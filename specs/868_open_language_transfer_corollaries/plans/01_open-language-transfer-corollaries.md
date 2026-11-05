@@ -183,7 +183,7 @@ sorry-free, with hypothesis-leading signatures and a `Paper:` line on each docst
       `end FormalSystem.Metalogic.Expressiveness`.
 - [x] Add `decidableOpenValidIn_of_translation` with body
       `letI := hdec (T φ); decidable_of_iff (PlusValidIn fc (T φ)) (hT φ).symm`. It MUST compile
-      as a plain `def` -- no `noncomputable`.
+      as a plain `def` -- no `noncomputable`. *(deviation: altered — renamed to `decidableOpenValidInOfTranslation`; the planned snake_case name is rejected by gates C26 and C16's `defsWithUnderscore` linter)*
 - [x] Add `openDecider` with body `fun φ => d (T φ)`, and `openDecider_correct` with body
       `(hd (T φ)).trans (hT φ).symm`.
 - [x] Add `exists_translation_ztime` with body `⟨tr hsep, openValidIn_ztime_iff_tr hsep⟩`, and
@@ -288,32 +288,32 @@ that actually covers it -- a diff read-through would not catch a malformed docst
 
 ---
 
-### Phase 3: Re-measure and Pin the C14 Axiom Baselines [NOT STARTED]
+### Phase 3: Re-measure and Pin the C14 Axiom Baselines [COMPLETED]
 
 **Goal**: Eight matched baseline pairs are appended to both C14 heredocs, carrying **measured**
 axiom profiles, with the explanatory comment block amended to match.
 
 **Tasks**:
 
-- [ ] Re-read `scripts/check-module-invariants.sh` immediately before editing.
-- [ ] Append eight `#print axioms FormalSystem.Metalogic.Expressiveness.<name>` lines to the
+- [x] Re-read `scripts/check-module-invariants.sh` immediately before editing.
+- [x] Append eight `#print axioms FormalSystem.Metalogic.Expressiveness.<name>` lines to the
       `C14LEAN` heredoc (around line 2481), directly after the existing
       `ofutP_of_futDet` line (around line 2624) -- for the eight declarations **excluding**
       `openDecider`.
-- [ ] Append eight matching lines at the **same trailing position** in the `C14_BASELINE` heredoc
+- [x] Append eight matching lines at the **same trailing position** in the `C14_BASELINE` heredoc
       (around line 2212), after the existing `ofutP_of_futDet` baseline line (around line 2354).
-- [ ] Do **not** add `openDecider` to either heredoc. `C14_OUT` is built by
+- [x] Do **not** add `openDecider` to either heredoc. `C14_OUT` is built by
       `… | grep 'depends on axioms'`, which discards the `'…' does not depend on any axioms` line,
       so a baseline line for it could never match and a `#print axioms` line for it would be a
       silent no-op.
-- [ ] Run `bash scripts/check-module-invariants.sh`, read the reported C14 divergence, and copy
+- [x] Run `bash scripts/check-module-invariants.sh`, read the reported C14 divergence, and copy
       the **measured** lines verbatim into `C14_BASELINE`. Never type an axiom profile by hand.
-- [ ] Amend the explanatory comment block above the heredocs (around lines 2162-2175): the count
+- [x] Amend the explanatory comment block above the heredocs (around lines 2162-2175): the count
       ("Eight further matched pairs sit in the open-modal neighbourhood …") changes, the new rows
       are described, and the WHAT THESE LINES DO NOT ASSERT paragraph is extended to state that
       the new pins assert axiom profiles only -- no decidability and no completeness claim for
       L^▷ at any class, and no antecedent discharged.
-- [ ] Re-run `bash scripts/check-module-invariants.sh` and confirm C14 PASS.
+- [x] Re-run `bash scripts/check-module-invariants.sh` and confirm C14 PASS.
 
 **Timing**: 1 hour
 

@@ -27,7 +27,7 @@ modal does so in mirror image:
   a separated conjunctive normal form — there is a translation `OpenFormula → PlusFormula`
   preserving truth at every model, world history and time over every regular `P`-frame, hence
   transporting validity in either direction;
-* the **transfer corollaries** `decidableOpenValidIn_of_translation`, `openDecider_correct`,
+* the **transfer corollaries** `decidableOpenValidInOfTranslation`, `openDecider_correct`,
   `decidableOpenValidZTimeOfTr`, `decidableOpenValidRTimeOfTr`,
   `openComplete_of_plusComplete_in`, `openValid_of_plusSound`: each a *reduction*, carrying
   decidability resp. completeness of open-future-language validity back to the corresponding L⁺
@@ -64,7 +64,7 @@ anywhere in this module. What the transfer corollaries state is a **reduction**,
 antecedents is undischarged:
 
 * **L⁺ decidability.** `Decidable (PlusValidIn FrameClass.ZTime ψ)` — and its `.RTime` mirror — is
-  stated nowhere in this tree, let alone proved. `decidableOpenValidIn_of_translation`,
+  stated nowhere in this tree, let alone proved. `decidableOpenValidInOfTranslation`,
   `decidableOpenValidZTimeOfTr` and `decidableOpenValidRTimeOfTr` take it as a hypothesis and are
   never applied.
 * **L⁺ completeness.** Completeness of any recursive extension of TM⁺ is open at every frame
@@ -122,7 +122,7 @@ appear.
 * `openValidIn_ztime_iff_tr`, `openValidIn_rtime_iff_tr` — validity transfer at `.ZTime` and
   `.RTime`, conditional on separation over that class
 * `ofutP_of_pastDet`, `ofutP_of_futDet` — the two split-free ends of the elimination
-* `decidableOpenValidIn_of_translation` — given a validity-transferring translation and a decision
+* `decidableOpenValidInOfTranslation` — given a validity-transferring translation and a decision
   procedure for L⁺ validity at a class, decidability of open-language validity there
 * `openDecider`, `openDecider_correct` — the `Bool`-level twin of that reduction, and its
   correctness given a correct L⁺ decider
@@ -476,7 +476,7 @@ The hypothesis does real work: because `T` is an explicit argument rather than t
 
 Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
 translation for them) -/
-def decidableOpenValidIn_of_translation (fc : FormalSystem.ProofSystem.FrameClass)
+def decidableOpenValidInOfTranslation (fc : FormalSystem.ProofSystem.FrameClass)
     (T : OpenFormula → PlusFormula)
     (hT : ∀ φ : OpenFormula, OpenValidIn fc φ ↔ PlusValidIn fc (T φ))
     (hdec : ∀ ψ : PlusFormula, Decidable (PlusValidIn fc ψ)) (φ : OpenFormula) :

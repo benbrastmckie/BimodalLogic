@@ -2179,6 +2179,31 @@ fi
 # discharged nowhere, and it is false over the non-Dedekind-complete flows, so nothing here
 # reaches the dense or unconstrained classes.
 #
+# Eight further matched pairs follow those, for the TRANSFER COROLLARIES of the same module --
+# the reductions carrying decidability and completeness of open-future-language validity back to
+# their L+ counterparts. `...decidableOpenValidInOfTranslation` is the generic decidability
+# reduction over an explicit translation function and `...openDecider_correct` its Bool-level
+# twin's correctness; `...exists_translation_ztime` and `...exists_translation_rtime` say `tr
+# hsep` inhabits that translation slot at the integer resp. Dedekind-complete class;
+# `...decidableOpenValidZTimeOfTr` and `...decidableOpenValidRTimeOfTr` are the per-formula
+# decidability reductions there; `...openComplete_of_plusComplete_in` is the completeness
+# reduction over an abstract derivability relation and `...openValid_of_plusSound` its soundness
+# mirror. `Classical.choice` enters the four that mention `tr`, which chooses a separated form;
+# the other four measure the strict subset `[propext]`, which is not a regression.
+# `...openDecider` itself is deliberately absent: it depends on no axiom at all, and `C14_OUT`
+# is built by `grep 'depends on axioms'`, which discards the `does not depend on any axioms`
+# line -- so a baseline line for it could never match and a `#print axioms` line for it would be
+# a silent no-op.
+#
+# WHAT THESE EIGHT LINES DO NOT ASSERT. Every one of them pins a REDUCTION whose antecedent is
+# undischarged, and they pin axiom profiles and nothing else. No decidability result and no
+# completeness result for the open-future language is asserted here at any frame class:
+# `Decidable (PlusValidIn FrameClass.ZTime _)` is stated nowhere in this tree, completeness of
+# any recursive extension of TM+ is open at every frame class, and `tr` is noncomputable, so no
+# decision procedure and no recursive axiomatization of the open-future language follows. The
+# four lines mentioning `tr` additionally inherit the undischarged `SeparationOver` hypothesis
+# described above, and nothing here reaches the base or dense classes.
+#
 # Eleven further matched pairs follow them, for the open-future NON-definability layer
 # (`Metalogic/Independence/OpenFutureUndefinable.lean`), which is the negative half of the same
 # neighbourhood. `...ofut_pastDet` and `...opast_futDet` are the determinacy facts that confine
@@ -2352,6 +2377,14 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Expressiveness.openValidIn_ztime_iff_tr' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.openValidIn_rtime_iff_tr' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.ofutP_of_futDet' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.decidableOpenValidInOfTranslation' depends on axioms: [propext]
+'FormalSystem.Metalogic.Expressiveness.openDecider_correct' depends on axioms: [propext]
+'FormalSystem.Metalogic.Expressiveness.exists_translation_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.exists_translation_rtime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.decidableOpenValidZTimeOfTr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.decidableOpenValidRTimeOfTr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.openComplete_of_plusComplete_in' depends on axioms: [propext]
+'FormalSystem.Metalogic.Expressiveness.openValid_of_plusSound' depends on axioms: [propext]
 'FormalSystem.Metalogic.Independence.ofut_pastDet' depends on axioms: [propext]
 'FormalSystem.Metalogic.Independence.opast_futDet' depends on axioms: [propext]
 'FormalSystem.Metalogic.Independence.MarkerGadget.theta_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -2634,6 +2667,14 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Expressiveness.openValidIn_ztime_iff_tr
 #print axioms FormalSystem.Metalogic.Expressiveness.openValidIn_rtime_iff_tr
 #print axioms FormalSystem.Metalogic.Expressiveness.ofutP_of_futDet
+#print axioms FormalSystem.Metalogic.Expressiveness.decidableOpenValidInOfTranslation
+#print axioms FormalSystem.Metalogic.Expressiveness.openDecider_correct
+#print axioms FormalSystem.Metalogic.Expressiveness.exists_translation_ztime
+#print axioms FormalSystem.Metalogic.Expressiveness.exists_translation_rtime
+#print axioms FormalSystem.Metalogic.Expressiveness.decidableOpenValidZTimeOfTr
+#print axioms FormalSystem.Metalogic.Expressiveness.decidableOpenValidRTimeOfTr
+#print axioms FormalSystem.Metalogic.Expressiveness.openComplete_of_plusComplete_in
+#print axioms FormalSystem.Metalogic.Expressiveness.openValid_of_plusSound
 #print axioms FormalSystem.Metalogic.Independence.ofut_pastDet
 #print axioms FormalSystem.Metalogic.Independence.opast_futDet
 #print axioms FormalSystem.Metalogic.Independence.MarkerGadget.theta_eq_iff
