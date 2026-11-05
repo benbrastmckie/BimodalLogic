@@ -99,6 +99,25 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem (FrameClass)
 open OpenFormula
 
+/-! ### Two derived operators the Dedekind schemata need
+
+`OpenLanguage/Formula.lean` carries every derived operator its own results use, and the Reynolds
+operators are not among them; they are declared here, at their `PlusFormula` namesakes' right-hand
+sides verbatim, so that `ofPlus` and `eraseOpen` commute with each one by `rfl`. They are declared
+in this file rather than beside `OpenFormula` so that `OpenLanguage/Formula.lean` and its module
+invariants stay untouched, the same divergence `OpenContext`'s placement records in
+`OpenLanguage/OpenDerivation.lean`. -/
+
+namespace OpenFormula
+
+/-- Reynolds' `K⁺`: `¬U(¬φ, ⊤)` in guard-first order. Mirrors `PlusFormula.kPlus`. -/
+def kPlus (φ : OpenFormula) : OpenFormula := (OpenFormula.untl φ.neg OpenFormula.top).neg
+
+/-- Reynolds' `K⁻`: `¬S(¬φ, ⊤)` in guard-first order. Mirrors `PlusFormula.kMinus`. -/
+def kMinus (φ : OpenFormula) : OpenFormula := (OpenFormula.snce φ.neg OpenFormula.top).neg
+
+end OpenFormula
+
 /-! ### Purity predicates
 
 The side conditions of the pasting schemata (`paste`, `untl_paste`) and of the two rigidity
@@ -236,6 +255,215 @@ inductive OpenAxiom : OpenFormula → Type where
   /-- `⊡φ → ▷◁φ`; validity `openValid_stab_imp_ofut_opast`. The backward half is excluded; see the
   note on the inductive. -/
   | definability_fwd (φ : OpenFormula) : OpenAxiom (imp (stab φ) (ofut (opast φ)))
+  -- The TM⁺ schemata, re-declared at `OpenFormula` parameters (53)
+  -- Read constructor for constructor against `FormalSystem/PlusLanguage/Axioms.lean`, whose
+  -- docstrings are authoritative for each schema's reading and provenance.
+  -- Layer 1: Propositional (4)
+  /-- Propositional K: `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))` -/
+  | prop_k (φ ψ χ : OpenFormula) :
+      OpenAxiom ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ)))
+  /-- Propositional S (weakening): `φ → (ψ → φ)` -/
+  | prop_s (φ ψ : OpenFormula) : OpenAxiom (φ.imp (ψ.imp φ))
+  /-- Ex Falso Quodlibet: `⊥ → φ` -/
+  | ex_falso (φ : OpenFormula) : OpenAxiom (OpenFormula.bot.imp φ)
+  /-- Peirce's Law: `((φ → ψ) → φ) → φ` -/
+  | peirce (φ ψ : OpenFormula) : OpenAxiom (((φ.imp ψ).imp φ).imp φ)
+  -- Layer 2: S5 Modal (5)
+  /-- Modal T: `□φ → φ` -/
+  | modal_t (φ : OpenFormula) : OpenAxiom (OpenFormula.box φ |>.imp φ)
+  /-- Modal 4: `□φ → □□φ` -/
+  | modal_4 (φ : OpenFormula) : OpenAxiom
+      ((OpenFormula.box φ).imp (OpenFormula.box (OpenFormula.box φ)))
+  /-- Modal B: `φ → □◇φ` -/
+  | modal_b (φ : OpenFormula) : OpenAxiom (φ.imp (OpenFormula.box φ.diamond))
+  /-- Modal 5 Collapse: `◇□φ → □φ` -/
+  | modal_5_collapse (φ : OpenFormula) : OpenAxiom (φ.box.diamond.imp φ.box)
+  /-- Modal K Distribution: `□(φ → ψ) → (□φ → □ψ)` -/
+  | modal_k_dist (φ ψ : OpenFormula) :
+      OpenAxiom ((φ.imp ψ).box.imp (φ.box.imp ψ.box))
+  -- Layer 3: BX Temporal (22)
+  /-- Serial future: `F(⊤)` (the paper's TS verbatim) -/
+  | serial_future :
+    OpenAxiom (OpenFormula.someFuture (OpenFormula.bot.imp OpenFormula.bot))
+  /-- Serial past: `⊤ → P(⊤)` -/
+  | serial_past :
+    OpenAxiom ((OpenFormula.bot.imp OpenFormula.bot).imp
+      (OpenFormula.somePast (OpenFormula.bot.imp OpenFormula.bot)))
+  /-- BX2G: `G(φ→χ) → ((φ U ψ) → (χ U ψ))` -/
+  | left_mono_until_G (φ χ ψ : OpenFormula) :
+      OpenAxiom ((φ.imp χ).allFuture.imp ((OpenFormula.untl φ ψ).imp (OpenFormula.untl χ ψ)))
+  /-- BX2H: `H(φ→χ) → ((φ S ψ) → (χ S ψ))` -/
+  | left_mono_since_H (φ χ ψ : OpenFormula) :
+      OpenAxiom ((φ.imp χ).allPast.imp ((OpenFormula.snce φ ψ).imp (OpenFormula.snce χ ψ)))
+  /-- BX3: `G(φ → ψ) → ((χ U φ) → (χ U ψ))` -/
+  | right_mono_until (φ ψ χ : OpenFormula) :
+      OpenAxiom ((φ.imp ψ).allFuture.imp ((OpenFormula.untl χ φ).imp (OpenFormula.untl χ ψ)))
+  /-- BX3': `H(φ → ψ) → ((χ S φ) → (χ S ψ))` -/
+  | right_mono_since (φ ψ χ : OpenFormula) :
+      OpenAxiom ((φ.imp ψ).allPast.imp ((OpenFormula.snce χ φ).imp (OpenFormula.snce χ ψ)))
+  /-- BX4: `φ → G(P(φ))` -/
+  | connect_future (φ : OpenFormula) :
+      OpenAxiom (φ.imp (φ.somePast.allFuture))
+  /-- BX4': `φ → H(F(φ))` -/
+  | connect_past (φ : OpenFormula) :
+      OpenAxiom (φ.imp (φ.someFuture.allPast))
+  /-- BX13: `p ∧ untl(φ, ψ) → untl(φ, ψ ∧ snce(φ, p))` (Burgess A3a) -/
+  | enrichment_until (φ ψ p : OpenFormula) :
+      OpenAxiom (OpenFormula.and p (OpenFormula.untl φ ψ) |>.imp
+        (OpenFormula.untl φ (OpenFormula.and ψ (OpenFormula.snce φ p))))
+  /-- BX13': `p ∧ snce(φ, ψ) → snce(φ, ψ ∧ untl(φ, p))` (Burgess A3b) -/
+  | enrichment_since (φ ψ p : OpenFormula) :
+      OpenAxiom (OpenFormula.and p (OpenFormula.snce φ ψ) |>.imp
+        (OpenFormula.snce φ (OpenFormula.and ψ (OpenFormula.untl φ p))))
+  /-- BX5: `U(ψ, φ) → U(ψ, φ ∧ U(ψ, φ))` -/
+  | self_accum_until (φ ψ : OpenFormula) :
+      OpenAxiom ((OpenFormula.untl φ ψ).imp
+        (OpenFormula.untl (OpenFormula.and φ (OpenFormula.untl φ ψ)) ψ))
+  /-- BX5': `S(ψ, φ) → S(ψ, φ ∧ S(ψ, φ))` -/
+  | self_accum_since (φ ψ : OpenFormula) :
+      OpenAxiom ((OpenFormula.snce φ ψ).imp
+        (OpenFormula.snce (OpenFormula.and φ (OpenFormula.snce φ ψ)) ψ))
+  /-- BX6: `U(φ ∧ U(ψ, φ), φ) → U(ψ, φ)` -/
+  | absorb_until (φ ψ : OpenFormula) :
+      OpenAxiom ((OpenFormula.untl φ (OpenFormula.and φ (OpenFormula.untl φ ψ))).imp
+        (OpenFormula.untl φ ψ))
+  /-- BX6': `S(φ ∧ S(ψ, φ), φ) → S(ψ, φ)` -/
+  | absorb_since (φ ψ : OpenFormula) :
+      OpenAxiom ((OpenFormula.snce φ (OpenFormula.and φ (OpenFormula.snce φ ψ))).imp
+        (OpenFormula.snce φ ψ))
+  /-- BX7: linearity of Until (the paper's CN, right-associated) -/
+  | linear_until (φ ψ χ θ : OpenFormula) :
+      OpenAxiom (OpenFormula.and (OpenFormula.untl φ ψ) (OpenFormula.untl χ θ)
+        |>.imp (OpenFormula.or
+          (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and ψ θ))
+          (OpenFormula.or
+            (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and ψ χ))
+            (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and φ θ)))))
+  /-- BX7': linearity of Since -/
+  | linear_since (φ ψ χ θ : OpenFormula) :
+      OpenAxiom (OpenFormula.and (OpenFormula.snce φ ψ) (OpenFormula.snce χ θ)
+        |>.imp (OpenFormula.or
+          (OpenFormula.or
+            (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and ψ θ))
+            (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and ψ χ)))
+          (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and φ θ))))
+  /-- BX10: `U(ψ, φ) → F(ψ)` -/
+  | until_F (φ ψ : OpenFormula) :
+      OpenAxiom ((OpenFormula.untl φ ψ).imp (OpenFormula.someFuture ψ))
+  /-- BX10': `S(ψ, φ) → P(ψ)` -/
+  | since_P (φ ψ : OpenFormula) :
+      OpenAxiom ((OpenFormula.snce φ ψ).imp (OpenFormula.somePast ψ))
+  /-- BX11 (the paper's TL, verbatim): `F(φ) ∧ F(ψ) → F(F(φ) ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)))` -/
+  | temp_linearity (φ ψ : OpenFormula) :
+      OpenAxiom (OpenFormula.and (OpenFormula.someFuture φ) (OpenFormula.someFuture ψ) |>.imp
+        (OpenFormula.or (OpenFormula.someFuture (OpenFormula.and (OpenFormula.someFuture φ) ψ))
+          (OpenFormula.or (OpenFormula.someFuture (OpenFormula.and φ ψ))
+            (OpenFormula.someFuture (OpenFormula.and φ (OpenFormula.someFuture ψ))))))
+  /-- BX11': `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)` -/
+  | temp_linearity_past (φ ψ : OpenFormula) :
+      OpenAxiom (OpenFormula.and (OpenFormula.somePast φ) (OpenFormula.somePast ψ) |>.imp
+        (OpenFormula.or (OpenFormula.somePast (OpenFormula.and φ ψ))
+          (OpenFormula.or (OpenFormula.somePast (OpenFormula.and φ (OpenFormula.somePast ψ)))
+            (OpenFormula.somePast (OpenFormula.and (OpenFormula.somePast φ) ψ)))))
+  /-- BX12: `F(φ) → U(φ, ⊤)` -/
+  | F_until_equiv (φ : OpenFormula) :
+      OpenAxiom ((OpenFormula.someFuture φ).imp
+        (OpenFormula.untl (OpenFormula.bot.imp OpenFormula.bot) φ))
+  /-- BX12': `P(φ) → S(φ, ⊤)` -/
+  | P_since_equiv (φ : OpenFormula) :
+      OpenAxiom ((OpenFormula.somePast φ).imp
+        (OpenFormula.snce (OpenFormula.bot.imp OpenFormula.bot) φ))
+  -- Layer 4: Modal-Temporal Interaction (1)
+  /-- Modal-Future: `□φ → □(Gφ)` -/
+  | modal_future (φ : OpenFormula) :
+      OpenAxiom ((OpenFormula.box φ).imp (OpenFormula.box (OpenFormula.allFuture φ)))
+  -- Layer 5: Uniformity (5)
+  /-- `U(⊤,⊥) → S(⊤,⊥)` -/
+  | discrete_symm_fwd :
+      OpenAxiom ((OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)).imp
+        (OpenFormula.snce OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)))
+  /-- `S(⊤,⊥) → U(⊤,⊥)` -/
+  | discrete_symm_bwd :
+      OpenAxiom ((OpenFormula.snce OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)).imp
+        (OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)))
+  /-- `U(⊤,⊥) → G(U(⊤,⊥))` -/
+  | discrete_propagate_fwd :
+      OpenAxiom ((OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)).imp
+        (OpenFormula.allFuture
+          (OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot))))
+  /-- `U(⊤,⊥) → H(U(⊤,⊥))` -/
+  | discrete_propagate_bwd :
+      OpenAxiom ((OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)).imp
+        (OpenFormula.allPast
+          (OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot))))
+  /-- `U(⊤,⊥) → □(U(⊤,⊥))` -/
+  | discrete_box_necessity :
+      OpenAxiom ((OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)).imp
+        (OpenFormula.box (OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot))))
+  -- Layer 6: Prior (2)
+  /-- Prior-UZ: `F(φ) → U(φ, ¬φ)` -/
+  | prior_UZ (φ : OpenFormula) :
+      OpenAxiom (φ.someFuture.imp (OpenFormula.untl φ.neg φ))
+  /-- Prior-SZ: `P(φ) → S(φ, ¬φ)` -/
+  | prior_SZ (φ : OpenFormula) :
+      OpenAxiom (φ.somePast.imp (OpenFormula.snce φ.neg φ))
+  -- Layer 7: Z1 (1)
+  /-- Z1: `G(Gφ→φ) → (FGφ→Gφ)` -/
+  | z1 (φ : OpenFormula) :
+      OpenAxiom ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture))
+  -- Layer 8: Density (2)
+  /-- Density: `GGφ → Gφ` -/
+  | density (φ : OpenFormula) :
+      OpenAxiom (φ.allFuture.allFuture.imp φ.allFuture)
+  /-- Dense indicator: `¬U(⊤,⊥)` -/
+  | dense_indicator :
+      OpenAxiom (OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)).neg
+  -- Layer 9: Reynolds Dedekind (3)
+  /-- Prior-U (gap form): `U(⊤,φ) ∧ F(¬φ) → U(¬φ ∨ K⁺(¬φ), φ)` -/
+  | prior_U_gap (φ : OpenFormula) :
+      OpenAxiom ((OpenFormula.and (OpenFormula.untl φ OpenFormula.top) φ.neg.someFuture).imp
+        (OpenFormula.untl φ (OpenFormula.or φ.neg (OpenFormula.kPlus φ.neg))))
+  /-- Prior-S (gap form): `S(⊤,φ) ∧ P(¬φ) → S(¬φ ∨ K⁻(¬φ), φ)` -/
+  | prior_S_gap (φ : OpenFormula) :
+      OpenAxiom ((OpenFormula.and (OpenFormula.snce φ OpenFormula.top) φ.neg.somePast).imp
+        (OpenFormula.snce φ (OpenFormula.or φ.neg (OpenFormula.kMinus φ.neg))))
+  /-- Sep: `K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)) → K⁺(K⁺φ ∧ K⁻φ)` -/
+  | sep (φ : OpenFormula) :
+      OpenAxiom ((OpenFormula.and (OpenFormula.kPlus φ)
+        (OpenFormula.kPlus (OpenFormula.and φ (OpenFormula.untl φ.neg φ))).neg).imp
+        (OpenFormula.kPlus (OpenFormula.and (OpenFormula.kPlus φ) (OpenFormula.kMinus φ))))
+  -- The stability modal (8)
+  /-- SK: `⊡(φ → ψ) → (⊡φ → ⊡ψ)` — K for `⊡`, from the universal-quantifier shape of the
+  `stab` clause (`def:BLstar-semantics`). -/
+  | stab_k (φ ψ : OpenFormula) :
+      OpenAxiom ((OpenFormula.stab (φ.imp ψ)).imp ((OpenFormula.stab φ).imp (OpenFormula.stab ψ)))
+  /-- ST: `⊡φ → φ` — T for `⊡` (the footnote to the Stability clause); `Semantics.of_stab`. -/
+  | stab_t (φ : OpenFormula) : OpenAxiom ((OpenFormula.stab φ).imp φ)
+  /-- S4: `⊡φ → ⊡⊡φ` (the footnote to the Stability clause); `Semantics.stab_four`. `stab_4` is
+  not among the schemata of the manuscript's commented-out TM-stability axiomatization (SK, ST,
+  S5, MS, AS, PS and US); it is derivable from SK, ST and the S5 schema, and is kept here as a
+  primitive constructor for convenience. -/
+  | stab_4 (φ : OpenFormula) :
+      OpenAxiom ((OpenFormula.stab φ).imp (OpenFormula.stab (OpenFormula.stab φ)))
+  /-- S5: `⟐φ → ⊡⟐φ`, stated as `¬⊡¬φ → ⊡¬⊡¬φ` through `dstab` (the footnote to the Stability
+  clause); `Semantics.stab_five` at `¬φ`. -/
+  | stab_5 (φ : OpenFormula) :
+      OpenAxiom ((dstab φ).imp (OpenFormula.stab (dstab φ)))
+  /-- MS: `□φ → ⊡φ` — `⟨τ⟩_x ⊆ H_F` (`def:BLstar-semantics`); `Semantics.stab_of_box`. -/
+  | box_stab (φ : OpenFormula) : OpenAxiom ((OpenFormula.box φ).imp (OpenFormula.stab φ))
+  /-- AS: `p → ⊡p` for atoms (the footnote to the Stability clause); `Semantics.stab_of_stateLocal`
+      at `stateLocal_atom`. The axiom stays atom-restricted — widening it would change TM⁺ — but
+      its semantic witness is the whole state-locality fragment. -/
+  | atom_stab (p : Atom) :
+      OpenAxiom ((OpenFormula.atom p).imp (OpenFormula.stab (OpenFormula.atom p)))
+  /-- PS (same-time pasting): `⟐φ⁺ → (⟐ψ⁻ → ⟐(φ⁺ ∧ ψ⁻))` for pure-future `φ⁺` and pure-past
+  `ψ⁻`; `Semantics.paste_valid`. -/
+  | paste (φ ψ : OpenFormula) (hφ : IsPureFutureOpen φ) (hψ : IsPurePastOpen ψ) :
+      OpenAxiom ((dstab φ).imp ((dstab ψ).imp (dstab (φ.and ψ))))
+  /-- US (future pasting): `(α⁻ U ⟐φ⁺) → ⟐(α⁻ U φ⁺)` for pure-past `α⁻` and pure-future `φ⁺`;
+  `Semantics.untl_dstab_valid`. -/
+  | untl_paste (α φ : OpenFormula) (hα : IsPurePastOpen α) (hφ : IsPureFutureOpen φ) :
+      OpenAxiom ((OpenFormula.untl α (dstab φ)).imp (dstab (OpenFormula.untl α φ)))
 
 namespace OpenAxiom
 
@@ -266,6 +494,60 @@ def minFrameClass {φ : OpenFormula} : OpenAxiom φ → FrameClass
   | .rigidity_ofut_fwd _ _ => .Base
   | .rigidity_ofut_bwd _ _ => .Base
   | .definability_fwd _ => .Base
+  -- The re-declared TM⁺ schemata, repeating `PlusAxiom.minFrameClass`'s assignment
+  | .prop_k _ _ _ => .Base
+  | .prop_s _ _ => .Base
+  | .ex_falso _ => .Base
+  | .peirce _ _ => .Base
+  | .modal_t _ => .Base
+  | .modal_4 _ => .Base
+  | .modal_b _ => .Base
+  | .modal_5_collapse _ => .Base
+  | .modal_k_dist _ _ => .Base
+  | .serial_future => .Base
+  | .serial_past => .Base
+  | .left_mono_until_G _ _ _ => .Base
+  | .left_mono_since_H _ _ _ => .Base
+  | .right_mono_until _ _ _ => .Base
+  | .right_mono_since _ _ _ => .Base
+  | .connect_future _ => .Base
+  | .connect_past _ => .Base
+  | .enrichment_until _ _ _ => .Base
+  | .enrichment_since _ _ _ => .Base
+  | .self_accum_until _ _ => .Base
+  | .self_accum_since _ _ => .Base
+  | .absorb_until _ _ => .Base
+  | .absorb_since _ _ => .Base
+  | .linear_until _ _ _ _ => .Base
+  | .linear_since _ _ _ _ => .Base
+  | .until_F _ _ => .Base
+  | .since_P _ _ => .Base
+  | .temp_linearity _ _ => .Base
+  | .temp_linearity_past _ _ => .Base
+  | .F_until_equiv _ => .Base
+  | .P_since_equiv _ => .Base
+  | .modal_future _ => .Base
+  | .discrete_symm_fwd => .Base
+  | .discrete_symm_bwd => .Base
+  | .discrete_propagate_fwd => .Base
+  | .discrete_propagate_bwd => .Base
+  | .discrete_box_necessity => .Base
+  | .prior_UZ _ => .ZTime
+  | .prior_SZ _ => .ZTime
+  | .z1 _ => .ZTime
+  | .density _ => .Dense
+  | .dense_indicator => .Dense
+  | .prior_U_gap _ => .RTime
+  | .prior_S_gap _ => .RTime
+  | .sep _ => .RTime
+  | .stab_k _ _ => .Base
+  | .stab_t _ => .Base
+  | .stab_4 _ => .Base
+  | .stab_5 _ => .Base
+  | .box_stab _ => .Base
+  | .atom_stab _ => .Base
+  | .paste _ _ _ _ => .Base
+  | .untl_paste _ _ _ _ => .Base
 
 end OpenAxiom
 
@@ -279,5 +561,14 @@ example (α : OpenFormula) : (OpenAxiom.hn_open α).minFrameClass = .Base := rfl
 example (φ : OpenFormula) (hφ : IsPureFutureOpen φ) :
     (OpenAxiom.rigidity_opast_bwd φ hφ).minFrameClass = .Base := rfl
 example (φ : OpenFormula) : (OpenAxiom.definability_fwd φ).minFrameClass = .Base := rfl
+
+/-! One representative TM⁺ mirror at each of the four frame classes. -/
+
+example (φ : OpenFormula) : (OpenAxiom.stab_t φ).minFrameClass = .Base := rfl
+example (φ : OpenFormula) : (OpenAxiom.density φ).minFrameClass = .Dense := rfl
+example (φ : OpenFormula) : (OpenAxiom.z1 φ).minFrameClass = .ZTime := rfl
+example (φ : OpenFormula) : (OpenAxiom.sep φ).minFrameClass = .RTime := rfl
+example (φ ψ : OpenFormula) (hφ : IsPureFutureOpen φ) (hψ : IsPurePastOpen ψ) :
+    (OpenAxiom.paste φ ψ hφ hψ).minFrameClass = .Base := rfl
 
 end FormalSystem.OpenLanguage

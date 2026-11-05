@@ -247,27 +247,27 @@ number of `minFrameClass` arms; a mismatch means a constructor escaped the dispa
 
 ---
 
-### Phase 2: `OpenAxioms.lean` — the re-declared TM⁺ schemata [NOT STARTED]
+### Phase 2: `OpenAxioms.lean` — the re-declared TM⁺ schemata [COMPLETED]
 
 **Goal**: Re-declare every TM⁺ schema at `OpenFormula` parameters, so MF at `▷p` and every other
 ▷-containing instance is available, and extend `minFrameClass` to cover them.
 
 **Tasks**:
 
-- [ ] For each constructor of `PlusAxiom` (`FormalSystem/PlusLanguage/Axioms.lean:107-338`),
+- [x] For each constructor of `PlusAxiom` (`FormalSystem/PlusLanguage/Axioms.lean:107-338`),
   add the corresponding `OpenAxiom` constructor at `OpenFormula` parameters, keeping the
   constructor name and argument order identical so the Phase 3 embedding and the Phase 5
   discharge table are constructor-to-constructor.
-- [ ] Carry the purity side conditions across: `paste` takes `IsPureFutureOpen φ` and
+- [x] Carry the purity side conditions across: `paste` takes `IsPureFutureOpen φ` and
   `IsPurePastOpen ψ`; `untl_paste` takes `IsPurePastOpen α` and `IsPureFutureOpen φ`.
-- [ ] Extend `minFrameClass` with one arm per new constructor, matching
+- [x] Extend `minFrameClass` with one arm per new constructor, matching
   `PlusAxiom.minFrameClass`'s assignment exactly: `.Dense` for `density` and `dense_indicator`;
   `.ZTime` for `prior_UZ`, `prior_SZ`, `z1`; `.RTime` for `prior_U_gap` and the remaining
   Dedekind rows; `.Base` otherwise. Read the `PlusAxiom.minFrameClass` arms directly rather than
   reproducing them from this plan.
-- [ ] Add `rfl` pins (as `example`) for one representative constructor at each of the four frame
+- [x] Add `rfl` pins (as `example`) for one representative constructor at each of the four frame
   classes.
-- [ ] Record in the docstring why the schemata are re-declared rather than embedded (D4): an
+- [x] *(deviation: altered — `OpenFormula.kPlus`/`kMinus` had to be declared in this file for `prior_U_gap`, `prior_S_gap` and `sep` to be statable at all; `OpenLanguage/Formula.lean` carries neither and is out of scope by plan design.)* Record in the docstring why the schemata are re-declared rather than embedded (D4): an
   `ofPlus`-embedding constructor supplies only ▷-free instances, and `□▷p → □G▷p` is needed.
 
 **Timing**: 2 hours
