@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.OpenLanguage.Formula
+import FormalSystem.OpenLanguage.OpenAxioms
 import FormalSystem.OpenLanguage.OpenClasses
 import FormalSystem.OpenLanguage.OpenOckhamist
 import FormalSystem.OpenLanguage.OpenReversal
@@ -40,6 +41,9 @@ library theorems rather than leaving it to be rediscovered.
 - `OpenLanguage.Formula` — `OpenFormula`, the derived operators (with `PlusFormula`'s right-hand
   sides), the duals `dofut` and `dopast`, `reflectTime` (which exchanges `▷` and `◁`), and the
   embedding `ofPlus`
+- `OpenLanguage.OpenAxioms` — `IsPureFutureOpen`/`IsPurePastOpen`, the `OpenAxiom` schemata (the
+  TM⁺ schemata re-declared at `OpenFormula` parameters, plus the restricted-modal block for `▷`
+  and `◁`), and the wildcard-free `OpenAxiom.minFrameClass`
 
 ## Semantic modules
 

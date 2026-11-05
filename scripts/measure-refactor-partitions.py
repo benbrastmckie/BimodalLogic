@@ -206,7 +206,7 @@ LANGUAGE_FILE_LAYERS = {
         "StarValidity": 1,
     },
     "OpenLanguage": {
-        "Formula": 0,
+        "Formula": 0, "OpenAxioms": 0,
         "OpenClasses": 1, "OpenOckhamist": 1, "OpenReversal": 1, "OpenTruth": 1,
         "OpenValidity": 1,
     },

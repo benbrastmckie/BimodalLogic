@@ -1,7 +1,7 @@
 # Implementation Plan: Task #856
 
 - **Task**: 856 - Build the L^▷ proof system: OpenAxiom, OpenDerivationTree, soundness and conservativity
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 29 hours
 - **Dependencies**: 854 (completed), 859 (completed) — the ▷-definability gate, both verdicts in
 - **Research Inputs**: `specs/856_open_language_proof_system_and_soundness/reports/01_open-proof-system-soundness-conservativity.md`; `specs/856_open_language_proof_system_and_soundness/probes/01_erasure-collapse-and-discharge.lean` (255 lines, compiled-live, sorry-free)
@@ -172,47 +172,47 @@ into one wave: the serialization is same-file territory discipline, not a mathem
 
 ---
 
-### Phase 1: `OpenAxioms.lean` — purity predicates, the ▷/◁ block, `minFrameClass` [NOT STARTED]
+### Phase 1: `OpenAxioms.lean` — purity predicates, the ▷/◁ block, `minFrameClass` [COMPLETED]
 
 **Goal**: Create the axiom type with its restricted-modal constructors only, so the module
 compiles standalone and every later phase has a target to extend.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/OpenLanguage/OpenAxioms.lean` importing `FormalSystem.OpenLanguage.Formula`
+- [x] Create `FormalSystem/OpenLanguage/OpenAxioms.lean` importing `FormalSystem.OpenLanguage.Formula`
   and `FormalSystem.ProofSystem.Axioms` and nothing else — no `FormalSystem.Semantics.*`, no
   semantic module of any language (the directory's module invariant).
-- [ ] Declare `IsPureFutureOpen` and `IsPurePastOpen` as inductives mirroring
+- [x] *(deviation: altered — this bullet's literal sample clause `| ofut {φ} : IsPureFutureOpen φ → IsPureFutureOpen (.ofut φ)` contradicts the next bullet and is unsound; `▷` is past-determined, not future-determined, so admitting it as pure-future would falsify `paste`. Implemented the next bullet's crossed direction: `IsPureFutureOpen` admits `.opast` under a recursive guard, `IsPurePastOpen` admits `.ofut`.)* Declare `IsPureFutureOpen` and `IsPurePastOpen` as inductives mirroring
   `PlusFormula.IsPureFuture`/`IsPurePast` (`FormalSystem/PlusLanguage/Formula.lean:309-318`),
   adding `| ofut {φ} : IsPureFutureOpen φ → IsPureFutureOpen (.ofut φ)` and the matching
   recursive `opast` clauses. Admit `▷ψ` as pure-past and `◁ψ` as pure-future **only when `ψ` is
   itself pure** — a blanket leaf clause is semantically true but breaks Phase 4's
   erasure-preservation lemma.
-- [ ] Declare `inductive OpenAxiom : OpenFormula → Type` carrying the restricted-modal block
+- [x] Declare `inductive OpenAxiom : OpenFormula → Type` carrying the restricted-modal block
   only: `ofut_k`, `ofut_t`, `ofut_four`, `ofut_five`; `opast_k`, `opast_t`, `opast_four`,
   `opast_five`; `stab_of_box`, `ofut_of_stab`, `opast_of_stab`; `hn_open`, `hn_open_mirror`;
   `rigidity_opast_fwd`, `rigidity_opast_bwd` (guarded by `IsPureFutureOpen`),
   `rigidity_ofut_fwd`, `rigidity_ofut_bwd` (guarded by `IsPurePastOpen`);
   `definability_fwd` (`⊡φ → ▷◁φ`).
-- [ ] Do NOT declare `definability_bwd` (`▷◁φ → ⊡φ`) — D1. Record in the constructor-block
+- [x] Do NOT declare `definability_bwd` (`▷◁φ → ⊡φ`) — D1. Record in the constructor-block
   docstring that it is excluded, that its erasure is *Determined* and refuted by
   `PlusLanguage.refute_determined`, and that the forward half is anyway derivable in the system
   from `stab_4`, the two bridges, `▷`-K and derived `▷`-necessitation.
-- [ ] Declare `namespace OpenAxiom` / `def minFrameClass {φ : OpenFormula} : OpenAxiom φ → FrameClass`
+- [x] Declare `namespace OpenAxiom` / `def minFrameClass {φ : OpenFormula} : OpenAxiom φ → FrameClass`
   with one arm per constructor and no wildcard. Every arm above is `.Base`. Spell it
   `namespace OpenAxiom` + `def minFrameClass` rather than `def OpenAxiom.minFrameClass` (the
   `PlusAxiom` spelling) so the bare name resolves for `lean-plan-compliance-check.sh`'s
   declaration grep.
-- [ ] Add `rfl` pins (as `example`, not `theorem`) showing `minFrameClass` on the ▷/◁ block.
-- [ ] Write the module docstring: the four-arms-per-constructor extension recipe (constructor,
+- [x] Add `rfl` pins (as `example`, not `theorem`) showing `minFrameClass` on the ▷/◁ block.
+- [x] Write the module docstring: the four-arms-per-constructor extension recipe (constructor,
   `minFrameClass` arm, validity arm, reflection-validity arm, **plus** the discharge arm — five
   surfaces, which is one more than `PlusLanguage/README.md`'s recipe states, because the
   discharge arm can be impossible rather than merely laborious); the class split (notational at
   `.ZTime`/`.RTime` by 854, a genuine extension at `.Base`/`.Dense` by 859); and an explicit "no
   completeness is claimed" sentence.
-- [ ] Add `"OpenAxioms": 0` to the `"OpenLanguage"` dict of `LANGUAGE_FILE_LAYERS` in
+- [x] Add `"OpenAxioms": 0` to the `"OpenLanguage"` dict of `LANGUAGE_FILE_LAYERS` in
   `scripts/measure-refactor-partitions.py`.
-- [ ] Add `import FormalSystem.OpenLanguage.OpenAxioms` to `FormalSystem/OpenLanguage.lean` and a
+- [x] Add `import FormalSystem.OpenLanguage.OpenAxioms` to `FormalSystem/OpenLanguage.lean` and a
   module bullet to its `## Modules` list.
 
 **Timing**: 2 hours
