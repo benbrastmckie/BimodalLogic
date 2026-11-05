@@ -305,7 +305,7 @@ is `bash /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/verify
 
 ---
 
-### Phase 3: Deploy, verify the full gate set, and confirm both provisions read correctly from the deployed tree [NOT STARTED]
+### Phase 3: Deploy, verify the full gate set, and confirm both provisions read correctly from the deployed tree [IN PROGRESS]
 
 **Goal**: Land both provisions in the deployed `.claude/` tree through the sanctioned deploy path,
 confirm `RESULT=landed_verify_clean`, run the complete gate set, and confirm the two acceptance
@@ -313,34 +313,45 @@ criteria hold for a reader of the deployed `plan-format.md` alone.
 
 **Tasks**:
 
-- [ ] Run `timeout 540 bash /home/benjamin/Projects/BimodalLogic/.claude/scripts/deploy-headless.sh`
+- [x] Run `timeout 540 bash /home/benjamin/Projects/BimodalLogic/.claude/scripts/deploy-headless.sh`
       with the Bash tool `timeout` parameter raised to 600000 (not its 120000 ms default), per
-      `context/patterns/external-process-wait.md` Rule 1.
-- [ ] Confirm the deploy reports `RESULT=landed_verify_clean`. Any other RESULT is blocking:
+      `context/patterns/external-process-wait.md` Rule 1. *(completed)*
+- [x] Confirm the deploy reports `RESULT=landed_verify_clean`. Any other RESULT is blocking:
       report it verbatim in the handoff's `blockers[]` and do NOT hand-patch any file under
       `.claude/**` as a substitute, which would mask the divergence instead of fixing it.
-- [ ] Confirm `diff -q` between the source-store `plan-format.md` and the deployed
+      *(completed: RESULT=landed_verify_clean)*
+- [x] Confirm `diff -q` between the source-store `plan-format.md` and the deployed
       `.claude/context/formats/plan-format.md` reports no difference, i.e. both paragraphs reached
-      the deployed tree as deploy output rather than as a hand edit.
-- [ ] Run the complete gate set: `bash /home/benjamin/Projects/BimodalLogic/.claude/scripts/verify-deploy.sh`.
-- [ ] Run `bash /home/benjamin/Projects/BimodalLogic/.claude/scripts/check-task-references.sh` and
+      the deployed tree as deploy output rather than as a hand edit. *(completed: diff -q exit 0,
+      no difference)*
+- [x] Run the complete gate set: `bash /home/benjamin/Projects/BimodalLogic/.claude/scripts/verify-deploy.sh`.
+      *(completed: PASS -- 15 check(s), 0 failure(s); remaining gates SKIP because this repo is a
+      deploy consumer, not the source store)*
+- [x] Run `bash /home/benjamin/Projects/BimodalLogic/.claude/scripts/check-task-references.sh` and
       `bash /home/benjamin/Projects/BimodalLogic/.claude/scripts/check-record-versioning.sh`;
       confirm no BLOCKING finding attributable to either new paragraph (advisory
       record-versioning findings never affect exit status and are reported, not fixed, unless
-      they name one of the two new hunks).
-- [ ] Run `bash /home/benjamin/Projects/BimodalLogic/.claude/scripts/validate-state.sh` and confirm
+      they name one of the two new hunks). *(completed: check-task-references.sh PASS, 0
+      occurrences. check-record-versioning.sh's repo-wide scan reports 6 pre-existing BLOCKING
+      findings, all in Boneyard/ and FormalSystem/Metalogic/ Lean files unrelated to this record;
+      none names plan-format.md or either new paragraph)*
+- [x] Run `bash /home/benjamin/Projects/BimodalLogic/.claude/scripts/validate-state.sh` and confirm
       no new finding attributable to this record — in particular no coarse-declaration finding
-      arising from this plan's `Files to modify` declarations.
-- [ ] Acceptance read-through of the deployed `plan-format.md`, reading only that file: determine
+      arising from this plan's `Files to modify` declarations. *(completed: STATE VALIDATION
+      PASSED WITH WARNINGS; no warning mentions project_number 769)*
+- [x] Acceptance read-through of the deployed `plan-format.md`, reading only that file: determine
       (a) whether a plan containing a pre-decided `[BLOCKED]` gate conforms and where that gate
       sits in the wave table, and (b) that the plan-level `Status` field is not writable from a
       phase checklist item, together with the sanctioned alternative. Record both verdicts in the
-      handoff summary.
-- [ ] Confirm by read-through that neither new paragraph contradicts
+      handoff summary. *(completed: both verdicts affirmative, recorded in the Phase 3 handoff)*
+- [x] Confirm by read-through that neither new paragraph contradicts
       `context/contracts/plan-status-ownership.md` or `context/standards/status-markers.md`, and
       that status-markers.md's target-argument / resting-state distinction is intact.
-- [ ] Confirm no change to the six-value phase-heading enum, the `### Phase N: {name} [STATUS]`
-      heading contract, or any of the three mechanical consumers of that contract.
+      *(completed: no contradiction; neither paragraph uses "target argument" or "resting state"
+      phrasing)*
+- [x] Confirm no change to the six-value phase-heading enum, the `### Phase N: {name} [STATUS]`
+      heading contract, or any of the three mechanical consumers of that contract. *(completed:
+      both diffs are pure additions with zero lines removed or altered elsewhere in the file)*
 
 **Timing**: 0.5 hours
 
@@ -382,21 +393,27 @@ unexpected `plan-format.md` delta rather than absorbing it silently.
 
 ## Testing & Validation
 
-- [ ] Both new paragraphs exist in the source-store `plan-format.md` at their named insertion
-      points, each a single added hunk.
-- [ ] Provision 1 states the exemption from the literal depends-on edge, the wave-1 /
+- [x] Both new paragraphs exist in the source-store `plan-format.md` at their named insertion
+      points, each a single added hunk. *(completed)*
+- [x] Provision 1 states the exemption from the literal depends-on edge, the wave-1 /
       `Depends on: none` placement, the final phase's re-observation MUST, and the wave-table
-      note's MUST.
-- [ ] Provision 2 states the named owner, the prohibition on phase-body instructions, and the
-      sanctioned alternative.
-- [ ] Neither paragraph introduces target-argument / resting-state language.
-- [ ] Phase-heading enum, plan-level `Status` vocabulary, trailing-annotation rule, and
-      `### Phase N: {name} [STATUS]` heading contract all byte-unchanged.
-- [ ] `agents/planner-agent.md` unchanged (decision recorded, not silently omitted).
-- [ ] `deploy-headless.sh` reports `RESULT=landed_verify_clean`.
-- [ ] `verify-deploy.sh` full gate set clean; `check-task-references.sh` exit 0;
+      note's MUST. *(completed)*
+- [x] Provision 2 states the named owner, the prohibition on phase-body instructions, and the
+      sanctioned alternative. *(completed)*
+- [x] Neither paragraph introduces target-argument / resting-state language. *(completed)*
+- [x] Phase-heading enum, plan-level `Status` vocabulary, trailing-annotation rule, and
+      `### Phase N: {name} [STATUS]` heading contract all byte-unchanged. *(completed)*
+- [x] `agents/planner-agent.md` unchanged (decision recorded, not silently omitted). *(completed:
+      file not touched by this task)*
+- [x] `deploy-headless.sh` reports `RESULT=landed_verify_clean`. *(completed)*
+- [x] `verify-deploy.sh` full gate set clean; `check-task-references.sh` exit 0;
       `check-record-versioning.sh` no BLOCKING finding; `validate-state.sh` no new finding.
-- [ ] Deployed and source-store `plan-format.md` byte-identical after deploy.
+      *(completed: verify-deploy.sh PASS 15/0; check-task-references.sh exit 0;
+      check-record-versioning.sh's 6 pre-existing BLOCKING findings are unrelated Lean-file
+      occurrences, none attributable to either new paragraph; validate-state.sh passed with
+      warnings, none naming project_number 769)*
+- [x] Deployed and source-store `plan-format.md` byte-identical after deploy. *(completed: diff -q
+      exit 0)*
 
 ## Artifacts & Outputs
 
