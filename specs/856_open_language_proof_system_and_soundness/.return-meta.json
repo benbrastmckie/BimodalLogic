@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/856_open_language_proof_system_and_soundness/reports/01_open-proof-system-soundness-conservativity.md",
+      "summary": "Dependency gate opened (class-split verdict); the OpenAxiom/OpenDerivationTree/OpenErasure architecture with per-file layer and line budget; the schema set with every landed soundness witness and its erasure image; and the forced decision that the definability equation's backward half must stay out of the axiom type, with a compiled refutation."
+    },
+    {
+      "type": "probe",
+      "path": "specs/856_open_language_proof_system_and_soundness/probes/01_erasure-collapse-and-discharge.lean",
+      "summary": "Compiled-live (exit 0, no sorry, no warnings): eraseOpen with its ofPlus retraction and reflectTime commutation, the choice-free Determined collapse, nine axiom-discharge arms including the Ockhamist HN arm, and the machine-checked negative that the definability backward half erases to refuted Determined."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1793893221_493f2c_856",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

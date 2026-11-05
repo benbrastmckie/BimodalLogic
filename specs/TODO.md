@@ -129,7 +129,7 @@ next_project_number: 870
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-856 [RESEARCHING] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
+856 [RESEARCHED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
 867 [NOT STARTED] — IMPLEMENTATION TASK, sizeable: formalize Gabbay separation...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
@@ -723,10 +723,11 @@ and does not resolve here.
 ---
 
 ### 856. Build the L^▷ proof system: OpenAxiom, OpenDerivationTree, soundness and conservativity
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 854, Task 859
+- **Research**: [856_open_language_proof_system_and_soundness/reports/01_open-proof-system-soundness-conservativity.md]
 
 **Description**: IMPLEMENTATION TASK, gated: build the proof system for L^▷ -- `OpenAxiom`, `OpenDerivationTree`, and their soundness recursion -- beside `FormalSystem/OpenLanguage/`'s existing semantic half, plus the two conservativity directions over TM⁺ and the collapse under `Determined`. This is a PREREQUISITE for any completeness statement about L^▷ and it is currently owed by nobody.
 
