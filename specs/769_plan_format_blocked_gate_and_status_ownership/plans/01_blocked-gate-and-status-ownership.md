@@ -215,7 +215,7 @@ would skip).
 
 ---
 
-### Phase 2: Provision 2 -- plan-level Status field ownership and its sanctioned alternative [NOT STARTED]
+### Phase 2: Provision 2 -- plan-level Status field ownership and its sanctioned alternative [IN PROGRESS]
 
 **Goal**: Add one paragraph to `plan-format.md`'s "Plan-level vs. phase-level markers" subsection
 stating that the plan-level `- **Status**:` field is owned by `update-plan-status.sh`, that no
@@ -224,38 +224,44 @@ planner writes instead when a plan is expected to come to rest at `[BLOCKED]`.
 
 **Tasks**:
 
-- [ ] Locate the insertion point by verbatim anchor: immediately after the four-bullet status
+- [x] Locate the insertion point by verbatim anchor: immediately after the four-bullet status
       vocabulary list under `### Plan-level vs. phase-level markers` (the bullet ending with the
       cross-reference to `status-markers.md`'s `[COMPLETED WITH EXCLUSIONS]` subsection) and
-      immediately before `#### Trailing annotations on the plan-level Status line`.
-- [ ] Insert one new paragraph there carrying the normative content drafted in the research
+      immediately before `#### Trailing annotations on the plan-level Status line`. *(completed)*
+- [x] Insert one new paragraph there carrying the normative content drafted in the research
       report's Decision 2: the plan-level `- **Status**:` field is owned by
       `update-plan-status.sh`, invoked from `update-task-status.sh` postflight, and never by a
       phase's own checklist, verification criteria, or other phase-body prose; no phase
       `**Tasks**:` item or `**Verification**:` criterion may instruct a writer to hand-set it; an
       implementation agent's refusal of such an instruction (per
       `context/contracts/plan-status-ownership.md`) is exactly correct, and the defect lies in
-      authoring the instruction at all.
-- [ ] Include the sanctioned alternative in the same paragraph — the clause is load-bearing, since
+      authoring the instruction at all. *(completed)*
+- [x] Include the sanctioned alternative in the same paragraph — the clause is load-bearing, since
       a prohibition with no alternative will be worked around: when a plan is expected to come to
       rest at `[BLOCKED]`, mark the relevant phase heading `[BLOCKED]` (or close bypassed phases
       `[COMPLETED WITH EXCLUSIONS]` with their `#### Reasoned Exclusions` record, whichever shape
       the plan calls for), and let the implementer's return (`.return-meta.json` status, the
-      handoff's `blockers[]`) carry the outcome forward for postflight to stamp.
-- [ ] Cross-reference the Provision 1 paragraph from Phase 1 by section name ("Decision gates and
+      handoff's `blockers[]`) carry the outcome forward for postflight to stamp. *(completed)*
+- [x] Cross-reference the Provision 1 paragraph from Phase 1 by section name ("Decision gates and
       contingency branches") as the example of a plan containing a pre-decided `[BLOCKED]` gate,
-      so the two provisions read as one coherent rule.
-- [ ] Confirm the inserted prose cites only "invoked from `update-task-status.sh` postflight" and
+      so the two provisions read as one coherent rule. *(completed)*
+- [x] Confirm the inserted prose cites only "invoked from `update-task-status.sh` postflight" and
       introduces no target-argument / resting-state language, leaving
       `context/standards/status-markers.md`'s "Target Arguments vs. Resting States" distinction
-      textually intact and unduplicated.
-- [ ] Confirm the inserted prose does not alter the plan-level six-value `Status` vocabulary, the
+      textually intact and unduplicated. *(completed: grep -niE "target argument|resting state"
+      returns nothing)*
+- [x] Confirm the inserted prose does not alter the plan-level six-value `Status` vocabulary, the
       `#### Trailing annotations on the plan-level Status line` rule, or the phase-heading enum.
-- [ ] Confirm the inserted prose carries no task-number reference and no record-versioning
-      language.
-- [ ] Record in the implementation notes that `agents/planner-agent.md` is deliberately NOT edited
+      *(completed: diff shows no change outside the single added hunk)*
+- [x] Confirm the inserted prose carries no task-number reference and no record-versioning
+      language. *(completed)*
+- [x] Record in the implementation notes that `agents/planner-agent.md` is deliberately NOT edited
       (the report's Decision 3: its template invites no such checklist item, and the
-      `plan-format.md` rule governs every plan author uniformly).
+      `plan-format.md` rule governs every plan author uniformly). *(completed: recorded here per
+      plan — agents/planner-agent.md is intentionally untouched by this task)*
+- [x] Ran the Phase 2 covering check with `TARGET=/home/benjamin/.config/nvim` (same corrected
+      invocation as Phase 1's deviation; `generate-context-line-counts.sh --write` run first) —
+      both gates passed clean. *(completed)*
 
 **Timing**: 0.5 hours
 
