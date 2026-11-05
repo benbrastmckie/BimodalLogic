@@ -15,7 +15,10 @@ agree with the world of evaluation at every time up to and including the time of
 evaluation onward. `⊡` quantifies over `⟨τ⟩_x`, the worlds through the present world **state**.
 
 L^▷ is **semantic only**: it has no proof system, and no axiomatization, soundness or completeness
-claim is made for `▷` or `◁`.
+claim is made for `▷` or `◁`. `Metalogic/Expressiveness/OpenFutureElimination.lean` does state
+*conditional reductions* carrying decidability and completeness of L^▷ validity at `.ZTime` and
+`.RTime` back to their L⁺ counterparts, but each takes the L⁺ fact as an undischarged hypothesis,
+so nothing there establishes either property for L^▷ or supplies it with a proof system.
 
 ## Why the component exists
 
@@ -76,7 +79,7 @@ exclusion. Anchors are cited by `\label` or by a quotable phrase, never by line 
 
 | Manuscript item | Status |
 |---|---|
-| An axiomatization, soundness or completeness result for `▷` and `◁` | **Excluded.** The manuscript gives none — "I will omit further consideration of the restricted modals" — and none is claimed here. The S5 laws and the ordering above are validities, not axioms of a proof system |
+| An axiomatization, soundness or completeness result for `▷` and `◁` | **Excluded.** The manuscript gives none — "I will omit further consideration of the restricted modals" — and none is claimed here. The S5 laws and the ordering above are validities, not axioms of a proof system. The conditional reductions in `Metalogic/Expressiveness/OpenFutureElimination.lean` are not an exception: their antecedents are undischarged, so no such result follows from them |
 | The nomic operator of `sub:RestrictedModalities`, over a four-place task relation indexed by world states | **Formalized**, not here but in `FormalSystem/NomicLanguage/` (BL plus `◈`, semantic only, in this component's pattern), over the nomic frames of `FormalSystem/Semantics/Nomic/`; see its README's correspondence table |
 | The world registers `↑_M`, `↓_M` of `sub:Extension` | **Excluded.** `FormalSystem/StarLanguage/` formalizes the time registers only. **State** registers, which the manuscript does not have, are formalized in `FormalSystem/HybridLanguage/`; the world registers stay excluded |
 

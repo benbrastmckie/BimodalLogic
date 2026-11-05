@@ -21,7 +21,7 @@ a genuine partition; `scripts/measure-refactor-partitions.py --check` asserts th
 | `EFGameTactics.lean` | 333 | EF game automation tactics for expressive completeness proofs |
 | `MonadicFO.lean` | 823 | Monadic first-order logic translation for expressiveness results |
 | `NormalForm.lean` | 882 | Normal form for TM formulas used in the expressiveness proofs |
-| `OpenFutureElimination.lean` | 413 | Elimination of a disjunction under the open-future and open-past modals, its conjunctive-normal-form version, and a translation into L⁺ conditional on a named separation hypothesis |
+| `OpenFutureElimination.lean` | 599 | Elimination of a disjunction under the open-future and open-past modals, its conjunctive-normal-form version, a translation into L⁺ conditional on a named separation hypothesis, and the transfer corollaries reducing open-language decidability and completeness to their L⁺ counterparts |
 | `PriorDefs.lean` | 47 | Shared definitions for the Prior expressiveness development |
 | `PriorDefsDense.lean` | 409 | Prior definitions specialized to the dense setting |
 | `PriorExpressiveness.lean` | 378 | Prior's theorem on temporal expressiveness |
@@ -56,8 +56,17 @@ Counts above exclude the archive. Run `scripts/check-module-invariants.sh` rathe
   validity along the translation `tr` at `.ZTime` and `.RTime` — **conditional on
   `SeparationOver`**, an explicit named hypothesis standing for separation theorems this tree
   does not formalize and discharges nowhere. The hypothesis fails over the non-Dedekind-complete
-  flows, so nothing in that module reaches the dense or unconstrained classes, and no
-  completeness or decidability claim is made for the open-future language.
+  flows, so nothing in that module reaches the dense or unconstrained classes.
+  On top of those transfers sit the **transfer corollaries**
+  `decidableOpenValidInOfTranslation`, `openDecider_correct`, `exists_translation_ztime` /
+  `exists_translation_rtime`, `decidableOpenValidZTimeOfTr` / `decidableOpenValidRTimeOfTr`,
+  `openComplete_of_plusComplete_in` and `openValid_of_plusSound`. Each states a **reduction**:
+  given decidability resp. completeness of L⁺ validity at a frame class, the corresponding
+  open-language fact follows. Every antecedent is undischarged — `Decidable (PlusValidIn
+  FrameClass.ZTime _)` is stated nowhere in this tree, completeness of any recursive extension of
+  TM⁺ is open at every frame class, and `tr` is noncomputable, so no decision procedure and no
+  recursive axiomatization follows either. **No completeness or decidability result for the
+  open-future language is established, at any class.**
   That module also **owns the shared vocabulary** `PastDet`, `FutDet`, `OfutP` and `OpastP`, all
   public and documented, together with the syntactic bridges `pastDet_of_isPurePast` and
   `futDet_of_isPureFuture` and the two split-free ends `ofutP_of_pastDet` and `ofutP_of_futDet`;

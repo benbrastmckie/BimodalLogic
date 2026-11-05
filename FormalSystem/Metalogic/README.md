@@ -97,7 +97,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Core.lean` | 40 | `Core/` |
 | `Decidability.lean` | 202 | `Decidability/` |
 | `Deterministic.lean` | 30 | <!-- TODO: add description --> |
-| `Expressiveness.lean` | 86 | `Expressiveness/` |
+| `Expressiveness.lean` | 101 | `Expressiveness/` |
 | `Independence.lean` | 268 | `Independence/` |
 | `SoundnessLemmas.lean` | 38 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 142 | `WeakCanonical/` |

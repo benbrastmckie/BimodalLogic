@@ -53,7 +53,10 @@ split a genuine partition rather than a renaming.
 9. **MonadicFO / EFGameTactics**: shared vocabulary and proof automation
 10. **OpenFutureElimination**: the open-future and open-past modals against separated L⁺
     formulas — the elimination of a disjunction under `▷`/`◁`, its conjunctive-normal-form
-    version, and a translation into L⁺ conditional on a named separation hypothesis
+    version, a translation into L⁺ conditional on a named separation hypothesis, and the
+    transfer corollaries: conditional reductions carrying decidability and completeness of
+    open-language validity back to their L⁺ counterparts, each taking the L⁺ fact as an
+    undischarged hypothesis
 
 ## Main Exports
 
@@ -65,6 +68,18 @@ The open-future elimination of `OpenFutureElimination` is landed **conditional o
 `SeparationOver`**, an explicit named hypothesis standing for the separation theorems of
 [GHR][gabbay1994] Chapter 10, which are cited literature and are not formalized in this tree; it
 is not a headline unconditional result and is not on the main-results page.
+
+The same module's **transfer corollaries** are conditional in the same spirit and for the same
+reason. `decidableOpenValidInOfTranslation`, `openDecider_correct`,
+`decidableOpenValidZTimeOfTr`, `decidableOpenValidRTimeOfTr`,
+`openComplete_of_plusComplete_in` and `openValid_of_plusSound` each state a **reduction**: given
+decidability resp. completeness of L⁺ validity at a frame class, the corresponding open-language
+fact follows, with `exists_translation_ztime` and `exists_translation_rtime` supplying the
+translation slot from `tr`. Every antecedent is undischarged — `Decidable (PlusValidIn
+FrameClass.ZTime _)` is stated nowhere in this tree, completeness of any recursive extension of
+TM⁺ is open at every frame class, and `tr` is noncomputable — so **no decidability and no
+completeness result for the open-future language is established at any class**, and none of these
+rows is on the main-results page either.
 
 ## Status
 

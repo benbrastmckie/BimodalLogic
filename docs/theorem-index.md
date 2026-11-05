@@ -614,13 +614,22 @@ no recurrence, quantifiers over every set of world states do.
 
 ### Expressiveness
 
-The first two rows are unconditional. The six open-future-elimination rows that follow them are
-**conditional on `SeparationOver`**, an explicit named hypothesis standing for the separation
-theorems of Gabbay, Hodkinson and Reynolds, Chapter 10 — cited literature that is not formalized
-in this tree and is discharged nowhere in it, so no row below asserts that the restricted modals
-are L⁺-definable full stop. The hypothesis is false for `U`/`S` over `ℚ`, so nothing in this
-band transfers to the `.Dense` or `.Base` classes, and no completeness or decidability claim for
-the open-future language is made here or anywhere else.
+The first two rows are unconditional. Every open-future-elimination row that follows them —
+four eliminations, two validity transfers, and eight transfer corollaries — is **conditional**,
+and the four that mention the translation `tr` are conditional specifically on `SeparationOver`,
+an explicit named hypothesis standing for the separation theorems of Gabbay, Hodkinson and
+Reynolds, Chapter 10 — cited literature that is not formalized in this tree and is discharged
+nowhere in it, so no row below asserts that the restricted modals are L⁺-definable full stop. The
+hypothesis is false for `U`/`S` over `ℚ`, so nothing in this band transfers to the `.Dense` or
+`.Base` classes.
+
+The eight transfer-corollary rows state a **reduction**: given decidability resp. completeness of
+L⁺ validity at a frame class, the corresponding open-language fact follows. Every antecedent of
+every one of them is undischarged — `Decidable (PlusValidIn FrameClass.ZTime _)` is stated nowhere
+in this tree, completeness of any recursive extension of TM⁺ is open at every frame class, and
+`tr` is noncomputable, so no decision procedure and no recursive axiomatization follows either.
+**No completeness or decidability result for the open-future language is asserted by any row in
+this band, at any frame class.**
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |
 |-------------|-----------|-----------|------|-------------|--------|
@@ -632,6 +641,14 @@ the open-future language is made here or anywhere else.
 | — | For a list of (past-determined, future-determined) clauses, on every regular task frame: `◁` of their conjunction is the conjunction of the `◁`-eliminated clauses | `FormalSystem.Metalogic.Expressiveness.opastP_sepForm_iff` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | pcq pinned:C14 |
 | — | Given separation over ℤ-time frames — a hypothesis this tree does not formalize — open-future-language validity at `ZTime` is L⁺-validity of the translation | `FormalSystem.Metalogic.Expressiveness.openValidIn_ztime_iff_tr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | ZTime | pcq pinned:C14 |
 | — | Given separation over the dense Dedekind-complete frames — a hypothesis this tree does not formalize — open-future-language validity at `RTime` is L⁺-validity of the translation | `FormalSystem.Metalogic.Expressiveness.openValidIn_rtime_iff_tr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | RTime | pcq pinned:C14 |
+| — | Given a translation transferring validity at a frame class and a decision procedure for L⁺ validity there — neither of which this tree supplies — open-language validity at that class is decidable | `FormalSystem.Metalogic.Expressiveness.decidableOpenValidInOfTranslation` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | [propext] pinned:C14 |
+| — | Given a translation transferring validity at a frame class and a correct `Bool`-valued decider for L⁺ validity there — neither of which this tree supplies — the composite decider is correct for open-language validity | `FormalSystem.Metalogic.Expressiveness.openDecider_correct` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | [propext] pinned:C14 |
+| — | Given separation over ℤ-time frames — a hypothesis this tree does not formalize — some translation transfers open-language validity at `ZTime` to L⁺ validity, namely `tr hsep` | `FormalSystem.Metalogic.Expressiveness.exists_translation_ztime` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | ZTime | pcq pinned:C14 |
+| — | Given separation over the dense Dedekind-complete frames — a hypothesis this tree does not formalize — some translation transfers open-language validity at `RTime` to L⁺ validity, namely `tr hsep` | `FormalSystem.Metalogic.Expressiveness.exists_translation_rtime` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | RTime | pcq pinned:C14 |
+| — | Given separation over ℤ-time frames and decidability of L⁺ validity at `ZTime` for the single formula `tr hsep φ` — neither of which this tree supplies — open-language validity of `φ` at `ZTime` is decidable | `FormalSystem.Metalogic.Expressiveness.decidableOpenValidZTimeOfTr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | ZTime | pcq pinned:C14 |
+| — | Given separation over the dense Dedekind-complete frames and decidability of L⁺ validity at `RTime` for the single formula `tr hsep φ` — neither of which this tree supplies — open-language validity of `φ` at `RTime` is decidable | `FormalSystem.Metalogic.Expressiveness.decidableOpenValidRTimeOfTr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | RTime | pcq pinned:C14 |
+| — | Given a translation transferring validity at a frame class and an L⁺ relation complete for validity there — the latter open at every frame class — every valid open-language formula has a derivable translation | `FormalSystem.Metalogic.Expressiveness.openComplete_of_plusComplete_in` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | [propext] pinned:C14 |
+| — | Given a translation transferring validity at a frame class and an L⁺ relation sound for validity there, derivability of a translation yields validity of the original open-language formula | `FormalSystem.Metalogic.Expressiveness.openValid_of_plusSound` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | [propext] pinned:C14 |
 
 ## Statuses that are refutations, not gaps, and one status that is a gap
 

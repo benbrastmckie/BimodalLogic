@@ -349,41 +349,41 @@ returning 16 total occurrences, and by C14 reporting PASS on the second run.
 
 ---
 
-### Phase 4: Bring the Four Documentation Surfaces Into Agreement [NOT STARTED]
+### Phase 4: Bring the Four Documentation Surfaces Into Agreement [COMPLETED]
 
 **Goal**: The theorem index, the Expressiveness README, the Expressiveness aggregator, and the
 OpenLanguage README all state the reduction honestly and none of them contradicts another.
 
 **Tasks**:
 
-- [ ] Re-read each target file immediately before editing it (sibling concurrency).
-- [ ] `docs/theorem-index.md`, Expressiveness band: add one row per result for the eight
+- [x] Re-read each target file immediately before editing it (sibling concurrency).
+- [x] `docs/theorem-index.md`, Expressiveness band: add one row per result for the eight
       declarations that carry a C14 pin (not `openDecider`). Every Statement cell opens with
       "Given …", naming the hypothesis first. The Axioms cell carries the **measured** value from
       Phase 3 plus `pinned:C14`.
-- [ ] Amend the Expressiveness band preamble (around lines 600-606). Two clauses are now false:
+- [x] Amend the Expressiveness band preamble (around lines 600-606). Two clauses are now false:
       "The six open-future-elimination rows that follow them" (the count changes) and "no
       completeness or decidability claim for the open-future language is made here **or anywhere
       else**". Replace the second with the precise statement: what is stated is a *reduction* of
       open-language completeness and decidability to their L⁺ counterparts, every antecedent of
       which is undischarged -- so no completeness or decidability result for L^▷ is asserted at
       any class.
-- [ ] `FormalSystem/Metalogic/Expressiveness/README.md`: update the `OpenFutureElimination.lean`
+- [x] `FormalSystem/Metalogic/Expressiveness/README.md`: update the `OpenFutureElimination.lean`
       line count in the module table (currently `413`) to the measured new value, and amend the
       Key Results bullet (around line 53), which carries the same "no completeness or decidability
       claim is made" sentence, to the reduction statement.
-- [ ] `FormalSystem/Metalogic/Expressiveness.lean`: amend item 10 of `## Submodules` (around line
+- [x] `FormalSystem/Metalogic/Expressiveness.lean`: amend item 10 of `## Submodules` (around line
       54) and the `## Main Exports` paragraph (around lines 58-64) to name the transfer corollaries
       as conditional reductions. Do **not** add them to `FormalSystem/MainResults.lean` -- the
       elimination layer is deliberately off it, which also keeps C21 untouched.
-- [ ] `FormalSystem/OpenLanguage/README.md`: line 17 ("L^▷ is **semantic only**: it has no proof
+- [x] `FormalSystem/OpenLanguage/README.md`: line 17 ("L^▷ is **semantic only**: it has no proof
       system, and no axiomatization, soundness or completeness claim is made for `▷` or `◁`") and
       the exclusion-table row ("An axiomatization, soundness or completeness result for `▷` and
       `◁` | **Excluded.**") both remain **true** -- no proof system for L^▷ is built. Add a
       one-clause cross-reference to the conditional reduction in
       `Metalogic/Expressiveness/OpenFutureElimination.lean` so the two surfaces cannot be read as
       contradicting each other.
-- [ ] Do not touch any `Independence/` module.
+- [x] Do not touch any `Independence/` module.
 
 **Timing**: 1 hour
 
