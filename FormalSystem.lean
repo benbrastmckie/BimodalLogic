@@ -456,6 +456,7 @@ import FormalSystem.Metalogic.Expressiveness.Separation.KampTranslation
 import FormalSystem.Metalogic.Expressiveness.Separation.SemanticBridge
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.Distributivity
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.LeafAbstraction
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.NegationEquiv
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.Syntax
 import FormalSystem.Metalogic.Expressiveness.StaviConnectives
 import FormalSystem.Metalogic.Expressiveness.Table

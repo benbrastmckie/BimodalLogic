@@ -21,6 +21,7 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 | `Syntax.lean` | 394 | `USForm`, `usTruth` over `ℤ`, the derived connectives, the clause lemmas, the time reflection `swap` with `usTruth_swap`, and the `maxLeaf`/`freshLeaf` fresh-index device |
 | `LeafAbstraction.lean` | 370 | The one seam to `PlusFormula`: `leaves`, `abstr`, `toPlus`, the roundtrip, truth transfer at `t : ℤ`, `IsUOnly`/`IsSOnly`, purity transfer, and the carrier bridge |
 | `Distributivity.lean` | 134 | GHR Lemma 10.2.1: the duality combinator `usTruth_swap_congr` and the four Boolean distributivities (linearity only) |
+| `NegationEquiv.lean` | 166 | GHR Lemma 10.2.2: the `ℤ` least-witness device and the four negation equivalences (first discreteness-dependent step) |
 
 ## Key Results
 

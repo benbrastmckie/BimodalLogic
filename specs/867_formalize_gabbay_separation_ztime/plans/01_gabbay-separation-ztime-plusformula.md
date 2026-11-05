@@ -424,25 +424,25 @@ the two `snce` proofs mention `usTruth_swap`.
 
 ---
 
-### Phase 4: GHR Lemma 10.2.2 -- The Negation Equivalences over `ℤ` [NOT STARTED]
+### Phase 4: GHR Lemma 10.2.2 -- The Negation Equivalences over `ℤ` [COMPLETED]
 
 **Goal**: The four negation equivalences hold over integer time, with the least-witness arguments
 discharged by `Int.exists_least_of_bdd`.
 
 **Tasks**:
 
-- [ ] Add `NegationEquiv.lean`. State and prove, flipped into guard-first order, GHR's
+- [x] Add `NegationEquiv.lean`. State and prove, flipped into guard-first order, GHR's
       `¬U(A,B) ↔ G(¬A) ∨ U(¬A ∧ ¬B, ¬A)`, its `snce`/`allPast` mirror, and the two variants
       carrying `B ∧ ¬A` in the guard slot.
-- [ ] Use `Int.exists_least_of_bdd` (`.lake/packages/mathlib/Mathlib/Data/Int/LeastGreatest.lean:69`,
+- [x] Use `Int.exists_least_of_bdd` (`.lake/packages/mathlib/Mathlib/Data/Int/LeastGreatest.lean:69`,
       re-derived at plan time) for the "least `u > t` with `A u`" step, and `omega` for the
       adjacent-point arithmetic, including the empty open interval `(t, t+1) ∩ ℤ = ∅` that makes a
       guard vacuous on adjacent points.
-- [ ] Record, in the module docstring, that the vacuous-guard degeneracy on `ℤ` makes
+- [x] Record, in the module docstring, that the vacuous-guard degeneracy on `ℤ` makes
       `snce`/`untl` *easier* to satisfy at adjacent points, not harder -- the archived Boneyard
       note states this backwards and the mistake is cheap to re-inherit.
-- [ ] Derive each past-side equivalence by duality from its future-side counterpart.
-- [ ] Append the module's row to `SeparationZ/README.md` and regenerate `FormalSystem.lean`.
+- [x] Derive each past-side equivalence by duality from its future-side counterpart.
+- [x] Append the module's row to `SeparationZ/README.md` and regenerate `FormalSystem.lean`.
 
 **Timing**: 2 hours
 
