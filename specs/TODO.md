@@ -985,6 +985,35 @@ rather than unexpanded `$SD/...` strings. A standing record measured that `$SD/.
 nothing mechanically on any commit path, because no `SD=` assignment exists there. Do not
 "normalise" these entries back to a variable form.
 
+=== ADDED EVIDENCE (2026-11-05): SECOND INDEPENDENT REPRODUCTION, AND THE INTERIM WORKAROUND ===
+
+REPRODUCED AGAIN, in a different task, with a measured size. `state-write.sh --audit-verdict
+FILE` failed with EXIT 126 and `Argument list too long`. The audit document's largest SINGLE
+NDJSON LINE was ~151 KB, against Linux's 131,072-byte `MAX_ARG_STRLEN`. Note the granularity
+this reproduction pins down: the overflow is driven by the largest single LINE, because the
+script slurps the whole file's parsed JSON into one shell variable and passes it to `jq` as one
+`--argjson` argv string -- so a document of many small lines and a document of two enormous lines
+fail differently, and a per-line streaming read would have survived this case. Both oversized
+lines were dominated by `scope-blind` verdicts against the ~490 open backlog entries declaring no
+`file_scope`, confirming this record's existing finding that `scope-blind` volume is the driver.
+
+THIRD REPRODUCTION, WHILE THE SUCCESSOR RECORD WAS BEING FILED. An audit of two proposals against
+the live backlog produced lines of 140,327 and 137,645 bytes -- both over the limit, from a
+TWO-proposal audit. The ceiling is reached by the smallest realistic multi-task creation.
+
+INTERIM WORKAROUND, KNOWN-GOOD AND USED TWICE. Build a condensed verdict file that keeps every
+non-`scope-blind` verdict VERBATIM and collapses the `scope-blind` entries into a single count
+field, pass that to `--audit-verdict`, and commit the full uncondensed audit document separately
+as the durable evidence. This preserves the gate's coverage check (which matches on
+`proposal.id`) and loses no decision-relevant content. It is a caller-side patch, not a fix: it
+must be re-implemented by every caller, and it is the pattern this record should make unnecessary.
+A worked instance is committed at
+specs/883_backlog_audit_duplicate_predicate_component7/task-proposals-audit.ndjson (full
+document) with its condensed counterpart recorded in that task's `audit_verdict` field.
+
+Provenance: issue-log entry iss_1793896707515_8YgW0i in
+specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/issues.jsonl.
+
 ---
 
 ### 857. Fix validate-handoff.sh crash-as-false-negative and settle the canonical blockers shape
@@ -2322,6 +2351,48 @@ the header explains why each keeps its own separate array.
 VERIFICATION: extend `tests/test-plan-file-scope-harvest.sh` and `tests/test-git-commit-scoped.sh`
 rather than replacing them. A regression case reproducing the LadderPumpType drop from a plan
 fixture is the minimum bar for item 1.
+
+=== ADDED EVIDENCE (2026-11-05): SEVEN MORE DROPS, PLUS A NAMED REMEDY FOR ITEM 2 ===
+
+ITEM 2 CONFIRMED AT SCALE, WITH A CONSEQUENCE. In one task's implement phase,
+`git-commit-scoped.sh --task 856` dropped FIVE pathspecs as not contained in that task's declared
+`file_scope`, in a single commit attempt:
+  - `scripts/module-invariants-allowlist.txt` -- the C5 gate repair, WITHOUT WHICH THE BARE
+    `check-module-invariants.sh` GATE STAYS RED. This is the one that matters: the dropped path
+    was not cosmetic, it was the fix for a gate the repository depends on.
+  - `FormalSystem/Semantics/README.md`, `FormalSystem/StarLanguage/README.md`,
+    `docs/ARCHITECTURE.md`, `docs/development/MODULE_ORGANIZATION.md` -- four semantic-only prose
+    corrections produced by a grep the plan itself mandated re-running.
+Individually logged as iss_1793896677444_Gi5Aya, iss_1793903419765_Hn0bP8,
+iss_1793903419848_o9cxpo, iss_1793903419933_PKigiI, iss_1793903420012_frFQG8,
+iss_1793903420105_WeIWvR and summarized in iss_1793903473205_8SeEjU, all in
+specs/856_open_language_proof_system_and_soundness/issues.jsonl.
+
+WHAT THE IMPLEMENTER DID INSTEAD, and why it is the wrong shape. Because the deployed script has
+NO `--allow-out-of-scope` flag, and because the V10 containment guard is `--task` opt-in and
+FAIL-OPEN when the scope array is empty, the five paths were committed in a SECOND commit with
+`--task` omitted -- i.e. untagged, outside the containment contract entirely. The documented
+fail-open path is being used as the routine escape hatch for legitimately-out-of-scope work. That
+is strictly worse than an explicit, recorded override: the commit loses its task attribution and
+the excursion leaves no trace in the commit itself.
+
+NAMED REMEDY FOR ITEM 2, to be weighed rather than adopted uncritically: add an explicit
+`--allow-out-of-scope` flag to `git-commit-scoped.sh` that keeps `--task` attribution, stages the
+out-of-scope paths, and records the excursion (the issue log already has a `scope excursion`
+class, and `--honest-index-rows` is precedent for a flag that changes what a commit asserts about
+itself). The point is to make the honest path cheaper than the fail-open path.
+
+ITEM 1 EXTENDED: TWO GENERATED SURFACES NO PLAN PHASE WILL EVER NAME. Every new `.lean` file in
+this repository forces two generated surfaces, and the pre-commit gate stays red until both are
+regenerated:
+  - `typst/generated/status.typ`, regenerated by `scripts/typst-sync-check.sh --fix`;
+  - the library root `FormalSystem.lean`, regenerated by `lake exe mk_all --lib FormalSystem`.
+The second was absent from the task's declared `file_scope` and was silently dropped by the V10
+containment guard on the first attempt; `file_scope` was patched by hand afterwards. Because
+`plan-file-scope-harvest.sh` ALREADY auto-appends some companion paths, the fix is most likely an
+EXTENSION of that existing mechanism -- a companion-surface rule keyed on "the phase touches any
+`.lean` file" -- rather than a new mechanism. Confirm the existing auto-append set at research
+time before designing a second one. Provenance: iss_1793896751357_yvMFdq in the same log.
 
 ---
 
@@ -3817,6 +3888,89 @@ The vacuous-definition-grep instance described under ITEM 4 ("A SECOND INSTANCE 
 
 Nothing in ITEM 4 changes as a result, and no further measurement is required: the entry adds a citation and one emphasis worth keeping when the prose is written -- that a legitimate `trivial` closing a real goal is simultaneously a FALSE POSITIVE for the underlying vacuous-definition grep, so the absolute-zero criterion is unmeetable not merely because the baseline is non-zero but because the pattern itself cannot distinguish debt from a correct one-line proof. State that as the reason the remedy is a baseline delta or a touched-files scope, rather than "clean up the baseline first", for this particular lint.
 
+=== ADDED ITEMS 4-9 (2026-11-05): SIX MORE MEASURED GATE SURFACES NO PLAN NAMED IN ADVANCE ===
+
+Six further gate surfaces, measured across two Lean implementation runs, each of which blocked a
+commit or a gate until repaired at implement time and none of which the originating plan named.
+They belong in the same deliverable as items 1-3 because they are the same class: a repository
+gate whose trigger condition a Lean planner can and should enumerate BEFORE writing the plan.
+This block does not change items 1-3; it extends the inventory. Note that item 4 below is the
+SAME generated surface as item 1 but a DIFFERENT check inside it (Check 2, the line count, rather
+than the inventory blocks), so write it as a second trigger condition on one surface, not a second
+surface.
+
+ITEM 4 -- typst-sync-check.sh CHECK 2 (LINE-COUNT STALENESS). A phase-1 commit was refused by
+`scripts/typst-sync-check.sh` Check 2: `typst/generated/status.typ`'s `formalsystem-line-count`
+was stale by exactly 65 lines, the size of that phase's `.lean` insertion. The delta matched the
+insertion exactly, so attribution was unambiguous and the sanctioned `--fix` remedy cleared it.
+Plan-authoring consequence: ANY change to Lean source line counts trips this check, so a plan that
+adds or removes Lean lines must pre-authorize the `--fix` run and carry `typst/generated/status.typ`
+in its own file scope. Provenance: iss_1793894901428_HTEUof in
+specs/852_model_level_pumping_lemma_for_tpof_along_ladder_path/issues.jsonl.
+
+ITEM 5 -- check-metalogic-cycles.sh ASSERTION B ASSERTS EQUALITY, AND FAILS ON SURPLUS. This is
+the most dangerous of the six, because it fails on work that is correct. Assertion B in
+`scripts/check-metalogic-cycles.sh` asserts that the library-wide UPWARD IMPORT SET EQUALS a
+FROZEN 8-line `ALLOWLIST` (`_SRC`/`ALLOWLIST` in that script) -- equality, not containment -- so
+it fails on SURPLUS as well as on deficit. A new layer-0 file importing a layer-2
+`FormalSystem.Theorems.*` module for a legitimate discharge arm therefore produces surplus upward
+edges and fails the gate even though the import is intended. Plan-authoring consequence: a plan
+introducing ANY new upward import must extend the allowlist IN THE SAME PHASE as the import, and
+must carry `scripts/check-metalogic-cycles.sh` in its file scope. In the observed case the
+research report had named the layer-0 placement and the discharge-table precedent without
+flagging the gate at all. Provenance: iss_1793894876520_CGtayY in
+specs/856_open_language_proof_system_and_soundness/issues.jsonl.
+
+ITEM 6 -- C26: NON-TRAILING UNDERSCORES ARE FORBIDDEN IN def/abbrev NAMES. `check-module-invariants.sh`
+C26 flags any live `def`/`abbrev` whose last name component carries a non-trailing underscore;
+`theorem` is EXEMPT, which is why snake_case theorem names are everywhere and mislead by analogy.
+A probe naming its discharge-table terms `discharge_ofut_k`, `discharge_opast_t`,
+`discharge_stab_of_box` as Type-valued `def`s would have failed the bare gate if promoted
+verbatim. Repository precedent is lowerCamelCase for derivation-term defs
+(`MinusLanguage/AxiomDischarge.lean`: `dischargePropK`, `dischargeModalT`, `dischargeAxiom`;
+`Theorems/TemporalDerived.lean`). Plan-authoring consequence: a plan that says "promote probe N
+rather than re-deriving it" must state whether the promotion is verbatim, and must mandate the
+`def` renames explicitly when it is not. Provenance: iss_1793894917685_pe97V0 in the 856 log.
+
+ITEM 7 -- THE longFile 1500-LINE CEILING, AND ITS NARROW BASELINING WINDOW. A file crossed the
+package-level `longFile` lint ceiling of 1500 lines (at 2355 lines). Per
+`docs/development/LEAN_STYLE_GUIDE.md` long files are BASELINED, NOT SPLIT, via
+`set_option linter.style.longFile N`. The trap is the linter's acceptance window: it accepts `N`
+only when `N - 200 <= lines < N`. So a baseline set in an early phase becomes WRONG as later
+phases grow or shrink the file, and the final phase must RE-TIGHTEN `N` in the same change.
+Plan-authoring consequence: a plan whose file will cross 1500 lines must schedule the baseline
+and its re-tightening as named phase work, not leave it to be discovered. Provenance:
+iss_1793901279040_PYDvcy in the 856 log.
+
+ITEM 8 -- THE show TACTIC IS LINTED, AND CI BUILDS WITH --wfail. `show` is linted in this
+repository (`The show tactic should only be used to indicate intermediate goal states for
+readability`) and CI builds with `--wfail`, so a lint warning is a CI FAILURE. Using `show` to
+exploit a defeq -- an ordinary and otherwise idiomatic move -- would have failed CI; the remedy
+was a named `rfl` lemma instead. The same incident fixed two pre-existing `unusedVariables`
+warnings in the same file that `--wfail` would also have failed on, which is the general point:
+under `--wfail` any linter category is a hard gate, so a plan must treat "warning" and "error" as
+the same thing. Provenance: iss_1793901799595_uite6X in the 856 log.
+
+ITEM 9 -- C5's MODULE-PATH REGEX CANNOT TELL A DECLARATION NAME FROM A MODULE PATH. `check-module-invariants.sh`
+C5's module-path regex matched the DECLARATION NAMES `OpenAxiom` and `OpenDerivationTree` as
+though they were module paths, requiring entries in `scripts/module-invariants-allowlist.txt`
+exactly as `StarAxiom`/`StarDerivationTree` already have. Plan-authoring consequence: a plan
+introducing a declaration whose name looks like a module path component must pre-authorize the
+companion allowlist entry and carry `scripts/module-invariants-allowlist.txt` in its file scope.
+The same bare-gate run surfaced three further unanticipated failures worth naming in the
+guidance as a checklist -- C15 (every theorem-index row needs a `Paper:` line in the
+declaration's own doc comment; 13 declarations needed one added), C33 (`lake exe mk_all --lib
+FormalSystem` after adding files), and FAIL INV. Provenance: iss_1793903362994_i6Asph in the 856
+log.
+
+SCOPE NOTE. These six do not change this record's declared file scope: all of them are
+plan-authoring prose in the same lean-extension guidance file plus its existing wiring. Nothing
+in either repository is broken by them and no gate script should be edited by this record --
+`typst-sync-check.sh`, `check-metalogic-cycles.sh`, `check-module-invariants.sh`,
+`module-invariants-allowlist.txt` and the style guide are all correct as they stand. A sibling
+open record adds a seventh item (the `unusedArguments` remedy) to the same file; sequence against
+it rather than editing concurrently.
+
 ---
 
 ### 784. Retire migrated source store bound records
@@ -3968,6 +4122,36 @@ DEPENDENCY RATIONALE, AND WHY THIS IS A SEPARATE RECORD RATHER THAN A FOLD. The 
 
 RELATED RECORDS, FOR ORIENTATION ONLY -- NO FURTHER DEPENDENCY EDGES. `agent-system/extensions/core/agents/planner-agent.md` is DELIBERATELY EXCLUDED from this record's file_scope even though the plan-author audience makes it a tempting referrer: the plan-format blocked-decision-gate record already claims that path, and the jq record excluded it on the same ground. If research concludes a matching line in `planner-agent.md` is genuinely necessary, add a serializing dependency edge at that point (`update-task-status.sh --depends-on-add`) rather than editing a file another record claims.
 
+=== ADDED EVIDENCE (2026-11-05): THE ANCHOR-SELECTION HALF RECURRED, AND THE ASSERTION HALF CAUGHT IT ===
+
+A SECOND, INDEPENDENT INSTANCE of this failure class, in a different task's implement phase, with
+the same mechanism and the same magnitude. A phase-4 plan-marker edit used a BARE SUBSTRING
+anchor (`## Lean Challenge Statements`) as the END of the phase slice. That same string also
+occurs INLINE IN PHASE 1'S PROSE, at an EARLIER offset -- so `end < start`, and the splice
+duplicated phases 2 and 3 into the plan. Identical shape to the 773-line duplication this record
+already describes: an off-target slice boundary silently re-emitting a region already present,
+with nothing in the write path noticing.
+
+THIS IS THE STRONGEST AVAILABLE EVIDENCE FOR THIS RECORD'S OWN THESIS. The duplication was
+detected IMMEDIATELY by a post-edit heading grep showing duplicate Phase 2/3 headings -- the
+assertion half, exactly as this record argues. Recovery was non-destructive:
+`git show HEAD:<path> > <path>`. The edit was then redone with LINE-INDEXED, forward-searched
+heading anchors and succeeded. So both halves are now evidenced by two independent incidents each,
+and the remedy for the anchor half is specific and known: a plan-marker edit must resolve its
+anchors to LINE INDICES of headings, forward-searched from the slice start, never to bare
+substring offsets -- which structurally cannot splice backwards.
+
+SIBLING-COVERAGE NOTE, UNCHANGED. The anchor-selection half remains claimed by the sibling record
+in the source-store repository's own task space, and this record must still not restate it. This
+block is recurrence EVIDENCE for that sibling plus confirmation of the assertion half's value; it
+does not move the anchor work into this record. A plan for this record should cite the sibling and
+leave the anchoring rule to it. The incident also reproduces the exact failure mode
+`lean-implementation-flow` Stage 4A's section-anchoring rule already warns about, so a candidate
+cheap fix in the sibling's scope is to make that warning mechanical rather than advisory.
+
+Provenance: issue-log entry iss_1793895962683_3zuFxa in
+specs/852_model_level_pumping_lemma_for_tpof_along_ladder_path/issues.jsonl.
+
 ---
 
 ### 781. Phase5 hoist kernel neutral decision
@@ -4068,6 +4252,37 @@ ONE TENSION WORTH NAMING RATHER THAN GLOSSING. The handoff differs from the plan
 SEVERITY, BOUNDED HONESTLY AND INDEPENDENTLY FOR THIS OCCURRENCE. No data was lost here either: `scripts/orchestrate-cycle-postflight.sh` committed the handoff later in the same run, so the consequence was benign. This is a correctness-of-contract defect, not a data-loss defect, and it should be scoped accordingly -- it adds a second observation to the recurrence argument above, not a new cost category. The three genuine costs enumerated earlier (a disabled post-commit completeness check, a false warning that trains readers to discount a load-bearing one, and a spurious `scope excursion` entry consuming a conclusion-stage channel slot) apply here unchanged, and the third is again self-inflicted: this paragraph exists because the defect wrote its own bug report.
 
 ADDED TO ACCEPTANCE. Extend acceptance item (3) -- which already requires coverage for `specs/TODO.md` and `specs/state.json` self-reported in `files_touched` -- with a case for a `${task_dir}/.orchestrator-handoff.json` entry, asserting the same four properties as the plan-artifact case: the path is NOT dropped; no `dropping out-of-scope path` warning naming it is emitted; no `scope excursion` entry is written for it; and the post-commit completeness check RUNS rather than being skipped. The same demonstrate-it-fails-first discipline in acceptance item (2) applies to this case.
+
+
+=== ADDED EVIDENCE (2026-11-05): THE SAME DROP FIRES ON DOTFILES DIRECTLY UNDER THE TASK-DIR ROOT ===
+
+Two further instances of this exact defect, from a different task's implement phase. The
+Phase-Commit Containment Self-Check printed `WARNING: dropping out-of-scope path` for BOTH
+`.orchestrator-handoff.json` and `.return-meta.json` during a phase-4 commit, citing them as not
+contained in that task's declared `file_scope`. Both files sit directly under the task directory
+ROOT as dotfiles, not under a named subdirectory such as `progress/` or `handoffs/` -- so this
+case is worth pinning as its own regression fixture alongside the plan-artifact case this record
+already describes, in case the path classification treats a dotfile at the directory root
+differently from a file in a named subdirectory.
+
+END STATE WAS CORRECT, WHICH IS WHY THIS IS A DIAGNOSTIC DEFECT AND NOT DATA LOSS HERE. Both
+files WERE committed with their latest content (verified after the fact: `git diff HEAD` showed
+no drift and `git show HEAD:<path>` matched the just-written content), because `${task_dir}/` is
+staged unconditionally and first. The warning text is therefore misleading -- it announces a drop
+that did not happen -- which is a distinct harm from the plan-artifact case: it trains a reader
+to ignore a warning that in other circumstances means real loss.
+
+THESE ARE ORCHESTRATOR RUNTIME FILES, WHICH EVERY TASK PRODUCES. `.orchestrator-handoff.json` and
+`.return-meta.json` are not task-specific deliverables a `file_scope` could reasonably be
+expected to anticipate; they are produced by the orchestrator for every task. Whatever carve-out
+this record lands must cover them by construction. See
+`context/standards/orchestrator-runtime-files.md` and `scripts/lib/runtime-file-patterns.sh` --
+a runtime-file predicate already exists and should be reused rather than re-derived.
+
+Provenance: issue-log entries iss_1793896983894_KN1MDj, iss_1793896939483_1vZI0M and
+iss_1793896939557_vHUDIO in
+specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/issues.jsonl. Read the
+`what_happened` fields before planning.
 
 ---
 
