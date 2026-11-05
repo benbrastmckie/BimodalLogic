@@ -1,5 +1,5 @@
 ---
-next_project_number: 861
+next_project_number: 864
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 861
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,814,816,823,824,826,827,840,845,853 | 298,428,502,761,768,769,770,772,777,785,810,813,838,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 3 | 410,498,499,500,822,834 | 429,497,783,823 | agent-system, algebraic-representation, decidability |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,810,813,817,818,821,825,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860,863 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,814,816,823,824,826,827,840,845,853,862 | 298,428,502,761,768,769,770,772,777,785,810,813,838,839,852 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -98,6 +98,8 @@ next_project_number: 861
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 761 [HOLD] — AMENDED 2026-10-18 (presentation chosen): the cell...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
+    └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
+  └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
@@ -105,7 +107,10 @@ next_project_number: 861
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
+  └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
 852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
+  └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a... (see above)
+863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
 
 ### Formula Refactor
 
@@ -145,6 +150,42 @@ next_project_number: 861
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ## Tasks
+
+### 863. Record the half-line test as a lean4 context pattern note
+- **Effort**: small
+- **Status**: [RESEARCHED]
+- **Task Type**: meta
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 855
+
+**Description**: Record the half-line test as a durable lean4 context note: given a proposed transport or index condition, name the half-line the counter is read from and the half-line the formula is read from; if both are forward, the proposal is already decided by the recorded refutation mechanism and needs no fresh probe. This is the reusable product of the one-sided open-modal probe, whose six-mechanism survival analysis lives in specs/evidence/seam-gluing-ray-product/one-sided-count-move-refutation.lean. SOURCE-STORE BOUNDARY: author under the source_dir resolved from .claude-extensions.json, at the path mirroring context/project/lean4/patterns/, never hand-authored under .claude/**. Keep it a test an agent can apply in one reading.
+
+---
+
+### 862. Promote cntAt_eq_of_pend_eq_fwd into LadderAgree as a strict sharpening
+- **Effort**: small
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 761, Task 852
+- **Parent**: Task 855
+
+**Description**: Promote cntAt_eq_of_pend_eq_fwd from the evidence probe into FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean as a strict sharpening of the landed cntAt_eq_of_pend_eq. The landed theorem's own proof already reads its hypothesis only at positions at or above the compared one, so the forward-only hypothesis suffices -- the same proof at a weaker hypothesis, verified sorry-free in specs/evidence/seam-gluing-ray-product/one-sided-count-move-refutation.lean. Land it beside the existing theorem, derive the existing theorem from the sharpening or state why that direction is not worth the churn, and keep the probe compiling. No sorry, no new axiom, axiom profile within [propext, Classical.choice, Quot.sound]; check-evidence-probes.sh and the full guarded lake build must both stay green.
+
+---
+
+### 861. Record the one-sided transport refutation in the RaySummary refutation table
+- **Effort**: small
+- **Status**: [RESEARCHED]
+- **Task Type**: markdown
+- **Topic**: decidability
+- **Dependencies**: Task 761, Task 763, Task 838
+- **Parent**: Task 855
+
+**Description**: Add the one-sided transport refutation row to the RaySummary refutation table in FormalSystem/Metalogic/Decidability/RaySummary/README.md, recording the NEGATIVE verdict that the probe specs/evidence/seam-gluing-ray-product/one-sided-count-move-refutation.lean establishes: the one-sided open-modal factorization does not crack the transport condition. State the mechanism as the probe states it -- the ladder countdown and the closure eventualities read the same forward half-line, so freezing the future leaves nothing to transport and freeing it loses the realized type. Cite the probe file and its headline declarations by name. Scope: README.md only; no .lean edits. Do not claim any decidability consequence.
+
+---
 
 ### 860. Colourclock history bridge lemma
 - **Effort**: low
