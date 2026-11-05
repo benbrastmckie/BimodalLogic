@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/867_formalize_gabbay_separation_ztime/reports/01_gabbay-separation-ztime-plusformula.md",
+      "summary": "Architecture research for discharging SeparationOver TaskFrame.IsZTime: full GHR 10.2 step map extracted from the corpus, carrier normalization to Z via plusValidZTime_iff_plusValidInt, an abstract-leaf USForm route that removes the uniform-substitution obstruction, a verified refutation of GHR's printed Case 5 formula, and a 9-phase decomposition with the two stall candidates named."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1793911571_152ebe_867",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
