@@ -1,7 +1,7 @@
 # Implementation Plan: Task #865
 
 - **Task**: 865 - tm_plus_lc_axiomatization_and_automaton_obstruction
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: 864 (`[COMPLETED]`), 866 (`[COMPLETED]`)
 - **Research Inputs**: `specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md`

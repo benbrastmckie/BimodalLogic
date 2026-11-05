@@ -25,14 +25,24 @@
       "category": "TECHNIQUE",
       "source_artifact": "specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/summaries/01_lc-axiomatization-automaton-obstruction-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["state-write.sh", "audit-task-proposals.sh", "MAX_ARG_STRLEN", "argument list too long", "backlog-reconciliation"]
+      "suggested_keywords": [
+        "state-write.sh",
+        "audit-task-proposals.sh",
+        "MAX_ARG_STRLEN",
+        "argument list too long",
+        "backlog-reconciliation"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1793893221_493f2c",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 4,
     "phases_total": 4
   }
