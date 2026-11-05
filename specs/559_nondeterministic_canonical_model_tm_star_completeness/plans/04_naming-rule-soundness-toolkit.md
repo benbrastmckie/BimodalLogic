@@ -291,7 +291,7 @@ needed, that is the located obstruction to record, not a reason to weaken the st
 
 ---
 
-### Phase 4: The `NamingRules` module and freshness [NOT STARTED]
+### Phase 4: The `NamingRules` module and freshness [COMPLETED]
 
 **Goal**: Create `FormalSystem/Metalogic/NamingRules.lean`, wire its import into the Metalogic
 aggregator, and land the `T_fresh` port that both naming rules consume.

@@ -21,6 +21,7 @@ import FormalSystem.Metalogic.Deterministic
 import FormalSystem.Metalogic.QTime
 import FormalSystem.Metalogic.ConvexConsequence
 import FormalSystem.Metalogic.ZTimeProvability
+import FormalSystem.Metalogic.NamingRules
 
 /-!
 # Bimodal Metalogic
@@ -265,6 +266,21 @@ standard Lean axioms only: `propext`, `Classical.choice`, `Quot.sound`. The form
 its discrete branch `WeakCanonical.countermodel_discrete` is proved
 (`WeakCanonical/GroupModel/CountermodelBase.lean`), so `completeness` too depends on exactly those
 three axioms.
+
+## Naming rules
+
+- **The irreflexivity and clock rules over L⁺** (`Metalogic/NamingRules.lean`): SORRY-FREE
+  (axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). A *naming rule* licenses
+  inferring `φ` from `A(q) → φ` for an auxiliary sentence letter `q` not occurring in `φ`, where
+  `A(q)` says `q` behaves like a name for the time of evaluation. Two are proved sound at every
+  frame class: Gabbay's plain irreflexivity rule (`irr_sound`, antecedent `q ∧ H¬q`) and the
+  stronger **clock rule** (`clock_irr_sound`, antecedent `q ∧ □△(once q ∧ rigid q)`), which
+  assumes `q` holds at exactly one time of every history with that time rigid under `⊟`. Both run
+  on the library's translation product under the valuation "the clock reads zero", so no second
+  clock construction exists in the tree; the auxiliary letter is discharged by
+  `plusTruthAt_congr_of_fresh`, and the conclusion is projected back by
+  `Semantics.plus_invariance`. These are soundness facts about two rules and **nothing more**: no
+  completeness, decidability or axiomatizability claim follows from them here, and none is made.
 
 ## Module Structure
 
