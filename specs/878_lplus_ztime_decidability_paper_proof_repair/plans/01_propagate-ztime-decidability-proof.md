@@ -301,7 +301,7 @@ without its substance being altered.
 
 ---
 
-### Phase 4: Close-out verification and guardrail audit [NOT STARTED]
+### Phase 4: Close-out verification and guardrail audit [COMPLETED]
 
 **Goal**: All three edited records and this task's own report are mutually consistent, every
 dispatch guardrail holds across all four, and the full gate set has been run with every failure
@@ -309,13 +309,13 @@ attributed by path to something this task did not touch.
 
 **Tasks**:
 
-- [ ] Re-read the four records as a set: this task's report, the amended report 03 (§1.2 and §1.3), the amended report 866, and the changed regions of `specs/ROADMAP.md`. Confirm they agree on the verdict's scope (G1 and G2 repaired, order reversed, Rabin held at `S2S`, ZTime only, conditional on (H5)) and on the open-modal verdict being negative
-- [ ] Audit the six guardrails across all four records: (1) nothing claims the theorem is machine-checked, Lean-verified, or constructive; (2) nothing states it unconditionally on (H5); (3) nothing claims the finite model property, and every mention of the regular-model by-product says *finitely presented, not finite*; (4) nothing proposes or reopens a Lean formalization of the MSO route; (5) nothing presents the landed `decidableValidZTime` / `decidableDerivableZTime` (at base `Formula`, no `stab`) as covering `⊡`; (6) Base, Dense and RTime are stated open with the obstruction located at report 03 §1.4
-- [ ] Confirm every claim added in Phases 1-3 carries an evidence tier (compiled / held / cited / derived / paper) and that no added claim is labelled *recalled* — dispatch item (3) was to eliminate recalled citations, so a newly-introduced one would be a regression
-- [ ] Run `bash .claude/scripts/validate-artifact.sh` on this task's report, on the amended report 03 (resolved path), and on the amended report 866 — all three with type `report`
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. For every failure, attribute it by path and confirm none is attributable to a file this plan touched (all under `specs/**`, where the doc-lint gate has no bearing and the task-reference lint is exempt by design). Record any pre-existing failure — including anything arising from the `literature` extension staleness this dispatch was warned about — as pre-existing, and do not repair it here
-- [ ] Record the two follow-up proposals in the handoff and `.return-meta.json` `next_steps`, filed by neither this phase nor this task: (a) a `/revise` of task 870 restating its hypothesis at oriented-forest strength, since this task propagates the flag but does not mutate 870's record; (b) a separate task to write the theorem into `typst/chapters/p3-decidability-frontier.typ` as the citable chapter-level result, with its own chapter-quality gate, if the user wants it beyond the report
-- [ ] Record the phase's issue-log entries via `issue-record.sh`, non-fatally, including a `kind: win` entry if the propagation ran clean and an entry for any record that needed more than an additive edit
+- [x] Re-read the four records as a set: this task's report, the amended report 03 (§1.2 and §1.3), the amended report 866, and the changed regions of `specs/ROADMAP.md`. Confirm they agree on the verdict's scope (G1 and G2 repaired, order reversed, Rabin held at `S2S`, ZTime only, conditional on (H5)) and on the open-modal verdict being negative *(completed)*
+- [x] Audit the six guardrails across all four records: (1) nothing claims the theorem is machine-checked, Lean-verified, or constructive; (2) nothing states it unconditionally on (H5); (3) nothing claims the finite model property, and every mention of the regular-model by-product says *finitely presented, not finite*; (4) nothing proposes or reopens a Lean formalization of the MSO route; (5) nothing presents the landed `decidableValidZTime` / `decidableDerivableZTime` (at base `Formula`, no `stab`) as covering `⊡`; (6) Base, Dense and RTime are stated open with the obstruction located at report 03 §1.4 *(completed)*
+- [x] Confirm every claim added in Phases 1-3 carries an evidence tier (compiled / held / cited / derived / paper) and that no added claim is labelled *recalled* — dispatch item (3) was to eliminate recalled citations, so a newly-introduced one would be a regression *(completed)*
+- [x] Run `bash .claude/scripts/validate-artifact.sh` on this task's report, on the amended report 03 (resolved path), and on the amended report 866 — all three with type `report` *(completed)*
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. For every failure, attribute it by path and confirm none is attributable to a file this plan touched (all under `specs/**`, where the doc-lint gate has no bearing and the task-reference lint is exempt by design). Record any pre-existing failure — including anything arising from the `literature` extension staleness this dispatch was warned about — as pre-existing, and do not repair it here *(completed)*
+- [x] Record the two follow-up proposals in the handoff and `.return-meta.json` `next_steps`, filed by neither this phase nor this task: (a) a `/revise` of task 870 restating its hypothesis at oriented-forest strength, since this task propagates the flag but does not mutate 870's record; (b) a separate task to write the theorem into `typst/chapters/p3-decidability-frontier.typ` as the citable chapter-level result, with its own chapter-quality gate, if the user wants it beyond the report *(completed)*
+- [x] Record the phase's issue-log entries via `issue-record.sh`, non-fatally, including a `kind: win` entry if the propagation ran clean and an entry for any record that needed more than an additive edit *(completed)*
 
 **Timing**: 35 minutes
 
@@ -325,7 +325,7 @@ attributed by path to something this task did not touch.
 
 **Files to modify**:
 
-- none - verification only; no file is edited in this phase
+- none - verification only; no file is edited in this phase *(deviation: altered — this task's own report at `specs/878_lplus_ztime_decidability_paper_proof_repair/reports/01_lplus-ztime-decidability-proof-repair.md` needed a minimal "## Recommendations" section added to satisfy this phase's own `validate-artifact.sh` verification criterion, which the report lacked since its research-dispatch authoring; see the progress file's `deviations` array)*
 
 **Verification**:
 

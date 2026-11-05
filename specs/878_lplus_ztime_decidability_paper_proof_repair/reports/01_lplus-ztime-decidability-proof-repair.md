@@ -686,6 +686,21 @@ the digraph order disagree about what a meet is.
    step 4 consumes (an underlying forest), so that the Lean lemma is stated at the strength the
    argument needs.
 
+## Recommendations
+
+- **R1 (file it; small).** `/revise` task 870 to restate its hypothesis at **oriented-forest**
+  strength (the underlying undirected graph is a forest), not merely directed-path uniqueness.
+  Report 03 §1.2's own step 4 needs the stronger hypothesis (finding 1; decision 7); a Lean lemma
+  stated at the weaker hypothesis will not discharge (H5). This report propagates the flag (report
+  03 §1.2's new note, this report's decision 7, and `specs/ROADMAP.md`'s `870` run-order
+  annotations) but does not itself mutate task 870's record — that is a `/revise` operation for
+  870's owner or the user.
+- **R2 (optional, not filed).** A separate task to write the theorem of finding 7 into
+  `typst/chapters/p3-decidability-frontier.typ` as a citable chapter-level result, subject to its
+  own chapter-quality gate (source grounding, anti-fluff density, presentation clarity,
+  open-question honesty). The dispatch that produced this report asked for a report only; this
+  recommendation is left for the user to file if wanted beyond the report.
+
 ## Risks & Mitigations
 
 - **Risk: the theorem is read as machine-checked.** It is not; it is a paper theorem, conditional
