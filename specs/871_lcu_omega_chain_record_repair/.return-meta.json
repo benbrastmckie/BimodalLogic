@@ -1,17 +1,29 @@
 {
-  "status": "researched",
-  "dispatch_seq": 2,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/871_lcu_omega_chain_record_repair/reports/01_lcu-omega-chain-record-repair.md",
-      "summary": "All three repair parts confirmed and verified by compiled lean_run_code probes: the LCU docstring claim is false on two surfaces, omega_chain dropped P plus hP plus two further conclusions (c 0 = s0 is load-bearing for LCU), and backward LC_n is a one-line plusValidIn_reflectTime corollary measuring pcq."
+      "type": "plan",
+      "path": "specs/871_lcu_omega_chain_record_repair/plans/01_lcu-omega-chain-record-repair.md",
+      "summary": "Five-phase corrective plan: restore omega_chain/stg_step to full probe fidelity with the one call site adapted atomically, repair the PlusOmegaChain docstrings, correct the false LCU claim, add the one-line backward LC_n corollary, then close the record surfaces (theorem-index rows, C14 baseline pair, generated doc-sync surfaces) under the complete gate set."
     }
   ],
   "metadata": {
     "session_id": "sess_1793911571_152ebe_871",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 3,
+    "dependency_waves": [[1], [2, 3], [4], [5]]
+  },
+  "memory_candidates": [
+    {
+      "content": "In the BimodalLogic repository, any plan whose phases edit a .lean file incurs a generated doc-sync obligation the research phase will not surface: plan-file-scope-harvest.sh augments the harvested file_scope with typst/generated/status.typ and every registered README generated-inventory block covering the touched directory's ancestor chain. These are machine-owned and gated (scripts/typst-sync-check.sh for status.typ, check-module-invariants.sh --emit-inventory --check for the README blocks), so a Lean plan that omits a regeneration step fails its final gate after every substantive phase has already committed. Note the ordering constraint: typst-sync-check.sh --fix reads a per-declaration axiom report out of the build, so it must run AFTER the unscoped build, not before. Planning technique: run plan-file-scope-harvest.sh against the draft plan and reconcile its output against the declared Files to modify blocks before returning; a harvested path absent from the declarations is a missing phase task, not harvester noise.",
+      "category": "PATTERN",
+      "source_artifact": "specs/871_lcu_omega_chain_record_repair/plans/01_lcu-omega-chain-record-repair.md",
+      "confidence": 0.82,
+      "suggested_keywords": ["lean-plan", "doc-sync", "file-scope-harvest", "status.typ", "readme-inventory", "plan-authoring"]
+    }
+  ],
+  "dispatch_seq": 5
 }

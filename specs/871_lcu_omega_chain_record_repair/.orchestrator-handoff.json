@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 5,
+  "phases_completed": 0,
+  "phases_total": 5,
+  "summary": "Wrote a five-phase plan for the three corrective repairs. Phase 1 restores stg_step/omega_chain to full probe fidelity (P, hP, the strengthened continuation hypothesis, and the three dropped conclusions) with lcN_plusValidInt's single call site adapted in one atomic-batch commit; Phases 2-3 repair the PlusOmegaChain docstrings and the false LCU claim; Phase 4 adds the one-line backward corollary; Phase 5 closes the record surfaces and runs the complete gate set. Scope decision recorded: full-fidelity restoration including c 0 = s0, because without it LCU's consequent has no coverage for [t, c 0) -- the narrow P/hP-only variant is the documented fallback, and research verified both compile.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/871_lcu_omega_chain_record_repair/plans/01_lcu-omega-chain-record-repair.md",
+      "summary": "Five-phase corrective plan with waves [1], [2,3], [4], [5]; final phase declares the full gate set."
+    }
+  ]
+}
