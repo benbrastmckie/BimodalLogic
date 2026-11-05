@@ -346,19 +346,27 @@ no nodes below `x` and the closure does not grow downward.
 
 ## Decisions
 
-1. **Verdict recorded as YES at step 4, with an amendment at step 1.** The dispatch asked for a
+1. **Verdict corrected to NEGATIVE, per finding 5's amendment.** The dispatch asked for a
    verdict on whether the open modals ride the MSO encoding. They do, at step 4 — the step the
-   dispatch flagged — and the invariance step 2 carries them too. The cost is a loss of step 1's
-   witness economy, which countability survives. Decided to state the verdict as positive while
-   naming step 1 as the step that changes, rather than hedging the whole verdict on step 1's
-   pre-existing weakness.
+   dispatch flagged — and the invariance step 2 carries them too. What does not survive is
+   step 1, the countable-model step: finding 5's amendment establishes that the loss there is
+   not merely of witness economy but of countability itself, because the object determining a
+   falsifying witness for `▷`/`◁` is an entire backward ray, of continuum size in general, and
+   no indexing of witnesses already in the set makes that set of rays countable. Decided to
+   state the net verdict for L^▷/L^◁ ZTime decidability via this route as negative — steps 2 and
+   4 extend to the open modals, but the argument as a whole does not — rather than as
+   positive-with-an-amendment.
 2. **Gaps G1 and G2 recorded, not repaired.** Both belong to report 03's own argument and affect
    `⊡` with or without the open modals. Repairing G1 is a research project in its own right.
    Decided to locate them precisely here so that any future attempt starts at G1, and to state
    explicitly that neither is caused by the open modals.
-3. **Do not propose formalizing the decidability result.** Finding 8 settles the cost. Decided to
-   recommend keeping the ZTime decidability of L^▷ as a paper result, and to carve out the one
-   genuinely cheap, independently useful Lean item (R1) instead of filing the whole route.
+3. **Do not propose formalizing the decidability result — because this route does not establish
+   one.** Finding 8's Mathlib gap would have blocked formalization even had the route succeeded,
+   but per finding 5's amendment the route itself does not establish L^▷/L^◁ ZTime decidability,
+   so there is no result — paper or Lean — for the open modals to record via this argument.
+   Decided to withdraw the earlier recommendation to keep L^▷ ZTime decidability as a paper
+   result, and to carve out the one genuinely cheap, independently useful Lean item (R1) instead
+   of filing the whole route.
 4. **`◁` handled by mirror throughout.** The compiled time-reflection transport
    (`openTruthAt_rev`, `openValidOn_rev_iff`, `openValid_reflectTime` in
    `OpenLanguage/OpenReversal.lean`) already carries L^▷ validity across time reversal, and
@@ -382,13 +390,20 @@ Prioritized.
     already has at L⁺, it is the invariance fact any future bounded-morphism argument about the
     open modals will need, and it does not depend on G1, G2, Rabin, Gabbay separation, or the
     ladder.
-- **R2 (do not file).** The MSO decidability proof for L^▷ at ZTime. Blocked by finding 8 at a
-  cost no plausible budget reaches. Record the result as a paper theorem in the manuscript's own
-  terms if it is wanted; do not open a formalization task.
+- **R2 (do not file).** The MSO decidability proof for L^▷ at ZTime. Per finding 5's amendment,
+  the countable-model step does not extend to the open modals — the determining object is a
+  backward ray of continuum size in general, a gap finding 8's Mathlib shortfall would not even
+  reach. There is no established result for L^▷/L^◁ at ZTime via this route to record as a paper
+  theorem or to formalize; do not open a formalization task, and do not present this route as
+  having settled L^▷ ZTime decidability.
 - **R3 (optional, cheap).** A short amendment note appended to report 03 section 1.3, or a
-  pointer from it to this report, recording (a) that the open modals are accommodated, (b) that
-  step 1's per-state economy is unsound for any modal whose witness is not state-local, and
-  (c) gaps G1 and G2. Prevents the per-state economy from being relied on again.
+  pointer from it to this report, recording (a) that the open modals ride steps 2 and 4 of the
+  argument but that the countable-model step (step 1) does not extend to them — per finding 5's
+  amendment, their determining object is an entire backward ray, of continuum size in general, so
+  L^▷/L^◁ ZTime decidability is not established by this route, (b) that step 1's per-state
+  economy is unsound for any modal whose witness is not state-local, and (c) gaps G1 and G2.
+  Prevents both the per-state economy and the withdrawn open-modal countability claim from being
+  relied on again.
 - **R4 (research, expensive, not now).** Repair G1. Until the fixpoint in step 1 is closed, the
   whole of section 1.3 — base language with `⊡`, and the open extension alike — is a sketch. Any
   serious pursuit of the MSO route begins here, not at step 4.
