@@ -901,28 +901,28 @@ parameter on the TM⁺ row would mean the syntactic route was abandoned.
 
 ---
 
-### Phase 14: `OpenCollapse.lean` — the collapse under `Determined` [NOT STARTED]
+### Phase 14: `OpenCollapse.lean` — the collapse under `Determined` [COMPLETED]
 
 **Goal**: Land the deterministic collapse and recover the landed deterministic completeness
 through the composite erasure.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/Deterministic/OpenCollapse.lean` and add its import to
+- [x] Create `FormalSystem/Metalogic/Deterministic/OpenCollapse.lean` and add its import to
   `FormalSystem/Metalogic/Deterministic.lean` (or the directory's aggregator as it is named) and
   the `Deterministic/README.md` module table.
-- [ ] Promote probe 01 §2: `theorem openTruthAt_eraseOpen_of_deterministic`, by induction with the
+- [x] Promote probe 01 §2: `theorem openTruthAt_eraseOpen_of_deterministic`, by induction with the
   history and time binders inside the statement, exactly as
   `plusTruthAt_erasePlus_of_deterministic` (`FormalSystem/Metalogic/Deterministic/Erasure.lean:133`).
   Determinism is consumed **only** in the `ofut`/`opast` cases, through
   `states_eq_of_deterministic` and the landed `truth_congr_ext`; the `stab` case is structural
   because `eraseOpen` keeps `⊡`.
-- [ ] Prove `theorem openTruthAt_erasePlus_eraseOpen_of_deterministic`, the composition with
+- [x] Prove `theorem openTruthAt_erasePlus_eraseOpen_of_deterministic`, the composition with
   `plusTruthAt_erasePlus_of_deterministic` landing in L.
-- [ ] Prove the validity-level corollary pair and the `iff`, mirroring
+- [x] *(deviation: altered — no `OpenValidDetIn` existed, so the file declares it (`OpenValidOnFrames` at `DetSat fc`) with its two binder adapters before the corollary pair, mirroring `PlusValidDetIn`'s own shape in `Deterministic/Validity.lean`. A second composite `iff` down to L was added alongside.)* Prove the validity-level corollary pair and the `iff`, mirroring
   `validDetIn_erasePlus_of_plusValidDetIn`, `plusValidDetIn_of_validDetIn_erasePlus` and
   `plusValidDetIn_iff_validDetIn_erasePlus` in `Erasure.lean`.
-- [ ] Recover the landed deterministic completeness through the composite erasure, naming the
+- [x] Recover the landed deterministic completeness through the composite erasure, naming the
   `Deterministic/Completeness.lean` row recovered. Record in the docstring that `⊡ = ▷ = ◁ = id`
   on a deterministic frame is what makes this work, and that `Determined` is reached through the
   frame-predicate form only — it is not and must not become an `OpenAxiom` constructor.

@@ -51,6 +51,7 @@ remaining work is the two collapses: semantic (`Erasure.lean`) and syntactic
 | `System.lean` | `DetAxiom`, `DetDerivationTree`, `DetDerivable`, and the embeddings of TM and TM⁺ |
 | `Soundness.lean` | `detSoundness` over the *Determined*-valid frames, plus consistency |
 | `Collapse.lean` | the derived-rule layer and the **syntactic** collapse `detDerivable_iff_erasePlus` |
+| `OpenCollapse.lean` | `OpenValidDetIn` and the **semantic** collapse of the restricted modals, `openTruthAt_eraseOpen_of_deterministic`; the composite down to L; the validity-level corollary pair and `iff`; and `detDerivable_eraseOpen_of_openValidDetIn`, the landed `detCompleteness` row recovered through the composite erasure |
 | `Completeness.lean` | `detCompleteness*`, `logicDeterministicEqDeterminedValid`, the intermediate-class transfers, and `detDerivable_ofFormula_iff` (conservativity over TM) |
 | `SameLogic.lean` | `validIn_iff_validDetIn` and `valid_iff_valid_deterministic`: for `L`, the deterministic frames determine the same logic as all task frames at every class, by the shift-set round trip plus `ShiftSet.frame_deterministic` |
 
