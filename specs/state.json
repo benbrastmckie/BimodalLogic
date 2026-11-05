@@ -2596,7 +2596,7 @@
     {
       "project_number": 852,
       "project_name": "model_level_pumping_lemma_for_tpof_along_ladder_path",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Author a model-level pumping lemma for tpOf along a ladder path: the model-side analogue of the periodicity of the certificate graph.\n\nWHY: the absence of this lemma is the third circularity, hit independently in three separate implementation rounds. Pumping the object walk preserves the realized type only through a MODEL-level periodicity statement about tpOf along a ladder path. The only landed periodicity statement is prodPre_periodic, with outputs satThreshold/satPeriod -- a statement about the backward-reachability fixpoint prodPreStep (cohIdle) on Finset (ProdState Q phi), i.e. a CERTIFICATE-relation fact. CounterQuotient.lean states in source that nothing there relates cohIdle to Rlad, ladderModel, tpOf or cellAt. The bridge from that certificate fact to tpOf is exactly obligations (S) and (C-prime), which READ the agreement that needs this lemma -- so citing prodPre_periodic here closes a cycle rather than discharging one.\n\nNo phase of any plan version to date costs this lemma; it must be authored rather than cited.\n\nKNOWN REFUTATION TO RESPECT -- do not restate the refuted shape. Splice invariance of the realized stab-free type (tpOf_stabFree_eq_of_splice) is FALSE, not merely open: a single splice duplicates the pumped block, adding one occurrence of every object state in that block to the future of the walk, so a nested-eventuality counting formula F(p AND F p) flips between the original and the spliced path at EVERY position below the splice point, however far. Nested until has unbounded reach, so any distance-budget-per-nesting-depth framing is wrong. The refutation is compiled as the wired probe specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean (splice_type_invariance_refuted), checked against the ITERATED surgery the residue coordinate needs, with every recorded hypothesis discharged. What is refuted is that the admissibility-preserving surgery also preserves the type; the presentation itself and cellAt_const_of_kappa_eq are untouched.\n\nA further relevant compiled fact: by stab_mem_tpOf_iff_cell the stab bit of a realized type is a datum of the very cell being compared, so an agreement proof runs by induction on stab-nesting depth whatever the phase order is.\n\nGUARDRAILS: no sorry, no new axiom, no vacuous definition. State what the lemma actually quantifies over; if the honest form is weaker than the circularity needs, say so rather than widening the statement.",
       "effort": null,
@@ -2606,14 +2606,27 @@
         855
       ],
       "created": "2026-11-04T06:48:13Z",
-      "last_updated": "2026-11-05T15:41:37Z",
-      "artifacts": [],
+      "last_updated": "2026-11-05T16:01:48Z",
+      "artifacts": [
+        {
+          "path": "specs/852_model_level_pumping_lemma_for_tpof_along_ladder_path/plans/01_model-level-tpof-periodicity.md",
+          "type": "plan",
+          "summary": "Four-phase plan: conditional tpOf periodicity lemma plus endpoint-pair corollary, compiled refutation of the unconditional form, honest-form record, final gate."
+        }
+      ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
-        "specs/evidence/seam-gluing-ray-product/"
+        "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "specs/852_model_level_pumping_lemma_for_tpof_along_ladder_path/summaries/01_model-level-tpof-periodicity-summary.md",
+        "specs/evidence/seam-gluing-ray-product/",
+        "specs/evidence/seam-gluing-ray-product/ladder-tpof-periodicity-refutation.lean",
+        "typst/generated/status.typ"
       ],
-      "session_id": "sess_1793893221_493f2c_852"
+      "session_id": "sess_1793893221_493f2c"
     },
     {
       "project_number": 853,

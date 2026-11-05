@@ -108,7 +108,7 @@ next_project_number: 870
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
   └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
-852 [PLANNING] — Author a model-level pumping lemma for tpOf along a ladder...
+852 [PLANNED] — Author a model-level pumping lemma for tpOf along a ladder...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
 
@@ -851,11 +851,12 @@ CITATIONS: parent issues.jsonl iss_1793819583011_jsu079 and iss_1792373250168_HQ
 ---
 
 ### 852. Model level pumping lemma for tpof along ladder path
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 855
 - **Parent**: Task 761
+- **Plan**: [852_model_level_pumping_lemma_for_tpof_along_ladder_path/plans/01_model-level-tpof-periodicity.md]
 
 **Description**: Author a model-level pumping lemma for tpOf along a ladder path: the model-side analogue of the periodicity of the certificate graph.
 

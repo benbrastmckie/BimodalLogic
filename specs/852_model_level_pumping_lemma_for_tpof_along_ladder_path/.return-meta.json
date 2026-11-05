@@ -1,0 +1,22 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/852_model_level_pumping_lemma_for_tpof_along_ladder_path/plans/01_model-level-tpof-periodicity.md",
+      "summary": "Four-phase plan (5h) for a conditional model-level tpOf periodicity lemma, a compiled refutation of the unconditional form, and the honest-gap record."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1793893221_493f2c_852",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 5,
+    "dependency_waves": 4
+  },
+  "memory_candidates": [],
+  "next_steps": "Run /orchestrate 852 to execute the plan",
+  "dispatch_seq": 2
+}

@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 2,
+  "phases_completed": 0,
+  "phases_total": 4,
+  "summary": "Authored a 4-phase plan for the model-level pumping lemma for tpOf. A codebase audit found the splice/pump half already landed before task creation (tpOf_eq_spliceIdx_of_tpOf_eq, exists_typeBlock_of_spacing, realized_typeBlock_mem_prodCycleLens), so the plan was narrowed to the genuinely absent object: a PERIODICITY statement about tpOf along a ladder path. The honest form is conditional on a globally periodic object walk; the unconditional eventual-periodicity form is false and gets a compiled refutation probe. The plan records explicitly that the conditional form does not discharge the third circularity, since the tight chain's walk is not globally periodic.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/852_model_level_pumping_lemma_for_tpof_along_ladder_path/plans/01_model-level-tpof-periodicity.md",
+      "summary": "Four-phase plan: conditional tpOf periodicity lemma plus endpoint-pair corollary, compiled refutation of the unconditional form, honest-form record, final gate."
+    }
+  ]
+}
