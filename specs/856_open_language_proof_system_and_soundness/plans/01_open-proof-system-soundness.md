@@ -1,7 +1,7 @@
 # Implementation Plan: Task #856
 
 - **Task**: 856 - Build the L^▷ proof system: OpenAxiom, OpenDerivationTree, soundness and conservativity
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 29 hours
 - **Dependencies**: 854 (completed), 859 (completed) — the ▷-definability gate, both verdicts in
 - **Research Inputs**: `specs/856_open_language_proof_system_and_soundness/reports/01_open-proof-system-soundness-conservativity.md`; `specs/856_open_language_proof_system_and_soundness/probes/01_erasure-collapse-and-discharge.lean` (255 lines, compiled-live, sorry-free)

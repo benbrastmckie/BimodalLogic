@@ -738,7 +738,7 @@
     {
       "project_number": 856,
       "project_name": "open_language_proof_system_and_soundness",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "metalogic",
       "title": "Build the L^▷ proof system: OpenAxiom, OpenDerivationTree, soundness and conservativity",
@@ -771,7 +771,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-11-04T20:41:42Z",
-      "last_updated": "2026-11-05T16:29:40Z",
+      "last_updated": "2026-11-05T18:34:02Z",
       "audit_verdict": {
         "verdict": "covered-by-closed",
         "project_number": 443,
@@ -807,10 +807,11 @@
         {
           "path": "specs/856_open_language_proof_system_and_soundness/summaries/01_open-proof-system-soundness-summary.md",
           "type": "summary",
-          "summary": "Implementation summary for phases 1-6 and 14: what landed, the seven plan deviations, the measured axiom profiles, and the sized follow-ups for phases 7-13 and 15."
+          "summary": "Implementation summary for all 15 phases: what landed, the five plan deviations, the measured axiom profiles with their semantic-half comparisons, the full verification table and the follow-ups."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Built the L^open proof system end to end: a closed 71-constructor OpenAxiom, the seven-rule OpenDerivationTree, the eraseOpen retraction with a 71-arm wildcard-free discharge table, two wildcard-free 71-arm validity dispatches, soundness at every frame class, conservativity over TM-plus in both directions (unconditional and syntactic) and over TM at all four classes, and the collapse under Determined recovering the landed deterministic completeness. Eight new Lean files, sorry-free, zero new axioms, every axiom profile measured and no wider than the semantic half it lifts. No completeness is claimed for L^open at any frame class."
     },
     {
       "project_number": 855,

@@ -11,8 +11,8 @@ next_project_number: 881
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,856,857,858,860,863,867,869,870,871,872,873,878 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,874,875,876,879,880 | 298,428,502,761,770,772,777,785,803,813,838,839,856,867,870,871 | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,870,871,872,873,874,876,878,880 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,875,879 | 298,428,502,761,770,772,777,785,803,813,838,839,867,870,871 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,834,861,877 | 429,497,763,783,823,838,873,874,875,876 | agent-system, algebraic-representation, decidability, ... |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -113,8 +113,8 @@ next_project_number: 881
 
 ### Documentation
 
-877 [NOT STARTED] — IMPLEMENTATION TASK, LAST IN THE PROGRAMME AND PURELY...
 880 [NOT STARTED] — Reposition L^▷ in the READMEs and record the Logos reading of...
+877 [NOT STARTED] — IMPLEMENTATION TASK, LAST IN THE PROGRAMME AND PURELY...
 
 ### Formula Refactor
 
@@ -128,12 +128,10 @@ next_project_number: 881
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-856 [IMPLEMENTING] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
-  └─ 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 860 [RESEARCHED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 867 [NOT STARTED] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
 871 [NOT STARTED] — Correct LCU docstring and restore omega\_chain...
-  └─ 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the... (see above)
+  └─ 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 872 [IMPLEMENTING] — CLOSING RULING (2026-11-05, user): the six follow-on...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
@@ -979,7 +977,7 @@ and does not resolve here.
 ---
 
 ### 856. Build the L^▷ proof system: OpenAxiom, OpenDerivationTree, soundness and conservativity
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 854, Task 859
