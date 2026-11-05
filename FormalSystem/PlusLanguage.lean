@@ -18,6 +18,7 @@ import FormalSystem.PlusLanguage.PlusStateLocal
 import FormalSystem.PlusLanguage.PlusLimitClosure
 import FormalSystem.PlusLanguage.PlusIntTransfer
 import FormalSystem.PlusLanguage.PlusOmegaChain
+import FormalSystem.PlusLanguage.PlusLCSchema
 import FormalSystem.PlusLanguage.PlusRayFibre
 import FormalSystem.PlusLanguage.PlusReversal
 
@@ -72,6 +73,10 @@ proof system mirroring `ProofSystem.DerivationTree` constructor for constructor.
   `omega_limit` at an arbitrary regular frame under an explicit cofinality hypothesis on the
   marker sequence, `intOrder_omega_cofinal` as that hypothesis's only available discharge, and
   `omega_chain`, which iterates a `paste` and takes the limit
+- `PlusLanguage.PlusLCSchema` — **`LC_n`**, Reynolds 2003's infinite limit-closure schema
+  transposed to `⊡` with `G≤`: `gle`, `bigAnd`, `lcAnte`, `lcCons`, `lcN`, and
+  `lcN_plusValidInt`/`lcN_plusValidZTime`, its validity at the `.ZTime` frame class for every
+  `n ≥ 1` and arbitrary parameters. `.Base` validity is open and unclaimed
 - `PlusLanguage.PlusRayFibre` — `⊡` as a **quantifier over a product of two path spaces**:
   `plusStab_iff_rays` reads the clause over ray pairs through `Presheaf.seamFibreEquiv`, and
   `seamOmegaEquiv` / `plusStab_iff_omega` read it over pairs of ω-indexed step sequences over `ℤ`

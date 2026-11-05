@@ -319,16 +319,16 @@ tree imports yet, and it adds no symbol any other module calls.
 
 ---
 
-### Phase 4: The schema module and its syntax [NOT STARTED]
+### Phase 4: The schema module and its syntax [COMPLETED]
 
 **Goal**: Create `FormalSystem/PlusLanguage/PlusLCSchema.lean` with the finite-conjunction helper,
 the local `G≤` abbreviation, and the LC_n formula itself.
 
 **Tasks**:
-- [ ] Create `FormalSystem/PlusLanguage/PlusLCSchema.lean` with the standard header,
+- [x] Create `FormalSystem/PlusLanguage/PlusLCSchema.lean` with the standard header,
       `import FormalSystem.PlusLanguage.PlusOmegaChain`, `namespace FormalSystem.PlusLanguage`
       and the same `open` block.
-- [ ] Write the module docstring, which MUST state: (a) LC_n is Reynolds 2003's infinite
+- [x] Write the module docstring, which MUST state: (a) LC_n is Reynolds 2003's infinite
       limit-closure schema transposed to `⊡` with `G≤`, cited as `reynolds2003` (the repository's
       established key, already used in `FormalSystem/OpenLanguage/README.md` and
       `FormalSystem/Metalogic/BXCanonical/Quasimodel/Realization.lean`); (b) the proof of record
@@ -339,17 +339,17 @@ the local `G≤` abbreviation, and the LC_n formula itself.
       instance of `lcN`, with no separate declaration; (e) `.Base` validity of `lcN` is OPEN — a
       paper argument by Zorn plus the Extension Theorem is recorded in task 559's report 03 and is
       UNVERIFIED in Lean, so nothing here claims it.
-- [ ] Port `gle` and its truth clause from probe lines 48 and 111: `G≤ φ := φ ∧ Gφ`, with
+- [x] Port `gle` and its truth clause from probe lines 48 and 111: `G≤ φ := φ ∧ Gφ`, with
       `gle_iff : PlusTruthAt M τ t φ.gle ↔ ∀ s, t ≤ s → PlusTruthAt M τ s φ`. `gle` does not exist
       in `PlusLanguage/Formula.lean`; define it locally in this module.
-- [ ] Port `bigAnd` and `bigAnd_iff` from probe lines 707-725. The index must be `ℕ` with a uniform
+- [x] Port `bigAnd` and `bigAnd_iff` from probe lines 707-725. The index must be `ℕ` with a uniform
       `top` base case. `Syntax.bigconj` is NOT reusable: it is `List Formula → Formula`, has a
       non-uniform base case, and sits at the L layer rather than L⁺.
-- [ ] Port `lcAnte`, `lcCons`, `lcN` from probe lines 727-734, indices mod n, at the Challenge
+- [x] Port `lcAnte`, `lcCons`, `lcN` from probe lines 727-734, indices mod n, at the Challenge
       signatures below.
-- [ ] Register the module in `FormalSystem/PlusLanguage.lean` (import plus prose module-list
+- [x] Register the module in `FormalSystem/PlusLanguage.lean` (import plus prose module-list
       entry) and `FormalSystem.lean`. Re-read both aggregators immediately before editing.
-- [ ] Guarded scoped build green, zero `sorry`, no vacuous definition.
+- [x] Guarded scoped build green, zero `sorry`, no vacuous definition.
 
 **Timing**: 1 hour
 
