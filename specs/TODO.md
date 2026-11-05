@@ -1,5 +1,5 @@
 ---
-next_project_number: 872
+next_project_number: 878
 ---
 
 # TODO
@@ -11,10 +11,10 @@ next_project_number: 872
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,856,857,858,860,863,867,869,870,871 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862 | 298,428,502,761,770,772,777,785,803,813,838,839 | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
-| 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,856,857,858,860,863,867,869,870,871,872,873 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,874,875 | 298,428,502,761,770,772,777,785,803,813,838,839,856,871 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 3 | 410,498,499,500,822,834,861,876 | 429,497,763,783,823,838,874,875 | agent-system, algebraic-representation, decidability, ... |
+| 4 | 125,411,543,843,877 | 410,498,499,500,822,873,876 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
 | 7 | 482 | 412 | decidability |
@@ -106,6 +106,10 @@ next_project_number: 872
   └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
 
+### Documentation
+
+877 [NOT STARTED] — IMPLEMENTATION TASK, LAST IN THE PROGRAMME AND PURELY...
+
 ### Formula Refactor
 
 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of...
@@ -124,9 +128,12 @@ next_project_number: 872
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 856 [IMPLEMENTING] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
+  └─ 875 [NOT STARTED] — IMPLEMENTATION TASK, gated on the L^▷ proof system and its...
 860 [RESEARCHED] — Add the bridge lemma in...
 867 [NOT STARTED] — IMPLEMENTATION TASK, sizeable: formalize Gabbay separation...
 871 [NOT STARTED] — Correct LCU docstring and restore omega\_chain...
+  └─ 875 [NOT STARTED] — IMPLEMENTATION TASK, gated on the L^▷ proof system and its... (see above)
+872 [NOT STARTED] — RESEARCH TASK, cheap and ordering: produce the transfer...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -149,6 +156,12 @@ next_project_number: 872
 803 [PLANNED] — Cut the elaboration time of...
   └─ 804 [NOT STARTED] — Determine whether...
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
+
+### Syntax
+
+873 [NOT STARTED] — IMPLEMENTATION TASK, small and fully templated: build...
+874 [NOT STARTED] — IMPLEMENTATION TASK, gated on the L^▷ proof system: build...
+  └─ 876 [NOT STARTED] — IMPLEMENTATION TASK WITH A DECISION GATE IN PHASE 1, and the...
 
 ## Tasks
 
@@ -893,6 +906,7 @@ and does not resolve here.
 - **Dependencies**: Task 854, Task 859
 - **Research**: [856_open_language_proof_system_and_soundness/reports/01_open-proof-system-soundness-conservativity.md]
 - **Plan**: [856_open_language_proof_system_and_soundness/plans/01_open-proof-system-soundness.md]
+- **Summary**: [856_open_language_proof_system_and_soundness/summaries/01_open-proof-system-soundness-summary.md]
 
 **Description**: IMPLEMENTATION TASK, gated: build the proof system for L^▷ -- `OpenAxiom`, `OpenDerivationTree`, and their soundness recursion -- beside `FormalSystem/OpenLanguage/`'s existing semantic half, plus the two conservativity directions over TM⁺ and the collapse under `Determined`. This is a PREREQUISITE for any completeness statement about L^▷ and it is currently owed by nobody.
 

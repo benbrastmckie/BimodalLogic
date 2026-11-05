@@ -249,6 +249,11 @@
           "path": "specs/856_open_language_proof_system_and_soundness/plans/01_open-proof-system-soundness.md",
           "type": "plan",
           "summary": "15 phases, 29 hours, 10 dependency waves: OpenAxioms.lean, OpenDerivation.lean, OpenErasure.lean at layer 0; Conservativity/Open/{OpenAxiomValidity,OpenSoundness,Forward}.lean and Deterministic/OpenCollapse.lean at layer 3; plus the layer table, the cycle-check allowlist, the C14 baseline pairs and the theorem-index rows."
+        },
+        {
+          "path": "specs/856_open_language_proof_system_and_soundness/summaries/01_open-proof-system-soundness-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for phases 1-6 and 14: what landed, the seven plan deviations, the measured axiom profiles, and the sized follow-ups for phases 7-13 and 15."
         }
       ],
       "next_artifact_number": 2
