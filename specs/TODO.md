@@ -1,5 +1,5 @@
 ---
-next_project_number: 884
+next_project_number: 885
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 884
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,870,871,873,874,876,880,881,882 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,870,871,873,874,876,880,881,882,884 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,875,879,883 | 298,428,502,761,770,772,777,785,803,813,838,839,858,867,870,871 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -111,6 +111,7 @@ next_project_number: 884
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
   └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
+884 [RESEARCHED] — Restate the oriented-forest Saturation hypothesis at the...
 
 ### Documentation
 
@@ -163,6 +164,44 @@ next_project_number: 884
 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 884. Oriented forest hypothesis strength revision
+- **Effort**: medium
+- **Status**: [RESEARCHED]
+- **Task Type**: formal
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 878
+
+**Description**: Restate the oriented-forest Saturation hypothesis at the strength the ZTime decidability proof
+actually consumes, and revise the owning task's scope to match.
+
+The hypothesis as currently stated by specs/870_oriented_forest_saturation is "directed paths
+between any two nodes are unique". The proof that consumes it needs strictly more: step 4 of the
+countable-model/cover argument (specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md
+section 1.2) takes the UNDIRECTED tree path between two nodes and its unique sink, which requires
+the underlying undirected graph to be a forest, not merely that directed paths be unique.
+
+Consequence if left as stated: a lemma landing at the weaker, stated strength will NOT discharge
+hypothesis (H5), on which the whole L-plus ZTime decidability theorem is conditional. The
+conditionality is load-bearing -- the theorem has no unconditional form without it.
+
+Scope:
+- Restate the hypothesis at oriented-forest strength, naming precisely what the cover
+  construction and step 4 consume.
+- Confirm whether the Saturation side is affected. FrameOver.IsRegular bundles
+  TaskFrame.Saturation as a fourth field, so the compiled plus_invariance_of_isZTime requires
+  BOTH frames to satisfy Saturation; induced sub-digraphs of oriented forests are again oriented
+  forests, so this is expected to cost nothing -- verify rather than assume.
+- Revise specs/870_oriented_forest_saturation's own description and any plan it has, via /revise,
+  so its stated hypothesis matches what the consumer needs.
+- Carry forward the multigraph convention in the cover, which is load-bearing for the Walk
+  predicate's correctness.
+
+Evidence: the mismatch was measured, not recalled -- see the research and summary artifacts under
+specs/878_lplus_ztime_decidability_paper_proof_repair/.
+
+---
 
 ### 883. Stop one low-specificity shared path from producing duplicate-of-open, and settle Component 7 under /orchestrate
 - **Status**: [NOT STARTED]
