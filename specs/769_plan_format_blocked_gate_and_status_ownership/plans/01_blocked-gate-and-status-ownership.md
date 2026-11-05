@@ -215,7 +215,7 @@ would skip).
 
 ---
 
-### Phase 2: Provision 2 -- plan-level Status field ownership and its sanctioned alternative [IN PROGRESS]
+### Phase 2: Provision 2 -- plan-level Status field ownership and its sanctioned alternative [COMPLETED]
 
 **Goal**: Add one paragraph to `plan-format.md`'s "Plan-level vs. phase-level markers" subsection
 stating that the plan-level `- **Status**:` field is owned by `update-plan-status.sh`, that no
