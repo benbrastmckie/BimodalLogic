@@ -1,0 +1,18 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "summary": "Planned task 866's remaining work as propagation, not discovery: the report carrying the verdict (YES at step 4, amended at step 1) is already landed, so the plan has three phases, all specs/** markdown and no Lean. Phase 1 amends report 03 section 1.3 with the open-modal accommodation, the unsound per-state witness economy, and pre-existing gaps G1/G2; Phase 2 records the ZTime-only verdict in specs/ROADMAP.md, answers the 867 annotation, and lands the filing-ready R1 proposal plus the R2 do-not-file note; Phase 3 audits the four dispatch guardrails across all three records and runs the full gate set. Phases 1 and 2 are parallel (disjoint files); Phase 3 depends on both.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/866_mso_route_open_modals_ztime_decidability/plans/01_record-verdict-and-file-r1.md",
+      "summary": "Three-phase propagation plan: report 03 section 1.3 amendment, specs/ROADMAP.md verdict plus R1 proposal, guardrail audit and full gate set."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 3,
+  "blockers": [],
+  "next_action_hint": "Dispatch the implement phase. Both file targets contend with siblings dispatched this same cycle (864 touches 559's directory, 868 likely touches specs/ROADMAP.md), so re-read each target immediately before editing and stage by explicit file list.",
+  "plan_markers_verified": true,
+  "dispatch_seq": 5
+}

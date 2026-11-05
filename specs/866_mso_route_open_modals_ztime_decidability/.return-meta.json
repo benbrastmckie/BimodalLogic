@@ -1,43 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 2,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md",
-      "summary": "Verdict YES: the open-future and open-past modals are MSO-definable in report 03 section 1.3's step-4 (P, x) encoding, the restriction being one first-order conjunct over directed reachability in the oriented forest; the cover step also carries them; step 1's per-state witness economy is lost but countability survives; two pre-existing gaps in section 1.3 located; recommendation is to file one small Lean invariance task and NOT the MSO decidability result (Mathlib has no MSO/omega-automata/Rabin)."
+      "type": "plan",
+      "path": "specs/866_mso_route_open_modals_ztime_decidability/plans/01_record-verdict-and-file-r1.md",
+      "summary": "Three-phase propagation plan (no Lean, specs/** markdown only): amend report 03 section 1.3 with the open-modal accommodation, the unsound per-state witness economy and gaps G1/G2; record the ZTime-only verdict plus the filing-ready R1 proposal and the R2 do-not-file note in specs/ROADMAP.md; close out with a guardrail audit and the full gate set."
     }
   ],
-  "next_steps": "Run /orchestrate 866 to create an implementation plan, or accept recommendation R2 (no formalization of the MSO route) and close. Recommendation R1 proposes a separate small Lean task for open-modal invariance along a ray-agreement-lifting morphism (est. 150-350 lines).",
-  "user_decision": {
-    "question": "Should the small Lean item the report recommends (R1: open-future/open-past truth invariance along a history-lifting morphism with ray-agreement lifting, est. 150-350 lines) be filed as its own task now?",
-    "options": [
-      "File R1 now as a separate Lean task — cheap, independently useful at L-plus-plus-open, independent of the MSO route's unverified steps",
-      "Do not file R1 — record the verdict only and leave the open-modal invariance unformalized until something downstream needs it"
-    ],
-    "recommended": "File R1 now as a separate Lean task — cheap, independently useful at L-plus-plus-open, independent of the MSO route's unverified steps",
-    "blocking": false
-  },
+  "next_steps": "Run /orchestrate 866 to execute the plan. R1 (open-future/open-past truth invariance along a history-lifting morphism with ray-agreement lifting, est. 150-350 lines, one phase) is to be filed as its own Lean task at the conclusion stage per the settled decision in .decisions.json; the plan makes it filing-ready rather than creating it mid-loop.",
+  "phase_count": 3,
+  "estimated_hours": 1.75,
+  "dependency_waves": [[1, 2], [3]],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1793857391_c5064b_866",
-    "agent_type": "formal-research-agent",
-    "duration_seconds": 760,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "formal-research-agent"],
-    "domains_researched": ["logic", "math"],
-    "findings_count": 8,
-    "context_files_loaded": [
-      "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md",
-      "FormalSystem/OpenLanguage.lean",
-      "FormalSystem/OpenLanguage/OpenClasses.lean",
-      "FormalSystem/OpenLanguage/OpenTruth.lean",
-      "FormalSystem/Semantics/HistoryMorphism.lean",
-      "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
-      "FormalSystem/Syntax/Formula.lean",
-      ".claude/context/formats/report-format.md",
-      ".claude/context/standards/user-decision-contract.md"
-    ],
-    "mathlib_lookups_performed": 3,
-    "verification_passed": true
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 5
 }
