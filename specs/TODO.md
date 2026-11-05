@@ -1,5 +1,5 @@
 ---
-next_project_number: 867
+next_project_number: 869
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 867
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,813,817,818,821,825,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860,863,864,865,866 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,783,810,814,816,823,824,827,840,845,853,862 | 298,428,502,761,768,769,770,772,777,785,813,838,839,852 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,768,769,770,772,774,777,779,780,781,784,785,787,803,804,813,817,818,821,825,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860,863,864,866,867,868 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,783,810,814,816,823,824,827,840,845,853,862,865 | 298,428,502,761,768,769,770,772,777,785,813,838,839,852,864 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,826,834,861 | 429,497,763,783,810,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -29,7 +29,7 @@ next_project_number: 867
 752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
 753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
 767 [NOT STARTED] — lake-build-guard replays stale result for env lean FILE
-768 [RESEARCHED] — lean-challenge-snapshot swallows declarations, mishandles...
+768 [PLANNING] — lean-challenge-snapshot swallows declarations, mishandles...
   └─ 810 [NOT STARTED] — META TASK. ONE grouped task covering FIVE agent-system...
     └─ 826 [NOT STARTED] — Diagnose the zero-result literature retrieval and settle the...
   └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and...
@@ -77,7 +77,7 @@ next_project_number: 867
 ### Completeness
 
 864 [NOT STARTED] — IMPLEMENTATION TASK, time-sensitive: land the LC\_n and LCU...
-865 [NOT STARTED] — RESEARCH TASK, and the owner of a programme that is currently...
+  └─ 865 [NOT STARTED] — RESEARCH TASK, and the owner of a programme that is currently...
 
 ### Dataset Enhancement
 
@@ -137,6 +137,8 @@ next_project_number: 867
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
+867 [NOT STARTED] — IMPLEMENTATION TASK, sizeable: formalize Gabbay separation...
+868 [NOT STARTED] — IMPLEMENTATION TASK, small and deliberately conditional:...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -157,9 +159,29 @@ next_project_number: 867
 
 ## Tasks
 
+### 868. Open language transfer corollaries
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+
+**Description**: IMPLEMENTATION TASK, small and deliberately conditional: state in Lean the reductions that carry completeness and decidability of the open language at ZTime and RTime back to their L-plus counterparts, so that each one lands automatically whenever its antecedent is discharged.
+
+THE GAP. Task 854 landed VALIDITY transfer -- openValidIn_ztime_iff_tr and openValidIn_rtime_iff_tr in FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean say that open-language validity at those classes is L-plus validity of the translation. Nothing states the consequences that matter: that decidability of L-plus validity at ZTime yields decidability of open-language validity at ZTime, and that completeness of an L-plus proof system at ZTime or RTime yields completeness for the open language there. Those steps are short given what is landed, and nobody owns them.
+
+WHY STATE THEM WHILE THE ANTECEDENTS ARE OPEN. Both antecedents are genuinely open -- Decidable PlusValidZTime is stated nowhere in the tree, and completeness of any recursive extension of TM-plus is open at every frame class. That is precisely the argument for landing the reductions now rather than later: the reduction is the durable artifact, and making it machine-checked means the open-language result follows by application the moment the L-plus result arrives, instead of being rediscovered by whoever lands it. State each result as an explicit implication or a Decidable instance taking the L-plus fact as a hypothesis.
+
+ROW DISCIPLINE, WHICH IS THE WHOLE RISK HERE. Every landed row must make the hypothesis the leading clause, exactly as the openValidIn_ztime_iff_tr row does. No row, docstring or README cell may read as if decidability or completeness of the open language has been established at any class. The module docstring states what is proved -- the reduction -- and names each undischarged antecedent, with the separation hypothesis that tr itself rests on named too, since these reductions inherit it.
+
+WHAT IS OUT OF SCOPE. No proof system for the open language is built here -- that is the gated L-plus-to-open-language axiomatization task, and its rationale is confined to Base and Dense where the open-future modal is genuinely stronger. Nothing is claimed at Base or Dense, where the translation does not exist. Do not attempt to discharge any antecedent. Do not touch the Independence/ modules.
+
+GATES. Zero sorry, zero vacuous definitions; a theorem-index row per result with the conditional form stated honestly; re-measured axiom baselines pinned by scripts/check-module-invariants.sh, never typed by hand; guarded scoped build then unscoped, with check-module-invariants.sh and check-metalogic-cycles.sh green against their pre-task baselines.
+
+---
+
 ### 867. Formalize gabbay separation ztime
 - **Status**: [NOT STARTED]
-- **Task Type**: formal
+- **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 
@@ -203,7 +225,7 @@ DELIVERABLE: a report under this task's directory, with a verdict on whether the
 - **Status**: [NOT STARTED]
 - **Task Type**: formal
 - **Topic**: completeness
-- **Dependencies**: None
+- **Dependencies**: Task 864
 
 **Description**: RESEARCH TASK, and the owner of a programme that is currently owned by nobody: does TM-plus extended by the limit-closure schema admit a completeness proof, and can the located obstruction to Reynolds' construction be cleared in this setting?
 
@@ -3705,7 +3727,7 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. Two sibling record
 ---
 
 ### 768. lean-challenge-snapshot swallows declarations, mishandles Unicode names, and over-reads Goals prose
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
