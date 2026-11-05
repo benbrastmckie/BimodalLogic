@@ -549,25 +549,25 @@ including the `reports/01` model that refutes GHR's printed formula. Cases 6-8 p
 candidate. The criterion was 4 of 4, so the primary contingency branch of
 `## Rollback/Contingency` is taken.
 
-### Phase 6: GHR Lemma 10.2.3 -- Eliminations, Cases 1-4 [NOT STARTED]
+### Phase 6: GHR Lemma 10.2.3 -- Eliminations, Cases 1-4 [COMPLETED]
 
 **Goal**: The first four eliminations pull `untl` out from under `snce` and are proved at every
 `v` and `t` over `ℤ`, with arbitrary `USForm` parameters.
 
 **Tasks**:
 
-- [ ] Add `Eliminations.lean`. State each of Cases 1-4 with **arbitrary `USForm` parameters**
+- [x] Add `Eliminations.lean`. State each of Cases 1-4 with **arbitrary `USForm` parameters**
       `a`, `q`, `A`, `B`, not atoms: GHR's atomicity hypothesis exists only to license their
       substitution step and is unused in their semantic arguments.
-- [ ] Prove Case 1 (`S(a ∧ U(A,B), q)`), Case 2 (`S(a ∧ ¬U(A,B), q)`), Case 3
+- [x] Prove Case 1 (`S(a ∧ U(A,B), q)`), Case 2 (`S(a ∧ ¬U(A,B), q)`), Case 3
       (`S(a, q ∨ U(A,B))`) and Case 4 (`S(a, q ∨ ¬U(A,B))`), flipping every GHR `U(A,B)` to
       `untl B A`.
-- [ ] Reduce Case 3 to Case 2 and Case 4 as GHR's own internal reductions indicate, rather than
+- [x] Reduce Case 3 to Case 2 and Case 4 as GHR's own internal reductions indicate, rather than
       proving it from scratch, and record which reduction each case uses in its docstring.
-- [ ] Verify, for each case, that the right-hand side is syntactically separated -- every `untl`
+- [x] Verify, for each case, that the right-hand side is syntactically separated -- every `untl`
       occurrence sits under no `snce` and vice versa -- by discharging `IsUOnly`/`IsSOnly` side
       conditions rather than asserting it in prose.
-- [ ] Append the module's row to `SeparationZ/README.md` and regenerate `FormalSystem.lean`.
+- [x] Append the module's row to `SeparationZ/README.md` and regenerate `FormalSystem.lean`.
 
 **Timing**: 2 hours
 
@@ -662,7 +662,7 @@ is proved from them plus all eight eliminations.
 - [ ] Add `NormalForm.lean` with `dnf` and `cnf` on the Boolean skeleton of a `USForm` (treating
       every `untl`/`snce` subformula and every `leaf` as an opaque literal), each with a truth-
       preservation lemma at every `v` and `t`.
-- [ ] Add `IsSyntacticallySeparated` inductively: `leaf` and `bot` are separated; `imp` of
+- [ ] Add `IsSyntacticallySeparated` inductively: `leaf` and `bot` are separated; `imp` of *(deviation: altered — landed in Phase 6's `Eliminations.lean` as `IsSeparated`, since Phase 6's separatedness discharge needs it and this phase is excluded)*
       separated is separated; `untl ψ φ` is separated when `IsUOnly ψ` and `IsUOnly φ`; `snce ψ φ`
       is separated when `IsSOnly ψ` and `IsSOnly φ`.
 - [ ] State GHR 10.2.4: for `untl`/`snce`-free `A` and `B`, if every `untl` occurring in `C` and
