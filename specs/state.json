@@ -47,7 +47,7 @@
     {
       "project_number": 855,
       "project_name": "one_sided_open_modal_type_transport_probe",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "decidability",
       "title": "Probe the one-sided ▷/◁ type transport against the refuted two-sided shape",
@@ -58,7 +58,7 @@
         "scripts/check-evidence-probes.sh"
       ],
       "created": "2026-11-04T20:41:05Z",
-      "last_updated": "2026-11-04T23:57:11Z",
+      "last_updated": "2026-11-05T00:10:50Z",
       "audit_verdict": {
         "verdict": "covered-by-closed",
         "project_number": 718,
@@ -75,7 +75,15 @@
           "title": "Probe the one-sided ▷/◁ type transport against the refuted two-sided shape"
         }
       },
-      "session_id": "sess_1793836596_f24dfd_855"
+      "session_id": "sess_1793836596_f24dfd",
+      "artifacts": [
+        {
+          "path": "specs/855_one_sided_open_modal_type_transport_probe/reports/01_one-sided-open-modal-transport.md",
+          "type": "report",
+          "summary": "NEGATIVE verdict: the one-sided ▷/◁ factorization does not crack the transport condition — all six recorded refutation mechanisms survive the one-sided relaxation, two of them strictly harder, because the ladder countdown and the closure's eventualities both read the same forward half-line."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 854,
@@ -1246,7 +1254,7 @@
     {
       "project_number": 559,
       "project_name": "nondeterministic_canonical_model_tm_star_completeness",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness toolkit -- the only content of this task's four research rounds that is still absent from the library. Everything else this task found has ALREADY LANDED and must not be re-derived.\n\nWHAT ALREADY LANDED (verified in the library; do not redo any of it):\n  - The headline incompleteness verdict. plus_incomplete_base in FormalSystem/Metalogic/Independence/PlusIncompleteness.lean carries report 02's Base limit-closure witness as a pinned theorem-index row. Reports 01 and 02 are fully harvested.\n  - Report 04's Ockhamist correction: hnOpen_openValid and hnStab_refuted_sinkFrame are pinned rows in the theorem-index L-open-future section, and stab_state_only is in the library with a coarsened-model port in CoarsenedModels.lean.\n  So probes 01, 02 and 04 are spent scaffolding: standalone Mathlib-only reconstructions of results that now exist against the real definitions. They carry no durable value and are to be dropped with this task's directory.\n\nWHAT IS STILL UNLANDED, and is the whole of this task's remaining deliverable -- report 03's toolkit, machine-checked in probes/03_morphisms-clock-rule-lc-schema.lean (814 lines, sorry-free), absent from FormalSystem under any name:\n  (1) tw_invariance: truth is invariant under surjective two-way bounded morphisms. A world state can be split without changing the stability modal, provided every copy keeps all predecessors and successors up to copy. This is the load-bearing lemma -- everything positive in report 03 follows from it.\n  (2) irr_sound: Gabbay's plain irreflexivity rule is sound over the integers.\n  (3) clock_irr_sound: the stronger clock rule is sound over the integers -- an atom may be assumed to hold at exactly one time of every history, with that time rigid under the stability modal. A time cannot be named globally, but it can be named within every stability cluster.\n  (4) aa_expand: the semantic core of Reynolds 2001's Auxiliary Atoms rule transfers; the forward-cone unravelling is a two-way-morphic preimage whose forward cone is a tree.\n\nWHY IT IS WORTH LANDING: these are the soundness facts any future completeness engine for this logic has to stand on, and (1) is a reusable model-transformation tool with no substitute in the tree. They are not a verdict about one formula; they are infrastructure.\n\nDELIVERABLE:\n  - (1) extends FormalSystem/Semantics/HistoryMorphism.lean, which already hosts HistMap/HistMorphism and is the natural home for a two-way bounded morphism and its invariance lemma.\n  - (2)-(4) land in a new module FormalSystem/Metalogic/NamingRules.lean, with its import line added to the Metalogic aggregator.\n  - Both get docstrings, a theorem-index row each under a new Naming rules and model transformations subsection, and a re-measured axiom baseline pinned by scripts/check-module-invariants.sh. Never type an axiom profile by hand.\n\nSIZE, STATED HONESTLY: this is a PORT, not a transcription. The probes import no FormalSystem module -- they were written under a build embargo as Mathlib-only reconstructions -- so every statement must be re-expressed against the repository's own TaskFrame, WorldHistory and PlusTruthAt before it will compile. Budget accordingly and phase it: (1) first, since (2)-(4) consume it.\n\nNOT IN SCOPE: probes/05_stab-definable-from-open-modals.lean, which is live work owned by the stab-definable-from-open-modals task (currently planning) -- leave it alone. No engine, no completeness claim, no decidability claim: this task lands four soundness lemmas and nothing more. The LC-schema and axiomatizability discussion in report 03 is NOT part of this deliverable.\n\nGUARDRAILS: no sorry, no new axiom, no vacuous definition. If a lemma turns out not to port -- the Mathlib-only reconstruction relied on something the real definitions do not give -- record that as a located obstruction in the summary and land the ones that do; a partial landing with an honest account beats a stalled task.\n\nAFTER THIS LANDS the four reports and five probes are disposable, which is the point: their durable content will be in the two modules, their docstrings and the ledger.\n",
       "topic": "metalogic",
@@ -1255,7 +1263,7 @@
         854
       ],
       "created": "2026-09-08T15:35:44Z",
-      "last_updated": "2026-11-04T23:41:51Z",
+      "last_updated": "2026-11-05T00:06:30Z",
       "priority": "low",
       "session_id": "sess_1793832648_193830",
       "artifacts": [

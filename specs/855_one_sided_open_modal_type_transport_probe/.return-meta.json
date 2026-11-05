@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/855_one_sided_open_modal_type_transport_probe/reports/01_one-sided-open-modal-transport.md",
+      "summary": "NEGATIVE verdict: the one-sided ▷/◁ factorization does not crack the transport condition — all six recorded refutation mechanisms survive the one-sided relaxation, two of them strictly harder, because the ladder countdown and the closure's eventualities both read the same forward half-line."
+    },
+    {
+      "type": "probe",
+      "path": "specs/855_one_sided_open_modal_type_transport_probe/probes/01_one-sided-count-move.lean",
+      "summary": "Sorry-free prototype (exit 0, no warnings): the forward-only sharpening cntAt_eq_of_pend_eq_fwd, the two one-sided relaxations of AtomPreservingCountMove, and the refutation of the ◁-shaped one from which the recorded two-sided refutation is a corollary."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1793836596_f24dfd_855",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

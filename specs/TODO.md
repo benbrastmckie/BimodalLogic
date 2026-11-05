@@ -105,7 +105,7 @@ next_project_number: 861
 837 [RESEARCHED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
-855 [RESEARCHING] — Probe the one-sided ▷/◁ type transport against the refuted...
+855 [RESEARCHED] — Probe the one-sided ▷/◁ type transport against the refuted...
   └─ 852 [RESEARCHED] — Author a model-level pumping lemma for tpOf along a ladder...
 
 ### Formula Refactor
@@ -124,7 +124,7 @@ next_project_number: 861
 
 ### Metalogic
 
-559 [PLANNED] — IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness...
+559 [IMPLEMENTING] — IMPLEMENTATION TASK, NARROWED: land the naming-rule soundness...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 856 [NOT STARTED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
@@ -563,10 +563,11 @@ SIZING. This is multi-dispatch work: a new axiom type, a new derivation tree, a 
 ---
 
 ### 855. Probe the one-sided ▷/◁ type transport against the refuted two-sided shape
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [855_one_sided_open_modal_type_transport_probe/reports/01_one-sided-open-modal-transport.md]
 
 **Description**: RESEARCH TASK, one probe's worth of work, aimed squarely at the Stage 1 wall: does the ONE-SIDED factorization given by the open modals ▷/◁ crack the transport condition whose two-sided pointwise form is refuted? Reports and sorry-free probes under this task's directory and `specs/evidence/seam-gluing-ray-product/`; no changes to `FormalSystem/` or `Tests/`.
 
@@ -3893,7 +3894,7 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 
 ### 559. Nondeterministic canonical model tm star completeness
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 833, Task 854
