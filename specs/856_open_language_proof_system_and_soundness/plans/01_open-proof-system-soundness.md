@@ -809,25 +809,25 @@ against a wildcard having been added to satisfy it.
 
 ---
 
-### Phase 12: `OpenSoundness.lean` [NOT STARTED]
+### Phase 12: `OpenSoundness.lean` [COMPLETED]
 
 **Goal**: Land the soundness recursion over `OpenDerivationTree` and the class rows.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/Conservativity/Open/OpenSoundness.lean` and add its import
+- [x] Create `FormalSystem/Metalogic/Conservativity/Open/OpenSoundness.lean` and add its import
   to `FormalSystem/Metalogic/Conservativity/Open.lean` and the directory README's module table.
-- [ ] Prove `theorem open_derivable_valid_and_reflect_time_validIn`, the simultaneous recursion
+- [x] Prove `theorem open_derivable_valid_and_reflect_time_validIn`, the simultaneous recursion
   over the seven rules, mirroring `star_derivable_valid_and_reflect_time_validIn`
   (`FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean:71`). The `time_reflection` rule
   is what forces the conjunction; the `axiom` rule consumes both Phase 11 dispatch lemmas with
   `OpenValidIn.mono` against the rule's `minFrameClass ≤ fc` gate.
-- [ ] Prove `theorem open_soundness_validIn {fc} {φ} (h : OpenDerivable fc [] φ) : OpenValidIn fc φ`.
-- [ ] Prove the four class rows — `open_soundness_valid`, `open_soundness_dense`,
+- [x] Prove `theorem open_soundness_validIn {fc} {φ} (h : OpenDerivable fc [] φ) : OpenValidIn fc φ`.
+- [x] Prove the four class rows — `open_soundness_valid`, `open_soundness_dense`,
   `open_soundness_ztime`, `open_soundness_rtime` — and the non-triviality row
   `open_not_derivable_nil_bot`, mirroring `StarSoundness.lean`'s own row block.
-- [ ] Prove the context form `open_soundness_in`, mirroring `plus_soundness_in`.
-- [ ] State in the docstring that soundness is all this file claims: no completeness, in any form,
+- [x] Prove the context form `open_soundness_in`, mirroring `plus_soundness_in`.
+- [x] State in the docstring that soundness is all this file claims: no completeness, in any form,
   for any class.
 
 **Timing**: 1.5 hours

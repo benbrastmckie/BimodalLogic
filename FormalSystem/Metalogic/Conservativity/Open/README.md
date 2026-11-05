@@ -39,7 +39,8 @@ would remove that cost for all three languages and is deliberately out of scope 
 
 | Module | Contents |
 |---|---|
-| `OpenAxiomValidity.lean` | The L^▷ purity congruences `openTruthAt_congr_agreeFrom` / `openTruthAt_congr_agreeUpTo`; the per-constructor validity and reflection-validity theorems; the block aggregates `openAxiomValidIn_ofutBlock`, `openAxiomReflectValidIn_ofutBlock`, `openAxiomValidIn_rigidityBlock`, `openAxiomReflectValidIn_rigidityBlock` |
+| `OpenAxiomValidity.lean` | The L^▷ purity congruences `openTruthAt_congr_agreeFrom` / `openTruthAt_congr_agreeUpTo`; the time-shift infrastructure `openTruthAt_congr_ext` / `openTruthAt_timeShift`; the `K±` clause lemmas `openKPlus_iff` / `openKMinus_iff`; a per-constructor validity and reflection-validity theorem for each of the 71 `OpenAxiom` constructors; thirteen block aggregates whose covered-name lists partition that set exactly; and the two wildcard-free 71-arm dispatch lemmas `openAxiom_validIn_min` / `openAxiom_reflect_time_validIn_min` |
+| `OpenSoundness.lean` | The companion recursion `open_derivable_valid_and_reflect_time_validIn` over `OpenDerivationTree`'s seven rules; `open_soundness_validIn` and the context form `open_soundness_in`; the four class rows `open_soundness_valid` / `_dense` / `_ztime` / `_rtime`; and the consistency row `open_not_derivable_nil_bot` |
 
 ## References
 
