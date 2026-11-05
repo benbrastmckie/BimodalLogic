@@ -1,7 +1,7 @@
 # Implementation Plan: Task #810
 
 - **Task**: 810 - agent_system_batch_defect_group
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8.5 hours
 - **Dependencies**: None (task 768, previously flagged as a `file_scope` collision on
   `lean-challenge-snapshot.sh`, has already fully landed — see Research Integration)

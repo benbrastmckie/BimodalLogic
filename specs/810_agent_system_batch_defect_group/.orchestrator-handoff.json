@@ -1,15 +1,15 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
-  "phases_total": 7,
-  "summary": "Wrote a 7-phase, 8.5-hour plan covering all five agent-system defects, every fix targeted at the resolved source store. The plan is built on the research report's three premise corrections rather than the dispatch's authored text: Defect 2 fails loudly (exit 71), not vacuously, so only the START_RE anchor is fixed; Defect 5's lean manifest carries no routing_hard key, so no free deletion exists; Defect 3 has no existing test suite, so the inline spot-check is extracted to a testable script before its polarity is fixed. Four design decisions are recorded in a Decisions section, including the severity-prefix route for Defect 5 (the addendum's option 1) and why the sanctioned --depends-on-add edge to task 780 is unavailable.",
+  "status": "implemented",
+  "dispatch_seq": 6,
+  "summary": "Fixed all five agent-system defects (batch gate deferral narrowing paths, lean-challenge-snapshot.sh Goals-header anchor, plan-compliance polarity inversion on refutation plans, literature-search.sh --read chunk-path resolution, Gate 16's batch-blocking WARN finding) across 7 phases in the resolved source store at /home/benjamin/.config/nvim. Each fix carries the test evidence its own defect admits. This repository's deployed tree was redeployed and re-verified clean, with Gate 16's discharge measured directly. Two follow-ups surfaced: the routing_agents_hard migration (re-measured at 22 files) and task 780's rewrite note.",
   "blockers": [],
+  "phases_completed": 7,
+  "phases_total": 7,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/810_agent_system_batch_defect_group/plans/01_agent-system-batch-defect-group.md",
-      "summary": "7-phase plan (3 waves, 8.5h) fixing five agent-system defects in the resolved source store, with per-defect test evidence and a full-gate final phase."
+      "type": "summary",
+      "path": "specs/810_agent_system_batch_defect_group/summaries/01_agent-system-batch-defect-group-summary.md",
+      "summary": "Consolidated acceptance evidence for all five fixed defects, the Batch Gate Deferral discharge, mechanical no-.claude-staged proof, and two named follow-ups."
     }
-  ],
-  "dispatch_seq": 5
+  ]
 }
