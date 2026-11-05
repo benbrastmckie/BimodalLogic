@@ -1,0 +1,43 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/872_open_language_transfer_ledger/reports/01_open-language-transfer-ledger.md",
+      "summary": "The L-plus-to-L^open transfer ledger: 64 rows (23 TRANSFERRED, 10 REDUCIBLE, 24 OWED, 7 NOT APPLICABLE) over the logic and math domains, enumerated from three recorded sources, with every count and declaration name reproducible from a command recorded in the report"
+    }
+  ],
+  "next_steps": "Run /orchestrate 872 to reach the conclusion stage, which should file the unowned OWED rows: T4 (name the direct L-to-L-open embedding; sequence BEFORE task 856 phase 13 and task 874), T1 (the L-open state-locality fragment), T2 (the L-open semantics-support lemmas), T3 (L-open axiom-set non-redundancy, gated on 856 phase 12), T5 (discharge hmarkers; check task 860 first), T6 (trivial, absorb into T2 or 873). Four rows are flagged as blocked on open mathematics and must NOT be filed: TM-plus completeness at any class, TM-plus decidability, the 35-row ZTime certificate front, and the hinexpr collapse argument.",
+  "metadata": {
+    "session_id": "sess_1793900475_c93eff_872",
+    "agent_type": "formal-research-agent",
+    "duration_seconds": 840,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "formal-research-agent"],
+    "domains_researched": ["logic", "math"],
+    "findings_count": 7,
+    "ledger_rows": 64,
+    "ledger_transferred": 23,
+    "ledger_reducible": 10,
+    "ledger_owed": 24,
+    "ledger_not_applicable": 7,
+    "owed_rows_unowned": 13,
+    "proposed_tasks": 6,
+    "open_mathematics_flags": 4,
+    "unformalized_hypotheses_found": 3,
+    "context_files_loaded": [
+      "FormalSystem/OpenLanguage/README.md",
+      "FormalSystem/PlusLanguage/README.md",
+      "FormalSystem/Metalogic/README.md",
+      "FormalSystem/Metalogic/Independence/README.md",
+      "FormalSystem/Metalogic/Expressiveness/README.md",
+      "FormalSystem/Metalogic/Conservativity/Open.lean",
+      ".claude/context/standards/user-decision-contract.md"
+    ],
+    "mathlib_lookups_performed": 1,
+    "evidence_tier": "grep-of-record; lean_local_search reported index=warming so LSP absence is not proof of absence, announced in the report",
+    "files_modified_under_FormalSystem": 0,
+    "verification_passed": true
+  }
+}

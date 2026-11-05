@@ -7865,18 +7865,24 @@
     {
       "project_number": 872,
       "project_name": "open_language_transfer_ledger",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "formal",
       "topic": "metalogic",
       "created": "2026-11-05T17:16:24Z",
-      "last_updated": "2026-11-05T17:16:24Z",
-      "next_artifact_number": 1,
+      "last_updated": "2026-11-05T17:56:58Z",
+      "next_artifact_number": 2,
       "description": "RESEARCH TASK, cheap and ordering: produce the transfer ledger for the L-plus-to-L^▷ programme -- one row per L-plus headline result, naming its L^▷ counterpart and that counterpart's status -- so that \"everything for L-plus has been transferred to L^▷\" becomes a measurable condition rather than a judgement. Report only; this task changes nothing under `FormalSystem/`.\n\nWHY IT EXISTS. The user's stated end state is that the repository present two object languages, L and L^▷, with L-plus surviving as an internal layer rather than a front. The standing architectural ruling keeps L-plus embedded and forbids renaming or mutating `PlusFormula`/`PlusAxiom`/`PlusDerivationTree`, so the end state is reached by making every L-plus headline result readable at L^▷ through `ofPlus` and the conservativity directions -- not by deleting anything. What is missing is the ledger: no file, task or report enumerates the L-plus results and their L^▷ status, so there is no way to tell how far the transfer has gone or what remains. Two concrete gaps were found by hand at filing time (no `OpenLanguage/Subformulas.lean`, no `OpenLanguage/Substitution.lean`, each the counterpart of an existing L-plus file) and each is filed as its own task; a systematic pass is likely to find more, and is cheaper than finding them one at a time.\n\nWHAT TO PRODUCE. A single report with one table whose rows are L-plus headline results and whose columns are: the L-plus declaration (fully qualified), its file, the L^▷ counterpart declaration if one exists, that counterpart's file, and a status drawn from a closed set -- TRANSFERRED (a named L^▷ declaration exists), REDUCIBLE (no L^▷ declaration, but the result is reachable at a stated frame class through a named landed translation or conservativity theorem, with the theorem named), OWED (no counterpart and no reduction; name the owning task if one exists, or state that none does), or NOT APPLICABLE (the result is about L-plus-specific syntax and has no L^▷ reading; say why in one clause).\n\nHOW TO ENUMERATE, so the pass is reproducible rather than impressionistic. Take the L-plus surface from three places and say which rows came from which: the per-file declaration lists under `FormalSystem/PlusLanguage/` (eighteen files), the L-plus rows of `docs/theorem-index.md`, and the L-plus entries of `FormalSystem/Metalogic/README.md`'s result table. Record the counts. A row whose status is REDUCIBLE must name the frame class it is reducible at and the theorem that reduces it -- the ZTime and RTime translation equivalences are the expected vehicle and they do not apply at Base or Dense, so a REDUCIBLE row with no class is a defect in the ledger.\n\nWHAT THE LEDGER MUST ALSO ANSWER, in prose beside the table. Which L-plus files have no `OpenLanguage/` counterpart file at all, and for each, whether the counterpart is wanted or the L-plus file is internal infrastructure that correctly has no L^▷ reading. Whether the direct embedding of L into L^▷ is stated anywhere as a single map, or only as a composition. Whether any L^▷ result currently depends on an unformalized hypothesis, and which -- the separation hypothesis carrying the positive definability half and the inexpressibility hypothesis carrying the negative half are the two known ones; confirm whether there are others.\n\nWHAT TO RECOMMEND. For each OWED row, either name the existing task that should absorb it or propose a task with a one-paragraph scope. Do not file the tasks from this one; recommend them and let the conclusion stage file what survives. Explicitly flag any row where the transfer looks blocked on open mathematics rather than on unwritten Lean, since those belong to the completeness and decidability programmes and not to this one.\n\nEXPLICITLY NOT IN SCOPE. No edits under `FormalSystem/`. No new Lean declarations. No proposal to rename L-plus, to mutate its inductives, or to delete `PlusLanguage/` -- the ruling against absorb-and-rename stands, and the end state is reached by transfer, not removal. No completeness or decidability claim.\n\nVERIFICATION. Every count and every declaration name in the report must be reproduced from a command recorded in the report itself, so a reader can re-run it. A claim about what exists in the tree that no recorded command supports is a defect in the report.",
       "file_scope": [
-        "docs/theorem-index.md"
+        "specs/872_open_language_transfer_ledger/"
       ],
-      "artifacts": [],
-      "session_id": "sess_1793898929_f3f6c6",
+      "artifacts": [
+        {
+          "path": "specs/872_open_language_transfer_ledger/reports/01_open-language-transfer-ledger.md",
+          "type": "report",
+          "summary": "The L-plus-to-L^open transfer ledger: 64 rows (23 TRANSFERRED, 10 REDUCIBLE, 24 OWED, 7 NOT APPLICABLE) over the logic and math domains, enumerated from three recorded sources, with every count and declaration name reproducible from a command recorded in the report"
+        }
+      ],
+      "session_id": "sess_1793900475_c93eff",
       "dependencies": [],
       "audit_verdict": {
         "proposal": {
