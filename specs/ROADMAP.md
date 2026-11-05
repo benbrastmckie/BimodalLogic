@@ -228,10 +228,6 @@ with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
 
 - [ ] **Decide when 761 comes off `[HOLD]`.** Resuming it re-serializes the Stage 1 front behind
       its 40-path scope; 763 is gated on it. Recommended: finish 853 first, now that 852 has landed
-- [ ] **Abandon 877** (ruled 2026-11-05, not yet applied): the abandon gate refuses while 856's
-      session is live, because 877's `file_scope` overlaps 856's at `README.md`. Run
-      `/task --abandon 877` once 856 reports terminal. 127 and 128 are abandoned under the same
-      ruling
 - [ ] Supply the Hugging Face account and token **257** is blocked on
 - [ ] Rule on **428**'s scope. Its one edge (465) is discharged and its `blockers` says "paused at
       4/5 cycles, NOT blocked", so the marker is mis-set: `/revise 428` to add phases for its four

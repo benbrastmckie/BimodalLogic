@@ -13,7 +13,7 @@ next_project_number: 881
 |------|-------|------------|--------|
 | 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,870,871,873,874,876,878,880 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,875,879 | 298,428,502,761,770,772,777,785,803,813,838,839,867,870,871 | agent-system, algebraic-representation, completeness, ... |
-| 3 | 410,498,499,500,822,834,861,877 | 429,497,763,783,823,838,873,874,875,876 | agent-system, algebraic-representation, decidability, ... |
+| 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -114,7 +114,6 @@ next_project_number: 881
 ### Documentation
 
 880 [NOT STARTED] — Reposition L^▷ in the READMEs and record the Logos reading of...
-877 [NOT STARTED] — IMPLEMENTATION TASK, LAST IN THE PROGRAMME AND PURELY...
 
 ### Formula Refactor
 
@@ -220,30 +219,6 @@ WHAT TO DELIVER. A report carrying the full argument, each step proved or cited 
 (5) Record whether Craig's observation then yields recursive axiomatizability of L-plus at ZTime at the level of existence, which report 03's amendment currently records as open.
 
 RELATION TO OTHER WORK. The cover step (step 2) consumes oriented-forest Saturation, which task 870 owns as a Lean lemma; cite it and do not reprove it. Formalizing this route in Lean is REFUSED by ruling (Mathlib has no MSO syntax, no omega-automata and no Rabin tree theorem) and this task must not propose it. The open-modal reading is secondary: 866 found that the open-future and open-past modals ride step 4's encoding at the cost of an amendment at step 1, so note in one paragraph whether the repaired step 1 still admits that amendment, and stop there. A verdict that a gap cannot be repaired, with the obstruction named, is a complete outcome.
-
----
-
-### 877. Language display name consolidation
-- **Status**: [NOT STARTED]
-- **Task Type**: lean4
-- **Topic**: documentation
-- **Dependencies**: Task 856, Task 873, Task 874, Task 875, Task 876
-
-**Description**: IMPLEMENTATION TASK, LAST IN THE PROGRAMME AND PURELY MECHANICAL: retire the hard-to-type display name of the open-modal language in favour of the superscript-plus display name, across every prose and ledger surface, and give the stability-modal language a new display name in the same pass. Lean identifiers are NOT renamed by this task.
-
-THE DECISION THIS IMPLEMENTS, AND ITS DELIBERATE CHEAPNESS. The maintainer's ruling is that the `Open` identifier family is the preferred one and STAYS -- `OpenFormula`, `OpenAxiom`, `OpenDerivationTree`, `OpenValidIn`, `eraseOpen`, `ofPlus` and every `open`-prefixed declaration keep their Lean names. What changes is only the display name those identifiers are glossed by in prose: the open-modal language is to be written with the superscript plus, because the triangle glyph is awkward to type. Consequently this task does NOT rename the five-figure `Plus` identifier family and does NOT rename the `Open` family either; a measured alternative that renamed identifiers was rejected as roughly nineteen thousand mechanical edits across four hundred and twelve of the tree's Lean files, for no gain over a prose-only change.
-
-THE NAME COLLISION THIS MUST RESOLVE, AND IT IS A PLAN-TIME DECISION, NOT AN IMPLEMENTATION DETAIL. The superscript-plus display name is currently worn by the stability-modal language -- the one whose Lean family is `Plus` -- and the two cannot share it. That language survives the consolidation as the internal layer that the store/recall language, the hybrid state language, the nomic language and the open-modal language all embed, so it needs a display name of its own, not deletion. Settle that name at plan time and record it as a decision with its rationale before editing anything. The obvious candidate is a name formed from its own operator, since the repository README already glosses it as the base language plus the stability modal; a role-based name naming it as the shared internal layer is the alternative. Whichever is chosen, every surface below must use it consistently and the decision record must name it once so a future reader can trace the change.
-
-THE SURFACES, AND THE INVENTORY IS PART OF THE DELIVERABLE. Enumerate them from the tree rather than from this description, record the counts, and work from that list: the repository README's language table and its component tree; every module docstring under the open-modal and stability-modal language directories and under the metalogic tree that glosses either language by display name; the theorem-index prose columns; the typst reference manual; and the component READMEs. A grep for the triangle glyph and for the superscript-plus glyph across markdown, typst and Lean docstrings is the starting inventory. Report the before and after counts per surface.
-
-WHAT MUST NOT CHANGE, each being a way to get this wrong. No Lean identifier is renamed -- not one declaration, namespace, file name or directory name. No statement changes. No frame class changes. The paper-label correspondence tables keep pointing at the same manuscript labels: the manuscript's own notation is not this repository's to rename, so where a docstring cites a manuscript label the label stays and only the surrounding gloss changes. The embedding `ofPlus` keeps its name in all four embedding languages even though its source language's display name changes, and the task records that mismatch in the stability-modal language's README rather than renaming the function.
-
-ORDERING, AND IT IS A HARD GATE. This runs LAST. Declare as dependencies the L^▷ proof system, the subformula closure, the substitution closure, the incompleteness transfer and the stability-primitive removal. Rationale: a display-name change is worth doing exactly once, and every one of those tasks writes new docstrings that would otherwise be written in the old name and renamed afterwards. Do not enter this task while any of them is open.
-
-THE ONE SUBSTANTIVE CHECK IN AN OTHERWISE MECHANICAL TASK. After the pass, no surface may use the superscript-plus display name for two different languages, and no surface may still use the triangle display name. Both are greppable and both must be shown clean in the summary, with the commands recorded. A single missed docstring makes the tree ambiguous about which language a result is about, which is the whole cost this task exists to avoid paying twice.
-
-VERIFICATION GATE. Guarded scoped build green, then the unscoped build; never bare `lake` -- docstring edits do not change elaboration but the generated inventory blocks are build-adjacent and must be regenerated rather than hand-edited. The bare module-invariants check and the metalogic-cycles check both green. The typst manual must compile. Axiom sets are unaffected by construction; state that rather than measuring nothing silently, and confirm zero Lean identifiers changed by showing the diff touches no declaration line.
 
 ---
 

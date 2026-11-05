@@ -1952,6 +1952,45 @@
   ],
   "completed_projects": [
     {
+      "project_number": 877,
+      "project_name": "language_display_name_consolidation",
+      "status": "abandoned",
+      "task_type": "lean4",
+      "topic": "documentation",
+      "created": "2026-11-05T17:16:35Z",
+      "last_updated": "2026-11-05T17:16:35Z",
+      "next_artifact_number": 1,
+      "description": "IMPLEMENTATION TASK, LAST IN THE PROGRAMME AND PURELY MECHANICAL: retire the hard-to-type display name of the open-modal language in favour of the superscript-plus display name, across every prose and ledger surface, and give the stability-modal language a new display name in the same pass. Lean identifiers are NOT renamed by this task.\n\nTHE DECISION THIS IMPLEMENTS, AND ITS DELIBERATE CHEAPNESS. The maintainer's ruling is that the `Open` identifier family is the preferred one and STAYS -- `OpenFormula`, `OpenAxiom`, `OpenDerivationTree`, `OpenValidIn`, `eraseOpen`, `ofPlus` and every `open`-prefixed declaration keep their Lean names. What changes is only the display name those identifiers are glossed by in prose: the open-modal language is to be written with the superscript plus, because the triangle glyph is awkward to type. Consequently this task does NOT rename the five-figure `Plus` identifier family and does NOT rename the `Open` family either; a measured alternative that renamed identifiers was rejected as roughly nineteen thousand mechanical edits across four hundred and twelve of the tree's Lean files, for no gain over a prose-only change.\n\nTHE NAME COLLISION THIS MUST RESOLVE, AND IT IS A PLAN-TIME DECISION, NOT AN IMPLEMENTATION DETAIL. The superscript-plus display name is currently worn by the stability-modal language -- the one whose Lean family is `Plus` -- and the two cannot share it. That language survives the consolidation as the internal layer that the store/recall language, the hybrid state language, the nomic language and the open-modal language all embed, so it needs a display name of its own, not deletion. Settle that name at plan time and record it as a decision with its rationale before editing anything. The obvious candidate is a name formed from its own operator, since the repository README already glosses it as the base language plus the stability modal; a role-based name naming it as the shared internal layer is the alternative. Whichever is chosen, every surface below must use it consistently and the decision record must name it once so a future reader can trace the change.\n\nTHE SURFACES, AND THE INVENTORY IS PART OF THE DELIVERABLE. Enumerate them from the tree rather than from this description, record the counts, and work from that list: the repository README's language table and its component tree; every module docstring under the open-modal and stability-modal language directories and under the metalogic tree that glosses either language by display name; the theorem-index prose columns; the typst reference manual; and the component READMEs. A grep for the triangle glyph and for the superscript-plus glyph across markdown, typst and Lean docstrings is the starting inventory. Report the before and after counts per surface.\n\nWHAT MUST NOT CHANGE, each being a way to get this wrong. No Lean identifier is renamed -- not one declaration, namespace, file name or directory name. No statement changes. No frame class changes. The paper-label correspondence tables keep pointing at the same manuscript labels: the manuscript's own notation is not this repository's to rename, so where a docstring cites a manuscript label the label stays and only the surrounding gloss changes. The embedding `ofPlus` keeps its name in all four embedding languages even though its source language's display name changes, and the task records that mismatch in the stability-modal language's README rather than renaming the function.\n\nORDERING, AND IT IS A HARD GATE. This runs LAST. Declare as dependencies the L^▷ proof system, the subformula closure, the substitution closure, the incompleteness transfer and the stability-primitive removal. Rationale: a display-name change is worth doing exactly once, and every one of those tasks writes new docstrings that would otherwise be written in the old name and renamed afterwards. Do not enter this task while any of them is open.\n\nTHE ONE SUBSTANTIVE CHECK IN AN OTHERWISE MECHANICAL TASK. After the pass, no surface may use the superscript-plus display name for two different languages, and no surface may still use the triangle display name. Both are greppable and both must be shown clean in the summary, with the commands recorded. A single missed docstring makes the tree ambiguous about which language a result is about, which is the whole cost this task exists to avoid paying twice.\n\nVERIFICATION GATE. Guarded scoped build green, then the unscoped build; never bare `lake` -- docstring edits do not change elaboration but the generated inventory blocks are build-adjacent and must be regenerated rather than hand-edited. The bare module-invariants check and the metalogic-cycles check both green. The typst manual must compile. Axiom sets are unaffected by construction; state that rather than measuring nothing silently, and confirm zero Lean identifiers changed by showing the diff touches no declaration line.",
+      "file_scope": [
+        "README.md",
+        "docs/theorem-index.md",
+        "FormalSystem/OpenLanguage/README.md",
+        "FormalSystem/PlusLanguage/README.md",
+        "typst/"
+      ],
+      "artifacts": [],
+      "session_id": "sess_1793898929_f3f6c6",
+      "dependencies": [
+        856,
+        873,
+        874,
+        875,
+        876
+      ],
+      "audit_verdict": {
+        "proposal": {
+          "id": "language_display_name_consolidation",
+          "project_number": null,
+          "title": "Retire the triangle display name for the superscript-plus one"
+        },
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        }
+      },
+      "abandoned": "2026-11-05T18:39:39Z"
+    },
+    {
       "project_number": 128,
       "project_name": "open_set_operator_dense_continuous",
       "status": "abandoned",
