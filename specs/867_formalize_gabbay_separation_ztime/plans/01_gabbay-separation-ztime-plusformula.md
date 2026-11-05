@@ -377,23 +377,23 @@ covers it; no existing declaration or signature is touched.
 
 ---
 
-### Phase 3: GHR Lemma 10.2.1 -- The Four Boolean Distributivities [NOT STARTED]
+### Phase 3: GHR Lemma 10.2.1 -- The Four Boolean Distributivities [COMPLETED]
 
 **Goal**: The four distributivities hold for `usTruth` over `ℤ`, each stated with arbitrary
 `USForm` arguments rather than atoms.
 
 **Tasks**:
 
-- [ ] Add `Distributivity.lean`. State and prove, in this repository's guard-first order (so
+- [x] Add `Distributivity.lean`. State and prove, in this repository's guard-first order (so
       GHR's `U(A ∨ B, C)` is `untl C (A.or B)`):
       `untl C (A.or B) ↔ (untl C A).or (untl C B)`;
       the `snce` mirror; `untl (B.and C) A ↔ (untl B A).and (untl C A)`; and its `snce` mirror --
       each as a `usTruth`-level `Iff` at every `v` and `t`.
-- [ ] Derive each `snce` case from its `untl` case through `usTruth_swap` and `swap_involutive`
+- [x] Derive each `snce` case from its `untl` case through `usTruth_swap` and `swap_involutive`
       rather than repeating the argument, establishing the duality idiom every later phase reuses.
-- [ ] Confirm each proof uses only linearity of `ℤ`, not discreteness -- GHR's 10.2.1 is valid
+- [x] Confirm each proof uses only linearity of `ℤ`, not discreteness -- GHR's 10.2.1 is valid
       over linear time and nothing here may silently consume `Int.exists_least_of_bdd`.
-- [ ] Append the module's row to `SeparationZ/README.md` and regenerate `FormalSystem.lean`.
+- [x] Append the module's row to `SeparationZ/README.md` and regenerate `FormalSystem.lean`.
 
 **Timing**: 1.5 hours
 
