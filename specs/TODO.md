@@ -11,7 +11,7 @@ next_project_number: 884
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,870,871,873,874,876,878,880,881,882 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,870,871,873,874,876,880,881,882 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,875,879,883 | 298,428,502,761,770,772,777,785,803,813,838,839,858,867,870,871 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -111,7 +111,6 @@ next_project_number: 884
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
   └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
-878 [IMPLEMENTING] — Make the paper proof of L-plus ZTime decidability rigorous
 
 ### Documentation
 
@@ -386,12 +385,13 @@ SEQUENCING AND SCOPE. The standing ruling is decidability before completeness: i
 ---
 
 ### 878. Make the paper proof of L-plus ZTime decidability rigorous
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [878_lplus_ztime_decidability_paper_proof_repair/reports/01_lplus-ztime-decidability-proof-repair.md]
 - **Plan**: [878_lplus_ztime_decidability_paper_proof_repair/plans/01_propagate-ztime-decidability-proof.md]
+- **Summary**: [878_lplus_ztime_decidability_paper_proof_repair/summaries/01_propagate-ztime-decidability-proof-summary.md]
 
 **Description**: RESEARCH TASK, paper-level and high-value: make the paper proof that L-plus validity at ZTime is decidable rigorous, as a self-contained written argument. Report only; no change under `FormalSystem/` or `Tests/`.
 

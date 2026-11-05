@@ -24,21 +24,37 @@
       "category": "PATTERN",
       "source_artifact": "specs/878_lplus_ztime_decidability_paper_proof_repair/summaries/01_propagate-ztime-decidability-proof-summary.md",
       "confidence": 0.75,
-      "suggested_keywords": ["scope-discipline", "issue-record", "propagation-plan", "multi-phase", "stale-downstream-record"]
+      "suggested_keywords": [
+        "scope-discipline",
+        "issue-record",
+        "propagation-plan",
+        "multi-phase",
+        "stale-downstream-record"
+      ]
     },
     {
       "content": "A plan's final verification-only phase ('no file edited in this phase') can legitimately still require an edit when validate-artifact.sh's required-section check (e.g. a missing '## Recommendations' section) fails against an EARLIER dispatch's own deliverable that was never checked before. When this happens, restate only what the phase's own Tasks/verification criteria already name (e.g. follow-up proposals already listed elsewhere in the plan) rather than introducing new substantive content, and record the deviation explicitly against the 'Files to modify: none' line rather than silently treating it as in-scope.",
       "category": "INSIGHT",
       "source_artifact": "specs/878_lplus_ztime_decidability_paper_proof_repair/summaries/01_propagate-ztime-decidability-proof-summary.md",
       "confidence": 0.7,
-      "suggested_keywords": ["validate-artifact", "required-sections", "audit-phase", "deviation-recording", "verification-only-phase"]
+      "suggested_keywords": [
+        "validate-artifact",
+        "required-sections",
+        "audit-phase",
+        "deviation-recording",
+        "verification-only-phase"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1793904111_6edc04",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 4,
     "phases_total": 4
   }

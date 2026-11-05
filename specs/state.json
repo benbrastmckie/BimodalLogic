@@ -370,7 +370,7 @@
     {
       "project_number": 878,
       "project_name": "lplus_ztime_decidability_paper_proof_repair",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "formal",
       "title": "Make the paper proof of L-plus ZTime decidability rigorous",
       "description": "RESEARCH TASK, paper-level and high-value: make the paper proof that L-plus validity at ZTime is decidable rigorous, as a self-contained written argument. Report only; no change under `FormalSystem/` or `Tests/`.\n\nWHY THIS EXISTS. The aim of the repository is completeness and decidability of the stability-modal language L-plus (specs/ROADMAP.md). The only argument that L-plus ZTime validity is decidable is the five-step MSO/Rabin paper argument in specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md section 1.3, and it is not yet a proof: specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md found two gaps that are already present for the stability modal, and report 03's own dated amendment records that the argument rests on a recalled, not held, theorem. The Lean front (the ladder engine) aims at a constructive `Decidable (PlusValidZTime phi)` and has hit repeated walls; a rigorous paper proof is the hedge, and it gives a citable theorem independent of that front.\n\nWHAT TO DELIVER. A report carrying the full argument, each step proved or cited to a held source.\n(1) REPAIR STEP 1, the countable-model step. Its induction needs witnesses at every walk of the sub-digraph, not only at the designated countable set. This is gap G1, the weakest link in the whole argument, and it is where the work starts.\n(2) REPAIR THE FOREST GAP. Step 3 yields a forest of countably many trees while step 5 applies Rabin's theorem to a single tree. Give the new-root coding explicitly and check that step 4's encoding survives it.\n(3) Replace every recalled citation by a held one, obtaining sources through the literature corpus, and state the exact form of Rabin's theorem that is used.\n(4) State the resulting theorem precisely, with its hypotheses, and state what it does NOT give: no constructive decision procedure, no complexity bound, nothing at Base, Dense or RTime.\n(5) Record whether Craig's observation then yields recursive axiomatizability of L-plus at ZTime at the level of existence, which report 03's amendment currently records as open.\n\nRELATION TO OTHER WORK. The cover step (step 2) consumes oriented-forest Saturation, which task 870 owns as a Lean lemma; cite it and do not reprove it. Formalizing this route in Lean is REFUSED by ruling (Mathlib has no MSO syntax, no omega-automata and no Rabin tree theorem) and this task must not propose it. The open-modal reading is secondary: 866 found that the open-future and open-past modals ride step 4's encoding at the cost of an amendment at step 1, so note in one paragraph whether the repaired step 1 still admits that amendment, and stop there. A verdict that a gap cannot be repaired, with the obstruction named, is a complete outcome.",
@@ -378,7 +378,7 @@
       "priority": "high",
       "dependencies": [],
       "created": "2026-11-05T18:24:29Z",
-      "last_updated": "2026-11-05T19:12:45Z",
+      "last_updated": "2026-11-05T19:31:27Z",
       "audit_verdict": {
         "proposal": {
           "id": "lplus_ztime_decidability_paper_proof_repair",
@@ -570,6 +570,11 @@
           "path": "specs/878_lplus_ztime_decidability_paper_proof_repair/plans/01_propagate-ztime-decidability-proof.md",
           "type": "plan",
           "summary": "4-phase, 2-wave, 2.5-hour propagation plan: report 03 sections 1.2/1.3 amendment (G1 repair, step reorder, G2 new-root coding, Rabin held at S2S, conditional reinstatement of the withdrawn consequence sentence, finite-vs-regular-model sharpening, oriented-forest hypothesis flag), report 866 finding 5 correction, four answerable specs/ROADMAP.md sentences, and a six-guardrail close-out audit."
+        },
+        {
+          "path": "specs/878_lplus_ztime_decidability_paper_proof_repair/summaries/01_propagate-ztime-decidability-proof-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the 4-phase propagation of report 878's repaired L+ ZTime decidability argument into report 03, report 866, and specs/ROADMAP.md, plus a format-compliance fix to this task's own report."
         }
       ],
       "next_artifact_number": 2,
@@ -577,7 +582,8 @@
         "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md",
         "specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md",
         "specs/ROADMAP.md"
-      ]
+      ],
+      "completion_summary": "Propagated task 878's already-landed paper-proof repair (L+ ZTime decidability, conditional on hypothesis H5/task 870) into report 03's §1.2/§1.3 (G1/G2 repairs, step reorder, Rabin held at S2S, conditional reinstatement, finite-vs-regular-model sharpening), report 866's finding 5 (corrected to a negative open-modal verdict), and four specs/ROADMAP.md sentences naming this task as pending. Added a missing '## Recommendations' section to this task's own report to pass validate-artifact.sh. All four plan phases COMPLETED; verify-deploy.sh passes with 15 checks, 0 failures."
     },
     {
       "project_number": 868,

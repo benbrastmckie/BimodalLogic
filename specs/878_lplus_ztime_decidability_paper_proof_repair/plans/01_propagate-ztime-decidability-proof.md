@@ -1,7 +1,7 @@
 # Implementation Plan: Task #878
 
 - **Task**: 878 - Make the paper proof of L-plus ZTime decidability rigorous
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None (the theorem it propagates is conditional on task 870's lemma, but no
   phase below is gated on 870 landing)
