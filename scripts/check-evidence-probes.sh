@@ -2007,6 +2007,85 @@ EVIDENCE="specs/evidence"
 #                                                           | Quot.sound]` on every headline. No
 #                                                           | `sorryAx`, no custom axiom, no
 #                                                           | `native_decide`.
+# seam-gluing-ray-product/one-sided-count-move-refutation   | THE ONE-SIDED COUNT MOVE IS
+#                                                           | REFUTED ON THE `◁` SIDE, and the
+#                                                           | recorded TWO-SIDED refutation comes
+#                                                           | back out of it as a COROLLARY --
+#                                                           | NEGATIVE VERDICT on the open-modal
+#                                                           | factorization as a route past the
+#                                                           | transport wall.  `◁` fixes the
+#                                                           | future and varies the past
+#                                                           | (`AgreeFrom`); `▷` fixes the past
+#                                                           | and varies the future (`AgreeUpTo`).
+#                                                           | Both quantifiers fix the FULL ladder
+#                                                           | state at the evaluation point, so
+#                                                           | what is measured is the ATOM-ROW
+#                                                           | RELAXATION ON A HALF-LINE of
+#                                                           | `AtomPreservingCountMove`, the
+#                                                           | strongest form either projection can
+#                                                           | honestly be read as giving.
+#                                                           | `futAtomPreservingCountMove_refuted`
+#                                                           | kills the `◁`-shaped relaxation
+#                                                           | under exactly the hypotheses the
+#                                                           | landed `atomPreservingCountMove_refuted`
+#                                                           | carries, by
+#                                                           | `cntAt_eq_of_pend_eq_fwd` -- a strict
+#                                                           | FORWARD-ONLY sharpening of the landed
+#                                                           | `cntAt_eq_of_pend_eq`, whose own
+#                                                           | proof reads its hypothesis only at
+#                                                           | positions at or above the compared
+#                                                           | one.  Freeing the whole PAST buys
+#                                                           | nothing: the obstruction is entirely
+#                                                           | forward.  The `▷` side is
+#                                                           | ATTRIBUTED, NOT RE-PROVED: the landed
+#                                                           | `exists_spliced_ladderPath_of_pend_past`
+#                                                           | already IS a `▷`-shaped count move
+#                                                           | (`spliceObj_eq_of_le` holds the object
+#                                                           | row at every `v <= a`,
+#                                                           | `spliced_at_region` moves the
+#                                                           | countdown) and
+#                                                           | `ladder-splice-type-refutation` says
+#                                                           | it does not preserve the realized
+#                                                           | stab-free type.  The pincer: the
+#                                                           | counter and the closure's
+#                                                           | eventualities read the SAME forward
+#                                                           | half-line, so freezing the future
+#                                                           | leaves nothing to transport and
+#                                                           | freeing it loses the type.  The
+#                                                           | two-state object is RE-DERIVED from
+#                                                           | `ladder-cell-agreement-refutation` (a
+#                                                           | probe is compiled with
+#                                                           | `lake env lean` outside the Lake
+#                                                           | module graph, so no probe can import
+#                                                           | another); that file is NOT edited or
+#                                                           | re-signed.  NON-VACUITY IS DISCHARGED
+#                                                           | IN THIS FILE, not inherited:
+#                                                           | `exists_one_sided_refuting_instance`
+#                                                           | pins the walk `gC 3 5`, comparison
+#                                                           | position `z = 0` where the state is
+#                                                           | PENDING, and target countdown
+#                                                           | `3 + 1` against the path's own `3`;
+#                                                           | the target is admissible because
+#                                                           | `Adm pend q = {c | pend q = false ->
+#                                                           | c = 0}` has a false hypothesis at a
+#                                                           | pending state, so EVERY countdown is
+#                                                           | admissible where the pending bit is
+#                                                           | set (`admZeroC`).  The two headlines
+#                                                           | `futAtomPreservingCountMove_refutedO`
+#                                                           | and `atomPreservingCountMove_refutedO`
+#                                                           | carry NO hypotheses.  NO bound and NO
+#                                                           | decidability claim, in either
+#                                                           | direction; no finite-fibre and no
+#                                                           | finite-width assumption; the live
+#                                                           | `LadderChain.lean` route's gap to
+#                                                           | `CellLEZeroConstOfKappaEq` is NOT a
+#                                                           | one-sidedness gap and is untouched.
+#                                                           | Axioms: `no axioms` on the two
+#                                                           | relaxation lemmas, and a subset of
+#                                                           | `[propext, Classical.choice,
+#                                                           | Quot.sound]` on every other headline.
+#                                                           | No `sorryAx`, no custom axiom, no
+#                                                           | `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -2057,6 +2136,7 @@ WIRED=(
   "seam-gluing-ray-product/ladder-tight-chain-nonliftability"
   "seam-gluing-ray-product/ladder-reps-bound-refutation"
   "seam-gluing-ray-product/ladder-idle-past-interface-decision"
+  "seam-gluing-ray-product/one-sided-count-move-refutation"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

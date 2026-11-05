@@ -302,7 +302,7 @@ helper — not by weakening `admissible_shift_at_zero`'s statement.
 
 ---
 
-### Phase 3: Wire into the evidence gate [NOT STARTED]
+### Phase 3: Wire into the evidence gate [COMPLETED]
 
 **Goal**: The new probe is guarded. It has a header table block recording what it holds in place
 and a `WIRED` entry, and it is staged so the gate's tracked-ness test can see it. This is the step
