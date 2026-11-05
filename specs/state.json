@@ -8930,7 +8930,7 @@
     {
       "project_number": 884,
       "project_name": "oriented_forest_hypothesis_strength_revision",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "formal",
       "description": "Restate the oriented-forest Saturation hypothesis at the strength the ZTime decidability proof\nactually consumes, and revise the owning task's scope to match.\n\nThe hypothesis as currently stated by specs/870_oriented_forest_saturation is \"directed paths\nbetween any two nodes are unique\". The proof that consumes it needs strictly more: step 4 of the\ncountable-model/cover argument (specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md\nsection 1.2) takes the UNDIRECTED tree path between two nodes and its unique sink, which requires\nthe underlying undirected graph to be a forest, not merely that directed paths be unique.\n\nConsequence if left as stated: a lemma landing at the weaker, stated strength will NOT discharge\nhypothesis (H5), on which the whole L-plus ZTime decidability theorem is conditional. The\nconditionality is load-bearing -- the theorem has no unconditional form without it.\n\nScope:\n- Restate the hypothesis at oriented-forest strength, naming precisely what the cover\n  construction and step 4 consume.\n- Confirm whether the Saturation side is affected. FrameOver.IsRegular bundles\n  TaskFrame.Saturation as a fourth field, so the compiled plus_invariance_of_isZTime requires\n  BOTH frames to satisfy Saturation; induced sub-digraphs of oriented forests are again oriented\n  forests, so this is expected to cost nothing -- verify rather than assume.\n- Revise specs/870_oriented_forest_saturation's own description and any plan it has, via /revise,\n  so its stated hypothesis matches what the consumer needs.\n- Carry forward the multigraph convention in the cover, which is load-bearing for the Walk\n  predicate's correctness.\n\nEvidence: the mismatch was measured, not recalled -- see the research and summary artifacts under\nspecs/878_lplus_ztime_decidability_paper_proof_repair/.",
       "effort": "medium",
@@ -8938,12 +8938,17 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-11-05T20:04:42Z",
-      "last_updated": "2026-11-05T21:09:15Z",
+      "last_updated": "2026-11-05T21:28:35Z",
       "artifacts": [
         {
           "path": "specs/884_oriented_forest_hypothesis_strength_revision/plans/01_oriented-forest-hypothesis-strength.md",
           "type": "plan",
           "summary": "4-phase plan: restate the hypothesis and its per-step consumption map, verify the Saturation side from compiled signatures, carry the multigraph convention forward, revise task 870's record and close with the full gate set."
+        },
+        {
+          "path": "specs/884_oriented_forest_hypothesis_strength_revision/summaries/01_oriented-forest-hypothesis-strength-summary.md",
+          "type": "summary",
+          "summary": "Full implementation summary: the restated hypothesis, the Saturation-side verdict with evidence tiers, the multigraph carry-forward, and the task 870 revision."
         }
       ],
       "audit_verdict": {
@@ -12312,7 +12317,8 @@
         "specs/TODO.md",
         "specs/state.json"
       ],
-      "session_id": "sess_1793911571_152ebe"
+      "session_id": "sess_1793911571_152ebe",
+      "completion_summary": "Appended a three-part dated amendment to report 03 section 1.2 restating the oriented-forest hypothesis at undirected-multigraph-acyclicity strength with a per-step consumption map, verifying from compiled signatures that the Saturation side is unaffected, and carrying the multigraph convention forward; revised task 870's state.json description to match via the state-write.sh fallback. All four phases COMPLETED, no FormalSystem/** file touched, zero deletions across every report edit."
     }
   ],
   "artifacts": [

@@ -1,19 +1,19 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "task_number": 884,
-  "phase": "plan",
-  "dispatch_seq": 1,
-  "session_id": "sess_1793911571_152ebe_884",
-  "phases_completed": 0,
+  "phase": "implement",
+  "dispatch_seq": 4,
+  "session_id": "sess_1793911571_152ebe",
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Wrote a 4-phase plan for task 884 at specs/884_oriented_forest_hypothesis_strength_revision/plans/01_oriented-forest-hypothesis-strength.md. No research artifact was dispatched; the Stage 1.5 assessment found the task description specification-grade and planned directly from it plus targeted reads of report 03 section 1.2, report 01 of task 878, and FormalSystem/Semantics/TaskFrame.lean. The plan pins the hypothesis at acyclicity of the underlying undirected MULTIGRAPH (not the simplified graph, which would readmit opposite-edge pairs as 2-cycles), maps which of section 1.2's steps 1-5 consume which strength, schedules a compiled-signature verification of the Saturation side rather than an assumption, carries the multigraph convention forward, and files the task 870 record revision via /revise with the state-write.sh description-update path as named fallback. All four phases are serial; every edit lands under specs/**, with FormalSystem/** explicitly out of scope.",
+  "summary": "Restated the oriented-forest Saturation hypothesis in report 03 section 1.2 at the strength its own step 4 (and the countable-model argument) actually consumes: acyclicity of the underlying undirected multigraph, not merely directed-path uniqueness. Verified from compiled signatures (FrameOver.IsRegular, TwoWayBounded.plus_invariance_of_isZTime) plus two derived closure arguments that the Saturation side is unaffected by the strengthening. Carried the load-bearing multigraph convention forward with its three consequences. Revised task 870's own state.json description to match, via the state-write.sh fallback since /revise is not directly invokable from this dispatch. No FormalSystem/** file touched; all four phases COMPLETED.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/884_oriented_forest_hypothesis_strength_revision/plans/01_oriented-forest-hypothesis-strength.md",
-      "summary": "4-phase plan: restate the hypothesis and its per-step consumption map, verify the Saturation side from compiled signatures, carry the multigraph convention forward, revise task 870's record and close with the full gate set."
+      "type": "summary",
+      "path": "specs/884_oriented_forest_hypothesis_strength_revision/summaries/01_oriented-forest-hypothesis-strength-summary.md",
+      "summary": "Full implementation summary: the restated hypothesis, the Saturation-side verdict with evidence tiers, the multigraph carry-forward, and the task 870 revision."
     }
   ],
-  "next_steps": "Run /orchestrate 884 to execute the plan"
+  "next_steps": "Task 870 (dependent on 884) is now unblocked to proceed at the corrected oriented-forest hypothesis strength."
 }

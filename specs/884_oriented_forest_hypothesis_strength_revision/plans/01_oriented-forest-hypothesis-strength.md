@@ -1,7 +1,7 @@
 # Implementation Plan: Task #884
 
 - **Task**: 884 - Oriented-forest hypothesis strength revision
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.8 hours
 - **Dependencies**: None (task 870 depends on *this* task; the edge already exists in `specs/state.json`)
 - **Research Inputs**: None dispatched. Evidence of record is pre-existing:
