@@ -439,7 +439,7 @@ covering check is the single-module build
 
 ---
 
-### Phase 7: The Auxiliary-Atoms expansion, or a located obstruction [NOT STARTED]
+### Phase 7: The Auxiliary-Atoms expansion, or a located obstruction [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Land deliverable item (4) — the forward-cone unravelling is a two-way-bounded-morphic
 preimage whose forward cone is a tree, carrying a machine-state labelling — or record, precisely,
@@ -466,6 +466,19 @@ why it does not port.
       below with the compositionality verdict and its evidence, and carry the same account into
       the task summary. A partial landing with an honest account is the dispatch's stated
       preference over a stalled task
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `aa_expand` (deliverable item 4) | The forward-cone unravelling cannot be presented as a `FrameOver` within this phase's budget: `FrameOver.ofReflectiveRegular` demands *Saturation* of the presenting relation, and none of the three routes this tree has to *Saturation* applies to a path-recording relation on an unravelled carrier. The plan's own finding (d) predicted *Compositionality* as the blocker; that prediction is REFUTED (see the next row). | `FormalSystem/Semantics/TaskFrame.lean`'s `ofReflectiveRegular (W : Type) [Nonempty W] (R : W → ↑D → W → Prop) (hR : ...) (_hcomp : TaskFrame.Compositional R) (_hser : TaskFrame.Serial R) (_hlim : TaskFrame.Limit R) (_hsat : TaskFrame.Saturation R) : FrameOver D` — `_hsat` is a required argument. The unmeetable obligation, `#print TaskFrame.Saturation` at the unravelled carrier: `∀ (S : Set (Set (W ⊕ (W × List W)))), TaskFrame.DirectedFamily S → (∀ s ∈ S, (TaskFrame.IsFiber R s ∨ TaskFrame.IsSegment R s) ∧ s.Nonempty) → (⋂₀ S).Nonempty`. The three discharges, signatures read with `#check`: `saturation_of_finite : {W : Type} → [Finite W] → (R : W → D → W → Prop) → Saturation R` — unavailable, since `example (W : Type) [Nonempty W] : Infinite (W ⊕ (W × List W))` machine-checks and `FrameOver.worldNonempty` is a field, so every frame's carrier is nonempty; `saturation_of_fib_finite : (∀ (w : W) (x : D), (TaskFrame.Fib R w x).Finite) → TaskFrame.Saturation R` — unavailable, since `aa_expand`'s `F` is an arbitrary `FrameOver D`, which carries no finiteness field, and an unravelled fibre is in bijection with a fibre of the base; `saturation_of_deterministic : {F : TaskFrame} → F.Deterministic → TaskFrame.Saturation F.TaskRel` — unavailable, since the unravelling branches by construction. |
+| Finding (d) itself — the plan-time claim that a step-counting path record "cannot be a `FrameOver` relation" because `TaskFrame`s are compositional | REFUTED against the real definitions. Over discrete time the durations are exactly the multiples of one step, so the number of steps is a function of the duration and `k = k₁ + k₂` subdivides. Composing single steps into the task the relation must carry at an *arbitrary* pair of times — the step finding (d) says a digraph gets for free and a task frame does not — is machine-checked, for exactly this shape of construction, by Phase 3. | `FormalSystem.Semantics.TwoWayBounded.exists_histMorphism_of_isZTime` and its private `chain_rel`, `FormalSystem/Semantics/HistoryMorphism.lean`: `intIso : ↑D ≃+o ℤ` makes `m • δ = intIso.symm m` exact, and `chain_rel` composes `k` single `δ`-tasks into the task at duration `(j - i) • δ` via `FrameOver.forward_comp` and `FrameOver.reflection`. |
+| The one sanctioned reformulation (record the path as a `PartialHistory` over the interval from the anchor) | Attempted and rejected, by reasoning rather than by a machine proof, and recorded as such: the machine run stays definable by successor recursion, so the reformulation fixes nothing that was broken, while the carrier only grows (it embeds the finite-path carrier) and the fibre at `k` steps out of a recorded segment is in bijection with the set of `k`-step base paths out of its endpoint — the same set the list record gives. The *Saturation* obligation is therefore unchanged. Per the phase's own instruction, no third formulation was attempted. | `FormalSystem/Semantics/PartialHistory.lean`'s `structure PartialHistory` carries `domain`, `nonempty_domain`, `states` and an unconditional `respects_task`, and no finiteness; `FrameOver`'s own fields are `WorldState`, `worldNonempty` and `PosRel`, and no finiteness. |
+
+**Nothing speculative was landed**: no `sorry`, no vacuous definition, and no new declaration at
+all. The obstruction is recorded in `FormalSystem/Metalogic/NamingRules.lean`'s module docstring,
+under *Not formalized* → *The Auxiliary-Atoms expansion, and where it stops*, so it travels with
+the module rather than with this task's directory.
 
 **Timing**: 2 hours (hard budget; the obstruction route closes the phase rather than extending it)
 

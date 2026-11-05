@@ -54,6 +54,43 @@ applies here unchanged.
 No completeness, decidability or axiomatizability claim is made or implied. These are soundness
 facts about two rules; what an axiomatization built on them would prove is not settled here.
 
+### The Auxiliary-Atoms expansion, and where it stops
+
+Reynolds' *Auxiliary Atoms* rule has a semantic core that the two rules above do not reach: above
+any point of any model there should be a two-way-bounded-morphic preimage whose forward cone is a
+**tree**, carrying a finite-state-machine labelling that each step advances. The preimage is the
+forward-cone unravelling: one verbatim copy of the frame, plus one copy of each state *per path
+by which it is reached*, so that every copy keeps all predecessors (whence the projection is a
+two-way bounded morphism, `Semantics/HistoryMorphism.lean`'s `TwoWayBounded`) while inside the
+unravelled part each state has exactly one predecessor (whence the tree).
+
+That transfer is **not** formalized here, and the obstruction is specific. Over a digraph the
+unravelling is immediate: the path record is a finite list and one relational step extends it by
+one state. A task frame's relation is not a digraph's — it is indexed by every duration, and
+`FrameOver.ofReflectiveRegular` demands *Compositionality*, *Seriality*, *Limit* and *Saturation*
+of it. The first three are reachable over discrete time: the durations are exactly the multiples
+of one step there, so "number of steps" is a function of the duration, `k = k₁ + k₂` subdivides,
+and composing single steps into the task at an arbitrary pair of times is what
+`TwoWayBounded.exists_histMorphism_of_isZTime` already does. *Saturation* is the obstruction. Its
+statement at the unravelled carrier is
+
+```
+∀ S : Set (Set (W ⊕ (W × List W))), DirectedFamily S →
+  (∀ s ∈ S, (IsFiber R s ∨ IsSegment R s) ∧ s.Nonempty) → (⋂₀ S).Nonempty
+```
+
+and none of the three routes this tree has to it applies: `TaskFrame.saturation_of_finite` binds
+`[Finite W]`, while the unravelled carrier is infinite whenever the base carrier is (and
+`FrameOver.worldNonempty` makes the base carrier nonempty for every frame);
+`TaskFrame.saturation_of_fib_finite` asks that every fibre be finite, which an arbitrary frame
+does not give, and an unravelled fibre is in bijection with a fibre of the base;
+`TaskFrame.saturation_of_deterministic` asks for a deterministic relation, which the unravelling
+is not — branching is the whole point of it. Recording the path as a partial history over the
+interval from the anchor, rather than as a finite list, changes nothing here: the machine run
+stays definable by successor recursion, but the carrier only grows and the fibres are the same
+sets, so the obligation is unchanged. Discharging *Saturation* for a path-recording relation
+directly is left open.
+
 ## References
 
 * `FormalSystem/Semantics/Frames/TranslationProduct.lean` — the clock product and its invariance
