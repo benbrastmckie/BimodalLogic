@@ -146,19 +146,19 @@ reader is pointed at the two reports that located the gap.
 
 ---
 
-### Phase 2: Build and Audit the Follow-On Proposal Set [NOT STARTED]
+### Phase 2: Build and Audit the Follow-On Proposal Set [COMPLETED]
 
 **Goal**: A machine-readable, non-duplicate verdict for each of the two proposed follow-ons,
 written to this task's directory as the evidence Phase 3's filings will cite.
 
 **Tasks**:
-- [ ] Re-read the report's `### Recommendations` section and confirm the disposition split is still R1 and R2 filed, R3 gated, R4 refused, R5 discharged in Phase 1.
-- [ ] Write a proposals array to `specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/task-proposals.json` in `audit-task-proposals.sh`'s set-mode shape (`id`, `title`, `description`, `file_scope`; no `project_number`), with two elements:
+- [x] Re-read the report's `### Recommendations` section and confirm the disposition split is still R1 and R2 filed, R3 gated, R4 refused, R5 discharged in Phase 1. *(completed)*
+- [x] Write a proposals array to `specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/task-proposals.json` in `audit-task-proposals.sh`'s set-mode shape (`id`, `title`, `description`, `file_scope`; no `project_number`), with two elements: *(completed)*
   - R1 — `lean4`. Oriented-forest *Saturation*: every oriented forest (directed paths unique between any two nodes) satisfies the literal `TaskFrame.Saturation`, stated with the path-uniqueness hypothesis explicit rather than a forest structure, as a `Semantics/` lemma beside the existing `saturation_of_*` family. Description names its two consumers (the AA carrier layer-split route and the MSO cover step) and its five-step source (report 03 §1.2). `file_scope`: `FormalSystem/Semantics/TaskFrame.lean`, `FormalSystem/Semantics/README.md`.
   - R2 — `lean4`, corrective and small. Three parts: correct `PlusLCSchema.lean`'s docstring claim that `LCU` is the `n = 1` instance of `lcN` (it is the until-form with two parameters and `untl`; `lcN 1` is the F-form with one); restore `omega_chain`'s segment-property parameter `P` with its stability hypothesis (`specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean` lines 659-684 carry both); and state backward `LC_n` as the one-line `plusValidIn_reflectTime` corollary of `lcN_plusValidZTime`. Description states explicitly that declaring the until-form `LCU` itself is NOT in scope and waits on R1 and 867. `file_scope`: `FormalSystem/PlusLanguage/PlusLCSchema.lean`, `FormalSystem/PlusLanguage/PlusOmegaChain.lean`, `FormalSystem/PlusLanguage/README.md`.
-- [ ] Run `bash .claude/scripts/audit-task-proposals.sh --proposals-file specs/865_.../task-proposals.json > specs/865_.../task-proposals-audit.ndjson` and read every verdict.
-- [ ] Classify each proposal: `genuinely-new` / `overlaps-open #N` (edge to add) / anything else (drop or narrow — do not auto-apply). Record `scope-blind` compactly as a count, per the standard's rendering note.
-- [ ] Record an issue-log entry if any verdict is other than `genuinely-new`, `scope-blind`, or `overlaps-open`.
+- [x] Run `bash .claude/scripts/audit-task-proposals.sh --proposals-file specs/865_.../task-proposals.json > specs/865_.../task-proposals-audit.ndjson` and read every verdict. *(completed)*
+- [x] Classify each proposal: `genuinely-new` / `overlaps-open #N` (edge to add) / anything else (drop or narrow — do not auto-apply). Record `scope-blind` compactly as a count, per the standard's rendering note. *(completed: R1 narrowed to drop README.md after audit found overlap with task 869; both R1 and R2 genuinely-new)*
+- [x] Record an issue-log entry if any verdict is other than `genuinely-new`, `scope-blind`, or `overlaps-open`. *(completed: issue-record.sh entry for the R1/869 duplicate-of-open finding)*
 
 **Timing**: 0.5 hours
 
