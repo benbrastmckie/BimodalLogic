@@ -11,8 +11,8 @@ next_project_number: 869
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,804,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860,863,864,866,867,868 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,783,814,816,823,824,840,845,853,862,865 | 298,428,502,761,770,772,777,785,813,838,839,852,864 | agent-system, algebraic-representation, completeness, ... |
+| 1 | 127,128,178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,804,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,852,856,857,858,860,863,865,866,867,868 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,783,814,816,823,824,840,845,853,862 | 298,428,502,761,770,772,777,785,813,838,839,852 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -72,8 +72,7 @@ next_project_number: 869
 
 ### Completeness
 
-864 [IMPLEMENTING] — IMPLEMENTATION TASK, time-sensitive: land the LC\_n and LCU...
-  └─ 865 [NOT STARTED] — RESEARCH TASK, and the owner of a programme that is currently...
+865 [NOT STARTED] — RESEARCH TASK, and the owner of a programme that is currently...
 
 ### Dataset Enhancement
 
@@ -246,12 +245,13 @@ DELIVERABLE: a report under this task's directory. No library change and no comp
 ---
 
 ### 864. Land lc schema limit closure soundness
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
 - **Research**: [864_land_lc_schema_limit_closure_soundness/reports/01_lc-schema-limit-closure-soundness.md]
 - **Plan**: [864_land_lc_schema_limit_closure_soundness/plans/01_lc-schema-limit-closure-soundness.md]
+- **Summary**: [864_land_lc_schema_limit_closure_soundness/summaries/01_lc-schema-limit-closure-soundness-summary.md]
 
 **Description**: IMPLEMENTATION TASK, time-sensitive: land the LC_n and LCU limit-closure soundness results into the library before task 559's directory is archived. The proofs are already written and compiled; this is a port, not a proof search.
 

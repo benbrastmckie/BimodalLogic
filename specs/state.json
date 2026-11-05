@@ -100,12 +100,12 @@
     {
       "project_number": 864,
       "project_name": "land_lc_schema_limit_closure_soundness",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "IMPLEMENTATION TASK, time-sensitive: land the LC_n and LCU limit-closure soundness results into the library before task 559's directory is archived. The proofs are already written and compiled; this is a port, not a proof search.\n\nWHY TIME-SENSITIVE. Task 559 is [COMPLETED] and is queued for /todo archival. Its narrowed deliverable explicitly carved this content out -- \"The LC-schema and axiomatizability discussion in report 03 is NOT part of this deliverable\" -- so the LC schema has never been landed and is owned by no task. The source is specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/03_morphisms-clock-rule-lc-schema.lean (814 lines, sorry-free, exit 0), whose declarations lcAnte, lcCons, lcN (lines 727-734), lcN_valid_full (line 737) and omega_limit (line 630) are absent from FormalSystem/ under any name. Verify that absence by grep before starting; if a later round has already landed them, close this task as already-satisfied rather than duplicating.\n\nWHAT THE SCHEMA IS. LC_n is Reynolds 2003's infinite limit-closure schema, transposed into this language:\n  LC_n := box-dot G-le AND_{i<n}(dstab a_i -> dstab F dstab a_{i+1}) -> dstab G-le AND_{i<n}(dstab a_i -> F dstab a_{i+1})\nwith indices mod n. The compiled result lcN_valid_full establishes its validity on every all-walks Z-model for every n >= 1 and arbitrary a_i. The report also records a paper argument for validity at Base, by Zorn plus the Extension Theorem, in the same pattern as report 02 section 2 -- that half is UNVERIFIED in Lean and must stay stated-not-claimed unless it compiles here.\n\nSIZE, STATED HONESTLY: this is a PORT. The probe imports no FormalSystem module -- it was written under a build embargo as a Mathlib-only reconstruction over a bare formula type and a raw relation W -> W -> Prop -- so every statement must be re-expressed against the repository's own TaskFrame, WorldHistory and PlusTruthAt before it will compile. Budget as task 559's own port was budgeted, and phase it: the omega_limit infrastructure first, since the LC results consume it.\n\nWHAT ALREADY LANDED, AND MUST NOT BE REDONE. The clock rule and the plain irreflexivity rule are in FormalSystem/Metalogic/NamingRules.lean (clock_irr_sound, irr_sound), landed with their four truth characterisations. NamingRules.lean is the natural sibling home for this content, but confirm the layering before committing to it.\n\nNOT IN SCOPE. No completeness claim and no engine: this task lands soundness results and nothing more. Do not reopen the Auxiliary-Atoms expansion -- its obstruction is TaskFrame.Saturation at the unravelled carrier, located and durably recorded at NamingRules.lean lines 57-82, and it is not this task's problem. Do not state any claim about whether TM-plus plus LC_n is complete.\n\nLEDGER AND GATES. Every landed result needs a docs/theorem-index.md row stating the conditional form honestly, and a re-measured axiom baseline pinned by scripts/check-module-invariants.sh -- never type an axiom profile by hand. Guarded scoped build green, then the unscoped build; zero sorry, zero vacuous definitions; check-module-invariants.sh and check-metalogic-cycles.sh both green against their pre-task baselines.",
       "topic": "completeness",
       "created": "2026-11-05T02:26:15Z",
-      "last_updated": "2026-11-05T06:06:49Z",
+      "last_updated": "2026-11-05T07:01:12Z",
       "audit_override": "User confirmed via AskUserQuestion after review: all audit verdicts were semantic-only (0.40-0.50, mechanical_class none/scope-blind, no shared paths); the nearest match #559 explicitly carves out the LC-schema content this task lands, and lcN/lcN_valid_full were verified absent from FormalSystem/ by grep",
       "session_id": "sess_1793857391_c5064b",
       "artifacts": [
@@ -118,6 +118,11 @@
           "path": "specs/864_land_lc_schema_limit_closure_soundness/plans/01_lc-schema-limit-closure-soundness.md",
           "type": "plan",
           "summary": "6-phase port plan: evidence promotion, omega-limit kernel, splice/omega-chain, LC_n syntax, ZTime validity, ledger and gates."
+        },
+        {
+          "path": "specs/864_land_lc_schema_limit_closure_soundness/summaries/01_lc-schema-limit-closure-soundness-summary.md",
+          "type": "summary",
+          "summary": "Six-phase port record: evidence promotion, omega-limit kernel, splice/omega-chain, LC_n syntax, ZTime validity, ledger and gates."
         }
       ],
       "next_artifact_number": 2,
@@ -134,7 +139,8 @@
         "scripts/check-module-invariants.sh",
         "specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Landed Reynolds' infinite limit-closure schema LC_n and its validity at the .ZTime frame class in two new FormalSystem/PlusLanguage/ modules: PlusOmegaChain.lean (the omega-limit-of-splices principle and the omega-chain it drives, under an explicit cofinality hypothesis on the markers, plus intOrder_omega_cofinal as its only available discharge) and PlusLCSchema.lean (gle, bigAnd, lcAnte, lcCons, lcN, lcN_plusValidInt, lcN_plusValidZTime). Twelve new public theorems are axiom-pinned in C14 from measured profiles and carry docs/theorem-index.md rows stating the conditional form honestly; .Base validity of LC_n is recorded as open and is claimed nowhere. The 814-line source probe was promoted into tracked specs/evidence/ and wired into the evidence-probe gate so that archiving its originating task is harmless."
     },
     {
       "project_number": 856,

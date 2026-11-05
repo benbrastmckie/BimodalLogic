@@ -1,7 +1,7 @@
 # Implementation Plan: Task #864
 
 - **Task**: 864 - Land LC schema limit-closure soundness
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/864_land_lc_schema_limit_closure_soundness/reports/01_lc-schema-limit-closure-soundness.md`
