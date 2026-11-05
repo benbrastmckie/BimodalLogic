@@ -63,8 +63,8 @@ so no roadmap consultation applies.
 
 **Goals**:
 
-- `decidableOpenValidIn_of_translation` -- the generic decidability reduction, primary row.
-- `openDecider` -- the `Bool`-level twin of that reduction.
+- `decidableOpenValidInOfTranslation` -- the generic decidability reduction, primary row.
+- `openDecider` -- the Bool-level twin of that reduction.
 - `openDecider_correct` -- its correctness statement.
 - `exists_translation_ztime` -- `tr hsep` inhabits the translation slot at `.ZTime`.
 - `exists_translation_rtime` -- the `.RTime` mirror.
@@ -96,7 +96,7 @@ open FormalSystem.PlusLanguage
 open FormalSystem.OpenLanguage
 open FormalSystem.ProofSystem
 
-def decidableOpenValidIn_of_translation (fc : FrameClass) (T : OpenFormula → PlusFormula)
+def decidableOpenValidInOfTranslation (fc : FrameClass) (T : OpenFormula → PlusFormula)
     (hT : ∀ φ : OpenFormula, OpenValidIn fc φ ↔ PlusValidIn fc (T φ))
     (hdec : ∀ ψ : PlusFormula, Decidable (PlusValidIn fc ψ)) (φ : OpenFormula) :
     Decidable (OpenValidIn fc φ) := sorry
@@ -181,9 +181,11 @@ sorry-free, with hypothesis-leading signatures and a `Paper:` line on each docst
 - [x] Add a new `/-! ## Transfer corollaries: decidability and completeness reductions -/` section
       at the end of the namespace body, after `ofutP_of_futDet` and before
       `end FormalSystem.Metalogic.Expressiveness`.
-- [x] Add `decidableOpenValidIn_of_translation` with body
+- [x] Add `decidableOpenValidInOfTranslation` with body
       `letI := hdec (T φ); decidable_of_iff (PlusValidIn fc (T φ)) (hT φ).symm`. It MUST compile
-      as a plain `def` -- no `noncomputable`. *(deviation: altered — renamed to `decidableOpenValidInOfTranslation`; the planned snake_case name is rejected by gates C26 and C16's `defsWithUnderscore` linter)*
+      as a plain `def` -- no `noncomputable`. The name is camelCase because gate C26 and C16's
+      `defsWithUnderscore` linter both reject a snake_case `def`/`abbrev` name in the live tree;
+      theorems in this module keep snake_case.
 - [x] Add `openDecider` with body `fun φ => d (T φ)`, and `openDecider_correct` with body
       `(hd (T φ)).trans (hT φ).symm`.
 - [x] Add `exists_translation_ztime` with body `⟨tr hsep, openValidIn_ztime_iff_tr hsep⟩`, and
@@ -339,7 +341,7 @@ returning 16 total occurrences, and by C14 reporting PASS on the second run.
 - `bash scripts/check-module-invariants.sh` exits 0 with C14 PASS.
 - Expected measured values (predictions from the probe run under the probe namespace, **not** a
   substitute for re-measurement under the final names):
-  `decidableOpenValidIn_of_translation` `[propext]`; `openDecider_correct` `[propext]`;
+  `decidableOpenValidInOfTranslation` `[propext]`; `openDecider_correct` `[propext]`;
   `exists_translation_ztime` / `exists_translation_rtime`
   `[propext, Classical.choice, Quot.sound]`; `decidableOpenValidZTimeOfTr` /
   `decidableOpenValidRTimeOfTr` `[propext, Classical.choice, Quot.sound]`;
