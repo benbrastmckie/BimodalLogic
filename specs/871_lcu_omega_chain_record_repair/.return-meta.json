@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/871_lcu_omega_chain_record_repair/reports/01_lcu-omega-chain-record-repair.md",
+      "summary": "All three repair parts confirmed and verified by compiled lean_run_code probes: the LCU docstring claim is false on two surfaces, omega_chain dropped P plus hP plus two further conclusions (c 0 = s0 is load-bearing for LCU), and backward LC_n is a one-line plusValidIn_reflectTime corollary measuring pcq."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1793911571_152ebe_871",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

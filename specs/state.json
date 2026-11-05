@@ -8007,12 +8007,12 @@
       "project_number": 871,
       "project_name": "lcu_omega_chain_record_repair",
       "title": "Correct LCU docstring and restore omega_chain segment-property parameter",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "created": "2026-11-05T16:37:24Z",
-      "last_updated": "2026-11-05T20:48:58Z",
-      "next_artifact_number": 1,
+      "last_updated": "2026-11-05T21:07:50Z",
+      "next_artifact_number": 2,
       "description": "Small, purely corrective library repair with three parts, all confirmed against the live tree: (1) correct PlusLCSchema.lean's docstring claim that LCU is the n=1 instance of lcN -- LCU is the until-form with two parameters and untl, while lcN 1 is the F-form with one parameter; (2) restore the landed omega_chain's dropped segment-property parameter P together with its stability hypothesis, matching specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean lines 659-684, which carries both; (3) state backward LC_n as the one-line plusValidIn_reflectTime corollary of lcN_plusValidZTime, since the doubled automaton route needs it and it costs only a corollary. Declaring the until-form LCU itself is explicitly NOT in scope here and waits on the oriented-forest Saturation lemma and task 867 (SeparationOver).",
       "file_scope": [
         "FormalSystem/PlusLanguage/PlusLCSchema.lean",
@@ -8428,7 +8428,14 @@
         "degradations_count": 450
       },
       "priority": "high",
-      "session_id": "sess_1793911571_152ebe_871"
+      "session_id": "sess_1793911571_152ebe",
+      "artifacts": [
+        {
+          "path": "specs/871_lcu_omega_chain_record_repair/reports/01_lcu-omega-chain-record-repair.md",
+          "type": "report",
+          "summary": "All three repair parts confirmed and verified by compiled lean_run_code probes: the LCU docstring claim is false on two surfaces, omega_chain dropped P plus hP plus two further conclusions (c 0 = s0 is load-bearing for LCU), and backward LC_n is a one-line plusValidIn_reflectTime corollary measuring pcq."
+        }
+      ]
     },
     {
       "project_number": 872,
