@@ -74,22 +74,41 @@
     {
       "project_number": 864,
       "project_name": "land_lc_schema_limit_closure_soundness",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "IMPLEMENTATION TASK, time-sensitive: land the LC_n and LCU limit-closure soundness results into the library before task 559's directory is archived. The proofs are already written and compiled; this is a port, not a proof search.\n\nWHY TIME-SENSITIVE. Task 559 is [COMPLETED] and is queued for /todo archival. Its narrowed deliverable explicitly carved this content out -- \"The LC-schema and axiomatizability discussion in report 03 is NOT part of this deliverable\" -- so the LC schema has never been landed and is owned by no task. The source is specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/03_morphisms-clock-rule-lc-schema.lean (814 lines, sorry-free, exit 0), whose declarations lcAnte, lcCons, lcN (lines 727-734), lcN_valid_full (line 737) and omega_limit (line 630) are absent from FormalSystem/ under any name. Verify that absence by grep before starting; if a later round has already landed them, close this task as already-satisfied rather than duplicating.\n\nWHAT THE SCHEMA IS. LC_n is Reynolds 2003's infinite limit-closure schema, transposed into this language:\n  LC_n := box-dot G-le AND_{i<n}(dstab a_i -> dstab F dstab a_{i+1}) -> dstab G-le AND_{i<n}(dstab a_i -> F dstab a_{i+1})\nwith indices mod n. The compiled result lcN_valid_full establishes its validity on every all-walks Z-model for every n >= 1 and arbitrary a_i. The report also records a paper argument for validity at Base, by Zorn plus the Extension Theorem, in the same pattern as report 02 section 2 -- that half is UNVERIFIED in Lean and must stay stated-not-claimed unless it compiles here.\n\nSIZE, STATED HONESTLY: this is a PORT. The probe imports no FormalSystem module -- it was written under a build embargo as a Mathlib-only reconstruction over a bare formula type and a raw relation W -> W -> Prop -- so every statement must be re-expressed against the repository's own TaskFrame, WorldHistory and PlusTruthAt before it will compile. Budget as task 559's own port was budgeted, and phase it: the omega_limit infrastructure first, since the LC results consume it.\n\nWHAT ALREADY LANDED, AND MUST NOT BE REDONE. The clock rule and the plain irreflexivity rule are in FormalSystem/Metalogic/NamingRules.lean (clock_irr_sound, irr_sound), landed with their four truth characterisations. NamingRules.lean is the natural sibling home for this content, but confirm the layering before committing to it.\n\nNOT IN SCOPE. No completeness claim and no engine: this task lands soundness results and nothing more. Do not reopen the Auxiliary-Atoms expansion -- its obstruction is TaskFrame.Saturation at the unravelled carrier, located and durably recorded at NamingRules.lean lines 57-82, and it is not this task's problem. Do not state any claim about whether TM-plus plus LC_n is complete.\n\nLEDGER AND GATES. Every landed result needs a docs/theorem-index.md row stating the conditional form honestly, and a re-measured axiom baseline pinned by scripts/check-module-invariants.sh -- never type an axiom profile by hand. Guarded scoped build green, then the unscoped build; zero sorry, zero vacuous definitions; check-module-invariants.sh and check-metalogic-cycles.sh both green against their pre-task baselines.",
       "topic": "completeness",
       "created": "2026-11-05T02:26:15Z",
-      "last_updated": "2026-11-05T05:57:11Z",
+      "last_updated": "2026-11-05T06:05:09Z",
       "audit_override": "User confirmed via AskUserQuestion after review: all audit verdicts were semantic-only (0.40-0.50, mechanical_class none/scope-blind, no shared paths); the nearest match #559 explicitly carves out the LC-schema content this task lands, and lcN/lcN_valid_full were verified absent from FormalSystem/ by grep",
-      "session_id": "sess_1793857391_c5064b_864",
+      "session_id": "sess_1793857391_c5064b",
       "artifacts": [
         {
           "path": "specs/864_land_lc_schema_limit_closure_soundness/reports/01_lc-schema-limit-closure-soundness.md",
           "type": "report",
           "summary": "Port map for the LC_n limit-closure soundness results: absence confirmed, probe recompiles (exit 0), home module is PlusLanguage/ beside PlusLimitClosure.lean (not NamingRules.lean), and the ZTime frame-class scoping is forced by the omega-chain's cofinality requirement."
+        },
+        {
+          "path": "specs/864_land_lc_schema_limit_closure_soundness/plans/01_lc-schema-limit-closure-soundness.md",
+          "type": "plan",
+          "summary": "6-phase port plan: evidence promotion, omega-limit kernel, splice/omega-chain, LC_n syntax, ZTime validity, ledger and gates."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "file_scope": [
+        "FormalSystem.lean",
+        "FormalSystem/PlusLanguage.lean",
+        "FormalSystem/PlusLanguage/PlusLCSchema.lean",
+        "FormalSystem/PlusLanguage/PlusOmegaChain.lean",
+        "FormalSystem/PlusLanguage/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "docs/theorem-index.md",
+        "scripts/check-evidence-probes.sh",
+        "scripts/check-module-invariants.sh",
+        "specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean",
+        "typst/generated/status.typ"
+      ]
     },
     {
       "project_number": 856,
@@ -1515,7 +1534,7 @@
     {
       "project_number": 769,
       "project_name": "plan_format_blocked_gate_and_status_ownership",
-      "status": "researched",
+      "status": "planning",
       "task_type": "meta",
       "title": "plan-format: blocked decision gates and plan-level Status ownership",
       "description": "Add two missing provisions to `plan-format.md`: one admitting a pre-decided `[BLOCKED]` decision-gate phase, and one forbidding a plan from instructing the implementer to write the plan-level `Status` field.\n\nBOTH CONCERNS ARE BATCHED INTO ONE RECORD DELIBERATELY. Each is a short prose provision in the same file, `context/formats/plan-format.md`. Splitting them would create an unordered overlap on one file's prose, which the batching guardrail in `.claude/CLAUDE.md` names as a reason to batch rather than separate. They are otherwise independent and can be landed in either order.\n\nPROVISION 1 -- A `[BLOCKED]` DECISION GATE HAS NO LEGAL PLACE IN THE WAVE GRAPH. `plan-format.md`'s final-phase rule states that a plan's final phase MUST depend, directly or transitively, on every other phase in the plan. A phase that is already `[BLOCKED]` at PLAN time has no consistent position under that rule: making executable phases depend on it DEADLOCKS the implementer, while not depending on it violates the rule's letter. The file's \"Decision gates and contingency branches\" subsection introduces decision gates but says nothing about one that is blocked before execution begins. Resolved ad hoc in the originating run by placing the blocked gate in wave 1 beside the first executable phase with `Depends on: none`, and noting in the wave table that the final phase re-observes the gate's measurement through the wired probe. PRECEDENT EXISTS AND SHOULD BE READ BEFORE DRAFTING: `specs/archive/006` plan 05 and `specs/archive/008` plan 03 (locate the exact paths by globbing the archive -- the directory names carry slugs). A one-paragraph provision in the \"Decision gates and contingency branches\" subsection settles it. The provision must say explicitly how such a gate relates to the final-phase transitive-dependency rule, so that a plan validator and a human reader reach the same verdict on a plan containing one; a provision that merely permits the shape without reconciling it against the final-phase rule leaves the ambiguity in place.\n\nPROVISION 2 -- PLANNER-SIDE GUIDANCE PERMITS AUTHORING AN INSTRUCTION THE IMPLEMENTER IS FORBIDDEN TO EXECUTE. In the originating run a plan's final phase instructed the implementer to set the plan-level `- **Status**:` field to `[BLOCKED]`. The `lean-implementation-agent` contract (its MUST-NOT item citing `context/contracts/plan-status-ownership.md`) reserves that field for `update-plan-status.sh` via `update-task-status.sh` postflight. The agent CORRECTLY followed the contract and annotated the checklist item as a skipped deviation -- so nothing malfunctioned at run time; the defect is that the instruction was writable at all. THE FIX BELONGS ON THE PLANNER/PLAN-FORMAT SIDE so such an instruction is never authored. Concretely: `plan-format.md` already documents the plan-level `- **Status**:` field, its required-field list, and its trailing-annotation rule under \"Plan-level vs. phase-level markers\" -- add, at that same place, an explicit statement that the field is owned by `update-plan-status.sh` and that NO phase checklist item may instruct a writer to set it, together with what a planner should write instead when it wants a plan to end up `[BLOCKED]`. That last clause is load-bearing: a prohibition with no sanctioned alternative will be worked around. Evaluate whether `agents/planner-agent.md` needs a matching line, since that file carries the plan template and the required-field checks the planner actually executes; if `plan-format.md` alone is judged sufficient, say so in the plan and drop the planner-agent path from the edit set rather than leaving it ambiguous.\n\nACCEPTANCE. (1) A reader of `plan-format.md` alone can determine whether a plan containing a pre-decided `[BLOCKED]` gate conforms, and can predict where that gate sits in the wave table. (2) A reader of `plan-format.md` alone can determine that the plan-level `Status` field is not writable from a phase checklist item, and can find the sanctioned alternative. (3) The new prose does not contradict `context/contracts/plan-status-ownership.md` or `context/standards/status-markers.md` -- in particular, status-markers.md's distinction between a target argument passed to `update-task-status.sh` and the RESTING state that actually persists must be left intact. (4) No change to the closed six-value phase-marker enum or to the `### Phase N: {name} [STATUS]` heading contract, both of which have mechanical consumers (`update-phase-status.sh`, `update-plan-status.sh`, `update-task-status.sh --phase-check`) that this record must not disturb.\n\nSOURCE-STORE BOUNDARY. `.claude/**` is a gitignored, regenerated deploy artifact; a hand edit there is wiped by the next deploy and will appear to succeed while having no lasting effect. Resolve `source_dir` from `<project-root>/.claude-extensions.json` for the owning extension (`core`, whose source store is `/home/benjamin/.config/nvim/agent-system/extensions/core`) and edit at the mirroring path there, per `.claude/rules/source-store-deploy-boundary.md`. Then redeploy via `bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`. The `.claude/**` paths in file_scope are declared only so the admission overlap gate can see the collision surface; they are NOT the edit target.\n\nDELIVERABLE HYGIENE. Every edited file is outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). Cite durable anchors -- file names, function names, section headings, flag names -- only.\n\nPROVENANCE. Raised during orchestration of the ladder-model cell-stabilization work and approved at the lead level as an agent-system change request. The originating issue-log entry is in `specs/760_ladder_model_cell_stabilization_lemma/issues.jsonl`: entry_id `iss_1791710205747_08BVlu` (severity minor, class \"standard or contract ambiguity\") for Provision 1, and entry_id `iss_1791711120761_z8uj5G` (severity minor, class `plan-contract-conflict`) for Provision 2. Both resolution worked_around, both hinted channel `agent_system` (neither hint overridden).\n\nRELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. Two sibling records from the same orchestration cover Lean-extension script defects (`lake-build-guard.sh` stale replay, `lean-challenge-snapshot.sh` chunk and Unicode handling); both touch files disjoint from this one. Note separately that earlier completed records already edited `plan-format.md` for `file_scope` declaration hygiene -- re-read the file as it stands now rather than working from any remembered version of it.",
@@ -1534,8 +1553,8 @@
         }
       ],
       "created": "2026-10-11T10:03:21Z",
-      "last_updated": "2026-11-05T06:04:15Z",
-      "session_id": "sess_1793858282_9587e4",
+      "last_updated": "2026-11-05T06:04:56Z",
+      "session_id": "sess_1793858282_9587e4_769",
       "next_artifact_number": 2
     },
     {

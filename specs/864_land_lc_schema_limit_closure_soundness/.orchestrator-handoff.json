@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 4,
+  "summary": "Wrote a 6-phase, 9.5-hour implementation plan for porting the LC_n limit-closure soundness content from task 559's probe into FormalSystem/PlusLanguage/. The plan relocates the home module away from the dispatch's suggested NamingRules.lean to two new modules beside PlusLimitClosure.lean (research confirmed the layering), pins the result at .ZTime via PlusValidInt plus plusValidZTime_iff_plusValidInt with .Base recorded as open and unclaimed, and carries a Lean Challenge Statements block fixing all nine committed signatures. Phase 1 promotes the source probe into tracked specs/evidence/ so task 559's archival is harmless. Validator passes with 0 warnings.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/864_land_lc_schema_limit_closure_soundness/plans/01_lc-schema-limit-closure-soundness.md",
+      "summary": "6-phase port plan: evidence promotion, omega-limit kernel, splice/omega-chain, LC_n syntax, ZTime validity, ledger and gates."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 6,
+  "blockers": []
+}
