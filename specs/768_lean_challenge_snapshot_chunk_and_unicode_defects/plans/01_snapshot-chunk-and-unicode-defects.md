@@ -200,7 +200,7 @@ together with `python3 -c "import json; json.load(open('manifest.json'))"` for t
 
 ---
 
-### Phase 2: One Shared Unicode-Aware Identifier Definition, Consumed by All Four Sites [NOT STARTED]
+### Phase 2: One Shared Unicode-Aware Identifier Definition, Consumed by All Four Sites [COMPLETED]
 
 **Goal**: Replace four independently-written ASCII-only identifier literals with a single shared,
 Unicode-aware definition, so the Goals identifier set and the declared identifier set can never
@@ -227,27 +227,35 @@ never drop a real identifier.
 
 **Tasks**:
 
-- [ ] Re-derive the four site locations by pattern, not by line number:
+- [x] Re-derive the four site locations by pattern, not by line number:
       `grep -n "A-Za-z\|a-zA-Z" agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh`.
-- [ ] Define and export the shared identifier pattern once, above `do_check()`, with a header
+      *(completed: confirmed exactly 4 sites, at lines 235, 393, 492, 610 before this phase's edits)*
+- [x] Define and export the shared identifier pattern once, above `do_check()`, with a header
       comment stating what it accepts and why one definition exists rather than four.
-- [ ] Replace the identifier class at all four sites with a read of the shared definition:
+      *(completed: `export LEAN_IDENT_PATTERN="[^\W\d][\w']*"`)*
+- [x] Replace the identifier class at all four sites with a read of the shared definition:
       `do_check()`'s `DECL_HEADER_RE`, `extract_goal_names()`'s `TOKEN_RE`, `extract_r1()`'s
       `DECL_RE`, and `extract_r2()`'s `DECL_HEADER_RE`. Removing the redundant `A-Za-zA-Z0-9`
-      range falls out of this replacement rather than being a separate edit.
-- [ ] Assert no ASCII-only identifier literal survives anywhere in the file.
-- [ ] Add failing-first test case **R9**: a declaration whose name carries a non-ASCII character,
+      range falls out of this replacement rather than being a separate edit. *(completed)*
+- [x] Assert no ASCII-only identifier literal survives anywhere in the file.
+      *(completed: `grep -n "A-Za-z\|a-zA-Z"` returns no matches)*
+- [x] Add failing-first test case **R9**: a declaration whose name carries a non-ASCII character,
       named under `**Goals**:` and declared in the `## Lean Challenge Statements` block, snapshots
       cleanly (exit 0) with that name appearing **in full** in `theorem_names` and in the
       assembled module. Add its fixture and register the fixture in `manifest.json`.
-- [ ] Add failing-first test case **R10**, the truncation-collision guard: a Goals bullet naming
+      *(completed: fixture plan_r9_unicode.md)*
+- [x] Add failing-first test case **R10**, the truncation-collision guard: a Goals bullet naming
       the ASCII prefix of a non-ASCII declared name must **fail** cross-validation rather than
       silently passing. This is the case that currently exits 0 while recording the wrong
       identifier, so it is the mutation-killing half of defect (b).
-- [ ] Confirm the two sides still sort consistently for a non-ASCII name (Python `sorted()` versus
+      *(completed: fixture plan_r10_truncation.md)*
+- [x] Confirm the two sides still sort consistently for a non-ASCII name (Python `sorted()` versus
       `LC_ALL=C comm`), rather than assuming UTF-8 byte order and code-point order agree.
-- [ ] Demonstrate R9 and R10 fail against the script as it stands before this phase's edits, and
-      pass after.
+      *(completed: both order ['assoc', 'comm₁', 'zed'] identically)*
+- [x] Demonstrate R9 and R10 fail against the script as it stands before this phase's edits, and
+      pass after. *(completed: verified against the Phase-1 commit sha 80d43b2e2 — R9 exited 71
+      "no identifiers found", R10 exited 0 with the wrong truncated name "comm"; both now behave
+      as specified)*
 
 **Timing**: 2 hours
 
