@@ -341,27 +341,37 @@ docstring and a markdown record, neither of which carries a Lean proof obligatio
 
 ---
 
-### Phase 4: Final gate [NOT STARTED]
+### Phase 4: Final gate [COMPLETED]
 
 **Goal**: The whole gate set, green, with the zero-debt guarantees the dispatch requires.
 
 **Tasks**:
-- [ ] Re-read every file this task touched, in case a concurrent sibling has edited one.
-- [ ] Full project build through the guard.
-- [ ] `lean_verify` on both new library declarations and `#print axioms` on the probe's headline
+- [x] Re-read every file this task touched, in case a concurrent sibling has edited one.
+- [x] Full project build through the guard.
+- [x] `lean_verify` on both new library declarations and `#print axioms` on the probe's headline
   theorems; collect the profiles into the summary.
-- [ ] Repo-wide debt scan over the task's own diff: no `sorry`, no `axiom`, no `native_decide`,
+- [x] Repo-wide debt scan over the task's own diff: no `sorry`, no `axiom`, no `native_decide`,
   no vacuous `:= True`/`Unit`/`trivial` body, no `noncomputable` `Decidable`-valued declaration.
-- [ ] Confirm the Goals' identifiers resolve in the source root exactly as named (the
+- [x] Confirm the Goals' identifiers resolve in the source root exactly as named (the
   `## Lean Challenge Statements` set), and that no weakened substitute was published under either
   name.
-- [ ] Write the completion summary, including the honest-gap statement in its own words.
+- [x] Write the completion summary, including the honest-gap statement in its own words.
 
 **Timing**: 0.5 hours
 
 **Depends on**: 3
 
 **Verification Tier**: full
+
+**Batch-deferral note**: the full gate SET was deferred to this /orchestrate batch's own final
+stage per this dispatch's directive, not independently run here. The narrowing harnesses that
+directive names cover no file in this task's diff (`run-all.sh` discovers shell suites under
+`.claude/scripts/` and `agent-system/extensions/`; `verify-deploy.sh` compares the deployed
+`.claude/` tree against the source store; this task touched no shell script, no `.claude/**` and
+no `agent-system/**` file). The checks that DO cover these files -- the full `lake build`, the
+probe compile, `lean_verify` on both declarations, and `check-module-invariants.sh`,
+`typst-sync-check.sh`, `readme-lint.sh`, `check-task-references.sh` -- were run in FULL rather
+than scoped.
 
 **Scope Hypothesis**: this phase asserts exactly one new file (the completion summary) and no
 source change. Confirm with `git status --short` before staging; any source fix the gate forces is
@@ -439,17 +449,17 @@ rather than annotated.
 
 ## Testing & Validation
 
-- [ ] Scoped build of `FormalSystem.Metalogic.Decidability.RaySummary.LadderAgree` green after
+- [x] Scoped build of `FormalSystem.Metalogic.Decidability.RaySummary.LadderAgree` green after
   Phase 1.
-- [ ] `lake env lean` green on the new probe after Phase 2.
-- [ ] Full project build green after Phase 4.
-- [ ] `lean_verify` clean on `tpOf_periodic_of_objAt_periodic` and
+- [x] `lake env lean` green on the new probe after Phase 2.
+- [x] Full project build green after Phase 4.
+- [x] `lean_verify` clean on `tpOf_periodic_of_objAt_periodic` and
   `objAt_tpOf_eq_of_objAt_periodic`; `#print axioms` clean on every probe headline.
-- [ ] Zero-debt scan over the task diff: no `sorry`, no new `axiom`, no `native_decide`, no
+- [x] Zero-debt scan over the task diff: no `sorry`, no new `axiom`, no `native_decide`, no
   vacuous definition, no `noncomputable` `Decidable`-valued declaration.
-- [ ] `hper` is load-bearing in both new declarations (deleting it breaks the proof).
-- [ ] The probe refutes the EVENTUAL form (threshold AND period), not a single-period instance.
-- [ ] No task-number reference and no record-version language introduced into any deliverable
+- [x] `hper` is load-bearing in both new declarations (deleting it breaks the proof).
+- [x] The probe refutes the EVENTUAL form (threshold AND period), not a single-period instance.
+- [x] No task-number reference and no record-version language introduced into any deliverable
   file.
 
 ## Artifacts & Outputs
