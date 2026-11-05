@@ -1,7 +1,7 @@
 # Implementation Plan: Gabbay Separation over ZTime for L⁺
 
 - **Task**: 867 - Formalize Gabbay separation over discrete time for `PlusFormula`, discharging `SeparationOver TaskFrame.IsZTime` and making the open-future translation executable
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 27 hours
 - **Dependencies**: None blocking. Consumes only already-compiled declarations.
 - **Research Inputs**: specs/867_formalize_gabbay_separation_ztime/reports/01_gabbay-separation-ztime-plusformula.md
@@ -236,7 +236,7 @@ Phases 2-5 are dependency-independent of one another in the mathematics, but eve
 module-adding phase rewrites the generated root `FormalSystem.lean` and the subtree README, so
 running them concurrently would put two writers on the same two files for no gain.
 
-### Phase 1: The Until/Since Syntax over Abstract Leaves [NOT STARTED]
+### Phase 1: The Until/Since Syntax over Abstract Leaves [COMPLETED]
 
 **Goal**: A new `SeparationZ/` subtree exists, registered and building, carrying the auxiliary
 syntax `USForm`, its `ℤ`-indexed truth recursion `usTruth`, the derived connectives the GHR
@@ -245,35 +245,35 @@ phases rewrite with.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/Expressiveness/SeparationZ/` with the standard copyright
+- [x] Create `FormalSystem/Metalogic/Expressiveness/SeparationZ/` with the standard copyright
       header on every new file (checked by `scripts/check-copyright-headers.sh`).
-- [ ] Add `Syntax.lean` in namespace `FormalSystem.Metalogic.Expressiveness.SeparationZ`, with
+- [x] Add `Syntax.lean` in namespace `FormalSystem.Metalogic.Expressiveness.SeparationZ`, with
       `inductive USForm` carrying `leaf : ℕ → USForm`, `bot`, `imp`, `untl` and `snce` --
       `untl`/`snce` taking **guard first, event second**, matching `PlusFormula.untl` and
       **opposite to GHR's `U(A, B)`** (GHR's `U(A,B)` is this repository's `untl B A`; every
       transcription flips).
-- [ ] Add `usTruth (v : ℕ → ℤ → Prop) (t : ℤ) : USForm → Prop`, whose `untl`/`snce` clauses are
+- [x] Add `usTruth (v : ℕ → ℤ → Prop) (t : ℤ) : USForm → Prop`, whose `untl`/`snce` clauses are
       `PlusTruthAt`'s verbatim with `F.Duration` replaced by `ℤ` and the strict open-interval
       guard preserved.
-- [ ] Add the derived connectives `top`, `neg`, `and`, `or`, `iff`, `someFuture`, `somePast`,
+- [x] Add the derived connectives `top`, `neg`, `and`, `or`, `iff`, `someFuture`, `somePast`,
       `allFuture` (GHR's `G`), `allPast` (GHR's `H`), `next`, `prev`, each defined by the same
       right-hand side its `PlusFormula` counterpart uses, so `toPlus` commutes with it by `rfl`.
-- [ ] Add the clause lemmas (`usTruth_imp_iff`, `usTruth_and_iff`, `usTruth_or_iff`,
+- [x] Add the clause lemmas (`usTruth_imp_iff`, `usTruth_and_iff`, `usTruth_or_iff`,
       `usTruth_neg_iff`, `usTruth_untl_iff`, `usTruth_snce_iff`, `usTruth_allFuture_iff`,
       `usTruth_allPast_iff`), each a `simp`-usable `Iff`, since the Boolean rearrangement steps of
       Phases 3 and 8 rest entirely on them.
-- [ ] Add `swap : USForm → USForm` exchanging `untl` and `snce`, with `swap_involutive` and
+- [x] Add `swap : USForm → USForm` exchanging `untl` and `snce`, with `swap_involutive` and
       `usTruth_swap : usTruth v t (swap ψ) ↔ usTruth (fun i s => v i (-s)) (-t) ψ` (or the
       negation-reindexed equivalent the proof actually wants) -- this is the `USForm`-level
       counterpart of `plusValidIn_reflectTime_iff` and is what halves every later `snce` case.
-- [ ] Add `maxLeaf : USForm → ℕ` and `freshLeaf ψ = maxLeaf ψ + 1`, with
+- [x] Add `maxLeaf : USForm → ℕ` and `freshLeaf ψ = maxLeaf ψ + 1`, with
       `usTruth_congr_of_update`: updating `v` at an index above `maxLeaf ψ` does not change
       `usTruth v t ψ`. This is the whole content of GHR's "fresh atom" device.
-- [ ] Add `SeparationZ/README.md` with a module table and a `Last verified: {ISO_DATE}` line
+- [x] Add `SeparationZ/README.md` with a module table and a `Last verified: {ISO_DATE}` line
       (required by `scripts/readme-lint.sh` check 1 and check 4).
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`. Never hand-edit
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`. Never hand-edit
       `FormalSystem.lean`.
-- [ ] Confirm the new module imports no `FormalSystem.Metalogic.<other-subdirectory>` module --
+- [x] Confirm the new module imports no `FormalSystem.Metalogic.<other-subdirectory>` module --
       Mathlib plus `FormalSystem.Init` reachability only -- so `check-metalogic-cycles.sh`
       assertions A and B cannot be perturbed.
 
