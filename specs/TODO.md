@@ -111,7 +111,7 @@ next_project_number: 884
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
   └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
-878 [RESEARCHED] — Make the paper proof of L-plus ZTime decidability rigorous
+878 [PLANNED] — Make the paper proof of L-plus ZTime decidability rigorous
 
 ### Documentation
 
@@ -386,11 +386,12 @@ SEQUENCING AND SCOPE. The standing ruling is decidability before completeness: i
 ---
 
 ### 878. Make the paper proof of L-plus ZTime decidability rigorous
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: formal
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [878_lplus_ztime_decidability_paper_proof_repair/reports/01_lplus-ztime-decidability-proof-repair.md]
+- **Plan**: [878_lplus_ztime_decidability_paper_proof_repair/plans/01_propagate-ztime-decidability-proof.md]
 
 **Description**: RESEARCH TASK, paper-level and high-value: make the paper proof that L-plus validity at ZTime is decidable rigorous, as a self-contained written argument. Report only; no change under `FormalSystem/` or `Tests/`.
 

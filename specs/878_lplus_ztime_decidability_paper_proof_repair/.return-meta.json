@@ -1,33 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/878_lplus_ztime_decidability_paper_proof_repair/reports/01_lplus-ztime-decidability-proof-repair.md",
-      "summary": "Rigorous paper proof that L-plus validity at ZTime is decidable: G1 (countable-model step) repaired via the compiled stab_state_only / box_global state-indexed witness closure; G2 (forest vs tree) repaired by an explicit new-root coding with a load-bearing non-root-meet guard on directed reachability; every recalled citation replaced by a held one (Thomas 1997 Thm 6.18/6.19/6.20 for Rabin at S2S plus the countable-branching embedding; Chagrov-Zakharyaschev 1997 Thm 16.10 for Craig); theorem stated with a 7-item hypothesis list; negative results recorded (no constructive procedure, no Lean Decidable, no elementary bound, no FMP but a regular-model property, nothing at Base/Dense/RTime); recursive axiomatizability at ZTime closed at the level of existence; open modals verdict NEGATIVE with the obstruction named."
+      "type": "plan",
+      "path": "specs/878_lplus_ztime_decidability_paper_proof_repair/plans/01_propagate-ztime-decidability-proof.md",
+      "summary": "4-phase, 2-wave, 2.5-hour propagation plan carrying the repaired ZTime decidability argument into the three live records that currently contradict or await it, plus a six-guardrail close-out audit."
     }
   ],
-  "next_steps": "Run /orchestrate 878 to create an implementation plan, or treat the report as the terminus for this research task. Two downstream items surfaced: task 870's stated hypothesis (directed-path uniqueness) should be strengthened to the oriented-forest hypothesis that report 03 section 1.2 step 4 actually consumes; and report 03 section 1.3's amendment can be updated to record G1/G2 closed and the existence question for recursive axiomatizability at ZTime closed.",
   "metadata": {
     "session_id": "sess_1793904111_6edc04_878",
-    "agent_type": "formal-research-agent",
-    "duration_seconds": 3180,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "formal-research-agent"],
-    "domains_researched": ["logic", "math"],
-    "findings_count": 11,
-    "context_files_loaded": [
-      "specs/878_lplus_ztime_decidability_paper_proof_repair/.dispatch/1.md",
-      "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md",
-      "specs/866_mso_route_open_modals_ztime_decidability/reports/01_mso-route-open-modals.md"
-    ],
-    "mathlib_lookups_performed": 0,
-    "literature_sources_held": [
-      "thomas_1997_languages (sections 3, 6.2, 6.3; Theorems 6.18, 6.19, 6.20)",
-      "chagrovzakharyaschev_1997_modallogic (chapter 16 p. 496, Theorem 16.10)"
-    ],
-    "verification_passed": true,
-    "issue_log_entries": 5
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2.5,
+    "dependency_waves": 2
+  },
+  "memory_candidates": [],
+  "next_steps": "Run /orchestrate 878 to execute the plan. Two follow-ups the plan deliberately does not file: (a) a /revise of task 870 restating its hypothesis at oriented-forest strength (the underlying undirected graph is a forest), since its current directed-path-uniqueness wording will not discharge hypothesis (H5) that the paper theorem rests on; (b) optionally, a separate task to write the theorem into typst/chapters/p3-decidability-frontier.typ as a citable chapter-level result, which this task's report-only constraint excludes.",
+  "dispatch_seq": 2
 }

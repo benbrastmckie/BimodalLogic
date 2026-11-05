@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 4,
+  "summary": "Planned task 878's implement phase as propagation, not discovery: research report 01 already carries the complete self-contained argument, so all four phases edit specs/** markdown only (report 03 sections 1.2/1.3, report 866's finding 5, specs/ROADMAP.md, then a close-out guardrail audit). 4 phases, 2 waves, 2.5 hours; phases 1-3 touch three disjoint files and run in parallel. Two measured corrections to the task-866 precedent plan were folded in: specs/ROADMAP.md resolves to two real suites rather than __FULL_SWEEP__, and plan-format.md's named run-all.sh entry point does not exist in this deploy target. The theorem is conditional on hypothesis (H5), owned by not_started task 870, whose stated hypothesis is measurably weaker than the argument consumes -- propagated as a flag through both channels 870's owner reads, without mutating 870's record.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/878_lplus_ztime_decidability_paper_proof_repair/plans/01_propagate-ztime-decidability-proof.md",
+      "summary": "4-phase, 2-wave, 2.5-hour propagation plan: report 03 sections 1.2/1.3 amendment (G1 repair, step reorder, G2 new-root coding, Rabin held at S2S, conditional reinstatement of the withdrawn consequence sentence, finite-vs-regular-model sharpening, oriented-forest hypothesis flag), report 866 finding 5 correction, four answerable specs/ROADMAP.md sentences, and a six-guardrail close-out audit."
+    }
+  ],
+  "dispatch_seq": 2
+}
