@@ -120,6 +120,45 @@ induction's step needs the transport for the letters of depth at most `d` while 
 depth `d + 1`. The stab-free statement is the instance `L := fun _ => False`
 (`tpOf_stabFree_eq_of_objAt_eq`).
 
+## The model-level periodicity of the realized type, and the gap it leaves
+
+Half (i) has one immediate consequence about a SINGLE path, and it is this layer's one model-side
+periodicity statement: `tpOf_periodic_of_objAt_periodic`, the realized stab-free
+type is `l`-periodic along a ladder path whenever that path's object walk is globally
+`l`-periodic, together with `objAt_tpOf_eq_of_objAt_periodic`, the same fact delivered as the
+`(objAt, tpOf)` endpoint pair at distance `l` in the tuple shape the type pigeonhole
+(`exists_typeBlock_of_spacing`) and the duplication type lemma (`tpOf_eq_spliceIdx_of_tpOf_eq`)
+consume. The proof is `tpOf_timeShift` composed with half (i) at `σ' := σ.timeShift l`.
+
+What these QUANTIFY OVER, stated exactly, because the statement is weaker than a reader might
+assume. The hypothesis is GLOBAL — `objAt g (v + l) = objAt g v` at every `v : ℤ`, not past some
+threshold — and it is on the WALK, not on the certificate layer: no `ParamsOk`, no pending-region
+hypothesis, no `kappa`, no certificate object of any kind. The one-sided weakening is not
+available: a walk `l`-periodic only on `[N, ∞)` does NOT give an `l`-periodic type there, because
+the `S` clause reads the past and half (i) requires the two walks to agree at EVERY position; a
+future-only restriction would need a future-locality lemma the tree does not have, and none is
+stated.
+
+These are also NOT a surgery, and so are untouched by the splice-type refutation: both sides of
+the equation are positions of ONE path, the walk is unchanged, and hence so is every occurrence
+count a nested eventuality reads. The refuted object is a different one — whether DUPLICATING an
+admissibility-preserving block preserves the type, refuted at a block whose endpoint types differ
+(`splice_block_not_type_respecting`).
+
+The hypothesis is load-bearing and not decorative. Dropping it altogether leaves the EVENTUAL
+form — a threshold `N` and a period `p > 0` with the type repeating above `N` — which is the shape
+`satThreshold`/`satPeriod` carry on the certificate side, and that form is FALSE along an
+arbitrary ladder path: see the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-tpof-periodicity-refutation.lean`
+(`tpOf_periodicity_refuted_unconditional`), whose all-idle object constrains the walk not at all
+and whose walk is `true` exactly at the powers of two.
+
+So the honest gap: this periodicity is CONDITIONAL, and the condition is unavailable exactly where
+the cell-level route needs it. The tight (doubling) chain's walk is not globally periodic, so
+these two declarations do not reach the depth-`0` cell obligation, and nothing here should be read
+as supplying the bridge from the certificate layer's periodicity to `tpOf`. That bridge remains
+unbuilt.
+
 ## The atom-valuation closure agreement
 
 Half (i)'s hypothesis — the SAME object walk — is strictly stronger than anything the cell-level

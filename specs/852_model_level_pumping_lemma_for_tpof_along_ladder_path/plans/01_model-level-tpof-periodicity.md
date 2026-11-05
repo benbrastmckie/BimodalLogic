@@ -275,30 +275,41 @@ wider surface is reachable from it.
 
 ---
 
-### Phase 3: Record the honest form and the gap it leaves [NOT STARTED]
+### Phase 3: Record the honest form and the gap it leaves [COMPLETED]
 
 **Goal**: State in the layer's own record exactly what the new lemma quantifies over, that the
 unconditional form is refuted, and that the conditional form does not discharge the third
 circularity — per the dispatch's guardrail, rather than widening the statement.
 
 **Tasks**:
-- [ ] Add `FormalSystem/Metalogic/Decidability/RaySummary/README.md` to the task's `file_scope`
+- [x] Add `FormalSystem/Metalogic/Decidability/RaySummary/README.md` to the task's `file_scope`
   (`bash .claude/scripts/update-task-status.sh` scope addition, or the equivalent the script
   exposes) before editing it, and note the extension in the phase's commit message body.
-- [ ] Extend `LadderAgree.lean`'s module docstring: a short paragraph naming the two new
+  *(deviation: altered — no scope-addition call was needed; `state.json`'s `file_scope` for this
+  task already lists that README, `FormalSystem/Metalogic/README.md`, the repo-root `README.md`
+  and `typst/generated/status.typ`, all four of which this phase touches.)*
+- [x] Extend `LadderAgree.lean`'s module docstring: a short paragraph naming the two new
   declarations, the quantifier they carry (a globally periodic object walk), and the two things
   they are not — not a surgery, and not the periodicity the certificate layer supplies.
-- [ ] Add the RaySummary `README.md` rows for the two declarations in the file's existing row
-  style, and one sentence in the verdict section recording: the only landed model-level
+- [x] Add the RaySummary `README.md` rows for the two declarations in the file's existing row
+  style, *(deviation: altered — the file's only declaration table is a GENERATED inventory block
+  (`<!-- BEGIN GENERATED: inventory -->`, one row per FILE, not per declaration, carrying
+  `<!-- TODO: add description -->` for `LadderAgree.lean`); hand-editing it is barred, so the two
+  declarations are recorded in the bold-headed trailing-paragraph style the file's later entries
+  use, and the generated block was refreshed with
+  `scripts/check-module-invariants.sh --emit-inventory`.)* and one sentence in the verdict section recording: the only landed model-level
   periodicity statement is now the CONDITIONAL one; the unconditional/eventual form is refuted by
   the new probe; and the conditional form does not reach the third circularity, because the
   tight (doubling) chain's walk is not globally periodic, so the hypothesis is unavailable exactly
   there. Mark that last clause as argued, not compiled, matching the file's existing convention
   for the tight-chain gap.
-- [ ] Register the new probe in whatever probe inventory the directory's record keeps (check
+- [x] Register the new probe in whatever probe inventory the directory's record keeps (check
   `specs/evidence/seam-gluing-ray-product/` and the README's probe numbering before asserting a
-  number; do not invent an ordinal).
-- [ ] Commit.
+  number; do not invent an ordinal). *(completed: ordinals in the README run to "fifteenth" in the
+  `## Evidence` section with one later "forty-seventh", and every entry after the fifteenth is
+  registered WITHOUT an ordinal; the new probe follows that style and says so in its own
+  sentence.)*
+- [x] Commit.
 
 **Timing**: 1 hour
 
