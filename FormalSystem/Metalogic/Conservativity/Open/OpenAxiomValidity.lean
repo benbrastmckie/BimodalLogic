@@ -73,6 +73,10 @@ anyway.
   four monotonicity and two connection schemata, and their reflections
 - `openAxiomValidIn_tempAccumBlock`, `openAxiomReflectValidIn_tempAccumBlock` — the two
   enrichment, two self-accumulation and two absorption schemata, and their reflections
+- `openAxiomValidIn_linearityBlock`, `openAxiomReflectValidIn_linearityBlock` — the four
+  linearity schemata, and their reflections
+- `openAxiomValidIn_tempEquivBlock`, `openAxiomReflectValidIn_tempEquivBlock` — the four
+  `F`/`P` equivalence schemata, and their reflections
 
 ## References
 
@@ -1198,5 +1202,287 @@ theorem openAxiomReflectValidIn_tempAccumBlock :
   ⟨openValidIn_enrichmentUntil_reflect, openValidIn_enrichmentSince_reflect,
     openValidIn_selfAccumUntil_reflect, openValidIn_selfAccumSince_reflect,
     openValidIn_absorbUntil_reflect, openValidIn_absorbSince_reflect⟩
+
+/-! ## The linearity block, per constructor
+
+The four linearity schemata of Layer 3 — the paper's CN for `U` and `S` and its `F`/`P` form TL —
+each by trichotomy on the two witnesses the antecedent supplies.
+
+**The disjunct nesting is read off `OpenAxiom`, not off the BX numbering.** `linear_until` and
+`temp_linearity` carry the paper's **right-associated** disjunction, while `linear_since` and
+`temp_linearity_past` carry the **left-associated** one; the four statements below are transcribed
+from whichever `Conservativity/Star/StarAxiomValidity.lean` theorem has the matching nesting
+(`starValid_linear_until_paper`, `starValid_linear_since`, `starValid_temp_linearity_paper`,
+`starValid_temp_linearity_past` respectively), since only the `.inl`/`.inr` routing differs
+between the variants. -/
+
+/-- BX7 / the paper's CN over L^▷: linearity of `until`, right-associated. -/
+theorem openValidIn_linearUntil (φ ψ χ θ : OpenFormula) :
+    OpenValid (OpenFormula.and (OpenFormula.untl φ ψ) (OpenFormula.untl χ θ)
+      |>.imp (OpenFormula.or
+        (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and ψ θ))
+        (OpenFormula.or
+          (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and ψ χ))
+          (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and φ θ))))) := by
+  refine OpenValid.of_forall fun F M τ t => ?_
+  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_or_iff, openTruth_untl_iff]
+  rintro ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩
+  rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+  · exact .inr (.inl ⟨s₁, hts₁, ⟨h_ψs₁, h_guard₂ s₁ hts₁ h_lt⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr hrs, h_guard₂ r htr (lt_trans hrs h_lt)⟩⟩)
+  · exact .inl ⟨s₁, hts₁, ⟨h_ψs₁, h_eq ▸ h_θs₂⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr hrs, h_guard₂ r htr (h_eq ▸ hrs)⟩⟩
+  · exact .inr (.inr ⟨s₂, hts₂, ⟨h_guard₁ s₂ hts₂ h_gt, h_θs₂⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr (lt_trans hrs h_gt), h_guard₂ r htr hrs⟩⟩)
+
+/-- BX7' over L^▷: linearity of `since`, left-associated. -/
+theorem openValidIn_linearSince (φ ψ χ θ : OpenFormula) :
+    OpenValid (OpenFormula.and (OpenFormula.snce φ ψ) (OpenFormula.snce χ θ)
+      |>.imp (OpenFormula.or
+        (OpenFormula.or
+          (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and ψ θ))
+          (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and ψ χ)))
+        (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and φ θ)))) := by
+  refine OpenValid.of_forall fun F M τ t => ?_
+  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_or_iff, openTruth_snce_iff]
+  rintro ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩
+  rcases lt_trichotomy s₂ s₁ with h_lt | h_eq | h_gt
+  · exact .inl (.inr ⟨s₁, hs₁t, ⟨h_ψs₁, h_guard₂ s₁ h_lt hs₁t⟩,
+      fun r hs₁r hrt => ⟨h_guard₁ r hs₁r hrt, h_guard₂ r (lt_trans h_lt hs₁r) hrt⟩⟩)
+  · exact .inl (.inl ⟨s₁, hs₁t, ⟨h_ψs₁, h_eq ▸ h_θs₂⟩,
+      fun r hs₁r hrt => ⟨h_guard₁ r hs₁r hrt, h_guard₂ r (h_eq ▸ hs₁r) hrt⟩⟩)
+  · exact .inr ⟨s₂, hs₂t, ⟨h_guard₁ s₂ h_gt hs₂t, h_θs₂⟩,
+      fun r hs₂r hrt => ⟨h_guard₁ r (lt_trans h_gt hs₂r) hrt, h_guard₂ r hs₂r hrt⟩⟩
+
+/-- BX11 / the paper's TL over L^▷: two future witnesses are ordered, right-associated. -/
+theorem openValidIn_tempLinearity (φ ψ : OpenFormula) :
+    OpenValid (OpenFormula.and (OpenFormula.someFuture φ) (OpenFormula.someFuture ψ) |>.imp
+      (OpenFormula.or (OpenFormula.someFuture (OpenFormula.and (OpenFormula.someFuture φ) ψ))
+        (OpenFormula.or (OpenFormula.someFuture (OpenFormula.and φ ψ))
+          (OpenFormula.someFuture (OpenFormula.and φ (OpenFormula.someFuture ψ)))))) := by
+  refine OpenValid.of_forall fun F M τ t => ?_
+  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_or_iff, OpenTruth.someFuture_iff]
+  rintro ⟨⟨s₁, hts₁, hφ⟩, s₂, hts₂, hψ⟩
+  rcases lt_trichotomy s₁ s₂ with h | h | h
+  · exact .inr (.inr ⟨s₁, hts₁, hφ, s₂, h, hψ⟩)
+  · exact .inr (.inl ⟨s₁, hts₁, hφ, h ▸ hψ⟩)
+  · exact .inl ⟨s₂, hts₂, ⟨s₁, h, hφ⟩, hψ⟩
+
+/-- BX11' over L^▷, the past form, left-associated. -/
+theorem openValidIn_tempLinearityPast (φ ψ : OpenFormula) :
+    OpenValid (OpenFormula.and (OpenFormula.somePast φ) (OpenFormula.somePast ψ) |>.imp
+      (OpenFormula.or (OpenFormula.somePast (OpenFormula.and φ ψ))
+        (OpenFormula.or (OpenFormula.somePast (OpenFormula.and φ (OpenFormula.somePast ψ)))
+          (OpenFormula.somePast (OpenFormula.and (OpenFormula.somePast φ) ψ))))) := by
+  refine OpenValid.of_forall fun F M τ t => ?_
+  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_or_iff, OpenTruth.somePast_iff]
+  rintro ⟨⟨s₁, hs₁t, hφ⟩, s₂, hs₂t, hψ⟩
+  rcases lt_trichotomy s₁ s₂ with h | h | h
+  · exact .inr (.inr ⟨s₂, hs₂t, ⟨s₁, h, hφ⟩, hψ⟩)
+  · exact .inl ⟨s₁, hs₁t, hφ, h ▸ hψ⟩
+  · exact .inr (.inl ⟨s₁, hs₁t, hφ, s₂, h, hψ⟩)
+
+/-! ## The `F`/`P` equivalence block, per constructor
+
+The four schemata relating `U`/`S` to `F`/`P`: an `until` witness is a future witness (BX10,
+BX10'), and `F`/`P` is `U`/`S` at the trivial guard (BX12, BX12'). -/
+
+/-- BX10 over L^▷: an `until` witness is a future witness. -/
+theorem openValidIn_untilF (φ ψ : OpenFormula) :
+    OpenValid ((OpenFormula.untl φ ψ).imp (OpenFormula.someFuture ψ)) := by
+  refine OpenValid.of_forall fun F M τ t => ?_
+  simp only [openTruth_imp_iff, openTruth_untl_iff, OpenTruth.someFuture_iff]
+  rintro ⟨s, hts, h_ψs, _⟩
+  exact ⟨s, hts, h_ψs⟩
+
+/-- BX10' over L^▷, the past mirror of `openValidIn_untilF`. -/
+theorem openValidIn_sinceP (φ ψ : OpenFormula) :
+    OpenValid ((OpenFormula.snce φ ψ).imp (OpenFormula.somePast ψ)) := by
+  refine OpenValid.of_forall fun F M τ t => ?_
+  simp only [openTruth_imp_iff, openTruth_snce_iff, OpenTruth.somePast_iff]
+  rintro ⟨s, hst, h_ψs, _⟩
+  exact ⟨s, hst, h_ψs⟩
+
+/-- BX12 over L^▷: `F` is `U` at the trivial guard. -/
+theorem openValidIn_FUntilEquiv (φ : OpenFormula) :
+    OpenValid ((OpenFormula.someFuture φ).imp
+      (OpenFormula.untl (OpenFormula.bot.imp OpenFormula.bot) φ)) := by
+  refine OpenValid.of_forall fun F M τ t => ?_
+  simp only [openTruth_imp_iff, OpenTruth.someFuture_iff, openTruth_untl_iff]
+  rintro ⟨s, hts, h_φs⟩
+  exact ⟨s, hts, h_φs, fun _ _ _ => id⟩
+
+/-- BX12' over L^▷, the past mirror of `openValidIn_FUntilEquiv`. -/
+theorem openValidIn_PSinceEquiv (φ : OpenFormula) :
+    OpenValid ((OpenFormula.somePast φ).imp
+      (OpenFormula.snce (OpenFormula.bot.imp OpenFormula.bot) φ)) := by
+  refine OpenValid.of_forall fun F M τ t => ?_
+  simp only [openTruth_imp_iff, OpenTruth.somePast_iff, openTruth_snce_iff]
+  rintro ⟨s, hst, h_φs⟩
+  exact ⟨s, hst, h_φs, fun _ _ _ => id⟩
+
+/-! ### The reflection halves
+
+All eight schemata sit at `.Base`, so each reflection half is one line through
+`openValid_reflectTime`. -/
+
+/-- The reflection of BX7 is valid. -/
+theorem openValidIn_linearUntil_reflect (φ ψ χ θ : OpenFormula) :
+    OpenValid (OpenFormula.and (OpenFormula.untl φ ψ) (OpenFormula.untl χ θ)
+      |>.imp (OpenFormula.or
+        (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and ψ θ))
+        (OpenFormula.or
+          (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and ψ χ))
+          (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and φ θ))))).reflectTime :=
+  openValid_reflectTime _ (openValidIn_linearUntil φ ψ χ θ)
+
+/-- The reflection of BX7' is valid. -/
+theorem openValidIn_linearSince_reflect (φ ψ χ θ : OpenFormula) :
+    OpenValid (OpenFormula.and (OpenFormula.snce φ ψ) (OpenFormula.snce χ θ)
+      |>.imp (OpenFormula.or
+        (OpenFormula.or
+          (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and ψ θ))
+          (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and ψ χ)))
+        (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and φ θ)))).reflectTime :=
+  openValid_reflectTime _ (openValidIn_linearSince φ ψ χ θ)
+
+/-- The reflection of BX11 is valid. -/
+theorem openValidIn_tempLinearity_reflect (φ ψ : OpenFormula) :
+    OpenValid (OpenFormula.and (OpenFormula.someFuture φ) (OpenFormula.someFuture ψ) |>.imp
+      (OpenFormula.or (OpenFormula.someFuture (OpenFormula.and (OpenFormula.someFuture φ) ψ))
+        (OpenFormula.or (OpenFormula.someFuture (OpenFormula.and φ ψ))
+          (OpenFormula.someFuture
+            (OpenFormula.and φ (OpenFormula.someFuture ψ)))))).reflectTime :=
+  openValid_reflectTime _ (openValidIn_tempLinearity φ ψ)
+
+/-- The reflection of BX11' is valid. -/
+theorem openValidIn_tempLinearityPast_reflect (φ ψ : OpenFormula) :
+    OpenValid (OpenFormula.and (OpenFormula.somePast φ) (OpenFormula.somePast ψ) |>.imp
+      (OpenFormula.or (OpenFormula.somePast (OpenFormula.and φ ψ))
+        (OpenFormula.or (OpenFormula.somePast (OpenFormula.and φ (OpenFormula.somePast ψ)))
+          (OpenFormula.somePast
+            (OpenFormula.and (OpenFormula.somePast φ) ψ))))).reflectTime :=
+  openValid_reflectTime _ (openValidIn_tempLinearityPast φ ψ)
+
+/-- The reflection of BX10 is valid. -/
+theorem openValidIn_untilF_reflect (φ ψ : OpenFormula) :
+    OpenValid ((OpenFormula.untl φ ψ).imp (OpenFormula.someFuture ψ)).reflectTime :=
+  openValid_reflectTime _ (openValidIn_untilF φ ψ)
+
+/-- The reflection of BX10' is valid. -/
+theorem openValidIn_sinceP_reflect (φ ψ : OpenFormula) :
+    OpenValid ((OpenFormula.snce φ ψ).imp (OpenFormula.somePast ψ)).reflectTime :=
+  openValid_reflectTime _ (openValidIn_sinceP φ ψ)
+
+/-- The reflection of BX12 is valid. -/
+theorem openValidIn_FUntilEquiv_reflect (φ : OpenFormula) :
+    OpenValid ((OpenFormula.someFuture φ).imp
+      (OpenFormula.untl (OpenFormula.bot.imp OpenFormula.bot) φ)).reflectTime :=
+  openValid_reflectTime _ (openValidIn_FUntilEquiv φ)
+
+/-- The reflection of BX12' is valid. -/
+theorem openValidIn_PSinceEquiv_reflect (φ : OpenFormula) :
+    OpenValid ((OpenFormula.somePast φ).imp
+      (OpenFormula.snce (OpenFormula.bot.imp OpenFormula.bot) φ)).reflectTime :=
+  openValid_reflectTime _ (openValidIn_PSinceEquiv φ)
+
+/-! ## The linearity and equivalence block aggregates
+
+**Constructors covered by `openAxiomValidIn_linearityBlock`** (four, in `OpenAxiom` constructor
+order): `linear_until`, `linear_since`, `temp_linearity`, `temp_linearity_past`.
+
+**Constructors covered by `openAxiomValidIn_tempEquivBlock`** (four, in `OpenAxiom` constructor
+order): `until_F`, `since_P`, `F_until_equiv`, `P_since_equiv`.
+
+The two blocks interleave in the inductive — `until_F`/`since_P` sit between `linear_since` and
+`temp_linearity` — so neither block is a contiguous run of constructors. Each is nonetheless
+internally constructor-ordered. -/
+
+/-- **The linearity validity block**: `linear_until`, `linear_since`, `temp_linearity`,
+`temp_linearity_past`. -/
+theorem openAxiomValidIn_linearityBlock :
+    (∀ φ ψ χ θ : OpenFormula,
+      OpenValid (OpenFormula.and (OpenFormula.untl φ ψ) (OpenFormula.untl χ θ)
+        |>.imp (OpenFormula.or
+          (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and ψ θ))
+          (OpenFormula.or
+            (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and ψ χ))
+            (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and φ θ)))))) ∧
+    (∀ φ ψ χ θ : OpenFormula,
+      OpenValid (OpenFormula.and (OpenFormula.snce φ ψ) (OpenFormula.snce χ θ)
+        |>.imp (OpenFormula.or
+          (OpenFormula.or
+            (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and ψ θ))
+            (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and ψ χ)))
+          (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and φ θ))))) ∧
+    (∀ φ ψ : OpenFormula,
+      OpenValid (OpenFormula.and (OpenFormula.someFuture φ) (OpenFormula.someFuture ψ) |>.imp
+        (OpenFormula.or (OpenFormula.someFuture (OpenFormula.and (OpenFormula.someFuture φ) ψ))
+          (OpenFormula.or (OpenFormula.someFuture (OpenFormula.and φ ψ))
+            (OpenFormula.someFuture (OpenFormula.and φ (OpenFormula.someFuture ψ))))))) ∧
+    (∀ φ ψ : OpenFormula,
+      OpenValid (OpenFormula.and (OpenFormula.somePast φ) (OpenFormula.somePast ψ) |>.imp
+        (OpenFormula.or (OpenFormula.somePast (OpenFormula.and φ ψ))
+          (OpenFormula.or (OpenFormula.somePast (OpenFormula.and φ (OpenFormula.somePast ψ)))
+            (OpenFormula.somePast (OpenFormula.and (OpenFormula.somePast φ) ψ)))))) :=
+  ⟨openValidIn_linearUntil, openValidIn_linearSince, openValidIn_tempLinearity,
+    openValidIn_tempLinearityPast⟩
+
+/-- **The linearity reflection block**, same four schemata in the same order. -/
+theorem openAxiomReflectValidIn_linearityBlock :
+    (∀ φ ψ χ θ : OpenFormula,
+      OpenValid (OpenFormula.and (OpenFormula.untl φ ψ) (OpenFormula.untl χ θ)
+        |>.imp (OpenFormula.or
+          (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and ψ θ))
+          (OpenFormula.or
+            (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and ψ χ))
+            (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and φ θ))))).reflectTime) ∧
+    (∀ φ ψ χ θ : OpenFormula,
+      OpenValid (OpenFormula.and (OpenFormula.snce φ ψ) (OpenFormula.snce χ θ)
+        |>.imp (OpenFormula.or
+          (OpenFormula.or
+            (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and ψ θ))
+            (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and ψ χ)))
+          (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and φ θ)))).reflectTime) ∧
+    (∀ φ ψ : OpenFormula,
+      OpenValid (OpenFormula.and (OpenFormula.someFuture φ) (OpenFormula.someFuture ψ) |>.imp
+        (OpenFormula.or (OpenFormula.someFuture (OpenFormula.and (OpenFormula.someFuture φ) ψ))
+          (OpenFormula.or (OpenFormula.someFuture (OpenFormula.and φ ψ))
+            (OpenFormula.someFuture
+              (OpenFormula.and φ (OpenFormula.someFuture ψ)))))).reflectTime) ∧
+    (∀ φ ψ : OpenFormula,
+      OpenValid (OpenFormula.and (OpenFormula.somePast φ) (OpenFormula.somePast ψ) |>.imp
+        (OpenFormula.or (OpenFormula.somePast (OpenFormula.and φ ψ))
+          (OpenFormula.or (OpenFormula.somePast (OpenFormula.and φ (OpenFormula.somePast ψ)))
+            (OpenFormula.somePast
+              (OpenFormula.and (OpenFormula.somePast φ) ψ))))).reflectTime) :=
+  ⟨openValidIn_linearUntil_reflect, openValidIn_linearSince_reflect,
+    openValidIn_tempLinearity_reflect, openValidIn_tempLinearityPast_reflect⟩
+
+/-- **The `F`/`P` equivalence validity block**: `until_F`, `since_P`, `F_until_equiv`,
+`P_since_equiv`. -/
+theorem openAxiomValidIn_tempEquivBlock :
+    (∀ φ ψ : OpenFormula,
+      OpenValid ((OpenFormula.untl φ ψ).imp (OpenFormula.someFuture ψ))) ∧
+    (∀ φ ψ : OpenFormula,
+      OpenValid ((OpenFormula.snce φ ψ).imp (OpenFormula.somePast ψ))) ∧
+    (∀ φ : OpenFormula, OpenValid ((OpenFormula.someFuture φ).imp
+      (OpenFormula.untl (OpenFormula.bot.imp OpenFormula.bot) φ))) ∧
+    (∀ φ : OpenFormula, OpenValid ((OpenFormula.somePast φ).imp
+      (OpenFormula.snce (OpenFormula.bot.imp OpenFormula.bot) φ))) :=
+  ⟨openValidIn_untilF, openValidIn_sinceP, openValidIn_FUntilEquiv, openValidIn_PSinceEquiv⟩
+
+/-- **The `F`/`P` equivalence reflection block**, same four schemata in the same order. -/
+theorem openAxiomReflectValidIn_tempEquivBlock :
+    (∀ φ ψ : OpenFormula,
+      OpenValid ((OpenFormula.untl φ ψ).imp (OpenFormula.someFuture ψ)).reflectTime) ∧
+    (∀ φ ψ : OpenFormula,
+      OpenValid ((OpenFormula.snce φ ψ).imp (OpenFormula.somePast ψ)).reflectTime) ∧
+    (∀ φ : OpenFormula, OpenValid ((OpenFormula.someFuture φ).imp
+      (OpenFormula.untl (OpenFormula.bot.imp OpenFormula.bot) φ)).reflectTime) ∧
+    (∀ φ : OpenFormula, OpenValid ((OpenFormula.somePast φ).imp
+      (OpenFormula.snce (OpenFormula.bot.imp OpenFormula.bot) φ)).reflectTime) :=
+  ⟨openValidIn_untilF_reflect, openValidIn_sinceP_reflect, openValidIn_FUntilEquiv_reflect,
+    openValidIn_PSinceEquiv_reflect⟩
 
 end FormalSystem.Metalogic.Conservativity

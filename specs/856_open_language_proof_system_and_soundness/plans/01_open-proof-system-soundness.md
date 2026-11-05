@@ -662,19 +662,25 @@ total.
 
 ---
 
-### Phase 9: validity block — temporal schemata, part 2 [NOT STARTED]
+### Phase 9: validity block — temporal schemata, part 2 [COMPLETED]
 
 **Goal**: Land the block helpers for the linearity schemata and the `F`/`P` equivalences.
 
 **Tasks**:
 
-- [ ] Land `theorem openAxiomValidIn_linearityBlock` /
+- [x] Land `theorem openAxiomValidIn_linearityBlock` /
   `openAxiomReflectValidIn_linearityBlock` covering `linear_until`, `linear_since`,
   `temp_linearity`, `temp_linearity_past`.
-- [ ] Land `theorem openAxiomValidIn_tempEquivBlock` /
+- [x] Land `theorem openAxiomValidIn_tempEquivBlock` /
   `openAxiomReflectValidIn_tempEquivBlock` covering `until_F`, `since_P`, `F_until_equiv`,
   `P_since_equiv`.
-- [ ] Pair future and past schemata through `openValid_reflectTime` as in Phase 8.
+- [x] Pair future and past schemata through `openValid_reflectTime` as in Phase 8. *(deviation:
+  altered — same point as Phase 8: `openValid_reflectTime` discharges the eight reflection
+  halves, while the four past-mirror constructors `linear_since`, `temp_linearity_past`,
+  `since_P`, `P_since_equiv` are separate constructors proved directly. Their disjunct nesting
+  is also NOT the mirror image of their future twins' — `linear_until`/`temp_linearity` are
+  right-associated and `linear_since`/`temp_linearity_past` left-associated — so a mirror
+  transport would not have produced the stated shapes anyway)*
 
 **Timing**: 2.5 hours
 
