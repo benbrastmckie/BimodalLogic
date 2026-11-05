@@ -57,6 +57,8 @@ consumer of `omega_chain` is thereby `.ZTime`-scoped, which is why
 - `omega_limit` — the ω-limit-of-splices principle, class-generic under cofinality
 - `int_marker_add_le` — a strictly increasing `ℕ`-indexed sequence in `ℤ` dominates its index
 - `intOrder_omega_cofinal` — the `ℤ` discharge of the cofinality hypothesis
+- `int_marker_exists_gt` — over `ℤ`, a marker past any given time in any prescribed residue
+  class mod `n`
 - `stg_step` — one splice: a stage at `i` yields a stage at `i + 1` with a strictly larger
   marker, agreeing with its predecessor up to the old marker
 - `omega_chain` — iterate the splice and take the ω-limit: one world history realising the whole
@@ -103,6 +105,8 @@ variable {F : TaskFrame}
 
 Stated over an arbitrary preorder rather than at `F.Duration`: the only content is
 `strictMono_nat_of_lt_succ`, and the chain argument reads it at both `F.Duration` and `ℕ`.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
 -/
 theorem marker_mono {α : Type*} [Preorder α] {c : ℕ → α} (hc : ∀ k, c k < c (k + 1)) :
     Monotone c :=
@@ -114,6 +118,8 @@ theorem marker_mono {α : Type*} [Preorder α] {c : ℕ → α} (hc : ∀ k, c k
 Each stage agrees with its predecessor at or below its predecessor's marker; monotonicity of the
 markers lets that single step be iterated, so stage `k + d` agrees with stage `k` at every time
 at or below `c k`.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
 -/
 theorem marker_agree_add {τ : ℕ → WorldHistory F} {c : ℕ → F.Duration}
     (hc : ∀ k, c k < c (k + 1))
@@ -136,8 +142,13 @@ The cofinality hypothesis `hcof` is load-bearing and is the one binder that fixe
 of every downstream consumer; see the module docstring. The construction itself is short because
 `WorldHistory.ofTotal` asks only for `∀ s t, F.TaskRel (f s) (t - s) (f t)`, which a single
 common marker discharges from that stage's own `respects_task`.
+
+**No `[F.IsRegular]`**: the limit is built by `WorldHistory.ofTotal`, which needs no frame
+constraint. Regularity enters one layer up, at `stg_step`, where `paste` uses *Compositionality*.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
 -/
-theorem omega_limit [F.IsRegular] {τ : ℕ → WorldHistory F} {c : ℕ → F.Duration}
+theorem omega_limit {τ : ℕ → WorldHistory F} {c : ℕ → F.Duration}
     (hc : ∀ k, c k < c (k + 1)) (hcof : ∀ x : F.Duration, ∃ k, x ≤ c k)
     (hag : ∀ k x, x ≤ c k → (τ (k + 1)).state x = (τ k).state x) :
     ∃ lim : WorldHistory F, ∀ k x, x ≤ c k → lim.state x = (τ k).state x := by
@@ -171,6 +182,8 @@ theorem omega_limit [F.IsRegular] {τ : ℕ → WorldHistory F} {c : ℕ → F.D
 The arithmetic step behind cofinality over `ℤ`: each successor advances the sequence by at least
 one, so after `k` steps it has advanced by at least `k`. This is exactly what has no counterpart
 over a dense order, where the increments may be summable.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
 -/
 theorem int_marker_add_le {c : ℕ → ℤ} (hc : ∀ k, c k < c (k + 1)) (k : ℕ) : c 0 + k ≤ c k := by
   induction k with
@@ -188,12 +201,42 @@ today, and it is **false over a dense temporal order**: a strictly increasing se
 totally ordered abelian group may converge, leaving every term below some bound. Every consumer
 of `omega_chain` that reaches validity through this lemma is therefore `.ZTime`-scoped and cannot
 be lifted to `.Base` by any reshuffling of the ω-chain argument.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
 -/
 theorem intOrder_omega_cofinal (c : ℕ → ℤ) (hc : ∀ k, c k < c (k + 1)) (x : ℤ) :
     ∃ k, x ≤ c k := by
   refine ⟨(x - c 0).toNat, ?_⟩
   have := int_marker_add_le hc (x - c 0).toNat
   omega
+
+/--
+**A marker beyond any given time, in any prescribed residue class.**
+
+Over `ℤ` a strictly increasing marker sequence can be sampled both *late enough* and *in a
+chosen residue class mod `n`* at once: walk `(s - c 0).toNat + 1` full cycles of length `n` past
+the offset that fixes the class. This is the arithmetic that closes the consequent's `G≤` in
+`PlusLCSchema.lean`, and it is where the `ℤ`-only character of the whole route becomes concrete.
+
+Stated with `c : ℕ → ℤ` rather than at a frame's duration carrier on purpose: `omega` reads the
+*syntactic* type of a hypothesis and does not see through `↑intOrder = ℤ` (see
+`Semantics/TemporalOrder.lean`'s `intOrder` docstring), so the arithmetic is done here, once, at
+`ℤ`, and transported to `↑intOrder` by defeq at the single application site.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
+-/
+theorem int_marker_exists_gt {c : ℕ → ℤ} (hc : ∀ k, c k < c (k + 1)) (n i j m : ℕ)
+    (hn : 0 < n) (hm : n = i + m) (s : ℤ) :
+    ∃ k : ℕ, (i + k) % n = (j + 1) % n ∧ s < c k := by
+  refine ⟨j + 1 + m + ((s - c 0).toNat + 1) * n, ?_, ?_⟩
+  · have e : i + (j + 1 + m + ((s - c 0).toNat + 1) * n)
+        = (j + 1) + n * (((s - c 0).toNat + 1) + 1) := by
+      rw [hm]; ring
+    rw [e, Nat.add_mul_mod_self_left]
+  · have h1 := int_marker_add_le hc (j + 1 + m + ((s - c 0).toNat + 1) * n)
+    have h2 : (s - c 0).toNat + 1 ≤ ((s - c 0).toNat + 1) * n :=
+      Nat.le_mul_of_pos_right _ hn
+    omega
 
 /-! ## The splice stage -/
 
@@ -229,6 +272,8 @@ agreeing with its predecessor everywhere at or below the old marker.
 The construction is `PlusPasting.paste` and nothing else: the continuation `η` shares the
 stage's state at the old marker, `paste_agreeUpTo` keeps the passage through `w` at `t`, and
 `paste_agreeFrom` carries the new recurrence from `η` to the pasted history at the new marker.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
 -/
 theorem stg_step [F.IsRegular] {w : F.WorldState} {t : F.Duration}
     {A : ℕ → F.Duration → F.WorldState → Prop}
@@ -259,6 +304,8 @@ validity reached through this lemma lands at `.ZTime` and not at `.Base`.
 
 `Nat.rec` over `Exists.choose` builds the chain, so this carries `Classical.choice` — the tree's
 standard `pcq` profile.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
 -/
 theorem omega_chain [F.IsRegular] (σ : WorldHistory F) (t : F.Duration)
     (A : ℕ → F.Duration → F.WorldState → Prop)

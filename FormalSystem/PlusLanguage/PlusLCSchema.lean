@@ -105,7 +105,10 @@ counterpart either.
 -/
 def PlusFormula.gle (φ : PlusFormula) : PlusFormula := φ.and φ.allFuture
 
-/-- `G≤ φ` holds at `t` exactly when `φ` holds at every time at or after `t`. -/
+/-- `G≤ φ` holds at `t` exactly when `φ` holds at every time at or after `t`.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
+-/
 theorem gle_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : PlusFormula) :
     PlusTruthAt M τ t φ.gle ↔ ∀ s, t ≤ s → PlusTruthAt M τ s φ := by
   rw [PlusFormula.gle, and_iff, allFuture_iff]
@@ -130,7 +133,10 @@ def bigAnd : ℕ → (ℕ → PlusFormula) → PlusFormula
   | 0, _ => PlusFormula.top
   | n + 1, g => (bigAnd n g).and (g n)
 
-/-- `bigAnd n g` holds exactly when every `g i` with `i < n` holds. -/
+/-- `bigAnd n g` holds exactly when every `g i` with `i < n` holds.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
+-/
 theorem bigAnd_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (g : ℕ → PlusFormula) :
     ∀ n, PlusTruthAt M τ t (bigAnd n g) ↔ ∀ i, i < n → PlusTruthAt M τ t (g i) := by
   intro n
@@ -168,5 +174,101 @@ def lcCons (n : ℕ) (α : ℕ → PlusFormula) : PlusFormula :=
 and what is not — in particular, `.Base` validity is open and unclaimed.
 -/
 def lcN (n : ℕ) (α : ℕ → PlusFormula) : PlusFormula := (lcAnte n α).imp (lcCons n α)
+
+/-! ## Validity at the `ℤ` fibre, and at `.ZTime` -/
+
+/--
+**`LC_n` is valid on every model over a `FrameOver intOrder` frame**, for every `n ≥ 1` and
+arbitrary parameter formulas.
+
+The `ℤ` fibre is where the ω-chain's cofinality requirement is discharged, by
+`intOrder_omega_cofinal`, and that is the step which fixes the frame class: closing the
+consequent's `G≤` means producing, for an arbitrary `s ≥ t` and index `j`, a marker `c k > s`
+whose residue class is `j + 1 mod n`, which needs the markers cofinal in the duration order.
+
+The argument splits on whether any `⟐αᵢ`-point is reachable at all. If none is, the evaluation
+history itself witnesses the consequent vacuously. If one is, the ω-chain runs at the recurrence
+family `A k := ⟐α_{(i₀ + k) mod n}` — the `n` indices cycled forever from the one that was
+found — and its limit history carries every member at a strictly increasing marker.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
+-/
+theorem lcN_plusValidInt (n : ℕ) (hn : 0 < n) (α : ℕ → PlusFormula) :
+    PlusValidInt (lcN n α) := by
+  classical
+  intro F _ M σ t hante
+  -- The antecedent, unpacked at every history through `σ`'s state at `t`.
+  have hA : ∀ ρ : WorldHistory F.toTaskFrame, ρ.state t = σ.state t → ∀ s, t ≤ s → ∀ i, i < n →
+      PlusTruthAt M ρ s (PlusFormula.dstab (α i)) →
+      PlusTruthAt M ρ s (PlusFormula.dstab (PlusFormula.someFuture
+        (PlusFormula.dstab (α ((i + 1) % n))))) := by
+    intro ρ he s hs i hi
+    have h1 := hante ρ he.symm
+    rw [gle_iff] at h1
+    exact (bigAnd_iff M ρ s _ n).1 (h1 s hs) i hi
+  simp only [lcCons]
+  rw [dstab_iff]
+  by_cases hex : ∃ (ρ : WorldHistory F.toTaskFrame) (s : ℤ) (i : ℕ),
+      ρ.state t = σ.state t ∧ t ≤ s ∧ i < n ∧ PlusTruthAt M ρ s (PlusFormula.dstab (α i))
+  · obtain ⟨ρ₀, s₀, i₀, h0w, h0s, hi₀, h0A⟩ := hex
+    -- `⟐α` read as a condition on a time and a world state: this is the shape `omega_chain`
+    -- consumes, and `⟐` is exactly what makes it one.
+    have hAiff : ∀ (k : ℕ) (ρ : WorldHistory F.toTaskFrame) (s : ℤ),
+        (∃ η : WorldHistory F.toTaskFrame, ρ.state s = η.state s ∧
+            PlusTruthAt M η s (α ((i₀ + k) % n))) ↔
+          PlusTruthAt M ρ s (PlusFormula.dstab (α ((i₀ + k) % n))) :=
+      fun k ρ s => (dstab_iff M ρ s (α ((i₀ + k) % n))).symm
+    obtain ⟨ρ, c, hρt, hcl, hcA⟩ := omega_chain (F := F.toTaskFrame) σ t
+      (fun k s v => ∃ η : WorldHistory F.toTaskFrame, v = η.state s ∧
+        PlusTruthAt M η s (α ((i₀ + k) % n)))
+      (fun c hc x => intOrder_omega_cofinal c hc x)
+      ⟨ρ₀, s₀, h0w, h0s,
+        (hAiff 0 ρ₀ s₀).2 (by rw [Nat.add_zero, Nat.mod_eq_of_lt hi₀]; exact h0A)⟩
+      (by
+        intro ρ he k s hs hk
+        have h1 := hA ρ he s hs ((i₀ + k) % n) (Nat.mod_lt _ hn) ((hAiff k ρ s).1 hk)
+        rw [dstab_iff] at h1
+        obtain ⟨η, he', h2⟩ := h1
+        rw [someFuture_iff] at h2
+        obtain ⟨s', hs', h3⟩ := h2
+        refine ⟨η, s', he'.symm, hs', (hAiff (k + 1) η s').2 ?_⟩
+        have e : (i₀ + (k + 1)) % n = ((i₀ + k) % n + 1) % n := by
+          rw [Nat.mod_add_mod, add_assoc]
+        rw [e]
+        exact h3)
+    refine ⟨ρ, hρt.symm, ?_⟩
+    rw [gle_iff]
+    intro s hs
+    rw [bigAnd_iff]
+    intro j hj hdj
+    rw [someFuture_iff]
+    -- A marker beyond `s` whose residue class is `j + 1` modulo `n`.
+    obtain ⟨m, hm⟩ : ∃ m, n = i₀ + m := ⟨n - i₀, by omega⟩
+    obtain ⟨k, hk1, hk2⟩ := int_marker_exists_gt hcl n i₀ j m hn hm s
+    refine ⟨c k, hk2, ?_⟩
+    have hfin := (hAiff k ρ (c k)).1 (hcA k).2
+    rwa [hk1] at hfin
+  · -- No `⟐αᵢ`-point is reachable: `σ` itself witnesses the consequent vacuously.
+    refine ⟨σ, rfl, ?_⟩
+    rw [gle_iff]
+    intro s hs
+    rw [bigAnd_iff]
+    intro j hj hdj
+    exact absurd ⟨σ, s, j, rfl, hs, hj, hdj⟩ hex
+
+/--
+**`LC_n` is valid at the `.ZTime` frame class**, for every `n ≥ 1` and arbitrary parameter
+formulas, by carrier normalization from `lcN_plusValidInt`.
+
+`.Base` validity is **open**: a paper argument by Zorn plus the Extension Theorem exists in prose
+but is unverified in Lean, and nothing here claims it. See the module docstring for the precise
+obstruction — the ω-chain's markers must be cofinal in the duration order, which fails over a
+dense order.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
+-/
+theorem lcN_plusValidZTime (n : ℕ) (hn : 0 < n) (α : ℕ → PlusFormula) :
+    PlusValidZTime (lcN n α) :=
+  (plusValidZTime_iff_plusValidInt (lcN n α)).mpr (lcN_plusValidInt n hn α)
 
 end FormalSystem.PlusLanguage

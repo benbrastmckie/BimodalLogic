@@ -2474,6 +2474,18 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.NamingRules.plusTruthAt_clockAnte' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.NamingRules.clock_irr_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.NamingRules.irr_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.PlusLanguage.marker_mono' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.PlusLanguage.marker_agree_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.PlusLanguage.omega_limit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.PlusLanguage.int_marker_add_le' depends on axioms: [propext, Quot.sound]
+'FormalSystem.PlusLanguage.intOrder_omega_cofinal' depends on axioms: [propext, Quot.sound]
+'FormalSystem.PlusLanguage.int_marker_exists_gt' depends on axioms: [propext, Quot.sound]
+'FormalSystem.PlusLanguage.stg_step' depends on axioms: [propext, Quot.sound]
+'FormalSystem.PlusLanguage.omega_chain' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.PlusLanguage.gle_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.PlusLanguage.bigAnd_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.PlusLanguage.lcN_plusValidInt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.PlusLanguage.lcN_plusValidZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2744,6 +2756,18 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.NamingRules.plusTruthAt_clockAnte
 #print axioms FormalSystem.Metalogic.NamingRules.clock_irr_sound
 #print axioms FormalSystem.Metalogic.NamingRules.irr_sound
+#print axioms FormalSystem.PlusLanguage.marker_mono
+#print axioms FormalSystem.PlusLanguage.marker_agree_add
+#print axioms FormalSystem.PlusLanguage.omega_limit
+#print axioms FormalSystem.PlusLanguage.int_marker_add_le
+#print axioms FormalSystem.PlusLanguage.intOrder_omega_cofinal
+#print axioms FormalSystem.PlusLanguage.int_marker_exists_gt
+#print axioms FormalSystem.PlusLanguage.stg_step
+#print axioms FormalSystem.PlusLanguage.omega_chain
+#print axioms FormalSystem.PlusLanguage.gle_iff
+#print axioms FormalSystem.PlusLanguage.bigAnd_iff
+#print axioms FormalSystem.PlusLanguage.lcN_plusValidInt
+#print axioms FormalSystem.PlusLanguage.lcN_plusValidZTime
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

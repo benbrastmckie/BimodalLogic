@@ -1,16 +1,31 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 4,
-  "summary": "Wrote a 6-phase, 9.5-hour implementation plan for porting the LC_n limit-closure soundness content from task 559's probe into FormalSystem/PlusLanguage/. The plan relocates the home module away from the dispatch's suggested NamingRules.lean to two new modules beside PlusLimitClosure.lean (research confirmed the layering), pins the result at .ZTime via PlusValidInt plus plusValidZTime_iff_plusValidInt with .Base recorded as open and unclaimed, and carries a Lean Challenge Statements block fixing all nine committed signatures. Phase 1 promotes the source probe into tracked specs/evidence/ so task 559's archival is harmless. Validator passes with 0 warnings.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 7,
+  "summary": "Landed LC_n and its .ZTime validity in two new FormalSystem/PlusLanguage/ modules: PlusOmegaChain.lean (omega_limit, intOrder_omega_cofinal, Stg/stg_step, omega_chain) and PlusLCSchema.lean (gle, bigAnd, lcAnte, lcCons, lcN, lcN_plusValidInt, lcN_plusValidZTime). All six plan phases COMPLETED, each with its own commit. Full guarded lake build green (2900 jobs, 0 errors), sorry census 0, axiom count unchanged at 14, 12 new C14 rows pasted from measured #print axioms output, 12 new docs/theorem-index.md rows; check-metalogic-cycles.sh and check-evidence-probes.sh both exit 0 with no new upward edge. Two statement adjustments in the strengthening direction only (omega_chain's recurrence family is the probe's state-time predicate rather than a formula family, which the Challenge's shape makes unprovable; omega_limit's unused [F.IsRegular] dropped). .Base validity of LC_n stays open and unclaimed.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/864_land_lc_schema_limit_closure_soundness/plans/01_lc-schema-limit-closure-soundness.md",
-      "summary": "6-phase port plan: evidence promotion, omega-limit kernel, splice/omega-chain, LC_n syntax, ZTime validity, ledger and gates."
+      "type": "summary",
+      "path": "specs/864_land_lc_schema_limit_closure_soundness/summaries/01_lc-schema-limit-closure-soundness-summary.md",
+      "summary": "Six-phase port record: evidence promotion, omega-limit kernel, splice/omega-chain, LC_n syntax, ZTime validity, ledger and gates."
+    },
+    {
+      "type": "other",
+      "path": "FormalSystem/PlusLanguage/PlusOmegaChain.lean",
+      "summary": "The omega-limit of splices and the omega-chain it drives, under an explicit cofinality hypothesis on the markers."
+    },
+    {
+      "type": "other",
+      "path": "FormalSystem/PlusLanguage/PlusLCSchema.lean",
+      "summary": "LC_n, Reynolds' infinite limit-closure schema at the stability modal with G-le, and its validity at .ZTime."
+    },
+    {
+      "type": "other",
+      "path": "specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean",
+      "summary": "The promoted 814-line compiled source of record, wired into check-evidence-probes.sh."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 6,
   "phases_total": 6,
   "blockers": []
 }

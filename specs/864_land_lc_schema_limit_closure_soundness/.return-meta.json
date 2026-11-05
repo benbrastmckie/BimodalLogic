@@ -1,30 +1,50 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-11-05T06:10:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/864_land_lc_schema_limit_closure_soundness/plans/01_lc-schema-limit-closure-soundness.md",
-      "summary": "6-phase, 9.5-hour plan to port the LC_n/omega-chain limit-closure soundness content into FormalSystem/PlusLanguage/ at the .ZTime frame class."
+      "type": "summary",
+      "path": "specs/864_land_lc_schema_limit_closure_soundness/summaries/01_lc-schema-limit-closure-soundness-summary.md",
+      "summary": "Ported the LC_n limit-closure soundness content into FormalSystem/PlusLanguage/ as PlusOmegaChain.lean and PlusLCSchema.lean, with lcN_plusValidZTime landed at the .ZTime frame class and .Base recorded as open and unclaimed."
     }
   ],
-  "memory_candidates": [
-    {
-      "content": "In BimodalLogic (ProofChecker), a probe written in the Mathlib-only 'all-walks Z-model' idiom (bare formula type, raw relation W -> W -> Prop) ports into the library along one fixed route, and rediscovering it is expensive. The dictionary: the probe's T (fullModel R V) becomes PlusTruthAt M; IsWalk R becomes IsStepPath F at F : FrameOver intOrder; 'every walk' and 'every WorldHistory of a FrameOver intOrder frame' are the SAME set by FrameOver.mem_HF_iff_adjacent, with FrameOver.worldHistoryOfStepPath and WorldHistory.isStepPath as the two directions; the validity target is PlusValidInt on the Z fibre, lifted to PlusValidZTime by plusValidZTime_iff_plusValidInt. Build limit histories with WorldHistory.ofTotal (it wants only forall s t, F.TaskRel (f s) (t - s) (f t)), which is shorter than an adjacency-plus-composition argument. Standing caveat: any argument that needs a marker sequence COFINAL in the duration order is Z-only. A TemporalOrder is an arbitrary nontrivial totally ordered abelian group, so over a dense order a strictly increasing sequence may converge -- such results land at .ZTime, never at .Base, and threading cofinality as an explicit hypothesis on the kernel lemma isolates that dependence at one auditable binder.",
-      "category": "PATTERN",
-      "source_artifact": "specs/864_land_lc_schema_limit_closure_soundness/plans/01_lc-schema-limit-closure-soundness.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["ztime-normalization", "all-walks-model", "PlusValidInt", "IsStepPath", "cofinality", "probe-port"]
-    }
+  "completion_data": {
+    "completion_summary": "Landed Reynolds' infinite limit-closure schema LC_n and its validity at the .ZTime frame class in two new FormalSystem/PlusLanguage/ modules: PlusOmegaChain.lean (the omega-limit-of-splices principle and the omega-chain it drives, under an explicit cofinality hypothesis on the markers, plus intOrder_omega_cofinal as its only available discharge) and PlusLCSchema.lean (gle, bigAnd, lcAnte, lcCons, lcN, lcN_plusValidInt, lcN_plusValidZTime). Twelve new public theorems are axiom-pinned in C14 from measured profiles and carry docs/theorem-index.md rows stating the conditional form honestly; .Base validity of LC_n is recorded as open and is claimed nowhere. The 814-line source probe was promoted into tracked specs/evidence/ and wired into the evidence-probe gate so that archiving its originating task is harmless.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem.lean",
+    "FormalSystem/PlusLanguage.lean",
+    "FormalSystem/PlusLanguage/PlusLCSchema.lean",
+    "FormalSystem/PlusLanguage/PlusOmegaChain.lean",
+    "FormalSystem/PlusLanguage/README.md",
+    "FormalSystem/README.md",
+    "ORGANISATION.md",
+    "README.md",
+    "docs/theorem-index.md",
+    "scripts/check-evidence-probes.sh",
+    "scripts/check-module-invariants.sh",
+    "scripts/measure-refactor-partitions.py",
+    "specs/864_land_lc_schema_limit_closure_soundness/plans/01_lc-schema-limit-closure-soundness.md",
+    "specs/864_land_lc_schema_limit_closure_soundness/summaries/01_lc-schema-limit-closure-soundness-summary.md",
+    "specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean",
+    "typst/generated/status.typ"
   ],
   "metadata": {
-    "session_id": "sess_1793857391_c5064b_864",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1793857391_c5064b",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 9.5,
-    "dependency_waves": [[1, 2], [3], [4], [5], [6]]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "phases_completed": 6,
+    "phases_total": 6
   },
-  "next_steps": "Run /orchestrate 864 to execute the plan",
-  "dispatch_seq": 4
+  "dispatch_seq": 7
 }
