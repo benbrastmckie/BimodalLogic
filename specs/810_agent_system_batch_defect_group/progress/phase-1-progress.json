@@ -1,0 +1,22 @@
+{
+  "phase": 1,
+  "phase_name": "Defect 4 — literature-search.sh --read chunk-path resolution",
+  "started_at": "2026-11-05T03:44:33Z",
+  "last_updated": "2026-11-05T03:52:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-derive literature source store; confirm edit target not under .claude/**", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Add sources/<doc_id>/<basename> candidate to do_read() chunk-file resolution", "status": "done", "files_touched": ["agent-system/extensions/literature/scripts/literature-search.sh"]},
+    {"id": 3, "description": "Add precedent comment naming load_fidelity_map()", "status": "done", "files_touched": ["agent-system/extensions/literature/scripts/literature-search.sh"]},
+    {"id": 4, "description": "Capture measured --read evidence for a caleiro_2013 chunk, pre and post fix", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Stage and commit with explicit single-file pathspec", "status": "in_progress", "files_touched": []}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "verification_notes": {
+    "pre_fix_read": "chunk fd8fba3d5eb37a3f (caleiro_2013): content = \"[Chunk file not found: /home/benjamin/Projects/Literature/sec04_32-mosaics-and-satisfiability.md]\"",
+    "post_fix_read": "chunk fd8fba3d5eb37a3f (caleiro_2013): content = real paper text (Mosaics and Satisfiability section), resolved via sources/caleiro_2013/sec04_32-mosaics-and-satisfiability.md",
+    "test_suite": "bash agent-system/extensions/core/scripts/tests/run-all.sh --only test-lit-pipeline.sh -> 1 passed, 0 failed",
+    "bash_n": "bash -n agent-system/extensions/literature/scripts/literature-search.sh -> OK"
+  }
+}

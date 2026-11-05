@@ -1,42 +1,12 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/810_agent_system_batch_defect_group/plans/01_agent-system-batch-defect-group.md",
-      "summary": "7-phase plan (3 waves, 8.5h) fixing five agent-system defects in the resolved source store, with per-defect test evidence and a full-gate final phase."
-    }
-  ],
-  "next_steps": "Run /orchestrate 810 to execute the plan",
+  "status": "in_progress",
+  "dispatch_seq": 6,
   "metadata": {
-    "session_id": "sess_1793845134_662c9d_810",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 7,
-    "estimated_hours": 8.5,
-    "dependency_waves": [[1, 2, 3, 5], [4, 6], [7]]
-  },
-  "memory_candidates": [],
-  "proposed_file_scope": [
-    "agent-system/extensions/core/scripts/orchestrate-build-dispatch.sh",
-    "agent-system/extensions/core/scripts/orchestrate-batch-gate.sh",
-    "agent-system/extensions/core/context/contracts/batch-gate-stage.md",
-    "agent-system/extensions/core/context/formats/plan-format.md",
-    "agent-system/extensions/core/scripts/tests/test-orchestrate-build-dispatch.sh",
-    "agent-system/extensions/core/scripts/tests/test-verify-deploy-gate-selection.sh",
-    "agent-system/extensions/core/scripts/verify-deploy.sh",
-    "agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh",
-    "agent-system/extensions/lean/scripts/tests/test-lean-challenge-snapshot.sh",
-    "agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh",
-    "agent-system/extensions/lean/scripts/tests/test-lean-plan-compliance-check.sh",
-    "agent-system/extensions/lean/agents/lean-implementation-agent.md",
-    "agent-system/extensions/lean/manifest.json",
-    "agent-system/extensions/literature/scripts/literature-search.sh",
-    "__WHOLE_TREE__"
-  ],
-  "modified_files": [
-    "specs/810_agent_system_batch_defect_group/plans/01_agent-system-batch-defect-group.md"
-  ],
-  "dispatch_seq": 5
+    "session_id": "sess_1793845134_662c9d",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 0,
+    "phases_total": 7
+  }
 }

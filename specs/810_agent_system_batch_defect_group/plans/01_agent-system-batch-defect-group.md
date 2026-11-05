@@ -1,7 +1,7 @@
 # Implementation Plan: Task #810
 
 - **Task**: 810 - agent_system_batch_defect_group
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8.5 hours
 - **Dependencies**: None (task 768, previously flagged as a `file_scope` collision on
   `lean-challenge-snapshot.sh`, has already fully landed — see Research Integration)
@@ -193,23 +193,26 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Defect 4 — literature-search.sh `--read` chunk-path resolution [NOT STARTED]
+### Phase 1: Defect 4 — literature-search.sh `--read` chunk-path resolution [COMPLETED]
 
 **Goal**: `literature-search.sh --read <chunk_id>` resolves a chunk file that lives under
 `sources/<doc_id>/` and returns its content instead of `[Chunk file not found: ...]`.
 
 **Tasks**:
-- [ ] Re-derive the `literature` source store from `.claude-extensions.json`'s
+- [x] Re-derive the `literature` source store from `.claude-extensions.json`'s
   `.extensions.literature.source_dir`; confirm the edit target is not under `.claude/**`.
-- [ ] In `do_read()`'s embedded Python chunk-file resolution, append a **third** resolution
+  *(completed: resolved to /home/benjamin/.config/nvim/agent-system/extensions/literature)*
+- [x] In `do_read()`'s embedded Python chunk-file resolution, append a **third** resolution
   candidate `os.path.join(db_dir, "sources", doc_id, chunk_file_basename)`, tried only after the
   two existing candidates both miss, mirroring `load_fidelity_map()`'s own `sources/<dir>/`
-  derivation earlier in the same function.
-- [ ] Add a short comment naming `load_fidelity_map()` as the in-file precedent for the
+  derivation earlier in the same function. *(completed)*
+- [x] Add a short comment naming `load_fidelity_map()` as the in-file precedent for the
   `doc_id == directory-name-under-sources/` assumption, so the two cannot drift apart silently.
-- [ ] Capture the measured evidence the Acceptance clause requires: run `--read` against a real
+  *(completed)*
+- [x] Capture the measured evidence the Acceptance clause requires: run `--read` against a real
   `caleiro_2013` chunk and record that it returns paper content, not the not-found string.
-- [ ] Stage and commit with an explicit single-file pathspec.
+  *(completed: chunk fd8fba3d5eb37a3f, pre-fix "[Chunk file not found: ...]", post-fix real content)*
+- [x] Stage and commit with an explicit single-file pathspec. *(completed)*
 
 **Timing**: 0.5 hours
 
