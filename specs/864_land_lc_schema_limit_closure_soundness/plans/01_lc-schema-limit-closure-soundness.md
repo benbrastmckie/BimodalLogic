@@ -196,7 +196,7 @@ adds one array entry with no symbol any other module calls.
 
 ---
 
-### Phase 2: The ω-limit kernel module [NOT STARTED]
+### Phase 2: The ω-limit kernel module [COMPLETED]
 
 **Goal**: Create `FormalSystem/PlusLanguage/PlusOmegaChain.lean` and land the marker-sequence
 lemmas and `omega_limit` in it, at an arbitrary regular task frame under an explicit cofinality
@@ -209,27 +209,27 @@ probe needed `IsWalk` plus a composition argument only because its bundle was de
 adjacency.
 
 **Tasks**:
-- [ ] Create `FormalSystem/PlusLanguage/PlusOmegaChain.lean` with the repository's standard
+- [x] Create `FormalSystem/PlusLanguage/PlusOmegaChain.lean` with the repository's standard
       copyright header, `import FormalSystem.PlusLanguage.PlusPasting` and
       `import FormalSystem.PlusLanguage.PlusIntTransfer`, `namespace FormalSystem.PlusLanguage`,
       and the same `open` block `PlusLimitClosure.lean` uses (`FormalSystem.Syntax`,
       `FormalSystem.Semantics`, `PartialHistory`, `PlusTruth`).
-- [ ] Write the module docstring: what the ω-limit principle is, that it is class-generic, and
+- [x] Write the module docstring: what the ω-limit principle is, that it is class-generic, and
       that the cofinality hypothesis is the one binder at which the ℤ-dependence of the
       downstream LC_n result is isolated and auditable.
-- [ ] Port the marker lemmas from probe lines 609-628: monotonicity (`c k ≤ c (k + d)`) and
+- [x] Port the marker lemmas from probe lines 609-628: monotonicity (`c k ≤ c (k + d)`) and
       transitive agreement across stages (`agree_add`), restated at `F.Duration` rather than `ℤ`.
       Keep the probe's decomposition — one named lemma per probe lemma; do not inline them into
       `omega_limit`.
-- [ ] Port `omega_limit` (probe line 630) at the Challenge signature below, building the limit
+- [x] Port `omega_limit` (probe line 630) at the Challenge signature below, building the limit
       with `WorldHistory.ofTotal` and discharging its `TaskRel` obligation from the marker
       agreement as described above.
-- [ ] Register the module: add `import FormalSystem.PlusLanguage.PlusOmegaChain` to
+- [x] Register the module: add `import FormalSystem.PlusLanguage.PlusOmegaChain` to
       `FormalSystem/PlusLanguage.lean` (beside the existing `PlusLimitClosure`/`PlusIntTransfer`
       imports) with a matching entry in that file's prose module list, and to `FormalSystem.lean`
       beside its existing `PlusLanguage.PlusIntTransfer`/`PlusLimitClosure` imports. Re-read both
       aggregators immediately before editing.
-- [ ] Guarded scoped build green, zero `sorry`, no vacuous definition.
+- [x] Guarded scoped build green, zero `sorry`, no vacuous definition.
 
 **Timing**: 1.5 hours
 
