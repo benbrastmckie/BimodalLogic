@@ -403,7 +403,7 @@ is missing rather than building a second clock product.
 
 ---
 
-### Phase 6: Gabbay's plain irreflexivity rule [NOT STARTED]
+### Phase 6: Gabbay's plain irreflexivity rule [COMPLETED]
 
 **Goal**: Land deliverable item (2) as a corollary: the clock antecedent implies `q ∧ H¬q`, so
 soundness of the weaker rule follows from Phase 5.

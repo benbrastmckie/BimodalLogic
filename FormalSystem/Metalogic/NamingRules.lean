@@ -292,4 +292,44 @@ theorem clock_irr_sound (fc : FormalSystem.ProofSystem.FrameClass) (q : Atom) (�
   have h3 := (plus_invariance G.toFibre M φ (liftH G.toFibre τ (0 - x)) x).1 h2
   rwa [projH_liftH] at h3
 
+/--
+**Soundness of Gabbay's plain irreflexivity rule**, as a corollary. If `(q ∧ H¬q) → φ` is valid
+over a frame class and `q` does not occur in `φ`, then `φ` is valid over that class.
+
+The weaker antecedent follows from the clock antecedent: `once q` puts the unique time at which
+`q` holds in the past of, at, or in the future of the evaluation time, and `q` holding *now*
+rules out the two off-centre cases, leaving `nm q`, whose second conjunct is `H¬q`. `rigid q` is
+not consumed — which is exactly the sense in which the clock rule is the stronger of the two.
+
+Paper: — (formalization-native; the manuscript states no naming rule)
+-/
+theorem irr_sound (fc : FormalSystem.ProofSystem.FrameClass) (q : Atom) (φ : PlusFormula)
+    (hq : Fresh q φ)
+    (hprem : PlusValidIn fc
+      (((PlusFormula.atom q).and (PlusFormula.atom q).neg.allPast).imp φ)) :
+    PlusValidIn fc φ := by
+  refine clock_irr_sound fc q φ hq ?_
+  intro G hG M τ x hante
+  refine hprem G hG M τ x ?_
+  rw [clockAnte, PlusTruth.and_iff, PlusTruth.box_iff] at hante
+  obtain ⟨hqt, hbox⟩ := hante
+  have h1 := hbox τ
+  rw [PlusFormula.always, PlusTruth.and_iff, PlusTruth.and_iff] at h1
+  have h3 := h1.2.1
+  rw [PlusTruth.and_iff, once, PlusTruth.or_iff, PlusTruth.or_iff, PlusTruth.somePast_iff,
+    PlusTruth.someFuture_iff] at h3
+  rw [PlusTruth.and_iff, PlusTruth.allPast_iff]
+  refine ⟨hqt, ?_⟩
+  intro r hr hqr
+  rcases h3.1 with (h | ⟨s, hs, h⟩) | ⟨s, hs, h⟩
+  · rw [nm, PlusTruth.and_iff, PlusTruth.and_iff, PlusTruth.allPast_iff,
+      PlusTruth.allFuture_iff] at h
+    exact h.2.1 r hr hqr
+  · rw [nm, PlusTruth.and_iff, PlusTruth.and_iff, PlusTruth.allPast_iff,
+      PlusTruth.allFuture_iff] at h
+    exact h.2.2 x hs hqt
+  · rw [nm, PlusTruth.and_iff, PlusTruth.and_iff, PlusTruth.allPast_iff,
+      PlusTruth.allFuture_iff] at h
+    exact h.2.1 x hs hqt
+
 end FormalSystem.Metalogic.NamingRules
