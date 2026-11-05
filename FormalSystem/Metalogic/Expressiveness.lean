@@ -22,6 +22,11 @@ import FormalSystem.Metalogic.Expressiveness.EFGames.StaviCompleteness
 import FormalSystem.Metalogic.Expressiveness.GameTransfer.SplitPoint
 import FormalSystem.Metalogic.Expressiveness.GameTransfer.CaseAnalysis
 import FormalSystem.Metalogic.Expressiveness.OpenFutureElimination
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.Syntax
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.LeafAbstraction
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.Distributivity
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.NegationEquiv
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.Eliminations
 
 /-!
 # Expressiveness: Kamp/Stavi Expressive Completeness
@@ -51,7 +56,11 @@ split a genuine partition rather than a renaming.
 7. **Separation**: the Gabbay separation route
 8. **GameTransfer**: transfer of game equivalences across structures
 9. **MonadicFO / EFGameTactics**: shared vocabulary and proof automation
-10. **OpenFutureElimination**: the open-future and open-past modals against separated L⁺
+10. **SeparationZ**: the Gabbay separation development over the integer flow, on an auxiliary
+    until/since syntax whose leaves are abstract predicates — GHR Lemmas 10.2.1 and 10.2.2 in
+    full and Lemma 10.2.3's four single-sign cases. Cases 5-8 of 10.2.3, and therefore 10.2.4
+    onwards, are **not** landed, so `SeparationOver` is not discharged
+11. **OpenFutureElimination**: the open-future and open-past modals against separated L⁺
     formulas — the elimination of a disjunction under `▷`/`◁`, its conjunctive-normal-form
     version, a translation into L⁺ conditional on a named separation hypothesis, and the
     transfer corollaries: conditional reductions carrying decidability and completeness of
@@ -66,8 +75,10 @@ check C14's axiom baseline in `scripts/check-module-invariants.sh`.
 
 The open-future elimination of `OpenFutureElimination` is landed **conditional on
 `SeparationOver`**, an explicit named hypothesis standing for the separation theorems of
-[GHR][gabbay1994] Chapter 10, which are cited literature and are not formalized in this tree; it
-is not a headline unconditional result and is not on the main-results page.
+[GHR][gabbay1994] Chapter 10. `SeparationZ/` carries part of the route to those theorems over
+the integer flow — Lemmas 10.2.1 and 10.2.2, and 10.2.3's four single-sign cases — but **not**
+Theorem 10.2.9, so the hypothesis stays undischarged and every `tr` row stays conditional. The
+elimination is not a headline unconditional result and is not on the main-results page.
 
 The same module's **transfer corollaries** are conditional in the same spirit and for the same
 reason. `decidableOpenValidInOfTranslation`, `openDecider_correct`,

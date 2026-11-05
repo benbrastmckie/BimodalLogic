@@ -49,3 +49,14 @@ and no live module imports it. Its imports are still checked -- C11 in
 waived in `scripts/boneyard-import-waivers.txt`.
 
 Last verified: 2026-08-24
+
+## Caveat: `replace_box_with_top` must not be transplanted
+
+This archive's normalization step `replace_box_with_top` (`FormulaOps.lean`) is sound for
+`Formula` over `IntStructure`, where `□` is a global quantifier over a single flow and is
+therefore time-invariant. It is **unsound for `PlusFormula` over a task frame**: there `□ψ` is
+`∀ σ : WorldHistory F, PlusTruthAt M σ t ψ`, which is a genuine quantifier over world histories
+and is not in general equivalent to `⊤`. The live Gabbay-separation development over the integer
+flow (`FormalSystem/Metalogic/Expressiveness/SeparationZ/`) therefore does not use it: it
+abstracts each maximal `□`- and `⊡`-subformula to a *leaf* instead, and the leaf is doubly pure
+rather than trivially true.

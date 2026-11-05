@@ -287,6 +287,9 @@ def reflectVal (v : ℕ → ℤ → Prop) : ℕ → ℤ → Prop := fun i s => v
 `FormalSystem.PlusLanguage.plusValidIn_reflectTime_iff`: this is what halves every `snce` case
 in the development below, since a past-side statement is the image of its future-side
 counterpart under `swap` together with this lemma.
+
+Paper: — (formalization-native; the manuscript has no auxiliary until/since syntax and no
+leaf abstraction, so it carries no label for this)
 -/
 theorem usTruth_swap (v : ℕ → ℤ → Prop) (t : ℤ) (φ : USForm) :
     usTruth v t φ.swap ↔ usTruth (reflectVal v) (-t) φ := by
@@ -371,6 +374,9 @@ theorem usTruth_congr {v w : ℕ → ℤ → Prop} (φ : USForm)
 /--
 **The whole content of GHR's "fresh atom" device**: updating the leaf valuation at an index
 above `maxLeaf φ` does not change `φ`'s truth.
+
+Paper: — (formalization-native; the manuscript has no auxiliary until/since syntax and no
+leaf abstraction, so it carries no label for this)
 -/
 theorem usTruth_congr_of_update {v : ℕ → ℤ → Prop} {j : ℕ} (φ : USForm)
     (hj : φ.maxLeaf < j) (p : ℤ → Prop) (t : ℤ) :

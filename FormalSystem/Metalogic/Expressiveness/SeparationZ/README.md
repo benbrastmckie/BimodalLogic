@@ -1,8 +1,15 @@
 # SeparationZ — Gabbay separation over the integer flow
 
-Gabbay's Separation Theorem for the until/since language over discrete (integer) time, and the
-discharge of `FormalSystem.Metalogic.Expressiveness.SeparationOver TaskFrame.IsZTime` that
-follows from it.
+Gabbay's Separation Theorem for the until/since language over discrete (integer) time: the
+route that would discharge the `SeparationOver TaskFrame.IsZTime` hypothesis of
+[`OpenFutureElimination.lean`](../OpenFutureElimination.lean).
+
+**Status: the hypothesis is NOT discharged.** What is landed is GHR Lemmas 10.2.1 and 10.2.2 in
+full, and Lemma 10.2.3's four single-sign cases. Lemma 10.2.3's Cases 5-8 — the cases in which
+the same `untl` occurs in both the event and the guard argument of a `snce` — are not, and
+10.2.4 onwards consume all eight of them, so Theorem 10.2.9 is not reached either. Every `tr`
+row of `OpenFutureElimination.lean` keeps its `SeparationOver` hypothesis exactly as before.
+`Eliminations.lean`'s module docstring states the obstruction.
 
 The development runs over an auxiliary syntax `USForm` whose leaves are abstract natural-number
 indices evaluated by a leaf valuation `ℕ → ℤ → Prop`, not over `PlusFormula` directly. The
@@ -30,6 +37,18 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 - `usTruth_congr_of_update` — the whole content of GHR's "fresh atom" device
 - `toPlus_abstr`, `usTruth_toPlus_iff` — the roundtrip and the truth transfer across the seam
 - `pointwise_ztime_of_pointwise_int` — the carrier bridge from `ℤ` to every regular ℤ-time frame
+- `usTruth_untl_or_event`, `usTruth_untl_and_guard` and their `snce` mirrors — GHR 10.2.1
+- `usTruth_neg_untl`, `usTruth_neg_untl_strong` and their `snce` mirrors — GHR 10.2.2
+- `usTruth_case1` … `usTruth_case4` with `isSeparated_case1Rhs` … `isSeparated_case4Rhs` —
+  GHR 10.2.3's four single-sign cases, each with its separatedness proved rather than asserted
+
+## Not landed
+
+GHR Lemma 10.2.3 Cases 5-8, Lemma 10.2.4 and everything downstream of it (10.2.5-10.2.8,
+Theorem 10.2.9), hence also the `SeparationOver TaskFrame.IsZTime` discharge and the computable
+ZTime translation that would rest on it. `Eliminations.lean`'s module docstring records why
+Cases 5-8 resist: their guard-failure condition is an `∃∀` over the window whose re-anchoring
+retains a forward-looking, `t`-bounded conjunct.
 
 ## References
 

@@ -68,7 +68,8 @@ theorem usTruth_swap_congr {φ ψ : USForm}
 `untl C (A ∨ B) ↔ untl C A ∨ untl C B`. An existential distributing over a disjunction;
 linearity only.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.1
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
 -/
 theorem usTruth_untl_or_event (A B C : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (USForm.untl C (A.or B)) ↔
@@ -86,7 +87,8 @@ theorem usTruth_untl_or_event (A B C : USForm) (v : ℕ → ℤ → Prop) (t : �
 **GHR 10.2.1, second distributivity**: the `S` mirror of `usTruth_untl_or_event`, derived
 through `usTruth_swap_congr` rather than by repeating the argument.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.1
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
 -/
 theorem usTruth_snce_or_event (A B C : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (USForm.snce C (A.or B)) ↔
@@ -104,7 +106,8 @@ The `←` half takes the **smaller** of the two event witnesses: the event argum
 hence at the smaller, and the open interval below the smaller is contained in both guarded
 intervals. This is linearity (`le_total`), not discreteness.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.1
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
 -/
 theorem usTruth_untl_and_guard (A B C : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (USForm.untl (B.and C) A) ↔
@@ -123,7 +126,8 @@ theorem usTruth_untl_and_guard (A B C : USForm) (v : ℕ → ℤ → Prop) (t : 
 **GHR 10.2.1, fourth distributivity**: the `S` mirror of `usTruth_untl_and_guard`, derived
 through `usTruth_swap_congr`.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.1
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
 -/
 theorem usTruth_snce_and_guard (A B C : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (USForm.snce (B.and C) A) ↔

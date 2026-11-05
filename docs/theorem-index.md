@@ -648,10 +648,17 @@ The first two rows are unconditional. Every open-future-elimination row that fol
 four eliminations, two validity transfers, and eight transfer corollaries — is **conditional**,
 and the four that mention the translation `tr` are conditional specifically on `SeparationOver`,
 an explicit named hypothesis standing for the separation theorems of Gabbay, Hodkinson and
-Reynolds, Chapter 10 — cited literature that is not formalized in this tree and is discharged
-nowhere in it, so no row below asserts that the restricted modals are L⁺-definable full stop. The
-hypothesis is false for `U`/`S` over `ℚ`, so nothing in this band transfers to the `.Dense` or
-`.Base` classes.
+Reynolds, Chapter 10. That hypothesis **is discharged nowhere in this tree**, so no row below
+asserts that the restricted modals are L⁺-definable full stop. The hypothesis is false for
+`U`/`S` over `ℚ`, so nothing in this band transfers to the `.Dense` or `.Base` classes.
+
+Part of the route to the hypothesis over the integer flow **is** formalized, in
+`FormalSystem/Metalogic/Expressiveness/SeparationZ/`, and has its own sub-band below: GHR
+Lemmas 10.2.1 and 10.2.2 in full, and Lemma 10.2.3's four cases in which the eliminated `until`
+occurs in exactly one of the two arguments of the `since`. Lemma 10.2.3's remaining four cases —
+the ones in which the same `until` occurs in **both** arguments — are not formalized, and
+Lemma 10.2.4 consumes all eight of them, so Theorem 10.2.9 is not reached. **No row's
+conditionality is weakened by that sub-band**, at `.ZTime` or anywhere else.
 
 The eight transfer-corollary rows state a **reduction**: given decidability resp. completeness of
 L⁺ validity at a frame class, the corresponding open-language fact follows. Every antecedent of
@@ -679,6 +686,47 @@ this band, at any frame class.**
 | — | Given separation over the dense Dedekind-complete frames and decidability of L⁺ validity at `RTime` for the single formula `tr hsep φ` — neither of which this tree supplies — open-language validity of `φ` at `RTime` is decidable | `FormalSystem.Metalogic.Expressiveness.decidableOpenValidRTimeOfTr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | RTime | pcq pinned:C14 |
 | — | Given a translation transferring validity at a frame class and an L⁺ relation complete for validity there — the latter open at every frame class — every valid open-language formula has a derivable translation | `FormalSystem.Metalogic.Expressiveness.openComplete_of_plusComplete_in` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | [propext] pinned:C14 |
 | — | Given a translation transferring validity at a frame class and an L⁺ relation sound for validity there, derivability of a translation yields validity of the original open-language formula | `FormalSystem.Metalogic.Expressiveness.openValid_of_plusSound` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | [propext] pinned:C14 |
+
+#### Gabbay separation over the integer flow: the part that is formalized
+
+Every row here is an unconditional statement about the auxiliary until/since syntax `USForm`
+evaluated over `ℤ` at an arbitrary leaf valuation `ℕ → ℤ → Prop`, or about the single seam
+between that syntax and `PlusFormula`. None of them discharges `SeparationOver`, and none of
+them is consumed by any row above. GHR's `U(A,B)` is this subtree's `untl B A`: guard first,
+event second.
+
+| Paper label | Statement | Lean name | File | Frame class | Axioms |
+|-------------|-----------|-----------|------|-------------|--------|
+| — | The time reflection on the auxiliary syntax: `usTruth v t (swap φ) ↔ usTruth (reflectVal v) (-t) φ`, the duality that halves every `since` case of the development | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_swap` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Syntax.lean` | — | `[propext, Quot.sound]` pinned:C14 |
+| — | The fresh-index device: updating the leaf valuation above a formula's `maxLeaf` does not change its truth. This is the whole content of GHR's "fresh atom" step | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_congr_of_update` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Syntax.lean` | — | `[propext, Quot.sound]` pinned:C14 |
+| — | Abstracting an L⁺ formula's atoms and maximal `□`/`⊡` subformulas to leaves and resubstituting its own leaf table recovers the formula on the nose | `FormalSystem.Metalogic.Expressiveness.SeparationZ.toPlus_abstr` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/LeafAbstraction.lean` | — | pcq pinned:C14 |
+| — | Truth transfer across the seam: over a frame whose duration carrier is `ℤ`, `usTruth` at the leaf valuation induced by a leaf assignment is `PlusTruthAt` of the resubstituted formula | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_toPlus_iff` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/LeafAbstraction.lean` | — | `[propext]` pinned:C14 |
+| — | The carrier bridge: a pointwise L⁺ equivalence over the single carrier `ℤ` upgrades to the pointwise equivalence over every regular ℤ-time task frame, which is the shape `SeparationOver` asks for | `FormalSystem.Metalogic.Expressiveness.SeparationZ.pointwise_ztime_of_pointwise_int` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/LeafAbstraction.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.1: `U` distributes over a disjoined event argument, `U(A ∨ B, C) ↔ U(A,C) ∨ U(B,C)`. Linearity only — no discreteness is consumed | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_untl_or_event` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Distributivity.lean` | — | pcq pinned:C14 |
+| — | GHR 10.2.1: the `S` mirror of the event-disjunction distributivity, derived through the `swap` duality | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_snce_or_event` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Distributivity.lean` | — | pcq pinned:C14 |
+| — | GHR 10.2.1: `U` distributes over a conjoined guard argument, `U(A, B ∧ C) ↔ U(A,B) ∧ U(A,C)`, by taking the smaller of the two event witnesses. Linearity only | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_untl_and_guard` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Distributivity.lean` | — | pcq pinned:C14 |
+| — | GHR 10.2.1: the `S` mirror of the guard-conjunction distributivity | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_snce_and_guard` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Distributivity.lean` | — | pcq pinned:C14 |
+| — | Discreteness in the exact form the negation equivalences consume: a predicate true somewhere above `t` is true at a least such point of `ℤ`, and fails throughout the open interval below it | `FormalSystem.Metalogic.Expressiveness.SeparationZ.exists_least_above` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/NegationEquiv.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.2, printed form: `¬U(A,B) ↔ G¬A ∨ U(¬A ∧ ¬B, ¬A)` over the integer flow. The first discreteness-dependent step of the development; it has no counterpart over a dense flow | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_untl` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/NegationEquiv.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.2, the variant the least-`¬B` witness actually delivers: `¬U(A,B) ↔ G¬A ∨ U(¬A ∧ ¬B, B ∧ ¬A)` | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_untl_strong` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/NegationEquiv.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.2: the `S`/`H` mirror of the printed form, derived through the `swap` duality | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_snce` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/NegationEquiv.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.2: the `S`/`H` mirror of the variant form | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_snce_strong` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/NegationEquiv.lean` | ZTime | pcq pinned:C14 |
+| — | The `G`-under-`S` elimination `S(a ∧ GX, q) ↔ X ∧ GX ∧ S(a, q ∧ X)`, the auxiliary GHR 10.2.3's Case 2 needs. Consumes no discreteness | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_snce_allFuture` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Eliminations.lean` | — | pcq pinned:C14 |
+| — | GHR 10.2.3, Case 1: `S(a ∧ U(A,B), q)` is separated, by the trichotomy of the `until` witness against the evaluation point. Stated at arbitrary `USForm` parameters, not atoms | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case1` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Eliminations.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.3, Case 2: `S(a ∧ ¬U(A,B), q)` is separated, through 10.2.2 on the event, 10.2.1's event-disjunction split, then Case 1 and the `G`-under-`S` elimination | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case2` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Eliminations.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.3, Case 3: `S(a, q ∨ U(A,B))` is separated, through 10.2.2's mirror on the negation, which moves the guard's `until` into the event argument as Case 2's shape | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case3` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Eliminations.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.3, Case 4: `S(a, q ∨ ¬U(A,B))` is separated, by the same move, landing on Case 1's shape | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case4` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Eliminations.lean` | ZTime | pcq pinned:C14 |
+| — | Each of Cases 1-4's right-hand sides is syntactically separated — no `until` under a `since` and no `since` under an `until` — given `IsSOnly`/`IsUOnly` side conditions on the four parameters. Proved, not asserted in prose; axiom-free, hence not C14-pinnable | `FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_case1Rhs` and its three siblings | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Eliminations.lean` | — | axiom-free |
+
+**What this sub-band does NOT contain, and why.** GHR 10.2.3's Cases 5-8 — `S(a ∧ ±U(A,B),
+q ∨ ±U(A,B))`, the same `until` in both arguments — are absent. GHR's printed Case 5 is refuted
+over the integer flow, and Cases 6-8 are published only as reductions with acknowledged gaps. The
+obstruction for Cases 6-8 is structural: the guard-failure condition of a case whose guard
+carries `¬U(A,B)` is an `∃∀` over the window below the evaluation point, and re-anchoring it at
+its own rightmost witness retains a forward-looking, bounded conjunct, which is not a formula at
+the guard's own evaluation point and so cannot be an `S`-guard. Because 10.2.4 consumes all
+eight cases, 10.2.4 through 10.2.8 and Theorem 10.2.9 are absent too, and with them the
+`SeparationOver TaskFrame.IsZTime` discharge and any computable ZTime translation.
 
 ## Statuses that are refutations, not gaps, and one status that is a gap
 

@@ -2396,6 +2396,25 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Expressiveness.decidableOpenValidRTimeOfTr' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.openComplete_of_plusComplete_in' depends on axioms: [propext]
 'FormalSystem.Metalogic.Expressiveness.openValid_of_plusSound' depends on axioms: [propext]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_swap' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_congr_of_update' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.toPlus_abstr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_toPlus_iff' depends on axioms: [propext]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.pointwise_ztime_of_pointwise_int' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_untl_or_event' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_snce_or_event' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_untl_and_guard' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_snce_and_guard' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.exists_least_above' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_untl' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_snce' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_untl_strong' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_snce_strong' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_snce_allFuture' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case1' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case2' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case3' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case4' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Independence.ofut_pastDet' depends on axioms: [propext]
 'FormalSystem.Metalogic.Independence.opast_futDet' depends on axioms: [propext]
 'FormalSystem.Metalogic.Independence.MarkerGadget.theta_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -2697,6 +2716,25 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Expressiveness.decidableOpenValidRTimeOfTr
 #print axioms FormalSystem.Metalogic.Expressiveness.openComplete_of_plusComplete_in
 #print axioms FormalSystem.Metalogic.Expressiveness.openValid_of_plusSound
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_swap
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_congr_of_update
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.toPlus_abstr
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_toPlus_iff
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.pointwise_ztime_of_pointwise_int
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_untl_or_event
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_snce_or_event
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_untl_and_guard
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_snce_and_guard
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.exists_least_above
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_untl
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_snce
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_untl_strong
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_snce_strong
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_snce_allFuture
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case1
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case2
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case3
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case4
 #print axioms FormalSystem.Metalogic.Independence.ofut_pastDet
 #print axioms FormalSystem.Metalogic.Independence.opast_futDet
 #print axioms FormalSystem.Metalogic.Independence.MarkerGadget.theta_eq_iff

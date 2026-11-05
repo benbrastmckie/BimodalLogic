@@ -598,7 +598,7 @@ condition. Confirm by counting `theorem` keywords and by checking each case has 
 
 ---
 
-### Phase 7: GHR Lemma 10.2.3 -- Eliminations, Cases 5-8 [NOT STARTED]
+### Phase 7: GHR Lemma 10.2.3 -- Eliminations, Cases 5-8 [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The remaining four eliminations, the ones whose printed forms are refuted or gapped,
 are proved from the candidates Phase 5 pinned.
@@ -649,9 +649,21 @@ that recorded candidate; a mismatch is a plan deviation to raise, not to annotat
   nothing -- the anti-circularity check.
 - Zero `sorry`, zero vacuous definitions.
 
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `ElimHard.lean` with GHR 10.2.3 Cases 6, 7 and 8 | No candidate right-hand side was produced for any of the three. Their guard-failure conditions are `∃∀` over the window `(s,t]` whose re-anchoring retains an `s`-bounded forward conjunct, with no analogue of the collapse that keeps Case 5's candidate finite; the negation route between Cases 5 and 8 is circular. This is the precisely located obstruction the dispatch accepts. | Phase 5's gate measurement: `specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-probe.lean`, `## Gate measurement` (compiles at exit 0), and this plan's Phase 5 `#### Reasoned Exclusions` |
+| `ElimHard.lean` with GHR 10.2.3 Case 5 | A candidate IS pinned and survives all three probe models, including the one that refutes GHR's printed formula, so this item is unblocked mathematically. It is excluded only because the phase's deliverable is all four cases and the three above cannot be reached; a successor dispatch can land Case 5 alone from the pinned candidate and its recorded derivation without re-deriving anything. | Phase 5's gate measurement: `specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-probe.lean`, `## Gate measurement` (compiles at exit 0), and this plan's Phase 5 `#### Reasoned Exclusions` |
+
+Closed under the primary contingency branch of `## Rollback/Contingency`: Phase 5's gate
+criterion was 4 of 4 and it measured 1 of 4, so this phase was decided against rather than
+interrupted. No `sorry` and no vacuous placeholder was introduced anywhere in its place.
+
 ---
 
-### Phase 8: Normal Forms and GHR Lemma 10.2.4 [NOT STARTED]
+### Phase 8: Normal Forms and GHR Lemma 10.2.4 [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: A disjunctive and a conjunctive normal form exist for the Boolean skeleton of a
 `USForm`, with truth preservation, and GHR 10.2.4 -- depth-one packaging for a single `U`-type --
@@ -698,9 +710,21 @@ covers it, since no declaration outside the subtree references these names.
 - GHR 10.2.4's conclusion carries a proved `IsSyntacticallySeparated` witness, not a prose claim.
 - Zero `sorry`, zero vacuous definitions.
 
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `NormalForm.lean` with `dnf`, `cnf` and GHR 10.2.4 | GHR 10.2.4's proof consumes **all eight** cases of 10.2.3 clause by clause: after `dnf` on the event argument and `cnf` on the guard argument, each Boolean constituent has the shape `snce (C₂ ∨ ±untl B A) (C₁ ∧ ±untl B A)`, which is one of the eight. Three of the eight are unavailable, so 10.2.4 is unreachable. The archive's route of deriving Cases 5-8 back *from* the final theorem closes the circularity this plan's phase order exists to prevent and is not taken. | Phase 5's gate measurement: `specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-probe.lean`, `## Gate measurement` (compiles at exit 0), and this plan's Phase 5 `#### Reasoned Exclusions` |
+| `IsSyntacticallySeparated` | Landed early, as `IsSeparated` in Phase 6's `Eliminations.lean`, because Phase 6's separatedness discharge needs it. Its definition is verbatim the one this phase's task list specifies. | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Eliminations.lean`, `inductive IsSeparated` |
+
+Closed under the primary contingency branch of `## Rollback/Contingency`: Phase 5's gate
+criterion was 4 of 4 and it measured 1 of 4, so this phase was decided against rather than
+interrupted. No `sorry` and no vacuous placeholder was introduced anywhere in its place.
+
 ---
 
-### Phase 9: GHR Lemmas 10.2.5 and 10.2.6 [NOT STARTED]
+### Phase 9: GHR Lemmas 10.2.5 and 10.2.6 [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The `snce`-nesting induction and the `U`-type-count induction are proved, each with its
 measure defined structurally and its strict decrease proved rather than asserted.
@@ -746,9 +770,20 @@ covers the whole edit.
   `sorry`), and each strict-decrease claim is a named, proved theorem.
 - Zero `sorry`, zero vacuous definitions.
 
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `Hierarchy.lean` with `snceDepthAbove`, `uTypeCount`, their strict-decrease lemmas, and GHR 10.2.5 and 10.2.6 | Both inductions apply GHR 10.2.4 at each step — 10.2.5 at each maximal `snce`, 10.2.6 through 10.2.5 — and 10.2.4 is excluded one phase upstream. Nothing in this phase is independently reachable. | Phase 5's gate measurement: `specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-probe.lean`, `## Gate measurement` (compiles at exit 0), and this plan's Phase 5 `#### Reasoned Exclusions` |
+
+Closed under the primary contingency branch of `## Rollback/Contingency`: Phase 5's gate
+criterion was 4 of 4 and it measured 1 of 4, so this phase was decided against rather than
+interrupted. No `sorry` and no vacuous placeholder was introduced anywhere in its place.
+
 ---
 
-### Phase 10: GHR Lemma 10.2.7 [NOT STARTED]
+### Phase 10: GHR Lemma 10.2.7 [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The `untl`-nesting induction is proved, for formulas with no `snce` nested within an
 `untl`.
@@ -788,9 +823,20 @@ covers it.
   procedure, not a prose side condition.
 - Zero `sorry`, zero vacuous definitions.
 
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `UNesting.lean` with `untlDepth`, its strict-decrease lemma, GHR 10.2.7 and its structural hypothesis predicate | GHR 10.2.7's induction step separates by GHR 10.2.6, which is excluded one phase upstream. | Phase 5's gate measurement: `specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-probe.lean`, `## Gate measurement` (compiles at exit 0), and this plan's Phase 5 `#### Reasoned Exclusions` |
+
+Closed under the primary contingency branch of `## Rollback/Contingency`: Phase 5's gate
+criterion was 4 of 4 and it measured 1 of 4, so this phase was decided against rather than
+interrupted. No `sorry` and no vacuous placeholder was introduced anywhere in its place.
+
 ---
 
-### Phase 11: Junction Depth, GHR Lemma 10.2.8 and Theorem 10.2.9 [NOT STARTED]
+### Phase 11: Junction Depth, GHR Lemma 10.2.8 and Theorem 10.2.9 [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Junction depth is a structural measure with proved monotonicity bounds and a proved
 strict decrease, GHR 10.2.8 holds, and the Separation Theorem over `ℤ` follows.
@@ -846,9 +892,20 @@ covers it, and `sep`'s computability is checked inside the same build by the abs
 - The strict-decrease lemma is a named, proved theorem, not a `simp`-closed afterthought.
 - Zero `sorry`, zero vacuous definitions.
 
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `JunctionDepth.lean` with `junctionDepth`, its bounds, the strict-decrease lemma, GHR 10.2.8, `sep`, `usTruth_sep_iff` and `isSyntacticallySeparated_sep` | GHR 10.2.8's induction step separates by GHR 10.2.7, which is excluded upstream, and Theorem 10.2.9 is its corollary. The junction-depth strict decrease — this plan's secondary stall candidate, asserted without proof in the source — was therefore never reached and is **not** itself the obstruction on record. | Phase 5's gate measurement: `specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-probe.lean`, `## Gate measurement` (compiles at exit 0), and this plan's Phase 5 `#### Reasoned Exclusions` |
+
+Closed under the primary contingency branch of `## Rollback/Contingency`: Phase 5's gate
+criterion was 4 of 4 and it measured 1 of 4, so this phase was decided against rather than
+interrupted. No `sorry` and no vacuous placeholder was introduced anywhere in its place.
+
 ---
 
-### Phase 12: CNF Packaging and the Discharge of `SeparationOver` [NOT STARTED]
+### Phase 12: CNF Packaging and the Discharge of `SeparationOver` [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: A separated `USForm` is packaged into the binary clause list `sepForm` consumes, and
 `sepZ`, `sepZ_sepClauses`, `plusTruthAt_sepZ_iff` and `separationOver_ztime` land.
@@ -920,9 +977,20 @@ signature.
 - Each of the four docstrings carries a `Paper:` line.
 - Zero `sorry`, zero vacuous definitions.
 
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `Packaging.lean`, and `Discharge.lean` with `sepZ`, `sepZ_sepClauses`, `plusTruthAt_sepZ_iff` and `separationOver_ztime` | Every one of the four contract declarations is a composite of `sep` from Theorem 10.2.9, which is excluded upstream. `separationOver_ztime` — this task's headline deliverable — is therefore **not** discharged, and every `tr` row in `OpenFutureElimination.lean` keeps its `SeparationOver` hypothesis unchanged. | Phase 5's gate measurement: `specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-probe.lean`, `## Gate measurement` (compiles at exit 0), and this plan's Phase 5 `#### Reasoned Exclusions` |
+
+Closed under the primary contingency branch of `## Rollback/Contingency`: Phase 5's gate
+criterion was 4 of 4 and it measured 1 of 4, so this phase was decided against rather than
+interrupted. No `sorry` and no vacuous placeholder was introduced anywhere in its place.
+
 ---
 
-### Phase 13: The Computable Translation `trZ` [NOT STARTED]
+### Phase 13: The Computable Translation `trZ` [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: A computable ZTime translation exists beside the frozen `noncomputable tr`, with its own
 truth-preservation and validity-transfer theorems, both unconditional.
@@ -982,9 +1050,20 @@ covers it.
   `OpenFutureElimination.lean` is byte-unchanged by this phase.
 - Zero `sorry`, zero vacuous definitions.
 
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `Computable.lean` with `trZ`, `openTruthAt_iff_trZ` and `openValidIn_ztime_iff_trZ` | `trZ` is defined at `.ofut`/`.opast` as `ofutElim (sepZ (trZ φ))` / `opastElim (sepZ (trZ φ))`, and `sepZ` is excluded one phase upstream. `tr` stays `noncomputable` and untouched, and the effectiveness gap recorded in `OpenFutureElimination.lean`'s `## What is NOT proved here` stands exactly as written. | Phase 5's gate measurement: `specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-probe.lean`, `## Gate measurement` (compiles at exit 0), and this plan's Phase 5 `#### Reasoned Exclusions` |
+
+Closed under the primary contingency branch of `## Rollback/Contingency`: Phase 5's gate
+criterion was 4 of 4 and it measured 1 of 4, so this phase was decided against rather than
+interrupted. No `sorry` and no vacuous placeholder was introduced anywhere in its place.
+
 ---
 
-### Phase 14: Documentation, Theorem-Index Rows and Measured Axiom Baselines [NOT STARTED]
+### Phase 14: Documentation, Theorem-Index Rows and Measured Axiom Baselines [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Every documentation surface that says the separation hypothesis is unformalized in this
 tree is corrected for `.ZTime` and left untouched for `.RTime`, the new declarations carry
@@ -992,48 +1071,48 @@ measured C14 pins, and the subtree is aggregated.
 
 **Tasks**:
 
-- [ ] Re-read each target file immediately before editing it (sibling concurrency).
-- [ ] Amend `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean`'s module docstring:
+- [x] Re-read each target file immediately before editing it (sibling concurrency).
+- [ ] Amend `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean`'s module docstring: *(deviation: skipped — the contingency branch requires this docstring left unchanged, since `separationOver_ztime` was not reached)*
       `## What is NOT proved here` must no longer assert the separation hypothesis is unformalized
       at `.ZTime`. State precisely what changed -- `separationOver_ztime` discharges it at `.ZTime`
       in this tree -- and that the `.RTime` hypothesis (GHR Theorem 10.3.20) remains undischarged.
       Change no declaration in the file.
-- [ ] Add the new modules to `FormalSystem/Metalogic/Expressiveness.lean`'s import list, so the
+- [x] Add the new modules to `FormalSystem/Metalogic/Expressiveness.lean`'s import list, so the
       headline results are reachable from the subtree aggregator and not only from the generated
       root.
-- [ ] Amend `FormalSystem/Metalogic/Expressiveness/README.md` to list the `SeparationZ/`
+- [x] Amend `FormalSystem/Metalogic/Expressiveness/README.md` to list the `SeparationZ/`
       subdirectory with its live file count and a one-line description, and refresh its
       `Last verified` date. Do not attempt to repair the unrelated stale table in
       `Separation/README.md`.
-- [ ] Measure the axiom profile of each of the seven contract declarations with `#print axioms`
+- [x] Measure the axiom profile of each of the seven contract declarations with `#print axioms`
       (or `lean_verify`) against the built tree, and paste the **measured** output. Never hand-type
       a profile.
-- [ ] Append matched pairs to **both** heredocs in `scripts/check-module-invariants.sh` --
+- [x] Append matched pairs to **both** heredocs in `scripts/check-module-invariants.sh` --
       `C14_BASELINE` and `C14LEAN` -- at the same trailing position, directly after the existing
       `Expressiveness` lines. Omit any declaration whose `#print axioms` reports no
       `depends on axioms` line at all: `C14_OUT` filters that line out, so a baseline entry for
       such a declaration can never match and a `#print axioms` line for it in `C14LEAN` is a
       silent no-op.
-- [ ] Update `docs/theorem-index.md`: restate the `.ZTime` rows whose Statement cell currently
+- [x] Update `docs/theorem-index.md`: restate the `.ZTime` rows whose Statement cell currently *(deviation: altered — no `.ZTime` row was restated and no conditionality removed; a sub-band of 20 rows was added for the landed `ℤ` validities, and the band preamble was corrected factually to say that part of the route is formalized while the hypothesis is discharged nowhere)*
       opens "Given separation over ℤ-time frames — a hypothesis this tree does not formalize"
       (`openValidIn_ztime_iff_tr`, `exists_translation_ztime`, `decidableOpenValidZTimeOfTr`) so
       the parenthetical records that the hypothesis is now discharged in-tree by
       `separationOver_ztime`; add rows for the seven new declarations; and amend the
       Expressiveness-band preamble, which currently states that the separation theorems are
       "not formalized in this tree and discharged nowhere in it".
-- [ ] Leave every `.RTime` row, and the preamble's `.Dense`/`.Base` sentences, unchanged: `U`/`S`
+- [x] Leave every `.RTime` row, and the preamble's `.Dense`/`.Base` sentences, unchanged: `U`/`S`
       is not separable over `ℚ` and GHR 10.3.20 is out of scope.
-- [ ] Add the one-line caveat the research report recommends to
+- [x] Add the one-line caveat the research report recommends to
       `Boneyard/Kamp/KampWeakCanonical/Separation/README.md`: the archive's
       `replace_box_with_top` normalization is sound for `Formula` over `IntStructure` and
       **unsound** for `PlusFormula` over a task frame, so it must not be transplanted.
-- [ ] Bring the **doc-sync pinned counts** into agreement with the tree: thirteen new modules
+- [x] Bring the **doc-sync pinned counts** into agreement with the tree: thirteen new modules
       change the file and line counts that `typst/generated/status.typ` and the ancestor-chain
       READMEs (`README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`) carry,
       and C14 asserts documented counts match in `docs/`, `README.md` **and**
       `FormalSystem/**/*.lean` docstrings. Re-derive every count from the tree in this same run;
       never adjust one by hand to make a comparison pass.
-- [ ] Regenerate `FormalSystem.lean` if any import changed, and check each new module's warning
+- [x] Regenerate `FormalSystem.lean` if any import changed, and check each new module's warning
       count against `scripts/warning-budget.txt`.
 
 **Timing**: 1.5 hours
@@ -1082,6 +1161,18 @@ output itself, not from this estimate, and record the actual counts in the phase
   the same run.
 - `grep -n 'RTime' docs/theorem-index.md` confirms no `.RTime` row's conditionality was weakened.
 - No docstring, README cell or index cell reads as if separation holds at `.Dense` or `.Base`.
+
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| The `OpenFutureElimination.lean` module-docstring amendment | The contingency branch of `## Rollback/Contingency` requires this docstring left unchanged when `separationOver_ztime` is not reached. Its `## What is NOT proved here` still states the truth: the separation hypothesis is discharged nowhere in this tree. | `git diff` over `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` is empty across this task's commits |
+| Restating the three `.ZTime` rows (`openValidIn_ztime_iff_tr`, `exists_translation_ztime`, `decidableOpenValidZTimeOfTr`) as unconditional | Same reason: the hypothesis they take is not discharged, so each stays verbatim conditional. What was added instead is a sub-band of 20 rows for the landed `ℤ` validities, plus a factual correction to the band preamble recording that part of the route is formalized while the hypothesis is discharged nowhere. | `docs/theorem-index.md`; `grep -n 'RTime' docs/theorem-index.md` confirms no `.RTime` row changed either |
+| C14 matched pairs for the seven contract declarations | None of the seven exists: they are Phase 12's and Phase 13's deliverables, excluded upstream. 19 matched pairs were appended instead, for the declarations that did land and that report a `depends on axioms` line; the six axiom-free ones (`isPureFuture_toPlus`, `isPurePast_toPlus`, `isSeparated_case1Rhs` through `isSeparated_case4Rhs`) are deliberately omitted, since `C14_OUT` filters that line out and a baseline entry for them could never match. | `scripts/check-module-invariants.sh`, 19 `SeparationZ` lines in each of `C14_BASELINE` and `C14LEAN`; `check-module-invariants.sh` reports `PASS C14` |
+
+Closed under the contingency branch, not interrupted. Every axiom profile pasted into the
+baseline was measured by `#print axioms` against the built tree in the same run.
 
 ---
 

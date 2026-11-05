@@ -23,10 +23,14 @@ two arguments:
 | 4 | `S(a, q ∨ ¬U(A,B))` | `snce (q ∨ ¬untl B A) a` |
 
 The four cases in which it occurs in **both** arguments (GHR's Cases 5-8) are **not** in this
-module. GHR's printed Case 5 is refuted over the integer flow, and Cases 6-8 are published only
-as reductions with acknowledged gaps; the reconstruction of Case 5 and the precisely located
-obstruction for Cases 6-8 are recorded in
-`specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-probe.lean`.
+module, and no declaration here depends on them. GHR's printed Case 5 is refuted over the
+integer flow by a counterexample on a `ℤ` model with `B` identically false, where the adjacency
+degeneracy `(t, t+1) ∩ ℤ = ∅` makes the `B`-guard vacuous; Cases 6-8 are published only as
+reductions with acknowledged gaps. The obstruction is structural rather than tactical: the
+guard-failure condition of a case whose **guard** carries `¬U(A,B)` is an `∃∀` over the window
+`(s,t]`, and re-anchoring it at its own rightmost witness retains a forward-looking,
+`t`-bounded conjunct, which is not a formula at the guard's own evaluation point and so cannot
+be an `S`-guard. The single-sign cases below have no such condition.
 
 ## Arbitrary parameters, not atoms
 
@@ -153,7 +157,8 @@ splits at `t` into its `(s,t)` part, its value at `t`, and its `(t,∞)` part; t
 the guard and the third is the one pure-future conjunct. This is the auxiliary Case 2's first
 summand needs, and it consumes no discreteness.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.3 (auxiliary to Case 2)
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
 -/
 theorem usTruth_snce_allFuture (a q X : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (USForm.snce q (a.and (USForm.allFuture X))) ↔
@@ -208,7 +213,8 @@ re-anchors the outer `S` at `u`, whose guard then carries `q` and whose event ca
 `A ∧ q ∧ S(a, B ∧ q)`; the `u = t` branch reads `A` off `t`; the `u > t` branch splits the
 `B`-guard of `(s,u)` at `t`, leaving `B ∧ U(A,B)` at `t` beside the pure-past `S(a, q ∧ B)`.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.3, Case 1
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
 -/
 theorem usTruth_case1 (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (USForm.snce q (a.and (USForm.untl B A))) ↔
@@ -251,7 +257,8 @@ The reduction: `usTruth_neg_untl` (GHR 10.2.2) rewrites the event's `¬U(A,B)` a
 (GHR 10.2.1) splits the `S`; `usTruth_snce_allFuture` finishes the `G¬A` summand and
 `usTruth_case1` the other, at the parameters `A := ¬A ∧ ¬B`, `B := ¬A`.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.3, Case 2
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
 -/
 theorem usTruth_case2 (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (USForm.snce q (a.and (USForm.untl B A).neg)) ↔
@@ -277,7 +284,8 @@ The reduction goes through the *negation*: `usTruth_neg_snce` (GHR 10.2.2's mirr
 shape at `a := ¬a ∧ ¬q`, `q := ¬a`. The right-hand side is therefore the negation of a separated
 formula, which is separated.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.3, Case 3
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
 -/
 theorem usTruth_case3 (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (USForm.snce (q.or (USForm.untl B A)) a) ↔
@@ -300,7 +308,8 @@ theorem usTruth_case3 (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
 The same move as Case 3, landing on Case 1's shape instead: the guard's `¬U(A,B)` becomes
 `¬¬U(A,B)`, i.e. `U(A,B)`.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.3, Case 4
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
 -/
 theorem usTruth_case4 (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (USForm.snce (q.or (USForm.untl B A).neg) a) ↔
@@ -323,6 +332,10 @@ Each is discharged as a theorem from `IsSOnly`/`IsUOnly` side conditions on the 
 parameters, never asserted in prose. In the intended application (GHR 10.2.4) the parameters are
 `untl`/`snce`-free, so both side conditions hold of all four. -/
 
+/-- Case 1's right-hand side is syntactically separated whenever the four parameters are.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
 theorem isSeparated_case1Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
     (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A) (hBu : IsUOnly B) :
     IsSeparated (case1Rhs a q A B) := by
@@ -333,6 +346,10 @@ theorem isSeparated_case1Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q
       (IsSeparated.and (IsSeparated.untl hBu hAu)
         (IsSeparated.ofIsSOnly (IsSOnly.snce (hq.and hBs) ha)))
 
+/-- Case 2's right-hand side is syntactically separated whenever the four parameters are.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
 theorem isSeparated_case2Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
     (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A) (hBu : IsUOnly B) :
     IsSeparated (case2Rhs a q A B) := by
@@ -342,12 +359,20 @@ theorem isSeparated_case2Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q
   exact isSeparated_case1Rhs ha hq (hAs.neg.and hBs.neg) hAs.neg
     (hAu.neg.and hBu.neg) hAu.neg
 
+/-- Case 3's right-hand side is syntactically separated whenever the four parameters are.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
 theorem isSeparated_case3Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
     (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A) (hBu : IsUOnly B) :
     IsSeparated (case3Rhs a q A B) :=
   (IsSeparated.or (IsSeparated.ofIsSOnly ha.neg.allPast)
     (isSeparated_case2Rhs (ha.neg.and hq.neg) ha.neg hAs hBs hAu hBu)).neg
 
+/-- Case 4's right-hand side is syntactically separated whenever the four parameters are.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
 theorem isSeparated_case4Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
     (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A) (hBu : IsUOnly B) :
     IsSeparated (case4Rhs a q A B) :=

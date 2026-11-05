@@ -55,6 +55,9 @@ namespace FormalSystem.Metalogic.Expressiveness.SeparationZ
 **The least witness strictly above `t`.** The discreteness of `ℤ` in the exact form the
 negation equivalences consume: a predicate holding somewhere above `t` holds at a least such
 point, below which it fails throughout the open interval.
+
+Paper: — (formalization-native; the manuscript carries no least-witness device for the
+integer flow)
 -/
 theorem exists_least_above {P : ℤ → Prop} {t : ℤ} (h : ∃ s : ℤ, t < s ∧ P s) :
     ∃ m : ℤ, t < m ∧ P m ∧ ∀ r : ℤ, t < r → r < m → ¬ P r := by
@@ -74,7 +77,8 @@ hold. At `m` both `¬A` and `¬B` hold, and on `(t, m)` both `B` (by leastness o
 (by leastness of `u`) hold. The `←` half is a trichotomy on the two witnesses and needs no
 discreteness.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.2
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
 -/
 theorem usTruth_neg_untl_strong (A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (USForm.untl B A).neg ↔
@@ -112,7 +116,8 @@ theorem usTruth_neg_untl_strong (A B : USForm) (v : ℕ → ℤ → Prop) (t : �
 The `→` half weakens the guard of `usTruth_neg_untl_strong`'s right-hand side; the `←` half is
 the same trichotomy, now reading `¬A` off the guard directly.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.2
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
 -/
 theorem usTruth_neg_untl (A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (USForm.untl B A).neg ↔
@@ -142,7 +147,8 @@ theorem usTruth_neg_untl (A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
 **GHR 10.2.2's `S`/`H` mirror of the variant form**, derived from
 `usTruth_neg_untl_strong` through `usTruth_swap_congr`.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.2
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
 -/
 theorem usTruth_neg_snce_strong (A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (USForm.snce B A).neg ↔
@@ -155,7 +161,8 @@ theorem usTruth_neg_snce_strong (A B : USForm) (v : ℕ → ℤ → Prop) (t : �
 **GHR 10.2.2's `S`/`H` mirror of the printed form**, derived from `usTruth_neg_untl` through
 `usTruth_swap_congr`.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.2
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
 -/
 theorem usTruth_neg_snce (A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (USForm.snce B A).neg ↔

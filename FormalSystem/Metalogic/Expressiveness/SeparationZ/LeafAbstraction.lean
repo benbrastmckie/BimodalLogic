@@ -212,7 +212,10 @@ theorem toPlus_abstrWith {g : ℕ → PlusFormula} {L : List PlusFormula} :
     exact h (.stab φ) (List.mem_singleton_self _)
 
 /-- **The roundtrip**: abstracting an L⁺ formula and resubstituting its own leaf table recovers
-it on the nose. -/
+it on the nose.
+
+Paper: — (formalization-native; the manuscript has no auxiliary until/since syntax and no
+leaf abstraction, so it carries no label for this) -/
 theorem toPlus_abstr (φ : PlusFormula) : toPlus (leafVal φ) (abstr φ) = φ :=
   toPlus_abstrWith φ fun _ hx => leafVal_idxOf hx
 
@@ -317,6 +320,9 @@ theorem isPurePast_toPlus {g : ℕ → PlusFormula}
 **Truth transfer.** Over a frame whose duration carrier is `ℤ`, `usTruth` at the leaf valuation
 induced by a leaf assignment `g` is `PlusTruthAt` of the resubstituted formula. The carrier is
 ascribed at `↑intOrder` in the binder, not at `ℤ`.
+
+Paper: — (formalization-native; the manuscript has no auxiliary until/since syntax and no
+leaf abstraction, so it carries no label for this)
 -/
 theorem usTruth_toPlus_iff {F : FrameOver intOrder} (M : TaskModel F.toTaskFrame)
     (τ : WorldHistory F.toTaskFrame) (g : ℕ → PlusFormula) :
@@ -354,6 +360,9 @@ pointwise equivalence over every regular ℤ-time task frame that `SeparationOve
 The route is `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` applied to
 `φ.iff ψ`: validity of the biconditional *is* the pointwise equivalence, in both directions, so
 the carrier normalization of L⁺ validity transports the pointwise statement unchanged.
+
+Paper: — (formalization-native; the manuscript has no auxiliary until/since syntax and no
+leaf abstraction, so it carries no label for this)
 -/
 theorem pointwise_ztime_of_pointwise_int {φ ψ : PlusFormula}
     (h : ∀ (F : FrameOver intOrder), F.IsRegular → ∀ (M : TaskModel F.toTaskFrame)
