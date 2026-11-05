@@ -1,0 +1,23 @@
+{
+  "phase": 5,
+  "phase_name": "Defect 3a — extract the plan-compliance spot-check into a testable script",
+  "started_at": "2026-11-05T06:05:00Z",
+  "last_updated": "2026-11-05T06:35:00Z",
+  "objectives": [
+    {"id": 1, "description": "Create lean-plan-compliance-check.sh with behaviour-identical extracted logic", "status": "done", "files_touched": ["agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh"]},
+    {"id": 2, "description": "Create test-lean-plan-compliance-check.sh characterization suite", "status": "done", "files_touched": ["agent-system/extensions/lean/scripts/tests/test-lean-plan-compliance-check.sh"]},
+    {"id": 3, "description": "Rewrite lean-implementation-agent.md step 5 to invoke the script", "status": "done", "files_touched": ["agent-system/extensions/lean/agents/lean-implementation-agent.md"]},
+    {"id": 4, "description": "Verify (do not edit) the two SKILL.md consumer stages still read compliance_check correctly", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Stage and commit with explicit three-file pathspec", "status": "in_progress", "files_touched": []}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "verification_notes": {
+    "behaviour_preservation": "Ran both the extracted script and a verbatim copy of the pre-extraction inline block against two fixture plans (a must-exist plan that resolves cleanly, and one naming a genuinely missing declaration). Both produced identical per-name [OK]/[MISSING] lines and the same passed/failed verdict in each case. Script output recorded verbatim in session transcript.",
+    "test_suite": "bash agent-system/extensions/core/scripts/tests/run-all.sh --only test-lean-plan-compliance-check.sh,test-lint-agent-contracts.sh,test-lint-agent-contracts-heartbeat.sh,test-lint-agent-contracts-await-notification.sh -> 4 passed, 0 failed. test-lint-agent-contracts.sh passing confirms the lean-implementation-agent.md markdown edit is contract-compliant.",
+    "new_suite_standalone": "bash agent-system/extensions/lean/scripts/tests/test-lean-plan-compliance-check.sh -> 8 passed, 0 failed (C1-C8, including two characterization cases pinning pre-existing quirks: no keyword denylist (C5), colon-anchored Goals range (C6)).",
+    "consumer_verification": "Grepped skill-lean-implementation/SKILL.md:192 and skill-lean-implementation-hard/SKILL.md:313 -- both read metadata.compliance_check via jq into the same passed/failed/skipped case vocabulary, unaffected by this phase's extraction. No edit made to either file.",
+    "bash_n": "bash -n on lean-plan-compliance-check.sh and test-lean-plan-compliance-check.sh -> OK"
+  }
+}

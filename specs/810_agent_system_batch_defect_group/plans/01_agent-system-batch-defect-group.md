@@ -470,33 +470,35 @@ still correct for it before proceeding.
 
 ---
 
-### Phase 5: Defect 3a — extract the plan-compliance spot-check into a testable script [NOT STARTED]
+### Phase 5: Defect 3a — extract the plan-compliance spot-check into a testable script [COMPLETED]
 
 **Goal**: The spot-check moves from inline bash inside `lean-implementation-agent.md` prose into
 a standalone script with its own test suite, **with its behaviour unchanged**, so Phase 6's
 polarity fix has something testable to change and task 780 has something testable to diff against.
 
 **Tasks**:
-- [ ] Create `agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh` containing the
+- [x] Create `agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh` containing the
   step-5 logic verbatim in behaviour: the Goals-block `sed` range extraction, the backticked-token
   harvest, the per-name declaration grep across the resolved Lean source roots, the
   `replacement_targets` integrity sweep, and the `passed`/`failed`/`skipped` verdict. Take the plan
   file and the Lean source roots as arguments; print the per-name `[OK]`/`[MISSING]`/
   `[INTEGRITY FAIL]` lines on stdout exactly as today and the verdict on a parseable last line.
-- [ ] Create `agent-system/extensions/lean/scripts/tests/test-lean-plan-compliance-check.sh` as a
+  *(completed; also emits a non-zero exit code on failed, a deliberate, documented addition)*
+- [x] Create `agent-system/extensions/lean/scripts/tests/test-lean-plan-compliance-check.sh` as a
   **characterization** suite written against the pre-extraction behaviour — including the existing
   quirks (colon-anchored Goals range; no keyword denylist, so a backticked `sorry` is harvested
   as a name to find). These cases pin today's behaviour so Phase 6's changes are visible as
   deliberate diffs rather than silent drift. `run-all.sh` auto-discovers the file via its
-  `extensions/*/scripts/tests/test-*.sh` glob, so no runner registration is needed.
-- [ ] Rewrite `lean-implementation-agent.md`'s Final Verification Stage step 5 to invoke the
+  `extensions/*/scripts/tests/test-*.sh` glob, so no runner registration is needed. *(completed:
+  8 cases, C1-C8)*
+- [x] Rewrite `lean-implementation-agent.md`'s Final Verification Stage step 5 to invoke the
   script and read its verdict, keeping the `Record: compliance_check (...)` contract line and the
-  `If "failed", set status: "partial"` instruction byte-identical in meaning.
-- [ ] Verify — do not edit — that `skill-lean-implementation/SKILL.md` Stage 6b and
+  `If "failed", set status: "partial"` instruction byte-identical in meaning. *(completed)*
+- [x] Verify — do not edit — that `skill-lean-implementation/SKILL.md` Stage 6b and
   `skill-lean-implementation-hard/SKILL.md` Stage 6a still read `compliance_check` correctly: the
   vocabulary is unchanged by this phase, so per D2 no consumer edit is due. Record the two
-  stage locations checked.
-- [ ] Stage and commit with an explicit three-file pathspec.
+  stage locations checked. *(completed: SKILL.md:192 and SKILL.md:313, both unchanged)*
+- [x] Stage and commit with an explicit three-file pathspec. *(completed)*
 
 **Timing**: 1.5 hours
 
