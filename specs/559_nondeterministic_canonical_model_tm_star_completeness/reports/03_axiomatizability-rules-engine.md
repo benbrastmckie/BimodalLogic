@@ -245,6 +245,17 @@ Consequences.
 > - **Net verdict.** The `Saturation` side is **unaffected**: no new obligation appears on either
 >   frame, and (H5), as task 878's finding 7 words it ("every doubly serial oriented forest over
 >   `ℤ` satisfies `TaskFrame.Saturation`"), needs no repair.
+>
+> **Multigraph convention, carried forward.** The construction above already takes the components
+> "as undirected multigraphs, orientation kept" — the convention is present there and is carried
+> forward here, not introduced. It has three consequences: a base opposite-edge pair `u → v`,
+> `v → u` lifts to **two distinct** cover edges to two distinct nodes; a base loop `u → u` lifts
+> to a ray; hence the cover `G̃` is a **simple** tree — no parallel edges, no loops, and therefore
+> **no directed 2-cycles**. The dependency runs both ways: the convention is what makes the
+> strengthened hypothesis *true* of the cover (without it, an opposite-edge pair survives as an
+> undirected 2-cycle and step 4's unique sink fails), and the absence of directed 2-cycles is what
+> task 878's finding 4 `Walk` predicate depends on. Two named consumers: step 4's unique sink
+> above, and the `Walk` predicate downstream.
 
 #### 1.3 Decidability at ZTime (paper, Medium-High; rests on a recalled theorem)
 

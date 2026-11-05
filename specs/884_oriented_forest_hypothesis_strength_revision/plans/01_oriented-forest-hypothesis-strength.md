@@ -252,26 +252,27 @@ line, rather than citing the reference that merely mentions the projection.
 
 ---
 
-### Phase 3: Carry the multigraph convention forward to the statement [NOT STARTED]
+### Phase 3: Carry the multigraph convention forward to the statement [COMPLETED]
 
 **Goal**: Make the orientation-keeping-undirected-multigraph convention explicit at the point
 where the hypothesis is stated, together with the three consequences that make the downstream
 `Walk` predicate correct.
 
 **Tasks**:
-- [ ] Confirm by re-reading that §1.2's construction already says the components are taken "as
+- [x] Confirm by re-reading that §1.2's construction already says the components are taken "as
       undirected multigraphs, orientation kept" — the convention is present in the construction
-      and is being carried forward, not introduced.
-- [ ] Record the three consequences, as 878 finding 1's first precision note derives them: a base
+      and is being carried forward, not introduced. *(completed)*
+- [x] Record the three consequences, as 878 finding 1's first precision note derives them: a base
       opposite-edge pair `u → v`, `v → u` lifts to two distinct cover edges to two distinct nodes,
       and a base loop `u → u` lifts to a ray; hence the cover is a **simple** tree — no parallel
-      edges, no loops, and therefore **no directed 2-cycles**.
-- [ ] State the dependency explicitly in both directions: the convention is what makes the
+      edges, no loops, and therefore **no directed 2-cycles**. *(completed)*
+- [x] State the dependency explicitly in both directions: the convention is what makes the
       strengthened hypothesis *true* of the cover (without it, an opposite-edge pair survives as
       an undirected 2-cycle and step 4's unique sink fails), and the absence of directed 2-cycles
-      is what 878 finding 4's `Walk` predicate depends on. Name both consumers.
-- [ ] Attach this to the Phase 1-2 amendment rather than editing §1.2's construction sentence, so
-      the construction text stays byte-identical.
+      is what 878 finding 4's `Walk` predicate depends on. Name both consumers. *(completed)*
+- [x] Attach this to the Phase 1-2 amendment rather than editing §1.2's construction sentence, so
+      the construction text stays byte-identical. *(completed; git diff confirms zero deletions
+      and the construction sentence itself unedited)*
 
 **Timing**: 0.5 hours
 
