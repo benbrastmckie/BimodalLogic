@@ -3712,6 +3712,7 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. Three sibling reco
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [769_plan_format_blocked_gate_and_status_ownership/reports/01_blocked-gate-and-status-ownership.md]
+- **Plan**: [769_plan_format_blocked_gate_and_status_ownership/plans/01_blocked-gate-and-status-ownership.md]
 
 **Description**: Add two missing provisions to `plan-format.md`: one admitting a pre-decided `[BLOCKED]` decision-gate phase, and one forbidding a plan from instructing the implementer to write the plan-level `Status` field.
 

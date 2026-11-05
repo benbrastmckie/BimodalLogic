@@ -1,32 +1,22 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "session_id": "sess_1793858282_9587e4_769",
-  "dispatch_seq": 1,
-  "findings_count": 6,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/769_plan_format_blocked_gate_and_status_ownership/reports/01_blocked-gate-and-status-ownership.md",
-      "summary": "Confirms both plan-format.md gaps against the originating precedent (task 760's archived plan) and the plan-status-ownership.md canonical fragment; drafts exact Provision 1 and Provision 2 text and insertion points; recommends dropping agents/planner-agent.md from the edit set with reasoning."
+      "type": "plan",
+      "path": "specs/769_plan_format_blocked_gate_and_status_ownership/plans/01_blocked-gate-and-status-ownership.md",
+      "summary": "Three-phase, 1.5-hour plan landing two prose provisions in the core source store's plan-format.md (blocked decision gate reconciled with the final-phase rule; plan-level Status field ownership plus sanctioned alternative), then deploying and running the full gate set."
     }
   ],
-  "memory_candidates": [
-    {
-      "content": "plan-format.md's 'Decision gates and contingency branches' subsection covers only a gate that executes and measures inside the plan (worked example: sweep fails, bypassed phases close COMPLETED WITH EXCLUSIONS). A gate already [BLOCKED] at plan-authoring time (measured and failed at research time, before any phase executes) is a distinct shape needing its own provision: it is exempt from the final-phase transitive-dependency rule's literal depends-on edge (place it in wave 1, Depends on: none, beside the first executable phase), but the final phase's full-tier verification must re-observe the gate's own measurement by name to preserve the rule's observe-all-work rationale. Precedent: specs/archive/760_ladder_model_cell_stabilization_lemma's plan, Phase 1 [BLOCKED]/Phase 4 final.",
-      "category": "PATTERN",
-      "source_artifact": "specs/769_plan_format_blocked_gate_and_status_ownership/reports/01_blocked-gate-and-status-ownership.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["plan-format", "decision-gate", "blocked-phase", "final-phase-rule", "wave-table"]
-    },
-    {
-      "content": "context/contracts/plan-status-ownership.md names plan-format.md's 'Plan-level vs. phase-level markers' subsection as the authority for the plan-level-Status ownership split, but as of this research that subsection documented only the two vocabularies, never the ownership/write-authority statement itself -- a canonical fragment can assert another file is authoritative for something that file does not yet say. Worth checking other 'pointed at, not restated' cross-references in context/contracts/*.md for the same latent gap.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/769_plan_format_blocked_gate_and_status_ownership/reports/01_blocked-gate-and-status-ownership.md",
-      "confidence": 0.6,
-      "suggested_keywords": ["plan-status-ownership", "canonical-fragment", "cross-reference-gap", "contracts"]
-    }
-  ],
-  "next_steps": "Run /orchestrate 769 to create implementation plan"
+  "memory_candidates": [],
+  "next_steps": "Run /orchestrate 769 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1793858282_9587e4_769",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 1.5,
+    "dependency_waves": [[1], [2], [3]]
+  },
+  "dispatch_seq": 2
 }
