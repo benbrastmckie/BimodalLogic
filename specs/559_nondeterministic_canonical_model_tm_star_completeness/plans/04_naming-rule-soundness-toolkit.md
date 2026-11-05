@@ -182,7 +182,7 @@ that enumerates, rather than trusting this list.
 
 ---
 
-### Phase 2: Two-way bounded morphisms and the one-step preimage lemma [NOT STARTED]
+### Phase 2: Two-way bounded morphisms and the one-step preimage lemma [COMPLETED]
 
 **Goal**: Introduce the `TwoWayBounded` notion for task frames and prove that, under the
 reflection convention, a single preimage-step condition quantified over all durations supplies
@@ -200,11 +200,11 @@ both of the probe's `forth` and `back` fields.
       `-x` through `FrameOver.reflection` — this is the lemma that discharges the probe's `back`
       field and is the content of finding (c)
 - [ ] Prove `TwoWayBounded.ofHistMap` / `HistMap.twoWayBounded`-direction lemmas only insofar as
-      they are needed by Phase 3; do not speculatively add both directions
+      they are needed by Phase 3; do not speculatively add both directions *(deviation: skipped — Phase 3 consumes neither direction; it builds a `HistMorphism` from `TwoWayBounded` directly, so both would be speculative, which this step's own "only insofar as they are needed" clause forbids)*
 - [ ] Docstring the structure with the finding-(c) narrative: why a task-frame two-way bounded
       morphism needs one condition where a digraph one needs two
-- [ ] Record `FrameOver.translationProductProj`'s underlying `Prod.fst` as the intended instance
-      in the docstring (do not re-prove it; `translationProductProj` already exists)
+- [x] Record `FrameOver.translationProductProj`'s underlying `Prod.fst` as the intended instance
+      in the docstring (do not re-prove it; `translationProductProj` already exists) *(deviation: altered — the docstring records it AND the phase's own verification criterion demands it be landed "as a worked instance, not as prose"; `FrameOver.translationProduct_twoWayBounded` therefore lands in `Frames/TranslationProduct.lean`, which the phase's Files-to-modify list omits, because `HistoryMorphism.lean` is below it in the import order)*
 
 **Timing**: 1 hour
 

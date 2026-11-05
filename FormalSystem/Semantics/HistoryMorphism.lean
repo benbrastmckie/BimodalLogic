@@ -65,6 +65,7 @@ No frame class excludes recurrence — the one-state frame over any temporal ord
 - `HistMap`, `HistMorphism` — history-lifting maps and morphisms over one temporal order
 - `HistMap.mapH` — the image of a world history
 - `HistMap.pullM` — the pulled-back model
+- `TwoWayBounded` — two-way bounded morphisms of task frames over one temporal order
 - `TaskFrame.RecurrenceFree` — no world history visits a world state twice
 
 ## Main Results
@@ -72,6 +73,8 @@ No frame class excludes recurrence — the one-state frame over any temporal ord
 - `HistMap.mapH_state` — the image history's state is the image of the state (`rfl`)
 - `HistMorphism.plus_invariance` — L⁺ truth is invariant along a history-lifting morphism
 - `HistMorphism.plusValidOn` — L⁺ frame validity travels from the source to the image
+- `TwoWayBounded.exists_preimage_step`, `.exists_preimage_step_neg` — the successor- and
+  predecessor-lifting forms, the second derived from the first by reflection
 - `trivialFrame_not_recurrenceFree` — the one-state frame has recurrence
 - `exists_sat_not_recurrenceFree` — every frame class contains a frame with recurrence
 
@@ -231,6 +234,73 @@ theorem HistMorphism.plusValidOn {D : TemporalOrder} {F' F : FrameOver D}
   rwa [hm] at this
 
 end PlusInvariance
+
+/-! ## Two-way bounded morphisms
+
+A two-way bounded morphism is the modal-logician's p-morphism, read at a task frame rather than
+at a digraph: the relation is carried forward, and every relational step out of an image state is
+in the image of a step out of the state itself.
+
+**Why one condition where a digraph needs two.** On a digraph a two-way bounded morphism carries
+three fields: a homomorphism condition, a *forth* condition lifting successors, and a *back*
+condition lifting predecessors. A task relation is already two-sided — `FrameOver.TaskRel` is the
+reflective extension of the primitive positive-cone relation, so `F.TaskRel w d u ↔
+F.TaskRel u (-d) w` holds outright (`FrameOver.reflection`) — and the backward condition is
+therefore the forward one at a negative duration. `TwoWayBounded` accordingly has two fields, and
+`TwoWayBounded.exists_preimage_step_neg` derives the predecessor-lifting form from the
+successor-lifting one rather than postulating it.
+
+The intended instance is `Prod.fst` on a translation product, the underlying function of
+`FrameOver.translationProductProj`; it is landed as
+`FrameOver.translationProduct_twoWayBounded` beside the product itself
+(`Frames/TranslationProduct.lean`), since this module is below it in the import order.
+-/
+
+section TwoWay
+
+/--
+**A two-way bounded morphism of task frames over one temporal order**: a function on world states
+that carries the task relation forward, and along which every task out of an image state lifts to
+a task out of the given state.
+
+`forth` is `HistMap.forth` verbatim. `step` is strictly weaker than `HistMap.lift`: it lifts one
+task, where `lift` lifts a whole history. Over discrete time the two are equivalent, which is
+`TwoWayBounded.exists_histMorphism_of_isZTime`.
+
+Paper: — (formalization-native; the paper defines no morphism of task frames)
+-/
+structure TwoWayBounded {D : TemporalOrder} {F' F : FrameOver D}
+    (f : F'.WorldState → F.WorldState) : Prop where
+  /-- The task relation is carried forward, exactly as `HistMap.forth` asks. -/
+  forth : ∀ a x b, F'.TaskRel a x b → F.TaskRel (f a) x (f b)
+  /-- Every task out of an image state lifts to a task out of the given state. -/
+  step : ∀ a x v, F.TaskRel (f a) x v → ∃ b, F'.TaskRel a x b ∧ f b = v
+
+namespace TwoWayBounded
+
+variable {D : TemporalOrder} {F' F : FrameOver D} {f : F'.WorldState → F.WorldState}
+
+/-- **The named, reusable form of the `step` field**: an `x`-successor of an image state is the
+image of an `x`-successor of the state. -/
+theorem exists_preimage_step (h : TwoWayBounded f)
+    (a : F'.WorldState) (x : ↑D) (v : F.WorldState) (hv : F.TaskRel (f a) x v) :
+    ∃ b : F'.WorldState, F'.TaskRel a x b ∧ f b = v :=
+  h.step a x v hv
+
+/-- **The predecessor-lifting form, derived rather than postulated**: an `x`-predecessor of an
+image state is the image of an `x`-predecessor of the state.
+
+This is the field a digraph two-way bounded morphism has to carry separately. Here it is `step`
+at `-x`, read through `FrameOver.reflection` on each side. -/
+theorem exists_preimage_step_neg [F'.IsRegular] [F.IsRegular] (h : TwoWayBounded f)
+    (a : F'.WorldState) (x : ↑D) (u : F.WorldState) (hu : F.TaskRel u x (f a)) :
+    ∃ c : F'.WorldState, F'.TaskRel c x a ∧ f c = u := by
+  obtain ⟨c, hc, hfc⟩ := h.step a (-x) u ((F.reflection u x (f a)).1 hu)
+  exact ⟨c, (F'.reflection c x a).2 hc, hfc⟩
+
+end TwoWayBounded
+
+end TwoWay
 
 /-! ## Recurrence-freeness -/
 
