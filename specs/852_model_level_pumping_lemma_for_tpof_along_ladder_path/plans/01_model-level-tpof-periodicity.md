@@ -207,42 +207,42 @@ whose downstream consumers are unchanged by an addition.
 
 ---
 
-### Phase 2: Compile the refutation of the unconditional form [NOT STARTED]
+### Phase 2: Compile the refutation of the unconditional form [COMPLETED]
 
 **Goal**: A new wired probe compiling that EVENTUAL periodicity of `tpOf` along an arbitrary
 ladder path — a threshold `N` and a period `p > 0`, the shape of `satThreshold`/`satPeriod` — is
 false, so that Phase 1's hypothesis is shown to be load-bearing rather than decorative.
 
 **Tasks**:
-- [ ] Create `specs/evidence/seam-gluing-ray-product/ladder-tpof-periodicity-refutation.lean`
+- [x] Create `specs/evidence/seam-gluing-ray-product/ladder-tpof-periodicity-refutation.lean`
   with the directory's house docstring structure: what was asked, what is settled, non-vacuity,
   what this probe does NOT show, what is refuted precisely, and verification.
-- [ ] Define the object: `Q := Bool`, `stepA : Bool → Bool → Bool := fun _ _ => true`,
+- [x] Define the object: `Q := Bool`, `stepA : Bool → Bool → Bool := fun _ _ => true`,
   `pendA : Bool → Bool := fun _ => false` (all idle, so `Count` pins the countdown to `0`),
   `labA : Bool → Atom → Bool` separating the two states on one atom.
-- [ ] Discharge `fwd`/`bwd` (seriality of `RladAdm` in both directions on the admissible carrier)
+- [x] Discharge `fwd`/`bwd` (seriality of `RladAdm` in both directions on the admissible carrier)
   as discharged hypotheses, not assumptions — follow the `fwdS`/`bwdS` pattern of
   `ladder-splice-type-refutation.lean` and the `ClimbWitness` fixture at
   `LadderChain.lean:1411-1460`.
-- [ ] Define the aperiodic walk `wA v := decide (∃ n : ℕ, (2 ^ n : ℤ) = v)` (classically, via
+- [x] Define the aperiodic walk `wA v := decide (∃ n : ℕ, (2 ^ n : ℤ) = v)` (classically, via
   `Classical.dec`), lift it to a ladder path, and obtain the history by
   `exists_hist_of_isLadderPath` / `exists_ladderPath_of_walk_nxt` as the sibling probes do.
-- [ ] Compile the tail-aperiodicity arithmetic: for every `p > 0` and every `N` there is an
+- [x] Compile the tail-aperiodicity arithmetic: for every `p > 0` and every `N` there is an
   `n : ℕ` with `2 ^ n ≥ N`, `2 ^ n > p`, hence `2 ^ n < 2 ^ n + p < 2 ^ (n + 1)`, so `2 ^ n` is a
   power of two and `2 ^ n + p` is not.
-- [ ] State the target as a schema `TpOfEventualPeriodicity` (universally quantified over the
+- [x] State the target as a schema `TpOfEventualPeriodicity` (universally quantified over the
   object, the label, `φ`, the path, its presentation and the stab-free closure condition,
   concluding `∃ N p, 0 < p ∧ ∀ z ≥ N, tpOf σ (z + p) = tpOf σ z`) and compile
   `tpOf_periodicity_refuted_unconditional : ¬ TpOfEventualPeriodicity`.
-- [ ] Carry non-vacuity on both sides explicitly: the separating atom is IN one realized type and
+- [x] Carry non-vacuity on both sides explicitly: the separating atom is IN one realized type and
   NOT in the other, so neither type is empty and the inequality is not an artefact.
-- [ ] In "what this probe does NOT show", state that it refutes nothing about
+- [x] In "what this probe does NOT show", state that it refutes nothing about
   `tpOf_periodic_of_objAt_periodic` (whose hypothesis the witness violates at every `l`), nothing
   about the duplication type lemma, nothing about the realized-chain bridge, and that it is a
   statement about PERIODICITY and not a restatement of `splice_type_invariance_refuted`.
-- [ ] `#print axioms` on every headline theorem; record the profile in the docstring's
+- [x] `#print axioms` on every headline theorem; record the profile in the docstring's
   Verification block.
-- [ ] Compile with `lake env lean` on the probe file and commit.
+- [x] Compile with `lake env lean` on the probe file and commit.
 
 **Timing**: 2 hours
 
