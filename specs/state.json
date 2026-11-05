@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 870,
+  "next_project_number": 872,
   "active_projects": [
     {
       "project_number": 868,
@@ -184,6 +184,7 @@
       "title": "Build the L^▷ proof system: OpenAxiom, OpenDerivationTree, soundness and conservativity",
       "description": "IMPLEMENTATION TASK, gated: build the proof system for L^▷ -- `OpenAxiom`, `OpenDerivationTree`, and their soundness recursion -- beside `FormalSystem/OpenLanguage/`'s existing semantic half, plus the two conservativity directions over TM⁺ and the collapse under `Determined`. This is a PREREQUISITE for any completeness statement about L^▷ and it is currently owed by nobody.\n\nTHE GAP THIS FILLS, VERIFIED AT FILING. `FormalSystem/OpenLanguage/` is 1,611 lines over six files (`Formula.lean`, `OpenTruth.lean`, `OpenValidity.lean`, `OpenClasses.lean`, `OpenReversal.lean`, `OpenOckhamist.lean`), sorry-free, and carries NO proof system: no axiom type, no derivation tree, no soundness theorem. Task 559 names this exact omission and the exact remedy -- \"The sanctioned home for a proof system over L^▷ is a NEW OpenAxiom/OpenDerivationTree beside OpenLanguage/'s semantic half, which perturbs no existing recursion\" -- and explicitly defers the work: \"it is not to be built from this task either: this task reports, and files the implementation as its own lean4 task\". This is that task.\n\nDEPENDENCY, AND IT IS A HARD GATE, NOT A COURTESY. This task declares the ▷-definability check as a dependency and MUST NOT be entered before that verdict is in. If ▷ turns out L⁺-definable, L^▷ is a notational variant of L⁺, `PlusAxiom`/`PlusDerivationTree` already are its proof system, and this entire task is unnecessary -- building it first would be the single most expensive way to learn that. Re-read that verdict before planning.\n\nWHAT TO BUILD, and the template is named rather than invented. `FormalSystem/PlusLanguage/README.md`'s \"Extension recipe: adding a `PlusAxiom` constructor\" is the per-constructor cost model: `PlusAxiom` is closed, exactly three declarations pattern-match on its constructors (`PlusAxiom.minFrameClass`, `plusAxiom_validIn_min`, `plusAxiom_reflect_time_validIn_min`), neither dispatch lemma has a wildcard arm, and every other module reaches the axiom type only through `minFrameClass` and the two lifted forms. Mirror that shape for `OpenAxiom`: one constructor line, one `minFrameClass` arm, one validity arm and one reflection-validity arm per schema, with the reflection arm cheap because `reflectTime` fixes ⊡ and exchanges ▷ with ◁ (`OpenReversal.lean`), so every ◁ obligation is one line from its ▷ twin through `openValid_reflectTime`.\n\nTHE SCHEMA SET, from 559's (P2) candidate, each with its soundness status as recorded there. Soundness is LARGELY PRE-BUILT and that is the reason this task is tractable: the S5 laws for ▷ and for ◁ (`ofut_k`, `of_ofut`, `ofut_four`, `ofut_five` and the four `opast` mirrors), the ordering `□ ⟹ ⊡ ⟹ ▷/◁` (`stab_of_box`, `ofut_of_stab`, `opast_of_stab`), strictness at every link, incomparability of ▷ and ◁, HN for ▷ (`hnOpen_openValid`, and refuted for ⊡ by `hnStab_refuted_sinkFrame` -- do not state HN for ⊡), and the reversal transport are all landed in `OpenLanguage/`. What is missing is the proof system, not the semantics. The two rigidity schemata `◁φ⁺ ↔ φ⁺` and `▷ψ⁻ ↔ ψ⁻` have their semantic halves landed as `PlusLanguage.truth_congr_agreeFrom` and `truth_congr_agreeUpTo`. The definability equation `⊡φ ↔ ▷◁φ` comes from the OpenLanguage landing of that biconditional -- declare that task as a dependency too, or cite its landed names if it has already run.\n\nWHAT IS EXPLICITLY NOT IN SCOPE, each of these being a way to get this task wrong.\n- NO COMPLETENESS CLAIM, in any form, for any frame class. This task delivers a sound system and nothing more. 559's binding obstruction is closedness of the canonical bundle and ▷/◁ supply no closure principle; `plus_incomplete_base` stands exactly as proved; `blc` stays a non-theorem; an LC_n-style schema is still required in L^▷ exactly as in L⁺. Any docstring sentence suggesting otherwise is a defect.\n- ADD NO CONSTRUCTOR to `PlusFormula`, `PlusAxiom` or `PlusDerivationTree`, and do not alter `OpenFormula`'s nine constructors. The separate-inductive-plus-embedding architecture (`ofPlus : PlusFormula → OpenFormula`, constructor-to-constructor, every derived operator sharing its `PlusFormula` namesake's right-hand side so `ofPlus` commutes by `rfl`) is the pattern and it is load-bearing: mutating `PlusFormula` would turn the landed `plus_incomplete_base`, the Independence block and both conservativity directions over TM into statements about a different language, requiring re-proof rather than inheritance.\n- Do NOT define ⊡ away as `▷◁`. `OpenFormula.stab` stays PRIMITIVE. The ← half of the biconditional needs `[F.IsRegular]`, so a syntactic abbreviation would change ⊡'s truth conditions off the regular class; and the decidability front's one working anchor for ⊡ is one bit per cell (`stab_mem_tpOf_iff_cell`, resting on `stab_state_only`), which routing through two non-state-local operators would lose. Definability here means a proved biconditional with the primitive retained.\n- A schema valid only over a restricted frame class that no `FrameClass` tag denotes must NOT be added to the axiom type; state its validity through the frame-predicate form instead, exactly as the `PlusLanguage` recipe directs for `Determined`.\n\nTHE THREE BASELINES ANY CANDIDATE MUST MEET, from 559's own list, and they are acceptance criteria rather than suggestions. (1) Soundness over all task frames of the class, one lemma per new constructor. (2) Conservativity over TM⁺ in BOTH directions -- which the definability equation makes statable rather than conditional, in deliberate contrast to `Conservativity.starConservative_of_plusComplete`, whose hypothesis is FALSE at Base by `plus_incomplete_base`; do not model this task's conservativity statement on that one. (3) Collapse under `Determined`, where ⊡ = ▷ = ◁ = id on a deterministic frame, so the landed deterministic completeness must still be recovered.\n\nLAYERING AND THE GATES THAT CHECK IT. Syntax-layer files import nothing from `FormalSystem/Semantics/` and no semantic module of any language -- `OpenLanguage/Formula.lean` records this as a module invariant and `scripts/check-metalogic-cycles.sh` checks the edge. Every new file under a language directory needs a row in the `LANGUAGE_FILE_LAYERS` table of `scripts/measure-refactor-partitions.py` or `check-metalogic-cycles.sh` FAILS naming the file; add the row in the same phase as the file. `docs/theorem-index.md` is the repository's single ledger and every result needs a row there: statement, fully-qualified Lean name, file, frame class, pinned axiom set. The README's generated inventory block is NOT hand-edited -- re-run `bash scripts/check-module-invariants.sh --emit-inventory`.\n\nVERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, then the unscoped build for final verification; never bare `lake`. Zero `sorry`, zero vacuous definitions. `bash scripts/check-module-invariants.sh` (bare form -- a flagged subset's exit 0 is not the whole gate) and `bash scripts/check-metalogic-cycles.sh` both green. Axiom sets measured per declaration and compared against the semantic halves being lifted; picking up `Classical.choice` where the semantic half was choice-free is a regression, not a new baseline.\n\nSIZING. This is multi-dispatch work: a new axiom type, a new derivation tree, a soundness recursion over both, two conservativity directions and a collapse theorem. Expect it to be planned in phases with one schema family per phase, not landed in one round.",
       "file_scope": [
+        "FormalSystem.lean",
         "FormalSystem/Metalogic/Conservativity.lean",
         "FormalSystem/Metalogic/Conservativity/Open.lean",
         "FormalSystem/Metalogic/Conservativity/Open/Forward.lean",
@@ -6972,6 +6973,882 @@
         ],
         "scope_blind_collapsed": 451,
         "collapse_note": "scope-blind verdicts collapsed to a count to fit the state-write audit gate argv limit; the full unfiltered audit is reproducible by re-running audit-task-proposals.sh with this proposal id, title, description and file_scope."
+      }
+    },
+    {
+      "project_number": 870,
+      "project_name": "oriented_forest_saturation",
+      "title": "Oriented-forest Saturation lemma for TaskFrame",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "semantics",
+      "created": "2026-11-05T16:35:44Z",
+      "last_updated": "2026-11-05T16:35:44Z",
+      "next_artifact_number": 1,
+      "description": "Prove that every oriented forest (a frame in which directed paths between any two nodes are unique) satisfies the literal TaskFrame.Saturation obligation, following report 03 section 1.2's five-step argument against the literal definition, as a Semantics/ lemma beside the existing saturation_of_* family (natural home: next to saturation_of_fib_finite). State the path-uniqueness hypothesis explicitly rather than assuming a forest data structure. This unblocks two independent fronts: the AA carrier layer-split route located in specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md finding 4, and the MSO cover step at ZTime (report 03 section 1.3 step 2, the countable-oriented-forest cover). Independent of SeparationOver, of Rabin's theorem, and of the ladder/RaySummary files held by other in-flight tasks.",
+      "file_scope": [
+        "FormalSystem/Semantics/TaskFrame.lean"
+      ],
+      "dependencies": [],
+      "audit_verdict": {
+        "proposal": {
+          "id": "oriented_forest_saturation",
+          "project_number": null,
+          "title": "Oriented-forest Saturation lemma for TaskFrame"
+        },
+        "verdicts": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 827,
+            "project_name": "plan_self_consistency_and_artifact_existence",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4057971014492754
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 869,
+            "project_name": "open_modal_invariance_ray_agreement_lifting",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.43478260869565216
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 796,
+            "project_name": "time_reflection_bl_tr_valid_anti_iso",
+            "discharging_artifact": {
+              "path": "specs/796_time_reflection_bl_tr_valid_anti_iso/plans/01_time-reflection-bl-tr-valid.md",
+              "type": "plan",
+              "summary": "6-phase plan, all phases [COMPLETED], with the Lean Challenge Statements block pinning all eleven target signatures."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.13043478260869565
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 756,
+            "project_name": "repin_lem_nullity_after_paper_strengthening",
+            "discharging_artifact": {
+              "path": "specs/756_repin_lem_nullity_after_paper_strengthening/summaries/01_repin-lem-nullity-paper-strengthening-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the 27-anchor re-pin, the in-tree verbatim corrections, what was deliberately left alone, and the full gate evidence."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.18840579710144928
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 748,
+            "project_name": "revise_and_create_tasks_lplus_decidability",
+            "discharging_artifact": {
+              "path": "specs/748_revise_and_create_tasks_lplus_decidability/summaries/04_task-graph-revisions-and-roadmap-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for plan 03: four creations, two revisions, one subsumption close, and the roadmap hand-edit, with every deviation recorded."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4492753623188406
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 746,
+            "project_name": "hit_level_soundness_realize_presentation_b2b",
+            "discharging_artifact": {
+              "path": "specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md",
+              "type": "plan",
+              "summary": "8 phases, 6 waves, 14 hours: Cons (untl half transcribed from a compiled probe, snce mirror proved outright), modelOf via ofSlicedStep on W := Q, presented_modelOf through eq_clTrace_of_localRun_anchored, and the Hit-level corollary, with 8 Challenge-pinned signatures."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4492753623188406
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 737,
+            "project_name": "discharge_presents_mso_reduction_seam_summary",
+            "discharging_artifact": {
+              "path": "specs/737_discharge_presents_mso_reduction_seam_summary/summaries/01_discharge-presents-verdict-summary.md",
+              "type": "summary",
+              "summary": "Field-by-field verdict, what landed where, measured axiom profiles, the B1-B4 residue (CARRIED-UNVERIFIED costs), and the recommendation to re-point the assembly record at Hit."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.42028985507246375
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 719,
+            "project_name": "ray_layer_seam_gluing_and_stab_fibre",
+            "discharging_artifact": {
+              "path": "specs/719_ray_layer_seam_gluing_and_stab_fibre/summaries/01_ray-layer-seam-gluing-stab-fibre-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the two new modules, the four pinned keystone axiom rows, the measured pre-edit gate baseline, the recorded verdicts, the wired E1 probe, and five annotated plan deviations."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4782608695652174
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 718,
+            "project_name": "omega_sequence_decidability_full_lplus",
+            "discharging_artifact": {
+              "path": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for all 7 plan phases."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.6086956521739131
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 706,
+            "project_name": "lplus_finite_model_property_and_completeness",
+            "discharging_artifact": {
+              "path": "specs/706_lplus_finite_model_property_and_completeness/summaries/01_land-finite-carrier-refutation-summary.md",
+              "type": "summary",
+              "summary": "Execution summary for the library landing of the finite-carrier refutation family."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5507246376811594
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 564,
+            "project_name": "sheaf_clause_gluing_and_starpasting_generalization",
+            "discharging_artifact": {
+              "path": "specs/564_sheaf_clause_gluing_and_starpasting_generalization/summaries/02_sheaf-clause-and-seam-dedup-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: per-phase gate exit codes, the full #print axioms table, all four confirmed Scope Hypotheses, and both pre-existing gate failures reported rather than fixed."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.2898550724637681
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 707,
+            "project_name": "ztime_no_finite_carrier_fmp_context_note",
+            "discharging_artifact": {
+              "path": "specs/707_ztime_no_finite_carrier_fmp_context_note/summaries/01_ztime-no-finite-carrier-fmp-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary, amended with the dispatch-10 C5 citation correction"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4057971014492754
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 656,
+            "project_name": "refactor_task_frames_general_with_frame_constraints",
+            "discharging_artifact": {
+              "path": "specs/656_refactor_task_frames_general_with_frame_constraints/summaries/01_general-frames-regular-constraints-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary with the complete migration table, checked against git diff --stat (109 files, 3503 insertions, 819 deletions since the plan commit)."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.2753623188405797
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 636,
+            "project_name": "docstring_and_citation_normalisation",
+            "discharging_artifact": {
+              "path": "specs/636_docstring_and_citation_normalisation/summaries/01_docstring-citation-normalisation-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary with the full before/after acceptance table, every plan deviation, and six follow-ups."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.07246376811594203
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 585,
+            "project_name": "burn_down_compiler_warnings_and_add_gate",
+            "discharging_artifact": {
+              "path": "specs/585_burn_down_compiler_warnings_and_add_gate/summaries/02_warning-burndown-and-c28-gate-summary.md",
+              "type": "summary",
+              "summary": "Burned 348 compiler warnings to 0 and landed C28, a build-free warning ratchet, enforced against a zero baseline with --wfail wired as the second gate."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.14492753623188406
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 588,
+            "project_name": "triage_zero_occurrence_declarations",
+            "discharging_artifact": {
+              "path": "specs/588_triage_zero_occurrence_declarations/summaries/02_c17-census-filter-and-triage-summary.md",
+              "type": "summary",
+              "summary": "C17's dead-declaration census filtered from 1,020 to 771 and triaged into six dispositioned clusters; the one unambiguous cluster (80 unreferenced defs) deleted across three verified batches, final headline 698, drop reconciled to zero residue."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.10144927536231885
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 540,
+            "project_name": "docstring_coverage_class_instance_lemma",
+            "discharging_artifact": {
+              "path": "specs/540_docstring_coverage_class_instance_lemma/summaries/01_instance-docstring-coverage-summary.md",
+              "type": "summary",
+              "summary": "C19 per-keyword reporting plus 20 instance docstrings; all three categories at or above floor."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.14492753623188406
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 615,
+            "project_name": "close_world_history_reach_through_residue",
+            "discharging_artifact": {
+              "path": "specs/615_close_world_history_reach_through_residue/plans/01_close-reach-through-residue.md",
+              "type": "plan",
+              "summary": "Six-phase plan closing the 36-site world-history reach-through residue: add the respects_task accessor, sweep 22 call sites in two territory-disjoint phases, fix two layer-crossing defects, delete the dead CoeOut instance, record the triage and hold the axiom gate."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.17391304347826086
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 596,
+            "project_name": "nest_semantics_language_family_files",
+            "discharging_artifact": {
+              "path": "specs/596_nest_semantics_language_family_files/summaries/01_nest-semantics-language-family-summary.md",
+              "type": "summary",
+              "summary": "15 language-family semantics modules nested into Semantics/{Minus,Plus,Star}Language/ with aggregators; C8 extended to Semantics/; ForMathlib README written."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.10144927536231885
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 584,
+            "project_name": "reconcile_lean_tree_with_paper_vocabulary",
+            "discharging_artifact": {
+              "path": "specs/584_reconcile_lean_tree_with_paper_vocabulary/summaries/02_paper-vocabulary-reconciliation-summary.md",
+              "type": "summary",
+              "summary": "Paper-definition drift absorbed (14 re-hashed, thm:M5-valid retired), full TD->TR rename with carve-outs, labels adopted, naming audit closed, record re-pinned, check wired into CI with skip-neutral path."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.17391304347826086
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 542,
+            "project_name": "dead_declaration_triage_c17_findings",
+            "discharging_artifact": null,
+            "mechanical_class": "subset",
+            "semantic_score": 0.057971014492753624
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 577,
+            "project_name": "abstract_validity_layer_over_truth_class",
+            "discharging_artifact": {
+              "path": "specs/577_abstract_validity_layer_over_truth_class/summaries/01_abstract-validity-layer-truth-class-summary.md",
+              "type": "summary",
+              "summary": "Validity layer and derived-operator clause layer abstracted over PointTruth/TruthEnv classes and instantiated for all four object languages; 77 per-language proof bodies delegated with zero statement changes."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.2608695652173913
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 541,
+            "project_name": "formalsystem_init_transitive_import_adoption",
+            "discharging_artifact": {
+              "path": "specs/541_formalsystem_init_transitive_import_adoption/summaries/01_init-transitive-import-adoption-summary.md",
+              "type": "summary",
+              "summary": "Eleven import lines give every FormalSystem module a transitive path to FormalSystem.Init; checkInitImports made exit-status-correct and wired into the invariants harness as enforced check C24."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.07246376811594203
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 546,
+            "project_name": "rename_frameclass_tags_to_ztime_rtime",
+            "discharging_artifact": {
+              "path": "specs/546_rename_frameclass_tags_to_ztime_rtime/summaries/01_ztime-rtime-rename-summary.md",
+              "type": "summary",
+              "summary": "FrameClass.Discrete/.Dedekind renamed to .ZTime/.RTime across 152 files; all gates green"
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.14492753623188406
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 517,
+            "project_name": "rename_spherical_axiom_to_saturation",
+            "discharging_artifact": {
+              "path": "specs/517_rename_spherical_axiom_to_saturation/summaries/01_spherical-to-saturation-rename-summary.md",
+              "type": "summary",
+              "summary": "Spherical -> Saturation rename: 3 phases, all gates green, 0 unresolvable anchors"
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.08695652173913043
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 523,
+            "project_name": "frame_kit_helpers_transport_standard_frames",
+            "discharging_artifact": {
+              "path": "specs/523_frame_kit_helpers_transport_standard_frames/summaries/01_frame-kit-helpers-transport-summary.md",
+              "type": "summary",
+              "summary": "Updated implementation summary: status IMPLEMENTED, Phase 10 resolution, induction-phi ledger at three, resumed-dispatch verification rows"
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.2318840579710145
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 512,
+            "project_name": "bundle_duration_into_taskframe",
+            "discharging_artifact": {
+              "path": "specs/512_bundle_duration_into_taskframe/summaries/02_temporal-order-fibration-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for the temporal-order fibration: what landed, the binder criterion, verification, deviations and follow-ups."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.21739130434782608
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 469,
+            "project_name": "eliminate_the_bridge_filtration_into_intpresentation",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/469_eliminate_the_bridge_filtration_into_intpresentation/summaries/01_capture-verdict-and-followups-summary.md",
+              "summary": "Implementation summary: five findings captured into docstrings across 10 files (283 added lines, zero deletions), plus three separated follow-up tasks."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4057971014492754
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.43478260869565216
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 441,
+            "project_name": "effective_periodic_extension_over_finite_frames",
+            "discharging_artifact": {
+              "path": "specs/441_effective_periodic_extension_over_finite_frames/summaries/01_effective-periodic-extension-summary.md",
+              "type": "summary",
+              "summary": "Ten phases complete: two-tier effective periodic extension over finite Z-frames, agreement lemma with three limits, machine-checked axiom evidence."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.2028985507246377
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 440,
+            "project_name": "finite_frame_discharge_of_spherical_and_limit",
+            "discharging_artifact": {
+              "path": "specs/440_finite_frame_discharge_of_spherical_and_limit/plans/01_finite-spherical-discharge.md",
+              "type": "plan",
+              "summary": "5-phase plan for finite-frame discharge of spherical and limit obligations."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.4927536231884058
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5942028985507246
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 442,
+            "project_name": "revise_bimodal_reference_book_against_paper_and_lean",
+            "discharging_artifact": {
+              "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/summaries/01_book-paper-lean-revision-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all 16 phases: what changed, decisions, plan deviations (none), impacts, follow-ups."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5362318840579711
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 180,
+            "project_name": "line_limit_compliance_and_publication_residue",
+            "discharging_artifact": {
+              "path": "specs/180_line_limit_compliance_and_publication_residue/summaries/01_line-limit-compliance-residue-summary.md",
+              "type": "summary",
+              "summary": "598 to 0 longLine violations across 65 files; harness repaired; copyright 331/331 and universe-polymorphism empty recorded as verified"
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.15942028985507245
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 131,
+            "project_name": "refactor_module_organization",
+            "discharging_artifact": {
+              "path": "specs/131_refactor_module_organization/summaries/01_module-reorganization-summary.md",
+              "type": "summary",
+              "summary": "Module reorganization: 13/13 phases, invariants preserved"
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.08695652173913043
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 402,
+            "project_name": "systematic_mathlib_naming_upgrade",
+            "discharging_artifact": {
+              "path": "specs/402_systematic_mathlib_naming_upgrade/summaries/01_mathlib-naming-upgrade-summary.md",
+              "type": "summary",
+              "summary": "Execution summary: all 8 phases; defsWithUnderscore 861 -> 0 by genuine conformance with nolints.json deleted; 845 declarations renamed across 25,640 resolved-reference spans in 284 files."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.3188405797101449
+          }
+        ],
+        "scope_blind_count": 453,
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 451
+      }
+    },
+    {
+      "project_number": 871,
+      "project_name": "lcu_omega_chain_record_repair",
+      "title": "Correct LCU docstring and restore omega_chain segment-property parameter",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "metalogic",
+      "created": "2026-11-05T16:37:24Z",
+      "last_updated": "2026-11-05T16:37:24Z",
+      "next_artifact_number": 1,
+      "description": "Small, purely corrective library repair with three parts, all confirmed against the live tree: (1) correct PlusLCSchema.lean's docstring claim that LCU is the n=1 instance of lcN -- LCU is the until-form with two parameters and untl, while lcN 1 is the F-form with one parameter; (2) restore the landed omega_chain's dropped segment-property parameter P together with its stability hypothesis, matching specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean lines 659-684, which carries both; (3) state backward LC_n as the one-line plusValidIn_reflectTime corollary of lcN_plusValidZTime, since the doubled automaton route needs it and it costs only a corollary. Declaring the until-form LCU itself is explicitly NOT in scope here and waits on the oriented-forest Saturation lemma and task 867 (SeparationOver).",
+      "file_scope": [
+        "FormalSystem/PlusLanguage/PlusLCSchema.lean",
+        "FormalSystem/PlusLanguage/PlusOmegaChain.lean",
+        "FormalSystem/PlusLanguage/README.md"
+      ],
+      "dependencies": [],
+      "audit_verdict": {
+        "proposal": {
+          "id": "lcu_omega_chain_record_repair",
+          "project_number": null,
+          "title": "Correct LCU docstring and restore omega_chain's segment-property parameter"
+        },
+        "verdicts": [
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 864,
+            "project_name": "land_lc_schema_limit_closure_soundness",
+            "discharging_artifact": {
+              "path": "specs/864_land_lc_schema_limit_closure_soundness/summaries/01_lc-schema-limit-closure-soundness-summary.md",
+              "type": "summary",
+              "summary": "Six-phase port record: evidence promotion, omega-limit kernel, splice/omega-chain, LC_n syntax, ZTime validity, ledger and gates."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.3188405797101449
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 833,
+            "project_name": "stab_definable_from_open_modals",
+            "discharging_artifact": {
+              "path": "specs/833_stab_definable_from_open_modals/summaries/01_stab-definable-from-open-modals-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the six landed declarations, the three documentation surfaces, the full verification record, and the two generator-owned-file deviations."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.43478260869565216
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 789,
+            "project_name": "prove_app_gluing_general_convex_overlap",
+            "discharging_artifact": {
+              "path": "specs/789_prove_app_gluing_general_convex_overlap/summaries/01_general-convex-gluing-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the general app:gluing module, its wiring, the C14 choice-free pin, the repointed citation surface, five recorded plan deviations, and the paper-side leanproof follow-up for the author."
+            },
+            "mechanical_class": "overlap",
+            "semantic_score": 0.14492753623188406
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 793,
+            "project_name": "after_operator_negation_equivalence",
+            "discharging_artifact": {
+              "path": "specs/793_after_operator_negation_equivalence/summaries/01_after-operator-negation-equivalence-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: what landed, the five theorems with measured axiom sets, three recorded plan deviations, and every gate exit status."
+            },
+            "mechanical_class": "overlap",
+            "semantic_score": 0.10144927536231885
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 788,
+            "project_name": "reduce_tm_and_extensions_to_minimal_axiom_sets",
+            "discharging_artifact": {
+              "path": "/home/benjamin/Projects/BimodalLogic/specs/788_reduce_tm_and_extensions_to_minimal_axiom_sets/summaries/01_reduce-tm-minimal-axiom-sets-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary with verification, decisions, and the recorded plan deviations."
+            },
+            "mechanical_class": "overlap",
+            "semantic_score": 0.10144927536231885
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 800,
+            "project_name": "stability_time_reflection_transport",
+            "discharging_artifact": {
+              "path": "specs/800_stability_time_reflection_transport/summaries/01_stability-time-reflection-transport-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: fifteen declarations across five phases, the three plan deviations, the full verification record, and five follow-ups."
+            },
+            "mechanical_class": "overlap",
+            "semantic_score": 0.2753623188405797
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 720,
+            "project_name": "promote_fmp_width_refutations_to_evidence",
+            "discharging_artifact": {
+              "path": "specs/720_promote_fmp_width_refutations_to_evidence/summaries/01_ci-repair-and-citation-repoint-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: tracked-ness check, WIRED_REPO deletions, README re-points, source-store mv note, full gate results."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4057971014492754
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 746,
+            "project_name": "hit_level_soundness_realize_presentation_b2b",
+            "discharging_artifact": {
+              "path": "specs/746_hit_level_soundness_realize_presentation_b2b/plans/01_hit-level-soundness-b2b.md",
+              "type": "plan",
+              "summary": "8 phases, 6 waves, 14 hours: Cons (untl half transcribed from a compiled probe, snce mirror proved outright), modelOf via ofSlicedStep on W := Q, presented_modelOf through eq_clTrace_of_localRun_anchored, and the Hit-level corollary, with 8 Challenge-pinned signatures."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.43478260869565216
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 737,
+            "project_name": "discharge_presents_mso_reduction_seam_summary",
+            "discharging_artifact": {
+              "path": "specs/737_discharge_presents_mso_reduction_seam_summary/summaries/01_discharge-presents-verdict-summary.md",
+              "type": "summary",
+              "summary": "Field-by-field verdict, what landed where, measured axiom profiles, the B1-B4 residue (CARRIED-UNVERIFIED costs), and the recommendation to re-point the assembly record at Hit."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.463768115942029
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 711,
+            "project_name": "universal_summary_substrate_stab_fibre",
+            "discharging_artifact": {
+              "path": "specs/711_universal_summary_substrate_stab_fibre/summaries/02_buechi-chain-ktype-substrate-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for the Büchi-chain k-type summary substrate and seam interface."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4492753623188406
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 742,
+            "project_name": "compute_hit_realizability_device",
+            "discharging_artifact": {
+              "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
+              "type": "summary",
+              "summary": "Phases 1-10 of 10: B3a, B1, B2a (both halves), B3b (i)-(iii) with hitOf/mem_hitOf_iff, the B2b verdict probe, the per-model bridge under Presented, and the Phase 10 closure pass with the full gate and the B2b successor-record description."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.43478260869565216
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 719,
+            "project_name": "ray_layer_seam_gluing_and_stab_fibre",
+            "discharging_artifact": {
+              "path": "specs/719_ray_layer_seam_gluing_and_stab_fibre/summaries/01_ray-layer-seam-gluing-stab-fibre-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the two new modules, the four pinned keystone axiom rows, the measured pre-edit gate baseline, the recorded verdicts, the wired E1 probe, and five annotated plan deviations."
+            },
+            "mechanical_class": "overlap",
+            "semantic_score": 0.463768115942029
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 718,
+            "project_name": "omega_sequence_decidability_full_lplus",
+            "discharging_artifact": {
+              "path": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for all 7 plan phases."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5507246376811594
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 706,
+            "project_name": "lplus_finite_model_property_and_completeness",
+            "discharging_artifact": {
+              "path": "specs/706_lplus_finite_model_property_and_completeness/summaries/01_land-finite-carrier-refutation-summary.md",
+              "type": "summary",
+              "summary": "Execution summary for the library landing of the finite-carrier refutation family."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5362318840579711
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 695,
+            "project_name": "plus_carrier_normalization_int_transfer",
+            "discharging_artifact": {
+              "path": "specs/695_plus_carrier_normalization_int_transfer/summaries/01_plus-carrier-normalization-transfer-summary.md",
+              "type": "summary",
+              "summary": "Carrier normalization for L-plus landed: the iff, its seven-case truth transport, C2 pin and theorem-index rows."
+            },
+            "mechanical_class": "overlap",
+            "semantic_score": 0.07246376811594203
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 656,
+            "project_name": "refactor_task_frames_general_with_frame_constraints",
+            "discharging_artifact": {
+              "path": "specs/656_refactor_task_frames_general_with_frame_constraints/summaries/01_general-frames-regular-constraints-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary with the complete migration table, checked against git diff --stat (109 files, 3503 insertions, 819 deletions since the plan commit)."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.2898550724637681
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 642,
+            "project_name": "restore_layer_measurement_for_language_directories",
+            "discharging_artifact": {
+              "path": "specs/642_restore_layer_measurement_for_language_directories/summaries/01_restore-layer-measurement-language-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary with acceptance criteria by command and the negative-test observations."
+            },
+            "mechanical_class": "overlap",
+            "semantic_score": 0.07246376811594203
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 634,
+            "project_name": "language_extension_directories_and_probe_tests",
+            "discharging_artifact": {
+              "path": "specs/634_language_extension_directories_and_probe_tests/summaries/01_language-extension-directory-merge-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for the language-extension directory merge."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.11594202898550725
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 636,
+            "project_name": "docstring_and_citation_normalisation",
+            "discharging_artifact": {
+              "path": "specs/636_docstring_and_citation_normalisation/summaries/01_docstring-citation-normalisation-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary with the full before/after acceptance table, every plan deviation, and six follow-ups."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.07246376811594203
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 588,
+            "project_name": "triage_zero_occurrence_declarations",
+            "discharging_artifact": {
+              "path": "specs/588_triage_zero_occurrence_declarations/summaries/02_c17-census-filter-and-triage-summary.md",
+              "type": "summary",
+              "summary": "C17's dead-declaration census filtered from 1,020 to 771 and triaged into six dispositioned clusters; the one unambiguous cluster (80 unreferenced defs) deleted across three verified batches, final headline 698, drop reconciled to zero residue."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.18840579710144928
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 540,
+            "project_name": "docstring_coverage_class_instance_lemma",
+            "discharging_artifact": {
+              "path": "specs/540_docstring_coverage_class_instance_lemma/summaries/01_instance-docstring-coverage-summary.md",
+              "type": "summary",
+              "summary": "C19 per-keyword reporting plus 20 instance docstrings; all three categories at or above floor."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.15942028985507245
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 542,
+            "project_name": "dead_declaration_triage_c17_findings",
+            "discharging_artifact": null,
+            "mechanical_class": "subset",
+            "semantic_score": 0.08695652173913043
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 577,
+            "project_name": "abstract_validity_layer_over_truth_class",
+            "discharging_artifact": {
+              "path": "specs/577_abstract_validity_layer_over_truth_class/summaries/01_abstract-validity-layer-truth-class-summary.md",
+              "type": "summary",
+              "summary": "Validity layer and derived-operator clause layer abstracted over PointTruth/TruthEnv classes and instantiated for all four object languages; 77 per-language proof bodies delegated with zero statement changes."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.17391304347826086
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 541,
+            "project_name": "formalsystem_init_transitive_import_adoption",
+            "discharging_artifact": {
+              "path": "specs/541_formalsystem_init_transitive_import_adoption/summaries/01_init-transitive-import-adoption-summary.md",
+              "type": "summary",
+              "summary": "Eleven import lines give every FormalSystem module a transitive path to FormalSystem.Init; checkInitImports made exit-status-correct and wired into the invariants harness as enforced check C24."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.14492753623188406
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 546,
+            "project_name": "rename_frameclass_tags_to_ztime_rtime",
+            "discharging_artifact": {
+              "path": "specs/546_rename_frameclass_tags_to_ztime_rtime/summaries/01_ztime-rtime-rename-summary.md",
+              "type": "summary",
+              "summary": "FrameClass.Discrete/.Dedekind renamed to .ZTime/.RTime across 152 files; all gates green"
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.07246376811594203
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 469,
+            "project_name": "eliminate_the_bridge_filtration_into_intpresentation",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/469_eliminate_the_bridge_filtration_into_intpresentation/summaries/01_capture-verdict-and-followups-summary.md",
+              "summary": "Implementation summary: five findings captured into docstrings across 10 files (283 added lines, zero deletions), plus three separated follow-up tasks."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4057971014492754
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.43478260869565216
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 440,
+            "project_name": "finite_frame_discharge_of_spherical_and_limit",
+            "discharging_artifact": {
+              "path": "specs/440_finite_frame_discharge_of_spherical_and_limit/plans/01_finite-spherical-discharge.md",
+              "type": "plan",
+              "summary": "5-phase plan for finite-frame discharge of spherical and limit obligations."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4927536231884058
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5362318840579711
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 442,
+            "project_name": "revise_bimodal_reference_book_against_paper_and_lean",
+            "discharging_artifact": {
+              "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/summaries/01_book-paper-lean-revision-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all 16 phases: what changed, decisions, plan deviations (none), impacts, follow-ups."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4927536231884058
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 180,
+            "project_name": "line_limit_compliance_and_publication_residue",
+            "discharging_artifact": {
+              "path": "specs/180_line_limit_compliance_and_publication_residue/summaries/01_line-limit-compliance-residue-summary.md",
+              "type": "summary",
+              "summary": "598 to 0 longLine violations across 65 files; harness repaired; copyright 331/331 and universe-polymorphism empty recorded as verified"
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.17391304347826086
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 131,
+            "project_name": "refactor_module_organization",
+            "discharging_artifact": {
+              "path": "specs/131_refactor_module_organization/summaries/01_module-reorganization-summary.md",
+              "type": "summary",
+              "summary": "Module reorganization: 13/13 phases, invariants preserved"
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.11594202898550725
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 402,
+            "project_name": "systematic_mathlib_naming_upgrade",
+            "discharging_artifact": {
+              "path": "specs/402_systematic_mathlib_naming_upgrade/summaries/01_mathlib-naming-upgrade-summary.md",
+              "type": "summary",
+              "summary": "Execution summary: all 8 phases; defsWithUnderscore 861 -> 0 by genuine conformance with nolints.json deleted; 845 declarations renamed across 25,640 resolved-reference spans in 284 files."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.3188405797101449
+          }
+        ],
+        "scope_blind_count": 453,
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 450
       }
     }
   ],

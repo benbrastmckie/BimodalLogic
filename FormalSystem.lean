@@ -559,6 +559,7 @@ import FormalSystem.NomicLanguage.NomicTruth
 import FormalSystem.NomicLanguage.NomicValidity
 import FormalSystem.OpenLanguage
 import FormalSystem.OpenLanguage.Formula
+import FormalSystem.OpenLanguage.OpenAxioms
 import FormalSystem.OpenLanguage.OpenClasses
 import FormalSystem.OpenLanguage.OpenOckhamist
 import FormalSystem.OpenLanguage.OpenReversal
