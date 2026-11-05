@@ -171,6 +171,23 @@ Consequences.
 - A ZTime engine has no Saturation obligation in principle. In Lean the practical route is a
   finitely branching construction (`saturation_of_fib_finite`) or a formalised step 1-5.
 
+> **Note (2026-11-05; hypothesis-strength flag, derived).** This section's claim above glosses
+> "oriented forest" as "directed walks are reduced paths, so directed paths between two nodes are
+> unique" — directed-path uniqueness. But step 4 of this same section uses the *undirected* tree
+> path between `a_m` and `a'` and its unique sink `m`, which needs the *underlying undirected
+> graph* to be a forest — strictly more than directed-path uniqueness (a digraph can have unique
+> directed paths between any two nodes while its underlying undirected graph contains a cycle, if
+> the two directions of an edge-pair are never both present on the same undirected cycle in a way
+> that creates two directed paths). A Lean lemma stated only at the weaker, directed-path-unique
+> hypothesis will not discharge what this section's own step 4 — and, downstream, the countable
+> model step's step B — actually consumes. Task 870 owns the oriented-forest Saturation lemma and
+> the universal-cover construction this section states; it should be stated at the
+> **oriented-forest** hypothesis (the underlying undirected graph is a forest), not merely at
+> directed-path uniqueness. Flagged, not resolved here; see
+> `specs/878_lplus_ztime_decidability_paper_proof_repair/reports/01_lplus-ztime-decidability-proof-repair.md`
+> finding 1 (decision 7) for the full derivation. This note adds no positive claim and does not
+> alter this section's construction or claim above.
+
 #### 1.3 Decidability at ZTime (paper, Medium-High; rests on a recalled theorem)
 
 1. *Countable model property.* Close a countable set of walks under one chosen witness walk per
@@ -270,6 +287,101 @@ cover is that tree, because folding by subtree type forgets what lies above a no
 >
 > This amendment adds no positive claim and establishes no finite model property; §1.2, §1.4, and
 > the unamended §1.3 argument above are otherwise untouched.
+
+> **Amendment (2026-11-05; G1/G2 repair, step reorder, Rabin held, conditional reinstatement).**
+> §1.3 above remains an unverified **paper** argument, not a machine-checked one. The repairs
+> below are themselves **paper** results, each labelled by evidence tier, and the whole chain
+> remains conditional on hypothesis **(H5)** — the oriented-forest `Saturation` lemma and the
+> universal-cover construction this section's step 2 and step B below consume — which is owned by
+> task 870 and is, as of this amendment, `[NOT STARTED]`. Full derivations are in
+> `specs/878_lplus_ztime_decidability_paper_proof_repair/reports/01_lplus-ztime-decidability-proof-repair.md`
+> (hereafter "report 878"), findings 1-9; only the results are recorded here. The route reaches
+> **ZTime only**, exactly as the unamended argument already states; §1.4 below is untouched.
+>
+> - **(G1 repair; paper, with a compiled core; report 878 finding 2).** Step 1's stated
+>   justification — "state-local truth is shift-invariant, so one witness per state suffices" —
+>   is a non-sequitur (report 866 finding 5 was right to refuse it). The *construction* stands;
+>   only the justification is replaced. The correct reason the per-state witness economy is sound
+>   is the compiled `PlusTruth.stab_state_only` (`PlusTruth.lean:332`: `⊡φ` is one bit per world
+>   state) together with `PlusTruth.box_global` (`PlusTruth.lean:372`: `□φ` is one bit per model).
+>   Because the two universal modals' quantifier ranges are each determined by a *state* (`⊡`) or
+>   by *nothing* (`□`), the witness closure can be indexed by states rather than by walks; a
+>   closure operator on states is countable-to-countable, so it reaches a countable fixpoint. The
+>   induction itself is quantified over **every** walk of the sub-digraph, not only the designated
+>   countable set — this is the scope G1 named, and report 878 finding 2's Lemma B states and
+>   proves it at that scope. This answers the preceding 2026-11-05 amendment's statement that
+>   "step 1 currently has no stated justification that survives".
+> - **(Step reorder; derived; report 878 finding 1).** Steps 1 and 2 above must swap: cover first,
+>   countable model second. The compiled `FrameOver.IsRegular` (`TaskFrame.lean:1185`) bundles
+>   `saturation` as a fourth field, so the compiled invariance theorem
+>   `TwoWayBounded.plus_invariance_of_isZTime` (`HistoryMorphism.lean:589`) demands `Saturation`
+>   of the *base* frame as well as the cover, and in the order written above the base frame at the
+>   cover step is the very sub-digraph of step 1 whose `Saturation` is unestablished. Taking the
+>   cover first costs nothing: an induced sub-digraph of an oriented forest is again an oriented
+>   forest, so the cited oriented-forest lemma (H5) applies a second time inside the cover, and no
+>   second cover and no second invariance appeal is needed.
+> - **(G2 repair; derived; report 878 finding 4).** Step 3 above yields a forest of countably many
+>   trees (one per component of the cover); step 5 applies Rabin's theorem to a single tree. The
+>   repair is an explicit new-root coding: adjoin a fresh node `r`, with tree edges `{r, r_i}` to
+>   each component root `r_i`, and three unary predicates — `Rt := {r}`; `Up(v)` marking whether
+>   the tree edge at `v` runs child-to-parent in the digraph; `A_p` for each atom of `φ`. The
+>   digraph relation is recovered first-order as
+>   `E(u,v) :⟺ ¬Rt(u) ∧ ¬Rt(v) ∧ [(Ch(u,v) ∧ ¬Up(v)) ∨ (Ch(v,u) ∧ Up(u))]`, and because `E` has no
+>   edge at `r`, step 4's `Walk` predicate needs no separate `r`-exclusion — a set containing `r`
+>   already fails `Walk`'s in-degree clause. The one load-bearing guard is on directed
+>   reachability `⊑`: report 866 finding 3's first-order definition of `⊑` from the rooted-tree
+>   order and `Up` must carry the extra conjunct `¬Rt(meet(y,x))`, or it returns spurious
+>   cross-component reachability once the rooted-tree meet of two nodes in different components
+>   becomes the new super-root `r`. With that guard, `⊑` is correct, stays first-order with no
+>   added quantifier alternation, and never crosses components. The multigraph convention of
+>   step 2 above (components taken as undirected *multigraphs*, orientation kept) is load-bearing
+>   for this repair too: it is what makes the cover a *simple* tree, hence no directed 2-cycles,
+>   hence `Walk` and `E` well-behaved at all.
+> - **(Rabin, held; report 878 finding 6).** Step 5's citation is replaced: Rabin's theorem is
+>   **Thomas 1997, *Languages, Automata, and Logic*, Theorem 6.20** (`S2S` — monadic second-order
+>   logic over the full binary tree `⟨{0,1}*, S₀, S₁⟩` — is decidable, attributed to Rabin 1969),
+>   together with Theorem 6.19 (every MSO formula over `(S₀, S₁)` effectively yields an equivalent
+>   Muller tree automaton) and Theorem 6.18, the Rabin Basis Theorem (emptiness of the resulting
+>   automaton is decidable, with a regular witness obtainable when nonempty). The exact form used
+>   is only: *the set of MSO sentences true in the full binary tree is decidable, effectively in
+>   the sentence.* Countable branching is discharged by §6.3's explicit
+>   `1^{i₁}0 1^{i₂}0 ⋯ 1^{i_l}0` prefix-preserving embedding of a countably branching tree into
+>   the binary tree, whose range is existentially quantified as a set `P₀` inside the final
+>   sentence. **`S2S` alone suffices**; `SωS`, Gurevich-Shelah, and the Muchnik/Walukiewicz
+>   unravelling-transfer theorem are **not needed and not used**. This supersedes step 5's
+>   parenthetical ("recalled; the held Reynolds 2002 §6 describes the same method for the tree
+>   logics via Gurevich-Shelah").
+> - **(Craig/existence; derived, on a held citation; report 878 finding 9).** The preceding
+>   2026-11-05 amendment above withdrew the consequence sentence and left the *existence* of a
+>   recursive axiomatization at ZTime open. On the theorem assembled from the four repairs above
+>   (conditional on (H5)), that question is now **closed affirmatively, and did not need Craig**:
+>   decidability makes `V := {φ | PlusValidZTime φ}` a **recursive** set, and a recursive set is
+>   literally its own recursive axiom set (axioms `V`, no substitution rule needed or sound here).
+>   Craig's theorem — held: Chagrov & Zakharyaschev 1997, *Modal Logic*, Theorem 16.10 (p. 496) —
+>   is the instrument for the strictly weaker situation where only r.e.-ness of `V` is in hand
+>   without decidability; that is exactly the situation at Base, Dense and RTime (§1.4 below),
+>   where r.e.-ness itself is open, not the situation here. What stays open at ZTime under this
+>   repair is a **finitely schematic** system — whether a finite set of `LC_n`-style schemata
+>   axiomatizes the ZTime validities (§2 below, untouched) — which is a different question from
+>   existence.
+> - **(Finite-versus-regular model; derived; report 878 finding 8).** The finite model property
+>   is still **not** established, and the reason is now stated precisely: folding a regular tree
+>   by subtree type satisfies the *forth* half of a two-way bounded morphism but fails the *back*
+>   half (a tree node has exactly one parent and so cannot witness every in-edge of its subtree
+>   type), while `plus_invariance_of_isZTime` demands the full `TwoWayBounded` hypothesis — this is
+>   report 03 §1.1's warning, instantiated. Theorem 6.18 does, however, give a **regular**-model
+>   property as a by-product: every ZTime-refutable L⁺ formula is refuted on a **finitely
+>   presented** (automaton-generated) doubly serial oriented forest. *Finitely presented, not
+>   finite.*
+>
+> **Scope of this amendment.** As with the amendment above, this one does not establish the
+> finite model property, does not constitute a Lean verification of this section's argument, is
+> conditional throughout on (H5) landing at task 870 (and at the oriented-forest strength the
+> §1.2 note below flags, not merely directed-path uniqueness), and is independent of this
+> repository's landed `decidableValidZTime` / `decidableDerivableZTime` (at base `Formula`,
+> without `⊡` or the open modals). It claims nothing about Base, Dense, or RTime. The open-modal
+> reading does **not** survive this repair; report 866's finding 5 is corrected at its own
+> location (report 878 finding 10).
 
 #### 1.4 Base, Dense, RTime: OPEN, with the obstruction located
 

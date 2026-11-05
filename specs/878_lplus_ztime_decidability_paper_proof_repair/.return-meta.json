@@ -1,22 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/878_lplus_ztime_decidability_paper_proof_repair/plans/01_propagate-ztime-decidability-proof.md",
-      "summary": "4-phase, 2-wave, 2.5-hour propagation plan carrying the repaired ZTime decidability argument into the three live records that currently contradict or await it, plus a six-guardrail close-out audit."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 3,
   "metadata": {
-    "session_id": "sess_1793904111_6edc04_878",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 2.5,
-    "dependency_waves": 2
-  },
-  "memory_candidates": [],
-  "next_steps": "Run /orchestrate 878 to execute the plan. Two follow-ups the plan deliberately does not file: (a) a /revise of task 870 restating its hypothesis at oriented-forest strength (the underlying undirected graph is a forest), since its current directed-path-uniqueness wording will not discharge hypothesis (H5) that the paper theorem rests on; (b) optionally, a separate task to write the theorem into typst/chapters/p3-decidability-frontier.typ as a citable chapter-level result, which this task's report-only constraint excludes.",
-  "dispatch_seq": 2
+    "session_id": "sess_1793904111_6edc04",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }
