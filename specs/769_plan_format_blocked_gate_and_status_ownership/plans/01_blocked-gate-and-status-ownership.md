@@ -1,7 +1,7 @@
 # Implementation Plan: Task #769
 
 - **Task**: 769 - plan-format: blocked decision gates and plan-level Status ownership
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/769_plan_format_blocked_gate_and_status_ownership/reports/01_blocked-gate-and-status-ownership.md

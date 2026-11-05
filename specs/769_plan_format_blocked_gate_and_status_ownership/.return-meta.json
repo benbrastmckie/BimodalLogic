@@ -18,14 +18,24 @@
       "category": "CONFIG",
       "source_artifact": "specs/769_plan_format_blocked_gate_and_status_ownership/summaries/01_blocked-gate-and-status-ownership-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["verify-deploy.sh", "source-store", "TARGET", "nvim config repo", "generate-context-line-counts.sh"]
+      "suggested_keywords": [
+        "verify-deploy.sh",
+        "source-store",
+        "TARGET",
+        "nvim config repo",
+        "generate-context-line-counts.sh"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1793858282_9587e4",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 3,
     "phases_total": 3
   }
