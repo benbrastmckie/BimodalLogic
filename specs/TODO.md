@@ -72,7 +72,7 @@ next_project_number: 870
 
 ### Completeness
 
-865 [RESEARCHED] — RESEARCH TASK, and the owner of a programme that is currently...
+865 [PLANNING] — RESEARCH TASK, and the owner of a programme that is currently...
 
 ### Dataset Enhancement
 
@@ -108,7 +108,7 @@ next_project_number: 870
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
   └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
-852 [PLANNED] — Author a model-level pumping lemma for tpOf along a ladder...
+852 [IMPLEMENTING] — Author a model-level pumping lemma for tpOf along a ladder...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a... (see above)
 863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
 
@@ -129,7 +129,7 @@ next_project_number: 870
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-856 [RESEARCHED] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
+856 [PLANNING] — Build the L^▷ proof system: OpenAxiom, OpenDerivationTree,...
 860 [RESEARCHED] — Add the bridge lemma in...
 867 [NOT STARTED] — IMPLEMENTATION TASK, sizeable: formalize Gabbay separation...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
@@ -150,7 +150,7 @@ next_project_number: 870
 
 ### Build Performance
 
-803 [PLANNING] — Cut the elaboration time of...
+803 [PLANNED] — Cut the elaboration time of...
   └─ 804 [NOT STARTED] — Determine whether...
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
@@ -253,7 +253,7 @@ DELIVERABLE: a report under this task's directory, with a verdict on whether the
 ---
 
 ### 865. Tm plus lc axiomatization and automaton obstruction
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: formal
 - **Topic**: completeness
 - **Dependencies**: Task 864
@@ -723,7 +723,7 @@ and does not resolve here.
 ---
 
 ### 856. Build the L^▷ proof system: OpenAxiom, OpenDerivationTree, soundness and conservativity
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 854, Task 859
@@ -852,7 +852,7 @@ CITATIONS: parent issues.jsonl iss_1793819583011_jsu079 and iss_1792373250168_HQ
 ---
 
 ### 852. Model level pumping lemma for tpof along ladder path
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 855
@@ -3214,11 +3214,12 @@ ACCEPTANCE. A written classification of every import edge from the termination s
 ---
 
 ### 803. Cut subformulaproperty elaboration time
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: build-performance
 - **Dependencies**: None
 - **Research**: [803_cut_subformulaproperty_elaboration_time/reports/01_cut-subformulaproperty-elaboration-time.md]
+- **Plan**: [803_cut_subformulaproperty_elaboration_time/plans/01_cut-subformulaproperty-elaboration-time.md]
 
 **Description**: Cut the elaboration time of FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean, the repository's single largest rebuild cost.
 

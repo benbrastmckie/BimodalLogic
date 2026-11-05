@@ -97,17 +97,17 @@
     {
       "project_number": 865,
       "project_name": "tm_plus_lc_axiomatization_and_automaton_obstruction",
-      "status": "researched",
+      "status": "planning",
       "task_type": "formal",
       "description": "RESEARCH TASK, and the owner of a programme that is currently owned by nobody: does TM-plus extended by the limit-closure schema admit a completeness proof, and can the located obstruction to Reynolds' construction be cleared in this setting?\n\nWHY THIS TASK EXISTS. Task 559 owned the TM-plus completeness programme and completed as a NARROWED task -- the naming-rule soundness toolkit only -- whose description states that \"The LC-schema and axiomatizability discussion in report 03 is NOT part of this deliverable\". The programme therefore has no owner, while docs/theorem-index.md records the two facts that make it the gating question for this whole area: the current TM-plus axiom set is incomplete at Base (plus_incomplete_base, the limit-closure formula valid on every task frame and not a Base theorem), and completeness of any recursive extension is open at every frame class and is stated nowhere in the tree.\n\nTHE CANDIDATE, AS ALREADY RECORDED. specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md proposes:\n  TM-plus + LC_n + LCU + the clock rule + the transposed Auxiliary-Atoms rule\nand records that every ingredient has a compiled soundness core, that no frame axiom is at risk (Saturation is idle), and that the blueprint is a held paper with a full proof. Read that report before anything else; this task starts from it rather than re-deriving it. Note that the report is in a directory queued for /todo archival -- if it has moved, it is under specs/archive/.\n\nTHE LOCATED OBSTRUCTION, WHICH IS THE RESEARCH QUESTION. Reynolds' construction uses a ONE-SIDED automaton: it reads omega-words from a root. Here emergent histories are limits of splices in BOTH directions. That mismatch is the whole difficulty and it is the thing to attack. A precisely located verdict -- which step of Reynolds' construction fails, on which model shape, and whether a two-sided or doubled automaton recovers it -- is a complete outcome for this task. So is a refutation.\n\nINGREDIENT STATUS, SO NOTHING IS RE-DERIVED. The clock rule and the plain irreflexivity rule are landed in FormalSystem/Metalogic/NamingRules.lean (clock_irr_sound, irr_sound). The Auxiliary-Atoms expansion is NOT landed and its obstruction is specific and recorded: FrameOver.ofReflectiveRegular demands Saturation, and at the forward-cone unravelled carrier none of the three routes this tree has to Saturation applies -- read NamingRules.lean lines 57-82, which states this in full. LC_n and LCU soundness are the subject of this task's dependency and will be in the library by the time this runs.\n\nWHAT IS ALSO WORTH SETTLING HERE. Report 03 section 1.3 argues on paper that ZTime validity is decidable via an MSO encoding plus Rabin's theorem, hence recursively axiomatizable there, leaving \"only a natural system\" open at ZTime. Confirm or correct that reading, since it determines whether this task's question at ZTime is about existence or only about naturalness. The finite model property is NOT established and the report says why; do not assume it.\n\nDELIVERABLE: a report under this task's directory. No library change and no completeness claim lands from this task; if a route survives scrutiny, file the implementation as its own task.",
       "topic": "completeness",
       "created": "2026-11-05T02:28:18Z",
-      "last_updated": "2026-11-05T16:01:19Z",
+      "last_updated": "2026-11-05T16:03:13Z",
       "audit_override": "User confirmed via AskUserQuestion after reviewing the audit: all verdicts semantic-only (0.40-0.50, mechanical_class none/scope-blind, no shared paths); nearest match #559 explicitly carves out this content",
       "dependencies": [
         864
       ],
-      "session_id": "sess_1793893221_493f2c",
+      "session_id": "sess_1793893221_493f2c_865",
       "artifacts": [
         {
           "path": "specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md",
@@ -165,7 +165,7 @@
     {
       "project_number": 856,
       "project_name": "open_language_proof_system_and_soundness",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "topic": "metalogic",
       "title": "Build the L^▷ proof system: OpenAxiom, OpenDerivationTree, soundness and conservativity",
@@ -178,7 +178,7 @@
         "docs/theorem-index.md"
       ],
       "created": "2026-11-04T20:41:42Z",
-      "last_updated": "2026-11-05T16:02:27Z",
+      "last_updated": "2026-11-05T16:03:42Z",
       "audit_verdict": {
         "verdict": "covered-by-closed",
         "project_number": 443,
@@ -199,7 +199,7 @@
         854,
         859
       ],
-      "session_id": "sess_1793893221_493f2c",
+      "session_id": "sess_1793893221_493f2c_856",
       "artifacts": [
         {
           "path": "specs/856_open_language_proof_system_and_soundness/reports/01_open-proof-system-soundness-conservativity.md",
@@ -448,21 +448,33 @@
     {
       "project_number": 803,
       "project_name": "cut_subformulaproperty_elaboration_time",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Cut the elaboration time of FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean, the repository's single largest rebuild cost.\n\nMEASURED EVIDENCE (from .lake/build-guard.stdout, full guarded build, 2026-10-15, this repo): the module elaborates in 1103s (18.4 minutes) as ONE module. On that build 414 of 2848 jobs actually rebuilt, totalling 6354s of elaboration across those 414; Metalogic accounted for 5649s across 306 modules. Seven modules accounted for roughly 2500s of the total, and SubformulaProperty alone is about 17 percent of the whole incremental rebuild. Next worst: Decidability.Tableau 476s, Termination.MintBound.MintPotential 360s, Termination.Fuel 238s.\n\nWHY IT HURTS REPEATEDLY. The module imports FormalSystem.Metalogic.Decidability.Tableau and FormalSystem.Syntax.SubformulaClosure.Closure, so any edit to the syntax or proof-system layer invalidates it. Paper-alignment work routinely edits FormalSystem/ProofSystem/Axioms.lean and FormalSystem/Semantics.lean, so this 18-minute module is woken by edits unrelated to decidability.\n\nGOAL. Reduce elaboration time substantially while proving exactly the same results. Localize hotspots with lean_profile_proof BEFORE changing anything, and record before/after per-declaration timings as evidence rather than asserting an improvement. Suspects to confirm rather than assume: simp set blowup, decide on a non-trivial decidable instance, unfolding of large structures, Nat/Int arithmetic normalization. Candidate remedies: replace simp with targeted rewrites, extract heavy sublemmas into their own declarations, mark expensive defs irreducible where sound, scope set_option maxHeartbeats.\n\nNON-GOALS. No change to any statement that is proved. Zero new sorry. No new axiom dependency (verify with #print axioms before and after). No weakening of the termination argument.\n\nACCEPTANCE. A measured, reported reduction in this module's elaboration time with before/after numbers from the build log or lean_profile_proof; lake build green; check-module-invariants.sh ALL CHECKS PASSED; sorry_count 0; axiom profiles unchanged for every declaration in the module.",
       "topic": "build-performance",
       "file_scope": [
-        "FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean"
+        "FormalSystem/Metalogic/Decidability/Tableau.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/README.md",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "specs/803_cut_subformulaproperty_elaboration_time/evidence/01_elaboration-baseline.md",
+        "typst/generated/status.typ"
       ],
       "created": "2026-10-15T05:04:28Z",
-      "last_updated": "2026-11-05T15:59:09Z",
-      "session_id": "sess_1793893053_616f17_803",
+      "last_updated": "2026-11-05T16:06:36Z",
+      "session_id": "sess_1793893053_616f17",
       "artifacts": [
         {
           "path": "specs/803_cut_subformulaproperty_elaboration_time/reports/01_cut-subformulaproperty-elaboration-time.md",
           "type": "report",
           "summary": "Profiled baseline localizes 99.2% of SubformulaProperty.lean's elaboration cost to the all_goals simp_all cascade (14988s simp vs 108s tactic execution), not unfold/whnf as the file's comments claim; measured A/B probes show rewriting the 36 per-rule bodies against the already-generated applyRule.eq_1..eq_38 equation lemmas cuts andPos 882487->760 hb, serialityRule 2084589->146 hb, boxNeg 885047->27178 hb, with no statement, sorry, or axiom change."
+        },
+        {
+          "path": "specs/803_cut_subformulaproperty_elaboration_time/plans/01_cut-subformulaproperty-elaboration-time.md",
+          "type": "plan",
+          "summary": "Nine-phase, 15-hour plan to convert 36 proof bodies to applyRule.eq_N rewrites behind named wrappers, with before/after heartbeat evidence and a per-rule exclusion fallback."
         }
       ],
       "next_artifact_number": 2
@@ -2604,7 +2616,7 @@
     {
       "project_number": 852,
       "project_name": "model_level_pumping_lemma_for_tpof_along_ladder_path",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Author a model-level pumping lemma for tpOf along a ladder path: the model-side analogue of the periodicity of the certificate graph.\n\nWHY: the absence of this lemma is the third circularity, hit independently in three separate implementation rounds. Pumping the object walk preserves the realized type only through a MODEL-level periodicity statement about tpOf along a ladder path. The only landed periodicity statement is prodPre_periodic, with outputs satThreshold/satPeriod -- a statement about the backward-reachability fixpoint prodPreStep (cohIdle) on Finset (ProdState Q phi), i.e. a CERTIFICATE-relation fact. CounterQuotient.lean states in source that nothing there relates cohIdle to Rlad, ladderModel, tpOf or cellAt. The bridge from that certificate fact to tpOf is exactly obligations (S) and (C-prime), which READ the agreement that needs this lemma -- so citing prodPre_periodic here closes a cycle rather than discharging one.\n\nNo phase of any plan version to date costs this lemma; it must be authored rather than cited.\n\nKNOWN REFUTATION TO RESPECT -- do not restate the refuted shape. Splice invariance of the realized stab-free type (tpOf_stabFree_eq_of_splice) is FALSE, not merely open: a single splice duplicates the pumped block, adding one occurrence of every object state in that block to the future of the walk, so a nested-eventuality counting formula F(p AND F p) flips between the original and the spliced path at EVERY position below the splice point, however far. Nested until has unbounded reach, so any distance-budget-per-nesting-depth framing is wrong. The refutation is compiled as the wired probe specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean (splice_type_invariance_refuted), checked against the ITERATED surgery the residue coordinate needs, with every recorded hypothesis discharged. What is refuted is that the admissibility-preserving surgery also preserves the type; the presentation itself and cellAt_const_of_kappa_eq are untouched.\n\nA further relevant compiled fact: by stab_mem_tpOf_iff_cell the stab bit of a realized type is a datum of the very cell being compared, so an agreement proof runs by induction on stab-nesting depth whatever the phase order is.\n\nGUARDRAILS: no sorry, no new axiom, no vacuous definition. State what the lemma actually quantifies over; if the honest form is weaker than the circularity needs, say so rather than widening the statement.",
       "effort": null,
@@ -2614,7 +2626,7 @@
         855
       ],
       "created": "2026-11-04T06:48:13Z",
-      "last_updated": "2026-11-05T16:01:48Z",
+      "last_updated": "2026-11-05T16:03:27Z",
       "artifacts": [
         {
           "path": "specs/852_model_level_pumping_lemma_for_tpof_along_ladder_path/plans/01_model-level-tpof-periodicity.md",

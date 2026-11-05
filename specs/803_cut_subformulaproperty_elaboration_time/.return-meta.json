@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/803_cut_subformulaproperty_elaboration_time/reports/01_cut-subformulaproperty-elaboration-time.md",
-      "summary": "Profiled baseline localizes 99.2% of SubformulaProperty.lean's elaboration cost to the all_goals simp_all cascade (14988s simp vs 108s tactic execution), not unfold/whnf as the file's comments claim; measured A/B probes show rewriting the 36 per-rule bodies against the already-generated applyRule.eq_1..eq_38 equation lemmas cuts andPos 882487->760 hb, serialityRule 2084589->146 hb, boxNeg 885047->27178 hb, with no statement, sorry, or axiom change."
+      "type": "plan",
+      "path": "specs/803_cut_subformulaproperty_elaboration_time/plans/01_cut-subformulaproperty-elaboration-time.md",
+      "summary": "Nine-phase, 15-hour plan to convert 36 proof bodies to applyRule.eq_N rewrites behind named wrappers, with before/after heartbeat evidence and a per-rule exclusion fallback."
+    }
+  ],
+  "next_steps": "Run /orchestrate 803 to execute the plan",
+  "phase_count": 9,
+  "estimated_hours": 15,
+  "dependency_waves": [[1],[2],[3],[4],[5],[6],[7],[8],[9]],
+  "memory_candidates": [
+    {
+      "content": "Lean 4 cost anti-pattern with measured attribution: a proof body shaped as `unfold <bigMatchDef> at h` followed by `repeat' split at h` and then `all_goals (try simp_all only [...])` is pathologically expensive, and the cost is in simp, not in the unfold. Profiled on a 36-arm match definition (FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean, 36 such bodies): `lake env lean -Dprofiler=true -Dprofiler.threshold=200` attributed 14,987.6s to simp across 1348 calls (99.2 percent) against 108s for ALL tactic execution combined (0.7 percent) and 1.55s for imports. The splitter leaves ~37 goals, each carrying both the unfolded definition and the accumulated guard hypotheses, and simp_all rewrites that whole context once per goal. The remedy is the per-arm equation lemmas Lean already generates for any match-defined function (`f.eq_1 ... f.eq_N` plus a catch-all `f.eq_<N+1>` whose hypotheses are `... -> False` guards): rewriting with the right `eq_N` replaces the cascade with a two-or-three-goal proof. Measured A/B: 882,487 -> 760 heartbeats; 2,084,589 -> 146. Two discipline notes: `#count_heartbeats` requires `set_option Elab.async false` or every count reads ~30 (the proof elaborates on another thread), and `eq_N` numbering is generator-assigned and tracks arm order, so downstream proofs should name a wrapper theorem per arm rather than the raw `eq_N`. Restructuring the definition into per-arm sub-definitions is the obvious-looking fix and is wrong: the dispatch cost it removes is inside the sub-1-percent tactic-execution slice.",
+      "category": "PATTERN",
+      "source_artifact": "specs/803_cut_subformulaproperty_elaboration_time/plans/01_cut-subformulaproperty-elaboration-time.md",
+      "confidence": 0.88,
+      "suggested_keywords": ["lean4", "elaboration-performance", "equation-lemmas", "simp_all-anti-pattern", "count-heartbeats", "profiler"]
     }
   ],
   "metadata": {
     "session_id": "sess_1793893053_616f17_803",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 2
 }

@@ -1,0 +1,18 @@
+{
+  "status": "planned",
+  "task_number": 803,
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "session_id": "sess_1793893053_616f17_803",
+  "phases_completed": 0,
+  "phases_total": 9,
+  "summary": "Wrote a nine-phase plan converting the 36 per-rule applyRule_<rule>_closed proof bodies from the all_goals (try simp_all only) splitter cascade to wrapper-routed applyRule.eq_N rewrites, decomposed along the module's five existing sections. Phase 1 captures axiom profiles, the 38 equation-lemma types, and 36 heartbeat baselines before any edit; Phase 2 lands 37 named wrappers in Tableau.lean to pin the generator-assigned numbering; Phase 3 is a decision gate with a per-rule fallback to [COMPLETED WITH EXCLUSIONS]; Phases 7-8 handle the mem_filterMap_sub full-simp-set residue and the maxHeartbeats ceiling removal. validate-artifact.sh passes with 0 warnings.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/803_cut_subformulaproperty_elaboration_time/plans/01_cut-subformulaproperty-elaboration-time.md",
+      "summary": "Nine-phase, 15-hour plan to convert 36 proof bodies to applyRule.eq_N rewrites behind named wrappers, with before/after heartbeat evidence and a per-rule exclusion fallback."
+    }
+  ]
+}
