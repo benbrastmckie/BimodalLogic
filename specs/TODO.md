@@ -133,7 +133,7 @@ next_project_number: 878
 867 [NOT STARTED] — IMPLEMENTATION TASK, sizeable: formalize Gabbay separation...
 871 [NOT STARTED] — Correct LCU docstring and restore omega\_chain...
   └─ 875 [NOT STARTED] — IMPLEMENTATION TASK, gated on the L^▷ proof system and its... (see above)
-872 [RESEARCHED] — RESEARCH TASK, cheap and ordering: produce the transfer...
+872 [PLANNED] — RESEARCH TASK, cheap and ordering: produce the transfer...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -288,11 +288,12 @@ VERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, th
 ---
 
 ### 872. Open language transfer ledger
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: formal
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [872_open_language_transfer_ledger/reports/01_open-language-transfer-ledger.md]
+- **Plan**: [872_open_language_transfer_ledger/plans/01_transfer-ledger-conclusion.md]
 
 **Description**: RESEARCH TASK, cheap and ordering: produce the transfer ledger for the L-plus-to-L^▷ programme -- one row per L-plus headline result, naming its L^▷ counterpart and that counterpart's status -- so that "everything for L-plus has been transferred to L^▷" becomes a measurable condition rather than a judgement. Report only; this task changes nothing under `FormalSystem/`.
 
