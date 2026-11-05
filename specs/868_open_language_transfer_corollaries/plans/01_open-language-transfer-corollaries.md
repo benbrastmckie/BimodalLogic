@@ -1,7 +1,7 @@
 # Implementation Plan: Open-Language Transfer Corollaries
 
 - **Task**: 868 - Open-language transfer corollaries (completeness and decidability reductions at ZTime and RTime)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/868_open_language_transfer_corollaries/reports/01_open-language-transfer-corollaries.md

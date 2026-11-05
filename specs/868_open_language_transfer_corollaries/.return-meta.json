@@ -37,7 +37,12 @@
     "session_id": "sess_1793857391_c5064b",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "failed"
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "compliance_check_note": "Re-run after the plan was corrected to name the landed decidableOpenValidInOfTranslation (the planned snake_case name is rejected by gate C26 and C16 defsWithUnderscore) and to drop backticks from a prose mention of Bool in the Goals block, which the harvester read as a declaration name. lean-plan-compliance-check.sh now reports passed; the implementation itself was unchanged."
   }
 }
