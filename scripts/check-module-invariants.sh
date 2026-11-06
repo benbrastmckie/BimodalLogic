@@ -2204,7 +2204,7 @@ fi
 # four lines mentioning `tr` additionally inherit the undischarged `SeparationOver` hypothesis
 # described above, and nothing here reaches the base or dense classes.
 #
-# Eleven further matched pairs follow them, for the open-future NON-definability layer
+# Thirteen further matched pairs follow them, for the open-future NON-definability layer
 # (`Metalogic/Independence/OpenFutureUndefinable.lean`), which is the negative half of the same
 # neighbourhood. `...ofut_pastDet` and `...opast_futDet` are the determinacy facts that confine
 # any separator to the past side; `...MarkerGadget.theta_eq_iff`, `...nu_iff_le`, `...run_iff`
@@ -2213,21 +2213,34 @@ fi
 # `...MarkerGadget.deltaProp_pastDet` is past-determinedness of the gap-anchored property;
 # `...MarkerGadget.dofut_probe_iff` and `...ofut_neg_probe_iff` are the exactness claim that the
 # open-future modal computes that property with no slack;
-# `...ofut_not_plusDefinable_of_deltaProp_inexpressible` is the reduction theorem; and
+# `...ofut_not_plusDefinable_of_deltaProp_inexpressible` is the reduction theorem;
 # `...colourFibre_isRegular` puts the four-colour clock witness frame in the regular class over
-# every temporal order. `Classical.choice` enters the gadget chain through the trichotomy case
+# every temporal order; `...colourFibre_hmarkers` is the enough-worlds condition compiled at that
+# frame under its intended valuation `markerModel`, where the two colour bits are read as the two
+# probe atoms; and `...colourFibre_ofut_not_plusDefinable_of_deltaProp_inexpressible` is the
+# reduction at that frame with the enough-worlds condition supplied by application rather than
+# assumed. `Classical.choice` enters the gadget chain through the trichotomy case
 # split `theta_eq_iff` turns on; the three lines measuring the strict subset `[propext]` need no
 # split and are not a regression.
 #
-# WHAT THESE ELEVEN LINES DO NOT ASSERT. The reduction theorem is CONDITIONAL on two explicit
+# WHAT THESE THIRTEEN LINES DO NOT ASSERT. The reduction theorem is CONDITIONAL on two explicit
 # named hypotheses: `hmarkers`, an enough-worlds condition on the frame, and `hinexpr`, the
 # inexpressibility of the gap-anchored past property. `hinexpr` stands for a collapse argument
 # derived in prose in the module's own docstring, in the style of Gabbay, Hodkinson and Reynolds
 # vol. 1, Lemma 12.4.2, and NOT formalized anywhere in this tree. Their presence in this
 # baseline pins axiom profiles and nothing else: no unconditional non-definability claim for the
-# open-future modal at the base or dense classes is asserted here, neither hypothesis is
-# discharged in this tree, and nothing here bears on the integer or real classes, where the
-# elimination layer above gives the positive result.
+# open-future modal at the base or dense classes is asserted here, and nothing here bears on the
+# integer or real classes, where the elimination layer above gives the positive result.
+#
+# `hmarkers` is now DISCHARGED at one frame and one valuation, and nowhere else.
+# `...colourFibre_hmarkers` compiles it at `colourFibre D` under `markerModel D`, and
+# `...colourFibre_ofut_not_plusDefinable_of_deltaProp_inexpressible` is the reduction with that
+# discharge applied. That is a strictly weaker statement than the reduction theorem's own
+# `hmarkers`, which quantifies over every model of the frame and is, read literally, false at
+# every frame: a valuation sending the marker atom to False at every state admits no history
+# carrying the marker future. `hinexpr` remains UNDISCHARGED in this tree at every frame,
+# `colourFibre` included, so neither new line moves the verdict from conditional to
+# unconditional.
 #
 # The second block below (soundness onward) is the SORRY-FREE claim set of
 # FormalSystem/Metalogic.lean's module docstring. Every declaration that docstring calls
@@ -2426,6 +2439,8 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Independence.MarkerGadget.ofut_neg_probe_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Independence.ofut_not_plusDefinable_of_deltaProp_inexpressible' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Independence.colourFibre_isRegular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.colourFibre_hmarkers' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.colourFibre_ofut_not_plusDefinable_of_deltaProp_inexpressible' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.HybridLanguage.regFree_invariance' depends on axioms: [propext, Quot.sound]
 'FormalSystem.HybridLanguage.recF_defines' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.HybridLanguage.transF_defines' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -2747,6 +2762,8 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Independence.MarkerGadget.ofut_neg_probe_iff
 #print axioms FormalSystem.Metalogic.Independence.ofut_not_plusDefinable_of_deltaProp_inexpressible
 #print axioms FormalSystem.Metalogic.Independence.colourFibre_isRegular
+#print axioms FormalSystem.Metalogic.Independence.colourFibre_hmarkers
+#print axioms FormalSystem.Metalogic.Independence.colourFibre_ofut_not_plusDefinable_of_deltaProp_inexpressible
 #print axioms FormalSystem.HybridLanguage.regFree_invariance
 #print axioms FormalSystem.HybridLanguage.recF_defines
 #print axioms FormalSystem.HybridLanguage.transF_defines

@@ -301,7 +301,24 @@ The generic bridge `FrameOver.ofReflective_taskRel` is deliberately *not* `@[sim
 left-hand side is well typed only up to unfolding `ofReflective` — so each frame built by that
 constructor states its own `@[simp]` bridge, proved by the generic one. This is `colourClock`'s,
 the exact counterpart of `FrameOver.translationProduct_taskRel` below. -/
-@[simp] theorem colourClock_taskRel [Finite W] [Nonempty W]
+-- `nolint simpNF`: the `simpNF` env_linter adds every Prop-valued non-instance hypothesis of the
+-- lemma under test to the simp set, by design -- `simp [*]`, so that a conditional simp lemma can
+-- apply to itself (Batteries/Tactic/Lint/Simp.lean). One of this lemma's hypotheses is
+-- `hR : ∀ w d u, R w d u ↔ R u (-d) w`, which as a rewrite is an unconditional loop:
+-- `R a.1 x b.1 → R b.1 (-x) a.1 → R a.1 (- -x) b.1`, and `neg_neg` closes the cycle. The linter
+-- therefore aborts with `maximum recursion depth has been reached` -- it never reaches a
+-- normal-form verdict at all, so the finding is not a claim that this left-hand side is
+-- unnormalised.
+--
+-- The declaration cannot conform. `colourClock` takes its four presentation conditions as
+-- explicit arguments, so they are arguments of `colourClock R hR hC hS h0` and must appear in
+-- any bridge's left-hand side; `isCondition` exempts only instance-implicit binders, so making
+-- them implicit would not remove `hR` from the linter's simp set. Every other
+-- `ofReflectiveRegular` bridge in this development escapes only because its frame takes no
+-- Prop-valued argument (`FrameOver.translationProduct_taskRel` reads reflection off `F`'s own
+-- field; `permissiveFrame_taskRel` and `paddedClock_taskRel` take data, not proofs). The
+-- exemption is recorded here and in `scripts/nolint-attribute-allowlist.txt`.
+@[simp, nolint simpNF] theorem colourClock_taskRel [Finite W] [Nonempty W]
     (hR : ∀ w d u, R w d u ↔ R u (-d) w) (hC : TaskFrame.Compositional R)
     (hS : TaskFrame.Serial R) (h0 : ∀ w u, R w 0 u → u = w)
     (a : W × ↑D) (x : ↑D) (b : W × ↑D) :

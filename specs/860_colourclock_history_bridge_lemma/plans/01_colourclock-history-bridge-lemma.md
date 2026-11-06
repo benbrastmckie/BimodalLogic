@@ -312,34 +312,42 @@ already recorded for it.
 
 ---
 
-### Phase 4: Index rows, C14 pinning, and the full gate [NOT STARTED]
+### Phase 4: Index rows, C14 pinning, and the full gate [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Earn the ledger rows for the two results worth pinning, wire their axiom baselines, and
 close the task on the complete gate set.
 
 **Tasks**:
-- [ ] Add two rows to `docs/theorem-index.md`, beside the existing `colourFibre_isRegular` row:
+- [x] Add two rows to `docs/theorem-index.md`, beside the existing `colourFibre_isRegular` row:
       one for `FormalSystem.Metalogic.Independence.colourFibre_hmarkers` (the enough-worlds
       condition at the four-colour clock frame under the marker valuation, compiled), one for
       `FormalSystem.Metalogic.Independence.colourFibre_ofut_not_plusDefinable_of_deltaProp_inexpressible`
       (the reduction at `colourFibre` with the enough-worlds condition discharged, conditional on
       `hinexpr` alone). Both rows carry `—` in the Paper label column, `Base` is not the right
       Frame class here since both are class-generic over `D`, so use `—`.
-- [ ] Do not overstate: neither row may read as an unconditional non-definability verdict.
+- [x] Do not overstate: neither row may read as an unconditional non-definability verdict.
       `hinexpr` stays named as the remaining unformalized hypothesis in the second row's
       statement cell.
-- [ ] Add the matching `#print axioms` lines to the `C14LEAN` heredoc in
+- [x] Add the matching `#print axioms` lines to the `C14LEAN` heredoc in
       `scripts/check-module-invariants.sh`, immediately after the existing
       `FormalSystem.Metalogic.Independence.colourFibre_isRegular` line.
-- [ ] Add the matching `'…' depends on axioms: …` lines to the `C14_BASELINE` heredoc at the same
+- [x] Add the matching `'…' depends on axioms: …` lines to the `C14_BASELINE` heredoc at the same
       relative position, with the values measured in Phase 3 -- not guessed.
-- [ ] Extend the explanatory comment above the baseline (the paragraph naming
+- [x] Extend the explanatory comment above the baseline (the paragraph naming
       `ofut_not_plusDefinable_of_deltaProp_inexpressible` and `colourFibre_isRegular`) to cover
       the two new entries.
-- [ ] Run `bash scripts/check-module-invariants.sh` and confirm C2, C14 and C20 pass.
-- [ ] Run the full unscoped guarded build and confirm exit 0 with no `sorry`, error, or warning.
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`.
-- [ ] Commit each green sub-step by explicit file path, never a directory or glob pathspec.
+- [x] Run `bash scripts/check-module-invariants.sh` and confirm C2, C14 and C20 pass.
+      *(deviation: altered — C2, C14, C20 and C26 all pass, but the script EXITS 1 on a
+      pre-existing, out-of-scope C16 `unusedArguments` finding on
+      `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136`, which is sibling
+      task 889's own declared subject and territory. Two in-scope gate failures WERE found and
+      fixed: a `simpNF` linter abort on `colourClock_taskRel` and four stale generated README
+      inventory blocks, repaired with `--emit-inventory`. See the Reasoned Exclusions table.)*
+- [x] Run the full unscoped guarded build and confirm exit 0 with no `sorry`, error, or warning.
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh` *(deviation: deferred
+      — the dispatch directive for this cycle replaces this phase's full tier with a scoped tier
+      and defers the complete set to the batch stage. See the Reasoned Exclusions table.)*
+- [x] Commit each green sub-step by explicit file path, never a directory or glob pathspec.
 
 **Timing**: 0.75 hours
 
@@ -361,6 +369,15 @@ close the task on the complete gate set.
   plan's final phase and the full set is owed here.
 - `grep -rn 'sorry' FormalSystem/Semantics/Frames/TranslationProduct.lean FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean`
   returns nothing outside prose.
+
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash .claude/scripts/verify-deploy.sh` complete gate set | The dispatch directive for this cycle replaces this phase's `**Verification Tier**: full` with a SCOPED tier and defers the complete set to the batch stage, where it runs once for the whole batch and is attributed back by `modified_files`. Separately, no `verify-deploy.sh` gate and no `run-all.sh` suite covers ANY file this task touched: all are under `FormalSystem/`, `docs/`, `scripts/` or `typst/`, while those two harnesses check the deployed `.claude/` tree against `agent-system/extensions/` and run the agent system's own shell suites. A narrowing `--only-gate`/`--only` invocation would therefore have been a no-op rather than evidence. | The gates that DO cover these files were run: full guarded `lake build` (exit 0, 2957 jobs, zero `error:`, zero `warning:`), `scripts/check-module-invariants.sh` (C1 `lake build` and `lake build BimodalTest`, C2, C3 zero sorries, C14, C20, C26 all pass), `lake exe runLinter FormalSystem.Semantics.Frames.TranslationProduct` (passed), `scripts/typst-sync-check.sh --fix` (PASS). |
+| `scripts/check-module-invariants.sh` exit 0 | Held at 1 by a PRE-EXISTING C16 `unusedArguments` finding on `LadderChain.lean:2136` (`mem_cellAt_of_shift_of_hasForwardSlack`, argument 23), outside this task's file scope and inside sibling task 889's. Clearing it would mean editing that file or `scripts/nolints.json`, both of which are 889's declared territory. | `LadderChain.lean` has a clean working tree and its last commit is task 850's, three commits before this task's first; the finding is absent from `scripts/nolints.json`; sibling 889 is `ladderchain_c16_unusedarguments_clear` with exactly that file scope. Every check this task's own files reach passes. |
+| `simpNF` conformance of `colourClock_taskRel` | Batteries' `simpNF` env_linter adds every Prop-valued non-instance hypothesis of the lemma under test to the simp set by design (`simp [*]`, so a conditional simp lemma can apply to itself). This lemma's `hR` is the reflection condition `R w d u ↔ R u (-d) w`, an unconditional rewrite loop once `neg_neg` closes the cycle, so the linter aborts on maximum recursion depth without ever reaching a normal-form verdict. The declaration cannot conform while `colourClock` takes its four presentation conditions as explicit arguments, and `isCondition` exempts only instance-implicit binders. Resolved by the repository's documented permanent-exemption route rather than by weakening the pinned `@[simp]` statement. | `@[simp, nolint simpNF]` with the full reason at the attribute site plus a `scripts/nolint-attribute-allowlist.txt` entry; `lake exe runLinter FormalSystem.Semantics.Frames.TranslationProduct` then passes and C26 reports all 9 in-source `nolint` pairs allowlisted. |
 
 ---
 
@@ -477,14 +494,18 @@ exposed.
 
 ## Testing & Validation
 
-- [ ] Each phase's scoped guarded build exits 0, with no `sorry`, error, or warning.
-- [ ] The full unscoped guarded build exits 0 at Phase 4.
+- [x] Each phase's scoped guarded build exits 0, with no `sorry`, error, or warning.
+- [x] The full unscoped guarded build exits 0 at Phase 4.
 - [ ] `bash scripts/check-module-invariants.sh` exits 0 with C2, C14 and C20 passing, after the
-      baseline pair is extended.
-- [ ] `bash .claude/scripts/verify-deploy.sh` exits 0 at Phase 4.
-- [ ] Every new declaration's measured `#print axioms` value matches what the C14 baseline
+      baseline pair is extended. *(deviation: altered — C2, C14, C20 and C26 pass and the
+      baseline pair is extended, but the script exits 1 on a pre-existing out-of-scope C16
+      finding in sibling task 889's territory. See Phase 4's Reasoned Exclusions.)*
+- [ ] `bash .claude/scripts/verify-deploy.sh` exits 0 at Phase 4. *(deviation: deferred — the
+      dispatch directive defers the complete gate set to the batch stage, and no gate of it
+      covers any file this task touched. See Phase 4's Reasoned Exclusions.)*
+- [x] Every new declaration's measured `#print axioms` value matches what the C14 baseline
       records for it -- measured, never transcribed from another declaration.
-- [ ] `docs/theorem-index.md` gains exactly two rows, neither of which claims an unconditional
+- [x] `docs/theorem-index.md` gains exactly two rows, neither of which claims an unconditional
       non-definability verdict.
 
 ## Artifacts & Outputs
