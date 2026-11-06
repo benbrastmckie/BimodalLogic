@@ -178,30 +178,30 @@ assume the two-module figure.
 
 ---
 
-### Phase 2: Histories of `colourClock` from colour functions [NOT STARTED]
+### Phase 2: Histories of `colourClock` from colour functions [COMPLETED]
 
 **Goal**: Compile "a colour function with a clock offset is a history of `colourClock`", in a
 general form carrying an explicit coherence hypothesis and a free-relation form in which that
 hypothesis is discharged, together with the clock-shape lemma the `hmarkers` discharge needs.
 
 **Tasks**:
-- [ ] Add a `/-! ### Histories of the colour clock -/` subsection after `colourClock_taskRel`.
-- [ ] Add `colourClock_zero_self`: `R w 0 w`, from `(hS w 0 le_rfl).1` and `h0`.
-- [ ] Add `colourClock_clock_eq`: for any `τ : WorldHistory (colourClock R hR hC hS h0).toTaskFrame`,
+- [x] Add a `/-! ### Histories of the colour clock -/` subsection after `colourClock_taskRel`.
+- [x] Add `colourClock_zero_self`: `R w 0 w`, from `(hS w 0 le_rfl).1` and `h0`.
+- [x] Add `colourClock_clock_eq`: for any `τ : WorldHistory (colourClock R hR hC hS h0).toTaskFrame`,
       `(τ.state t).2 = (τ.state 0).2 + t`, by `colourClock_taskRel` on `τ.respects_task 0 t`
       followed by `sub_zero` -- the direct analogue of `clock_eq`.
-- [ ] Add `colourClock.ofColourFun` via `WorldHistory.ofTotal _ (fun t => (f t, c + t))`,
+- [x] Add `colourClock.ofColourFun` via `WorldHistory.ofTotal _ (fun t => (f t, c + t))`,
       discharging the obligation with `colourClock_taskRel` plus `hf s t` and the abelian-group
       identity `c + t = (c + s) + (t - s)` (`abel`, as `liftH` does).
-- [ ] Add `@[simp] colourClock.ofColourFun_state`, proved by `rfl`.
-- [ ] Add `colourClock.ofFreeColourFun`, defined as `ofColourFun` with the coherence hypothesis
+- [x] Add `@[simp] colourClock.ofColourFun_state`, proved by `rfl`.
+- [x] Add `colourClock.ofFreeColourFun`, defined as `ofColourFun` with the coherence hypothesis
       supplied: `fun s t => if h : t - s = 0 then (by rw [h, sub_eq_zero.mp h]; exact
       colourClock_zero_self …) else hfree _ _ _ h` -- the zero case closing through
       `colourClock_zero_self` and `sub_eq_zero`, the nonzero case through `hfree`.
-- [ ] Add `@[simp] colourClock.ofFreeColourFun_state`, proved by `rfl`.
-- [ ] Add docstrings to each, and the five new names to the module docstring's
+- [x] Add `@[simp] colourClock.ofFreeColourFun_state`, proved by `rfl`.
+- [x] Add docstrings to each, and the five new names to the module docstring's
       `## Main Definitions` / `## Main Results` lists as appropriate.
-- [ ] Build the module.
+- [x] Build the module.
 
 **Timing**: 1 hour
 

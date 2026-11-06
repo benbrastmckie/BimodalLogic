@@ -42,6 +42,9 @@ supplies the rest (`prodRel_limit`, through `TaskFrame.limit_of_shift`).
 - `prodRel R` — the product relation on `W × D` over a bare relation `R`
 - `colourClock` — a task frame over any temporal order from a finite reflective, serial,
   compositional relation whose zero-fibres are trivial; Saturation is `cor:saturation-finite`
+- `colourClock.ofColourFun`, `colourClock.ofFreeColourFun` — the history of the colour clock
+  built from a colour function and a clock offset, and its free-relation form in which the
+  coherence hypothesis is discharged outright
 - `FrameOver.translationProduct` — the translation product of a live frame (`def:frame`)
 - `liftH`, `projH` — lifting and projecting world histories (`def:world-history`)
 - `liftModel` — the lift of a model; the valuation ignores the clock (`def:BL-semantics`)
@@ -52,6 +55,10 @@ supplies the rest (`prodRel_limit`, through `TaskFrame.limit_of_shift`).
   `prodRel_saturation` — each frame condition of the product from the matching condition on
   the base relation; `saturation_of_prodRel` — and Saturation back again
 - `colourClock_taskRel` — the task relation of the colour clock, unfolded
+- `colourClock_zero_self`, `colourClock_clock_eq` — every state is `0`-related to itself, and
+  the clock along any history of the colour clock is time plus a constant
+- `colourClock.ofColourFun_state`, `colourClock.ofFreeColourFun_state` — the states of the
+  colour-function histories
 - `FrameOver.translationProduct_sat` — the product lies in every frame class its base does
 - `FrameOver.translationProduct_deterministic_iff` — the product is neutral on determinism
   (`def:deterministic`)
@@ -300,6 +307,81 @@ the exact counterpart of `FrameOver.translationProduct_taskRel` below. -/
     (a : W × ↑D) (x : ↑D) (b : W × ↑D) :
     (colourClock R hR hC hS h0).TaskRel a x b ↔ R a.1 x b.1 ∧ b.2 = a.2 + x :=
   FrameOver.ofReflectiveRegular_taskRel
+
+/-! ### Histories of the colour clock
+
+The product's own history theory (`liftH`, `projH`, `liftH_projH`) is stated for a *live* frame
+`F`, and so reads a history of the base frame off every history of the product. The colour clock
+has no base frame: its input is a bare relation `R`, whose histories are not objects of this
+development. What takes the place of `projH` here is therefore a bare *colour function*
+`f : D → W`, and the content of this subsection is that a colour function plus a clock offset is
+a history of `colourClock` — with no coherence condition at all when `R` is free away from `0`.
+-/
+
+/-- Every state is related to itself across duration `0`: Seriality supplies some `0`-successor
+and trivial zero-fibres force it to be the state itself. -/
+theorem colourClock_zero_self (hS : TaskFrame.Serial R)
+    (h0 : ∀ w u, R w 0 u → u = w) (w : W) : R w 0 w := by
+  obtain ⟨u, hu⟩ := (hS w 0 le_rfl).1
+  rwa [h0 w u hu] at hu
+
+/-- The clock along any history of the colour clock is time plus a constant — the counterpart of
+`clock_eq` for the product of a live frame. This is the half of the colour-function
+correspondence that the enough-worlds discharge at `colourFibre` consumes. -/
+theorem colourClock_clock_eq [Finite W] [Nonempty W]
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (hC : TaskFrame.Compositional R)
+    (hS : TaskFrame.Serial R) (h0 : ∀ w u, R w 0 u → u = w)
+    (τ : WorldHistory (colourClock R hR hC hS h0).toTaskFrame) (t : ↑D) :
+    (τ.state t).2 = (τ.state 0).2 + t := by
+  have := ((colourClock_taskRel R hR hC hS h0 _ _ _).1 (τ.respects_task 0 t)).2
+  rwa [sub_zero] at this
+
+/-- **A colour function with a clock offset is a history of the colour clock**, given coherence
+of the colour function with `R`: at time `t` the history occupies `(f t, c + t)`.
+
+The coherence hypothesis `hf` is the whole of the obligation — the clock component is discharged
+by the abelian-group identity `c + t = (c + s) + (t - s)`, exactly as `liftH` does. -/
+def colourClock.ofColourFun [Finite W] [Nonempty W]
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (hC : TaskFrame.Compositional R)
+    (hS : TaskFrame.Serial R) (h0 : ∀ w u, R w 0 u → u = w)
+    (f : ↑D → W) (c : ↑D) (hf : ∀ s t : ↑D, R (f s) (t - s) (f t)) :
+    WorldHistory (colourClock R hR hC hS h0).toTaskFrame :=
+  WorldHistory.ofTotal _ (fun t => (f t, c + t)) (by
+    intro s t
+    exact (colourClock_taskRel R hR hC hS h0 _ _ _).2
+      ⟨hf s t, by change c + t = c + s + (t - s); abel⟩)
+
+/-- The state of a colour-function history. -/
+@[simp] theorem colourClock.ofColourFun_state [Finite W] [Nonempty W]
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (hC : TaskFrame.Compositional R)
+    (hS : TaskFrame.Serial R) (h0 : ∀ w u, R w 0 u → u = w)
+    (f : ↑D → W) (c : ↑D) (hf : ∀ s t : ↑D, R (f s) (t - s) (f t)) (t : ↑D) :
+    (colourClock.ofColourFun R hR hC hS h0 f c hf).state t = (f t, c + t) := rfl
+
+/-- **Every colour function is a history of the colour clock**, when `R` is free at every nonzero
+duration: the coherence hypothesis of `ofColourFun` is then discharged outright, the nonzero case
+by freeness and the zero case by `colourClock_zero_self`.
+
+This is the fact the open-future non-definability probe needs of its witness frame, and the
+reason a *free* colour relation was chosen: the histories of the frame are then literally the
+arbitrary colour functions with a clock offset, so any prescribed future — the marker future
+among them — is realised by some history. -/
+def colourClock.ofFreeColourFun [Finite W] [Nonempty W]
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (hC : TaskFrame.Compositional R)
+    (hS : TaskFrame.Serial R) (h0 : ∀ w u, R w 0 u → u = w)
+    (hfree : ∀ w (d : ↑D) u, d ≠ 0 → R w d u) (f : ↑D → W) (c : ↑D) :
+    WorldHistory (colourClock R hR hC hS h0).toTaskFrame :=
+  colourClock.ofColourFun R hR hC hS h0 f c (fun s t => by
+    by_cases h : t - s = 0
+    · rw [h, sub_eq_zero.mp h]; exact colourClock_zero_self R hS h0 (f s)
+    · exact hfree _ _ _ h)
+
+/-- The state of a free-colour-function history. -/
+@[simp] theorem colourClock.ofFreeColourFun_state [Finite W] [Nonempty W]
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (hC : TaskFrame.Compositional R)
+    (hS : TaskFrame.Serial R) (h0 : ∀ w u, R w 0 u → u = w)
+    (hfree : ∀ w (d : ↑D) u, d ≠ 0 → R w d u) (f : ↑D → W) (c : ↑D) (t : ↑D) :
+    (colourClock.ofFreeColourFun R hR hC hS h0 hfree f c).state t = (f t, c + t) := rfl
 
 end Bare
 
