@@ -2129,9 +2129,20 @@ theorem exists_ladderPath_through_deleted_exact_of_pend_past
   exists_ladderPath_through_deleted_exact_upfirst_of_pend_past step pend fwd bwd lab φ Tc Tn P B
     hp hno g hg z hpast m hTc (by omega) (hasForwardSlack_mono g z hslack (Nat.le_add_right _ _))
 
--- `linter.unusedVariables`: the statement is kept verbatim; `hslk` (the gap `n + budget² ≤ c`)
--- is slack the `_exact` form does not need once the regime amount is `m · (P + 1)`, so it is
--- not read.
+-- TWO linters see `hslk`, and each needs a DIFFERENT remedy. The binder is the gap
+-- `n + budget² ≤ c`: slack the `_exact` form does not need once the regime amount is
+-- `m · (P + 1)`, so this proof does not read it. The statement is nonetheless kept verbatim
+-- because it is a pinned Challenge statement -- dropping the binder would be
+-- same-name-different-signature drift against that pin.
+--   (1) The FRONTEND linter `linter.unusedVariables` is silenced by the `set_option ... in`
+--       line below, which must stay: `hslk` is still an unused binder at the frontend.
+--   (2) Batteries' `@[env_linter] unusedArguments` -- the linter `lake exe runLinter` and
+--       `scripts/check-module-invariants.sh`'s C16 actually run -- reads the COMPILED
+--       environment, so no `set_option linter.*` reaches it. It is exempted instead by the
+--       matching row in `scripts/nolints.json`.
+-- Do NOT regenerate that ledger with `lake exe runLinter --update`: it rewrites the whole file
+-- from current findings in a different serialization, grandfathering any genuine regression
+-- along with this row. Add or remove rows there by hand.
 set_option linter.unusedVariables false in
 /-- **THE DOWNWARD CELL INCLUSION ON THE WITNESSING PATH, under the regime at
 `m · (P + 1) + budget²`** (statement kept verbatim): a corollary of
