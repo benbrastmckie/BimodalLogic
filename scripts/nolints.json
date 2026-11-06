@@ -906,5 +906,9 @@
   [
     "unusedArguments",
     "FormalSystem.Metalogic.Decidability.RaySummary.paramsOk_params"
+  ],
+  [
+    "unusedArguments",
+    "FormalSystem.Metalogic.Decidability.RaySummary.mem_cellAt_of_shift_of_hasForwardSlack"
   ]
 ]
