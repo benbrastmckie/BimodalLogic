@@ -1,7 +1,7 @@
 # Implementation Plan: colourClock history bridge lemma
 
 - **Task**: 860 - colourclock_history_bridge_lemma
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: None (no research report for this task; grounding re-derived at plan time
@@ -126,24 +126,29 @@ consumes the declarations the previous one lands.
 
 ---
 
-### Phase 1: The `colourClock` task-relation bridge [NOT STARTED]
+### Phase 1: The `colourClock` task-relation bridge [COMPLETED]
 
 **Goal**: Give `colourClock` the `@[simp]` task-relation bridge that `translationProduct` already
 has, so its task relation can be read off without unfolding the constructor.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Semantics/Frames/TranslationProduct.lean` around `colourClock` and
+- [x] Re-read `FormalSystem/Semantics/Frames/TranslationProduct.lean` around `colourClock` and
       `colourClock_isRegular` immediately before editing (sibling-concurrency discipline).
-- [ ] Add `colourClock_taskRel` directly after `colourClock_isRegular`, inside `section Bare`,
+- [x] Add `colourClock_taskRel` directly after `colourClock_isRegular`, inside `section Bare`,
       with the signature pinned in `## Lean Challenge Statements` below.
-- [ ] Prove it, working the mitigation ladder in Risks in order; stop at the first rung that
-      closes and record in the phase notes which rung was needed.
-- [ ] Add a docstring in the style of `FrameOver.translationProduct_taskRel`'s, noting that
+- [x] Prove it, working the mitigation ladder in Risks in order; stop at the first rung that
+      closes and record in the phase notes which rung was needed. *(no rung needed: a bare
+      `FrameOver.ofReflectiveRegular_taskRel` term closed it, as `translationProduct_taskRel`
+      does; the `haveI`, `show` and `reflect_restrict_iff` rungs were not reached)*
+- [x] Add a docstring in the style of `FrameOver.translationProduct_taskRel`'s, noting that
       `ofReflective_taskRel` is deliberately not `@[simp]` and that each frame states its own
       bridge.
-- [ ] Add `colourClock_taskRel` to the `## Main Results` list in the module docstring.
-- [ ] Enumerate the dependent set: `grep -rl 'colourClock\|colourFibre' FormalSystem/`.
-- [ ] Build `FormalSystem.Semantics.Frames.TranslationProduct` and each enumerated dependent
+- [x] Add `colourClock_taskRel` to the `## Main Results` list in the module docstring.
+- [x] Enumerate the dependent set: `grep -rl 'colourClock\|colourFibre' FormalSystem/`
+      *(three Lean modules: `Semantics/Frames/TranslationProduct.lean`,
+      `Metalogic/Independence/OpenFutureUndefinable.lean`, `Metalogic/Independence.lean`;
+      two README.md files are prose only. Scope Hypothesis confirmed.)*
+- [x] Build `FormalSystem.Semantics.Frames.TranslationProduct` and each enumerated dependent
       module, confirming no new error or warning.
 
 **Timing**: 0.75 hours

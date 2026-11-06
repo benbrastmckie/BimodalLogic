@@ -51,6 +51,7 @@ supplies the rest (`prodRel_limit`, through `TaskFrame.limit_of_shift`).
 - `prodRel_reflection`, `prodRel_comp`, `prodRel_serial`, `prodRel_limit`,
   `prodRel_saturation` — each frame condition of the product from the matching condition on
   the base relation; `saturation_of_prodRel` — and Saturation back again
+- `colourClock_taskRel` — the task relation of the colour clock, unfolded
 - `FrameOver.translationProduct_sat` — the product lies in every frame class its base does
 - `FrameOver.translationProduct_deterministic_iff` — the product is neutral on determinism
   (`def:deterministic`)
@@ -285,6 +286,20 @@ instance colourClock_isRegular [Finite W] [Nonempty W]
     (hS : TaskFrame.Serial R) (h0 : ∀ w u, R w 0 u → u = w) :
     (colourClock R hR hC hS h0).IsRegular :=
   FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+
+/-- The task relation of the colour clock, unfolded: a task of duration `x` moves the colour
+along `R` and advances the clock by `x`.
+
+The generic bridge `FrameOver.ofReflective_taskRel` is deliberately *not* `@[simp]` — its
+left-hand side is well typed only up to unfolding `ofReflective` — so each frame built by that
+constructor states its own `@[simp]` bridge, proved by the generic one. This is `colourClock`'s,
+the exact counterpart of `FrameOver.translationProduct_taskRel` below. -/
+@[simp] theorem colourClock_taskRel [Finite W] [Nonempty W]
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (hC : TaskFrame.Compositional R)
+    (hS : TaskFrame.Serial R) (h0 : ∀ w u, R w 0 u → u = w)
+    (a : W × ↑D) (x : ↑D) (b : W × ↑D) :
+    (colourClock R hR hC hS h0).TaskRel a x b ↔ R a.1 x b.1 ∧ b.2 = a.2 + x :=
+  FrameOver.ofReflectiveRegular_taskRel
 
 end Bare
 
