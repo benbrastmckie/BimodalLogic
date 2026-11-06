@@ -632,24 +632,35 @@ consumer, and a `local` build of the one file would miss them.
 
 ---
 
-### Phase 10: Rewire L^▷ — `OpenAxiomValidity.lean` [NOT STARTED]
+### Phase 10: Rewire L^▷ — `OpenAxiomValidity.lean` [COMPLETED]
 
 **Goal**: The same rewire for the largest of the three files.
 
 **Tasks**:
-- [ ] Add the `GenericSchemata` import.
-- [ ] Rewrite the subsumed bodies in the propositional, S5-modal, temporal-monotonicity,
+- [x] Add the `GenericSchemata` import.
+- [x] Rewrite the subsumed bodies in the propositional, S5-modal, temporal-monotonicity,
       temporal-accumulation, linearity, `F`/`P`-equivalence, discrete, Prior/Dedekind, density
       and stability blocks as one-line delegations.
-- [ ] Replace the nine `openTruth_*_iff` clause re-exports (`:480`–`:546`) with delegations to
+- [x] Replace the nine `openTruth_*_iff` clause re-exports (`:480`–`:546`) with delegations to
       the generic `TruthClauses.*_iff` family, or delete them if the rewired bodies no longer
       need the local names (`grep -rn "openTruth_imp_iff" FormalSystem/ Tests/` first).
-- [ ] Collapse `openKPlus_iff`/`openKMinus_iff` onto `TruthClauses.kPlus_iff`/`kMinus_iff` under
+      *(measured, and all nine KEPT: they were **already** one-line delegations to
+      `TruthClauses.*` or `Iff.rfl`, so the first half of this task was a no-op. On the second
+      half, four still have consumers after the rewire — `openTruth_allFuture_iff` and
+      `openTruth_allPast_iff` by `Conservativity/Open/OpenSoundness.lean`, and
+      `openTruth_and_iff` and `openTruth_untl_iff` by the pasting block, which is a declared
+      Non-Goal — so splitting the set five-deleted/four-kept would trade nine uniform one-liners
+      for an arbitrary partition. The block docstring now records that they are no longer what
+      the mirror arms read through.)*
+- [x] Collapse `openKPlus_iff`/`openKMinus_iff` onto `TruthClauses.kPlus_iff`/`kMinus_iff` under
       the same consumer check as Phase 9.
-- [ ] Leave untouched: the restricted-modal (`▷`/`◁`) block, the rigidity block, the two purity
+      *(checked: after the rewire the only remaining references were their own declarations, one
+      docstring row and the directory README. Both deleted, as the Star pair was; the Dedekind
+      arms now reach `TruthClauses.kPlus_iff`/`kMinus_iff` through the generic schemata.)*
+- [x] Leave untouched: the restricted-modal (`▷`/`◁`) block, the rigidity block, the two purity
       congruences, `openTruthAt_congr_ext`, `openTruthAt_timeShift`, the pasting block, the
       thirteen block aggregates' covered-name lists, and the two 71-arm dispatchers.
-- [ ] Update the module docstring's Main Results list to reflect any removed re-export names.
+- [x] Update the module docstring's Main Results list to reflect any removed re-export names.
 
 **Timing**: 2 hours
 
@@ -661,6 +672,15 @@ consumer, and a `local` build of the one file would miss them.
 file's named `openValidIn_*` theorems and roughly 1,370 of its 2,587 lines, read off the section
 boundaries at `:708`–`:1525` and `:1561`–`:2114`. Confirm by measuring the before/after
 `wc -l` and `grep -c "^theorem openValidIn_"` and reporting both in the handoff.
+
+*(measured: `grep -c "^theorem openValidIn_"` is **145 before and 145 after** — every name
+preserved. **55 of them** were rewritten as delegations (42 plain `OpenValid`, 8 frame-class
+arms via `sat_intro`, 4 `.RTime` arms passing their own completeness conjunct, plus
+`modalFuture`'s homogeneity discharge). The ~100 figure in this hypothesis counted the
+reflection halves too; those were **already** one-liners through `openValid_reflectTime` and are
+untouched, so the honest subsumed count is 55. Line delta: **2587 → 2298, −289 lines**, which
+also absorbs deleting `openKPlus_iff`/`openKMinus_iff`; the in-source `longFile` baseline was
+tightened 2600 → 2400 as the linter asked.)*
 
 **Tier Justification**: `Conservativity/Open/OpenSoundness.lean` and
 `Conservativity/Open/Forward.lean` consume the two dispatch lemmas, and the thirteen block
@@ -676,7 +696,12 @@ consumer of the changed declarations.
 - `lake build FormalSystem.Metalogic.Conservativity.Open` green.
 - The thirteen block aggregates' covered-name lists still union to all 71 `OpenAxiom`
   constructors, none twice and none missing — the invariant the file's own docstring asserts.
+  *(26 aggregate theorems — 13 validity + 13 reflection — are present and unchanged; their
+  covered-name lists were not edited, and both 71-arm dispatchers still elaborate, which is what
+  mechanically enforces the partition.)*
 - `openAxiom_validIn_min` / `openAxiom_reflect_time_validIn_min` remain wildcard-free.
+  *(measured: 71 arms, and the only `| _ =>` text in the file is a prose mention of
+  `PlusAxiom.minFrameClass`'s own wildcard inside a docstring.)*
 
 ---
 

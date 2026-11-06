@@ -8,6 +8,7 @@ import FormalSystem.OpenLanguage.OpenAxioms
 import FormalSystem.OpenLanguage.OpenValidity
 import FormalSystem.OpenLanguage.OpenOckhamist
 import FormalSystem.OpenLanguage.OpenReversal
+import FormalSystem.Metalogic.SoundnessLemmas.GenericSchemata
 import FormalSystem.Metalogic.Conservativity.Plus.AxiomValidity
 
 /-!
@@ -78,7 +79,6 @@ anyway.
   linearity schemata, and their reflections
 - `openAxiomValidIn_tempEquivBlock`, `openAxiomReflectValidIn_tempEquivBlock` — the four
   `F`/`P` equivalence schemata, and their reflections
-- `openKPlus_iff`, `openKMinus_iff` — the two Reynolds gap operators, unfolded
 - `openAxiomValidIn_discreteBlock`, `openAxiomReflectValidIn_discreteBlock` — the five
   discrete-uniformity schemata, and their reflections
 - `openAxiomValidIn_priorBlock`, `openAxiomReflectValidIn_priorBlock` — the three Prior and three
@@ -118,7 +118,7 @@ open-language · soundness · axiom-validity · time-reflection
 -- and its reflection half, plus the time-shift and `K±` infrastructure the `modal_future` and
 -- Dedekind arms consume. The two wildcard-free dispatch lemmas read every one of those names, so
 -- they belong in one module with them. Not for parking unrelated material.
-set_option linter.style.longFile 2600
+set_option linter.style.longFile 2400
 
 namespace FormalSystem.Metalogic.Conservativity
 
@@ -128,6 +128,7 @@ open FormalSystem.PlusLanguage
 open FormalSystem.OpenLanguage
 open FormalSystem.OpenLanguage.OpenFormula
 open FormalSystem.Semantics
+open FormalSystem.Metalogic.SoundnessLemmas
 
 /-! ## The L^▷ purity congruences -/
 
@@ -483,8 +484,13 @@ theorem openAxiomReflectValidIn_rigidityBlock :
 operators and for `neg`, `someFuture`, `somePast`, `dstab`, `dofut` and `dopast`, but not for the
 derived operators the TM⁺ mirror schemata are stated through. Those are available generically from
 the `StabClauses OpenFormula` instance (`Semantics/TruthClauses.lean`); the re-exports below put
-them in the `OpenTruthAt` shape the `StarTruth.*_iff` family has, so the mirror proofs below can be
-read against `Conservativity/Star/StarAxiomValidity.lean` line for line. -/
+them in the `OpenTruthAt` shape. Since the mirror block now delegates to
+`Metalogic/SoundnessLemmas/GenericSchemata.lean`, these are no longer what the mirror arms are
+read through; four of the nine are still consumed — `openTruth_allFuture_iff` and
+`openTruth_allPast_iff` by `Conservativity/Open/OpenSoundness.lean`, and `openTruth_and_iff` and
+`openTruth_untl_iff` by the pasting block, which is deliberately not generalised — so all nine are
+kept rather than split. Each is already a one-line delegation to the generic clause lemma or an
+`Iff.rfl`. -/
 
 section ClauseLemmas
 
@@ -707,8 +713,13 @@ theorem openTruthAt_timeShift (M : TaskModel F) (φ : OpenFormula) :
 
 /-! ## The propositional block, per constructor
 
-The four Layer-1 schemata of `OpenAxiom`, proved **directly against `OpenTruthAt`** at arbitrary
-`OpenFormula` metavariables.
+The four Layer-1 schemata of `OpenAxiom`. Each is a **one-line delegation** to the correspondingly
+named `generic_*` lemma of `Metalogic/SoundnessLemmas/GenericSchemata.lean`, which states each TM⁺
+mirror schema once over the `TruthEnv`/`StabClauses` clause interface; the same holds of every
+mirror block below. Names, statements and attributes are unchanged — only the bodies are. The
+delegation is statement-preserving because `OpenFormula`'s derived-operator `def`s coincide
+definitionally with the clause layer's `abbrev`s, pinned by the `rfl` bridges in
+`Tests/BimodalTest/Semantics/ValidityLayerTest.lean`.
 
 **No atomization and no uniform substitution, here or anywhere below (R7).** The atomization route
 of `Conservativity/Plus/Atomization.lean` rests on `stab_state_only` — `⊡φ`'s truth value at
@@ -716,28 +727,32 @@ of `Conservativity/Plus/Atomization.lean` rests on `stab_state_only` — `⊡φ`
 sharing a state at `t` need not agree up to `t`, so no L^▷ analogue of `stab_state_only` exists and
 the atomization route is unavailable. Uniform substitution is independently unsound over TM⁺, whose
 `atom_stab` schema (`p → ⊡p`, atoms only) is false at a general substitution instance. Every arm
-below is therefore a fresh direct proof, and the shortcut is not to be re-attempted. -/
+below therefore rests on the generic clause-level statement, never on atomization or
+substitution, and the shortcut is not to be re-attempted. **That unavailability is why the generic
+layer exists**: the shared statement had to be made somewhere, and the clause interface is where it
+can be made once for L⁺, L⋆ and L^▷ together instead of transcribed three times. -/
 
 /-- Propositional K over L^▷. -/
 theorem openValidIn_propK (φ ψ χ : OpenFormula) :
     OpenValid ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) :=
-  OpenValid.of_forall fun _ _ _ _ h1 h2 h3 => h1 h3 (h2 h3)
+  OpenValid.of_forall fun _ M τ t =>
+    generic_prop_k (L := OpenFormula) M τ t PUnit.unit φ ψ χ
 
 /-- Propositional S (weakening) over L^▷. -/
 theorem openValidIn_propS (φ ψ : OpenFormula) : OpenValid (φ.imp (ψ.imp φ)) :=
-  OpenValid.of_forall fun _ _ _ _ h _ => h
+  OpenValid.of_forall fun _ M τ t =>
+    generic_prop_s (L := OpenFormula) M τ t PUnit.unit φ ψ
 
 /-- Ex Falso Quodlibet over L^▷. -/
 theorem openValidIn_exFalso (φ : OpenFormula) : OpenValid (OpenFormula.bot.imp φ) :=
-  OpenValid.of_forall fun _ _ _ _ h => h.elim
+  OpenValid.of_forall fun _ M τ t =>
+    generic_ex_falso (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- Peirce's Law over L^▷, by classical case analysis on `φ`. -/
 theorem openValidIn_peirce (φ ψ : OpenFormula) :
-    OpenValid (((φ.imp ψ).imp φ).imp φ) := by
-  refine OpenValid.of_forall fun F M τ t h => ?_
-  by_cases hφ : OpenTruthAt M τ t φ
-  · exact hφ
-  · exact h fun hp => absurd hp hφ
+    OpenValid (((φ.imp ψ).imp φ).imp φ) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_peirce (L := OpenFormula) M τ t PUnit.unit φ ψ
 
 /-! ## The S5-modal block, per constructor
 
@@ -748,48 +763,45 @@ each one step from that clause; `modal_future` is the only one that moves the ti
 
 /-- Modal T over L^▷: the evaluation history is itself a world history, so `□` reflects. -/
 theorem openValidIn_modalT (φ : OpenFormula) : OpenValid ((OpenFormula.box φ).imp φ) :=
-  OpenValid.of_forall fun _ _ τ _ h => h τ
+  OpenValid.of_forall fun _ M τ t =>
+    generic_modal_t (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- Modal 4 over L^▷: the `box` clause quantifies over all world histories, so it is
 idempotent. -/
 theorem openValidIn_modal4 (φ : OpenFormula) :
     OpenValid ((OpenFormula.box φ).imp (OpenFormula.box (OpenFormula.box φ))) :=
-  OpenValid.of_forall fun _ _ _ _ h _ => h
+  OpenValid.of_forall fun _ M τ t =>
+    generic_modal_4 (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- Modal B over L^▷. -/
 theorem openValidIn_modalB (φ : OpenFormula) :
-    OpenValid (φ.imp (OpenFormula.box φ.diamond)) := by
-  refine OpenValid.of_forall fun F M τ t h => ?_
-  intro σ
-  rw [openTruth_diamond_iff]
-  exact ⟨τ, h⟩
+    OpenValid (φ.imp (OpenFormula.box φ.diamond)) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_modal_b (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- Modal 5 Collapse over L^▷. -/
 theorem openValidIn_modal5Collapse (φ : OpenFormula) :
-    OpenValid (φ.box.diamond.imp φ.box) := by
-  refine OpenValid.of_forall fun F M τ t h => ?_
-  rw [openTruth_diamond_iff] at h
-  obtain ⟨σ, hb⟩ := h
-  exact hb
+    OpenValid (φ.box.diamond.imp φ.box) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_modal_5_collapse (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- Modal K distribution over L^▷. -/
 theorem openValidIn_modalKDist (φ ψ : OpenFormula) :
     OpenValid ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) :=
-  OpenValid.of_forall fun _ _ _ _ h1 h2 σ => h1 σ (h2 σ)
+  OpenValid.of_forall fun _ M τ t =>
+    generic_modal_k_dist (L := OpenFormula) M τ t PUnit.unit φ ψ
 
 /-- **MF at every `OpenFormula`**: `□φ → □Gφ`. The argument is the L⁺ one, with
 `openTruthAt_timeShift` supplying homogeneity: `□φ` holds of the shifted history
 `σ.timeShift (s - t)` at `t`, which is `φ` at `σ` at time `s`. -/
 theorem openValidIn_modalFuture (φ : OpenFormula) :
-    OpenValid ((OpenFormula.box φ).imp (OpenFormula.box (OpenFormula.allFuture φ))) := by
-  refine OpenValid.of_forall fun F M τ t h => ?_
-  intro σ
-  rw [openTruth_allFuture_iff]
-  intro s hts
-  have h1 := h (σ.timeShift (s - t))
-  have h2 := (openTruthAt_timeShift M φ σ t (s - t)).mp h1
-  rw [add_sub_cancel] at h2
-  exact h2
+    OpenValid ((OpenFormula.box φ).imp (OpenFormula.box (OpenFormula.allFuture φ))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_modal_future (L := OpenFormula) M τ t PUnit.unit φ fun σ s hts h => by
+      have h1 := h (σ.timeShift (s - t))
+      have h2 := (openTruthAt_timeShift M φ σ t (s - t)).mp h1
+      rw [add_sub_cancel] at h2
+      exact h2
 
 /-! ### The reflection halves
 
@@ -912,154 +924,115 @@ theorem openAxiomReflectValidIn_modalBlock :
 
 /-! ## The temporal monotonicity and connection block, per constructor
 
-The seriality, left/right monotonicity and connection schemata of Layer 3. Each is the L-level
-argument of `Metalogic/Soundness.lean` under the substitution `TruthAt M τ t ↦ OpenTruthAt M τ t`,
-`Truth.*_iff ↦ openTruth_*_iff`, read against
-`Conservativity/Star/StarAxiomValidity.lean`'s own transcription of the same proofs. The two
-seriality schemata are closed formulas and are proved from `exists_gt` / `exists_lt` directly
-rather than transported, so that the whole block is discharged against `OpenTruthAt` uniformly.
+The seriality, left/right monotonicity and connection schemata of Layer 3, each delegating to the
+generic layer. The two seriality schemata are closed formulas whose content is seriality of the
+*temporal order* (`exists_gt` / `exists_lt` on `F.Duration`), which is what
+`generic_serial_future` and `generic_serial_past` state — so no `ofPlus` transport is involved on
+either side.
 
 As throughout this file: no atomization, no uniform substitution (see the propositional block's
 note). -/
 
 /-- Serial future over L^▷: `F(⊤)`, from forward seriality of the duration order. -/
 theorem openValidIn_serialFuture :
-    OpenValid (OpenFormula.someFuture (OpenFormula.bot.imp OpenFormula.bot)) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  rw [OpenTruth.someFuture_iff]
-  obtain ⟨s, hts⟩ := exists_gt t
-  exact ⟨s, hts, fun h => h⟩
+    OpenValid (OpenFormula.someFuture (OpenFormula.bot.imp OpenFormula.bot)) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_serial_future (L := OpenFormula) M τ t PUnit.unit
 
 /-- Serial past over L^▷: `⊤ → P(⊤)`, from backward seriality. -/
 theorem openValidIn_serialPast :
     OpenValid ((OpenFormula.bot.imp OpenFormula.bot).imp
-      (OpenFormula.somePast (OpenFormula.bot.imp OpenFormula.bot))) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  intro _
-  rw [OpenTruth.somePast_iff]
-  obtain ⟨s, hst⟩ := exists_lt t
-  exact ⟨s, hst, fun h => h⟩
+      (OpenFormula.somePast (OpenFormula.bot.imp OpenFormula.bot))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_serial_past (L := OpenFormula) M τ t PUnit.unit
 
 /-- BX2G over L^▷: the guard of an `until` may be weakened under `G`. -/
 theorem openValidIn_leftMonoUntilG (φ χ ψ : OpenFormula) :
     OpenValid ((φ.imp χ).allFuture.imp
-      ((OpenFormula.untl φ ψ).imp (OpenFormula.untl χ ψ))) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_allFuture_iff, openTruth_untl_iff]
-  rintro h_G ⟨s, hts, h_event, h_guard⟩
-  exact ⟨s, hts, h_event, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
+      ((OpenFormula.untl φ ψ).imp (OpenFormula.untl χ ψ))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_left_mono_until_G (L := OpenFormula) M τ t PUnit.unit φ χ ψ
 
 /-- BX2H over L^▷, the past mirror of `openValidIn_leftMonoUntilG`. -/
 theorem openValidIn_leftMonoSinceH (φ χ ψ : OpenFormula) :
     OpenValid ((φ.imp χ).allPast.imp
-      ((OpenFormula.snce φ ψ).imp (OpenFormula.snce χ ψ))) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_allPast_iff, openTruth_snce_iff]
-  rintro h_H ⟨s, hst, h_event, h_guard⟩
-  exact ⟨s, hst, h_event, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
+      ((OpenFormula.snce φ ψ).imp (OpenFormula.snce χ ψ))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_left_mono_since_H (L := OpenFormula) M τ t PUnit.unit φ χ ψ
 
 /-- BX3 over L^▷: the event of an `until` may be weakened under `G`. -/
 theorem openValidIn_rightMonoUntil (φ ψ χ : OpenFormula) :
     OpenValid ((φ.imp ψ).allFuture.imp
-      ((OpenFormula.untl χ φ).imp (OpenFormula.untl χ ψ))) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_allFuture_iff, openTruth_untl_iff]
-  rintro h_G ⟨s, hts, h_event, h_guard⟩
-  exact ⟨s, hts, h_G s hts h_event, h_guard⟩
+      ((OpenFormula.untl χ φ).imp (OpenFormula.untl χ ψ))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_right_mono_until (L := OpenFormula) M τ t PUnit.unit φ ψ χ
 
 /-- BX3' over L^▷, the past mirror of `openValidIn_rightMonoUntil`. -/
 theorem openValidIn_rightMonoSince (φ ψ χ : OpenFormula) :
     OpenValid ((φ.imp ψ).allPast.imp
-      ((OpenFormula.snce χ φ).imp (OpenFormula.snce χ ψ))) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_allPast_iff, openTruth_snce_iff]
-  rintro h_H ⟨s, hst, h_event, h_guard⟩
-  exact ⟨s, hst, h_H s hst h_event, h_guard⟩
+      ((OpenFormula.snce χ φ).imp (OpenFormula.snce χ ψ))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_right_mono_since (L := OpenFormula) M τ t PUnit.unit φ ψ χ
 
 /-- BX4 over L^▷: what is true now is always going to have been true. -/
 theorem openValidIn_connectFuture (φ : OpenFormula) :
-    OpenValid (φ.imp (φ.somePast.allFuture)) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_allFuture_iff, OpenTruth.somePast_iff]
-  intro h s hts
-  exact ⟨t, hts, h⟩
+    OpenValid (φ.imp (φ.somePast.allFuture)) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_connect_future (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- BX4' over L^▷, the past mirror of `openValidIn_connectFuture`. -/
 theorem openValidIn_connectPast (φ : OpenFormula) :
-    OpenValid (φ.imp (φ.someFuture.allPast)) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_allPast_iff, OpenTruth.someFuture_iff]
-  intro h s hst
-  exact ⟨t, hst, h⟩
+    OpenValid (φ.imp (φ.someFuture.allPast)) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_connect_past (L := OpenFormula) M τ t PUnit.unit φ
 
 /-! ## The enrichment, self-accumulation and absorption block, per constructor
 
-The heaviest arms of Layer 3. Each is `simp only` over the clause family followed by `rintro`
-and, where two witnesses must be compared, `rcases lt_trichotomy`. -/
+The heaviest arms of Layer 3. The clause-family `simp only` plus `rintro` plus
+`rcases lt_trichotomy` argument each of these needs now lives once in `GenericSchemata.lean`; the
+arms here are delegations. -/
 
 /-- BX13 over L^▷ (Burgess A3a). -/
 theorem openValidIn_enrichmentUntil (φ ψ p : OpenFormula) :
     OpenValid (OpenFormula.and p (OpenFormula.untl φ ψ) |>.imp
-      (OpenFormula.untl φ (OpenFormula.and ψ (OpenFormula.snce φ p)))) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_untl_iff, openTruth_snce_iff]
-  rintro ⟨h_pt, s, hts, h_ψs, h_guard⟩
-  exact ⟨s, hts, ⟨h_ψs, t, hts, h_pt, h_guard⟩, h_guard⟩
+      (OpenFormula.untl φ (OpenFormula.and ψ (OpenFormula.snce φ p)))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_enrichment_until (L := OpenFormula) M τ t PUnit.unit φ ψ p
 
 /-- BX13' over L^▷ (Burgess A3b), the past mirror of `openValidIn_enrichmentUntil`. -/
 theorem openValidIn_enrichmentSince (φ ψ p : OpenFormula) :
     OpenValid (OpenFormula.and p (OpenFormula.snce φ ψ) |>.imp
-      (OpenFormula.snce φ (OpenFormula.and ψ (OpenFormula.untl φ p)))) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_untl_iff, openTruth_snce_iff]
-  rintro ⟨h_pt, s, hst, h_ψs, h_guard⟩
-  exact ⟨s, hst, ⟨h_ψs, t, hst, h_pt, h_guard⟩, h_guard⟩
+      (OpenFormula.snce φ (OpenFormula.and ψ (OpenFormula.untl φ p)))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_enrichment_since (L := OpenFormula) M τ t PUnit.unit φ ψ p
 
 /-- BX5 over L^▷. -/
 theorem openValidIn_selfAccumUntil (φ ψ : OpenFormula) :
     OpenValid ((OpenFormula.untl φ ψ).imp
-      (OpenFormula.untl (OpenFormula.and φ (OpenFormula.untl φ ψ)) ψ)) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_untl_iff]
-  rintro ⟨s, hts, h_ψs, h_guard⟩
-  refine ⟨s, hts, h_ψs, fun r htr hrs => ⟨h_guard r htr hrs, ?_⟩⟩
-  exact ⟨s, hrs, h_ψs, fun q hqr hqs => h_guard q (lt_trans htr hqr) hqs⟩
+      (OpenFormula.untl (OpenFormula.and φ (OpenFormula.untl φ ψ)) ψ)) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_self_accum_until (L := OpenFormula) M τ t PUnit.unit φ ψ
 
 /-- BX5' over L^▷, the past mirror of `openValidIn_selfAccumUntil`. -/
 theorem openValidIn_selfAccumSince (φ ψ : OpenFormula) :
     OpenValid ((OpenFormula.snce φ ψ).imp
-      (OpenFormula.snce (OpenFormula.and φ (OpenFormula.snce φ ψ)) ψ)) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_snce_iff]
-  rintro ⟨s, hst, h_ψs, h_guard⟩
-  refine ⟨s, hst, h_ψs, fun r hsr hrt => ⟨h_guard r hsr hrt, ?_⟩⟩
-  exact ⟨s, hsr, h_ψs, fun q hsq hqr => h_guard q hsq (lt_trans hqr hrt)⟩
+      (OpenFormula.snce (OpenFormula.and φ (OpenFormula.snce φ ψ)) ψ)) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_self_accum_since (L := OpenFormula) M τ t PUnit.unit φ ψ
 
 /-- BX6 over L^▷. -/
 theorem openValidIn_absorbUntil (φ ψ : OpenFormula) :
     OpenValid ((OpenFormula.untl φ (OpenFormula.and φ (OpenFormula.untl φ ψ))).imp
-      (OpenFormula.untl φ ψ)) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_untl_iff]
-  rintro ⟨s₁, hts₁, ⟨h_φs₁, s₂, hs₁s₂, h_ψs₂, h_guard₂⟩, h_guard₁⟩
-  refine ⟨s₂, lt_trans hts₁ hs₁s₂, h_ψs₂, fun q htq hqs₂ => ?_⟩
-  rcases lt_trichotomy q s₁ with h_lt | h_eq | h_gt
-  · exact h_guard₁ q htq h_lt
-  · exact h_eq ▸ h_φs₁
-  · exact h_guard₂ q h_gt hqs₂
+      (OpenFormula.untl φ ψ)) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_absorb_until (L := OpenFormula) M τ t PUnit.unit φ ψ
 
 /-- BX6' over L^▷, the past mirror of `openValidIn_absorbUntil`. -/
 theorem openValidIn_absorbSince (φ ψ : OpenFormula) :
     OpenValid ((OpenFormula.snce φ (OpenFormula.and φ (OpenFormula.snce φ ψ))).imp
-      (OpenFormula.snce φ ψ)) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_snce_iff]
-  rintro ⟨s₁, hs₁t, ⟨h_φs₁, s₂, hs₂s₁, h_ψs₂, h_guard₂⟩, h_guard₁⟩
-  refine ⟨s₂, lt_trans hs₂s₁ hs₁t, h_ψs₂, fun q hs₂q hqt => ?_⟩
-  rcases lt_trichotomy s₁ q with h_lt | h_eq | h_gt
-  · exact h_guard₁ q h_lt hqt
-  · exact h_eq ▸ h_φs₁
-  · exact h_guard₂ q hs₂q h_gt
+      (OpenFormula.snce φ ψ)) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_absorb_since (L := OpenFormula) M τ t PUnit.unit φ ψ
 
 /-! ### The reflection halves
 
@@ -1247,11 +1220,12 @@ each by trichotomy on the two witnesses the antecedent supplies.
 
 **The disjunct nesting is read off `OpenAxiom`, not off the BX numbering.** `linear_until` and
 `temp_linearity` carry the paper's **right-associated** disjunction, while `linear_since` and
-`temp_linearity_past` carry the **left-associated** one; the four statements below are transcribed
-from whichever `Conservativity/Star/StarAxiomValidity.lean` theorem has the matching nesting
-(`starValid_linear_until_paper`, `starValid_linear_since`, `starValid_temp_linearity_paper`,
-`starValid_temp_linearity_past` respectively), since only the `.inl`/`.inr` routing differs
-between the variants. -/
+`temp_linearity_past` carry the **left-associated** one; each of the four statements below
+delegates to whichever generic lemma has the matching nesting (`generic_linear_until_paper`,
+`generic_linear_since`, `generic_temp_linearity_paper`, `generic_temp_linearity_past`
+respectively). The generic layer supplies **all four** variants on purpose, precisely so that no
+language's statement is re-associated by the refactor; only the `.inl`/`.inr` routing differs
+between them, and that routing now lives once per variant. -/
 
 /-- BX7 / the paper's CN over L^▷: linearity of `until`, right-associated. -/
 theorem openValidIn_linearUntil (φ ψ χ θ : OpenFormula) :
@@ -1260,17 +1234,9 @@ theorem openValidIn_linearUntil (φ ψ χ θ : OpenFormula) :
         (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and ψ θ))
         (OpenFormula.or
           (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and ψ χ))
-          (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and φ θ))))) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_or_iff, openTruth_untl_iff]
-  rintro ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩
-  rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-  · exact .inr (.inl ⟨s₁, hts₁, ⟨h_ψs₁, h_guard₂ s₁ hts₁ h_lt⟩,
-      fun r htr hrs => ⟨h_guard₁ r htr hrs, h_guard₂ r htr (lt_trans hrs h_lt)⟩⟩)
-  · exact .inl ⟨s₁, hts₁, ⟨h_ψs₁, h_eq ▸ h_θs₂⟩,
-      fun r htr hrs => ⟨h_guard₁ r htr hrs, h_guard₂ r htr (h_eq ▸ hrs)⟩⟩
-  · exact .inr (.inr ⟨s₂, hts₂, ⟨h_guard₁ s₂ hts₂ h_gt, h_θs₂⟩,
-      fun r htr hrs => ⟨h_guard₁ r htr (lt_trans hrs h_gt), h_guard₂ r htr hrs⟩⟩)
+          (OpenFormula.untl (OpenFormula.and φ χ) (OpenFormula.and φ θ))))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_linear_until_paper (L := OpenFormula) M τ t PUnit.unit φ ψ χ θ
 
 /-- BX7' over L^▷: linearity of `since`, left-associated. -/
 theorem openValidIn_linearSince (φ ψ χ θ : OpenFormula) :
@@ -1279,45 +1245,27 @@ theorem openValidIn_linearSince (φ ψ χ θ : OpenFormula) :
         (OpenFormula.or
           (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and ψ θ))
           (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and ψ χ)))
-        (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and φ θ)))) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_or_iff, openTruth_snce_iff]
-  rintro ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩
-  rcases lt_trichotomy s₂ s₁ with h_lt | h_eq | h_gt
-  · exact .inl (.inr ⟨s₁, hs₁t, ⟨h_ψs₁, h_guard₂ s₁ h_lt hs₁t⟩,
-      fun r hs₁r hrt => ⟨h_guard₁ r hs₁r hrt, h_guard₂ r (lt_trans h_lt hs₁r) hrt⟩⟩)
-  · exact .inl (.inl ⟨s₁, hs₁t, ⟨h_ψs₁, h_eq ▸ h_θs₂⟩,
-      fun r hs₁r hrt => ⟨h_guard₁ r hs₁r hrt, h_guard₂ r (h_eq ▸ hs₁r) hrt⟩⟩)
-  · exact .inr ⟨s₂, hs₂t, ⟨h_guard₁ s₂ h_gt hs₂t, h_θs₂⟩,
-      fun r hs₂r hrt => ⟨h_guard₁ r (lt_trans h_gt hs₂r) hrt, h_guard₂ r hs₂r hrt⟩⟩
+        (OpenFormula.snce (OpenFormula.and φ χ) (OpenFormula.and φ θ)))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_linear_since (L := OpenFormula) M τ t PUnit.unit φ ψ χ θ
 
 /-- BX11 / the paper's TL over L^▷: two future witnesses are ordered, right-associated. -/
 theorem openValidIn_tempLinearity (φ ψ : OpenFormula) :
     OpenValid (OpenFormula.and (OpenFormula.someFuture φ) (OpenFormula.someFuture ψ) |>.imp
       (OpenFormula.or (OpenFormula.someFuture (OpenFormula.and (OpenFormula.someFuture φ) ψ))
         (OpenFormula.or (OpenFormula.someFuture (OpenFormula.and φ ψ))
-          (OpenFormula.someFuture (OpenFormula.and φ (OpenFormula.someFuture ψ)))))) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_or_iff, OpenTruth.someFuture_iff]
-  rintro ⟨⟨s₁, hts₁, hφ⟩, s₂, hts₂, hψ⟩
-  rcases lt_trichotomy s₁ s₂ with h | h | h
-  · exact .inr (.inr ⟨s₁, hts₁, hφ, s₂, h, hψ⟩)
-  · exact .inr (.inl ⟨s₁, hts₁, hφ, h ▸ hψ⟩)
-  · exact .inl ⟨s₂, hts₂, ⟨s₁, h, hφ⟩, hψ⟩
+          (OpenFormula.someFuture (OpenFormula.and φ (OpenFormula.someFuture ψ)))))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_temp_linearity_paper (L := OpenFormula) M τ t PUnit.unit φ ψ
 
 /-- BX11' over L^▷, the past form, left-associated. -/
 theorem openValidIn_tempLinearityPast (φ ψ : OpenFormula) :
     OpenValid (OpenFormula.and (OpenFormula.somePast φ) (OpenFormula.somePast ψ) |>.imp
       (OpenFormula.or (OpenFormula.somePast (OpenFormula.and φ ψ))
         (OpenFormula.or (OpenFormula.somePast (OpenFormula.and φ (OpenFormula.somePast ψ)))
-          (OpenFormula.somePast (OpenFormula.and (OpenFormula.somePast φ) ψ))))) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_and_iff, openTruth_or_iff, OpenTruth.somePast_iff]
-  rintro ⟨⟨s₁, hs₁t, hφ⟩, s₂, hs₂t, hψ⟩
-  rcases lt_trichotomy s₁ s₂ with h | h | h
-  · exact .inr (.inr ⟨s₂, hs₂t, ⟨s₁, h, hφ⟩, hψ⟩)
-  · exact .inl ⟨s₁, hs₁t, hφ, h ▸ hψ⟩
-  · exact .inr (.inl ⟨s₁, hs₁t, hφ, s₂, h, hψ⟩)
+          (OpenFormula.somePast (OpenFormula.and (OpenFormula.somePast φ) ψ))))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_temp_linearity_past (L := OpenFormula) M τ t PUnit.unit φ ψ
 
 /-! ## The `F`/`P` equivalence block, per constructor
 
@@ -1326,37 +1274,29 @@ BX10'), and `F`/`P` is `U`/`S` at the trivial guard (BX12, BX12'). -/
 
 /-- BX10 over L^▷: an `until` witness is a future witness. -/
 theorem openValidIn_untilF (φ ψ : OpenFormula) :
-    OpenValid ((OpenFormula.untl φ ψ).imp (OpenFormula.someFuture ψ)) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_untl_iff, OpenTruth.someFuture_iff]
-  rintro ⟨s, hts, h_ψs, _⟩
-  exact ⟨s, hts, h_ψs⟩
+    OpenValid ((OpenFormula.untl φ ψ).imp (OpenFormula.someFuture ψ)) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_until_F (L := OpenFormula) M τ t PUnit.unit φ ψ
 
 /-- BX10' over L^▷, the past mirror of `openValidIn_untilF`. -/
 theorem openValidIn_sinceP (φ ψ : OpenFormula) :
-    OpenValid ((OpenFormula.snce φ ψ).imp (OpenFormula.somePast ψ)) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, openTruth_snce_iff, OpenTruth.somePast_iff]
-  rintro ⟨s, hst, h_ψs, _⟩
-  exact ⟨s, hst, h_ψs⟩
+    OpenValid ((OpenFormula.snce φ ψ).imp (OpenFormula.somePast ψ)) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_since_P (L := OpenFormula) M τ t PUnit.unit φ ψ
 
 /-- BX12 over L^▷: `F` is `U` at the trivial guard. -/
 theorem openValidIn_FUntilEquiv (φ : OpenFormula) :
     OpenValid ((OpenFormula.someFuture φ).imp
-      (OpenFormula.untl (OpenFormula.bot.imp OpenFormula.bot) φ)) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, OpenTruth.someFuture_iff, openTruth_untl_iff]
-  rintro ⟨s, hts, h_φs⟩
-  exact ⟨s, hts, h_φs, fun _ _ _ => id⟩
+      (OpenFormula.untl (OpenFormula.bot.imp OpenFormula.bot) φ)) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_F_until_equiv (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- BX12' over L^▷, the past mirror of `openValidIn_FUntilEquiv`. -/
 theorem openValidIn_PSinceEquiv (φ : OpenFormula) :
     OpenValid ((OpenFormula.somePast φ).imp
-      (OpenFormula.snce (OpenFormula.bot.imp OpenFormula.bot) φ)) := by
-  refine OpenValid.of_forall fun F M τ t => ?_
-  simp only [openTruth_imp_iff, OpenTruth.somePast_iff, openTruth_snce_iff]
-  rintro ⟨s, hst, h_φs⟩
-  exact ⟨s, hst, h_φs, fun _ _ _ => id⟩
+      (OpenFormula.snce (OpenFormula.bot.imp OpenFormula.bot) φ)) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_P_since_equiv (L := OpenFormula) M τ t PUnit.unit φ
 
 /-! ### The reflection halves
 
@@ -1522,104 +1462,57 @@ theorem openAxiomReflectValidIn_tempEquivBlock :
   ⟨openValidIn_untilF_reflect, openValidIn_sinceP_reflect, openValidIn_FUntilEquiv_reflect,
     openValidIn_PSinceEquiv_reflect⟩
 
-/-! ## The two `K±` clause lemmas
-
-`OpenFormula.kPlus` / `OpenFormula.kMinus` (declared beside `OpenAxiom` in
-`OpenLanguage/OpenAxioms.lean`, since the Dedekind schemata are their only consumers) unfolded
-into the shape the Dedekind arms consume. Transcriptions of `starKPlus_iff` / `starKMinus_iff`. -/
-
-/-- `K⁺φ` at `t`: every point above `t` has a `φ`-point strictly between. -/
-theorem openKPlus_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
-    (φ : OpenFormula) :
-    OpenTruthAt M τ t φ.kPlus ↔
-      ∀ s : F.Duration, t < s → ∃ r : F.Duration, t < r ∧ r < s ∧ OpenTruthAt M τ r φ := by
-  simp only [OpenFormula.kPlus, OpenFormula.neg, OpenFormula.top, OpenTruthAt]
-  constructor
-  · intro h s hs
-    by_contra hc
-    push Not at hc
-    exact h ⟨s, hs, id, fun r h1 h2 hr => hc r h1 h2 hr⟩
-  · rintro h ⟨s, hs, -, hall⟩
-    obtain ⟨r, h1, h2, hr⟩ := h s hs
-    exact hall r h1 h2 hr
-
-/-- `K⁻φ` at `t`: the past mirror of `openKPlus_iff`. -/
-theorem openKMinus_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
-    (φ : OpenFormula) :
-    OpenTruthAt M τ t φ.kMinus ↔
-      ∀ s : F.Duration, s < t → ∃ r : F.Duration, s < r ∧ r < t ∧ OpenTruthAt M τ r φ := by
-  simp only [OpenFormula.kMinus, OpenFormula.neg, OpenFormula.top, OpenTruthAt]
-  constructor
-  · intro h s hs
-    by_contra hc
-    push Not at hc
-    exact h ⟨s, hs, id, fun r h1 h2 hr => hc r h1 h2 hr⟩
-  · rintro h ⟨s, hs, -, hall⟩
-    obtain ⟨r, h1, h2, hr⟩ := h s hs
-    exact hall r h1 h2 hr
-
 /-! ## The discrete-uniformity block, per constructor
 
-The five Layer-5 schemata, each a **closed** formula at `.Base`. They are therefore literally
-`ofPlus` images, and their validity transports along `openValid_ofPlus_iff` from
-`plusAxiom_validIn_min` with no L^▷ argument at all.
+The five Layer-5 schemata, each a **closed** formula at `.Base`. Each used to transport along
+`openValid_ofPlus_iff` from `plusAxiom_validIn_min`; each now delegates to the generic schema
+instead.
 
-**Transport rather than a direct proof is the right route here, and not merely the cheap one.**
-Each of these records a *frame-level* uniformity fact — that a regular task frame's discreteness is
-symmetric, propagates along the order and is modally necessary — proved once at the L level
-(`Metalogic/Soundness.lean`'s uniformity block). A direct L^▷ proof would re-derive that frame
-reasoning, not transcribe a truth-clause argument. -/
+**The frame-level fact is still proved exactly once, and is still not re-derived here.** What
+changed is where that one proof lives. Each of these records a *frame-level* uniformity fact —
+that discreteness of the duration order is symmetric, propagates along the order and is modally
+necessary — and `Metalogic/SoundnessLemmas/GenericSchemata.lean` now states it once over the
+clause interface, with the gap-translation argument in `generic_gap_shift` /
+`generic_cogap_shift` / `generic_gap_iff_cogap`. That serves L⁺, L⋆ and L^▷ together, and serves
+a language with no `ofPlus` embedding at all, which transport could not. -/
 
 /-- `U(⊤,⊥) → S(⊤,⊥)` over L^▷, by transport. -/
 theorem openValidIn_discreteSymmFwd :
     OpenValid ((OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)).imp
       (OpenFormula.snce OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot))) :=
-  (openValid_ofPlus_iff
-    ((PlusFormula.untl PlusFormula.bot (PlusFormula.bot.imp PlusFormula.bot)).imp
-      (PlusFormula.snce PlusFormula.bot (PlusFormula.bot.imp PlusFormula.bot)))).mpr
-    (plusAxiom_validIn_min PlusAxiom.discrete_symm_fwd)
+  OpenValid.of_forall fun _ M τ t =>
+    generic_discrete_symm_fwd (L := OpenFormula) M τ t PUnit.unit
 
 /-- `S(⊤,⊥) → U(⊤,⊥)` over L^▷, by transport. -/
 theorem openValidIn_discreteSymmBwd :
     OpenValid ((OpenFormula.snce OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)).imp
       (OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot))) :=
-  (openValid_ofPlus_iff
-    ((PlusFormula.snce PlusFormula.bot (PlusFormula.bot.imp PlusFormula.bot)).imp
-      (PlusFormula.untl PlusFormula.bot (PlusFormula.bot.imp PlusFormula.bot)))).mpr
-    (plusAxiom_validIn_min PlusAxiom.discrete_symm_bwd)
+  OpenValid.of_forall fun _ M τ t =>
+    generic_discrete_symm_bwd (L := OpenFormula) M τ t PUnit.unit
 
 /-- `U(⊤,⊥) → G(U(⊤,⊥))` over L^▷, by transport. -/
 theorem openValidIn_discretePropagateFwd :
     OpenValid ((OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)).imp
       (OpenFormula.allFuture
         (OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)))) :=
-  (openValid_ofPlus_iff
-    ((PlusFormula.untl PlusFormula.bot (PlusFormula.bot.imp PlusFormula.bot)).imp
-      (PlusFormula.allFuture
-        (PlusFormula.untl PlusFormula.bot (PlusFormula.bot.imp PlusFormula.bot))))).mpr
-    (plusAxiom_validIn_min PlusAxiom.discrete_propagate_fwd)
+  OpenValid.of_forall fun _ M τ t =>
+    generic_discrete_propagate_fwd (L := OpenFormula) M τ t PUnit.unit
 
 /-- `U(⊤,⊥) → H(U(⊤,⊥))` over L^▷, by transport. -/
 theorem openValidIn_discretePropagateBwd :
     OpenValid ((OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)).imp
       (OpenFormula.allPast
         (OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)))) :=
-  (openValid_ofPlus_iff
-    ((PlusFormula.untl PlusFormula.bot (PlusFormula.bot.imp PlusFormula.bot)).imp
-      (PlusFormula.allPast
-        (PlusFormula.untl PlusFormula.bot (PlusFormula.bot.imp PlusFormula.bot))))).mpr
-    (plusAxiom_validIn_min PlusAxiom.discrete_propagate_bwd)
+  OpenValid.of_forall fun _ M τ t =>
+    generic_discrete_propagate_bwd (L := OpenFormula) M τ t PUnit.unit
 
 /-- `U(⊤,⊥) → □(U(⊤,⊥))` over L^▷, by transport. -/
 theorem openValidIn_discreteBoxNecessity :
     OpenValid ((OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)).imp
       (OpenFormula.box
         (OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)))) :=
-  (openValid_ofPlus_iff
-    ((PlusFormula.untl PlusFormula.bot (PlusFormula.bot.imp PlusFormula.bot)).imp
-      (PlusFormula.box
-        (PlusFormula.untl PlusFormula.bot (PlusFormula.bot.imp PlusFormula.bot))))).mpr
-    (plusAxiom_validIn_min PlusAxiom.discrete_box_necessity)
+  OpenValid.of_forall fun _ M τ t =>
+    generic_discrete_box_necessity (L := OpenFormula) M τ t PUnit.unit
 
 /-! ### The discrete reflection halves
 
@@ -1687,11 +1580,7 @@ theorem openValidIn_priorUZ (φ : OpenFormula) :
     OpenValidIn FrameClass.ZTime (φ.someFuture.imp (OpenFormula.untl φ.neg φ)) := by
   refine fun F hF M τ t => ?_
   sat_intro hF
-  simp only [openTruth_imp_iff, OpenTruth.someFuture_iff, openTruth_untl_iff,
-    OpenTruth.neg_iff]
-  rintro ⟨s, hts, hs⟩
-  exact FormalSystem.Metalogic.SoundnessLemmas.exists_nearest_gt
-    (P := fun x => OpenTruthAt M τ x φ) hts hs
+  exact generic_prior_UZ (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- Prior-SZ over L^▷ at `.ZTime`, the past dual — through `exists_nearest_lt`, which is itself
 `exists_nearest_gt` at `Dᵒᵈ`. The dualisation is of the *carrier*, never of the formula. -/
@@ -1699,11 +1588,7 @@ theorem openValidIn_priorSZ (φ : OpenFormula) :
     OpenValidIn FrameClass.ZTime (φ.somePast.imp (OpenFormula.snce φ.neg φ)) := by
   refine fun F hF M τ t => ?_
   sat_intro hF
-  simp only [openTruth_imp_iff, OpenTruth.somePast_iff, openTruth_snce_iff,
-    OpenTruth.neg_iff]
-  rintro ⟨s, hst, hs⟩
-  exact FormalSystem.Metalogic.SoundnessLemmas.exists_nearest_lt
-    (P := fun x => OpenTruthAt M τ x φ) hst hs
+  exact generic_prior_SZ (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- Z1 over L^▷ at `.ZTime`, through `forall_gt_of_succ_step`. -/
 theorem openValidIn_z1 (φ : OpenFormula) :
@@ -1711,10 +1596,7 @@ theorem openValidIn_z1 (φ : OpenFormula) :
       (φ.allFuture.someFuture.imp φ.allFuture)) := by
   refine fun F hF M τ t => ?_
   sat_intro hF
-  simp only [openTruth_imp_iff, openTruth_allFuture_iff, OpenTruth.someFuture_iff]
-  rintro h_GGpIp ⟨s₀, hts₀, hs₀⟩
-  exact FormalSystem.Metalogic.SoundnessLemmas.forall_gt_of_succ_step
-    (P := fun x => OpenTruthAt M τ x φ) h_GGpIp hts₀ hs₀
+  exact generic_z1 (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- The temporal dual of `openValidIn_z1`, through `forall_lt_of_pred_step`. Z1 has no past twin
 among the schemata, so this dual is named here. -/
@@ -1723,10 +1605,7 @@ theorem openValidIn_z1_reflectDual (φ : OpenFormula) :
       (φ.allPast.somePast.imp φ.allPast)) := by
   refine fun F hF M τ t => ?_
   sat_intro hF
-  simp only [openTruth_imp_iff, openTruth_allPast_iff, OpenTruth.somePast_iff]
-  rintro h_HHpIp ⟨s₀, hs₀t, hs₀⟩
-  exact FormalSystem.Metalogic.SoundnessLemmas.forall_lt_of_pred_step
-    (P := fun x => OpenTruthAt M τ x φ) h_HHpIp hs₀t hs₀
+  exact generic_z1_reflect_time (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- Prior-U (gap form) over L^▷ at `.RTime`. The least upper bound of the set of times whose whole
 open past back to `t` satisfies `φ` is the gap point. -/
@@ -1734,42 +1613,9 @@ theorem openValidIn_priorUGap (φ : OpenFormula) :
     OpenValidIn FrameClass.RTime
       ((OpenFormula.and (OpenFormula.untl φ OpenFormula.top) φ.neg.someFuture).imp
         (OpenFormula.untl φ (OpenFormula.or φ.neg (OpenFormula.kPlus φ.neg)))) := by
-  refine fun F h_lub M τ t h_ant => ?_
+  refine fun F h_lub M τ t => ?_
   sat_intro h_lub
-  simp only [openTruth_and_iff, openTruth_untl_iff, OpenTruth.someFuture_iff,
-    OpenTruth.neg_iff] at h_ant
-  obtain ⟨h1, h2⟩ := h_ant
-  obtain ⟨s0, hts0, -, hp0⟩ := h1
-  obtain ⟨w0, htw0, hnpw0⟩ := h2
-  set A : Set F.Duration :=
-    {u : F.Duration | t < u ∧ ∀ r : F.Duration, t < r → r < u → OpenTruthAt M τ r φ} with hA
-  have hs0A : s0 ∈ A := ⟨hts0, hp0⟩
-  have hAbdd : BddAbove A := by
-    refine ⟨w0, ?_⟩
-    intro u hu
-    by_contra hvu
-    exact hnpw0 (hu.2 w0 htw0 (lt_of_not_ge hvu))
-  obtain ⟨s, hs⟩ := h_lub A ⟨s0, hs0A⟩ hAbdd
-  have hts : t < s := lt_of_lt_of_le hts0 (hs.1 hs0A)
-  have hguard : ∀ r : F.Duration, t < r → r < s → OpenTruthAt M τ r φ := by
-    intro r htr hrs
-    obtain ⟨u, huA, hru, -⟩ := hs.exists_between hrs
-    exact huA.2 r htr hru
-  simp only [openTruth_untl_iff, openTruth_or_iff, OpenTruth.neg_iff, openKPlus_iff]
-  refine ⟨s, hts, ?_, hguard⟩
-  by_cases hps : OpenTruthAt M τ s φ
-  · refine .inr fun w hsw => ?_
-    by_contra hw
-    push Not at hw
-    have hwA : w ∈ A := by
-      refine ⟨lt_trans hts hsw, ?_⟩
-      intro r htr hrw
-      rcases lt_trichotomy r s with h | h | h
-      · exact hguard r htr h
-      · exact h ▸ hps
-      · exact hw r h hrw
-    exact absurd (hs.1 hwA) (not_le_of_gt hsw)
-  · exact .inl hps
+  exact generic_prior_U_gap (L := OpenFormula) M τ t PUnit.unit φ h_lub
 
 /-- Prior-S (gap form) over L^▷ at `.RTime`, the past dual — through
 `SoundnessLemmas.exists_isGLB_of_lub`, so the least-upper-bound hypothesis is used once and the
@@ -1778,43 +1624,9 @@ theorem openValidIn_priorSGap (φ : OpenFormula) :
     OpenValidIn FrameClass.RTime
       ((OpenFormula.and (OpenFormula.snce φ OpenFormula.top) φ.neg.somePast).imp
         (OpenFormula.snce φ (OpenFormula.or φ.neg (OpenFormula.kMinus φ.neg)))) := by
-  refine fun F h_lub M τ t h_ant => ?_
+  refine fun F h_lub M τ t => ?_
   sat_intro h_lub
-  simp only [openTruth_and_iff, openTruth_snce_iff, OpenTruth.somePast_iff,
-    OpenTruth.neg_iff] at h_ant
-  obtain ⟨h1, h2⟩ := h_ant
-  obtain ⟨s0, hs0t, -, hp0⟩ := h1
-  obtain ⟨w0, hw0t, hnpw0⟩ := h2
-  set B : Set F.Duration :=
-    {u : F.Duration | u < t ∧ ∀ r : F.Duration, u < r → r < t → OpenTruthAt M τ r φ} with hB
-  have hs0B : s0 ∈ B := ⟨hs0t, hp0⟩
-  have hBbdd : BddBelow B := by
-    refine ⟨w0, ?_⟩
-    intro u hu
-    by_contra huw
-    exact hnpw0 (hu.2 w0 (lt_of_not_ge huw) hw0t)
-  obtain ⟨s, hs⟩ :=
-    FormalSystem.Metalogic.SoundnessLemmas.exists_isGLB_of_lub h_lub ⟨s0, hs0B⟩ hBbdd
-  have hst : s < t := lt_of_le_of_lt (hs.1 hs0B) hs0t
-  have hguard : ∀ r : F.Duration, s < r → r < t → OpenTruthAt M τ r φ := by
-    intro r hsr hrt
-    obtain ⟨u, huB, -, hur⟩ := hs.exists_between hsr
-    exact huB.2 r hur hrt
-  simp only [openTruth_snce_iff, openTruth_or_iff, OpenTruth.neg_iff, openKMinus_iff]
-  refine ⟨s, hst, ?_, hguard⟩
-  by_cases hps : OpenTruthAt M τ s φ
-  · refine .inr fun w hws => ?_
-    by_contra hw
-    push Not at hw
-    have hwB : w ∈ B := by
-      refine ⟨lt_trans hws hst, ?_⟩
-      intro r hwr hrt
-      rcases lt_trichotomy r s with h | h | h
-      · exact hw r hwr h
-      · exact h ▸ hps
-      · exact hguard r h hrt
-    exact absurd (hs.1 hwB) (not_le_of_gt hws)
-  · exact .inl hps
+  exact generic_prior_S_gap (L := OpenFormula) M τ t PUnit.unit φ h_lub
 
 /-- **Sep over L^▷ at `.RTime`.** The order-theoretic core is `SoundnessLemmas.sep_order`,
 consumed unchanged at `P := {u | OpenTruthAt M τ u φ}`; nothing about `OpenFormula` enters it. -/
@@ -1824,51 +1636,9 @@ theorem openValidIn_sep (φ : OpenFormula) :
         (OpenFormula.kPlus (OpenFormula.and φ (OpenFormula.untl φ.neg φ))).neg).imp
         (OpenFormula.kPlus
           (OpenFormula.and (OpenFormula.kPlus φ) (OpenFormula.kMinus φ)))) := by
-  refine fun F h_lub M τ t h_ant => ?_
+  refine fun F h_lub M τ t => ?_
   sat_intro h_lub
-  obtain ⟨Q, hQc, hQd⟩ :=
-    FormalSystem.Metalogic.SoundnessLemmas.exists_countable_order_dense h_lub
-  obtain ⟨h1, h2⟩ := (openTruth_and_iff M τ t _ _).mp h_ant
-  simp only [OpenTruthAt, OpenFormula.and, OpenFormula.neg, OpenFormula.kPlus,
-    OpenFormula.kMinus, OpenFormula.top] at h1 h2 ⊢
-  rintro ⟨s₂, hts₂, -, hno⟩
-  have hK : ∀ w, t < w → ∃ u, t < u ∧ u < w ∧ OpenTruthAt M τ u φ := by
-    intro w htw
-    by_contra hc
-    refine h1 ⟨w, htw, fun hb => hb, ?_⟩
-    intro r htr hrw hrφ
-    exact hc ⟨r, htr, hrw, hrφ⟩
-  have h2' : ∃ s₁, t < s₁ ∧ (True) ∧ ∀ u, t < u → u < s₁ →
-      (OpenTruthAt M τ u φ → OpenTruthAt M τ u (OpenFormula.untl φ.neg φ) → False) := by
-    refine Classical.byContradiction (fun hc => h2 ?_)
-    intro hbad
-    exact hc (by
-      obtain ⟨s₁, hts₁, -, hu⟩ := hbad
-      exact ⟨s₁, hts₁, trivial, fun u htu hus => Classical.byContradiction (hu u htu hus)⟩)
-  obtain ⟨s₁, hts₁, -, hstart⟩ := h2'
-  refine FormalSystem.Metalogic.SoundnessLemmas.sep_order h_lub Q hQc hQd
-    {u | OpenTruthAt M τ u φ} t s₁ s₂ hts₁ hts₂ hK ?_ ?_
-  · rintro u htu hus₁ huP ⟨w, huw, hwP, hfree⟩
-    exact hstart u htu hus₁ huP ⟨w, huw, hwP, fun r hur hrw => hfree r hur hrw⟩
-  · intro u htu hus₂
-    have hAB : OpenTruthAt M τ u (OpenFormula.kPlus φ) →
-        OpenTruthAt M τ u (OpenFormula.kMinus φ) → False := by
-      intro ha hb
-      exact hno u htu hus₂ (fun k => k ha hb)
-    by_cases hR : ∃ w, u < w ∧ ∀ z, u < z → z < w → ¬ OpenTruthAt M τ z φ
-    · exact Or.inl hR
-    · refine Or.inr ?_
-      have ha : OpenTruthAt M τ u (OpenFormula.kPlus φ) := by
-        rw [openKPlus_iff]
-        intro s hus
-        by_contra hc
-        exact hR ⟨s, hus, fun z huz hzs hz => hc ⟨z, huz, hzs, hz⟩⟩
-      have hb := hAB ha
-      refine Classical.byContradiction (fun hns => hb ?_)
-      rw [openKMinus_iff]
-      intro s hsu
-      by_contra hc
-      exact hns ⟨s, hsu, fun z hsz hzu hz => hc ⟨z, hsz, hzu, hz⟩⟩
+  exact generic_sep (L := OpenFormula) M τ t PUnit.unit φ h_lub
 
 /-- **The temporal dual of Sep**, at `.RTime`. Sep has no past twin among the schemata, so the
 dual is named here; the order-theoretic core is `SoundnessLemmas.sep_order_mirror`, which is
@@ -1880,52 +1650,9 @@ theorem openValidIn_sep_reflect (φ : OpenFormula) :
         (OpenFormula.kPlus
           (OpenFormula.and (OpenFormula.kPlus φ)
             (OpenFormula.kMinus φ)))).reflectTime) := by
-  refine fun F h_lub M τ t h_ant => ?_
+  refine fun F h_lub M τ t => ?_
   sat_intro h_lub
-  obtain ⟨Q, hQc, hQd⟩ :=
-    FormalSystem.Metalogic.SoundnessLemmas.exists_countable_order_dense h_lub
-  obtain ⟨h1, h2⟩ := (openTruth_and_iff M τ t _ _).mp h_ant
-  simp only [OpenFormula.and, OpenFormula.neg, OpenFormula.kPlus, OpenFormula.kMinus,
-    OpenFormula.top, OpenFormula.reflectTime, OpenTruthAt] at h1 h2 ⊢
-  rintro ⟨s₂, hs₂t, -, hno⟩
-  have hK : ∀ w, w < t → ∃ u, w < u ∧ u < t ∧ OpenTruthAt M τ u φ.reflectTime := by
-    intro w hwt
-    by_contra hc
-    refine h1 ⟨w, hwt, fun hb => hb, ?_⟩
-    intro r hwr hrt hrφ
-    exact hc ⟨r, hwr, hrt, hrφ⟩
-  have h2' : ∃ s₁, s₁ < t ∧ (True) ∧ ∀ u, u < t → s₁ < u →
-      (OpenTruthAt M τ u φ.reflectTime →
-        OpenTruthAt M τ u (OpenFormula.snce φ.reflectTime.neg φ.reflectTime) → False) := by
-    refine Classical.byContradiction (fun hc => h2 ?_)
-    intro hbad
-    exact hc (by
-      obtain ⟨s₁, hs₁t, -, hu⟩ := hbad
-      exact ⟨s₁, hs₁t, trivial, fun u hut hs₁u => Classical.byContradiction (hu u hs₁u hut)⟩)
-  obtain ⟨s₁, hs₁t, -, hstart⟩ := h2'
-  refine FormalSystem.Metalogic.SoundnessLemmas.sep_order_mirror h_lub Q hQc hQd
-    {u | OpenTruthAt M τ u φ.reflectTime} t s₁ s₂ hs₁t hs₂t hK ?_ ?_
-  · rintro u hut hs₁u huP ⟨w, hwu, hwP, hfree⟩
-    exact hstart u hut hs₁u huP ⟨w, hwu, hwP, fun r hwr hru => hfree r hwr hru⟩
-  · intro u hut hs₂u
-    have hAB : OpenTruthAt M τ u (OpenFormula.kMinus φ.reflectTime) →
-        OpenTruthAt M τ u (OpenFormula.kPlus φ.reflectTime) → False := by
-      intro ha hb
-      exact hno u hs₂u hut (fun k => k ha hb)
-    by_cases hL : ∃ w, w < u ∧ ∀ z, w < z → z < u → ¬ OpenTruthAt M τ z φ.reflectTime
-    · exact Or.inl hL
-    · refine Or.inr ?_
-      have ha : OpenTruthAt M τ u (OpenFormula.kMinus φ.reflectTime) := by
-        rw [openKMinus_iff]
-        intro s hsu
-        by_contra hc
-        exact hL ⟨s, hsu, fun z hsz hzu hz => hc ⟨z, hsz, hzu, hz⟩⟩
-      have hb := hAB ha
-      refine Classical.byContradiction (fun hns => hb ?_)
-      rw [openKPlus_iff]
-      intro s hus
-      by_contra hc
-      exact hns ⟨s, hus, fun z huz hzs hz => hc ⟨z, huz, hzs, hz⟩⟩
+  exact generic_sep_reflect_time (L := OpenFormula) M τ t PUnit.unit φ.reflectTime h_lub
 
 /-! ### The Prior and Dedekind reflection halves
 
@@ -1974,20 +1701,14 @@ theorem openValidIn_density (φ : OpenFormula) :
     OpenValidIn FrameClass.Dense ((φ.allFuture.allFuture).imp φ.allFuture) := by
   refine fun F h_dense M τ t => ?_
   sat_intro h_dense
-  simp only [openTruth_imp_iff, openTruth_allFuture_iff]
-  intro h_GG s hts
-  obtain ⟨r, htr, hrs⟩ := @DenselyOrdered.dense F.Duration _ h_dense t s hts
-  exact h_GG r htr s hrs
+  exact generic_density (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- The temporal dual of `openValidIn_density`: `HHφ → Hφ`, again at `.Dense`. -/
 theorem openValidIn_density_reflectDual (φ : OpenFormula) :
     OpenValidIn FrameClass.Dense ((φ.allPast.allPast).imp φ.allPast) := by
   refine fun F h_dense M τ t => ?_
   sat_intro h_dense
-  simp only [openTruth_imp_iff, openTruth_allPast_iff]
-  intro h_HH s hst
-  obtain ⟨r, hsr, hrt⟩ := @DenselyOrdered.dense F.Duration _ h_dense s t hst
-  exact h_HH r hrt s hsr
+  exact generic_density_reflect_time (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- The dense indicator over L^▷ at `.Dense`: `¬U(⊤,⊥)`. A witness `s > t` with no point strictly
 between contradicts density. -/
@@ -1996,10 +1717,7 @@ theorem openValidIn_denseIndicator :
       (OpenFormula.untl OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)).neg := by
   refine fun F h_dense M τ t => ?_
   sat_intro h_dense
-  rw [OpenTruth.neg_iff, openTruth_untl_iff]
-  rintro ⟨s, hts, -, hall⟩
-  obtain ⟨r, htr, hrs⟩ := @DenselyOrdered.dense F.Duration _ h_dense t s hts
-  exact hall r htr hrs
+  exact generic_dense_indicator (L := OpenFormula) M τ t PUnit.unit
 
 /-- The temporal dual of the dense indicator: `¬S(⊤,⊥)`, again at `.Dense`. -/
 theorem openValidIn_denseIndicator_reflectDual :
@@ -2007,10 +1725,7 @@ theorem openValidIn_denseIndicator_reflectDual :
       (OpenFormula.snce OpenFormula.bot (OpenFormula.bot.imp OpenFormula.bot)).neg := by
   refine fun F h_dense M τ t => ?_
   sat_intro h_dense
-  rw [OpenTruth.neg_iff, openTruth_snce_iff]
-  rintro ⟨s, hst, -, hall⟩
-  obtain ⟨r, hsr, hrt⟩ := @DenselyOrdered.dense F.Duration _ h_dense s t hst
-  exact hall r hsr hrt
+  exact generic_dense_indicator_reflect_time (L := OpenFormula) M τ t PUnit.unit
 
 /-- The reflection of density is its named dual at the reflected parameter. -/
 theorem openValidIn_density_reflect (φ : OpenFormula) :
@@ -2034,44 +1749,40 @@ block is self-contained and the mirror block is constructor-for-constructor with
 theorem openValidIn_stabK (φ ψ : OpenFormula) :
     OpenValid ((OpenFormula.stab (φ.imp ψ)).imp
       ((OpenFormula.stab φ).imp (OpenFormula.stab ψ))) :=
-  OpenValid.of_forall fun _ _ _ _ h1 h2 σ hs => h1 σ hs (h2 σ hs)
+  OpenValid.of_forall fun _ M τ t =>
+    generic_stab_k (L := OpenFormula) M τ t PUnit.unit φ ψ
 
 /-- ST over L^▷: state equality is reflexive. -/
 theorem openValidIn_stabT (φ : OpenFormula) :
     OpenValid ((OpenFormula.stab φ).imp φ) :=
-  OpenValid.of_forall fun _ _ τ _ h => h τ rfl
+  OpenValid.of_forall fun _ M τ t =>
+    generic_stab_t (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- S4 for `⊡` over L^▷: state equality at a fixed time is transitive. -/
 theorem openValidIn_stab4 (φ : OpenFormula) :
-    OpenValid ((OpenFormula.stab φ).imp (OpenFormula.stab (OpenFormula.stab φ))) := by
-  refine OpenValid.of_forall fun F M τ t h => ?_
-  intro σ hσsame ρ hρsame
-  exact h ρ (hσsame.trans hρsame)
+    OpenValid ((OpenFormula.stab φ).imp (OpenFormula.stab (OpenFormula.stab φ))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_stab_4 (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- S5 for `⊡` over L^▷: state equality at a fixed time is symmetric. -/
 theorem openValidIn_stab5 (φ : OpenFormula) :
-    OpenValid ((dstab φ).imp (OpenFormula.stab (dstab φ))) := by
-  refine OpenValid.of_forall fun F M τ t h => ?_
-  intro σ hσsame
-  rw [OpenTruth.dstab_iff] at h ⊢
-  obtain ⟨ρ, hρsame, hφ⟩ := h
-  exact ⟨ρ, hσsame.symm.trans hρsame, hφ⟩
+    OpenValid ((dstab φ).imp (OpenFormula.stab (dstab φ))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_stab_5 (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- MS over L^▷: `⟨τ⟩_x ⊆ H_F`, so `□` is stronger than `⊡`. -/
 theorem openValidIn_boxStab (φ : OpenFormula) :
     OpenValid ((OpenFormula.box φ).imp (OpenFormula.stab φ)) :=
-  OpenValid.of_forall fun _ _ _ _ h σ _ => h σ
+  OpenValid.of_forall fun _ M τ t =>
+    generic_box_stab (L := OpenFormula) M τ t PUnit.unit φ
 
 /-- AS over L^▷: the atom clause reads the world state alone, which the `stab` clause fixes. The
 schema stays atom-restricted — widening it would change TM⁺ — though its semantic witness is the
 whole state-locality fragment. -/
 theorem openValidIn_atomStab (p : Atom) :
-    OpenValid ((OpenFormula.atom p).imp (OpenFormula.stab (OpenFormula.atom p))) := by
-  refine OpenValid.of_forall fun F M τ t h => ?_
-  intro σ hsame
-  rw [OpenTruth.atom_iff] at h ⊢
-  rw [← hsame]
-  exact h
+    OpenValid ((OpenFormula.atom p).imp (OpenFormula.stab (OpenFormula.atom p))) :=
+  OpenValid.of_forall fun _ M τ t =>
+    generic_atom_stab (L := OpenFormula) M τ t PUnit.unit p
 
 /-! ### The stability reflection halves
 
