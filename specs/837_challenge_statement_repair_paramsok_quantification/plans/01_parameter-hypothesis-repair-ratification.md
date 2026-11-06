@@ -1,7 +1,7 @@
 # Implementation Plan: Task #837
 
 - **Task**: 837 - Challenge statement repair: ParamsOk quantification
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.25 hours
 - **Dependencies**: None (parent: task 761, currently `[HOLD]`)
 - **Research Inputs**: None (no research dispatch ran this round; the evidence base is the landed

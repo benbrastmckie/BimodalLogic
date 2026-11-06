@@ -11,7 +11,7 @@ next_project_number: 890
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,863,867,869,873,874,875,876,882,883 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,838,839,841,842,847,848,857,863,867,869,873,874,875,876,882,883 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,879 | 298,428,502,761,770,772,777,785,803,813,838,839,867 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -105,7 +105,6 @@ next_project_number: 890
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-837 [PLANNED] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
   └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
@@ -2307,12 +2306,13 @@ Origin: conclusion-stage channel (c) of an orchestration run, citations iss_1793
 
 ### 837. Challenge statement repair paramsok quantification
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 761
 - **Plan**: [837_challenge_statement_repair_paramsok_quantification/plans/01_parameter-hypothesis-repair-ratification.md]
+- **Summary**: [837_challenge_statement_repair_paramsok_quantification/summaries/01_parameter-hypothesis-repair-ratification-summary.md]
 
 **Description**: The recorded Challenge statements cellAt_const_of_kappa_eq and ladderRealized are REFUTED as written, and the repair is barred by the Statement Fidelity rule, so it needs its own sanctioned revision rather than an in-flight edit.
 
