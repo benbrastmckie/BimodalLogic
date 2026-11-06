@@ -122,7 +122,7 @@ next_project_number: 890
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-867 [PLANNED] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
+867 [IMPLEMENTING] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
@@ -700,7 +700,7 @@ GATES. Zero sorry, zero vacuous definitions; a theorem-index row per result with
 ---
 
 ### 867. Formalize gabbay separation ztime
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None

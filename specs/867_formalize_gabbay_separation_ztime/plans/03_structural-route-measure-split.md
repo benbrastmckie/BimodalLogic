@@ -2144,7 +2144,7 @@ the `inductive`/`theorem` keywords landed in `Hierarchy.lean` against that list,
 
 ---
 
-### Phase 22.2: GHR Lemma 10.2.5 by Structural Recursion [NOT STARTED]
+### Phase 22.2: GHR Lemma 10.2.5 by Structural Recursion [IN PROGRESS]
 
 **Goal**: `sepU` -- the separated form of a single-`untl`-type formula -- with its typedness,
 truth-preservation and separatedness lemmas, which together are GHR Lemma 10.2.5 in full. It is

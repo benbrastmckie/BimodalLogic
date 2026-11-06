@@ -1,31 +1,15 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/867_formalize_gabbay_separation_ztime/plans/03_structural-route-measure-split.md",
-      "summary": "Revised plan: GHR 10.2.5's missing precondition and the 10.2.5 route question settled at plan level (decision D-h, structural recursion), Phase 22 decomposed into 22.1/22.2/22.3, and the strict-decrease obligation split three ways and sized per instance across Phases 22.3, 23 and 24. Phases 1-21 preserved byte-identical."
-    }
-  ],
-  "next_steps": "Run /orchestrate 867 to execute the revised plan from Phase 22.1",
+  "status": "in_progress",
+  "started_at": "2026-11-06T00:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context and plan"
+  },
   "metadata": {
-    "session_id": "sess_1793991712_2d6201",
-    "agent_type": "reviser-agent",
-    "delegation_path": [
-      "orchestrator",
-      "revise",
-      "reviser-agent"
-    ],
-    "phase_count": 30,
-    "phases_preserved_completed": 21,
-    "estimated_hours": 59.5,
-    "reports_integrated": [
-      "01_gabbay-separation-ztime-plusformula.md"
-    ],
-    "revision_inputs": [
-      "issues.jsonl:iss_1793990528437_xWUyGV",
-      "issues.jsonl:iss_1793988190659_sEi3vg"
-    ],
-    "route_ruling": "D-h: GHR 10.2.5 is proved by structural recursion over USForm (sepU), not by induction on a snceDepthAbove measure; snceDepthAbove, the hasUntl decision and the one-level 10.2.4-rewriting operator are not built, and the measure route survives only as Phase 22.2's sized contingency. uTypeCount, untlDepth and junctionDepth all remain load-bearing at 10.2.6, 10.2.7 and 10.2.8 respectively."
+    "session_id": "sess_1793993028_251d86",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
   }
 }
