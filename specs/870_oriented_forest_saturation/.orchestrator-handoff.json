@@ -1,15 +1,25 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 12,
+  "phases_completed": 8,
   "phases_total": 8,
-  "summary": "Authored an 8-phase, 13-hour implementation plan for the oriented-forest Saturation lemma at specs/870_oriented_forest_saturation/plans/01_oriented-forest-saturation.md. Phases 1-3 port the research dispatch's compiled prototype into a new FormalSystem/Semantics/OrientedForest.lean (the dispatch's suggested home beside saturation_of_fib_finite is unavailable: iter/ofStepRel live downstream in IntNormalForm.lean); phases 4-5 add the one residual step, merge-point uniqueness, which is the only place undirected acyclicity is consumed; phases 6-7 assemble TaskFrame.Saturation through the existing axiom-free sInter_nonempty_of_directed_of_minimal; phase 8 lands a build-breaking axiom-profile test module, documentation rows and the full gate. The plan's Lean Challenge Statements block pinning all eleven committed signatures was compile-verified (lake env lean, exit 0, only the expected sorry warnings).",
+  "summary": "All eight plan phases are [COMPLETED]. FormalSystem/Semantics/OrientedForest.lean is landed sorry-free: IsOrientedForest, the full mathematical layer (C1, UPL, PEN, UIV, MERGE, DISJ), the target-free mergePoint_unique that is report 03 section 1.2's residual step, merge_unique at its pinned signature, the three Saturation reductions with the Function.swap symmetry lemma, the duration-minimal selection, and both headline theorems saturation_of_orientedForest and saturation_of_orientedForest' at exactly the pinned Challenge signatures. A build-breaking evidence module pins seven measured axiom profiles, all [propext, Classical.choice, Quot.sound], and compiles the minimality fixture; documentation rows landed on five surfaces. Final guarded full lake build exits 0 with zero errors and zero warnings; check-module-invariants.sh --no-build, readme-lint.sh, check-copyright-headers.sh --strict and check-metalogic-cycles.sh all green; whole-tree sorry count 0 and axiom-declaration count unchanged at 14.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/870_oriented_forest_saturation/plans/01_oriented-forest-saturation.md",
-      "summary": "8-phase plan (13h, fully sequential) landing saturation_of_orientedForest and its hgen variant in a new Semantics/OrientedForest.lean, with eleven pinned Challenge signatures."
+      "type": "summary",
+      "path": "specs/870_oriented_forest_saturation/summaries/01_oriented-forest-saturation-summary.md",
+      "summary": "Implementation summary for all 8 phases: what landed, the decisions, the five plan deviations, the full verification record, and the follow-ups."
+    },
+    {
+      "type": "other",
+      "path": "FormalSystem/Semantics/OrientedForest.lean",
+      "summary": "The new module: IsOrientedForest, the mathematical layer, the residual step, the three reductions, and both headline theorems."
+    },
+    {
+      "type": "other",
+      "path": "Tests/BimodalTest/Semantics/OrientedForestSaturationTest.lean",
+      "summary": "Build-breaking axiom-profile guards plus the compiled minimality fixture."
     }
-  ],
-  "dispatch_seq": 10
+  ]
 }
