@@ -4153,7 +4153,7 @@
     {
       "project_number": 860,
       "project_name": "colourclock_history_bridge_lemma",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise.\n\nAdd the bridge lemma in FormalSystem/Semantics/Frames/TranslationProduct.lean that makes the \"every colour function is a history\" step compiled rather than stated. Context: the colourClock wrapper carries an internal Nonempty instance that blocks ofReflectiveRegular_taskRel from unifying, so the open-future non-definability probe had to leave the hmarkers hypothesis as a one-line audited paper step. Deliverable: a lemma stating that every function from the duration carrier into the colour component of colourClock is a history of the colourClock frame, discharging Limit via the clock component and Saturation via finiteness of the colour set, stated so that the probe can discharge hmarkers by application rather than by assumption. Then update that probe to use it and confirm it still compiles clean (exit 0, no sorry/error/warning). Scope: TranslationProduct.lean plus the probes/ file only; the verdict itself (open-future not L-plus-definable at Base and Dense) is settled on the written report and is not reopened by this task.",
       "effort": "low",
@@ -4161,11 +4161,26 @@
       "topic": "metalogic",
       "dependencies": [],
       "file_scope": [
-        "FormalSystem/Semantics/Frames/TranslationProduct.lean"
+        "FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean",
+        "FormalSystem/Metalogic/Independence/README.md",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "FormalSystem/Semantics/Frames/README.md",
+        "FormalSystem/Semantics/Frames/TranslationProduct.lean",
+        "README.md",
+        "docs/theorem-index.md",
+        "scripts/check-module-invariants.sh",
+        "typst/generated/status.typ"
       ],
       "created": "2026-11-04T22:14:53Z",
-      "last_updated": "2026-11-06T07:14:46Z",
-      "artifacts": [],
+      "last_updated": "2026-11-06T07:29:00Z",
+      "artifacts": [
+        {
+          "path": "specs/860_colourclock_history_bridge_lemma/plans/01_colourclock-history-bridge-lemma.md",
+          "type": "plan",
+          "summary": "4 phases, 4 waves, 4 hours: colourClock_taskRel simp bridge, colour-function history constructor, hmarkers compiled at colourFibre under markerModel, plus theorem-index rows and C14 pinning; 17 Challenge-pinned signatures."
+        }
+      ],
       "audit_verdict": {
         "proposal": {
           "id": "colourclock_history_bridge_lemma",
@@ -4267,7 +4282,7 @@
         }
       },
       "priority": "low",
-      "session_id": "sess_1793949238_9d766e_860"
+      "session_id": "sess_1793949238_9d766e"
     },
     {
       "title": "Record the one-sided transport refutation in the RaySummary refutation table",

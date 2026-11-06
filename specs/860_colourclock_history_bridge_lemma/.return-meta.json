@@ -1,0 +1,22 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/860_colourclock_history_bridge_lemma/plans/01_colourclock-history-bridge-lemma.md",
+      "summary": "4 phases, 4 hours: colourClock_taskRel simp bridge, colour-function history constructor, hmarkers compiled at colourFibre, theorem-index rows and C14 pinning."
+    }
+  ],
+  "memory_candidates": [],
+  "metadata": {
+    "session_id": "sess_1793949238_9d766e_860",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 4,
+    "dependency_waves": [[1], [2], [3], [4]]
+  },
+  "next_steps": "Run /orchestrate 860 to execute the plan",
+  "dispatch_seq": 2
+}

@@ -123,7 +123,7 @@ next_project_number: 890
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-860 [PLANNING] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
+860 [PLANNED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 867 [PARTIAL] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 881 [PLANNING] — Factor the 53 TM-plus mirror schema validity proofs into a...
@@ -841,11 +841,12 @@ LEDGER AND GATES. Every landed result needs a docs/theorem-index.md row stating 
 
 ### 860. Colourclock history bridge lemma
 - **Effort**: low
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Parent**: Task 859
+- **Plan**: [860_colourclock_history_bridge_lemma/plans/01_colourclock-history-bridge-lemma.md]
 
 **Description**: PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise.
 
