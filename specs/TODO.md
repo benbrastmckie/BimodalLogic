@@ -1,5 +1,5 @@
 ---
-next_project_number: 885
+next_project_number: 889
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 885
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,873,874,875,876,881,882 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,879,883 | 298,428,502,761,770,772,777,785,803,813,838,839,858,867 | agent-system, algebraic-representation, completeness, ... |
-| 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,873,874,875,876,881,882,886,887 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,879,883,885 | 298,428,502,761,770,772,777,785,803,813,827,838,839,858,867,882 | agent-system, algebraic-representation, completeness, ... |
+| 3 | 410,498,499,500,822,834,861,888 | 429,497,763,783,823,838,885 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -50,8 +50,11 @@ next_project_number: 885
 825 [NOT STARTED] — Report a reversed validate-artifact.sh invocation as an...
 826 [NOT STARTED] — Diagnose the zero-result literature retrieval and settle the...
 827 [NOT STARTED] — Require a plan phase to agree with its own Scope Hypothesis...
+  └─ 885 [NOT STARTED] — Sequence generated-surface regeneration per phase, and make...
+    └─ 888 [NOT STARTED] — Settle the lean plan Goals-block harvest contract: every...
 839 [NOT STARTED] — Harvest a plan's declared contingency files into file\_scope,...
   └─ 845 [NOT STARTED] — Name the typst-sync gate as the cause when...
+  └─ 885 [NOT STARTED] — Sequence generated-surface regeneration per phase, and make... (see above)
 841 [NOT STARTED] — Probe the Lean LSP index state at dispatch start and...
 842 [NOT STARTED] — Close the recurring stale-handoff defect and find out why the...
 847 [NOT STARTED] — file\_scope containment drops external source-store paths...
@@ -60,6 +63,9 @@ next_project_number: 885
 858 [NOT STARTED] — Make --audit-verdict survive a realistic backlog instead of...
   └─ 883 [NOT STARTED] — Stop one low-specificity shared path from producing...
 882 [NOT STARTED] — Require task descriptions to request a proposal packet...
+  └─ 885 [NOT STARTED] — Sequence generated-surface regeneration per phase, and make... (see above)
+886 [NOT STARTED] — Make the research phase enumerate the generated doc-sync...
+887 [NOT STARTED] — Document that a dispatched agent cannot invoke /revise, and...
 
 ### Algebraic Representation
 
@@ -157,6 +163,379 @@ next_project_number: 885
 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 888. Settle the lean plan Goals-block harvest contract: every backticked token versus the documented identifier
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 885
+
+**Description**: META TASK. ONE defect, ONE record: `lean-plan-compliance-check.sh` and the contract
+`context/formats/plan-format.md` documents disagree about what a plan's `**Goals**` block
+contributes as goal declarations. The script and the document cannot both be right; this record
+settles WHICH, deliberately.
+
+MEASURED {871, iss_1793913951568_HzkOMJ} (class `tooling-contract`, phase `plan`). The script
+harvests EVERY backticked token in the Goals block, not only the leading identifier that
+plan-format.md's `## Lean Challenge Statements` section describes. Binder names cited in
+descriptive prose (`P`, `hP`) and cross-referenced PRE-EXISTING lemmas
+(`plusValidIn_reflectTime`, `lcN_plusValidZTime`) were harvested as goal declarations. Two of them
+can never resolve as declarations introduced by the plan, so the Final Verification spot-check
+would have failed permanently, not transiently. The affected plan had to work around it by
+stripping every backtick from its Goals prose -- a workaround that degrades the plan's own
+readability to satisfy a harvester, and that the next plan author will not know to apply.
+
+VERIFY THE MECHANISM FIRST, do not trust this summary. In the source store's
+`scripts/lean-plan-compliance-check.sh` the harvest is a `sed` range over `/^\*\*Goals\*\*/` to
+the next `/^\*\*[^G]/` piped through a backticked-token extraction, followed by a per-name
+declaration grep across the resolved Lean source roots. The script's own header already records
+two prior narrowings of the same harvest (a keyword exclusion list, so a backticked `sorry` or
+`box` in prose is no longer harvested; and a colon-optional Goals-range fix) -- so this is the
+THIRD narrowing of one over-broad harvest, which is itself evidence about where the contract
+should live. The header also warns that two Goals-block readers must not drift apart on which
+header shapes they accept; find the second reader before changing either.
+
+THE DECISION THIS RECORD OWES, with the rejected alternative recorded on its own merits:
+
+  (a) Narrow the SCRIPT to the documented contract -- harvest only the leading identifier of each
+      Goals entry -- making descriptive backticks in Goals prose safe again.
+  (b) Widen the DOCUMENT to state the script's actual behavior, i.e. make "no backticks in Goals
+      prose except goal identifiers" an explicit, discoverable authoring rule rather than folklore
+      a plan author discovers by a permanent verification failure.
+
+Weigh (a) against the keyword-exclusion precedent already in the script: that precedent chose to
+narrow the harvest rather than to constrain prose, which is an argument for (a). Weigh (b) against
+the risk that a leading-identifier rule mis-parses the multi-line and parenthesized Goals shapes
+the test fixtures already cover (`plan_r19_multiline_paren_goals.md`, `plan_r18_paren_goals.md`,
+`plan_list_item_goals.md`, `plan_goals_preamble.md`). Whichever is chosen, the stripped-backticks
+workaround must NOT be the settled answer.
+
+VERIFICATION: extend `scripts/tests/test-lean-plan-compliance-check.sh` and the
+`scripts/tests/fixtures/challenge/` fixture set rather than replacing them. The minimum bar is a
+regression fixture whose Goals block cites a pre-existing lemma and a binder name in prose and
+which the check does not fail on.
+
+SCOPE BOUNDARY. Two adjacent open records own the Challenge block's OTHER contracts and must not
+be edited here: #813 (precedence and snapshot-prerequisite rules for a pinned Challenge block) and
+#824 (making a fixture-dependent gate statement expressible under `lean-challenge-snapshot.sh`).
+This record owns only the Goals-block harvest-versus-contract disagreement.
+
+EDIT TARGET, binding. Per `rules/source-store-deploy-boundary.md` this repository's `.claude/`
+tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
+file under `.claude/**` is silently wiped by the next regeneration -- the edit appears to succeed
+and has no lasting effect. Make every edit under the source store at the path mirroring the
+deployed one. RE-DERIVE the store rather than trusting this note: `source_dir` lives PER-EXTENSION
+at `.extensions.<name>.source_dir` in `<project-root>/.claude-extensions.json`, not as a
+top-level key, so a top-level `jq -r '.source_dir'` returning null must NOT be read as the key
+being absent. Re-derive with, for example:
+
+  jq -r '.extensions.core.source_dir' .claude-extensions.json
+
+which currently yields `/home/benjamin/.config/nvim/agent-system/extensions/core`. If `source_dir`
+is absent or its path does not exist when this task runs, record that as an observation of its own
+rather than silently hand-authoring under `.claude/**`.
+
+NOTE ON file_scope AND THE EXTERNAL STORE. The store is a DIFFERENT git repository
+(`/home/benjamin/.config/nvim/agent-system`), so the `agent-system/extensions/**` entries in this
+task's declared `file_scope` do not resolve inside this repository and a phase commit here cannot
+carry them. That mismatch is a known, separately-recorded defect (open backlog record #847) --
+expect containment drops on those paths and do not treat them as this task's own defect.
+
+PROVENANCE. The citations below are {task number, entry_id} pairs into
+`specs/{NNN}_{SLUG}/issues.jsonl`, readable by `entry_id`; each is reproducible with
+`jq -c 'select(.entry_id=="<id>")' specs/{NNN}_{SLUG}/issues.jsonl`. These defects were derived
+from the aggregated issue logs of a five-task `/orchestrate` batch run and grouped by class across
+tasks. The orchestrator's conclusion stage classified this record to channel (b) (agent-system
+change); NO cited entry carries a contrary `suggested_channel` hint -- every one records
+`suggested_channel: null`, verified directly.
+
+---
+
+### 887. Document that a dispatched agent cannot invoke /revise, and name the sanctioned description-update route
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: META TASK. ONE documentation defect, ONE record: `/revise` is a user-facing slash command that a
+dispatched implementation agent cannot invoke, and that unavailability is undocumented at the point
+of use. An agent that needs a sibling task's DESCRIPTION updated therefore has no documented route,
+and finds the sanctioned one only by reading `skill-reviser`'s own internals.
+
+MEASURED {884, iss_1793913745294_dZNuX5} (class `tooling`, phase `implement`): a dispatched
+implementation agent needed another task's description updated, could not invoke `/revise N`, and
+used the `state-write.sh` jq object-merge fallback instead (object-merge on `description` and
+`last_updated`, with `--session-id`, `--argjson num N`, and `--regen-todo`). THE WORK WAS CORRECT:
+that fallback is the identical mechanical path `skill-reviser`'s own Stage 7 uses for a description
+update, and the plan had named it as the fallback. The defect is purely that an agent had to
+rediscover it.
+
+WHAT TO VERIFY BEFORE WRITING ANYTHING. Establish, and state in the report, which of these the
+system actually enforces -- they imply different wording and possibly different surfaces:
+  (i) `/revise` is categorically unavailable to a dispatched subagent (the same measured
+      tool-withholding that applies to `AskUserQuestion`, documented in
+      `docs/reference/standards/agent-frontmatter-standard.md`'s "Tool Withholding from Dispatched
+      Subagents" section);
+  (ii) it is available in principle but prohibited by contract;
+  (iii) it is a Skill-tool invocation that would succeed, and the observed unavailability was
+        narrower than the entry's own wording.
+Note that `commands/revise.md` and `skills/skill-reviser/SKILL.md` are NOT currently marked
+user-only -- `skill-tag` is the system's existing precedent for a user-only marking, so compare
+against it rather than inventing a new convention.
+
+THE DELIVERABLE is documentation and, if (i) or (ii) holds, a named route at the point of use:
+state the unavailability where an agent will meet it (`commands/revise.md` and
+`skills/skill-reviser/SKILL.md`), and name the sanctioned description-update route for a dispatched
+agent -- with the exact `state-write.sh` invocation shape, since an agent reconstructing a jq
+object-merge by hand against the single mutex-guarded state writer is precisely the kind of
+improvisation this system elsewhere refuses to leave to chance.
+`context/standards/postflight-tool-restrictions.md` is one candidate home for the general
+"what a dispatched agent cannot invoke" statement; weigh it against stating the restriction only on
+the two `/revise` surfaces, and record the rejected alternative.
+
+SCOPE BOUNDARY. Do not change `skill-reviser`'s own revision workflow, and do not add a new
+agent-invokable description-update command: the mechanical path already exists and is correct. This
+record's deliverable is that the path is DISCOVERABLE from where an agent looks for it.
+
+EDIT TARGET, binding. Per `rules/source-store-deploy-boundary.md` this repository's `.claude/`
+tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
+file under `.claude/**` is silently wiped by the next regeneration -- the edit appears to succeed
+and has no lasting effect. Make every edit under the source store at the path mirroring the
+deployed one. RE-DERIVE the store rather than trusting this note: `source_dir` lives PER-EXTENSION
+at `.extensions.<name>.source_dir` in `<project-root>/.claude-extensions.json`, not as a
+top-level key, so a top-level `jq -r '.source_dir'` returning null must NOT be read as the key
+being absent. Re-derive with, for example:
+
+  jq -r '.extensions.core.source_dir' .claude-extensions.json
+
+which currently yields `/home/benjamin/.config/nvim/agent-system/extensions/core`. If `source_dir`
+is absent or its path does not exist when this task runs, record that as an observation of its own
+rather than silently hand-authoring under `.claude/**`.
+
+NOTE ON file_scope AND THE EXTERNAL STORE. The store is a DIFFERENT git repository
+(`/home/benjamin/.config/nvim/agent-system`), so the `agent-system/extensions/**` entries in this
+task's declared `file_scope` do not resolve inside this repository and a phase commit here cannot
+carry them. That mismatch is a known, separately-recorded defect (open backlog record #847) --
+expect containment drops on those paths and do not treat them as this task's own defect.
+
+PROVENANCE. The citations below are {task number, entry_id} pairs into
+`specs/{NNN}_{SLUG}/issues.jsonl`, readable by `entry_id`; each is reproducible with
+`jq -c 'select(.entry_id=="<id>")' specs/{NNN}_{SLUG}/issues.jsonl`. These defects were derived
+from the aggregated issue logs of a five-task `/orchestrate` batch run and grouped by class across
+tasks. The orchestrator's conclusion stage classified this record to channel (b) (agent-system
+change); NO cited entry carries a contrary `suggested_channel` hint -- every one records
+`suggested_channel: null`, verified directly.
+
+---
+
+### 886. Make the research phase enumerate the generated doc-sync companion surface instead of deferring it to plan time
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: META TASK. ONE gap, ONE record: the research phase has no obligation to enumerate the GENERATED
+doc-sync companion surface a `.lean` edit forces, so that surface is discovered at plan time -- by
+running the file-scope harvester against a draft plan -- or later, by a gate firing
+mid-implementation. Two entries from the same task record the same cause.
+
+MEASURED {871, iss_1793913951546_jLdhm5} (class `scope-discovery`, phase `plan`): "The research
+report did not cover the generated doc-sync surface at all." Running
+`plan-file-scope-harvest.sh` against the DRAFT plan surfaced four companion paths the harvester
+augments for any `.lean` edit -- `typst/generated/status.typ` plus three registered README
+inventory blocks -- each separately gated by `typst-sync-check.sh` and
+`check-module-invariants.sh --emit-inventory --check`. They had to be retrofitted into a late
+phase as explicit regeneration tasks, declared files, verification criteria, and two Risks rows.
+
+MEASURED {871, iss_1793927811619_YMJoHw} (class `scope-delta`, phase `implement`): a phase's Scope
+Hypothesis predicted zero mentions of a renamed construct in any README; grep found a fourth
+surface inside a GENERATED inventory block. Inspection of
+`scripts/check-module-invariants.sh`'s `render_block` established that the Description column is
+PRESERVED from the existing block (only Lines are refreshed), so that cell is hand-authored and a
+hand edit SURVIVES regeneration. That is a non-obvious fact about a generated surface, and the
+scope hypothesis predicted its opposite.
+
+WHY THESE ARE ONE GAP. The harvester's own header (`scripts/plan-file-scope-harvest.sh`,
+"Generated-surface appending") already documents the augmentation, its `.lean` trigger, its
+capability guard (both generator scripts must exist under the resolved repo root, else the whole
+addition is inert), and the fact that a plan omitting these "either blocks on the pre-commit
+`typst-sync-check.sh` gate or fails `check-module-invariants.sh`'s INV check mid-implementation --
+this has happened twice independently." The capability probe that decides whether the augmentation
+applies is therefore ALREADY mechanized and already repo-agnostic. Nothing in the research-phase
+contract consults it, so the research report can be complete on its own terms and still hand the
+planner a surface inventory that is short by four paths.
+
+THE DELIVERABLE is the research-phase contract: `context/processes/research-workflow.md` and the
+research agent's own instructions should require a report whose scope inventory names the
+generated/derived companion surface for every source file class it expects to be edited, together
+with which generator owns each surface and whether any column or region of it is hand-authored
+rather than regenerated. Decide deliberately whether the obligation is discharged by prose, by
+invoking the existing harvester capability probe at research time, or by both; record the rejected
+alternative on its own merits. A research phase cannot be asked to enumerate a repository-specific
+generator set from nothing -- so weigh resolving it from the repository's own declarations
+(`context/standards/repo-level-declarations.md` is the existing surface) against reusing the
+harvester's probe directly.
+
+SCOPE BOUNDARIES, binding. This record does NOT own the harvester's augmentation SET, nor the
+containment behavior of a path it fails to augment: open record #839 owns both (its Item 1 settles
+whether Scope Hypothesis contingency paths become a second harvest source, and its Item 1 Extended
+owns the companion-surface rule keyed on "the phase touches any `.lean` file"). Do not change
+`plan-file-scope-harvest.sh`'s augmentation set here. This record also does not own the LEAN
+extension's plan-authoring prose record (#785) or its `plan-authoring-gate-collisions.md`
+(#785, #840) -- if the `render_block` Description-preservation fact needs a durable home in a
+lean-specific pattern note rather than in the core research contract, say so and propose adding it
+to that record instead of writing into its declared files.
+
+NOT a repair of this repository's generators. `scripts/check-module-invariants.sh`,
+`scripts/typst-sync-check.sh`, `typst/generated/status.typ` and every inventory block are correct
+as they stand; the Description-column preservation is deliberate behavior to be DOCUMENTED, not
+changed.
+
+EDIT TARGET, binding. Per `rules/source-store-deploy-boundary.md` this repository's `.claude/`
+tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
+file under `.claude/**` is silently wiped by the next regeneration -- the edit appears to succeed
+and has no lasting effect. Make every edit under the source store at the path mirroring the
+deployed one. RE-DERIVE the store rather than trusting this note: `source_dir` lives PER-EXTENSION
+at `.extensions.<name>.source_dir` in `<project-root>/.claude-extensions.json`, not as a
+top-level key, so a top-level `jq -r '.source_dir'` returning null must NOT be read as the key
+being absent. Re-derive with, for example:
+
+  jq -r '.extensions.core.source_dir' .claude-extensions.json
+
+which currently yields `/home/benjamin/.config/nvim/agent-system/extensions/core`. If `source_dir`
+is absent or its path does not exist when this task runs, record that as an observation of its own
+rather than silently hand-authoring under `.claude/**`.
+
+NOTE ON file_scope AND THE EXTERNAL STORE. The store is a DIFFERENT git repository
+(`/home/benjamin/.config/nvim/agent-system`), so the `agent-system/extensions/**` entries in this
+task's declared `file_scope` do not resolve inside this repository and a phase commit here cannot
+carry them. That mismatch is a known, separately-recorded defect (open backlog record #847) --
+expect containment drops on those paths and do not treat them as this task's own defect.
+
+PROVENANCE. The citations below are {task number, entry_id} pairs into
+`specs/{NNN}_{SLUG}/issues.jsonl`, readable by `entry_id`; each is reproducible with
+`jq -c 'select(.entry_id=="<id>")' specs/{NNN}_{SLUG}/issues.jsonl`. These defects were derived
+from the aggregated issue logs of a five-task `/orchestrate` batch run and grouped by class across
+tasks. The orchestrator's conclusion stage classified this record to channel (b) (agent-system
+change); NO cited entry carries a contrary `suggested_channel` hint -- every one records
+`suggested_channel: null`, verified directly.
+
+---
+
+### 885. Sequence generated-surface regeneration per phase, and make batch gate deferral name a gate the target repo has
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 827, Task 839, Task 882
+
+**Description**: META TASK. ONE mechanism, two faces: a plan that sequences a generated-surface regeneration into
+a single final phase is unsatisfiable against a gate that fires on EVERY phase commit, and a
+dispatch-time batch deferral directive that names only the agent-system's own test harness leaves
+a plan's declared gate criterion unsatisfiable in a repository whose gates are something else.
+
+=== FACE 1 -- PER-PHASE REGENERATION, NOT A FINAL PHASE ===
+
+MEASURED, 4 entries across 3 tasks: {871, iss_1793928066810_oWg5Au}, {867, iss_1793914994233_yAr1ND},
+{870, iss_1793920716964_cvinG9}, {870, iss_1793927378769_FitNDF}.
+
+The mechanism, verified in this repository rather than assumed: `.githooks/pre-commit` (installed
+by `scripts/install-git-hooks.sh`, which sets `core.hooksPath`) fires `scripts/typst-sync-check.sh
+--counts-only` on any staged set touching at least one `.lean` path, and refuses the commit when
+`typst/generated/status.typ`'s pinned FormalSystem file/line counts have drifted. It is BLOCKING
+and does not auto-regenerate. Consequence: every phase commit whose `.lean` line count moves
+blocks until `typst-sync-check.sh --fix` has run and `status.typ` is staged WITH that phase's
+commit.
+
+Three separate plans in one batch independently sequenced the regeneration into a single final
+phase (871's Phase 5, 867's Phase 14, 870's Phase 5) and all three had to run it per-phase
+instead. That is three independent plan-authoring failures against the same mechanism, which is
+the signal that the obligation is missing from the plan-authoring contract rather than that three
+planners each erred.
+
+{870, iss_1793927378769_FitNDF} records the same shape on a second gate:
+`check-module-invariants.sh --no-build` caught three bands red from that task's own edits -- INV
+(stale README inventory blocks, fixed by `--emit-inventory`), C35 (69 citation-manifest line
+drifts, all +4 inside one file from four added docstring lines, fixed by
+`export-lean-citations.py`), and C15 (every `docs/theorem-index.md` row needs a `Paper:` line in
+the declaration's own doc comment). None of the three surfaces was enumerated in the plan's phase
+file list.
+
+THE DELIVERABLE for this face is the plan-authoring obligation in
+`context/formats/plan-format.md`, and whatever planner-side guidance makes it actually bind: a
+phase whose `Files to modify` touches a `.lean` path owns the companion regeneration IN THAT
+PHASE, not in a later one. Decide deliberately whether this is stated as an authoring rule, as a
+mechanical check, or both, and record the rejected alternative on its own merits.
+
+=== FACE 2 -- A DEFERRAL DIRECTIVE THAT NAMES THE WRONG HARNESS ===
+
+MEASURED {880, iss_1793932578569_JqSq31}. A plan's Phase 5 named the bare, lake-build-including
+`bash scripts/check-module-invariants.sh` as its own verification gate; the dispatch's own
+`## Batch Gate Deferral` directive superseded it for that run and directed a scoped discharge
+instead, leaving the plan's written criterion unsatisfiable as authored. The implementer resolved
+it by running `check-module-invariants.sh --no-build` green after every phase, and stopped the
+bare invocation twice (once truncated by a `| head` closing stdout early, once past the 120s
+foreground timeout) to honor the deferral.
+
+The directive's own named narrowing invocations are
+`.claude/scripts/tests/run-all.sh --only SUITE` and `.claude/scripts/verify-deploy.sh --only-gate N`
+(with the `agent-system/extensions/core/scripts/...` parallel forms as fallback). Verify in
+`context/contracts/batch-gate-stage.md`'s "Narrowing-invocation paths are resolved, not hardcoded"
+section and in `scripts/orchestrate-build-dispatch.sh`'s `batch_gate_deferral_flag` block: the
+resolution is across the deploy/source-store boundary ONLY. Both candidates are the agent-system's
+own deploy-infra harness. Neither exists in, nor applies to, a repository whose plan-declared gate
+is a Lean/markdown invariants checker -- so in such a repository the directive names a scoped tier
+it cannot express and supersedes a plan criterion it cannot replace.
+
+THE DECISION THIS FACE OWES: should the deferral directive resolve a narrowing invocation from the
+TARGET repository's own gate set (and if so, how is that set declared -- `context/standards/
+repo-level-declarations.md` is the existing surface to weigh), or should it decline to supersede a
+plan criterion it cannot express a narrowing for, and say so in the directive text? Pick one,
+implement it, and record the rejected alternative.
+
+=== SCOPE BOUNDARIES, binding ===
+
+NOT a repair of this repository's gates. `.githooks/pre-commit`, `scripts/typst-sync-check.sh`,
+`scripts/check-module-invariants.sh`, `typst/generated/status.typ` and the inventory blocks are all
+correct as they stand; do not edit them.
+
+DO NOT re-litigate two adjacent open records. #845 owns the narrow diagnostic-message defect
+(`git-commit-scoped.sh` misnaming a typst-sync refusal as the V8 drop defect) -- message only.
+#785 owns recording the two-generated-surfaces fact as plan-authoring prose in the LEAN
+extension's source store. This record owns neither: its subject is the CORE plan-format phase
+sequencing obligation and the deferral directive's narrowing resolution. If research finds the
+boundary between this record and #785 is not clean, say so explicitly rather than writing into
+#785's declared files.
+
+EDIT TARGET, binding. Per `rules/source-store-deploy-boundary.md` this repository's `.claude/`
+tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
+file under `.claude/**` is silently wiped by the next regeneration -- the edit appears to succeed
+and has no lasting effect. Make every edit under the source store at the path mirroring the
+deployed one. RE-DERIVE the store rather than trusting this note: `source_dir` lives PER-EXTENSION
+at `.extensions.<name>.source_dir` in `<project-root>/.claude-extensions.json`, not as a
+top-level key, so a top-level `jq -r '.source_dir'` returning null must NOT be read as the key
+being absent. Re-derive with, for example:
+
+  jq -r '.extensions.core.source_dir' .claude-extensions.json
+
+which currently yields `/home/benjamin/.config/nvim/agent-system/extensions/core`. If `source_dir`
+is absent or its path does not exist when this task runs, record that as an observation of its own
+rather than silently hand-authoring under `.claude/**`.
+
+NOTE ON file_scope AND THE EXTERNAL STORE. The store is a DIFFERENT git repository
+(`/home/benjamin/.config/nvim/agent-system`), so the `agent-system/extensions/**` entries in this
+task's declared `file_scope` do not resolve inside this repository and a phase commit here cannot
+carry them. That mismatch is a known, separately-recorded defect (open backlog record #847) --
+expect containment drops on those paths and do not treat them as this task's own defect.
+
+PROVENANCE. The citations below are {task number, entry_id} pairs into
+`specs/{NNN}_{SLUG}/issues.jsonl`, readable by `entry_id`; each is reproducible with
+`jq -c 'select(.entry_id=="<id>")' specs/{NNN}_{SLUG}/issues.jsonl`. These defects were derived
+from the aggregated issue logs of a five-task `/orchestrate` batch run and grouped by class across
+tasks. The orchestrator's conclusion stage classified this record to channel (b) (agent-system
+change); NO cited entry carries a contrary `suggested_channel` hint -- every one records
+`suggested_channel: null`, verified directly.
+
+---
 
 ### 884. Oriented forest hypothesis strength revision
 - **Effort**: medium
@@ -4331,6 +4710,30 @@ Provenance: issue-log entries iss_1793896983894_KN1MDj, iss_1793896939483_1vZI0M
 iss_1793896939557_vHUDIO in
 specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/issues.jsonl. Read the
 `what_happened` fields before planning.
+
+=== ADDED EVIDENCE (2026-11-05): A FOURTH OCCURRENCE, FROM A DIFFERENT TASK ===
+
+MEASURED {880, iss_1793931736280_bsZRJ1} (class `scope excursion`, phase `implement`):
+`git-commit-phase.sh` dropped
+`specs/880_reposition_open_language_docs_and_logos_reading/plans/01_open-language-repositioning-and-logos-reading.md`
+from a phase-commit pathspec with the message text `not contained in this task's declared
+file_scope`, and the implementer committed the plan artifact in a separate commit carrying no task
+attribution. The entry is readable with
+`jq -c 'select(.entry_id=="iss_1793931736280_bsZRJ1")' specs/880_reposition_open_language_docs_and_logos_reading/issues.jsonl`
+and carries `suggested_channel: null`.
+
+This is the SAME defect this record already owns and the same root cause it already names
+(`files_touched` derived from the phase progress file is tested by the Containment Self-Check even
+though `stage_paths` stages `${task_dir}/` unconditionally); it is recorded here as a recurrence
+count rather than as new design input, and it changes none of this record's decisions. A
+separately-proposed record for it was ruled a `subset-of-open` of this one by
+`scripts/audit-task-proposals.sh` (mechanical class `subset`, three shared declared paths) and was
+NOT filed.
+
+Deploy drift is ruled out as an explanation: at the time this evidence was added,
+`.claude/scripts/git-commit-phase.sh` and
+`agent-system/extensions/core/scripts/git-commit-phase.sh` were byte-identical (`diff -q`), so the
+behavior observed is the source store's own.
 
 ---
 
