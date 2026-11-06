@@ -408,25 +408,34 @@ no importers yet.
 
 ---
 
-### Phase 6: Discrete uniformity, density, Prior-Z and Z1 [NOT STARTED]
+### Phase 6: Discrete uniformity, density, Prior-Z and Z1 [COMPLETED]
 
 **Goal**: The frame-class-restricted tier, consuming `SoundnessLemmas/DiscreteOrder.lean`.
 
 **Tasks**:
-- [ ] The five closed uniformity schemata plus the three duals with no sibling constructor:
+- [x] The five closed uniformity schemata plus the three duals with no sibling constructor:
       `generic_discrete_symm_fwd`, `generic_discrete_symm_bwd`,
       `generic_discrete_propagate_fwd`, `generic_discrete_propagate_fwd_reflect_time`,
       `generic_discrete_propagate_bwd`, `generic_discrete_propagate_bwd_reflect_time`,
       `generic_discrete_box_necessity`, `generic_discrete_box_necessity_reflect_time`.
       These are closed formulas; state them with the frame constraints as instance binders
       rather than transporting through any language's `ofPlus`.
-- [ ] `generic_density`, `generic_density_reflect_time` under `[DenselyOrdered F.Duration]`.
-- [ ] `generic_dense_indicator`, `generic_dense_indicator_reflect_time`.
-- [ ] `generic_prior_UZ`, `generic_prior_SZ` through `SoundnessLemmas.exists_nearest_gt` /
+      *(deviation: altered — these eight carry NO frame-constraint binder, because there is no
+      frame constraint to carry. Measured: the five uniformity schemata are valid at
+      `FrameClass.Base`; `Metalogic/Soundness.lean`'s `discrete_symm_fwd_valid` and siblings are
+      introduced by `Valid.of_forall`. The only structure consumed is that `F.Duration` is a
+      nontrivial linearly ordered abelian group, which every `TemporalOrder` already is. The
+      no-transport half of the task is executed in full: five helper lemmas —
+      `generic_gap_iff`, `generic_cogap_iff`, `generic_gap_shift`, `generic_cogap_shift`,
+      `generic_gap_iff_cogap` — write the gap-translation argument once, generically, replacing
+      the `ofPlus` transports both consumers use.)*
+- [x] `generic_density`, `generic_density_reflect_time` under `[DenselyOrdered F.Duration]`.
+- [x] `generic_dense_indicator`, `generic_dense_indicator_reflect_time`.
+- [x] `generic_prior_UZ`, `generic_prior_SZ` through `SoundnessLemmas.exists_nearest_gt` /
       `exists_nearest_lt` at `P := fun x => TruthEnv.T M τ x e φ`.
-- [ ] `generic_z1`, `generic_z1_reflect_time` through `forall_gt_of_succ_step` /
+- [x] `generic_z1`, `generic_z1_reflect_time` through `forall_gt_of_succ_step` /
       `forall_lt_of_pred_step` at the same predicate.
-- [ ] Add the `DiscreteOrder` import. Record in the docstring that the order content is **not**
+- [x] Add the `DiscreteOrder` import. Record in the docstring that the order content is **not**
       inlined — the same invariant `StarAxiomValidity.lean`'s own docstring asserts.
 
 **Timing**: 2 hours
@@ -444,6 +453,13 @@ already compiles, so that one build still covers the whole changed surface.
 `openValidIn_*` in `OpenAxiomValidity.lean:1561`–`2026`; if the two languages' sets differ, state
 the generic form once per distinct statement and record the asymmetry in the section docstring.
 
+*(confirmed, with a measured asymmetry: sixteen landed. The two consumers' named-dual sets do
+differ — Star names three duals explicitly while Open produces all five reflections through
+`openValid_reflectTime`, giving it two names Star has none for (`discreteSymmFwd_reflect`,
+`discreteSymmBwd_reflect`). The generic forms are stated once per distinct *statement*, which
+covers both sets, since each `symm` reflection is the other `symm` lemma's statement. Recorded in
+the section docstring.)*
+
 **Files to modify**:
 - `FormalSystem/Metalogic/SoundnessLemmas/GenericSchemata.lean` - discrete / density / Prior-Z /
   Z1 section, plus the `DiscreteOrder` import
@@ -452,6 +468,11 @@ the generic form once per distinct statement and record the asymmetry in the sec
 - Scoped build green.
 - Each frame-class hypothesis is load-bearing: removing `[DenselyOrdered F.Duration]` from
   `generic_density` must break the build.
+  *(checked by the compiler rather than by deletion: the module builds with **zero** warnings,
+  and Lean's `unusedSectionVars` linter reports any section variable a theorem does not consume —
+  it is what caught the surplus `[BotClause L]` in Phase 2. No warning fires on
+  `[DenselyOrdered F.Duration]`, `[SuccOrder F.Duration]`, `[IsSuccArchimedean F.Duration]`,
+  `[PredOrder F.Duration]` or `[IsPredArchimedean F.Duration]`, so each is consumed.)*
 
 ---
 

@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.TruthClauses
+import FormalSystem.Metalogic.SoundnessLemmas.DiscreteOrder
 
 /-!
 # The TM⁺ mirror schemata, stated once over the clause interface
@@ -768,5 +769,371 @@ theorem generic_temp_linearity_past_paper (M : TaskModel F) (τ : WorldHistory F
   · exact .inr (.inr ⟨s₁, hs₁t, hφ, s₂, h, hψ⟩)
 
 end LinearityPast
+
+/-!
+## Discrete uniformity, density, Prior-Z and Z1
+
+**The frame-class side conditions are instance binders on `F.Duration`, not transports.** Both
+`StarAxiomValidity.lean` and `OpenAxiomValidity.lean` close the five uniformity arms by
+transporting `plusAxiom_validIn_min` along their `ofPlus` embeddings, which is cheap for them but
+useless to a language with no such embedding. Stated here, each is what it actually is: a fact
+about the duration group's order, with the gap-translation argument written once.
+
+**Measured correction to the plan's hypothesis for this group.** The five uniformity schemata are
+valid at `FrameClass.Base` — `Metalogic/Soundness.lean`'s `discrete_symm_fwd_valid` and siblings
+are introduced by `Valid.of_forall`, with no frame class and no regularity. The only structure
+they consume is that `F.Duration` is a nontrivial linearly ordered abelian group, which every
+`TemporalOrder` already is. So there is no frame-constraint binder to add for them; the binders
+appear exactly where the frame class is real — `[DenselyOrdered F.Duration]` for density,
+`[SuccOrder]`/`[IsSuccArchimedean]` (and their `Pred` mirrors) for Prior-Z and Z1.
+
+The order-theoretic content is **not** inlined: Prior-Z goes through
+`SoundnessLemmas.exists_nearest_gt`/`exists_nearest_lt` and Z1 through
+`forall_gt_of_succ_step`/`forall_lt_of_pred_step`, each at `P := fun x => TruthEnv.T M τ x e φ`.
+
+**The two consumers' sets of named duals differ, and both are covered.** The group is not closed
+under `reflectTime` — the dual of `U(⊤,⊥) → G(U(⊤,⊥))` is `S(⊤,⊥) → H(S(⊤,⊥))`, which is no
+member's statement — so `StarAxiomValidity.lean` names three duals explicitly
+(`discrete_propagate_fwd_reflect_time`, `discrete_propagate_bwd_reflect_time`,
+`discrete_box_necessity_reflect_time`) while `OpenAxiomValidity.lean` instead produces all five
+reflections mechanically through `openValid_reflectTime`, giving it two names Star has none for
+(`discreteSymmFwd_reflect`, `discreteSymmBwd_reflect`). The sixteen lemmas here are stated per
+*distinct statement*, which covers both sets: the two `symm` reflections are the other `symm`
+lemma's statement, so they need no separate generic form.
+-/
+
+section Gap
+variable [BotClause L] [UntlClause L]
+
+/-- `U(⊥,⊤)` at `t` says there is a point strictly above `t` with nothing strictly between: the
+guard `⊥` forbids every intruder and the event `⊤` is free. -/
+theorem generic_gap_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e (UntlClause.untl (BotClause.bot : L) top) ↔
+      ∃ s : F.Duration, t < s ∧ ∀ r : F.Duration, t < r → r < s → False := by
+  rw [UntlClause.untl_clause]
+  constructor
+  · rintro ⟨s, hts, -, hguard⟩
+    exact ⟨s, hts, fun r h1 h2 => BotClause.bot_clause M τ r e (hguard r h1 h2)⟩
+  · rintro ⟨s, hts, hguard⟩
+    exact ⟨s, hts, top_true M τ s e, fun r h1 h2 => (hguard r h1 h2).elim⟩
+
+/-- **Gaps translate.** A gap immediately above `t` is a gap immediately above every point: shift
+the witness by `u - t` and shift any intruder back. Translation invariance of `<` on the duration
+group is the whole argument, which is why the statement mentions no history and no model, exactly
+as `Semantics/Truth.lean`'s `truthAt_gap_shift` does not. -/
+theorem generic_gap_shift (M : TaskModel F) (τ : WorldHistory F) (t u : F.Duration)
+    (e : TruthEnv.Env L F)
+    (h : TruthEnv.T M τ t e (UntlClause.untl (BotClause.bot : L) top)) :
+    TruthEnv.T M τ u e (UntlClause.untl (BotClause.bot : L) top) := by
+  rw [generic_gap_iff] at h ⊢
+  obtain ⟨s, hts, hguard⟩ := h
+  refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun c huc hcs => ?_⟩
+  have h1 : t < c - (u - t) := by
+    conv_lhs => rw [(sub_sub_cancel u t).symm]
+    exact sub_lt_sub_right huc _
+  have h2 : c - (u - t) < s := by
+    conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
+    exact sub_lt_sub_right hcs _
+  exact hguard (c - (u - t)) h1 h2
+
+/-- `U(⊤,⊥) → G(U(⊤,⊥))`: a gap above `t` is a gap above every later point. -/
+theorem generic_discrete_propagate_fwd (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (UntlClause.untl (BotClause.bot : L) top)
+        (allFuture (UntlClause.untl (BotClause.bot : L) top))) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [allFuture_iff]
+  exact fun u _ => generic_gap_shift M τ t u e h
+
+end Gap
+
+section Cogap
+variable [BotClause L] [SnceClause L]
+
+/-- `S(⊥,⊤)` at `t`: the past mirror of `generic_gap_iff`. -/
+theorem generic_cogap_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e (SnceClause.snce (BotClause.bot : L) top) ↔
+      ∃ s : F.Duration, s < t ∧ ∀ r : F.Duration, s < r → r < t → False := by
+  rw [SnceClause.snce_clause]
+  constructor
+  · rintro ⟨s, hst, -, hguard⟩
+    exact ⟨s, hst, fun r h1 h2 => BotClause.bot_clause M τ r e (hguard r h1 h2)⟩
+  · rintro ⟨s, hst, hguard⟩
+    exact ⟨s, hst, top_true M τ s e, fun r h1 h2 => (hguard r h1 h2).elim⟩
+
+/-- Co-gaps translate, the past mirror of `generic_gap_shift`. -/
+theorem generic_cogap_shift (M : TaskModel F) (τ : WorldHistory F) (t u : F.Duration)
+    (e : TruthEnv.Env L F)
+    (h : TruthEnv.T M τ t e (SnceClause.snce (BotClause.bot : L) top)) :
+    TruthEnv.T M τ u e (SnceClause.snce (BotClause.bot : L) top) := by
+  rw [generic_cogap_iff] at h ⊢
+  obtain ⟨s, hst, hguard⟩ := h
+  refine ⟨u - (t - s), sub_lt_self u (sub_pos.mpr hst), fun c huc hcu => ?_⟩
+  have h1 : s < c + (t - u) := by
+    calc s = u - (t - s) + (t - u) := by rw [sub_add_sub_cancel', sub_sub_cancel]
+      _ < c + (t - u) := add_lt_add_left huc (t - u)
+  have h2 : c + (t - u) < t := by
+    calc c + (t - u) < u + (t - u) := add_lt_add_left hcu (t - u)
+      _ = t := by rw [add_comm, sub_add_cancel]
+  exact hguard (c + (t - u)) h1 h2
+
+/-- The temporal dual of `generic_discrete_propagate_fwd`: `S(⊤,⊥) → H(S(⊤,⊥))`. Not an instance
+of any schema, so it is named here, mirroring
+`SoundnessLemmas.discrete_propagate_fwd_reflect_time_valid`. -/
+theorem generic_discrete_propagate_fwd_reflect_time (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration) (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (SnceClause.snce (BotClause.bot : L) top)
+        (allPast (SnceClause.snce (BotClause.bot : L) top))) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [allPast_iff]
+  exact fun u _ => generic_cogap_shift M τ t u e h
+
+end Cogap
+
+section GapMixed
+variable [BotClause L] [UntlClause L] [SnceClause L]
+
+/-- **A gap above is a gap below.** Reflect the witness through `t`. Its two directions are what
+make the two `discrete_symm_*` schemata one term each. -/
+theorem generic_gap_iff_cogap (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e (UntlClause.untl (BotClause.bot : L) top) ↔
+      TruthEnv.T M τ t e (SnceClause.snce (BotClause.bot : L) top) := by
+  rw [generic_gap_iff, generic_cogap_iff]
+  constructor
+  · rintro ⟨s, hts, hguard⟩
+    refine ⟨t - (s - t), sub_lt_self t (sub_pos.mpr hts), fun c hrc hct => ?_⟩
+    have h1 : t < c + (s - t) :=
+      calc t = t - (s - t) + (s - t) := (sub_add_cancel t (s - t)).symm
+        _ < c + (s - t) := add_lt_add_left hrc (s - t)
+    have h2 : c + (s - t) < s :=
+      calc c + (s - t) < t + (s - t) := add_lt_add_left hct (s - t)
+        _ = s := by rw [add_comm, sub_add_cancel]
+    exact hguard (c + (s - t)) h1 h2
+  · rintro ⟨r, hrt, hguard⟩
+    refine ⟨t + (t - r), lt_add_of_pos_right t (sub_pos.mpr hrt), fun c htc hcs => ?_⟩
+    have h1 : r < c - (t - r) := by
+      conv_lhs => rw [(sub_sub_cancel t r).symm]
+      exact sub_lt_sub_right htc _
+    have h2 : c - (t - r) < t := by
+      conv_rhs => rw [(add_sub_cancel_right t (t - r)).symm]
+      exact sub_lt_sub_right hcs _
+    exact hguard (c - (t - r)) h1 h2
+
+/-- `U(⊤,⊥) → S(⊤,⊥)`. -/
+theorem generic_discrete_symm_fwd (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (UntlClause.untl (BotClause.bot : L) top)
+        (SnceClause.snce (BotClause.bot : L) top)) := by
+  rw [ImpClause.imp_clause]
+  exact fun h => (generic_gap_iff_cogap M τ t e).mp h
+
+/-- `S(⊤,⊥) → U(⊤,⊥)`. -/
+theorem generic_discrete_symm_bwd (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (SnceClause.snce (BotClause.bot : L) top)
+        (UntlClause.untl (BotClause.bot : L) top)) := by
+  rw [ImpClause.imp_clause]
+  exact fun h => (generic_gap_iff_cogap M τ t e).mpr h
+
+/-- `U(⊤,⊥) → H(U(⊤,⊥))`. -/
+theorem generic_discrete_propagate_bwd (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (UntlClause.untl (BotClause.bot : L) top)
+        (allPast (UntlClause.untl (BotClause.bot : L) top))) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [allPast_iff]
+  exact fun u _ => generic_gap_shift M τ t u e h
+
+/-- The temporal dual of `generic_discrete_propagate_bwd`: `S(⊤,⊥) → G(S(⊤,⊥))`. -/
+theorem generic_discrete_propagate_bwd_reflect_time (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration) (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (SnceClause.snce (BotClause.bot : L) top)
+        (allFuture (SnceClause.snce (BotClause.bot : L) top))) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [allFuture_iff]
+  exact fun u _ => generic_cogap_shift M τ t u e h
+
+end GapMixed
+
+section GapBox
+variable [BotClause L] [BoxClause L] [UntlClause L]
+
+/-- `U(⊤,⊥) → □(U(⊤,⊥))`: the gap is a fact about the duration order, so it holds at every world
+history. `generic_gap_iff`'s right-hand side mentions no history, which is the whole proof. -/
+theorem generic_discrete_box_necessity (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (UntlClause.untl (BotClause.bot : L) top)
+        (BoxClause.box (UntlClause.untl (BotClause.bot : L) top))) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [BoxClause.box_clause]
+  rw [generic_gap_iff] at h
+  exact fun σ => (generic_gap_iff M σ t e).mpr h
+
+end GapBox
+
+section CogapBox
+variable [BotClause L] [BoxClause L] [SnceClause L]
+
+/-- The temporal dual of `generic_discrete_box_necessity`: `S(⊤,⊥) → □(S(⊤,⊥))`. -/
+theorem generic_discrete_box_necessity_reflect_time (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration) (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (SnceClause.snce (BotClause.bot : L) top)
+        (BoxClause.box (SnceClause.snce (BotClause.bot : L) top))) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [BoxClause.box_clause]
+  rw [generic_cogap_iff] at h
+  exact fun σ => (generic_cogap_iff M σ t e).mpr h
+
+end CogapBox
+
+section DensityFuture
+variable [BotClause L] [UntlClause L] [DenselyOrdered F.Duration]
+
+/-- DN: `GGφ → Gφ` on a dense order. -/
+theorem generic_density (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e (ImpClause.imp (allFuture (allFuture φ)) (allFuture φ)) := by
+  rw [ImpClause.imp_clause]
+  intro h_GG
+  rw [allFuture_iff] at h_GG
+  rw [allFuture_iff]
+  intro s hts
+  obtain ⟨r, htr, hrs⟩ := exists_between hts
+  exact (allFuture_iff M τ r e φ).mp (h_GG r htr) s hrs
+
+/-- The dense indicator: `¬U(⊤,⊥)`. A dense order has no gap. -/
+theorem generic_dense_indicator (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e (neg (UntlClause.untl (BotClause.bot : L) top)) := by
+  rw [neg_iff, generic_gap_iff]
+  rintro ⟨s, hts, hguard⟩
+  obtain ⟨r, htr, hrs⟩ := exists_between hts
+  exact hguard r htr hrs
+
+end DensityFuture
+
+section DensityPast
+variable [BotClause L] [SnceClause L] [DenselyOrdered F.Duration]
+
+/-- The temporal dual of `generic_density`: `HHφ → Hφ`. There is no `density_past` schema, so this
+dual is named here, mirroring `Metalogic/Soundness.lean`'s `density_reflect_time_valid`. -/
+theorem generic_density_reflect_time (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e (ImpClause.imp (allPast (allPast φ)) (allPast φ)) := by
+  rw [ImpClause.imp_clause]
+  intro h_HH
+  rw [allPast_iff] at h_HH
+  rw [allPast_iff]
+  intro s hst
+  obtain ⟨r, hsr, hrt⟩ := exists_between hst
+  exact (allPast_iff M τ r e φ).mp (h_HH r hrt) s hsr
+
+/-- The temporal dual of the dense indicator: `¬S(⊤,⊥)`. -/
+theorem generic_dense_indicator_reflect_time (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration) (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e (neg (SnceClause.snce (BotClause.bot : L) top)) := by
+  rw [neg_iff, generic_cogap_iff]
+  rintro ⟨s, hst, hguard⟩
+  obtain ⟨r, hsr, hrt⟩ := exists_between hst
+  exact hguard r hsr hrt
+
+end DensityPast
+
+section PriorZFuture
+variable [BotClause L] [UntlClause L] [SuccOrder F.Duration] [IsSuccArchimedean F.Duration]
+
+/-- Prior-UZ: the nearest `φ`-point above `t` witnesses `U(¬φ, φ)`. -/
+theorem generic_prior_UZ (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (someFuture φ) (UntlClause.untl (neg φ) φ)) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [someFuture_iff] at h
+  rw [UntlClause.untl_clause]
+  obtain ⟨s, hts, hs⟩ := h
+  obtain ⟨u, htu, hu, hmin⟩ :=
+    exists_nearest_gt (P := fun x => TruthEnv.T M τ x e φ) hts hs
+  exact ⟨u, htu, hu, fun r h1 h2 => (neg_iff M τ r e φ).mpr (hmin r h1 h2)⟩
+
+/-- Z1, through `forall_gt_of_succ_step`. -/
+theorem generic_z1 (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (allFuture (ImpClause.imp (allFuture φ) φ))
+        (ImpClause.imp (someFuture (allFuture φ)) (allFuture φ))) := by
+  rw [ImpClause.imp_clause]
+  intro h_GGpIp
+  rw [ImpClause.imp_clause]
+  intro h_ex
+  rw [allFuture_iff] at h_GGpIp
+  rw [someFuture_iff] at h_ex
+  rw [allFuture_iff]
+  obtain ⟨s₀, hts₀, hs₀⟩ := h_ex
+  refine forall_gt_of_succ_step (P := fun x => TruthEnv.T M τ x e φ) ?_ hts₀ ?_
+  · intro u htu hu
+    exact ((ImpClause.imp_clause M τ u e (allFuture φ) φ).mp (h_GGpIp u htu))
+      ((allFuture_iff M τ u e φ).mpr hu)
+  · exact (allFuture_iff M τ s₀ e φ).mp hs₀
+
+end PriorZFuture
+
+section PriorZPast
+variable [BotClause L] [SnceClause L] [PredOrder F.Duration] [IsPredArchimedean F.Duration]
+
+/-- Prior-SZ, the past dual — through `exists_nearest_lt`, which is itself `exists_nearest_gt`
+at `Dᵒᵈ`. The dualisation is of the *carrier*, never of the formula. -/
+theorem generic_prior_SZ (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (somePast φ) (SnceClause.snce (neg φ) φ)) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [somePast_iff] at h
+  rw [SnceClause.snce_clause]
+  obtain ⟨s, hst, hs⟩ := h
+  obtain ⟨u, hut, hu, hmin⟩ :=
+    exists_nearest_lt (P := fun x => TruthEnv.T M τ x e φ) hst hs
+  exact ⟨u, hut, hu, fun r h1 h2 => (neg_iff M τ r e φ).mpr (hmin r h1 h2)⟩
+
+/-- The temporal dual of `generic_z1`, through `forall_lt_of_pred_step`. Z1 has no past twin among
+the schemata, so this dual is named here — mirroring `SoundnessLemmas.z1_past_valid`. -/
+theorem generic_z1_reflect_time (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (allPast (ImpClause.imp (allPast φ) φ))
+        (ImpClause.imp (somePast (allPast φ)) (allPast φ))) := by
+  rw [ImpClause.imp_clause]
+  intro h_HHpIp
+  rw [ImpClause.imp_clause]
+  intro h_ex
+  rw [allPast_iff] at h_HHpIp
+  rw [somePast_iff] at h_ex
+  rw [allPast_iff]
+  obtain ⟨s₀, hs₀t, hs₀⟩ := h_ex
+  refine forall_lt_of_pred_step (P := fun x => TruthEnv.T M τ x e φ) ?_ hs₀t ?_
+  · intro u hut hu
+    exact ((ImpClause.imp_clause M τ u e (allPast φ) φ).mp (h_HHpIp u hut))
+      ((allPast_iff M τ u e φ).mpr hu)
+  · exact (allPast_iff M τ s₀ e φ).mp hs₀
+
+end PriorZPast
 
 end FormalSystem.Metalogic.SoundnessLemmas
