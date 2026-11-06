@@ -524,30 +524,30 @@ and segment cases closed outright.
 
 ---
 
-### Phase 7: Duration-minimal selection and the headline theorems [NOT STARTED]
+### Phase 7: Duration-minimal selection and the headline theorems [COMPLETED]
 
 **Goal**: `saturation_of_orientedForest` and `saturation_of_orientedForest'`, sorry-free.
 
 **Tasks**:
 
-- [ ] Define the duration minimum as `min {n | ∃ a, Fib R a n ∈ S}` — over **all**
+- [x] Define the duration minimum as `min {n | ∃ a, Fib R a n ∈ S}` — over **all**
       representations of **all** members, never over one chosen representation per member — and
       obtain its witness `(a_m, r_m)` with `F_m = Fib R a_m r_m`.
-- [ ] For an arbitrary member `F_i`, take directedness' member `F' = Fib R a' n' ⊆ F_m ∩ F_i`,
+- [x] For an arbitrary member `F_i`, take directedness' member `F' = Fib R a' n' ⊆ F_m ∩ F_i`,
       pick `x ∈ F'`, and apply `exists_merge` to the walks `a_m → x` (length `r_m`) and
       `a' → x` (length `n'`), obtaining `c, k, l, j` with `k + j = r_m` and `l + j = n'`.
-- [ ] Prove `Fib R c j ⊆ F'` by composition (`iter_add`); this direction needs no forest input.
-- [ ] Prove `F' ⊆ Fib R c j` — the independence claim — by applying `exists_merge` to
+- [x] Prove `Fib R c j ⊆ F'` by composition (`iter_add`); this direction needs no forest input.
+- [x] Prove `F' ⊆ Fib R c j` — the independence claim — by applying `exists_merge` to
       `(a_m, a', y)` for each `y ∈ F'` and identifying its merge point with `c` via
       `merge_unique`.
-- [ ] Conclude: `(c, j)` represents `F'` with duration `j = r_m - k`, so minimality forces
+- [x] Conclude: `(c, j)` represents `F'` with duration `j = r_m - k`, so minimality forces
       `k = 0`, hence `c = a_m` and `F' = F_m`, hence `F_m ⊆ F_i`; `F_m` is `⊆`-least and
       `TaskFrame.sInter_nonempty_of_directed_of_minimal` closes the goal.
-- [ ] Land `saturation_of_orientedForest` at the pinned signature.
-- [ ] Land `saturation_of_orientedForest'` at the pinned signature, and record in its docstring
+- [x] Land `saturation_of_orientedForest` at the pinned signature.
+- [x] Land `saturation_of_orientedForest'` at the pinned signature, and record in its docstring
       that `ofStepRel_of_nonneg`/`ofStepRel_of_nonpos` discharge `hgen` for `ofStepRel` itself, so
       the primed variant is for consumers whose relation is only *equal* to `ofStepRel E`.
-- [ ] Add the module docstring's step map: which declaration discharges which of report 03
+- [x] Add the module docstring's step map: which declaration discharges which of report 03
       section 1.2's five steps.
 
 **Timing**: 2 hours

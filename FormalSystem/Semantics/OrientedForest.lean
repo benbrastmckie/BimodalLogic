@@ -717,4 +717,164 @@ theorem sInter_nonempty_of_mixed_sign_fibres {R : W → ℤ → W → Prop} {E :
   exact seg_subsingleton_of_gen hF hgen w v hx (by omega)
     (hmemSeg p (hS'sub hp)) (hmemSeg q (hS'sub hq))
 
+/-! ## Duration-minimal selection and the headline theorems -/
+
+/--
+**The all-forward case — report 03 section 1.2's steps 4 and 5 assembled.**
+
+A `⊇`-directed family of nonempty sets, each of which is a *forward* `E`-fibre
+`{u | iter E n a u}`, has nonempty intersection.
+
+Stated in `iter` vocabulary rather than against a task relation, precisely so that the
+all-backward case is this same lemma at `Function.swap E` (`isOrientedForest_swap`, `iter_swap`).
+
+**The duration minimum ranges over all representations of all members** — over
+`{n | ∃ a, {u | iter E n a u} ∈ S}` — never over one chosen representation per member. The
+distinction is not cosmetic: a member can carry two representations of different durations (the
+research report records a measured oriented forest in which `Fib(a, 3) = Fib(c, 1) ⊊ Fib(a', 2)`),
+so minimising per chosen representation can select the wrong member, and the mistake leaves no
+visible trace. `Tests/BimodalTest/Semantics/OrientedForestSaturationTest.lean` compiles that
+configuration as a fixture.
+
+The selected member is `⊆`-**least**, not merely minimal, which is why
+`TaskFrame.sInter_nonempty_of_directed_of_minimal`'s minimality obligation is discharged by
+ignoring its `T ⊆ Sstar` premise.
+-/
+theorem sInter_nonempty_of_forward_fibres {E : W → W → Prop} (hF : IsOrientedForest E)
+    {S : Set (Set W)} (hd : ∀ S₁ ∈ S, ∀ S₂ ∈ S, ∃ S' ∈ S, S' ⊆ S₁ ∩ S₂)
+    (hSne : S.Nonempty) (hne : ∀ s ∈ S, s.Nonempty)
+    (hfwd : ∀ s ∈ S, ∃ (a : W) (n : ℕ), s = {u | iter E n a u}) :
+    (⋂₀ S).Nonempty := by
+  classical
+  have hNne : ∃ n : ℕ, ∃ a : W, {u | iter E n a u} ∈ S := by
+    obtain ⟨s₀, hs₀⟩ := hSne
+    obtain ⟨a₀, n₀, hs₀eq⟩ := hfwd s₀ hs₀
+    exact ⟨n₀, a₀, hs₀eq ▸ hs₀⟩
+  obtain ⟨r, hrspec, hrmin⟩ :
+      ∃ r : ℕ, (∃ a : W, {u | iter E r a u} ∈ S) ∧
+        ∀ m : ℕ, (∃ a : W, {u | iter E m a u} ∈ S) → r ≤ m :=
+    ⟨Nat.find hNne, Nat.find_spec hNne, fun _ hm => Nat.find_le hm⟩
+  obtain ⟨am, hFm⟩ := hrspec
+  refine TaskFrame.sInter_nonempty_of_directed_of_minimal hd hne hFm ?_
+  intro T hT _
+  obtain ⟨F', hF'mem, hF'sub⟩ := hd {u | iter E r am u} hFm T hT
+  obtain ⟨a', n', hF'eq⟩ := hfwd F' hF'mem
+  have hn' : r ≤ n' := hrmin n' ⟨a', hF'eq ▸ hF'mem⟩
+  obtain ⟨x, hxF'⟩ := hne F' hF'mem
+  have hxn : iter E n' a' x := by rw [hF'eq] at hxF'; exact hxF'
+  have hxr : iter E r am x := (hF'sub hxF').1
+  obtain ⟨c, k, l, j, hkc, hlc, hjc, hkj, hlj, hdisj⟩ := exists_merge r n' am a' x hxr hxn
+  have hk0 : k = 0 := by
+    rcases hdisj with h | h | ⟨kk, ll, u₁, u₂, hkeq, hleq, hne₁₂, hEu₁, hEu₂, hau₁, hbu₂⟩
+    · exact h
+    · -- `l = 0` makes `j = n'`, and `k + n' = r ≤ n'` forces `k = 0`
+      omega
+    · -- the divergent case: the independence claim exhibits a member of duration `j < r`
+      exfalso
+      have hsub1 : {u | iter E j c u} ⊆ F' := by
+        intro y hy
+        rw [hF'eq]
+        have hcomp : iter E (l + j) a' y := (iter_add E l j a' y).mpr ⟨c, hlc, hy⟩
+        rw [hlj] at hcomp
+        exact hcomp
+      have hsub2 : F' ⊆ {u | iter E j c u} := by
+        intro y hy
+        have hyn : iter E n' a' y := by rw [hF'eq] at hy; exact hy
+        have hyr : iter E r am y := (hF'sub hy).1
+        obtain ⟨c₂, k₂, l₂, j₂, hk₂c, hl₂c, hj₂c, hk₂j, hl₂j, hdisj₂⟩ :=
+          exists_merge r n' am a' y hyr hyn
+        have hcontra : ∀ m : ℕ, iter E m a' am → False := fun m hreach =>
+          not_divergent_of_reach hF hreach hau₁ hEu₁ hbu₂ hEu₂ hne₁₂
+        rcases hdisj₂ with h₂ | h₂ |
+          ⟨kk₂, ll₂, v₁, v₂, hk₂eq, hl₂eq, hnev, hEv₁, hEv₂, hav₁, hbv₂⟩
+        · subst h₂
+          have hamc : am = c₂ := (iter_zero E am c₂).mp hk₂c
+          rw [← hamc] at hl₂c
+          exact (hcontra l₂ hl₂c).elim
+        · subst h₂
+          have hk₂0 : k₂ = 0 := by omega
+          subst hk₂0
+          have hamc : am = c₂ := (iter_zero E am c₂).mp hk₂c
+          have ha'c : a' = c₂ := (iter_zero E a' c₂).mp hl₂c
+          exact (hcontra 0 ((iter_zero E a' am).mpr (by rw [ha'c, ← hamc]))).elim
+        · have hcc : c = c₂ :=
+            mergePoint_unique hF hau₁ hEu₁ hbu₂ hEu₂ hne₁₂ hav₁ hEv₁ hbv₂ hEv₂ hnev
+          have h1 : iter E (kk + 1) am c := (iter_succ E kk am c).mpr ⟨u₁, hau₁, hEu₁⟩
+          have h2 : iter E (kk₂ + 1) am c := by
+            rw [hcc]
+            exact (iter_succ E kk₂ am c₂).mpr ⟨v₁, hav₁, hEv₁⟩
+          have hlen : kk + 1 = kk₂ + 1 := iter_length_unique hF h1 h2
+          have hjj : j = j₂ := by omega
+          rw [← hcc, ← hjj] at hj₂c
+          exact hj₂c
+      have hF'eqc : F' = {u | iter E j c u} := Set.Subset.antisymm hsub2 hsub1
+      have hjle : r ≤ j := hrmin j ⟨c, hF'eqc ▸ hF'mem⟩
+      omega
+  -- `k = 0` identifies `c` with `am` and `j` with `r`, so `F' = Fib am r` and the goal follows
+  subst hk0
+  have hamc : am = c := (iter_zero E am c).mp hkc
+  intro y hy
+  have hyc : iter E r c y := by rw [← hamc]; exact hy
+  have hcomp : iter E (l + r) a' y := (iter_add E l r a' y).mpr ⟨c, hlc, hyc⟩
+  have hlr : l + r = n' := by omega
+  rw [hlr] at hcomp
+  exact (hF'sub (by rw [hF'eq]; exact hcomp)).2
+
+/--
+**The headline theorem, `hgen`-parameterised.** A task relation on `ℤ` generated by an oriented
+forest's one-step relation satisfies the literal `TaskFrame.Saturation` predicate.
+
+`ofStepRel_gen` discharges `hgen` for `ofStepRel E` itself — that is what
+`saturation_of_orientedForest` below does — so this variant costs the headline theorem nothing
+and serves a consumer whose relation is only *equal* to `ofStepRel E` rather than definitionally
+it.
+
+The three reductions above leave exactly two cases, and `isOrientedForest_swap` turns the second
+into the first.
+-/
+theorem saturation_of_orientedForest' {E : W → W → Prop} {R : W → ℤ → W → Prop}
+    (hF : IsOrientedForest E)
+    (hgen : ∀ (n : ℕ) (w u : W),
+      (R w (n : ℤ) u ↔ iter E n w u) ∧ (R w (-(n : ℤ)) u ↔ iter E n u w)) :
+    TaskFrame.Saturation R := by
+  classical
+  intro S hdir hmem
+  obtain ⟨hSne, hd⟩ := hdir
+  have hne : ∀ s ∈ S, s.Nonempty := fun s hs => (hmem s hs).2
+  by_cases hfwd : ∀ s ∈ S, ∃ (a : W) (n : ℕ), s = {u | iter E n a u}
+  · exact sInter_nonempty_of_forward_fibres hF hd hSne hne hfwd
+  by_cases hbwd : ∀ s ∈ S, ∃ (a : W) (n : ℕ), s = {u | iter (Function.swap E) n a u}
+  · exact sInter_nonempty_of_forward_fibres (isOrientedForest_swap hF) hd hSne hne hbwd
+  push Not at hfwd hbwd
+  obtain ⟨s₁, hs₁, hs₁not⟩ := hfwd
+  obtain ⟨s₂, hs₂, hs₂not⟩ := hbwd
+  rcases (hmem s₁ hs₁).1 with ⟨w₁, x₁, hs₁eq⟩ | hseg₁
+  · rcases (hmem s₂ hs₂).1 with ⟨w₂, x₂, hs₂eq⟩ | hseg₂
+    · have hx₁ : x₁ ≤ 0 := by
+        by_contra hx
+        obtain ⟨n, hn⟩ : ∃ n : ℕ, x₁ = (n : ℤ) := ⟨x₁.natAbs, by omega⟩
+        exact hs₁not w₁ n (by rw [hs₁eq, hn, fib_natCast_eq hgen w₁ n])
+      have hx₂ : 0 ≤ x₂ := by
+        by_contra hx
+        obtain ⟨n, hn⟩ : ∃ n : ℕ, x₂ = -(n : ℤ) := ⟨x₂.natAbs, by omega⟩
+        exact hs₂not w₂ n (by rw [hs₂eq, hn, fib_negNatCast_eq hgen w₂ n])
+      exact sInter_nonempty_of_mixed_sign_fibres hF hgen hd hne hs₂ hs₁ hx₂ hx₁ hs₂eq hs₁eq
+    · exact sInter_nonempty_of_segment_or_zero_member hF hgen hd hne hs₂ (Or.inl hseg₂)
+  · exact sInter_nonempty_of_segment_or_zero_member hF hgen hd hne hs₁ (Or.inl hseg₁)
+
+/--
+**Every oriented forest satisfies *Saturation***.
+
+`IsOrientedForest E` is the only hypothesis: no `[Finite W]`, no fibre-shape restriction, and no
+directed-path-uniqueness restatement. The conclusion is the literal `TaskFrame.Saturation`
+predicate at `ofStepRel E` over `ℤ`.
+
+This does **not** change `FrameOver.ofStep`'s existing `saturation` field, which still routes
+through `TaskFrame.saturation_of_finite`; rewiring it is a separate decision with its own blast
+radius.
+-/
+theorem saturation_of_orientedForest {E : W → W → Prop} (hF : IsOrientedForest E) :
+    TaskFrame.Saturation (ofStepRel E) :=
+  saturation_of_orientedForest' hF ofStepRel_gen
+
 end FormalSystem.Semantics
