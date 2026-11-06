@@ -78,10 +78,13 @@ from the reduction only once `hinexpr` is discharged, and discharging it is a pa
   **derived rather than quoted**. The two separating structures have run order type `ℤ` and
   `ω + 1 + ω`, and `DeltaProp` tells them apart. That half is **UNVERIFIED in Lean** and is the
   paper step of record.
-* **`hmarkers` at a particular frame.** It holds at `colourFibre D` for every `D`, because the
-  world histories of that frame are the arbitrary colour functions with a clock offset and the
-  marker future is just another colour function — but this module *states* that rather than
-  compiling it, so `hmarkers` stays a hypothesis of the reduction theorem.
+* **The all-models form of `hmarkers`.** Read literally, the hypothesis of
+  `ofut_not_plusDefinable_of_deltaProp_inexpressible` quantifies over every model of the frame,
+  and in that form it is false everywhere: a valuation making `m` false at every state admits no
+  history carrying the marker future. What is now compiled is the condition at the *intended*
+  valuation — `colourFibre_hmarkers`, at `colourFibre D` under `markerModel D`, consumed by the
+  fixed-model variant `ofut_not_plusDefinable_of_deltaProp_inexpressible_at`. The all-models
+  hypothesis itself is kept as stated and is not discharged here.
 * Any claim that the companion module's `openTruthAt_iff_tr` is literally a positive instance of
   `OfutPlusDefinable`. The two are the same truth-level notion and the cross-reference is
   recorded, but no bridge between them is proved here.
@@ -129,9 +132,19 @@ isolation condition, which is what `DeltaProp` is.
 * `MarkerGadget.deltaProp_of_no_p_between` — the non-vacuity witness for `DeltaProp`.
 * `OfutPlusDefinable` — truth-level L⁺-definability of the whole of L^▷ at a frame.
 * `ofut_not_plusDefinable_of_deltaProp_inexpressible` — the conditional non-definability theorem.
-* `MarkerColour`, `cRel`, `cRel_reflection`, `cRel_comp`, `cRel_serial`, `cRel_zero`,
+* `ofut_not_plusDefinable_of_deltaProp_inexpressible_at` — the same reduction at one fixed model,
+  which is the form a concrete frame can discharge.
+* `MarkerColour`, `cRel`, `cRel_reflection`, `cRel_comp`, `cRel_serial`, `cRel_zero`, `cRel_free`,
   `colourFibre`, `colourFibre_isRegular` — the four-colour clock witness frame, regular over
-  every temporal order.
+  every temporal order, with its colour relation free away from `0`.
+* `markerAtom_ne_dataAtom`, `markerValuation`, `markerModel` — the intended valuation on the
+  witness frame: the first colour bit is `p`, the second is `m`, every other atom is false.
+* `colourFibre.ofColourFun`, `colourFibre.ofColourFun_state` — every colour function is a history
+  of the witness frame, at any clock offset.
+* `colourFibre_hmarkers` — the enough-worlds condition **compiled** at `colourFibre D` under
+  `markerModel D`.
+* `colourFibre_ofut_not_plusDefinable_of_deltaProp_inexpressible` — the reduction at the witness
+  frame with that condition discharged, leaving `hinexpr` its one remaining hypothesis.
 
 ## References
 
@@ -392,10 +405,15 @@ def OfutPlusDefinable (F : TaskFrame) : Prop :=
 Both hypotheses are named for what they are.
 
 `hmarkers` is the frame's **enough-worlds** condition: from any present state with `m` false there
-is a world with the same past carrying the marker future. It holds at `colourFibre D` for every
-temporal order `D`, since that frame's histories are the arbitrary colour functions with a clock
-offset and the marker future is just another colour function — but that is *stated* here, not
-compiled, so it stays a hypothesis.
+is a world with the same past carrying the marker future. As stated here it quantifies over
+*every* model of `F`, and in that form it is false at every frame — a valuation sending
+`markerAtom` to `False` at every state admits no history carrying the marker future at all. What
+holds is the condition at the **intended** valuation: at `colourFibre D`, under `markerModel D`,
+it is compiled below as `colourFibre_hmarkers`, since that frame's histories are the arbitrary
+colour functions with a clock offset and the marker future is just another colour function. The
+form that consumes that discharge is
+`ofut_not_plusDefinable_of_deltaProp_inexpressible_at`, which fixes one model; this theorem's
+all-models hypothesis is strictly stronger and is kept as stated.
 
 `hinexpr` is **the paper step of record**. It was discharged in the research round for the
 permissive frame over a dense, non-Dedekind-complete duration by a collapse argument in the style
@@ -418,6 +436,32 @@ theorem ofut_not_plusDefinable_of_deltaProp_inexpressible
   refine hbad ?_
   rw [PlusTruth.neg_iff, ← htr M τ t (.ofut (ofPlus probe.neg)),
     ofut_neg_probe_iff M τ t hm (hmarkers M τ t hm)]
+  exact (not_not).symm
+
+/-- **The same reduction at one fixed model.** Both hypotheses are stated at a single given `M`,
+which is all the proof ever uses: `hinexpr` hands back a model, and the all-models form of
+`hmarkers` is only ever applied at that one.
+
+This is the form that can actually be discharged at a concrete frame. The all-models `hmarkers`
+of `ofut_not_plusDefinable_of_deltaProp_inexpressible` is strictly stronger and, read literally,
+false at every frame: a valuation sending `markerAtom` to `False` at every state admits no
+history carrying the marker future. What holds at a witness frame is the condition *under the
+intended valuation*, and that is exactly what this variant asks for — see
+`colourFibre_hmarkers`.
+
+Paper: — (formalization-native) -/
+theorem ofut_not_plusDefinable_of_deltaProp_inexpressible_at (M : TaskModel F)
+    (hmarkers : ∀ (τ : WorldHistory F) (t : F.Duration),
+      ¬ holds M τ t markerAtom →
+        ∃ ρ : WorldHistory F, AgreeUpTo τ ρ t ∧ ∀ s, t < s → holds M ρ s markerAtom)
+    (hinexpr : ∀ ψ : PlusFormula, ∃ (τ : WorldHistory F) (t : F.Duration),
+      ¬ holds M τ t markerAtom ∧ ¬ (DeltaProp M τ t ↔ PlusTruthAt M τ t ψ)) :
+    ¬ OfutPlusDefinable F := by
+  rintro ⟨tr, htr⟩
+  obtain ⟨τ, t, hm, hbad⟩ := hinexpr (tr (.ofut (ofPlus probe.neg))).neg
+  refine hbad ?_
+  rw [PlusTruth.neg_iff, ← htr M τ t (.ofut (ofPlus probe.neg)),
+    ofut_neg_probe_iff M τ t hm (hmarkers τ t hm)]
   exact (not_not).symm
 
 /-! ## The witness frame: four colours on a clock, over any temporal order
@@ -489,10 +533,10 @@ theorem cRel_serial : TaskFrame.Serial (cRel (D := D)) :=
 theorem cRel_zero : ∀ w u, cRel (D := D) w 0 u → u = w := fun _ _ h => h rfl
 
 /-- **The witness frame**: four colours on a clock over `D`. Its histories are the arbitrary
-colour functions with a clock offset, so the marker future is just another history and the
-enough-worlds hypothesis `hmarkers` of
-`ofut_not_plusDefinable_of_deltaProp_inexpressible` holds at it — stated rather than compiled
-here. -/
+colour functions with a clock offset (`colourFibre.ofColourFun`), so the marker future is just
+another history and the enough-worlds condition holds at it under the intended valuation
+`markerModel D` — compiled as `colourFibre_hmarkers`, and consumed by
+`ofut_not_plusDefinable_of_deltaProp_inexpressible_at`. -/
 def colourFibre (D : TemporalOrder) : FrameOver D :=
   colourClock (W := MarkerColour) cRel cRel_reflection cRel_comp cRel_serial cRel_zero
 
@@ -509,6 +553,97 @@ Paper: — (formalization-native; the manuscript states no definability question
 modals and supplies no witness frame) -/
 instance colourFibre_isRegular : (colourFibre D).IsRegular :=
   colourClock_isRegular (W := MarkerColour) cRel cRel_reflection cRel_comp cRel_serial cRel_zero
+
+/-! ### The intended valuation, and the enough-worlds condition compiled
+
+`hmarkers` is not a property of a frame alone: it quantifies over models, and at a valuation that
+never makes `m` true it fails at every frame. The condition that *does* hold at `colourFibre` is
+the one at its intended valuation, where the two colour bits are read as the two atoms. That is
+what `markerModel` fixes and `colourFibre_hmarkers` compiles. -/
+
+/-- The two probe atoms are distinct: they are `Atom.mkBase` of distinct string literals. Stated
+as a named `@[simp]` lemma so the valuation's simp set carries it, rather than leaving each proof
+to rediscover it by `decide`. -/
+@[simp] theorem markerAtom_ne_dataAtom : markerAtom ≠ dataAtom := by decide
+
+/-- **The intended valuation** on the four-colour clock: the first colour bit is the data atom
+`p`, the second is the marker atom `m`, and every other atom is false everywhere. The clock
+component is ignored, as it must be — sentence letters denote sets of world states, and the clock
+is not part of a colour. -/
+def markerValuation : MarkerColour × ↑D → Atom → Prop :=
+  fun s a => (a = dataAtom ∧ s.1.1 = true) ∨ (a = markerAtom ∧ s.1.2 = true)
+
+/-- **The intended model** on the witness frame: `colourFibre D` under `markerValuation`. -/
+def markerModel (D : TemporalOrder) : TaskModel (colourFibre D).toTaskFrame :=
+  { valuation := markerValuation }
+
+/-- `cRel` is free at every nonzero duration: its only constraint is at `0`. This is what makes
+every colour function a history (`colourClock.ofFreeColourFun`). -/
+theorem cRel_free (w : MarkerColour) (d : ↑D) (u : MarkerColour) (hd : d ≠ 0) :
+    cRel (D := D) w d u := fun hd0 => absurd hd0 hd
+
+/-- **Every colour function is a history of the witness frame**, at any clock offset:
+`colourClock.ofFreeColourFun` instantiated at `cRel`, whose freeness away from `0` is
+`cRel_free`. -/
+def colourFibre.ofColourFun (f : ↑D → MarkerColour) (c : ↑D) :
+    WorldHistory (colourFibre D).toTaskFrame :=
+  colourClock.ofFreeColourFun (W := MarkerColour) cRel cRel_reflection cRel_comp cRel_serial
+    cRel_zero (fun w d u hd => cRel_free w d u hd) f c
+
+/-- The state of a colour-function history of the witness frame. -/
+@[simp] theorem colourFibre.ofColourFun_state (f : ↑D → MarkerColour) (c t : ↑D) :
+    (colourFibre.ofColourFun f c).state t = (f t, c + t) := rfl
+
+/-- **The enough-worlds condition, compiled at `colourFibre` under the intended valuation.**
+
+Given any history `τ` and time `t` at which `m` is false, the witness is the colour function that
+copies `τ`'s colours up to `t` and, after `t`, keeps `τ`'s data bit but sets the marker bit —
+a colour function like any other, hence a history by `colourFibre.ofColourFun`. Agreement up to
+`t` is the first branch of the `if` together with `colourClock_clock_eq`, which pins the clock
+component of every history of the frame to `(τ.state 0).2 + s`; the marker future is the literal
+`true` in the second branch.
+
+The `¬ holds` hypothesis is named for the shape
+`ofut_not_plusDefinable_of_deltaProp_inexpressible_at` consumes and is not used: the witness
+exists at *every* `(τ, t)` of this frame, marker bit or not, because the marker future is simply
+another colour function. Hence the underscore on its binder.
+
+This is the step `colourFibre`'s docstring states below, now compiled.
+
+Paper: — (formalization-native) -/
+theorem colourFibre_hmarkers (τ : WorldHistory (colourFibre D).toTaskFrame) (t : ↑D)
+    (_hm : ¬ holds (markerModel D) τ t markerAtom) :
+    ∃ ρ : WorldHistory (colourFibre D).toTaskFrame, AgreeUpTo τ ρ t ∧
+      ∀ s, t < s → holds (markerModel D) ρ s markerAtom := by
+  refine ⟨colourFibre.ofColourFun
+      (fun s => if s ≤ t then (τ.state s).1 else ((τ.state s).1.1, true)) (τ.state 0).2,
+    fun s hs => ?_, fun s hts => ?_⟩
+  · have hst : (colourFibre.ofColourFun
+        (fun s => if s ≤ t then (τ.state s).1 else ((τ.state s).1.1, true))
+        (τ.state 0).2).state s = ((τ.state s).1, (τ.state 0).2 + s) := by
+      rw [colourFibre.ofColourFun_state, if_pos hs]
+    rw [hst]
+    exact Prod.ext rfl
+      (colourClock_clock_eq cRel cRel_reflection cRel_comp cRel_serial cRel_zero τ s)
+  · refine Or.inr ⟨rfl, ?_⟩
+    rw [colourFibre.ofColourFun_state, if_neg (not_le.mpr hts)]
+
+/-- **The reduction at the witness frame, with the enough-worlds condition discharged.** The one
+remaining hypothesis is `hinexpr`, the paper step of record: that `DeltaProp` is not
+L⁺-expressible at `colourFibre D` under the intended valuation.
+
+This is *not* an unconditional non-definability verdict. It is the reduction with one of its two
+hypotheses now compiled rather than assumed.
+
+Paper: — (formalization-native) -/
+theorem colourFibre_ofut_not_plusDefinable_of_deltaProp_inexpressible
+    (hinexpr : ∀ ψ : PlusFormula,
+      ∃ (τ : WorldHistory (colourFibre D).toTaskFrame) (t : ↑D),
+        ¬ holds (markerModel D) τ t markerAtom ∧
+          ¬ (DeltaProp (markerModel D) τ t ↔ PlusTruthAt (markerModel D) τ t ψ)) :
+    ¬ OfutPlusDefinable (colourFibre D).toTaskFrame :=
+  ofut_not_plusDefinable_of_deltaProp_inexpressible_at (markerModel D)
+    (fun τ t hm => colourFibre_hmarkers τ t hm) hinexpr
 
 end WitnessFrame
 

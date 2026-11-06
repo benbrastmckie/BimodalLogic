@@ -235,42 +235,48 @@ needed, record the deviation rather than silently adjusting the count.
 
 ---
 
-### Phase 3: `hmarkers` compiled at `colourFibre` [NOT STARTED]
+### Phase 3: `hmarkers` compiled at `colourFibre` [COMPLETED]
 
 **Goal**: Define the intended marker valuation at `colourFibre`, discharge the enough-worlds
 condition at it by applying Phase 2's constructor, and expose a reduction theorem at
 `colourFibre` whose only remaining hypothesis is `hinexpr`.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean` immediately before
+- [x] Re-read `FormalSystem/Metalogic/Independence/OpenFutureUndefinable.lean` immediately before
       editing.
-- [ ] Beside `ofut_not_plusDefinable_of_deltaProp_inexpressible`, in the same `{F : TaskFrame}`
+- [x] Beside `ofut_not_plusDefinable_of_deltaProp_inexpressible`, in the same `{F : TaskFrame}`
       variable scope, add `ofut_not_plusDefinable_of_deltaProp_inexpressible_at`: the fixed-model
       variant whose `hmarkers` and `hinexpr` are both stated at one given `M`. Its proof is the
       existing four-line proof with `M` fixed. Leave the existing theorem untouched.
-- [ ] In `section WitnessFrame`, add `markerAtom_ne_dataAtom` as a `@[simp]` disequality.
-- [ ] Add `markerValuation : MarkerColour × ↑D → Atom → Prop` reading the first bit at
+- [x] In `section WitnessFrame`, add `markerAtom_ne_dataAtom` as a `@[simp]` disequality.
+- [x] Add `markerValuation : MarkerColour × ↑D → Atom → Prop` reading the first bit at
       `dataAtom`, the second at `markerAtom`, and `False` elsewhere, and `markerModel` wrapping
       it as a `TaskModel (colourFibre D).toTaskFrame`.
-- [ ] Add `cRel_free`: `cRel (D := D) w d u` for `d ≠ 0`, immediate from `cRel`'s definition.
-- [ ] Add `colourFibre.ofColourFun` as `colourClock.ofFreeColourFun` instantiated at `cRel`, and
+- [x] Add `cRel_free`: `cRel (D := D) w d u` for `d ≠ 0`, immediate from `cRel`'s definition.
+- [x] Add `colourFibre.ofColourFun` as `colourClock.ofFreeColourFun` instantiated at `cRel`, and
       `@[simp] colourFibre.ofColourFun_state`.
-- [ ] Add `colourFibre_hmarkers`: given `τ` and `t` with `¬ holds (markerModel D) τ t markerAtom`,
+- [x] Add `colourFibre_hmarkers`: given `τ` and `t` with `¬ holds (markerModel D) τ t markerAtom`
+      *(deviation: altered — the hypothesis BINDER is named `_hm`, not `hm`. Its TYPE is exactly
+      as pinned in `## Lean Challenge Statements`, and the proposition proved is unchanged; the
+      hypothesis is genuinely unused, since a marker-future witness exists at every `(τ, t)` of
+      this frame, and Lean's `unusedVariables` linter emitted a `warning:` on `hm` that the
+      phase's own "no warning" criterion forbids. Recorded as a deviation because the plan pins
+      the signature text verbatim.)*,
       take `ρ := colourFibre.ofColourFun (fun s => if s ≤ t then (τ.state s).1
       else ((τ.state s).1.1, true)) ((τ.state 0).2)`. `AgreeUpTo` follows from
       `colourClock_clock_eq` at `colourFibre` plus the `if` branch; the marker-future conjunct is
       the second bit being `true` on the other branch.
-- [ ] Add `colourFibre_ofut_not_plusDefinable_of_deltaProp_inexpressible`, applying
+- [x] Add `colourFibre_ofut_not_plusDefinable_of_deltaProp_inexpressible`, applying
       `ofut_not_plusDefinable_of_deltaProp_inexpressible_at` at `markerModel D` with
       `colourFibre_hmarkers` supplied.
-- [ ] Correct both docstrings per `## Correction Required by This Work`: in
+- [x] Correct both docstrings per `## Correction Required by This Work`: in
       `ofut_not_plusDefinable_of_deltaProp_inexpressible`'s, say that the condition holds at
       `colourFibre D` *under the marker valuation* `markerModel`, now compiled as
       `colourFibre_hmarkers`, and that the all-models form it states is strictly stronger and
       false at a valuation that never makes `m` true; in `colourFibre`'s, strike "stated rather
       than compiled here" and cite `colourFibre_hmarkers`.
-- [ ] Update the module docstring's bullet lists with the new names.
-- [ ] Build the module.
+- [x] Update the module docstring's bullet lists with the new names.
+- [x] Build the module.
 
 **Timing**: 1.5 hours
 
