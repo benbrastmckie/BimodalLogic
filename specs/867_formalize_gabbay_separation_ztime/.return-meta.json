@@ -1,79 +1,57 @@
 {
   "status": "partial",
-  "started_at": "2026-11-05T00:00:00Z",
-  "completed_at": "2026-11-05T01:30:00Z",
   "requires_user_review": true,
-  "review_reason": "Phase 5's decision gate measured 1 of 4 against a criterion of 4 of 4: a Case 5 candidate for GHR Lemma 10.2.3 was derived and survives all three probe models, but Cases 6-8 yielded no candidate, so the plan's primary contingency branch closed Phases 7-13 as [COMPLETED WITH EXCLUSIONS]. The task's headline deliverable, separationOver_ztime, is NOT discharged and no tr row in OpenFutureElimination.lean changed. Phases 1-6 and 14-15 landed sorry-free and gate-green.",
-  "user_decision": {
-    "question": "Continue the GHR separation route, or pivot to the MSO/Rabin decidability route?",
-    "context": "The task description asks for exactly this comparison before committing further effort, and the GHR route now has a precisely located obstruction rather than a hypothetical one: GHR 10.2.3's Cases 6-8 (the same `until` in both arguments of the `since`) have no candidate right-hand side, because their guard-failure condition is an exists-forall over the window below the evaluation point whose re-anchoring retains a forward-looking bounded conjunct that cannot be an S-guard. GHR 10.2.4 consumes all eight cases, so Theorem 10.2.9 and every deliverable resting on it are unreachable without them. The MSO/Rabin route reaches a decidability answer for the open language at .ZTime with no translation at all; if it holds, this task's remaining value is confined to making the definability verdict unconditional and to an executable tr.",
-    "options": [
-      "Continue GHR: a successor dispatch proves the pinned, probed Case 5 candidate in the library (mathematically unblocked, recorded derivation, does not by itself reach 10.2.4), then attacks Cases 6-8 with either a published correct integer-flow form or a measure-carrying device bounding the re-anchoring chain.",
-      "Pivot to MSO/Rabin and leave SeparationZ/ as landed: the four distributivities, the four negation equivalences and 10.2.3's four single-sign cases are independently useful unconditional Z validities, already pinned, indexed and documented as such.",
-      "Do neither for now: the landed subtree is additive and self-consistent, and every documentation surface already states that the separation hypothesis is discharged nowhere."
-    ],
-    "blocking": false
-  },
+  "blocked_phase": 21,
+  "review_reason": "Phase 21 blocked: the plan's uTypeCount measure is invalidated by landed case2Rhs carrying untl types other than untl B A; two repair routes recorded, choosing between them is a planning decision. Also two recorded plan deviations needing review: Phase 16 pinned a third Case 5 candidate after refuting the plan's preferred one, and Phase 20 built the untl-literal normal form in place of general dnf/cnf.",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 0,
+    "vacuous_count": 1,
+    "vacuous_note": "unchanged from the pre-task baseline and outside this task's file set (FormalSystem/Examples/TemporalStructures.lean:495); baseline measured at commit be4809087 as 1",
+    "axiom_count": 14,
+    "axiom_note": "unchanged from the pre-task baseline, measured at commit be4809087 as 14",
     "build_passed": true
+  },
+  "partial_progress": {
+    "stage": "phase_21_blocked",
+    "details": "Phases 16-20 landed sorry-free and gate-green; all eight GHR 10.2.3 cases and GHR 10.2.4 are proved. Phase 21 is BLOCKED on a newly located obstruction in the landed Phase 6 layer. See the plan file's Phase 21 blocker entry.",
+    "phases_completed": 20,
+    "phases_total": 27
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/867_formalize_gabbay_separation_ztime/summaries/01_gabbay-separation-ztime-plusformula-summary.md",
-      "summary": "GHR 10.2.1, 10.2.2 and 10.2.3's four single-sign cases landed over an auxiliary until/since syntax on Z; Phase 5's gate measured 1 of 4 and Phases 7-13 closed with exclusions, so SeparationOver TaskFrame.IsZTime is not discharged."
+      "summary": "All eight GHR 10.2.3 cases and GHR 10.2.4 landed; the two printed-text defects pinned with compiled counterexamples; the new Phase 21 obstruction located with two repair routes."
+    },
+    {
+      "type": "prototype",
+      "path": "specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-reduction.lean",
+      "summary": "Phase 16's gate record: source-quoted reduction DAG, five compiled probe models, the refutation of the two-disjunct Case 5 repair, and the Case 8 non-redundancy model."
     }
   ],
-  "partial_progress": {
-    "stage": "phases_1_to_6_and_14_to_15_landed",
-    "details": "Phases 1-6 landed [COMPLETED] except Phase 5 [COMPLETED WITH EXCLUSIONS] (gate 1 of 4); Phases 7-13 [COMPLETED WITH EXCLUSIONS] under the plan's primary contingency; Phases 14-15 [COMPLETED WITH EXCLUSIONS] (contingency-reduced documentation, scoped gate tier).",
-    "phases_completed": 8,
-    "phases_total": 15
-  },
   "modified_files": [
-    "FormalSystem.lean",
-    "FormalSystem/Metalogic/Expressiveness.lean",
-    "FormalSystem/Metalogic/Expressiveness/README.md",
-    "FormalSystem/Metalogic/Expressiveness/SeparationZ/Distributivity.lean",
-    "FormalSystem/Metalogic/Expressiveness/SeparationZ/Eliminations.lean",
-    "FormalSystem/Metalogic/Expressiveness/SeparationZ/LeafAbstraction.lean",
+    "FormalSystem/Metalogic/Expressiveness/SeparationZ/ElimHard.lean",
     "FormalSystem/Metalogic/Expressiveness/SeparationZ/NegationEquiv.lean",
+    "FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean",
     "FormalSystem/Metalogic/Expressiveness/SeparationZ/README.md",
-    "FormalSystem/Metalogic/Expressiveness/SeparationZ/Syntax.lean",
-    "FormalSystem/Metalogic/README.md",
+    "FormalSystem.lean",
     "FormalSystem/README.md",
+    "FormalSystem/Metalogic/README.md",
     "README.md",
-    "Boneyard/Kamp/KampWeakCanonical/Separation/README.md",
-    "docs/theorem-index.md",
-    "scripts/check-module-invariants.sh",
     "typst/generated/status.typ",
-    "specs/867_formalize_gabbay_separation_ztime/issues.jsonl",
     "specs/867_formalize_gabbay_separation_ztime/plans/01_gabbay-separation-ztime-plusformula.md",
-    "specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-probe.lean",
+    "specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-reduction.lean",
     "specs/867_formalize_gabbay_separation_ztime/summaries/01_gabbay-separation-ztime-plusformula-summary.md",
-    "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-1-handoff-20261105T000000Z.md",
-    "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-2-handoff-20261105T001000Z.md",
-    "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-3-handoff-20261105T002000Z.md",
-    "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-4-handoff-20261105T003000Z.md",
-    "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-5-handoff-20261105T004000Z.md",
-    "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-6-handoff-20261105T005000Z.md",
-    "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-14-handoff-20261105T010000Z.md",
-    "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-15-handoff-20261105T011500Z.md"
+    "specs/867_formalize_gabbay_separation_ztime/issues.jsonl"
   ],
   "metadata": {
-    "session_id": "sess_1793911571_152ebe",
+    "session_id": "sess_1793963301_2c6cc8",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ],
-    "compliance_check": "failed",
-    "compliance_note": "The seven contract declarations of the plan's ## Lean Challenge Statements (sepZ, sepZ_sepClauses, plusTruthAt_sepZ_iff, separationOver_ztime, trZ, openTruthAt_iff_trZ, openValidIn_ztime_iff_trZ) are reported MISSING, which is exactly what Phases 12 and 13's #### Reasoned Exclusions record. No weaker same-named restatement of any of them was landed anywhere: the names do not exist in the tree at all."
+    "dispatch_seq": 12,
+    "orchestrator_mode": true,
+    "compliance_check": "passed",
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
   }
 }

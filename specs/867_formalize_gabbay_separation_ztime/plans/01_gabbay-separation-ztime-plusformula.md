@@ -1647,7 +1647,47 @@ the landed `def` and `theorem` keywords in the module against that list.
 
 ---
 
-### Phase 21: GHR Lemmas 10.2.5 and 10.2.6 [NOT STARTED]
+### Phase 21: GHR Lemmas 10.2.5 and 10.2.6 [BLOCKED]
+
+**BLOCKER** (Phase 21):
+
+- **What failed**: the phase's third and fourth tasks. `uTypeCount`, "the number of distinct
+  maximal `untl` subformulas", cannot carry GHR 10.2.6's induction over the eliminations as they
+  are landed, because Phase 20's `sepSnce` can **increase** it. The strict-decrease lemma the
+  phase asks for is therefore false of the landed layer, not merely unproved.
+- **What was tried**: nothing was edited. The obstruction was found while discharging Phase 20's
+  own conclusion, whose second clause ("`untl` occurs only as `untl B A`") is the same fact and
+  is recorded as that phase's `#### Reasoned Exclusions` row. Phase 20's equivalence and
+  separatedness halves both landed and are green.
+- **Why it's stuck**: `Eliminations.lean`'s landed `case2Rhs` is
+  `(A.neg.and ((allFuture A.neg).and (snce (q.and A.neg) a))).or (case1Rhs a q (A.neg.and B.neg) A.neg)`.
+  That carries two `untl` types beside `untl B A`: `untl A.neg (A.neg.and B.neg)`, from
+  `case1Rhs` applied at transformed parameters, and `untl USForm.top A.neg.neg`, from
+  `allFuture`. GHR's printed Case 2 carries neither, because its third step folds
+  `G¬A ∨ U(¬A∧¬B,¬A)` back into `¬U(A,B)` by Lemma 10.2.2 in reverse; the landed proof omits that
+  fold and leaves the expanded form. `case3Rhs` consumes `case2Rhs`; `case8Rhs` consumes
+  `case2Rhs` at `q := ⊤`; `case6Rhs` and `case7Rhs` consume `case3Rhs` and `case8Rhs`. So three
+  of `sepSnce`'s four constituents carry extra `untl` types, and a type count over the whole
+  formula can rise across an elimination step.
+- **What is needed** — two routes, and the choice is a planning decision, not an implementation
+  one:
+  1. **Repair the layer.** Add a second Case 2 lemma whose right-hand side is GHR's printed
+     three-disjunct form `[S(a, q∧¬A) ∧ ¬A ∧ ¬U(A,B)] ∨ [¬A∧¬B∧S(a,¬A∧q)] ∨
+     S(¬A∧¬B∧q∧S(a,¬A∧q), q)`, which mentions `untl` only as `untl B A`, then re-derive Cases 3,
+     6, 7 and 8 through it. Additive throughout: `usTruth_case2` and `case2Rhs` keep their names,
+     signatures and proofs, and nothing landed is weakened. `uTypeCount` then works as the phase
+     specifies it.
+  2. **Change the measure.** Count `untl` occurrences lying *under a `snce`* rather than distinct
+     `untl` types. Phase 20's `isSeparated_sepSnce` already drives that count to zero for the
+     subformula it rewrites, and the extra types `case2Rhs` introduces all sit in the pure-future
+     part, where they are harmless. This leaves the landed layer untouched but redesigns the
+     measures of Phases 21, 22 and 23, which is why it is not an implementation-time
+     substitution.
+- **Prohibited workarounds**: do NOT use `sorry`, `def X := True`, or any vacuous placeholder for
+  the strict-decrease lemma; do NOT re-impose `IsSeparated` at 10.2.4's input position to make a
+  count work (decision D-f); and do NOT weaken `uTypeCount`'s decrease claim to a non-strict
+  bound, which would not terminate the induction.
+
 
 **Goal**: The `snce`-nesting induction and the `U`-type-count induction, each with its measure
 defined structurally and its strict decrease proved rather than asserted. This reinstates the
