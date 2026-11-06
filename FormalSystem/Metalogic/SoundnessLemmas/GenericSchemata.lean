@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.TruthClauses
 import FormalSystem.Metalogic.SoundnessLemmas.DiscreteOrder
+import FormalSystem.Metalogic.SoundnessLemmas.Separability
 
 /-!
 # The TM⁺ mirror schemata, stated once over the clause interface
@@ -1135,5 +1136,232 @@ theorem generic_z1_reflect_time (M : TaskModel F) (τ : WorldHistory F) (t : F.D
   · exact (allPast_iff M τ s₀ e φ).mp hs₀
 
 end PriorZPast
+
+/-!
+## The Reynolds Dedekind tier
+
+The four order-dependent schemata of `.RTime`. The least-upper-bound property is taken as an
+**explicit hypothesis** `h_lub` rather than a class: `FrameClass.RTime`'s `Sat` is the conjunction
+`IsRegular ∧ IsRTime`, and `IsRTime`'s completeness clause is itself a `Prop`-valued statement
+(`Semantics/FrameProperty.lean` records why it is not a `ConditionallyCompleteLinearOrder`
+instance), so each wrapper passes what its own `sat_intro` already produced.
+
+The order-theoretic content is **not** inlined: `generic_prior_S_gap` derives its greatest lower
+bound through `SoundnessLemmas.exists_isGLB_of_lub`, so the lub hypothesis is used once rather than
+assumed twice, and the two `sep` lemmas consume the whole of `SoundnessLemmas.sep_order` /
+`sep_order_mirror` at `P := {u | TruthEnv.T M τ u e φ}`.
+
+A third ordering trap, after Phase 3's and Phase 5's: `kPlus ψ` is `neg (untl (neg ψ) top)`, so
+`neg_iff` matches a `kPlus` term. `kPlus_iff`/`kMinus_iff` are therefore always applied *before*
+`neg_iff`, never in the same `simp only`.
+-/
+
+section DedekindFuture
+variable [BotClause L] [UntlClause L]
+
+/-- Prior-U, gap form. The least upper bound of the set of times whose whole open past back to
+`t` satisfies `φ` is the gap point. -/
+theorem generic_prior_U_gap (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L)
+    (h_lub : ∀ X : Set F.Duration, X.Nonempty → BddAbove X → ∃ x, IsLUB X x) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (and (UntlClause.untl φ top) (someFuture (neg φ)))
+        (UntlClause.untl φ (or (neg φ) (kPlus (neg φ))))) := by
+  rw [ImpClause.imp_clause]
+  intro h_ant
+  rw [and_iff] at h_ant
+  obtain ⟨h1, h2⟩ := h_ant
+  rw [UntlClause.untl_clause] at h1
+  rw [someFuture_iff] at h2
+  obtain ⟨s0, hts0, -, hp0⟩ := h1
+  obtain ⟨w0, htw0, hnw0⟩ := h2
+  have hnpw0 : ¬ TruthEnv.T M τ w0 e φ := (neg_iff M τ w0 e φ).mp hnw0
+  set A : Set F.Duration :=
+    {u : F.Duration | t < u ∧ ∀ r : F.Duration, t < r → r < u → TruthEnv.T M τ r e φ} with hA
+  have hs0A : s0 ∈ A := ⟨hts0, hp0⟩
+  have hAbdd : BddAbove A := by
+    refine ⟨w0, ?_⟩
+    intro u hu
+    by_contra hvu
+    exact hnpw0 (hu.2 w0 htw0 (lt_of_not_ge hvu))
+  obtain ⟨s, hs⟩ := h_lub A ⟨s0, hs0A⟩ hAbdd
+  have hts : t < s := lt_of_lt_of_le hts0 (hs.1 hs0A)
+  have hguard : ∀ r : F.Duration, t < r → r < s → TruthEnv.T M τ r e φ := by
+    intro r htr hrs
+    obtain ⟨u, huA, hru, -⟩ := hs.exists_between hrs
+    exact huA.2 r htr hru
+  rw [UntlClause.untl_clause]
+  refine ⟨s, hts, ?_, hguard⟩
+  rw [or_iff, kPlus_iff]
+  simp only [neg_iff]
+  by_cases hps : TruthEnv.T M τ s e φ
+  · refine .inr fun w hsw => ?_
+    by_contra hw
+    push Not at hw
+    have hwA : w ∈ A := by
+      refine ⟨lt_trans hts hsw, ?_⟩
+      intro r htr hrw
+      rcases lt_trichotomy r s with h | h | h
+      · exact hguard r htr h
+      · exact h ▸ hps
+      · exact hw r h hrw
+    exact absurd (hs.1 hwA) (not_le_of_gt hsw)
+  · exact .inl hps
+
+end DedekindFuture
+
+section DedekindPast
+variable [BotClause L] [SnceClause L]
+
+/-- Prior-S, gap form: the past dual, through `SoundnessLemmas.exists_isGLB_of_lub`. -/
+theorem generic_prior_S_gap (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L)
+    (h_lub : ∀ X : Set F.Duration, X.Nonempty → BddAbove X → ∃ x, IsLUB X x) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (and (SnceClause.snce φ top) (somePast (neg φ)))
+        (SnceClause.snce φ (or (neg φ) (kMinus (neg φ))))) := by
+  rw [ImpClause.imp_clause]
+  intro h_ant
+  rw [and_iff] at h_ant
+  obtain ⟨h1, h2⟩ := h_ant
+  rw [SnceClause.snce_clause] at h1
+  rw [somePast_iff] at h2
+  obtain ⟨s0, hs0t, -, hp0⟩ := h1
+  obtain ⟨w0, hw0t, hnw0⟩ := h2
+  have hnpw0 : ¬ TruthEnv.T M τ w0 e φ := (neg_iff M τ w0 e φ).mp hnw0
+  set B : Set F.Duration :=
+    {u : F.Duration | u < t ∧ ∀ r : F.Duration, u < r → r < t → TruthEnv.T M τ r e φ} with hB
+  have hs0B : s0 ∈ B := ⟨hs0t, hp0⟩
+  have hBbdd : BddBelow B := by
+    refine ⟨w0, ?_⟩
+    intro u hu
+    by_contra huw
+    exact hnpw0 (hu.2 w0 (lt_of_not_ge huw) hw0t)
+  obtain ⟨s, hs⟩ := exists_isGLB_of_lub h_lub ⟨s0, hs0B⟩ hBbdd
+  have hst : s < t := lt_of_le_of_lt (hs.1 hs0B) hs0t
+  have hguard : ∀ r : F.Duration, s < r → r < t → TruthEnv.T M τ r e φ := by
+    intro r hsr hrt
+    obtain ⟨u, huB, -, hur⟩ := hs.exists_between hsr
+    exact huB.2 r hur hrt
+  rw [SnceClause.snce_clause]
+  refine ⟨s, hst, ?_, hguard⟩
+  rw [or_iff, kMinus_iff]
+  simp only [neg_iff]
+  by_cases hps : TruthEnv.T M τ s e φ
+  · refine .inr fun w hws => ?_
+    by_contra hw
+    push Not at hw
+    have hwB : w ∈ B := by
+      refine ⟨lt_trans hws hst, ?_⟩
+      intro r hwr hrt
+      rcases lt_trichotomy r s with h | h | h
+      · exact hw r hwr h
+      · exact h ▸ hps
+      · exact hguard r h hrt
+    exact absurd (hs.1 hwB) (not_le_of_gt hws)
+  · exact .inl hps
+
+end DedekindPast
+
+section Sep
+variable [BotClause L] [UntlClause L] [SnceClause L] [DenselyOrdered F.Duration]
+
+/-- **Sep.** The order-theoretic core is `SoundnessLemmas.sep_order`, consumed unchanged at
+`P := {u | TruthEnv.T M τ u e φ}`; nothing about any object language enters it.
+
+Stating this over the clause interface is a genuine simplification of the L⋆ and L^▷
+transcriptions as well as a unification of them: both of those unfold their whole formula
+language to the raw truth recursion (`simp only [StarTruthAt, StarFormula.and, …]`) in order to
+reach the shape `sep_order` wants, where `kPlus_iff`/`kMinus_iff` give it directly. -/
+theorem generic_sep (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L)
+    (h_lub : ∀ X : Set F.Duration, X.Nonempty → BddAbove X → ∃ x, IsLUB X x) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp
+        (and (kPlus φ) (neg (kPlus (and φ (UntlClause.untl (neg φ) φ)))))
+        (kPlus (and (kPlus φ) (kMinus φ)))) := by
+  rw [ImpClause.imp_clause]
+  intro h_ant
+  rw [and_iff] at h_ant
+  obtain ⟨h1, h2⟩ := h_ant
+  rw [kPlus_iff] at h1
+  rw [neg_iff, kPlus_iff] at h2
+  push Not at h2
+  obtain ⟨s₁, hts₁, hstart⟩ := h2
+  rw [kPlus_iff]
+  intro s₂ hts₂
+  by_contra hno
+  push Not at hno
+  obtain ⟨Q, hQc, hQd⟩ := exists_countable_order_dense h_lub
+  refine (sep_order h_lub Q hQc hQd {u : F.Duration | TruthEnv.T M τ u e φ} t s₁ s₂
+    hts₁ hts₂ h1 ?_ ?_).elim
+  · rintro u htu hus₁ huP ⟨v, huv, hvP, hfree⟩
+    refine hstart u htu hus₁ ?_
+    rw [and_iff, UntlClause.untl_clause]
+    exact ⟨huP, v, huv, hvP,
+      fun r hur hrv => (neg_iff M τ r e φ).mpr (hfree r hur hrv)⟩
+  · intro u htu hus₂
+    have hAB : ¬ (TruthEnv.T M τ u e (kPlus φ) ∧ TruthEnv.T M τ u e (kMinus φ)) := fun hab =>
+      hno u htu hus₂ ((and_iff M τ u e (kPlus φ) (kMinus φ)).mpr hab)
+    by_cases hR : ∃ v, u < v ∧ ∀ w, u < w → w < v → w ∉ {x : F.Duration | TruthEnv.T M τ x e φ}
+    · exact Or.inl hR
+    · refine Or.inr ?_
+      have ha : TruthEnv.T M τ u e (kPlus φ) := by
+        rw [kPlus_iff]
+        intro s hus
+        by_contra hc
+        push Not at hc
+        exact hR ⟨s, hus, fun w huw hws => hc w huw hws⟩
+      by_contra hns
+      push Not at hns
+      exact hAB ⟨ha, (kMinus_iff M τ u e φ).mpr hns⟩
+
+/-- **The temporal dual of Sep.** Sep has no past twin among the schemata, so the dual is stated
+here; the order core is `SoundnessLemmas.sep_order_mirror`, itself `sep_order` at `Dᵒᵈ`, so the
+nested-interval argument is written once. -/
+theorem generic_sep_reflect_time (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L)
+    (h_lub : ∀ X : Set F.Duration, X.Nonempty → BddAbove X → ∃ x, IsLUB X x) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp
+        (and (kMinus φ) (neg (kMinus (and φ (SnceClause.snce (neg φ) φ)))))
+        (kMinus (and (kMinus φ) (kPlus φ)))) := by
+  rw [ImpClause.imp_clause]
+  intro h_ant
+  rw [and_iff] at h_ant
+  obtain ⟨h1, h2⟩ := h_ant
+  rw [kMinus_iff] at h1
+  rw [neg_iff, kMinus_iff] at h2
+  push Not at h2
+  obtain ⟨s₁, hs₁t, hstart⟩ := h2
+  rw [kMinus_iff]
+  intro s₂ hs₂t
+  by_contra hno
+  push Not at hno
+  obtain ⟨Q, hQc, hQd⟩ := exists_countable_order_dense h_lub
+  refine (sep_order_mirror h_lub Q hQc hQd {u : F.Duration | TruthEnv.T M τ u e φ} t s₁ s₂
+    hs₁t hs₂t h1 ?_ ?_).elim
+  · rintro u hut hs₁u huP ⟨v, hvu, hvP, hfree⟩
+    refine hstart u hs₁u hut ?_
+    rw [and_iff, SnceClause.snce_clause]
+    exact ⟨huP, v, hvu, hvP,
+      fun r hvr hru => (neg_iff M τ r e φ).mpr (hfree r hvr hru)⟩
+  · intro u hut hs₂u
+    have hAB : ¬ (TruthEnv.T M τ u e (kMinus φ) ∧ TruthEnv.T M τ u e (kPlus φ)) := fun hab =>
+      hno u hs₂u hut ((and_iff M τ u e (kMinus φ) (kPlus φ)).mpr hab)
+    by_cases hL : ∃ v, v < u ∧ ∀ w, v < w → w < u → w ∉ {x : F.Duration | TruthEnv.T M τ x e φ}
+    · exact Or.inl hL
+    · refine Or.inr ?_
+      have ha : TruthEnv.T M τ u e (kMinus φ) := by
+        rw [kMinus_iff]
+        intro s hsu
+        by_contra hc
+        push Not at hc
+        exact hL ⟨s, hsu, fun w hsw hwu => hc w hsw hwu⟩
+      by_contra hns
+      push Not at hns
+      exact hAB ⟨ha, (kPlus_iff M τ u e φ).mpr hns⟩
+
+end Sep
 
 end FormalSystem.Metalogic.SoundnessLemmas

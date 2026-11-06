@@ -476,19 +476,19 @@ the section docstring.)*
 
 ---
 
-### Phase 7: The Reynolds Dedekind tier — gap operators and `sep` [NOT STARTED]
+### Phase 7: The Reynolds Dedekind tier — gap operators and `sep` [COMPLETED]
 
 **Goal**: The four hardest order-dependent schemata, consuming
 `SoundnessLemmas/Separability.lean` and Phase 1's `kPlus_iff`/`kMinus_iff`.
 
 **Tasks**:
-- [ ] `generic_prior_U_gap`, `generic_prior_S_gap` — transcribed from
+- [x] `generic_prior_U_gap`, `generic_prior_S_gap` — transcribed from
       `StarAxiomValidity.lean:896`/`:940`, with `starKPlus_iff` replaced by Phase 1's
       `TruthClauses.kPlus_iff`.
-- [ ] `generic_sep`, `generic_sep_reflect_time` — from `:984`/`:1038`, consuming
+- [x] `generic_sep`, `generic_sep_reflect_time` — from `:984`/`:1038`, consuming
       `SoundnessLemmas.sep_order` / `sep_order_mirror` at
       `P := fun x => TruthEnv.T M τ x e φ`.
-- [ ] Add the `Separability` import.
+- [x] Add the `Separability` import.
 
 **Timing**: 2 hours
 
@@ -508,6 +508,12 @@ compiles every file this phase touches or newly depends on.
 - Scoped build green.
 - The `sep` proofs route through `sep_order`/`sep_order_mirror` rather than re-deriving the
   nested-interval argument (`grep -c "sep_order"` in the new section is at least 2).
+  *(measured: 7 occurrences in the file. The `.RTime` least-upper-bound property is an explicit
+  `h_lub` hypothesis rather than a class binder, because `FrameClass.RTime`'s completeness clause
+  is itself `Prop`-valued — `Semantics/FrameProperty.lean` records why it is not a
+  `ConditionallyCompleteLinearOrder` instance — so each wrapper passes what its own `sat_intro`
+  already produced. `generic_sep_reflect_time` states the mirror explicitly rather than a
+  `.reflectTime` of the statement, since the generic layer has no `reflectTime`.)*
 
 ---
 
