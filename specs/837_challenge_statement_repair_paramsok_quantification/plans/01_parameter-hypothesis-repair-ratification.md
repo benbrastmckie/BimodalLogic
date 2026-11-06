@@ -269,38 +269,38 @@ covering check is the `prose` row's diff read-through of the new file.
 
 ---
 
-### Phase 3: Amend the Design of Record and Reproduce It Durably [NOT STARTED]
+### Phase 3: Amend the Design of Record and Reproduce It Durably [COMPLETED]
 
 **Goal**: The design of record carries a dated ratification of the parameter-hypothesis repair in
 each of the three places that narrate the affected statements, and that text survives a fresh
 clone.
 
 **Tasks**:
-- [ ] Re-read `specs/archive/757_lplus_decidability_successor_task_set/followup-scope-spec.md`
+- [x] Re-read `specs/archive/757_lplus_decidability_successor_task_set/followup-scope-spec.md`
       immediately before editing (concurrency discipline), and locate Section A's amendment
       paragraph, Section C's amendment paragraph, and the H4 record's `STATEMENT` block.
-- [ ] Append to **Section C** a dated paragraph in the file's established shape —
+- [x] Append to **Section C** a dated paragraph in the file's established shape —
       `**Amended by** specs/837_challenge_statement_repair_paramsok_quantification/records/01_parameter-hypothesis-repair-ratification.md, 2026-11-05:` —
       recording that `cellAt_const_of_kappa_eq` carries `(hp : ParamsOk step pend lab phi Tc Tn P B)`,
       that the hypothesis is discharged by `paramsOk_params` at the periodicity fixpoint's own four
       outputs, and that `not_paramsOk_allZero` is the companion fact making it load-bearing. The
       section's existing content about the factorization lemma being a COROLLARY stands unchanged.
-- [ ] Append to **Section A** a dated paragraph in the same shape recording that the fibre equation
+- [x] Append to **Section A** a dated paragraph in the same shape recording that the fibre equation
       `ladderRealized` likewise carries the parameter hypothesis, and that the parameters remain
       UNIVERSALLY quantified and constrained rather than existentially quantified — with the reason
       repair (b) was not adopted stated in one sentence.
-- [ ] Append to the **H4** record a dated paragraph in the same shape recording the same two
+- [x] Append to the **H4** record a dated paragraph in the same shape recording the same two
       signature changes against H4's own `STATEMENT` block, and noting that the block's
       `hitOf (truncate B …)` form was already withdrawn by the Section A amendment of 2026-10-18
       and is not revived.
-- [ ] State in each paragraph, in one sentence, that the repair was adopted by task 761's
+- [x] State in each paragraph, in one sentence, that the repair was adopted by task 761's
       `plans/03_ladder-paramsok-parameter-repair.md` revision round and is ratified — not decided —
       here, so Statement Fidelity is satisfied.
-- [ ] Create `specs/837_challenge_statement_repair_paramsok_quantification/records/design-of-record-amendment-2026-11-05.md`
+- [x] Create `specs/837_challenge_statement_repair_paramsok_quantification/records/design-of-record-amendment-2026-11-05.md` *(deviation: altered — written as `design-of-record-amendment-2026-11-06.md`, and all three paragraphs dated 2026-11-06, because the round executed on 2026-11-06 and a dated amendment must carry the date it was written; the plan's 2026-11-05 was its own authoring date)*
       reproducing all three paragraphs VERBATIM, with the same durability preamble the
       2026-10-18 copy carries (`specs/archive/` is gitignored, so the tracked copy exists for
       durability only and the archived file remains the amended record).
-- [ ] Do NOT touch any file under `specs/761_ladder_realization_theorem/`, and do NOT edit
+- [x] Do NOT touch any file under `specs/761_ladder_realization_theorem/`, and do NOT edit
       `specs/state.json`'s 761 entry.
 
 **Timing**: 1 hour
@@ -315,7 +315,7 @@ no executable surface, the `__FULL_SWEEP__` sub-case (a), so the honest covering
 
 **Files to modify**:
 - `specs/archive/757_lplus_decidability_successor_task_set/followup-scope-spec.md` - three dated `**Amended by**` paragraphs appended to Sections A, C and the H4 record
-- `specs/837_challenge_statement_repair_paramsok_quantification/records/design-of-record-amendment-2026-11-05.md` - new; durable tracked reproduction of those three paragraphs
+- `specs/837_challenge_statement_repair_paramsok_quantification/records/design-of-record-amendment-2026-11-06.md` - new; durable tracked reproduction of those three paragraphs (dated for the execution date, not the plan's authoring date)
 
 **Verification**:
 - `grep -c 'Amended by' specs/archive/757_lplus_decidability_successor_task_set/followup-scope-spec.md`
@@ -396,7 +396,7 @@ summarized, and the work is committed with scoped staging.
 
 - `specs/837_challenge_statement_repair_paramsok_quantification/plans/01_parameter-hypothesis-repair-ratification.md` (this plan)
 - `specs/837_challenge_statement_repair_paramsok_quantification/records/01_parameter-hypothesis-repair-ratification.md` (the ratification decision record)
-- `specs/837_challenge_statement_repair_paramsok_quantification/records/design-of-record-amendment-2026-11-05.md` (durable tracked reproduction)
+- `specs/837_challenge_statement_repair_paramsok_quantification/records/design-of-record-amendment-2026-11-06.md` (durable tracked reproduction)
 - `specs/archive/757_lplus_decidability_successor_task_set/followup-scope-spec.md` (amended, Sections A, C and H4; gitignored, hence the copy above)
 - `specs/837_challenge_statement_repair_paramsok_quantification/summaries/01_parameter-hypothesis-repair-ratification-summary.md` (round summary)
 
