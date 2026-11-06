@@ -2886,7 +2886,7 @@
     {
       "project_number": 837,
       "project_name": "challenge_statement_repair_paramsok_quantification",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "The recorded Challenge statements cellAt_const_of_kappa_eq and ladderRealized are REFUTED as written, and the repair is barred by the Statement Fidelity rule, so it needs its own sanctioned revision rather than an in-flight edit.\n\nEstablished by task 761 (the 14th wired probe): both statements universally quantify (Tc Tn P B : Nat) with no hypothesis relating the parameters to the object, the formula, or each other. At Tc = Tn = P = B = 0 the quotient CK 0 0 0 0 = Fin 1 x Fin 1 x Fin 1 x Fin 1 x Fin 1 is a subsingleton, so both assert the cell is constant in (c, n) -- which cell_succ_ne refutes for every c and n at fixed next-deadline. This holds for EVERY kappa and every candidate Dmax, with no property of Dmax used. Compiled unconditional on the four-state tag object, non-vacuity witnessed on both sides, exit 0, axiom profile [propext, Classical.choice, Quot.sound] on all six headline theorems.\n\nThe presentation is not what is wrong; the free-parameter quantification is. The two candidate repairs are (a) add a ParamsOk Tc Tn P B hypothesis carrying (K1)-(K4), or (b) existentially quantify the parameters. Either is a change to a RECORDED Challenge statement, which .claude/rules/plan-compliance.md Statement Fidelity forbids an implement dispatch from making -- which is why task 761 Phases 9 and 13 closed BLOCKED rather than proceeding, correctly. paramsOk_params already discharges ParamsOk at the periodicity fixpoint own outputs, so repair (a) has a landed witness available.\n\nA second, independent inconsistency to settle in the same pass: Phase 8 task list required promoting realizes_of_certAdm_cohBi while its own Scope Hypothesis said certStab and certAdm are deliberately NOT promoted. That theorem is stated in terms of certAdm and its proof destructures certAdm_iff, so the two directives cannot both hold.\n\nDeliverable: a sanctioned decision on which repair to adopt, with the revised statement recorded so a later implement dispatch can land it without violating Statement Fidelity.\n\nEvidence: task 761 issues.jsonl entries iss_1792365111362_wjBgRA (statement-defect, blocking), iss_1792365551644_Swi1MU (environment, blocking), iss_1792364282470_KxINSA (plan-inconsistency, costly).",
       "effort": "medium",
@@ -2894,9 +2894,21 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-11-02T22:19:51Z",
-      "last_updated": "2026-11-06T07:15:22Z",
-      "artifacts": [],
-      "session_id": "sess_1793949238_9d766e_837"
+      "last_updated": "2026-11-06T07:30:03Z",
+      "artifacts": [
+        {
+          "path": "specs/837_challenge_statement_repair_paramsok_quantification/plans/01_parameter-hypothesis-repair-ratification.md",
+          "type": "plan",
+          "summary": "Four-phase records-only plan ratifying the already-landed ParamsOk parameter-hypothesis repair into the design of record and settling the realizes_of_certAdm_cohBi directive conflict."
+        }
+      ],
+      "session_id": "sess_1793949238_9d766e",
+      "file_scope": [
+        "specs/837_challenge_statement_repair_paramsok_quantification/records/01_parameter-hypothesis-repair-ratification.md",
+        "specs/837_challenge_statement_repair_paramsok_quantification/records/design-of-record-amendment-2026-11-05.md",
+        "specs/837_challenge_statement_repair_paramsok_quantification/summaries/01_parameter-hypothesis-repair-ratification-summary.md",
+        "specs/archive/757_lplus_decidability_successor_task_set/followup-scope-spec.md"
+      ]
     },
     {
       "project_number": 838,

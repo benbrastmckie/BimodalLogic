@@ -1,0 +1,39 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/837_challenge_statement_repair_paramsok_quantification/plans/01_parameter-hypothesis-repair-ratification.md",
+      "summary": "Four-phase records-only plan ratifying the already-landed ParamsOk parameter-hypothesis repair into the design of record and settling the realizes_of_certAdm_cohBi directive conflict."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1793949238_9d766e_837",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3.25,
+    "dependency_waves": 4
+  },
+  "user_decision": {
+    "question": "Task 837's stated deliverable -- decide between repair (a) ParamsOk and repair (b) existential quantification -- is already settled: task 761 adopted repair (a) via its plans/03 /revise round, both Challenge statements already carry (hp : ParamsOk step pend lab phi Tc Tn P B) in plan 11's recorded block, and ParamsOk/paramsOk_params/not_paramsOk_allZero are landed and compiled. Only a records gap remains (the design of record carries no ratification). Should 837 run the narrowed records-only round, or be closed as superseded?",
+    "options": [
+      "Run the narrowed records-only round -- ratify the repair into the design of record, add the durable tracked copy, settle the realizes_of_certAdm_cohBi conflict (~3.25h, no Lean work)",
+      "Close task 837 as superseded by task 761's plans/03 revision round and leave the design of record stale"
+    ],
+    "recommended": "Run the narrowed records-only round -- ratify the repair into the design of record, add the durable tracked copy, settle the realizes_of_certAdm_cohBi conflict (~3.25h, no Lean work)",
+    "blocking": false
+  },
+  "memory_candidates": [
+    {
+      "content": "A task spun off from a parent task's 'user decision required' follow-up can be silently superseded by the parent's own later /revise rounds. Before planning such a spin-off, read the parent's CURRENT plan artifact (specs/{parent}/plans/ highest-numbered file and specs/state.json's artifacts list), not the summary that generated the follow-up: a /revise round is the sanctioned route for changing a recorded Lean Challenge statement, so the decision the spin-off was created to make may already have been taken and landed there. In this repository the check is cheap -- grep the parent's current plan's '## Lean Challenge Statements' block for the proposed hypothesis, and grep the library for the proposed definition and its discharge lemma.",
+      "category": "PATTERN",
+      "source_artifact": "specs/837_challenge_statement_repair_paramsok_quantification/plans/01_parameter-hypothesis-repair-ratification.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["spin-off-task", "statement-fidelity", "revise-lineage", "superseded-premise", "lean-challenge-statements", "parent-task-drift"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 837 to execute the plan",
+  "dispatch_seq": 4
+}

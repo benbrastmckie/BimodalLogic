@@ -1,0 +1,27 @@
+{
+  "status": "planned",
+  "task_number": 837,
+  "phase": "plan",
+  "session_id": "sess_1793949238_9d766e_837",
+  "dispatch_seq": 4,
+  "phases_completed": 0,
+  "phases_total": 4,
+  "summary": "Planned task 837, but its premise is superseded: the repair decision it was created to make was already taken. Task 761 adopted repair (a) -- the ParamsOk hypothesis -- via its plans/03 /revise round, and both cellAt_const_of_kappa_eq and ladderRealized already carry (hp : ParamsOk step pend lab phi Tc Tn P B) in plan 11's recorded Lean Challenge Statements block; ParamsOk, paramsOk_params and not_paramsOk_allZero are landed in CounterQuotient.lean. The realizes_of_certAdm_cohBi directive conflict is likewise settled (certStab/certAdm promoted; plan 11 Phase 8 [COMPLETED]). The one real residual is a records gap -- the design of record was last amended 2026-10-18 and carries no ratification of the repair -- so the plan is a four-phase, records-only round (3.25h) that writes no .lean file.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/837_challenge_statement_repair_paramsok_quantification/plans/01_parameter-hypothesis-repair-ratification.md",
+      "summary": "Four-phase records-only plan ratifying the already-landed ParamsOk parameter-hypothesis repair into the design of record and settling the realizes_of_certAdm_cohBi directive conflict."
+    }
+  ],
+  "user_decision": {
+    "question": "Task 837's stated deliverable -- decide between repair (a) ParamsOk and repair (b) existential quantification -- is already settled by task 761's plans/03 revision round, and only a records gap remains. Should 837 run the narrowed records-only round, or be closed as superseded?",
+    "options": [
+      "Run the narrowed records-only round -- ratify the repair into the design of record, add the durable tracked copy, settle the realizes_of_certAdm_cohBi conflict (~3.25h, no Lean work)",
+      "Close task 837 as superseded by task 761's plans/03 revision round and leave the design of record stale"
+    ],
+    "recommended": "Run the narrowed records-only round -- ratify the repair into the design of record, add the durable tracked copy, settle the realizes_of_certAdm_cohBi conflict (~3.25h, no Lean work)",
+    "blocking": false
+  }
+}
