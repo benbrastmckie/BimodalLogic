@@ -2144,7 +2144,7 @@ the `inductive`/`theorem` keywords landed in `Hierarchy.lean` against that list,
 
 ---
 
-### Phase 22.2: GHR Lemma 10.2.5 by Structural Recursion [IN PROGRESS]
+### Phase 22.2: GHR Lemma 10.2.5 by Structural Recursion [COMPLETED]
 
 **Goal**: `sepU` -- the separated form of a single-`untl`-type formula -- with its typedness,
 truth-preservation and separatedness lemmas, which together are GHR Lemma 10.2.5 in full. It is
@@ -2168,43 +2168,43 @@ crossing; an uncrossed transcription typechecks and is wrong.
 
 **Tasks**:
 
-- [ ] Define `sepU (A B : USForm) : USForm → USForm` in `Hierarchy.lean` as a plain `def` by
+- [x] Define `sepU (A B : USForm) : USForm → USForm` in `Hierarchy.lean` as a plain `def` by
       structural recursion: `leaf i ↦ .leaf i`; `bot ↦ .bot`;
       `imp φ ψ ↦ .imp (sepU A B φ) (sepU A B ψ)`; `untl ψ φ ↦ .untl ψ φ`;
       `snce ψ φ ↦ sepSnce A B (sepU A B φ) (sepU A B ψ)`.
-- [ ] Record in the docstring **why the `untl` equation is the identity**: under `IsUSingleType`
+- [x] Record in the docstring **why the `untl` equation is the identity**: under `IsUSingleType`
       the only `untl` node is `untl B A`, so the equation needs no case analysis, no decidable
       equality test and no `sepU A B A = A` lemma, and `IsUTyped.untl` applies to the returned
       node directly. A dispatch that adds a decidable-equality test here has reconstructed a case
       analysis the predicate already supplies.
-- [ ] Record in the same docstring the `snce`/`sepSnce` argument crossing described above, citing
+- [x] Record in the same docstring the `snce`/`sepSnce` argument crossing described above, citing
       `usTruth_sepSnce`'s statement as the authority.
-- [ ] Do **not** add `noncomputable`. `sep`, `sepZ` and `trZ` all consume `sepU` transitively and
+- [x] Do **not** add `noncomputable`. `sep`, `sepZ` and `trZ` all consume `sepU` transitively and
       Phase 26's executability deliverable depends on it; if Lean demands the keyword, the
       construction is wrong and adding it is not the fix.
-- [ ] Prove
+- [x] Prove
       `isUTyped_sepU (hAs : IsSOnly A) (hBs : IsSOnly B) (h : IsUSingleType A B φ) : IsUTyped A B (sepU A B φ)`
       by induction on `h`: `untl` is `IsUTyped.untl`, `imp` is `IsUTyped.imp` at the two induction
       hypotheses, and `snce` is Phase 21's `isUTyped_sepSnce hAs hBs` at them. Prove this
       **before** the equivalence -- it supplies the hypotheses `usTruth_sepSnce` demands, and
       attempting the equivalence first is what makes this phase look harder than it is.
-- [ ] Prove
+- [x] Prove
       `usTruth_sepU (hAs : IsSOnly A) (hBs : IsSOnly B) (h : IsUSingleType A B φ) (v : ℕ → ℤ → Prop) (t : ℤ) : usTruth v t (sepU A B φ) ↔ usTruth v t φ`
       by induction on `h`, chaining `usTruth_snce_congr` at the two induction hypotheses with
       `usTruth_sepSnce` at the `isUTyped_sepU` witnesses from the previous task. The `untl` case
       is `Iff.rfl`.
-- [ ] Prove
+- [x] Prove
       `isSeparated_sepU (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A) (hBu : IsUOnly B) (h : IsUSingleType A B φ) : IsSeparated (sepU A B φ)`
       as the one-line composite `isSeparated_of_isUTyped hAu hBu (isUTyped_sepU hAs hBs h)`. Do
       not re-induct: a second induction here is a sign the typedness lemma was stated too weakly.
-- [ ] Record in the module docstring that these three lemmas are GHR Lemma 10.2.5 in full -- the
+- [x] Record in the module docstring that these three lemmas are GHR Lemma 10.2.5 in full -- the
       equivalence, the separatedness, and its conclusion's "`U` only appears as the formula
       `U(A,B)`" clause -- with the corpus citation, and that the source's own induction on the
       maximum nested-`S` depth above a `U(A,B)` is deliberately not formalized, naming D-h and
       stating in one sentence why the structural recursion reaches the same conclusion.
-- [ ] Where any step must discharge 10.2.4's hypothesis, discharge `IsUTyped`, never
+- [x] Where any step must discharge 10.2.4's hypothesis, discharge `IsUTyped`, never
       `IsSeparated`. D-f is the ruling and this phase does not change it.
-- [ ] Regenerate `typst/generated/status.typ` and run the `typst-sync-check.sh --fix` step; the
+- [x] Regenerate `typst/generated/status.typ` and run the `typst-sync-check.sh --fix` step; the *(deviation: altered — two generated inventory blocks (`README.md`, `FormalSystem/Metalogic/README.md`) also required regeneration via `check-module-invariants.sh --emit-inventory`, because the module line count moved; same collision recorded at Phases 21 and 22.1)*
       declaration counts move even though no module is added.
 
 **Timing**: 1.5 hours

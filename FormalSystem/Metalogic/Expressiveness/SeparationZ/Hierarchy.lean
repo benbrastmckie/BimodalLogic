@@ -40,8 +40,23 @@ verbatim one predicate further out.
 
 `NormalForm.lean:179`'s `isSeparated_of_isUTyped` has **no** counterpart here, and none can
 exist: a `snce` carrying an `untl` argument is not syntactically separated, which is the precise
-content of "strictly weaker". Producing Lemma 10.2.5's separated form is the work of `sepU`, not
-a closure property of this predicate — see the `Hierarchy`-consuming layer for that construction.
+content of "strictly weaker". Producing Lemma 10.2.5's separated form is the work of `sepU`
+below, not a closure property of this predicate.
+
+## Lemma 10.2.5 in full, and the induction that is deliberately not formalized
+
+`sepU`, `usTruth_sepU`, `isSeparated_sepU` and `isUTyped_sepU` are GHR Lemma 10.2.5 in full:
+the equivalence, the separatedness of the equivalent, and its conclusion's remaining clause
+that in the equivalent "`U` only appears as the formula `U(A, B)`".
+
+GHR prove the lemma "by induction on the maximum number k of nested Ss above any U(A, B)". That
+induction is **deliberately not formalized**: `sepU` is a plain structural recursion over
+`USForm`, with no depth measure, no decision procedure for whether a subformula contains an
+`untl`, and no one-level rewriting operator.
+The structural recursion reaches the same conclusion because the two landed halves of
+Lemma 10.2.4 chain at every `snce` node — `usTruth_sepSnce` supplies the equivalence and
+`isUTyped_sepSnce` supplies the typedness the node above then requires as its own hypothesis —
+so the nested-`S` depth never has to be measured, only recursed through.
 
 ## Main Results
 
@@ -49,6 +64,8 @@ a closure property of this predicate — see the `Hierarchy`-consuming layer for
 - `IsUSingleType.ofIsSOnly`, `.neg`, `.and`, `.or`: the Boolean closure lemmas
 - `isUSingleType_of_isUTyped`: the one-way implication from `NormalForm.lean`'s predicate
 - `not_isUTyped_snce_untl`, `isUSingleType_snce_untl`: the strictness, proved at one formula
+- `sepU`: the separated form of a single-`untl`-type formula
+- `isUTyped_sepU`, `usTruth_sepU`, `isSeparated_sepU`: GHR Lemma 10.2.5's three conclusions
 
 ## References
 
@@ -165,5 +182,87 @@ separation theorem and carries no label for one) -/
 theorem isUSingleType_snce_untl {A B : USForm} :
     IsUSingleType A B (USForm.snce USForm.bot (USForm.untl B A)) :=
   IsUSingleType.snce IsUSingleType.bot IsUSingleType.untl
+
+/-! ## GHR Lemma 10.2.5 by structural recursion -/
+
+/--
+The **separated form of a single-`untl`-type formula**: GHR Lemma 10.2.5's construction, by plain
+structural recursion over `USForm`.
+
+**Why the `untl` equation is the identity.** Under `IsUSingleType A B` the only `untl` node is
+`untl B A`, so this equation needs no case analysis, no decidable-equality test and no
+`sepU A B A = A` lemma: `IsUTyped.untl` applies to the returned node directly. A decidable
+equality test here has reconstructed a case analysis the precondition already supplies.
+
+**The `snce`/`sepSnce` argument crossing.** `USForm.snce` takes the **guard first and the event
+second**, while `sepSnce A B C F` takes the **event `C` first and the guard `F` second**, so the
+two arguments cross at the `snce` equation. `usTruth_sepSnce`'s own statement,
+`usTruth v t (USForm.snce F C) ↔ usTruth v t (sepSnce A B C F)`, is the authority on that
+crossing; an uncrossed transcription typechecks and is wrong.
+
+This is a plain `def`, deliberately not `noncomputable`: the downstream ZTime translation's
+executability deliverable consumes it transitively.
+-/
+def sepU (A B : USForm) : USForm → USForm
+  | .leaf i => .leaf i
+  | .bot => .bot
+  | .imp φ ψ => .imp (sepU A B φ) (sepU A B ψ)
+  | .untl ψ φ => .untl ψ φ
+  | .snce ψ φ => sepSnce A B (sepU A B φ) (sepU A B ψ)
+
+/--
+**GHR Lemma 10.2.5**, the typedness half: in the separated equivalent, `untl` occurs only as
+`untl B A`.
+
+This is proved **before** the equivalence, because it supplies the hypotheses `usTruth_sepSnce`
+demands at every `snce` node.
+
+Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.5 (the conclusion's "`U` only appears as the formula
+`U(A, B)`" clause)
+-/
+theorem isUTyped_sepU {A B : USForm} (hAs : IsSOnly A) (hBs : IsSOnly B) {φ : USForm}
+    (h : IsUSingleType A B φ) : IsUTyped A B (sepU A B φ) := by
+  induction h with
+  | leaf i => exact IsUTyped.leaf i
+  | bot => exact IsUTyped.bot
+  | imp _ _ ihφ ihψ => exact IsUTyped.imp ihφ ihψ
+  | untl => exact IsUTyped.untl
+  | snce _ _ ihψ ihφ => exact isUTyped_sepSnce hAs hBs ihφ ihψ
+
+/--
+**GHR Lemma 10.2.5**, the equivalence half: a formula whose only `untl` type is `untl B A` is
+equivalent to its separated form at every leaf valuation and every time.
+
+The `snce` case chains `usTruth_snce_congr` at the two induction hypotheses with
+`usTruth_sepSnce` at the `isUTyped_sepU` witnesses; Lemma 10.2.4 is cited, never re-derived here.
+
+Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.5 (the equivalence)
+-/
+theorem usTruth_sepU {A B : USForm} (hAs : IsSOnly A) (hBs : IsSOnly B) {φ : USForm}
+    (h : IsUSingleType A B φ) (v : ℕ → ℤ → Prop) (t : ℤ) :
+    usTruth v t (sepU A B φ) ↔ usTruth v t φ := by
+  induction h generalizing v t with
+  | leaf i => exact Iff.rfl
+  | bot => exact Iff.rfl
+  | imp _ _ ihφ ihψ =>
+    change (usTruth v t (sepU A B _) → usTruth v t (sepU A B _)) ↔ _
+    exact imp_congr (ihφ v t) (ihψ v t)
+  | untl => exact Iff.rfl
+  | snce hψ hφ ihψ ihφ =>
+    exact ((usTruth_sepSnce (isUTyped_sepU hAs hBs hφ) (isUTyped_sepU hAs hBs hψ) v t).symm).trans
+      (usTruth_snce_congr (fun w r => ihψ w r) (fun w r => ihφ w r) v t)
+
+/--
+**GHR Lemma 10.2.5**, the separatedness half: the equivalent is syntactically separated.
+
+A one-line composite of `isSeparated_of_isUTyped` and `isUTyped_sepU` — not a second induction,
+which would be a sign the typedness lemma had been stated too weakly. The two `IsUOnly`
+hypotheses are GHR's standing "`A` and `B` are wffs built without `S` or `U`".
+
+Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.5 (the conclusion's separatedness)
+-/
+theorem isSeparated_sepU {A B : USForm} (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A)
+    (hBu : IsUOnly B) {φ : USForm} (h : IsUSingleType A B φ) : IsSeparated (sepU A B φ) :=
+  isSeparated_of_isUTyped hAu hBu (isUTyped_sepU hAs hBs h)
 
 end FormalSystem.Metalogic.Expressiveness.SeparationZ

@@ -38,7 +38,7 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 | `Eliminations.lean` | 508 | GHR Lemma 10.2.3 Cases 1-4, the `G`-under-`S` elimination, the `IsSeparated` predicate, the four discharged separatedness theorems, and the printed-form siblings of Cases 2 and 3 |
 | `ElimHard.lean` | 1089 | GHR Lemma 10.2.3's four hard cases — the ones where the same `untl` sits in both arguments of a `snce`. Carries the `ℤ` greatest-witness device, the `case5W`/`case5Core` split, the guard equivalence, Cases 5-8 and their separatedness, the printed-form siblings of Cases 8, 7 and 6, plus the landed reduction DAG |
 | `NormalForm.lean` | 514 | GHR Lemma 10.2.4: the `IsUTyped` precondition with its relationship to `IsSeparated`, the `untl`-literal normal form `substU` with the event and guard splits, the nine right-hand-side typedness witnesses, and `sepSnce` with its equivalence and both discharged halves of the conclusion |
-| `Hierarchy.lean` | 169 | GHR Lemma 10.2.5's input hypothesis `IsUSingleType` — the single `untl` type with nesting unconstrained — with its four Boolean closure lemmas, the one-way implication from `IsUTyped`, and the two witnesses that prove the strictness at `S(⊥, U(A,B))` |
+| `Hierarchy.lean` | 268 | GHR Lemma 10.2.5: its input hypothesis `IsUSingleType` — the single `untl` type with nesting unconstrained — with the four Boolean closure lemmas, the one-way implication from `IsUTyped` and the two witnesses proving the strictness at `S(⊥, U(A,B))`; then the lemma itself, the structural recursion `sepU` with all three of its conclusions |
 
 ## Key Results
 
@@ -48,6 +48,7 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 - `pointwise_ztime_of_pointwise_int` — the carrier bridge from `ℤ` to every regular ℤ-time frame
 - `usTruth_untl_or_event`, `usTruth_untl_and_guard` and their `snce` mirrors — GHR 10.2.1
 - `usTruth_neg_untl`, `usTruth_neg_untl_strong` and their `snce` mirrors — GHR 10.2.2
+- `sepU` with `usTruth_sepU`, `isSeparated_sepU` and `isUTyped_sepU` — GHR 10.2.5 in full
 - `usTruth_case1` … `usTruth_case4` with `isSeparated_case1Rhs` … `isSeparated_case4Rhs` —
   GHR 10.2.3's four single-sign cases, each with its separatedness proved rather than asserted
 - `usTruth_case5` … `usTruth_case8` with `isSeparated_case5Rhs` … `isSeparated_case8Rhs` —
@@ -73,11 +74,14 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 
 ## Not landed
 
-GHR Lemmas 10.2.5-10.2.8 and Theorem 10.2.9, hence also the
+GHR Lemmas 10.2.6-10.2.8 and Theorem 10.2.9, hence also the
 `SeparationOver TaskFrame.IsZTime` discharge and the computable ZTime translation that would rest
-on it. All of Lemma 10.2.3 is landed, and so is Lemma 10.2.4's equivalence and separatedness.
-Lemma 10.2.5's *input hypothesis* is landed as `Hierarchy.lean`'s `IsUSingleType`; the lemma
-itself — the `sepU` construction over it — is not.
+on it. All of Lemma 10.2.3 is landed, and so are Lemma 10.2.4's equivalence and separatedness.
+Lemma 10.2.5 is landed in full: its input hypothesis `IsUSingleType` and the `sepU` construction
+over it, with the equivalence, the separatedness and the single-`untl`-type clause. GHR's own
+induction on the maximum nested-`S` depth above a `U(A,B)` is deliberately not formalized —
+`sepU` is a plain structural recursion, because the two halves of Lemma 10.2.4 chain at every
+`snce` node and so the depth never has to be measured.
 
 Both halves of Lemma 10.2.4's conclusion are landed: `isSeparated_sepSnce` for separatedness
 and `isUTyped_sepSnce` for the single `untl` type, so a downstream induction counting `untl`
