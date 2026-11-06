@@ -52,3 +52,12 @@ defsWithUnderscore:tacticApply_axiom
 defsWithUnderscore:tacticModal_t
 defsWithUnderscore:tacticAssumption_search
 simpNF:BObj.mk.injEq
+
+# The `simpNF` linter adds the lemma's own Prop-valued hypotheses to the simp set so that a
+# conditional simp lemma can apply to itself. `colourClock_taskRel`'s `hR` hypothesis is the
+# reflection condition `R w d u ↔ R u (-d) w`, which as a rewrite loops through `neg_neg`, so the
+# linter aborts on maximum recursion depth without ever reaching a normal-form verdict. The
+# declaration cannot conform: `colourClock` takes its four presentation conditions as explicit
+# arguments, so `hR` is part of the frame term any bridge's left-hand side names, and
+# `isCondition` exempts only instance-implicit binders. Semantics/Frames/TranslationProduct.lean.
+simpNF:colourClock_taskRel
