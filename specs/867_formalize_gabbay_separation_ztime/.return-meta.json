@@ -1,20 +1,48 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-11-06T18:05:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/867_formalize_gabbay_separation_ztime/plans/01_gabbay-separation-ztime-plusformula.md",
-      "summary": "Revised plan: Phase 21's anchors mechanically re-verified against landed sources, and the three unproved measure-decrease obligations of Phases 22-24 decomposed into three parts with the expensive one named."
+      "type": "summary",
+      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/02_type-clean-case2-printed-rederivations-summary.md",
+      "summary": "Phase 21: the printed-form Case 2 and its four Boolean re-derivations, with isUTyped_sepSnce discharging GHR 10.2.4's second conclusion clause."
     }
   ],
-  "next_steps": "Run /orchestrate 867 to implement Phase 21 (the type-clean Case 2 and the four Boolean re-derivations), which is implementable as written.",
+  "completion_data": {
+    "completion_summary": "Phase 21 of 28 landed: GHR's printed Case 2 right-hand side and the printed-form siblings of Cases 3, 6, 7 and 8, all additive and leaving every landed signature intact, plus ten IsUTyped witnesses and isUTyped_sepSnce. GHR Lemma 10.2.4 now carries both halves of its conclusion as proved witnesses, so uTypeCount is well-posed over the snce-side elimination layer and Phase 22's recorded blocker is resolved rather than worked around. SeparationOver TaskFrame.IsZTime remains undischarged; Phases 22-28 are still NOT STARTED.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Expressiveness/SeparationZ/Eliminations.lean",
+    "FormalSystem/Metalogic/Expressiveness/SeparationZ/ElimHard.lean",
+    "FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean",
+    "FormalSystem/Metalogic/Expressiveness/SeparationZ/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "typst/generated/status.typ",
+    "specs/867_formalize_gabbay_separation_ztime/plans/01_gabbay-separation-ztime-plusformula.md",
+    "specs/867_formalize_gabbay_separation_ztime/issues.jsonl",
+    "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-21-handoff-20261106T183827Z.md",
+    "specs/867_formalize_gabbay_separation_ztime/summaries/02_type-clean-case2-printed-rederivations-summary.md",
+    "specs/867_formalize_gabbay_separation_ztime/.return-meta.json",
+    "specs/867_formalize_gabbay_separation_ztime/.orchestrator-handoff.json"
+  ],
+  "next_steps": "Phase 22 (GHR Lemmas 10.2.5 and 10.2.6) needs a plan revision before an implementation dispatch, not another implement cycle: its task list does not decompose 10.2.5's missing precondition predicate (IsUTyped A B is strictly too strong) or the hasUntl decision plus one-level rewriting operator the snceDepthAbove induction requires, and a cheaper structural-recursion route to 10.2.5 now exists that plan-compliance.md forbids an implementation dispatch adopting on its own. See the summary's Follow-ups.",
   "metadata": {
-    "session_id": "sess_1793987703_3d0672_867",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "dispatch_seq": 15,
-    "phase_count": 28,
-    "estimated_hours": 56,
-    "reports_integrated": ["01_gabbay-separation-ztime-plusformula.md"]
+    "session_id": "sess_1793989212_34b9e4",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "dispatch_seq": 16,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "phases_completed": 21,
+    "phases_total": 28
   }
 }
