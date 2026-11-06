@@ -1,22 +1,25 @@
 {
-  "dispatch_seq": 16,
+  "dispatch_seq": 17,
   "status": "implemented",
-  "phases_completed": 21,
-  "phases_total": 28,
-  "summary": "Phase 21 landed and closed clean, exactly at its Scope Hypothesis (5 defs, 20 theorems, one edited definition body, zero new modules) and exactly on decision D-g's route 1. GHR's printed Case 2 right-hand side and the printed-form siblings of Cases 3, 6, 7 and 8 are additive, every landed signature is byte-identical, and sepSnce's rebuilt body keeps its name, signature and both lemma statements. The deliverable Phase 20 excluded is reinstated as the proved witness isUTyped_sepSnce, so GHR Lemma 10.2.4 now carries both halves of its conclusion and uTypeCount is well-posed over the snce-side layer. All gates measured green: full guarded lake build (exit 0, zero errors, 2960 jobs), zero sorry, zero introduced vacuous definitions, no new axiom, check-module-invariants.sh ALL CHECKS PASSED, check-metalogic-cycles.sh exit 0, typst-sync-check.sh --fix PASS. Phase 22 was sized per the plan's own instruction and deliberately not opened: it needs a plan revision first, for the two undecomposed prerequisites and the route question recorded in blockers.",
-  "blockers": [
-    "Phase 22 needs a plan revision before an implementation dispatch. (a) GHR 10.2.5's precondition has no landed predicate: IsUTyped A B is strictly too strong, since its snce constructor demands IsSOnly arguments -- no untl under any snce -- which is exactly the restriction 10.2.5 relaxes, so a third predicate plus its Boolean closure lemmas is forced and the plan's Files-to-modify row does not name it. (b) Inducting on snceDepthAbove needs a hasUntl decision and a one-level rewriting operator applying 10.2.4 at the deepest snce-containing-an-untl, with four lemmas about it; neither is in the task list, and both are prior to the three-part obligation the plan does decompose (which attaches to 10.2.6/10.2.7/10.2.8, not 10.2.5). (c) Route question, for planning not implementation: a structural-recursion route to 10.2.5 needs no measure at all, because usTruth_sepSnce and the now-landed isUTyped_sepSnce compose directly at every snce node, and it is strictly cheaper than the specified measure route. plan-compliance.md forbids an implementation dispatch substituting it silently, so it is reported rather than taken."
-  ],
+  "phases_completed": 23,
+  "phases_total": 30,
+  "summary": "Phases 22.1 and 22.2 landed and closed clean, each exactly at its Scope Hypothesis (8 then 4 declarations, one docstring line in an existing module, zero landed-signature changes). IsUSingleType is GHR Lemma 10.2.5's actual input hypothesis, strictly weaker than the landed IsUTyped with the strictness proved at S(bot, U(A,B)) rather than asserted; sepU with isUTyped_sepU, usTruth_sepU and isSeparated_sepU is Lemma 10.2.5 in full. Decision D-h's structural route held and cost no measure: the two landed halves of Lemma 10.2.4 chain at every snce node, and snceDepthAbove/hasUntl are absent from the SeparationZ subtree, which is the ruling's own observable consequence. All gates measured green: full unscoped guarded lake build exit 0 with zero errors over 2961 jobs and .olean newer than source, zero sorry, zero introduced vacuous definitions, 14 axiom declarations unchanged with every new declaration's profile measured by #print axioms and within the three standard axioms, sepU compiling without noncomputable and depending on no axioms at all, check-module-invariants.sh ALL CHECKS PASSED, check-metalogic-cycles.sh exit 0, typst-sync-check.sh --fix PASS. Phases 22.3 through 28 remain and need no plan revision to open.",
+  "blockers": [],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/02_type-clean-case2-printed-rederivations-summary.md",
-      "summary": "Phase 21 implementation summary: the printed-form Case 2 and its four Boolean re-derivations, the ten IsUTyped witnesses, isUTyped_sepSnce, every measured gate, and the Phase 22 sizing finding."
+      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-5-structural-recursion-summary.md",
+      "summary": "Implementation summary for Phases 22.1 and 22.2: IsUSingleType with its closure lemmas and proved strictness, GHR Lemma 10.2.5 in full via sepU, every measured gate, and the plan-compliance verdict explained."
     },
     {
       "type": "handoff",
-      "path": "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-21-handoff-20261106T183827Z.md",
-      "summary": "Phase 21 phase-end handoff: proof state, what landed, key decisions, the one annotated deviation, and the measured gate results."
+      "path": "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-22.2-handoff-20261106T202829Z.md",
+      "summary": "Phase 22.2 phase-end handoff: proof state, what landed, the two transcription hazards honoured, the one annotated deviation, and the measured gate results."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-22.1-handoff-20261106T193746Z.md",
+      "summary": "Phase 22.1 phase-end handoff: IsUSingleType, the proved strictness, and the two transcription hazards carried forward to 22.2."
     }
   ]
 }
