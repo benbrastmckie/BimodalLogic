@@ -4,12 +4,18 @@ Gabbay's Separation Theorem for the until/since language over discrete (integer)
 route that would discharge the `SeparationOver TaskFrame.IsZTime` hypothesis of
 [`OpenFutureElimination.lean`](../OpenFutureElimination.lean).
 
-**Status: the hypothesis is NOT discharged.** What is landed is GHR Lemmas 10.2.1 and 10.2.2 in
-full, and Lemma 10.2.3's four single-sign cases. Lemma 10.2.3's Cases 5-8 — the cases in which
-the same `untl` occurs in both the event and the guard argument of a `snce` — are not, and
-10.2.4 onwards consume all eight of them, so Theorem 10.2.9 is not reached either. Every `tr`
-row of `OpenFutureElimination.lean` keeps its `SeparationOver` hypothesis exactly as before.
-`Eliminations.lean`'s module docstring states the obstruction.
+**Status: the hypothesis is NOT discharged yet.** What is landed is GHR Lemmas 10.2.1 and
+10.2.2 in full, Lemma 10.2.3's four single-sign cases, and Lemma 10.2.3's Case 5 — the hard case
+in which the same `untl` occurs in both the event and the guard argument of a `snce` and both
+occurrences are positive. Cases 6, 7 and 8 reduce to Case 5 and to the single-sign cases in the
+source's own acyclic order, and 10.2.4 onwards consume all eight, so Theorem 10.2.9 is not
+reached yet. Every `tr` row of `OpenFutureElimination.lean` keeps its `SeparationOver`
+hypothesis exactly as before.
+
+`Eliminations.lean`'s module docstring records an obstruction to Cases 5-8. That record describes
+a route that re-anchors each hard case semantically — which is not the route the source uses, and
+is not the route `ElimHard.lean` takes. `ElimHard.lean`'s own module docstring carries the
+correction, together with the two compiled models that refute GHR's printed Case 5 formula.
 
 The development runs over an auxiliary syntax `USForm` whose leaves are abstract natural-number
 indices evaluated by a leaf valuation `ℕ → ℤ → Prop`, not over `PlusFormula` directly. The
@@ -30,6 +36,7 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 | `Distributivity.lean` | 134 | GHR Lemma 10.2.1: the duality combinator `usTruth_swap_congr` and the four Boolean distributivities (linearity only) |
 | `NegationEquiv.lean` | 166 | GHR Lemma 10.2.2: the `ℤ` least-witness device and the four negation equivalences (first discreteness-dependent step) |
 | `Eliminations.lean` | 357 | GHR Lemma 10.2.3 Cases 1-4, the `G`-under-`S` elimination, the `IsSeparated` predicate, and the four discharged separatedness theorems |
+| `ElimHard.lean` | 461 | GHR Lemma 10.2.3's hard cases — the ones where the same `untl` sits in both arguments of a `snce`. Carries the `ℤ` greatest-witness device, the `case5W`/`case5Core` split, the guard equivalence, Case 5 and its separatedness |
 
 ## Key Results
 
@@ -41,14 +48,17 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 - `usTruth_neg_untl`, `usTruth_neg_untl_strong` and their `snce` mirrors — GHR 10.2.2
 - `usTruth_case1` … `usTruth_case4` with `isSeparated_case1Rhs` … `isSeparated_case4Rhs` —
   GHR 10.2.3's four single-sign cases, each with its separatedness proved rather than asserted
+- `usTruth_case5` with `isSeparated_case5Rhs` — GHR 10.2.3's Case 5, the one hard case proved
+  semantically, with GHR's printed formula refuted over `ℤ` and the repair recorded at the
+  declaration
+- `usTruth_case5_guard_iff` — the guard equivalence the repair needs, the one lemma of this
+  subtree with no counterpart in the source
 
 ## Not landed
 
-GHR Lemma 10.2.3 Cases 5-8, Lemma 10.2.4 and everything downstream of it (10.2.5-10.2.8,
-Theorem 10.2.9), hence also the `SeparationOver TaskFrame.IsZTime` discharge and the computable
-ZTime translation that would rest on it. `Eliminations.lean`'s module docstring records why
-Cases 5-8 resist: their guard-failure condition is an `∃∀` over the window whose re-anchoring
-retains a forward-looking, `t`-bounded conjunct.
+GHR Lemma 10.2.3 Cases 6, 7 and 8, Lemma 10.2.4 and everything downstream of it
+(10.2.5-10.2.8, Theorem 10.2.9), hence also the `SeparationOver TaskFrame.IsZTime` discharge and
+the computable ZTime translation that would rest on it.
 
 ## References
 
@@ -56,4 +66,4 @@ retains a forward-looking, `t`-bounded conjunct.
   and Computational Aspects*, vol. 1, Chapter 10 §10.2 — Lemmas 10.2.1-10.2.8 and
   Theorem 10.2.9 over the integer flow
 
-*Last verified: 2026-11-05*
+*Last verified: 2026-11-06*

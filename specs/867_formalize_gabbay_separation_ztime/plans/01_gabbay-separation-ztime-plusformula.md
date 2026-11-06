@@ -695,7 +695,7 @@ are proved from the candidates Phase 5 pinned.
 - [ ] **Do not** derive any of these four from the junction-depth induction. They are strictly
       upstream of Lemma 10.2.4; closing that loop is the circularity risk this phase order exists
       to prevent.
-- [ ] Append the module's row to `SeparationZ/README.md` and regenerate `FormalSystem.lean`.
+- [x] Append the module's row to `SeparationZ/README.md` and regenerate `FormalSystem.lean`.
 
 **Timing**: 2 hours
 
@@ -1392,29 +1392,29 @@ measurement has not met the gate.
 
 ---
 
-### Phase 17: `ElimHard.lean` -- GHR 10.2.3 Case 5 [NOT STARTED]
+### Phase 17: `ElimHard.lean` -- GHR 10.2.3 Case 5 [COMPLETED]
 
 **Goal**: Case 5 lands alone, from the Phase 16 candidate. It is the only one of the four hard
 cases whose derivation is semantic, and every other reduces to it or to an already-landed case.
 
 **Tasks**:
 
-- [ ] Add `FormalSystem/Metalogic/Expressiveness/SeparationZ/ElimHard.lean`. Define `case5Rhs`
+- [x] Add `FormalSystem/Metalogic/Expressiveness/SeparationZ/ElimHard.lean`. Define `case5Rhs`
       verbatim from the Phase 16 pinned candidate; do not re-derive a different right-hand side
       mid-proof.
-- [ ] Prove `usTruth_case5` at arbitrary `USForm` parameters `a`, `q`, `A`, `B`, in the statement
+- [x] Prove `usTruth_case5` at arbitrary `USForm` parameters `a`, `q`, `A`, `B`, in the statement
       shape and guard-first order `Eliminations.lean`'s `usTruth_case1` through `usTruth_case4`
       already use.
-- [ ] Discharge `isSeparated_case5Rhs` from `IsSOnly`/`IsUOnly` hypotheses on the four parameters,
+- [x] Discharge `isSeparated_case5Rhs` from `IsSOnly`/`IsUOnly` hypotheses on the four parameters,
       exactly as `isSeparated_case1Rhs` does.
-- [ ] Record in the module docstring that the printed Case 5 is **refuted** over `ℤ`, name the
+- [x] Record in the module docstring that the printed Case 5 is **refuted** over `ℤ`, name the
       refuting model (`a(0)`, `A(1)`, `B ≡ ⊥`, `q ∈ {1,2}`, at `t = 3`), state that the landed form
       is the bracketing repair rather than the printed formula, and keep the citation so a later
       reader does not restore the printed form.
-- [ ] **Do not** derive Case 5 from the junction-depth induction, from 10.2.4, or from any later
+- [x] **Do not** derive Case 5 from the junction-depth induction, from 10.2.4, or from any later
       lemma.
 - [ ] Append the module's row to `SeparationZ/README.md` and regenerate `FormalSystem.lean`.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` in this
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` in this
       phase's commit: the pre-commit counts gate fires on every module-adding commit, recorded as
       a gate-collision issue in this task's `issues.jsonl` at dispatch 7.
 
