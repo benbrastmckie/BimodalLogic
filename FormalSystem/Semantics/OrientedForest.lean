@@ -70,13 +70,18 @@ present at this pin:
 | `SimpleGraph.Walk.length_concat` / `support_concat` | length and support bookkeeping |
 | `SimpleGraph.Walk.isPath_iff_nil` / `length_eq_zero_iff` | nil-case handling |
 | `SimpleGraph.Walk.support_append` / `support_reverse` | the merge-point support transfer |
+| `SimpleGraph.Walk.cons_tail_support` | the junction is not in its own support tail |
+| `SimpleGraph.Walk.mem_support_append_iff` | the merge-point support transfer |
 
 **Two deprecation pairs at this pin are live traps.** Reach for
 `isAcyclic_iff_subsingleton_path` / `IsAcyclic.subsingleton_path`, never
 `isAcyclic_iff_path_unique` / `IsAcyclic.path_unique`; and for `Walk.isPath_iff_nil` /
 `Walk.length_eq_zero_iff`, never `Walk.isPath_iff_eq_nil` / `Walk.nil_iff_length_eq`, whose
-statements also changed shape (`p.Nil` in place of `p = nil`). A future Mathlib bump should
-re-check this table rather than the proof bodies.
+statements also changed shape (`p.Nil` in place of `p = nil`). A **third** pair was measured
+at this pin while landing the merge layer: `Walk.support_eq_cons` is deprecated in favour of
+`Walk.cons_tail_support`, whose equation runs in the opposite direction
+(`u :: p.support.tail = p.support`). A future Mathlib bump should re-check this table rather than
+the proof bodies.
 
 ## Main results
 
@@ -376,5 +381,65 @@ theorem not_divergent_of_reach {E : W → W → Prop} (hF : IsOrientedForest E)
   have hlen : l₂ + kk + 1 = ll + 1 := iter_length_unique hF hbc₁ hbc₂
   have hll : l₂ + kk = ll := by omega
   exact hne (pen_unique hF hbu₁ hE₁ (hll ▸ hu₂) hE₂)
+
+/-! ## The concatenated approach walk
+
+At a divergent merge point the two approach walks, concatenated with one reversed, form a
+genuine undirected path between the two sources. That is the construction merge-point uniqueness
+runs `walk_unique` against; the nodup side condition routes through `meet_approach_disjoint`
+rather than through any new acyclicity appeal.
+-/
+
+/--
+At a divergent merge point `c` of `(a, b)`, the walk
+`(pathOf … : Walk a c).append ((pathOf … : Walk b c).reverse) : Walk a b` is an undirected path.
+
+The support-disjointness side condition is exactly `meet_approach_disjoint`: a shared vertex `d`
+of the two approach walks splits both, by `exists_isPath_of_iter`'s between-clause, and is
+therefore `c` — which the reversed walk's own `IsPath` excludes from its support tail.
+-/
+theorem approach_concat_isPath {E : W → W → Prop} (hF : IsOrientedForest E)
+    {a b c u u' : W} {kk ll : ℕ}
+    (hu : iter E kk a u) (hEu : E u c) (hu' : iter E ll b u') (hEu' : E u' c) (hne : u ≠ u')
+    (hac : iter E (kk + 1) a c) (hbc : iter E (ll + 1) b c) :
+    ((pathOf hF hac).append (pathOf hF hbc).reverse).IsPath := by
+  obtain ⟨hp, _, _, hpbtw⟩ := pathOf_spec hF hac
+  obtain ⟨hq, _, _, hqbtw⟩ := pathOf_spec hF hbc
+  have hqr : ((pathOf hF hbc).reverse).IsPath := hq.reverse
+  have hcons : c :: ((pathOf hF hbc).reverse).support.tail
+      = ((pathOf hF hbc).reverse).support := Walk.cons_tail_support _
+  have hnd := hqr.support_nodup
+  rw [← hcons] at hnd
+  obtain ⟨hcnot, hndt⟩ := List.nodup_cons.mp hnd
+  refine Walk.IsPath.mk' ?_
+  rw [Walk.support_append]
+  refine List.Nodup.append hp.support_nodup hndt ?_
+  intro d hd hd'
+  have hdrev : d ∈ ((pathOf hF hbc).reverse).support := by
+    rw [← hcons]; exact List.mem_cons_of_mem _ hd'
+  have hdq : d ∈ (pathOf hF hbc).support := by simpa using hdrev
+  obtain ⟨i, hi, h1, h2⟩ := hpbtw d hd
+  obtain ⟨i', hi', h3, h4⟩ := hqbtw d hdq
+  have hdc : d = c :=
+    meet_approach_disjoint hF hu hEu hu' hEu' hne h1 h2 (by omega) h3 h4 (by omega)
+  exact hcnot (hdc ▸ hd')
+
+/-- The length of the concatenated approach walk: the two approach lengths added. Recorded as a
+named fact rather than re-derived inside a larger proof. -/
+theorem approach_concat_length {E : W → W → Prop} (hF : IsOrientedForest E)
+    {a b c : W} {kk ll : ℕ} (hac : iter E (kk + 1) a c) (hbc : iter E (ll + 1) b c) :
+    ((pathOf hF hac).append (pathOf hF hbc).reverse).length = (kk + 1) + (ll + 1) := by
+  obtain ⟨_, hplen, _⟩ := pathOf_spec hF hac
+  obtain ⟨_, hqlen, _⟩ := pathOf_spec hF hbc
+  rw [Walk.length_append, Walk.length_reverse, hplen, hqlen]
+
+/-- The index of the merge point along the concatenated approach walk, as a named fact beside
+`approach_concat_length`. -/
+theorem approach_concat_getVert {E : W → W → Prop} (hF : IsOrientedForest E)
+    {a b c : W} {kk ll : ℕ} (hac : iter E (kk + 1) a c) (hbc : iter E (ll + 1) b c) :
+    ((pathOf hF hac).append (pathOf hF hbc).reverse).getVert (kk + 1) = c := by
+  obtain ⟨_, hplen, _⟩ := pathOf_spec hF hac
+  rw [Walk.getVert_append, hplen]
+  simp
 
 end FormalSystem.Semantics

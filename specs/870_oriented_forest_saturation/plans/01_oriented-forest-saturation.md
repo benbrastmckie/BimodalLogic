@@ -382,22 +382,22 @@ visible signature changed, covered by
 
 ---
 
-### Phase 4: The concatenated approach walk is a path [NOT STARTED]
+### Phase 4: The concatenated approach walk is a path [COMPLETED]
 
 **Goal**: the internal lemma that turns a divergent merge point into a genuine undirected path
 between the two sources — the one new construction phase 5 needs.
 
 **Tasks**:
 
-- [ ] State the internal helper `approach_concat_isPath`: for a divergent merge point `c` of
+- [x] State the internal helper `approach_concat_isPath`: for a divergent merge point `c` of
       `(a, b)` with approach lengths `kk + 1` and `ll + 1`, the walk
       `(pathOf … : Walk a c).append (pathOf … : Walk b c).reverse : Walk a b` is a path.
-- [ ] Prove the support-disjointness side condition: a shared vertex `d` of the two approach
+- [x] Prove the support-disjointness side condition: a shared vertex `d` of the two approach
       walks splits both by `exists_isPath_of_iter`'s between-clause, and `meet_approach_disjoint`
       forces `d = c`.
-- [ ] Discharge nodup of the concatenated support from `Walk.support_append` plus
+- [x] Discharge nodup of the concatenated support from `Walk.support_append` plus
       `List.Nodup.append` and the previous step.
-- [ ] Record the walk's length (`(kk + 1) + (ll + 1)`) and the index of `c` along it as separate
+- [x] Record the walk's length (`(kk + 1) + (ll + 1)`) and the index of `c` along it as separate
       named facts, so phase 5's `Walk.getVert_append` arithmetic has them to hand rather than
       re-deriving them inside a larger proof.
 
