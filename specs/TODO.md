@@ -1,5 +1,5 @@
 ---
-next_project_number: 889
+next_project_number: 890
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 889
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,873,874,875,876,881,882,886,887 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,873,874,875,876,881,882,886,887,889 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,879,883,885 | 298,428,502,761,770,772,777,785,803,813,827,838,839,858,867,882 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,834,861,888 | 429,497,763,783,823,838,885 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -134,6 +134,7 @@ next_project_number: 889
 867 [PARTIAL] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 881 [RESEARCHED] — Factor the 53 TM-plus mirror schema validity proofs into a...
+889 [NOT STARTED] — Clear the live C16 (env\_linter) gate failure so...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -163,6 +164,45 @@ next_project_number: 889
 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 889. Ladderchain c16 unusedarguments clear
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+- **Parent**: Task 871
+
+**Description**: Clear the live C16 (env_linter) gate failure so `scripts/check-module-invariants.sh` exits 0 again.
+
+MEASURED. `check-module-invariants.sh` exits 1 on C16 alone, for a single `unusedArguments`
+finding at `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136`
+(`mem_cellAt_of_shift_of_hasForwardSlack`, argument 23 `hslk`), which is absent from
+`scripts/nolints.json`. Two independent dispatches hit it, each confirming it predates its own
+base commit, that `LadderChain.lean` was clean in the working tree, and that the finding
+references none of their changed declarations. Both declined to run `lake exe runLinter --update`
+because that grandfathers the finding rather than resolving it, and reported it instead. Until the
+owning module resolves it, this gate exits 1 for every task that runs it, so every Lean task must
+either narrow its verification tier or carry a Reasoned Exclusions row for a failure it did not
+cause.
+
+EVIDENCE: issue-log entry {task 871, entry_id iss_1793929097512_cRWu2i}. Classified by
+/orchestrate's conclusion stage to channel (c) (follow-up task); the cited entry records
+`suggested_channel: null`, so no hint was overridden.
+
+DECIDE AND RECORD, stating the rejected option on its own merits: whether `hslk` should be
+removed from `mem_cellAt_of_shift_of_hasForwardSlack`'s signature, consumed by its proof, or
+exempted by a hand-inserted row in `scripts/nolints.json`'s own existing format. Do NOT run
+`lake exe runLinter --update`: it rewrites the whole ledger in a different serialization instead of
+adding one row.
+
+RELATION, read before writing: task 840 records the plan-authoring GUIDANCE for this class of
+collision (that the `--update` remedy is a wholesale ledger rewrite, and what the narrow route is).
+This record is the concrete repair of one live finding in a Lean source file, not a second copy of
+that guidance -- read 840 first so the two do not restate each other, and do not write into its
+file.
+
+---
 
 ### 888. Settle the lean plan Goals-block harvest contract: every backticked token versus the documented identifier
 - **Status**: [NOT STARTED]

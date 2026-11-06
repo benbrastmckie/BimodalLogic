@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 889,
+  "next_project_number": 890,
   "active_projects": [
     {
       "project_number": 880,
@@ -13560,6 +13560,319 @@
         },
         "scope_blind_collapsed": 450,
         "degradations_collapsed": 450
+      }
+    },
+    {
+      "project_number": 889,
+      "project_name": "ladderchain_c16_unusedarguments_clear",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Clear the live C16 (env_linter) gate failure so `scripts/check-module-invariants.sh` exits 0 again.\n\nMEASURED. `check-module-invariants.sh` exits 1 on C16 alone, for a single `unusedArguments`\nfinding at `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136`\n(`mem_cellAt_of_shift_of_hasForwardSlack`, argument 23 `hslk`), which is absent from\n`scripts/nolints.json`. Two independent dispatches hit it, each confirming it predates its own\nbase commit, that `LadderChain.lean` was clean in the working tree, and that the finding\nreferences none of their changed declarations. Both declined to run `lake exe runLinter --update`\nbecause that grandfathers the finding rather than resolving it, and reported it instead. Until the\nowning module resolves it, this gate exits 1 for every task that runs it, so every Lean task must\neither narrow its verification tier or carry a Reasoned Exclusions row for a failure it did not\ncause.\n\nEVIDENCE: issue-log entry {task 871, entry_id iss_1793929097512_cRWu2i}. Classified by\n/orchestrate's conclusion stage to channel (c) (follow-up task); the cited entry records\n`suggested_channel: null`, so no hint was overridden.\n\nDECIDE AND RECORD, stating the rejected option on its own merits: whether `hslk` should be\nremoved from `mem_cellAt_of_shift_of_hasForwardSlack`'s signature, consumed by its proof, or\nexempted by a hand-inserted row in `scripts/nolints.json`'s own existing format. Do NOT run\n`lake exe runLinter --update`: it rewrites the whole ledger in a different serialization instead of\nadding one row.\n\nRELATION, read before writing: task 840 records the plan-authoring GUIDANCE for this class of\ncollision (that the `--update` remedy is a wholesale ledger rewrite, and what the narrow route is).\nThis record is the concrete repair of one live finding in a Lean source file, not a second copy of\nthat guidance -- read 840 first so the two do not restate each other, and do not write into its\nfile.",
+      "effort": "small",
+      "parent_task": 871,
+      "topic": "metalogic",
+      "dependencies": [],
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+        "scripts/nolints.json"
+      ],
+      "created": "2026-11-06T03:15:15Z",
+      "last_updated": "2026-11-06T03:15:15Z",
+      "artifacts": [],
+      "audit_verdict": {
+        "proposal": {
+          "id": "ladderchain_c16_unusedarguments_clear",
+          "project_number": null,
+          "title": "Clear the pre-existing C16 unusedArguments finding on LadderChain.lean"
+        },
+        "verdicts": [
+          {
+            "verdict": "overlaps-open",
+            "project_number": 761,
+            "project_name": "ladder_realization_theorem",
+            "shared_paths": [
+              "scripts/nolints.json"
+            ],
+            "mechanical_class": "overlap",
+            "semantic_score": 0.25
+          },
+          {
+            "verdict": "overlaps-open",
+            "project_number": 177,
+            "project_name": "update_readme_and_module_docstrings",
+            "shared_paths": [
+              "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean"
+            ],
+            "mechanical_class": "overlap",
+            "semantic_score": 0.22727272727272727
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 785,
+            "project_name": "lean_plan_gate_collision_authoring_guidance",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.5454545454545454
+          },
+          {
+            "verdict": "overlaps-open",
+            "project_number": 838,
+            "project_name": "two_sided_open_core_pin_free_pigeonhole",
+            "shared_paths": [
+              "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean"
+            ],
+            "mechanical_class": "overlap",
+            "semantic_score": 0.1590909090909091
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 839,
+            "project_name": "plan_contingency_file_scope_and_containment_drop",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4772727272727273
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 869,
+            "project_name": "open_modal_invariance_ray_agreement_lifting",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4090909090909091
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 768,
+            "project_name": "lean_challenge_snapshot_chunk_and_unicode_defects",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4090909090909091
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 844,
+            "project_name": "reanchored_deletion_half_depth_zero_cell",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.29545454545454547
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 849,
+            "project_name": "forward_slack_discharge_and_exact_shift_iteration",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.3409090909090909
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 850,
+            "project_name": "upfirst_exact_shift_copy_boundary_types",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.4772727272727273
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 852,
+            "project_name": "model_level_pumping_lemma_for_tpof_along_ladder_path",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.11363636363636363
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 836,
+            "project_name": "ladder_type_preserving_cell_agreement_construction",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.22727272727272727
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 808,
+            "project_name": "c16_unused_finite_instance_shiftfinitetype",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.4090909090909091
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 719,
+            "project_name": "ray_layer_seam_gluing_and_stab_fibre",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4318181818181818
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 706,
+            "project_name": "lplus_finite_model_property_and_completeness",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4318181818181818
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 656,
+            "project_name": "refactor_task_frames_general_with_frame_constraints",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.2727272727272727
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 632,
+            "project_name": "bimodaltools_split",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.18181818181818182
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 636,
+            "project_name": "docstring_and_citation_normalisation",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.09090909090909091
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 585,
+            "project_name": "burn_down_compiler_warnings_and_add_gate",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.3181818181818182
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 588,
+            "project_name": "triage_zero_occurrence_declarations",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.13636363636363635
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 540,
+            "project_name": "docstring_coverage_class_instance_lemma",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.13636363636363635
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 615,
+            "project_name": "close_world_history_reach_through_residue",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.1590909090909091
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 542,
+            "project_name": "dead_declaration_triage_c17_findings",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.20454545454545456
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 539,
+            "project_name": "linter_debt_burndown_nolints_dupnamespace",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.5
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 541,
+            "project_name": "formalsystem_init_transitive_import_adoption",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.20454545454545456
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 546,
+            "project_name": "rename_frameclass_tags_to_ztime_rtime",
+            "shared_paths": null,
+            "mechanical_class": "subset",
+            "semantic_score": 0.18181818181818182
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 558,
+            "project_name": "close_defswithunderscore_gate_evasion_routes",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4090909090909091
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 517,
+            "project_name": "rename_spherical_axiom_to_saturation",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.18181818181818182
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 512,
+            "project_name": "bundle_duration_into_taskframe",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.1590909090909091
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.45454545454545453
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 95,
+            "project_name": "completeness_verification_audit",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.25
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 453,
+            "project_name": "restore_bimodaltest_green_and_clear_c6_c9",
+            "shared_paths": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4090909090909091
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 180,
+            "project_name": "line_limit_compliance_and_publication_residue",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.20454545454545456
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 131,
+            "project_name": "refactor_module_organization",
+            "shared_paths": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.09090909090909091
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 402,
+            "project_name": "systematic_mathlib_naming_upgrade",
+            "shared_paths": null,
+            "mechanical_class": "subset",
+            "semantic_score": 0.3409090909090909
+          }
+        ]
       }
     }
   ],
