@@ -36,6 +36,15 @@ The printed formula is
 ∨ S(A ∧ S(a, B), A ∨ B ∨ ¬S(¬q, ¬A)) ∧ [A ∨ (B ∧ U(A, B))] ∧ ¬S(¬q, ¬A).
 ```
 
+This transcription was checked directly against the Chapter 10 PDF page image, not only against
+a markdown chunk extracted from it: the PDF layout carries the same `[A ∨ (B ∧ U(A,B))]` conjunct
+on the second disjunct. That placement is itself suspect on the source's own terms — GHR's gloss
+for Case 5 describes the second disjunct as covering the case where `A` holds at a point in the
+**past** of the evaluation point, while `U(A,B)` is a pure-future claim with no business in a
+past-characterising conjunct. The semantic refutation below is independent of this gloss
+inconsistency; it is recorded here because it corroborates, from a different angle, that the
+printed conjunct placement is not to be trusted at either disjunct.
+
 It is **false** over the integer flow, and so is the bracketing that attaches
 `[A ∨ (B ∧ U(A,B))]` to the first disjunct only. Two models refute them, both compiled as probe
 theorems in the Cases 5-8 reduction prototype that accompanies this module:
