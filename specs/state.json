@@ -673,13 +673,13 @@
           "summary": "Architecture research for discharging SeparationOver TaskFrame.IsZTime: full GHR 10.2 step map extracted from the corpus, carrier normalization to Z via plusValidZTime_iff_plusValidInt, an abstract-leaf USForm route that removes the uniform-substitution obstruction, a verified refutation of GHR's printed Case 5 formula, and a 9-phase decomposition with the two stall candidates named."
         },
         {
-          "path": "specs/867_formalize_gabbay_separation_ztime/summaries/02_type-clean-case2-printed-rederivations-summary.md",
-          "type": "summary",
-          "summary": "Phase 21 implementation summary: the printed-form Case 2 and its four Boolean re-derivations, the ten IsUTyped witnesses, isUTyped_sepSnce, every measured gate, and the Phase 22 sizing finding."
-        },
-        {
           "path": "specs/867_formalize_gabbay_separation_ztime/plans/03_structural-route-measure-split.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-5-structural-recursion-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for Phases 22.1 and 22.2: IsUSingleType with its closure lemmas and proved strictness, GHR Lemma 10.2.5 in full via sepU, every measured gate, and the plan-compliance verdict explained."
         }
       ],
       "next_artifact_number": 4,
