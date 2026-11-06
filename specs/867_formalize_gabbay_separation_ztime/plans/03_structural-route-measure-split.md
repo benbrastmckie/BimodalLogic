@@ -2046,7 +2046,7 @@ congruence substitution was specified.
 
 ---
 
-### Phase 22.1: GHR 10.2.5's Precondition as Its Own Predicate [NOT STARTED]
+### Phase 22.1: GHR 10.2.5's Precondition as Its Own Predicate [COMPLETED]
 
 **Goal**: The input hypothesis GHR Lemma 10.2.5 actually consumes -- every `untl` occurrence is
 the single type `untl B A`, with nesting unconstrained -- stated as its own inductive predicate,
@@ -2068,36 +2068,41 @@ Cite it; do not re-derive it.
 
 **Tasks**:
 
-- [ ] Add `Hierarchy.lean`, importing `NormalForm`. Define
+- [x] Add `Hierarchy.lean`, importing `NormalForm`. Define
       `inductive IsUSingleType (A B : USForm) : USForm → Prop` with constructors `leaf`, `bot`,
       `imp`, `untl : IsUSingleType A B (USForm.untl B A)` and
       `snce {ψ φ} : IsUSingleType A B ψ → IsUSingleType A B φ → IsUSingleType A B (USForm.snce ψ φ)`
       -- the one and only difference from `IsUTyped` being that the `snce` constructor recurses
       rather than demanding `IsSOnly` of its two arguments.
-- [ ] Docstring it as GHR Lemma 10.2.5's input hypothesis: quote the corpus sentence, cite the
+- [x] Docstring it as GHR Lemma 10.2.5's input hypothesis: quote the corpus sentence, cite the
       file and lemma number, and state that it is **strictly weaker** than `IsUTyped` and must
       never be replaced by it at an input position. Decision D-f's ruling applies verbatim one
       predicate further out.
-- [ ] Prove the Boolean closure lemmas `IsUSingleType.ofIsSOnly`, `.neg`, `.and` and `.or`, each
+- [x] Prove the Boolean closure lemmas `IsUSingleType.ofIsSOnly`, `.neg`, `.and` and `.or`, each
       mirroring its `IsUTyped` counterpart at `NormalForm.lean:150`-`:167`.
-- [ ] Prove `isUSingleType_of_isUTyped (h : IsUTyped A B φ) : IsUSingleType A B φ` by induction
+- [x] Prove `isUSingleType_of_isUTyped (h : IsUTyped A B φ) : IsUSingleType A B φ` by induction
       on `h`; the `snce` case goes through `IsUSingleType.ofIsSOnly` at each argument.
-- [ ] Prove the strictness as a pair of theorems rather than a docstring claim:
+- [x] Prove the strictness as a pair of theorems rather than a docstring claim:
       `not_isUTyped_snce_untl : ¬ IsUTyped A B (USForm.snce USForm.bot (USForm.untl B A))` and
       `isUSingleType_snce_untl : IsUSingleType A B (USForm.snce USForm.bot (USForm.untl B A))`.
       Together they exhibit the gap at one concrete formula, so no later reader takes the
       direction on trust. The refutation is a `cases` on the `IsUTyped.snce` hypothesis followed
       by a `cases` on the resulting `IsSOnly (USForm.untl B A)`, which has no applicable
       constructor.
-- [ ] Record in the predicate's docstring that there is deliberately **no**
+- [x] Record in the predicate's docstring that there is deliberately **no**
       `isSeparated_of_isUSingleType` counterpart to `NormalForm.lean:179`'s
       `isSeparated_of_isUTyped`, and that none can exist: a `snce` carrying an `untl` argument is
       not separated, which is the precise content of "strictly weaker". Producing 10.2.5's
       separated form is Phase 22.2's work, not a closure property of this predicate.
-- [ ] Add one docstring line at `NormalForm.lean`'s `IsUTyped` pointing a reader to the weaker
+- [x] Add one docstring line at `NormalForm.lean`'s `IsUTyped` pointing a reader to the weaker
       sibling in `Hierarchy.lean` and naming which lemma consumes which. Change no declaration in
       that file.
-- [ ] README row, regenerated root, and the `typst-sync-check.sh --fix` step.
+- [x] README row, regenerated root, and the `typst-sync-check.sh --fix` step. *(deviation: altered
+      -- three generated inventory blocks (`README.md`, `FormalSystem/README.md`,
+      `FormalSystem/Metalogic/README.md`) also had to be regenerated through
+      `check-module-invariants.sh --emit-inventory`, because the new module changes the
+      per-directory file counts those blocks pin and the phase's gates require that check green.
+      The Files-to-modify row names `status.typ` and `FormalSystem.lean` but not these three.)*
 
 **Timing**: 1 hour
 

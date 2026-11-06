@@ -129,6 +129,10 @@ namespace FormalSystem.Metalogic.Expressiveness.SeparationZ
 
 It is strictly weaker than `IsSeparated` and does not imply it — see the module docstring. An
 input position asking for `IsSeparated` where this suffices is a defect, not a strengthening.
+
+`Hierarchy.lean`'s `IsUSingleType` is in turn strictly weaker than this predicate — it drops the
+`untl`-freeness of `snce` arguments — and is GHR Lemma 10.2.5's input hypothesis, while this one
+is Lemma 10.2.4's; `isUSingleType_of_isUTyped` is the one-way implication between them.
 -/
 inductive IsUTyped (A B : USForm) : USForm → Prop
   /-- Every leaf is `(A,B)`-typed. -/

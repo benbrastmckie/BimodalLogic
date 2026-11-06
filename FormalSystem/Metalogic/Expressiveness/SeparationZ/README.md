@@ -37,7 +37,8 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 | `NegationEquiv.lean` | 212 | GHR Lemma 10.2.2: the `ℤ` least-witness device, the four negation equivalences (first discreteness-dependent step), and the generic negated-since distribution identity Case 8 consumes |
 | `Eliminations.lean` | 508 | GHR Lemma 10.2.3 Cases 1-4, the `G`-under-`S` elimination, the `IsSeparated` predicate, the four discharged separatedness theorems, and the printed-form siblings of Cases 2 and 3 |
 | `ElimHard.lean` | 1089 | GHR Lemma 10.2.3's four hard cases — the ones where the same `untl` sits in both arguments of a `snce`. Carries the `ℤ` greatest-witness device, the `case5W`/`case5Core` split, the guard equivalence, Cases 5-8 and their separatedness, the printed-form siblings of Cases 8, 7 and 6, plus the landed reduction DAG |
-| `NormalForm.lean` | 510 | GHR Lemma 10.2.4: the `IsUTyped` precondition with its relationship to `IsSeparated`, the `untl`-literal normal form `substU` with the event and guard splits, the nine right-hand-side typedness witnesses, and `sepSnce` with its equivalence and both discharged halves of the conclusion |
+| `NormalForm.lean` | 514 | GHR Lemma 10.2.4: the `IsUTyped` precondition with its relationship to `IsSeparated`, the `untl`-literal normal form `substU` with the event and guard splits, the nine right-hand-side typedness witnesses, and `sepSnce` with its equivalence and both discharged halves of the conclusion |
+| `Hierarchy.lean` | 169 | GHR Lemma 10.2.5's input hypothesis `IsUSingleType` — the single `untl` type with nesting unconstrained — with its four Boolean closure lemmas, the one-way implication from `IsUTyped`, and the two witnesses that prove the strictness at `S(⊥, U(A,B))` |
 
 ## Key Results
 
@@ -65,12 +66,18 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
   `isSeparated_*Printed` witness
 - `usTruth_sepSnce` with `isSeparated_sepSnce` and `isUTyped_sepSnce` — GHR Lemma 10.2.4's
   equivalence and both halves of its conclusion, each a proved witness
+- `IsUSingleType` with `isUSingleType_of_isUTyped` — GHR 10.2.5's actual precondition, one
+  `untl` type with nesting unconstrained, and the one-way implication from 10.2.4's. The
+  converse is refuted, not merely disclaimed: `not_isUTyped_snce_untl` and
+  `isUSingleType_snce_untl` exhibit the gap at `S(⊥, U(A,B))`
 
 ## Not landed
 
 GHR Lemmas 10.2.5-10.2.8 and Theorem 10.2.9, hence also the
 `SeparationOver TaskFrame.IsZTime` discharge and the computable ZTime translation that would rest
 on it. All of Lemma 10.2.3 is landed, and so is Lemma 10.2.4's equivalence and separatedness.
+Lemma 10.2.5's *input hypothesis* is landed as `Hierarchy.lean`'s `IsUSingleType`; the lemma
+itself — the `sepU` construction over it — is not.
 
 Both halves of Lemma 10.2.4's conclusion are landed: `isSeparated_sepSnce` for separatedness
 and `isUTyped_sepSnce` for the single `untl` type, so a downstream induction counting `untl`
