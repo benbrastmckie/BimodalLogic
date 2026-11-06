@@ -1,7 +1,7 @@
 # Implementation Plan: colourClock history bridge lemma
 
 - **Task**: 860 - colourclock_history_bridge_lemma
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: None (no research report for this task; grounding re-derived at plan time

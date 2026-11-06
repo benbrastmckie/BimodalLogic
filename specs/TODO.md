@@ -11,7 +11,7 @@ next_project_number: 890
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,860,863,867,869,873,874,875,876,881,882,883,889 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,863,867,869,873,874,875,876,881,882,883,889 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,879 | 298,428,502,761,770,772,777,785,803,813,838,839,867 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -123,7 +123,6 @@ next_project_number: 890
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-860 [IMPLEMENTING] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 867 [PARTIAL] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 881 [PLANNED] — Factor the 53 TM-plus mirror schema validity proofs into a...
@@ -843,12 +842,13 @@ LEDGER AND GATES. Every landed result needs a docs/theorem-index.md row stating 
 
 ### 860. Colourclock history bridge lemma
 - **Effort**: low
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Parent**: Task 859
 - **Plan**: [860_colourclock_history_bridge_lemma/plans/01_colourclock-history-bridge-lemma.md]
+- **Summary**: [860_colourclock_history_bridge_lemma/summaries/01_colourclock-history-bridge-lemma-summary.md]
 
 **Description**: PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise.
 
