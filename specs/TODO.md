@@ -114,7 +114,7 @@ next_project_number: 885
 
 ### Documentation
 
-880 [NOT STARTED] — Reposition L^▷ in the READMEs and record the Logos reading of...
+880 [RESEARCHED] — Reposition L^▷ in the READMEs and record the Logos reading of...
 
 ### Formula Refactor
 
@@ -384,10 +384,11 @@ Two obstructions found during the L-open work, worth confirming survive the gene
 ---
 
 ### 880. Reposition L^▷ in the READMEs and record the Logos reading of the stability modal
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: Task 856, Task 871
+- **Research**: [880_reposition_open_language_docs_and_logos_reading/reports/01_open-language-repositioning-and-logos-reading.md]
 
 **Description**: Reposition L^▷ in the prose surfaces as an extension under exploration, with L-plus as the front, and record the Logos reading of the stability modal. Markdown only; no `.lean` edits. Not to be entered before task 856 completes, since its final phase edits the same README surfaces.
 

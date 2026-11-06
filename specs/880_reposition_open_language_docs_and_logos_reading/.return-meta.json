@@ -1,0 +1,35 @@
+{
+  "status": "researched",
+  "dispatch_seq": 14,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/880_reposition_open_language_docs_and_logos_reading/reports/01_open-language-repositioning-and-logos-reading.md",
+      "summary": "Re-verifies the 872 ledger's OpenLanguage/README.md contradictions (already fixed by task 856 phase 15), confirms the three 'end state' files already avoid the framing the dispatch warns against, drafts an additive cross-link sentence for each, and grounds a new 'Logos Reading' section for PlusLanguage/README.md in 03-dynamics.typ's necessity/stability/open-future/open-past clauses."
+    }
+  ],
+  "next_steps": "Run /orchestrate 880 to create the implementation plan: add one cross-reference sentence each to Metalogic/README.md, Metalogic/Conservativity/Open/README.md, and the top-level README.md, and add the drafted Logos Reading section to PlusLanguage/README.md. No edit needed to OpenLanguage/README.md (already correct). Leave the PlusLanguage/README.md Subformulas.lean generated-inventory TODO row out of scope (inside BEGIN GENERATED).",
+  "metadata": {
+    "session_id": "sess_1793911571_152ebe_880",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  },
+  "memory_candidates": [
+    {
+      "content": "In the Logos theory manual (03-dynamics.typ), necessity and the stability modal are both abbreviations of one primitive counterfactual operator (box-arrow) at a Constitutive-Foundation antecedent: box phi := top box-arrow phi (every state verifies top, so the quantifier reaches every world-history), and stably phi := not-bot box-arrow phi (the null state is the UNIQUE verifier of not-bot, so the quantifier collapses to exactly the world-histories agreeing with the evaluation history at the evaluation state -- i.e. BimodalLogic's stab/box-dot). The manual explicitly generalizes this to 'any true sentence whose unique verifier is the null state', naming a true propositional identity as another instance. Open-future/open-past are built by the same point-to-ray agreement-class generalization but are NOT routed through the counterfactual: no Constitutive-Foundation antecedent can express ray-agreement (its event-verifiers are pinned to a single time), so they get their own primitive truth/falsity clauses (def-open-future-past) instead of unfolding from box-arrow.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/880_reposition_open_language_docs_and_logos_reading/reports/01_open-language-repositioning-and-logos-reading.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["logos", "counterfactual", "stability-modal", "necessity", "constitutive-foundation", "open-future-open-past"]
+    },
+    {
+      "content": "Before re-applying a prior research report's enumerated contradictions as edits, re-verify them against the CURRENT tree, not just the pinned commit the report cites -- a later task phase may have already fixed exactly what was flagged. Task 872's ledger report (pinned at 4c52993c1) flagged OpenLanguage/README.md as contradicting the tree; task 856's own final phase (phase 15, committed after that pin) already corrected every one of those contradictions, so a naive re-application of the 872 findings as a to-do list would have produced a no-op or a reversion.",
+      "category": "PATTERN",
+      "source_artifact": "specs/880_reposition_open_language_docs_and_logos_reading/reports/01_open-language-repositioning-and-logos-reading.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["stale-report", "re-verification", "ledger-report", "tree-state", "research-discipline"]
+    }
+  ],
+  "findings_count": 4
+}
