@@ -175,7 +175,7 @@ and 838's `.blocker-research.json` first.
 /orchestrate 813,817,818,821,825,826,827,829
 /orchestrate 830,831,832,839,841,842,847,848
 /orchestrate 857,863,869,873,874,875,876,882
-/orchestrate 883
+/orchestrate 883,890
 ```
 
 ## Next batches
