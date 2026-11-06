@@ -473,29 +473,29 @@ visible signature changed, covered by
 
 ---
 
-### Phase 6: Saturation reductions A, B and C [NOT STARTED]
+### Phase 6: Saturation reductions A, B and C [COMPLETED]
 
 **Goal**: reduce the `Saturation` goal to the all-forward-fibres case, with the singleton-member
 and segment cases closed outright.
 
 **Tasks**:
 
-- [ ] Land the internal Reduction A: if any member of the directed family is a nonempty
+- [x] Land the internal Reduction A: if any member of the directed family is a nonempty
       subsingleton, `TaskFrame.sInter_nonempty_of_directed_of_minimal` closes the goal with that
       member as `Sstar` (a member `T ⊆ {b}` is nonempty, hence `= {b}`). Consumes no forest
       input at all.
-- [ ] Land the segment-subsingleton bridge: a `TaskFrame.Seg (ofStepRel E) w v x y` with
+- [x] Land the segment-subsingleton bridge: a `TaskFrame.Seg (ofStepRel E) w v x y` with
       `0 ≤ x`, `0 ≤ y` unfolds to `{u | iter E x.natAbs w u ∧ iter E y.natAbs u v}` via
       `ofStepRel_of_nonneg`/`ofStepRel_of_nonpos`, and is a subsingleton by `mid_unique`.
-- [ ] Land Reduction B: with the bridge plus `Fib (ofStepRel E) a 0 = {a}`, Reduction A disposes
+- [x] Land Reduction B: with the bridge plus `Fib (ofStepRel E) a 0 = {a}`, Reduction A disposes
       of every segment member and every zero-duration fibre member, so the remaining case has all
       members fibres of nonzero duration.
-- [ ] Land Reduction C: if members of both signs occur, `DirectedFamily`'s witness inside
+- [x] Land Reduction C: if members of both signs occur, `DirectedFamily`'s witness inside
       `Fib R a n ∩ Fib R a' (-m)` is a segment, hence a nonempty subsingleton, and Reduction A
       applies; the all-backward case is the all-forward case for `E.swap`, which is an oriented
       forest whenever `E` is — prove `IsOrientedForest E → IsOrientedForest (flip E)` (or
       `Function.swap`) as its own named lemma rather than inlining the symmetry.
-- [ ] Record in the docstrings that Reduction C is report 03 section 1.2's step 3 **without** its
+- [x] Record in the docstrings that Reduction C is report 03 section 1.2's step 3 **without** its
       "two directed paths" argument, which `mid_unique` has already absorbed.
 
 **Timing**: 2 hours

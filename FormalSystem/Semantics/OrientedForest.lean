@@ -515,4 +515,206 @@ theorem merge_unique {E : W → W → Prop} (hF : IsOrientedForest E)
     have hlen := iter_length_unique hF h1 h2
     omega
 
+/-! ## Saturation: the three reductions
+
+The `Saturation` goal is reduced to the all-forward-fibre case in three steps, each a separately
+named declaration rather than an inlined step of the final assembly.
+
+The `hgen` hypothesis shared by this section and the next relates a task relation `R` on `ℤ` to
+the one-step relation `E`: at a natural duration `R` is forward iteration, at its negation
+backward iteration. `ofStepRel_gen` discharges it for `ofStepRel E` itself, so the extra
+generality costs the headline theorem nothing and buys the primed variant for a consumer whose
+relation is only *equal* to `ofStepRel E`.
+-/
+
+/--
+**Reduction A.** A `⊇`-directed family of nonempty sets with a *subsingleton* member has
+nonempty intersection: a nonempty subsingleton member is `⊆`-least outright, so
+`TaskFrame.sInter_nonempty_of_directed_of_minimal` closes the goal. Consumes no forest input at
+all.
+-/
+theorem sInter_nonempty_of_subsingleton_member {S : Set (Set W)}
+    (hd : ∀ S₁ ∈ S, ∀ S₂ ∈ S, ∃ S' ∈ S, S' ⊆ S₁ ∩ S₂)
+    (hne : ∀ s ∈ S, s.Nonempty)
+    {T : Set W} (hT : T ∈ S) (hsub : T.Subsingleton) : (⋂₀ S).Nonempty := by
+  refine TaskFrame.sInter_nonempty_of_directed_of_minimal hd hne hT ?_
+  intro T' hT' hT'sub
+  obtain ⟨x, hx⟩ := hne T' hT'
+  intro y hy
+  have hyx : y = x := hsub hy (hT'sub hx)
+  exact hyx ▸ hx
+
+/-! ### Reduction C's symmetry: the opposite relation -/
+
+/-- Iterating the opposite relation reverses the walk. -/
+theorem iter_swap {E : W → W → Prop} : ∀ (n : ℕ) (a u : W),
+    iter (Function.swap E) n a u ↔ iter E n u a := by
+  intro n
+  induction n with
+  | zero =>
+    intro a u
+    rw [iter_zero, iter_zero]
+    exact eq_comm
+  | succ n ih =>
+    intro a u
+    rw [iter_succ]
+    have hcomm : 1 + n = n + 1 := Nat.add_comm 1 n
+    constructor
+    · rintro ⟨v, hv, hE⟩
+      have h1 : iter E 1 u v := (iter_one E u v).mpr hE
+      have h2 : iter E (1 + n) u a := (iter_add E 1 n u a).mpr ⟨v, h1, (ih a v).mp hv⟩
+      rwa [hcomm] at h2
+    · intro h
+      have h2 : iter E (1 + n) u a := by rwa [hcomm]
+      obtain ⟨v, h1, h3⟩ := (iter_add E 1 n u a).mp h2
+      exact ⟨v, (ih a v).mpr h3, (iter_one E u v).mp h1⟩
+
+/-- `SimpleGraph.fromRel` forgets edge orientation, so it does not see the swap. -/
+theorem fromRel_swap (E : W → W → Prop) :
+    SimpleGraph.fromRel (Function.swap E) = SimpleGraph.fromRel E := by
+  ext u v
+  simp only [SimpleGraph.fromRel_adj, Function.swap]
+  tauto
+
+/-- `IsOrientedForest` is symmetric in `E` and its opposite: the underlying undirected
+multigraph is the same object. This is what makes the all-backward case of `Saturation` the
+all-forward case for `Function.swap E`. -/
+theorem isOrientedForest_swap {E : W → W → Prop} (hF : IsOrientedForest E) :
+    IsOrientedForest (Function.swap E) where
+  loopFree u := hF.loopFree u
+  oppFree u v h := hF.oppFree v u h
+  acyclic := by rw [fromRel_swap]; exact hF.acyclic
+
+/-! ### The segment-subsingleton bridge -/
+
+/-- `ofStepRel E` satisfies the generator condition: this is what makes the primed headline
+theorem's `hgen` free for `ofStepRel` itself. -/
+theorem ofStepRel_gen {E : W → W → Prop} : ∀ (n : ℕ) (w u : W),
+    (ofStepRel E w (n : ℤ) u ↔ iter E n w u) ∧
+      (ofStepRel E w (-(n : ℤ)) u ↔ iter E n u w) := by
+  intro n w u
+  refine ⟨?_, ?_⟩
+  · rw [ofStepRel_of_nonneg (Int.natCast_nonneg n) w u]; simp
+  · rw [ofStepRel_of_nonpos (neg_nonpos.mpr (Int.natCast_nonneg n)) w u]; simp
+
+/-- A forward fibre of `R` at a natural duration is a forward `E`-fibre. -/
+theorem fib_natCast_eq {R : W → ℤ → W → Prop} {E : W → W → Prop}
+    (hgen : ∀ (n : ℕ) (w u : W),
+      (R w (n : ℤ) u ↔ iter E n w u) ∧ (R w (-(n : ℤ)) u ↔ iter E n u w))
+    (w : W) (n : ℕ) : TaskFrame.Fib R w (n : ℤ) = {u | iter E n w u} := by
+  ext u
+  exact (hgen n w u).1
+
+/-- A backward fibre of `R` is a forward fibre of the opposite one-step relation. -/
+theorem fib_negNatCast_eq {R : W → ℤ → W → Prop} {E : W → W → Prop}
+    (hgen : ∀ (n : ℕ) (w u : W),
+      (R w (n : ℤ) u ↔ iter E n w u) ∧ (R w (-(n : ℤ)) u ↔ iter E n u w))
+    (w : W) (n : ℕ) :
+    TaskFrame.Fib R w (-(n : ℤ)) = {u | iter (Function.swap E) n w u} := by
+  ext u
+  rw [TaskFrame.mem_Fib, (hgen n w u).2]
+  exact (iter_swap n w u).symm
+
+/-- A segment at natural offsets is a subsingleton, by `mid_unique`. -/
+theorem seg_natCast_subsingleton {R : W → ℤ → W → Prop} {E : W → W → Prop}
+    (hF : IsOrientedForest E)
+    (hgen : ∀ (n : ℕ) (w u : W),
+      (R w (n : ℤ) u ↔ iter E n w u) ∧ (R w (-(n : ℤ)) u ↔ iter E n u w))
+    (w v : W) (m n : ℕ) : (TaskFrame.Seg R w v (m : ℤ) (n : ℤ)).Subsingleton := by
+  intro p hp q hq
+  rw [TaskFrame.mem_Seg] at hp hq
+  exact mid_unique hF n m w v p q ((hgen m w p).1.mp hp.1) ((hgen n v p).2.mp hp.2)
+    ((hgen m w q).1.mp hq.1) ((hgen n v q).2.mp hq.2)
+
+/--
+**The segment-subsingleton bridge.** A `TaskFrame.Seg R w v x y` with `0 ≤ x` and `0 ≤ y` —
+exactly `TaskFrame.IsSegment`'s proviso — is a subsingleton.
+
+This is report 03 section 1.2's steps 1 and 3, and it is `mid_unique` in disguise: the segment
+unfolds to `{u | iter E x.natAbs w u ∧ iter E y.natAbs u v}`, which is the hypothesis shape of
+`mid_unique`. Reduction C is step 3 **without** its "two directed paths" argument, which
+`mid_unique` has already absorbed.
+-/
+theorem seg_subsingleton_of_gen {R : W → ℤ → W → Prop} {E : W → W → Prop}
+    (hF : IsOrientedForest E)
+    (hgen : ∀ (n : ℕ) (w u : W),
+      (R w (n : ℤ) u ↔ iter E n w u) ∧ (R w (-(n : ℤ)) u ↔ iter E n u w))
+    (w v : W) {x y : ℤ} (hx : 0 ≤ x) (hy : 0 ≤ y) :
+    (TaskFrame.Seg R w v x y).Subsingleton := by
+  obtain ⟨m, hm⟩ : ∃ m : ℕ, x = (m : ℤ) := ⟨x.natAbs, by omega⟩
+  obtain ⟨n, hn⟩ : ∃ n : ℕ, y = (n : ℤ) := ⟨y.natAbs, by omega⟩
+  subst hm
+  subst hn
+  exact seg_natCast_subsingleton hF hgen w v m n
+
+/-- The bridge at `ofStepRel E` itself, through `ofStepRel_of_nonneg`/`ofStepRel_of_nonpos`
+(which is what `ofStepRel_gen` packages). -/
+theorem seg_subsingleton {E : W → W → Prop} (hF : IsOrientedForest E) (w v : W) {x y : ℤ}
+    (hx : 0 ≤ x) (hy : 0 ≤ y) : (TaskFrame.Seg (ofStepRel E) w v x y).Subsingleton :=
+  seg_subsingleton_of_gen hF ofStepRel_gen w v hx hy
+
+/-! ### Reductions B and C -/
+
+/-- A zero-duration fibre is the singleton of its base point. -/
+theorem fib_zero_eq_singleton {R : W → ℤ → W → Prop} {E : W → W → Prop}
+    (hgen : ∀ (n : ℕ) (w u : W),
+      (R w (n : ℤ) u ↔ iter E n w u) ∧ (R w (-(n : ℤ)) u ↔ iter E n u w))
+    (a : W) : TaskFrame.Fib R a (0 : ℤ) = {a} := by
+  have h : TaskFrame.Fib R a ((0 : ℕ) : ℤ) = {u | iter E 0 a u} := fib_natCast_eq hgen a 0
+  rw [Nat.cast_zero] at h
+  rw [h]
+  ext u
+  simp [eq_comm]
+
+/--
+**Reduction B.** A family member that is a segment, or a fibre of duration zero, is a
+subsingleton, so Reduction A closes the goal outright. Together with Reduction C this leaves only
+the case in which every member is a fibre of nonzero duration, all of one sign.
+-/
+theorem sInter_nonempty_of_segment_or_zero_member {R : W → ℤ → W → Prop} {E : W → W → Prop}
+    (hF : IsOrientedForest E)
+    (hgen : ∀ (n : ℕ) (w u : W),
+      (R w (n : ℤ) u ↔ iter E n w u) ∧ (R w (-(n : ℤ)) u ↔ iter E n u w))
+    {S : Set (Set W)} (hd : ∀ S₁ ∈ S, ∀ S₂ ∈ S, ∃ S' ∈ S, S' ⊆ S₁ ∩ S₂)
+    (hne : ∀ s ∈ S, s.Nonempty) {T : Set W} (hT : T ∈ S)
+    (hTkind : TaskFrame.IsSegment R T ∨ ∃ a, T = TaskFrame.Fib R a (0 : ℤ)) :
+    (⋂₀ S).Nonempty := by
+  refine sInter_nonempty_of_subsingleton_member hd hne hT ?_
+  rcases hTkind with ⟨w, v, x, y, hx, hy, hTeq⟩ | ⟨a, hTeq⟩
+  · rw [hTeq]
+    exact seg_subsingleton_of_gen hF hgen w v hx hy
+  · rw [hTeq, fib_zero_eq_singleton hgen a]
+    exact Set.subsingleton_singleton
+
+/--
+**Reduction C.** If the family has a member that is a fibre of nonnegative duration *and* a
+member that is a fibre of nonpositive duration, then directedness' witness inside their
+intersection sits inside a **segment**, hence is a nonempty subsingleton member, and Reduction A
+closes the goal.
+
+This is where the all-backward case stops being a separate case: once both signs occur the
+family is closed outright, so the remaining cases are "every member a forward fibre" and "every
+member a backward fibre", and `isOrientedForest_swap` turns the second into the first.
+-/
+theorem sInter_nonempty_of_mixed_sign_fibres {R : W → ℤ → W → Prop} {E : W → W → Prop}
+    (hF : IsOrientedForest E)
+    (hgen : ∀ (n : ℕ) (w u : W),
+      (R w (n : ℤ) u ↔ iter E n w u) ∧ (R w (-(n : ℤ)) u ↔ iter E n u w))
+    {S : Set (Set W)} (hd : ∀ S₁ ∈ S, ∀ S₂ ∈ S, ∃ S' ∈ S, S' ⊆ S₁ ∩ S₂)
+    (hne : ∀ s ∈ S, s.Nonempty)
+    {T₁ T₂ : Set W} (hT₁ : T₁ ∈ S) (hT₂ : T₂ ∈ S)
+    {w v : W} {x y : ℤ} (hx : 0 ≤ x) (hy : y ≤ 0)
+    (hT₁eq : T₁ = TaskFrame.Fib R w x) (hT₂eq : T₂ = TaskFrame.Fib R v y) :
+    (⋂₀ S).Nonempty := by
+  obtain ⟨S', hS'mem, hS'sub⟩ := hd T₁ hT₁ T₂ hT₂
+  refine sInter_nonempty_of_subsingleton_member hd hne hS'mem ?_
+  have hmemSeg : ∀ u, u ∈ T₁ ∩ T₂ → u ∈ TaskFrame.Seg R w v x (-y) := by
+    intro u hu
+    rw [hT₁eq, hT₂eq] at hu
+    rw [TaskFrame.mem_Seg, neg_neg]
+    exact ⟨hu.1, hu.2⟩
+  intro p hp q hq
+  exact seg_subsingleton_of_gen hF hgen w v hx (by omega)
+    (hmemSeg p (hS'sub hp)) (hmemSeg q (hS'sub hq))
+
 end FormalSystem.Semantics
