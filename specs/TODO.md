@@ -123,11 +123,11 @@ next_project_number: 890
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-860 [PLANNED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
+860 [IMPLEMENTING] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 867 [PARTIAL] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 881 [PLANNED] — Factor the 53 TM-plus mirror schema validity proofs into a...
-889 [RESEARCHED] — Clear the live C16 (env\_linter) gate failure so...
+889 [PLANNED] — Clear the live C16 (env\_linter) gate failure so...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -160,12 +160,13 @@ next_project_number: 890
 
 ### 889. Ladderchain c16 unusedarguments clear
 - **Effort**: small
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Parent**: Task 871
 - **Research**: [889_ladderchain_c16_unusedarguments_clear/reports/01_ladderchain-c16-unusedarguments-clear.md]
+- **Plan**: [889_ladderchain_c16_unusedarguments_clear/plans/01_ladderchain-c16-unusedarguments-clear.md]
 
 **Description**: Clear the live C16 (env_linter) gate failure so `scripts/check-module-invariants.sh` exits 0 again.
 
@@ -842,7 +843,7 @@ LEDGER AND GATES. Every landed result needs a docs/theorem-index.md row stating 
 
 ### 860. Colourclock history bridge lemma
 - **Effort**: low
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
