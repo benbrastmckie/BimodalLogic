@@ -1,57 +1,20 @@
 {
-  "status": "partial",
-  "requires_user_review": true,
-  "blocked_phase": 21,
-  "review_reason": "Phase 21 blocked: the plan's uTypeCount measure is invalidated by landed case2Rhs carrying untl types other than untl B A; two repair routes recorded, choosing between them is a planning decision. Also two recorded plan deviations needing review: Phase 16 pinned a third Case 5 candidate after refuting the plan's preferred one, and Phase 20 built the untl-literal normal form in place of general dnf/cnf.",
-  "verification": {
-    "verification_passed": true,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "vacuous_note": "unchanged from the pre-task baseline and outside this task's file set (FormalSystem/Examples/TemporalStructures.lean:495); baseline measured at commit be4809087 as 1",
-    "axiom_count": 14,
-    "axiom_note": "unchanged from the pre-task baseline, measured at commit be4809087 as 14",
-    "build_passed": true
-  },
-  "partial_progress": {
-    "stage": "phase_21_blocked",
-    "details": "Phases 16-20 landed sorry-free and gate-green; all eight GHR 10.2.3 cases and GHR 10.2.4 are proved. Phase 21 is BLOCKED on a newly located obstruction in the landed Phase 6 layer. See the plan file's Phase 21 blocker entry.",
-    "phases_completed": 20,
-    "phases_total": 27
-  },
+  "status": "planned",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/01_gabbay-separation-ztime-plusformula-summary.md",
-      "summary": "All eight GHR 10.2.3 cases and GHR 10.2.4 landed; the two printed-text defects pinned with compiled counterexamples; the new Phase 21 obstruction located with two repair routes."
-    },
-    {
-      "type": "prototype",
-      "path": "specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-reduction.lean",
-      "summary": "Phase 16's gate record: source-quoted reduction DAG, five compiled probe models, the refutation of the two-disjunct Case 5 repair, and the Case 8 non-redundancy model."
+      "type": "plan",
+      "path": "specs/867_formalize_gabbay_separation_ztime/plans/01_gabbay-separation-ztime-plusformula.md",
+      "summary": "Revised plan: Phase 21's anchors mechanically re-verified against landed sources, and the three unproved measure-decrease obligations of Phases 22-24 decomposed into three parts with the expensive one named."
     }
   ],
-  "modified_files": [
-    "FormalSystem/Metalogic/Expressiveness/SeparationZ/ElimHard.lean",
-    "FormalSystem/Metalogic/Expressiveness/SeparationZ/NegationEquiv.lean",
-    "FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean",
-    "FormalSystem/Metalogic/Expressiveness/SeparationZ/README.md",
-    "FormalSystem.lean",
-    "FormalSystem/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "typst/generated/status.typ",
-    "specs/867_formalize_gabbay_separation_ztime/plans/01_gabbay-separation-ztime-plusformula.md",
-    "specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-reduction.lean",
-    "specs/867_formalize_gabbay_separation_ztime/summaries/01_gabbay-separation-ztime-plusformula-summary.md",
-    "specs/867_formalize_gabbay_separation_ztime/issues.jsonl"
-  ],
+  "next_steps": "Run /orchestrate 867 to implement Phase 21 (the type-clean Case 2 and the four Boolean re-derivations), which is implementable as written.",
   "metadata": {
-    "session_id": "sess_1793963301_2c6cc8",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "dispatch_seq": 12,
-    "orchestrator_mode": true,
-    "compliance_check": "passed",
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+    "session_id": "sess_1793987703_3d0672_867",
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "dispatch_seq": 15,
+    "phase_count": 28,
+    "estimated_hours": 56,
+    "reports_integrated": ["01_gabbay-separation-ztime-plusformula.md"]
   }
 }

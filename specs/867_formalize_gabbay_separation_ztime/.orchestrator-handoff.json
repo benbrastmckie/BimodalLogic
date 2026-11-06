@@ -1,23 +1,15 @@
 {
-  "dispatch_seq": 12,
-  "status": "partial",
+  "dispatch_seq": 15,
+  "status": "planned",
   "phases_completed": 20,
-  "phases_total": 27,
-  "summary": "Phases 16-20 of the twenty-seven-phase plan landed sorry-free and gate-green, dissolving the obstruction Phase 5 had recorded at GHR Lemma 10.2.3's Cases 6, 7 and 8: that obstruction described a direct semantic re-anchoring route the source does not use. Reading GHR vol. 1 Chapter 10 section 10.2's printed text directly gave the reduction order with every edge source-quoted, and all eight cases of Lemma 10.2.3 are now proved, together with Lemma 10.2.4's equivalence and its separatedness. Two printed-text defects are pinned with compiled counterexamples: GHR's Case 5 formula is false over the integers under every bracketing, and its claim that Case 8's third disjunct is redundant is false. The headline deliverable separationOver_ztime is still NOT discharged and no tr row changed.",
-  "blockers": [
-    "Phase 21 is BLOCKED on a NEW obstruction, different from the one Phase 5 recorded. uTypeCount -- the plan's measure, the number of distinct maximal untl subformulas -- cannot carry GHR 10.2.6's induction over the eliminations as landed, because Phase 20's sepSnce can increase it. Cause: Eliminations.lean's landed case2Rhs is built as (... ) or case1Rhs a q (A.neg.and B.neg) A.neg together with allFuture A.neg, so it carries the untl types untl A.neg (A.neg.and B.neg) and untl top A.neg.neg beside untl B A; GHR's printed Case 2 carries neither, because its third step folds G-not-A or U(not-A and not-B, not-A) back into not-U(A,B) by Lemma 10.2.2 in reverse, which the landed proof omits. case3Rhs consumes case2Rhs, and case6Rhs/case7Rhs/case8Rhs consume case3Rhs/case8Rhs, so three of sepSnce's four constituents inherit it. Two repair routes, both recorded in the plan's Phase 21 blocker entry: (1) add a second Case 2 lemma at GHR's printed three-disjunct right-hand side and re-derive Cases 3, 6, 7, 8 through it -- additive, no signature change, and uTypeCount then works as specified; (2) change the measure to count untl occurrences under a snce rather than distinct untl types -- leaves the landed layer untouched but redesigns the measures of Phases 21, 22 and 23. Choosing between them is a planning decision, not an implementation one.",
-    "Phases 22-27 are NOT STARTED, gated behind Phase 21. The plan's own standing warning is unchanged: Phase 23's junction-depth strict decrease is asserted without proof in the source and is the plan's primary stall candidate; it has still never been reached."
-  ],
+  "phases_total": 28,
+  "summary": "Forced --plan round on a plan that dispatch 14 had already revised to carry the cycle-1 route-1 decision, so no route changed and no research was integrated. The round's work was verification and decomposition: all nine of Phase 21's load-bearing anchors were re-checked mechanically against the landed sources and are green -- in particular a sweep of every USForm.untl in every def body of Eliminations.lean and ElimHard.lean confirms case2Rhs is the only contamination site, so Phase 21's five-def Scope Hypothesis stands and it is implementable as written. The substantive finding is that the strict-decrease obligation Phases 22, 23 and 24 each carry is not one obligation but three of very unequal cost; the plan now decomposes it once and each phase cites that decomposition.",
+  "blockers": [],
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/01_gabbay-separation-ztime-plusformula-summary.md",
-      "summary": "Implementation summary: all eight GHR 10.2.3 cases and 10.2.4 landed, the two printed-text defects pinned, and the new Phase 21 obstruction located with two repair routes."
-    },
-    {
-      "type": "prototype",
-      "path": "specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-reduction.lean",
-      "summary": "Phase 16's gate record: the source-quoted reduction DAG, five compiled probe models, the refutation of the two-disjunct Case 5 repair, and the Case 8 non-redundancy model."
+      "type": "plan",
+      "path": "specs/867_formalize_gabbay_separation_ztime/plans/01_gabbay-separation-ztime-plusformula.md",
+      "summary": "Revised plan, 28 phases: adds the dispatch-15 anchor-verification table and the shared measure-decrease decomposition, with Phases 21-24 amended to cite them. No phase status, phase number or signature changed."
     }
   ]
 }

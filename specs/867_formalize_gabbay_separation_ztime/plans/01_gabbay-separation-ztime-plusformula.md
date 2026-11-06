@@ -2,15 +2,23 @@
 
 - **Task**: 867 - Formalize Gabbay separation over discrete time for `PlusFormula`, discharging `SeparationOver TaskFrame.IsZTime` and making the open-future translation executable
 - **Status**: [IMPLEMENTING]
-- **Effort**: 53.5 hours (27 recorded for Phases 1-15; 26.5 added for Phases 16-27)
+- **Effort**: 56 hours (27 recorded for Phases 1-15; 29 added for Phases 16-28)
 - **Dependencies**: None blocking. Consumes only already-compiled declarations.
 - **Research Inputs**: specs/867_formalize_gabbay_separation_ztime/reports/01_gabbay-separation-ztime-plusformula.md;
   the blocker-research findings carried in
-  specs/867_formalize_gabbay_separation_ztime/.dispatch/11-aux-plan-revision.md (dispatch 11)
+  specs/867_formalize_gabbay_separation_ztime/.dispatch/11-aux-plan-revision.md (dispatch 11);
+  the blocker-research findings carried in
+  specs/867_formalize_gabbay_separation_ztime/.dispatch/14-aux-plan-revision.md (dispatch 14);
+  the mechanical anchor re-verification carried out against the landed sources at dispatch 15
+  (recorded in `### Revision Integration: Dispatch-15 Anchor Verification and the Shared
+  Measure-Decrease Shape`; no new research, no route change)
 - **Artifacts**: plans/01_gabbay-separation-ztime-plusformula.md (this file)
 - **Reports Integrated**: 01_gabbay-separation-ztime-plusformula.md; the blocker-research
-  findings of dispatch 11, which arrived as delegation context rather than as a report file
-  (no `.blocker-research.json` was written by the dispatch that produced them)
+  findings of dispatch 11 and of dispatch 13 (delivered as dispatch 14's delegation context),
+  both of which arrived as delegation context rather than as report files (no
+  `.blocker-research.json` was written by either dispatch that produced them). Dispatch 15 is a
+  forced `--plan` round that integrated no further report: the research artifact on its delegation
+  context is report 01, already integrated above.
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -31,7 +39,7 @@ Phases 1-4 and 6 of this plan are landed and compiled; Phase 5's decision gate m
 and closed Phases 7-15 as `[COMPLETED WITH EXCLUSIONS]`. That measurement rested on a route
 defect, not on a mathematical obstruction: the derivation method it tried for Cases 6-8 is not the
 one GHR 10.2.3 uses, and the separatedness bar it held each candidate to is stronger than the one
-GHR 10.2.4 consumes. Phases 16-27 reach the excluded deliverables along the source's own reduction
+GHR 10.2.4 consumes. Phases 16-28 reach the excluded deliverables along the source's own reduction
 order. Phases 1-15 stay exactly as recorded, including their exclusions: they are the measurement
 Phase 16 re-specifies, not work to be rewritten.
 
@@ -112,6 +120,85 @@ printed-text defects that the implementation must encode rather than repair sile
 4. **GHR's claim that Case 8's third disjunct is redundant is false.** Phase 16 exhibits a `ℤ`
    model and a point at which that disjunct is the only true one, and Phase 18 keeps all three
    disjuncts with that model cited at the definition.
+
+### Revision Integration: the Case 2 Type Repair
+
+Three findings from the dispatch-13 blocker research reach this plan through dispatch 14's
+delegation context (again, no report artifact was written). Together they resolve the Phase 22
+blocker by choosing its route 1 and show that route to cost materially less than the blocker
+entry assumed.
+
+1. **The `untl`-type contamination has exactly one source.** Every `USForm.untl` in every
+   definition of `Eliminations.lean` and `ElimHard.lean` is already `untl B A`, except the two
+   introduced at `Eliminations.lean:193-194` inside `case2Rhs`. `case1Rhs`, `case4Rhs`,
+   `case5W`, `case5Core` and `case5Rhs` are all already type-clean, and the four contaminated
+   right-hand sides (`case3Rhs`, `case6Rhs`, `case7Rhs`, `case8Rhs`) are contaminated only by
+   inheritance. Repairing that one definition cleans the layer, and the four re-derivations are
+   substitutions at Boolean positions -- `or` and `neg` only -- so each lifts by congruence.
+2. **The fold the landed proof omits is already landed, as an iff.** GHR's printed Case 2 reaches
+   its three-disjunct form by "using lemma 10.2.2 again (in reverse)"; that reverse direction is
+   `usTruth_neg_untl` at `NegationEquiv.lean:122`, and `Eliminations.lean` already imports the
+   module that holds it. Route 1 therefore needs no new semantic argument, no new module and no
+   new import -- which is the single largest difference from the blocker entry's cost estimate.
+3. **GHR's printed Case 2 is verified against the corpus verbatim.** The three disjuncts quoted
+   in Phase 21 match
+   `ch1001_chapter-10-expressive-completeness-of-si.md`, Lemma 10.2.3 case 2, exactly, and match
+   the quotation the blocker record already carried. The transcription is therefore a
+   transcription, not a reconstruction, and its only `untl` occurrence is `untl B A`.
+
+### Revision Integration: Dispatch-15 Anchor Verification and the Shared Measure-Decrease Shape
+
+This revision adds no new research and changes no route. It does two things: it re-verifies
+mechanically, against the landed sources rather than against the dispatch-13 record, every anchor
+Phase 21 transcribes; and it decomposes the measure-decrease obligation that Phases 22, 23 and 24
+each carry, which each of them states as a single named obligation and which is in fact three
+sub-obligations of very unequal difficulty.
+
+**Anchor verification (all green; no correction needed).** Each claim below was checked against
+the file as it now stands, not against the record that produced Phase 21:
+
+| Phase 21 claim | Verified |
+|------|------|
+| `case2Rhs`'s body is the sole contamination site, at `Eliminations.lean:193-194` | Confirmed. Those two lines are exactly that body, and a sweep of every `USForm.untl` in every `def` body of `Eliminations.lean` and `ElimHard.lean` finds only `untl B A` — at `Eliminations.lean:188` (`case1Rhs`), `ElimHard.lean:132` (`case5W`), `:579` (`case7Rhs`) and `:714` (`case6Rhs`). No third site exists, so Phase 21's Scope Hypothesis stands. |
+| `allFuture A.neg` contributes the type `untl ⊤ A.neg.neg` | Confirmed through `Syntax.lean:103` and `:109`: `someFuture φ = untl ⊤ φ`, and `allFuture φ = (someFuture φ.neg).neg`. |
+| `case1Rhs a q (A.neg.and B.neg) A.neg` contributes `untl A.neg (A.neg.and B.neg)` | Confirmed: `case1Rhs`'s body carries `untl B A` at its own parameter names, and that call site binds its third parameter to `A.neg.and B.neg` and its fourth to `A.neg`. |
+| The omitted fold is landed as an iff at `NegationEquiv.lean:122` | Confirmed: `usTruth_neg_untl` is there at GHR 10.2.2's printed form, and `Eliminations.lean` already uses it at `:271`, so no new import is needed. |
+| `IsUTyped` and its Boolean closure lemmas are landed | Confirmed at `NormalForm.lean:122` — `inductive IsUTyped`, whose only `untl` constructor is `untl : IsUTyped A B (untl B A)` — and at `:134`–`:157` for `ofIsSOnly`, `neg`, `and` and `or`. |
+| `case5Core` needs no `IsUTyped` witness beyond `ofIsSOnly` | Confirmed: its body is `snce`/Boolean only, with no `untl` occurrence. |
+| `sepSnce`'s four constituents and their `substU` parameter pairs | Confirmed at `NormalForm.lean:295`: `case7Rhs`/`case5Rhs` on the `⊤`-event branch and `case8Rhs`/`case6Rhs` on the `⊥`-event branch, at exactly the four pairs Phase 21 names. `isSOnly_substU` is at `:219`, `usTruth_sepSnce` at `:316`, `isSeparated_sepSnce` at `:339`. |
+| Phase 22's abstraction device | Confirmed at `Syntax.lean:334`, `:342` and `:381`: `maxLeaf`, `freshLeaf` and `usTruth_congr_of_update`. |
+| `uTypeCount` does not yet exist | Confirmed — no occurrence anywhere in the subtree. It is Phase 22's to define, as that phase states. |
+
+Phase 21 is therefore implementable exactly as written, and an implementation dispatch should
+cite this table rather than re-deriving any row of it.
+
+**The shared measure-decrease shape.** Phases 22, 23 and 24 each close with a named
+strict-decrease obligation that GHR assert without proof: `uTypeCount` under 10.2.6, `untlDepth`
+under 10.2.7, `junctionDepth` under 10.2.8. All three sit over the same three-step construction —
+abstract a maximal subformula to a fresh leaf, separate by the previous lemma, reindex back — and
+in all three the obligation decomposes the same way, into three parts of very unequal cost.
+Stating that decomposition once, here, keeps each phase from rediscovering it:
+
+1. **Abstraction strictly drops the measure.** This is where the strict decrease originates and
+   it is the cheap part: replacing a counted subformula by a leaf fresh above `maxLeaf` removes it
+   from the count by the structural recursion's own defining equations.
+2. **Separation must not raise the measure.** This is a fact about the *shape of the separated
+   form*, not about the measure's recursion, and it is the part that is easy to mistake for the
+   whole obligation. At Phase 22 it is exactly what Phase 21's `isUTyped_sepSnce` supplies, which
+   is why that phase cites it instead of re-proving it. At Phases 23 and 24 there is no landed
+   counterpart, and each must prove its own analogue for `untlDepth` and `junctionDepth`.
+3. **Reindexing back re-raises the measure, and the recursion must absorb that.** This is the
+   expensive part and the part GHR leave implicit. It means none of the three is a plain induction
+   on the measure of a single formula: each is a strong recursion in which the reindexed form's
+   measure must be *bounded* by the pre-abstraction measure less one, and it is that bound, not
+   step 1, that licenses the recursive call.
+
+Two consequences for sizing. Phase 22's obligation is the cheapest of the three, because step 2
+is already landed and step 3 is bounded by the single `untl` type 10.2.6 retains. Phase 24's is
+the dearest, and part 3 is specifically the plan's declared stall candidate — a dispatch that
+discharges parts 1 and 2 there and finds the recursion still not well-founded has reached the
+contemplated stall at the right place rather than failed, and `## Rollback/Contingency` governs.
+Each of the three phases should size part 3 before starting, not after.
 
 ### Prior Plan Reference
 
@@ -204,7 +291,7 @@ decomposition that Phases 1-11 are entitled to refine.
 
 ## Decisions
 
-Four plan-time decisions refine the research report. Each is a judgement between known-workable
+Seven plan-time decisions refine the research report. Each is a judgement between known-workable
 options, recorded here so an implementation dispatch does not reopen it.
 
 **D-a. Leaves are indexed by `ℕ`, not `Fin n`.** The report's illustrative sketch parameterizes
@@ -246,6 +333,24 @@ that no induction step is asked for purity the source does not demand. Approxima
 precondition by `IsSeparated` is what made Phase 5's bar unmeetable, and re-imposing it anywhere
 downstream reintroduces that defect.
 
+**D-g. The elimination layer is repaired at its single contaminated definition, and
+`sepSnce` is rebuilt over the repaired right-hand sides rather than duplicated.** This is route 1
+of the Phase 22 blocker, chosen over route 2 (recounting `untl` occurrences lying under a `snce`
+instead of counting distinct types). Three reasons. Route 1 leaves every measure of Phases 22-24
+exactly as those phases specify them, so it localizes the change to one phase instead of
+redesigning three. Its cost is a transcription plus four Boolean congruences, because the fold
+GHR's printed Case 2 needs is already landed as an iff. And it buys a deliverable route 2 does
+not: GHR 10.2.4's second conclusion clause, which Phase 20 had to exclude, becomes a proved
+`IsUTyped` witness.
+
+Within route 1, `case2Rhs` and `usTruth_case2` keep their names, signatures and proofs -- nothing
+landed is weakened -- but `sepSnce`'s *body* is rebuilt in place rather than cloned as a
+`sepSncePrinted` sibling. GHR 10.2.4 has one separated form, Phase 26's `sepZ` consumes exactly
+one, and a clone would leave the contaminated body reachable by a later reader with nothing but a
+docstring to say which is current. `sepSnce`'s name and signature are unchanged and
+`usTruth_sepSnce` and `isSeparated_sepSnce` keep their exact statements, so the edit is invisible
+to every consumer.
+
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
@@ -265,7 +370,8 @@ downstream reintroduces that defect.
 | Concurrency with siblings 871 (plan) and 884 (implement), dispatched this same cycle on this same tree. | M | M | This task's scope is the new `SeparationZ/` subtree plus narrow edits to `OpenFutureElimination.lean`, `Expressiveness.lean`, `Expressiveness/README.md`, `docs/theorem-index.md`, `scripts/check-module-invariants.sh` and the generated root -- disjoint from 871's `PlusLanguage/` files and 884's `specs/` files. Re-read every file immediately before editing, stage explicit file lists only, never `git-snapshot.sh` in its reverting default mode, and treat a build failure outside this task's file set as possibly a sibling's in-flight edit. On observing a foreign commit or foreign uncommitted modification, STOP and report after checking `git log`. |
 | A reduction edge cannot be named at a source step, so the DAG is reconstructed rather than transcribed. | H | L | Phase 16's gate criterion (b) is exactly this test and is measured before any proof is attempted. A failing edge is recorded as the located obstruction at that edge, not worked around by returning to the re-anchoring route D-e forbids. |
 | Case 8's right-hand side, with the non-redundant third disjunct kept, is large enough to slow elaboration downstream of Phase 20's clause-by-clause application. | M | M | `ElimHard.lean` stays a module of its own with its own scoped build. If elaboration slows, profile the clause application; a disjunct may be dropped only against a proof of its redundancy, never because a tactic happens to close the equivalence without it. |
-| The junction-depth strict decrease — asserted without proof in the source — resists proof. It was never reached before, so it is now the live primary stall candidate rather than the secondary one. | H | M | Phase 23 defines the measure structurally and proves each decrease as a named obligation. Its contingency branch is the one added for this revision in `## Rollback/Contingency`; a `sorry` remains not an option. |
+| The junction-depth strict decrease — asserted without proof in the source — resists proof. It was never reached before, so it is now the live primary stall candidate rather than the secondary one. | H | M | Phase 24 defines the measure structurally and proves each decrease as a named obligation. Its contingency branch is the one added for this revision in `## Rollback/Contingency`; a `sorry` remains not an option. |
+| A Boolean congruence substitution in Phase 21 does not lift, because a contaminated right-hand side turns out to sit at a non-Boolean position in a consumer. | M | L | The four consumers were read directly: `case3Rhs` substitutes under `or`/`neg`, `case8Rhs` under `neg`/`or`, `case7Rhs` and `case6Rhs` under `or`. If a fifth consumer appears at implementation time, treat it as a scope finding and report it before proving anything -- it would mean the contamination has a second source, which the dispatch-13 measurement says it does not. |
 | A later reader cites Phase 5's superseded gate verdict, or Phase 7's exclusions record, as a standing mathematical obstruction. | M | M | Phase 16's gate measurement states in its own file that the verdict is superseded and why, and Phase 18's module docstring records that the Cases 5/8 loop was an artefact of the re-anchoring route. Phases 1-15 are left verbatim, so the correction lives where a reader of the new phases will meet it. |
 
 ## Implementation Phases
@@ -301,10 +407,13 @@ downstream reintroduces that defect.
 | 25 | 25 | 24 |
 | 26 | 26 | 25 |
 | 27 | 27 | 26 |
+| 28 | 28 | 27 |
 
-Phases 1-15 are closed records. Phases 16-27 are the live sequence: Phase 16 re-specifies the
-decision gate Phase 5 measured, and Phases 17-27 reach the deliverables Phases 7-15 excluded,
-along the reduction order of decision D-e. Every module-adding phase among them also regenerates
+Phases 1-15 are closed records. Phases 16-28 are the live sequence: Phase 16 re-specifies the
+decision gate Phase 5 measured, Phases 17-20 land the eight eliminations and GHR 10.2.4 along the
+reduction order of decision D-e, Phase 21 repairs the one `untl`-type defect that measurement
+exposed in the landed layer, and Phases 22-28 reach the remaining deliverables Phases 9-15
+excluded. Every module-adding phase among them also regenerates
 `typst/generated/status.typ` in its own commit, because the pre-commit counts gate fires on each
 one -- recorded as a gate-collision issue in this task's `issues.jsonl` at dispatch 7.
 
@@ -1647,47 +1756,188 @@ the landed `def` and `theorem` keywords in the module against that list.
 
 ---
 
-### Phase 21: GHR Lemmas 10.2.5 and 10.2.6 [BLOCKED]
+### Phase 21: The Type-Clean Case 2 and the Downstream Re-derivations [NOT STARTED]
 
-**BLOCKER** (Phase 21):
+**Goal**: Remove the one source of `untl`-type contamination in the landed elimination layer, so
+that every separated right-hand side the layer produces mentions `untl` only as `untl B A`. This
+reinstates the half of GHR 10.2.4's conclusion that Phase 20's second `#### Reasoned Exclusions`
+row excluded -- now as a proved `IsUTyped` witness, not a prose claim -- and it makes Phase 22's
+`uTypeCount` measure well-posed over the layer it has to measure. Decision D-g is the ruling:
+route 1 of the blocker Phase 22 records, not route 2.
 
-- **What failed**: the phase's third and fourth tasks. `uTypeCount`, "the number of distinct
-  maximal `untl` subformulas", cannot carry GHR 10.2.6's induction over the eliminations as they
-  are landed, because Phase 20's `sepSnce` can **increase** it. The strict-decrease lemma the
-  phase asks for is therefore false of the landed layer, not merely unproved.
-- **What was tried**: nothing was edited. The obstruction was found while discharging Phase 20's
-  own conclusion, whose second clause ("`untl` occurs only as `untl B A`") is the same fact and
-  is recorded as that phase's `#### Reasoned Exclusions` row. Phase 20's equivalence and
-  separatedness halves both landed and are green.
-- **Why it's stuck**: `Eliminations.lean`'s landed `case2Rhs` is
-  `(A.neg.and ((allFuture A.neg).and (snce (q.and A.neg) a))).or (case1Rhs a q (A.neg.and B.neg) A.neg)`.
-  That carries two `untl` types beside `untl B A`: `untl A.neg (A.neg.and B.neg)`, from
-  `case1Rhs` applied at transformed parameters, and `untl USForm.top A.neg.neg`, from
-  `allFuture`. GHR's printed Case 2 carries neither, because its third step folds
-  `G¬A ∨ U(¬A∧¬B,¬A)` back into `¬U(A,B)` by Lemma 10.2.2 in reverse; the landed proof omits that
-  fold and leaves the expanded form. `case3Rhs` consumes `case2Rhs`; `case8Rhs` consumes
-  `case2Rhs` at `q := ⊤`; `case6Rhs` and `case7Rhs` consume `case3Rhs` and `case8Rhs`. So three
-  of `sepSnce`'s four constituents carry extra `untl` types, and a type count over the whole
-  formula can rise across an elimination step.
-- **What is needed** — two routes, and the choice is a planning decision, not an implementation
-  one:
-  1. **Repair the layer.** Add a second Case 2 lemma whose right-hand side is GHR's printed
-     three-disjunct form `[S(a, q∧¬A) ∧ ¬A ∧ ¬U(A,B)] ∨ [¬A∧¬B∧S(a,¬A∧q)] ∨
-     S(¬A∧¬B∧q∧S(a,¬A∧q), q)`, which mentions `untl` only as `untl B A`, then re-derive Cases 3,
-     6, 7 and 8 through it. Additive throughout: `usTruth_case2` and `case2Rhs` keep their names,
-     signatures and proofs, and nothing landed is weakened. `uTypeCount` then works as the phase
-     specifies it.
-  2. **Change the measure.** Count `untl` occurrences lying *under a `snce`* rather than distinct
-     `untl` types. Phase 20's `isSeparated_sepSnce` already drives that count to zero for the
-     subformula it rewrites, and the extra types `case2Rhs` introduces all sit in the pure-future
-     part, where they are harmless. This leaves the landed layer untouched but redesigns the
-     measures of Phases 21, 22 and 23, which is why it is not an implementation-time
-     substitution.
-- **Prohibited workarounds**: do NOT use `sorry`, `def X := True`, or any vacuous placeholder for
-  the strict-decrease lemma; do NOT re-impose `IsSeparated` at 10.2.4's input position to make a
-  count work (decision D-f); and do NOT weaken `uTypeCount`'s decrease claim to a non-strict
-  bound, which would not terminate the induction.
+**Every anchor this phase transcribes was re-verified mechanically at dispatch 15** against the
+landed sources — the single contamination site and the absence of a third, the two contaminating
+types, the landed fold, `IsUTyped` and its closure lemmas, `case5Core`'s purity, and `sepSnce`'s
+four constituents at their `substU` pairs. The row-by-row record is the table in
+`### Revision Integration: Dispatch-15 Anchor Verification and the Shared Measure-Decrease Shape`.
+Cite it; do not re-derive it.
 
+**Why this costs less than the blocker entry estimates.** Two facts, both read off the landed
+sources by the dispatch-13 blocker research rather than inferred:
+
+- The contamination has exactly **one** source. Every `USForm.untl` in every definition of
+  `Eliminations.lean` and `ElimHard.lean` is already `untl B A`, except the two introduced at
+  `Eliminations.lean:193-194` inside `case2Rhs`: `untl USForm.top A.neg.neg`, from
+  `USForm.allFuture A.neg`, and `untl A.neg (A.neg.and B.neg)`, from `case1Rhs` at transformed
+  parameters. `case1Rhs`, `case4Rhs`, `case5W`, `case5Core` and `case5Rhs` are all already
+  type-clean. Repairing that single definition therefore cleans the whole downstream layer, and
+  the four re-derivations below are substitutions in Boolean positions, not new arguments.
+- The fold the landed proof omits -- GHR's own words at printed Case 2, "using lemma 10.2.2 again
+  (in reverse)" -- is already landed **as an iff, in both directions**: `usTruth_neg_untl` at
+  `NegationEquiv.lean:122`, stating `¬U(A,B) ↔ G¬A ∨ U(¬A∧¬B, ¬A)`. `Eliminations.lean` already
+  imports `NegationEquiv`, so this phase needs no new semantic argument, no new module and no new
+  import.
+
+**A term-order trap, to read before transcribing anything below.** `USForm.snce` takes the
+**guard first and the event second**: GHR's `S(a, q)` is `USForm.snce q a`. Every quotation in
+this phase is in GHR's notation and every Lean term is in `snce guard event` order. Transcribing
+one as the other yields a definition that typechecks and is wrong.
+
+**The source text this phase transcribes**, verbatim from
+`~/Projects/Literature/sources/gabbay_1994/ch1001_chapter-10-expressive-completeness-of-si.md`,
+Lemma 10.2.3 case 2 -- re-verified against the corpus by the dispatch-13 research and matching
+the quotation already carried in Phase 22's blocker record:
+
+```
+[S(a, q ∧ ¬A) ∧ ¬A ∧ ¬U(A, B)]
+∨ [¬A ∧ ¬B ∧ S(a, ¬A ∧ q)]
+∨ S(¬A ∧ ¬B ∧ q ∧ S(a, ¬A ∧ q), q).
+```
+
+Its only `untl` occurrence is the `¬U(A,B)` of the first disjunct, which is exactly `untl B A`.
+
+**Tasks**:
+
+- [ ] Add `case2RhsPrinted (a q A B : USForm) : USForm` to `Eliminations.lean`, beside
+      `case2Rhs` and changing nothing about it, at the printed form above:
+      `((USForm.snce (q.and A.neg) a).and (A.neg.and (USForm.untl B A).neg)).or`
+      `((A.neg.and (B.neg.and (USForm.snce (A.neg.and q) a))).or`
+      `(USForm.snce q (((A.neg.and B.neg).and q).and (USForm.snce (A.neg.and q) a))))`.
+      Quote the three printed disjuncts in its docstring and cite the corpus file and lemma
+      number, so a later reader can re-verify the transcription without the plan.
+- [ ] Prove `usTruth_case2_printed (a q A B) (v) (t) :`
+      `usTruth v t (USForm.snce q (a.and (USForm.untl B A).neg)) ↔ usTruth v t (case2RhsPrinted a q A B)`
+      by chaining the landed `usTruth_case2` with `usTruth_neg_untl` applied in the `←`
+      direction to fold `G¬A ∨ U(¬A∧¬B,¬A)` back into `¬U(A,B)`. Do not re-derive Case 2
+      semantically: if the proof needs a trichotomy on a witness, the fold has been reconstructed
+      instead of used, and `usTruth_neg_untl` is the lemma that was wanted.
+- [ ] Prove `isSeparated_case2RhsPrinted` at the same six-hypothesis shape every sibling in the
+      layer carries -- `(ha : IsSOnly a) (hq : IsSOnly q) (hAs : IsSOnly A) (hBs : IsSOnly B)`
+      `(hAu : IsUOnly A) (hBu : IsUOnly B)` -- so it is a drop-in for
+      `isSeparated_case2Rhs` at every call site.
+- [ ] Add `case3RhsPrinted a q A B :=`
+      `((USForm.allPast a.neg).or (case2RhsPrinted (a.neg.and q.neg) a.neg A B)).neg` to
+      `Eliminations.lean`, with `usTruth_case3_printed` and `isSeparated_case3RhsPrinted`. The
+      equivalence is Boolean congruence from `usTruth_case2_printed` at those parameters -- the
+      substituted position sits under `or` and `neg` only -- not a re-derivation of Case 3.
+- [ ] Add `case8RhsPrinted` to `ElimHard.lean`, identical to `case8Rhs` except that the
+      `case2Rhs a USForm.top A B` slot becomes `case2RhsPrinted a USForm.top A B`. Keep all three
+      disjuncts: the non-redundancy of the third is a landed, model-backed fact recorded at
+      `case8Rhs`, and it is unaffected by this substitution. Prove `usTruth_case8_printed` by the
+      same Boolean congruence, and `isSeparated_case8RhsPrinted`.
+- [ ] Add `case7RhsPrinted` and `case6RhsPrinted` to `ElimHard.lean`, each identical to its
+      landed sibling except in the one contaminated slot: `case7RhsPrinted` takes
+      `case8RhsPrinted` where `case7Rhs` takes `case8Rhs` (its `case4Rhs` slot is already
+      type-clean), and `case6RhsPrinted` takes `case3RhsPrinted` where `case6Rhs` takes
+      `case3Rhs` (its `case5Rhs` slot is already type-clean). Prove the two equivalences by
+      Boolean congruence and the two `IsSeparated` witnesses as above.
+- [ ] Add the `IsUTyped` witnesses in `NormalForm.lean`, beside the predicate that owns them, at
+      the hypothesis shape `(ha : IsSOnly a) (hq : IsSOnly q) (hAs : IsSOnly A) (hBs : IsSOnly B)`
+      -- the two `IsUOnly` halves are needed for separatedness, never for typedness, and asking
+      for them here would be a gratuitous strengthening. Nine are needed, one per right-hand side
+      the clean route reaches: `case1Rhs`, `case2RhsPrinted`, `case3RhsPrinted`, `case4Rhs`,
+      `case5W`, `case5Rhs`, `case6RhsPrinted`, `case7RhsPrinted`, `case8RhsPrinted`.
+      `case5Core` needs none -- it is `IsSOnly`, so `IsUTyped.ofIsSOnly` covers it. Each witness
+      is a structural term mirroring the shape of the corresponding `isSeparated_*` lemma, with
+      `IsUTyped.untl` where that lemma has `IsSeparated.untl`.
+- [ ] Rebuild `sepSnce`'s body in `NormalForm.lean` over the clean right-hand sides --
+      `case7RhsPrinted`, `case5Rhs`, `case8RhsPrinted`, `case6RhsPrinted` at exactly the four
+      `substU` parameter pairs it already uses -- keeping its name and signature. Re-prove
+      `usTruth_sepSnce` and `isSeparated_sepSnce` at their **exact existing statements**: both
+      proofs are structural in the four case lemmas, so each is a name swap to the `_printed`
+      siblings at the same parameters. D-g rules out the alternative of a `sepSncePrinted` sibling.
+- [ ] Prove `isUTyped_sepSnce {A B C F} (hAs : IsSOnly A) (hBs : IsSOnly B) (hC : IsUTyped A B C)`
+      `(hF : IsUTyped A B F) : IsUTyped A B (sepSnce A B C F)`, from the four witnesses above at
+      the `substU` parameters, whose `IsSOnly`-ness is already landed as `isSOnly_substU`. This
+      is GHR 10.2.4's second conclusion clause -- "in which `U` only appears as the formula
+      `U(A,B)`" -- and the deliverable Phase 20 excluded.
+- [ ] Amend `NormalForm.lean`'s module docstring: its "What this lemma does NOT yet deliver"
+      section now records what **is** delivered and by which declaration, and the repair it
+      prescribed is the one that landed. State in the same place that `case2Rhs` and
+      `usTruth_case2` are retained unchanged, and that the printed-form siblings are the route
+      every downstream measure consumes.
+- [ ] Regenerate `typst/generated/status.typ` and run the `typst-sync-check.sh --fix` step; the
+      declaration counts move even though no module is added.
+
+**Timing**: 2.5 hours
+
+**Depends on**: 20
+
+**Verification Tier**: local
+
+**Tier Justification**: Three existing modules in one import chain and no new module. The single
+command
+`bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Expressiveness.SeparationZ.NormalForm`
+rebuilds `Eliminations`, `ElimHard` and `NormalForm` together, and nothing outside the subtree
+references any of the names this phase adds or the one definition body it edits.
+
+**Scope Hypothesis**: five new `def`s, five equivalence theorems, five `IsSeparated` witnesses,
+ten `IsUTyped` witnesses (nine right-hand sides plus `sepSnce`), one edited definition body, and
+zero new modules. Confirm at implementation time by counting the `def`/`theorem` keywords added
+against that list; a count materially above it means a re-derivation was attempted where a
+congruence substitution was specified.
+
+**Files to modify**:
+
+- `FormalSystem/Metalogic/Expressiveness/SeparationZ/Eliminations.lean` - additive:
+  `case2RhsPrinted`, `case3RhsPrinted`, their equivalences and their `IsSeparated` witnesses.
+- `FormalSystem/Metalogic/Expressiveness/SeparationZ/ElimHard.lean` - additive:
+  `case8RhsPrinted`, `case7RhsPrinted`, `case6RhsPrinted`, their equivalences and their
+  `IsSeparated` witnesses.
+- `FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean` - the ten `IsUTyped`
+  witnesses, `sepSnce`'s rebuilt body, and the module docstring amendment.
+- `typst/generated/status.typ` - regenerated counts.
+
+**Verification**:
+
+- Scoped guarded build green for `NormalForm` and therefore for the whole chain.
+- `isUTyped_sepSnce` compiles sorry-free, and GHR 10.2.4 now carries both conclusion clauses as
+  proved witnesses.
+- **Blocking check -- nothing landed is weakened**: `git diff` shows no deletion or signature
+  change for `case2Rhs`, `usTruth_case2`, `isSeparated_case2Rhs`, `case3Rhs`, `case6Rhs`,
+  `case7Rhs`, `case8Rhs`, `usTruth_sepSnce` or `isSeparated_sepSnce`. `sepSnce`'s body is the one
+  landed body this phase edits; its name and signature are unchanged and the two lemmas about it
+  keep their exact statements. If any other landed statement has to move to make a proof go
+  through, stop and report rather than editing it.
+- **Blocking check -- no `IsSeparated` at an input position.** No declaration added here demands
+  `IsSeparated` where `IsUTyped` suffices. D-f is the ruling, and the `IsUTyped` witnesses are
+  precisely the declarations most at risk of over-hypothesising.
+- Zero `sorry`, zero vacuous definitions.
+
+---
+
+### Phase 22: GHR Lemmas 10.2.5 and 10.2.6 [NOT STARTED]
+
+**RESOLVED BLOCKER** (recorded at dispatch 12, resolved by this revision):
+
+- **What was found**: `uTypeCount`, "the number of distinct maximal `untl` subformulas", cannot
+  carry GHR 10.2.6's induction over the elimination layer **as that layer stood at dispatch 12**,
+  because Phase 20's `sepSnce` could increase it. The strict-decrease lemma was therefore false
+  of that layer, not merely unproved. The diagnosis was correct and nothing was edited in
+  response to it; Phase 20's equivalence and separatedness halves both landed and are green.
+- **Why**: `Eliminations.lean`'s `case2Rhs` carries `untl A.neg (A.neg.and B.neg)` and
+  `untl USForm.top A.neg.neg` beside `untl B A`, because GHR's printed Case 2 folds
+  `G¬A ∨ U(¬A∧¬B,¬A)` back into `¬U(A,B)` by Lemma 10.2.2 in reverse and the landed proof omits
+  that fold. `case3Rhs`, `case8Rhs`, `case7Rhs` and `case6Rhs` inherit it, so three of
+  `sepSnce`'s four constituents were contaminated.
+- **The ruling**: route 1, the layer repair, is now Phase 21, and decision D-g records why it was
+  chosen over route 2 (redesigning the measures). Phase 21 makes the layer type-clean, so
+  `uTypeCount` works exactly as this phase's task list specifies it, with no change to the
+  measure. The task list below is unchanged in substance from the one this blocker interrupted.
+- **Prohibited workarounds, still in force**: do NOT use `sorry`, `def X := True`, or any vacuous
+  placeholder for the strict-decrease lemma; do NOT re-impose `IsSeparated` at 10.2.4's input
+  position to make a count work (D-f); and do NOT weaken `uTypeCount`'s decrease claim to a
+  non-strict bound, which would not terminate the induction.
 
 **Goal**: The `snce`-nesting induction and the `U`-type-count induction, each with its measure
 defined structurally and its strict decrease proved rather than asserted. This reinstates the
@@ -1707,14 +1957,23 @@ deliverable Phase 9 excluded, and this task list is the operative one.
       whole device), separate for the remaining type by 10.2.5, reindex back, and re-separate the
       resulting impure pure-past parts by the induction hypothesis.
 - [ ] Prove the strict-decrease lemma for `uTypeCount` under abstract-separate-reindex as a named
-      obligation with its own statement; GHR assert it without proof.
+      obligation with its own statement; GHR assert it without proof. Decompose it by the three
+      parts of `### Revision Integration: Dispatch-15 Anchor Verification and the Shared
+      Measure-Decrease Shape` and discharge them in that order. Part 2 — separation does not raise
+      the count — is Phase 21's `isUTyped_sepSnce`: every `untl` the separated form introduces is
+      the one type already counted, so cite that lemma rather than re-establishing
+      type-cleanliness here. Part 1 is the abstraction's own drop. **Part 3 is the one to size
+      before starting**: the reindexed form's count must be bounded by the pre-abstraction count
+      less one, and that bound, not part 1, is what licenses the recursive call. This is the
+      cheapest of the plan's three instances of this obligation, because part 2 is landed and
+      10.2.6 retains a single `untl` type.
 - [ ] Where a step must discharge 10.2.4's hypothesis, discharge Phase 20's weaker predicate,
       never `IsSeparated`. D-f is the ruling.
 - [ ] README row, regenerated root, and the `typst-sync-check.sh --fix` step.
 
 **Timing**: 2.5 hours
 
-**Depends on**: 20
+**Depends on**: 21
 
 **Verification Tier**: local
 
@@ -1735,12 +1994,14 @@ covers the whole edit.
 - Scoped guarded build green for the new module.
 - Both measures are total structural recursions (no `partial`, no well-founded-recursion `sorry`),
   and each strict-decrease claim is a named, proved theorem.
+- The `uTypeCount` decrease obligation cites `isUTyped_sepSnce`; a proof that instead re-derives
+  type-cleanliness inline has duplicated Phase 21 and should be reduced to the citation.
 - No input position in the module demands `IsSeparated` where 10.2.4's weaker predicate suffices.
 - Zero `sorry`, zero vacuous definitions.
 
 ---
 
-### Phase 22: GHR Lemma 10.2.7 [NOT STARTED]
+### Phase 23: GHR Lemma 10.2.7 [NOT STARTED]
 
 **Goal**: The `untl`-nesting induction, for formulas with no `snce` nested within an `untl`. This
 reinstates the deliverable Phase 10 excluded, and this task list is the operative one.
@@ -1750,15 +2011,19 @@ reinstates the deliverable Phase 10 excluded, and this task list is the operativ
 - [ ] Add `UNesting.lean`. Define `untlDepth : USForm → ℕ`, the maximum nesting depth of `untl`
       beneath a `snce`, structurally.
 - [ ] Prove GHR 10.2.7 by induction on it: abstract each inner `untl Yᵢⱼ Xᵢⱼ` to a fresh leaf,
-      separate by Phase 21's 10.2.6, reindex back, and re-separate.
-- [ ] Prove the step's strict-decrease obligation explicitly, as in Phase 21.
+      separate by Phase 22's 10.2.6, reindex back, and re-separate.
+- [ ] Prove the step's strict-decrease obligation explicitly, by the same three-part
+      decomposition Phase 22 uses (see `### Revision Integration: Dispatch-15 Anchor Verification
+      and the Shared Measure-Decrease Shape`). Unlike Phase 22, part 2 has no landed counterpart
+      here: the non-increase of `untlDepth` under 10.2.6's separated form must be proved in this
+      module. Size part 3 — the bound on the reindexed form's depth — before starting.
 - [ ] State the hypothesis "no `snce` nested within an `untl`" as a decidable structural predicate
       on `USForm`, not as prose, so 10.2.8 can discharge it mechanically.
 - [ ] README row, regenerated root, and the `typst-sync-check.sh --fix` step.
 
 **Timing**: 1.5 hours
 
-**Depends on**: 21
+**Depends on**: 22
 
 **Verification Tier**: local
 
@@ -1783,7 +2048,7 @@ covers it.
 
 ---
 
-### Phase 23: Junction Depth, GHR Lemma 10.2.8 and Theorem 10.2.9 [NOT STARTED]
+### Phase 24: Junction Depth, GHR Lemma 10.2.8 and Theorem 10.2.9 [NOT STARTED]
 
 **Goal**: Junction depth is a structural measure with proved monotonicity bounds and a proved
 strict decrease, GHR 10.2.8 holds, and the Separation Theorem over `ℤ` follows. This reinstates
@@ -1802,21 +2067,27 @@ candidate.
       `jd_untl_le_left` and siblings indicate the shape; re-derive each, do not transplant.
 - [ ] Prove that `junctionDepth ψ ≤ 1` implies `IsSeparated ψ`.
 - [ ] Prove GHR 10.2.8 by strong recursion on `junctionDepth`: abstract each maximal `snce E F`
-      inside a maximal `untl Bᵢ Aᵢ` to a fresh leaf, separate by Phase 22's 10.2.7, reindex back,
+      inside a maximal `untl Bᵢ Aᵢ` to a fresh leaf, separate by Phase 23's 10.2.7, reindex back,
       and prove the result's junction depth is strictly smaller. **That strict decrease is the
-      phase's central named obligation** -- GHR assert it with no proof.
+      phase's central named obligation** -- GHR assert it with no proof. Decompose it by the three
+      parts of `### Revision Integration: Dispatch-15 Anchor Verification and the Shared
+      Measure-Decrease Shape`. Part 2 (separation by 10.2.7 does not raise `junctionDepth`) must
+      be proved here; no landed counterpart exists. **Part 3 is this plan's declared stall
+      candidate**: discharging parts 1 and 2 and finding the recursion still not well-founded is
+      the contemplated stall reached at the right place, not a failure, and
+      `## Rollback/Contingency` governs from there. Size part 3 first.
 - [ ] Prove Theorem 10.2.9: every `USForm` has a syntactically separated equivalent at every `v`
       and `t`, as a function `sep : USForm → USForm` together with
       `usTruth_sep_iff : usTruth v t (sep ψ) ↔ usTruth v t ψ` and
       `isSeparated_sep : IsSeparated (sep ψ)`.
 - [ ] Declare `sep` as a plain `def` with no `noncomputable` keyword. If the recursion needs
-      `Classical.choose` anywhere, the construction is wrong -- Phase 25's executability
+      `Classical.choose` anywhere, the construction is wrong -- Phase 26's executability
       deliverable depends on `sep` being computable.
 - [ ] README row, regenerated root, and the `typst-sync-check.sh --fix` step.
 
 **Timing**: 3 hours
 
-**Depends on**: 22
+**Depends on**: 23
 
 **Verification Tier**: local
 
@@ -1843,7 +2114,7 @@ covers it, and `sep`'s computability is checked inside the same build by the abs
 
 ---
 
-### Phase 24: CNF Packaging and the Discharge of `SeparationOver` [NOT STARTED]
+### Phase 25: CNF Packaging and the Discharge of `SeparationOver` [NOT STARTED]
 
 **Goal**: A separated `USForm` is packaged into the binary clause list `sepForm` consumes, and
 `sepZ`, `sepZ_sepClauses`, `plusTruthAt_sepZ_iff` and `separationOver_ztime` land. This reinstates
@@ -1852,8 +2123,12 @@ the deliverable Phase 12 excluded, and this task list is the operative one.
 **Tasks**:
 
 - [ ] Add `Packaging.lean`. Classify each literal of a separated `USForm`'s Boolean skeleton as
-      past-admissible, future-admissible, or both (leaves are both); CNF-normalize the skeleton by
-      Phase 20's `cnf`; and per clause put the `snce`-only and leaf literals in the first
+      past-admissible, future-admissible, or both (leaves are both); CNF-normalize the skeleton
+      with a `cnf` function of this module's own -- Phase 20's `#### Reasoned Exclusions` replaced
+      the general `dnf`/`cnf` it was to have provided with the `untl`-literal normal form
+      (`substU`, `usTruth_event_split`, `usTruth_guard_split`), so no general `cnf` exists in the
+      tree and this phase must build the one it needs; and per clause put the `snce`-only and leaf
+      literals in the first
       component and the `untl`-only literals in the second, padding an absent side with
       `PlusFormula.bot` (a leaf constructor of both `IsPurePast` and `IsPureFuture`).
 - [ ] Prove the packaging's truth-preservation lemma: the packaged clause list's `sepForm` is
@@ -1867,7 +2142,7 @@ the deliverable Phase 12 excluded, and this task list is the operative one.
       `pastDet_of_isPurePast` and `futDet_of_isPureFuture`. Purity is frame-independent, so the
       `hreg`/`hz` hypotheses are consumed only to match `SeparationOver`'s shape.
 - [ ] Prove `plusTruthAt_sepZ_iff` by routing through Phase 2's carrier bridge and
-      `plusValidZTime_iff_plusValidInt` to `t : ℤ`, then Phase 2's truth transfer, Phase 23's
+      `plusValidZTime_iff_plusValidInt` to `t : ℤ`, then Phase 2's truth transfer, Phase 24's
       `usTruth_sep_iff` and the packaging lemma.
 - [ ] Prove `separationOver_ztime : SeparationOver TaskFrame.IsZTime` as
       `fun φ => ⟨sepZ φ, fun F hreg hz => ⟨sepZ_sepClauses φ F hreg hz, plusTruthAt_sepZ_iff φ hreg hz⟩⟩`,
@@ -1878,7 +2153,7 @@ the deliverable Phase 12 excluded, and this task list is the operative one.
 
 **Timing**: 2.5 hours
 
-**Depends on**: 23
+**Depends on**: 24
 
 **Verification Tier**: local
 
@@ -1915,7 +2190,7 @@ declared paths and by checking each of the four contract names resolves at its
 
 ---
 
-### Phase 25: The Computable Translation `trZ` [NOT STARTED]
+### Phase 26: The Computable Translation `trZ` [NOT STARTED]
 
 **Goal**: A computable ZTime translation beside the frozen `noncomputable tr`, with its own truth-
 preservation and validity-transfer theorems, both unconditional. This reinstates the deliverable
@@ -1948,11 +2223,11 @@ Phase 13 excluded, and this task list is the operative one.
 
 **Timing**: 1.5 hours
 
-**Depends on**: 24
+**Depends on**: 25
 
 **Verification Tier**: local
 
-**Tier Justification**: One additive module naming only existing declarations and Phase 24's new
+**Tier Justification**: One additive module naming only existing declarations and Phase 25's new
 ones, with no existing signature changed, so
 `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Expressiveness.SeparationZ.Computable`
 covers it.
@@ -1977,7 +2252,7 @@ covers it.
 
 ---
 
-### Phase 26: Documentation, Theorem-Index Restatement and Re-measured Axiom Baselines [NOT STARTED]
+### Phase 27: Documentation, Theorem-Index Restatement and Re-measured Axiom Baselines [NOT STARTED]
 
 **Goal**: The three documentation items Phase 14 excluded land, now that
 `separationOver_ztime` exists, and the seven contract declarations get measured C14 pins. Phase
@@ -1999,7 +2274,7 @@ covers it.
 - [ ] Correct the Expressiveness-band preamble and the `ℤ`-validities sub-band text Phase 14
       landed: both currently record that the separation hypothesis is discharged nowhere in this
       tree, which the discharge makes false.
-- [ ] Add rows for the declarations of Phases 17-25, the seven contract declarations among them.
+- [ ] Add rows for the declarations of Phases 17-26, the seven contract declarations among them.
 - [ ] Measure the axiom profile of each of the seven contract declarations with `#print axioms`
       (or `lean_verify`) against the built tree and paste the **measured** output. Never hand-type
       a profile.
@@ -2022,7 +2297,7 @@ covers it.
 
 **Timing**: 2 hours
 
-**Depends on**: 25
+**Depends on**: 26
 
 **Verification Tier**: interface
 
@@ -2034,7 +2309,7 @@ followed by `bash scripts/check-module-invariants.sh`, which is what actually ch
 C15 and C33 over the changed import graph and baselines.
 
 **Scope Hypothesis**: Three restated `.ZTime` rows, one corrected band preamble and sub-band text,
-new rows for the Phases 17-25 declarations, and matched C14 pairs for however many of the seven
+new rows for the Phases 17-26 declarations, and matched C14 pairs for however many of the seven
 contract declarations report a `depends on axioms` line. Confirm at implementation time from the
 measured `#print axioms` output itself, not from this estimate.
 
@@ -2067,7 +2342,7 @@ measured `#print axioms` output itself, not from this estimate.
 
 ---
 
-### Phase 27: Full Gate Sweep and Commit [NOT STARTED]
+### Phase 28: Full Gate Sweep and Commit [NOT STARTED]
 
 **Goal**: The complete gate set green against its pre-task baselines, with zero `sorry`, zero
 vacuous definitions and no new axiom beyond what the landed eliminations already carry. This
@@ -2104,7 +2379,7 @@ reinstates Phase 15 over the enlarged tree.
 
 **Timing**: 1 hour
 
-**Depends on**: 26
+**Depends on**: 27
 
 **Verification Tier**: full
 
@@ -2206,14 +2481,24 @@ Contingency branches:
   the DAG is a reconstruction rather than a transcription. Do not fall back to the direct semantic
   re-anchoring D-e forbids. Record which edge resists, the source text consulted, and what a
   correct derivation of that edge would need; close Phase 16 as `[COMPLETED WITH EXCLUSIONS]` with
-  that evidence and do not attempt Phases 17-27 as written. A partial DAG still licenses the cases
+  that evidence and do not attempt Phases 17-28 as written. A partial DAG still licenses the cases
   downstream of the edges that *were* named: if Case 8's edge holds and Case 7's does not, land
   Cases 5 and 8 and locate the obstruction at Case 7.
-- **Phase 23's junction-depth strict decrease resists proof.** Now the primary stall candidate: it
+- **Phase 21's Case 2 transcription cannot be proved equivalent to the landed `case2Rhs`.** The
+  fold is misapplied, or the printed form was transcribed with `USForm.snce`'s arguments
+  reversed. Re-read the corpus quotation carried in Phase 21 and the `snce guard event` note
+  above it before touching the mathematics; `usTruth_neg_untl` is an iff, so a failure here is a
+  transcription or orientation error, not a missing semantic fact. Only if the printed form is
+  genuinely refutable over `ℤ` does this become an obstruction: exhibit the refuting model, close
+  Phase 21 as `[COMPLETED WITH EXCLUSIONS]` with it, and fall back to route 2 of the blocker
+  Phase 22 records -- recount `untl` occurrences lying under a `snce` instead of counting
+  distinct types, which leaves the landed layer untouched but redesigns the measures of Phases
+  22, 23 and 24. Do not weaken `uTypeCount`'s decrease to a non-strict bound in either branch.
+- **Phase 24's junction-depth strict decrease resists proof.** Now the primary stall candidate: it
   was never reached under the earlier route, so no measurement of it exists yet. Locate the
   obstruction precisely -- which abstraction step fails to reduce the measure, the goal state
-  reached, and what would unblock it -- close Phase 23 and its dependents as
-  `[COMPLETED WITH EXCLUSIONS]` with that evidence, and land Phases 16-22. A `sorry` is not an
+  reached, and what would unblock it -- close Phase 24 and its dependents as
+  `[COMPLETED WITH EXCLUSIONS]` with that evidence, and land Phases 16-23. A `sorry` is not an
   option.
 - **Phase 5's gate fails for one or more of Cases 5-8** (fewer than four candidates survive
   probing). This was the plan's primary contingency and is the branch taken at dispatch 7. Do not
