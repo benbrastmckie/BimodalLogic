@@ -2,7 +2,7 @@
 
 - **Task**: 880 - Reposition L^▷ in the prose surfaces as an extension under exploration, with
   L⁺ as the front, and record the Logos reading of the stability modal
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.25 hours
 - **Dependencies**: 856 (complete), 871 (complete)
 - **Research Inputs**: `specs/880_reposition_open_language_docs_and_logos_reading/reports/01_open-language-repositioning-and-logos-reading.md`
@@ -110,15 +110,15 @@ No `roadmap_path` was provided in the delegation context; no ROADMAP.md consulta
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Re-verify `OpenLanguage/README.md` against the tree [NOT STARTED]
+### Phase 1: Re-verify `OpenLanguage/README.md` against the tree [COMPLETED]
 
 **Goal**: Establish, by reading the live file and the tree, whether any claim in
 `FormalSystem/OpenLanguage/README.md` still contradicts what the tree proves — and edit only
 what does.
 
 **Tasks**:
-- [ ] Read `FormalSystem/OpenLanguage/README.md` in full.
-- [ ] Re-verify each of the three contradictions the transfer-ledger report
+- [x] Read `FormalSystem/OpenLanguage/README.md` in full. *(completed)*
+- [x] Re-verify each of the three contradictions the transfer-ledger report
       (`specs/872_open_language_transfer_ledger/reports/01_open-language-transfer-ledger.md`,
       finding "`OpenLanguage/README.md` now contradicts the tree") enumerates, against the
       current tree rather than against the ledger's pinned commit:
@@ -128,14 +128,19 @@ what does.
       equals `ls FormalSystem/OpenLanguage/*.lean | wc -l`;
       (c) agreement between the README and
       `FormalSystem/Metalogic/Conservativity/Open.lean`'s module docstring.
-- [ ] Confirm the four positive claims the dispatch requires are present and accurate: sound
+      *(completed: all three resolved — (a) the README's third paragraph states the proof
+      system's exact scope; (b) 9 generated rows = 9 `.lean` files via `ls`; (c) the docstring
+      and README state the same soundness/conservativity/no-completeness/class-split claims)*
+- [x] Confirm the four positive claims the dispatch requires are present and accurate: sound
       proof system; conservative over TM⁺ in both directions; definability split by frame class
       (`.ZTime`/`.RTime` definable, `.Base`/`.Dense` not); no completeness claim at any class.
-- [ ] Edit **only** a claim that still contradicts the tree. If none does — the expected
+      *(completed: all four already present and accurate)*
+- [x] Edit **only** a claim that still contradicts the tree. If none does — the expected
       outcome — make no edit and record the attestation in the phase's handoff and via
-      `issue-record.sh --kind win`.
-- [ ] Do not touch the file's `BEGIN GENERATED` block under any outcome; a row-count mismatch at
-      step (b) is reported, not hand-fixed.
+      `issue-record.sh --kind win`. *(completed: no contradiction found; zero-diff attestation
+      recorded via issue-record.sh)*
+- [x] Do not touch the file's `BEGIN GENERATED` block under any outcome; a row-count mismatch at
+      step (b) is reported, not hand-fixed. *(completed: no row-count mismatch; block untouched)*
 
 **Timing**: 0.25 hours
 

@@ -114,7 +114,7 @@ next_project_number: 885
 
 ### Documentation
 
-880 [PLANNED] — Reposition L^▷ in the READMEs and record the Logos reading of...
+880 [IMPLEMENTING] — Reposition L^▷ in the READMEs and record the Logos reading of...
 
 ### Formula Refactor
 
@@ -384,7 +384,7 @@ Two obstructions found during the L-open work, worth confirming survive the gene
 ---
 
 ### 880. Reposition L^▷ in the READMEs and record the Logos reading of the stability modal
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: Task 856, Task 871
