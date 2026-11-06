@@ -99,7 +99,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Deterministic.lean` | 31 | <!-- TODO: add description --> |
 | `Expressiveness.lean` | 112 | `Expressiveness/` |
 | `Independence.lean` | 268 | `Independence/` |
-| `SoundnessLemmas.lean` | 38 | `SoundnessLemmas/` |
+| `SoundnessLemmas.lean` | 42 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 142 | `WeakCanonical/` |
 <!-- END GENERATED -->
 
@@ -154,14 +154,14 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Algebraic/`](Algebraic/README.md) | 5 | 2,415 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
 | [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,165 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,863 | Bundled families of MCSs and their coherence conditions |
-| [`Conservativity/`](Conservativity/README.md) | 32 | 11,693 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
+| [`Conservativity/`](Conservativity/README.md) | 32 | 11,157 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`ConvexConsequence/`](ConvexConsequence/README.md) | 6 | 1,388 | The metatheory of the convex-index consequence relations C3 and C4 of `Semantics/ConvexTruth.lean`: the separations from C1 and from each other, and the axiom-survival table as one theorem per row |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 182 | 112,436 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 9 | 2,072 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Expressiveness/`](Expressiveness/README.md) | 149 | 106,270 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 30 | 9,269 | Axiom-independence models |
-| [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 5 | 1,515 | Per-axiom validity lemmas feeding `Soundness.lean` |
+| [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 6 | 2,955 | Per-axiom validity lemmas feeding `Soundness.lean` |
 | [`WeakCanonical/`](WeakCanonical/README.md) | 45 | 29,303 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 

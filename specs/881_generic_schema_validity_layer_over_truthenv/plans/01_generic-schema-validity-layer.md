@@ -762,21 +762,42 @@ line-recovery, and the plan said to measure rather than assume it.
 
 ---
 
-### Phase 12: Documentation, inventories and the full gate sweep [NOT STARTED]
+### Phase 12: Documentation, inventories and the full gate sweep [COMPLETED]
 
 **Goal**: Bring every generated and hand-written record into line, and clear the whole CI gate
 set.
 
 **Tasks**:
-- [ ] Regenerate the `<!-- BEGIN GENERATED: inventory -->` blocks for
+- [x] Regenerate the `<!-- BEGIN GENERATED: inventory -->` blocks for
       `FormalSystem/Metalogic/SoundnessLemmas/README.md`, `FormalSystem/Semantics/README.md`,
       `FormalSystem/Metalogic/Conservativity/Star/README.md` and
       `FormalSystem/Metalogic/Conservativity/Open/README.md`, and refresh each README's
       "Last verified" date.
-- [ ] Update `docs/theorem-index.md` rows whose files changed size or whose proof route changed.
-- [ ] Run `python3 scripts/reanchor-lean-citations.py --by-name --files <each changed .lean>`
+      *(done via the sanctioned generator, `check-module-invariants.sh --emit-inventory`;
+      `readme-inventory.sh` is a deprecated shim. It rewrote **12** files, not 4 — the extra ones
+      are the directories whose `.lean` line counts moved (the seven language modules,
+      `Conservativity/Plus/`) plus the two roll-up tables in `FormalSystem/Metalogic/README.md`
+      and the repository `README.md`. `Conservativity/Open/README.md` needed a hand edit instead:
+      its row named the now-deleted `openKPlus_iff`/`openKMinus_iff`. `Semantics/README.md`'s
+      `TruthClauses.lean` row was extended by hand to name `AtomClause` and the gap operators.
+      `Last verified` refreshed on the three directories this task changed; the ~20 other stale
+      dates `readme-lint.sh` reports pre-date this work and were left alone.)*
+- [x] Update `docs/theorem-index.md` rows whose files changed size or whose proof route changed.
+      *(measured: **no row needed editing.** The index carries no row for
+      `starAxiom_validIn_min`, `plusAxiom_validIn_min` or any `TruthClauses.*` name; the four
+      rows naming `OpenAxiomValidity.lean` declarations all name preserved declarations in an
+      unmoved file, and the index records no line numbers or file sizes. Its axiom column is
+      generated from the C2/C14 baselines rather than typed, and `pcq` — its abbreviation for
+      `[propext, Classical.choice, Quot.sound]` — still matches the measured profile of all
+      three dispatchers.)*
+- [x] Run `python3 scripts/reanchor-lean-citations.py --by-name --files <each changed .lean>`
       and read the diff; repair rather than baseline any C20 finding.
-- [ ] Full gate sweep, each run and each result reported:
+      *(run over all 13 changed `.lean` files: **0 citations re-pointed, 0 citer files touched.**
+      `check-module-invariants.sh` did report one citation-manifest problem — `Semantics.TruthAt`'s
+      span end moved 273 → 279 because the `AtomClause Formula` instance was inserted inside it —
+      repaired with its own sanctioned command, `python3 scripts/export-lean-citations.py`, not
+      by baselining. `scripts/c20-declaration-baseline.txt` is unchanged at 22 lines.)*
+- [x] Full gate sweep, each run and each result reported:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`;
       `bash scripts/check-evidence-probes.sh`;
       `bash scripts/check-module-invariants.sh --no-build`;
@@ -787,8 +808,17 @@ set.
       `bash scripts/check-paper-definitions.sh`;
       the `BimodalTest` test driver; and the warning budget
       (`python3 scripts/warning-budget.py`).
-- [ ] Measure and report the actual net line delta across the three rewired files against the
+- [x] Measure and report the actual net line delta across the three rewired files against the
       new module, replacing the plan's ~1,500-line hypothesis with a measured number.
+      *(measured, and the hypothesis is **wrong**: net Lean delta across every touched file is
+      **8,827 → 9,862, +1,035 lines**. −555 recovered from the two transcriptions (Star
+      1,479 → 1,213; Open 2,587 → 2,298) against +1,440 for the new module, +64 for the clause
+      interface, +19 for L⁺'s docstring record, +67 for instances, test pins and aggregators. The
+      ~1,500 figure mistook each file's total size for its duplicated-proof content: Star's 1,479
+      lines also held the 16 register schemata and two 69-arm dispatchers, the removed bodies are
+      replaced by 2–4-line delegations rather than by nothing, and 299 of the new module's 1,440
+      lines are its extension-contract docstring and section prose. The payoff is
+      single-statement, not fewer lines.)*
 
 **Timing**: 1.5 hours
 
@@ -800,6 +830,11 @@ set.
 to need regeneration. Confirm by running `bash scripts/readme-lint.sh FormalSystem BimodalTools`
 first and acting on what it reports, rather than on this list.
 
+*(confirmed by running it: `readme-lint.sh` PASSes, so its findings are informational. The
+authoritative report is `check-module-invariants.sh`'s INV check, which named **11** stale
+inventory blocks, not 4; `--emit-inventory` rewrote 12. `docs/theorem-index.md` needed **no**
+change. Acted on what the tools reported, not on the list.)*
+
 **Files to modify**:
 - `FormalSystem/Metalogic/SoundnessLemmas/README.md` - inventory block, Last verified
 - `FormalSystem/Semantics/README.md` - inventory block, Last verified
@@ -810,9 +845,31 @@ first and acting on what it reports, rather than on this list.
 **Verification**:
 - Every gate above exits 0; any that does not is reported with its output verbatim, not
   summarised as "mostly passing".
-- `scripts/c20-declaration-baseline.txt` has not grown.
-- `scripts/nolints.json` is unmodified.
-- No `sorry` anywhere in the changed files.
+  *(all green except one, reported rather than summarised: `check-paper-definitions.sh` exits 1
+  with 9 drifted definitions against `docs/reference/paper-definitions-of-record.md`. The drift is
+  in the live LaTeX source at `~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`,
+  outside this repository — the first shown is `\begin{enumerate}[wide=0pt, labelsep=.1in,
+  itemsep=.075in]` → `\begin{enumerate}[named]` in `def:task-relation`. This task touched no
+  `.tex` file and no file under `docs/reference/` (the record was last committed 2026-10-18), so
+  the failure pre-dates this work and is not repaired here. Green: full `lake build` (2,958 jobs,
+  0 errors, 0 warnings), `lake test` (3,022 jobs), `check-module-invariants.sh --no-build` (ALL
+  CHECKS PASSED, after repairing INV/C33/C35 with their own sanctioned commands),
+  `check-evidence-probes.sh` (52 probes), `check-copyright-headers.sh --strict` (0 of 779
+  nonconforming), `readme-lint.sh`, `check-metalogic-cycles.sh` (still exactly one
+  directory-level cycle), `typst-sync-check.sh` (4/4), `warning-budget.py` (0 warnings).)*
+- `scripts/c20-declaration-baseline.txt` has not grown. *(22 lines before and after.)*
+- `scripts/nolints.json` is unmodified. *(confirmed: not in `git status`. Task 889 holds it.)*
+- No `sorry` anywhere in the changed files. *(`lean-sorry-census.sh` over the resolved source
+  roots: `sorry_count: 0`, empty inventory. Axiom count 14 → 14, unchanged.)*
+
+**Batch Gate Deferral, discharged**: this dispatch's directive defers the complete agent-system
+gate set (`.claude/scripts/tests/run-all.sh`, `verify-deploy.sh`) to the batch stage. No
+narrowing `--only` invocation covers this phase's files, because that set tests the agent
+system's own shell scripts and this task modified **no** file under `.claude/**` and no shell
+script — its `modified_files` are Lean library and test sources, generated typst status, the
+citation manifest, and READMEs. The deferral is therefore recorded as vacuous for this task
+rather than discharged against a scope it does not reach, and the project's own Lean gate set —
+which is what actually verifies this work — was run in full above.
 
 ---
 
