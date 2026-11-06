@@ -1,7 +1,7 @@
 # Implementation Plan: Task #837
 
 - **Task**: 837 - Challenge statement repair: ParamsOk quantification
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.25 hours
 - **Dependencies**: None (parent: task 761, currently `[HOLD]`)
 - **Research Inputs**: None (no research dispatch ran this round; the evidence base is the landed
@@ -158,36 +158,36 @@ no live plan carries.
 Phases within the same wave can execute in parallel; this plan's chain is linear, because each
 phase cites the artifact the previous one produced.
 
-### Phase 1: Re-derive the As-Landed Baseline [NOT STARTED]
+### Phase 1: Re-derive the As-Landed Baseline [COMPLETED]
 
 **Goal**: Confirm, by command, that repair (a) is the recorded and landed repair and that the
 design-of-record gap is real — before a single word is written. This phase produces no tree
 change; its output is the corrected anchor set Phases 2 and 3 cite.
 
 **Tasks**:
-- [ ] Confirm both Challenge statements carry the hypothesis:
+- [x] Confirm both Challenge statements carry the hypothesis:
       `grep -n 'hp : ParamsOk' specs/761_ladder_realization_theorem/plans/11_idle-insertion-cascade-restatement.md`
       — expect hits inside the `## Lean Challenge Statements` block for `cellAt_const_of_kappa_eq`
       and `ladderRealized`, and transcribe both signatures verbatim for Phase 2.
-- [ ] Confirm the adopting round: `ls specs/761_ladder_realization_theorem/plans/` shows
+- [x] Confirm the adopting round: `ls specs/761_ladder_realization_theorem/plans/` shows
       `03_ladder-paramsok-parameter-repair.md`, and
       `grep -n 'Lean Challenge Statements' specs/761_ladder_realization_theorem/plans/03_ladder-paramsok-parameter-repair.md`
       locates the block that first recorded the repair.
-- [ ] Confirm the landed Lean layer:
+- [x] Confirm the landed Lean layer:
       `grep -n 'def ParamsOk\|theorem paramsOk_params\|not_paramsOk_allZero' FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean`
       — record the actual line numbers found, which supersede the ones this plan cites.
-- [ ] Confirm the `rk_of_count_drift` counter-case is in-source:
+- [x] Confirm the `rk_of_count_drift` counter-case is in-source:
       `grep -n 'ParamsOk. is NOT a hypothesis here' FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean`.
-- [ ] Confirm the second inconsistency is settled:
+- [x] Confirm the second inconsistency is settled:
       `grep -n '^### Phase 8' specs/761_ladder_realization_theorem/plans/11_idle-insertion-cascade-restatement.md`
       shows `[COMPLETED]`, and `grep -rn 'realizes_of_certAdm_cohBi' FormalSystem/ --include=*.lean`
       shows the promoted layer in `Certificate.lean`.
-- [ ] Confirm the design-of-record gap:
+- [x] Confirm the design-of-record gap:
       `grep -n 'Amended by\|ParamsOk' specs/archive/757_lplus_decidability_successor_task_set/followup-scope-spec.md`
       — expect exactly two `**Amended by**` paragraphs, both dated 2026-10-18, and ZERO `ParamsOk`
       occurrences. If `ParamsOk` now appears there, the gap is already closed and Phase 3 narrows
       to whatever remains; record that outcome rather than writing a redundant amendment.
-- [ ] Confirm the archive tree is gitignored (`grep -n 'specs/archive' .gitignore`), which is the
+- [x] Confirm the archive tree is gitignored (`grep -n 'specs/archive' .gitignore`), which is the
       reason Phase 3 writes a durable tracked copy.
 
 **Timing**: 0.5 hours
