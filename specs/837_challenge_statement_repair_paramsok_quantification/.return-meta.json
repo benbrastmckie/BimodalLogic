@@ -1,39 +1,40 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/837_challenge_statement_repair_paramsok_quantification/plans/01_parameter-hypothesis-repair-ratification.md",
-      "summary": "Four-phase records-only plan ratifying the already-landed ParamsOk parameter-hypothesis repair into the design of record and settling the realizes_of_certAdm_cohBi directive conflict."
+      "type": "summary",
+      "path": "specs/837_challenge_statement_repair_paramsok_quantification/summaries/01_parameter-hypothesis-repair-ratification-summary.md",
+      "summary": "Records-only round: ratified the already-landed ParamsOk parameter-hypothesis repair into the design of record and settled the realizes_of_certAdm_cohBi directive conflict; no Lean source written."
     }
+  ],
+  "completion_data": {
+    "completion_summary": "Ratified repair (a), the ParamsOk hypothesis, as the adopted repair for the refuted Challenge statements cellAt_const_of_kappa_eq and ladderRealized, in a durable decision record quoting both revised statements verbatim with their discharge witness (paramsOk_params) and load-bearing companion (not_paramsOk_allZero). Closed the records gap by appending three dated **Amended by** paragraphs to the design of record (Sections A, C and the H4 record) and reproducing them verbatim in a tracked copy, since specs/archive/ is gitignored. Settled the realizes_of_certAdm_cohBi directive conflict in favour of promotion at the K-free carrier ProdState Q phi, with its Certificate.lean anchors. No .lean file was written and neither theorem was proved.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "specs/837_challenge_statement_repair_paramsok_quantification/plans/01_parameter-hypothesis-repair-ratification.md",
+    "specs/837_challenge_statement_repair_paramsok_quantification/records/01_parameter-hypothesis-repair-ratification.md",
+    "specs/837_challenge_statement_repair_paramsok_quantification/records/design-of-record-amendment-2026-11-06.md",
+    "specs/837_challenge_statement_repair_paramsok_quantification/summaries/01_parameter-hypothesis-repair-ratification-summary.md",
+    "specs/837_challenge_statement_repair_paramsok_quantification/issues.jsonl"
   ],
   "metadata": {
-    "session_id": "sess_1793949238_9d766e_837",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1793949238_9d766e",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 3.25,
-    "dependency_waves": 4
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "skipped",
+    "compliance_check_reason": "The plan declares Lean Intent: false and writes no .lean file; its phases name no Goals block of theorem declarations, so lean-plan-compliance-check.sh has no declaration set to check. The plan's own equivalent (verbatim-signature diff against plan 11's Lean Challenge Statements block) ran and passed.",
+    "gate_tier": "scoped",
+    "gate_deferral": "Phase 4's **Verification Tier**: full was discharged against run-all.sh --only over the 12 covering suites (12 passed, 0 failed) per this dispatch's Batch Gate Deferral directive; the complete set runs once for the whole batch at the end of the invocation.",
+    "preexisting_gate_failure": "check-record-versioning.sh exits 1 on 6 BLOCKING occurrences in Boneyard/** and FormalSystem/Metalogic/Expressiveness/Kamp/** Lean files, none touched by this round; the lint excludes specs/**, where every file this round wrote lives."
   },
-  "user_decision": {
-    "question": "Task 837's stated deliverable -- decide between repair (a) ParamsOk and repair (b) existential quantification -- is already settled: task 761 adopted repair (a) via its plans/03 /revise round, both Challenge statements already carry (hp : ParamsOk step pend lab phi Tc Tn P B) in plan 11's recorded block, and ParamsOk/paramsOk_params/not_paramsOk_allZero are landed and compiled. Only a records gap remains (the design of record carries no ratification). Should 837 run the narrowed records-only round, or be closed as superseded?",
-    "options": [
-      "Run the narrowed records-only round -- ratify the repair into the design of record, add the durable tracked copy, settle the realizes_of_certAdm_cohBi conflict (~3.25h, no Lean work)",
-      "Close task 837 as superseded by task 761's plans/03 revision round and leave the design of record stale"
-    ],
-    "recommended": "Run the narrowed records-only round -- ratify the repair into the design of record, add the durable tracked copy, settle the realizes_of_certAdm_cohBi conflict (~3.25h, no Lean work)",
-    "blocking": false
-  },
-  "memory_candidates": [
-    {
-      "content": "A task spun off from a parent task's 'user decision required' follow-up can be silently superseded by the parent's own later /revise rounds. Before planning such a spin-off, read the parent's CURRENT plan artifact (specs/{parent}/plans/ highest-numbered file and specs/state.json's artifacts list), not the summary that generated the follow-up: a /revise round is the sanctioned route for changing a recorded Lean Challenge statement, so the decision the spin-off was created to make may already have been taken and landed there. In this repository the check is cheap -- grep the parent's current plan's '## Lean Challenge Statements' block for the proposed hypothesis, and grep the library for the proposed definition and its discharge lemma.",
-      "category": "PATTERN",
-      "source_artifact": "specs/837_challenge_statement_repair_paramsok_quantification/plans/01_parameter-hypothesis-repair-ratification.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["spin-off-task", "statement-fidelity", "revise-lineage", "superseded-premise", "lean-challenge-statements", "parent-task-drift"]
-    }
-  ],
-  "next_steps": "Run /orchestrate 837 to execute the plan",
-  "dispatch_seq": 4
+  "dispatch_seq": 9
 }

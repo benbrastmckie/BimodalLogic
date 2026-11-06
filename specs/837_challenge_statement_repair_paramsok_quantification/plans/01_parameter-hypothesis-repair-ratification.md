@@ -332,27 +332,27 @@ no executable surface, the `__FULL_SWEEP__` sub-case (a), so the honest covering
 
 ---
 
-### Phase 4: Full Gate, Summary, and Scoped Commit [NOT STARTED]
+### Phase 4: Full Gate, Summary, and Scoped Commit [COMPLETED]
 
 **Goal**: The repository's complete gate set is green over the round's changes, the round is
 summarized, and the work is committed with scoped staging.
 
 **Tasks**:
-- [ ] `bash .claude/scripts/validate-artifact.sh specs/837_challenge_statement_repair_paramsok_quantification/plans/01_parameter-hypothesis-repair-ratification.md plan`
+- [x] `bash .claude/scripts/validate-artifact.sh specs/837_challenge_statement_repair_paramsok_quantification/plans/01_parameter-hypothesis-repair-ratification.md plan`
       — read the exit status.
-- [ ] `bash .claude/scripts/check-task-references.sh` — expect 0 unexempted occurrences outside
+- [x] `bash .claude/scripts/check-task-references.sh` — expect 0 unexempted occurrences outside
       `specs/**`; every file this round touched is inside `specs/**`, so this round adds none.
-- [ ] `bash .claude/scripts/check-record-versioning.sh` — the dated `**Amended by**` paragraphs are
+- [x] `bash .claude/scripts/check-record-versioning.sh` *(deviation: altered — exits 1 on 6 PRE-EXISTING BLOCKING occurrences in Boneyard/** and FormalSystem/Metalogic/Expressiveness/Kamp/** Lean files this round never touched; the lint excludes specs/**, where every file this round wrote lives. Enumerated in the summary; not an exemption claim)* — the dated `**Amended by**` paragraphs are
       a permitted exception and the touched files are `specs/**`, the primary exemption; confirm
       the exit status rather than assuming it.
-- [ ] `bash .claude/scripts/verify-deploy.sh` — the complete gate set, run unnarrowed, with its
+- [x] `bash .claude/scripts/verify-deploy.sh` — the complete gate set, run unnarrowed, with its
       exit status read. Neither `--skip-slow` nor `--only-gate` is used here: this is the final
-      phase's own gate, and a narrowed pass is not evidence for it.
-- [ ] Write `specs/837_challenge_statement_repair_paramsok_quantification/summaries/01_parameter-hypothesis-repair-ratification-summary.md`
+      phase's own gate, and a narrowed pass is not evidence for it. *(deviation: altered — this dispatch's Batch Gate Deferral directive supersedes this bullet: the `full` tier was discharged against a SCOPED `run-all.sh --only` selection of the 12 suites covering this round's file kinds (12 passed, 0 failed), and the complete set runs once for the whole batch at the end of the invocation, attributed back by `modified_files`. Deferred, not forgiven)*
+- [x] Write `specs/837_challenge_statement_repair_paramsok_quantification/summaries/01_parameter-hypothesis-repair-ratification-summary.md`
       stating plainly that the round's substantive decision was found already landed, what was
       therefore ratified rather than decided, the design-of-record gap that was closed, and that
       no `.lean` file was touched and neither theorem was proved.
-- [ ] Commit with explicit per-file staging (`git add -- <file> <file> …`, never a directory or
+- [x] Commit with explicit per-file staging (`git add -- <file> <file> …`, never a directory or
       glob pathspec), reviewed by `git status --short` and `git diff --staged` first, with the
       message `task 837: complete implementation` and the session ID in the body.
 
@@ -378,18 +378,18 @@ summarized, and the work is committed with scoped staging.
 
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/validate-artifact.sh <plan path> plan` exits 0.
-- [ ] `bash .claude/scripts/check-task-references.sh` exits 0 with 0 unexempted occurrences outside
+- [x] `bash .claude/scripts/validate-artifact.sh <plan path> plan` exits 0. *(exit 0, `[PASS] plan artifact is valid (0 warning(s))`; the summary artifact also validates, exit 0)*
+- [x] `bash .claude/scripts/check-task-references.sh` exits 0 with 0 unexempted occurrences outside
       `specs/**`.
-- [ ] `bash .claude/scripts/check-record-versioning.sh` exits 0, or every finding is named with its
+- [x] `bash .claude/scripts/check-record-versioning.sh` *(deviation: altered — exits 1, not 0: 6 PRE-EXISTING BLOCKING occurrences in `Boneyard/**` and `FormalSystem/Metalogic/Expressiveness/Kamp/**` Lean files, all five files untouched by this round's three commits, and the lint excludes `specs/**` where every file this round wrote lives. All six enumerated in the summary's Verification section as a pre-existing repo-wide condition, NOT as an exemption claim)* — exits 0, or every finding is named with its
       exemption category in the round summary.
-- [ ] `bash .claude/scripts/verify-deploy.sh` exits 0, run with no `--skip-slow` and no
+- [x] `bash .claude/scripts/verify-deploy.sh` *(deviation: altered — superseded by this dispatch's Batch Gate Deferral directive; discharged against a scoped `run-all.sh --only` selection of 12 covering suites, 12 passed / 0 failed, with the complete set deferred to the batch stage)* exits 0, run with no `--skip-slow` and no
       `--only-gate` narrowing.
-- [ ] `git status --short` lists no file under `FormalSystem/`, `Tests/`, `scripts/`, `typst/`, or
+- [x] `git status --short` lists no file under `FormalSystem/`, `Tests/`, `scripts/`, `typst/`, or
       `specs/761_ladder_realization_theorem/` at any point in the round.
-- [ ] `lake build` is NOT run and is not required: this round compiles nothing, and the plan claims
+- [x] *(deviation: altered — `lake build` WAS run, through `lake-build-guard.sh` detached with the bounded-waiter idiom, because the lean-implementation agent contract mandates a final full build before an `implemented` return. Guard exit 0, `Build completed successfully (2958 jobs)`, 0 `error:` occurrences, `.olean` newer than source for both cited modules. The plan's point stands on its own terms: the round compiles nothing of its own, so the green build attests the tree's state, not this round's output.)* `lake build` is NOT run and is not required: this round compiles nothing, and the plan claims
       no build result.
-- [ ] The three amendment paragraphs diff IDENTICAL between the archived design of record and the
+- [x] The three amendment paragraphs diff IDENTICAL between the archived design of record and the
       tracked durable copy.
 
 ## Artifacts & Outputs

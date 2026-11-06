@@ -1,27 +1,28 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "task_number": 837,
-  "phase": "plan",
-  "session_id": "sess_1793949238_9d766e_837",
-  "dispatch_seq": 4,
-  "phases_completed": 0,
+  "phase": "implement",
+  "session_id": "sess_1793949238_9d766e",
+  "dispatch_seq": 9,
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Planned task 837, but its premise is superseded: the repair decision it was created to make was already taken. Task 761 adopted repair (a) -- the ParamsOk hypothesis -- via its plans/03 /revise round, and both cellAt_const_of_kappa_eq and ladderRealized already carry (hp : ParamsOk step pend lab phi Tc Tn P B) in plan 11's recorded Lean Challenge Statements block; ParamsOk, paramsOk_params and not_paramsOk_allZero are landed in CounterQuotient.lean. The realizes_of_certAdm_cohBi directive conflict is likewise settled (certStab/certAdm promoted; plan 11 Phase 8 [COMPLETED]). The one real residual is a records gap -- the design of record was last amended 2026-10-18 and carries no ratification of the repair -- so the plan is a four-phase, records-only round (3.25h) that writes no .lean file.",
+  "summary": "Executed the four-phase records-only round. Phase 1 re-derived every anchor by command and confirmed the plan's premise: repair (a), the ParamsOk hypothesis, was already adopted by task 761's plans/03 revision round and is landed in CounterQuotient.lean, and the design of record carried ZERO ParamsOk occurrences, so the records gap was real. Phase 2 wrote the ratification decision record (both revised statements quoted byte-identical against plan 11's Challenge block, the discharge witness, the load-bearing companion, the bounded reach excluding rk_of_count_drift, and the realizes_of_certAdm_cohBi resolution). Phase 3 appended three dated **Amended by** paragraphs to the design of record (Sections A, C, H4) and reproduced them verbatim in a tracked copy. Phase 4 gated: plan and summary validate at exit 0, check-task-references exits 0, 12 covering suites pass, full lake build green (2958 jobs, 0 errors), sorry count 0, no Lean file written.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/837_challenge_statement_repair_paramsok_quantification/plans/01_parameter-hypothesis-repair-ratification.md",
-      "summary": "Four-phase records-only plan ratifying the already-landed ParamsOk parameter-hypothesis repair into the design of record and settling the realizes_of_certAdm_cohBi directive conflict."
+      "type": "summary",
+      "path": "specs/837_challenge_statement_repair_paramsok_quantification/summaries/01_parameter-hypothesis-repair-ratification-summary.md",
+      "summary": "Round summary: what was ratified rather than decided, the records gap closed, the scoped gate tier, and the pre-existing check-record-versioning failure named in full."
+    },
+    {
+      "type": "record",
+      "path": "specs/837_challenge_statement_repair_paramsok_quantification/records/01_parameter-hypothesis-repair-ratification.md",
+      "summary": "The ratification decision record: repair (a) adopted, repair (b) rejected, both revised statements verbatim, discharge and load-bearing evidence, bounded reach, and the realizes_of_certAdm_cohBi resolution."
+    },
+    {
+      "type": "record",
+      "path": "specs/837_challenge_statement_repair_paramsok_quantification/records/design-of-record-amendment-2026-11-06.md",
+      "summary": "Verbatim durable reproduction of the three **Amended by** paragraphs written into the gitignored design of record."
     }
-  ],
-  "user_decision": {
-    "question": "Task 837's stated deliverable -- decide between repair (a) ParamsOk and repair (b) existential quantification -- is already settled by task 761's plans/03 revision round, and only a records gap remains. Should 837 run the narrowed records-only round, or be closed as superseded?",
-    "options": [
-      "Run the narrowed records-only round -- ratify the repair into the design of record, add the durable tracked copy, settle the realizes_of_certAdm_cohBi conflict (~3.25h, no Lean work)",
-      "Close task 837 as superseded by task 761's plans/03 revision round and leave the design of record stale"
-    ],
-    "recommended": "Run the narrowed records-only round -- ratify the repair into the design of record, add the durable tracked copy, settle the realizes_of_certAdm_cohBi conflict (~3.25h, no Lean work)",
-    "blocking": false
-  }
+  ]
 }
