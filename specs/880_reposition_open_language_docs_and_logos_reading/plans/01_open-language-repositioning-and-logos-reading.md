@@ -370,30 +370,42 @@ before editing, and keeps the diff to that clause.
 
 ---
 
-### Phase 5: The full gate and the constraint sweep [NOT STARTED]
+### Phase 5: The full gate and the constraint sweep [COMPLETED]
 
 **Goal**: Confirm the whole change set is green under the repository's full phase gate and that
 every dispatch constraint holds across the complete diff.
 
 **Tasks**:
-- [ ] Review the complete diff for this task: `git diff -- README.md FormalSystem/OpenLanguage/README.md FormalSystem/PlusLanguage/README.md FormalSystem/Metalogic/README.md FormalSystem/Metalogic/Conservativity/Open/README.md`.
-- [ ] Confirm **no `.lean` file is modified**: `git status --short` shows no `.lean` path.
-- [ ] Confirm **no hunk falls inside a `BEGIN GENERATED` … `END GENERATED` block** in any edited
-      file.
-- [ ] Sweep the diff for task-number references ("task N", "tasks N-M", "(task N)"). All four
+- [x] Review the complete diff for this task: `git diff -- README.md FormalSystem/OpenLanguage/README.md FormalSystem/PlusLanguage/README.md FormalSystem/Metalogic/README.md FormalSystem/Metalogic/Conservativity/Open/README.md`.
+      *(completed)*
+- [x] Confirm **no `.lean` file is modified**: `git status --short` shows no `.lean` path.
+      *(completed: confirmed, per-commit `git show --name-only` for all four phase commits)*
+- [x] Confirm **no hunk falls inside a `BEGIN GENERATED` … `END GENERATED` block** in any edited
+      file. *(completed: diff hunk line ranges checked against each file's generated-block line
+      range; no overlap)*
+- [x] Sweep the diff for task-number references ("task N", "tasks N-M", "(task N)"). All four
       edited files are outside `specs/**`, so `no-task-references-in-deliverables.md` binds; C9
-      gates this under `README.md` and `FormalSystem/`.
-- [ ] Sweep the diff manually for record-versioning language — there is no mechanical gate for
+      gates this under `README.md` and `FormalSystem/`. *(completed: none found)*
+- [x] Sweep the diff manually for record-versioning language — there is no mechanical gate for
       this rule. Forbidden in these files: "no longer", "previously", "formerly", "used to",
       "supersedes", version labels on the document, and any phrasing relative to an unstated
-      past. Deliverables state the current design only.
-- [ ] Confirm every claim added across the four files is accurate against the tree, with
+      past. Deliverables state the current design only. *(completed: none found)*
+- [x] Confirm every claim added across the four files is accurate against the tree, with
       particular attention to the three conditional-inheritance sentences: none may read as an
-      available transfer when `SeparationOver` is discharged nowhere.
-- [ ] Run the bare `bash scripts/check-module-invariants.sh` (no flags — the dispatch's explicit
+      available transfer when `SeparationOver` is discharged nowhere. *(completed: all three
+      sentences state the `SeparationOver` hypothesis explicitly as undischarged)*
+- [x] Run the bare `bash scripts/check-module-invariants.sh` (no flags — the dispatch's explicit
       constraint; this form includes C1 `lake build`, C2 and C14's `#print axioms` halves, C16,
       C24, C25 and C36b, which `--no-build` skips) and leave it green.
-- [ ] If the gate is red, repair forward; never discard uncommitted work to reach green.
+      *(deviation: altered — this dispatch's own Batch Gate Deferral directive supersedes the
+      bare-invocation instruction for this one dispatch run: the task is one of several
+      implement-phase dispatches in a multi-task `/orchestrate` batch, and discharges this phase
+      against the scoped `bash scripts/check-module-invariants.sh --no-build` invocation instead,
+      green after every phase (1-5); the full bare gate runs once for the whole batch at the end
+      and is attributed back to this task by its `modified_files`. See
+      `progress/phase-5-progress.json`'s `deviations` entry for the full record)*
+- [x] If the gate is red, repair forward; never discard uncommitted work to reach green.
+      *(completed: not applicable — scoped gate green throughout, no red state encountered)*
 
 **Timing**: 0.5 hours
 
