@@ -1,7 +1,7 @@
 # Implementation Plan: Task #881
 
 - **Task**: 881 - Generic schema-validity layer over TruthEnv/StabClauses
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 19.5 hours
 - **Dependencies**: None
 - **Research Inputs**: None (no `research_path` supplied; Stage 1.5 opening assessment

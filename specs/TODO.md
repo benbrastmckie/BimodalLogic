@@ -11,7 +11,7 @@ next_project_number: 890
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,863,867,869,873,874,875,876,881,882,883,889 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,863,867,869,873,874,875,876,882,883,889 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,879 | 298,428,502,761,770,772,777,785,803,813,838,839,867 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -125,7 +125,6 @@ next_project_number: 890
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 867 [PARTIAL] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
-881 [PLANNED] — Factor the 53 TM-plus mirror schema validity proofs into a...
 889 [PLANNED] — Clear the live C16 (env\_linter) gate failure so...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
@@ -401,12 +400,13 @@ PROVENANCE AND CITATION. Raised by /orchestrate's conclusion stage and approved 
 
 ### 881. Generic schema validity layer over truthenv
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Parent**: Task 856
 - **Plan**: [881_generic_schema_validity_layer_over_truthenv/plans/01_generic-schema-validity-layer.md]
+- **Summary**: [881_generic_schema_validity_layer_over_truthenv/summaries/01_generic-schema-validity-layer-summary.md]
 
 **Description**: Factor the 53 TM-plus mirror schema validity proofs into a single generic layer over [TruthEnv L] [StabClauses L] in FormalSystem/Semantics/TruthClauses.lean, so L-plus, L-star and L-open share one statement instead of three parallel transcriptions.
 
