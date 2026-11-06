@@ -2,7 +2,7 @@
 
 - **Task**: 880 - Reposition L^▷ in the prose surfaces as an extension under exploration, with
   L⁺ as the front, and record the Logos reading of the stability modal
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.25 hours
 - **Dependencies**: 856 (complete), 871 (complete)
 - **Research Inputs**: `specs/880_reposition_open_language_docs_and_logos_reading/reports/01_open-language-repositioning-and-logos-reading.md`

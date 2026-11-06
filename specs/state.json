@@ -9,7 +9,7 @@
     {
       "project_number": 880,
       "project_name": "reposition_open_language_docs_and_logos_reading",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "markdown",
       "title": "Reposition L^▷ in the READMEs and record the Logos reading of the stability modal",
       "description": "Reposition L^▷ in the prose surfaces as an extension under exploration, with L-plus as the front, and record the Logos reading of the stability modal. Markdown only; no `.lean` edits. Not to be entered before task 856 completes, since its final phase edits the same README surfaces.\n\nWHAT TO CHANGE.\n(1) `FormalSystem/OpenLanguage/README.md`: correct every place it contradicts the tree -- the transfer-ledger report specs/872_open_language_transfer_ledger/reports/01_open-language-transfer-ledger.md, finding \"OpenLanguage/README.md now contradicts the tree\", enumerates them; re-verify each against the tree before editing. Present L^▷ as what it is: a sound proof system, conservative over TM-plus in both directions, with the definability split by frame class and no completeness claim.\n(2) `FormalSystem/Metalogic/Conservativity/Open/README.md`, `FormalSystem/Metalogic/README.md` and the top-level `README.md`: wherever L^▷ is presented as the end state or L-plus as an internal layer, state instead that completeness and decidability are pursued for L-plus and that L^▷ inherits results at ZTime and RTime by translation.\n(3) `FormalSystem/PlusLanguage/README.md`: add a short section giving the Logos reading. In the Logos theory (`~/Projects/Logos/Theory/typst/manual/chapters/03-dynamics.typ`), necessity is the counterfactual with antecedent top, which every state verifies, and stability is equivalent to the counterfactual whose antecedent is verified by the null state alone (the negation of bottom, or any true identity). So L-plus is the fragment of counterfactuals with trivial constitutive antecedents. The open-future and open-past modals correspond to trivial tensed antecedents and need the event-level clause. State this as a reading of the manual's clauses, not as a formalized theorem.\n\nCONSTRAINTS. Deliverables state the current design only: no task numbers and no draft-history language outside specs/. Do not hand-edit inside `BEGIN GENERATED` inventory blocks. Run the bare `scripts/check-module-invariants.sh` afterwards and leave it green.",
@@ -20,7 +20,7 @@
         871
       ],
       "created": "2026-11-05T18:25:05Z",
-      "last_updated": "2026-11-06T02:16:46Z",
+      "last_updated": "2026-11-06T02:38:41Z",
       "audit_verdict": {
         "proposal": {
           "id": "reposition_open_language_docs_and_logos_reading",
@@ -204,9 +204,15 @@
           "path": "specs/880_reposition_open_language_docs_and_logos_reading/plans/01_open-language-repositioning-and-logos-reading.md",
           "type": "plan",
           "summary": "5-phase markdown-only plan: re-verify OpenLanguage/README.md, add the Logos Reading section, cross-link the TM-plus pursuit target in three files, then the bare module-invariants gate."
+        },
+        {
+          "path": "specs/880_reposition_open_language_docs_and_logos_reading/summaries/01_open-language-repositioning-and-logos-reading-summary.md",
+          "type": "summary",
+          "summary": "All 5 phases completed: re-verified OpenLanguage/README.md (no edit needed), added the Logos Reading section to PlusLanguage/README.md, and cross-linked the TM-plus pursuit target across Metalogic/README.md, Metalogic/Conservativity/Open/README.md, and the top-level README.md."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Repositioned L^open as a conservative extension pursuing completeness/decidability through TM-plus (not as an end state) across four README surfaces, and added a new Logos Reading section to PlusLanguage/README.md grounding the stability modal and open-future/open-past modals in the Logos manual's 03-dynamics.typ clauses. No .lean file touched; the bare check-module-invariants.sh full gate was deferred to the batch stage per the dispatch's own Batch Gate Deferral directive, with the scoped --no-build invocation green after every phase."
     },
     {
       "project_number": 879,
