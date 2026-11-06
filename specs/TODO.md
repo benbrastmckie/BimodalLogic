@@ -1,5 +1,5 @@
 ---
-next_project_number: 890
+next_project_number: 891
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 890
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,838,839,841,842,847,848,857,863,867,869,873,874,875,876,882,883 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,838,839,841,842,847,848,857,863,867,869,873,874,875,876,882,883,890 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,879 | 298,428,502,761,770,772,777,785,803,813,838,839,867 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
@@ -124,6 +124,7 @@ next_project_number: 890
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 867 [IMPLEMENTING] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
+890 [RESEARCHED] — Record the GHR94 Lemma 10.2.3 Case 5 erratum in the Typst...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -153,6 +154,26 @@ next_project_number: 890
 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 890. Ghr lemma 10 2 3 case5 erratum reference manual
+- **Effort**: medium
+- **Status**: [RESEARCHED]
+- **Task Type**: typst
+- **Topic**: metalogic
+- **Dependencies**: None
+- **Parent**: Task 867
+
+**Description**: Record the GHR94 Lemma 10.2.3 Case 5 erratum in the Typst reference manual.
+
+GHR94's printed Case 5 formula for Lemma 10.2.3 is refuted over integer time by an explicit counterexample: a(0), A(1), B identically false, q(1)=q(2). The LHS is true at t=3 while the RHS is false, because both printed disjuncts carry the conjunct [A or (B and U(A,B))] evaluated at t. The refutation was verified against the ch10 PDF layout, not only the markdown chunk -- the PDF carries the same conjunct on the second disjunct, so the defect is in the printed source and not an artifact of conversion.
+
+The corrected rederivation is already landed in Lean. What is missing is the durable write-up: the erratum and its counterexample currently exist only in a task artifact under specs/, which is not where this repository keeps its account of the GHR material. The reference manual is.
+
+Scope: state the printed formula, state the counterexample with its valuation, show which conjunct fails and why integer time (as against the dense time GHR assume) is what exposes it, and point at the landed corrected form. No Lean work -- the mathematics is done.
+
+Evidence: originating issue entry iss_1793912463353_yZ5rLd, recorded during the formalization of GHR separation over Z-time.
+
+---
 
 ### 889. Ladderchain c16 unusedarguments clear
 - **Effort**: small
