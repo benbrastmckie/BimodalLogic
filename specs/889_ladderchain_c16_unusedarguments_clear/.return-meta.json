@@ -1,22 +1,46 @@
 {
-  "status": "planned",
-  "dispatch_seq": 5,
+  "status": "implemented",
+  "started_at": "2026-11-06T09:59:00Z",
+  "completed_at": "2026-11-06T10:19:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "vacuous_count_baseline": 1,
+    "vacuous_count_introduced": 0,
+    "vacuous_note": "The single match is pre-existing and not a placeholder: FormalSystem/Examples/TemporalStructures.lean:495, 'theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial', a genuine theorem whose conclusion is universally true, in a file this task never touched and byte-identical at the base commit 34109a473. Recorded as measured rather than as a bare 0.",
+    "axiom_count": 14,
+    "axiom_count_baseline": 14,
+    "build_passed": true,
+    "build_note": "Full guarded 'lake build': 2958 jobs, 'Build completed successfully', guard exit_status=0. 'lake exe runLinter FormalSystem' through the guard: '-- Linting passed for FormalSystem.', exit_status=0. 'bash scripts/check-module-invariants.sh': ALL CHECKS PASSED, exit 0, with PASS C16. Full gate set deferred to the batch stage per the dispatch's Batch Gate Deferral directive; the scoped narrowing 'verify-deploy.sh --only-gate 4' was run in its place and passed (1 check, 0 failures, nothing skipped under filter)."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/889_ladderchain_c16_unusedarguments_clear/plans/01_ladderchain-c16-unusedarguments-clear.md",
-      "summary": "3-phase plan (1.25h) clearing the live C16 unusedArguments finding via a repaired two-linter reason comment and one hand-inserted scripts/nolints.json row, with C16 plus full-gate closure as the final phase."
+      "type": "summary",
+      "path": "specs/889_ladderchain_c16_unusedarguments_clear/summaries/01_ladderchain-c16-unusedarguments-clear-summary.md",
+      "summary": "Cleared the live C16 unusedArguments finding on mem_cellAt_of_shift_of_hasForwardSlack by a hand-inserted nolints.json row plus a repaired two-linter reason comment; check-module-invariants.sh exits 0 again."
     }
   ],
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1793949238_9d766e_889",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 1.25,
-    "dependency_waves": [[1], [2], [3]]
+  "completion_data": {
+    "completion_summary": "Cleared the live C16 (env_linter) unusedArguments finding on mem_cellAt_of_shift_of_hasForwardSlack by appending one hand-written row to scripts/nolints.json (227 to 228 rows) and repairing the reason comment at the declaration site so it names both linters that see the dead hslk binder, the distinct remedy each needs, and the standing prohibition on 'lake exe runLinter --update'. No statement, proof term, or axiom profile changed: the LadderChain.lean diff is comment-only, with zero non-comment lines against the base commit. 'bash scripts/check-module-invariants.sh' now reports ALL CHECKS PASSED and exits 0 with PASS C16, so downstream Lean tasks no longer need to narrow their verification tier for a failure they did not cause.",
+    "roadmap_items": []
   },
-  "next_steps": "Run /orchestrate 889 to execute the plan"
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+    "scripts/nolints.json",
+    "typst/generated/status.typ",
+    "README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "specs/889_ladderchain_c16_unusedarguments_clear/plans/01_ladderchain-c16-unusedarguments-clear.md",
+    "specs/889_ladderchain_c16_unusedarguments_clear/summaries/01_ladderchain-c16-unusedarguments-clear-summary.md"
+  ],
+  "metadata": {
+    "session_id": "sess_1793949238_9d766e",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "dispatch_seq": 8
+  }
 }
