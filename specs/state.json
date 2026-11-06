@@ -11179,7 +11179,7 @@
     {
       "project_number": 889,
       "project_name": "ladderchain_c16_unusedarguments_clear",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Clear the live C16 (env_linter) gate failure so `scripts/check-module-invariants.sh` exits 0 again.\n\nMEASURED. `check-module-invariants.sh` exits 1 on C16 alone, for a single `unusedArguments`\nfinding at `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136`\n(`mem_cellAt_of_shift_of_hasForwardSlack`, argument 23 `hslk`), which is absent from\n`scripts/nolints.json`. Two independent dispatches hit it, each confirming it predates its own\nbase commit, that `LadderChain.lean` was clean in the working tree, and that the finding\nreferences none of their changed declarations. Both declined to run `lake exe runLinter --update`\nbecause that grandfathers the finding rather than resolving it, and reported it instead. Until the\nowning module resolves it, this gate exits 1 for every task that runs it, so every Lean task must\neither narrow its verification tier or carry a Reasoned Exclusions row for a failure it did not\ncause.\n\nEVIDENCE: issue-log entry {task 871, entry_id iss_1793929097512_cRWu2i}. Classified by\n/orchestrate's conclusion stage to channel (c) (follow-up task); the cited entry records\n`suggested_channel: null`, so no hint was overridden.\n\nDECIDE AND RECORD, stating the rejected option on its own merits: whether `hslk` should be\nremoved from `mem_cellAt_of_shift_of_hasForwardSlack`'s signature, consumed by its proof, or\nexempted by a hand-inserted row in `scripts/nolints.json`'s own existing format. Do NOT run\n`lake exe runLinter --update`: it rewrites the whole ledger in a different serialization instead of\nadding one row.\n\nRELATION, read before writing: task 840 records the plan-authoring GUIDANCE for this class of\ncollision (that the `--update` remedy is a wholesale ledger rewrite, and what the narrow route is).\nThis record is the concrete repair of one live finding in a Lean source file, not a second copy of\nthat guidance -- read 840 first so the two do not restate each other, and do not write into its\nfile.",
       "effort": "small",
@@ -11196,7 +11196,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-11-06T03:15:15Z",
-      "last_updated": "2026-11-06T08:40:01Z",
+      "last_updated": "2026-11-06T10:20:54Z",
       "artifacts": [
         {
           "path": "specs/889_ladderchain_c16_unusedarguments_clear/reports/01_ladderchain-c16-unusedarguments-clear.md",
@@ -11207,6 +11207,11 @@
           "path": "specs/889_ladderchain_c16_unusedarguments_clear/plans/01_ladderchain-c16-unusedarguments-clear.md",
           "type": "plan",
           "summary": "3-phase plan (1.25h): comment repair at the declaration site, one appended scripts/nolints.json row, then C16 plus full-gate closure."
+        },
+        {
+          "path": "specs/889_ladderchain_c16_unusedarguments_clear/summaries/01_ladderchain-c16-unusedarguments-clear-summary.md",
+          "type": "summary",
+          "summary": "What landed, the disposition with both rejected options on their own merits, the five plan deviations, and the full verification record."
         }
       ],
       "audit_verdict": {
@@ -11505,7 +11510,8 @@
         ]
       },
       "session_id": "sess_1793949238_9d766e",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Cleared the live C16 (env_linter) unusedArguments finding on mem_cellAt_of_shift_of_hasForwardSlack by appending one hand-written row to scripts/nolints.json (227 to 228 rows) and repairing the reason comment at the declaration site so it names both linters that see the dead hslk binder, the distinct remedy each needs, and the standing prohibition on 'lake exe runLinter --update'. No statement, proof term, or axiom profile changed: the LadderChain.lean diff is comment-only, with zero non-comment lines against the base commit. 'bash scripts/check-module-invariants.sh' now reports ALL CHECKS PASSED and exits 0 with PASS C16, so downstream Lean tasks no longer need to narrow their verification tier for a failure they did not cause."
     }
   ],
   "artifacts": [

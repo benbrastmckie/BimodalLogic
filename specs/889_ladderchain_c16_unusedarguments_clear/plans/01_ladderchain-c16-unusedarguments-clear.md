@@ -1,7 +1,7 @@
 # Implementation Plan: Task #889
 
 - **Task**: 889 - Clear the live C16 (env_linter) gate failure so `scripts/check-module-invariants.sh` exits 0 again
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/889_ladderchain_c16_unusedarguments_clear/reports/01_ladderchain-c16-unusedarguments-clear.md
