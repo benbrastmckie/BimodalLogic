@@ -570,22 +570,24 @@ this phase's outcome.
 
 ---
 
-### Phase 9: Rewire L⋆ — `StarAxiomValidity.lean` [IN PROGRESS]
+### Phase 9: Rewire L⋆ — `StarAxiomValidity.lean` [COMPLETED]
 
 **Goal**: Replace every generic-subsumed mirror-arm proof body with a one-line delegation,
 preserving all names and statements.
 
 **Tasks**:
-- [ ] Add the `GenericSchemata` import.
-- [ ] Rewrite each subsumed `starValid_*` body as
+- [x] Add the `GenericSchemata` import.
+- [x] Rewrite each subsumed `starValid_*` body as
       `StarValid.of_forall fun F M τ x v => generic_… M τ x v …` (or
       `of_forall_regular` where the arm consumes a frame constraint).
-- [ ] Delete `starKPlus_iff` / `starKMinus_iff` only if no consumer outside this file remains;
+- [x] Delete `starKPlus_iff` / `starKMinus_iff` only if no consumer outside this file remains;
       otherwise keep them as one-line delegations to `TruthClauses.kPlus_iff`/`kMinus_iff`.
       Check first with `grep -rn "starKPlus_iff\|starKMinus_iff" FormalSystem/ Tests/`.
-- [ ] Leave untouched: the sixteen register schemata, `recallFree_vector_irrelevant`, the four
+      *(checked: the only hit outside this file is a prose mention in
+      `Open/OpenAxiomValidity.lean`'s docstring, not a consumer. Both deleted.)*
+- [x] Leave untouched: the sixteen register schemata, `recallFree_vector_irrelevant`, the four
       pasting arms, and the two dispatch lemmas' arm structure.
-- [ ] Trim the module docstring's "How the arms close" section to describe the delegation rather
+- [x] Trim the module docstring's "How the arms close" section to describe the delegation rather
       than the (now removed) direct transcriptions, keeping the "no atomization, no uniform
       substitution" invariant statement, which is still true and still load-bearing.
 
@@ -601,6 +603,13 @@ theorem count including named `*_reflect_time` duals is higher). Confirm at impl
 by listing `grep -c "^theorem starValid_"` before and after and reporting both numbers plus the
 line delta in the handoff; do not assert a count that was not measured.
 
+*(measured: `grep -c "^theorem starValid_"` is **86 before and 86 after** — every name is
+preserved, as the Non-Goals require. **65 of the 86 bodies** were rewritten as delegations: the
+whole mirror block including both linearity nestings, both TL orderings, the eight discrete
+duals, the four Dedekind arms, and `modal_future` with its dual. The untouched 21 are the sixteen
+register schemata, the four pasting arms, and the file's own shape adapters. Line delta:
+**1479 → 1213, −266 lines**, which also absorbs deleting `starKPlus_iff`/`starKMinus_iff`.)*
+
 **Tier Justification**: Statements are preserved but bodies, axiom profiles and the file's import
 set all change, and `Conservativity/Star/StarSoundness.lean` plus
 `Conservativity/Star/Forward.lean` consume the dispatch lemmas — so
@@ -615,8 +624,11 @@ consumer, and a `local` build of the one file would miss them.
 - `lake build FormalSystem.Metalogic.Conservativity.Star` green.
 - `starAxiom_validIn_min` and `starAxiom_reflect_time_validIn_min` still have one arm per
   constructor and **no wildcard arm**.
+  *(measured: 69 arms each, no `| _ =>` anywhere in the file.)*
 - `lean_verify FormalSystem.Metalogic.Conservativity.starAxiom_validIn_min` shows no axiom gained
   relative to the pre-phase profile (capture it before editing).
+  *(captured before: `[propext, Classical.choice, Quot.sound]`; measured after: identical. No
+  axiom gained.)*
 
 ---
 
