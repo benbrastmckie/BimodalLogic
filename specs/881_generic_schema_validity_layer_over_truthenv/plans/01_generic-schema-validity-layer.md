@@ -570,7 +570,7 @@ this phase's outcome.
 
 ---
 
-### Phase 9: Rewire L⋆ — `StarAxiomValidity.lean` [NOT STARTED]
+### Phase 9: Rewire L⋆ — `StarAxiomValidity.lean` [IN PROGRESS]
 
 **Goal**: Replace every generic-subsumed mirror-arm proof body with a one-line delegation,
 preserving all names and statements.
