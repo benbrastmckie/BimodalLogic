@@ -677,9 +677,9 @@
           "type": "plan"
         },
         {
-          "path": "specs/867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-5-structural-recursion-summary.md",
+          "path": "specs/867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-6-utype-measure-summary.md",
           "type": "summary",
-          "summary": "Implementation summary for Phases 22.1 and 22.2: IsUSingleType with its closure lemmas and proved strictness, GHR Lemma 10.2.5 in full via sepU, every measured gate, and the plan-compliance verdict explained."
+          "summary": "Phase 22.3 implementation summary: uTypeCount and GHR Lemma 10.2.6, with the confirmed-false Scope Hypothesis record."
         }
       ],
       "next_artifact_number": 4,

@@ -1,25 +1,20 @@
 {
-  "dispatch_seq": 17,
-  "status": "implemented",
-  "phases_completed": 23,
+  "status": "partial",
+  "dispatch_seq": 18,
+  "phases_completed": 24,
   "phases_total": 30,
-  "summary": "Phases 22.1 and 22.2 landed and closed clean, each exactly at its Scope Hypothesis (8 then 4 declarations, one docstring line in an existing module, zero landed-signature changes). IsUSingleType is GHR Lemma 10.2.5's actual input hypothesis, strictly weaker than the landed IsUTyped with the strictness proved at S(bot, U(A,B)) rather than asserted; sepU with isUTyped_sepU, usTruth_sepU and isSeparated_sepU is Lemma 10.2.5 in full. Decision D-h's structural route held and cost no measure: the two landed halves of Lemma 10.2.4 chain at every snce node, and snceDepthAbove/hasUntl are absent from the SeparationZ subtree, which is the ruling's own observable consequence. All gates measured green: full unscoped guarded lake build exit 0 with zero errors over 2961 jobs and .olean newer than source, zero sorry, zero introduced vacuous definitions, 14 axiom declarations unchanged with every new declaration's profile measured by #print axioms and within the three standard axioms, sepU compiling without noncomputable and depending on no axioms at all, check-module-invariants.sh ALL CHECKS PASSED, check-metalogic-cycles.sh exit 0, typst-sync-check.sh --fix PASS. Phases 22.3 through 28 remain and need no plan revision to open.",
+  "summary": "Phase 22.3 landed and committed green: the U-type measure (uTypes/uTypeCount) and GHR Lemma 10.2.6 in full -- equivalence, separatedness and type preservation -- with its three strict-decrease obligations as three separately named results, part (b) a one-line citation of isUTyped_sepU as the plan rules. The abstraction-and-reindexing device (mapU, mapS, substLeaf, abstrFn, unabstrFn) had to be built here because the plan's claim that freshLeaf and usTruth_congr_of_update were 'the whole device' is false: the tree carries no substitution operation on USForm. All gates green; zero sorry, zero new axioms, sepMulti computable. Phases 23-28 remain.",
   "blockers": [],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-5-structural-recursion-summary.md",
-      "summary": "Implementation summary for Phases 22.1 and 22.2: IsUSingleType with its closure lemmas and proved strictness, GHR Lemma 10.2.5 in full via sepU, every measured gate, and the plan-compliance verdict explained."
+      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-6-utype-measure-summary.md",
+      "summary": "Phase 22.3 implementation summary: uTypeCount and GHR Lemma 10.2.6, with the confirmed-false Scope Hypothesis record."
     },
     {
       "type": "handoff",
-      "path": "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-22.2-handoff-20261106T202829Z.md",
-      "summary": "Phase 22.2 phase-end handoff: proof state, what landed, the two transcription hazards honoured, the one annotated deviation, and the measured gate results."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-22.1-handoff-20261106T193746Z.md",
-      "summary": "Phase 22.1 phase-end handoff: IsUSingleType, the proved strictness, and the two transcription hazards carried forward to 22.2."
+      "path": "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-22.3-handoff-20261106T232000Z.md",
+      "summary": "Phase 22.3 phase-end handoff with the full measured-gate record and the next action."
     }
   ]
 }

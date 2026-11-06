@@ -1,6 +1,7 @@
 {
-  "status": "implemented",
-  "started_at": "2026-11-06T19:24:05Z",
+  "status": "partial",
+  "started_at": "2026-11-06T23:10:27Z",
+  "completed_at": "2026-11-06T23:26:00Z",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
@@ -11,39 +12,33 @@
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-5-structural-recursion-summary.md",
-      "summary": "Phases 22.1 and 22.2: IsUSingleType with its closure lemmas and proved strictness, then GHR Lemma 10.2.5 in full as the structural recursion sepU with all three conclusions, plus every measured gate."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-22.2-handoff-20261106T202829Z.md",
-      "summary": "Phase 22.2 phase-end handoff: proof state, what landed, the two transcription hazards honoured, the one annotated deviation, and the measured gate results."
+      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-6-utype-measure-summary.md",
+      "summary": "Phase 22.3: the U-type measure uTypes/uTypeCount and GHR Lemma 10.2.6 in full (equivalence, separatedness, type preservation), with its three strict-decrease obligations separately named and the abstraction/reindexing device built."
     }
   ],
-  "completion_data": {
-    "completion_summary": "Phases 22.1 and 22.2 landed and closed clean. IsUSingleType is GHR Lemma 10.2.5's actual input hypothesis, strictly weaker than the landed IsUTyped with the strictness proved at S(bot, U(A,B)) rather than asserted; sepU with isUTyped_sepU, usTruth_sepU and isSeparated_sepU is Lemma 10.2.5 in full, reached by plain structural recursion over USForm per decision D-h with no depth measure, no hasUntl decision and no one-level rewriting operator. All gates measured green: full guarded lake build exit 0 with zero errors over 2961 jobs, zero sorry, zero introduced vacuous definitions, no new axiom, module invariants and metalogic cycles green, typst sync PASS.",
-    "roadmap_items": []
-  },
   "modified_files": [
     "FormalSystem/Metalogic/Expressiveness/SeparationZ/Hierarchy.lean",
-    "FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean",
     "FormalSystem/Metalogic/Expressiveness/SeparationZ/README.md",
     "FormalSystem/Metalogic/README.md",
-    "FormalSystem/README.md",
     "README.md",
     "typst/generated/status.typ",
     "specs/867_formalize_gabbay_separation_ztime/plans/03_structural-route-measure-split.md",
     "specs/867_formalize_gabbay_separation_ztime/issues.jsonl",
-    "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-22.1-handoff-20261106T193746Z.md",
-    "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-22.2-handoff-20261106T202829Z.md",
-    "specs/867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-5-structural-recursion-summary.md"
+    "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-22.3-handoff-20261106T232000Z.md",
+    "specs/867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-6-utype-measure-summary.md"
   ],
+  "partial_progress": {
+    "stage": "phase_22.3_completed",
+    "details": "Phase 22.3 closed green and committed (3e900220d). Phases 23-28 remain NOT STARTED. Phase 22.3's Scope Hypothesis is confirmed false (48 declarations against a predicted five) and its diagnosis of the overshoot is also false; Phases 23 and 24 are sized on the same false premise and should be re-sized before dispatch.",
+    "phases_completed": 24,
+    "phases_total": 30
+  },
   "metadata": {
-    "session_id": "sess_1793993028_251d86",
+    "session_id": "sess_1794005409_20566a",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "failed",
-    "compliance_check_note": "Measurement artifact, not a divergence: the entire MISSING list is the task's end-state deliverables (sepZ, sepZ_sepClauses, separationOver_ztime, trZ, openTruthAt_iff_trZ, openValidIn_ztime_iff_trZ, plusTruthAt_sepZ_iff), produced by Phases 25-26 and reachable by no earlier phase. tr, the one name that exists today, reports OK. The verdict is identical against plan 01 and plan 03, so it is attributable to neither this dispatch nor the plan revision, and will recur on every remaining dispatch until Phase 26 lands. See the summary's 'Plan compliance verdict, stated plainly' section."
+    "compliance_check": "passed",
+    "dispatch_seq": 18
   }
 }
