@@ -313,30 +313,31 @@ this phase.
 
 ---
 
-### Phase 4: Tighten the top-level `README.md` L^▷ bullet [NOT STARTED]
+### Phase 4: Tighten the top-level `README.md` L^▷ bullet [COMPLETED]
 
 **Goal**: Make the top-level `README.md`'s L^▷ bullet name the pursuit target and the reduction
 route explicitly, rather than leaving "notational variant" to carry the inheritance claim.
 
 **Tasks**:
-- [ ] Read the landed Phase 3 wording in `FormalSystem/Metalogic/README.md` first, and word this
+- [x] Read the landed Phase 3 wording in `FormalSystem/Metalogic/README.md` first, and word this
       bullet's addition differently — C18 scans `README.md`,
       `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md` and
       `FormalSystem/Metalogic.lean` for duplicated whole paragraphs and for duplicated sentences
-      of 15+ words.
-- [ ] Tighten the final clause of the **L^▷** bullet in the "seven object languages" list (the
+      of 15+ words. *(completed: read; worded independently)*
+- [x] Tighten the final clause of the **L^▷** bullet in the "seven object languages" list (the
       bullet beginning "**L^▷ extends L⁺ by the two operators of the manuscript's subsection
       *Restricted Modalities***", whose clause currently reads "…so the system extends TM⁺
       genuinely at the first two classes and is a notational variant of it at the last two"):
       name TM⁺ as where completeness and decidability are pursued, and name
       `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` as the route by which a
-      landed TM⁺ result at `.ZTime` or `.RTime` would reach L^▷.
-- [ ] Carry the same conditionality as Phase 3: the reductions' hypotheses are undischarged.
-- [ ] Keep the bullet's existing correct content — "**No completeness is claimed for it, at any
+      landed TM⁺ result at `.ZTime` or `.RTime` would reach L^▷. *(completed)*
+- [x] Carry the same conditionality as Phase 3: the reductions' hypotheses are undischarged.
+      *(completed)*
+- [x] Keep the bullet's existing correct content — "**No completeness is claimed for it, at any
       frame class**", the class-split, and the Ockhamist "what it is for" passage — intact. This
-      is a tightening of one clause, not a rewrite of the bullet.
-- [ ] Verify the reduction file's path resolves as written (C12 gates slash-shaped source paths
-      in `README.md`).
+      is a tightening of one clause, not a rewrite of the bullet. *(completed: unchanged)*
+- [x] Verify the reduction file's path resolves as written (C12 gates slash-shaped source paths
+      in `README.md`). *(completed: C12 passes)*
 
 **Timing**: 0.25 hours
 

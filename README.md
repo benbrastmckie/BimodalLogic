@@ -275,8 +275,12 @@ time-store/recall and the world-store/recall families (the sentence defining `\B
   collapse under `Determined`. **No completeness is claimed for it, at any frame class.** Its
   novelty is class-split: ▷ is L⁺-definable over integer and real time and not definable over the
   base and dense classes, so the system extends TM⁺ genuinely at the first two classes and is a
-  notational variant of it at the last two. What it is for: on a task frame the present world
-  *state* fixes the alternatives of ⊡, while Ockhamist historical necessity needs the shared
+  notational variant of it at the last two. Completeness and decidability are pursued for TM⁺,
+  not L^▷ directly; `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` is the
+  route by which a landed TM⁺ result at `.ZTime` or `.RTime` would reach L^▷ validity there,
+  conditional on an undischarged separation hypothesis. What it is for: on a task frame the
+  present world *state* fixes the alternatives of ⊡, while Ockhamist historical necessity needs
+  the shared
   *past*, which is ▷. The Ockhamist principle `Pα → ▷P▷̂α` is valid over every task frame
   (`hnOpen_openValid`) and its stability transposition `Pp → ⊡P⟐p` is refuted on a finite frame
   satisfying all four frame axioms (`hnStab_refuted_sinkFrame`). See
