@@ -277,19 +277,23 @@ Paper: — (formalization-native; the manuscript states no limit-closure schema)
 -/
 theorem stg_step [F.IsRegular] {w : F.WorldState} {t : F.Duration}
     {A : ℕ → F.Duration → F.WorldState → Prop}
+    {P : ℕ → WorldHistory F → F.Duration → F.Duration → Prop}
+    (hP : ∀ i (η η' : WorldHistory F) s s',
+      (∀ z, s < z → z ≤ s' → η'.state z = η.state z) → P i η s s' → P i η' s s')
     (H : ∀ (ρ : WorldHistory F), ρ.state t = w → ∀ k s, t ≤ s → A k s (ρ.state s) →
       ∃ (η : WorldHistory F) (s' : F.Duration), η.state s = ρ.state s ∧ s < s' ∧
-        A (k + 1) s' (η.state s'))
+        A (k + 1) s' (η.state s') ∧ P k η s s')
     {i : ℕ} (x : Stg F w t A i) :
     ∃ y : Stg F w t A (i + 1), x.mark < y.mark ∧
-      ∀ z, z ≤ x.mark → y.hist.state z = x.hist.state z := by
-  obtain ⟨η, s', he, hlt, hA'⟩ := H x.hist x.thru i x.mark x.le x.hA
+      (∀ z, z ≤ x.mark → y.hist.state z = x.hist.state z) ∧ P i y.hist x.mark y.mark := by
+  obtain ⟨η, s', he, hlt, hA', hP'⟩ := H x.hist x.thru i x.mark x.le x.hA
   have hsame : x.hist.state x.mark = η.state x.mark := he.symm
   have hup := paste_agreeUpTo x.hist η x.mark hsame
   have hfrom := paste_agreeFrom x.hist η x.mark hsame
-  refine ⟨⟨paste x.hist η x.mark hsame, s', ?_, le_trans x.le hlt.le, ?_⟩, hlt, hup⟩
+  refine ⟨⟨paste x.hist η x.mark hsame, s', ?_, le_trans x.le hlt.le, ?_⟩, hlt, hup, ?_⟩
   · rw [hup t x.le]; exact x.thru
   · rw [hfrom s' hlt.le]; exact hA'
+  · exact hP i η _ x.mark s' (fun z h1 _ => hfrom z h1.le) hP'
 
 /-! ## The ω-chain -/
 
@@ -309,26 +313,33 @@ Paper: — (formalization-native; the manuscript states no limit-closure schema)
 -/
 theorem omega_chain [F.IsRegular] (σ : WorldHistory F) (t : F.Duration)
     (A : ℕ → F.Duration → F.WorldState → Prop)
+    (P : ℕ → WorldHistory F → F.Duration → F.Duration → Prop)
     (hcof : ∀ c : ℕ → F.Duration, (∀ k, c k < c (k + 1)) → ∀ x : F.Duration, ∃ k, x ≤ c k)
-    (hstart : ∃ (ρ : WorldHistory F) (s : F.Duration),
-      ρ.state t = σ.state t ∧ t ≤ s ∧ A 0 s (ρ.state s))
+    (hP : ∀ i (η η' : WorldHistory F) s s',
+      (∀ z, s < z → z ≤ s' → η'.state z = η.state z) → P i η s s' → P i η' s s')
+    (ρ₀ : WorldHistory F) (s₀ : F.Duration) (h0w : ρ₀.state t = σ.state t) (h0s : t ≤ s₀)
+    (h0A : A 0 s₀ (ρ₀.state s₀))
     (hstep : ∀ (ρ : WorldHistory F), ρ.state t = σ.state t → ∀ k s, t ≤ s → A k s (ρ.state s) →
       ∃ (η : WorldHistory F) (s' : F.Duration), η.state s = ρ.state s ∧ s < s' ∧
-        A (k + 1) s' (η.state s')) :
+        A (k + 1) s' (η.state s') ∧ P k η s s') :
     ∃ (ρ : WorldHistory F) (c : ℕ → F.Duration), ρ.state t = σ.state t ∧
-      (∀ k, c k < c (k + 1)) ∧ (∀ k, t ≤ c k ∧ A k (c k) (ρ.state (c k))) := by
+      (∀ z, z ≤ s₀ → ρ.state z = ρ₀.state z) ∧ c 0 = s₀ ∧
+      (∀ k, c k < c (k + 1)) ∧ (∀ k, t ≤ c k ∧ A k (c k) (ρ.state (c k))) ∧
+      (∀ k, P k ρ (c k) (c (k + 1))) := by
   classical
-  obtain ⟨ρ₀, s₀, h0w, h0s, h0A⟩ := hstart
   let chain : (k : ℕ) → Stg F (σ.state t) t A k := fun k =>
     Nat.rec (motive := fun k => Stg F (σ.state t) t A k) ⟨ρ₀, s₀, h0w, h0s, h0A⟩
-      (fun _ x => (stg_step hstep x).choose) k
+      (fun _ x => (stg_step hP hstep x).choose) k
   have hstg : ∀ k, (chain k).mark < (chain (k + 1)).mark ∧
-      ∀ z, z ≤ (chain k).mark → (chain (k + 1)).hist.state z = (chain k).hist.state z :=
-    fun k => (stg_step hstep (chain k)).choose_spec
+      (∀ z, z ≤ (chain k).mark → (chain (k + 1)).hist.state z = (chain k).hist.state z) ∧
+      P k (chain (k + 1)).hist (chain k).mark (chain (k + 1)).mark :=
+    fun k => (stg_step hP hstep (chain k)).choose_spec
   obtain ⟨lim, hlag⟩ := omega_limit (τ := fun k => (chain k).hist) (c := fun k => (chain k).mark)
-    (fun k => (hstg k).1) (hcof _ fun k => (hstg k).1) (fun k x hx => (hstg k).2 x hx)
-  refine ⟨lim, fun k => (chain k).mark, ?_, fun k => (hstg k).1, fun k => ⟨(chain k).le, ?_⟩⟩
+    (fun k => (hstg k).1) (hcof _ fun k => (hstg k).1) (fun k x hx => (hstg k).2.1 x hx)
+  refine ⟨lim, fun k => (chain k).mark, ?_, fun z hz => hlag 0 z hz, rfl, fun k => (hstg k).1,
+    fun k => ⟨(chain k).le, ?_⟩, fun k => ?_⟩
   · rw [hlag 0 t (chain 0).le]; exact (chain 0).thru
   · rw [hlag k _ le_rfl]; exact (chain k).hA
+  · exact hP k _ _ _ _ (fun z _ h2 => hlag (k + 1) z h2) (hstg k).2.2
 
 end FormalSystem.PlusLanguage

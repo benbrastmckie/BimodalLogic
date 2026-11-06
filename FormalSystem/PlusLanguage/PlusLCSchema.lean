@@ -218,12 +218,17 @@ theorem lcN_plusValidInt (n : ℕ) (hn : 0 < n) (α : ℕ → PlusFormula) :
             PlusTruthAt M η s (α ((i₀ + k) % n))) ↔
           PlusTruthAt M ρ s (PlusFormula.dstab (α ((i₀ + k) % n))) :=
       fun k ρ s => (dstab_iff M ρ s (α ((i₀ + k) % n))).symm
-    obtain ⟨ρ, c, hρt, hcl, hcA⟩ := omega_chain (F := F.toTaskFrame) σ t
+    -- `P` is the segment-property slot `omega_chain` carries for the until-form schema; this
+    -- `F`-form argument needs nothing from it, so it is instantiated trivially and its three
+    -- extra conclusions (`c 0 = s₀`, agreement below `s₀`, the segment property) go unused here.
+    obtain ⟨ρ, c, hρt, _, _, hcl, hcA, _⟩ := omega_chain (F := F.toTaskFrame) σ t
       (fun k s v => ∃ η : WorldHistory F.toTaskFrame, v = η.state s ∧
         PlusTruthAt M η s (α ((i₀ + k) % n)))
+      (fun _ _ _ _ => True)
       (fun c hc x => intOrder_omega_cofinal c hc x)
-      ⟨ρ₀, s₀, h0w, h0s,
-        (hAiff 0 ρ₀ s₀).2 (by rw [Nat.add_zero, Nat.mod_eq_of_lt hi₀]; exact h0A)⟩
+      (fun _ _ _ _ _ _ h => h)
+      ρ₀ s₀ h0w h0s
+      ((hAiff 0 ρ₀ s₀).2 (by rw [Nat.add_zero, Nat.mod_eq_of_lt hi₀]; exact h0A))
       (by
         intro ρ he k s hs hk
         have h1 := hA ρ he s hs ((i₀ + k) % n) (Nat.mod_lt _ hn) ((hAiff k ρ s).1 hk)
@@ -231,7 +236,7 @@ theorem lcN_plusValidInt (n : ℕ) (hn : 0 < n) (α : ℕ → PlusFormula) :
         obtain ⟨η, he', h2⟩ := h1
         rw [someFuture_iff] at h2
         obtain ⟨s', hs', h3⟩ := h2
-        refine ⟨η, s', he'.symm, hs', (hAiff (k + 1) η s').2 ?_⟩
+        refine ⟨η, s', he'.symm, hs', (hAiff (k + 1) η s').2 ?_, trivial⟩
         have e : (i₀ + (k + 1)) % n = ((i₀ + k) % n + 1) % n := by
           rw [Nat.mod_add_mod, add_assoc]
         rw [e]
