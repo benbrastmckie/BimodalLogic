@@ -118,6 +118,11 @@ instance : StabClauses OpenFormula where
   snce_clause _ _ _ _ _ _ := Iff.rfl
   stab_clause _ _ _ _ _ := Iff.rfl
 
+/-- L^▷'s atom clause: the valuation at the history's current state. -/
+instance : AtomClause OpenFormula where
+  atom := OpenFormula.atom
+  atom_clause _ _ _ _ _ := Iff.rfl
+
 namespace OpenTruth
 
 /-! ### Clause lemmas -/

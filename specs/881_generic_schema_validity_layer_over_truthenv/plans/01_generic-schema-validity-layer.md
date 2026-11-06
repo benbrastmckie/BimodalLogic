@@ -1,7 +1,7 @@
 # Implementation Plan: Task #881
 
 - **Task**: 881 - Generic schema-validity layer over TruthEnv/StabClauses
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 19.5 hours
 - **Dependencies**: None
 - **Research Inputs**: None (no `research_path` supplied; Stage 1.5 opening assessment
@@ -168,32 +168,32 @@ Phases 9, 10 and 11 edit three *different* files and are genuinely parallel.
 
 ---
 
-### Phase 1: Clause-interface extensions — `AtomClause`, `kPlus`/`kMinus` [NOT STARTED]
+### Phase 1: Clause-interface extensions — `AtomClause`, `kPlus`/`kMinus` [COMPLETED]
 
 **Goal**: Extend `Semantics/TruthClauses.lean` with the two pieces of clause-layer vocabulary the
 generic schemata need and that it does not yet carry, and instantiate them.
 
 **Tasks**:
-- [ ] Add `class AtomClause (L : Type) [TruthEnv L]` with fields `atom : Atom → L` and
+- [x] Add `class AtomClause (L : Type) [TruthEnv L]` with fields `atom : Atom → L` and
       `atom_clause : ∀ {F} (M : TaskModel F) (τ) (t) (e) (p : Atom),
       TruthEnv.T M τ t e (atom p) ↔ M.valuation (τ.state t) p`. Confirmed identical clause shape
       in `Semantics/Truth.lean:299`, `PlusLanguage/PlusTruth.lean:126`,
       `StarLanguage/StarTruth.lean:162`, `OpenLanguage/OpenTruth.lean:127`.
-- [ ] Add `abbrev kPlus (φ : L) : L := neg (UntlClause.untl (neg φ) top)` and
+- [x] Add `abbrev kPlus (φ : L) : L := neg (UntlClause.untl (neg φ) top)` and
       `abbrev kMinus (φ : L) : L := neg (SnceClause.snce (neg φ) top)` in the `untl`/`snce`
       tiers. Confirmed definitionally identical in `Syntax/Formula.lean:197,210`,
       `PlusLanguage/Formula.lean:152,155`, `StarLanguage/Formula.lean:170,173`,
       `OpenLanguage/OpenAxioms.lean:114,117`.
-- [ ] Prove `TruthClauses.kPlus_iff` and `TruthClauses.kMinus_iff` (statements pinned under
+- [x] Prove `TruthClauses.kPlus_iff` and `TruthClauses.kMinus_iff` (statements pinned under
       `## Lean Challenge Statements`), transcribing the argument from
       `StarAxiomValidity.lean:830` / `:845` with `StarTruthAt M τ t v ↦ TruthEnv.T M τ t e`.
-- [ ] Declare `AtomClause` instances (every field `Iff.rfl`) in `Semantics/Truth.lean`,
+- [x] Declare `AtomClause` instances (every field `Iff.rfl`) in `Semantics/Truth.lean`,
       `MinusLanguage/MinusTruth.lean`, `PlusLanguage/PlusTruth.lean`,
       `StarLanguage/StarTruth.lean`, `OpenLanguage/OpenTruth.lean`,
       `HybridLanguage/HybridTruth.lean`, `QuantLanguage/QuantTruth.lean`.
-- [ ] Add `example … := rfl` bridge pins for `kPlus`, `kMinus` and `atom` in each language to
+- [x] Add `example … := rfl` bridge pins for `kPlus`, `kMinus` and `atom` in each language to
       `Tests/BimodalTest/Semantics/ValidityLayerTest.lean`, matching the ~40 pins already there.
-- [ ] Extend `TruthClauses.lean`'s "Design Invariants — the extension contract" section: add
+- [x] Extend `TruthClauses.lean`'s "Design Invariants — the extension contract" section: add
       `AtomClause` to the tier table, record the new `rfl` bridges, and note that the generic
       lemmas still carry **no** attributes.
 
@@ -238,6 +238,9 @@ class and abbrevs, and nothing outside that set references names that do not yet
 - Every new `example … := rfl` pin elaborates (a failure is a real finding, not a nuisance —
   record which bridge failed).
 - `lean_verify FormalSystem.Semantics.TruthClauses.kPlus_iff` reports no axiom beyond `propext`.
+  *(measured: `[propext, Classical.choice, Quot.sound]` — the classical `¬∀ ⇒ ∃` step is
+  irreducible, and the lemma this replaces, `starKPlus_iff`, has the identical profile, so
+  no axiom is gained. The plan's `[propext]` prediction was unmeasured.)*
 
 ---
 

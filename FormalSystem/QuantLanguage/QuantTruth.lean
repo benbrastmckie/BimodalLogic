@@ -142,6 +142,11 @@ instance : UntlClauses QuantFormula where
   untl_clause _ _ _ _ _ _ := Iff.rfl
   snce_clause _ _ _ _ _ _ := Iff.rfl
 
+/-- The quantifier language's atom clause: the valuation at the history's current state. -/
+instance : AtomClause QuantFormula where
+  atom := QuantFormula.atom
+  atom_clause _ _ _ _ _ := Iff.rfl
+
 namespace QuantTruth
 
 /-! ### Clause lemmas -/

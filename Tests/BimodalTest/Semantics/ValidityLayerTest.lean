@@ -8,6 +8,7 @@ import FormalSystem.Semantics.TruthClauses
 import FormalSystem.StarLanguage.StarValidity
 import FormalSystem.MinusLanguage.MinusValidity
 import FormalSystem.OpenLanguage.OpenValidity
+import FormalSystem.OpenLanguage.OpenAxioms
 import FormalSystem.HybridLanguage.HybridValidity
 import FormalSystem.QuantLanguage.QuantTruth
 
@@ -169,6 +170,10 @@ example : Syntax.Formula.allFuture φ = TruthClauses.allFuture φ := rfl
 example : Syntax.Formula.allPast φ = TruthClauses.allPast φ := rfl
 example : Syntax.Formula.always φ = TruthClauses.always φ := rfl
 
+example : Syntax.Formula.kPlus φ = TruthClauses.kPlus φ := rfl
+example : Syntax.Formula.kMinus φ = TruthClauses.kMinus φ := rfl
+example (p : Syntax.Atom) : Syntax.Formula.atom p = AtomClause.atom p := rfl
+
 end LOperators
 
 /-! ### L⁻ — the tense-primitive presentation
@@ -190,6 +195,8 @@ example : MinusFormula.someFuture φ = TruthClauses.someFuture' φ := rfl
 example : MinusFormula.somePast φ = TruthClauses.somePast' φ := rfl
 example : MinusFormula.always φ = TruthClauses.always' φ := rfl
 
+example (p : Syntax.Atom) : MinusFormula.atom p = AtomClause.atom p := rfl
+
 end LMinusOperators
 
 section LPlusOperators
@@ -207,6 +214,10 @@ example : PlusFormula.allFuture φ = TruthClauses.allFuture φ := rfl
 example : PlusFormula.allPast φ = TruthClauses.allPast φ := rfl
 example : PlusFormula.always φ = TruthClauses.always φ := rfl
 example : PlusFormula.dstab φ = TruthClauses.dstab φ := rfl
+
+example : PlusFormula.kPlus φ = TruthClauses.kPlus φ := rfl
+example : PlusFormula.kMinus φ = TruthClauses.kMinus φ := rfl
+example (p : Syntax.Atom) : PlusFormula.atom p = AtomClause.atom p := rfl
 
 end LPlusOperators
 
@@ -226,6 +237,10 @@ example : StarFormula.allPast φ = TruthClauses.allPast φ := rfl
 example : StarFormula.always φ = TruthClauses.always φ := rfl
 example : StarFormula.dstab φ = TruthClauses.dstab φ := rfl
 
+example : StarFormula.kPlus φ = TruthClauses.kPlus φ := rfl
+example : StarFormula.kMinus φ = TruthClauses.kMinus φ := rfl
+example (p : Syntax.Atom) : StarFormula.atom p = AtomClause.atom p := rfl
+
 end LStarOperators
 
 section LOpenOperators
@@ -244,6 +259,10 @@ example : OpenFormula.allPast φ = TruthClauses.allPast φ := rfl
 example : OpenFormula.always φ = TruthClauses.always φ := rfl
 example : OpenFormula.dstab φ = TruthClauses.dstab φ := rfl
 
+example : OpenFormula.kPlus φ = TruthClauses.kPlus φ := rfl
+example : OpenFormula.kMinus φ = TruthClauses.kMinus φ := rfl
+example (p : Syntax.Atom) : OpenFormula.atom p = AtomClause.atom p := rfl
+
 end LOpenOperators
 
 section LHybridOperators
@@ -261,6 +280,8 @@ example : HybridFormula.allFuture φ = TruthClauses.allFuture φ := rfl
 example : HybridFormula.allPast φ = TruthClauses.allPast φ := rfl
 example : HybridFormula.always φ = TruthClauses.always φ := rfl
 example : HybridFormula.dstab φ = TruthClauses.dstab φ := rfl
+
+example (p : Syntax.Atom) : HybridFormula.atom p = AtomClause.atom p := rfl
 
 end LHybridOperators
 
@@ -281,6 +302,8 @@ example : QuantFormula.somePast φ = TruthClauses.somePast φ := rfl
 example : QuantFormula.allFuture φ = TruthClauses.allFuture φ := rfl
 example : QuantFormula.allPast φ = TruthClauses.allPast φ := rfl
 example : QuantFormula.always φ = TruthClauses.always φ := rfl
+
+example (p : Syntax.Atom) : QuantFormula.atom p = AtomClause.atom p := rfl
 
 end LQuantOperators
 

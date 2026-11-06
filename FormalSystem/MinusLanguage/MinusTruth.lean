@@ -137,6 +137,12 @@ instance : TenseClauses MinusFormula where
   allFuture_clause _ _ _ _ _ := Iff.rfl
   allPast_clause _ _ _ _ _ := Iff.rfl
 
+/-- L⁻'s atom clause: the valuation at the history's current state. -/
+instance : AtomClause MinusFormula where
+  atom := MinusFormula.atom
+  atom_clause _ _ _ _ _ := Iff.rfl
+
+
 namespace MinusTruth
 
 variable {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}

@@ -269,6 +269,12 @@ instance : UntlClauses Formula where
   untl_clause _ _ _ _ _ _ := Iff.rfl
   snce_clause _ _ _ _ _ _ := Iff.rfl
 
+/-- L's atom clause: the valuation at the history's current state. -/
+instance : AtomClause Formula where
+  atom := Formula.atom
+  atom_clause _ _ _ _ _ := Iff.rfl
+
+
 namespace Truth
 
 /--

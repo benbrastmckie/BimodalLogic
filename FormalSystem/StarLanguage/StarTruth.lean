@@ -155,6 +155,12 @@ instance : StabClauses StarFormula where
   snce_clause _ _ _ _ _ _ := Iff.rfl
   stab_clause _ _ _ _ _ := Iff.rfl
 
+/-- L⋆'s atom clause: the valuation at the history's current state. -/
+instance : AtomClause StarFormula where
+  atom := StarFormula.atom
+  atom_clause _ _ _ _ _ := Iff.rfl
+
+
 namespace StarTruth
 
 variable (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (v : ℕ → F.Duration)

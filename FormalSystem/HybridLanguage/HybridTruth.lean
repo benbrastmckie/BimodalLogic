@@ -119,6 +119,11 @@ instance : StabClauses HybridFormula where
   snce_clause _ _ _ _ _ _ := Iff.rfl
   stab_clause _ _ _ _ _ := Iff.rfl
 
+/-- The hybrid state language's atom clause: the valuation at the history's current state. -/
+instance : AtomClause HybridFormula where
+  atom := HybridFormula.atom
+  atom_clause _ _ _ _ _ := Iff.rfl
+
 namespace HybridTruth
 
 /-! ### Clause lemmas -/

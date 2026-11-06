@@ -31,18 +31,19 @@ operators behave identically in both point shapes.
 ## Main Definitions
 
 - `TruthEnv` — the pointed truth relation with an inert environment
-- `BotClause`, `ImpClause`, `BoxClause`, `UntlClause`, `SnceClause`, `StabClause`,
-  `AllFutureClause`, `AllPastClause` — one class per primitive operator, each carrying the
-  operator and its truth clause
+- `AtomClause`, `BotClause`, `ImpClause`, `BoxClause`, `UntlClause`, `SnceClause`,
+  `StabClause`, `AllFutureClause`, `AllPastClause` — one class per primitive operator, each
+  carrying the operator and its truth clause
 - `TruthClauses.neg`, `.top`, `.and`, `.or`, `.diamond`, `.someFuture`, `.somePast`,
-  `.allFuture`, `.allPast`, `.always`, `.dstab` — the derived operators, and the
-  tense-primitive alternatives `.someFuture'`, `.somePast'`, `.always'`
+  `.allFuture`, `.allPast`, `.always`, `.dstab`, `.kPlus`, `.kMinus` — the derived operators,
+  and the tense-primitive alternatives `.someFuture'`, `.somePast'`, `.always'`
 
 ## Main Results
 
 - `TruthClauses.neg_iff`, `.top_true`, `.and_iff`, `.or_iff`, `.diamond_iff` — the Boolean tier
 - `TruthClauses.someFuture_iff`, `.somePast_iff`, `.allFuture_iff`, `.allPast_iff`,
   `.always_iff_tri` — the `untl`/`snce` tier
+- `TruthClauses.kPlus_iff`, `.kMinus_iff` — Reynolds' two gap operators, unfolded once
 - `TruthClauses.dstab_iff` — the stability tier
 - `TruthClauses.someFuture_iff_of_allFuture`, `.somePast_iff_of_allPast`, `.always_iff_of_tense`
   — the tense-primitive tier
@@ -87,6 +88,13 @@ apply to it.
   (`after_top_iff`, `after_iff_of_isNextTime`, `after_negation`, over `IsNextTime` and
   `isNextTime_unique`); Instantiated by: L
 * `StabClauses` — Primitives: + `stab`; Lemmas inherited: + `dstab_iff`; Instantiated by: L⁺, L⋆
+* `AtomClause` — Primitive: `atom`; Lemmas inherited: no clause lemma of its own (the clause
+  field *is* the characterization), but it is what
+  `Metalogic/SoundnessLemmas/GenericSchemata.lean`'s `generic_atom_stab` consumes;
+  Instantiated by: L, L⁻, L⁺, L⋆, L^▷, the hybrid state language,
+  and the propositional-quantifier language — all seven, since every one of them reads an atom as
+  `M.valuation (τ.state t) p`. It stands alone rather than joining a bundle: it is purely
+  additive, with no `extends` into `BoolClauses`, so adding it perturbs no existing instance.
 * `TenseClauses` — Primitives: `allFuture`, `allPast` **primitive** instead of `untl`/`snce`; Lemmas
   inherited: the five Boolean ones, plus `someFuture_iff_of_allFuture`, `somePast_iff_of_allPast`,
   `always_iff_of_tense`; Instantiated by: L⁻
@@ -119,19 +127,22 @@ A language's own derived-operator `def`s coincide with the `abbrev`s here only b
 the same Łukasiewicz/`untl` encodings **character for character** — `neg φ := imp φ bot`,
 `and φ ψ := neg (imp φ (neg ψ))`, `someFuture φ := untl top φ`, and so on. That coincidence is
 what lets a wrapper delegate without a `show`. All four languages satisfy it today, for every
-operator; it is pinned by ~40 `example … := rfl` lines in
-`Tests/BimodalTest/Semantics/ValidityLayerTest.lean` rather than assumed. A fifth language that
+operator; it is pinned by the `example … := rfl` lines in
+`Tests/BimodalTest/Semantics/ValidityLayerTest.lean` rather than assumed. The two gap operators
+`kPlus`/`kMinus` and the `atom` constructor are pinned the same way, in each language that has
+them — `kPlus`/`kMinus` for L, L⁺, L⋆ and L^▷, `atom` for all seven. A fifth language that
 encodes a derived operator differently keeps its own proof for that one lemma and inherits the
 rest.
 
 ### Attributes
 
-The generic lemmas carry **no** attributes, and must not acquire any. Each language's wrapper
-keeps exactly the attributes it has today — `@[simp, truth_norm]` on L's ten, `@[simp]` on L⁻'s
-eight, none on L⁺'s and L⋆'s. Tagging a generic lemma `@[simp]` would change every downstream simp
-set at once, and L's two `always` forms are a live example of why that matters: only the collected
-`always_iff` may carry the attribute, and it is L-only precisely because collapsing the three
-cases needs the frame's trichotomy, which no generic lemma has.
+The generic lemmas carry **no** attributes, and must not acquire any. The same holds of the
+schema layer written over this one in `Metalogic/SoundnessLemmas/GenericSchemata.lean`. Each
+language's wrapper keeps exactly the attributes it has today — `@[simp, truth_norm]` on L's ten,
+`@[simp]` on L⁻'s eight, none on L⁺'s and L⋆'s. Tagging a generic lemma `@[simp]` would change
+every downstream simp set at once, and L's two `always` forms are a live example of why that
+matters: only the collected `always_iff` may carry the attribute, and it is L-only precisely
+because collapsing the three cases needs the frame's trichotomy, which no generic lemma has.
 
 ### Classical discipline
 
@@ -196,6 +207,21 @@ class TruthEnv (L : Type) where
 Each carries the operator and its truth clause. The clause statements are copied from
 `Semantics/Truth.lean`'s `TruthAt`, with `e` threaded inert.
 -/
+
+/--
+An atomic proposition, read off the valuation at the history's current **state**.
+
+This is the one clause whose right-hand side is not built from the truth relation itself, and the
+only one mentioning `TaskModel.valuation`. It is state-local by construction — `τ.state t` is all
+of `(M, τ, t, e)` that it reads — which is exactly what makes AS (`p → ⊡p`) generic.
+-/
+class AtomClause (L : Type) [TruthEnv L] where
+  /-- The atom constructor. -/
+  atom : Syntax.Atom → L
+  /-- An atom holds iff the valuation holds of the current state. -/
+  atom_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (p : Syntax.Atom),
+    TruthEnv.T M τ t e (atom p) ↔ M.valuation (τ.state t) p
 
 /-- The falsum, false at every point. -/
 class BotClause (L : Type) [TruthEnv L] where
@@ -423,6 +449,25 @@ theorem allFuture_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
   · rintro h ⟨s, hs, hn⟩
     exact ((neg_iff M τ s e φ).mp hn) (h s hs)
 
+/-- Reynolds' forward gap operator (`K⁺φ`): `¬U(¬φ, ⊤)`, guard-first. -/
+abbrev kPlus (φ : L) : L := neg (UntlClause.untl (neg φ) top)
+
+/-- `K⁺φ` at `t`: every point above `t` has a `φ`-point strictly between. -/
+theorem kPlus_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e (kPlus φ) ↔
+      ∀ s : F.Duration, t < s → ∃ r : F.Duration, t < r ∧ r < s ∧ TruthEnv.T M τ r e φ := by
+  rw [kPlus, neg_iff, UntlClause.untl_clause]
+  constructor
+  · intro h s hs
+    by_contra hc
+    push Not at hc
+    exact h ⟨s, hs, top_true M τ s e,
+      fun r h1 h2 => (neg_iff M τ r e φ).mpr (hc r h1 h2)⟩
+  · rintro h ⟨s, hs, -, hall⟩
+    obtain ⟨r, h1, h2, hr⟩ := h s hs
+    exact (neg_iff M τ r e φ).mp (hall r h1 h2) hr
+
 end Future
 
 /-!
@@ -546,6 +591,25 @@ theorem allPast_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     exact h ⟨s, hs, (neg_iff M τ s e φ).mpr hc⟩
   · rintro h ⟨s, hs, hn⟩
     exact ((neg_iff M τ s e φ).mp hn) (h s hs)
+
+/-- Reynolds' backward gap operator (`K⁻φ`): `¬S(¬φ, ⊤)`, guard-first. -/
+abbrev kMinus (φ : L) : L := neg (SnceClause.snce (neg φ) top)
+
+/-- `K⁻φ` at `t`: the past mirror of `kPlus_iff`. -/
+theorem kMinus_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e (kMinus φ) ↔
+      ∀ s : F.Duration, s < t → ∃ r : F.Duration, s < r ∧ r < t ∧ TruthEnv.T M τ r e φ := by
+  rw [kMinus, neg_iff, SnceClause.snce_clause]
+  constructor
+  · intro h s hs
+    by_contra hc
+    push Not at hc
+    exact h ⟨s, hs, top_true M τ s e,
+      fun r h1 h2 => (neg_iff M τ r e φ).mpr (hc r h1 h2)⟩
+  · rintro h ⟨s, hs, -, hall⟩
+    obtain ⟨r, h1, h2, hr⟩ := h s hs
+    exact (neg_iff M τ r e φ).mp (hall r h1 h2) hr
 
 end Past
 
