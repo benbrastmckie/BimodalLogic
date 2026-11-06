@@ -517,25 +517,30 @@ compiles every file this phase touches or newly depends on.
 
 ---
 
-### Phase 8: `modal_future` — generic core with an explicit homogeneity hypothesis [NOT STARTED]
+### Phase 8: `modal_future` — generic core with an explicit homogeneity hypothesis [COMPLETED]
 
 **Goal**: Recover MF generically without violating `ValidityLayer.lean`'s "time shift is not
 inherited" boundary.
 
 **Tasks**:
-- [ ] State `generic_modal_future` taking the homogeneity fact as an **explicit hypothesis**,
+- [x] State `generic_modal_future` taking the homogeneity fact as an **explicit hypothesis**,
       shaped so that each language discharges it from its own time-shift lemma:
       `(hhom : ∀ (σ : WorldHistory F) (s : F.Duration), t < s →
       (∀ ρ : WorldHistory F, TruthEnv.T M ρ t e φ) → TruthEnv.T M σ s e φ)`, concluding
       `TruthEnv.T M τ t e (ImpClause.imp (BoxClause.box φ) (BoxClause.box (allFuture φ)))`.
-- [ ] State `generic_modal_future_reflect_time` the same way over `allPast`.
-- [ ] Record in the docstring **why** the hypothesis is explicit rather than a class field: the
+- [x] State `generic_modal_future_reflect_time` the same way over `allPast`.
+- [x] Record in the docstring **why** the hypothesis is explicit rather than a class field: the
       three languages' time-shift statements genuinely differ (L⋆'s drags the stored-time vector
       along, L^▷'s needed a bespoke `openTruthAt_congr_ext`), which is the documented reason
       time shift sits outside both existing layers.
-- [ ] Verify the hypothesis is dischargeable from each landed lemma **before** rewiring:
+- [x] Verify the hypothesis is dischargeable from each landed lemma **before** rewiring:
       `plusTruthAt_timeShift`, `starTruthAt_timeShift` (+ `recallFree_vector_irrelevant` for the
       `RecallFree` side condition), `openTruthAt_timeShift`.
+      *(done, by compiled probe rather than by argument: three standalone `example`s — the full
+      `StarValid` wrapper for L⋆ under `RecallFree φ`, and the pointwise discharge for L^▷ and L⁺
+      — all elaborate with zero diagnostics. L⁺ and L^▷ discharge with **no side condition at
+      all**; only L⋆ needs `RecallFree`, because only its shift moves the environment. The
+      decision gate therefore passes: `modal_future` is genuinely generic.)*
 
 **Timing**: 1.5 hours
 
@@ -559,6 +564,9 @@ this phase's outcome.
 **Verification**:
 - Scoped build green.
 - The hypothesis is load-bearing (the lemma does not elaborate with it removed).
+  *(`hhom` is the only semantic input in the body — nothing else in scope could supply `φ` at a
+  later time — and it is an explicit argument, so Lean's `unusedVariables` linter would report it
+  if unconsumed; the module builds with zero warnings.)*
 
 ---
 

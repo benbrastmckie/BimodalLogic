@@ -1364,4 +1364,77 @@ theorem generic_sep_reflect_time (M : TaskModel F) (τ : WorldHistory F) (t : F.
 
 end Sep
 
+/-!
+## `modal_future`, with homogeneity as an explicit hypothesis
+
+MF (`□φ → □Gφ`) is the one TM⁺ mirror schema whose semantic content is **time shift**, and time
+shift is the boundary both layers below this one declare uninheritable. The reason is not
+squeamishness: the three languages' shift lemmas have genuinely different statements.
+`PlusTruth.plusTruthAt_timeShift` and `openTruthAt_timeShift` read
+
+```
+T M (σ.timeShift Δ) t φ ↔ T M σ (t + Δ) φ
+```
+
+while `StarTruth.starTruthAt_timeShift` must drag the stored-time vector along,
+
+```
+StarTruthAt M (σ.timeShift Δ) t v φ ↔ StarTruthAt M σ (t + Δ) (fun i => v i + Δ) φ
+```
+
+and the L^▷ lemma needed a bespoke `openTruthAt_congr_ext` to land at all. No single clause-class
+field covers the three, so making one up would be fiction.
+
+What *is* common is the consequence MF actually uses: a formula true at every world history at `t`
+is true at every world history at every later time. That is taken below as the explicit hypothesis
+`hhom`, shaped so each language discharges it from its own shift lemma — L⁺ and L^▷ directly, L⋆
+with `recallFree_vector_irrelevant` absorbing the vector the shift moves (which is why
+`StarAxiom.modal_future` carries a `RecallFree` side condition, and why the generic statement
+fixes one `e` rather than quantifying it).
+-/
+
+section ModalFuture
+variable [BotClause L] [BoxClause L] [UntlClause L]
+
+/-- MF, generically: `□φ → □Gφ` under homogeneity. `hhom` is the only semantic input, and it is
+load-bearing — nothing else in the proof could supply `φ` at a later time. -/
+theorem generic_modal_future (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L)
+    (hhom : ∀ (σ : WorldHistory F) (s : F.Duration), t < s →
+      (∀ ρ : WorldHistory F, TruthEnv.T M ρ t e φ) → TruthEnv.T M σ s e φ) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (BoxClause.box φ) (BoxClause.box (allFuture φ))) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [BoxClause.box_clause] at h
+  rw [BoxClause.box_clause]
+  intro σ
+  rw [allFuture_iff]
+  intro s hts
+  exact hhom σ s hts h
+
+end ModalFuture
+
+section ModalPast
+variable [BotClause L] [BoxClause L] [SnceClause L]
+
+/-- MF's temporal dual, `□φ → □Hφ`, under past homogeneity. No `modal_past` schema exists, so
+this dual is named here, exactly as `starValid_modal_future_reflect_time` is. -/
+theorem generic_modal_future_reflect_time (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration) (e : TruthEnv.Env L F) (φ : L)
+    (hhom : ∀ (σ : WorldHistory F) (s : F.Duration), s < t →
+      (∀ ρ : WorldHistory F, TruthEnv.T M ρ t e φ) → TruthEnv.T M σ s e φ) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (BoxClause.box φ) (BoxClause.box (allPast φ))) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [BoxClause.box_clause] at h
+  rw [BoxClause.box_clause]
+  intro σ
+  rw [allPast_iff]
+  intro s hst
+  exact hhom σ s hst h
+
+end ModalPast
+
 end FormalSystem.Metalogic.SoundnessLemmas
