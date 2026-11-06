@@ -65,21 +65,43 @@ and above the greatest `A`-point `z` below `t`, forcing `q on [z,t)` — which i
 `¬S(¬q,¬A)@t` — and leaving the left-hand side at `z`, where `A(z)` makes `W` true again and the
 first branch applies. `S(A ∧ case5Core, ¬A)` is how `z` is named at `t`.
 
+## The reduction DAG, as landed
+
+One row per case, naming the lemmas its proof consumes. Acyclicity is auditable from this table
+alone: every consumed case precedes its consumer in the order `1, 2, 3, 4, 5, 8, 7, 6`.
+
+| Case | proved in | consumes |
+|------|-----------|----------|
+| 1 | `Eliminations.lean` | — (semantic) |
+| 2 | `Eliminations.lean` | `usTruth_neg_untl`, `usTruth_snce_or_event`, `G`-under-`S`, Case 1 |
+| 3 | `Eliminations.lean` | `usTruth_neg_snce`, `usTruth_case2` |
+| 4 | `Eliminations.lean` | `usTruth_neg_snce`, `usTruth_case1` |
+| 5 | this module | — (semantic: `usTruth_case5_guard_iff` plus both witness devices) |
+| 8 | this module | `usTruth_neg_snce_distrib`, Case 2 (at `q := ⊤`), Case 5 (twice) |
+| 7 | this module | one semantic step, Case 4, Case 8 |
+| 6 | this module | one semantic step, `exists_least_above`, Case 3, Case 5 |
+
+No row consumes GHR 10.2.4, Theorem 10.2.9, or a junction-depth measure: all eight cases are
+strictly upstream of the induction that consumes them.
+
 ## Main Definitions
 
 - `case5W`, `case5Core`, `case5Rhs`: the split, GHR's pure-past core, and Case 5's right-hand side
+- `case8Rhs`, `case7Rhs`, `case6Rhs`: the three reductions' right-hand sides
 
 ## Main Results
 
 - `exists_greatest_below`: the greatest-witness device over `ℤ`, dual to `exists_least_above`
 - `usTruth_case5_guard_iff`: the guard equivalence (Claim C of the Phase 16 gate record)
-- `usTruth_case5`: GHR 10.2.3, Case 5
-- `isSeparated_case5Rhs`: its separatedness, discharged
+- `usTruth_case5`, `usTruth_case8`, `usTruth_case7`, `usTruth_case6`: GHR 10.2.3's four hard
+  cases, completing all eight
+- `isSeparated_case5Rhs`, `isSeparated_case8Rhs`, `isSeparated_case7Rhs`,
+  `isSeparated_case6Rhs`: their separatedness, each discharged rather than asserted
 
 ## References
 
 * [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
-  Computational Aspects*][gabbay1994], vol. 1, Lemma 10.2.3, Case 5
+  Computational Aspects*][gabbay1994], vol. 1, Lemma 10.2.3, Cases 5-8
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.SeparationZ
@@ -423,6 +445,435 @@ theorem usTruth_case5 (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
       · exact absurd hWt hW
       · exact (usTruth_case5_of_not_case5W a q A B v t hW).mpr h
 
+/-! ## Case 8, by reduction
+
+GHR derive Case 8 from the generic negated-since distribution identity
+(`usTruth_neg_snce_distrib`) at `y = z = ¬U(A,B)`, which turns the negation of Case 8's
+left-hand side into a three-way disjunction whose every disjunct is an already-landed case. The
+instantiations, written out so the reduction is checkable:
+
+| disjunct | GHR's form | handled by | at |
+|----------|-----------|------------|-----|
+| first | `H(¬a ∨ U(A,B))` | Case 2, negated | `q := ⊤` |
+| second | `S(¬q ∧ ¬a ∧ U(A,B), ¬a ∨ U(A,B))` | Case 5 | `a := ¬q ∧ ¬a`, `q := ¬a` |
+| third | `S(¬q ∧ U(A,B), ¬a ∨ U(A,B))` | Case 5 | `a := ¬q`, `q := ¬a` |
+
+The first disjunct is `H(¬a ∨ U(A,B))`, i.e. `¬P(a ∧ ¬U(A,B))`, i.e. the negation of
+`S(a ∧ ¬U(A,B), ⊤)` — Case 2 with its guard taken to be `⊤`. The two `S` disjuncts are Case 5's
+shape at the two instantiations above; the Boolean simplification that licenses reading them that
+way is that `U(A,B)` implies `¬a ∨ U(A,B)` and implies `¬(a ∧ ¬U(A,B))`, so the identity's event
+`(¬a ∨ U(A,B)) ∧ ¬q ∧ U(A,B)` collapses to `¬q ∧ U(A,B)` on the third disjunct and to
+`¬q ∧ ¬a ∧ U(A,B)` on the second.
+
+**This reduction is not circular.** Case 5 is proved semantically in `usTruth_case5`, strictly
+upstream, so the Cases 5/8 edge runs one way only. An earlier dispatch's gate record reported a
+Cases 5/8 loop; that loop was an artefact of trying to obtain Case 5 *from* Case 8's negation,
+which is not what happens here, and it does not arise. -/
+
+/--
+Case 8's separated right-hand side: the negation of the three disjuncts the distribution identity
+produces, each at the instantiation recorded in the section docstring above.
+
+**All three disjuncts are kept.** GHR write "Notice the last disjunct in ¬D is redundant", and
+that is false. The error is one of orientation: the **second** disjunct's event
+`¬q ∧ ¬a ∧ U(A,B)` strictly implies the third's `¬q ∧ U(A,B)`, and `S` is monotone in its event
+argument, so it is the second that is redundant, never the third. The model
+`a ∈ {0,4}`, `q ≡ ⊥`, `A(5)`, `B(5)` at `t = 5` — compiled as `v₄` in
+`specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-reduction.lean` — is a point at
+which the third disjunct is the **only** true one of the three, so dropping it would make the
+expansion unsound. Do not reduce this to two disjuncts, even if a tactic closes the equivalence
+without one.
+-/
+def case8Rhs (a q A B : USForm) : USForm :=
+  ((case2Rhs a USForm.top A B).neg.or
+    ((case5Rhs (q.neg.and a.neg) a.neg A B).or (case5Rhs q.neg a.neg A B))).neg
+
+/--
+**GHR 10.2.3, Case 8**: `S(a ∧ ¬U(A,B), q ∨ ¬U(A,B))` is separated.
+
+By the reduction the source gives, not by a semantic re-derivation: the generic negated-since
+distribution identity at `y = z = ¬U(A,B)`, then Case 2 at `q := ⊤` on the `H` disjunct and
+Case 5 at the two instantiations tabulated in the section docstring on the two `S` disjuncts.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
+-/
+theorem usTruth_case8 (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
+    usTruth v t (USForm.snce (q.or (USForm.untl B A).neg) (a.and (USForm.untl B A).neg)) ↔
+      usTruth v t (case8Rhs a q A B) := by
+  have hsome : usTruth v t (USForm.allPast (a.neg.or (USForm.untl B A).neg.neg)) ↔
+      ¬ usTruth v t (USForm.snce USForm.top (a.and (USForm.untl B A).neg)) := by
+    rw [usTruth_allPast_iff, usTruth_snce_iff]
+    constructor
+    · rintro h ⟨s, hst, hev, -⟩
+      rcases (usTruth_or_iff v s a.neg _).mp (h s hst) with hna | hnn
+      · exact (usTruth_neg_iff v s a).mp hna ((usTruth_and_iff v s a _).mp hev).1
+      · exact (usTruth_neg_iff v s _).mp hnn ((usTruth_and_iff v s a _).mp hev).2
+    · intro h s hst
+      refine (usTruth_or_iff v s a.neg _).mpr ?_
+      by_cases ha : usTruth v s a
+      · refine Or.inr ((usTruth_neg_iff v s _).mpr fun hnU => h ⟨s, hst, ?_, ?_⟩)
+        · exact (usTruth_and_iff v s a _).mpr ⟨ha, hnU⟩
+        · exact fun r _ _ => usTruth_top v r
+      · exact Or.inl ((usTruth_neg_iff v s a).mpr ha)
+  have h1 : usTruth v t (USForm.allPast (a.neg.or (USForm.untl B A).neg.neg)) ↔
+      ¬ usTruth v t (case2Rhs a USForm.top A B) :=
+    hsome.trans (not_congr (usTruth_case2 a USForm.top A B v t))
+  have h2 : usTruth v t (USForm.snce (a.neg.or (USForm.untl B A).neg.neg)
+        ((q.neg.and (USForm.untl B A).neg.neg).and a.neg)) ↔
+      usTruth v t (case5Rhs (q.neg.and a.neg) a.neg A B) := by
+    refine Iff.trans (usTruth_snce_congr (G' := a.neg.or (USForm.untl B A))
+      (E' := ((q.neg.and a.neg)).and (USForm.untl B A))
+      (fun w r => ?_) (fun w r => ?_) v t) (usTruth_case5 _ _ A B v t)
+    · simp only [usTruth_or_iff, usTruth_neg_iff]
+      tauto
+    · simp only [usTruth_and_iff, usTruth_neg_iff]
+      tauto
+  have h3 : usTruth v t (USForm.snce (a.neg.or (USForm.untl B A).neg.neg)
+        ((q.neg.and (USForm.untl B A).neg.neg).and (USForm.untl B A).neg.neg)) ↔
+      usTruth v t (case5Rhs q.neg a.neg A B) := by
+    refine Iff.trans (usTruth_snce_congr (G' := a.neg.or (USForm.untl B A))
+      (E' := q.neg.and (USForm.untl B A))
+      (fun w r => ?_) (fun w r => ?_) v t) (usTruth_case5 _ _ A B v t)
+    · simp only [usTruth_or_iff, usTruth_neg_iff]
+      tauto
+    · simp only [usTruth_and_iff, usTruth_neg_iff]
+      tauto
+  have hid := ((usTruth_neg_snce_distrib a q (USForm.untl B A).neg (USForm.untl B A).neg
+      v t).trans (usTruth_or_iff v t _ _)).trans
+    (or_congr h1 ((usTruth_or_iff v t _ _).trans (or_congr h2 h3)))
+  have hsplit : usTruth v t (case8Rhs a q A B) ↔
+      ¬ (¬ usTruth v t (case2Rhs a USForm.top A B) ∨
+          (usTruth v t (case5Rhs (q.neg.and a.neg) a.neg A B) ∨
+            usTruth v t (case5Rhs q.neg a.neg A B))) := by
+    rw [case8Rhs, usTruth_neg_iff, usTruth_or_iff, usTruth_or_iff, usTruth_neg_iff]
+  rw [hsplit]
+  exact not_not.symm.trans (not_congr hid)
+
+/-! ## Case 7, by reduction
+
+GHR derive Case 7 by one semantic step — "By considering when A is true" — followed by Cases 8
+and 4. The semantic step splits on the position of the `U(A,B)` witness `u` relative to the
+evaluation point `t`:
+
+* `u ≥ t`: the outer guard's `¬U(A,B)` disjunct is unavailable throughout `(s,t)`, because the
+  witness `u` serves every point of that interval, so `q` must hold throughout it. That gives
+  `S(a, B ∧ q)` at `t`, together with `A` at `t` (when `u = t`) or `B ∧ U(A,B)` at `t`
+  (when `u > t`) — GHR's second and third disjuncts.
+* `u < t`: the same argument gives `S(a, B ∧ q)` at `u`, and the outer guard's own value at `u`
+  splits the remainder in two. `q` at `u` lands on Case 4's shape `S(a', q ∨ ¬U(A,B))` at
+  `a' := A ∧ S(a, B ∧ q) ∧ q`; `¬U(A,B)` at `u` lands on Case 8's shape
+  `S(a'' ∧ ¬U(A,B), q ∨ ¬U(A,B))` at `a'' := A ∧ S(a, B ∧ q)`.
+
+Splitting at the anchor rather than afterwards is what makes GHR's "eliminations (8) and (4)"
+step a direct appeal to the two cases with no distributivity rewrite in between. -/
+
+/--
+Case 7's separated right-hand side, as the reduction produces it. Neither this nor `case6Rhs` is
+hand-minimised: a disjunct stays unless its redundancy is proved, for the reason recorded at
+`case8Rhs`.
+-/
+def case7Rhs (a q A B : USForm) : USForm :=
+  (case4Rhs ((A.and (USForm.snce (B.and q) a)).and q) q A B).or
+    ((case8Rhs (A.and (USForm.snce (B.and q) a)) q A B).or
+      (((USForm.snce (B.and q) a).and A).or
+        ((USForm.snce (B.and q) a).and (B.and (USForm.untl B A)))))
+
+/--
+Case 7's left-hand side holds whenever an anchor `u < t` carries `A`, `S(a, B ∧ q)`, the outer
+guard at `u`, and the outer guard throughout `(u,t)`. The `←` halves of both Case 7 disjuncts
+that come from the `u < t` branch go through this.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
+-/
+theorem usTruth_case7_of_anchor (a q A B : USForm) (v : ℕ → ℤ → Prop) {u t : ℤ} (hut : u < t)
+    (hAu : usTruth v u A) (hSabq : usTruth v u (USForm.snce (B.and q) a))
+    (hgu : usTruth v u (q.or (USForm.untl B A).neg))
+    (hg : ∀ r : ℤ, u < r → r < t → usTruth v r (q.or (USForm.untl B A).neg)) :
+    usTruth v t (USForm.snce (q.or (USForm.untl B A).neg) (a.and (USForm.untl B A))) := by
+  obtain ⟨s, hsu, ha, hBq⟩ := (usTruth_snce_iff v u (B.and q) a).mp hSabq
+  refine (usTruth_snce_iff v t (q.or (USForm.untl B A).neg) (a.and (USForm.untl B A))).mpr
+    ⟨s, by omega, (usTruth_and_iff v s a (USForm.untl B A)).mpr
+      ⟨ha, (usTruth_untl_iff v s B A).mpr ⟨u, hsu, hAu, fun x h1 h2 =>
+        ((usTruth_and_iff v x B q).mp (hBq x h1 h2)).1⟩⟩, fun r h1 h2 => ?_⟩
+  rcases (by omega : r < u ∨ r = u ∨ u < r) with h | h | h
+  · exact (usTruth_or_iff v r q (USForm.untl B A).neg).mpr
+      (Or.inl ((usTruth_and_iff v r B q).mp (hBq r h1 h)).2)
+  · exact h ▸ hgu
+  · exact hg r h h2
+
+/--
+**GHR 10.2.3, Case 7**: `S(a ∧ U(A,B), q ∨ ¬U(A,B))` is separated.
+
+By the reduction the source gives: one semantic step on the position of the `U(A,B)` witness,
+then Case 4 and Case 8 at the instantiations recorded in the section docstring. Both are strictly
+upstream — Case 8 is proved from Case 5, which is proved semantically — so nothing here appeals
+to 10.2.4 or to the junction-depth induction.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
+-/
+theorem usTruth_case7 (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
+    usTruth v t (USForm.snce (q.or (USForm.untl B A).neg) (a.and (USForm.untl B A))) ↔
+      usTruth v t (case7Rhs a q A B) := by
+  have hrhs : usTruth v t (case7Rhs a q A B) ↔
+      (usTruth v t (USForm.snce (q.or (USForm.untl B A).neg)
+          ((A.and (USForm.snce (B.and q) a)).and q)) ∨
+        (usTruth v t (USForm.snce (q.or (USForm.untl B A).neg)
+            ((A.and (USForm.snce (B.and q) a)).and (USForm.untl B A).neg)) ∨
+          ((usTruth v t (USForm.snce (B.and q) a) ∧ usTruth v t A) ∨
+            (usTruth v t (USForm.snce (B.and q) a) ∧
+              (usTruth v t B ∧ usTruth v t (USForm.untl B A)))))) := by
+    rw [case7Rhs]
+    simp only [usTruth_or_iff, usTruth_and_iff]
+    rw [← usTruth_case4, ← usTruth_case8]
+  rw [hrhs]
+  constructor
+  · intro h
+    obtain ⟨s, hst, hev, hg⟩ :=
+      (usTruth_snce_iff v t (q.or (USForm.untl B A).neg) (a.and (USForm.untl B A))).mp h
+    obtain ⟨ha, hU⟩ := (usTruth_and_iff v s a (USForm.untl B A)).mp hev
+    obtain ⟨u, hsu, hAu, hBu⟩ := (usTruth_untl_iff v s B A).mp hU
+    have hqlt : ∀ r : ℤ, s < r → r < u → r < t → usTruth v r q := by
+      intro r h1 h2 h3
+      rcases (usTruth_or_iff v r q (USForm.untl B A).neg).mp (hg r h1 h3) with hq | hnU
+      · exact hq
+      · exact absurd ((usTruth_untl_iff v r B A).mpr
+          ⟨u, h2, hAu, fun x hx1 hx2 => hBu x (by omega) hx2⟩)
+          ((usTruth_neg_iff v r (USForm.untl B A)).mp hnU)
+    rcases (by omega : t ≤ u ∨ u < t) with hut | hut
+    · have hSabq : usTruth v t (USForm.snce (B.and q) a) :=
+        (usTruth_snce_iff v t (B.and q) a).mpr ⟨s, hst, ha, fun r h1 h2 =>
+          (usTruth_and_iff v r B q).mpr ⟨hBu r h1 (by omega), hqlt r h1 (by omega) h2⟩⟩
+      rcases (by omega : u = t ∨ t < u) with heq | hlt
+      · exact Or.inr (Or.inr (Or.inl ⟨hSabq, heq ▸ hAu⟩))
+      · refine Or.inr (Or.inr (Or.inr ⟨hSabq, hBu t hst hlt, ?_⟩))
+        exact (usTruth_untl_iff v t B A).mpr
+          ⟨u, hlt, hAu, fun x hx1 hx2 => hBu x (by omega) hx2⟩
+    · have hSabqu : usTruth v u (USForm.snce (B.and q) a) :=
+        (usTruth_snce_iff v u (B.and q) a).mpr ⟨s, hsu, ha, fun r h1 h2 =>
+          (usTruth_and_iff v r B q).mpr ⟨hBu r h1 h2, hqlt r h1 h2 (by omega)⟩⟩
+      have hAS : usTruth v u (A.and (USForm.snce (B.and q) a)) :=
+        (usTruth_and_iff v u A (USForm.snce (B.and q) a)).mpr ⟨hAu, hSabqu⟩
+      rcases (usTruth_or_iff v u q (USForm.untl B A).neg).mp (hg u hsu hut) with hqu | hnUu
+      · refine Or.inl ((usTruth_snce_iff v t (q.or (USForm.untl B A).neg)
+          ((A.and (USForm.snce (B.and q) a)).and q)).mpr
+          ⟨u, hut, (usTruth_and_iff v u _ q).mpr ⟨hAS, hqu⟩, fun r h1 h2 => hg r (by omega) h2⟩)
+      · refine Or.inr (Or.inl ((usTruth_snce_iff v t (q.or (USForm.untl B A).neg)
+          ((A.and (USForm.snce (B.and q) a)).and (USForm.untl B A).neg)).mpr
+          ⟨u, hut, (usTruth_and_iff v u _ (USForm.untl B A).neg).mpr ⟨hAS, hnUu⟩,
+            fun r h1 h2 => hg r (by omega) h2⟩))
+  · rintro (h1 | h2 | ⟨hSabq, hAt⟩ | ⟨hSabq, hBt, hUt⟩)
+    · obtain ⟨u, hut, hev, hg⟩ :=
+        (usTruth_snce_iff v t (q.or (USForm.untl B A).neg)
+          ((A.and (USForm.snce (B.and q) a)).and q)).mp h1
+      obtain ⟨hAS, hqu⟩ := (usTruth_and_iff v u _ q).mp hev
+      obtain ⟨hAu, hSabqu⟩ := (usTruth_and_iff v u A (USForm.snce (B.and q) a)).mp hAS
+      exact usTruth_case7_of_anchor a q A B v hut hAu hSabqu
+        ((usTruth_or_iff v u q (USForm.untl B A).neg).mpr (Or.inl hqu)) hg
+    · obtain ⟨u, hut, hev, hg⟩ :=
+        (usTruth_snce_iff v t (q.or (USForm.untl B A).neg)
+          ((A.and (USForm.snce (B.and q) a)).and (USForm.untl B A).neg)).mp h2
+      obtain ⟨hAS, hnUu⟩ := (usTruth_and_iff v u _ (USForm.untl B A).neg).mp hev
+      obtain ⟨hAu, hSabqu⟩ := (usTruth_and_iff v u A (USForm.snce (B.and q) a)).mp hAS
+      exact usTruth_case7_of_anchor a q A B v hut hAu hSabqu
+        ((usTruth_or_iff v u q (USForm.untl B A).neg).mpr (Or.inr hnUu)) hg
+    · obtain ⟨s, hst, ha, hBq⟩ := (usTruth_snce_iff v t (B.and q) a).mp hSabq
+      refine (usTruth_snce_iff v t (q.or (USForm.untl B A).neg)
+        (a.and (USForm.untl B A))).mpr ⟨s, hst, (usTruth_and_iff v s a _).mpr
+          ⟨ha, (usTruth_untl_iff v s B A).mpr ⟨t, hst, hAt, fun x h1 h2 =>
+            ((usTruth_and_iff v x B q).mp (hBq x h1 h2)).1⟩⟩, fun r h1 h2 => ?_⟩
+      exact (usTruth_or_iff v r q (USForm.untl B A).neg).mpr
+        (Or.inl ((usTruth_and_iff v r B q).mp (hBq r h1 h2)).2)
+    · obtain ⟨s, hst, ha, hBq⟩ := (usTruth_snce_iff v t (B.and q) a).mp hSabq
+      obtain ⟨x₀, htx₀, hAx₀, hBx₀⟩ := (usTruth_untl_iff v t B A).mp hUt
+      refine (usTruth_snce_iff v t (q.or (USForm.untl B A).neg)
+        (a.and (USForm.untl B A))).mpr ⟨s, hst, (usTruth_and_iff v s a _).mpr
+          ⟨ha, (usTruth_untl_iff v s B A).mpr ⟨x₀, by omega, hAx₀, fun x h1 h2 => ?_⟩⟩,
+          fun r h1 h2 => ?_⟩
+      · rcases (by omega : x < t ∨ x = t ∨ t < x) with hc | hc | hc
+        · exact ((usTruth_and_iff v x B q).mp (hBq x h1 hc)).1
+        · exact hc ▸ hBt
+        · exact hBx₀ x hc h2
+      · exact (usTruth_or_iff v r q (USForm.untl B A).neg).mpr
+          (Or.inl ((usTruth_and_iff v r B q).mp (hBq r h1 h2)).2)
+
+/-! ## Case 6, by reduction
+
+GHR derive Case 6 by one semantic step — "considering when the first occurrence (if any) of `¬B`
+after `s` is" — followed by Cases 3 and 5. With `n` the least `¬B` point above the `S`-witness
+`s`, the event's `¬U(A,B)` forces `¬A` throughout `(s,n]`, which in turn kills the outer guard's
+`U(A,B)` disjunct throughout `(s,n)` and so forces `q` there. That gives `S(a, q ∧ ¬A)` at `n`,
+and the outer guard's own value at `n` splits the remainder in two: `q` at `n` lands on Case 3's
+shape `S(a', q ∨ U(A,B))` and `U(A,B)` at `n` lands on Case 5's shape
+`S(a'' ∧ U(A,B), q ∨ U(A,B))`, both at `a'' := ¬B ∧ ¬A ∧ S(a, q ∧ ¬A)`. When no `¬B` point lies
+in `(s,t)` the same argument runs to `t` itself and gives GHR's first disjunct. -/
+
+/-- Case 6's separated right-hand side, as the reduction produces it. -/
+def case6Rhs (a q A B : USForm) : USForm :=
+  ((USForm.snce (q.and A.neg) a).and (A.neg.and (B.and (USForm.untl B A)).neg)).or
+    ((case3Rhs (((B.neg.and A.neg).and (USForm.snce (q.and A.neg) a)).and q) q A B).or
+      (case5Rhs ((B.neg.and A.neg).and (USForm.snce (q.and A.neg) a)) q A B))
+
+/--
+Case 6's left-hand side holds whenever an anchor `n < t` carries `¬B`, `¬A`, `S(a, q ∧ ¬A)`, the
+outer guard at `n`, and the outer guard throughout `(n,t)`. The `←` halves of both Case 6
+disjuncts that come from the `n` branch go through this.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
+-/
+theorem usTruth_case6_of_anchor (a q A B : USForm) (v : ℕ → ℤ → Prop) {n t : ℤ} (hnt : n < t)
+    (hnB : ¬ usTruth v n B) (hnA : ¬ usTruth v n A)
+    (hinner : usTruth v n (USForm.snce (q.and A.neg) a))
+    (hgn : usTruth v n (q.or (USForm.untl B A)))
+    (hg : ∀ r : ℤ, n < r → r < t → usTruth v r (q.or (USForm.untl B A))) :
+    usTruth v t (USForm.snce (q.or (USForm.untl B A)) (a.and (USForm.untl B A).neg)) := by
+  obtain ⟨s, hsn, ha, hqA⟩ := (usTruth_snce_iff v n (q.and A.neg) a).mp hinner
+  refine (usTruth_snce_iff v t (q.or (USForm.untl B A)) (a.and (USForm.untl B A).neg)).mpr
+    ⟨s, by omega, (usTruth_and_iff v s a (USForm.untl B A).neg).mpr
+      ⟨ha, (usTruth_neg_iff v s (USForm.untl B A)).mpr ?_⟩, fun r h1 h2 => ?_⟩
+  · rintro hU
+    obtain ⟨x, hsx, hAx, hBx⟩ := (usTruth_untl_iff v s B A).mp hU
+    rcases (by omega : x < n ∨ x = n ∨ n < x) with hc | hc | hc
+    · exact ((usTruth_and_iff v x q A.neg).mp (hqA x hsx hc)).2 hAx
+    · exact hnA (hc ▸ hAx)
+    · exact hnB (hBx n hsn hc)
+  · rcases (by omega : r < n ∨ r = n ∨ n < r) with h | h | h
+    · exact (usTruth_or_iff v r q (USForm.untl B A)).mpr
+        (Or.inl ((usTruth_and_iff v r q A.neg).mp (hqA r h1 h)).1)
+    · exact h ▸ hgn
+    · exact hg r h h2
+
+/--
+**GHR 10.2.3, Case 6**: `S(a ∧ ¬U(A,B), q ∨ U(A,B))` is separated.
+
+By the reduction the source gives: one semantic step on the first `¬B` point after the
+`S`-witness, then Case 3 and Case 5 at the instantiations recorded in the section docstring.
+Both are strictly upstream, so nothing here appeals to 10.2.4 or to the junction-depth induction.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
+-/
+theorem usTruth_case6 (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
+    usTruth v t (USForm.snce (q.or (USForm.untl B A)) (a.and (USForm.untl B A).neg)) ↔
+      usTruth v t (case6Rhs a q A B) := by
+  have hrhs : usTruth v t (case6Rhs a q A B) ↔
+      ((usTruth v t (USForm.snce (q.and A.neg) a) ∧
+          (¬ usTruth v t A ∧ ¬ (usTruth v t B ∧ usTruth v t (USForm.untl B A)))) ∨
+        (usTruth v t (USForm.snce (q.or (USForm.untl B A))
+            (((B.neg.and A.neg).and (USForm.snce (q.and A.neg) a)).and q)) ∨
+          usTruth v t (USForm.snce (q.or (USForm.untl B A))
+            (((B.neg.and A.neg).and (USForm.snce (q.and A.neg) a)).and
+              (USForm.untl B A))))) := by
+    rw [case6Rhs]
+    simp only [usTruth_or_iff, usTruth_and_iff, usTruth_neg_iff]
+    rw [← usTruth_case3, ← usTruth_case5]
+  rw [hrhs]
+  constructor
+  · intro h
+    obtain ⟨s, hst, hev, hg⟩ :=
+      (usTruth_snce_iff v t (q.or (USForm.untl B A)) (a.and (USForm.untl B A).neg)).mp h
+    obtain ⟨ha, hnU⟩ := (usTruth_and_iff v s a (USForm.untl B A).neg).mp hev
+    have hnU' := (usTruth_neg_iff v s (USForm.untl B A)).mp hnU
+    by_cases hBall : ∀ x : ℤ, s < x → x < t → usTruth v x B
+    · have hnA : ∀ x : ℤ, s < x → x ≤ t → ¬ usTruth v x A := by
+        intro x h1 h2 hAx
+        exact hnU' ((usTruth_untl_iff v s B A).mpr
+          ⟨x, h1, hAx, fun y hy1 hy2 => hBall y hy1 (by omega)⟩)
+      have hq : ∀ r : ℤ, s < r → r < t → usTruth v r q := by
+        intro r h1 h2
+        rcases (usTruth_or_iff v r q (USForm.untl B A)).mp (hg r h1 h2) with hq | hUr
+        · exact hq
+        · obtain ⟨x, hrx, hAx, hBrx⟩ := (usTruth_untl_iff v r B A).mp hUr
+          refine absurd ((usTruth_untl_iff v s B A).mpr
+            ⟨x, by omega, hAx, fun y hy1 hy2 => ?_⟩) hnU'
+          rcases (by omega : y < r ∨ y = r ∨ r < y) with hc | hc | hc
+          · exact hBall y hy1 (by omega)
+          · exact hc ▸ hBall r h1 h2
+          · exact hBrx y hc hy2
+      refine Or.inl ⟨(usTruth_snce_iff v t (q.and A.neg) a).mpr
+        ⟨s, hst, ha, fun r h1 h2 => (usTruth_and_iff v r q A.neg).mpr
+          ⟨hq r h1 h2, (usTruth_neg_iff v r A).mpr (hnA r h1 (by omega))⟩⟩,
+        hnA t hst (by omega), ?_⟩
+      rintro ⟨hBt, hUt⟩
+      obtain ⟨x, htx, hAx, hBx⟩ := (usTruth_untl_iff v t B A).mp hUt
+      refine hnU' ((usTruth_untl_iff v s B A).mpr ⟨x, by omega, hAx, fun y hy1 hy2 => ?_⟩)
+      rcases (by omega : y < t ∨ y = t ∨ t < y) with hc | hc | hc
+      · exact hBall y hy1 hc
+      · exact hc ▸ hBt
+      · exact hBx y hc hy2
+    · push Not at hBall
+      obtain ⟨x₀, hsx₀, hx₀t, hnBx₀⟩ := hBall
+      obtain ⟨n, hsn, hnBn, hminB⟩ :=
+        exists_least_above (P := fun z => ¬ usTruth v z B) ⟨x₀, hsx₀, hnBx₀⟩
+      have hnt : n < t := by
+        by_contra hc
+        exact (hminB x₀ hsx₀ (by omega)) hnBx₀
+      have hBsn : ∀ x : ℤ, s < x → x < n → usTruth v x B := fun x h1 h2 =>
+        not_not.mp (hminB x h1 h2)
+      have hnA : ∀ x : ℤ, s < x → x ≤ n → ¬ usTruth v x A := by
+        intro x h1 h2 hAx
+        exact hnU' ((usTruth_untl_iff v s B A).mpr
+          ⟨x, h1, hAx, fun y hy1 hy2 => hBsn y hy1 (by omega)⟩)
+      have hq : ∀ r : ℤ, s < r → r < n → usTruth v r q := by
+        intro r h1 h2
+        rcases (usTruth_or_iff v r q (USForm.untl B A)).mp (hg r h1 (by omega)) with hq | hUr
+        · exact hq
+        · obtain ⟨x, hrx, hAx, hBrx⟩ := (usTruth_untl_iff v r B A).mp hUr
+          have hxn : x ≤ n := by
+            by_contra hc
+            exact hnBn (hBrx n h2 (by omega))
+          exact absurd hAx (hnA x (by omega) hxn)
+      have hinner : usTruth v n (USForm.snce (q.and A.neg) a) :=
+        (usTruth_snce_iff v n (q.and A.neg) a).mpr ⟨s, hsn, ha, fun r h1 h2 =>
+          (usTruth_and_iff v r q A.neg).mpr
+            ⟨hq r h1 h2, (usTruth_neg_iff v r A).mpr (hnA r h1 (by omega))⟩⟩
+      have hcore : usTruth v n ((B.neg.and A.neg).and (USForm.snce (q.and A.neg) a)) :=
+        (usTruth_and_iff v n (B.neg.and A.neg) _).mpr
+          ⟨(usTruth_and_iff v n B.neg A.neg).mpr
+            ⟨(usTruth_neg_iff v n B).mpr hnBn,
+              (usTruth_neg_iff v n A).mpr (hnA n hsn (by omega))⟩, hinner⟩
+      rcases (usTruth_or_iff v n q (USForm.untl B A)).mp (hg n hsn hnt) with hqn | hUn
+      · exact Or.inr (Or.inl ((usTruth_snce_iff v t (q.or (USForm.untl B A)) _).mpr
+          ⟨n, hnt, (usTruth_and_iff v n _ q).mpr ⟨hcore, hqn⟩,
+            fun r h1 h2 => hg r (by omega) h2⟩))
+      · exact Or.inr (Or.inr ((usTruth_snce_iff v t (q.or (USForm.untl B A)) _).mpr
+          ⟨n, hnt, (usTruth_and_iff v n _ (USForm.untl B A)).mpr ⟨hcore, hUn⟩,
+            fun r h1 h2 => hg r (by omega) h2⟩))
+  · rintro (⟨hinner, hnAt, hnBU⟩ | h2 | h3)
+    · obtain ⟨s, hst, ha, hqA⟩ := (usTruth_snce_iff v t (q.and A.neg) a).mp hinner
+      refine (usTruth_snce_iff v t (q.or (USForm.untl B A))
+        (a.and (USForm.untl B A).neg)).mpr ⟨s, hst,
+          (usTruth_and_iff v s a (USForm.untl B A).neg).mpr
+            ⟨ha, (usTruth_neg_iff v s (USForm.untl B A)).mpr ?_⟩, fun r h1 h2 => ?_⟩
+      · rintro hU
+        obtain ⟨x, hsx, hAx, hBx⟩ := (usTruth_untl_iff v s B A).mp hU
+        rcases (by omega : x < t ∨ x = t ∨ t < x) with hc | hc | hc
+        · exact ((usTruth_and_iff v x q A.neg).mp (hqA x hsx hc)).2 hAx
+        · exact hnAt (hc ▸ hAx)
+        · refine hnBU ⟨hBx t hst hc, (usTruth_untl_iff v t B A).mpr
+            ⟨x, hc, hAx, fun y hy1 hy2 => hBx y (by omega) hy2⟩⟩
+      · exact (usTruth_or_iff v r q (USForm.untl B A)).mpr
+          (Or.inl ((usTruth_and_iff v r q A.neg).mp (hqA r h1 h2)).1)
+    · obtain ⟨n, hnt, hev, hg⟩ :=
+        (usTruth_snce_iff v t (q.or (USForm.untl B A)) _).mp h2
+      obtain ⟨hcore, hqn⟩ := (usTruth_and_iff v n _ q).mp hev
+      obtain ⟨hnBA, hinner⟩ := (usTruth_and_iff v n (B.neg.and A.neg) _).mp hcore
+      obtain ⟨hnB, hnA⟩ := (usTruth_and_iff v n B.neg A.neg).mp hnBA
+      exact usTruth_case6_of_anchor a q A B v hnt
+        ((usTruth_neg_iff v n B).mp hnB) ((usTruth_neg_iff v n A).mp hnA) hinner
+        ((usTruth_or_iff v n q (USForm.untl B A)).mpr (Or.inl hqn)) hg
+    · obtain ⟨n, hnt, hev, hg⟩ :=
+        (usTruth_snce_iff v t (q.or (USForm.untl B A)) _).mp h3
+      obtain ⟨hcore, hUn⟩ := (usTruth_and_iff v n _ (USForm.untl B A)).mp hev
+      obtain ⟨hnBA, hinner⟩ := (usTruth_and_iff v n (B.neg.and A.neg) _).mp hcore
+      obtain ⟨hnB, hnA⟩ := (usTruth_and_iff v n B.neg A.neg).mp hnBA
+      exact usTruth_case6_of_anchor a q A B v hnt
+        ((usTruth_neg_iff v n B).mp hnB) ((usTruth_neg_iff v n A).mp hnA) hinner
+        ((usTruth_or_iff v n q (USForm.untl B A)).mpr (Or.inr hUn)) hg
+
 /-! ## Separatedness -/
 
 /-- GHR's pure-past core is `snce`-only whenever the four parameters are.
@@ -457,5 +908,47 @@ theorem isSeparated_case5Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q
   exact IsSeparated.or (IsSeparated.and hW (IsSeparated.ofIsSOnly hcore))
     (IsSeparated.and hW.neg (IsSeparated.ofIsSOnly
       ((IsSOnly.snce hAs.neg hq.neg).neg.and (IsSOnly.snce hAs.neg (hAs.and hcore)))))
+
+/-- Case 8's right-hand side is syntactically separated whenever the four parameters are.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isSeparated_case8Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A) (hBu : IsUOnly B) :
+    IsSeparated (case8Rhs a q A B) :=
+  (IsSeparated.or (isSeparated_case2Rhs ha IsSOnly.top hAs hBs hAu hBu).neg
+    (IsSeparated.or (isSeparated_case5Rhs (hq.neg.and ha.neg) ha.neg hAs hBs hAu hBu)
+      (isSeparated_case5Rhs hq.neg ha.neg hAs hBs hAu hBu))).neg
+
+/-- Case 7's right-hand side is syntactically separated whenever the four parameters are.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isSeparated_case7Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A) (hBu : IsUOnly B) :
+    IsSeparated (case7Rhs a q A B) := by
+  have hSabq : IsSOnly (USForm.snce (B.and q) a) := IsSOnly.snce (hBs.and hq) ha
+  exact IsSeparated.or (isSeparated_case4Rhs ((hAs.and hSabq).and hq) hq hAs hBs hAu hBu)
+    (IsSeparated.or (isSeparated_case8Rhs (hAs.and hSabq) hq hAs hBs hAu hBu)
+      (IsSeparated.or (IsSeparated.ofIsSOnly (hSabq.and hAs))
+        (IsSeparated.and (IsSeparated.ofIsSOnly hSabq)
+          (IsSeparated.and (IsSeparated.ofIsSOnly hBs) (IsSeparated.untl hBu hAu)))))
+
+/-- Case 6's right-hand side is syntactically separated whenever the four parameters are.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isSeparated_case6Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A) (hBu : IsUOnly B) :
+    IsSeparated (case6Rhs a q A B) := by
+  have hinner : IsSOnly (USForm.snce (q.and A.neg) a) := IsSOnly.snce (hq.and hAs.neg) ha
+  have hcore : IsSOnly ((B.neg.and A.neg).and (USForm.snce (q.and A.neg) a)) :=
+    (hBs.neg.and hAs.neg).and hinner
+  exact IsSeparated.or
+    (IsSeparated.and (IsSeparated.ofIsSOnly hinner)
+      (IsSeparated.and (IsSeparated.ofIsSOnly hAs.neg)
+        (IsSeparated.and (IsSeparated.ofIsSOnly hBs) (IsSeparated.untl hBu hAu)).neg))
+    (IsSeparated.or (isSeparated_case3Rhs (hcore.and hq) hq hAs hBs hAu hBu)
+      (isSeparated_case5Rhs hcore hq hAs hBs hAu hBu))
 
 end FormalSystem.Metalogic.Expressiveness.SeparationZ

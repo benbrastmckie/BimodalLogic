@@ -5,17 +5,17 @@ route that would discharge the `SeparationOver TaskFrame.IsZTime` hypothesis of
 [`OpenFutureElimination.lean`](../OpenFutureElimination.lean).
 
 **Status: the hypothesis is NOT discharged yet.** What is landed is GHR Lemmas 10.2.1 and
-10.2.2 in full, Lemma 10.2.3's four single-sign cases, and Lemma 10.2.3's Case 5 — the hard case
-in which the same `untl` occurs in both the event and the guard argument of a `snce` and both
-occurrences are positive. Cases 6, 7 and 8 reduce to Case 5 and to the single-sign cases in the
-source's own acyclic order, and 10.2.4 onwards consume all eight, so Theorem 10.2.9 is not
-reached yet. Every `tr` row of `OpenFutureElimination.lean` keeps its `SeparationOver`
-hypothesis exactly as before.
+10.2.2 in full and **all eight cases of Lemma 10.2.3** — the four single-sign cases in
+`Eliminations.lean` and the four hard cases, where the same `untl` occurs in both the event and
+the guard argument of a `snce`, in `ElimHard.lean`. Lemma 10.2.4 onwards still consume them, so
+Theorem 10.2.9 is not reached yet, and every `tr` row of `OpenFutureElimination.lean` keeps its
+`SeparationOver` hypothesis exactly as before.
 
 `Eliminations.lean`'s module docstring records an obstruction to Cases 5-8. That record describes
 a route that re-anchors each hard case semantically — which is not the route the source uses, and
 is not the route `ElimHard.lean` takes. `ElimHard.lean`'s own module docstring carries the
-correction, together with the two compiled models that refute GHR's printed Case 5 formula.
+correction: the landed reduction DAG, the two compiled models that refute GHR's printed Case 5
+formula, and the model that refutes GHR's claim that Case 8's third disjunct is redundant.
 
 The development runs over an auxiliary syntax `USForm` whose leaves are abstract natural-number
 indices evaluated by a leaf valuation `ℕ → ℤ → Prop`, not over `PlusFormula` directly. The
@@ -34,9 +34,9 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 | `Syntax.lean` | 394 | `USForm`, `usTruth` over `ℤ`, the derived connectives, the clause lemmas, the time reflection `swap` with `usTruth_swap`, and the `maxLeaf`/`freshLeaf` fresh-index device |
 | `LeafAbstraction.lean` | 370 | The one seam to `PlusFormula`: `leaves`, `abstr`, `toPlus`, the roundtrip, truth transfer at `t : ℤ`, `IsUOnly`/`IsSOnly`, purity transfer, and the carrier bridge |
 | `Distributivity.lean` | 134 | GHR Lemma 10.2.1: the duality combinator `usTruth_swap_congr` and the four Boolean distributivities (linearity only) |
-| `NegationEquiv.lean` | 166 | GHR Lemma 10.2.2: the `ℤ` least-witness device and the four negation equivalences (first discreteness-dependent step) |
+| `NegationEquiv.lean` | 212 | GHR Lemma 10.2.2: the `ℤ` least-witness device, the four negation equivalences (first discreteness-dependent step), and the generic negated-since distribution identity Case 8 consumes |
 | `Eliminations.lean` | 357 | GHR Lemma 10.2.3 Cases 1-4, the `G`-under-`S` elimination, the `IsSeparated` predicate, and the four discharged separatedness theorems |
-| `ElimHard.lean` | 461 | GHR Lemma 10.2.3's hard cases — the ones where the same `untl` sits in both arguments of a `snce`. Carries the `ℤ` greatest-witness device, the `case5W`/`case5Core` split, the guard equivalence, Case 5 and its separatedness |
+| `ElimHard.lean` | 954 | GHR Lemma 10.2.3's four hard cases — the ones where the same `untl` sits in both arguments of a `snce`. Carries the `ℤ` greatest-witness device, the `case5W`/`case5Core` split, the guard equivalence, Cases 5-8 and their separatedness, plus the landed reduction DAG |
 
 ## Key Results
 
@@ -48,17 +48,20 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 - `usTruth_neg_untl`, `usTruth_neg_untl_strong` and their `snce` mirrors — GHR 10.2.2
 - `usTruth_case1` … `usTruth_case4` with `isSeparated_case1Rhs` … `isSeparated_case4Rhs` —
   GHR 10.2.3's four single-sign cases, each with its separatedness proved rather than asserted
-- `usTruth_case5` with `isSeparated_case5Rhs` — GHR 10.2.3's Case 5, the one hard case proved
-  semantically, with GHR's printed formula refuted over `ℤ` and the repair recorded at the
-  declaration
-- `usTruth_case5_guard_iff` — the guard equivalence the repair needs, the one lemma of this
+- `usTruth_case5` … `usTruth_case8` with `isSeparated_case5Rhs` … `isSeparated_case8Rhs` —
+  GHR 10.2.3's four hard cases, completing all eight. Case 5 is the only one proved
+  semantically; Cases 8, 7 and 6 are reductions to earlier cases in the source's own acyclic
+  order, tabulated in `ElimHard.lean`'s docstring
+- `usTruth_case5_guard_iff` — the guard equivalence Case 5's repair needs, the one lemma of this
   subtree with no counterpart in the source
+- `usTruth_neg_snce_distrib` — GHR's generic negated-since distribution identity, the hinge of
+  Case 8's reduction
 
 ## Not landed
 
-GHR Lemma 10.2.3 Cases 6, 7 and 8, Lemma 10.2.4 and everything downstream of it
-(10.2.5-10.2.8, Theorem 10.2.9), hence also the `SeparationOver TaskFrame.IsZTime` discharge and
-the computable ZTime translation that would rest on it.
+GHR Lemma 10.2.4 and everything downstream of it (10.2.5-10.2.8, Theorem 10.2.9), hence also
+the `SeparationOver TaskFrame.IsZTime` discharge and the computable ZTime translation that would
+rest on it. All of Lemma 10.2.3 is landed.
 
 ## References
 

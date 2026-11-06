@@ -1447,7 +1447,7 @@ covers it, and nothing outside the subtree can see these declarations yet.
 
 ---
 
-### Phase 18: The Negated-Since Distribution Identity and GHR 10.2.3 Case 8 [NOT STARTED]
+### Phase 18: The Negated-Since Distribution Identity and GHR 10.2.3 Case 8 [COMPLETED]
 
 **Goal**: A generic negated-since distribution identity is named and proved, and Case 8 follows
 from it plus Case 5 -- the reduction the source uses, not a semantic re-derivation -- with all
@@ -1455,27 +1455,27 @@ three disjuncts of the landed right-hand side kept.
 
 **Tasks**:
 
-- [ ] State the distribution identity as its own named lemma, generic in the event and the guard:
+- [x] State the distribution identity as its own named lemma, generic in the event and the guard:
       the form that rewrites `(USForm.snce G E).neg` into `USForm.allPast E.neg` disjoined with a
       `snce` whose event and guard are Boolean combinations of `E`, `G` and their negations. The
       landed `usTruth_neg_snce_strong` and `usTruth_neg_snce` of `NegationEquiv.lean` are the GHR
       10.2.2 instances to build on; if one of them already *is* the identity at the generality
       needed, consume it and record that in the docstring rather than restating it.
-- [ ] Prove `usTruth_case8` for `S(a ∧ ¬U(A,B), q ∨ ¬U(A,B))` by the reduction: negate the
+- [x] Prove `usTruth_case8` for `S(a ∧ ¬U(A,B), q ∨ ¬U(A,B))` by the reduction: negate the
       left-hand side, apply the identity, recognise the resulting `snce` as Case 5's shape at the
       instantiation the identity produces, apply Phase 17's `usTruth_case5`, and negate back.
-- [ ] Write the instantiation into the docstring explicitly: which parameters Case 5 is applied
+- [x] Write the instantiation into the docstring explicitly: which parameters Case 5 is applied
       at, and which Boolean simplification licenses reading the identity's `snce` as Case 5's
       shape. A reduction whose instantiation is not written down is not checkable.
-- [ ] **Keep all three disjuncts** of `case8Rhs`. GHR's claim that the third is redundant is
+- [x] **Keep all three disjuncts** of `case8Rhs`. GHR's claim that the third is redundant is
       false, refuted by Phase 16's model; cite that model at the definition. Do not simplify to
       two disjuncts even if a tactic closes the equivalence without the third.
-- [ ] Discharge `isSeparated_case8Rhs` as in Phase 17.
-- [ ] Record in the docstring that the Cases 5/8 negation route is **not** circular: Case 5 is
+- [x] Discharge `isSeparated_case8Rhs` as in Phase 17.
+- [x] Record in the docstring that the Cases 5/8 negation route is **not** circular: Case 5 is
       proved semantically in Phase 17 and is strictly upstream, so the edge runs one way only.
       Phase 5's `#### Reasoned Exclusions` recorded a loop under the assumption that Case 5 itself
       needed Case 8; it does not.
-- [ ] README row, regenerated root, and the `typst-sync-check.sh --fix` step as in Phase 17.
+- [x] README row, regenerated root, and the `typst-sync-check.sh --fix` step as in Phase 17.
 
 **Timing**: 2.5 hours
 
@@ -1514,26 +1514,26 @@ top-level disjuncts.
 
 ---
 
-### Phase 19: GHR 10.2.3 Cases 7 and 6 by Reduction [NOT STARTED]
+### Phase 19: GHR 10.2.3 Cases 7 and 6 by Reduction [COMPLETED]
 
 **Goal**: The two remaining hard cases land as the reductions the source gives -- Case 7 from
 Cases 8 and 4, Case 6 from Cases 3 and 5 -- closing all eight eliminations.
 
 **Tasks**:
 
-- [ ] Prove `usTruth_case7` for `S(a ∧ U(A,B), q ∨ ¬U(A,B))` from Phase 18's `usTruth_case8` and
+- [x] Prove `usTruth_case7` for `S(a ∧ U(A,B), q ∨ ¬U(A,B))` from Phase 18's `usTruth_case8` and
       the landed `usTruth_case4`, with the instantiation of each written into the docstring.
-- [ ] Prove `usTruth_case6` for `S(a ∧ ¬U(A,B), q ∨ U(A,B))` from the landed `usTruth_case3` and
+- [x] Prove `usTruth_case6` for `S(a ∧ ¬U(A,B), q ∨ U(A,B))` from the landed `usTruth_case3` and
       Phase 17's `usTruth_case5`, likewise.
-- [ ] Define `case6Rhs` and `case7Rhs` as the reductions produce them; do not hand-minimise
+- [x] Define `case6Rhs` and `case7Rhs` as the reductions produce them; do not hand-minimise
       either. A disjunct whose redundancy is not proved stays, for the reason Phase 16 measured at
       Case 8.
-- [ ] Discharge `isSeparated_case6Rhs` and `isSeparated_case7Rhs`.
-- [ ] **Do not** derive either case from the junction-depth induction, from 10.2.4, or from
+- [x] Discharge `isSeparated_case6Rhs` and `isSeparated_case7Rhs`.
+- [x] **Do not** derive either case from the junction-depth induction, from 10.2.4, or from
       Theorem 10.2.9: all eight cases stay strictly upstream of Phase 20.
-- [ ] Append a table to the module docstring recording the reduction DAG as landed -- one row per
+- [x] Append a table to the module docstring recording the reduction DAG as landed -- one row per
       case, naming the lemmas it consumes -- so acyclicity is auditable from the module alone.
-- [ ] README row refresh, regenerated root, and the `typst-sync-check.sh --fix` step.
+- [x] README row refresh, regenerated root, and the `typst-sync-check.sh --fix` step.
 
 **Timing**: 2.5 hours
 

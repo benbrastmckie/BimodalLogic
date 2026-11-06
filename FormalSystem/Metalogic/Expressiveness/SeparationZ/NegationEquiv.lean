@@ -170,4 +170,43 @@ theorem usTruth_neg_snce (A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
   have h := usTruth_swap_congr (usTruth_neg_untl A.swap B.swap) v t
   simpa using h
 
+/-! ## The generic negated-since distribution identity
+
+GHR state this at Lemma 10.2.3's Case 8, generic in the event rider `z` and the guard rider `y`.
+It is not a new principle: it is `usTruth_neg_snce` at event `a ∧ z` and guard `q ∨ y`, followed
+by `usTruth_snce_or_event` splitting the resulting event, plus Boolean congruence. It is stated
+in its own right because Case 8 consumes exactly this generality -- it substitutes
+`y = z = ¬U(A,B)` -- and because the three disjuncts it produces are the ones whose claimed
+redundancy the source gets wrong (see `ElimHard.lean`'s `case8Rhs`). -/
+
+/--
+**GHR's generic negated-since distribution identity**: in GHR's event-first notation
+
+```
+  ¬S(a ∧ z, q ∨ y) ↔ H(¬a ∨ ¬z) ∨ S(¬q ∧ ¬y ∧ ¬a, ¬a ∨ ¬z) ∨ S(¬q ∧ ¬y ∧ ¬z, ¬a ∨ ¬z).
+```
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
+-/
+theorem usTruth_neg_snce_distrib (a q y z : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
+    usTruth v t (USForm.snce (q.or y) (a.and z)).neg ↔
+      usTruth v t ((USForm.allPast (a.neg.or z.neg)).or
+        ((USForm.snce (a.neg.or z.neg) ((q.neg.and y.neg).and a.neg)).or
+          (USForm.snce (a.neg.or z.neg) ((q.neg.and y.neg).and z.neg)))) := by
+  rw [usTruth_neg_snce (a.and z) (q.or y) v t]
+  simp only [usTruth_or_iff]
+  refine or_congr ?_ ?_
+  · rw [usTruth_allPast_iff, usTruth_allPast_iff]
+    refine forall_congr' fun s => imp_congr_right fun _ => ?_
+    simp only [usTruth_neg_iff, usTruth_and_iff, usTruth_or_iff]
+    tauto
+  · rw [← usTruth_or_iff, ← usTruth_snce_or_event, usTruth_snce_iff, usTruth_snce_iff]
+    refine exists_congr fun s => and_congr_right fun _ => and_congr ?_ ?_
+    · simp only [usTruth_neg_iff, usTruth_and_iff, usTruth_or_iff]
+      tauto
+    · refine forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ?_
+      simp only [usTruth_neg_iff, usTruth_and_iff, usTruth_or_iff]
+      tauto
+
 end FormalSystem.Metalogic.Expressiveness.SeparationZ
