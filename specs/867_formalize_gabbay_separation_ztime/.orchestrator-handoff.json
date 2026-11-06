@@ -1,15 +1,22 @@
 {
-  "dispatch_seq": 15,
-  "status": "planned",
-  "phases_completed": 20,
+  "dispatch_seq": 16,
+  "status": "implemented",
+  "phases_completed": 21,
   "phases_total": 28,
-  "summary": "Forced --plan round on a plan that dispatch 14 had already revised to carry the cycle-1 route-1 decision, so no route changed and no research was integrated. The round's work was verification and decomposition: all nine of Phase 21's load-bearing anchors were re-checked mechanically against the landed sources and are green -- in particular a sweep of every USForm.untl in every def body of Eliminations.lean and ElimHard.lean confirms case2Rhs is the only contamination site, so Phase 21's five-def Scope Hypothesis stands and it is implementable as written. The substantive finding is that the strict-decrease obligation Phases 22, 23 and 24 each carry is not one obligation but three of very unequal cost; the plan now decomposes it once and each phase cites that decomposition.",
-  "blockers": [],
+  "summary": "Phase 21 landed and closed clean, exactly at its Scope Hypothesis (5 defs, 20 theorems, one edited definition body, zero new modules) and exactly on decision D-g's route 1. GHR's printed Case 2 right-hand side and the printed-form siblings of Cases 3, 6, 7 and 8 are additive, every landed signature is byte-identical, and sepSnce's rebuilt body keeps its name, signature and both lemma statements. The deliverable Phase 20 excluded is reinstated as the proved witness isUTyped_sepSnce, so GHR Lemma 10.2.4 now carries both halves of its conclusion and uTypeCount is well-posed over the snce-side layer. All gates measured green: full guarded lake build (exit 0, zero errors, 2960 jobs), zero sorry, zero introduced vacuous definitions, no new axiom, check-module-invariants.sh ALL CHECKS PASSED, check-metalogic-cycles.sh exit 0, typst-sync-check.sh --fix PASS. Phase 22 was sized per the plan's own instruction and deliberately not opened: it needs a plan revision first, for the two undecomposed prerequisites and the route question recorded in blockers.",
+  "blockers": [
+    "Phase 22 needs a plan revision before an implementation dispatch. (a) GHR 10.2.5's precondition has no landed predicate: IsUTyped A B is strictly too strong, since its snce constructor demands IsSOnly arguments -- no untl under any snce -- which is exactly the restriction 10.2.5 relaxes, so a third predicate plus its Boolean closure lemmas is forced and the plan's Files-to-modify row does not name it. (b) Inducting on snceDepthAbove needs a hasUntl decision and a one-level rewriting operator applying 10.2.4 at the deepest snce-containing-an-untl, with four lemmas about it; neither is in the task list, and both are prior to the three-part obligation the plan does decompose (which attaches to 10.2.6/10.2.7/10.2.8, not 10.2.5). (c) Route question, for planning not implementation: a structural-recursion route to 10.2.5 needs no measure at all, because usTruth_sepSnce and the now-landed isUTyped_sepSnce compose directly at every snce node, and it is strictly cheaper than the specified measure route. plan-compliance.md forbids an implementation dispatch substituting it silently, so it is reported rather than taken."
+  ],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/867_formalize_gabbay_separation_ztime/plans/01_gabbay-separation-ztime-plusformula.md",
-      "summary": "Revised plan, 28 phases: adds the dispatch-15 anchor-verification table and the shared measure-decrease decomposition, with Phases 21-24 amended to cite them. No phase status, phase number or signature changed."
+      "type": "summary",
+      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/02_type-clean-case2-printed-rederivations-summary.md",
+      "summary": "Phase 21 implementation summary: the printed-form Case 2 and its four Boolean re-derivations, the ten IsUTyped witnesses, isUTyped_sepSnce, every measured gate, and the Phase 22 sizing finding."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-21-handoff-20261106T183827Z.md",
+      "summary": "Phase 21 phase-end handoff: proof state, what landed, key decisions, the one annotated deviation, and the measured gate results."
     }
   ]
 }
