@@ -82,6 +82,30 @@ mention `PlusTruthAt`, which puts it above `Semantics/Truth.lean`; the Presheaf 
 strictly below that by `assert_not_exists`. The ray layer and `seamFibreEquiv` stay there, and the
 two-module split is forced by the layering.
 
+## Logos Reading
+
+In the Logos theory's dynamical layer (`03-dynamics.typ`), necessity and the stability modal are
+both abbreviations of the one primitive counterfactual operator at a Constitutive-Foundation
+(non-dynamical, non-tensed) antecedent: `□φ := ⊤ □→ φ`, and `stably φ := ¬⊥ □→ φ`
+(`def-derived-operators-dyn`). Necessity's clause collapses to a quantifier over every
+world-history because every state verifies `⊤`; stability's collapses to a quantifier over
+exactly the world-histories agreeing with the evaluation history at the evaluation state — this
+repository's `⊡` — because the null state is the *unique* verifier of `¬⊥`
+(`lem-stability-semantics`), and the manual observes that any true sentence with that same
+unique-null-state verifier works as well, naming a true propositional identity as another
+instance. Read this way, `⊡` is the fragment of the counterfactual whose antecedent is one of
+these two trivial Constitutive-Foundation antecedents, rather than a modality built from new
+frame structure.
+
+The open-future and open-past modals of `FormalSystem/OpenLanguage/` are the tensed analogue of
+the same idea — ray-agreement in place of point-agreement — but the manual does not reach them
+through the counterfactual's shortcut: no Constitutive-Foundation antecedent pins down agreement
+over a whole ray of times rather than a single evaluation-time state, so `def-open-future-past`
+gives `▷`/`◁` their own primitive truth and falsity clauses directly (`def-agreement-classes`
+supplies the ray-agreement classes they quantify over), rather than unfolding them from `□→`.
+This is a reading of the manual's clauses offered for cross-reference; no claim here is a
+formalized theorem of either system.
+
 ## Why the TM schemata are re-declared
 
 An embedding constructor `Axiom φ → PlusAxiom (ofFormula φ)` would yield only `⊡`-free instances;
@@ -154,4 +178,4 @@ instead.
 
 ---
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-11-05*

@@ -172,14 +172,14 @@ and if a contradiction *has* survived, the edit is in scope for this phase.
 
 ---
 
-### Phase 2: The Logos reading section in `PlusLanguage/README.md` [NOT STARTED]
+### Phase 2: The Logos reading section in `PlusLanguage/README.md` [COMPLETED]
 
 **Goal**: Add a short prose section to `FormalSystem/PlusLanguage/README.md` giving the Logos
 reading of `⊡` as the trivial-constitutive-antecedent fragment of the counterfactual, with the
 open-future and open-past modals' need for the event-level clause stated.
 
 **Tasks**:
-- [ ] Re-grep the four Typst labels in
+- [x] Re-grep the four Typst labels in
       `~/Projects/Logos/Theory/typst/manual/chapters/03-dynamics.typ` and confirm each still
       names the content the research report attributes to it, reading the surrounding clause
       rather than trusting the report's line numbers:
@@ -187,15 +187,17 @@ open-future and open-past modals' need for the event-level clause stated.
       `lem-stability-semantics` (null state the unique verifier of `¬⊥`; the generalization to
       any true sentence with that unique verifier, a true propositional identity among them),
       `def-agreement-classes` and `def-open-future-past` (ray-agreement, with their own primitive
-      truth *and* falsity clauses).
-- [ ] If a label has moved or its content changed, adjust the section's prose to the manual as
+      truth *and* falsity clauses). *(completed: all four labels present and content confirmed
+      against the live file — lines 91, 1744, 1771, 1788)*
+- [x] If a label has moved or its content changed, adjust the section's prose to the manual as
       it now stands and note the divergence from the report via `issue-record.sh`.
-- [ ] Insert a `## Logos Reading` section into `FormalSystem/PlusLanguage/README.md`
+      *(completed: no divergence found; no note needed)*
+- [x] Insert a `## Logos Reading` section into `FormalSystem/PlusLanguage/README.md`
       immediately after the existing `## \`⊡\` as a quantifier over a product of two path
       spaces` section (which ends just before `## Why the TM schemata are re-declared`) — that
       section already discusses what `⊡`'s quantification domain *is*, so the reading of where
-      that domain comes from in the Logos theory belongs directly after it.
-- [ ] Base the section on the research report's drafted text (report, Findings §(3), "Suggested
+      that domain comes from in the Logos theory belongs directly after it. *(completed)*
+- [x] Base the section on the research report's drafted text (report, Findings §(3), "Suggested
       content for `PlusLanguage/README.md`'s new section"), editing for this file's register.
       Required content: both abbreviations; why each clause collapses (every state verifies `⊤`;
       the null state is the *unique* verifier of `¬⊥`); the "or any true identity"
@@ -203,14 +205,15 @@ open-future and open-past modals' need for the event-level clause stated.
       Constitutive-Foundation antecedent rather than a modality built from new frame structure;
       and the open-future/open-past asymmetry with its structural reason (a
       Constitutive-Foundation formula's event-verifiers are pinned to the single evaluation time,
-      so no such antecedent reaches a whole ray).
-- [ ] State explicitly, in the section itself, that this is a reading of the manual's clauses and
-      that no claim in it is a formalized theorem of either system.
-- [ ] Cite the manual by Typst label, never by line number, matching the paper-label citation
-      convention `FormalSystem/OpenLanguage/README.md` already uses.
-- [ ] Leave the file's `BEGIN GENERATED` inventory block (lines 33-53) untouched, including the
-      `Subformulas.lean` TODO row.
-- [ ] Update the file's trailing `*Last verified: …*` line to the implementation date.
+      so no such antecedent reaches a whole ray). *(completed: all required content present)*
+- [x] State explicitly, in the section itself, that this is a reading of the manual's clauses and
+      that no claim in it is a formalized theorem of either system. *(completed)*
+- [x] Cite the manual by Typst label, never by line number, matching the paper-label citation
+      convention `FormalSystem/OpenLanguage/README.md` already uses. *(completed)*
+- [x] Leave the file's `BEGIN GENERATED` inventory block (lines 33-53) untouched, including the
+      `Subformulas.lean` TODO row. *(completed: block untouched, confirmed via diff hunk headers)*
+- [x] Update the file's trailing `*Last verified: …*` line to the implementation date.
+      *(completed: set to 2026-11-05)*
 
 **Timing**: 0.75 hours
 
