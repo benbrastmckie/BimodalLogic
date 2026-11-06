@@ -43,7 +43,14 @@ consumer of `omega_chain` is thereby `.ZTime`-scoped, which is why
    asks for exactly that and nothing about adjacency.
 4. **The chain** (`omega_chain`). Iterating a one-step splice (`stg_step`, which pastes a
    continuation onto the current stage at its marker) produces such a family, and its limit
-   carries every stage's recurrence at once.
+   carries every stage's recurrence at once. The splice additionally carries a **segment
+   property** `P k η s s'` across the paste: a condition on the continuation over the interval
+   between the old marker and the new one. What survives a paste there is exactly the *half-open*
+   reading `(s, s']` — `paste` replaces the history strictly after `s` and keeps it at and below
+   `s` — so `hP`'s stability hypothesis is stated at `(s, s']` and is discharged by
+   `paste_agreeFrom` directly. The closed reading `[s, s']` would ask the paste to preserve a
+   condition at `s` itself, where the pasted history is the *old* stage's, not the
+   continuation's.
 
 ## Main Definitions
 
@@ -60,9 +67,12 @@ consumer of `omega_chain` is thereby `.ZTime`-scoped, which is why
 - `int_marker_exists_gt` — over `ℤ`, a marker past any given time in any prescribed residue
   class mod `n`
 - `stg_step` — one splice: a stage at `i` yields a stage at `i + 1` with a strictly larger
-  marker, agreeing with its predecessor up to the old marker
+  marker, agreeing with its predecessor up to the old marker, and satisfying the segment property
+  `P i` on the half-open interval between the two markers
 - `omega_chain` — iterate the splice and take the ω-limit: one world history realising the whole
-  recurrence family
+  recurrence family, with its first marker *equal to* the start time supplied, agreeing with the
+  start history everywhere at or below it, and satisfying the segment property on every
+  consecutive marker pair
 
 ## Relation to `PlusLimitClosure.lean`
 
@@ -251,6 +261,19 @@ a condition reading the time and the state there survives the paste. A formula-v
 would need a state-locality side condition to say the same thing, and the instantiation this
 module exists to serve (`PlusLCSchema.lean`'s `A k s v := ⟐α_k` at `v`, `s`) is state-local by
 construction because `⟐` is.
+
+`stg_step` and `omega_chain` carry a **second** family alongside `A`, the segment property
+`P : ℕ → WorldHistory F → F.Duration → F.Duration → Prop`, and the two have deliberately
+different arities and different carriers. `A` reads a single time and the state there, so it is
+*state*-valued; `P` reads a whole history over an interval between two times, so it is
+*history*-valued. The reason is the direction each one faces. `A` is what the splice must *find*
+at the new marker, and the paste only preserves a state-local condition there, so `A` cannot be
+history-valued. `P` is what the splice must *carry* across the paste over the interval it just
+filled, which is a condition on the filling history itself and cannot be read off one state; the
+intended until-form instantiation states it with `PlusTruthAt`, which wants a history. `P`'s
+stability under the paste is therefore not automatic and is supplied as the explicit hypothesis
+`hP`. `Stg` itself is indexed by `A` only: `P` constrains the *transition* between consecutive
+stages, not any single stage.
 -/
 structure Stg (F : TaskFrame) (w : F.WorldState) (t : F.Duration)
     (A : ℕ → F.Duration → F.WorldState → Prop) (i : ℕ) where
@@ -267,11 +290,28 @@ structure Stg (F : TaskFrame) (w : F.WorldState) (t : F.Duration)
 
 /--
 **One splice.** A stage at index `i` yields a stage at `i + 1` with a strictly larger marker,
-agreeing with its predecessor everywhere at or below the old marker.
+agreeing with its predecessor everywhere at or below the old marker, and satisfying the segment
+property `P i` on the half-open interval between the two markers.
 
 The construction is `PlusPasting.paste` and nothing else: the continuation `η` shares the
 stage's state at the old marker, `paste_agreeUpTo` keeps the passage through `w` at `t`, and
 `paste_agreeFrom` carries the new recurrence from `η` to the pasted history at the new marker.
+
+`paste_agreeFrom` is also what carries `P`. The continuation hypothesis `H` delivers `P k η s s'`
+about `η`, which is *not* the history the conclusion is stated at — that is the pasted history —
+so `hP` is used to transport it, with `paste_agreeFrom` supplying the agreement premise. This is
+the whole content of the segment-property clause: nothing new is proved about `P`, only moved
+from the continuation onto the paste.
+
+**Why `P` is carried at all.** Every current consumer in this tree instantiates it trivially
+(`PlusLCSchema.lean`'s `lcN_plusValidInt` passes `fun _ _ _ _ => True`). It is kept because it is
+the hook the **until-form** limit-closure schema's semantic core needs: an until-commitment
+`⟐β U ⟐α` is discharged only by a witness carrying `⟐β` *throughout* the interval up to the
+`⟐α`-point, which is a condition on the spliced segment and not on either endpoint's state. The
+`F`-form schema this module currently serves needs no such interval condition, which is exactly
+why the parameter was dropped once already — read off as carrying no load, because the one
+consumer then being ported did not use it. Restoring it is cheap; rediscovering that it is needed
+is not.
 
 Paper: — (formalization-native; the manuscript states no limit-closure schema)
 -/
@@ -299,8 +339,18 @@ theorem stg_step [F.IsRegular] {w : F.WorldState} {t : F.Duration}
 
 /--
 **ω-chain principle.** If every `A k`-point on a world history through `σ`'s state at `t` can be
-continued, by a splice, to a later `A (k + 1)`-point, then **one** world history through that
-same state realises the whole sequence at a strictly increasing sequence of markers.
+continued, by a splice, to a later `A (k + 1)`-point with the spliced segment satisfying the
+segment property `P k`, then **one** world history through that same state realises the whole
+sequence at a strictly increasing sequence of markers, carrying `P k` on every consecutive marker
+pair.
+
+The start data is supplied as **five explicit arguments** (`ρ₀`, `s₀`, `h0w`, `h0s`, `h0A`)
+rather than as an existential, because two of the conclusions name `ρ₀` and `s₀`: the first
+marker is `s₀` *on the nose* (`c 0 = s₀`), and the limit agrees with `ρ₀` everywhere at or below
+`s₀`. Both are load-bearing for the until-form schema and neither is statable from behind an
+existential. `c 0 = s₀` in particular is what closes the `[t, c 0)` gap: without it the
+conclusion gives only `t ≤ c k`, leaving the interval between the evaluation time and the first
+marker covered by no segment and no marker, which is the base case of the coverage argument.
 
 The cofinality hypothesis `hcof` is the single binder at which the `ℤ`-dependence of every
 consumer is isolated; `intOrder_omega_cofinal` is its only available discharge today, so every
@@ -308,6 +358,15 @@ validity reached through this lemma lands at `.ZTime` and not at `.Base`.
 
 `Nat.rec` over `Exists.choose` builds the chain, so this carries `Classical.choice` — the tree's
 standard `pcq` profile.
+
+**Fidelity anchor.** This signature is faithful to
+`specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean`'s `Omega` section — its
+`variable (w) (t) (A) (P)` line and the `stg_step` / `omega_chain` immediately following it —
+re-expressed here in `WorldHistory`/`.state` vocabulary and in this module's binder order. A
+future port should diff against that range rather than exercise judgement about which parameters
+look used: `P`, `hP`, `c 0 = s₀` and the agreement-below-`s₀` conclusion were all present in the
+probe and all dropped on the first port, precisely because nothing then consuming the lemma
+needed them.
 
 Paper: — (formalization-native; the manuscript states no limit-closure schema)
 -/
