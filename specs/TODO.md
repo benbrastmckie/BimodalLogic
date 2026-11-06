@@ -11,9 +11,9 @@ next_project_number: 890
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,873,874,875,876,881,882,886,887,889 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,879,883,885 | 298,428,502,761,770,772,777,785,803,813,827,838,839,858,867,882 | agent-system, algebraic-representation, completeness, ... |
-| 3 | 410,498,499,500,822,834,861,888 | 429,497,763,783,823,838,885 | agent-system, algebraic-representation, decidability |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,860,863,867,869,873,874,875,876,881,882,883,889 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,879 | 298,428,502,761,770,772,777,785,803,813,838,839,867 | agent-system, algebraic-representation, completeness, ... |
+| 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -50,22 +50,15 @@ next_project_number: 890
 825 [NOT STARTED] — Report a reversed validate-artifact.sh invocation as an...
 826 [NOT STARTED] — Diagnose the zero-result literature retrieval and settle the...
 827 [NOT STARTED] — Require a plan phase to agree with its own Scope Hypothesis...
-  └─ 885 [NOT STARTED] — Sequence generated-surface regeneration per phase, and make...
-    └─ 888 [NOT STARTED] — Settle the lean plan Goals-block harvest contract: every...
 839 [NOT STARTED] — Harvest a plan's declared contingency files into file\_scope,...
   └─ 845 [NOT STARTED] — Name the typst-sync gate as the cause when...
-  └─ 885 [NOT STARTED] — Sequence generated-surface regeneration per phase, and make... (see above)
 841 [NOT STARTED] — Probe the Lean LSP index state at dispatch start and...
 842 [NOT STARTED] — Close the recurring stale-handoff defect and find out why the...
 847 [NOT STARTED] — file\_scope containment drops external source-store paths...
 848 [NOT STARTED] — Test sweep permanently red where the source store is external
 857 [NOT STARTED] — Fix validate-handoff.sh crash-as-false-negative and settle...
-858 [NOT STARTED] — Make --audit-verdict survive a realistic backlog instead of...
-  └─ 883 [NOT STARTED] — Stop one low-specificity shared path from producing...
 882 [NOT STARTED] — Require task descriptions to request a proposal packet...
-  └─ 885 [NOT STARTED] — Sequence generated-surface regeneration per phase, and make... (see above)
-886 [NOT STARTED] — Make the research phase enumerate the generated doc-sync...
-887 [NOT STARTED] — Document that a dispatched agent cannot invoke /revise, and...
+883 [NOT STARTED] — Stop one low-specificity shared path from producing...
 
 ### Algebraic Representation
 
@@ -201,379 +194,6 @@ collision (that the `--update` remedy is a wholesale ledger rewrite, and what th
 This record is the concrete repair of one live finding in a Lean source file, not a second copy of
 that guidance -- read 840 first so the two do not restate each other, and do not write into its
 file.
-
----
-
-### 888. Settle the lean plan Goals-block harvest contract: every backticked token versus the documented identifier
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: Task 885
-
-**Description**: META TASK. ONE defect, ONE record: `lean-plan-compliance-check.sh` and the contract
-`context/formats/plan-format.md` documents disagree about what a plan's `**Goals**` block
-contributes as goal declarations. The script and the document cannot both be right; this record
-settles WHICH, deliberately.
-
-MEASURED {871, iss_1793913951568_HzkOMJ} (class `tooling-contract`, phase `plan`). The script
-harvests EVERY backticked token in the Goals block, not only the leading identifier that
-plan-format.md's `## Lean Challenge Statements` section describes. Binder names cited in
-descriptive prose (`P`, `hP`) and cross-referenced PRE-EXISTING lemmas
-(`plusValidIn_reflectTime`, `lcN_plusValidZTime`) were harvested as goal declarations. Two of them
-can never resolve as declarations introduced by the plan, so the Final Verification spot-check
-would have failed permanently, not transiently. The affected plan had to work around it by
-stripping every backtick from its Goals prose -- a workaround that degrades the plan's own
-readability to satisfy a harvester, and that the next plan author will not know to apply.
-
-VERIFY THE MECHANISM FIRST, do not trust this summary. In the source store's
-`scripts/lean-plan-compliance-check.sh` the harvest is a `sed` range over `/^\*\*Goals\*\*/` to
-the next `/^\*\*[^G]/` piped through a backticked-token extraction, followed by a per-name
-declaration grep across the resolved Lean source roots. The script's own header already records
-two prior narrowings of the same harvest (a keyword exclusion list, so a backticked `sorry` or
-`box` in prose is no longer harvested; and a colon-optional Goals-range fix) -- so this is the
-THIRD narrowing of one over-broad harvest, which is itself evidence about where the contract
-should live. The header also warns that two Goals-block readers must not drift apart on which
-header shapes they accept; find the second reader before changing either.
-
-THE DECISION THIS RECORD OWES, with the rejected alternative recorded on its own merits:
-
-  (a) Narrow the SCRIPT to the documented contract -- harvest only the leading identifier of each
-      Goals entry -- making descriptive backticks in Goals prose safe again.
-  (b) Widen the DOCUMENT to state the script's actual behavior, i.e. make "no backticks in Goals
-      prose except goal identifiers" an explicit, discoverable authoring rule rather than folklore
-      a plan author discovers by a permanent verification failure.
-
-Weigh (a) against the keyword-exclusion precedent already in the script: that precedent chose to
-narrow the harvest rather than to constrain prose, which is an argument for (a). Weigh (b) against
-the risk that a leading-identifier rule mis-parses the multi-line and parenthesized Goals shapes
-the test fixtures already cover (`plan_r19_multiline_paren_goals.md`, `plan_r18_paren_goals.md`,
-`plan_list_item_goals.md`, `plan_goals_preamble.md`). Whichever is chosen, the stripped-backticks
-workaround must NOT be the settled answer.
-
-VERIFICATION: extend `scripts/tests/test-lean-plan-compliance-check.sh` and the
-`scripts/tests/fixtures/challenge/` fixture set rather than replacing them. The minimum bar is a
-regression fixture whose Goals block cites a pre-existing lemma and a binder name in prose and
-which the check does not fail on.
-
-SCOPE BOUNDARY. Two adjacent open records own the Challenge block's OTHER contracts and must not
-be edited here: #813 (precedence and snapshot-prerequisite rules for a pinned Challenge block) and
-#824 (making a fixture-dependent gate statement expressible under `lean-challenge-snapshot.sh`).
-This record owns only the Goals-block harvest-versus-contract disagreement.
-
-EDIT TARGET, binding. Per `rules/source-store-deploy-boundary.md` this repository's `.claude/`
-tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
-file under `.claude/**` is silently wiped by the next regeneration -- the edit appears to succeed
-and has no lasting effect. Make every edit under the source store at the path mirroring the
-deployed one. RE-DERIVE the store rather than trusting this note: `source_dir` lives PER-EXTENSION
-at `.extensions.<name>.source_dir` in `<project-root>/.claude-extensions.json`, not as a
-top-level key, so a top-level `jq -r '.source_dir'` returning null must NOT be read as the key
-being absent. Re-derive with, for example:
-
-  jq -r '.extensions.core.source_dir' .claude-extensions.json
-
-which currently yields `/home/benjamin/.config/nvim/agent-system/extensions/core`. If `source_dir`
-is absent or its path does not exist when this task runs, record that as an observation of its own
-rather than silently hand-authoring under `.claude/**`.
-
-NOTE ON file_scope AND THE EXTERNAL STORE. The store is a DIFFERENT git repository
-(`/home/benjamin/.config/nvim/agent-system`), so the `agent-system/extensions/**` entries in this
-task's declared `file_scope` do not resolve inside this repository and a phase commit here cannot
-carry them. That mismatch is a known, separately-recorded defect (open backlog record #847) --
-expect containment drops on those paths and do not treat them as this task's own defect.
-
-PROVENANCE. The citations below are {task number, entry_id} pairs into
-`specs/{NNN}_{SLUG}/issues.jsonl`, readable by `entry_id`; each is reproducible with
-`jq -c 'select(.entry_id=="<id>")' specs/{NNN}_{SLUG}/issues.jsonl`. These defects were derived
-from the aggregated issue logs of a five-task `/orchestrate` batch run and grouped by class across
-tasks. The orchestrator's conclusion stage classified this record to channel (b) (agent-system
-change); NO cited entry carries a contrary `suggested_channel` hint -- every one records
-`suggested_channel: null`, verified directly.
-
----
-
-### 887. Document that a dispatched agent cannot invoke /revise, and name the sanctioned description-update route
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: None
-
-**Description**: META TASK. ONE documentation defect, ONE record: `/revise` is a user-facing slash command that a
-dispatched implementation agent cannot invoke, and that unavailability is undocumented at the point
-of use. An agent that needs a sibling task's DESCRIPTION updated therefore has no documented route,
-and finds the sanctioned one only by reading `skill-reviser`'s own internals.
-
-MEASURED {884, iss_1793913745294_dZNuX5} (class `tooling`, phase `implement`): a dispatched
-implementation agent needed another task's description updated, could not invoke `/revise N`, and
-used the `state-write.sh` jq object-merge fallback instead (object-merge on `description` and
-`last_updated`, with `--session-id`, `--argjson num N`, and `--regen-todo`). THE WORK WAS CORRECT:
-that fallback is the identical mechanical path `skill-reviser`'s own Stage 7 uses for a description
-update, and the plan had named it as the fallback. The defect is purely that an agent had to
-rediscover it.
-
-WHAT TO VERIFY BEFORE WRITING ANYTHING. Establish, and state in the report, which of these the
-system actually enforces -- they imply different wording and possibly different surfaces:
-  (i) `/revise` is categorically unavailable to a dispatched subagent (the same measured
-      tool-withholding that applies to `AskUserQuestion`, documented in
-      `docs/reference/standards/agent-frontmatter-standard.md`'s "Tool Withholding from Dispatched
-      Subagents" section);
-  (ii) it is available in principle but prohibited by contract;
-  (iii) it is a Skill-tool invocation that would succeed, and the observed unavailability was
-        narrower than the entry's own wording.
-Note that `commands/revise.md` and `skills/skill-reviser/SKILL.md` are NOT currently marked
-user-only -- `skill-tag` is the system's existing precedent for a user-only marking, so compare
-against it rather than inventing a new convention.
-
-THE DELIVERABLE is documentation and, if (i) or (ii) holds, a named route at the point of use:
-state the unavailability where an agent will meet it (`commands/revise.md` and
-`skills/skill-reviser/SKILL.md`), and name the sanctioned description-update route for a dispatched
-agent -- with the exact `state-write.sh` invocation shape, since an agent reconstructing a jq
-object-merge by hand against the single mutex-guarded state writer is precisely the kind of
-improvisation this system elsewhere refuses to leave to chance.
-`context/standards/postflight-tool-restrictions.md` is one candidate home for the general
-"what a dispatched agent cannot invoke" statement; weigh it against stating the restriction only on
-the two `/revise` surfaces, and record the rejected alternative.
-
-SCOPE BOUNDARY. Do not change `skill-reviser`'s own revision workflow, and do not add a new
-agent-invokable description-update command: the mechanical path already exists and is correct. This
-record's deliverable is that the path is DISCOVERABLE from where an agent looks for it.
-
-EDIT TARGET, binding. Per `rules/source-store-deploy-boundary.md` this repository's `.claude/`
-tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
-file under `.claude/**` is silently wiped by the next regeneration -- the edit appears to succeed
-and has no lasting effect. Make every edit under the source store at the path mirroring the
-deployed one. RE-DERIVE the store rather than trusting this note: `source_dir` lives PER-EXTENSION
-at `.extensions.<name>.source_dir` in `<project-root>/.claude-extensions.json`, not as a
-top-level key, so a top-level `jq -r '.source_dir'` returning null must NOT be read as the key
-being absent. Re-derive with, for example:
-
-  jq -r '.extensions.core.source_dir' .claude-extensions.json
-
-which currently yields `/home/benjamin/.config/nvim/agent-system/extensions/core`. If `source_dir`
-is absent or its path does not exist when this task runs, record that as an observation of its own
-rather than silently hand-authoring under `.claude/**`.
-
-NOTE ON file_scope AND THE EXTERNAL STORE. The store is a DIFFERENT git repository
-(`/home/benjamin/.config/nvim/agent-system`), so the `agent-system/extensions/**` entries in this
-task's declared `file_scope` do not resolve inside this repository and a phase commit here cannot
-carry them. That mismatch is a known, separately-recorded defect (open backlog record #847) --
-expect containment drops on those paths and do not treat them as this task's own defect.
-
-PROVENANCE. The citations below are {task number, entry_id} pairs into
-`specs/{NNN}_{SLUG}/issues.jsonl`, readable by `entry_id`; each is reproducible with
-`jq -c 'select(.entry_id=="<id>")' specs/{NNN}_{SLUG}/issues.jsonl`. These defects were derived
-from the aggregated issue logs of a five-task `/orchestrate` batch run and grouped by class across
-tasks. The orchestrator's conclusion stage classified this record to channel (b) (agent-system
-change); NO cited entry carries a contrary `suggested_channel` hint -- every one records
-`suggested_channel: null`, verified directly.
-
----
-
-### 886. Make the research phase enumerate the generated doc-sync companion surface instead of deferring it to plan time
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: None
-
-**Description**: META TASK. ONE gap, ONE record: the research phase has no obligation to enumerate the GENERATED
-doc-sync companion surface a `.lean` edit forces, so that surface is discovered at plan time -- by
-running the file-scope harvester against a draft plan -- or later, by a gate firing
-mid-implementation. Two entries from the same task record the same cause.
-
-MEASURED {871, iss_1793913951546_jLdhm5} (class `scope-discovery`, phase `plan`): "The research
-report did not cover the generated doc-sync surface at all." Running
-`plan-file-scope-harvest.sh` against the DRAFT plan surfaced four companion paths the harvester
-augments for any `.lean` edit -- `typst/generated/status.typ` plus three registered README
-inventory blocks -- each separately gated by `typst-sync-check.sh` and
-`check-module-invariants.sh --emit-inventory --check`. They had to be retrofitted into a late
-phase as explicit regeneration tasks, declared files, verification criteria, and two Risks rows.
-
-MEASURED {871, iss_1793927811619_YMJoHw} (class `scope-delta`, phase `implement`): a phase's Scope
-Hypothesis predicted zero mentions of a renamed construct in any README; grep found a fourth
-surface inside a GENERATED inventory block. Inspection of
-`scripts/check-module-invariants.sh`'s `render_block` established that the Description column is
-PRESERVED from the existing block (only Lines are refreshed), so that cell is hand-authored and a
-hand edit SURVIVES regeneration. That is a non-obvious fact about a generated surface, and the
-scope hypothesis predicted its opposite.
-
-WHY THESE ARE ONE GAP. The harvester's own header (`scripts/plan-file-scope-harvest.sh`,
-"Generated-surface appending") already documents the augmentation, its `.lean` trigger, its
-capability guard (both generator scripts must exist under the resolved repo root, else the whole
-addition is inert), and the fact that a plan omitting these "either blocks on the pre-commit
-`typst-sync-check.sh` gate or fails `check-module-invariants.sh`'s INV check mid-implementation --
-this has happened twice independently." The capability probe that decides whether the augmentation
-applies is therefore ALREADY mechanized and already repo-agnostic. Nothing in the research-phase
-contract consults it, so the research report can be complete on its own terms and still hand the
-planner a surface inventory that is short by four paths.
-
-THE DELIVERABLE is the research-phase contract: `context/processes/research-workflow.md` and the
-research agent's own instructions should require a report whose scope inventory names the
-generated/derived companion surface for every source file class it expects to be edited, together
-with which generator owns each surface and whether any column or region of it is hand-authored
-rather than regenerated. Decide deliberately whether the obligation is discharged by prose, by
-invoking the existing harvester capability probe at research time, or by both; record the rejected
-alternative on its own merits. A research phase cannot be asked to enumerate a repository-specific
-generator set from nothing -- so weigh resolving it from the repository's own declarations
-(`context/standards/repo-level-declarations.md` is the existing surface) against reusing the
-harvester's probe directly.
-
-SCOPE BOUNDARIES, binding. This record does NOT own the harvester's augmentation SET, nor the
-containment behavior of a path it fails to augment: open record #839 owns both (its Item 1 settles
-whether Scope Hypothesis contingency paths become a second harvest source, and its Item 1 Extended
-owns the companion-surface rule keyed on "the phase touches any `.lean` file"). Do not change
-`plan-file-scope-harvest.sh`'s augmentation set here. This record also does not own the LEAN
-extension's plan-authoring prose record (#785) or its `plan-authoring-gate-collisions.md`
-(#785, #840) -- if the `render_block` Description-preservation fact needs a durable home in a
-lean-specific pattern note rather than in the core research contract, say so and propose adding it
-to that record instead of writing into its declared files.
-
-NOT a repair of this repository's generators. `scripts/check-module-invariants.sh`,
-`scripts/typst-sync-check.sh`, `typst/generated/status.typ` and every inventory block are correct
-as they stand; the Description-column preservation is deliberate behavior to be DOCUMENTED, not
-changed.
-
-EDIT TARGET, binding. Per `rules/source-store-deploy-boundary.md` this repository's `.claude/`
-tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
-file under `.claude/**` is silently wiped by the next regeneration -- the edit appears to succeed
-and has no lasting effect. Make every edit under the source store at the path mirroring the
-deployed one. RE-DERIVE the store rather than trusting this note: `source_dir` lives PER-EXTENSION
-at `.extensions.<name>.source_dir` in `<project-root>/.claude-extensions.json`, not as a
-top-level key, so a top-level `jq -r '.source_dir'` returning null must NOT be read as the key
-being absent. Re-derive with, for example:
-
-  jq -r '.extensions.core.source_dir' .claude-extensions.json
-
-which currently yields `/home/benjamin/.config/nvim/agent-system/extensions/core`. If `source_dir`
-is absent or its path does not exist when this task runs, record that as an observation of its own
-rather than silently hand-authoring under `.claude/**`.
-
-NOTE ON file_scope AND THE EXTERNAL STORE. The store is a DIFFERENT git repository
-(`/home/benjamin/.config/nvim/agent-system`), so the `agent-system/extensions/**` entries in this
-task's declared `file_scope` do not resolve inside this repository and a phase commit here cannot
-carry them. That mismatch is a known, separately-recorded defect (open backlog record #847) --
-expect containment drops on those paths and do not treat them as this task's own defect.
-
-PROVENANCE. The citations below are {task number, entry_id} pairs into
-`specs/{NNN}_{SLUG}/issues.jsonl`, readable by `entry_id`; each is reproducible with
-`jq -c 'select(.entry_id=="<id>")' specs/{NNN}_{SLUG}/issues.jsonl`. These defects were derived
-from the aggregated issue logs of a five-task `/orchestrate` batch run and grouped by class across
-tasks. The orchestrator's conclusion stage classified this record to channel (b) (agent-system
-change); NO cited entry carries a contrary `suggested_channel` hint -- every one records
-`suggested_channel: null`, verified directly.
-
----
-
-### 885. Sequence generated-surface regeneration per phase, and make batch gate deferral name a gate the target repo has
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: Task 827, Task 839, Task 882
-
-**Description**: META TASK. ONE mechanism, two faces: a plan that sequences a generated-surface regeneration into
-a single final phase is unsatisfiable against a gate that fires on EVERY phase commit, and a
-dispatch-time batch deferral directive that names only the agent-system's own test harness leaves
-a plan's declared gate criterion unsatisfiable in a repository whose gates are something else.
-
-=== FACE 1 -- PER-PHASE REGENERATION, NOT A FINAL PHASE ===
-
-MEASURED, 4 entries across 3 tasks: {871, iss_1793928066810_oWg5Au}, {867, iss_1793914994233_yAr1ND},
-{870, iss_1793920716964_cvinG9}, {870, iss_1793927378769_FitNDF}.
-
-The mechanism, verified in this repository rather than assumed: `.githooks/pre-commit` (installed
-by `scripts/install-git-hooks.sh`, which sets `core.hooksPath`) fires `scripts/typst-sync-check.sh
---counts-only` on any staged set touching at least one `.lean` path, and refuses the commit when
-`typst/generated/status.typ`'s pinned FormalSystem file/line counts have drifted. It is BLOCKING
-and does not auto-regenerate. Consequence: every phase commit whose `.lean` line count moves
-blocks until `typst-sync-check.sh --fix` has run and `status.typ` is staged WITH that phase's
-commit.
-
-Three separate plans in one batch independently sequenced the regeneration into a single final
-phase (871's Phase 5, 867's Phase 14, 870's Phase 5) and all three had to run it per-phase
-instead. That is three independent plan-authoring failures against the same mechanism, which is
-the signal that the obligation is missing from the plan-authoring contract rather than that three
-planners each erred.
-
-{870, iss_1793927378769_FitNDF} records the same shape on a second gate:
-`check-module-invariants.sh --no-build` caught three bands red from that task's own edits -- INV
-(stale README inventory blocks, fixed by `--emit-inventory`), C35 (69 citation-manifest line
-drifts, all +4 inside one file from four added docstring lines, fixed by
-`export-lean-citations.py`), and C15 (every `docs/theorem-index.md` row needs a `Paper:` line in
-the declaration's own doc comment). None of the three surfaces was enumerated in the plan's phase
-file list.
-
-THE DELIVERABLE for this face is the plan-authoring obligation in
-`context/formats/plan-format.md`, and whatever planner-side guidance makes it actually bind: a
-phase whose `Files to modify` touches a `.lean` path owns the companion regeneration IN THAT
-PHASE, not in a later one. Decide deliberately whether this is stated as an authoring rule, as a
-mechanical check, or both, and record the rejected alternative on its own merits.
-
-=== FACE 2 -- A DEFERRAL DIRECTIVE THAT NAMES THE WRONG HARNESS ===
-
-MEASURED {880, iss_1793932578569_JqSq31}. A plan's Phase 5 named the bare, lake-build-including
-`bash scripts/check-module-invariants.sh` as its own verification gate; the dispatch's own
-`## Batch Gate Deferral` directive superseded it for that run and directed a scoped discharge
-instead, leaving the plan's written criterion unsatisfiable as authored. The implementer resolved
-it by running `check-module-invariants.sh --no-build` green after every phase, and stopped the
-bare invocation twice (once truncated by a `| head` closing stdout early, once past the 120s
-foreground timeout) to honor the deferral.
-
-The directive's own named narrowing invocations are
-`.claude/scripts/tests/run-all.sh --only SUITE` and `.claude/scripts/verify-deploy.sh --only-gate N`
-(with the `agent-system/extensions/core/scripts/...` parallel forms as fallback). Verify in
-`context/contracts/batch-gate-stage.md`'s "Narrowing-invocation paths are resolved, not hardcoded"
-section and in `scripts/orchestrate-build-dispatch.sh`'s `batch_gate_deferral_flag` block: the
-resolution is across the deploy/source-store boundary ONLY. Both candidates are the agent-system's
-own deploy-infra harness. Neither exists in, nor applies to, a repository whose plan-declared gate
-is a Lean/markdown invariants checker -- so in such a repository the directive names a scoped tier
-it cannot express and supersedes a plan criterion it cannot replace.
-
-THE DECISION THIS FACE OWES: should the deferral directive resolve a narrowing invocation from the
-TARGET repository's own gate set (and if so, how is that set declared -- `context/standards/
-repo-level-declarations.md` is the existing surface to weigh), or should it decline to supersede a
-plan criterion it cannot express a narrowing for, and say so in the directive text? Pick one,
-implement it, and record the rejected alternative.
-
-=== SCOPE BOUNDARIES, binding ===
-
-NOT a repair of this repository's gates. `.githooks/pre-commit`, `scripts/typst-sync-check.sh`,
-`scripts/check-module-invariants.sh`, `typst/generated/status.typ` and the inventory blocks are all
-correct as they stand; do not edit them.
-
-DO NOT re-litigate two adjacent open records. #845 owns the narrow diagnostic-message defect
-(`git-commit-scoped.sh` misnaming a typst-sync refusal as the V8 drop defect) -- message only.
-#785 owns recording the two-generated-surfaces fact as plan-authoring prose in the LEAN
-extension's source store. This record owns neither: its subject is the CORE plan-format phase
-sequencing obligation and the deferral directive's narrowing resolution. If research finds the
-boundary between this record and #785 is not clean, say so explicitly rather than writing into
-#785's declared files.
-
-EDIT TARGET, binding. Per `rules/source-store-deploy-boundary.md` this repository's `.claude/`
-tree is a gitignored, disposable deploy artifact regenerated from a source store; a hand-authored
-file under `.claude/**` is silently wiped by the next regeneration -- the edit appears to succeed
-and has no lasting effect. Make every edit under the source store at the path mirroring the
-deployed one. RE-DERIVE the store rather than trusting this note: `source_dir` lives PER-EXTENSION
-at `.extensions.<name>.source_dir` in `<project-root>/.claude-extensions.json`, not as a
-top-level key, so a top-level `jq -r '.source_dir'` returning null must NOT be read as the key
-being absent. Re-derive with, for example:
-
-  jq -r '.extensions.core.source_dir' .claude-extensions.json
-
-which currently yields `/home/benjamin/.config/nvim/agent-system/extensions/core`. If `source_dir`
-is absent or its path does not exist when this task runs, record that as an observation of its own
-rather than silently hand-authoring under `.claude/**`.
-
-NOTE ON file_scope AND THE EXTERNAL STORE. The store is a DIFFERENT git repository
-(`/home/benjamin/.config/nvim/agent-system`), so the `agent-system/extensions/**` entries in this
-task's declared `file_scope` do not resolve inside this repository and a phase commit here cannot
-carry them. That mismatch is a known, separately-recorded defect (open backlog record #847) --
-expect containment drops on those paths and do not treat them as this task's own defect.
-
-PROVENANCE. The citations below are {task number, entry_id} pairs into
-`specs/{NNN}_{SLUG}/issues.jsonl`, readable by `entry_id`; each is reproducible with
-`jq -c 'select(.entry_id=="<id>")' specs/{NNN}_{SLUG}/issues.jsonl`. These defects were derived
-from the aggregated issue logs of a five-task `/orchestrate` batch run and grouped by class across
-tasks. The orchestrator's conclusion stage classified this record to channel (b) (agent-system
-change); NO cited entry carries a contrary `suggested_channel` hint -- every one records
-`suggested_channel: null`, verified directly.
 
 ---
 
@@ -1268,218 +888,6 @@ RELATED, NOT BLOCKING: the colourClock history bridge-lemma task would turn hmar
 GUARDRAILS: no sorry, no new axiom, no vacuous definition. Scope is the new module, the Independence aggregator, that directory's README, docs/theorem-index.md and the invariants baseline. Do not touch Expressiveness/ (the companion task owns it) and do not edit the metalogic-cycles allowlist.
 
 AFTER THIS LANDS, the report and probe under this task directory are safely disposable: their durable content lives in the module, its docstring and the ledger, which is the point of this task.
-
----
-
-### 858. Make --audit-verdict survive a realistic backlog instead of overflowing argv
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: None
-
-**Description**: META TASK. `state-write.sh --audit-verdict` is unusable against a realistic backlog: the verdict
-document is passed to jq as a single inline argv string and overflows Linux's per-argument limit,
-so the Component 4b audit-evidence gate fails closed on the normal case and pushes every caller
-onto `--audit-override`, which is exactly the bypass the gate exists to prevent. Every figure
-below was measured, not inferred; re-verify against live code at implement time.
-
-=== THE DEFECT, MEASURED ===
-
-Observed live during a multi-task creation attempt: `state-write.sh --audit-verdict` refused the
-write with `jq: Argument list too long`. The verdict document was 140,794 bytes, passed as ONE
-argv entry. Linux's `MAX_ARG_STRLEN` is 131,072 bytes (32 pages, a compile-time constant).
-
-READ THE LIMIT CORRECTLY, because the obvious remedy does not apply: `MAX_ARG_STRLEN` is a
-PER-ARGUMENT-STRING cap, distinct from the total-argv `ARG_MAX`. Raising `ulimit -s` raises
-`ARG_MAX` and does nothing here. No stack-size, environment-trimming or argument-count change can
-fix this; the single string is simply too long to pass through `execve`.
-
-THIS IS THE NORMAL CASE, NOT AN EDGE CASE, AND IT REPRODUCED WHILE THIS RECORD WAS BEING FILED.
-`scope-blind` verdict rows -- which `audit-task-proposals.sh` emits UNCONDITIONALLY, one per
-corpus record declaring no `file_scope`, with no relevance gating -- dominate the document. A
-single-proposal audit run for THIS record produced a 143,561-byte verdict document, again over
-the limit, carrying 481 verdict rows of which 438 were `scope-blind`: 91% of rows and roughly
-half the bytes (about 72 KB). The originating report measured a comparable 93% noise share on
-its own document. This repository's backlog carries about 100 open entries plus the closed
-corpus, a large share of them legacy no-scope records, so a single proposal's verdict list
-routinely exceeds the limit. Any realistic creation attempt hits this on the first try.
-
-A SECOND MEASURED FACT WORTH PRESERVING, because it shows the noise is not merely bulky but
-actively unhelpful: in that run NO verdict carried a non-empty `shared_paths`. All 19
-`duplicate-of-open` and 24 `covered-by-closed` verdicts came purely from the recall-biased
-semantic shortlist, scoring 0.40-0.54. The overflowing document therefore contained zero
-mechanical overlap findings -- the one signal a reader most needs, a real `file_scope`
-collision -- while 438 rows reported only the absence of scope data.
-
-=== WHERE IT IS, AND WHY THE FIX SURFACE IS WIDER THAN ONE LINE ===
-
-The originating report named `state-write.sh:901`. That is correct but incomplete: the verdict
-document is interpolated inline at THREE sites in that script, all passing
-`--argjson verdicts "$AUDIT_VERDICT_JSON"`:
-  - the dry-run coverage probe (near line 769),
-  - the real coverage probe that emits the exit-5 refusal (near line 901),
-  - the verdict-recording transform that writes `.audit_verdict` / `.audit_override` onto each new
-    entry (near line 934).
-`AUDIT_VERDICT_JSON` is bound once, eagerly, before the mutex (near line 500), by slurping the
-`--audit-verdict` FILE through `jq -c -s`. Fixing only the line named in the report leaves two
-other sites that will overflow on the same document. Confirm all three sites live rather than
-trusting these line numbers.
-
-=== THE MECHANISM TO REUSE ALREADY EXISTS IN THIS SCRIPT ===
-
-Do NOT design a new mechanism. `state-write.sh` already carries transparent spill logic for
-exactly this condition on the caller-facing `--argjson` path: `SPILL_THRESHOLD` is 100000 bytes
-(deliberately under `MAX_ARG_STRLEN`), an oversized value is written to a private `mktemp` file
-under `TMP_DIR`, forwarded as `--slurpfile __spill_N`, and the caller's filter is prefixed with an
-`as $NAME` binding so `$NAME` resolves exactly as a plain `--argjson` would have. The supporting
-machinery is all present and commented: `SPILL_FILES`, `SPILL_PRIVATE_NAMES`,
-`SPILL_PUBLIC_NAMES`, `SPILL_SOURCES`, the explicit `SPILL_SEQ` counter, and
-`check_spill_name_unique`. Scope the work as EXTENDING that existing path to the audit-verdict
-interpolation sites, not as inventing a second spill design.
-
-NOTE THE SIMPLIFICATION AVAILABLE HERE, and state whether it is taken: the audit-verdict document
-is already read from a FILE on disk. The three internal jq calls bind `$verdicts` themselves
-rather than on behalf of a caller's filter, so the cleanest route may be to pass the file
-directly (`--slurpfile`, dereferenced as the existing spill prefix does) and never materialise
-`AUDIT_VERDICT_JSON` as a shell string at all -- which removes the overflow by construction
-instead of thresholding it. Weigh that against reusing the generic spill helper for consistency,
-and record the reason for the choice. The `jq -c -s '[.[] | if type == "array" then .[] else . end]'`
-normalisation (which makes the gate accept both NDJSON and a single JSON array) must survive
-whichever route is taken.
-
-=== WHY THIS MATTERS MORE THAN AN ORDINARY TOOL BUG ===
-
-On overflow the caller's only way forward is `--audit-override`, which satisfies every new entry
-unconditionally. The Component 4b audit-evidence gate exists to ensure no new `active_projects`
-entry is created without a backlog-reconciliation verdict covering it. A gate that reliably fails
-open under normal load is worse than no gate, because callers learn to reach for the override by
-habit and the override's recorded reason becomes boilerplate. State this consequence in whatever
-test or documentation the fix lands with, so a future reader understands why the spill is a
-correctness concern and not a performance nicety.
-
-=== SECOND HALF, TO BE DECIDED BY THIS TASK RATHER THAN PRE-DECIDED ===
-
-Whether `audit-task-proposals.sh` should keep emitting `scope-blind` rows one-per-record at all,
-or summarise them as a count. DO NOT treat this as settled in either direction. The arguments on
-record:
-
-  FOR leaving the emission alone. The script's own header already anticipates this exact
-  situation and rules on it: the unconditional emission is deliberate, because "an absent scope
-  must never be silently read as non-overlap" (see `context/patterns/backlog-reconciliation.md`'s
-  Pass 1 section and its `scope-blind` vocabulary row); the header states that a calling surface
-  wiring this into a Component 4b confirmation table "is expected to render `scope-blind` entries
-  compactly (e.g. a count, not N expanded rows)", and that collapsing display noise is "a
-  presentation concern for the caller, never a reason for this script to start suppressing
-  records". The script also advertises NO SUPPRESSION as a property: every corpus record it emits
-  a verdict for appears in the output. Changing that is a contract change, not a tidy-up.
-
-  FOR changing something anyway. Fixing only the spill leaves a document whose rows are ~91%
-  scope-blind flowing through every audited write; fixing only the emission leaves the overflow
-  reachable by other means (a genuinely large set of real verdicts, or a larger corpus).
-
-  THE DISTINCTION THE DECISION SHOULD TURN ON, which neither argument above makes explicit: the
-  WIRE format consumed by `state-write.sh` and the DISPLAY format rendered to a user are two
-  different surfaces. A compact wire representation of scope-blind rows (one row carrying a count
-  and the project numbers, instead of N rows) could reduce volume without suppressing any record,
-  and would be consistent with the script's no-suppression property. If that route is taken it is
-  a change to the emitted vocabulary and must be reflected in
-  `context/patterns/backlog-reconciliation.md` and in the gate's coverage logic, which keys on
-  `.proposal.id` rather than on individual verdict rows.
-
-THE TASK MUST STATE EXPLICITLY which halves it takes: spill only, emission only, or both. The
-spill half is the blocking defect and is REQUIRED. The emission half is optional and may be
-deferred with a stated reason, but it must not be silently dropped.
-
-=== ACCEPTANCE ===
-
-(1) A `--audit-verdict` document well above `MAX_ARG_STRLEN` (use the measured 140,794-byte shape,
-    or generate one) is accepted and its coverage correctly evaluated -- the gate must still
-    refuse an UNCOVERED entry with exit 5, and still pass a covered one. Both directions tested;
-    an oversized document that is merely "no longer an error" is not a pass.
-(2) All three inline interpolation sites are fixed, demonstrated by a test exercising the
-    recording transform (the `.audit_verdict` field actually written onto a new entry) and not
-    only the refusal probe.
-(3) The existing behaviour on small documents is byte-identical, and the NDJSON-or-array
-    normalisation still accepts both shapes.
-(4) Extend the EXISTING suites rather than asserting by inspection:
-    `scripts/test-state-write-large-payload.sh` and `scripts/test-state-write-spill-names.sh`
-    cover the spill path, and `scripts/tests/test-audit-task-proposals.sh` covers the emitter.
-(5) If the emission half is taken, `context/patterns/backlog-reconciliation.md` agrees with the
-    emitted vocabulary, and `scripts/tests/test-validate-task-creation-audit.sh` still passes.
-(6) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean`.
-
-=== EDIT TARGET, BINDING ===
-
-Per `.claude/rules/source-store-deploy-boundary.md` this repository's `.claude/` tree is a
-gitignored, disposable deploy artifact regenerated from a source store; a hand-authored file
-landing under `.claude/**` is silently wiped by the next regeneration. Resolve the source store
-with `jq -r '.extensions.core.source_dir' .claude-extensions.json` -- `source_dir` is
-PER-EXTENSION, so a top-level `jq -r '.source_dir'` returns `null`, which must NOT be read as the
-key being absent. Reading of 2026-11-04: `/home/benjamin/.config/nvim/agent-system/extensions/core`.
-Re-derive it rather than trusting that path. Edit at the mirroring path there; reach `.claude/**`
-only by deploy. That store is a DIFFERENT git repository, so its commits are made there -- see the
-standing record on external-source-store paths being dropped from phase-commit pathspecs, and
-stage narrowly with explicit file lists, never a directory or glob pathspec.
-
-=== DELIVERABLE PROSE CONSTRAINTS ===
-
-Every edited file lies outside `specs/**`, so no task-number references
-(`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language
-(`.claude/rules/no-record-versioning-in-deliverables.md`) may appear in the deliverables. Durable
-anchors citable freely in deliverable prose: `state-write.sh`, `audit-task-proposals.sh`,
-`--audit-verdict`, `--audit-override`, `--argjson`, `--slurpfile`, `SPILL_THRESHOLD`,
-`MAX_ARG_STRLEN`, `ARG_MAX`, exit 5, the `scope-blind` verdict name, the Component 4b gate name,
-and `context/patterns/backlog-reconciliation.md`. The originating session identifier belongs
-nowhere; it is deliberately omitted from this record too.
-
-=== RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES AS FILED ===
-
-No OPEN record declares `state-write.sh` in its `file_scope`; the record that owned that file (the
-membership-based task-number allocation change) is closed, which is why this defect was unowned
-and needs its own record. Two neighbours to re-check at admission time:
-  - The state-counter/archive-numbering record remains open at `researched` and its candidate
-    remedy (i) names `state-write.sh`'s `--allocate-into` bound and `validate-state.sh`'s Check 12.
-    Its subject matter is disjoint from the audit-verdict path, but it shares the file. If it is
-    still live when this task is admitted, add a serializing dependency edge
-    (`update-task-status.sh --depends-on-add`) rather than running the two concurrently.
-  - The file_scope declaration-hygiene record declares the DEPLOYED `.claude/scripts/validate-state.sh`
-    path, not `state-write.sh`, so it does not collide mechanically.
-
-=== A NOTE ON `file_scope` FORM ===
-
-This record's `file_scope` deliberately uses literal `agent-system/extensions/core/...` entries
-rather than unexpanded `$SD/...` strings. A standing record measured that `$SD/...` entries match
-nothing mechanically on any commit path, because no `SD=` assignment exists there. Do not
-"normalise" these entries back to a variable form.
-
-=== ADDED EVIDENCE (2026-11-05): SECOND INDEPENDENT REPRODUCTION, AND THE INTERIM WORKAROUND ===
-
-REPRODUCED AGAIN, in a different task, with a measured size. `state-write.sh --audit-verdict
-FILE` failed with EXIT 126 and `Argument list too long`. The audit document's largest SINGLE
-NDJSON LINE was ~151 KB, against Linux's 131,072-byte `MAX_ARG_STRLEN`. Note the granularity
-this reproduction pins down: the overflow is driven by the largest single LINE, because the
-script slurps the whole file's parsed JSON into one shell variable and passes it to `jq` as one
-`--argjson` argv string -- so a document of many small lines and a document of two enormous lines
-fail differently, and a per-line streaming read would have survived this case. Both oversized
-lines were dominated by `scope-blind` verdicts against the ~490 open backlog entries declaring no
-`file_scope`, confirming this record's existing finding that `scope-blind` volume is the driver.
-
-THIRD REPRODUCTION, WHILE THE SUCCESSOR RECORD WAS BEING FILED. An audit of two proposals against
-the live backlog produced lines of 140,327 and 137,645 bytes -- both over the limit, from a
-TWO-proposal audit. The ceiling is reached by the smallest realistic multi-task creation.
-
-INTERIM WORKAROUND, KNOWN-GOOD AND USED TWICE. Build a condensed verdict file that keeps every
-non-`scope-blind` verdict VERBATIM and collapses the `scope-blind` entries into a single count
-field, pass that to `--audit-verdict`, and commit the full uncondensed audit document separately
-as the durable evidence. This preserves the gate's coverage check (which matches on
-`proposal.id`) and loses no decision-relevant content. It is a caller-side patch, not a fix: it
-must be re-implemented by every caller, and it is the pattern this record should make unnecessary.
-A worked instance is committed at
-specs/883_backlog_audit_duplicate_predicate_component7/task-proposals-audit.ndjson (full
-document) with its condensed counterpart recorded in that task's `audit_verdict` field.
-
-Provenance: issue-log entry iss_1793896707515_8YgW0i in
-specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/issues.jsonl.
 
 ---
 
@@ -4538,6 +3946,66 @@ owned by the source store repository's #481, which also now carries the measured
 classification and a bounded reading list for it. The identifiers #452 and #481 are numbers in
 THAT repository's task space and do not resolve here. This record's only job is to stop a doomed
 dispatch in the meantime.
+
+
+========================================================================
+AMENDED 2026-11-05 -- FIVE RETIRED; THE FROZEN SET IS NOW 28
+========================================================================
+
+RE-MEASURED with this record's own two queries against specs/state.json on 2026-11-05, AFTER the
+five retirements below. The frozen set is 28, not 32:
+
+  (a) declares at least one agent-system/** path -- 26 records:
+      767, 770, 772, 777, 783, 785, 813, 814, 816, 822, 823, 824, 825, 826, 827, 834, 839, 840,
+      841, 842, 843, 845, 857, 863, 882, 883
+  (b) declares only .claude/** paths -- 2 records: 753, 774
+
+A CORRECTION TO THE 2026-11-04 AMENDMENT'S GROUP (b). That amendment listed 752, 753 and 774. The
+query also returns 751, 752 and this record itself, but those three declare BimodalLogic-LOCAL
+paths -- specs/state.json, specs/ROADMAP.md, .claude/scripts/validate-state.sh -- so they are
+candidates to STAY, not members of group (b). Group (b) proper is 753 and 774.
+
+SEVEN RECORDS HAD ARRIVED SINCE THAT AMENDMENT: 863, 882, 883, 885, 886, 887, 888. Four of them --
+885 through 888 -- were filed on 2026-11-05 by a single /orchestrate conclusion-stage channel-(b)
+dispatch during a six-task batch run in this repository, while the store-side migration record was
+already open. The conclusion stage files channel-(b) tasks into whichever repository the batch ran
+in, and its meta-builder dispatch ran a backlog audit that caught a duplicate but had no check for
+whether a proposed record's edit target resolves in the receiving repository. That is the second
+measured instance of this mechanism, so the set will grow again until the store-side prevention
+record lands.
+
+--- THE FIVE RETIRED, EACH WITH ITS GROUNDS AND POINTER ---
+
+Each was abandoned and archived under task-abandon-mode.md, with a durable pointer appended to its
+own description BEFORE archival so the archived record carries it:
+
+  886 research_phase_doc_sync_companion_surface  -> MOVED to the store's #502, same slug
+  887 revise_unavailable_to_dispatched_agent     -> MOVED to the store's #503, same slug
+  888 lean_goals_block_harvest_contract          -> MOVED to the store's #504, same slug
+  885 per_phase_generated_surface_gates_and_batch_defer -> FOLDED into the store's #449
+                                                     hoist_batch_gate_deferral_directive
+  858 state_write_audit_verdict_argv_overflow    -> ABANDONED AS COVERED by the store's #475
+                                                     audit_evidence_gate_internal_argjson_spill_bypass
+
+The three moved records' descriptions were preserved verbatim with every iss_* citation id intact,
+their file_scope rewritten to source-store-only paths, and a cross-repo reference map prepended so
+their BimodalLogic record citations stay readable from the store. 885's five citations and its
+measured status.typ line-count drift were transplanted into #449 before 885 was retired.
+
+--- WHAT WAS DELIBERATELY NOT DONE, AND WHY ---
+
+The remaining 28 were NOT abandoned. The repository owner asked for the agent-system records here
+to be abandoned; the five above were, and the rest were held back on the store-side migration
+record's own terms, which this record must not override: its Phase 1 ruling pass gates every
+disposition and states that a bulk verdict over a group is not acceptable output; the
+false-abandonment cost is losing a real record; its Group B mixed-scope records must not be
+force-fitted while the cross-repo-overlap question is open; and 753 carries the predecessor
+migration record's standing fail-safe keeping it OPEN until the closed-absorbing-record question is
+settled in writing.
+
+GUARDRAIL (b) AT THE TOP OF THIS RECORD STILL HOLDS for all 28: do not re-add them to an
+/orchestrate batch line. They were excluded from four Stage 3 lines because batching them
+dispatches work that cannot complete, and that remains true.
 
 ---
 
