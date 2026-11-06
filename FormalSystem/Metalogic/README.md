@@ -299,6 +299,16 @@ nearest results in the literature are Reynolds (2003) on until/since completenes
 and Zanardo (1991) on branching-time logics under an Ockhamist reading; neither settles the
 all-histories semantics used here.
 
+The pursuit target named by those two **OPEN** rows is **TM⁺ itself**, not a separate engine for
+`FormalSystem/OpenLanguage/`'s extension L^▷. Because L^▷ is conservative over TM⁺ in both
+directions and `▷` is L⁺-definable at `.ZTime` and `.RTime`,
+`Metalogic/Expressiveness/OpenFutureElimination.lean`'s conditional reductions
+(`exists_translation_ztime`, `exists_translation_rtime`, `decidableOpenValidInOfTranslation`,
+`openDecider_correct`) would carry a landed TM⁺ completeness or decidability result at either
+class over to L^▷ validity there — but each reduction takes `SeparationOver` (Gabbay's
+Separation Theorem over the relevant flow) as an explicit hypothesis discharged nowhere in this
+tree, so no such transfer is available yet.
+
 The deterministic row is an **axiomatization, not a characterization**. *Determined* (`φ → ⊡φ`)
 is valid on a class strictly larger than the deterministic frames, and no L⁺ formula set defines
 the deterministic frames at all (`Independence/DeterminismUndefinable.lean`). What holds — and is

@@ -14,6 +14,15 @@ and nothing more. `plus_incomplete_base` stands as proved, the Burgess-style lim
 principle stays a non-theorem, and an LC_n-style schema is still required in L^▷ exactly as it is
 in L⁺.
 
+Completeness and decidability are pursued for TM⁺, not for L^▷ directly.
+`Metalogic/Expressiveness/OpenFutureElimination.lean` gives the route by which a landed TM⁺
+result would reach here: `exists_translation_ztime` and `exists_translation_rtime` say that,
+conditional on `SeparationOver` (Gabbay's Separation Theorem over the relevant flow, an explicit
+hypothesis discharged nowhere in this tree), a validity-preserving translation back to L⁺ exists
+at `.ZTime` and `.RTime`, and `decidableOpenValidInOfTranslation` / `openDecider_correct` turn
+such a translation into a decision procedure. `.Base` and `.Dense` have **no such route**: `▷`
+is not L⁺-definable at either class, so there is no translation for a landed TM⁺ result to ride.
+
 ## Why atomization is unavailable here
 
 `Conservativity/Plus/AxiomValidity.lean` discharges 45 of its 53 arms through

@@ -246,14 +246,14 @@ by the re-grep above before reusing any of the drafted wording.
 
 ---
 
-### Phase 3: The pursuit-target cross-link in the two Metalogic surfaces [NOT STARTED]
+### Phase 3: The pursuit-target cross-link in the two Metalogic surfaces [COMPLETED]
 
 **Goal**: State in `FormalSystem/Metalogic/README.md` and
 `FormalSystem/Metalogic/Conservativity/Open/README.md` that the pursuit target is TM⁺ and that
 L^▷ inherits a landed TM⁺ result at `.ZTime` and `.RTime` by translation — conditionally.
 
 **Tasks**:
-- [ ] `FormalSystem/Metalogic/README.md`: add one or two sentences immediately after the
+- [x] `FormalSystem/Metalogic/README.md`: add one or two sentences immediately after the
       paragraph closing the `### The TM⁺ metatheory rows` section's discussion of its two
       **OPEN** rows ("completeness of any extension of the TM⁺ axiom set, at any class" and
       "TM⁺ decidability"; the paragraph beginning "The two open rows are stated nowhere in the
@@ -261,22 +261,24 @@ L^▷ inherits a landed TM⁺ result at `.ZTime` and `.RTime` by translation —
       not a separate L^▷ engine; and because L^▷ is conservative over TM⁺ and `▷` is
       L⁺-definable at `.ZTime` and `.RTime`, a landed TM⁺ result at either class would transfer
       to L^▷ validity there through `Metalogic/Expressiveness/OpenFutureElimination.lean`'s
-      conditional reductions.
-- [ ] **State the conditionality.** Those reductions (`exists_translation_ztime`,
+      conditional reductions. *(completed)*
+- [x] **State the conditionality.** Those reductions (`exists_translation_ztime`,
       `exists_translation_rtime`, `decidableOpenValidInOfTranslation`, `openDecider_correct`)
       each take `SeparationOver` — Gabbay's Separation Theorem over the relevant flow — and/or
       the corresponding L⁺ fact as an **explicit hypothesis discharged nowhere in this tree**.
       The sentence must not read as though the transfer is already available. Match the register
-      `FormalSystem/OpenLanguage/README.md` already uses for the same reductions.
-- [ ] `FormalSystem/Metalogic/Conservativity/Open/README.md`: add one or two sentences
+      `FormalSystem/OpenLanguage/README.md` already uses for the same reductions. *(completed)*
+- [x] `FormalSystem/Metalogic/Conservativity/Open/README.md`: add one or two sentences
       immediately after the existing "**No completeness is claimed here, at any frame class, in
       any form.**" paragraph (ending "…exactly as it is in L⁺."). The sentences must name the
       same reduction file, state that `.Base` and `.Dense` have **no such route** because `▷` is
-      not L⁺-definable there, and carry the same conditionality.
-- [ ] Verify every path and declaration name written into either file resolves: the reduction
-      file's path, and each declaration named.
-- [ ] Record, for Phase 4, the exact sentences landed in `FormalSystem/Metalogic/README.md`, so
-      Phase 4 can deliberately differ from them.
+      not L⁺-definable there, and carry the same conditionality. *(completed)*
+- [x] Verify every path and declaration name written into either file resolves: the reduction
+      file's path, and each declaration named. *(completed: all four declaration names
+      grep-confirmed in OpenFutureElimination.lean; check-module-invariants.sh --no-build green)*
+- [x] Record, for Phase 4, the exact sentences landed in `FormalSystem/Metalogic/README.md`, so
+      Phase 4 can deliberately differ from them. *(completed: C18 confirms zero duplicated
+      paragraphs/15+-word sentences across the four top-level READMEs after this phase's edit)*
 
 **Timing**: 0.5 hours
 
