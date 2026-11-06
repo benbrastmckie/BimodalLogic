@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 12,
+  "summary": "Wrote a 12-phase implementation plan for the generic schema-validity layer. No research round was needed: the repository already documents this exact refactoring pattern twice (Semantics/ValidityLayer.lean and Semantics/TruthClauses.lean), and direct reads confirmed StabClauses instances exist for PlusFormula, StarFormula, OpenFormula and HybridFormula, so the generic layer serves more consumers than the task description assumed. Both recorded obstructions were confirmed: openTruthAt_timeShift is landed but time shift stays outside the clause layer by the existing contract, so modal_future takes the homogeneity fact as an explicit hypothesis; and the linearity asymmetry is two distinct axes (genuine nesting for CN/BX7, disjunct order only for TL/BX11), so the plan supplies all four variant pairs. The plan validates clean under validate-artifact.sh --strict.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/881_generic_schema_validity_layer_over_truthenv/plans/01_generic-schema-validity-layer.md",
+      "summary": "12-phase plan, 19.5h, 10 dependency waves; new module FormalSystem/Metalogic/SoundnessLemmas/GenericSchemata.lean plus clause-interface extensions and three per-language rewires."
+    }
+  ],
+  "dispatch_seq": 3
+}

@@ -7433,7 +7433,7 @@
     {
       "project_number": 881,
       "project_name": "generic_schema_validity_layer_over_truthenv",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Factor the 53 TM-plus mirror schema validity proofs into a single generic layer over [TruthEnv L] [StabClauses L] in FormalSystem/Semantics/TruthClauses.lean, so L-plus, L-star and L-open share one statement instead of three parallel transcriptions.\n\nMotivation (surfaced by the L-open proof system work): the 53 TM-plus mirror schemata had to be discharged directly against OpenTruthAt because atomization rests on stab_state_only and an open-modal-prefixed formula is not state-local, so neither Atomization.lean nor uniform substitution (atom_stab) applies. FormalSystem/Metalogic/Conservativity/Star/StarAxiomValidity.lean (1,479 lines, 86 starValid_* theorems) already paid the identical cost against StarTruthAt for the same reason, and Conservativity/Open/OpenAxiomValidity.lean paid it a third time against OpenTruthAt. Stating the schemata once over the TruthEnv/StabClauses interface would serve all three languages together and remove roughly 1,500 lines of parallel transcription.\n\nScope: state each TM-plus schema once against the generic truth interface; re-derive the per-language validity rows from the generic statement; retire the duplicated transcriptions where the generic form subsumes them.\n\nTwo obstructions found during the L-open work, worth confirming survive the generalization:\n- The L-open analogue openTruthAt_timeShift had to be landed by hand (plusTruthAt_timeShift and starTruthAt_timeShift already existed), together with an openTruthAt_congr_ext it needs.\n- The OpenAxiom linearity statements do not use a uniform disjunct nesting: linear_until and temp_linearity are right-associated (the paper CN/TL form) while linear_since and temp_linearity_past are left-associated (the BX7-prime/BX11-prime form). StarAxiomValidity.lean carries both variants.",
       "effort": "large",
@@ -7441,15 +7441,49 @@
       "topic": "metalogic",
       "dependencies": [],
       "created": "2026-11-05T18:41:22Z",
-      "last_updated": "2026-11-06T07:15:04Z",
-      "artifacts": [],
+      "last_updated": "2026-11-06T07:29:31Z",
+      "artifacts": [
+        {
+          "path": "specs/881_generic_schema_validity_layer_over_truthenv/plans/01_generic-schema-validity-layer.md",
+          "type": "plan",
+          "summary": "12-phase plan, 19.5h, 10 dependency waves; new module FormalSystem/Metalogic/SoundnessLemmas/GenericSchemata.lean plus clause-interface extensions and three per-language rewires."
+        }
+      ],
       "file_scope": [
-        "FormalSystem/Semantics/TruthClauses.lean",
+        "FormalSystem/HybridLanguage/HybridTruth.lean",
+        "FormalSystem/HybridLanguage/README.md",
+        "FormalSystem/Metalogic/Conservativity/Open/OpenAxiomValidity.lean",
+        "FormalSystem/Metalogic/Conservativity/Open/README.md",
+        "FormalSystem/Metalogic/Conservativity/Plus/AxiomValidity.lean",
+        "FormalSystem/Metalogic/Conservativity/Plus/README.md",
+        "FormalSystem/Metalogic/Conservativity/README.md",
+        "FormalSystem/Metalogic/Conservativity/Star/README.md",
         "FormalSystem/Metalogic/Conservativity/Star/StarAxiomValidity.lean",
-        "FormalSystem/Metalogic/Conservativity/Open/OpenAxiomValidity.lean"
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/Metalogic/SoundnessLemmas.lean",
+        "FormalSystem/Metalogic/SoundnessLemmas/GenericSchemata.lean",
+        "FormalSystem/Metalogic/SoundnessLemmas/README.md",
+        "FormalSystem/MinusLanguage/MinusTruth.lean",
+        "FormalSystem/MinusLanguage/README.md",
+        "FormalSystem/OpenLanguage/OpenTruth.lean",
+        "FormalSystem/OpenLanguage/README.md",
+        "FormalSystem/PlusLanguage/PlusTruth.lean",
+        "FormalSystem/PlusLanguage/README.md",
+        "FormalSystem/QuantLanguage/QuantTruth.lean",
+        "FormalSystem/QuantLanguage/README.md",
+        "FormalSystem/README.md",
+        "FormalSystem/Semantics/README.md",
+        "FormalSystem/Semantics/Truth.lean",
+        "FormalSystem/Semantics/TruthClauses.lean",
+        "FormalSystem/StarLanguage/README.md",
+        "FormalSystem/StarLanguage/StarTruth.lean",
+        "README.md",
+        "Tests/BimodalTest/Semantics/ValidityLayerTest.lean",
+        "docs/theorem-index.md",
+        "typst/generated/status.typ"
       ],
       "audit_override": "audit returned duplicate-of-open against open task 430 (semantic_lift_and_track_a_assembly_valid_iff_allclosed) on semantic_score 0.447 alone: mechanical_class none, shared_paths null, zero file_scope overlap, topic decidability vs metalogic. Task 430 owns the Track A tableau spine and the semantic lift in FormalSystem/Metalogic/Decidability/{Verified/Decidable,Correctness}.lean; this proposal factors the 53 TM-plus schema validity transcriptions over the TruthEnv/StabClauses interface in FormalSystem/Semantics/TruthClauses.lean. Inspected and found unrelated; the verdict is a vocabulary-overlap false positive of the same class recorded this session at specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/issues.jsonl entry iss_1793896439283_Vm6ITF. Raw audit evidence retained alongside this task.",
-      "session_id": "sess_1793949238_9d766e_881"
+      "session_id": "sess_1793949238_9d766e"
     },
     {
       "project_number": 882,
