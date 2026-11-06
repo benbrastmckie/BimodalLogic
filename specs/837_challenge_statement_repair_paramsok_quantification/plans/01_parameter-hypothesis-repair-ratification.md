@@ -218,7 +218,7 @@ and corrects the figure in Phase 2's record where it has moved.
 
 ---
 
-### Phase 2: Write the Ratification Decision Record [NOT STARTED]
+### Phase 2: Write the Ratification Decision Record [COMPLETED]
 
 **Goal**: A durable record in task 837's own tracked directory that states the adopted repair, both
 revised statements verbatim, the evidence that the hypothesis is both dischargeable and
@@ -226,8 +226,8 @@ load-bearing, the bounded scope of the ratification, and the resolution of the
 `realizes_of_certAdm_cohBi` directive conflict.
 
 **Tasks**:
-- [ ] Create `specs/837_challenge_statement_repair_paramsok_quantification/records/`.
-- [ ] Write `records/01_parameter-hypothesis-repair-ratification.md` with these sections:
+- [x] Create `specs/837_challenge_statement_repair_paramsok_quantification/records/`.
+- [x] Write `records/01_parameter-hypothesis-repair-ratification.md` with these sections:
       **Decision** (repair (a) ratified, repair (b) not adopted, with the reason from this plan's
       "The decision this plan ratifies" section); **The revised statements**, quoting both
       `cellAt_const_of_kappa_eq` and `ladderRealized` verbatim from the Phase 1 transcription, in
@@ -240,9 +240,9 @@ load-bearing, the bounded scope of the ratification, and the resolution of the
       directive conflict** (settled in favour of promotion at the K-free carrier `ProdState Q φ`,
       with the `Certificate.lean` anchor); **Statement Fidelity position** (the repair was adopted
       by a `/revise` round, not an in-flight edit, so recording it violates nothing).
-- [ ] State in the record that neither theorem is proved, that task 761's Phases 11.7 and 16 own
+- [x] State in the record that neither theorem is proved, that task 761's Phases 11.7 and 16 own
       them, and that this record changes no `.lean` file.
-- [ ] Cite durable anchors only — filenames, declaration names and section headings. Task numbers
+- [x] Cite durable anchors only — filenames, declaration names and section headings. Task numbers
       are permitted here because the file lives under `specs/**`
       (`no-task-references-in-deliverables.md`, primary exemption).
 
