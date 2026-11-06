@@ -59,6 +59,8 @@ four parameters and discharged as a theorem, never asserted in prose.
 
 - `IsSeparated`: a `USForm` in which no `untl` sits under a `snce` and no `snce` under an `untl`
 - `case1Rhs`, `case2Rhs`, `case3Rhs`, `case4Rhs`: the four separated right-hand sides
+- `case2RhsPrinted`, `case3RhsPrinted`: GHR's printed Case 2 form and the Case 3 form over it,
+  whose only `untl` occurrence is `untl B A`
 
 ## Main Results
 
@@ -66,6 +68,8 @@ four parameters and discharged as a theorem, never asserted in prose.
 - `usTruth_snce_allFuture`: `S(a ∧ GX, q) ↔ X ∧ GX ∧ S(a, q ∧ X)` — the `G`-under-`S` elimination
 - `usTruth_case1` … `usTruth_case4`: the four eliminations
 - `isSeparated_case1Rhs` … `isSeparated_case4Rhs`: their separatedness, discharged
+- `usTruth_case2_printed`, `usTruth_case3_printed`: the same two eliminations at the printed
+  right-hand sides, with `isSeparated_case2RhsPrinted` and `isSeparated_case3RhsPrinted`
 
 ## References
 
@@ -378,5 +382,127 @@ theorem isSeparated_case4Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q
     IsSeparated (case4Rhs a q A B) :=
   (IsSeparated.or (IsSeparated.ofIsSOnly ha.neg.allPast)
     (isSeparated_case1Rhs (ha.neg.and hq.neg) ha.neg hAs hBs hAu hBu)).neg
+
+/-! ## The printed-form siblings of Cases 2 and 3
+
+GHR's printed Case 2 has a **third** step the landed `usTruth_case2` omits: "using lemma 10.2.2
+again (in reverse)", which folds `G¬A ∨ U(¬A ∧ ¬B, ¬A)` back into `¬U(A,B)`. The landed form is
+correct and is kept unchanged; what it costs is that `case2Rhs` carries the two extra `untl`
+types `untl A.neg (A.neg.and B.neg)` and `untl USForm.top A.neg.neg`, so no downstream induction
+that counts `untl` **types** can be run over it.
+
+The siblings below are the printed forms. Their only `untl` occurrence is `untl B A`, so they
+are `IsUTyped A B` (witnesses in `NormalForm.lean`), and each is a drop-in replacement for its
+landed counterpart at the same six-hypothesis separatedness shape. The fold is `usTruth_neg_untl`
+used in the `←` direction; no new semantic argument, module or import is needed.
+
+**Term order**: GHR's `S(a, q)` is `USForm.snce q a` — guard first, event second. Every
+quotation below is in GHR's notation; every Lean term is in `snce guard event` order. -/
+
+/--
+**GHR 10.2.3, Case 2's printed right-hand side.** Verbatim from
+`gabbay_1994/ch1001_chapter-10-expressive-completeness-of-si.md`, Lemma 10.2.3, Case 2:
+
+```
+[S(a, q ∧ ¬A) ∧ ¬A ∧ ¬U(A, B)]
+∨ [¬A ∧ ¬B ∧ S(a, ¬A ∧ q)]
+∨ S(¬A ∧ ¬B ∧ q ∧ S(a, ¬A ∧ q), q).
+```
+
+Its only `untl` occurrence is the `¬U(A,B)` of the first disjunct, which is exactly `untl B A`.
+`case2Rhs` and `usTruth_case2` are retained unchanged beside this; neither is weakened.
+-/
+def case2RhsPrinted (a q A B : USForm) : USForm :=
+  ((USForm.snce (q.and A.neg) a).and (A.neg.and (USForm.untl B A).neg)).or
+    ((A.neg.and (B.neg.and (USForm.snce (A.neg.and q) a))).or
+      (USForm.snce q (((A.neg.and B.neg).and q).and (USForm.snce (A.neg.and q) a))))
+
+/--
+**GHR 10.2.3, Case 2 at the printed right-hand side**: `S(a ∧ ¬U(A,B), q)` is equivalent to
+`case2RhsPrinted a q A B`.
+
+Not a second semantic derivation of Case 2. The landed `usTruth_case2` supplies the equivalence;
+`usTruth_neg_untl` (GHR 10.2.2) supplies the fold GHR's printed Case 2 performs in its third step
+and the landed proof omits, used here in the `←` direction. The remaining work is Boolean: the
+printed first disjunct `S(a, q ∧ ¬A) ∧ ¬A ∧ ¬U(A,B)` splits under the fold into exactly
+`case2Rhs`'s `G¬A` summand and its `U(¬A ∧ ¬B, ¬A)` disjunct, and the printed second and third
+disjuncts are `case1Rhs`'s middle and first disjuncts up to associativity and the commutation of
+`q ∧ ¬A`.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
+-/
+theorem usTruth_case2_printed (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
+    usTruth v t (USForm.snce q (a.and (USForm.untl B A).neg)) ↔
+      usTruth v t (case2RhsPrinted a q A B) := by
+  have hsw : ∀ (w : ℕ → ℤ → Prop) (r : ℤ),
+      usTruth w r (USForm.snce (q.and A.neg) a) ↔
+        usTruth w r (USForm.snce (A.neg.and q) a) := fun w r =>
+    usTruth_snce_congr (fun w' r' => by simp only [usTruth_and_iff]; tauto)
+      (fun _ _ => Iff.rfl) w r
+  have hP3 : usTruth v t (USForm.snce q
+        (((A.neg.and B.neg).and q).and (USForm.snce (A.neg.and q) a))) ↔
+      usTruth v t (USForm.snce q
+        ((A.neg.and B.neg).and (q.and (USForm.snce (A.neg.and q) a)))) :=
+    usTruth_snce_congr (fun _ _ => Iff.rfl)
+      (fun w r => by simp only [usTruth_and_iff]; tauto) v t
+  have hfold : usTruth v t (USForm.untl B A).neg ↔
+      (usTruth v t (USForm.allFuture A.neg) ∨
+        usTruth v t (USForm.untl A.neg (A.neg.and B.neg))) :=
+    (usTruth_neg_untl A B v t).trans (usTruth_or_iff v t _ _)
+  rw [usTruth_case2 a q A B v t, case2Rhs, case2RhsPrinted, case1Rhs]
+  simp only [usTruth_or_iff, usTruth_and_iff, hsw v t, hP3, hfold]
+  tauto
+
+/-- Case 2's printed right-hand side is syntactically separated whenever the four parameters are.
+A drop-in for `isSeparated_case2Rhs` at the same six-hypothesis shape.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isSeparated_case2RhsPrinted {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A) (hBu : IsUOnly B) :
+    IsSeparated (case2RhsPrinted a q A B) :=
+  IsSeparated.or
+    (IsSeparated.and (IsSeparated.ofIsSOnly (IsSOnly.snce (hq.and hAs.neg) ha))
+      (IsSeparated.and (IsSeparated.ofIsSOnly hAs.neg) (IsSeparated.untl hBu hAu).neg))
+    (IsSeparated.or
+      (IsSeparated.and (IsSeparated.ofIsSOnly hAs.neg)
+        (IsSeparated.and (IsSeparated.ofIsSOnly hBs.neg)
+          (IsSeparated.ofIsSOnly (IsSOnly.snce (hAs.neg.and hq) ha))))
+      (IsSeparated.ofIsSOnly (IsSOnly.snce hq
+        (((hAs.neg.and hBs.neg).and hq).and (IsSOnly.snce (hAs.neg.and hq) ha)))))
+
+/-- Case 3's printed-form right-hand side: `case3Rhs` with its one `case2Rhs` slot taken at
+`case2RhsPrinted`. The substituted position sits under `or` and `neg` only. -/
+def case3RhsPrinted (a q A B : USForm) : USForm :=
+  ((USForm.allPast a.neg).or (case2RhsPrinted (a.neg.and q.neg) a.neg A B)).neg
+
+/--
+**GHR 10.2.3, Case 3 at the printed right-hand side.** Boolean congruence from
+`usTruth_case2_printed` at the parameters `a := ¬a ∧ ¬q`, `q := ¬a`, not a re-derivation of
+Case 3: the substituted position sits under `or` and `neg` only.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
+-/
+theorem usTruth_case3_printed (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
+    usTruth v t (USForm.snce (q.or (USForm.untl B A)) a) ↔
+      usTruth v t (case3RhsPrinted a q A B) := by
+  have hc : usTruth v t (case2Rhs (a.neg.and q.neg) a.neg A B) ↔
+      usTruth v t (case2RhsPrinted (a.neg.and q.neg) a.neg A B) :=
+    (usTruth_case2 (a.neg.and q.neg) a.neg A B v t).symm.trans
+      (usTruth_case2_printed (a.neg.and q.neg) a.neg A B v t)
+  rw [usTruth_case3 a q A B v t, case3Rhs, case3RhsPrinted]
+  simp only [usTruth_neg_iff, usTruth_or_iff, hc]
+
+/-- Case 3's printed right-hand side is syntactically separated whenever the four parameters are.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isSeparated_case3RhsPrinted {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A) (hBu : IsUOnly B) :
+    IsSeparated (case3RhsPrinted a q A B) :=
+  (IsSeparated.or (IsSeparated.ofIsSOnly ha.neg.allPast)
+    (isSeparated_case2RhsPrinted (ha.neg.and hq.neg) ha.neg hAs hBs hAu hBu)).neg
 
 end FormalSystem.Metalogic.Expressiveness.SeparationZ

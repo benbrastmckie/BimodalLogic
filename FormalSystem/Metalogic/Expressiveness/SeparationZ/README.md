@@ -35,9 +35,9 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 | `LeafAbstraction.lean` | 370 | The one seam to `PlusFormula`: `leaves`, `abstr`, `toPlus`, the roundtrip, truth transfer at `t : ℤ`, `IsUOnly`/`IsSOnly`, purity transfer, and the carrier bridge |
 | `Distributivity.lean` | 134 | GHR Lemma 10.2.1: the duality combinator `usTruth_swap_congr` and the four Boolean distributivities (linearity only) |
 | `NegationEquiv.lean` | 212 | GHR Lemma 10.2.2: the `ℤ` least-witness device, the four negation equivalences (first discreteness-dependent step), and the generic negated-since distribution identity Case 8 consumes |
-| `Eliminations.lean` | 357 | GHR Lemma 10.2.3 Cases 1-4, the `G`-under-`S` elimination, the `IsSeparated` predicate, and the four discharged separatedness theorems |
-| `ElimHard.lean` | 954 | GHR Lemma 10.2.3's four hard cases — the ones where the same `untl` sits in both arguments of a `snce`. Carries the `ℤ` greatest-witness device, the `case5W`/`case5Core` split, the guard equivalence, Cases 5-8 and their separatedness, plus the landed reduction DAG |
-| `NormalForm.lean` | 352 | GHR Lemma 10.2.4: the `IsUTyped` precondition with its relationship to `IsSeparated`, the `untl`-literal normal form `substU` with the event and guard splits, and `sepSnce` with its equivalence and its discharged separatedness |
+| `Eliminations.lean` | 508 | GHR Lemma 10.2.3 Cases 1-4, the `G`-under-`S` elimination, the `IsSeparated` predicate, the four discharged separatedness theorems, and the printed-form siblings of Cases 2 and 3 |
+| `ElimHard.lean` | 1089 | GHR Lemma 10.2.3's four hard cases — the ones where the same `untl` sits in both arguments of a `snce`. Carries the `ℤ` greatest-witness device, the `case5W`/`case5Core` split, the guard equivalence, Cases 5-8 and their separatedness, the printed-form siblings of Cases 8, 7 and 6, plus the landed reduction DAG |
+| `NormalForm.lean` | 510 | GHR Lemma 10.2.4: the `IsUTyped` precondition with its relationship to `IsSeparated`, the `untl`-literal normal form `substU` with the event and guard splits, the nine right-hand-side typedness witnesses, and `sepSnce` with its equivalence and both discharged halves of the conclusion |
 
 ## Key Results
 
@@ -59,8 +59,12 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
   Case 8's reduction
 - `IsUTyped` with `isSeparated_of_isUTyped` — GHR 10.2.4's actual precondition, strictly weaker
   than `IsSeparated`, and the two extra hypotheses the implication needs
-- `usTruth_sepSnce` with `isSeparated_sepSnce` — GHR Lemma 10.2.4's equivalence half and its
-  separatedness half, the latter a proved witness
+- `usTruth_case2_printed`, `usTruth_case3_printed`, `usTruth_case8_printed`,
+  `usTruth_case7_printed`, `usTruth_case6_printed` — the five cases GHR's printed Case 2 reaches,
+  restated at right-hand sides whose only `untl` occurrence is `untl B A`, each with its own
+  `isSeparated_*Printed` witness
+- `usTruth_sepSnce` with `isSeparated_sepSnce` and `isUTyped_sepSnce` — GHR Lemma 10.2.4's
+  equivalence and both halves of its conclusion, each a proved witness
 
 ## Not landed
 
@@ -68,13 +72,14 @@ GHR Lemmas 10.2.5-10.2.8 and Theorem 10.2.9, hence also the
 `SeparationOver TaskFrame.IsZTime` discharge and the computable ZTime translation that would rest
 on it. All of Lemma 10.2.3 is landed, and so is Lemma 10.2.4's equivalence and separatedness.
 
-One half of Lemma 10.2.4's conclusion is **not** landed: that the separated equivalent mentions
-`untl` only as `untl B A`. `NormalForm.lean`'s module docstring locates the cause exactly — the
-landed `case2Rhs` composes `case1Rhs` at transformed parameters and `allFuture` instead of
-folding `G¬A ∨ U(¬A∧¬B,¬A)` back to `¬U(A,B)` as GHR's printed Case 2 does, and `case3Rhs`,
-`case6Rhs`, `case7Rhs` and `case8Rhs` inherit it — and records the additive repair. Any
-downstream induction counting `untl` **types** needs that repair first; one counting `untl`
-occurrences under a `snce` does not.
+Both halves of Lemma 10.2.4's conclusion are landed: `isSeparated_sepSnce` for separatedness
+and `isUTyped_sepSnce` for the single `untl` type, so a downstream induction counting `untl`
+**types** is well-posed over this layer. `NormalForm.lean`'s module docstring records which of
+the two available Case 2 routes `sepSnce` consumes and why: `case2Rhs` composes `case1Rhs` at
+transformed parameters together with `allFuture`, and so mentions two `untl` types beside
+`untl B A`, while `case2RhsPrinted` performs GHR's own third step — the fold of
+`G¬A ∨ U(¬A∧¬B,¬A)` back to `¬U(A,B)` by Lemma 10.2.2 in reverse — and mentions `untl B A`
+alone. Both are retained; `sepSnce` routes through the printed-form siblings.
 
 ## References
 

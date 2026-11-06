@@ -66,27 +66,33 @@ have to dispose of clauses carrying both `U` and `¬U` and clauses carrying neit
 substitution split never produces. The mathematical content is GHR's; only the route to it is
 shorter.
 
-## What this lemma does NOT yet deliver
+## Both conclusion halves, and why `sepSnce` routes through the printed-form siblings
 
 GHR 10.2.4's conclusion has two halves: the equivalent is *separated*, and in it *`untl` occurs
-only as `untl B A`*. Only the first half is proved here. The second fails for the **landed** form
-of the four `snce`-side case right-hand sides, not for any reason of principle:
+only as `untl B A`*. Both are proved here, as `isSeparated_sepSnce` and `isUTyped_sepSnce`
+respectively. The second is what makes an induction counting `untl` **types** well-posed over
+this layer; an induction counting `untl` occurrences lying *under a `snce`* is already driven to
+zero by the first.
 
-* `Eliminations.lean`'s `case2Rhs` is built as `… ∨ case1Rhs a q (A.neg.and B.neg) A.neg`
-  together with `allFuture A.neg`, so it carries the `untl` types `untl A.neg (A.neg.and B.neg)`
-  and `untl USForm.top A.neg.neg` beside `untl B A`. GHR's printed Case 2 does not: its third
-  step folds `G¬A ∨ U(¬A ∧ ¬B, ¬A)` back into `¬U(A,B)` by Lemma 10.2.2 in reverse, which the
-  landed proof omits.
-* `case3Rhs` consumes `case2Rhs` and inherits this; `case1Rhs` and `case4Rhs` do not, and carry
-  `untl B A` alone.
-* `ElimHard.lean`'s `case8Rhs` consumes `case2Rhs` at `q := ⊤`, and `case6Rhs`/`case7Rhs`
-  consume `case3Rhs`/`case8Rhs`, so three of the four instances above inherit it too.
+The typedness half is what fixes which of the two available Case 2 routes `sepSnce` consumes.
+`Eliminations.lean` carries both, side by side and neither weakening the other:
 
-The repair is additive and needs no signature change: a second Case 2 lemma whose right-hand side
-is GHR's printed three-disjunct form, which mentions `untl` only as `untl B A`, proved beside the
-landed `usTruth_case2` rather than replacing it. Until that exists, any downstream induction that
-counts `untl` **types** cannot be run; an induction that counts `untl` occurrences lying *under a
-`snce`* can, because `isSeparated_sepSnce` already drives that count to zero.
+* `case2Rhs` / `usTruth_case2` is built as `… ∨ case1Rhs a q (A.neg.and B.neg) A.neg` together
+  with `allFuture A.neg`, so it mentions the `untl` types `untl A.neg (A.neg.and B.neg)` and
+  `untl USForm.top A.neg.neg` beside `untl B A`. It is retained exactly as it stands — nothing
+  here weakens its statement — and it is not `IsUTyped A B`.
+* `case2RhsPrinted` / `usTruth_case2_printed` is GHR's printed three-disjunct Case 2, whose only
+  `untl` occurrence is `untl B A`. It is obtained from the landed equivalence by
+  `usTruth_neg_untl` (Lemma 10.2.2) in the `←` direction — GHR's own third step, "using lemma
+  10.2.2 again (in reverse)".
+
+`case3RhsPrinted`, and `ElimHard.lean`'s `case6RhsPrinted`, `case7RhsPrinted` and
+`case8RhsPrinted`, are the same substitution propagated one slot at a time: each is identical to
+its sibling except where it reaches Case 2 or Case 3. `case1Rhs`, `case4Rhs`, `case5W`,
+`case5Core` and `case5Rhs` mention `untl B A` alone already and are shared by both routes.
+`sepSnce`'s body therefore takes `case7RhsPrinted`, `case5Rhs`, `case8RhsPrinted` and
+`case6RhsPrinted` at the four `substU` parameter pairs, and the printed-form siblings are the
+route every downstream measure over this layer consumes.
 
 ## Main Definitions
 
@@ -99,8 +105,13 @@ counts `untl` **types** cannot be run; an induction that counts `untl` occurrenc
 - `isSeparated_of_isUTyped`: the relationship to `IsSeparated`, with its two extra hypotheses
 - `usTruth_substU`, `isSOnly_substU`: the substitution's truth preservation and `untl`-freeness
 - `usTruth_event_split`, `usTruth_guard_split`: the two halves of the normal form
+- `isUTyped_case1Rhs`, `isUTyped_case2RhsPrinted`, `isUTyped_case3RhsPrinted`,
+  `isUTyped_case4Rhs`, `isUTyped_case5W`, `isUTyped_case5Rhs`, `isUTyped_case6RhsPrinted`,
+  `isUTyped_case7RhsPrinted`, `isUTyped_case8RhsPrinted`: the nine typedness witnesses for the
+  right-hand sides the printed-form route reaches
 - `usTruth_sepSnce`: GHR Lemma 10.2.4's equivalence
 - `isSeparated_sepSnce`: its conclusion's separatedness, discharged
+- `isUTyped_sepSnce`: its conclusion's single `untl` type, discharged
 
 ## References
 
@@ -173,6 +184,128 @@ theorem isSeparated_of_isUTyped {A B : USForm} (hAu : IsUOnly A) (hBu : IsUOnly 
   | imp _ _ ihφ ihψ => exact IsSeparated.imp ihφ ihψ
   | untl => exact IsSeparated.untl hBu hAu
   | snce hψ hφ => exact IsSeparated.snce hψ hφ
+
+/-! ## `IsUTyped` witnesses for the elimination layer
+
+GHR 10.2.4's conclusion has two halves: the equivalent is *separated*, and in it `untl` occurs
+only as `untl B A`. The witnesses below are the second half, for every right-hand side the
+printed-form route reaches. Each mirrors the shape of the corresponding `isSeparated_*` lemma,
+with `IsUTyped.untl` where that lemma has `IsSeparated.untl`.
+
+They take only the four `IsSOnly` hypotheses. The two `IsUOnly` halves of GHR's standing
+hypothesis on `A` and `B` are needed for *separatedness*, never for typedness, so asking for
+them here would be a gratuitous strengthening — and `isSeparated_of_isUTyped` is where they are
+consumed. `case5Core` needs no witness of its own: it is `IsSOnly`, so `IsUTyped.ofIsSOnly`
+covers it. -/
+
+/-- Case 1's right-hand side mentions `untl` only as `untl B A`.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isUTyped_case1Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) : IsUTyped A B (case1Rhs a q A B) :=
+  IsUTyped.or
+    (IsUTyped.ofIsSOnly (IsSOnly.snce hq (hAs.and (hq.and (IsSOnly.snce (hBs.and hq) ha)))))
+    (IsUTyped.or
+      (IsUTyped.ofIsSOnly (hAs.and (IsSOnly.snce (hq.and hBs) ha)))
+      (IsUTyped.and (IsUTyped.ofIsSOnly hBs)
+        (IsUTyped.and IsUTyped.untl
+          (IsUTyped.ofIsSOnly (IsSOnly.snce (hq.and hBs) ha)))))
+
+/-- Case 2's **printed** right-hand side mentions `untl` only as `untl B A`. This is the clause
+the landed `case2Rhs` fails, and the reason the printed-form siblings exist.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isUTyped_case2RhsPrinted {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) : IsUTyped A B (case2RhsPrinted a q A B) :=
+  IsUTyped.or
+    (IsUTyped.and (IsUTyped.ofIsSOnly (IsSOnly.snce (hq.and hAs.neg) ha))
+      (IsUTyped.and (IsUTyped.ofIsSOnly hAs.neg) (IsUTyped.neg IsUTyped.untl)))
+    (IsUTyped.or
+      (IsUTyped.ofIsSOnly (hAs.neg.and (hBs.neg.and (IsSOnly.snce (hAs.neg.and hq) ha))))
+      (IsUTyped.ofIsSOnly (IsSOnly.snce hq
+        (((hAs.neg.and hBs.neg).and hq).and (IsSOnly.snce (hAs.neg.and hq) ha)))))
+
+/-- Case 3's printed right-hand side mentions `untl` only as `untl B A`.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isUTyped_case3RhsPrinted {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) : IsUTyped A B (case3RhsPrinted a q A B) :=
+  IsUTyped.neg (IsUTyped.or (IsUTyped.ofIsSOnly ha.neg.allPast)
+    (isUTyped_case2RhsPrinted (ha.neg.and hq.neg) ha.neg hAs hBs))
+
+/-- Case 4's right-hand side mentions `untl` only as `untl B A`.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isUTyped_case4Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) : IsUTyped A B (case4Rhs a q A B) :=
+  IsUTyped.neg (IsUTyped.or (IsUTyped.ofIsSOnly ha.neg.allPast)
+    (isUTyped_case1Rhs (ha.neg.and hq.neg) ha.neg hAs hBs))
+
+/-- `W := A ∨ (B ∧ U(A,B))` mentions `untl` only as `untl B A` — its single occurrence.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isUTyped_case5W {A B : USForm} (hAs : IsSOnly A) (hBs : IsSOnly B) :
+    IsUTyped A B (case5W A B) :=
+  IsUTyped.or (IsUTyped.ofIsSOnly hAs)
+    (IsUTyped.and (IsUTyped.ofIsSOnly hBs) IsUTyped.untl)
+
+/-- Case 5's right-hand side mentions `untl` only as `untl B A`: every occurrence is inside
+`case5W`, since `case5Core` is `untl`-free.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isUTyped_case5Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) : IsUTyped A B (case5Rhs a q A B) := by
+  have hcore := isSOnly_case5Core ha hq hAs hBs
+  have hW := isUTyped_case5W (A := A) (B := B) hAs hBs
+  exact IsUTyped.or (IsUTyped.and hW (IsUTyped.ofIsSOnly hcore))
+    (IsUTyped.and (IsUTyped.neg hW) (IsUTyped.ofIsSOnly
+      ((IsSOnly.snce hAs.neg hq.neg).neg.and (IsSOnly.snce hAs.neg (hAs.and hcore)))))
+
+/-- Case 8's printed right-hand side mentions `untl` only as `untl B A`.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isUTyped_case8RhsPrinted {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) : IsUTyped A B (case8RhsPrinted a q A B) :=
+  IsUTyped.neg
+    (IsUTyped.or (IsUTyped.neg (isUTyped_case2RhsPrinted ha IsSOnly.top hAs hBs))
+      (IsUTyped.or (isUTyped_case5Rhs (hq.neg.and ha.neg) ha.neg hAs hBs)
+        (isUTyped_case5Rhs hq.neg ha.neg hAs hBs)))
+
+/-- Case 7's printed right-hand side mentions `untl` only as `untl B A`.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isUTyped_case7RhsPrinted {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) : IsUTyped A B (case7RhsPrinted a q A B) := by
+  have hSabq : IsSOnly (USForm.snce (B.and q) a) := IsSOnly.snce (hBs.and hq) ha
+  exact IsUTyped.or (isUTyped_case4Rhs ((hAs.and hSabq).and hq) hq hAs hBs)
+    (IsUTyped.or (isUTyped_case8RhsPrinted (hAs.and hSabq) hq hAs hBs)
+      (IsUTyped.or (IsUTyped.ofIsSOnly (hSabq.and hAs))
+        (IsUTyped.and (IsUTyped.ofIsSOnly hSabq)
+          (IsUTyped.and (IsUTyped.ofIsSOnly hBs) IsUTyped.untl))))
+
+/-- Case 6's printed right-hand side mentions `untl` only as `untl B A`.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isUTyped_case6RhsPrinted {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) : IsUTyped A B (case6RhsPrinted a q A B) := by
+  have hinner : IsSOnly (USForm.snce (q.and A.neg) a) := IsSOnly.snce (hq.and hAs.neg) ha
+  have hcore : IsSOnly ((B.neg.and A.neg).and (USForm.snce (q.and A.neg) a)) :=
+    (hBs.neg.and hAs.neg).and hinner
+  exact IsUTyped.or
+    (IsUTyped.and (IsUTyped.ofIsSOnly hinner)
+      (IsUTyped.and (IsUTyped.ofIsSOnly hAs.neg)
+        (IsUTyped.neg (IsUTyped.and (IsUTyped.ofIsSOnly hBs) IsUTyped.untl))))
+    (IsUTyped.or (isUTyped_case3RhsPrinted (hcore.and hq) hq hAs hBs)
+      (isUTyped_case5Rhs hcore hq hAs hBs))
 
 /-! ## The `untl`-literal normal form -/
 
@@ -293,13 +426,13 @@ the `U`-branch of the event, Cases 8 and 6 on the `¬U`-branch, each at the para
 in the module docstring.
 -/
 def sepSnce (A B C F : USForm) : USForm :=
-  ((case7Rhs (substU (USForm.untl B A) USForm.top C)
+  ((case7RhsPrinted (substU (USForm.untl B A) USForm.top C)
       (substU (USForm.untl B A) USForm.top F) A B).and
     (case5Rhs (substU (USForm.untl B A) USForm.top C)
       (substU (USForm.untl B A) USForm.bot F) A B)).or
-  ((case8Rhs (substU (USForm.untl B A) USForm.bot C)
+  ((case8RhsPrinted (substU (USForm.untl B A) USForm.bot C)
       (substU (USForm.untl B A) USForm.top F) A B).and
-    (case6Rhs (substU (USForm.untl B A) USForm.bot C)
+    (case6RhsPrinted (substU (USForm.untl B A) USForm.bot C)
       (substU (USForm.untl B A) USForm.bot F) A B))
 
 /--
@@ -322,8 +455,8 @@ theorem usTruth_sepSnce {A B C F : USForm} (hC : IsUTyped A B C) (hF : IsUTyped 
   simp only [usTruth_or_iff, usTruth_and_iff]
   rw [usTruth_snce_or_event, usTruth_or_iff, usTruth_snce_and_guard, usTruth_snce_and_guard,
     usTruth_and_iff, usTruth_and_iff]
-  exact or_congr (and_congr (usTruth_case7 _ _ A B v t) (usTruth_case5 _ _ A B v t))
-    (and_congr (usTruth_case8 _ _ A B v t) (usTruth_case6 _ _ A B v t))
+  exact or_congr (and_congr (usTruth_case7_printed _ _ A B v t) (usTruth_case5 _ _ A B v t))
+    (and_congr (usTruth_case8_printed _ _ A B v t) (usTruth_case6_printed _ _ A B v t))
 
 /--
 **GHR Lemma 10.2.4**, the separatedness half: `sepSnce A B C F` is syntactically separated. This
@@ -344,9 +477,34 @@ theorem isSeparated_sepSnce {A B C F : USForm} (hAs : IsSOnly A) (hBs : IsSOnly 
   have hFU : IsSOnly (substU (USForm.untl B A) USForm.top F) := isSOnly_substU IsSOnly.top hF
   have hFN : IsSOnly (substU (USForm.untl B A) USForm.bot F) := isSOnly_substU IsSOnly.bot hF
   exact IsSeparated.or
-    (IsSeparated.and (isSeparated_case7Rhs hCU hFU hAs hBs hAu hBu)
+    (IsSeparated.and (isSeparated_case7RhsPrinted hCU hFU hAs hBs hAu hBu)
       (isSeparated_case5Rhs hCU hFN hAs hBs hAu hBu))
-    (IsSeparated.and (isSeparated_case8Rhs hCN hFU hAs hBs hAu hBu)
-      (isSeparated_case6Rhs hCN hFN hAs hBs hAu hBu))
+    (IsSeparated.and (isSeparated_case8RhsPrinted hCN hFU hAs hBs hAu hBu)
+      (isSeparated_case6RhsPrinted hCN hFN hAs hBs hAu hBu))
+
+/--
+**GHR Lemma 10.2.4**, the typedness half: in `sepSnce A B C F`, `untl` occurs only as the single
+type `untl B A`. This is the conclusion clause "in which `U` only appears as the formula
+`U(A,B)`", as a proved witness rather than a prose claim.
+
+It needs only the two `IsSOnly` hypotheses on `A` and `B`, never the `IsUOnly` halves and never
+`IsSeparated` at an input position: typedness of the four case parameters comes from
+`isSOnly_substU`, and each of the four right-hand sides the clean route uses carries its own
+`isUTyped_*` witness.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
+-/
+theorem isUTyped_sepSnce {A B C F : USForm} (hAs : IsSOnly A) (hBs : IsSOnly B)
+    (hC : IsUTyped A B C) (hF : IsUTyped A B F) : IsUTyped A B (sepSnce A B C F) := by
+  have hCU : IsSOnly (substU (USForm.untl B A) USForm.top C) := isSOnly_substU IsSOnly.top hC
+  have hCN : IsSOnly (substU (USForm.untl B A) USForm.bot C) := isSOnly_substU IsSOnly.bot hC
+  have hFU : IsSOnly (substU (USForm.untl B A) USForm.top F) := isSOnly_substU IsSOnly.top hF
+  have hFN : IsSOnly (substU (USForm.untl B A) USForm.bot F) := isSOnly_substU IsSOnly.bot hF
+  exact IsUTyped.or
+    (IsUTyped.and (isUTyped_case7RhsPrinted hCU hFU hAs hBs)
+      (isUTyped_case5Rhs hCU hFN hAs hBs))
+    (IsUTyped.and (isUTyped_case8RhsPrinted hCN hFU hAs hBs)
+      (isUTyped_case6RhsPrinted hCN hFN hAs hBs))
 
 end FormalSystem.Metalogic.Expressiveness.SeparationZ

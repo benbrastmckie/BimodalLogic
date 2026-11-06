@@ -1756,7 +1756,7 @@ the landed `def` and `theorem` keywords in the module against that list.
 
 ---
 
-### Phase 21: The Type-Clean Case 2 and the Downstream Re-derivations [NOT STARTED]
+### Phase 21: The Type-Clean Case 2 and the Downstream Re-derivations [COMPLETED]
 
 **Goal**: Remove the one source of `untl`-type contamination in the landed elimination layer, so
 that every separated right-hand side the layer produces mentions `untl` only as `untl B A`. This
@@ -1808,40 +1808,40 @@ Its only `untl` occurrence is the `¬U(A,B)` of the first disjunct, which is exa
 
 **Tasks**:
 
-- [ ] Add `case2RhsPrinted (a q A B : USForm) : USForm` to `Eliminations.lean`, beside
+- [x] Add `case2RhsPrinted (a q A B : USForm) : USForm` to `Eliminations.lean`, beside
       `case2Rhs` and changing nothing about it, at the printed form above:
       `((USForm.snce (q.and A.neg) a).and (A.neg.and (USForm.untl B A).neg)).or`
       `((A.neg.and (B.neg.and (USForm.snce (A.neg.and q) a))).or`
       `(USForm.snce q (((A.neg.and B.neg).and q).and (USForm.snce (A.neg.and q) a))))`.
       Quote the three printed disjuncts in its docstring and cite the corpus file and lemma
       number, so a later reader can re-verify the transcription without the plan.
-- [ ] Prove `usTruth_case2_printed (a q A B) (v) (t) :`
+- [x] Prove `usTruth_case2_printed (a q A B) (v) (t) :`
       `usTruth v t (USForm.snce q (a.and (USForm.untl B A).neg)) ↔ usTruth v t (case2RhsPrinted a q A B)`
       by chaining the landed `usTruth_case2` with `usTruth_neg_untl` applied in the `←`
       direction to fold `G¬A ∨ U(¬A∧¬B,¬A)` back into `¬U(A,B)`. Do not re-derive Case 2
       semantically: if the proof needs a trichotomy on a witness, the fold has been reconstructed
       instead of used, and `usTruth_neg_untl` is the lemma that was wanted.
-- [ ] Prove `isSeparated_case2RhsPrinted` at the same six-hypothesis shape every sibling in the
+- [x] Prove `isSeparated_case2RhsPrinted` at the same six-hypothesis shape every sibling in the
       layer carries -- `(ha : IsSOnly a) (hq : IsSOnly q) (hAs : IsSOnly A) (hBs : IsSOnly B)`
       `(hAu : IsUOnly A) (hBu : IsUOnly B)` -- so it is a drop-in for
       `isSeparated_case2Rhs` at every call site.
-- [ ] Add `case3RhsPrinted a q A B :=`
+- [x] Add `case3RhsPrinted a q A B :=`
       `((USForm.allPast a.neg).or (case2RhsPrinted (a.neg.and q.neg) a.neg A B)).neg` to
       `Eliminations.lean`, with `usTruth_case3_printed` and `isSeparated_case3RhsPrinted`. The
       equivalence is Boolean congruence from `usTruth_case2_printed` at those parameters -- the
       substituted position sits under `or` and `neg` only -- not a re-derivation of Case 3.
-- [ ] Add `case8RhsPrinted` to `ElimHard.lean`, identical to `case8Rhs` except that the
+- [x] Add `case8RhsPrinted` to `ElimHard.lean`, identical to `case8Rhs` except that the
       `case2Rhs a USForm.top A B` slot becomes `case2RhsPrinted a USForm.top A B`. Keep all three
       disjuncts: the non-redundancy of the third is a landed, model-backed fact recorded at
       `case8Rhs`, and it is unaffected by this substitution. Prove `usTruth_case8_printed` by the
       same Boolean congruence, and `isSeparated_case8RhsPrinted`.
-- [ ] Add `case7RhsPrinted` and `case6RhsPrinted` to `ElimHard.lean`, each identical to its
+- [x] Add `case7RhsPrinted` and `case6RhsPrinted` to `ElimHard.lean`, each identical to its
       landed sibling except in the one contaminated slot: `case7RhsPrinted` takes
       `case8RhsPrinted` where `case7Rhs` takes `case8Rhs` (its `case4Rhs` slot is already
       type-clean), and `case6RhsPrinted` takes `case3RhsPrinted` where `case6Rhs` takes
       `case3Rhs` (its `case5Rhs` slot is already type-clean). Prove the two equivalences by
       Boolean congruence and the two `IsSeparated` witnesses as above.
-- [ ] Add the `IsUTyped` witnesses in `NormalForm.lean`, beside the predicate that owns them, at
+- [x] Add the `IsUTyped` witnesses in `NormalForm.lean`, beside the predicate that owns them, at
       the hypothesis shape `(ha : IsSOnly a) (hq : IsSOnly q) (hAs : IsSOnly A) (hBs : IsSOnly B)`
       -- the two `IsUOnly` halves are needed for separatedness, never for typedness, and asking
       for them here would be a gratuitous strengthening. Nine are needed, one per right-hand side
@@ -1850,24 +1850,24 @@ Its only `untl` occurrence is the `¬U(A,B)` of the first disjunct, which is exa
       `case5Core` needs none -- it is `IsSOnly`, so `IsUTyped.ofIsSOnly` covers it. Each witness
       is a structural term mirroring the shape of the corresponding `isSeparated_*` lemma, with
       `IsUTyped.untl` where that lemma has `IsSeparated.untl`.
-- [ ] Rebuild `sepSnce`'s body in `NormalForm.lean` over the clean right-hand sides --
+- [x] Rebuild `sepSnce`'s body in `NormalForm.lean` over the clean right-hand sides --
       `case7RhsPrinted`, `case5Rhs`, `case8RhsPrinted`, `case6RhsPrinted` at exactly the four
       `substU` parameter pairs it already uses -- keeping its name and signature. Re-prove
       `usTruth_sepSnce` and `isSeparated_sepSnce` at their **exact existing statements**: both
       proofs are structural in the four case lemmas, so each is a name swap to the `_printed`
       siblings at the same parameters. D-g rules out the alternative of a `sepSncePrinted` sibling.
-- [ ] Prove `isUTyped_sepSnce {A B C F} (hAs : IsSOnly A) (hBs : IsSOnly B) (hC : IsUTyped A B C)`
+- [x] Prove `isUTyped_sepSnce {A B C F} (hAs : IsSOnly A) (hBs : IsSOnly B) (hC : IsUTyped A B C)`
       `(hF : IsUTyped A B F) : IsUTyped A B (sepSnce A B C F)`, from the four witnesses above at
       the `substU` parameters, whose `IsSOnly`-ness is already landed as `isSOnly_substU`. This
       is GHR 10.2.4's second conclusion clause -- "in which `U` only appears as the formula
       `U(A,B)`" -- and the deliverable Phase 20 excluded.
-- [ ] Amend `NormalForm.lean`'s module docstring: its "What this lemma does NOT yet deliver"
+- [x] Amend `NormalForm.lean`'s module docstring: its "What this lemma does NOT yet deliver"
       section now records what **is** delivered and by which declaration, and the repair it
       prescribed is the one that landed. State in the same place that `case2Rhs` and
       `usTruth_case2` are retained unchanged, and that the printed-form siblings are the route
       every downstream measure consumes.
-- [ ] Regenerate `typst/generated/status.typ` and run the `typst-sync-check.sh --fix` step; the
-      declaration counts move even though no module is added.
+- [x] Regenerate `typst/generated/status.typ` and run the `typst-sync-check.sh --fix` step; the
+      declaration counts move even though no module is added. *(deviation: altered — the same mechanical count update was additionally required for the two generated inventory blocks in `README.md` and `FormalSystem/Metalogic/README.md`, regenerated via `check-module-invariants.sh --emit-inventory`, since the phase's own GATES require that check green; `SeparationZ/README.md` was also amended by hand so its "Not landed" section does not keep asserting a clause this phase proves.)*
 
 **Timing**: 2.5 hours
 

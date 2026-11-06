@@ -88,6 +88,9 @@ strictly upstream of the induction that consumes them.
 
 - `case5W`, `case5Core`, `case5Rhs`: the split, GHR's pure-past core, and Case 5's right-hand side
 - `case8Rhs`, `case7Rhs`, `case6Rhs`: the three reductions' right-hand sides
+- `case8RhsPrinted`, `case7RhsPrinted`, `case6RhsPrinted`: the same three with their one
+  Case 2 / Case 3 slot taken at the printed form, so that `untl B A` is the only `untl`
+  type each mentions
 
 ## Main Results
 
@@ -97,6 +100,9 @@ strictly upstream of the induction that consumes them.
   cases, completing all eight
 - `isSeparated_case5Rhs`, `isSeparated_case8Rhs`, `isSeparated_case7Rhs`,
   `isSeparated_case6Rhs`: their separatedness, each discharged rather than asserted
+- `usTruth_case8_printed`, `usTruth_case7_printed`, `usTruth_case6_printed`: the same three
+  cases at the printed right-hand sides, with `isSeparated_case8RhsPrinted`,
+  `isSeparated_case7RhsPrinted` and `isSeparated_case6RhsPrinted`
 
 ## References
 
@@ -948,6 +954,136 @@ theorem isSeparated_case6Rhs {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q
       (IsSeparated.and (IsSeparated.ofIsSOnly hAs.neg)
         (IsSeparated.and (IsSeparated.ofIsSOnly hBs) (IsSeparated.untl hBu hAu)).neg))
     (IsSeparated.or (isSeparated_case3Rhs (hcore.and hq) hq hAs hBs hAu hBu)
+      (isSeparated_case5Rhs hcore hq hAs hBs hAu hBu))
+
+/-! ## The printed-form siblings of Cases 8, 7 and 6
+
+Each definition below is identical to its landed sibling except in the one slot that reaches
+`case2Rhs` or `case3Rhs`, where it takes `case2RhsPrinted` or `case3RhsPrinted` instead. That is
+the whole of the change: `case5W`, `case5Core`, `case5Rhs`, `case1Rhs` and `case4Rhs` are already
+type-clean, so these three substitutions remove the last `untl`-type contamination from the
+`snce`-side layer. Every equivalence below is Boolean congruence from the corresponding
+`_printed` equivalence at the same parameters, never a re-derivation of the case; the landed
+`case6Rhs`, `case7Rhs`, `case8Rhs` and their lemmas are retained unchanged. -/
+
+/--
+Case 8's printed-form right-hand side: `case8Rhs` with its one `case2Rhs a ⊤ A B` slot taken at
+`case2RhsPrinted a ⊤ A B`.
+
+**All three disjuncts are kept**, for the reason recorded at `case8Rhs`: the third is the only
+true disjunct at the compiled probe model `v₄`, so dropping it would make the expansion unsound.
+The substitution performed here does not touch that fact.
+-/
+def case8RhsPrinted (a q A B : USForm) : USForm :=
+  ((case2RhsPrinted a USForm.top A B).neg.or
+    ((case5Rhs (q.neg.and a.neg) a.neg A B).or (case5Rhs q.neg a.neg A B))).neg
+
+/--
+**GHR 10.2.3, Case 8 at the printed right-hand side.** Boolean congruence from
+`usTruth_case2_printed` at `q := ⊤`: the substituted position sits under `neg` and `or` only.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
+-/
+theorem usTruth_case8_printed (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
+    usTruth v t (USForm.snce (q.or (USForm.untl B A).neg) (a.and (USForm.untl B A).neg)) ↔
+      usTruth v t (case8RhsPrinted a q A B) := by
+  have hc : usTruth v t (case2Rhs a USForm.top A B) ↔
+      usTruth v t (case2RhsPrinted a USForm.top A B) :=
+    (usTruth_case2 a USForm.top A B v t).symm.trans
+      (usTruth_case2_printed a USForm.top A B v t)
+  rw [usTruth_case8 a q A B v t, case8Rhs, case8RhsPrinted]
+  simp only [usTruth_neg_iff, usTruth_or_iff, hc]
+
+/-- Case 8's printed right-hand side is syntactically separated whenever the four parameters are.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isSeparated_case8RhsPrinted {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A) (hBu : IsUOnly B) :
+    IsSeparated (case8RhsPrinted a q A B) :=
+  (IsSeparated.or (isSeparated_case2RhsPrinted ha IsSOnly.top hAs hBs hAu hBu).neg
+    (IsSeparated.or (isSeparated_case5Rhs (hq.neg.and ha.neg) ha.neg hAs hBs hAu hBu)
+      (isSeparated_case5Rhs hq.neg ha.neg hAs hBs hAu hBu))).neg
+
+/-- Case 7's printed-form right-hand side: `case7Rhs` with its one `case8Rhs` slot taken at
+`case8RhsPrinted`. Its `case4Rhs` slot is already type-clean and is untouched. -/
+def case7RhsPrinted (a q A B : USForm) : USForm :=
+  (case4Rhs ((A.and (USForm.snce (B.and q) a)).and q) q A B).or
+    ((case8RhsPrinted (A.and (USForm.snce (B.and q) a)) q A B).or
+      (((USForm.snce (B.and q) a).and A).or
+        ((USForm.snce (B.and q) a).and (B.and (USForm.untl B A)))))
+
+/--
+**GHR 10.2.3, Case 7 at the printed right-hand side.** Boolean congruence from
+`usTruth_case8_printed` at `a := A ∧ S(a, B ∧ q)`: the substituted position sits under `or` only.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
+-/
+theorem usTruth_case7_printed (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
+    usTruth v t (USForm.snce (q.or (USForm.untl B A).neg) (a.and (USForm.untl B A))) ↔
+      usTruth v t (case7RhsPrinted a q A B) := by
+  have hc : usTruth v t (case8Rhs (A.and (USForm.snce (B.and q) a)) q A B) ↔
+      usTruth v t (case8RhsPrinted (A.and (USForm.snce (B.and q) a)) q A B) :=
+    (usTruth_case8 (A.and (USForm.snce (B.and q) a)) q A B v t).symm.trans
+      (usTruth_case8_printed (A.and (USForm.snce (B.and q) a)) q A B v t)
+  rw [usTruth_case7 a q A B v t, case7Rhs, case7RhsPrinted]
+  simp only [usTruth_or_iff, hc]
+
+/-- Case 7's printed right-hand side is syntactically separated whenever the four parameters are.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isSeparated_case7RhsPrinted {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A) (hBu : IsUOnly B) :
+    IsSeparated (case7RhsPrinted a q A B) := by
+  have hSabq : IsSOnly (USForm.snce (B.and q) a) := IsSOnly.snce (hBs.and hq) ha
+  exact IsSeparated.or (isSeparated_case4Rhs ((hAs.and hSabq).and hq) hq hAs hBs hAu hBu)
+    (IsSeparated.or (isSeparated_case8RhsPrinted (hAs.and hSabq) hq hAs hBs hAu hBu)
+      (IsSeparated.or (IsSeparated.ofIsSOnly (hSabq.and hAs))
+        (IsSeparated.and (IsSeparated.ofIsSOnly hSabq)
+          (IsSeparated.and (IsSeparated.ofIsSOnly hBs) (IsSeparated.untl hBu hAu)))))
+
+/-- Case 6's printed-form right-hand side: `case6Rhs` with its one `case3Rhs` slot taken at
+`case3RhsPrinted`. Its `case5Rhs` slot is already type-clean and is untouched. -/
+def case6RhsPrinted (a q A B : USForm) : USForm :=
+  ((USForm.snce (q.and A.neg) a).and (A.neg.and (B.and (USForm.untl B A)).neg)).or
+    ((case3RhsPrinted (((B.neg.and A.neg).and (USForm.snce (q.and A.neg) a)).and q) q A B).or
+      (case5Rhs ((B.neg.and A.neg).and (USForm.snce (q.and A.neg) a)) q A B))
+
+/--
+**GHR 10.2.3, Case 6 at the printed right-hand side.** Boolean congruence from
+`usTruth_case3_printed` at `a := ¬B ∧ ¬A ∧ S(a, q ∧ ¬A) ∧ q`: the substituted position sits
+under `or` only.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one)
+-/
+theorem usTruth_case6_printed (a q A B : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
+    usTruth v t (USForm.snce (q.or (USForm.untl B A)) (a.and (USForm.untl B A).neg)) ↔
+      usTruth v t (case6RhsPrinted a q A B) := by
+  have hc : ∀ c : USForm, usTruth v t (case3Rhs c q A B) ↔
+      usTruth v t (case3RhsPrinted c q A B) := fun c =>
+    (usTruth_case3 c q A B v t).symm.trans (usTruth_case3_printed c q A B v t)
+  rw [usTruth_case6 a q A B v t, case6Rhs, case6RhsPrinted]
+  simp only [usTruth_or_iff, hc]
+
+/-- Case 6's printed right-hand side is syntactically separated whenever the four parameters are.
+
+Paper: — (a result of GHR vol. 1, Chapter 10 §10.2; the manuscript states no separation
+theorem and carries no label for one) -/
+theorem isSeparated_case6RhsPrinted {a q A B : USForm} (ha : IsSOnly a) (hq : IsSOnly q)
+    (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A) (hBu : IsUOnly B) :
+    IsSeparated (case6RhsPrinted a q A B) := by
+  have hinner : IsSOnly (USForm.snce (q.and A.neg) a) := IsSOnly.snce (hq.and hAs.neg) ha
+  have hcore : IsSOnly ((B.neg.and A.neg).and (USForm.snce (q.and A.neg) a)) :=
+    (hBs.neg.and hAs.neg).and hinner
+  exact IsSeparated.or
+    (IsSeparated.and (IsSeparated.ofIsSOnly hinner)
+      (IsSeparated.and (IsSeparated.ofIsSOnly hAs.neg)
+        (IsSeparated.and (IsSeparated.ofIsSOnly hBs) (IsSeparated.untl hBu hAu)).neg))
+    (IsSeparated.or (isSeparated_case3RhsPrinted (hcore.and hq) hq hAs hBs hAu hBu)
       (isSeparated_case5Rhs hcore hq hAs hBs hAu hBu))
 
 end FormalSystem.Metalogic.Expressiveness.SeparationZ
