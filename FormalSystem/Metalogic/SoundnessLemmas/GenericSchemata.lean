@@ -289,4 +289,160 @@ theorem generic_atom_stab (M : TaskModel F) (τ : WorldHistory F) (t : F.Duratio
 
 end AtomStab
 
+/-!
+## Seriality
+
+The temporal order is nontrivial in both directions — `exists_gt`/`exists_lt` on
+`F.Duration` — and that, not any frame constraint, is the whole content of the two seriality
+schemata. **Measured correction to the plan's hypothesis**: `[F.IsRegular]` is *not* consumed
+here. The L-level `serial_future_axiom_valid` (`Metalogic/Soundness.lean`) is likewise introduced
+by `Valid.of_forall`, with no regularity, and closes on `exists_gt t`; the per-language `⊤`-guarded
+forms use `of_forall_regular` only as a binder shape. The four lemmas below are therefore stated
+without a regularity binder, which is strictly stronger and still serves every wrapper that has
+one.
+-/
+
+section Seriality
+variable [BotClause L] [UntlClause L]
+
+/-- TS, bare: `F⊤`. The order has no maximum. -/
+theorem generic_serial_future (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e (someFuture (top : L)) := by
+  rw [someFuture_iff]
+  obtain ⟨s, hts⟩ := exists_gt t
+  exact ⟨s, hts, top_true M τ s e⟩
+
+/-- `⊤ → F⊤`: `generic_serial_future` under a trivially true antecedent. -/
+theorem generic_serial_future_imp (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e (ImpClause.imp (top : L) (someFuture (top : L))) := by
+  rw [ImpClause.imp_clause]
+  exact fun _ => generic_serial_future M τ t e
+
+end Seriality
+
+section SerialityPast
+variable [BotClause L] [SnceClause L]
+
+/-- `⊤ → P⊤`. The order has no minimum. -/
+theorem generic_serial_past (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e (ImpClause.imp (top : L) (somePast (top : L))) := by
+  rw [ImpClause.imp_clause, somePast_iff]
+  intro _
+  obtain ⟨s, hst⟩ := exists_lt t
+  exact ⟨s, hst, top_true M τ s e⟩
+
+/-- `P⊤`, bare: `generic_serial_past` at the true antecedent. -/
+theorem generic_serial_past_bare (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) :
+    TruthEnv.T M τ t e (somePast (top : L)) :=
+  ((ImpClause.imp_clause M τ t e _ _).mp (generic_serial_past M τ t e)) (top_true M τ t e)
+
+end SerialityPast
+
+/-!
+## Monotonicity of `U` and `S`, and the two connection schemata
+
+Transcriptions of `StarAxiomValidity.lean`'s `starValid_left_mono_until_G`–
+`starValid_connect_past`. Each is the clause family followed by one `rintro`; no frame constraint
+and no order fact beyond transitivity enters.
+-/
+
+section MonoFuture
+variable [BotClause L] [UntlClause L]
+
+/-- BX2G: the guard of an `until` may be weakened under `G`. -/
+theorem generic_left_mono_until_G (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ χ ψ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (allFuture (ImpClause.imp φ χ))
+        (ImpClause.imp (UntlClause.untl φ ψ) (UntlClause.untl χ ψ))) := by
+  rw [ImpClause.imp_clause]
+  intro h_G
+  rw [allFuture_iff] at h_G
+  rw [ImpClause.imp_clause]
+  simp only [UntlClause.untl_clause]
+  rintro ⟨s, hts, h_event, h_guard⟩
+  refine ⟨s, hts, h_event, fun r htr hrs => ?_⟩
+  exact ((ImpClause.imp_clause M τ r e φ χ).mp (h_G r htr)) (h_guard r htr hrs)
+
+/-- BX3: the event of an `until` may be weakened under `G`. -/
+theorem generic_right_mono_until (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ χ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (allFuture (ImpClause.imp φ ψ))
+        (ImpClause.imp (UntlClause.untl χ φ) (UntlClause.untl χ ψ))) := by
+  rw [ImpClause.imp_clause]
+  intro h_G
+  rw [allFuture_iff] at h_G
+  rw [ImpClause.imp_clause]
+  simp only [UntlClause.untl_clause]
+  rintro ⟨s, hts, h_event, h_guard⟩
+  exact ⟨s, hts, ((ImpClause.imp_clause M τ s e φ ψ).mp (h_G s hts)) h_event, h_guard⟩
+
+end MonoFuture
+
+section MonoPast
+variable [BotClause L] [SnceClause L]
+
+/-- BX2H, the past mirror of `generic_left_mono_until_G`. -/
+theorem generic_left_mono_since_H (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ χ ψ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (allPast (ImpClause.imp φ χ))
+        (ImpClause.imp (SnceClause.snce φ ψ) (SnceClause.snce χ ψ))) := by
+  rw [ImpClause.imp_clause]
+  intro h_H
+  rw [allPast_iff] at h_H
+  rw [ImpClause.imp_clause]
+  simp only [SnceClause.snce_clause]
+  rintro ⟨s, hst, h_event, h_guard⟩
+  refine ⟨s, hst, h_event, fun r hsr hrt => ?_⟩
+  exact ((ImpClause.imp_clause M τ r e φ χ).mp (h_H r hrt)) (h_guard r hsr hrt)
+
+/-- BX3', the past mirror of `generic_right_mono_until`. -/
+theorem generic_right_mono_since (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ χ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (allPast (ImpClause.imp φ ψ))
+        (ImpClause.imp (SnceClause.snce χ φ) (SnceClause.snce χ ψ))) := by
+  rw [ImpClause.imp_clause]
+  intro h_H
+  rw [allPast_iff] at h_H
+  rw [ImpClause.imp_clause]
+  simp only [SnceClause.snce_clause]
+  rintro ⟨s, hst, h_event, h_guard⟩
+  exact ⟨s, hst, ((ImpClause.imp_clause M τ s e φ ψ).mp (h_H s hst)) h_event, h_guard⟩
+
+end MonoPast
+
+section Connection
+variable [BotClause L] [UntlClause L] [SnceClause L]
+
+/-- BX4: what is true now is always going to have been true. -/
+theorem generic_connect_future (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e (ImpClause.imp φ (allFuture (somePast φ))) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [allFuture_iff]
+  intro s hts
+  rw [somePast_iff]
+  exact ⟨t, hts, h⟩
+
+/-- BX4', the past mirror of `generic_connect_future`. -/
+theorem generic_connect_past (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e (ImpClause.imp φ (allPast (someFuture φ))) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [allPast_iff]
+  intro s hst
+  rw [someFuture_iff]
+  exact ⟨t, hst, h⟩
+
+end Connection
+
 end FormalSystem.Metalogic.SoundnessLemmas

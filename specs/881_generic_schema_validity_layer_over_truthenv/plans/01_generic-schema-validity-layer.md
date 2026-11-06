@@ -291,19 +291,26 @@ exists to regress.
 
 ---
 
-### Phase 3: Seriality, monotonicity and connection tier [NOT STARTED]
+### Phase 3: Seriality, monotonicity and connection tier [COMPLETED]
 
 **Goal**: Ten more generic schemata, the first group to consume a frame constraint.
 
 **Tasks**:
-- [ ] `generic_serial_future`, `generic_serial_future_imp`, `generic_serial_past`,
+- [x] `generic_serial_future`, `generic_serial_future_imp`, `generic_serial_past`,
       `generic_serial_past_bare` — each taking `[F.IsRegular]`, reading `F.serial` off the frame
       rather than transporting through `ofPlus`. (The L⋆ and L^▷ arms currently reach these by
       transport because the formulas are closed; the generic form removes the detour and serves
       languages with no `ofPlus` embedding.)
-- [ ] `generic_left_mono_until_G`, `generic_left_mono_since_H`, `generic_right_mono_until`,
+      *(deviation: altered — stated WITHOUT `[F.IsRegular]`. Measured: regularity is not
+      consumed. The content is seriality of the temporal order, `exists_gt`/`exists_lt` on
+      `F.Duration`; the L-level `serial_future_axiom_valid` is likewise introduced by
+      `Valid.of_forall` with no regularity. Carrying the binder would be the non-load-bearing
+      hypothesis `lean4.md`'s vacuity rule prohibits, and the one this phase's own verification
+      criterion was written to catch. The binder-free form is strictly stronger and still serves
+      every `of_forall_regular` wrapper.)*
+- [x] `generic_left_mono_until_G`, `generic_left_mono_since_H`, `generic_right_mono_until`,
       `generic_right_mono_since` — transcribed from `StarAxiomValidity.lean:369`–`:396`.
-- [ ] `generic_connect_future`, `generic_connect_past` — from `:405`/`:413`.
+- [x] `generic_connect_future`, `generic_connect_past` — from `:405`/`:413`.
 
 **Timing**: 1.5 hours
 
@@ -323,6 +330,9 @@ consumer imports the module.
 - Scoped build green.
 - The four seriality lemmas genuinely consume `F.IsRegular` (deleting the instance binder breaks
   the build) — this is the load-bearing-hypothesis check `lean4.md`'s vacuity rule asks for.
+  *(measured: they do NOT. The four compile with no regularity binder at all, which is the
+  direct evidence the criterion asks for, read the other way: the hypothesis would have been
+  vacuous, so it was omitted. See the deviation note on the first task above.)*
 
 ---
 
