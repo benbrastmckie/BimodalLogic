@@ -375,17 +375,17 @@ no importers yet.
 
 ---
 
-### Phase 5: `until_F`/`since_P`, temporal linearity and the `F`/`P` equivalences [NOT STARTED]
+### Phase 5: `until_F`/`since_P`, temporal linearity and the `F`/`P` equivalences [COMPLETED]
 
 **Goal**: Eight more schemata, including **both** disjunct orderings of TL/BX11.
 
 **Tasks**:
-- [ ] `generic_until_F`, `generic_since_P`.
-- [ ] `generic_temp_linearity`, `generic_temp_linearity_paper` (future; differ in disjunct
+- [x] `generic_until_F`, `generic_since_P`.
+- [x] `generic_temp_linearity`, `generic_temp_linearity_paper` (future; differ in disjunct
       order, both `or A (or B C)`).
-- [ ] `generic_temp_linearity_past`, `generic_temp_linearity_past_paper` (past mirrors).
-- [ ] `generic_F_until_equiv`, `generic_P_since_equiv`.
-- [ ] Note in the section docstring that the two TL variants differ in disjunct **order**, not
+- [x] `generic_temp_linearity_past`, `generic_temp_linearity_past_paper` (past mirrors).
+- [x] `generic_F_until_equiv`, `generic_P_since_equiv`.
+- [x] Note in the section docstring that the two TL variants differ in disjunct **order**, not
       nesting — unlike the CN pair in Phase 4 — so a reader does not conflate the two axes.
 
 **Timing**: 1.5 hours

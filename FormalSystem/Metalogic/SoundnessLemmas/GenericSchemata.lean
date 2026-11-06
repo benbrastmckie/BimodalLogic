@@ -634,4 +634,139 @@ theorem generic_linear_since_paper (M : TaskModel F) (τ : WorldHistory F) (t : 
 
 end AccumPast
 
+/-!
+## `until_F`/`since_P`, temporal linearity, and the two `F`/`P` equivalences
+
+**The two TL variants differ in disjunct *order*, not nesting.** Both
+`generic_temp_linearity` and `generic_temp_linearity_paper` are right-associated,
+`or A (or B C)`; what differs is which of the three disjuncts is `A`. That is a different axis
+from the CN/BX7 pair of the previous section, which differs in genuine association. Conflating the
+two is the slip this note exists to prevent, and both axes are supplied on both sides so that no
+language's statement is restated by this layer.
+
+A second ordering trap, internal to the tactic blocks: `someFuture φ` is `untl top φ`, so
+`UntlClause.untl_clause` matches a `someFuture` term too. Where a statement carries both operators
+the `someFuture_iff`/`somePast_iff` rewrite is therefore applied first, by hand, and never handed
+to the same `simp only` as the primitive clause.
+-/
+
+section LinearityFuture
+variable [BotClause L] [UntlClause L]
+
+/-- BX10: an `until` witness is a future witness. -/
+theorem generic_until_F (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ : L) :
+    TruthEnv.T M τ t e (ImpClause.imp (UntlClause.untl φ ψ) (someFuture ψ)) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [someFuture_iff]
+  rw [UntlClause.untl_clause] at h
+  obtain ⟨s, hts, h_ψs, -⟩ := h
+  exact ⟨s, hts, h_ψs⟩
+
+/-- BX12: `F` is `U` at the trivial guard. -/
+theorem generic_F_until_equiv (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e (ImpClause.imp (someFuture φ) (UntlClause.untl (top : L) φ)) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [someFuture_iff] at h
+  rw [UntlClause.untl_clause]
+  obtain ⟨s, hts, h_φs⟩ := h
+  exact ⟨s, hts, h_φs, fun r _ _ => top_true M τ r e⟩
+
+/-- BX11: two future witnesses are ordered, by trichotomy. -/
+theorem generic_temp_linearity (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (and (someFuture φ) (someFuture ψ))
+        (or (someFuture (and φ ψ))
+          (or (someFuture (and φ (someFuture ψ)))
+            (someFuture (and (someFuture φ) ψ))))) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, or_iff, someFuture_iff]
+  rintro ⟨⟨s₁, hts₁, hφ⟩, s₂, hts₂, hψ⟩
+  rcases lt_trichotomy s₁ s₂ with h | h | h
+  · exact .inr (.inl ⟨s₁, hts₁, hφ, s₂, h, hψ⟩)
+  · exact .inl ⟨s₁, hts₁, hφ, h ▸ hψ⟩
+  · exact .inr (.inr ⟨s₂, hts₂, ⟨s₁, h, hφ⟩, hψ⟩)
+
+/-- The paper's TL, in the disjunct order `OpenAxiom.temp_linearity` declares. -/
+theorem generic_temp_linearity_paper (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (and (someFuture φ) (someFuture ψ))
+        (or (someFuture (and (someFuture φ) ψ))
+          (or (someFuture (and φ ψ))
+            (someFuture (and φ (someFuture ψ)))))) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, or_iff, someFuture_iff]
+  rintro ⟨⟨s₁, hts₁, hφ⟩, s₂, hts₂, hψ⟩
+  rcases lt_trichotomy s₁ s₂ with h | h | h
+  · exact .inr (.inr ⟨s₁, hts₁, hφ, s₂, h, hψ⟩)
+  · exact .inr (.inl ⟨s₁, hts₁, hφ, h ▸ hψ⟩)
+  · exact .inl ⟨s₂, hts₂, ⟨s₁, h, hφ⟩, hψ⟩
+
+end LinearityFuture
+
+section LinearityPast
+variable [BotClause L] [SnceClause L]
+
+/-- BX10', the past mirror of `generic_until_F`. -/
+theorem generic_since_P (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ : L) :
+    TruthEnv.T M τ t e (ImpClause.imp (SnceClause.snce φ ψ) (somePast ψ)) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [somePast_iff]
+  rw [SnceClause.snce_clause] at h
+  obtain ⟨s, hst, h_ψs, -⟩ := h
+  exact ⟨s, hst, h_ψs⟩
+
+/-- BX12', the past mirror of `generic_F_until_equiv`. -/
+theorem generic_P_since_equiv (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e (ImpClause.imp (somePast φ) (SnceClause.snce (top : L) φ)) := by
+  rw [ImpClause.imp_clause]
+  intro h
+  rw [somePast_iff] at h
+  rw [SnceClause.snce_clause]
+  obtain ⟨s, hst, h_φs⟩ := h
+  exact ⟨s, hst, h_φs, fun r _ _ => top_true M τ r e⟩
+
+/-- BX11', the past mirror of `generic_temp_linearity`. -/
+theorem generic_temp_linearity_past (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (and (somePast φ) (somePast ψ))
+        (or (somePast (and φ ψ))
+          (or (somePast (and φ (somePast ψ)))
+            (somePast (and (somePast φ) ψ))))) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, or_iff, somePast_iff]
+  rintro ⟨⟨s₁, hs₁t, hφ⟩, s₂, hs₂t, hψ⟩
+  rcases lt_trichotomy s₁ s₂ with h | h | h
+  · exact .inr (.inr ⟨s₂, hs₂t, ⟨s₁, h, hφ⟩, hψ⟩)
+  · exact .inl ⟨s₁, hs₁t, hφ, h ▸ hψ⟩
+  · exact .inr (.inl ⟨s₁, hs₁t, hφ, s₂, h, hψ⟩)
+
+/-- The time reflection of the paper's TL, in the disjunct order
+`OpenAxiom.temp_linearity_past` declares. -/
+theorem generic_temp_linearity_past_paper (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration) (e : TruthEnv.Env L F) (φ ψ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (and (somePast φ) (somePast ψ))
+        (or (somePast (and (somePast φ) ψ))
+          (or (somePast (and φ ψ))
+            (somePast (and φ (somePast ψ)))))) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, or_iff, somePast_iff]
+  rintro ⟨⟨s₁, hs₁t, hφ⟩, s₂, hs₂t, hψ⟩
+  rcases lt_trichotomy s₁ s₂ with h | h | h
+  · exact .inl ⟨s₂, hs₂t, ⟨s₁, h, hφ⟩, hψ⟩
+  · exact .inr (.inl ⟨s₁, hs₁t, hφ, h ▸ hψ⟩)
+  · exact .inr (.inr ⟨s₁, hs₁t, hφ, s₂, h, hψ⟩)
+
+end LinearityPast
+
 end FormalSystem.Metalogic.SoundnessLemmas
