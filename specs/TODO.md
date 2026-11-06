@@ -105,7 +105,7 @@ next_project_number: 890
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-837 [RESEARCHED] — The recorded Challenge statements...
+837 [PLANNING] — The recorded Challenge statements...
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
   └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
@@ -123,11 +123,11 @@ next_project_number: 890
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-860 [RESEARCHED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
+860 [PLANNING] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 867 [PARTIAL] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
-881 [RESEARCHED] — Factor the 53 TM-plus mirror schema validity proofs into a...
-889 [NOT STARTED] — Clear the live C16 (env\_linter) gate failure so...
+881 [PLANNING] — Factor the 53 TM-plus mirror schema validity proofs into a...
+889 [RESEARCHED] — Clear the live C16 (env\_linter) gate failure so...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -160,11 +160,12 @@ next_project_number: 890
 
 ### 889. Ladderchain c16 unusedarguments clear
 - **Effort**: small
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Parent**: Task 871
+- **Research**: [889_ladderchain_c16_unusedarguments_clear/reports/01_ladderchain-c16-unusedarguments-clear.md]
 
 **Description**: Clear the live C16 (env_linter) gate failure so `scripts/check-module-invariants.sh` exits 0 again.
 
@@ -400,7 +401,7 @@ PROVENANCE AND CITATION. Raised by /orchestrate's conclusion stage and approved 
 
 ### 881. Generic schema validity layer over truthenv
 - **Effort**: large
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
@@ -840,7 +841,7 @@ LEDGER AND GATES. Every landed result needs a docs/theorem-index.md row stating 
 
 ### 860. Colourclock history bridge lemma
 - **Effort**: low
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
@@ -2303,7 +2304,7 @@ Origin: conclusion-stage channel (c) of an orchestration run, citations iss_1793
 
 ### 837. Challenge statement repair paramsok quantification
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None

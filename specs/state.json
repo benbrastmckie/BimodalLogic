@@ -2886,7 +2886,7 @@
     {
       "project_number": 837,
       "project_name": "challenge_statement_repair_paramsok_quantification",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "description": "The recorded Challenge statements cellAt_const_of_kappa_eq and ladderRealized are REFUTED as written, and the repair is barred by the Statement Fidelity rule, so it needs its own sanctioned revision rather than an in-flight edit.\n\nEstablished by task 761 (the 14th wired probe): both statements universally quantify (Tc Tn P B : Nat) with no hypothesis relating the parameters to the object, the formula, or each other. At Tc = Tn = P = B = 0 the quotient CK 0 0 0 0 = Fin 1 x Fin 1 x Fin 1 x Fin 1 x Fin 1 is a subsingleton, so both assert the cell is constant in (c, n) -- which cell_succ_ne refutes for every c and n at fixed next-deadline. This holds for EVERY kappa and every candidate Dmax, with no property of Dmax used. Compiled unconditional on the four-state tag object, non-vacuity witnessed on both sides, exit 0, axiom profile [propext, Classical.choice, Quot.sound] on all six headline theorems.\n\nThe presentation is not what is wrong; the free-parameter quantification is. The two candidate repairs are (a) add a ParamsOk Tc Tn P B hypothesis carrying (K1)-(K4), or (b) existentially quantify the parameters. Either is a change to a RECORDED Challenge statement, which .claude/rules/plan-compliance.md Statement Fidelity forbids an implement dispatch from making -- which is why task 761 Phases 9 and 13 closed BLOCKED rather than proceeding, correctly. paramsOk_params already discharges ParamsOk at the periodicity fixpoint own outputs, so repair (a) has a landed witness available.\n\nA second, independent inconsistency to settle in the same pass: Phase 8 task list required promoting realizes_of_certAdm_cohBi while its own Scope Hypothesis said certStab and certAdm are deliberately NOT promoted. That theorem is stated in terms of certAdm and its proof destructures certAdm_iff, so the two directives cannot both hold.\n\nDeliverable: a sanctioned decision on which repair to adopt, with the revised statement recorded so a later implement dispatch can land it without violating Statement Fidelity.\n\nEvidence: task 761 issues.jsonl entries iss_1792365111362_wjBgRA (statement-defect, blocking), iss_1792365551644_Swi1MU (environment, blocking), iss_1792364282470_KxINSA (plan-inconsistency, costly).",
       "effort": "medium",
@@ -2894,8 +2894,9 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-11-02T22:19:51Z",
-      "last_updated": "2026-11-02T22:19:51Z",
-      "artifacts": []
+      "last_updated": "2026-11-06T07:15:22Z",
+      "artifacts": [],
+      "session_id": "sess_1793949238_9d766e_837"
     },
     {
       "project_number": 838,
@@ -4152,7 +4153,7 @@
     {
       "project_number": 860,
       "project_name": "colourclock_history_bridge_lemma",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "description": "PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise.\n\nAdd the bridge lemma in FormalSystem/Semantics/Frames/TranslationProduct.lean that makes the \"every colour function is a history\" step compiled rather than stated. Context: the colourClock wrapper carries an internal Nonempty instance that blocks ofReflectiveRegular_taskRel from unifying, so the open-future non-definability probe had to leave the hmarkers hypothesis as a one-line audited paper step. Deliverable: a lemma stating that every function from the duration carrier into the colour component of colourClock is a history of the colourClock frame, discharging Limit via the clock component and Saturation via finiteness of the colour set, stated so that the probe can discharge hmarkers by application rather than by assumption. Then update that probe to use it and confirm it still compiles clean (exit 0, no sorry/error/warning). Scope: TranslationProduct.lean plus the probes/ file only; the verdict itself (open-future not L-plus-definable at Base and Dense) is settled on the written report and is not reopened by this task.",
       "effort": "low",
@@ -4163,7 +4164,7 @@
         "FormalSystem/Semantics/Frames/TranslationProduct.lean"
       ],
       "created": "2026-11-04T22:14:53Z",
-      "last_updated": "2026-11-05T18:21:07Z",
+      "last_updated": "2026-11-06T07:14:46Z",
       "artifacts": [],
       "audit_verdict": {
         "proposal": {
@@ -4265,7 +4266,8 @@
           "semantic": true
         }
       },
-      "priority": "low"
+      "priority": "low",
+      "session_id": "sess_1793949238_9d766e_860"
     },
     {
       "title": "Record the one-sided transport refutation in the RaySummary refutation table",
@@ -7416,7 +7418,7 @@
     {
       "project_number": 881,
       "project_name": "generic_schema_validity_layer_over_truthenv",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "description": "Factor the 53 TM-plus mirror schema validity proofs into a single generic layer over [TruthEnv L] [StabClauses L] in FormalSystem/Semantics/TruthClauses.lean, so L-plus, L-star and L-open share one statement instead of three parallel transcriptions.\n\nMotivation (surfaced by the L-open proof system work): the 53 TM-plus mirror schemata had to be discharged directly against OpenTruthAt because atomization rests on stab_state_only and an open-modal-prefixed formula is not state-local, so neither Atomization.lean nor uniform substitution (atom_stab) applies. FormalSystem/Metalogic/Conservativity/Star/StarAxiomValidity.lean (1,479 lines, 86 starValid_* theorems) already paid the identical cost against StarTruthAt for the same reason, and Conservativity/Open/OpenAxiomValidity.lean paid it a third time against OpenTruthAt. Stating the schemata once over the TruthEnv/StabClauses interface would serve all three languages together and remove roughly 1,500 lines of parallel transcription.\n\nScope: state each TM-plus schema once against the generic truth interface; re-derive the per-language validity rows from the generic statement; retire the duplicated transcriptions where the generic form subsumes them.\n\nTwo obstructions found during the L-open work, worth confirming survive the generalization:\n- The L-open analogue openTruthAt_timeShift had to be landed by hand (plusTruthAt_timeShift and starTruthAt_timeShift already existed), together with an openTruthAt_congr_ext it needs.\n- The OpenAxiom linearity statements do not use a uniform disjunct nesting: linear_until and temp_linearity are right-associated (the paper CN/TL form) while linear_since and temp_linearity_past are left-associated (the BX7-prime/BX11-prime form). StarAxiomValidity.lean carries both variants.",
       "effort": "large",
@@ -7424,14 +7426,15 @@
       "topic": "metalogic",
       "dependencies": [],
       "created": "2026-11-05T18:41:22Z",
-      "last_updated": "2026-11-05T18:41:22Z",
+      "last_updated": "2026-11-06T07:15:04Z",
       "artifacts": [],
       "file_scope": [
         "FormalSystem/Semantics/TruthClauses.lean",
         "FormalSystem/Metalogic/Conservativity/Star/StarAxiomValidity.lean",
         "FormalSystem/Metalogic/Conservativity/Open/OpenAxiomValidity.lean"
       ],
-      "audit_override": "audit returned duplicate-of-open against open task 430 (semantic_lift_and_track_a_assembly_valid_iff_allclosed) on semantic_score 0.447 alone: mechanical_class none, shared_paths null, zero file_scope overlap, topic decidability vs metalogic. Task 430 owns the Track A tableau spine and the semantic lift in FormalSystem/Metalogic/Decidability/{Verified/Decidable,Correctness}.lean; this proposal factors the 53 TM-plus schema validity transcriptions over the TruthEnv/StabClauses interface in FormalSystem/Semantics/TruthClauses.lean. Inspected and found unrelated; the verdict is a vocabulary-overlap false positive of the same class recorded this session at specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/issues.jsonl entry iss_1793896439283_Vm6ITF. Raw audit evidence retained alongside this task."
+      "audit_override": "audit returned duplicate-of-open against open task 430 (semantic_lift_and_track_a_assembly_valid_iff_allclosed) on semantic_score 0.447 alone: mechanical_class none, shared_paths null, zero file_scope overlap, topic decidability vs metalogic. Task 430 owns the Track A tableau spine and the semantic lift in FormalSystem/Metalogic/Decidability/{Verified/Decidable,Correctness}.lean; this proposal factors the 53 TM-plus schema validity transcriptions over the TruthEnv/StabClauses interface in FormalSystem/Semantics/TruthClauses.lean. Inspected and found unrelated; the verdict is a vocabulary-overlap false positive of the same class recorded this session at specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/issues.jsonl entry iss_1793896439283_Vm6ITF. Raw audit evidence retained alongside this task.",
+      "session_id": "sess_1793949238_9d766e_881"
     },
     {
       "project_number": 882,
@@ -11103,7 +11106,7 @@
     {
       "project_number": 889,
       "project_name": "ladderchain_c16_unusedarguments_clear",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Clear the live C16 (env_linter) gate failure so `scripts/check-module-invariants.sh` exits 0 again.\n\nMEASURED. `check-module-invariants.sh` exits 1 on C16 alone, for a single `unusedArguments`\nfinding at `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136`\n(`mem_cellAt_of_shift_of_hasForwardSlack`, argument 23 `hslk`), which is absent from\n`scripts/nolints.json`. Two independent dispatches hit it, each confirming it predates its own\nbase commit, that `LadderChain.lean` was clean in the working tree, and that the finding\nreferences none of their changed declarations. Both declined to run `lake exe runLinter --update`\nbecause that grandfathers the finding rather than resolving it, and reported it instead. Until the\nowning module resolves it, this gate exits 1 for every task that runs it, so every Lean task must\neither narrow its verification tier or carry a Reasoned Exclusions row for a failure it did not\ncause.\n\nEVIDENCE: issue-log entry {task 871, entry_id iss_1793929097512_cRWu2i}. Classified by\n/orchestrate's conclusion stage to channel (c) (follow-up task); the cited entry records\n`suggested_channel: null`, so no hint was overridden.\n\nDECIDE AND RECORD, stating the rejected option on its own merits: whether `hslk` should be\nremoved from `mem_cellAt_of_shift_of_hasForwardSlack`'s signature, consumed by its proof, or\nexempted by a hand-inserted row in `scripts/nolints.json`'s own existing format. Do NOT run\n`lake exe runLinter --update`: it rewrites the whole ledger in a different serialization instead of\nadding one row.\n\nRELATION, read before writing: task 840 records the plan-authoring GUIDANCE for this class of\ncollision (that the `--update` remedy is a wholesale ledger rewrite, and what the narrow route is).\nThis record is the concrete repair of one live finding in a Lean source file, not a second copy of\nthat guidance -- read 840 first so the two do not restate each other, and do not write into its\nfile.",
       "effort": "small",
@@ -11115,8 +11118,14 @@
         "scripts/nolints.json"
       ],
       "created": "2026-11-06T03:15:15Z",
-      "last_updated": "2026-11-06T03:15:15Z",
-      "artifacts": [],
+      "last_updated": "2026-11-06T07:28:29Z",
+      "artifacts": [
+        {
+          "path": "specs/889_ladderchain_c16_unusedarguments_clear/reports/01_ladderchain-c16-unusedarguments-clear.md",
+          "type": "report",
+          "summary": "Confirms the live C16 unusedArguments finding on mem_cellAt_of_shift_of_hasForwardSlack, identifies the frontend-vs-environment linter root cause, and decides on a hand-inserted scripts/nolints.json row plus a repaired reason comment, rejecting binder removal (pinned Challenge signature), proof-level consumption, and the in-source @[nolint] route on their own merits."
+        }
+      ],
       "audit_verdict": {
         "proposal": {
           "id": "ladderchain_c16_unusedarguments_clear",
@@ -11411,7 +11420,9 @@
             "semantic_score": 0.3409090909090909
           }
         ]
-      }
+      },
+      "session_id": "sess_1793949238_9d766e",
+      "next_artifact_number": 2
     }
   ],
   "artifacts": [
