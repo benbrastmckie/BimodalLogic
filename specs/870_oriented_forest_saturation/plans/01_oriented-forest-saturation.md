@@ -425,21 +425,21 @@ between the two sources — the one new construction phase 5 needs.
 
 ---
 
-### Phase 5: Merge-point uniqueness [NOT STARTED]
+### Phase 5: Merge-point uniqueness [COMPLETED]
 
 **Goal**: `merge_unique` — the residual step, and the only place undirected acyclicity is
 genuinely consumed.
 
 **Tasks**:
 
-- [ ] Land `merge_unique` at the pinned signature: two divergent merge points `c`, `c'` of the
+- [x] Land `merge_unique` at the pinned signature: two divergent merge points `c`, `c'` of the
       same pair with a common target give two paths `a → b` by `approach_concat_isPath`, which
       `IsAcyclic.subsingleton_path` identifies.
-- [ ] Derive the length arithmetic: equal walks have equal length, so `k + l = k' + l'`; combined
+- [x] Derive the length arithmetic: equal walks have equal length, so `k + l = k' + l'`; combined
       with the common target's `iter_length_unique` facts this yields `j = j'`, `k = k'`,
       `l = l'`.
-- [ ] Derive `c = c'` from the identified walk via `Walk.getVert_append` at the recorded index.
-- [ ] Record in the docstring that this is the one declaration in the module whose proof consumes
+- [x] Derive `c = c'` from the identified walk via `Walk.getVert_append` at the recorded index. *(deviation: altered — `c = c'` is closed by transferring `c'`'s support membership across the identified walk (`Walk.mem_support_append_iff`) and then applying `meet_approach_disjoint`, not by `getVert_append` index arithmetic. Reason: phase 7's independence step compares merges at two DIFFERENT targets (`x` and `y`), so it needs a target-free merge-point uniqueness; the plan's `getVert` route derives `k = k'` from the common-target length arithmetic and so cannot supply the target-free form. The pinned `merge_unique` signature is still landed, derived from the stronger target-free `mergePoint_unique`, and `approach_concat_getVert` records the index as the plan asks.)*
+- [x] Record in the docstring that this is the one declaration in the module whose proof consumes
       `acyclic` rather than `loopFree`/`oppFree`, and name the 4-node witness (`a → c`, `b → c`,
       `a → y`, `b → y`: directed-path uniqueness holds, two distinct divergent merge points, a
       4-cycle underlying) as the reason the hypothesis cannot be weakened.

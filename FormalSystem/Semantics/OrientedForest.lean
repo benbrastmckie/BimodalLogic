@@ -442,4 +442,77 @@ theorem approach_concat_getVert {E : W → W → Prop} (hF : IsOrientedForest E)
   rw [Walk.getVert_append, hplen]
   simp
 
+/-! ## Merge-point uniqueness — the residual step -/
+
+/--
+**A divergent merge point of a pair is unique**, with no reference to any common target.
+
+This is the one declaration in the module whose proof consumes `acyclic` rather than only
+`loopFree`/`oppFree`: `approach_concat_isPath` turns each divergent merge point into an
+undirected path from `a` to `b`, and `walk_unique` — i.e. `IsAcyclic.subsingleton_path` —
+identifies the two. The merge point `c'` is then a vertex of the *other* merge point's
+concatenated walk, which `meet_approach_disjoint` forces to be `c`.
+
+**Why the hypothesis cannot be weakened to directed-path uniqueness.** The four-node digraph
+`a → c`, `b → c`, `a → y`, `b → y` has a unique directed path between any two of its vertices,
+and `(a, b)` has *two* distinct divergent merge points, `c` and `y`. Its underlying undirected
+multigraph is a 4-cycle, which `acyclic` excludes and directed-path uniqueness does not.
+-/
+theorem mergePoint_unique {E : W → W → Prop} (hF : IsOrientedForest E)
+    {a b c c' u₁ u₂ u₁' u₂' : W} {k l k' l' : ℕ}
+    (hu₁ : iter E k a u₁) (hE₁ : E u₁ c) (hu₂ : iter E l b u₂) (hE₂ : E u₂ c) (hne : u₁ ≠ u₂)
+    (hu₁' : iter E k' a u₁') (hE₁' : E u₁' c') (hu₂' : iter E l' b u₂') (hE₂' : E u₂' c')
+    (hne' : u₁' ≠ u₂') : c = c' := by
+  have hac : iter E (k + 1) a c := (iter_succ E k a c).mpr ⟨u₁, hu₁, hE₁⟩
+  have hbc : iter E (l + 1) b c := (iter_succ E l b c).mpr ⟨u₂, hu₂, hE₂⟩
+  have hac' : iter E (k' + 1) a c' := (iter_succ E k' a c').mpr ⟨u₁', hu₁', hE₁'⟩
+  have hbc' : iter E (l' + 1) b c' := (iter_succ E l' b c').mpr ⟨u₂', hu₂', hE₂'⟩
+  have hP := approach_concat_isPath hF hu₁ hE₁ hu₂ hE₂ hne hac hbc
+  have hP' := approach_concat_isPath hF hu₁' hE₁' hu₂' hE₂' hne' hac' hbc'
+  have heq := walk_unique hF hP' hP
+  have hc'mem : c' ∈ ((pathOf hF hac).append (pathOf hF hbc).reverse).support := by
+    rw [← heq, Walk.mem_support_append_iff]
+    exact Or.inl (Walk.end_mem_support _)
+  rw [Walk.mem_support_append_iff] at hc'mem
+  obtain ⟨_, _, _, hpbtw⟩ := pathOf_spec hF hac
+  obtain ⟨_, _, _, hqbtw⟩ := pathOf_spec hF hbc
+  rcases hc'mem with hA | hB
+  · obtain ⟨i, hi, h1, h2⟩ := hpbtw c' hA
+    have hcomp : iter E ((l' + 1) + (k + 1 - i)) b c :=
+      (iter_add E (l' + 1) (k + 1 - i) b c).mpr ⟨c', hbc', h2⟩
+    have hlen : (l' + 1) + (k + 1 - i) = l + 1 := iter_length_unique hF hcomp hbc
+    exact (meet_approach_disjoint hF hu₁ hE₁ hu₂ hE₂ hne h1 h2 (by omega) hbc' h2 hlen).symm
+  · have hB' : c' ∈ (pathOf hF hbc).support := by simpa using hB
+    obtain ⟨i', hi', h3, h4⟩ := hqbtw c' hB'
+    have hcomp : iter E ((k' + 1) + (l + 1 - i')) a c :=
+      (iter_add E (k' + 1) (l + 1 - i') a c).mpr ⟨c', hac', h4⟩
+    have hlen : (k' + 1) + (l + 1 - i') = k + 1 := iter_length_unique hF hcomp hac
+    exact (meet_approach_disjoint hF hu₁ hE₁ hu₂ hE₂ hne hac' h4 hlen h3 h4 (by omega)).symm
+
+/--
+**The residual step of report 03 section 1.2.** A divergent merge point of a pair with a common
+target, together with its three length parameters, is unique.
+
+`mergePoint_unique` supplies `c = c'` without reference to `z`; the three length identities then
+fall out of `iter_length_unique` alone.
+-/
+theorem merge_unique {E : W → W → Prop} (hF : IsOrientedForest E)
+    {a b z c c' u₁ u₂ u₁' u₂' : W} {k l j k' l' j' : ℕ}
+    (hu₁ : iter E k a u₁) (hE₁ : E u₁ c) (hu₂ : iter E l b u₂) (hE₂ : E u₂ c) (hne : u₁ ≠ u₂)
+    (hcz : iter E j c z)
+    (hu₁' : iter E k' a u₁') (hE₁' : E u₁' c') (hu₂' : iter E l' b u₂') (hE₂' : E u₂' c')
+    (hne' : u₁' ≠ u₂') (hc'z : iter E j' c' z) :
+    c = c' ∧ k = k' ∧ l = l' ∧ j = j' := by
+  have hcc : c = c' := mergePoint_unique hF hu₁ hE₁ hu₂ hE₂ hne hu₁' hE₁' hu₂' hE₂' hne'
+  rw [hcc] at hE₁ hE₂ hcz
+  refine ⟨hcc, ?_, ?_, iter_length_unique hF hcz hc'z⟩
+  · have h1 : iter E (k + 1) a c' := (iter_succ E k a c').mpr ⟨u₁, hu₁, hE₁⟩
+    have h2 : iter E (k' + 1) a c' := (iter_succ E k' a c').mpr ⟨u₁', hu₁', hE₁'⟩
+    have hlen := iter_length_unique hF h1 h2
+    omega
+  · have h1 : iter E (l + 1) b c' := (iter_succ E l b c').mpr ⟨u₂, hu₂, hE₂⟩
+    have h2 : iter E (l' + 1) b c' := (iter_succ E l' b c').mpr ⟨u₂', hu₂', hE₂'⟩
+    have hlen := iter_length_unique hF h1 h2
+    omega
+
 end FormalSystem.Semantics
