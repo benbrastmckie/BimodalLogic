@@ -244,29 +244,29 @@ class and abbrevs, and nothing outside that set references names that do not yet
 
 ---
 
-### Phase 2: New module + the Boolean, S5-modal and `⊡` tier [NOT STARTED]
+### Phase 2: New module + the Boolean, S5-modal and `⊡` tier [COMPLETED]
 
 **Goal**: Create `GenericSchemata.lean` with its extension-contract docstring and the fifteen
 schemata that need only `BotClause`/`ImpClause`/`BoxClause`/`StabClause`/`AtomClause`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/SoundnessLemmas/GenericSchemata.lean` in namespace
+- [x] Create `FormalSystem/Metalogic/SoundnessLemmas/GenericSchemata.lean` in namespace
       `FormalSystem.Metalogic.SoundnessLemmas`, importing
       `FormalSystem.Semantics.TruthClauses`. All new names carry the `generic_` prefix,
       mirroring `ValidityLayer.lean`'s `Generic*` convention; no new namespace is introduced
       (C23 no-bare-namesake).
-- [ ] Write the module docstring in the house style of `TruthClauses.lean`: Main Results, the
+- [x] Write the module docstring in the house style of `TruthClauses.lean`: Main Results, the
       pointwise-not-validity design decision, the per-language one-line-wrapper shape for both
       point shapes (`fun F M τ x => …` and `fun F M τ x v => …`), and an explicit
       "What is NOT generic" boundary naming the pasting schemata and time shift.
-- [ ] Prove the fifteen: `generic_prop_k`, `generic_prop_s`, `generic_ex_falso`,
+- [x] Prove the fifteen: `generic_prop_k`, `generic_prop_s`, `generic_ex_falso`,
       `generic_peirce`, `generic_modal_t`, `generic_modal_4`, `generic_modal_b`,
       `generic_modal_5_collapse`, `generic_modal_k_dist`, `generic_stab_k`, `generic_stab_t`,
       `generic_stab_4`, `generic_stab_5`, `generic_box_stab`, `generic_atom_stab`.
-- [ ] Each lemma names only the operator classes its proof consumes — never a bundle — per
+- [x] Each lemma names only the operator classes its proof consumes — never a bundle — per
       `TruthClauses.lean`'s stated grain invariant.
-- [ ] Add the module to `FormalSystem/Metalogic/SoundnessLemmas.lean`'s import list.
-- [ ] Carry **no** attributes on any generic lemma.
+- [x] Add the module to `FormalSystem/Metalogic/SoundnessLemmas.lean`'s import list.
+- [x] Carry **no** attributes on any generic lemma.
 
 **Timing**: 2 hours
 

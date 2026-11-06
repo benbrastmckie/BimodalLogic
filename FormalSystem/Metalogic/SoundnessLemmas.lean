@@ -8,6 +8,7 @@ import FormalSystem.Metalogic.SoundnessLemmas.CoValidity
 import FormalSystem.Metalogic.SoundnessLemmas.DiscreteOrder
 import FormalSystem.Metalogic.SoundnessLemmas.EventOperators
 import FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants
+import FormalSystem.Metalogic.SoundnessLemmas.GenericSchemata
 import FormalSystem.Metalogic.SoundnessLemmas.Separability
 
 /-!
@@ -26,6 +27,9 @@ theorem; keeping them separate stops that file from growing without bound.
 - `EventOperators` — `after_negation_valid`, the semantic validity of `lem:after-negation` for
   `def:event-operators`' `After` (not a soundness case: `Formula.after` is derived, not primitive)
 - `FrameClassVariants` — per-axiom validity and reflection-validity across the frame-class variants
+- `GenericSchemata` — the TM⁺ mirror schemata stated once, pointwise, over
+  `Semantics/TruthClauses.lean`'s clause interface, so that L⁺, L⋆ and L^▷ share one statement
+  instead of three parallel transcriptions
 - `Separability` — the order-theoretic input to Reynolds' separability axiom
 
 ## Position in the Layering
