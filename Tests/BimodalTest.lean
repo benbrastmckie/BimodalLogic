@@ -17,6 +17,7 @@ import BimodalTest.Semantics.ValidityLayerTest
 import BimodalTest.Semantics.TruthTest
 import BimodalTest.Semantics.TaskFrameTest
 import BimodalTest.Semantics.SaturationFiniteAxiomTest
+import BimodalTest.Semantics.OrientedForestSaturationTest
 import BimodalTest.Semantics.OpenLanguageAxiomTest
 import BimodalTest.Semantics.HybridLanguageAxiomTest
 import BimodalTest.Semantics.QuantLanguageAxiomTest

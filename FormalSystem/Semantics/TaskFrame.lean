@@ -235,6 +235,10 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 - `TaskFrame.saturation_of_fib_finite`: *Saturation* from **finite fibres** alone — the
   finite-fibres variant of `cor:saturation-finite`, which reaches infinite carriers that
   `saturation_of_finite` does not
+- `Semantics.saturation_of_orientedForest`, in `Semantics/OrientedForest.lean`: *Saturation* from
+  the hypothesis that the undirected multigraph of a one-step relation is a **forest** — no
+  finiteness anywhere, over `D = ℤ` at `ofStepRel`. It lives in its own module rather than here
+  because it is stated at `IntNormalForm.lean`'s `iter`/`ofStepRel`, which import this file
 - Example task frames for testing and demonstrations (polymorphic over time type)
 
 ## Implementation Notes

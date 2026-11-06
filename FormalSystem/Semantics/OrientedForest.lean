@@ -831,6 +831,8 @@ it.
 
 The three reductions above leave exactly two cases, and `isOrientedForest_swap` turns the second
 into the first.
+
+Paper: `def:frame#Saturation`
 -/
 theorem saturation_of_orientedForest' {E : W → W → Prop} {R : W → ℤ → W → Prop}
     (hF : IsOrientedForest E)
@@ -872,6 +874,8 @@ predicate at `ofStepRel E` over `ℤ`.
 This does **not** change `FrameOver.ofStep`'s existing `saturation` field, which still routes
 through `TaskFrame.saturation_of_finite`; rewiring it is a separate decision with its own blast
 radius.
+
+Paper: `def:frame#Saturation`
 -/
 theorem saturation_of_orientedForest {E : W → W → Prop} (hF : IsOrientedForest E) :
     TaskFrame.Saturation (ofStepRel E) :=

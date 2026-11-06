@@ -10,6 +10,7 @@ Tests for task frame semantics.
 | TruthTest.lean | Truth evaluation tests |
 | SemanticPropertyTest.lean | Property-based semantics tests |
 | SaturationFiniteAxiomTest.lean | Axiom-profile evidence for the finite-carrier *Saturation* discharge |
+| OrientedForestSaturationTest.lean | Axiom-profile evidence for the oriented-forest *Saturation* discharge, plus the compiled minimality fixture pinning that the duration minimum must range over ALL representations of all members |
 | OpenLanguageAxiomTest.lean | Axiom-profile guards for the open-future and open-past language: the Ockhamist separating pair, its time-reversal mirror, and `propext`-only conservativity over L⁺ |
 | HybridLanguageAxiomTest.lean | Axiom-profile guards for the hybrid state language: choice-free invariance of the register-free fragment, the two definability theorems for recurrence-freeness, and `propext`-only conservativity over L⁺ |
 | QuantLanguageAxiomTest.lean | Axiom-profile guards for the propositional-quantifier language: choice-free invariance under the lifted family, the standard-semantics definability and non-invariance results, and `propext`-only conservativity over L |

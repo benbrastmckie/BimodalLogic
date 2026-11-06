@@ -578,35 +578,35 @@ confined to `OrientedForest.lean` with no externally visible signature changed, 
 
 ---
 
-### Phase 8: Evidence module, documentation rows, and the full gate [NOT STARTED]
+### Phase 8: Evidence module, documentation rows, and the full gate [COMPLETED]
 
 **Goal**: the result is discoverable, its axiom profile and its minimality trap are pinned by a
 build-breaking test module, and the repository's complete gate set is green.
 
 **Tasks**:
 
-- [ ] Create `Tests/BimodalTest/Semantics/OrientedForestSaturationTest.lean` with the repository
+- [x] Create `Tests/BimodalTest/Semantics/OrientedForestSaturationTest.lean` with the repository
       copyright header, modelled on `SaturationFiniteAxiomTest.lean`: `#guard_msgs`-gated
       `#print axioms` blocks for `saturation_of_orientedForest`,
       `saturation_of_orientedForest'`, `merge_unique`, `mid_unique` and `exists_merge`, so a
       profile change breaks the build.
-- [ ] Add to that module the research report's measured minimality fixture (the forest
+- [x] Add to that module the research report's measured minimality fixture (the forest
       `a → u → c`, `a' → c`, with `c` having two children and `a'` a second child `d`, where
       `Fib(a,3) = Fib(c,1) ⊊ Fib(a',2)`) as a compiled witness that per-member-representation
       minimisation is wrong, with a docstring saying so.
-- [ ] Register the test module: `import BimodalTest.Semantics.OrientedForestSaturationTest` in
+- [x] Register the test module: `import BimodalTest.Semantics.OrientedForestSaturationTest` in
       `Tests/BimodalTest.lean`, and a row in `Tests/BimodalTest/Semantics/README.md`.
-- [ ] Add a one-line pointer to `TaskFrame.lean`'s `saturation_of_*` inventory block (the
+- [x] Add a one-line pointer to `TaskFrame.lean`'s `saturation_of_*` inventory block (the
       docstring list that currently ends at `saturation_of_fib_finite`) naming
       `Semantics.saturation_of_orientedForest` and its module, so the family stays discoverable
       from one place. Docstring prose only — no declaration in `TaskFrame.lean` is changed.
-- [ ] Add a row for `FormalSystem/Semantics/OrientedForest.lean` to
+- [x] Add a row for `FormalSystem/Semantics/OrientedForest.lean` to
       `FormalSystem/Semantics/README.md` and refresh that file's "Last verified" date.
-- [ ] Add rows to `docs/theorem-index.md` for both headline theorems, matching the existing
+- [x] Add rows to `docs/theorem-index.md` for both headline theorems, matching the existing
       column shape (`Paper label | Statement | Lean name | File | Frame class | Axioms`) with
       fully qualified Lean names, no line numbers, and the axiom column written from the measured
       profile rather than typed from memory.
-- [ ] Run the repository's complete gate set and record its result.
+- [x] Run the repository's complete gate set and record its result.
 
 **Timing**: 1.5 hours
 
@@ -615,7 +615,14 @@ build-breaking test module, and the repository's complete gate set is green.
 **Verification Tier**: full
 
 **Scope Hypothesis**: This phase asserts six touched files (the new test module plus five
-additive edits) and five `#print axioms` blocks. Both are hypotheses: confirm the file count by
+additive edits) and five `#print axioms` blocks. *(Confirmed by `git status --short` before
+committing: the six asserted files were all touched, plus four more this hypothesis did not
+anticipate — `FormalSystem/Semantics/OrientedForest.lean` (two added `Paper:` docstring lines that
+C15 requires before a `docs/theorem-index.md` row is accepted), the regenerated inventory blocks
+in `FormalSystem/README.md` and `README.md`, and the regenerated
+`scripts/lean-citation-manifest.json`; `typst/generated/status.typ` is regenerated at every phase.
+Seven `#print axioms` blocks landed, not five, per this hypothesis's own instruction to pin
+whatever declarations actually landed.)* Both are hypotheses: confirm the file count by
 `git status --short` before committing, and confirm the block count against the declarations that
 actually landed in phases 1-7 — if `merge_unique` was landed under a different internal
 decomposition, pin whatever the committed declarations are rather than forcing the asserted five.
@@ -649,28 +656,28 @@ of the landed declarations.
 
 ## Testing & Validation
 
-- [ ] All eleven declarations named under `- **Goals**:` compile sorry-free at exactly the
+- [x] All eleven declarations named under `- **Goals**:` compile sorry-free at exactly the
       signatures pinned in `## Lean Challenge Statements`.
-- [ ] `grep -rn 'sorry' FormalSystem/Semantics/OrientedForest.lean Tests/BimodalTest/Semantics/OrientedForestSaturationTest.lean`
+- [x] `grep -rn 'sorry' FormalSystem/Semantics/OrientedForest.lean Tests/BimodalTest/Semantics/OrientedForestSaturationTest.lean`
       returns nothing.
-- [ ] No deprecated Mathlib name (`isAcyclic_iff_path_unique`, `IsAcyclic.path_unique`,
+- [x] No deprecated Mathlib name (`isAcyclic_iff_path_unique`, `IsAcyclic.path_unique`,
       `Walk.isPath_iff_eq_nil`, `Walk.nil_iff_length_eq`) appears anywhere in the new files, and
       the build reports zero deprecation warnings.
-- [ ] `saturation_of_orientedForest` concludes the literal `TaskFrame.Saturation` predicate, with
+- [x] `saturation_of_orientedForest` concludes the literal `TaskFrame.Saturation` predicate, with
       `IsOrientedForest E` as its only hypothesis — no `[Finite W]`, no fibre-shape hypothesis,
       no directed-path-uniqueness restatement.
-- [ ] The duration minimum ranges over all `(a, n)` with `Fib R a n ∈ S`, and the test module's
+- [x] The duration minimum ranges over all `(a, n)` with `Fib R a n ∈ S`, and the test module's
       minimality fixture compiles as a witness that the per-member-representation reading is wrong.
-- [ ] `merge_unique`'s proof consumes `acyclic` (via `IsAcyclic.subsingleton_path`), and no
+- [x] `merge_unique`'s proof consumes `acyclic` (via `IsAcyclic.subsingleton_path`), and no
       declaration before it does.
-- [ ] Measured axiom profiles of both headline theorems are no larger than
+- [x] Measured axiom profiles of both headline theorems are no larger than
       `[propext, Classical.choice, Quot.sound]`, matching `saturation_of_finite`'s existing
       profile, so the lemma adds no new axiom cost at either consumer.
-- [ ] `FrameOver.ofStep`'s `saturation` field is unchanged and still routes through
+- [x] `FrameOver.ofStep`'s `saturation` field is unchanged and still routes through
       `saturation_of_finite`.
-- [ ] Nothing under `FormalSystem/Metalogic/**`, no ladder/`RaySummary` file, and
+- [x] Nothing under `FormalSystem/Metalogic/**`, no ladder/`RaySummary` file, and
       `specs/ROADMAP.md` are modified.
-- [ ] The complete gate set is green, with any pre-existing failure attributed by path and
+- [x] The complete gate set is green, with any pre-existing failure attributed by path and
       reported rather than baselined.
 
 ## Artifacts & Outputs
