@@ -336,18 +336,18 @@ consumer imports the module.
 
 ---
 
-### Phase 4: Enrichment, self-accumulation, absorption and `U`/`S` linearity [NOT STARTED]
+### Phase 4: Enrichment, self-accumulation, absorption and `U`/`S` linearity [COMPLETED]
 
 **Goal**: The heaviest BX group, including **both** nesting variants of CN/BX7.
 
 **Tasks**:
-- [ ] `generic_enrichment_until`, `generic_enrichment_since`, `generic_self_accum_until`,
+- [x] `generic_enrichment_until`, `generic_enrichment_since`, `generic_self_accum_until`,
       `generic_self_accum_since`, `generic_absorb_until`, `generic_absorb_since`.
-- [ ] `generic_linear_until` (left-associated, `or (or A B) C`) and
+- [x] `generic_linear_until` (left-associated, `or (or A B) C`) and
       `generic_linear_until_paper` (right-associated, `or A (or B C)`).
-- [ ] `generic_linear_since` (left-associated) and `generic_linear_since_paper`
+- [x] `generic_linear_since` (left-associated) and `generic_linear_since_paper`
       (right-associated).
-- [ ] Record in the section docstring that all four exist on purpose, that `OpenAxiom` takes the
+- [x] Record in the section docstring that all four exist on purpose, that `OpenAxiom` takes the
       paper nesting for `linear_until` and the other for `linear_since` while `StarAxiom`
       carries both, and that **no language's statement is re-associated by this refactor**.
 

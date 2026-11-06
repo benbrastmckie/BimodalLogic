@@ -445,4 +445,193 @@ theorem generic_connect_past (M : TaskModel F) (τ : WorldHistory F) (t : F.Dura
 
 end Connection
 
+/-!
+## Enrichment, self-accumulation, absorption, and `U`/`S` linearity
+
+The heaviest of the BX groups. Each proof is the clause family followed by `rintro` and, where two
+witnesses must be compared, `rcases lt_trichotomy`.
+
+**On the shape of the tactic blocks.** `and`, `or`, `top` and `neg` are `abbrev`s here, hence
+*reducible*, so `ImpClause.imp_clause` matches straight through them and will consume an `and` or
+`or` term before `and_iff`/`or_iff` can fire. (`StarTruth`'s counterparts do not have this problem:
+`StarFormula.and` is a plain `def`.) Every block below therefore peels the outermost implication
+with a single `rw [ImpClause.imp_clause]` and hands the rest to a `simp only` that does **not**
+mention `imp_clause`.
+
+**All four linearity variants exist on purpose.** `OpenAxiom.linear_until` takes the paper's
+right-associated nesting `or A (or B C)` while `OpenAxiom.linear_since` takes the left-associated
+`or (or A B) C`; `StarAxiom` carries both. The four lemmas below supply both nestings on both
+sides, so that **no language's statement is re-associated by this layer**. The distinction here is
+genuine *nesting*; the temporal-linearity pair in the next section differs in disjunct *order*
+instead, and the two axes should not be conflated.
+-/
+
+section Enrichment
+variable [BotClause L] [UntlClause L] [SnceClause L]
+
+/-- BX13: an `until` may be enriched with a `since` back to the present. -/
+theorem generic_enrichment_until (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ p : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (and p (UntlClause.untl φ ψ))
+        (UntlClause.untl φ (and ψ (SnceClause.snce φ p)))) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, UntlClause.untl_clause, SnceClause.snce_clause]
+  rintro ⟨h_pt, s, hts, h_ψs, h_guard⟩
+  exact ⟨s, hts, ⟨h_ψs, t, hts, h_pt, h_guard⟩, h_guard⟩
+
+/-- BX13', the past mirror of `generic_enrichment_until`. -/
+theorem generic_enrichment_since (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ p : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (and p (SnceClause.snce φ ψ))
+        (SnceClause.snce φ (and ψ (UntlClause.untl φ p)))) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, UntlClause.untl_clause, SnceClause.snce_clause]
+  rintro ⟨h_pt, s, hst, h_ψs, h_guard⟩
+  exact ⟨s, hst, ⟨h_ψs, t, hst, h_pt, h_guard⟩, h_guard⟩
+
+end Enrichment
+
+section AccumFuture
+variable [BotClause L] [UntlClause L]
+
+/-- BX5: the guard of an `until` may absorb the `until` itself. -/
+theorem generic_self_accum_until (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (UntlClause.untl φ ψ)
+        (UntlClause.untl (and φ (UntlClause.untl φ ψ)) ψ)) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, UntlClause.untl_clause]
+  rintro ⟨s, hts, h_ψs, h_guard⟩
+  refine ⟨s, hts, h_ψs, fun r htr hrs => ⟨h_guard r htr hrs, ?_⟩⟩
+  exact ⟨s, hrs, h_ψs, fun q hqr hqs => h_guard q (lt_trans htr hqr) hqs⟩
+
+/-- BX6, the converse direction: the absorbed `until` may be discharged again. -/
+theorem generic_absorb_until (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (UntlClause.untl φ (and φ (UntlClause.untl φ ψ)))
+        (UntlClause.untl φ ψ)) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, UntlClause.untl_clause]
+  rintro ⟨s₁, hts₁, ⟨h_φs₁, s₂, hs₁s₂, h_ψs₂, h_guard₂⟩, h_guard₁⟩
+  refine ⟨s₂, lt_trans hts₁ hs₁s₂, h_ψs₂, fun q htq hqs₂ => ?_⟩
+  rcases lt_trichotomy q s₁ with h_lt | h_eq | h_gt
+  · exact h_guard₁ q htq h_lt
+  · exact h_eq ▸ h_φs₁
+  · exact h_guard₂ q h_gt hqs₂
+
+/-- BX7: linearity of `until`, **left-associated** (`StarAxiom.linear_until`'s own nesting as
+`starValid_linear_until` states it), by trichotomy on the two witnesses. -/
+theorem generic_linear_until (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ χ θ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (and (UntlClause.untl φ ψ) (UntlClause.untl χ θ))
+        (or (or (UntlClause.untl (and φ χ) (and ψ θ))
+              (UntlClause.untl (and φ χ) (and ψ χ)))
+          (UntlClause.untl (and φ χ) (and φ θ)))) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, or_iff, UntlClause.untl_clause]
+  rintro ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩
+  rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+  · exact .inl (.inr ⟨s₁, hts₁, ⟨h_ψs₁, h_guard₂ s₁ hts₁ h_lt⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr hrs, h_guard₂ r htr (lt_trans hrs h_lt)⟩⟩)
+  · exact .inl (.inl ⟨s₁, hts₁, ⟨h_ψs₁, h_eq ▸ h_θs₂⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr hrs, h_guard₂ r htr (h_eq ▸ hrs)⟩⟩)
+  · exact .inr ⟨s₂, hts₂, ⟨h_guard₁ s₂ hts₂ h_gt, h_θs₂⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr (lt_trans hrs h_gt), h_guard₂ r htr hrs⟩⟩
+
+/-- The paper's CN, **right-associated** (`OpenAxiom.linear_until`'s nesting). -/
+theorem generic_linear_until_paper (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ χ θ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (and (UntlClause.untl φ ψ) (UntlClause.untl χ θ))
+        (or (UntlClause.untl (and φ χ) (and ψ θ))
+          (or (UntlClause.untl (and φ χ) (and ψ χ))
+            (UntlClause.untl (and φ χ) (and φ θ))))) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, or_iff, UntlClause.untl_clause]
+  rintro ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩
+  rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+  · exact .inr (.inl ⟨s₁, hts₁, ⟨h_ψs₁, h_guard₂ s₁ hts₁ h_lt⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr hrs, h_guard₂ r htr (lt_trans hrs h_lt)⟩⟩)
+  · exact .inl ⟨s₁, hts₁, ⟨h_ψs₁, h_eq ▸ h_θs₂⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr hrs, h_guard₂ r htr (h_eq ▸ hrs)⟩⟩
+  · exact .inr (.inr ⟨s₂, hts₂, ⟨h_guard₁ s₂ hts₂ h_gt, h_θs₂⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr (lt_trans hrs h_gt), h_guard₂ r htr hrs⟩⟩)
+
+end AccumFuture
+
+section AccumPast
+variable [BotClause L] [SnceClause L]
+
+/-- BX5', the past mirror of `generic_self_accum_until`. -/
+theorem generic_self_accum_since (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (SnceClause.snce φ ψ)
+        (SnceClause.snce (and φ (SnceClause.snce φ ψ)) ψ)) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, SnceClause.snce_clause]
+  rintro ⟨s, hst, h_ψs, h_guard⟩
+  refine ⟨s, hst, h_ψs, fun r hsr hrt => ⟨h_guard r hsr hrt, ?_⟩⟩
+  exact ⟨s, hsr, h_ψs, fun q hsq hqr => h_guard q hsq (lt_trans hqr hrt)⟩
+
+/-- BX6', the past mirror of `generic_absorb_until`. -/
+theorem generic_absorb_since (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (SnceClause.snce φ (and φ (SnceClause.snce φ ψ)))
+        (SnceClause.snce φ ψ)) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, SnceClause.snce_clause]
+  rintro ⟨s₁, hs₁t, ⟨h_φs₁, s₂, hs₂s₁, h_ψs₂, h_guard₂⟩, h_guard₁⟩
+  refine ⟨s₂, lt_trans hs₂s₁ hs₁t, h_ψs₂, fun q hs₂q hqt => ?_⟩
+  rcases lt_trichotomy s₁ q with h_lt | h_eq | h_gt
+  · exact h_guard₁ q h_lt hqt
+  · exact h_eq ▸ h_φs₁
+  · exact h_guard₂ q hs₂q h_gt
+
+/-- BX7', **left-associated** (`OpenAxiom.linear_since`'s nesting). -/
+theorem generic_linear_since (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ χ θ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (and (SnceClause.snce φ ψ) (SnceClause.snce χ θ))
+        (or (or (SnceClause.snce (and φ χ) (and ψ θ))
+              (SnceClause.snce (and φ χ) (and ψ χ)))
+          (SnceClause.snce (and φ χ) (and φ θ)))) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, or_iff, SnceClause.snce_clause]
+  rintro ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩
+  rcases lt_trichotomy s₂ s₁ with h_lt | h_eq | h_gt
+  · exact .inl (.inr ⟨s₁, hs₁t, ⟨h_ψs₁, h_guard₂ s₁ h_lt hs₁t⟩,
+      fun r hs₁r hrt => ⟨h_guard₁ r hs₁r hrt, h_guard₂ r (lt_trans h_lt hs₁r) hrt⟩⟩)
+  · exact .inl (.inl ⟨s₁, hs₁t, ⟨h_ψs₁, h_eq ▸ h_θs₂⟩,
+      fun r hs₁r hrt => ⟨h_guard₁ r hs₁r hrt, h_guard₂ r (h_eq ▸ hs₁r) hrt⟩⟩)
+  · exact .inr ⟨s₂, hs₂t, ⟨h_guard₁ s₂ h_gt hs₂t, h_θs₂⟩,
+      fun r hs₂r hrt => ⟨h_guard₁ r (lt_trans h_gt hs₂r) hrt, h_guard₂ r hs₂r hrt⟩⟩
+
+/-- The time reflection of the paper's CN: Since linearity, **right-associated**. -/
+theorem generic_linear_since_paper (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ χ θ : L) :
+    TruthEnv.T M τ t e
+      (ImpClause.imp (and (SnceClause.snce φ ψ) (SnceClause.snce χ θ))
+        (or (SnceClause.snce (and φ χ) (and ψ θ))
+          (or (SnceClause.snce (and φ χ) (and ψ χ))
+            (SnceClause.snce (and φ χ) (and φ θ))))) := by
+  rw [ImpClause.imp_clause]
+  simp only [and_iff, or_iff, SnceClause.snce_clause]
+  rintro ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩
+  rcases lt_trichotomy s₂ s₁ with h_lt | h_eq | h_gt
+  · exact .inr (.inl ⟨s₁, hs₁t, ⟨h_ψs₁, h_guard₂ s₁ h_lt hs₁t⟩,
+      fun r hs₁r hrt => ⟨h_guard₁ r hs₁r hrt, h_guard₂ r (lt_trans h_lt hs₁r) hrt⟩⟩)
+  · exact .inl ⟨s₁, hs₁t, ⟨h_ψs₁, h_eq ▸ h_θs₂⟩,
+      fun r hs₁r hrt => ⟨h_guard₁ r hs₁r hrt, h_guard₂ r (h_eq ▸ hs₁r) hrt⟩⟩
+  · exact .inr (.inr ⟨s₂, hs₂t, ⟨h_guard₁ s₂ h_gt hs₂t, h_θs₂⟩,
+      fun r hs₂r hrt => ⟨h_guard₁ r (lt_trans h_gt hs₂r) hrt, h_guard₂ r hs₂r hrt⟩⟩)
+
+end AccumPast
+
 end FormalSystem.Metalogic.SoundnessLemmas
