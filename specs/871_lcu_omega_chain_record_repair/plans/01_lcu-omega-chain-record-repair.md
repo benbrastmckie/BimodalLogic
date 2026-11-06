@@ -1,7 +1,7 @@
 # Implementation Plan: LCU docstring correction, omega_chain segment-property restoration, backward LC_n
 
 - **Task**: 871 - Correct LCU docstring and restore omega_chain segment-property parameter
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/871_lcu_omega_chain_record_repair/reports/01_lcu-omega-chain-record-repair.md`

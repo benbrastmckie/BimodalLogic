@@ -11,8 +11,8 @@ next_project_number: 885
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,871,873,874,876,881,882 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,875,879,880,883 | 298,428,502,761,770,772,777,785,803,813,838,839,858,867,871 | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,873,874,875,876,880,881,882 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,879,883 | 298,428,502,761,770,772,777,785,803,813,838,839,858,867 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -130,8 +130,7 @@ next_project_number: 885
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 860 [RESEARCHED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 867 [PARTIAL] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
-871 [PLANNED] — Correct LCU docstring and restore omega\_chain...
-  └─ 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
+875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 881 [RESEARCHED] — Factor the 53 TM-plus mirror schema validity proofs into a...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
@@ -583,12 +582,13 @@ VERIFICATION. Every count and every declaration name in the report must be repro
 ---
 
 ### 871. Correct LCU docstring and restore omega_chain segment-property parameter
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [871_lcu_omega_chain_record_repair/reports/01_lcu-omega-chain-record-repair.md]
 - **Plan**: [871_lcu_omega_chain_record_repair/plans/01_lcu-omega-chain-record-repair.md]
+- **Summary**: [871_lcu_omega_chain_record_repair/summaries/01_lcu-omega-chain-record-repair-summary.md]
 
 **Description**: Small, purely corrective library repair with three parts, all confirmed against the live tree: (1) correct PlusLCSchema.lean's docstring claim that LCU is the n=1 instance of lcN -- LCU is the until-form with two parameters and untl, while lcN 1 is the F-form with one parameter; (2) restore the landed omega_chain's dropped segment-property parameter P together with its stability hypothesis, matching specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean lines 659-684, which carries both; (3) state backward LC_n as the one-line plusValidIn_reflectTime corollary of lcN_plusValidZTime, since the doubled automaton route needs it and it costs only a corollary. Declaring the until-form LCU itself is explicitly NOT in scope here and waits on the oriented-forest Saturation lemma and task 867 (SeparationOver).
 
