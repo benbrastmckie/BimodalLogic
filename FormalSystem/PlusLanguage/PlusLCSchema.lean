@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.PlusLanguage.PlusOmegaChain
+import FormalSystem.PlusLanguage.PlusReversal
 
 /-!
 # `LC_n`: Reynolds' infinite limit-closure schema, transposed to `⊡`
@@ -96,6 +97,9 @@ frame class, `lcN` reaches a strictly larger family of formulas.
   `n ≥ 1` and arbitrary parameters
 - `lcN_plusValidZTime` — the same at the `.ZTime` frame class, by
   `plusValidZTime_iff_plusValidInt`
+- `lcN_reflectTime_plusValidZTime` — the **backward** limit-closure schema at `.ZTime`, as the
+  one-line `plusValidIn_reflectTime` corollary of the forward one; stated at
+  `(lcN n α).reflectTime` rather than as an expanded mirror form
 
 ## References
 
@@ -104,6 +108,7 @@ frame class, `lcN` reaches a strictly larger family of formulas.
 * `PlusLanguage/PlusOmegaChain.lean` — `omega_chain` and `intOrder_omega_cofinal`
 * `PlusLanguage/PlusLimitClosure.lean` — `blc`, the single-index limit-closure formula at `.Base`
 * `PlusLanguage/PlusIntTransfer.lean` — `PlusValidInt`, `plusValidZTime_iff_plusValidInt`
+* `PlusLanguage/PlusReversal.lean` — `plusValidIn_reflectTime`, which gives the backward schema
 
 ## Tags
 
@@ -303,5 +308,31 @@ Paper: — (formalization-native; the manuscript states no limit-closure schema)
 theorem lcN_plusValidZTime (n : ℕ) (hn : 0 < n) (α : ℕ → PlusFormula) :
     PlusValidZTime (lcN n α) :=
   (plusValidZTime_iff_plusValidInt (lcN n α)).mpr (lcN_plusValidInt n hn α)
+
+/--
+**The backward limit-closure schema at `.ZTime`**: `LC_n` read backwards in time is valid there
+too, for every `n ≥ 1` and arbitrary parameter formulas.
+
+`reflectTime` fixes `⊡` and exchanges `U` with `S`, hence `F` with `P` and `G` with `H`
+(`PlusLanguage/PlusReversal.lean`, `PlusLanguage/Formula.lean`). The reflection of `LC_n` is
+therefore the *same* cycling schema with every temporal direction reversed: a past-directed
+`H≤`-antecedent supplying the recurrences one at a time, and a past-directed consequent asking
+for one history carrying all of them backwards forever. It is valid at `.ZTime` because `ℤ` is
+reflection-symmetric — the frame class is closed under `rev`, which is precisely what
+`plusValidOnFrames_reflectTime` consumes and what `plusValidIn_reflectTime` discharges at an
+arbitrary `ProofSystem.FrameClass`.
+
+**The mirror form is deliberately not expanded.** Stating the reflected schema in syntax, rather
+than as `(lcN n α).reflectTime`, would require three new declarations this module does not have
+and does not need: an `H≤` definition (this module defines `gle` only, and neither `Formula` nor
+`PlusFormula` carries a reflexive-*past* closure), a `reflect_time_gle` push-through lemma, and a
+`reflect_time_bigAnd` lemma for the `ℕ`-indexed conjunction. The one-liner below already proves
+what all three would be built to state.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
+-/
+theorem lcN_reflectTime_plusValidZTime (n : ℕ) (hn : 0 < n) (α : ℕ → PlusFormula) :
+    PlusValidZTime (lcN n α).reflectTime :=
+  plusValidIn_reflectTime (lcN_plusValidZTime n hn α)
 
 end FormalSystem.PlusLanguage
