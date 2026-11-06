@@ -47,8 +47,33 @@ unexcused.
 
 ## `LCU`, and the relation to `blc`
 
-**`LCU` is the `n = 1` instance of `lcN`** — which is what the schema specializes to at a single
-parameter — and is not given a declaration of its own here.
+**`LCU` is not an instance of `lcN`, and `lcN 1` is not `LCU`.** The two formulas are:
+
+```
+LCU α β  :=  ⊡G≤(⟐α → ⟐(⟐β U ⟐α))  →  (⟐α → ⟐G≤(⟐α ∨ (⟐β U ⟐α)))
+lcN 1 α  :=  ⊡G≤(⟐α₀ → ⟐F⟐α₀)      →  ⟐G≤(⟐α₀ → F⟐α₀)
+```
+
+`LCU` takes **two** parameters and its recurrence is an **until**: `⟐β U ⟐α`, with `untl`
+primitive. `lcN 1 α` takes **one** parameter, `α₀`, and its recurrence is `F` alone — no `untl`
+anywhere. Their consequents differ in shape too: `LCU`'s is an implication `⟐α → ⟐G≤ …` with the
+antecedent *outside* the `⟐`, while `lcN`'s consequent is a single `⟐G≤ …` whose body is the
+implication. Neither formula is a substitution instance of the other, and setting `β := ⊤` does
+not rescue the reading either: `⟐⊤ U ⟐α` is not `F⟐α`, and the consequent shapes still disagree.
+
+**Why this matters, and is not a cosmetic difference.** L⁺ has `untl` and `snce` as *primitives*,
+so a Reynolds-style construction over L⁺ must discharge until-commitments as well as
+`F`-commitments. An until-commitment `⟐β U ⟐α` is satisfied only by a witness carrying `⟐β`
+throughout the interval up to the `⟐α`-point; the `F`-form schema says nothing about any
+interval and so does not discharge an until-commitment's guard. A reader who takes `lcN` to
+already cover `LCU` is told the until-form ingredient is present in this tree when it is not.
+
+**What this tree does and does not have.** `PlusOmegaChain.lean`'s `omega_chain` carries the
+segment-property parameter `P` (with its stability hypothesis `hP`, the first-marker identity
+`c 0 = s₀`, and agreement below `s₀`) that `LCU`'s semantic core needs — an interval condition on
+the spliced segment is exactly what `P` is for. But **`LCU` itself is not declared anywhere in
+this tree**: there is no `LCU` definition, and no claim whatsoever about its validity at any
+frame class. It waits on the oriented-forest `Saturation` lemma and on separation over `ℤ`.
 
 `PlusLimitClosure.lean`'s `blc` is **not** subsumed by `lcN`, and does not subsume it. `blc` is
 the `n = 1` limit-closure formula valid at `.Base`, by Zorn plus the Extension Theorem; `lcN` is
@@ -170,8 +195,11 @@ def lcCons (n : ℕ) (α : ℕ → PlusFormula) : PlusFormula :=
 /--
 **`LC_n`**: Reynolds 2003's infinite limit-closure schema, transposed to `⊡` with `G≤`.
 
-`LCU` is the `n = 1` instance. See the module docstring for what is claimed about this formula
-and what is not — in particular, `.Base` validity is open and unclaimed.
+`LCU`, the until-form limit-closure schema, is **not** an instance of this one, and `lcN 1` is
+not `LCU`: see the module docstring's `LCU` section for the two formulas side by side and for why
+the difference is substantive. `LCU` is not declared in this tree. See the module docstring for
+what is claimed about `lcN` and what is not — in particular, `.Base` validity is open and
+unclaimed.
 -/
 def lcN (n : ℕ) (α : ℕ → PlusFormula) : PlusFormula := (lcAnte n α).imp (lcCons n α)
 
