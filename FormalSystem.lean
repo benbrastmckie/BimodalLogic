@@ -459,6 +459,7 @@ import FormalSystem.Metalogic.Expressiveness.SeparationZ.ElimHard
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.Eliminations
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.LeafAbstraction
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.NegationEquiv
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.NormalForm
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.Syntax
 import FormalSystem.Metalogic.Expressiveness.StaviConnectives
 import FormalSystem.Metalogic.Expressiveness.Table

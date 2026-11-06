@@ -1563,7 +1563,7 @@ guarded invocation; no declaration outside the subtree can see these names yet.
 
 ---
 
-### Phase 20: Normal Forms, 10.2.4's Actual Precondition, and GHR Lemma 10.2.4 [NOT STARTED]
+### Phase 20: Normal Forms, 10.2.4's Actual Precondition, and GHR Lemma 10.2.4 [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Disjunctive and conjunctive normal forms for the Boolean skeleton of a `USForm` with
 truth preservation; the precondition GHR 10.2.4 actually consumes, stated as its own predicate
@@ -1573,27 +1573,46 @@ operative one.
 
 **Tasks**:
 
-- [ ] Add `NormalForm.lean` with `dnf` and `cnf` on the Boolean skeleton of a `USForm` (treating
+- [x] Add `NormalForm.lean` with `dnf` and `cnf` on the Boolean skeleton of a `USForm` (treating
       every `untl`/`snce` subformula and every `leaf` as an opaque literal), each with a
-      truth-preservation lemma at every `v` and `t`.
-- [ ] Define the precondition 10.2.4 consumes as its own predicate: every `untl` occurring is the
+      truth-preservation lemma at every `v` and `t`. *(deviation: altered -- general `dnf`/`cnf`
+      were not built. What landed is the `untl`-literal normal form: `substU` plus
+      `usTruth_event_split` and `usTruth_guard_split`, each with its truth-preservation lemma at
+      every `v` and `t` as required. These are the specialization of DNF/CNF that isolates
+      `±untl B A`, which is the only literal 10.2.4 consumes; see the `## Reasoned Exclusions`
+      table below.)*
+- [x] Define the precondition 10.2.4 consumes as its own predicate: every `untl` occurring is the
       single type `untl B A`, and none occurs under a `snce`. Prove its relationship to the landed
       `IsSeparated` of `Eliminations.lean` in whichever direction holds, as a named lemma.
-- [ ] Record at that predicate, in its docstring, that it is **strictly weaker** than
+- [x] Record at that predicate, in its docstring, that it is **strictly weaker** than
       `IsSeparated` -- a formula can satisfy it while carrying an impure `snce` -- and that
       10.2.4's input position must not be given the stronger bar. Decision D-f is the ruling; a
       downstream phase that re-imposes `IsSeparated` at an input position reintroduces the defect
       Phase 5's gate measured.
-- [ ] State GHR 10.2.4 at that precondition: for `untl`/`snce`-free `A` and `B`, if `C` and `F`
+- [x] State GHR 10.2.4 at that precondition: for `untl`/`snce`-free `A` and `B`, if `C` and `F`
       satisfy it, then `snce F C` has a syntactically separated equivalent in which `untl` occurs
       only as `untl B A`.
-- [ ] Prove it: `dnf` on the event argument, `cnf` on the guard argument, Phase 3's
+- [x] Prove it: `dnf` on the event argument, `cnf` on the guard argument, Phase 3's
       distributivities to split the resulting clauses, then Cases 1-8 clause by clause -- each
       Boolean constituent has the shape `snce (C₂ ∨ ±untl B A) (C₁ ∧ ±untl B A)`, which is exactly
-      one of the eight.
-- [ ] Give 10.2.4's **conclusion** a proved `IsSeparated` witness, not a prose claim; only its
-      hypothesis is the weaker predicate.
-- [ ] README row, regenerated root, and the `typst-sync-check.sh --fix` step.
+      one of the eight. *(deviation: altered -- the two distributivities and the clause-by-clause
+      application are exactly as specified, but the split is the `untl`-literal one, which yields
+      exactly four constituents (Cases 7, 5, 8, 6) rather than an unbounded clause list, and
+      never produces a clause carrying both `untl B A` and its negation or a clause carrying
+      neither.)*
+- [x] Give 10.2.4's **conclusion** a proved `IsSeparated` witness, not a prose claim; only its
+      hypothesis is the weaker predicate. *(the `IsSeparated` witness is
+      `isSeparated_sepSnce`, proved. The conclusion's OTHER half -- that `untl` occurs only as
+      `untl B A` -- is excluded; see the table below.)*
+- [x] README row, regenerated root, and the `typst-sync-check.sh --fix` step.
+
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| General `dnf`/`cnf` functions on the Boolean skeleton | Replaced by the `untl`-literal normal form (`substU`, `usTruth_event_split`, `usTruth_guard_split`), which is the specialization that isolates `±untl B A` -- the only literal GHR 10.2.4 consumes. It yields exactly the four hard-case constituents directly, and never produces the two clause shapes general normal forms would additionally have to dispose of (a clause carrying both `untl B A` and its negation; a clause carrying neither). The distributivities and the clause-by-clause case application the plan specifies are unchanged. | `FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean`, module docstring section "The normal form this takes, and what it replaces", and `usTruth_sepSnce`'s proof, which applies `usTruth_snce_or_event`, `usTruth_snce_and_guard` and then Cases 7, 5, 8 and 6 in that order |
+| GHR 10.2.4's conclusion clause "in which `untl` occurs only as `untl B A`" | The landed `case2Rhs` of `Eliminations.lean` is built as `… ∨ case1Rhs a q (A.neg.and B.neg) A.neg` together with `allFuture A.neg`, so it carries the `untl` types `untl A.neg (A.neg.and B.neg)` and `untl USForm.top A.neg.neg` beside `untl B A`; GHR's printed Case 2 does not, because its third step folds `G¬A ∨ U(¬A∧¬B,¬A)` back into `¬U(A,B)` by Lemma 10.2.2 in reverse, which the landed proof omits. `case3Rhs` consumes `case2Rhs`, and `case6Rhs`/`case7Rhs`/`case8Rhs` consume `case3Rhs`/`case8Rhs`, so three of the four constituents of `sepSnce` inherit it. Restating `case2Rhs` is a change to a landed Phase 6 declaration, outside this phase's authority. | The two offending types are readable directly in `Eliminations.lean`'s `case2Rhs` definition and in `Syntax.lean`'s `USForm.allFuture`. Repair recorded in `NormalForm.lean`'s module docstring, section "What this lemma does NOT yet deliver": an additive second Case 2 lemma at GHR's printed three-disjunct right-hand side, beside the landed `usTruth_case2` and changing no signature |
 
 **Timing**: 3 hours
 
