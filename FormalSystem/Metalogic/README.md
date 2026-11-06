@@ -159,7 +159,7 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 182 | 112,447 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 9 | 2,072 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
-| [`Expressiveness/`](Expressiveness/README.md) | 152 | 108,315 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
+| [`Expressiveness/`](Expressiveness/README.md) | 152 | 109,047 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 30 | 9,269 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 6 | 2,955 | Per-axiom validity lemmas feeding `Soundness.lean` |
 | [`WeakCanonical/`](WeakCanonical/README.md) | 45 | 29,303 | Kamp/Reynolds route, including all of `Kamp/` |

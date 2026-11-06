@@ -2248,7 +2248,7 @@ tree -- its absence is the route ruling's own observable consequence, not an ove
 
 ---
 
-### Phase 22.3: `uTypeCount` and GHR Lemma 10.2.6 [NOT STARTED]
+### Phase 22.3: `uTypeCount` and GHR Lemma 10.2.6 [COMPLETED]
 
 **RESOLVED BLOCKER** (recorded at dispatch 12 against the undecomposed Phase 22, resolved by the
 Phase 21 that landed since):
@@ -2291,42 +2291,61 @@ decrease to a non-strict bound.
 
 **Tasks**:
 
-- [ ] Define `uTypeCount : USForm → ℕ`, the number of distinct maximal `untl` subformulas, as a
+- [x] Define `uTypeCount : USForm → ℕ`, the number of distinct maximal `untl` subformulas, as a
       structural recursion in `Hierarchy.lean`. GHR's occurrence-level phrasing has no Lean
-      counterpart and must be restated this way.
+      counterpart and must be restated this way. *(completed: `uTypes` collects each `untl` node
+      without descending into it -- that is "maximal" -- and `List.dedup` makes them "distinct";
+      `uTypeCount` is its length, and `uTypes_nodup` is what makes the count count once)*
 - [ ] State GHR 10.2.6 and prove it by strong recursion on `uTypeCount`: abstract each
       `untl Bᵢ Aᵢ` for `i < n` to a fresh leaf above `maxLeaf` (Phase 1's `freshLeaf` and
       `usTruth_congr_of_update` are the whole device, confirmed landed at `Syntax.lean:334`,
       `:342` and `:381`), separate for the remaining type by Phase 22.2's `sepU`, reindex back,
-      and re-separate the resulting impure pure-past parts by the recursive call.
-- [ ] **Part (a) of the strict-decrease obligation -- abstraction strictly drops the measure** --
+      and re-separate the resulting impure pure-past parts by the recursive call. *(deviation:
+      altered -- the route, the measure and every step are exactly as specified (`sepBody` keeps
+      the head type, abstracts the tail to leaves above `freshLeaf`, calls `sepU`, reindexes by
+      `substLeaf`, and fires the recursive call by `mapS` at the recontaminated `snce`
+      constituents), but two sub-claims of this bullet did not hold as written. First, "strong
+      recursion on `uTypeCount`" cannot be a Lean well-founded recursion here: the recursive
+      call's argument is produced by `mapS` and is neither a subterm of the definition's argument
+      nor in scope at elaboration time, so no `decreasing_by` goal can be stated for it at all;
+      the count is carried as an explicit budget (`sepFuel`) instead and `sepMulti` instantiates
+      it at the measure, so the budget never reaches the lemma's statement. Second,
+      `usTruth_congr_of_update` is NOT part of the device and is unused: `usTruth_substLeaf`
+      moves the substitution onto the valuation and is strictly stronger, so the equivalence half
+      needs no freshness side-condition at all -- `freshLeaf` is still needed, but only for the
+      syntactic round trip `substLeaf_mapU_abstr`)*
+- [x] **Part (a) of the strict-decrease obligation -- abstraction strictly drops the measure** --
       as its own named lemma with its own statement. Replacing a counted `untl Bᵢ Aᵢ` by a leaf
       fresh above `maxLeaf` removes it from the count by `uTypeCount`'s own defining equations.
       This is the cheap part and it is where the strict decrease originates.
-- [ ] **Part (b) -- separation does not raise the measure -- by citation, not by proof.**
+- [x] **Part (b) -- separation does not raise the measure -- by citation, not by proof.**
       Phase 22.2's `isUTyped_sepU` states that every `untl` in `sepU A B φ` is the single type
       `untl B A`, which is already counted, so the separated form introduces no new type. Cite
       that lemma. Do **not** cite `isUTyped_sepSnce` here: that lemma is one level down, about a
       single `snce` node, and discharges part (b) only at 10.2.4. The previous round's task text
       made exactly that substitution, and it is what would have sent a dispatch into part (c)
       unsized.
-- [ ] **Part (c) -- the reindexed form's count is bounded by the pre-abstraction count less
+- [x] **Part (c) -- the reindexed form's count is bounded by the pre-abstraction count less
       one** -- as its own named lemma, and **size it before starting**. GHR's own argument is that
       `U(Aₙ,Bₙ)` appears in no pure-past constituent `Dⱼ` of the separated form, so each reindexed
       `Dⱼ` carries at most `n-1` types; that non-appearance is what must be proved, and
       `isUTyped_sepU` is where it comes from. It is this bound, not part (a), that licenses the
       recursive call. This instance of part (c) is the cheapest of the plan's three, because
       10.2.6 retains a single `untl` type throughout.
-- [ ] Do not collapse (a), (b) and (c) back into one named obligation, and do not let a lemma
+- [x] Do not collapse (a), (b) and (c) back into one named obligation, and do not let a lemma
       discharging one of them be cited as covering another. The obligation table in
       `### Revision Integration: the 10.2.5 Route Ruling and the Three-Part Measure Split` is the
       ruling.
-- [ ] Where a step must discharge 10.2.5's hypothesis, discharge `IsUSingleType`; where it must
+- [x] Where a step must discharge 10.2.5's hypothesis, discharge `IsUSingleType`; where it must
       discharge 10.2.4's, discharge `IsUTyped`. Never `IsSeparated` at an input position (D-f).
-- [ ] Declare the separating function this phase produces as a plain `def` with no
-      `noncomputable` keyword, for the same reason `sepU` carries that constraint.
-- [ ] Regenerate `typst/generated/status.typ` and run the `typst-sync-check.sh --fix` step; the
-      declaration counts move even though no module is added.
+- [x] Declare the separating function this phase produces as a plain `def` with no
+      `noncomputable` keyword, for the same reason `sepU` carries that constraint. *(completed:
+      `sepBody`, `sepFuel` and `sepMulti` are all plain `def`s and `sepMulti` `#eval`s)*
+- [x] Regenerate `typst/generated/status.typ` and run the `typst-sync-check.sh --fix` step; the
+      declaration counts move even though no module is added. *(deviation: altered -- two
+      generated inventory blocks (`README.md`, `FormalSystem/Metalogic/README.md`) also required
+      regeneration through `check-module-invariants.sh --emit-inventory`, because the module's
+      line count moved. Same collision as at Phases 21, 22.1 and 22.2)*
 
 **Timing**: 2.5 hours
 
@@ -2344,6 +2363,21 @@ citation rather than by a new proof) and GHR 10.2.6 -- five new declarations add
 module, zero new modules. Confirm at implementation time by counting the `def`/`theorem` keywords
 in this phase's own diff; a count materially above it means part (b) was re-proved where the task
 list specifies a citation.
+
+**Scope Hypothesis -- CONFIRMED FALSE, and the hypothesis's own diagnosis of an overshoot is also
+false.** Measured on this phase's diff: **48** new `def`/`theorem`/`inductive` declarations
+against a predicted five, with zero new modules (that part held). Part (b) was *not* re-proved:
+`uTypes_sepU` is a one-line citation of `isUTyped_sepU`, exactly as the task list specifies, so
+the predicted cause of an overshoot is ruled out. The actual cause is this phase's own task text:
+it asserted that "Phase 1's `freshLeaf` and `usTruth_congr_of_update` are the whole device" for
+the abstract/reindex step, but the tree carries **no substitution operation on `USForm` in either
+direction**. The device had to be built here -- `mapU`, `mapS`, `substLeaf`, `abstrFn`,
+`unabstrFn`, plus their truth, round-trip and shape lemmas -- and that infrastructure, together
+with the measure's own API (five `uTypes` equation lemmas, `uTypes_nodup`,
+`uTypes_eq_singleton_of_mem`, `maxLeaf_le_of_mem_uTypes`, and the two bridges to `IsUTyped` and
+`IsUSingleType`), is the whole of the discrepancy. The same under-estimate should be expected to
+recur at Phases 23 and 24, which the plan sizes on the same assumption; the device is now landed
+and reusable, so the overshoot should not.
 
 **Files to modify**:
 
