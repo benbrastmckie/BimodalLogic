@@ -1,7 +1,7 @@
 # Implementation Plan: Task #870
 
 - **Task**: 870 - Oriented-forest Saturation lemma for TaskFrame
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 13 hours
 - **Dependencies**: 884 (the report 03 section 1.2 amendment that pins the hypothesis strength; its
   consumption map is what fixes `acyclic` as a field rather than directed-path uniqueness alone)

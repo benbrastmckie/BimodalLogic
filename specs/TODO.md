@@ -6,13 +6,13 @@ next_project_number: 885
 
 ## Task Order
 
-*Updated 2026-11-05. Generated from state.json dependency graph.*
+*Updated 2026-11-06. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,870,871,873,874,876,881,882 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,875,879,880,883 | 298,428,502,761,770,772,777,785,803,813,838,839,858,867,870,871 | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,787,803,813,817,818,821,825,826,827,829,830,831,832,837,838,839,841,842,847,848,857,858,860,863,867,869,871,873,874,876,881,882 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,804,814,816,823,824,840,845,853,862,875,879,880,883 | 298,428,502,761,770,772,777,785,803,813,838,839,858,867,871 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,822,834,861 | 429,497,763,783,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -148,7 +148,6 @@ next_project_number: 885
 ### Semantics
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
-870 [PLANNED] — Oriented-forest Saturation lemma for TaskFrame
 
 ### Build Performance
 
@@ -596,12 +595,13 @@ VERIFICATION. Every count and every declaration name in the report must be repro
 ---
 
 ### 870. Oriented-forest Saturation lemma for TaskFrame
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 884
 - **Research**: [870_oriented_forest_saturation/reports/01_oriented-forest-saturation.md]
 - **Plan**: [870_oriented_forest_saturation/plans/01_oriented-forest-saturation.md]
+- **Summary**: [870_oriented_forest_saturation/summaries/01_oriented-forest-saturation-summary.md]
 
 **Description**: Prove that every oriented forest (a frame whose underlying undirected multigraph of the one-step edge relation is a forest, i.e. acyclic -- strictly more than directed-path uniqueness, per specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md section 1.2's amendment) satisfies the literal TaskFrame.Saturation obligation, following report 03 section 1.2's five-step argument against the literal definition, as a Semantics/ lemma beside the existing saturation_of_* family (natural home: next to saturation_of_fib_finite). State the undirected-acyclicity hypothesis explicitly over a bare task relation -- the underlying undirected multigraph is a forest -- still without assuming a forest data structure. This unblocks two independent fronts: the AA carrier layer-split route located in specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md finding 4, and the MSO cover step at ZTime (report 03 section 1.3 step 2, the countable-oriented-forest cover). Independent of SeparationOver, of Rabin's theorem, and of the ladder/RaySummary files held by other in-flight tasks.
 
