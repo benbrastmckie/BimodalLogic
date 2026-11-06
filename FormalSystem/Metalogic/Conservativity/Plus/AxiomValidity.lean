@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import FormalSystem.Metalogic.SoundnessLemmas.GenericSchemata
 import FormalSystem.Metalogic.Conservativity.Plus.Atomization
 import FormalSystem.PlusLanguage.PlusPasting
 import FormalSystem.PlusLanguage.PlusStateLocal
@@ -34,12 +35,32 @@ mirror argument is used, since the TM axiom set is not mirror-closed.
   each is `plusValidIn_of_tm` (resp. `plusValidIn_reflect_time_of_tm`) applied to the landed L
   schema at the atomized parameters, under one fixed encoding. No schema is re-proved over
   `PlusTruthAt`.
-- **The six S5/bridge `⊡` arms** are the definitional validities of
-  `PlusLanguage/PlusTruth.lean` (`of_stab`, `stab_four`, `stab_five`, `stab_of_box`; K is
-  the universal-quantifier shape of the `stab` clause) together with `stab_of_stateLocal`
-  (`PlusLanguage/PlusStateLocal.lean`), which discharges AS at the atom instance
-  `stateLocal_atom p` of the state-locality fragment. Their temporal duals are the same schemata at
-  reflected parameters, because `reflectTime` fixes `stab`.
+
+  **These 45 deliberately do *not* adopt the generic schema layer**, even though
+  `Metalogic/SoundnessLemmas/GenericSchemata.lean` states every one of their schemata. Each arm
+  carries real provenance — it is the landed *L-level* schema, transported through one fixed
+  encoding — and that provenance is the content of TM⁺ conservativity, not an implementation
+  detail of this file. Each is also already one line, so a generic rewrite would spend that
+  provenance and recover nothing. The generic layer exists for L⋆ and L^▷, which have no
+  atomization route at all (`stab_state_only` has no analogue there), and for a language with no
+  `ofPlus` embedding.
+- **The six S5/bridge `⊡` arms** delegate to `GenericSchemata.lean`'s `generic_stab_k`,
+  `generic_stab_t`, `generic_stab_4`, `generic_stab_5`, `generic_box_stab` and
+  `generic_atom_stab`, which state the same six schemata once over the clause interface for all
+  three languages. This is where L⁺ adoption pays: these six were the only L⁺ arms *not* carrying
+  atomization provenance, and they are exactly the ones L⋆ and L^▷ also need.
+
+  AS in particular now goes through the atom clause directly rather than through
+  `stab_of_stateLocal` at `stateLocal_atom p`. `PlusLanguage/PlusStateLocal.lean` is untouched and
+  still has consumers (`Metalogic/Independence/StabUndefinable.lean`,
+  `Metalogic/Independence/ForwardDeterministicFrame.lean`,
+  `Semantics/StateLocalTransfer.lean`, `StarLanguage/StarStateLocal.lean`); the state-locality
+  fragment remains the schema's *semantic* witness, it is simply no longer the route this one arm
+  takes. Likewise `PlusTruth.lean`'s `of_stab`, `stab_four`, `stab_five` and `stab_of_box` keep
+  their other consumers.
+
+  Their temporal duals are the same schemata at reflected parameters, because `reflectTime` fixes
+  `stab`.
 - **The two pasting arms** are the PS/US validities of `PlusLanguage/PlusPasting.lean`;
   their temporal duals are the past mirrors `paste'_plusValid` and `snce_paste_plusValid`, with the
   purity side conditions exchanged by `IsPureFuture.reflectTime` / `IsPurePast.reflectTime`.
@@ -58,6 +79,7 @@ open FormalSystem.PlusLanguage
 open FormalSystem.PlusLanguage.PlusFormula
 open FormalSystem.Semantics
 open FormalSystem.Metalogic
+open FormalSystem.Metalogic.SoundnessLemmas
 
 /-- One fixed encoding, chosen once for every TM arm below. -/
 noncomputable def theEncoding : Encoding := Classical.choice Encoding.nonempty
@@ -167,15 +189,13 @@ theorem plusAxiom_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
       (DerivedAxioms.priorSGap le_rfl (A a0))
   | sep a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.sep (A a0)) le_rfl
   | stab_k a0 a1 =>
-    exact fun _ _ M τ t h1 h2 σ hs => h1 σ hs (h2 σ hs)
-  | stab_t a0 => exact fun _ _ M τ t => of_stab M τ t a0
-  | stab_4 a0 => exact fun _ _ M τ t => stab_four M τ t a0
-  | stab_5 a0 =>
-    exact fun _ _ M τ t h => stab_five M τ t a0.neg h
-  | box_stab a0 => exact fun _ _ M τ t => stab_of_box M τ t a0
+    exact fun _ _ M τ t => generic_stab_k (L := PlusFormula) M τ t PUnit.unit a0 a1
+  | stab_t a0 => exact fun _ _ M τ t => generic_stab_t (L := PlusFormula) M τ t PUnit.unit a0
+  | stab_4 a0 => exact fun _ _ M τ t => generic_stab_4 (L := PlusFormula) M τ t PUnit.unit a0
+  | stab_5 a0 => exact fun _ _ M τ t => generic_stab_5 (L := PlusFormula) M τ t PUnit.unit a0
+  | box_stab a0 => exact fun _ _ M τ t => generic_box_stab (L := PlusFormula) M τ t PUnit.unit a0
   | atom_stab p =>
-    exact fun _ _ M τ t =>
-      stab_of_stateLocal (stateLocal_atom p) M τ t
+    exact fun _ _ M τ t => generic_atom_stab (L := PlusFormula) M τ t PUnit.unit p
   | paste a0 a1 h0 h1 => exact paste_plusValid h0 h1
   | untl_paste a0 a1 h0 h1 => exact untl_paste_starValid h0 h1
 
@@ -301,19 +321,18 @@ theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ
         (DerivedAxioms.priorSGap le_rfl (A' a0))
   | sep a0 => exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.sep (A' a0)) le_rfl
   | stab_k a0 a1 =>
-    exact fun _ _ M τ t h1 h2 σ hs => h1 σ hs (h2 σ hs)
-  | stab_t a0 =>
-    exact fun _ _ M τ t => of_stab M τ t a0.reflectTime
-  | stab_4 a0 =>
-    exact fun _ _ M τ t => stab_four M τ t a0.reflectTime
-  | stab_5 a0 =>
-    exact fun _ _ M τ t h =>
-      stab_five M τ t a0.reflectTime.neg h
-  | box_stab a0 =>
-    exact fun _ _ M τ t => stab_of_box M τ t a0.reflectTime
-  | atom_stab p =>
     exact fun _ _ M τ t =>
-      stab_of_stateLocal (stateLocal_atom p) M τ t
+      generic_stab_k (L := PlusFormula) M τ t PUnit.unit a0.reflectTime a1.reflectTime
+  | stab_t a0 =>
+    exact fun _ _ M τ t => generic_stab_t (L := PlusFormula) M τ t PUnit.unit a0.reflectTime
+  | stab_4 a0 =>
+    exact fun _ _ M τ t => generic_stab_4 (L := PlusFormula) M τ t PUnit.unit a0.reflectTime
+  | stab_5 a0 =>
+    exact fun _ _ M τ t => generic_stab_5 (L := PlusFormula) M τ t PUnit.unit a0.reflectTime
+  | box_stab a0 =>
+    exact fun _ _ M τ t => generic_box_stab (L := PlusFormula) M τ t PUnit.unit a0.reflectTime
+  | atom_stab p =>
+    exact fun _ _ M τ t => generic_atom_stab (L := PlusFormula) M τ t PUnit.unit p
   | paste a0 a1 h0 h1 =>
     simp only [PlusFormula.reflectTime, reflect_time_dstab, reflect_time_and]
     exact paste'_plusValid h0.reflectTime h1.reflectTime

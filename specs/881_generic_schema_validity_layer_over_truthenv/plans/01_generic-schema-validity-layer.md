@@ -705,25 +705,25 @@ consumer of the changed declarations.
 
 ---
 
-### Phase 11: L⁺ adoption, measured [NOT STARTED]
+### Phase 11: L⁺ adoption, measured [COMPLETED]
 
 **Goal**: Make L⁺ a consumer of the generic layer where that is a genuine simplification, and
 record honestly where it is not.
 
 **Tasks**:
-- [ ] Rewire the six S5/bridge `⊡` arms of `plusAxiom_validIn_min` and
+- [x] Rewire the six S5/bridge `⊡` arms of `plusAxiom_validIn_min` and
       `plusAxiom_reflect_time_validIn_min` onto `generic_stab_k`, `generic_stab_t`,
       `generic_stab_4`, `generic_stab_5`, `generic_box_stab`, `generic_atom_stab`. For
       `atom_stab` this replaces the `stab_of_stateLocal` + `stateLocal_atom` route with the
       direct atom-clause argument; keep `PlusStateLocal.lean` intact, since the state-locality
       fragment has other consumers (confirm with
       `grep -rn "stab_of_stateLocal\|stateLocal_atom" FormalSystem/`).
-- [ ] Do **not** replace the 45 TM-schema arms' atomization route. Those arms carry real
+- [x] Do **not** replace the 45 TM-schema arms' atomization route. Those arms carry real
       provenance — each is the landed L-level schema transported through
       `Conservativity/Plus/Atomization.lean` under one fixed encoding — and are already one line
       apiece, so a generic rewrite would cost that provenance and recover no lines. Record this
       decision, with that reason, in the module docstring's "How the arms close" section.
-- [ ] Add the `GenericSchemata` import.
+- [x] Add the `GenericSchemata` import.
 
 **Timing**: 1 hour
 
@@ -743,7 +743,22 @@ consumer of the arms being rewired.
 **Verification**:
 - `lake build FormalSystem.Metalogic.Conservativity.Plus` green.
 - `Conservativity/Plus/Atomization.lean` still compiles and still has consumers.
+  *(measured: `Metalogic/Soundness.lean`, `Metalogic/Conservativity/Plus.lean`,
+  `Metalogic/Independence/CoarsenedModels.lean` and this file's own 45 TM arms. Likewise
+  `PlusLanguage/PlusStateLocal.lean` is untouched and still consumed by
+  `Metalogic/Independence/StabUndefinable.lean`,
+  `Metalogic/Independence/ForwardDeterministicFrame.lean`,
+  `Semantics/StateLocalTransfer.lean` and `StarLanguage/StarStateLocal.lean`, even though the AS
+  arm no longer routes through `stab_of_stateLocal`.)*
 - Both dispatch lemmas remain wildcard-free with one arm per constructor.
+  *(unchanged: only the six `⊡` arm bodies were edited; no arm was added, removed or merged, and
+  `lake build FormalSystem.Metalogic.Conservativity.Plus` is green with 0 warnings, which is what
+  enforces exhaustiveness.)*
+
+**Measured L⁺ adoption**: 6 of the 53 arms in each dispatcher, 12 arm bodies in all. Line count
+329 → 348 (**+19**), the increase being the docstring record of *why* the 45 TM arms deliberately
+do not adopt the layer. That is the honest number: L⁺ adoption is a unification, not a
+line-recovery, and the plan said to measure rather than assume it.
 
 ---
 
