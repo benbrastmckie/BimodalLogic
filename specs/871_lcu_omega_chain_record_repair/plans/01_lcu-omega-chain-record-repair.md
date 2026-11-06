@@ -1,7 +1,7 @@
 # Implementation Plan: LCU docstring correction, omega_chain segment-property restoration, backward LC_n
 
 - **Task**: 871 - Correct LCU docstring and restore omega_chain segment-property parameter
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/871_lcu_omega_chain_record_repair/reports/01_lcu-omega-chain-record-repair.md`
@@ -151,7 +151,7 @@ Rollback/Contingency.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Restore the full-fidelity `stg_step` / `omega_chain` signatures and adapt the one call site [NOT STARTED]
+### Phase 1: Restore the full-fidelity `stg_step` / `omega_chain` signatures and adapt the one call site [COMPLETED]
 
 **Goal**: Land the segment-property parameter `P`, its stability hypothesis `hP`, the strengthened
 continuation hypothesis, and the three restored `omega_chain` conclusions, with
@@ -241,7 +241,7 @@ complete call-site set for an arity change confined to this namespace.
 
 ---
 
-### Phase 2: Repair `PlusOmegaChain.lean`'s docstrings to describe the restored signature [NOT STARTED]
+### Phase 2: Repair `PlusOmegaChain.lean`'s docstrings to describe the restored signature [COMPLETED]
 
 **Goal**: Bring the module's prose back into agreement with its code, so that `P` and what `hP`
 buys are introduced where a reader meets them, and no docstring still describes the `A`-only
@@ -312,7 +312,7 @@ covering check, and no externally visible signature changes in this phase.
 
 ---
 
-### Phase 3: Correct the `LCU` claim in `PlusLCSchema.lean` [NOT STARTED]
+### Phase 3: Correct the `LCU` claim in `PlusLCSchema.lean` [COMPLETED]
 
 **Goal**: Replace the false "`LCU` is the `n = 1` instance of `lcN`" claim, on both surfaces in
 this module, with prose that states what `LCU` actually is, that neither formula is an instance of
@@ -381,7 +381,7 @@ signature, so the single-module build is the cheapest honest check.
 
 ---
 
-### Phase 4: Add the backward limit-closure corollary [NOT STARTED]
+### Phase 4: Add the backward limit-closure corollary [COMPLETED]
 
 **Goal**: State `lcN_reflectTime_plusValidZTime` as the one-line `plusValidIn_reflectTime`
 corollary of `lcN_plusValidZTime`, with the mirror reading given in prose rather than expanded in
@@ -451,7 +451,7 @@ signature changed, so nothing outside this module can break on it.
 
 ---
 
-### Phase 5: Record surfaces, axiom baseline, and the complete gate set [NOT STARTED]
+### Phase 5: Record surfaces, axiom baseline, and the complete gate set [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Close the task: correct the third wrong-`LCU` surface, refresh the two ledger rows whose
 Statement cells now misdescribe their declarations, pin the new corollary's **measured** axiom
@@ -569,6 +569,33 @@ running each regenerator and observing what it actually rewrites, rather than as
 - The new `docs/theorem-index.md` row carries a fully qualified `Lean name`, no line numbers in
   `File`, and an `Axioms` cell whose value was copied from the measured C14 output.
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash .claude/scripts/verify-deploy.sh` exits 0 for the touched doc surface | Not satisfiable as written, and deferred to the batch stage. Every one of this script's gates lints the deployed `.claude/` tree against `agent-system/extensions/**`; none covers `docs/theorem-index.md` or project-root `scripts/**`, and this task touches no file under either `.claude/**` or `agent-system/**`. Independently, this dispatch's own `<deploy-freshness-context>` reports the deployed tree already STALE for `core`, `lean` and `literature` before this task began, so a run here would fail for reasons this task neither caused nor may fix (hand-patching `.claude/**` is prohibited). The dispatch's `## Batch Gate Deferral` directive applies: the full set runs once for the whole batch | Gate-selection audit: `gate_selected 1..21+` in `.claude/scripts/verify-deploy.sh`, each guarded on `$TARGET/.claude` or `$TARGET/agent-system/extensions`. The doc surface's actual covering checks were run instead and are green: `check-module-invariants.sh` C14/C15/C20/C9D, `--emit-inventory --check`, `typst-sync-check.sh` (all 4), and `.claude/scripts/check-task-references.sh` (0 unexempted occurrences) |
+| `bash scripts/check-module-invariants.sh` exits 0 | Exits 1 on **C16** (`env_linter`) alone — one `unusedArguments` finding at `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136` (`mem_cellAt_of_shift_of_hasForwardSlack`, argument 23 `hslk`), not on `scripts/nolints.json`'s baseline. **Pre-existing and out of this task's scope**, not a regression introduced here: the file is clean in the working tree, its last commit (`ea08629d8`, task 850 phase 7) is an ancestor of this task's base `2dee31e7a`, it references none of the four declarations this task changed, and no `.lean` file under `FormalSystem/` is dirty. Reported rather than re-pinned — `--update` would grandfather it, and touching another task's declaration is out of scope | Gate transcript: `PASS INV`, `PASS C14` (both assertions, including "every pinned declaration matches its axiom baseline"), `PASS C15` (both assertions), `PASS C20`, `PASS C21`, `PASS C27`, `PASS C9D`; the single `FAIL` line is C16. The declaration is already named in `specs/ROADMAP.md` and in tasks 761/850 artifacts |
+
+**Verification notes (batch deferral)**: per this dispatch's `## Batch Gate Deferral`, the
+complete gate set was **deferred to the batch stage** rather than independently run in full. The
+phase's declared `**Verification Tier**: full` above is unchanged. What was run here, scoped to
+the files this phase actually touched: the guarded unscoped `lake build` (exit 0, 2957 jobs, 0
+`error:`), `check-module-invariants.sh` (every group PASS except the pre-existing C16 above),
+`--emit-inventory --check` (exit 0), `typst-sync-check.sh` (exit 0, all four checks),
+`check-metalogic-cycles.sh` (exit 0, no new upward edge from Phase 4's `PlusReversal` import),
+`check-evidence-probes.sh` (exit 0; `limit-closure-schema/lc-schema-omega-chain` still `WIRED`
+and `PASS`), and `.claude/scripts/check-task-references.sh` (exit 0).
+
+**Scope Hypothesis outcome**: four `docs/theorem-index.md` touches landed exactly as predicted
+(one corrected `lcN_plusValidZTime` cell, two refreshed Statement cells, one new corollary row),
+and the C14 pair matched — one `C14LEAN` line and one `C14_BASELINE` line, both appended last,
+with C14 passing on the first run and no existing row moving. The measured corollary profile is
+`[propext, Classical.choice, Quot.sound]` (`pcq`), confirming the carried expectation; `stg_step`
+(`[propext, Quot.sound]`) and `omega_chain` (`pcq`) re-measured unchanged. The doc-sync half came
+in at **three** surfaces, not four: `typst/generated/status.typ` plus two README inventory blocks
+(`FormalSystem/PlusLanguage/README.md` and `README.md`). `FormalSystem/README.md` was already
+byte-settled and `--emit-inventory` did not rewrite it.
+
 ---
 
 ## Lean Challenge Statements
@@ -650,25 +677,25 @@ of record and research verified it elaborates as written.
 
 ## Testing & Validation
 
-- [ ] Guarded scoped build green for `FormalSystem.PlusLanguage.PlusOmegaChain`.
-- [ ] Guarded scoped build green for `FormalSystem.PlusLanguage.PlusLCSchema`.
-- [ ] Guarded scoped build green for `FormalSystem.PlusLanguage`.
-- [ ] Guarded unscoped build (`-- build`, no module) green.
-- [ ] Zero `sorry` in `PlusOmegaChain.lean` and `PlusLCSchema.lean`; zero vacuous definitions.
-- [ ] The landed `omega_chain` conclusion carries all three restored clauses (`c 0 = s₀`,
+- [x] Guarded scoped build green for `FormalSystem.PlusLanguage.PlusOmegaChain`.
+- [x] Guarded scoped build green for `FormalSystem.PlusLanguage.PlusLCSchema`.
+- [x] Guarded scoped build green for `FormalSystem.PlusLanguage`.
+- [x] Guarded unscoped build (`-- build`, no module) green.
+- [x] Zero `sorry` in `PlusOmegaChain.lean` and `PlusLCSchema.lean`; zero vacuous definitions.
+- [x] The landed `omega_chain` conclusion carries all three restored clauses (`c 0 = s₀`,
       agreement below `s₀`, `∀ k, P k ρ (c k) (c (k + 1))`) — read from the committed signature,
       not inferred from a green build.
-- [ ] `bash scripts/check-module-invariants.sh` green, with C14 matching the re-measured baseline
-      and its diff naming only the new corollary line.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` green (README inventory
+- [x] `bash scripts/check-module-invariants.sh` green, with C14 matching the re-measured baseline
+      and its diff naming only the new corollary line. *(deviation: altered — C14 passed on the first run with no diff at all; the script's overall exit is 1 on the pre-existing out-of-scope C16 `env_linter` finding alone, see Phase 5's Reasoned Exclusions)*
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` green (README inventory
       blocks byte-settled).
-- [ ] `bash scripts/typst-sync-check.sh` green (all four checks).
-- [ ] `bash scripts/check-metalogic-cycles.sh` green against its pre-task baseline.
-- [ ] `bash scripts/check-evidence-probes.sh` green.
-- [ ] `bash .claude/scripts/verify-deploy.sh` green for the touched doc surface.
-- [ ] No declaration named `LCU` exists anywhere under `FormalSystem/`, and no validity claim is
+- [x] `bash scripts/typst-sync-check.sh` green (all four checks).
+- [x] `bash scripts/check-metalogic-cycles.sh` green against its pre-task baseline.
+- [x] `bash scripts/check-evidence-probes.sh` green.
+- [ ] `bash .claude/scripts/verify-deploy.sh` green for the touched doc surface. *(deviation: skipped — no verify-deploy gate covers `docs/theorem-index.md` or project-root `scripts/**`; this task touches no `.claude/**` or `agent-system/**` file, and the deployed tree was already stale before this task. Deferred to the batch stage per the dispatch's Batch Gate Deferral; see Phase 5's Reasoned Exclusions)*
+- [x] No declaration named `LCU` exists anywhere under `FormalSystem/`, and no validity claim is
       made about it — the Non-Goal confirmed mechanically, not assumed.
-- [ ] All three wrong-`LCU` surfaces closed together: `grep -rn "n = 1 instance"` over
+- [x] All three wrong-`LCU` surfaces closed together: `grep -rn "n = 1 instance"` over
       `docs/theorem-index.md` and `FormalSystem/PlusLanguage/PlusLCSchema.lean` returns nothing on
       a line mentioning `LCU`.
 

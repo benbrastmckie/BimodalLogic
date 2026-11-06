@@ -1,29 +1,43 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-11-06T01:12:23Z",
+  "completed_at": "2026-11-06T02:10:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/871_lcu_omega_chain_record_repair/plans/01_lcu-omega-chain-record-repair.md",
-      "summary": "Five-phase corrective plan: restore omega_chain/stg_step to full probe fidelity with the one call site adapted atomically, repair the PlusOmegaChain docstrings, correct the false LCU claim, add the one-line backward LC_n corollary, then close the record surfaces (theorem-index rows, C14 baseline pair, generated doc-sync surfaces) under the complete gate set."
+      "type": "summary",
+      "path": "specs/871_lcu_omega_chain_record_repair/summaries/01_lcu-omega-chain-record-repair-summary.md",
+      "summary": "Restored omega_chain/stg_step to full probe fidelity, corrected the false LCU-is-lcN-1 claim on four surfaces, and landed the backward LC_n corollary."
     }
+  ],
+  "completion_data": {
+    "completion_summary": "Restored stg_step and omega_chain to the evidence probe's full signature (segment-property parameter P, its stability hypothesis hP, the strengthened continuation hypothesis, and the three dropped conclusions c 0 = s_0, agreement below s_0, and the segment property on every consecutive marker pair), with lcN_plusValidInt's single call site adapted. Corrected the false claim that LCU is the n = 1 instance of lcN on all four surfaces that carried it. Landed lcN_reflectTime_plusValidZTime as the one-line plusValidIn_reflectTime corollary, with its measured pcq axiom profile pinned into the C14 baseline pair. Zero sorry, zero vacuous definitions, axiom count unchanged, full lake build green at every phase end.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/PlusLanguage/PlusOmegaChain.lean",
+    "FormalSystem/PlusLanguage/PlusLCSchema.lean",
+    "FormalSystem/PlusLanguage/README.md",
+    "README.md",
+    "docs/theorem-index.md",
+    "scripts/check-module-invariants.sh",
+    "typst/generated/status.typ",
+    "specs/871_lcu_omega_chain_record_repair/plans/01_lcu-omega-chain-record-repair.md",
+    "specs/871_lcu_omega_chain_record_repair/summaries/01_lcu-omega-chain-record-repair-summary.md"
   ],
   "metadata": {
-    "session_id": "sess_1793911571_152ebe_871",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1793911571_152ebe",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 3,
-    "dependency_waves": [[1], [2, 3], [4], [5]]
-  },
-  "memory_candidates": [
-    {
-      "content": "In the BimodalLogic repository, any plan whose phases edit a .lean file incurs a generated doc-sync obligation the research phase will not surface: plan-file-scope-harvest.sh augments the harvested file_scope with typst/generated/status.typ and every registered README generated-inventory block covering the touched directory's ancestor chain. These are machine-owned and gated (scripts/typst-sync-check.sh for status.typ, check-module-invariants.sh --emit-inventory --check for the README blocks), so a Lean plan that omits a regeneration step fails its final gate after every substantive phase has already committed. Note the ordering constraint: typst-sync-check.sh --fix reads a per-declaration axiom report out of the build, so it must run AFTER the unscoped build, not before. Planning technique: run plan-file-scope-harvest.sh against the draft plan and reconcile its output against the declared Files to modify blocks before returning; a harvested path absent from the declarations is a missing phase task, not harvester noise.",
-      "category": "PATTERN",
-      "source_artifact": "specs/871_lcu_omega_chain_record_repair/plans/01_lcu-omega-chain-record-repair.md",
-      "confidence": 0.82,
-      "suggested_keywords": ["lean-plan", "doc-sync", "file-scope-harvest", "status.typ", "readme-inventory", "plan-authoring"]
-    }
-  ],
-  "dispatch_seq": 5
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "dispatch_seq": 13,
+    "notes": "check-module-invariants.sh exits 1 on a single PRE-EXISTING C16 env_linter finding outside this task's scope (FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136, mem_cellAt_of_shift_of_hasForwardSlack argument 23). Attribution evidence: that file is clean in the working tree, its last commit is an ancestor of this task's base 2dee31e7a, it references none of the four declarations this task changed, and no .lean file under FormalSystem/ is dirty. Every other group PASSES (INV, C14 both assertions, C15 both assertions, C20, C21, C27, C9D). The lean-sorry-census vacuous grep also reports 1 pre-existing hit at FormalSystem/Examples/TemporalStructures.lean:495, byte-identical at the base commit and outside this task's files; vacuous_count above is this task's own contribution, which is 0. verify-deploy.sh was deferred to the batch stage per the dispatch's Batch Gate Deferral and is additionally not a covering gate for this task's files, which touch no .claude/** or agent-system/** path; recorded in Phase 5's Reasoned Exclusions."
+  }
 }
