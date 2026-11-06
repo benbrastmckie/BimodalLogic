@@ -37,8 +37,8 @@ The plan this module executes called for general disjunctive and conjunctive nor
 Boolean skeleton of a `USForm`, followed by a clause-by-clause match of each resulting clause
 against one of GHR's eight cases. What is built instead is the **`untl`-literal normal form** —
 the specialization of those normal forms that isolates `±untl B A`, which is the only thing
-Lemma 10.2.4 consumes. This is a recorded deviation, not an oversight; see this task's
-`issues.jsonl` and the plan's Phase 20 record.
+Lemma 10.2.4 consumes. This is a recorded deviation, not an oversight: the plan's Phase 20
+`#### Reasoned Exclusions` table carries the full record.
 
 The device is `substU`: replace every `untl B A` occurrence by `⊤` or by `⊥`. Under
 `IsUTyped A B` the recursion never has to enter a `snce` (those are `untl`-free) and never meets

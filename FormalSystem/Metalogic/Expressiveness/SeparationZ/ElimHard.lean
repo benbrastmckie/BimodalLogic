@@ -37,8 +37,8 @@ The printed formula is
 ```
 
 It is **false** over the integer flow, and so is the bracketing that attaches
-`[A ∨ (B ∧ U(A,B))]` to the first disjunct only. Two models refute them, both compiled in
-`specs/867_formalize_gabbay_separation_ztime/prototype/`:
+`[A ∨ (B ∧ U(A,B))]` to the first disjunct only. Two models refute them, both compiled as probe
+theorems in the Cases 5-8 reduction prototype that accompanies this module:
 
 * `a(0)`, `q ∈ {1,2}`, `A(1)`, `B ≡ ⊥`, at `t = 3`. The left-hand side holds — the event's
   `U(A,B)@0` is witnessed by the adjacent `A`-point `1` over an empty guard interval, and the
@@ -478,11 +478,10 @@ produces, each at the instantiation recorded in the section docstring above.
 that is false. The error is one of orientation: the **second** disjunct's event
 `¬q ∧ ¬a ∧ U(A,B)` strictly implies the third's `¬q ∧ U(A,B)`, and `S` is monotone in its event
 argument, so it is the second that is redundant, never the third. The model
-`a ∈ {0,4}`, `q ≡ ⊥`, `A(5)`, `B(5)` at `t = 5` — compiled as `v₄` in
-`specs/867_formalize_gabbay_separation_ztime/prototype/cases-5-8-reduction.lean` — is a point at
-which the third disjunct is the **only** true one of the three, so dropping it would make the
-expansion unsound. Do not reduce this to two disjuncts, even if a tactic closes the equivalence
-without one.
+`a ∈ {0,4}`, `q ≡ ⊥`, `A(5)`, `B(5)` at `t = 5` — compiled as the probe model `v₄` in the
+Cases 5-8 reduction prototype — is a point at which the third disjunct is the **only** true one
+of the three, so dropping it would make the expansion unsound. Do not reduce this to two
+disjuncts, even if a tactic closes the equivalence without one.
 -/
 def case8Rhs (a q A B : USForm) : USForm :=
   ((case2Rhs a USForm.top A B).neg.or
