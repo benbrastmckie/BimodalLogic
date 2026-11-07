@@ -1,0 +1,35 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/743_typst_sync_check1_namespace_resolution/reports/01_namespace-resolution-feasibility.md",
+      "summary": "Confirms Check 1's dotted-identifier branch still does literal grep with no namespace resolution; surveys current citations (only one leaf-dotted citation exists today, resolving by accidental docstring match); validates a build-free, comment-aware namespace-stack resolver against the live FormalSystem/ tree; recommends Option (a) with a concrete design, with Option (b) as fallback and Option (c) explicitly rejected."
+    }
+  ],
+  "next_steps": "Run /orchestrate 743 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1794079850_b31491_743",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 6
+  },
+  "dispatch_seq": 1,
+  "memory_candidates": [
+    {
+      "content": "scripts/typst-sync-check.sh's Check 1 dotted-identifier branch (bare identifier / dotted qualified name, no '/' and no path-like extension) is a pure literal 'grep -rl -F <name>' over LEAN_SRC_ROOTS (FormalSystem:BimodalTools), excl. Boneyard/ -- it performs no namespace parsing, so a correctly fully-qualified namespaced declaration citation only resolves if its exact dotted string happens to appear verbatim somewhere in a .lean file (typically a docstring cross-reference), not because the name was actually resolved against open namespaces.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/743_typst_sync_check1_namespace_resolution/reports/01_namespace-resolution-feasibility.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["typst-sync-check", "Check 1", "namespace resolution", "literal grep", "FormalSystem"]
+    },
+    {
+      "content": "A build-free (regex/text only, no lake) namespace-stack resolver for Lean 4 source -- tracking a per-file namespace push/pop stack keyed on exact namespace/end argument match, after stripping -- line comments and nested /- ... -/ block comments -- correctly assembles fully-qualified declaration names and runs in well under a second over a ~900-file, 16.7k-declaration tree. Comment-stripping is not optional: a naive version without it over-collects by ~1.3% by matching keyword-shaped text inside docstrings.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/743_typst_sync_check1_namespace_resolution/reports/01_namespace-resolution-feasibility.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean4", "namespace parsing", "build-free resolver", "comment stripping", "regex"]
+    }
+  ]
+}
