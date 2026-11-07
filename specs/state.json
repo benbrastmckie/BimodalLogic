@@ -658,14 +658,14 @@
     {
       "project_number": 867,
       "project_name": "formalize_gabbay_separation_ztime",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "description": "PRIORITY AND RATIONALE RULING (2026-11-05, user): this task STAYS on the L-plus path, sequenced AFTER the ZTime decidability front, and its consumers are re-ordered. FIRST consumer: the L-plus ZTime completeness programme -- the doubled (two one-sided, clock-anchored) automaton route located in specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md is sufficient in shape only conditional on `SeparationOver TaskFrame.IsZTime`, and the until-form LCU waits on it. SECOND consumer: the L^▷ translation (making `tr` executable and the ZTime/RTime transfer rows unconditional), which is now a secondary line of investigation. Read the WHY NOW paragraph below in that order.\n\nIMPLEMENTATION TASK, sizeable: formalize Gabbay separation over discrete time for PlusFormula, discharging the SeparationOver hypothesis and making the open-future translation executable.\n\nWHY NOW. This was proposed as recommendation R4 of specs/854_open_future_modal_lplus_definability/reports/01_open-future-definability-verdict.md and deliberately NOT filed there, on the stated condition that it be filed \"only if a consumer needs the executable translation\". Two consumers now exist. First, FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean's two headline results, openValidIn_ztime_iff_tr and openValidIn_rtime_iff_tr, are conditional on SeparationOver -- a hypothesis standing for cited literature that this tree does not formalize -- so the unconditional verdict that the open-future modal is definable at ZTime and RTime lives only in that module's docstring with its citation, not in a pinned row. Second, any transfer of decidability through the translation needs tr to be computable, not merely to exist.\n\nWHAT TO FORMALIZE. GHR Lemmas 10.2.1 through 10.2.8 -- the eight eliminations plus the junction-depth induction -- for PlusFormula over frames satisfying IsZTime, discharging SeparationOver TaskFrame.IsZTime. The reference is Gabbay, Hodkinson and Reynolds, Theorem 10.2.9 over the integers; Theorem 10.3.20 is the Dedekind-complete counterpart and is the natural second target, not necessarily this task's.\n\nWHAT IS ALREADY LANDED AND MUST NOT BE REDONE. The elimination layer that CONSUMES separation is complete and compiled in OpenFutureElimination.lean: PastDet, FutDet, the syntactic bridges, OfutP and OpastP, the eliminations ofutP_or_iff and opastP_or_iff with their CNF forms ofutP_sepForm_iff and opastP_sepForm_iff, the SeparationOver predicate itself, tr, and the two validity-transfer results. This task supplies the hypothesis those results take; it does not restate them and must not weaken any of their signatures.\n\nSIZING, AND AN HONEST WARNING. Report 01 of task 854 rates this as a sorry-free path that EXISTS and is SIZEABLE, comparable to a multi-phase implementation round. Expect the junction-depth induction to be the expensive part. Before committing, weigh it against the MSO/Rabin decidability route, which reaches a decidability answer for the open language at ZTime with no translation at all -- if that route holds, this task's value is confined to making the definability verdict unconditional and to giving an executable tr, which is real but narrower than it looks.\n\nSCOPE. The separation development and the discharge of SeparationOver at IsZTime; the theorem-index rows that become unconditional as a result, restated from their conditional form; the re-measured axiom baselines. Do NOT touch FormalSystem/Metalogic/Independence/ -- the non-definability result at Base and Dense is a separate verdict and is unaffected, since separation does not hold there. Do not alter the metalogic-cycles allowlist.\n\nGATES. Zero sorry, zero vacuous definitions, no new axiom beyond what the eliminations already carry. Guarded scoped build then unscoped; check-module-invariants.sh and check-metalogic-cycles.sh green against their pre-task baselines; every axiom profile measured, never hand-typed. If the development stalls, a precisely located obstruction -- which elimination resists formalization and why -- is a legitimate [COMPLETED WITH EXCLUSIONS] outcome.",
       "topic": "metalogic",
       "created": "2026-11-05T02:29:03Z",
-      "last_updated": "2026-11-06T19:24:05Z",
+      "last_updated": "2026-11-07T01:11:15Z",
       "audit_override": "User confirmed via AskUserQuestion after reviewing the audit: all verdicts semantic-only (0.40-0.50, mechanical_class none/scope-blind, no shared paths); nearest match #559 explicitly carves out this content",
-      "session_id": "sess_1793993028_251d86",
+      "session_id": "sess_1794012989_4a4d20",
       "artifacts": [
         {
           "path": "specs/867_formalize_gabbay_separation_ztime/reports/01_gabbay-separation-ztime-plusformula.md",
@@ -673,16 +673,16 @@
           "summary": "Architecture research for discharging SeparationOver TaskFrame.IsZTime: full GHR 10.2 step map extracted from the corpus, carrier normalization to Z via plusValidZTime_iff_plusValidInt, an abstract-leaf USForm route that removes the uniform-substitution obstruction, a verified refutation of GHR's printed Case 5 formula, and a 9-phase decomposition with the two stall candidates named."
         },
         {
-          "path": "specs/867_formalize_gabbay_separation_ztime/plans/03_structural-route-measure-split.md",
-          "type": "plan"
-        },
-        {
           "path": "specs/867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-6-utype-measure-summary.md",
           "type": "summary",
           "summary": "Phase 22.3 implementation summary: uTypeCount and GHR Lemma 10.2.6, with the confirmed-false Scope Hypothesis record."
+        },
+        {
+          "path": "specs/867_formalize_gabbay_separation_ztime/plans/04_landed-device-resize-10-2-7-10-2-8.md",
+          "type": "plan"
         }
       ],
-      "next_artifact_number": 4,
+      "next_artifact_number": 5,
       "file_scope": [
         "Boneyard/Kamp/KampWeakCanonical/Separation/README.md",
         "FormalSystem.lean",

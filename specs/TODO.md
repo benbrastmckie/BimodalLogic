@@ -6,7 +6,7 @@ next_project_number: 891
 
 ## Task Order
 
-*Updated 2026-11-06. Generated from state.json dependency graph.*
+*Updated 2026-11-07. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -122,7 +122,7 @@ next_project_number: 891
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-867 [IMPLEMENTING] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
+867 [PLANNED] — PRIORITY AND RATIONALE RULING (2026-11-05, user): this task...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 890 [RESEARCHED] — Record the GHR94 Lemma 10.2.3 Case 5 erratum in the Typst...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
@@ -721,13 +721,13 @@ GATES. Zero sorry, zero vacuous definitions; a theorem-index row per result with
 ---
 
 ### 867. Formalize gabbay separation ztime
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [867_formalize_gabbay_separation_ztime/reports/01_gabbay-separation-ztime-plusformula.md]
-- **Plan**: [867_formalize_gabbay_separation_ztime/plans/03_structural-route-measure-split.md]
 - **Summary**: [867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-6-utype-measure-summary.md]
+- **Plan**: [867_formalize_gabbay_separation_ztime/plans/04_landed-device-resize-10-2-7-10-2-8.md]
 
 **Description**: PRIORITY AND RATIONALE RULING (2026-11-05, user): this task STAYS on the L-plus path, sequenced AFTER the ZTime decidability front, and its consumers are re-ordered. FIRST consumer: the L-plus ZTime completeness programme -- the doubled (two one-sided, clock-anchored) automaton route located in specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md is sufficient in shape only conditional on `SeparationOver TaskFrame.IsZTime`, and the until-form LCU waits on it. SECOND consumer: the L^▷ translation (making `tr` executable and the ZTime/RTime transfer rows unconditional), which is now a secondary line of investigation. Read the WHY NOW paragraph below in that order.
 
