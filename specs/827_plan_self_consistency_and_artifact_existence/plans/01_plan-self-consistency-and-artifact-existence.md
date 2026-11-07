@@ -195,39 +195,41 @@ outside `plan-format.md`.
 
 ---
 
-### Phase 2: Author the Correction-Target-Existence Provisions [NOT STARTED]
+### Phase 2: Author the Correction-Target-Existence Provisions [COMPLETED]
 
 **Goal**: `plan-format.md` carries item 2(a)'s general confirm-at-authoring-time rule and item
 2(b)'s stronger sidecar prohibition, with the durable record named as the sanctioned carrier.
 
 **Tasks**:
 
-- [ ] Locate the `Files to modify` field documentation's "Consumers of this field" subsection and
+- [x] Locate the `Files to modify` field documentation's "Consumers of this field" subsection and
   the "Whole-tree-claim declaration rule" subsection that follows it; the new subsection goes
   after the consumers list, as additional authoring guidance about what an entry's annotation
-  means, not a new field or a new consumer.
-- [ ] State rule (a) in its own paragraph: when a plan names an existing artifact as the thing to
+  means, not a new field or a new consumer. *(completed)*
+- [x] State rule (a) in its own paragraph: when a plan names an existing artifact as the thing to
   CORRECT, AMEND or RETIRE — as distinct from one the phase will CREATE — the author confirms at
   authoring time that it exists, and the task says what the implementer does if it does not.
   Include the reason in one sentence: a correction task against an absent path is not a task; it
   is a sentence that cannot be executed, leaving the implementer only the choice of skipping it
-  or inventing a target.
-- [ ] State rule (b) in its own paragraph as the stronger prohibition: a plan MUST NOT make a
+  or inventing a target. *(completed)*
+- [x] State rule (b) in its own paragraph as the stronger prohibition: a plan MUST NOT make a
   phase's goal turn on correcting a machine-written orchestration sidecar whose existence is
   contingent on whether a particular auxiliary dispatch has run and whose content, if it appears,
   is written by that dispatch rather than by anyone the plan can consult. Name the sanctioned
   carrier for a route decision, a retirement or a withdrawn recommendation: the durable record —
   the task description in `specs/state.json`, or a file under the task's own `records/`
-  directory.
-- [ ] Add the one-sentence sharpest-argument line: an artifact's existence is a quantity the plan
+  directory. *(completed)*
+- [x] Add the one-sentence sharpest-argument line: an artifact's existence is a quantity the plan
   does not control, so a plan that assumes it is wrong the moment the quantity moves, in either
   direction. Write it as a general claim about the class; do not assert the current presence or
-  absence of any specific path.
-- [ ] Confirm the `.blocker-research.json` filename shape may be cited as a durable illustration
+  absence of any specific path. *(completed)*
+- [x] Confirm the `.blocker-research.json` filename shape may be cited as a durable illustration
   of the sidecar CLASS only if no sentence around it asserts whether such a file is currently
-  present; otherwise describe the class without the filename.
-- [ ] Read the diff and confirm the new prose asserts no moving quantity as a live fact, carries
+  present; otherwise describe the class without the filename. *(completed: described the class
+  without citing the filename)*
+- [x] Read the diff and confirm the new prose asserts no moving quantity as a live fact, carries
   no task number, no record-versioning phrasing, and no run-specific names or phase numbers.
+  *(completed: hygiene grep clean after rewording one phrase to avoid an ambiguous lint match)*
 
 **Timing**: 0.75 hours
 
