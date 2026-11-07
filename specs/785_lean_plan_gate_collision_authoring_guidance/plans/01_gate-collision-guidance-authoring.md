@@ -1,7 +1,7 @@
 # Implementation Plan: Task #785
 
 - **Task**: 785 - Record the Lean plan-authoring gate-collision facts in the lean extension source store
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.25 hours
 - **Dependencies**: None (task 840 depends on this task's output file)
 - **Research Inputs**: specs/785_lean_plan_gate_collision_authoring_guidance/reports/01_gate-collision-guidance-siting.md; live gate-set re-measurement recorded in `### Revision Integration` below

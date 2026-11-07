@@ -1,25 +1,25 @@
 {
-  "status": "partial",
-  "dispatch_seq": 11,
-  "phases_completed": 2,
+  "status": "implemented",
+  "dispatch_seq": 16,
+  "phases_completed": 3,
   "phases_total": 3,
-  "summary": "Authored the nine-condition plan-authoring-gate-collisions.md guidance file in the lean extension's source store and wired it (index-entries.json entry, EXTENSION.md referrer). All of this task's own deliverable work (Phases 1 and 2, plus Phase 3's wiring and hygiene sweep) is complete and verified. Phase 3 closes PARTIAL solely because the final deploy-headless.sh verification reported RESULT=landed_verify_red, not landed_verify_clean, due to pre-existing uncommitted foreign changes in the shared nvim config repo that were already present before this task began.",
+  "summary": "Re-measured the deploy verification gate set from scratch rather than acting on the prior handoff's stale foreign-file attribution (those three files are now committed and were confirmed never to have been in the failing eager-load set). Trimmed this task's own EXTENSION.md referrer bullet to its structural floor (172 B -> 114 B, committed as d3e2b1b42 in /home/benjamin/.config/nvim) and proved by counterfactual that the residual eager-load overage (182 B even with this task's entire contribution removed) is unreachable by any in-scope action. deploy-headless.sh reported RESULT=landed_verify_red (3 of 41 checks: eager-load, one pre-existing shellcheck finding, two pre-existing dead-command-recommendation findings), all pre-existing and naming no file this task touched. Phase 3 closed [COMPLETED WITH EXCLUSIONS] with a three-row Reasoned Exclusions table; the task's own deliverable (the nine-condition guidance file and its wiring) was already complete and unchanged.",
   "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/785_lean_plan_gate_collision_authoring_guidance/plans/01_gate-collision-guidance-authoring.md",
+      "summary": "All three phases closed; Phase 3 closed [COMPLETED WITH EXCLUSIONS] with the Reasoned Exclusions table."
+    },
     {
       "type": "summary",
       "path": "specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md",
-      "summary": "Full implementation summary including the four traced-foreign deploy findings and the resume action."
+      "summary": "Final implementation summary covering the attribution table, the eager-load trim and counterfactual, and the raised-not-closed residual findings."
     },
     {
       "type": "handoff",
-      "path": "specs/785_lean_plan_gate_collision_authoring_guidance/handoffs/phase-3-handoff-20261107T011000Z.md",
-      "summary": "Phase 3 handoff with blocker detail and concrete resume command."
+      "path": "specs/785_lean_plan_gate_collision_authoring_guidance/handoffs/phase-3-handoff-20261107T224446Z.md",
+      "summary": "Closing handoff superseding the prior phase-3 handoff's stale attribution."
     }
   ],
-  "blockers": [
-    {
-      "description": "deploy-headless.sh reports RESULT=landed_verify_red instead of RESULT=landed_verify_clean. All four failing checks (doc-lint drift on tts-stt-integration.md/neovim-integration.md, eager-load baseline overage, a shellcheck finding in lean-plan-compliance-check.sh, two dead-command-recommendation findings re: /ide in memory-extension docs) trace to pre-existing uncommitted foreign changes in the shared nvim config repo (agent-system/extensions/lean/rules/lean4.md, agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md, agent-system/extensions/core/scripts/lake-build-guard.sh), present before this task began and outside this task's file scope. No further attempt on this phase can close it without either committing or reverting that foreign work, which this task must not do.",
-      "resolution": "Once the three foreign files are committed by their owning session or reverted by an operator, re-run: timeout 540 bash /home/benjamin/.config/nvim/.claude/scripts/deploy-headless.sh (Bash tool timeout parameter raised to 600000) from /home/benjamin/.config/nvim, and confirm RESULT=landed_verify_clean. Then close Phase 3 and this task [COMPLETED] -- no further edit to this task's own deliverable is needed."
-    }
-  ]
+  "blockers": []
 }

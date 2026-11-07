@@ -16,8 +16,8 @@
     {"id": 10, "description": "3.10 - Trim this task's own eager-load contribution to its structural floor", "status": "done", "files_touched": ["agent-system/extensions/lean/EXTENSION.md"]},
     {"id": 11, "description": "3.11 - Establish that the residual eager overage is not closable in scope, by measurement", "status": "done", "files_touched": []},
     {"id": 12, "description": "3.12 - Confirm no out-of-scope file and no baseline was touched", "status": "done", "files_touched": []},
-    {"id": 13, "description": "3.13 - Re-deploy and close the phase on the attributed record", "status": "done", "files_touched": []},
-    {"id": 14, "description": "3.14 - Record the closing decisions in the completion summary", "status": "done", "files_touched": ["specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md"]}
+    {"id": 13, "description": "3.13 - Re-deploy and close the phase on the attributed record", "status": "done", "files_touched": ["specs/785_lean_plan_gate_collision_authoring_guidance/plans/01_gate-collision-guidance-authoring.md"]},
+    {"id": 14, "description": "3.14 - Record the closing decisions in the completion summary", "status": "done", "files_touched": ["specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md", "specs/785_lean_plan_gate_collision_authoring_guidance/handoffs/phase-3-handoff-20261107T224446Z.md"]}
   ],
   "current_objective": 14,
   "approaches_tried": [
