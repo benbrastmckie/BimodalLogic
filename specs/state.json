@@ -2599,20 +2599,21 @@
           "summary": "Research report: confirms target file path via task 840's dependency, resolves item 2's siting question, verifies all nine gate-collision items' mechanical facts, flags a stale allowlist-size comment in check-metalogic-cycles.sh."
         },
         {
-          "path": "specs/785_lean_plan_gate_collision_authoring_guidance/plans/01_gate-collision-guidance-authoring.md",
-          "type": "plan",
-          "summary": "Three-phase plan: conditions 1-4, conditions 5-9, then wiring plus hygiene sweep plus redeploy."
-        },
-        {
           "path": "specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md",
           "type": "summary",
           "summary": "Full implementation summary including the four traced-foreign deploy findings and the resume action."
+        },
+        {
+          "path": "specs/785_lean_plan_gate_collision_authoring_guidance/plans/01_gate-collision-guidance-authoring.md",
+          "type": "plan",
+          "summary": "All three phases closed; Phase 3 closed [COMPLETED WITH EXCLUSIONS] with the Reasoned Exclusions table."
         }
       ],
       "created": "2026-10-14T05:28:18Z",
       "last_updated": "2026-11-07T22:46:04Z",
       "session_id": "sess_1794089411_892cf6",
-      "next_artifact_number": 2
+      "next_artifact_number": 3,
+      "completion_summary": "Closed the task's final phase by re-measuring the deploy gate set from scratch (superseding a stale foreign-file attribution), trimming this task's own eager-load contribution to its structural floor, and proving by counterfactual that the residual gate overage is unreachable by any action in this task's file scope. Phase 3 closed [COMPLETED WITH EXCLUSIONS] on three pre-existing, out-of-scope findings; the task's own deliverable (the nine-condition guidance file and its wiring) was already complete and unchanged."
     },
     {
       "project_number": 787,

@@ -3664,8 +3664,8 @@ WHAT WOULD MAKE THIS A COMPLETE RESULT EVEN IF NO LOCK IS ADDED. A reasoned find
 - **Dependencies**: None
 - **Parent**: Task 778
 - **Research**: [785_lean_plan_gate_collision_authoring_guidance/reports/01_gate-collision-guidance-siting.md]
-- **Plan**: [785_lean_plan_gate_collision_authoring_guidance/plans/01_gate-collision-guidance-authoring.md]
 - **Summary**: [785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md]
+- **Plan**: [785_lean_plan_gate_collision_authoring_guidance/plans/01_gate-collision-guidance-authoring.md]
 
 **Description**: Record, in the lean extension's source store, the three gate-collision facts a Lean implementation plan must anticipate before it is written: that any change to Lean source line counts trips TWO independent generated surfaces rather than one, that verify-deploy.sh's target argument is a deploy-tree root rather than an extension subdirectory, and that a sweep criterion asserting "matches nothing" over paths which deliberately retain refuted or pinned bodies is unsatisfiable by construction.
 
