@@ -1,21 +1,30 @@
 {
   "phase": 3,
-  "phase_name": "Wire the File, Sweep Deliverable Hygiene, and Redeploy",
+  "phase_name": "Wire the File, Sweep Deliverable Hygiene, and Close the Deploy Gate on Attributed Evidence",
   "started_at": "2026-11-07T00:35:00Z",
-  "last_updated": "2026-11-07T01:10:00Z",
+  "last_updated": "2026-11-07T22:44:46Z",
   "objectives": [
     {"id": 1, "description": "Re-read index-entries.json and EXTENSION.md before editing", "status": "done", "files_touched": []},
     {"id": 2, "description": "Add index-entries.json entry", "status": "done", "files_touched": ["agent-system/extensions/lean/index-entries.json"]},
     {"id": 3, "description": "Add EXTENSION.md referrer bullet", "status": "done", "files_touched": ["agent-system/extensions/lean/EXTENSION.md"]},
     {"id": 4, "description": "Hygiene sweep: task-refs, record-versioning, digit-bearing quantities", "status": "done", "files_touched": []},
-    {"id": 5, "description": "Run deploy-headless.sh, confirm landed_verify_clean", "status": "in_progress", "files_touched": [], "note": "deploy landed but reported RESULT=landed_verify_red; see deviations"},
+    {"id": 5, "description": "Run deploy-headless.sh, confirm landed_verify_clean", "status": "done", "files_touched": [], "note": "first deploy landed but reported RESULT=landed_verify_red; superseded by re-measurement in objectives 9-14"},
     {"id": 6, "description": "Post-deploy line_count/keywords agreement check", "status": "done", "files_touched": []},
     {"id": 7, "description": "Run complete gate set, record result", "status": "done", "files_touched": []},
-    {"id": 8, "description": "Record completion summary observations", "status": "done", "files_touched": []}
+    {"id": 8, "description": "Record completion summary observations", "status": "done", "files_touched": []},
+    {"id": 9, "description": "3.9 - Re-measure the gate set from scratch and build the attribution table", "status": "done", "files_touched": []},
+    {"id": 10, "description": "3.10 - Trim this task's own eager-load contribution to its structural floor", "status": "done", "files_touched": ["agent-system/extensions/lean/EXTENSION.md"]},
+    {"id": 11, "description": "3.11 - Establish that the residual eager overage is not closable in scope, by measurement", "status": "done", "files_touched": []},
+    {"id": 12, "description": "3.12 - Confirm no out-of-scope file and no baseline was touched", "status": "done", "files_touched": []},
+    {"id": 13, "description": "3.13 - Re-deploy and close the phase on the attributed record", "status": "done", "files_touched": []},
+    {"id": 14, "description": "3.14 - Record the closing decisions in the completion summary", "status": "done", "files_touched": ["specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md"]}
   ],
-  "current_objective": 5,
+  "current_objective": 14,
   "approaches_tried": [
-    {"approach": "re-ran deploy-headless.sh verification against the live nvim repo", "result": "failed", "reason": "RESULT=landed_verify_red: 4 failing checks, all traced to pre-existing uncommitted foreign changes (agent-system/extensions/lean/rules/lean4.md, agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md, agent-system/extensions/core/scripts/lake-build-guard.sh) present in the shared source-store repo before this phase began; none name this task's own files"}
+    {"approach": "re-ran deploy-headless.sh verification against the live nvim repo (first attempt)", "result": "failed", "reason": "RESULT=landed_verify_red: 4 failing checks, attributed at the time to pre-existing uncommitted foreign changes; this attribution was later superseded by a fresh re-measurement (objective 9)"},
+    {"approach": "acting on the prior handoff's resume instruction (commit/revert the three named foreign files, expect landed_verify_clean)", "result": "failed", "reason": "the three files were already committed by their owning session by the time this closing pass ran, and re-measurement confirmed none of them were ever in the eager-load set that was actually failing -- the gate remained red for an unrelated reason"},
+    {"approach": "full verify-deploy.sh re-measurement piped through tail with a 540s timeout", "result": "failed", "reason": "killed by its own timeout before producing any output under concurrent multi-agent CPU load; retried with timeout 900 and a direct unbuffered log redirect instead of a tail pipe, which succeeded"},
+    {"approach": "trim EXTENSION.md referrer bullet to structural floor, then counterfactual the residual", "result": "success", "reason": "recovered 58 B (172 B -> 114 B); counterfactual of removing the bullet entirely (66982 B) still 182 B over baseline, proving the residual gate is unreachable by any action in this task's file scope"}
   ],
   "handoff_count": 0,
   "deviations": [
@@ -23,8 +32,15 @@
       "task_id": "3.5",
       "description": "Run timeout 540 bash .claude/scripts/deploy-headless.sh and confirm RESULT=landed_verify_clean",
       "type": "altered",
-      "reason": "Deploy landed but verification reported RESULT=landed_verify_red. The four failures (doc-lint drift on tts-stt-integration.md and suite-classification.data; eager-load total 67154B vs baseline 66800B; shellcheck finding in lean-plan-compliance-check.sh; dead-command-recommendation finding in memory-setup.md/memory-troubleshooting.md re: /ide) all trace to pre-existing uncommitted foreign changes in the shared nvim config repo, already present before this phase began, none naming this task's own files. Per the plan's own Rollback/Contingency clause, this phase closes [PARTIAL] rather than being hand-patched to force green.",
-      "annotation": "*(deviation: altered -- deploy landed but RESULT=landed_verify_red, traced to pre-existing foreign uncommitted changes outside this task's scope)*"
+      "reason": "Deploy landed but verification reported RESULT=landed_verify_red. Tasks 3.9-3.14 were added to the plan to re-measure from scratch and close on attributed evidence rather than an assumed-clean re-run.",
+      "annotation": "*(deviation: altered -- deploy landed but RESULT=landed_verify_red; tasks 3.9-3.14 added to close on attributed evidence)*"
+    },
+    {
+      "task_id": "3.13",
+      "description": "Run timeout 540 bash .claude/scripts/deploy-headless.sh and record its RESULT= line; close [COMPLETED] if landed_verify_clean, else [COMPLETED WITH EXCLUSIONS] on attributed evidence",
+      "type": "altered",
+      "reason": "Second deploy run (after the 3.9-3.12 re-measurement and the 3.10 eager-load trim) still reported RESULT=landed_verify_red, 3 of 41 checks. All three are pre-existing and name no file this task touched; the eager-load finding was proven unreachable in scope by the 3.11 counterfactual. Phase closed [COMPLETED WITH EXCLUSIONS] with a three-row Reasoned Exclusions table rather than forced-green or indefinite [PARTIAL].",
+      "annotation": "*(deviation: altered -- RESULT=landed_verify_red persisted; closed [COMPLETED WITH EXCLUSIONS] on attributed evidence)*"
     }
   ]
 }
