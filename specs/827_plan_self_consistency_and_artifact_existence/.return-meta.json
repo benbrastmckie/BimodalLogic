@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1794079850_b31491_827",
+  "dispatch_seq": 12,
+  "findings_count": 6,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/827_plan_self_consistency_and_artifact_existence/reports/01_plan-self-consistency-and-artifact-existence.md",
+      "summary": "Resolves siting for both plan-format.md items, confirms the sibling lean-extension cross-reference target (open task 813, not yet landed -- point at rules/plan-compliance.md's Statement Fidelity section by location), decides the mechanical-check question (no sound discrimination buildable; ship prose only), and recommends two short planner-agent.md pointer items mirroring the existing whole-tree-claim precedent."
+    }
+  ],
+  "memory_candidates": [],
+  "next_steps": "Run /orchestrate 827 to create implementation plan"
+}
