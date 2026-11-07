@@ -11,7 +11,7 @@ next_project_number: 891
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,777,779,780,781,783,784,785,803,817,818,821,825,826,827,829,830,831,832,838,839,841,842,847,848,857,863,867,869,873,874,875,876,882,883,890 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,777,779,780,781,783,784,785,803,817,818,821,825,826,829,830,831,832,838,839,841,842,847,848,857,863,867,869,873,874,875,876,882,883,890 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,787,804,813,816,822,823,840,845,853,862,879 | 298,428,502,743,761,770,777,783,785,803,838,839,867 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,814,824,834,843,861 | 429,497,763,813,822,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -47,7 +47,6 @@ next_project_number: 891
   └─ 840 [NOT STARTED] — Give the Lean unusedArguments remedy a narrow route instead...
 825 [NOT STARTED] — Report a reversed validate-artifact.sh invocation as an...
 826 [NOT STARTED] — Diagnose the zero-result literature retrieval and settle the...
-827 [IMPLEMENTING] — Require a plan phase to agree with its own Scope Hypothesis...
 839 [NOT STARTED] — Harvest a plan's declared contingency files into file\_scope,...
   └─ 845 [NOT STARTED] — Name the typst-sync gate as the cause when...
 841 [NOT STARTED] — Probe the Lean LSP index state at dispatch start and...
@@ -2660,13 +2659,14 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, Critical Issues section.
 
 ### 827. Require a plan phase to agree with its own Scope Hypothesis and to name only artifacts that exist
 - **Effort**: low
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 769, Task 772, Task 774
 - **Parent**: Task 761
 - **Research**: [827_plan_self_consistency_and_artifact_existence/reports/01_plan-self-consistency-and-artifact-existence.md]
 - **Plan**: [827_plan_self_consistency_and_artifact_existence/plans/01_plan-self-consistency-and-artifact-existence.md]
+- **Summary**: [827_plan_self_consistency_and_artifact_existence/summaries/01_plan-self-consistency-and-artifact-existence-summary.md]
 
 **Description**: Close two plan-AUTHORING truthfulness gaps in `context/formats/plan-format.md`: that a phase's task list may contradict that same phase's own `**Scope Hypothesis**:` line, and that a plan may name an artifact as the thing to CORRECT without that artifact existing.
 

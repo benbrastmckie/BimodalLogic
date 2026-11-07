@@ -1,7 +1,7 @@
 # Implementation Plan: Task #827
 
 - **Task**: 827 - Require a plan phase to agree with its own Scope Hypothesis and to name only artifacts that exist
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.75 hours
 - **Dependencies**: 769, 772, 774 (task-level; none block this record's own `plan-format.md` edit territory)
 - **Research Inputs**: specs/827_plan_self_consistency_and_artifact_existence/reports/01_plan-self-consistency-and-artifact-existence.md

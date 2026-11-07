@@ -1,17 +1,20 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 14,
-  "summary": "Authored a 4-phase plan for the two plan-authoring truthfulness provisions. Phases 1-3 are prose-tier source-store edits (item 1's Scope-Hypothesis self-consistency pair plus the sibling non-transfer statement in plan-format.md; item 2's correction-target-existence pair in the same file's Files to modify documentation; two generation-time pointer items in planner-agent.md), and Phase 4 is the full-tier wiring, hygiene, redeploy and verify phase. Research's mechanical-check decision (no sound correction-vs-creation discrimination is buildable; build nothing) is carried into the plan as a Non-Goal and a Phase 4 completion-summary obligation, so no lint, hook, or new plan-format field is planned. file_scope already covers all three target paths; no widening was needed.",
+  "status": "implemented",
+  "dispatch_seq": 16,
+  "phases_completed": 4,
+  "phases_total": 4,
+  "summary": "Landed two plan-authoring truthfulness provisions (Scope-Hypothesis/task-list self-consistency; correction-target existence) as prose in core's plan-format.md, with two generation-time pointer items in planner-agent.md's Stage 4 checklist. Reconciled index-entries.json's line_count to 1083. Redeployed to RESULT=landed_verify_clean and the full gate set passed (15 checks, 0 failures). The mechanical-check question was investigated and decided: no sound discrimination is buildable, so nothing was built.",
+  "blockers": [],
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/827_plan_self_consistency_and_artifact_existence/summaries/01_plan-self-consistency-and-artifact-existence-summary.md",
+      "summary": "Implementation summary covering all four phases, the mechanical-check decision, and the cross-repo commit reasoning."
+    },
     {
       "type": "plan",
       "path": "specs/827_plan_self_consistency_and_artifact_existence/plans/01_plan-self-consistency-and-artifact-existence.md",
-      "summary": "4-phase, 2.75-hour plan over 3 waves: three prose-tier source-store edits plus a full-tier wiring/hygiene/redeploy phase; validate-artifact.sh passes with 0 warnings."
+      "summary": "Plan with all four phases checked off and marked [COMPLETED]."
     }
-  ],
-  "phases_completed": 0,
-  "phases_total": 4,
-  "blockers": [],
-  "next_action_hint": "Dispatch implement for task 827; Phase 1 must re-derive the core source store from .claude-extensions.json's per-extension source_dir before any edit."
+  ]
 }
