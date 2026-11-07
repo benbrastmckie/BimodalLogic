@@ -267,7 +267,7 @@ the one-file prediction silently.
 
 ---
 
-### Phase 3: Add the Generation-Time Pointer Items to `planner-agent.md` [NOT STARTED]
+### Phase 3: Add the Generation-Time Pointer Items to `planner-agent.md` [COMPLETED]
 
 **Goal**: the plan author meets both provisions while generating the phase, via two short pointer
 items in `planner-agent.md`'s Stage 4 phase-authoring checklist, following the existing
@@ -275,24 +275,25 @@ whole-tree-claim item's shape.
 
 **Tasks**:
 
-- [ ] Read `agents/planner-agent.md`'s Stage 4 checklist item 9 ("Declare a Whole-Tree-Claim
+- [x] Read `agents/planner-agent.md`'s Stage 4 checklist item 9 ("Declare a Whole-Tree-Claim
   Phase Honestly") as the shape to mirror: a numbered item of one or two sentences stating the
   obligation, a `MUST NOT` bullet, and a pointer to the `plan-format.md` subsection carrying the
-  full mechanism — never a restatement of it.
-- [ ] Add one new numbered item for item 1(a): before writing a phase that carries a
+  full mechanism — never a restatement of it. *(completed)*
+- [x] Add one new numbered item for item 1(a): before writing a phase that carries a
   `**Scope Hypothesis**:` naming a deliberate exclusion, check every task in that same phase
   against the exclusion. Add a `MUST NOT` bullet forbidding a phase whose task list requires what
   its own Scope Hypothesis excludes. Point at the new `plan-format.md` subsection from Phase 1
-  by section name.
-- [ ] Add one new numbered item for items 2(a)/(b): confirm at authoring time that any artifact
+  by section name. *(completed: item 10)*
+- [x] Add one new numbered item for items 2(a)/(b): confirm at authoring time that any artifact
   named as a correction, amendment or retirement target exists, and state in the task what the
   implementer does if it does not. Add a `MUST NOT` bullet forbidding a phase goal that turns on
   correcting a dispatch-created orchestration sidecar, naming the durable record as the carrier.
-  Point at the new `plan-format.md` subsection from Phase 2 by section name.
-- [ ] Renumber nothing that does not need renumbering: append the two items after the existing
-  final checklist item rather than inserting them mid-list.
-- [ ] Read the diff and confirm both items are pointer-shaped (one to two sentences plus a
-  pointer), carry no task number, and duplicate no `plan-format.md` content.
+  Point at the new `plan-format.md` subsection from Phase 2 by section name. *(completed: item 11)*
+- [x] Renumber nothing that does not need renumbering: append the two items after the existing
+  final checklist item rather than inserting them mid-list. *(completed: no renumbering needed)*
+- [x] Read the diff and confirm both items are pointer-shaped (one to two sentences plus a
+  pointer), carry no task number, and duplicate no `plan-format.md` content. *(completed: hygiene
+  grep clean)*
 
 **Timing**: 0.5 hours
 
