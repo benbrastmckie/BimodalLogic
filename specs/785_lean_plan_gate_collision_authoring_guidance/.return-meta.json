@@ -1,0 +1,35 @@
+{
+  "status": "researched",
+  "summary": "Confirmed the lean-extension target file path (dependency-locked by task 840), resolved item 2's open core-vs-lean siting question (reference plan-format.md's existing contract rather than duplicate it), verified all nine items' mechanical facts against the live repository, and found one stale measurement (check-metalogic-cycles.sh's allowlist comment says 8 lines, is actually 10 from two sources).",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/785_lean_plan_gate_collision_authoring_guidance/reports/01_gate-collision-guidance-siting.md",
+      "summary": "Research report: confirms target file path via task 840's dependency, resolves item 2's siting question, verifies all nine gate-collision items' mechanical facts, flags a stale allowlist-size comment in check-metalogic-cycles.sh."
+    }
+  ],
+  "findings_count": 9,
+  "dispatch_seq": 3,
+  "metadata": {
+    "session_id": "sess_1794079850_b31491_785",
+    "agent_type": "general-research-agent",
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  },
+  "memory_candidates": [
+    {
+      "content": "In this repository's agent-system, a gate script's own in-line comment near a data structure (e.g. check-metalogic-cycles.sh's ALLOWLIST comment citing '8 lines') can go stale relative to the structure itself and relative to the script's own header comment, even when nothing is broken. When writing plan-authoring guidance that cites a gate's internal counts, prefer describing the mechanism (e.g. 'equality not containment', 'two named source constants') over a specific count, and re-verify any count against the live file rather than trusting a prior citation.",
+      "category": "PATTERN",
+      "source_artifact": "specs/785_lean_plan_gate_collision_authoring_guidance/reports/01_gate-collision-guidance-siting.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["gate-collision", "stale-baseline", "check-metalogic-cycles", "plan-authoring", "lean4"]
+    },
+    {
+      "content": "When a domain extension's plan-authoring guidance would otherwise restate a contract already documented in detail in the core extension (e.g. verify-deploy.sh's target-shape contract in core's plan-format.md sub-case (b)), the domain file should state the fact tersely with an explicit pointer to the core source, not re-derive the full contract -- avoids redundant/divergent documentation across extensions.",
+      "category": "PATTERN",
+      "source_artifact": "specs/785_lean_plan_gate_collision_authoring_guidance/reports/01_gate-collision-guidance-siting.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["extension-siting", "verify-deploy", "plan-format", "cross-extension-reference", "documentation-duplication"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 785 to create the implementation plan for the lean-extension guidance file."
+}
