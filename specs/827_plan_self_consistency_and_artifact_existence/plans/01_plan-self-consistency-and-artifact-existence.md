@@ -329,7 +329,7 @@ append, renumber and say so rather than preserving the no-renumber prediction si
 
 ---
 
-### Phase 4: Reconcile Wiring, Sweep Hygiene, Redeploy and Verify [NOT STARTED]
+### Phase 4: Reconcile Wiring, Sweep Hygiene, Redeploy and Verify [COMPLETED]
 
 **Goal**: `index-entries.json`'s `line_count` agrees with the landed file, the three edited files
 pass deliverable hygiene, the full gate set is green, and the deploy reports
@@ -337,32 +337,35 @@ pass deliverable hygiene, the full gate set is green, and the deploy reports
 
 **Tasks**:
 
-- [ ] Re-measure `wc -l` on the landed source-store `context/formats/plan-format.md` and write
+- [x] Re-measure `wc -l` on the landed source-store `context/formats/plan-format.md` and write
   that exact figure into `index-entries.json`'s existing entry for `formats/plan-format.md`. Do
-  not reuse any earlier figure.
-- [ ] Confirm the two `planner-agent.md` pointers resolve to section headings that exist in the
-  landed `plan-format.md`; correct either side if they do not.
-- [ ] Grep the three edited files for task-number references and record-versioning language, and
+  not reuse any earlier figure. *(completed: 1083, reconciled)*
+- [x] Confirm the two `planner-agent.md` pointers resolve to section headings that exist in the
+  landed `plan-format.md`; correct either side if they do not. *(completed: both resolve, no
+  correction needed)*
+- [x] Grep the three edited files for task-number references and record-versioning language, and
   for absence-asserting phrasing about any named path ("does not exist", "no such file", "is
   missing", "is currently absent"). Nothing in the added prose may assert a moving quantity as a
-  live fact.
-- [ ] Confirm `agents/planner-agent.md` needs no `index-entries.json` entry (it is an agent
+  live fact. *(completed: clean)*
+- [x] Confirm `agents/planner-agent.md` needs no `index-entries.json` entry (it is an agent
   file) and that no new context file was created; if one was created instead, add its entry plus
-  at least one referrer.
-- [ ] Redeploy: `timeout 540 bash .claude/scripts/deploy-headless.sh` (Bash tool `timeout`
+  at least one referrer. *(completed: confirmed, no new context file)*
+- [x] Redeploy: `timeout 540 bash .claude/scripts/deploy-headless.sh` (Bash tool `timeout`
   parameter raised to 600000, not its 120000ms default, per
   `context/patterns/external-process-wait.md` Rule 1). Confirm `RESULT=landed_verify_clean`. This
-  also clears the lean extension's recorded deploy staleness.
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. A selected subset does
-  not discharge this phase.
-- [ ] Record the mechanical-check decision in the completion summary: no sound
+  also clears the lean extension's recorded deploy staleness. *(completed: RESULT=landed_verify_clean)*
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. A selected subset does
+  not discharge this phase. *(completed: PASS -- 15 check(s), 0 failure(s))*
+- [x] Record the mechanical-check decision in the completion summary: no sound
   correction-target-versus-creation-target discrimination is buildable from the current
   `Files to modify` grammar, and nothing was built — with the three reasons (no structured intent
   signal and no consistent corpus vocabulary; the harvester's own documented design already
   correctly treats a not-yet-existing path as a legitimate creation target, so a check flagging
-  them would fire on every new-file phase; a new plan-format field is out of scope).
-- [ ] Record any issues and wins from this phase via `issue-record.sh`, or attest explicitly that
-  there were none.
+  them would fire on every new-file phase; a new plan-format field is out of scope). *(completed:
+  recorded in summary)*
+- [x] Record any issues and wins from this phase via `issue-record.sh`, or attest explicitly that
+  there were none. *(completed: one win recorded for the clean redeploy; the Phase 1 environment-gap
+  issue was already recorded)*
 
 **Timing**: 0.75 hours
 
