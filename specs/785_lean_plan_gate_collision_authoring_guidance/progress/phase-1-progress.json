@@ -1,0 +1,17 @@
+{
+  "phase": 1,
+  "phase_name": "Author the Four Criterion-Authoring Conditions",
+  "started_at": "2026-11-07T00:00:00Z",
+  "last_updated": "2026-11-07T00:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Resolve source_dir and confirm target path missing", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Write framing section + condition 1 (two generated surfaces)", "status": "done", "files_touched": ["agent-system/extensions/lean/context/project/lean4/patterns/plan-authoring-gate-collisions.md"]},
+    {"id": 3, "description": "Write condition 2 (verify-deploy.sh target shape)", "status": "done", "files_touched": ["agent-system/extensions/lean/context/project/lean4/patterns/plan-authoring-gate-collisions.md"]},
+    {"id": 4, "description": "Write condition 3 (unsatisfiable sweep over retained refuted bodies)", "status": "done", "files_touched": ["agent-system/extensions/lean/context/project/lean4/patterns/plan-authoring-gate-collisions.md"]},
+    {"id": 5, "description": "Write condition 4 (absolute vs delta baseline rule)", "status": "done", "files_touched": ["agent-system/extensions/lean/context/project/lean4/patterns/plan-authoring-gate-collisions.md"]}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

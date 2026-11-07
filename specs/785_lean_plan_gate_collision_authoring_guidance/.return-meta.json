@@ -1,22 +1,9 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/785_lean_plan_gate_collision_authoring_guidance/plans/01_gate-collision-guidance-authoring.md",
-      "summary": "Three-phase plan authoring nine separately checkable gate-surface conditions in the lean extension's new plan-authoring-gate-collisions.md, plus index-entries.json/EXTENSION.md wiring and a clean redeploy."
-    }
-  ],
-  "memory_candidates": [],
-  "next_steps": "Run /orchestrate 785 to execute the plan",
+  "status": "in_progress",
+  "dispatch_seq": 11,
   "metadata": {
-    "session_id": "sess_1794079850_b31491_785",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 3.75,
-    "dependency_waves": 3
-  },
-  "dispatch_seq": 7
+    "session_id": "sess_1794079850_b31491",
+    "agent_type": "general-implementation-agent",
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

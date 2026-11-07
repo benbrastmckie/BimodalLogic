@@ -1,7 +1,7 @@
 # Implementation Plan: Task #785
 
 - **Task**: 785 - Record the Lean plan-authoring gate-collision facts in the lean extension source store
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.75 hours
 - **Dependencies**: None (task 840 depends on this task's output file)
 - **Research Inputs**: specs/785_lean_plan_gate_collision_authoring_guidance/reports/01_gate-collision-guidance-siting.md
@@ -120,7 +120,7 @@ performed and no roadmap phases are included.
 Phases within the same wave can execute in parallel. All three phases write to or verify the
 same new guidance file, so no two of them may run concurrently.
 
-### Phase 1: Author the Four Criterion-Authoring Conditions [NOT STARTED]
+### Phase 1: Author the Four Criterion-Authoring Conditions [COMPLETED]
 
 **Goal**: Create the guidance file with its framing section and conditions 1-4 — the four classes
 that concern how a verification criterion is written. Conditions 5-9 (the gate-surface
@@ -128,14 +128,15 @@ inventory) are Phase 2's work.
 
 **Tasks**:
 
-- [ ] Resolve `source_dir` for the `lean` extension from
+- [x] Resolve `source_dir` for the `lean` extension from
       `/home/benjamin/Projects/BimodalLogic/.claude-extensions.json` and confirm it is
       `/home/benjamin/.config/nvim/agent-system/extensions/lean`; confirm the target
       `context/project/lean4/patterns/plan-authoring-gate-collisions.md` does not yet exist.
-- [ ] Write the file's framing section: who reads it (a Lean plan author, before a verification
+      *(completed)*
+- [x] Write the file's framing section: who reads it (a Lean plan author, before a verification
       criterion is written), and the single shared failure mode — a verification step that cannot
-      be met as written, through no fault of the implementation work.
-- [ ] **Condition 1 — a change to Lean source line counts trips two generated surfaces.** Name
+      be met as written, through no fault of the implementation work. *(completed)*
+- [x] **Condition 1 — a change to Lean source line counts trips two generated surfaces.** Name
       surface (a), the module-inventory blocks in `README.md` and
       `FormalSystem/Metalogic/README.md`, regenerated via
       `scripts/check-module-invariants.sh --emit-inventory` and verified via
@@ -157,7 +158,7 @@ inventory) are Phase 2's work.
       that adds no declaration, trips it; therefore a plan adding or removing Lean lines
       pre-authorizes the `--fix` run and carries `typst/generated/status.typ` in its own file
       scope.
-- [ ] **Condition 2 — `verify-deploy.sh`'s target argument is a deploy-tree root.** State the
+- [x] **Condition 2 — `verify-deploy.sh`'s target argument is a deploy-tree root.** State the
       correct shape positively: a repository root that holds a deployed `.claude/` tree, and for
       a source-store-adjacent invocation one that holds the `agent-system/extensions` source
       store simultaneously — never an extension subdirectory. One-line pointer to core's
@@ -166,7 +167,7 @@ inventory) are Phase 2's work.
       against the whole deploy tree, a red gate there may be entirely pre-existing and unrelated
       to the plan's own edits, so the criterion must be phrased to distinguish findings that name
       the plan's own files from the tree's standing baseline.
-- [ ] **Condition 3 — a sweep asserting "matches nothing" over paths that deliberately retain
+- [x] **Condition 3 — a sweep asserting "matches nothing" over paths that deliberately retain
       refuted bodies is unsatisfiable by construction.** State the gap between the author's
       intent ("my new declaration is absent") and what the sweep asks ("no declaration of this
       shape exists anywhere in these paths"), and that in a repository whose evidence apparatus
@@ -180,7 +181,7 @@ inventory) are Phase 2's work.
       shared prefix. State explicitly that a criterion fixing only one of the two is still
       unsatisfiable for the other reason, and present the exact-name form as a remedy observed
       to work on the measured tree rather than an untested suggestion.
-- [ ] **Condition 4 — a repo-wide lint criterion is stated as a baseline delta, not an absolute
+- [x] **Condition 4 — a repo-wide lint criterion is stated as a baseline delta, not an absolute
       zero.** State the rule: a phase criterion invoking a repo-wide lint, sweep or grep MUST be
       a delta against the baseline rather than an absolute zero or absolute exit 0, unless the
       author has confirmed the baseline is clean AND that it will still be clean when the
@@ -202,7 +203,7 @@ inventory) are Phase 2's work.
       itself cannot distinguish debt from a correct one-line proof, which is why the remedy for
       this particular lint is a baseline delta or a touched-files scope rather than "clean up the
       baseline first".
-- [ ] Re-read the written sections and confirm conditions 1-4 appear as four distinct headings
+- [x] Re-read the written sections and confirm conditions 1-4 appear as four distinct headings
       with four distinct trigger sentences, not blurred into one.
 
 **Timing**: 1.5 hours
