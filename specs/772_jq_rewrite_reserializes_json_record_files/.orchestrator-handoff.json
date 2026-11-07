@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 4,
+  "summary": "Created a 4-phase implementation plan for the jq re-serialization guidance, built on research that had already settled siting (extend context/patterns/jq-escaping-workarounds.md), the exact recipe text, and the no-helper-script/no-planner-agent-edit decisions. Phases: (1) widen the pattern file's framing and add the re-serialization section with the assertion-backed recipe, (2) add the one-line merged CLAUDE.md jq-section pointer, (3) resync the index-entries.json entry, (4) redeploy and walk all acceptance criteria. Plan validates clean with 0 warnings. Two facts were verified at plan time rather than assumed: suite_selection_select returns __FULL_SWEEP__ for all three touched paths, and the only valid --only-gate 3,4 TARGET is the source-store repo root /home/benjamin/.config/nvim, since this repo has no agent-system/extensions directory.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/772_jq_rewrite_reserializes_json_record_files/plans/01_jq-reserialization-guidance.md",
+      "summary": "4-phase guidance-only plan: extend the jq pitfalls hub with the whole-file re-serialization failure class and its assertion-backed recipe, add the merged CLAUDE.md pointer line, resync the index entry, then redeploy to RESULT=landed_verify_clean."
+    }
+  ],
+  "dispatch_seq": 6
+}
