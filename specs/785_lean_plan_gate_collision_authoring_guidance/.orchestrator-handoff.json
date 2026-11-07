@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 3,
+  "summary": "Authored a three-phase plan for the lean-extension gate-collision guidance file. Phases 1 and 2 split the nine conditions across the single new plan-authoring-gate-collisions.md (four criterion-authoring classes, then five gate-surface inventory items), serialized because both write the same file; Phase 3 wires index-entries.json and EXTENSION.md, sweeps deliverable hygiene, and redeploys to RESULT=landed_verify_clean. The research-confirmed target path matches the declared file_scope exactly, so no scope widening is needed; dispatch item 2 is planned as a terse restatement pointing at core's plan-format.md rather than a duplicate, with no core file edited.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/785_lean_plan_gate_collision_authoring_guidance/plans/01_gate-collision-guidance-authoring.md",
+      "summary": "Three-phase plan: conditions 1-4, conditions 5-9, then wiring plus hygiene sweep plus redeploy."
+    }
+  ],
+  "dispatch_seq": 7
+}
