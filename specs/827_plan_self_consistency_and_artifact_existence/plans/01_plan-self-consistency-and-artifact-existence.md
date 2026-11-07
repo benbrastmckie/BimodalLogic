@@ -1,7 +1,7 @@
 # Implementation Plan: Task #827
 
 - **Task**: 827 - Require a plan phase to agree with its own Scope Hypothesis and to name only artifacts that exist
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.75 hours
 - **Dependencies**: 769, 772, 774 (task-level; none block this record's own `plan-format.md` edit territory)
 - **Research Inputs**: specs/827_plan_self_consistency_and_artifact_existence/reports/01_plan-self-consistency-and-artifact-existence.md
@@ -109,7 +109,7 @@ No `roadmap_path` was provided in this dispatch; no roadmap consultation perform
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Author the Scope-Hypothesis Self-Consistency Provisions [NOT STARTED]
+### Phase 1: Author the Scope-Hypothesis Self-Consistency Provisions [COMPLETED]
 
 **Goal**: `plan-format.md` carries item 1(a)'s authoring obligation and item 1(b)'s implementer
 rule as two separately checkable conditions, plus the explicit non-transfer statement and the
@@ -117,42 +117,44 @@ sibling pointer, and "Reasoned Exclusions" gains a one-sentence backward pointer
 
 **Tasks**:
 
-- [ ] Re-derive the `core` source store from `<project-root>/.claude-extensions.json`'s
+- [x] Re-derive the `core` source store from `<project-root>/.claude-extensions.json`'s
   per-extension `source_dir` (there is no top-level key). If it is unreachable or ambiguous,
   record the issue, write a `blocked` handoff, and stop — do not fall back to editing `.claude/**`.
-- [ ] Locate the `### Counts-are-hypotheses obligation` section and the
+  *(completed: resolved to /home/benjamin/.config/nvim/agent-system/extensions/core, tree clean)*
+- [x] Locate the `### Counts-are-hypotheses obligation` section and the
   `### Cross-phase ceiling consistency obligation` heading that follows it; the new subsection
-  goes between them.
-- [ ] Write the new subsection with a heading naming the self-consistency concern (not a
+  goes between them. *(completed)*
+- [x] Write the new subsection with a heading naming the self-consistency concern (not a
   task-derived name), opening with one sentence distinguishing it from the obligation above: the
   existing obligation governs a claim about the WORLD, repairable by implementation-time
   confirmation; this one governs a claim inconsistent with the plan's OWN instructions, which no
   confirmation can repair because the phase is unsatisfiable as written rather than mis-estimated.
-- [ ] State condition (a), the authoring obligation, in its own labelled paragraph: a phase's
+  *(completed: "### Scope-Hypothesis / task-list self-consistency obligation")*
+- [x] State condition (a), the authoring obligation, in its own labelled paragraph: a phase's
   `**Scope Hypothesis**:` and that phase's task list are two assertions by the same author about
   the same phase; an author whose Scope Hypothesis names what is deliberately EXCLUDED checks
-  every task in that same phase against the exclusion before the phase is written.
-- [ ] State condition (b), the implementer's rule, in its own labelled paragraph: preserve what
+  every task in that same phase against the exclusion before the phase is written. *(completed)*
+- [x] State condition (b), the implementer's rule, in its own labelled paragraph: preserve what
   the task list requires — the statement, the declaration, the thing the phase exists to produce
   — over the scope prediction; record the deviation in place with the reason; propagate any
   consequence to later phases that named the same identifiers. Include the two explicit
   prohibitions: never silently drop the task to protect the prediction, and never silently widen
-  the prediction without saying so.
-- [ ] Add the non-transfer paragraph: a sibling rule for a different surface pair resolves its
+  the prediction without saying so. *(completed)*
+- [x] Add the non-transfer paragraph: a sibling rule for a different surface pair resolves its
   contradiction by precedence, because one of its two surfaces is pinned and immutable by design
   after plan time; neither a `**Scope Hypothesis**:` nor a task list is pinned or immutable, so
   no immutability argument is available here, which is why condition (b) is argued from what the
   phase exists to produce instead. Point at the lean extension's `rules/plan-compliance.md`
-  "Statement Fidelity" section by file and section name only.
-- [ ] Add a one-sentence forward pointer from the new subsection to `## Reasoned Exclusions
-  (format)` for the record-the-deviation half of (b).
-- [ ] Add a one-sentence backward pointer in `## Reasoned Exclusions (format)`'s existing
+  "Statement Fidelity" section by file and section name only. *(completed)*
+- [x] Add a one-sentence forward pointer from the new subsection to `## Reasoned Exclusions
+  (format)` for the record-the-deviation half of (b). *(completed)*
+- [x] Add a one-sentence backward pointer in `## Reasoned Exclusions (format)`'s existing
   "Relationship to Scope Hypothesis" paragraph: alongside the overcount case it already
   describes, an exclusion record may close a Scope Hypothesis that contradicted the phase's own
-  task list, with a pointer to the new subsection. Add nothing else there.
-- [ ] Read the diff and confirm every changed hunk is prose, carries no task number, no
+  task list, with a pointer to the new subsection. Add nothing else there. *(completed)*
+- [x] Read the diff and confirm every changed hunk is prose, carries no task number, no
   record-versioning phrasing, and none of the originating run's declaration names or phase
-  numbers.
+  numbers. *(completed: hygiene grep clean)*
 
 **Timing**: 0.75 hours
 
