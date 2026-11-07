@@ -4,11 +4,11 @@ Gabbay's Separation Theorem for the until/since language over discrete (integer)
 route that would discharge the `SeparationOver TaskFrame.IsZTime` hypothesis of
 [`OpenFutureElimination.lean`](../OpenFutureElimination.lean).
 
-**Status: the hypothesis is NOT discharged yet.** What is landed is GHR Lemmas 10.2.1 and
-10.2.2 in full and **all eight cases of Lemma 10.2.3** — the four single-sign cases in
-`Eliminations.lean` and the four hard cases, where the same `untl` occurs in both the event and
-the guard argument of a `snce`, in `ElimHard.lean`. Lemma 10.2.4 onwards still consume them, so
-Theorem 10.2.9 is not reached yet, and every `tr` row of `OpenFutureElimination.lean` keeps its
+**Status: the hypothesis is NOT discharged yet.** What is landed is GHR Lemmas 10.2.1
+through 10.2.7 in full — including **all eight cases of Lemma 10.2.3**, the four single-sign
+cases in `Eliminations.lean` and the four hard cases, where the same `untl` occurs in both the
+event and the guard argument of a `snce`, in `ElimHard.lean`. Lemma 10.2.8 and Theorem 10.2.9
+are not reached yet, so every `tr` row of `OpenFutureElimination.lean` keeps its
 `SeparationOver` hypothesis exactly as before.
 
 `Eliminations.lean`'s module docstring records an obstruction to Cases 5-8. That record describes
@@ -39,6 +39,7 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 | `ElimHard.lean` | 1089 | GHR Lemma 10.2.3's four hard cases — the ones where the same `untl` sits in both arguments of a `snce`. Carries the `ℤ` greatest-witness device, the `case5W`/`case5Core` split, the guard equivalence, Cases 5-8 and their separatedness, the printed-form siblings of Cases 8, 7 and 6, plus the landed reduction DAG |
 | `NormalForm.lean` | 514 | GHR Lemma 10.2.4: the `IsUTyped` precondition with its relationship to `IsSeparated`, the `untl`-literal normal form `substU` with the event and guard splits, the nine right-hand-side typedness witnesses, and `sepSnce` with its equivalence and both discharged halves of the conclusion |
 | `Hierarchy.lean` | 1000 | GHR Lemmas 10.2.5 and 10.2.6: 10.2.5's input hypothesis `IsUSingleType` — the single `untl` type with nesting unconstrained — with the four Boolean closure lemmas, the one-way implication from `IsUTyped` and the two witnesses proving the strictness at `S(⊥, U(A,B))`; the structural recursion `sepU` with all three of 10.2.5's conclusions; then the `U`-type measure `uTypes`/`uTypeCount`, the abstraction and reindexing device (`mapU`, `mapS`, `substLeaf`, `abstrFn`, `unabstrFn`), the three separately named strict-decrease obligations, and 10.2.6's `sepMulti` with all three of its conclusions |
+| `UNesting.lean` | 858 | GHR Lemma 10.2.7: the hypothesis predicate `NoSnceUnderUntl` with its `Bool`-valued decision procedure, the `U`-within-`U` nesting measure `untlDepth` with its equation lemmas, the two base-case bridges to 10.2.6's `HasPureUTypes`, GHR's inner types `innerTypes` with the licensing bound `untlDepth_lt_of_mem_innerTypes` proved rather than asserted, the two-level abstraction `abstrArgs` as `mapU` at a `mapU`, the three separately named strict-decrease obligations, and `sep7` with both of 10.2.7's conclusions |
 
 ## Key Results
 
@@ -58,6 +59,26 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
   less one
 - `sepMulti` with `usTruth_sepMulti`, `isSeparated_sepMulti` and `uTypes_sepMulti` — GHR 10.2.6
   in full, over `HasPureUTypes` as its precondition
+- `NoSnceUnderUntl` with `noSnceUnderUntlB` and `noSnceUnderUntlB_iff` — GHR 10.2.7's hypothesis
+  "contains no `S` nested within a `U`" as a decidable structural predicate, not a prose side
+  condition
+- `untlDepth` — the `U`-within-`U` nesting depth, GHR's "maximum depth of nesting of Us beneath an
+  S". Independent of `uTypeCount`: that measure counts maximal `untl` types and says nothing about
+  nesting, and neither bounds the other
+- `untlDepth_le_one_of_hasPureUTypes`, `hasPureUTypes_of_untlDepth_le_one` — the two bridges
+  between the measure and 10.2.6's hypothesis, which together are 10.2.7's base case, so that the
+  budget's base case is `sepMulti` exactly as GHR's `n = 1` case is 10.2.6
+- `untlDepth_lt_of_mem_innerTypes` — GHR's licensing sentence ("the level of nesting of U in
+  `U(Aᵢ, Bᵢ)` must be strictly greater than that in its subformula `U(Xᵢⱼ, Yᵢⱼ)`") proved rather
+  than asserted; the source states it without proof
+- `untlDepth_mapU_abstrArgs_le_one`, `untlDepth_sepMulti_le_one`, `untlDepth_snce_substLeaf_le` —
+  GHR 10.2.7's strict decrease as three separately named obligations: abstraction drops the depth
+  to at most one, separation does not raise it (proved from `hasPureUTypes_sepMulti`, **not** from
+  `uTypes_sepMulti`, which bounds types and not nesting), and the reindexed constituents are
+  bounded by the pre-abstraction depth less one. It is the third, not the first, that licenses the
+  recursive call
+- `sep7` with `usTruth_sep7` and `isSeparated_sep7` — GHR 10.2.7 in full, over `NoSnceUnderUntl`
+  as its precondition. A plain `def`: the budget `sep7Fuel` appears in neither conclusion
 - `usTruth_case1` … `usTruth_case4` with `isSeparated_case1Rhs` … `isSeparated_case4Rhs` —
   GHR 10.2.3's four single-sign cases, each with its separatedness proved rather than asserted
 - `usTruth_case5` … `usTruth_case8` with `isSeparated_case5Rhs` … `isSeparated_case8Rhs` —
@@ -83,7 +104,7 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 
 ## Not landed
 
-GHR Lemmas 10.2.7 and 10.2.8 and Theorem 10.2.9, hence also the
+GHR Lemma 10.2.8 and Theorem 10.2.9, hence also the
 `SeparationOver TaskFrame.IsZTime` discharge and the computable ZTime translation that would rest
 on it. All of Lemma 10.2.3 is landed, and so are Lemma 10.2.4's equivalence and separatedness.
 Lemma 10.2.5 is landed in full: its input hypothesis `IsUSingleType` and the `sepU` construction
@@ -100,6 +121,20 @@ formula rather than threaded through as a parameter list, and the recursion carr
 an explicit budget because a direct well-founded recursion on `uTypeCount` cannot state its
 decrease goal — the recursive call is fired by `mapS` at constituents that are not subterms of
 the definition's argument. `sepMulti` is a plain `def` and `#eval`s.
+
+Lemma 10.2.7 is landed in full: `NoSnceUnderUntl` as its decidable hypothesis, `untlDepth` as the
+`U`-within-`U` nesting measure, and `sep7` as the construction, with the equivalence and the
+separatedness as its two conclusions. GHR's induction on the nesting depth is rendered by the same
+explicit-budget idiom 10.2.6 uses, and for the same reason: the recursive call is fired by `mapS`
+at the separated form's `snce` constituents, which are neither subterms of the definition's
+argument nor in scope at elaboration time, so no `decreasing_by` goal can be stated. The base case
+is `sepMulti` rather than the identity — at nesting depth one a formula satisfies 10.2.6's
+hypothesis but is in general not itself separated, since its maximal `untl`s may sit under `snce`
+nodes. The abstraction reuses `mapU`, `mapS`, `substLeaf`, `abstrFn` and `unabstrFn` verbatim; no
+second substitution operator exists in this subtree. Three of `Hierarchy.lean`'s reindexing lemmas
+do not transfer, because their hypothesis is `IsPureType` of every abstracted member and an inner
+type need not be pure; `isSeparated_unabstrFn_of_isUOnly`, `mapS_unabstrFn_of_untl` and
+`untlDepth_unabstrFn_le` are their analogues with the purity replaced by what this layer has.
 
 Both halves of Lemma 10.2.4's conclusion are landed: `isSeparated_sepSnce` for separatedness
 and `isUTyped_sepSnce` for the single `untl` type, so a downstream induction counting `untl`

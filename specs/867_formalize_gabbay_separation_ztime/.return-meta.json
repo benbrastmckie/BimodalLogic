@@ -1,37 +1,15 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/867_formalize_gabbay_separation_ztime/plans/04_landed-device-resize-10-2-7-10-2-8.md",
-      "summary": "Revised plan: the 24 closed phases preserved byte-identically; Phases 23-28 re-sized and re-routed against the abstraction-and-reindexing device landed by Phase 22.3, with the budget-recursion ruling (D-i) replacing well-founded recursion on the measure and the swap-duality ruling (D-j) at GHR 10.2.8."
-    }
-  ],
-  "next_steps": "Run /orchestrate 867 to execute the revised plan from Phase 23 (GHR Lemma 10.2.7).",
-  "modified_files": [
-    "specs/867_formalize_gabbay_separation_ztime/plans/04_landed-device-resize-10-2-7-10-2-8.md",
-    "specs/867_formalize_gabbay_separation_ztime/.plan-revised.json"
-  ],
+  "status": "in_progress",
+  "started_at": "2026-11-06T18:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "phase_23_started",
+    "details": "Phase 23 (GHR 10.2.7, UNesting.lean) marked IN PROGRESS; landed device surveyed."
+  },
   "metadata": {
-    "session_id": "sess_1794012989_4a4d20",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "revision_mode": "plan_revision",
-    "phase_count": 30,
-    "phases_preserved_completed": 24,
-    "phases_revised": 6,
-    "phases_added": 0,
-    "phases_removed": 0,
-    "estimated_hours": 58,
-    "remaining_hours": 11,
-    "reports_integrated": ["01_gabbay-separation-ztime-plusformula.md"],
-    "new_research_paths": [],
-    "revision_evidence": [
-      "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-22.3-handoff-20261106T232000Z.md",
-      "specs/867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-6-utype-measure-summary.md",
-      "FormalSystem/Metalogic/Expressiveness/SeparationZ/Hierarchy.lean"
-    ],
-    "decisions_added": ["D-i", "D-j"],
-    "validation": "validate-artifact.sh plan: PASS (0 warnings); closed-phase region byte-identical to the prior round by diff"
+    "session_id": "sess_1794023947_2ba7ed",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
   }
 }

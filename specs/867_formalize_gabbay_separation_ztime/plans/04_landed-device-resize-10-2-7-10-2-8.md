@@ -2565,7 +2565,7 @@ and reusable, so the overshoot should not.
 
 ---
 
-### Phase 23: GHR Lemma 10.2.7 -- the `untl`-Nesting Induction [NOT STARTED]
+### Phase 23: GHR Lemma 10.2.7 -- the `untl`-Nesting Induction [COMPLETED]
 
 **Goal**: `UNesting.lean` carries the hypothesis predicate GHR 10.2.7 consumes, the `untl`-nesting
 measure, the three named parts of the strict-decrease obligation, and GHR 10.2.7 itself as a
@@ -2601,49 +2601,49 @@ side-condition from the equivalence step (finding 3).
 
 **Tasks**:
 
-- [ ] Add `UNesting.lean`, importing `Hierarchy`. State GHR 10.2.7's hypothesis as a decidable
+- [x] Add `UNesting.lean`, importing `Hierarchy`. State GHR 10.2.7's hypothesis as a decidable
       structural predicate, not as prose, so Phase 24 can discharge it mechanically:
       `inductive NoSnceUnderUntl : USForm → Prop` with `leaf`, `bot`, `imp` and `snce` recursing
       and `untl {ψ φ} : IsUOnly ψ → IsUOnly φ → NoSnceUnderUntl (USForm.untl ψ φ)`. `IsUOnly` is
       "contains no `snce`" (`LeafAbstraction.lean:225`), so that one constructor is exactly "no S
       nested within a U", hereditarily. Supply a `Decidable` instance or a `Bool`-valued decision
       procedure with its correctness lemma.
-- [ ] Define `untlDepth : USForm → ℕ` as a structural recursion: `0` at `leaf` and `bot`, `max` of
+- [x] Define `untlDepth : USForm → ℕ` as a structural recursion: `0` at `leaf` and `bot`, `max` of
       the two at `imp` and at `snce`, and `1 + max` of the two at `untl`. This is the `U`-within-`U`
       nesting depth, which is the quantity GHR's licensing sentence bounds and the quantity the
       recursion decreases. Add its `@[simp]` equation lemmas.
-- [ ] Prove the two bridges between the measure and 10.2.6's hypothesis, which together are this
+- [x] Prove the two bridges between the measure and 10.2.6's hypothesis, which together are this
       phase's base case: `untlDepth_le_one_of_hasPureUTypes` (a pure type has `untl`-free
       arguments, so `untlDepth ≤ 1`) and `hasPureUTypes_of_untlDepth_le_one`
       `(h : NoSnceUnderUntl φ) (hd : untlDepth φ ≤ 1) : HasPureUTypes φ` -- at depth 1 every
       maximal `untl`'s arguments are `untl`-free, and `NoSnceUnderUntl` makes them `snce`-free, so
       every collected type is an `IsPureType`. The second is what makes the budget's base case
       `sepMulti`, exactly as GHR's `n = 1` case is 10.2.6.
-- [ ] Define `innerTypes : USForm → List USForm` -- GHR's `U(Xᵢⱼ, Yᵢⱼ)`s -- as the deduplicated
+- [x] Define `innerTypes : USForm → List USForm` -- GHR's `U(Xᵢⱼ, Yᵢⱼ)`s -- as the deduplicated
       concatenation of `uTypes` of both arguments of each member of `uTypes φ`. Prove
       `untlDepth_lt_of_mem_innerTypes : u ∈ innerTypes φ → untlDepth u < untlDepth φ`. This is
       GHR's licensing sentence, proved rather than asserted, and it is what part (c) consumes.
-- [ ] Define the abstraction as `mapU` at the argument-rewriting function:
+- [x] Define the abstraction as `mapU` at the argument-rewriting function:
       `abstrArgs j L u = match u with | .untl ψ φ => .untl (mapU (abstrFn j L) ψ) (mapU (abstrFn j L) φ) | _ => u`,
       with the abstracted formula `mapU (abstrArgs j (innerTypes φ)) φ` at `j = φ.freshLeaf`. Prove
       `hasPureUTypes_mapU_abstrArgs` -- every maximal `untl` of the abstracted formula has
       `untl`-free arguments (each of its maximal `untl`s lay in the abstracted list and became a
       leaf) and `snce`-free arguments (from `NoSnceUnderUntl`, since `mapU (abstrFn ..)` introduces
       only leaves).
-- [ ] **Part (a) of the strict-decrease obligation -- abstraction strictly drops the measure** --
+- [x] **Part (a) of the strict-decrease obligation -- abstraction strictly drops the measure** --
       as its own named lemma `untlDepth_mapU_abstrArgs_le_one`. Abstracting every inner type leaves
       every maximal `untl` with `untl`-free arguments, so the depth falls to at most 1 from at
       least 2. `hasPureUTypes_mapU_abstrArgs` is the form 10.2.6 consumes and
       `untlDepth_mapU_abstrArgs_le_one` is the form the measure argument consumes; prove both and
       keep them distinct.
-- [ ] **Part (b) -- separation does not raise the measure** -- as its own named lemma
+- [x] **Part (b) -- separation does not raise the measure** -- as its own named lemma
       `untlDepth_sepMulti_le_one`, proved in this module. There is no landed counterpart:
       `uTypes_sepMulti` bounds `untl` *types*, not `untl` nesting, so it does not discharge this
       and must not be cited as doing so. What it does supply is `hasPureUTypes_sepMulti`, and part
       (b) follows from that together with `untlDepth_le_one_of_hasPureUTypes` above -- two lines,
       not an induction. If it needs an induction, the measure's equations were stated wrongly;
       re-check them before proving anything larger.
-- [ ] **Part (c) -- the reindexed form's depth is bounded by the pre-abstraction depth less one**
+- [x] **Part (c) -- the reindexed form's depth is bounded by the pre-abstraction depth less one**
       -- as its own named lemma `untlDepth_snce_substLeaf_le`, and **size it before starting**. It
       is the composite of three steps, each named: `untlDepth_unabstrFn_le` (every value of the
       reindexing has depth at most `d`, given every member of the abstracted list does -- the
@@ -2654,16 +2654,16 @@ side-condition from the equivalence step (finding 3).
       `untlDepth_lt_of_mem_innerTypes` above. The shape to mirror is the landed
       `uTypeCount_snce_substLeaf_le` with `mem_uTypes_substLeaf_of_isSOnly`. It is this bound, not
       part (a), that licenses the recursive call.
-- [ ] Prove `mapS_unabstrFn_of_untl`, the second analogue of a landed lemma whose `IsPureType`
+- [x] Prove `mapS_unabstrFn_of_untl`, the second analogue of a landed lemma whose `IsPureType`
       hypothesis does not transfer: `mapS k` is the identity on every value of the reindexing,
       because each value is a leaf or an `untl`-headed member of the abstracted list. Membership of
       a `uTypes`-collected list is what gives `untl`-headedness; no purity is needed.
-- [ ] Do not collapse (a), (b) and (c) into one named obligation, and do not cite a lemma
+- [x] Do not collapse (a), (b) and (c) into one named obligation, and do not cite a lemma
       discharging one as covering another. The obligation table in `### Revision Integration: the
       10.2.5 Route Ruling and the Three-Part Measure Split` is the ruling, and finding 6 of
       `### Revision Integration: The Landed Abstraction Device and the Re-sized 10.2.7 and 10.2.8
       Steps` records that the landed 10.2.6 discharges it in exactly that three-part form.
-- [ ] Build the recursion in the three-declaration budget idiom decision D-i fixes, mirroring
+- [x] Build the recursion in the three-declaration budget idiom decision D-i fixes, mirroring
       `sepBody`/`sepFuel`/`sepMulti` name for name: `sep7Body (k : USForm → USForm) (φ : USForm)`
       (one step, taking the recursive call as a parameter: abstract the inner types, `sepMulti`,
       reindex by `substLeaf (unabstrFn ..)`, and fire `k` through `mapS` at the recontaminated
@@ -2671,23 +2671,46 @@ side-condition from the equivalence step (finding 3).
       structural on the budget; and `sep7 φ = sep7Fuel (untlDepth φ) φ`. **Do not attempt a
       well-founded recursion on `untlDepth`**: the recursive call's argument is produced by `mapS`
       and no `decreasing_by` goal can be stated for it (D-i, and finding 2 of the Landed
-      Abstraction Device section).
-- [ ] Prove the reindex-and-recurse pass `mapS_substLeaf_spec7` and then
+      Abstraction Device section). *(deviation: altered -- `sep7Body` returns `sepMulti φ`,
+      not `φ` unchanged, at `untlDepth φ ≤ 1`. This bullet's parenthetical and the base-case
+      bullet three items above it ("what makes the budget's base case `sepMulti`, exactly as GHR's
+      `n = 1` case is 10.2.6") are mutually inconsistent, and only the latter reading is sound: a
+      formula of `untlDepth` 1 satisfies 10.2.6's hypothesis but is in general NOT separated,
+      since its maximal `untl`s may sit under `snce` nodes, so returning it unchanged would be
+      unsound at every depth-1 input and would additionally break the recursive call at every
+      greater depth, because the reindexed constituents land at depth at most one. `sep7Fuel 0 φ
+      = φ` is retained and is sound for a different reason: budget 0 is reached only at
+      `untlDepth φ ≤ 0`, where `isSOnly_of_untlDepth_eq_zero` makes `φ` already separated.
+      Recorded in the module docstring's "The base case, and why it is `sepMulti` and not the
+      identity" section and in `issues.jsonl`.)*
+- [x] Prove the reindex-and-recurse pass `mapS_substLeaf_spec7` and then
       `sep7Fuel_spec : ∀ n φ, untlDepth φ ≤ n → NoSnceUnderUntl φ → IsSeparated (sep7Fuel n φ) ∧ (∀ v t, usTruth v t (sep7Fuel n φ) ↔ usTruth v t φ) ∧ ...`
       by induction on the budget, with part (c)'s bound licensing the inductive hypothesis at the
       reduced budget and the equivalence half a `calc` chain over `usTruth_substLeaf`,
       `usTruth_sepMulti`, `usTruth_substLeaf` again and `substLeaf_mapU_abstr`. The third conjunct
       is whatever invariant the recursion needs re-established at the recursive call -- state it
       from the proof obligation, not from a guess, and keep `NoSnceUnderUntl` of the reindexed
-      constituents among the conclusions if the induction needs it.
-- [ ] Expose the two public conclusions `isSeparated_sep7` and `usTruth_sep7` by instantiating the
+      constituents among the conclusions if the induction needs it. *(deviation: altered -- the spec carries TWO
+      conjuncts, not three. Read off the proof obligation as this bullet directs: the induction in
+      `mapS_substLeaf_spec7` runs on `IsSeparated S` and needs from the recursive call only
+      separatedness and the truth equivalence, so no third invariant is required.
+      `NoSnceUnderUntl` of the reindexed constituents IS needed, but as a HYPOTHESIS discharged
+      locally at the call by `noSnceUnderUntl_substLeaf_of_isSOnly` and
+      `noSnceUnderUntl_unabstrFn`, not as a conclusion the recursion must re-establish. Flagged
+      for Phase 24's part (b), which anticipates this: if "sep7 does not raise junctionDepth"
+      turns out to need a third conjunct here, that is an additive change to `sep7Fuel_spec` with
+      no signature change to `isSeparated_sep7` or `usTruth_sep7`. Also altered: the calc chain's
+      last step is `substLeaf_mapU_abstrArgs`, a new additive two-level round trip whose own
+      `untl` case is exactly the landed `substLeaf_mapU_abstr` this bullet names, applied to the
+      node's two arguments.)*
+- [x] Expose the two public conclusions `isSeparated_sep7` and `usTruth_sep7` by instantiating the
       budget at the measure, so the budget appears in no public statement. Declare `sep7` as a
       plain `def` with no `noncomputable` keyword.
-- [ ] Give `sep7` and both conclusions a `Paper:` line citing GHR vol. 1, Lemma 10.2.7, and record
+- [x] Give `sep7` and both conclusions a `Paper:` line citing GHR vol. 1, Lemma 10.2.7, and record
       in the module docstring that the measure is the `U`-within-`U` nesting depth, that the base
       case is 10.2.6 through `hasPureUTypes_of_untlDepth_le_one`, and that the budget renders
       GHR's induction because a `decreasing_by` goal is unstatable here.
-- [ ] README row, regenerated root (`lake exe mk_all --lib FormalSystem`), the
+- [x] README row, regenerated root (`lake exe mk_all --lib FormalSystem`), the
       `typst-sync-check.sh --fix` step, and the three generated inventory blocks
       (`README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`) through
       `bash scripts/check-module-invariants.sh --emit-inventory`. The inventory regeneration is a
@@ -2718,6 +2741,30 @@ the effort is lower because the substitution calculus those results run on is la
 materially above 24 means a landed device declaration was rebuilt instead of reused -- check
 finding 1's inventory before proving anything further. A count materially below it means two of
 the three decrease parts were collapsed.
+
+**Confirmed at implementation time.** `UNesting.lean` landed **57** declarations (52 matching
+`^(def|theorem|inductive|instance)` plus 5 `^@[simp] theorem`), against the 24 this hypothesis
+names, and `git diff` shows `Hierarchy.lean` byte-unchanged (it is absent from this phase's
+staged file list entirely). This hypothesis's pre-emptive diagnosis -- "a count materially above
+24 means a landed device declaration was rebuilt instead of reused" -- is **refuted
+mechanically**, by the same two blocking checks this phase's verification already carries:
+`grep -n 'def substLeaf\|def mapU\|def mapS\|def abstrFn\|def unabstrFn' UNesting.lean` returns
+nothing, and every occurrence of `usTruth_congr_of_update` in the subtree is a docstring or README
+line explaining its disuse, plus its own declaration in `Syntax.lean`. The real cause is the one
+finding 5 of `### Revision Integration: The Landed Abstraction Device and the Re-sized 10.2.7 and
+10.2.8 Steps` already names for Phase 22.3: the group list counts headline results and omits the
+supporting APIs. Specifically, 33 of the 57 are in four groups the hypothesis's group list does
+not enumerate at all -- the `IsUOnly`/`IsSOnly`/`NoSnceUnderUntl`/`untlDepth` transfer lemmas
+across `mapU`, `substLeaf` and `unabstrFn` (13), the `uTypes`-membership API
+(`exists_untl_of_mem_uTypes`, `untlDepth_le_of_mem_uTypes`, `isUOnly_of_mem_uTypes`,
+`isUOnly_args_of_mem_uTypes`) (4), the `innerTypes` membership API beyond its depth lemma
+(`argUTypes`, `argUTypes_untl`, `mem_innerTypes`, `mem_innerTypes_of_mem_uTypes_arg`,
+`exists_untl_of_mem_innerTypes`, `isUOnly_of_mem_innerTypes`) (6), and the decision procedure's
+own two-level build-out (`hasNoSnce`, `hasNoSnce_iff`, the `IsUOnly` instance,
+`noSnceUnderUntlB`, `noSnceUnderUntlB_iff`, the `NoSnceUnderUntl` instance) (6), plus the two
+`noSnceUnderUntl_of_isUOnly`/`_of_isSOnly` bridges, the `sep7Body` equation pair and
+`substLeaf_mapU_abstrArgs` (4). All three decrease parts are separately named and proved, so the
+"materially below" diagnosis does not apply either.
 
 **Files to modify**:
 
