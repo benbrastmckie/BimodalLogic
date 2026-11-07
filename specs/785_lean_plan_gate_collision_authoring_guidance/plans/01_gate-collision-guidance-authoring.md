@@ -260,7 +260,7 @@ covers it; the covering check is the `prose` row's diff read-through plus
 
 ---
 
-### Phase 2: Author the Five Gate-Surface Inventory Conditions [NOT STARTED]
+### Phase 2: Author the Five Gate-Surface Inventory Conditions [COMPLETED]
 
 **Goal**: Extend the same file with conditions 5-9 — the gate surfaces whose trigger conditions
 a Lean planner can enumerate in advance, each of which blocked a commit or a gate until repaired
@@ -268,8 +268,8 @@ at implement time.
 
 **Tasks**:
 
-- [ ] Re-read the file as Phase 1 left it (a sibling may have touched the tree) before appending.
-- [ ] **Condition 5 — `check-metalogic-cycles.sh` Assertion B asserts equality and fails on
+- [x] Re-read the file as Phase 1 left it (a sibling may have touched the tree) before appending.
+- [x] **Condition 5 — `check-metalogic-cycles.sh` Assertion B asserts equality and fails on
       surplus.** State that Assertion B asserts the library-wide upward import set EQUALS a
       frozen allowlist — equality, not containment — so it fails on surplus as well as on
       deficit. Name the two source constants (`_SRC` and `_SRC_OPEN`) and state the mechanism
@@ -281,7 +281,7 @@ at implement time.
       upward import must extend the allowlist IN THE SAME PHASE as the import and must carry
       `scripts/check-metalogic-cycles.sh` in its file scope. Note that this is the most dangerous
       of the inventory conditions because it fails on work that is correct.
-- [ ] **Condition 6 — C26 forbids non-trailing underscores in `def`/`abbrev` names.** State that
+- [x] **Condition 6 — C26 forbids non-trailing underscores in `def`/`abbrev` names.** State that
       `check-module-invariants.sh` C26 flags any live `def`/`abbrev` whose last name component
       carries a non-trailing underscore, and that `theorem` is EXEMPT — which is why snake_case
       theorem names are everywhere and mislead by analogy. Name the repository's
@@ -289,7 +289,7 @@ at implement time.
       `dischargePropK`, `dischargeModalT`, `dischargeAxiom`; `Theorems/TemporalDerived.lean`).
       Consequence: a plan saying "promote probe N rather than re-deriving it" must state whether
       the promotion is verbatim, and must mandate the `def` renames explicitly when it is not.
-- [ ] **Condition 7 — the `longFile` 1500-line ceiling and its narrow baselining window.** State
+- [x] **Condition 7 — the `longFile` 1500-line ceiling and its narrow baselining window.** State
       the package-level ceiling of 1500 lines; that per `docs/development/LEAN_STYLE_GUIDE.md`
       long files are BASELINED, not split, via `set_option linter.style.longFile N`; and the
       trap — the linter accepts `N` only when `N - 200 <= lines < N`, so a baseline set in an
@@ -298,7 +298,7 @@ at implement time.
       a ceiling, it does not suppress the lint. Consequence: a plan whose file will cross the
       ceiling schedules the baseline and its re-tightening as named phase work rather than
       leaving it to be discovered.
-- [ ] **Condition 8 — the `show` tactic is linted and CI builds with `--wfail`.** State that
+- [x] **Condition 8 — the `show` tactic is linted and CI builds with `--wfail`.** State that
       `show` is linted in this repository (the linter objects that it should only indicate
       intermediate goal states for readability) and that CI builds with `--wfail`, so a lint
       warning is a CI FAILURE. Give the observed shape: using `show` to exploit a defeq — an
@@ -306,7 +306,7 @@ at implement time.
       instead. State the general point that makes this a planning condition rather than a style
       note: under `--wfail` any linter category is a hard gate, including `unusedVariables`, so a
       plan must treat "warning" and "error" as the same thing.
-- [ ] **Condition 9 — C5's module-path regex cannot tell a declaration name from a module path,
+- [x] **Condition 9 — C5's module-path regex cannot tell a declaration name from a module path,
       plus the companion bare-gate checklist.** State that `check-module-invariants.sh` C5's
       module-path regex matches DECLARATION NAMES that look like module path components, requiring
       entries in `scripts/module-invariants-allowlist.txt` — the file is a permanent-exemption
@@ -316,7 +316,7 @@ at implement time.
       bare-gate conditions worth enumerating in advance: C15 (every theorem-index row needs a
       `Paper:` line in the declaration's own doc comment), C33 (`lake exe mk_all --lib
       FormalSystem` after adding files), and FAIL INV.
-- [ ] Re-read the whole file and confirm all nine conditions read as separately checkable, each
+- [x] Re-read the whole file and confirm all nine conditions read as separately checkable, each
       with a trigger condition a planner can evaluate before writing a criterion.
 
 **Timing**: 1.25 hours
