@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1794079850_b31491_774",
+  "dispatch_seq": 4,
+  "findings_count": 5,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/774_refuted_predicted_reason_recording/reports/01_refuted-predicted-reason-recording.md",
+      "summary": "Re-verifies all four grounding findings and concludes no-change: the existing design-record defect or ambiguity seed class already covers a refuted predicted reason, plan-accuracy stays unpromoted pending recurrence, and claim_invalidations does not fit (cross-task claim matching, not same-task plan-vs-measurement divergence)."
+    }
+  ],
+  "memory_candidates": [],
+  "next_steps": "Run /orchestrate 774 to create implementation plan"
+}
