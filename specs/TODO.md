@@ -4278,6 +4278,7 @@ behavior observed is the source store's own.
 - **Dependencies**: None
 - **Research**: [774_refuted_predicted_reason_recording/reports/01_refuted-predicted-reason-recording.md]
 - **Plan**: [774_refuted_predicted_reason_recording/plans/01_refuted-predicted-reason-recording.md]
+- **Summary**: [774_refuted_predicted_reason_recording/summaries/01_refuted-predicted-reason-recording-summary.md]
 
 **Description**: **EVALUATE (AND BE WILLING TO DECLINE): should plan guidance require a refuted predicted REASON to be recorded distinctly from a refuted predicted OUTCOME?**
 

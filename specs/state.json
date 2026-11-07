@@ -2443,9 +2443,15 @@
           "path": "specs/774_refuted_predicted_reason_recording/plans/01_refuted-predicted-reason-recording.md",
           "type": "plan",
           "summary": "Single-phase decline-implementation plan; zero in-tree edits, final phase at verification tier full."
+        },
+        {
+          "path": "specs/774_refuted_predicted_reason_recording/summaries/01_refuted-predicted-reason-recording-summary.md",
+          "type": "summary",
+          "summary": "Decline verdict, three independent declining reasons, and forward precedent for the next occurrence."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Re-confirmed all five grounding findings against the live source store and closed with a decline: a refuted-predicted-reason recording requirement is not added to plan-format.md, issue-log.md's seed enum, or return-metadata-file.md's claim_invalidations. Wrote the decline reasoning and forward precedent into the task summary; zero files outside specs/774_refuted_predicted_reason_recording/ were touched."
     },
     {
       "project_name": "phase_commit_drops_own_plan_artifact",
