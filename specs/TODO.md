@@ -1,5 +1,5 @@
 ---
-next_project_number: 892
+next_project_number: 893
 ---
 
 # TODO
@@ -14,7 +14,7 @@ next_project_number: 892
 | 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,777,779,780,781,783,784,803,813,817,818,821,825,826,829,830,831,832,838,839,840,841,842,847,848,857,863,867,869,873,874,875,876,882,883,890,891 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,787,804,814,816,822,823,824,845,853,862,879 | 298,428,502,743,761,770,777,783,803,813,838,839,867 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,834,843,861 | 429,497,763,822,823,838 | agent-system, algebraic-representation, decidability |
-| 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
+| 4 | 125,411,543,892 | 410,498,499,500,843 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
 | 7 | 482 | 412 | decidability |
@@ -39,6 +39,7 @@ next_project_number: 892
 783 [NOT STARTED] — Bounded in-file block edits: index and assert, never...
   └─ 822 [NOT STARTED] — Record the launch-side PID-fidelity condition on the...
     └─ 843 [NOT STARTED] — Extend the bounded-waiter lint beyond Rule 2 to the...
+      └─ 892 [NOT STARTED] — Record the load-sized bound and the diagnostic-preserving...
 784 [BLOCKED] — FROZEN-RECORD TRACKER. Seven task records in this repository...
 813 [NOT STARTED] — State the precedence and snapshot-prerequisite rules for a...
   └─ 814 [NOT STARTED] — Record the decide-synthesis working form, the axiom-free...
@@ -151,6 +152,282 @@ next_project_number: 892
 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 892. Record the load-sized bound and the diagnostic-preserving output capture on the bounded-waiter idiom
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 843
+
+**Description**: Record two conditions the bounded-waiter guidance assumes but never states: that a waiter's bound
+must be sized from its writer's measured worst case under CONCURRENT AGENT LOAD rather than its
+solo expected runtime, and that a bounded run's output capture must be one that preserves partial
+output when the bound fires.
+
+NOTHING IN ANY SCRIPT IS BROKEN AND THIS IS NOT A DATA-REPAIR RECORD. The deliverable is guidance
+prose in the core extension's source store plus its index wiring.
+
+=== THE TWO MEASURED FACTS ===
+
+(1) A full `verify-deploy.sh` re-measurement, bounded at `timeout 540` and piped through
+`tail -150`, was killed by its own 540s bound before producing ANY output, under concurrent
+multi-agent CPU load -- many sibling `verify-deploy.sh` invocations were observed running
+concurrently. It completed only on a retry bounded at 900s.
+
+(2) That same killed run yielded ZERO diagnostic signal: the caller could not tell how far it had
+got or which gate it died in, because the `tail` pipe emitted nothing. A direct file redirect
+preserves partial output across a kill.
+
+=== READ THIS BEFORE WRITING ANY PROSE: THE "RAISE IT TO 900" FRAMING IS WRONG TWICE OVER ===
+
+The obvious reading of fact (1) is "the bound was too small, use 900." Do NOT write that. It is
+wrong on two independent, checkable grounds, and both must be reflected in the guidance.
+
+FIRST, 900 DOES NOT FIT. The Bash tool's `timeout` parameter has a documented CEILING of
+`600000`ms (600s). An inner `timeout 900` inside a foreground Bash call can therefore never fire:
+the harness auto-backgrounds the call at 600s at the latest, which is precisely the failure
+`external-process-wait.md` Rule 1 step (2) and `bounded-build-waiter.md`'s canonical-idiom section
+both already exist to prevent. A bound above ~540 is not a tuning choice available to the
+foreground form at all; it is a statement that the job has left the foreground form's reach.
+
+SECOND, AND MORE IMPORTANTLY, THE BOUND WAS KILLING THE WRONG THING. In the foreground form
+(`timeout N cmd`), the bound kills the SUBJECT -- the work is destroyed when the bound fires. In
+the detach-plus-waiter form (`cmd >log 2>&1 & pid=$!` then a bounded liveness wait), the bound
+ends only the WAITING; the writer runs on and the log survives on disk, so an expired waiter costs
+one more bounded call rather than the whole run. The measured incident used the foreground form
+for a job that needs the detached one. Under the detached form a 540s waiter expiry is a non-event
+and fact (2) cannot arise either, because the writer's output is already going to a file by
+redirect.
+
+So the correct resolution of fact (1) is NOT a bigger number. It is that a full `verify-deploy.sh`
+run under concurrent batch load is `external-process-wait.md` Rule 1's sub-case 3b -- a job that
+cannot fit under the 600s ceiling -- and sub-case 3b is already resolved, in full, by
+`bounded-build-waiter.md`'s `### Sizing a Wait Near the Per-Call Ceiling` section: launch once
+with a captured PID, then issue a SEQUENCE of separate bounded calls, each gated on liveness and
+sized safely under the ceiling, reading the log once liveness ends. THAT SECTION IS ALREADY
+CORRECT AND MUST NOT BE REWRITTEN. What is missing is only the sizing INPUT that tells a caller
+they are in 3b rather than 3a.
+
+=== THE SIZING INPUT IS THE ACTUAL GAP ===
+
+`bounded-build-waiter.md` Rule 1 currently reads, in part, "Size `N` to the command's expected run
+time, within whatever the calling tool allows." A caller reads "expected run time" as the duration
+they have observed, which in practice is a solo run on an idle machine. Under a batch
+orchestration, concurrent agent load is the NORMAL case rather than the exception, and the
+measured spread for this one process crosses the ceiling: comfortably inside 540 solo, above 600
+under load. The rule must say that the sizing input is the measured worst case under the
+concurrency the job will actually meet, and that when that figure approaches or exceeds the
+ceiling the job is 3b and takes the sequence form -- not a larger inner bound.
+
+State this as a property of the sizing INPUT, governed by the EXISTING 3a/3b split. Do NOT
+introduce a new numeric threshold of any kind: the 3a/3b split already decides when the sequence
+form is warranted, and a second arbiter would contradict it. Any number cited for the tool
+`timeout` parameter is `120000`ms (default) or `600000`ms (ceiling).
+
+=== THE OUTPUT-CAPTURE CONDITION, AND THE MEASUREMENT THAT REFUTES THE OBVIOUS PHRASING ===
+
+READ THIS BEFORE WRITING ANY PROSE. It is tempting to state fact (2) as "a pipe buffers, so never
+pipe a bounded run." That is measurably WRONG and would be an over-broad prohibition. Measured
+directly, a writer emitting 200 lines then sleeping, killed by a 3s bound, with the capture varied:
+
+  (a) `cmd 2>&1 | tail -150 > out`   -- out is 0 bytes, 0 lines. TOTAL LOSS.
+  (b) `cmd > out 2>&1`               -- out is 3692 bytes, 200 lines. FULL partial output.
+  (c) `cmd 2>&1 | head -150 > out`   -- out is 2742 bytes, 150 lines. Output SURVIVED.
+  (d) `cmd 2>&1 | cat > out`         -- out is 3692 bytes, 200 lines. Output SURVIVED IN FULL.
+
+The pipe is not the mechanism. `cat` through a pipe preserved everything and `head -N` preserved
+everything it had taken. The mechanism is specific to `tail -N`: it cannot know which lines are
+the LAST N until the stream ends, so by its own semantics it emits nothing before EOF, and a kill
+before EOF yields nothing at all. The rule to write is therefore a POSITIVE property, not a
+blocklist: the capture must be one that writes incrementally and does not require end-of-stream,
+for which a direct redirect to a file is the simple guaranteed form. Name `tail -N` as the
+concrete violating instance WITH its mechanism, so a reader does not generalize to every pipe and
+go looking for pipes to remove elsewhere.
+
+A SECOND, INDEPENDENT DEFECT OF THE PIPE FORM, ALSO MEASURED. The pipeline form destroys the
+`exit 124` discrimination that `external-process-wait.md` Rule 1 step (3) depends on. Measured on
+the same writer, reproducibly across runs:
+
+  `timeout 3 cmd 2>&1 | tail -150 > out`  -- the caller's `$?` is 143, PIPESTATUS is (124, 143)
+  `timeout 3 cmd > out 2>&1`              -- the caller's `$?` is 124
+
+A pipeline's exit status is its LAST command's, so the `124` that step (3) tells the caller to
+read as "the bound fired, re-check state rather than reading this as a failure of the command's
+subject" is not what `$?` reports; the caller sees 143 and has lost the distinction unless they
+reach into `PIPESTATUS[0]`. This is worth stating because it means the pipe form degrades the
+bounded-wait contract in two places at once, not just diagnostics.
+
+=== SITING: THREE FILES, AND WHY THE THIRD IS THE ONE THAT NAMES THE GATE ===
+
+Measured by reading the store, the generic-540 prescription the change request describes is NOT in
+either pattern file in the form the request implies. Precisely:
+
+  - `context/patterns/bounded-build-waiter.md` Rule 1 owns the local sizing rule ("Size `N` to the
+    command's expected run time"). The under-load sizing input belongs HERE. Its
+    `## The Canonical Idiom` section owns the `cmd >log 2>&1 & pid=$!` form; the output-capture
+    condition belongs HERE, as the stated rationale for a redirect the idiom already uses.
+  - `context/patterns/external-process-wait.md` carries the `540`-versus-`600` arithmetic, but its
+    `timeout 540` is a `gh run watch` example and the file states explicitly that it covers "the
+    case where there is no local writer to probe." A local gate run is not its case. DO NOT edit
+    it; its Rule 1 sub-case 3b already points at the bounded-waiter file by name and so inherits
+    whatever this record lands. This matches the standing ruling in the sibling record on this
+    file family that `external-process-wait.md` carries no restatement.
+  - `context/contracts/batch-gate-stage.md` is the file that actually prescribes a bound for THIS
+    process. Its `## The Executable Stage Body` step 2 directs the complete `verify-deploy.sh`
+    gate set -- run by `scripts/orchestrate-batch-gate.sh`, whose own header states it "Runs the
+    complete verify-deploy.sh gate set EXACTLY ONCE for the whole batch" -- to be invoked via "a
+    captured PID, a `kill -0` liveness loop, an outer `timeout 540` inside a single Bash tool call
+    whose own `timeout` parameter is raised to `600000`."
+
+That last prescription is the sharpest finding in this record and the reason it names a specific
+file rather than only amending generic prose. It hard-codes BOTH a 540 bound AND "a single Bash
+tool call" for the heaviest gate in the system, at the one site where that gate runs under
+maximum batch concurrency -- exactly the conditions under which 540 was measured insufficient and
+exactly where the Sizing section calls for a SEQUENCE rather than a single call. Note the
+prescription is not flatly wrong: it is correct for a solo-ish run that fits, and under-specified
+for the loaded run it will routinely meet. Research should decide whether the fix is to replace
+"a single Bash tool call" with the sequence form by reference, or to state the load condition and
+let the Sizing section's existing 3a/3b split route it. Do not resolve that by guessing here.
+
+=== HARD SCOPE BOUNDARY: DO NOT TOUCH THE GENERATED-COPY CONTRACT BULLET ===
+
+`bounded-build-waiter.md`'s `## Canonical Agent-Contract Bullet (Generated-Copy Source)` section
+is the single authoritative source for a MUST / MUST NOT bullet pair whose MUST half names "a
+captured `pid=$!`, a `kill -0` liveness loop, and an outer `timeout N`". MEASURED: the binding
+string `bounded-build-waiter.md's canonical idiom VERBATIM` appears in 28 files across the
+extensions tree, and `lint-agent-contracts.sh` Check H keeps every copy byte-identical by
+comparing against this file. Verify with a grep for that literal string across the source store.
+
+Both conditions in this record are plainly tempting additions to that bullet -- it already names
+"an outer `timeout N`" (which this record says how to size) and it is the text agents actually
+read. DO NOT ADD EITHER. Doing so converts a two-file prose change into a synchronized edit across
+every carrier, gated by a blocking lint. The bullet already binds its carriers to the canonical
+idiom VERBATIM and so already inherits whatever the idiom and Rule 1 say. If research concludes
+the bullet genuinely must change, RAISE IT rather than executing a multi-file edit under a record
+scoped and sized as a guidance change.
+
+=== RELATIONSHIP TO THE THREE OPEN RECORDS ON THESE FILES ===
+
+A backlog audit run at creation time returned `superset-of-open` against
+`bounded_waiter_detach_form_pid_fidelity` (mechanical class `superset`, the highest semantic score
+of any corpus match) and `duplicate-of-open` against `bounded_waiter_lint_beyond_rule_two` and
+`bounded_block_edit_index_and_assert`. The matcher never decides duplication, so those verdicts
+are a shortlist, and the ruling is recorded here rather than left implicit:
+
+  - `bounded_waiter_detach_form_pid_fidelity` is COMPLEMENTARY, not overlapping. Its subject is
+    launch-side PID fidelity -- whether the detach form's `$!` is the writer process itself -- and
+    it says nothing about bound duration or output capture. This record says nothing about which
+    detach form to use. They meet only in that both amend the same file's rules, and in one
+    genuine adjacency worth stating once: this record's reframe pushes callers of the heaviest gate
+    TOWARD the detached form, which is precisely the form whose PID fidelity that record governs.
+    The two are mutually reinforcing and neither subsumes the other.
+  - `bounded_waiter_lint_beyond_rule_two` is a MECHANICAL-COVERAGE record (a hook plus its tests)
+    that touches this file only to record which shapes are not detectable. No prose contention.
+  - `bounded_block_edit_index_and_assert` shares only `index-entries.json`.
+
+DEPENDENCY EDGE, AND WHY AN EDGE RATHER THAN AN EXCLUSION. Those three already form a chain
+(`bounded_block_edit_index_and_assert` -> `bounded_waiter_detach_form_pid_fidelity` ->
+`bounded_waiter_lint_beyond_rule_two`, itself behind a completed record on `jq` reserialization of
+JSON record files). This record's edits land in `bounded-build-waiter.md`, claimed by two links of
+that chain, and in `index-entries.json`, claimed by a third. Per this repository's batching
+discipline, shared file territory is serialized by an explicit edge rather than excluded, so this
+record depends on `bounded_waiter_lint_beyond_rule_two` as the chain's current tail, extending it
+to four rather than racing a fourth writer into the same two files. There is one substantive
+reason beyond territory: the detach-form record's own folded-in addition edits
+`### Sizing a Wait Near the Per-Call Ceiling`, the same subsection this record's 3a/3b reasoning
+turns on, so landing after it means amending settled text rather than colliding in it.
+
+=== SOURCE-STORE BOUNDARY ===
+
+`.claude/**` is a gitignored, regenerated deploy artifact; a hand edit there is wiped by the next
+regeneration and will appear to succeed while having no lasting effect. The owning extension is
+`core`. RE-DERIVE the store rather than trusting this note -- `source_dir` lives per-extension at
+`.extensions.core.source_dir`, not as a top-level key, so a top-level lookup returns null and must
+not be read as the key being absent:
+  jq -r '.extensions.core.source_dir' .claude-extensions.json
+It currently yields `/home/benjamin/.config/nvim/agent-system/extensions/core`, so every edit
+target is `agent-system/extensions/core/**` and never a deployed `.claude/**` path, per
+`rules/source-store-deploy-boundary.md`. Redeploy afterwards via
+`bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`.
+
+=== CROSS-REPO SITING NOTE -- A KNOWN AND ACCEPTED CONDITION ===
+
+This record is filed in the BimodalLogic task space while its edit target resolves only under
+`/home/benjamin/.config/nvim/`. That is the same deliberate, previously approved condition carried
+by its three sibling records on these files, and it is load-bearing here: a dependency edge cannot
+span two repositories' task spaces, so filing this record anywhere else would silently drop the
+serialization that keeps four writers out of one file. A migrator should treat the siting as a
+deliberate choice, not an authoring slip. Three records in the source-store repository's own task
+space bear on this class and are named so a future reader finds them without a search:
+`migrate_mis_sited_agent_system_tasks`, `cross_repo_source_store_gate_blindness`, and
+`agent_system_task_siting_and_target_root`.
+
+=== AN EDITING HAZARD THE IMPLEMENTER WILL VERY LIKELY HIT ===
+
+`hooks/validate-bounded-waiter.sh` is a PreToolUse hook that blocks a command whose text supplies
+three legs at once (a loop keyword, a delay call, and a process-name-matching liveness test). It
+matches raw command TEXT, heredoc payloads included, so writing prose ABOUT the forbidden shape
+can itself be blocked -- the sibling record on this file family documents exactly that happening
+while its own description was being written via a heredoc. Reach for a non-Bash file-writing tool
+for these edits rather than concluding the edit is malformed. This is a known false-positive class
+and is NOT part of this record's deliverable.
+
+=== DELIVERABLE HYGIENE ===
+
+Every edited file lies outside `specs/**`, so its prose must carry no task-number references
+(`rules/no-task-references-in-deliverables.md`) and no record-versioning language
+(`rules/no-record-versioning-in-deliverables.md`). Durable anchors may be cited freely: the script
+names (`verify-deploy.sh`, `orchestrate-batch-gate.sh`, `lint-agent-contracts.sh`), the shell
+tokens (`tail`, `head`, `cat`, `>log 2>&1`, `$!`, `kill -0`, `timeout`, `PIPESTATUS`), the rule
+numbers, the sub-case labels `3a`/`3b`, and the section headings of the edited files. The
+originating task number, the issue entry_id, the specific byte and line counts from the capture
+measurement, and the observed concurrent-invocation count may NOT appear in the guidance prose --
+they live in this record only. State each condition as what a caller does and what the shell does,
+never as a narration of a past run.
+
+=== ACCEPTANCE ===
+
+(1) `bounded-build-waiter.md` Rule 1 states that the sizing input for `N` is the writer's measured
+    worst case under the concurrent load the job will actually meet, not its solo expected
+    runtime, and that concurrent agent load is the normal case in a batch orchestration.
+(2) It states that when that figure approaches or exceeds the ceiling the job is sub-case 3b and
+    takes the `### Sizing a Wait Near the Per-Call Ceiling` sequence form -- never a larger inner
+    bound. The existing 3a/3b split remains the sole arbiter of when the sequence form is
+    warranted, and NO new numeric threshold is introduced anywhere.
+(3) The guidance states the foreground-versus-detached consequence once: a foreground bound kills
+    the subject, a detached bound ends only the waiting and leaves the log intact.
+(4) `## The Canonical Idiom` states the output-capture condition as a positive property -- the
+    capture must write incrementally and must not require end-of-stream -- with a direct redirect
+    named as the guaranteed form, and `tail -N` named as the concrete violating instance WITH its
+    mechanism (it cannot know the last N lines before EOF). It does NOT state or imply that pipes
+    generally buffer or that piping is generally forbidden.
+(5) The `exit 124` consequence is stated: a pipeline's status is its last command's, so the
+    pipe form costs the caller step (3)'s `124` discrimination.
+(6) `batch-gate-stage.md`'s complete-gate-set prescription no longer directs a bound and a single
+    call that the loaded case is measured to exceed; whichever resolution research chose is
+    recorded with its reason.
+(7) `external-process-wait.md` is unedited and carries no restatement of either condition.
+(8) The `## Canonical Agent-Contract Bullet (Generated-Copy Source)` section is byte-identical to
+    its current text, every carrier copy is untouched, and `lint-agent-contracts.sh` Check H still
+    passes.
+(9) `index-entries.json` reflects the landed files: `line_count` for every file whose length
+    changed agrees with the file as landed, and the file remains valid JSON parseable by `jq`.
+(10) The guidance carries no task-number references, no record-versioning language, and none of
+     the measured counts named under DELIVERABLE HYGIENE.
+(11) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean` afterwards.
+
+=== PROVENANCE ===
+
+Raised during orchestration of the Lean plan-gate-collision authoring-guidance record and approved
+at the orchestrate-lead level as an agent-system change request, dispatched through
+/orchestrate's conclusion stage agent-system channel in session `sess_1794089411_892cf6`. The
+originating entry is `specs/785_lean_plan_gate_collision_authoring_guidance/issues.jsonl`,
+entry_id `iss_1794090161774_0yd94u` (class `gate-collision`, severity minor, phase implement,
+dispatch_seq 16). The four-form capture measurement and the `PIPESTATUS` measurement in this
+record were performed fresh during task creation; the originating run measured only the failing
+form.
+
+---
 
 ### 891. Clear the three standing verify-deploy findings blocking a clean nvim deploy
 - **Effort**: low

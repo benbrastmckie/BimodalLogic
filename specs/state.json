@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 892,
+  "next_project_number": 893,
   "active_projects": [
     {
       "project_number": 880,
@@ -15147,6 +15147,293 @@
             "semantic_score": 0.4049586776859504
           }
         ]
+      }
+    },
+    {
+      "project_number": 892,
+      "project_name": "bounded_waiter_load_sizing_and_output_capture",
+      "status": "not_started",
+      "task_type": "meta",
+      "title": "Record the load-sized bound and the diagnostic-preserving output capture on the bounded-waiter idiom",
+      "description": "Record two conditions the bounded-waiter guidance assumes but never states: that a waiter's bound\nmust be sized from its writer's measured worst case under CONCURRENT AGENT LOAD rather than its\nsolo expected runtime, and that a bounded run's output capture must be one that preserves partial\noutput when the bound fires.\n\nNOTHING IN ANY SCRIPT IS BROKEN AND THIS IS NOT A DATA-REPAIR RECORD. The deliverable is guidance\nprose in the core extension's source store plus its index wiring.\n\n=== THE TWO MEASURED FACTS ===\n\n(1) A full `verify-deploy.sh` re-measurement, bounded at `timeout 540` and piped through\n`tail -150`, was killed by its own 540s bound before producing ANY output, under concurrent\nmulti-agent CPU load -- many sibling `verify-deploy.sh` invocations were observed running\nconcurrently. It completed only on a retry bounded at 900s.\n\n(2) That same killed run yielded ZERO diagnostic signal: the caller could not tell how far it had\ngot or which gate it died in, because the `tail` pipe emitted nothing. A direct file redirect\npreserves partial output across a kill.\n\n=== READ THIS BEFORE WRITING ANY PROSE: THE \"RAISE IT TO 900\" FRAMING IS WRONG TWICE OVER ===\n\nThe obvious reading of fact (1) is \"the bound was too small, use 900.\" Do NOT write that. It is\nwrong on two independent, checkable grounds, and both must be reflected in the guidance.\n\nFIRST, 900 DOES NOT FIT. The Bash tool's `timeout` parameter has a documented CEILING of\n`600000`ms (600s). An inner `timeout 900` inside a foreground Bash call can therefore never fire:\nthe harness auto-backgrounds the call at 600s at the latest, which is precisely the failure\n`external-process-wait.md` Rule 1 step (2) and `bounded-build-waiter.md`'s canonical-idiom section\nboth already exist to prevent. A bound above ~540 is not a tuning choice available to the\nforeground form at all; it is a statement that the job has left the foreground form's reach.\n\nSECOND, AND MORE IMPORTANTLY, THE BOUND WAS KILLING THE WRONG THING. In the foreground form\n(`timeout N cmd`), the bound kills the SUBJECT -- the work is destroyed when the bound fires. In\nthe detach-plus-waiter form (`cmd >log 2>&1 & pid=$!` then a bounded liveness wait), the bound\nends only the WAITING; the writer runs on and the log survives on disk, so an expired waiter costs\none more bounded call rather than the whole run. The measured incident used the foreground form\nfor a job that needs the detached one. Under the detached form a 540s waiter expiry is a non-event\nand fact (2) cannot arise either, because the writer's output is already going to a file by\nredirect.\n\nSo the correct resolution of fact (1) is NOT a bigger number. It is that a full `verify-deploy.sh`\nrun under concurrent batch load is `external-process-wait.md` Rule 1's sub-case 3b -- a job that\ncannot fit under the 600s ceiling -- and sub-case 3b is already resolved, in full, by\n`bounded-build-waiter.md`'s `### Sizing a Wait Near the Per-Call Ceiling` section: launch once\nwith a captured PID, then issue a SEQUENCE of separate bounded calls, each gated on liveness and\nsized safely under the ceiling, reading the log once liveness ends. THAT SECTION IS ALREADY\nCORRECT AND MUST NOT BE REWRITTEN. What is missing is only the sizing INPUT that tells a caller\nthey are in 3b rather than 3a.\n\n=== THE SIZING INPUT IS THE ACTUAL GAP ===\n\n`bounded-build-waiter.md` Rule 1 currently reads, in part, \"Size `N` to the command's expected run\ntime, within whatever the calling tool allows.\" A caller reads \"expected run time\" as the duration\nthey have observed, which in practice is a solo run on an idle machine. Under a batch\norchestration, concurrent agent load is the NORMAL case rather than the exception, and the\nmeasured spread for this one process crosses the ceiling: comfortably inside 540 solo, above 600\nunder load. The rule must say that the sizing input is the measured worst case under the\nconcurrency the job will actually meet, and that when that figure approaches or exceeds the\nceiling the job is 3b and takes the sequence form -- not a larger inner bound.\n\nState this as a property of the sizing INPUT, governed by the EXISTING 3a/3b split. Do NOT\nintroduce a new numeric threshold of any kind: the 3a/3b split already decides when the sequence\nform is warranted, and a second arbiter would contradict it. Any number cited for the tool\n`timeout` parameter is `120000`ms (default) or `600000`ms (ceiling).\n\n=== THE OUTPUT-CAPTURE CONDITION, AND THE MEASUREMENT THAT REFUTES THE OBVIOUS PHRASING ===\n\nREAD THIS BEFORE WRITING ANY PROSE. It is tempting to state fact (2) as \"a pipe buffers, so never\npipe a bounded run.\" That is measurably WRONG and would be an over-broad prohibition. Measured\ndirectly, a writer emitting 200 lines then sleeping, killed by a 3s bound, with the capture varied:\n\n  (a) `cmd 2>&1 | tail -150 > out`   -- out is 0 bytes, 0 lines. TOTAL LOSS.\n  (b) `cmd > out 2>&1`               -- out is 3692 bytes, 200 lines. FULL partial output.\n  (c) `cmd 2>&1 | head -150 > out`   -- out is 2742 bytes, 150 lines. Output SURVIVED.\n  (d) `cmd 2>&1 | cat > out`         -- out is 3692 bytes, 200 lines. Output SURVIVED IN FULL.\n\nThe pipe is not the mechanism. `cat` through a pipe preserved everything and `head -N` preserved\neverything it had taken. The mechanism is specific to `tail -N`: it cannot know which lines are\nthe LAST N until the stream ends, so by its own semantics it emits nothing before EOF, and a kill\nbefore EOF yields nothing at all. The rule to write is therefore a POSITIVE property, not a\nblocklist: the capture must be one that writes incrementally and does not require end-of-stream,\nfor which a direct redirect to a file is the simple guaranteed form. Name `tail -N` as the\nconcrete violating instance WITH its mechanism, so a reader does not generalize to every pipe and\ngo looking for pipes to remove elsewhere.\n\nA SECOND, INDEPENDENT DEFECT OF THE PIPE FORM, ALSO MEASURED. The pipeline form destroys the\n`exit 124` discrimination that `external-process-wait.md` Rule 1 step (3) depends on. Measured on\nthe same writer, reproducibly across runs:\n\n  `timeout 3 cmd 2>&1 | tail -150 > out`  -- the caller's `$?` is 143, PIPESTATUS is (124, 143)\n  `timeout 3 cmd > out 2>&1`              -- the caller's `$?` is 124\n\nA pipeline's exit status is its LAST command's, so the `124` that step (3) tells the caller to\nread as \"the bound fired, re-check state rather than reading this as a failure of the command's\nsubject\" is not what `$?` reports; the caller sees 143 and has lost the distinction unless they\nreach into `PIPESTATUS[0]`. This is worth stating because it means the pipe form degrades the\nbounded-wait contract in two places at once, not just diagnostics.\n\n=== SITING: THREE FILES, AND WHY THE THIRD IS THE ONE THAT NAMES THE GATE ===\n\nMeasured by reading the store, the generic-540 prescription the change request describes is NOT in\neither pattern file in the form the request implies. Precisely:\n\n  - `context/patterns/bounded-build-waiter.md` Rule 1 owns the local sizing rule (\"Size `N` to the\n    command's expected run time\"). The under-load sizing input belongs HERE. Its\n    `## The Canonical Idiom` section owns the `cmd >log 2>&1 & pid=$!` form; the output-capture\n    condition belongs HERE, as the stated rationale for a redirect the idiom already uses.\n  - `context/patterns/external-process-wait.md` carries the `540`-versus-`600` arithmetic, but its\n    `timeout 540` is a `gh run watch` example and the file states explicitly that it covers \"the\n    case where there is no local writer to probe.\" A local gate run is not its case. DO NOT edit\n    it; its Rule 1 sub-case 3b already points at the bounded-waiter file by name and so inherits\n    whatever this record lands. This matches the standing ruling in the sibling record on this\n    file family that `external-process-wait.md` carries no restatement.\n  - `context/contracts/batch-gate-stage.md` is the file that actually prescribes a bound for THIS\n    process. Its `## The Executable Stage Body` step 2 directs the complete `verify-deploy.sh`\n    gate set -- run by `scripts/orchestrate-batch-gate.sh`, whose own header states it \"Runs the\n    complete verify-deploy.sh gate set EXACTLY ONCE for the whole batch\" -- to be invoked via \"a\n    captured PID, a `kill -0` liveness loop, an outer `timeout 540` inside a single Bash tool call\n    whose own `timeout` parameter is raised to `600000`.\"\n\nThat last prescription is the sharpest finding in this record and the reason it names a specific\nfile rather than only amending generic prose. It hard-codes BOTH a 540 bound AND \"a single Bash\ntool call\" for the heaviest gate in the system, at the one site where that gate runs under\nmaximum batch concurrency -- exactly the conditions under which 540 was measured insufficient and\nexactly where the Sizing section calls for a SEQUENCE rather than a single call. Note the\nprescription is not flatly wrong: it is correct for a solo-ish run that fits, and under-specified\nfor the loaded run it will routinely meet. Research should decide whether the fix is to replace\n\"a single Bash tool call\" with the sequence form by reference, or to state the load condition and\nlet the Sizing section's existing 3a/3b split route it. Do not resolve that by guessing here.\n\n=== HARD SCOPE BOUNDARY: DO NOT TOUCH THE GENERATED-COPY CONTRACT BULLET ===\n\n`bounded-build-waiter.md`'s `## Canonical Agent-Contract Bullet (Generated-Copy Source)` section\nis the single authoritative source for a MUST / MUST NOT bullet pair whose MUST half names \"a\ncaptured `pid=$!`, a `kill -0` liveness loop, and an outer `timeout N`\". MEASURED: the binding\nstring `bounded-build-waiter.md's canonical idiom VERBATIM` appears in 28 files across the\nextensions tree, and `lint-agent-contracts.sh` Check H keeps every copy byte-identical by\ncomparing against this file. Verify with a grep for that literal string across the source store.\n\nBoth conditions in this record are plainly tempting additions to that bullet -- it already names\n\"an outer `timeout N`\" (which this record says how to size) and it is the text agents actually\nread. DO NOT ADD EITHER. Doing so converts a two-file prose change into a synchronized edit across\nevery carrier, gated by a blocking lint. The bullet already binds its carriers to the canonical\nidiom VERBATIM and so already inherits whatever the idiom and Rule 1 say. If research concludes\nthe bullet genuinely must change, RAISE IT rather than executing a multi-file edit under a record\nscoped and sized as a guidance change.\n\n=== RELATIONSHIP TO THE THREE OPEN RECORDS ON THESE FILES ===\n\nA backlog audit run at creation time returned `superset-of-open` against\n`bounded_waiter_detach_form_pid_fidelity` (mechanical class `superset`, the highest semantic score\nof any corpus match) and `duplicate-of-open` against `bounded_waiter_lint_beyond_rule_two` and\n`bounded_block_edit_index_and_assert`. The matcher never decides duplication, so those verdicts\nare a shortlist, and the ruling is recorded here rather than left implicit:\n\n  - `bounded_waiter_detach_form_pid_fidelity` is COMPLEMENTARY, not overlapping. Its subject is\n    launch-side PID fidelity -- whether the detach form's `$!` is the writer process itself -- and\n    it says nothing about bound duration or output capture. This record says nothing about which\n    detach form to use. They meet only in that both amend the same file's rules, and in one\n    genuine adjacency worth stating once: this record's reframe pushes callers of the heaviest gate\n    TOWARD the detached form, which is precisely the form whose PID fidelity that record governs.\n    The two are mutually reinforcing and neither subsumes the other.\n  - `bounded_waiter_lint_beyond_rule_two` is a MECHANICAL-COVERAGE record (a hook plus its tests)\n    that touches this file only to record which shapes are not detectable. No prose contention.\n  - `bounded_block_edit_index_and_assert` shares only `index-entries.json`.\n\nDEPENDENCY EDGE, AND WHY AN EDGE RATHER THAN AN EXCLUSION. Those three already form a chain\n(`bounded_block_edit_index_and_assert` -> `bounded_waiter_detach_form_pid_fidelity` ->\n`bounded_waiter_lint_beyond_rule_two`, itself behind a completed record on `jq` reserialization of\nJSON record files). This record's edits land in `bounded-build-waiter.md`, claimed by two links of\nthat chain, and in `index-entries.json`, claimed by a third. Per this repository's batching\ndiscipline, shared file territory is serialized by an explicit edge rather than excluded, so this\nrecord depends on `bounded_waiter_lint_beyond_rule_two` as the chain's current tail, extending it\nto four rather than racing a fourth writer into the same two files. There is one substantive\nreason beyond territory: the detach-form record's own folded-in addition edits\n`### Sizing a Wait Near the Per-Call Ceiling`, the same subsection this record's 3a/3b reasoning\nturns on, so landing after it means amending settled text rather than colliding in it.\n\n=== SOURCE-STORE BOUNDARY ===\n\n`.claude/**` is a gitignored, regenerated deploy artifact; a hand edit there is wiped by the next\nregeneration and will appear to succeed while having no lasting effect. The owning extension is\n`core`. RE-DERIVE the store rather than trusting this note -- `source_dir` lives per-extension at\n`.extensions.core.source_dir`, not as a top-level key, so a top-level lookup returns null and must\nnot be read as the key being absent:\n  jq -r '.extensions.core.source_dir' .claude-extensions.json\nIt currently yields `/home/benjamin/.config/nvim/agent-system/extensions/core`, so every edit\ntarget is `agent-system/extensions/core/**` and never a deployed `.claude/**` path, per\n`rules/source-store-deploy-boundary.md`. Redeploy afterwards via\n`bash .claude/scripts/deploy-headless.sh` and confirm `RESULT=landed_verify_clean`.\n\n=== CROSS-REPO SITING NOTE -- A KNOWN AND ACCEPTED CONDITION ===\n\nThis record is filed in the BimodalLogic task space while its edit target resolves only under\n`/home/benjamin/.config/nvim/`. That is the same deliberate, previously approved condition carried\nby its three sibling records on these files, and it is load-bearing here: a dependency edge cannot\nspan two repositories' task spaces, so filing this record anywhere else would silently drop the\nserialization that keeps four writers out of one file. A migrator should treat the siting as a\ndeliberate choice, not an authoring slip. Three records in the source-store repository's own task\nspace bear on this class and are named so a future reader finds them without a search:\n`migrate_mis_sited_agent_system_tasks`, `cross_repo_source_store_gate_blindness`, and\n`agent_system_task_siting_and_target_root`.\n\n=== AN EDITING HAZARD THE IMPLEMENTER WILL VERY LIKELY HIT ===\n\n`hooks/validate-bounded-waiter.sh` is a PreToolUse hook that blocks a command whose text supplies\nthree legs at once (a loop keyword, a delay call, and a process-name-matching liveness test). It\nmatches raw command TEXT, heredoc payloads included, so writing prose ABOUT the forbidden shape\ncan itself be blocked -- the sibling record on this file family documents exactly that happening\nwhile its own description was being written via a heredoc. Reach for a non-Bash file-writing tool\nfor these edits rather than concluding the edit is malformed. This is a known false-positive class\nand is NOT part of this record's deliverable.\n\n=== DELIVERABLE HYGIENE ===\n\nEvery edited file lies outside `specs/**`, so its prose must carry no task-number references\n(`rules/no-task-references-in-deliverables.md`) and no record-versioning language\n(`rules/no-record-versioning-in-deliverables.md`). Durable anchors may be cited freely: the script\nnames (`verify-deploy.sh`, `orchestrate-batch-gate.sh`, `lint-agent-contracts.sh`), the shell\ntokens (`tail`, `head`, `cat`, `>log 2>&1`, `$!`, `kill -0`, `timeout`, `PIPESTATUS`), the rule\nnumbers, the sub-case labels `3a`/`3b`, and the section headings of the edited files. The\noriginating task number, the issue entry_id, the specific byte and line counts from the capture\nmeasurement, and the observed concurrent-invocation count may NOT appear in the guidance prose --\nthey live in this record only. State each condition as what a caller does and what the shell does,\nnever as a narration of a past run.\n\n=== ACCEPTANCE ===\n\n(1) `bounded-build-waiter.md` Rule 1 states that the sizing input for `N` is the writer's measured\n    worst case under the concurrent load the job will actually meet, not its solo expected\n    runtime, and that concurrent agent load is the normal case in a batch orchestration.\n(2) It states that when that figure approaches or exceeds the ceiling the job is sub-case 3b and\n    takes the `### Sizing a Wait Near the Per-Call Ceiling` sequence form -- never a larger inner\n    bound. The existing 3a/3b split remains the sole arbiter of when the sequence form is\n    warranted, and NO new numeric threshold is introduced anywhere.\n(3) The guidance states the foreground-versus-detached consequence once: a foreground bound kills\n    the subject, a detached bound ends only the waiting and leaves the log intact.\n(4) `## The Canonical Idiom` states the output-capture condition as a positive property -- the\n    capture must write incrementally and must not require end-of-stream -- with a direct redirect\n    named as the guaranteed form, and `tail -N` named as the concrete violating instance WITH its\n    mechanism (it cannot know the last N lines before EOF). It does NOT state or imply that pipes\n    generally buffer or that piping is generally forbidden.\n(5) The `exit 124` consequence is stated: a pipeline's status is its last command's, so the\n    pipe form costs the caller step (3)'s `124` discrimination.\n(6) `batch-gate-stage.md`'s complete-gate-set prescription no longer directs a bound and a single\n    call that the loaded case is measured to exceed; whichever resolution research chose is\n    recorded with its reason.\n(7) `external-process-wait.md` is unedited and carries no restatement of either condition.\n(8) The `## Canonical Agent-Contract Bullet (Generated-Copy Source)` section is byte-identical to\n    its current text, every carrier copy is untouched, and `lint-agent-contracts.sh` Check H still\n    passes.\n(9) `index-entries.json` reflects the landed files: `line_count` for every file whose length\n    changed agrees with the file as landed, and the file remains valid JSON parseable by `jq`.\n(10) The guidance carries no task-number references, no record-versioning language, and none of\n     the measured counts named under DELIVERABLE HYGIENE.\n(11) `bash .claude/scripts/deploy-headless.sh` reports `RESULT=landed_verify_clean` afterwards.\n\n=== PROVENANCE ===\n\nRaised during orchestration of the Lean plan-gate-collision authoring-guidance record and approved\nat the orchestrate-lead level as an agent-system change request, dispatched through\n/orchestrate's conclusion stage agent-system channel in session `sess_1794089411_892cf6`. The\noriginating entry is `specs/785_lean_plan_gate_collision_authoring_guidance/issues.jsonl`,\nentry_id `iss_1794090161774_0yd94u` (class `gate-collision`, severity minor, phase implement,\ndispatch_seq 16). The four-form capture measurement and the `PIPESTATUS` measurement in this\nrecord were performed fresh during task creation; the originating run measured only the failing\nform.",
+      "topic": "agent-system",
+      "dependencies": [
+        843
+      ],
+      "file_scope": [
+        "agent-system/extensions/core/context/patterns/bounded-build-waiter.md",
+        "agent-system/extensions/core/context/contracts/batch-gate-stage.md",
+        "agent-system/extensions/core/index-entries.json"
+      ],
+      "artifacts": [],
+      "audit_verdict": {
+        "proposal": {
+          "id": "bounded_waiter_load_sizing_and_output_capture",
+          "project_number": null,
+          "title": "Record the load-sized bound and the diagnostic-preserving output capture on the bounded-waiter idiom"
+        },
+        "verdicts": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 770,
+            "project_name": "postflight_detail_free_blocking_partial_issue_entry",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4117647058823529
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 777,
+            "project_name": "phase_commit_drops_own_plan_artifact",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.5588235294117647
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 783,
+            "project_name": "bounded_block_edit_index_and_assert",
+            "shared_paths": [
+              "agent-system/extensions/core/index-entries.json"
+            ],
+            "mechanical_class": "overlap",
+            "semantic_score": 0.47058823529411764
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 784,
+            "project_name": "retire_migrated_source_store_bound_records",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.47058823529411764
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 787,
+            "project_name": "lake_unguarded_reader_lock_audit",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4411764705882353
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 814,
+            "project_name": "lean_decide_authoring_and_probe_guard_facts",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4411764705882353
+          },
+          {
+            "verdict": "superset-of-open",
+            "project_number": 822,
+            "project_name": "bounded_waiter_detach_form_pid_fidelity",
+            "shared_paths": [
+              "agent-system/extensions/core/context/patterns/bounded-build-waiter.md",
+              "agent-system/extensions/core/index-entries.json"
+            ],
+            "mechanical_class": "superset",
+            "semantic_score": 0.6764705882352942
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 823,
+            "project_name": "stall_reprompt_distrust_inherited_error_count",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.47058823529411764
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 824,
+            "project_name": "fixture_dependent_challenge_statement_pinning",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4117647058823529
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 826,
+            "project_name": "literature_search_zero_result_degraded_contract",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4117647058823529
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 834,
+            "project_name": "orchestrate_aux_carrier_and_implement_readmission",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.47058823529411764
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 843,
+            "project_name": "bounded_waiter_lint_beyond_rule_two",
+            "shared_paths": [
+              "agent-system/extensions/core/context/patterns/bounded-build-waiter.md"
+            ],
+            "mechanical_class": "overlap",
+            "semantic_score": 0.4117647058823529
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 845,
+            "project_name": "git_commit_scoped_gate_refusal_diagnostic",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4117647058823529
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 857,
+            "project_name": "validate_handoff_crash_and_blockers_shape",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.47058823529411764
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 827,
+            "project_name": "plan_self_consistency_and_artifact_existence",
+            "discharging_artifact": {
+              "path": "specs/827_plan_self_consistency_and_artifact_existence/summaries/01_plan-self-consistency-and-artifact-existence-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all four phases, the mechanical-check decision, and the cross-repo commit reasoning."
+            },
+            "mechanical_class": "overlap",
+            "semantic_score": 0.38235294117647056
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 768,
+            "project_name": "lean_challenge_snapshot_chunk_and_unicode_defects",
+            "discharging_artifact": {
+              "path": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/summaries/01_snapshot-chunk-and-unicode-defects-summary.md",
+              "type": "summary",
+              "summary": "All three lean-challenge-snapshot.sh defects repaired across 6 phases in the source store; suite extended from 17 to 29 passing cases; deployed tree regenerated and verified byte-identical, deployed suite green."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4411764705882353
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 772,
+            "project_name": "jq_rewrite_reserializes_json_record_files",
+            "discharging_artifact": {
+              "path": "specs/772_jq_rewrite_reserializes_json_record_files/summaries/01_jq-reserialization-guidance-summary.md",
+              "type": "summary",
+              "summary": "4-phase guidance change landed and redeployed clean; see file for full detail on each edited source-store file."
+            },
+            "mechanical_class": "overlap",
+            "semantic_score": 0.5
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 774,
+            "project_name": "refuted_predicted_reason_recording",
+            "discharging_artifact": {
+              "path": "specs/774_refuted_predicted_reason_recording/summaries/01_refuted-predicted-reason-recording-summary.md",
+              "type": "summary",
+              "summary": "Decline verdict, three independent declining reasons, and forward precedent for the next occurrence."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4117647058823529
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 785,
+            "project_name": "lean_plan_gate_collision_authoring_guidance",
+            "discharging_artifact": {
+              "path": "specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md",
+              "type": "summary",
+              "summary": "Full implementation summary including the four traced-foreign deploy findings and the resume action."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 810,
+            "project_name": "agent_system_batch_defect_group",
+            "discharging_artifact": {
+              "path": "specs/810_agent_system_batch_defect_group/summaries/01_agent-system-batch-defect-group-summary.md",
+              "type": "summary",
+              "summary": "Consolidated acceptance evidence for all five fixed defects, the Batch Gate Deferral discharge, mechanical no-.claude-staged proof, and two named follow-ups."
+            },
+            "mechanical_class": "overlap",
+            "semantic_score": 0.3235294117647059
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 885,
+            "project_name": "per_phase_generated_surface_gates_and_batch_defer",
+            "discharging_artifact": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.35294117647058826
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 858,
+            "project_name": "state_write_audit_verdict_argv_overflow",
+            "discharging_artifact": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.47058823529411764
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 835,
+            "project_name": "plan_format_baseline_relative_gate_criteria",
+            "discharging_artifact": null,
+            "mechanical_class": "overlap",
+            "semantic_score": 0.4411764705882353
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 718,
+            "project_name": "omega_sequence_decidability_full_lplus",
+            "discharging_artifact": {
+              "path": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for all 7 plan phases."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.47058823529411764
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.47058823529411764
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 341,
+            "project_name": "structural_refactor_sharedwitness_carrier_layer",
+            "discharging_artifact": {
+              "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/summaries/03_module-split-summary.md",
+              "type": "summary",
+              "summary": "SharedWitness.lean split into ten declaration-anchored modules; hub reduced to 86 lines; content conservation byte-exact; build green across 13 commits."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4411764705882353
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "summary": {
+          "total_verdicts": 479,
+          "scope_blind_collapsed": 453,
+          "note": "scope-blind verdicts collapsed to a count; full output retained at audit-full.ndjson"
+        }
       }
     }
   ],
