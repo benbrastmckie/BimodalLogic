@@ -1,22 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/774_refuted_predicted_reason_recording/plans/01_refuted-predicted-reason-recording.md",
-      "summary": "Single-phase plan implementing the research phase's decline verdict: re-confirm the four grounding findings at implement time, record the decline and its forward precedent in the task summary, make zero in-tree edits."
-    }
-  ],
-  "memory_candidates": [],
+  "status": "in_progress",
+  "dispatch_seq": 10,
   "metadata": {
-    "session_id": "sess_1794079850_b31491_774",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 1,
-    "estimated_hours": 0.75,
-    "dependency_waves": 1
-  },
-  "next_steps": "Run /orchestrate 774 to execute the plan",
-  "dispatch_seq": 8
+    "session_id": "sess_1794079850_b31491",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

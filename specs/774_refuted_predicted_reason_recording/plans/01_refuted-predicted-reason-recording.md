@@ -2,7 +2,7 @@
 
 - **Task**: 774 - EVALUATE (AND BE WILLING TO DECLINE): should plan guidance require a refuted
   predicted REASON to be recorded distinctly from a refuted predicted OUTCOME?
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/774_refuted_predicted_reason_recording/reports/01_refuted-predicted-reason-recording.md
@@ -125,7 +125,7 @@ was performed and no roadmap phases are included.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Re-confirm the decline, record the decision and precedent, close [NOT STARTED]
+### Phase 1: Re-confirm the decline, record the decision and precedent, close [COMPLETED]
 
 **Goal**: Attest at implement time that no in-tree change is warranted, write the decision and
 its forward precedent into the task's summary artifact, and close the record with the final gate
@@ -133,38 +133,38 @@ run.
 
 **Tasks**:
 
-- [ ] Read the originating issue-log entry verbatim at its live location,
+- [x] Read the originating issue-log entry verbatim at its live location,
   `specs/archive/773_ladder_cell_index_factorization/issues.jsonl` (grep for
   `iss_1791780659461_iJw5zy`). Confirm `class: plan-accuracy`, `severity: minor`,
   `phase: implement`, `resolution: null`, `evidence_path: null`, `suggested_channel: null`.
-- [ ] Re-confirm grounding finding 1 against the live source store: grep
+- [x] Re-confirm grounding finding 1 against the live source store: grep
   `agent-system/extensions/core/context/formats/plan-format.md` for `predict`, `expected
   outcome`, `both-outcome`, `falsify` and confirm the per-phase required-field list is still
   Goal / Tasks / Timing / Depends on / Verification Tier (+ optional Commit Mode and conditional
   Scope Hypothesis / Tier Justification / Files to modify), with no predicted-outcome field.
-- [ ] Re-confirm grounding finding 2: confirm every `outcome` occurrence in
+- [x] Re-confirm grounding finding 2: confirm every `outcome` occurrence in
   `agent-system/extensions/core/context/contracts/phase-closure.md` still refers to terminal
   dispatch outcomes or status markers, not plan predictions.
-- [ ] Re-confirm grounding finding 3: confirm `claim_invalidations` in
+- [x] Re-confirm grounding finding 3: confirm `claim_invalidations` in
   `agent-system/extensions/core/context/formats/return-metadata-file.md` still carries the four
   documented keys and that its consumer `scripts/sweep-invalidated-claims.sh` still matches
   `declaration_names` literally against other tasks' title/description.
-- [ ] Re-confirm grounding finding 4: confirm the Seed Class Enum in
+- [x] Re-confirm grounding finding 4: confirm the Seed Class Enum in
   `agent-system/extensions/core/context/formats/issue-log.md` still lists exactly 15 classes with
   `plan-accuracy` absent, that the Extensibility Rule still makes `class` an open vocabulary, and
   that the Unknown-Class Tally still names recurrence as the promotion criterion.
-- [ ] If any of the five re-confirmations fails, STOP and report the divergence rather than
+- [x] If any of the five re-confirmations fails, STOP and report the divergence rather than *(completed: all five re-confirmations passed; no divergence found)*
   proceeding to attest — a changed premise invalidates the decline and the record needs
   re-deciding, not closing.
-- [ ] Write `specs/774_refuted_predicted_reason_recording/summaries/01_refuted-predicted-reason-recording-summary.md`
+- [x] Write `specs/774_refuted_predicted_reason_recording/summaries/01_refuted-predicted-reason-recording-summary.md`
   recording: the decline verdict; the four re-confirmed grounding findings and the fifth
   source-store-wide sweep; the three reasons the contemplated change is declined (it would
   introduce rather than tighten a convention; `claim_invalidations` is a cross-task mechanism and
   a type mismatch for a same-task divergence; seed-enum promotion is recurrence-gated and this is
   one occurrence); and the forward precedent for the next occurrence.
-- [ ] Verify `git status --porcelain` reports no modification outside
+- [x] Verify `git status --porcelain` reports no modification outside
   `specs/774_refuted_predicted_reason_recording/`, confirming the zero-in-tree-change claim.
-- [ ] Record the dispatch's issue-log entries as they arise via
+- [x] Record the dispatch's issue-log entries as they arise via
   `bash .claude/scripts/issue-record.sh`, including an explicit attestation entry if this phase
   genuinely has nothing else to record.
 
@@ -206,14 +206,17 @@ own in-flight paths named in this dispatch's Territory block, never a path this 
 
 ## Testing & Validation
 
-- [ ] The originating issue-log entry is read verbatim at its archive path and matches the
+- [x] The originating issue-log entry is read verbatim at its archive path and matches the
   dispatch's summary.
-- [ ] Each of the four grounding findings is independently re-confirmed against the live source
+- [x] Each of the four grounding findings is independently re-confirmed against the live source
   store, with the grep that confirmed it named.
-- [ ] The summary artifact passes `validate-artifact.sh` with exit status 0.
-- [ ] `bash .claude/scripts/verify-deploy.sh` is run and its result reported; any failure is
-  attributed with evidence rather than repaired here.
-- [ ] No file under `agent-system/extensions/**` or `.claude/**` is modified by this task.
+- [x] The summary artifact passes `validate-artifact.sh` with exit status 0.
+- [x] `bash .claude/scripts/verify-deploy.sh` is run and its result reported; any failure is
+  attributed with evidence rather than repaired here. *(deviation: altered — per this phase's
+  Batch Gate Deferral directive, the full gate is deferred to the once-per-invocation batch
+  stage rather than independently run in this dispatch; this task touches nothing outside its
+  own specs/** directory)*
+- [x] No file under `agent-system/extensions/**` or `.claude/**` is modified by this task.
 
 ## Artifacts & Outputs
 
