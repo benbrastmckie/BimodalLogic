@@ -2667,22 +2667,18 @@ side-condition from the equivalence step (finding 3).
       `sepBody`/`sepFuel`/`sepMulti` name for name: `sep7Body (k : USForm → USForm) (φ : USForm)`
       (one step, taking the recursive call as a parameter: abstract the inner types, `sepMulti`,
       reindex by `substLeaf (unabstrFn ..)`, and fire `k` through `mapS` at the recontaminated
-      `snce` constituents, returning `φ` unchanged when `untlDepth φ ≤ 1`); `sep7Fuel : ℕ → USForm → USForm`
+      `snce` constituents, returning `sepMulti φ` when `untlDepth φ ≤ 1`); `sep7Fuel : ℕ → USForm → USForm`
       structural on the budget; and `sep7 φ = sep7Fuel (untlDepth φ) φ`. **Do not attempt a
       well-founded recursion on `untlDepth`**: the recursive call's argument is produced by `mapS`
       and no `decreasing_by` goal can be stated for it (D-i, and finding 2 of the Landed
-      Abstraction Device section). *(deviation: altered -- `sep7Body` returns `sepMulti φ`,
-      not `φ` unchanged, at `untlDepth φ ≤ 1`. This bullet's parenthetical and the base-case
-      bullet three items above it ("what makes the budget's base case `sepMulti`, exactly as GHR's
-      `n = 1` case is 10.2.6") are mutually inconsistent, and only the latter reading is sound: a
-      formula of `untlDepth` 1 satisfies 10.2.6's hypothesis but is in general NOT separated,
-      since its maximal `untl`s may sit under `snce` nodes, so returning it unchanged would be
-      unsound at every depth-1 input and would additionally break the recursive call at every
-      greater depth, because the reindexed constituents land at depth at most one. `sep7Fuel 0 φ
-      = φ` is retained and is sound for a different reason: budget 0 is reached only at
-      `untlDepth φ ≤ 0`, where `isSOnly_of_untlDepth_eq_zero` makes `φ` already separated.
-      Recorded in the module docstring's "The base case, and why it is `sepMulti` and not the
-      identity" section and in `issues.jsonl`.)*
+      Abstraction Device section). The base case is `sepMulti`, not the identity: a formula of
+      `untlDepth` 1 satisfies 10.2.6's hypothesis but is in general NOT separated, since its
+      maximal `untl`s may sit under `snce` nodes, so returning it unchanged would be unsound at
+      every depth-1 input and would additionally break the recursive call at every greater depth,
+      because the reindexed constituents land at depth at most one. `sep7Fuel 0 φ = φ` is retained
+      and is sound for a different reason: budget 0 is reached only at `untlDepth φ ≤ 0`, where
+      `isSOnly_of_untlDepth_eq_zero` makes `φ` already separated. Recorded in the module
+      docstring's "The base case, and why it is `sepMulti` and not the identity" section.
 - [x] Prove the reindex-and-recurse pass `mapS_substLeaf_spec7` and then
       `sep7Fuel_spec : ∀ n φ, untlDepth φ ≤ n → NoSnceUnderUntl φ → IsSeparated (sep7Fuel n φ) ∧ (∀ v t, usTruth v t (sep7Fuel n φ) ↔ usTruth v t φ) ∧ ...`
       by induction on the budget, with part (c)'s bound licensing the inductive hypothesis at the
@@ -2918,17 +2914,28 @@ separation of a wff of the form `S(D₁, D₂)`").
 covers it, and `sep`'s computability is checked inside the same build by the absence of the
 `noncomputable` keyword.
 
-**Scope Hypothesis**: one new module, zero changes to any landed declaration, and roughly **28**
-new declarations in the groups this task list names: the mutual measure with its equation lemmas
-and the GHR worked-example check (6-8), the monotonicity bounds (4-6), the base-case lemma (1), the
-duality instruments (4), the abstraction with `noSnceUnderUntl_mapU_abstrSnceArgs` (2), parts (a),
-(b) and (c) with part (c)'s own components (6), and the recursion with `sep8Fuel_spec`, `sep`,
-`usTruth_sep_iff` and `isSeparated_sep` (6). Confirm at implementation time by counting the
-`def`/`theorem` keywords landed in `JunctionDepth.lean` against that group list, and by `git diff`
-showing `Hierarchy.lean` and `UNesting.lean` byte-unchanged. The monotonicity-bound count and part
-(c)'s component count are the two most likely to move, and moving them up is expected rather than
-a scope breach; a count materially above 28 overall means a landed device declaration was rebuilt
-instead of reused.
+**Scope Hypothesis**: one new module, zero changes to any landed declaration, and roughly
+**60-70** new declarations in the groups this task list names, now including one group the
+task list's own prose leaves unnamed: the mutual measure with its equation lemmas and the GHR
+worked-example check (6-8), the monotonicity bounds (4-6), the base-case lemma (1), the duality
+instruments (4), a mirror `sTypes`/`innerSTypes` collection API -- the `snce`-side analogue of
+Phase 23's `uTypes`/`innerTypes`, needed to collect "the list of those maximal `snce`
+subformulae" the abstraction task bullet names as `L` and to bound part (c)'s reindexed measure
+on the `snce` side, and not landed anywhere in the subtree (~12), the abstraction with
+`noSnceUnderUntl_mapU_abstrSnceArgs` (2), parts (a), (b) and (c) with part (c)'s own components
+(6), and the recursion with `sep8Fuel_spec`, `sep`, `usTruth_sep_iff` and `isSeparated_sep` (6).
+Confirm at implementation time by counting the `def`/`theorem` keywords landed in
+`JunctionDepth.lean` against that group list, and by `git diff` showing `Hierarchy.lean` and
+`UNesting.lean` byte-unchanged. The monotonicity-bound count, the `sTypes`/`innerSTypes` group,
+and part (c)'s component count are the three most likely to move, and moving them up is expected
+rather than a scope breach. Do **not** treat a count materially above this figure as meaning a
+landed device declaration was rebuilt: Phase 23's identically-worded diagnosis made exactly that
+claim at its own overshoot and was refuted mechanically, because the real cause there was a
+group list that counted headline results and omitted supporting APIs, not rebuilding. Check for
+rebuilding only by this phase's own two blocking greps (no second `mapU`/`mapS`/`substLeaf`/
+`abstrFn`/`unabstrFn` definition, and no citation of `usTruth_congr_of_update` outside a
+docstring); an overshoot neither grep explains is most likely another unenumerated
+supporting-API group, as it was at Phase 23.
 
 **Files to modify**:
 
