@@ -196,11 +196,12 @@ _measure = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_measure)
 LIB, layer_of = _measure.LIB, _measure.layer_of
 
-# The recorded allowlist: 8 lines, all from `FormalSystem.MinusLanguage.AxiomDischarge`
-# (layer 0 by its pre-merge origin, `Syntax/MinusLanguage/`) into `Theorems` (layer 2).
-# They are recorded, not excused: the file discharges the Minus axioms through derived
-# theorems of the base logic, and relocating it is separate work.  Every entry is derived
-# by running `measure-refactor-partitions.py upward-edges`, never hand-copied from a plan.
+# The recorded allowlist: 10 lines from two layer-0 axiom-discharge sources --
+# `FormalSystem.MinusLanguage.AxiomDischarge` and `FormalSystem.OpenLanguage.OpenErasure`
+# -- into `Theorems` (layer 2); see this script's header for the full 8/2 split and the
+# Ockhamist-arm explanation. They are recorded, not excused: relocating these imports is
+# separate work.  Every entry is derived by running `measure-refactor-partitions.py
+# upward-edges`, never hand-copied from a plan.
 _SRC = "FormalSystem.MinusLanguage.AxiomDischarge"
 _SRC_OPEN = "FormalSystem.OpenLanguage.OpenErasure"
 ALLOWLIST = (
