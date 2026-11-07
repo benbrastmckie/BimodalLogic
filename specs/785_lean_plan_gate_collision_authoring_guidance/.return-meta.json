@@ -1,9 +1,58 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "dispatch_seq": 11,
+  "partial_progress": {
+    "stage": "deploy_verification_blocked_by_foreign_tree_state",
+    "details": "All three plan phases' own deliverable work is complete and verified (guidance file authored with all nine conditions, wired via index-entries.json and EXTENSION.md, hygiene sweep clean). Phase 3 closes [PARTIAL] solely because the final deploy-headless.sh run reported RESULT=landed_verify_red instead of landed_verify_clean, for reasons entirely outside this task's file scope: all four failing checks trace to pre-existing uncommitted foreign changes in the shared nvim config repo that were already present before this task began. See handoff for full detail and the concrete resume action.",
+    "handoff_path": "specs/785_lean_plan_gate_collision_authoring_guidance/handoffs/phase-3-handoff-20261107T011000Z.md",
+    "phases_completed": 2,
+    "phases_total": 3
+  },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md",
+      "summary": "Guidance file authored and wired with all nine gate-collision conditions; task PARTIAL only because deploy-headless.sh's final verify reported landed_verify_red due to pre-existing foreign uncommitted changes outside this task's scope."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/785_lean_plan_gate_collision_authoring_guidance/handoffs/phase-3-handoff-20261107T011000Z.md",
+      "summary": "Blocker detail and concrete resume action: re-run deploy-headless.sh once the three foreign uncommitted files in the nvim repo are committed or reverted by their owning session/operator."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Authored and wired the nine-condition plan-authoring-gate-collisions.md guidance file in the lean extension's source store; deliverable work is complete, but the final redeploy verification is blocked by pre-existing, out-of-scope foreign uncommitted changes in the shared source-store repository."
+  },
+  "modified_files": [],
+  "memory_candidates": [
+    {
+      "content": "verify-deploy.sh's target argument must be a deploy-tree root (a repo root holding both a deployed .claude/ tree and, for source-store work, agent-system/extensions simultaneously) -- never an extension's own source_dir subdirectory, which has no .claude/ and makes gate 0 exit before gate selection. For a source-store-adjacent check, resolve the repo root as the directory containing .claude-extensions.json and pass that as TARGET, e.g. `bash <repo_root>/.claude/scripts/verify-deploy.sh --skip-slow --only-gate 3,4 <repo_root>`.",
+      "category": "PATTERN",
+      "source_artifact": "specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["verify-deploy", "target-shape", "source-store", "deploy-tree-root", "gate-selection"]
+    },
+    {
+      "content": "A repo-wide lint/sweep/grep criterion in a verification step should be phrased as a baseline delta or scoped to the files a phase touches, never as an absolute zero -- a baseline is a moving quantity and a criterion hard-coding one is wrong the moment it moves in either direction. A gate failing only on pre-existing findings outside the task's file scope is a recorded PASS, not a blocker, and must never be cleared by editing out-of-scope files.",
+      "category": "PATTERN",
+      "source_artifact": "specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["baseline-delta", "verification-criteria", "gate-collision", "absolute-zero", "pre-existing-findings"]
+    },
+    {
+      "content": "When a shared source-store repository's working tree already carries pre-existing, uncommitted foreign changes from another in-flight session before a task even begins, a deploy-time verification gate (e.g. deploy-headless.sh's inline RESULT check) can fail for reasons entirely attributable to that foreign content. The correct response is to diff-attribute each failing finding to the specific foreign file causing it (never assume; measure), never hand-patch the foreign file, and close the phase [PARTIAL] per the plan's own rollback instruction rather than forcing green.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["shared-working-tree", "foreign-uncommitted-changes", "deploy-headless", "territory", "partial-status"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1794079850_b31491",
     "agent_type": "general-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 2,
+    "phases_total": 3
   }
 }

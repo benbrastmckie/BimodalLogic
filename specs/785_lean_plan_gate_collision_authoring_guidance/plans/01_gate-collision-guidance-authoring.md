@@ -362,7 +362,7 @@ covers it; the covering check is the `prose` row's diff read-through plus
 
 ---
 
-### Phase 3: Wire the File, Sweep Deliverable Hygiene, and Redeploy [NOT STARTED]
+### Phase 3: Wire the File, Sweep Deliverable Hygiene, and Redeploy [PARTIAL]
 
 **Goal**: Make the file reachable (an `index-entries.json` entry plus an `EXTENSION.md`
 context-pointer referrer), confirm the prose carries none of the forbidden content classes, and
@@ -371,9 +371,9 @@ wiring is part of this change and not a follow-up.
 
 **Tasks**:
 
-- [ ] Re-read `agent-system/extensions/lean/index-entries.json` and
+- [x] Re-read `agent-system/extensions/lean/index-entries.json` and
       `agent-system/extensions/lean/EXTENSION.md` immediately before editing either.
-- [ ] Add the `index-entries.json` entry for
+- [x] Add the `index-entries.json` entry for
       `project/lean4/patterns/plan-authoring-gate-collisions.md`, matching the extension's
       existing pattern-file convention: `load_when.agents` =
       `["lean-research-agent", "lean-implementation-agent"]`, `load_when.task_types` =
@@ -382,11 +382,11 @@ wiring is part of this change and not a follow-up.
       authoring, generated surfaces, baseline delta, verification criteria). Write
       `line_count` approximately; `deploy-headless.sh` regenerates it via
       `generate-context-line-counts.sh --write`. Validate the file parses as JSON after the edit.
-- [ ] Add the `EXTENSION.md` referrer: one bullet under `### Context Pointers`, in the same style
+- [x] Add the `EXTENSION.md` referrer: one bullet under `### Context Pointers`, in the same style
       as the `dependency-tracing.md` line, naming
       `.claude/context/project/lean4/patterns/plan-authoring-gate-collisions.md` with a
       one-clause summary a plan author who does not already know the filename would recognize.
-- [ ] Hygiene sweep on the landed guidance file: grep for task-number reference forms and run
+- [x] Hygiene sweep on the landed guidance file: grep for task-number reference forms and run
       `bash .claude/scripts/check-task-references.sh` scoped to the landed file individually;
       grep for the record-versioning forms the rule enumerates (page-level version labels,
       supersession framing, "no longer" / "previously" / "formerly" / "used to" / "withdrawn");
@@ -394,18 +394,22 @@ wiring is part of this change and not a follow-up.
       constant (the 1500-line ceiling, the 200-line acceptance window) or removing it. No
       measured line-count value, occurrence count, matched-body count, originating task number,
       issue entry_id or adjacent record number may remain.
-- [ ] Confirm every statement in the guidance is phrased as what a plan author does and what the
+- [x] Confirm every statement in the guidance is phrased as what a plan author does and what the
       gates check, never as a narration of a past run or of this guidance's own drafting.
-- [ ] Run `timeout 540 bash .claude/scripts/deploy-headless.sh` (Bash tool `timeout` parameter
+- [x] Run `timeout 540 bash .claude/scripts/deploy-headless.sh` (Bash tool `timeout` parameter
       raised to 600000) and confirm `RESULT=landed_verify_clean`. Bounded wait only, per
-      `context/patterns/external-process-wait.md` Rule 1.
-- [ ] After the deploy, re-read the `line_count` field for the new entry and compare it against a
+      `context/patterns/external-process-wait.md` Rule 1. *(deviation: altered — deploy landed
+      but reported `RESULT=landed_verify_red`; the four failing checks (doc-lint drift on two
+      unrelated files, eager-load baseline, shellcheck, dead-command-recommendation) all trace to
+      pre-existing uncommitted changes in the shared source-store repository, present before this
+      phase began and outside this task's file scope. See Phase 3 handoff for full detail.)*
+- [x] After the deploy, re-read the `line_count` field for the new entry and compare it against a
       live `wc -l` of the landed source file; confirm they agree and that `keywords` match the
       file's subject matter as landed.
-- [ ] Run the complete gate set and record the result, enumerating any pre-existing finding that
+- [x] Run the complete gate set and record the result, enumerating any pre-existing finding that
       does not name this task's own files as baseline rather than as a blocker — per condition 4's
       own rule, applied to this plan.
-- [ ] Record in the completion summary: the item 2 reference-rather-than-duplicate resolution and
+- [x] Record in the completion summary: the item 2 reference-rather-than-duplicate resolution and
       its destination (the lean extension, with a pointer to core's `plan-format.md` sub-case
       (b); no core file edited), and the observation that
       `scripts/check-metalogic-cycles.sh`'s inline comment near its `ALLOWLIST` definition

@@ -1,15 +1,25 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "partial",
+  "dispatch_seq": 11,
+  "phases_completed": 2,
   "phases_total": 3,
-  "summary": "Authored a three-phase plan for the lean-extension gate-collision guidance file. Phases 1 and 2 split the nine conditions across the single new plan-authoring-gate-collisions.md (four criterion-authoring classes, then five gate-surface inventory items), serialized because both write the same file; Phase 3 wires index-entries.json and EXTENSION.md, sweeps deliverable hygiene, and redeploys to RESULT=landed_verify_clean. The research-confirmed target path matches the declared file_scope exactly, so no scope widening is needed; dispatch item 2 is planned as a terse restatement pointing at core's plan-format.md rather than a duplicate, with no core file edited.",
-  "blockers": [],
+  "summary": "Authored the nine-condition plan-authoring-gate-collisions.md guidance file in the lean extension's source store and wired it (index-entries.json entry, EXTENSION.md referrer). All of this task's own deliverable work (Phases 1 and 2, plus Phase 3's wiring and hygiene sweep) is complete and verified. Phase 3 closes PARTIAL solely because the final deploy-headless.sh verification reported RESULT=landed_verify_red, not landed_verify_clean, due to pre-existing uncommitted foreign changes in the shared nvim config repo that were already present before this task began.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/785_lean_plan_gate_collision_authoring_guidance/plans/01_gate-collision-guidance-authoring.md",
-      "summary": "Three-phase plan: conditions 1-4, conditions 5-9, then wiring plus hygiene sweep plus redeploy."
+      "type": "summary",
+      "path": "specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md",
+      "summary": "Full implementation summary including the four traced-foreign deploy findings and the resume action."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/785_lean_plan_gate_collision_authoring_guidance/handoffs/phase-3-handoff-20261107T011000Z.md",
+      "summary": "Phase 3 handoff with blocker detail and concrete resume command."
     }
   ],
-  "dispatch_seq": 7
+  "blockers": [
+    {
+      "description": "deploy-headless.sh reports RESULT=landed_verify_red instead of RESULT=landed_verify_clean. All four failing checks (doc-lint drift on tts-stt-integration.md/neovim-integration.md, eager-load baseline overage, a shellcheck finding in lean-plan-compliance-check.sh, two dead-command-recommendation findings re: /ide in memory-extension docs) trace to pre-existing uncommitted foreign changes in the shared nvim config repo (agent-system/extensions/lean/rules/lean4.md, agent-system/extensions/lean/context/project/lean4/domain/ladder-counter-observables.md, agent-system/extensions/core/scripts/lake-build-guard.sh), present before this task began and outside this task's file scope. No further attempt on this phase can close it without either committing or reverting that foreign work, which this task must not do.",
+      "resolution": "Once the three foreign files are committed by their owning session or reverted by an operator, re-run: timeout 540 bash /home/benjamin/.config/nvim/.claude/scripts/deploy-headless.sh (Bash tool timeout parameter raised to 600000) from /home/benjamin/.config/nvim, and confirm RESULT=landed_verify_clean. Then close Phase 3 and this task [COMPLETED] -- no further edit to this task's own deliverable is needed."
+    }
+  ]
 }
