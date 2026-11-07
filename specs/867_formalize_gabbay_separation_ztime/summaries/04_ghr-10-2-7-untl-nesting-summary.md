@@ -216,3 +216,37 @@ The full breakdown is written into the plan's own Scope Hypothesis.
   verbatim
 - `~/Projects/Literature/sources/gabbay_1994/ch1001_chapter-10-expressive-completeness-of-si.md:175`
   — Lemma 10.2.7 verbatim
+
+## Addendum: Phase 24's Part (c), Sized Before Starting
+
+Phase 24's part (c) bullet requires that it be sized before any of the rest of that phase is
+attempted, and the plan's `## Rollback/Contingency` treats failure to bound the reindexed junction
+depth as the contemplated stall. The sizing was done on paper at the end of this dispatch, with no
+code written and Phase 24 left `[NOT STARTED]`. The full derivation is in
+`handoffs/phase-23-handoff-20261106T190000Z.md`'s addendum; the three results that matter:
+
+1. **The measure's equations are correct as the plan writes them**, confirmed mechanically rather
+   than by hand: a self-contained `lean_run_code` snippet evaluates GHR's worked example
+   `S(a ∧ U(A, S(C,D)), S(S(C,D), E))` to `junctionDepth = 3` and its second `C` appearance to
+   `1`, both matching the source, and shows the two equations elaborate as a `mutual` structural
+   recursion with no `decreasing_by`.
+2. **Parts (a) and (b) are cheap.** `NoSnceUnderUntl φ → junctionDepth φ ≤ 2` (an alternating
+   chain of length 3 necessarily puts an `S` beneath a `U`) and
+   `IsSeparated φ → junctionDepth φ ≤ 1`. Part (b) is therefore two lines from
+   `isSeparated_sep7`, and does not need the transfer the plan's bullet correctly says is
+   unavailable.
+3. **Part (c) closes, and is not a stall — but only because of the duality reduction.** Over a
+   separated `S`, four substitution bounds give
+   `junctionDepth (substLeaf (unabstrFn j L) S) ≤ 1 + max mU mS` for `mU`/`mS` the maximum `jdU`/
+   `jdS` over the abstracted list. For a general `φ` this bounds the result by `n` and does **not**
+   strictly drop — the exact point at which an unsized dispatch would stall. For an `snce`-headed
+   `φ`, `jdS φ ≥ 1 + jdU φ` forces `mS ≤ n - 2` and `mU ≤ n - 3`, and the bound becomes `n - 1`.
+   The condition the step actually needs is `jdU φ < jdS φ`, which fails when `jdU φ = jdS φ`
+   (reachable at `n ≥ 2`), so the step must be applied at **maximal temporal nodes**, where the
+   head's kind forces the inequality — not at the root of an arbitrary formula. GHR's duality
+   remark is thus a precondition of part (c), not a convenience.
+
+The implied `sep8Body` shape is a plain structural recursion over the Boolean skeleton with the
+step at each maximal temporal node, which needs no new mapping operator. The phase is tractable
+but is roughly 60-70 declarations against its Scope Hypothesis of 28, chiefly because a mirror
+`sTypes`/`innerSTypes` collection API is not landed and the hypothesis does not budget for it.
