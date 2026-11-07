@@ -1,10 +1,44 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
+  "dispatch_seq": 9,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/772_jq_rewrite_reserializes_json_record_files/summaries/01_jq-reserialization-guidance-summary.md",
+      "summary": "4-phase guidance change landed: widened jq-escaping-workarounds.md's framing and added a whole-file re-serialization section with an assertion-backed recipe, added a merged CLAUDE.md pointer line, resynced the pattern file's index-entries.json entry (using its own prescribed recipe), and redeployed to RESULT=landed_verify_clean with the full gate set green."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Added a new whole-file jq re-serialization hazard section (trigger condition, concrete file shape, five-step assertion-backed recipe, state-write.sh relation, reopen condition, non-generalization) to context/patterns/jq-escaping-workarounds.md in the core extension source store, widened that file's opening framing, added a one-line pointer in the merged CLAUDE.md jq section, resynced the pattern file's index-entries.json registration entry, and redeployed with RESULT=landed_verify_clean and a clean full gate set."
+  },
+  "modified_files": [
+    "specs/772_jq_rewrite_reserializes_json_record_files/summaries/01_jq-reserialization-guidance-summary.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a registration/index file itself has the hand-maintained mixed-compaction shape a new 'avoid whole-file jq rewrites' guidance describes, apply that same guidance's own recipe to the edit of the registration file, rather than treating the registration update as exempt. Recipe: take HEAD bytes (git show HEAD:path), apply the intended field changes as a text-level edit on a copy, independently compute the intended result with jq from the same HEAD bytes, assert canonicalized equality (diff <(jq -S . text-edited) <(jq -S . jq-output) must be empty), then move the text-edited copy into place. The equality assertion is load-bearing: it buys back jq's well-formedness guarantee that a bare text edit gives up.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/772_jq_rewrite_reserializes_json_record_files/summaries/01_jq-reserialization-guidance-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "jq",
+        "json-editing",
+        "reserialization",
+        "text-level-edit",
+        "canonicalization"
+      ]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1794079850_b31491",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
-  },
-  "dispatch_seq": 9
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
+    "phases_completed": 4,
+    "phases_total": 4
+  }
 }

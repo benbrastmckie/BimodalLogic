@@ -1,7 +1,7 @@
 # Implementation Plan: Task #772
 
 - **Task**: 772 - jq rewrite reserializes JSON record files
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/772_jq_rewrite_reserializes_json_record_files/reports/01_jq-rewrite-reserialization-guidance.md
@@ -350,7 +350,7 @@ run together with the same source-store gate subset
 
 ---
 
-### Phase 4: Redeploy, verify, and walk the acceptance criteria [NOT STARTED]
+### Phase 4: Redeploy, verify, and walk the acceptance criteria [COMPLETED]
 
 **Goal**: The source-store edits are landed in this repository's deployed `.claude/` tree with
 `RESULT=landed_verify_clean`, the complete gate set is green, and every acceptance criterion is
