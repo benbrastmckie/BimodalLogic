@@ -1,7 +1,7 @@
 # Implementation Plan: Task #772
 
 - **Task**: 772 - jq rewrite reserializes JSON record files
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/772_jq_rewrite_reserializes_json_record_files/reports/01_jq-rewrite-reserialization-guidance.md
@@ -145,7 +145,7 @@ and never run `git-snapshot.sh` in its reverting default mode.
 
 ---
 
-### Phase 1: Widen the file's framing and add the re-serialization section [NOT STARTED]
+### Phase 1: Widen the file's framing and add the re-serialization section [COMPLETED]
 
 **Goal**: The pattern file documents the whole-file re-serialization failure class with a
 checkable trigger condition, the copyable assertion-backed recipe, the `state-write.sh` relation,
@@ -236,7 +236,7 @@ prescribes.
 
 ---
 
-### Phase 2: Add the merged CLAUDE.md jq-section pointer [NOT STARTED]
+### Phase 2: Add the merged CLAUDE.md jq-section pointer [COMPLETED]
 
 **Goal**: The merged `CLAUDE.md` "jq Command Safety" section — auto-injected into every agent
 session, which is what reaches the plan-author audience — names the re-serialization hazard in one
@@ -287,7 +287,7 @@ run with the single-file diff read-through this tier prescribes.
 
 ---
 
-### Phase 3: Resync the index-entries.json entry [NOT STARTED]
+### Phase 3: Resync the index-entries.json entry [COMPLETED]
 
 **Goal**: The `patterns/jq-escaping-workarounds.md` entry in `core`'s `index-entries.json` agrees
 with the extended file — accurate `line_count`, a `summary` describing both failure classes, and

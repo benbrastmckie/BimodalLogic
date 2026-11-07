@@ -11,8 +11,8 @@ next_project_number: 891
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,774,777,779,780,781,784,785,803,817,818,821,825,826,829,830,831,832,838,839,841,842,847,848,857,863,867,869,873,874,875,876,882,883,890 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,783,787,804,813,816,823,827,840,845,853,862,879 | 298,428,502,743,761,770,772,774,777,785,803,838,839,867 | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,772,777,779,780,781,784,785,803,817,818,821,825,826,829,830,831,832,838,839,841,842,847,848,857,863,867,869,873,874,875,876,882,883,890 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,783,787,804,813,816,823,827,840,845,853,862,879 | 298,428,502,743,761,770,772,777,785,803,838,839,867 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,814,822,824,834,861 | 429,497,763,783,813,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543,843 | 410,498,499,500,822 | agent-system, algebraic-representation, decidability, ... |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -37,8 +37,6 @@ next_project_number: 891
     └─ 822 [NOT STARTED] — Record the launch-side PID-fidelity condition on the...
       └─ 843 [NOT STARTED] — Extend the bounded-waiter lint beyond Rule 2 to the...
   └─ 827 [NOT STARTED] — Require a plan phase to agree with its own Scope Hypothesis...
-774 [IMPLEMENTING] — EVALUATE (AND BE WILLING TO DECLINE): should plan guidance...
-  └─ 827 [NOT STARTED] — Require a plan phase to agree with its own Scope Hypothesis... (see above)
 777 [NOT STARTED] — Carve a task's own specs/ artifacts out of...
   └─ 816 [NOT STARTED] — Stop git-snapshot.sh's --no-revert artifacts from...
 779 [NOT STARTED] — Source-store-aware commit path and plan-time...
@@ -4275,7 +4273,7 @@ behavior observed is the source store's own.
 ---
 
 ### 774. Refuted predicted reason recording
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
