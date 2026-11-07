@@ -4313,6 +4313,7 @@ behavior observed is the source store's own.
 - **Dependencies**: None
 - **Research**: [772_jq_rewrite_reserializes_json_record_files/reports/01_jq-rewrite-reserialization-guidance.md]
 - **Plan**: [772_jq_rewrite_reserializes_json_record_files/plans/01_jq-reserialization-guidance.md]
+- **Summary**: [772_jq_rewrite_reserializes_json_record_files/summaries/01_jq-reserialization-guidance-summary.md]
 
 **Description**: Add agent-system guidance for in-place edits of formatting-sensitive JSON record files, so a whole-file `jq` rewrite is never authored as the edit mechanism for one.
 

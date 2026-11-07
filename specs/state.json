@@ -2402,13 +2402,19 @@
           "path": "specs/772_jq_rewrite_reserializes_json_record_files/plans/01_jq-reserialization-guidance.md",
           "type": "plan",
           "summary": "4-phase guidance-only plan: extend the jq pitfalls hub with the whole-file re-serialization failure class and its assertion-backed recipe, add the merged CLAUDE.md pointer line, resync the index entry, then redeploy to RESULT=landed_verify_clean."
+        },
+        {
+          "path": "specs/772_jq_rewrite_reserializes_json_record_files/summaries/01_jq-reserialization-guidance-summary.md",
+          "type": "summary",
+          "summary": "4-phase guidance change landed and redeployed clean; see file for full detail on each edited source-store file."
         }
       ],
       "created": "2026-10-12T00:03:28Z",
       "last_updated": "2026-11-07T20:08:34Z",
       "project_number": 772,
       "session_id": "sess_1794079850_b31491",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Added a new whole-file jq re-serialization hazard section (trigger condition, concrete file shape, five-step assertion-backed recipe, state-write.sh relation, reopen condition, non-generalization) to context/patterns/jq-escaping-workarounds.md in the core extension source store, widened that file's opening framing, added a one-line pointer in the merged CLAUDE.md jq section, resynced the pattern file's index-entries.json registration entry, and redeployed with RESULT=landed_verify_clean and a clean full gate set."
     },
     {
       "project_number": 774,
