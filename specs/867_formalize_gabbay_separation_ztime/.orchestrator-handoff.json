@@ -1,20 +1,25 @@
 {
   "status": "partial",
-  "dispatch_seq": 18,
-  "phases_completed": 24,
+  "dispatch_seq": 19,
+  "phases_completed": 25,
   "phases_total": 30,
-  "summary": "Phase 22.3 landed and committed green: the U-type measure (uTypes/uTypeCount) and GHR Lemma 10.2.6 in full -- equivalence, separatedness and type preservation -- with its three strict-decrease obligations as three separately named results, part (b) a one-line citation of isUTyped_sepU as the plan rules. The abstraction-and-reindexing device (mapU, mapS, substLeaf, abstrFn, unabstrFn) had to be built here because the plan's claim that freshLeaf and usTruth_congr_of_update were 'the whole device' is false: the tree carries no substitution operation on USForm. All gates green; zero sorry, zero new axioms, sepMulti computable. Phases 23-28 remain.",
+  "summary": "Phase 23 landed and committed green: GHR Lemma 10.2.7 in full as the new UNesting.lean (858 lines, 57 declarations), which compiled on the FIRST build attempt because Phase 22.3's substitution calculus transferred verbatim. The hypothesis is now the decidable structural predicate NoSnceUnderUntl, GHR's licensing sentence about nesting levels is proved rather than asserted (untlDepth_lt_of_mem_innerTypes), and the induction is the budget idiom with the three decrease parts separately named. Two plan deviations, both recorded: sep7Body's base case returns sepMulti rather than the identity (the phase's two statements of its own base case are inconsistent and only this reading is sound), and sep7Fuel_spec carries two conjuncts, read off the proof obligation as the plan directs. All gates green against baseline: zero sorry, zero vacuous introduced, axiom count 14 unchanged, full lake build 0 errors, module-invariants and metalogic-cycles PASS. Phase 24's standing 'size part (c) first' prerequisite was then executed on paper with no code written: the plan's declared stall candidate is NOT a stall, and GHR's duality reduction turns out to be a precondition of the bound rather than a convenience.",
   "blockers": [],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/03_ghr-10-2-6-utype-measure-summary.md",
-      "summary": "Phase 22.3 implementation summary: uTypeCount and GHR Lemma 10.2.6, with the confirmed-false Scope Hypothesis record."
+      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/04_ghr-10-2-7-untl-nesting-summary.md",
+      "summary": "Phase 23 implementation summary: GHR Lemma 10.2.7 in full, the measured gate record, the three plan deviations, the refuted Scope Hypothesis diagnosis, and the Phase 24 part (c) sizing addendum."
     },
     {
       "type": "handoff",
-      "path": "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-22.3-handoff-20261106T232000Z.md",
-      "summary": "Phase 22.3 phase-end handoff with the full measured-gate record and the next action."
+      "path": "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-23-handoff-20261106T190000Z.md",
+      "summary": "Phase 23 phase-end handoff: the interface Phase 24 consumes, the full measured gate table, and the part (c) sizing derivation with its mechanical check of GHR's worked example."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Expressiveness/SeparationZ/UNesting.lean",
+      "summary": "New module: GHR Lemma 10.2.7 -- NoSnceUnderUntl with its decision procedure, untlDepth, the two base-case bridges, innerTypes with the proved licensing bound, abstrArgs, the three named decrease parts, and sep7 with isSeparated_sep7 and usTruth_sep7."
     }
   ]
 }
