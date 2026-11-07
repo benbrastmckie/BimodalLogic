@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 891,
+  "next_project_number": 892,
   "active_projects": [
     {
       "project_number": 880,
@@ -14972,6 +14972,181 @@
           "mechanical": true,
           "semantic": true
         }
+      }
+    },
+    {
+      "project_number": 891,
+      "project_name": "nvim_deploy_standing_verify_findings",
+      "title": "Clear the three standing verify-deploy findings blocking a clean nvim deploy",
+      "status": "researched",
+      "task_type": "meta",
+      "description": "Clear the three standing verify-deploy findings in the nvim config repo so deploy-headless.sh can reach RESULT=landed_verify_clean again. All three are committed (not merely uncommitted) and were confirmed foreign to the gate-collision guidance work that observed them.\n\nFINDING 1 -- gate 22 (shellcheck lint): SC2155 at agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh:207 (declare and assign separately to avoid masking return values).\n\nFINDING 2 -- gate 24 (dead-command-recommendation lint): two recommendations naming a command with no definition file, both for /ide -- agent-system/extensions/memory/.../memory-setup.md:93 and memory-troubleshooting.md:34. Decide per site whether the recommendation should be dropped or repointed at a command that exists; do not create an /ide definition just to satisfy the lint.\n\nFINDING 3 -- gate 20 (orchestrator context budget): eager-load total measured 67096 B against a 66800 B baseline, 296 B over. A counterfactual run proved 182 B of that overage persists with the guidance-file referrer bullet entirely removed, so it is pre-existing growth from other committed work, not attributable to any one recent addition. Either trim elsewhere in the eager-load set or re-baseline deliberately with a recorded justification -- do not raise the baseline silently.\n\nVerification: run timeout 900 bash .claude/scripts/deploy-headless.sh from /home/benjamin/.config/nvim with a direct unbuffered file redirect (never piped through tail, which buffers and destroys the diagnostics of a killed run), and confirm RESULT=landed_verify_clean.",
+      "effort": "low",
+      "parent_task": 785,
+      "topic": "agent-system",
+      "dependencies": [],
+      "file_scope": [
+        "agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh"
+      ],
+      "created": "2026-11-07T22:59:59Z",
+      "last_updated": "2026-11-07T22:59:59Z",
+      "artifacts": [],
+      "audit_verdict": {
+        "proposal": {
+          "id": "nvim_deploy_standing_verify_findings",
+          "project_number": 891,
+          "title": "Clear the three standing verify-deploy findings blocking a clean nvim deploy"
+        },
+        "mechanical_class_summary": [
+          {
+            "class": "none",
+            "count": 12
+          },
+          {
+            "class": "scope-blind",
+            "count": 453
+          },
+          {
+            "class": "subset",
+            "count": 2
+          }
+        ],
+        "max_semantic_score": 0.5206611570247934,
+        "verdict_count": 467,
+        "duplicate_candidates": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 777,
+            "project_name": "phase_commit_drops_own_plan_artifact",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.49586776859504134
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 783,
+            "project_name": "bounded_block_edit_index_and_assert",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4049586776859504
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 813,
+            "project_name": "lean_plan_challenge_block_authoring_contract",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4380165289256198
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 816,
+            "project_name": "snapshot_artifacts_contaminate_phase_commits",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4132231404958678
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 822,
+            "project_name": "bounded_waiter_detach_form_pid_fidelity",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4793388429752066
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 834,
+            "project_name": "orchestrate_aux_carrier_and_implement_readmission",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.45454545454545453
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 827,
+            "project_name": "plan_self_consistency_and_artifact_existence",
+            "discharging_artifact": {
+              "path": "specs/827_plan_self_consistency_and_artifact_existence/summaries/01_plan-self-consistency-and-artifact-existence-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all four phases, the mechanical-check decision, and the cross-repo commit reasoning."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4628099173553719
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 768,
+            "project_name": "lean_challenge_snapshot_chunk_and_unicode_defects",
+            "discharging_artifact": {
+              "path": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/summaries/01_snapshot-chunk-and-unicode-defects-summary.md",
+              "type": "summary",
+              "summary": "All three lean-challenge-snapshot.sh defects repaired across 6 phases in the source store; suite extended from 17 to 29 passing cases; deployed tree regenerated and verified byte-identical, deployed suite green."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4297520661157025
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 785,
+            "project_name": "lean_plan_gate_collision_authoring_guidance",
+            "discharging_artifact": {
+              "path": "specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md",
+              "type": "summary",
+              "summary": "Full implementation summary including the four traced-foreign deploy findings and the resume action."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5206611570247934
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 810,
+            "project_name": "agent_system_batch_defect_group",
+            "discharging_artifact": {
+              "path": "specs/810_agent_system_batch_defect_group/summaries/01_agent-system-batch-defect-group-summary.md",
+              "type": "summary",
+              "summary": "Consolidated acceptance evidence for all five fixed defects, the Batch Gate Deferral discharge, mechanical no-.claude-staged proof, and two named follow-ups."
+            },
+            "mechanical_class": "subset",
+            "semantic_score": 0.4132231404958678
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 888,
+            "project_name": "lean_goals_block_harvest_contract",
+            "discharging_artifact": null,
+            "mechanical_class": "subset",
+            "semantic_score": 0.3140495867768595
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 858,
+            "project_name": "state_write_audit_verdict_argv_overflow",
+            "discharging_artifact": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4380165289256198
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 835,
+            "project_name": "plan_format_baseline_relative_gate_criteria",
+            "discharging_artifact": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4793388429752066
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4049586776859504
+          }
+        ]
       }
     }
   ],

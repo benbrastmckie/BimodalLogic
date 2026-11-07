@@ -1,5 +1,5 @@
 ---
-next_project_number: 891
+next_project_number: 892
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 891
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,777,779,780,781,783,784,803,813,817,818,821,825,826,829,830,831,832,838,839,840,841,842,847,848,857,863,867,869,873,874,875,876,882,883,890 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,777,779,780,781,783,784,803,813,817,818,821,825,826,829,830,831,832,838,839,840,841,842,847,848,857,863,867,869,873,874,875,876,882,883,890,891 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,787,804,814,816,822,823,824,845,853,862,879 | 298,428,502,743,761,770,777,783,803,813,838,839,867 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,834,843,861 | 429,497,763,822,823,838 | agent-system, algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -55,6 +55,7 @@ next_project_number: 891
 857 [NOT STARTED] — Fix validate-handoff.sh crash-as-false-negative and settle...
 882 [NOT STARTED] — Require task descriptions to request a proposal packet...
 883 [NOT STARTED] — Stop one low-specificity shared path from producing...
+891 [RESEARCHED] — Clear the three standing verify-deploy findings blocking a...
 
 ### Algebraic Representation
 
@@ -150,6 +151,26 @@ next_project_number: 891
 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 891. Clear the three standing verify-deploy findings blocking a clean nvim deploy
+- **Effort**: low
+- **Status**: [RESEARCHED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Parent**: Task 785
+
+**Description**: Clear the three standing verify-deploy findings in the nvim config repo so deploy-headless.sh can reach RESULT=landed_verify_clean again. All three are committed (not merely uncommitted) and were confirmed foreign to the gate-collision guidance work that observed them.
+
+FINDING 1 -- gate 22 (shellcheck lint): SC2155 at agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh:207 (declare and assign separately to avoid masking return values).
+
+FINDING 2 -- gate 24 (dead-command-recommendation lint): two recommendations naming a command with no definition file, both for /ide -- agent-system/extensions/memory/.../memory-setup.md:93 and memory-troubleshooting.md:34. Decide per site whether the recommendation should be dropped or repointed at a command that exists; do not create an /ide definition just to satisfy the lint.
+
+FINDING 3 -- gate 20 (orchestrator context budget): eager-load total measured 67096 B against a 66800 B baseline, 296 B over. A counterfactual run proved 182 B of that overage persists with the guidance-file referrer bullet entirely removed, so it is pre-existing growth from other committed work, not attributable to any one recent addition. Either trim elsewhere in the eager-load set or re-baseline deliberately with a recorded justification -- do not raise the baseline silently.
+
+Verification: run timeout 900 bash .claude/scripts/deploy-headless.sh from /home/benjamin/.config/nvim with a direct unbuffered file redirect (never piped through tail, which buffers and destroys the diagnostics of a killed run), and confirm RESULT=landed_verify_clean.
+
+---
 
 ### 890. Ghr lemma 10 2 3 case5 erratum reference manual
 - **Effort**: medium
