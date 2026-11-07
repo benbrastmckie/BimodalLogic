@@ -2,7 +2,7 @@
 
 - **Task**: 774 - EVALUATE (AND BE WILLING TO DECLINE): should plan guidance require a refuted
   predicted REASON to be recorded distinctly from a refuted predicted OUTCOME?
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/774_refuted_predicted_reason_recording/reports/01_refuted-predicted-reason-recording.md

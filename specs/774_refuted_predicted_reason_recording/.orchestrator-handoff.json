@@ -1,15 +1,15 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 10,
+  "phases_completed": 1,
   "phases_total": 1,
-  "summary": "Wrote a single-phase plan implementing the research phase's decline verdict: no plan-format field, no new issue-log class, no claim_invalidations routing, and no source-store or deployed-tree edit at all. The one phase re-confirms the four grounding findings against the live source store (siblings are editing it this same cycle), writes the decline and its forward precedent into the task summary so the next occurrence is judged against stated reasoning, and runs the full gate. The only file created is one summary artifact under this task's own specs directory.",
-  "blockers": [],
+  "summary": "Re-confirmed all five grounding findings (originating issue-log entry, plan-format.md, phase-closure.md, claim_invalidations, issue-log.md seed enum) against the live source store and closed with a decline: no plan-format field, no new issue-log class, no claim_invalidations use is warranted from this single minor occurrence. Wrote the decline reasoning and forward precedent into the task summary artifact. Zero files outside specs/774_refuted_predicted_reason_recording/ were modified; the full verification gate is deferred to this batch's once-per-invocation stage per the dispatch's Batch Gate Deferral directive.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/774_refuted_predicted_reason_recording/plans/01_refuted-predicted-reason-recording.md",
-      "summary": "Single-phase decline-implementation plan; zero in-tree edits, final phase at verification tier full."
+      "type": "summary",
+      "path": "specs/774_refuted_predicted_reason_recording/summaries/01_refuted-predicted-reason-recording-summary.md",
+      "summary": "Decline verdict, three independent declining reasons, and forward precedent for the next occurrence."
     }
   ],
-  "dispatch_seq": 8
+  "blockers": []
 }

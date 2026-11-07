@@ -1,10 +1,29 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 10,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/774_refuted_predicted_reason_recording/summaries/01_refuted-predicted-reason-recording-summary.md",
+      "summary": "Decline verdict: no plan-format field, no new issue-log class, no claim_invalidations use; records three independent reasons for declining and the forward precedent for the next occurrence."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Re-confirmed all five grounding findings against the live source store and closed with a decline: a refuted-predicted-reason recording requirement is not added to plan-format.md, issue-log.md's seed enum, or return-metadata-file.md's claim_invalidations. Wrote the decline reasoning and forward precedent into the task summary; zero files outside specs/774_refuted_predicted_reason_recording/ were touched."
+  },
+  "modified_files": [
+    "specs/774_refuted_predicted_reason_recording/summaries/01_refuted-predicted-reason-recording-summary.md",
+    "specs/774_refuted_predicted_reason_recording/progress/phase-1-progress.json",
+    "specs/774_refuted_predicted_reason_recording/plans/01_refuted-predicted-reason-recording.md",
+    "specs/774_refuted_predicted_reason_recording/issues.jsonl"
+  ],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1794079850_b31491",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 1,
+    "phases_total": 1
   }
 }
