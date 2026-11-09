@@ -1,7 +1,7 @@
 # Implementation Plan: Task #879
 
 - **Task**: 879 - Own the L-plus ZTime completeness programme for TM-plus with the limit-closure schema
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.75 hours
 - **Dependencies**: 870 (`[COMPLETED]`), 871 (`[COMPLETED]`), 867 (`[COMPLETED]`)
 - **Research Inputs**: `specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md`
@@ -133,15 +133,15 @@ not a roadmap sync (which remains `/todo`'s and `roadmap-integration.sh`'s job).
 Phases within the same wave can execute in parallel (this plan is fully sequential: Phase 2 needs
 Phase 1's evidence file, Phase 3 needs Phase 2's allocated numbers, Phase 4 closes everything).
 
-### Phase 1: Dispositions and Condensed Audit Evidence [NOT STARTED]
+### Phase 1: Dispositions and Condensed Audit Evidence [COMPLETED]
 
 **Goal**: A written disposition for each of the nine proposals and a `state-write.sh`-sized audit
 evidence file, so Phase 2 can file without re-deciding anything.
 
 **Tasks**:
-- [ ] Re-read `task-proposals.json` and `task-proposals-audit.ndjson`; confirm the nine `id`s
+- [x] Re-read `task-proposals.json` and `task-proposals-audit.ndjson`; confirm the nine `id`s
   above are present in both, in order, and that every `.proposal.id` equals the `project_name`
-  Phase 2 will write (the `id` string verbatim).
+  Phase 2 will write (the `id` string verbatim). *(completed: 9/9 ids, same order)*
 - [ ] Classify each proposal's open-side verdicts (`overlaps-open`, `subset-of-open`,
   `duplicate-of-open`) and every `covered-by-closed` at semantic score ≥ 0.55, writing the
   disposition into the Phase 1 notes of this plan (one line per proposal): `genuinely-new`;
@@ -152,17 +152,17 @@ evidence file, so Phase 2 can file without re-deciding anything.
   or `drop/narrow` (a `duplicate-of-open`/`covered-by-closed` that survives inspection — at plan
   time none does: 430 is the base-language tableau lift, 706/718/719/443/468 are reports and
   refactors; the report's Backlog audit paragraph already records these dismissals and they are
-  re-confirmed here by reading the named records' titles, not re-derived).
+  re-confirmed here by reading the named records' titles, not re-derived). *(completed: see Phase 1 Notes)*
 - [ ] Write `task-proposals-audit-condensed.ndjson`: for each line of the full NDJSON, keep
   `.proposal` verbatim and `.verdicts` filtered to every non-`scope-blind` verdict verbatim, plus
   one synthetic field `scope_blind_count` (the number of `scope-blind` verdicts collapsed), via
   `jq -c '{proposal, verdicts: [.verdicts[] | select(.verdict == "scope-blind" | not)], scope_blind_count: ([.verdicts[] | select(.verdict == "scope-blind")] | length)}'`
   (note the `| not` form, never `!=` — see `.claude/CLAUDE.md`'s jq safety section). Confirm every
-  line is under 100 KB (`awk '{print length($0)}'`).
+  line is under 100 KB (`awk '{print length($0)}'`). *(completed: 9 lines, 4.7–51.1 KB)*
 - [ ] Record an issue-log entry (`issue-record.sh --kind issue --class tooling --severity minor`)
   if any proposal's disposition is other than `genuinely-new` or `aggregator-only overlap`, naming
-  the proposal and the record it collided with; otherwise record a `win` attesting the clean pass.
-- [ ] Commit the condensed file by explicit path (`git-commit-scoped.sh ... -- <path>`).
+  the proposal and the record it collided with; otherwise record a `win` attesting the clean pass. *(completed: win recorded)*
+- [x] Commit the condensed file by explicit path (`git-commit-scoped.sh ... -- <path>`). *(completed: via git-commit-phase.sh, the phase-closing commit)*
 
 **Timing**: 0.5 hours
 
@@ -182,6 +182,38 @@ evidence file, so Phase 2 can file without re-deciding anything.
 - The condensed file has exactly nine lines, each parsing under `jq -e .`, each with a `.proposal.id` equal to one of the nine proposal ids and a `verdicts` array containing no `scope-blind` entry.
 - Every line is under 100 KB.
 - Each proposal has a written disposition before Phase 2 starts.
+
+**Phase 1 Notes (dispositions, written at implementation time)**:
+
+Audit evidence re-read: `task-proposals.json` (9 proposals) and `task-proposals-audit.ndjson`
+(9 lines, 139–185 KB each); the nine `id`s are present in both files in the same order, and each
+`.proposal.id` is the `project_name` Phase 2 writes. Verdict totals across the nine lines:
+4069 `scope-blind` (450–453 per proposal, collapsed to `scope_blind_count`), 697
+`covered-by-closed`, 61 `overlaps-open`, 3 `duplicate-of-open`, 1 `subset-of-open`. The condensed
+file has 9 lines of 4.7–51.1 KB, each `jq -e .`-valid, with no `scope-blind` verdict retained.
+Every open-side `overlaps-open` shared path is in the aggregator set {`docs/theorem-index.md`,
+`scripts/check-module-invariants.sh`, `FormalSystem.lean`}; the only non-aggregator shared `.lean`
+path in the whole audit is P6/869 on `FormalSystem/Semantics/HistoryMorphism.lean`. No
+`covered-by-closed` verdict at semantic score ≥ 0.55 shares a path; the five that reach it are
+443 (0.62), 706 (0.58), 468 (0.56) on P6 and 718 (0.60), 719 (0.58) on P7 — 443 and 468 are
+reports (a formal-foundations report; a programme realignment), 706 is the finite-carrier
+refutation landing, 718 is a methods report and 719 the seam-gluing task; none states the lemma
+proposed. The three `duplicate-of-open 430` verdicts are semantic-only (0.40–0.45, no shared
+path) against the base-language tableau semantic lift; dismissed on title inspection.
+
+| Proposal | Open-side verdicts (shared paths) | Disposition |
+|---|---|---|
+| P1 `lcu_until_form_schema_ztime_validity` | `overlaps-open` 763, 761, 869 (`docs/theorem-index.md`, `scripts/check-module-invariants.sh`); 873–876 (`docs/theorem-index.md`) | aggregator-only overlap, no edge |
+| P2 `cone_unravelling_frame_layer_split_saturation` | `overlaps-open` 763, 761 (`FormalSystem.lean`, `docs/theorem-index.md`); 543, 838 (`FormalSystem.lean`); 869, 873–876 (`docs/theorem-index.md`) | aggregator-only overlap, no edge |
+| P3 `auxiliary_atoms_rule_soundness_ztime` | `overlaps-open` 763, 761, 869, 873–876 (`docs/theorem-index.md`) | aggregator-only overlap, no edge |
+| P4 `lplus_extended_proof_system_and_target_statement` | as P2 | aggregator-only overlap, no edge |
+| P5 `universal_cover_oriented_forest_two_way_bounded` | as P2 | aggregator-only overlap, no edge |
+| P6 `plus_invariance_base_without_saturation` | `subset-of-open` 869 (`FormalSystem/Semantics/HistoryMorphism.lean`, `docs/theorem-index.md`); `overlaps-open` 763, 761, 873–876 (`docs/theorem-index.md`); `duplicate-of-open` 430 (semantic 0.45, no path) | substantive overlap, edge: 869 ← P6 (P6 first, per the report) |
+| P7 `stability_cluster_type_product_lemma` | `overlaps-open` 763, 761, 869, 873–876 (`docs/theorem-index.md`); `duplicate-of-open` 430 (semantic 0.40) | aggregator-only overlap, no edge |
+| P8 `linear_ztime_validity_tm_plus_substitution_bridge` | `overlaps-open` 763, 761, 869, 873–876 (`docs/theorem-index.md`); `duplicate-of-open` 430 (semantic 0.42) | aggregator-only overlap, no edge |
+| P9 `two_sided_reynolds_engine_paper_proof` | none (9 weak `covered-by-closed`, all < 0.55) | genuinely-new |
+
+No proposal is `drop/narrow`; the plan-time Scope Hypothesis for this phase is confirmed verbatim.
 
 ---
 

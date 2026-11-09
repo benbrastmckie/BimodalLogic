@@ -35,7 +35,7 @@ next_project_number: 893
 
 ### Completeness
 
-879 [PLANNED] — Own the L-plus ZTime completeness programme for TM-plus with...
+879 [IMPLEMENTING] — Own the L-plus ZTime completeness programme for TM-plus with...
 
 ### Dataset Enhancement
 
@@ -134,7 +134,7 @@ Evidence: originating issue entry iss_1793912463353_yZ5rLd, recorded during the 
 ---
 
 ### 879. Own the L-plus ZTime completeness programme for TM-plus with the limit-closure schema
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal
 - **Topic**: completeness
 - **Dependencies**: Task 870, Task 871, Task 867

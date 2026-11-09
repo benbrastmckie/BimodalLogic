@@ -1,35 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/plans/01_lplus-ztime-completeness-programme.md",
-      "summary": "Close-out plan, 4 sequential phases, 2.75 hours: condensed audit evidence and dispositions for the nine filed ingredient proposals; filing P1-P9 via state-write.sh with edges P3<-P2, P4<-P3, P9<-P1 and 869<-P6; three sentence-level ROADMAP amendments (LCU as cure of record, (H5) cover ownership, R3 filing note); summary and full gate. No library change."
-    }
-  ],
-  "next_steps": "Run /orchestrate 879 to execute the plan",
+  "status": "in_progress",
+  "dispatch_seq": 23,
   "metadata": {
-    "session_id": "sess_1794209534_e57749_879",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 2.75,
-    "dependency_waves": [[1], [2], [3], [4]]
-  },
-  "memory_candidates": [
-    {
-      "content": "Close-out plan pattern for a report-only research task whose report leaves audited task proposals behind (the research agent has no task-creation surface): (1) write a condensed audit NDJSON (non-scope-blind verdicts verbatim, scope-blind collapsed to a count, .proposal.id preserved) because state-write.sh --audit-verdict passes the file through a single jq argv and full audit lines of 140-185 KB exceed Linux's 128 KB per-argv ceiling; (2) treat overlaps-open verdicts whose shared paths are only aggregator files (docs/theorem-index.md, scripts/check-module-invariants.sh, FormalSystem.lean, module aggregators) as no-edge, since dispatch-time file_scope admission already serializes them, and add a dependency edge only for a substantive .lean overlap; (3) file proposals sequentially with --allocate-into, reading each allocated number before writing the next entry's dependencies, so inter-proposal edges can be set at creation.",
-      "category": "PATTERN",
-      "source_artifact": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/plans/01_lplus-ztime-completeness-programme.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["task-proposals", "audit-verdict", "state-write", "close-out plan", "aggregator overlap", "allocate-into"]
-    }
-  ],
-  "modified_files": [
-    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/plans/01_lplus-ztime-completeness-programme.md",
-    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/.return-meta.json",
-    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/.orchestrator-handoff.json"
-  ],
-  "dispatch_seq": 22
+    "session_id": "sess_1794209534_e57749",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }
