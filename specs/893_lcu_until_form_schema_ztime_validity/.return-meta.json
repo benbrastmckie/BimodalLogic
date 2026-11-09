@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/893_lcu_until_form_schema_ztime_validity/reports/01_lcu-until-form-ztime-validity.md",
+      "summary": "Verified sorry-free route for lcU plus its ZTime and reflectTime validity via omega_chain, the one new marker-bracketing lemma it needs, an endpoint correction to the task's segment property, and the five prose surfaces and four gate surfaces the change trips."
+    },
+    {
+      "type": "probe",
+      "path": "specs/893_lcu_until_form_schema_ztime_validity/probes/01_lcu-ztime-validity.lean",
+      "summary": "Self-contained Lean probe: lcU, int_marker_bracket, lcU_plusValidInt/ZTime/reflectTime_plusValidZTime. Compiles with zero errors, zero sorries; all four declarations pcq."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794246177_f0f988_893",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

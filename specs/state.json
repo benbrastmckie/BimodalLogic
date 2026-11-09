@@ -7305,7 +7305,7 @@
     {
       "project_number": 893,
       "project_name": "lcu_until_form_schema_ztime_validity",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "title": "Declare the until-form limit-closure schema LCU and its mirror, with ZTime validity",
       "description": "Declare lcU (alpha beta : PlusFormula) : PlusFormula := stab (gle ((dstab alpha).imp (dstab (untl (dstab beta) (dstab alpha))))) imp ((dstab alpha).imp (dstab (gle ((dstab alpha).or (untl (dstab beta) (dstab alpha)))))) in FormalSystem/PlusLanguage/PlusLCSchema.lean beside lcN, prove lcU_plusValidInt and lcU_plusValidZTime by instantiating omega_chain with A k := dstab alpha at the markers and the segment property P k eta s s' := dstab beta throughout (s, s'] (the hook restored by the omega_chain repair), and state the backward schema lcU_reflectTime_plusValidZTime as the plusValidIn_reflectTime corollary. This is the limit-closure principle the Reynolds-2001 ban-preservation lemma consumes for the L-plus language with untl and snce primitive; lcN is the F-form and does not discharge the segment guard. Add the docs/theorem-index.md rows and the C14 pins. No completeness claim.",
@@ -7317,10 +7317,16 @@
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T09:48:32Z",
-      "last_updated": "2026-11-09T09:48:32Z",
-      "next_artifact_number": 1,
-      "artifacts": [],
-      "session_id": "sess_1794209534_e57749",
+      "last_updated": "2026-11-09T17:53:59Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/893_lcu_until_form_schema_ztime_validity/reports/01_lcu-until-form-ztime-validity.md",
+          "type": "report",
+          "summary": "Verified sorry-free route for lcU plus its ZTime and reflectTime validity via omega_chain, the one new marker-bracketing lemma it needs, an endpoint correction to the task's segment property, and the five prose surfaces and four gate surfaces the change trips."
+        }
+      ],
+      "session_id": "sess_1794246177_f0f988",
       "audit_verdict": {
         "proposal": {
           "id": "lcu_until_form_schema_ztime_validity",
