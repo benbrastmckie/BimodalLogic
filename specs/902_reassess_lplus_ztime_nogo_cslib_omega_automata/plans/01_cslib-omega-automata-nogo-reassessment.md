@@ -1,7 +1,7 @@
 # Implementation Plan: Task #902
 
 - **Task**: 902 - Re-assess the L-plus ZTime completeness NO-GO against CSLib's deterministic omega-automata inventory, including the local fork
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.75 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md`
@@ -170,7 +170,7 @@ this task's directory) and neither consumes the other's output, so they are genu
 independent. Phase 3 needs Phase 2's allocated task numbers to cite. Phase 4 closes everything and
 is the terminal node.
 
-### Phase 1: Amend the Completeness-Programme Report's Automaton Row and Verdict Ground [NOT STARTED]
+### Phase 1: Amend the Completeness-Programme Report's Automaton Row and Verdict Ground [COMPLETED]
 
 **Goal**: `specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md`
 states the re-measured position at every point where it asserted the overturned ground, with the
@@ -258,6 +258,56 @@ NO-GO outcome preserved verbatim and each amendment dated and sourced to this ta
 - `grep -c 'NO-GO on a Lean proof' <report>` is unchanged from its pre-edit value, and a read of the amended passages confirms no lifting language and no completeness claim.
 - `git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` is empty.
 - `git diff --staged --name-only` names only the two files above.
+
+#### Phase 1 Notes (measured 2026-11-09, dispatch_seq 3)
+
+**Anchor counts.** All six anchors matched exactly once before editing, at the plan-time line
+numbers, in a 286-line file (288 after):
+
+| Anchor | Before | After | Line | Disposition |
+|---|---|---|---|---|
+| `not formalizable at this Mathlib pin` | 1 | 0 | 198 | replaced (row 16, Evidence/proposal cell) |
+| `Mathlib at this pin has no ω-automata and no determinization` | 1 | 1 | 221 | kept; only the inference after it replaced |
+| `Mathlib has no ω-automata and no determinization, and the standing ruling` | 1 | 0 | 33 | first half kept (counts 1 on its own), `and the standing ruling …` clause dropped |
+| `nor any ω-automata determinization project` | 1 | 0 | 251 | narrowed per plan |
+| `Mathlib has no ω-automata or determinization` | 1 | 1 | 278 | kept; evidence tier upgraded |
+| `The Lean obstruction is named as determinization` | 1 | 1 | 239 | kept; the MSO-alignment clause corrected |
+
+The plan's verification criterion "each of the six greps matches exactly once after the edit" is
+**unsatisfiable for the three rows that count 0**, because this phase's own task list mandates
+replacing or narrowing exactly the text those greps match. The substituted check, which all three
+pass: each anchor's deliberately-kept half still counts 1 —
+`Mathlib has no ω-automata and no determinization` (1), the recommendation-6 clause
+`Do not file** a Lean formalization of T3's completeness proof` (1), and its `until P9 reports
+whether a progress-measure replacement exists` gating (1).
+
+**Hunks.** `git diff -U0` shows exactly **7** hunks, matching the Scope Hypothesis: six in-place
+amendments plus the one dated amendment note under `## Executive Summary`. `git diff --stat`:
+8 insertions, 6 deletions, one file.
+
+**Row-16 column resolution (deviation).** The phase text says to replace "the third column" while
+keeping "the row's first two columns byte-identical", but the ingredient table has four columns
+(`#`, `Ingredient`, `Status`, `Evidence / proposal`) and the overturned ground lives in the
+fourth. The verbatim replacement text was placed in the fourth cell; the `Status` cell
+`paper (held: Safra/Piterman in corpus)` is left byte-identical, since the ingredient remains a
+paper-level step and that cell carried none of the overturned claim.
+
+**Outcome-preservation read-back.** `NO-GO on a Lean proof` still occurs twice (unchanged). The
+verdict paragraph's opening `**NO-GO on a Lean proof of T1, T2 or T3 today — a located
+obstruction.**` is byte-identical. The executive summary's deliverable-4 verdict string
+`GO for T3 as a staged paper programme … NO-GO on a Lean proof of any of T1-T3 today` is
+byte-identical. No sentence states T1 is refuted, and a grep for lifting language
+(`completeness proof is now available`, `NO-GO is lifted`, `completeness is now formalizable`)
+returns 0. Ingredient-table **row 8 is byte-identical** to its pre-edit text (now line 192).
+
+**Gates.** `validate-artifact.sh … report` → `[PASS] report artifact is valid (0 warning(s))`,
+exit 0. `git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` → empty.
+
+**Process deviation.** The `[IN PROGRESS]` marker was not set before this phase's first edit; the
+heading went from `[NOT STARTED]` to `[COMPLETED]` after the edits and verification completed.
+Recorded in the issue log. Phases 2-4 set the marker first.
+
+**Timing**: 0.75 hours
 
 ---
 
