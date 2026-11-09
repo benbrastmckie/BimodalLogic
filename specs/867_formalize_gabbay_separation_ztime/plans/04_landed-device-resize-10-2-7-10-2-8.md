@@ -2973,7 +2973,7 @@ supporting-API group, as it was at Phase 23.
 
 ---
 
-### Phase 25: CNF Packaging and the Discharge of `SeparationOver` [NOT STARTED]
+### Phase 25: CNF Packaging and the Discharge of `SeparationOver` [COMPLETED]
 
 **Goal**: A separated `USForm` is packaged into the binary clause list `sepForm` consumes, and
 `sepZ`, `sepZ_sepClauses`, `plusTruthAt_sepZ_iff` and `separationOver_ztime` land. This reinstates
@@ -2982,7 +2982,7 @@ depends on the abstraction device, so its route is unchanged.
 
 **Tasks**:
 
-- [ ] Add `Packaging.lean`. Classify each literal of a separated `USForm`'s Boolean skeleton as
+- [x] Add `Packaging.lean`. Classify each literal of a separated `USForm`'s Boolean skeleton as
       past-admissible, future-admissible, or both (leaves are both); CNF-normalize the skeleton
       with a `cnf` function of this module's own -- Phase 20's `#### Reasoned Exclusions` replaced
       the general `dnf`/`cnf` it was to have provided with the `untl`-literal normal form
@@ -2990,26 +2990,26 @@ depends on the abstraction device, so its route is unchanged.
       tree and this phase must build the one it needs; and per clause put the `snce`-only and leaf
       literals in the first component and the `untl`-only literals in the second, padding an
       absent side with `PlusFormula.bot` (a leaf constructor of both `IsPurePast` and
-      `IsPureFuture`).
-- [ ] Prove the packaging's truth-preservation lemma: the packaged clause list's `sepForm` is
+      `IsPureFuture`). *(completed — `cnfPos`/`cnfNeg` as a mutual clause-list recursion with `cnfTruth_cnf` holding for every `USForm`; literals classified by `IsSOnly`, made decidable through the landed `IsUOnly` decision and `swap`, so the `snce`-only literals and the leaves take the first component and the `untl`-only literals the second, `⊥`-padded by `orList`.)*
+- [x] Prove the packaging's truth-preservation lemma: the packaged clause list's `sepForm` is
       equivalent to the separated formula at every `v` and `t`. This step has no counterpart in
-      the source and is the phase's main new obligation.
-- [ ] Add `Discharge.lean` in namespace `FormalSystem.Metalogic.Expressiveness` (not the
+      the source and is the phase's main new obligation. *(completed — `usTruth_sepFormUS_package`.)*
+- [x] Add `Discharge.lean` in namespace `FormalSystem.Metalogic.Expressiveness` (not the
       `SeparationZ.` sub-namespace -- these are the contract declarations). Define
       `sepZ : PlusFormula → List (PlusFormula × PlusFormula)` as the composite: leaf-abstract,
       Phase 24's `sep`, package, `toPlus` each component.
-- [ ] Prove `sepZ_sepClauses` from Phase 2's purity transfer plus the compiled
+- [x] Prove `sepZ_sepClauses` from Phase 2's purity transfer plus the compiled
       `pastDet_of_isPurePast` and `futDet_of_isPureFuture`. Purity is frame-independent, so the
-      `hreg`/`hz` hypotheses are consumed only to match `SeparationOver`'s shape.
-- [ ] Prove `plusTruthAt_sepZ_iff` by routing through Phase 2's carrier bridge and
+      `hreg`/`hz` hypotheses are consumed only to match `SeparationOver`'s shape. *(completed — the unused `hreg`/`hz` the pinned signature carries collided with `linter.unusedVariables`, the Mathlib `unusedArguments` env linter (C16) and C26's nolint allowlist; resolved by a declaration-scoped `set_option` naming the linter, `@[nolint unusedArguments]`, and a reasoned permanent entry in `scripts/nolint-attribute-allowlist.txt`. No signature change.)*
+- [x] Prove `plusTruthAt_sepZ_iff` by routing through Phase 2's carrier bridge and
       `plusValidZTime_iff_plusValidInt` to `t : ℤ`, then Phase 2's truth transfer, Phase 24's
       `usTruth_sep_iff` and the packaging lemma.
-- [ ] Prove `separationOver_ztime : SeparationOver TaskFrame.IsZTime` as
+- [x] Prove `separationOver_ztime : SeparationOver TaskFrame.IsZTime` as
       `fun φ => ⟨sepZ φ, fun F hreg hz => ⟨sepZ_sepClauses φ F hreg hz, plusTruthAt_sepZ_iff φ hreg hz⟩⟩`,
       matching the `∃ L` before `∀ F` binder order exactly.
-- [ ] Give each of the four a docstring carrying a `Paper:` line citing GHR Theorem 10.2.9
+- [x] Give each of the four a docstring carrying a `Paper:` line citing GHR Theorem 10.2.9
       (vol. 1, Chapter 10 §10.2). C15's second assertion requires the anchor at the declaration.
-- [ ] README rows, regenerated root, the `typst-sync-check.sh --fix` step, and the three generated
+- [x] README rows, regenerated root, the `typst-sync-check.sh --fix` step, and the three generated
       inventory blocks through `bash scripts/check-module-invariants.sh --emit-inventory`.
 
 **Timing**: 2.5 hours

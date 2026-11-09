@@ -454,6 +454,7 @@ import FormalSystem.Metalogic.Expressiveness.PriorExpressivenessDense
 import FormalSystem.Metalogic.Expressiveness.Separation.Defs
 import FormalSystem.Metalogic.Expressiveness.Separation.KampTranslation
 import FormalSystem.Metalogic.Expressiveness.Separation.SemanticBridge
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.Discharge
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.Distributivity
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.ElimHard
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.Eliminations
@@ -462,6 +463,7 @@ import FormalSystem.Metalogic.Expressiveness.SeparationZ.JunctionDepth
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.LeafAbstraction
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.NegationEquiv
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.NormalForm
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.Packaging
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.Syntax
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.UNesting
 import FormalSystem.Metalogic.Expressiveness.StaviConnectives

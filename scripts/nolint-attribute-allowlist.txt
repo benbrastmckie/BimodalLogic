@@ -61,3 +61,12 @@ simpNF:BObj.mk.injEq
 # arguments, so `hR` is part of the frame term any bridge's left-hand side names, and
 # `isCondition` exempts only instance-implicit binders. Semantics/Frames/TranslationProduct.lean.
 simpNF:colourClock_taskRel
+
+# `sepZ_sepClauses` carries `hreg : F.IsRegular` and `hz : F.IsZTime` that its proof never uses.
+# The declaration cannot conform: it is one of the two conclusions `SeparationOver` pairs per
+# frame (`SepClauses F L ∧ ∀ M τ t, ...` under `F.IsRegular → P F →`), so its signature is
+# fixed at the per-frame shape with both hypotheses, while the separatedness it proves comes
+# from syntactic purity, which holds on every frame and consumes neither. Dropping the two
+# arguments would change a contract signature to spare a linter.
+# Metalogic/Expressiveness/SeparationZ/Discharge.lean.
+unusedArguments:sepZ_sepClauses

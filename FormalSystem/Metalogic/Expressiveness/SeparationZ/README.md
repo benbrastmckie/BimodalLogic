@@ -4,14 +4,16 @@ Gabbay's Separation Theorem for the until/since language over discrete (integer)
 route that would discharge the `SeparationOver TaskFrame.IsZTime` hypothesis of
 [`OpenFutureElimination.lean`](../OpenFutureElimination.lean).
 
-**Status: the hypothesis is NOT discharged yet.** What is landed is GHR Lemmas 10.2.1
-through 10.2.8 and Theorem 10.2.9 in full over the auxiliary syntax — including **all eight cases
-of Lemma 10.2.3**, the four single-sign cases in `Eliminations.lean` and the four hard cases,
-where the same `untl` occurs in both the event and the guard argument of a `snce`, in
-`ElimHard.lean` — so `sep` with `isSeparated_sep` and `usTruth_sep_iff` is the Separation
-Theorem over `ℤ` at the `USForm` level. The CNF packaging that carries it across the seam to
-`PlusFormula` and discharges `SeparationOver TaskFrame.IsZTime` is not landed yet, so every `tr`
-row of `OpenFutureElimination.lean` keeps its `SeparationOver` hypothesis exactly as before.
+**Status: the hypothesis IS discharged at ℤ-time.** `Discharge.lean` lands
+`separationOver_ztime : SeparationOver TaskFrame.IsZTime`, with the separated form computed by the
+plain `def` `sepZ` (axiom profile `{propext}`). Beneath it, GHR Lemmas 10.2.1 through 10.2.8 and
+Theorem 10.2.9 are landed in full over the auxiliary syntax — including **all eight cases of
+Lemma 10.2.3**, the four single-sign cases in `Eliminations.lean` and the four hard cases, where
+the same `untl` occurs in both the event and the guard argument of a `snce`, in `ElimHard.lean` —
+and `Packaging.lean` carries `sep`'s output into the clause-pair shape `sepForm` consumes. The
+conditional `tr` rows of `OpenFutureElimination.lean` are untouched and may now be instantiated
+at `separationOver_ztime`; the computable translation `trZ` that replaces `tr`'s
+`Classical.choose` by `sepZ` is the one remaining deliverable of this subtree.
 
 `Eliminations.lean`'s module docstring records an obstruction to Cases 5-8. That record describes
 a route that re-anchors each hard case semantically — which is not the route the source uses, and
@@ -43,6 +45,8 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 | `Hierarchy.lean` | 1000 | GHR Lemmas 10.2.5 and 10.2.6: 10.2.5's input hypothesis `IsUSingleType` — the single `untl` type with nesting unconstrained — with the four Boolean closure lemmas, the one-way implication from `IsUTyped` and the two witnesses proving the strictness at `S(⊥, U(A,B))`; the structural recursion `sepU` with all three of 10.2.5's conclusions; then the `U`-type measure `uTypes`/`uTypeCount`, the abstraction and reindexing device (`mapU`, `mapS`, `substLeaf`, `abstrFn`, `unabstrFn`), the three separately named strict-decrease obligations, and 10.2.6's `sepMulti` with all three of its conclusions |
 | `UNesting.lean` | 858 | GHR Lemma 10.2.7: the hypothesis predicate `NoSnceUnderUntl` with its `Bool`-valued decision procedure, the `U`-within-`U` nesting measure `untlDepth` with its equation lemmas, the two base-case bridges to 10.2.6's `HasPureUTypes`, GHR's inner types `innerTypes` with the licensing bound `untlDepth_lt_of_mem_innerTypes` proved rather than asserted, the two-level abstraction `abstrArgs` as `mapU` at a `mapU`, the three separately named strict-decrease obligations, and `sep7` with both of 10.2.7's conclusions |
 | `JunctionDepth.lean` | 1164 | GHR Lemma 10.2.8 and Theorem 10.2.9: the junction-depth measure `jdU`/`jdS`/`junctionDepth` as a mutual structural recursion, checked against GHR's own worked example (`junctionDepth_ghrExample`); its monotonicity bounds, the zero/one characterizations and the base case `isSeparated_of_junctionDepth_le_one` with its converse; the duality instruments `junctionDepth_swap`, `isSeparated_swap`, `NoUntlUnderSnce` and the conjugated 10.2.7 `sep7Dual`; the mirror collection API `sTypes`/`argSTypes`/`innerSTypes`; the abstraction of the inner `snce`s through `mapSDeep` (the `swap`-conjugate of `mapU`) and `abstrSnceArgs`; the three separately named strict-decrease obligations, with part (c) proved at `snce` heads where GHR's duality reduction is shown to be its precondition; and `sep8Body`/`sep8Fuel`/`sep` with both of Theorem 10.2.9's conclusions |
+| `Packaging.lean` | 329 | CNF packaging of a separated formula: the decidability of `IsSOnly` through the time reflection, `orList`, the mutual clause-list recursion `cnfPos`/`cnfNeg` with its truth lemma `cnfTruth_cnf` (for every formula) and purity lemma `pureLit_cnf` (for separated ones), `packClause` splitting a clause into a (`snce`-only, `untl`-only) pair, `sepFormUS` as `sepForm`'s shape on `USForm`, and `package` with the truth-preservation lemma `usTruth_sepFormUS_package` and both purity conclusions |
+| `Discharge.lean` | 151 | The four contract declarations, in namespace `FormalSystem.Metalogic.Expressiveness`: the plain `def` `sepZ` (leaf-abstract, `sep`, `package`, `toPlus`), `sepZ_sepClauses`, `plusTruthAt_sepZ_iff` through the carrier bridge, and `separationOver_ztime : SeparationOver TaskFrame.IsZTime` |
 
 ## Key Results
 
@@ -101,6 +105,15 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 - `sep` with `usTruth_sep_iff` and `isSeparated_sep` — GHR Lemma 10.2.8 and Theorem 10.2.9 in
   full over `USForm`: every formula is equivalent over `ℤ` to a separated one. A plain `def`
   whose axiom profile is `{propext}`; the budget `sep8Fuel` appears in neither conclusion
+- `cnfPos`/`cnfNeg` with `cnfTruth_cnf` and `pureLit_cnf`, `package` with
+  `usTruth_sepFormUS_package`, `isSOnly_fst_of_mem_package` and `isUOnly_snd_of_mem_package` — the
+  CNF packaging of a separated formula into (`snce`-only, `untl`-only) clause pairs, truth-preserving
+  at every leaf valuation and time; the one step with no counterpart in the source
+- `sepZ` with `sepZ_sepClauses` and `plusTruthAt_sepZ_iff`, and `separationOver_ztime` — **the
+  discharge of `SeparationOver TaskFrame.IsZTime`**: Gabbay's Separation Theorem over the integer
+  flow, carried across the `LeafAbstraction.lean` seam to `PlusFormula` and lifted to every
+  regular ℤ-time task frame by the carrier bridge. `sepZ` is a plain `def` with axiom profile
+  `{propext}`
 - `usTruth_case1` … `usTruth_case4` with `isSeparated_case1Rhs` … `isSeparated_case4Rhs` —
   GHR 10.2.3's four single-sign cases, each with its separatedness proved rather than asserted
 - `usTruth_case5` … `usTruth_case8` with `isSeparated_case5Rhs` … `isSeparated_case8Rhs` —
@@ -126,9 +139,9 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 
 ## Not landed
 
-The CNF packaging of `sep`'s output into `SepClauses`, the carrying of Theorem 10.2.9 across the
-`LeafAbstraction.lean` seam to `PlusFormula`, hence the `SeparationOver TaskFrame.IsZTime`
-discharge and the computable ZTime translation that would rest on it. All of Lemma 10.2.3 is landed, and so are Lemma 10.2.4's equivalence and separatedness.
+The computable ZTime translation `trZ` — `tr` with `Classical.choose` replaced by `sepZ` — and its
+two unconditional theorems; with it, the theorem-index restatement of the three `.ZTime` rows that
+`separationOver_ztime` makes unconditional. All of Lemma 10.2.3 is landed, and so are Lemma 10.2.4's equivalence and separatedness.
 Lemma 10.2.5 is landed in full: its input hypothesis `IsUSingleType` and the `sepU` construction
 over it, with the equivalence, the separatedness and the single-`untl`-type clause. GHR's own
 induction on the maximum nested-`S` depth above a `U(A,B)` is deliberately not formalized —
@@ -169,6 +182,15 @@ of the results so far" directs. The abstraction of the maximal `snce`s inside th
 descends through nested `untl`s, which the landed `mapS` does not, so the inner pass is the
 `swap`-conjugate of `mapU` (`mapSDeep`), used only through its five equations; no new substitution
 operator exists in this subtree. `sep` is a plain `def` with axiom profile `{propext}`.
+
+The discharge is landed: `Packaging.lean` puts a separated formula's Boolean skeleton in
+conjunctive normal form by a mutual `cnfPos`/`cnfNeg` recursion — the general `cnf` the earlier
+normal-form phase did not provide, built here for exactly this purpose — splits each clause by
+the now-decidable `IsSOnly`, and proves the packaging truth-preserving; `Discharge.lean` composes
+leaf abstraction, `sep`, the packaging and resubstitution into the plain `def` `sepZ`, proves its
+two `SeparationOver` conclusions (determinacy from purity transferred across the seam, equivalence
+over the carrier `ℤ` lifted by `pointwise_ztime_of_pointwise_int`), and pairs them as
+`separationOver_ztime` in `SeparationOver`'s own `∃ L` before `∀ F` binder order.
 
 Both halves of Lemma 10.2.4's conclusion are landed: `isSeparated_sepSnce` for separatedness
 and `isUTyped_sepSnce` for the single `untl` type, so a downstream induction counting `untl`
