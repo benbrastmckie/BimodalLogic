@@ -181,13 +181,10 @@ false. Re-planning the area from 838's two-sided framing is barred — read 844'
 and 838's `.blocker-research.json` first.
 **Coverage appendix (uncovered tasks)**:
 ```
-/orchestrate 178,502,570,604,664,714,729,730
-/orchestrate 741,743,751,752,753,767,770,772
-/orchestrate 774,777,779,780,781,785,787,803
-/orchestrate 813,817,818,821,825,826,827,829
-/orchestrate 830,831,832,839,841,842,847,848
-/orchestrate 857,863,869,873,874,875,876,882
-/orchestrate 883,890
+/orchestrate 178,502,570,604,664,714,743,781
+/orchestrate 803,817,818,821,829,830,831,832
+/orchestrate 873,874,875,876,890,894,897,898
+/orchestrate 899,900,905,906,907
 ```
 
 ## Next batches
