@@ -1,0 +1,39 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1794233746_5963da_904",
+  "dispatch_seq": 2,
+  "findings_count": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/reports/01_proof-wanted-trust-surface-and-dependency-assessment-lessons.md",
+      "summary": "Records the three method-lesson context-extension recommendations authored in the source store: a proof_wanted trust-surface subsection in metadata-trust-surfaces.md, a new external-library-dependency-assessment.md pattern file, and a ground-overturned/outcome-preserved verdict-amendment subsection in report-format.md."
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "proof_wanted is a Lean marker that elaborates and discards: it is invisible to both `grep sorry` (no sorry token present) and `#print axioms` (the name was never added to the environment, so there is no axiom profile to query). A module consisting entirely of proof_wanted declarations reports as sorry-free by both standard checks while declaring nothing. The only reliable detector is `grep -c '^proof_wanted'` over the source file.",
+      "category": "PATTERN",
+      "source_artifact": "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/reports/01_proof-wanted-trust-surface-and-dependency-assessment-lessons.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["proof_wanted", "sorry", "print axioms", "trust surface", "Lean", "cslib"]
+    },
+    {
+      "content": "Checklist for assessing an external Lean library as a candidate dependency: (1) read upstream claims via `git show upstream/main:<path>`, never a fork worktree; (2) measure commit divergence with `git rev-list --left-right --count` in both directions, not one; (3) compare lean-toolchain across candidates BEFORE comparing Mathlib revisions, since toolchain mismatch can invert the apparent cost ordering; (4) verify a build cache's .olean mtimes post-date their .lean sources before trusting #print axioms against it; (5) compute the transitive import closure of the specific target modules rather than citing the repository's total line count, which can overstate the real cost by an order of magnitude.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/reports/01_proof-wanted-trust-surface-and-dependency-assessment-lessons.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["external library", "dependency assessment", "git rev-list", "lean-toolchain", "import closure", "cslib"]
+    },
+    {
+      "content": "A verdict amendment can be 'ground overturned, outcome preserved': the original conclusion (NO-GO, blocked, etc.) still holds, but the stated reason for it was wrong and is being replaced. This differs from an outcome-overturning amendment and should be stated explicitly in a report's Decisions section (preserved outcome + the specific wrong reasoning component + the corrected reasoning), never described as reopening or lifting the verdict, to avoid misleading a later reader into thinking the verdict changed when only its ground did.",
+      "category": "PATTERN",
+      "source_artifact": "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/reports/01_proof-wanted-trust-surface-and-dependency-assessment-lessons.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["verdict amendment", "report writing", "decisions section", "ground vs outcome", "NO-GO"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 904 to create implementation plan"
+}
