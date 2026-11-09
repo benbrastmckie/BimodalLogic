@@ -119,14 +119,14 @@ next_project_number: 905
   └─ 869 [NOT STARTED] — (semantics: PRIORITY RULING (2026-11-05, user):...) (see above)
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
-903 [NOT STARTED] — Settle whether a deterministic Muller automaton suffices for...
+903 [RESEARCHED] — Settle whether a deterministic Muller automaton suffices for...
   └─ 901 [NOT STARTED] — Paper proof of the two-sided Reynolds engine for L-plus at... (see above)
-904 [NOT STARTED] — Record three method lessons in the source store:...
+904 [RESEARCHING] — Record three method lessons in the source store:...
 
 ## Tasks
 
 ### 904. Record three method lessons in the source store: proof_wanted as a trust surface, the external-library dependency-assessment checklist, and ground-overturned-outcome-preserved verdict amendments
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: meta
 - **Dependencies**: None
 
@@ -143,9 +143,10 @@ NON-GOALS. No hand-authored file under .claude/**; no redeploy claimed by this t
 ---
 
 ### 903. Settle whether a deterministic Muller automaton suffices for the Auxiliary-Atoms rule and the ban/lull mechanism at ZTime, or whether Rabin or parity is genuinely needed
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: formal
 - **Dependencies**: None
+- **Research**: [903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md]
 
 **Description**: PAPER QUESTION, no Lean work. The L-plus ZTime completeness architecture (see specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md) specifies a deterministic RABIN or PARITY automaton for the violation language, and the re-assessment in specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md identifies that choice as obstruction component (O1) and as the cheapest open question in the whole assessment. Decide, on paper, whether a deterministic MULLER automaton suffices for the Auxiliary-Atoms rule and for the ban/lull mechanism at ZTime.
 
@@ -191,7 +192,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 - **Task Type**: formal
 - **Dependencies**: Task 893, Task 903
 
-**Description**: RESEARCH TASK, report only. Write out, at the level of rigour of Reynolds 2001 sections 9-15, the two-sided transposition of the CTL* completeness engine to L-plus over Z-time for the system TM-plus + LCU + mirror LCU + clock rule + forward and backward Auxiliary-Atoms rules: the closure sets with the separated CNF of every closure formula; hues, colours and the state formula of a colour; the two deterministic Rabin automata over colour words, the forward one indexed by the set of past-types realized at the cut colour and the backward one by the set of future-types, with the violation language defined through the separated CNF; the consistency lemma for phi-plus via the linear bridge and the three rules; the two-sided chronicle with alternating future and past defect curing, pioneers and lulls in both directions; the ban-preservation lemma consuming LCU and its mirror; universal non-acceptance along every bi-infinite walk of the limit quotient; the truth lemma including the stab case for emergent walks; and the final-frame step through the universal cover. Record, as located questions, whether LCU is derivable from TM-plus + LC_n at ZTime and whether the three naming rules are admissible in the rule-free system. Note that a Lean formalization of this proof depends on deterministic omega-automata (Safra/Piterman), absent from Mathlib, and is not to be filed until that dependency is either supplied or replaced by a progress-measure argument.
+**Description**: RESEARCH TASK, report only. Write out, at the level of rigour of Reynolds 2001 sections 9-15, the two-sided transposition of the CTL* completeness engine to L-plus over Z-time for the system TM-plus + LCU + mirror LCU + clock rule + forward and backward Auxiliary-Atoms rules: the closure sets with the separated CNF of every closure formula; hues, colours and the state formula of a colour; the two deterministic Rabin automata over colour words, the forward one indexed by the set of past-types realized at the cut colour and the backward one by the set of future-types, with the violation language defined through the separated CNF; the consistency lemma for phi-plus via the linear bridge and the three rules; the two-sided chronicle with alternating future and past defect curing, pioneers and lulls in both directions; the ban-preservation lemma consuming LCU and its mirror; universal non-acceptance along every bi-infinite walk of the limit quotient; the truth lemma including the stab case for emergent walks; and the final-frame step through the universal cover. Record, as located questions, whether LCU is derivable from TM-plus + LC_n at ZTime and whether the three naming rules are admissible in the rule-free system. Note that a Lean formalization of this proof is blocked on a relocated obstruction with four named components, not on absence from Mathlib from either CSLib tree -- see `specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md`: (O1) determinization to a deterministic Rabin or parity automaton is unproved everywhere (the local fork's `Muller.toRabin_exists` and `Rabin.toParity_exists` are `proof_wanted`); (O2) the indexed conjunctive product automaton with a nameable initial state is absent from both the upstream and fork CSLib trees; (O3) every determinization result arrives as an existential over `Type`, not as the syntax the Auxiliary-Atoms rule needs to name the automaton in fresh state-valued atoms; and (O4) the rest of the paper proof -- consistency of phi-plus, ban preservation, universal non-acceptance, fair scheduling, the two-sided truth lemma -- is untouched by any of this. A Lean formalization is not to be filed until this located obstruction is resolved.
 
 ---
 

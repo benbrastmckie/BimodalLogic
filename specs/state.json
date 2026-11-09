@@ -16393,7 +16393,7 @@
       "status": "not_started",
       "task_type": "formal",
       "title": "Paper proof of the two-sided Reynolds engine for L-plus at ZTime: ban preservation, fair scheduling, universal non-acceptance, truth lemma",
-      "description": "RESEARCH TASK, report only. Write out, at the level of rigour of Reynolds 2001 sections 9-15, the two-sided transposition of the CTL* completeness engine to L-plus over Z-time for the system TM-plus + LCU + mirror LCU + clock rule + forward and backward Auxiliary-Atoms rules: the closure sets with the separated CNF of every closure formula; hues, colours and the state formula of a colour; the two deterministic Rabin automata over colour words, the forward one indexed by the set of past-types realized at the cut colour and the backward one by the set of future-types, with the violation language defined through the separated CNF; the consistency lemma for phi-plus via the linear bridge and the three rules; the two-sided chronicle with alternating future and past defect curing, pioneers and lulls in both directions; the ban-preservation lemma consuming LCU and its mirror; universal non-acceptance along every bi-infinite walk of the limit quotient; the truth lemma including the stab case for emergent walks; and the final-frame step through the universal cover. Record, as located questions, whether LCU is derivable from TM-plus + LC_n at ZTime and whether the three naming rules are admissible in the rule-free system. Note that a Lean formalization of this proof depends on deterministic omega-automata (Safra/Piterman), absent from Mathlib, and is not to be filed until that dependency is either supplied or replaced by a progress-measure argument.",
+      "description": "RESEARCH TASK, report only. Write out, at the level of rigour of Reynolds 2001 sections 9-15, the two-sided transposition of the CTL* completeness engine to L-plus over Z-time for the system TM-plus + LCU + mirror LCU + clock rule + forward and backward Auxiliary-Atoms rules: the closure sets with the separated CNF of every closure formula; hues, colours and the state formula of a colour; the two deterministic Rabin automata over colour words, the forward one indexed by the set of past-types realized at the cut colour and the backward one by the set of future-types, with the violation language defined through the separated CNF; the consistency lemma for phi-plus via the linear bridge and the three rules; the two-sided chronicle with alternating future and past defect curing, pioneers and lulls in both directions; the ban-preservation lemma consuming LCU and its mirror; universal non-acceptance along every bi-infinite walk of the limit quotient; the truth lemma including the stab case for emergent walks; and the final-frame step through the universal cover. Record, as located questions, whether LCU is derivable from TM-plus + LC_n at ZTime and whether the three naming rules are admissible in the rule-free system. Note that a Lean formalization of this proof is blocked on a relocated obstruction with four named components, not on absence from Mathlib from either CSLib tree -- see `specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md`: (O1) determinization to a deterministic Rabin or parity automaton is unproved everywhere (the local fork's `Muller.toRabin_exists` and `Rabin.toParity_exists` are `proof_wanted`); (O2) the indexed conjunctive product automaton with a nameable initial state is absent from both the upstream and fork CSLib trees; (O3) every determinization result arrives as an existential over `Type`, not as the syntax the Auxiliary-Atoms rule needs to name the automaton in fresh state-valued atoms; and (O4) the rest of the paper proof -- consistency of phi-plus, ban preservation, universal non-acceptance, fair scheduling, the two-sided truth lemma -- is untouched by any of this. A Lean formalization is not to be filed until this located obstruction is resolved.",
       "file_scope": [],
       "dependencies": [
         893,
@@ -16401,7 +16401,7 @@
       ],
       "priority": "medium",
       "created": "2026-11-09T09:48:35Z",
-      "last_updated": "2026-11-09T13:53:06Z",
+      "last_updated": "2026-11-09T14:07:04Z",
       "next_artifact_number": 1,
       "artifacts": [],
       "session_id": "sess_1794209534_e57749",
@@ -16527,7 +16527,7 @@
     {
       "project_number": 903,
       "project_name": "muller_sufficiency_for_auxiliary_atoms_rule_ztime",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "formal",
       "title": "Settle whether a deterministic Muller automaton suffices for the Auxiliary-Atoms rule and the ban/lull mechanism at ZTime, or whether Rabin or parity is genuinely needed",
       "description": "PAPER QUESTION, no Lean work. The L-plus ZTime completeness architecture (see specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md) specifies a deterministic RABIN or PARITY automaton for the violation language, and the re-assessment in specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md identifies that choice as obstruction component (O1) and as the cheapest open question in the whole assessment. Decide, on paper, whether a deterministic MULLER automaton suffices for the Auxiliary-Atoms rule and for the ban/lull mechanism at ZTime.\n\nWHAT MAKES IT ANSWERABLE WITHOUT LEAN WORK. The architecture's actual requirement on the automaton is literally 'deterministic', because the AA rule records a run as a function of the path prefix (what coneSt and Reynolds' Lemma 13/26 use). Muller acceptance is as expressible by state-valued fresh atoms as Rabin's is: 'infOcc in accept' is a finite disjunction over F in accept of (conjunction over b in F of GF b) and (conjunction over b not in F of FG not-b). So the Rabin/parity requirement may be a presentational preference rather than a real need. Settling it needs Reynolds' Lemma 13/26 and the ban/lull mechanism read against that expressibility fact, and nothing else.\n\nTHE STAKE. If Muller suffices, the local CSLib fork's already-proved, sorry-free IsRegular.iff_da_muller IS the determinization the architecture needs and (O1) vanishes, which makes the CSLib dependency question live rather than hypothetical. If Rabin is genuinely needed, Muller.toRabin_exists (fork DA/Conversions.lean:112, proof_wanted) becomes the single highest-value gap in either CSLib tree.\n\nNON-GOALS. No Lean source, no change under FormalSystem/ or Tests/, no require on CSLib, no completeness claim. This task answers one acceptance-condition question and reports.",
@@ -16535,9 +16535,15 @@
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T13:52:27Z",
-      "last_updated": "2026-11-09T13:52:27Z",
-      "artifacts": [],
-      "next_artifact_number": 1,
+      "last_updated": "2026-11-09T14:29:14Z",
+      "artifacts": [
+        {
+          "path": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md",
+          "type": "report",
+          "summary": "Split verdict on Muller sufficiency: Muller suffices for the Auxiliary-Atoms rule (acceptance-condition-free antecedent, determinism is the sole demand) but NOT for the ban/lull mechanism (Reynolds' banned list is indexed by accepting pairs). (O1) preserved with sharpened ground; Muller.toRabin_exists is the single highest-value gap. (O2) discharged for free by Muller.exists_iSup under a union-first composition order. Two-state countermodel proves pair-enumeration repair is unsound, not merely incomplete."
+        }
+      ],
+      "next_artifact_number": 2,
       "audit_verdict": {
         "proposal": {
           "id": "muller_sufficiency_for_auxiliary_atoms_rule_ztime",
@@ -17160,12 +17166,13 @@
           "count": 452,
           "note": "scope-blind verdicts collapsed to a count per context/patterns/backlog-reconciliation.md Pass 1 rendering guidance; the unabridged per-record list is committed at specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/task-proposals-audit.ndjson. Collapsed only because --argjson passes this payload through argv and the full 140KB slice exceeds the 128KB per-argv ceiling."
         }
-      }
+      },
+      "session_id": "sess_1794233746_5963da"
     },
     {
       "project_number": 904,
       "project_name": "proof_wanted_trust_surface_and_external_library_dependency_assessment",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "meta",
       "title": "Record three method lessons in the source store: proof_wanted as a trust surface, the external-library dependency-assessment checklist, and ground-overturned-outcome-preserved verdict amendments",
       "description": "META TASK. File three method lessons measured in specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md (its Context Extension Recommendations section). All three MUST be authored in the source store resolved from .claude-extensions.json's source_dir, never hand-authored under .claude/**, per rules/source-store-deploy-boundary.md.\n\nLESSON 1 - proof_wanted is a trust surface distinct from sorry. proof_wanted ELABORATES AND DISCARDS, so a zero sorry count and a clean #print axioms are BOTH blind to it. The 902 session found five named-but-absent theorems this way (two in the CSLib fork's DA/Conversions.lean, three in NA/BuchiCompl.lean at lines 293, 321, 328) in a tree whose own dispatch described it as 'all reported sorry-free'. Add a proof_wanted subsection to metadata-trust-surfaces.md naming grep -c '^proof_wanted' as the only reliable detector, and stating that a module consisting entirely of proof_wanted declares nothing. The archived CSLib omega-automata survey raised this same recommendation and it remains unimplemented.\n\nLESSON 2 - a checklist for assessing an external Lean library as a candidate dependency, in a new pattern file. Read upstream claims through 'git show upstream/main:<path>' rather than a fork worktree (this is how the prod_run_eq misattribution surfaced); measure 'git rev-list --left-right --count' in BOTH directions (this is how a 235-commit lag behind upstream surfaced under a '4717 commits ahead' description); compare lean-toolchain BEFORE Mathlib revisions (this inverted the cost ordering between two candidate dependencies); verify a build cache post-dates its sources before trusting #print axioms; and compute the IMPORT CLOSURE of the target modules rather than the repository's line count (8,526 lines versus 244,339 - a 29x difference in the honest number).\n\nLESSON 3 - 'ground overturned, outcome preserved' as a distinct kind of verdict amendment. A prior verdict can be correct in outcome and wrong in its stated reason; the correct amendment preserves the outcome, replaces the reason, and says so explicitly, so that a later reader is not misled into thinking a NO-GO was lifted. Nothing in context/standards/ currently names this pattern. A short subsection in the report-format or status-markers standard.\n\nNON-GOALS. No hand-authored file under .claude/**; no redeploy claimed by this task; no change under FormalSystem/ or Tests/.",
@@ -17179,7 +17186,7 @@
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T13:52:50Z",
-      "last_updated": "2026-11-09T13:52:50Z",
+      "last_updated": "2026-11-09T14:16:19Z",
       "artifacts": [],
       "next_artifact_number": 1,
       "audit_verdict": {
@@ -17832,7 +17839,8 @@
           "count": 452,
           "note": "scope-blind verdicts collapsed to a count per context/patterns/backlog-reconciliation.md Pass 1 rendering guidance; the unabridged per-record list is committed at specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/task-proposals-audit.ndjson. Collapsed only because --argjson passes this payload through argv and the full 140KB slice exceeds the 128KB per-argv ceiling."
         }
-      }
+      },
+      "session_id": "sess_1794233746_5963da_904"
     }
   ],
   "artifacts": [
