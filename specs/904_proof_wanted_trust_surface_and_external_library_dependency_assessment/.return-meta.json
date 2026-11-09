@@ -1,10 +1,64 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
+  "dispatch_seq": 6,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/summaries/01_register-and-verify-method-lessons-summary.md",
+      "summary": "Registered the already-authored external-library-dependency-assessment.md pattern file in both lean extension registries, closed the one-directional cross-link, removed one record-versioning lint occurrence, amended the research report's garbled Decisions bullet, and re-verified all three lessons' content against the source store. Phase 3 closed COMPLETED WITH EXCLUSIONS for the task-repo gate (deferred to batch stage) and source-store gate pre-existing/out-of-scope findings."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Registered the new external-library-dependency-assessment.md pattern file in lean/index-entries.json and lean/EXTENSION.md, bidirectionally cross-linked it with dependency-tracing.md, removed a record-versioning lint occurrence, and amended the research report's Decisions bullet to reflect the final cross-link state. All three method lessons (proof_wanted trust surface, external-library dependency checklist, ground-overturned-outcome-preserved amendment pattern) were re-verified intact against the source store; no lesson content was re-authored."
+  },
+  "modified_files": [
+    "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/plans/01_register-and-verify-method-lessons.md",
+    "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/reports/01_proof-wanted-trust-surface-and-dependency-assessment-lessons.md",
+    "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/summaries/01_register-and-verify-method-lessons-summary.md",
+    "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/progress/phase-1-progress.json",
+    "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/progress/phase-2-progress.json",
+    "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/progress/phase-3-progress.json",
+    "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/handoffs/phase-1-handoff-20261109T001500Z.md",
+    "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/handoffs/phase-2-handoff-20261109T003600Z.md",
+    "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/handoffs/phase-3-handoff-20261109T010500Z.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a plan edits a source-store index-entries.json (line_count refresh + new entry) without running a redeploy, expect verify-deploy.sh's gate 3 (Rule S: deployed-index-orphan, reads deployed .claude/context/index.json directly) and gate 5 (manifest-driven content-hash equality) to both fail as a direct, correct consequence -- neither is fixable without a redeploy, and a plan with a 'no redeploy' Non-Goal should anticipate and pre-emptively document these two gates in a Reasoned Exclusions table rather than treating them as surprises at verification time.",
+      "category": "PATTERN",
+      "source_artifact": "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/summaries/01_register-and-verify-method-lessons-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "verify-deploy",
+        "index-entries.json",
+        "redeploy",
+        "rule-s",
+        "gate-deferral"
+      ]
+    },
+    {
+      "content": "A plan's own multi-repository full-gate verification criterion (task repo + source-store repo both exit 0) can collide with a same-cycle orchestrate batch's Batch Gate Deferral directive, which only defers the TASK repo's own gate to the batch stage -- the source-store repo's gate is a separate, plan-mandated requirement outside the batch mechanism's scope and should still be run directly, with any pre-existing/unrelated failures documented via Reasoned Exclusions rather than silently skipped.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/summaries/01_register-and-verify-method-lessons-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": [
+        "batch-gate-deferral",
+        "source-store",
+        "two-repository-verification",
+        "reasoned-exclusions"
+      ]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1794233746_5963da",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
-  },
-  "dispatch_seq": 6
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
+    "phases_completed": 3,
+    "phases_total": 3
+  }
 }
