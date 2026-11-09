@@ -12118,26 +12118,42 @@
     {
       "project_number": 897,
       "project_name": "universal_cover_oriented_forest_two_way_bounded",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "title": "Universal cover of a doubly serial digraph: oriented forest, surjective two-way bounded covering map",
       "description": "The second half of ROADMAP hypothesis (H5), left unowned when the oriented-forest Saturation lemma landed: for a doubly serial one-step relation E on W, construct the cover relation on reduced walks (components taken as orientation-keeping undirected multigraphs, so an opposite-edge pair lifts to two distinct edges and a loop to a ray), prove IsOrientedForest for it, doubly serial, and that the endpoint projection is surjective and TwoWayBounded for the induced ofStepRel frames, so that saturation_of_orientedForest makes the cover a regular ZTime frame and plus_invariance_of_isZTime transfers L-plus truth. Mathlib's Combinatorics/Quiver/Covering.lean is the recorded starting point. Two consumers: the decidability paper proof's cover step (reports 03 section 1.2 and 878 finding 1) and the completeness programme's final-frame step, where the canonical quotient digraph is not known to satisfy Saturation and is replaced by its cover. New module FormalSystem/Semantics/UniversalCover.lean.",
       "file_scope": [
-        "FormalSystem/Semantics/UniversalCover.lean",
-        "FormalSystem/Semantics.lean",
         "FormalSystem.lean",
-        "docs/theorem-index.md"
+        "FormalSystem/ForMathlib.lean",
+        "FormalSystem/ForMathlib/Combinatorics/README.md",
+        "FormalSystem/ForMathlib/Combinatorics/SimpleGraphAcyclic.lean",
+        "FormalSystem/ForMathlib/README.md",
+        "FormalSystem/Init.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "FormalSystem/Semantics.lean",
+        "FormalSystem/Semantics/IntNormalForm.lean",
+        "FormalSystem/Semantics/UniversalCover.lean",
+        "README.md",
+        "docs/theorem-index.md",
+        "scripts/CheckInitImportsMain.lean",
+        "typst/generated/status.typ"
       ],
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T09:48:34Z",
-      "last_updated": "2026-11-09T22:12:09Z",
+      "last_updated": "2026-11-09T22:31:07Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/897_universal_cover_oriented_forest_two_way_bounded/reports/01_universal-cover-oriented-forest.md",
           "type": "report",
           "summary": "Full sorry-free design for the universal-cover half of ROADMAP (H5): rejects Mathlib's Quiver/Covering.lean as property-only, specifies a structurally-reduced-walk carrier with an Option (Bool x W) last-move index, gives the oriented-forest/seriality/lift proofs, a reusable SimpleGraph acyclicity criterion, and the ofStep [Finite W] generalization the cover frame needs."
+        },
+        {
+          "path": "specs/897_universal_cover_oriented_forest_two_way_bounded/plans/01_universal-cover-oriented-forest.md",
+          "type": "plan",
+          "summary": "Seven-phase sequential plan, 9 hours estimated, covering the ForMathlib acyclicity criterion, the ofStepSat frame constructor, the cover carrier, the oriented-forest proof, the lifts, two-way boundedness, and the L-plus truth-transfer assembly."
         }
       ],
       "session_id": "sess_1794261422_5f0e55",

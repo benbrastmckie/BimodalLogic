@@ -1,25 +1,29 @@
 {
-  "status": "researched",
-  "started_at": "2026-11-09T21:58:12Z",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/897_universal_cover_oriented_forest_two_way_bounded/reports/01_universal-cover-oriented-forest.md",
-      "summary": "Full sorry-free design for the universal-cover half of ROADMAP (H5): rejects Mathlib's Quiver/Covering.lean as property-only, specifies a structurally-reduced-walk carrier with an Option (Bool x W) last-move index, gives the oriented-forest/seriality/lift proofs, a reusable SimpleGraph acyclicity criterion, and the ofStep [Finite W] generalization the cover frame needs."
+      "type": "plan",
+      "path": "specs/897_universal_cover_oriented_forest_two_way_bounded/plans/01_universal-cover-oriented-forest.md",
+      "summary": "Seven-phase sequential plan for the universal cover of a doubly serial digraph: a ForMathlib rank/parent acyclicity criterion, a Saturation-parameterised FrameOver constructor, the reduced-walk carrier, the oriented-forest fields, the one-step and iterated lifts, two-way boundedness, and the L-plus truth-transfer assembly."
     }
   ],
-  "completion_data": {
-    "completion_summary": "Research for the universal-cover construction is complete. A sorry-free route is fully specified: carrier, one-step relation, all three IsOrientedForest fields, double seriality, the two one-step lifts, their iter-level forms, TwoWayBounded, surjectivity, and the assembly through saturation_of_orientedForest and plus_invariance_of_isZTime. Three findings change the shape of the work: Mathlib's Quiver/Covering.lean constructs nothing and is rejected as a starting point; FrameOver.taskRel_eq_iter makes the generation hypothesis and the base's double-seriality hypothesis free from [F.IsRegular]; and FrameOver.ofStep's [Finite W] binder (used only for saturation_of_finite) blocks presenting the infinite cover, so a Saturation-parameterised sibling constructor is required in IntNormalForm.lean.",
-    "roadmap_items": [
-      "(H5) second half: universal-cover construction with surjective two-way bounded covering map onto its base"
-    ]
-  },
   "metadata": {
     "session_id": "sess_1794261422_5f0e55_897",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 9,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7]]
   },
-  "next_steps": "Plan the module in five phases, with the two carrier-independent items first: (1) the general SimpleGraph.isAcyclic_of_rank_parent criterion in FormalSystem/ForMathlib/; (2) the FrameOver.ofStepSat generalization of ofStep in IntNormalForm.lean, keeping ofStep's signature and its three bridge lemmas intact; (3) the Cover/CoverPt/CoverStep carrier plus the single coverStep_cases structural lemma and the three IsOrientedForest fields; (4) double seriality and the two one-step lifts, then their iter-level forms; (5) TwoWayBounded, surjectivity of CoverPt.endpt, and the headline assembly, passing SuccOrder/IsSuccArchimedean positionally via inferInstanceAs per the ShiftSet.lean:485 gate. Each phase ends on a green scoped build. Territory is two files: the new FormalSystem/Semantics/UniversalCover.lean and FormalSystem/Semantics/IntNormalForm.lean, plus one new ForMathlib file and the FormalSystem.lean / FormalSystem/Semantics.lean aggregator imports."
+  "memory_candidates": [
+    {
+      "content": "lean-challenge-snapshot.sh assembles a plan's '## Lean Challenge Statements' section by concatenating every ```lean fenced block, then rewriting each recognized declaration from its top-level ':=' onward to ':= sorry'. Two consequences constrain how the section must be authored. (1) Everything between one declaration's ':=' and the next declaration's start is DISCARDED, so any import, namespace, open or end line sitting between two declarations vanishes: the section must be ONE fenced block whose entire preamble (all imports and all open lines) precedes the first declaration, with no namespace blocks between declarations. (2) Declaration names are harvested as a single dot-free identifier, so 'def FrameOver.ofStepSat' harvests as 'FrameOver' and fails the hard cross-validation against the Goals identifier set; declare at the root and name the real namespace in prose instead. Verify both at plan time with '--dry-run' (fast, prints the assembled module and the harvested theorem_names) and then '--dry-run --compile' (compiles in a scratch dir against the project's own toolchain), which catches an unstatable pinned signature before any implementation dispatch runs.",
+      "category": "PATTERN",
+      "source_artifact": "specs/897_universal_cover_oriented_forest_two_way_bounded/plans/01_universal-cover-oriented-forest.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean-challenge-snapshot", "lean-challenge-statements", "plan-authoring", "lean4", "goals-cross-validation", "dry-run-compile"]
+    }
+  ],
+  "dispatch_seq": 2
 }
