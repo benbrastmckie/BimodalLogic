@@ -42,6 +42,7 @@ def exceptions : List Name := [
   -- beside the directory rather than under it, carries the import instead, so every *consumer* of
   -- this module still reaches `FormalSystem.Init`.
   `FormalSystem.ForMathlib.Combinatorics.InfiniteRamseyPairs,
+  `FormalSystem.ForMathlib.Combinatorics.SimpleGraphAcyclic,
   `FormalSystem.ForMathlib.Order.BallSpace,
   `FormalSystem.ForMathlib.Order.PFilter,
   `FormalSystem.ForMathlib.Topology.Sierpinski,

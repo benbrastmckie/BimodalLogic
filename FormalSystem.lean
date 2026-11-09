@@ -13,6 +13,7 @@ import FormalSystem.Examples.TemporalStructures
 import FormalSystem.Examples.Walkthrough
 import FormalSystem.ForMathlib
 import FormalSystem.ForMathlib.Combinatorics.InfiniteRamseyPairs
+import FormalSystem.ForMathlib.Combinatorics.SimpleGraphAcyclic
 import FormalSystem.ForMathlib.Order.BallSpace
 import FormalSystem.ForMathlib.Order.PFilter
 import FormalSystem.ForMathlib.Topology.Sierpinski

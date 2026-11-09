@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.ForMathlib.Combinatorics.InfiniteRamseyPairs
+import FormalSystem.ForMathlib.Combinatorics.SimpleGraphAcyclic
 import FormalSystem.ForMathlib.Order.BallSpace
 import FormalSystem.ForMathlib.Order.PFilter
 import FormalSystem.ForMathlib.Topology.Sierpinski
@@ -30,6 +31,10 @@ strictly `Mathlib → ForMathlib → FormalSystem.* → downstream`.
   (`Nat.exists_strictMono_const_pair_colour`): every finite colouring of the increasing pairs of
   naturals is constant on some strictly monotone subsequence. Mathlib carries Hindman and
   Hales–Jewett at this pin but not the classical infinite Ramsey theorem.
+* `FormalSystem.ForMathlib.Combinatorics.SimpleGraphAcyclic` — a rank/parent criterion for
+  acyclicity (`SimpleGraph.isAcyclic_of_rank_parent`): a graph is acyclic as soon as every
+  adjacency is a parent edge across a strict rank drop. Mathlib carries characterisations of
+  acyclicity but no sufficient condition in construction-side rank/parent form.
 * `FormalSystem.ForMathlib.Order.BallSpace` — ball spaces in the sense of Ćmiel, Kuhlmann and
   Kuhlmann: nests (`Order.IsNest`), spherical completeness `S₁` over an arbitrary ball predicate
   (`Order.SphericallyComplete`), cofinal nests (`Order.HasCofinalNest`), the hierarchy's

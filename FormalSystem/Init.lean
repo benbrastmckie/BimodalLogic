@@ -24,8 +24,9 @@ this file, since that edge would close a cycle.
 this file, and `scripts/check-module-invariants.sh` runs it as enforced check C24. That property now
 holds across the tree: the eight minimal elements of the internal import DAG -- the modules with no
 `FormalSystem.*` import of their own beyond this file -- import this file directly, and every other
-module inherits it through them. Five modules are recorded exceptions.
+module inherits it through them. Six modules are recorded exceptions.
 `FormalSystem.ForMathlib.Combinatorics.InfiniteRamseyPairs`,
+`FormalSystem.ForMathlib.Combinatorics.SimpleGraphAcyclic`,
 `FormalSystem.ForMathlib.Order.BallSpace`, `FormalSystem.ForMathlib.Order.PFilter` and
 `FormalSystem.ForMathlib.Topology.Sierpinski` are staged for upstreaming and so may not depend
 on anything under `FormalSystem`; the sibling

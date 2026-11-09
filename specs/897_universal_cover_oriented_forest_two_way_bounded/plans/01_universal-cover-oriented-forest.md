@@ -1,7 +1,7 @@
 # Implementation Plan: Task #897
 
 - **Task**: 897 - Universal cover of a doubly serial digraph: oriented forest, surjective two-way bounded covering map
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/897_universal_cover_oriented_forest_two_way_bounded/reports/01_universal-cover-oriented-forest.md
@@ -155,35 +155,35 @@ single shared library root `FormalSystem.lean`. Running any two phases concurren
 them contend on those two files. The dependency edges therefore record a real serialization
 constraint, not a mathematical one.
 
-### Phase 1: ForMathlib Acyclicity Criterion and Its Registration [NOT STARTED]
+### Phase 1: ForMathlib Acyclicity Criterion and Its Registration [COMPLETED]
 
 **Goal**: Land `SimpleGraph.isAcyclic_of_rank_parent` as a standalone, Mathlib-shaped lemma with
 no dependency on this library, fully registered against the library root and the C24 exemption
 list, so that Phase 4's `acyclic` field has a compiled criterion to cite.
 
 **Tasks**:
-- [ ] Create `FormalSystem/ForMathlib/Combinatorics/SimpleGraphAcyclic.lean` with the standard
+- [x] Create `FormalSystem/ForMathlib/Combinatorics/SimpleGraphAcyclic.lean` with the standard
       copyright header, `import Mathlib.Combinatorics.SimpleGraph.Acyclic`, and a module docstring
       that records what the lemma is for and that Mathlib has no equivalent at this pin.
-- [ ] State `SimpleGraph.isAcyclic_of_rank_parent` with the signature pinned in the challenge
+- [x] State `SimpleGraph.isAcyclic_of_rank_parent` with the signature pinned in the challenge
       block below.
-- [ ] Prove it: rewrite with `isAcyclic_iff_forall_adj_isBridge`; given an adjacency, reduce to
+- [x] Prove it: rewrite with `isAcyclic_iff_forall_adj_isBridge`; given an adjacency, reduce to
       non-reachability in the edge-deleted graph through `isBridge_iff`; define the ancestor
       predicate as "some iterate of the parent map reaches the lower endpoint"; prove the lower
       endpoint is its own ancestor, prove ancestry is invariant along every edge of the deleted
       graph (the parent-of-target branch uses a positive iterate count, since zero would name the
       deleted edge), and prove the upper endpoint is not an ancestor from the rank inequality
       iterated against the strict rank drop. Conclude by walk induction on a reachability witness.
-- [ ] Handle the symmetric disjunct by the same argument with the endpoints exchanged, factored
+- [x] Handle the symmetric disjunct by the same argument with the endpoints exchanged, factored
       through a private auxiliary rather than duplicated.
-- [ ] Register the module: add its import to `FormalSystem/ForMathlib.lean`, add its name to
+- [x] Register the module: add its import to `FormalSystem/ForMathlib.lean`, add its name to
       `FormalSystem/Init.lean`'s recorded-exception docstring (the stated count there reads "Five
       modules are recorded exceptions" and must be updated along with the list), and add its
       module name to `scripts/CheckInitImportsMain.lean`'s exemption list beside the four existing
       `ForMathlib` entries.
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, which adds the new import
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, which adds the new import
       line to `FormalSystem.lean` in sorted position.
-- [ ] Regenerate the Typst count surface: `lake build && bash scripts/typst-sync-check.sh --fix`,
+- [x] Regenerate the Typst count surface: `lake build && bash scripts/typst-sync-check.sh --fix`,
       then stage `typst/generated/status.typ`.
 
 **Timing**: 1.5 hours
@@ -219,18 +219,30 @@ every module reachable from it, the full enumerated dependent set of the root ed
 - `typst/generated/status.typ` - regenerated file and line counts
 
 **Verification**:
-- [ ] `lake build` is green with zero warnings (CI runs `--wfail`, so a warning is a failure).
-- [ ] `grep -c "sorry" FormalSystem/ForMathlib/Combinatorics/SimpleGraphAcyclic.lean` is 0.
-- [ ] `#print axioms SimpleGraph.isAcyclic_of_rank_parent` yields only the three standard axioms,
+- [x] `lake build` is green with zero warnings (CI runs `--wfail`, so a warning is a failure).
+- [x] `grep -c "sorry" FormalSystem/ForMathlib/Combinatorics/SimpleGraphAcyclic.lean` is 0.
+- [x] `#print axioms SimpleGraph.isAcyclic_of_rank_parent` yields only the three standard axioms,
       with no new axiom and no `sorryAx`.
-- [ ] `bash scripts/check-module-invariants.sh` exits 0, or every finding it reports is compared
+- [x] `bash scripts/check-module-invariants.sh` exits 0, or every finding it reports is compared
       against the pre-task baseline and recorded as pre-existing because it names no file this
       phase touched; C24 and C33 must be green either way.
-- [ ] `bash scripts/typst-sync-check.sh --counts-only` exits 0.
+- [x] `bash scripts/typst-sync-check.sh --counts-only` exits 0.
+
+**Verification notes (Phase 1)**: `lake build` green, exit 0, zero errors and zero warnings
+(forced with `--no-share`, since the guard replayed a stale result from the pre-fix run on the
+first attempt). `grep -c sorry` = 0. `#print axioms SimpleGraph.isAcyclic_of_rank_parent` =
+`[propext, Classical.choice, Quot.sound]` — no `sorryAx`, no new axiom.
+`check-module-invariants.sh`: C24 PASS, C33 PASS, and exactly one failing group, `INV` ("4 file(s)
+carry a stale generated inventory block": the two `ForMathlib` READMEs, `FormalSystem/README.md`
+and `README.md`). That finding is the module-inventory surface this plan's own Risks table declares
+deferrable and schedules once, in Phase 7; it is deferred here rather than forgiven, and Phase 7
+reconciles it with `--emit-inventory`. `typst-sync-check.sh --counts-only` exits 0 after `--fix`.
+The plan's Scope Hypothesis of four registration files is **confirmed**: no fifth registration
+surface surfaced.
 
 ---
 
-### Phase 2: The Saturation-Parameterised Frame Constructor [NOT STARTED]
+### Phase 2: The Saturation-Parameterised Frame Constructor [IN PROGRESS]
 
 **Goal**: Add the additive sibling of `FrameOver.ofStep` that takes `Saturation` as a hypothesis
 instead of deriving it from `[Finite W]`, so that an infinite carrier can present a frame over
