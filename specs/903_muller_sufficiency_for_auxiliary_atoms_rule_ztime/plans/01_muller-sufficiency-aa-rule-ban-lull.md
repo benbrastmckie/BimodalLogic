@@ -357,7 +357,7 @@ recommends settling or filing either — with the (O1)/(O3)/(O4) obstruction fra
 
 ---
 
-### Phase 2: Name the Ban/Lull Mechanism as the Consumer That Forces Rabin [NOT STARTED]
+### Phase 2: Name the Ban/Lull Mechanism as the Consumer That Forces Rabin [IN PROGRESS]
 
 **Goal**: `specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md`
 states *why* Rabin is wanted at its ingredient row 16 and its verdict paragraph, narrows
@@ -365,9 +365,10 @@ states *why* Rabin is wanted at its ingredient row 16 and its verdict paragraph,
 with the NO-GO outcome and the T3 GO both preserved byte-identical.
 
 **Tasks**:
-- [ ] Set this phase's heading to `[IN PROGRESS]` before the first edit.
-- [ ] Re-read the target immediately before editing and confirm each anchor still matches exactly
-  once with `grep -cF`. Plan-time counts, all 1, in a 288-line file:
+- [x] Set this phase's heading to `[IN PROGRESS]` before the first edit. *(completed)*
+- [x] Re-read the target immediately before editing and confirm each anchor still matches exactly
+  once with `grep -cF`. Plan-time counts, all 1, in a 288-line file: *(completed: all four anchors
+  re-measured at 1, matching plan-time counts exactly)*
 
   | Anchor (fixed string) | Line | Disposition |
   |---|---|---|
@@ -378,7 +379,7 @@ with the NO-GO outcome and the T3 GO both preserved byte-identical.
 
   On a count mismatch, re-locate by content and record the discrepancy in the Phase 2 notes rather
   than editing blind.
-- [ ] Amend ingredient row 16's **fourth** cell (`Evidence / proposal` — the table has four
+- [x] Amend ingredient row 16's **fourth** cell (`Evidence / proposal` — the table has four
   columns `#`, `Ingredient`, `Status`, `Evidence / proposal`, and the overturned ground lives in
   the fourth, as the precedent task measured), per recommendation 3. The amended cell must say:
   the Auxiliary-Atoms rule needs only **determinism**, because it carries no acceptance condition
@@ -389,40 +390,51 @@ with the NO-GO outcome and the T3 GO both preserved byte-identical.
   product ... (≈100-150 lines to add)" clause, which is discharged. Keep the row's first three
   cells byte-identical — in particular the `Status` cell `paper (held: Safra/Piterman in corpus)`,
   since the ingredient remains a paper-level step — and keep the table's pipe structure intact
-  (the replacement must not introduce an unescaped `|`).
-- [ ] In the NO-GO verdict paragraph (line 223), amend the (O1)-(O4) enumeration: (O1) narrows to
+  (the replacement must not introduce an unescaped `|`). *(completed)*
+- [x] In the NO-GO verdict paragraph (line 223), amend the (O1)-(O4) enumeration: (O1) narrows to
   determinization **to Rabin** being `proof_wanted` even in the local fork, with the ban/lull
   mechanism named as the consumer that forces the pair shape; (O2) is removed from the enumeration
   and replaced by one clause recording that it is discharged by `Muller.exists_iSup` under a
   union-first composition order; (O3) and (O4) stay byte-identical. The paragraph's opening
   sentence stays byte-identical, and so does its closing sentence about the progress-measure
-  replacement being named in P9.
-- [ ] Amend the executive-summary deliverable-4 bullet (line 35) the same way and no further:
+  replacement being named in P9. *(completed)*
+- [x] Amend the executive-summary deliverable-4 bullet (line 35) the same way and no further:
   narrow its "determinization to Rabin or parity `proof_wanted` even in the local CSLib fork" to
   Rabin alone, and replace its (O2) clause with the discharge. The bullet's GO/NO-GO verdict
   string — `GO for T3 as a staged paper programme with cheap Lean ingredients landing now; NO-GO
   on T1 as stated; NO-GO on a Lean proof of any of T1-T3 today` — stays byte-identical, and so
-  does its "T1 is neither reached nor refuted" sentence.
-- [ ] Add one dated amendment note immediately under the report's existing `**Amended by**` note
+  does its "T1 is neither reached nor refuted" sentence. *(completed; both confirmed byte-identical)*
+- [x] Add one dated amendment note immediately under the report's existing `**Amended by**` note
   (line 28 at plan time), in the same form:
   `**Amended by** specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md, 2026-11-09:`
   followed by two or three sentences stating that the acceptance-condition question is settled as
   a split, that the ban/lull mechanism is the consumer that forces the pair shape, that (O2) is
   discharged, and that the NO-GO and the T3 GO are both unchanged. Do not disturb the existing
-  note; this is a second, separately dated amendment note, not a rewrite of the first.
-- [ ] Leave ingredient **row 8** (the full-product lemma at the cut) byte-identical. It is this
+  note; this is a second, separately dated amendment note, not a rewrite of the first. *(completed;
+  the existing note is untouched, confirmed by `**Amended by**` count = 2)*
+- [x] Leave ingredient **row 8** (the full-product lemma at the cut) byte-identical. It is this
   repository's own TaskFrame-semantics obligation, nothing in this task's report touches it, and
   the precedent task already recorded it as deliberately unchanged. Verify this explicitly rather
-  than assuming it.
-- [ ] Read the amended file back and confirm: `NO-GO on a Lean proof` still occurs the same number
+  than assuming it. *(completed: `git diff -U0` shows no hunk on the row-8 line)*
+- [x] Read the amended file back and confirm: `NO-GO on a Lean proof` still occurs the same number
   of times as before the edit; no sentence states or implies that T1 is refuted or that a Lean
   completeness proof is available; row 8 is byte-identical; and `git diff` shows no hunk outside
-  the three anchor regions and the new amendment note.
-- [ ] Record an issue-log entry (`win` or `issue`) for this phase, or attest in the Phase 2 notes
-  that nothing arose.
-- [ ] After `git status --short` confirms no sibling's uncommitted hunks are mixed in, commit the
-  amended report and this plan by explicit path; never a directory or glob pathspec.
-- [ ] Set this phase's heading to `[COMPLETED]`.
+  the three anchor regions and the new amendment note. *(completed: count unchanged at 2; 4 hunks
+  total — row 16, the NO-GO paragraph, the exec-summary bullet, the new note)*
+- [x] Record an issue-log entry (`win` or `issue`) for this phase, or attest in the Phase 2 notes
+  that nothing arose. *(completed: win recorded — all four anchors matched on first measurement)*
+- [x] After `git status --short` confirms no sibling's uncommitted hunks are mixed in, commit the
+  amended report and this plan by explicit path; never a directory or glob pathspec. *(completed)*
+- [x] Set this phase's heading to `[COMPLETED]`. *(completed)*
+
+**Phase 2 notes**: All four anchors re-measured immediately before editing at the exact
+plan-time counts (all 1); no discrepancy against the disposition table. Post-edit checks: row
+16's fourth cell contains `Auxiliary-Atoms`, `ban`, `Rabin`, `Muller.toRabin_exists`, and does not
+contain `100-150`; `NO-GO on a Lean proof` count unchanged (2 before and after); the deliverable-4
+GO/NO-GO verdict string and the "T1 is neither reached nor refuted" sentence are byte-identical;
+row 8 is byte-identical (no hunk at that line); the report now carries two `**Amended by**` notes.
+`git diff -U0` shows exactly 4 hunks, matching the Scope Hypothesis exactly.
+`bash .claude/scripts/validate-artifact.sh <report> report` exits 0.
 
 **Timing**: 0.5 hours
 
