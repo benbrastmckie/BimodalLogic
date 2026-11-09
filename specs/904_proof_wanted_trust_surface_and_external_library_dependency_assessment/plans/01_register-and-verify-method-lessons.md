@@ -172,7 +172,7 @@ the figure.
 
 ---
 
-### Phase 2: Register the new pattern file in both explicit registries [NOT STARTED]
+### Phase 2: Register the new pattern file in both explicit registries [COMPLETED]
 
 **Goal**: Make `external-library-dependency-assessment.md` discoverable through the two per-file
 registries that do not pick it up from the directory-based `provides.context` entry: the lean
@@ -180,25 +180,29 @@ extension's index entries and its merged Context Pointers list.
 
 **Tasks**:
 
-- [ ] Measure the post-Phase-1 line counts of both
+- [x] Measure the post-Phase-1 line counts of both
       `external-library-dependency-assessment.md` and `dependency-tracing.md` with `wc -l`. Do not
       reuse the authoring-time figures (122 / 229) without re-measuring — Phase 1 edits both files.
-- [ ] Add one entry to `lean/index-entries.json`'s `entries` array for the new file, copying the
+      *(completed: 122 unchanged / 237 post-Phase-1)*
+- [x] Add one entry to `lean/index-entries.json`'s `entries` array for the new file, copying the
       field shape of the existing `dependency-tracing.md` entry verbatim: `path`, `line_count`,
       `load_when.agents`, `load_when.task_types`, `domain` (`project`), `subdomain` (`lean`),
-      `summary`, `keywords`.
-- [ ] Set the new entry's `load_when.agents` to both `lean-research-agent` and
+      `summary`, `keywords`. *(completed)*
+- [x] Set the new entry's `load_when.agents` to both `lean-research-agent` and
       `lean-implementation-agent`, matching the `plan-authoring-gate-collisions.md` entry rather
       than `dependency-tracing.md`'s implementation-only list: whether to adopt an external
-      library is a research-phase question before it is an implementation one.
-- [ ] Refresh the existing `dependency-tracing.md` entry's `line_count` in the same file to its
-      post-Phase-1 value.
-- [ ] Make both JSON changes with a targeted in-place edit, not a whole-file `jq` rewrite, then
+      library is a research-phase question before it is an implementation one. *(completed)*
+- [x] Refresh the existing `dependency-tracing.md` entry's `line_count` in the same file to its
+      post-Phase-1 value. *(completed: 229 -> 237)*
+- [x] Make both JSON changes with a targeted in-place edit, not a whole-file `jq` rewrite, then
       diff to confirm only those two records changed and no unrelated record was reflowed.
-- [ ] Append one `### Context Pointers` line to `lean/EXTENSION.md`, placed immediately after the
+      *(completed: targeted Edit used; diff confined to the two intended records plus one
+      pre-existing, uncommitted change to the metadata-trust-surfaces.md entry's line_count from
+      the prior research-round dispatch — not touched by this phase)*
+- [x] Append one `### Context Pointers` line to `lean/EXTENSION.md`, placed immediately after the
       `dependency-tracing.md` line, using the same deployed-path form
       (`.claude/context/project/lean4/patterns/...`) and `path - description` shape the
-      surrounding entries use.
+      surrounding entries use. *(completed)*
 
 **Timing**: 0.4 hours
 
