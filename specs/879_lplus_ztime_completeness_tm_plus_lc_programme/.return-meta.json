@@ -1,0 +1,73 @@
+{
+  "status": "researched",
+  "started_at": "2026-11-09T09:05:46Z",
+  "dispatch_seq": 21,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
+      "summary": "Research report: target statements T1/T2/T3 (elaborated), end-to-end Reynolds-2001 transposition, 21-row ingredient table with 9 audited missing-ingredient proposals, go/no-go verdict with located obstructions"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794209534_e57749_879",
+    "agent_type": "formal-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "formal-research-agent"
+    ],
+    "duration_seconds": 1563,
+    "domains_researched": [
+      "logic",
+      "math"
+    ],
+    "findings_count": 5,
+    "context_files_loaded": [
+      "logic/README.md",
+      "logic/domain/ztime-no-finite-carrier-fmp.md",
+      "patterns/mathlib-lookup-gate.md",
+      "patterns/backlog-reconciliation.md",
+      "formats/report-format.md"
+    ],
+    "mathlib_lookups_performed": 0,
+    "mathlib_lookup_gated": "skipped_no_lean_target"
+  },
+  "next_steps": "Create the nine audited proposals in specs/879_.../task-proposals.json as tasks (P1-P4 serialized lean4 batch; P5, P6 shared with the decidability front; P7, P8 small lean4; P9 formal research), amend the ROADMAP cure-of-record sentence per Recommendation 5, then run /orchestrate 879 to plan if a plan phase is wanted; no library change is proposed by this report",
+  "modified_files": [
+    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
+    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/probes/01_target-statements.lean",
+    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/task-proposals.json",
+    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/task-proposals-audit.ndjson",
+    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/issues.jsonl"
+  ],
+  "memory_candidates": [
+    {
+      "content": "Reynolds 2001 CTL* completeness consumes its limit-closure axiom only in Lemma 17 (ban preservation) and there needs the UNTIL-form LC; the F-form LC_n (Reynolds 2003, F/P-only language) does not discharge the segment guard. For L-plus with untl/snce primitive the schema of record is LCU plus its mirror.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "limit closure",
+        "LCU",
+        "Reynolds 2001",
+        "ban preservation",
+        "L-plus completeness"
+      ]
+    },
+    {
+      "content": "In the all-walks ZTime semantics, a fresh-atom (state-valued) initialisation of a clock-anchored automaton is sound only through the full-product lemma for (past-type, future-type) at the cut, which presupposes Gabbay separation; separation is consumed at that one point of the completeness architecture.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "separation",
+        "auxiliary atoms",
+        "clock cut",
+        "product automaton",
+        "stability cluster"
+      ]
+    }
+  ]
+}
