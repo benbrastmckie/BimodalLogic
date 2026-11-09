@@ -12,6 +12,7 @@ import FormalSystem.Semantics.FrameClassValidity
 import FormalSystem.Semantics.FrameConstraintIndependence
 import FormalSystem.Semantics.IntNormalForm
 import FormalSystem.Semantics.OrientedForest
+import FormalSystem.Semantics.UniversalCover
 import FormalSystem.Semantics.SlicedFrame
 import FormalSystem.Semantics.Periodicity
 import FormalSystem.Semantics.PartialHistory
@@ -116,6 +117,13 @@ three. The subdirectories `Extension/`, `Presheaf/`, `Ultraproduct/`, `Correspon
   appendix is cut in full, so both anchors resolve against
   `docs/reference/paper-definitions-of-record.md` as `DANGLING` rows rather than against a live
   `\label{}`
+- `UniversalCover`: the universal cover of a one-step relation as a type of reduced walks
+  (`RWalk`, `CoverPt`, `CoverStep`), its oriented-forest proof
+  (`coverStep_isOrientedForest`), the two one-step lifts, and the headline
+  `exists_orientedForest_cover` — every regular frame over `intOrder` has a regular cover
+  frame whose endpoint projection is surjective and `TwoWayBounded`, with the L⁺ truth
+  transfer along it. Components are taken as orientation-keeping undirected multigraphs, so
+  an opposite-edge pair lifts to two distinct edges and a loop to a ray
 - `HistoryMorphism`: history-lifting morphisms between task frames over one temporal order
   (`HistMap`, `HistMorphism`, the image history `HistMap.mapH`, the pulled-back model
   `HistMap.pullM`) and the frame property `TaskFrame.RecurrenceFree` — no world history visits a

@@ -316,35 +316,35 @@ untouched and verified to still compile unchanged by the full build.
 
 ---
 
-### Phase 3: The Cover Carrier and Its One-Step Relation [IN PROGRESS]
+### Phase 3: The Cover Carrier and Its One-Step Relation [COMPLETED]
 
 **Goal**: Create `FormalSystem/Semantics/UniversalCover.lean` with the reduced-walk carrier, the
 bundled cover point, the one-step relation as an inductive, the length and parent maps, and full
 module registration -- so that every later phase has a compiled carrier to reason about.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/UniversalCover.lean` with the standard copyright header,
+- [x] Create `FormalSystem/Semantics/UniversalCover.lean` with the standard copyright header,
       importing `FormalSystem.Semantics.OrientedForest`,
       `FormalSystem.Semantics.HistoryMorphism` and
       `FormalSystem.ForMathlib.Combinatorics.SimpleGraphAcyclic`, and a module docstring recording
       the construction, the multigraph convention and how the reducedness rule forces it, the
       base-points-over-all-of-the-carrier decision, and the rejection of the Quiver route with
       reasons.
-- [ ] Define the reduced-walk inductive indexed by origin, endpoint and `Option (Bool × W)` (the
+- [x] Define the reduced-walk inductive indexed by origin, endpoint and `Option (Bool × W)` (the
       last move's direction and pre-vertex), with constructors `nil`, `fwd` and `bwd`, each
       carrying its reducedness side condition exactly as research Decision 3 states.
-- [ ] Define the bundled cover point as a structure over origin, endpoint, last-move index and
+- [x] Define the bundled cover point as a structure over origin, endpoint, last-move index and
       walk.
-- [ ] Define the walk length by recursion and the cover point's length as its projection.
-- [ ] Define the drop-last parent map on walks and on cover points, with `nil` mapping to itself.
-- [ ] Define the one-step relation on cover points as the two-constructor inductive (`up` and
+- [x] Define the walk length by recursion and the cover point's length as its projection.
+- [x] Define the drop-last parent map on walks and on cover points, with `nil` mapping to itself.
+- [x] Define the one-step relation on cover points as the two-constructor inductive (`up` and
       `down`) of research Decision 4.
-- [ ] Record, as a docstring note on the one-step relation, that `cases` on it is confined to
+- [x] Record, as a docstring note on the one-step relation, that `cases` on it is confined to
       Phase 4's structural lemma so that `HEq` never reaches a later proof.
-- [ ] Register the module: add its import to `FormalSystem/Semantics.lean` and add its one-line
+- [x] Register the module: add its import to `FormalSystem/Semantics.lean` and add its one-line
       entry to that file's module-list docstring, then regenerate the library root with
       `lake exe mk_all --lib FormalSystem`.
-- [ ] Regenerate the Typst count surface: `lake build && bash scripts/typst-sync-check.sh --fix`,
+- [x] Regenerate the Typst count surface: `lake build && bash scripts/typst-sync-check.sh --fix`,
       then stage `typst/generated/status.typ`.
 
 **Timing**: 1.25 hours
@@ -375,17 +375,34 @@ are compiled by that build.
 - `typst/generated/status.typ` - regenerated file and line counts
 
 **Verification**:
-- [ ] `lake build` is green with zero warnings.
-- [ ] `grep -c "sorry" FormalSystem/Semantics/UniversalCover.lean` is 0; no declaration in this
+- [x] `lake build` is green with zero warnings.
+- [x] `grep -c "sorry" FormalSystem/Semantics/UniversalCover.lean` is 0; no declaration in this
       phase has a proof obligation.
-- [ ] A `#check` of the one-step relation, of the cover-point structure, and of each walk
+- [x] A `#check` of the one-step relation, of the cover-point structure, and of each walk
       constructor elaborates, with the three indices of both endpoints fully determined.
-- [ ] `bash scripts/check-module-invariants.sh` reports C33 green.
-- [ ] `bash scripts/typst-sync-check.sh --counts-only` exits 0.
+- [x] `bash scripts/check-module-invariants.sh` reports C33 green.
+- [x] `bash scripts/typst-sync-check.sh --counts-only` exits 0.
+
+**Verification notes (Phase 3)**: full `lake build` green (`--no-share`), 2968 jobs, zero errors
+and zero warnings. `grep -c sorry` = 0. `#check` of `CoverStep`, `CoverPt`, each of `RWalk.nil`,
+`RWalk.fwd`, `RWalk.bwd`, and each of `CoverStep.up`, `CoverStep.down` elaborates, and the printed
+types of the two `CoverStep` constructors show every field of **both** endpoint structure literals
+explicitly, so all three indices of both endpoints are fully determined. `check-module-invariants.sh`:
+C24 PASS, C33 PASS (749 import lines). `typst-sync-check.sh --counts-only` exits 0 after `--fix`.
+
+**Scope Hypothesis outcome (Phase 3)**: the line-count figure is **superseded** — the module
+landed at 193 lines in this phase and 486 lines complete (Phases 3 through 7 together), against the
+projected ~150 and ~830, so the long-file ceiling of 1500 is not approached and no
+`linter.style.longFile` baseline is needed. A **fifth** registration surface surfaced that the
+plan's file list did not name: `FormalSystem/Semantics/README.md` carries a *hand-maintained*
+inventory row per live module (`check-module-invariants.sh` reported
+"`UniversalCover.lean` is live but has no row"), distinct from the `--emit-inventory`-generated
+blocks the Risks table defers to Phase 7. Following the Phase 1 hypothesis's own instruction for
+this case, the row was added in this phase rather than deferred, and a re-run cleared the finding.
 
 ---
 
-### Phase 4: The Structural Lemma and the Oriented-Forest Fields [NOT STARTED]
+### Phase 4: The Structural Lemma and the Oriented-Forest Fields [IN PROGRESS]
 
 **Goal**: Prove the single `cases`-on-the-step-relation lemma and, from it, the three fields of
 `IsOrientedForest` for the cover's one-step relation, discharging the `acyclic` field through

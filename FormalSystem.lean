@@ -695,6 +695,7 @@ import FormalSystem.Semantics.Ultraproduct.Carrier
 import FormalSystem.Semantics.Ultraproduct.IndexFilter
 import FormalSystem.Semantics.Ultraproduct.Los
 import FormalSystem.Semantics.Ultraproduct.ShiftSetProduct
+import FormalSystem.Semantics.UniversalCover
 import FormalSystem.Semantics.Validity
 import FormalSystem.Semantics.ValidityLayer
 import FormalSystem.SourceLanguage
