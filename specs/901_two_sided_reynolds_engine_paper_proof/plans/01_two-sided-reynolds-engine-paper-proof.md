@@ -276,7 +276,7 @@ hypothesis.
 
 ---
 
-### Phase 2: Amend the Architecture Report's Separation and Automaton-Initialisation Record [NOT STARTED]
+### Phase 2: Amend the Architecture Report's Separation and Automaton-Initialisation Record [COMPLETED]
 
 **Goal**: The same report's Finding 2.4 records the split consumption point (S1)/(S2) and the
 first-transition indexing; ingredient rows 8 and 9 name their second consumers; and the
@@ -284,8 +284,8 @@ Cross-Domain Synthesis no longer asserts that the semantics' defining feature pa
 exactly once.
 
 **Tasks**:
-- [ ] Set this phase's heading to `[IN PROGRESS]` before the first edit.
-- [ ] Re-confirm each of the six anchors still matches exactly once (`grep -cF`, counts and
+- [x] Set this phase's heading to `[IN PROGRESS]` before the first edit. *(completed)*
+- [x] Re-confirm each of the six anchors still matches exactly once (`grep -cF`, counts and
   plan-time line numbers): ``so `θ_f` can state it`` (1, line 163) ·
   `Separation is consumed exactly once` (1, line 163) ·
   `| 8 | Full-product lemma at the cut` (1, line 194) ·
@@ -293,47 +293,64 @@ exactly once.
   `pays for itself exactly once, at the anchor` (1, line 231) ·
   `The exact point at which separation is consumed is located` (1, line 34). Line numbers will
   have shifted by Phase 1's insertions; re-locate by content, not by line. On an absent anchor,
-  skip that edit and record which in the Phase 2 notes.
-- [ ] Amend Finding 2.4's initialisation parenthetical (line 163): replace
+  skip that edit and record which in the Phase 2 notes. *(completed: all six anchors re-confirmed,
+  each matching exactly once, shifted by +2 lines to 165, 165, 196, 197, 233, 36 respectively,
+  consistent with Phase 1's two-line insertion)*
+- [x] Amend Finding 2.4's initialisation parenthetical (line 163): replace
   ``(its initial state is a function of `γ_{colour(w₀)}`, so `θ_f` can state it)`` with the
   first-transition formulation of this task's report Finding 5.4 — the index set is a function of
   the cut *letter*, so defining `ρ⁺(s₀⁺, ĉ)` as the initial state of the sub-automaton that has
   already resolved `{pt : ⟐δ_pt ∈ ĉ}` makes a single fixed initial-state atom `b₀⁺` sufficient and
   leaves `aaAnte` used unchanged. State that the earlier reading is correct but avoidable, and that
-  the avoidable version is the one a formalization should state.
-- [ ] Amend the same finding's consumption-point sentence (line 163):
+  the avoidable version is the one a formalization should state. *(completed)*
+- [x] Amend the same finding's consumption-point sentence (line 163):
   `**Separation is consumed exactly once: in the legitimacy of initialising the two product
   automata at the cut from the cut colour's type sets.**` becomes the split (S1)/(S2) of this
   task's report Finding 4.3 — (S1) separation makes the cut index a finite, state-level datum
   (`separationOver_ztime`/`sepZ_sepClauses`/`plusTruthAt_sepZ_iff`), and (S2) PS/US pasting
   (`paste`, `untl_paste`) is what makes the conditional badness tautology `⊢ χ̄₀[⟐·]` derivable —
   with the statement that neither substitutes for the other and that the single point recorded
-  earlier is the conjunction of the two.
-- [ ] Amend the matching executive-summary bullet (line 34) to name the split in one clause, so the
+  earlier is the conjunction of the two. *(completed)*
+- [x] Amend the matching executive-summary bullet (line 34) to name the split in one clause, so the
   summary and the finding do not disagree. Keep the bullet's `Derived, finding 2.4` attribution.
-- [ ] Annotate ingredient row 8 (`Full-product lemma at the cut`, line 194) with its **second**
+  *(completed: this bullet's closing sentence is byte-identical to a sentence inside Finding 2.4's
+  own resolution paragraph, so the single edit to that shared text landed both occurrences at once;
+  the `Derived, finding 2.4` attribution is kept byte-identical)*
+- [x] Annotate ingredient row 8 (`Full-product lemma at the cut`, line 194) with its **second**
   consumer per Recommendation 3: the alphabet collapse of this task's report Findings 1.3/4.4 —
   the realized `(pt, ft)` pairs forming a product is what collapses `2^{|PastLits|+|FutLits|}`
   pair-indexed closure members to `2^{|PastLits|} + 2^{|FutLits|}` — alongside the cut soundness it
   already names. Do not change the row's Status cell: the lemma is still missing, and the
-  statement itself is unchanged.
-- [ ] Annotate ingredient row 9 (the linear-validity bridge, line 195) with its second consumer:
+  statement itself is unchanged. *(completed; Status cell `**missing**` left byte-identical)*
+- [x] Annotate ingredient row 9 (the linear-validity bridge, line 195) with its second consumer:
   derivable separation (this task's report Lemma 7.2), alongside Claim 1⁺. Again leave the Status
-  cell as written.
-- [ ] Amend the Cross-Domain Synthesis sentence (line 231): `pays for itself exactly once, at the
+  cell as written. *(completed; Status cell `**missing**` left byte-identical)*
+- [x] Amend the Cross-Domain Synthesis sentence (line 231): `pays for itself exactly once, at the
   anchor` becomes the three registers of this task's report's own synthesis — order-theoretically
   the product (Lemma 4.2), logically conditional badness as a theorem (Lemma 7.3), combinatorially
   the free down-and-across construction (Lemma 9.2) — keeping the sentence's point that the logical
-  and order-theoretic content meet at the cut.
-- [ ] Add one dated amendment note below Phase 1's, stating that Finding 2.4's consumption point is
+  and order-theoretic content meet at the cut. *(completed)*
+- [x] Add one dated amendment note below Phase 1's, stating that Finding 2.4's consumption point is
   split and its initialisation reading superseded, that rows 8 and 9 gain second consumers with
   their statements unchanged, and — explicitly — that **no new Lean item is filed by this
-  amendment** and the level split is deliberately not filed (Recommendation 4).
-- [ ] Read back and confirm: no row's Status cell changed in this phase; the report nowhere claims
+  amendment** and the level split is deliberately not filed (Recommendation 4). *(completed)*
+- [x] Read back and confirm: no row's Status cell changed in this phase; the report nowhere claims
   a new landed ingredient; and `git diff` shows no hunk outside the six anchor regions and the new
-  note.
-- [ ] Record an issue-log entry for this phase (`issue` or `win`).
-- [ ] Commit by explicit path.
+  note. *(completed: rows 8/9 Status cells re-read as `**missing**`, byte-identical; `git diff -U0
+  HEAD` for this phase shows exactly 5 hunks, all within the anchor regions and the new note — fewer
+  than the 7-hunk hypothesis because the initialisation and consumption-point edits share one line
+  and the exec-summary bullet shares literal text with the Finding 2.4 paragraph)*
+- [x] Record an issue-log entry for this phase (`issue` or `win`). *(completed)*
+- [x] Commit by explicit path. *(completed)*
+
+**Phase 2 Notes**: all six anchors matched exactly once at the expected shifted line numbers
+(+2 from Phase 1's insertions); no anchor was absent or required re-location by content beyond the
+expected shift. `git diff -U0 HEAD` shows 5 hunks for this phase's commit, fewer than the plan's
+7-hunk scope hypothesis: the initialisation parenthetical and consumption-point sentence share a
+single line (merged into one hunk), and the executive-summary bullet's closing sentence turned out
+to be byte-identical to a sentence already inside Finding 2.4's resolution paragraph, so one edit
+satisfied both anchors. Both ingredient rows 8 and 9 retain their `**missing**` Status cells
+verbatim.
 
 **Timing**: 0.75 hours
 
