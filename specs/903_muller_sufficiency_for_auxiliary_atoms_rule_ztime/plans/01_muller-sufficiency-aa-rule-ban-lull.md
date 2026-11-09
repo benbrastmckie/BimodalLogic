@@ -357,7 +357,7 @@ recommends settling or filing either — with the (O1)/(O3)/(O4) obstruction fra
 
 ---
 
-### Phase 2: Name the Ban/Lull Mechanism as the Consumer That Forces Rabin [IN PROGRESS]
+### Phase 2: Name the Ban/Lull Mechanism as the Consumer That Forces Rabin [COMPLETED]
 
 **Goal**: `specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md`
 states *why* Rabin is wanted at its ingredient row 16 and its verdict paragraph, narrows

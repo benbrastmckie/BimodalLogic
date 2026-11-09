@@ -14,7 +14,7 @@
     {"id": 8, "description": "Read back and confirm NO-GO/row8 unchanged, no hunk outside anchors", "status": "done", "files_touched": []},
     {"id": 9, "description": "Record issue-log entry", "status": "done", "files_touched": ["specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/issues.jsonl"]},
     {"id": 10, "description": "Commit amended report and plan", "status": "done", "files_touched": []},
-    {"id": 11, "description": "Set phase heading to [COMPLETED]", "status": "done", "files_touched": []}
+    {"id": 11, "description": "Set phase heading to [COMPLETED]; post-phase self-review; progressive handoff", "status": "done", "files_touched": ["specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/plans/01_muller-sufficiency-aa-rule-ban-lull.md", "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/handoffs/phase-2-handoff-20261109T010500Z.md"]}
   ],
   "current_objective": 11,
   "approaches_tried": [],
