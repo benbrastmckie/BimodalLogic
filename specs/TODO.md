@@ -6,57 +6,21 @@ next_project_number: 893
 
 ## Task Order
 
-*Updated 2026-11-07. Generated from state.json dependency graph.*
+*Updated 2026-11-09. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,729,730,734,741,743,751,752,753,761,767,770,777,779,780,781,783,784,803,813,817,818,821,825,826,829,830,831,832,838,839,840,841,842,847,848,857,863,867,869,873,874,875,876,882,883,890,891 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,787,804,814,816,822,823,824,845,853,862,879 | 298,428,502,743,761,770,777,783,803,813,838,839,867 | agent-system, algebraic-representation, completeness, ... |
-| 3 | 410,498,499,500,834,843,861 | 429,497,763,822,823,838 | agent-system, algebraic-representation, decidability |
-| 4 | 125,411,543,892 | 410,498,499,500,843 | agent-system, algebraic-representation, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,867,869,873,874,875,876,890 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 2 | 231,282,296,429,497,763,787,804,853,862,879 | 298,428,502,743,761,803,838,867 | algebraic-representation, completeness, dataset-enhancement, ... |
+| 3 | 410,498,499,500,861 | 429,497,763,838 | algebraic-representation, decidability |
+| 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
 | 7 | 482 | 412 | decidability |
 | 8 | 177 | 178,282,296,481,482,543 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-730 [NOT STARTED] — Evaluate whether the formal:logic implement-phase routing...
-741 [NOT STARTED] — Land the three agent-system context extensions recorded by...
-752 [NOT STARTED] — roadmap-integration.sh --regenerate IS SILENTLY INOPERATIVE...
-753 [NOT STARTED] — conclusion stage drops null-resolution issue-log entries
-767 [NOT STARTED] — lake-build-guard replays stale result for env lean FILE
-770 [NOT STARTED] — postflight writes detail-free blocking issue entry on partial...
-  └─ 823 [NOT STARTED] — Tell the re-prompted dispatch to distrust the error count it...
-    └─ 834 [NOT STARTED] — Confirm the blocker-research aux carrier landed, and refuse...
-777 [NOT STARTED] — Carve a task's own specs/ artifacts out of...
-  └─ 816 [NOT STARTED] — Stop git-snapshot.sh's --no-revert artifacts from...
-779 [NOT STARTED] — Source-store-aware commit path and plan-time...
-780 [NOT STARTED] — Plan-compliance spot-check misses evidence-probe-scoped Goals
-783 [NOT STARTED] — Bounded in-file block edits: index and assert, never...
-  └─ 822 [NOT STARTED] — Record the launch-side PID-fidelity condition on the...
-    └─ 843 [NOT STARTED] — Extend the bounded-waiter lint beyond Rule 2 to the...
-      └─ 892 [NOT STARTED] — Record the load-sized bound and the diagnostic-preserving...
-784 [BLOCKED] — FROZEN-RECORD TRACKER. Seven task records in this repository...
-813 [NOT STARTED] — State the precedence and snapshot-prerequisite rules for a...
-  └─ 814 [NOT STARTED] — Record the decide-synthesis working form, the axiom-free...
-  └─ 824 [NOT STARTED] — Make a fixture-dependent Lean gate statement expressible and...
-825 [NOT STARTED] — Report a reversed validate-artifact.sh invocation as an...
-826 [NOT STARTED] — Diagnose the zero-result literature retrieval and settle the...
-839 [NOT STARTED] — Harvest a plan's declared contingency files into file\_scope,...
-  └─ 845 [NOT STARTED] — Name the typst-sync gate as the cause when...
-840 [NOT STARTED] — Give the Lean unusedArguments remedy a narrow route instead...
-841 [NOT STARTED] — Probe the Lean LSP index state at dispatch start and...
-842 [NOT STARTED] — Close the recurring stale-handoff defect and find out why the...
-847 [NOT STARTED] — file\_scope containment drops external source-store paths...
-848 [NOT STARTED] — Test sweep permanently red where the source store is external
-857 [NOT STARTED] — Fix validate-handoff.sh crash-as-false-negative and settle...
-882 [NOT STARTED] — Require task descriptions to request a proposal packet...
-883 [NOT STARTED] — Stop one low-specificity shared path from producing...
-891 [RESEARCHED] — Clear the three standing verify-deploy findings blocking a...
 
 ### Algebraic Representation
 
@@ -105,7 +69,6 @@ next_project_number: 893
 838 [PARTIAL] — The depth-0 cell obligation is blocked on a two-sided open...
   └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
   └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
-863 [RESEARCHED] — Record the half-line test as a lean4 context pattern note
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Formula Refactor
@@ -127,9 +90,7 @@ next_project_number: 893
 
 ### Repo Hygiene
 
-729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
 743 [PLANNED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
-751 [NOT STARTED] — DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE. Two...
 817 [NOT STARTED] — Wrap the remaining count-carrying inventory tables under...
 818 [NOT STARTED] — Wrap the four directory-rollup inventory tables that need the...
 821 [RESEARCHED] — Reconcile specs/state.json's next\_project\_number against...
@@ -154,7 +115,7 @@ next_project_number: 893
 ## Tasks
 
 ### 892. Record the load-sized bound and the diagnostic-preserving output capture on the bounded-waiter idiom
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 843
@@ -427,11 +388,30 @@ dispatch_seq 16). The four-form capture measurement and the `PIPESTATUS` measure
 record were performed fresh during task creation; the originating run measured only the failing
 form.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: bounded_waiter_load_sizing_and_output_capture
+  number there: 561 (at time of migration)
+  edit target:  agent-system/extensions/core/context/patterns/bounded-build-waiter.md
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 891. Clear the three standing verify-deploy findings blocking a clean nvim deploy
 - **Effort**: low
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -446,6 +426,25 @@ FINDING 2 -- gate 24 (dead-command-recommendation lint): two recommendations nam
 FINDING 3 -- gate 20 (orchestrator context budget): eager-load total measured 67096 B against a 66800 B baseline, 296 B over. A counterfactual run proved 182 B of that overage persists with the guidance-file referrer bullet entirely removed, so it is pre-existing growth from other committed work, not attributable to any one recent addition. Either trim elsewhere in the eager-load set or re-baseline deliberately with a recorded justification -- do not raise the baseline silently.
 
 Verification: run timeout 900 bash .claude/scripts/deploy-headless.sh from /home/benjamin/.config/nvim with a direct unbuffered file redirect (never piped through tail, which buffers and destroys the diagnostics of a killed run), and confirm RESULT=landed_verify_clean.
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: nvim_deploy_standing_verify_findings
+  number there: 560 (at time of migration)
+  edit target:  agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
 
 ---
 
@@ -552,7 +551,7 @@ specs/878_lplus_ztime_decidability_paper_proof_repair/.
 ---
 
 ### 883. Stop one low-specificity shared path from producing duplicate-of-open, and settle Component 7 under /orchestrate
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 858
@@ -673,11 +672,30 @@ for exactly those three. The overlap is real and the two must not run concurrent
 them: the argv fix lands first (it changes how the verdict document reaches the gate), then this
 record's predicate tuning (which changes what that document contains).
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: backlog_audit_duplicate_predicate_component7
+  number there: 559 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/audit-task-proposals.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 882. Require task descriptions to request a proposal packet instead of instructing a dispatch to file tasks
 - **Effort**: small
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -709,6 +727,26 @@ SOURCE-STORE BOUNDARY -- BINDING. `.claude/**` in this repository is a gitignore
 DELIVERABLE HYGIENE. Every edited file lies outside `specs/**`, so its prose must carry no task-number references (`.claude/rules/no-task-references-in-deliverables.md`) and no record-versioning language (`.claude/rules/no-record-versioning-in-deliverables.md`). Cite durable anchors only: file names, section headings, component names ("Component 7"), field names (`suggested_channel`, `follow_up_task`), and tool names (`AskUserQuestion`). The originating task number and the issue entry_id below belong in this description only, never in deliverable prose.
 
 PROVENANCE AND CITATION. Raised by /orchestrate's conclusion stage and approved at the orchestrate-lead level as an agent-system change request, session `sess_1793900475_c93eff`. The originating issue-log entry, cited verbatim for audit against its evidence: {task 872, entry_id iss_1793901844876_M9V2B8}, in `specs/872_open_language_transfer_ledger/issues.jsonl` -- `class: design-record defect or ambiguity`, `severity: minor`, `phase: plan`, `dispatch_seq: 2`, `resolution: worked_around`, `suggested_channel: follow_up_task`, `evidence_path: .claude/docs/reference/standards/multi-task-creation-standard.md`. Read that entry verbatim before composing anything. BACKLOG-RECONCILIATION RULING, RECORDED HONESTLY: `scripts/audit-task-proposals.sh` returned only pure-semantic `duplicate-of-open` verdicts for this proposal, every one with `mechanical_class: none` and the highest at `semantic_score: 0.525` -- below any corroboration. The three nearest open records were read and each addresses a different mechanism: one closes the conclusion stage's filter predicate against `resolution: null` entries, one closes plan-authoring self-consistency gaps, and one concerns an inherited error count on a stall re-prompt. None governs how a task description phrases its hand-off to a foreground confirmation. The proposal is ruled genuinely new on that reading, not on the matcher's recall-biased output.
+
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: conclusion_stage_filing_handoff_phrasing
+  number there: 558 (at time of migration)
+  edit target:  agent-system/extensions/core/docs/reference/standards/multi-task-creation-standard.md
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
 
 ---
 
@@ -1120,13 +1158,32 @@ LEDGER AND GATES. Every landed result needs a docs/theorem-index.md row stating 
 
 ### 863. Record the half-line test as a lean4 context pattern note
 - **Effort**: small
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 855
 
 **Description**: Record the half-line test as a durable lean4 context note: given a proposed transport or index condition, name the half-line the counter is read from and the half-line the formula is read from; if both are forward, the proposal is already decided by the recorded refutation mechanism and needs no fresh probe. This is the reusable product of the one-sided open-modal probe, whose six-mechanism survival analysis lives in specs/evidence/seam-gluing-ray-product/one-sided-count-move-refutation.lean. SOURCE-STORE BOUNDARY: author under the source_dir resolved from .claude-extensions.json, at the path mirroring context/project/lean4/patterns/, never hand-authored under .claude/**. Keep it a test an agent can apply in one reading.
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: half_line_test_context_note
+  number there: 557 (at time of migration)
+  edit target:  agent-system/extensions/lean/context/patterns/half-line-test.md
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
 
 ---
 
@@ -1210,7 +1267,7 @@ AFTER THIS LANDS, the report and probe under this task directory are safely disp
 ---
 
 ### 857. Fix validate-handoff.sh crash-as-false-negative and settle the canonical blockers shape
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -1354,6 +1411,26 @@ may not fall inside #472's scope, and neither record cites an entry_id, so there
 shortcut. RULING THIS PAIR REQUIRES READING BOTH IN FULL -- it was deliberately left undecided
 rather than guessed from the titles. The identifier #472 is a number in THAT repository's task space
 and does not resolve here.
+
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: validate_handoff_crash_and_blockers_shape
+  number there: 556 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/validate-handoff.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
 
 ---
 
@@ -1599,7 +1676,7 @@ AUTHORING NOTE: a commit touching FormalSystem/**/*.lean is refused unless it al
 
 ### 848. Test sweep permanently red where the source store is external
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -1622,11 +1699,30 @@ SOURCE STORE AND PROSE CONSTRAINTS. Resolve the source store via `jq -r '.extens
 
 PROVENANCE: raised during an orchestration run and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. No `suggested_channel` hint was carried on any citation, so there is no hint-versus-decision override to record.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: test_sweep_external_source_store_failures
+  number there: 555 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/tests/run-all.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 847. file_scope containment drops external source-store paths from phase commits
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -1650,6 +1746,25 @@ ACCEPTANCE: (1) A task whose deliverable lives in an external source store eithe
 SOURCE STORE AND PROSE CONSTRAINTS. Resolve the source store via `jq -r '.extensions.core.source_dir' .claude-extensions.json`; `source_dir` is PER-EXTENSION, so a top-level `jq -r '.source_dir'` returns `null`, which must NOT be read as the key being absent. Edits land under `agent-system/extensions/core/**` and reach `.claude/**` only by deploy; never hand-author the deployed tree. The edited files lie outside `specs/**`, so no task-number references and no record-versioning language may appear in the deliverables (.claude/rules/no-task-references-in-deliverables.md, .claude/rules/no-record-versioning-in-deliverables.md). Durable anchors citable freely: script names, flag spellings, check names, exit codes, key names, message texts. The originating task number and the issue entry_ids belong in this description only, never in deliverable prose.
 
 PROVENANCE: raised during an orchestration run and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. No `suggested_channel` hint was carried on any citation, so there is no hint-versus-decision override to record.
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: file_scope_external_source_store_containment
+  number there: 554 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/git-commit-phase.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
 
 ---
 
@@ -1820,7 +1935,7 @@ narrative of what went wrong.
 
 ### 845. Name the typst-sync gate as the cause when git-commit-scoped.sh reports a refused commit
 - **Effort**: low
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 839
@@ -2016,6 +2131,25 @@ and should read #785's own cross-repo siting note for the three adjacent source-
 bear on it. No dependency edge can express that coordination, because those records live in a
 different repository's task space.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: git_commit_scoped_gate_refusal_diagnostic
+  number there: 553 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/git-commit-scoped.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 844. Reanchored deletion half depth zero cell
@@ -2059,7 +2193,7 @@ AUTHORING NOTE: a commit touching FormalSystem/**/*.lean is refused unless it al
 
 ### 843. Extend the bounded-waiter lint beyond Rule 2 to the backgrounded-and-blocked shape that stranded two dispatches
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 822
@@ -2138,11 +2272,30 @@ a positive case and a negative case proving the hook stays silent on the canonic
 `bounded-build-waiter.md`'s own "The Canonical Idiom" and "Conforming Examples"
 sections.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: bounded_waiter_lint_beyond_rule_two
+  number there: 552 (at time of migration)
+  edit target:  agent-system/extensions/core/hooks/validate-bounded-waiter.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 842. Close the recurring stale-handoff defect and find out why the return-meta schema violation left no record
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -2278,11 +2431,31 @@ record `validate_handoff_crash_and_blockers_shape`, whose file_scope is delibera
 from this one (it takes `validate-handoff.sh`, the handoff schema and the lean hard agent
 instruction; it takes neither file this record owns).
 
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: orchestrate_stale_handoff_recurrence_and_missing_defect_record
+  number there: 551 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/orchestrate-cycle-postflight.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 841. Probe the Lean LSP index state at dispatch start and propagate the degraded evidence tier downstream
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -2356,11 +2529,30 @@ holds `extensions/lean/index-entries.json` in their own declared `file_scope`; t
 off that territory on purpose. If the chosen design turns out to require a new context file and
 therefore index wiring, STOP and raise it rather than taking the overlap.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: lean_lsp_index_state_probe_and_evidence_tier
+  number there: 550 (at time of migration)
+  edit target:  agent-system/extensions/lean/scripts/lean-mcp-preflight-check.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 840. Give the Lean unusedArguments remedy a narrow route instead of the wholesale runLinter --update rewrite
 - **Effort**: low
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 785
@@ -2435,11 +2627,30 @@ RELATION, check before writing: tasks 813 and 824 both concern the pinned Challe
 block. This record adds the LINTER-REMEDY consequence of pinning, not a new pinning rule -- read
 them first so this guidance does not restate their content.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: lean_unusedarguments_narrow_remedy_route
+  number there: 549 (at time of migration)
+  edit target:  agent-system/extensions/lean/context/project/lean4/patterns/plan-authoring-gate-collisions.md
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 839. Harvest a plan's declared contingency files into file_scope, and stop the containment drop from losing a legitimately-modified file
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -2587,6 +2798,25 @@ EXTENSION of that existing mechanism -- a companion-surface rule keyed on "the p
 `.lean` file" -- rather than a new mechanism. Confirm the existing auto-append set at research
 time before designing a second one. Provenance: iss_1793896751357_yvMFdq in the same log.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: plan_contingency_file_scope_and_containment_drop
+  number there: 548 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/plan-file-scope-harvest.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 838. Two sided open core pin free pigeonhole
@@ -2645,7 +2875,7 @@ Evidence: task 761 issues.jsonl entries iss_1792365111362_wjBgRA (statement-defe
 
 ### 834. Confirm the blocker-research aux carrier landed, and refuse an implement re-dispatch when a plan revision is owed
 - **Effort**: high
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 823
@@ -2736,6 +2966,26 @@ Raised during orchestration of the ladder-realization-theorem record (task 761) 
 === CROSS-REPO SITING NOTE -- A KNOWN AND ACCEPTED CONDITION ===
 
 This record is filed in the BimodalLogic task space while its edit target resolves only under `/home/benjamin/.config/nvim/`. That mismatch is the same deliberate, previously approved condition carried by its sibling records: the record sits beside the run that measured it. A migrator should treat it as a deliberate choice, not an authoring slip. No dependency edge or `file_scope` overlap gate can span the two repositories, so any coordination with records in the source-store repository's own task space is a manual read.
+
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: orchestrate_aux_carrier_and_implement_readmission
+  number there: 547 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/orchestrate-cycle-plan.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
 
 ---
 
@@ -3047,7 +3297,7 @@ This record is filed in the BimodalLogic task space while its edit target resolv
 
 ### 826. Diagnose the zero-result literature retrieval and settle the degraded-signal contract
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 810
@@ -3139,11 +3389,31 @@ characters against #453's 8,124 it is the RICHER of the two, so the correct disp
 of this record's content INTO #453, with roughly 4 KB to move, before this one is retired. The
 identifier #453 is a number in THAT repository's task space and does not resolve here.
 
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: literature_search_zero_result_degraded_contract
+  number there: 546 (at time of migration)
+  edit target:  agent-system/extensions/literature/scripts/literature-search.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 825. Report a reversed validate-artifact.sh invocation as an argument-order fault, not a missing file
 - **Effort**: low
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -3176,11 +3446,30 @@ DELIVERABLE PROSE CONSTRAINTS. The edited files lie outside `specs/**`: no task-
 
 PROVENANCE. Raised during orchestration and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. Originating entry: {task: 820, entry_id: iss_1792347398463_OSs9p5}, class `tooling`, severity `minor`, phase `research`, in specs/820_*/issues.jsonl. No `suggested_channel` hint was carried, so there is no hint-versus-decision override to record.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: validate_artifact_argument_order_fault
+  number there: 545 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/validate-artifact.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 824. Make a fixture-dependent Lean gate statement expressible and mechanically checkable in a plan Challenge block
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 768, Task 813
@@ -3219,11 +3508,30 @@ PROVENANCE. Raised during orchestration and approved at the orchestrate-lead lev
 
 FILE_SCOPE IS DELIBERATELY NARROWER THAN THE DESIGN SPACE -- RAISE, DO NOT WIDEN SILENTLY. This record's file_scope names only the script, its test suite and its fixtures directory. It deliberately OMITS `agent-system/extensions/lean/context/project/lean4/domain/challenge-snapshot.md` and `agent-system/extensions/core/context/formats/plan-format.md`, because #813 claims the first and the cross-repo record claims both. Design option (b) in particular -- promoting "Target statement" to a recognised plan-format construct -- cannot be executed without one or both of them. If the chosen option requires either file, RAISE IT at plan time and have the scope widened or the work re-sited by agreement, rather than editing a file another record claims or quietly expanding scope at implement time. "The option I picked needs a file outside scope" is a planning signal, not an obstacle to route around.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: fixture_dependent_challenge_statement_pinning
+  number there: 544 (at time of migration)
+  edit target:  agent-system/extensions/lean/scripts/lean-challenge-snapshot.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 823. Tell the re-prompted dispatch to distrust the error count it inherited from the interrupting context
 - **Effort**: low
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 770
@@ -3264,11 +3572,30 @@ DELIVERABLE PROSE CONSTRAINTS. Every edited file lies outside `specs/**`, so its
 
 PROVENANCE. Raised during orchestration and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. Originating entry: {task: 820, entry_id: iss_1792352683728_T7G7i4}, class `dispatch-stall`, severity `costly`, phase `implement`, in specs/820_*/issues.jsonl. The entry carried no `suggested_channel` hint, so there is no hint-versus-decision override to record; the lead classified it to the agent-system channel on its own judgment.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: stall_reprompt_distrust_inherited_error_count
+  number there: 543 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/orchestrate-cycle-postflight.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 822. Record the launch-side PID-fidelity condition on the bounded-waiter detach form
 - **Effort**: low
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 783
@@ -3474,6 +3801,25 @@ re-derive with `jq -r '.extensions.core.source_dir' .claude-extensions.json`, cu
      headings, `skill-orchestrate/SKILL.md`, the shell tokens, the rule numbers -- may be cited
      freely.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: bounded_waiter_detach_form_pid_fidelity
+  number there: 542 (at time of migration)
+  edit target:  agent-system/extensions/core/context/patterns/bounded-build-waiter.md
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 821. State counter archive numbering reconciliation
@@ -3575,7 +3921,7 @@ NON-GOALS. No change to the generator column set or algorithm. No Lean source ch
 ---
 
 ### 816. Snapshot artifacts contaminate phase commits
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 777
@@ -3611,11 +3957,30 @@ DELIVERABLE HYGIENE. Every edited file is outside `specs/**`, so its prose must 
 
 PROVENANCE AND CITATION. Raised by /orchestrate's conclusion stage, channel (b) agent-system changes, user-approved for session `sess_1792261594_b3e099` (approval ledger `specs/.orchestration/.conclusion-approval-sess_1792261594_b3e099.json`, channel b = yes). The originating issue-log entry is `entry_id: iss_1792263251358_jTp86B` in `specs/744_wrap_inventory_tables_generated_markers/issues.jsonl` -- `class: tooling`, `severity: minor`, `resolution: null`. Read that entry verbatim before composing anything. The `minor` severity is correct for data loss (nothing was lost; the foreign files were copies, and the originals remain untracked in place) but understates the mechanism: the defect writes other tasks' files into a commit silently, and the observed mitigation was to abandon the snapshot safety net for the rest of the run.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: snapshot_artifacts_contaminate_phase_commits
+  number there: 541 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/git-snapshot.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 814. Record the decide-synthesis working form, the axiom-free maxRecDepth remedy, and the probe guard's total arithmetic
 - **Effort**: low
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 813
@@ -3701,11 +4066,30 @@ As with the companion record, this one is filed in the BimodalLogic task space w
 
 Raised during orchestration of the realizable-type adequacy / countdown-profile probe (task 809) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. All three originating entries are in `specs/809_realizable_type_adequacy_countdown_profile/issues.jsonl`: item A is entry_id `iss_1792222011856_qMPlOk` (class `lean-elaboration`, severity minor), item B is entry_id `iss_1792223234777_xNq0su` (class `tactic-budget`, severity minor), item C is entry_id `iss_1792224038265_EsUSH3` (class `scope-hypothesis-miss`, severity minor). The lead classified all three as knowledge-capture items; the aggregator supplied no `suggested_channel_hints` for any of them, so no hint was overridden.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: lean_decide_authoring_and_probe_guard_facts
+  number there: 540 (at time of migration)
+  edit target:  agent-system/extensions/lean/context/project/lean4/patterns/tactic-patterns.md
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 813. State the precedence and snapshot-prerequisite rules for a lean plan's pinned Challenge block
 - **Effort**: low
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 785
@@ -3817,6 +4201,25 @@ ADDITIONAL ACCEPTANCE FOR ITEM 3:
 (10) Item 2's first branch is stated as a plan-phase obligation discharged before the task's status leaves `planned`, NOT as a step an implementation plan schedules; the guidance names exit 73 and the pre-implementation status set so a reader meeting the refusal recognises the defect; it states that a plan scheduling the snapshot as a phase task is defective; and it states that an implementer meeting such a step does not use `--force` and falls back to the declaration-by-declaration diff. If research concluded the prose obligation has no executor on the plan side, that is raised in the completion summary rather than silently absorbed.
 
 ITEM 3 PROVENANCE. Raised during orchestration of the ladder-realization-theorem record (task 761) and approved at the orchestrate-lead level as an agent-system change request, dispatched through the conclusion stage's agent-system channel. Entry: `specs/761_ladder_realization_theorem/issues.jsonl`, entry_id `iss_1792362555851_OvmVEP`. Routed into this record rather than filed as a separate task because it lands in the identical two files as item 2 and corrects item 2's own prescribed remedy -- landing them separately would write guidance that is wrong on arrival and then correct it in a second pass over the same prose, which the batching guardrail in `.claude/CLAUDE.md` names as the case to batch rather than separate.
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: lean_plan_challenge_block_authoring_contract
+  number there: 539 (at time of migration)
+  edit target:  agent-system/extensions/lean/rules/plan-compliance.md
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
 
 ---
 
@@ -4174,8 +4577,8 @@ it rather than editing concurrently.
 
 ---
 
-### 784. Retire migrated source store bound records
-- **Status**: [BLOCKED]
+### 784. Frozen-record tracker for meta records that could not be worked in this repository
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -4333,10 +4736,29 @@ GUARDRAIL (b) AT THE TOP OF THIS RECORD STILL HOLDS for all 28: do not re-add th
 /orchestrate batch line. They were excluded from four Stage 3 lines because batching them
 dispatches work that cannot complete, and that remains true.
 
+=== DISCHARGED BY THE MIGRATION -- ABANDONED, NOT ABANDONED AS UNWANTED ===
+On 2026-11-08 every record this tracker froze was resolved: 730, 741, 752, 767 and 770 were migrated
+to the agent-system source-store repository at /home/benjamin/.config/nvim (project_names
+formal_logic_implement_routing_lean_capable_agent, agent_system_context_extensions_cslib_survey,
+roadmap_integration_regenerate_silent_abort, lake_build_guard_stale_replay_env_lean_file and
+postflight_detail_free_blocking_partial_issue_entry), and 768 and 769 had already been completed in
+this repository. No frozen record remains, so this tracker has nothing left to track.
+
+WHY IT WAS NOT ITSELF MIGRATED: it is a record ABOUT records in this repository. Relocated, it would
+list numbers that no longer exist here and name a freeze that no longer applies -- a stray that would
+mislead a future reader rather than inform one. Its blockers array (504 entries, all naming the frozen
+records) is cleared for the same reason.
+
+THE CONDITION IT DIAGNOSED IS STILL LIVE, and is owned elsewhere: records filing source-store work can
+still be created in this repository, because the authoring path that resolves the target repository is
+unfixed. That is owned in the source-store repository by project_name
+agent_system_task_siting_and_target_root. Until it lands, this repository can accumulate mis-sited meta
+records again, and the procedure for moving them is context/patterns/cross-repo-task-migration.md there.
+
 ---
 
 ### 783. Bounded in-file block edits: index and assert, never string-splice
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 772
@@ -4413,6 +4835,25 @@ cheap fix in the sibling's scope is to make that warning mechanical rather than 
 Provenance: issue-log entry iss_1793895962683_3zuFxa in
 specs/852_model_level_pumping_lemma_for_tpof_along_ladder_path/issues.jsonl.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: bounded_block_edit_index_and_assert
+  number there: 538 (at time of migration)
+  edit target:  agent-system/extensions/core/context/patterns/bounded-block-edit.md
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 781. Phase5 hoist kernel neutral decision
@@ -4428,7 +4869,7 @@ specs/852_model_level_pumping_lemma_for_tpof_along_ladder_path/issues.jsonl.
 
 ### 780. Plan-compliance spot-check misses evidence-probe-scoped Goals
 - **Effort**: low
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -4436,11 +4877,30 @@ specs/852_model_level_pumping_lemma_for_tpof_along_ladder_path/issues.jsonl.
 
 **Description**: lean-implementation-agent's Final Verification Stage step 5 ('Plan compliance spot-check'; source: agent-system/extensions/lean/agents/lean-implementation-agent.md) greps the plan's Goal names ONLY under the roots returned by lean-src-roots.sh (FormalSystem, Tests, BimodalTools; source: agent-system/extensions/lean/scripts/lean-src-roots.sh). Plans following this repository's evidence-probe convention pin their Goals in specs/evidence/**/*.lean, outside those roots. On one such plan the literal check reported 8 of 8 Goals MISSING while a probe-scoped grep found 8 of 8 present at their pinned signatures; the agent recorded both readings in .return-meta.json and set compliance_check from the plan-named location rather than the heuristic's scope. So the heuristic produced a FALSE FAILURE that had to be overridden by hand -- and an uncorrected one would have forced status 'partial' via the stage's own rule ('If failed, set status: partial'), and would have been surfaced at GATE OUT by the skill's Stage 6b read of metadata.compliance_check. Note the replacement-target integrity sub-check in the same code block greps the same "${lean_roots[@]}" scope and inherits the identical blind spot. Deliverable: have the spot-check derive its grep scope from the PLAN itself -- the plan's Files-to-modify list, or the Challenge snapshot manifest -- unioned with (not substituted for) the resolved source roots, so both in-tree and probe-scoped Goals are found; apply the same widened scope to the replacement-target sub-check; leave step 0's resolve-or-abort posture and the roots-only consumers elsewhere in the stage (sorry census, axiom and vacuity checks, build) unchanged. Originating observation: specs/775_residue_index_factorization_lemma/issues.jsonl entry iss_1791842368633_NJQxnS (class: tooling bug or gap, severity minor, resolution worked_around). SCOPE NOTE: the edit target is the source store under ~/.config/nvim/agent-system/extensions/lean/, never the deployed .claude/ tree (see .claude/rules/source-store-deploy-boundary.md).
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: plan_compliance_spotcheck_probe_scope
+  number there: 537 (at time of migration)
+  edit target:  agent-system/extensions/lean/agents/lean-implementation-agent.md
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 779. Source-store-aware commit path and plan-time registration-description review
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -4448,10 +4908,29 @@ specs/852_model_level_pumping_lemma_for_tpof_along_ladder_path/issues.jsonl.
 
 **Description**: Two gaps surfaced when a lean implementation task edited the agent-system source store (~/.config/nvim) from this repository. (1) COMMIT SCOPING: git-commit-scoped.sh (source: agent-system/extensions/core/scripts/git-commit-scoped.sh) resolves PROJECT_ROOT from its own BASH_SOURCE location (SCRIPT_DIR/common_repo_root, near line 233) and cd's there before staging, so it can only commit in the repository whose deploy tree it lives in; it also stages whole files. A task editing agent-system/extensions/lean/index-entries.json and context/project/lean4/domain/ladder-counter-observables.md in the source store hit a pre-existing uncommitted FOREIGN hunk in the same JSON file (an unrelated line_count bump), and had to hand-stage a HEAD-derived blob carrying only its own edits (git hash-object + git update-index --cacheinfo) and then run plain `git commit` with the session trailer by hand -- bypassing the whole scoped-commit contract (commit-lock mutex serialization, ephemeral-exclusion injection, the V3 degenerate-pathspec gate, the session-trailer convention). Deliverable: EITHER a source-store-aware commit path (e.g. an opt-in --repo-root parameter whose default remains today's BASH_SOURCE-derived resolution so every existing caller is byte-identical, which also forces a decision on where the commit-lock mutex and claim leases live when the committed repo is not the calling repo), OR -- if a second repository root is judged out of scope for that script -- a hunk-scoped staging procedure documented verbatim in the source-store/deploy boundary narrative (.claude/context/standards/source-store-deploy-boundary-narrative.md, source under agent-system/extensions/core/context/standards/) so an agent follows a sanctioned recipe instead of improvising git plumbing. (2) REGISTRATION-DESCRIPTION REVIEW: when the CONTENT of a registered context note is rewritten, two registration DESCRIPTIONS of that note -- the extension's source-store README.md row and the index-entries.json summary -- can still assert claims the rewrite overturns. In the observed case both carried a sentence the task's result refuted, and the plan's explicit 'no registration change required' item did not anticipate it. Deliverable: a plan-time check (planner-agent and/or the plan-format standard) that whenever a plan rewrites the content of a registered context note, that note's registration descriptions are enumerated as review targets rather than assumed stable. Originating observation: specs/775_residue_index_factorization_lemma/issues.jsonl entry iss_1791841137268_YNCuUv (class: cross-task ownership/territory, severity minor, resolution worked_around). SCOPE NOTE: all edits land in the source store under ~/.config/nvim/agent-system/, never in a deployed .claude/ tree (see .claude/rules/source-store-deploy-boundary.md).
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: source_store_commit_and_registration_review
+  number there: 536 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/git-commit-scoped.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 777. Carve a task's own specs/ artifacts out of git-commit-phase.sh's containment filter
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -4569,6 +5048,25 @@ Deploy drift is ruled out as an explanation: at the time this evidence was added
 `agent-system/extensions/core/scripts/git-commit-phase.sh` were byte-identical (`diff -q`), so the
 behavior observed is the source store's own.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: phase_commit_drops_own_plan_artifact
+  number there: 535 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/git-commit-phase.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 774. Refuted predicted reason recording
@@ -4647,7 +5145,7 @@ RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES AS FILED. `agent-sy
 ---
 
 ### 770. postflight writes detail-free blocking issue entry on partial returns
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -4673,6 +5171,25 @@ DELIVERABLE HYGIENE. Every edited file is outside `specs/**`, so its prose must 
 PROVENANCE. Raised during orchestration of the ladder-model cell-stabilization work and approved at the lead level as an agent-system change request. The originating issue-log entries are in `specs/760_ladder_model_cell_stabilization_lemma/issues.jsonl`, entry_ids `iss_1791711671927_JbPqvi` (dispatch_seq 3) and `iss_1791716590257_0MGDRu` (dispatch_seq 6); both severity `blocking`, class `environment`, resolution `open`. CHANNEL OVERRIDE, RECORDED VISIBLY: both entries' own `suggested_channel` hint reads `follow_up_task`; the orchestrate lead OVERRODE the hint to `agent_system`, on the ground that the defect lies in the orchestrator's own issue-writing path rather than in any task's subject-matter work -- there is no task to follow up, only a writer to fix. `conclusion-stage.md`'s "The Hint-Versus-Decision Rule" sanctions that override provided it is stated visibly, which this paragraph is.
 
 RELATED RECORDS, FOR ORIENTATION ONLY -- NO DEPENDENCY EDGES. Three sibling records from the same orchestration cover the `lake-build-guard.sh` stale-replay defect, the `lean-challenge-snapshot.sh` declaration-chunk and Unicode-identifier defects, and the `plan-format.md` blocked-decision-gate and plan-level-Status-ownership provisions; all three touch files disjoint from this one. The null-resolution conclusion-stage record is the nearest neighbour and is the one whose territory this record must not enter, as stated above.
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: postflight_detail_free_blocking_partial_issue_entry
+  number there: 534 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/orchestrate-cycle-postflight.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
 
 ---
 
@@ -4753,7 +5270,7 @@ DEFECT (c)'s remaining non-keyword case was hit again, independently, during orc
 ---
 
 ### 767. lake-build-guard replays stale result for env lean FILE
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -4791,6 +5308,26 @@ NOTHING IN THIS RECORD'S SCOPE, REMEDY SET OR ACCEPTANCE CONDITIONS CHANGES. The
   (2) THE SEVERITY IS NOW EXHIBITED, NOT ONLY ARGUED. This record argues that a silent stale replay "undermines EVERY single-file verification in the system". The second run supplies a concrete instance in the opposite polarity from the one the prose above imagines: two successive signature-fidelity diffs reported a phantom `end Generic` syntax error that no longer existed on disk, so a CORRECT file was made to look broken. A stale replay therefore produces false negatives as readily as false greens, and the caller cannot distinguish either from a fresh run without inspecting stderr for the `lake-build-guard: REPLAY:` marker. This strengthens the case for remedy (b) -- refuse to share for an `env lean ...` invocation at all -- on the ground that the failure is silent in both directions, and it supplies a second regression-test polarity worth asserting: a run whose second outcome is PASS after a first outcome of FAIL, not only the reverse.
 
 ONE ATTRIBUTION CORRECTION, SO IT IS NOT RE-INTRODUCED FROM THE CHANGE REQUEST. The dispatching change request attributed `lake-build-guard.sh` to the `lean` extension. VERIFIED DURING THE CREATION OF THIS NOTE, two ways: the script exists in the source store only at `/home/benjamin/.config/nvim/agent-system/extensions/core/scripts/lake-build-guard.sh`, and `<project-root>/.claude-extensions.json` attributes the deployed `.claude/scripts/lake-build-guard.sh` to the `core` extension. The owning extension is `core`, which agrees with this record's existing `file_scope`; no `file_scope` change is required.
+
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: lake_build_guard_stale_replay_env_lean_file
+  number there: 533 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/lake-build-guard.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
 
 ---
 
@@ -4855,7 +5392,7 @@ NOT COSTABLE, and why: T3 landed no bound (its stabilization lemma is refuted); 
 ---
 
 ### 753. conclusion stage drops null-resolution issue-log entries
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -4897,10 +5434,30 @@ the absorbing record is already closed is now recorded on that repository's #481
 it; the identifiers #373, #390 and #481 are numbers in THAT repository's task space and do not
 resolve here.
 
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: conclusion_stage_drops_null_resolution_entries
+  number there: 562 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/issue-record.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 752. Roadmap integration regenerate silent abort
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -4911,15 +5468,53 @@ resolve here.
 
 **BEHAVIOR UPDATE (observed after a `core` redeploy brought `.claude/scripts/roadmap-integration.sh` up to the source store).** The silent-abort premise above no longer reproduces as stated. Live observation on the redeployed script: `bash .claude/scripts/roadmap-integration.sh --regenerate` exits **0**, writes the marker `<!-- roadmap-generation mode=regenerate tasks=52 topics=10 runs=20 pruned=0 retained=9 -->` to **stderr** (91 bytes; still nothing on stdout), and DOES write to `specs/ROADMAP.md` — appending only a `**Coverage appendix (uncovered tasks)**` fenced block with an `/orchestrate` line of tasks absent from the authored Stage sections. It does NOT assemble the `## Open work` / `## Next` layout, and it does not touch the authored Stage prose. So the defect to land is narrower than "silently inoperative": the script now half-applies to an authored layout, emitting its only diagnostic on stderr as an HTML comment rather than a named message, and appending generated content into a file whose own header declares it authored-and-not-generated. The authored-only-versus-teach-the-layout decision this record asks for is unchanged and still the thing to settle; what changed is that a caller now gets exit 0 and a partial write instead of a silent exit 1, which is a different failure to describe and a different one to fix. Re-verify against the live script before implementing; the exit-1/zero-output description predates the redeploy.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: roadmap_integration_regenerate_silent_abort
+  number there: 532 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/roadmap-integration.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 751. File scope declaration hygiene remediation
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 
 **Description**: **DECLARATION-HYGIENE REMEDIATION FOR THE ADMISSION GATE.** Two defects make the overlap gate unable to see collisions. (1) Task 177 declares `FormalSystem/Metalogic/Decidability/` as a WHOLE-DIRECTORY `file_scope` entry, overlapping every non-terminal task that touches that subtree — narrow it to the files it actually touches. (2) Of the non-terminal tasks, a large majority (28 of 52 at the time this was detected) declare NO `file_scope` at all — backfill them. `bash .claude/scripts/validate-state.sh specs/state.json` already enumerates both defects as Check 8 (coarse whole-directory-root declarations) and Check 9 (duplicates); the detector exists, the remediation does not. ALSO IN SCOPE if not landed first elsewhere: the recurring mechanism by which `/task --abandon` and `/todo` archival un-track a `WIRED_REPO` gate target (`.claude/context/patterns/task-abandon-mode.md:58-65`), whose detector is a one-line `git ls-files --error-unmatch` beside the `-f` test at `scripts/check-evidence-probes.sh:717-720`. Read the live validator output rather than trusting the counts above; they are a snapshot, not a contract.
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: file_scope_declaration_hygiene_remediation
+  number there: 531 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/validate-state.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
 
 ---
 
@@ -4962,7 +5557,7 @@ THE QUESTION THIS TASK STILL OWNS, now sharpened by having three resolution styl
 ---
 
 ### 741. Agent system context extensions cslib survey
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 736
@@ -4986,6 +5581,25 @@ CONSTRAINTS. No Lean, no proofs, no edits under FormalSystem/ or Tests/. Make no
 ACCEPTANCE. For each of the three: either the content landed in the named source-store file (new or extended), the deployed tree regenerated via deploy-headless.sh so the deployed copy matches, and a one-line record of what was added; or a recorded reason for declining it, naming what made it not worth doing. Mixed outcomes across the three are expected. The acceptance signal is that the source store, not `.claude/**`, carries every edit -- a change visible only in the deployed tree has not landed.
 
 SCOPE. Source-store files under /home/benjamin/.config/nvim/agent-system/extensions/{lean,literature}/ plus the regenerated deployed copies. SET file_scope AT PLAN TIME, after reading the three candidate literature-audit scripts to decide which hosts the pass. Do not edit specs/archive/** and do not edit task 736's records: they are the historical source being acted on.
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: agent_system_context_extensions_cslib_survey
+  number there: 530 (at time of migration)
+  edit target:  agent-system/extensions/cslib/context/project/cslib/
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
 
 ---
 
@@ -5022,7 +5636,7 @@ ACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compi
 ---
 
 ### 730. Formal logic implement routing lean capable agent
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -5039,10 +5653,29 @@ SCOPE. (1) Determine how many non-terminal and recently-completed formal / forma
 
 NON-GOALS: no change to research-phase or plan-phase routing, both of which are working as intended; no change to the lean extension's own `lean4*` routing; no new agent definitions.
 
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: formal_logic_implement_routing_lean_capable_agent
+  number there: 529 (at time of migration)
+  edit target:  agent-system/extensions/formal/manifest.json
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
+
 ---
 
 ### 729. State json title fields for todo readability
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -5056,6 +5689,25 @@ SCOPE: (1) write a concise noun-phrase `.title` for each entry in specs/state.js
 NON-GOALS: no schema change (the field is already supported by both generators); no edit to `description`, `project_name`, `topic`, or any other existing field; no change to the generators themselves; no renaming of task directories, whose names derive from `project_name` and must stay stable.
 
 Effort: small-to-medium, mostly editorial judgment rather than code.
+
+=== MIGRATED OUT OF THIS REPOSITORY -- ABANDONED HERE, NOT DROPPED ===
+This record was moved on 2026-11-08 to the agent-system source-store repository at
+/home/benjamin/.config/nvim, under the ruling that all meta records live there. The work is NOT
+cancelled; it continues under the relocated record.
+
+DURABLE POINTER (a bare cross-repo number is unstable under vault renumbering, so it is paired with
+anchors that do not move):
+  repository:   /home/benjamin/.config/nvim
+  project_name: state_json_title_fields_for_todo_readability
+  number there: 528 (at time of migration)
+  edit target:  agent-system/extensions/core/scripts/generate-todo.sh
+
+WHY ABANDONED RATHER THAN EXPANDED: the record did not divide into subtasks; a single record relocated
+intact, with its description preserved verbatim. EXPANDED would assert a decomposition that never
+happened. Nothing here supersedes it and no successor record exists in this repository.
+WHY IT COULD NOT STAY: every edit target it declares resolves only under agent-system/**, which does
+not exist in this repository, so a dispatch here could read nothing it was meant to edit and
+git-commit-scoped.sh would silently drop every one of its paths from any commit.
 
 ---
 
