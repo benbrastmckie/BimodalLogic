@@ -121,15 +121,16 @@ next_project_number: 905
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 903 [PLANNED] — Settle whether a deterministic Muller automaton suffices for...
   └─ 901 [NOT STARTED] — Paper proof of the two-sided Reynolds engine for L-plus at... (see above)
-904 [PLANNING] — Record three method lessons in the source store:...
+904 [PLANNED] — Record three method lessons in the source store:...
 
 ## Tasks
 
 ### 904. Record three method lessons in the source store: proof_wanted as a trust surface, the external-library dependency-assessment checklist, and ground-overturned-outcome-preserved verdict amendments
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Dependencies**: None
 - **Research**: [904_proof_wanted_trust_surface_and_external_library_dependency_assessment/reports/01_proof-wanted-trust-surface-and-dependency-assessment-lessons.md]
+- **Plan**: [904_proof_wanted_trust_surface_and_external_library_dependency_assessment/plans/01_register-and-verify-method-lessons.md]
 
 **Description**: META TASK. File three method lessons measured in specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md (its Context Extension Recommendations section). All three MUST be authored in the source store resolved from .claude-extensions.json's source_dir, never hand-authored under .claude/**, per rules/source-store-deploy-boundary.md.
 

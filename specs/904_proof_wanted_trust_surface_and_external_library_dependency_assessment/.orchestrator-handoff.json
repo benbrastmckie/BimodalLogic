@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 4,
+  "phases_completed": 0,
+  "phases_total": 3,
+  "summary": "Verified that the research round already authored all three method lessons in the source store, content-complete against the dispatch's requirements, so the plan was rescoped from authoring to registration and verification. The 3-phase plan closes four verified gaps: the new pattern file is absent from both of the lean extension's explicit per-file registries (index-entries.json and EXTENSION.md), its cross-link to dependency-tracing.md runs one direction only, it carries one record-versioning lint-pattern occurrence, and the research report's Decisions section records a cross-link state the fix will change. Waves are 1 -> 2 -> 3, estimated 1.5 hours, with the final phase running the complete gate set in both the task repository and the source-store repository.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/plans/01_register-and-verify-method-lessons.md",
+      "summary": "3-phase plan registering and verifying three already-authored source-store method lessons; 1.5h, waves 1->2->3."
+    }
+  ]
+}
