@@ -1,18 +1,23 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "dispatch_seq": 3,
   "task_number": 902,
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "session_id": "sess_1794230367_d584c4_902",
-  "phases_completed": 0,
+  "phase": "implement",
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Wrote a four-phase plan landing the research report's consequences without taking any action the report declined. Phase 1 amends the completeness-programme report at six confirmed anchors (row 16, the NO-GO verdict inference, the executive-summary obstruction clause, recommendation 6, the CARRIED-UNVERIFIED evidence tag, Decisions item 5), preserving the NO-GO outcome and replacing its ground. Phase 2 files two owned follow-ups with backlog evidence (the Muller-sufficiency paper question, type formal, plus a 901 edge; and the three source-store method lessons, type meta). Phase 3 narrows the ROADMAP's two omega-automata-absence sentences without weakening the MSO refusal; Phase 4 writes the close-out record naming what is deliberately not done. Plan validates with 0 warnings.",
+  "session_id": "sess_1794230367_d584c4",
+  "summary": "Landed the consequences of task 902's re-assessment: the completeness-programme report's Lean NO-GO keeps its outcome but loses its stated ground (six in-place amendments plus one dated amendment note), and specs/ROADMAP.md's two omega-automata-absence sentences now state which of their enumerated grounds are load-bearing, with both refusals left standing. Filed the two follow-ups this repository can own with backlog-reconciliation evidence -- 903 (formal, the Muller-sufficiency paper question) and 904 (meta, three method lessons) -- and serialized 901 behind 903. No Lean source, no lakefile.toml or lake-manifest.json edit, and no CSLib require: the dependency assessment is recorded as a recommendation only.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/summaries/01_cslib-omega-automata-nogo-reassessment-summary.md",
+      "summary": "Close-out record: the revised verdict, deliverable (2)'s two-part answer, the prior-art assessment, the two corrected dispatch premises, the filings, and an explicit deliberately-not-done section."
+    },
+    {
       "type": "plan",
       "path": "specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/plans/01_cslib-omega-automata-nogo-reassessment.md",
-      "summary": "Four-phase record-and-handoff plan: amend the completeness-programme report's overturned NO-GO ground, file two owned follow-ups, narrow the ROADMAP's omega-automata ground, close out with the deliberately-not-done record."
+      "summary": "Plan with Phase 1-4 implementation notes and Phase 3's Reasoned Exclusions record."
     }
   ]
 }

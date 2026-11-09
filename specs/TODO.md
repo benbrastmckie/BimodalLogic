@@ -11,7 +11,7 @@ next_project_number: 905
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,893,894,897,898,899,900,902,903,904 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,893,894,897,898,899,900,903,904 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,804,853,862,869,895,901 | 298,428,502,743,761,803,838,893,894,898,903 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,896 | 429,497,763,838,895 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -32,10 +32,6 @@ next_project_number: 905
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
-
-### Completeness
-
-902 [IMPLEMENTING] — RESEARCH TASK: re-assess the L-plus ZTime completeness NO-GO...
 
 ### Dataset Enhancement
 
@@ -162,12 +158,13 @@ NON-GOALS. No Lean source, no change under FormalSystem/ or Tests/, no require o
 ---
 
 ### 902. Reassess lplus ztime nogo cslib omega automata
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
 - **Research**: [902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md]
 - **Plan**: [902_reassess_lplus_ztime_nogo_cslib_omega_automata/plans/01_cslib-omega-automata-nogo-reassessment.md]
+- **Summary**: [902_reassess_lplus_ztime_nogo_cslib_omega_automata/summaries/01_cslib-omega-automata-nogo-reassessment-summary.md]
 
 **Description**: RESEARCH TASK: re-assess the L-plus ZTime completeness NO-GO against CSLib's deterministic omega-automata inventory, including the local fork. Report only; no change under `FormalSystem/` or `Tests/`, and no `require` edit to `lakefile.toml` as part of this task.
 
