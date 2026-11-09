@@ -7305,28 +7305,38 @@
     {
       "project_number": 893,
       "project_name": "lcu_until_form_schema_ztime_validity",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "title": "Declare the until-form limit-closure schema LCU and its mirror, with ZTime validity",
       "description": "Declare lcU (alpha beta : PlusFormula) : PlusFormula := stab (gle ((dstab alpha).imp (dstab (untl (dstab beta) (dstab alpha))))) imp ((dstab alpha).imp (dstab (gle ((dstab alpha).or (untl (dstab beta) (dstab alpha)))))) in FormalSystem/PlusLanguage/PlusLCSchema.lean beside lcN, prove lcU_plusValidInt and lcU_plusValidZTime by instantiating omega_chain with A k := dstab alpha at the markers and the segment property P k eta s s' := dstab beta throughout (s, s'] (the hook restored by the omega_chain repair), and state the backward schema lcU_reflectTime_plusValidZTime as the plusValidIn_reflectTime corollary. This is the limit-closure principle the Reynolds-2001 ban-preservation lemma consumes for the L-plus language with untl and snce primitive; lcN is the F-form and does not discharge the segment guard. Add the docs/theorem-index.md rows and the C14 pins. No completeness claim.",
       "file_scope": [
         "FormalSystem/PlusLanguage/PlusLCSchema.lean",
+        "FormalSystem/PlusLanguage/PlusOmegaChain.lean",
+        "FormalSystem/PlusLanguage/README.md",
+        "FormalSystem/README.md",
+        "README.md",
         "docs/theorem-index.md",
-        "scripts/check-module-invariants.sh"
+        "scripts/check-module-invariants.sh",
+        "typst/generated/status.typ"
       ],
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T09:48:32Z",
-      "last_updated": "2026-11-09T17:54:37Z",
+      "last_updated": "2026-11-09T18:32:59Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/893_lcu_until_form_schema_ztime_validity/reports/01_lcu-until-form-ztime-validity.md",
           "type": "report",
           "summary": "Verified sorry-free route for lcU plus its ZTime and reflectTime validity via omega_chain, the one new marker-bracketing lemma it needs, an endpoint correction to the task's segment property, and the five prose surfaces and four gate surfaces the change trips."
+        },
+        {
+          "path": "specs/893_lcu_until_form_schema_ztime_validity/plans/01_lcu-until-form-ztime-validity.md",
+          "type": "plan",
+          "summary": "Four-phase sequential plan: int_marker_bracket, lcU plus three validity theorems, prose repair across five surfaces, theorem-index rows and C14 pins."
         }
       ],
-      "session_id": "sess_1794246177_f0f988_893",
+      "session_id": "sess_1794246177_f0f988",
       "audit_verdict": {
         "proposal": {
           "id": "lcu_until_form_schema_ztime_validity",

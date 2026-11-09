@@ -1,11 +1,30 @@
 {
-  "status": "in_progress",
-  "dispatch_seq": 2,
-  "artifacts": [],
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/893_lcu_until_form_schema_ztime_validity/plans/01_lcu-until-form-ztime-validity.md",
+      "summary": "Four-phase sequential plan to declare lcU and int_marker_bracket, prove lcU_plusValidInt/lcU_plusValidZTime/lcU_reflectTime_plusValidZTime, repair the five undeclared-ness prose surfaces, and land the theorem-index rows plus C14 pins."
+    }
+  ],
+  "next_steps": "Run /orchestrate 893 to execute the plan",
+  "phase_count": 4,
+  "estimated_hours": 4.5,
+  "dependency_waves": [[1], [2], [3], [4]],
+  "memory_candidates": [
+    {
+      "content": "Instantiating omega_chain (FormalSystem/PlusLanguage/PlusOmegaChain.lean) carries an interval-endpoint discipline no docstring records: the segment property P's CONTENT window must sit strictly inside the (s, s'] agreement window that omega_chain's hP hypothesis offers. A guard sourced from an `untl` clause is therefore OPEN on the right -- at the right endpoint the until-witness carries the event (the eventuality formula), not the guard -- so a half-open P k eta s s' reading is not derivable from an until-shaped antecedent even though hP would accept it. The complementary marker-arithmetic fact: an until-form consequent needs the marker pair that STRADDLES an arbitrary s (c k <= s < c (k+1)), because the segment guard only exists between consecutive markers; an F-form's 'marker beyond s in a residue class' lemma (int_marker_exists_gt) cannot serve. Both facts generalize to any consumer splicing a one-step until-commitment into an infinite one.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/893_lcu_until_form_schema_ztime_validity/plans/01_lcu-until-form-ztime-validity.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["omega_chain", "segment-property", "interval-endpoint", "until-form", "marker-bracketing", "limit-closure"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1794246177_f0f988_893",
     "agent_type": "planner-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  }
+  },
+  "dispatch_seq": 2
 }
