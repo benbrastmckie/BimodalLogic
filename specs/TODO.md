@@ -1,5 +1,5 @@
 ---
-next_project_number: 907
+next_project_number: 908
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 907
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,894,897,898,899,900,905,906 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,894,897,898,899,900,905,906,907 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,804,853,862,869,895 | 298,428,502,743,761,803,838,894,898 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,896 | 429,497,763,838,895 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -119,8 +119,20 @@ next_project_number: 907
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 905 [NOT STARTED] — Eliminate cross-certification between the forward and...
 906 [NOT STARTED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
+907 [NOT STARTED] — Regenerate the deployed .claude/ tree in BimodalLogic, which...
 
 ## Tasks
+
+### 907. Redeploy-stale-claude-tree
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Dependencies**: None
+- **Parent**: Task 901
+
+**Description**: Regenerate the deployed .claude/ tree in BimodalLogic, which two dispatches reported stale relative to the source store for six extensions (core, formal, lean, literature, memory, typst). Run deploy-headless.sh under the bounded-wait idiom (timeout 540, Bash tool timeout parameter 600000, per context/patterns/external-process-wait.md Rule 1), then verify with verify-deploy.sh and confirm the per-extension staleness warning from skill-base.sh no longer fires. Never hand-patch a deployed .claude/** file to clear the warning: that masks the divergence instead of fixing it. Neither reporting dispatch relied on a stale deployed command, so no prior work needs redoing. Recurrence of the condition addressed by closed task 715.
+
+---
 
 ### 906. Settle whether LCU is derivable from TM-plus + LC_n at ZTime via a non-ZTime separating model
 - **Status**: [NOT STARTED]
