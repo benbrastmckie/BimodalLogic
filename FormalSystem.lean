@@ -454,6 +454,7 @@ import FormalSystem.Metalogic.Expressiveness.PriorExpressivenessDense
 import FormalSystem.Metalogic.Expressiveness.Separation.Defs
 import FormalSystem.Metalogic.Expressiveness.Separation.KampTranslation
 import FormalSystem.Metalogic.Expressiveness.Separation.SemanticBridge
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.Computable
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.Discharge
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.Distributivity
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.ElimHard

@@ -3056,7 +3056,7 @@ likely to move.
 
 ---
 
-### Phase 26: The Computable Translation `trZ` [NOT STARTED]
+### Phase 26: The Computable Translation `trZ` [COMPLETED]
 
 **Goal**: A computable ZTime translation beside the frozen `noncomputable tr`, with its own truth-
 preservation and validity-transfer theorems, both unconditional. This reinstates the deliverable
@@ -3065,28 +3065,28 @@ abstraction device, so its route is unchanged.
 
 **Tasks**:
 
-- [ ] Add `Computable.lean` in namespace `FormalSystem.Metalogic.Expressiveness`. Define
+- [x] Add `Computable.lean` in namespace `FormalSystem.Metalogic.Expressiveness`. Define
       `trZ : OpenFormula → PlusFormula`, homomorphic on the seven shared constructors, and at
       `.ofut φ` / `.opast φ` returning `ofutElim (sepZ (trZ φ))` / `opastElim (sepZ (trZ φ))` --
       the computable `sepZ` in place of `tr`'s `Classical.choose`.
-- [ ] Declare `trZ` as a plain `def`. **Do not** add `noncomputable`.
-- [ ] Prove `openTruthAt_iff_trZ` by induction on `φ` generalizing the history and the time,
+- [x] Declare `trZ` as a plain `def`. **Do not** add `noncomputable`.
+- [x] Prove `openTruthAt_iff_trZ` by induction on `φ` generalizing the history and the time,
       mirroring the landed `openTruthAt_iff_tr` proof, with `plusTruthAt_sepZ_iff` where that
       proof uses `Classical.choose_spec` and the compiled `ofutP_sepForm_iff` /
       `opastP_sepForm_iff` at the two modal cases.
-- [ ] Prove `openValidIn_ztime_iff_trZ` from it, unfolding
+- [x] Prove `openValidIn_ztime_iff_trZ` from it, unfolding
       `FrameClass.Sat .ZTime F = F.IsRegular ∧ F.IsZTime`, in the shape
       `openValidOnFrames_iff_tr` already establishes for the conditional route.
-- [ ] Record in the module docstring that `tr` is untouched -- same name, still `noncomputable`,
+- [x] Record in the module docstring that `tr` is untouched -- same name, still `noncomputable`,
       still taking `hsep` explicitly -- and that `trZ` is an addition, not a replacement.
-- [ ] Note in the same docstring that `trZ` inhabits the translation slot of the already-generic
+- [x] Note in the same docstring that `trZ` inhabits the translation slot of the already-generic
       `decidableOpenValidInOfTranslation`, `openDecider`, `openDecider_correct`,
       `openComplete_of_plusComplete_in` and `openValid_of_plusSound` with no change to any of the
       five, and that this closes the effectiveness gap those rows inherit at `.ZTime` only.
-- [ ] Do **not** add a uniform `noncomputable` `Decidable (OpenValidIn FrameClass.ZTime φ)`: the
+- [x] Do **not** add a uniform `noncomputable` `Decidable (OpenValidIn FrameClass.ZTime φ)`: the
       host module's docstring records that shape as rejected and `lean4.md` classes it as vacuous.
-- [ ] Give both theorems and `trZ` a `Paper:` line.
-- [ ] README row, regenerated root, the `typst-sync-check.sh --fix` step, and the three generated
+- [x] Give both theorems and `trZ` a `Paper:` line.
+- [x] README row, regenerated root, the `typst-sync-check.sh --fix` step, and the three generated
       inventory blocks through `bash scripts/check-module-invariants.sh --emit-inventory`.
 
 **Timing**: 1.5 hours

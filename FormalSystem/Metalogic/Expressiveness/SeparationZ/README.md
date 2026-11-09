@@ -12,8 +12,9 @@ Lemma 10.2.3**, the four single-sign cases in `Eliminations.lean` and the four h
 the same `untl` occurs in both the event and the guard argument of a `snce`, in `ElimHard.lean` —
 and `Packaging.lean` carries `sep`'s output into the clause-pair shape `sepForm` consumes. The
 conditional `tr` rows of `OpenFutureElimination.lean` are untouched and may now be instantiated
-at `separationOver_ztime`; the computable translation `trZ` that replaces `tr`'s
-`Classical.choose` by `sepZ` is the one remaining deliverable of this subtree.
+at `separationOver_ztime`, and `Computable.lean` lands the computable translation `trZ`, which
+replaces `tr`'s `Classical.choose` by `sepZ`, with `openValidIn_ztime_iff_trZ` as the
+unconditional validity transfer at `.ZTime`.
 
 `Eliminations.lean`'s module docstring records an obstruction to Cases 5-8. That record describes
 a route that re-anchors each hard case semantically — which is not the route the source uses, and
@@ -47,6 +48,7 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 | `JunctionDepth.lean` | 1164 | GHR Lemma 10.2.8 and Theorem 10.2.9: the junction-depth measure `jdU`/`jdS`/`junctionDepth` as a mutual structural recursion, checked against GHR's own worked example (`junctionDepth_ghrExample`); its monotonicity bounds, the zero/one characterizations and the base case `isSeparated_of_junctionDepth_le_one` with its converse; the duality instruments `junctionDepth_swap`, `isSeparated_swap`, `NoUntlUnderSnce` and the conjugated 10.2.7 `sep7Dual`; the mirror collection API `sTypes`/`argSTypes`/`innerSTypes`; the abstraction of the inner `snce`s through `mapSDeep` (the `swap`-conjugate of `mapU`) and `abstrSnceArgs`; the three separately named strict-decrease obligations, with part (c) proved at `snce` heads where GHR's duality reduction is shown to be its precondition; and `sep8Body`/`sep8Fuel`/`sep` with both of Theorem 10.2.9's conclusions |
 | `Packaging.lean` | 329 | CNF packaging of a separated formula: the decidability of `IsSOnly` through the time reflection, `orList`, the mutual clause-list recursion `cnfPos`/`cnfNeg` with its truth lemma `cnfTruth_cnf` (for every formula) and purity lemma `pureLit_cnf` (for separated ones), `packClause` splitting a clause into a (`snce`-only, `untl`-only) pair, `sepFormUS` as `sepForm`'s shape on `USForm`, and `package` with the truth-preservation lemma `usTruth_sepFormUS_package` and both purity conclusions |
 | `Discharge.lean` | 151 | The four contract declarations, in namespace `FormalSystem.Metalogic.Expressiveness`: the plain `def` `sepZ` (leaf-abstract, `sep`, `package`, `toPlus`), `sepZ_sepClauses`, `plusTruthAt_sepZ_iff` through the carrier bridge, and `separationOver_ztime : SeparationOver TaskFrame.IsZTime` |
+| `Computable.lean` | 136 | The computable ZTime translation `trZ` (a plain `def`: `tr` with `Classical.choose` replaced by `sepZ`), with `openTruthAt_iff_trZ` and the unconditional `openValidIn_ztime_iff_trZ`; `tr` and every other declaration of `OpenFutureElimination.lean` are untouched |
 
 ## Key Results
 
@@ -114,6 +116,9 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
   flow, carried across the `LeafAbstraction.lean` seam to `PlusFormula` and lifted to every
   regular ℤ-time task frame by the carrier bridge. `sepZ` is a plain `def` with axiom profile
   `{propext}`
+- `trZ` with `openTruthAt_iff_trZ` and `openValidIn_ztime_iff_trZ` — the computable ZTime
+  translation of the open-future language into L⁺ and its unconditional truth and validity
+  transfer; `tr` is untouched and `trZ` is an addition beside it
 - `usTruth_case1` … `usTruth_case4` with `isSeparated_case1Rhs` … `isSeparated_case4Rhs` —
   GHR 10.2.3's four single-sign cases, each with its separatedness proved rather than asserted
 - `usTruth_case5` … `usTruth_case8` with `isSeparated_case5Rhs` … `isSeparated_case8Rhs` —
@@ -139,9 +144,10 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 
 ## Not landed
 
-The computable ZTime translation `trZ` — `tr` with `Classical.choose` replaced by `sepZ` — and its
-two unconditional theorems; with it, the theorem-index restatement of the three `.ZTime` rows that
-`separationOver_ztime` makes unconditional. All of Lemma 10.2.3 is landed, and so are Lemma 10.2.4's equivalence and separatedness.
+Nothing of the ℤ-time programme: every lemma of GHR §10.2, the discharge of
+`SeparationOver TaskFrame.IsZTime` and the computable translation are landed. The Dedekind-complete
+counterpart (GHR Theorem 10.3.20, `SeparationOver TaskFrame.IsRTime`) is out of this subtree's
+scope and every `.RTime` row of `OpenFutureElimination.lean` keeps its hypothesis. All of Lemma 10.2.3 is landed, and so are Lemma 10.2.4's equivalence and separatedness.
 Lemma 10.2.5 is landed in full: its input hypothesis `IsUSingleType` and the `sepU` construction
 over it, with the equivalence, the separatedness and the single-`untl`-type clause. GHR's own
 induction on the maximum nested-`S` depth above a `U(A,B)` is deliberately not formalized —
