@@ -234,7 +234,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 
 ---
 
-### Phase 4: Theorem-index rows, the C14 pins, and the generated surfaces [NOT STARTED]
+### Phase 4: Theorem-index rows, the C14 pins, and the generated surfaces [COMPLETED]
 
 **Goal**: Index and pin all four new declarations and reconcile both generated line-count surfaces, leaving the full gate set green.
 
@@ -273,6 +273,45 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 - C14's own output confirms the four new pins: `bash scripts/check-module-invariants.sh 2>&1 | grep -n "C14"` shows PASS with the new declaration count, not a HARD STOP.
 - Every one of the four new `docs/theorem-index.md` rows is anchored at its declaration, per C15's second assertion — confirmed by C15 PASS, which reports the total row count it checked.
 - `git status --short` and `git diff --staged` are reviewed before the commit; no file outside this phase's declared scope is staged.
+
+**Verification notes (recorded at implementation time)**:
+
+- **Batch gate deferral did not bite.** This dispatch's directive permitted discharging this
+  phase's `full` tier against a scoped subset, with the complete set deferred to the batch stage.
+  That allowance was not used: the complete gate set named above was run independently and in
+  full in this dispatch, and every one of it is green. Nothing was deferred.
+- `lake build` (full, through `lake-build-guard.sh`): exit 0, 2966 jobs, zero `error:` and zero
+  `warning:` lines.
+- `bash scripts/check-module-invariants.sh`: **exit 0, ALL CHECKS PASSED**. C14 PASS on both
+  assertions — the four new pins matched their baseline, no HARD STOP. C15 PASS with 436
+  theorem-index rows carrying their anchor (432 before this task, +4). C21, C26, C33 PASS. The
+  `FAIL INV` stale-inventory deferral carried from Phases 1-3 is closed.
+- `bash scripts/check-module-invariants.sh --emit-inventory --check`: exit 0,
+  `PASS INV every generated inventory block is current, every hand-maintained one is exhaustive`.
+  Phase 3's hand-written `PlusLCSchema.lean` Description cell survived the regeneration; only the
+  line count changed (338 → 490).
+- `bash scripts/typst-sync-check.sh` (full, not `--counts-only`): exit 0, all 4 checks green.
+- `bash scripts/check-metalogic-cycles.sh`: exit 0.
+- `bash .claude/scripts/verify-deploy.sh --findings --skip-slow`: exit 0. One standing
+  WARN-FINDING, `gate16 lean still declares routing_hard/routing_agents_hard`, which names no
+  file this task touched. No finding names any of `PlusLCSchema.lean`, `PlusOmegaChain.lean`,
+  `docs/theorem-index.md`, `scripts/check-module-invariants.sh`, `typst/generated/status.typ`, or
+  either `README.md`.
+- Out-of-scope conditions verified rather than assumed: `git diff 17399bdd5 -- FormalSystem/`
+  shows no added or removed `import` line, so `check-metalogic-cycles.sh` assertion B is
+  untouched; `--name-status` over the same range shows three modified files and no added file, so
+  `lake exe mk_all --lib FormalSystem` is not needed and C33 PASS confirms `FormalSystem.lean` is
+  still byte-for-byte the generated root at 747 imports; C26 PASS, so no
+  `scripts/module-invariants-allowlist.txt` entry is needed.
+- `bash .claude/scripts/lean-plan-compliance-check.sh` reports `COMPLIANCE_CHECK: failed`. The
+  verdict is driven entirely by two harvested tokens that are not Lean declarations: `C14` (a
+  gate identifier, from the Goals bullet "the `C14` baseline pair extended") and `LCU` (the
+  schema's prose display name; its Lean identifier `lcU` is reported `[OK]`). All four
+  identifiers this plan's `## Lean Challenge Statements` block names —
+  `int_marker_bracket`, `lcU_plusValidInt`, `lcU_plusValidZTime`,
+  `lcU_reflectTime_plusValidZTime` — are reported `[OK]`, as is `lcU` itself. The script's
+  verdict is recorded as measured, not reinterpreted, and the plan's Goals prose was deliberately
+  NOT edited to make the harvest pass.
 
 ---
 

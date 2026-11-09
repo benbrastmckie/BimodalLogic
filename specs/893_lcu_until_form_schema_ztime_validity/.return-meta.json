@@ -1,30 +1,47 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "Every substantive gate is green (full lake build exit 0 with zero errors/warnings, check-module-invariants.sh exit 0 ALL CHECKS PASSED with C14 and C15 PASS, --emit-inventory --check exit 0, typst-sync-check.sh full exit 0, check-metalogic-cycles.sh exit 0, verify-deploy.sh exit 0, sorry_count 0, axiom_count unchanged at 14) and all four plan phases are [COMPLETED]. The single non-green signal is lean-plan-compliance-check.sh's COMPLIANCE_CHECK: failed, driven entirely by two tokens it harvests from the plan's Goals PROSE that are not Lean declarations: 'C14' (a gate identifier) and 'LCU' (the schema's display name, whose Lean identifier lcU is reported [OK]). All four identifiers the plan's ## Lean Challenge Statements block names are reported [OK]. Status is recorded as partial per the agent contract's compliance_check coupling rather than because any implementation work is outstanding; the plan's Goals prose was deliberately NOT edited to make the harvest pass.",
+  "verification": {
+    "verification_passed": false,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 14,
+    "build_passed": true,
+    "build_output": "",
+    "notes": "vacuous_count 1 is pre-existing and untouched: FormalSystem/Examples/TemporalStructures.lean:495 'int_domain_universal (t : Int) : intTimeHistory.domain t := trivial', present identically at the pre-task commit 17399bdd5 in a file this task does not modify. Zero introduced here. axiom_count 14 is unchanged from the pre-task commit. verification_passed is false ONLY because of the compliance_check coupling described in review_reason; every build, gate and axiom check is green."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/893_lcu_until_form_schema_ztime_validity/plans/01_lcu-until-form-ztime-validity.md",
-      "summary": "Four-phase sequential plan to declare lcU and int_marker_bracket, prove lcU_plusValidInt/lcU_plusValidZTime/lcU_reflectTime_plusValidZTime, repair the five undeclared-ness prose surfaces, and land the theorem-index rows plus C14 pins."
+      "type": "summary",
+      "path": "specs/893_lcu_until_form_schema_ztime_validity/summaries/01_lcu-until-form-ztime-validity-summary.md",
+      "summary": "Declared lcU, the until-form limit-closure schema, with int_marker_bracket and proofs of its validity over the Z fibre, at .ZTime, and for the reflectTime mirror."
     }
   ],
-  "next_steps": "Run /orchestrate 893 to execute the plan",
-  "phase_count": 4,
-  "estimated_hours": 4.5,
-  "dependency_waves": [[1], [2], [3], [4]],
-  "memory_candidates": [
-    {
-      "content": "Instantiating omega_chain (FormalSystem/PlusLanguage/PlusOmegaChain.lean) carries an interval-endpoint discipline no docstring records: the segment property P's CONTENT window must sit strictly inside the (s, s'] agreement window that omega_chain's hP hypothesis offers. A guard sourced from an `untl` clause is therefore OPEN on the right -- at the right endpoint the until-witness carries the event (the eventuality formula), not the guard -- so a half-open P k eta s s' reading is not derivable from an until-shaped antecedent even though hP would accept it. The complementary marker-arithmetic fact: an until-form consequent needs the marker pair that STRADDLES an arbitrary s (c k <= s < c (k+1)), because the segment guard only exists between consecutive markers; an F-form's 'marker beyond s in a residue class' lemma (int_marker_exists_gt) cannot serve. Both facts generalize to any consumer splicing a one-step until-commitment into an infinite one.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/893_lcu_until_form_schema_ztime_validity/plans/01_lcu-until-form-ztime-validity.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["omega_chain", "segment-property", "interval-endpoint", "until-form", "marker-bracketing", "limit-closure"]
-    }
+  "completion_data": {
+    "completion_summary": "Declared lcU, the until-form limit-closure schema, in FormalSystem/PlusLanguage/PlusLCSchema.lean beside lcN, and proved lcU_plusValidInt, lcU_plusValidZTime and lcU_reflectTime_plusValidZTime by instantiating omega_chain at the constant family A k := dstab alpha with the segment property carrying dstab beta across each open marker interval. Added the marker-bracketing helper int_marker_bracket to PlusOmegaChain.lean, repaired every prose surface asserting LCU was undeclared, and added the four docs/theorem-index.md rows and the four matched C14 axiom pins. No derivability or completeness claim is made, and .Base validity is recorded as open and unclaimed.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/PlusLanguage/PlusOmegaChain.lean",
+    "FormalSystem/PlusLanguage/PlusLCSchema.lean",
+    "FormalSystem/PlusLanguage/README.md",
+    "README.md",
+    "docs/theorem-index.md",
+    "scripts/check-module-invariants.sh",
+    "typst/generated/status.typ",
+    "specs/893_lcu_until_form_schema_ztime_validity/plans/01_lcu-until-form-ztime-validity.md",
+    "specs/893_lcu_until_form_schema_ztime_validity/summaries/01_lcu-until-form-ztime-validity-summary.md",
+    "specs/893_lcu_until_form_schema_ztime_validity/issues.jsonl"
   ],
   "metadata": {
-    "session_id": "sess_1794246177_f0f988_893",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 2
+    "session_id": "sess_1794246177_f0f988",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "task_dir": "specs/893_lcu_until_form_schema_ztime_validity",
+    "dispatch_seq": 3,
+    "compliance_check": "failed",
+    "phases_completed": 4,
+    "phases_total": 4
+  }
 }
