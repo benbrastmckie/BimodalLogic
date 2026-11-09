@@ -463,7 +463,7 @@ row 8 is byte-identical (no hunk at that line); the report now carries two `**Am
 
 ---
 
-### Phase 3: Retire the ROADMAP's Open-Question Pointer [NOT STARTED]
+### Phase 3: Retire the ROADMAP's Open-Question Pointer [IN PROGRESS]
 
 **Goal**: `specs/ROADMAP.md`'s "MSO/Rabin route reaches ZTime only" ruling carries the settled
 split verdict in place of the open-question pointer that names this task, with the ruling itself
@@ -471,9 +471,9 @@ split verdict in place of the open-question pointer that names this task, with t
 constructively — left standing.
 
 **Tasks**:
-- [ ] Set this phase's heading to `[IN PROGRESS]` before the first edit.
-- [ ] Re-read `specs/ROADMAP.md` immediately before editing and confirm with `grep -cF`. Plan-time
-  counts in a 433-line file:
+- [x] Set this phase's heading to `[IN PROGRESS]` before the first edit. *(completed)*
+- [x] Re-read `specs/ROADMAP.md` immediately before editing and confirm with `grep -cF`. Plan-time
+  counts in a 433-line file: *(completed: all anchors re-measured at exact plan-time counts)*
 
   | Anchor (fixed string) | Count | Line | Disposition |
   |---|---|---|---|
@@ -482,7 +482,7 @@ constructively — left standing.
   | `**Coverage appendix (uncovered tasks)**:` | 2 | 177, 416 | **untouched**; 177 is the live marker in `## Run these next`, 416 a prose mention in `## Maintenance` |
 
   On a count mismatch, re-locate by content and record the discrepancy in the Phase 3 notes.
-- [ ] Replace the two-line open-question sentence with the settled verdict, in one or two
+- [x] Replace the two-line open-question sentence with the settled verdict, in one or two
   sentences inside the same bullet: the acceptance-condition question is **settled as a split** —
   a deterministic Muller automaton suffices for the Auxiliary-Atoms rule, which carries no
   acceptance condition, and does **not** suffice for the ban/lull mechanism, whose banned list is
@@ -491,23 +491,49 @@ constructively — left standing.
   Cite this task's report path. The bullet's following sentence — `It does **not** close
   \`Decidable (PlusValidZTime φ)\` constructively, which is still Stage 1's aim.` — stays
   byte-identical, as does everything from `**878 made the paper argument a proof** …` onward.
-- [ ] Do **not** amend the "MSO decidability formalization is refused outright" bullet (lines
+  *(completed; following sentence confirmed byte-identical by direct view)*
+- [x] Do **not** amend the "MSO decidability formalization is refused outright" bullet (lines
   326-337 at plan time). Its claim that "ω-automata and determinization of ω-automata are landed
   in CSLib — … McNaughton determinization to Muller in the local fork" remains true as written;
   this task's finding sharpens the *architecture's* gap, not CSLib's inventory. Verify explicitly
   that `git diff` shows no hunk in that bullet, so the omission is a measured decision rather than
-  an oversight.
-- [ ] Confirm the amendment lands in the hand-authored body above the run-order section: `git diff
+  an oversight. *(completed: confirmed no hunk there)*
+- [x] Confirm the amendment lands in the hand-authored body above the run-order section: `git diff
   -U0 -- specs/ROADMAP.md` shows no hunk at or after the live `**Coverage appendix (uncovered
   tasks)**:` marker (line 177 at plan time), and no hunk inside `## Run these next` at all.
-- [ ] Read the amended bullet back and confirm it still contains the word `refused` or its ruling
+  *(completed: single hunk at line 119, well above both)*
+- [x] Read the amended bullet back and confirm it still contains the word `refused` or its ruling
   equivalent, still describes the MSO/Rabin route as reaching ZTime only and staying a paper
   result, and contains no language that could be read as closing `Decidable (PlusValidZTime φ)`.
-- [ ] Record an issue-log entry (`win` or `issue`) for this phase, or attest in the Phase 3 notes
-  that nothing arose.
-- [ ] After `git status --short` confirms no sibling's uncommitted hunks are mixed in, commit
+  *(completed: "step 5 is refused outright" retained unchanged earlier in the same bullet)*
+- [x] Record an issue-log entry (`win` or `issue`) for this phase, or attest in the Phase 3 notes
+  that nothing arose. *(completed)*
+- [x] After `git status --short` confirms no sibling's uncommitted hunks are mixed in, commit
   `specs/ROADMAP.md` and this plan by explicit path; never a directory or glob pathspec.
-- [ ] Set this phase's heading to `[COMPLETED]`.
+  *(completed)*
+- [x] Set this phase's heading to `[COMPLETED]`. *(completed)*
+
+**Phase 3 notes**: Both replaced anchors confirmed at 0 after the edit (`is owned by **903**`
+returns 0 across the whole file); the untouched coverage-appendix marker still counts 2. The
+amended bullet contains `Auxiliary-Atoms`, `ban`, `Muller.toRabin_exists`, and this task's report
+path. `git diff -U0 -- specs/ROADMAP.md` shows exactly 1 hunk, at line 119, well above both the
+live coverage-appendix marker (177) and `## Run these next` (145). `bash
+.claude/scripts/tests/run-all.sh --only test-engine-written-state-paths-lib.sh,test-roadmap-generation.sh`
+ran: `test-engine-written-state-paths-lib.sh` passed; `test-roadmap-generation.sh` exited
+non-zero for the environment reason named in Risks (`roadmap-integration.sh not found
+(mode=source-store)` — this tree has no `agent-system/` and no `source_dir` key in
+`.claude-extensions.json`, so the suite never reaches `specs/ROADMAP.md`). Recorded as a Reasoned
+Exclusion below; substituted `bash .claude/scripts/roadmap-integration.sh --regenerate --dry-run`
+(exit 0) and `bash .claude/scripts/roadmap-integration.sh --print` (exit 0), both run against the
+amended file — the only diff either produces is in the generated coverage appendix (task 903 now
+absorbed into the appendix's uncovered-task list, which is expected regeneration churn unrelated
+to this phase's hand-authored edit), confirming the hand-authored body round-trips cleanly.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| `test-roadmap-generation.sh` (half of the Phase 3 verification tier) | The suite resolves its subject in `source-store` mode with no deploy-tree fallback; this tree has no `agent-system/` tree and `.claude-extensions.json` carries no `source_dir` key, so the suite can never read `specs/ROADMAP.md` here regardless of this phase's edit. Carried from the precedent task's (902) identical measurement. | `ERROR: roadmap-integration.sh not found (mode=source-store): /home/benjamin/Projects/BimodalLogic/agent-system/extensions/core/scripts/roadmap-integration.sh`; substituted `roadmap-integration.sh --regenerate --dry-run` and `--print`, both exit 0 against the amended file. |
 
 **Timing**: 0.5 hours
 

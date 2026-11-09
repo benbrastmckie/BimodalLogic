@@ -116,8 +116,13 @@ cited record, not here.
   clause** (902): CSLib upstream carries the ω-regular closure lattice including a proved
   `IsRegular.compl`, and the local CSLib fork carries `IsRegular.iff_da_muller` proved in both
   directions, sorry-free and measured clean on this project's own toolchain — while CSLib has
-  nothing in MSO syntax and nothing at `S2S`. The open acceptance-condition question (whether a
-  deterministic Muller automaton suffices, or Rabin/parity is genuinely needed) is owned by **903**. It does **not** close
+  nothing in MSO syntax and nothing at `S2S`. The acceptance-condition question is **settled as a split** (903): a deterministic Muller
+  automaton suffices for the Auxiliary-Atoms rule, which carries no acceptance condition, and
+  does **not** suffice for the ban/lull mechanism, whose banned list is indexed by the
+  automaton's accepting pairs — so `Muller.toRabin_exists` is load-bearing, and the fork's landed
+  `IsRegular.iff_da_muller` is **not** the determinization the architecture consumes
+  (`specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md`).
+  It does **not** close
   `Decidable (PlusValidZTime φ)` constructively, which is still Stage 1's aim. **878 made the
   paper argument a proof, conditional on (H5)**: both gaps are repaired — G1 by re-justification
   via the compiled `stab_state_only`/`box_global` state-indexed witness closure, G2 by an explicit
