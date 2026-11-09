@@ -242,27 +242,27 @@ surface surfaced.
 
 ---
 
-### Phase 2: The Saturation-Parameterised Frame Constructor [IN PROGRESS]
+### Phase 2: The Saturation-Parameterised Frame Constructor [COMPLETED]
 
 **Goal**: Add the additive sibling of `FrameOver.ofStep` that takes `Saturation` as a hypothesis
 instead of deriving it from `[Finite W]`, so that an infinite carrier can present a frame over
 `intOrder`, with `ofStep` itself restated as a one-line call to it.
 
 **Tasks**:
-- [ ] Add `FrameOver.ofStepSat` inside `IntNormalForm.lean`'s third `namespace FrameOver` block,
+- [x] Add `FrameOver.ofStepSat` inside `IntNormalForm.lean`'s third `namespace FrameOver` block,
       immediately before `ofStep`, by moving `ofStep`'s existing body verbatim and replacing its
       final `TaskFrame.saturation_of_finite (ofStepRel R₁)` argument with the new hypothesis.
-- [ ] Redefine `ofStep` as the new constructor applied to `TaskFrame.saturation_of_finite _`,
+- [x] Redefine `ofStep` as the new constructor applied to `TaskFrame.saturation_of_finite _`,
       keeping its signature, its `[Finite W]` binder and its docstring, amended only where the
       docstring describes how `Saturation` is obtained.
-- [ ] Restate the three bridge results at the new constructor: the regularity instance, the
+- [x] Restate the three bridge results at the new constructor: the regularity instance, the
       `@[simp]` task-relation equation, and the one-step characterisation, each proved exactly as
       its `ofStep` counterpart is.
-- [ ] Reduce the three existing `ofStep` bridge results to citations of the new ones, so no proof
+- [x] Reduce the three existing `ofStep` bridge results to citations of the new ones, so no proof
       is duplicated.
-- [ ] Extend the module docstring's inventory with the new declarations and record why the split
+- [x] Extend the module docstring's inventory with the new declarations and record why the split
       exists (the cover carrier is infinite), without introducing a `Paper:` anchor.
-- [ ] Regenerate the Typst count surface: `lake build && bash scripts/typst-sync-check.sh --fix`,
+- [x] Regenerate the Typst count surface: `lake build && bash scripts/typst-sync-check.sh --fix`,
       then stage `typst/generated/status.typ`.
 
 **Timing**: 1 hour
@@ -292,15 +292,31 @@ compiles `IntNormalForm.lean` plus every enumerated direct dependent of `FrameOv
 - `typst/generated/status.typ` - regenerated file and line counts
 
 **Verification**:
-- [ ] `lake build` is green with zero warnings.
-- [ ] `git diff` shows no change to the declared type of `FrameOver.ofStep` or of its three
+- [x] `lake build` is green with zero warnings.
+- [x] `git diff` shows no change to the declared type of `FrameOver.ofStep` or of its three
       existing bridge results.
-- [ ] `#print axioms FormalSystem.Semantics.FrameOver.ofStepSat` shows no `sorryAx`.
-- [ ] `bash scripts/typst-sync-check.sh --counts-only` exits 0.
+- [x] `#print axioms FormalSystem.Semantics.FrameOver.ofStepSat` shows no `sorryAx`.
+- [x] `bash scripts/typst-sync-check.sh --counts-only` exits 0.
+
+**Verification notes (Phase 2)**: full `lake build` green (`--no-share`), exit 0, zero errors and
+zero warnings. `#check` confirms `FrameOver.ofStepSat`'s signature is byte-identical to the pinned
+Challenge statement, and that `ofStep`, `ofStep_isRegular`, `ofStep_taskRel` and `ofStep_step` all
+keep their declared types (the `git diff` removals are docstring and body lines only).
+`#print axioms FormalSystem.Semantics.FrameOver.ofStepSat` =
+`[propext, Classical.choice, Quot.sound]` — no `sorryAx`. `typst-sync-check.sh --counts-only`
+exits 0 after `--fix`.
+
+**Scope Hypothesis outcome (Phase 2)**: the `[Finite W]` claim is **confirmed** — the binder was
+consumed at exactly one place and every other field moved verbatim. The consumer count is
+**corrected**: `FrameOver.ofStep` has **four** term-level consumers, not three —
+`Metalogic/Decidability/IntPresentation.lean:136`, `Semantics/Nomic/ZTime.lean:19`,
+`IntNormalForm.lean`'s own `flipFrame`, and `OpenLanguage/OpenOckhamist.lean:145`, which the plan's
+hypothesis did not enumerate. Per that hypothesis's own instruction the fourth consumer was left
+untouched and verified to still compile unchanged by the full build.
 
 ---
 
-### Phase 3: The Cover Carrier and Its One-Step Relation [NOT STARTED]
+### Phase 3: The Cover Carrier and Its One-Step Relation [IN PROGRESS]
 
 **Goal**: Create `FormalSystem/Semantics/UniversalCover.lean` with the reduced-walk carrier, the
 bundled cover point, the one-step relation as an inductive, the length and parent maps, and full

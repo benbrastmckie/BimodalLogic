@@ -40,6 +40,14 @@ synthesis from a bare bi-serial relation, and computable model checking — rest
 - `IsStepPath` — a bi-infinite walk `f : ℤ → WorldState` stepping between consecutive times
 - `WorldHistory.path` — the bare path underlying a possible world
 - `FrameOver.worldHistoryOfStepPath` — the possible world determined by a bi-infinite step-path
+- `FrameOver.ofStepSat` — frame synthesis from a bi-serial one-step relation on a carrier that
+  need **not** be finite, with *Saturation* taken as a hypothesis; with its three bridge results
+  `ofStepSat_isRegular`, `ofStepSat_taskRel` and `ofStepSat_step`
+- `FrameOver.ofStep` — the finite-carrier specialization of `ofStepSat`, which is where the
+  `[Finite W]` binder is spent: it buys *Saturation* through `TaskFrame.saturation_of_finite` and
+  nothing else. The split exists because a carrier can be infinite and still satisfy *Saturation*
+  for a structural reason — the universal cover of `Semantics/UniversalCover.lean` is infinite
+  whenever the base has an edge, and gets *Saturation* from `saturation_of_orientedForest`
 
 ## Main Results
 
@@ -433,8 +441,8 @@ namespace FrameOver
 open TaskFrame
 
 /--
-**Frame synthesis over ℤ**: a bi-serial relation on a finite nonempty carrier generates a
-`FrameOver intOrder`.
+**Frame synthesis over ℤ, with *Saturation* as a hypothesis**: a bi-serial relation on a nonempty
+carrier — **finite or not** — generates a `FrameOver intOrder` once *Saturation* is supplied.
 
 The field discharges, and where each comes from:
 
@@ -444,17 +452,24 @@ Each entry reads *field* — *source*:
 * `comp` — free — `iter_add`, which is the paper's biconditional *Compositionality* whole
 * reflection (`hR`) — free — `ofStepRel` is symmetric in its two sign-guarded conjuncts by
   construction
-* `serial` — **the one genuine obligation**: exactly `fwd` and `bwd` (see the section note above)
+* `serial` — **one genuine obligation**: exactly `fwd` and `bwd` (see the section note above)
 * `limit` — `TaskFrame.limit_of_succOrder` — ℤ is a `SuccOrder`, so *Limit* is automatic
-* `saturation` — `TaskFrame.saturation_of_finite` — the carrier is finite
+* `saturation` — **the other genuine obligation**: the hypothesis `hsat`
 
-`saturation_of_finite` is the *only* applicable route here, because `R₁` is arbitrary in shape and
-every other `Saturation` helper constrains the relation's shape. It costs `Classical.choice`, and
-that cost is accepted for `ofStep` specifically. It is **not** a licence to re-route a frame whose
-relation *does* fit a choice-free class helper — see `saturation_of_finite`'s own docstring.
+**Why this sibling of `ofStep` exists.** `ofStep`'s `[Finite W]` binder is consumed at exactly one
+place in its body — the `TaskFrame.saturation_of_finite` argument — and every other field is
+finiteness-free. A construction whose carrier is infinite but whose relation *does* satisfy
+*Saturation* for a structural reason (the universal cover of
+`Semantics/UniversalCover.lean`, whose carrier is infinite whenever the base has an edge and
+whose *Saturation* comes from `saturation_of_orientedForest`) cannot present a frame through
+`ofStep` at all. Taking *Saturation* as a hypothesis is therefore additive new API, not a
+convenience: `ofStep` below is this constructor at
+`TaskFrame.saturation_of_finite (ofStepRel R₁)`, so no proof is duplicated and no existing
+signature changes.
 -/
-def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
-    (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) : FrameOver intOrder :=
+def ofStepSat {W : Type} [Nonempty W] (R₁ : W → W → Prop)
+    (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w)
+    (hsat : TaskFrame.Saturation (ofStepRel R₁)) : FrameOver intOrder :=
   FrameOver.ofReflectiveRegular W (ofStepRel R₁)
     (fun w d u => by
       constructor
@@ -484,25 +499,62 @@ def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
     (TaskFrame.limit_of_succOrder fun w u h => by
       rw [ofStepRel_of_nonneg (le_refl (0 : ℤ))] at h
       simpa [eq_comm] using h)
-    (TaskFrame.saturation_of_finite (ofStepRel R₁))
+    hsat
+
+/-- **`ofStepSat` is regular**, through the regular constructor's auto-instance. -/
+instance ofStepSat_isRegular {W : Type} [Nonempty W] (R₁ : W → W → Prop)
+    (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w)
+    (hsat : TaskFrame.Saturation (ofStepRel R₁)) : (ofStepSat R₁ fwd bwd hsat).IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+
+@[simp]
+theorem ofStepSat_taskRel {W : Type} [Nonempty W] (R₁ : W → W → Prop)
+    (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w)
+    (hsat : TaskFrame.Saturation (ofStepRel R₁)) :
+    (ofStepSat R₁ fwd bwd hsat).TaskRel = ofStepRel R₁ :=
+  FrameOver.ofReflectiveRegular_taskRel_eq
+
+/-- The one-step relation of a frame synthesized by `ofStepSat` is the relation it was synthesized
+from. -/
+theorem ofStepSat_step {W : Type} [Nonempty W] (R₁ : W → W → Prop)
+    (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w)
+    (hsat : TaskFrame.Saturation (ofStepRel R₁)) (w u : W) :
+    (ofStepSat R₁ fwd bwd hsat).step w u ↔ R₁ w u := by
+  change (ofStepSat R₁ fwd bwd hsat).TaskRel w 1 u ↔ _
+  rw [ofStepSat_taskRel, ofStepRel_of_nonneg (zero_le_one : (0 : ℤ) ≤ 1)]
+  exact iter_one R₁ w u
+
+/--
+**Frame synthesis over ℤ**: a bi-serial relation on a finite nonempty carrier generates a
+`FrameOver intOrder`.
+
+This is `ofStepSat` at `TaskFrame.saturation_of_finite (ofStepRel R₁)`: the `[Finite W]` binder
+buys *Saturation* and nothing else, which is why the sibling constructor above exists for carriers
+that are not finite. See `ofStepSat`'s docstring for the per-field discharge table.
+
+`saturation_of_finite` is the *only* applicable route here, because `R₁` is arbitrary in shape and
+every other `Saturation` helper constrains the relation's shape. It costs `Classical.choice`, and
+that cost is accepted for `ofStep` specifically. It is **not** a licence to re-route a frame whose
+relation *does* fit a choice-free class helper — see `saturation_of_finite`'s own docstring.
+-/
+def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
+    (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) : FrameOver intOrder :=
+  ofStepSat R₁ fwd bwd (TaskFrame.saturation_of_finite (ofStepRel R₁))
 
 /-- **`ofStep` is regular**, through the regular constructor's auto-instance. -/
 instance ofStep_isRegular {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
     (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) : (ofStep R₁ fwd bwd).IsRegular :=
-  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+  ofStepSat_isRegular R₁ fwd bwd _
 
 @[simp]
 theorem ofStep_taskRel {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
     (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) :
-    (ofStep R₁ fwd bwd).TaskRel = ofStepRel R₁ := FrameOver.ofReflectiveRegular_taskRel_eq
+    (ofStep R₁ fwd bwd).TaskRel = ofStepRel R₁ := ofStepSat_taskRel R₁ fwd bwd _
 
 /-- The one-step relation of a synthesized frame is the relation it was synthesized from. -/
 theorem ofStep_step {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
     (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) (w u : W) :
-    (ofStep R₁ fwd bwd).step w u ↔ R₁ w u := by
-  change (ofStep R₁ fwd bwd).TaskRel w 1 u ↔ _
-  rw [ofStep_taskRel, ofStepRel_of_nonneg (zero_le_one : (0 : ℤ) ≤ 1)]
-  exact iter_one R₁ w u
+    (ofStep R₁ fwd bwd).step w u ↔ R₁ w u := ofStepSat_step R₁ fwd bwd _ w u
 
 end FrameOver
 
