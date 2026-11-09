@@ -3223,7 +3223,7 @@ should be re-measured rather than carried.
 
 ---
 
-### Phase 28: Full Gate Sweep and Commit [NOT STARTED]
+### Phase 28: Full Gate Sweep and Commit [COMPLETED]
 
 **Goal**: The complete gate set green against its pre-task baselines, with zero `sorry`, zero
 vacuous definitions and no new axiom beyond what the landed eliminations already carry. This
@@ -3231,38 +3231,38 @@ reinstates Phase 15 over the enlarged tree.
 
 **Tasks**:
 
-- [ ] Guarded **scoped** build of the subtree aggregator:
-      `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Expressiveness`.
-- [ ] Guarded **unscoped** build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`.
+- [x] Guarded **scoped** build of the subtree aggregator:
+      `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Expressiveness`. *(completed — `GUARD_EXIT=0`, 0 errors, 0 warnings.)*
+- [x] Guarded **unscoped** build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`.
       Detach as a shell-level background job and block on it with the bounded single-call idiom
-      (`context/patterns/bounded-build-waiter.md`); never `Bash(run_in_background: true)`.
-- [ ] `bash scripts/check-module-invariants.sh` -- green against its pre-task baseline, including
+      (`context/patterns/bounded-build-waiter.md`); never `Bash(run_in_background: true)`. *(completed — `GUARD_EXIT=0`, "Build completed successfully (2966 jobs)", 0 errors, 0 warnings; ran as a bounded foreground call since it fits one call.)*
+- [x] `bash scripts/check-module-invariants.sh` -- green against its pre-task baseline, including
       C14, both C15 assertions, C19, C23, C24, C26, C28, C29, C30, C31, C32 and C33. C16's
       `unusedArguments` finding on
       `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean:2136` is **pre-existing**
       and outside this task's file set: report it, never baseline it, and do not run
-      `lake exe runLinter --update`.
-- [ ] `bash scripts/check-metalogic-cycles.sh` -- green, all three assertions PASS. No new module
-      may import a `FormalSystem.Metalogic.<other>` subdirectory.
-- [ ] `bash .claude/scripts/verify-deploy.sh` -- deferred at Phase 15 under that dispatch's Batch
+      `lake exe runLinter --update`. *(completed — `ALL CHECKS PASSED`; C16 reports no un-nolisted finding and `runLinter --update` was not run.)*
+- [x] `bash scripts/check-metalogic-cycles.sh` -- green, all three assertions PASS. No new module
+      may import a `FormalSystem.Metalogic.<other>` subdirectory. *(completed — PASS ×3; no new module imports another `Metalogic/` subdirectory.)*
+- [x] `bash .claude/scripts/verify-deploy.sh` -- deferred at Phase 15 under that dispatch's Batch
       Gate Deferral directive and **not forgiven**. Run it here, or re-defer it with the same
-      narrowing record and the same measured justification, never silently.
-- [ ] Zero-debt sweep: `grep -rn 'sorry'` over every changed `.lean` file returns nothing, and no
+      narrowing record and the same measured justification, never silently. *(re-deferred — per this dispatch's Batch Gate Deferral directive the complete gate set runs once for the whole batch; the narrowing invocation covering this task's touched deliverables, `bash .claude/scripts/tests/run-all.sh --only test-check-task-references.sh,test-check-record-versioning.sh`, PASSED 2/2, and the repo-wide `check-task-references.sh` is PASS with 0 occurrences. `check-record-versioning.sh` reports 6 BLOCKING occurrences repo-wide, all in `Boneyard/` and `Expressiveness/Kamp/` files this task never touched — pre-existing, reported, not baselined.)*
+- [x] Zero-debt sweep: `grep -rn 'sorry'` over every changed `.lean` file returns nothing, and no
       added declaration matches a prohibited vacuous shape (`:= True`, `:= trivial`, `:= Unit`,
-      `:= Trivial`).
-- [ ] Confirm no added declaration carries `noncomputable`, in particular `sepU`, `sepMulti`,
-      `sep7`, `sep`, `sepZ` and `trZ`.
-- [ ] Confirm the route rulings were not bypassed anywhere in the subtree:
+      `:= Trivial`). *(completed — `lean-sorry-census.sh` 0; the one grep hit in `Expressiveness.lean` is the docstring phrase "sorry-free"; the single vacuous-shape hit is the pre-existing `Examples/TemporalStructures.lean:495`.)*
+- [x] Confirm no added declaration carries `noncomputable`, in particular `sepU`, `sepMulti`,
+      `sep7`, `sep`, `sepZ` and `trZ`. *(completed — all six are plain `def`s; zero `noncomputable` in the subtree.)*
+- [x] Confirm the route rulings were not bypassed anywhere in the subtree:
       `grep -rn 'snceDepthAbove\|hasUntl' FormalSystem/Metalogic/Expressiveness/SeparationZ/`
       returns nothing (decision D-h), `grep -rn 'decreasing_by' FormalSystem/Metalogic/Expressiveness/SeparationZ/`
       returns nothing (decision D-i), and `usTruth_congr_of_update` is cited nowhere outside a
-      docstring recording its disuse.
-- [ ] Re-measure every axiom profile and confirm no new axiom beyond
+      docstring recording its disuse. *(completed — all three greps return nothing; the only `usTruth_congr_of_update` mentions are the `Hierarchy.lean` docstring recording its disuse and the README's Key Results bullet for the Syntax-level lemma itself.)*
+- [x] Re-measure every axiom profile and confirm no new axiom beyond
       `[propext, Classical.choice, Quot.sound]`, the ceiling the landed eliminations already
-      carry. A profile exceeding it is a finding to report, not to baseline.
-- [ ] Commit with explicit per-file staging (`git add -- <path> ...`), never a directory or glob,
+      carry. A profile exceeding it is a finding to report, not to baseline. *(completed — 38 declarations re-measured by `#print axioms` in this run, byte-identical to the Phase 27 measurement; every profile is `[propext]`, `[propext, Classical.choice, Quot.sound]` or axiom-free; `grep -c '^axiom '` is 14, the baseline.)*
+- [x] Commit with explicit per-file staging (`git add -- <path> ...`), never a directory or glob,
       reviewing `git status --short` and `git diff --staged` first. If a foreign commit or foreign
-      uncommitted modification is visible, STOP and report after checking `git log`.
+      uncommitted modification is visible, STOP and report after checking `git log`. *(completed — one commit per phase through `git-commit-scoped.sh` with explicit file lists; `git log dd02bd258..HEAD` shows exactly this task's phase commits and no foreign work.)*
 
 **Timing**: 1 hour
 
