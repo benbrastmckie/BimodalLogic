@@ -302,35 +302,35 @@ Every entry carries `audit_verdict` (the matching condensed verdict object, reco
 
 ---
 
-### Phase 3: Amend the ROADMAP Record [NOT STARTED]
+### Phase 3: Amend the ROADMAP Record [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: `specs/ROADMAP.md`'s hand-authored body states the corrected cure of record and the
 current ownership of the universal-cover construction, with the new task numbers, and nothing
 else in the file changes.
 
 **Tasks**:
-- [ ] Re-read immediately before editing: `grep -n "The cure of record is" specs/ROADMAP.md`
+- [x] Re-read immediately before editing: `grep -n "The cure of record is" specs/ROADMAP.md`
   (one hit expected, in "## Cross-stage sequencing", at line 353 at plan time),
   `grep -n "universal-cover construction" specs/ROADMAP.md` (one hit expected, the `(H5)` line at
   124 at plan time), and `grep -n "R3, the doubled AA" specs/ROADMAP.md` (one hit, line 355 at plan
   time). If any count differs, re-locate by content rather than editing blind; if a sentence is
-  gone, record that in the Phase 3 notes and skip it.
-- [ ] Replace the sentence "The cure of record is `LC_n` plus progress measures in the state."
+  gone, record that in the Phase 3 notes and skip it. *(completed: one hit each at lines 353, 124, 354; 418 lines, marker at 170)*
+- [x] Replace the sentence "The cure of record is `LC_n` plus progress measures in the state."
   with: "The cure of record is the until-form `LCU` and its mirror plus the Reynolds automaton-
   and-ban machinery (Reynolds 2001 §11–§13), per 879's report finding 2.3; `LC_n`'s role in a
   language with `untl`/`snce` primitive is open (879's Q1, owned by <P9 number>)." Keep the
-  preceding sentences of that bullet byte-identical.
-- [ ] In the `(H5)` line, replace "task 870's oriented-forest Saturation lemma and universal-cover
+  preceding sentences of that bullet byte-identical. *(completed: P9 = 901)*
+- [x] In the `(H5)` line, replace "task 870's oriented-forest Saturation lemma and universal-cover
   construction, `[NOT STARTED]`" with "870's oriented-forest Saturation lemma (`[COMPLETED]`,
   `saturation_of_orientedForest`) and the universal-cover construction (<P5 number>,
-  `[NOT STARTED]`)". Nothing else in that bullet changes.
-- [ ] In the "R3, the doubled AA⊡ rule" bullet, append one sentence after "which files it if its
+  `[NOT STARTED]`)". Nothing else in that bullet changes. *(completed: P5 = 897)*
+- [x] In the "R3, the doubled AA⊡ rule" bullet, append one sentence after "which files it if its
   ingredient table calls for it.": "Filed: <P2 number> (the cone carrier) and <P3 number> (the
-  formula-level rule, gated on <P2 number>)." Leave the rest of the bullet byte-identical.
-- [ ] Confirm nothing at or after the `**Coverage appendix (uncovered tasks)**:` marker changed
+  formula-level rule, gated on <P2 number>)." Leave the rest of the bullet byte-identical. *(completed: 894, 895)*
+- [x] Confirm nothing at or after the `**Coverage appendix (uncovered tasks)**:` marker changed
   (`git diff -U0 specs/ROADMAP.md` shows hunks only above line 170 at plan time) and that the
-  three edits are the only hunks.
-- [ ] Commit `specs/ROADMAP.md` by explicit path.
+  three edits are the only hunks. *(completed: hunks at 124, 353, 355 only; marker now at 171)*
+- [x] Commit `specs/ROADMAP.md` by explicit path. *(completed: via git-commit-phase.sh)*
 
 **Timing**: 0.5 hours
 
@@ -348,8 +348,23 @@ else in the file changes.
 **Verification**:
 - Each of the three greps above matches exactly once after the edit (the amended sentences still contain their anchor text).
 - `git diff -U0 -- specs/ROADMAP.md` shows exactly three hunks, none at or after the coverage-appendix marker.
-- `bash .claude/scripts/tests/run-all.sh --only test-engine-written-state-paths-lib.sh,test-roadmap-generation.sh` exits 0.
+- `bash .claude/scripts/tests/run-all.sh --only test-engine-written-state-paths-lib.sh,test-roadmap-generation.sh` exits 0. *(deviation: altered — `test-engine-written-state-paths-lib.sh` PASS; `test-roadmap-generation.sh` exits 2 (environment) in this deployed-only tree, see Reasoned Exclusions; substitute round-trip evidence recorded below)*
 - The amended text makes no completeness claim and does not describe T1 as refuted.
+
+**Phase 3 Notes**: all three anchors matched exactly once before and after the edit; the three
+hunks are the only hunks (`git diff -U0 -- specs/ROADMAP.md`: `@@ -124,2 +124,3`, `@@ -353 +354,3`,
+`@@ -355 +358,2`), all above the coverage-appendix marker (170 before, 171 after). The cited
+`saturation_of_orientedForest` is `FormalSystem/Semantics/OrientedForest.lean:880`. Substitute
+round-trip evidence for the generator: `bash .claude/scripts/roadmap-integration.sh --regenerate
+--dry-run` exits 0 against the amended file (`<!-- roadmap-generation mode=regenerate tasks=63
+topics=11 runs=8 pruned=0 retained=11 -->`; its diff is confined to the generated coverage
+appendix, which now lists 893–900), and `--print` exits 0.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Verification criterion "`run-all.sh --only test-engine-written-state-paths-lib.sh,test-roadmap-generation.sh` exits 0", for the `test-roadmap-generation.sh` half only | The suite resolves its subject in `source-store` mode with no deploy-tree fallback (`lib/common.sh`'s `common_test_resolve_subject`, `source-store)` arm) and exits 2 (environment error) in this deployed-only repository, which has no `agent-system/` directory and whose `.claude-extensions.json` carries no `source_dir`. The failure is independent of the ROADMAP content: the suite drives `roadmap-integration.sh` over its own synthetic fixtures and never reads `specs/ROADMAP.md`. Nothing remains for a future dispatch of this task; the resolver-mode gap is a test-harness matter captured in this task's issue log. | Suite stderr: `ERROR: roadmap-integration.sh not found (mode=source-store): /home/benjamin/Projects/BimodalLogic/agent-system/extensions/core/scripts/roadmap-integration.sh`; `ls agent-system` → no such directory; `jq keys .claude-extensions.json` → `["extensions","version"]`. Covering substitute: `roadmap-integration.sh --regenerate --dry-run` exit 0 and `--print` exit 0 on the amended file; `test-engine-written-state-paths-lib.sh` PASS. |
 
 ---
 

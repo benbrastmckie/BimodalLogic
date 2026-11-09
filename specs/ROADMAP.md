@@ -121,8 +121,9 @@ cited record, not here.
   `{φ | PlusValidZTime φ}` is decidable
   (`specs/878_lplus_ztime_decidability_paper_proof_repair/reports/01_lplus-ztime-decidability-proof-repair.md`
   finding 7's statement and hypothesis list (H0)-(H6)), a **paper** theorem conditional on
-  **(H5)** — task 870's oriented-forest Saturation lemma and universal-cover construction,
-  `[NOT STARTED]`. It gives **no** constructive decision procedure, **no** Lean
+  **(H5)** — 870's oriented-forest Saturation lemma (`[COMPLETED]`,
+  `saturation_of_orientedForest`) and the universal-cover construction (897,
+  `[NOT STARTED]`). It gives **no** constructive decision procedure, **no** Lean
   `Decidable (PlusValidZTime φ)` (still Stage 1's own aim), **no** elementary complexity bound,
   and **no** finite model property — a *regular*-model property instead (every ZTime-refutable
   formula is refuted on a finitely presented, not finite, doubly serial oriented forest). It is
@@ -350,9 +351,12 @@ out of the immediate run list appears there correctly; its presence is not a gap
   front reaches it first states it in reusable form and the other cites it.
 - **The binding obstruction on the completeness front is closedness of the canonical bundle**
   (559 item (c)), not `(P1)`. PS/US give paste-closure, MF translation-closure, and nothing gives
-  closedness. The cure of record is `LC_n` plus progress measures in the state.
+  closedness. The cure of record is the until-form `LCU` and its mirror plus the Reynolds
+  automaton-and-ban machinery (Reynolds 2001 §11–§13), per 879's report finding 2.3; `LC_n`'s
+  role in a language with `untl`/`snce` primitive is open (879's Q1, owned by 901).
 - **R3, the doubled AA⊡ rule, is gated on 870 and informed by 867; not filed.** It belongs to
-  the programme 879 owns, which files it if its ingredient table calls for it. The
+  the programme 879 owns, which files it if its ingredient table calls for it. Filed: 894 (the
+  cone carrier) and 895 (the formula-level rule, gated on 894). The
   Auxiliary-Atoms carrier's *Saturation* obligation is what stops it today, and 870 supplies it.
   `NamingRules.lean` lines 57–82 already record the blocker.
 - **The one invisible collision across Stages 2 and 5** is the one-line import in
