@@ -311,7 +311,7 @@ Recorded in the issue log. Phases 2-4 set the marker first.
 
 ---
 
-### Phase 2: File the Two Owned Follow-Ups, With Backlog Evidence [NOT STARTED]
+### Phase 2: File the Two Owned Follow-Ups, With Backlog Evidence [COMPLETED]
 
 **Goal**: Two new `not_started` entries exist in `specs/state.json`, each carrying
 backlog-reconciliation evidence in its own `audit_verdict` field and a declared `file_scope`; the
@@ -414,6 +414,86 @@ Reynolds-engine paper-proof task depends on the Muller-sufficiency question; `TO
 - `specs/TODO.md` renders both new tasks with bracket-only artifact-link format and no `[name](path)` links.
 - `git diff --staged --name-only` names only the five files above.
 - `git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` is empty.
+
+#### Phase 2 Notes (measured 2026-11-09, dispatch_seq 3)
+
+**Baseline before filing**: `.active_projects | length` = 65, `next_project_number` = 903.
+**After filing**: length = 67 (+2, as the Scope Hypothesis predicted), `next_project_number` = 905.
+
+**Confirmation table**
+
+| # | Title | Type | `file_scope` | Dependencies | Backlog check |
+|---|---|---|---|---|---|
+| 903 | Settle whether a deterministic Muller automaton suffices for the Auxiliary-Atoms rule and the ban/lull mechanism at ZTime, or whether Rabin or parity is genuinely needed | `formal` | `[]` (a paper question, no file target) | `[]` | 465 verdicts: 452 `scope-blind` (count), 12 `covered-by-closed` (scores 0.409-0.551, all semantic-shortlist noise), 1 `duplicate-of-open` — **against task 902 itself**, rejected on inspection |
+| 904 | Record three method lessons in the source store: `proof_wanted` as a trust surface, the external-library dependency-assessment checklist, and ground-overturned-outcome-preserved verdict amendments | `meta` | the 5 declared source-store paths | `[]` | 471 verdicts: 452 `scope-blind` (count), 19 `covered-by-closed` (scores 0.352-0.5), **0** `duplicate-of-open`, **0** `subset-of-open` |
+
+Both entries carry an `audit_verdict` field (written verbatim by `state-write.sh`'s audit-evidence
+gate) and `project_name` equal to their proposal `id`.
+
+**Decision gate.** Proceeded on both, unchanged and un-narrowed.
+
+- The single `duplicate-of-open` is a **self-match against task 902**
+  (`semantic_score` 0.48, `mechanical_class: none`) — unsurprising, since the proposal is drawn
+  verbatim from 902's own report. It does not survive inspection: 902 is a report-only research
+  task that explicitly declines to answer the Muller question and whose recommendation 1 is to
+  file it.
+- The two tasks the plan named for inspection came back **clear**. 901 scored 0.219 (Muller
+  proposal) and 0.167 (method-lessons proposal) with verdict `scope-blind` only; **895 emitted no
+  verdict at all** for either proposal. 901's own description independently confirms the edge
+  direction: it names "the two deterministic **Rabin** automata over colour words" as its own
+  subject matter, so it *presupposes* the answer 903 settles. 903 is genuinely upstream of 901,
+  not inside its remit, and the edge was added rather than skipped.
+- The 31 `covered-by-closed` verdicts are semantic-shortlist noise at scores 0.35-0.55 with
+  `mechanical_class: none` throughout. The two worth naming: #736 (the archived CSLib ω-automata
+  survey) at 0.417 against the Muller proposal — 902's Finding 0 already fixes that this survey
+  never asks the acceptance-condition question; and #785 at 0.5 against the method-lessons
+  proposal. Neither discharges either proposal.
+
+**Serialization edge.** 901's `dependencies` went `[893]` → `[893, 903]`, appended via
+`state-write.sh` under the mutex with a `map(... .dependencies += [903] ...)` filter, as the plan
+directed (`--depends-on-add` has no no-status-change token for a `not_started` task). 903's own
+`dependencies` is `[]`, so no cycle is possible; confirmed mechanically below.
+
+**`--audit-verdict` payload exceeded the ceiling, and the plan's remedy was insufficient.**
+`state-write.sh` passes the audit payload through argv (`--argjson verdicts`), so the 128 KB
+per-argv ceiling applies. The plan's remedy — "slice the committed audit file to a one-line
+per-proposal file" — does not help, because `audit-task-proposals.sh` **already** emits exactly
+one line per proposal and each line is ~140 KB, dominated by the 452 `scope-blind` verdicts (one
+per corpus record declaring no `file_scope`). Remedy applied: per-proposal condensed slices
+keeping **every** non-`scope-blind` verdict verbatim and collapsing the 452 `scope-blind` verdicts
+to a count plus a provenance note — which is what `context/patterns/backlog-reconciliation.md`'s
+own Pass 1 guidance prescribes for rendering `scope-blind`. 66 KB each, under the ceiling. The
+unabridged audit is committed at `task-proposals-audit.ndjson`, so no evidence is lost.
+
+**Source store unreachable (plan premise corrected).** The plan states the five source-store paths
+were "confirmed present at plan time except the new pattern file". Not reproducible: this
+repository's `.claude-extensions.json` carries **no `source_dir` key** (its only keys are
+`extensions` and `version`), and there is no `agent-system/` tree in this repo or anywhere under
+`~/Projects`. The filing stands unchanged — `file_scope` is descriptive, not
+filesystem-validated, and this phase's own Scope Hypothesis anticipates exactly this. Both
+lessons were instead re-confirmed genuinely unimplemented against the deployed mirror:
+`.claude/context/project/lean4/domain/metadata-trust-surfaces.md` contains **0** occurrences of
+`proof_wanted`, and `.claude/context/project/lean4/patterns/external-library-dependency-assessment.md`
+does not exist.
+
+**Gates.** `jq -e` succeeds on `task-proposals.json` (2 elements, all four required keys on each)
+and on both lines of `task-proposals-audit.ndjson`. `specs/TODO.md` renders 903 and 904, and a
+grep for the prohibited `[name](path)` artifact-link form returns 0.
+`validate-state.sh --deep` → **19 passed, 19 warnings, 0 failed, exit 0**, with
+`No dependency cycles detected among active_projects`, `No dangling dependency references` and
+`TODO.md is in sync … (regenerated content is byte-identical)` all explicitly observed. (A bare
+`validate-state.sh` does **not** reach the cycle check — it is Check D5, inside the `--deep`
+block; the plan's "cycle check included" criterion requires `--deep`.) The 19 warnings are all
+pre-existing legacy `file_scope` visibility findings on tasks 125-502, none introduced here.
+`git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` → empty.
+
+**Observation handed forward, not acted on.** Task 901's description still carries the ground this
+task overturned ("absent from Mathlib, and is not to be filed until that dependency is either
+supplied or replaced by a progress-measure argument"). Amending task *descriptions* is outside
+this plan's scope, which names only the completeness-programme report and `specs/ROADMAP.md` as
+amendment targets. Recorded in the summary's Follow-ups.
+
+**Timing**: 0.75 hours
 
 ---
 
