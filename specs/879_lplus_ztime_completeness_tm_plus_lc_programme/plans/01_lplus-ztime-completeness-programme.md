@@ -368,13 +368,13 @@ appendix, which now lists 893–900), and `--print` exits 0.
 
 ---
 
-### Phase 4: Summary and Final Gate [NOT STARTED]
+### Phase 4: Summary and Final Gate [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The task's close-out record exists, states what was filed and what was deliberately not,
 and the repository passes its full gate set with `FormalSystem/` and `Tests/` untouched.
 
 **Tasks**:
-- [ ] Write `specs/879_lplus_ztime_completeness_tm_plus_lc_programme/summaries/01_lplus-ztime-completeness-programme-summary.md`
+- [x] Write `specs/879_lplus_ztime_completeness_tm_plus_lc_programme/summaries/01_lplus-ztime-completeness-programme-summary.md`
   per `summary-format.md` (all six required headings verbatim), covering: the report's verdict in
   three sentences (GO on T3 as a staged paper programme; T1 reduced to Q1/Q2, not refuted; no Lean
   proof today, obstruction = determinization); the exact point separation is consumed (one
@@ -382,16 +382,16 @@ and the repository passes its full gate set with `FormalSystem/` and `Tests/` un
   the ROADMAP amendments; the dispositions of every non-`genuinely-new` verdict; and an explicit
   paragraph recording that a Lean completeness proof and any ω-automata determinization project
   are deliberately not filed pending P9's progress-measure question, so neither reads as an
-  oversight. Link the report and `probes/01_target-statements.lean` under `## References`.
-- [ ] Confirm no library change: `git status --short -- FormalSystem/ Tests/` is empty and
-  `git diff --stat HEAD~N -- FormalSystem/ Tests/` over this task's commits is empty.
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Read the output; do not
+  oversight. Link the report and `probes/01_target-statements.lean` under `## References`. *(completed: validate-artifact.sh exit 0, 0 warnings)*
+- [x] Confirm no library change: `git status --short -- FormalSystem/ Tests/` is empty and
+  `git diff --stat HEAD~N -- FormalSystem/ Tests/` over this task's commits is empty. *(completed: both empty over bc0b8e660..HEAD)*
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Read the output; do not
   infer a pass. If this dispatch carries a `## Batch Gate Deferral` directive, follow it and record
-  the deferral in the summary's Verification section instead.
-- [ ] Record a closing issue-log entry (win or issue) for this phase, or attest in the summary that
-  nothing arose.
-- [ ] Write `.orchestrator-handoff.json` and `.return-meta.json` (`status: "implemented"`,
-  `dispatch_seq` echoed), and commit the summary by explicit path.
+  the deferral in the summary's Verification section instead. *(deviation: altered — Batch Gate Deferral directive present; full gate deferred to the batch stage, scoped tier run here: 4 PASS, 2 environment exit-2, see Reasoned Exclusions)*
+- [x] Record a closing issue-log entry (win or issue) for this phase, or attest in the summary that
+  nothing arose. *(completed: one win, one costly tooling issue)*
+- [x] Write `.orchestrator-handoff.json` and `.return-meta.json` (`status: "implemented"`,
+  `dispatch_seq` echoed), and commit the summary by explicit path. *(completed: via git-commit-phase.sh)*
 
 **Timing**: 0.75 hours
 
@@ -409,6 +409,20 @@ and the repository passes its full gate set with `FormalSystem/` and `Tests/` un
 - `bash .claude/scripts/verify-deploy.sh` runs to completion and is observed green (the complete gate set, not a `--only-gate` subset and not `--skip-slow`), or the batch-deferral is recorded per the directive.
 - `git status --short -- FormalSystem/ Tests/` is empty.
 - `.orchestrator-handoff.json` validates (the write-time `validate-handoff-location.sh` gate accepts it) and `.return-meta.json` carries `status: "implemented"` with `dispatch_seq` echoed.
+
+**Phase 4 Notes**: the dispatch file carries a `## Batch Gate Deferral` section, so the full gate
+set was deferred to the once-per-invocation batch stage rather than run independently here. The
+scoped tier run in this dispatch (`run-all.sh --only test-validate-state.sh,test-state-write-large-payload.sh,test-engine-written-state-paths-lib.sh,test-generate-task-order.sh,test-audit-task-proposals.sh,test-update-task-status.sh`,
+chosen from `suite_selection_select`'s output for `specs/state.json`/`specs/TODO.md`/`specs/ROADMAP.md`
+as the suites exercising the writers this task used): 4 PASS, 2 environment exit-2 (below).
+`validate-state.sh` exit 0; `validate-artifact.sh <summary> summary` exit 0; `FormalSystem/` and
+`Tests/` byte-identical across commits d87c0d333, 77b001c8f, e52a75287 and this phase's commit.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `test-generate-task-order.sh` and `test-update-task-status.sh` within the scoped tier | Same environment class as Phase 3's exclusion: both resolve their subject in `source-store` mode with no deploy-tree fallback and exit 2 in this deployed-only repository (no `agent-system/`, no `source_dir` in `.claude-extensions.json`). Content-independent; the writers they cover (`update-task-status.sh`, `generate-task-order.sh`) were exercised directly in Phases 2–3 (`validate-state.sh` exit 0 after every write; `roadmap-integration.sh --regenerate --dry-run` exit 0). Nothing remains for a future dispatch of this task; captured as a `costly` tooling issue in the issue log. | Suite stderr: `ERROR: generate-task-order.sh not found (mode=source-store): .../agent-system/extensions/core/scripts/generate-task-order.sh`; `ERROR: source-store override file missing: .../agent-system/extensions/core/scripts/update-task-status.sh`; `[run-all] 4 passed, 2 failed (0 expected, 2 NEW), 0 skipped, 6 total`. |
 
 ---
 

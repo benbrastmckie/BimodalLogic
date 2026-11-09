@@ -1,19 +1,19 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 22,
-  "summary": "Wrote the close-out plan for task 879: four sequential phases (2.75 h) that file the report's nine audited ingredient proposals P1-P9 as tasks via state-write.sh with the report's edges (P3<-P2, P4<-P3, P9<-P1) plus one serialization edge 869<-P6, amend three ROADMAP sentences (LCU as the cure of record, (H5) cover ownership, R3 filing note), and close with a summary and the full gate. The research report already discharges all four deliverables; no library change and no completeness claim lands. Plan validated with validate-artifact.sh --strict, 0 warnings.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 23,
+  "summary": "Closed out task 879: filed the report's nine audited ingredient proposals as tasks 893-901 via state-write.sh --allocate-into with the report's edges (895<-894, 896<-895, 901<-893) plus the serialization edge 869<-898, amended three specs/ROADMAP.md sentences (LCU as the cure of record, (H5) cover ownership to 897, R3 filing note naming 894/895), and wrote the validated summary. FormalSystem/ and Tests/ are byte-identical; no completeness claim lands. Phases 3 and 4 closed COMPLETED WITH EXCLUSIONS over source-store-mode test suites that exit 2 in this deployed-only tree; the full gate is batch-deferred per the dispatch directive.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/plans/01_lplus-ztime-completeness-programme.md",
-      "summary": "Close-out plan, 4 sequential phases, 2.75 hours: condensed audit evidence, filing of P1-P9 with dependency edges, three ROADMAP amendments, summary and full gate."
+      "type": "summary",
+      "path": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/summaries/01_lplus-ztime-completeness-programme-summary.md",
+      "summary": "Close-out record: verdict of record, Component 7 table for 893-901 with edges, ROADMAP amendments, dispositions of every non-genuinely-new verdict, deliberately-not-filed paragraph, batch-deferral note."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 4,
   "phases_total": 4,
   "blockers": [],
-  "plan_markers_verified": null,
+  "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch implement for task 879: start at Phase 1 (condensed audit evidence), then file P1-P9 in order so edges can be set from allocated numbers."
+  "next_action_hint": "Postflight: mark 879 completed. The batch-level full gate will report source-store-mode suites (test-roadmap-generation.sh, test-generate-task-order.sh, test-update-task-status.sh) as exit-2 environment failures in this deployed-only tree; see the task's issue log (class tooling, severity costly)."
 }

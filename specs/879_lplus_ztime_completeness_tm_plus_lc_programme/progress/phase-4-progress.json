@@ -1,0 +1,59 @@
+{
+  "phase": 4,
+  "phase_name": "Summary and Final Gate",
+  "started_at": "2026-11-09T09:55:23Z",
+  "last_updated": "2026-11-09T09:57:31Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Write the summary per summary-format.md",
+      "status": "done",
+      "files_touched": [
+        "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/summaries/01_lplus-ztime-completeness-programme-summary.md"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Confirm no library change (FormalSystem/, Tests/)",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 3,
+      "description": "Discharge the final gate against the Batch Gate Deferral scoped tier",
+      "status": "done",
+      "files_touched": [
+        "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/plans/01_lplus-ztime-completeness-programme.md"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "Closing issue-log entry",
+      "status": "done",
+      "files_touched": [
+        "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/issues.jsonl"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "Write .orchestrator-handoff.json and .return-meta.json; commit the summary",
+      "status": "done",
+      "files_touched": [
+        "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/.orchestrator-handoff.json",
+        "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/.return-meta.json"
+      ]
+    }
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "4.3",
+      "description": "Run the complete gate set verify-deploy.sh",
+      "type": "altered",
+      "reason": "Batch Gate Deferral directive present; full gate deferred to the batch stage. Scoped tier run: 4 PASS, 2 exit-2 environment (source-store-mode suites in a deployed-only tree), recorded as Reasoned Exclusions.",
+      "annotation": "*(deviation: altered — batch-deferred full gate, scoped tier run)*"
+    }
+  ],
+  "handoff_count": 0
+}
