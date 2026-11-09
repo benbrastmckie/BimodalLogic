@@ -11,6 +11,8 @@
 
 ## Overview
 
+**Amended by** specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md, 2026-11-09: (O1) is settled as a split (Muller suffices for the Auxiliary-Atoms rule, not for the ban/lull mechanism) and (O2) is discharged for free under a named composition order, dropping the obstruction count from four components to three. The "Not filed, by decision" row below for the ≈100-150-line (O2) item is now a withdrawal rather than a deferral: it is not needed at all under the union-first ordering, not merely deferred to a CSLib-side filing.
+
 This task re-tested exactly one premise of the completeness-programme report's Lean NO-GO: the
 claim that deterministic ω-automata are "absent from Mathlib" and therefore in the same refusal
 class as MSO. The research dispatch delivered all four stated deliverables; this implementation

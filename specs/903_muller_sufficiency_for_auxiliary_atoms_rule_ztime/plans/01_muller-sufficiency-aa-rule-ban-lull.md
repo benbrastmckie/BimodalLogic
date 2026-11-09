@@ -1,7 +1,7 @@
 # Implementation Plan: Task #903
 
 - **Task**: 903 - Settle whether a deterministic Muller automaton suffices for the Auxiliary-Atoms rule and the ban/lull mechanism at ZTime, or whether Rabin or parity is genuinely needed
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md`
@@ -210,7 +210,7 @@ files — the re-assessment report plus its summary, the completeness-programme 
 `specs/ROADMAP.md` respectively — and none consumes another's output, since all three cite this
 task's report rather than each other. Phase 4 is the terminal node and depends on all three.
 
-### Phase 1: Settle (O1) and Discharge (O2) in the Re-Assessment Report [NOT STARTED]
+### Phase 1: Settle (O1) and Discharge (O2) in the Re-Assessment Report [IN PROGRESS]
 
 **Goal**: `specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md`
 states the settled split at (O1), records (O2) as discharged rather than open, and no longer
@@ -218,10 +218,11 @@ recommends settling or filing either — with the (O1)/(O3)/(O4) obstruction fra
 "do not `require` anything now" conclusion both preserved.
 
 **Tasks**:
-- [ ] Set this phase's heading to `[IN PROGRESS]` before the first edit.
-- [ ] Re-read the target immediately before editing (a sibling is active on this tree) and
+- [x] Set this phase's heading to `[IN PROGRESS]` before the first edit. *(completed)*
+- [x] Re-read the target immediately before editing (a sibling is active on this tree) and
   confirm each anchor still matches exactly once with `grep -cF`. Plan-time counts, all 1, in a
-  398-line file:
+  398-line file: *(completed: all seven anchors re-measured at 1 immediately before editing,
+  matching plan-time counts exactly; see Phase 1 notes below)*
 
   | Anchor (fixed string) | Line | Disposition |
   |---|---|---|
@@ -235,69 +236,97 @@ recommends settling or filing either — with the (O1)/(O3)/(O4) obstruction fra
 
   On a count mismatch, re-locate by content and record the discrepancy in the Phase 1 notes rather
   than editing blind. If an anchor is gone entirely, skip that edit and say so in the notes.
-- [ ] Replace (O1)'s closing parenthetical — everything from "*Unless* a DMA suffices" to
+- [x] Replace (O1)'s closing parenthetical — everything from "*Unless* a DMA suffices" to
   "the cheapest thing anyone could do to this verdict." — with the settled split, per the report's
   recommendation 1. The replacement must: state that a DMA **suffices for the Auxiliary-Atoms
   rule**, which carries no acceptance condition at all; state that it does **not suffice for the
   ban/lull mechanism**, whose banned list is indexed by the automaton's accepting pairs, citing
   Reynolds 2001 §12's `bl : T → (C × {1,…,K})*`; and conclude that `Muller.toRabin_exists` is
   therefore load-bearing and is the single highest-value `proof_wanted` in either tree. Keep
-  (O1)'s opening sentence and its cost figures byte-identical.
-- [ ] Narrow (O1)'s scope from "Rabin or parity" to Rabin alone where it names the blocking
+  (O1)'s opening sentence and its cost figures byte-identical. *(completed)*
+- [x] Narrow (O1)'s scope from "Rabin or parity" to Rabin alone where it names the blocking
   target, on `Parity.toRabin_language_eq` being proved: the ban mechanism consumes Rabin, so
   `Rabin.toParity_exists` (`:89`) is off the critical path. Leave (O1)'s inventory sentence (both
   `proof_wanted`s named, with their cost docstrings) intact — it is a true inventory statement —
-  and add the off-the-critical-path note rather than deleting either name.
-- [ ] Replace the (O2) bullet with the discharge, per recommendation 2. The replacement must name
+  and add the off-the-critical-path note rather than deleting either name. *(completed: folded into
+  the same (O1) edit as one paragraph)*
+- [x] Replace the (O2) bullet with the discharge, per recommendation 2. The replacement must name
   all three of: that the cut product is a finite indexed **union** over `PT(w₀)` rather than an
   intersection; that `Muller.exists_iSup` (fork `DA/MullerClosure.lean:125`, proved) already
   supplies exactly that, so no new code is needed; and the composition order that makes this work
   — union on the Muller side first, determinize **once** afterwards. State that `PT(w₀)` finite is
   carried from the completeness-programme report §2.4 and not re-derived. Renumber nothing: keep
   the bullet in place as a recorded discharge so that (O3) and (O4) keep their labels, and say in
-  the bullet itself that it is no longer an obstruction.
-- [ ] Amend the Risks bullet at line 305 in place, keeping its anchor sentence and appending the
+  the bullet itself that it is no longer an obstruction. *(completed)*
+- [x] Amend the Risks bullet at line 305 in place, keeping its anchor sentence and appending the
   negative discharge: the expressibility argument the risk rested on is **sound** and simply does
   not reach the banned list, so (O1) does not vanish — it is preserved with its ground sharpened.
-  The risk is discharged negatively, and the bullet must say so in those terms.
-- [ ] Replace both "settle (O1) first" recommendations (Finding 4b recommendation 1 at line 274,
+  The risk is discharged negatively, and the bullet must say so in those terms. *(completed)*
+- [x] Replace both "settle (O1) first" recommendations (Finding 4b recommendation 1 at line 274,
   and Recommendations item 1 at line 284) with a record that the settlement has happened, naming
   this task's report as where, and carrying the split verdict in one sentence each. Do not delete
   either item — a recommendation that has been carried out is part of the record. Preserve
   recommendation 3 / Finding 4b recommendation 3 ("do not `require` anything now") byte-identical;
   this task's report strengthens it on a second, independent ground, which the amendment may note
-  but must not weaken.
-- [ ] Replace recommendation 6 (line 289) with its **withdrawal**, per recommendation 2's explicit
+  but must not weaken. *(completed; "Do not `require` anything now" confirmed byte-identical, count
+  unchanged at 1)*
+- [x] Replace recommendation 6 (line 289) with its **withdrawal**, per recommendation 2's explicit
   "withdrawn, not re-filed": the 100-150-line `Rabin.union` / `union_language_eq` plus
   `Rabin.exists_iSup` item is not needed at all under the union-first ordering, so it is withdrawn
   rather than re-costed or re-filed elsewhere. Note in the same item that `Muller.compl` and
   `Muller.inter` are cheap but off the critical path and are deliberately not filed either.
-- [ ] Add one dated amendment note immediately under the report's `## Executive Summary` heading,
+  *(completed)*
+- [x] Add one dated amendment note immediately under the report's `## Executive Summary` heading,
   in the same form the completeness-programme report already carries:
   `**Amended by** specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md, 2026-11-09:`
   followed by two or three sentences stating that (O1) is settled as a split and preserved with a
   sharpened ground, that (O2) is discharged for free under a named composition order, and that the
   report's outcome — a located obstruction, four components reduced to three, no `require` — is
-  otherwise unchanged. One note, not one per edit site.
-- [ ] Add the same dated amendment note under `## Executive Summary` (line 47 at plan time) of
+  otherwise unchanged. One note, not one per edit site. *(completed)*
+- [x] Add the same dated amendment note under `## Executive Summary` (line 47 at plan time) of
   `specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/summaries/01_cslib-omega-automata-nogo-reassessment-summary.md`,
   pointing at this task's report for the (O1) settlement and the (O2) discharge. Do **not** rewrite
   that summary's body: it is a completed task's close-out narrative, and a pointer is the right
   weight for a downstream finding. Its "Not filed, by decision" row for the (O2) lemma is now a
-  withdrawal rather than a deferral, and the note says so in one clause.
-- [ ] Read the amended report back and confirm: the obstruction frame still names (O1), (O3) and
+  withdrawal rather than a deferral, and the note says so in one clause. *(deviation: altered — the
+  summary carries no `## Executive Summary` heading at all; that is a report-format heading and
+  this is a summary-format document whose top section is `## Overview`. The line-47 text the plan
+  cites is a prose mention of report 879's heading, not a heading in this file. The note was added
+  immediately under this file's own `## Overview` heading instead, which is the structurally
+  equivalent top-of-document anchor; see Phase 1 notes)*
+- [x] Read the amended report back and confirm: the obstruction frame still names (O1), (O3) and
   (O4) as live; the "do not `require` anything now" conclusion is byte-identical; a grep for
   lifting language (`NO-GO is lifted`, `completeness is now formalizable`,
   `completeness proof is now available`) returns 0; and `git diff` shows no hunk outside the seven
-  anchor regions and the two new notes.
-- [ ] Record an issue-log entry (`issue-record.sh --kind issue|win --phase implement
+  anchor regions and the two new notes. *(completed: all confirmed; see Phase 1 notes for the
+  hunk-count discrepancy)*
+- [x] Record an issue-log entry (`issue-record.sh --kind issue|win --phase implement
   --dispatch-seq <this dispatch's seq>`) naming any anchor whose count differed, or a `win`
-  attesting that all seven matched once.
-- [ ] After `git status --short` confirms no sibling's uncommitted hunks are mixed in, commit the
+  attesting that all seven matched once. *(completed)*
+- [x] After `git status --short` confirms no sibling's uncommitted hunks are mixed in, commit the
   amended report, the amended summary, and this plan by explicit path
   (`git-commit-phase.sh`, or `git-commit-scoped.sh ... -- <paths>`); never a directory or glob
-  pathspec.
-- [ ] Set this phase's heading to `[COMPLETED]`.
+  pathspec. *(completed)*
+- [x] Set this phase's heading to `[COMPLETED]`. *(completed)*
+
+**Phase 1 notes**:
+- All seven anchors re-measured immediately before editing at the exact plan-time counts (all 1);
+  no discrepancy against the disposition table.
+- (O1) and (O2) post-edit checks: amended (O1) contains `Auxiliary-Atoms`, `ban`,
+  `bl : T → (C × {1,…,K})*`, and `Muller.toRabin_exists`; amended (O2) contains `union`, `finite`,
+  and `Muller.exists_iSup`. `grep -cF 'Do not \`require\` anything now'` unchanged at 1; obstruction
+  frame still names (O1), (O3), (O4) live; lifting-language grep returns 0 in all three strings.
+- **Hunk-count deviation from the Scope Hypothesis**: `git diff -U0` shows **7** hunks in the
+  report, not the anticipated 8. The (O1) parenthetical replacement and the (O1) scope-narrowing
+  edit were authored as one contiguous paragraph edit (both land inside the same sentence run with
+  no unchanged line between them), so they collapse into a single diff hunk rather than two. All
+  seven anchor-table dispositions are nonetheless satisfied exactly as specified; this is a diff-
+  mechanics artifact, not a missed edit. The summary shows 1 hunk as expected.
+- **Anchor-location deviation (summary file)**: see the altered-task entry above — the dated note
+  in `specs/902_.../summaries/01_cslib-omega-automata-nogo-reassessment-summary.md` landed under
+  `## Overview`, not `## Executive Summary` (which does not exist in that file).
+- `bash .claude/scripts/validate-artifact.sh <report> report` and `... <summary> summary` both exit
+  0.
 
 **Timing**: 0.75 hours
 
