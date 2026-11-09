@@ -1,16 +1,30 @@
 {
-  "status": "planned",
-  "summary": "Wrote the implementation plan for task 901 as a record-and-handoff plan: the research write-up is already delivered, so the four phases land its consequences instead of re-deriving it. Phases 1-2 amend the 879 architecture report (LCU recorded landed at eight anchors; Finding 2.4's split (S1)/(S2) consumption point, the first-transition automaton indexing, rows 8 and 9's second consumers, the Cross-Domain Synthesis correction), Phase 3 files the two ownable paper questions (Q3) and (Q1) with backlog evidence, and Phase 4 closes out under the full gate set. All 14 amendment anchors were confirmed present at plan time and lcU plus its three validity theorems confirmed compiled; no Lean work is filed, per the standing prohibition.",
+  "status": "implemented",
+  "dispatch_seq": 6,
+  "summary": "Executed task 901's four-phase record-and-handoff plan in full. Phase 1 amended the 879 architecture report's LCU inventory (9 hunks: ingredient row 2 and seven dependent assertions move from missing to landed, citing task 893's four compiled PlusLCSchema.lean declarations). Phase 2 amended the same report's separation-consumption and automaton-initialisation record (5 hunks: the split (S1)/(S2) consumption point, the first-transition initialisation, rows 8/9's second consumers, the three-register Cross-Domain Synthesis). Phase 3 filed two ownable paper questions (905, 906) with full backlog-reconciliation evidence, dismissing five low-score duplicate candidates and recording (Q2)'s deliberate non-filing. Phase 4 wrote the close-out summary, confirmed zero FormalSystem/Tests/lakefile touches across this task's own three phase commits, and ran the batch-deferred scoped gate set green (5/5). No Lean source, no build-file change, no PR.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/901_two_sided_reynolds_engine_paper_proof/plans/01_two-sided-reynolds-engine-paper-proof.md",
-      "summary": "Four-phase record-and-handoff plan, 3.0 hours, three waves; no Lean source, no build-file change, no PR."
+      "type": "summary",
+      "path": "specs/901_two_sided_reynolds_engine_paper_proof/summaries/01_two-sided-reynolds-engine-paper-proof-summary.md",
+      "summary": "Close-out record: result statement, paper-proof-not-machine-checked caveat, the two filed questions, the Phase 1-3 amendments and filings, and the deliberately-not-done paragraph."
+    },
+    {
+      "type": "report",
+      "path": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
+      "summary": "Amended across Phases 1-2: LCU inventory landed (9 hunks), separation/automaton-initialisation record split and corrected (5 hunks)."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 4,
   "phases_total": 4,
   "blockers": [],
-  "phase": "plan",
-  "dispatch_seq": 5
+  "phase": "implement",
+  "modified_files": [
+    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
+    "specs/901_two_sided_reynolds_engine_paper_proof/plans/01_two-sided-reynolds-engine-paper-proof.md",
+    "specs/901_two_sided_reynolds_engine_paper_proof/task-proposals.json",
+    "specs/901_two_sided_reynolds_engine_paper_proof/task-proposals-audit.ndjson",
+    "specs/901_two_sided_reynolds_engine_paper_proof/summaries/01_two-sided-reynolds-engine-paper-proof-summary.md",
+    "specs/state.json",
+    "specs/TODO.md"
+  ]
 }

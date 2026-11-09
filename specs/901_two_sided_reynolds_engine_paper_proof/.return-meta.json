@@ -1,9 +1,52 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 6,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/901_two_sided_reynolds_engine_paper_proof/summaries/01_two-sided-reynolds-engine-paper-proof-summary.md",
+      "summary": "Close-out record: result statement, paper-proof-not-machine-checked caveat, the two filed questions, the Phase 1-3 amendments and filings, and the deliberately-not-done paragraph."
+    },
+    {
+      "type": "report",
+      "path": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
+      "summary": "Amended across Phases 1-2: LCU inventory landed (9 hunks), separation/automaton-initialisation record split and corrected (5 hunks)."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Landed all four phases of task 901's record-and-handoff plan: amended the 879 architecture report's LCU inventory and separation/automaton-initialisation record (14 hunks across two commits), filed two ownable paper questions (905, 906) with full backlog-reconciliation evidence, and wrote the close-out summary. No Lean source, no build-file change, no PR; the batch-deferred scoped gate set ran green."
+  },
+  "modified_files": [
+    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
+    "specs/901_two_sided_reynolds_engine_paper_proof/plans/01_two-sided-reynolds-engine-paper-proof.md",
+    "specs/901_two_sided_reynolds_engine_paper_proof/task-proposals.json",
+    "specs/901_two_sided_reynolds_engine_paper_proof/task-proposals-audit.ndjson",
+    "specs/901_two_sided_reynolds_engine_paper_proof/summaries/01_two-sided-reynolds-engine-paper-proof-summary.md",
+    "specs/state.json",
+    "specs/TODO.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "state-write.sh's --audit-verdict parses the verdict file via `jq --argjson` passed as a shell argument, not --slurpfile; a full audit-task-proposals.sh NDJSON (100KB+) will hit the shell argument-length limit ('Argument list too long'). Workaround: trim the verdict file to the matching proposal plus its non-scope-blind verdicts only (a few KB) before passing it -- the audit-evidence gate only requires a verdict object whose .proposal.id matches the new entry's project_name, not the full verdict set. Commit the full, untrimmed NDJSON separately as the evidence record.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/901_two_sided_reynolds_engine_paper_proof/summaries/01_two-sided-reynolds-engine-paper-proof-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["state-write.sh", "audit-verdict", "argument list too long", "audit-task-proposals.sh", "backlog-reconciliation"]
+    },
+    {
+      "content": "The plan-verification idiom 'git diff --stat <this task's first commit>^..HEAD -- <paths>' is unreliable in a shared working tree where sibling tasks commit concurrently: the window-wide diff captures every writer's commits during that span, not just this task's own. The correct per-task check is to inspect each of the task's own phase commits individually (git show --stat <commit> -- <paths>), confirmed empty for all of them.",
+      "category": "PATTERN",
+      "source_artifact": "specs/901_two_sided_reynolds_engine_paper_proof/summaries/01_two-sided-reynolds-engine-paper-proof-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["git diff --stat", "shared working tree", "concurrent writers", "verification criterion", "per-commit check"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1794246177_f0f988",
     "agent_type": "general-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
   }
 }

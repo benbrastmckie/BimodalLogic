@@ -487,15 +487,15 @@ partial progress toward (Q2) would overstate the position. (Q2) is recorded here
 
 ---
 
-### Phase 4: Close-Out Record and Final Gate [NOT STARTED]
+### Phase 4: Close-Out Record and Final Gate [COMPLETED]
 
 **Goal**: The task's close-out record exists, states what was amended and filed and — explicitly —
 what was deliberately not acted on, and the repository passes its full gate set with
 `FormalSystem/`, `Tests/`, `lakefile.toml` and `lake-manifest.json` untouched by every phase.
 
 **Tasks**:
-- [ ] Set this phase's heading to `[IN PROGRESS]` before the first write.
-- [ ] Write
+- [x] Set this phase's heading to `[IN PROGRESS]` before the first write. *(completed)*
+- [x] Write
   `specs/901_two_sided_reynolds_engine_paper_proof/summaries/01_two-sided-reynolds-engine-paper-proof-summary.md`
   per `summary-format.md` (all required headings verbatim), covering:
   - The write-up's result in three sentences: the transposition closes, and in a shape the prior
@@ -515,23 +515,47 @@ what was deliberately not acted on, and the repository passes its full gate set 
     item (a chronicle-definition change, behind (O1)/(O3), with no reachable target); no CSLib
     `require` added and the question not re-opened; no edit under `FormalSystem/` or `Tests/`; (Q2)
     recorded rather than filed; and no redeploy of the stale `.claude/` tree.
-  - Link this task's report and the amended architecture report under `## References`.
-- [ ] Confirm no library or build-file change across the whole task:
+  - Link this task's report and the amended architecture report under `## References`. *(completed:
+    all six required headings present and verified, plus an additional "Deliberately Not Done"
+    section carrying the six-omission paragraph)*
+- [x] Confirm no library or build-file change across the whole task:
   `git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` is empty, and
   `git diff --stat <this task's first commit>^..HEAD -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json`
-  is empty.
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`, in the foreground with a
+  is empty. *(completed with a measured correction: `git status --short` on these paths is empty,
+  confirmed. The window-wide `git diff --stat <first commit>^..HEAD` is NOT empty, because this is
+  a shared working tree and the window since this task's first commit (`ceb9c08de`) also contains
+  concurrent sibling tasks' own commits (task 893 landing `lcU` in `PlusLCSchema.lean`, among
+  others) — that diff shows their changes, not this task's. The correct per-task check is each of
+  this task's OWN phase commits individually: `git show --stat d06366364/8c486968c/ccff8ca7f --
+  FormalSystem/ Tests/ lakefile.toml lake-manifest.json` is empty for all three, confirming none of
+  this task's own commits touch those paths)*
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`, in the foreground with a
   bounded timeout, redirecting output to a file and grepping that file. Read the output in full; do
   not infer a pass from the absence of visible errors. If this dispatch carries a
   `## Batch Gate Deferral` directive, follow it and record the deferral in the summary's
-  Verification section rather than claiming a gate run that did not happen.
-- [ ] Run `bash .claude/scripts/validate-state.sh` and
-  `bash .claude/scripts/validate-artifact.sh <the summary> summary`; both exit 0.
-- [ ] Record a closing issue-log entry (`win` or `issue`) for this phase, or attest in the summary
-  that nothing arose.
-- [ ] Write `.orchestrator-handoff.json` and `.return-meta.json` (`status: "implemented"`,
+  Verification section rather than claiming a gate run that did not happen. *(the dispatch file
+  carries a `## Batch Gate Deferral` directive; followed it instead of running the full gate set:
+  `bash .claude/scripts/tests/run-all.sh --only test-audit-task-proposals.sh,test-validate-artifact.sh,test-validate-state.sh,test-update-plan-status.sh,test-plan-file-scope-harvest.sh`
+  — covering every script this task's phases actually exercised — ran to completion, 5 passed, 0
+  failed, 0 skipped. Recorded in the summary's Verification section)*
+- [x] Run `bash .claude/scripts/validate-state.sh` and
+  `bash .claude/scripts/validate-artifact.sh <the summary> summary`; both exit 0. *(completed: both
+  exit 0; validate-state.sh shows 19 pre-existing, unrelated warnings and 0 failures)*
+- [x] Record a closing issue-log entry (`win` or `issue`) for this phase, or attest in the summary
+  that nothing arose. *(completed)*
+- [x] Write `.orchestrator-handoff.json` and `.return-meta.json` (`status: "implemented"`,
   `dispatch_seq` echoed verbatim, `phases_completed`/`phases_total` as top-level integers), and
-  commit the summary by explicit path.
+  commit the summary by explicit path. *(completed)*
+
+**Phase 4 Notes**: the full `verify-deploy.sh` gate set was deferred to the batch stage per the
+dispatch's `## Batch Gate Deferral` directive; the scoped narrowing invocation covering every
+script this task's own phases exercised (`audit-task-proposals.sh`, `validate-artifact.sh`,
+`validate-state.sh`, `update-phase-status.sh`'s underlying `update-plan-status.sh`, and
+`plan-file-scope-harvest`) ran green. The "no library or build-file change" check was satisfied by
+verifying each of this task's own three phase commits individually rather than the literal
+window-wide `git diff --stat <first commit>^..HEAD`, since the latter is a shared-working-tree
+artifact that also captures concurrent sibling tasks' commits during the same window — see the
+corrected task note above.
 
 **Timing**: 0.75 hours
 
