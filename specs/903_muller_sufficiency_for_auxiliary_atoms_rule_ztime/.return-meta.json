@@ -1,26 +1,31 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
+  "dispatch_seq": 3,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md",
-      "summary": "Split verdict on Muller sufficiency: Muller suffices for the Auxiliary-Atoms rule (acceptance-condition-free antecedent, determinism is the sole demand) but NOT for the ban/lull mechanism (Reynolds' banned list is indexed by accepting pairs). (O1) preserved with sharpened ground; Muller.toRabin_exists is the single highest-value gap. (O2) discharged for free by Muller.exists_iSup under a union-first composition order. Two-state countermodel proves pair-enumeration repair is unsound, not merely incomplete."
+      "type": "plan",
+      "path": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/plans/01_muller-sufficiency-aa-rule-ban-lull.md",
+      "summary": "Four-phase record-amendment plan landing the split Muller-sufficiency verdict in reports 902 and 879 and in specs/ROADMAP.md, discharging (O2), and closing out; no Lean source, no require, no new task filed."
     }
   ],
-  "next_steps": "Run /orchestrate 903 to create implementation plan. Report recommends three record amendments (902's (O1) and Risks bullet 1; 902's (O2) and recommendation 6; 879's row 16 and verdict paragraph 3) and one narrowed CSLib-side item (a NAMED Muller.toRabinLAR rather than the existential proof_wanted). No Lean work, no require, no completeness claim.",
+  "next_steps": "Run /orchestrate 903 to execute the plan",
+  "memory_candidates": [
+    {
+      "content": "Plan-authoring pattern for record-amendment tasks (a research-only task whose implementation phases are text amendments to prior artifacts): a verification criterion of the form 'each anchor grep still matches exactly once after the edit' is UNSATISFIABLE for any anchor the phase's own task list mandates replacing, and an implementer who takes it literally must substitute a check mid-phase. The fix is an explicit per-anchor disposition table in the phase body -- each anchor tagged KEPT (fixed-string count stays 1) or REPLACED (count goes to 0, with a named deliberately-kept half that must still count 1) -- measured with grep -cF at plan time and re-measured immediately before editing. The same table doubles as the correction-target existence check (never name an amendment target without confirming it exists) and as the Scope Hypothesis's hunk count. Pairs with the fact that specs/** paths return the __FULL_SWEEP__ sentinel from suite_selection_select, so the honest covering check for such a phase is validate-artifact.sh on the amended artifact plus a diff read-through, never a gate subset.",
+      "category": "PATTERN",
+      "source_artifact": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/plans/01_muller-sufficiency-aa-rule-ban-lull.md",
+      "confidence": 0.78,
+      "suggested_keywords": ["record-amendment-plan", "anchor-disposition", "grep-cF", "unsatisfiable-verification-criterion", "full-sweep-sentinel", "correction-target-existence"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1794233746_5963da_903",
-    "agent_type": "formal-research-agent",
-    "duration_seconds": 1340,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "formal-research-agent"],
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
     "task_number": 903,
-    "domains_researched": ["logic", "math"],
-    "findings_count": 5,
-    "context_files_loaded": ["patterns/mathlib-lookup-gate.md"],
-    "mathlib_lookups_performed": 0,
-    "mathlib_lookup_gated": "skipped_no_lean_target",
-    "verdict": "split: Muller suffices for the AA rule; Muller does NOT suffice for the ban/lull mechanism; (O1) preserved, (O2) discharged"
+    "phase_count": 4,
+    "estimated_hours": 2.25,
+    "dependency_waves": 2
   }
 }
