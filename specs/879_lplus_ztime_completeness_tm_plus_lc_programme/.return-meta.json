@@ -1,73 +1,35 @@
 {
-  "status": "researched",
-  "started_at": "2026-11-09T09:05:46Z",
-  "dispatch_seq": 21,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
-      "summary": "Research report: target statements T1/T2/T3 (elaborated), end-to-end Reynolds-2001 transposition, 21-row ingredient table with 9 audited missing-ingredient proposals, go/no-go verdict with located obstructions"
+      "type": "plan",
+      "path": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/plans/01_lplus-ztime-completeness-programme.md",
+      "summary": "Close-out plan, 4 sequential phases, 2.75 hours: condensed audit evidence and dispositions for the nine filed ingredient proposals; filing P1-P9 via state-write.sh with edges P3<-P2, P4<-P3, P9<-P1 and 869<-P6; three sentence-level ROADMAP amendments (LCU as cure of record, (H5) cover ownership, R3 filing note); summary and full gate. No library change."
     }
   ],
+  "next_steps": "Run /orchestrate 879 to execute the plan",
   "metadata": {
     "session_id": "sess_1794209534_e57749_879",
-    "agent_type": "formal-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "research",
-      "formal-research-agent"
-    ],
-    "duration_seconds": 1563,
-    "domains_researched": [
-      "logic",
-      "math"
-    ],
-    "findings_count": 5,
-    "context_files_loaded": [
-      "logic/README.md",
-      "logic/domain/ztime-no-finite-carrier-fmp.md",
-      "patterns/mathlib-lookup-gate.md",
-      "patterns/backlog-reconciliation.md",
-      "formats/report-format.md"
-    ],
-    "mathlib_lookups_performed": 0,
-    "mathlib_lookup_gated": "skipped_no_lean_target"
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2.75,
+    "dependency_waves": [[1], [2], [3], [4]]
   },
-  "next_steps": "Create the nine audited proposals in specs/879_.../task-proposals.json as tasks (P1-P4 serialized lean4 batch; P5, P6 shared with the decidability front; P7, P8 small lean4; P9 formal research), amend the ROADMAP cure-of-record sentence per Recommendation 5, then run /orchestrate 879 to plan if a plan phase is wanted; no library change is proposed by this report",
-  "modified_files": [
-    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
-    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/probes/01_target-statements.lean",
-    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/task-proposals.json",
-    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/task-proposals-audit.ndjson",
-    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/issues.jsonl"
-  ],
   "memory_candidates": [
     {
-      "content": "Reynolds 2001 CTL* completeness consumes its limit-closure axiom only in Lemma 17 (ban preservation) and there needs the UNTIL-form LC; the F-form LC_n (Reynolds 2003, F/P-only language) does not discharge the segment guard. For L-plus with untl/snce primitive the schema of record is LCU plus its mirror.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
-      "confidence": 0.85,
-      "suggested_keywords": [
-        "limit closure",
-        "LCU",
-        "Reynolds 2001",
-        "ban preservation",
-        "L-plus completeness"
-      ]
-    },
-    {
-      "content": "In the all-walks ZTime semantics, a fresh-atom (state-valued) initialisation of a clock-anchored automaton is sound only through the full-product lemma for (past-type, future-type) at the cut, which presupposes Gabbay separation; separation is consumed at that one point of the completeness architecture.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
-      "confidence": 0.8,
-      "suggested_keywords": [
-        "separation",
-        "auxiliary atoms",
-        "clock cut",
-        "product automaton",
-        "stability cluster"
-      ]
+      "content": "Close-out plan pattern for a report-only research task whose report leaves audited task proposals behind (the research agent has no task-creation surface): (1) write a condensed audit NDJSON (non-scope-blind verdicts verbatim, scope-blind collapsed to a count, .proposal.id preserved) because state-write.sh --audit-verdict passes the file through a single jq argv and full audit lines of 140-185 KB exceed Linux's 128 KB per-argv ceiling; (2) treat overlaps-open verdicts whose shared paths are only aggregator files (docs/theorem-index.md, scripts/check-module-invariants.sh, FormalSystem.lean, module aggregators) as no-edge, since dispatch-time file_scope admission already serializes them, and add a dependency edge only for a substantive .lean overlap; (3) file proposals sequentially with --allocate-into, reading each allocated number before writing the next entry's dependencies, so inter-proposal edges can be set at creation.",
+      "category": "PATTERN",
+      "source_artifact": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/plans/01_lplus-ztime-completeness-programme.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["task-proposals", "audit-verdict", "state-write", "close-out plan", "aggregator overlap", "allocate-into"]
     }
-  ]
+  ],
+  "modified_files": [
+    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/plans/01_lplus-ztime-completeness-programme.md",
+    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/.return-meta.json",
+    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/.orchestrator-handoff.json"
+  ],
+  "dispatch_seq": 22
 }

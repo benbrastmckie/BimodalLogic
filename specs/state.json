@@ -9,7 +9,7 @@
     {
       "project_number": 879,
       "project_name": "lplus_ztime_completeness_tm_plus_lc_programme",
-      "status": "researched",
+      "status": "planned",
       "task_type": "formal",
       "title": "Own the L-plus ZTime completeness programme for TM-plus with the limit-closure schema",
       "description": "RESEARCH TASK, and the owner of a programme that again has no owner: is TM-plus extended by the limit-closure schema LC_n complete for L-plus validity at ZTime? Report only; no change under `FormalSystem/` or `Tests/`.\n\nWHY THIS EXISTS. The aim of the repository is completeness and decidability of the stability-modal language L-plus (specs/ROADMAP.md). Task 559 completed as a narrowed task (the naming-rule soundness toolkit only) and task 865 completed as research with two corrective successors, 870 and 871, and no successor owning the completeness question itself. The standing facts: TM-plus is incomplete at Base (`plus_incomplete_base`); LC_n is valid at ZTime for every n >= 1 (`lcN_plusValidZTime`); completeness of any recursive extension of TM-plus is open at every frame class.\n\nWHAT IS ALREADY ESTABLISHED AND MUST NOT BE REDONE. specs/865_tm_plus_lc_axiomatization_and_automaton_obstruction/reports/01_lc-axiomatization-automaton-obstruction.md: a doubled (two one-sided, clock-anchored) automaton pair is sufficient in shape, conditional on `SeparationOver TaskFrame.IsZTime` (task 867); the binding obstruction is the Auxiliary-Atoms carrier, proved intrinsic, so the two-layer shape of `coneR` and its Saturation obligation are forced; a layer-split route to that obligation is given whose one missing ingredient is oriented-forest Saturation (task 870). From task 559's record: the binding obstruction on the completeness front is closedness of the canonical bundle, and the cure of record is LC_n plus progress measures in the state. Re-verify every declaration name against the tree before citing it.\n\nWHAT TO DELIVER.\n(1) The target theorem as a precise statement: weak completeness at ZTime of TM-plus together with the LC_n schema (and backward LC_n, which task 871 states as a corollary), written as a Lean proposition that is stated and not proved.\n(2) The proof architecture end to end: canonical-bundle closedness from LC_n with progress measures; the doubled Auxiliary-Atoms rule over the layer-split carrier; and the exact point at which separation is consumed.\n(3) An ingredient table: each lemma the architecture needs, marked landed, owned by a named task, or missing. File each missing ingredient as its own implementation task through the backlog audit.\n(4) A go/no-go verdict. A located obstruction, stated precisely, is a complete outcome.\n\nSEQUENCING AND SCOPE. The standing ruling is decidability before completeness: if the ZTime decidability paper proof lands, Craig gives a recursive axiomatization at the level of existence and this question sharpens to whether the natural one works. ZTime only; Base, Dense and RTime are out of scope. L^▷ is out of scope: at ZTime and RTime its completeness transfers from L-plus through the landed conditional corollaries, and it is a secondary line of investigation.",
@@ -21,7 +21,7 @@
         867
       ],
       "created": "2026-11-05T18:24:47Z",
-      "last_updated": "2026-11-09T09:32:06Z",
+      "last_updated": "2026-11-09T09:41:40Z",
       "audit_verdict": {
         "proposal": {
           "id": "lplus_ztime_completeness_tm_plus_lc_programme",
@@ -192,9 +192,22 @@
           "path": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
           "type": "report",
           "summary": "Research report: target statements T1/T2/T3 (elaborated), end-to-end Reynolds-2001 transposition, 21-row ingredient table with 9 audited missing-ingredient proposals, go/no-go verdict with located obstructions"
+        },
+        {
+          "path": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/plans/01_lplus-ztime-completeness-programme.md",
+          "type": "plan",
+          "summary": "Close-out plan, 4 sequential phases, 2.75 hours: condensed audit evidence, filing of P1-P9 with dependency edges, three ROADMAP amendments, summary and full gate."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "file_scope": [
+        "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/plans/01_lplus-ztime-completeness-programme.md",
+        "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/summaries/01_lplus-ztime-completeness-programme-summary.md",
+        "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/task-proposals-audit-condensed.ndjson",
+        "specs/ROADMAP.md",
+        "specs/TODO.md",
+        "specs/state.json"
+      ]
     },
     {
       "project_number": 867,

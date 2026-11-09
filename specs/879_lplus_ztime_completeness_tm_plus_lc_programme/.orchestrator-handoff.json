@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 22,
+  "summary": "Wrote the close-out plan for task 879: four sequential phases (2.75 h) that file the report's nine audited ingredient proposals P1-P9 as tasks via state-write.sh with the report's edges (P3<-P2, P4<-P3, P9<-P1) plus one serialization edge 869<-P6, amend three ROADMAP sentences (LCU as the cure of record, (H5) cover ownership, R3 filing note), and close with a summary and the full gate. The research report already discharges all four deliverables; no library change and no completeness claim lands. Plan validated with validate-artifact.sh --strict, 0 warnings.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/plans/01_lplus-ztime-completeness-programme.md",
+      "summary": "Close-out plan, 4 sequential phases, 2.75 hours: condensed audit evidence, filing of P1-P9 with dependency edges, three ROADMAP amendments, summary and full gate."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": [],
+  "plan_markers_verified": null,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement for task 879: start at Phase 1 (condensed audit evidence), then file P1-P9 in order so edges can be set from allocated numbers."
+}

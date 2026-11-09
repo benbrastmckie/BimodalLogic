@@ -35,7 +35,7 @@ next_project_number: 893
 
 ### Completeness
 
-879 [RESEARCHED] — Own the L-plus ZTime completeness programme for TM-plus with...
+879 [PLANNED] — Own the L-plus ZTime completeness programme for TM-plus with...
 
 ### Dataset Enhancement
 
@@ -134,11 +134,12 @@ Evidence: originating issue entry iss_1793912463353_yZ5rLd, recorded during the 
 ---
 
 ### 879. Own the L-plus ZTime completeness programme for TM-plus with the limit-closure schema
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: formal
 - **Topic**: completeness
 - **Dependencies**: Task 870, Task 871, Task 867
 - **Research**: [879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md]
+- **Plan**: [879_lplus_ztime_completeness_tm_plus_lc_programme/plans/01_lplus-ztime-completeness-programme.md]
 
 **Description**: RESEARCH TASK, and the owner of a programme that again has no owner: is TM-plus extended by the limit-closure schema LC_n complete for L-plus validity at ZTime? Report only; no change under `FormalSystem/` or `Tests/`.
 
