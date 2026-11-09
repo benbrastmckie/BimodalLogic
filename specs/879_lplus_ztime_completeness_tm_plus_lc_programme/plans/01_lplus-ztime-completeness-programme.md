@@ -217,40 +217,40 @@ No proposal is `drop/narrow`; the plan-time Scope Hypothesis for this phase is c
 
 ---
 
-### Phase 2: File the Nine Ingredient Tasks [NOT STARTED]
+### Phase 2: File the Nine Ingredient Tasks [COMPLETED]
 
 **Goal**: Nine new `not_started` tasks exist in `specs/state.json` with declared `file_scope`,
 audit evidence on each entry, the report's dependency edges, and the one serialization edge; `TODO.md`
 renders them.
 
 **Tasks**:
-- [ ] Decision gate: for each proposal, proceed on `genuinely-new` or `aggregator-only overlap`
+- [x] Decision gate: for each proposal, proceed on `genuinely-new` or `aggregator-only overlap`
   (no edge); for `substantive overlap, edge` proceed and add the edge in the step below; for
   `drop/narrow` do not file unchanged — narrow `file_scope` and re-run
   `bash .claude/scripts/audit-task-proposals.sh --proposals-file <one-element file>` with the
-  same `id`, or drop and record the reason in the Phase 2 notes.
-- [ ] Record the pre-filing baseline: `jq '.active_projects | length' specs/state.json` and
+  same `id`, or drop and record the reason in the Phase 2 notes. *(completed: all nine proceed; P6 carries the edge)*
+- [x] Record the pre-filing baseline: `jq '.active_projects | length' specs/state.json` and
   `jq '.next_project_number' specs/state.json` (893 at plan time; `--allocate-into` derives from
-  membership, so read allocated numbers from the script's output, never from this cache).
-- [ ] File in order P1, P2, P3, P4, P5, P6, P7, P8, P9, one call each:
+  membership, so read allocated numbers from the script's output, never from this cache). *(completed: 55 active, next 893, max active 890)*
+- [x] File in order P1, P2, P3, P4, P5, P6, P7, P8, P9, one call each:
   `bash .claude/scripts/state-write.sh '.active_projects += [{project_number: $n, project_name: "<id>", status: "not_started", task_type: "<lean4|formal>", title: "<title>", description: "<description>", file_scope: <file_scope>, dependencies: <deps>, priority: "medium", created: $now, last_updated: $now, next_artifact_number: 1}]' --session-id "$session_id" --allocate-into n --arg now "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --audit-verdict specs/879_lplus_ztime_completeness_tm_plus_lc_programme/task-proposals-audit-condensed.ndjson --regen-todo`
   — appending with `+=` only (never a wholesale `.active_projects = [...]`), `title`/`description`/
   `file_scope` copied verbatim from `task-proposals.json`, `task_type` `lean4` for P1–P8 and
   `formal` for P9, and `dependencies` set from the numbers already allocated: P3 → [P2's number],
   P4 → [P3's number], P9 → [P1's number], all others `[]`. Read the allocated number from each
-  call's output before the next call.
-- [ ] Add the serialization edge: `bash .claude/scripts/update-task-status.sh preflight 869 not_started "$session_id" --depends-on-add='[<P6 number>]'`
+  call's output before the next call. *(deviation: altered — the 9-line condensed file (346 KB) still exceeded the 128 KB per-argv ceiling of `--audit-verdict`'s single `--argjson`; each call was given a one-line per-proposal slice of the committed condensed file instead; allocated 893–901)*
+- [x] Add the serialization edge: `bash .claude/scripts/update-task-status.sh preflight 869 not_started "$session_id" --depends-on-add='[<P6 number>]'`
   (or the equivalent no-status-change operation the script's usage names), so 869 runs after
-  P6 on their shared `HistoryMorphism.lean`; confirm with `jq '.active_projects[] | select(.project_number==869) | .dependencies'`.
-- [ ] Verify each new entry: `project_name` equals its proposal `id`; `audit_verdict` is present
+  P6 on their shared `HistoryMorphism.lean`; confirm with `jq '.active_projects[] | select(.project_number==869) | .dependencies'`. *(deviation: altered — `update-task-status.sh --depends-on-add` has no no-op token for a `not_started` task; the edge 869 ← 898 was appended via `state-write.sh` under the mutex, `validate-state.sh` cycle check green afterwards)*
+- [x] Verify each new entry: `project_name` equals its proposal `id`; `audit_verdict` is present
   (the gate recorded it); `file_scope` is non-empty for P1–P8 and `[]` for P9; `dependencies`
-  match the edge list.
-- [ ] Render the Component 7 confirmation table (number, title, task type, effort from the
+  match the edge list. *(completed)*
+- [x] Render the Component 7 confirmation table (number, title, task type, effort from the
   report's ingredient table, dependencies, backlog check with `scope-blind` as a count) into the
-  Phase 2 notes of this plan; no interactive prompt is issued (see Risks).
-- [ ] Run `bash .claude/scripts/validate-state.sh` and read its output in full; exit 0 required.
-- [ ] After `git status --short` confirms no sibling's uncommitted hunks are mixed in, commit
-  `specs/state.json`, `specs/TODO.md`, and this plan by explicit path.
+  Phase 2 notes of this plan; no interactive prompt is issued (see Risks). *(completed: see Phase 2 Notes)*
+- [x] Run `bash .claude/scripts/validate-state.sh` and read its output in full; exit 0 required. *(completed: exit 0, 10 passed, 19 pre-existing file_scope-visibility warnings, 0 failed)*
+- [x] After `git status --short` confirms no sibling's uncommitted hunks are mixed in, commit
+  `specs/state.json`, `specs/TODO.md`, and this plan by explicit path. *(completed: via git-commit-phase.sh)*
 
 **Timing**: 1 hour
 
@@ -273,6 +273,32 @@ renders them.
 - `specs/TODO.md` renders each new task with bracket-only artifact-link format and no `[name](path)` links.
 - `git diff --staged --name-only` names only `specs/state.json`, `specs/TODO.md`, and this plan.
 - `git status --short -- FormalSystem/ Tests/` is empty.
+
+**Phase 2 Notes (Component 7 confirmation table, rendered at implementation time; no
+interactive prompt was issued — the task description's "file each missing ingredient as its own
+implementation task" is the pre-authorization)**:
+
+Baseline before filing: 55 `active_projects`, `next_project_number` 893, max active 890. After:
+64 entries, `next_project_number` 902. Allocation was membership-based via `--allocate-into`.
+The report's ingredient table carries no effort column; the Size column below is the report's own
+sizing language (verdict section: P1–P8 "each small", P5/P6 shared with the decidability front,
+P9 a research dispatch).
+
+| # | Task | Type | Size (report) | Dependencies | Backlog check |
+|---|---|---|---|---|---|
+| 893 | P1 Declare the until-form limit-closure schema LCU and its mirror, with ZTime validity | lean4 | small | — | genuinely new; 7 aggregator-only `overlaps-open`; 453 `scope-blind` collapsed |
+| 894 | P2 The forward-cone unravelling as a regular ZTime frame: inr-layer oriented forest and the two-layer Saturation split | lean4 | small | — | genuinely new; 9 aggregator-only `overlaps-open`; 452 `scope-blind` |
+| 895 | P3 The Auxiliary-Atoms rule for L-plus at ZTime, forward and mirror, formula level with soundness | lean4 | small | 894 | genuinely new; 7 aggregator-only `overlaps-open`; 452 `scope-blind` |
+| 896 | P4 The extended L-plus proof system (TM-plus + axiom set + naming rules) with its ZTime soundness, and the completeness targets as stated Props | lean4 | small | 895 | genuinely new; 9 aggregator-only `overlaps-open`; 452 `scope-blind` |
+| 897 | P5 Universal cover of a doubly serial digraph: oriented forest, surjective two-way bounded covering map | lean4 | small, shared with the decidability front | — | genuinely new; 9 aggregator-only `overlaps-open`; 453 `scope-blind` |
+| 898 | P6 Two-way bounded L-plus invariance over ZTime with no Saturation hypothesis on the base frame | lean4 | small, shared with the decidability front | — (869 now depends on 898) | substantive overlap with 869 on `HistoryMorphism.lean` → edge 869 ← 898; `duplicate-of-open` 430 semantic-only, dismissed; 453 `scope-blind` |
+| 899 | P7 The stability cluster's (past-type, future-type) set is a full product | lean4 | small | — | genuinely new; `duplicate-of-open` 430 semantic-only, dismissed; 450 `scope-blind` |
+| 900 | P8 Bridge: ZTime-valid L formulas yield TM-plus theorems under PlusFormula substitution | lean4 | small (two-line bridge) | — | genuinely new; `duplicate-of-open` 430 semantic-only, dismissed; 453 `scope-blind` |
+| 901 | P9 Paper proof of the two-sided Reynolds engine for L-plus at ZTime: ban preservation, fair scheduling, universal non-acceptance, truth lemma | formal (research) | one research dispatch | 893 | genuinely new; no open-side verdict; 451 `scope-blind` |
+
+Every entry carries `audit_verdict` (the matching condensed verdict object, recorded by the gate),
+`project_name` equal to its proposal `id`, `priority: medium`, `artifacts: []`, and this session's
+`session_id`. `file_scope` is non-empty for 893–900 and `[]` for 901.
 
 ---
 
