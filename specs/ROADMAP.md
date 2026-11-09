@@ -111,7 +111,13 @@ cited record, not here.
   be gated on it.
 - **The MSO/Rabin route reaches ZTime only, and stays a paper result** (866). `▷`/`◁` **do ride**
   step 4's encoding, at the cost of an amendment at step 1. Mathlib has no MSO, no ω-automata and
-  no Rabin tree theorem, so step 5 is refused outright rather than deferred. It does **not** close
+  no Rabin tree theorem, so step 5 is refused outright rather than deferred. **That refusal is
+  carried by the MSO-syntax and Rabin-tree-theorem clauses specifically, not by the ω-automata
+  clause** (902): CSLib upstream carries the ω-regular closure lattice including a proved
+  `IsRegular.compl`, and the local CSLib fork carries `IsRegular.iff_da_muller` proved in both
+  directions, sorry-free and measured clean on this project's own toolchain — while CSLib has
+  nothing in MSO syntax and nothing at `S2S`. The open acceptance-condition question (whether a
+  deterministic Muller automaton suffices, or Rabin/parity is genuinely needed) is owned by **903**. It does **not** close
   `Decidable (PlusValidZTime φ)` constructively, which is still Stage 1's aim. **878 made the
   paper argument a proof, conditional on (H5)**: both gaps are repaired — G1 by re-justification
   via the compiled `stab_state_only`/`box_global` state-indexed witness closure, G2 by an explicit
@@ -320,7 +326,12 @@ out of the immediate run list appears there correctly; its presence is not a gap
 - **The MSO decidability formalization is refused outright, not deferred** (866's R2, 865's R4),
   **unchanged by 878's repair and not resting on it**. The refusal rests on Mathlib's inventory —
   no MSO syntax, no ω-automata, no determinization of ω-automata, no Rabin tree theorem (866
-  finding 8, held) — not on gap G1. 878 discharged the precondition this entry previously stated
+  finding 8, held) — not on gap G1. **Two of those four grounds are true of Mathlib but false of
+  the reachable Lean ecosystem** (902, re-verified against `.lake/packages/mathlib` at
+  `79d0395a`): ω-automata and determinization of ω-automata are landed in CSLib — the closure
+  lattice with complementation upstream, McNaughton determinization to Muller in the local fork —
+  so the refusal now rests on the MSO-syntax and Rabin-tree-theorem clauses alone, neither of
+  which CSLib has in any form. 878 discharged the precondition this entry previously stated
   (gap G1 in report 03 §1.3 needed a paper repair); the refusal itself stands on its own grounds
   regardless.
 - On any `C16` unused-binder red, prefer the signature edit to a `scripts/nolints.json` entry,

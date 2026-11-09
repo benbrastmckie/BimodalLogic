@@ -497,7 +497,7 @@ amendment targets. Recorded in the summary's Follow-ups.
 
 ---
 
-### Phase 3: Narrow the ROADMAP's omega-Automata Absence Ground [NOT STARTED]
+### Phase 3: Narrow the ROADMAP's omega-Automata Absence Ground [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: `specs/ROADMAP.md`'s two ω-automata-absence sentences state which of the enumerated
 grounds survive the re-measurement, with both refusals left standing and the Muller-sufficiency
@@ -559,6 +559,63 @@ coverage-appendix marker changes.
 - `bash .claude/scripts/tests/run-all.sh --only test-engine-written-state-paths-lib.sh,test-roadmap-generation.sh` exits 0. If `test-roadmap-generation.sh` exits 2 for the environment reason named in Risks (it resolves its subject in `source-store` mode with no deploy-tree fallback and never reads `specs/ROADMAP.md`), record a `#### Reasoned Exclusions` row for that half with the suite's stderr as evidence, and substitute: `bash .claude/scripts/roadmap-integration.sh --regenerate --dry-run` exits 0 against the amended file and `bash .claude/scripts/roadmap-integration.sh --print` exits 0.
 - Both amended bullets still contain "refused"; neither contains lifting language, and the amended text makes no completeness claim.
 - `git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` is empty.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| `test-roadmap-generation.sh`, the second half of this phase's named suite pair | Environment, not scope: the suite resolves its subject in `source-store` mode with **no deploy-tree fallback**, and this repository has no source store (`.claude-extensions.json` carries no `source_dir` key and no `agent-system/` tree exists). The suite never reads `specs/ROADMAP.md`, so it could not have covered this amendment even had it run. | Suite's own exit code **2** (environment), stderr verbatim: `ERROR: roadmap-integration.sh not found (mode=source-store): /home/benjamin/Projects/BimodalLogic/agent-system/extensions/core/scripts/roadmap-integration.sh`. Carried forward from task 879's identical measurement, which is why the plan named the substitute up front. |
+
+Covering substitute, run and observed per the plan's verification criteria:
+`bash .claude/scripts/roadmap-integration.sh --regenerate --dry-run` → **exit 0**, and
+`bash .claude/scripts/roadmap-integration.sh --print` → **exit 0**, both against the amended file;
+and the dry-run left `specs/ROADMAP.md` at exactly its two amendment hunks. The suite pair's other
+half, `test-engine-written-state-paths-lib.sh`, **passed**.
+
+#### Phase 3 Notes (measured 2026-11-09, dispatch_seq 3)
+
+**Anchor counts.** Both anchors matched exactly once before editing and still match exactly once
+after, since both amendments *append* to their sentence rather than replacing it:
+
+| Anchor | Before | After | Line (pre-edit) | Section |
+|---|---|---|---|---|
+| `Mathlib has no MSO, no ω-automata` | 1 | 1 | 113 | `## Rulings in force` |
+| `The refusal rests on Mathlib's inventory` | 1 | 1 | 321 | `## Do not re-attempt` |
+
+**Hunks.** `git diff -U0 -- specs/ROADMAP.md` shows exactly **2** hunks, at lines 114 and 329;
+file 422 → 433 lines. The task-number citation for 903 landed inside the first bullet rather than
+as a third hunk, so the count is 2, the low end of the Scope Hypothesis's "two or three".
+
+**The plan's generated-content boundary claim is wrong, and the real boundary is narrower.** The
+plan asserts the `**Coverage appendix (uncovered tasks)**:` marker "is below both" anchors and
+directs that no hunk land at or after it. Measured false: the marker is at line **171**
+(pre-edit), *above* anchor 2 at line 321, so the stated check is unsatisfiable for anchor 2.
+`specs/ROADMAP.md`'s own `## Maintenance` section gives the actual contract:
+`strip_coverage_appendix` discards everything after the marker **only within the run-order
+section**, and `roadmap-integration.sh --regenerate` retains every other `## ` section
+byte-for-byte. Both anchors sit *outside* the run-order section (`## Run these next`, lines
+139-181 pre-edit) — anchor 1 in `## Rulings in force`, anchor 2 in `## Do not re-attempt` — so
+both are safe. Substituted check, which passes: neither hunk falls inside the run-order section,
+and no `/orchestrate` line in the coverage appendix changed (`git diff` shows no added or removed
+`/orchestrate` line).
+
+**Both refusals left standing.** Each amended bullet still contains "refused" (1 occurrence
+apiece). A grep over the whole file for lifting language (`refusal is lifted`, `no longer
+refused`, `now formalizable`, `refusal is withdrawn`, `completeness is now`) returns **0**. The
+first bullet's clause "so step 5 is refused outright rather than deferred" is kept byte-identical;
+the second bullet's four enumerated grounds, its "not on gap G1" clause, and its closing sentence
+("the refusal itself stands on its own grounds regardless") are all kept byte-identical. What each
+amendment adds is which of the enumerated grounds is load-bearing, nothing more: the MSO-syntax
+and Rabin-tree-theorem clauses carry both refusals, and CSLib has nothing in MSO syntax and
+nothing at `S2S`.
+
+**Owner citation.** Task **903** (the Muller-sufficiency question filed in Phase 2) is named as
+the owner of the open acceptance-condition question, in the first bullet, in one clause, without
+restating the question.
+
+**Gates.** `git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` → empty.
+
+**Timing**: 0.5 hours
 
 ---
 
