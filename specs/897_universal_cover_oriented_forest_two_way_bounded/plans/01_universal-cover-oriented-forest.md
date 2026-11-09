@@ -402,32 +402,32 @@ this case, the row was added in this phase rather than deferred, and a re-run cl
 
 ---
 
-### Phase 4: The Structural Lemma and the Oriented-Forest Fields [IN PROGRESS]
+### Phase 4: The Structural Lemma and the Oriented-Forest Fields [COMPLETED]
 
 **Goal**: Prove the single `cases`-on-the-step-relation lemma and, from it, the three fields of
 `IsOrientedForest` for the cover's one-step relation, discharging the `acyclic` field through
 Phase 1's criterion.
 
 **Tasks**:
-- [ ] Prove the structural lemma: a step from one cover point to another either lengthens by one
+- [x] Prove the structural lemma: a step from one cover point to another either lengthens by one
       with the target's last-move tag recording a forward move out of the source's endpoint and
       the target's parent equal to the source, or shortens by one with the source's last-move tag
       recording a backward move out of the target's endpoint and the source's parent equal to the
       target. Prove it by `cases` on the step relation. This is the only sanctioned `cases` site
       on that relation.
-- [ ] Prove loop-freeness: both disjuncts of the structural lemma degenerate to a length equal to
+- [x] Prove loop-freeness: both disjuncts of the structural lemma degenerate to a length equal to
       its own successor.
-- [ ] Prove opposite-freeness: from steps in both directions, the two same-side pairings
+- [x] Prove opposite-freeness: from steps in both directions, the two same-side pairings
       contradict on length, and the two cross pairings agree on length and contradict on the
       direction tag. Record in the docstring that this is where the multigraph convention becomes
       "no directed 2-cycles".
-- [ ] Prove undirected acyclicity by applying `SimpleGraph.isAcyclic_of_rank_parent` with the
+- [x] Prove undirected acyclicity by applying `SimpleGraph.isAcyclic_of_rank_parent` with the
       cover point's length as the rank and the drop-last map as the parent, taking the rank
       inequality from the structural lemma plus the `nil` case of the parent map, and the
       adjacency hypothesis from the structural lemma read through `SimpleGraph.fromRel_adj`.
-- [ ] Assemble `coverStep_isOrientedForest` as the structure literal over the three preceding
+- [x] Assemble `coverStep_isOrientedForest` as the structure literal over the three preceding
       lemmas.
-- [ ] Regenerate the Typst count surface: `lake build && bash scripts/typst-sync-check.sh --fix`,
+- [x] Regenerate the Typst count surface: `lake build && bash scripts/typst-sync-check.sh --fix`,
       then stage `typst/generated/status.typ`.
 
 **Timing**: 1.5 hours
@@ -454,18 +454,31 @@ tree yet.
 - `typst/generated/status.typ` - regenerated file and line counts
 
 **Verification**:
-- [ ] `lake build FormalSystem.Semantics.UniversalCover` is green with zero warnings, then
+- [x] `lake build FormalSystem.Semantics.UniversalCover` is green with zero warnings, then
       `lake build` is green.
-- [ ] `grep -c "sorry" FormalSystem/Semantics/UniversalCover.lean` is 0.
-- [ ] `#print axioms FormalSystem.Semantics.coverStep_isOrientedForest` shows no `sorryAx` and no
+- [x] `grep -c "sorry" FormalSystem/Semantics/UniversalCover.lean` is 0.
+- [x] `#print axioms FormalSystem.Semantics.coverStep_isOrientedForest` shows no `sorryAx` and no
       axiom beyond the three standard ones.
-- [ ] `grep -nE "(cases|rcases|induction).*CoverStep" FormalSystem/Semantics/UniversalCover.lean`
+- [x] `grep -nE "(cases|rcases|induction).*CoverStep" FormalSystem/Semantics/UniversalCover.lean`
       names only the structural lemma's own proof.
-- [ ] `bash scripts/typst-sync-check.sh --counts-only` exits 0.
+- [x] `bash scripts/typst-sync-check.sh --counts-only` exits 0.
+
+**Verification notes (Phase 4)**: scoped `lake build FormalSystem.Semantics.UniversalCover` green,
+then full `lake build` green (`--no-share`), 2968 jobs, zero errors and zero warnings.
+`grep -c sorry` = 0. `#print axioms FormalSystem.Semantics.coverStep_isOrientedForest` =
+`[propext, Classical.choice, Quot.sound]` — no `sorryAx`, no axiom beyond the three standard ones,
+and `Classical.choice` traces to `simp`/`omega`'s classical reasoning rather than to a new choice.
+`grep -nE "(cases|rcases|induction).*CoverStep"` names only the module docstring, the structural
+lemma's own docstring and its signature; the module contains exactly one `cases h with`, at
+`coverStep_cases`. `typst-sync-check.sh --counts-only` exits 0 after `--fix`.
+
+**Scope Hypothesis outcome (Phase 4)**: **confirmed**. `#print FormalSystem.Semantics.IsOrientedForest`
+reports exactly three fields — `loopFree`, `oppFree`, `acyclic` — so exactly three obligations were
+discharged and no fourth lemma was needed.
 
 ---
 
-### Phase 5: Double Seriality and the Two One-Step Lifts [NOT STARTED]
+### Phase 5: Double Seriality and the Two One-Step Lifts [IN PROGRESS]
 
 **Goal**: Prove the forward and backward one-step lifting lemmas -- the mathematical heart, where
 "directed walks are reduced paths" becomes a theorem -- and derive double seriality of the cover's

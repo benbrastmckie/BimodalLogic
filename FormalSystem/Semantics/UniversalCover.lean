@@ -190,4 +190,91 @@ inductive CoverStep (E : W → W → Prop) : CoverPt E → CoverPt E → Prop
       (hred : m ≠ some (true, c)) :
       CoverStep E ⟨a, c, some (false, b), RWalk.bwd p h hred⟩ ⟨a, b, m, p⟩
 
+/-! ## The structural lemma and the oriented-forest fields -/
+
+/--
+**The structural case lemma** — the single `cases`-on-`CoverStep` site in the development.
+
+A cover step either *lengthens* by one, with the target's last-move tag recording a forward move
+out of the source's endpoint and the target's parent equal to the source, or *shortens* by one,
+with the source's last-move tag recording a backward move out of the target's endpoint and the
+source's parent equal to the target. Either way the endpoints carry one `E`-step.
+
+Every one of `coverStep_loopFree`, `coverStep_oppFree`, `coverStep_acyclic` and the
+endpoint-iteration lemma is proved from this disjunction alone.
+-/
+theorem coverStep_cases {E : W → W → Prop} {x y : CoverPt E} (h : CoverStep E x y) :
+    E x.endpt y.endpt ∧
+      ((y.length = x.length + 1 ∧ y.last = some (true, x.endpt) ∧ y.parent = x) ∨
+        (x.length = y.length + 1 ∧ x.last = some (false, y.endpt) ∧ x.parent = y)) := by
+  cases h with
+  | up p hE hred => exact ⟨hE, Or.inl ⟨by simp, rfl, rfl⟩⟩
+  | down p hE hred => exact ⟨hE, Or.inr ⟨by simp, rfl, rfl⟩⟩
+
+/-- A cover step projects to an `E`-step on endpoints. -/
+theorem step_endpt_of_coverStep {E : W → W → Prop} {x y : CoverPt E} (h : CoverStep E x y) :
+    E x.endpt y.endpt := (coverStep_cases h).1
+
+/-- Dropping the last move never increases the length. -/
+theorem parent_length_le {E : W → W → Prop} (x : CoverPt E) : x.parent.length ≤ x.length := by
+  obtain ⟨a, b, m, p⟩ := x
+  cases p with
+  | nil => simp [RWalk.parent]
+  | fwd q h hred => simp [RWalk.parent]
+  | bwd q h hred => simp [RWalk.parent]
+
+/-- **No loops in the cover**: both disjuncts of the structural lemma degenerate to a length
+equal to its own successor. -/
+theorem coverStep_loopFree {E : W → W → Prop} (x : CoverPt E) : ¬ CoverStep E x x := by
+  intro h
+  rcases (coverStep_cases h).2 with ⟨hl, _, _⟩ | ⟨hl, _, _⟩ <;> omega
+
+/--
+**No directed 2-cycles in the cover** — this is where the multigraph convention becomes a
+theorem.
+
+Of the four pairings of the structural lemma's disjuncts, the two same-side ones contradict on
+length; the two cross pairings agree on length and contradict on the direction tag, since an
+opposite-edge pair of the base lifts to two *distinct* cover edges whose targets carry different
+tags.
+-/
+theorem coverStep_oppFree {E : W → W → Prop} (x y : CoverPt E) (h : CoverStep E x y) :
+    ¬ CoverStep E y x := by
+  intro h'
+  rcases (coverStep_cases h).2 with ⟨hl, ht, _⟩ | ⟨hl, ht, _⟩ <;>
+    rcases (coverStep_cases h').2 with ⟨hl', ht', _⟩ | ⟨hl', ht', _⟩
+  · omega
+  · rw [ht] at ht'; simp at ht'
+  · rw [ht'] at ht; simp at ht
+  · omega
+
+/--
+**The cover's underlying undirected graph is acyclic**, by `SimpleGraph.isAcyclic_of_rank_parent`
+with the walk length as the rank and drop-the-last-move as the parent map.
+
+The rank inequality is `parent_length_le` (the `nil` case is where the parent is its own parent),
+and the adjacency hypothesis is the structural lemma read through `SimpleGraph.fromRel_adj`. No
+cycle is ever mentioned.
+-/
+theorem coverStep_acyclic {E : W → W → Prop} :
+    (SimpleGraph.fromRel (CoverStep E)).IsAcyclic := by
+  refine SimpleGraph.isAcyclic_of_rank_parent CoverPt.length CoverPt.parent parent_length_le ?_
+  intro x y hxy
+  rw [SimpleGraph.fromRel_adj] at hxy
+  obtain ⟨_, hst⟩ := hxy
+  rcases hst with hst | hst
+  · rcases (coverStep_cases hst).2 with ⟨hl, _, hp⟩ | ⟨hl, _, hp⟩
+    · exact Or.inl ⟨hp, by omega⟩
+    · exact Or.inr ⟨hp, by omega⟩
+  · rcases (coverStep_cases hst).2 with ⟨hl, _, hp⟩ | ⟨hl, _, hp⟩
+    · exact Or.inr ⟨hp, by omega⟩
+    · exact Or.inl ⟨hp, by omega⟩
+
+/-- **The cover is an oriented forest**: the three fields over the three preceding lemmas. -/
+theorem coverStep_isOrientedForest {E : W → W → Prop} : IsOrientedForest (CoverStep E) where
+  loopFree := coverStep_loopFree
+  oppFree := coverStep_oppFree
+  acyclic := coverStep_acyclic
+
+
 end FormalSystem.Semantics
