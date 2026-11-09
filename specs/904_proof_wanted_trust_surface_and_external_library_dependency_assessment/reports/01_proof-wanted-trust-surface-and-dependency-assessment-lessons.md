@@ -126,10 +126,12 @@ and a prior report's own findings. No WebSearch or WebFetch call was made.
   because the dispatch's own recommendation names a specific new filename
   (`external-library-dependency-assessment.md`) and the two files answer different questions —
   `dependency-tracing.md` traces whether one declaration depends on another inside a single
-  environment, while the new file assesses whether to adopt an external library at all. A
-  "See Also" cross-link was added in both directions is not performed here (editing
-  `dependency-tracing.md` itself was out of scope for this dispatch); the new file links to
-  `dependency-tracing.md`, one direction only.
+  environment, while the new file assesses whether to adopt an external library at all. At
+  authoring time, a "See Also" cross-link was added only from the new file to
+  `dependency-tracing.md`, one direction only, because editing `dependency-tracing.md` itself
+  was out of scope for this dispatch; the implementation phase of this same task added the
+  reverse link to `dependency-tracing.md`, so the cross-link is bidirectional in its final
+  state.
 - **Lesson 3 was placed in `report-format.md`, not `status-markers.md`**, because the pattern it
   names — a verdict's *ground* being wrong while its *outcome* is preserved — is a property of
   how a report amends a prior report's reasoning, which is exactly the subject

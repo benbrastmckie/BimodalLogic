@@ -244,40 +244,59 @@ exists, update it in place rather than adding a duplicate.
 
 ---
 
-### Phase 3: Verification sweep, report amendment, and final gate [NOT STARTED]
+### Phase 3: Verification sweep, report amendment, and final gate [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Confirm every content requirement and NON-GOAL the dispatch states, bring the research
 report's Decisions section into agreement with the cross-link's final state, and run the complete
 gate set.
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Task repository's full `verify-deploy.sh` run (BimodalLogic) | This dispatch's own dispatch file (`.dispatch/6.md`) carries a `## Batch Gate Deferral` section directing this final `full`-tier phase to discharge against a scoped tier instead of independently running the complete gate set, since this is one of several `implement`-phase dispatches inside one multi-task `/orchestrate` batch invocation; the complete gate set runs once, for the whole batch, at the end of the invocation. | Dispatch file section quoted verbatim in the dispatch context; scoped discharge run instead: `validate-artifact.sh` on the amended report exited 0 ("[PASS] report artifact is valid (0 warning(s))"), and a fast non-source-store-only gate subset (`verify-deploy.sh --skip-slow --only-gate 1,2`) exited 0 ("PASS -- 12 check(s), 0 failure(s)"). |
+| Source-store `verify-deploy.sh` gate 3 (doc-lint, Rule S deployed-index-orphan) | Rule S reads the DEPLOYED `.claude/context/index.json` directly, which only picks up this task's `lean/index-entries.json` registration at redeploy time; this plan's own Non-Goals explicitly exclude running or claiming a redeploy. Structurally unresolvable within this task's scope without violating a stated Non-Goal. | `check-extension-docs.sh` output: "FAIL: Rule S: deployed context/project/lean4/patterns/external-library-dependency-assessment.md has no entry in .claude/context/index.json" (also observed identically at the end of Phase 1, before Phase 2's registration edit, confirming it is pre-existing and redeploy-gated, not introduced by this task's content edits). |
+| Source-store `verify-deploy.sh` gate 5 (manifest-driven content-hash equality) | Reports "Content differs from source" for `dependency-tracing.md` and `external-library-dependency-assessment.md` because the deployed copies have not been regenerated from the just-edited source files — this is the direct, unavoidable consequence of this plan's Non-Goal against running a redeploy. | `verify-deploy.sh --skip-slow` gate 5 output: "lean: Content differs from source: context/project/lean4/patterns/dependency-tracing.md" and the same for `external-library-dependency-assessment.md`. |
+| Source-store `verify-deploy.sh` gates 10, 20, 22, 24 (state-schema timeout, eager-load context budget, shellcheck, dead-command-recommendation) | None of these four gates inspects any file this task touched (all of this task's source-store edits are to `.md` prose and `index-entries.json`/`EXTENSION.md` registry content; these four gates cover `specs/state.json` deep validation timing, `commands/`/`skills/` eager-load byte budgets, `.sh` shellcheck findings, and command-definition cross-references respectively) — pre-existing, unrelated failures in a shared repository that independently carries other in-flight work (per this plan's own Risks table). | `verify-deploy.sh --skip-slow /home/benjamin/.config/nvim` full run: "FAIL -- 6 of 41 check(s) failed", itemized as gate10 ("exceeded its 60s timeout and was killed"), gate20 ("eager-load total (67442 B) exceeds recorded baseline (66800 B)"), gate22 ("shellcheck lint reported one or more findings"), gate24 ("dead-command-recommendation lint reported a recommendation naming a command with no definition file") — each concerning a file category this task never wrote to. |
+
 **Tasks**:
 
-- [ ] Verify Lesson 1 in `metadata-trust-surfaces.md`: `## 6.` names `grep -c '^proof_wanted'` as
+- [x] Verify Lesson 1 in `metadata-trust-surfaces.md`: `## 6.` names `grep -c '^proof_wanted'` as
       the reliable detector; states that a module consisting entirely of `proof_wanted`
       declarations declares nothing; records that both `grep sorry` and `#print axioms` are blind
       to it; and `## 7. Practical consequences` carries the cross-referencing bullet. Re-run
       `grep -n '§[0-9]'` over the file and confirm no reference points at a stale section number.
-- [ ] Verify Lesson 2 in `external-library-dependency-assessment.md`: all five checklist items are
+      *(completed: all content confirmed; §2, §3, §5, §6 all resolve to real sections)*
+- [x] Verify Lesson 2 in `external-library-dependency-assessment.md`: all five checklist items are
       present with their command forms and measured consequences — `git show upstream/main:<path>`
       for upstream claims; two-way `git rev-list --left-right --count` (the 235-behind figure
       against the 4717-ahead description); `lean-toolchain` compared before Mathlib revisions;
       build-cache freshness verified before trusting `#print axioms`; import closure rather than
-      repository line count (8,526 against 244,339, a 29x difference).
-- [ ] Verify Lesson 3 in `report-format.md`: the `## Amending a Prior Verdict` subsection
+      repository line count (8,526 against 244,339, a 29x difference). *(completed: all five
+      items present and measured)*
+- [x] Verify Lesson 3 in `report-format.md`: the `## Amending a Prior Verdict` subsection
       distinguishes outcome-overturned from ground-overturned-outcome-preserved, requires naming
       both halves explicitly in `## Decisions`, and forbids reopening/lifting/walking-back
-      language for a ground-only correction.
-- [ ] Verify the NON-GOALS: `git -C /home/benjamin/Projects/BimodalLogic status --porcelain` shows
+      language for a ground-only correction. *(completed)*
+- [x] Verify the NON-GOALS: `git -C /home/benjamin/Projects/BimodalLogic status --porcelain` shows
       no modification under `.claude/`; no path under `FormalSystem/` or `Tests/` is modified; no
       `lakefile.toml` or `lake-manifest.json` change; no redeploy was run, and none is claimed in
-      the summary or handoff.
-- [ ] Amend the research report's Decisions bullet that records the cross-link as one-directional.
+      the summary or handoff. *(completed: all NON-GOALS confirmed intact)*
+- [x] Amend the research report's Decisions bullet that records the cross-link as one-directional.
       That bullet currently also carries a garbled sentence ("A `See Also` cross-link was added in
       both directions is not performed here"); rewrite it to state the cross-link's actual final
       state in one grammatical sentence. The report exists (verified, 199 lines); if it is absent
       at implementation time, record the correction in the completion summary instead.
-- [ ] Run the complete gate set for the task repository, and the source-store-targeted gate subset
-      that actually reads the authored files.
+      *(completed: rewritten to state the cross-link is bidirectional in its final state)*
+- [x] Run the complete gate set for the task repository, and the source-store-targeted gate subset
+      that actually reads the authored files. *(completed with exclusions: see Reasoned
+      Exclusions below — the task repository's full `verify-deploy.sh` was deferred to this
+      multi-task orchestrate batch's own batch-level gate stage per the dispatch's Batch Gate
+      Deferral directive, discharged here via `validate-artifact.sh` on the amended report (PASS)
+      plus a fast, non-source-store-only gate subset (`--only-gate 1,2`, PASS); the source-store
+      repository's full `verify-deploy.sh --skip-slow` was run directly and showed 6 of 41 checks
+      failed, all pre-existing or structurally out-of-scope per this plan's own Non-Goals — see
+      Reasoned Exclusions)*
 
 **Timing**: 0.5 hours
 
@@ -320,15 +339,23 @@ declaring the phase green.
 
 ## Testing & Validation
 
-- [ ] The new pattern file appears in `lean/index-entries.json` with a `line_count` matching the
-      file on disk, and in `lean/EXTENSION.md`'s Context Pointers list.
-- [ ] `dependency-tracing.md`'s recorded `line_count` matches the file on disk after its edit.
-- [ ] `jq empty` parses the edited `index-entries.json`, and the diff is confined to two records.
-- [ ] The cross-link between the two pattern files resolves in both directions.
-- [ ] The combined record-version / task-reference grep over the three authored files is clean.
-- [ ] All three lessons satisfy every content requirement the dispatch states.
+- [x] The new pattern file appears in `lean/index-entries.json` with a `line_count` matching the
+      file on disk, and in `lean/EXTENSION.md`'s Context Pointers list. *(completed)*
+- [x] `dependency-tracing.md`'s recorded `line_count` matches the file on disk after its edit.
+      *(completed: 237 == 237)*
+- [x] `jq empty` parses the edited `index-entries.json`, and the diff is confined to two records.
+      *(completed: confined to the two intended records, plus one pre-existing uncommitted
+      change from the research round, not from this phase)*
+- [x] The cross-link between the two pattern files resolves in both directions. *(completed)*
+- [x] The combined record-version / task-reference grep over the three authored files is clean.
+      *(completed: zero hits)*
+- [x] All three lessons satisfy every content requirement the dispatch states. *(completed)*
 - [ ] The task repository's complete gate set and the source-store gate subset both exit 0.
-- [ ] No file under `.claude/**`, `FormalSystem/`, or `Tests/` was modified.
+      *(deviation: altered — task repository's full gate deferred to the batch-level gate stage
+      per the dispatch's Batch Gate Deferral directive; source-store gate subset run directly and
+      exited non-zero on 6/41 checks, all pre-existing or structurally out-of-scope per this
+      plan's own Non-Goals — see Phase 3's `#### Reasoned Exclusions`)*
+- [x] No file under `.claude/**`, `FormalSystem/`, or `Tests/` was modified. *(completed)*
 
 ## Artifacts & Outputs
 
