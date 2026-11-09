@@ -463,7 +463,7 @@ row 8 is byte-identical (no hunk at that line); the report now carries two `**Am
 
 ---
 
-### Phase 3: Retire the ROADMAP's Open-Question Pointer [IN PROGRESS]
+### Phase 3: Retire the ROADMAP's Open-Question Pointer [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: `specs/ROADMAP.md`'s "MSO/Rabin route reaches ZTime only" ruling carries the settled
 split verdict in place of the open-question pointer that names this task, with the ruling itself
