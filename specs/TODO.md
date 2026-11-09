@@ -109,7 +109,7 @@ next_project_number: 905
 
 ### Uncategorized
 
-893 [RESEARCHED] — Declare the until-form limit-closure schema LCU and its...
+893 [PLANNING] — Declare the until-form limit-closure schema LCU and its...
   └─ 901 [NOT STARTED] — Paper proof of the two-sided Reynolds engine for L-plus at...
 894 [NOT STARTED] — The forward-cone unravelling as a regular ZTime frame:...
   └─ 895 [NOT STARTED] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
@@ -261,7 +261,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 893. Declare the until-form limit-closure schema LCU and its mirror, with ZTime validity
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Dependencies**: None
 - **Research**: [893_lcu_until_form_schema_ztime_validity/reports/01_lcu-until-form-ztime-validity.md]
