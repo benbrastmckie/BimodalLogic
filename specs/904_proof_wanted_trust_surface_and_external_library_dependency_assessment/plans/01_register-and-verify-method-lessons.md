@@ -1,7 +1,7 @@
 # Implementation Plan: Task #904
 
 - **Task**: 904 - File three method lessons from the cslib omega-automata reassessment report's Context Extension Recommendations
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/904_proof_wanted_trust_surface_and_external_library_dependency_assessment/reports/01_proof-wanted-trust-surface-and-dependency-assessment-lessons.md`
@@ -113,28 +113,28 @@ line counts that Phase 1's edits can change, and because both phases would other
 
 ---
 
-### Phase 1: Close the content-level loose ends [NOT STARTED]
+### Phase 1: Close the content-level loose ends [COMPLETED]
 
 **Goal**: Remove the one record-versioning lint-pattern occurrence from the newly authored prose,
 and make the cross-link between the new pattern file and `dependency-tracing.md` bidirectional.
 
 **Tasks**:
 
-- [ ] Re-read `external-library-dependency-assessment.md` around line 70 immediately before
-      editing, in case a sibling has changed the file.
-- [ ] Rephrase the one occurrence of `no longer` (line 70: "may describe code that no longer
+- [x] Re-read `external-library-dependency-assessment.md` around line 70 immediately before
+      editing, in case a sibling has changed the file. *(completed: confirmed line 70 unchanged)*
+- [x] Rephrase the one occurrence of `no longer` (line 70: "may describe code that no longer
       matches what is on disk") so the technical meaning is preserved without the matched phrase —
       e.g. "may describe code that differs from what is now on disk". This is a lint-pattern
       occurrence, not a genuine draft-history reference, but rephrasing is cheaper than carrying a
-      standing exemption.
-- [ ] Re-run the combined sweep over all three authored files for
+      standing exemption. *(completed: rephrased to "differs from what is now on disk")*
+- [x] Re-run the combined sweep over all three authored files for
       `task [0-9]+|tasks [0-9]+|no longer|previously|formerly|used to |supersedes|withdrawn|carried forward from`
-      and confirm zero remaining hits.
-- [ ] Append a `## See Also` section to `dependency-tracing.md` with one entry pointing at
+      and confirm zero remaining hits. *(completed: zero hits confirmed)*
+- [x] Append a `## See Also` section to `dependency-tracing.md` with one entry pointing at
       `context/project/lean4/patterns/external-library-dependency-assessment.md`, naming the
       shared import-closure technique as the specific connection. If that file has acquired a
       `## See Also` section by implementation time, add the entry to the existing section instead
-      of creating a second one.
+      of creating a second one. *(completed: section created, file grew to 237 lines)*
 
 **Timing**: 0.4 hours
 

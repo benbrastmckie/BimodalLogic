@@ -119,14 +119,14 @@ next_project_number: 905
   └─ 869 [NOT STARTED] — (semantics: PRIORITY RULING (2026-11-05, user):...) (see above)
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
-903 [PLANNED] — Settle whether a deterministic Muller automaton suffices for...
+903 [IMPLEMENTING] — Settle whether a deterministic Muller automaton suffices for...
   └─ 901 [NOT STARTED] — Paper proof of the two-sided Reynolds engine for L-plus at... (see above)
-904 [PLANNED] — Record three method lessons in the source store:...
+904 [IMPLEMENTING] — Record three method lessons in the source store:...
 
 ## Tasks
 
 ### 904. Record three method lessons in the source store: proof_wanted as a trust surface, the external-library dependency-assessment checklist, and ground-overturned-outcome-preserved verdict amendments
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Dependencies**: None
 - **Research**: [904_proof_wanted_trust_surface_and_external_library_dependency_assessment/reports/01_proof-wanted-trust-surface-and-dependency-assessment-lessons.md]
@@ -145,7 +145,7 @@ NON-GOALS. No hand-authored file under .claude/**; no redeploy claimed by this t
 ---
 
 ### 903. Settle whether a deterministic Muller automaton suffices for the Auxiliary-Atoms rule and the ban/lull mechanism at ZTime, or whether Rabin or parity is genuinely needed
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal
 - **Dependencies**: None
 - **Research**: [903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md]
