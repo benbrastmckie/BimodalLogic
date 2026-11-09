@@ -210,7 +210,7 @@ files — the re-assessment report plus its summary, the completeness-programme 
 `specs/ROADMAP.md` respectively — and none consumes another's output, since all three cite this
 task's report rather than each other. Phase 4 is the terminal node and depends on all three.
 
-### Phase 1: Settle (O1) and Discharge (O2) in the Re-Assessment Report [IN PROGRESS]
+### Phase 1: Settle (O1) and Discharge (O2) in the Re-Assessment Report [COMPLETED]
 
 **Goal**: `specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md`
 states the settled split at (O1), records (O2) as discharged rather than open, and no longer

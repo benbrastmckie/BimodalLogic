@@ -15,10 +15,10 @@
     {"id": 10, "description": "Add dated amendment note to summary under Overview", "status": "done", "files_touched": ["specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/summaries/01_cslib-omega-automata-nogo-reassessment-summary.md"]},
     {"id": 11, "description": "Read back and confirm obstruction frame / no lifting language", "status": "done", "files_touched": []},
     {"id": 12, "description": "Record issue-log entries", "status": "done", "files_touched": ["specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/issues.jsonl"]},
-    {"id": 13, "description": "Commit amended report, summary, and plan", "status": "in_progress", "files_touched": []},
-    {"id": 14, "description": "Set phase heading to [COMPLETED]", "status": "not_started", "files_touched": []}
+    {"id": 13, "description": "Commit amended report, summary, and plan", "status": "done", "files_touched": []},
+    {"id": 14, "description": "Set phase heading to [COMPLETED]; post-phase self-review; progressive handoff", "status": "done", "files_touched": ["specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/plans/01_muller-sufficiency-aa-rule-ban-lull.md", "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/handoffs/phase-1-handoff-20261109T063000Z.md"]}
   ],
-  "current_objective": 13,
+  "current_objective": 14,
   "approaches_tried": [],
   "handoff_count": 0,
   "deviations": [
