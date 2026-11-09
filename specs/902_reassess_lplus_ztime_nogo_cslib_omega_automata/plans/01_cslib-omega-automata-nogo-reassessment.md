@@ -619,7 +619,7 @@ restating the question.
 
 ---
 
-### Phase 4: Close-Out Record and Final Gate [NOT STARTED]
+### Phase 4: Close-Out Record and Final Gate [COMPLETED]
 
 **Goal**: The task's close-out record exists, states what was amended and filed and — explicitly —
 what was deliberately not acted on, and the repository passes its full gate set with
@@ -684,6 +684,37 @@ what was deliberately not acted on, and the repository passes its full gate set 
 - `git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` is empty, and the `git diff --stat` over this task's own commits for the same paths is empty.
 - `.orchestrator-handoff.json` validates (the write-time `validate-handoff-location.sh` gate accepts it) and `.return-meta.json` carries `status: "implemented"` with `dispatch_seq` echoed.
 - The summary's deliberately-not-done paragraph names all four omissions (no `require`, no PR, no (O2) lemma, no redeploy), each with a reason.
+
+#### Phase 4 Notes (measured 2026-11-09, dispatch_seq 3)
+
+**Summary written** to
+`specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/summaries/01_cslib-omega-automata-nogo-reassessment-summary.md`;
+`validate-artifact.sh … summary` → `[PASS] summary artifact is valid (0 warning(s))`, exit 0. Its
+deliberately-not-done section names all four omissions with reasons (no `require`, no upstream PR,
+no (O2) lemma, no `.claude/` redeploy), plus two more this dispatch found worth stating (no edit
+in either CSLib checkout; task 901's description deliberately left carrying the overturned ground,
+as amending task descriptions is outside this plan's scope).
+
+**No library or build-file change.**
+`git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` → empty, and
+`git diff --stat 8310217fd^..HEAD -- <same paths>` → empty. This task's commits:
+`8310217fd` (phase 1), `9093de468` (phase 2), `f378592cc` (phase 3).
+
+**Full gate set.** No `## Batch Gate Deferral` directive in this dispatch (grep count 0), so the
+complete set was run: `bash .claude/scripts/verify-deploy.sh` →
+**`[verify-deploy] PASS -- 15 check(s), 0 failure(s)`**, exit 0. Tally over the captured log:
+14 `[PASS]`, 22 `[SKIP]`, 1 `[WARN]`, 0 `[FAIL]`. Every SKIP is
+"`… is a deploy consumer, not the source store`"; the single WARN is
+`lean still declares routing_hard/routing_agents_hard`, pre-existing and unrelated. Not a
+`--only-gate` subset and not `--skip-slow`.
+
+**One root cause behind three surfaces.** The 22 `verify-deploy.sh` SKIPs, Phase 3's
+`test-roadmap-generation.sh` exit 2, and Phase 2's absent `source_dir` key are all the same
+condition — this tree is a deploy consumer with no reachable source store. None of the three is a
+defect in this task's work, and the deploy-freshness warning the dispatch carried is handed
+forward rather than acted on (a redeploy is a whole-tree regeneration and its own task).
+
+**Timing**: 0.75 hours
 
 ---
 
