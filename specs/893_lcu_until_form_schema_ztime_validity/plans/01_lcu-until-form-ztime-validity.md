@@ -1,7 +1,7 @@
 # Implementation Plan: Task #893
 
 - **Task**: 893 - Declare the until-form limit-closure schema LCU and its mirror, with ZTime validity
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/893_lcu_until_form_schema_ztime_validity/reports/01_lcu-until-form-ztime-validity.md`

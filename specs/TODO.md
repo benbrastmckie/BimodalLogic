@@ -11,8 +11,8 @@ next_project_number: 905
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,893,894,897,898,899,900 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
-| 2 | 231,282,296,429,497,763,787,804,853,862,869,895,901 | 298,428,502,743,761,803,838,893,894,898 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,894,897,898,899,900,901 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 2 | 231,282,296,429,497,763,787,804,853,862,869,895 | 298,428,502,743,761,803,838,894,898 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,896 | 429,497,763,838,895 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -109,8 +109,6 @@ next_project_number: 905
 
 ### Uncategorized
 
-893 [PLANNED] — Declare the until-form limit-closure schema LCU and its...
-  └─ 901 [NOT STARTED] — Paper proof of the two-sided Reynolds engine for L-plus at...
 894 [NOT STARTED] — The forward-cone unravelling as a regular ZTime frame:...
   └─ 895 [NOT STARTED] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
     └─ 896 [NOT STARTED] — The extended L-plus proof system (TM-plus + axiom set +...
@@ -119,6 +117,7 @@ next_project_number: 905
   └─ 869 [NOT STARTED] — (semantics: PRIORITY RULING (2026-11-05, user):...) (see above)
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
+901 [NOT STARTED] — Paper proof of the two-sided Reynolds engine for L-plus at...
 
 ## Tasks
 
@@ -261,11 +260,12 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 893. Declare the until-form limit-closure schema LCU and its mirror, with ZTime validity
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Dependencies**: None
 - **Research**: [893_lcu_until_form_schema_ztime_validity/reports/01_lcu-until-form-ztime-validity.md]
 - **Plan**: [893_lcu_until_form_schema_ztime_validity/plans/01_lcu-until-form-ztime-validity.md]
+- **Summary**: [893_lcu_until_form_schema_ztime_validity/summaries/01_lcu-until-form-ztime-validity-summary.md]
 
 **Description**: Declare lcU (alpha beta : PlusFormula) : PlusFormula := stab (gle ((dstab alpha).imp (dstab (untl (dstab beta) (dstab alpha))))) imp ((dstab alpha).imp (dstab (gle ((dstab alpha).or (untl (dstab beta) (dstab alpha)))))) in FormalSystem/PlusLanguage/PlusLCSchema.lean beside lcN, prove lcU_plusValidInt and lcU_plusValidZTime by instantiating omega_chain with A k := dstab alpha at the markers and the segment property P k eta s s' := dstab beta throughout (s, s'] (the hook restored by the omega_chain repair), and state the backward schema lcU_reflectTime_plusValidZTime as the plusValidIn_reflectTime corollary. This is the limit-closure principle the Reynolds-2001 ban-preservation lemma consumes for the L-plus language with untl and snce primitive; lcN is the F-form and does not discharge the segment guard. Add the docs/theorem-index.md rows and the C14 pins. No completeness claim.
 

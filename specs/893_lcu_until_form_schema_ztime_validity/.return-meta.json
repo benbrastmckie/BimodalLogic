@@ -37,7 +37,11 @@
   "metadata": {
     "session_id": "sess_1794246177_f0f988",
     "agent_type": "lean-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
     "task_dir": "specs/893_lcu_until_form_schema_ztime_validity",
     "dispatch_seq": 3,
     "compliance_check": "failed",
