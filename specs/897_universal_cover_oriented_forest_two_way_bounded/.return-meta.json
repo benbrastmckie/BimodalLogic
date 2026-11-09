@@ -1,0 +1,25 @@
+{
+  "status": "researched",
+  "started_at": "2026-11-09T21:58:12Z",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/897_universal_cover_oriented_forest_two_way_bounded/reports/01_universal-cover-oriented-forest.md",
+      "summary": "Full sorry-free design for the universal-cover half of ROADMAP (H5): rejects Mathlib's Quiver/Covering.lean as property-only, specifies a structurally-reduced-walk carrier with an Option (Bool x W) last-move index, gives the oriented-forest/seriality/lift proofs, a reusable SimpleGraph acyclicity criterion, and the ofStep [Finite W] generalization the cover frame needs."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Research for the universal-cover construction is complete. A sorry-free route is fully specified: carrier, one-step relation, all three IsOrientedForest fields, double seriality, the two one-step lifts, their iter-level forms, TwoWayBounded, surjectivity, and the assembly through saturation_of_orientedForest and plus_invariance_of_isZTime. Three findings change the shape of the work: Mathlib's Quiver/Covering.lean constructs nothing and is rejected as a starting point; FrameOver.taskRel_eq_iter makes the generation hypothesis and the base's double-seriality hypothesis free from [F.IsRegular]; and FrameOver.ofStep's [Finite W] binder (used only for saturation_of_finite) blocks presenting the infinite cover, so a Saturation-parameterised sibling constructor is required in IntNormalForm.lean.",
+    "roadmap_items": [
+      "(H5) second half: universal-cover construction with surjective two-way bounded covering map onto its base"
+    ]
+  },
+  "metadata": {
+    "session_id": "sess_1794261422_5f0e55_897",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  },
+  "next_steps": "Plan the module in five phases, with the two carrier-independent items first: (1) the general SimpleGraph.isAcyclic_of_rank_parent criterion in FormalSystem/ForMathlib/; (2) the FrameOver.ofStepSat generalization of ofStep in IntNormalForm.lean, keeping ofStep's signature and its three bridge lemmas intact; (3) the Cover/CoverPt/CoverStep carrier plus the single coverStep_cases structural lemma and the three IsOrientedForest fields; (4) double seriality and the two one-step lifts, then their iter-level forms; (5) TwoWayBounded, surjectivity of CoverPt.endpt, and the headline assembly, passing SuccOrder/IsSuccArchimedean positionally via inferInstanceAs per the ShiftSet.lean:485 gate. Each phase ends on a green scoped build. Territory is two files: the new FormalSystem/Semantics/UniversalCover.lean and FormalSystem/Semantics/IntNormalForm.lean, plus one new ForMathlib file and the FormalSystem.lean / FormalSystem/Semantics.lean aggregator imports."
+}
