@@ -2428,6 +2428,39 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case2' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case3' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case4' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case5' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case5_guard_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_snce_distrib' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case8' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case7' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case6' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sepSnce' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sepSnce' depends on axioms: [propext]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.isUTyped_sepSnce' depends on axioms: [propext]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sepU' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sepU' depends on axioms: [propext]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.isUTyped_sepU' depends on axioms: [propext]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sepMulti' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sepMulti' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.uTypes_sepMulti' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.uTypeCount_snce_substLeaf_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.untlDepth_lt_of_mem_innerTypes' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sep7' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sep7' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_of_junctionDepth_le_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.junctionDepth_sep8Step_snce_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sep_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sep' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.sep' depends on axioms: [propext]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.cnfTruth_cnf' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sepFormUS_package' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.sepZ' depends on axioms: [propext]
+'FormalSystem.Metalogic.Expressiveness.sepZ_sepClauses' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.plusTruthAt_sepZ_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.separationOver_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.trZ' depends on axioms: [propext]
+'FormalSystem.Metalogic.Expressiveness.openTruthAt_iff_trZ' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.openValidIn_ztime_iff_trZ' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Independence.ofut_pastDet' depends on axioms: [propext]
 'FormalSystem.Metalogic.Independence.opast_futDet' depends on axioms: [propext]
 'FormalSystem.Metalogic.Independence.MarkerGadget.theta_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -2751,6 +2784,39 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case2
 #print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case3
 #print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case4
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case5
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case5_guard_iff
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_snce_distrib
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case8
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case7
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case6
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sepSnce
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sepSnce
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.isUTyped_sepSnce
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sepU
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sepU
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.isUTyped_sepU
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sepMulti
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sepMulti
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.uTypes_sepMulti
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.uTypeCount_snce_substLeaf_le
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.untlDepth_lt_of_mem_innerTypes
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sep7
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sep7
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_of_junctionDepth_le_one
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.junctionDepth_sep8Step_snce_le
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sep_iff
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sep
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.sep
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.cnfTruth_cnf
+#print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sepFormUS_package
+#print axioms FormalSystem.Metalogic.Expressiveness.sepZ
+#print axioms FormalSystem.Metalogic.Expressiveness.sepZ_sepClauses
+#print axioms FormalSystem.Metalogic.Expressiveness.plusTruthAt_sepZ_iff
+#print axioms FormalSystem.Metalogic.Expressiveness.separationOver_ztime
+#print axioms FormalSystem.Metalogic.Expressiveness.trZ
+#print axioms FormalSystem.Metalogic.Expressiveness.openTruthAt_iff_trZ
+#print axioms FormalSystem.Metalogic.Expressiveness.openValidIn_ztime_iff_trZ
 #print axioms FormalSystem.Metalogic.Independence.ofut_pastDet
 #print axioms FormalSystem.Metalogic.Independence.opast_futDet
 #print axioms FormalSystem.Metalogic.Independence.MarkerGadget.theta_eq_iff

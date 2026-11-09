@@ -3130,7 +3130,7 @@ finding rather than folding it in silently.
 
 ---
 
-### Phase 27: Documentation, Theorem-Index Restatement and Re-measured Axiom Baselines [NOT STARTED]
+### Phase 27: Documentation, Theorem-Index Restatement and Re-measured Axiom Baselines [COMPLETED]
 
 **Goal**: The three documentation items Phase 14 excluded land, now that
 `separationOver_ztime` exists, and the seven contract declarations get measured C14 pins. Phase
@@ -3139,38 +3139,38 @@ finding rather than folding it in silently.
 
 **Tasks**:
 
-- [ ] Re-read each target file immediately before editing it (sibling concurrency).
-- [ ] Amend `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean`'s module docstring:
+- [x] Re-read each target file immediately before editing it (sibling concurrency).
+- [x] Amend `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean`'s module docstring:
       `## What is NOT proved here` must no longer assert the separation hypothesis is unformalized
       at `.ZTime`. State precisely what changed -- `separationOver_ztime` discharges it at
       `.ZTime` in this tree -- and that the `.RTime` hypothesis (GHR Theorem 10.3.20) remains
-      undischarged. Change no declaration in the file.
-- [ ] Restate the three `.ZTime` rows of `docs/theorem-index.md` whose Statement cell opens
+      undischarged. Change no declaration in the file. *(deviation: altered — besides the module docstring, three declaration docstrings that read as undischarged at `.ZTime` (`SeparationOver`, `openValidIn_ztime_iff_tr`, `exists_translation_ztime`) were amended in the same spirit; no declaration changed, `git diff` shows docstring text only.)*
+- [x] Restate the three `.ZTime` rows of `docs/theorem-index.md` whose Statement cell opens
       "Given separation over ℤ-time frames -- a hypothesis this tree does not formalize"
       (`openValidIn_ztime_iff_tr`, `exists_translation_ztime`, `decidableOpenValidZTimeOfTr`), so
       each records that the hypothesis is now discharged in-tree by `separationOver_ztime`.
-- [ ] Correct the Expressiveness-band preamble and the `ℤ`-validities sub-band text Phase 14
+- [x] Correct the Expressiveness-band preamble and the `ℤ`-validities sub-band text Phase 14
       landed: both currently record that the separation hypothesis is discharged nowhere in this
       tree, which the discharge makes false.
-- [ ] Add rows for the declarations of Phases 17-26, the seven contract declarations among them.
-- [ ] Measure the axiom profile of each of the seven contract declarations with `#print axioms`
+- [x] Add rows for the declarations of Phases 17-26, the seven contract declarations among them. *(completed — 37 rows; the `## How to read a row` legend requires every row with an axiom profile to be machine-pinned, so 33 C14 pairs were appended (the seven contract declarations among them) and the four axiom-free rows carry `axiom-free`.)*
+- [x] Measure the axiom profile of each of the seven contract declarations with `#print axioms`
       (or `lean_verify`) against the built tree and paste the **measured** output. Never hand-type
       a profile.
-- [ ] Append matched pairs to **both** heredocs in `scripts/check-module-invariants.sh` --
+- [x] Append matched pairs to **both** heredocs in `scripts/check-module-invariants.sh` --
       `C14_BASELINE` and `C14LEAN` -- at the same trailing position, after the existing
       `SeparationZ` lines. Omit any declaration whose `#print axioms` reports no
       `depends on axioms` line at all: `C14_OUT` filters that line out, so such a baseline entry
-      can never match. The 19 pairs Phase 14 landed stay; this phase appends, never rewrites them.
-- [ ] Leave every `.RTime` row, and the preamble's `.Dense`/`.Base` sentences, unchanged: `U`/`S`
+      can never match. The 19 pairs Phase 14 landed stay; this phase appends, never rewrites them. *(completed — 33 pairs, inserted directly after the `usTruth_case4` line in each heredoc; the five axiom-free declarations (`isSeparated_case5Rhs`, `isSeparated_of_isUTyped`, `isUSingleType_of_isUTyped`, `not_isUTyped_snce_untl`, `junctionDepth_ghrExample`) omitted as the bullet directs. C15's second assertion then required every new row's declaration to carry `Paper: — (reason)` rather than `Paper: [GHR]...`, so 39 `Paper:` lines across `Hierarchy.lean`, `UNesting.lean`, `JunctionDepth.lean` and `Discharge.lean` were normalized to the shape `Eliminations.lean` already uses, and two missing lines added; docstring-only.)*
+- [x] Leave every `.RTime` row, and the preamble's `.Dense`/`.Base` sentences, unchanged: `U`/`S`
       is not separable over `ℚ` and GHR 10.3.20 is out of scope.
-- [ ] Add the new modules to `FormalSystem/Metalogic/Expressiveness.lean`'s import list and
+- [x] Add the new modules to `FormalSystem/Metalogic/Expressiveness.lean`'s import list and
       refresh `FormalSystem/Metalogic/Expressiveness/README.md`'s `SeparationZ/` entry with its
       live file count and `Last verified` date.
-- [ ] Re-derive the doc-sync pinned counts from the tree (`typst/generated/status.typ` and the
+- [x] Re-derive the doc-sync pinned counts from the tree (`typst/generated/status.typ` and the
       ancestor-chain READMEs `README.md`, `FormalSystem/README.md`,
       `FormalSystem/Metalogic/README.md`) in this same run; never adjust one by hand to make a
       comparison pass.
-- [ ] Regenerate `FormalSystem.lean` if any import changed, and check each new module's warning
+- [x] Regenerate `FormalSystem.lean` if any import changed, and check each new module's warning
       count against `scripts/warning-budget.txt`.
 
 **Timing**: 2 hours

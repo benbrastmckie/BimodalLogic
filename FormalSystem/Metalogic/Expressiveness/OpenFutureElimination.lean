@@ -52,12 +52,16 @@ consume.
 
 ## What is NOT proved here
 
-The separation hypothesis itself. `SeparationOver` is an explicit named hypothesis standing for
-the cited theorems above, which are **not formalized in this tree**; every result below it is
-therefore conditional, and nothing here discharges it. The paper-level bookkeeping — the leaf
-abstraction, the conjunctive-normal-form rearrangement of a separated formula, and the
-order-isomorphism invariance of `U`/`S` truth — is likewise unverified in Lean. Formalizing
-[GHR][gabbay1994] Lemmas 10.2.1-10.2.8 is the route that would remove the hypothesis.
+The separation hypothesis itself, **at `.RTime`**. `SeparationOver` is an explicit named
+hypothesis standing for the cited theorems above. At `P := TaskFrame.IsZTime` it **is discharged
+in this tree**: `separationOver_ztime` (`SeparationZ/Discharge.lean`) proves it from a
+formalization of [GHR][gabbay1994] Lemmas 10.2.1-10.2.8 and Theorem 10.2.9 over the integer flow,
+with the separated form computed by the plain `def` `sepZ`; the paper-level bookkeeping — the
+leaf abstraction, the conjunctive-normal-form rearrangement of a separated formula, and the
+carrier bridge from `ℤ` to every regular ℤ-time frame — is verified there too. Nothing in this
+module changes on that account: every result here keeps its explicit `hsep` argument and may be
+instantiated at `separationOver_ztime`. At `P := TaskFrame.IsRTime` (Theorem 10.3.20) the
+hypothesis remains undischarged, and every `.RTime` result below is conditional on it.
 
 No completeness and no decidability result, for the open-future language or for L⁺, is claimed
 anywhere in this module. What the transfer corollaries state is a **reduction**, and each of its
@@ -73,14 +77,17 @@ antecedents is undischarged:
   soundness. Neither hypothesis is met by any relation constructed in this tree, and no proof
   system for the open-future language is built here at all.
 * **Effectiveness.** `tr` is `noncomputable` as defined — it reads a separated form off
-  `Classical.choose`. So even granting separation and granting L⁺ decidability, nothing here
-  yields a decision *procedure* for the open-future language, nor a *recursive* axiomatization of
-  it. `openDecider` is a composite of a hypothetical L⁺ decider with a translation supplied as an
-  argument; no such decider, and no computable translation, is exhibited.
+  `Classical.choose`. The computable translation at `.ZTime` is `trZ`
+  (`SeparationZ/Computable.lean`), with `openValidIn_ztime_iff_trZ` unconditional, so at `.ZTime`
+  the translation slot of `openDecider` and its siblings is inhabited effectively. What is still
+  missing for a decision *procedure* or a *recursive* axiomatization is the L⁺ decider resp. the
+  complete L⁺ relation, neither of which is exhibited; at `.RTime` no computable translation
+  exists in this tree either.
 
-The separation hypothesis named above is inherited unchanged by every one of those rows, since
-`tr` rests on it: `exists_translation_ztime` and `exists_translation_rtime` say only that `tr hsep`
-inhabits the translation slot *given* separation over the class in question.
+Every one of those rows takes the separation hypothesis explicitly, since `tr` rests on it:
+`exists_translation_ztime` and `exists_translation_rtime` say only that `tr hsep` inhabits the
+translation slot *given* separation over the class in question. At `.ZTime` that argument is
+supplied by `separationOver_ztime`; at `.RTime` it is inherited undischarged.
 
 One shape is **deliberately rejected** and must not be reintroduced as a simplification of the
 per-formula rows. A uniform `Decidable (OpenValidIn FrameClass.ZTime φ)` hypothesising
@@ -340,11 +347,12 @@ theorem opastP_sepForm_iff [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F)
 /-- **The separation hypothesis over a frame predicate `P`**: every L⁺ formula has a separated
 conjunctive normal form equivalent to it on every regular frame satisfying `P`.
 
-This is an explicit named hypothesis standing for cited literature that is **not formalized in
-this tree**. For `P := TaskFrame.IsZTime` it is Gabbay's Separation Theorem over the integer flow
-([GHR][gabbay1994] vol. 1, Theorem 10.2.9), with `□ψ` and `⊡ψ` subformulas and atoms read as
-propositional leaves; for `P := TaskFrame.IsRTime` its Dedekind-complete form (ibid.,
-Theorem 10.3.20). It is **false** at `P := fun _ => True` (the unconstrained class) and over
+This is an explicit named hypothesis standing for cited literature. For `P := TaskFrame.IsZTime`
+it is Gabbay's Separation Theorem over the integer flow ([GHR][gabbay1994] vol. 1,
+Theorem 10.2.9), with `□ψ` and `⊡ψ` subformulas and atoms read as propositional leaves, and it
+**is discharged in this tree** by `separationOver_ztime` (`SeparationZ/Discharge.lean`); for
+`P := TaskFrame.IsRTime` it is the Dedekind-complete form (ibid., Theorem 10.3.20), which is
+**not formalized** here. It is **false** at `P := fun _ => True` (the unconstrained class) and over
 dense flows generally, because `U`/`S` is not separable over `ℚ`. -/
 def SeparationOver (P : TaskFrame → Prop) : Prop :=
   ∀ φ : PlusFormula, ∃ L : List (PlusFormula × PlusFormula),
@@ -413,8 +421,10 @@ theorem openValidOnFrames_iff_tr {P : TaskFrame → Prop} (hsep : SeparationOver
 
 /-- **At `.ZTime`**, conditional on separation over ℤ-time frames: open-future-language validity
 is L⁺-validity of the translation. `FrameClass.Sat .ZTime F` is `F.IsRegular ∧ F.IsZTime` by
-definition. The hypothesis is Gabbay's Separation Theorem over the integer flow and is not
-formalized here, so this is a conditional result.
+definition. The hypothesis is Gabbay's Separation Theorem over the integer flow; it is discharged
+in this tree by `separationOver_ztime` (`SeparationZ/Discharge.lean`), at which this result may be
+instantiated, and `openValidIn_ztime_iff_trZ` (`SeparationZ/Computable.lean`) is its unconditional
+computable form.
 
 Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
 translation for them) -/
@@ -509,7 +519,8 @@ theorem openDecider_correct (fc : FormalSystem.ProofSystem.FrameClass)
 
 /-- **Given** separation over ℤ-time frames, the translation slot of the reductions above is
 inhabited at `.ZTime`, by `tr hsep`. Existence only: this says the generic reductions apply at
-`.ZTime` once separation is granted, and nothing about whether their other hypotheses hold.
+`.ZTime` once separation is granted — which `separationOver_ztime` does in this tree — and nothing
+about whether their other hypotheses hold.
 
 Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
 translation for them) -/

@@ -211,7 +211,10 @@ def ghrSCD : USForm := USForm.snce (.leaf 3) (.leaf 2)
 def ghrExample : USForm :=
   USForm.snce (USForm.snce (.leaf 4) ghrSCD) ((USForm.leaf 0).and (USForm.untl ghrSCD (.leaf 1)))
 
-/-- The measure agrees with the source: the whole formula has junction depth `3`. -/
+/-- The measure agrees with the source: the whole formula has junction depth `3`.
+
+Paper: — (GHR vol. 1, §10.2's worked example of junction depth; the manuscript states no
+separation theorem) -/
 theorem junctionDepth_ghrExample : junctionDepth ghrExample = 3 := by decide
 
 /-- The two chains separately: `jdU` is `2` (the `U` with the first `S(C, D)` inside it) and `jdS`
@@ -355,8 +358,8 @@ theorem isSOnly_of_jdU_eq_zero : ∀ {φ : USForm}, jdU φ = 0 → IsSOnly φ
 arguments and every `snce` has `untl`-free arguments, which is `IsSeparated` constructor for
 constructor.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.8 (the base case, "if the junction depth is 0 or 1
-then the formula is already separated")
+Paper: — (a result of GHR vol. 1, Lemma 10.2.8 (the base case, "if the junction depth is 0 or 1 then
+the formula is already separated"); the manuscript states no separation theorem)
 -/
 theorem isSeparated_of_junctionDepth_le_one : ∀ {φ : USForm}, junctionDepth φ ≤ 1 → IsSeparated φ
   | .leaf i, _ => IsSeparated.leaf i
@@ -481,8 +484,8 @@ def sep7Dual (φ : USForm) : USForm := (sep7 φ.swap).swap
 within an `S` is syntactically separable. Obtained from `sep7` by the time reflection, never by a
 second argument.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.7 (its dual, which the proof of Lemma 10.2.8 invokes
-as "the dual nature of the results so far")
+Paper: — (a result of GHR vol. 1, Lemma 10.2.7 (its dual, which the proof of Lemma 10.2.8 invokes as
+"the dual nature of the results so far"); the manuscript states no separation theorem)
 -/
 theorem isSeparated_sep7Dual {φ : USForm} (h : NoUntlUnderSnce φ) : IsSeparated (sep7Dual φ) :=
   isSeparated_swap (isSeparated_sep7 h)
@@ -490,7 +493,8 @@ theorem isSeparated_sep7Dual {φ : USForm} (h : NoUntlUnderSnce φ) : IsSeparate
 /--
 **GHR Lemma 10.2.7, conjugated**, the equivalence half.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.7 (its dual)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.7 (its dual); the manuscript states no separation
+theorem)
 -/
 theorem usTruth_sep7Dual {φ : USForm} (h : NoUntlUnderSnce φ) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (sep7Dual φ) ↔ usTruth v t φ := by
@@ -644,7 +648,8 @@ that `untl` starts an `untl`-headed chain through it, so the inner `S`'s own `sn
 are strictly shorter than `φ`'s longest `untl`-headed one. This is the depth-indexed analogue of
 `untlDepth_lt_of_mem_innerTypes`, restated for junction depth.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.8 (implicit in "of one less junction depth")
+Paper: — (a result of GHR vol. 1, Lemma 10.2.8 (implicit in "of one less junction depth"); the
+manuscript states no separation theorem)
 -/
 theorem jdS_lt_jdU_of_mem_innerSTypes {φ u : USForm} (hu : u ∈ innerSTypes φ) :
     jdS u < jdU φ := by
@@ -662,7 +667,8 @@ theorem jdS_lt_jdU_of_mem_innerSTypes {φ u : USForm} (hu : u ∈ innerSTypes φ
 chains are strictly shorter than its `snce`-headed ones, hence at least two shorter than `φ`'s
 longest `untl`-headed chain.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.8 (implicit in "of one less junction depth")
+Paper: — (a result of GHR vol. 1, Lemma 10.2.8 (implicit in "of one less junction depth"); the
+manuscript states no separation theorem)
 -/
 theorem jdU_add_two_le_jdU_of_mem_innerSTypes {φ u : USForm} (hu : u ∈ innerSTypes φ) :
     jdU u + 2 ≤ jdU φ := by
@@ -733,8 +739,8 @@ theorem isUOnly_mapSDeep_abstrFn {j : ℕ} {L : List USForm} :
 `mapU (abstrSnceArgs j L) φ` has `snce`-free arguments, because each maximal `snce` inside it was
 an inner `S`, lies in `L`, and became a leaf. This is what makes `sep7` applicable to it.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.8 (the "abstract the inner `S`s, then apply Lemma
-10.2.7" step)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.8 (the "abstract the inner `S`s, then apply Lemma
+10.2.7" step); the manuscript states no separation theorem)
 -/
 theorem noSnceUnderUntl_mapU_abstrSnceArgs {j : ℕ} {L : List USForm} :
     ∀ {φ : USForm}, (∀ u ∈ innerSTypes φ, u ∈ L) → NoSnceUnderUntl (mapU (abstrSnceArgs j L) φ)
@@ -825,7 +831,8 @@ to at most two.** Replacing each maximal `snce` inside a maximal `untl` by a fre
 every `S`-beneath-`U` link, so the abstracted formula satisfies `NoSnceUnderUntl`, whose junction
 depth is at most two.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.8 (the abstraction step)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.8 (the abstraction step); the manuscript states no
+separation theorem)
 -/
 theorem junctionDepth_mapU_abstrSnceArgs_le_two (φ : USForm) {j : ℕ} :
     junctionDepth (mapU (abstrSnceArgs j (innerSTypes φ)) φ) ≤ 2 :=
@@ -845,8 +852,8 @@ raise the junction depth.** There is no landed counterpart, and neither `uTypes_
 quantity from either — but none is needed: a separated formula has junction depth at most one
 outright, by `junctionDepth_le_one_of_isSeparated`.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.8 (the "separate by Lemma 10.2.7" step, at the level
-of the measure)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.8 (the "separate by Lemma 10.2.7" step, at the level of
+the measure); the manuscript states no separation theorem)
 -/
 theorem junctionDepth_sep7_le_one {φ : USForm} (h : NoSnceUnderUntl φ) :
     junctionDepth (sep7 φ) ≤ 1 :=
@@ -1004,8 +1011,8 @@ head kind is a genuine precondition of the bound and the recursion applies the s
 maximal temporal nodes, reaching `untl` heads by conjugation. It is this bound that licenses the
 recursive call in `sep8Body_spec`.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.8 (the bound licensing the induction hypothesis,
-asserted there as "of one less junction depth")
+Paper: — (a result of GHR vol. 1, Lemma 10.2.8 (the bound licensing the induction hypothesis,
+asserted there as "of one less junction depth"); the manuscript states no separation theorem)
 -/
 theorem junctionDepth_sep8Step_snce_le (ψ φ : USForm) (h : 2 ≤ junctionDepth (USForm.snce ψ φ)) :
     junctionDepth (sep8Step (USForm.snce ψ φ)) + 1 ≤ junctionDepth (USForm.snce ψ φ) := by
@@ -1073,7 +1080,8 @@ def sep8Fuel : ℕ → USForm → USForm
 so the budget appears in no public statement. A plain `def`, deliberately not `noncomputable`:
 the downstream ZTime translation's executability deliverable consumes it.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.8 and Theorem 10.2.9
+Paper: — (a result of GHR vol. 1, Lemma 10.2.8 and Theorem 10.2.9; the manuscript states no
+separation theorem)
 -/
 def sep (φ : USForm) : USForm := sep8Fuel (junctionDepth φ) φ
 
@@ -1082,7 +1090,8 @@ def sep (φ : USForm) : USForm := sep8Fuel (junctionDepth φ) φ
 `snce` case consumes part (c) directly; the `untl` case consumes it at the reflected formula,
 through `junctionDepth_swap` and `usTruth_swap`.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.8 (the inductive step)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.8 (the inductive step); the manuscript states no
+separation theorem)
 -/
 theorem sep8Body_spec {n : ℕ} {k : USForm → USForm}
     (hk : ∀ χ : USForm, junctionDepth χ ≤ n →
@@ -1127,7 +1136,7 @@ theorem sep8Body_spec {n : ℕ} {k : USForm → USForm}
 equivalent to a separated formula. Induction on the budget; the step is `sep8Body_spec`, where
 part (c) licenses the inductive hypothesis.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.8
+Paper: — (a result of GHR vol. 1, Lemma 10.2.8; the manuscript states no separation theorem)
 -/
 theorem sep8Fuel_spec : ∀ (n : ℕ) (φ : USForm), junctionDepth φ ≤ n →
     IsSeparated (sep8Fuel n φ) ∧ ∀ v t, usTruth v t (sep8Fuel n φ) ↔ usTruth v t φ := by
@@ -1147,7 +1156,8 @@ theorem sep8Fuel_spec : ∀ (n : ℕ) (φ : USForm), junctionDepth φ ≤ n →
 formula of the until/since language is equivalent over `ℤ` to a syntactically separated one, and
 `sep` computes it.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.8 and Theorem 10.2.9
+Paper: — (a result of GHR vol. 1, Lemma 10.2.8 and Theorem 10.2.9; the manuscript states no
+separation theorem)
 -/
 theorem isSeparated_sep (ψ : USForm) : IsSeparated (sep ψ) :=
   (sep8Fuel_spec (junctionDepth ψ) ψ le_rfl).1
@@ -1155,7 +1165,8 @@ theorem isSeparated_sep (ψ : USForm) : IsSeparated (sep ψ) :=
 /--
 **GHR Theorem 10.2.9 — the Separation Theorem over the integers**, the equivalence half.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.8 and Theorem 10.2.9
+Paper: — (a result of GHR vol. 1, Lemma 10.2.8 and Theorem 10.2.9; the manuscript states no
+separation theorem)
 -/
 theorem usTruth_sep_iff (ψ : USForm) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (sep ψ) ↔ usTruth v t ψ :=

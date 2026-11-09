@@ -32,10 +32,10 @@ a genuine partition; `scripts/measure-refactor-partitions.py --check` asserts th
 | `GameTransfer/` | 9,507 | Transfer of game equivalences across structures (5 files) |
 | `Kamp/` | 77,714 | Kamp/Rabinovich separation machinery (116 files) -- by far the largest subtree in the repository |
 | `Separation/` | 926 | Separation theorem and supporting lemmas (3 files) |
-| `SeparationZ/` | 1,413 | Gabbay separation over the integer flow, on an auxiliary until/since syntax with abstract leaves: GHR Lemmas 10.2.1 and 10.2.2 in full, and 10.2.3's four single-sign cases (5 files). Cases 5-8 of 10.2.3 and everything downstream of them are not landed, so `SeparationOver` is not discharged |
+| `SeparationZ/` | 6,875 | Gabbay separation over the integer flow, on an auxiliary until/since syntax with abstract leaves: GHR Lemmas 10.2.1-10.2.8 and Theorem 10.2.9 in full, the CNF packaging of the separated form, the discharge `separationOver_ztime : SeparationOver TaskFrame.IsZTime` with the computable `sepZ`, and the computable translation `trZ` (13 files) |
 
-Measured live contents: **10 loose modules and 5 subdirectories**, 149 modules in total
-(10 loose + EFGames 11 + GameTransfer 5 + Kamp 115 + Separation 3 + SeparationZ 5), re-derived
+Measured live contents: **10 loose modules and 5 subdirectories**, 157 modules in total
+(10 loose + EFGames 11 + GameTransfer 5 + Kamp 115 + Separation 3 + SeparationZ 13), re-derived
 rather than incremented. The per-subdirectory file and line figures in the table above are hand-written and
 lag that measurement; the live figures and the generated `Expressiveness/` row in
 [`Metalogic/README.md`](../README.md) are the authority, not the table cells. The aggregator for
@@ -55,14 +55,14 @@ Counts above exclude the archive. Run `scripts/check-module-invariants.sh` rathe
   separated disjunction and against a separated conjunctive normal form, on every regular task
   frame. On top of them, `openValidIn_ztime_iff_tr` and `openValidIn_rtime_iff_tr` transfer
   validity along the translation `tr` at `.ZTime` and `.RTime` — **conditional on
-  `SeparationOver`**, an explicit named hypothesis standing for separation theorems this tree
-  does not formalize and discharges nowhere. The hypothesis fails over the non-Dedekind-complete
-  flows, so nothing in that module reaches the dense or unconstrained classes.
-  `SeparationZ/` carries part of the route to that hypothesis over the integer flow — the four
-  Boolean distributivities (GHR 10.2.1), the four negation equivalences (GHR 10.2.2, the first
-  discreteness-dependent step), and GHR 10.2.3's four single-sign cases `usTruth_case1` through
-  `usTruth_case4`, each with its separatedness discharged — but **not** Theorem 10.2.9, so no
-  conditionality is removed anywhere.
+  `SeparationOver`**, an explicit named hypothesis standing for separation over the class.
+  `SeparationZ/` discharges it at `.ZTime`: `separationOver_ztime` (`SeparationZ/Discharge.lean`)
+  proves `SeparationOver TaskFrame.IsZTime` from GHR Lemmas 10.2.1-10.2.8 and Theorem 10.2.9 over
+  the integer flow, so `openValidIn_ztime_iff_tr` is instantiable there, and `trZ` with
+  `openValidIn_ztime_iff_trZ` (`SeparationZ/Computable.lean`) is the unconditional computable
+  form. At `.RTime` the hypothesis (GHR Theorem 10.3.20) remains undischarged. It fails over the
+  non-Dedekind-complete flows, so nothing in that module reaches the dense or unconstrained
+  classes.
   On top of those transfers sit the **transfer corollaries**
   `decidableOpenValidInOfTranslation`, `openDecider_correct`, `exists_translation_ztime` /
   `exists_translation_rtime`, `decidableOpenValidZTimeOfTr` / `decidableOpenValidRTimeOfTr`,
@@ -118,4 +118,4 @@ MonadicFO.lean            (monadic signature, MonadicFormula, evaluation)
 
 ---
 
-*Last verified: 2026-11-05*
+*Last verified: 2026-11-09*

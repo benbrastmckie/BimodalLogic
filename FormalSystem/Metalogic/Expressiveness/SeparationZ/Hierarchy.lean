@@ -250,8 +250,8 @@ def sepU (A B : USForm) : USForm → USForm
 This is proved **before** the equivalence, because it supplies the hypotheses `usTruth_sepSnce`
 demands at every `snce` node.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.5 (the conclusion's "`U` only appears as the formula
-`U(A, B)`" clause)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.5 (the conclusion's "`U` only appears as the formula
+`U(A, B)`" clause); the manuscript states no separation theorem)
 -/
 theorem isUTyped_sepU {A B : USForm} (hAs : IsSOnly A) (hBs : IsSOnly B) {φ : USForm}
     (h : IsUSingleType A B φ) : IsUTyped A B (sepU A B φ) := by
@@ -269,7 +269,8 @@ equivalent to its separated form at every leaf valuation and every time.
 The `snce` case chains `usTruth_snce_congr` at the two induction hypotheses with
 `usTruth_sepSnce` at the `isUTyped_sepU` witnesses; Lemma 10.2.4 is cited, never re-derived here.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.5 (the equivalence)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.5 (the equivalence); the manuscript states no
+separation theorem)
 -/
 theorem usTruth_sepU {A B : USForm} (hAs : IsSOnly A) (hBs : IsSOnly B) {φ : USForm}
     (h : IsUSingleType A B φ) (v : ℕ → ℤ → Prop) (t : ℤ) :
@@ -292,7 +293,8 @@ A one-line composite of `isSeparated_of_isUTyped` and `isUTyped_sepU` — not a 
 which would be a sign the typedness lemma had been stated too weakly. The two `IsUOnly`
 hypotheses are GHR's standing "`A` and `B` are wffs built without `S` or `U`".
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.5 (the conclusion's separatedness)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.5 (the conclusion's separatedness); the manuscript
+states no separation theorem)
 -/
 theorem isSeparated_sepU {A B : USForm} (hAs : IsSOnly A) (hBs : IsSOnly B) (hAu : IsUOnly A)
     (hBu : IsUOnly B) {φ : USForm} (h : IsUSingleType A B φ) : IsSeparated (sepU A B φ) :=
@@ -675,8 +677,8 @@ own defining equations: no type of the abstracted formula lies in `L`, and every
 survives was already a type of the original. This is the cheap part, and it is where the strict
 decrease originates — `uTypes_mapU_abstr_eq_head` is the instance the recursion consumes.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.6 (the "replace each `U(Aᵢ,Bᵢ)` by a fresh atom"
-step)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.6 (the "replace each `U(Aᵢ,Bᵢ)` by a fresh atom" step);
+the manuscript states no separation theorem)
 -/
 theorem uTypes_mapU_abstr {j : ℕ} {L : List USForm} {φ u : USForm}
     (hu : u ∈ uTypes (mapU (abstrFn j L) φ)) : u ∈ uTypes φ ∧ u ∉ L := by
@@ -705,8 +707,8 @@ measure.** Discharged by citing Phase 22.2's `isUTyped_sepU`, which already stat
 re-derived here, and `isUTyped_sepSnce` — one level down, about a single `snce` node, and
 adequate only at Lemma 10.2.4 — is deliberately *not* what is cited.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.6 (the "the separated form introduces no new type"
-step)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.6 (the "the separated form introduces no new type"
+step); the manuscript states no separation theorem)
 -/
 theorem uTypes_sepU {A B : USForm} (hAs : IsSOnly A) (hBs : IsSOnly B) {φ : USForm}
     (h : IsUSingleType A B φ) : ∀ u ∈ uTypes (sepU A B φ), u = USForm.untl B A :=
@@ -743,7 +745,8 @@ rather than asserted: the constituent's arguments were `untl`-free before reinde
 the reindexing, whose whole image lies in the abstracted tail `L`. It is this bound, not part
 (a), that licenses the recursive call.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.6 (the bound licensing the induction hypothesis)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.6 (the bound licensing the induction hypothesis); the
+manuscript states no separation theorem)
 -/
 theorem uTypeCount_snce_substLeaf_le {j : ℕ} {L : List USForm} (hLp : ∀ u ∈ L, IsPureType u)
     {ψ χ : USForm} (hψ : IsSOnly ψ) (hχ : IsSOnly χ) :
@@ -805,7 +808,8 @@ mention no fresh index — and recontaminates exactly the `snce` constituents, w
 available at every formula whose type count is at most `L.length`: the pre-abstraction count less
 one, by part (c).
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.6 (the reindexing and recursive-call step)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.6 (the reindexing and recursive-call step); the
+manuscript states no separation theorem)
 -/
 theorem mapS_substLeaf_spec {A B : USForm} (hAu : IsUOnly A) (hBu : IsUOnly B) {j : ℕ}
     {L : List USForm} (hLp : ∀ u ∈ L, IsPureType u) (hj : (USForm.untl B A).maxLeaf < j)
@@ -905,7 +909,7 @@ formula single-typed), part (b) by `uTypes_sepU`, which is a citation of Phase 2
 (c) by `uTypeCount_snce_substLeaf_le`, which is what licenses the recursive call `ih` at the
 reduced budget.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.6
+Paper: — (a result of GHR vol. 1, Lemma 10.2.6; the manuscript states no separation theorem)
 -/
 theorem sepFuel_spec : ∀ (n : ℕ) (φ : USForm), uTypeCount φ ≤ n → HasPureUTypes φ →
     IsSeparated (sepFuel n φ) ∧ (∀ v t, usTruth v t (sepFuel n φ) ↔ usTruth v t φ) ∧
@@ -967,7 +971,8 @@ theorem sepFuel_spec : ∀ (n : ℕ) (φ : USForm), uTypeCount φ ≤ n → HasP
 **GHR Lemma 10.2.6**, the separatedness half: a formula all of whose `untl` types are built
 without `S` or `U` is equivalent to a syntactically separated formula.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.6 (the conclusion's separatedness)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.6 (the conclusion's separatedness); the manuscript
+states no separation theorem)
 -/
 theorem isSeparated_sepMulti {φ : USForm} (h : HasPureUTypes φ) : IsSeparated (sepMulti φ) :=
   (sepFuel_spec (uTypeCount φ) φ le_rfl h).1
@@ -975,7 +980,8 @@ theorem isSeparated_sepMulti {φ : USForm} (h : HasPureUTypes φ) : IsSeparated 
 /--
 **GHR Lemma 10.2.6**, the equivalence half.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.6 (the equivalence)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.6 (the equivalence); the manuscript states no
+separation theorem)
 -/
 theorem usTruth_sepMulti {φ : USForm} (h : HasPureUTypes φ) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (sepMulti φ) ↔ usTruth v t φ :=
@@ -986,8 +992,8 @@ theorem usTruth_sepMulti {φ : USForm} (h : HasPureUTypes φ) (v : ℕ → ℤ �
 forms `U(Aᵢ, Bᵢ)` it already appeared in. With `uTypes_eq_self_of_isPureType` this also gives
 `HasPureUTypes (sepMulti φ)`, so the conclusion can feed the next lemma's hypothesis.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.6 (the conclusion's "`U` appears only in the forms
-`U(Aᵢ, Bᵢ)`" clause)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.6 (the conclusion's "`U` appears only in the forms
+`U(Aᵢ, Bᵢ)`" clause); the manuscript states no separation theorem)
 -/
 theorem uTypes_sepMulti {φ : USForm} (h : HasPureUTypes φ) :
     ∀ u ∈ uTypes (sepMulti φ), u ∈ uTypes φ :=

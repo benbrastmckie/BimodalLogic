@@ -458,8 +458,8 @@ is a maximal `untl` of one of a maximal `untl`'s arguments, so it sits strictly 
 that the enclosing `untl` contributes. This is what part (c) of the strict-decrease obligation
 consumes.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.7 (the sentence licensing the induction, asserted
-there without proof)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.7 (the sentence licensing the induction, asserted there
+without proof); the manuscript states no separation theorem)
 -/
 theorem untlDepth_lt_of_mem_innerTypes {φ u : USForm} (hu : u ∈ innerTypes φ) :
     untlDepth u < untlDepth φ := by
@@ -520,8 +520,8 @@ theorem isSOnly_mapU_abstrFn {j : ℕ} {L : List USForm} {ψ : USForm}
 `untl`s was an inner type and became a leaf, and `snce`-free arguments, because
 `NoSnceUnderUntl φ` gives that before the abstraction and the abstraction introduces only leaves.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.7 (the "abstract each `U(Xᵢⱼ, Yᵢⱼ)` to a fresh atom,
-separate the result by 10.2.6" step)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.7 (the "abstract each `U(Xᵢⱼ, Yᵢⱼ)` to a fresh atom,
+separate the result by 10.2.6" step); the manuscript states no separation theorem)
 -/
 theorem hasPureUTypes_mapU_abstrArgs {φ : USForm} (h : NoSnceUnderUntl φ) {j : ℕ} :
     HasPureUTypes (mapU (abstrArgs j (innerTypes φ)) φ) := by
@@ -546,7 +546,8 @@ so the depth falls to at most `1` from at least `2`.
 This is the form the *measure* argument consumes; `hasPureUTypes_mapU_abstrArgs` is the same fact
 in the form Lemma 10.2.6 consumes, and the two are deliberately kept distinct.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.7 (the abstraction step)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.7 (the abstraction step); the manuscript states no
+separation theorem)
 -/
 theorem untlDepth_mapU_abstrArgs_le_one {φ : USForm} (h : NoSnceUnderUntl φ) {j : ℕ} :
     untlDepth (mapU (abstrArgs j (innerTypes φ)) φ) ≤ 1 :=
@@ -561,8 +562,8 @@ There is **no** landed counterpart, and `uTypes_sepMulti` is not it: that lemma 
 *types* and says nothing about `untl` nesting, so citing it here would discharge a different
 claim.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.7 (the "separate the result by 10.2.6" step, at the
-level of the measure)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.7 (the "separate the result by 10.2.6" step, at the
+level of the measure); the manuscript states no separation theorem)
 -/
 theorem untlDepth_sepMulti_le_one {φ : USForm} (h : HasPureUTypes φ) :
     untlDepth (sepMulti φ) ≤ 1 :=
@@ -604,7 +605,8 @@ The composite of `untlDepth_unabstrFn_le` (every value of the reindexing nests a
 GHR's "the pre-abstraction depth less one", and it is **this** bound, not part (a), that licenses
 the recursive call.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.7 (the bound licensing the induction hypothesis)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.7 (the bound licensing the induction hypothesis); the
+manuscript states no separation theorem)
 -/
 theorem untlDepth_snce_substLeaf_le {j d : ℕ} {L : List USForm}
     (hLd : ∀ u ∈ L, untlDepth u ≤ d) {ψ χ : USForm} (hψ : IsSOnly ψ) (hχ : IsSOnly χ) :
@@ -708,8 +710,8 @@ too — and recontaminates exactly the `snce` constituents, whose arguments were
 `mapS k` fires `k` at each of those, and `hk` is the recursive call's contract, available at every
 formula of nesting depth at most `d`: the pre-abstraction depth less one, by part (c).
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.7 (the "substitute back, and re-separate the
-constituents the substitution made impure" step)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.7 (the "substitute back, and re-separate the
+constituents the substitution made impure" step); the manuscript states no separation theorem)
 -/
 theorem mapS_substLeaf_spec7 {j d : ℕ} {L : List USForm}
     (hLt : ∀ u ∈ L, ∃ a b : USForm, u = USForm.untl a b) (hLu : ∀ u ∈ L, IsUOnly u)
@@ -770,7 +772,7 @@ def sep7Fuel : ℕ → USForm → USForm
 /-- **GHR Lemma 10.2.7's separating function**: the budget instantiated at the measure, so the
 budget appears in no public statement. A plain `def`, deliberately not `noncomputable`.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.7 -/
+Paper: — (a result of GHR vol. 1, Lemma 10.2.7; the manuscript states no separation theorem) -/
 def sep7 (φ : USForm) : USForm := sep7Fuel (untlDepth φ) φ
 
 /--
@@ -786,7 +788,7 @@ Part (c), `untlDepth_snce_substLeaf_le`, is applied inside `mapS_substLeaf_spec7
 licenses the recursive call `ih` at the reduced budget: every inner type nests strictly less than
 `φ` by `untlDepth_lt_of_mem_innerTypes`, so `hLd` holds at `n`.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.7
+Paper: — (a result of GHR vol. 1, Lemma 10.2.7; the manuscript states no separation theorem)
 -/
 theorem sep7Fuel_spec : ∀ (n : ℕ) (φ : USForm), untlDepth φ ≤ n → NoSnceUnderUntl φ →
     IsSeparated (sep7Fuel n φ) ∧ ∀ v t, usTruth v t (sep7Fuel n φ) ↔ usTruth v t φ := by
@@ -841,7 +843,8 @@ theorem sep7Fuel_spec : ∀ (n : ℕ) (φ : USForm), untlDepth φ ≤ n → NoSn
 **GHR Lemma 10.2.7**, the separatedness half: a formula containing no `S` nested within a `U` is
 syntactically separable.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.7 (the conclusion's separatedness)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.7 (the conclusion's separatedness); the manuscript
+states no separation theorem)
 -/
 theorem isSeparated_sep7 {φ : USForm} (h : NoSnceUnderUntl φ) : IsSeparated (sep7 φ) :=
   (sep7Fuel_spec (untlDepth φ) φ le_rfl h).1
@@ -849,7 +852,8 @@ theorem isSeparated_sep7 {φ : USForm} (h : NoSnceUnderUntl φ) : IsSeparated (s
 /--
 **GHR Lemma 10.2.7**, the equivalence half.
 
-Paper: [GHR][gabbay1994] vol. 1, Lemma 10.2.7 (the equivalence)
+Paper: — (a result of GHR vol. 1, Lemma 10.2.7 (the equivalence); the manuscript states no
+separation theorem)
 -/
 theorem usTruth_sep7 {φ : USForm} (h : NoSnceUnderUntl φ) (v : ℕ → ℤ → Prop) (t : ℤ) :
     usTruth v t (sep7 φ) ↔ usTruth v t φ :=

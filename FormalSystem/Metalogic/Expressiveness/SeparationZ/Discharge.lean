@@ -87,7 +87,8 @@ theorem SeparationZ.toPlus_sepFormUS (g : ℕ → PlusFormula) :
 Theorem 10.2.9, package into (past, future) clause pairs, resubstitute. A plain `def`, deliberately
 not `noncomputable`: this is what makes the ZTime translation executable.
 
-Paper: [GHR][gabbay1994] vol. 1, Theorem 10.2.9 (the separated form it asserts to exist, computed)
+Paper: — (a result of GHR vol. 1, Theorem 10.2.9 (the separated form it asserts to exist, computed);
+the manuscript states no separation theorem)
 -/
 def sepZ (φ : PlusFormula) : List (PlusFormula × PlusFormula) :=
   (package (sep (abstr φ))).map fun c => (toPlus (leafVal φ) c.1, toPlus (leafVal φ) c.2)
@@ -101,7 +102,8 @@ set_option linter.unusedVariables false in
 **Every clause of `sepZ φ` is a (past-determined, future-determined) pair**, on every frame. Purity
 is frame-independent, so `hreg` and `hz` are consumed only to match `SeparationOver`'s shape.
 
-Paper: [GHR][gabbay1994] vol. 1, Theorem 10.2.9 (the separatedness of the form)
+Paper: — (a result of GHR vol. 1, Theorem 10.2.9 (the separatedness of the form); the manuscript
+states no separation theorem)
 -/
 @[nolint unusedArguments]
 theorem sepZ_sepClauses (φ : PlusFormula) (F : TaskFrame) (hreg : F.IsRegular)
@@ -118,7 +120,8 @@ theorem sepZ_sepClauses (φ : PlusFormula) (F : TaskFrame) (hreg : F.IsRegular)
 **`sepZ φ` is equivalent to `φ` on every regular ℤ-time frame.** Proved over the carrier `ℤ` and
 lifted by the carrier bridge.
 
-Paper: [GHR][gabbay1994] vol. 1, Theorem 10.2.9 (the equivalence)
+Paper: — (a result of GHR vol. 1, Theorem 10.2.9 (the equivalence); the manuscript states no
+separation theorem)
 -/
 theorem plusTruthAt_sepZ_iff (φ : PlusFormula) {F : TaskFrame} (hreg : F.IsRegular)
     (hz : F.IsZTime) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
@@ -142,7 +145,7 @@ theorem plusTruthAt_sepZ_iff (φ : PlusFormula) {F : TaskFrame} (hreg : F.IsRegu
 `OpenFutureElimination.lean` states: every L⁺ formula has a separated conjunctive normal form
 equivalent to it on every regular ℤ-time task frame, and `sepZ` computes it.
 
-Paper: [GHR][gabbay1994] vol. 1, Theorem 10.2.9
+Paper: — (a result of GHR vol. 1, Theorem 10.2.9; the manuscript states no separation theorem)
 -/
 theorem separationOver_ztime : SeparationOver TaskFrame.IsZTime :=
   fun φ => ⟨sepZ φ, fun F hreg hz =>

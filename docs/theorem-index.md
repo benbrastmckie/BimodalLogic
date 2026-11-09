@@ -650,26 +650,29 @@ no recurrence, quantifiers over every set of world states do.
 ### Expressiveness
 
 The first two rows are unconditional. Every open-future-elimination row that follows them —
-four eliminations, two validity transfers, and eight transfer corollaries — is **conditional**,
-and the four that mention the translation `tr` are conditional specifically on `SeparationOver`,
-an explicit named hypothesis standing for the separation theorems of Gabbay, Hodkinson and
-Reynolds, Chapter 10. That hypothesis **is discharged nowhere in this tree**, so no row below
-asserts that the restricted modals are L⁺-definable full stop. The hypothesis is false for
-`U`/`S` over `ℚ`, so nothing in this band transfers to the `.Dense` or `.Base` classes.
+four eliminations, two validity transfers, and eight transfer corollaries — is stated
+**conditionally**, and the four that mention the translation `tr` are conditional specifically
+on `SeparationOver`, an explicit named hypothesis standing for the separation theorems of Gabbay,
+Hodkinson and Reynolds, Chapter 10. At `.ZTime` that hypothesis **is discharged in this tree**:
+`separationOver_ztime` (`FormalSystem/Metalogic/Expressiveness/SeparationZ/Discharge.lean`)
+proves `SeparationOver TaskFrame.IsZTime`, so each `.ZTime` row below is instantiable at it, and
+the sub-band's `trZ` rows state the computable, unconditional form. At `.RTime` (GHR
+Theorem 10.3.20) the hypothesis remains undischarged, and those rows stay conditional. The
+hypothesis is false for `U`/`S` over `ℚ`, so nothing in this band transfers to the `.Dense` or
+`.Base` classes.
 
-Part of the route to the hypothesis over the integer flow **is** formalized, in
-`FormalSystem/Metalogic/Expressiveness/SeparationZ/`, and has its own sub-band below: GHR
-Lemmas 10.2.1 and 10.2.2 in full, and Lemma 10.2.3's four cases in which the eliminated `until`
-occurs in exactly one of the two arguments of the `since`. Lemma 10.2.3's remaining four cases —
-the ones in which the same `until` occurs in **both** arguments — are not formalized, and
-Lemma 10.2.4 consumes all eight of them, so Theorem 10.2.9 is not reached. **No row's
-conditionality is weakened by that sub-band**, at `.ZTime` or anywhere else.
+The route over the integer flow is formalized in full in
+`FormalSystem/Metalogic/Expressiveness/SeparationZ/`, with its own sub-band below: GHR Lemmas
+10.2.1 through 10.2.8 and Theorem 10.2.9 over an auxiliary until/since syntax, the CNF packaging
+of the separated form, the discharge itself, and the computable translation. **No `.RTime` row's
+conditionality is weakened by that sub-band.**
 
 The eight transfer-corollary rows state a **reduction**: given decidability resp. completeness of
 L⁺ validity at a frame class, the corresponding open-language fact follows. Every antecedent of
 every one of them is undischarged — `Decidable (PlusValidIn FrameClass.ZTime _)` is stated nowhere
-in this tree, completeness of any recursive extension of TM⁺ is open at every frame class, and
-`tr` is noncomputable, so no decision procedure and no recursive axiomatization follows either.
+in this tree and completeness of any recursive extension of TM⁺ is open at every frame class;
+`trZ` is a computable translation at `.ZTime`, but with no L⁺ decider and no complete L⁺ relation
+exhibited, no decision procedure and no recursive axiomatization follows either.
 **No completeness or decidability result for the open-future language is asserted by any row in
 this band, at any frame class.**
 
@@ -681,24 +684,26 @@ this band, at any frame class.**
 | — | For `α` past-determined and `β` future-determined, on every regular task frame: `◁(α ∨ β) ↔ ⊡α ∨ β` | `FormalSystem.Metalogic.Expressiveness.opastP_or_iff` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | pcq pinned:C14 |
 | — | For a list of (past-determined, future-determined) clauses, on every regular task frame: `▷` of their conjunction is the conjunction of the `▷`-eliminated clauses | `FormalSystem.Metalogic.Expressiveness.ofutP_sepForm_iff` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | pcq pinned:C14 |
 | — | For a list of (past-determined, future-determined) clauses, on every regular task frame: `◁` of their conjunction is the conjunction of the `◁`-eliminated clauses | `FormalSystem.Metalogic.Expressiveness.opastP_sepForm_iff` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | pcq pinned:C14 |
-| — | Given separation over ℤ-time frames — a hypothesis this tree does not formalize — open-future-language validity at `ZTime` is L⁺-validity of the translation | `FormalSystem.Metalogic.Expressiveness.openValidIn_ztime_iff_tr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | ZTime | pcq pinned:C14 |
+| — | Given separation over ℤ-time frames — discharged in this tree by `separationOver_ztime`, so the hypothesis is instantiable — open-future-language validity at `ZTime` is L⁺-validity of the translation | `FormalSystem.Metalogic.Expressiveness.openValidIn_ztime_iff_tr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | ZTime | pcq pinned:C14 |
 | — | Given separation over the dense Dedekind-complete frames — a hypothesis this tree does not formalize — open-future-language validity at `RTime` is L⁺-validity of the translation | `FormalSystem.Metalogic.Expressiveness.openValidIn_rtime_iff_tr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | RTime | pcq pinned:C14 |
 | — | Given a translation transferring validity at a frame class and a decision procedure for L⁺ validity there — neither of which this tree supplies — open-language validity at that class is decidable | `FormalSystem.Metalogic.Expressiveness.decidableOpenValidInOfTranslation` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | [propext] pinned:C14 |
 | — | Given a translation transferring validity at a frame class and a correct `Bool`-valued decider for L⁺ validity there — neither of which this tree supplies — the composite decider is correct for open-language validity | `FormalSystem.Metalogic.Expressiveness.openDecider_correct` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | [propext] pinned:C14 |
-| — | Given separation over ℤ-time frames — a hypothesis this tree does not formalize — some translation transfers open-language validity at `ZTime` to L⁺ validity, namely `tr hsep` | `FormalSystem.Metalogic.Expressiveness.exists_translation_ztime` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | ZTime | pcq pinned:C14 |
+| — | Given separation over ℤ-time frames — discharged in this tree by `separationOver_ztime`, so the hypothesis is instantiable — some translation transfers open-language validity at `ZTime` to L⁺ validity, namely `tr hsep` | `FormalSystem.Metalogic.Expressiveness.exists_translation_ztime` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | ZTime | pcq pinned:C14 |
 | — | Given separation over the dense Dedekind-complete frames — a hypothesis this tree does not formalize — some translation transfers open-language validity at `RTime` to L⁺ validity, namely `tr hsep` | `FormalSystem.Metalogic.Expressiveness.exists_translation_rtime` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | RTime | pcq pinned:C14 |
-| — | Given separation over ℤ-time frames and decidability of L⁺ validity at `ZTime` for the single formula `tr hsep φ` — neither of which this tree supplies — open-language validity of `φ` at `ZTime` is decidable | `FormalSystem.Metalogic.Expressiveness.decidableOpenValidZTimeOfTr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | ZTime | pcq pinned:C14 |
+| — | Given separation over ℤ-time frames (discharged in this tree by `separationOver_ztime`) and decidability of L⁺ validity at `ZTime` for the single formula `tr hsep φ` — which this tree does not supply — open-language validity of `φ` at `ZTime` is decidable | `FormalSystem.Metalogic.Expressiveness.decidableOpenValidZTimeOfTr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | ZTime | pcq pinned:C14 |
 | — | Given separation over the dense Dedekind-complete frames and decidability of L⁺ validity at `RTime` for the single formula `tr hsep φ` — neither of which this tree supplies — open-language validity of `φ` at `RTime` is decidable | `FormalSystem.Metalogic.Expressiveness.decidableOpenValidRTimeOfTr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | RTime | pcq pinned:C14 |
 | — | Given a translation transferring validity at a frame class and an L⁺ relation complete for validity there — the latter open at every frame class — every valid open-language formula has a derivable translation | `FormalSystem.Metalogic.Expressiveness.openComplete_of_plusComplete_in` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | [propext] pinned:C14 |
 | — | Given a translation transferring validity at a frame class and an L⁺ relation sound for validity there, derivability of a translation yields validity of the original open-language formula | `FormalSystem.Metalogic.Expressiveness.openValid_of_plusSound` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | [propext] pinned:C14 |
 
-#### Gabbay separation over the integer flow: the part that is formalized
+#### Gabbay separation over the integer flow
 
-Every row here is an unconditional statement about the auxiliary until/since syntax `USForm`
-evaluated over `ℤ` at an arbitrary leaf valuation `ℕ → ℤ → Prop`, or about the single seam
-between that syntax and `PlusFormula`. None of them discharges `SeparationOver`, and none of
-them is consumed by any row above. GHR's `U(A,B)` is this subtree's `untl B A`: guard first,
-event second.
+Every row here is an unconditional statement: about the auxiliary until/since syntax `USForm`
+evaluated over `ℤ` at an arbitrary leaf valuation `ℕ → ℤ → Prop`, about the single seam between
+that syntax and `PlusFormula`, or — in the last seven rows — about `PlusFormula` and the
+open-future language themselves. `separationOver_ztime` discharges `SeparationOver
+TaskFrame.IsZTime` and is what every `.ZTime` row above may be instantiated at; `trZ` is the
+computable translation those rows' `tr hsep` becomes. GHR's `U(A,B)` is this subtree's
+`untl B A`: guard first, event second.
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |
 |-------------|-----------|-----------|------|-------------|--------|
@@ -722,16 +727,49 @@ event second.
 | — | GHR 10.2.3, Case 3: `S(a, q ∨ U(A,B))` is separated, through 10.2.2's mirror on the negation, which moves the guard's `until` into the event argument as Case 2's shape | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case3` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Eliminations.lean` | ZTime | pcq pinned:C14 |
 | — | GHR 10.2.3, Case 4: `S(a, q ∨ ¬U(A,B))` is separated, by the same move, landing on Case 1's shape | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case4` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Eliminations.lean` | ZTime | pcq pinned:C14 |
 | — | Each of Cases 1-4's right-hand sides is syntactically separated — no `until` under a `since` and no `since` under an `until` — given `IsSOnly`/`IsUOnly` side conditions on the four parameters. Proved, not asserted in prose; axiom-free, hence not C14-pinnable | `FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_case1Rhs` and its three siblings | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Eliminations.lean` | — | axiom-free |
+| — | GHR 10.2.3, Case 5: `S(a ∧ U(A,B), q ∨ U(A,B))` — the same `until` in both arguments — is separated, proved semantically through the `ℤ` greatest-witness device at a repaired right-hand side; GHR's printed Case 5 formula is refuted over the integer flow by two compiled models | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case5` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/ElimHard.lean` | ZTime | pcq pinned:C14 |
+| — | The guard equivalence Case 5's repair needs, the one lemma of the subtree with no counterpart in the source | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case5_guard_iff` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/ElimHard.lean` | ZTime | pcq pinned:C14 |
+| — | GHR's generic negated-since distribution identity, the hinge of Case 8's reduction | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_neg_snce_distrib` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/NegationEquiv.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.3, Case 8: `S(a ∧ ¬U(A,B), q ∨ ¬U(A,B))` is separated, by reduction to earlier cases along the source's own acyclic order, keeping the third disjunct the source calls redundant — a compiled model shows it is not | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case8` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/ElimHard.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.3, Case 7: `S(a ∧ U(A,B), q ∨ ¬U(A,B))` is separated, by reduction | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case7` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/ElimHard.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.3, Case 6: `S(a ∧ ¬U(A,B), q ∨ U(A,B))` is separated, by reduction; with Case 5 this completes all eight cases | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_case6` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/ElimHard.lean` | ZTime | pcq pinned:C14 |
+| — | Each of Cases 5-8's right-hand sides is syntactically separated, given the `IsSOnly`/`IsUOnly` side conditions. Axiom-free, hence not C14-pinnable | `FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_case5Rhs` and its three siblings | `FormalSystem/Metalogic/Expressiveness/SeparationZ/ElimHard.lean` | — | axiom-free |
+| — | GHR 10.2.4's actual precondition `IsUTyped` — one admitted `until` type, no `until` under a `since` — is strictly weaker than `IsSeparated`, and implies it under two extra purity hypotheses. Axiom-free | `FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_of_isUTyped` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean` | — | axiom-free |
+| — | GHR 10.2.4: at a `since` node whose two arguments are `(A,B)`-typed, `sepSnce` is an equivalent formula, obtained by the `until`-literal normal form and the eight cases of 10.2.3 | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sepSnce` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.4, the conclusion's first half: `sepSnce` is syntactically separated | `FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sepSnce` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean` | — | `[propext]` pinned:C14 |
+| — | GHR 10.2.4, the conclusion's second half: `sepSnce` mentions the single `until` type `U(A,B)` and no other | `FormalSystem.Metalogic.Expressiveness.SeparationZ.isUTyped_sepSnce` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean` | — | `[propext]` pinned:C14 |
+| — | GHR 10.2.5's precondition `IsUSingleType` — one `until` type with nesting unconstrained — follows from 10.2.4's `IsUTyped`, and the converse is refuted at `S(⊥, U(A,B))`. Both axiom-free | `FormalSystem.Metalogic.Expressiveness.SeparationZ.isUSingleType_of_isUTyped` and `FormalSystem.Metalogic.Expressiveness.SeparationZ.not_isUTyped_snce_untl` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Hierarchy.lean` | — | axiom-free |
+| — | GHR 10.2.5: a formula with the single `until` type `U(A,B)`, `A` and `B` built without `S` or `U`, is equivalent to `sepU A B` of it, by structural recursion composing 10.2.4 at every `since` node | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sepU` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Hierarchy.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.5, the conclusion's separatedness | `FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sepU` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Hierarchy.lean` | — | `[propext]` pinned:C14 |
+| — | GHR 10.2.5, the conclusion's single-type clause | `FormalSystem.Metalogic.Expressiveness.SeparationZ.isUTyped_sepU` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Hierarchy.lean` | — | `[propext]` pinned:C14 |
+| — | GHR 10.2.6: a formula all of whose maximal `until` types have arguments built without `S` or `U` is equivalent to `sepMulti` of it — the induction on the number of types, rendered as an explicit budget recursion | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sepMulti` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Hierarchy.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.6, the conclusion's separatedness | `FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sepMulti` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Hierarchy.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.6, the conclusion's type clause: `sepMulti` introduces no `until` type the input did not have | `FormalSystem.Metalogic.Expressiveness.SeparationZ.uTypes_sepMulti` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Hierarchy.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.6's strict decrease, part (c): the reindexed constituents carry at most the pre-abstraction type count less one — the bound that licenses the induction hypothesis, proved rather than asserted | `FormalSystem.Metalogic.Expressiveness.SeparationZ.uTypeCount_snce_substLeaf_le` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Hierarchy.lean` | — | pcq pinned:C14 |
+| — | GHR 10.2.7's licensing sentence — the nesting level of `U` in `U(Aᵢ,Bᵢ)` strictly exceeds that in its subformula `U(Xᵢⱼ,Yᵢⱼ)` — proved rather than asserted | `FormalSystem.Metalogic.Expressiveness.SeparationZ.untlDepth_lt_of_mem_innerTypes` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/UNesting.lean` | — | pcq pinned:C14 |
+| — | GHR 10.2.7: a formula containing no `since` nested within an `until` is equivalent to `sep7` of it — the induction on the `until`-nesting depth, as a budget recursion | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sep7` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/UNesting.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.7, the conclusion's separatedness | `FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sep7` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/UNesting.lean` | ZTime | pcq pinned:C14 |
+| — | GHR's junction depth, defined as a mutual structural recursion, computes the source's stated value `3` on its own worked example `S(a ∧ U(A, S(C, D)), S(S(C, D), E))`. Proved by `decide`; axiom-free | `FormalSystem.Metalogic.Expressiveness.SeparationZ.junctionDepth_ghrExample` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/JunctionDepth.lean` | — | axiom-free |
+| — | GHR 10.2.8's base case: junction depth at most one is separatedness | `FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_of_junctionDepth_le_one` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/JunctionDepth.lean` | — | pcq pinned:C14 |
+| — | GHR 10.2.8's strict decrease, part (c): at a `since`-headed formula of junction depth `n ≥ 2`, the reindexed form has junction depth at most `n - 1` — the source's "of one less junction depth", proved; it holds only at temporal heads, which is why the duality reduction is a precondition of the bound | `FormalSystem.Metalogic.Expressiveness.SeparationZ.junctionDepth_sep8Step_snce_le` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/JunctionDepth.lean` | ZTime | pcq pinned:C14 |
+| — | GHR 10.2.8 and Theorem 10.2.9, the equivalence: every formula of the until/since language is equivalent over `ℤ` to `sep` of it | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sep_iff` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/JunctionDepth.lean` | ZTime | pcq pinned:C14 |
+| — | GHR Theorem 10.2.9, the separatedness: `sep` of every formula is syntactically separated | `FormalSystem.Metalogic.Expressiveness.SeparationZ.isSeparated_sep` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/JunctionDepth.lean` | ZTime | pcq pinned:C14 |
+| — | The separating function of Theorem 10.2.9 is a plain `def` — computable, no `Classical.choice` | `FormalSystem.Metalogic.Expressiveness.SeparationZ.sep` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/JunctionDepth.lean` | ZTime | `[propext]` pinned:C14 |
+| — | The clause-list CNF of a formula's Boolean skeleton is truth-preserving, for every formula | `FormalSystem.Metalogic.Expressiveness.SeparationZ.cnfTruth_cnf` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Packaging.lean` | — | pcq pinned:C14 |
+| — | A separated formula packaged into (`since`-only, `until`-only) clause pairs is equivalent to it at every leaf valuation and time — the one step with no counterpart in the source | `FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_sepFormUS_package` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Packaging.lean` | — | pcq pinned:C14 |
+| — | The computable separated conjunctive normal form of an L⁺ formula over ℤ-time: leaf-abstract, `sep`, package, resubstitute. A plain `def` | `FormalSystem.Metalogic.Expressiveness.sepZ` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Discharge.lean` | ZTime | `[propext]` pinned:C14 |
+| — | Every clause of `sepZ φ` is a (past-determined, future-determined) pair, on every frame | `FormalSystem.Metalogic.Expressiveness.sepZ_sepClauses` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Discharge.lean` | ZTime | pcq pinned:C14 |
+| — | `sepZ φ` is equivalent to `φ` on every regular ℤ-time frame, proved over the carrier `ℤ` and lifted by the carrier bridge | `FormalSystem.Metalogic.Expressiveness.plusTruthAt_sepZ_iff` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Discharge.lean` | ZTime | pcq pinned:C14 |
+| — | **Gabbay's Separation Theorem over the integer flow, as the discharge of `SeparationOver TaskFrame.IsZTime`**: every L⁺ formula has a separated conjunctive normal form equivalent to it on every regular ℤ-time frame | `FormalSystem.Metalogic.Expressiveness.separationOver_ztime` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Discharge.lean` | ZTime | pcq pinned:C14 |
+| — | The computable translation of the open-future language into L⁺ over ℤ-time: `tr` with `Classical.choose` replaced by `sepZ`. A plain `def`; `tr` is untouched | `FormalSystem.Metalogic.Expressiveness.trZ` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Computable.lean` | ZTime | `[propext]` pinned:C14 |
+| — | `trZ` is truth-preserving on every regular ℤ-time frame, at every model, world history and time | `FormalSystem.Metalogic.Expressiveness.openTruthAt_iff_trZ` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Computable.lean` | ZTime | pcq pinned:C14 |
+| — | **Unconditionally**: open-future-language validity at `ZTime` is L⁺-validity of the computable translation — `openValidIn_ztime_iff_tr` with its hypothesis discharged and its translation computed | `FormalSystem.Metalogic.Expressiveness.openValidIn_ztime_iff_trZ` | `FormalSystem/Metalogic/Expressiveness/SeparationZ/Computable.lean` | ZTime | pcq pinned:C14 |
 
-**What this sub-band does NOT contain, and why.** GHR 10.2.3's Cases 5-8 — `S(a ∧ ±U(A,B),
-q ∨ ±U(A,B))`, the same `until` in both arguments — are absent. GHR's printed Case 5 is refuted
-over the integer flow, and Cases 6-8 are published only as reductions with acknowledged gaps. The
-obstruction for Cases 6-8 is structural: the guard-failure condition of a case whose guard
-carries `¬U(A,B)` is an `∃∀` over the window below the evaluation point, and re-anchoring it at
-its own rightmost witness retains a forward-looking, bounded conjunct, which is not a formula at
-the guard's own evaluation point and so cannot be an `S`-guard. Because 10.2.4 consumes all
-eight cases, 10.2.4 through 10.2.8 and Theorem 10.2.9 are absent too, and with them the
-`SeparationOver TaskFrame.IsZTime` discharge and any computable ZTime translation.
+**What this sub-band does NOT contain.** The Dedekind-complete counterpart, GHR Theorem 10.3.20,
+hence `SeparationOver TaskFrame.IsRTime`: every `.RTime` row above keeps its hypothesis. Two
+findings about the source are recorded at the declarations rather than here: GHR's printed Case 5
+formula is refuted over the integer flow by two compiled models, and the third disjunct of
+Case 8's right-hand side, which the source calls redundant, is not (`ElimHard.lean`).
 
 ## Statuses that are refutations, not gaps, and one status that is a gap
 

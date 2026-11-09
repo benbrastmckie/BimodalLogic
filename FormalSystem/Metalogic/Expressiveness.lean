@@ -27,6 +27,14 @@ import FormalSystem.Metalogic.Expressiveness.SeparationZ.LeafAbstraction
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.Distributivity
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.NegationEquiv
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.Eliminations
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.ElimHard
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.NormalForm
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.Hierarchy
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.UNesting
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.JunctionDepth
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.Packaging
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.Discharge
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.Computable
 
 /-!
 # Expressiveness: Kamp/Stavi Expressive Completeness
@@ -57,9 +65,11 @@ split a genuine partition rather than a renaming.
 8. **GameTransfer**: transfer of game equivalences across structures
 9. **MonadicFO / EFGameTactics**: shared vocabulary and proof automation
 10. **SeparationZ**: the Gabbay separation development over the integer flow, on an auxiliary
-    until/since syntax whose leaves are abstract predicates — GHR Lemmas 10.2.1 and 10.2.2 in
-    full and Lemma 10.2.3's four single-sign cases. Cases 5-8 of 10.2.3, and therefore 10.2.4
-    onwards, are **not** landed, so `SeparationOver` is not discharged
+    until/since syntax whose leaves are abstract predicates — GHR Lemmas 10.2.1 through 10.2.8
+    and Theorem 10.2.9 in full, the CNF packaging of the separated form, the discharge
+    `separationOver_ztime : SeparationOver TaskFrame.IsZTime` with its computable separated form
+    `sepZ`, and the computable translation `trZ` with its unconditional validity transfer at
+    `.ZTime`
 11. **OpenFutureElimination**: the open-future and open-past modals against separated L⁺
     formulas — the elimination of a disjunction under `▷`/`◁`, its conjunctive-normal-form
     version, a translation into L⁺ conditional on a named separation hypothesis, and the
@@ -75,10 +85,14 @@ check C14's axiom baseline in `scripts/check-module-invariants.sh`.
 
 The open-future elimination of `OpenFutureElimination` is landed **conditional on
 `SeparationOver`**, an explicit named hypothesis standing for the separation theorems of
-[GHR][gabbay1994] Chapter 10. `SeparationZ/` carries part of the route to those theorems over
-the integer flow — Lemmas 10.2.1 and 10.2.2, and 10.2.3's four single-sign cases — but **not**
-Theorem 10.2.9, so the hypothesis stays undischarged and every `tr` row stays conditional. The
-elimination is not a headline unconditional result and is not on the main-results page.
+[GHR][gabbay1994] Chapter 10. `SeparationZ/` discharges that hypothesis **at
+`TaskFrame.IsZTime`**: `separationOver_ztime` (`SeparationZ/Discharge.lean`) proves it from
+Lemmas 10.2.1-10.2.8 and Theorem 10.2.9 over the integer flow, with the separated form computed
+by the plain `def` `sepZ`, and `trZ` (`SeparationZ/Computable.lean`) is the resulting computable
+translation, with `openValidIn_ztime_iff_trZ` unconditional. Every `tr` row keeps its explicit
+`hsep` argument and is instantiable at `separationOver_ztime`; at `TaskFrame.IsRTime` (GHR
+Theorem 10.3.20) the hypothesis remains undischarged and those rows stay conditional. The
+elimination is not on the main-results page.
 
 The same module's **transfer corollaries** are conditional in the same spirit and for the same
 reason. `decidableOpenValidInOfTranslation`, `openDecider_correct`,

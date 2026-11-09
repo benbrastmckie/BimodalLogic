@@ -179,7 +179,10 @@ theorem cnfTruth_distrib (v : ℕ → ℤ → Prop) (t : ℤ) (C D : List (List 
       exact ⟨l, List.mem_append.mpr (Or.inr hl), hlt⟩
 
 /-- **The CNF is truth-preserving**, for every formula: `cnfPos φ` holds exactly when `φ` does and
-`cnfNeg φ` exactly when `φ` fails. -/
+`cnfNeg φ` exactly when `φ` fails.
+
+Paper: — (formalization-native; the manuscript states separation as a Boolean combination and
+never puts it in conjunctive normal form) -/
 theorem cnfTruth_cnf (v : ℕ → ℤ → Prop) (t : ℤ) : ∀ φ : USForm,
     (cnfTruth v t (cnfPos φ) ↔ usTruth v t φ) ∧ (cnfTruth v t (cnfNeg φ) ↔ ¬ usTruth v t φ)
   | .leaf i => by
