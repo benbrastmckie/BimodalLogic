@@ -1,7 +1,7 @@
 # Implementation Plan: Gabbay Separation over ZTime for L⁺
 
 - **Task**: 867 - Formalize Gabbay separation over discrete time for `PlusFormula`, discharging `SeparationOver TaskFrame.IsZTime` and making the open-future translation executable
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 58 hours (27 recorded for Phases 1-15; 20 recorded for Phases 16-22.3; 11 remaining
   for Phases 23-28)
 - **Dependencies**: None blocking. Consumes only already-compiled declarations.

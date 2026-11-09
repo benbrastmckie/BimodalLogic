@@ -1,25 +1,35 @@
 {
-  "status": "partial",
-  "dispatch_seq": 19,
-  "phases_completed": 25,
+  "status": "implemented",
+  "dispatch_seq": 20,
+  "phases_completed": 30,
   "phases_total": 30,
-  "summary": "Phase 23 landed and committed green: GHR Lemma 10.2.7 in full as the new UNesting.lean (858 lines, 57 declarations), which compiled on the FIRST build attempt because Phase 22.3's substitution calculus transferred verbatim. The hypothesis is now the decidable structural predicate NoSnceUnderUntl, GHR's licensing sentence about nesting levels is proved rather than asserted (untlDepth_lt_of_mem_innerTypes), and the induction is the budget idiom with the three decrease parts separately named. Two plan deviations, both recorded: sep7Body's base case returns sepMulti rather than the identity (the phase's two statements of its own base case are inconsistent and only this reading is sound), and sep7Fuel_spec carries two conjuncts, read off the proof obligation as the plan directs. All gates green against baseline: zero sorry, zero vacuous introduced, axiom count 14 unchanged, full lake build 0 errors, module-invariants and metalogic-cycles PASS. Phase 24's standing 'size part (c) first' prerequisite was then executed on paper with no code written: the plan's declared stall candidate is NOT a stall, and GHR's duality reduction turns out to be a precondition of the bound rather than a convenience.",
+  "summary": "Phases 24-28 landed and committed green, one commit per phase: JunctionDepth.lean (GHR 10.2.8 and Theorem 10.2.9 over USForm, part (c) proved at snce heads with the duality reduction shown to be its precondition), Packaging.lean and Discharge.lean (CNF packaging and separationOver_ztime : SeparationOver TaskFrame.IsZTime with the plain def sepZ, axiom profile {propext}), Computable.lean (trZ with openValidIn_ztime_iff_trZ unconditional), the documentation and theorem-index restatement with 33 measured C14 pins, and the full gate sweep. All seven pinned contract signatures match; lean-plan-compliance-check passed; full lake build 0 errors/0 warnings; sorry 0; axiom count 14 unchanged; module-invariants and metalogic-cycles PASS. Three plan deviations (all annotated inline): the inner abstraction pass is the swap-conjugate of mapU because the sketch's mapS does not descend through nested untls; sep8Body guards at maximal temporal nodes; part (a) is a <= 2 bound strict only above depth 2. verify-deploy.sh re-deferred to the batch stage with the narrowing suites run and passing.",
   "blockers": [],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/04_ghr-10-2-7-untl-nesting-summary.md",
-      "summary": "Phase 23 implementation summary: GHR Lemma 10.2.7 in full, the measured gate record, the three plan deviations, the refuted Scope Hypothesis diagnosis, and the Phase 24 part (c) sizing addendum."
+      "path": "specs/867_formalize_gabbay_separation_ztime/summaries/04_separation-theorem-discharge-ztime-summary.md",
+      "summary": "Implementation summary for Phases 24-28 with the measured gate record, decisions, plan deviations and follow-ups."
     },
     {
       "type": "handoff",
-      "path": "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-23-handoff-20261106T190000Z.md",
-      "summary": "Phase 23 phase-end handoff: the interface Phase 24 consumes, the full measured gate table, and the part (c) sizing derivation with its mechanical check of GHR's worked example."
+      "path": "specs/867_formalize_gabbay_separation_ztime/handoffs/phase-28-handoff-20261109T103000Z.md",
+      "summary": "Phase 28 gate-sweep record; earlier phase handoffs 24-27 sit beside it."
     },
     {
       "type": "source",
-      "path": "FormalSystem/Metalogic/Expressiveness/SeparationZ/UNesting.lean",
-      "summary": "New module: GHR Lemma 10.2.7 -- NoSnceUnderUntl with its decision procedure, untlDepth, the two base-case bridges, innerTypes with the proved licensing bound, abstrArgs, the three named decrease parts, and sep7 with isSeparated_sep7 and usTruth_sep7."
+      "path": "FormalSystem/Metalogic/Expressiveness/SeparationZ/JunctionDepth.lean",
+      "summary": "GHR Lemma 10.2.8 and Theorem 10.2.9 over USForm: junction depth, duality instruments, the three decrease parts, sep."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Expressiveness/SeparationZ/Discharge.lean",
+      "summary": "sepZ, sepZ_sepClauses, plusTruthAt_sepZ_iff, separationOver_ztime -- the discharge of SeparationOver TaskFrame.IsZTime."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Expressiveness/SeparationZ/Computable.lean",
+      "summary": "trZ, openTruthAt_iff_trZ, openValidIn_ztime_iff_trZ -- the computable ZTime translation."
     }
   ]
 }
