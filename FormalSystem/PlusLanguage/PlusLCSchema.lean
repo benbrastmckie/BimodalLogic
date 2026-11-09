@@ -66,15 +66,23 @@ not rescue the reading either: `⟐⊤ U ⟐α` is not `F⟐α`, and the consequ
 so a Reynolds-style construction over L⁺ must discharge until-commitments as well as
 `F`-commitments. An until-commitment `⟐β U ⟐α` is satisfied only by a witness carrying `⟐β`
 throughout the interval up to the `⟐α`-point; the `F`-form schema says nothing about any
-interval and so does not discharge an until-commitment's guard. A reader who takes `lcN` to
-already cover `LCU` is told the until-form ingredient is present in this tree when it is not.
+interval and so does not discharge an until-commitment's guard. The two schemas are therefore
+separate ingredients, and a reader who takes `lcN` to cover the until-form has the wrong
+inventory: `lcN` is the `F`-form and discharges no segment guard.
 
-**What this tree does and does not have.** `PlusOmegaChain.lean`'s `omega_chain` carries the
-segment-property parameter `P` (with its stability hypothesis `hP`, the first-marker identity
-`c 0 = s₀`, and agreement below `s₀`) that `LCU`'s semantic core needs — an interval condition on
-the spliced segment is exactly what `P` is for. But **`LCU` itself is not declared anywhere in
-this tree**: there is no `LCU` definition, and no claim whatsoever about its validity at any
-frame class. It waits on the oriented-forest `Saturation` lemma and on separation over `ℤ`.
+**What is declared here, and what is claimed for it.** `lcU` is `LCU`, declared below beside
+`lcN`. `lcU_plusValidInt` and `lcU_plusValidZTime` are the results of record for it: `LCU α β`
+is valid on every model over a `FrameOver intOrder` frame, and hence at the `.ZTime` frame class,
+for arbitrary parameter formulas; `lcU_reflectTime_plusValidZTime` carries the same to the
+backward mirror. The route is `PlusOmegaChain.lean`'s `omega_chain`, whose segment-property
+parameter `P` (with its stability hypothesis `hP`, the first-marker identity `c 0 = s₀`, and
+agreement below `s₀`) is exactly the interval condition `LCU`'s semantic core needs.
+
+**What is not claimed for it.** `.Base` validity of `LCU` is **open and unclaimed**, for the same
+cofinality reason `lcN`'s is: `omega_chain`'s cofinality hypothesis has one discharge in this
+tree, `intOrder_omega_cofinal`, available over `ℤ` alone. Nor is any derivability or completeness
+claim made: nothing here says `lcU` is a TM⁺ theorem, that TM⁺ extended by it is complete, or
+that `lcU` follows from `lcN` or `lcN` from `lcU`.
 
 `PlusLimitClosure.lean`'s `blc` is **not** subsumed by `lcN`, and does not subsume it. `blc` is
 the `n = 1` limit-closure formula valid at `.Base`, by Zorn plus the Extension Theorem; `lcN` is
@@ -208,11 +216,12 @@ def lcCons (n : ℕ) (α : ℕ → PlusFormula) : PlusFormula :=
 /--
 **`LC_n`**: Reynolds 2003's infinite limit-closure schema, transposed to `⊡` with `G≤`.
 
-`LCU`, the until-form limit-closure schema, is **not** an instance of this one, and `lcN 1` is
-not `LCU`: see the module docstring's `LCU` section for the two formulas side by side and for why
-the difference is substantive. `LCU` is not declared in this tree. See the module docstring for
-what is claimed about `lcN` and what is not — in particular, `.Base` validity is open and
-unclaimed.
+`lcU`, the until-form limit-closure schema, is **not** an instance of this one, and `lcN 1` is
+not `lcU`: see the module docstring's `LCU` section for the two formulas side by side and for why
+the difference is substantive. `lcU` is declared below, with its own validity results
+(`lcU_plusValidInt`, `lcU_plusValidZTime`, `lcU_reflectTime_plusValidZTime`). See the module
+docstring for what is claimed about `lcN` and what is not — in particular, `.Base` validity is
+open and unclaimed.
 -/
 def lcN (n : ℕ) (α : ℕ → PlusFormula) : PlusFormula := (lcAnte n α).imp (lcCons n α)
 

@@ -189,7 +189,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 
 ---
 
-### Phase 3: Prose repair across the four remaining undeclared-ness surfaces [NOT STARTED]
+### Phase 3: Prose repair across the four remaining undeclared-ness surfaces [COMPLETED]
 
 **Goal**: Remove every live assertion that `LCU` is undeclared, keeping each genuinely substantive distinction and restating it on its own merits, in the present tense, with no record-versioning language.
 
