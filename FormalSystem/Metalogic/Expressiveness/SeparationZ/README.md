@@ -5,11 +5,13 @@ route that would discharge the `SeparationOver TaskFrame.IsZTime` hypothesis of
 [`OpenFutureElimination.lean`](../OpenFutureElimination.lean).
 
 **Status: the hypothesis is NOT discharged yet.** What is landed is GHR Lemmas 10.2.1
-through 10.2.7 in full — including **all eight cases of Lemma 10.2.3**, the four single-sign
-cases in `Eliminations.lean` and the four hard cases, where the same `untl` occurs in both the
-event and the guard argument of a `snce`, in `ElimHard.lean`. Lemma 10.2.8 and Theorem 10.2.9
-are not reached yet, so every `tr` row of `OpenFutureElimination.lean` keeps its
-`SeparationOver` hypothesis exactly as before.
+through 10.2.8 and Theorem 10.2.9 in full over the auxiliary syntax — including **all eight cases
+of Lemma 10.2.3**, the four single-sign cases in `Eliminations.lean` and the four hard cases,
+where the same `untl` occurs in both the event and the guard argument of a `snce`, in
+`ElimHard.lean` — so `sep` with `isSeparated_sep` and `usTruth_sep_iff` is the Separation
+Theorem over `ℤ` at the `USForm` level. The CNF packaging that carries it across the seam to
+`PlusFormula` and discharges `SeparationOver TaskFrame.IsZTime` is not landed yet, so every `tr`
+row of `OpenFutureElimination.lean` keeps its `SeparationOver` hypothesis exactly as before.
 
 `Eliminations.lean`'s module docstring records an obstruction to Cases 5-8. That record describes
 a route that re-anchors each hard case semantically — which is not the route the source uses, and
@@ -40,6 +42,7 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 | `NormalForm.lean` | 514 | GHR Lemma 10.2.4: the `IsUTyped` precondition with its relationship to `IsSeparated`, the `untl`-literal normal form `substU` with the event and guard splits, the nine right-hand-side typedness witnesses, and `sepSnce` with its equivalence and both discharged halves of the conclusion |
 | `Hierarchy.lean` | 1000 | GHR Lemmas 10.2.5 and 10.2.6: 10.2.5's input hypothesis `IsUSingleType` — the single `untl` type with nesting unconstrained — with the four Boolean closure lemmas, the one-way implication from `IsUTyped` and the two witnesses proving the strictness at `S(⊥, U(A,B))`; the structural recursion `sepU` with all three of 10.2.5's conclusions; then the `U`-type measure `uTypes`/`uTypeCount`, the abstraction and reindexing device (`mapU`, `mapS`, `substLeaf`, `abstrFn`, `unabstrFn`), the three separately named strict-decrease obligations, and 10.2.6's `sepMulti` with all three of its conclusions |
 | `UNesting.lean` | 858 | GHR Lemma 10.2.7: the hypothesis predicate `NoSnceUnderUntl` with its `Bool`-valued decision procedure, the `U`-within-`U` nesting measure `untlDepth` with its equation lemmas, the two base-case bridges to 10.2.6's `HasPureUTypes`, GHR's inner types `innerTypes` with the licensing bound `untlDepth_lt_of_mem_innerTypes` proved rather than asserted, the two-level abstraction `abstrArgs` as `mapU` at a `mapU`, the three separately named strict-decrease obligations, and `sep7` with both of 10.2.7's conclusions |
+| `JunctionDepth.lean` | 1164 | GHR Lemma 10.2.8 and Theorem 10.2.9: the junction-depth measure `jdU`/`jdS`/`junctionDepth` as a mutual structural recursion, checked against GHR's own worked example (`junctionDepth_ghrExample`); its monotonicity bounds, the zero/one characterizations and the base case `isSeparated_of_junctionDepth_le_one` with its converse; the duality instruments `junctionDepth_swap`, `isSeparated_swap`, `NoUntlUnderSnce` and the conjugated 10.2.7 `sep7Dual`; the mirror collection API `sTypes`/`argSTypes`/`innerSTypes`; the abstraction of the inner `snce`s through `mapSDeep` (the `swap`-conjugate of `mapU`) and `abstrSnceArgs`; the three separately named strict-decrease obligations, with part (c) proved at `snce` heads where GHR's duality reduction is shown to be its precondition; and `sep8Body`/`sep8Fuel`/`sep` with both of Theorem 10.2.9's conclusions |
 
 ## Key Results
 
@@ -79,6 +82,25 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
   recursive call
 - `sep7` with `usTruth_sep7` and `isSeparated_sep7` — GHR 10.2.7 in full, over `NoSnceUnderUntl`
   as its precondition. A plain `def`: the budget `sep7Fuel` appears in neither conclusion
+- `jdU`, `jdS`, `junctionDepth` — GHR's junction depth as a mutual structural recursion, the
+  longest chain of nested temporal subformulae of alternating kinds over every appearance;
+  `junctionDepth_ghrExample` confirms the source's stated value `3` on its own worked example
+- `isSeparated_of_junctionDepth_le_one`, `junctionDepth_le_one_of_isSeparated` — GHR 10.2.8's base
+  case and its converse: junction depth at most one is exactly separatedness
+- `junctionDepth_swap`, `isSeparated_swap`, `sep7Dual` with `usTruth_sep7Dual` and
+  `isSeparated_sep7Dual` — the duality instruments, the last being GHR 10.2.7
+  conjugated by the time reflection over `NoUntlUnderSnce`, never proved a second time
+- `junctionDepth_mapU_abstrSnceArgs_le_two`, `junctionDepth_sep7_le_one`,
+  `junctionDepth_sep8Step_snce_le` — GHR 10.2.8's strict decrease as three separately named
+  obligations: abstraction drops the depth to at most two, separation by 10.2.7 does not raise it
+  (a separated formula has depth at most one outright), and the reindexed form of a
+  **`snce`-headed** formula has depth at most the pre-abstraction depth less one. The third is
+  where GHR's "of one less junction depth" is proved rather than asserted, and it holds only at
+  temporal heads: for a formula with `jdU = jdS` the bound is not strict, so the duality reduction
+  is a precondition of the bound and not a convenience
+- `sep` with `usTruth_sep_iff` and `isSeparated_sep` — GHR Lemma 10.2.8 and Theorem 10.2.9 in
+  full over `USForm`: every formula is equivalent over `ℤ` to a separated one. A plain `def`
+  whose axiom profile is `{propext}`; the budget `sep8Fuel` appears in neither conclusion
 - `usTruth_case1` … `usTruth_case4` with `isSeparated_case1Rhs` … `isSeparated_case4Rhs` —
   GHR 10.2.3's four single-sign cases, each with its separatedness proved rather than asserted
 - `usTruth_case5` … `usTruth_case8` with `isSeparated_case5Rhs` … `isSeparated_case8Rhs` —
@@ -104,9 +126,9 @@ The seam back to `PlusFormula` is a single interface in `LeafAbstraction.lean`.
 
 ## Not landed
 
-GHR Lemma 10.2.8 and Theorem 10.2.9, hence also the
-`SeparationOver TaskFrame.IsZTime` discharge and the computable ZTime translation that would rest
-on it. All of Lemma 10.2.3 is landed, and so are Lemma 10.2.4's equivalence and separatedness.
+The CNF packaging of `sep`'s output into `SepClauses`, the carrying of Theorem 10.2.9 across the
+`LeafAbstraction.lean` seam to `PlusFormula`, hence the `SeparationOver TaskFrame.IsZTime`
+discharge and the computable ZTime translation that would rest on it. All of Lemma 10.2.3 is landed, and so are Lemma 10.2.4's equivalence and separatedness.
 Lemma 10.2.5 is landed in full: its input hypothesis `IsUSingleType` and the `sepU` construction
 over it, with the equivalence, the separatedness and the single-`untl`-type clause. GHR's own
 induction on the maximum nested-`S` depth above a `U(A,B)` is deliberately not formalized —
@@ -136,6 +158,18 @@ do not transfer, because their hypothesis is `IsPureType` of every abstracted me
 type need not be pure; `isSeparated_unabstrFn_of_isUOnly`, `mapS_unabstrFn_of_untl` and
 `untlDepth_unabstrFn_le` are their analogues with the purity replaced by what this layer has.
 
+Lemma 10.2.8 and Theorem 10.2.9 are landed in full over `USForm`: `junctionDepth` as the measure,
+`sep` as the construction, and the equivalence and separatedness as its two conclusions. GHR's
+induction on junction depth is rendered by the same explicit-budget idiom, with the step applied
+at each maximal temporal node rather than at the whole formula, because the bound licensing the
+recursive call — part (c), which the source states only as "of one less junction depth" — holds
+only where the head's kind forces `jdU < jdS` or its mirror; the `untl`-headed case is reached by
+conjugating the `snce`-headed one with the time reflection, exactly as the source's "dual nature
+of the results so far" directs. The abstraction of the maximal `snce`s inside the maximal `untl`s
+descends through nested `untl`s, which the landed `mapS` does not, so the inner pass is the
+`swap`-conjugate of `mapU` (`mapSDeep`), used only through its five equations; no new substitution
+operator exists in this subtree. `sep` is a plain `def` with axiom profile `{propext}`.
+
 Both halves of Lemma 10.2.4's conclusion are landed: `isSeparated_sepSnce` for separatedness
 and `isUTyped_sepSnce` for the single `untl` type, so a downstream induction counting `untl`
 **types** is well-posed over this layer. `NormalForm.lean`'s module docstring records which of
@@ -151,4 +185,4 @@ alone. Both are retained; `sepSnce` routes through the printed-form siblings.
   and Computational Aspects*, vol. 1, Chapter 10 §10.2 — Lemmas 10.2.1-10.2.8 and
   Theorem 10.2.9 over the integer flow
 
-*Last verified: 2026-11-06*
+*Last verified: 2026-11-09*

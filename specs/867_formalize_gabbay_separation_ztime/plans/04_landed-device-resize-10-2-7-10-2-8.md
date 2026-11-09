@@ -2798,7 +2798,7 @@ own two-level build-out (`hasNoSnce`, `hasNoSnce_iff`, the `IsUOnly` instance,
 
 ---
 
-### Phase 24: Junction Depth, GHR Lemma 10.2.8 and Theorem 10.2.9 [NOT STARTED]
+### Phase 24: Junction Depth, GHR Lemma 10.2.8 and Theorem 10.2.9 [COMPLETED]
 
 **Goal**: Junction depth is a structural measure with proved monotonicity bounds, with its
 definition checked against GHR's own worked example, GHR 10.2.8 holds as a budget recursion, and
@@ -2825,7 +2825,7 @@ separation of a wff of the form `S(D₁, D₂)`").
 
 **Tasks**:
 
-- [ ] Add `JunctionDepth.lean`, importing `UNesting`. Define the measure by the mutual structural
+- [x] Add `JunctionDepth.lean`, importing `UNesting`. Define the measure by the mutual structural
       recursion the alternation requires: `jdU` (the longest alternating chain whose next element
       must be an `untl`) and `jdS` (likewise for `snce`), with
       `jdU (untl ψ φ) = max (1 + max (jdS ψ) (jdS φ)) (max (jdU ψ) (jdU φ))` -- the two branches
@@ -2835,19 +2835,19 @@ separation of a wff of the form `S(D₁, D₂)`").
       `junctionDepth φ = max (jdU φ) (jdS φ)`. The "skip" branch is what makes this the maximum
       over all appearances rather than only over root-anchored chains; a definition without it
       undercounts and is wrong.
-- [ ] **Check the definition against GHR's own worked example before proving anything about it.**
+- [x] **Check the definition against GHR's own worked example before proving anything about it.**
       The source states that in `S(a ∧ U(A, S(C, D)), S(S(C, D), E))` the first appearance of `C`
       has junction depth 3, the second has 1, and the whole formula has junction depth 3. Land that
       as an executable `example` (a `decide`- or `rfl`-closed equality, or an `#eval` recorded in
       the docstring) on the corresponding `USForm`. A definition that disagrees with this example
       is wrong however plausible its equations look, and this check costs one line.
-- [ ] Prove the monotonicity bounds: `jdU`, `jdS` and `junctionDepth` of each immediate subformula
+- [x] Prove the monotonicity bounds: `jdU`, `jdS` and `junctionDepth` of each immediate subformula
       are at most those of the whole, at `imp`, `untl` and `snce`. The archived development's
       `jd_imp_le_left`, `jd_untl_le_left` and siblings indicate the shape; re-derive each, do not
       transplant.
-- [ ] Prove `isSeparated_of_junctionDepth_le_one : junctionDepth ψ ≤ 1 → IsSeparated ψ`, GHR's
+- [x] Prove `isSeparated_of_junctionDepth_le_one : junctionDepth ψ ≤ 1 → IsSeparated ψ`, GHR's
       base case.
-- [ ] **The duality instruments (decision D-j).** Prove `isSeparated_swap`,
+- [x] **The duality instruments (decision D-j).** Prove `isSeparated_swap`,
       `junctionDepth_swap`, and the conjugate of Phase 23's hypothesis predicate -- define
       `NoUntlUnderSnce` or derive it as `NoSnceUnderUntl φ.swap` -- and obtain the conjugated form
       of GHR 10.2.7 from `sep7` by `USForm.swap`, `swap_involutive` and `usTruth_swap`
@@ -2856,25 +2856,25 @@ separation of a wff of the form `S(D₁, D₂)`").
       so the conjugation of the hypothesis predicate is a real obligation and is named here rather
       than assumed; if it will not go through, `## Rollback/Contingency` carries the direct
       `untl`-headed case as the sized fallback.
-- [ ] Define the abstraction by reusing `mapU` and `mapS` together: inside each maximal `untl`,
+- [x] Define the abstraction by reusing `mapU` and `mapS` together: inside each maximal `untl`,
       rewrite each maximal `snce` by `abstrFn j L`, i.e.
       `abstrSnceArgs j L u = match u with | .untl ψ φ => .untl (mapS (abstrFn j L) ψ) (mapS (abstrFn j L) φ) | _ => u`,
       with `L` the list of those maximal `snce` subformulae. Prove
       `noSnceUnderUntl_mapU_abstrSnceArgs` -- the abstracted formula satisfies Phase 23's
       hypothesis, which is what makes `sep7` applicable to it. Do not define a new substitution
-      operator: `mapU`, `mapS`, `substLeaf`, `abstrFn` and `unabstrFn` are landed and generic.
-- [ ] **Part (a) -- abstraction strictly drops `junctionDepth`** -- as its own named lemma.
+      operator: `mapU`, `mapS`, `substLeaf`, `abstrFn` and `unabstrFn` are landed and generic. *(deviation: altered — the bullet's sketch `mapS (abstrFn j L)` cannot be what it describes: the landed `mapS` stops at `untl` without descending, so it misses every maximal `snce` lying under a nested `untl` (e.g. `snce ⊥ (untl ⊥ (untl ⊥ (snce ⊥ p)))`, junction depth 3, would be left unabstracted and `sep7` inapplicable). The bullet's primary instruction — rewrite each maximal `snce` inside each maximal `untl` — is executed with the inner pass taken as the `swap`-conjugate of the landed `mapU`, `mapSDeep k φ = (mapU (fun u => (k u.swap).swap) φ.swap).swap`, used only through its five equations; `abstrSnceArgs` is `mapU`'s argument exactly as `abstrArgs` is. The collection `L` is the mirror API `sTypes`/`argSTypes`/`innerSTypes`. No new substitution operator; both blocking greps clean.)*
+- [x] **Part (a) -- abstraction strictly drops `junctionDepth`** -- as its own named lemma.
       Replacing a maximal `snce E F` inside a maximal `untl Bᵢ Aᵢ` by a leaf fresh above `maxLeaf`
       breaks that alternation link, so every chain through it shortens, by the measure's own
-      defining equations. Cheap, and it rests on the monotonicity bounds proved above.
-- [ ] **Part (b) -- separation by Phase 23's `sep7` does not raise `junctionDepth`** -- as its own
+      defining equations. Cheap, and it rests on the monotonicity bounds proved above. *(deviation: altered — landed as `junctionDepth_mapU_abstrSnceArgs_le_two` (the abstracted formula satisfies `NoSnceUnderUntl`, whose depth is ≤ 2) with the strict form `junctionDepth_mapU_abstrSnceArgs_lt` exactly above depth 2. At depth 2 the drop is not strict and cannot be — e.g. `snce ⊥ (untl ⊥ p)` has no inner `snce` to abstract — and the recursion closes regardless because part (c), not (a), licenses the call.)*
+- [x] **Part (b) -- separation by Phase 23's `sep7` does not raise `junctionDepth`** -- as its own
       named lemma, proved in this module. **No landed counterpart exists**, and neither
       `uTypes_sepMulti` nor Phase 23's `untlDepth` bound transfers: `junctionDepth` counts
       *alternations* between `untl` and `snce`, which is a different quantity from a type count or
       a one-sided nesting depth. If this turns out to need `sep7Fuel_spec` to carry an extra
       conjunct, that is a finding to report against Phase 23's third conjunct, not a licence to
       weaken the claim here.
-- [ ] **Part (c) -- the reindexed form's junction depth is bounded by the pre-abstraction depth
+- [x] **Part (c) -- the reindexed form's junction depth is bounded by the pre-abstraction depth
       less one** -- as its own named lemma, and **size it first, before any of the rest of this
       phase is attempted.** GHR leave it implicit entirely: their "of one less junction depth" is
       the whole of their argument for it. The shapes to mirror are the landed
@@ -2882,25 +2882,25 @@ separation of a wff of the form `S(D₁, D₂)`").
       depth-indexed analogues of `mem_uTypes_unabstrFn` and `mapS_unabstrFn` restated for
       `junctionDepth`. Discharging parts (a) and (b) and failing to establish this bound is the
       contemplated stall reached at the right place rather than a failure, and
-      `## Rollback/Contingency` governs from there.
-- [ ] Do not collapse (a), (b) and (c) into one named obligation. The obligation table in
+      `## Rollback/Contingency` governs from there. *(completed — sized first per the Phase 23 handoff addendum, then proved as `junctionDepth_sep8Step_snce_le` at `snce` heads with `2 ≤ junctionDepth`: four substitution bounds, `jd_substLeaf_le_of_isSeparated`, `junctionDepth_substLeaf_unabstrFn_le` giving `≤ max (jdU φ) 1`, and `jdU φ < jdS φ` from the head. The head kind is a precondition of the bound: for `jdU φ = jdS φ` it is not strict, so the step is applied at maximal temporal nodes and GHR's duality reduction is load-bearing.)*
+- [x] Do not collapse (a), (b) and (c) into one named obligation. The obligation table in
       `### Revision Integration: the 10.2.5 Route Ruling and the Three-Part Measure Split` is the
       ruling, and this phase is the instance it sizes dearest.
-- [ ] Build GHR 10.2.8's recursion in the budget idiom decision D-i fixes, mirroring
+- [x] Build GHR 10.2.8's recursion in the budget idiom decision D-i fixes, mirroring
       `sepBody`/`sepFuel`/`sepMulti`: `sep8Body (k : USForm → USForm) (φ : USForm)` taking the
       recursive call as a parameter and returning `φ` unchanged at junction depth at most one;
       `sep8Fuel : ℕ → USForm → USForm` structural on the budget; `sep8Fuel_spec` by induction on
       the budget, with part (c)'s bound licensing the inductive hypothesis. **Do not attempt a
-      well-founded recursion on `junctionDepth`**, for the reason D-i records.
-- [ ] Prove Theorem 10.2.9: `sep : USForm → USForm` as the budget instantiated at the measure,
+      well-founded recursion on `junctionDepth`**, for the reason D-i records. *(deviation: altered — `sep8Body k` descends the Boolean skeleton structurally and guards `junctionDepth ≤ 1` at each maximal temporal node rather than at the whole formula, firing `k (sep8Step (snce ψ φ))` at a `snce` head and `k (sep8StepDual (untl ψ φ))` at an `untl` head, because part (c)'s bound holds only at temporal heads; `sep8Fuel` structural on the budget and `sep8Fuel_spec` by induction on it, exactly as specified.)*
+- [x] Prove Theorem 10.2.9: `sep : USForm → USForm` as the budget instantiated at the measure,
       with `usTruth_sep_iff : usTruth v t (sep ψ) ↔ usTruth v t ψ` and
       `isSeparated_sep : IsSeparated (sep ψ)`, both with the budget absent from their statements.
       Give all three a `Paper:` line citing GHR vol. 1, Lemma 10.2.8 and Theorem 10.2.9.
-- [ ] Declare `sep` as a plain `def` with no `noncomputable` keyword. If the recursion needs
+- [x] Declare `sep` as a plain `def` with no `noncomputable` keyword. If the recursion needs
       `Classical.choose` anywhere, the construction is wrong -- Phase 26's executability
       deliverable depends on `sep` being computable, and `sep8Fuel`'s structural recursion on `ℕ`
       is what keeps it so.
-- [ ] README row, regenerated root, the `typst-sync-check.sh --fix` step, and the three generated
+- [x] README row, regenerated root, the `typst-sync-check.sh --fix` step, and the three generated
       inventory blocks through `bash scripts/check-module-invariants.sh --emit-inventory`.
 
 **Timing**: 2.5 hours

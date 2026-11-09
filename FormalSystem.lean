@@ -458,6 +458,7 @@ import FormalSystem.Metalogic.Expressiveness.SeparationZ.Distributivity
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.ElimHard
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.Eliminations
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.Hierarchy
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.JunctionDepth
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.LeafAbstraction
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.NegationEquiv
 import FormalSystem.Metalogic.Expressiveness.SeparationZ.NormalForm
