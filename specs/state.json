@@ -16527,7 +16527,7 @@
     {
       "project_number": 903,
       "project_name": "muller_sufficiency_for_auxiliary_atoms_rule_ztime",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "formal",
       "title": "Settle whether a deterministic Muller automaton suffices for the Auxiliary-Atoms rule and the ban/lull mechanism at ZTime, or whether Rabin or parity is genuinely needed",
       "description": "PAPER QUESTION, no Lean work. The L-plus ZTime completeness architecture (see specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md) specifies a deterministic RABIN or PARITY automaton for the violation language, and the re-assessment in specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md identifies that choice as obstruction component (O1) and as the cheapest open question in the whole assessment. Decide, on paper, whether a deterministic MULLER automaton suffices for the Auxiliary-Atoms rule and for the ban/lull mechanism at ZTime.\n\nWHAT MAKES IT ANSWERABLE WITHOUT LEAN WORK. The architecture's actual requirement on the automaton is literally 'deterministic', because the AA rule records a run as a function of the path prefix (what coneSt and Reynolds' Lemma 13/26 use). Muller acceptance is as expressible by state-valued fresh atoms as Rabin's is: 'infOcc in accept' is a finite disjunction over F in accept of (conjunction over b in F of GF b) and (conjunction over b not in F of FG not-b). So the Rabin/parity requirement may be a presentational preference rather than a real need. Settling it needs Reynolds' Lemma 13/26 and the ban/lull mechanism read against that expressibility fact, and nothing else.\n\nTHE STAKE. If Muller suffices, the local CSLib fork's already-proved, sorry-free IsRegular.iff_da_muller IS the determinization the architecture needs and (O1) vanishes, which makes the CSLib dependency question live rather than hypothetical. If Rabin is genuinely needed, Muller.toRabin_exists (fork DA/Conversions.lean:112, proof_wanted) becomes the single highest-value gap in either CSLib tree.\n\nNON-GOALS. No Lean source, no change under FormalSystem/ or Tests/, no require on CSLib, no completeness claim. This task answers one acceptance-condition question and reports.",
@@ -16542,7 +16542,7 @@
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T13:52:27Z",
-      "last_updated": "2026-11-09T14:40:26Z",
+      "last_updated": "2026-11-09T14:57:36Z",
       "artifacts": [
         {
           "path": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md",
@@ -16553,6 +16553,11 @@
           "path": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/plans/01_muller-sufficiency-aa-rule-ban-lull.md",
           "type": "plan",
           "summary": "Four-phase record-amendment plan (2.25h, waves 1=[1,2,3] / 2=[4]): amend report 902's (O1)/(O2)/recommendations, amend report 879's row 16 and verdict, retire the ROADMAP open-question pointer, close out under the full gate set. No Lean source, no require, no new task filed."
+        },
+        {
+          "path": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/summaries/01_muller-sufficiency-aa-rule-ban-lull-summary.md",
+          "type": "summary",
+          "summary": "Close-out record: the split verdict, the unsoundness example, the (O2) saving, what is untouched, and the deliberately-not-done paragraph with every recommendation named and reasoned."
         }
       ],
       "next_artifact_number": 2,
@@ -17179,7 +17184,8 @@
           "note": "scope-blind verdicts collapsed to a count per context/patterns/backlog-reconciliation.md Pass 1 rendering guidance; the unabridged per-record list is committed at specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/task-proposals-audit.ndjson. Collapsed only because --argjson passes this payload through argv and the full 140KB slice exceeds the 128KB per-argv ceiling."
         }
       },
-      "session_id": "sess_1794233746_5963da"
+      "session_id": "sess_1794233746_5963da",
+      "completion_summary": "Landed the split Muller-sufficiency verdict in report 902's (O1)/(O2)/recommendations, report 879's ingredient row 16 and verdict paragraph, and specs/ROADMAP.md's open-question pointer; wrote the close-out summary. No Lean source, no require, no new task filed; Phase 3 closed COMPLETED WITH EXCLUSIONS on an environment-blocked suite with green substitute evidence."
     },
     {
       "project_number": 904,

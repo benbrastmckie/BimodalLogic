@@ -25,21 +25,36 @@
       "category": "PATTERN",
       "source_artifact": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/summaries/01_muller-sufficiency-aa-rule-ban-lull-summary.md",
       "confidence": 0.75,
-      "suggested_keywords": ["record-amendment", "multi-site-restatement", "byte-identical-preservation", "anchor-table", "grep-cF"]
+      "suggested_keywords": [
+        "record-amendment",
+        "multi-site-restatement",
+        "byte-identical-preservation",
+        "anchor-table",
+        "grep-cF"
+      ]
     },
     {
       "content": "git diff -U0's hunk count can under-count a Scope Hypothesis's predicted hunk count when two planned edits land in the same contiguous sentence run with no unchanged line between them -- they collapse into one diff hunk even though the plan's anchor table lists them as two separate dispositions. This is a diff-mechanics artifact, not a missed edit: verify against the anchor table's per-anchor grep -cF counts and required-substring checks, which are the authoritative verification criteria, rather than insisting the literal hunk count match the Scope Hypothesis's estimate.",
       "category": "INSIGHT",
       "source_artifact": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/plans/01_muller-sufficiency-aa-rule-ban-lull.md",
       "confidence": 0.7,
-      "suggested_keywords": ["git-diff-hunk-count", "scope-hypothesis", "anchor-table", "diff-mechanics"]
+      "suggested_keywords": [
+        "git-diff-hunk-count",
+        "scope-hypothesis",
+        "anchor-table",
+        "diff-mechanics"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1794233746_5963da",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 4,
     "phases_total": 4
   }

@@ -11,8 +11,8 @@ next_project_number: 905
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,893,894,897,898,899,900,903,904 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
-| 2 | 231,282,296,429,497,763,787,804,853,862,869,895,901 | 298,428,502,743,761,803,838,893,894,898,903 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,893,894,897,898,899,900,904 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 2 | 231,282,296,429,497,763,787,804,853,862,869,895,901 | 298,428,502,743,761,803,838,893,894,898 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,896 | 429,497,763,838,895 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -119,8 +119,6 @@ next_project_number: 905
   └─ 869 [NOT STARTED] — (semantics: PRIORITY RULING (2026-11-05, user):...) (see above)
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
-903 [IMPLEMENTING] — Settle whether a deterministic Muller automaton suffices for...
-  └─ 901 [NOT STARTED] — Paper proof of the two-sided Reynolds engine for L-plus at... (see above)
 904 [IMPLEMENTING] — Record three method lessons in the source store:...
 
 ## Tasks
@@ -145,11 +143,12 @@ NON-GOALS. No hand-authored file under .claude/**; no redeploy claimed by this t
 ---
 
 ### 903. Settle whether a deterministic Muller automaton suffices for the Auxiliary-Atoms rule and the ban/lull mechanism at ZTime, or whether Rabin or parity is genuinely needed
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal
 - **Dependencies**: None
 - **Research**: [903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md]
 - **Plan**: [903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/plans/01_muller-sufficiency-aa-rule-ban-lull.md]
+- **Summary**: [903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/summaries/01_muller-sufficiency-aa-rule-ban-lull-summary.md]
 
 **Description**: PAPER QUESTION, no Lean work. The L-plus ZTime completeness architecture (see specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md) specifies a deterministic RABIN or PARITY automaton for the violation language, and the re-assessment in specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md identifies that choice as obstruction component (O1) and as the cheapest open question in the whole assessment. Decide, on paper, whether a deterministic MULLER automaton suffices for the Auxiliary-Atoms rule and for the ban/lull mechanism at ZTime.
 

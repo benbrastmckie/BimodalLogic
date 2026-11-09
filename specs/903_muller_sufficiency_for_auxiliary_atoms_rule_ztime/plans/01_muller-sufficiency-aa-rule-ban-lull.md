@@ -1,7 +1,7 @@
 # Implementation Plan: Task #903
 
 - **Task**: 903 - Settle whether a deterministic Muller automaton suffices for the Auxiliary-Atoms rule and the ban/lull mechanism at ZTime, or whether Rabin or parity is genuinely needed
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md`
