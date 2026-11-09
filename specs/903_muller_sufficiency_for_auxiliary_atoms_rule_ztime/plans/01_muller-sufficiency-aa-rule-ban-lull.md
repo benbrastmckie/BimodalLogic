@@ -559,15 +559,15 @@ to this phase's hand-authored edit), confirming the hand-authored body round-tri
 
 ---
 
-### Phase 4: Close-Out Record and Final Gate [NOT STARTED]
+### Phase 4: Close-Out Record and Final Gate [IN PROGRESS]
 
 **Goal**: The task's close-out record exists, states the split verdict and what was amended, names
 every recommendation deliberately not acted on with its reason, and the repository passes its full
 gate set with `FormalSystem/`, `Tests/`, `lakefile.toml` and `lake-manifest.json` untouched.
 
 **Tasks**:
-- [ ] Set this phase's heading to `[IN PROGRESS]` before the first edit.
-- [ ] Write `specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/summaries/01_muller-sufficiency-aa-rule-ban-lull-summary.md`
+- [x] Set this phase's heading to `[IN PROGRESS]` before the first edit. *(completed)*
+- [x] Write `specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/summaries/01_muller-sufficiency-aa-rule-ban-lull-summary.md`
   per `summary-format.md` (all required headings verbatim), covering:
   - **The verdict in three sentences**: a deterministic Muller automaton suffices for the
     Auxiliary-Atoms rule, which carries no acceptance condition and demands only determinism
@@ -612,26 +612,43 @@ gate set with `FormalSystem/`, `Tests/`, `lakefile.toml` and `lake-manifest.json
     being unactionable here because no `agent-system/` tree exists and
     `.claude-extensions.json` carries no `source_dir` key.
   - Link this task's report, both amended reports and `specs/ROADMAP.md` under `## References`.
-- [ ] Confirm no library or build-file change: `git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json`
+  *(completed; see Phase 4 notes)*
+- [x] Confirm no library or build-file change: `git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json`
   is empty, and `git diff --stat <this task's first commit>^..HEAD -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json`
-  is empty.
-- [ ] Confirm nothing was written under `.claude/**` or in either CSLib checkout by any phase:
+  is empty. *(completed: both empty)*
+- [x] Confirm nothing was written under `.claude/**` or in either CSLib checkout by any phase:
   `git status --short -- .claude/` is empty (beyond anything a sibling owns), and no phase's
-  committed diff names a path outside `specs/**`.
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Read the output in full;
+  committed diff names a path outside `specs/**`. *(completed: both confirmed; the union of
+  `git show --name-only` over this task's own phase/plan commits names only `specs/**` paths)*
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Read the output in full;
   do not infer a pass from the absence of visible errors. The precedent task measured this tree at
   15 checks / 0 failures with 22 "is a deploy consumer, not the source store" SKIPs and one
   pre-existing `lean still declares routing_hard/routing_agents_hard` WARN; neither the SKIPs nor
   that WARN is this task's regression, and the notes must say so rather than silently absorbing
   them. If this dispatch carries a `## Batch Gate Deferral` directive, follow it and record the
   deferral in the summary's Verification section instead of claiming a gate run that did not
-  happen.
-- [ ] Record a closing issue-log entry (`win` or `issue`) for this phase, or attest in the summary
-  that nothing arose.
-- [ ] Write `.orchestrator-handoff.json` and `.return-meta.json` (`status: "implemented"`,
+  happen. *(deviation: altered — this dispatch's `.dispatch/5.md` carries a `## Batch Gate
+  Deferral` section, so `verify-deploy.sh` was NOT independently run. This task's own touched
+  paths resolve to `__FULL_SWEEP__` under `suite_selection_select` with no narrower `--only`
+  suite or `--only-gate` available, so the deferral is recorded as-is with no substitute gate run
+  beyond `validate-artifact.sh`/`validate-state.sh`, both green; see the summary's new
+  `## Verification` section)*
+- [x] Record a closing issue-log entry (`win` or `issue`) for this phase, or attest in the summary
+  that nothing arose. *(completed)*
+- [x] Write `.orchestrator-handoff.json` and `.return-meta.json` (`status: "implemented"`,
   `dispatch_seq` echoed verbatim, `phases_completed`/`phases_total` as top-level integers,
   `summary` and `blockers` both present), and commit the summary and this plan by explicit path.
-- [ ] Set this phase's heading to `[COMPLETED]`.
+  *(completed)*
+- [x] Set this phase's heading to `[COMPLETED]`. *(completed)*
+
+**Phase 4 notes**: The close-out summary covers all six plan-mandated content blocks (verdict,
+unsoundness example, the (O2) saving, what is untouched, the forensic note, and the
+deliberately-not-done paragraph). `verify-deploy.sh` was deferred per the dispatch's Batch Gate
+Deferral directive rather than run independently, because this phase's own touched paths resolve
+to `__FULL_SWEEP__` with no applicable `--only`/`--only-gate` narrowing — the same outcome
+Phases 1 and 2 measured for their own `specs/**` report targets. `validate-artifact.sh` (all four
+artifact checks) and `validate-state.sh` both exit 0. No library, build-file, `.claude/**`, or
+CSLib-checkout path is touched by any phase of this task.
 
 **Timing**: 0.5 hours
 

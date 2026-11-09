@@ -1,12 +1,46 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 5,
-  "artifacts": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/summaries/01_muller-sufficiency-aa-rule-ban-lull-summary.md",
+      "summary": "Close-out record: the split verdict (Muller suffices for the Auxiliary-Atoms rule, not for the ban/lull mechanism), the unsoundness example, the (O2) saving, what is untouched, and the deliberately-not-done paragraph."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Landed the split Muller-sufficiency verdict in report 902's (O1)/(O2)/recommendations, report 879's ingredient row 16 and verdict paragraph, and specs/ROADMAP.md's open-question pointer; wrote the close-out summary. No Lean source, no require, no new task filed; Phase 3 closed COMPLETED WITH EXCLUSIONS on an environment-blocked suite with green substitute evidence."
+  },
+  "modified_files": [
+    "specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md",
+    "specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/summaries/01_cslib-omega-automata-nogo-reassessment-summary.md",
+    "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md",
+    "specs/ROADMAP.md",
+    "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/plans/01_muller-sufficiency-aa-rule-ban-lull.md",
+    "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/summaries/01_muller-sufficiency-aa-rule-ban-lull-summary.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a record-amendment task narrows two acceptance-type names in one report's inventory sentence to one (e.g. 'Rabin or parity' -> 'Rabin alone'), check whether the same narrowing claim is restated independently in 2-3 other places in the SAME or a SIBLING report (an ingredient-table cell, a verdict paragraph's enumeration, an executive-summary bullet, a ROADMAP bullet). Each restatement is its own anchor with its own byte-identical-preservation obligations (an opening sentence, a closing sentence, an unrelated enumerated item like (O3)/(O4)) and must be independently re-measured with grep -cF immediately before editing, even when the semantic content of the edit is identical across all of them. Treating them as one edit risks either missing a restatement or over-editing a byte-identical-preservation zone.",
+      "category": "PATTERN",
+      "source_artifact": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/summaries/01_muller-sufficiency-aa-rule-ban-lull-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["record-amendment", "multi-site-restatement", "byte-identical-preservation", "anchor-table", "grep-cF"]
+    },
+    {
+      "content": "git diff -U0's hunk count can under-count a Scope Hypothesis's predicted hunk count when two planned edits land in the same contiguous sentence run with no unchanged line between them -- they collapse into one diff hunk even though the plan's anchor table lists them as two separate dispositions. This is a diff-mechanics artifact, not a missed edit: verify against the anchor table's per-anchor grep -cF counts and required-substring checks, which are the authoritative verification criteria, rather than insisting the literal hunk count match the Scope Hypothesis's estimate.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/plans/01_muller-sufficiency-aa-rule-ban-lull.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["git-diff-hunk-count", "scope-hypothesis", "anchor-table", "diff-mechanics"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1794233746_5963da",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
     "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
-    "task_number": 903
+    "phases_completed": 4,
+    "phases_total": 4
   }
 }
