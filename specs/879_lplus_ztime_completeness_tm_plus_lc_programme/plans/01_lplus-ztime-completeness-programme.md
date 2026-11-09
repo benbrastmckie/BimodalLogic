@@ -1,7 +1,7 @@
 # Implementation Plan: Task #879
 
 - **Task**: 879 - Own the L-plus ZTime completeness programme for TM-plus with the limit-closure schema
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.75 hours
 - **Dependencies**: 870 (`[COMPLETED]`), 871 (`[COMPLETED]`), 867 (`[COMPLETED]`)
 - **Research Inputs**: `specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md`

@@ -11,7 +11,7 @@ next_project_number: 902
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,879,890,893,894,897,898,899,900 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,893,894,897,898,899,900 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,804,853,862,869,895,901 | 298,428,502,743,761,803,838,893,894,898 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,896 | 429,497,763,838,895 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -32,10 +32,6 @@ next_project_number: 902
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
-
-### Completeness
-
-879 [IMPLEMENTING] — Own the L-plus ZTime completeness programme for TM-plus with...
 
 ### Dataset Enhancement
 
@@ -228,12 +224,13 @@ Evidence: originating issue entry iss_1793912463353_yZ5rLd, recorded during the 
 ---
 
 ### 879. Own the L-plus ZTime completeness programme for TM-plus with the limit-closure schema
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal
 - **Topic**: completeness
 - **Dependencies**: Task 870, Task 871, Task 867
 - **Research**: [879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md]
 - **Plan**: [879_lplus_ztime_completeness_tm_plus_lc_programme/plans/01_lplus-ztime-completeness-programme.md]
+- **Summary**: [879_lplus_ztime_completeness_tm_plus_lc_programme/summaries/01_lplus-ztime-completeness-programme-summary.md]
 
 **Description**: RESEARCH TASK, and the owner of a programme that again has no owner: is TM-plus extended by the limit-closure schema LC_n complete for L-plus validity at ZTime? Report only; no change under `FormalSystem/` or `Tests/`.
 

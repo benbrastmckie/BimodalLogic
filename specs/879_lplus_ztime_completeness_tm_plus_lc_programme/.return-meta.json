@@ -28,28 +28,53 @@
       "category": "TECHNIQUE",
       "source_artifact": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/summaries/01_lplus-ztime-completeness-programme-summary.md",
       "confidence": 0.9,
-      "suggested_keywords": ["state-write", "audit-verdict", "argv limit", "backlog audit", "task filing", "allocate-into"]
+      "suggested_keywords": [
+        "state-write",
+        "audit-verdict",
+        "argv limit",
+        "backlog audit",
+        "task filing",
+        "allocate-into"
+      ]
     },
     {
       "content": "update-task-status.sh --depends-on-add requires an operation:target_status pair that is a status no-op, and map_status() has no pair resolving to not_started, so an edge cannot be added to a not_started task through it (orchestrate-suggest-next-batch.sh's resolve_noop_token() documents the gap). Append the edge via state-write.sh under the mutex with an append-only filter on .dependencies (unique), then run validate-state.sh for the Kahn cycle check.",
       "category": "WORKFLOW",
       "source_artifact": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/summaries/01_lplus-ztime-completeness-programme-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["depends-on-add", "not_started", "dependency edge", "state-write", "update-task-status", "serialization edge"]
+      "suggested_keywords": [
+        "depends-on-add",
+        "not_started",
+        "dependency edge",
+        "state-write",
+        "update-task-status",
+        "serialization edge"
+      ]
     },
     {
       "content": "In a deployed-only repository (no agent-system/ directory, no source_dir in .claude-extensions.json), every test suite that resolves its subject with common_test_resolve_subject in 'source-store' mode exits 2 'not found (mode=source-store)' regardless of content (observed: test-roadmap-generation.sh, test-generate-task-order.sh, test-update-task-status.sh). Treat these as environment failures: use a substitute check (e.g. roadmap-integration.sh --regenerate --dry-run) and record a Reasoned Exclusion rather than parking the phase PARTIAL.",
       "category": "INSIGHT",
       "source_artifact": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/summaries/01_lplus-ztime-completeness-programme-summary.md",
       "confidence": 0.8,
-      "suggested_keywords": ["run-all", "source-store", "deployed-only", "test suite", "environment failure", "reasoned exclusion"]
+      "suggested_keywords": [
+        "run-all",
+        "source-store",
+        "deployed-only",
+        "test suite",
+        "environment failure",
+        "reasoned exclusion"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1794209534_e57749",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 4,
     "phases_total": 4
   }
