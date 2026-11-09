@@ -146,7 +146,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 
 ---
 
-### Phase 2: `lcU` and the three validity theorems [NOT STARTED]
+### Phase 2: `lcU` and the three validity theorems [COMPLETED]
 
 **Goal**: Declare `lcU` and prove `lcU_plusValidInt`, `lcU_plusValidZTime` and `lcU_reflectTime_plusValidZTime`, transcribing the verified probe.
 
@@ -182,7 +182,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 
 - `lake build` exits 0 with zero errors, zero warnings and zero sorries.
 - `#print axioms` on each of `FormalSystem.PlusLanguage.lcU_plusValidInt`, `lcU_plusValidZTime` and `lcU_reflectTime_plusValidZTime` prints `[propext, Classical.choice, Quot.sound]`. Record the literal output for Phase 4; do not predict it there.
-- `grep -c "sorry" FormalSystem/PlusLanguage/PlusLCSchema.lean` returns 0.
+- `grep -c "sorry" FormalSystem/PlusLanguage/PlusLCSchema.lean` returns 0. *(deviation: altered — the literal criterion is unsatisfiable and was already false at the pre-task commit: line 32's module docstring contains the phrase "`sorry`-free" in prose. The substantive check was run instead and is green: `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests` reports `sorry_count: 0`, and the full `lake build` emitted zero `declaration uses 'sorry'` warnings.)*
 - Exact-name absence check before the edit, then presence after: `grep -n "^def lcU\b\|^theorem lcU_" FormalSystem/PlusLanguage/PlusLCSchema.lean` finds exactly the four new declarations. Use exact names, never a shared prefix (gate-collisions Condition 3(b)).
 - `bash scripts/typst-sync-check.sh --counts-only` exits 0.
 - `bash scripts/check-module-invariants.sh` reports no new finding naming `FormalSystem/PlusLanguage/PlusLCSchema.lean` relative to the pre-task commit, with the expected C14/`FAIL INV` deferrals recorded as in Phase 1.

@@ -88,6 +88,7 @@ frame class, `lcN` reaches a strictly larger family of formulas.
 - `bigAnd` — finite conjunction of an `ℕ`-indexed family, with a uniform `top` base case
 - `lcAnte`, `lcCons` — `LC_n`'s antecedent and consequent
 - `lcN` — the schema itself
+- `lcU` — `LCU`, the until-form limit-closure schema, with `untl` primitive and two parameters
 
 ## Main Results
 
@@ -100,6 +101,13 @@ frame class, `lcN` reaches a strictly larger family of formulas.
 - `lcN_reflectTime_plusValidZTime` — the **backward** limit-closure schema at `.ZTime`, as the
   one-line `plusValidIn_reflectTime` corollary of the forward one; stated at
   `(lcN n α).reflectTime` rather than as an expanded mirror form
+- `lcU_plusValidInt` — `LCU` is valid on every model over a `FrameOver intOrder` frame, for
+  arbitrary parameters, by the ω-chain at the constant family `A k := ⟐α` with the segment
+  property carrying `⟐β` across each open marker interval
+- `lcU_plusValidZTime` — the same at the `.ZTime` frame class, by
+  `plusValidZTime_iff_plusValidInt`
+- `lcU_reflectTime_plusValidZTime` — the **backward** until-form schema at `.ZTime`, as the
+  one-line `plusValidIn_reflectTime` corollary; stated at `(lcU α β).reflectTime`
 
 ## References
 
@@ -207,6 +215,34 @@ what is claimed about `lcN` and what is not — in particular, `.Base` validity 
 unclaimed.
 -/
 def lcN (n : ℕ) (α : ℕ → PlusFormula) : PlusFormula := (lcAnte n α).imp (lcCons n α)
+
+/--
+**`LCU`**, the until-form limit-closure schema:
+
+```
+LCU α β  :=  ⊡G≤(⟐α → ⟐(⟐β U ⟐α))  →  (⟐α → ⟐G≤(⟐α ∨ (⟐β U ⟐α)))
+```
+
+The antecedent supplies, at every later time and on a possibly different history through the
+present state, an until-commitment `⟐β U ⟐α` from each `⟐α`-point; the consequent asks for
+**one** history through that state on which, from the present time onward, every time is either
+an `⟐α`-point or the start of such an until-commitment.
+
+This is **not** an instance of `lcN`, and `lcN 1` is not this formula: see the module docstring's
+`LCU` section for the two side by side. The schema is a `def` only — no derivability or
+completeness claim is made about it anywhere in this tree. What is claimed is its semantic
+validity over the `ℤ` fibre and at `.ZTime`, by `lcU_plusValidInt` and `lcU_plusValidZTime`;
+`.Base` validity is **open and unclaimed**.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
+-/
+def lcU (α β : PlusFormula) : PlusFormula :=
+  (PlusFormula.stab ((PlusFormula.dstab α).imp
+      (PlusFormula.dstab (PlusFormula.untl (PlusFormula.dstab β)
+        (PlusFormula.dstab α)))).gle).imp
+    ((PlusFormula.dstab α).imp
+      (PlusFormula.dstab ((PlusFormula.dstab α).or
+        (PlusFormula.untl (PlusFormula.dstab β) (PlusFormula.dstab α))).gle))
 
 /-! ## Validity at the `ℤ` fibre, and at `.ZTime` -/
 
@@ -334,5 +370,112 @@ Paper: — (formalization-native; the manuscript states no limit-closure schema)
 theorem lcN_reflectTime_plusValidZTime (n : ℕ) (hn : 0 < n) (α : ℕ → PlusFormula) :
     PlusValidZTime (lcN n α).reflectTime :=
   plusValidIn_reflectTime (lcN_plusValidZTime n hn α)
+
+/--
+**`LCU` is valid on every model over a `FrameOver intOrder` frame**, for arbitrary parameter
+formulas.
+
+The route is the same ω-chain as `lcN`'s, instantiated at the until-form's data: the recurrence
+family is the *constant* `A k s v := ⟐α` at `v`, `s`, and the segment property is
+`P k η s s' := ⟐β` at every `r` strictly between `s` and `s'`. The chain's first marker is the
+evaluation time itself (`ρ₀ := σ`, `s₀ := t`, so `c 0 = t`), so no reachability case split is
+needed and the `[t, c 0)` gap the `F`-form must argue about is empty. The consequent's left
+disjunct `⟐α` is never taken: at an arbitrary `s ≥ t`, `int_marker_bracket` produces the
+consecutive marker pair with `c k ≤ s < c (k + 1)`, the right marker carries `⟐α`, and the chain's
+segment property carries `⟐β` across `(c k, c (k + 1))` ⊇ `(s, c (k + 1))`, which is exactly the
+right disjunct's until-witness.
+
+**The segment property is instantiated on the open interval `(s, s')`, not the half-open
+`(s, s']`.** The half-open reading is not derivable from the antecedent: the `untl` clause carries
+`⟐α`, not `⟐β`, at the right endpoint. The open content window sits strictly inside the half-open
+agreement window that `omega_chain`'s `hP` offers, so `hP` discharges by state-locality of `⟐`;
+see `PlusOmegaChain.lean`'s `stg_step` docstring for the endpoint discipline a consumer must
+observe.
+
+The `ℤ` fibre is where the ω-chain's cofinality requirement is discharged, by
+`intOrder_omega_cofinal`, and that is the step which fixes the frame class.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
+-/
+theorem lcU_plusValidInt (α β : PlusFormula) : PlusValidInt (lcU α β) := by
+  classical
+  intro F _ M σ t hante hα
+  have hA : ∀ ρ : WorldHistory F.toTaskFrame, ρ.state t = σ.state t → ∀ s, t ≤ s →
+      PlusTruthAt M ρ s (PlusFormula.dstab α) →
+      PlusTruthAt M ρ s (PlusFormula.dstab (PlusFormula.untl (PlusFormula.dstab β)
+        (PlusFormula.dstab α))) := by
+    intro ρ he s hs
+    have h1 := hante ρ he.symm
+    rw [gle_iff] at h1
+    exact h1 s hs
+  obtain ⟨ρ, c, hρt, _, hc0, hcl, hcA, hcP⟩ := omega_chain (F := F.toTaskFrame) σ t
+      (fun _ s v => ∃ η : WorldHistory F.toTaskFrame, v = η.state s ∧ PlusTruthAt M η s α)
+      (fun _ η s s' => ∀ r, s < r → r < s' → PlusTruthAt M η r (PlusFormula.dstab β))
+      (fun c hc x => intOrder_omega_cofinal c hc x)
+      (by
+        intro i η η' s s' hag h r h1 h2
+        obtain ⟨κ, hκ, hval⟩ := (dstab_iff M η r β).1 (h r h1 h2)
+        exact (dstab_iff M η' r β).2 ⟨κ, (hag r h1 h2.le).trans hκ, hval⟩)
+      σ t rfl le_rfl ((dstab_iff M σ t α).1 hα)
+      (by
+        intro ρ' he k s hs hk
+        have h1 := hA ρ' he s hs ((dstab_iff M ρ' s α).2 hk)
+        rw [dstab_iff] at h1
+        obtain ⟨η, he', h2⟩ := h1
+        rw [untl_iff] at h2
+        obtain ⟨s', hlt, hαs', hβ⟩ := h2
+        exact ⟨η, s', he'.symm, hlt, (dstab_iff M η s' α).1 hαs', hβ⟩)
+  rw [dstab_iff]
+  refine ⟨ρ, hρt.symm, ?_⟩
+  rw [gle_iff]
+  intro s hs
+  rw [or_iff]
+  right
+  rw [untl_iff]
+  obtain ⟨k, hk1, hk2⟩ := int_marker_bracket hcl (s := s) (by rw [hc0]; exact hs)
+  refine ⟨c (k + 1), hk2, ?_, ?_⟩
+  · exact (dstab_iff M ρ (c (k + 1)) α).2 (hcA (k + 1)).2
+  · intro r hr1 hr2
+    exact hcP k r (lt_of_le_of_lt hk1 hr1) hr2
+
+/--
+**`LCU` is valid at the `.ZTime` frame class**, for arbitrary parameter formulas, by carrier
+normalization from `lcU_plusValidInt`.
+
+`.Base` validity is **open and unclaimed**. The obstruction is the same one `lcN` meets and is
+not a gap in this proof: `omega_chain`'s cofinality hypothesis has exactly one discharge in this
+tree, `intOrder_omega_cofinal`, and that discharge is available over `ℤ` alone. Over a dense
+temporal order a strictly increasing marker sequence may converge, leaving an unreached tail.
+
+**No derivability or completeness claim is made.** Nothing here says that `lcU` is a TM⁺ theorem,
+that TM⁺ extended by it is complete, or that it follows from `lcN` (or `lcN` from it).
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
+-/
+theorem lcU_plusValidZTime (α β : PlusFormula) : PlusValidZTime (lcU α β) :=
+  (plusValidZTime_iff_plusValidInt (lcU α β)).mpr (lcU_plusValidInt α β)
+
+/--
+**The backward until-form limit-closure schema at `.ZTime`**: `LCU` read backwards in time is
+valid there too, for arbitrary parameter formulas.
+
+`reflectTime` fixes `⊡` and exchanges `U` with `S`, hence `F` with `P` and `G` with `H`
+(`PlusLanguage/PlusReversal.lean`, `PlusLanguage/Formula.lean`), so the reflection of `LCU` is
+the same schema with the until read as a since and every temporal direction reversed. It is valid
+at `.ZTime` because `ℤ` is reflection-symmetric — the frame class is closed under `rev`, which is
+what `plusValidIn_reflectTime` discharges at an arbitrary `ProofSystem.FrameClass`.
+
+**The mirror form is deliberately not expanded**, for the reason
+`lcN_reflectTime_plusValidZTime`'s docstring gives: stating it in syntax would need an `H≤`
+definition and push-through lemmas this module neither has nor needs, and the one-liner below
+already proves what they would be built to state.
+
+`.Base` validity is **open and unclaimed**, and no derivability or completeness claim is made.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
+-/
+theorem lcU_reflectTime_plusValidZTime (α β : PlusFormula) :
+    PlusValidZTime (lcU α β).reflectTime :=
+  plusValidIn_reflectTime (lcU_plusValidZTime α β)
 
 end FormalSystem.PlusLanguage
