@@ -66,6 +66,8 @@ consumer of `omega_chain` is thereby `.ZTime`-scoped, which is why
 - `intOrder_omega_cofinal` — the `ℤ` discharge of the cofinality hypothesis
 - `int_marker_exists_gt` — over `ℤ`, a marker past any given time in any prescribed residue
   class mod `n`
+- `int_marker_bracket` — over `ℤ`, the consecutive marker pair straddling any time at or after
+  the first marker
 - `stg_step` — one splice: a stage at `i` yields a stage at `i + 1` with a strictly larger
   marker, agreeing with its predecessor up to the old marker, and satisfying the segment property
   `P i` on the half-open interval between the two markers
@@ -248,6 +250,41 @@ theorem int_marker_exists_gt {c : ℕ → ℤ} (hc : ∀ k, c k < c (k + 1)) (n 
       Nat.le_mul_of_pos_right _ hn
     omega
 
+/--
+**The marker pair straddling a given time.**
+
+For any `s` at or after the first marker there is a `k` with `c k ≤ s < c (k + 1)`: cofinality
+supplies *some* marker past `s`, and `Nat.find` takes the least such index, whose predecessor is
+then at or below `s`. The least index is not `0` because `c 0 ≤ s`.
+
+`int_marker_exists_gt` cannot serve here. That lemma gives a marker *beyond* `s` in a prescribed
+residue class, which is what the `F`-form's consequent needs; the until-witness needs the marker
+pair that *straddles* `s`, because the segment guard carried by `omega_chain` is available only
+between consecutive markers.
+
+Stated with `c : ℕ → ℤ` rather than at a frame's duration carrier for the reason
+`int_marker_exists_gt`'s docstring gives: `omega` reads the *syntactic* type of a hypothesis and
+does not see through `↑intOrder = ℤ`, so the arithmetic is done here, once, at `ℤ`, and
+transported to `c : ℕ → F.Duration` by defeq at the application site.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema)
+-/
+theorem int_marker_bracket {c : ℕ → ℤ} (hc : ∀ k, c k < c (k + 1)) {s : ℤ} (h0 : c 0 ≤ s) :
+    ∃ k, c k ≤ s ∧ s < c (k + 1) := by
+  have hex : ∃ m, s < c m := by
+    obtain ⟨m, hm⟩ := intOrder_omega_cofinal c hc (s + 1)
+    exact ⟨m, by omega⟩
+  have hm : s < c (Nat.find hex) := Nat.find_spec hex
+  have hm0 : Nat.find hex ≠ 0 := by
+    intro h
+    rw [h] at hm
+    omega
+  obtain ⟨k, hk⟩ : ∃ k, Nat.find hex = k + 1 := ⟨Nat.find hex - 1, by omega⟩
+  refine ⟨k, ?_, ?_⟩
+  · have h2 := Nat.find_min hex (m := k) (by omega)
+    omega
+  · rw [← hk]; exact hm
+
 /-! ## The splice stage -/
 
 /--
@@ -303,15 +340,22 @@ so `hP` is used to transport it, with `paste_agreeFrom` supplying the agreement 
 the whole content of the segment-property clause: nothing new is proved about `P`, only moved
 from the continuation onto the paste.
 
-**Why `P` is carried at all.** Every current consumer in this tree instantiates it trivially
-(`PlusLCSchema.lean`'s `lcN_plusValidInt` passes `fun _ _ _ _ => True`). It is kept because it is
-the hook the **until-form** limit-closure schema's semantic core needs: an until-commitment
-`⟐β U ⟐α` is discharged only by a witness carrying `⟐β` *throughout* the interval up to the
-`⟐α`-point, which is a condition on the spliced segment and not on either endpoint's state. The
-`F`-form schema this module currently serves needs no such interval condition, which is exactly
-why the parameter was dropped once already — read off as carrying no load, because the one
-consumer then being ported did not use it. Restoring it is cheap; rediscovering that it is needed
-is not.
+**Why `P` is carried at all.** It is the hook the **until-form** limit-closure schema's semantic
+core needs: an until-commitment `⟐β U ⟐α` is discharged only by a witness carrying `⟐β`
+*throughout* the interval up to the `⟐α`-point, which is a condition on the spliced segment and
+not on either endpoint's state. `PlusLCSchema.lean`'s `lcU_plusValidInt` is that consumer, and
+instantiates `P k η s s'` as `⟐β` at every `r` strictly between `s` and `s'`. The `F`-form
+schema in the same module needs no interval condition at all: `lcN_plusValidInt` passes
+`fun _ _ _ _ => True`.
+
+**The interval-endpoint discipline a consumer must observe.** What survives a paste, and so what
+`hP`'s agreement premise offers, is the *half-open* window `(s, s']`. A consumer's `P` must
+therefore have its content window sitting inside that: an `untl`-sourced guard is **open on the
+right**, carrying `⟐β` on `(s, s')` only, because the `untl` clause places `⟐α` rather than `⟐β`
+at the right endpoint. The open content window is a strict subset of the half-open agreement
+window, so `hP` discharges by state-locality of `⟐`; a `P` stated on the closed `[s, s']` would
+instead ask the paste to preserve a condition at `s` itself, where the pasted history is the
+*old* stage's and not the continuation's.
 
 Paper: — (formalization-native; the manuscript states no limit-closure schema)
 -/

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #893
 
 - **Task**: 893 - Declare the until-form limit-closure schema LCU and its mirror, with ZTime validity
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/893_lcu_until_form_schema_ztime_validity/reports/01_lcu-until-form-ztime-validity.md`
@@ -105,7 +105,7 @@ Note for the snapshot consumer: the three `lcU_*` statements mention `lcU`, whic
 
 Phases within the same wave can execute in parallel. This plan is fully sequential: Phase 2 consumes Phase 1's new lemma, Phase 3 restates claims about declarations Phase 2 creates, and Phase 4 indexes and pins all of them.
 
-### Phase 1: `int_marker_bracket` and the `stg_step` consumer note [NOT STARTED]
+### Phase 1: `int_marker_bracket` and the `stg_step` consumer note [COMPLETED]
 
 **Goal**: Add the marker-bracketing lemma the until-form's consequent needs, in the `ℤ` discharge section where its three siblings live, and correct `stg_step`'s docstring claim that every current consumer instantiates `P` trivially.
 
