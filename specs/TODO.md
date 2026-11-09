@@ -35,7 +35,7 @@ next_project_number: 903
 
 ### Completeness
 
-902 [NOT STARTED] — RESEARCH TASK: re-assess the L-plus ZTime completeness NO-GO...
+902 [RESEARCHED] — RESEARCH TASK: re-assess the L-plus ZTime completeness NO-GO...
 
 ### Dataset Enhancement
 
@@ -127,10 +127,11 @@ next_project_number: 903
 ## Tasks
 
 ### 902. Reassess lplus ztime nogo cslib omega automata
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
+- **Research**: [902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md]
 
 **Description**: RESEARCH TASK: re-assess the L-plus ZTime completeness NO-GO against CSLib's deterministic omega-automata inventory, including the local fork. Report only; no change under `FormalSystem/` or `Tests/`, and no `require` edit to `lakefile.toml` as part of this task.
 
