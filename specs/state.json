@@ -4,8 +4,83 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 902,
+  "next_project_number": 903,
   "active_projects": [
+    {
+      "project_number": 902,
+      "project_name": "reassess_lplus_ztime_nogo_cslib_omega_automata",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "RESEARCH TASK: re-assess the L-plus ZTime completeness NO-GO against CSLib's deterministic omega-automata inventory, including the local fork. Report only; no change under `FormalSystem/` or `Tests/`, and no `require` edit to `lakefile.toml` as part of this task.\n\nWHY THIS EXISTS. The completeness-programme report `specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md` returned NO-GO on any Lean completeness proof today, on the stated ground that deterministic omega-automata are \"absent from Mathlib\", placed in the same class as the MSO refusal. That ground is correct about Mathlib and incomplete as a search: the material lives in CSLib, which the report did not consult. A direct inspection (2026-11-09) establishes the following, and this task must re-verify every claim below against the trees rather than trusting this note.\n\nWHAT IS UPSTREAM (`leanprover/cslib`, head `1e285fd14`). `DA` with `run`/`run'` over `ωSequence`, and `DA.Buchi` and `DA.Muller`, each with an `ωAcceptor` instance, all in `Cslib/Computability/Automata/DA/Basic.lean` (`DA` at line 37, `Buchi` at 91, `Muller` at 106); `DA.prod` with `prod_run_eq` in `DA/Prod.lean`; Buchi complementation and the `IsRegular` closure lattice (`sup`, `inf`, `iSup`, `iInf`, `hmul`, `omegaPow`, `compl`) in `Cslib/Computability/Languages/OmegaRegularLanguage.lean`; the `OmegaSequence` infrastructure (`InfOcc`, `Flatten`, `Init`, `Temporal`, `Topology`) under `Cslib/Foundations/Data/OmegaSequence/`. Upstream genuinely lacks McNaughton determinization, which is a `proof_wanted` at `OmegaRegularLanguage.lean:261` (`IsRegular.iff_da_muller`), and has no Rabin, Streett or Parity.\n\nWHAT THE LOCAL FORK ADDS (`benbrastmckie/cslib`, ~4717 commits ahead of upstream, checkout at `~/Projects/cslib`), all reported sorry-free. `DA/Rabin.lean`: `Rabin` and `Streett` with `ωAcceptor` instances plus `Buchi.toRabin`, `Rabin.toMuller`, `Rabin.toStreett`, `Streett.toRabin`, each with a `_language_eq` correctness theorem. `DA/Parity.lean`: `Parity` with `Parity.toRabin_language_eq`. `DA/Choueka.lean`: the Choueka language, `chouekaLang_regular`, `chouekaLang_omega_power_eq_omega_limit`. `DA/MullerClosure.lean`: DMA finite-union closure via the product automaton. And `IsRegular.iff_da_muller` PROVED, both directions, the forward one by the Choueka route ported from `ctchou/AutomataTheory`. Also fork-only: `DA/Concat.lean`, `DA/Conversions.lean`, `DA/BuchiChar.lean`, `DA/BuchiClosure.lean`, `NA/BuchiCompl.lean`, `NA/Emptiness.lean`. The separate `~/Projects/cslib-pr648` checkout is on `rebase/pr648-upstream` and carries only the upstream DA set, so it is not a source of this material.\n\nWHAT TO DELIVER.\n(1) A verified inventory table: for each ingredient the completeness architecture needs, whether it is landed upstream, landed fork-only, or genuinely missing. Re-derive every row from the trees; cite file and declaration name, and give the measured axiom profile of any declaration the architecture would depend on.\n(2) The decisive open question this task exists to settle: does the fork have the FULL-PRODUCT / PASTING lemma the architecture consumes at its single separation-consumption point (the state-level initialisation of the two clock-anchored product automata from the cut colour's type sets)? `DA.prod` plus `prod_run_eq` is strictly weaker than what that step needs. If the lemma is absent, state precisely what is missing and what it would cost.\n(3) A revised verdict on the Lean route for T3 (TM-plus + until-form LCU + mirror + rules), replacing the NO-GO in the report named above. A located obstruction, stated precisely, is a complete outcome; so is an overturn.\n(4) A dependency-cost assessment, stated as a recommendation and not acted on: CSLib is NOT currently a dependency of this project (`lake-manifest.json` lists only mathlib, batteries, aesop, Qq, proofwidgets, Cli, plausible, LeanSearchClient, importGraph). Consuming the fork-only material means a `require` on a fork that is ~4717 commits ahead of an upstream that has not reviewed it, with a real and recurring sync cost; consuming only upstream material avoids that but leaves determinization unavailable. Assess both, and whether the fork-only modules are candidates for upstreaming instead.\n\nSCOPE AND NON-GOALS. ZTime only. No change under `FormalSystem/` or `Tests/`; no edit to `lakefile.toml` or `lake-manifest.json`; no completeness claim lands from this task. Do not re-derive the architecture itself, which the report already gives: this task re-tests exactly one premise of its verdict.\n\nPRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automata survey whose close-out record is `specs/736_cslib_omega_automata_survey_and_e3_reopen_check/summaries/01_cslib-omega-automata-survey-summary.md`; its summary names a six-item operator hand-off list of findings deliberately not acted on. Read that summary and its hand-off list before starting, and state explicitly which of this task's deliverables it already discharges and which it does not. It is prior art, not a blocker: it predates the completeness-programme report's NO-GO and does not address the pasting-lemma question in deliverable (2).",
+      "topic": "completeness",
+      "priority": "medium",
+      "created": "2026-11-09T13:08:50Z",
+      "last_updated": "2026-11-09T13:08:50Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "reassess_lplus_ztime_nogo_cslib_omega_automata",
+          "project_number": null,
+          "title": "Re-assess the L-plus ZTime completeness NO-GO against CSLib's deterministic omega-automata inventory"
+        },
+        "verdicts": [
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 736,
+            "project_name": "cslib_omega_automata_survey_and_e3_reopen_check",
+            "discharging_artifact": {
+              "path": "specs/736_cslib_omega_automata_survey_and_e3_reopen_check/summaries/01_cslib-omega-automata-survey-summary.md",
+              "type": "summary",
+              "summary": "Execution summary: verdict (i) KEEP candidate (d), re-run acceptance evidence, and a six-item operator hand-off list of findings deliberately not acted on."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4140625
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 718,
+            "project_name": "omega_sequence_decidability_full_lplus",
+            "discharging_artifact": {
+              "path": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for all 7 plan phases."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4609375
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.41796875
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.42578125
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations": [],
+        "scope_blind_collapsed": 453,
+        "scope_blind_degradations_collapsed": 453
+      }
+    },
     {
       "project_number": 879,
       "project_name": "lplus_ztime_completeness_tm_plus_lc_programme",

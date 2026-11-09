@@ -1,5 +1,5 @@
 ---
-next_project_number: 902
+next_project_number: 903
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 902
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,893,894,897,898,899,900 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,893,894,897,898,899,900,902 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,787,804,853,862,869,895,901 | 298,428,502,743,761,803,838,893,894,898 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,896 | 429,497,763,838,895 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -32,6 +32,10 @@ next_project_number: 902
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
+
+### Completeness
+
+902 [NOT STARTED] — RESEARCH TASK: re-assess the L-plus ZTime completeness NO-GO...
 
 ### Dataset Enhancement
 
@@ -121,6 +125,32 @@ next_project_number: 902
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 
 ## Tasks
+
+### 902. Reassess lplus ztime nogo cslib omega automata
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK: re-assess the L-plus ZTime completeness NO-GO against CSLib's deterministic omega-automata inventory, including the local fork. Report only; no change under `FormalSystem/` or `Tests/`, and no `require` edit to `lakefile.toml` as part of this task.
+
+WHY THIS EXISTS. The completeness-programme report `specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md` returned NO-GO on any Lean completeness proof today, on the stated ground that deterministic omega-automata are "absent from Mathlib", placed in the same class as the MSO refusal. That ground is correct about Mathlib and incomplete as a search: the material lives in CSLib, which the report did not consult. A direct inspection (2026-11-09) establishes the following, and this task must re-verify every claim below against the trees rather than trusting this note.
+
+WHAT IS UPSTREAM (`leanprover/cslib`, head `1e285fd14`). `DA` with `run`/`run'` over `ωSequence`, and `DA.Buchi` and `DA.Muller`, each with an `ωAcceptor` instance, all in `Cslib/Computability/Automata/DA/Basic.lean` (`DA` at line 37, `Buchi` at 91, `Muller` at 106); `DA.prod` with `prod_run_eq` in `DA/Prod.lean`; Buchi complementation and the `IsRegular` closure lattice (`sup`, `inf`, `iSup`, `iInf`, `hmul`, `omegaPow`, `compl`) in `Cslib/Computability/Languages/OmegaRegularLanguage.lean`; the `OmegaSequence` infrastructure (`InfOcc`, `Flatten`, `Init`, `Temporal`, `Topology`) under `Cslib/Foundations/Data/OmegaSequence/`. Upstream genuinely lacks McNaughton determinization, which is a `proof_wanted` at `OmegaRegularLanguage.lean:261` (`IsRegular.iff_da_muller`), and has no Rabin, Streett or Parity.
+
+WHAT THE LOCAL FORK ADDS (`benbrastmckie/cslib`, ~4717 commits ahead of upstream, checkout at `~/Projects/cslib`), all reported sorry-free. `DA/Rabin.lean`: `Rabin` and `Streett` with `ωAcceptor` instances plus `Buchi.toRabin`, `Rabin.toMuller`, `Rabin.toStreett`, `Streett.toRabin`, each with a `_language_eq` correctness theorem. `DA/Parity.lean`: `Parity` with `Parity.toRabin_language_eq`. `DA/Choueka.lean`: the Choueka language, `chouekaLang_regular`, `chouekaLang_omega_power_eq_omega_limit`. `DA/MullerClosure.lean`: DMA finite-union closure via the product automaton. And `IsRegular.iff_da_muller` PROVED, both directions, the forward one by the Choueka route ported from `ctchou/AutomataTheory`. Also fork-only: `DA/Concat.lean`, `DA/Conversions.lean`, `DA/BuchiChar.lean`, `DA/BuchiClosure.lean`, `NA/BuchiCompl.lean`, `NA/Emptiness.lean`. The separate `~/Projects/cslib-pr648` checkout is on `rebase/pr648-upstream` and carries only the upstream DA set, so it is not a source of this material.
+
+WHAT TO DELIVER.
+(1) A verified inventory table: for each ingredient the completeness architecture needs, whether it is landed upstream, landed fork-only, or genuinely missing. Re-derive every row from the trees; cite file and declaration name, and give the measured axiom profile of any declaration the architecture would depend on.
+(2) The decisive open question this task exists to settle: does the fork have the FULL-PRODUCT / PASTING lemma the architecture consumes at its single separation-consumption point (the state-level initialisation of the two clock-anchored product automata from the cut colour's type sets)? `DA.prod` plus `prod_run_eq` is strictly weaker than what that step needs. If the lemma is absent, state precisely what is missing and what it would cost.
+(3) A revised verdict on the Lean route for T3 (TM-plus + until-form LCU + mirror + rules), replacing the NO-GO in the report named above. A located obstruction, stated precisely, is a complete outcome; so is an overturn.
+(4) A dependency-cost assessment, stated as a recommendation and not acted on: CSLib is NOT currently a dependency of this project (`lake-manifest.json` lists only mathlib, batteries, aesop, Qq, proofwidgets, Cli, plausible, LeanSearchClient, importGraph). Consuming the fork-only material means a `require` on a fork that is ~4717 commits ahead of an upstream that has not reviewed it, with a real and recurring sync cost; consuming only upstream material avoids that but leaves determinization unavailable. Assess both, and whether the fork-only modules are candidates for upstreaming instead.
+
+SCOPE AND NON-GOALS. ZTime only. No change under `FormalSystem/` or `Tests/`; no edit to `lakefile.toml` or `lake-manifest.json`; no completeness claim lands from this task. Do not re-derive the architecture itself, which the report already gives: this task re-tests exactly one premise of its verdict.
+
+PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automata survey whose close-out record is `specs/736_cslib_omega_automata_survey_and_e3_reopen_check/summaries/01_cslib-omega-automata-survey-summary.md`; its summary names a six-item operator hand-off list of findings deliberately not acted on. Read that summary and its hand-off list before starting, and state explicitly which of this task's deliverables it already discharges and which it does not. It is prior art, not a blocker: it predates the completeness-programme report's NO-GO and does not address the pasting-lemma question in deliverable (2).
+
+---
 
 ### 901. Paper proof of the two-sided Reynolds engine for L-plus at ZTime: ban preservation, fair scheduling, universal non-acceptance, truth lemma
 - **Status**: [NOT STARTED]
