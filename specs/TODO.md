@@ -117,7 +117,7 @@ next_project_number: 905
   └─ 869 [NOT STARTED] — (semantics: PRIORITY RULING (2026-11-05, user):...) (see above)
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
-901 [PLANNED] — Paper proof of the two-sided Reynolds engine for L-plus at...
+901 [IMPLEMENTING] — Paper proof of the two-sided Reynolds engine for L-plus at...
 
 ## Tasks
 
@@ -188,7 +188,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 901. Paper proof of the two-sided Reynolds engine for L-plus at ZTime: ban preservation, fair scheduling, universal non-acceptance, truth lemma
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal
 - **Dependencies**: Task 893, Task 903
 - **Research**: [901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md]

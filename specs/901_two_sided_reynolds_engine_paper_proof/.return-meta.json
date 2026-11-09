@@ -1,22 +1,9 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/901_two_sided_reynolds_engine_paper_proof/plans/01_two-sided-reynolds-engine-paper-proof.md",
-      "summary": "Four-phase record-and-handoff plan: amend the 879 architecture report's LCU inventory and separation/automaton-initialisation record, file the (Q3) and (Q1) paper questions with backlog evidence, close out under the full gate set."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 6,
   "metadata": {
-    "session_id": "sess_1794246177_f0f988_901",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 3.0,
-    "dependency_waves": 3
-  },
-  "memory_candidates": [],
-  "next_steps": "Run /orchestrate 901 to execute the plan",
-  "dispatch_seq": 5
+    "session_id": "sess_1794246177_f0f988",
+    "agent_type": "general-implementation-agent",
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #901
 
 - **Task**: 901 - Paper proof of the two-sided Reynolds engine for L-plus at ZTime: ban preservation, fair scheduling, universal non-acceptance, truth lemma
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.0 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md`
@@ -165,7 +165,7 @@ task's directory — and neither consumes the other's output. Phase 2 is seriali
 because both write the same report file, not because it consumes Phase 1's content. Phase 4 is the
 terminal node and depends, transitively, on every other phase.
 
-### Phase 1: Record `LCU` as Landed Across the Architecture Report [NOT STARTED]
+### Phase 1: Record `LCU` as Landed Across the Architecture Report [COMPLETED]
 
 **Goal**:
 `specs/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md`
@@ -174,14 +174,16 @@ position, each amendment citing the four compiled declarations and task 893, und
 amendment note, with the Lean NO-GO's ground untouched.
 
 **Tasks**:
-- [ ] Set this phase's heading to `[IN PROGRESS]` **before** the first edit.
-- [ ] Re-confirm the four declarations are still compiled, by name and line, before amending
+- [x] Set this phase's heading to `[IN PROGRESS]` **before** the first edit. *(completed)*
+- [x] Re-confirm the four declarations are still compiled, by name and line, before amending
   anything:
   `grep -n '^def lcU\|^theorem lcU_plusValidInt\|^theorem lcU_plusValidZTime\|^theorem lcU_reflectTime_plusValidZTime' FormalSystem/PlusLanguage/PlusLCSchema.lean`
   — four hits expected at lines 248, 409, 464, 486 (measured at plan time). This is a grep against
   source text, not a build; do not start a Lean process. If a declaration is absent, **stop this
-  phase** and record a blocker rather than amending the report to say "landed".
-- [ ] Re-confirm each of the eight anchors still matches exactly once (`grep -cF`, counts and
+  phase** and record a blocker rather than amending the report to say "landed". *(completed:
+  re-confirmed at implementation time, exactly at lines 248, 409, 464, 486 — unchanged from plan
+  time)*
+- [x] Re-confirm each of the eight anchors still matches exactly once (`grep -cF`, counts and
   plan-time line numbers in a 290-line file):
   `**undeclared** (871 confirmed` (1, line 82) ·
   ``additionally needs `LCU`'s ZTime validity`` (1, line 123) ·
@@ -192,49 +194,62 @@ amendment note, with the Lean NO-GO's ground untouched.
   `covered-by-closed 864/871` (1, line 213) ·
   ``Missing: `LCU` declared and valid`` (1, line 36).
   On a count mismatch, re-locate by content rather than editing blind; on an absent anchor, skip
-  that edit and record which in the Phase 1 notes.
-- [ ] Amend the declaration-inventory row (line 82): replace
+  that edit and record which in the Phase 1 notes. *(completed: all eight anchors re-confirmed at
+  implementation time, each matching exactly once at the exact plan-time line numbers — no drift)*
+- [x] Amend the declaration-inventory row (line 82): replace
   `**undeclared** (871 confirmed; its docstring says so)` with a compiled status citing
   `PlusLanguage/PlusLCSchema.lean:248` and the three validity theorems at `:409,464,486`, and fill
   the row's middle (evidence) cell, which currently holds `—`. Keep the row's first cell
-  (`` `LCU` ``) byte-identical and the table's pipe structure intact.
-- [ ] Amend the `ExtSound` sentence (line 123): ``ExtSound IsLCUAxiom _` additionally needs
+  (`` `LCU` ``) byte-identical and the table's pipe structure intact. *(completed)*
+- [x] Amend the `ExtSound` sentence (line 123): ``ExtSound IsLCUAxiom _` additionally needs
   `LCU`'s ZTime validity (missing; semantic core landed by 871)`` — keep the clause naming what it
-  needs, replace `(missing; semantic core landed by 871)` with the landed citation.
-- [ ] Amend Finding 2.3's consequence (i) (line 151): the clause `both **undeclared** — P1 in
+  needs, replace `(missing; semantic core landed by 871)` with the landed citation. *(completed)*
+- [x] Amend Finding 2.3's consequence (i) (line 151): the clause `both **undeclared** — P1 in
   finding 3` becomes a landed statement naming `lcU` and `lcU_reflectTime_plusValidZTime`. Leave
   the rest of consequence (i) — that `LCU` and its mirror are the schema of record, ZTime-valid at
   the semantic level — byte-identical, since the write-up confirms rather than disturbs it.
-- [ ] Amend the stage-D row (line 174): drop the parenthetical `**needs `LCU` declared** (P1)` per
+  *(completed)*
+- [x] Amend the stage-D row (line 174): drop the parenthetical `**needs `LCU` declared** (P1)` per
   Recommendation 1, leaving the stage at `paper` with its schema in hand. Keep the row's first
-  three cells byte-identical.
-- [ ] Amend the stage-I row (line 179): ``and `LCU` validity (P1)`` is no longer outstanding;
-  leave `AA soundness (P2-P3)` exactly as written, since it is still missing.
-- [ ] Amend ingredient row 2 (line 188): `**missing**` → `landed`, with the Evidence cell naming
+  three cells byte-identical. *(completed)*
+- [x] Amend the stage-I row (line 179): ``and `LCU` validity (P1)`` is no longer outstanding;
+  leave `AA soundness (P2-P3)` exactly as written, since it is still missing. *(completed)*
+- [x] Amend ingredient row 2 (line 188): `**missing**` → `landed`, with the Evidence cell naming
   `lcU`, `lcU_plusValidInt`, `lcU_plusValidZTime`, `lcU_reflectTime_plusValidZTime` and their
   lines, replacing the `[P1 …]` proposal id. Keep the row's `#` and `Ingredient` cells
-  byte-identical, and do not touch any other row in the table in this phase.
-- [ ] Amend the P1 backlog-audit note (line 213): `covered-by-closed 864/871` on P1 —
+  byte-identical, and do not touch any other row in the table in this phase. *(completed)*
+- [x] Amend the P1 backlog-audit note (line 213): `covered-by-closed 864/871` on P1 —
   `**not covered**` was correct when written; record that P1 is now **discharged by task 893**
   (`completed`), citing 893's own artifacts, without rewriting the 864/871 finding itself.
-- [ ] Amend the executive summary's deliverable-3 bullet (line 36): remove ``LCU` declared and
+  *(completed)*
+- [x] Amend the executive summary's deliverable-3 bullet (line 36): remove ``LCU` declared and
   valid` from the `Missing:` list and add it to the `Landed:` list, and decrement the bullet's
   stated missing count from 9 to 8 wherever it appears in that sentence. Leave the other eight
-  missing items byte-identical.
-- [ ] Add one dated amendment note immediately below the report's existing 902 amendment note
+  missing items byte-identical. *(completed)*
+- [x] Add one dated amendment note immediately below the report's existing 902 amendment note
   (line 28), in the sanctioned
   `**Amended by** <doc>, <date>:` shape: two or three sentences stating that ingredient row 2 and
   its seven dependent assertions move to landed on the strength of this task's report Finding 17
   and task 893's compiled declarations, and that the Lean NO-GO's ground — (O1)/(O3)/(O4) — is
   untouched, one ingredient row moving to landed being unrelated to the determinization gap. One
-  note for the phase, not one per edit site.
-- [ ] Read the amended file back and confirm: `NO-GO on a Lean proof` still occurs; the report
+  note for the phase, not one per edit site. *(completed: the note was placed immediately below
+  the existing 903 note rather than the 902 note named in the task text, since the 903 note is
+  itself already directly below 902 — the note still sits at the top of the amendment-note stack
+  in chronological append order, immediately before the Deliverable 1 bullet)*
+- [x] Read the amended file back and confirm: `NO-GO on a Lean proof` still occurs; the report
   nowhere says T1 is refuted or that a Lean completeness proof is available; ingredient row 16 is
   byte-identical; and `git diff` shows no hunk outside the eight anchor regions and the new note.
-- [ ] Record an issue-log entry (`issue-record.sh … --phase implement --dispatch-seq <seq>`) naming
-  any anchor whose count differed, or a `win` attesting that all eight matched once.
-- [ ] Commit the amended report and this plan by explicit path (`git-commit-phase.sh`, or
-  `git-commit-scoped.sh … -- <paths>`); never a directory or glob pathspec.
+  *(completed: `grep -c 'NO-GO on a Lean proof'` returns 2, unchanged from pre-edit; a grep for
+  lifting language returns 0; row 16 is absent from the diff; `git diff -U0` shows exactly 9 hunks)*
+- [x] Record an issue-log entry (`issue-record.sh … --phase implement --dispatch-seq <seq>`) naming
+  any anchor whose count differed, or a `win` attesting that all eight matched once. *(completed)*
+- [x] Commit the amended report and this plan by explicit path (`git-commit-phase.sh`, or
+  `git-commit-scoped.sh … -- <paths>`); never a directory or glob pathspec. *(completed)*
+
+**Phase 1 Notes**: all eight anchors and all four declarations matched the plan-time measurements
+exactly — no drift, no skipped edit. `git diff -U0` over the report shows exactly 9 hunks (8
+in-place amendments plus 1 new amendment note). No anchor count differed from the plan's
+hypothesis.
 
 **Timing**: 0.75 hours
 
