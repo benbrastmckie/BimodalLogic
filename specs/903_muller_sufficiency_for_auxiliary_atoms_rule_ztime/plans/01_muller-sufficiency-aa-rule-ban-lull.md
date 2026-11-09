@@ -559,7 +559,7 @@ to this phase's hand-authored edit), confirming the hand-authored body round-tri
 
 ---
 
-### Phase 4: Close-Out Record and Final Gate [IN PROGRESS]
+### Phase 4: Close-Out Record and Final Gate [COMPLETED]
 
 **Goal**: The task's close-out record exists, states the split verdict and what was amended, names
 every recommendation deliberately not acted on with its reason, and the repository passes its full
