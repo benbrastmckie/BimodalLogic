@@ -31,21 +31,37 @@
       "category": "TECHNIQUE",
       "source_artifact": "specs/901_two_sided_reynolds_engine_paper_proof/summaries/01_two-sided-reynolds-engine-paper-proof-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["state-write.sh", "audit-verdict", "argument list too long", "audit-task-proposals.sh", "backlog-reconciliation"]
+      "suggested_keywords": [
+        "state-write.sh",
+        "audit-verdict",
+        "argument list too long",
+        "audit-task-proposals.sh",
+        "backlog-reconciliation"
+      ]
     },
     {
       "content": "The plan-verification idiom 'git diff --stat <this task's first commit>^..HEAD -- <paths>' is unreliable in a shared working tree where sibling tasks commit concurrently: the window-wide diff captures every writer's commits during that span, not just this task's own. The correct per-task check is to inspect each of the task's own phase commits individually (git show --stat <commit> -- <paths>), confirmed empty for all of them.",
       "category": "PATTERN",
       "source_artifact": "specs/901_two_sided_reynolds_engine_paper_proof/summaries/01_two-sided-reynolds-engine-paper-proof-summary.md",
       "confidence": 0.8,
-      "suggested_keywords": ["git diff --stat", "shared working tree", "concurrent writers", "verification criterion", "per-commit check"]
+      "suggested_keywords": [
+        "git diff --stat",
+        "shared working tree",
+        "concurrent writers",
+        "verification criterion",
+        "per-commit check"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1794246177_f0f988",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 4,
     "phases_total": 4
   }

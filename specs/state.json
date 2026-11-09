@@ -16411,7 +16411,7 @@
     {
       "project_number": 901,
       "project_name": "two_sided_reynolds_engine_paper_proof",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "formal",
       "title": "Paper proof of the two-sided Reynolds engine for L-plus at ZTime: ban preservation, fair scheduling, universal non-acceptance, truth lemma",
       "description": "RESEARCH TASK, report only. Write out, at the level of rigour of Reynolds 2001 sections 9-15, the two-sided transposition of the CTL* completeness engine to L-plus over Z-time for the system TM-plus + LCU + mirror LCU + clock rule + forward and backward Auxiliary-Atoms rules: the closure sets with the separated CNF of every closure formula; hues, colours and the state formula of a colour; the two deterministic Rabin automata over colour words, the forward one indexed by the set of past-types realized at the cut colour and the backward one by the set of future-types, with the violation language defined through the separated CNF; the consistency lemma for phi-plus via the linear bridge and the three rules; the two-sided chronicle with alternating future and past defect curing, pioneers and lulls in both directions; the ban-preservation lemma consuming LCU and its mirror; universal non-acceptance along every bi-infinite walk of the limit quotient; the truth lemma including the stab case for emergent walks; and the final-frame step through the universal cover. Record, as located questions, whether LCU is derivable from TM-plus + LC_n at ZTime and whether the three naming rules are admissible in the rule-free system. Inherit as a settled premise, not as an open question, the split verdict of `specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md`: a deterministic Muller automaton suffices for the Auxiliary-Atoms rule -- the rule's antecedent, Reynolds' `theta_A`, carries no acceptance condition at all, so determinism is the whole demand the rule makes on the automaton -- but does not suffice for the ban/lull mechanism, whose chronicle indexes `bl` by the number of accepting pairs of the automaton; a two-state counterexample (`Q = {a,b}`, with Muller family `{{a,b}}`) shows that enumerating pairs over a Muller family is unsound, not merely incomplete, so the determinization state-space blowup is unavoidable and the write-up may name deterministic Rabin automata without hedging. Note that a Lean formalization of this proof is blocked on a relocated obstruction with three live named components, not on absence from Mathlib or from either CSLib tree -- see `specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md`: (O1) determinization to a deterministic Rabin automaton is unproved everywhere -- the local fork's `Muller.toRabin_exists` is a `proof_wanted`, and it is the single remaining determinization gap, `Rabin.toParity_exists` being off the critical path because `Parity.toRabin_language_eq` is already proved and the ban mechanism consumes Rabin rather than parity; (O3) every determinization result arrives as an existential over `Type`, not as the syntax the Auxiliary-Atoms rule needs to name the automaton in fresh state-valued atoms; and (O4) the rest of the paper proof -- consistency of phi-plus, ban preservation, universal non-acceptance, fair scheduling, the two-sided truth lemma -- is untouched by any of this. The component labels are kept as the 902 report numbers them, because the fourth member of the earlier count, (O2) the indexed conjunctive product automaton with a nameable initial state, is now discharged rather than merely deprioritized: taking the cut product as a finite indexed union on the Muller side and determinizing once afterwards puts it inside the already-proved `Muller.exists_iSup`, so none of the Rabin-side product or closure code it was costed at is needed. A Lean formalization is not to be filed until this located obstruction is resolved.",
@@ -16430,7 +16430,7 @@
       ],
       "priority": "medium",
       "created": "2026-11-09T09:48:35Z",
-      "last_updated": "2026-11-09T19:48:52Z",
+      "last_updated": "2026-11-09T20:07:42Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -16442,6 +16442,11 @@
           "path": "specs/901_two_sided_reynolds_engine_paper_proof/plans/01_two-sided-reynolds-engine-paper-proof.md",
           "type": "plan",
           "summary": "Four-phase record-and-handoff plan, 3.0 hours, three waves; no Lean source, no build-file change, no PR."
+        },
+        {
+          "path": "specs/901_two_sided_reynolds_engine_paper_proof/summaries/01_two-sided-reynolds-engine-paper-proof-summary.md",
+          "type": "summary",
+          "summary": "Close-out record: result statement, paper-proof-not-machine-checked caveat, the two filed questions, the Phase 1-3 amendments and filings, and the deliberately-not-done paragraph."
         }
       ],
       "session_id": "sess_1794246177_f0f988",
@@ -16562,7 +16567,8 @@
           }
         ],
         "scope_blind_count": 451
-      }
+      },
+      "completion_summary": "Landed all four phases of task 901's record-and-handoff plan: amended the 879 architecture report's LCU inventory and separation/automaton-initialisation record (14 hunks across two commits), filed two ownable paper questions (905, 906) with full backlog-reconciliation evidence, and wrote the close-out summary. No Lean source, no build-file change, no PR; the batch-deferred scoped gate set ran green."
     },
     {
       "project_number": 903,

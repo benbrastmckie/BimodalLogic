@@ -11,7 +11,7 @@ next_project_number: 907
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,894,897,898,899,900,901,905,906 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,894,897,898,899,900,905,906 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,804,853,862,869,895 | 298,428,502,743,761,803,838,894,898 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,896 | 429,497,763,838,895 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -117,7 +117,6 @@ next_project_number: 907
   └─ 869 [NOT STARTED] — (semantics: PRIORITY RULING (2026-11-05, user):...) (see above)
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
-901 [IMPLEMENTING] — Paper proof of the two-sided Reynolds engine for L-plus at...
 905 [NOT STARTED] — Eliminate cross-certification between the forward and...
 906 [NOT STARTED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
 
@@ -208,11 +207,12 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 901. Paper proof of the two-sided Reynolds engine for L-plus at ZTime: ban preservation, fair scheduling, universal non-acceptance, truth lemma
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal
 - **Dependencies**: Task 893, Task 903
 - **Research**: [901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md]
 - **Plan**: [901_two_sided_reynolds_engine_paper_proof/plans/01_two-sided-reynolds-engine-paper-proof.md]
+- **Summary**: [901_two_sided_reynolds_engine_paper_proof/summaries/01_two-sided-reynolds-engine-paper-proof-summary.md]
 
 **Description**: RESEARCH TASK, report only. Write out, at the level of rigour of Reynolds 2001 sections 9-15, the two-sided transposition of the CTL* completeness engine to L-plus over Z-time for the system TM-plus + LCU + mirror LCU + clock rule + forward and backward Auxiliary-Atoms rules: the closure sets with the separated CNF of every closure formula; hues, colours and the state formula of a colour; the two deterministic Rabin automata over colour words, the forward one indexed by the set of past-types realized at the cut colour and the backward one by the set of future-types, with the violation language defined through the separated CNF; the consistency lemma for phi-plus via the linear bridge and the three rules; the two-sided chronicle with alternating future and past defect curing, pioneers and lulls in both directions; the ban-preservation lemma consuming LCU and its mirror; universal non-acceptance along every bi-infinite walk of the limit quotient; the truth lemma including the stab case for emergent walks; and the final-frame step through the universal cover. Record, as located questions, whether LCU is derivable from TM-plus + LC_n at ZTime and whether the three naming rules are admissible in the rule-free system. Inherit as a settled premise, not as an open question, the split verdict of `specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01_muller-sufficiency-aa-rule-ban-lull.md`: a deterministic Muller automaton suffices for the Auxiliary-Atoms rule -- the rule's antecedent, Reynolds' `theta_A`, carries no acceptance condition at all, so determinism is the whole demand the rule makes on the automaton -- but does not suffice for the ban/lull mechanism, whose chronicle indexes `bl` by the number of accepting pairs of the automaton; a two-state counterexample (`Q = {a,b}`, with Muller family `{{a,b}}`) shows that enumerating pairs over a Muller family is unsound, not merely incomplete, so the determinization state-space blowup is unavoidable and the write-up may name deterministic Rabin automata without hedging. Note that a Lean formalization of this proof is blocked on a relocated obstruction with three live named components, not on absence from Mathlib or from either CSLib tree -- see `specs/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01_cslib-omega-automata-nogo-reassessment.md`: (O1) determinization to a deterministic Rabin automaton is unproved everywhere -- the local fork's `Muller.toRabin_exists` is a `proof_wanted`, and it is the single remaining determinization gap, `Rabin.toParity_exists` being off the critical path because `Parity.toRabin_language_eq` is already proved and the ban mechanism consumes Rabin rather than parity; (O3) every determinization result arrives as an existential over `Type`, not as the syntax the Auxiliary-Atoms rule needs to name the automaton in fresh state-valued atoms; and (O4) the rest of the paper proof -- consistency of phi-plus, ban preservation, universal non-acceptance, fair scheduling, the two-sided truth lemma -- is untouched by any of this. The component labels are kept as the 902 report numbers them, because the fourth member of the earlier count, (O2) the indexed conjunctive product automaton with a nameable initial state, is now discharged rather than merely deprioritized: taking the cut product as a finite indexed union on the Muller side and determinizing once afterwards puts it inside the already-proved `Muller.exists_iSup`, so none of the Rabin-side product or closure code it was costed at is needed. A Lean formalization is not to be filed until this located obstruction is resolved.
 
