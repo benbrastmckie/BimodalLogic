@@ -376,15 +376,15 @@ verbatim.
 
 ---
 
-### Phase 3: File the Two Ownable Paper Questions, With Backlog Evidence [NOT STARTED]
+### Phase 3: File the Two Ownable Paper Questions, With Backlog Evidence [COMPLETED]
 
 **Goal**: Two `not_started` entries exist in `specs/state.json`, each carrying
 backlog-reconciliation evidence in its own `audit_verdict` field and a declared `file_scope`;
 `specs/TODO.md` renders both; (Q2) is deliberately not filed and the reason is recorded.
 
 **Tasks**:
-- [ ] Set this phase's heading to `[IN PROGRESS]` before the first write.
-- [ ] Write `specs/901_two_sided_reynolds_engine_paper_proof/task-proposals.json` as a two-element
+- [x] Set this phase's heading to `[IN PROGRESS]` before the first write. *(completed)*
+- [x] Write `specs/901_two_sided_reynolds_engine_paper_proof/task-proposals.json` as a two-element
   JSON array, each element carrying exactly the four keys `{id, title, description, file_scope}`
   that `audit-task-proposals.sh` consumes:
   - **(Q3)** `eliminate_cross_certification_two_sided_reynolds_automata` — RESEARCH TASK, report
@@ -402,30 +402,62 @@ backlog-reconciliation evidence in its own `audit_verdict` field and a declared 
     countermodel cannot settle it** — both `lcN_plusValidZTime` and `lcU_plusValidZTime` are
     compiled, so the two systems have the same ZTime models — and that `.Base`, where both
     schemata's validity is open and unclaimed per `PlusLCSchema.lean`'s own docstring, is the first
-    target for a separating general frame or algebra.
-- [ ] Run `bash .claude/scripts/audit-task-proposals.sh` over the proposals file; commit the
-  resulting audit NDJSON into this task's directory as the evidence record.
-- [ ] **Decision gate**: on a surviving `duplicate-of-open` or `subset-of-open` verdict against an
+    target for a separating general frame or algebra. *(completed, both proposals written verbatim
+    to spec)*
+- [x] Run `bash .claude/scripts/audit-task-proposals.sh` over the proposals file; commit the
+  resulting audit NDJSON into this task's directory as the evidence record. *(completed; exit 0,
+  465 verdicts for (Q3), 490 verdicts for (Q1))*
+- [x] **Decision gate**: on a surviving `duplicate-of-open` or `subset-of-open` verdict against an
   open task, narrow the proposal's scope to the non-overlapping remainder or drop it, rather than
   filing it unchanged; record the disposition of every non-`scope-blind`, non-trivial verdict with
   its reason, in the shape the architecture report's own "Backlog audit" paragraph uses.
-- [ ] File the surviving proposals via `bash .claude/scripts/state-write.sh` with
+  *(completed — see Phase 3 Notes below; no proposal was narrowed or dropped)*
+- [x] File the surviving proposals via `bash .claude/scripts/state-write.sh` with
   `--audit-verdict` carrying the verdict object for each new entry (the audit-evidence gate
   refuses the write otherwise), each as `not_started` with its `task_type` and declared
   `file_scope`. Do not hand-edit `specs/state.json`, and do not assign `.artifacts = [...]`
-  wholesale — `rules/state-management.md` makes that array append-only.
-- [ ] Regenerate the rendered view: `bash .claude/scripts/generate-todo.sh`. Never edit
-  `specs/TODO.md` directly.
-- [ ] Confirm `bash .claude/scripts/validate-state.sh` exits 0 (including its cycle check) and that
+  wholesale — `rules/state-management.md` makes that array append-only. *(completed: both filed via
+  `state-write.sh --allocate-into --audit-verdict`, project numbers 905 (Q3) and 906 (Q1); the
+  full 465/490-verdict NDJSON passed as `--audit-verdict` hit the shell's argument-length limit, so
+  a trimmed verdict object — proposal plus the non-`scope-blind` verdicts only, which is all the
+  gate structurally requires — was passed instead; the full audit record is committed unabridged at
+  `task-proposals-audit.ndjson`)*
+- [x] Regenerate the rendered view: `bash .claude/scripts/generate-todo.sh`. Never edit
+  `specs/TODO.md` directly. *(completed)*
+- [x] Confirm `bash .claude/scripts/validate-state.sh` exits 0 (including its cycle check) and that
   both new entries render in `specs/TODO.md` with their `task_type` and bracket status.
-- [ ] Record in the Phase 3 notes, with its reason, that **(Q2) is deliberately not filed**: the
+  *(completed: exit 0, 19 pre-existing warnings unrelated to 905/906, 0 failures; both entries
+  render with `formal`/`[NOT STARTED]`)*
+- [x] Record in the Phase 3 notes, with its reason, that **(Q2) is deliberately not filed**: the
   write-up's Recommendation 7 asks only that it stay framed as admissibility rather than soundness,
   and names no settling route an agent could be dispatched against; the landed
   `clock_irr_sound`/`irr_sound` bear on soundness, not admissibility, and recording them as partial
-  progress would overstate the position.
-- [ ] Record an issue-log entry for this phase (`issue` or `win`).
-- [ ] Commit the proposals file, the audit NDJSON, `specs/state.json` and `specs/TODO.md` by
-  explicit path.
+  progress would overstate the position. *(completed — see Phase 3 Notes below)*
+- [x] Record an issue-log entry for this phase (`issue` or `win`). *(completed)*
+- [x] Commit the proposals file, the audit NDJSON, `specs/state.json` and `specs/TODO.md` by
+  explicit path. *(completed)*
+
+**Phase 3 Notes**: both proposals survived the decision gate unchanged. For (Q3), the audit's only
+non-`scope-blind` hit against an open task was `duplicate-of-open 901` itself (semantic score
+0.407, well below the sibling task 902's calibrated ~0.62 credible-match threshold) — this is the
+task raising the question, not a competing owner, and 901 declares no Lean item and no cross-
+certification deliverable of its own; **dismissed, self-reference, not a genuine duplicate**. Every
+other (Q3) verdict was `covered-by-closed` against reports/summaries in the 0.43-0.67 range, none
+naming cross-certification or the clause-(a) mechanism; **dismissed, no on-point coverage**. For
+(Q1), four `duplicate-of-open` hits surfaced (430, 543, 869, 875), all at 0.41-0.51, below
+threshold; 430 was already adjudicated by the architecture report's own P1 backlog-audit note as
+"token overlap on 'lift'/'valid'/'assembly', unrelated in content" — the same dismissal applies
+here; 869 is the already-demoted L^▷ invariance task (architecture report: "subset-of-open 869 …
+on P6 … overlap on `HistoryMorphism.lean` only"), unrelated to the LCU/`LC_n` derivability question;
+543 and 875 show no content overlap with a non-ZTime separating-model question beyond generic
+logic-programme vocabulary. **All four dismissed, below-threshold token overlap, no content
+match.** No `subset-of-open` verdict appeared for either proposal. Allocated numbers: **905**
+(Q3, `eliminate_cross_certification_two_sided_reynolds_automata`), **906** (Q1,
+`lcu_derivability_from_lcn_non_ztime_separating_model`). **(Q2) is deliberately not filed**:
+Recommendation 7 asks only that "is `LC_n` admissible in the rule-free system" stay framed as
+admissibility, not soundness, and names no settling route an agent could be dispatched against; the
+landed `clock_irr_sound`/`irr_sound` bear on soundness, not admissibility, so recording them as
+partial progress toward (Q2) would overstate the position. (Q2) is recorded here, not filed.
 
 **Timing**: 0.75 hours
 

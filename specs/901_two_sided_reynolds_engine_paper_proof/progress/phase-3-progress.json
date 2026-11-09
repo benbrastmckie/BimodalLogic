@@ -1,0 +1,20 @@
+{
+  "phase": 3,
+  "phase_name": "File the Two Ownable Paper Questions, With Backlog Evidence",
+  "started_at": "2026-11-09T20:03:00Z",
+  "last_updated": "2026-11-09T20:12:00Z",
+  "objectives": [
+    {"id": 1, "description": "Write task-proposals.json", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/task-proposals.json"]},
+    {"id": 2, "description": "Run audit-task-proposals.sh and commit evidence", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/task-proposals-audit.ndjson"]},
+    {"id": 3, "description": "Decision gate review of non-trivial verdicts", "status": "done", "files_touched": []},
+    {"id": 4, "description": "File proposals via state-write.sh, regenerate TODO, validate", "status": "done", "files_touched": ["specs/state.json", "specs/TODO.md"]},
+    {"id": 5, "description": "Record Phase 3 notes including Q2 non-filing", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/plans/01_two-sided-reynolds-engine-paper-proof.md"]}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [
+    {"approach": "pass full audit NDJSON to state-write.sh --audit-verdict", "result": "failed", "reason": "jq --argjson argument list too long (145-159KB)"},
+    {"approach": "trim verdict file to proposal + non-scope-blind verdicts only", "result": "success", "reason": "satisfies audit-evidence gate's matching .proposal.id requirement at much smaller size"}
+  ],
+  "deviations": [],
+  "handoff_count": 0
+}

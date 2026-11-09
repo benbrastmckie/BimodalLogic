@@ -1,5 +1,5 @@
 ---
-next_project_number: 905
+next_project_number: 907
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 905
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,894,897,898,899,900,901 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,894,897,898,899,900,901,905,906 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,804,853,862,869,895 | 298,428,502,743,761,803,838,894,898 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,896 | 429,497,763,838,895 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -118,8 +118,28 @@ next_project_number: 905
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 901 [IMPLEMENTING] — Paper proof of the two-sided Reynolds engine for L-plus at...
+905 [NOT STARTED] — Eliminate cross-certification between the forward and...
+906 [NOT STARTED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
 
 ## Tasks
+
+### 906. Settle whether LCU is derivable from TM-plus + LC_n at ZTime via a non-ZTime separating model
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, report only. Deliverable: either a derivation of lcU alpha beta in TM-plus + LC_n + mirror LC_n for state-local beta, or a non-ZTime separating model. A ZTime countermodel cannot settle this question -- both lcN_plusValidZTime and lcU_plusValidZTime are compiled, so the two systems have the same ZTime models -- so the first target is .Base, where both schemata's validity is open and unclaimed per FormalSystem/PlusLanguage/PlusLCSchema.lean's own docstring, for a separating general frame or algebra. No Lean work beyond what is needed to state the separating model or derivation at the report level; no completeness claim.
+
+---
+
+### 905. Eliminate cross-certification between the forward and backward Rabin automata, or show it is load-bearing
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, report only. Deliverable: an answer, with its argument, to whether the clause-(a) cross-certification of specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md's Finding 5.2/14.4 is eliminable -- either a proof that the certification is automatic from the chronicle clauses of that report's Finding 8.2, or a demonstration that it is load-bearing, or a bi-infinite-automaton alternative with its cost. The question is answerable against the chronicle clauses and the two clause (a)s alone, strictly cheaper than anything in that report's Finding 17; eliminating the clauses would remove one omega-regularity argument from each automaton and shrink the alphabet's enlargement. No Lean work; no completeness claim.
+
+---
 
 ### 904. Record three method lessons in the source store: proof_wanted as a trust surface, the external-library dependency-assessment checklist, and ground-overturned-outcome-preserved verdict amendments
 - **Status**: [COMPLETED]

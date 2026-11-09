@@ -4,7 +4,7 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 905,
+  "next_project_number": 907,
   "active_projects": [
     {
       "project_number": 902,
@@ -17916,6 +17916,202 @@
       },
       "session_id": "sess_1794233746_5963da",
       "completion_summary": "Registered the new external-library-dependency-assessment.md pattern file in lean/index-entries.json and lean/EXTENSION.md, bidirectionally cross-linked it with dependency-tracing.md, removed a record-versioning lint occurrence, and amended the research report's Decisions bullet to reflect the final cross-link state. All three method lessons (proof_wanted trust surface, external-library dependency checklist, ground-overturned-outcome-preserved amendment pattern) were re-verified intact against the source store; no lesson content was re-authored."
+    },
+    {
+      "project_number": 905,
+      "project_name": "eliminate_cross_certification_two_sided_reynolds_automata",
+      "status": "not_started",
+      "task_type": "formal",
+      "title": "Eliminate cross-certification between the forward and backward Rabin automata, or show it is load-bearing",
+      "description": "RESEARCH TASK, report only. Deliverable: an answer, with its argument, to whether the clause-(a) cross-certification of specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md's Finding 5.2/14.4 is eliminable -- either a proof that the certification is automatic from the chronicle clauses of that report's Finding 8.2, or a demonstration that it is load-bearing, or a bi-infinite-automaton alternative with its cost. The question is answerable against the chronicle clauses and the two clause (a)s alone, strictly cheaper than anything in that report's Finding 17; eliminating the clauses would remove one omega-regularity argument from each automaton and shrink the alphabet's enlargement. No Lean work; no completeness claim.",
+      "file_scope": [],
+      "dependencies": [],
+      "priority": "low",
+      "created": "2026-11-09T20:01:27Z",
+      "last_updated": "2026-11-09T20:01:27Z",
+      "next_artifact_number": 1,
+      "artifacts": [],
+      "audit_verdict": {
+        "proposal": {
+          "id": "eliminate_cross_certification_two_sided_reynolds_automata",
+          "project_number": null,
+          "title": "Eliminate cross-certification between the forward and backward Rabin automata, or show it is load-bearing"
+        },
+        "verdicts": [
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 718,
+            "project_name": "omega_sequence_decidability_full_lplus",
+            "discharging_artifact": {
+              "path": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for all 7 plan phases."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.6666666666666666
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5370370370370371
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 748,
+            "project_name": "revise_and_create_tasks_lplus_decidability",
+            "discharging_artifact": {
+              "path": "specs/748_revise_and_create_tasks_lplus_decidability/summaries/04_task-graph-revisions-and-roadmap-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for plan 03: four creations, two revisions, one subsumption close, and the roadmap hand-edit, with every deviation recorded."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5185185185185185
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5185185185185185
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 736,
+            "project_name": "cslib_omega_automata_survey_and_e3_reopen_check",
+            "discharging_artifact": {
+              "path": "specs/736_cslib_omega_automata_survey_and_e3_reopen_check/summaries/01_cslib-omega-automata-survey-summary.md",
+              "type": "summary",
+              "summary": "Execution summary: verdict (i) KEEP candidate (d), re-run acceptance evidence, and a six-item operator hand-off list of findings deliberately not acted on."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.48148148148148145
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 737,
+            "project_name": "discharge_presents_mso_reduction_seam_summary",
+            "discharging_artifact": {
+              "path": "specs/737_discharge_presents_mso_reduction_seam_summary/summaries/01_discharge-presents-verdict-summary.md",
+              "type": "summary",
+              "summary": "Field-by-field verdict, what landed where, measured axiom profiles, the B1-B4 residue (CARRIED-UNVERIFIED costs), and the recommendation to re-point the assembly record at Hit."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.46296296296296297
+          }
+        ],
+        "scope_blind_count": 452,
+        "note": "trimmed to top 6 of 13 non-scope-blind verdicts for state-write arg-size limits; full 465-verdict record committed at task-proposals-audit.ndjson"
+      }
+    },
+    {
+      "project_number": 906,
+      "project_name": "lcu_derivability_from_lcn_non_ztime_separating_model",
+      "status": "not_started",
+      "task_type": "formal",
+      "title": "Settle whether LCU is derivable from TM-plus + LC_n at ZTime via a non-ZTime separating model",
+      "description": "RESEARCH TASK, report only. Deliverable: either a derivation of lcU alpha beta in TM-plus + LC_n + mirror LC_n for state-local beta, or a non-ZTime separating model. A ZTime countermodel cannot settle this question -- both lcN_plusValidZTime and lcU_plusValidZTime are compiled, so the two systems have the same ZTime models -- so the first target is .Base, where both schemata's validity is open and unclaimed per FormalSystem/PlusLanguage/PlusLCSchema.lean's own docstring, for a separating general frame or algebra. No Lean work beyond what is needed to state the separating model or derivation at the report level; no completeness claim.",
+      "file_scope": [],
+      "dependencies": [],
+      "priority": "low",
+      "created": "2026-11-09T20:01:38Z",
+      "last_updated": "2026-11-09T20:01:38Z",
+      "next_artifact_number": 1,
+      "artifacts": [],
+      "audit_verdict": {
+        "proposal": {
+          "id": "lcu_derivability_from_lcn_non_ztime_separating_model",
+          "project_number": null,
+          "title": "Settle whether LCU is derivable from TM-plus + LC_n at ZTime via a non-ZTime separating model"
+        },
+        "verdicts": [
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.673469387755102
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 718,
+            "project_name": "omega_sequence_decidability_full_lplus",
+            "discharging_artifact": {
+              "path": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for all 7 plan phases."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.6326530612244898
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 706,
+            "project_name": "lplus_finite_model_property_and_completeness",
+            "discharging_artifact": {
+              "path": "specs/706_lplus_finite_model_property_and_completeness/summaries/01_land-finite-carrier-refutation-summary.md",
+              "type": "summary",
+              "summary": "Execution summary for the library landing of the finite-carrier refutation family."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.6326530612244898
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 442,
+            "project_name": "revise_bimodal_reference_book_against_paper_and_lean",
+            "discharging_artifact": {
+              "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/summaries/01_book-paper-lean-revision-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all 16 phases: what changed, decisions, plan deviations (none), impacts, follow-ups."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.6122448979591837
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 624,
+            "project_name": "translation_product_task_semantics_visibility",
+            "discharging_artifact": {
+              "path": "specs/624_translation_product_task_semantics_visibility/summaries/01_translation-product-closeout-summary.md",
+              "type": "summary",
+              "summary": "Closeout record: reconciliation ledger for all four recommendations, ownership table for all nine Appendix B UNVERIFIED items, and the terminal disposition."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5714285714285714
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5714285714285714
+          }
+        ],
+        "scope_blind_count": 452,
+        "note": "trimmed to top 6 of 38 non-scope-blind verdicts for state-write arg-size limits; full 490-verdict record committed at task-proposals-audit.ndjson"
+      }
     }
   ],
   "artifacts": [
