@@ -1,26 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md",
-      "summary": "Two-sided transposition of the Reynolds 2001 CTL* completeness engine to L-plus over Z-time, at the source's level of rigour: closure sets with the separated CNF, hues/colours/state formulas, the two deterministic Rabin automata over colour words with cut-type indexing folded into the first transition, the consistency lemma for phi-plus via the linear bridge and the three naming rules, the two-sided chronicle with level-split banned lists, ban preservation consuming LCU and its mirror, universal non-acceptance, the truth lemma including the stab case for emergent walks via cross-certification, and the final-frame step through the universal cover. 17 findings, 11 decisions, 8 recommendations, 9 risks."
+      "type": "plan",
+      "path": "specs/901_two_sided_reynolds_engine_paper_proof/plans/01_two-sided-reynolds-engine-paper-proof.md",
+      "summary": "Four-phase record-and-handoff plan: amend the 879 architecture report's LCU inventory and separation/automaton-initialisation record, file the (Q3) and (Q1) paper questions with backlog evidence, close out under the full gate set."
     }
   ],
-  "next_steps": "Record the three inventory/architecture amendments named in Recommendations 1-3 (ingredient row 2 is landed, not missing; the split separation-consumption point; the second consumers of the full-product lemma and the linear bridge). Do not file any Lean work: (O1)/(O3)/(O4) are unresolved and Recommendations 4 and 8 forbid it. (Q1), (Q2) and the new (Q3) are recorded as open with their settling conditions.",
   "metadata": {
     "session_id": "sess_1794246177_f0f988_901",
-    "agent_type": "formal-research-agent",
-    "duration_seconds": 1640,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "formal-research-agent"],
-    "domains_researched": ["logic", "math"],
-    "findings_count": 17,
-    "context_files_loaded": ["mathlib-lookup-gate.md", "report-format.md"],
-    "mathlib_lookups_performed": 0,
-    "mathlib_lookup_gated": "skipped-no-lean-target",
-    "verification_passed": true,
-    "verification_note": "validate-artifact.sh report: PASS, 0 warnings; the five required headings grepped individually before this write."
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3.0,
+    "dependency_waves": 3
+  },
+  "memory_candidates": [],
+  "next_steps": "Run /orchestrate 901 to execute the plan",
+  "dispatch_seq": 5
 }
