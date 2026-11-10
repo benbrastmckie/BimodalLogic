@@ -1,17 +1,33 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "summary": "Planned the register-lowering exact-shift deletion as a generalization of the landed up-first theorem over the target register (parameter k, slack at m*(P+1)+k), then spent it on the common-shift sub-regime's downward direction: path-level membership, state-level inclusion under ForwardSlackWitnessed, and a branch-2 depth-0 cell-equality schema carrying the common-shift displacement in place of the equal-register hypothesis n = n'. Five phases, 7 hours, fully sequential (every Lean-touching phase stages the blocking typst/generated/status.typ surface). All five pinned Lean Challenge signatures were compile-validated against the project toolchain at authoring time.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 12,
+  "summary": "All five plan phases closed: the register-LOWERING exact-shift deletion landed in LadderChain.lean and its four cell-level consequences in LadderCell.lean, including the branch-2 depth-0 cell-EQUALITY schema CellLEZeroConstOfKappaEqCommonShiftForwardSlack and its theorem, which carries NO equal-register hypothesis. All five pinned Challenge signatures compile sorry-free at the standard axiom profile; full lake build, check-module-invariants.sh (C1-C37) and typst-sync-check.sh all green; the reserved name cellLE_zero_const_of_kappa_eq is still declared by nothing and the saturated-gap residue is untouched. One recorded decomposition deviation (Phase 1's plan-specified spine is not implementable against the landed overshoot loop, so the pinned statement was proved by a re-lift reduction instead) is raised as a non-blocking user_decision on .return-meta.json.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/909_register_lowering_deletion_drop_equal_register/plans/01_register-lowering-deletion-common-shift.md",
-      "summary": "Five-phase implementation plan with five pinned Lean Challenge statements, all elaborated successfully via lean-challenge-snapshot.sh --dry-run --compile."
+      "type": "summary",
+      "path": "specs/909_register_lowering_deletion_drop_equal_register/summaries/01_register-lowering-deletion-common-shift-summary.md",
+      "summary": "Register-lowering exact-shift deletion landed, spent on the common-shift downward cell inclusion and a branch-2 depth-0 cell-equality schema carrying no equal-register hypothesis."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/909_register_lowering_deletion_drop_equal_register/handoffs/phase-5-handoff-20261110T222206Z.md",
+      "summary": "Phase-5 progressive handoff: state of all five declarations, the Phase 1 spine deviation, and the resume point."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 5,
   "phases_total": 5,
   "blockers": [],
-  "next_action_hint": "Dispatch implement for task 909 starting at Phase 1 (LadderChain.lean). Note the plan declares FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean, one file beyond the task's original file_scope, with the rationale recorded in the plan's Decisions section; LadderPump.lean needs no modification.",
-  "dispatch_seq": 7
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "typst/generated/status.typ",
+    "specs/909_register_lowering_deletion_drop_equal_register/plans/01_register-lowering-deletion-common-shift.md",
+    "specs/909_register_lowering_deletion_drop_equal_register/summaries/01_register-lowering-deletion-common-shift-summary.md",
+    "specs/909_register_lowering_deletion_drop_equal_register/handoffs/phase-5-handoff-20261110T222206Z.md",
+    "specs/909_register_lowering_deletion_drop_equal_register/issues.jsonl"
+  ]
 }

@@ -1,22 +1,55 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/909_register_lowering_deletion_drop_equal_register/plans/01_register-lowering-deletion-common-shift.md",
-      "summary": "Five-phase plan landing the register-lowering exact-shift deletion and the branch-2 common-shift cell-equality schema that drops the equal-register hypothesis; five pinned Lean Challenge statements, all compile-validated at authoring time."
+      "type": "summary",
+      "path": "specs/909_register_lowering_deletion_drop_equal_register/summaries/01_register-lowering-deletion-common-shift-summary.md",
+      "summary": "Register-lowering exact-shift deletion landed, spent on the common-shift downward cell inclusion and a branch-2 depth-0 cell-equality schema carrying no equal-register hypothesis."
     }
   ],
-  "next_steps": "Run /orchestrate 909 to execute the plan",
-  "phase_count": 5,
-  "estimated_hours": 7,
-  "dependency_waves": [[1], [2], [3], [4], [5]],
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1794328980_5b668f_909",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "completion_data": {
+    "completion_summary": "Landed the register-LOWERING exact-shift deletion in LadderChain.lean and the four cell-level consequences in LadderCell.lean: the common-shift downward membership on the witnessing path, its state-level form under ForwardSlackWitnessed at the doubled regime amount, and the branch-2 depth-0 cell-EQUALITY schema CellLEZeroConstOfKappaEqCommonShiftForwardSlack with its theorem, which carries NO equal-register hypothesis. All five pinned Challenge signatures compile sorry-free at the module's standard axiom profile; the reserved name cellLE_zero_const_of_kappa_eq is still declared by nothing and the saturated-gap residue is untouched. One recorded decomposition deviation: Phase 1's specified internal spine is not implementable against the landed overshoot loop, which pins its slack amount and destroys the extra k, so the pinned statement was proved by a re-lift reduction to the landed held-register theorem instead.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 7
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "typst/generated/status.typ",
+    "specs/909_register_lowering_deletion_drop_equal_register/plans/01_register-lowering-deletion-common-shift.md",
+    "specs/909_register_lowering_deletion_drop_equal_register/summaries/01_register-lowering-deletion-common-shift-summary.md",
+    "specs/909_register_lowering_deletion_drop_equal_register/handoffs/phase-5-handoff-20261110T222206Z.md",
+    "specs/909_register_lowering_deletion_drop_equal_register/issues.jsonl"
+  ],
+  "user_decision": {
+    "blocking": false,
+    "question": "Phase 1's plan-specified internal proof spine was not implementable and the pinned statement was landed by a different internal route. Accept the deviation as landed, or revise the plan to generalize the overshoot loop and rebuild the spine as originally specified?",
+    "context": "plan-compliance.md treats a plan's specified helper routing as contractual on .lean files and asks for a would-be deviation to be raised rather than annotated silently. This raises it. The pinned Challenge SIGNATURE is landed byte-for-byte, so statement fidelity is intact; what deviates is the decomposition. The blocker is factual: exists_deleted_ladderPath_overshoot_of_pend_past pins its slack amount to the shape R*l + budget*l at register nxtAt g z, in hypothesis and conclusion alike, so the extra k the lowered anchor needs is destroyed by the loop and cannot be recovered (slack transport is exact in both directions, monotonicity runs the wrong way in both arguments, and k folds into the loop's amount shape only when l divides k). The implemented route instead lowers the register BEFORE the surgery via exists_ladderPath_of_walk_nxt_at on the path's own walk and countdown, and applies the landed held-register theorem as a black box: ~70 new lines against the ~230 a compliant duplicate would have cost. Doing it the plan's way would require generalizing the landed loop's amount to a free L, which is recorded as a follow-up option and is not needed by anything landed here.",
+    "options": [
+      "Accept as landed (recommended): all five pinned signatures compile, every gate is green, and the module carries one copy of the pigeonhole/raise/overshoot/remainder spine rather than two.",
+      "Revise: generalize exists_deleted_ladderPath_overshoot_of_pend_past to a free slack amount, rebuild Phase 1 as the plan's spine, and then retire the landed up-first proof to the k=0 instance as Phase 2 intended."
+    ]
+  },
+  "metadata": {
+    "session_id": "sess_1794343738_e0026f",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "verification_tier_note": "Phase 5's declared tier 'full' was discharged against a SCOPED tier per this dispatch's Batch Gate Deferral directive. The narrowing invocation covering this task's files is the Lean-tree gate (check-module-invariants.sh, exit 0, C1-C37 all PASS; typst-sync-check.sh, PASS) plus the full-project guarded lake build (exit 0). verify-deploy.sh and tests/run-all.sh were deliberately not run: no file this task touched lives under .claude/** or agent-system/**, so neither harness can produce a finding attributable to this task. The complete gate set runs once for the whole batch at the end of the invocation."
+  },
+  "dispatch_seq": 12
 }

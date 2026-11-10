@@ -1990,7 +1990,7 @@
     {
       "project_number": 895,
       "project_name": "auxiliary_atoms_rule_soundness_ztime",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "title": "The Auxiliary-Atoms rule for L-plus at ZTime, forward and mirror, formula level with soundness",
       "description": "State the transposed Reynolds-2001 Auxiliary-Atoms rule at the formula level and prove it validity-preserving at FrameClass.ZTime. Antecedent aaAnte b0 Q a p := b0 and stab (gle (bigAnd over b in Q, i < k of ((b and a i) -> stab (next (p b i))))) and stab (gle (bigAnd over b != b' of not (b and b'))), where Q is a finite set of fresh atoms, a i are state-local formulas (PlusFormula.StateLocal) that are provably pairwise inconsistent and jointly exhaustive, and p : Q -> Fin k -> Q is the machine. The rule: if (aaAnte b0 Q a p).imp phi is ZTime-valid and no Q-atom occurs in phi or in any a i, then phi is ZTime-valid. The proof runs the premise on the cone unravelling of the given frame with the machine-run valuation coneSt (semantic core: the archived probe's aa_expand), forgets Q by plusTruthAt_congr_of_fresh, and projects by plus_invariance_of_isZTime. The mirror rule follows by plusValidIn_reflectTime-style reflection of the construction or by a mirrored cone. Depends on the cone-unravelling frame task. Home: FormalSystem/Metalogic/NamingRules.lean or a sibling FormalSystem/Metalogic/AuxiliaryAtoms.lean. No completeness claim.",
@@ -2006,10 +2006,10 @@
       ],
       "priority": "medium",
       "created": "2026-11-09T09:48:33Z",
-      "last_updated": "2026-11-10T16:24:45Z",
+      "last_updated": "2026-11-10T21:50:58Z",
       "next_artifact_number": 1,
       "artifacts": [],
-      "session_id": "sess_1794209534_e57749",
+      "session_id": "sess_1794343738_e0026f_895",
       "audit_verdict": {
         "proposal": {
           "id": "auxiliary_atoms_rule_soundness_ztime",
@@ -2774,7 +2774,7 @@
     {
       "project_number": 909,
       "project_name": "register_lowering_deletion_drop_equal_register",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Construct the register-LOWERING deletion that would drop the equal-register hypothesis n = n' from cellLE_zero_const_of_kappa_eq_of_forwardSlack on branch 2 of the collision case split.\n\nVERIFIED STARTING POSITION (established by compiled objects, not argued):\n(1) The landed restricted obligation cellLE_zero_const_of_kappa_eq_of_forwardSlack (FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean) concludes cell EQUALITY via Set.Subset.antisymm, but carries FOUR restrictions, the fourth of which -- the equal-register hypothesis n = n' -- was not anticipated when the obligation was stated. The proof routes through kappa_eq_components rather than kappa_collision_regimes.\n(2) The common-shift sub-regime's DOWNWARD direction is the specific blocker: the landed deletion HOLDS the register, and nothing landed LOWERS it. That asymmetry is what forces the n = n' hypothesis.\n(3) The forward register cascade is the underlying obstruction. For a <= v the deleted walk's pin v IS the original path's pin v + l, so the bound demanded by exists_ladderPath_of_walk_nxt exceeds what pinCompat_of_ladderPath supplies by exactly l, and by m*(P+1) when iterated. This is not slack a sharper proof recovers: tightChain_slack_zero compiles a tight doubling chain with Lipschitz slack exactly 0 at every gap between pins.\n(4) LadderPump.lean carries single-step deletion admissibility (exists_deleted_ladderPath_of_pend_past) and the deletion type lemma (tpOf_eq_delIdx_of_tpOf_eq), but NO iterated deletion and no downward assembly; the single-step lemma fixes the deleted path's register base at nxtAt g (l : Z) rather than prescribing the register at the compared position.\n\nSCOPE: a register-lowering deletion dropping the hypothesis on branch 2 only. It does NOT reach the saturated-gap residue, which a sibling follow-up owns. The reserved name cellLE_zero_const_of_kappa_eq remains reserved and claimed by nothing -- nothing here may land under it.\n\nORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Citations: parent issues.jsonl iss_1793731048423_ByWoAB (suggested_channel follow_up_task, honored) and iss_1794299302902_wvV3dt.\n",
       "effort": "high",
@@ -2792,12 +2792,17 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-11-10T12:04:29Z",
-      "last_updated": "2026-11-10T17:11:08Z",
+      "last_updated": "2026-11-10T22:23:38Z",
       "artifacts": [
         {
           "path": "specs/909_register_lowering_deletion_drop_equal_register/plans/01_register-lowering-deletion-common-shift.md",
           "type": "plan",
           "summary": "Five-phase implementation plan with five pinned Lean Challenge statements, all elaborated successfully via lean-challenge-snapshot.sh --dry-run --compile."
+        },
+        {
+          "path": "specs/909_register_lowering_deletion_drop_equal_register/summaries/01_register-lowering-deletion-common-shift-summary.md",
+          "type": "summary",
+          "summary": "Register-lowering exact-shift deletion landed, spent on the common-shift downward cell inclusion and a branch-2 depth-0 cell-equality schema carrying no equal-register hypothesis."
         }
       ],
       "audit_verdict": {
@@ -2814,7 +2819,8 @@
         "degradation_count": 455,
         "evidence_file": "specs/evidence/audit-verdicts/909.json"
       },
-      "session_id": "sess_1794328980_5b668f"
+      "session_id": "sess_1794343738_e0026f",
+      "completion_summary": "Landed the register-LOWERING exact-shift deletion in LadderChain.lean and the four cell-level consequences in LadderCell.lean: the common-shift downward membership on the witnessing path, its state-level form under ForwardSlackWitnessed at the doubled regime amount, and the branch-2 depth-0 cell-EQUALITY schema CellLEZeroConstOfKappaEqCommonShiftForwardSlack with its theorem, which carries NO equal-register hypothesis. All five pinned Challenge signatures compile sorry-free at the module's standard axiom profile; the reserved name cellLE_zero_const_of_kappa_eq is still declared by nothing and the saturated-gap residue is untouched. One recorded decomposition deviation: Phase 1's specified internal spine is not implementable against the landed overshoot loop, which pins its slack amount and destroys the extra k, so the pinned statement was proved by a re-lift reduction to the landed held-register theorem instead."
     },
     {
       "project_number": 910,

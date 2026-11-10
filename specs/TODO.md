@@ -11,8 +11,8 @@ next_project_number: 916
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,895,899,900,905,906,907,908,909,912 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,896,910,911,913,914 | 298,428,502,743,761,873,895,909,912 | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,895,899,900,905,906,907,908,910,911,912 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,896,913,914 | 298,428,502,743,761,873,895,912 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -42,7 +42,7 @@ next_project_number: 916
 
 ### Completeness
 
-895 [NOT STARTED] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
+895 [RESEARCHING] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
   └─ 896 [NOT STARTED] — The extended L-plus proof system (TM-plus + axiom set +...
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
@@ -78,9 +78,8 @@ next_project_number: 916
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-909 [PLANNED] — Construct the register-LOWERING deletion that would drop the...
-  └─ 910 [RESEARCHED] — Dispatch or explicitly exclude the SATURATED-GAP third branch...
-  └─ 911 [RESEARCHED] — Pursue the idle-cycle sharpening left open by the idle-gap...
+910 [RESEARCHED] — Dispatch or explicitly exclude the SATURATED-GAP third branch...
+911 [RESEARCHED] — Pursue the idle-cycle sharpening left open by the idle-gap...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Documentation
@@ -265,12 +264,13 @@ ORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Cit
 
 ### 909. Register lowering deletion drop equal register
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 838
 - **Plan**: [909_register_lowering_deletion_drop_equal_register/plans/01_register-lowering-deletion-common-shift.md]
+- **Summary**: [909_register_lowering_deletion_drop_equal_register/summaries/01_register-lowering-deletion-common-shift-summary.md]
 
 **Description**: Construct the register-LOWERING deletion that would drop the equal-register hypothesis n = n' from cellLE_zero_const_of_kappa_eq_of_forwardSlack on branch 2 of the collision case split.
 
@@ -471,7 +471,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 895. The Auxiliary-Atoms rule for L-plus at ZTime, forward and mirror, formula level with soundness
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 894, Task 915

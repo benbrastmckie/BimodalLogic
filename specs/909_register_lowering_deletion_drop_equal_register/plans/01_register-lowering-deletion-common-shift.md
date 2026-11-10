@@ -1,7 +1,7 @@
 # Implementation Plan: Task #909
 
 - **Task**: 909 - Construct the register-LOWERING deletion that would drop the equal-register hypothesis `n = n'` from `cellLE_zero_const_of_kappa_eq_of_forwardSlack` on branch 2 of the collision case split
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7 hours
 - **Dependencies**: None
 - **Research Inputs**: None (no `research_artifact` on this dispatch; see "Why no research round" below)
