@@ -3,10 +3,10 @@
 - **Task**: 838 - Two-sided open core: attack the depth-`0` cell obligation through a `(K2)`-level pigeonhole over region starts on the pin-free side, or restate the obligation under a new name
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-11-03T17:42:40Z
-- **Completed**: 2026-11-10T07:30:00Z
-- **Effort**: ~2.5 hours of wall clock over seven landed phases (Phase 5's earlier blocker withdrawn as mis-anchored and the phase then landed)
+- **Completed**: 2026-11-10T08:05:00Z
+- **Effort**: ~3 hours of wall clock over eight landed phases (Phase 5's earlier blocker withdrawn as mis-anchored and the phase then landed)
 - **Dependencies**: None at the `state.json` level. Parent: the task whose pump layer is this round's entire input. The ladder realization theorem's depth-`0` induction is the downstream consumer; nothing here edits any of its artifacts
-- **Artifacts**: plans/01_pin-free-pigeonhole-open-core.md, prototype/pin-free-side.lean, prototype/spanning-divisibility.lean
+- **Artifacts**: plans/01_pin-free-pigeonhole-open-core.md, prototype/pin-free-side.lean, prototype/spanning-divisibility.lean, prototype/idle-gap-lengthening.lean
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
@@ -31,6 +31,16 @@ weakening; the case split landed with THREE branches rather than the planned two
 planned two-branch shape is not derivable from the destructors it was to be proved from — the
 gap coordinate clips at `B`, and a collision saturated at that clip on both sides satisfies
 neither alternative. That is recorded as a compiled refutation, not as prose.
+
+Phase 8's decision gate — does lengthening the idle gap above `z`'s region buy the missing slack
+type-respectingly? — returned **FAIL**, on sub-question (i), ADMISSIBILITY, with a compiled
+refuting object. The obstruction is not the pin condition the gate expected to test against but
+one level below it, in `step` itself: an idle run of length two requires an idle-to-idle edge in
+the object's own step graph, and an object satisfying `ParamsOk` need not have one. The idle run's
+length is therefore a datum of the object, not a parameter the construction may raise, so the
+lengthening cannot be promoted to the slack-normalization lemma the downward cell inclusion would
+consume. Sub-question (ii), type preservation, was never reached and is recorded as untouched.
+No library file was changed by the gate — it runs in a `specs/**` prototype by construction.
 
 ## What Changed
 
@@ -100,6 +110,13 @@ neither alternative. That is recorded as a compiled refutation, not as prose.
 - `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` — a new requirement-(W) cell-level
   prose block and three axiom-profile pins; the file's recorded `longFile` ceiling raised from
   2,100 to 2,200 to admit them.
+- `specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean` — NEW,
+  standalone prototype (namespace `Probe838C`), not a wired probe and not on the Lake library
+  path. Holds the gate's schema `IdleGapLengthening`, the generic mechanism lemma
+  `no_consecutive_idle_of_no_idle_step`, the two-state refuting object (`Qo := Bool`,
+  `stepO x y = x || y`, serial in both directions via `fwdO`/`bwdO`), the witnessing path
+  `exists_gO`, the stab-free atomic closure `aO` with its parameter tuple discharged by
+  `paramsOk_params`, and the verdict object `idleGapLengthening_refuted`.
 
 ## Decisions
 
@@ -145,6 +162,33 @@ neither alternative. That is recorded as a compiled refutation, not as prose.
   three-branch form was landed and the two-branch form refuted by a compiled object, in this
   repository's own idiom. The Challenge block had explicitly left this statement unpinned as a
   composite whose exact shape is fixed by the transports it composes, which is the latitude used.
+
+- **Phase 8: the gate's verdict is FAIL, and the obstruction is NOT where the plan expected it.**
+  The plan's mechanism claim was that `pinCompat_of_ladderPath` does not forbid lengthening the
+  idle gap, because moving a region start farther from `z` while holding its countdown makes the
+  pin demand strictly looser. That claim is correct and irrelevant: the lengthening is denied one
+  level below the pin condition, by `step`. A ladder path's object walk satisfies
+  `step (objAt g v) (objAt g (v + 1)) = true` at every position, so an idle run of length two
+  requires an idle-to-idle edge in the object's step graph.
+  `no_consecutive_idle_of_no_idle_step` states that generically, and the two-state object `Qo`
+  (`pendO = id`, `stepO x y = x || y` — exactly the idle-to-idle edge missing) is the witness.
+  `idleGapLengthening_refuted` instantiates the schema's every hypothesis on it at `z = 0`,
+  `I = 1`, `l = 1` — the gap `0 + 2 ≤ T_c` from `(K3)`'s `2 · T_short + T_idle + 2 ≤ T_c`, the
+  countdown bound `T_c ≤ cntAt g 0`, the idle run `{T_c + 1}` and the region start at `T_c + 2` —
+  and contradicts the conclusion, which asks for a ladder path idle at both `T_c + 1` and
+  `T_c + 2`. The parameters are the periodicity fixpoint's own outputs for the stab-free atomic
+  closure, discharged by `paramsOk_params`, so the refutation is at a tuple the parameter
+  conditions genuinely admit.
+
+- **Phase 8: a fresh object was declared rather than the sibling prototypes' reused.**
+  `pin-free-side.lean` and `spanning-divisibility.lean` both use `stepC = fun _ _ => true`, which
+  admits every idle run and so cannot carry this refutation at all. The new object is the minimal
+  one that can: two states, one edge removed.
+
+- **Phase 8: the type clause stays in the schema's conclusion even though the refutation never
+  reaches it.** Dropping it would have made the schema a weaker statement than the plan specified,
+  and refuting a weaker statement is a weaker result. Carrying it means the refutation refutes the
+  conjunction at its first failing conjunct, which is what the record says.
 
 ## Plan Deviations
 
@@ -201,6 +245,19 @@ neither alternative. That is recorded as a compiled refutation, not as prose.
   object — because it is the evidence for the three-branch shape and belongs in the ledger beside
   what it justifies. Additive, not a substitution.
 
+- **Phase 8** sub-question (i) was to "build the lengthened walk and its countdown explicitly"
+  and discharge the five counter and pin clauses against it. No such walk was built: on the
+  refuting object none exists, so there is nothing to discharge the clauses against. The
+  sub-question is answered NEGATIVELY by a compiled object instead — the phase's own FAIL branch,
+  which the plan provides for explicitly, rather than a substituted step.
+- **Phase 8** sub-question (ii), TYPE PRESERVATION, was NOT REACHED and is recorded as untouched
+  rather than silently skipped. The refutation closes from `step` alone.
+- **Phase 8** Scope Hypothesis predicted a 200-400 line prototype with the refuting object as the
+  larger half, one file created and the plan file edited. Actual: a 299-line prototype in which
+  the refuting object is NOT the larger half — the generic mechanism lemma is four lines and the
+  object's seriality and path construction dominate — and exactly the two predicted files plus
+  `issues.jsonl`. `git diff --stat -- FormalSystem/ Tests/` is empty, as the hypothesis required.
+
 ## Verification
 
 - Build: Success. Unscoped full `lake build` through the build guard reports `exit_status=0`,
@@ -250,6 +307,28 @@ neither alternative. That is recorded as a compiled refutation, not as prose.
   dispatch; it is deferred to the batch stage of the dispatching invocation, per the dispatch's
   batch gate deferral. Phase 7's own tier is `interface` and its covering checks are listed above.
 
+- **Phase 8**: `bash .claude/scripts/lake-build-guard.sh build --timeout 840 -- env lean
+  specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean` reports
+  `exit_status=0`, zero `error:` lines, zero `warning:` lines, zero `declaration uses 'sorry'`.
+  `#print axioms Probe838C.idleGapLengthening_refuted` shows
+  `[propext, Classical.choice, Quot.sound]` and `#print axioms
+  Probe838C.no_consecutive_idle_of_no_idle_step` shows `[propext]` — no `sorryAx` on either.
+  `bash .claude/scripts/validate-artifact.sh …/plans/01_pin-free-pigeonhole-open-core.md plan`
+  exits 0 with zero warnings. `bash .claude/scripts/check-task-references.sh --quiet` on the new
+  prototype reports 0 occurrences, exit 0. `git diff --stat -- FormalSystem/ Tests/` is empty.
+  `grep -rn 'cellLE_zero_const_of_kappa_eq' FormalSystem/ Tests/` still shows no `theorem`, `def`
+  or `lemma` claiming the reserved name.
+- **Phase 8, library state carried forward on Tier-3 evidence rather than a re-run build.** The
+  phase changed no `FormalSystem/` or `Tests/` file, so no full unscoped library build was run in
+  its dispatch and none is claimed. What was checked instead: every one of the 400+ sources under
+  `FormalSystem/` and `Tests/BimodalTest/` has an `.olean` newer than it (0 missing, 0
+  source-newer), from the green full build Phase 7 closed on; and the sorry census over the
+  resolved source roots reports `sorry_count: 0`. The two standing baseline counts are unchanged
+  because nothing in the library moved: 14 `^axiom ` lines, and one grep hit for the vacuity
+  pattern (`FormalSystem/Examples/TemporalStructures.lean:495`,
+  `int_domain_universal … := trivial`, a pre-existing genuine theorem in a file this phase did not
+  touch). The complete gate set is Phase 10's obligation and is deferred to the batch stage there.
+
 ## Impacts
 
 - The pin layer is available to every `RaySummary` consumer: the dichotomy names the two sides a
@@ -268,6 +347,15 @@ neither alternative. That is recorded as a compiled refutation, not as prose.
   state, SOME path realizing it there with slack.
 - The depth-`0` obligation is still neither proved nor refuted under `ParamsOk`, and the reserved
   name is still claimed by nothing. The downstream induction remains unenterable along this route.
+
+- Phase 8's FAIL closes the last candidate source of the missing slack that the landed layer
+  could have supplied on its own. Phase 9 therefore takes its FAIL branch: the obligation is
+  stated and compiled under the NEW name `cellLE_zero_const_of_kappa_eq_of_forwardSlack`, carrying
+  the forward-slack regime as an explicit hypothesis on the witnessing path, and the reserved name
+  `cellLE_zero_const_of_kappa_eq` stays reserved and claimed by nothing.
+- `no_consecutive_idle_of_no_idle_step` is a generic fact about the relationship between an
+  object's step graph and the idle-run structure of its ladder paths. Nothing in the library states
+  it; it lives in the prototype, and a consumer that needs it would have to land it.
 
 ## Follow-ups
 
@@ -299,6 +387,18 @@ neither alternative. That is recorded as a compiled refutation, not as prose.
 - Phase 8's decision gate (does lengthening the idle gap buy the missing slack
   type-respectingly?) is untouched by this dispatch and remains the next action.
 
+- **The sharpening Phase 8's verdict leaves open, named rather than created**: the lengthening is
+  available exactly where the object's idle states carry a reachable cycle — `tIdle pend`
+  (`#idle states + 1`) is the length above which an idle run must repeat an idle state and so
+  become duplicable by the landed splice type lemma. That is an OBJECT hypothesis and not a
+  consequence of `ParamsOk`; adding it would restrict the obligation rather than prove it, which
+  is the same shape as the forward-slack restriction Phase 9 lands. Not created as a task.
+- **Sub-question (ii), type preservation, is open.** Whether a lengthened path, on an object that
+  admits one, holds the realized stab-free type at `z` was never tested. Any future route through
+  gap lengthening must answer it before the lengthening is usable.
+- **Wiring `idleGapLengthening_refuted` as a probe** is a candidate on the same footing as
+  `spanningBlockLengthDvd_refuted`: it stays a prototype here.
+
 ## References
 
 - `specs/838_two_sided_open_core_pin_free_pigeonhole/plans/01_pin-free-pigeonhole-open-core.md` —
@@ -308,3 +408,6 @@ neither alternative. That is recorded as a compiled refutation, not as prose.
 - `specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/` — the five per-phase handoffs.
 - `specs/838_two_sided_open_core_pin_free_pigeonhole/issues.jsonl` — the issue and win log.
 - `FormalSystem/Metalogic/Decidability/RaySummary/README.md` — the brought-current narrative.
+
+- `specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean` — the
+  Phase 8 decision gate's schema, mechanism lemma, refuting object and verdict.

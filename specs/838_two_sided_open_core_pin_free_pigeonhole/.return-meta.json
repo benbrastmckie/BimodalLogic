@@ -1,70 +1,57 @@
 {
   "status": "implemented",
   "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": [
-    "orchestrator",
-    "implement",
-    "lean-implementation-hard-agent"
-  ],
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 838,
-  "dispatch_seq": 6,
   "phase": "implement",
-  "phases_completed": 7,
-  "phases_total": 10,
+  "dispatch_seq": 7,
+  "session_id": "sess_1794293763_c4273a",
+  "skeleton": false,
   "requires_user_review": false,
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
-      "summary": "Round-01 summary brought current with Phase 7: the common-shift cell inclusion, the three-branch collision split, and the compiled refutation of the planned two-branch shape."
+      "summary": "Round-01 summary brought current with Phase 8's idle-gap-lengthening decision gate: VERDICT FAIL on sub-question (i), admissibility, refuted by a compiled object."
     },
     {
       "type": "handoff",
-      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-7-handoff-20261110T074719Z.md",
-      "summary": "Phase 7's end state, the next action, the saturated-gap branch Phase 9 must absorb, and the empty sorry inventory."
+      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-8-handoff-20261110T080409Z.md",
+      "summary": "Phase 8 end state, the FAIL verdict Phase 9 consumes, and the two open items carried into it."
     }
   ],
   "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
-    "FormalSystem.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "FormalSystem/README.md",
-    "README.md",
-    "typst/generated/status.typ",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean",
     "specs/838_two_sided_open_core_pin_free_pigeonhole/plans/01_pin-free-pigeonhole-open-core.md",
     "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-8-handoff-20261110T080409Z.md",
     "specs/838_two_sided_open_core_pin_free_pigeonhole/issues.jsonl",
-    "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-7-handoff-20261110T074719Z.md"
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/.orchestrator-handoff.json",
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/.return-meta.json"
   ],
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
-    "sorry_cross_check": "MATCH",
-    "vacuous_count": 0,
+    "vacuous_count": 1,
+    "vacuous_note": "Pre-existing baseline, unchanged by this phase: FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal ... := trivial, a genuine theorem in a file this phase did not touch. This phase changed no FormalSystem/ or Tests/ file.",
     "axiom_count": 14,
-    "axiom_count_delta": 0,
+    "axiom_note": "Pre-existing baseline, unchanged: this phase changed no library file.",
     "build_passed": true,
+    "build_evidence": "Phase scope is one standalone specs/** prototype: bash .claude/scripts/lake-build-guard.sh build --timeout 840 -- env lean specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean reports exit_status=0 with zero error: lines, zero warning: lines and zero 'declaration uses sorry'. NO full unscoped library build was run in this dispatch and none is claimed: git diff --stat -- FormalSystem/ Tests/ is empty, so the library's green state is carried on Tier-3 evidence (every FormalSystem/** and Tests/BimodalTest/** source has an .olean newer than it from Phase 7's green full build; 0 missing, 0 source-newer) plus a sorry census of 0 over the resolved source roots. The complete gate set is Phase 10's obligation and is deferred to the batch stage there.",
     "verification_passed": true,
-    "gates": {
-      "lake_build_full_unscoped": "exit 0, 0 error:, 0 warning:, 2969 jobs",
-      "lake_build_scoped_LadderCell": "exit 0",
-      "lake_build_scoped_FormalSystem": "exit 0",
-      "lake_build_scoped_KTypeSummaryAxiomTest": "exit 0",
-      "check_module_invariants": "exit 0, ALL CHECKS PASSED",
-      "check_task_references": "exit 0",
-      "typst_sync_check": "exit 0 after --fix",
-      "full_gate_set": "deferred to the dispatching invocation's batch stage per the dispatch's batch gate deferral; this phase's tier is interface and its covering checks are the three scoped builds plus check-module-invariants.sh"
-    }
+    "other_gates": "validate-artifact.sh exit 0 (0 warnings) on both the plan and the summary; check-task-references.sh --quiet exit 0 with 0 occurrences on the new prototype; grep for the reserved name cellLE_zero_const_of_kappa_eq in FormalSystem/ and Tests/ shows no theorem/def/lemma claiming it; #print axioms shows no sorryAx on either headline object."
   },
   "completion_data": {
-    "completion_summary": "Phase 7 landed as a new leaf module LadderCell.lean (299 lines, importing LadderChain.lean alone), wired into both roots. cellAt_subset_of_common_shift_of_pend_past is the UPWARD cell inclusion along the COMMON-SHIFT chain -- the sub-regime the landed register-held inclusion's docstring names and does not state -- landed at its pinned Challenge signature token for token, with no weakening and without the phase's [BLOCKED] escape hatch: the anchor clause closed from the widened window alone, because the raise pushes every pin of the raised path past z + cntAt g z + m*(P+1) while the pending-forever gap n + 2 <= c bounds the register at z by cntAt g z - 2, so the pin bound has exactly m*(P+1) to spare. Its assembly exists_ladderPath_through_common_shifted_of_pend_past needed no new pump: it calls the landed regime-A assembly for the walk and the countdowns and re-runs only the register rebuild at the freed anchor. kappa_collision_regimes landed with THREE branches rather than the planned two, because the two-branch shape is NOT derivable from the three destructors it was to be proved from plus (K4)'s 2 <= B: clipIdx clips the gap at B, so a collision saturated at that clip on both sides satisfies neither alternative. That is recorded as a compiled object, kappa_collision_two_regimes_refuted, at Tc=Tn=P=0, B=2 and the pairs (0,2),(0,3), scoped to that derivation and asserting nothing about the two-branch form under full ParamsOk. Three axiom pins. Every gate green: full unscoped guarded build exit 0 with zero errors and zero warnings, sorry_count 0 cross-checked against the compiler, check-module-invariants.sh exit 0 ALL CHECKS PASSED, check-task-references.sh exit 0, typst-sync regenerated. Nothing landed under the reserved name cellLE_zero_const_of_kappa_eq. OPEN FOR PHASE 9: its planned close consumes the split expecting two branches, and the saturated-gap branch is addressed by neither landed inclusion."
+    "completion_summary": "Phase 8's decision gate landed its verdict as a compiled object: FAIL, on sub-question (i), ADMISSIBILITY. The schema IdleGapLengthening is stated as a named def in the new standalone prototype specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean (299 lines, namespace Probe838C) and refuted there by idleGapLengthening_refuted on the standard axiom profile with no sorryAx. The obstruction is not pinCompat_of_ladderPath, which does loosen as the plan argued, but step itself: an idle run of length two requires an idle-to-idle edge in the object's step graph, which an object satisfying ParamsOk need not have, so the idle run's length is a datum of the object rather than a parameter the construction may raise. no_consecutive_idle_of_no_idle_step is the generic reading and the two-state object Qo := Bool with stepO x y = x || y is the witness. Sub-question (ii), type preservation, was never reached and is recorded as untouched. No library file changed; the reserved name cellLE_zero_const_of_kappa_eq remains claimed by nothing. Phase 9 proceeds on its FAIL branch."
   },
   "memory_candidates": [
-    "A Lean goal that needs a register/anchor value raised can often reuse a landed construction wholesale and re-run only the anchor-rebuild step through a freed-anchor lift, instead of duplicating the whole construction: the landed theorem's exposed clauses (walk, countdown, types) are usually enough to discharge the new anchor's side condition.",
-    "omega treats two different Int-cast normal forms of the SAME product as distinct atoms (((m * (P + 1) : Nat) : Int) vs (m : Int) * ((P : Int) + 1)); supplying the bridging equality by push_cast; ring as a `have` is what lets omega close the goal, since it is linear in either atom once they are linked.",
-    "When a plan's stated disjunction is not derivable from the destructors it names, the honest move in a compiled-evidence repository is to land the provable disjunction WITH the extra branch and add a compiled refutation of the planned shape, scoped explicitly to the derivation refuted -- not to restate the planned shape nor to silently weaken it."
+    {
+      "title": "A decision gate about inserting positions into a ladder path can fail at the step graph, below the pin condition",
+      "content": "When a construction over ladder paths proposes to lengthen an idle run, the pin-compatibility condition is the wrong place to look for the obstruction: it loosens as a region start moves farther away. The binding constraint is one level below, in step itself -- an idle run of length two requires an idle-to-idle edge in the object's step graph, and nothing in ParamsOk supplies one. Before designing the pin arithmetic for such a construction, check whether the object's step graph admits the run length at all; a two-state object with that single edge removed refutes the whole schema in four lines."
+    },
+    {
+      "title": "Reusing a permissive prototype object can make a refutation impossible to state",
+      "content": "Sibling prototypes in this repository use step = fun _ _ => true, which admits every walk. That object cannot carry any refutation whose mechanism is a missing edge: it has none. When a gate's expected failure mode is an object-level restriction, declare a fresh minimal object rather than reusing the permissive one, and say in the record why the reuse was impossible."
+    }
   ]
 }
