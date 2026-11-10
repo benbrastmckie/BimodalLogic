@@ -1,50 +1,70 @@
 {
   "status": "implemented",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": [
+    "orchestrator",
+    "implement",
+    "lean-implementation-hard-agent"
+  ],
+  "task_number": 838,
+  "dispatch_seq": 6,
+  "phase": "implement",
+  "phases_completed": 7,
+  "phases_total": 10,
+  "requires_user_review": false,
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
-      "summary": "Phase 5 compiled the slack accounting: the free baseline hasForwardSlack_zero and the exact-transport composite hasForwardSlack_raise_of_zero, with the mis-anchored blocker withdrawn."
+      "summary": "Round-01 summary brought current with Phase 7: the common-shift cell inclusion, the three-branch collision split, and the compiled refutation of the planned two-branch shape."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-7-handoff-20261110T074719Z.md",
+      "summary": "Phase 7's end state, the next action, the saturated-gap branch Phase 9 must absorb, and the empty sorry inventory."
     }
   ],
   "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+    "FormalSystem.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
     "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
     "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
     "README.md",
     "typst/generated/status.typ",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
     "specs/838_two_sided_open_core_pin_free_pigeonhole/plans/01_pin-free-pigeonhole-open-core.md",
     "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
-    "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-5-handoff-20261110T071151Z.md",
-    "specs/838_two_sided_open_core_pin_free_pigeonhole/issues.jsonl"
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/issues.jsonl",
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-7-handoff-20261110T074719Z.md"
   ],
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
+    "sorry_cross_check": "MATCH",
     "vacuous_count": 0,
-    "axiom_count_changed": false,
+    "axiom_count": 14,
+    "axiom_count_delta": 0,
     "build_passed": true,
     "verification_passed": true,
-    "detail": "Full unscoped guarded lake build exit 0, zero error: lines, .olean newer than source on both touched modules. Scoped builds of LadderChain, FormalSystem and BimodalTest.Metalogic.KTypeSummaryAxiomTest each exit 0. lean-sorry-census.sh over all resolved source roots: sorry_count 0. Vacuity and ^axiom counts unchanged from HEAD on every changed file. check-module-invariants.sh exit 0 after the prescribed --emit-inventory regeneration; check-task-references.sh --quiet exit 0 on each changed non-specs file; typst-sync-check.sh --counts-only MISMATCH_COUNT=0. hasForwardSlack_zero axiom profile [propext, Quot.sound], no sorryAx; signature matches the pinned Challenge statement modulo the block's stated ASCII convention. LadderChain.lean 2267 lines against an unbumped longFile baseline of 2300."
+    "gates": {
+      "lake_build_full_unscoped": "exit 0, 0 error:, 0 warning:, 2969 jobs",
+      "lake_build_scoped_LadderCell": "exit 0",
+      "lake_build_scoped_FormalSystem": "exit 0",
+      "lake_build_scoped_KTypeSummaryAxiomTest": "exit 0",
+      "check_module_invariants": "exit 0, ALL CHECKS PASSED",
+      "check_task_references": "exit 0",
+      "typst_sync_check": "exit 0 after --fix",
+      "full_gate_set": "deferred to the dispatching invocation's batch stage per the dispatch's batch gate deferral; this phase's tier is interface and its covering checks are the three scoped builds plus check-module-invariants.sh"
+    }
   },
   "completion_data": {
-    "completion_summary": "Phase 5 of ten landed: the forward-slack regime's baseline is compiled as free (hasForwardSlack_zero) and its two transports shown exact, with hasForwardSlack_raise_of_zero as the composite that needs no slack hypothesis; the phase's earlier blocker was withdrawn as mis-anchored and recorded as a win. The depth-0 cell obligation stays neither proved nor refuted and the reserved name stays claimed by nothing; Phase 8's idle-gap gate is now the only remaining candidate source of slack."
+    "completion_summary": "Phase 7 landed as a new leaf module LadderCell.lean (299 lines, importing LadderChain.lean alone), wired into both roots. cellAt_subset_of_common_shift_of_pend_past is the UPWARD cell inclusion along the COMMON-SHIFT chain -- the sub-regime the landed register-held inclusion's docstring names and does not state -- landed at its pinned Challenge signature token for token, with no weakening and without the phase's [BLOCKED] escape hatch: the anchor clause closed from the widened window alone, because the raise pushes every pin of the raised path past z + cntAt g z + m*(P+1) while the pending-forever gap n + 2 <= c bounds the register at z by cntAt g z - 2, so the pin bound has exactly m*(P+1) to spare. Its assembly exists_ladderPath_through_common_shifted_of_pend_past needed no new pump: it calls the landed regime-A assembly for the walk and the countdowns and re-runs only the register rebuild at the freed anchor. kappa_collision_regimes landed with THREE branches rather than the planned two, because the two-branch shape is NOT derivable from the three destructors it was to be proved from plus (K4)'s 2 <= B: clipIdx clips the gap at B, so a collision saturated at that clip on both sides satisfies neither alternative. That is recorded as a compiled object, kappa_collision_two_regimes_refuted, at Tc=Tn=P=0, B=2 and the pairs (0,2),(0,3), scoped to that derivation and asserting nothing about the two-branch form under full ParamsOk. Three axiom pins. Every gate green: full unscoped guarded build exit 0 with zero errors and zero warnings, sorry_count 0 cross-checked against the compiler, check-module-invariants.sh exit 0 ALL CHECKS PASSED, check-task-references.sh exit 0, typst-sync regenerated. Nothing landed under the reserved name cellLE_zero_const_of_kappa_eq. OPEN FOR PHASE 9: its planned close consumes the split expecting two branches, and the saturated-gap branch is addressed by neither landed inclusion."
   },
   "memory_candidates": [
-    "A Lean plan that pins one lemma's position ('immediately after X') and only a section for a lemma consuming it can specify an impossible forward reference; resolve inside the plan's wording by honoring the pinned position and placing the consumer after its dependency in the same section, rather than treating it as a plan deviation.",
-    "An axiom-profile pin written from a plan's PREDICTED profile fails #guard_msgs when the measured profile is strictly smaller; measure first with lean_verify, and note the #print axioms docstring wraps across lines only when the profile list is long enough to wrap.",
-    "In this repository every .lean-touching commit must carry a regenerated typst/generated/status.typ: the pre-commit typst-sync gate compares committed line counts against a live regeneration, so a library edit needs 'typst-sync-check.sh --fix' before git-commit-scoped.sh will land."
-  ],
-  "metadata": {
-    "session_id": "sess_1794293763_c4273a",
-    "agent_type": "lean-implementation-hard-agent",
-    "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-    "dispatch_seq": 5,
-    "orchestrator_mode": true,
-    "phase_number": 5,
-    "phases_completed": 6,
-    "phases_total": 10,
-    "commit": "9ddc3e674"
-  }
+    "A Lean goal that needs a register/anchor value raised can often reuse a landed construction wholesale and re-run only the anchor-rebuild step through a freed-anchor lift, instead of duplicating the whole construction: the landed theorem's exposed clauses (walk, countdown, types) are usually enough to discharge the new anchor's side condition.",
+    "omega treats two different Int-cast normal forms of the SAME product as distinct atoms (((m * (P + 1) : Nat) : Int) vs (m : Int) * ((P : Int) + 1)); supplying the bridging equality by push_cast; ring as a `have` is what lets omega close the goal, since it is linear in either atom once they are linked.",
+    "When a plan's stated disjunction is not derivable from the destructors it names, the honest move in a compiled-evidence repository is to land the provable disjunction WITH the extra branch and add a compiled refutation of the planned shape, scoped explicitly to the derivation refuted -- not to restate the planned shape nor to silently weaken it."
+  ]
 }

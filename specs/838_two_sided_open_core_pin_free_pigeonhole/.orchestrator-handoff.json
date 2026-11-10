@@ -2,9 +2,9 @@
   "status": "implemented",
   "skeleton": false,
   "phase": "implement",
-  "dispatch_seq": 5,
-  "summary": "Phase 5 landed: the slack accounting is compiled rather than argued. hasForwardSlack_zero gives the FREE BASELINE (HasForwardSlack g z 0 (nxtAt g z) on every ladder path, from nxtAt_lipschitz_two_sided alone), and hasForwardSlack_raise_of_zero composes it with hasForwardSlack_raise so a raised path carries slack d*l from no slack hypothesis at all; its docstring states the accounting in full (baseline 0 free, raise +d*l exact, deletion -l per step exact, so no composition exceeds the total raised amount and a raise-then-delete round trip at z is net zero). Phase 5's earlier blocker is WITHDRAWN as mis-anchored and recorded as a win, not back-edited out: the goal it quoted carried the anchor VALUE at the hardwired anchor POSITION 0, while that anchor is a free argument discharged existentially, and the re-anchored deletion is already landed. One axiom-test pin plus one narrative line. No theorem quantified over compositions was written (the plan prohibits one). Every gate green: full unscoped guarded build exit 0 with zero errors, sorry_count 0, check-module-invariants.sh exit 0, typst-sync counts-only clean. Nothing was landed under the reserved name cellLE_zero_const_of_kappa_eq or under the planned new name.",
-  "phases_completed": 6,
+  "dispatch_seq": 6,
+  "summary": "Phase 7 landed as a new leaf module LadderCell.lean (299 lines, importing LadderChain.lean alone), wired into both roots. cellAt_subset_of_common_shift_of_pend_past is the UPWARD cell inclusion along the COMMON-SHIFT chain -- the sub-regime the landed register-held inclusion's docstring names and does not state -- landed at its pinned Challenge signature token for token, with no weakening and without the phase's [BLOCKED] escape hatch: the anchor clause closed from the widened window alone, because the raise pushes every pin of the raised path past z + cntAt g z + m*(P+1) while the pending-forever gap n + 2 <= c bounds the register at z by cntAt g z - 2, so the pin bound has exactly m*(P+1) to spare. Its assembly exists_ladderPath_through_common_shifted_of_pend_past needed no new pump: it calls the landed regime-A assembly for the walk and the countdowns and re-runs only the register rebuild at the freed anchor. kappa_collision_regimes landed with THREE branches rather than the planned two, because the two-branch shape is NOT derivable from the three destructors it was to be proved from plus (K4)'s 2 <= B: clipIdx clips the gap at B, so a collision saturated at that clip on both sides satisfies neither alternative. That is recorded as a compiled object, kappa_collision_two_regimes_refuted, at Tc=Tn=P=0, B=2 and the pairs (0,2),(0,3), scoped to that derivation and asserting nothing about the two-branch form under full ParamsOk. Three axiom pins. Every gate green: full unscoped guarded build exit 0 with zero errors and zero warnings, sorry_count 0 cross-checked against the compiler, check-module-invariants.sh exit 0 ALL CHECKS PASSED, check-task-references.sh exit 0, typst-sync regenerated. Nothing landed under the reserved name cellLE_zero_const_of_kappa_eq. OPEN FOR PHASE 9: its planned close consumes the split expecting two branches, and the saturated-gap branch is addressed by neither landed inclusion.",
+  "phases_completed": 7,
   "phases_total": 10,
   "sorry_inventory": [],
   "blockers": [],
@@ -13,13 +13,13 @@
     {
       "type": "summary",
       "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
-      "summary": "Round-01 summary brought current: Phase 5's blocker withdrawal, the free slack baseline, the exact-transport accounting, and what Phase 8's gate is now the only remaining source of."
+      "summary": "Round-01 summary brought current with Phase 7: the common-shift cell inclusion, the three-branch collision split, and the compiled refutation of the planned two-branch shape."
     },
     {
       "type": "handoff",
-      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-5-handoff-20261110T071151Z.md",
-      "summary": "Phase 5's end state, the next action (Phase 7's LadderCell.lean), and the empty sorry inventory."
+      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-7-handoff-20261110T074719Z.md",
+      "summary": "Phase 7's end state, the next action (Phase 8's idle-gap decision gate), the saturated-gap branch Phase 9 must absorb, and the empty sorry inventory."
     }
   ],
-  "next_steps": "Run /orchestrate 838 --implement to execute Phase 7 (LadderCell.lean: cellAt_subset_of_common_shift_of_pend_past against the pinned Challenge signature) and then Phase 8's decision gate; Phases 7 and 8 are the plan's one parallel pair."
+  "next_steps": "Run /orchestrate 838 --implement to execute Phase 8's decision gate (does lengthening the idle gap buy the missing slack type-respectingly?). Before Phase 9 runs, note that kappa_collision_regimes has a THIRD branch (saturated gap coordinate at both pairs) that neither landed cell inclusion addresses; Phase 9 must exclude it from the obligation's hypotheses or carry it explicitly."
 }

@@ -3,8 +3,8 @@
 - **Task**: 838 - Two-sided open core: attack the depth-`0` cell obligation through a `(K2)`-level pigeonhole over region starts on the pin-free side, or restate the obligation under a new name
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-11-03T17:42:40Z
-- **Completed**: 2026-11-10T07:15:00Z
-- **Effort**: ~2 hours of wall clock over six landed phases (Phase 5's earlier blocker withdrawn as mis-anchored and the phase then landed)
+- **Completed**: 2026-11-10T07:30:00Z
+- **Effort**: ~2.5 hours of wall clock over seven landed phases (Phase 5's earlier blocker withdrawn as mis-anchored and the phase then landed)
 - **Dependencies**: None at the `state.json` level. Parent: the task whose pump layer is this round's entire input. The ladder realization theorem's depth-`0` induction is the downstream consumer; nothing here edits any of its artifacts
 - **Artifacts**: plans/01_pin-free-pigeonhole-open-core.md, prototype/pin-free-side.lean, prototype/spanning-divisibility.lean
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -22,6 +22,15 @@ re-anchored deletion is landed — and the phase landed the slack accounting ins
 baseline is free at amount `0` and the two transports around it are exact, so the regime is not
 itself a source of slack. Nothing weakened was landed under the reserved name or under the
 planned new one, and the depth-`0` obligation remains neither proved nor refuted.
+
+Phase 7 then landed the cell level as a new leaf module `LadderCell.lean`: the UPWARD cell
+inclusion along the COMMON-SHIFT chain (the sub-regime the landed register-held inclusion's
+docstring names and does not state), and the arithmetic case split that says which sub-regimes a
+`kappa`-collision can occupy. The inclusion landed at its pinned Challenge signature with no
+weakening; the case split landed with THREE branches rather than the planned two, because the
+planned two-branch shape is not derivable from the destructors it was to be proved from — the
+gap coordinate clips at `B`, and a collision saturated at that clip on both sides satisfies
+neither alternative. That is recorded as a compiled refutation, not as prose.
 
 ## What Changed
 
@@ -64,6 +73,34 @@ planned new one, and the depth-`0` obligation remains neither proved nor refuted
   the gate: `SpanningBlockLengthDvd`, `spanning_walk_not_pending`,
   `spanningBlockLengthDvd_refuted`.
 
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean` — NEW, 299 lines, importing
+  `LadderChain.lean` alone. Four declarations:
+  - `exists_ladderPath_through_common_shifted_of_pend_past` — the regime-A assembly with the
+    register CARRIED along the shift rather than held. The walk and every countdown are the
+    landed path's; only the deadline register is rebuilt, by the freed-anchor lift
+    `exists_ladderPath_of_walk_nxt_at` at `z` with the anchor value `nxtAt g z + m · (P + 1)`.
+  - `cellAt_subset_of_common_shift_of_pend_past` — the UPWARD cell inclusion along the
+    common-shift chain, at the pinned Challenge signature token for token. One direction only.
+  - `kappa_collision_regimes` — the collision case split over named arithmetic facts, THREE
+    branches: equal register `n = n'` (with the countdowns congruent mod `P + 1` and the two
+    counter regimes segregated by `clipIdx_regime_of_eq`), common shift of both coordinates by
+    the same multiple of `P + 1`, and a SATURATED gap coordinate at both pairs on the same side
+    of the window.
+  - `kappa_collision_two_regimes_refuted` — the compiled refutation of the two-branch form as a
+    consequence of the three destructors together with `(K4)`'s `2 ≤ B`, at `Tc = Tn = P = 0`,
+    `B = 2` and the pairs `(0, 2)`, `(0, 3)`. Scoped to that derivation: it asserts nothing about
+    the two-branch form under full `ParamsOk`.
+- `FormalSystem.lean`, `FormalSystem/Metalogic/Decidability/RaySummary.lean` — one import line
+  each for the new module.
+- `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `FormalSystem/Metalogic/README.md`,
+  `FormalSystem/README.md`, `README.md` — regenerated inventory blocks plus the hand-written
+  description cell for `LadderCell.lean`.
+- `typst/generated/status.typ` — regenerated counts (the pre-commit sync gate requires it once a
+  live `.lean` file is added).
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` — a new requirement-(W) cell-level
+  prose block and three axiom-profile pins; the file's recorded `longFile` ceiling raised from
+  2,100 to 2,200 to admit them.
+
 ## Decisions
 
 - **The decision gate's verdict is FAIL, and refuted rather than merely unproved.** `(K1)`'s two
@@ -93,6 +130,21 @@ planned new one, and the depth-`0` obligation remains neither proved nor refuted
 - **Every phase commit carries a regenerated `typst/generated/status.typ`.** A commit touching
   `FormalSystem/**/*.lean` is refused by the typst-sync pre-commit gate without it; the plan's
   per-phase `Files to modify` lists do not name that file.
+
+- **Phase 7: reuse the landed assembly rather than re-derive the duplication.** The plan's route
+  for the common shift was the landed register-held iterated duplication read through
+  `exists_ladderPath_of_walk_nxt_at` with the anchor raised. That was taken in the cheapest
+  faithful form: call the landed regime-A assembly for the walk and the countdowns, then re-run
+  ONLY the register rebuild at the freed anchor. The anchor clause closes from the widened window
+  alone — the raise pushes every pin of the raised path past `z + cntAt g z + m · (P + 1)`, while
+  the pending-forever gap `n + 2 ≤ c` bounds the register at `z` by `cntAt g z − 2`, leaving
+  exactly `m · (P + 1)` to spare in both directions — so no new pump construction was needed and
+  the phase's escape hatch (close `[BLOCKED]` if the clause does not close) was not used.
+- **Phase 7: state the collision split honestly, and compile the refutation of the planned
+  shape.** Rather than restate the planned two-branch disjunction as if it followed, the
+  three-branch form was landed and the two-branch form refuted by a compiled object, in this
+  repository's own idiom. The Challenge block had explicitly left this statement unpinned as a
+  composite whose exact shape is fixed by the transports it composes, which is the latitude used.
 
 ## Plan Deviations
 
@@ -131,6 +183,24 @@ planned new one, and the depth-`0` obligation remains neither proved nor refuted
   from HEAD. The single match is a pre-existing DOCSTRING sentence (“is not a disguised `sorry`”),
   not a declaration; `lean-sorry-census.sh` reports `sorry_count: 0` over every source root.
 
+- **Phase 7**, `kappa_collision_regimes`: altered — landed as a THREE-branch disjunction, not
+  the planned two. The planned shape (equal register OR common shift) is NOT a consequence of the
+  three named destructors plus `(K4)`'s `2 ≤ B`: `clipIdx` clips the gap at `B`, so a collision
+  whose gaps are both saturated at that clip on the same side of the window satisfies neither
+  alternative. `kappa_collision_two_regimes_refuted` is the compiled refutation at
+  `Tc = Tn = P = 0`, `B = 2` and the pairs `(0, 2)`, `(0, 3)`. The statement was explicitly
+  unpinned in the Challenge block, so no pinned signature was weakened; the consequence for the
+  plan is that Phase 9 must dispatch or exclude the third branch, which it does not currently
+  budget for.
+- **Phase 7** Scope Hypothesis predicted six or seven files; nine changed. The root `README.md`
+  inventory totals block is a FOURTH generated consumer, and `typst/generated/status.typ` is a
+  fifth derived artifact the pre-commit sync gate requires once a live `.lean` file is added.
+  Wider but harmless; no existing proof changed (`git diff -U0` on `LadderChain.lean` reports
+  zero declaration lines touched).
+- **Phase 7** added a THIRD axiom pin beyond the plan's "both new theorems" — the refutation
+  object — because it is the evidence for the three-branch shape and belongs in the ledger beside
+  what it justifies. Additive, not a substitution.
+
 ## Verification
 
 - Build: Success. Unscoped full `lake build` through the build guard reports `exit_status=0`,
@@ -151,6 +221,34 @@ planned new one, and the depth-`0` obligation remains neither proved nor refuted
 - Both prototypes compile standalone through the build guard with zero errors and zero
   `declaration uses 'sorry'`.
 - Files verified: Yes.
+
+### Phase 7 (dispatch 6)
+
+- Build: Success. Unscoped full guarded `lake build` reports `exit_status=0`, zero `error:` and
+  zero `warning:` across both captured streams, 2,969 jobs, and `LadderCell.olean` newer than
+  `LadderCell.lean`. The three covering scoped builds (`… LadderCell`, `… FormalSystem`,
+  `… BimodalTest.Metalogic.KTypeSummaryAxiomTest`) each exit 0.
+- Sorry count: 0. `lean-sorry-census.sh --cross-check` over the resolved source roots reports
+  `stripper_sorry_count: 0`, `compiler_sorry_count: 0`, `cross_check: MATCH`.
+- Vacuous count: 0 on `LadderCell.lean`. The one repo-wide match of the vacuity grep
+  (`FormalSystem/Examples/TemporalStructures.lean:495`, a domain-membership theorem whose goal
+  reduces to `True` on `Int`) is pre-existing and untouched.
+- Axiom count: 14, unchanged — no `^axiom ` line added.
+- Axiom profiles: `cellAt_subset_of_common_shift_of_pend_past`,
+  `exists_ladderPath_through_common_shifted_of_pend_past` and `kappa_collision_regimes` carry the
+  standard `[propext, Classical.choice, Quot.sound]`; `kappa_collision_two_regimes_refuted` is
+  strictly below it at `[propext, Quot.sound]`. No `sorryAx`.
+- `cellAt_subset_of_common_shift_of_pend_past`'s signature matches the Challenge block token for
+  token, modulo the block's own stated ASCII rendering.
+- Reserved name: 10 occurrences of `cellLE_zero_const_of_kappa_eq` repo-wide, every one on a
+  docstring or prose line; zero claimed by a `theorem`, `def` or `lemma`.
+- `LadderChain.lean` is still 2,267 lines against its unbumped 2,300 baseline.
+- Gates: `check-module-invariants.sh --emit-inventory` then `--check` exits 0, ALL CHECKS PASSED
+  (C1, C33 and the inventory/description-cell checks included);
+  `check-task-references.sh --quiet` exits 0; `typst-sync-check.sh` exits 0 after `--fix`.
+- The complete gate set declared by the plan's final phase was NOT independently run in this
+  dispatch; it is deferred to the batch stage of the dispatching invocation, per the dispatch's
+  batch gate deferral. Phase 7's own tier is `interface` and its covering checks are listed above.
 
 ## Impacts
 
@@ -192,6 +290,14 @@ planned new one, and the depth-`0` obligation remains neither proved nor refuted
 - **A tighter pigeonhole constant** was looked for and not found: the even-index factor two buys
   the separation a third pin strictly inside the block needs. Tightening it remains open and is a
   proof obligation, never a loosening of the pinned signature.
+
+- **Phase 9 must handle the saturated-gap branch.** `kappa_collision_regimes`'s third branch is
+  addressed by NEITHER landed inclusion. Phase 9's planned close consumes the split expecting two
+  branches; it must either exclude the saturated branch from the obligation's own hypotheses or
+  carry it as an explicit extra hypothesis on whatever it lands. Nothing in this round settles
+  which.
+- Phase 8's decision gate (does lengthening the idle gap buy the missing slack
+  type-respectingly?) is untouched by this dispatch and remains the next action.
 
 ## References
 
