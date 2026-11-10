@@ -433,7 +433,7 @@ imports.
 
 ---
 
-### Phase 3: The antecedent as L⁺ syntax [NOT STARTED]
+### Phase 3: The antecedent as L⁺ syntax [COMPLETED]
 
 **Goal**: Define `aaStep`, `aaExcl` and `aaAnte` exactly as pinned in `## Lean Challenge
 Statements`, and prove the three unpacking lemmas that read each conjunct back out of a truth

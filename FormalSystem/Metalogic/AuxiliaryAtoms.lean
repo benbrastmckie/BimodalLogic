@@ -364,4 +364,127 @@ theorem aaState_step (F : FrameOver intOrder) [F.IsRegular]
     change aaRun p b₀ idx y.2 = p (aaRun p b₀ idx x.2) (idx x.1)
     rw [hstep.2]; rfl
 
+/-! ## The antecedent as L⁺ syntax -/
+
+/--
+**The machine-step clause** `⋀_{j<m} ⋀_{i<k} ((q_j ∧ aᵢ) → ⊡X q_{p j i})`.
+
+Reynolds' Definition 4 clause for clause, with `⊡X` where the source has its own next-step
+operator: the consequent must hold on *every* history through the state reached, not only along
+the history at hand, which is what makes the machine's labelling a function of the state.
+
+`bigAnd` is single-level and `ℕ`-indexed, so the double family is a nested `bigAnd`.
+
+Paper: — (formalization-native; the transposition to `⊡`/`G≤` over L⁺ is not Reynolds')
+-/
+def aaStep (qa : ℕ → Atom) (m k : ℕ) (a : ℕ → PlusFormula) (p : ℕ → ℕ → ℕ) : PlusFormula :=
+  bigAnd m fun j => bigAnd k fun i =>
+    ((PlusFormula.atom (qa j)).and (a i)).imp
+      (PlusFormula.stab (PlusFormula.atom (qa (p j i))).next)
+
+/--
+**The exclusivity clause** `⋀_{j<m} ⋀_{j'<m, j'≠j} ¬(q_j ∧ q_{j'})`: no two auxiliary atoms hold
+together.
+
+**The diagonal carries `top`, by convention stated here.** `bigAnd` ranges over the full `m × m`
+square, and the diagonal entry `¬(q_j ∧ q_j)` is unsatisfiable, so the pair `(j, j)` is guarded
+by `if j = j' then PlusFormula.top`. `bigAnd_iff` then yields a clean
+`∀ j < m, ∀ j' < m, …` that a `rcases eq_or_ne j j'` splits, with the diagonal branch discharged
+by `PlusTruth.top_true`. Decidable equality on `ℕ` means no classical choice enters here.
+
+Paper: — (formalization-native; the transposition to `⊡`/`G≤` over L⁺ is not Reynolds')
+-/
+def aaExcl (qa : ℕ → Atom) (m : ℕ) : PlusFormula :=
+  bigAnd m fun j => bigAnd m fun j' =>
+    if j = j' then PlusFormula.top
+    else ((PlusFormula.atom (qa j)).and (PlusFormula.atom (qa j'))).neg
+
+/--
+**The Auxiliary-Atoms antecedent**, the L⁺ transposition of Reynolds §7's `θ`: three conjuncts —
+
+* `q_{b₀}` — the machine starts in state `b₀` here;
+* `⊡G≤ (aaStep …)` — the machine-step clause, on every history through the present state and at
+  every time from now on;
+* `⊡G≤ (aaExcl …)` — the exclusivity clause, under the same two closures.
+
+Both closed conjuncts sit under `⊡G≤` rather than `□△`: the rule is run on the cone unravelling
+anchored at the present point, so only the forward cone of the present stability cluster is
+constrained, which is exactly what the construction can supply.
+
+Paper: — (formalization-native; the transposition to `⊡`/`G≤` over L⁺ is not Reynolds')
+-/
+def aaAnte (qa : ℕ → Atom) (m k : ℕ) (a : ℕ → PlusFormula) (p : ℕ → ℕ → ℕ) (b₀ : ℕ) :
+    PlusFormula :=
+  ((PlusFormula.atom (qa b₀)).and (PlusFormula.stab (aaStep qa m k a p).gle)).and
+    (PlusFormula.stab (aaExcl qa m).gle)
+
+/-! ### Reading the antecedent's three conjuncts back out -/
+
+/-- **The antecedent's initial conjunct**: the atom `q_{b₀}` holds at the evaluation point. One
+`PlusTruth.and_iff` unpacking.
+
+Paper: — (formalization-native; the transposition to `⊡`/`G≤` over L⁺ is not Reynolds')
+-/
+theorem plusTruthAt_aaAnte_initial {F : TaskFrame} (M : TaskModel F) (qa : ℕ → Atom) (m k : ℕ)
+    (a : ℕ → PlusFormula) (p : ℕ → ℕ → ℕ) (b₀ : ℕ) (τ : WorldHistory F) (x : F.Duration)
+    (h : PlusTruthAt M τ x (aaAnte qa m k a p b₀)) :
+    M.valuation (τ.state x) (qa b₀) :=
+  ((PlusTruth.and_iff M τ x _ _).mp ((PlusTruth.and_iff M τ x _ _).mp h).1).1
+
+/--
+**The antecedent's step conjunct**, read out at an arbitrary point of the forward cone of the
+present stability cluster: on every history `σ` through `τ(x)` at `x`, at every `s ≥ x`, if `q_j`
+and `aᵢ` both hold at `(σ, s)` then `q_{p j i}` holds at `(σ', s + 1)` for *every* history `σ'`
+agreeing with `σ` at `s`.
+
+The ladder is `PlusTruth.and_iff` → `PlusTruth.stab_iff` → `gle_iff` → `bigAnd_iff` twice →
+`PlusTruth.imp_iff`/`and_iff` → `PlusTruth.stab_iff` → `plusTruthAt_next_iff_add_one`. The last
+step is why this lemma is stated at `FrameOver intOrder` rather than at an arbitrary
+`TaskFrame`.
+
+Paper: — (formalization-native; the transposition to `⊡`/`G≤` over L⁺ is not Reynolds')
+-/
+theorem plusTruthAt_aaAnte_step {F : FrameOver intOrder} (M : TaskModel F.toTaskFrame)
+    (qa : ℕ → Atom) (m k : ℕ) (a : ℕ → PlusFormula) (p : ℕ → ℕ → ℕ) (b₀ : ℕ)
+    (τ : WorldHistory F.toTaskFrame) (x : ↑intOrder)
+    (h : PlusTruthAt M τ x (aaAnte qa m k a p b₀))
+    (σ : WorldHistory F.toTaskFrame) (hσ : τ.state x = σ.state x)
+    (s : ↑intOrder) (hs : x ≤ s) (j : ℕ) (hj : j < m) (i : ℕ) (hi : i < k)
+    (hq : M.valuation (σ.state s) (qa j)) (hai : PlusTruthAt M σ s (a i))
+    (σ' : WorldHistory F.toTaskFrame) (hσ' : σ.state s = σ'.state s) :
+    M.valuation (σ'.state (s + 1)) (qa (p j i)) := by
+  have h1 := ((PlusTruth.and_iff M τ x _ _).mp ((PlusTruth.and_iff M τ x _ _).mp h).1).2
+  have h2 := (PlusTruth.stab_iff M τ x _).mp h1 σ hσ
+  have h3 := (gle_iff M σ x _).mp h2 s hs
+  have h4 := (bigAnd_iff M σ s _ m).mp h3 j hj
+  have h5 := (bigAnd_iff M σ s _ k).mp h4 i hi
+  have h6 := (PlusTruth.imp_iff M σ s _ _).mp h5 ((PlusTruth.and_iff M σ s _ _).mpr ⟨hq, hai⟩)
+  have h7 := (PlusTruth.stab_iff M σ s _).mp h6 σ' hσ'
+  exact (plusTruthAt_next_iff_add_one M σ' s _).mp h7
+
+/--
+**The antecedent's exclusivity conjunct**, read out over the same forward cone: on every history
+`σ` through `τ(x)` at `x`, at every `s ≥ x`, no two distinct auxiliary atoms below `m` hold
+together at `(σ, s)`.
+
+The same ladder as the step conjunct down to the two `bigAnd_iff`s, then `if_neg` on the
+`j ≠ j'` guard discharges the `top` diagonal.
+
+Paper: — (formalization-native; the transposition to `⊡`/`G≤` over L⁺ is not Reynolds')
+-/
+theorem plusTruthAt_aaAnte_excl {F : TaskFrame} (M : TaskModel F) (qa : ℕ → Atom) (m k : ℕ)
+    (a : ℕ → PlusFormula) (p : ℕ → ℕ → ℕ) (b₀ : ℕ) (τ : WorldHistory F) (x : F.Duration)
+    (h : PlusTruthAt M τ x (aaAnte qa m k a p b₀))
+    (σ : WorldHistory F) (hσ : τ.state x = σ.state x)
+    (s : F.Duration) (hs : x ≤ s) (j : ℕ) (hj : j < m) (j' : ℕ) (hj' : j' < m) (hne : j ≠ j') :
+    ¬ (M.valuation (σ.state s) (qa j) ∧ M.valuation (σ.state s) (qa j')) := by
+  have h1 := (PlusTruth.and_iff M τ x _ _).mp h |>.2
+  have h2 := (PlusTruth.stab_iff M τ x _).mp h1 σ hσ
+  have h3 := (gle_iff M σ x _).mp h2 s hs
+  have h4 := (bigAnd_iff M σ s _ m).mp h3 j hj
+  have h5 := (bigAnd_iff M σ s _ m).mp h4 j' hj'
+  rw [if_neg hne] at h5
+  intro hc
+  exact (PlusTruth.neg_iff M σ s _).mp h5 ((PlusTruth.and_iff M σ s _ _).mpr hc)
+
 end FormalSystem.Metalogic.AuxiliaryAtoms
