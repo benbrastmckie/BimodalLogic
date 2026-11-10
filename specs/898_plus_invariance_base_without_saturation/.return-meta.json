@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "dispatch_seq": 4,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/898_plus_invariance_base_without_saturation/reports/01_plus-invariance-base-without-saturation.md",
+      "summary": "Saturation is consumed nowhere in the HistoryMorphism lift chain: compiled probes show the base frame needs no def:frame constraint at all and the source frame needs only Compositionality, Seriality and Limit; includes the restatement plan, the downstream UniversalCover/taskRel_eq_iter weakening, and a concrete non-saturated FrameOver witness."
+    },
+    {
+      "type": "other",
+      "path": "specs/evidence/history-morphism-saturation-audit/lift-chain-without-isregular.lean",
+      "summary": "Compiled probe (lake env lean, exit 0) restating the whole lift chain with explicit constraint hypotheses and no IsRegular instance on either frame."
+    },
+    {
+      "type": "other",
+      "path": "specs/evidence/history-morphism-saturation-audit/non-saturated-frameover-witness.lean",
+      "summary": "Compiled probe wrapping StateTopology SeparatingFrame.srel as a FrameOver intOrder that is Compositional, Serial and Limit but provably not Saturated."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794261422_5f0e55_898",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
