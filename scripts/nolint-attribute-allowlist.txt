@@ -70,6 +70,16 @@ simpNF:colourClock_taskRel
 # arguments would change a contract signature to spare a linter.
 # Metalogic/Expressiveness/SeparationZ/Discharge.lean.
 unusedArguments:sepZ_sepClauses
+# `insRegionStart_trichotomy` carries `hu1 : pend (objAt g (u + 1)) = true` -- that the insertion
+# site opens a region -- which the trichotomy's own proof never reads. The declaration cannot
+# conform: `hu1` is the hypothesis the pin bound built directly on top of it
+# (`insPins_of_region_start`) consumes at the raised pin in six of its nine branches, and the two
+# are stated over one shared hypothesis list so that neither re-derives it. Dropping the argument
+# here would force the next layer to re-establish it, and would change a signature that the
+# interface above resolves against. The paired source-level suppression is a scoped
+# `set_option linter.unusedVariables false in` at the same site.
+# Metalogic/Decidability/RaySummary/LadderAgree.lean.
+unusedArguments:insRegionStart_trichotomy
 # The base frame's `[F.IsRegular]` binder on the two discrete-time lift headlines. Research
 # established that the lift chain consumes no `def:frame` constraint of the base at all, so both
 # proofs now delegate to `..._of_isZTime_of_constraints`, which takes none -- and the linter is
