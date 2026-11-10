@@ -115,6 +115,24 @@
         "auto_recoverable": false
       },
       "fix_status": "unfixed"
+    },
+    {
+      "id": "err_1794329816161_FYHHIf",
+      "timestamp": "2026-11-10T16:56:56.168Z",
+      "type": "state_bloat_e2big",
+      "severity": "critical",
+      "message": "specs/state.json audit_verdict fields reached 145-195KB per record, exceeding Linux MAX_ARG_STRLEN (131072B); skill-base.sh:390 'export TASK_DATA' then made every subsequent exec (jq, head) fail with E2BIG, blocking all dispatch for tasks 908-915",
+      "context": {
+        "session_id": "sess_1794328980_5b668f",
+        "command": "/orchestrate",
+        "task": 915,
+        "file": "specs/state.json"
+      },
+      "recovery": {
+        "suggested_action": "Durable fix belongs in the agent-system source store: either stop exporting TASK_DATA in skill-base.sh:390, or cap audit_verdict size at write time in state-write.sh. Immediate mitigation already applied: 21 oversized audit_verdict payloads relocated to specs/evidence/audit-verdicts/NNN.json with summary stubs left in state.json (max record now 16KB).",
+        "auto_recoverable": false
+      },
+      "fix_status": "unfixed"
     }
   ]
 }
