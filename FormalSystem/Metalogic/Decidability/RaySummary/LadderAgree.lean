@@ -347,7 +347,13 @@ stated anywhere in the tree, and none is invented here.
 -- ladder paths and stay in one module.  The baseline is raised in place rather than the module
 -- split: the insertion walk reads `spliceObj`/`spliceCnt` and the pin bookkeeping of the same
 -- Cascade section at every step, so a split would put one argument across an import edge.
-set_option linter.style.longFile 2900
+-- The raise from 2900 pays for the insertion cascade's PIN half (the region-start extraction,
+-- the inserted walk's region-start trichotomy and the pin bound it feeds) together with the two
+-- restated existentials that read the interface at the comparison position, all of which read
+-- the same section's splice and pin bookkeeping.  The `longFile` linter requires the baseline to
+-- equal the file's own round-up to the next hundred rather than a forward-looking ceiling, so it
+-- tracks the file as the cascade lands instead of being set once to its final value.
+set_option linter.style.longFile 3100
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1253,6 +1259,31 @@ earlier region start, so the condition is not automatic and the surgery is not f
 preceding idle runs have to be lengthened with it, which is the cascade the parameter condition
 `(K2)` sizes and which this phase does not land. -/
 
+/-- **A `Drift`-chained register is two-sidedly `1`-Lipschitz.** The `Drift`-level counterpart of
+the landed `nxtAt_lipschitz_two_sided`, which is this fact specialised to the deadline register of
+a ladder path: there the chain comes from `nxtAt_drift`, here it is the hypothesis `hd`, so the
+statement applies to any register a McShane extension returns before it is known to be some
+path's own `nxtAt`. -/
+theorem drift_lipschitz_two_sided (n : ℤ → ℕ)
+    (hd : ∀ t : ℤ, Drift (n t) (n (t + 1))) (u v : ℤ) :
+    ((n u : ℤ) - n v).natAbs ≤ (u - v).natAbs := by
+  have hone : ∀ (z : ℤ) (j : ℕ), ((n z : ℤ) - n (z + (j : ℤ))).natAbs ≤ j := by
+    intro z j
+    induction j with
+    | zero => simp
+    | succ j ih =>
+      have h := hd (z + (j : ℤ))
+      rw [show z + ((j + 1 : ℕ) : ℤ) = z + (j : ℤ) + 1 by push_cast; ring]
+      simp only [Drift] at h
+      omega
+  rcases le_total u v with h | h
+  · have hlip := hone u (v - u).toNat
+    rw [show u + (((v - u).toNat : ℕ) : ℤ) = v by omega] at hlip
+    omega
+  · have hlip := hone v (u - v).toNat
+    rw [show v + (((u - v).toNat : ℕ) : ℤ) = u by omega] at hlip
+    omega
+
 /-- **The lift of a walk with its forced countdown to a ladder path on the admissible carrier.**
 `exists_rlad_hist_of_walk` with the admissibility proof read off the idle-zero clause. -/
 theorem exists_ladderPath_of_walk (w : ℤ → Q) (c : ℤ → ℕ) (n₀ : ℕ)
@@ -1271,6 +1302,56 @@ theorem exists_ladderPath_of_walk (w : ℤ → Q) (c : ℤ → ℕ) (n₀ : ℕ)
     exists_rlad_hist_of_walk step pend 0 w c n₀ hw hidle hpp hpi hpins hn₀
   refine ⟨fun v => ⟨(w v, c v, n v), fun h => hidle v h⟩, fun v => hR v, fun _ => rfl,
     fun _ => rfl⟩
+
+/-- **THE ANCHOR-FREE LIFT: `hn₀` IS DERIVED FROM `hpins`, NOT ASSUMED.** A walk whose pin family
+is pairwise compatible already determines a `Drift` register through those pins -- that is exactly
+`drift_extension_of_pins`'s hypothesis, and the McShane extension it returns has a value at `0`
+which witnesses the anchor condition through `drift_lipschitz_two_sided`. So the anchor slot of
+`exists_ladderPath_of_walk` is redundant and no consumer of the lift has to construct one.
+
+This makes the lemma strictly MORE GENERAL than `exists_ladderPath_of_walk`: every instance of
+this one is an instance of that one at `n₀ := n 0`, and the converse needs the anchor supplied.
+`exists_ladderPath_of_walk` is deliberately NOT deleted and NOT restated in terms of this lemma --
+every landed consumer (`exists_spliced_ladderPath`, the alternative-history construction) keeps
+reading the anchored form, which is the shape `exists_rlad_hist_of_walk` promotes. -/
+theorem exists_ladderPath_of_walk_of_pins (w : ℤ → Q) (c : ℤ → ℕ)
+    (hw : ∀ v, step (w v) (w (v + 1)) = true)
+    (hidle : ∀ v, pend (w v) = false → c v = 0)
+    (hpp : ∀ v, pend (w v) = true → pend (w (v + 1)) = true → c (v + 1) + 1 = c v)
+    (hpi : ∀ v, pend (w v) = true → pend (w (v + 1)) = false → c v = 0)
+    (hpins : ∀ s v, pend (w s) = false → pend (w (s + 1)) = true →
+      pend (w v) = false → pend (w (v + 1)) = true →
+      ((c (s + 1) : ℤ) - c (v + 1)).natAbs ≤ (s - v).natAbs) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v, objAt g' v = w v) ∧ (∀ v, cntAt g' v = c v) := by
+  classical
+  have hcompat : ∀ (s t : ℤ) (x y : ℕ),
+      (if pend (w s) = false ∧ pend (w (s + 1)) = true then some (c (s + 1)) else none)
+        = some x →
+      (if pend (w t) = false ∧ pend (w (t + 1)) = true then some (c (t + 1)) else none)
+        = some y →
+      ((x : ℤ) - y).natAbs ≤ (s - t).natAbs := by
+    intro s t x y hx hy
+    by_cases hs : pend (w s) = false ∧ pend (w (s + 1)) = true
+    · by_cases ht : pend (w t) = false ∧ pend (w (t + 1)) = true
+      · rw [if_pos hs] at hx
+        rw [if_pos ht] at hy
+        have hx' : c (s + 1) = x := Option.some_inj.mp hx
+        have hy' : c (t + 1) = y := Option.some_inj.mp hy
+        subst hx'; subst hy'
+        exact hpins s t hs.1 hs.2 ht.1 ht.2
+      · rw [if_neg ht] at hy; simp at hy
+    · rw [if_neg hs] at hx; simp at hx
+  obtain ⟨n, hdrift, hthrough⟩ :=
+    drift_extension_of_pins
+      (fun v => if pend (w v) = false ∧ pend (w (v + 1)) = true then some (c (v + 1)) else none)
+      hcompat
+  refine exists_ladderPath_of_walk w c (n 0) hw hidle hpp hpi hpins ?_
+  intro v hv0 hv1
+  have hnv : n v = c (v + 1) := hthrough v (c (v + 1)) (by simp [hv0, hv1])
+  have hlip := drift_lipschitz_two_sided n hdrift v 0
+  rw [← hnv]
+  simpa using hlip
 
 section Splice
 

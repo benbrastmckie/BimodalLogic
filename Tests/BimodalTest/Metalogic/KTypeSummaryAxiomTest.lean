@@ -1172,6 +1172,26 @@ no certificate object is named, and no pin is a complexity bound. -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_of_walk
 
+/-! ## The anchor-free lift
+
+`exists_ladderPath_of_walk`'s anchor slot `hn₀` is REDUNDANT: a walk whose pin family is pairwise
+compatible already determines a `Drift` register through those pins, and that register's value at
+`0` witnesses the anchor. `drift_lipschitz_two_sided` is the `Drift`-level Lipschitz fact the
+discharge reads (the counterpart of `nxtAt_lipschitz_two_sided`, which is the same fact on a
+ladder path's own deadline register), and `exists_ladderPath_of_walk_of_pins` is the lift with the
+slot dropped. The anchored form is NOT superseded in the tree: every landed consumer still reads
+it, and both pins below stand beside its own rather than replacing it. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.drift_lipschitz_two_sided' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.drift_lipschitz_two_sided
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_of_walk_of_pins' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_of_walk_of_pins
+
 /-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_spliced_ladderPath' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
