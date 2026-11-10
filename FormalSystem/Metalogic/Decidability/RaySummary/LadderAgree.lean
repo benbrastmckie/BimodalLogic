@@ -353,7 +353,7 @@ stated anywhere in the tree, and none is invented here.
 -- the same section's splice and pin bookkeeping.  The `longFile` linter requires the baseline to
 -- equal the file's own round-up to the next hundred rather than a forward-looking ceiling, so it
 -- tracks the file as the cascade lands instead of being set once to its final value.
-set_option linter.style.longFile 3100
+set_option linter.style.longFile 3200
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1985,6 +1985,97 @@ theorem exists_region_start_of_idle_past (g : ℤ → LadderState Q pend)
     intro t ht1 ht2
     have := hrun (a - t).toNat (by omega)
     rwa [show a - (((a - t).toNat : ℕ) : ℤ) = t by omega] at this
+
+-- `linter.unusedVariables`, scoped to this declaration: the signature is pinned by the plan's
+-- Lean Challenge Statements block, and `hu1` — that the insertion site opens a region — is not
+-- read by the trichotomy itself. It is the hypothesis the pin bound of the next layer consumes,
+-- so it is carried here rather than dropped and re-derived there.
+set_option linter.unusedVariables false in
+/-- **THE INSERTED WALK'S REGION STARTS, TRICHOTOMISED.** Insert the repeated segment's copy at
+`u`, the region start of `a`'s OWN region, with depth `d := l`. Then every region start of the
+inserted walk is exactly one of three things, with its countdown known in each case:
+
+* `x = u` itself — the ONE raised pin, countdown `cntAt g (u + 1) + l`. `hreg` is exactly what
+  raises it: it is the hypothesis that makes the splice's `+ l` branch fire at `u + 1`.
+* `x` with `x + l < u` — an original region start strictly below `u`, displaced DOWN by `l`, with
+  its countdown UNCHANGED. Unchanged because the `+ l` branch does not fire there: if it did,
+  `pend_of_mem_region` would place the idle `u` inside that region's span.
+* `x` with `a + l ≤ x` — an original region start at or above the seam, displaced UP by `l`, with
+  its countdown unchanged, read off the original `l` positions earlier.
+
+**WHERE `d := l` IS FIXED, AND WHY.** The three families' displacements are `0`, `-l` and `+l`,
+and only the `0` family's countdown is raised. So the earlier region starts move DOWN TOGETHER:
+their mutual distances are preserved and only their distance to the raised pin grows, by exactly
+`l`. That is what `d := l` pays for, and it is why ONE insertion suffices where the cascade
+bookkeeping of this section (`cascadeDemand`, `pin_deficit_le_of_lengthen`) anticipated an
+iteration with a doubling recurrence.
+
+**WHAT MAKES THE MIDDLE BAND EMPTY.** Nothing lies strictly between `u` and `a + l`: `hmax` kills
+`u < x ≤ a` (every such position is pending, so none is a region start), the pending span of `a`
+under `hcl` (`cntAt_sub_of_pend`) kills `a < x < a + l`, and the seam itself is inside that span.
+The collapsed block `[u - l, u]` is killed separately and for a different reason — its whole image
+is the idle `u`, so a position there has an IDLE successor and cannot open a region. -/
+theorem insRegionStart_trichotomy {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+    (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
+    (u : ℤ) (hu0 : pend (objAt g u) = false) (hu1 : pend (objAt g (u + 1)) = true)
+    (hua : u + 1 ≤ a) (hreg : a ≤ u + 1 + (cntAt g (u + 1) : ℤ))
+    (hmax : ∀ t : ℤ, u < t → t ≤ a → pend (objAt g t) = true)
+    (x : ℤ) (hx0 : pend (insObj g a l u l x) = false)
+    (hx1 : pend (insObj g a l u l (x + 1)) = true) :
+    (x = u ∧ insCnt g a l u l (x + 1) = cntAt g (u + 1) + l)
+    ∨ (x + (l : ℤ) < u ∧ pend (objAt g (x + (l : ℤ))) = false
+        ∧ pend (objAt g (x + (l : ℤ) + 1)) = true
+        ∧ insCnt g a l u l (x + 1) = cntAt g (x + (l : ℤ) + 1))
+    ∨ (a + (l : ℤ) ≤ x ∧ pend (objAt g (x - (l : ℤ))) = false
+        ∧ pend (objAt g (x - (l : ℤ) + 1)) = true
+        ∧ insCnt g a l u l (x + 1) = cntAt g (x - (l : ℤ) + 1)) := by
+  have hpa : pend (objAt g a) = true := hmax a (by omega) le_rfl
+  simp only [insObj] at hx0 hx1
+  simp only [insCnt]
+  rcases lt_or_ge x u with hxu | hxu
+  · -- below the insertion site
+    rcases lt_or_ge x (u - (l : ℤ)) with hxb | hxb
+    · -- strictly below the collapsed block: `x` and `x + 1` read the original at `x + l`
+      rw [insIdx_of_lt_block u l x hxb, spliceObj_of_lt (x + (l : ℤ)) (by omega)] at hx0
+      rw [insIdx_succ_of_lt_block u l x hxb,
+        spliceObj_of_lt (x + (l : ℤ) + 1) (by omega)] at hx1
+      rw [insIdx_succ_of_lt_block u l x hxb]
+      -- the splice's `+ l` branch does NOT fire: it would put the idle `u` inside this region
+      have hnot : ¬ a ≤ x + (l : ℤ) + 1 + (cntAt g (x + (l : ℤ) + 1) : ℤ) := by
+        intro hc
+        exact Bool.false_ne_true
+          (hu0.symm.trans (pend_of_mem_region g hg (x + (l : ℤ)) u hx1 (by omega) (by omega)))
+      refine Or.inr (Or.inl ⟨by omega, hx0, hx1, ?_⟩)
+      rw [spliceCnt_of_lt (x + (l : ℤ) + 1) (by omega), if_neg hnot]
+    · -- inside the collapsed block: the successor reads the idle insertion site
+      exfalso
+      rw [insIdx_of_mem_block u l (x + 1) (by omega) (by omega),
+        spliceObj_of_lt u (by omega)] at hx1
+      exact Bool.false_ne_true (hu0.symm.trans hx1)
+  · -- at or above the insertion site
+    rcases lt_or_ge x (a + (l : ℤ)) with hxa | hxa
+    · rcases eq_or_lt_of_le hxu with rfl | hxl
+      · -- the raised pin: `hreg` fires the splice's `+ l` branch at `u + 1`
+        refine Or.inl ⟨rfl, ?_⟩
+        rw [insIdx_of_gt u l (u + 1) (by omega), spliceCnt_of_lt (u + 1) (by omega),
+          if_pos hreg]
+      · -- the middle band is empty
+        exfalso
+        rw [insIdx_of_ge u l x hxu, spliceObj_of_lt x (by omega)] at hx0
+        rcases lt_or_ge a x with hxgt | hxle
+        · -- inside the repeated segment's source span, which is pending by `hcl`
+          have hseg := (cntAt_sub_of_pend g hg a hpa (x - a).toNat (by omega)).1
+          rw [show a + (((x - a).toNat : ℕ) : ℤ) = x by omega] at hseg
+          exact Bool.false_ne_true (hx0.symm.trans hseg)
+        · -- between `u` and `a`, where `hmax` makes every position pending
+          exact Bool.false_ne_true (hx0.symm.trans (hmax x hxl hxle))
+    · -- above the seam: the inserted walk is the original read `l` positions earlier
+      rw [insIdx_of_ge u l x hxu, spliceObj_of_ge x hxa] at hx0
+      rw [insIdx_of_gt u l (x + 1) (by omega), spliceObj_of_ge (x + 1) (by omega),
+        show x + 1 - (l : ℤ) = x - (l : ℤ) + 1 by ring] at hx1
+      rw [insIdx_of_gt u l (x + 1) (by omega)]
+      refine Or.inr (Or.inr ⟨hxa, hx0, hx1, ?_⟩)
+      rw [spliceCnt_of_ge (x + 1) (by omega), show x + 1 - (l : ℤ) = x - (l : ℤ) + 1 by ring]
 
 end Cascade
 

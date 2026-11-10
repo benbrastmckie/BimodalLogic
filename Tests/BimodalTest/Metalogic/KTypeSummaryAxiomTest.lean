@@ -2203,6 +2203,39 @@ This pin is still NOT an existential over ladder paths: `hpins` for the inserted
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_region_start_of_idle_past
 
+/-! ### The inserted walk's region starts, trichotomised
+
+`insRegionStart_trichotomy` is the whole content of the insertion's PIN half. Inserting the
+repeated segment's copy at `u`, the region start of `a`'s own region, with depth `d := l`, every
+region start of the inserted walk is the raised pin at `u` (countdown `cntAt g (u + 1) + l`), an
+original region start strictly below `u` displaced DOWN by `l` with its countdown unchanged, or an
+original region start at or above the seam displaced UP by `l` with its countdown unchanged.
+
+Three things the pin records, none of them derivable from the name:
+
+* The earlier region starts move down TOGETHER, so their mutual distances are preserved and only
+  their distance to the raised pin grows — by exactly `l`. That is what fixes `d := l` and why ONE
+  insertion suffices where this section's `cascadeDemand` / `pin_deficit_le_of_lengthen`
+  bookkeeping anticipated an iteration with a doubling recurrence. That bookkeeping stays landed
+  as the sizing record and is NOT consumed by this proof.
+* The middle band `u < x < a + l` is EMPTY, and it takes the maximality clause of
+  `exists_region_start_of_idle_past` plus the pending span of `a` under `l ≤ cntAt g a` to make it
+  so. The collapsed block is excluded separately and for a different reason: its whole image is
+  the idle `u`, so a position there has an idle successor.
+* The profile carries `Classical.choice`, unlike `exists_region_start_of_idle_past` above: the
+  splice's own countdown lemmas are in the dependency closure here and the region-start
+  extraction's `Nat.find` route is not the only thing being measured.
+
+This pin is still NOT an existential over ladder paths. `hpins` for the inserted walk
+(`insPins_of_region_start`) and both `exists_ladderPath_at_region*` names remain owed, and
+`exists_spliced_ladderPath_of_idle_past` remains REFUTED rather than merely unclaimed. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insRegionStart_trichotomy' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insRegionStart_trichotomy
+
 /-! ### `Real`'s three RELATIONAL conditions
 
 Conditions (2), (3) and (4) of `Real` — the three that quantify `relK` between two members, and
