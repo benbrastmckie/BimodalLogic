@@ -617,7 +617,7 @@ which is the only thing that can observe a break confined to this still-unimport
 
 ---
 
-### Phase 6: The three headline theorems, evidence pin, documentation and the full gate set [NOT STARTED]
+### Phase 6: The three headline theorems, evidence pin, documentation and the full gate set [COMPLETED]
 
 **Goal**: Land `aa_sound_int`, `aa_sound_ztime` and `aa_reflectTime_sound_ztime`; pin their axiom
 profiles as permanent evidence; retire `NamingRules.lean`'s "where it stops" framing; add the

@@ -558,9 +558,15 @@ history: `aaIdx_of_occurring` shows the real branch is always taken there, under
 The fallback exists only so that the function is total, which the machine-labelling definitions
 `aaRun`/`aaState` require.
 
+**No `[F.IsRegular]` binder.** The definition reads only the frame's world states and histories,
+so regularity is not needed here; it is needed at `aaIdx_of_occurring` and `aaIdx_spec`, where
+`PlusValidInt`'s own `[F.IsRegular]` binder has to be discharged to instantiate the partition
+hypotheses. Carrying an unread instance binder here would be a `unusedArguments` finding with no
+contract to justify it, unlike `aa_sound_int`'s `hexh`.
+
 Paper: — (formalization-native; the paper's machine reads a propositional labelling directly)
 -/
-noncomputable def aaIdx (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)
+noncomputable def aaIdx (F : FrameOver intOrder) (M : TaskModel F.toTaskFrame)
     (a : ℕ → PlusFormula) (k : ℕ) : F.WorldState → ℕ := fun w =>
   haveI : Decidable (∃ i, i < k ∧ ∃ (τ : WorldHistory F.toTaskFrame) (t : ℤ),
       τ.state t = w ∧ PlusTruthAt M τ t (a i)) := Classical.dec _
@@ -573,7 +579,7 @@ noncomputable def aaIdx (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.
 
 Paper: — (formalization-native; the paper's machine reads a propositional labelling directly)
 -/
-theorem aaIdx_lt (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)
+theorem aaIdx_lt (F : FrameOver intOrder) (M : TaskModel F.toTaskFrame)
     (a : ℕ → PlusFormula) (k : ℕ) (w : F.WorldState)
     (h : ∃ i, i < k ∧ ∃ (τ : WorldHistory F.toTaskFrame) (t : ℤ),
       τ.state t = w ∧ PlusTruthAt M τ t (a i)) :
@@ -727,5 +733,171 @@ theorem plusTruthAt_aaAnte (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel
       obtain ⟨h1, h2⟩ := (PlusTruth.and_iff _ ρ' s _ _).mp hc
       exact hne (((aaModel_atom_q F M qa m _ hinj _ j hj).mp h1).symm.trans
         ((aaModel_atom_q F M qa m _ hinj _ j' hj').mp h2))
+
+/-! ## The headline: the Auxiliary-Atoms rule is validity-preserving -/
+
+-- `linter.unusedVariables`, scoped to this declaration: the `hexh` binder is genuinely unread,
+-- and a deletion trial confirms it — dropping the hypothesis raises no error inside this proof,
+-- the only breakage being the positional application at `aa_sound_ztime`'s call site below
+-- (measured with `lean_minimal_hypotheses`). The reason is that the antecedent's step clause is
+-- an implication, so a point at which no `aᵢ` holds places no demand on the machine. The binder
+-- is retained because it is the published signature this theorem's recorded statement fixes, and
+-- because dropping it would silently change the rule's shape relative to Reynolds' §7; see the
+-- doc comment below and `scripts/nolint-attribute-allowlist.txt`.
+set_option linter.unusedVariables false in
+/--
+**Soundness of the Auxiliary-Atoms rule over every regular frame over `intOrder`.**
+
+If `(aaAnte …) → φ` is `ℤ`-valid, the auxiliary atoms `q_0, …, q_{m-1}` are distinct and occur
+neither in `φ` nor in any `aᵢ`, the `aᵢ` are state-local and pairwise inconsistent, the machine
+`p` stays below `m`, and the initial state `b₀` is below `m`, then `φ` is `ℤ`-valid.
+
+The eight steps, at an arbitrary regular `F`, model `M`, history `τ` and time `x`:
+
+1. `TwoWayBounded.plus_invariance_of_isZTime` at `coneF_twoWayBounded F` and
+   `coneF_surjective` supplies the morphism `g : HistMorphism (coneFrame F) F` with
+   `g.toFun = coneF` and the truth biconditional along it;
+2. `aaIdx F M a k` is the machine's input function and `aaState p b₀ (aaIdx F M a k)` the machine
+   labelling of the cone carrier, so `aaModel` is the auxiliary-atom model;
+3. `g.lift τ (.inr (τ.state x, [])) x` anchors a cone history at the `inr` node with empty record
+   above `τ(x)` — the side condition is `coneF (.inr (τ.state x, [])) = τ.state x`, which is
+   `rfl` after `g.toFun = coneF`. **No history construction and no onto-histories argument is
+   needed**: `lift` is already a field of `HistMap`;
+4. `plusTruthAt_aaAnte` says the antecedent holds there;
+5. `hprem` instantiates at `coneFrame F` — its `[(coneFrame F).IsRegular]` binder is discharged by
+   `coneFrame_isRegular`'s instance status — and the implication gives `φ` at the cone model;
+6. `plusTruthAt_congr_of_fresh_family`, fed `aaModel_valuation_off`, forgets the auxiliary atoms
+   and lands at the pulled-back model `g.pullM M`;
+7. the morphism's truth biconditional carries `φ` to `M` along `g.mapH τ'`;
+8. `WorldHistory.ext_state` on `lift`'s projection equation turns `g.mapH τ'` into `τ`.
+
+**The statement is at `PlusValidInt`, not at a class-generic `PlusValidIn fc`, and that
+narrowing is forced**, not sloppiness: `coneFrame F` exists only over `intOrder`, so there is no
+cone to run the premise on at another carrier. `clock_irr_sound`'s class-generic signature
+(`Metalogic/NamingRules.lean`) is possible there because the translation product is built at an
+arbitrary frame class. `aa_sound_ztime` below recovers the `FrameClass.ZTime` form by carrier
+normalization, which is the only class this construction reaches.
+
+**Exhaustiveness (`hexh`) is retained in the signature and is not consumed by the proof.** The
+step clause of the antecedent is an implication, so a point at which no `aᵢ` holds places no
+demand on the machine and `aaIdx`'s `0` fallback is never read; `aaIdx_of_occurring` is the
+declaration that consumes exhaustiveness, and it is a recorded fact about the input function
+rather than a step of this proof. Exhaustiveness is what makes the rule *useful* — it is what
+pins the machine's run down to a single run, which is how Reynolds uses it — not what makes it
+sound, so the rule proved here is in that one respect stronger than the rule stated. The binder
+is kept because it is the **published signature** this theorem's recorded statement fixes, and
+because dropping it would silently change the rule's shape relative to its source; paired entry:
+`scripts/nolint-attribute-allowlist.txt`.
+
+**The partition conditions enter as semantic validity hypotheses**, which is a deliberate
+deviation from Reynolds' §7, where they are substitution instances of a classical tautology.
+Semantic validity is weaker, so the rule obtained is more general.
+
+Paper: — (formalization-native; the manuscript states no naming rule)
+-/
+@[nolint unusedArguments]
+theorem aa_sound_int (qa : ℕ → Atom) (m k : ℕ) (a : ℕ → PlusFormula) (p : ℕ → ℕ → ℕ) (b₀ : ℕ)
+    (φ : PlusFormula) (hb₀ : b₀ < m)
+    (hinj : ∀ j, j < m → ∀ j', j' < m → qa j = qa j' → j = j')
+    (hp : ∀ j, j < m → ∀ i, i < k → p j i < m)
+    (ha : ∀ i, i < k → (a i).StateLocal)
+    (hexh : PlusValidInt (bigAnd k fun i => (a i).neg).neg)
+    (hdisj : ∀ i, i < k → ∀ i', i' < k → i ≠ i' → PlusValidInt (((a i).and (a i')).neg))
+    (hfresh : ∀ j, j < m → Fresh (qa j) φ)
+    (hfreshA : ∀ j, j < m → ∀ i, i < k → Fresh (qa j) (a i))
+    (hprem : PlusValidInt ((aaAnte qa m k a p b₀).imp φ)) :
+    PlusValidInt φ := by
+  intro F _ M τ x
+  obtain ⟨g, hgf, hinv⟩ :=
+    @TwoWayBounded.plus_invariance_of_isZTime intOrder (coneFrame F) F
+      (coneFrame_isRegular F) ‹F.IsRegular›
+      (inferInstanceAs (SuccOrder ℤ)) (inferInstanceAs (IsSuccArchimedean ℤ))
+      coneF (coneF_twoWayBounded F) (coneF_surjective (E := F.step)) M
+  obtain ⟨τ', hτ'x, hτ'⟩ := g.lift τ (.inr (τ.state x, [])) x (by rw [hgf]; rfl)
+  have hante := plusTruthAt_aaAnte F M qa m k a p b₀ hb₀ hinj hp ha hdisj hfreshA τ' x
+    (τ.state x) hτ'x
+  have hφ' : PlusTruthAt (aaModel F M qa m (aaState p b₀ (aaIdx F M a k))) τ' x φ :=
+    (PlusTruth.imp_iff _ τ' x _ _).mp
+      (hprem (coneFrame F) (aaModel F M qa m (aaState p b₀ (aaIdx F M a k))) τ' x) hante
+  have hpull : ∀ (z : (coneFrame F).WorldState) (r : Atom),
+      (g.pullM M).valuation z r ↔ M.valuation (coneF z) r := by
+    intro z r
+    change M.valuation (g.toFun z) r ↔ M.valuation (coneF z) r
+    rw [hgf]
+  have hV : ∀ (z : (coneFrame F).WorldState) (r : Atom), (∀ j, j < m → r ≠ qa j) →
+      ((aaModel F M qa m (aaState p b₀ (aaIdx F M a k))).valuation z r ↔
+        (g.pullM M).valuation z r) :=
+    fun z r hr => (aaModel_valuation_off F M qa m _ z r hr).trans (hpull z r).symm
+  have h2 : PlusTruthAt (g.pullM M) τ' x φ :=
+    (plusTruthAt_congr_of_fresh_family (aaModel F M qa m (aaState p b₀ (aaIdx F M a k)))
+      (g.pullM M) qa m hV φ hfresh τ' x).mp hφ'
+  have h3 := (hinv φ τ' x).mp h2
+  have hm : g.mapH τ' = τ := WorldHistory.ext_state hτ'
+  rwa [hm] at h3
+
+/--
+**The Auxiliary-Atoms rule at the `FrameClass.ZTime` frame class**, by carrier normalization from
+`aa_sound_int`.
+
+Each side condition is converted by `plusValidZTime_iff_plusValidInt`; the conclusion is
+converted back by the same biconditional. The partition hypotheses are stated at
+`PlusValidZTime` here and at `PlusValidInt` in `aa_sound_int` rather than mixed within one
+signature, which would read worse than two `.mp` applications.
+
+Paper: — (formalization-native; the manuscript states no naming rule)
+-/
+theorem aa_sound_ztime (qa : ℕ → Atom) (m k : ℕ) (a : ℕ → PlusFormula) (p : ℕ → ℕ → ℕ) (b₀ : ℕ)
+    (φ : PlusFormula) (hb₀ : b₀ < m)
+    (hinj : ∀ j, j < m → ∀ j', j' < m → qa j = qa j' → j = j')
+    (hp : ∀ j, j < m → ∀ i, i < k → p j i < m)
+    (ha : ∀ i, i < k → (a i).StateLocal)
+    (hexh : PlusValidZTime (bigAnd k fun i => (a i).neg).neg)
+    (hdisj : ∀ i, i < k → ∀ i', i' < k → i ≠ i' → PlusValidZTime (((a i).and (a i')).neg))
+    (hfresh : ∀ j, j < m → Fresh (qa j) φ)
+    (hfreshA : ∀ j, j < m → ∀ i, i < k → Fresh (qa j) (a i))
+    (hprem : PlusValidZTime ((aaAnte qa m k a p b₀).imp φ)) :
+    PlusValidZTime φ :=
+  (plusValidZTime_iff_plusValidInt φ).mpr
+    (aa_sound_int qa m k a p b₀ φ hb₀ hinj hp ha
+      ((plusValidZTime_iff_plusValidInt _).mp hexh)
+      (fun i hi i' hi' hne => (plusValidZTime_iff_plusValidInt _).mp (hdisj i hi i' hi' hne))
+      hfresh hfreshA ((plusValidZTime_iff_plusValidInt _).mp hprem))
+
+/--
+**The mirror Auxiliary-Atoms rule at `FrameClass.ZTime`**: the rule read backwards in time is
+validity-preserving there too.
+
+`plusValidIn_reflectTime_iff` unreflects the premise — `reflectTime` commutes with `imp`
+componentwise by `rfl`, so the unreflected premise is literally `(aaAnte …) → φ` — `aa_sound_ztime`
+gives `PlusValidZTime φ`, and `plusValidIn_reflectTime` reflects the conclusion. `FrameClass.ZTime`
+is closed under `rev`, which is what `plusValidIn_reflectTime` consumes.
+
+**The side conditions are stated on the unreflected data**, so no `Fresh`-vs-`reflectTime`
+commutation lemma is needed.
+
+**The mirror form is deliberately not expanded in syntax**, following
+`PlusLanguage/PlusLCSchema.lean`'s `lcN_reflectTime_plusValidZTime`, whose docstring names the
+three declarations an expanded mirror would need and declines all three: an `H≤` definition
+(neither `Formula` nor `PlusFormula` carries a reflexive *past* closure), a `reflect_time_gle`
+push-through lemma, and a `reflect_time_bigAnd` lemma for the `ℕ`-indexed conjunction. The
+one-liner below already proves what all three would be built to state. A mirrored cone
+construction is likewise not built: reflection of the validity statement is enough.
+
+Paper: — (formalization-native; the manuscript states no naming rule)
+-/
+theorem aa_reflectTime_sound_ztime (qa : ℕ → Atom) (m k : ℕ) (a : ℕ → PlusFormula)
+    (p : ℕ → ℕ → ℕ) (b₀ : ℕ) (φ : PlusFormula) (hb₀ : b₀ < m)
+    (hinj : ∀ j, j < m → ∀ j', j' < m → qa j = qa j' → j = j')
+    (hp : ∀ j, j < m → ∀ i, i < k → p j i < m)
+    (ha : ∀ i, i < k → (a i).StateLocal)
+    (hexh : PlusValidZTime (bigAnd k fun i => (a i).neg).neg)
+    (hdisj : ∀ i, i < k → ∀ i', i' < k → i ≠ i' → PlusValidZTime (((a i).and (a i')).neg))
+    (hfresh : ∀ j, j < m → Fresh (qa j) φ)
+    (hfreshA : ∀ j, j < m → ∀ i, i < k → Fresh (qa j) (a i))
+    (hprem : PlusValidZTime (((aaAnte qa m k a p b₀).imp φ).reflectTime)) :
+    PlusValidZTime φ.reflectTime :=
+  plusValidIn_reflectTime
+    (aa_sound_ztime qa m k a p b₀ φ hb₀ hinj hp ha hexh hdisj hfresh hfreshA
+      (plusValidIn_reflectTime_iff.mp hprem))
 
 end FormalSystem.Metalogic.AuxiliaryAtoms

@@ -54,7 +54,7 @@ applies here unchanged.
 No completeness, decidability or axiomatizability claim is made or implied. These are soundness
 facts about two rules; what an axiomatization built on them would prove is not settled here.
 
-### The Auxiliary-Atoms expansion, and where it stops
+### The Auxiliary-Atoms expansion, and where it now stands
 
 Reynolds' *Auxiliary Atoms* rule has a semantic core that the two rules above do not reach: above
 any point of any model there should be a two-way-bounded-morphic preimage whose forward cone is a
@@ -64,7 +64,13 @@ by which it is reached*, so that every copy keeps all predecessors (whence the p
 two-way bounded morphism, `Semantics/HistoryMorphism.lean`'s `TwoWayBounded`) while inside the
 unravelled part each state has exactly one predecessor (whence the tree).
 
-That transfer is **not** formalized here, and the obstruction is specific — but it is narrower
+That transfer is formalized, but **not here**: the rule itself lives in
+`FormalSystem/Metalogic/AuxiliaryAtoms.lean`, where `AuxiliaryAtoms.aa_sound_int` proves it
+validity-preserving over every regular frame over `intOrder` and `AuxiliaryAtoms.aa_sound_ztime`
+carries that to `FrameClass.ZTime`. The record below is retained because it is the analysis that
+*located* the obstruction, and because the obstruction it describes is real and was discharged
+rather than dissolved — a reader who deletes it loses the reason the two-layer *Saturation* split
+had to exist. The obstruction is specific, and it is narrower
 than presenting the unravelled frame at all. Over a digraph the unravelling is immediate: the
 path record is a finite list and one relational step extends it by one state. A task frame's
 relation is not a digraph's — it is indexed by every duration. `FrameOver.ofReflective` presents
@@ -132,6 +138,10 @@ carrier whole, which is exactly why *Saturation* had to be proved layer by layer
 * `FormalSystem/Semantics/ConeUnravelling.lean` — the forward-cone unravelling, the two-layer
   *Saturation* split (`saturation_coneR`) and the frame-side headline
   (`exists_coneUnravelling`) that discharge the obligation recorded above
+* `FormalSystem/Metalogic/AuxiliaryAtoms.lean` — the formula-level Auxiliary-Atoms rule itself
+  (`aa_sound_int`, `aa_sound_ztime`, `aa_reflectTime_sound_ztime`), which runs the device recorded
+  above on the cone unravelling under a machine-run valuation. It imports this module, not the
+  other way round, so the reference here adds no import edge
 * Gabbay's irreflexivity rule and Reynolds' *Auxiliary Atoms* rule are the two sources; the clock
   rule below is the strengthening of the former that the latter's device suggests
 
