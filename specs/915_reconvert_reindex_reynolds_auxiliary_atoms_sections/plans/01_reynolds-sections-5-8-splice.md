@@ -217,19 +217,19 @@ tracked file.
 
 ---
 
-### Phase 4: Rebuild the global index and verify retrieval [NOT STARTED]
+### Phase 4: Rebuild the global index and verify retrieval [COMPLETED]
 
 **Goal**: The global FTS5 index contains the four new chunks and a search for the Auxiliary Atoms
 rule returns the new §7 chunk.
 
 **Tasks**:
-- [ ] Capture a pre-rebuild baseline: total indexed chunk count in `~/Projects/Literature/.literature.db` and the `reynolds_2001` chunk count (expected 10).
-- [ ] Run `bash .claude/scripts/literature-build-index.sh --global`.
-- [ ] Compare post-rebuild counts: `reynolds_2001` at 14, corpus total up by exactly 4 against the baseline.
-- [ ] Run `bash .claude/scripts/literature-search.sh "auxiliary atoms"` and confirm a `reynolds_2001` §7 result; repeat with a second query (e.g. `"limit closure axiom"` or `"AA rule sound"`) as a cross-check.
-- [ ] Run `bash .claude/scripts/literature-search.sh --toc reynolds_2001` and confirm the §1-§16 sequence with no gap between §4.7-4.8 and §9.
-- [ ] Run `bash .claude/scripts/literature-search.sh --read <new §7 chunk_id>` and confirm it returns the §7 text.
-- [ ] Commit the `Literature/` repo changes (renames, four new files, `chunks.json`) under **that repository's own** conventions — not this repo's `task {N}:` format.
+- [x] Capture a pre-rebuild baseline: total indexed chunk count in `~/Projects/Literature/.literature.db` and the `reynolds_2001` chunk count (expected 10). *(completed: 38793 total, 10 for reynolds_2001)*
+- [x] Run `bash .claude/scripts/literature-build-index.sh --global`. *(completed)*
+- [x] Compare post-rebuild counts: `reynolds_2001` at 14, corpus total up by exactly 4 against the baseline. *(completed: 38797 total (+4), reynolds_2001 at 14)*
+- [x] Run `bash .claude/scripts/literature-search.sh "auxiliary atoms"` and confirm a `reynolds_2001` §7 result; repeat with a second query (e.g. `"limit closure axiom"` or `"AA rule sound"`) as a cross-check. *(completed: §7 chunk b8612210b46df4dc ranks #1 for "auxiliary atoms"; §6 chunk 641a8a3c90af2711 ranks #1 for "limit closure axiom")*
+- [x] Run `bash .claude/scripts/literature-search.sh --toc reynolds_2001` and confirm the §1-§16 sequence with no gap between §4.7-4.8 and §9. *(completed: confirmed)*
+- [x] Run `bash .claude/scripts/literature-search.sh --read <new §7 chunk_id>` and confirm it returns the §7 text. *(completed: returns full §7 text)*
+- [x] Commit the `Literature/` repo changes (renames, four new files, `chunks.json`) under **that repository's own** conventions — not this repo's `task {N}:` format. *(completed: commit 59f97333 "corpus: splice reynolds_2001 sections 5-8 (LC axiom, AA rule) into chunks.json" in ~/Projects/Literature/)*
 
 **Timing**: 0.5 hours
 
