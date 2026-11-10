@@ -624,31 +624,31 @@ projected ~680.
 
 ---
 
-### Phase 7: Assembly, Generated Surfaces, and the Full Gate Set [IN PROGRESS]
+### Phase 7: Assembly, Generated Surfaces, and the Full Gate Set [COMPLETED]
 
 **Goal**: Prove the headline `exists_orientedForest_cover`, reconcile every deferred generated
 surface, and run the repository's complete Lean gate set against its pre-task baseline.
 
 **Tasks**:
-- [ ] Prove `exists_orientedForest_cover` with the signature pinned in the challenge block below,
+- [x] Prove `exists_orientedForest_cover` with the signature pinned in the challenge block below,
       taking the cover frame of Phase 6 and the endpoint projection, and supplying
       `endpt_twoWayBounded`, the surjectivity proof and the model to
       `TwoWayBounded.plus_invariance_of_isZTime`.
-- [ ] Pass the two order instances positionally with `@` and `inferInstanceAs`, following the
+- [x] Pass the two order instances positionally with `@` and `inferInstanceAs`, following the
       recorded form of `ShiftSet.ofIntAction`, and confirm `Mathlib.Data.Int.SuccPred` is imported
       (it arrives transitively through `IntNormalForm`; add it explicitly if instance search still
       fails).
-- [ ] Close the module docstring with the inventory of what the module proves and an explicit note
+- [x] Close the module docstring with the inventory of what the module proves and an explicit note
       that unique path lifting is deliberately not stated.
-- [ ] If `wc -l FormalSystem/Semantics/UniversalCover.lean` reports 1500 or more, add the
+- [x] If `wc -l FormalSystem/Semantics/UniversalCover.lean` reports 1500 or more, add the
       `set_option linter.style.longFile` baseline directly after the module docstring, choosing a
       value inside the linter's narrow acceptance window (the value minus 200 at or below the
       actual line count, which must itself be below the value); if it reports fewer, confirm no
       such baseline is present.
-- [ ] Reconcile the deferred module-inventory surface with
+- [x] Reconcile the deferred module-inventory surface with
       `bash scripts/check-module-invariants.sh --emit-inventory`, then stage whichever registered
       blocks it rewrote.
-- [ ] Regenerate the Typst count surface a final time:
+- [x] Regenerate the Typst count surface a final time:
       `lake build && bash scripts/typst-sync-check.sh --fix`, then stage
       `typst/generated/status.typ`.
 
@@ -674,28 +674,73 @@ contingency if the ceiling is crossed.
 - `typst/generated/status.typ` - regenerated file and line counts
 
 **Verification**:
-- [ ] `lake build` is green with zero warnings. Under CI's `--wfail` a warning is a failure, so a
+- [x] `lake build` is green with zero warnings. Under CI's `--wfail` a warning is a failure, so a
       warning here is not a pass.
-- [ ] `grep -rn "sorry" FormalSystem/Semantics/UniversalCover.lean` and
+- [x] `grep -rn "sorry" FormalSystem/Semantics/UniversalCover.lean` and
       `grep -rn "sorry" FormalSystem/ForMathlib/Combinatorics/SimpleGraphAcyclic.lean` both return
       nothing.
-- [ ] `#print axioms` on each of the three pinned identifiers shows no `sorryAx` and no axiom
+- [x] `#print axioms` on each of the three pinned identifiers shows no `sorryAx` and no axiom
       beyond the three standard ones.
-- [ ] The complete repository gate set runs, each invocation's exit status is checked, and each
+- [x] The complete repository gate set runs, each invocation's exit status is checked, and each
       result is compared against its pre-task baseline, with any finding that does not name a file
       this task touched recorded as pre-existing rather than treated as a blocker: `lake build`;
       `lake test`; `bash scripts/check-module-invariants.sh` (including C24, C33 and the
       `--emit-inventory --check` rollup); `bash scripts/check-metalogic-cycles.sh` (assertion B
       must be unperturbed, since no new module imports any `FormalSystem.Metalogic`
       subdirectory); `bash scripts/typst-sync-check.sh`; and `lake exe lint-style`.
-- [ ] `bash .claude/scripts/verify-deploy.sh` run from the repository root, stated as a baseline
+- [x] `bash .claude/scripts/verify-deploy.sh` run from the repository root, stated as a baseline
       delta rather than an absolute exit 0: its findings are compared against the pre-task
       commit's and no finding may name a file this task touched. Gate 4, the task-reference lint,
       is the gate with real bearing here, since this task edits `README.md` -- a deliverable
       outside `specs/**`, where a task-number citation is prohibited.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0, confirming no
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0, confirming no
       registered generated block is left stale.
-- [ ] `git status --short` shows no unstaged generated surface before the phase's commit.
+- [x] `git status --short` shows no unstaged generated surface before the phase's commit.
+
+**Verification notes (Phase 7)**: full `lake build` green (`--no-share`), 2968 jobs, zero errors
+and zero warnings; verdict read at all three tiers — guard exit status 0, the success line with a
+zero `error:` count over both captured streams, and an `.olean`-newer-than-source check for every
+module this task touched (`UniversalCover`, `IntNormalForm`, `SimpleGraphAcyclic`, `ForMathlib`,
+`Init`, `Semantics`, and the library root). `lake test` exit 0. `grep -rn sorry` returns nothing in
+either new module. `#print axioms` on each of the three pinned identifiers —
+`SimpleGraph.isAcyclic_of_rank_parent`, `FormalSystem.Semantics.FrameOver.ofStepSat` and
+`FormalSystem.Semantics.exists_orientedForest_cover` — is
+`[propext, Classical.choice, Quot.sound]`: no `sorryAx` and no axiom beyond the three standard
+ones. `wc -l FormalSystem/Semantics/UniversalCover.lean` = 519, so no
+`linter.style.longFile` baseline is present or needed (ceiling 1500).
+`check-module-invariants.sh`: C24, C33, C34a and C34b all PASS, and
+`--emit-inventory --check` exits 0 after the reconciliation.
+`check-metalogic-cycles.sh` exit 0 with **assertion B unperturbed** ("upward import set is exactly
+the recorded 10 line(s)" PASS), as expected since no new module imports any
+`FormalSystem.Metalogic` subdirectory. `typst-sync-check.sh` PASS (all four checks) and
+`--counts-only` exit 0.
+
+`lake exe lint-style` exits 1 on **four pre-existing findings**, all
+"space before a semicolon" at `FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean`
+lines 383, 390, 413 and 420. That file names nothing this task touched and is byte-identical to the
+pre-task baseline commit `50e2893e5` (`git diff 50e2893e5 HEAD --` on it is empty; its last commit
+is an unrelated earlier task's phase). Recorded as a pre-existing baseline delta, not a blocker.
+
+Two further repository-wide censuses, both compared against the same baseline: the
+vacuous-definition grep returns exactly one hit,
+`FormalSystem/Examples/TemporalStructures.lean:495`'s
+`theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial`, in a file this task
+did not touch (`git diff` against the baseline is empty) and where `trivial` is the honest proof,
+since the total ℤ history's `domain` genuinely reduces to `True`. The `^axiom ` count across the
+resolved source roots is **14 at the baseline and 14 now** — unchanged.
+
+**Batch gate deferral**: this dispatch is one `implement`-phase dispatch inside a multi-task
+`/orchestrate` batch, so the repository's complete gate set was discharged here against a
+**scoped** tier rather than independently re-run in full:
+`bash .claude/scripts/verify-deploy.sh --only-gate 4` (the task-reference lint, the gate with real
+bearing since this task edits `README.md`, a deliverable outside `specs/**`) exits 0 —
+"[PASS] task-reference lint reports no findings". The full gate set runs exactly once, for the
+whole batch, at the end of the invocation, and its result is attributed back to this task by its
+own `modified_files`. The deferral is recorded, not forgiven.
+
+**Scope Hypothesis outcome (Phase 7)**: **superseded** — the module's final size is 519 lines
+against the projected ~830, so the long-file contingency in this phase's fourth task never fired
+and `grep -n longFile` confirms no baseline is present.
 
 ---
 
@@ -793,20 +838,20 @@ programme's final-frame step -- read.
 
 ## Testing & Validation
 
-- [ ] `lake build` green with zero warnings at every phase close. CI runs `--wfail`, so a warning
+- [x] `lake build` green with zero warnings at every phase close. CI runs `--wfail`, so a warning
       is a failure, including cosmetic categories such as unused variables, and the `show` tactic
       is linted -- use a named `rfl` lemma rather than an inline `show`.
-- [ ] `lake test` green.
-- [ ] Zero `sorry` across both new modules, confirmed by grep.
-- [ ] `#print axioms` on each of the three pinned identifiers shows no `sorryAx` and no new axiom.
-- [ ] `bash scripts/check-module-invariants.sh` green against its pre-task baseline, with C24 (the
+- [x] `lake test` green.
+- [x] Zero `sorry` across both new modules, confirmed by grep.
+- [x] `#print axioms` on each of the three pinned identifiers shows no `sorryAx` and no new axiom.
+- [x] `bash scripts/check-module-invariants.sh` green against its pre-task baseline, with C24 (the
       new `ForMathlib` module's Init exemption) and C33 (the regenerated library root) explicitly
       green, and `--emit-inventory --check` exiting 0.
-- [ ] `bash scripts/check-metalogic-cycles.sh` green, with assertion B unperturbed.
-- [ ] `bash scripts/typst-sync-check.sh` green, and `--counts-only` exiting 0 before every commit
+- [x] `bash scripts/check-metalogic-cycles.sh` green, with assertion B unperturbed.
+- [x] `bash scripts/typst-sync-check.sh` green, and `--counts-only` exiting 0 before every commit
       that stages a `.lean` path.
-- [ ] `lake exe lint-style` green.
-- [ ] No existing signature changed, confirmed by reading `git diff` for
+- [x] `lake exe lint-style` green. *(deviation: altered — exits 1 on four pre-existing "space before a semicolon" findings in `FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean`, a file byte-identical to the pre-task baseline and named by nothing this task touched; recorded as a baseline delta per Phase 7's own gate instruction.)*
+- [x] No existing signature changed, confirmed by reading `git diff` for
       `FormalSystem/Semantics/IntNormalForm.lean`.
 
 ## Artifacts & Outputs

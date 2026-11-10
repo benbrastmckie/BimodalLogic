@@ -15,6 +15,7 @@ accident: a module intended for Mathlib may not depend on this repository.
 | File | Lines | Description |
 |------|------:|-------------|
 | `InfiniteRamseyPairs.lean` | 160 | Infinite Ramsey for pairs, proved from scratch: a descending chain of infinite sets chosen by `Exists.choose`, a pre-homogeneous sequence, pigeonhole on the finite colour type, and monotone enumeration by `Nat.Subtype.ofNat` |
+| `SimpleGraphAcyclic.lean` | 142 | <!-- TODO: add description --> |
 <!-- END GENERATED -->
 
 ## Key Definitions
