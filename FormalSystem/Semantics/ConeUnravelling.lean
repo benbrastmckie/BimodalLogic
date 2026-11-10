@@ -444,4 +444,214 @@ theorem exists_iter_coneR_bwd_inr {E : W → W → Prop} (n : ℕ) (p : W × Lis
     ∃ z : W ⊕ (W × List W), iter (coneR E) (n + 1) z (.inr p) ∧ coneF z = v :=
   ⟨.inl v, (iter_inl_inr n v p).mpr h, rfl⟩
 
+/-! ## The set-level preamble
+
+One frame-independent fact, stated here rather than in `OrientedForest.lean`, which this module
+does not modify.
+-/
+
+/-- **A cofinal subfamily has the same intersection.** If every member of `S` contains a member of
+`T ⊆ S`, then `⋂₀ T = ⋂₀ S`. This is what lets the *Saturation* split replace `S` by its
+`inr`-contained subfamily in Case B without changing the goal. -/
+theorem cofinal_sInter_eq {α : Type} {S T : Set (Set α)} (hTS : T ⊆ S)
+    (hcof : ∀ s ∈ S, ∃ t ∈ T, t ⊆ s) : ⋂₀ T = ⋂₀ S := by
+  refine Set.Subset.antisymm ?_ ?_
+  · intro x hx s hs
+    obtain ⟨t, htT, hts⟩ := hcof s hs
+    exact hts (hx t htT)
+  · intro x hx t htT
+    exact hx t (hTS htT)
+
+/-! ## The member-shape classification -/
+
+/--
+**An `inl`-anchored fibre, and a negative-duration `inr`-anchored fibre, always contain an `inl`
+element** once they are nonempty.
+
+The witness is obtained from any member element through `coneF`: `coneF_iter` projects the path to
+the base, and `iter_inl_inl` (nonnegative, `inl` anchor) or `iter_inl_inr` (negative duration,
+`inr` anchor) lifts it back as a path through the `inl` layer. For a negative duration at an `inl`
+anchor the element is *already* `inl`, by `iter_inl_target`.
+
+This is the fact that excludes those two shapes from the `inr`-contained subfamily in Case B of
+the *Saturation* split.
+-/
+theorem mem_range_inl_of_mem {E : W → W → Prop} {z : W ⊕ (W × List W)} {x : ℤ}
+    (hshape : (∃ a : W, z = Sum.inl a) ∨ x < 0)
+    {y : W ⊕ (W × List W)} (hy : y ∈ TaskFrame.Fib (ofStepRel (coneR E)) z x) :
+    ∃ b : W, (Sum.inl b : W ⊕ (W × List W)) ∈ TaskFrame.Fib (ofStepRel (coneR E)) z x := by
+  rcases lt_or_ge x 0 with hx | hx
+  · have hx' : x ≤ 0 := le_of_lt hx
+    rw [TaskFrame.mem_Fib, ofStepRel_of_nonpos hx'] at hy
+    cases z with
+    | inl a =>
+      obtain ⟨c, hc⟩ := iter_inl_target _ y a hy
+      subst hc
+      exact ⟨c, by rw [TaskFrame.mem_Fib, ofStepRel_of_nonpos hx']; exact hy⟩
+    | inr q =>
+      obtain ⟨n, hn⟩ : ∃ n : ℕ, x.natAbs = n + 1 := ⟨x.natAbs - 1, by omega⟩
+      have hbase : iter E x.natAbs (coneF y) q.1 := by
+        simpa [coneF] using coneF_iter x.natAbs y (.inr q) hy
+      refine ⟨coneF y, ?_⟩
+      rw [TaskFrame.mem_Fib, ofStepRel_of_nonpos hx', hn]
+      exact (iter_inl_inr n (coneF y) q).mpr (hn ▸ hbase)
+  · obtain ⟨a, rfl⟩ : ∃ a : W, z = Sum.inl a := by
+      rcases hshape with h | h
+      · exact h
+      · omega
+    rw [TaskFrame.mem_Fib, ofStepRel_of_nonneg hx] at hy
+    have hbase : iter E x.natAbs a (coneF y) := by
+      simpa [coneF] using coneF_iter x.natAbs (.inl a) y hy
+    refine ⟨coneF y, ?_⟩
+    rw [TaskFrame.mem_Fib, ofStepRel_of_nonneg hx]
+    exact (iter_inl_inl x.natAbs a (coneF y)).mpr hbase
+
+/--
+**A set inside the `inr` layer that is bounded above by a backward fibre is a subsingleton.**
+
+Its elements are `inr` nodes with a common iterated `inr`-layer path into `v`, and
+`coneRin_bwd_unique` makes that path's source unique. Applied at a *segment* — whose
+`TaskFrame.IsSegment` proviso supplies `0 ≤ y` and whose second conjunct supplies the bound —
+this is the "segment contained in the `inr` layer" cell of the classification.
+
+`seg_subsingleton` is **not** available here and is not the route: it demands
+`IsOrientedForest (coneR E)`, which is false — the `inl` layer is a verbatim copy of `E` and
+inherits its loops and opposite edges. Only the `inr` layer is a forest, and
+`coneRin_bwd_unique` is that layer's own determinism fact.
+-/
+theorem subsingleton_of_subset_range_inr {E : W → W → Prop} {v : W ⊕ (W × List W)} {y : ℤ}
+    (hy : 0 ≤ y) {s : Set (W ⊕ (W × List W))}
+    (hinr : s ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W)))
+    (hfib : s ⊆ TaskFrame.Fib (ofStepRel (coneR E)) v (-y)) : s.Subsingleton := by
+  intro z hz z' hz'
+  obtain ⟨p, rfl⟩ := hinr hz
+  obtain ⟨p', rfl⟩ := hinr hz'
+  have h1 := hfib hz
+  have h2 := hfib hz'
+  rw [TaskFrame.mem_Fib, ofStepRel_of_nonpos (by omega : -y ≤ 0)] at h1 h2
+  obtain ⟨q, hvq, hi1⟩ := (iter_inr_fwd _ p v).mp h1
+  obtain ⟨q', hvq', hi2⟩ := (iter_inr_fwd _ p' v).mp h2
+  have hqq : q = q' := Sum.inr.inj (hvq.symm.trans hvq')
+  subst hqq
+  exact congrArg Sum.inr (coneRin_bwd_unique _ p p' q hi1 hi2)
+
+/--
+**Case A's table as one lemma.** A nonempty fibre-or-segment member of the cone's task relation
+that is *not* contained in the `inr` layer has an `inl`-preimage that is a nonempty fibre or
+segment of the base relation.
+
+The `inl`-preimage is taken literally, so `Sum.inl b ∈ s ↔ b ∈ Sum.inl ⁻¹' s` is `Iff.rfl` and
+needs no statement of its own; that is what lets Case A return `Sum.inl b` for the base witness
+`b` that the base's *Saturation* supplies.
+
+The shapes excluded by the `¬ ⊆ Set.range Sum.inr` hypothesis are exactly the ones
+`fib_inr_pos_subset` sends into the `inr` layer: a nonnegative-duration `inr`-anchored fibre, and
+a segment either of whose endpoint fibres is one.
+-/
+theorem fib_or_seg_inl_preimage {E : W → W → Prop} {s : Set (W ⊕ (W × List W))}
+    (hkind : TaskFrame.IsFiber (ofStepRel (coneR E)) s ∨
+      TaskFrame.IsSegment (ofStepRel (coneR E)) s)
+    (hns : ¬ s ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W))) :
+    (TaskFrame.IsFiber (ofStepRel E) (Sum.inl ⁻¹' s) ∨
+        TaskFrame.IsSegment (ofStepRel E) (Sum.inl ⁻¹' s)) ∧
+      (Sum.inl ⁻¹' s).Nonempty := by
+  refine ⟨?_, ?_⟩
+  · rcases hkind with ⟨z, x, rfl⟩ | ⟨w, v, x, y, hx, hy, rfl⟩
+    · cases z with
+      | inl a => exact Or.inl ⟨a, x, inl_preimage_fib_inl a x⟩
+      | inr q =>
+        rcases lt_or_ge x 0 with hxneg | hxpos
+        · exact Or.inl ⟨q.1, x, inl_preimage_fib_inr_neg q hxneg⟩
+        · exact absurd (fib_inr_pos_subset q hxpos) hns
+    · -- the `w` endpoint must be `inl`, since `0 ≤ x` sends an `inr` anchor into the `inr` layer
+      obtain ⟨a, rfl⟩ : ∃ a : W, w = Sum.inl a := by
+        cases w with
+        | inl a => exact ⟨a, rfl⟩
+        | inr p =>
+          exact absurd (fun u hu => fib_inr_pos_subset p hx hu.1) hns
+      -- the `v` endpoint is either `inl`, or `inr` at a strictly negative `-y`
+      refine Or.inr ?_
+      cases v with
+      | inl b =>
+        refine ⟨a, b, x, y, hx, hy, ?_⟩
+        rw [TaskFrame.Seg, TaskFrame.Seg, Set.preimage_inter, inl_preimage_fib_inl a x,
+          inl_preimage_fib_inl b (-y)]
+      | inr q =>
+        have hypos : 0 < y := by
+          rcases lt_or_ge 0 y with h | h
+          · exact h
+          · have hy0 : y = 0 := le_antisymm h hy
+            subst hy0
+            exact absurd (fun u hu => fib_inr_pos_subset q (by norm_num) hu.2) hns
+        refine ⟨a, q.1, x, y, hx, hy, ?_⟩
+        rw [TaskFrame.Seg, TaskFrame.Seg, Set.preimage_inter, inl_preimage_fib_inl a x,
+          inl_preimage_fib_inr_neg q (by omega : -y < 0)]
+  · obtain ⟨z, hzs, hzn⟩ := Set.not_subset.mp hns
+    cases z with
+    | inl a => exact ⟨a, hzs⟩
+    | inr p => exact absurd ⟨p, rfl⟩ hzn
+
+/--
+**The exhaustive member-shape classification the *Saturation* split consumes.**
+
+Every nonempty fibre-or-segment member of `ofStepRel (coneR E)` falls under exactly one of three
+*dispositions*, and the three are what `saturation_coneR`'s four steps act on:
+
+* **D1 — subsingleton.** Closed outright by `OrientedForest.sInter_nonempty_of_subsingleton_member`
+  (Reduction A), which consumes no forest input at all.
+* **D2 — not contained in the `inr` layer.** Transported by `Sum.inl ⁻¹'` through
+  `fib_or_seg_inl_preimage` and closed by the base's own *Saturation* (Case A).
+* **D3 — an `inr`-anchored fibre of nonnegative duration.** Transported by `Sum.inr ⁻¹'` through
+  `inr_preimage_fib_inr_pos` and closed by `saturation_of_orientedForest` on the `inr` layer
+  (Case B).
+
+The grid is `{IsFiber, IsSegment}` × anchor side × duration sign, and all twelve cells have a
+named disposition:
+
+| # | Class | Anchor(s) | Duration | Disposition |
+|---|-------|-----------|----------|-------------|
+| 1 | `IsFiber` | `inl` | `0 ≤ x` | **D2** — `mem_range_inl_of_mem` gives an `inl` element |
+| 2 | `IsFiber` | `inl` | `x < 0` | **D2** — `iter_inl_target`: every element is already `inl` |
+| 3 | `IsFiber` | `inr` | `0 ≤ x` | **D3** — the Case B shape |
+| 4 | `IsFiber` | `inr` | `x < 0` | **D2** — `iter_inl_inr` exhibits the `inl` entry point |
+| 5 | `IsSegment` | `inl`, `inl` | `0 < y` | **D2** or **D1** — `inr`-contained is D1, else D2 |
+| 6 | `IsSegment` | `inl`, `inl` | `y = 0` | **D2** or **D1** — likewise |
+| 7 | `IsSegment` | `inl`, `inr` | `0 < y` | **D2** or **D1** — likewise |
+| 8 | `IsSegment` | `inl`, `inr` | `y = 0` | **D1** — `fib_inr_pos_subset` at `-0` forces it |
+| 9 | `IsSegment` | `inr`, `inl` | `0 < y` | **D1** — `fib_inr_pos_subset` at `0 ≤ x` forces it |
+| 10 | `IsSegment` | `inr`, `inl` | `y = 0` | **D1** — likewise |
+| 11 | `IsSegment` | `inr`, `inr` | `0 < y` | **D1** — likewise |
+| 12 | `IsSegment` | `inr`, `inr` | `y = 0` | **D1** — likewise |
+
+The segment rows collapse to one uniform argument — `inr`-contained gives D1 by
+`subsingleton_of_subset_range_inr`, and otherwise D2 — which is why the statement below is a
+three-way disjunction rather than a twelve-way one. Rows 8–12 are the rows in which
+`inr`-containment is *forced* rather than merely possible, and they are recorded separately
+because that is the information a reader needs to see no cell was dropped.
+-/
+theorem cone_member_classification {E : W → W → Prop} {s : Set (W ⊕ (W × List W))}
+    (hkind : TaskFrame.IsFiber (ofStepRel (coneR E)) s ∨
+      TaskFrame.IsSegment (ofStepRel (coneR E)) s)
+    (hne : s.Nonempty) :
+    s.Subsingleton
+      ∨ ¬ s ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W))
+      ∨ ∃ (p : W × List W) (x : ℤ), 0 ≤ x ∧ s = TaskFrame.Fib (ofStepRel (coneR E)) (.inr p) x := by
+  have hD2 : ∀ {z : W ⊕ (W × List W)} {x : ℤ}, (∃ a : W, z = Sum.inl a) ∨ x < 0 →
+      s = TaskFrame.Fib (ofStepRel (coneR E)) z x →
+      ¬ s ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W)) := by
+    intro z x hshape hseq hsub
+    obtain ⟨y0, hy0⟩ := hne
+    rw [hseq] at hy0 hsub
+    obtain ⟨b, hb⟩ := mem_range_inl_of_mem hshape hy0
+    exact absurd (hsub hb) (by simp)
+  rcases hkind with ⟨z, x, hseq⟩ | ⟨w, v, x, y, hx, hy, hseq⟩
+  · rcases lt_or_ge x 0 with hxneg | hxpos
+    · exact Or.inr (Or.inl (hD2 (Or.inr hxneg) hseq))
+    · cases z with
+      | inl a => exact Or.inr (Or.inl (hD2 (Or.inl ⟨a, rfl⟩) hseq))
+      | inr p => exact Or.inr (Or.inr ⟨p, x, hxpos, hseq⟩)
+  · by_cases hsub : s ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W))
+    · exact Or.inl (subsingleton_of_subset_range_inr hy hsub (fun u hu => (hseq ▸ hu).2))
+    · exact Or.inr (Or.inl hsub)
+
 end FormalSystem.Semantics

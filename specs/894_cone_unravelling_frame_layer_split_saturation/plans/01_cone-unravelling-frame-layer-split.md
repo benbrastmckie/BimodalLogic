@@ -218,33 +218,33 @@ unique-inr-predecessor lemma, and double seriality — all promoted from the com
 docstrings added — and get the new module into the library root and the generated count surface.
 
 **Tasks**:
-- [ ] Create the module with the standard copyright header and the three imports the probe uses
+- [x] Create the module with the standard copyright header and the three imports the probe uses
       (`FormalSystem.Semantics.OrientedForest`, `FormalSystem.Semantics.HistoryMorphism`,
       `FormalSystem.ForMathlib.Combinatorics.SimpleGraphAcyclic`), opening
       `namespace FormalSystem.Semantics` with `variable {W : Type}`.
-- [ ] Write the module docstring on `UniversalCover.lean`'s pattern: the construction, a
+- [x] Write the module docstring on `UniversalCover.lean`'s pattern: the construction, a
       **"The promiscuous entry edge, and why narrowing it breaks seriality"** section stating the
       decision and the counterexample shape, a "Why not reuse the universal cover" section
       (verbatim-copy-plus-tree vs. forest-everywhere, and that `ProofSystem.FrameClass.Sat`'s
       `IsRegular` demand is what both exist to satisfy), Main definitions, Main results, a
       "What is deliberately absent" section, and a "Verified Mathlib names" note recording
       `SimpleGraph.isAcyclic_of_rank_parent` and the `simp_all [parIn]` obligation as pin-sensitive.
-- [ ] Introduce no `def:`/`thm:`/`lem:`/`cor:`/`app:`/`rmk:`-shaped token in the docstring other
+- [x] Introduce no `def:`/`thm:`/`lem:`/`cor:`/`app:`/`rmk:`-shaped token in the docstring other
       than `def:frame#Saturation`, which is already registered in
       `docs/reference/paper-definitions-of-record.md`.
-- [ ] Promote `coneRin`, `coneR`, `coneF`, `parIn` verbatim from the probe's `Probe894` namespace,
+- [x] Promote `coneRin`, `coneR`, `coneF`, `parIn` verbatim from the probe's `Probe894` namespace,
       each with its own doc comment. Keep the names exactly as probed — all four are
       lowerCamelCase and therefore C26-clean.
-- [ ] Promote `coneRin_loopFree`, `coneRin_oppFree`, `coneRin_acyclic`,
+- [x] Promote `coneRin_loopFree`, `coneRin_oppFree`, `coneRin_acyclic`,
       `coneRin_isOrientedForest`.
-- [ ] Promote `coneRin_bwd_unique` and `coneRin_bwd_subsingleton`.
-- [ ] Promote `coneR_serial_fwd`, `coneR_serial_bwd`.
-- [ ] Confirm `Nonempty (W ⊕ (W × List W))` is derivable from `Nonempty W` for
+- [x] Promote `coneRin_bwd_unique` and `coneRin_bwd_subsingleton`.
+- [x] Promote `coneR_serial_fwd`, `coneR_serial_bwd`.
+- [x] Confirm `Nonempty (W ⊕ (W × List W))` is derivable from `Nonempty W` for
       `FrameOver.ofStepSat`'s `[Nonempty W]` binder; if it is not found by instance search, add a
       named instance beside the definitions, mirroring `CoverPt.instNonempty`.
-- [ ] Run `lake exe mk_all --lib FormalSystem` and stage the regenerated `FormalSystem.lean`
+- [x] Run `lake exe mk_all --lib FormalSystem` and stage the regenerated `FormalSystem.lean`
       (C33: a plan adding files carries this step explicitly).
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`
       in the same commit as the Lean lines.
 
 **Timing**: 1.5 hours
@@ -290,16 +290,16 @@ module imports yet.
 `Probe894`/`Probe894b`/`Probe894c` namespaces.
 
 **Tasks**:
-- [ ] Promote `coneF_step` and `coneF_iter` with doc comments naming their role (the projection is
+- [x] Promote `coneF_step` and `coneF_iter` with doc comments naming their role (the projection is
       a homomorphism of one-step relations, and iterated).
-- [ ] Promote the four `iter`-level identities: `iter_inl_target`, `iter_inl_inl`, `iter_inr_fwd`,
+- [x] Promote the four `iter`-level identities: `iter_inl_target`, `iter_inl_inl`, `iter_inr_fwd`,
       `iter_inl_inr`. Give `iter_inl_inr` a doc comment recording that it is where the promiscuous
       entry edge collapses a union over entry points into a single base fibre.
-- [ ] Promote the four `Fib`-level bridges: `inl_preimage_fib_inl`, `inl_preimage_fib_inr_neg`,
+- [x] Promote the four `Fib`-level bridges: `inl_preimage_fib_inl`, `inl_preimage_fib_inr_neg`,
       `fib_inr_pos_subset`, `inr_preimage_fib_inr_pos`.
-- [ ] Promote the two lifts: `exists_iter_coneRin` and `exists_iter_coneR_bwd_inr`.
-- [ ] Add a `/-! ## ... -/` section header before each group, as `UniversalCover.lean` does.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+- [x] Promote the two lifts: `exists_iter_coneRin` and `exists_iter_coneR_bwd_inr`.
+- [x] Add a `/-! ## ... -/` section header before each group, as `UniversalCover.lean` does.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
 
 **Timing**: 1.5 hours
 
@@ -331,7 +331,7 @@ downstream can observe the edit.
 
 ---
 
-### Phase 3: The member-shape classification and the split's set-level scaffolding [NOT STARTED]
+### Phase 3: The member-shape classification and the split's set-level scaffolding [COMPLETED]
 
 **Goal**: State and prove, as named lemmas, every bookkeeping fact the *Saturation* split
 consumes — the exhaustive member-shape classification, the inl-element-existence fact that
@@ -340,27 +340,27 @@ cofinality equality — so that a missing cell fails here, at a named declaratio
 inside Phase 4's case analysis.
 
 **Tasks**:
-- [ ] State `cone_member_classification` (name may be adjusted for namespace fit, recorded in the
+- [x] State `cone_member_classification` (name may be adjusted for namespace fit, recorded in the
       progress file if so): for a member `s` of a `DirectedFamily` over `ofStepRel (coneR E)`
       satisfying `(IsFiber R s ∨ IsSegment R s) ∧ s.Nonempty`, enumerate the shape cells over the
       grid `{IsFiber, IsSegment} × {inl-anchored, inr-anchored} × {0 ≤ x, x < 0}` and name for
       each cell which disposition Phase 4 uses (subsingleton, `Sum.inl ⁻¹'` transport,
       `Sum.inr ⁻¹'` transport, or excluded by `s ⊆ Set.range Sum.inr`). All twelve cells must be
       accounted for; a cell with no disposition is a blocker, not a gap to paper over.
-- [ ] Prove `mem_range_inl_of_mem`: an inl-anchored fibre, and a negative-duration inr-anchored
+- [x] Prove `mem_range_inl_of_mem`: an inl-anchored fibre, and a negative-duration inr-anchored
       fibre, always contain an element of `Set.range Sum.inl` — obtained from any member element
       via `coneF` together with `iter_inl_inl` / `iter_inl_inr`. This is the fact that excludes
       those shapes from `S_inr` in Case B.
-- [ ] Prove `subsingleton_of_subset_range_inr`: a segment contained in the inr layer is a
-      subsingleton, via `coneRin_bwd_subsingleton` and `seg_subsingleton`.
-- [ ] Prove `fib_or_seg_inl_preimage`: Case A's table as one lemma — for a member not contained
+- [x] Prove `subsingleton_of_subset_range_inr`: a segment contained in the inr layer is a
+      subsingleton, via `coneRin_bwd_subsingleton` and `seg_subsingleton`. *(deviation: altered — `seg_subsingleton` is inapplicable (it demands `IsOrientedForest (coneR E)`, false for the inl layer); proved at its named statement via `coneRin_bwd_unique` through `iter_inr_fwd`)*
+- [x] Prove `fib_or_seg_inl_preimage`: Case A's table as one lemma — for a member not contained
       in `Set.range Sum.inr`, `Sum.inl ⁻¹' s` is a base fibre or segment of
       `ofStepRel E`, nonempty, with `inl b ∈ s ↔ b ∈ Sum.inl ⁻¹' s`. Compose the two
       negative/positive `Fib` rows from Phase 2 for the `Seg` case.
-- [ ] Prove `cofinal_sInter_eq`: if `T ⊆ S` is cofinal in `S` under `⊆` then `⋂₀ T = ⋂₀ S`. This
+- [x] Prove `cofinal_sInter_eq`: if `T ⊆ S` is cofinal in `S` under `⊆` then `⋂₀ T = ⋂₀ S`. This
       mentions no relation; place it in the set-level preamble of this module (not in
       `OrientedForest.lean`, which is not modified by this task).
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
 
 **Timing**: 2 hours
 
