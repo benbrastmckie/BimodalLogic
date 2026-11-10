@@ -1,12 +1,12 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 5 complete: both previously-unclaimed names landed as sorry-free theorems in LadderAgree.lean, signatures token-for-token identical to the plan's Lean Challenge Statements block. exists_ladderPath_at_region_of_idle_past composes Phases 1-4 (exists_ladderPath_of_walk_of_pins, exists_region_start_of_idle_past, insPins_of_region_start) with the four landed LOCAL inserted-walk conditions; exists_ladderPath_at_region joins both regimes by by_cases on the pending-past predicate. Two #print axioms pins added to KTypeSummaryAxiomTest.lean, both passing with [propext, Classical.choice, Quot.sound]. Full library build green (guard exit 0, 2969 jobs, zero errors, zero warnings). Also repaired a pre-existing C16 env_linter failure on the Phase 3 trichotomy's deliberately-unread hu1 binder via the documented @[nolint unusedArguments] + allowlist pair, with no signature change. Phases 6 and 7 remain.",
-  "phases_completed": 5,
+  "summary": "Phase 6 of 7 complete: every record asserting that exists_ladderPath_at_region_of_idle_past and exists_ladderPath_at_region are unlanded, that no binder was added to them, or that the restated existential is open has been brought current across LadderAgree.lean and KTypeSummaryAxiomTest.lean, while the spliceObj-shaped refutation paragraph, the continued reservation of exists_spliced_ladderPath_of_idle_past, and the self-loop's status as a genuine premise were all preserved. No Lean declaration added, removed or restated; no #guard_msgs pin changed; three generated inventory blocks rolled plus typst/generated/status.typ. Phase 7 (complete gate set and summary) is untouched and next.",
+  "phases_completed": 6,
   "phases_total": 7,
-  "dispatch_seq": 15,
+  "dispatch_seq": 16,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-5-handoff-20261110T150000Z.md",
+  "continuation_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-6-handoff-20261110T160000Z.md",
   "artifacts": []
 }
