@@ -494,7 +494,7 @@ which is the only thing that can observe a break confined to this still-unimport
 
 ---
 
-### Phase 4: The auxiliary-atom model and the machine's input function [NOT STARTED]
+### Phase 4: The auxiliary-atom model and the machine's input function [COMPLETED]
 
 **Goal**: Land `aaModel` with its two reading lemmas, and `aaIdx` with the well-definedness facts
 that make it the right input to the machine.

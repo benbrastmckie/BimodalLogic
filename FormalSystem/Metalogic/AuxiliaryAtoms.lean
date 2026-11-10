@@ -487,4 +487,152 @@ theorem plusTruthAt_aaAnte_excl {F : TaskFrame} (M : TaskModel F) (qa : ℕ → 
   intro hc
   exact (PlusTruth.neg_iff M σ s _).mp h5 ((PlusTruth.and_iff M σ s _ _).mpr hc)
 
+/-! ## The auxiliary-atom model on the cone carrier -/
+
+/--
+**The auxiliary-atom model**: on the cone carrier, each `q_j` with `j < m` reads the machine
+state `st` recorded at the node, and every other atom reads the base model through the projection
+`coneF`.
+
+The two disjuncts are mutually exclusive by their own side conditions, which is what makes the
+two reading lemmas below biconditionals rather than one-way implications.
+
+Paper: — (formalization-native; the paper labels a tree model, not a recorded cone)
+-/
+def aaModel (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)
+    (qa : ℕ → Atom) (m : ℕ) (st : (coneFrame F).WorldState → ℕ) :
+    TaskModel (coneFrame F).toTaskFrame :=
+  ⟨fun z r => (∃ j, j < m ∧ r = qa j ∧ st z = j) ∨
+    ((∀ j, j < m → r ≠ qa j) ∧ M.valuation (coneF z) r)⟩
+
+/--
+**Reading an auxiliary atom**: `q_j` holds at a node exactly when the machine state recorded
+there is `j`.
+
+**The injectivity-below-`m` hypothesis is load-bearing**, not decoration: without it two indices
+`j ≠ j'` could name the same atom, and `q_j` would hold at a node recording `j'` through the
+first disjunct, so the biconditional would fail left to right.
+
+Paper: — (formalization-native; the paper labels a tree model, not a recorded cone)
+-/
+theorem aaModel_atom_q (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)
+    (qa : ℕ → Atom) (m : ℕ) (st : (coneFrame F).WorldState → ℕ)
+    (hinj : ∀ j, j < m → ∀ j', j' < m → qa j = qa j' → j = j')
+    (z : (coneFrame F).WorldState) (j : ℕ) (hj : j < m) :
+    (aaModel F M qa m st).valuation z (qa j) ↔ st z = j := by
+  constructor
+  · rintro (⟨j', hj', he, hst⟩ | ⟨hne, _⟩)
+    · exact hst.trans (hinj j' hj' j hj he.symm)
+    · exact absurd rfl (hne j hj)
+  · intro h; exact Or.inl ⟨j, hj, rfl, h⟩
+
+/-- **Reading any other atom**: an atom outside the auxiliary family is read off the base model
+through the projection. This is what `plusTruthAt_congr_of_fresh_family` consumes to forget `Q`.
+
+Paper: — (formalization-native; the paper labels a tree model, not a recorded cone)
+-/
+theorem aaModel_valuation_off (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)
+    (qa : ℕ → Atom) (m : ℕ) (st : (coneFrame F).WorldState → ℕ)
+    (z : (coneFrame F).WorldState) (r : Atom) (hr : ∀ j, j < m → r ≠ qa j) :
+    (aaModel F M qa m st).valuation z r ↔ M.valuation (coneF z) r := by
+  constructor
+  · rintro (⟨j, hj, he, _⟩ | ⟨_, h⟩)
+    · exact absurd he (hr j hj)
+    · exact h
+  · intro h; exact Or.inr ⟨hr, h⟩
+
+/-! ## The machine's input function -/
+
+/--
+**The machine's input function**: the index of an `aᵢ` true at the base world state `w`, or `0`
+when none is.
+
+The input must be a function of the **state** alone — the antecedent's step clause is read under
+`⊡`, so the input read at one history must be the input read at every history through that state,
+at every time. `plusTruthAt_stateLocal_state_only` is what makes that well defined for a
+`StateLocal` family, and `aaIdx_spec` below is where it is consumed.
+
+**`Classical.choice` enters here and nowhere else in this module**, through `h.choose` on the
+`dite`'s real branch. The `0` fallback is never consulted at a state that actually occurs on a
+history: `aaIdx_of_occurring` shows the real branch is always taken there, under exhaustiveness.
+The fallback exists only so that the function is total, which the machine-labelling definitions
+`aaRun`/`aaState` require.
+
+Paper: — (formalization-native; the paper's machine reads a propositional labelling directly)
+-/
+noncomputable def aaIdx (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)
+    (a : ℕ → PlusFormula) (k : ℕ) : F.WorldState → ℕ := fun w =>
+  haveI : Decidable (∃ i, i < k ∧ ∃ (τ : WorldHistory F.toTaskFrame) (t : ℤ),
+      τ.state t = w ∧ PlusTruthAt M τ t (a i)) := Classical.dec _
+  if h : ∃ i, i < k ∧ ∃ (τ : WorldHistory F.toTaskFrame) (t : ℤ),
+      τ.state t = w ∧ PlusTruthAt M τ t (a i)
+    then h.choose else 0
+
+/-- **The input is in range** whenever the `dite` takes its real branch — which, by
+`aaIdx_of_occurring`, is at every state that occurs on a history.
+
+Paper: — (formalization-native; the paper's machine reads a propositional labelling directly)
+-/
+theorem aaIdx_lt (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)
+    (a : ℕ → PlusFormula) (k : ℕ) (w : F.WorldState)
+    (h : ∃ i, i < k ∧ ∃ (τ : WorldHistory F.toTaskFrame) (t : ℤ),
+      τ.state t = w ∧ PlusTruthAt M τ t (a i)) :
+    aaIdx F M a k w < k := by
+  simp only [aaIdx, dif_pos h]
+  exact h.choose_spec.1
+
+/--
+**At a state that occurs on a history, the `dite` takes its real branch.**
+
+This is where **exhaustiveness** is consumed: `hexh` says no point makes every `aᵢ` false, so at
+`(τ, t)` some `aᵢ` with `i < k` holds, and that is the witness the `dite`'s condition asks for.
+
+**No "history through a state" existence lemma is used, and none exists in this tree.** The
+witness history is the one the caller already has, which is why this lemma is stated at a state
+*presented* as `τ.state t` rather than at an arbitrary state of the carrier.
+
+Paper: — (formalization-native; the paper's machine reads a propositional labelling directly)
+-/
+theorem aaIdx_of_occurring (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)
+    (a : ℕ → PlusFormula) (k : ℕ)
+    (hexh : PlusValidInt (bigAnd k fun i => (a i).neg).neg)
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ) :
+    ∃ i, i < k ∧ ∃ (σ : WorldHistory F.toTaskFrame) (s : ℤ),
+      σ.state s = τ.state t ∧ PlusTruthAt M σ s (a i) := by
+  have h := (PlusTruth.neg_iff M τ t _).mp (hexh F M τ t)
+  by_contra hc
+  refine h ((bigAnd_iff M τ t _ k).mpr fun i hi => ?_)
+  refine (PlusTruth.neg_iff M τ t _).mpr fun hai => ?_
+  exact hc ⟨i, hi, τ, t, rfl, hai⟩
+
+/--
+**The input function is exactly the index**: if some `aᵢ` with `i < k` holds at a point whose
+state is `w`, then `aaIdx … w = i`.
+
+This is the lemma with real content in the input layer, and it is where **pairwise
+inconsistency** is consumed. The `dite`'s real branch is reached by the hypothesis itself, so the
+chosen index `i'` satisfies `aᵢ'` at *some* point whose state is also `w`;
+`plusTruthAt_stateLocal_state_only` transports that truth from the chosen witness point to the
+given one — this is the step that needs state-locality at *different times*, which
+`IsPlusStateLocal` does not give — and `hdisj` then forces `i' = i`.
+
+Paper: — (formalization-native; the paper's machine reads a propositional labelling directly)
+-/
+theorem aaIdx_spec (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)
+    (a : ℕ → PlusFormula) (k : ℕ)
+    (ha : ∀ i, i < k → (a i).StateLocal)
+    (hdisj : ∀ i, i < k → ∀ i', i' < k → i ≠ i' → PlusValidInt (((a i).and (a i')).neg))
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ) (i : ℕ) (hi : i < k)
+    (hai : PlusTruthAt M τ t (a i)) :
+    aaIdx F M a k (τ.state t) = i := by
+  have hex : ∃ i, i < k ∧ ∃ (σ : WorldHistory F.toTaskFrame) (s : ℤ),
+      σ.state s = τ.state t ∧ PlusTruthAt M σ s (a i) := ⟨i, hi, τ, t, rfl, hai⟩
+  simp only [aaIdx, dif_pos hex]
+  obtain ⟨hlt, σ, s, hst, hspec⟩ := hex.choose_spec
+  by_contra hne
+  have htr : PlusTruthAt M τ t (a hex.choose) :=
+    (plusTruthAt_stateLocal_state_only (ha _ hlt) M σ τ s t hst).mp hspec
+  exact (PlusTruth.neg_iff M τ t _).mp (hdisj _ hlt i hi hne F M τ t)
+    ((PlusTruth.and_iff M τ t _ _).mpr ⟨htr, hai⟩)
+
 end FormalSystem.Metalogic.AuxiliaryAtoms
