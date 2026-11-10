@@ -11,9 +11,9 @@ next_project_number: 909
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,838,873,890,894,899,900,905,906,907,908 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
-| 2 | 231,282,296,429,497,763,787,803,853,862,869,874,875,876,895 | 298,428,502,743,761,838,873,894 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 410,498,499,500,804,861,896 | 429,497,763,803,838,895 | algebraic-representation, decidability, build-performance |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,853,873,890,894,899,900,905,906,907,908 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,895 | 298,428,502,743,761,873,894 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 410,498,499,500,804,861,896 | 429,497,763,803,895 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -62,9 +62,7 @@ next_project_number: 909
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-838 [IMPLEMENTING] — The depth-0 cell obligation is blocked on a two-sided open...
-  └─ 853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
-  └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary... (see above)
+853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Formula Refactor
@@ -589,7 +587,7 @@ CITATIONS: parent issues.jsonl iss_1793819583011_jsu079 and iss_1792373250168_HQ
 
 ### 838. Two sided open core pin free pigeonhole
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None

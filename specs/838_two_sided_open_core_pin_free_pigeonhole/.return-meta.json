@@ -1,7 +1,11 @@
 {
   "status": "implemented",
   "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "delegation_path": [
+    "orchestrator",
+    "implement",
+    "lean-implementation-hard-agent"
+  ],
   "task_number": 838,
   "dispatch_seq": 9,
   "phase": "implement",
