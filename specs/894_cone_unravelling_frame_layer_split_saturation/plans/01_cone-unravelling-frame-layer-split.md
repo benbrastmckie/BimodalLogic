@@ -690,22 +690,22 @@ import-closure and whole-library consequences are what Phase 6's `full` gate exi
 
 ---
 
-### Phase 6: Documentation reconciliation, axiom-profile pin, and the full gate set [NOT STARTED]
+### Phase 6: Documentation reconciliation, axiom-profile pin, and the full gate set [COMPLETED]
 
 **Goal**: Retire `NamingRules.lean`'s "left open" assertion, pin the headline axiom profiles as
 permanent evidence, add the theorem-index rows, regenerate the module-inventory surface, and run
 the complete gate set over the finished tree.
 
 **Tasks**:
-- [ ] Create `Tests/BimodalTest/Semantics/ConeUnravellingTest.lean` on
+- [x] Create `Tests/BimodalTest/Semantics/ConeUnravellingTest.lean` on
       `OrientedForestSaturationTest.lean`'s pattern: a docstring saying it is permanent evidence
       rather than a conventional test, a "When one of these guards fires" paragraph, and
       `#guard_msgs in #print axioms` blocks for `saturation_coneR`,
       `coneRin_isOrientedForest`, `coneF_surjective`, `coneF_twoWayBounded` and
       `exists_coneUnravelling`. Every expected block is **measured** in this
       dispatch, never typed from memory.
-- [ ] Add `import BimodalTest.Semantics.ConeUnravellingTest` to `Tests/BimodalTest.lean`.
-- [ ] Amend `FormalSystem/Metalogic/NamingRules.lean`'s module docstring: rewrite the paragraph
+- [x] Add `import BimodalTest.Semantics.ConeUnravellingTest` to `Tests/BimodalTest.lean`.
+- [x] Amend `FormalSystem/Metalogic/NamingRules.lean`'s module docstring: rewrite the paragraph
       ending "Discharging *Saturation* for a path-recording relation directly is left open." so
       it instead records that the obligation is discharged, naming
       `Semantics.saturation_coneR` and `Semantics.exists_coneUnravelling` (the
@@ -714,23 +714,25 @@ the complete gate set over the finished tree.
       the new route was needed). Add the new module to that docstring's `## References` list.
       Introduce no import — this is a prose change only, so no new upward edge reaches
       `scripts/check-metalogic-cycles.sh`'s Assertion B.
-- [ ] Add `docs/theorem-index.md` rows for `saturation_coneR` (paper label
+- [x] Add `docs/theorem-index.md` rows for `saturation_coneR` (paper label
       `def:frame#Saturation`) and `exists_coneUnravelling` (paper label `—`), each
       anchored by the `Paper:` line already placed in its declaration's doc comment, and each
       naming `Tests/BimodalTest/Semantics/ConeUnravellingTest.lean` as the profile guard.
-- [ ] Add a cross-reference paragraph to both `UniversalCover.lean`'s and
+- [x] Add a cross-reference paragraph to both `UniversalCover.lean`'s and
       `ConeUnravelling.lean`'s docstrings stating the division of labour between the two
       unravelling constructions (verbatim-copy-plus-tree vs. forest-everywhere) and that
       `ProofSystem.FrameClass.Sat`'s `IsRegular` demand is what both exist to satisfy. This is
       the only edit this task makes to `UniversalCover.lean` and it adds no declaration.
-- [ ] `git add` the evidence probe directory
+- [x] `git add` the evidence probe directory
       `specs/evidence/cone-unravelling-frame-layer-split/` so the research report's citation
       resolves from a fresh clone. Do **not** add an entry to
       `scripts/check-evidence-probes.sh`'s `WIRED` list (see Decisions).
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated
+      *(already tracked: `git ls-files` resolves `specs/evidence/cone-unravelling-frame-layer-split/cone-core-probe.lean`, committed in an earlier phase, so no `git add` was needed; no `WIRED` entry added)*
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated
       inventory blocks.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
-- [ ] Run the complete gate set and record its outcome per the criteria below.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+      *(run once per sub-step commit, as in Phase 5: `.githooks/pre-commit` enforces the line-count field)*
+- [x] Run the complete gate set and record its outcome per the criteria below.
 
 **Timing**: 1.5 hours
 
@@ -799,6 +801,20 @@ sentence before editing.
 
 ---
 
+
+#### Gate-set outcome, as run
+
+Every line below is a measured result from this dispatch, scoped as the criteria ask.
+
+- `lake build` (unscoped, `defaultTargets = ["FormalSystem"]`): exit 0, 2970 jobs, zero `error:`, zero `warning`. `lake build BimodalTest`: exit 0, 3036 jobs, zero `error:`, zero `warning`. Both are needed — the default target does **not** include the test library, so the unscoped build alone would not have compiled the new `#guard_msgs` module.
+- `verify-deploy.sh --skip-slow`: **PASS, 15 checks, 0 failures** — no findings at all, hence none naming a file this task touched. The dispatch's deploy-freshness context flags the deployed tree as stale for core/lean/literature/memory; that staleness produced no finding here because this repository is a deploy *consumer*, so every source-store-only gate `[SKIP]`s. Gate 8 (`tests/run-all.sh`, measured at 117.9s of the full run) is the one gate `--skip-slow` defers; per this dispatch's Batch Gate Deferral it runs once for the whole batch at the end of the invocation, deferred rather than forgiven.
+- `check-module-invariants.sh`: exit 0 after two real findings were fixed. **C34a** flagged `base_taskRel_eq_ofStepRel` and `coneF_twoWayBounded` for carrying `Constraints consumed: Compositionality, Seriality, Limit` over an `[F.IsRegular]` binder that also supplies *Saturation*. `UniversalCover.lean`'s instance-projected declarations are excused by their binder-free twins (`coverFrameOfSerial` carries the three-constraint claim); this module has no twin by the recorded decision, so the markers were corrected to list all four with the reason stated inline. **FAIL INV** flagged a stale inventory block, fixed by re-running `--emit-inventory`.
+- `typst-sync-check.sh`: exit 0. `check-metalogic-cycles.sh`: exit 0 (the `NamingRules.lean` change is prose-only and adds no import, so Assertion B sees no new upward edge). `check-copyright-headers.sh`: exit 0. `check-phantom-citations.sh`: exit 0. `check-evidence-probes.sh`: exit 0. `readme-lint.sh`: exit 0.
+- `check-paper-definitions.sh`: exit 1, **pre-existing baseline, not this task's**. The drift is in `def:`, `def:frame`, `def:frame-properties`, `def:id`, `def:lang`, `def:qe` and `def:task-relation` between the paper source and `docs/reference/paper-definitions-of-record.md`. That record file and the paper `.tex` are the gate's only inputs and neither appears in this dispatch's changed-file set (`git diff --name-only dc881fc2b` plus the working tree), so no finding names a file this task touched.
+- `lean-challenge-snapshot.sh --check 894 .`: `ERROR: no manifest found ... exit 71` — **exactly the predicted outcome**. No snapshot was ever taken for this task and snapshot mode refuses to create one past `planned`. Recorded as the verdict; not a drift finding, not a failure, and no manifest was manufactured after the fact. The *Amendment record* subsection under `## Lean Challenge Statements` is the fidelity trail in its place.
+- Zero-debt scope: `lean-sorry-census.sh` over the four resolved source roots reports `sorry_count: 0`. `grep -rn 'sorry'` over both of this task's files returns nothing. Axiom count is **14 at both** `dc881fc2b` and the working tree — no increase. The vacuous-pattern sweep returns one hit, `FormalSystem/Examples/TemporalStructures.lean:495` (`int_domain_universal ... := trivial`), in a file this task never touched and where the goal genuinely is trivially true: pre-existing baseline, not introduced here.
+- Every `#guard_msgs` block in the new evidence module was populated from a measured `lean_verify` run in this dispatch and all five compile green. Measured profiles: `coneRin_isOrientedForest`, `saturation_coneR`, `coneF_twoWayBounded` and `exists_coneUnravelling` at `[propext, Classical.choice, Quot.sound]`; `coneF_surjective` axiom-free.
+- `grep -n 'left open' FormalSystem/Metalogic/NamingRules.lean` returns nothing.
 ## Testing & Validation
 
 - [ ] Full project build green, zero warnings (CI builds with `--wfail`; a lint warning is a CI failure).
