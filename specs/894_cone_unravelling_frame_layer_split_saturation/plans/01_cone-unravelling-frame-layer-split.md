@@ -282,7 +282,7 @@ module imports yet.
 
 ---
 
-### Phase 2: The transport layer [NOT STARTED]
+### Phase 2: The transport layer [COMPLETED]
 
 **Goal**: Land the projection homomorphism, the `iter`-level transport identities, the
 `Fib`-level preimage bridges and the two inr-layer lifts — the vocabulary both halves of the

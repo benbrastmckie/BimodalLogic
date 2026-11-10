@@ -276,4 +276,172 @@ theorem coneR_serial_bwd {E : W → W → Prop} (hbwd : ∀ w, ∃ v, E v w) :
   · obtain ⟨v', h⟩ := hbwd v
     exact ⟨.inl v', h⟩
 
+/-! ## The projection is a homomorphism -/
+
+/-- The projection carries a cone step to a base step: all three edge kinds project to `E`. -/
+theorem coneF_step {E : W → W → Prop} {z z' : W ⊕ (W × List W)} (h : coneR E z z') :
+    E (coneF z) (coneF z') := by
+  match z, z', h with
+  | .inl _, .inl _, h => exact h
+  | .inl _, .inr _, h => exact h
+  | .inr _, .inr _, h => exact h.1
+
+/-- The projection carries iterated cone steps to iterated base steps. -/
+theorem coneF_iter {E : W → W → Prop} :
+    ∀ (n : ℕ) (z z' : W ⊕ (W × List W)), iter (coneR E) n z z' →
+      iter E n (coneF z) (coneF z') := by
+  intro n
+  induction n with
+  | zero => intro z z' h; rw [iter_zero] at h; subst h; rfl
+  | succ n ih =>
+    intro z z' h
+    obtain ⟨v, hv, hstep⟩ := h
+    exact ⟨coneF v, ih z v hv, coneF_step hstep⟩
+
+/-! ## The `iter`-level transport identities -/
+
+/-- Nothing enters the `inl` layer: an iterated path landing on an `inl` node starts there. -/
+theorem iter_inl_target {E : W → W → Prop} :
+    ∀ (n : ℕ) (z : W ⊕ (W × List W)) (b : W), iter (coneR E) n z (.inl b) → ∃ a, z = .inl a := by
+  intro n
+  induction n with
+  | zero => intro z b h; rw [iter_zero] at h; exact ⟨b, h⟩
+  | succ n ih =>
+    intro z b h
+    obtain ⟨v, hv, hstep⟩ := h
+    match v, hstep with
+    | .inl c, _ => exact ih z c hv
+    | .inr _, hstep => exact absurd hstep (by simp [coneR])
+
+/-- The `inl` layer is a verbatim copy of the base, at every duration. -/
+theorem iter_inl_inl {E : W → W → Prop} :
+    ∀ (n : ℕ) (a b : W), iter (coneR E) n (.inl a) (.inl b) ↔ iter E n a b := by
+  intro n
+  induction n with
+  | zero => intro a b; simp [iter_zero, Sum.inl.injEq]
+  | succ n ih =>
+    intro a b
+    constructor
+    · intro h
+      obtain ⟨v, hv, hstep⟩ := h
+      match v, hstep with
+      | .inl c, hstep => exact ⟨c, (ih a c).mp hv, hstep⟩
+      | .inr _, hstep => exact absurd hstep (by simp [coneR])
+    · rintro ⟨c, hc, hstep⟩
+      exact ⟨.inl c, (ih a c).mpr hc, hstep⟩
+
+/-- Forward from the `inr` layer stays in the `inr` layer, and is the `inr`-layer iterate. -/
+theorem iter_inr_fwd {E : W → W → Prop} :
+    ∀ (n : ℕ) (p : W × List W) (z : W ⊕ (W × List W)),
+      iter (coneR E) n (.inr p) z ↔ ∃ q, z = .inr q ∧ iter (coneRin E) n p q := by
+  intro n
+  induction n with
+  | zero =>
+    intro p z
+    constructor
+    · intro h; rw [iter_zero] at h; exact ⟨p, h.symm, rfl⟩
+    · rintro ⟨q, rfl, hq⟩; rw [iter_zero] at hq; rw [iter_zero, hq]
+  | succ n ih =>
+    intro p z
+    constructor
+    · intro h
+      obtain ⟨v, hv, hstep⟩ := h
+      obtain ⟨q', rfl, hq'⟩ := (ih p v).mp hv
+      match z, hstep with
+      | .inr q, hstep => exact ⟨q, rfl, q', hq', hstep⟩
+      | .inl _, hstep => exact absurd hstep (by simp [coneR])
+    · rintro ⟨q, rfl, q', hq', hstep⟩
+      exact ⟨.inr q', (ih p (.inr q')).mpr ⟨q', rfl, hq'⟩, hstep⟩
+
+/--
+**The promiscuous-entry collapse.** At a positive duration, an iterated cone path from an `inl`
+node to an `inr` node is exactly a base path to that node's base state.
+
+This is where the promiscuous entry edge earns its keep: because the entry edge imposes nothing
+on the recorded list, the set of entry points contributing to this fibre collapses to a **single**
+base fibre instead of a union indexed by records. That collapse is the whole of the
+`inl`-anchored half of the *Saturation* split.
+-/
+theorem iter_inl_inr {E : W → W → Prop} (n : ℕ) (w : W) (q : W × List W) :
+    iter (coneR E) (n + 1) (.inl w) (.inr q) ↔ iter E (n + 1) w q.1 := by
+  constructor
+  · intro h; simpa [coneF] using coneF_iter (n + 1) (.inl w) (.inr q) h
+  · rintro ⟨c, hc, hstep⟩
+    exact ⟨.inl c, (iter_inl_inl n w c).mpr hc, hstep⟩
+
+/-! ## The `Fib`-level preimage bridges -/
+
+/-- Case A, `inl` anchor: the `inl`-preimage of an `inl`-anchored fibre is the base fibre. -/
+theorem inl_preimage_fib_inl {E : W → W → Prop} (a : W) (x : ℤ) :
+    Sum.inl ⁻¹' (TaskFrame.Fib (ofStepRel (coneR E)) (.inl a) x)
+      = TaskFrame.Fib (ofStepRel E) a x := by
+  ext b
+  rcases le_or_gt 0 x with hx | hx
+  · simp only [Set.mem_preimage, TaskFrame.mem_Fib, ofStepRel_of_nonneg hx]
+    exact iter_inl_inl _ a b
+  · have hx' : x ≤ 0 := le_of_lt hx
+    simp only [Set.mem_preimage, TaskFrame.mem_Fib, ofStepRel_of_nonpos hx']
+    exact iter_inl_inl _ b a
+
+/-- Case A, `inr` anchor at a **negative** duration: the `inl`-preimage of a backward fibre at an
+`inr` node is the base backward fibre at its base state. The promiscuous entry edge is what makes
+this an equality rather than a union over entry points. -/
+theorem inl_preimage_fib_inr_neg {E : W → W → Prop} (q : W × List W) {x : ℤ} (hx : x < 0) :
+    Sum.inl ⁻¹' (TaskFrame.Fib (ofStepRel (coneR E)) (.inr q) x)
+      = TaskFrame.Fib (ofStepRel E) q.1 x := by
+  ext w
+  obtain ⟨n, hn⟩ : ∃ n : ℕ, x.natAbs = n + 1 := ⟨x.natAbs - 1, by omega⟩
+  simp only [Set.mem_preimage, TaskFrame.mem_Fib, ofStepRel_of_nonpos (le_of_lt hx), hn]
+  exact iter_inl_inr n w q
+
+/-- Case B: a forward fibre at an `inr` node lies entirely in the `inr` layer. -/
+theorem fib_inr_pos_subset {E : W → W → Prop} (p : W × List W) {x : ℤ} (hx : 0 ≤ x) :
+    TaskFrame.Fib (ofStepRel (coneR E)) (.inr p) x ⊆ Set.range (Sum.inr : W × List W → _) := by
+  intro z hz
+  rw [TaskFrame.mem_Fib, ofStepRel_of_nonneg hx] at hz
+  obtain ⟨q, rfl, -⟩ := (iter_inr_fwd _ p z).mp hz
+  exact ⟨q, rfl⟩
+
+/-- Case B: the `inr`-preimage of a forward fibre at an `inr` node is the corresponding fibre of
+the `inr`-layer relation. -/
+theorem inr_preimage_fib_inr_pos {E : W → W → Prop} (p : W × List W) {x : ℤ} (hx : 0 ≤ x) :
+    Sum.inr ⁻¹' (TaskFrame.Fib (ofStepRel (coneR E)) (.inr p) x)
+      = TaskFrame.Fib (ofStepRel (coneRin E)) p x := by
+  ext q
+  simp only [Set.mem_preimage, TaskFrame.mem_Fib, ofStepRel_of_nonneg hx]
+  constructor
+  · intro h
+    obtain ⟨q', hq', hiter⟩ := (iter_inr_fwd _ p (.inr q)).mp h
+    cases Sum.inr.inj hq'
+    exact hiter
+  · intro h
+    exact (iter_inr_fwd _ p (.inr q)).mpr ⟨q, rfl, h⟩
+
+/-! ## The `inr`-layer lifts -/
+
+/-- The `inr`-layer lift: a base path out of `p.1` lifts to an `inr`-layer path out of `p`,
+recording it. This is the `step` field of `TwoWayBounded` at a nonnegative duration and an
+`inr`-anchored point. -/
+theorem exists_iter_coneRin {E : W → W → Prop} :
+    ∀ (n : ℕ) (p : W × List W) (v : W), iter E n p.1 v →
+      ∃ q : W × List W, q.1 = v ∧ iter (coneRin E) n p q := by
+  intro n
+  induction n with
+  | zero =>
+    intro p v h
+    rw [iter_zero] at h
+    exact ⟨p, h.symm ▸ rfl, by rw [iter_zero]⟩
+  | succ n ih =>
+    intro p v h
+    obtain ⟨c, hc, hstep⟩ := h
+    obtain ⟨q, hq1, hq⟩ := ih p c hc
+    exact ⟨(v, q.1 :: q.2), rfl, q, hq, by exact ⟨hq1 ▸ hstep, rfl⟩⟩
+
+/-- The backward half of `step` at an `inr`-anchored point: every base predecessor is realised,
+through the `inl` layer, by the promiscuous entry edge. -/
+theorem exists_iter_coneR_bwd_inr {E : W → W → Prop} (n : ℕ) (p : W × List W) (v : W)
+    (h : iter E (n + 1) v p.1) :
+    ∃ z : W ⊕ (W × List W), iter (coneR E) (n + 1) z (.inr p) ∧ coneF z = v :=
+  ⟨.inl v, (iter_inl_inr n v p).mpr h, rfl⟩
+
 end FormalSystem.Semantics
