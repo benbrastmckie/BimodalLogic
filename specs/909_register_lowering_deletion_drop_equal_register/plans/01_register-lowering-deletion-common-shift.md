@@ -264,26 +264,31 @@ covers a purely additive declaration in one module with no externally visible si
 
 ---
 
-### Phase 2: Retire the Landed Up-First Proof to the `k = 0` Instance (CONTINGENT) [NOT STARTED]
+### Phase 2: Retire the Landed Up-First Proof to the `k = 0` Instance (CONTINGENT) [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: `exists_ladderPath_through_deleted_exact_upfirst_of_pend_past` keeps its signature
 byte-for-byte and gets a one-line proof body: the `k = 0`, `n₀ := nxtAt g z` instance of Phase 1's
 declaration. If that instance does not reduce exactly, the landed proof is left untouched.
 
 **Tasks**:
-- [ ] Attempt the instance: `n₀ := nxtAt g z`, `k := 0`, `hk := by omega`. Check that the
+- [x] Attempt the instance: `n₀ := nxtAt g z`, `k := 0`, `hk := by omega`. Check that the
       generalized `hgap` (`nxtAt g z + m * (P + 1) + k ≤ cntAt g z`) and `hslack`
       (`HasForwardSlack g z (m * (P + 1) + k) (nxtAt g z)`) reduce to the landed binders at
-      `k = 0`, with `Nat.add_zero` rewrites only.
-- [ ] If it reduces: replace the proof body, leaving the signature lines untouched.
-- [ ] If it does not reduce: STOP. Leave the landed declaration exactly as it stands, close this
+      `k = 0`, with `Nat.add_zero` rewrites only. *(deviation: altered — the binders DO reduce at
+      `k = 0`, but the instance cannot be taken: Phase 1's declaration is PROVED FROM the landed
+      theorem, so retiring the landed proof to it is circular)*
+- [ ] If it reduces: replace the proof body, leaving the signature lines untouched. *(deviation:
+      skipped — would be circular; see the Reasoned Exclusions record below)*
+- [x] If it does not reduce: STOP. Leave the landed declaration exactly as it stands, close this
       phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record naming the
       specific binder that failed to reduce and the goal state observed, and proceed to Phase 3.
       Do NOT alter the landed signature to make the instance fit — that is exactly the
       same-name-different-signature drift `plan-compliance.md`'s Statement Fidelity section
-      forbids.
-- [ ] Either way: `bash scripts/typst-sync-check.sh --fix` and stage
-      `typst/generated/status.typ` with the Lean change.
+      forbids. *(the stated fallback was taken, for a different reason than anticipated:
+      circularity, not binder mismatch)*
+- [x] Either way: `bash scripts/typst-sync-check.sh --fix` and stage
+      `typst/generated/status.typ` with the Lean change. *(deviation: skipped — this phase makes
+      no Lean change, so no line counts moved and there is nothing to regenerate or stage)*
 
 **Timing**: 45 minutes
 
@@ -311,6 +316,22 @@ no downstream consumer's elaboration can be affected.
 - `bash .claude/scripts/lean-challenge-snapshot.sh --check` is run and its verdict recorded; per
   `plan-compliance.md` the verdict is ADVISORY — a drift finding is investigated, never treated
   as an automatic failure.
+
+**Verification outcome**: the full-project `lake build` closing Phase 1 is the last build before
+this phase and no Lean file was edited here, so the build evidence carries over unchanged (exit
+0, zero `error:` lines, `.olean` newer than source for every touched module). `git diff` on
+`LadderChain.lean` shows no change in this phase at all, so the landed signature is trivially
+unchanged. `lean-challenge-snapshot.sh --check` was NOT run: no Challenge snapshot exists for
+this task (`specs/909_.../challenge/` is absent — the snapshot is created at plan time and this
+dispatch's plan round did not create one), so there is no recorded baseline to compare against.
+Recorded as absent rather than as a pass or a drift.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Replacing `exists_ladderPath_through_deleted_exact_upfirst_of_pend_past`'s proof body with the `k = 0`, `n₀ := nxtAt g z` instance of Phase 1's declaration | CIRCULAR. The plan assumed Phase 1 would be built as an independent copy of the landed spine with a lowered final anchor, making the landed theorem a specialization of it. That spine is not implementable with the landed overshoot loop (which pins its slack amount to `R * l + budget * l` at register `nxtAt g z` and so destroys the extra `k`), so Phase 1 was instead landed by REDUCTION to the landed theorem: it re-lifts the walk with the anchor at `n₀` and then applies `exists_ladderPath_through_deleted_exact_upfirst_of_pend_past` as a black box. Deriving the landed theorem from Phase 1's declaration would therefore make the landed theorem depend on itself. | `LadderChain.lean`, `exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past`'s step (C) calls `exists_ladderPath_through_deleted_exact_upfirst_of_pend_past` directly; Phase 1's recorded PLAN-SPINE DEVIATION note states why the independent spine is unavailable. |
+| The near-duplication this phase existed to remove | NOT INCURRED, so there is nothing to remove. The reduction route added ~70 lines that share no proof text with the landed spine (no pigeonhole block, no raise, no overshoot loop, no remainder deletion), rather than the ~140-line near-duplicate the plan anticipated. The module therefore carries one copy of the spine, which is the outcome this phase was scheduled to secure. | `git diff --stat` for the Phase 1 commit: 119 added lines in `LadderChain.lean` for one new declaration plus one `longFile` baseline line. |
 
 ---
 
