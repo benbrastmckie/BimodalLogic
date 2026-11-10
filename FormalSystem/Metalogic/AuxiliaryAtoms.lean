@@ -635,4 +635,97 @@ theorem aaIdx_spec (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTas
   exact (PlusTruth.neg_iff M τ t _).mp (hdisj _ hlt i hi hne F M τ t)
     ((PlusTruth.and_iff M τ t _ _).mpr ⟨htr, hai⟩)
 
+/-! ## The antecedent holds at the constructed model -/
+
+/--
+**The auxiliary-atom model satisfies the whole Auxiliary-Atoms antecedent**, on every history of
+the cone frame anchored at an `inr` node with empty record.
+
+The three conjuncts:
+
+* **initial** — `aaState` at an `inr` node with empty record is `aaRun … [] = b₀` by `rfl`, and
+  `aaModel_atom_q` reads that back as `q_{b₀}`;
+* **exclusivity** — `aaModel_atom_q` at two indices says the node's machine state is both `j` and
+  `j'`, and `aaState` is a function, so `j = j'`; the diagonal is `top`;
+* **step** — the only branch with work in it. At a cone node `ρ'(s)` where `q_j` and `aᵢ` both
+  hold, `aᵢ`'s truth is transferred to the base model in two moves: `aaModel_valuation_off`
+  together with `plusTruthAt_congr_of_fresh_family` (reading `hfreshA`) replaces the
+  auxiliary-atom valuation by the pulled-back one, and the morphism's own truth equivalence
+  carries it to `M` along `g.mapH ρ'`. `aaIdx_spec` then forces `aaIdx … (coneF (ρ'(s))) = i`,
+  which is the input `aaState` actually stepped on, so `aaState_step` computes the machine state
+  at `η'(s + 1)` as `p j i` for *every* history `η'` agreeing with `ρ'` at `s` — which is what
+  the `⊡` in the step clause's consequent quantifies over — and `plusTruthAt_next_iff_add_one`
+  turns the `X` into `s + 1`.
+
+**Exhaustiveness is not consumed here.** The step clause's antecedent is an implication, so a
+node at which no `aᵢ` holds places no demand on the machine and the `aaIdx` fallback is never
+read. Exhaustiveness is what makes the rule *useful* — it is what pins the machine's run down to
+one run — not what makes it sound. See `aa_sound_int` for the same observation at the headline.
+
+Paper: — (formalization-native; the paper's Lemma 6 argues on a tree model, not on a recorded
+cone)
+-/
+theorem plusTruthAt_aaAnte (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)
+    (qa : ℕ → Atom) (m k : ℕ) (a : ℕ → PlusFormula) (p : ℕ → ℕ → ℕ) (b₀ : ℕ) (hb₀ : b₀ < m)
+    (hinj : ∀ j, j < m → ∀ j', j' < m → qa j = qa j' → j = j')
+    (hp : ∀ j, j < m → ∀ i, i < k → p j i < m)
+    (ha : ∀ i, i < k → (a i).StateLocal)
+    (hdisj : ∀ i, i < k → ∀ i', i' < k → i ≠ i' → PlusValidInt (((a i).and (a i')).neg))
+    (hfreshA : ∀ j, j < m → ∀ i, i < k → Fresh (qa j) (a i))
+    (τ' : WorldHistory (coneFrame F).toTaskFrame) (x : ↑intOrder) (ω : F.WorldState)
+    (hax : τ'.state x = .inr (ω, [])) :
+    PlusTruthAt (aaModel F M qa m (aaState p b₀ (aaIdx F M a k))) τ' x
+      (aaAnte qa m k a p b₀) := by
+  obtain ⟨g, hgf, hinv⟩ :=
+    @TwoWayBounded.plus_invariance_of_isZTime intOrder (coneFrame F) F
+      (coneFrame_isRegular F) ‹F.IsRegular›
+      (inferInstanceAs (SuccOrder ℤ)) (inferInstanceAs (IsSuccArchimedean ℤ))
+      coneF (coneF_twoWayBounded F) (coneF_surjective (E := F.step)) M
+  have hpull : ∀ (z : (coneFrame F).WorldState) (r : Atom),
+      (g.pullM M).valuation z r ↔ M.valuation (coneF z) r := by
+    intro z r
+    change M.valuation (g.toFun z) r ↔ M.valuation (coneF z) r
+    rw [hgf]
+  have hV : ∀ (z : (coneFrame F).WorldState) (r : Atom), (∀ j, j < m → r ≠ qa j) →
+      ((aaModel F M qa m (aaState p b₀ (aaIdx F M a k))).valuation z r ↔
+        (g.pullM M).valuation z r) :=
+    fun z r hr =>
+      (aaModel_valuation_off F M qa m _ z r hr).trans (hpull z r).symm
+  have hcongr := plusTruthAt_congr_of_fresh_family
+    (aaModel F M qa m (aaState p b₀ (aaIdx F M a k))) (g.pullM M) qa m hV
+  refine (PlusTruth.and_iff _ τ' x _ _).mpr
+    ⟨(PlusTruth.and_iff _ τ' x _ _).mpr ⟨?_, ?_⟩, ?_⟩
+  · -- the initial conjunct
+    have h0 : aaState p b₀ (aaIdx F M a k) (τ'.state x) = b₀ := by rw [hax]; rfl
+    exact (aaModel_atom_q F M qa m _ hinj _ b₀ hb₀).mpr h0
+  · -- the step conjunct
+    refine (PlusTruth.stab_iff _ τ' x _).mpr fun ρ' hρ => (gle_iff _ ρ' x _).mpr fun s hs => ?_
+    refine (bigAnd_iff _ ρ' s _ m).mpr fun j hj => (bigAnd_iff _ ρ' s _ k).mpr fun i hi => ?_
+    refine (PlusTruth.imp_iff _ ρ' s _ _).mpr fun hand => ?_
+    obtain ⟨hqj, hai⟩ := (PlusTruth.and_iff _ ρ' s _ _).mp hand
+    refine (PlusTruth.stab_iff _ ρ' s _).mpr fun η' he => ?_
+    refine (plusTruthAt_next_iff_add_one _ η' s _).mpr ?_
+    refine (aaModel_atom_q F M qa m _ hinj _ (p j i) (hp j hj i hi)).mpr ?_
+    have hanchor : ρ'.state x = .inr (ω, []) := hρ.symm.trans hax
+    have hstep := aaState_step F p b₀ (aaIdx F M a k) x ω ρ' hanchor s hs η' he.symm
+    have hjeq : aaState p b₀ (aaIdx F M a k) (ρ'.state s) = j :=
+      (aaModel_atom_q F M qa m _ hinj _ j hj).mp hqj
+    have hbase : PlusTruthAt M (g.mapH ρ') s (a i) :=
+      (hinv (a i) ρ' s).mp ((hcongr (a i) (fun jj hjj => hfreshA jj hjj i hi) ρ' s).mp hai)
+    have hidx : aaIdx F M a k (coneF (ρ'.state s)) = i := by
+      have h0 := aaIdx_spec F M a k ha hdisj (g.mapH ρ') s i hi hbase
+      rwa [HistMap.mapH_state, hgf] at h0
+    rw [hstep, hjeq, hidx]
+  · -- the exclusivity conjunct
+    refine (PlusTruth.stab_iff _ τ' x _).mpr fun ρ' _ => (gle_iff _ ρ' x _).mpr fun s _ => ?_
+    refine (bigAnd_iff _ ρ' s _ m).mpr fun j hj => (bigAnd_iff _ ρ' s _ m).mpr fun j' hj' => ?_
+    rcases eq_or_ne j j' with rfl | hne
+    · rw [if_pos rfl]
+      exact PlusTruth.top_true _ ρ' s
+    · rw [if_neg hne]
+      refine (PlusTruth.neg_iff _ ρ' s _).mpr fun hc => ?_
+      obtain ⟨h1, h2⟩ := (PlusTruth.and_iff _ ρ' s _ _).mp hc
+      exact hne (((aaModel_atom_q F M qa m _ hinj _ j hj).mp h1).symm.trans
+        ((aaModel_atom_q F M qa m _ hinj _ j' hj').mp h2))
+
 end FormalSystem.Metalogic.AuxiliaryAtoms

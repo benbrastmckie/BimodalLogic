@@ -559,7 +559,7 @@ which is the only thing that can observe a break confined to this still-unimport
 
 ---
 
-### Phase 5: The antecedent holds at the constructed model [NOT STARTED]
+### Phase 5: The antecedent holds at the constructed model [COMPLETED]
 
 **Goal**: Prove `plusTruthAt_aaAnte` — the auxiliary-atom model satisfies the whole antecedent on
 every history of the cone anchored at an `inr` empty-record node.
