@@ -824,7 +824,7 @@ to any `theorem` or `def` line (`git diff -U0 -- 'FormalSystem/**/*.lean' | grep
 
 ---
 
-### Phase 7: `LadderCell.lean` — the Common-Shift Sub-Regime and the Collision Case Split [NOT STARTED]
+### Phase 7: `LadderCell.lean` — the Common-Shift Sub-Regime and the Collision Case Split [COMPLETED]
 
 **Goal**: A new module `LadderCell.lean` beside `LadderChain.lean`, importing it alone, holding
 the cell-level material `LadderChain.lean` has no room for: the UPWARD inclusion in the
@@ -835,11 +835,11 @@ landed inclusions address. Both are useful on either branch of Phase 8.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean` with a contract
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean` with a contract
   docstring stating its one argument (the cell level: inclusions between cells at
   `kappa`-colliding counter states, and nothing about pumps or pins), and wire it into
   `FormalSystem/Metalogic/Decidability/RaySummary.lean` and `FormalSystem.lean`.
-- [ ] `cellAt_subset_of_common_shift_of_pend_past`: in the pending-forever regime (`n + 2 ≤ c`)
+- [x] `cellAt_subset_of_common_shift_of_pend_past`: in the pending-forever regime (`n + 2 ≤ c`)
   at countdown at least `Tc`, the cell at `(q, c, n)` is contained in the cell at
   `(q, c + m · (P + 1), n + m · (P + 1))`. The construction is the landed register-held iterated
   duplication read through `exists_ladderPath_of_walk_nxt_at` with the anchor parameter
@@ -847,22 +847,22 @@ landed inclusions address. Both are useful on either branch of Phase 8.
   window, because the duplication raises the countdown at `z` by exactly `m · (P + 1)` while the
   pins above `z` keep their countdowns, so the pin bound has exactly `m · (P + 1)` more room than
   it needs at the base pin. Signature pinned in the Challenge block below.
-- [ ] If that anchor clause does NOT close from the widened window, do not weaken the statement
+- [x] If that anchor clause does NOT close from the widened window, do not weaken the statement
   and do not substitute a different one: close this phase `[BLOCKED]`, record the goal state
   reached verbatim, and let Phase 9 proceed on the sub-regime `n' = n` alone. The case split
-  below lands either way, so the phase has a deliverable even then.
-- [ ] `kappa_collision_regimes`: a `kappa`-collision `kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')`
+  below lands either way, so the phase has a deliverable even then. *(escape NOT taken: the anchor clause closed from the widened window as predicted, so the statement landed unweakened at the pinned signature)*
+- [x] `kappa_collision_regimes`: a `kappa`-collision `kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')`
   at a common object state, under `ParamsOk`, is in exactly one of the two sub-regimes the landed
   inclusions address — a common shift of both coordinates by a multiple of `P + 1`, or an equal
   register with the countdowns differing by such a multiple. Prove it from the landed destructors
   `kappa_eq_components`, `eq_or_both_ge_of_min_eq` and `clipIdx_regime_of_eq` (the last needs
   `2 ≤ B`, which `(K4)` supplies), with `kappa_eq_of_shift` as the non-vacuity witness. State it
   as a disjunction over named arithmetic facts, not over cells, so Phase 9 can consume it on
-  either branch.
-- [ ] Regenerate the inventory blocks and add the hand-written description cell for the new
+  either branch. *(deviation: altered — landed as a THREE-branch disjunction, not two. The planned two-branch shape is NOT derivable from the three named destructors plus `(K4)`'s `2 ≤ B`: the gap coordinate clips at `B`, so a collision whose gaps are both saturated at the clip on the same side of the window satisfies neither alternative. `kappa_collision_two_regimes_refuted` is the compiled refutation, at `Tc = Tn = P = 0`, `B = 2` and the pairs `(0, 2)`, `(0, 3)`; it refutes that derivation alone and asserts nothing about the two-branch form under full `ParamsOk`. The statement was explicitly unpinned in the Challenge block as a composite whose exact shape is fixed by the landed transports it composes, which is the latitude this alteration uses. Phase 9 must dispatch or exclude the third branch.)*
+- [x] Regenerate the inventory blocks and add the hand-written description cell for the new
   module: `bash scripts/check-module-invariants.sh --emit-inventory` then `--check`.
-- [ ] Axiom-test pins for both new theorems, inside the obligation block.
-- [ ] Prohibited: no `sorry`, no vacuous placeholder, no statement under the reserved name
+- [x] Axiom-test pins for both new theorems, inside the obligation block. *(three pins: the two named theorems plus `kappa_collision_two_regimes_refuted`)*
+- [x] Prohibited: no `sorry`, no vacuous placeholder, no statement under the reserved name
   `cellLE_zero_const_of_kappa_eq`, and no edit to any `ParamsOk` conjunct.
 
 **Timing**: 2 hours
@@ -903,6 +903,35 @@ other dependent.
 - `grep -cE 'sorry|native_decide|^axiom|:= True|:= trivial' FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean` is 0.
 - `grep -rn 'cellLE_zero_const_of_kappa_eq' FormalSystem/ Tests/` shows the reserved name on docstring lines only, with no `theorem` or `def` claiming it.
 - `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0; `bash .claude/scripts/check-task-references.sh --quiet` exits 0 on every changed file.
+
+#### Verification Notes (dispatch 6)
+
+All of this phase's own `interface`-tier criteria were run and are green:
+
+| Check | Result |
+|-------|--------|
+| guarded scoped build `… LadderCell` | exit 0, zero `error:`, zero `warning:` |
+| guarded scoped build `… FormalSystem` | exit 0, zero `error:`, 2,969 jobs |
+| guarded scoped build `… BimodalTest.Metalogic.KTypeSummaryAxiomTest` | exit 0, 2,411 jobs |
+| `#print axioms` on the three new pins | standard profile on the two positive results, `propext`/`Quot.sound` on the refutation; no `sorryAx` |
+| pinned signature of `cellAt_subset_of_common_shift_of_pend_past` | matches the Challenge block token for token (modulo the block's stated ASCII) |
+| vacuity grep on `LadderCell.lean` | 0 matches |
+| reserved name `cellLE_zero_const_of_kappa_eq` | 10 occurrences repo-wide, all docstring/prose; 0 claimed by a `theorem`/`def`/`lemma` |
+| `check-module-invariants.sh --check` | exit 0, ALL CHECKS PASSED |
+| `check-task-references.sh --quiet` | exit 0 |
+| declaration churn in `LadderChain.lean` | 0 — no existing proof changed |
+
+Scope hypothesis confirmed with one addition: the root `README.md` inventory totals block is a
+FOURTH generated block the regeneration rewrites (750 live files, 214,323 lines), so the change is
+eight files plus the new module rather than six or seven. `KTypeSummaryAxiomTest.lean`'s recorded
+`longFile` ceiling was raised from 2,100 to 2,200 to admit the three new pins and their prose;
+`LadderChain.lean`'s own 2,300 baseline was NOT touched and its line count is unchanged at 2,267.
+
+The complete gate set declared by this plan's final phase was NOT independently run here — it is
+deferred to the batch stage of the invocation that dispatched this phase, per the dispatch's batch
+gate deferral and `context/contracts/phase-closure.md`'s no-promotion-without-evidence carve-out.
+This phase's tier is `interface`, and its covering checks are the three guarded scoped builds and
+the module-invariants run above, all green.
 
 ---
 

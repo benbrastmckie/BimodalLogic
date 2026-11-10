@@ -27,6 +27,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.LadderAgree
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderPump
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderPin
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderChain
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderCell
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis

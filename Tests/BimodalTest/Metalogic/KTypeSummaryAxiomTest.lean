@@ -108,7 +108,7 @@ expectation to rewrite.
 -- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): this is one
 -- axiom-profile ledger for the summary layer and its requirement sections stay together, so the
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
-set_option linter.style.longFile 2100
+set_option linter.style.longFile 2200
 
 namespace BimodalTest.Metalogic
 
@@ -1769,6 +1769,40 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 /-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.hasForwardSlack_zero' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.hasForwardSlack_zero
+
+/-! ## Requirement (W): the cell level (`RaySummary/LadderCell.lean`)
+
+`cellAt_subset_of_common_shift_of_pend_past`: the UPWARD cell inclusion along the COMMON-SHIFT
+chain — the sub-regime `cellAt_subset_of_shift_of_pend_past`'s docstring names and does not
+state, with the register carried up by the same multiple of `P + 1` as the countdown. ONE
+direction only, exactly as for the register-held sub-regime: no downward inclusion is claimed by
+either, and the depth-`0` cell obligation under `ParamsOk` is neither proved nor refuted by these
+pins. `kappa_collision_regimes`: the collision case split, over arithmetic facts rather than over
+cells, with THREE branches — equal register, common shift, and a SATURATED gap coordinate that
+neither inclusion addresses. `kappa_collision_two_regimes_refuted`: the compiled refutation of
+the two-branch form as a consequence of the collision destructors together with `(K4)`'s
+`2 ≤ B`, which is why the third branch is carried; it refutes that derivation alone and asserts
+nothing about the two-branch form under full `ParamsOk`. The standard profile on the two
+positive results, and `propext` with `Quot.sound` alone — below the standard profile — on the
+refutation, which consumes no choice. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_subset_of_common_shift_of_pend_past' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms cellAt_subset_of_common_shift_of_pend_past
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.kappa_collision_regimes' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.kappa_collision_regimes
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.kappa_collision_two_regimes_refuted' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.kappa_collision_two_regimes_refuted
 
 /-! ## Requirement (W): the pin layer (`RaySummary/LadderPin.lean`)
 
