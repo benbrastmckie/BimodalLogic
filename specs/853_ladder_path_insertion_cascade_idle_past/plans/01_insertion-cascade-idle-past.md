@@ -391,7 +391,7 @@ axiom test, changing no existing signature, so guarded scoped builds of
 
 ---
 
-### Phase 5: The Two Existentials [NOT STARTED]
+### Phase 5: The Two Existentials [COMPLETED]
 
 **Goal**: Both unclaimed names landed. The idle-past half assembles Phases 1-4 with the four
 landed LOCAL conditions and the two landed pointwise facts; the join is `by_cases` on the
@@ -399,14 +399,14 @@ pending-past predicate over it and the landed pending-forever half.
 
 **Tasks**:
 
-- [ ] `exists_ladderPath_at_region_of_idle_past` (Goal, signature as pinned below). Derive `pend (objAt g a) = true` from `hl` and `hcl` through `cntAt_eq_zero_of_idle` rather than taking it as a binder — the landed pending-forever half does not take it either, and adding it would drift from the pinned signature.
-- [ ] Obtain `u` from `exists_region_start_of_idle_past` on the regime witness, then show `u < v`: `v` is pending (an idle `v` forces `cntAt g v = 0`, so `hvreg` reads `a ≤ v` and with `hv` gives `v = a`, contradicting `a` pending); and `v < u` would place the idle `u` inside `v`'s own pending span by `cntAt_sub_of_pend g hg v`, since `v < u ≤ a ≤ v + cntAt g v`.
-- [ ] Apply `exists_ladderPath_of_walk_of_pins (insObj g a l u l) (insCnt g a l u l)` with: `insObj_step hg hl hrep u l (le_of_lt hua') (hself u _ hu0)` for `hw`; `insCnt_idle hg hpa hcl` for `hidle`; `insCnt_pend_pend hg hl hpa hcl u l hu0 hua'` and `insCnt_pend_idle hg hl hpa hcl u l hu0 hua'` for `hpp`/`hpi`; and Phase 4's `insPins_of_region_start` for `hpins`.
-- [ ] Read the conclusion at `v` through `insObj_of_gt u l v hlt` then `spliceObj_eq_of_le hl v hv` for the object half, and `insCnt_of_gt u l v hlt` then `spliceCnt_add_of_mem_region hl v hv hvreg` for the countdown half.
-- [ ] `exists_ladderPath_at_region` (Goal, signature as pinned below): `by_cases hpast : ∀ p : ℤ, p ≤ a → pend (objAt g p) = true`; on the `true` branch apply the landed `exists_ladderPath_at_region_of_pend_past` (which does not read `hself`); on the `false` branch `push_neg` and `Bool.not_eq_true` give the regime witness for the idle-past half.
-- [ ] Docstring both. State explicitly: `hself` is the self-loop premise the parent's Phase 11.11 decided to carry, it is a genuine additional premise on a general object relation and not a consequence of `IsLadderPath`, it is stated path-locally (only at the path's own idle positions at or below `a`) rather than globally over `Q`, and the join is unconditional in the REGIME sense — it needs no pending-past hypothesis — while still carrying `hself` because its idle-past branch does. Cite `specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-decision.lean` by path for the probe whose carrier's `step` is total, and say that the probe therefore decides refutability and not provability.
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: a `#guard_msgs in #print axioms` pin for each of the two names.
-- [ ] Record in `issues.jsonl` the `hself` shape that actually worked, and whether the `u < v` argument needed both halves as written.
+- [x] `exists_ladderPath_at_region_of_idle_past` (Goal, signature as pinned below). Derive `pend (objAt g a) = true` from `hl` and `hcl` through `cntAt_eq_zero_of_idle` rather than taking it as a binder — the landed pending-forever half does not take it either, and adding it would drift from the pinned signature.
+- [x] Obtain `u` from `exists_region_start_of_idle_past` on the regime witness, then show `u < v`: `v` is pending (an idle `v` forces `cntAt g v = 0`, so `hvreg` reads `a ≤ v` and with `hv` gives `v = a`, contradicting `a` pending); and `v < u` would place the idle `u` inside `v`'s own pending span by `cntAt_sub_of_pend g hg v`, since `v < u ≤ a ≤ v + cntAt g v`.
+- [x] Apply `exists_ladderPath_of_walk_of_pins (insObj g a l u l) (insCnt g a l u l)` with: `insObj_step hg hl hrep u l (le_of_lt hua') (hself u _ hu0)` for `hw`; `insCnt_idle hg hpa hcl` for `hidle`; `insCnt_pend_pend hg hl hpa hcl u l hu0 hua'` and `insCnt_pend_idle hg hl hpa hcl u l hu0 hua'` for `hpp`/`hpi`; and Phase 4's `insPins_of_region_start` for `hpins`. *(deviation: altered — each cited lemma is applied with its full explicit argument list (`insCnt_idle hg hpa hcl u l`, not `insCnt_idle hg hpa hcl`) and the `u ≤ a` slots are discharged by `by omega` rather than `le_of_lt hua'`; same lemmas, same routing)*
+- [x] Read the conclusion at `v` through `insObj_of_gt u l v hlt` then `spliceObj_eq_of_le hl v hv` for the object half, and `insCnt_of_gt u l v hlt` then `spliceCnt_add_of_mem_region hl v hv hvreg` for the countdown half.
+- [x] `exists_ladderPath_at_region` (Goal, signature as pinned below): `by_cases hpast : ∀ p : ℤ, p ≤ a → pend (objAt g p) = true`; on the `true` branch apply the landed `exists_ladderPath_at_region_of_pend_past` (which does not read `hself`); on the `false` branch `push_neg` and `Bool.not_eq_true` give the regime witness for the idle-past half. *(deviation: altered — `push Not` in place of the named `push_neg`, which is deprecated on this toolchain and would add two warnings to a warning-free module; same tactic, repository-standard surface)*
+- [x] Docstring both. State explicitly: `hself` is the self-loop premise the parent's Phase 11.11 decided to carry, it is a genuine additional premise on a general object relation and not a consequence of `IsLadderPath`, it is stated path-locally (only at the path's own idle positions at or below `a`) rather than globally over `Q`, and the join is unconditional in the REGIME sense — it needs no pending-past hypothesis — while still carrying `hself` because its idle-past branch does. Cite `specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-decision.lean` by path for the probe whose carrier's `step` is total, and say that the probe therefore decides refutability and not provability.
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: a `#guard_msgs in #print axioms` pin for each of the two names.
+- [x] Record in `issues.jsonl` the `hself` shape that actually worked, and whether the `u < v` argument needed both halves as written.
 
 **Timing**: 2 hours
 

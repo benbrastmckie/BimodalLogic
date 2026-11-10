@@ -2270,6 +2270,49 @@ ladder paths: both `exists_ladderPath_at_region*` names remain owed here, and
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.insPins_of_region_start
 
+/-! ### The two existentials of the idle-past regime
+
+`exists_ladderPath_at_region_of_idle_past` and `exists_ladderPath_at_region` are the interface
+the counter lift reads at the comparison position, in the regime where the splice point has an
+idle position in its past and in both regimes joined. Four things these pins record that the
+names do not carry:
+
+* **The cascade collapsed to a SINGLE insertion.** The insertion site is the region start of `a`'s
+  own region and the depth is `d := l`; that choice moves every earlier region start down by `l`
+  together, so only the distance to the raised pin grows and the growth is exactly the raise.
+  There is no iteration in either dependency closure, and so no doubling recurrence:
+  `cascadeDemand`, `cascadeDemand_add_succ`, `cascadeDemand_le_cascadeBound`, `pinnedRegions*` and
+  `pin_deficit_le_of_lengthen` are all unconsumed by these two proofs.
+* **`hself` is a real binder, carried path-locally.** Both names take
+  `∀ p ≤ a, pend (objAt g p) = false → step (objAt g p) (objAt g p) = true`. The self-loop at an
+  idle object does not follow from `IsLadderPath`, which constrains `step` only along the original
+  walk, and the collapsed block of the inserted walk needs it at exactly one position. It is stated
+  at the path's own idle positions at or below `a` rather than globally over `Q`.
+* **The join is unconditional in the REGIME sense only.** `exists_ladderPath_at_region` carries
+  neither a pending-past nor an idle-past hypothesis — it `by_cases`es the dichotomy internally —
+  while still carrying `hself`, because its idle-past branch does.
+* **`pend (objAt g a) = true` is derived, not assumed.** Neither name takes it as a binder; both
+  obtain it from `0 < l ≤ cntAt g a` through `cntAt_eq_zero_of_idle`, matching
+  `exists_ladderPath_at_region_of_pend_past` above.
+
+The profile on each matches `insPins_of_region_start`'s, which together with
+`exists_ladderPath_of_walk_of_pins` is the only nontrivial thing in either closure.
+`exists_spliced_ladderPath_of_idle_past` is still claimed by nothing, and remains REFUTED rather
+than merely unclaimed: the conclusion these two names carry is NOT the `spliceObj`-shaped one. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region_of_idle_past' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms
+  FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region_of_idle_past
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region
+
 /-! ### `Real`'s three RELATIONAL conditions
 
 Conditions (2), (3) and (4) of `Real` — the three that quantify `relK` between two members, and

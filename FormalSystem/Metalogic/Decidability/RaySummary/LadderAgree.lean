@@ -1989,7 +1989,10 @@ theorem exists_region_start_of_idle_past (g : ℤ → LadderState Q pend)
 -- `linter.unusedVariables`, scoped to this declaration: the signature is pinned by the plan's
 -- Lean Challenge Statements block, and `hu1` — that the insertion site opens a region — is not
 -- read by the trichotomy itself. It is the hypothesis the pin bound of the next layer consumes,
--- so it is carried here rather than dropped and re-derived there.
+-- so it is carried here rather than dropped and re-derived there. `linter.unusedVariables` is the
+-- SOURCE-level linter; the environment linter's `unusedArguments` reports the same binder
+-- independently and is silenced by the paired `@[nolint unusedArguments]` attribute below, whose
+-- allowlist entry is in `scripts/nolint-attribute-allowlist.txt`.
 set_option linter.unusedVariables false in
 /-- **THE INSERTED WALK'S REGION STARTS, TRICHOTOMISED.** Insert the repeated segment's copy at
 `u`, the region start of `a`'s OWN region, with depth `d := l`. Then every region start of the
@@ -2015,6 +2018,7 @@ iteration with a doubling recurrence.
 under `hcl` (`cntAt_sub_of_pend`) kills `a < x < a + l`, and the seam itself is inside that span.
 The collapsed block `[u - l, u]` is killed separately and for a different reason — its whole image
 is the idle `u`, so a position there has an IDLE successor and cannot open a region. -/
+@[nolint unusedArguments]
 theorem insRegionStart_trichotomy {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
     (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
     (u : ℤ) (hu0 : pend (objAt g u) = false) (hu1 : pend (objAt g (u + 1)) = true)
@@ -2160,6 +2164,120 @@ theorem insPins_of_region_start {g : ℤ → LadderState Q pend} {a : ℤ} {l : 
       rw [hsc, hvc]
       have := pinCompat_of_ladderPath g hg (s - (l : ℤ)) (v - (l : ℤ)) hsi0 hsi1 hvi0 hvi1
       omega
+
+/-- **THE INTERFACE, IN THE IDLE-PAST REGIME.** The other half of the regime dichotomy: when the
+path has an idle position at or below the splice point, some ladder path carries the original's
+object state at the comparison position with the countdown raised by exactly the cycle length.
+The `spliceObj`-shaped conclusion is REFUTED here — `pinCompat_of_ladderPath` makes the splice's
+pin demand necessary, and on a pin-tight original it reads `s - v + l ≤ s - v` — so the walk that
+closes this is the INSERTED one (`insObj`/`insCnt`), which differs from the splice strictly below
+the comparison position's region start while leaving it pointwise fixed at and above.
+
+**THE CASCADE COLLAPSES TO A SINGLE INSERTION.** The insertion site is `u`, the region start of
+`a`'s OWN region (`exists_region_start_of_idle_past`), and the depth is `d := l`. Taking `u` there
+moves every earlier region start down by `l` TOGETHER, so their mutual distances are preserved and
+only their distance to the raised pin at `u` grows — by exactly `l`, which is exactly the raise.
+`insPins_of_region_start` discharges the lift lemma's pin side condition on that arithmetic with no
+iteration and no doubling recurrence. The cascade bookkeeping above (`pinnedRegions`,
+`pin_deficit_le_of_lengthen`, `cascadeDemand` and its sizing) is therefore the RECORD of the
+mechanism this construction was anticipated to need, and is not consumed by it.
+
+**THE ANCHOR OBLIGATION IS ELIMINATED RATHER THAN CONSTRUCTED**, through
+`exists_ladderPath_of_walk_of_pins`: the pin family's pairwise compatibility already determines
+the `Drift` register, so no `hn₀` has to be produced for a walk whose displacement is two-sided.
+
+**`hself` IS A GENUINE ADDITIONAL PREMISE.** The self-loop at the inserted idle object is the
+primitive the inserted-walk subsection above decided to carry explicitly on `insObj_step`, and it
+is carried through to this interface rather than discharged: `IsLadderPath` constrains `step` only
+along the original walk, so on a general object relation `step q q = true` at an idle `q` does NOT
+follow from the path's existence. It is stated PATH-LOCALLY — at the path's own idle positions at
+or below `a`, not globally over `Q` — which is the weakest form the collapsed block needs. The
+wired probe `specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-decision.lean`
+exhibits the construction at a single instance, and its carrier's `step` is TOTAL, so it pays none
+of this cost: it decides REFUTABILITY and not PROVABILITY.
+
+`pend (objAt g a) = true` is DERIVED from `hl` and `hcl` through `cntAt_eq_zero_of_idle` rather
+than taken as a binder, matching `exists_ladderPath_at_region_of_pend_past`, which does not take
+it either. -/
+theorem exists_ladderPath_at_region_of_idle_past
+    {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+    (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
+    (hidle : ∃ p : ℤ, p ≤ a ∧ pend (objAt g p) = false)
+    (hrep : objAt g a = objAt g (a + (l : ℤ)))
+    (hself : ∀ p : ℤ, p ≤ a → pend (objAt g p) = false →
+      step (objAt g p) (objAt g p) = true)
+    (v : ℤ) (hv : v ≤ a) (hvreg : a ≤ v + (cntAt g v : ℤ)) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' v = objAt g v ∧ cntAt g' v = cntAt g v + l := by
+  -- `a` is pending: an idle `a` would force `cntAt g a = 0`, contradicting `0 < l ≤ cntAt g a`
+  have hpa : pend (objAt g a) = true := by
+    by_contra h
+    rw [Bool.not_eq_true] at h
+    have h0 := cntAt_eq_zero_of_idle g hg a h
+    omega
+  obtain ⟨p, hp, hpi⟩ := hidle
+  obtain ⟨u, -, hua', hu0, hu1, hureg, hmax⟩ :=
+    exists_region_start_of_idle_past g hg a p hpa hp hpi
+  -- the comparison position is pending: an idle `v` carries countdown `0`, so `hvreg` reads
+  -- `a ≤ v` and with `hv` forces `v = a`, which is pending
+  have hvpend : pend (objAt g v) = true := by
+    by_contra h
+    rw [Bool.not_eq_true] at h
+    have h0 := cntAt_eq_zero_of_idle g hg v h
+    have hva : v = a := by omega
+    subst hva
+    exact Bool.false_ne_true (h.symm.trans hpa)
+  -- the insertion site is strictly below the comparison position: `v = u` collides pending with
+  -- idle, and `v < u` would place the idle `u` inside `v`'s own pending span, since
+  -- `v < u ≤ a ≤ v + cntAt g v`
+  have huv : u < v := by
+    by_contra hle
+    push Not at hle
+    rcases eq_or_lt_of_le hle with heq | hlt
+    · exact Bool.false_ne_true (hu0.symm.trans (heq ▸ hvpend))
+    · have hj : (u - v).toNat ≤ cntAt g v := by omega
+      have hpu := (cntAt_sub_of_pend g hg v hvpend _ hj).1
+      rw [show v + (((u - v).toNat : ℕ) : ℤ) = u by omega] at hpu
+      exact Bool.false_ne_true (hu0.symm.trans hpu)
+  obtain ⟨g', hg', hobj, hcnt⟩ :=
+    exists_ladderPath_of_walk_of_pins (step := step) (insObj g a l u l) (insCnt g a l u l)
+      (insObj_step hg hl hrep u l (by omega) (hself u (by omega) hu0))
+      (insCnt_idle hg hpa hcl u l)
+      (insCnt_pend_pend hg hl hpa hcl u l hu0 (by omega))
+      (insCnt_pend_idle hg hl hpa hcl u l hu0 (by omega))
+      (insPins_of_region_start hg hl hcl u hu0 hu1 hua' hureg hmax)
+  refine ⟨g', hg', ?_, ?_⟩
+  · rw [hobj v, insObj_of_gt u l v huv, spliceObj_eq_of_le hl v hv]
+  · rw [hcnt v, insCnt_of_gt u l v huv, spliceCnt_add_of_mem_region hl v hv hvreg]
+
+/-- **THE INTERFACE, JOINED OVER BOTH REGIMES.** `by_cases` on the pending-past predicate:
+the `true` branch is the landed `exists_ladderPath_at_region_of_pend_past` (which does not read
+`hself`), and the `false` branch is `exists_ladderPath_at_region_of_idle_past` on the negation's
+own witness. So the counter lift's admissibility half reads a single name at the comparison
+position and no longer has to case on the regime itself.
+
+**WHAT "UNCONDITIONAL" MEANS HERE, EXACTLY.** This name is unconditional in the REGIME sense —
+it carries no pending-past and no idle-past hypothesis, and the dichotomy is discharged inside the
+proof — and NOT in the sense of carrying no hypotheses at all. It still takes `hself`, because its
+idle-past branch does, and the self-loop at an idle object is a genuine additional premise on a
+general object relation rather than a consequence of `IsLadderPath`. Any record saying these two
+names would be landed with no binder added is brought current by that: the binder is `hself`, it is
+path-local, and it is not removable at this layer. -/
+theorem exists_ladderPath_at_region
+    {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+    (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
+    (hrep : objAt g a = objAt g (a + (l : ℤ)))
+    (hself : ∀ p : ℤ, p ≤ a → pend (objAt g p) = false →
+      step (objAt g p) (objAt g p) = true)
+    (v : ℤ) (hv : v ≤ a) (hvreg : a ≤ v + (cntAt g v : ℤ)) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' v = objAt g v ∧ cntAt g' v = cntAt g v + l := by
+  by_cases hpast : ∀ p : ℤ, p ≤ a → pend (objAt g p) = true
+  · exact exists_ladderPath_at_region_of_pend_past hg hl hcl hpast hrep v hv hvreg
+  · refine exists_ladderPath_at_region_of_idle_past hg hl hcl ?_ hrep hself v hv hvreg
+    push Not at hpast
+    obtain ⟨p, hp, hpne⟩ := hpast
+    exact ⟨p, hp, by simpa using hpne⟩
 
 end Cascade
 
