@@ -9895,7 +9895,8 @@
           }
         ],
         "scope_blind_count": 452
-      }
+      },
+      "topic": "completeness"
     },
     {
       "project_number": 895,
@@ -10887,7 +10888,8 @@
           }
         ],
         "scope_blind_count": 452
-      }
+      },
+      "topic": "completeness"
     },
     {
       "project_number": 896,
@@ -12141,7 +12143,8 @@
           }
         ],
         "scope_blind_count": 452
-      }
+      },
+      "topic": "completeness"
     },
     {
       "project_number": 897,
@@ -15566,7 +15569,8 @@
           }
         ],
         "scope_blind_count": 450
-      }
+      },
+      "topic": "completeness"
     },
     {
       "project_number": 900,
@@ -16494,7 +16498,8 @@
           }
         ],
         "scope_blind_count": 453
-      }
+      },
+      "topic": "completeness"
     },
     {
       "project_number": 901,
@@ -18107,7 +18112,8 @@
         ],
         "scope_blind_count": 452,
         "note": "trimmed to top 6 of 13 non-scope-blind verdicts for state-write arg-size limits; full 465-verdict record committed at task-proposals-audit.ndjson"
-      }
+      },
+      "topic": "completeness"
     },
     {
       "project_number": 906,
@@ -18205,7 +18211,8 @@
         ],
         "scope_blind_count": 452,
         "note": "trimmed to top 6 of 38 non-scope-blind verdicts for state-write arg-size limits; full 490-verdict record committed at task-proposals-audit.ndjson"
-      }
+      },
+      "topic": "completeness"
     },
     {
       "project_number": 907,
@@ -18215,7 +18222,7 @@
       "description": "Regenerate the deployed .claude/ tree in BimodalLogic, which two dispatches reported stale relative to the source store for six extensions (core, formal, lean, literature, memory, typst). Run deploy-headless.sh under the bounded-wait idiom (timeout 540, Bash tool timeout parameter 600000, per context/patterns/external-process-wait.md Rule 1), then verify with verify-deploy.sh and confirm the per-extension staleness warning from skill-base.sh no longer fires. Never hand-patch a deployed .claude/** file to clear the warning: that masks the divergence instead of fixing it. Neither reporting dispatch relied on a stale deployed command, so no prior work needs redoing. Recurrence of the condition addressed by closed task 715.",
       "effort": "small",
       "parent_task": 901,
-      "topic": null,
+      "topic": "agent-system",
       "dependencies": [],
       "created": "2026-11-09T20:16:48Z",
       "last_updated": "2026-11-09T20:16:48Z",
@@ -18230,7 +18237,7 @@
       "description": "Audit the 65 remaining \"Constraints consumed: Compositionality, Seriality, Limit, Saturation\" docstring lines across 16 library modules against what each declaration's proof actually projects, and correct the over-reporting ones.\n\nBackground. The completed work on L-plus invariance without Saturation established that such a line records the IsRegular binder PRESENT on a declaration, not the constraints the proof CONSUMES. Four lines in FormalSystem/Semantics/HistoryMorphism.lean and FormalSystem/Semantics/UniversalCover.lean over-reported in exactly that way and were corrected there; that over-claim is why the Saturation question looked open for as long as it did. Measurement found the residue is larger than first estimated: 65 occurrences across 16 files (FormalSystem/Semantics/Nomic/, Presheaf/, Extension/, Validity.lean, Correspondence/RigidityReal.lean, NomicLanguage/), not the ~20 initially reported. Correcting them was declared an explicit Non-Goal of that work, so the residue is unfiled.\n\nScope. For each occurrence, determine which constraints the proof actually projects -- the transplant-probe technique is proven: replace the bundling binder with explicit constraint hypotheses in a scratch copy and check it still compiles. Then correct the marker line where it over-reports. Many occurrences will be ACCURATE: a declaration that genuinely consumes Saturation keeps its line unchanged. This is an audit, not a sweep; a blind rewrite would be worse than the current state.\n\nConstraints to respect. The \"Constraints consumed:\" marker vocabulary is CLOSED (check-module-invariants.sh C34), and a side-attributing form such as \"source: ...; base: none\" is inadmissible on the marker line. Any phase touching a marker must name scripts/check-module-invariants.sh in its own verification tier -- a full lake build covers none of C34/C34a/C34b. typst/generated/status.typ is a mandatory file_scope member of any .lean-touching phase (typst-sync-check.sh pre-commit gate).\n\nEvidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two compiled transplant probes from the originating work.",
       "effort": "medium",
       "parent_task": 898,
-      "topic": null,
+      "topic": "documentation",
       "dependencies": [],
       "file_scope": [
         "FormalSystem/NomicLanguage/NomicFour.lean",
@@ -47154,7 +47161,8 @@
     "toolchain",
     "codebase-cleanup",
     "paper-alignment",
-    "build-performance"
+    "build-performance",
+    "syntax"
   ],
   "active_goal": "Close the residual repository-hygiene backlog"
 }

@@ -18,8 +18,7 @@ last stage below and are never dispatched ahead of, or batched with, L⁺ critic
 
 ## L^▷: what is landed, and what is parked
 
-L^▷ is a separate inductive embedding L⁺ constructor-to-constructor via `ofPlus`. Landed or at
-its final phase: the proof system with soundness, conservativity over TM⁺ in both directions and
+L^▷ is a separate inductive embedding L⁺ constructor-to-constructor via `ofPlus`. Landed: the proof system with soundness, conservativity over TM⁺ in both directions and
 over TM, and the collapse under `Determined` (856); `⊡φ ↔ ▷◁φ` on every regular frame (833); the
 definability split by frame class (854, 859); the conditional transfer corollaries (868). The
 ledger of L⁺ headline results against their L^▷ counterparts is 872's report.
@@ -29,11 +28,10 @@ The exploration backlog, every row `priority: low`:
 | Task | What it investigates | Gate |
 |---|---|---|
 | 873 | `OpenLanguage/Subformulas.lean` — subformula closure, `Finset`, decidable membership, and `subformulas_ofPlus` | none |
-| 874 | `OpenLanguage/Substitution.lean` — `substOpen`, `OpenAxiom.ofTMSubst`, and the direct L→L^▷ embedding | 856 |
-| 875 | incompleteness at Base, through both conservativity directions; the limit-closure schema in `▷`-form at Base/Dense | 856, 871 |
+| 874 | `OpenLanguage/Substitution.lean` — `substOpen`, `OpenAxiom.ofTMSubst`, and the direct L→L^▷ embedding | none (856 landed) |
+| 875 | incompleteness at Base, through both conservativity directions; the limit-closure schema in `▷`-form at Base/Dense | none (856, 871 landed) |
 | 869 | open-modal truth invariance along a ray-agreement lifting | none |
-| 860 | the `colourClock` bridge discharging `hmarkers` in the Base/Dense non-definability result | none |
-| 876 | **decision record only**: whether `⊡` *could* be removed as an `OpenFormula` primitive, and at what cost. No removal is attempted | 856 |
+| 876 | **decision record only**: whether `⊡` *could* be removed as an `OpenFormula` primitive, and at what cost. No removal is attempted | none (856 landed) |
 
 **872's six proposals (T1–T6) are not filed.** They stand in its report as the rest of this
 backlog; when L^▷ work resumes, T1 (the state-locality fragment) and T3 (non-redundancy of the
@@ -131,10 +129,11 @@ cited record, not here.
   and a regular witness), so `SωS` and Gurevich-Shelah are **not needed**. **The citable theorem**:
   `{φ | PlusValidZTime φ}` is decidable
   (`specs/878_lplus_ztime_decidability_paper_proof_repair/reports/01_lplus-ztime-decidability-proof-repair.md`
-  finding 7's statement and hypothesis list (H0)-(H6)), a **paper** theorem conditional on
-  **(H5)** — 870's oriented-forest Saturation lemma (`[COMPLETED]`,
-  `saturation_of_orientedForest`) and the universal-cover construction (897,
-  `[NOT STARTED]`). It gives **no** constructive decision procedure, **no** Lean
+  finding 7's statement and hypothesis list (H0)-(H6)), a **paper** theorem whose
+  **(H5)** is now **fully discharged** — both halves landed: 870's oriented-forest Saturation
+  lemma (`saturation_of_orientedForest`) and 897's universal-cover construction, composed with
+  `TwoWayBounded.plus_invariance_of_isZTime`. The theorem accordingly stands on (H0)-(H4) and
+  (H6) alone. It gives **no** constructive decision procedure, **no** Lean
   `Decidable (PlusValidZTime φ)` (still Stage 1's own aim), **no** elementary complexity bound,
   and **no** finite model property — a *regular*-model property instead (every ZTime-refutable
   formula is refuted on a finitely presented, not finite, doubly serial oriented forest). It is
@@ -150,92 +149,89 @@ cited record, not here.
 ## Run these next
 
 ```bash
-/orchestrate 878 --lit           # FIRST on the L⁺ front, and cheap: make the paper proof of ZTime decidability rigorous (gap G1, the forest gap)
-/orchestrate 870,871             # the oriented-forest Saturation lemma and the corrective repair; both feed 878 and 879. State it at oriented-forest strength (underlying undirected graph is a forest), not directed-path uniqueness alone (report 03 §1.2 note; 878 decision 7)
-/orchestrate 853,838 --hard --lit # Stage 1: the Phase 11.8 insertion cascade, batched with its blocker
-/orchestrate 856 --hard          # IN FLIGHT at its final phase: the L^▷ proof system. Finish it; it closes the L^▷ layer as it stands
-/orchestrate 872                 # IN FLIGHT: the transfer ledger. Concludes as a record; its proposals are NOT filed
-/orchestrate 867 --hard --lit    # Gabbay separation: first consumer is 879's doubled-automaton route, second the L^▷ translation. After the decidability front
-/orchestrate 879 --lit           # the L⁺ ZTime completeness programme's owner. Research; gated on 870, 871, 867
-/orchestrate 880                 # after 856: reposition L^▷ in the READMEs and record the Logos reading of ⊡
-/todo                            # 19 completed tasks read the open count high — safe to run now (864 has landed)
+/orchestrate 894,895,896 --hard --lit   # Stage 2: P2 -> P3 -> P4 of 879's ingredient table. Already dependency-ordered; dry-run clean. Lands soundness of the whole T3 system as a theorem
+/orchestrate 909,910 --hard --lit       # Stage 1's live open core: the register-lowering deletion and the saturated-gap residue. Needs the 909 -> 910 edge first (they share LadderCell.lean). A compiled refutation is as good an outcome as a proof
+/orchestrate 899,900 --hard             # P7/P8: the cut product lemma and the linear bridge. Both defer against 894 on docs/theorem-index.md -- run after it, or add serializing edges
+/orchestrate 905,906                    # the two research questions 901 filed: cross-certification elimination, and lcU-from-LC_n (879's Q1). Report only, no Lean
+/orchestrate 912,913,914                # agent-system: coupled generated surfaces in plan authoring, V10 pair paths, batch-gate narrowing. Off both fronts
+/todo                                   # 11 completed tasks read the open count high; CHANGE_LOG's last entry is 2026-10-04
 ```
 
-**`/todo` is no longer blocked.** 864 landed the limit-closure schema out of 559's probe
-directory, which was the one thing that had to precede archival.
+**(H5) is fully discharged.** 870 landed `saturation_of_orientedForest` and 897 landed the
+universal cover, so 878's paper theorem that `{φ | PlusValidZTime φ}` is decidable now stands on
+(H0)–(H4) and (H6) alone. It still yields no Lean `Decidable` instance, no complexity bound and
+no finite model property — a *regular*-model property instead. It is the hedge beside the engine,
+not a substitute for it.
 
-**761 is `[HOLD]`, parked mid-plan-v11 at Phase 11.12** precisely so the Stage 1 front can
-dispatch without its 40-path `file_scope` blocking it. `[HOLD]` is not resumable by an ordinary
-command: resuming needs `update-task-status.sh preflight ... unhold` or an explicit
-`/orchestrate 761 --implement`, and doing so re-imposes serialization on everything sharing the
-`RaySummary` library set, `docs/theorem-index.md`, `scripts/check-module-invariants.sh`,
-`specs/evidence/seam-gluing-ray-product/`, `specs/state.json` and `specs/TODO.md`.
+**The Stage 1 chain, bottom-up, is the whole of what remains on the decidability front.**
+`CellLEZeroConstOfKappaEq` under `ParamsOk` (refuted at the frozen `ParamsOkPre`, neither proved
+nor refuted under the real one — the live open core) gates `certStabK`, the one `Real` condition
+of six not claimed; which gates `real_certAdmK_of_paramsOk` and `real_subset_dmax`; which gate the
+ladder realization theorem; which is (W)'s run layer, the lift from one seam to validity; above
+which sits 763's `Decidable (PlusValidZTime φ)`, stated nowhere in the tree. The reserved name
+`cellLE_zero_const_of_kappa_eq` sits at the bottom of that chain, claimed by nothing. 909 and 910
+attack the core; 911 is the idle-cycle sharpening beside it.
 
-**Stage 1's open core is closed: 852 is `[COMPLETED]`.** The model-level pumping lemma for `tpOf`
-along a ladder path — hit independently in three implementation rounds and costed by no plan
-phase — is authored and landed. 853 is next, blocked on 838: batch as `/orchestrate 853,838`.
+**761 stays `[HOLD]`, and lifting it buys nothing yet.** 853 discharged what its plan still marks
+`[NOT STARTED]` at Phases 11.12 and 11.13 (`exists_ladderPath_at_region_of_idle_past` and the
+unconditional join), but 761 remains `[BLOCKED]` on two independent obligations — the cell
+agreement above and the open ladder-cell index — and resuming re-imposes serialization on
+everything sharing the `RaySummary` library set, `docs/theorem-index.md`,
+`scripts/check-module-invariants.sh`, `specs/evidence/seam-gluing-ray-product/`,
+`specs/state.json` and `specs/TODO.md`. Wait for 909/910 to report.
 
-**Do not dispatch 838, 844, 849, 850 or 851** except as 853's predecessor. That chain is spent:
-844/849/850/851 are `[COMPLETED]` and 838 is `[PARTIAL]` on a framing its own successors measured
-false. Re-planning the area from 838's two-sided framing is barred — read 844's and 849's records
-and 838's `.blocker-research.json` first.
+**The 838 chain is spent and closed.** 838 is `[COMPLETED]` at 10/10 phases: the restricted
+obligation `cellLE_zero_const_of_kappa_eq_of_forwardSlack` landed as a theorem concluding cell
+equality, and two decision gates returned compiled FAIL verdicts (the spanning-block device both
+ways, and the idle-gap lengthening — refuted one level below the pin condition, by `step` itself).
+Re-planning the area from 838's two-sided framing is barred; its residue is 909/910/911.
 **Coverage appendix (uncovered tasks)**:
 ```
 /orchestrate 178,502,570,604,664,714,743,781
 /orchestrate 817,818,821,829,830,831,832,873
-/orchestrate 890,894,899,900,905,906,907,908
-/orchestrate 909,910,911
+/orchestrate 890,907,908,911
 ```
 
 ## Next batches
 
 ```bash
-# Stage 1 — decidability of L⁺ at ZTime: the binding front. Paper proof and Lean engine side by side
-/orchestrate 878 --lit           # the paper proof made rigorous: gap G1 and the forest gap. The hedge against the engine
-/orchestrate 853,838 --hard --lit # the insertion cascade with its blocker. Shares LadderAgree.lean
-/orchestrate 837                 # Challenge-statement repair (researched); barred from implement dispatch by Statement Fidelity
-/orchestrate 763 --hard --lit    # the lift and the Decidable (PlusValidZTime φ) corollary — needs 761 resumed
-/orchestrate 714,781 --hard      # sliced-certificate internals (781 researched)
-# Stage 2 — completeness of L⁺ at ZTime: TM⁺ plus the limit-closure schema
-/orchestrate 870,871             # the Saturation lemma and the corrective repair; both gate 879, and 870 feeds 878's cover step — state the oriented-forest hypothesis (underlying undirected graph is a forest), not directed-path uniqueness alone (report 03 §1.2 note; 878 decision 7)
-/orchestrate 867 --hard --lit    # Gabbay separation over ℤ for PlusFormula; the doubled-automaton route is conditional on it
-/orchestrate 879 --lit           # the programme's owner: target statement, architecture, ingredient table, go/no-go
+# Stage 1 — decidability of L⁺ at ZTime: the binding front
+/orchestrate 909,910 --hard --lit        # the live open core: register-lowering deletion, saturated-gap residue. Needs the 909 -> 910 edge (shared LadderCell.lean)
+/orchestrate 911 --hard --lit            # the idle-cycle sharpening: where the object's idle states carry a reachable cycle, the lengthening IS available
+/orchestrate 763 --hard --lit            # the lift and the Decidable (PlusValidZTime φ) corollary — needs 761 resumed AND the chain above closed
+/orchestrate 714,781 --hard              # sliced-certificate internals (781 researched)
+# Stage 2 — completeness of L⁺ at ZTime: TM⁺ plus the until-form schema
+/orchestrate 894,895,896 --hard --lit    # P2/P3/P4 of 879's ingredient table, already dependency-ordered. Ends with T3 soundness a theorem
+/orchestrate 899,900 --hard              # P7/P8: the cut product lemma and the linear bridge. Defer against 894 on docs/theorem-index.md
+/orchestrate 905,906                     # the two questions 901 filed: cross-certification elimination; lcU-from-LC_n (Q1). Report only
 # Stage 2b — supporting semantics and metalogic
-/orchestrate 664,570 --lit       # corpus ingest and the C3 open question
-/orchestrate 830 --hard          # Γ-generalize decidableValidZTime; does NOT advance either aim
+/orchestrate 664,570 --lit               # corpus ingest and the C3 open question
+/orchestrate 830 --hard                  # Γ-generalize decidableValidZTime; does NOT advance either aim
 # Stage 3 — hygiene, build cost, datasets, docs. Off both critical paths
-/orchestrate 803,804,829         # build-cost front: SubformulaProperty elaboration (research + plan landed), fan-in, .lake/build CI cache
-/orchestrate 847,848             # external-source-store pair: phase commits drop source-store paths
-/orchestrate 845                 # name the typst-sync gate as a refusal cause — waits on 839
-/orchestrate 298,282,296,231     # the dataset chain behind the c7 labeling bug (298/282/296 partial)
-/orchestrate 178,604,743         # worked Examples/ pipeline, zstd .jsonl, typst-sync namespace resolution
-/orchestrate 751,787             # file_scope backfill for the overlap gate; unguarded .lake reader audit
-/orchestrate 777,779,780,816     # commit-path and plan-compliance records; 816 waits on 777
-/orchestrate 772,783,753,774     # jq re-serialization; conclusion-stage null-resolution and refuted-REASON recording
-/orchestrate 857,858,810,842     # agent-system defects: handoff-validation crash, --audit-verdict argv overflow, gate16, defect recording
-/orchestrate 768                 # lean-challenge-snapshot — separate cycle from 842 (shares the script)
-/orchestrate 817,818,821         # phantom-row inventory, directory-rollup tables (821 researched)
-/orchestrate 729,832             # purpose-written .title fields; local-disk reclamation (user decision on data/'s .partial files)
-/orchestrate 257                 # only once the Stage 0 token exists
+/orchestrate 912,913,914                 # agent-system: coupled generated surfaces in plan authoring, V10 pair paths, batch-gate narrowing
+/orchestrate 803,804,829                 # build-cost front: SubformulaProperty elaboration (research + plan landed), fan-in, .lake/build CI cache
+/orchestrate 298,282,296,231             # the dataset chain behind the c7 labeling bug (298/282/296 partial)
+/orchestrate 178,604,743                 # worked Examples/ pipeline, zstd .jsonl, typst-sync namespace resolution
+/orchestrate 817,818,821                 # phantom-row inventory, directory-rollup tables (821 researched)
+/orchestrate 787,832                     # unguarded .lake reader audit; local-disk reclamation (user decision on data/'s .partial files)
+/orchestrate 907,908                     # redeploy the stale .claude/ tree; constraints-consumed marker accuracy
+/orchestrate 890                         # GHR Lemma 10.2.3 case 5 erratum reference
+/orchestrate 257                         # only once the Stage 0 token exists
 # Stage 4 — the long fronts, off both critical paths
-/orchestrate 481 --hard          # the refuted predicate; a C9 register entry is a complete outcome
+/orchestrate 481 --hard                  # the refuted predicate; a C9 register entry is a complete outcome
 /orchestrate 831 --research --lit        # off-spine: the Log(all) = Log(ZTime) ∩ Log(Dense) dichotomy
 /orchestrate 428,429,410,411 --hard      # the tableau spine's middle — needs 428's scope ruled; 410 planned
 /orchestrate 430,412,482 --hard --lit    # the spine's terminus
 /orchestrate 502,497 --research --lit    # the STSA literature gate, then the G-operator gap
-/orchestrate 498,499,500 --hard  # the representation's two sides and their reconciliation
-/orchestrate 125,501,543 --hard  # the Jónsson–Tarski capstone, Until/Since on STSA, MF correspondence
-/orchestrate 177                 # last in the programme: README, docs/ and docstring polish
+/orchestrate 498,499,500 --hard          # the representation's two sides and their reconciliation
+/orchestrate 125,501,543 --hard          # the Jónsson–Tarski capstone, Until/Since on STSA, MF correspondence
+/orchestrate 177                         # last in the programme: README, docs/ and docstring polish
 # Stage 5 — L^▷ exploration. Secondary, priority low; never ahead of, or batched with, Stages 1–2
-/orchestrate 856 --hard          # the proof system, at its final phase. Finish it
-/orchestrate 872                 # the transfer ledger. A record; its proposals T1–T6 stay unfiled
-/orchestrate 880                 # after 856: READMEs present L^▷ as the extension under exploration; the Logos reading of ⊡
-/orchestrate 873                 # subformula closure (ungated)
-/orchestrate 874                 # substitution closure and the direct L→L^▷ embedding
-/orchestrate 875                 # incompleteness transfer; the limit-closure schema in ▷-form at Base/Dense. Gated on 871
-/orchestrate 869                 # open-modal invariance along a ray-agreement lifting
-/orchestrate 860                 # the colourClock bridge discharging hmarkers. Re-point its scope at the landed Independence module first
-/orchestrate 876                 # decision record only: could ⊡ go as an OpenFormula primitive, and at what cost. No removal
+/orchestrate 873                         # subformula closure (ungated)
+/orchestrate 874                         # substitution closure and the direct L→L^▷ embedding
+/orchestrate 875                         # incompleteness transfer; the limit-closure schema in ▷-form at Base/Dense (its 871 gate is discharged)
+/orchestrate 869                         # open-modal invariance along a ray-agreement lifting
+/orchestrate 876                         # decision record only: could ⊡ go as an OpenFormula primitive, and at what cost. No removal
 ```
 
 Each line is one invocation. Batches are dependency-inclusive — the engine re-derives eligibility
@@ -243,25 +239,26 @@ every cycle, so a batch holding a blocker and its dependent is correct, and one 
 dependent *without* its out-of-batch blocker is dead weight. `MAX_TASKS` is 8; the work-cycle
 budget is per task, per invocation (5 default, 13 under `--hard`), so **re-run the same line until
 every member reports terminal**. Shared file scope serializes a batch rather than breaking it; a
-task with no declared `file_scope` is invisible to the overlap gate (the blindness 751
-remediates). A cross-batch collision against a **live** session's lock is not bypassable by
+task with no declared `file_scope` is invisible to the overlap gate, and no open task
+remediates that blindness. A cross-batch collision against a **live** session's lock is not bypassable by
 `--allow-scope-collision`, which clears only the plan-level gate: wait for the holder, or batch
 with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
 
 ## Stage 0 — User rulings (no agent may transition these)
 
 - [ ] **Decide when 761 comes off `[HOLD]`.** Resuming it re-serializes the Stage 1 front behind
-      its 40-path scope; 763 is gated on it. Recommended: finish 853 first, now that 852 has landed
+      its 40-path scope; 763 is gated on it. 853 is done, so the Phase 11.12/11.13 reason for
+      waiting is discharged — but 761 is still `[BLOCKED]` on the cell agreement and the open
+      ladder-cell index, so there is a second reason to wait. Recommended: let 909/910 report first
 - [ ] Supply the Hugging Face account and token **257** is blocked on
-- [ ] Rule on **428**'s scope. Its one edge (465) is discharged and its `blockers` says "paused at
+- [ ] Rule on **428**'s scope. Its one edge is discharged and its `blockers` says "paused at
       4/5 cycles, NOT blocked", so the marker is mis-set: `/revise 428` to add phases for its four
       residual hypotheses, or `/spawn 428` to split them out
-- [ ] Give **785**, **813**, **814** and **822–827** a disposition — frozen like the seven, or
-      re-sited. All nine declare `agent-system/**` paths absent from this repo
-- [ ] Rule on **807**'s positive verdict: `(q S ⊥) → ⊡(q S ⊥)` characterizes backward determinism
-      over regular `ℤ`-frames, making the know-time-do-not-forget family a candidate reduction
-      target. Options: (A, recommended) scope the transfer question as its own task and keep
-      Stage 1 moving; (B) halt Stage 1 until settled; (C) record the probe only
+- [ ] Rule on whether the 2026-11-06 meta-backlog pruning sweep was deliberate policy on its
+      class. Three records covering the plan-authoring/gate-collision ground were abandoned in one
+      70-second sweep with no per-record reason; the class then recurred with 10 fresh citations
+      across 838 and 853, and 912–914 were filed on that recurrence. If the pruning was policy,
+      abandon 912–914 explicitly rather than implementing them
 
 **713** is held by ruling (2026-10-03): its argued CTL⋆ 2EXPTIME lower bound is a citable ceiling
 with no consumer. **734** is `[HOLD]` on the paywalled *Handbook of Modal Logic* ch. 11
@@ -272,26 +269,16 @@ hold, not the aim.
 ## Not batched, and why
 
 - **713**, **734** are `HOLD` by ruling, **761** by the Stage 0 item above.
-- **730, 741, 752, 767, 768, 769, 770 are frozen: undispatchable from this repository.** Each
-  names an edit target resolving only under the agent-system source store
-  (`~/.config/nvim/agent-system/**`; this repo's `.claude-extensions.json` declares no
-  `source_dir`). Migration is tracked in that store's own task space
-  (`~/.config/nvim/specs/390_migrate_mis_sited_agent_system_tasks`). The set is **enumerated by
-  that record, not derivable from `file_scope`**: 753, 772, 774, 777, 779, 780, 783 also edit the
-  source store but are batched above by ruling, each editing at the mirroring source path and
-  redeploying afterwards.
-- **Thirteen more have the frozen shape without a disposition: 785, 813, 814, 822–827, 834/835,
-  840/843** (Stage 0 item above). They collide with one another too — 785/813/814 share the lean
-  extension's `index-entries.json`; 822/827/835 share core's; 834 shares
-  `docs/architecture/orchestrate-state-machine.md` with 823.
-- **834 is worth reading even if its disposition goes against it**: the blocker-research aux chain
-  is a dead drop with no receipt (`orchestrate-cycle-plan.sh` clears `aux_pending[t]` at emission
-  time), so a fork that never writes `.blocker-research.json` emits no `plan-revision` row,
-  `MAX_BLOCKER_ESCALATIONS` never fires, and an `[IMPLEMENTING]` task falls back into the
-  known-blocked phase. This is the mechanism behind 761's repeated re-entries.
-- **784** tracks the freeze, `[BLOCKED]` on the migration. It owns the only part this repo can do:
-  verify the records in the source store, delete them from `specs/state.json`, regenerate
-  `specs/TODO.md`, and drop this section.
+- **The agent-system freeze is resolved.** The records that declared edit targets resolving only
+  under the source store (`~/.config/nvim/agent-system/**`) have been migrated out of this
+  repository's task space and are gone from `specs/state.json`. Tasks 912–914 are the live
+  successors, and they declare absolute source-store paths in their own `file_scope` rather than
+  relying on a `source_dir` this repo's `.claude-extensions.json` does not declare.
+- **The blocker-research aux chain is a dead drop with no receipt** — `orchestrate-cycle-plan.sh`
+  clears `aux_pending[t]` at emission time, so a fork that never writes `.blocker-research.json`
+  emits no `plan-revision` row, `MAX_BLOCKER_ESCALATIONS` never fires, and an `[IMPLEMENTING]`
+  task falls back into the known-blocked phase. This is the mechanism behind 761's repeated
+  re-entries. Recorded here because no open task owns it.
 
 **Reading the coverage appendix.** It lists *ready* tasks absent from **`## Run these next`**
 alone — never computed from `## Next batches` or this section. A Stage 1 task deliberately kept
@@ -366,12 +353,12 @@ out of the immediate run list appears there correctly; its presence is not a gap
   (559 item (c)), not `(P1)`. PS/US give paste-closure, MF translation-closure, and nothing gives
   closedness. The cure of record is the until-form `LCU` and its mirror plus the Reynolds
   automaton-and-ban machinery (Reynolds 2001 §11–§13), per 879's report finding 2.3; `LC_n`'s
-  role in a language with `untl`/`snce` primitive is open (879's Q1, owned by 901).
-- **R3, the doubled AA⊡ rule, is gated on 870 and informed by 867; not filed.** It belongs to
-  the programme 879 owns, which files it if its ingredient table calls for it. Filed: 894 (the
-  cone carrier) and 895 (the formula-level rule, gated on 894). The
-  Auxiliary-Atoms carrier's *Saturation* obligation is what stops it today, and 870 supplies it.
-  `NamingRules.lean` lines 57–82 already record the blocker.
+  role in a language with `untl`/`snce` primitive is open (879's Q1, now owned by 906).
+- **R3, the doubled AA⊡ rule: its 870 gate is discharged and 867 has landed; still not filed.**
+  It belongs to the programme 879 owns, which files it if its ingredient table calls for it.
+  Filed instead: 894 (the cone carrier), 895 (the formula-level rule, gated on 894) and 896 (the
+  extended system, gated on 895). The Auxiliary-Atoms carrier's *Saturation* obligation is what
+  894 discharges, on 870's lemma; `NamingRules.lean` lines 57–82 record the blocker it closes.
 - **The one invisible collision across Stages 2 and 5** is the one-line import in
   `FormalSystem/Semantics/Presheaf.lean`, which no task declares. Batch only tasks already
   serialized by a dependency edge, and re-run `lake build` after each aggregator edit.

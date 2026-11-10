@@ -11,9 +11,9 @@ next_project_number: 915
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,894,899,900,905,906,907,908,909,910,911,912 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,895,913,914 | 298,428,502,743,761,873,894,912 | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 3 | 410,498,499,500,804,861,896 | 429,497,763,803,895 | algebraic-representation, decidability, build-performance |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,894,899,900,905,906,907,908,909,910,911,912 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,895,913,914 | 298,428,502,743,761,873,894,912 | agent-system, algebraic-representation, completeness, ... |
+| 3 | 410,498,499,500,804,861,896 | 429,497,763,803,895 | algebraic-representation, completeness, decidability, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -24,6 +24,7 @@ next_project_number: 915
 
 ### Agent System
 
+907 [NOT STARTED] — Regenerate the deployed .claude/ tree in BimodalLogic, which...
 912 [NOT STARTED] — Make the coupled-generated-surface and longFile-baseline...
   └─ 913 [NOT STARTED] — Provide a sanctioned in-dispatch remedy for a mechanically...
   └─ 914 [NOT STARTED] — Give the batch-gate-deferral directive a narrowing form that...
@@ -38,6 +39,16 @@ next_project_number: 915
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
+
+### Completeness
+
+894 [NOT STARTED] — The forward-cone unravelling as a regular ZTime frame:...
+  └─ 895 [NOT STARTED] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
+    └─ 896 [NOT STARTED] — The extended L-plus proof system (TM-plus + axiom set +...
+899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
+900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
+905 [NOT STARTED] — Eliminate cross-certification between the forward and...
+906 [NOT STARTED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
 
 ### Dataset Enhancement
 
@@ -72,6 +83,10 @@ next_project_number: 915
 910 [RESEARCHED] — Dispatch or explicitly exclude the SATURATED-GAP third branch...
 911 [RESEARCHED] — Pursue the idle-cycle sharpening left open by the idle-gap...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
+
+### Documentation
+
+908 [NOT STARTED] — Audit the 65 remaining "Constraints consumed:...
 
 ### Formula Refactor
 
@@ -112,18 +127,6 @@ next_project_number: 915
 873 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 874 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
-
-### Uncategorized
-
-894 [NOT STARTED] — The forward-cone unravelling as a regular ZTime frame:...
-  └─ 895 [NOT STARTED] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
-    └─ 896 [NOT STARTED] — The extended L-plus proof system (TM-plus + axiom set +...
-899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
-900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
-905 [NOT STARTED] — Eliminate cross-certification between the forward and...
-906 [NOT STARTED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
-907 [NOT STARTED] — Regenerate the deployed .claude/ tree in BimodalLogic, which...
-908 [NOT STARTED] — Audit the 65 remaining "Constraints consumed:...
 
 ## Tasks
 
@@ -272,6 +275,7 @@ ORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Cit
 - **Effort**: medium
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
+- **Topic**: documentation
 - **Dependencies**: None
 - **Parent**: Task 898
 
@@ -291,6 +295,7 @@ Evidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two
 - **Effort**: small
 - **Status**: [NOT STARTED]
 - **Task Type**: general
+- **Topic**: agent-system
 - **Dependencies**: None
 - **Parent**: Task 901
 
@@ -301,6 +306,7 @@ Evidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two
 ### 906. Settle whether LCU is derivable from TM-plus + LC_n at ZTime via a non-ZTime separating model
 - **Status**: [NOT STARTED]
 - **Task Type**: formal
+- **Topic**: completeness
 - **Dependencies**: None
 
 **Description**: RESEARCH TASK, report only. Deliverable: either a derivation of lcU alpha beta in TM-plus + LC_n + mirror LC_n for state-local beta, or a non-ZTime separating model. A ZTime countermodel cannot settle this question -- both lcN_plusValidZTime and lcU_plusValidZTime are compiled, so the two systems have the same ZTime models -- so the first target is .Base, where both schemata's validity is open and unclaimed per FormalSystem/PlusLanguage/PlusLCSchema.lean's own docstring, for a separating general frame or algebra. No Lean work beyond what is needed to state the separating model or derivation at the report level; no completeness claim.
@@ -310,6 +316,7 @@ Evidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two
 ### 905. Eliminate cross-certification between the forward and backward Rabin automata, or show it is load-bearing
 - **Status**: [NOT STARTED]
 - **Task Type**: formal
+- **Topic**: completeness
 - **Dependencies**: None
 
 **Description**: RESEARCH TASK, report only. Deliverable: an answer, with its argument, to whether the clause-(a) cross-certification of specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md's Finding 5.2/14.4 is eliminable -- either a proof that the certification is automatic from the chronicle clauses of that report's Finding 8.2, or a demonstration that it is load-bearing, or a bi-infinite-automaton alternative with its cost. The question is answerable against the chronicle clauses and the two clause (a)s alone, strictly cheaper than anything in that report's Finding 17; eliminating the clauses would remove one omega-regularity argument from each automaton and shrink the alphabet's enlargement. No Lean work; no completeness claim.
@@ -397,6 +404,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ### 900. Bridge: ZTime-valid L formulas yield TM-plus theorems under PlusFormula substitution
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
+- **Topic**: completeness
 - **Dependencies**: None
 
 **Description**: A two-step bridge lemma in FormalSystem/PlusLanguage/Substitution.lean: for an L formula valid at FrameClass.ZTime, every substitution instance substPlus sigma of it is PlusDerivable FrameClass.ZTime [], by completeness_ztime followed by PlusDerivationTree.ofTMSubst; plus the corollary for box-free formulas that a formula valid on every bi-infinite Z-word (the linear fragment) yields TM-plus theorems at every substitution. This is the transposition of Reynolds 2001's use of PLTL completeness inside the CTL* proof (Lemma 7, Claims 1-2, Lemma 17, Lemma 23): the automaton-correctness and fair-scheduling facts are linear validities over Z-words with stab-headed formulas and fresh atoms as sentence letters, derived in TM-plus through this bridge.
@@ -406,6 +414,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ### 899. The stability cluster's (past-type, future-type) set is a full product
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
+- **Topic**: completeness
 - **Dependencies**: None
 
 **Description**: In FormalSystem/PlusLanguage/PlusPasting.lean, for a regular frame, a model, a history tau, a time t and a finite list of past-determined and future-determined formulas, prove that the set of pairs (past-type, future-type) realized by histories through tau.state t at t equals the product of the set of realized past-types and the set of realized future-types, by paste with paste_agreeUpTo, paste_agreeFrom and the semantic PastDet/FutDet predicates of OpenFutureElimination.lean. This is the lemma that makes the initialization of the forward and backward Auxiliary-Atoms automata at the clock cut a state-level datum, and it is the exact point at which separationOver_ztime is consumed by the completeness architecture.
@@ -439,6 +448,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ### 896. The extended L-plus proof system (TM-plus + axiom set + naming rules) with its ZTime soundness, and the completeness targets as stated Props
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
+- **Topic**: completeness
 - **Dependencies**: Task 895
 
 **Description**: A new module FormalSystem/Metalogic/LCExtension.lean carrying: RuleSet (flags clock, aaFwd, aaBwd); ExtDerivation (fc) (Ax : PlusFormula -> Prop) (R : RuleSet) : PlusFormula -> Prop, a Prop-valued theoremhood closure whose base is PlusDerivable fc [] and whose constructors are Ax, modus ponens, necessitation, temporal necessitation, time reflection, and the three naming rules gated by R with their freshness side conditions; IsLCAxiom (lcN n alpha and its reflectTime, n >= 1) and IsLCUAxiom (lcU and its mirror); the soundness theorem ext_sound_ztime : ExtDerivation .ZTime Ax R phi -> PlusValidZTime phi under the hypothesis that Ax is ZTime-valid, assembled from plus_soundness_ztime, clock_irr_sound and the Auxiliary-Atoms soundness; and the completeness targets stated as Prop definitions with no proof and no sorry: LCComplete (RuleSet.none, IsLCAxiom), LCRulesComplete (RuleSet.all, IsLCAxiom), LCURulesComplete (RuleSet.all, IsLCUAxiom). PlusDerivationTree, PlusAxiom and PlusFormula are not modified (standing ruling). Depends on the Auxiliary-Atoms rule task for the soundness arm; the statements themselves can land first with the soundness arm parametric in a rule-soundness hypothesis.
@@ -448,6 +458,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ### 895. The Auxiliary-Atoms rule for L-plus at ZTime, forward and mirror, formula level with soundness
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
+- **Topic**: completeness
 - **Dependencies**: Task 894
 
 **Description**: State the transposed Reynolds-2001 Auxiliary-Atoms rule at the formula level and prove it validity-preserving at FrameClass.ZTime. Antecedent aaAnte b0 Q a p := b0 and stab (gle (bigAnd over b in Q, i < k of ((b and a i) -> stab (next (p b i))))) and stab (gle (bigAnd over b != b' of not (b and b'))), where Q is a finite set of fresh atoms, a i are state-local formulas (PlusFormula.StateLocal) that are provably pairwise inconsistent and jointly exhaustive, and p : Q -> Fin k -> Q is the machine. The rule: if (aaAnte b0 Q a p).imp phi is ZTime-valid and no Q-atom occurs in phi or in any a i, then phi is ZTime-valid. The proof runs the premise on the cone unravelling of the given frame with the machine-run valuation coneSt (semantic core: the archived probe's aa_expand), forgets Q by plusTruthAt_congr_of_fresh, and projects by plus_invariance_of_isZTime. The mirror rule follows by plusValidIn_reflectTime-style reflection of the construction or by a mirrored cone. Depends on the cone-unravelling frame task. Home: FormalSystem/Metalogic/NamingRules.lean or a sibling FormalSystem/Metalogic/AuxiliaryAtoms.lean. No completeness claim.
@@ -457,6 +468,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ### 894. The forward-cone unravelling as a regular ZTime frame: inr-layer oriented forest and the two-layer Saturation split
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
+- **Topic**: completeness
 - **Dependencies**: None
 
 **Description**: Land the Auxiliary-Atoms carrier as a FrameOver intOrder over the sum type W + (W x List W) with the one-step relation coneR (inl u -> inl v and inl u -> inr (v, h) when u -> v; inr (u, h) -> inr (v, u :: h) when u -> v; nothing leaves inr), for a doubly serial base relation. Three lemmas: (1) the inr layer is an IsOrientedForest (every inr node has a unique inr-predecessor and the recorded list strictly lengthens along edges, so the undirected multigraph is acyclic, loop-free and opposite-edge-free); (2) the two-layer Saturation lemma: TaskFrame.Saturation (ofStepRel coneR) from TaskFrame.Saturation of the base relation on the inl-anchored families and saturation_of_orientedForest' on the inr-anchored families, with the mixed-family case handled by directedness; (3) TwoWayBounded for the projection coneF with surjectivity, so plus_invariance_of_isZTime applies. This discharges the Saturation obligation recorded in NamingRules.lean's module docstring and is the frame-side prerequisite of the formula-level Auxiliary-Atoms rule. New module FormalSystem/Semantics/ConeUnravelling.lean.
