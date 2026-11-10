@@ -515,28 +515,34 @@ the in-source attribute route was used instead.
 
 ---
 
-### Phase 6: Full-project verification and zero-debt gate [NOT STARTED]
+### Phase 6: Full-project verification and zero-debt gate [COMPLETED]
 
 **Goal**: Confirm the whole change is green end to end: a full unscoped `lake build`, a sorry-free
 and axiom-clean audit of every new declaration, and the complete repository gate set.
 
 **Tasks**:
-- [ ] Run the full unscoped project build:
+- [x] Run the full unscoped project build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`. Prefer the
       foreground `timeout N <guard call>` form with the Bash tool `timeout` raised to 600000; if it
       does not fit one call, detach as a shell-level background job and block with the bounded
       single-call idiom from `context/project/lean4/operations/long-builds.md`. Never use
       `Bash(run_in_background: true)`.
-- [ ] Run `lean_verify` on each of the eight Goal declarations by fully qualified name, confirming
+- [x] Run `lean_verify` on each of the eight Goal declarations by fully qualified name, confirming
       no `sorryAx` and no unexpected axiom beyond the project's baseline.
-- [ ] Grep the five touched Lean files for `sorry`, `admit`, and the prohibited vacuous-definition
+- [x] Grep the five touched Lean files for `sorry`, `admit`, and the prohibited vacuous-definition
       patterns from `rules/lean4.md` ("Vacuous Definitions"), confirming none were introduced.
-- [ ] Confirm `grep -rc "Constraints consumed: Compositionality, Seriality, Limit, Saturation"`
+- [x] Confirm `grep -rc "Constraints consumed: Compositionality, Seriality, Limit, Saturation"`
       returns 0 for `FormalSystem/Semantics/HistoryMorphism.lean` and
       `FormalSystem/Semantics/UniversalCover.lean`, and that the ~20 occurrences elsewhere under
       `FormalSystem/` are untouched (they are an explicit Non-Goal).
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`, with no `--only-gate`
-      and no `--skip-slow` filter.
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`, with no `--only-gate`
+      and no `--skip-slow` filter. *(deviation: altered — discharged against the SCOPED tier
+      `verify-deploy.sh --skip-slow --only-gate 3,4` (PASS) per this dispatch's Batch Gate
+      Deferral directive, which defers the complete unfiltered set to the batch stage at the end
+      of the enclosing /orchestrate invocation. `scripts/check-module-invariants.sh` was
+      additionally run IN FULL — C1, C14, C15, C16, C34, C34a, C34b and INV all PASS — because
+      Phases 1-4 turned out to have introduced findings there that no phase's declared
+      Verification Tier and no `lake build` would have caught.)*
 
 **Timing**: 1 hour
 
@@ -677,22 +683,22 @@ end FormalSystem.Semantics
 
 ## Testing & Validation
 
-- [ ] Full unscoped `lake build` exits 0 with no errors and no `sorry` project-wide (Phase 6).
-- [ ] All eight Goal declarations exist at their pinned signatures and pass `lean_verify` with no
+- [x] Full unscoped `lake build` exits 0 with no errors and no `sorry` project-wide (Phase 6).
+- [x] All eight Goal declarations exist at their pinned signatures and pass `lean_verify` with no
       `sorryAx` (Phase 6).
-- [ ] Every pre-existing signature the plan touches is byte-identical in `git diff`:
+- [x] Every pre-existing signature the plan touches is byte-identical in `git diff`:
       `exists_preimage_step_neg`, `exists_histMorphism_of_isZTime`, `plus_invariance_of_isZTime`,
       `taskRel_natCast_iff_iter`, `taskRel_eq_iter`, `coverFrame_taskRel`, `coverFrame_isRegular`,
       `endpt_twoWayBounded`, `exists_orientedForest_cover` (Phases 1-3).
-- [ ] Each changed module's enumerated direct dependents build clean (Phases 1-3).
-- [ ] `ConstraintWitnesses.lean` still has zero importers under `FormalSystem/` after the witness
+- [x] Each changed module's enumerated direct dependents build clean (Phases 1-3).
+- [x] `ConstraintWitnesses.lean` still has zero importers under `FormalSystem/` after the witness
       lands (Phase 4).
-- [ ] Zero remaining `Constraints consumed: Compositionality, Seriality, Limit, Saturation` lines
+- [x] Zero remaining `Constraints consumed: Compositionality, Seriality, Limit, Saturation` lines
       in `HistoryMorphism.lean` and `UniversalCover.lean`; the occurrences elsewhere under
       `FormalSystem/` unchanged (Phase 6).
-- [ ] No vacuous-definition pattern from `rules/lean4.md` introduced in any touched file
+- [x] No vacuous-definition pattern from `rules/lean4.md` introduced in any touched file
       (Phase 6).
-- [ ] `bash .claude/scripts/verify-deploy.sh` exits 0, unfiltered (Phase 6).
+- [x] `bash .claude/scripts/verify-deploy.sh` — discharged at the scoped tier (gates 3,4 PASS) per the Batch Gate Deferral directive; the unfiltered run is deferred to the batch stage (Phase 6).
 
 ## Artifacts & Outputs
 
