@@ -2602,6 +2602,10 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.PlusLanguage.lcU_plusValidInt' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.PlusLanguage.lcU_plusValidZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.PlusLanguage.lcU_reflectTime_plusValidZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.TwoWayBounded.exists_histMorphism_of_isZTime_of_constraints' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.TwoWayBounded.plus_invariance_of_isZTime_of_constraints' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.exists_orientedForest_cover_of_constraints' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.SeparatingFrame.exists_nonSaturated_base_orientedForest_cover' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2962,6 +2966,10 @@ import FormalSystem
 #print axioms FormalSystem.PlusLanguage.lcU_plusValidInt
 #print axioms FormalSystem.PlusLanguage.lcU_plusValidZTime
 #print axioms FormalSystem.PlusLanguage.lcU_reflectTime_plusValidZTime
+#print axioms FormalSystem.Semantics.TwoWayBounded.exists_histMorphism_of_isZTime_of_constraints
+#print axioms FormalSystem.Semantics.TwoWayBounded.plus_invariance_of_isZTime_of_constraints
+#print axioms FormalSystem.Semantics.exists_orientedForest_cover_of_constraints
+#print axioms FormalSystem.Semantics.StateTopology.SeparatingFrame.exists_nonSaturated_base_orientedForest_cover
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

@@ -70,3 +70,14 @@ simpNF:colourClock_taskRel
 # arguments would change a contract signature to spare a linter.
 # Metalogic/Expressiveness/SeparationZ/Discharge.lean.
 unusedArguments:sepZ_sepClauses
+# The base frame's `[F.IsRegular]` binder on the two discrete-time lift headlines. Research
+# established that the lift chain consumes no `def:frame` constraint of the base at all, so both
+# proofs now delegate to `..._of_isZTime_of_constraints`, which takes none -- and the linter is
+# correct that the binder is unread. It is retained because these two signatures are the
+# published form that every call site resolves against, and because the asymmetry is the result:
+# dropping the binder would change a contract signature to spare a linter, and would also erase
+# the record that the base-side constraint set is empty rather than absent by oversight. The
+# reason is written at both attribute sites.
+# Semantics/HistoryMorphism.lean.
+unusedArguments:exists_histMorphism_of_isZTime
+unusedArguments:plus_invariance_of_isZTime
