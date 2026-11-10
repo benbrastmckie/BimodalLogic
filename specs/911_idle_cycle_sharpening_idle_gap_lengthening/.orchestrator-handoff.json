@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 7,
+  "summary": "Planned the idle-cycle sharpening in seven phases. The premise is run-local (a block of the idle run whose ends share an object state), which is exactly what spliceObj_step already needs; phases 1-3 land the idle mirror of the pump layer in LadderPump.lean and phases 4-6 build a new leaf module LadderIdle.lean for the register-anchored pump, the sharpened schema, and the refutation of its freed-increment form. Two findings shaped the plan: the register-anchoring lift lives downstream of LadderPump, so a new module is required, and sub-question (ii) type preservation is discharged rather than deferred because the premise route runs through the (objAt, tpOf) pigeonhole. The plan's 14 pinned Lean signatures and both schema def bodies were compile-verified against the repo toolchain before returning.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/911_idle_cycle_sharpening_idle_gap_lengthening/plans/01_idle-cycle-sharpening.md",
+      "summary": "Seven-phase plan for the idle-cycle sharpening, with the sharpened schema, its theorem, and the freed-increment refutation as named deliverables."
+    }
+  ],
+  "dispatch_seq": 15
+}

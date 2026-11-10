@@ -1,0 +1,22 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/911_idle_cycle_sharpening_idle_gap_lengthening/plans/01_idle-cycle-sharpening.md",
+      "summary": "Seven-phase plan landing the idle-cycle sharpening of the refuted idle-gap lengthening: idle-cycle vocabulary and the no-cycle run bound, the idle-block splice with its pin condition free, the idle-run type pigeonhole, a new leaf module LadderIdle.lean holding the register-anchored idle pump, the sharpened schema with its theorem, and the freed-increment refutation."
+    }
+  ],
+  "memory_candidates": [],
+  "metadata": {
+    "session_id": "sess_1794343738_e0026f_911",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 11,
+    "dependency_waves": [[1], [2, 3], [4], [5], [6], [7]]
+  },
+  "next_steps": "Run /orchestrate 911 to execute the plan",
+  "dispatch_seq": 15
+}

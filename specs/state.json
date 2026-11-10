@@ -2876,7 +2876,7 @@
     {
       "project_number": 911,
       "project_name": "idle_cycle_sharpening_idle_gap_lengthening",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Pursue the idle-cycle sharpening left open by the idle-gap lengthening decision gate's FAIL verdict: the lengthening is available exactly where the object's idle states carry a reachable cycle, which is an OBJECT hypothesis rather than a consequence of ParamsOk.\n\nVERIFIED STARTING POSITION (compiled refutation, not an unproved conjecture):\n(1) The decision gate returned FAIL on sub-question (i), ADMISSIBILITY. IdleGapLengthening is refuted by idleGapLengthening_refuted in prototype/idle-gap-lengthening.lean (namespace Probe838C, standalone, not wired), on the standard axiom profile with no sorryAx.\n(2) The obstruction is NOT where it was expected. pinCompat_of_ladderPath does loosen as a region start moves farther from z, exactly as predicted -- but the lengthening is denied one level BELOW the pin condition, by step itself. A ladder path's object walk satisfies step (objAt g v) (objAt g (v+1)) = true at every position, so an idle run of length two requires an idle-to-idle edge in the object's step graph, and an object satisfying ParamsOk need not have one. no_consecutive_idle_of_no_idle_step states this generically.\n(3) The witness is the two-state object Qo := Bool with pendO = id and stepO x y = x || y (exactly that edge missing), serial in both directions, at a parameter tuple ParamsOk genuinely admits (the periodicity fixpoint's own outputs, discharged by paramsOk_params).\n(4) Sub-question (ii), TYPE PRESERVATION, was NEVER REACHED -- the refutation closes from step alone. It is untouched, not skipped.\n\nSCOPE: identify the object hypothesis (reachable cycle among idle states) under which the lengthening IS available, state it as an explicit premise, and determine what it buys. The idle run's length is a datum of the object, not a parameter a construction may raise -- any statement claiming otherwise is false, not merely weaker.\n\nORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Citation: parent issues.jsonl iss_1794297685402_9saHqw.\n",
       "effort": "high",
@@ -2886,11 +2886,26 @@
         909
       ],
       "file_scope": [
-        "FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean"
+        "FormalSystem.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "scripts/check-metalogic-cycles.sh",
+        "typst/generated/status.typ"
       ],
       "created": "2026-11-10T12:04:38Z",
-      "last_updated": "2026-11-10T22:27:46Z",
-      "artifacts": [],
+      "last_updated": "2026-11-10T22:53:13Z",
+      "artifacts": [
+        {
+          "path": "specs/911_idle_cycle_sharpening_idle_gap_lengthening/plans/01_idle-cycle-sharpening.md",
+          "type": "plan",
+          "summary": "Seven-phase plan for the idle-cycle sharpening, with the sharpened schema, its theorem, and the freed-increment refutation as named deliverables."
+        }
+      ],
       "audit_verdict": {
         "proposal": {
           "id": "idle_cycle_sharpening_idle_gap_lengthening",
@@ -2905,7 +2920,7 @@
         "degradation_count": 454,
         "evidence_file": "specs/evidence/audit-verdicts/911.json"
       },
-      "session_id": "sess_1794343738_e0026f_911"
+      "session_id": "sess_1794343738_e0026f"
     },
     {
       "project_number": 912,

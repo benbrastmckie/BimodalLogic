@@ -79,7 +79,7 @@ next_project_number: 916
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 910 [PLANNED] — Dispatch or explicitly exclude the SATURATED-GAP third branch...
-911 [PLANNING] — Pursue the idle-cycle sharpening left open by the idle-gap...
+911 [PLANNED] — Pursue the idle-cycle sharpening left open by the idle-gap...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Documentation
@@ -221,11 +221,12 @@ NOT a repair of this repository's own gates. `.githooks/pre-commit`, `scripts/ty
 
 ### 911. Idle cycle sharpening idle gap lengthening
 - **Effort**: high
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 909
 - **Parent**: Task 838
+- **Plan**: [911_idle_cycle_sharpening_idle_gap_lengthening/plans/01_idle-cycle-sharpening.md]
 
 **Description**: Pursue the idle-cycle sharpening left open by the idle-gap lengthening decision gate's FAIL verdict: the lengthening is available exactly where the object's idle states carry a reachable cycle, which is an OBJECT hypothesis rather than a consequence of ParamsOk.
 
