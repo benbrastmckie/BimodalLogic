@@ -1,7 +1,7 @@
 # Implementation Plan: Task #853
 
 - **Task**: 853 - Construct the Phase 11.8 insertion cascade for the ladder-path region lemmas: the idle-past half (`exists_ladderPath_at_region_of_idle_past`) and, given it, the unconditional join (`exists_ladderPath_at_region`)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours across 7 phases (1.5 / 1.5 / 2 / 2 / 2 / 1.5 / 1.5). Phases 3 and 4 carry the two largest proofs (the inserted walk's region-start trichotomy and the pin bound it feeds); Phase 5 is short because every component it composes is landed by then
 - **Dependencies**: Task 838 (`two_sided_open_core_pin_free_pigeonhole`) at the `state.json` level — the recorded serializing edge for shared `LadderAgree.lean` territory. Its implementation closed before this dispatch (`HEAD` carries `task 838: complete implementation`), so the edge is satisfied and nothing here waits on it. Parent: task 761, whose Phase 11.12 is exactly this construction and whose Phase 11.11 landed the inserted walk and its four LOCAL ladder conditions as this plan's INPUTS
 - **Research Inputs**: None. No research report exists for this round; the `research_artifact` field of `.dispatch/10.md` is empty. The Stage 1.5 opening assessment applies and is recorded under "Research Integration" below. The substantive inputs are the task description's four verified findings, the landed library (`LadderAgree.lean`'s `Cascade` section and the lift lemma above it, `RunLayer.lean`'s `drift_extension_of_pins`), and the parent's own Phase 11.11 handoff

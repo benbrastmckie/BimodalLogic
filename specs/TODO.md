@@ -11,7 +11,7 @@ next_project_number: 909
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,853,873,890,894,899,900,905,906,907,908 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,894,899,900,905,906,907,908 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,895 | 298,428,502,743,761,873,894 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,804,861,896 | 429,497,763,803,895 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -62,7 +62,6 @@ next_project_number: 909
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-853 [IMPLEMENTING] — Construct the Phase 11.8 insertion cascade for the...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Formula Refactor
@@ -560,12 +559,13 @@ GATES. Zero sorry, zero vacuous definitions, no new axiom beyond what the elimin
 
 ### 853. Ladder path insertion cascade idle past
 - **Effort**: large
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 838
 - **Parent**: Task 761
 - **Plan**: [853_ladder_path_insertion_cascade_idle_past/plans/01_insertion-cascade-idle-past.md]
+- **Summary**: [853_ladder_path_insertion_cascade_idle_past/summaries/01_insertion-cascade-idle-past-summary.md]
 
 **Description**: Construct the Phase 11.8 insertion cascade for the ladder-path region lemmas: the idle-past half (exists_ladderPath_at_region_of_idle_past) and, given it, the unconditional join (exists_ladderPath_at_region), which follows by by_cases on the pending-past predicate.
 
