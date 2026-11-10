@@ -219,24 +219,24 @@ FormalSystem.QuantLanguage.QuantRecurrence` -- and `suite_selection_select` retu
 
 ---
 
-### Phase 2: Explicit-hypothesis decomposition theorem in IntNormalForm.lean [NOT STARTED]
+### Phase 2: Explicit-hypothesis decomposition theorem in IntNormalForm.lean [COMPLETED]
 
 **Goal**: Add `taskRel_natCast_iff_iter_of_constraints` and `taskRel_eq_iter_of_constraints` over
 explicit *Compositionality*, *Seriality* and *Limit*, with the two `[IsRegular]` forms kept as
 verbatim-statement wrappers, so Phase 3 has a Saturation-free route to `taskRel_eq_iter`.
 
 **Tasks**:
-- [ ] Add `FrameOver.taskRel_natCast_iff_iter_of_constraints` with the signature pinned under
+- [x] Add `FrameOver.taskRel_natCast_iff_iter_of_constraints` with the signature pinned under
       `## Lean Challenge Statements`, reusing the existing proof body with `F.nullity_identity`
       replaced by `TaskFrame.nullity_identity_of_serial_limit hser hlim` and `F.comp` replaced by
       `hcomp`.
-- [ ] Add `FrameOver.taskRel_eq_iter_of_constraints`, same pinning, reusing the existing proof body
+- [x] Add `FrameOver.taskRel_eq_iter_of_constraints`, same pinning, reusing the existing proof body
       with `F.reflection` replaced by `F.reflection_of_limit hlim` and the recursive call routed to
       `taskRel_natCast_iff_iter_of_constraints`.
-- [ ] Rewrite `taskRel_natCast_iff_iter` and `taskRel_eq_iter` as thin `[F.IsRegular]` wrappers
+- [x] Rewrite `taskRel_natCast_iff_iter` and `taskRel_eq_iter` as thin `[F.IsRegular]` wrappers
       discharging the three hypotheses with `F.comp`, `F.serial`, `F.limit`. Statements must stay
       byte-identical to the current ones at lines 204 and 232.
-- [ ] Record in each new docstring which constraints are consumed and that `taskRel_eq_iter`'s
+- [x] Record in each new docstring which constraints are consumed and that `taskRel_eq_iter`'s
       `[IsRegular]` form is now a wrapper over the minimal-hypothesis general theorem.
 
 **Timing**: 1 hour

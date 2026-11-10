@@ -198,22 +198,38 @@ theorem step_def (F : FrameOver intOrder)
 exactly an `n`-fold iteration of the one-step relation.
 
 By induction on `n`. The base case is the derived `nullity_identity` (`⇒₀` is the identity); the
-step case is the `comp` field — the paper's biconditional *Compositionality*
-(`def:frame#Compositionality`) — instantiated at `x = n`, `y = 1`, both nonnegative.
+step case is *Compositionality* (`def:frame#Compositionality`) — instantiated at `x = n`, `y = 1`,
+both nonnegative.
+
+Constraints consumed: *Compositionality*, *Seriality*, *Limit*. **No *Saturation***, which is why
+the hypotheses are explicit rather than read off a `[F.IsRegular]` instance: the decomposition is
+available over any frame meeting the other three, and `taskRel_natCast_iff_iter` is this theorem
+specialised to a regular frame.
 -/
-theorem taskRel_natCast_iff_iter (F : FrameOver intOrder) [F.IsRegular] (n : ℕ)
-    (w u : F.WorldState) :
+theorem taskRel_natCast_iff_iter_of_constraints (F : FrameOver intOrder)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) (n : ℕ) (w u : F.WorldState) :
     F.TaskRel w (n : ℤ) u ↔ iter F.step n w u := by
   induction n generalizing u with
-  | zero => simpa using F.nullity_identity w u
+  | zero => simpa using F.nullity_identity_of_serial_limit hser hlim w u
   | succ n ih =>
     have hcast : ((n + 1 : ℕ) : ℤ) = (n : ℤ) + 1 := by push_cast; rfl
     rw [hcast, iter_succ]
-    have hcomp : F.TaskRel w ((n : ℤ) + 1) u ↔ ∃ v, F.TaskRel w (n : ℤ) v ∧ F.TaskRel v 1 u :=
-      F.comp w u (n : ℤ) 1 (Int.natCast_nonneg n) zero_le_one
-    rw [hcomp]
+    have hstep : F.TaskRel w ((n : ℤ) + 1) u ↔ ∃ v, F.TaskRel w (n : ℤ) v ∧ F.TaskRel v 1 u :=
+      hcomp w u (n : ℤ) 1 (Int.natCast_nonneg n) zero_le_one
+    rw [hstep]
     exact ⟨fun ⟨v, h1, h2⟩ => ⟨v, (ih v).mp h1, h2⟩,
            fun ⟨v, h1, h2⟩ => ⟨v, (ih v).mpr h1, h2⟩⟩
+
+/--
+**The decomposition theorem, nonnegative core, over a regular frame**:
+`taskRel_natCast_iff_iter_of_constraints` with the three constraints it consumes projected out of
+the `[F.IsRegular]` instance. *Saturation* is not among them.
+-/
+theorem taskRel_natCast_iff_iter (F : FrameOver intOrder) [F.IsRegular] (n : ℕ)
+    (w u : F.WorldState) :
+    F.TaskRel w (n : ℤ) u ↔ iter F.step n w u :=
+  F.taskRel_natCast_iff_iter_of_constraints F.comp F.serial F.limit n w u
 
 /--
 **The decomposition theorem**: over ℤ, an arbitrary frame is determined by its one-step
@@ -228,30 +244,51 @@ uses.
 
 `Int.natAbs` is the right index on both sides because `(-d).natAbs = d.natAbs`: a backward task of
 duration `d < 0` is a forward `|d|`-step path traversed in the other direction.
+
+Constraints consumed: *Compositionality*, *Seriality*, *Limit*. **No *Saturation***: the negative
+half runs on `FrameOver.reflection_of_limit`, which needs *Limit* alone, and the nonnegative half
+is `taskRel_natCast_iff_iter_of_constraints`. `taskRel_eq_iter` is this theorem specialised to a
+regular frame, so a non-saturated frame over ℤ-time is still determined by its one-step relation.
 -/
-theorem taskRel_eq_iter (F : FrameOver intOrder) [F.IsRegular] (w u : F.WorldState) (d : ℤ) :
+theorem taskRel_eq_iter_of_constraints (F : FrameOver intOrder)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) (w u : F.WorldState) (d : ℤ) :
     F.TaskRel w d u ↔
       (0 ≤ d → iter F.step d.natAbs w u) ∧ (d ≤ 0 → iter F.step d.natAbs u w) := by
   constructor
   · intro h
     refine ⟨fun hd => ?_, fun hd => ?_⟩
     · have : ((d.natAbs : ℤ)) = d := Int.natAbs_of_nonneg hd
-      exact (F.taskRel_natCast_iff_iter d.natAbs w u).mp (by rwa [this])
-    · have hconv : F.TaskRel u (-d) w := (F.reflection w d u).mp h
+      exact (F.taskRel_natCast_iff_iter_of_constraints hcomp hser hlim d.natAbs w u).mp
+        (by rwa [this])
+    · have hconv : F.TaskRel u (-d) w := (F.reflection_of_limit hlim w d u).mp h
       have hnat : (((-d).natAbs : ℤ)) = -d := Int.natAbs_of_nonneg (by omega)
-      have := (F.taskRel_natCast_iff_iter (-d).natAbs u w).mp (by rwa [hnat])
+      have := (F.taskRel_natCast_iff_iter_of_constraints hcomp hser hlim (-d).natAbs u w).mp
+        (by rwa [hnat])
       rwa [Int.natAbs_neg] at this
   · rintro ⟨hpos, hneg⟩
     rcases le_or_gt 0 d with hd | hd
     · have hnat : ((d.natAbs : ℤ)) = d := Int.natAbs_of_nonneg hd
-      exact hnat ▸ (F.taskRel_natCast_iff_iter d.natAbs w u).mpr (hpos hd)
+      exact hnat ▸ (F.taskRel_natCast_iff_iter_of_constraints hcomp hser hlim d.natAbs w u).mpr
+        (hpos hd)
     · have hd' : d ≤ 0 := le_of_lt hd
       have hnat : (((-d).natAbs : ℤ)) = -d := Int.natAbs_of_nonneg (by omega)
       have hiter : iter F.step (-d).natAbs u w := by
         rw [Int.natAbs_neg]; exact hneg hd'
       have : F.TaskRel u (-d) w :=
-        hnat ▸ (F.taskRel_natCast_iff_iter (-d).natAbs u w).mpr hiter
-      exact (F.reflection w d u).mpr this
+        hnat ▸ (F.taskRel_natCast_iff_iter_of_constraints hcomp hser hlim (-d).natAbs u w).mpr
+          hiter
+      exact (F.reflection_of_limit hlim w d u).mpr this
+
+/--
+**The decomposition theorem, over a regular frame**: `taskRel_eq_iter_of_constraints` with the
+three constraints it consumes projected out of the `[F.IsRegular]` instance. *Saturation* is not
+among them, so the general form above applies to frames outside the regular class.
+-/
+theorem taskRel_eq_iter (F : FrameOver intOrder) [F.IsRegular] (w u : F.WorldState) (d : ℤ) :
+    F.TaskRel w d u ↔
+      (0 ≤ d → iter F.step d.natAbs w u) ∧ (d ≤ 0 → iter F.step d.natAbs u w) :=
+  F.taskRel_eq_iter_of_constraints F.comp F.serial F.limit w u d
 
 /-- The one-step relation is `taskRel_eq_iter` at `d = 1`: a sanity check that `step` really is
 the `d = 1` slice, stated so a reader can see the two presentations agree. -/
