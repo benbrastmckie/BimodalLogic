@@ -1,7 +1,7 @@
 # Implementation Plan: Task #894
 
 - **Task**: 894 - The forward-cone unravelling as a regular ZTime frame: inr-layer oriented forest and the two-layer Saturation split
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/894_cone_unravelling_frame_layer_split_saturation/reports/01_cone-unravelling-frame-layer-split.md
@@ -210,7 +210,7 @@ assembly in. They are governed by Phase 5's task list and verification criteria 
 Phases within the same wave can execute in parallel. This plan is fully sequential: each phase
 consumes declarations the previous one lands.
 
-### Phase 1: Module skeleton, carrier, relation, oriented forest [NOT STARTED]
+### Phase 1: Module skeleton, carrier, relation, oriented forest [COMPLETED]
 
 **Goal**: Create `FormalSystem/Semantics/ConeUnravelling.lean` with its full module docstring,
 the four definitions, the three `IsOrientedForest` obligations and their assembly, the
