@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 5,
+  "summary": "Wrote a 5-phase implementation plan for splicing reynolds_2001's missing sections 5-8 into the Literature corpus. The plan follows the research report's surgical-splice strategy: extract and hand-fit the sections 5-8 span in scratch, renumber the existing sec04-sec10 files to sec08-sec14 (descending git mv to avoid collision), install four new sec04-sec07 files and splice four hand-authored chunks.json entries with a re-linked prev/next chain, rebuild only the global FTS5 index, and record a dated addendum on specs/literature-index.json. Estimated 3.25 hours across 4 dependency waves; validate-artifact.sh passes with zero warnings.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/plans/01_reynolds-sections-5-8-splice.md",
+      "summary": "5-phase, 3.25-hour plan to splice reynolds_2001 sections 5-8 into the Literature corpus and reindex, closing the Auxiliary Atoms rule citation gap."
+    }
+  ],
+  "dispatch_seq": 8
+}

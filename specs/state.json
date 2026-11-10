@@ -2993,7 +2993,7 @@
     {
       "project_number": 915,
       "project_name": "reconvert_reindex_reynolds_auxiliary_atoms_sections",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "description": "Re-convert and re-index reynolds_2001 with sections 5-8 included, so the Auxiliary Atoms rule has a citable source statement in the corpus. Evidence: literature-search.sh returns nothing for 'auxiliary atoms' in a formal-logic sense, and reynolds_2001's existing sub-index entry skips the axiom-system sections where the rule sits (its TOC jumps 4.7-4.8 straight to 9). Research on the forward-cone unravelling proceeded from FormalSystem/Metalogic/NamingRules.lean's recorded Saturation obligation as the source of record instead. The Auxiliary-Atoms rule for L-plus at ZTime is the direct subject of a downstream task, which needs the rule's actual source statement rather than only the repo's recorded obligation. Deliverable: the converted sections present in Literature/, a refreshed specs/literature-index.json entry covering them, and a literature-search.sh query for the rule that returns the right chunk.",
       "effort": "small",
@@ -3001,12 +3001,17 @@
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-11-10T15:53:18Z",
-      "last_updated": "2026-11-10T17:10:23Z",
+      "last_updated": "2026-11-10T19:28:03Z",
       "artifacts": [
         {
           "path": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/reports/01_reynolds-sections-5-8-reconversion.md",
           "type": "report",
           "summary": "Confirms reynolds_2001's missing sections are exactly section 5 through section 8 (AA rule at section 7/Lemma 6, LC axiom at section 6/Lemma 5), finds a naive full-document literature-convert.sh rerun degrades existing quality, and recommends a surgical splice (4 new per-section .md files + hand-authored chunks.json entries + global-only FTS5 rebuild) instead."
+        },
+        {
+          "path": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/plans/01_reynolds-sections-5-8-splice.md",
+          "type": "plan",
+          "summary": "5-phase, 3.25-hour plan to splice reynolds_2001 sections 5-8 into the Literature corpus and reindex, closing the Auxiliary Atoms rule citation gap."
         }
       ],
       "audit_verdict": {
@@ -3024,6 +3029,20 @@
         "evidence_file": "specs/evidence/audit-verdicts/915.json"
       },
       "file_scope": [
+        "/home/benjamin/Projects/Literature/.literature.db",
+        "/home/benjamin/Projects/Literature/index.json",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/chunks.json",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec04_axiom-system-bundled-trees.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec04_sec-9-completeness-preliminaries-in-what.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec05_limit-closure-axiom.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec05_sec-10-the-standard-basis-of-the-constru.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec06_111-lulls-it-will-be-important-in-our-co.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec06_auxiliary-atoms-rule.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec07_132-a-new-chronicle-we-check-that-t.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec07_the-theorem.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec08_143-hue-scheduling-assuming-that-there-i.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec09_sec-15-truth-lemma-ko-and-the-truth-lemm.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec10_sec-16-examples.md",
         "specs/literature-index.json"
       ],
       "session_id": "sess_1794328980_5b668f",
