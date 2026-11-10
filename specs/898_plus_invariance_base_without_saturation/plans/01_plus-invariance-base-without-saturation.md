@@ -350,36 +350,36 @@ returning `__FULL_SWEEP__` for this path, so no shell suite is claimed.
 
 ---
 
-### Phase 4: Non-saturated base witness in the StateTopology leaf [NOT STARTED]
+### Phase 4: Non-saturated base witness in the StateTopology leaf [COMPLETED]
 
 **Goal**: Wrap `SeparatingFrame.srel` as a `FrameOver intOrder`, prove it *Compositional*,
 *Serial*, *Limit* and **not** *Saturated*, apply Phase 3's weakened headline to it so the
 weakening is demonstrably non-vacuous, and correct the module's packaging-asymmetry paragraph.
 
 **Tasks**:
-- [ ] Add `import FormalSystem.Semantics.UniversalCover` to
+- [x] Add `import FormalSystem.Semantics.UniversalCover` to
       `FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean`, with a comment in the
       existing style of that file's `Extension.Completion` import note naming the single
       declaration that consumes it and recording that this module is a leaf, so the edge adds
       weight to nothing else.
-- [ ] Add `SeparatingFrame.srel_reflective`, the signature pinned under
+- [x] Add `SeparatingFrame.srel_reflective`, the signature pinned under
       `## Lean Challenge Statements`, proved by `rw [srel_iff, srel_iff, abs_sub_comm]; norm_num`
       per the report's tactic survey.
-- [ ] Add `def sepFrame : FrameOver intOrder := FrameOver.ofReflective ℚ srel srel_reflective`
+- [x] Add `def sepFrame : FrameOver intOrder := FrameOver.ofReflective ℚ srel srel_reflective`
       and `sepFrame_taskRel : sepFrame.TaskRel = srel` via `FrameOver.ofReflective_taskRel_eq`.
-- [ ] Add `sepFrame_comp`, `sepFrame_serial`, `sepFrame_limit` and `sepFrame_not_saturation`, each
+- [x] Add `sepFrame_comp`, `sepFrame_serial`, `sepFrame_limit` and `sepFrame_not_saturation`, each
       `rw [sepFrame_taskRel]` onto the existing bare-relation theorems `srel_compositional`,
       `srel_serial`, `srel_limit`, `not_srel_saturation`.
-- [ ] Add `exists_nonSaturated_base_orientedForest_cover`, the signature pinned under
+- [x] Add `exists_nonSaturated_base_orientedForest_cover`, the signature pinned under
       `## Lean Challenge Statements`, witnessed by `sepFrame` and discharged by
       `exists_orientedForest_cover_of_constraints` from Phase 3.
-- [ ] Update the `**A packaging asymmetry, recorded rather than papered over.**` paragraph
+- [x] Update the `**A packaging asymmetry, recorded rather than papered over.**` paragraph
       (currently at `ConstraintWitnesses.lean:142`) to state the current fact: `srel` carries a
       `FrameOver` wrapper via `srel_reflective`, so the separating row is certified at the frame
       level, and `RationalTwoOrigins.rel` remains bare-relation-only. State this as the current
       design, with no narration of the prior draft, per
       `rules/no-record-versioning-in-deliverables.md`.
-- [ ] Add a regression `example` or `theorem` in
+- [x] Add a regression `example` or `theorem` in
       `Tests/BimodalTest/Semantics/OrientedForestSaturationTest.lean` applying
       `exists_nonSaturated_base_orientedForest_cover`, so the witness has a test-library consumer
       as well as a library one.

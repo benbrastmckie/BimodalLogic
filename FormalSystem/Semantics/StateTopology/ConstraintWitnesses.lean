@@ -15,6 +15,11 @@ import Mathlib.Tactic.Ring
 -- which `SeparatingFrame.srel_completion` consumes. This module is a leaf — nothing under
 -- `FormalSystem/` imports it — so the edge adds weight to nothing else.
 import FormalSystem.Semantics.Extension.Completion
+-- `Semantics.UniversalCover` is imported for exactly one declaration,
+-- `exists_orientedForest_cover_of_constraints`, which
+-- `SeparatingFrame.exists_nonSaturated_base_orientedForest_cover` consumes. This module is a
+-- leaf — nothing under `FormalSystem/` imports it — so the edge adds weight to nothing else.
+import FormalSystem.Semantics.UniversalCover
 import FormalSystem.Semantics.StateTopology
 
 /-!
@@ -139,14 +144,19 @@ neither witness separates the two forms, and **neither bears on whether `S₁ �
 open. Reading `not_srel_saturation` as evidence about directedness was a standing assumption of
 the collection; these two theorems retire it.
 
-**A packaging asymmetry, recorded rather than papered over.** Three of the four independence rows
-are certified at the **frame** level — the statements are about a `FrameOver`'s `TaskRel`. The
-*Saturation* row and the whole of the fifth, separating row are certified at the
-**bare-relation** level only: neither `RationalTwoOrigins.rel` nor `SeparatingFrame.srel` carries
-a `FrameOver` wrapper, because wrapping either would need a reflection law for its carrier that
-this module does not prove. The results are genuine at exactly the level `def:frame` states its
-constraints — they are conditions on the task relation — but no row should be read as claiming a
-`FrameOver` witness it does not have.
+**A packaging asymmetry, recorded rather than papered over.** Most rows here are certified at the
+**frame** level — the statements are about a `FrameOver`'s `TaskRel`. `SeparatingFrame.srel` is
+among them: `SeparatingFrame.srel_reflective` supplies the reflection law its carrier needs, so
+`SeparatingFrame.sepFrame` wraps it as a `FrameOver intOrder` and the separating row is certified
+at the frame level, `sepFrame_not_saturation` included. That wrapper is what makes
+`SeparatingFrame.exists_nonSaturated_base_orientedForest_cover` statable, and with it the
+non-vacuity of the Saturation-free cover headline.
+
+`RationalTwoOrigins.rel` is certified at the **bare-relation** level only: it carries no
+`FrameOver` wrapper, because wrapping it would need a reflection law for its carrier that this
+module does not prove. That result is genuine at exactly the level `def:frame` states its
+constraints — they are conditions on the task relation — but the row should not be read as
+claiming a `FrameOver` witness it does not have.
 
 ## Import weight
 
@@ -170,7 +180,7 @@ set_option warn.classDefReducibility false
 -- `docs/ARCHITECTURE.md` records that nothing under `FormalSystem/` imports this module, so
 -- a sibling module importing it would falsify that record; the baseline is the sanctioned
 -- response instead. Not for parking unrelated material.
-set_option linter.style.longFile 1800
+set_option linter.style.longFile 1900
 
 open Topology TopologicalSpace Set
 
@@ -1571,6 +1581,81 @@ theorem not_srel_totalComp : ¬ TotalComp srel := by
   have h3 := h 0 1 2 1 (-1) h1 h2
   rw [srel_iff] at h3
   norm_num at h3
+
+/-! ### The separating frame as a `FrameOver`, and the non-vacuity of the weakened cover headline
+
+`srel` obeys the reflection law, so it carries a `FrameOver intOrder` wrapper by
+`FrameOver.ofReflective` — the same route `voidFrame` takes below. That wrapper is what certifies
+the separating row at the **frame** level rather than the bare-relation level, and it is what
+lets `Semantics.exists_orientedForest_cover_of_constraints` be applied to a frame that is
+provably **not** *Saturated*.
+-/
+
+/-- **The reflection law for unit-speed drift on `ℚ` over `ℤ`-time.** `|v - w| ≤ |x|` is
+symmetric in the two states and even in the duration, so reflecting both at once is a no-op. -/
+theorem srel_reflective (w : ℚ) (d : ℤ) (u : ℚ) : srel w d u ↔ srel u (-d) w := by
+  rw [srel_iff, srel_iff, abs_sub_comm]
+  norm_num
+
+/-- **The separating frame** — `srel` presented as a `FrameOver intOrder`. No `IsRegular` instance
+is declared for it, by construction: it fails *Saturation* (`not_srel_saturation`). -/
+def sepFrame : FrameOver intOrder :=
+  FrameOver.ofReflective ℚ srel srel_reflective
+
+theorem sepFrame_taskRel : sepFrame.TaskRel = srel :=
+  FrameOver.ofReflective_taskRel_eq
+
+/-- The separating frame satisfies *Compositionality*. -/
+theorem sepFrame_comp : TaskFrame.Compositional sepFrame.TaskRel := by
+  rw [sepFrame_taskRel]; exact srel_compositional
+
+/-- The separating frame satisfies *Seriality*. -/
+theorem sepFrame_serial : TaskFrame.Serial sepFrame.TaskRel := by
+  rw [sepFrame_taskRel]; exact srel_serial
+
+/-- The separating frame satisfies *Limit*. -/
+theorem sepFrame_limit : TaskFrame.Limit sepFrame.TaskRel := by
+  rw [sepFrame_taskRel]; exact srel_limit
+
+/-- **The separating frame fails *Saturation***, so it is outside the regular class and no
+`[sepFrame.IsRegular]` instance exists to discharge the old form of the cover headline. -/
+theorem sepFrame_not_saturation : ¬ TaskFrame.Saturation sepFrame.TaskRel := by
+  rw [sepFrame_taskRel]; exact not_srel_saturation
+
+open FormalSystem.PlusLanguage in
+/--
+**Non-vacuity of the Saturation-free cover headline.** There is a concrete `FrameOver intOrder`
+that is *Compositional*, *Serial* and *Limit*, provably **not** *Saturated*, and to which
+`Semantics.exists_orientedForest_cover_of_constraints` nonetheless applies: every model on it has
+a regular oriented-forest cover with surjective, two-way bounded endpoint projection, along which
+L⁺ truth transfers.
+
+The witness is `sepFrame`. Its failure of *Saturation* is `not_srel_saturation`, so the
+`[F.IsRegular]` form of the headline — `Semantics.exists_orientedForest_cover` — cannot be
+instantiated here at all: the weakening is not a cosmetic restatement of a theorem whose
+hypotheses were already met.
+
+The weakening remains on the **transfer-from** side only. `ProofSystem.FrameClass.Sat` still
+demands `FrameOver.IsRegular` of a frame-class member, and the cover supplied above is regular —
+its *Saturation* comes from `Semantics.saturation_of_orientedForest`, a fact about oriented
+forests, not an inheritance from `sepFrame`. So the cover, not the base, is the frame-class
+member of record.
+
+Paper: `def:frame#Saturation` (the constraint this base frame fails)
+-/
+theorem exists_nonSaturated_base_orientedForest_cover :
+    ∃ F : FrameOver intOrder,
+      TaskFrame.Compositional F.TaskRel ∧ TaskFrame.Serial F.TaskRel ∧
+        TaskFrame.Limit F.TaskRel ∧ ¬ TaskFrame.Saturation F.TaskRel ∧
+        ∀ M : TaskModel F.toTaskFrame,
+          ∃ (F' : FrameOver intOrder) (_ : F'.IsRegular) (f : F'.WorldState → F.WorldState),
+            TwoWayBounded f ∧ Function.Surjective f ∧
+              ∃ g : HistMorphism F' F, g.toFun = f ∧
+                ∀ (φ : PlusFormula) (τ' : WorldHistory F'.toTaskFrame) (t : ↑intOrder),
+                  PlusTruthAt (g.pullM M) τ' t φ ↔ PlusTruthAt M (g.mapH τ') t φ :=
+  ⟨sepFrame, sepFrame_comp, sepFrame_serial, sepFrame_limit, sepFrame_not_saturation,
+    fun M => Semantics.exists_orientedForest_cover_of_constraints sepFrame
+      sepFrame_comp sepFrame_serial sepFrame_limit M⟩
 
 end SeparatingFrame
 

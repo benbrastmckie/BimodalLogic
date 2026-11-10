@@ -5,6 +5,10 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.OrientedForest
+-- Imported for exactly one declaration,
+-- `StateTopology.SeparatingFrame.exists_nonSaturated_base_orientedForest_cover`, which the
+-- non-vacuity fixture at the end of this module consumes.
+import FormalSystem.Semantics.StateTopology.ConstraintWitnesses
 
 /-!
 # Evidence for the oriented-forest *Saturation* discharge
@@ -203,5 +207,23 @@ theorem minS_nonempty_members : ∀ s ∈ minS, s.Nonempty := by
   · refine ⟨5, ?_⟩
     simp only [Set.mem_setOf_eq, iter_succ, iter_zero]
     decide
+
+/-! ## The Saturation-free cover headline is non-vacuous
+
+`Semantics.exists_orientedForest_cover_of_constraints` takes a base frame carrying only
+*Compositionality*, *Seriality* and *Limit*. The fixture below pins that this is a real weakening
+rather than a restatement: `StateTopology.SeparatingFrame.sepFrame` meets those three, fails
+*Saturation*, and the headline still applies to it. If the headline ever re-acquires a
+*Saturation* hypothesis on the base, this stops compiling.
+-/
+
+open FormalSystem.Semantics FormalSystem.Semantics.StateTopology.SeparatingFrame in
+/-- The non-vacuity witness is consumed here as well as in the library, so the separating frame's
+place in the cover argument has a test-library record. -/
+theorem sepFrame_witnesses_nonSaturated_cover :
+    ∃ F : FrameOver intOrder, ¬ TaskFrame.Saturation F.TaskRel := by
+  obtain ⟨F, _, _, _, hnotsat, _⟩ := exists_nonSaturated_base_orientedForest_cover
+  exact ⟨F, hnotsat⟩
+
 
 end BimodalTest.Semantics
