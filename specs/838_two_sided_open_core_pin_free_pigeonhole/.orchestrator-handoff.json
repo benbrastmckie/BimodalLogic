@@ -1,25 +1,12 @@
 {
-  "status": "implemented",
+  "status": "partial",
   "skeleton": false,
-  "phase": "implement",
-  "dispatch_seq": 7,
-  "summary": "Phase 8's decision gate returned FAIL, on sub-question (i) ADMISSIBILITY, with a compiled refuting object. IdleGapLengthening is stated as a named schema def and refuted by idleGapLengthening_refuted in the new standalone prototype prototype/idle-gap-lengthening.lean (299 lines, namespace Probe838C, not wired, no library file touched). The obstruction is NOT where the plan expected it: pinCompat_of_ladderPath does loosen when a region start moves farther from z, exactly as the plan argued, but the lengthening is denied one level below the pin condition, by step itself. A ladder path's object walk satisfies step (objAt g v) (objAt g (v+1)) = true at every position, so an idle run of length two needs an idle-to-idle edge in the object's step graph, and an object satisfying ParamsOk need not have one. no_consecutive_idle_of_no_idle_step states that generically; the witness is the two-state object Qo := Bool with pendO = id and stepO x y = x || y (exactly the idle-to-idle edge missing), serial in both directions via fwdO/bwdO, carrying exists_gO's path: one region of countdown Tc through z = 0 with the register constantly 0, pending forever into its past, then idle runs of length exactly one. At I = 1, l = 1 every schema hypothesis holds -- the gap 0 + 2 <= Tc from (K3)'s 2*tShort + tIdle + 2 <= Tc, the countdown bound, the idle run {Tc+1} and the region start at Tc+2 -- while the conclusion asks for a ladder path idle at BOTH Tc+1 and Tc+2, which no ladder path on this object is. Parameters are the periodicity fixpoint's own outputs for the stab-free atomic closure aO, discharged by paramsOk_params, so the refutation sits at a tuple ParamsOk genuinely admits. Sub-question (ii), TYPE PRESERVATION, was NEVER REACHED and is recorded as untouched, not skipped: the refutation closes from step alone. Gates: guarded standalone lake env lean exit 0 with zero errors, zero warnings, zero sorries; axiom profiles [propext, Classical.choice, Quot.sound] and [propext] with no sorryAx; validate-artifact exit 0 on both plan and summary; check-task-references exit 0; git diff --stat on FormalSystem/ and Tests/ empty. No full library build was run in this dispatch and none is claimed -- no library file changed, so the library's green state is carried on Tier-3 evidence (every FormalSystem/** and Tests/BimodalTest/** source has a newer .olean from Phase 7's green full build; 0 missing, 0 source-newer) plus a sorry census of 0. Nothing landed under the reserved name cellLE_zero_const_of_kappa_eq. PHASE 9 MUST TAKE ITS FAIL BRANCH: state the restricted obligation under the NEW name cellLE_zero_const_of_kappa_eq_of_forwardSlack and leave the reserved name reserved. Two items carried into it: kappa_collision_regimes's saturated-gap third branch is addressed by neither landed inclusion, and Phase 8's idle-cycle sharpening (the lengthening is available exactly where the object's idle states carry a reachable cycle) is an object hypothesis, not a consequence of ParamsOk.",
-  "phases_completed": 8,
+  "summary": "Phase 9 only (single-phase dispatch). Phase 8's FAIL verdict routed this phase to its FAIL branch: the forward-slack-restricted depth-0 cell obligation is landed in LadderCell.lean as a THEOREM under the planned new names, the reserved name cellLE_zero_const_of_kappa_eq stays claimed by nothing, and the unrestricted schema stays neither proved nor refuted. Five new declarations, 199 lines, all sorry-free on the standard axiom profile (the refutation below it). The schema carries a FOURTH restriction the plan did not anticipate -- the equal-register hypothesis n = n' -- forced by the compiled kappa_collision_two_regimes_refuted_of_pend_gap and recorded as a plan deviation. Phase 9 closed [COMPLETED WITH EXCLUSIONS] with a six-row Reasoned Exclusions record. Phase 10 (records, full gate set, summary brought current) remains.",
+  "phases_completed": 9,
   "phases_total": 10,
+  "dispatch_seq": 8,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": null,
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
-      "summary": "Round-01 summary brought current with Phase 8: the idle-gap-lengthening gate's FAIL verdict on admissibility, the step-graph mechanism, and the type-preservation sub-question recorded as untouched."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-8-handoff-20261110T080409Z.md",
-      "summary": "Phase 8's end state, the FAIL verdict Phase 9 consumes, the explicit instruction to take Phase 9's FAIL branch, and the two open items carried into it."
-    }
-  ],
-  "next_steps": "Run /orchestrate 838 --implement to execute Phase 9 on its FAIL branch: state CellLEZeroConstOfKappaEqForwardSlack and cellLE_zero_const_of_kappa_eq_of_forwardSlack in LadderCell.lean with the forward-slack regime as an explicit hypothesis on the witnessing path, pin the axiom profile, and leave cellLE_zero_const_of_kappa_eq reserved. Do NOT attempt the PASS-branch tasks. Phase 9 must also dispatch or explicitly exclude kappa_collision_regimes's saturated-gap third branch, which neither landed cell inclusion addresses."
+  "continuation_path": "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-9-handoff-20261110T082854Z.md",
+  "artifacts": []
 }

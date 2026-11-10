@@ -1,30 +1,19 @@
 {
-  "status": "implemented",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "task_number": 838,
-  "phase": "implement",
-  "dispatch_seq": 7,
-  "session_id": "sess_1794293763_c4273a",
-  "skeleton": false,
+  "dispatch_seq": 8,
   "requires_user_review": false,
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
-      "summary": "Round-01 summary brought current with Phase 8's idle-gap-lengthening decision gate: VERDICT FAIL on sub-question (i), admissibility, refuted by a compiled object."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-8-handoff-20261110T080409Z.md",
-      "summary": "Phase 8 end state, the FAIL verdict Phase 9 consumes, and the two open items carried into it."
-    }
-  ],
+  "artifacts": [],
   "modified_files": [
-    "specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "typst/generated/status.typ",
     "specs/838_two_sided_open_core_pin_free_pigeonhole/plans/01_pin-free-pigeonhole-open-core.md",
-    "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
-    "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-8-handoff-20261110T080409Z.md",
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-9-handoff-20261110T082854Z.md",
     "specs/838_two_sided_open_core_pin_free_pigeonhole/issues.jsonl",
     "specs/838_two_sided_open_core_pin_free_pigeonhole/.orchestrator-handoff.json",
     "specs/838_two_sided_open_core_pin_free_pigeonhole/.return-meta.json"
@@ -33,25 +22,28 @@
   "verification": {
     "sorry_count": 0,
     "vacuous_count": 1,
-    "vacuous_note": "Pre-existing baseline, unchanged by this phase: FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal ... := trivial, a genuine theorem in a file this phase did not touch. This phase changed no FormalSystem/ or Tests/ file.",
-    "axiom_count": 14,
-    "axiom_note": "Pre-existing baseline, unchanged: this phase changed no library file.",
+    "vacuous_note": "pre-existing at FormalSystem/Examples/TemporalStructures.lean:495; zero introduced by this phase (git diff HEAD~2..HEAD shows 0 added lines matching the vacuity patterns)",
+    "axiom_count": 12,
+    "axiom_note": "unchanged from the pre-phase baseline; 0 '^axiom ' lines added by this phase",
     "build_passed": true,
-    "build_evidence": "Phase scope is one standalone specs/** prototype: bash .claude/scripts/lake-build-guard.sh build --timeout 840 -- env lean specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean reports exit_status=0 with zero error: lines, zero warning: lines and zero 'declaration uses sorry'. NO full unscoped library build was run in this dispatch and none is claimed: git diff --stat -- FormalSystem/ Tests/ is empty, so the library's green state is carried on Tier-3 evidence (every FormalSystem/** and Tests/BimodalTest/** source has an .olean newer than it from Phase 7's green full build; 0 missing, 0 source-newer) plus a sorry census of 0 over the resolved source roots. The complete gate set is Phase 10's obligation and is deferred to the batch stage there.",
+    "build_evidence": "lake-build-guard.sh exit_status=0 on the full project (2969 jobs, 0 'error:' lines) and on each of the three scoped builds (LadderCell, FormalSystem, BimodalTest.Metalogic.KTypeSummaryAxiomTest); .olean newer than source for both touched modules; scripts/check-module-invariants.sh exits 0",
     "verification_passed": true,
-    "other_gates": "validate-artifact.sh exit 0 (0 warnings) on both the plan and the summary; check-task-references.sh --quiet exit 0 with 0 occurrences on the new prototype; grep for the reserved name cellLE_zero_const_of_kappa_eq in FormalSystem/ and Tests/ shows no theorem/def/lemma claiming it; #print axioms shows no sorryAx on either headline object."
+    "tier": "interface",
+    "tier_note": "Phase 9's declared tier is interface, not full, so the dispatch's batch-stage deferral (which targets the plan's FINAL phase, Phase 10, tier full) does not apply here; all four interface-tier covering checks ran independently and are green."
   },
+  "phases_completed": 9,
+  "phases_total": 10,
   "completion_data": {
-    "completion_summary": "Phase 8's decision gate landed its verdict as a compiled object: FAIL, on sub-question (i), ADMISSIBILITY. The schema IdleGapLengthening is stated as a named def in the new standalone prototype specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean (299 lines, namespace Probe838C) and refuted there by idleGapLengthening_refuted on the standard axiom profile with no sorryAx. The obstruction is not pinCompat_of_ladderPath, which does loosen as the plan argued, but step itself: an idle run of length two requires an idle-to-idle edge in the object's step graph, which an object satisfying ParamsOk need not have, so the idle run's length is a datum of the object rather than a parameter the construction may raise. no_consecutive_idle_of_no_idle_step is the generic reading and the two-state object Qo := Bool with stepO x y = x || y is the witness. Sub-question (ii), type preservation, was never reached and is recorded as untouched. No library file changed; the reserved name cellLE_zero_const_of_kappa_eq remains claimed by nothing. Phase 9 proceeds on its FAIL branch."
+    "completion_summary": "Phase 9 of 10 complete. The forward-slack-restricted depth-0 cell obligation is a compiled theorem (cellLE_zero_const_of_kappa_eq_of_forwardSlack) over its schema (CellLEZeroConstOfKappaEqForwardSlack), assembled from the landed upward inclusion and a new state-level downward inclusion (cellAt_subset_of_shift_of_pend_past_rev) under the new forward-slack-witnessing hypothesis (ForwardSlackWitnessed). The reserved name stays claimed by nothing and the unrestricted obligation stays open. Phase 10 remains."
+  },
+  "user_decision": {
+    "blocking": false,
+    "question": "Phase 9's forward-slack-restricted obligation landed under the planned names but with a FOURTH restriction the plan did not anticipate: the equal-register hypothesis n = n'. The compiled kappa_collision_two_regimes_refuted_of_pend_gap shows the saturated-gap branch of the collision case split survives restriction to the pending-forever regime at countdowns above the threshold, and on that residue no landed inclusion applies in either direction; the common-shift sub-regime's downward direction is separately blocked because the landed deletion holds the register and nothing landed lowers it. Accept the equal-register-restricted equality under the planned name cellLE_zero_const_of_kappa_eq_of_forwardSlack, or hold that name open pending a register-lowering deletion?",
+    "recommendation": "Accept it as landed. It is consistent with the cycle-2 decision already on file (land the regime-restricted obligation as an equality once the downward/deletion assembly with an explicit forward-slack hypothesis exists -- it now does, as mem_cellAt_of_shift_of_hasForwardSlack_exact), the extra restriction is visible in the signature rather than hidden, and the register-lowering deletion is recorded as a named candidate follow-up route that would drop the hypothesis on branch 2 of the case split without reaching the saturated residue."
   },
   "memory_candidates": [
-    {
-      "title": "A decision gate about inserting positions into a ladder path can fail at the step graph, below the pin condition",
-      "content": "When a construction over ladder paths proposes to lengthen an idle run, the pin-compatibility condition is the wrong place to look for the obstruction: it loosens as a region start moves farther away. The binding constraint is one level below, in step itself -- an idle run of length two requires an idle-to-idle edge in the object's step graph, and nothing in ParamsOk supplies one. Before designing the pin arithmetic for such a construction, check whether the object's step graph admits the run length at all; a two-state object with that single edge removed refutes the whole schema in four lines."
-    },
-    {
-      "title": "Reusing a permissive prototype object can make a refutation impossible to state",
-      "content": "Sibling prototypes in this repository use step = fun _ _ => true, which admits every walk. That object cannot carry any refutation whose mechanism is a missing edge: it has none. When a gate's expected failure mode is an object-level restriction, declare a fresh minimal object rather than reusing the permissive one, and say in the record why the reuse was impossible."
-    }
+    "A Lean module edit that adds lines to FormalSystem/ trips two mechanical gates in this repository that no plan Scope Hypothesis anticipates: the pre-commit typst-sync-check.sh Check 2 (fix with 'bash scripts/typst-sync-check.sh --fix' then stage typst/generated/status.typ) and check-module-invariants.sh's stale generated inventory blocks (fix with 'bash scripts/check-module-invariants.sh --emit-inventory', which rewrites three READMEs). Budget both into any Lean phase's file list.",
+    "In Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean a '#print axioms <fully qualified name>' line exceeds the repository's 100-character limit once the declaration name passes about 39 characters; the established fix is the 'open FormalSystem.Metalogic.Decidability.RaySummary in' prefix before the #guard_msgs docstring, which shortens the command line while the expected message still carries the full name. The message itself wraps after '[propext,' once the one-line rendering passes 120 characters.",
+    "A cell-level DOWNWARD inclusion in the ladder layer cannot be stated at the state level: the climbing-register path (ClimbWitness.hasForwardSlack_refuted_unconditional) passes through a state satisfying every state-level hypothesis and violates the forward-slack regime. The sound lift is existential over paths -- 'every type the cell realizes is realized there by SOME path with slack' -- which the climbing path does not touch."
   ]
 }

@@ -1069,7 +1069,7 @@ either path.
 
 ---
 
-### Phase 9: Close the Obligation — GATED ON PHASE 8 [IN PROGRESS]
+### Phase 9: Close the Obligation — GATED ON PHASE 8 [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: On Phase 8's PASS verdict, the lengthening is promoted to a slack-normalization lemma —
 every type realized at the upper state is realized there by SOME path with forward slack — which
@@ -1080,57 +1080,158 @@ forward-slack-restricted obligation is stated and compiled under a NEW name, the
 exactly what the consumer must supply, and the reserved name stays reserved and claimed by
 nothing.
 
-**Tasks** (PASS branch):
+**BRANCH TAKEN: FAIL.** Phase 8's verdict is FAIL on sub-question (i), admissibility, so the
+PASS-branch tasks below are excluded and the FAIL-branch tasks ran.
 
-- [ ] `exists_hasForwardSlack_realizing_of_pend_past` in `LadderCell.lean`: for a path `g`
-  through `(q, c + m · (P + 1), n)` in the pending-forever regime at countdown at least `Tc`,
-  a path `g''` through the SAME state with the SAME realized stab-free type at `z` and
-  `HasForwardSlack g'' z (m · (P + 1)) n`, by `m · (P + 1)` applications of Phase 8's lengthening
-  to the idle gap above `z`'s region. This is the one statement the gate's PASS verdict buys and
-  the climbing-register refutation does not touch, because it is existential over paths rather
-  than universal.
-- [ ] `cellAt_subset_of_shift_of_pend_past_rev`: the state-level downward inclusion, from the
-  normalization lemma and `mem_cellAt_of_shift_of_hasForwardSlack_exact`.
-- [ ] `cellLE_zero_const_of_kappa_eq : CellLEZeroConstOfKappaEq step pend fwd bwd lab φ Tc Tn P B`
-  in `LadderCell.lean`, from the two inclusions in each sub-regime: Phase 7's
-  `kappa_collision_regimes` splits the collision, `cellAt_subset_of_shift_of_pend_past` and
-  `cellAt_subset_of_common_shift_of_pend_past` give the upward halves, and
-  `cellAt_subset_of_shift_of_pend_past_rev` with its common-shift mirror gives the downward
-  halves.
-- [ ] `LadderAgree.lean`: the obligation section's docstrings and `CellLEZeroConstOfKappaEq`'s own
-  docstring now say the schema is a THEOREM under `ParamsOk`, name `LadderCell.lean` as its home,
-  and keep the pre-repair refutation's record intact (it refutes a different, frozen predicate).
-  Current-design language only; no task number.
-- [ ] Axiom-test pin for `cellLE_zero_const_of_kappa_eq`, and the `(W)` prose block amended to
-  say the obligation is proved rather than open.
+**Tasks** (PASS branch) — ALL EXCLUDED, see `#### Reasoned Exclusions` below:
+
+- [ ] `exists_hasForwardSlack_realizing_of_pend_past` in `LadderCell.lean` *(deviation: skipped —
+  the gate's PASS verdict, which is this lemma's only route, did not fire)*
+- [ ] `cellAt_subset_of_shift_of_pend_past_rev` from that normalization lemma *(deviation: altered
+  — the theorem IS landed, under this name, but from the hypothesis `ForwardSlackWitnessed`
+  supplied by a consumer rather than from a normalization lemma the gate would have bought)*
+- [ ] `cellLE_zero_const_of_kappa_eq` under the reserved name *(deviation: skipped — the reserved
+  name stays claimed by nothing)*
+- [ ] `LadderAgree.lean` obligation docstrings rewritten to say the schema is a THEOREM
+  *(deviation: skipped — PASS-branch only; the schema is not a theorem, so the docstrings are
+  correct as they stand and `LadderAgree.lean` is untouched by this phase)*
+- [ ] Axiom-test pin for `cellLE_zero_const_of_kappa_eq`, `(W)` prose saying the obligation is
+  proved *(deviation: skipped — the `(W)` prose says the obligation is OPEN, see the FAIL-branch
+  task below)*
 
 **Tasks** (FAIL / INCONCLUSIVE branch):
 
-- [ ] State the restricted obligation in `LadderCell.lean` under a NEW name —
+- [x] State the restricted obligation in `LadderCell.lean` under a NEW name —
   `CellLEZeroConstOfKappaEqForwardSlack` for the schema and
-  `cellLE_zero_const_of_kappa_eq_of_forwardSlack` for the theorem — carrying, in addition to
-  `ParamsOk` and the stab-free hypothesis, the forward-slack regime as an explicit hypothesis on
-  the witnessing path of the higher state, which is the hypothesis
-  `mem_cellAt_of_shift_of_hasForwardSlack_exact` already consumes, and prove it from the landed
-  upward inclusion, Phase 7's common-shift inclusion and case split, and that landed downward
-  inclusion. The statement must conclude the SAME relation its name advertises: if what closes is
-  an inclusion rather than an equality, name it an inclusion.
-- [ ] `cellLE_zero_const_of_kappa_eq` stays reserved. Verify by
-  `grep -rn 'cellLE_zero_const_of_kappa_eq' FormalSystem/ Tests/` returning only docstring lines,
-  and state in the new schema's docstring that it is NOT the reserved statement, which hypothesis
-  it adds, on which path that hypothesis sits, and that the unrestricted schema is neither proved
-  nor refuted under `ParamsOk`.
-- [ ] Record, in the new schema's docstring and in Phase 10's summary, exactly what the consumer
-  (task 761's Phase 11.6 induction) must supply to use the restricted form — a forward-slack
-  witness at each state it inducts through — and name as candidate follow-ups, without creating
-  them, the two routes the gate's FAIL verdict leaves: a `(K1)` amendment, and a restatement of
-  the obligation over a slack-carrying sub-class of paths.
-- [ ] Axiom-test pin for the new theorem; the `(W)` prose block says the obligation is open and
+  `cellLE_zero_const_of_kappa_eq_of_forwardSlack` for the theorem — and prove it.
+  *(deviation: altered — the schema carries a FOURTH restriction the plan did not anticipate, the
+  EQUAL-REGISTER hypothesis `n = n'`. See `#### Deviation: the equal-register hypothesis` below,
+  which carries the compiled reason.)*
+- [x] `cellLE_zero_const_of_kappa_eq` stays reserved, verified by grep, and the new schema's
+  docstring states that it is NOT the reserved statement, which hypotheses it adds, on which path
+  the forward-slack hypothesis sits, and that the unrestricted schema is neither proved nor
+  refuted under `ParamsOk`.
+- [x] Record what the consumer must supply — the register equality across the collision and a
+  forward-slack witness at the higher state, at each state it inducts through — in the new
+  schema's docstring and in the `(W)` prose block, and name as candidate follow-ups, without
+  creating them, the two routes the gate's FAIL verdict leaves.
+- [x] Axiom-test pin for the new theorem; the `(W)` prose block says the obligation is open and
   the restricted form is proved.
-- [ ] Prohibited on both branches: no `sorry`, no `def X := True`, no vacuous placeholder, and no
-  narrowed, regime-restricted or otherwise weakened statement under the reserved name. A weaker
-  statement under the PLANNED new name is equally prohibited: that is the one defect
-  `rules/plan-compliance.md` exists to catch.
+- [x] Prohibited on both branches: no `sorry`, no `def X := True`, no vacuous placeholder, and no
+  narrowed, regime-restricted or otherwise weakened statement under the reserved name.
+
+**WHAT LANDED.** Five declarations in
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean` (299 → 498 lines), all on the
+standard axiom profile `[propext, Classical.choice, Quot.sound]` except the refutation, which sits
+BELOW it at `[propext, Quot.sound]`, and none carrying `sorryAx`:
+
+* `ForwardSlackWitnessed` — the forward-slack regime lifted from one path to a whole cell: every
+  type the cell at a state realizes is realized there by SOME path carrying
+  `HasForwardSlack · z l n`. Existential over paths, which is exactly why
+  `ClimbWitness.hasForwardSlack_refuted_unconditional` does not touch it — the climbing path's
+  presence among the paths through the state is compatible with another path realizing the same
+  type with slack. It asserts nothing; it is a hypothesis a consumer supplies.
+* `cellAt_subset_of_shift_of_pend_past_rev` — the DOWNWARD cell inclusion at the STATE level, the
+  mirror of the landed upward `cellAt_subset_of_shift_of_pend_past`. The body is the landed
+  path-level `mem_cellAt_of_shift_of_hasForwardSlack_exact` applied to the witnessing path
+  `ForwardSlackWitnessed` supplies. No new pump and no new pin.
+* `CellLEZeroConstOfKappaEqForwardSlack` — the obligation with four hypotheses added, all four
+  visible in the quantifier: the equal-register restriction `n = n'`; the pending-forever gap at
+  both pairs; the threshold bounds at both pairs; and the forward-slack witnessing of whichever
+  pair carries the higher countdown, at exactly the displacement separating the two.
+* `cellLE_zero_const_of_kappa_eq_of_forwardSlack` — that schema, as a THEOREM, at every parameter
+  tuple `ParamsOk` admits. It concludes cell EQUALITY, the relation its name advertises: the
+  upward half is `cellAt_subset_of_shift_of_pend_past`, the downward half is
+  `cellAt_subset_of_shift_of_pend_past_rev`, and `Set.Subset.antisymm` closes it.
+* `kappa_collision_two_regimes_refuted_of_pend_gap` — the compiled reason the equal-register
+  hypothesis is carried (below).
+
+**What this does NOT settle.** The unrestricted `CellLEZeroConstOfKappaEq` is, under `ParamsOk`,
+still NEITHER PROVED NOR REFUTED, and `cellLE_zero_const_of_kappa_eq` is still claimed by nothing
+— verified by `grep -rn 'cellLE_zero_const_of_kappa_eq' FormalSystem/ Tests/`, whose every hit
+outside the new `_of_forwardSlack` name is a docstring or prose line. The restricted theorem is
+strictly stronger in hypotheses, so it bears on the unrestricted schema's truth value in neither
+direction.
+
+#### Deviation: the equal-register hypothesis
+
+The plan's FAIL-branch task named THREE additions to the obligation (`ParamsOk`, the stab-free
+hypothesis, the forward-slack regime) and directed the proof through `kappa_collision_regimes`.
+The landed schema carries a FOURTH, `n = n'`, and routes through `kappa_eq_components` instead.
+Both departures have the same compiled cause, and it is recorded here rather than annotated
+silently because `rules/plan-compliance.md` governs `.lean` files.
+
+**The compiled reason.** `kappa_collision_two_regimes_refuted_of_pend_gap` shows that restricting
+a collision to the pending-forever regime at countdowns above the threshold does NOT remove the
+saturated-gap branch of `kappa_collision_regimes`: at `Tc = Tn = P = 0`, `B = 2` the pairs
+`(2, 0)` and `(4, 1)` collide — both clipped coordinates pinned at their thresholds, both residues
+trivial at `P + 1 = 1`, the gap coordinate saturated below the window on both
+(`clipIdx 2 2 0 = clipIdx 2 4 1 = 0`) — while `0 + 2 ≤ 2`, `1 + 2 ≤ 4` and `0 ≤ 2`, `0 ≤ 4` hold,
+the registers differ, and no single `m` displaces both coordinates (`4 = 2 + m` forces `m = 2`
+while `1 = 0 + m` forces `m = 1`). On that residue NO landed inclusion applies in EITHER
+direction, and the forward-slack hypothesis does not reach it: forward slack buys the deletion
+inside `z`'s region, and the obstruction here is that the register must move by an amount the
+countdown does not match.
+
+**Why the destructor and not the case split.** With `n = n'` carried, `kappa_collision_regimes`'
+branch structure supplies nothing the countdown residue does not. Its equal-register branch gives
+exactly the displacement the proof uses; its common-shift branch collapses to `m = 0` under
+`n = n'`; and its saturated-gap branch — which the restricted schema does NOT exclude — needs the
+residue congruence all the same. `kappa_eq_components` is therefore the whole of the arithmetic
+the proof consumes, and the case split is cited for the scope statement rather than the
+derivation.
+
+**What the deviation costs.** The restricted schema covers the equal-register slice of every
+collision — branch 1 of the case split entire, plus the `n = n'` slice of the saturated branch —
+and nothing else. The consumer's extra obligation grew by one item (the register equality), which
+the schema's docstring and the `(W)` prose both name.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| `exists_hasForwardSlack_realizing_of_pend_past` (PASS task 1) | Its only route is Phase 8's lengthening, which is refuted, not merely unproved. The lemma is not applicable, not deferred. | Phase 8 VERDICT FAIL; `Probe838C.idleGapLengthening_refuted` in `prototype/idle-gap-lengthening.lean`, `#print axioms` showing no `sorryAx` |
+| `cellLE_zero_const_of_kappa_eq` under the reserved name (PASS task 3) | The downward inclusion it needs exists only under the forward-slack hypothesis, which the obligation does not carry; claiming the reserved name would be the one defect `rules/plan-compliance.md` exists to catch. | `grep -rn 'cellLE_zero_const_of_kappa_eq' FormalSystem/ Tests/` — docstring and prose lines only, no `theorem` or `def` |
+| `LadderAgree.lean` obligation docstrings rewritten (PASS task 4) | PASS-branch only. The schema is not a theorem, so the existing docstrings are already correct and any edit would make them false. | `git diff --stat` for this phase lists no `LadderAgree.lean` row |
+| Axiom pin and `(W)` prose for a PROVED unrestricted obligation (PASS task 5) | Same cause; the `(W)` prose instead says the obligation is OPEN and the restricted form is proved, which is the FAIL-branch form of the same task and IS done. | `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, the new `(W)` block headed "the FORWARD-SLACK-RESTRICTED depth-`0` cell obligation" |
+| The common-shift sub-regime's DOWNWARD direction | The landed deletion `mem_cellAt_of_shift_of_hasForwardSlack_exact` HOLDS the register, and nothing landed lowers it; a common-shift mirror would need a register-lowering deletion that does not exist. Decided, not deferred within this phase: it is named below as a candidate follow-up route. | `mem_cellAt_of_shift_of_hasForwardSlack_exact`'s signature in `LadderChain.lean` — `n` on both sides of the shift |
+| The saturated-gap residue with unequal registers | Compiled as surviving the regime restriction; no landed inclusion addresses it in either direction. Named below as the second candidate follow-up route. | `kappa_collision_two_regimes_refuted_of_pend_gap`, pinned at `[propext, Quot.sound]` |
+
+All five admission conditions hold: each exclusion is a decision forced by a compiled object
+rather than a stalled attempt; each is scoped to a named item; each carries a reason and evidence
+above; and nothing in Phase 9 itself remains for a future dispatch — the two open routes are
+recorded as candidate follow-ups, which this phase's own task list directs ("name as candidate
+follow-ups, without creating them").
+
+**Candidate follow-up routes left by the FAIL verdict** (named, NOT created):
+
+1. A `(K1)` amendment that constrains the length of a type-respecting block spanning a region
+   start, which is what Phase 4's decision gate found `(K1)` does not do. This would reopen the
+   spanning-block device the two-sided refutation closed.
+2. A register-lowering deletion — the common-shift mirror of
+   `mem_cellAt_of_shift_of_hasForwardSlack_exact`, carrying the register DOWN by the same multiple
+   of `P + 1` as the countdown — which would buy the common-shift sub-regime's downward direction
+   and so drop the `n = n'` hypothesis on branch 2 of the case split. It would NOT reach the
+   saturated residue.
+
+**Verification notes.** All four of this phase's `interface`-tier covering checks are green:
+`bash .claude/scripts/lake-build-guard.sh build --timeout 540 -- build
+FormalSystem.Metalogic.Decidability.RaySummary.LadderCell` reports `exit_status=0` with zero
+`error:` lines; the same guarded form `-- build FormalSystem` reports `exit_status=0`; `-- build
+BimodalTest.Metalogic.KTypeSummaryAxiomTest` reports `exit_status=0`; and
+`bash scripts/check-module-invariants.sh` exits 0 (after
+`bash scripts/check-module-invariants.sh --emit-inventory` refreshed the three generated inventory
+blocks the new line count moved — a mechanical consequence of the edit, outside the phase's
+declared file list and recorded here as such).
+`grep -cE 'sorry|native_decide|^axiom|:= True|:= trivial'
+FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean` is 0.
+`bash .claude/scripts/check-task-references.sh --quiet` exits 0 on every changed file. `#print
+axioms` on all four new positive declarations shows `[propext, Classical.choice, Quot.sound]` and
+on the refutation `[propext, Quot.sound]`, with no `sorryAx` on any — pinned under `#guard_msgs`
+in the axiom test, so the profiles are checked by the build rather than asserted here. This
+phase's tier is `interface`, so the batch-stage deferral the dispatch directive describes for the
+plan's FINAL phase (`Verification Tier: full`) does not apply to it; the complete gate set remains
+Phase 10's obligation and is deferred to the batch stage there, not forgiven.
 
 **Timing**: 2 hours
 
@@ -1143,7 +1244,10 @@ nothing.
 **Scope Hypothesis**: On either branch the assembly is 120-300 lines added to `LadderCell.lean`
 (bringing it to 270-550 lines, well under the package `longFile` limit of 1500), and three or
 four files change: `LadderCell.lean`, the axiom test, and on the PASS branch `LadderAgree.lean`'s
-obligation docstrings. Confirm by `wc -l` and `git diff --stat`.
+obligation docstrings. Confirm by `wc -l` and `git diff --stat`. CONFIRMED for the Lean files
+(199 lines added; `LadderCell.lean` is 498 lines) and EXCEEDED by four generated/derived files the
+hypothesis did not anticipate: the three inventory-block READMEs above and
+`typst/generated/status.typ`, each a regenerated block rather than hand-authored content.
 
 **Tier Justification**: The phase adds theorems to `LadderCell.lean` and, on the PASS branch,
 edits `LadderAgree.lean` docstrings that every `RaySummary` module transitively imports, so the
