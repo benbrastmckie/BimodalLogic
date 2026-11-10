@@ -11,9 +11,9 @@ next_project_number: 909
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,869,873,874,875,876,890,894,899,900,905,906,907,908 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
-| 2 | 231,282,296,429,497,763,787,804,853,862,895 | 298,428,502,743,761,803,838,894 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 410,498,499,500,861,896 | 429,497,763,838,895 | algebraic-representation, decidability |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,838,873,890,894,899,900,905,906,907,908 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 2 | 231,282,296,429,497,763,787,803,853,862,869,874,875,876,895 | 298,428,502,743,761,838,873,894 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 410,498,499,500,804,861,896 | 429,497,763,803,838,895 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -79,9 +79,9 @@ next_project_number: 909
 ### Metalogic
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 890 [RESEARCHED] — Record the GHR94 Lemma 10.2.3 Case 5 erratum in the Typst...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
+875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ### Repo Hygiene
 
@@ -97,15 +97,15 @@ next_project_number: 909
 
 ### Build Performance
 
+829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 803 [PLANNED] — Cut the elaboration time of...
   └─ 804 [NOT STARTED] — Determine whether...
-829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ### Syntax
 
 873 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
-874 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
-876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
+  └─ 874 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
+  └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ### Uncategorized
 
@@ -377,7 +377,7 @@ SEQUENCING AND SCOPE. The standing ruling is decidability before completeness: i
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: syntax
-- **Dependencies**: Task 856
+- **Dependencies**: Task 856, Task 873
 
 **Description**: PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise. SCOPE REVISED: DECISION RECORD ONLY. No removal is to be attempted, and no constructor of `OpenFormula` is to be deleted or re-expressed as notation: the stability modal stays primitive in both L-plus and L^▷. The deliverable is the Phase 1 gate alone, as a report: (1) whether any live consumer evaluates the stability modal off the regular class, where the backward half of the definability biconditional fails; (2) what losing state-locality would cost the decidability front and the atomization route; (3) a verdict on whether removal would be sound relative to this tree, recorded for a future ruling and not acted on. Every sentence below that names removal as a deliverable is superseded by this paragraph. Dependencies are reduced to the L^▷ proof-system task alone.
 
@@ -407,7 +407,7 @@ VERIFICATION GATE. Guarded scoped build green, then the unscoped build; never ba
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: Task 856, Task 871
+- **Dependencies**: Task 856, Task 871, Task 873
 
 **Description**: PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise.
 
@@ -433,7 +433,7 @@ VERIFICATION GATE. Guarded scoped build green, then the unscoped build; never ba
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: syntax
-- **Dependencies**: Task 856
+- **Dependencies**: Task 856, Task 873
 
 **Description**: PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise. RATIONALE CORRECTION: the paragraph below headed WHY IT MATTERS FOR THE END STATE is superseded. L-plus is not to be made dispensable. The value of this task is that L^▷ gains its own substitution closure and a direct embedding of L, as properties of L^▷ worth having on record.
 
@@ -483,7 +483,7 @@ VERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, th
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: semantics
-- **Dependencies**: Task 898
+- **Dependencies**: Task 743, Task 898
 
 **Description**: PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise.
 
@@ -876,7 +876,7 @@ ACCEPTANCE. A written classification of every import edge from the termination s
 - **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: build-performance
-- **Dependencies**: None
+- **Dependencies**: Task 743
 - **Research**: [803_cut_subformulaproperty_elaboration_time/reports/01_cut-subformulaproperty-elaboration-time.md]
 - **Plan**: [803_cut_subformulaproperty_elaboration_time/plans/01_cut-subformulaproperty-elaboration-time.md]
 
