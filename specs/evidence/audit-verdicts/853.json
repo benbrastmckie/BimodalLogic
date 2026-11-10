@@ -1,0 +1,271 @@
+{
+  "proposal": {
+    "id": "ladder_path_insertion_cascade_idle_past",
+    "project_number": null,
+    "title": "Construct the Phase 11.8 ladder-path insertion cascade: the idle-past half and the unconditional join"
+  },
+  "verdicts": [
+    {
+      "verdict": "subset-of-open",
+      "project_number": 761,
+      "project_name": "ladder_realization_theorem",
+      "shared_paths": [
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderCascade.lean"
+      ],
+      "mechanical_class": "subset",
+      "semantic_score": 0.32432432432432434
+    },
+    {
+      "verdict": "subset-of-open",
+      "project_number": 177,
+      "project_name": "update_readme_and_module_docstrings",
+      "shared_paths": [
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderCascade.lean"
+      ],
+      "mechanical_class": "subset",
+      "semantic_score": 0.21621621621621623
+    },
+    {
+      "verdict": "duplicate-of-open",
+      "project_number": 559,
+      "project_name": "nondeterministic_canonical_model_tm_star_completeness",
+      "shared_paths": null,
+      "mechanical_class": "none",
+      "semantic_score": 0.43243243243243246
+    },
+    {
+      "verdict": "overlaps-open",
+      "project_number": 838,
+      "project_name": "two_sided_open_core_pin_free_pigeonhole",
+      "shared_paths": [
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean"
+      ],
+      "mechanical_class": "overlap",
+      "semantic_score": 0.35135135135135137
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 844,
+      "project_name": "reanchored_deletion_half_depth_zero_cell",
+      "discharging_artifact": {
+        "path": "specs/844_reanchored_deletion_half_depth_zero_cell/summaries/01_reanchored-deletion-half-summary.md",
+        "type": "summary",
+        "summary": "Implementation summary: five new declarations, gate verdict FAIL (upper direction), verification results, and the two remaining pieces for the cell-level inclusion."
+      },
+      "mechanical_class": "overlap",
+      "semantic_score": 0.4594594594594595
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 849,
+      "project_name": "forward_slack_discharge_and_exact_shift_iteration",
+      "discharging_artifact": {
+        "path": "specs/849_forward_slack_discharge_and_exact_shift_iteration/summaries/01_forward-slack-exact-shift-summary.md",
+        "type": "summary",
+        "summary": "Implementation summary: seven pinned and seven unpinned declarations landed in LadderChain.lean, docstrings and README updated, full gate green, three recorded deviations (lint-driven Finite binder, longFile baseline, challenge-checker name ambiguity)."
+      },
+      "mechanical_class": "overlap",
+      "semantic_score": 0.3783783783783784
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 850,
+      "project_name": "upfirst_exact_shift_copy_boundary_types",
+      "discharging_artifact": {
+        "path": "specs/850_upfirst_exact_shift_copy_boundary_types/summaries/01_upfirst-exact-shift-copy-boundary-summary.md",
+        "type": "summary",
+        "summary": "Implementation summary: up-first exact shift with copy-boundary realized types exposed; verification, fidelity and census results."
+      },
+      "mechanical_class": "none",
+      "semantic_score": 0.5135135135135135
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 836,
+      "project_name": "ladder_type_preserving_cell_agreement_construction",
+      "discharging_artifact": {
+        "path": "specs/836_ladder_type_preserving_cell_agreement_construction/summaries/01_obligation-repair-and-pump-layer-summary.md",
+        "type": "summary",
+        "summary": "The implementation summary: what landed, the repair, the FAIL verdict, what task 761's reviser needs."
+      },
+      "mechanical_class": "overlap",
+      "semantic_score": 0.32432432432432434
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 656,
+      "project_name": "refactor_task_frames_general_with_frame_constraints",
+      "discharging_artifact": {
+        "path": "specs/656_refactor_task_frames_general_with_frame_constraints/summaries/01_general-frames-regular-constraints-summary.md",
+        "type": "summary",
+        "summary": "Implementation summary with the complete migration table, checked against git diff --stat (109 files, 3503 insertions, 819 deletions since the plan commit)."
+      },
+      "mechanical_class": "subset",
+      "semantic_score": 0.16216216216216217
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 636,
+      "project_name": "docstring_and_citation_normalisation",
+      "discharging_artifact": {
+        "path": "specs/636_docstring_and_citation_normalisation/summaries/01_docstring-citation-normalisation-summary.md",
+        "type": "summary",
+        "summary": "Implementation summary with the full before/after acceptance table, every plan deviation, and six follow-ups."
+      },
+      "mechanical_class": "subset",
+      "semantic_score": 0.08108108108108109
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 585,
+      "project_name": "burn_down_compiler_warnings_and_add_gate",
+      "discharging_artifact": {
+        "path": "specs/585_burn_down_compiler_warnings_and_add_gate/summaries/02_warning-burndown-and-c28-gate-summary.md",
+        "type": "summary",
+        "summary": "Burned 348 compiler warnings to 0 and landed C28, a build-free warning ratchet, enforced against a zero baseline with --wfail wired as the second gate."
+      },
+      "mechanical_class": "subset",
+      "semantic_score": 0.02702702702702703
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 588,
+      "project_name": "triage_zero_occurrence_declarations",
+      "discharging_artifact": {
+        "path": "specs/588_triage_zero_occurrence_declarations/summaries/02_c17-census-filter-and-triage-summary.md",
+        "type": "summary",
+        "summary": "C17's dead-declaration census filtered from 1,020 to 771 and triaged into six dispositioned clusters; the one unambiguous cluster (80 unreferenced defs) deleted across three verified batches, final headline 698, drop reconciled to zero residue."
+      },
+      "mechanical_class": "subset",
+      "semantic_score": 0.05405405405405406
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 540,
+      "project_name": "docstring_coverage_class_instance_lemma",
+      "discharging_artifact": {
+        "path": "specs/540_docstring_coverage_class_instance_lemma/summaries/01_instance-docstring-coverage-summary.md",
+        "type": "summary",
+        "summary": "C19 per-keyword reporting plus 20 instance docstrings; all three categories at or above floor."
+      },
+      "mechanical_class": "subset",
+      "semantic_score": 0.02702702702702703
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 615,
+      "project_name": "close_world_history_reach_through_residue",
+      "discharging_artifact": {
+        "path": "specs/615_close_world_history_reach_through_residue/plans/01_close-reach-through-residue.md",
+        "type": "plan",
+        "summary": "Six-phase plan closing the 36-site world-history reach-through residue: add the respects_task accessor, sweep 22 call sites in two territory-disjoint phases, fix two layer-crossing defects, delete the dead CoeOut instance, record the triage and hold the axiom gate."
+      },
+      "mechanical_class": "subset",
+      "semantic_score": 0.08108108108108109
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 542,
+      "project_name": "dead_declaration_triage_c17_findings",
+      "discharging_artifact": null,
+      "mechanical_class": "subset",
+      "semantic_score": 0.02702702702702703
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 541,
+      "project_name": "formalsystem_init_transitive_import_adoption",
+      "discharging_artifact": {
+        "path": "specs/541_formalsystem_init_transitive_import_adoption/summaries/01_init-transitive-import-adoption-summary.md",
+        "type": "summary",
+        "summary": "Eleven import lines give every FormalSystem module a transitive path to FormalSystem.Init; checkInitImports made exit-status-correct and wired into the invariants harness as enforced check C24."
+      },
+      "mechanical_class": "subset",
+      "semantic_score": 0.05405405405405406
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 546,
+      "project_name": "rename_frameclass_tags_to_ztime_rtime",
+      "discharging_artifact": {
+        "path": "specs/546_rename_frameclass_tags_to_ztime_rtime/summaries/01_ztime-rtime-rename-summary.md",
+        "type": "summary",
+        "summary": "FrameClass.Discrete/.Dedekind renamed to .ZTime/.RTime across 152 files; all gates green"
+      },
+      "mechanical_class": "subset",
+      "semantic_score": 0.05405405405405406
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 517,
+      "project_name": "rename_spherical_axiom_to_saturation",
+      "discharging_artifact": {
+        "path": "specs/517_rename_spherical_axiom_to_saturation/summaries/01_spherical-to-saturation-rename-summary.md",
+        "type": "summary",
+        "summary": "Spherical -> Saturation rename: 3 phases, all gates green, 0 unresolvable anchors"
+      },
+      "mechanical_class": "subset",
+      "semantic_score": 0.02702702702702703
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 512,
+      "project_name": "bundle_duration_into_taskframe",
+      "discharging_artifact": {
+        "path": "specs/512_bundle_duration_into_taskframe/summaries/02_temporal-order-fibration-summary.md",
+        "type": "summary",
+        "summary": "Implementation summary for the temporal-order fibration: what landed, the binder criterion, verification, deviations and follow-ups."
+      },
+      "mechanical_class": "subset",
+      "semantic_score": 0.13513513513513514
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 95,
+      "project_name": "completeness_verification_audit",
+      "discharging_artifact": null,
+      "mechanical_class": "subset",
+      "semantic_score": 0.13513513513513514
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 180,
+      "project_name": "line_limit_compliance_and_publication_residue",
+      "discharging_artifact": {
+        "path": "specs/180_line_limit_compliance_and_publication_residue/summaries/01_line-limit-compliance-residue-summary.md",
+        "type": "summary",
+        "summary": "598 to 0 longLine violations across 65 files; harness repaired; copyright 331/331 and universe-polymorphism empty recorded as verified"
+      },
+      "mechanical_class": "subset",
+      "semantic_score": 0.05405405405405406
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 131,
+      "project_name": "refactor_module_organization",
+      "discharging_artifact": {
+        "path": "specs/131_refactor_module_organization/summaries/01_module-reorganization-summary.md",
+        "type": "summary",
+        "summary": "Module reorganization: 13/13 phases, invariants preserved"
+      },
+      "mechanical_class": "subset",
+      "semantic_score": 0.05405405405405406
+    },
+    {
+      "verdict": "covered-by-closed",
+      "project_number": 402,
+      "project_name": "systematic_mathlib_naming_upgrade",
+      "discharging_artifact": {
+        "path": "specs/402_systematic_mathlib_naming_upgrade/summaries/01_mathlib-naming-upgrade-summary.md",
+        "type": "summary",
+        "summary": "Execution summary: all 8 phases; defsWithUnderscore 861 -> 0 by genuine conformance with nolints.json deleted; 845 declarations renamed across 25,640 resolved-reference spans in 284 files."
+      },
+      "mechanical_class": "subset",
+      "semantic_score": 0.13513513513513514
+    }
+  ],
+  "scope_blind_collapsed_count": 453,
+  "note": "scope-blind rows collapsed to a count for argv size; full verdict retained alongside this record"
+}
