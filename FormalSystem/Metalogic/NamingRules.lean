@@ -104,13 +104,34 @@ does not give, and an unravelled fibre is in bijection with a fibre of the base;
 is not — branching is the whole point of it. Recording the path as a partial history over the
 interval from the anchor, rather than as a finite list, changes nothing here: the machine run
 stays definable by successor recursion, but the carrier only grows and the fibres are the same
-sets, so the obligation is unchanged. Discharging *Saturation* for a path-recording relation
-directly is left open.
+sets, so the obligation is unchanged.
+
+**The obligation is discharged**, by splitting *Saturation* across the two layers of the carrier
+rather than by finding a fourth general route. `Semantics.saturation_coneR` proves
+`TaskFrame.Saturation (ofStepRel (coneR E))` from `TaskFrame.Saturation (ofStepRel E)` alone: the
+`inl`-anchored families read the base's own *Saturation*, the `inr`-anchored families read
+`Semantics.saturation_of_orientedForest'` on the `inr` layer — which *is* an oriented forest, the
+recorded list strictly lengthening along every edge — and the mixed case collapses, because a
+family with one `inr`-contained member has its `inr`-contained members cofinal.
+`Semantics.exists_coneUnravelling` is the class-membership consequence: every regular frame over
+`intOrder` has a regular cone unravelling with surjective, two-way bounded projection, along
+which L⁺ truth transfers. Both are stated in instance-projected form, over
+`(F : FrameOver intOrder) [F.IsRegular]`; there is no constraint-parameterised form of either to
+cite, because the base's *Saturation* is genuinely consumed and so all four constraints are
+needed.
+
+The three-routes analysis above stands unchanged, and is now the reason the split was needed: the
+`inl` layer is a verbatim copy of the base, so it inherits the base's loops and opposite edges and
+`Semantics.IsOrientedForest (coneR E)` is false — the forest route cannot be applied to the
+carrier whole, which is exactly why *Saturation* had to be proved layer by layer.
 
 ## References
 
 * `FormalSystem/Semantics/Frames/TranslationProduct.lean` — the clock product and its invariance
 * `FormalSystem/Semantics/HistoryMorphism.lean` — `TwoWayBounded`, `HistMorphism.plus_invariance`
+* `FormalSystem/Semantics/ConeUnravelling.lean` — the forward-cone unravelling, the two-layer
+  *Saturation* split (`saturation_coneR`) and the frame-side headline
+  (`exists_coneUnravelling`) that discharge the obligation recorded above
 * Gabbay's irreflexivity rule and Reynolds' *Auxiliary Atoms* rule are the two sources; the clock
   rule below is the strengthening of the former that the latter's device suggests
 

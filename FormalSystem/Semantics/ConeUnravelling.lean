@@ -79,6 +79,16 @@ Both exist for the same downstream reason: `ProofSystem.FrameClass.Sat` demands
 carry a refutation as a bona fide `FrameClass.Sat .ZTime` member once it has been presented as a
 regular frame. `UniversalCover.lean` is modified by nothing here.
 
+**Which to pick.** By what the downstream argument needs of the base, not by preference. A cover
+when the base is not known *Saturated* — that construction manufactures *Saturation* structurally
+and `StateTopology.SeparatingFrame.exists_nonSaturated_base_orientedForest_cover` exhibits a base
+it applies to. The cone when a verbatim copy of the base must survive into the unravelling
+alongside a path-recording layer, which is what the formula-level *Auxiliary Atoms* rule needs;
+the price is `[F.IsRegular]` on the base, and that price is unavoidable rather than an artefact
+of the proof (see `exists_coneUnravelling`'s doc comment for the `ℤ`/`≤` witness that makes base
+*Saturation* necessary). `UniversalCover.lean` carries the reciprocal paragraph under its own
+*Division of labour with the forward-cone unravelling* heading.
+
 ## Main definitions
 
 * `coneRin` — the `inr`-layer one-step relation: prepend the state just left to the record
@@ -861,7 +871,14 @@ because `IntNormalForm.lean` is widely imported and this module's blast radius i
 one file. A later reader should **promote** it deliberately — move it upstream and re-point this
 module's one use site — rather than duplicate it.
 
-Constraints consumed: Compositionality, Seriality, Limit
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
+
+The proof reads only the first three, through `FrameOver.taskRel_eq_iter`, but the marker lists
+what the **binder supplies**, and `[F.IsRegular]` supplies all four. `UniversalCover.lean` can
+mark its instance-projected declarations at the three they read because each has a binder-free
+twin taking those three explicitly; this module deliberately has no such twin (see `coneFrame`),
+so a three-constraint marker here would advertise a hypothesis set no declaration in the tree
+offers.
 
 Paper: — (formalization-native; the paper states no generated-relation equality)
 -/
@@ -940,7 +957,12 @@ a transport identity already proved above:
 `UniversalCover.endpt_twoWayBounded` is the two-field template; the split here is four-way
 rather than two-way because the cone carrier has two layers.
 
-Constraints consumed: Compositionality, Seriality, Limit
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
+
+As with `base_taskRel_eq_ofStepRel`, the proof reads only the first three — the base side goes
+through `FrameOver.taskRel_eq_iter` and the source side through `coneFrame_taskRel` — while the
+marker lists what `[F.IsRegular]` supplies. There is no binder-free twin to carry the
+three-constraint claim, by the decision recorded at `coneFrame`.
 -/
 theorem coneF_twoWayBounded (F : FrameOver intOrder) [F.IsRegular] :
     TwoWayBounded (F' := coneFrame F) (F := F) coneF := by

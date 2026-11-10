@@ -37,10 +37,11 @@ Two of the five are worth reading before re-baselining anything:
 ## What this module does not pin
 
 It does **not** pin that `exists_coneUnravelling` is proved of the cone rather than delegated to
-`UniversalCover.exists_orientedForest_cover`. No axiom, `sorry` or name-existence check can see
-that difference — both have satisfying witnesses of the same type — which is why the prohibition
-lives in `exists_coneUnravelling`'s own doc comment, as prose a reader must honour, and is
-recorded in this task's plan under `## Decisions`. A guard cannot substitute for it.
+`UniversalCover.exists_orientedForest_cover`. No axiom check, no zero-debt check and no
+name-existence check can see that difference — both have satisfying witnesses of the same type —
+which is why the prohibition lives in `exists_coneUnravelling`'s own doc comment, as prose a
+reader must honour, and is recorded in this task's plan under `## Decisions`. A guard cannot
+substitute for it.
 -/
 
 namespace BimodalTest.Semantics

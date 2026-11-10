@@ -63,6 +63,33 @@ of the `fromRel` graph. Its one genuine contribution is kept: the positive and n
 orientation tags of `Quiver.Symmetrify` confirm that the `Bool` direction tag used here is the
 standard encoding.
 
+## Division of labour with the forward-cone unravelling
+
+`Semantics/ConeUnravelling.lean` builds a second unravelling, and the two answer different
+questions. Neither subsumes the other and neither is slack to be tidied away.
+
+* This module's cover is **forest-everywhere**: its whole carrier is an oriented forest, so its
+  *Saturation* comes from `saturation_of_orientedForest`, a fact about oriented forests with no
+  hypothesis on the base at all. The base need not be *Saturated* — and
+  `StateTopology.SeparatingFrame.exists_nonSaturated_base_orientedForest_cover` exhibits a base
+  that is not. That is why `exists_orientedForest_cover_of_constraints` takes
+  *Compositionality*, *Seriality* and *Limit* and no more.
+* The cone unravelling is **verbatim-copy-plus-tree**: its `inl` layer is the base relation
+  unchanged, so base states, base fibres and base segments survive unmodified, and its `inr`
+  layer records paths. Because the `inl` layer copies the base it also copies the base's loops
+  and opposite edges, so `IsOrientedForest (coneR E)` is false and no structural route to
+  *Saturation* exists for the carrier whole; `ConeUnravelling.saturation_coneR` splits the
+  obligation across the layers and the `inl`-anchored half reads the base's own *Saturation*.
+  Hence `exists_coneUnravelling` is stated over `[F.IsRegular]`, which bundles all four
+  constraints.
+
+**Both exist for the same downstream reason.** `ProofSystem.FrameClass.Sat` demands
+`FrameOver.IsRegular` — hence *Saturation* — of a frame-class member, so a countermodel can carry
+a refutation as a bona fide `FrameClass.Sat .ZTime` member only once it has been presented as a
+regular frame. Pick by what the downstream argument needs of the base: a cover when the base is
+not known saturated, the cone when a verbatim copy of the base must survive alongside a
+path-recording layer. Nothing in `ConeUnravelling.lean` modifies this module.
+
 ## Main definitions
 
 * `RWalk` — reduced walks, indexed by origin, endpoint and last move
