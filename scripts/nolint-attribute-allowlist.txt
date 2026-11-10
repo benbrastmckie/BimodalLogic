@@ -91,3 +91,13 @@ unusedArguments:insRegionStart_trichotomy
 # Semantics/HistoryMorphism.lean.
 unusedArguments:exists_histMorphism_of_isZTime
 unusedArguments:plus_invariance_of_isZTime
+# `coneF_surjective`'s `{E : W → W → Prop}` binder is unread, and the linter is correct: `coneF`
+# is the sum eliminator `W ⊕ (W × List W) → W` and mentions no relation at all. The declaration
+# cannot conform: this is the published signature the theorem's recorded statement fixes, and the
+# contrast with `UniversalCover.endpt_surjective` -- whose own `{E}` indexes the carrier
+# `CoverPt E` and is therefore read -- is itself the record that the cone's `inl` layer is a
+# verbatim copy of the base rather than a relation-indexed construction. Dropping the argument
+# would change a contract signature to spare a linter. The paired source-level suppression is a
+# scoped `set_option linter.unusedVariables false in` at the same site.
+# Semantics/ConeUnravelling.lean.
+unusedArguments:coneF_surjective
