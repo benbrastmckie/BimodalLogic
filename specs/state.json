@@ -27411,12 +27411,14 @@
       "effort": "high",
       "parent_task": 838,
       "topic": "decidability",
-      "dependencies": [],
+      "dependencies": [
+        909
+      ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean"
       ],
       "created": "2026-11-10T12:04:38Z",
-      "last_updated": "2026-11-10T12:04:38Z",
+      "last_updated": "2026-11-10T16:36:26Z",
       "artifacts": [],
       "audit_verdict": {
         "proposal": {
@@ -31309,12 +31311,14 @@
       "effort": "high",
       "parent_task": 838,
       "topic": "decidability",
-      "dependencies": [],
+      "dependencies": [
+        909
+      ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean"
       ],
       "created": "2026-11-10T12:04:38Z",
-      "last_updated": "2026-11-10T12:04:38Z",
+      "last_updated": "2026-11-10T16:36:26Z",
       "artifacts": [],
       "audit_verdict": {
         "proposal": {

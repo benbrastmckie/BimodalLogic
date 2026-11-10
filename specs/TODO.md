@@ -11,8 +11,8 @@ next_project_number: 916
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,894,899,900,905,906,907,908,909,910,911,912,915 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,895,913,914 | 298,428,502,743,761,873,894,912,915 | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,894,899,900,905,906,907,908,909,912,915 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,895,910,911,913,914 | 298,428,502,743,761,873,894,909,912,915 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,804,861,896 | 429,497,763,803,895 | algebraic-representation, completeness, decidability, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -82,8 +82,8 @@ next_project_number: 916
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 909 [RESEARCHED] — Construct the register-LOWERING deletion that would drop the...
-910 [RESEARCHED] — Dispatch or explicitly exclude the SATURATED-GAP third branch...
-911 [RESEARCHED] — Pursue the idle-cycle sharpening left open by the idle-gap...
+  └─ 910 [RESEARCHED] — Dispatch or explicitly exclude the SATURATED-GAP third branch...
+  └─ 911 [RESEARCHED] — Pursue the idle-cycle sharpening left open by the idle-gap...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Documentation
@@ -225,7 +225,7 @@ NOT a repair of this repository's own gates. `.githooks/pre-commit`, `scripts/ty
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 909
 - **Parent**: Task 838
 
 **Description**: Pursue the idle-cycle sharpening left open by the idle-gap lengthening decision gate's FAIL verdict: the lengthening is available exactly where the object's idle states carry a reachable cycle, which is an OBJECT hypothesis rather than a consequence of ParamsOk.
@@ -247,7 +247,7 @@ ORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Cit
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 909
 - **Parent**: Task 838
 
 **Description**: Dispatch or explicitly exclude the SATURATED-GAP third branch of kappa_collision_regimes, which neither landed cell inclusion addresses in either direction.
