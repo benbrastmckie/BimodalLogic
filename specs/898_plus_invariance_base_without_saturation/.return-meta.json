@@ -1,27 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/898_plus_invariance_base_without_saturation/reports/01_plus-invariance-base-without-saturation.md",
-      "summary": "Saturation is consumed nowhere in the HistoryMorphism lift chain: compiled probes show the base frame needs no def:frame constraint at all and the source frame needs only Compositionality, Seriality and Limit; includes the restatement plan, the downstream UniversalCover/taskRel_eq_iter weakening, and a concrete non-saturated FrameOver witness."
-    },
-    {
-      "type": "other",
-      "path": "specs/evidence/history-morphism-saturation-audit/lift-chain-without-isregular.lean",
-      "summary": "Compiled probe (lake env lean, exit 0) restating the whole lift chain with explicit constraint hypotheses and no IsRegular instance on either frame."
-    },
-    {
-      "type": "other",
-      "path": "specs/evidence/history-morphism-saturation-audit/non-saturated-frameover-witness.lean",
-      "summary": "Compiled probe wrapping StateTopology SeparatingFrame.srel as a FrameOver intOrder that is Compositional, Serial and Limit but provably not Saturated."
+      "type": "plan",
+      "path": "specs/898_plus_invariance_base_without_saturation/plans/01_plus-invariance-base-without-saturation.md",
+      "summary": "6-phase, ~7h plan weakening the HistoryMorphism lift chain and the UniversalCover oriented-forest-cover headline off Saturation, with 8 pinned Lean Challenge Statements and a concrete non-saturated base witness."
     }
   ],
   "metadata": {
     "session_id": "sess_1794261422_5f0e55_898",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 7,
+    "dependency_waves": [[1, 2], [3], [4, 5], [6]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When a research report ships a compiled transplant probe (the target declaration chain copied into a scratch file with the instance binder replaced by explicit hypotheses, compiled with `lake env lean`), plan authoring becomes transcription rather than estimation: every signature the plan pins in its Lean Challenge Statements block is one that already compiled, each phase's verification criterion is the probe's own compile narrowed to the real module, and each phase's rollback fallback can point at the probe as the reference term. No tactic search or feasibility guessing is needed at plan time. The complementary planning insight from the same task: in a truth-transfer result along a morphism (source -> base), spend the hypothesis-weakening budget on the base (transfer-from) side, because the frame-class membership obligation binds only the target that carries the refutation -- so the asymmetric weakening (base: nothing; source: three constraints) is what makes the argument go through, and it is not expressible as one bundling typeclass.",
+      "category": "PATTERN",
+      "source_artifact": "specs/898_plus_invariance_base_without_saturation/plans/01_plus-invariance-base-without-saturation.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["compiled-probe", "instance-binder-audit", "plan-from-probe", "constraint-weakening", "truth-transfer-asymmetry", "lean-challenge-statements"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 898 to execute the plan",
+  "dispatch_seq": 5
 }

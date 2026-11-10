@@ -13454,24 +13454,40 @@
     {
       "project_number": 898,
       "project_name": "plus_invariance_base_without_saturation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "title": "Two-way bounded L-plus invariance over ZTime with no Saturation hypothesis on the base frame",
       "description": "plus_invariance_of_isZTime and exists_histMorphism_of_isZTime in FormalSystem/Semantics/HistoryMorphism.lean take [F.IsRegular] on the base frame F, which bundles Saturation. Determine whether Saturation of the base is consumed anywhere in the lifting chain (bwdSeq_spec, chain_spec, chain_step, chain_rel, exists_preimage_step_neg) and, if not, restate the chain over a base carrying only reflection, Compositionality, Seriality and Limit, so that truth transfers from a non-saturated doubly serial digraph over Z to its universal cover. The completeness programme needs exactly this direction: the canonical quotient digraph of the Reynolds-style construction has infinite fibres and is not known saturated, and the countermodel of record is its cover. If Saturation turns out essential, record the exact step and the obstruction instead.",
       "file_scope": [
+        "FormalSystem/Metalogic/NamingRules.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "FormalSystem/Semantics.lean",
         "FormalSystem/Semantics/HistoryMorphism.lean",
-        "docs/theorem-index.md"
+        "FormalSystem/Semantics/IntNormalForm.lean",
+        "FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean",
+        "FormalSystem/Semantics/StateTopology/README.md",
+        "FormalSystem/Semantics/UniversalCover.lean",
+        "README.md",
+        "Tests/BimodalTest/Semantics/OrientedForestSaturationTest.lean",
+        "docs/theorem-index.md",
+        "typst/generated/status.typ"
       ],
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T09:48:34Z",
-      "last_updated": "2026-11-10T01:04:43Z",
+      "last_updated": "2026-11-10T01:14:48Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/898_plus_invariance_base_without_saturation/reports/01_plus-invariance-base-without-saturation.md",
           "type": "report",
           "summary": "Saturation is consumed nowhere in the HistoryMorphism lift chain: compiled probes show the base frame needs no def:frame constraint at all and the source frame needs only Compositionality, Seriality and Limit; includes the restatement plan, the downstream UniversalCover/taskRel_eq_iter weakening, and a concrete non-saturated FrameOver witness."
+        },
+        {
+          "path": "specs/898_plus_invariance_base_without_saturation/plans/01_plus-invariance-base-without-saturation.md",
+          "type": "plan",
+          "summary": "6-phase, ~7h plan weakening the HistoryMorphism lift chain and the UniversalCover headline off Saturation, with 8 pinned Lean Challenge Statements and a non-vacuity witness."
         }
       ],
       "session_id": "sess_1794261422_5f0e55",

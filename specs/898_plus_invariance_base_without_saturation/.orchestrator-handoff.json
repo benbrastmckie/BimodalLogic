@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 6,
+  "summary": "Wrote a 6-phase plan landing the research finding that Saturation is consumed nowhere in the HistoryMorphism lift chain and that the base frame needs no def:frame constraint at all. Phases 1-2 (wave 1) weaken HistoryMorphism.lean and IntNormalForm.lean in the existing reflection_of_limit house style; Phase 3 carries the weakening to the completeness programme's entry point exists_orientedForest_cover; Phase 4 lands a concrete non-saturated FrameOver intOrder witness in the StateTopology leaf; Phase 5 corrects the prose surfaces; Phase 6 runs the full gate set. Every [IsRegular] form is kept as a verbatim-statement wrapper, so the diff is additive and no call site changes.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/898_plus_invariance_base_without_saturation/plans/01_plus-invariance-base-without-saturation.md",
+      "summary": "6-phase, ~7h plan weakening the HistoryMorphism lift chain and the UniversalCover headline off Saturation, with 8 pinned Lean Challenge Statements and a non-vacuity witness."
+    }
+  ],
+  "dispatch_seq": 5
+}
