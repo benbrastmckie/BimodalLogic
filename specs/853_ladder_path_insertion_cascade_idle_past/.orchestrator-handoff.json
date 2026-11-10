@@ -1,12 +1,20 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 2 of 7 complete: the region start of a's own region. exists_region_start_of_idle_past landed at the end of LadderAgree.lean's section Cascade, sorry-free, with an axiom pin in KTypeSummaryAxiomTest.lean. From an idle position anywhere at or below a pending a it constructs the greatest idle s <= a with the window inequality a <= s + 1 + cntAt g (s + 1) and the maximality clause that every position strictly between s and a is pending -- the clause that makes a SINGLE insertion sufficient in Phases 3-4. The landed Nat.find route of cntAt_le_nxtAt_succ_of_idle_past was reusable as written; no helper was factored out and its signature is untouched. The proof compiled first try from the plan's prescribed pipeline. Zero deviations: all seven plan tasks executed as written. Axioms are [propext, Quot.sound] -- the regime extraction is choice-free, since Nat.find's DecidablePred comes free from Bool equality on pend and the classical scope is never consumed. Neither longFile baseline needed raising (LadderAgree 3024/3100, axiom test 2255/2300). Full unscoped lake build green: exit 0, zero error:, zero warning:, 2969 jobs, oleans newer than source for both touched modules. The typst-sync gate fired again as Phase 1 predicted and status.typ was regenerated and staged. check-module-invariants.sh stays red on the same 3 stale README inventory blocks, which is Phase 6's declared scope. A sibling batch writer is live under specs/893_* and specs/events.jsonl; nothing foreign touches this task's territory, and only this task's own paths were staged.",
-  "phases_completed": 2,
+  "summary": "Phase 3 landed insRegionStart_trichotomy in LadderAgree.lean: every region start of the inserted walk (inserted at the region start of a's own region, depth d := l) is the raised pin at u with countdown cntAt g (u+1) + l, an original start strictly below u displaced down by l with its countdown unchanged, or an original start at or above the seam displaced up by l with its countdown unchanged. All three middle-band exclusions were needed and all three worked as written. One axiom pin added. Zero sorries; full library build green. Phases 4-7 remain.",
+  "phases_completed": 3,
   "phases_total": 7,
-  "dispatch_seq": 12,
+  "dispatch_seq": 13,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-2-handoff-20261110T094051Z.md",
-  "artifacts": []
+  "continuation_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-3-handoff-20261110T095226Z.md",
+  "artifacts": [],
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "typst/generated/status.typ",
+    "specs/853_ladder_path_insertion_cascade_idle_past/plans/01_insertion-cascade-idle-past.md",
+    "specs/853_ladder_path_insertion_cascade_idle_past/issues.jsonl",
+    "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-3-handoff-20261110T095226Z.md"
+  ]
 }

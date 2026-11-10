@@ -3,11 +3,21 @@
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 853,
-  "dispatch_seq": 12,
-  "phase_number": 2,
-  "phases_completed": 2,
+  "phase": "implement",
+  "dispatch_seq": 13,
+  "phases_completed": 3,
   "phases_total": 7,
   "requires_user_review": false,
+  "handoff_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-3-handoff-20261110T095226Z.md",
+  "sorry_inventory": [],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true,
+    "verification_passed": true,
+    "notes": "lean-sorry-census.sh over all resolved source roots reports sorry_count: 0. The one vacuous-pattern grep hit (FormalSystem/Examples/TemporalStructures.lean:495, int_domain_universal := trivial) is pre-existing and unrelated; this phase's diff adds zero vacuous lines and zero axioms. axiom_count 14 is the unchanged baseline. Full library build through the guard: exit 0, 2969 jobs, zero error: lines, .olean newer than source for both touched modules. Scoped builds of LadderAgree and KTypeSummaryAxiomTest each exit 0. Phase 3's criterion that the certificate-freedom grep on LadderAgree.lean return no match is not met as literally written: it returns 2, both pre-existing prose-only docstring mentions, identically 2 at HEAD before this phase, neither a proof term. Recorded in issues.jsonl as a gate collision rather than passed silently."
+  },
   "artifacts": [],
   "modified_files": [
     "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
@@ -15,32 +25,15 @@
     "typst/generated/status.typ",
     "specs/853_ladder_path_insertion_cascade_idle_past/plans/01_insertion-cascade-idle-past.md",
     "specs/853_ladder_path_insertion_cascade_idle_past/issues.jsonl",
-    "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-2-handoff-20261110T094051Z.md",
-    "specs/853_ladder_path_insertion_cascade_idle_past/.orchestrator-handoff.json",
-    "specs/853_ladder_path_insertion_cascade_idle_past/.return-meta.json"
+    "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-3-handoff-20261110T095226Z.md"
   ],
-  "sorry_inventory": [],
-  "blockers": [],
-  "handoff_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-2-handoff-20261110T094051Z.md",
-  "verification": {
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "vacuous_note": "Pre-existing and unrelated: FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal := trivial, whose goal intTimeHistory.domain t is definitionally True. Not introduced by this task and not in a file it touches; baseline unchanged.",
-    "axiom_count": 14,
-    "axiom_note": "Baseline unchanged; this phase introduced no axiom.",
-    "build_passed": true,
-    "build_evidence": "Guard exit 0 (Tier 1); 'Build completed successfully (2969 jobs)' with zero 'error:' and zero 'warning:' over both captured streams (Tier 2); .olean newer than source for FormalSystem.Metalogic.Decidability.RaySummary.LadderAgree and BimodalTest.Metalogic.KTypeSummaryAxiomTest (Tier 3).",
-    "scoped_builds": "FormalSystem.Metalogic.Decidability.RaySummary.LadderAgree exit 0, no warnings; BimodalTest.Metalogic.KTypeSummaryAxiomTest exit 0, no warnings.",
-    "signature_fidelity": "Verified positively: a probe restates the plan's Lean Challenge signature for exists_region_start_of_idle_past verbatim and discharges it with the landed declaration applied to its own binders; it type-checks.",
-    "full_gate_set": "Deferred to the batch stage per this dispatch's Batch Gate Deferral directive, not independently run. Phase 2's own declared Verification Tier is local and its plan-declared covering check (guarded scoped builds of both touched modules) ran green, as did an unscoped full-library build.",
-    "known_red": "scripts/check-module-invariants.sh exits 1 on 3 stale generated README inventory blocks (RaySummary/README.md, Metalogic/README.md, root README.md). Phase 6's declared scope; carried over from Phase 1 and deliberately not fixed in a single-phase dispatch."
-  },
-  "completion_data": {
-    "completion_summary": "Phase 2 of 7 landed exists_region_start_of_idle_past: the constructive direction of the idle-past regime hypothesis, producing the region start of the splice point's own region together with its window inequality and the maximality clause the insertion cascade's trichotomy consumes. Sorry-free, choice-free, axiom-pinned, full build green, zero plan deviations. Phases 3-7 remain."
-  },
   "memory_candidates": [
-    "Lean's linter.style.longFile baseline must EQUAL the file's own round-up to the next hundred, not a forward-looking ceiling: a baseline set above that round-up emits 'The current limit is N, but it is expected to be M' and introduces a build warning. A growing file therefore needs its baseline bumped incrementally per phase rather than set once to a projected final value.",
-    "A Nat.find over a Bool-valued predicate (e.g. pend (objAt g (a - j)) = false) is decidable without Classical.choice, so an extraction lemma built on it stays at [propext, Quot.sound] even when the proof opens a classical scope that is never consumed. Check #print axioms rather than assuming classical implies Classical.choice.",
-    "In this repository, any commit that changes a .lean file's line count stales typst/generated/status.typ's formalsystem-line-count / tests-line-count fields and is refused by git-commit-scoped.sh's pre-commit typst-sync gate. The sanctioned remedy is bash scripts/typst-sync-check.sh --fix plus staging that file in the same commit."
-  ]
+    "In this Lean codebase le_or_lt is not an available identifier; lt_or_ge with the branches reordered is the working two-way split and is what the RaySummary modules already use.",
+    "When a plan's Lean Challenge Statements block pins a binder the proof does not read, keep the binder and silence linter.unusedVariables with a scoped set_option ... in plus a comment naming the reason. Renaming to _h would change the pinned signature, which plan-compliance.md's Statement Fidelity forbids. Six sites in the RaySummary family already use this convention.",
+    "The in-source linter.style.longFile baseline must equal the file's own round-up to the next hundred, not a forward-looking ceiling, so a growing module needs the baseline raised once per phase rather than set once to its final value.",
+    "git-commit-scoped.sh's pre-commit gate includes typst-sync-check.sh Check 2, which compares typst/generated/status.typ's committed line counts against a live regeneration. Any .lean line-count change trips it; the fix is bash scripts/typst-sync-check.sh --fix and adding typst/generated/status.typ to the same commit's pathspec list."
+  ],
+  "completion_data": {
+    "completion_summary": "Phase 3 of 7 complete: insRegionStart_trichotomy landed sorry-free in LadderAgree.lean with its axiom pin, full library build green. Phases 4-7 (the pin bound, the two existentials, the record updates, the closing gate set and summary) remain."
+  }
 }
