@@ -1546,7 +1546,7 @@
     {
       "project_number": 853,
       "project_name": "ladder_path_insertion_cascade_idle_past",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Construct the Phase 11.8 insertion cascade for the ladder-path region lemmas: the idle-past half (exists_ladderPath_at_region_of_idle_past) and, given it, the unconditional join (exists_ladderPath_at_region), which follows by by_cases on the pending-past predicate.\n\nVERIFIED STARTING POSITION (blocker research, checked against the Lean source):\n(1) Both unlanded names are gated on a SINGLE owed construction, not two.\n(2) The obvious route is REFUTED, not absent: pinCompat_of_ladderPath proves the splice demand necessary, and on a pin-tight original it reads s-v+l <= s-v, false for l>0 (tight witness tightChain_slack_zero compiles). No pin hypothesis can be relaxed -- a relaxed lift lemma would be FALSE, not weaker.\n(3) cntAt_eq_of_obj_eq makes the countdown a function of the object walk, so the surgery cannot be confined to the countdown.\n(4) No insertion/lengthening walk constructor exists under FormalSystem/. Only cascade bookkeeping is landed (pinnedRegions_subset_Ico/_finite/_ncard_le, pin_deficit_le_of_lengthen, cascadeDemand*, LadderAgree.lean:1424-1484).\n\nSIZING: three new components, none landed, with a refuted predecessor -- a standalone construction, not a residual phase.\nTRAP: two_pow_card_prodState_le_Tc lives in LadderChain.lean, which IMPORTS LadderAgree.lean and is unavailable here. Only cascadeBound from CounterQuotient.lean is citable.\nSOUNDNESS: the parent is sound as recorded; the counter-lift admissibility half is unconditional in the pending-forever regime and conditional in the idle-past one. The parent proceeds on certStabK, independent of this blocker.\n\nRECONCILIATION: overlaps-open against the two-sided open-core pigeonhole task (shared LadderAgree.lean, sibling open core, different construction) -- a serializing dependency edge is recorded. A duplicate-of-open against the nondeterministic-canonical-model research task was ruled a Pass-2 false positive at the lead level.\n\nORIGIN: Conclusion stage (channel c) of an /orchestrate invocation over the ladder realization theorem task, user-approved.\nCITATIONS: parent issues.jsonl iss_1793819583011_jsu079 and iss_1792373250168_HQM6Je.",
       "effort": "large",
@@ -1567,7 +1567,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-11-04T19:34:26Z",
-      "last_updated": "2026-11-10T09:15:06Z",
+      "last_updated": "2026-11-10T09:15:37Z",
       "artifacts": [
         {
           "path": "specs/853_ladder_path_insertion_cascade_idle_past/plans/01_insertion-cascade-idle-past.md",

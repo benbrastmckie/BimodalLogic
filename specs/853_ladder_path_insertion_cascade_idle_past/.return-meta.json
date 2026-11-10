@@ -1,30 +1,53 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/853_ladder_path_insertion_cascade_idle_past/plans/01_insertion-cascade-idle-past.md",
-      "summary": "Seven-phase plan closing the idle-past half and the unconditional join of the ladder-path region interface: an anchor-free lift, the region-start extraction, the inserted walk's region-start trichotomy, hpins, both existentials under an explicit path-local self-loop, records, and the full gate."
-    }
+  "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": [
+    "orchestrator",
+    "implement",
+    "lean-implementation-hard-agent"
   ],
-  "next_steps": "Run /orchestrate 853 to execute the plan",
+  "task_number": 853,
+  "dispatch_seq": 11,
+  "phases_completed": 1,
+  "phases_total": 7,
+  "requires_user_review": false,
+  "summary": "Phase 1 of 7 complete: the anchor-free lift. drift_lipschitz_two_sided and exists_ladderPath_of_walk_of_pins landed in LadderAgree.lean, sorry-free, with axiom pins in KTypeSummaryAxiomTest.lean. hn0 is derived from hpins through drift_extension_of_pins rather than assumed, so no consumer of the lift constructs an anchor again. Full unscoped lake build green. Two gate collisions recorded: the longFile baseline went to 3100 not the plan's 3400 (the linter requires the file's own round-up, not a forward-looking ceiling), and the commit gate required regenerating typst/generated/status.typ, a third file the plan's phase list does not name. check-module-invariants.sh is red on 3 stale README inventory blocks, which is Phase 6's declared scope and expected across Phases 1-4.",
+  "artifacts": [],
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "typst/generated/status.typ",
+    "specs/853_ladder_path_insertion_cascade_idle_past/plans/01_insertion-cascade-idle-past.md",
+    "specs/853_ladder_path_insertion_cascade_idle_past/issues.jsonl",
+    "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-1-handoff-20261110T093002Z.md",
+    "specs/853_ladder_path_insertion_cascade_idle_past/.orchestrator-handoff.json",
+    "specs/853_ladder_path_insertion_cascade_idle_past/.return-meta.json"
+  ],
+  "sorry_inventory": [],
+  "handoff_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-1-handoff-20261110T093002Z.md",
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count_delta": 0,
+    "build_passed": true,
+    "verification_passed": true,
+    "notes": "Scoped builds of FormalSystem.Metalogic.Decidability.RaySummary.LadderAgree and BimodalTest.Metalogic.KTypeSummaryAxiomTest exit 0 with zero warnings; full unscoped lake build through the guard exits 0 with zero 'error:' lines, the success line, and .olean newer than source for both touched modules. Phase 1's declared Verification Tier is 'local'; the full build was run in addition rather than instead. The dispatch's batch gate deferral targets the plan's FINAL phase (Phase 7, tier full), which this dispatch does not reach, so no scoped-tier substitution was needed and no full gate set was deferred by this dispatch. Known red: check-module-invariants.sh exits 1 on 3 stale generated README inventory blocks, which Phase 6 owns."
+  },
+  "completion_data": {
+    "completion_summary": "Phase 1 of 7 complete: the anchor-free lift. drift_lipschitz_two_sided and exists_ladderPath_of_walk_of_pins landed in LadderAgree.lean, sorry-free, with axiom pins in KTypeSummaryAxiomTest.lean. hn0 is derived from hpins through drift_extension_of_pins rather than assumed, so no consumer of the lift constructs an anchor again. Full unscoped lake build green. Two gate collisions recorded: the longFile baseline went to 3100 not the plan's 3400 (the linter requires the file's own round-up, not a forward-looking ceiling), and the commit gate required regenerating typst/generated/status.typ, a third file the plan's phase list does not name. check-module-invariants.sh is red on 3 stale README inventory blocks, which is Phase 6's declared scope and expected across Phases 1-4."
+  },
   "memory_candidates": [
     {
-      "content": "When a planned construction is described in the source records as needing an ITERATION (a cascade, a doubling recurrence) over a family of constraints that all shift together, check whether a single move at the family's own anchor point discharges all of them at once. In the ladder-path insertion case (FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean), the recorded mechanism anticipated inserting idle positions into each idle run in turn, with the displacement propagating down as the recurrence cascadeDemand encodes. Taking the insertion site to be the region start of the SURGERY'S OWN region instead moves every earlier region start down by the same amount together: their mutual distances are preserved and only their distance to the one raised pin grows, so a single insertion of depth equal to the lengthening discharges the whole pin family exactly. The general pattern: an iteration is owed only when the moves interfere; when a single move is uniform over the whole affected family, the recurrence is a sizing record rather than live machinery. Second instance of the same shape: an anchor side condition (hn0) over a pairwise-compatible family is often eliminable by applying the family's own extension lemma (a McShane/Lipschitz extension) and reading the anchor off the extension, rather than constructed case by case.",
-      "category": "PATTERN",
-      "source_artifact": "specs/853_ladder_path_insertion_cascade_idle_past/plans/01_insertion-cascade-idle-past.md",
-      "confidence": 0.82,
-      "suggested_keywords": ["cascade-collapse", "single-insertion", "pin-compatibility", "anchor-elimination", "lipschitz-extension", "ladder-path"]
+      "insight": "Lean's linter.style.longFile baseline must EQUAL the file's round-up to the next hundred, not a forward-looking ceiling. A plan that pre-authorizes raising the baseline once to its anticipated final value will produce a build warning; the baseline has to be bumped per phase as the file grows.",
+      "category": "lean4-tooling"
+    },
+    {
+      "insight": "In this repository, any .lean edit that changes line counts stales typst/generated/status.typ and the pre-commit typst-sync gate refuses the commit. The sanctioned remedy is 'bash scripts/typst-sync-check.sh --fix' plus staging that file; the hook's bypass is only for drift caused by a foreign writer. Plan phase file lists should anticipate this third file.",
+      "category": "repo-gates"
+    },
+    {
+      "insight": "An anchor hypothesis on a lift lemma can be eliminable rather than constructible: when the lemma already assumes a pairwise-compatible pin family, a McShane extension through those pins returns a register whose value at 0 witnesses the anchor, so the anchor slot is redundant and the stronger lemma drops it.",
+      "category": "proof-engineering"
     }
-  ],
-  "metadata": {
-    "session_id": "sess_1794293763_c4273a_853",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 7,
-    "estimated_hours": 12,
-    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7]]
-  },
-  "dispatch_seq": 10
+  ]
 }
