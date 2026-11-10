@@ -2773,7 +2773,7 @@
     {
       "project_number": 909,
       "project_name": "register_lowering_deletion_drop_equal_register",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Construct the register-LOWERING deletion that would drop the equal-register hypothesis n = n' from cellLE_zero_const_of_kappa_eq_of_forwardSlack on branch 2 of the collision case split.\n\nVERIFIED STARTING POSITION (established by compiled objects, not argued):\n(1) The landed restricted obligation cellLE_zero_const_of_kappa_eq_of_forwardSlack (FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean) concludes cell EQUALITY via Set.Subset.antisymm, but carries FOUR restrictions, the fourth of which -- the equal-register hypothesis n = n' -- was not anticipated when the obligation was stated. The proof routes through kappa_eq_components rather than kappa_collision_regimes.\n(2) The common-shift sub-regime's DOWNWARD direction is the specific blocker: the landed deletion HOLDS the register, and nothing landed LOWERS it. That asymmetry is what forces the n = n' hypothesis.\n(3) The forward register cascade is the underlying obstruction. For a <= v the deleted walk's pin v IS the original path's pin v + l, so the bound demanded by exists_ladderPath_of_walk_nxt exceeds what pinCompat_of_ladderPath supplies by exactly l, and by m*(P+1) when iterated. This is not slack a sharper proof recovers: tightChain_slack_zero compiles a tight doubling chain with Lipschitz slack exactly 0 at every gap between pins.\n(4) LadderPump.lean carries single-step deletion admissibility (exists_deleted_ladderPath_of_pend_past) and the deletion type lemma (tpOf_eq_delIdx_of_tpOf_eq), but NO iterated deletion and no downward assembly; the single-step lemma fixes the deleted path's register base at nxtAt g (l : Z) rather than prescribing the register at the compared position.\n\nSCOPE: a register-lowering deletion dropping the hypothesis on branch 2 only. It does NOT reach the saturated-gap residue, which a sibling follow-up owns. The reserved name cellLE_zero_const_of_kappa_eq remains reserved and claimed by nothing -- nothing here may land under it.\n\nORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Citations: parent issues.jsonl iss_1793731048423_ByWoAB (suggested_channel follow_up_task, honored) and iss_1794299302902_wvV3dt.\n",
       "effort": "high",
@@ -2782,11 +2782,23 @@
       "dependencies": [],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
-        "FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean"
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "typst/generated/status.typ"
       ],
       "created": "2026-11-10T12:04:29Z",
-      "last_updated": "2026-11-10T16:44:00Z",
-      "artifacts": [],
+      "last_updated": "2026-11-10T17:11:08Z",
+      "artifacts": [
+        {
+          "path": "specs/909_register_lowering_deletion_drop_equal_register/plans/01_register-lowering-deletion-common-shift.md",
+          "type": "plan",
+          "summary": "Five-phase implementation plan with five pinned Lean Challenge statements, all elaborated successfully via lean-challenge-snapshot.sh --dry-run --compile."
+        }
+      ],
       "audit_verdict": {
         "proposal": {
           "id": "register_lowering_deletion_drop_equal_register",
@@ -2801,7 +2813,7 @@
         "degradation_count": 455,
         "evidence_file": "specs/evidence/audit-verdicts/909.json"
       },
-      "session_id": "sess_1794328980_5b668f_909"
+      "session_id": "sess_1794328980_5b668f"
     },
     {
       "project_number": 910,

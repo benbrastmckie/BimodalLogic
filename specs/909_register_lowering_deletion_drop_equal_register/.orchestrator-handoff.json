@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "summary": "Planned the register-lowering exact-shift deletion as a generalization of the landed up-first theorem over the target register (parameter k, slack at m*(P+1)+k), then spent it on the common-shift sub-regime's downward direction: path-level membership, state-level inclusion under ForwardSlackWitnessed, and a branch-2 depth-0 cell-equality schema carrying the common-shift displacement in place of the equal-register hypothesis n = n'. Five phases, 7 hours, fully sequential (every Lean-touching phase stages the blocking typst/generated/status.typ surface). All five pinned Lean Challenge signatures were compile-validated against the project toolchain at authoring time.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/909_register_lowering_deletion_drop_equal_register/plans/01_register-lowering-deletion-common-shift.md",
+      "summary": "Five-phase implementation plan with five pinned Lean Challenge statements, all elaborated successfully via lean-challenge-snapshot.sh --dry-run --compile."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
+  "next_action_hint": "Dispatch implement for task 909 starting at Phase 1 (LadderChain.lean). Note the plan declares FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean, one file beyond the task's original file_scope, with the rationale recorded in the plan's Decisions section; LadderPump.lean needs no modification.",
+  "dispatch_seq": 7
+}
