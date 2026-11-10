@@ -251,16 +251,16 @@ rule returns the new §7 chunk.
 
 ---
 
-### Phase 5: Record the reindex in the sub-index and close out [NOT STARTED]
+### Phase 5: Record the reindex in the sub-index and close out [COMPLETED]
 
 **Goal**: `specs/literature-index.json`'s `reynolds_2001` entry records that §5-§8 are now
 present, and the full gate set passes.
 
 **Tasks**:
-- [ ] Add a dated addendum to the existing `reynolds_2001` entry in `specs/literature-index.json` — a `"reindexed"` field carrying the date and the fact that §5-§8 (LC axiom, AA rule, Theorem 3) are now converted and indexed. Leave the `reason`, `added`, `source`, and `citation_rule` text unchanged: the `reason` field's "sec 6, Lemma 5" / "sec 7, Lemma 6" citations were confirmed accurate against the PDF by the research phase and need no correction. (Correction target confirmed present at authoring time: the entry exists in `specs/literature-index.json`. If it is absent when this phase runs, add the entry fresh with the same `doc_id` and `citation_rule` rather than skipping the step.)
-- [ ] Optional drive-by: refresh the stale `token_count` on `~/Projects/Literature/index.json`'s `reynolds_2001` entry to the true chunk-sum (pre-existing staleness, 32665 recorded against a 33419 sum; post-splice sum ≈ 36200). Skip if it would expand the change surface; it is not part of this task's deliverable, and the briefing's separate "~66084" figure is explicitly out of scope.
-- [ ] Run the full gate set and confirm green.
-- [ ] Commit the `BimodalLogic` `specs/` change separately, in this repository, under this repo's `task {N}:` convention.
+- [x] Add a dated addendum to the existing `reynolds_2001` entry in `specs/literature-index.json` — a `"reindexed"` field carrying the date and the fact that §5-§8 (LC axiom, AA rule, Theorem 3) are now converted and indexed. Leave the `reason`, `added`, `source`, and `citation_rule` text unchanged: the `reason` field's "sec 6, Lemma 5" / "sec 7, Lemma 6" citations were confirmed accurate against the PDF by the research phase and need no correction. (Correction target confirmed present at authoring time: the entry exists in `specs/literature-index.json`. If it is absent when this phase runs, add the entry fresh with the same `doc_id` and `citation_rule` rather than skipping the step.) *(completed: entry was present; `reason`/`added`/`source`/`citation_rule` confirmed byte-identical, `reindexed` field added citing the four new chunk_ids)*
+- [ ] Optional drive-by: refresh the stale `token_count` on `~/Projects/Literature/index.json`'s `reynolds_2001` entry to the true chunk-sum (pre-existing staleness, 32665 recorded against a 33419 sum; post-splice sum ≈ 36200). Skip if it would expand the change surface; it is not part of this task's deliverable, and the briefing's separate "~66084" figure is explicitly out of scope. *(deviation: skipped — on inspection, the global `index.json` also carries 10 separate per-chunk `"parent_doc": "reynolds_2001"` sub-entries (a second, chunk-level cache distinct from `chunks.json`); refreshing only the doc-level `token_count` without also adding matching sub-entries for the 4 new chunks would trade one inconsistency for another, and adding those sub-entries is a change-surface expansion the plan explicitly permits skipping)*
+- [x] Run the full gate set and confirm green. *(deviation: altered — per this dispatch's Batch Gate Deferral directive, ran the scoped narrowing invocation this phase's own touched files map to instead of independently running `verify-deploy.sh`: `bash .claude/scripts/tests/run-all.sh --only test-literature-build-index.sh,test-literature-search.sh` — both PASS. The full gate set still runs once for the whole `/orchestrate` batch and is attributed back to this task by `modified_files`.)*
+- [x] Commit the `BimodalLogic` `specs/` change separately, in this repository, under this repo's `task {N}:` convention. *(completed)*
 
 **Timing**: 0.5 hours
 
@@ -281,15 +281,15 @@ present, and the full gate set passes.
 
 ## Testing & Validation
 
-- [ ] `chunks.json` is valid JSON with 14 entries, 14 distinct `chunk_id` values, every `source_path` resolving on disk, and an unbroken prev/next chain in both directions.
-- [ ] Each new `chunk_id` is reproducible from the documented formula applied to the installed file content.
-- [ ] `ls sec*.md` shows ten renumbered existing files (`sec01`-`sec03`, `sec08`-`sec14`) plus four new ones (`sec04`-`sec07`).
-- [ ] `git diff --stat -M` in the `Literature/` repo shows the seven shifted files as pure renames with no content change.
-- [ ] `reynolds_2001` has 14 indexed chunks in the global DB; the corpus total rose by exactly 4.
-- [ ] `bash .claude/scripts/literature-search.sh "auxiliary atoms"` returns a `reynolds_2001` §7 result.
-- [ ] `bash .claude/scripts/literature-search.sh --toc reynolds_2001` shows §1-§16 with no gap.
-- [ ] §6's Lemma 5, §7's Definition 4 / AA rule / Lemma 6, and §8's Theorem 3 match the research report's Finding 2 verbatim quotations.
-- [ ] `bash .claude/scripts/verify-deploy.sh` passes.
+- [x] `chunks.json` is valid JSON with 14 entries, 14 distinct `chunk_id` values, every `source_path` resolving on disk, and an unbroken prev/next chain in both directions. *(completed)*
+- [x] Each new `chunk_id` is reproducible from the documented formula applied to the installed file content. *(completed)*
+- [x] `ls sec*.md` shows ten renumbered existing files (`sec01`-`sec03`, `sec08`-`sec14`) plus four new ones (`sec04`-`sec07`). *(completed)*
+- [x] `git diff --stat -M` in the `Literature/` repo shows the seven shifted files as pure renames with no content change. *(completed)*
+- [x] `reynolds_2001` has 14 indexed chunks in the global DB; the corpus total rose by exactly 4. *(completed)*
+- [x] `bash .claude/scripts/literature-search.sh "auxiliary atoms"` returns a `reynolds_2001` §7 result. *(completed)*
+- [x] `bash .claude/scripts/literature-search.sh --toc reynolds_2001` shows §1-§16 with no gap. *(completed)*
+- [x] §6's Lemma 5, §7's Definition 4 / AA rule / Lemma 6, and §8's Theorem 3 match the research report's Finding 2 verbatim quotations. *(completed)*
+- [ ] `bash .claude/scripts/verify-deploy.sh` passes. *(deviation: deferred to the batch stage per this dispatch's Batch Gate Deferral directive — see Phase 5's annotated task list above. The scoped narrowing invocation named there ran and passed.)*
 
 ## Artifacts & Outputs
 

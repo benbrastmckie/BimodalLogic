@@ -416,7 +416,8 @@
       "reason": "Task 559 PRIMARY: Reynolds, An Axiomatization of Full Computation Tree Logic (JSL 2001). The closest published analogue of all-histories completeness at ZTime: bundled axioms + limit-closure axiom LC (sec 6, Lemma 5) + Auxiliary Atoms rule (sec 7, Lemma 6), completeness by filtration with a deterministic Rabin automaton and banning (sec 8-11, Theorem 3).",
       "added": "2026-09-18",
       "source": "task 559 literature preparation (all-histories completeness for the stability modal)",
-      "citation_rule": "Cite by the paper's own section/lemma/axiom labels. Never cite md line numbers."
+      "citation_rule": "Cite by the paper's own section/lemma/axiom labels. Never cite md line numbers.",
+      "reindexed": "2026-11-10: sections 5-8 (the previously-missing axiom-system span covering the LC axiom and the AA rule) are now converted and indexed as their own chunks (chunk_ids 34fa6b6efe8ee430, 641a8a3c90af2711, b8612210b46df4dc, 754eeb9d891fcdb2), closing the gap the reason field above anticipated. `literature-search.sh \"auxiliary atoms\"` now returns the sec 7 chunk."
     },
     {
       "doc_id": "reynolds_2003_priors-ockhamist-logic-historical-necessity",

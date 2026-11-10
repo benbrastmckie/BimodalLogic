@@ -1,15 +1,55 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 9,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/summaries/01_reynolds-sections-5-8-splice-summary.md",
+      "summary": "Closed the reynolds_2001 sections 5-8 gap: spliced 4 new chunks (LC axiom, AA rule, combined theorem) into the Literature corpus, rebuilt the global FTS5 index, and recorded a dated addendum on the specs/literature-index.json sub-index entry. literature-search.sh \"auxiliary atoms\" now returns the new section 7 chunk as the top result."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "All 5 plan phases completed: spliced 4 new chunks.json entries (sections 5-8) into the reynolds_2001 corpus document, renumbered 7 existing files, rebuilt the global FTS5 index (reynolds_2001 now 14 chunks, corpus total +4), and added a dated addendum to the specs/literature-index.json sub-index entry. literature-search.sh \"auxiliary atoms\" and \"limit closure axiom\" both now return the correct new chunks as top results."
+  },
+  "modified_files": [
+    "/home/benjamin/Projects/Literature/.literature.db",
+    "/home/benjamin/Projects/Literature/sources/reynolds_2001/chunks.json",
+    "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec04_axiom-system-bundled-trees.md",
+    "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec05_limit-closure-axiom.md",
+    "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec06_auxiliary-atoms-rule.md",
+    "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec07_the-theorem.md",
+    "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec08_sec-9-completeness-preliminaries-in-what.md",
+    "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec09_sec-10-the-standard-basis-of-the-constru.md",
+    "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec10_111-lulls-it-will-be-important-in-our-co.md",
+    "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec11_132-a-new-chronicle-we-check-that-t.md",
+    "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec12_143-hue-scheduling-assuming-that-there-i.md",
+    "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec13_sec-15-truth-lemma-ko-and-the-truth-lemm.md",
+    "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec14_sec-16-examples.md",
+    "specs/literature-index.json"
+  ],
+  "memory_candidates": [
+    {
+      "content": "literature-build-index.sh's FTS content_preview field is built from only the first ~500 words of a chunk's source_path file (literature-build-index.sh lines ~228-237). A document's tail content past that word-500 cutoff is invisible to literature-search.sh even though the bytes exist on disk and the chunk's title/section_path may look correct. Before concluding a topic is 'missing' from a document and planning a reconversion, check whether the content already exists past this preview window (grep the source file directly) -- splitting it into its own chunk/file is often sufficient and far lower-risk than a fresh conversion pass.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/summaries/01_reynolds-sections-5-8-splice-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["literature-build-index.sh", "FTS5", "content_preview", "500-word cutoff", "search gap"]
+    },
+    {
+      "content": "To splice a missing section span into an existing per-section-chunked literature document (one chunk per paper-section convention, not literature-chunk.sh's token budget): (1) check first whether the text already exists elsewhere in the corpus past the FTS preview window before planning a reconversion; (2) free the needed filename slots by git mv-ing existing sec0N files in STRICTLY DESCENDING numeric order to avoid overwrite collisions; (3) compute new chunk_ids with literature-chunk.sh's own formula sha256(f'{doc_id}\\x00{section_path}\\x00{content[:64]}').hexdigest()[:16] via a script, never by hand; (4) re-link prev_chunk_id/next_chunk_id only on the two bracketing entries plus the new internal chain; (5) rebuild only the --global index when the repo's specs/literature/ is deprecated/local-db-less.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/summaries/01_reynolds-sections-5-8-splice-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["literature splice", "chunks.json", "chunk_id formula", "descending rename", "corpus maintenance"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1794328980_5b668f",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "general-implementation-agent"
-    ]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 5
   },
   "proposed_file_scope": [
     "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec08_sec-9-completeness-preliminaries-in-what.md",
