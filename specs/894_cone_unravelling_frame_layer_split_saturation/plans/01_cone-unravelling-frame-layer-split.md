@@ -553,7 +553,7 @@ to hide in.
 
 ---
 
-### Phase 5: Frame assembly, TwoWayBounded, and the headline [IN PROGRESS]
+### Phase 5: Frame assembly, TwoWayBounded, and the headline [COMPLETED]
 
 **Prior blocker, resolved.** This phase stalled once, on a signature defect: every
 frame-assembly declaration it originally declared omitted the base-*Saturation* hypothesis the
@@ -582,7 +582,7 @@ and `TwoWayBounded`, and assemble the L⁺ transfer headline — mirroring
 `UniversalCover.lean`'s assembly tail declaration-for-declaration.
 
 **Tasks** (in order; the bridge lemma comes first because every later item reads it):
-- [ ] State and prove the base-*Saturation* bridge as its own named lemma, before the frame
+- [x] State and prove the base-*Saturation* bridge as its own named lemma, before the frame
       assembly consumes it: `base_taskRel_eq_ofStepRel (F : FrameOver intOrder) [F.IsRegular] :
       F.TaskRel = ofStepRel F.step`, by `funext w d u` then `propext` of
       `FrameOver.taskRel_eq_iter F w u d` (`FormalSystem/Semantics/IntNormalForm.lean:297` — the
@@ -592,7 +592,7 @@ and `TwoWayBounded`, and assemble the L⁺ transfer headline — mirroring
       belong upstream eventually, but `IntNormalForm.lean` is widely imported and this task's
       blast radius is deliberately one module. Record that placement rationale in its doc comment
       so a later reader can promote it deliberately rather than duplicate it.
-- [ ] `coneFrame (F : FrameOver intOrder) [F.IsRegular] : FrameOver intOrder` via
+- [x] `coneFrame (F : FrameOver intOrder) [F.IsRegular] : FrameOver intOrder` via
       `FrameOver.ofStepSat (coneR F.step)`: the two seriality fields from
       `coneR_serial_fwd`/`coneR_serial_bwd` applied to `F.serial w 1 zero_le_one`, and the
       *Saturation* field from `saturation_coneR` applied to `F.saturation` rewritten by the
@@ -600,13 +600,13 @@ and `TwoWayBounded`, and assemble the L⁺ transfer headline — mirroring
       `FrameOver`'s instance-implicit `worldNonempty` field (`TaskFrame.lean:1072`), so no new
       instance is needed; confirm that synthesis actually fires rather than assuming it.
       There is **no** `coneFrameOfSerialSat` intermediate layer — see `## Decisions`.
-- [ ] `coneFrame_taskRel : (coneFrame F).TaskRel = ofStepRel (coneR F.step)` via
+- [x] `coneFrame_taskRel : (coneFrame F).TaskRel = ofStepRel (coneR F.step)` via
       `FrameOver.ofStepSat_taskRel`, and the `coneFrame_isRegular` instance via
       `FrameOver.ofStepSat_isRegular` — mirroring `coverFrame_taskRel` / `coverFrame_isRegular`
       (`UniversalCover.lean:476-487`). `coneFrame_isRegular` must be an `instance`, not a
       `theorem`: the headline's call to `plus_invariance_of_isZTime` needs it by synthesis.
 - [x] `coneF_surjective` with the `Sum.inl` section, axiom-free as `endpt_surjective` is. *(completed)*
-- [ ] `coneF_twoWayBounded (F : FrameOver intOrder) [F.IsRegular] :
+- [x] `coneF_twoWayBounded (F : FrameOver intOrder) [F.IsRegular] :
       TwoWayBounded (F' := coneFrame F) (F := F) coneF`: `forth` from `coneF_iter` on the two
       sign-guarded conjuncts of `ofStepRel`, with the source side rewritten by `coneFrame_taskRel`
       and the base side by `F.taskRel_eq_iter` (not `taskRel_eq_iter_of_constraints`); `step` by
@@ -614,20 +614,20 @@ and `TwoWayBounded`, and assemble the L⁺ transfer headline — mirroring
       `exists_iter_coneRin`; `.inr p` with `x < 0` via `iter_inl_inr` landing on `.inl v`.
       `endpt_twoWayBounded_of_constraints` (`UniversalCover.lean:497`) is the line-for-line
       template for the two fields; read it before writing this one.
-- [ ] `exists_coneUnravelling (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)`,
+- [x] `exists_coneUnravelling (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)`,
       via `TwoWayBounded.plus_invariance_of_isZTime` (`HistoryMorphism.lean:707` — the
       instance-projected form, which reads `[F'.IsRegular]` and `[F.IsRegular]` by synthesis, so
       the `coneFrame_isRegular` instance above is what makes it apply) with `SuccOrder ℤ` /
       `IsSuccArchimedean ℤ` by `inferInstanceAs`. The existential is discharged with
       `⟨coneFrame F, coneFrame_isRegular F, coneF, coneF_twoWayBounded F, coneF_surjective, …⟩`,
       mirroring `exists_orientedForest_cover`'s own assembly shape.
-- [ ] Give `exists_coneUnravelling` a doc comment recording that its *Saturation* is
+- [x] Give `exists_coneUnravelling` a doc comment recording that its *Saturation* is
       **inherited** from `[F.IsRegular]`, not manufactured from `Compositional`/`Serial`/`Limit`
       alone -- the asymmetry with `UniversalCover.lean` recorded in `## Decisions` -- plus a
       `Constraints consumed:` line and a `Paper: — (formalization-native; ...)` line, as
       `exists_orientedForest_cover_of_constraints` does, so Phase 6's theorem-index row is
       anchored at its declaration.
-- [ ] Re-point the module's three constraint-form citations at the instance-projected entry
+- [x] Re-point the module's three constraint-form citations at the instance-projected entry
       points this phase actually calls. All three are in
       `FormalSystem/Semantics/ConeUnravelling.lean`, confirmed present at revision time:
       line 23 (module overview) and line 114 (*What is deliberately absent*) both cite
@@ -640,7 +640,8 @@ and `TwoWayBounded`, and assemble the L⁺ transfer headline — mirroring
       makes the bridge. Prose correction inside the file this phase already edits; no new
       surface, no declaration change. If a line has moved, grep for the cited name rather than
       trusting the number.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+      *(run once per sub-step commit rather than once at phase end: `.githooks/pre-commit` enforces the line-count field, so every commit this phase fired needed it already staged)*
 
 **Timing**: 2.5 hours (`coneF_surjective` already landed; the bridge lemma and the docstring
 correction are the additions over the original estimate)
