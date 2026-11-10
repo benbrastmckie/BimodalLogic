@@ -294,6 +294,205 @@ theorem kappa_collision_two_regimes_refuted :
   · omega
   · omega
 
+/-- **THE TWO-BRANCH COLLISION SPLIT STAYS REFUTED INSIDE THE PENDING-FOREVER REGIME.** The
+saturated-gap branch of `kappa_collision_regimes` is not an artifact of reading the collision
+outside the regime the cell-level inclusions work in: restricting to the pending-forever gap
+`n + 2 ≤ c` at BOTH pairs and to countdowns at or above the threshold `Tc` does NOT remove it.
+At `Tc = Tn = P = 0` and `B = 2` the pairs `(2, 0)` and `(4, 1)` collide — both clipped
+coordinates are pinned at their thresholds, both residues are trivial at `P + 1 = 1`, and the
+gap coordinate is saturated BELOW the window on both (`clipIdx 2 2 0 = clipIdx 2 4 1 = 0`) —
+while `0 + 2 ≤ 2`, `1 + 2 ≤ 4` and `0 ≤ 2`, `0 ≤ 4` hold, the registers differ (`0 ≠ 1`), and
+no single `m` displaces both coordinates (`4 = 2 + m` forces `m = 2` while `1 = 0 + m` forces
+`m = 1`).
+
+This is the compiled reason the forward-slack-restricted obligation below carries the
+EQUAL-REGISTER hypothesis `n = n'` rather than dispatching on `kappa_collision_regimes`: inside
+the pending-forever regime the case split still has a residue on which the registers differ by
+a multiple of `P + 1` that the countdowns do not match, and no landed inclusion — upward,
+common-shift or downward — addresses it, in either direction.
+
+The refutation is scoped to this derivation, exactly as `kappa_collision_two_regimes_refuted` is:
+it refutes the two-branch form as a consequence of the collision destructors, `2 ≤ B` and the
+regime inequalities, and asserts NOTHING about the two-branch form under full `ParamsOk`, whose
+`(K1)`, `(K2)` and `(K4)` quantify the formula and are not read here. -/
+theorem kappa_collision_two_regimes_refuted_of_pend_gap :
+    ¬ ∀ (Tc Tn P B c n c' n' : ℕ), 2 ≤ B →
+        kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') →
+        n + 2 ≤ c → n' + 2 ≤ c' → Tc ≤ c → Tc ≤ c' →
+        (n = n' ∨ ∃ m : ℕ, (c' = c + m * (P + 1) ∧ n' = n + m * (P + 1)) ∨
+          (c = c' + m * (P + 1) ∧ n = n' + m * (P + 1))) := by
+  intro h
+  have hk : kappa 0 0 0 2 (2, 0) = kappa 0 0 0 2 (4, 1) := by decide
+  rcases h 0 0 0 2 2 0 4 1 (by omega) hk (by omega) (by omega) (by omega) (by omega) with
+    hn | ⟨m, hm | hm⟩
+  · omega
+  · omega
+  · omega
+
 end Collision
+
+/-! ## The forward-slack-restricted obligation -/
+
+section ForwardSlack
+
+/-- **THE FORWARD-SLACK REGIME, LIFTED FROM ONE PATH TO A WHOLE CELL.** The landed downward
+inclusion `mem_cellAt_of_shift_of_hasForwardSlack_exact` is stated on the WITNESSING PATH, and
+necessarily so: `ClimbWitness.hasForwardSlack_refuted_unconditional` compiles a path through a
+state satisfying every state-level hypothesis a consumer carries and violating the regime, so no
+state-level variant of the regime can be stated. `ForwardSlackWitnessed x z l n` is the
+weakest condition on the STATE `x` under which that path-level inclusion nevertheless yields a
+cell-level one: every type the cell at `x` realizes is realized there by SOME path carrying
+`HasForwardSlack · z l n`.
+
+It is existential over paths, not universal, which is exactly why the climbing-register
+refutation does not touch it: the climbing path's presence among the paths through `x` is
+compatible with some other path realizing the same type with slack. Nothing here asserts the
+condition HOLDS at any state — it is a hypothesis a consumer must supply, and the record names
+it as such. -/
+def ForwardSlackWitnessed {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (x : LadderState Q pend) (z : ℤ) (l n : ℕ) : Prop :=
+  ∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+      ((z, x) : (ladderFrameAdm step pend fwd bwd).WorldState) z,
+    ∃ (g : ℤ → LadderState Q pend)
+      (τ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+      IsLadderPath step pend g ∧ g z = x ∧ (∀ t : ℤ, τ.state t = (t, g t)) ∧
+      HasForwardSlack g z l n ∧
+      tpOf (ladderModel step pend fwd bwd lab) φ τ z = T
+
+/-- **THE DOWNWARD CELL INCLUSION AT THE STATE LEVEL, under the forward-slack witnessing of the
+HIGHER state.** The mirror of the landed upward `cellAt_subset_of_shift_of_pend_past`: in the
+pending-forever regime (`n + 2 ≤ c`) at countdown at least `Tc`, if every type the cell at
+`(q, c + m · (P + 1), n)` realizes is realized there by a path with
+`HasForwardSlack · z (m · (P + 1)) n`, then that cell is contained in the cell at `(q, c, n)`.
+
+This is the ONE step the state level needs and the path level already has: the body is
+`mem_cellAt_of_shift_of_hasForwardSlack_exact` applied to the witnessing path the hypothesis
+supplies. The hypothesis is not removable — see `ForwardSlackWitnessed`'s own docstring and the
+compiled `ClimbWitness.hasForwardSlack_refuted_unconditional` it cites — and the register is
+HELD on both sides: no common-shift mirror of this statement is claimed, because the landed
+deletion holds the register and nothing landed lowers it. -/
+theorem cellAt_subset_of_shift_of_pend_past_rev {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n : ℕ) (h : c ∈ Adm pend q) (m : ℕ) (h' : c + m * (P + 1) ∈ Adm pend q)
+    (hgap : n + 2 ≤ c) (hTc : Tc ≤ c) (z : ℤ)
+    (hw : ForwardSlackWitnessed step pend fwd bwd lab φ
+      (⟨(q, c + m * (P + 1), n), h'⟩ : LadderState Q pend) z (m * (P + 1)) n) :
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c + m * (P + 1), n), h'⟩) :
+          (ladderFrameAdm step pend fwd bwd).WorldState) z ⊆
+      cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  intro T hT
+  obtain ⟨g, τ, hg, hgz, hτ, hslack, hty⟩ := hw T hT
+  have hmem := mem_cellAt_of_shift_of_hasForwardSlack_exact step pend fwd bwd lab φ Tc Tn P B
+    hp hno q c n h m h' hgap hTc z g hg hgz hslack τ hτ
+  rwa [hty] at hmem
+
+/-- **THE FORWARD-SLACK-RESTRICTED DEPTH-`0` CELL OBLIGATION**, stated as a schema. This is NOT
+the reserved statement `CellLEZeroConstOfKappaEq`, which is claimed by nothing and stays so. Four
+hypotheses separate the two, and all four are visible in the quantifier below:
+
+1. the EQUAL-REGISTER restriction `n = n'`;
+2. the pending-forever gap `n + 2 ≤ c` and `n' + 2 ≤ c'`, at BOTH pairs;
+3. the threshold bounds `Tc ≤ c` and `Tc ≤ c'`, at both pairs;
+4. the forward-slack witnessing `ForwardSlackWitnessed` of whichever pair carries the HIGHER
+   countdown, at exactly the displacement `m · (P + 1)` separating the two.
+
+Hypothesis 4 is the one `mem_cellAt_of_shift_of_hasForwardSlack_exact` already consumes, lifted
+from a single path to the cell by `ForwardSlackWitnessed`; it sits on the PATHS through the higher
+state, never on the state. Hypotheses 2 and 3 are what every landed cell inclusion needs.
+Hypothesis 1 is forced by `kappa_collision_two_regimes_refuted_of_pend_gap`: inside the
+pending-forever regime at countdowns above the threshold, a collision can still displace the
+register by a multiple of `P + 1` that the countdown does not match, and no landed inclusion
+addresses that residue in either direction.
+
+WHAT A CONSUMER MUST SUPPLY. The induction that wants this (the ladder-realization induction one
+layer up) must, at each state it inducts through, exhibit (i) the register equality across the
+collision, and (ii) a forward-slack witness at the higher state: for each type in that state's
+cell, a ladder path through it realizing that type whose first region start above `z`'s region
+leaves `m · (P + 1)` of room in the anchor clause. Neither is a consequence of `ParamsOk`.
+
+The unrestricted schema `CellLEZeroConstOfKappaEq` is, under `ParamsOk`, NEITHER PROVED NOR
+REFUTED, and this theorem does not change that: it is strictly stronger in hypotheses, so it
+bears on the unrestricted schema's truth value in neither direction. -/
+def CellLEZeroConstOfKappaEqForwardSlack {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) : Prop :=
+  ParamsOk step pend lab φ Tc Tn P B →
+    (∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ) →
+    ∀ (q : Q) (c n c' n' : ℕ) (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q) (z : ℤ),
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') →
+      n = n' →
+      n + 2 ≤ c → n' + 2 ≤ c' → Tc ≤ c → Tc ≤ c' →
+      (∀ m : ℕ, c' = c + m * (P + 1) →
+        ForwardSlackWitnessed step pend fwd bwd lab φ
+          (⟨(q, c', n'), h'⟩ : LadderState Q pend) z (m * (P + 1)) n') →
+      (∀ m : ℕ, c = c' + m * (P + 1) →
+        ForwardSlackWitnessed step pend fwd bwd lab φ
+          (⟨(q, c, n), h⟩ : LadderState Q pend) z (m * (P + 1)) n) →
+      cellAt (ladderModel step pend fwd bwd lab) φ
+          ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+        = cellAt (ladderModel step pend fwd bwd lab) φ
+            ((z, ⟨(q, c', n'), h'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+
+/-- **THE FORWARD-SLACK-RESTRICTED OBLIGATION IS A THEOREM.** The schema above holds at every
+parameter tuple `ParamsOk` admits. The collision supplies, through `kappa_eq_components`'
+countdown residue, an explicit displacement by a multiple of `P + 1` in one direction or the
+other; the landed upward `cellAt_subset_of_shift_of_pend_past` gives the inclusion from the
+lower pair into the higher, `cellAt_subset_of_shift_of_pend_past_rev` with the witnessing
+hypothesis gives the reverse, and `Set.Subset.antisymm` closes the EQUALITY.
+
+Why the destructor and not the case split. `kappa_collision_regimes` reads a collision as three
+arithmetic regimes, and with the register equality already in hand its branch structure supplies
+nothing the residue congruence does not: the equal-register branch gives exactly this
+displacement, the common-shift branch collapses to `m = 0` under `n = n'`, and the saturated-gap
+branch — which the case split keeps and this schema does NOT exclude — needs the congruence all
+the same. The destructor is therefore the whole of the arithmetic this proof consumes, and the
+case split is used for the scope statement rather than the derivation.
+
+The reserved name `cellLE_zero_const_of_kappa_eq` is claimed by nothing here. -/
+theorem cellLE_zero_const_of_kappa_eq_of_forwardSlack {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) :
+    CellLEZeroConstOfKappaEqForwardSlack step pend fwd bwd lab φ Tc Tn P B := by
+  intro hp hno q c n c' n' h h' z hk hreg hgap hgap' hTc hTc' hwup hwdn
+  subst hreg
+  obtain ⟨-, hrc, -, -, -⟩ := kappa_eq_components Tc Tn P B c n c' n hk
+  rcases le_total c c' with hle | hle
+  · -- `c'` is the higher pair: up from `c`, down from `c'` through the witnessing hypothesis
+    obtain ⟨j, hj⟩ := (Nat.modEq_iff_dvd' hle).mp hrc
+    rw [Nat.mul_comm] at hj
+    have hc' : c' = c + j * (P + 1) := by omega
+    subst hc'
+    exact Set.Subset.antisymm
+      (cellAt_subset_of_shift_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno q c n h j h'
+        hgap hTc z)
+      (cellAt_subset_of_shift_of_pend_past_rev step pend fwd bwd lab φ Tc Tn P B hp hno q c n h j
+        h' hgap hTc z (hwup j rfl))
+  · -- `c` is the higher pair: the same two inclusions with the roles swapped
+    obtain ⟨j, hj⟩ := (Nat.modEq_iff_dvd' hle).mp hrc.symm
+    rw [Nat.mul_comm] at hj
+    have hc : c = c' + j * (P + 1) := by omega
+    subst hc
+    exact Set.Subset.antisymm
+      (cellAt_subset_of_shift_of_pend_past_rev step pend fwd bwd lab φ Tc Tn P B hp hno q c' n h'
+        j h hgap' hTc' z (hwdn j rfl))
+      (cellAt_subset_of_shift_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno q c' n h' j h
+        hgap' hTc' z)
+
+end ForwardSlack
 
 end FormalSystem.Metalogic.Decidability.RaySummary

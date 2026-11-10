@@ -1069,7 +1069,7 @@ either path.
 
 ---
 
-### Phase 9: Close the Obligation — GATED ON PHASE 8 [NOT STARTED]
+### Phase 9: Close the Obligation — GATED ON PHASE 8 [IN PROGRESS]
 
 **Goal**: On Phase 8's PASS verdict, the lengthening is promoted to a slack-normalization lemma —
 every type realized at the upper state is realized there by SOME path with forward slack — which
