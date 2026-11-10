@@ -149,7 +149,7 @@ cited record, not here.
 ## Run these next
 
 ```bash
-/orchestrate 894,895,896 --hard --lit   # Stage 2: P2 -> P3 -> P4 of 879's ingredient table. Already dependency-ordered; dry-run clean. Lands soundness of the whole T3 system as a theorem
+/orchestrate 894,915,895,896 --hard --lit  # Stage 2: P2 -> P3 -> P4 of 879's ingredient table, plus the Reynolds re-ingest 895 needs. Dependency-ordered; dry-run clean. Lands soundness of the whole T3 system as a theorem
 /orchestrate 909,910 --hard --lit       # Stage 1's live open core: the register-lowering deletion and the saturated-gap residue. Needs the 909 -> 910 edge first (they share LadderCell.lean). A compiled refutation is as good an outcome as a proof
 /orchestrate 899,900 --hard             # P7/P8: the cut product lemma and the linear bridge. Both defer against 894 on docs/theorem-index.md -- run after it, or add serializing edges
 /orchestrate 905,906                    # the two research questions 901 filed: cross-certification elimination, and lcU-from-LC_n (879's Q1). Report only, no Lean
@@ -201,7 +201,7 @@ Re-planning the area from 838's two-sided framing is barred; its residue is 909/
 /orchestrate 763 --hard --lit            # the lift and the Decidable (PlusValidZTime φ) corollary — needs 761 resumed AND the chain above closed
 /orchestrate 714,781 --hard              # sliced-certificate internals (781 researched)
 # Stage 2 — completeness of L⁺ at ZTime: TM⁺ plus the until-form schema
-/orchestrate 894,895,896 --hard --lit    # P2/P3/P4 of 879's ingredient table, already dependency-ordered. Ends with T3 soundness a theorem
+/orchestrate 894,915,895,896 --hard --lit # P2/P3/P4 of 879's ingredient table plus the Reynolds re-ingest, dependency-ordered. Ends with T3 soundness a theorem
 /orchestrate 899,900 --hard              # P7/P8: the cut product lemma and the linear bridge. Defer against 894 on docs/theorem-index.md
 /orchestrate 905,906                     # the two questions 901 filed: cross-certification elimination; lcU-from-LC_n (Q1). Report only
 # Stage 2b — supporting semantics and metalogic
