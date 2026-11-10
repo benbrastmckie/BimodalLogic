@@ -11,8 +11,8 @@ next_project_number: 908
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,894,898,899,900,905,906,907 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
-| 2 | 231,282,296,429,497,763,787,804,853,862,869,895 | 298,428,502,743,761,803,838,894,898 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,869,873,874,875,876,890,894,899,900,905,906,907 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 2 | 231,282,296,429,497,763,787,804,853,862,895 | 298,428,502,743,761,803,838,894 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,896 | 429,497,763,838,895 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -112,8 +112,6 @@ next_project_number: 908
 894 [NOT STARTED] — The forward-cone unravelling as a regular ZTime frame:...
   └─ 895 [NOT STARTED] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
     └─ 896 [NOT STARTED] — The extended L-plus proof system (TM-plus + axiom set +...
-898 [PLANNED] — Two-way bounded L-plus invariance over ZTime with no...
-  └─ 869 [NOT STARTED] — (semantics: PRIORITY RULING (2026-11-05, user):...) (see above)
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 905 [NOT STARTED] — Eliminate cross-certification between the forward and...
@@ -248,11 +246,12 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 898. Two-way bounded L-plus invariance over ZTime with no Saturation hypothesis on the base frame
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Dependencies**: None
 - **Research**: [898_plus_invariance_base_without_saturation/reports/01_plus-invariance-base-without-saturation.md]
 - **Plan**: [898_plus_invariance_base_without_saturation/plans/01_plus-invariance-base-without-saturation.md]
+- **Summary**: [898_plus_invariance_base_without_saturation/summaries/01_plus-invariance-base-without-saturation-summary.md]
 
 **Description**: plus_invariance_of_isZTime and exists_histMorphism_of_isZTime in FormalSystem/Semantics/HistoryMorphism.lean take [F.IsRegular] on the base frame F, which bundles Saturation. Determine whether Saturation of the base is consumed anywhere in the lifting chain (bwdSeq_spec, chain_spec, chain_step, chain_rel, exists_preimage_step_neg) and, if not, restate the chain over a base carrying only reflection, Compositionality, Seriality and Limit, so that truth transfers from a non-saturated doubly serial digraph over Z to its universal cover. The completeness programme needs exactly this direction: the canonical quotient digraph of the Reynolds-style construction has infinite fibres and is not known saturated, and the countermodel of record is its cover. If Saturation turns out essential, record the exact step and the obstruction instead.
 

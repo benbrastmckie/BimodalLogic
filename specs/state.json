@@ -13454,7 +13454,7 @@
     {
       "project_number": 898,
       "project_name": "plus_invariance_base_without_saturation",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "title": "Two-way bounded L-plus invariance over ZTime with no Saturation hypothesis on the base frame",
       "description": "plus_invariance_of_isZTime and exists_histMorphism_of_isZTime in FormalSystem/Semantics/HistoryMorphism.lean take [F.IsRegular] on the base frame F, which bundles Saturation. Determine whether Saturation of the base is consumed anywhere in the lifting chain (bwdSeq_spec, chain_spec, chain_step, chain_rel, exists_preimage_step_neg) and, if not, restate the chain over a base carrying only reflection, Compositionality, Seriality and Limit, so that truth transfers from a non-saturated doubly serial digraph over Z to its universal cover. The completeness programme needs exactly this direction: the canonical quotient digraph of the Reynolds-style construction has infinite fibres and is not known saturated, and the countermodel of record is its cover. If Saturation turns out essential, record the exact step and the obstruction instead.",
@@ -13476,7 +13476,7 @@
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T09:48:34Z",
-      "last_updated": "2026-11-10T01:14:48Z",
+      "last_updated": "2026-11-10T02:57:01Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -13488,6 +13488,11 @@
           "path": "specs/898_plus_invariance_base_without_saturation/plans/01_plus-invariance-base-without-saturation.md",
           "type": "plan",
           "summary": "6-phase, ~7h plan weakening the HistoryMorphism lift chain and the UniversalCover headline off Saturation, with 8 pinned Lean Challenge Statements and a non-vacuity witness."
+        },
+        {
+          "path": "specs/898_plus_invariance_base_without_saturation/summaries/01_plus-invariance-base-without-saturation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: the Saturation-free lift chain, the weakened oriented-forest cover headline, the non-saturated base witness, and the gate-driven Phase 5 scope expansion."
         }
       ],
       "session_id": "sess_1794261422_5f0e55",
@@ -14496,7 +14501,8 @@
           }
         ],
         "scope_blind_count": 453
-      }
+      },
+      "completion_summary": "Settled the open question affirmatively and more strongly than anticipated: Saturation is consumed nowhere in the HistoryMorphism.lean lifting chain, and the base frame needs no def:frame constraint whatsoever (its one apparent use of F.reflection is discharged at the nonzero step duration by TaskFrame.reflect_reflection_of_ne, which holds of any relation). Landed eight new declarations across four modules restating the lift chain, FrameOver.taskRel_eq_iter and the completeness programme's entry point exists_orientedForest_cover over a base carrying only Compositionality, Seriality and Limit, plus a concrete non-saturated FrameOver intOrder witness proving the weakening non-vacuous. Every pre-existing [IsRegular] form is kept as a verbatim-statement wrapper, so the diff is additive and no call site changed; truth now transfers from a non-saturated doubly serial digraph over Z to its universal cover, which is the direction the completeness programme needs."
     },
     {
       "project_number": 899,
