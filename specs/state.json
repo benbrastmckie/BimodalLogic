@@ -1519,7 +1519,7 @@
         {
           "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
           "type": "summary",
-          "summary": "Round-01 summary brought current: Phase 5's blocker withdrawal, the free slack baseline, the exact-transport accounting, and what Phase 8's gate is now the only remaining source of."
+          "summary": "Round-01 summary brought current with Phase 7: the common-shift cell inclusion, the three-branch collision split, and the compiled refutation of the planned two-branch shape."
         }
       ],
       "session_id": "sess_1794293763_c4273a",
