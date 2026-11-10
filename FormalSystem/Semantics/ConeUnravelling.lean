@@ -915,4 +915,67 @@ instance coneFrame_isRegular (F : FrameOver intOrder) [F.IsRegular] :
     (coneFrame F).IsRegular :=
   FrameOver.ofStepSat_isRegular _ _ _ _
 
+/-! ## The projection is two-way bounded -/
+
+/--
+**The projection is two-way bounded.**
+
+`forth` is `coneF_iter` on the two sign-guarded conjuncts of `ofStepRel`, with the source side
+read through `coneFrame_taskRel` and the base side through `FrameOver.taskRel_eq_iter`.
+
+`step` is a four-way split on the anchor's shape and the sign of the duration, and each branch is
+a transport identity already proved above:
+
+* `.inl w`, either sign — `iter_inl_inl`, at `.inl v`: the `inl` layer is a verbatim copy of the
+  base, so a base path lifts to the `inl` layer unchanged in both directions;
+* `.inr p`, `0 ≤ x` — `exists_iter_coneRin`, at the `inr` node the lift records: forward from the
+  `inr` layer stays in the `inr` layer, and the base path is recorded as it is traversed;
+* `.inr p`, `x < 0` — `exists_iter_coneR_bwd_inr`, landing on `.inl v`. The witness leaves the
+  `inr` layer, which is possible only because the entry edge is **promiscuous in the recorded
+  list**: a base predecessor of `p.1` is realised by entering at `.inl v` and stepping in, with no
+  coherence demand on `p.2`. At `x < 0` the duration is a genuine `n + 1`, which is what the
+  entry edge needs — a zero-length backward path would have to stay at `.inr p` itself, and that
+  case is on the `0 ≤ x` side of the split.
+
+`UniversalCover.endpt_twoWayBounded_of_constraints` is the two-field template; the split here is
+four-way rather than two-way because the cone carrier has two layers.
+
+Constraints consumed: Compositionality, Seriality, Limit
+-/
+theorem coneF_twoWayBounded (F : FrameOver intOrder) [F.IsRegular] :
+    TwoWayBounded (F' := coneFrame F) (F := F) coneF := by
+  constructor
+  · intro a x b hab
+    rw [coneFrame_taskRel] at hab
+    rw [F.taskRel_eq_iter]
+    exact ⟨fun hx => coneF_iter _ _ _ (hab.1 hx), fun hx => coneF_iter _ _ _ (hab.2 hx)⟩
+  · intro a x v hv
+    rw [F.taskRel_eq_iter] at hv
+    match a with
+    | .inl w =>
+      refine ⟨.inl v, ?_, rfl⟩
+      rw [coneFrame_taskRel]
+      exact ⟨fun hx => (iter_inl_inl x.natAbs w v).mpr (hv.1 hx),
+             fun hx => (iter_inl_inl x.natAbs v w).mpr (hv.2 hx)⟩
+    | .inr p =>
+      rcases le_or_gt 0 x with hx | hx
+      · have hx' : (0 : ℤ) ≤ x := hx
+        obtain ⟨q, hq1, hq⟩ := exists_iter_coneRin x.natAbs p v (hv.1 hx')
+        refine ⟨.inr q, ?_, hq1⟩
+        rw [coneFrame_taskRel]
+        exact (ofStepRel_of_nonneg hx' _ _).mpr ((iter_inr_fwd _ _ _).mpr ⟨q, rfl, hq⟩)
+      · have hxlt : (x : ℤ) < 0 := hx
+        have hx' : x ≤ (0 : ℤ) := le_of_lt hxlt
+        obtain ⟨n, hn⟩ := Nat.exists_eq_succ_of_ne_zero (Int.natAbs_ne_zero.mpr (ne_of_lt hxlt))
+        have hbase : iter F.step (n + 1) v p.1 := by
+          have h := hv.2 hx'
+          rw [hn] at h
+          exact h
+        obtain ⟨z, hz, hzf⟩ := exists_iter_coneR_bwd_inr n p v hbase
+        refine ⟨z, ?_, hzf⟩
+        rw [coneFrame_taskRel]
+        refine (ofStepRel_of_nonpos hx' _ _).mpr ?_
+        rw [hn]
+        exact hz
+
 end FormalSystem.Semantics
