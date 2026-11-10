@@ -1,16 +1,12 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 10,
-  "summary": "Seven-phase plan written for the Phase 11.8 insertion cascade: the anchor-free lift (hn0 derived from hpins via drift_extension_of_pins), the region-start extraction from the idle-past hypothesis, the inserted walk's region-start trichotomy, hpins, both existentials, records, and the full gate. Two planning findings change the construction: the cascade collapses to a SINGLE insertion at the region start of a's own region with d := l (no doubling recurrence, cascadeDemand* unconsumed), and hn0 is eliminable rather than constructible. Both target names are claimed with an explicit path-local idle self-loop hypothesis, the premise the parent's Phase 11.11 recorded as owed; all seven Goal signatures elaborated standalone with exit_status=0 and exactly seven sorry warnings.",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/853_ladder_path_insertion_cascade_idle_past/plans/01_insertion-cascade-idle-past.md",
-      "summary": "Seven-phase plan closing the idle-past half and the unconditional join of the ladder-path region interface, with seven pinned Lean Challenge Statements."
-    }
-  ],
-  "phases_completed": 0,
+  "status": "partial",
+  "skeleton": false,
+  "summary": "Phase 1 of 7 complete: the anchor-free lift. drift_lipschitz_two_sided and exists_ladderPath_of_walk_of_pins landed in LadderAgree.lean, sorry-free, with axiom pins in KTypeSummaryAxiomTest.lean. hn0 is derived from hpins through drift_extension_of_pins rather than assumed, so no consumer of the lift constructs an anchor again. Full unscoped lake build green. Two gate collisions recorded: the longFile baseline went to 3100 not the plan's 3400 (the linter requires the file's own round-up, not a forward-looking ceiling), and the commit gate required regenerating typst/generated/status.typ, a third file the plan's phase list does not name. check-module-invariants.sh is red on 3 stale README inventory blocks, which is Phase 6's declared scope and expected across Phases 1-4.",
+  "phases_completed": 1,
   "phases_total": 7,
-  "blockers": []
+  "dispatch_seq": 11,
+  "sorry_inventory": [],
+  "blockers": [],
+  "continuation_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-1-handoff-20261110T093002Z.md",
+  "artifacts": []
 }
