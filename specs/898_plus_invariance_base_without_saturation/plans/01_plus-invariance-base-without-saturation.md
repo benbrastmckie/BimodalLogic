@@ -281,7 +281,7 @@ cover it.
 
 ---
 
-### Phase 3: Saturation-free oriented-forest cover headline in UniversalCover.lean [NOT STARTED]
+### Phase 3: Saturation-free oriented-forest cover headline in UniversalCover.lean [COMPLETED]
 
 **Goal**: Restate the completeness programme's entry point over a base carrying only
 *Compositionality*, *Seriality* and *Limit*, keeping `coverFrame`, `endpt_twoWayBounded` and
@@ -289,26 +289,26 @@ cover it.
 fourth over-reporting docstring.
 
 **Tasks**:
-- [ ] Add `coverFrameOfSerial (F : FrameOver intOrder) (hser : TaskFrame.Serial F.TaskRel) :
+- [x] Add `coverFrameOfSerial (F : FrameOver intOrder) (hser : TaskFrame.Serial F.TaskRel) :
       FrameOver intOrder`, the current `coverFrame` body with
       `fun w => (F.serial w 1 zero_le_one).1` / `.2` replaced by the corresponding projections of
       `hser`.
-- [ ] Redefine `coverFrame F` as `coverFrameOfSerial F F.serial` so it unfolds to the same term,
+- [x] Redefine `coverFrame F` as `coverFrameOfSerial F F.serial` so it unfolds to the same term,
       and re-prove `coverFrame_taskRel` and the `coverFrame_isRegular` instance against it with
       their statements unchanged. Add the matching `coverFrameOfSerial_taskRel` and
       `coverFrameOfSerial_isRegular`.
-- [ ] Add `endpt_twoWayBounded_of_constraints` over `hcomp / hser / hlim`, routing through
+- [x] Add `endpt_twoWayBounded_of_constraints` over `hcomp / hser / hlim`, routing through
       `F.taskRel_eq_iter_of_constraints hcomp hser hlim` from Phase 2, and keep
       `endpt_twoWayBounded` as a verbatim-statement wrapper.
-- [ ] Add `exists_orientedForest_cover_of_constraints` with the signature pinned under
+- [x] Add `exists_orientedForest_cover_of_constraints` with the signature pinned under
       `## Lean Challenge Statements`, applying
       `TwoWayBounded.plus_invariance_of_isZTime_of_constraints` from Phase 1 with the cover's own
       *Comp* / *Serial* / *Limit* taken from `coverFrameOfSerial_isRegular`.
-- [ ] Keep `exists_orientedForest_cover` as a thin `[F.IsRegular]` wrapper, statement
+- [x] Keep `exists_orientedForest_cover` as a thin `[F.IsRegular]` wrapper, statement
       byte-identical to the current one at line 507.
-- [ ] Replace the `Constraints consumed: Compositionality, Seriality, Limit, Saturation` line at
+- [x] Replace the `Constraints consumed: Compositionality, Seriality, Limit, Saturation` line at
       `UniversalCover.lean:441` with the audited set, naming the base side explicitly.
-- [ ] Record Finding 7's caveat in `exists_orientedForest_cover_of_constraints`' docstring: the
+- [x] Record Finding 7's caveat in `exists_orientedForest_cover_of_constraints`' docstring: the
       base need not be *Saturated*, the **cover** is (by `saturation_of_orientedForest`), and that
       is what makes the cover a bona fide `FrameClass.Sat .ZTime` member carrying the refutation.
 
