@@ -497,7 +497,7 @@ with guarded scoped builds of `FormalSystem.Metalogic.Decidability.RaySummary.La
 
 ---
 
-### Phase 7: The Complete Gate Set and the Summary [NOT STARTED]
+### Phase 7: The Complete Gate Set and the Summary [COMPLETED]
 
 **Goal**: The task's terminal phase: the full gate set run and read, and the summary written with
 the finding the parent's reviser needs — that the pin half closed with a single insertion, that
@@ -506,10 +506,10 @@ record rather than live machinery.
 
 **Tasks**:
 
-- [ ] Write `specs/853_ladder_path_insertion_cascade_idle_past/summaries/01_insertion-cascade-idle-past-summary.md` per `context/formats/summary-format.md`: the seven declarations with their roles, the `hself` premise and its exact shape, the single-insertion finding against the anticipated iteration, the unconsumed sizing record, every recorded deviation, and the measurements table (`LadderAgree.lean` lines and baseline before and after, axiom-test lines and baseline before and after, inventory blocks rolled).
-- [ ] State plainly in the summary what task 761's Phase 11.12 and the counter-lift consumer inherit: the admissibility half of the counter-lift lemma is now unconditional in the pending-forever regime and conditional on `hself` in the idle-past regime, rather than conditional with nothing available.
-- [ ] Run the complete gate set and read its verdict, not a piped exit code.
-- [ ] Record in `issues.jsonl` any gate that needed a second run, and the total wall clock of the unscoped build.
+- [x] Write `specs/853_ladder_path_insertion_cascade_idle_past/summaries/01_insertion-cascade-idle-past-summary.md` per `context/formats/summary-format.md`: the seven declarations with their roles, the `hself` premise and its exact shape, the single-insertion finding against the anticipated iteration, the unconsumed sizing record, every recorded deviation, and the measurements table (`LadderAgree.lean` lines and baseline before and after, axiom-test lines and baseline before and after, inventory blocks rolled).
+- [x] State plainly in the summary what task 761's Phase 11.12 and the counter-lift consumer inherit: the admissibility half of the counter-lift lemma is now unconditional in the pending-forever regime and conditional on `hself` in the idle-past regime, rather than conditional with nothing available.
+- [x] Run the complete gate set and read its verdict, not a piped exit code. *(deviation: altered — discharged against the SCOPED tier per this dispatch's Batch Gate Deferral directive, not the complete set independently: this task is one of several implement-phase dispatches in one multi-task /orchestrate batch, so the full set runs once for the whole batch at the end of the invocation and is attributed back by `modified_files`. Every verdict read below was read from the command's own exit status, never a piped one.)*
+- [x] Record in `issues.jsonl` any gate that needed a second run, and the total wall clock of the unscoped build. *(deviation: narrower — no gate needed a second run in this phase and no unscoped build was launched here, the unscoped build being the deferred batch-stage gate; both facts recorded in `issues.jsonl` and in the summary's gate-deferral subsection rather than left as a silent omission.)*
 
 **Timing**: 1.5 hours
 
