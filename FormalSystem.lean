@@ -33,6 +33,7 @@ import FormalSystem.Metalogic.Algebraic.FlowFrame
 import FormalSystem.Metalogic.Algebraic.InteriorOperators
 import FormalSystem.Metalogic.Algebraic.LindenbaumQuotient
 import FormalSystem.Metalogic.Algebraic.UltrafilterMCS
+import FormalSystem.Metalogic.AuxiliaryAtoms
 import FormalSystem.Metalogic.BXCanonical
 import FormalSystem.Metalogic.BXCanonical.CanonicalChain
 import FormalSystem.Metalogic.BXCanonical.CanonicalModel

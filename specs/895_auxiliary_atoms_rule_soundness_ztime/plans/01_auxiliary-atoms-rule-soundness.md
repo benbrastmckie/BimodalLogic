@@ -1,7 +1,7 @@
 # Implementation Plan: Task #895
 
 - **Task**: 895 - The Auxiliary-Atoms rule for L⁺ at ZTime, forward and mirror, formula level with soundness
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: Task 894 [COMPLETED], Task 915 [COMPLETED] — both landed, both load-bearing
 - **Research Inputs**: specs/895_auxiliary_atoms_rule_soundness_ztime/reports/01_auxiliary-atoms-rule-soundness.md
@@ -289,7 +289,7 @@ a deeper logical order.
 
 ---
 
-### Phase 1: Module skeleton and the three infrastructure lemmas [NOT STARTED]
+### Phase 1: Module skeleton and the three infrastructure lemmas [COMPLETED]
 
 **Goal**: Create `FormalSystem/Metalogic/AuxiliaryAtoms.lean` with its header, module docstring
 and registration, and land the three probe-checked library gaps.
