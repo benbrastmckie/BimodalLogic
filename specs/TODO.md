@@ -1,5 +1,5 @@
 ---
-next_project_number: 908
+next_project_number: 909
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 908
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,869,873,874,875,876,890,894,899,900,905,906,907 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,869,873,874,875,876,890,894,899,900,905,906,907,908 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,804,853,862,895 | 298,428,502,743,761,803,838,894 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,896 | 429,497,763,838,895 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -117,8 +117,28 @@ next_project_number: 908
 905 [NOT STARTED] — Eliminate cross-certification between the forward and...
 906 [NOT STARTED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
 907 [NOT STARTED] — Regenerate the deployed .claude/ tree in BimodalLogic, which...
+908 [NOT STARTED] — Audit the 65 remaining "Constraints consumed:...
 
 ## Tasks
+
+### 908. Constraints consumed marker accuracy audit
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: None
+- **Parent**: Task 898
+
+**Description**: Audit the 65 remaining "Constraints consumed: Compositionality, Seriality, Limit, Saturation" docstring lines across 16 library modules against what each declaration's proof actually projects, and correct the over-reporting ones.
+
+Background. The completed work on L-plus invariance without Saturation established that such a line records the IsRegular binder PRESENT on a declaration, not the constraints the proof CONSUMES. Four lines in FormalSystem/Semantics/HistoryMorphism.lean and FormalSystem/Semantics/UniversalCover.lean over-reported in exactly that way and were corrected there; that over-claim is why the Saturation question looked open for as long as it did. Measurement found the residue is larger than first estimated: 65 occurrences across 16 files (FormalSystem/Semantics/Nomic/, Presheaf/, Extension/, Validity.lean, Correspondence/RigidityReal.lean, NomicLanguage/), not the ~20 initially reported. Correcting them was declared an explicit Non-Goal of that work, so the residue is unfiled.
+
+Scope. For each occurrence, determine which constraints the proof actually projects -- the transplant-probe technique is proven: replace the bundling binder with explicit constraint hypotheses in a scratch copy and check it still compiles. Then correct the marker line where it over-reports. Many occurrences will be ACCURATE: a declaration that genuinely consumes Saturation keeps its line unchanged. This is an audit, not a sweep; a blind rewrite would be worse than the current state.
+
+Constraints to respect. The "Constraints consumed:" marker vocabulary is CLOSED (check-module-invariants.sh C34), and a side-attributing form such as "source: ...; base: none" is inadmissible on the marker line. Any phase touching a marker must name scripts/check-module-invariants.sh in its own verification tier -- a full lake build covers none of C34/C34a/C34b. typst/generated/status.typ is a mandatory file_scope member of any .lean-touching phase (typst-sync-check.sh pre-commit gate).
+
+Evidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two compiled transplant probes from the originating work.
+
+---
 
 ### 907. Redeploy-stale-claude-tree
 - **Effort**: small
