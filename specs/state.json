@@ -8542,28 +8542,39 @@
     {
       "project_number": 894,
       "project_name": "cone_unravelling_frame_layer_split_saturation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "title": "The forward-cone unravelling as a regular ZTime frame: inr-layer oriented forest and the two-layer Saturation split",
       "description": "Land the Auxiliary-Atoms carrier as a FrameOver intOrder over the sum type W + (W x List W) with the one-step relation coneR (inl u -> inl v and inl u -> inr (v, h) when u -> v; inr (u, h) -> inr (v, u :: h) when u -> v; nothing leaves inr), for a doubly serial base relation. Three lemmas: (1) the inr layer is an IsOrientedForest (every inr node has a unique inr-predecessor and the recorded list strictly lengthens along edges, so the undirected multigraph is acyclic, loop-free and opposite-edge-free); (2) the two-layer Saturation lemma: TaskFrame.Saturation (ofStepRel coneR) from TaskFrame.Saturation of the base relation on the inl-anchored families and saturation_of_orientedForest' on the inr-anchored families, with the mixed-family case handled by directedness; (3) TwoWayBounded for the projection coneF with surjectivity, so plus_invariance_of_isZTime applies. This discharges the Saturation obligation recorded in NamingRules.lean's module docstring and is the frame-side prerequisite of the formula-level Auxiliary-Atoms rule. New module FormalSystem/Semantics/ConeUnravelling.lean.",
       "file_scope": [
-        "FormalSystem/Semantics/ConeUnravelling.lean",
-        "FormalSystem/Semantics.lean",
         "FormalSystem.lean",
-        "Tests/BimodalTest/Semantics/ConeUnravellingTest.lean",
+        "FormalSystem/Metalogic/NamingRules.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "FormalSystem/Semantics.lean",
+        "FormalSystem/Semantics/ConeUnravelling.lean",
+        "FormalSystem/Semantics/UniversalCover.lean",
+        "README.md",
         "Tests/BimodalTest.lean",
-        "docs/theorem-index.md"
+        "Tests/BimodalTest/Semantics/ConeUnravellingTest.lean",
+        "docs/theorem-index.md",
+        "typst/generated/status.typ"
       ],
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T09:48:33Z",
-      "last_updated": "2026-11-10T13:15:35Z",
+      "last_updated": "2026-11-10T13:29:04Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/894_cone_unravelling_frame_layer_split_saturation/reports/01_cone-unravelling-frame-layer-split.md",
           "type": "report",
           "summary": "Design research for the cone-unravelling carrier W + (W x List W): machine-checked oriented-forest and double-seriality core, the four-step two-layer Saturation split, the TwoWayBounded route, and a 4-phase sorry-free implementation decomposition."
+        },
+        {
+          "path": "specs/894_cone_unravelling_frame_layer_split_saturation/plans/01_cone-unravelling-frame-layer-split.md",
+          "type": "plan",
+          "summary": "Six-phase, ~10-hour plan: carrier + oriented forest, transport layer, member-shape classification, two-layer Saturation split, frame assembly + TwoWayBounded, documentation reconciliation + full gate set."
         }
       ],
       "session_id": "sess_1794315339_51105e",

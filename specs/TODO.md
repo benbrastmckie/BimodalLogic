@@ -42,7 +42,7 @@ next_project_number: 915
 
 ### Completeness
 
-894 [RESEARCHED] — The forward-cone unravelling as a regular ZTime frame:...
+894 [PLANNED] — The forward-cone unravelling as a regular ZTime frame:...
   └─ 895 [NOT STARTED] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
     └─ 896 [NOT STARTED] — The extended L-plus proof system (TM-plus + axiom set +...
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
@@ -466,11 +466,12 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 894. The forward-cone unravelling as a regular ZTime frame: inr-layer oriented forest and the two-layer Saturation split
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
 - **Research**: [894_cone_unravelling_frame_layer_split_saturation/reports/01_cone-unravelling-frame-layer-split.md]
+- **Plan**: [894_cone_unravelling_frame_layer_split_saturation/plans/01_cone-unravelling-frame-layer-split.md]
 
 **Description**: Land the Auxiliary-Atoms carrier as a FrameOver intOrder over the sum type W + (W x List W) with the one-step relation coneR (inl u -> inl v and inl u -> inr (v, h) when u -> v; inr (u, h) -> inr (v, u :: h) when u -> v; nothing leaves inr), for a doubly serial base relation. Three lemmas: (1) the inr layer is an IsOrientedForest (every inr node has a unique inr-predecessor and the recorded list strictly lengthens along edges, so the undirected multigraph is acyclic, loop-free and opposite-edge-free); (2) the two-layer Saturation lemma: TaskFrame.Saturation (ofStepRel coneR) from TaskFrame.Saturation of the base relation on the inl-anchored families and saturation_of_orientedForest' on the inr-anchored families, with the mixed-family case handled by directedness; (3) TwoWayBounded for the projection coneF with surjectivity, so plus_invariance_of_isZTime applies. This discharges the Saturation obligation recorded in NamingRules.lean's module docstring and is the frame-side prerequisite of the formula-level Auxiliary-Atoms rule. New module FormalSystem/Semantics/ConeUnravelling.lean.
 

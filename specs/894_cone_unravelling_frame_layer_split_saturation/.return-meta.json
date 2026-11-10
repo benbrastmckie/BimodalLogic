@@ -1,22 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/894_cone_unravelling_frame_layer_split_saturation/reports/01_cone-unravelling-frame-layer-split.md",
-      "summary": "Design research for the cone-unravelling carrier W + (W x List W): machine-checked oriented-forest and double-seriality core, the four-step two-layer Saturation split, the TwoWayBounded route, and a 4-phase sorry-free implementation decomposition."
-    },
+      "type": "plan",
+      "path": "specs/894_cone_unravelling_frame_layer_split_saturation/plans/01_cone-unravelling-frame-layer-split.md",
+      "summary": "Six-phase plan landing FormalSystem/Semantics/ConeUnravelling.lean: carrier + oriented forest, transport layer, member-shape classification, the two-layer Saturation split, frame assembly and TwoWayBounded, then documentation reconciliation and the full gate set."
+    }
+  ],
+  "next_steps": "Run /orchestrate 894 to execute the plan",
+  "memory_candidates": [
     {
-      "type": "evidence",
-      "path": "specs/evidence/cone-unravelling-frame-layer-split/cone-core-probe.lean",
-      "summary": "Compiling probe (23 declarations, no errors/warnings/sorries) establishing coneRin_isOrientedForest, double seriality of coneR on the literal sum carrier, the projection homomorphism, four iter-level transport identities, the Fib-level transport bridge, and both TwoWayBounded step lifts."
+      "content": "Authoring a `## Lean Challenge Statements` block that needs helper DEFINITIONS in scope: declare them as `abbrev`, not `def`. lean-challenge-snapshot.sh chunks at the declaration keyword and has three decoupled roles -- a `def`/`theorem`/`lemma`/named-`instance` both contributes its name to the cross-validated identifier set (which MUST equal the `- **Goals**:` set) AND gets its body force-rewritten to `:= sorry`, which would break every pinned theorem referencing it. An `abbrev` keeps its real body verbatim and contributes no name, so carrier definitions can sit in the block without appearing in Goals. Two companion facts: a per-declaration `open X in` prefix is stripped by the extractor (open at the top of the block instead, and note in the plan that the real module keeps the `open ... in` form); and `lean-challenge-snapshot.sh <task> <root> --dry-run --compile` compile-checks the assembled module against the project's own toolchain, so every pinned signature can be proven well-formed at PLAN time rather than discovered wrong mid-implementation.",
+      "category": "PATTERN",
+      "source_artifact": "specs/894_cone_unravelling_frame_layer_split_saturation/plans/01_cone-unravelling-frame-layer-split.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean-challenge-statements", "challenge-snapshot", "abbrev", "plan-authoring", "lean4", "signature-pinning"]
     }
   ],
   "metadata": {
     "session_id": "sess_1794315339_51105e_894",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 10,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6]]
+  },
+  "dispatch_seq": 2
 }

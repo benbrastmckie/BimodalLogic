@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 2,
+  "phases_completed": 0,
+  "phases_total": 6,
+  "summary": "Wrote a six-phase implementation plan for FormalSystem/Semantics/ConeUnravelling.lean, modelled declaration-for-declaration on UniversalCover.lean. Phases 1-2 promote the already-compiling evidence probe (carrier, coneR/coneRin/coneF/parIn, oriented forest, double seriality, transport and Fib-level bridges); Phase 3 hoists the one unprobed step -- the exhaustive 12-cell member-shape classification -- into its own named lemma; Phase 4 proves saturation_coneR; Phase 5 assembles the frame, surjectivity and TwoWayBounded; Phase 6 retires NamingRules.lean's 'left open' paragraph, pins axiom profiles, and runs the full gate set. The seven pinned Lean Challenge Statements were compile-checked via lean-challenge-snapshot.sh --dry-run --compile ('compile: OK') before being recorded as the plan's contract.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/894_cone_unravelling_frame_layer_split_saturation/plans/01_cone-unravelling-frame-layer-split.md",
+      "summary": "Six-phase, ~10-hour plan: carrier + oriented forest, transport layer, member-shape classification, two-layer Saturation split, frame assembly + TwoWayBounded, documentation reconciliation + full gate set."
+    }
+  ]
+}
