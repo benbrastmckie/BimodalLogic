@@ -296,18 +296,48 @@ theorem exists_preimage_step (h : TwoWayBounded f)
     ∃ b : F'.WorldState, F'.TaskRel a x b ∧ f b = v :=
   h.step a x v hv
 
+/-- **The predecessor-lifting form at a nonzero duration, over a base frame carrying no
+`def:frame` constraint at all.** An `x`-predecessor of an image state is the image of an
+`x`-predecessor of the state, for `x ≠ 0`.
+
+This is `step` at `-x`, read through a reflection law on each side — and the two sides are not
+symmetric. The **source** side needs `FrameOver.reflection_of_limit`, so it consumes *Limit*.
+The **base** side, at `x ≠ 0`, is discharged by `TaskFrame.reflect_reflection_of_ne`, which holds
+of the extended relation of *any* relation whatsoever: at a nonzero duration, reflection is a
+fact about how `FrameOver.TaskRel` is assembled from `PosRel`, not a constraint on the frame. So
+the base frame carries no hypothesis here, and in particular no *Saturation*.
+
+Constraints consumed: source `F'`: *Limit*; base `F`: none.
+
+Paper: — (formalization-native; the paper defines no morphism of task frames) -/
+theorem exists_preimage_step_neg_of_ne (hlim' : TaskFrame.Limit F'.TaskRel)
+    (h : TwoWayBounded f)
+    (a : F'.WorldState) (x : ↑D) (hx : x ≠ 0) (u : F.WorldState)
+    (hu : F.TaskRel u x (f a)) :
+    ∃ c : F'.WorldState, F'.TaskRel c x a ∧ f c = u := by
+  obtain ⟨c, hc, hfc⟩ := h.step a (-x) u
+    ((TaskFrame.reflect_reflection_of_ne (P := F.PosRel) hx).1 hu)
+  exact ⟨c, (F'.reflection_of_limit hlim' c x a).2 hc, hfc⟩
+
 /-- **The predecessor-lifting form, derived rather than postulated**: an `x`-predecessor of an
 image state is the image of an `x`-predecessor of the state.
 
 This is the field a digraph two-way bounded morphism has to carry separately. Here it is `step`
 at `-x`, read through `FrameOver.reflection` on each side.
 
+`exists_preimage_step_neg_of_ne` is the general form, and it is the whole content of this one
+away from `x = 0`: there the base frame needs no `def:frame` constraint and the source needs only
+*Limit*. At `x = 0` the statement is instead `nullity_identity` on each side — the predecessor is
+the state itself — which is the one place the base frame's constraints are read, and the reason
+this form keeps both instance binders.
+
 Paper: — (formalization-native; the paper defines no morphism of task frames) -/
 theorem exists_preimage_step_neg [F'.IsRegular] [F.IsRegular] (h : TwoWayBounded f)
     (a : F'.WorldState) (x : ↑D) (u : F.WorldState) (hu : F.TaskRel u x (f a)) :
     ∃ c : F'.WorldState, F'.TaskRel c x a ∧ f c = u := by
-  obtain ⟨c, hc, hfc⟩ := h.step a (-x) u ((F.reflection u x (f a)).1 hu)
-  exact ⟨c, (F'.reflection c x a).2 hc, hfc⟩
+  rcases eq_or_ne x 0 with rfl | hx
+  · exact ⟨a, F'.nullity a, ((F.nullity_identity u (f a)).1 hu).symm⟩
+  · exact exists_preimage_step_neg_of_ne F'.limit h a x hx u hu
 
 end TwoWayBounded
 
@@ -379,16 +409,17 @@ private theorem fwdSeq_spec {f : F'.WorldState → F.WorldState} (h : TwoWayBoun
   rw [e]; exact ex.choose_spec.1
 
 /-- The backward half lies over the recorded states and steps by `δ` into every stage. -/
-private theorem bwdSeq_spec [F'.IsRegular] [F.IsRegular]
+private theorem bwdSeq_spec (hlim' : TaskFrame.Limit F'.TaskRel)
     {f : F'.WorldState → F.WorldState} (h : TwoWayBounded f)
-    {δ : ↑D} {w : ℤ → F.WorldState} (hw : ∀ i : ℤ, F.TaskRel (w i) δ (w (i + 1)))
+    {δ : ↑D} (hδne : δ ≠ 0) {w : ℤ → F.WorldState}
+    (hw : ∀ i : ℤ, F.TaskRel (w i) δ (w (i + 1)))
     {a : F'.WorldState} (ha : f a = w 0) (k : ℕ) :
     f (bwdSeq f δ w a k) = w (-(k : ℤ)) ∧
       F'.TaskRel (bwdSeq f δ w a (k + 1)) δ (bwdSeq f δ w a k) := by
   have key : ∀ k : ℕ, f (bwdSeq f δ w a k) = w (-(k : ℤ)) →
       ∃ c, F'.TaskRel c δ (bwdSeq f δ w a k) ∧ f c = w (-(k : ℤ) - 1) := by
     intro k hk
-    refine h.exists_preimage_step_neg _ δ _ ?_
+    refine TwoWayBounded.exists_preimage_step_neg_of_ne hlim' h _ δ hδne _ ?_
     rw [hk]
     have hi := hw (-(k : ℤ) - 1)
     rwa [show -(k : ℤ) - 1 + 1 = -(k : ℤ) by ring] at hi
@@ -431,20 +462,22 @@ private theorem chain_zero (f : F'.WorldState → F.WorldState) (δ : ↑D)
   simp [fwdSeq]
 
 /-- The chain lies over the recorded states at every index. -/
-private theorem chain_spec [F'.IsRegular] [F.IsRegular]
+private theorem chain_spec (hlim' : TaskFrame.Limit F'.TaskRel)
     {f : F'.WorldState → F.WorldState} (h : TwoWayBounded f)
-    {δ : ↑D} {w : ℤ → F.WorldState} (hw : ∀ i : ℤ, F.TaskRel (w i) δ (w (i + 1)))
+    {δ : ↑D} (hδne : δ ≠ 0) {w : ℤ → F.WorldState}
+    (hw : ∀ i : ℤ, F.TaskRel (w i) δ (w (i + 1)))
     {a : F'.WorldState} (ha : f a = w 0) (i : ℤ) :
     f (chain f δ w a i) = w i := by
   rcases le_or_gt 0 i with hi | hi
   · rw [chain_of_nonneg f δ w a hi, (fwdSeq_spec h hw ha i.toNat).1, Int.toNat_of_nonneg hi]
-  · rw [chain_of_neg f δ w a hi, (bwdSeq_spec h hw ha (-i).toNat).1,
+  · rw [chain_of_neg f δ w a hi, (bwdSeq_spec hlim' h hδne hw ha (-i).toNat).1,
       Int.toNat_of_nonneg (by omega : (0 : ℤ) ≤ -i), neg_neg]
 
 /-- Consecutive links of the chain are one `δ`-task apart. -/
-private theorem chain_step [F'.IsRegular] [F.IsRegular]
+private theorem chain_step (hlim' : TaskFrame.Limit F'.TaskRel)
     {f : F'.WorldState → F.WorldState} (h : TwoWayBounded f)
-    {δ : ↑D} {w : ℤ → F.WorldState} (hw : ∀ i : ℤ, F.TaskRel (w i) δ (w (i + 1)))
+    {δ : ↑D} (hδne : δ ≠ 0) {w : ℤ → F.WorldState}
+    (hw : ∀ i : ℤ, F.TaskRel (w i) δ (w (i + 1)))
     {a : F'.WorldState} (ha : f a = w 0) (i : ℤ) :
     F'.TaskRel (chain f δ w a i) δ (chain f δ w a (i + 1)) := by
   rcases le_or_gt 0 i with hi | hi
@@ -454,10 +487,10 @@ private theorem chain_step [F'.IsRegular] [F.IsRegular]
   · rcases lt_or_ge (i + 1) 0 with hlt | hge
     · rw [chain_of_neg f δ w a hi, chain_of_neg f δ w a hlt,
         show (-i).toNat = (-(i + 1)).toNat + 1 by omega]
-      exact (bwdSeq_spec h hw ha (-(i + 1)).toNat).2
+      exact (bwdSeq_spec hlim' h hδne hw ha (-(i + 1)).toNat).2
     · rw [chain_of_neg f δ w a hi, chain_of_nonneg f δ w a hge,
         show (-i).toNat = 1 by omega, show (i + 1).toNat = 0 by omega]
-      exact (bwdSeq_spec h hw ha 0).2
+      exact (bwdSeq_spec hlim' h hδne hw ha 0).2
 
 /-- **Any two links of the chain are a task apart, at the duration their indices record.** The
 forward half is `chain_step` composed with itself, which is where *Compositionality* enters; the
@@ -465,10 +498,11 @@ backward half is that read through `FrameOver.reflection`. This is the step the 
 gets for free from a walk and a task frame does not: a world history has to respect the task
 relation at *every* pair of times, not only at consecutive ones.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-private theorem chain_rel [F'.IsRegular] [F.IsRegular]
+Constraints consumed: source `F'`: *Compositionality*, *Seriality*, *Limit*; base `F`: none. -/
+private theorem chain_rel (hcomp' : TaskFrame.Compositional F'.TaskRel)
+    (hser' : TaskFrame.Serial F'.TaskRel) (hlim' : TaskFrame.Limit F'.TaskRel)
     {f : F'.WorldState → F.WorldState} (h : TwoWayBounded f)
-    {δ : ↑D} (hδ : 0 ≤ δ) {w : ℤ → F.WorldState}
+    {δ : ↑D} (hδ : 0 ≤ δ) (hδne : δ ≠ 0) {w : ℤ → F.WorldState}
     (hw : ∀ i : ℤ, F.TaskRel (w i) δ (w (i + 1)))
     {a : F'.WorldState} (ha : f a = w 0) (i j : ℤ) :
     F'.TaskRel (chain f δ w a i) ((j - i) • δ) (chain f δ w a j) := by
@@ -476,12 +510,14 @@ private theorem chain_rel [F'.IsRegular] [F.IsRegular]
       F'.TaskRel (chain f δ w a i) ((m : ℤ) • δ) (chain f δ w a (i + m)) := by
     intro m
     induction m with
-    | zero => intro i; simpa using F'.nullity (chain f δ w a i)
+    | zero =>
+      intro i
+      simpa using TaskFrame.nullity_of_serial_limit hser' hlim' (chain f δ w a i)
     | succ m ih =>
       intro i
       have h3 : F'.TaskRel (chain f δ w a i) ((m : ℤ) • δ + δ) (chain f δ w a (i + m + 1)) :=
-        F'.forward_comp _ _ _ _ _ (zsmul_nonneg hδ (by omega)) hδ (ih i)
-          (chain_step h hw ha (i + m))
+        TaskFrame.forward_of_comp hcomp' _ _ _ _ _ (zsmul_nonneg hδ (by omega)) hδ (ih i)
+          (chain_step hlim' h hδne hw ha (i + m))
       rw [show ((m + 1 : ℕ) : ℤ) • δ = (m : ℤ) • δ + δ by push_cast; rw [add_zsmul, one_zsmul],
         show i + ((m + 1 : ℕ) : ℤ) = i + m + 1 by push_cast; ring]
       exact h3
@@ -494,23 +530,38 @@ private theorem chain_rel [F'.IsRegular] [F.IsRegular]
     rw [show j + (((i - j).toNat : ℤ)) = i by omega,
       show (((i - j).toNat : ℤ)) = i - j by omega,
       show i - j = -(j - i) by ring, neg_zsmul] at hi
-    exact (F'.reflection _ _ _).2 hi
+    exact (F'.reflection_of_limit hlim' _ _ _).2 hi
 
 namespace TwoWayBounded
 
 /--
-**Over discrete time a two-way bounded surjection is a history-lifting morphism.**
+**Over discrete time a two-way bounded surjection is a history-lifting morphism, over a base
+frame carrying no `def:frame` constraint at all.**
 
 `HistMap.lift` — a primitive field of `HistMap` — is derivable from `TwoWayBounded.step`, and
 `HistMorphism.onto` from `lift` plus surjectivity. Composed with
 `HistMorphism.plus_invariance`, this yields L⁺ truth invariance from `forth`, `step` and
-surjectivity alone (`TwoWayBounded.plus_invariance_of_isZTime`).
+surjectivity alone (`TwoWayBounded.plus_invariance_of_isZTime_of_constraints`).
 
 The construction: `intIso` identifies `↑D` with `ℤ` as an ordered group, so the step duration is
-`δ := intIso.symm 1` and the history to be lifted is a `ℤ`-indexed chain of base states. `fwdSeq`
-walks up it by `step`, `bwdSeq` walks down it by `exists_preimage_step_neg`, `chain` glues the
-two, and `chain_rel` composes the unit tasks into the task that `WorldHistory.ofTotal` demands at
-each pair of times.
+`δ := intIso.symm 1` — nonzero, which is what frees the base side — and the history to be lifted
+is a `ℤ`-indexed chain of base states. `fwdSeq` walks up it by `step`, `bwdSeq` walks down it by
+`exists_preimage_step_neg_of_ne`, `chain` glues the two, and `chain_rel` composes the unit tasks
+into the task that `WorldHistory.ofTotal` demands at each pair of times.
+
+The hypothesis set is **asymmetric, and that asymmetry is the point**: the whole chain is
+driven by the source frame's *Compositionality*, *Seriality* and *Limit*, while the base frame
+contributes nothing. The base's only would-be use is a reflection law, and at the nonzero step
+duration `δ` that is `TaskFrame.reflect_reflection_of_ne`, a fact about how `FrameOver.TaskRel`
+extends `PosRel` rather than a constraint on the frame. *Saturation* is consumed nowhere, on
+either side.
+
+**What this does not weaken.** The weakening is on the **transfer-from** side only.
+`ProofSystem.FrameClass.Sat` still demands `FrameOver.IsRegular` — hence *Saturation* — of a
+frame-class member, so a countermodel obtained by transferring truth along such a morphism must
+still be regular to count as one. What this theorem buys is that the frame being transferred
+*from* need not be: truth transfers off a merely compositional, serial, limit base onto a
+regular source.
 
 Discrete time is load bearing, not a convenience: the walk needs a next index to step to. Over
 dense time there is none, and lifting a history would need a fibre-relative saturation property
@@ -522,23 +573,31 @@ on an ordered group and is not taken as a binder. The name still reads `of_isZTi
 ℤ-time is the class the construction is about, and every ℤ-time frame supplies the two binders
 by synthesis.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation
+Constraints consumed: source `F'`: *Compositionality*, *Seriality*, *Limit*; base `F`: none.
 
 Paper: — (formalization-native; the paper defines no morphism of task frames)
 -/
-theorem exists_histMorphism_of_isZTime {D : TemporalOrder} {F' F : FrameOver D}
-    [F'.IsRegular] [F.IsRegular] [SuccOrder ↑D] [IsSuccArchimedean ↑D]
+theorem exists_histMorphism_of_isZTime_of_constraints {D : TemporalOrder} {F' F : FrameOver D}
+    [SuccOrder ↑D] [IsSuccArchimedean ↑D]
+    (hcomp' : TaskFrame.Compositional F'.TaskRel) (hser' : TaskFrame.Serial F'.TaskRel)
+    (hlim' : TaskFrame.Limit F'.TaskRel)
     {f : F'.WorldState → F.WorldState} (h : TwoWayBounded f)
     (hs : Function.Surjective f) :
     ∃ g : HistMorphism F' F, g.toFun = f := by
   classical
-  obtain ⟨e, δ, hsmul, hδnonneg⟩ :
-      ∃ (e : ↑D ≃+o ℤ) (δ : ↑D), (∀ m : ℤ, m • δ = e.symm m) ∧ (0 : ↑D) ≤ δ := by
-    refine ⟨intIso, (intIso (D := ↑D)).symm 1, fun m => ?_, ?_⟩
+  obtain ⟨e, δ, hsmul, hδnonneg, hδne⟩ :
+      ∃ (e : ↑D ≃+o ℤ) (δ : ↑D),
+        (∀ m : ℤ, m • δ = e.symm m) ∧ (0 : ↑D) ≤ δ ∧ δ ≠ 0 := by
+    refine ⟨intIso, (intIso (D := ↑D)).symm 1, fun m => ?_, ?_, ?_⟩
     · rw [← map_zsmul (intIso (D := ↑D)).symm m 1, zsmul_eq_mul, mul_one, Int.cast_id]
     · have h1 : (intIso (D := ↑D)).symm (0 : ℤ) ≤ (intIso (D := ↑D)).symm 1 :=
         OrderHomClass.monotone _ (by norm_num)
       rwa [map_zero] at h1
+    · intro hz
+      have : (1 : ℤ) = 0 := by
+        have := congrArg (intIso (D := ↑D)) hz
+        rwa [OrderAddMonoidIso.apply_symm_apply, map_zero] at this
+      exact one_ne_zero this
   -- the lift of one history, through one state, at one time
   have key : ∀ (τ : WorldHistory F.toTaskFrame) (a : F'.WorldState) (t : ↑D),
       f a = τ.state t →
@@ -558,7 +617,7 @@ theorem exists_histMorphism_of_isZTime {D : TemporalOrder} {F' F : FrameOver D}
     refine ⟨WorldHistory.ofTotal F'.toTaskFrame
       (fun n => chain f δ (fun i : ℤ => τ.state (t + e.symm i)) a (e (n - t))) ?_, ?_, ?_⟩
     · intro s u
-      have hr := chain_rel h hδnonneg hw ha0 (e (s - t)) (e (u - t))
+      have hr := chain_rel hcomp' hser' hlim' h hδnonneg hδne hw ha0 (e (s - t)) (e (u - t))
       rwa [show (e (u - t) - e (s - t)) • δ = u - s by
         rw [hsmul, ← map_sub e, show u - t - (s - t) = u - s by abel,
           OrderAddMonoidIso.symm_apply_apply]] at hr
@@ -566,7 +625,7 @@ theorem exists_histMorphism_of_isZTime {D : TemporalOrder} {F' F : FrameOver D}
       rw [sub_self, map_zero, chain_zero]
     · intro s
       change f (chain f δ (fun i : ℤ => τ.state (t + e.symm i)) a (e (s - t))) = τ.state s
-      rw [chain_spec h hw ha0]
+      rw [chain_spec hlim' h hδne hw ha0]
       change τ.state (t + e.symm (e (s - t))) = τ.state s
       rw [OrderAddMonoidIso.symm_apply_apply]
       congr 1
@@ -577,13 +636,61 @@ theorem exists_histMorphism_of_isZTime {D : TemporalOrder} {F' F : FrameOver D}
   obtain ⟨τ', _, hτ'⟩ := key τ a 0 ha
   exact ⟨τ', hτ'⟩
 
+/--
+**Over discrete time a two-way bounded surjection is a history-lifting morphism.** The regular
+form: `exists_histMorphism_of_isZTime_of_constraints` specialised by projecting the source
+frame's *Compositionality*, *Seriality* and *Limit* out of its `[F'.IsRegular]` instance.
+
+Neither `[F.IsRegular]` nor either frame's *Saturation* is consumed by the construction; both
+instance binders are kept here so that every existing call site resolves unchanged. The general
+theorem is the one to cite when the base frame is not known regular.
+
+Constraints consumed: source `F'`: *Compositionality*, *Seriality*, *Limit*; base `F`: none.
+
+Paper: — (formalization-native; the paper defines no morphism of task frames)
+-/
+theorem exists_histMorphism_of_isZTime {D : TemporalOrder} {F' F : FrameOver D}
+    [F'.IsRegular] [F.IsRegular] [SuccOrder ↑D] [IsSuccArchimedean ↑D]
+    {f : F'.WorldState → F.WorldState} (h : TwoWayBounded f)
+    (hs : Function.Surjective f) :
+    ∃ g : HistMorphism F' F, g.toFun = f :=
+  exists_histMorphism_of_isZTime_of_constraints F'.comp F'.serial F'.limit h hs
+
 open FormalSystem.PlusLanguage in
-/-- **L⁺ truth invariance from `forth`, `step` and surjectivity alone, over discrete time.**
-`TwoWayBounded.exists_histMorphism_of_isZTime` composed with
+/-- **L⁺ truth invariance from `forth`, `step` and surjectivity alone, over discrete time and
+over a base frame carrying no `def:frame` constraint.**
+`TwoWayBounded.exists_histMorphism_of_isZTime_of_constraints` composed with
 `HistMorphism.plus_invariance`: the machine-checked form of the claim that the two together
 replace the primitive `lift` field.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation
+The weakening is on the **transfer-from** side only: `ProofSystem.FrameClass.Sat` still requires
+`FrameOver.IsRegular`, hence *Saturation*, of a frame-class member, so a countermodel reached by
+transferring truth along this morphism still has to be regular. What is bought here is that the
+frame transferred *from* need not be — which is exactly the direction the completeness programme
+needs, since the canonical quotient it starts from is not known saturated.
+
+Constraints consumed: source `F'`: *Compositionality*, *Seriality*, *Limit*; base `F`: none.
+
+Paper: — (formalization-native; the paper defines no morphism of task frames) -/
+theorem plus_invariance_of_isZTime_of_constraints {D : TemporalOrder} {F' F : FrameOver D}
+    [SuccOrder ↑D] [IsSuccArchimedean ↑D]
+    (hcomp' : TaskFrame.Compositional F'.TaskRel) (hser' : TaskFrame.Serial F'.TaskRel)
+    (hlim' : TaskFrame.Limit F'.TaskRel)
+    {f : F'.WorldState → F.WorldState} (h : TwoWayBounded f)
+    (hs : Function.Surjective f) (M : TaskModel F.toTaskFrame) :
+    ∃ g : HistMorphism F' F, g.toFun = f ∧
+      ∀ (φ : PlusFormula) (τ' : WorldHistory F'.toTaskFrame) (t : ↑D),
+        PlusTruthAt (g.pullM M) τ' t φ ↔ PlusTruthAt M (g.mapH τ') t φ := by
+  obtain ⟨g, hg⟩ :=
+    exists_histMorphism_of_isZTime_of_constraints hcomp' hser' hlim' h hs
+  exact ⟨g, hg, fun φ τ' t => g.plus_invariance M φ τ' t⟩
+
+open FormalSystem.PlusLanguage in
+/-- **L⁺ truth invariance from `forth`, `step` and surjectivity alone, over discrete time.** The
+regular form: `plus_invariance_of_isZTime_of_constraints` specialised by projecting the source
+frame's *Compositionality*, *Seriality* and *Limit* out of its `[F'.IsRegular]` instance.
+
+Constraints consumed: source `F'`: *Compositionality*, *Seriality*, *Limit*; base `F`: none.
 
 Paper: — (formalization-native; the paper defines no morphism of task frames) -/
 theorem plus_invariance_of_isZTime {D : TemporalOrder} {F' F : FrameOver D}
@@ -592,9 +699,8 @@ theorem plus_invariance_of_isZTime {D : TemporalOrder} {F' F : FrameOver D}
     (hs : Function.Surjective f) (M : TaskModel F.toTaskFrame) :
     ∃ g : HistMorphism F' F, g.toFun = f ∧
       ∀ (φ : PlusFormula) (τ' : WorldHistory F'.toTaskFrame) (t : ↑D),
-        PlusTruthAt (g.pullM M) τ' t φ ↔ PlusTruthAt M (g.mapH τ') t φ := by
-  obtain ⟨g, hg⟩ := h.exists_histMorphism_of_isZTime hs
-  exact ⟨g, hg, fun φ τ' t => g.plus_invariance M φ τ' t⟩
+        PlusTruthAt (g.pullM M) τ' t φ ↔ PlusTruthAt M (g.mapH τ') t φ :=
+  plus_invariance_of_isZTime_of_constraints F'.comp F'.serial F'.limit h hs M
 
 end TwoWayBounded
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #898
 
 - **Task**: 898 - plus_invariance base without saturation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/898_plus_invariance_base_without_saturation/reports/01_plus-invariance-base-without-saturation.md
@@ -132,38 +132,41 @@ Phases within the same wave can execute in parallel. Note that `lake-build-guard
 concurrent builds against this project, so parallel execution of Phases 1 and 2 (or 4 and 5) gains
 nothing at the build step even though their edits are content-independent.
 
-### Phase 1: Saturation-free lift chain in HistoryMorphism.lean [NOT STARTED]
+### Phase 1: Saturation-free lift chain in HistoryMorphism.lean [COMPLETED]
 
 **Goal**: Land the explicit-hypothesis forms of the whole chain with no `[IsRegular]` on either
 frame, keep both public `[IsRegular]` forms as verbatim-statement wrappers, and correct the three
 docstrings in this module that over-report *Saturation* as consumed.
 
 **Tasks**:
-- [ ] Add `TwoWayBounded.exists_preimage_step_neg_of_ne` taking `hlim' : TaskFrame.Limit F'.TaskRel`
+- [x] Add `TwoWayBounded.exists_preimage_step_neg_of_ne` taking `hlim' : TaskFrame.Limit F'.TaskRel`
       and `hx : x ≠ 0`, with no base-frame constraint, using
       `TaskFrame.reflect_reflection_of_ne (P := F.PosRel) hx` for the base-side step and
       `F'.reflection_of_limit hlim'` for the source side. Source:
       `specs/evidence/history-morphism-saturation-audit/lift-chain-without-isregular.lean`.
-- [ ] Rewrite `exists_preimage_step_neg` as a thin `[F'.IsRegular] [F.IsRegular]` wrapper, its
-      statement byte-identical to the current one at line 306.
-- [ ] Reparameterise the four `private` lemmas `bwdSeq_spec`, `chain_spec`, `chain_step`,
+- [x] Rewrite `exists_preimage_step_neg` as a thin `[F'.IsRegular] [F.IsRegular]` wrapper, its
+      statement byte-identical to the current one at line 306. *(completed: routed through
+      `exists_preimage_step_neg_of_ne` at `x ≠ 0`; the `x = 0` case, which is outside that form's
+      domain, is `nullity_identity` on each side and is the one place the base frame's instance
+      binder is read, which is why both binders are retained)*
+- [x] Reparameterise the four `private` lemmas `bwdSeq_spec`, `chain_spec`, `chain_step`,
       `chain_rel` over `hcomp' / hser' / hlim' / hδne` in place of the two instance binders. These
       are `private`, so no external statement is owed and no wrapper is owed. Do **not** thread
       `hδne` through `fwdSeq_spec`, which does not need it (the probe's uniform threading produced
       an unused-binder linter warning there).
-- [ ] Add `TwoWayBounded.exists_histMorphism_of_isZTime_of_constraints` as the general theorem,
+- [x] Add `TwoWayBounded.exists_histMorphism_of_isZTime_of_constraints` as the general theorem,
       with the signature pinned under `## Lean Challenge Statements`.
-- [ ] Add `TwoWayBounded.plus_invariance_of_isZTime_of_constraints` as the general theorem, same
+- [x] Add `TwoWayBounded.plus_invariance_of_isZTime_of_constraints` as the general theorem, same
       pinning.
-- [ ] Rewrite `exists_histMorphism_of_isZTime` and `plus_invariance_of_isZTime` as thin
+- [x] Rewrite `exists_histMorphism_of_isZTime` and `plus_invariance_of_isZTime` as thin
       `[IsRegular]` wrappers, statements byte-identical to the current ones at lines 530 and 590,
       discharging the three source-side hypotheses with `F'.comp`, `F'.serial`, `F'.limit` and the
       `δ ≠ 0` hypothesis with the `congrArg intIso` / `OrderAddMonoidIso.apply_symm_apply` /
       `one_ne_zero` route the report's tactic survey records.
-- [ ] Replace the three `Constraints consumed: Compositionality, Seriality, Limit, Saturation`
+- [x] Replace the three `Constraints consumed: Compositionality, Seriality, Limit, Saturation`
       lines (468, 525, 586) with the audited set, stating on which side each constraint lands:
       source `F'`: *Compositionality*, *Seriality*, *Limit*; base `F`: none.
-- [ ] In the two public `_of_constraints` docstrings, record Finding 7's caveat: the weakening is
+- [x] In the two public `_of_constraints` docstrings, record Finding 7's caveat: the weakening is
       on the transfer-from side only, and `ProofSystem.FrameClass.Sat` still requires `IsRegular`
       of a frame-class member.
 
