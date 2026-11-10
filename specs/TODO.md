@@ -62,7 +62,7 @@ next_project_number: 909
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-853 [RESEARCHED] — Construct the Phase 11.8 insertion cascade for the...
+853 [PLANNED] — Construct the Phase 11.8 insertion cascade for the...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Formula Refactor
@@ -560,11 +560,12 @@ GATES. Zero sorry, zero vacuous definitions, no new axiom beyond what the elimin
 
 ### 853. Ladder path insertion cascade idle past
 - **Effort**: large
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 838
 - **Parent**: Task 761
+- **Plan**: [853_ladder_path_insertion_cascade_idle_past/plans/01_insertion-cascade-idle-past.md]
 
 **Description**: Construct the Phase 11.8 insertion cascade for the ladder-path region lemmas: the idle-past half (exists_ladderPath_at_region_of_idle_past) and, given it, the unconditional join (exists_ladderPath_at_region), which follows by by_cases on the pending-past predicate.
 

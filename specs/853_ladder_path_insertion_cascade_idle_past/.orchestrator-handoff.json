@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 10,
+  "summary": "Seven-phase plan written for the Phase 11.8 insertion cascade: the anchor-free lift (hn0 derived from hpins via drift_extension_of_pins), the region-start extraction from the idle-past hypothesis, the inserted walk's region-start trichotomy, hpins, both existentials, records, and the full gate. Two planning findings change the construction: the cascade collapses to a SINGLE insertion at the region start of a's own region with d := l (no doubling recurrence, cascadeDemand* unconsumed), and hn0 is eliminable rather than constructible. Both target names are claimed with an explicit path-local idle self-loop hypothesis, the premise the parent's Phase 11.11 recorded as owed; all seven Goal signatures elaborated standalone with exit_status=0 and exactly seven sorry warnings.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/853_ladder_path_insertion_cascade_idle_past/plans/01_insertion-cascade-idle-past.md",
+      "summary": "Seven-phase plan closing the idle-past half and the unconditional join of the ladder-path region interface, with seven pinned Lean Challenge Statements."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 7,
+  "blockers": []
+}
