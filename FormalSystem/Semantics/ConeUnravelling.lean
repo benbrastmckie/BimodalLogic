@@ -20,7 +20,7 @@ layers: the `inl`-anchored half from the base's own *Saturation*, the `inr`-anch
 `saturation_of_orientedForest`.
 
 The projection `coneF` back to the base is surjective and `TwoWayBounded`, so L⁺ truth transfers
-along it by `TwoWayBounded.plus_invariance_of_isZTime_of_constraints`.
+along it by `TwoWayBounded.plus_invariance_of_isZTime`.
 
 ## The construction
 
@@ -111,8 +111,7 @@ regular frame. `UniversalCover.lean` is modified by nothing here.
 
 **Unique path lifting is not stated**, and neither is any of the `Prefunctor.IsCovering`
 machinery. `TwoWayBounded` has exactly two fields, and
-`TwoWayBounded.plus_invariance_of_isZTime_of_constraints` consumes those two plus
-`Function.Surjective`.
+`TwoWayBounded.plus_invariance_of_isZTime` consumes those two plus `Function.Surjective`.
 
 **No coherence subtype of the carrier** is introduced; see "The carrier is the literal sum type"
 above.
@@ -789,8 +788,9 @@ adding a seriality hypothesis would silently weaken the statement.
 `hbase` is taken in `ofStepRel` form rather than as a frame field, mirroring
 `saturation_of_orientedForest'`'s own `hgen`-parameterised design: this tree has no
 relation-level `F.TaskRel = ofStepRel F.step` equality for a general regular `F`, only the
-pointwise `FrameOver.taskRel_eq_iter_of_constraints`, so the bridge is made once at the frame
-assembly rather than inside this theorem.
+pointwise `FrameOver.taskRel_eq_iter`, so the bridge is made once at the frame assembly --
+`base_taskRel_eq_ofStepRel` below is the lemma that makes it -- rather than inside this
+theorem.
 
 Paper: `def:frame#Saturation`
 -/
@@ -888,9 +888,9 @@ module rather than slack to be tidied away. The cover's *Saturation* comes from
 base carrying *Seriality* alone and a second, constraint-parameterised layer has something real
 to range over. The cone's `inl` layer is a verbatim copy of the base and inherits its loops and
 opposite edges, so `IsOrientedForest (coneR E)` is false and the `inl`-anchored half of the
-*Saturation* split must read the base's own *Saturation*. A `_of_constraints` layer here would
-have to take all four constraints, i.e. exactly `[F.IsRegular]` unbundled, and would parameterise
-over nothing.
+*Saturation* split must read the base's own *Saturation*. A second, constraint-parameterised
+layer here would have to take all four constraints, i.e. exactly `[F.IsRegular]` unbundled, and
+would parameterise over nothing.
 
 `FrameOver.ofStep` cannot present this frame: the cone carrier is infinite whenever `W` is, and
 `ofStep`'s `[Finite W]` binder is consumed exactly to obtain *Saturation*.
@@ -937,8 +937,8 @@ a transport identity already proved above:
   entry edge needs — a zero-length backward path would have to stay at `.inr p` itself, and that
   case is on the `0 ≤ x` side of the split.
 
-`UniversalCover.endpt_twoWayBounded_of_constraints` is the two-field template; the split here is
-four-way rather than two-way because the cone carrier has two layers.
+`UniversalCover.endpt_twoWayBounded` is the two-field template; the split here is four-way
+rather than two-way because the cone carrier has two layers.
 
 Constraints consumed: Compositionality, Seriality, Limit
 -/
@@ -977,5 +977,62 @@ theorem coneF_twoWayBounded (F : FrameOver intOrder) [F.IsRegular] :
         refine (ofStepRel_of_nonpos hx' _ _).mpr ?_
         rw [hn]
         exact hz
+
+/-! ## Assembly -/
+
+open FormalSystem.PlusLanguage in
+/--
+**Every regular frame over `intOrder` has a regular cone unravelling with surjective, two-way
+bounded projection, along which L⁺ truth transfers.**
+
+The cone frame is `coneFrame F`; the projection is `coneF`; two-way boundedness is
+`coneF_twoWayBounded` and surjectivity is `coneF_surjective`; and
+`TwoWayBounded.plus_invariance_of_isZTime` supplies the history morphism together with the truth
+biconditional, reading both frames' `IsRegular` instances by synthesis — which is why
+`coneFrame_isRegular` above is an `instance`.
+
+**The base's *Saturation* is inherited, not manufactured, and that asymmetry with
+`UniversalCover.lean` is the substantive content of this module rather than slack to be tidied
+away.** `UniversalCover.lean`'s cover-existence theorem has a general form taking
+*Compositionality*, *Seriality* and *Limit* and no more, because the cover's own *Saturation*
+comes from `saturation_of_orientedForest` — a fact about oriented forests, with no hypothesis on
+the base. This theorem cannot be stated that way. The cone's `inl` layer is a verbatim copy of
+the base and inherits its loops and opposite edges, so `IsOrientedForest (coneR E)` is false and
+no structural route to *Saturation* exists; the `inl`-anchored half of the split
+(`sInter_nonempty_of_no_inr_member`) reads the base's own *Saturation* instead. That reading is
+**necessary**, not merely convenient: over `E := fun w u => (w ≤ u : Prop)` on `ℤ` — which is
+*Compositional*, *Serial* and *Limit* — the family `{Fib (ofStepRel (coneR E)) (.inl w) 1 | w : ℤ}`
+is `⊇`-directed with nonempty `IsFiber` members and empty `⋂₀`, so the cone over such a base has
+no *Saturation* field to give. Hence `[F.IsRegular]` here, which bundles *Saturation* with the
+other three, and hence no constraint-parameterised general form below it: such a form would have
+to take all four constraints and would parameterise over nothing.
+
+**This theorem must not be discharged by delegating to `exists_orientedForest_cover`.** That
+theorem has a satisfying witness of exactly this *type* and an entirely different
+*construction* — the oriented-forest cover, not the cone — so a proof routed through it would
+assert nothing about this module while passing every name-existence check, every zero-debt check
+and every axiom check. The witness is `coneFrame F` and nothing else.
+
+**Unique path lifting is deliberately not stated.** `plus_invariance_of_isZTime` consumes `forth`,
+`step` and surjectivity and nothing else, so the covering-property machinery would cost the module
+its weight for no consumer.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
+
+Paper: — (formalization-native; the paper defines no unravelling of a task frame)
+-/
+theorem exists_coneUnravelling (F : FrameOver intOrder) [F.IsRegular]
+    (M : TaskModel F.toTaskFrame) :
+    ∃ (F' : FrameOver intOrder) (_ : F'.IsRegular) (f : F'.WorldState → F.WorldState),
+      TwoWayBounded f ∧ Function.Surjective f ∧
+        ∃ g : HistMorphism F' F, g.toFun = f ∧
+          ∀ (φ : PlusFormula) (τ' : WorldHistory F'.toTaskFrame) (t : ↑intOrder),
+            PlusTruthAt (g.pullM M) τ' t φ ↔ PlusTruthAt M (g.mapH τ') t φ :=
+  ⟨coneFrame F, coneFrame_isRegular F, coneF, coneF_twoWayBounded F,
+    coneF_surjective (E := F.step),
+    @TwoWayBounded.plus_invariance_of_isZTime intOrder (coneFrame F) F
+      (coneFrame_isRegular F) ‹F.IsRegular›
+      (inferInstanceAs (SuccOrder ℤ)) (inferInstanceAs (IsSuccArchimedean ℤ))
+      coneF (coneF_twoWayBounded F) (coneF_surjective (E := F.step)) M⟩
 
 end FormalSystem.Semantics
