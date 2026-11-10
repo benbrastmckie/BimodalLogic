@@ -1,7 +1,7 @@
 # Implementation Plan: Task #909
 
 - **Task**: 909 - Construct the register-LOWERING deletion that would drop the equal-register hypothesis `n = n'` from `cellLE_zero_const_of_kappa_eq_of_forwardSlack` on branch 2 of the collision case split
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7 hours
 - **Dependencies**: None
 - **Research Inputs**: None (no `research_artifact` on this dispatch; see "Why no research round" below)
@@ -175,30 +175,56 @@ every phase stages `typst/generated/status.typ` (the blocking pre-commit surface
 running concurrently would collide on that one generated file even when their Lean edits are in
 different modules.
 
-### Phase 1: The Register-Lowering Up-First Exact-Shift Deletion [NOT STARTED]
+### Phase 1: The Register-Lowering Up-First Exact-Shift Deletion [COMPLETED]
 
 **Goal**: `exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past` compiles in
 `LadderChain.lean`'s `DelNxtIter` section at the pinned signature: the countdown lowered by
 exactly `m · (P + 1)` and the register lowered to a prescribed `n₀`.
 
 **Tasks**:
-- [ ] Add the declaration to `LadderChain.lean`'s `section DelNxtIter`, immediately before the
+- [x] Add the declaration to `LadderChain.lean`'s `section DelNxtIter`, immediately before the
       landed `exists_ladderPath_through_deleted_exact_upfirst_of_pend_past`, at the signature
-      pinned in `## Lean Challenge Statements` below.
-- [ ] Build the proof as the landed up-first spine with two changes and no others: (i) the final
+      pinned in `## Lean Challenge Statements` below. *(deviation: altered — landed at the pinned
+      signature but placed immediately AFTER the landed theorem, because the implemented route
+      CONSUMES that theorem; placing it before would be a forward reference)*
+- [x] Build the proof as the landed up-first spine with two changes and no others: (i) the final
       `exists_deleted_ladderPath_of_pend_past_nxt` call takes the anchor value `n₀` in place of
       `nxtAt g z`; (ii) the `hfirst` step that feeds `anchor_clause_of_first_region_start` closes
       against `n₀` by `omega` from `hslack₂` at the amount `r * l + k`, `hk : n₀ + k = nxtAt g z`
       and the gap. Steps (i)-(iii) of the landed ordering — the pigeonhole block, the raise by
-      `budget` copies, the overshoot loop above the run — are reused unchanged.
+      `budget` copies, the overshoot loop above the run — are reused unchanged. *(deviation:
+      altered — this spine is NOT implementable with the landed loop: see the task note below)*
+
+      **PLAN-SPINE DEVIATION (recorded, not silent).** The spine above cannot be built without
+      modifying a landed declaration. `exists_deleted_ladderPath_overshoot_of_pend_past` pins its
+      slack amount to the shape `R * l + budget * l` AT register `nxtAt g z`, in its hypothesis
+      and in its conclusion alike; its output is therefore `HasForwardSlack g₂ z (r * l)
+      (nxtAt g z)` no matter what the input carried, and the extra `k` is destroyed. It cannot be
+      recovered afterwards: slack transport is exact in both directions
+      (`hasForwardSlack_del`/`hasForwardSlack_raise`), and `k` can only be folded into the loop's
+      amount shape when `l ∣ k`, which an arbitrary `k` does not satisfy. The implemented route
+      instead performs the lowering BEFORE the surgery, at no extra cost and with the landed
+      theorem reused as a black box: `exists_ladderPath_of_walk_nxt_at` re-lifts `g`'s OWN object
+      walk and countdown with the anchor at `n₀`, whose single pin clause is exactly
+      `anchor_clause_of_first_region_start` at deleted length `0` — the one inequality where the
+      `k` of the lowering is spent; `HasForwardSlack` then transfers to the re-lift because a
+      region start's countdown is the register's value at the idle position before it, so the
+      regime depends on the walk and countdown alone; and the landed held-register exact-shift
+      theorem applied to the re-lift yields this conclusion, with the realized type returning to
+      `g` through `tpOf_stabFree_eq_of_objAt_eq` on the shared walk. The PINNED SIGNATURE is
+      landed byte-for-byte; the deviation is in the internal decomposition only.
 - [ ] Thread the extra `k` through the loop's slack bookkeeping: the raise supplies
       `budget · l` (`hasForwardSlack_raise`), the loop consumes `t · l`, and the remainder
       deletion needs `r * l + k`, so the input amount is `m * (P + 1) + k`. Confirm the
-      arithmetic at the `hamt`/`hslack₂` rewrite rather than assuming it.
-- [ ] Write the docstring in the module's established voice: name the two changed steps, say that
+      arithmetic at the `hamt`/`hslack₂` rewrite rather than assuming it. *(deviation: skipped —
+      the arithmetic was confirmed and REFUTES this step: the loop's amount shape is pinned, so
+      the `+ k` cannot pass through it. Superseded by the re-lift route above.)*
+- [x] Write the docstring in the module's established voice: name the two changed steps, say that
       the lowered anchor costs exactly `k` of additional slack in the upper anchor direction and
-      nothing in the lower one, and name `k = 0` as recovering the landed statement.
-- [ ] `lake build` the module scoped, then
+      nothing in the lower one, and name `k = 0` as recovering the landed statement. *(deviation:
+      altered — the docstring names the re-lift construction actually used instead of "the two
+      changed steps", and does say both the exact-`k` cost and the `k = 0` recovery)*
+- [x] `lake build` the module scoped, then
       `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` with the
       Lean change in one commit.
 
@@ -214,6 +240,12 @@ exactly `m · (P + 1)` and the register lowered to a prescribed `n₀`.
 declaration's signature or body in `LadderChain.lean`; confirm at implementation time with
 `git diff --stat` on the module plus a `git diff` read-through showing only additions inside
 `section DelNxtIter`.
+
+**Scope Hypothesis outcome**: CONFIRMED for the declaration count (exactly one new declaration,
+no existing declaration's signature or body touched). PARTIALLY REFUTED on "only additions": one
+existing non-declaration line changed, the module's `set_option linter.style.longFile` baseline,
+raised from `2300` to `2500` because the module is now 2385 lines. That baseline is the recorded
+length ceiling `check-module-invariants.sh` treats as an exception rather than a linter disable.
 
 **Tier Justification**: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderChain`
 covers a purely additive declaration in one module with no externally visible signature change.

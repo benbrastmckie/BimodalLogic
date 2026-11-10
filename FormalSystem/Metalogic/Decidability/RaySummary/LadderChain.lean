@@ -74,7 +74,7 @@ passes through a state satisfying every state-level hypothesis the consumer carr
 downward inclusion held here is the path-level one above.
 -/
 
-set_option linter.style.longFile 2300
+set_option linter.style.longFile 2500
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -2077,6 +2077,123 @@ theorem exists_ladderPath_through_deleted_exact_upfirst_of_pend_past
         hσ₀' (fun t => by rw [add_zero]; exact hσ t) (fun _ => rfl) hno z
     rw [hz₂', hty₂ σ₂ hσ₂ z (by omega), hty₁ σ₁ hσ₁, iterSpliceIdx_of_lt u l _ z (by omega), e3]
 
+
+/-- **THE REGISTER-LOWERING EXACT-SHIFT THEOREM, UP-FIRST.** The exact-shift theorem above with
+the TARGET REGISTER freed: the countdown at `z` is still lowered by exactly `m · (P + 1)` and the
+object state and the realized stab-free type at `z` are still held, but the register is delivered
+at a PRESCRIBED value `n₀ ≤ nxtAt g z`, under forward slack at `m · (P + 1) + k` where
+`n₀ + k = nxtAt g z`. Lowering the anchor from `nxtAt g z` to `n₀` costs exactly `k` of
+additional slack in the UPPER direction of the single anchor inequality, and nothing in the lower
+one (the lower direction only gets easier as the anchor falls); `k = 0` is the held-register
+theorem above, hypothesis for hypothesis.
+
+**The construction.** The lowering is performed BEFORE the surgery, not inside it. The countdown
+of a ladder path is read off its object walk (`cntAt_sub_of_pend`, `cntAt_eq_zero_of_idle`), but
+the REGISTER is not: `exists_ladderPath_of_walk_nxt_at` re-lifts a walk together with its own
+countdown at any anchor value whose single pin clause `hn₀` holds, and that clause is exactly the
+collapse `anchor_clause_of_first_region_start` at deleted length `0` — one inequality at the first
+region start above `z`'s region, which `HasForwardSlack g z (m · (P + 1) + k) (nxtAt g z)`
+supplies at `n₀` because the two statements differ by exactly the `k` of the lowering. The
+re-lifted path `g₀` has the ORIGINAL walk and countdown and register `n₀` at `z`, so every
+hypothesis of the held-register theorem transfers to it verbatim (the regime included: a region
+start's countdown is the register's value at the idle position before it, so `HasForwardSlack`
+depends on the walk and countdown alone), and its conclusion is this one — the realized type
+coming back to `g` through `tpOf_stabFree_eq_of_objAt_eq` on the shared walk. -/
+theorem exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ)
+    (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true) (m : ℕ) (n₀ k : ℕ)
+    (hk : n₀ + k = nxtAt g z)
+    (hTc : Tc + m * (P + 1) ≤ cntAt g z)
+    (hgap : nxtAt g z + m * (P + 1) + k ≤ cntAt g z)
+    (hslack : HasForwardSlack g z (m * (P + 1) + k) (nxtAt g z)) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' z = objAt g z ∧ cntAt g' z + m * (P + 1) = cntAt g z ∧
+      nxtAt g' z = n₀ ∧
+      ∀ (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+        (∀ t : ℤ, σ.state t = (t, g t)) →
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+  classical
+  have hz : pend (objAt g z) = true := hpast z le_rfl
+  -- the regime at the LOWERED register: the `k` of the lowering is exactly the extra slack
+  have hslack₀ : HasForwardSlack g z (m * (P + 1)) n₀ := by
+    intro I hI hidle hnext
+    have := hslack I hI hidle hnext
+    omega
+  -- (A) the anchor clause at `n₀`, at deleted length `0`, on the ORIGINAL path
+  have hfirst : ∀ I : ℕ, 0 < I →
+      (∀ i : ℕ, i < I → pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false) →
+      pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true →
+      ((nxtAt g (z + (cntAt g z : ℤ) + (I : ℤ)) : ℤ) - n₀).natAbs
+        ≤ ((cntAt g z : ℤ) + I - ((0 : ℕ) : ℤ)).natAbs := fun I hI hidle hnext => by
+    have := hslack₀ I hI hidle hnext
+    have hcast : ((0 : ℕ) : ℤ) = 0 := by norm_num
+    rw [hcast]
+    omega
+  have hanch := anchor_clause_of_first_region_start g hg z hz 0 n₀ hfirst z le_rfl (by
+    have hcast : ((0 : ℕ) : ℤ) = 0 := by norm_num
+    rw [hcast]; omega)
+  have hn₀ : ∀ v : ℤ, pend (objAt g v) = false → pend (objAt g (v + 1)) = true →
+      ((cntAt g (v + 1) : ℤ) - n₀).natAbs ≤ (v - z).natAbs := by
+    intro v hv0 hv1
+    have hzv : z < v := by
+      by_contra hle
+      exact Bool.false_ne_true (hv0.symm.trans (hpast v (by omega)))
+    have h0 : pend (objAt g (v + ((0 : ℕ) : ℤ))) = false := by simpa using hv0
+    have h1 : pend (objAt g (v + ((0 : ℕ) : ℤ) + 1)) = true := by simpa using hv1
+    have hres := hanch v hzv h0 h1
+    rw [cntAt_eq_nxtAt_of_idle_pend g hg v hv0 hv1]
+    simpa using hres
+  -- (B) the re-lift: the original walk and countdown, the register at `n₀`
+  obtain ⟨g₀, hg₀, hobj₀, hcnt₀, hnxt₀⟩ :=
+    exists_ladderPath_of_walk_nxt_at (objAt g) (cntAt g) z n₀ (objAt_step g hg)
+      (fun v h => cntAt_eq_zero_of_idle g hg v h)
+      (fun v h0 h1 => cntAt_succ_of_pend_pend g hg v h0 h1)
+      (fun v h0 h1 => (cntAt_eq_zero_of_pend_idle g hg v h0 h1).1)
+      (fun s v hs0 hs1 hv0 hv1 => pinCompat_of_ladderPath g hg s v hs0 hs1 hv0 hv1) hn₀
+  have hpast₀ : ∀ p : ℤ, p ≤ z → pend (objAt g₀ p) = true := fun p hp => by
+    rw [hobj₀ p]; exact hpast p hp
+  -- the regime depends on the walk and the countdown alone, so it transfers to the re-lift
+  have htrans : ∀ L n : ℕ, HasForwardSlack g z L n → HasForwardSlack g₀ z L n := by
+    intro L n hs I hI hidle hnx
+    simp only [hobj₀, hcnt₀] at hidle hnx ⊢
+    have h0 := hidle (I - 1) (by omega)
+    have hcast : z + (cntAt g z : ℤ) + 1 + ((I - 1 : ℕ) : ℤ)
+        = z + (cntAt g z : ℤ) + (I : ℤ) := by
+      push_cast [Nat.cast_sub (by omega : 1 ≤ I)]; ring
+    rw [hcast] at h0
+    have h1 : pend (objAt g (z + (cntAt g z : ℤ) + (I : ℤ) + 1)) = true := by
+      rw [show z + (cntAt g z : ℤ) + (I : ℤ) + 1 = z + (cntAt g z : ℤ) + 1 + (I : ℤ) by ring]
+      exact hnx
+    have e1 : nxtAt g₀ (z + (cntAt g z : ℤ) + (I : ℤ))
+        = nxtAt g (z + (cntAt g z : ℤ) + (I : ℤ)) := by
+      rw [← cntAt_eq_nxtAt_of_idle_pend g₀ hg₀ _ (by rw [hobj₀]; exact h0)
+            (by rw [hobj₀]; exact h1), hcnt₀,
+        cntAt_eq_nxtAt_of_idle_pend g hg _ h0 h1]
+    rw [e1]
+    exact hs I hI hidle hnx
+  -- (C) the held-register exact-shift theorem, applied to the re-lift
+  obtain ⟨g', hg', hobj', hcnt', hnxt', hty'⟩ :=
+    exists_ladderPath_through_deleted_exact_upfirst_of_pend_past step pend fwd bwd lab φ
+      Tc Tn P B hp hno g₀ hg₀ z hpast₀ m (by rw [hcnt₀ z]; exact hTc)
+      (by rw [hnxt₀, hcnt₀ z]; omega) (by rw [hnxt₀]; exact htrans _ _ hslack₀)
+  refine ⟨g', hg', ?_, ?_, ?_, fun σ σ' hσ hσ' => ?_⟩
+  · rw [hobj']; exact hobj₀ z
+  · rw [hcnt']; exact hcnt₀ z
+  · rw [hnxt', hnxt₀]
+  · obtain ⟨σ₀, hσ₀⟩ := exists_hist_of_isLadderPath fwd bwd g₀ hg₀
+    rw [hty' σ₀ σ' hσ₀ hσ']
+    exact tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ₀ σ
+      (fun t => by rw [add_zero]; exact hσ₀ t) (fun t => by rw [add_zero]; exact hσ t)
+      (fun v => hobj₀ v) hno z
 /-- **THE DOWNWARD CELL INCLUSION ON THE WITNESSING PATH, under the regime at exactly
 `m · (P + 1)`.** In the pending-forever regime (`n + 2 ≤ c`) at countdown at least `Tc`: every
 type realized at `(q, c + m · (P + 1), n)` BY A PATH `g` satisfying
