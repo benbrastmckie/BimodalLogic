@@ -11,8 +11,8 @@ next_project_number: 916
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,894,899,900,905,906,907,908,909,912,915 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,895,910,911,913,914 | 298,428,502,743,761,873,894,909,912,915 | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,894,899,900,905,906,907,908,909,912 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,895,910,911,913,914 | 298,428,502,743,761,873,894,909,912 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,804,861,896 | 429,497,763,803,895 | algebraic-representation, completeness, decidability, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -49,8 +49,6 @@ next_project_number: 916
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 905 [NOT STARTED] — Eliminate cross-certification between the forward and...
 906 [NOT STARTED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
-915 [IMPLEMENTING] — Re-convert and re-index reynolds\_2001 with sections 5-8...
-  └─ 895 [NOT STARTED] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and... (see above)
 
 ### Dataset Enhancement
 
@@ -134,7 +132,7 @@ next_project_number: 916
 
 ### 915. Reconvert reindex reynolds auxiliary atoms sections
 - **Effort**: small
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: completeness
 - **Dependencies**: None

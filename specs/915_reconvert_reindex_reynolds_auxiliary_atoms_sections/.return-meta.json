@@ -33,21 +33,37 @@
       "category": "INSIGHT",
       "source_artifact": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/summaries/01_reynolds-sections-5-8-splice-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["literature-build-index.sh", "FTS5", "content_preview", "500-word cutoff", "search gap"]
+      "suggested_keywords": [
+        "literature-build-index.sh",
+        "FTS5",
+        "content_preview",
+        "500-word cutoff",
+        "search gap"
+      ]
     },
     {
       "content": "To splice a missing section span into an existing per-section-chunked literature document (one chunk per paper-section convention, not literature-chunk.sh's token budget): (1) check first whether the text already exists elsewhere in the corpus past the FTS preview window before planning a reconversion; (2) free the needed filename slots by git mv-ing existing sec0N files in STRICTLY DESCENDING numeric order to avoid overwrite collisions; (3) compute new chunk_ids with literature-chunk.sh's own formula sha256(f'{doc_id}\\x00{section_path}\\x00{content[:64]}').hexdigest()[:16] via a script, never by hand; (4) re-link prev_chunk_id/next_chunk_id only on the two bracketing entries plus the new internal chain; (5) rebuild only the --global index when the repo's specs/literature/ is deprecated/local-db-less.",
       "category": "WORKFLOW",
       "source_artifact": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/summaries/01_reynolds-sections-5-8-splice-summary.md",
       "confidence": 0.8,
-      "suggested_keywords": ["literature splice", "chunks.json", "chunk_id formula", "descending rename", "corpus maintenance"]
+      "suggested_keywords": [
+        "literature splice",
+        "chunks.json",
+        "chunk_id formula",
+        "descending rename",
+        "corpus maintenance"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1794328980_5b668f",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 5,
     "phases_total": 5
   },

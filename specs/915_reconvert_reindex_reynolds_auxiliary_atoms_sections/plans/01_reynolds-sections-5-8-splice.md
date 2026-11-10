@@ -1,7 +1,7 @@
 # Implementation Plan: Task #915
 
 - **Task**: 915 - Re-convert and re-index reynolds_2001 with sections 5-8 included
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/reports/01_reynolds-sections-5-8-reconversion.md`
