@@ -1,0 +1,41 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/reports/01_reynolds-sections-5-8-reconversion.md",
+      "summary": "Confirms reynolds_2001's missing sections are exactly section 5 through section 8 (AA rule at section 7/Lemma 6, LC axiom at section 6/Lemma 5), finds a naive full-document literature-convert.sh rerun degrades existing quality, and recommends a surgical splice (4 new per-section .md files + hand-authored chunks.json entries + global-only FTS5 rebuild) instead."
+    }
+  ],
+  "dispatch_seq": 6,
+  "next_steps": "Run /orchestrate 915 to create implementation plan",
+  "findings_count": 8,
+  "metadata": {
+    "session_id": "sess_1794328980_5b668f_915",
+    "agent_type": "general-research-agent",
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  },
+  "memory_candidates": [
+    {
+      "content": "A fresh literature-convert.sh run (auto/pymupdf4llm) on an older PDF whose corpus entry was migrated from a pre-pipeline, hand-curated conversion can PASS the quality gate while still being markedly lower house-style quality (pervasive spurious bold-wrapping, sparse heading detection, spurious OCR fallback on a born-digital title page) than the existing chunks. The quality gate checks column-interleaving/ligatures/hyphens/printable-ratio, not heading/emphasis house-style parity. Always test in a scratch directory and diff against neighbor chunks before trusting PASSED as a drop-in-replacement signal.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/reports/01_reynolds-sections-5-8-reconversion.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["literature-convert.sh", "quality-gate", "pymupdf4llm", "house-style", "reconversion"]
+    },
+    {
+      "content": "literature-build-index.sh's manifest consumer only requires a valid chunks.json plus the source_path files it names; it does not require literature-chunk.sh's own chunk_NNNN.md naming or its 512-token/1024-cap re-chunking. Some already-indexed documents (e.g. reynolds_2001) use a pre-literature-chunk.sh convention of one chunk per paper section regardless of token count. When adding sections to such a document, hand-author matching chunks.json entries (chunk_id = sha256(doc_id + \\x00 + section_path + \\x00 + content[:64]).hexdigest()[:16]) rather than invoking literature-chunk.sh, which would re-chunk/renumber the whole document and risk regressing already-good content.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/reports/01_reynolds-sections-5-8-reconversion.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["literature-build-index.sh", "chunks.json", "chunk_id", "literature-chunk.sh", "FTS5"]
+    },
+    {
+      "content": "In BimodalLogic, specs/literature/ (and its .literature.db) is deprecated in favor of the centralized ~/Projects/Literature/ repo; literature-search.sh checks the local specs/literature/.literature.db first and falls back to the global one, but since this repo has no local DB, every query already resolves against the global corpus. Any literature reindex task in this repo only needs `literature-build-index.sh --global`, never --local.",
+      "category": "CONFIG",
+      "source_artifact": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/reports/01_reynolds-sections-5-8-reconversion.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["literature-search.sh", "literature-build-index.sh", "specs/literature", "deprecated", "global-corpus"]
+    }
+  ]
+}
