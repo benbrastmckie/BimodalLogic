@@ -201,10 +201,11 @@ By induction on `n`. The base case is the derived `nullity_identity` (`⇒₀` i
 step case is *Compositionality* (`def:frame#Compositionality`) — instantiated at `x = n`, `y = 1`,
 both nonnegative.
 
-Constraints consumed: *Compositionality*, *Seriality*, *Limit*. **No *Saturation***, which is why
-the hypotheses are explicit rather than read off a `[F.IsRegular]` instance: the decomposition is
-available over any frame meeting the other three, and `taskRel_natCast_iff_iter` is this theorem
-specialised to a regular frame.
+*Saturation* is consumed nowhere, which is why the hypotheses are explicit rather than read off a
+`[F.IsRegular]` instance: the decomposition is available over any frame meeting the other three,
+and `taskRel_natCast_iff_iter` is this theorem specialised to a regular frame.
+
+Constraints consumed: Compositionality, Seriality, Limit
 -/
 theorem taskRel_natCast_iff_iter_of_constraints (F : FrameOver intOrder)
     (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
@@ -224,7 +225,10 @@ theorem taskRel_natCast_iff_iter_of_constraints (F : FrameOver intOrder)
 /--
 **The decomposition theorem, nonnegative core, over a regular frame**:
 `taskRel_natCast_iff_iter_of_constraints` with the three constraints it consumes projected out of
-the `[F.IsRegular]` instance. *Saturation* is not among them.
+the `[F.IsRegular]` instance. The instance's *Saturation* field is not read: the proof delegates
+to a declaration that takes no `def:frame` binder at all.
+
+Constraints consumed: Compositionality, Seriality, Limit
 -/
 theorem taskRel_natCast_iff_iter (F : FrameOver intOrder) [F.IsRegular] (n : ℕ)
     (w u : F.WorldState) :
@@ -245,10 +249,12 @@ uses.
 `Int.natAbs` is the right index on both sides because `(-d).natAbs = d.natAbs`: a backward task of
 duration `d < 0` is a forward `|d|`-step path traversed in the other direction.
 
-Constraints consumed: *Compositionality*, *Seriality*, *Limit*. **No *Saturation***: the negative
-half runs on `FrameOver.reflection_of_limit`, which needs *Limit* alone, and the nonnegative half
-is `taskRel_natCast_iff_iter_of_constraints`. `taskRel_eq_iter` is this theorem specialised to a
+*Saturation* is consumed nowhere: the negative half runs on `FrameOver.reflection_of_limit`,
+which needs *Limit* alone, and the nonnegative half is
+`taskRel_natCast_iff_iter_of_constraints`. `taskRel_eq_iter` is this theorem specialised to a
 regular frame, so a non-saturated frame over ℤ-time is still determined by its one-step relation.
+
+Constraints consumed: Compositionality, Seriality, Limit
 -/
 theorem taskRel_eq_iter_of_constraints (F : FrameOver intOrder)
     (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
@@ -282,8 +288,11 @@ theorem taskRel_eq_iter_of_constraints (F : FrameOver intOrder)
 
 /--
 **The decomposition theorem, over a regular frame**: `taskRel_eq_iter_of_constraints` with the
-three constraints it consumes projected out of the `[F.IsRegular]` instance. *Saturation* is not
-among them, so the general form above applies to frames outside the regular class.
+three constraints it consumes projected out of the `[F.IsRegular]` instance. The instance's
+*Saturation* field is not read, so the general form above applies to frames outside the regular
+class.
+
+Constraints consumed: Compositionality, Seriality, Limit
 -/
 theorem taskRel_eq_iter (F : FrameOver intOrder) [F.IsRegular] (w u : F.WorldState) (d : ℤ) :
     F.TaskRel w d u ↔

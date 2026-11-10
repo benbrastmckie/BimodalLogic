@@ -64,22 +64,38 @@ by which it is reached*, so that every copy keeps all predecessors (whence the p
 two-way bounded morphism, `Semantics/HistoryMorphism.lean`'s `TwoWayBounded`) while inside the
 unravelled part each state has exactly one predecessor (whence the tree).
 
-That transfer is **not** formalized here, and the obstruction is specific. Over a digraph the
-unravelling is immediate: the path record is a finite list and one relational step extends it by
-one state. A task frame's relation is not a digraph's — it is indexed by every duration, and
-`FrameOver.ofReflectiveRegular` demands *Compositionality*, *Seriality*, *Limit* and *Saturation*
-of it. The first three are reachable over discrete time: the durations are exactly the multiples
-of one step there, so "number of steps" is a function of the duration, `k = k₁ + k₂` subdivides,
-and composing single steps into the task at an arbitrary pair of times is what
-`TwoWayBounded.exists_histMorphism_of_isZTime` already does. *Saturation* is the obstruction. Its
-statement at the unravelled carrier is
+That transfer is **not** formalized here, and the obstruction is specific — but it is narrower
+than presenting the unravelled frame at all. Over a digraph the unravelling is immediate: the
+path record is a finite list and one relational step extends it by one state. A task frame's
+relation is not a digraph's — it is indexed by every duration. `FrameOver.ofReflective` presents
+a frame from a reflective relation with **no** `def:frame` constraint, so the unravelled relation
+can be wrapped as a `FrameOver` for free; it is `FrameOver.ofReflectiveRegular` that demands
+*Compositionality*, *Seriality*, *Limit* and *Saturation*, and reasoning from that constructor is
+what made all four look required. The first three are reachable over discrete time: the durations
+are exactly the multiples of one step there, so "number of steps" is a function of the duration,
+`k = k₁ + k₂` subdivides, and composing single steps into the task at an arbitrary pair of times
+is what `TwoWayBounded.exists_histMorphism_of_isZTime_of_constraints` already does — over a base
+frame carrying **no** constraint at all, and consuming *Compositionality*, *Seriality* and
+*Limit* of the source and nothing more. So the lift itself does not need *Saturation* on either
+side.
+
+What *Saturation* is still needed for is **class membership**, not the lift.
+`ProofSystem.FrameClass.Sat` demands `FrameOver.IsRegular` of a frame-class member, so the
+unravelled frame has to be regular to count as a model of record — and that is where the
+obligation below bites. The direction that does survive for free is the other one:
+`Semantics.exists_orientedForest_cover_of_constraints` transfers L⁺ truth *off* a merely
+compositional, serial, limit base onto a regular oriented-forest cover, with
+`Semantics.StateTopology.SeparatingFrame.exists_nonSaturated_base_orientedForest_cover` as a
+concrete non-saturated base it applies to. The *Saturation* obligation at the unravelled carrier
+is
 
 ```
 ∀ S : Set (Set (W ⊕ (W × List W))), DirectedFamily S →
   (∀ s ∈ S, (IsFiber R s ∨ IsSegment R s) ∧ s.Nonempty) → (⋂₀ S).Nonempty
 ```
 
-and none of the three routes this tree has to it applies: `TaskFrame.saturation_of_finite` binds
+and, read as the class-membership obligation it is, none of the three routes this tree has to it
+applies: `TaskFrame.saturation_of_finite` binds
 `[Finite W]`, while the unravelled carrier is infinite whenever the base carrier is (and
 `FrameOver.worldNonempty` makes the base carrier nonempty for every frame);
 `TaskFrame.saturation_of_fib_finite` asks that every fibre be finite, which an arbitrary frame

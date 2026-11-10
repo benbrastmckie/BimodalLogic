@@ -1641,7 +1641,8 @@ its *Saturation* comes from `Semantics.saturation_of_orientedForest`, a fact abo
 forests, not an inheritance from `sepFrame`. So the cover, not the base, is the frame-class
 member of record.
 
-Paper: `def:frame#Saturation` (the constraint this base frame fails)
+Paper: — (formalization-native; the paper states no cover construction, so it names no
+non-saturated base for one)
 -/
 theorem exists_nonSaturated_base_orientedForest_cover :
     ∃ F : FrameOver intOrder,

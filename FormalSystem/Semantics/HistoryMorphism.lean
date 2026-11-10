@@ -307,7 +307,7 @@ of the extended relation of *any* relation whatsoever: at a nonzero duration, re
 fact about how `FrameOver.TaskRel` is assembled from `PosRel`, not a constraint on the frame. So
 the base frame carries no hypothesis here, and in particular no *Saturation*.
 
-Constraints consumed: source `F'`: *Limit*; base `F`: none.
+Constraints consumed: Limit
 
 Paper: — (formalization-native; the paper defines no morphism of task frames) -/
 theorem exists_preimage_step_neg_of_ne (hlim' : TaskFrame.Limit F'.TaskRel)
@@ -498,7 +498,7 @@ backward half is that read through `FrameOver.reflection`. This is the step the 
 gets for free from a walk and a task frame does not: a world history has to respect the task
 relation at *every* pair of times, not only at consecutive ones.
 
-Constraints consumed: source `F'`: *Compositionality*, *Seriality*, *Limit*; base `F`: none. -/
+Constraints consumed: Compositionality, Seriality, Limit -/
 private theorem chain_rel (hcomp' : TaskFrame.Compositional F'.TaskRel)
     (hser' : TaskFrame.Serial F'.TaskRel) (hlim' : TaskFrame.Limit F'.TaskRel)
     {f : F'.WorldState → F.WorldState} (h : TwoWayBounded f)
@@ -573,7 +573,7 @@ on an ordered group and is not taken as a binder. The name still reads `of_isZTi
 ℤ-time is the class the construction is about, and every ℤ-time frame supplies the two binders
 by synthesis.
 
-Constraints consumed: source `F'`: *Compositionality*, *Seriality*, *Limit*; base `F`: none.
+Constraints consumed: Compositionality, Seriality, Limit
 
 Paper: — (formalization-native; the paper defines no morphism of task frames)
 -/
@@ -645,10 +645,16 @@ Neither `[F.IsRegular]` nor either frame's *Saturation* is consumed by the const
 instance binders are kept here so that every existing call site resolves unchanged. The general
 theorem is the one to cite when the base frame is not known regular.
 
-Constraints consumed: source `F'`: *Compositionality*, *Seriality*, *Limit*; base `F`: none.
+Constraints consumed: Compositionality, Seriality, Limit
 
 Paper: — (formalization-native; the paper defines no morphism of task frames)
 -/
+-- `[F.IsRegular]` is genuinely unused: the proof delegates to a general theorem that takes no
+-- `def:frame` constraint on the base frame at all. The binder is retained so that this
+-- signature stays byte-identical and every existing call site resolves unchanged; dropping it
+-- is the only way to satisfy the linter and would change the published statement. Paired entry:
+-- `scripts/nolint-attribute-allowlist.txt`.
+@[nolint unusedArguments]
 theorem exists_histMorphism_of_isZTime {D : TemporalOrder} {F' F : FrameOver D}
     [F'.IsRegular] [F.IsRegular] [SuccOrder ↑D] [IsSuccArchimedean ↑D]
     {f : F'.WorldState → F.WorldState} (h : TwoWayBounded f)
@@ -669,7 +675,7 @@ transferring truth along this morphism still has to be regular. What is bought h
 frame transferred *from* need not be — which is exactly the direction the completeness programme
 needs, since the canonical quotient it starts from is not known saturated.
 
-Constraints consumed: source `F'`: *Compositionality*, *Seriality*, *Limit*; base `F`: none.
+Constraints consumed: Compositionality, Seriality, Limit
 
 Paper: — (formalization-native; the paper defines no morphism of task frames) -/
 theorem plus_invariance_of_isZTime_of_constraints {D : TemporalOrder} {F' F : FrameOver D}
@@ -690,9 +696,14 @@ open FormalSystem.PlusLanguage in
 regular form: `plus_invariance_of_isZTime_of_constraints` specialised by projecting the source
 frame's *Compositionality*, *Seriality* and *Limit* out of its `[F'.IsRegular]` instance.
 
-Constraints consumed: source `F'`: *Compositionality*, *Seriality*, *Limit*; base `F`: none.
+Constraints consumed: Compositionality, Seriality, Limit
 
 Paper: — (formalization-native; the paper defines no morphism of task frames) -/
+-- `[F.IsRegular]` is genuinely unused, for the same reason as
+-- `exists_histMorphism_of_isZTime` above, which this theorem is built on; the binder is retained
+-- to keep this signature byte-identical. Paired entry:
+-- `scripts/nolint-attribute-allowlist.txt`.
+@[nolint unusedArguments]
 theorem plus_invariance_of_isZTime {D : TemporalOrder} {F' F : FrameOver D}
     [F'.IsRegular] [F.IsRegular] [SuccOrder ↑D] [IsSuccArchimedean ↑D]
     {f : F'.WorldState → F.WorldState} (h : TwoWayBounded f)

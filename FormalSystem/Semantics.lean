@@ -122,8 +122,14 @@ three. The subdirectories `Extension/`, `Presheaf/`, `Ultraproduct/`, `Correspon
   (`coverStep_isOrientedForest`), the two one-step lifts, and the headline
   `exists_orientedForest_cover` — every regular frame over `intOrder` has a regular cover
   frame whose endpoint projection is surjective and `TwoWayBounded`, with the L⁺ truth
-  transfer along it. Components are taken as orientation-keeping undirected multigraphs, so
-  an opposite-edge pair lifts to two distinct edges and a loop to a ray
+  transfer along it. `exists_orientedForest_cover_of_constraints` is the general form: a base
+  carrying *Compositionality*, *Seriality* and *Limit* — **no *Saturation*** — already has such
+  a cover, which is the direction the completeness programme needs, since the cover rather than
+  the base is the `ProofSystem.FrameClass.Sat` member carrying a refutation.
+  `StateTopology.SeparatingFrame.exists_nonSaturated_base_orientedForest_cover` exhibits a
+  concrete non-saturated base it applies to. Components are taken as orientation-keeping
+  undirected multigraphs, so an opposite-edge pair lifts to two distinct edges and a loop to a
+  ray
 - `HistoryMorphism`: history-lifting morphisms between task frames over one temporal order
   (`HistMap`, `HistMorphism`, the image history `HistMap.mapH`, the pulled-back model
   `HistMap.pullM`) and the frame property `TaskFrame.RecurrenceFree` — no world history visits a
@@ -131,7 +137,10 @@ three. The subdirectories `Extension/`, `Presheaf/`, `Ultraproduct/`, `Correspon
   (`exists_sat_not_recurrenceFree`). The language-independent layer beneath
   `FormalSystem/HybridLanguage/` and `FormalSystem/QuantLanguage/`: such a morphism preserves
   pulled-back valuations, the history and time structure and the same-state relation, but not
-  state identity
+  state identity. The lift and L⁺ invariance results over discrete time carry
+  explicit-hypothesis forms — `exists_histMorphism_of_isZTime_of_constraints` and
+  `plus_invariance_of_isZTime_of_constraints` — taking **no** `def:frame` constraint on the base
+  frame and only *Compositionality*, *Seriality* and *Limit* on the source
 - `FrameConstraintIndependence`: `def:frame`'s four constraints are **pairwise independent**, over
   `ℤ` — the duration type `intOrder` reducibly is, so this is independence over the certificate's
   own time structure. Four witness relations (`emptyRel`, `totalRel`, `rayRel`, `driftRel`), the

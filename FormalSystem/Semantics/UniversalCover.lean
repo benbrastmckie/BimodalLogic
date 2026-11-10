@@ -443,7 +443,7 @@ about oriented forests, not an inheritance from the base.
 `FrameOver.ofStep` cannot present it: the cover carrier is infinite whenever the base has any
 edge, and `ofStep`'s `[Finite W]` binder is consumed exactly to obtain *Saturation*.
 
-Constraints consumed: base `F`: *Seriality*.
+Constraints consumed: Seriality
 -/
 def coverFrameOfSerial (F : FrameOver intOrder) (hser : TaskFrame.Serial F.TaskRel) :
     FrameOver intOrder :=
@@ -468,7 +468,7 @@ instance coverFrameOfSerial_isRegular (F : FrameOver intOrder)
 **The cover frame** of a regular frame over `intOrder`: `coverFrameOfSerial` at the *Seriality*
 projected out of the `[F.IsRegular]` instance, so it unfolds to the same term.
 
-Constraints consumed: base `F`: *Seriality*.
+Constraints consumed: Seriality
 -/
 def coverFrame (F : FrameOver intOrder) [F.IsRegular] : FrameOver intOrder :=
   coverFrameOfSerial F F.serial
@@ -491,7 +491,7 @@ against the base's `taskRel_eq_iter_of_constraints`; `step` is the two iterated 
 sign. Every use of the base frame is through that decomposition theorem, which consumes
 *Compositionality*, *Seriality* and *Limit* and no more.
 
-Constraints consumed: base `F`: *Compositionality*, *Seriality*, *Limit*.
+Constraints consumed: Compositionality, Seriality, Limit
 -/
 theorem endpt_twoWayBounded_of_constraints (F : FrameOver intOrder)
     (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
@@ -557,7 +557,9 @@ witnesses for `F.step`.
 consumes `forth`, `step` and surjectivity and nothing else, so the covering-property machinery
 would cost the module its weight for no consumer.
 
-Constraints consumed: base `F`: *Compositionality*, *Seriality*, *Limit*.
+Constraints consumed: Compositionality, Seriality, Limit
+
+Paper: — (formalization-native; the paper defines no cover of a task frame)
 -/
 theorem exists_orientedForest_cover_of_constraints (F : FrameOver intOrder)
     (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
@@ -581,8 +583,9 @@ open FormalSystem.PlusLanguage in
 **Every regular frame over `intOrder` has an oriented-forest cover with surjective, two-way
 bounded endpoint projection, along which L⁺ truth transfers.**
 
-`exists_orientedForest_cover_of_constraints` at the three constraints projected out of the
-`[F.IsRegular]` instance; the base's *Saturation* is not among them.
+The regular-frame specialisation of `exists_orientedForest_cover_of_constraints`, which is the
+general form and is where this module's account of the construction and of exactly what it needs
+of the base frame lives. Cite that one when the base is not known regular.
 -/
 theorem exists_orientedForest_cover (F : FrameOver intOrder) [F.IsRegular]
     (M : TaskModel F.toTaskFrame) :
