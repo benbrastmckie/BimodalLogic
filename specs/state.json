@@ -9934,11 +9934,12 @@
         "docs/theorem-index.md"
       ],
       "dependencies": [
-        894
+        894,
+        915
       ],
       "priority": "medium",
       "created": "2026-11-09T09:48:33Z",
-      "last_updated": "2026-11-09T09:48:33Z",
+      "last_updated": "2026-11-10T16:24:45Z",
       "next_artifact_number": 1,
       "artifacts": [],
       "session_id": "sess_1794209534_e57749",
@@ -47140,7 +47141,7 @@
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-11-10T15:53:18Z",
-      "last_updated": "2026-11-10T15:53:18Z",
+      "last_updated": "2026-11-10T16:24:45Z",
       "artifacts": [],
       "audit_verdict": {
         "proposal": {
@@ -51029,7 +51030,10 @@
           "scope-blind: project 303 (k_gt_0_depth_induction) declares no file_scope -- judged on the semantic shortlist alone",
           "scope-blind: project 307 (kamp_cor54_bound_anchor_zone_converter) declares no file_scope -- judged on the semantic shortlist alone"
         ]
-      }
+      },
+      "file_scope": [
+        "specs/literature-index.json"
+      ]
     }
   ],
   "artifacts": [
