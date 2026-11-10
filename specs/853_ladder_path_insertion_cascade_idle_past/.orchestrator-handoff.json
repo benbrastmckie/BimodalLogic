@@ -1,12 +1,12 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 1 of 7 complete: the anchor-free lift. drift_lipschitz_two_sided and exists_ladderPath_of_walk_of_pins landed in LadderAgree.lean, sorry-free, with axiom pins in KTypeSummaryAxiomTest.lean. hn0 is derived from hpins through drift_extension_of_pins rather than assumed, so no consumer of the lift constructs an anchor again. Full unscoped lake build green. Two gate collisions recorded: the longFile baseline went to 3100 not the plan's 3400 (the linter requires the file's own round-up, not a forward-looking ceiling), and the commit gate required regenerating typst/generated/status.typ, a third file the plan's phase list does not name. check-module-invariants.sh is red on 3 stale README inventory blocks, which is Phase 6's declared scope and expected across Phases 1-4.",
-  "phases_completed": 1,
+  "summary": "Phase 2 of 7 complete: the region start of a's own region. exists_region_start_of_idle_past landed at the end of LadderAgree.lean's section Cascade, sorry-free, with an axiom pin in KTypeSummaryAxiomTest.lean. From an idle position anywhere at or below a pending a it constructs the greatest idle s <= a with the window inequality a <= s + 1 + cntAt g (s + 1) and the maximality clause that every position strictly between s and a is pending -- the clause that makes a SINGLE insertion sufficient in Phases 3-4. The landed Nat.find route of cntAt_le_nxtAt_succ_of_idle_past was reusable as written; no helper was factored out and its signature is untouched. The proof compiled first try from the plan's prescribed pipeline. Zero deviations: all seven plan tasks executed as written. Axioms are [propext, Quot.sound] -- the regime extraction is choice-free, since Nat.find's DecidablePred comes free from Bool equality on pend and the classical scope is never consumed. Neither longFile baseline needed raising (LadderAgree 3024/3100, axiom test 2255/2300). Full unscoped lake build green: exit 0, zero error:, zero warning:, 2969 jobs, oleans newer than source for both touched modules. The typst-sync gate fired again as Phase 1 predicted and status.typ was regenerated and staged. check-module-invariants.sh stays red on the same 3 stale README inventory blocks, which is Phase 6's declared scope. A sibling batch writer is live under specs/893_* and specs/events.jsonl; nothing foreign touches this task's territory, and only this task's own paths were staged.",
+  "phases_completed": 2,
   "phases_total": 7,
-  "dispatch_seq": 11,
+  "dispatch_seq": 12,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-1-handoff-20261110T093002Z.md",
+  "continuation_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-2-handoff-20261110T094051Z.md",
   "artifacts": []
 }
