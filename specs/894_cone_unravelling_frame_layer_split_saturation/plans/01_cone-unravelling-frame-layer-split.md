@@ -71,9 +71,11 @@ No `roadmap_path` was supplied with this dispatch and no roadmap phases are ther
 - `coneR_serial_fwd`, `coneR_serial_bwd` -- double seriality of `coneR` on the literal sum carrier.
 - `saturation_coneR` -- the two-layer *Saturation* split, with no seriality hypothesis.
 - `coneF_surjective` -- the projection is surjective, axiom-free.
-- `exists_coneUnravelling_of_constraints` -- the headline: a frame over `intOrder` carrying only
-  *Compositionality*, *Seriality* and *Limit* has a regular cone-unravelling frame with
-  surjective, two-way bounded projection, along which L⁺ truth transfers.
+- `exists_coneUnravelling` -- the headline, stated in the instance-projected form: a regular
+  frame over `intOrder` (`[F.IsRegular]`) has a regular cone-unravelling frame with surjective,
+  two-way bounded projection, along which L⁺ truth transfers. The cone's own *Saturation* is
+  inherited from the base's `IsRegular` instance, not manufactured from *Compositionality*,
+  *Seriality* and *Limit* alone -- see Phase 5's blocker resolution.
 
 **Non-Goals**:
 - The formula-level Auxiliary-Atoms rule. This task is the frame-side prerequisite only;
@@ -146,9 +148,8 @@ theorem saturation_coneR {E : W → W → Prop}
 theorem coneF_surjective {E : W → W → Prop} :
     Function.Surjective (coneF (W := W)) := sorry
 
-theorem exists_coneUnravelling_of_constraints (F : FrameOver intOrder)
-    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
-    (hlim : TaskFrame.Limit F.TaskRel) (M : TaskModel F.toTaskFrame) :
+theorem exists_coneUnravelling (F : FrameOver intOrder) [F.IsRegular]
+    (M : TaskModel F.toTaskFrame) :
     ∃ (F' : FrameOver intOrder) (_ : F'.IsRegular) (f : F'.WorldState → F.WorldState),
       TwoWayBounded f ∧ Function.Surjective f ∧
         ∃ g : HistMorphism F' F, g.toFun = f ∧
@@ -168,10 +169,11 @@ real body verbatim and contributes no name to the cross-validated identifier set
 lets this block type-check standalone while the pinned identifier set stays exactly the seven
 names listed under `- **Goals**:`. The module itself declares them as ordinary `def`s.
 
-`coneF_twoWayBounded_of_constraints` and the `coneFrameOfSerial` / `coneFrame` pair are real
-Phase 5 deliverables but are deliberately not pinned here: their statements mention the frame
-`def` itself, which cannot be stated in an isolated Challenge module without pulling the whole
-assembly in. They are governed by Phase 5's task list and verification criteria instead.
+`coneF_twoWayBounded` and `coneFrame` (both `[F.IsRegular]`-parameterised, per Phase 5's blocker
+resolution) are real Phase 5 deliverables but are deliberately not pinned here: their statements
+mention the frame `def` itself, which cannot be stated in an isolated Challenge module without
+pulling the whole assembly in. They are governed by Phase 5's task list and verification
+criteria instead.
 
 ## Decisions
 
@@ -522,6 +524,15 @@ to hide in.
   do NOT discharge `exists_coneUnravelling_of_constraints` by delegating to
   `exists_orientedForest_cover_of_constraints`.
 
+**RESOLUTION**: option (b) was chosen -- the headline is stated in the instance-projected form
+only, dropping the `_of_constraints` layer entirely: `coneFrame (F) [F.IsRegular]` and
+`exists_coneUnravelling (F) [F.IsRegular] (M)`. The cone's *Saturation* is **inherited** from the
+base frame's `IsRegular` instance rather than manufactured from `hcomp`/`hser`/`hlim`, which is
+the substantive asymmetry with `UniversalCover.lean` (whose base need not be saturated) that this
+phase's docstring task and Phase 6's cross-reference paragraph record. This phase's task list,
+the `## Lean Challenge Statements` block, and Phase 6's deliverables have been updated to the
+instance-projected signatures below. Phase 5 is unblocked.
+
 **Landed in this phase before the blocker** (committed, green, sorry-free):
 `coneF_surjective`, at the pinned Challenge signature, axiom-free (measured: `#print axioms`
 reports no axioms). It is independent of the frame assembly. Nothing else in this phase's task
@@ -532,34 +543,33 @@ and `TwoWayBounded`, and assemble the L⁺ transfer headline — mirroring
 `UniversalCover.lean`'s assembly tail declaration-for-declaration.
 
 **Tasks**:
-- [ ] `coneFrameOfSerial (F : FrameOver intOrder) (hser : TaskFrame.Serial F.TaskRel) : FrameOver intOrder` *(deviation: blocked — signature omits the base-*Saturation* hypothesis; see BLOCKER)*
-      via `FrameOver.ofStepSat (coneR F.step)`, with the two seriality fields from
-      `coneR_serial_fwd`/`coneR_serial_bwd` at `hser w 1 zero_le_one`, and the *Saturation* field
-      from `saturation_coneR` applied to the base's own *Saturation* in `ofStepRel` form.
+- [ ] `coneFrame (F : FrameOver intOrder) [F.IsRegular] : FrameOver intOrder` via
+      `FrameOver.ofStepSat (coneR F.step)`, with the two seriality fields from
+      `coneR_serial_fwd`/`coneR_serial_bwd` applied to `[F.IsRegular]`'s own `Serial` field at
+      `w 1 zero_le_one`, and the *Saturation* field from `saturation_coneR` applied to
+      `[F.IsRegular]`'s own *Saturation* field in `ofStepRel` form.
 - [ ] Bridge the base *Saturation* into `ofStepRel` form once, with `funext`/`propext` against
       `FrameOver.taskRel_eq_iter_of_constraints`, since this tree has no relation-level
       `F.TaskRel = ofStepRel F.step` equality for a general regular `F`.
-- [ ] `coneFrameOfSerial_taskRel` and the `coneFrameOfSerial_isRegular` instance, via
+- [ ] `coneFrame_taskRel` and the `coneFrame_isRegular` instance, via
       `FrameOver.ofStepSat_taskRel` / `ofStepSat_isRegular`.
-- [ ] `coneFrame (F) [F.IsRegular]`, `coneFrame_taskRel`, and the `coneFrame_isRegular` instance —
-      the `[F.IsRegular]`-projected specialisations, keeping the house `_of_constraints` /
-      instance-projected pairing.
 - [x] `coneF_surjective` with the `Sum.inl` section, axiom-free as `endpt_surjective` is. *(completed)*
-- [ ] `coneF_twoWayBounded_of_constraints (F) (hcomp) (hser) (hlim)`: `forth` from `coneF_iter` on
+- [ ] `coneF_twoWayBounded (F : FrameOver intOrder) [F.IsRegular]`: `forth` from `coneF_iter` on
       the two sign-guarded conjuncts of `ofStepRel` read against
       `taskRel_eq_iter_of_constraints`; `step` by the four-way split — `.inl w` either sign via
       `iter_inl_inl`; `.inr p` with `0 ≤ x` via `exists_iter_coneRin`; `.inr p` with `x < 0` via
       `iter_inl_inr` landing on `.inl v`.
-- [ ] `coneF_twoWayBounded (F) [F.IsRegular]`, the instance-projected specialisation.
-- [ ] `exists_coneUnravelling_of_constraints` and its `[F.IsRegular]` specialisation
-      `exists_coneUnravelling`, via
-      `TwoWayBounded.plus_invariance_of_isZTime_of_constraints` with `SuccOrder ℤ` /
+- [ ] `exists_coneUnravelling (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)`,
+      via `TwoWayBounded.plus_invariance_of_isZTime_of_constraints` (reading the `Compositional` /
+      `Serial` / `Limit` fields it needs off `[F.IsRegular]`) with `SuccOrder ℤ` /
       `IsSuccArchimedean ℤ` by `inferInstanceAs`, mirroring
       `exists_orientedForest_cover_of_constraints`.
-- [ ] Give `exists_coneUnravelling_of_constraints` a doc comment carrying a
-      `Constraints consumed:` line and a `Paper: — (formalization-native; ...)` line, as
-      `exists_orientedForest_cover_of_constraints` does, so Phase 6's theorem-index row is
-      anchored at its declaration.
+- [ ] Give `exists_coneUnravelling` a doc comment recording that its *Saturation* is
+      **inherited** from `[F.IsRegular]`, not manufactured from `Compositional`/`Serial`/`Limit`
+      alone -- the asymmetry with `UniversalCover.lean` already recorded in the Decisions section
+      and in this phase's blocker resolution -- plus a `Paper: — (formalization-native; ...)`
+      line, as `exists_orientedForest_cover_of_constraints` does, so Phase 6's theorem-index row
+      is anchored at its declaration.
 - [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
 
 **Timing**: 2 hours
@@ -570,8 +580,11 @@ and `TwoWayBounded`, and assemble the L⁺ transfer headline — mirroring
 
 **Commit Mode**: per-substep
 
-**Scope Hypothesis**: this phase asserts an eleven-declaration assembly tail mirroring
-`UniversalCover.lean`'s. Confirm by listing `UniversalCover.lean`'s own assembly-tail
+**Scope Hypothesis**: this phase asserts a six-declaration assembly tail
+(`coneFrame`, `coneFrame_taskRel`, `coneFrame_isRegular`, `coneF_surjective`,
+`coneF_twoWayBounded`, `exists_coneUnravelling`), all instance-projected (no `_of_constraints`
+layer, per this phase's blocker resolution), mirroring `UniversalCover.lean`'s own
+instance-projected forms. Confirm by listing `UniversalCover.lean`'s own assembly-tail
 declarations at implementation time and checking the one-to-one correspondence; record any
 declaration of that tail that has no cone analogue, and why, in the progress file.
 
@@ -582,13 +595,13 @@ the phase adds only new declarations inside one module, changes no existing sign
 import-closure and whole-library consequences are what Phase 6's `full` gate exists to observe.
 
 **Files to modify**:
-- `FormalSystem/Semantics/ConeUnravelling.lean` - the frame assembly, surjectivity, both `TwoWayBounded` forms, and both headline forms
+- `FormalSystem/Semantics/ConeUnravelling.lean` - the frame assembly, surjectivity, `TwoWayBounded`, and the headline, all in instance-projected form (`[F.IsRegular]`, no `_of_constraints` layer)
 - `typst/generated/status.typ` - regenerated by `scripts/typst-sync-check.sh --fix`
 
 **Verification**:
 - `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Semantics.ConeUnravelling` is green with zero warnings.
 - `grep -c 'sorry' FormalSystem/Semantics/ConeUnravelling.lean` is 0.
-- `coneF_surjective` and `exists_coneUnravelling_of_constraints` match the
+- `coneF_surjective` and `exists_coneUnravelling` match the
   `## Lean Challenge Statements` block exactly.
 - `bash scripts/typst-sync-check.sh --counts-only` is green.
 
@@ -605,20 +618,20 @@ the complete gate set over the finished tree.
       `OrientedForestSaturationTest.lean`'s pattern: a docstring saying it is permanent evidence
       rather than a conventional test, a "When one of these guards fires" paragraph, and
       `#guard_msgs in #print axioms` blocks for `saturation_coneR`,
-      `coneRin_isOrientedForest`, `coneF_surjective`, `coneF_twoWayBounded_of_constraints` and
-      `exists_coneUnravelling_of_constraints`. Every expected block is **measured** in this
+      `coneRin_isOrientedForest`, `coneF_surjective`, `coneF_twoWayBounded` and
+      `exists_coneUnravelling`. Every expected block is **measured** in this
       dispatch, never typed from memory.
 - [ ] Add `import BimodalTest.Semantics.ConeUnravellingTest` to `Tests/BimodalTest.lean`.
 - [ ] Amend `FormalSystem/Metalogic/NamingRules.lean`'s module docstring: rewrite the paragraph
       ending "Discharging *Saturation* for a path-recording relation directly is left open." so
       it instead records that the obligation is discharged, naming
-      `Semantics.saturation_coneR` and `Semantics.exists_coneUnravelling_of_constraints`, and
+      `Semantics.saturation_coneR` and `Semantics.exists_coneUnravelling`, and
       keeping the three-routes-do-not-apply analysis (which remains true and is now the reason
       the new route was needed). Add the new module to that docstring's `## References` list.
       Introduce no import — this is a prose change only, so no new upward edge reaches
       `scripts/check-metalogic-cycles.sh`'s Assertion B.
 - [ ] Add `docs/theorem-index.md` rows for `saturation_coneR` (paper label
-      `def:frame#Saturation`) and `exists_coneUnravelling_of_constraints` (paper label `—`), each
+      `def:frame#Saturation`) and `exists_coneUnravelling` (paper label `—`), each
       anchored by the `Paper:` line already placed in its declaration's doc comment, and each
       naming `Tests/BimodalTest/Semantics/ConeUnravellingTest.lean` as the profile guard.
 - [ ] Add a cross-reference paragraph to both `UniversalCover.lean`'s and
