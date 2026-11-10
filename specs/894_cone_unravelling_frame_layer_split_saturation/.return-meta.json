@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/894_cone_unravelling_frame_layer_split_saturation/reports/01_cone-unravelling-frame-layer-split.md",
+      "summary": "Design research for the cone-unravelling carrier W + (W x List W): machine-checked oriented-forest and double-seriality core, the four-step two-layer Saturation split, the TwoWayBounded route, and a 4-phase sorry-free implementation decomposition."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/cone-unravelling-frame-layer-split/cone-core-probe.lean",
+      "summary": "Compiling probe (23 declarations, no errors/warnings/sorries) establishing coneRin_isOrientedForest, double seriality of coneR on the literal sum carrier, the projection homomorphism, four iter-level transport identities, the Fib-level transport bridge, and both TwoWayBounded step lifts."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794315339_51105e_894",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
