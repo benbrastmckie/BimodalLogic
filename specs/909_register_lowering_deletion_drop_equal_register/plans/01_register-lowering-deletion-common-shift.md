@@ -335,28 +335,28 @@ Recorded as absent rather than as a pass or a drift.
 
 ---
 
-### Phase 3: The Common-Shift Downward Inclusion on the Witnessing Path [NOT STARTED]
+### Phase 3: The Common-Shift Downward Inclusion on the Witnessing Path [COMPLETED]
 
 **Goal**: `mem_cellAt_of_common_shift_of_hasForwardSlack_exact` compiles in `LadderCell.lean`: a
 type realized at `(q, c + m · (P + 1), n + m · (P + 1))` by a path carrying the regime at
 `m · (P + 1) + m · (P + 1)` is realized at `(q, c, n)`.
 
 **Tasks**:
-- [ ] Add the declaration to `LadderCell.lean`'s `section ForwardSlack`, before
+- [x] Add the declaration to `LadderCell.lean`'s `section ForwardSlack`, before
       `CellLEZeroConstOfKappaEqForwardSlack`, at the pinned signature below.
-- [ ] Model the body on the landed `mem_cellAt_of_shift_of_hasForwardSlack_exact`: read
+- [x] Model the body on the landed `mem_cellAt_of_shift_of_hasForwardSlack_exact`: read
       `objAt g z = q`, `cntAt g z = c + m * (P + 1)` and `nxtAt g z = n + m * (P + 1)` off `hgz`;
       derive `pend (objAt g z) = true` from `h'` and the gap; derive `hpast` by
       `pend_past_of_nxtAt_lt` from `n + 2 ≤ c`.
-- [ ] Apply Phase 1's declaration with `n₀ := n` and `k := m * (P + 1)`, discharging `hk` from
+- [x] Apply Phase 1's declaration with `n₀ := n` and `k := m * (P + 1)`, discharging `hk` from
       `hgz`, `hTc` from `Tc ≤ c`, and `hgap` from `hroom`.
-- [ ] Finish exactly as the landed theorem does: `mem_cellAt_ladder_iff`, a `Subtype.ext` on
+- [x] Finish exactly as the landed theorem does: `mem_cellAt_ladder_iff`, a `Subtype.ext` on
       `(objAt g' z, cntAt g' z, nxtAt g' z) = (q, c, n)`, and the type clause.
-- [ ] Docstring: state that the register is carried DOWN by the same multiple as the countdown,
+- [x] Docstring: state that the register is carried DOWN by the same multiple as the countdown,
       that the regime amount is DOUBLED relative to the landed equal-register inclusion and why,
       that `hroom` is a genuine strengthening not implied by `n + 2 ≤ c`, and that the statement
       is on the witnessing path because the state-level form is refuted.
-- [ ] `bash scripts/typst-sync-check.sh --fix`; stage `typst/generated/status.typ` with the Lean
+- [x] `bash scripts/typst-sync-check.sh --fix`; stage `typst/generated/status.typ` with the Lean
       change.
 
 **Timing**: 1 hour 15 minutes

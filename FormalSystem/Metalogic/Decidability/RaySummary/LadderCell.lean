@@ -397,6 +397,71 @@ theorem cellAt_subset_of_shift_of_pend_past_rev {Q : Type} [Fintype Q] [Nonempty
     hp hno q c n h m h' hgap hTc z g hg hgz hslack τ hτ
   rwa [hty] at hmem
 
+
+/-- **THE DOWNWARD CELL INCLUSION ON THE WITNESSING PATH, for the COMMON SHIFT.** The mirror of
+`mem_cellAt_of_shift_of_hasForwardSlack_exact` with the register carried DOWN by the same multiple
+of `P + 1` as the countdown: in the pending-forever regime (`n + 2 ≤ c`) at countdown at least
+`Tc`, every type realized at `(q, c + m · (P + 1), n + m · (P + 1))` BY A PATH `g` satisfying
+`HasForwardSlack g z (m · (P + 1) + m · (P + 1)) (n + m · (P + 1))` is realized at `(q, c, n)`.
+The body is `exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past`
+(`LadderChain.lean`) at `n₀ := n` and `k := m · (P + 1)`.
+
+**Why the regime amount is DOUBLED.** The deletion pays `m · (P + 1)` for the countdown and a
+further `k = m · (P + 1)` for lowering the anchor from `nxtAt g z = n + m · (P + 1)` to `n`;
+those are the two summands, not a loose bound. The landed equal-register inclusion pays only the
+first, because it HOLDS the register.
+
+**Why `hroom` is carried separately.** `hgap : n + 2 ≤ c` does not imply
+`hroom : n + (m · (P + 1) + m · (P + 1)) ≤ c`, and `hroom` does not imply `hgap` (it is vacuous
+at `m = 0`, where `hgap` is not). The landed equal-register inclusion runs on `hgap` alone; the
+common shift displaces the register too, so both are genuine hypotheses here.
+
+The statement is on the WITNESSING PATH, not on the state, for the same compiled reason as the
+landed one: `cellAt` quantifies over every path through the state, and
+`ClimbWitness.hasForwardSlack_refuted_unconditional` compiles a path through a state satisfying
+every state-level hypothesis a consumer carries and violating the regime. The state-level form is
+`cellAt_subset_of_common_shift_of_pend_past_rev` below, under `ForwardSlackWitnessed`. -/
+theorem mem_cellAt_of_common_shift_of_hasForwardSlack_exact
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n : ℕ) (h : c ∈ Adm pend q) (m : ℕ)
+    (h' : c + m * (P + 1) ∈ Adm pend q)
+    (hgap : n + 2 ≤ c) (hroom : n + (m * (P + 1) + m * (P + 1)) ≤ c) (hTc : Tc ≤ c) (z : ℤ)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (hgz : g z = ⟨(q, c + m * (P + 1), n + m * (P + 1)), h'⟩)
+    (hslack : HasForwardSlack g z (m * (P + 1) + m * (P + 1)) (n + m * (P + 1)))
+    (τ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hτ : ∀ t : ℤ, τ.state t = (t, g t)) :
+    tpOf (ladderModel step pend fwd bwd lab) φ τ z ∈
+      cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  classical
+  have hoz : objAt g z = q := by simp [objAt, hgz]
+  have hcz : cntAt g z = c + m * (P + 1) := by simp [cntAt, hgz]
+  have hnz : nxtAt g z = n + m * (P + 1) := by simp [nxtAt, hgz]
+  have hz : pend (objAt g z) = true := by
+    by_contra hne
+    rw [Bool.not_eq_true, hoz] at hne
+    have := h hne
+    omega
+  have hpast := pend_past_of_nxtAt_lt g hg z hz (by rw [hcz, hnz]; omega)
+  obtain ⟨g', hg', ho, hc, hn, hty⟩ :=
+    exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past step pend fwd bwd lab φ
+      Tc Tn P B hp hno g hg z hpast m n (m * (P + 1)) (by rw [hnz]) (by rw [hcz]; omega)
+      (by rw [hcz, hnz]; omega) (by rw [hnz]; exact hslack)
+  have hc' : cntAt g' z = c := by omega
+  obtain ⟨τ', hτ'⟩ := exists_hist_of_isLadderPath fwd bwd g' hg'
+  rw [mem_cellAt_ladder_iff]
+  refine ⟨g', τ', hg', ?_, hτ', ?_⟩
+  · apply Subtype.ext
+    change (objAt g' z, cntAt g' z, nxtAt g' z) = (q, c, n)
+    rw [ho, hc', hn, hoz]
+  · exact hty τ τ' hτ hτ'
 /-- **THE FORWARD-SLACK-RESTRICTED DEPTH-`0` CELL OBLIGATION**, stated as a schema. This is NOT
 the reserved statement `CellLEZeroConstOfKappaEq`, which is claimed by nothing and stays so. Four
 hypotheses separate the two, and all four are visible in the quantifier below:
