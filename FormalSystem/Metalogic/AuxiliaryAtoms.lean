@@ -225,4 +225,143 @@ theorem plusTruthAt_congr_of_fresh_family {F : TaskFrame} (M M' : TaskModel F) (
     intro hq τ t
     exact forall_congr' fun σ => imp_congr_right fun _ => ih hq σ t
 
+/-! ## Histories of the cone frame -/
+
+/--
+**Consecutive states of a history of the cone frame are a one-step `coneR` edge.**
+
+`WorldHistory.respects_task` gives the task relation at the duration `s + 1 - s`, which `abel`
+normalizes to `1`; `coneFrame_taskRel` then reads that as `ofStepRel (coneR F.step)`, whose
+nonnegative conjunct at duration `1` is a single `coneR` step.
+
+**The intermediate `have` is at `FrameOver.TaskRel`, deliberately.** `coneFrame_taskRel` is an
+equality of `FrameOver.TaskRel`s and does *not* rewrite a goal phrased with
+`(coneFrame F).toTaskFrame.TaskRel`, which is the shape `WorldHistory.respects_task` hands over;
+`toTaskFrame` is `@[reducible]`, so stating the `have` at the `FrameOver` projection typechecks
+against the history's own field and leaves a goal the rewrite applies to.
+
+`abel`, not `omega`, discharges `s + 1 - s = 1`: `omega` reports "no usable constraints" on
+`↑intOrder`.
+
+Paper: — (formalization-native; the paper defines no unravelling of a task frame)
+-/
+theorem coneHist_step (F : FrameOver intOrder) [F.IsRegular]
+    (τ' : WorldHistory (coneFrame F).toTaskFrame) (s : ↑intOrder) :
+    coneR F.step (τ'.state s) (τ'.state (s + 1)) := by
+  have h0 : (coneFrame F).TaskRel (τ'.state s) 1 (τ'.state (s + 1)) := by
+    have := τ'.respects_task s (s + 1)
+    rwa [show s + 1 - s = (1 : ↑intOrder) by abel] at this
+  rw [coneFrame_taskRel] at h0
+  have h1 := h0.1 (by norm_num)
+  simp only [show (1 : ℤ).natAbs = 1 from rfl] at h1
+  obtain ⟨v, hv, hstep⟩ := h1
+  exact (iter_zero _ _ _ |>.mp hv) ▸ hstep
+
+/--
+**A history anchored at an `inr` node with empty record stays in the `inr` layer forward**, with
+a record of exactly the elapsed length.
+
+Induction on `n` off `coneHist_step`: forward from an `inr` node every `coneR` edge is a `coneRin`
+edge, which prepends one state to the record, so the length tracks the elapsed time. The length
+conjunct is what makes the induction go through — it is not consumed downstream, but without it
+the inductive hypothesis says nothing about the record and the step case cannot be closed.
+
+`push_cast` + `abel` moves `t + ((n + 1 : ℕ) : ℤ)` to `t + (n : ℤ) + 1`; again not `omega`.
+
+Paper: — (formalization-native; the paper defines no unravelling of a task frame)
+-/
+theorem coneHist_inr_of_anchor (F : FrameOver intOrder) [F.IsRegular]
+    (τ' : WorldHistory (coneFrame F).toTaskFrame) (t : ↑intOrder) (w : F.WorldState)
+    (ha : τ'.state t = .inr (w, [])) :
+    ∀ n : ℕ, ∃ x : F.WorldState × List F.WorldState,
+      τ'.state (t + (n : ℤ)) = .inr x ∧ x.2.length = n := by
+  intro n
+  induction n with
+  | zero => exact ⟨(w, []), by simpa using ha, rfl⟩
+  | succ n ih =>
+    obtain ⟨x, hx, hlen⟩ := ih
+    have hstep := coneHist_step F τ' (t + (n : ℤ))
+    rw [hx] at hstep
+    rw [show t + ((n + 1 : ℕ) : ℤ) = t + (n : ℤ) + 1 by push_cast; abel]
+    rcases hv : τ'.state (t + (n : ℤ) + 1) with v | y
+    · rw [hv] at hstep; exact hstep.elim
+    · rw [hv] at hstep
+      exact ⟨y, rfl, by rw [hstep.2]; simp [hlen]⟩
+
+/-! ## The machine run along a recorded path -/
+
+/--
+**The machine run along a recorded path.**
+
+`aaRun p b₀ idx l` is the state the machine `p` reaches from the initial state `b₀` after reading
+the inputs `idx` of the states in `l`, *last first*: the recorded list of a cone node is
+**most-recent-first**, which is the orientation `coneRin` produces (it prepends the state just
+left), so the recursion consumes the head last.
+
+Paper: — (formalization-native; the paper's machine runs along a path of the model, not along a
+recorded list)
+-/
+def aaRun {W : Type} (p : ℕ → ℕ → ℕ) (b₀ : ℕ) (idx : W → ℕ) : List W → ℕ
+  | [] => b₀
+  | u :: h => p (aaRun p b₀ idx h) (idx u)
+
+/--
+**Which machine state a node of the cone carrier records.** An `inl` node carries no record and
+reads the initial state; an `inr` node reads the run along its record.
+
+Paper: — (formalization-native; the paper's machine runs along a path of the model, not along a
+recorded list)
+-/
+def aaState {W : Type} (p : ℕ → ℕ → ℕ) (b₀ : ℕ) (idx : W → ℕ) : W ⊕ (W × List W) → ℕ
+  | .inl _ => b₀
+  | .inr x => aaRun p b₀ idx x.2
+
+/--
+**The semantic core of the Auxiliary-Atoms antecedent**: one cone step advances the machine run by
+one machine step.
+
+Precisely: on a history `ρ'` of the cone frame anchored at an `inr` node with empty record at `t`,
+at every time `s ≥ t`, and for *every* history `η'` agreeing with `ρ'` at `s`, the machine state
+recorded at `η'(s + 1)` is `p` applied to the machine state at `ρ'(s)` and the input read off the
+projection of that state. The quantifier over `η'` is what the antecedent's `⊡` needs: the step
+clause is read on every history through the present state.
+
+The anchor hypothesis is load-bearing through `coneHist_inr_of_anchor`: without it `ρ'(s)` could
+be an `inl` node, whose successor's record is a singleton rather than an extension, and the
+identity fails.
+
+The offset extraction is `⟨(s - t).toNat, …⟩` discharged by `Int.toNat_of_nonneg` + `sub_nonneg`
++ `abel`. The archived probe's `by omega` does not transfer: `omega` reports "no usable
+constraints" on `↑intOrder`. The final restatement uses `change`, not `show`, because
+`linter.style.show` rejects a goal-changing `show`.
+
+This is the archived probe's `aa_expand` restated over `WorldHistory (coneFrame F)`; the
+Mathlib-only ancestor is `specs/evidence/limit-closure-schema/lc-schema-omega-chain.lean` Part J.
+
+Paper: — (formalization-native; the paper's Lemma 6 argues on a tree model, not on a recorded
+cone)
+-/
+theorem aaState_step (F : FrameOver intOrder) [F.IsRegular]
+    (p : ℕ → ℕ → ℕ) (b₀ : ℕ) (idx : F.WorldState → ℕ)
+    (t : ↑intOrder) (w : F.WorldState)
+    (ρ' : WorldHistory (coneFrame F).toTaskFrame) (ha : ρ'.state t = .inr (w, []))
+    (s : ↑intOrder) (hs : t ≤ s)
+    (η' : WorldHistory (coneFrame F).toTaskFrame) (he : η'.state s = ρ'.state s) :
+    aaState p b₀ idx (η'.state (s + 1))
+      = p (aaState p b₀ idx (ρ'.state s)) (idx (coneF (ρ'.state s))) := by
+  obtain ⟨n, rfl⟩ : ∃ n : ℕ, s = t + (n : ℤ) :=
+    ⟨(s - t).toNat, by
+      have h : ((s - t).toNat : ℤ) = s - t := Int.toNat_of_nonneg (by simpa using sub_nonneg.mpr hs)
+      rw [show ((((s - t).toNat : ℕ) : ℤ) : ↑intOrder) = ((s - t : ↑intOrder)) from h]
+      abel⟩
+  obtain ⟨x, hx, _⟩ := coneHist_inr_of_anchor F ρ' t w ha n
+  have hstep := coneHist_step F η' (t + (n : ℤ))
+  rw [he, hx] at hstep
+  rcases hv : η'.state (t + (n : ℤ) + 1) with v | y
+  · rw [hv] at hstep; exact hstep.elim
+  · rw [hv] at hstep
+    rw [hx]
+    change aaRun p b₀ idx y.2 = p (aaRun p b₀ idx x.2) (idx x.1)
+    rw [hstep.2]; rfl
+
 end FormalSystem.Metalogic.AuxiliaryAtoms

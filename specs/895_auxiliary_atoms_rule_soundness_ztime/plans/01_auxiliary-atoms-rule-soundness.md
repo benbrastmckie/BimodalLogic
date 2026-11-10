@@ -370,7 +370,7 @@ imports yet.
 
 ---
 
-### Phase 2: Cone-history lemmas and the machine run [NOT STARTED]
+### Phase 2: Cone-history lemmas and the machine run [COMPLETED]
 
 **Goal**: Land the two cone-history facts and the machine-labelling definitions, ending with
 `aaState_step` — the semantic core of the antecedent.
