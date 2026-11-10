@@ -6,12 +6,12 @@ next_project_number: 908
 
 ## Task Order
 
-*Updated 2026-11-09. Generated from state.json dependency graph.*
+*Updated 2026-11-10. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,894,897,898,899,900,905,906,907 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,803,817,818,821,829,830,831,832,838,873,874,875,876,890,894,898,899,900,905,906,907 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,804,853,862,869,895 | 298,428,502,743,761,803,838,894,898 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,896 | 429,497,763,838,895 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -112,7 +112,6 @@ next_project_number: 908
 894 [NOT STARTED] — The forward-cone unravelling as a regular ZTime frame:...
   └─ 895 [NOT STARTED] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
     └─ 896 [NOT STARTED] — The extended L-plus proof system (TM-plus + axiom set +...
-897 [PLANNED] — Universal cover of a doubly serial digraph: oriented forest,...
 898 [NOT STARTED] — Two-way bounded L-plus invariance over ZTime with no...
   └─ 869 [NOT STARTED] — (semantics: PRIORITY RULING (2026-11-05, user):...) (see above)
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
@@ -258,11 +257,12 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 897. Universal cover of a doubly serial digraph: oriented forest, surjective two-way bounded covering map
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Dependencies**: None
 - **Research**: [897_universal_cover_oriented_forest_two_way_bounded/reports/01_universal-cover-oriented-forest.md]
 - **Plan**: [897_universal_cover_oriented_forest_two_way_bounded/plans/01_universal-cover-oriented-forest.md]
+- **Summary**: [897_universal_cover_oriented_forest_two_way_bounded/summaries/01_universal-cover-oriented-forest-summary.md]
 
 **Description**: The second half of ROADMAP hypothesis (H5), left unowned when the oriented-forest Saturation lemma landed: for a doubly serial one-step relation E on W, construct the cover relation on reduced walks (components taken as orientation-keeping undirected multigraphs, so an opposite-edge pair lifts to two distinct edges and a loop to a ray), prove IsOrientedForest for it, doubly serial, and that the endpoint projection is surjective and TwoWayBounded for the induced ofStepRel frames, so that saturation_of_orientedForest makes the cover a regular ZTime frame and plus_invariance_of_isZTime transfers L-plus truth. Mathlib's Combinatorics/Quiver/Covering.lean is the recorded starting point. Two consumers: the decidability paper proof's cover step (reports 03 section 1.2 and 878 finding 1) and the completeness programme's final-frame step, where the canonical quotient digraph is not known to satisfy Saturation and is replaced by its cover. New module FormalSystem/Semantics/UniversalCover.lean.
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #897
 
 - **Task**: 897 - Universal cover of a doubly serial digraph: oriented forest, surjective two-way bounded covering map
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/897_universal_cover_oriented_forest_two_way_bounded/reports/01_universal-cover-oriented-forest.md
