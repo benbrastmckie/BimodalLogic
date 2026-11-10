@@ -1,15 +1,29 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
-  "phases_total": 6,
-  "summary": "Wrote a six-phase implementation plan for FormalSystem/Semantics/ConeUnravelling.lean, modelled declaration-for-declaration on UniversalCover.lean. Phases 1-2 promote the already-compiling evidence probe (carrier, coneR/coneRin/coneF/parIn, oriented forest, double seriality, transport and Fib-level bridges); Phase 3 hoists the one unprobed step -- the exhaustive 12-cell member-shape classification -- into its own named lemma; Phase 4 proves saturation_coneR; Phase 5 assembles the frame, surjectivity and TwoWayBounded; Phase 6 retires NamingRules.lean's 'left open' paragraph, pins axiom profiles, and runs the full gate set. The seven pinned Lean Challenge Statements were compile-checked via lean-challenge-snapshot.sh --dry-run --compile ('compile: OK') before being recorded as the plan's contract.",
-  "blockers": [],
+  "status": "blocked",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "FormalSystem/Semantics/ConeUnravelling.lean landed: 842 lines, 34 declarations, sorry-free, axiom-clean, full library build green with zero warnings. Phases 1-4 complete and committed, with saturation_coneR -- the two-layer Saturation split -- proved at its pinned signature; 6 of 7 pinned Challenge statements are proved as pinned. Phase 5 is BLOCKED: every frame-assembly signature the plan declares, including the pinned exists_coneUnravelling_of_constraints, omits a base-Saturation hypothesis the cone construction provably requires, and all three escape routes are machine-checked closed. A one-line user decision between two named corrected signatures unblocks the remaining Phase 5 and all of Phase 6.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/894_cone_unravelling_frame_layer_split_saturation/plans/01_cone-unravelling-frame-layer-split.md",
-      "summary": "Six-phase, ~10-hour plan: carrier + oriented forest, transport layer, member-shape classification, two-layer Saturation split, frame assembly + TwoWayBounded, documentation reconciliation + full gate set."
+      "type": "summary",
+      "path": "specs/894_cone_unravelling_frame_layer_split_saturation/summaries/01_cone-unravelling-frame-layer-split-summary.md",
+      "summary": "The cone-unravelling module landed sorry-free with the two-layer Saturation split proved; frame assembly blocked on a missing base-Saturation hypothesis in the plan's pinned signatures."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/894_cone_unravelling_frame_layer_split_saturation/handoffs/phase-5-handoff-20261110-061020.md",
+      "summary": "Phase 5 blocked-state handoff: what landed, what was not attempted, and the two resolution options."
+    }
+  ],
+  "phases_completed": 4,
+  "phases_total": 6,
+  "blockers": [
+    {
+      "phase": "implement",
+      "target": "FormalSystem.Semantics.exists_coneUnravelling_of_constraints (and the coneFrameOfSerial / coneF_twoWayBounded_of_constraints assembly it depends on)",
+      "verbatim_goal": "exists_coneUnravelling_of_constraints (F : FrameOver intOrder) (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel) (M : TaskModel F.toTaskFrame) : a frame over intOrder carrying only Compositionality, Seriality and Limit has a regular cone-unravelling frame with surjective, two-way bounded projection, along which L-plus truth transfers.",
+      "what_was_tried": "1. Reading base Saturation off F -- unavailable: a bare FrameOver carries no frame axiom (TaskFrame.lean:1072 structure FrameOver vs :1189 class IsRegular). 2. Deriving base Saturation from hcomp/hser/hlim -- refuted by FrameConstraintIndependence.lean's constraints_pairwise_independent, third conjunct, the rayRel witness over Z that satisfies C+S+L and refutes Saturation. 3. Deriving the cone's Saturation structurally as UniversalCover.lean does -- impossible: IsOrientedForest (coneR E) is false, since the inl layer is a verbatim copy of E and inherits its loops and opposite edges; only the inr layer is a forest, which is why Saturation had to be split in two. 4. Checking whether base Saturation is merely convenient -- it is necessary: at E := (fun w u => w <= u) on Z the family {Fib (ofStepRel (coneR E)) (.inl w) 1 | w : Z} is directed, has nonempty IsFiber members, and has empty intersection.",
+      "why_it_failed": "FrameOver.ofStepSat demands TaskFrame.Saturation (ofStepRel (coneR F.step)); the only route to it, saturation_coneR, demands TaskFrame.Saturation (ofStepRel F.step), which hser does not supply. The pinned statement is satisfiable only by delegating to UniversalCover.lean's exists_orientedForest_cover_of_constraints, whose existential witness is the cover and not the cone -- a proof that would pass every name, sorry and axiom check while asserting nothing about this module. rules/plan-compliance.md's Statement Fidelity section forbids adding a hypothesis to a recorded Challenge statement, or quietly editing the recorded Challenge, without raising it. Resolution options (a) thread hsat : TaskFrame.Saturation F.TaskRel through coneFrameOfSerialSat / coneF_twoWayBounded_of_constraints / exists_coneUnravelling_of_constraints, or (b) state the headline only in the instance-projected coneFrame (F) [F.IsRegular] / exists_coneUnravelling (F) [F.IsRegular] form."
     }
   ]
 }
