@@ -1,28 +1,57 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/894_cone_unravelling_frame_layer_split_saturation/plans/01_cone-unravelling-frame-layer-split.md",
-      "summary": "Revised plan: exists_coneUnravelling amended to the instance-projected [F.IsRegular] signature per the recorded user decision, the _of_constraints layer dropped throughout, Phase 5 unblocked and re-sequenced against the instance-projected API"
+      "type": "summary",
+      "path": "specs/894_cone_unravelling_frame_layer_split_saturation/summaries/02_cone-unravelling-frame-layer-split-summary.md",
+      "summary": "All six phases complete: the cone unravelling is presented as a regular FrameOver intOrder with a TwoWayBounded surjective projection, the L-plus transfer headline exists_coneUnravelling is proved, and NamingRules.lean's open Saturation obligation is retired."
     }
   ],
-  "next_steps": "Run /orchestrate 894 --implement to execute the revised Phase 5 and then Phase 6",
+  "completion_data": {
+    "completion_summary": "Landed the forward-cone unravelling's frame assembly and headline in FormalSystem/Semantics/ConeUnravelling.lean: base_taskRel_eq_ofStepRel, coneFrame, coneFrame_taskRel, the coneFrame_isRegular instance, coneF_twoWayBounded and exists_coneUnravelling, all instance-projected over [F.IsRegular] per the recorded user decision. Pinned the five headline axiom profiles as measured #guard_msgs blocks in a new evidence module, retired NamingRules.lean's assertion that discharging Saturation for a path-recording relation is left open, and added the two theorem-index rows plus reciprocal division-of-labour docstrings between the cone and the universal cover.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Semantics/ConeUnravelling.lean",
+    "FormalSystem/Semantics/UniversalCover.lean",
+    "FormalSystem/Metalogic/NamingRules.lean",
+    "FormalSystem/Metalogic/README.md",
+    "Tests/BimodalTest/Semantics/ConeUnravellingTest.lean",
+    "Tests/BimodalTest.lean",
+    "docs/theorem-index.md",
+    "README.md",
+    "typst/generated/status.typ",
+    "specs/894_cone_unravelling_frame_layer_split_saturation/plans/01_cone-unravelling-frame-layer-split.md",
+    "specs/894_cone_unravelling_frame_layer_split_saturation/summaries/02_cone-unravelling-frame-layer-split-summary.md",
+    "specs/894_cone_unravelling_frame_layer_split_saturation/handoffs/phase-5-handoff-20261110T130427.md",
+    "specs/894_cone_unravelling_frame_layer_split_saturation/handoffs/phase-6-handoff-20261110T134701.md",
+    "specs/894_cone_unravelling_frame_layer_split_saturation/issues.jsonl"
+  ],
   "metadata": {
-    "session_id": "sess_1794328980_5b668f_894",
-    "agent_type": "reviser-agent",
+    "session_id": "sess_1794343738_e0026f",
+    "agent_type": "lean-implementation-agent",
     "delegation_path": [
       "orchestrator",
-      "revise",
-      "reviser-agent"
+      "implement",
+      "skill-lean-implementation"
     ],
-    "dispatch_seq": 10,
-    "phase_count": 6,
-    "estimated_hours": 10.5,
-    "reports_integrated": [
-      "01_cone-unravelling-frame-layer-split.md"
-    ],
-    "revision_mode": "plan_revision",
-    "phases_preserved_completed": 4
+    "dispatch_seq": 11,
+    "phase": "implement",
+    "compliance_check": "passed",
+    "phases_completed": 6,
+    "phases_total": 6,
+    "challenge_snapshot_check": "no manifest found (exit 71) -- the predicted outcome; advisory only, no manifest manufactured after the fact",
+    "deferred_gates": "verify-deploy.sh gate 8 (tests/run-all.sh) deferred to the batch stage per this dispatch's Batch Gate Deferral",
+    "preexisting_baseline_findings": [
+      "check-paper-definitions.sh exit 1: paper/record drift over def:, def:frame, def:frame-properties, def:id, def:lang, def:qe, def:task-relation; neither gate input is in this dispatch's changed-file set",
+      "vacuous-pattern sweep: FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal := trivial, pre-existing, in a file this task never touched, goal genuinely trivially true"
+    ]
   }
 }

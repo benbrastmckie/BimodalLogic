@@ -1932,7 +1932,7 @@
     {
       "project_number": 894,
       "project_name": "cone_unravelling_frame_layer_split_saturation",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "title": "The forward-cone unravelling as a regular ZTime frame: inr-layer oriented forest and the two-layer Saturation split",
       "description": "Land the Auxiliary-Atoms carrier as a FrameOver intOrder over the sum type W + (W x List W) with the one-step relation coneR (inl u -> inl v and inl u -> inr (v, h) when u -> v; inr (u, h) -> inr (v, u :: h) when u -> v; nothing leaves inr), for a doubly serial base relation. Three lemmas: (1) the inr layer is an IsOrientedForest (every inr node has a unique inr-predecessor and the recorded list strictly lengthens along edges, so the undirected multigraph is acyclic, loop-free and opposite-edge-free); (2) the two-layer Saturation lemma: TaskFrame.Saturation (ofStepRel coneR) from TaskFrame.Saturation of the base relation on the inl-anchored families and saturation_of_orientedForest' on the inr-anchored families, with the mixed-family case handled by directedness; (3) TwoWayBounded for the projection coneF with surjectivity, so plus_invariance_of_isZTime applies. This discharges the Saturation obligation recorded in NamingRules.lean's module docstring and is the frame-side prerequisite of the formula-level Auxiliary-Atoms rule. New module FormalSystem/Semantics/ConeUnravelling.lean.",
@@ -1953,7 +1953,7 @@
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T09:48:33Z",
-      "last_updated": "2026-11-10T19:45:03Z",
+      "last_updated": "2026-11-10T21:48:02Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
@@ -1962,17 +1962,17 @@
           "summary": "Design research for the cone-unravelling carrier W + (W x List W): machine-checked oriented-forest and double-seriality core, the four-step two-layer Saturation split, the TwoWayBounded route, and a 4-phase sorry-free implementation decomposition."
         },
         {
-          "path": "specs/894_cone_unravelling_frame_layer_split_saturation/summaries/01_cone-unravelling-frame-layer-split-summary.md",
-          "type": "summary",
-          "summary": "The cone-unravelling module landed sorry-free with the two-layer Saturation split proved; frame assembly blocked on a missing base-Saturation hypothesis in the plan's pinned signatures."
-        },
-        {
           "path": "specs/894_cone_unravelling_frame_layer_split_saturation/plans/01_cone-unravelling-frame-layer-split.md",
           "type": "plan",
           "summary": "Revised implementation plan: Challenge statements amended to instance-projected form, Phase 5 unblocked and re-sequenced against the instance-projected API, six phases, 10.5h total with ~3.5h remaining."
+        },
+        {
+          "path": "specs/894_cone_unravelling_frame_layer_split_saturation/summaries/02_cone-unravelling-frame-layer-split-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the final two phases: the frame assembly and L-plus transfer headline, the axiom-profile evidence module, the NamingRules discharge record, and the full gate-set outcome with its deferrals and pre-existing baseline findings enumerated."
         }
       ],
-      "session_id": "sess_1794328980_5b668f",
+      "session_id": "sess_1794343738_e0026f",
       "audit_verdict": {
         "proposal": {
           "id": "cone_unravelling_frame_layer_split_saturation",
@@ -1984,7 +1984,8 @@
         "degradation_count": 0,
         "evidence_file": "specs/evidence/audit-verdicts/894.json"
       },
-      "topic": "completeness"
+      "topic": "completeness",
+      "completion_summary": "Landed the forward-cone unravelling's frame assembly and headline in FormalSystem/Semantics/ConeUnravelling.lean: base_taskRel_eq_ofStepRel, coneFrame, coneFrame_taskRel, the coneFrame_isRegular instance, coneF_twoWayBounded and exists_coneUnravelling, all instance-projected over [F.IsRegular] per the recorded user decision. Pinned the five headline axiom profiles as measured #guard_msgs blocks in a new evidence module, retired NamingRules.lean's assertion that discharging Saturation for a path-recording relation is left open, and added the two theorem-index rows plus reciprocal division-of-labour docstrings between the cone and the universal cover."
     },
     {
       "project_number": 895,

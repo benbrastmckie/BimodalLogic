@@ -1,7 +1,7 @@
 # Implementation Plan: Task #894
 
 - **Task**: 894 - The forward-cone unravelling as a regular ZTime frame: inr-layer oriented forest and the two-layer Saturation split
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10.5 hours (7 landed across Phases 1-4; ~3.5 remaining across Phases 5-6)
 - **Dependencies**: None
 - **Research Inputs**: specs/894_cone_unravelling_frame_layer_split_saturation/reports/01_cone-unravelling-frame-layer-split.md

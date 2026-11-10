@@ -1,32 +1,29 @@
 {
-  "status": "planned",
-  "dispatch_seq": 10,
-  "phases_completed": 4,
+  "status": "implemented",
+  "dispatch_seq": 11,
+  "phases_completed": 6,
   "phases_total": 6,
-  "summary": "Revised task 894's round-01 plan in place to land the recorded user decision (option (b)): exists_coneUnravelling is pinned at the instance-projected signature (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame) and the _of_constraints layer is dropped throughout, with a new Amendment record subsection giving the fidelity trail plan-compliance.md's Statement Fidelity section requires. Phase 5 moved from [BLOCKED] to [IN PROGRESS]: its blocker narrative is replaced by a resolved form, its four machine-checked findings are preserved as a Decisions entry, and its task list is re-pointed at FrameOver.taskRel_eq_iter and TwoWayBounded.plus_invariance_of_isZTime with the base-Saturation bridge hoisted into a named lemma that must land first. Phases 1-4 are carried through untouched as [COMPLETED]; Phase 6's NamingRules and challenge-snapshot criteria were corrected to name the amended declarations and the expected missing-manifest verdict.",
+  "summary": "Executed the two remaining phases of task 894's round-01 plan. Phase 5 landed the seven-declaration assembly tail in FormalSystem/Semantics/ConeUnravelling.lean (base_taskRel_eq_ofStepRel, coneFrame, coneFrame_taskRel, the coneFrame_isRegular instance, coneF_surjective already present, coneF_twoWayBounded, exists_coneUnravelling), all instance-projected over [F.IsRegular] per the recorded user decision, with no _of_constraints layer anywhere. Phase 6 pinned the five headline axiom profiles as measured #guard_msgs blocks in a new Tests/BimodalTest/Semantics/ConeUnravellingTest.lean, retired NamingRules.lean's left-open Saturation assertion, added two docs/theorem-index.md rows, and gave the cone and the universal cover reciprocal division-of-labour docstrings. Both libraries build green with zero warnings, sorry count 0, axiom count unchanged at 14, and every repository gate passes except a pre-existing paper-definitions drift that names no file this task touched.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/894_cone_unravelling_frame_layer_split_saturation/summaries/02_cone-unravelling-frame-layer-split-summary.md",
+      "summary": "Implementation summary for the final two phases: the frame assembly and L-plus transfer headline, the axiom-profile evidence module, the NamingRules discharge record, and the full gate-set outcome with its deferrals and pre-existing baseline findings enumerated."
+    },
+    {
       "type": "plan",
       "path": "specs/894_cone_unravelling_frame_layer_split_saturation/plans/01_cone-unravelling-frame-layer-split.md",
-      "summary": "Revised implementation plan: Challenge statements amended to instance-projected form, Phase 5 unblocked and re-sequenced against the instance-projected API, six phases, 10.5h total with ~3.5h remaining."
+      "summary": "All six phases now [COMPLETED]; Phase 6 carries a Gate-set outcome subsection recording each gate as a touched-file scope or a baseline delta."
     }
   ],
   "metadata": {
-    "session_id": "sess_1794328980_5b668f_894",
-    "agent_type": "reviser-agent",
-    "delegation_path": [
-      "orchestrator",
-      "revise",
-      "reviser-agent"
-    ],
-    "phase": "plan",
-    "reports_integrated": [
-      "01_cone-unravelling-frame-layer-split.md"
-    ],
-    "revision_mode": "plan_revision",
-    "new_research_paths": [],
-    "plan_revised_sentinel": "specs/894_cone_unravelling_frame_layer_split_saturation/.plan-revised.json"
+    "session_id": "sess_1794343738_e0026f",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "phase": "implement",
+    "compliance_check": "passed",
+    "deferred_gates": "verify-deploy.sh gate 8 (tests/run-all.sh) deferred to the batch stage"
   },
-  "next_steps": "Run /orchestrate 894 --implement to execute Phase 5 (base_taskRel_eq_ofStepRel, coneFrame, coneFrame_taskRel/isRegular, coneF_twoWayBounded, exists_coneUnravelling, plus the three docstring citation corrections), then Phase 6."
+  "next_steps": "No further implementation work for task 894. The batch stage still owes the full gate set (verify-deploy.sh gate 8, tests/run-all.sh), deferred by this dispatch's Batch Gate Deferral. Separately and independently of this task: check-paper-definitions.sh carries a pre-existing drift over seven paper labels that needs its own reconciliation."
 }
