@@ -3637,6 +3637,9 @@ if [ "$RUN_BUILD" -eq 1 ]; then
     grep -m1 '^-- Found ' "$C16_LOG" | while IFS= read -r l; do note "$l"; done
     tail -20 "$C16_LOG" | while IFS= read -r l; do note "$l"; done
     note "run 'lake exe runLinter --update FormalSystem' only after confirming every new finding is intentional -- --update grandfathers everything currently reported, including a genuine regression"
+    note "WARNING: --update rewrites scripts/nolints.json WHOLESALE, keeping only findings reported for the root(s) named on that invocation and silently discarding grandfathered entries for every other root (observed: 914 -> 237 lines) -- running it against a single root such as FormalSystem drops the baseline for BimodalTools and any other declared root"
+    note "prefer the non-destructive fix instead: an in-source '@[nolint unusedArguments]' (or the relevant linter name) attribute plus a matching entry in scripts/nolint-attribute-allowlist.txt"
+    note "if --update is still wanted, back up scripts/nolints.json first and diff the result before staging"
   fi
   rm -f "$C16_LOG"
 else
