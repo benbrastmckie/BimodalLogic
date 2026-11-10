@@ -1,0 +1,22 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/910_saturated_gap_branch_kappa_collision_regimes/plans/01_saturated-gap-monotone-dispatch.md",
+      "summary": "Seven-phase lean4 plan dispatching the monotone slice of kappa_collision_regimes' saturated-gap branch and explicitly excluding the antitone slice in the schema signature; eleven new declarations in LadderCell.lean."
+    }
+  ],
+  "next_steps": "Run /orchestrate 910 to execute the plan",
+  "memory_candidates": [],
+  "metadata": {
+    "session_id": "sess_1794343738_e0026f_910",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 10,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7]]
+  },
+  "dispatch_seq": 14
+}

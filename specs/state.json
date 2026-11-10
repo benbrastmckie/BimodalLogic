@@ -1990,7 +1990,7 @@
     {
       "project_number": 895,
       "project_name": "auxiliary_atoms_rule_soundness_ztime",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "title": "The Auxiliary-Atoms rule for L-plus at ZTime, forward and mirror, formula level with soundness",
       "description": "State the transposed Reynolds-2001 Auxiliary-Atoms rule at the formula level and prove it validity-preserving at FrameClass.ZTime. Antecedent aaAnte b0 Q a p := b0 and stab (gle (bigAnd over b in Q, i < k of ((b and a i) -> stab (next (p b i))))) and stab (gle (bigAnd over b != b' of not (b and b'))), where Q is a finite set of fresh atoms, a i are state-local formulas (PlusFormula.StateLocal) that are provably pairwise inconsistent and jointly exhaustive, and p : Q -> Fin k -> Q is the machine. The rule: if (aaAnte b0 Q a p).imp phi is ZTime-valid and no Q-atom occurs in phi or in any a i, then phi is ZTime-valid. The proof runs the premise on the cone unravelling of the given frame with the machine-run valuation coneSt (semantic core: the archived probe's aa_expand), forgets Q by plusTruthAt_congr_of_fresh, and projects by plus_invariance_of_isZTime. The mirror rule follows by plusValidIn_reflectTime-style reflection of the construction or by a mirrored cone. Depends on the cone-unravelling frame task. Home: FormalSystem/Metalogic/NamingRules.lean or a sibling FormalSystem/Metalogic/AuxiliaryAtoms.lean. No completeness claim.",
@@ -2006,7 +2006,7 @@
       ],
       "priority": "medium",
       "created": "2026-11-09T09:48:33Z",
-      "last_updated": "2026-11-10T22:24:23Z",
+      "last_updated": "2026-11-10T22:30:34Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -2015,7 +2015,7 @@
           "summary": "Research for the formula-level Auxiliary-Atoms rule and its ZTime soundness: Reynolds 2001 Definition 4/Lemma 6 step map, the concrete-cone-API route (not exists_coneUnravelling), PlusValidInt as the statement level with the mirror by plusValidIn_reflectTime_iff, three small library gaps, and a five-phase decomposition - every semantic step backed by a compiled sorry-free probe."
         }
       ],
-      "session_id": "sess_1794343738_e0026f",
+      "session_id": "sess_1794343738_e0026f_895",
       "audit_verdict": {
         "proposal": {
           "id": "auxiliary_atoms_rule_soundness_ztime",
@@ -2831,7 +2831,7 @@
     {
       "project_number": 910,
       "project_name": "saturated_gap_branch_kappa_collision_regimes",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Dispatch or explicitly exclude the SATURATED-GAP third branch of kappa_collision_regimes, which neither landed cell inclusion addresses in either direction.\n\nVERIFIED STARTING POSITION (compiled, not argued):\n(1) kappa_collision_regimes landed with THREE branches (equal register, common shift, saturated gap), not the two its plan anticipated. The two-branch shape is NOT derivable from the three destructors it was to be proved from plus (K4)'s 2 <= B: clipIdx clips the gap coordinate at B, so a collision saturated at that clip on both sides of the window satisfies neither alternative.\n(2) The refutation is compiled, not asserted: kappa_collision_two_regimes_refuted at Tc = Tn = P = 0, B = 2 and the pairs (0,2),(0,3).\n(3) The residue SURVIVES regime restriction. kappa_collision_two_regimes_refuted_of_pend_gap shows the saturated-gap branch survives restriction to the pending-forever regime at countdowns above the threshold (Tc = Tn = P = 0, B = 2, pairs (2,0) and (4,1)). On that residue no landed inclusion applies in either direction, and the forward-slack hypothesis does not reach it: forward slack buys the deletion inside z's region, while the obstruction is that the register must move by an amount the countdown does not match.\n\nTWO ADMISSIBLE OUTCOMES: either dispatch the branch with a genuine argument, or exclude it from the obligation's hypotheses explicitly and state the exclusion in the signature -- never leave it tacit. The reserved name cellLE_zero_const_of_kappa_eq stays reserved either way.\n\nORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Citation: parent issues.jsonl iss_1794296515751_mFmN7o.\n",
       "effort": "high",
@@ -2841,11 +2841,22 @@
         909
       ],
       "file_scope": [
-        "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean"
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "typst/generated/status.typ"
       ],
       "created": "2026-11-10T12:04:38Z",
-      "last_updated": "2026-11-10T16:36:26Z",
-      "artifacts": [],
+      "last_updated": "2026-11-10T22:52:40Z",
+      "artifacts": [
+        {
+          "path": "specs/910_saturated_gap_branch_kappa_collision_regimes/plans/01_saturated-gap-monotone-dispatch.md",
+          "type": "plan",
+          "summary": "Seven-phase lean4 plan: free-register raise, its necessity record, upward and downward cell inclusions on the monotone saturated-gap residue, the displacement dichotomy with two non-vacuity records, the monotone cell-equality schema, and a final records/gates phase. Eleven new declarations, all in LadderCell.lean."
+        }
+      ],
       "audit_verdict": {
         "proposal": {
           "id": "saturated_gap_branch_kappa_collision_regimes",
@@ -2859,12 +2870,13 @@
         "verdict_count": 475,
         "degradation_count": 455,
         "evidence_file": "specs/evidence/audit-verdicts/910.json"
-      }
+      },
+      "session_id": "sess_1794343738_e0026f"
     },
     {
       "project_number": 911,
       "project_name": "idle_cycle_sharpening_idle_gap_lengthening",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "description": "Pursue the idle-cycle sharpening left open by the idle-gap lengthening decision gate's FAIL verdict: the lengthening is available exactly where the object's idle states carry a reachable cycle, which is an OBJECT hypothesis rather than a consequence of ParamsOk.\n\nVERIFIED STARTING POSITION (compiled refutation, not an unproved conjecture):\n(1) The decision gate returned FAIL on sub-question (i), ADMISSIBILITY. IdleGapLengthening is refuted by idleGapLengthening_refuted in prototype/idle-gap-lengthening.lean (namespace Probe838C, standalone, not wired), on the standard axiom profile with no sorryAx.\n(2) The obstruction is NOT where it was expected. pinCompat_of_ladderPath does loosen as a region start moves farther from z, exactly as predicted -- but the lengthening is denied one level BELOW the pin condition, by step itself. A ladder path's object walk satisfies step (objAt g v) (objAt g (v+1)) = true at every position, so an idle run of length two requires an idle-to-idle edge in the object's step graph, and an object satisfying ParamsOk need not have one. no_consecutive_idle_of_no_idle_step states this generically.\n(3) The witness is the two-state object Qo := Bool with pendO = id and stepO x y = x || y (exactly that edge missing), serial in both directions, at a parameter tuple ParamsOk genuinely admits (the periodicity fixpoint's own outputs, discharged by paramsOk_params).\n(4) Sub-question (ii), TYPE PRESERVATION, was NEVER REACHED -- the refutation closes from step alone. It is untouched, not skipped.\n\nSCOPE: identify the object hypothesis (reachable cycle among idle states) under which the lengthening IS available, state it as an explicit premise, and determine what it buys. The idle run's length is a datum of the object, not a parameter a construction may raise -- any statement claiming otherwise is false, not merely weaker.\n\nORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Citation: parent issues.jsonl iss_1794297685402_9saHqw.\n",
       "effort": "high",
@@ -2877,7 +2889,7 @@
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean"
       ],
       "created": "2026-11-10T12:04:38Z",
-      "last_updated": "2026-11-10T16:36:26Z",
+      "last_updated": "2026-11-10T22:27:46Z",
       "artifacts": [],
       "audit_verdict": {
         "proposal": {
@@ -2892,7 +2904,8 @@
         "verdict_count": 479,
         "degradation_count": 454,
         "evidence_file": "specs/evidence/audit-verdicts/911.json"
-      }
+      },
+      "session_id": "sess_1794343738_e0026f_911"
     },
     {
       "project_number": 912,

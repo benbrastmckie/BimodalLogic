@@ -42,7 +42,7 @@ next_project_number: 916
 
 ### Completeness
 
-895 [RESEARCHED] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
+895 [PLANNING] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
   └─ 896 [NOT STARTED] — The extended L-plus proof system (TM-plus + axiom set +...
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
@@ -78,8 +78,8 @@ next_project_number: 916
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-910 [RESEARCHED] — Dispatch or explicitly exclude the SATURATED-GAP third branch...
-911 [RESEARCHED] — Pursue the idle-cycle sharpening left open by the idle-gap...
+910 [PLANNED] — Dispatch or explicitly exclude the SATURATED-GAP third branch...
+911 [PLANNING] — Pursue the idle-cycle sharpening left open by the idle-gap...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Documentation
@@ -221,7 +221,7 @@ NOT a repair of this repository's own gates. `.githooks/pre-commit`, `scripts/ty
 
 ### 911. Idle cycle sharpening idle gap lengthening
 - **Effort**: high
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 909
@@ -243,11 +243,12 @@ ORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Cit
 
 ### 910. Saturated gap branch kappa collision regimes
 - **Effort**: high
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 909
 - **Parent**: Task 838
+- **Plan**: [910_saturated_gap_branch_kappa_collision_regimes/plans/01_saturated-gap-monotone-dispatch.md]
 
 **Description**: Dispatch or explicitly exclude the SATURATED-GAP third branch of kappa_collision_regimes, which neither landed cell inclusion addresses in either direction.
 
@@ -471,7 +472,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 895. The Auxiliary-Atoms rule for L-plus at ZTime, forward and mirror, formula level with soundness
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 894, Task 915

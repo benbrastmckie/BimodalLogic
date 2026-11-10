@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 7,
+  "summary": "Authored a 7-phase plan that splits branch 3 of kappa_collision_regimes into a dispatchable MONOTONE residue (register displaced in the same direction as the countdown) and an explicitly excluded ANTITONE one. Three plan-time Lean runs settled the split rather than assuming it: the free-register anchor clause closes by omega from the six facts the landed common-shift proof already assembles plus exactly two bounds on the target register; the lower bound is non-removable, with an arithmetic witness; and both pinned kappa-collision witness pairs close by decide. The dispatched half covers the exact (2,0)/(4,1) pair the task description cites as reached by no landed inclusion, and the exclusion is carried as a named hypothesis backed by a compiled dichotomy and two non-vacuity records, so nothing is tacit. The reserved name cellLE_zero_const_of_kappa_eq stays claimed by nothing in every phase.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/910_saturated_gap_branch_kappa_collision_regimes/plans/01_saturated-gap-monotone-dispatch.md",
+      "summary": "Seven-phase lean4 plan: free-register raise, its necessity record, upward and downward cell inclusions on the monotone saturated-gap residue, the displacement dichotomy with two non-vacuity records, the monotone cell-equality schema, and a final records/gates phase. Eleven new declarations, all in LadderCell.lean."
+    }
+  ],
+  "dispatch_seq": 14
+}
