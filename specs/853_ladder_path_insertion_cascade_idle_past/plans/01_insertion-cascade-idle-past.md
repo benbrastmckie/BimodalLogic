@@ -241,7 +241,7 @@ reads either new name yet.
 
 ---
 
-### Phase 2: The Region Start of `a`'s Own Region [NOT STARTED]
+### Phase 2: The Region Start of `a`'s Own Region [COMPLETED]
 
 **Goal**: The one place the idle-past regime hypothesis does real work. An idle position at or
 below a pending `a` yields the greatest idle position `s ≤ a`, which is the region start of `a`'s
@@ -251,13 +251,13 @@ single insertion at `s` sufficient in Phases 3 and 4.
 
 **Tasks**:
 
-- [ ] `exists_region_start_of_idle_past` (Goal, signature as pinned below): from `hg`, `hpa : pend (objAt g a) = true`, `hp : p ≤ a` and `hpi : pend (objAt g p) = false`, produce `s` with `p ≤ s`, `s + 1 ≤ a`, `pend (objAt g s) = false`, `pend (objAt g (s + 1)) = true`, `a ≤ s + 1 + (cntAt g (s + 1) : ℤ)`, and `∀ t, s < t → t ≤ a → pend (objAt g t) = true`.
-- [ ] Model the proof on the landed `cntAt_le_nxtAt_succ_of_idle_past` (`LadderAgree.lean`), whose first half is this construction almost verbatim: `Nat.find` over `{j | pend (objAt g (a - j)) = false}`, nonempty by `(a - p).toNat`; `Nat.find_min` gives the run of pending positions above it; `0 < j₀` because `a` is pending; set `s := a - (j₀ : ℤ)`.
-- [ ] The window inequality comes from `cntAt_add_of_pend_back g hg a (j₀ - 1)` on that run: `cntAt g (s + 1) = cntAt g a + (j₀ - 1)`, so `s + 1 + cntAt g (s + 1) = a + cntAt g a ≥ a`. Do NOT route it through `pend_of_mem_region` — that reads the span from the start, which is the direction this phase is establishing.
-- [ ] The maximality clause is `Nat.find_min` re-indexed from `j` to `t := a - j`; state it in the `t` form the later phases consume rather than leaving a `j` form for them to convert.
-- [ ] Docstring: state that this is where the idle-past regime hypothesis is consumed, that the landed `le_region_start_of_idle` is the COMPLEMENTARY fact (an idle witness lies at or below a given region start) and is not what this lemma proves, and that the maximality clause is the hypothesis the trichotomy of the next phase needs.
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: one `#guard_msgs in #print axioms` pin.
-- [ ] Record in `issues.jsonl` whether the `Nat.find` route was reusable as written or whether the shared machinery was worth factoring out of `cntAt_le_nxtAt_succ_of_idle_past` into a named helper. Do NOT refactor the landed lemma as part of this phase if a helper would change its signature.
+- [x] `exists_region_start_of_idle_past` (Goal, signature as pinned below): from `hg`, `hpa : pend (objAt g a) = true`, `hp : p ≤ a` and `hpi : pend (objAt g p) = false`, produce `s` with `p ≤ s`, `s + 1 ≤ a`, `pend (objAt g s) = false`, `pend (objAt g (s + 1)) = true`, `a ≤ s + 1 + (cntAt g (s + 1) : ℤ)`, and `∀ t, s < t → t ≤ a → pend (objAt g t) = true`.
+- [x] Model the proof on the landed `cntAt_le_nxtAt_succ_of_idle_past` (`LadderAgree.lean`), whose first half is this construction almost verbatim: `Nat.find` over `{j | pend (objAt g (a - j)) = false}`, nonempty by `(a - p).toNat`; `Nat.find_min` gives the run of pending positions above it; `0 < j₀` because `a` is pending; set `s := a - (j₀ : ℤ)`.
+- [x] The window inequality comes from `cntAt_add_of_pend_back g hg a (j₀ - 1)` on that run: `cntAt g (s + 1) = cntAt g a + (j₀ - 1)`, so `s + 1 + cntAt g (s + 1) = a + cntAt g a ≥ a`. Do NOT route it through `pend_of_mem_region` — that reads the span from the start, which is the direction this phase is establishing.
+- [x] The maximality clause is `Nat.find_min` re-indexed from `j` to `t := a - j`; state it in the `t` form the later phases consume rather than leaving a `j` form for them to convert.
+- [x] Docstring: state that this is where the idle-past regime hypothesis is consumed, that the landed `le_region_start_of_idle` is the COMPLEMENTARY fact (an idle witness lies at or below a given region start) and is not what this lemma proves, and that the maximality clause is the hypothesis the trichotomy of the next phase needs.
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: one `#guard_msgs in #print axioms` pin. *(measurement: the pin reads `[propext, Quot.sound]` — no `Classical.choice`; the file is 2,255 lines against its unchanged `2300` baseline, and `LadderAgree.lean` is 3,024 against its `3100` baseline, so neither needed raising.)*
+- [x] Record in `issues.jsonl` whether the `Nat.find` route was reusable as written or whether the shared machinery was worth factoring out of `cntAt_le_nxtAt_succ_of_idle_past` into a named helper. Do NOT refactor the landed lemma as part of this phase if a helper would change its signature. *(outcome: the `Nat.find` route was reusable as written; no helper was factored out and `cntAt_le_nxtAt_succ_of_idle_past` is untouched.)*
 
 **Timing**: 1.5 hours
 

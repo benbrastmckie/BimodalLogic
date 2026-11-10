@@ -2184,6 +2184,25 @@ the standard profile or a subset of it. No `sorryAx`, no custom axiom anywhere. 
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.le_region_start_of_idle
 
+/-! ### The region start of the splice point's own region
+
+`le_region_start_of_idle` above reads a GIVEN region start against an idle witness.
+`exists_region_start_of_idle_past` is the complementary CONSTRUCTIVE direction: from an idle
+position anywhere at or below a pending `a` it produces the greatest idle position `s ≤ a`, which
+is the start of `a`'s own region — with the window inequality `a ≤ s + 1 + cntAt g (s + 1)` and the
+MAXIMALITY clause saying every position strictly between `s` and `a` is pending.  That maximality
+is what makes a single insertion at `s` sufficient, and it is the hypothesis the cascade's
+region-start trichotomy consumes.  `Nat.find` over backward idle distances is decidable on `Bool`
+equality without choice, so the profile stays at `[propext, Quot.sound]`.
+
+This pin is still NOT an existential over ladder paths: `hpins` for the inserted walk and both
+`exists_ladderPath_at_region*` names remain owed. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_region_start_of_idle_past' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_region_start_of_idle_past
+
 /-! ### `Real`'s three RELATIONAL conditions
 
 Conditions (2), (3) and (4) of `Real` — the three that quantify `relK` between two members, and

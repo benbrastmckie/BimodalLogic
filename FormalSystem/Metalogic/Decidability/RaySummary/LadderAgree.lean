@@ -1930,6 +1930,62 @@ theorem le_region_start_of_idle (g : ℤ → LadderState Q pend) (hg : IsLadderP
   exact Bool.false_ne_true
     (hp.symm.trans (pend_of_mem_region g hg s p hs1 (by omega) (by omega)))
 
+/-- **THE REGION START OF `a`'s OWN REGION.** This is where the idle-past regime hypothesis does
+its real work.  An idle position anywhere at or below a pending `a` yields the GREATEST idle
+position `s ≤ a`, and that position is the start of the region containing `a`: `s` is idle, `s + 1`
+is pending, the window inequality `a ≤ s + 1 + cntAt g (s + 1)` places `a` inside the span `s + 1`
+opens, and every position strictly between `s` and `a` is pending.
+
+The last clause — maximality — is the one the insertion cascade needs.  It is what makes a SINGLE
+insertion at `s` sufficient: because nothing between `s` and `a` is idle, no region start other
+than `s` itself lies in that interval, so lengthening the region at `a` cannot disturb a pin
+strictly inside the block.
+
+`le_region_start_of_idle` above is the COMPLEMENTARY fact and is not what this lemma proves: there,
+a region start is GIVEN and an idle witness is shown to lie at or below it; here the region start
+is CONSTRUCTED from the idle witness.  The two compose but neither follows from the other. -/
+theorem exists_region_start_of_idle_past (g : ℤ → LadderState Q pend)
+    (hg : IsLadderPath step pend g) (a p : ℤ)
+    (hpa : pend (objAt g a) = true) (hp : p ≤ a) (hpi : pend (objAt g p) = false) :
+    ∃ s : ℤ, p ≤ s ∧ s + 1 ≤ a ∧ pend (objAt g s) = false ∧
+      pend (objAt g (s + 1)) = true ∧ a ≤ s + 1 + (cntAt g (s + 1) : ℤ) ∧
+      (∀ t : ℤ, s < t → t ≤ a → pend (objAt g t) = true) := by
+  classical
+  -- the least backward distance at which the path is idle
+  have hex : ∃ j : ℕ, pend (objAt g (a - (j : ℤ))) = false :=
+    ⟨(a - p).toNat, by rw [show a - ((a - p).toNat : ℤ) = p by omega]; exact hpi⟩
+  set j₀ := Nat.find hex with hj₀
+  have hfind : pend (objAt g (a - (j₀ : ℤ))) = false := Nat.find_spec hex
+  have hlt : ∀ i : ℕ, i < j₀ → pend (objAt g (a - (i : ℤ))) = true := by
+    intro i hi
+    have := Nat.find_min hex (m := i) (by omega)
+    rw [Bool.not_eq_false] at this
+    exact this
+  -- minimality bounds the distance by the witness, which is what puts `s` at or above `p`
+  have hle : j₀ ≤ (a - p).toNat := Nat.find_le (by
+    rw [show a - ((a - p).toNat : ℤ) = p by omega]; exact hpi)
+  have hj₀pos : 0 < j₀ := by
+    rcases Nat.eq_zero_or_pos j₀ with h | h
+    · exfalso
+      rw [h, show a - ((0 : ℕ) : ℤ) = a by push_cast; ring] at hfind
+      exact Bool.false_ne_true (hfind.symm.trans hpa)
+    · exact h
+  set d := j₀ - 1 with hd
+  have hdj : j₀ = d + 1 := by omega
+  have hrun : ∀ i : ℕ, i ≤ d → pend (objAt g (a - (i : ℤ))) = true :=
+    fun i hi => hlt i (by omega)
+  have hsucc : a - (j₀ : ℤ) + 1 = a - (d : ℤ) := by rw [hdj]; push_cast; ring
+  refine ⟨a - (j₀ : ℤ), by omega, by omega, hfind, ?_, ?_, ?_⟩
+  · rw [hsucc]; exact hrun d le_rfl
+  · -- the whole run above the start is pending, so the start's countdown is `a`'s plus the run
+    have hcnt : cntAt g (a - (d : ℤ)) = cntAt g a + d := cntAt_add_of_pend_back g hg a d hrun
+    rw [hsucc, hcnt]
+    omega
+  · -- maximality is `Nat.find_min` re-indexed from the distance `i` to the position `t = a - i`
+    intro t ht1 ht2
+    have := hrun (a - t).toNat (by omega)
+    rwa [show a - (((a - t).toNat : ℕ) : ℤ) = t by omega] at this
+
 end Cascade
 
 /-! ### The alternative history: a pend-profile-preserving relabelling of the walk
