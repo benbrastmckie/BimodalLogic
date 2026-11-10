@@ -1,5 +1,5 @@
 ---
-next_project_number: 915
+next_project_number: 916
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 915
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,894,899,900,905,906,907,908,909,910,911,912 | -- | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,894,899,900,905,906,907,908,909,910,911,912,915 | -- | agent-system, algebraic-representation, completeness, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,895,913,914 | 298,428,502,743,761,873,894,912 | agent-system, algebraic-representation, completeness, ... |
 | 3 | 410,498,499,500,804,861,896 | 429,497,763,803,895 | algebraic-representation, completeness, decidability, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -49,6 +49,7 @@ next_project_number: 915
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 905 [NOT STARTED] — Eliminate cross-certification between the forward and...
 906 [NOT STARTED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
+915 [NOT STARTED] — Re-convert and re-index reynolds\_2001 with sections 5-8...
 
 ### Dataset Enhancement
 
@@ -129,6 +130,18 @@ next_project_number: 915
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 915. Reconvert reindex reynolds auxiliary atoms sections
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: completeness
+- **Dependencies**: None
+- **Parent**: Task 894
+
+**Description**: Re-convert and re-index reynolds_2001 with sections 5-8 included, so the Auxiliary Atoms rule has a citable source statement in the corpus. Evidence: literature-search.sh returns nothing for 'auxiliary atoms' in a formal-logic sense, and reynolds_2001's existing sub-index entry skips the axiom-system sections where the rule sits (its TOC jumps 4.7-4.8 straight to 9). Research on the forward-cone unravelling proceeded from FormalSystem/Metalogic/NamingRules.lean's recorded Saturation obligation as the source of record instead. The Auxiliary-Atoms rule for L-plus at ZTime is the direct subject of a downstream task, which needs the rule's actual source statement rather than only the repo's recorded obligation. Deliverable: the converted sections present in Literature/, a refreshed specs/literature-index.json entry covering them, and a literature-search.sh query for the rule that returns the right chunk.
+
+---
 
 ### 914. Give the batch-gate-deferral directive a narrowing form that covers a phase touching only project sources, not the agent-system deploy tree
 - **Status**: [NOT STARTED]
