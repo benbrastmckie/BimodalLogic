@@ -1,5 +1,5 @@
 ---
-next_project_number: 909
+next_project_number: 912
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 909
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,894,899,900,905,906,907,908 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,894,899,900,905,906,907,908,909,910,911 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,895 | 298,428,502,743,761,873,894 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,804,861,896 | 429,497,763,803,895 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -62,6 +62,9 @@ next_project_number: 909
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
+909 [RESEARCHED] — Construct the register-LOWERING deletion that would drop the...
+910 [RESEARCHED] — Dispatch or explicitly exclude the SATURATED-GAP third branch...
+911 [RESEARCHED] — Pursue the idle-cycle sharpening left open by the idle-gap...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Formula Refactor
@@ -117,6 +120,71 @@ next_project_number: 909
 908 [NOT STARTED] — Audit the 65 remaining "Constraints consumed:...
 
 ## Tasks
+
+### 911. Idle cycle sharpening idle gap lengthening
+- **Effort**: high
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 838
+
+**Description**: Pursue the idle-cycle sharpening left open by the idle-gap lengthening decision gate's FAIL verdict: the lengthening is available exactly where the object's idle states carry a reachable cycle, which is an OBJECT hypothesis rather than a consequence of ParamsOk.
+
+VERIFIED STARTING POSITION (compiled refutation, not an unproved conjecture):
+(1) The decision gate returned FAIL on sub-question (i), ADMISSIBILITY. IdleGapLengthening is refuted by idleGapLengthening_refuted in prototype/idle-gap-lengthening.lean (namespace Probe838C, standalone, not wired), on the standard axiom profile with no sorryAx.
+(2) The obstruction is NOT where it was expected. pinCompat_of_ladderPath does loosen as a region start moves farther from z, exactly as predicted -- but the lengthening is denied one level BELOW the pin condition, by step itself. A ladder path's object walk satisfies step (objAt g v) (objAt g (v+1)) = true at every position, so an idle run of length two requires an idle-to-idle edge in the object's step graph, and an object satisfying ParamsOk need not have one. no_consecutive_idle_of_no_idle_step states this generically.
+(3) The witness is the two-state object Qo := Bool with pendO = id and stepO x y = x || y (exactly that edge missing), serial in both directions, at a parameter tuple ParamsOk genuinely admits (the periodicity fixpoint's own outputs, discharged by paramsOk_params).
+(4) Sub-question (ii), TYPE PRESERVATION, was NEVER REACHED -- the refutation closes from step alone. It is untouched, not skipped.
+
+SCOPE: identify the object hypothesis (reachable cycle among idle states) under which the lengthening IS available, state it as an explicit premise, and determine what it buys. The idle run's length is a datum of the object, not a parameter a construction may raise -- any statement claiming otherwise is false, not merely weaker.
+
+ORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Citation: parent issues.jsonl iss_1794297685402_9saHqw.
+
+---
+
+### 910. Saturated gap branch kappa collision regimes
+- **Effort**: high
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 838
+
+**Description**: Dispatch or explicitly exclude the SATURATED-GAP third branch of kappa_collision_regimes, which neither landed cell inclusion addresses in either direction.
+
+VERIFIED STARTING POSITION (compiled, not argued):
+(1) kappa_collision_regimes landed with THREE branches (equal register, common shift, saturated gap), not the two its plan anticipated. The two-branch shape is NOT derivable from the three destructors it was to be proved from plus (K4)'s 2 <= B: clipIdx clips the gap coordinate at B, so a collision saturated at that clip on both sides of the window satisfies neither alternative.
+(2) The refutation is compiled, not asserted: kappa_collision_two_regimes_refuted at Tc = Tn = P = 0, B = 2 and the pairs (0,2),(0,3).
+(3) The residue SURVIVES regime restriction. kappa_collision_two_regimes_refuted_of_pend_gap shows the saturated-gap branch survives restriction to the pending-forever regime at countdowns above the threshold (Tc = Tn = P = 0, B = 2, pairs (2,0) and (4,1)). On that residue no landed inclusion applies in either direction, and the forward-slack hypothesis does not reach it: forward slack buys the deletion inside z's region, while the obstruction is that the register must move by an amount the countdown does not match.
+
+TWO ADMISSIBLE OUTCOMES: either dispatch the branch with a genuine argument, or exclude it from the obligation's hypotheses explicitly and state the exclusion in the signature -- never leave it tacit. The reserved name cellLE_zero_const_of_kappa_eq stays reserved either way.
+
+ORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Citation: parent issues.jsonl iss_1794296515751_mFmN7o.
+
+---
+
+### 909. Register lowering deletion drop equal register
+- **Effort**: high
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 838
+
+**Description**: Construct the register-LOWERING deletion that would drop the equal-register hypothesis n = n' from cellLE_zero_const_of_kappa_eq_of_forwardSlack on branch 2 of the collision case split.
+
+VERIFIED STARTING POSITION (established by compiled objects, not argued):
+(1) The landed restricted obligation cellLE_zero_const_of_kappa_eq_of_forwardSlack (FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean) concludes cell EQUALITY via Set.Subset.antisymm, but carries FOUR restrictions, the fourth of which -- the equal-register hypothesis n = n' -- was not anticipated when the obligation was stated. The proof routes through kappa_eq_components rather than kappa_collision_regimes.
+(2) The common-shift sub-regime's DOWNWARD direction is the specific blocker: the landed deletion HOLDS the register, and nothing landed LOWERS it. That asymmetry is what forces the n = n' hypothesis.
+(3) The forward register cascade is the underlying obstruction. For a <= v the deleted walk's pin v IS the original path's pin v + l, so the bound demanded by exists_ladderPath_of_walk_nxt exceeds what pinCompat_of_ladderPath supplies by exactly l, and by m*(P+1) when iterated. This is not slack a sharper proof recovers: tightChain_slack_zero compiles a tight doubling chain with Lipschitz slack exactly 0 at every gap between pins.
+(4) LadderPump.lean carries single-step deletion admissibility (exists_deleted_ladderPath_of_pend_past) and the deletion type lemma (tpOf_eq_delIdx_of_tpOf_eq), but NO iterated deletion and no downward assembly; the single-step lemma fixes the deleted path's register base at nxtAt g (l : Z) rather than prescribing the register at the compared position.
+
+SCOPE: a register-lowering deletion dropping the hypothesis on branch 2 only. It does NOT reach the saturated-gap residue, which a sibling follow-up owns. The reserved name cellLE_zero_const_of_kappa_eq remains reserved and claimed by nothing -- nothing here may land under it.
+
+ORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Citations: parent issues.jsonl iss_1793731048423_ByWoAB (suggested_channel follow_up_task, honored) and iss_1794299302902_wvV3dt.
+
+---
 
 ### 908. Constraints consumed marker accuracy audit
 - **Effort**: medium
