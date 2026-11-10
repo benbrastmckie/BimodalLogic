@@ -3,8 +3,8 @@
 - **Task**: 838 - Two-sided open core: attack the depth-`0` cell obligation through a `(K2)`-level pigeonhole over region starts on the pin-free side, or restate the obligation under a new name
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-11-03T17:42:40Z
-- **Completed**: 2026-11-03T19:05:00Z
-- **Effort**: ~1.5 hours of wall clock over four landed phases and one blocked phase
+- **Completed**: 2026-11-10T07:15:00Z
+- **Effort**: ~2 hours of wall clock over six landed phases (Phase 5's earlier blocker withdrawn as mis-anchored and the phase then landed)
 - **Dependencies**: None at the `state.json` level. Parent: the task whose pump layer is this round's entire input. The ladder realization theorem's depth-`0` induction is the downstream consumer; nothing here edits any of its artifacts
 - **Artifacts**: plans/01_pin-free-pigeonhole-open-core.md, prototype/pin-free-side.lean, prototype/spanning-divisibility.lean
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -15,10 +15,13 @@ Route (a) of the two named open routes was taken: a `(K2)`-level pigeonhole over
 exploiting the pin-free side both refuting objects carry. Its three provable pieces landed — the
 pin-free dichotomy, the pigeonhole over the pins, and the exponential `(K2)` bound — and the
 decision gate they fed returned **FAIL** with a compiled refuting object: `(K1)` does not
-constrain the length of a type-respecting block that spans a pin. The closing phase is
-**`[BLOCKED]`**: the FAIL branch's route to a regime-restricted obligation rests on a deletion
-mirror that is not landed and whose obstruction this task localized to one undischargeable
-register bound. Nothing weakened was landed under the reserved name or under the planned new one.
+constrain the length of a type-respecting block that spans a pin. Phase 5's earlier blocker was
+then **withdrawn as mis-anchored** — the goal it quoted carried the anchor VALUE at the hardwired
+anchor POSITION `0`, while that anchor is a free argument discharged existentially, and the
+re-anchored deletion is landed — and the phase landed the slack accounting instead: the regime's
+baseline is free at amount `0` and the two transports around it are exact, so the regime is not
+itself a source of slack. Nothing weakened was landed under the reserved name or under the
+planned new one, and the depth-`0` obligation remains neither proved nor refuted.
 
 ## What Changed
 
@@ -33,6 +36,15 @@ register bound. Nothing weakened was landed under the reserved name or under the
   - `exists_pinTypeBlock_of_budget_lt_pins` — the PIGEONHOLE OVER REGION STARTS: more than twice
     the type-pigeonhole budget of pins in a window forces a type-respecting block SPANNING a pin.
   - `exists_spanningBlock_of_pins_below` — that tuple in the refuted condition's own shape.
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean` — `section Slack` gained the
+  slack accounting: `hasForwardSlack_zero`, the FREE BASELINE (`HasForwardSlack g z 0 (nxtAt g z)`
+  on every ladder path, from `nxtAt_lipschitz_two_sided` alone — the regime becomes a constraint
+  only at a positive amount), and `hasForwardSlack_raise_of_zero`, its composite with
+  `hasForwardSlack_raise` (the raised path carries slack `d · l` from no slack hypothesis at all),
+  whose docstring states the accounting in full: baseline `0` free, raise `+ d · l` exact,
+  deletion `− l` per step exact, hence no composition yields slack exceeding the total raised
+  amount and a raise-then-delete round trip at `z` is net zero. No theorem quantified over
+  compositions was written — the plan prohibits one, and the two exact transports already say it.
 - `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean` — `two_pow_card_prodState_le_Tc`
   in `section Budget`: `(K2)` bounds `T_c` below by `2 ^ Fintype.card (ProdState Q φ)`, an
   EXPONENTIAL in the product carrier's cardinality, which is the quantity a pigeonhole over the
@@ -98,8 +110,26 @@ register bound. Nothing weakened was landed under the reserved name or under the
   routes through the chain's register tightness and the landed backward window rather than by
   extracting a region index from the chain's idle predicate.
 - **Phase 4**, the PASS-branch task is skipped: the gate returned FAIL.
-- **Phase 5** is `[BLOCKED]`, not completed. Its full blocker record is in the plan file's Phase 5
-  body.
+- **Phase 5**'s earlier `[BLOCKED]` record is WITHDRAWN as mis-anchored, and the phase is
+  `[COMPLETED]`. The withdrawal is recorded in the plan file's Phase 5 body and in the issue log
+  as a `win`, not back-edited out.
+- **Phase 5**, `hasForwardSlack_raise_of_zero` placement: after `hasForwardSlack_raise` rather
+  than beside `hasForwardSlack_zero`. The composite consumes that lemma, so the plan's two
+  placement sentences read literally would forward-reference it; the first scoped build failed
+  with `Unknown identifier hasForwardSlack_raise`. It remains inside `section Slack` as specified.
+- **Phase 5**, the axiom-test pin: written to the MEASURED profile `[propext, Quot.sound]`,
+  strictly less than the standard profile the plan predicted, because
+  `nxtAt_lipschitz_two_sided` consumes no choice. The plan's criterion reads “or less”, and the
+  test block's narrative line states the lesser profile explicitly rather than claiming the
+  standard one.
+- **Phase 5** touched three files beyond its enumerated list — the generated inventory blocks in
+  two `README.md` files and the root `README.md` — plus `typst/generated/status.typ`. All four are
+  line-count regenerations that this phase's 40 added library lines made stale, each prescribed by
+  the gate that detected it (`check-module-invariants.sh --emit-inventory`,
+  `typst-sync-check.sh --fix`).
+- **Phase 5**'s criterion `grep -cE 'sorry|…'` on `LadderChain.lean` reports 1, not 0 — unchanged
+  from HEAD. The single match is a pre-existing DOCSTRING sentence (“is not a disguised `sorry`”),
+  not a declaration; `lean-sorry-census.sh` reports `sorry_count: 0` over every source root.
 
 ## Verification
 
@@ -109,9 +139,11 @@ register bound. Nothing weakened was landed under the reserved name or under the
 - Sorry count: 0 (`lean-sorry-census.sh` over the resolved source roots).
 - Vacuous count: 0.
 - Axiom count: unchanged — no `^axiom ` line added anywhere.
-- Axiom profiles: all five new library declarations and all five new prototype headlines carry a
+- Axiom profiles: all seven new library declarations and all five new prototype headlines carry a
   subset of `[propext, Classical.choice, Quot.sound]`; no `sorryAx` anywhere.
-- Tests: `BimodalTest.Metalogic.KTypeSummaryAxiomTest` builds green with all eight new pins.
+  `hasForwardSlack_zero` is strictly below that profile at `[propext, Quot.sound]`.
+- Tests: `BimodalTest.Metalogic.KTypeSummaryAxiomTest` builds green with all nine new pins.
+- `LadderChain.lean` is 2,267 lines against an unbumped `longFile` baseline of 2,300.
 - Gates: `check-module-invariants.sh --emit-inventory --check` exit 0;
   `check-task-references.sh --quiet` exit 0 on every changed non-`specs/**` file;
   `check-evidence-probes.sh` and `verify-deploy.sh` results recorded in the Phase 6 handoff.
@@ -130,6 +162,12 @@ register bound. Nothing weakened was landed under the reserved name or under the
 - The gate's FAIL closes one of the two named open routes at the level of its arithmetic: no
   derivation of a spanning block's divisibility from `(K1)` is possible, so route (a) cannot
   deliver the downward inclusion without an amendment or a new forward hypothesis.
+- The slack accounting leaves Phase 8's decision gate as the only remaining candidate source of
+  slack: every positive amount in any composition of the landed transports is paid for by a raise,
+  so the regime supplies none of its own. What the obligation still needs is strictly weaker than
+  a state-level regime (refuted by `ClimbWitness.hasForwardSlack_refuted_unconditional`) and
+  strictly stronger than the landed path-level hypothesis: for each type realized at the upper
+  state, SOME path realizing it there with slack.
 - The depth-`0` obligation is still neither proved nor refuted under `ParamsOk`, and the reserved
   name is still claimed by nothing. The downstream induction remains unenterable along this route.
 

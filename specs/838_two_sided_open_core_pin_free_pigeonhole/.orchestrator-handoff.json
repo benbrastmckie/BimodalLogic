@@ -1,31 +1,25 @@
 {
-  "status": "partial",
+  "status": "implemented",
+  "skeleton": false,
   "phase": "implement",
-  "dispatch_seq": 2,
-  "summary": "Phases 1-4 and 6 landed and committed: the certificate-free pin layer LadderPin.lean (the pin-free dichotomy and a pigeonhole over region starts producing a type-respecting block that SPANS a pin), the exponential (K2) bound two_pow_card_prodState_le_Tc in LadderChain.lean, two compiled prototypes, and the brought-current records. Phase 4's DECISION GATE returned FAIL with a compiled refuting object: (K1) provably does not constrain a spanning block's length, because both cycle-length conjuncts demand a pending-throughout walk and satPeriod is not quantified over block lengths. Phase 5 is [BLOCKED]: its route to a regime-restricted obligation rests on a deletion mirror that is not landed, and the obstruction was localized to one undischargeable register bound that the forward cascade makes irrecoverable. Every gate is green and no weakened statement was landed under the reserved name or the planned new one.",
+  "dispatch_seq": 5,
+  "summary": "Phase 5 landed: the slack accounting is compiled rather than argued. hasForwardSlack_zero gives the FREE BASELINE (HasForwardSlack g z 0 (nxtAt g z) on every ladder path, from nxtAt_lipschitz_two_sided alone), and hasForwardSlack_raise_of_zero composes it with hasForwardSlack_raise so a raised path carries slack d*l from no slack hypothesis at all; its docstring states the accounting in full (baseline 0 free, raise +d*l exact, deletion -l per step exact, so no composition exceeds the total raised amount and a raise-then-delete round trip at z is net zero). Phase 5's earlier blocker is WITHDRAWN as mis-anchored and recorded as a win, not back-edited out: the goal it quoted carried the anchor VALUE at the hardwired anchor POSITION 0, while that anchor is a free argument discharged existentially, and the re-anchored deletion is already landed. One axiom-test pin plus one narrative line. No theorem quantified over compositions was written (the plan prohibits one). Every gate green: full unscoped guarded build exit 0 with zero errors, sorry_count 0, check-module-invariants.sh exit 0, typst-sync counts-only clean. Nothing was landed under the reserved name cellLE_zero_const_of_kappa_eq or under the planned new name.",
+  "phases_completed": 6,
+  "phases_total": 10,
+  "sorry_inventory": [],
+  "blockers": [],
+  "continuation_path": null,
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
-      "summary": "The pin layer, the pigeonhole over region starts, the exponential (K2) bound, the gate's FAIL verdict, and the closing phase's blocker."
+      "summary": "Round-01 summary brought current: Phase 5's blocker withdrawal, the free slack baseline, the exact-transport accounting, and what Phase 8's gate is now the only remaining source of."
     },
     {
       "type": "handoff",
-      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-5-handoff-20261103T182434Z.md",
-      "summary": "Phase 5's blocker, with the undischargeable goal quoted verbatim."
+      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-5-handoff-20261110T071151Z.md",
+      "summary": "Phase 5's end state, the next action (Phase 7's LadderCell.lean), and the empty sorry inventory."
     }
   ],
-  "phases_completed": 5,
-  "phases_total": 6,
-  "blockers": [],
-  "user_decision": {
-    "question": "Phase 4 refuted the premise behind the prior cycle's recorded answer: the depth-0 obligation's regime-restricted form is not provable from what is landed, because the obligation concludes cell EQUALITY and only the upward inclusion exists, the downward one being blocked by the forward register cascade. How should the round close?",
-    "options": [
-      "Spawn a dedicated task for the downward/deletion assembly with an explicit forward-slack hypothesis, and land the regime-restricted obligation (as an equality) only once that exists",
-      "Land the one-directional upward inclusion now under an honest NEW name that does not claim to be the obligation, with the record naming the missing reverse inclusion the consumer must supply",
-      "Open a (K1)-amendment task, accepting that it alters the parameter contract every wired probe discharges"
-    ],
-    "recommended": "Spawn a dedicated task for the downward/deletion assembly with an explicit forward-slack hypothesis, and land the regime-restricted obligation (as an equality) only once that exists",
-    "blocking": false
-  }
+  "next_steps": "Run /orchestrate 838 --implement to execute Phase 7 (LadderCell.lean: cellAt_subset_of_common_shift_of_pend_past against the pinned Challenge signature) and then Phase 8's decision gate; Phases 7 and 8 are the plan's one parallel pair."
 }

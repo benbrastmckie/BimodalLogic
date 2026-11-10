@@ -1,36 +1,50 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/plans/01_pin-free-pigeonhole-open-core.md",
-      "summary": "Revised ten-phase plan: Phase 5's mis-anchored blocker withdrawn, the landed re-anchored deletion layer taken as input, and four new phases -- the free slack baseline, a new LadderCell.lean (common-shift inclusion plus kappa-collision case split), an idle-gap-lengthening decision gate, and a branch-selected close."
+      "type": "summary",
+      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
+      "summary": "Phase 5 compiled the slack accounting: the free baseline hasForwardSlack_zero and the exact-transport composite hasForwardSlack_raise_of_zero, with the mis-anchored blocker withdrawn."
     }
   ],
-  "next_steps": "Run /orchestrate 838 --implement to execute the revised plan from Phase 5; Phases 7 and 8 are the one parallel pair.",
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "typst/generated/status.typ",
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/plans/01_pin-free-pigeonhole-open-core.md",
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-5-handoff-20261110T071151Z.md",
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/issues.jsonl"
+  ],
+  "sorry_inventory": [],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count_changed": false,
+    "build_passed": true,
+    "verification_passed": true,
+    "detail": "Full unscoped guarded lake build exit 0, zero error: lines, .olean newer than source on both touched modules. Scoped builds of LadderChain, FormalSystem and BimodalTest.Metalogic.KTypeSummaryAxiomTest each exit 0. lean-sorry-census.sh over all resolved source roots: sorry_count 0. Vacuity and ^axiom counts unchanged from HEAD on every changed file. check-module-invariants.sh exit 0 after the prescribed --emit-inventory regeneration; check-task-references.sh --quiet exit 0 on each changed non-specs file; typst-sync-check.sh --counts-only MISMATCH_COUNT=0. hasForwardSlack_zero axiom profile [propext, Quot.sound], no sorryAx; signature matches the pinned Challenge statement modulo the block's stated ASCII convention. LadderChain.lean 2267 lines against an unbumped longFile baseline of 2300."
+  },
+  "completion_data": {
+    "completion_summary": "Phase 5 of ten landed: the forward-slack regime's baseline is compiled as free (hasForwardSlack_zero) and its two transports shown exact, with hasForwardSlack_raise_of_zero as the composite that needs no slack hypothesis; the phase's earlier blocker was withdrawn as mis-anchored and recorded as a win. The depth-0 cell obligation stays neither proved nor refuted and the reserved name stays claimed by nothing; Phase 8's idle-gap gate is now the only remaining candidate source of slack."
+  },
+  "memory_candidates": [
+    "A Lean plan that pins one lemma's position ('immediately after X') and only a section for a lemma consuming it can specify an impossible forward reference; resolve inside the plan's wording by honoring the pinned position and placing the consumer after its dependency in the same section, rather than treating it as a plan deviation.",
+    "An axiom-profile pin written from a plan's PREDICTED profile fails #guard_msgs when the measured profile is strictly smaller; measure first with lean_verify, and note the #print axioms docstring wraps across lines only when the profile list is long enough to wrap.",
+    "In this repository every .lean-touching commit must carry a regenerated typst/generated/status.typ: the pre-commit typst-sync gate compares committed line counts against a live regeneration, so a library edit needs 'typst-sync-check.sh --fix' before git-commit-scoped.sh will land."
+  ],
   "metadata": {
-    "session_id": "sess_1794289705_1b4c8a",
-    "agent_type": "reviser-agent",
-    "delegation_path": [
-      "orchestrator",
-      "revise",
-      "reviser-agent"
-    ],
-    "dispatch_seq": 4,
-    "orchestrator_mode": false,
-    "revision_reason": "blocker",
-    "phase_count": 10,
-    "phases_preserved_completed": 5,
-    "phases_revised": 1,
-    "phases_added": 4,
-    "estimated_hours": 17.5,
-    "estimated_hours_remaining": 8.5,
-    "reports_integrated": [
-      ".dispatch/4-aux-plan-revision.md"
-    ],
-    "plan_revised_sentinel": "specs/838_two_sided_open_core_pin_free_pigeonhole/.plan-revised.json",
-    "issue_recorded": "iss_1794290566064_eorL8P",
-    "validation": "validate-artifact.sh ... plan exits 0 with 0 warnings; the two new Challenge statements elaborated standalone through the build guard (exit_status=0, zero errors, exactly two sorry warnings)",
-    "uncommitted": true
+    "session_id": "sess_1794293763_c4273a",
+    "agent_type": "lean-implementation-hard-agent",
+    "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+    "dispatch_seq": 5,
+    "orchestrator_mode": true,
+    "phase_number": 5,
+    "phases_completed": 6,
+    "phases_total": 10,
+    "commit": "9ddc3e674"
   }
 }
