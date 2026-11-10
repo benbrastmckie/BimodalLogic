@@ -1746,7 +1746,12 @@ register and the object state held, and the same realized stab-free type.
 `cellAt_subset_of_shift_of_pend_past`: hence the UPWARD inclusion of cells along the
 common-shift chain in the pending-forever regime. ONE direction only; the downward inclusion is
 not claimed, and the depth-`0` cell obligation under `ParamsOk` is neither proved nor refuted by
-these pins. The standard profile on each. -/
+these pins. `hasForwardSlack_zero`: the forward-slack regime's BASELINE is free — amount `0` holds
+on every ladder path from the register's Lipschitz bound alone — and the two transports around it
+are exact (`hasForwardSlack_raise` adds exactly the raise, `hasForwardSlack_del` spends exactly
+the deletion), so the regime is not itself a source of slack. The standard profile on the two
+assembly pins, and `propext` with `Quot.sound` alone — below the standard profile — on the
+baseline, which consumes no choice. -/
 
 open FormalSystem.Metalogic.Decidability.RaySummary in
 /-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_through_shifted_of_pend_past' depends on axioms: [propext,
@@ -1760,6 +1765,10 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.cellAt_subset_of_shift_of_pend_past
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.hasForwardSlack_zero' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.hasForwardSlack_zero
 
 /-! ## Requirement (W): the pin layer (`RaySummary/LadderPin.lean`)
 

@@ -1244,6 +1244,20 @@ theorem hasForwardSlack_mono {Q : Type} {pend : Q → Bool}
   have := h I hI hidle hnext
   omega
 
+/-- **The baseline is free.** At amount `0`, with the register read at `z` itself, the regime
+asks only that the register at the idle position `z + cntAt g z + I` before the first region
+start above `z`'s region exceed `nxtAt g z` by at most the distance `cntAt g z + I` travelled to
+reach it — which is exactly the two-sided Lipschitz bound on the register
+(`nxtAt_lipschitz_two_sided`). So nothing beyond `IsLadderPath` is needed, and the regime becomes
+a constraint only once the amount is positive: `ClimbWitness.hasForwardSlack_refuted_unconditional`
+refutes it already at amount `1`. -/
+theorem hasForwardSlack_zero {Q : Type} {pend : Q → Bool} {step : Q → Q → Bool}
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ) :
+    HasForwardSlack g z 0 (nxtAt g z) := by
+  intro I _ _ _
+  have hlip := nxtAt_lipschitz_two_sided g hg (z + (cntAt g z : ℤ) + (I : ℤ)) z
+  omega
+
 /-- **The regime from its finite witness.** The first region start above `z`'s region sits at
 `z + cntAt g z + 1 + I` for the unique `I > 0` whose predecessors are idle; its countdown is the
 register's value at the idle position before it (`cntAt_eq_nxtAt_of_idle_pend`), so a bound
@@ -1378,6 +1392,32 @@ theorem hasForwardSlack_raise {Q : Type} {step : Q → Q → Bool} {pend : Q →
   have hLZ : ((L + d * l : ℕ) : ℤ) = (L : ℤ) + ((d * l : ℕ) : ℤ) := by push_cast; ring
   rw [hLZ]
   omega
+
+/-- **A raise buys slack equal to exactly the raise, from no slack hypothesis at all**: the
+composite of `hasForwardSlack_zero` with `hasForwardSlack_raise`, at the raised path's exposure
+clauses (the countdown at `z` and the walk above the run) that
+`exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_past` supplies, the latter through
+`iterSpliceIdx_of_ge`.
+
+**The slack accounting, in full.** The baseline is free at amount `0` (`hasForwardSlack_zero`);
+a raise of `z`'s region by `d` copies of a length-`l` block increases the amount by exactly
+`d · l` (`hasForwardSlack_raise`); a deletion of `l` from inside `z`'s region decreases it by
+exactly `l` (`hasForwardSlack_del`). Both transports are exact, in both directions, so no
+composition of them yields slack exceeding the total amount raised, and a raise-then-delete round
+trip at `z` is net zero: it returns the amount the path entered the composition with. The regime
+is therefore not a source of slack — every positive amount in a composition is paid for by a
+raise, and what remains open is only whether some OTHER device supplies a positive amount at a
+position where no raise is available. -/
+theorem hasForwardSlack_raise_of_zero {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (z : ℤ) {u : ℤ} {l d : ℕ} (hul : u + (l : ℤ) ≤ z + (cntAt g z : ℤ))
+    (g' : ℤ → LadderState Q pend) (hg' : IsLadderPath step pend g')
+    (hcz : cntAt g' z = cntAt g z + d * l)
+    (habove : ∀ v : ℤ, u + ((d + 1) * l : ℕ) ≤ v →
+      objAt g' v = objAt g (v - (d * l : ℕ)) ∧ cntAt g' v = cntAt g (v - (d * l : ℕ))) :
+    HasForwardSlack g' z (d * l) (nxtAt g z) := by
+  have h0 : HasForwardSlack g z 0 (nxtAt g z) := hasForwardSlack_zero g hg z
+  simpa using hasForwardSlack_raise g hg z hul h0 g' hg' hcz habove
 
 /-- **The vacuous case**: when every position above `z`'s region is idle, no region start exists
 for the regime to constrain, and `HasForwardSlack` holds at every amount and every register. -/

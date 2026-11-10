@@ -640,7 +640,7 @@ either path.
 
 ---
 
-### Phase 5: The Slack Accounting, Compiled — and the Mis-Anchored Blocker Withdrawn [NOT STARTED]
+### Phase 5: The Slack Accounting, Compiled — and the Mis-Anchored Blocker Withdrawn [COMPLETED]
 
 **BLOCKER WITHDRAWN** (Phase 5):
 
@@ -685,30 +685,30 @@ leaves Phase 8's gate as the only remaining source of slack.
 
 **Tasks**:
 
-- [ ] `hasForwardSlack_zero` in `LadderChain.lean`'s `section Slack`, immediately after
+- [x] `hasForwardSlack_zero` in `LadderChain.lean`'s `section Slack`, immediately after
   `hasForwardSlack_mono`: `HasForwardSlack g z 0 (nxtAt g z)` for every ladder path, from
   `nxtAt_lipschitz_two_sided g hg (z + cntAt g z + I) z` and `omega`. Signature pinned in the
   Challenge block below; two lines of proof.
-- [ ] `hasForwardSlack_raise_of_zero` in the same section: the raised path of
+- [x] `hasForwardSlack_raise_of_zero` in the same section *(deviation: altered — placed after `hasForwardSlack_raise` rather than beside `hasForwardSlack_zero`; the composite consumes it, so the literal reading forward-references and the first scoped build failed with `Unknown identifier hasForwardSlack_raise`. Still inside `section Slack` as the task specifies.)*: the raised path of
   `exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_past` carries
   `HasForwardSlack g' z (d · l) (nxtAt g z)` — the composite of `hasForwardSlack_zero` with the
   landed `hasForwardSlack_raise`, which increases the amount by exactly `d · l`. Its docstring
   states the accounting in full: baseline `0` free, raise `+ d · l`, deletion `− l` per step, so
   no composition of the two transports yields slack exceeding the total raised amount, and a
   raise-then-delete round trip is net zero at `z`.
-- [ ] Do NOT restate the accounting as a theorem quantified over compositions. The two exact
+- [x] Do NOT restate the accounting as a theorem quantified over compositions *(honored: the accounting is stated in `hasForwardSlack_raise_of_zero`'s docstring, not as a theorem)*. The two exact
   transports already say it; a theorem quantifying over "every composition" would need a
   reification of the transports this layer does not have, and inventing one here is scope the
   gate does not need.
-- [ ] Axiom-test pin for `hasForwardSlack_zero` in
+- [x] Axiom-test pin for `hasForwardSlack_zero` *(deviation: altered — pinned to the MEASURED profile `[propext, Quot.sound]`, which is strictly less than the standard profile the plan predicted; `nxtAt_lipschitz_two_sided` consumes no choice. The narrative line says so explicitly.)* in
   `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, inside the existing obligation block,
   plus one narrative line saying the baseline is free and the two transports are exact.
-- [ ] Record the blocker's withdrawal with
+- [x] Record the blocker's withdrawal *(recorded as `kind: win`, class `design-record defect`, severity `blocking`)* with
   `bash .claude/scripts/issue-record.sh --task 838 --kind win --class "design-record defect"
   --severity blocking --phase implement --resolution fixed_inline --what-happened "..."`, naming
   the wrong anchor and the landed re-anchored deletion. The withdrawal is recorded, not
   back-edited out of the log.
-- [ ] Prohibited: no `sorry`, no `def X := True`, no vacuous placeholder, and no baseline bump on
+- [x] Prohibited *(honored: `lean-sorry-census.sh` reports `sorry_count: 0` over every source root; the vacuity and `^axiom ` counts are unchanged from HEAD on every changed file; `longFile` stays at 2300 with the file at 2267)*: no `sorry`, no `def X := True`, no vacuous placeholder, and no baseline bump on
   `LadderChain.lean`'s `longFile` option to make the two lemmas fit. If they do not fit, they
   move to `LadderCell.lean` with Phase 7.
 
@@ -746,6 +746,24 @@ can reach, and nothing in it is a shared tactic or a core type.
 - `wc -l FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean` is under 2300, and `grep -n 'longFile' FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean` still reports `2300`.
 - `grep -cE 'sorry|native_decide|^axiom|:= True|:= trivial' FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean` is 0.
 - `bash scripts/check-module-invariants.sh` exits 0; `bash .claude/scripts/check-task-references.sh --quiet` exits 0 on both changed library files.
+
+**Verification notes (as run)**: all three scoped builds exit 0 through the guard with zero
+`error:` lines — `… -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderChain`,
+`… -- build FormalSystem`, `… -- build BimodalTest.Metalogic.KTypeSummaryAxiomTest` — and both
+touched modules' `.olean` files are newer than their sources. `#print axioms` on
+`hasForwardSlack_zero` reports `[propext, Quot.sound]`, strictly less than the standard profile
+and with no `sorryAx`; the pinned `#guard_msgs` docstring matches it. `hasForwardSlack_zero`'s
+signature matches the Challenge block token for token modulo the block's own stated ASCII
+convention (`->`/`Int` there, `→`/`ℤ` in the library). `wc -l` on `LadderChain.lean` reports 2267
+against an unbumped `longFile` baseline of 2300. `lean-sorry-census.sh` over every resolved
+source root reports `sorry_count: 0`. The `grep -cE 'sorry|…'` criterion reports 1, unchanged
+from HEAD: a pre-existing DOCSTRING sentence at line 1445 (“is not a disguised `sorry`”), not a
+declaration. `check-module-invariants.sh` exits 0 after regenerating the three generated
+inventory blocks (`--emit-inventory`, line-counts only) that this phase's 40 added lines made
+stale; `check-task-references.sh --quiet` exits 0 on each of the five changed non-`specs/**`
+files. This phase's tier is `interface`, so the dispatch's batch-gate deferral directive (which
+scopes a `full`-tier phase) does not apply to it — every check enumerated above was run here
+rather than deferred.
 
 ---
 
