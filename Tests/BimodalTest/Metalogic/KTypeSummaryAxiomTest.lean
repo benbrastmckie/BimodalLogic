@@ -1804,6 +1804,70 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.kappa_collision_two_regimes_refuted
 
+/-! ## Requirement (W): the FORWARD-SLACK-RESTRICTED depth-`0` cell obligation
+(`RaySummary/LadderCell.lean`)
+
+THE UNRESTRICTED OBLIGATION IS STILL OPEN. `CellLEZeroConstOfKappaEq` — pinned above as a schema
+proved nowhere — is, under `ParamsOk`, neither proved nor refuted, and the reserved name
+`cellLE_zero_const_of_kappa_eq` is still claimed by nothing. The pins below do not change that:
+they pin a STRICTLY STRONGER statement, which bears on the unrestricted schema's truth value in
+neither direction.
+
+THE RESTRICTED FORM IS PROVED. `CellLEZeroConstOfKappaEqForwardSlack` is the obligation with four
+hypotheses added, and `cellLE_zero_const_of_kappa_eq_of_forwardSlack` is a THEOREM of it at every
+parameter tuple `ParamsOk` admits. The four: the EQUAL-REGISTER restriction `n = n'`; the
+pending-forever gap at both pairs; the threshold bounds `Tc ≤ c` and `Tc ≤ c'` at both pairs; and
+the FORWARD-SLACK WITNESSING of whichever pair carries the higher countdown, at exactly the
+displacement separating the two. It concludes cell EQUALITY, the relation its name advertises —
+the upward half is the landed `cellAt_subset_of_shift_of_pend_past`, the downward half is
+`cellAt_subset_of_shift_of_pend_past_rev`, and `Set.Subset.antisymm` closes it.
+
+WHAT THE RESTRICTION COSTS, COMPILED. `cellAt_subset_of_shift_of_pend_past_rev` lifts the landed
+path-level `mem_cellAt_of_shift_of_hasForwardSlack_exact` to the state level through
+`ForwardSlackWitnessed` — every type the higher cell realizes is realized there by SOME path with
+forward slack — which is existential over paths and so untouched by the climbing-register
+refutation `ClimbWitness.hasForwardSlack_refuted_unconditional`; no state-level form of the regime
+exists. `kappa_collision_two_regimes_refuted_of_pend_gap` is why the EQUAL-REGISTER hypothesis is
+carried rather than dispatched away: at `Tc = Tn = P = 0`, `B = 2` the pairs `(2, 0)` and `(4, 1)`
+collide inside the pending-forever regime with both countdowns above the threshold, the registers
+differ, and no single multiple of `P + 1` displaces both coordinates — so the saturated-gap branch
+of `kappa_collision_regimes` survives the regime restriction, and no landed inclusion addresses it
+in either direction. That refutation, like its sibling above, is scoped to the derivation from the
+collision destructors and `2 ≤ B`, and asserts nothing under full `ParamsOk`.
+
+WHAT A CONSUMER MUST SUPPLY to use the restricted form: at each state it inducts through, the
+register equality across the collision and a forward-slack witness at the higher state. Neither is
+a consequence of `ParamsOk`.
+
+The standard profile on the three positive declarations, and `propext` with `Quot.sound` alone —
+below the standard profile — on the refutation, which consumes no choice. No certificate object is
+named, no finite-fibre or finite-width hypothesis appears, and no pin is a bound. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_subset_of_shift_of_pend_past_rev' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cellAt_subset_of_shift_of_pend_past_rev
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.CellLEZeroConstOfKappaEqForwardSlack' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.CellLEZeroConstOfKappaEqForwardSlack
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellLE_zero_const_of_kappa_eq_of_forwardSlack' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms cellLE_zero_const_of_kappa_eq_of_forwardSlack
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.kappa_collision_two_regimes_refuted_of_pend_gap' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms kappa_collision_two_regimes_refuted_of_pend_gap
+
 /-! ## Requirement (W): the pin layer (`RaySummary/LadderPin.lean`)
 
 `pend_past_or_idle_of_no_pin_below` is the PIN-FREE DICHOTOMY: below a position carrying no pin
