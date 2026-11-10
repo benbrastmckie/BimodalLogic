@@ -181,17 +181,17 @@ tracked file.
 
 ---
 
-### Phase 3: Install the new section files and splice chunks.json [NOT STARTED]
+### Phase 3: Install the new section files and splice chunks.json [COMPLETED]
 
 **Goal**: The four hand-fitted §5-§8 files live in the document directory as `sec04`-`sec07`, and
 `chunks.json` carries four matching new entries in a single unbroken 14-entry chain.
 
 **Tasks**:
-- [ ] Copy the four Phase 1 scratch files into `~/Projects/Literature/sources/reynolds_2001/` as `sec04_axiom-system-bundled-trees.md`, `sec05_limit-closure-axiom.md`, `sec06_auxiliary-atoms-rule.md`, `sec07_the-theorem.md`.
-- [ ] Write a short script computing each new `chunk_id` as `sha256(f"reynolds_2001\x00{section_path}\x00{content[:64]}").hexdigest()[:16]` — the exact formula `literature-chunk.sh` uses — rather than computing any ID by hand.
-- [ ] Insert four entries into `chunks.json` between the existing `§4.7-4.8` entry and the `§9` entry, with `section_path`/`title` set to `"§5. The Axiom System for Bundled Trees"`, `"§6. The Limit Closure Axiom"`, `"§7. The Auxiliary Atoms Rule"`, `"§8. The Theorem"`; `doc_id: "reynolds_2001"`, `level: 1`, `parent_chunk_id: null`, `cross_refs: []` (matching every existing entry), `source_path` set to the new filenames, `token_count` from Phase 1's estimates, and `keywords`/`summary` in the existing entries' style (`summary` as `"Chapter: <section_path>"`).
-- [ ] Re-link the chain: the `§4.7-4.8` entry's `next_chunk_id` -> new §5 chunk; new §8 chunk's `next_chunk_id` -> the §9 chunk; the §9 entry's `prev_chunk_id` -> new §8 chunk; and the three internal links among §5-§8.
-- [ ] Assert the manifest is valid JSON with 14 entries, no duplicate `chunk_id`, every `source_path` resolving, and the prev/next links forming one list from the §1-3 head to the §16 tail.
+- [x] Copy the four Phase 1 scratch files into `~/Projects/Literature/sources/reynolds_2001/` as `sec04_axiom-system-bundled-trees.md`, `sec05_limit-closure-axiom.md`, `sec06_auxiliary-atoms-rule.md`, `sec07_the-theorem.md`. *(completed)*
+- [x] Write a short script computing each new `chunk_id` as `sha256(f"reynolds_2001\x00{section_path}\x00{content[:64]}").hexdigest()[:16]` — the exact formula `literature-chunk.sh` uses — rather than computing any ID by hand. *(completed)*
+- [x] Insert four entries into `chunks.json` between the existing `§4.7-4.8` entry and the `§9` entry, with `section_path`/`title` set to `"§5. The Axiom System for Bundled Trees"`, `"§6. The Limit Closure Axiom"`, `"§7. The Auxiliary Atoms Rule"`, `"§8. The Theorem"`; `doc_id: "reynolds_2001"`, `level: 1`, `parent_chunk_id: null`, `cross_refs: []` (matching every existing entry), `source_path` set to the new filenames, `token_count` from Phase 1's estimates, and `keywords`/`summary` in the existing entries' style (`summary` as `"Chapter: <section_path>"`). *(completed)*
+- [x] Re-link the chain: the `§4.7-4.8` entry's `next_chunk_id` -> new §5 chunk; new §8 chunk's `next_chunk_id` -> the §9 chunk; the §9 entry's `prev_chunk_id` -> new §8 chunk; and the three internal links among §5-§8. *(completed)*
+- [x] Assert the manifest is valid JSON with 14 entries, no duplicate `chunk_id`, every `source_path` resolving, and the prev/next links forming one list from the §1-3 head to the §16 tail. *(completed: scripted check confirms all four conditions, forward walk == reverse of backward walk)*
 
 **Timing**: 0.75 hours
 
