@@ -2069,20 +2069,20 @@ schema `CellLEZeroConstOfKappaEq`. The standard profile on each. -/
 
 `exists_ladderPath_at_region_of_pend_past` is the EXISTENTIAL form of what `spliced_at_region`
 exposes: some ladder path carries the original's object state at the comparison position with the
-countdown raised by exactly the cycle length. It is pinned because it is the half of that
-interface that IS landed. The other half, the idle-past regime, is not: the `spliceObj`-shaped
-conclusion is REFUTED there — `spliceCnt` raises the pin at the region start by exactly `l`
+countdown raised by exactly the cycle length. It is pinned because it is the regime half that
+needs no self-loop premise. In the idle-past regime the `spliceObj`-shaped conclusion is still
+REFUTED — `spliceCnt` raises the pin at the region start by exactly `l`
 against `pinCompat_of_ladderPath`'s necessity, and the tight doubling chain of
 `specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean` makes every pin
-pair exactly tight with an idle past — and the insertion cascade the restated statement would
-need has no landed component. `exists_spliced_ladderPath_of_idle_past`,
-`exists_ladderPath_at_region_of_idle_past` and `exists_ladderPath_at_region` are therefore
-claimed by nothing.
+pair exactly tight with an idle past — so `exists_spliced_ladderPath_of_idle_past` is claimed by
+nothing, deliberately, and that refutation is unaffected by anything below.
 
-That last sentence about the cascade is now NARROWER than when it was written, and the
-subsection below says exactly how: the insertion walk and its four LOCAL ladder conditions ARE
-landed. Its PIN conditions are not, no existential over them is claimed, and the three names above
-stay claimed by nothing. The standard profile. -/
+The NARROWER existential the consumer actually reads is a different statement, and it is landed
+in both regimes: `exists_ladderPath_at_region_of_idle_past` closes the idle-past half on the
+INSERTED walk rather than the spliced one, and `exists_ladderPath_at_region` joins the two by
+`by_cases` on the pending-past predicate. Both are pinned at the end of this file, and both carry
+`hself` — the path-local self-loop at the path's own idle positions at or below `a` — which this
+name does not. The standard profile. -/
 
 /-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region_of_pend_past' depends on axioms: [propext,
  Classical.choice,
@@ -2104,8 +2104,13 @@ consumes (`insObj_step`, `insCnt_idle`, `insCnt_pend_pend`, `insCnt_pend_idle`),
 regime's idle witness is a legal insertion site.
 
 **WHAT IS PINNED HERE IS NOT AN EXISTENTIAL AND NOT A PIN CONDITION.** `hpins` and `hn₀` for the
-inserted walk are owed in full; nothing below applies `exists_ladderPath_of_walk` to it, and no
-binder was added to any of the three unclaimed `exists_ladderPath_at_region*` names.
+inserted walk are not among the names in this subsection; the pin condition arrives separately as
+`insPins_of_region_start`, pinned further below, and `hn₀` is eliminated rather than produced
+(`exists_ladderPath_of_walk_of_pins` reads the pin family's own pairwise compatibility). Of the
+three `exists_ladderPath_at_region*`-family names, the two that are landed —
+`exists_ladderPath_at_region_of_idle_past` and `exists_ladderPath_at_region` — each took exactly
+one binder beyond the pending-forever half, `hself`, the path-local self-loop decided here;
+`exists_spliced_ladderPath_of_idle_past` took none and stays unclaimed and refuted.
 
 **THE SELF-LOOP PRIMITIVE IS AN EXPLICIT HYPOTHESIS, AND `insObj_step` IS THE ONLY SITE.**
 `insObj_step` carries `hself : step (objAt g u) (objAt g u) = true`, consumed at exactly one
@@ -2113,8 +2118,8 @@ place — the collapsed block, where the index map sends two consecutive positio
 idle object. `IsLadderPath` supplies no self-loop, and the pigeonhole alternative needs MANY idle
 runs below the region start where the regime hypothesis gives ONE; the module's own section
 docstring records that decision and its reason. The consequence is recorded rather than buried: on
-a general object relation the self-loop is a genuine additional premise, so an unconditional
-idle-past interface needs more than this layer lands.
+a general object relation the self-loop is a genuine additional premise, so the idle-past
+interface is unconditional in the REGIME sense only and carries `hself` all the way out.
 
 Profiles: the three definitions depend on no axioms at all; the plumbing facts carry `[propext]`
 or `[propext, Quot.sound]`; the four local conditions and the two `if`-dichotomy readings carry
@@ -2195,8 +2200,9 @@ is what makes a single insertion at `s` sufficient, and it is the hypothesis the
 region-start trichotomy consumes.  `Nat.find` over backward idle distances is decidable on `Bool`
 equality without choice, so the profile stays at `[propext, Quot.sound]`.
 
-This pin is still NOT an existential over ladder paths: `hpins` for the inserted walk and both
-`exists_ladderPath_at_region*` names remain owed. -/
+This pin is itself NOT an existential over ladder paths: `hpins` for the inserted walk
+(`insPins_of_region_start`) and the two landed `exists_ladderPath_at_region*` names are pinned
+separately, below. -/
 
 /-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_region_start_of_idle_past' depends on axioms: [propext,
  Quot.sound] -/
@@ -2226,9 +2232,10 @@ Three things the pin records, none of them derivable from the name:
   splice's own countdown lemmas are in the dependency closure here and the region-start
   extraction's `Nat.find` route is not the only thing being measured.
 
-This pin is still NOT an existential over ladder paths. `hpins` for the inserted walk
-(`insPins_of_region_start`) and both `exists_ladderPath_at_region*` names remain owed, and
-`exists_spliced_ladderPath_of_idle_past` remains REFUTED rather than merely unclaimed. -/
+This pin is itself NOT an existential over ladder paths. `hpins` for the inserted walk
+(`insPins_of_region_start`) and the two landed `exists_ladderPath_at_region*` names are pinned
+separately, below, and `exists_spliced_ladderPath_of_idle_past` remains REFUTED rather than merely
+unclaimed. -/
 
 /-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insRegionStart_trichotomy' depends on axioms: [propext,
  Classical.choice,
@@ -2260,9 +2267,10 @@ Three things this pin records that the name does not carry:
   all — it lives in `LadderChain.lean`, which imports this module.
 
 The profile matches `insRegionStart_trichotomy`'s, which is the only nontrivial thing in its
-dependency closure beyond `pinCompat_of_ladderPath`. This pin is still not an existential over
-ladder paths: both `exists_ladderPath_at_region*` names remain owed here, and
-`exists_spliced_ladderPath_of_idle_past` remains REFUTED rather than merely unclaimed. -/
+dependency closure beyond `pinCompat_of_ladderPath`. This pin is itself not an existential over
+ladder paths: the two landed `exists_ladderPath_at_region*` names are the existentials it feeds,
+pinned separately below, and `exists_spliced_ladderPath_of_idle_past` remains REFUTED rather than
+merely unclaimed. -/
 
 /-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insPins_of_region_start' depends on axioms: [propext,
  Classical.choice,

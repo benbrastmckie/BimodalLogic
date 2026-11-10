@@ -302,8 +302,13 @@ stated anywhere in the tree, and none is invented here.
   with `spliceObj_eq_of_le` supplying the hypothesis for the splice) — and two are OPEN: the two
   temporal letters and the `⊡` letters. `spliceIdx_seam_lt` compiles the reason the index maps
   alone do not settle the temporal pair.
-* **No discharge of the pin side condition outside the pending-forever regime.** The cascade that
-  would re-establish pin compatibility after a region is lengthened is not landed.
+* **The pin side condition is discharged in BOTH regimes, on two different walks.** In the
+  pending-forever regime the spliced walk's own pins go through; in the idle-past regime the
+  `spliceObj`-shaped conclusion is REFUTED, and the pins are discharged instead for the INSERTED
+  walk (`insPins_of_region_start`), by a single insertion at the region start of the splice
+  point's own region rather than by the cascade iteration `cascadeDemand` sizes. What the
+  idle-past half carries beyond the other is `hself`, the path-local self-loop at the path's own
+  idle positions at or below the splice point.
 * **NO SPLICE INVARIANCE — half (ii) of the transport layer is REFUTED, not merely absent.** Half
   (i) transports a type between two paths with the SAME object walk. Pumping produces a path with
   a DIFFERENT object walk, and no statement here transports a type across that difference —
@@ -1492,7 +1497,14 @@ of the same arithmetic — `forward_window`, `backward_constraint`, `region_doub
 and never as a proof term. The exponential in the number of pinned regions is named as a COUNT of
 iterations: nothing here claims anything about size, and nothing here is a complexity statement.
 The exponential `(K2)` reading `two_pow_card_prodState_le_Tc` lives in `LadderChain.lean`, which
-imports this module, so it is unavailable here and is not reached for.
+imports this module, so it is unavailable here and is not reached for. That recurrence was NOT
+consumed by the construction that closed the pin half — a single insertion at the region start of
+`a`'s own region moves every earlier region start down TOGETHER, so `insPins_of_region_start`
+discharges the pin side condition with no iteration — and `cascadeDemand`,
+`cascadeDemand_add_succ`, `cascadeDemand_le_cascadeBound`, `pinnedRegions`,
+`pinnedRegions_subset_Ico`, `pinnedRegions_finite`, `pinnedRegions_ncard_le` and
+`pin_deficit_le_of_lengthen` all stay landed, unconsumed, as the record of the iteration the
+single insertion made unnecessary; none of them is deleted.
 
 `exists_spliced_ladderPath_of_idle_past` is **REFUTED IN THE IDLE-PAST REGIME, not merely absent**,
 and the name is deliberately left unclaimed so the refutation stays legible. The mechanism:
@@ -1509,14 +1521,18 @@ idle). None of the pin hypotheses of `exists_spliced_ladderPath` is dropped or r
 `pinCompat_of_ladderPath` proves the condition is forced by the carrier, so a relaxed lift lemma
 would be false rather than weaker.
 
-What the refutation leaves OPEN is the narrower statement the single consumer actually reads — an
+What the refutation left OPEN is the narrower statement the single consumer actually reads — an
 EXISTENTIAL over some ladder path delivering, at the comparison position, exactly the two facts
 `spliced_at_region` exposes there: the same object state and the countdown raised by `l`, with no
-pointwise walk identity anywhere. Three declarations carry that interface:
-`exists_ladderPath_at_region_of_pend_past` (landed below, the landed companion composed with
-`spliced_at_region`), `exists_ladderPath_at_region_of_idle_past` (NOT landed: the insertion cascade
-it needs has no landed component — see the note at the end of this section) and
-`exists_ladderPath_at_region` (NOT landed: the plain dichotomy of the two). -/
+pointwise walk identity anywhere. Three declarations carry that interface, and all three are
+landed below: `exists_ladderPath_at_region_of_pend_past` (the landed companion composed with
+`spliced_at_region`), `exists_ladderPath_at_region_of_idle_past` (landed on the INSERTED walk
+`insObj`/`insCnt` — which the refutation FORCES to differ from `spliceObj` strictly below the
+comparison position's region start — and carrying `hself`, the path-local self-loop at the path's
+own idle positions at or below `a`, as a genuine additional premise) and
+`exists_ladderPath_at_region` (landed: the plain dichotomy of the two, unconditional in the REGIME
+sense and still carrying `hself`). The `spliceObj`-shaped conclusion stays refuted exactly as
+stated above; what the insertion closes is this narrower existential and nothing else. -/
 
 section Cascade
 
@@ -1653,9 +1669,10 @@ the `spliceObj`-shaped conclusion's refutation leaves open: it fixes the pair
 `(objAt g' v, cntAt g' v)` at the one position the lift compares and asserts nothing about `g'`
 anywhere else, so it is strictly weaker than any pointwise walk identity.
 
-Only the pending-forever half is landed. The idle-past half and the unconditional join are owed;
-the note closing this section records exactly what they need and why neither is available from
-what is landed here. -/
+All three declarations of this interface are landed: the pending-forever half immediately below,
+and the idle-past half together with the regime-unconditional join at the end of this section, the
+latter two on the INSERTED walk and under `hself`. The note following this half records what the
+idle-past construction had to answer and what it cost. -/
 
 /-- **THE INTERFACE, IN THE PENDING-FOREVER REGIME.** The landed
 `exists_spliced_ladderPath_of_pend_past` composed with `spliced_at_region`: in the regime where
@@ -1676,12 +1693,14 @@ theorem exists_ladderPath_at_region_of_pend_past
   obtain ⟨hob, hcn⟩ := spliced_at_region hl hobj hcnt v hv hreg
   exact ⟨g', hg', hob, hcn⟩
 
-/-! #### What the idle-past half needs, and why it is not landed here
+/-! #### What the idle-past half needed, and what closed it
 
 `exists_ladderPath_at_region_of_idle_past` — the same conclusion under
-`hidle : ∃ p : ℤ, p ≤ a ∧ pend (objAt g p) = false` in place of `hpast` — is NOT landed, and
-neither is the unconditional `exists_ladderPath_at_region` that joins the two. Both names are
-unclaimed. The reason is recorded rather than worked around:
+`hidle : ∃ p : ℤ, p ≤ a ∧ pend (objAt g p) = false` in place of `hpast` — IS landed at the end of
+this section, and so is the regime-unconditional `exists_ladderPath_at_region` that joins the two.
+Both carry `hself`. The four bullets the construction had to answer stay recorded rather than
+being deleted: the first two are why the walk had to move, and still bind; the third is what the
+insertion did instead of the anticipated iteration; the fourth is what it bought and at what cost:
 
 * **No route keeps the original walk.** `cntAt_eq_of_obj_eq` (above) is the rigidity: two ladder
   paths with the same object walk carry the same countdown at every position. So a path whose
@@ -1690,31 +1709,32 @@ unclaimed. The reason is recorded rather than worked around:
 * **The splice's own walk is refuted in this regime**, by the mechanism this section's docstring
   states, on the compiled tight doubling chain. So the walk must differ from `spliceObj g a l`
   as well, strictly BELOW the comparison position's region start.
-* **The construction the cascade names has no landed component.** The mechanism is to insert idle
-  positions into idle runs strictly below that start, which shifts the past downward on the `ℤ`
-  axis and leaves the walk at and above the start pointwise fixed — so `objAt g' v = objAt g v`
-  would survive by construction — while growing `|s - v|` and so relaxing the inequality the
-  splice violated; the displacement propagates to the next pin down, which is the doubling
-  recurrence `cascadeDemand` encodes. What this section landed is the cascade's BOOKKEEPING —
-  `pinnedRegions_subset_Ico`, `pinnedRegions_finite`, `pinnedRegions_ncard_le`,
-  `pin_deficit_le_of_lengthen`, `cascadeDemand`, `cascadeDemand_add_succ` and
-  `cascadeDemand_le_cascadeBound` — and NOT the inserted walk, its ladder-path proof, or the
-  iteration over the pins. No declaration here builds one.
-* **The restated existential is open, not known.** The refutation that kills the
-  `spliceObj`-shaped conclusion establishes nothing about this one, and the cascade is a mechanism
-  rather than a proof.
+* **The construction is the insertion, and NO iteration was needed.** The mechanism is to insert
+  idle positions into the idle run strictly below that start, which shifts the past downward on
+  the `ℤ` axis and leaves the walk at and above the start pointwise fixed — so
+  `objAt g' v = objAt g v` survives by construction — while growing `|s - v|` and so relaxing the
+  inequality the splice violated. What was ANTICIPATED is that the displacement propagates to the
+  next pin down, giving the doubling recurrence `cascadeDemand` encodes; what was FOUND is that it
+  does not. One insertion at `u`, the region start of `a`'s OWN region
+  (`exists_region_start_of_idle_past`), at depth `d := l`, moves every earlier region start down
+  by `l` TOGETHER: their mutual distances are preserved and only their distance to the raised pin
+  at `u` grows, by exactly the raise. So `insIdx`, `insObj`, `insCnt`, their local conditions
+  (`insObj_step`, `insCnt_idle`, `insCnt_pend_pend`, `insCnt_pend_idle`),
+  `insRegionStart_trichotomy` and `insPins_of_region_start` are the whole construction, with no
+  iteration over the pins anywhere, and `hn₀` is eliminated rather than produced — the pin
+  family's pairwise compatibility already determines the `Drift` register
+  (`exists_ladderPath_of_walk_of_pins`).
+* **The restated existential is now landed under `hself`, and the `spliceObj`-shaped one stays
+  refuted.** The two are different statements, and the refutation of the second establishes
+  nothing about the first in either direction; `exists_spliced_ladderPath_of_idle_past` is still
+  left deliberately unclaimed so its refutation stays legible. What the landed existential takes
+  beyond the pending-forever half is `hself`: the self-loop at an idle object, stated PATH-LOCALLY
+  at the path's own idle positions at or below `a`, which `IsLadderPath` does not supply on a
+  general object relation.
 
 The consumer inherits this: the admissibility half of the counter-lift lemma is UNCONDITIONAL in
-the pending-forever regime and CONDITIONAL in the idle-past regime, and no declaration anywhere
-claims otherwise.
-
-**WHAT THE SUBSECTION BELOW CHANGES, AND WHAT IT DOES NOT.** The third bullet above is now
-narrower than when it was written: the inserted walk and its four LOCAL ladder conditions ARE
-built below (`insIdx`, `insObj`, `insCnt`, `insObj_step`, `insCnt_idle`, `insCnt_pend_pend`,
-`insCnt_pend_idle`). What stays exactly as recorded is the rest of that bullet and the whole of
-the other two: the walk's PIN hypotheses (`hpins`, `hn₀`) are untouched, the iteration over the
-pins is unbuilt, no existential is claimed, and the restated existential remains open rather than
-known. -/
+the pending-forever regime and CONDITIONAL — on `hself`, and on nothing else — in the idle-past
+regime, and no declaration anywhere claims otherwise. -/
 
 /-! #### The idle-insertion walk, its index map, and its four LOCAL ladder conditions
 
@@ -1723,8 +1743,9 @@ What is landed: the index map `insIdx`, the inserted walk `insObj`/`insCnt` over
 the index map's three retraction facts, the two pointwise facts at and above the insertion site
 that carry the comparison position BY CONSTRUCTION, the four LOCAL hypotheses
 `exists_ladderPath_of_walk` consumes, and the legality of the regime's own idle witness as an
-insertion site. What is NOT: any existential, and any pin hypothesis — `hpins` and `hn₀` remain
-entirely owed, and nothing below weakens either.
+insertion site. What is NOT here: any existential, and any pin hypothesis — `hpins` arrives as
+`insPins_of_region_start` in a later subsection and `hn₀` is eliminated rather than produced
+(`exists_ladderPath_of_walk_of_pins`); nothing in THIS subsection weakens either.
 
 `insIdx u d` fixes every position above `u`, collapses the `d + 1` positions `u - d, …, u` onto
 `u`, and sends `v ↦ v + d` below them. So the idle run at `u` is extended downward by `d` while
@@ -1739,9 +1760,12 @@ obstruction needs; converting it into `hpins` is not attempted here.
 `step q q = true` for `q = objAt g u`, the inserted idle object. `IsLadderPath` constrains `step`
 only along the original walk and supplies no self-loop, so the obligation is real. Of the two
 candidates this layer takes the FIRST: the self-loop is carried as an EXPLICIT hypothesis
-`hself` on the auxiliary `insObj_step`, and on nothing else — no binder is added to any of
-`exists_ladderPath_at_region_of_idle_past`, `exists_ladderPath_at_region` or
-`exists_spliced_ladderPath_of_idle_past`, all three of which remain unclaimed names.
+`hself` on the auxiliary `insObj_step`, and it is carried from there to the two names this task
+landed: `exists_ladderPath_at_region_of_idle_past` and `exists_ladderPath_at_region` each take it
+PATH-LOCALLY, as `∀ p ≤ a, pend (objAt g p) = false → step (objAt g p) (objAt g p) = true`, which
+is the weakest form the collapsed block needs and is not globally over `Q`.
+`exists_spliced_ladderPath_of_idle_past` takes no binder because it remains an unclaimed name,
+refuted rather than merely absent.
 
 **Why not the second candidate** (insert a copy of an idle-containing cycle, obtained by a
 pigeonhole over a finite object type). The premise it needs is not available at this layer, and
@@ -1752,10 +1776,11 @@ pigeonhole of this family lives in
 `FormalSystem/Metalogic/Decidability/RaySummary/LadderPin.lean`, which is ABOVE this module in the
 import DAG; it is cited here by path and is not a proof term.
 
-**The consequence, recorded rather than buried.** With the first candidate taken, an
-unconditional `exists_ladderPath_at_region_of_idle_past` needs MORE than this layer lands: on a
-general object relation the self-loop is a genuine additional premise, not a consequence of
-`IsLadderPath`. The wired probe
+**The consequence, recorded rather than buried.** With the first candidate taken,
+`exists_ladderPath_at_region_of_idle_past` is landed carrying `hself` rather than discharging it,
+and so is the join: on a general object relation the self-loop is a genuine additional premise,
+not a consequence of `IsLadderPath`, so neither name is unconditional in that sense — only in the
+REGIME sense. The wired probe
 `specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-decision.lean` exhibits the
 whole construction working at a single instance — and records in its own docstring that its
 carrier's `step` is TOTAL, so it pays none of this cost and decides REFUTABILITY rather than
