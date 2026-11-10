@@ -353,7 +353,7 @@ stated anywhere in the tree, and none is invented here.
 -- the same section's splice and pin bookkeeping.  The `longFile` linter requires the baseline to
 -- equal the file's own round-up to the next hundred rather than a forward-looking ceiling, so it
 -- tracks the file as the cascade lands instead of being set once to its final value.
-set_option linter.style.longFile 3200
+set_option linter.style.longFile 3400
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -2076,6 +2076,90 @@ theorem insRegionStart_trichotomy {g : ℤ → LadderState Q pend} {a : ℤ} {l 
       rw [insIdx_of_gt u l (x + 1) (by omega)]
       refine Or.inr (Or.inr ⟨hxa, hx0, hx1, ?_⟩)
       rw [spliceCnt_of_ge (x + 1) (by omega), show x + 1 - (l : ℤ) = x - (l : ℤ) + 1 by ring]
+
+/-- **`hpins` FOR THE INSERTED WALK: `d := l` IS EXACTLY ENOUGH.** The pin obligation the
+`spliceObj`-shaped refutation left open, discharged. Every region start of the inserted walk is
+one of the three things `insRegionStart_trichotomy` names, so a PAIR of them is one of nine, and
+each of the nine reduces to `pinCompat_of_ladderPath` on the two ORIGINAL region starts plus
+linear arithmetic.
+
+**THE TIGHT PAIR.** `(u, y)` with the raised pin at `u` and an original start displaced down to
+`y - l` (so `y + l < u` in the walk's own coordinates). The demand there is
+`|cntAt g (u + 1) + l - cntAt g (y + 1)| ≤ (u - y)`, and compatibility on the original supplies
+only `|cntAt g (u + 1) - cntAt g (y + 1)| ≤ (u - y) - l`, because the displaced start sits `l`
+CLOSER to `u` on the original than it does on the inserted walk. The two differ by exactly `l`,
+which is the raise. So `d := l` is tight: any smaller depth fails this pair and any larger one is
+unnecessary, and this is the pair that fixes the parameter.
+
+**WHY ONE INSERTION, NOT AN ITERATION.** The displaced-down and displaced-up families carry their
+countdowns UNCHANGED and move RIGIDLY (`-l` and `+l` respectively), so within each family mutual
+distances are preserved and the pair closes directly; across the two, the distance grows by `2l`
+while the countdowns do not change at all. Only the single raised pin at `u` has a countdown that
+moved. That is the whole content of taking `u` to be the region start of `a`'s OWN region: there
+is exactly one pin to pay for, and one insertion pays for it.
+
+**WHAT IS NOT CONSUMED.** `cascadeDemand`, `cascadeDemand_add_succ` and
+`cascadeDemand_le_cascadeBound` are NOT used here, and neither is `pinnedRegions`,
+`pinnedRegions_ncard_le` or `pin_deficit_le_of_lengthen`. They size the ITERATION with the
+doubling recurrence that the recorded mechanism anticipated and that this construction turned out
+not to need; they stay landed as that sizing record rather than being deleted, since the record of
+what the cascade would have cost is itself the evidence that the single insertion is the cheaper
+route. -/
+theorem insPins_of_region_start {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+    (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
+    (u : ℤ) (hu0 : pend (objAt g u) = false) (hu1 : pend (objAt g (u + 1)) = true)
+    (hua : u + 1 ≤ a) (hreg : a ≤ u + 1 + (cntAt g (u + 1) : ℤ))
+    (hmax : ∀ t : ℤ, u < t → t ≤ a → pend (objAt g t) = true) :
+    ∀ s v : ℤ, pend (insObj g a l u l s) = false →
+      pend (insObj g a l u l (s + 1)) = true →
+      pend (insObj g a l u l v) = false → pend (insObj g a l u l (v + 1)) = true →
+      ((insCnt g a l u l (s + 1) : ℤ) - insCnt g a l u l (v + 1)).natAbs
+        ≤ (s - v).natAbs := by
+  intro s v hs0 hs1 hv0 hv1
+  have hs := insRegionStart_trichotomy hg hl hcl u hu0 hu1 hua hreg hmax s hs0 hs1
+  have hv := insRegionStart_trichotomy hg hl hcl u hu0 hu1 hua hreg hmax v hv0 hv1
+  rcases hs with ⟨hse, hsc⟩ | ⟨hsb, hsi0, hsi1, hsc⟩ | ⟨hsa, hsi0, hsi1, hsc⟩
+  · rcases hv with ⟨hve, hvc⟩ | ⟨hvb, hvi0, hvi1, hvc⟩ | ⟨hva, hvi0, hvi1, hvc⟩
+    · -- (raised `u`, raised `u`): the same pin, so the difference is `0`
+      rw [hsc, hvc]; omega
+    · -- (raised `u`, displaced-down): THE TIGHT PAIR — compatibility gives `u - y`, demand is
+      -- `(u - y) + l`, and the raise is exactly `l`
+      rw [hsc, hvc]
+      have := pinCompat_of_ladderPath g hg u (v + (l : ℤ)) hu0 hu1 hvi0 hvi1
+      omega
+    · -- (raised `u`, displaced-up): compatibility gives `t - u`, demand is `(t - u) + l`
+      rw [hsc, hvc]
+      have := pinCompat_of_ladderPath g hg u (v - (l : ℤ)) hu0 hu1 hvi0 hvi1
+      omega
+  · rcases hv with ⟨hve, hvc⟩ | ⟨hvb, hvi0, hvi1, hvc⟩ | ⟨hva, hvi0, hvi1, hvc⟩
+    · -- (displaced-down, raised `u`): the tight pair's mirror, by `natAbs`'s symmetry in the two
+      -- arguments — `pinCompat_of_ladderPath` is applied in the swapped order, not re-proved
+      rw [hsc, hvc]
+      have := pinCompat_of_ladderPath g hg (s + (l : ℤ)) u hsi0 hsi1 hu0 hu1
+      omega
+    · -- (displaced-down, displaced-down): the family moves rigidly, so distances and countdowns
+      -- are both unchanged and compatibility applies directly
+      rw [hsc, hvc]
+      have := pinCompat_of_ladderPath g hg (s + (l : ℤ)) (v + (l : ℤ)) hsi0 hsi1 hvi0 hvi1
+      omega
+    · -- (displaced-down, displaced-up): the new distance is `(t - y) + 2l` against an unchanged
+      -- countdown difference
+      rw [hsc, hvc]
+      have := pinCompat_of_ladderPath g hg (s + (l : ℤ)) (v - (l : ℤ)) hsi0 hsi1 hvi0 hvi1
+      omega
+  · rcases hv with ⟨hve, hvc⟩ | ⟨hvb, hvi0, hvi1, hvc⟩ | ⟨hva, hvi0, hvi1, hvc⟩
+    · -- mirror of (raised `u`, displaced-up)
+      rw [hsc, hvc]
+      have := pinCompat_of_ladderPath g hg (s - (l : ℤ)) u hsi0 hsi1 hu0 hu1
+      omega
+    · -- mirror of (displaced-down, displaced-up)
+      rw [hsc, hvc]
+      have := pinCompat_of_ladderPath g hg (s - (l : ℤ)) (v + (l : ℤ)) hsi0 hsi1 hvi0 hvi1
+      omega
+    · -- (displaced-up, displaced-up): rigid again, compatibility directly
+      rw [hsc, hvc]
+      have := pinCompat_of_ladderPath g hg (s - (l : ℤ)) (v - (l : ℤ)) hsi0 hsi1 hvi0 hvi1
+      omega
 
 end Cascade
 

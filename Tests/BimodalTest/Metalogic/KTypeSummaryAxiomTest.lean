@@ -108,7 +108,7 @@ expectation to rewrite.
 -- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): this is one
 -- axiom-profile ledger for the summary layer and its requirement sections stay together, so the
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
-set_option linter.style.longFile 2300
+set_option linter.style.longFile 2400
 
 namespace BimodalTest.Metalogic
 
@@ -2235,6 +2235,40 @@ This pin is still NOT an existential over ladder paths. `hpins` for the inserted
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.insRegionStart_trichotomy
+
+/-! ### `hpins` for the inserted walk, and the tightness of `d := l`
+
+`insPins_of_region_start` is the pin obligation the `spliceObj`-shaped refutation left open,
+discharged: the inserted walk's region-start countdowns are pairwise compatible, which is exactly
+the hypothesis `exists_ladderPath_of_walk_of_pins` consumes. Nine pairs of trichotomy cases, each
+closing on `pinCompat_of_ladderPath` applied to the two ORIGINAL region starts.
+
+Three things this pin records that the name does not carry:
+
+* **`d := l` is TIGHT, and one pair fixes it.** The pair `(u, y)` — the raised pin at `u` against
+  an original start displaced down to `y - l` — demands `(u - y) + l` where compatibility on the
+  original supplies only `u - y`. The deficit is exactly the raise, so no smaller depth closes
+  this pair and no larger one is needed. Every other pair has slack.
+* **The three mirror pairs are reached by `natAbs`'s symmetry in its two arguments**, by applying
+  `pinCompat_of_ladderPath` in the swapped order rather than by re-proving the arithmetic. Nine
+  cases, six distinct arguments.
+* **The cascade bookkeeping is NOT in this proof's dependency closure as a proof term.**
+  `cascadeDemand`, `cascadeDemand_add_succ`, `cascadeDemand_le_cascadeBound`, `pinnedRegions*` and
+  `pin_deficit_le_of_lengthen` are all unconsumed: the single insertion at the region start of
+  `a`'s own region replaces the iteration they size, and they stay landed as the record of what
+  that iteration would have cost. `two_pow_card_prodState_le_Tc` is not reachable from here at
+  all — it lives in `LadderChain.lean`, which imports this module.
+
+The profile matches `insRegionStart_trichotomy`'s, which is the only nontrivial thing in its
+dependency closure beyond `pinCompat_of_ladderPath`. This pin is still not an existential over
+ladder paths: both `exists_ladderPath_at_region*` names remain owed here, and
+`exists_spliced_ladderPath_of_idle_past` remains REFUTED rather than merely unclaimed. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.insPins_of_region_start' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.insPins_of_region_start
 
 /-! ### `Real`'s three RELATIONAL conditions
 
