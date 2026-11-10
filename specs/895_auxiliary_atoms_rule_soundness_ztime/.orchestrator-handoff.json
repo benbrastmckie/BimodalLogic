@@ -1,15 +1,52 @@
 {
-  "status": "planned",
-  "dispatch_seq": 16,
-  "phases_completed": 0,
+  "task_number": 895,
+  "dispatch_seq": 17,
+  "phase": "implement",
+  "status": "implemented",
+  "phases_completed": 6,
   "phases_total": 6,
-  "summary": "Authored a six-phase implementation plan for the formula-level Auxiliary-Atoms rule at FrameClass.ZTime, assembling the research report's compiled route into one new module FormalSystem/Metalogic/AuxiliaryAtoms.lean. The plan's ten Lean Challenge Statements were type-checked against the live library with lake env lean (exit 0, sorry warnings only), so every pinned signature is measured rather than asserted. Phases 1-5 are local-tier transcription-and-assembly on the single new module; Phase 6 is the full-tier headline, axiom-profile evidence pin, documentation reconciliation and repository gate set. suite_selection_select returns __FULL_SWEEP__ for every declared path, so each non-final phase's covering check is the scoped guarded module build.",
+  "session_id": "sess_1794343738_e0026f",
+  "summary": "All six plan phases closed in order, each on a green full-library build. FormalSystem/Metalogic/AuxiliaryAtoms.lean (903 lines) states the transposed Reynolds Auxiliary-Atoms rule at the L-plus formula level and proves it validity-preserving at FrameClass.ZTime: aa_sound_int over every regular frame over intOrder, aa_sound_ztime by carrier normalization, aa_reflectTime_sound_ztime as the mirror by reflection. All ten Challenge-pinned identifiers landed at byte-identical signatures, sorry-free, with measured axiom profiles pinned in a new evidence module Tests/BimodalTest/Metalogic/AuxiliaryAtomsTest.lean. Full project (2971 jobs) and test library (3038 jobs) green with zero warnings; check-module-invariants.sh ALL CHECKS PASSED; one finding of note is that the Challenge-pinned hexh hypothesis is not consumed by the soundness proof and is retained under the repository's own nolint-plus-allowlist precedent.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/895_auxiliary_atoms_rule_soundness_ztime/plans/01_auxiliary-atoms-rule-soundness.md",
-      "summary": "Six-phase, 10-hour plan for the Auxiliary-Atoms rule's ZTime soundness: three infrastructure lemmas, the cone-history machine run, the antecedent syntax, the auxiliary-atom model, the antecedent-satisfaction theorem, and the three headlines with the full gate set."
+      "type": "summary",
+      "path": "specs/895_auxiliary_atoms_rule_soundness_ztime/summaries/01_auxiliary-atoms-rule-soundness-summary.md",
+      "summary": "Implementation summary: scope, decisions, plan deviations (none), and the full verification record including pre-existing baseline findings."
+    },
+    {
+      "type": "code",
+      "path": "FormalSystem/Metalogic/AuxiliaryAtoms.lean",
+      "summary": "The new module: three infrastructure lemmas, two cone-history lemmas, the machine labelling and its step identity, the antecedent as L-plus syntax, the auxiliary-atom model and input function, and the three headline soundness theorems."
+    },
+    {
+      "type": "code",
+      "path": "Tests/BimodalTest/Metalogic/AuxiliaryAtomsTest.lean",
+      "summary": "Permanent evidence: six #guard_msgs-gated #print axioms blocks, every expected profile measured in this dispatch."
     }
+  ],
+  "modified_files": [
+    "FormalSystem.lean",
+    "FormalSystem/Metalogic.lean",
+    "FormalSystem/Metalogic/AuxiliaryAtoms.lean",
+    "FormalSystem/Metalogic/NamingRules.lean",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
+    "README.md",
+    "Tests/BimodalTest.lean",
+    "Tests/BimodalTest/Metalogic/AuxiliaryAtomsTest.lean",
+    "docs/theorem-index.md",
+    "scripts/nolint-attribute-allowlist.txt",
+    "specs/895_auxiliary_atoms_rule_soundness_ztime/handoffs/phase-1-handoff-20261110-150331.md",
+    "specs/895_auxiliary_atoms_rule_soundness_ztime/handoffs/phase-2-handoff-20261110-150552.md",
+    "specs/895_auxiliary_atoms_rule_soundness_ztime/handoffs/phase-3-handoff-20261110-150821.md",
+    "specs/895_auxiliary_atoms_rule_soundness_ztime/handoffs/phase-4-handoff-20261110-151148.md",
+    "specs/895_auxiliary_atoms_rule_soundness_ztime/handoffs/phase-5-handoff-20261110-151607.md",
+    "specs/895_auxiliary_atoms_rule_soundness_ztime/handoffs/phase-6-handoff-20261110-154930.md",
+    "specs/895_auxiliary_atoms_rule_soundness_ztime/issues.jsonl",
+    "specs/895_auxiliary_atoms_rule_soundness_ztime/plans/01_auxiliary-atoms-rule-soundness.md",
+    "specs/895_auxiliary_atoms_rule_soundness_ztime/summaries/01_auxiliary-atoms-rule-soundness-summary.md",
+    "specs/evidence/auxiliary-atoms-rule-soundness/aa-core-probe.lean",
+    "typst/generated/status.typ"
   ]
 }
