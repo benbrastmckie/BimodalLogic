@@ -654,4 +654,166 @@ theorem cone_member_classification {E : W → W → Prop} {s : Set (W ⊕ (W × 
     · exact Or.inl (subsingleton_of_subset_range_inr hy hsub (fun u hu => (hseq ▸ hu).2))
     · exact Or.inr (Or.inl hsub)
 
+/-! ## The two-layer *Saturation* split
+
+`saturation_coneR` is four steps, of which the two cases of the layer split are the named
+step lemmas below.
+
+* **Step 1** — a subsingleton member closes the goal outright, by
+  `sInter_nonempty_of_subsingleton_member` (Reduction A of `OrientedForest.lean`). This disposes
+  of every duration-zero fibre, every segment with a zero endpoint offset, and every segment
+  contained in the `inr` layer.
+* **Step 2** — split on `∃ s₀ ∈ S, s₀ ⊆ Set.range Sum.inr`.
+* **Step 3** — `sInter_nonempty_of_no_inr_member` (Case A).
+* **Step 4** — `sInter_nonempty_of_inr_member` (Case B).
+-/
+
+/--
+**Case A of the layer split**: no member of the family lies inside the `inr` layer.
+
+The whole family transports by `Sum.inl ⁻¹'` through `fib_or_seg_inl_preimage` into a
+`⊇`-directed family of nonempty base fibres and segments, the base's own *Saturation* supplies a
+witness `b`, and `Sum.inl b` is a witness for the original family — because the `inl` layer is a
+verbatim copy of the base, so `Sum.inl b ∈ s ↔ b ∈ Sum.inl ⁻¹' s` holds by definition.
+
+This is the half of the split that reads `hbase`, and it is the reason `saturation_coneR` cannot
+do without it.
+-/
+theorem sInter_nonempty_of_no_inr_member {E : W → W → Prop}
+    (hbase : TaskFrame.Saturation (ofStepRel E))
+    {S : Set (Set (W ⊕ (W × List W)))} (hSne : S.Nonempty)
+    (hd : ∀ S₁ ∈ S, ∀ S₂ ∈ S, ∃ S' ∈ S, S' ⊆ S₁ ∩ S₂)
+    (hmem : ∀ s ∈ S, (TaskFrame.IsFiber (ofStepRel (coneR E)) s ∨
+      TaskFrame.IsSegment (ofStepRel (coneR E)) s) ∧ s.Nonempty)
+    (hA : ∀ s ∈ S, ¬ s ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W))) :
+    (⋂₀ S).Nonempty := by
+  have hdir : TaskFrame.DirectedFamily ((fun s => Sum.inl ⁻¹' s) '' S) := by
+    refine ⟨?_, ?_⟩
+    · obtain ⟨s₀, hs₀⟩ := hSne
+      exact ⟨Sum.inl ⁻¹' s₀, s₀, hs₀, rfl⟩
+    · rintro _ ⟨s₁, hs₁, rfl⟩ _ ⟨s₂, hs₂, rfl⟩
+      obtain ⟨s', hs', hsub⟩ := hd s₁ hs₁ s₂ hs₂
+      refine ⟨Sum.inl ⁻¹' s', ⟨s', hs', rfl⟩, ?_⟩
+      intro b hb
+      exact ⟨(hsub hb).1, (hsub hb).2⟩
+  have hmem' : ∀ t ∈ (fun s => Sum.inl ⁻¹' s) '' S,
+      (TaskFrame.IsFiber (ofStepRel E) t ∨ TaskFrame.IsSegment (ofStepRel E) t) ∧ t.Nonempty := by
+    rintro _ ⟨s, hs, rfl⟩
+    exact fib_or_seg_inl_preimage (hmem s hs).1 (hA s hs)
+  obtain ⟨b, hb⟩ := hbase _ hdir hmem'
+  exact ⟨Sum.inl b, fun s hs => hb (Sum.inl ⁻¹' s) ⟨s, hs, rfl⟩⟩
+
+/--
+**Case B of the layer split**: some member lies inside the `inr` layer.
+
+Directedness makes the `inr`-contained members **cofinal** in the family — the common sub-member
+of `s₀` and any `s` is itself inside the `inr` layer and inside `s` — so `cofinal_sInter_eq`
+replaces the family by that subfamily without changing the intersection. Every member of the
+subfamily is then an `inr`-anchored fibre of nonnegative duration: `cone_member_classification`
+leaves only that cell once the subsingleton disposition is excluded by `hnosub` and the
+not-`inr`-contained disposition is excluded by membership in the subfamily. The subfamily
+transports by `Sum.inr ⁻¹'` through `inr_preimage_fib_inr_pos`, and
+`saturation_of_orientedForest` on the `inr` layer closes the goal.
+
+The `inr` half therefore reads **no** hypothesis about the base: `coneRin_isOrientedForest` holds
+for every `E` whatsoever.
+-/
+theorem sInter_nonempty_of_inr_member {E : W → W → Prop}
+    {S : Set (Set (W ⊕ (W × List W)))}
+    (hd : ∀ S₁ ∈ S, ∀ S₂ ∈ S, ∃ S' ∈ S, S' ⊆ S₁ ∩ S₂)
+    (hne : ∀ s ∈ S, s.Nonempty)
+    (hmem : ∀ s ∈ S, (TaskFrame.IsFiber (ofStepRel (coneR E)) s ∨
+      TaskFrame.IsSegment (ofStepRel (coneR E)) s) ∧ s.Nonempty)
+    (hnosub : ∀ T ∈ S, ¬ T.Subsingleton)
+    {s₀ : Set (W ⊕ (W × List W))} (hs₀ : s₀ ∈ S)
+    (hs₀inr : s₀ ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W))) :
+    (⋂₀ S).Nonempty := by
+  -- the `inr`-contained subfamily, and its cofinality
+  have hTS : {s ∈ S | s ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W))} ⊆ S :=
+    fun _ hs => hs.1
+  have hcof : ∀ s ∈ S, ∃ t ∈ {s ∈ S | s ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W))},
+      t ⊆ s := by
+    intro s hs
+    obtain ⟨s', hs', hsub⟩ := hd s₀ hs₀ s hs
+    exact ⟨s', ⟨hs', fun z hz => hs₀inr (hsub hz).1⟩, fun z hz => (hsub hz).2⟩
+  have hTeq : ⋂₀ {s ∈ S | s ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W))} = ⋂₀ S :=
+    cofinal_sInter_eq hTS hcof
+  -- every member of the subfamily is an `inr`-anchored fibre of nonnegative duration
+  have hshape : ∀ s ∈ {s ∈ S | s ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W))},
+      ∃ (p : W × List W) (x : ℤ), 0 ≤ x ∧
+        s = TaskFrame.Fib (ofStepRel (coneR E)) (.inr p) x := by
+    intro s hs
+    rcases cone_member_classification (hmem s hs.1).1 (hne s hs.1) with h | h | h
+    · exact absurd h (hnosub s hs.1)
+    · exact absurd hs.2 h
+    · exact h
+  -- transport the subfamily into the `inr` layer
+  have hdir : TaskFrame.DirectedFamily ((fun s => Sum.inr ⁻¹' s) ''
+      {s ∈ S | s ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W))}) := by
+    refine ⟨⟨Sum.inr ⁻¹' s₀, s₀, ⟨hs₀, hs₀inr⟩, rfl⟩, ?_⟩
+    rintro _ ⟨s₁, hs₁, rfl⟩ _ ⟨s₂, hs₂, rfl⟩
+    obtain ⟨s', hs', hsub⟩ := hd s₁ hs₁.1 s₂ hs₂.1
+    refine ⟨Sum.inr ⁻¹' s', ⟨s', ⟨hs', fun z hz => hs₁.2 (hsub hz).1⟩, rfl⟩, ?_⟩
+    intro q hq
+    exact ⟨(hsub hq).1, (hsub hq).2⟩
+  have hmem' : ∀ t ∈ (fun s => Sum.inr ⁻¹' s) ''
+      {s ∈ S | s ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W))},
+      (TaskFrame.IsFiber (ofStepRel (coneRin E)) t ∨
+        TaskFrame.IsSegment (ofStepRel (coneRin E)) t) ∧ t.Nonempty := by
+    rintro _ ⟨s, hs, rfl⟩
+    obtain ⟨z, hz⟩ := hne s hs.1
+    obtain ⟨q, rfl⟩ := hs.2 hz
+    obtain ⟨p, x, hx, hseq⟩ := hshape s hs
+    refine ⟨Or.inl ⟨p, x, ?_⟩, ⟨q, hz⟩⟩
+    rw [hseq]; exact inr_preimage_fib_inr_pos p hx
+  obtain ⟨p, hp⟩ :=
+    saturation_of_orientedForest (coneRin_isOrientedForest E) _ hdir hmem'
+  refine ⟨Sum.inr p, ?_⟩
+  rw [← hTeq]
+  exact fun s hs => hp (Sum.inr ⁻¹' s) ⟨s, hs, rfl⟩
+
+/--
+**The two-layer *Saturation* split.**
+
+*Saturation* of the cone's task relation follows from *Saturation* of the base's, with the two
+layers discharged by different means: the `inl`-anchored families from the base's own
+*Saturation* (`sInter_nonempty_of_no_inr_member`), the `inr`-anchored families from
+`saturation_of_orientedForest` on the `inr` layer (`sInter_nonempty_of_inr_member`), and the
+mixed case handled by **directedness** — a family with one `inr`-contained member has its
+`inr`-contained members cofinal, so there is no genuinely mixed case left to treat.
+
+**No seriality hypothesis is taken, and none is needed.** Every nonemptiness obligation in the
+split is discharged from the member's own nonemptiness, through the projection homomorphism;
+adding a seriality hypothesis would silently weaken the statement.
+
+`hbase` is taken in `ofStepRel` form rather than as a frame field, mirroring
+`saturation_of_orientedForest'`'s own `hgen`-parameterised design: this tree has no
+relation-level `F.TaskRel = ofStepRel F.step` equality for a general regular `F`, only the
+pointwise `FrameOver.taskRel_eq_iter_of_constraints`, so the bridge is made once at the frame
+assembly rather than inside this theorem.
+
+Paper: `def:frame#Saturation`
+-/
+theorem saturation_coneR {E : W → W → Prop}
+    (hbase : TaskFrame.Saturation (ofStepRel E)) :
+    TaskFrame.Saturation (ofStepRel (coneR E)) := by
+  intro S hdir hmem
+  obtain ⟨hSne, hd⟩ := hdir
+  have hne : ∀ s ∈ S, s.Nonempty := fun s hs => (hmem s hs).2
+  -- Step 1: a subsingleton member closes the goal outright
+  by_cases hsub : ∃ T ∈ S, T.Subsingleton
+  · obtain ⟨T, hT, hTsub⟩ := hsub
+    exact sInter_nonempty_of_subsingleton_member hd hne hT hTsub
+  have hnosub : ∀ T ∈ S, ¬ T.Subsingleton := by
+    intro T hT hTsub
+    exact hsub ⟨T, hT, hTsub⟩
+  -- Step 2: split on whether some member lies inside the `inr` layer
+  by_cases hB : ∃ s₀ ∈ S, s₀ ⊆ Set.range (Sum.inr : W × List W → W ⊕ (W × List W))
+  · obtain ⟨s₀, hs₀, hs₀inr⟩ := hB
+    -- Step 4 (Case B)
+    exact sInter_nonempty_of_inr_member hd hne hmem hnosub hs₀ hs₀inr
+  · -- Step 3 (Case A)
+    push Not at hB
+    exact sInter_nonempty_of_no_inr_member hbase hSne hd hmem hB
+
 end FormalSystem.Semantics

@@ -396,34 +396,34 @@ existing signature.
 
 ---
 
-### Phase 4: The two-layer Saturation lemma [NOT STARTED]
+### Phase 4: The two-layer Saturation lemma [COMPLETED]
 
 **Goal**: Prove `saturation_coneR` at the pinned signature — `TaskFrame.Saturation (ofStepRel (coneR E))`
 from `TaskFrame.Saturation (ofStepRel E)`, with no seriality hypothesis — as the four-step case
 analysis the research report derives.
 
 **Tasks**:
-- [ ] Open the proof with the intersect-nonemptily handle: directedness plus member-nonemptiness
+- [x] Open the proof with the intersect-nonemptily handle: directedness plus member-nonemptiness
       gives that any two members meet, by taking the common sub-member and using its nonemptiness.
-- [ ] Step 1: close via `sInter_nonempty_of_subsingleton_member` whenever some member is a
+- [x] Step 1: close via `sInter_nonempty_of_subsingleton_member` whenever some member is a
       subsingleton — disposing of every duration-zero fibre (`fib_zero_eq_singleton`), every
       segment with `x = 0` or `y = 0`, and every segment contained in the inr layer (via
       Phase 3's `subsingleton_of_subset_range_inr`).
-- [ ] Step 2: split on `∃ s₀ ∈ S, s₀ ⊆ Set.range Sum.inr`.
-- [ ] Step 3 (Case A, no member inside the inr layer): transport the whole family by
+- [x] Step 2: split on `∃ s₀ ∈ S, s₀ ⊆ Set.range Sum.inr`.
+- [x] Step 3 (Case A, no member inside the inr layer): transport the whole family by
       `Sum.inl ⁻¹'` using Phase 3's `fib_or_seg_inl_preimage`, apply `hbase`, and return
       `Sum.inl b`.
-- [ ] Step 4 (Case B): put `S_inr := {s ∈ S | s ⊆ Set.range Sum.inr}`; prove it cofinal in `S`
+- [x] Step 4 (Case B): put `S_inr := {s ∈ S | s ⊆ Set.range Sum.inr}`; prove it cofinal in `S`
       by directedness; conclude `⋂₀ S_inr = ⋂₀ S` by Phase 3's `cofinal_sInter_eq`; use
       `mem_range_inl_of_mem` to show every post-Step-1 member of `S_inr` is
       `Fib R (.inr p) x` with `0 ≤ x`; transport by `Sum.inr ⁻¹'` using
       `inr_preimage_fib_inr_pos`; and close with
       `saturation_of_orientedForest (coneRin_isOrientedForest E)` on the transported family.
-- [ ] Do not substitute `sInter_nonempty_of_forward_fibres` for the Step 4 endpoint. It is an
+- [x] Do not substitute `sInter_nonempty_of_forward_fibres` for the Step 4 endpoint. It is an
       equally valid endpoint and skips the `IsFiber` repackaging, but this plan selects
       `saturation_of_orientedForest` for fidelity to the task description; a switch is a
       `[BLOCKED]` escalation under `rules/plan-compliance.md`, not an in-flight choice.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
 
 **Timing**: 2 hours
 
