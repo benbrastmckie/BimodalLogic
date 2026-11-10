@@ -3012,6 +3012,11 @@
           "path": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/plans/01_reynolds-sections-5-8-splice.md",
           "type": "plan",
           "summary": "5-phase, 3.25-hour plan to splice reynolds_2001 sections 5-8 into the Literature corpus and reindex, closing the Auxiliary Atoms rule citation gap."
+        },
+        {
+          "path": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/summaries/01_reynolds-sections-5-8-splice-summary.md",
+          "type": "summary",
+          "summary": "Closed the reynolds_2001 sections 5-8 gap: spliced 4 new chunks into the Literature corpus, rebuilt the global FTS5 index, and recorded a dated addendum on the specs/literature-index.json sub-index entry."
         }
       ],
       "audit_verdict": {
@@ -3041,12 +3046,20 @@
         "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec07_132-a-new-chronicle-we-check-that-t.md",
         "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec07_the-theorem.md",
         "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec08_143-hue-scheduling-assuming-that-there-i.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec08_sec-9-completeness-preliminaries-in-what.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec09_sec-10-the-standard-basis-of-the-constru.md",
         "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec09_sec-15-truth-lemma-ko-and-the-truth-lemm.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec10_111-lulls-it-will-be-important-in-our-co.md",
         "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec10_sec-16-examples.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec11_132-a-new-chronicle-we-check-that-t.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec12_143-hue-scheduling-assuming-that-there-i.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec13_sec-15-truth-lemma-ko-and-the-truth-lemm.md",
+        "/home/benjamin/Projects/Literature/sources/reynolds_2001/sec14_sec-16-examples.md",
         "specs/literature-index.json"
       ],
       "session_id": "sess_1794328980_5b668f",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "All 5 plan phases completed: spliced 4 new chunks.json entries (sections 5-8) into the reynolds_2001 corpus document, renumbered 7 existing files, rebuilt the global FTS5 index (reynolds_2001 now 14 chunks, corpus total +4), and added a dated addendum to the specs/literature-index.json sub-index entry. literature-search.sh \"auxiliary atoms\" and \"limit closure axiom\" both now return the correct new chunks as top results."
     }
   ],
   "artifacts": [

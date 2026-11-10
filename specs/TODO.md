@@ -139,6 +139,7 @@ next_project_number: 916
 - **Parent**: Task 894
 - **Research**: [915_reconvert_reindex_reynolds_auxiliary_atoms_sections/reports/01_reynolds-sections-5-8-reconversion.md]
 - **Plan**: [915_reconvert_reindex_reynolds_auxiliary_atoms_sections/plans/01_reynolds-sections-5-8-splice.md]
+- **Summary**: [915_reconvert_reindex_reynolds_auxiliary_atoms_sections/summaries/01_reynolds-sections-5-8-splice-summary.md]
 
 **Description**: Re-convert and re-index reynolds_2001 with sections 5-8 included, so the Auxiliary Atoms rule has a citable source statement in the corpus. Evidence: literature-search.sh returns nothing for 'auxiliary atoms' in a formal-logic sense, and reynolds_2001's existing sub-index entry skips the axiom-system sections where the rule sits (its TOC jumps 4.7-4.8 straight to 9). Research on the forward-cone unravelling proceeded from FormalSystem/Metalogic/NamingRules.lean's recorded Saturation obligation as the source of record instead. The Auxiliary-Atoms rule for L-plus at ZTime is the direct subject of a downstream task, which needs the rule's actual source statement rather than only the repo's recorded obligation. Deliverable: the converted sections present in Literature/, a refreshed specs/literature-index.json entry covering them, and a literature-search.sh query for the rule that returns the right chunk.
 
