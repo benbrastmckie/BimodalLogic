@@ -19,7 +19,7 @@ reading of the landed regime-A assembly `exists_ladderPath_through_shifted_of_pe
 the register's anchor moved, or of the landed class destructors `kappa_eq_components`,
 `eq_or_both_ge_of_min_eq` and `clipIdx_regime_of_eq`.
 
-The layer has two halves.
+The layer has three parts.
 
 The COMMON-SHIFT INCLUSION. `LadderChain.lean`'s `cellAt_subset_of_shift_of_pend_past` covers
 the sub-regime in which the register is held (`n' = n`) and the countdown rises by a multiple of
@@ -47,6 +47,32 @@ alternatives alone — is NOT a consequence of the three destructors together wi
 derivation and says nothing about the two-branch form under full `ParamsOk`, whose `(K1)`, `(K2)`
 and `(K4)` quantify the formula and are not read here. The saturated branch is the honest
 residue: neither landed inclusion addresses it.
+
+The FORWARD-SLACK DOWNWARD HALF. A downward inclusion cannot be stated on the STATE under a
+path-level regime (`ClimbWitness.hasForwardSlack_refuted_unconditional`), so `ForwardSlackWitnessed`
+lifts `LadderChain.lean`'s path-level downward inclusions to the cell by asking, existentially,
+that every type the higher cell realizes be realized there by SOME path carrying the regime.
+Two downward inclusions are read through it, and each pairs with one upward inclusion above to
+give a depth-`0` cell-EQUALITY schema:
+
+* the EQUAL-REGISTER pair — `cellAt_subset_of_shift_of_pend_past_rev` against the landed
+  `cellAt_subset_of_shift_of_pend_past`, giving `CellLEZeroConstOfKappaEqForwardSlack` and its
+  theorem, which carries the equal-register restriction `n = n'`;
+* the COMMON-SHIFT pair — `cellAt_subset_of_common_shift_of_pend_past_rev` (whose witnessing path
+  work is `mem_cellAt_of_common_shift_of_hasForwardSlack_exact`, resting on `LadderChain.lean`'s
+  register-LOWERING deletion `exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past`)
+  against `cellAt_subset_of_common_shift_of_pend_past`, giving
+  `CellLEZeroConstOfKappaEqCommonShiftForwardSlack` and its theorem, which carries NO
+  equal-register restriction — the common-shift displacement stands in its place.
+
+The register-lowering deletion is what makes the second pair possible: the landed deletion holds
+the register, so the equal-register restriction on the first schema is forced by the asymmetry
+rather than by the mathematics. The price of moving the register is a DOUBLED regime amount
+`m · (P + 1) + m · (P + 1)` and a room bound `n + (m · (P + 1) + m · (P + 1)) ≤ c`, both carried
+explicitly. The saturated branch remains the honest residue, in both schemas, and the reserved
+name `cellLE_zero_const_of_kappa_eq` is claimed by nothing in this module: both schemas are
+strictly stronger in hypotheses than the reserved statement and bear on its truth value in
+neither direction.
 -/
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
@@ -597,6 +623,106 @@ theorem cellLE_zero_const_of_kappa_eq_of_forwardSlack {Q : Type} [Fintype Q] [No
         j h hgap' hTc' z (hwdn j rfl))
       (cellAt_subset_of_shift_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno q c' n h' j h
         hgap' hTc' z)
+
+/-- **THE BRANCH-2 DEPTH-`0` CELL OBLIGATION, with NO EQUAL-REGISTER HYPOTHESIS**, stated as a
+schema. The equal-register restriction `n = n'` that `CellLEZeroConstOfKappaEqForwardSlack`
+carries is ABSENT here by construction: in its place the collision's displacement is taken as an
+explicit hypothesis in the COMMON-SHIFT shape — one `m` displacing the countdown AND the register
+by the same `m · (P + 1)` — which is branch 2 of `kappa_collision_regimes`. What separates this
+schema from the reserved statement `CellLEZeroConstOfKappaEq` is therefore:
+
+1. the COMMON-SHIFT displacement hypothesis, in place of the equal-register one;
+2. the pending-forever gap `n + 2 ≤ c` and `n' + 2 ≤ c'`, at BOTH pairs;
+3. the threshold bounds `Tc ≤ c` and `Tc ≤ c'`, at both pairs;
+4. the room bound `n + (m · (P + 1) + m · (P + 1)) ≤ c` and the forward-slack witnessing of
+   whichever pair carries the HIGHER countdown, at the DOUBLED amount
+   `m · (P + 1) + m · (P + 1)`.
+
+The room bound and the witnessing live inside the same clause because `m` is existentially bound
+by hypothesis 1 and cannot be named outside a clause that quantifies it. The doubling in
+hypothesis 4 is the price of moving the register: `m · (P + 1)` for the countdown and a further
+`m · (P + 1)` for lowering the anchor, as
+`mem_cellAt_of_common_shift_of_hasForwardSlack_exact` records. The room bound is a genuine
+strengthening of the landed equal-register schema's hypotheses and is not implied by hypothesis 2
+(nor does it imply it: it is vacuous at `m = 0`).
+
+WHAT THIS DOES NOT REACH. Branch 3 of `kappa_collision_regimes` — the saturated-gap residue
+`kappa_collision_two_regimes_refuted_of_pend_gap` compiles as surviving inside the
+pending-forever regime above the threshold — is not addressed, in either direction. This schema
+takes the common-shift displacement as a hypothesis rather than dispatching on
+`kappa_collision_regimes`, so it says nothing about a collision that falls in that residue.
+
+The reserved name `cellLE_zero_const_of_kappa_eq` is claimed by nothing here, and this schema
+bears on its truth value in NEITHER DIRECTION: it is strictly stronger in hypotheses than the
+reserved statement, so proving it neither proves nor refutes the reserved one. -/
+def CellLEZeroConstOfKappaEqCommonShiftForwardSlack {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) : Prop :=
+  ParamsOk step pend lab φ Tc Tn P B →
+    (∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ) →
+    ∀ (q : Q) (c n c' n' : ℕ) (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q) (z : ℤ),
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') →
+      (∃ m : ℕ, (c' = c + m * (P + 1) ∧ n' = n + m * (P + 1)) ∨
+        (c = c' + m * (P + 1) ∧ n = n' + m * (P + 1))) →
+      n + 2 ≤ c → n' + 2 ≤ c' → Tc ≤ c → Tc ≤ c' →
+      (∀ m : ℕ, c' = c + m * (P + 1) → n' = n + m * (P + 1) →
+        n + (m * (P + 1) + m * (P + 1)) ≤ c ∧
+          ForwardSlackWitnessed step pend fwd bwd lab φ
+            (⟨(q, c', n'), h'⟩ : LadderState Q pend) z
+            (m * (P + 1) + m * (P + 1)) n') →
+      (∀ m : ℕ, c = c' + m * (P + 1) → n = n' + m * (P + 1) →
+        n' + (m * (P + 1) + m * (P + 1)) ≤ c' ∧
+          ForwardSlackWitnessed step pend fwd bwd lab φ
+            (⟨(q, c, n), h⟩ : LadderState Q pend) z
+            (m * (P + 1) + m * (P + 1)) n) →
+      cellAt (ladderModel step pend fwd bwd lab) φ
+          ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+        = cellAt (ladderModel step pend fwd bwd lab) φ
+            ((z, ⟨(q, c', n'), h'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+
+/-- **THE BRANCH-2 OBLIGATION IS A THEOREM.** The schema above holds at every parameter tuple
+`ParamsOk` admits, as cell EQUALITY. Each direction of the displacement hypothesis is closed by
+`Set.Subset.antisymm` against the two common-shift inclusions: upward by the landed
+`cellAt_subset_of_common_shift_of_pend_past`, downward by
+`cellAt_subset_of_common_shift_of_pend_past_rev`, whose register-lowering deletion is the whole
+of what this schema adds over the landed equal-register one.
+
+The collision equality itself is not consumed: the displacement comes from the explicit
+common-shift hypothesis, not from `kappa_eq_components`. It is retained as a binder so that the
+schema's shape matches `CellLEZeroConstOfKappaEqForwardSlack`'s and so that a consumer reading
+the two side by side sees exactly one hypothesis traded for another — the equal-register
+restriction for the common-shift displacement. -/
+theorem cellLE_zero_const_of_kappa_eq_commonShift_of_forwardSlack
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) :
+    CellLEZeroConstOfKappaEqCommonShiftForwardSlack step pend fwd bwd lab φ Tc Tn P B := by
+  intro hp hno q c n c' n' h h' z _ hbr hgap hgap' hTc hTc' hwup hwdn
+  obtain ⟨m, hm | hm⟩ := hbr
+  · -- `(c', n')` is the higher pair, displaced UP by the common shift
+    obtain ⟨hc', hn'⟩ := hm
+    subst hc'
+    subst hn'
+    obtain ⟨hroom, hwit⟩ := hwup m rfl rfl
+    exact Set.Subset.antisymm
+      (cellAt_subset_of_common_shift_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno
+        q c n h m h' hgap hTc z)
+      (cellAt_subset_of_common_shift_of_pend_past_rev step pend fwd bwd lab φ Tc Tn P B hp hno
+        q c n h m h' hgap hroom hTc z hwit)
+  · -- `(c, n)` is the higher pair: the same two inclusions with the roles swapped
+    obtain ⟨hc, hn⟩ := hm
+    subst hc
+    subst hn
+    obtain ⟨hroom, hwit⟩ := hwdn m rfl rfl
+    exact Set.Subset.antisymm
+      (cellAt_subset_of_common_shift_of_pend_past_rev step pend fwd bwd lab φ Tc Tn P B hp hno
+        q c' n' h' m h hgap' hroom hTc' z hwit)
+      (cellAt_subset_of_common_shift_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno
+        q c' n' h' m h hgap' hTc' z)
 
 end ForwardSlack
 

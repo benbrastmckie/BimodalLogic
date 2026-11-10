@@ -433,7 +433,7 @@ covers a purely additive declaration whose only consumers are later phases of th
 
 ---
 
-### Phase 5: The Branch-2 Schema, the Records, and the Full Gate [NOT STARTED]
+### Phase 5: The Branch-2 Schema, the Records, and the Full Gate [COMPLETED]
 
 **Goal**: `CellLEZeroConstOfKappaEqCommonShiftForwardSlack` and
 `cellLE_zero_const_of_kappa_eq_commonShift_of_forwardSlack` compile as cell EQUALITY with no
@@ -441,22 +441,27 @@ equal-register hypothesis; the durable records say what landed and what did not;
 set is green or its findings are attributed.
 
 **Tasks**:
-- [ ] Add the schema `def` and its theorem to `LadderCell.lean`'s `section ForwardSlack`, after
+- [x] Add the schema `def` and its theorem to `LadderCell.lean`'s `section ForwardSlack`, after
       Phase 4's declaration, at the pinned signatures below.
-- [ ] Proof: `intro hp hno q c n c' n' h h' z - hbr hgap hgap' hTc hTc' hwup hwdn`, discarding the
+- [x] Proof: `intro hp hno q c n c' n' h h' z - hbr hgap hgap' hTc hTc' hwup hwdn`, discarding the
       collision hypothesis at `intro` with `-` so no unused local is created (the displacement
       comes from `hbr`, not from `kappa_eq_components`). Destructure `hbr`, `subst` the
       displacement in each direction, and close each with `Set.Subset.antisymm` on the landed
       upward `cellAt_subset_of_common_shift_of_pend_past` and Phase 4's downward inclusion.
-- [ ] Docstring on the schema: enumerate its hypotheses, state that it is NOT the reserved
+      *(deviation: altered — `-` is `rintro` syntax, not `intro` syntax; the collision hypothesis
+      is discarded with `intro`'s `_` instead, which likewise creates no named local and draws no
+      unused-variable finding. Also: each direction's clause supplies the room bound AND the
+      witnessing as a conjunction, so each branch destructures `hwup`/`hwdn` into both before
+      `Set.Subset.antisymm`.)*
+- [x] Docstring on the schema: enumerate its hypotheses, state that it is NOT the reserved
       statement `CellLEZeroConstOfKappaEq`, that it is strictly stronger in hypotheses and bears
       on the reserved schema's truth value in neither direction, that the equal-register
       hypothesis is ABSENT by construction (the common-shift displacement replaces it), and that
       branch 3 of `kappa_collision_regimes` is not reached.
-- [ ] Amend `LadderCell.lean`'s module docstring: the layer now has three halves, not two — add
+- [x] Amend `LadderCell.lean`'s module docstring: the layer now has three halves, not two — add
       the register-lowering downward half and the branch-2 schema, and keep the existing
       reserved-name sentence intact.
-- [ ] Amend `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: the "two routes left
+- [x] Amend `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: the "two routes left
       open" paragraph (confirmed present at authoring time, in the `LadderCell.lean` /
       depth-`0`-obligation discussion near the end of the file) must no longer assert the
       REGISTER-LOWERING DELETION route open — it is landed for branch 2 and still does not reach
@@ -466,11 +471,11 @@ set is green or its findings are attributed.
       the time this phase runs, locate it by its "two routes left open" heading phrase and amend
       in place; if it is genuinely absent, treat the phase as `[BLOCKED]` and escalate rather
       than inventing a new home for the record.
-- [ ] Regenerate surface (a) IN THIS ORDER: edit the Description cells first, then
+- [x] Regenerate surface (a) IN THIS ORDER: edit the Description cells first, then
       `bash scripts/check-module-invariants.sh --emit-inventory` (it preserves existing
       Description text and refreshes only the counts), then
       `bash scripts/check-module-invariants.sh --emit-inventory --check`.
-- [ ] `bash scripts/typst-sync-check.sh --fix`; stage `typst/generated/status.typ`.
+- [x] `bash scripts/typst-sync-check.sh --fix`; stage `typst/generated/status.typ`.
 
 **Timing**: 2 hours
 
@@ -492,7 +497,38 @@ and the record edits with `git diff --stat`.
 - `FormalSystem/Metalogic/README.md` - regenerated inventory block
 - `typst/generated/status.typ` - regenerated line counts
 
-**Verification**:
+**Verification outcome** (all green; the scoped-tier substitution the dispatch directive requires
+is recorded in the last bullet):
+- Full-project guarded `lake build`: exit 0, 2970 jobs, zero `error:` lines, zero `sorry`.
+- `bash scripts/check-module-invariants.sh`: exit 0 — every constraint C1-C37 PASS, including C1
+  (build), C2/C14 (recorded axiom baselines), C16 (env linters, no un-nolisted finding), the
+  inventory check and the doc-count checks. No new `nolints.json` row was needed.
+- `bash scripts/check-module-invariants.sh --emit-inventory --check`: exit 0.
+- `bash scripts/typst-sync-check.sh` (full, not `--counts-only`): PASS, all 4 checks green.
+- `lean_verify` on all five new declarations (the two Phase 5 ones plus Phases 1, 3, 4):
+  `[propext, Classical.choice, Quot.sound]`, `trust: standard`, no non-standard axiom, no
+  `sorryAx`.
+- `bash .claude/scripts/lean-sorry-census.sh` over the resolved source roots: `sorry_count: 0`,
+  empty inventory. `grep -rn "^axiom "`: 14, byte-identical to the count at this task's base
+  commit `903830817` — no increase. The single-line vacuous-pattern grep returns one hit,
+  `FormalSystem/Examples/TemporalStructures.lean:495`'s `int_domain_universal ... := trivial`,
+  which is pre-existing (present at `903830817`, last touched 2026-10-14) and is not a vacuity
+  defect: `intTimeHistory.domain t` reduces to `True` by definition, so `trivial` is the honest
+  proof rather than a placeholder. Zero vacuous declarations attributable to this task.
+- `grep -rn "cellLE_zero_const_of_kappa_eq\b" FormalSystem/`: 10 hits, every one inside a
+  docstring or a README paragraph. The reserved name is declared by nothing.
+- **SCOPED TIER, per this dispatch's Batch Gate Deferral directive.** The complete gate set was
+  NOT independently run here; it runs once for the whole batch at the end of the invocation and
+  is attributed back by `modified_files`. The narrowing invocation actually covering this phase's
+  files is the Lean-tree gate above (`check-module-invariants.sh` plus `typst-sync-check.sh`),
+  both green. `verify-deploy.sh` and `tests/run-all.sh` were deliberately not run: every file
+  this task touched is Lean source, a `FormalSystem`/root README, a generated Typst status file
+  or a `specs/` artifact — none lives under `.claude/**` or `agent-system/**`, so no gate or
+  suite in either harness can produce a finding attributable to this task. The dispatch context's
+  recorded deploy staleness (core, lean, literature, memory, typst) is pre-existing and was NOT
+  remedied here; no file under `.claude/**` was hand-patched.
+
+**Verification (as planned)**:
 - `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` (full project) exits 0
   with no `sorry` and no error.
 - `bash scripts/check-module-invariants.sh` exits 0 — the project's Lean-tree phase gate,
