@@ -1,12 +1,18 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "skeleton": false,
-  "summary": "Phase 9 only (single-phase dispatch). Phase 8's FAIL verdict routed this phase to its FAIL branch: the forward-slack-restricted depth-0 cell obligation is landed in LadderCell.lean as a THEOREM under the planned new names, the reserved name cellLE_zero_const_of_kappa_eq stays claimed by nothing, and the unrestricted schema stays neither proved nor refuted. Five new declarations, 199 lines, all sorry-free on the standard axiom profile (the refutation below it). The schema carries a FOURTH restriction the plan did not anticipate -- the equal-register hypothesis n = n' -- forced by the compiled kappa_collision_two_regimes_refuted_of_pend_gap and recorded as a plan deviation. Phase 9 closed [COMPLETED WITH EXCLUSIONS] with a six-row Reasoned Exclusions record. Phase 10 (records, full gate set, summary brought current) remains.",
-  "phases_completed": 9,
+  "summary": "Phase 10 brought every record that states the depth-0 cell obligation's status current with Phase 8's FAIL verdict and Phase 9's FAIL branch, and corrected one claim in RaySummary/README.md that Phase 9's landed theorem had falsified. No Lean declaration added or removed; full unscoped guarded build green at 2969 jobs with sorry_count 0.",
+  "phases_completed": 10,
   "phases_total": 10,
-  "dispatch_seq": 8,
+  "dispatch_seq": 9,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-9-handoff-20261110T082854Z.md",
-  "artifacts": []
+  "continuation_path": null,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
+      "summary": "Round summary brought current in place: the forward-slack-restricted depth-0 cell obligation landed as a theorem under its own name, the reserved name still claimed by nothing, both decision gates' FAIL verdicts with their compiled mechanisms, and the two routes left open."
+    }
+  ]
 }

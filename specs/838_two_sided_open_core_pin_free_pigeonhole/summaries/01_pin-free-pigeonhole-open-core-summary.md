@@ -1,10 +1,10 @@
 # Implementation Summary: Task #838
 
 - **Task**: 838 - Two-sided open core: attack the depth-`0` cell obligation through a `(K2)`-level pigeonhole over region starts on the pin-free side, or restate the obligation under a new name
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Started**: 2026-11-03T17:42:40Z
-- **Completed**: 2026-11-10T08:05:00Z
-- **Effort**: ~3 hours of wall clock over eight landed phases (Phase 5's earlier blocker withdrawn as mis-anchored and the phase then landed)
+- **Completed**: 2026-11-10T09:05:00Z
+- **Effort**: ~4 hours of wall clock over ten landed phases (Phase 5's earlier blocker withdrawn as mis-anchored and the phase then landed; Phase 9 closed `[COMPLETED WITH EXCLUSIONS]` on its FAIL branch)
 - **Dependencies**: None at the `state.json` level. Parent: the task whose pump layer is this round's entire input. The ladder realization theorem's depth-`0` induction is the downstream consumer; nothing here edits any of its artifacts
 - **Artifacts**: plans/01_pin-free-pigeonhole-open-core.md, prototype/pin-free-side.lean, prototype/spanning-divisibility.lean, prototype/idle-gap-lengthening.lean
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -41,6 +41,22 @@ length is therefore a datum of the object, not a parameter the construction may 
 lengthening cannot be promoted to the slack-normalization lemma the downward cell inclusion would
 consume. Sub-question (ii), type preservation, was never reached and is recorded as untouched.
 No library file was changed by the gate — it runs in a `specs/**` prototype by construction.
+
+Phase 9 therefore took its FAIL branch and landed the obligation's FORWARD-SLACK-RESTRICTED form
+as a THEOREM under a name of its own, `cellLE_zero_const_of_kappa_eq_of_forwardSlack`, with the
+reserved name `cellLE_zero_const_of_kappa_eq` still claimed by nothing. The route is the state-level
+DOWNWARD cell inclusion, which the round's last piece of new ground made available: a per-path
+state-level regime is refuted (`ClimbWitness.hasForwardSlack_refuted_unconditional`), but an
+EXISTENTIAL-over-paths one is not, and `ForwardSlackWitnessed` — every type a cell realizes is
+realized there by SOME path with forward slack — lifts the landed path-level inclusion to the state
+level as `cellAt_subset_of_shift_of_pend_past_rev`, with no new pump and no new pin. Against the
+upward inclusion that is cell EQUALITY by `Set.Subset.antisymm`. The restricted schema carries FOUR
+added hypotheses, one more than the plan anticipated: the fourth is the EQUAL-REGISTER restriction
+`n = n'`, and it is carried for a compiled reason —
+`kappa_collision_two_regimes_refuted_of_pend_gap` shows the saturated-gap branch of the collision
+case split survives restriction to the pending-forever regime at countdowns above the threshold, and
+on that residue no landed inclusion applies in either direction. Phase 10 then brought every record
+that states the obligation's status current, with no Lean declaration added or removed.
 
 ## What Changed
 
@@ -118,6 +134,47 @@ No library file was changed by the gate — it runs in a `specs/**` prototype by
   `exists_gO`, the stab-free atomic closure `aO` with its parameter tuple discharged by
   `paramsOk_params`, and the verdict object `idleGapLengthening_refuted`.
 
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean` — grew 299 → 498 lines with the
+  FAIL branch's closing assembly, five declarations, all on a subset of
+  `[propext, Classical.choice, Quot.sound]` and none carrying `sorryAx`:
+  - `ForwardSlackWitnessed` — the forward-slack regime lifted from one path to a whole cell: every
+    type the cell at a state realizes is realized there by SOME path carrying
+    `HasForwardSlack · z l n`. Existential over paths, which is exactly why
+    `ClimbWitness.hasForwardSlack_refuted_unconditional` does not touch it. It asserts nothing; it
+    is a hypothesis a consumer supplies.
+  - `cellAt_subset_of_shift_of_pend_past_rev` — the DOWNWARD cell inclusion at the STATE level, the
+    mirror of the landed upward `cellAt_subset_of_shift_of_pend_past`. Body: the landed path-level
+    `mem_cellAt_of_shift_of_hasForwardSlack_exact` applied to the witnessing path. No new pump, no
+    new pin.
+  - `CellLEZeroConstOfKappaEqForwardSlack` — the obligation with four hypotheses added, all four
+    visible in the quantifier: the equal-register restriction `n = n'`; the pending-forever gap at
+    both pairs; the threshold bounds at both pairs; and the forward-slack witnessing of whichever
+    pair carries the higher countdown, at exactly the displacement separating the two.
+  - `cellLE_zero_const_of_kappa_eq_of_forwardSlack` — that schema as a THEOREM at every tuple
+    `ParamsOk` admits, concluding cell EQUALITY: upward half
+    `cellAt_subset_of_shift_of_pend_past`, downward half `cellAt_subset_of_shift_of_pend_past_rev`,
+    closed by `Set.Subset.antisymm`.
+  - `kappa_collision_two_regimes_refuted_of_pend_gap` — the compiled reason the equal-register
+    hypothesis is carried, at `[propext, Quot.sound]`, below the standard profile.
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` — a new requirement-(W) block headed
+  "the FORWARD-SLACK-RESTRICTED depth-`0` cell obligation" with four pins (the three positive
+  declarations plus the refutation), saying that the unrestricted obligation is still open, that the
+  pins are of a strictly stronger statement, and what a consumer must supply.
+- `FormalSystem/Metalogic/Decidability/RaySummary/README.md` — Phase 10: the `LadderCell.lean`
+  description cell brought current with the downward inclusion, the pending-regime refutation and
+  the restricted obligation; the depth-`0`-status paragraph given its forward pointer; and the
+  paragraph that previously closed "no finite deletion-derivative of which lifts (argued, not
+  compiled)" REPLACED by what the gate compiled — the per-path/existential asymmetry in the shape of
+  a working hypothesis, the idle-gap route's refutation with its `step`-level mechanism, the
+  restricted obligation with its four hypotheses and the compiled reason for the fourth, and the two
+  routes left open.
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` — Phase 10: the restricted-obligation
+  block's narrative extended with the gate's verdict and its mechanism (previously absent from the
+  ledger), and with the two open routes; the recorded `longFile` ceiling raised 2,200 → 2,300.
+- `specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md`
+  — this file, brought current in place (same round, same path) rather than superseded by a second
+  summary for the same round.
+
 ## Decisions
 
 - **The decision gate's verdict is FAIL, and refuted rather than merely unproved.** `(K1)`'s two
@@ -190,6 +247,44 @@ No library file was changed by the gate — it runs in a `specs/**` prototype by
   and refuting a weaker statement is a weaker result. Carrying it means the refutation refutes the
   conjunction at its first failing conjunct, which is what the record says.
 
+- **Phase 9: the hypothesis that buys the downward inclusion is EXISTENTIAL over paths, not
+  per-path.** This is the round's one genuinely new piece of ground and the reason a state-level
+  downward inclusion exists at all. `ClimbWitness.hasForwardSlack_refuted_unconditional` compiles
+  that no state-level hypothesis implies `HasForwardSlack` of a given path through the state — the
+  climbing-register path passes through a state satisfying every state-level hypothesis a consumer
+  carries while violating the regime. `ForwardSlackWitnessed` asks something the climbing path does
+  not contradict: that every type the cell realizes be realized by SOME path with slack, which is
+  compatible with the climbing path sitting among the paths through that state and realizing the
+  same type without slack. The refutation therefore does not reach it, and the lift
+  `cellAt_subset_of_shift_of_pend_past_rev` goes through on the witnessing path the hypothesis
+  supplies.
+- **Phase 9: the fourth hypothesis is carried rather than dispatched, for a compiled reason.** With
+  the collision restricted to the pending-forever regime at countdowns above the threshold, the
+  saturated-gap branch of `kappa_collision_regimes` does NOT drop out:
+  `kappa_collision_two_regimes_refuted_of_pend_gap` exhibits `Tc = Tn = P = 0`, `B = 2` and the
+  pairs `(2, 0)`, `(4, 1)` — both clipped coordinates pinned at their thresholds, both residues
+  trivial at `P + 1 = 1`, the gap coordinate saturated below the window on both, every gap and
+  threshold hypothesis satisfied, the registers differing, and no single `m` displacing both
+  coordinates (`4 = 2 + m` forces `m = 2` while `1 = 0 + m` forces `m = 1`). On that residue no
+  landed inclusion applies in either direction, and forward slack does not reach it: slack buys the
+  deletion inside the lower position's region, while the obstruction there is that the register must
+  move by an amount the countdown does not match. Hence `n = n'`.
+- **Phase 9: routed through `kappa_eq_components`, not the case split.** With `n = n'` carried,
+  `kappa_collision_regimes`' branch structure supplies nothing the countdown residue does not: its
+  equal-register branch gives exactly the displacement the proof uses, its common-shift branch
+  collapses to `m = 0`, and its saturated branch — which the restricted schema does not exclude —
+  needs the residue congruence all the same. The case split is cited for the scope statement rather
+  than consumed in the derivation.
+- **Phase 9: the common-shift sub-regime's DOWNWARD direction was decided, not deferred.** The
+  landed deletion `mem_cellAt_of_shift_of_hasForwardSlack_exact` HOLDS the register, and nothing
+  landed lowers it, so a common-shift mirror would need a register-lowering deletion that does not
+  exist. It is named as a candidate follow-up route rather than left as an open phase item.
+- **Phase 10: the axiom ledger's `longFile` ceiling was raised rather than the prose cut.** The
+  gate's verdict and its `step`-level mechanism were absent from the ledger entirely, which is the
+  one thing Phase 10's own task list names it must carry; the file is one ledger by design (its
+  header comment says so) and the ceiling had already been raised once on the same grounds. No
+  declaration was added.
+
 ## Plan Deviations
 
 - **Phase 1** Scope Hypothesis predicted three generated inventory blocks would move; FOUR did
@@ -257,6 +352,32 @@ No library file was changed by the gate — it runs in a `specs/**` prototype by
   the refuting object is NOT the larger half — the generic mechanism lemma is four lines and the
   object's seriality and path construction dominate — and exactly the two predicted files plus
   `issues.jsonl`. `git diff --stat -- FormalSystem/ Tests/` is empty, as the hypothesis required.
+
+- **Phase 9** closed `[COMPLETED WITH EXCLUSIONS]`: the gate's FAIL verdict excluded all five
+  PASS-branch tasks, each with a reason and evidence in the plan's `#### Reasoned Exclusions`
+  table — the normalization lemma (its only route is refuted, so it is not applicable rather than
+  deferred), the reserved name's claim, the `LadderAgree.lean` docstring rewrite (PASS-only; the
+  existing docstrings are correct as they stand and any edit would make them false), and the pin
+  and `(W)` prose for a PROVED unrestricted obligation (replaced by the FAIL-branch form of the
+  same task, which is done).
+- **Phase 9** landed a FOURTH restriction the plan did not anticipate, `n = n'`, and routed through
+  `kappa_eq_components` rather than `kappa_collision_regimes`. Both departures have the one compiled
+  cause recorded under Decisions; because `rules/plan-compliance.md` governs `.lean` files, they are
+  recorded in the plan body under `#### Deviation: the equal-register hypothesis` rather than
+  annotated silently, and in `issues.jsonl` at severity `costly`.
+- **Phase 9** Scope Hypothesis CONFIRMED for the Lean files (199 lines added, `LadderCell.lean` at
+  498 against the package `longFile` limit of 1,500) and EXCEEDED by four generated/derived files it
+  did not anticipate: the three inventory-block READMEs and `typst/generated/status.typ`, each a
+  regenerated block rather than hand-authored content.
+- **Phase 10** raised the axiom ledger's recorded `longFile` ceiling from 2,200 to 2,300 — not in
+  the phase's declared file-change list as a *kind* of change, though the file itself is listed. The
+  reason is under Decisions. Its Scope Hypothesis holds as stated:
+  `git diff -U0 -- 'FormalSystem/**/*.lean' | grep -cE '^[+-](theorem|def|lemma|abbrev)'` is 0 for
+  this phase.
+- **Phase 10**'s declared `Verification Tier` is `full`, and the complete gate set was NOT
+  independently run in its dispatch: it is deferred to the batch stage of the dispatching
+  invocation, per the dispatch's batch gate deferral, and the narrowing scoped invocation that
+  covers this phase's touched files was run instead. Deferred, not forgiven.
 
 ## Verification
 
@@ -329,6 +450,65 @@ No library file was changed by the gate — it runs in a `specs/**` prototype by
   `int_domain_universal … := trivial`, a pre-existing genuine theorem in a file this phase did not
   touch). The complete gate set is Phase 10's obligation and is deferred to the batch stage there.
 
+### Phase 9 (dispatch 8)
+
+- Build: Success. The three `interface`-tier covering checks each report `exit_status=0` through
+  `lake-build-guard.sh` with zero `error:` lines — `… -- build
+  FormalSystem.Metalogic.Decidability.RaySummary.LadderCell`, `… -- build FormalSystem`, and
+  `… -- build BimodalTest.Metalogic.KTypeSummaryAxiomTest`.
+- Sorry count: 0. `grep -cE 'sorry|native_decide|^axiom|:= True|:= trivial'` on `LadderCell.lean`
+  is 0.
+- Axiom profiles: the four positive declarations carry `[propext, Classical.choice, Quot.sound]`;
+  `kappa_collision_two_regimes_refuted_of_pend_gap` sits BELOW it at `[propext, Quot.sound]`. No
+  `sorryAx` on any. All five are pinned under `#guard_msgs`, so the profiles are checked by the
+  build rather than asserted in prose.
+- Reserved name: `grep -rn 'cellLE_zero_const_of_kappa_eq' FormalSystem/ Tests/` shows every hit
+  outside the `_of_forwardSlack` name on a docstring or prose line; no `theorem`, `def` or `lemma`
+  claims it.
+- Gates: `check-module-invariants.sh` exits 0 (after `--emit-inventory` refreshed the three
+  generated inventory blocks the new line count moved, a mechanical consequence recorded as outside
+  the phase's declared file list); `check-task-references.sh --quiet` exits 0 on every changed file.
+- `LadderCell.lean` is 498 lines against the package `longFile` limit of 1,500.
+
+### Phase 10 (dispatch 9)
+
+- Build: Success, and at the terminal full-project bar rather than a scoped one.
+  `lake-build-guard.sh build --timeout 1800 -- build` (unscoped) gives `GUARD_EXIT=0` (Tier 1),
+  `Build completed successfully (2969 jobs)` with a zero `error:` count over both captured streams
+  (Tier 2), and `.olean` newer than source on the one module this phase touched (Tier 3). The
+  covering scoped build `… -- build BimodalTest.Metalogic.KTypeSummaryAxiomTest` separately gives
+  `exit_status=0`, zero `error:`, 2,411 jobs.
+- Sorry count: 0. `lean-sorry-census.sh --cross-check` over the resolved source roots reports
+  `stripper_sorry_count: 0`, `compiler_sorry_count: 0`, `cross_check: MATCH`.
+- Vacuous count: 0. The vacuity grep's 4 hits on the axiom ledger are prose sentences about
+  `sorryAx`, byte-identical in count to HEAD; no declaration matches.
+- Axiom count: 14 over `FormalSystem/` and `Tests/`, identical to HEAD.
+- Scope Hypothesis confirmed: `git diff -U0 -- 'FormalSystem/**/*.lean' | grep -cE
+  '^[+-](theorem|def|lemma|abbrev)'` is 0 — no Lean declaration added or removed.
+- Reserved name: `grep -rnE '(theorem|def|lemma|abbrev)\s+cellLE_zero_const_of_kappa_eq\b'` over
+  `FormalSystem/` and `Tests/` returns nothing. The one declaration line carrying the string as a
+  prefix is `cellLE_zero_const_of_kappa_eq_of_forwardSlack` at `LadderCell.lean:465`.
+- Gates: `check-module-invariants.sh` exits 0, ALL CHECKS PASSED (including C9D, zero task-number
+  citations under `docs/`); `check-evidence-probes.sh` exits 0, all 52 wired probes compile, the one
+  SKIP being the pre-existing deferred `spike-untl-unfolding-and-fwd-obstruction`;
+  `check-task-references.sh --quiet` exits 0 with 0 occurrences;
+  `typst-sync-check.sh` FAILED on Check 2 (count freshness) and `--fix` repaired it to PASS, a
+  three-line regeneration of `typst/generated/status.typ` (the test-library line count and the
+  commit stamp) caused by this phase's prose addition;
+  `validate-artifact.sh` exits 0 with zero warnings on both this summary and the plan.
+- **The complete gate set was NOT independently run, and the two narrowing forms the dispatch
+  directive names do not cover this phase.** `run-all.sh --only SUITE` runs the agent system's
+  shell test suites and `verify-deploy.sh --only-gate N` compares the deployed `.claude/` tree
+  against its source store; this phase touched a `FormalSystem/` README narrative, one prose block
+  in a `Tests/` Lean file, `typst/generated/status.typ` and this summary, none of which either form
+  reaches. (The deployed tree is independently reported STALE for four extensions, so a full
+  `verify-deploy.sh` run would fail here for reasons unrelated to this task.) The covering scoped
+  checks actually run are the project gates listed above plus the unscoped full build; the complete
+  gate set is deferred to the batch stage of the dispatching invocation and attributed back to this
+  task by its `modified_files`. Deferred, not forgiven — and the mismatch is recorded in
+  `issues.jsonl` under class `gate collision` rather than papered over by invoking an unrelated
+  gate for the appearance of compliance.
+
 ## Impacts
 
 - The pin layer is available to every `RaySummary` consumer: the dichotomy names the two sides a
@@ -349,20 +529,35 @@ No library file was changed by the gate — it runs in a `specs/**` prototype by
   name is still claimed by nothing. The downstream induction remains unenterable along this route.
 
 - Phase 8's FAIL closes the last candidate source of the missing slack that the landed layer
-  could have supplied on its own. Phase 9 therefore takes its FAIL branch: the obligation is
-  stated and compiled under the NEW name `cellLE_zero_const_of_kappa_eq_of_forwardSlack`, carrying
-  the forward-slack regime as an explicit hypothesis on the witnessing path, and the reserved name
-  `cellLE_zero_const_of_kappa_eq` stays reserved and claimed by nothing.
+  could have supplied on its own. Phase 9 therefore took its FAIL branch: the obligation is stated
+  and compiled under the NEW name `cellLE_zero_const_of_kappa_eq_of_forwardSlack`, carrying the
+  forward-slack regime as an existential-over-paths hypothesis at the STATE level plus three
+  further restrictions, and the reserved name `cellLE_zero_const_of_kappa_eq` stays reserved and
+  claimed by nothing.
+- **The state-level downward cell inclusion is now available to every `RaySummary` consumer**
+  (`cellAt_subset_of_shift_of_pend_past_rev`), where before only the path-level one was. With the
+  upward inclusion it is the first assembly in the layer that concludes cell EQUALITY rather than a
+  one-directional inclusion, and the hypothesis it needs (`ForwardSlackWitnessed`) is statable at a
+  counter state — which is what the mis-anchored blocker's withdrawal said was the open question
+  and what this round answers.
+- **The shape of a working restriction is settled in both directions**, which is reusable
+  independently of this obligation: a per-path state-level regime is refuted
+  (`ClimbWitness.hasForwardSlack_refuted_unconditional`), an existential-over-paths one is not.
+  Any future attempt to restrict a cell-level statement by a path property must take the
+  existential form.
 - `no_consecutive_idle_of_no_idle_step` is a generic fact about the relationship between an
   object's step graph and the idle-run structure of its ladder paths. Nothing in the library states
   it; it lives in the prototype, and a consumer that needs it would have to land it.
 
 ## Follow-ups
 
-- **The user decision raised on this dispatch.** The prior cycle's recorded answer — land the
-  regime-restricted obligation under `cellLE_zero_const_of_kappa_eq_of_pinFree` — rests on a
-  premise this round refuted. Three options are on the table and are stated in
-  `.return-meta.json`'s `user_decision`.
+- **The user decision raised mid-round is SETTLED, and the record is the decision file.** Three
+  answers are on file in `.decisions.json`, each superseding the last as a compiled object refuted
+  its predecessor's premise, and all three were filed non-blocking and proceeded on the dispatched
+  agent's own recommendation. The standing one: accept the equal-register-restricted equality as
+  landed under the planned name `cellLE_zero_const_of_kappa_eq_of_forwardSlack`, with the extra
+  restriction visible in the signature and the register-lowering deletion recorded as a named
+  candidate follow-up route. Nothing in this round is awaiting an answer.
 - **A downward/deletion assembly carrying an explicit forward-slack hypothesis.** The missing
   piece is precisely localized: feeding the deleted walk to `exists_ladderPath_of_walk_nxt`
   leaves exactly one goal, `(↑(delCnt g a l (v + 1)) - ↑(nxtAt g 0)).natAbs ≤ v.natAbs`, in which
@@ -379,13 +574,11 @@ No library file was changed by the gate — it runs in a `specs/**` prototype by
   the separation a third pin strictly inside the block needs. Tightening it remains open and is a
   proof obligation, never a loosening of the pinned signature.
 
-- **Phase 9 must handle the saturated-gap branch.** `kappa_collision_regimes`'s third branch is
-  addressed by NEITHER landed inclusion. Phase 9's planned close consumes the split expecting two
-  branches; it must either exclude the saturated branch from the obligation's own hypotheses or
-  carry it as an explicit extra hypothesis on whatever it lands. Nothing in this round settles
-  which.
-- Phase 8's decision gate (does lengthening the idle gap buy the missing slack
-  type-respectingly?) is untouched by this dispatch and remains the next action.
+- **The saturated-gap branch was handled by carrying an explicit hypothesis, not by excluding it.**
+  Of the two options this round left open for it, Phase 9 took the second: the restricted schema
+  carries `n = n'`, which covers the `n = n'` slice of the saturated branch (and the case split's
+  first branch entire) and nothing else. `kappa_collision_two_regimes_refuted_of_pend_gap` is the
+  compiled reason the branch could not simply be excluded by the regime restriction.
 
 - **The sharpening Phase 8's verdict leaves open, named rather than created**: the lengthening is
   available exactly where the object's idle states carry a reachable cycle — `tIdle pend`
@@ -397,7 +590,25 @@ No library file was changed by the gate — it runs in a `specs/**` prototype by
   admits one, holds the realized stab-free type at `z` was never tested. Any future route through
   gap lengthening must answer it before the lengthening is usable.
 - **Wiring `idleGapLengthening_refuted` as a probe** is a candidate on the same footing as
-  `spanningBlockLengthDvd_refuted`: it stays a prototype here.
+  `spanningBlockLengthDvd_refuted`: it stays a prototype here. Phase 10's own task list directed
+  that this be recorded here rather than wired in that phase, and `check-evidence-probes.sh` passes
+  with all 52 currently wired probes compiling.
+
+- **The two routes the FAIL verdict leaves, named and NOT created as tasks.** (1) A `(K1)`
+  AMENDMENT constraining the length of a type-respecting block that spans a region start — which
+  `(K1)` does not do, compiled — would reopen the spanning-block device the two-sided refutation
+  closed; it would alter the parameter contract every wired probe discharges. (2) A
+  REGISTER-LOWERING DELETION, the common-shift mirror of
+  `mem_cellAt_of_shift_of_hasForwardSlack_exact` carrying the register DOWN by the same multiple of
+  `P + 1` as the countdown, where the landed deletion holds it and nothing landed lowers it. It
+  would buy the common-shift sub-regime's downward direction and so drop the equal-register
+  hypothesis on the case split's first branch; it would NOT reach the saturated residue.
+- **What a consumer of the restricted obligation must supply**, at each state it inducts through:
+  the register equality across the collision, and a forward-slack witness at the higher state.
+  Neither is a consequence of `ParamsOk`. The unrestricted `CellLEZeroConstOfKappaEq` is still
+  neither proved nor refuted under `ParamsOk`, `cellLE_zero_const_of_kappa_eq` is still claimed by
+  nothing, and the downstream ladder-realization induction remains unenterable without one of the
+  two routes above or the consumer's two extra hypotheses.
 
 ## References
 
@@ -411,3 +622,10 @@ No library file was changed by the gate — it runs in a `specs/**` prototype by
 
 - `specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean` — the
   Phase 8 decision gate's schema, mechanism lemma, refuting object and verdict.
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean` — the FAIL branch's closing
+  assembly (the `ForwardSlack` section and the pending-regime refutation).
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` — the requirement-(W) block headed "the
+  FORWARD-SLACK-RESTRICTED depth-`0` cell obligation", with its four pins, the gate's verdict and
+  the two open routes.
+- `specs/838_two_sided_open_core_pin_free_pigeonhole/.decisions.json` — the three recorded answers,
+  each superseding the last.

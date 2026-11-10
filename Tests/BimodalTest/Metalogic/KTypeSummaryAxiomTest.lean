@@ -108,7 +108,7 @@ expectation to rewrite.
 -- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): this is one
 -- axiom-profile ledger for the summary layer and its requirement sections stay together, so the
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
-set_option linter.style.longFile 2200
+set_option linter.style.longFile 2300
 
 namespace BimodalTest.Metalogic
 
@@ -1835,9 +1835,37 @@ of `kappa_collision_regimes` survives the regime restriction, and no landed incl
 in either direction. That refutation, like its sibling above, is scoped to the derivation from the
 collision destructors and `2 ≤ B`, and asserts nothing under full `ParamsOk`.
 
+WHY THE WITNESSING HYPOTHESIS IS CARRIED RATHER THAN DISCHARGED, COMPILED. A normalization lemma
+— every type realized at the upper state is realized there by SOME path with forward slack — would
+discharge `ForwardSlackWitnessed` outright and so drop the fourth hypothesis. The one candidate
+route to it was to LENGTHEN the idle run between the compared position's region and the first
+region start above it, which supplies exactly the amount the deletion's anchor clause is short by.
+That route is REFUTED, not merely unproved, and the obstruction is one level below the pin
+condition, in `step` itself: a ladder path's object walk satisfies
+`step (objAt g v) (objAt g (v + 1)) = true` at every position, so an idle run of length two
+requires an idle-to-idle edge in the object's own step graph, and an object admitted by `ParamsOk`
+need not have one — the two-state object with exactly that edge missing is serial in both
+directions and carries a path satisfying every hypothesis of the lengthening while admitting no
+lengthened path at all. The idle run's length is therefore a datum of the object, not a parameter
+the construction may raise. (The refuting object is the standalone prototype
+`idle-gap-lengthening.lean` in the task record that landed this layer, not a wired probe, so it is
+not pinned here; what IS pinned here is the restricted form that its verdict forces.) The
+refutation closes from `step` alone and never reaches
+the type clause, so it says nothing about whether a lengthened path, where one exists, holds the
+realized stab-free type; and it refutes neither the depth-`0` obligation nor any `ParamsOk`
+conjunct.
+
 WHAT A CONSUMER MUST SUPPLY to use the restricted form: at each state it inducts through, the
 register equality across the collision and a forward-slack witness at the higher state. Neither is
 a consequence of `ParamsOk`.
+
+THE TWO ROUTES LEFT OPEN, named rather than claimed: a `(K1)` amendment constraining the length of
+a type-respecting block that spans a region start — which `(K1)` does not do, compiled, see the pin
+layer's section below — and a REGISTER-LOWERING deletion, the common-shift mirror of
+`mem_cellAt_of_shift_of_hasForwardSlack_exact` carrying the register DOWN by the same multiple of
+`P + 1` as the countdown. The latter would buy the common-shift sub-regime's downward direction and
+so drop the equal-register hypothesis on the first branch of the case split; it would NOT reach the
+saturated residue.
 
 The standard profile on the three positive declarations, and `propext` with `Quot.sound` alone —
 below the standard profile — on the refutation, which consumes no choice. No certificate object is

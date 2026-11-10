@@ -1273,7 +1273,7 @@ exported theorem can reach, and nothing in it is a shared tactic or a core type.
 
 ---
 
-### Phase 10: Records, the Full Gate Set, and the Summary Brought Current [NOT STARTED]
+### Phase 10: Records, the Full Gate Set, and the Summary Brought Current [COMPLETED]
 
 **Goal**: Every record that states the depth-`0` obligation's status says what the revised phases
 established; the complete gate set runs green; the existing summary is brought current so task
@@ -1281,27 +1281,93 @@ established; the complete gate set runs green; the existing summary is brought c
 
 **Tasks**:
 
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: the narrative paragraphs that
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/README.md`: the narrative paragraphs that
   state the obligation's status are brought current with Phase 8's verdict and Phase 9's branch,
   and the new module gets its inventory row and description cell. The paragraph that currently
   ends "the gap between it and the obligation is the tight (doubling) chain, no finite
   deletion-derivative of which lifts (argued, not compiled)" is replaced by what the gate
   compiled. Durable anchors only — module names, declaration names, section headings — no task
-  numbers.
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: the `(W)` requirement narrative
+  numbers. *(deviation: altered — the inventory ROW was already present and its line count already
+  current from Phase 9's `--emit-inventory` run, so what this phase wrote is the hand-authored
+  DESCRIPTION CELL, brought current with the downward inclusion, the pending-regime refutation and
+  the restricted obligation. The named sentence is replaced as directed, and one FALSIFIED claim
+  beside it was corrected in the same edit — see `#### Deviation: a falsified claim in the record`
+  below.)*
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: the `(W)` requirement narrative
   states what the pins now certify, including the free slack baseline and the gate's verdict.
-- [ ] Bring `specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md`
+  *(deviation: altered — the free slack baseline was already stated by Phase 5's narrative line and
+  needed nothing; the GATE'S VERDICT was absent from the ledger entirely and is what this phase
+  added, with its `step`-level mechanism and the two open routes. The file's recorded `longFile`
+  ceiling was raised 2,200 → 2,300 to admit it, on Phase 7's precedent for the same file.)*
+- [x] Bring `specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md`
   current in place — same round, same path — so it carries the withdrawal of the Phase 5 blocker,
   every declaration landed by Phases 5, 7 and 9 with its axiom profile, Phase 8's verdict with
   its mechanism, what remains open, and the named follow-up candidates. Do not write a second
   summary file for the same round.
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 and reports all wired probes compiling. The
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 and reports all wired probes compiling. The
   three prototypes of this task stay prototypes; if Phase 8's refuting object is the kind of
   record a wired probe should hold in place, record that as a candidate follow-up in the summary
   rather than wiring it here.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0; every generated
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0; every generated
   inventory block is current.
-- [ ] Run the complete gate set and read its verdict, not a piped exit code.
+- [x] Run the complete gate set and read its verdict, not a piped exit code. *(deviation: altered —
+  discharged against the SCOPED tier per the dispatch's batch gate deferral, with the complete set
+  deferred to the batch stage of the dispatching invocation. See the verification notes below for
+  what was run, and for why neither narrowing form the directive names reaches this phase's files.)*
+
+#### Deviation: a falsified claim in the record
+
+The named sentence was not the only thing in `RaySummary/README.md` that Phase 9 had overtaken. The
+clause immediately before it asserted that the reserved name is claimed by nothing "and so is every
+STATE-level regime-restricted variant of it", justified by the climbing-register path. Phase 9
+landed exactly such a variant as a theorem, so the record contradicted the compiled object sitting
+beside it.
+
+The resolution is not a retraction but the asymmetry the two objects jointly establish, now stated
+explicitly: a PER-PATH state-level regime is indeed refuted — `ClimbWitness.climb` passes through a
+state satisfying every state-level hypothesis a consumer carries while violating the regime — while
+an EXISTENTIAL-over-paths one is not, because the climbing path's presence among the paths through
+the state is compatible with another path realizing the same type with slack. `ForwardSlackWitnessed`
+takes the existential form, which is why `cellAt_subset_of_shift_of_pend_past_rev` goes through. The
+correction is recorded in `issues.jsonl` as a `win`, class `design-record defect`, severity
+`costly`, and the generalizable part is carried into the summary's Impacts: any future restriction
+of a cell-level statement by a path property must take the existential form.
+
+**Verification notes.** The full-project criterion is met at the terminal bar rather than a scoped
+one: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` (unscoped) gives
+`GUARD_EXIT=0` read un-piped via `wait` (Tier 1), `Build completed successfully (2969 jobs)` with a
+zero `error:` count over both captured streams (Tier 2), and `.olean` newer than source on the one
+module this phase touched (Tier 3). The covering scoped build
+`… -- build BimodalTest.Metalogic.KTypeSummaryAxiomTest` separately reports `exit_status=0`, zero
+`error:`, 2,411 jobs. `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0
+(`every generated inventory block is current, every hand-maintained one is exhaustive`), and the
+plain form exits 0 with ALL CHECKS PASSED. `bash scripts/check-evidence-probes.sh` exits 0 with all
+52 wired probes compiling (the single SKIP, `spike-untl-unfolding-and-fwd-obstruction`, is
+pre-existing and deferred to frame-class uniformity work). `bash
+.claude/scripts/check-task-references.sh --quiet` exits 0 with 0 occurrences.
+`bash scripts/typst-sync-check.sh` FAILED on Check 2 (count freshness) and `--fix` repaired it to
+PASS — a three-line regeneration of `typst/generated/status.typ`, the test-library line count and
+the commit stamp, caused by this phase's prose addition and outside the declared file list, recorded
+here as such. `bash .claude/scripts/validate-artifact.sh` exits 0 with zero warnings on both the
+summary and this plan. `lean-sorry-census.sh --cross-check` over the resolved source roots reports
+`stripper_sorry_count: 0`, `compiler_sorry_count: 0`, `cross_check: MATCH`. The vacuity grep's four
+hits on the axiom ledger are prose sentences about `sorryAx`, unchanged in count from HEAD; the
+`^axiom ` count over `FormalSystem/` and `Tests/` is 14, identical to HEAD.
+`grep -rnE '(theorem|def|lemma|abbrev)\s+cellLE_zero_const_of_kappa_eq\b'` over `FormalSystem/` and
+`Tests/` returns nothing — the reserved name is still claimed by nothing, the one prefix-matching
+declaration line being `cellLE_zero_const_of_kappa_eq_of_forwardSlack` at `LadderCell.lean:465`.
+
+**On the complete gate set.** It was NOT independently run, and the two narrowing forms the dispatch
+directive offers do not reach this phase: `run-all.sh --only SUITE` runs the agent system's shell
+test suites, and `verify-deploy.sh --only-gate N` compares the deployed `.claude/` tree against its
+source store, while this phase touched a `FormalSystem/` README narrative, one prose block in a
+`Tests/` Lean file, `typst/generated/status.typ` and the summary. (The deployed tree is
+independently reported stale for four extensions, so a full `verify-deploy.sh` would fail here for
+reasons unrelated to this task.) The covering scoped checks actually run are the project gates
+above plus the unscoped full build; the complete set is deferred to the batch stage of the
+dispatching invocation and attributed back by this task's `modified_files`. Deferred, not forgiven,
+and the coverage mismatch is recorded in `issues.jsonl` under class `gate collision` rather than
+papered over by invoking an unrelated gate for the appearance of compliance.
 
 **Timing**: 1.5 hours
 
@@ -1313,6 +1379,12 @@ established; the complete gate set runs green; the existing summary is brought c
 narrative and inventory, the axiom test's `(W)` prose, and any inventory block the regeneration
 moves), and no Lean declaration is added or removed in this phase. Confirm by
 `git diff -U0 -- 'FormalSystem/**/*.lean' | grep -cE '^[+-](theorem|def|lemma|abbrev)'` being 0.
+CONFIRMED on the declaration count (0) and on the file count: exactly three record files changed —
+`RaySummary/README.md`, the axiom test, and `typst/generated/status.typ` in place of "any inventory
+block the regeneration moves" (no inventory block moved, since no Lean module's line count did) —
+plus the summary and this plan. One change the hypothesis did not anticipate in kind: the axiom
+test's recorded `linter.style.longFile` ceiling, raised 2,200 → 2,300, in a file the hypothesis
+does list.
 
 **Files to modify**:
 

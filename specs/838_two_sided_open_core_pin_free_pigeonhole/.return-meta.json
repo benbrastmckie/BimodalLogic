@@ -1,49 +1,56 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "dispatch_seq": 8,
+  "task_number": 838,
+  "dispatch_seq": 9,
+  "phase": "implement",
+  "phases_completed": 10,
+  "phases_total": 10,
+  "skeleton": false,
   "requires_user_review": false,
-  "artifacts": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
+      "summary": "Round summary brought current in place: the forward-slack-restricted depth-0 cell obligation landed as a theorem under its own name, the reserved name still claimed by nothing, both decision gates' FAIL verdicts with their compiled mechanisms, and the two routes left open."
+    }
+  ],
   "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
     "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
     "typst/generated/status.typ",
     "specs/838_two_sided_open_core_pin_free_pigeonhole/plans/01_pin-free-pigeonhole-open-core.md",
-    "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-9-handoff-20261110T082854Z.md",
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
     "specs/838_two_sided_open_core_pin_free_pigeonhole/issues.jsonl",
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/.return-meta.json",
     "specs/838_two_sided_open_core_pin_free_pigeonhole/.orchestrator-handoff.json",
-    "specs/838_two_sided_open_core_pin_free_pigeonhole/.return-meta.json"
+    "specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-10-handoff-20261110T085410Z.md"
   ],
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
-    "vacuous_count": 1,
-    "vacuous_note": "pre-existing at FormalSystem/Examples/TemporalStructures.lean:495; zero introduced by this phase (git diff HEAD~2..HEAD shows 0 added lines matching the vacuity patterns)",
-    "axiom_count": 12,
-    "axiom_note": "unchanged from the pre-phase baseline; 0 '^axiom ' lines added by this phase",
+    "vacuous_count": 0,
+    "axiom_count": 14,
     "build_passed": true,
-    "build_evidence": "lake-build-guard.sh exit_status=0 on the full project (2969 jobs, 0 'error:' lines) and on each of the three scoped builds (LadderCell, FormalSystem, BimodalTest.Metalogic.KTypeSummaryAxiomTest); .olean newer than source for both touched modules; scripts/check-module-invariants.sh exits 0",
     "verification_passed": true,
-    "tier": "interface",
-    "tier_note": "Phase 9's declared tier is interface, not full, so the dispatch's batch-stage deferral (which targets the plan's FINAL phase, Phase 10, tier full) does not apply here; all four interface-tier covering checks ran independently and are green."
+    "notes": "Unscoped guarded lake build: GUARD_EXIT=0, 'Build completed successfully (2969 jobs)', zero error: lines, .olean newer than source on the one touched module. lean-sorry-census.sh --cross-check: stripper 0, compiler 0, cross_check MATCH. check-module-invariants.sh --emit-inventory --check exit 0; check-evidence-probes.sh exit 0 (52 wired probes, one pre-existing deferred SKIP); check-task-references.sh --quiet exit 0; validate-artifact.sh exit 0 on plan and summary; typst-sync-check.sh failed on count freshness and --fix repaired it to PASS. Complete gate set deferred to the batch stage per the dispatch's batch gate deferral; neither narrowing form the directive names reaches this phase's files, recorded in issues.jsonl under class 'gate collision'."
   },
-  "phases_completed": 9,
-  "phases_total": 10,
   "completion_data": {
-    "completion_summary": "Phase 9 of 10 complete. The forward-slack-restricted depth-0 cell obligation is a compiled theorem (cellLE_zero_const_of_kappa_eq_of_forwardSlack) over its schema (CellLEZeroConstOfKappaEqForwardSlack), assembled from the landed upward inclusion and a new state-level downward inclusion (cellAt_subset_of_shift_of_pend_past_rev) under the new forward-slack-witnessing hypothesis (ForwardSlackWitnessed). The reserved name stays claimed by nothing and the unrestricted obligation stays open. Phase 10 remains."
-  },
-  "user_decision": {
-    "blocking": false,
-    "question": "Phase 9's forward-slack-restricted obligation landed under the planned names but with a FOURTH restriction the plan did not anticipate: the equal-register hypothesis n = n'. The compiled kappa_collision_two_regimes_refuted_of_pend_gap shows the saturated-gap branch of the collision case split survives restriction to the pending-forever regime at countdowns above the threshold, and on that residue no landed inclusion applies in either direction; the common-shift sub-regime's downward direction is separately blocked because the landed deletion holds the register and nothing landed lowers it. Accept the equal-register-restricted equality under the planned name cellLE_zero_const_of_kappa_eq_of_forwardSlack, or hold that name open pending a register-lowering deletion?",
-    "recommendation": "Accept it as landed. It is consistent with the cycle-2 decision already on file (land the regime-restricted obligation as an equality once the downward/deletion assembly with an explicit forward-slack hypothesis exists -- it now does, as mem_cellAt_of_shift_of_hasForwardSlack_exact), the extra restriction is visible in the signature rather than hidden, and the register-lowering deletion is recorded as a named candidate follow-up route that would drop the hypothesis on branch 2 of the case split without reaching the saturated residue."
+    "completion_summary": "All ten phases of the pin-free-pigeonhole round are closed. Route (a) was taken and its provable pieces landed (the pin-free dichotomy, the pigeonhole over pins, the exponential (K2) bound, the cell level and the slack accounting); both decision gates returned FAIL with compiled refuting objects, so the depth-0 cell obligation landed in its FORWARD-SLACK-RESTRICTED form as the theorem cellLE_zero_const_of_kappa_eq_of_forwardSlack, four hypotheses stronger than the reserved statement, with cellLE_zero_const_of_kappa_eq still claimed by nothing and the unrestricted schema still neither proved nor refuted under ParamsOk. The round's one genuinely new piece of ground: a per-path state-level forward-slack regime is refuted while an existential-over-paths one is not, which is what makes a state-level downward cell inclusion possible at all. Phase 10 brought every record that states the obligation's status current and corrected one claim in RaySummary/README.md that Phase 9's own theorem had falsified."
   },
   "memory_candidates": [
-    "A Lean module edit that adds lines to FormalSystem/ trips two mechanical gates in this repository that no plan Scope Hypothesis anticipates: the pre-commit typst-sync-check.sh Check 2 (fix with 'bash scripts/typst-sync-check.sh --fix' then stage typst/generated/status.typ) and check-module-invariants.sh's stale generated inventory blocks (fix with 'bash scripts/check-module-invariants.sh --emit-inventory', which rewrites three READMEs). Budget both into any Lean phase's file list.",
-    "In Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean a '#print axioms <fully qualified name>' line exceeds the repository's 100-character limit once the declaration name passes about 39 characters; the established fix is the 'open FormalSystem.Metalogic.Decidability.RaySummary in' prefix before the #guard_msgs docstring, which shortens the command line while the expected message still carries the full name. The message itself wraps after '[propext,' once the one-line rendering passes 120 characters.",
-    "A cell-level DOWNWARD inclusion in the ladder layer cannot be stated at the state level: the climbing-register path (ClimbWitness.hasForwardSlack_refuted_unconditional) passes through a state satisfying every state-level hypothesis and violates the forward-slack regime. The sound lift is existential over paths -- 'every type the cell realizes is realized there by SOME path with slack' -- which the climbing path does not touch."
+    {
+      "insight": "When a cell-level (or any set-level) statement must be restricted by a property of the paths through a state, the EXISTENTIAL-over-paths form can survive a refutation that kills the per-path form. Here ClimbWitness.hasForwardSlack_refuted_unconditional compiles that no state-level hypothesis implies HasForwardSlack of a given path, yet ForwardSlackWitnessed ('every type the cell realizes is realized by SOME path with slack') is untouched by it, because the climbing path's presence among the paths through the state is compatible with another path realizing the same type with slack. Reach for the existential form before concluding a restriction is unavailable.",
+      "category": "pattern"
+    },
+    {
+      "insight": "A Lean construction that inserts positions into a path's walk is constrained by the object's step graph before any higher-level side condition is reached. The idle-gap-lengthening gate failed not on the pin-compatibility condition it was designed to test but on step itself: an idle run of length two requires an idle-to-idle edge, and a two-state object with exactly that edge missing refutes the whole schema. Check the step/transition relation's own edges before designing a lengthening or insertion argument.",
+      "category": "gotcha"
+    },
+    {
+      "insight": "A records-only phase can still find the record contradicting the code: bringing RaySummary/README.md current surfaced a claim ('every STATE-level regime-restricted variant is claimed by nothing') that the immediately preceding phase's own landed theorem falsified. Treat a bring-the-record-current task as an audit of the surrounding claims, not just an append, and record the correction as a win rather than silently rewriting.",
+      "category": "process"
+    }
   ]
 }
