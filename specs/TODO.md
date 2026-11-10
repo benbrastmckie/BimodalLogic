@@ -42,14 +42,14 @@ next_project_number: 916
 
 ### Completeness
 
-894 [BLOCKED] — The forward-cone unravelling as a regular ZTime frame:...
+894 [PLANNING] — The forward-cone unravelling as a regular ZTime frame:...
   └─ 895 [NOT STARTED] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
     └─ 896 [NOT STARTED] — The extended L-plus proof system (TM-plus + axiom set +...
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 905 [NOT STARTED] — Eliminate cross-certification between the forward and...
 906 [NOT STARTED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
-915 [PLANNED] — Re-convert and re-index reynolds\_2001 with sections 5-8...
+915 [IMPLEMENTING] — Re-convert and re-index reynolds\_2001 with sections 5-8...
   └─ 895 [NOT STARTED] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and... (see above)
 
 ### Dataset Enhancement
@@ -134,7 +134,7 @@ next_project_number: 916
 
 ### 915. Reconvert reindex reynolds auxiliary atoms sections
 - **Effort**: small
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: completeness
 - **Dependencies**: None
@@ -483,7 +483,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 894. The forward-cone unravelling as a regular ZTime frame: inr-layer oriented forest and the two-layer Saturation split
-- **Status**: [BLOCKED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None

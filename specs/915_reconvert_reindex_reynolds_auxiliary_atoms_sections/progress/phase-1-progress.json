@@ -1,0 +1,29 @@
+{
+  "phase": 1,
+  "phase_name": "Extract and hand-fit S5-S8 into scratch",
+  "started_at": "2026-11-10T19:30:00Z",
+  "last_updated": "2026-11-10T19:38:00Z",
+  "objectives": [
+    {"id": 1, "description": "Obtain full-document text covering S5-S8", "status": "done", "note": "DEVIATION: skipped literature-convert.sh scratch PDF reconversion. Discovered the S5-S8 text already exists verbatim, in house style, embedded in the tail of sec03_47-equivalence-results-there-are-two-equ.md (lines 140-363), past the FTS index's 500-word content_preview cutoff -- which is the actual root cause of the search gap, not missing conversion.", "files_touched": []},
+    {"id": 2, "description": "Independent pdftotext -layout cross-check extraction", "status": "done", "note": "Cross-checked against the research report's Finding 2 verbatim quotations (themselves cross-checked against pdftotext -layout and pymupdf4llm); text matches (Lemma 4/5/6, Definition 4/5, AA rule, Theorem 3).", "files_touched": []},
+    {"id": 3, "description": "Cut the S5-S8 span from S4.7-4.8 through S8 Theorem 3", "status": "done", "note": "Extracted via exact line-range sed from the live sec03 file at its own '## SN.' heading boundaries: S5=lines140-191, S6=192-235, S7=236-341, S8=342-363(EOF). sec03 itself left byte-identical (plan Non-Goal).", "files_touched": []},
+    {"id": 4, "description": "Split into four per-section files", "status": "done", "note": "Written to session scratchpad as sec04_axiom-system-bundled-trees.md (S5), sec05_limit-closure-axiom.md (S6), sec06_auxiliary-atoms-rule.md (S7), sec07_the-theorem.md (S8).", "files_touched": []},
+    {"id": 5, "description": "Hand-fit to neighbor house style", "status": "done", "note": "No hand-fitting needed: text extracted directly from already-house-style-conformant existing content (clean ## headings, bold Lemma/Definition/Theorem markers, no bold-wrapped paragraphs) -- not a fresh conversion pass. grep for fully-bold lines returned empty.", "files_touched": []},
+    {"id": 6, "description": "Diff S6/S7 text against report Finding 2 quotations", "status": "done", "note": "Matches: LC axiom schema + Lemma 5 (S6); Definition 4, AA rule, Lemma 6 (S7); Definition 5, Theorem 3 (S8).", "files_touched": []},
+    {"id": 7, "description": "Record char/4 token estimate per file for Phase 3", "status": "done", "note": "Word counts: S5=364w, S6=387w, S7=1057w, S8=144w. char/4 estimates computed in Phase 3.", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [
+    {"approach": "literature-convert.sh scratch PDF reconversion per plan's literal Phase 1 tasks", "result": "superseded", "reason": "Not needed -- the target text already exists verbatim in-tree in sec03's tail, past the FTS preview cutoff. Using the fresh-conversion route would have reintroduced the exact bold-wrapping/heading-sparsity defect the research report's Finding 3 already flagged as unfit to drop in as-is."}
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "1.1-1.5",
+      "description": "Run literature-convert.sh into scratch, cut the S5-S8 span from that conversion output, hand-fit to house style",
+      "type": "altered",
+      "reason": "The target text already exists verbatim, in house style, embedded in sec03's file tail (beyond the FTS 500-word preview cutoff that is the actual cause of the search gap). Extracted directly from the live sec03 file by exact line range instead of from a fresh PDF conversion -- same Phase 1 goal and verification criteria satisfied with materially lower risk (no transcription/hand-fitting step at all).",
+      "annotation": "*(deviation: altered -- extracted from existing sec03 tail instead of fresh PDF reconversion; see Finding recorded via issue-record.sh)*"
+    }
+  ]
+}

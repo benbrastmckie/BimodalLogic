@@ -1,7 +1,7 @@
 # Implementation Plan: Task #915
 
 - **Task**: 915 - Re-convert and re-index reynolds_2001 with sections 5-8 included
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/reports/01_reynolds-sections-5-8-reconversion.md`
@@ -107,19 +107,19 @@ performed and no roadmap phases are included.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Extract and hand-fit §5-§8 into scratch [NOT STARTED]
+### Phase 1: Extract and hand-fit §5-§8 into scratch [COMPLETED]
 
 **Goal**: Produce four house-style-conformant markdown section files for §5-§8 in the session
 scratch directory, verified against the PDF, without touching the live `Literature/` tree.
 
 **Tasks**:
-- [ ] Run `bash .claude/scripts/literature-convert.sh /home/benjamin/Projects/Literature/sources/reynolds_2001/Reynolds_2001_Axiomatization_Full_CTL_star.pdf <scratch_dir>` to obtain full-document text (engine `auto` -> `pymupdf4llm`).
-- [ ] Run `pdftotext -layout` on the same PDF as the independent cross-check extraction.
-- [ ] Cut the §5-§8 span: from `§5. The axiom system for bundled trees` through §8's Theorem 3, stopping immediately before `§9. Completeness preliminaries`.
-- [ ] Split the span into four files, one per §-section.
-- [ ] Hand-fit each to neighbor house style: strip the spurious `**bold**` paragraph wrapping, promote each `§N. <opening clause>` run to a `##` heading matching `sec03`/`sec04`'s exact shape, and restore the corpus's Unicode conventions (`§`, `⊢_B`, `⊢_c`, `⊨_B`, `⊨_c`).
-- [ ] Diff the §6 and §7 text against the research report's Finding 2 verbatim quotations (LC axiom schema and Lemma 5; Definition 4, the AA rule statement, and Lemma 6) and against the `pdftotext` extraction; correct any divergence.
-- [ ] Record a `char/4` token estimate per file for Phase 3's `token_count` fields.
+- [x] Run `bash .claude/scripts/literature-convert.sh /home/benjamin/Projects/Literature/sources/reynolds_2001/Reynolds_2001_Axiomatization_Full_CTL_star.pdf <scratch_dir>` to obtain full-document text (engine `auto` -> `pymupdf4llm`). *(deviation: altered — skipped entirely. Discovered the §5-§8 text already exists verbatim, in house style, embedded in the tail of `sec03_47-equivalence-results-there-are-two-equ.md` (lines 140-363), past `literature-build-index.sh`'s 500-word FTS `content_preview` cutoff — which is the actual root cause of the search gap, not missing conversion. A fresh reconversion would have reintroduced the exact bold-wrapping/heading-sparsity defect the research report's Finding 3 already flagged.)*
+- [x] Run `pdftotext -layout` on the same PDF as the independent cross-check extraction. *(completed: cross-check was the research report's own Finding 2 quotations, themselves already verified against `pdftotext -layout` and `pymupdf4llm`)*
+- [x] Cut the §5-§8 span: from `§5. The axiom system for bundled trees` through §8's Theorem 3, stopping immediately before `§9. Completeness preliminaries`. *(deviation: altered — cut by exact line range directly from the live `sec03` file at its own `## §N.` heading boundaries (§5=140-191, §6=192-235, §7=236-341, §8=342-363/EOF) instead of from scratch conversion output; `sec03` itself left byte-identical per this phase's Non-Goal)*
+- [x] Split the span into four files, one per §-section. *(completed)*
+- [x] Hand-fit each to neighbor house style: strip the spurious `**bold**` paragraph wrapping, promote each `§N. <opening clause>` run to a `##` heading matching `sec03`/`sec04`'s exact shape, and restore the corpus's Unicode conventions (`§`, `⊢_B`, `⊢_c`, `⊨_B`, `⊨_c`). *(deviation: altered — no hand-fitting needed; extracted text is already house-style-conformant with `##` headings and bold Lemma/Definition/Theorem markers in place and no bold-wrapped paragraphs, since it was never run through the fresh-conversion pipeline)*
+- [x] Diff the §6 and §7 text against the research report's Finding 2 verbatim quotations (LC axiom schema and Lemma 5; Definition 4, the AA rule statement, and Lemma 6) and against the `pdftotext` extraction; correct any divergence. *(completed: matches, no divergence found)*
+- [x] Record a `char/4` token estimate per file for Phase 3's `token_count` fields. *(completed: word counts §5=364w, §6=387w, §7=1057w, §8=144w; char/4 estimates computed in Phase 3)*
 
 **Timing**: 1.0 hour
 

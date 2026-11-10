@@ -1,22 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/plans/01_reynolds-sections-5-8-splice.md",
-      "summary": "5-phase, 3.25-hour plan to splice reynolds_2001 sections 5-8 into the Literature corpus and reindex, closing the Auxiliary Atoms rule citation gap."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 9,
   "metadata": {
-    "session_id": "sess_1794328980_5b668f_915",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 3.25,
-    "dependency_waves": [[1, 2], [3], [4], [5]]
-  },
-  "memory_candidates": [],
-  "next_steps": "Run /orchestrate 915 to execute the plan",
-  "dispatch_seq": 8
+    "session_id": "sess_1794328980_5b668f",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

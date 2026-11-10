@@ -1932,7 +1932,7 @@
     {
       "project_number": 894,
       "project_name": "cone_unravelling_frame_layer_split_saturation",
-      "status": "blocked",
+      "status": "planning",
       "task_type": "lean4",
       "title": "The forward-cone unravelling as a regular ZTime frame: inr-layer oriented forest and the two-layer Saturation split",
       "description": "Land the Auxiliary-Atoms carrier as a FrameOver intOrder over the sum type W + (W x List W) with the one-step relation coneR (inl u -> inl v and inl u -> inr (v, h) when u -> v; inr (u, h) -> inr (v, u :: h) when u -> v; nothing leaves inr), for a doubly serial base relation. Three lemmas: (1) the inr layer is an IsOrientedForest (every inr node has a unique inr-predecessor and the recorded list strictly lengthens along edges, so the undirected multigraph is acyclic, loop-free and opposite-edge-free); (2) the two-layer Saturation lemma: TaskFrame.Saturation (ofStepRel coneR) from TaskFrame.Saturation of the base relation on the inl-anchored families and saturation_of_orientedForest' on the inr-anchored families, with the mixed-family case handled by directedness; (3) TwoWayBounded for the projection coneF with surjectivity, so plus_invariance_of_isZTime applies. This discharges the Saturation obligation recorded in NamingRules.lean's module docstring and is the frame-side prerequisite of the formula-level Auxiliary-Atoms rule. New module FormalSystem/Semantics/ConeUnravelling.lean.",
@@ -1953,7 +1953,7 @@
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T09:48:33Z",
-      "last_updated": "2026-11-10T16:43:20Z",
+      "last_updated": "2026-11-10T19:34:11Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -1972,7 +1972,7 @@
           "summary": "The cone-unravelling module landed sorry-free with the two-layer Saturation split proved; frame assembly blocked on a missing base-Saturation hypothesis in the plan's pinned signatures."
         }
       ],
-      "session_id": "sess_1794328980_5b668f",
+      "session_id": "sess_1794328980_5b668f_894",
       "audit_verdict": {
         "proposal": {
           "id": "cone_unravelling_frame_layer_split_saturation",
@@ -2993,7 +2993,7 @@
     {
       "project_number": 915,
       "project_name": "reconvert_reindex_reynolds_auxiliary_atoms_sections",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "general",
       "description": "Re-convert and re-index reynolds_2001 with sections 5-8 included, so the Auxiliary Atoms rule has a citable source statement in the corpus. Evidence: literature-search.sh returns nothing for 'auxiliary atoms' in a formal-logic sense, and reynolds_2001's existing sub-index entry skips the axiom-system sections where the rule sits (its TOC jumps 4.7-4.8 straight to 9). Research on the forward-cone unravelling proceeded from FormalSystem/Metalogic/NamingRules.lean's recorded Saturation obligation as the source of record instead. The Auxiliary-Atoms rule for L-plus at ZTime is the direct subject of a downstream task, which needs the rule's actual source statement rather than only the repo's recorded obligation. Deliverable: the converted sections present in Literature/, a refreshed specs/literature-index.json entry covering them, and a literature-search.sh query for the rule that returns the right chunk.",
       "effort": "small",
@@ -3001,7 +3001,7 @@
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-11-10T15:53:18Z",
-      "last_updated": "2026-11-10T19:28:03Z",
+      "last_updated": "2026-11-10T19:30:52Z",
       "artifacts": [
         {
           "path": "specs/915_reconvert_reindex_reynolds_auxiliary_atoms_sections/reports/01_reynolds-sections-5-8-reconversion.md",
