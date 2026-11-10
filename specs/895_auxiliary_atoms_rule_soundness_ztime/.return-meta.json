@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "dispatch_seq": 13,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/895_auxiliary_atoms_rule_soundness_ztime/reports/01_auxiliary-atoms-rule-soundness.md",
+      "summary": "Research for the formula-level Auxiliary-Atoms rule and its ZTime soundness: Reynolds 2001 Definition 4/Lemma 6 step map, the concrete-cone-API route (not exists_coneUnravelling), PlusValidInt as the statement level with the mirror by plusValidIn_reflectTime_iff, three small library gaps, and a five-phase decomposition - every semantic step backed by a compiled sorry-free probe."
+    },
+    {
+      "type": "probe",
+      "path": "specs/evidence/auxiliary-atoms-rule-soundness/aa-core-probe.lean",
+      "summary": "Compiled, sorry-free evidence probe (lake env lean exit 0, zero diagnostics) for the seven ingredients the soundness proof needs beyond landed library theorems, including the aa_expand step identity restated over WorldHistory (coneFrame F)."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794343738_e0026f_895",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

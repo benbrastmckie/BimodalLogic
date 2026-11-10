@@ -42,7 +42,7 @@ next_project_number: 916
 
 ### Completeness
 
-895 [RESEARCHING] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
+895 [RESEARCHED] — The Auxiliary-Atoms rule for L-plus at ZTime, forward and...
   └─ 896 [NOT STARTED] — The extended L-plus proof system (TM-plus + axiom set +...
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
@@ -471,10 +471,11 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 895. The Auxiliary-Atoms rule for L-plus at ZTime, forward and mirror, formula level with soundness
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 894, Task 915
+- **Research**: [895_auxiliary_atoms_rule_soundness_ztime/reports/01_auxiliary-atoms-rule-soundness.md]
 
 **Description**: State the transposed Reynolds-2001 Auxiliary-Atoms rule at the formula level and prove it validity-preserving at FrameClass.ZTime. Antecedent aaAnte b0 Q a p := b0 and stab (gle (bigAnd over b in Q, i < k of ((b and a i) -> stab (next (p b i))))) and stab (gle (bigAnd over b != b' of not (b and b'))), where Q is a finite set of fresh atoms, a i are state-local formulas (PlusFormula.StateLocal) that are provably pairwise inconsistent and jointly exhaustive, and p : Q -> Fin k -> Q is the machine. The rule: if (aaAnte b0 Q a p).imp phi is ZTime-valid and no Q-atom occurs in phi or in any a i, then phi is ZTime-valid. The proof runs the premise on the cone unravelling of the given frame with the machine-run valuation coneSt (semantic core: the archived probe's aa_expand), forgets Q by plusTruthAt_congr_of_fresh, and projects by plus_invariance_of_isZTime. The mirror rule follows by plusValidIn_reflectTime-style reflection of the construction or by a mirrored cone. Depends on the cone-unravelling frame task. Home: FormalSystem/Metalogic/NamingRules.lean or a sibling FormalSystem/Metalogic/AuxiliaryAtoms.lean. No completeness claim.
 
