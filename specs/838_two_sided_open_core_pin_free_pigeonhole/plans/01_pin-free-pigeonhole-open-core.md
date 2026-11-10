@@ -935,7 +935,7 @@ the module-invariants run above, all green.
 
 ---
 
-### Phase 8: DECISION GATE — Does Lengthening the Idle Gap Buy the Missing Slack Type-Respectingly? [NOT STARTED]
+### Phase 8: DECISION GATE — Does Lengthening the Idle Gap Buy the Missing Slack Type-Respectingly? [COMPLETED]
 
 **Goal**: ONE question, answered by a compiled object, with a named verdict recorded in this plan
 and in `issues.jsonl`. The anchor clause of the re-anchored deletion is short by exactly `l` in
@@ -949,7 +949,7 @@ with the register at `z` held, and (ii) realizing the SAME stab-free type at `z`
 
 **Tasks**:
 
-- [ ] State the gate as a named `def` in a new prototype
+- [x] State the gate as a named `def` in a new prototype
   `specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean`
   (namespace `Probe838C`, standalone, not wired): `IdleGapLengthening`, carrying `ParamsOk`, the
   stab-free closure hypothesis, a ladder path `g` pending forever into the past at `z` with
@@ -959,33 +959,80 @@ with the register at `z` held, and (ii) realizing the SAME stab-free type at `z`
   region, the same countdown at the displaced region start, and the same realized stab-free type
   at `z`. State it as a schema so the verdict is a theorem about a named object either way, on
   the precedent of `SpanningBlockBwd` and `SpanningBlockLengthDvd`.
-- [ ] Sub-question (i), ADMISSIBILITY: build the lengthened walk and its countdown explicitly
+- [x] Sub-question (i), ADMISSIBILITY *(answered NEGATIVELY by a refuting object rather than by building the walk: on the refuting object no lengthened walk exists at all, so there is nothing to discharge the five clauses against — this is the phase's own FAIL branch firing, not a substituted step)*: build the lengthened walk and its countdown explicitly
   (idle positions carry countdown `0`; everything above the gap is displaced by `+ l`), and
   discharge the five counter and pin clauses of `exists_ladderPath_of_walk_nxt_at` with the
   anchor `n₀ := nxtAt g z` at the anchor position `z`. The pin clause is the one to check against
   `pinCompat_of_ladderPath`: the displaced region starts keep their countdowns while every
   pairwise distance either grows or is unchanged.
-- [ ] Sub-question (ii), TYPE PRESERVATION: decide whether the realized stab-free type at `z` is
+- [x] Sub-question (ii), TYPE PRESERVATION *(NOT REACHED — the refutation closes at sub-question (i) from `step` alone; the type clause is carried in the schema's conclusion and is the conjunct the refutation never consumes. Recorded as untouched in the prototype's own verdict block)*: decide whether the realized stab-free type at `z` is
   held. The inserted positions are in `z`'s future, so this is a claim about `U` formulas of the
   closure; the landed transports to try first are `tpOf_stabFree_eq_of_objAt_eq` (an object-level
   agreement) and the two index-map transports of the pump layer. If the type is NOT held, the
   refuting object is a closure formula and a path on which the lengthened path's type at `z`
   differs — compile it.
-- [ ] PASS branch: compile `idleGapLengthening` as a theorem and record the verdict PASS with the
+- [x] PASS branch *(not taken)*: compile `idleGapLengthening` as a theorem and record the verdict PASS with the
   transport it routes through. Phase 9 then proceeds on its PASS branch.
-- [ ] FAIL branch: compile a refuting object, name it `idleGapLengthening_refuted`, record the
+- [x] FAIL branch: compile a refuting object, name it `idleGapLengthening_refuted`, record the
   verdict FAIL with the mechanism, and name in the record which of the two sub-questions failed —
   admissibility or type preservation. Phase 9 then proceeds on its FAIL branch. If neither a
   proof nor a refutation lands within this phase's budget, record the verdict INCONCLUSIVE with
   what was tried and what goal state was reached, close the phase `[PARTIAL]`, and let Phase 9
   take the FAIL branch: an unproved lengthening is not a usable one.
-- [ ] Record the verdict with
+- [x] Record the verdict with
   `bash .claude/scripts/issue-record.sh --task 838 --kind issue --class "decision gate" --severity costly --phase implement --what-happened "..."`
   with the branch named, and write the verdict into this phase's heading status line and body
   before closing the phase.
-- [ ] Prohibited on every branch: no `sorry` in any library file, no `def X := True`, no edit to
+- [x] Prohibited on every branch: no `sorry` in any library file, no `def X := True`, no edit to
   any `ParamsOk` conjunct, and no library file changed at all — the gate runs in a prototype by
   construction.
+
+**VERDICT: FAIL — on sub-question (i), ADMISSIBILITY.** The schema `IdleGapLengthening` is stated
+in `specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean`
+(namespace `Probe838C`) and REFUTED there by the compiled object `idleGapLengthening_refuted`, on
+the standard axiom profile `[propext, Classical.choice, Quot.sound]` with no `sorryAx`.
+
+**The mechanism.** `pinCompat_of_ladderPath` is indeed not the obstruction — the obstruction sits
+one level BELOW it, in `step` itself. A ladder path's object walk satisfies
+`step (objAt g v) (objAt g (v + 1)) = true` at every position, so an idle run of length two
+requires an idle-to-idle edge in the object's step graph, and an object need not have one. The
+generic reading is `no_consecutive_idle_of_no_idle_step`: if
+`∀ x y, pend x = false → pend y = false → step x y = false` then every idle position of every
+ladder path is followed by a pending one. The witness is the two-state object `Qo := Bool`
+(`pendO = id`, `stepO x y = x || y`, so exactly the idle-to-idle edge is missing), serial in both
+directions (`fwdO`, `bwdO`), carrying the witnessing path of `exists_gO`: one region of countdown
+`T_c` through `z = 0` with the register constantly `0`, pending forever into its past, then idle
+runs of length exactly one. At `I = 1`, `l = 1` that path satisfies every hypothesis of the schema
+— the gap `0 + 2 ≤ T_c` from `(K3)`'s `2 · T_short + T_idle + 2 ≤ T_c` (`two_le_TcO`), the
+countdown bound `T_c ≤ cntAt g 0`, and the idle run `{T_c + 1}` followed by the region start at
+`T_c + 2` — while the conclusion asks for a ladder path idle at BOTH `T_c + 1` and `T_c + 2`, which
+no ladder path on this object is. The parameters are the periodicity fixpoint's own outputs for the
+stab-free atomic closure `aO`, discharged by the landed `paramsOk_params`, so the refutation sits
+at a tuple the parameter conditions genuinely admit.
+
+**What the verdict settles.** The idle run's length is a datum of the object's step graph, not a
+parameter the construction may raise. The lengthening is therefore NOT a theorem of the schema and
+cannot be promoted to the slack-normalization lemma the downward cell inclusion would consume.
+Phase 9 takes its FAIL branch.
+
+**What the verdict does not settle.** Sub-question (ii), TYPE PRESERVATION, is UNTOUCHED: the
+refutation closes from `step` alone and never reaches the type clause, so nothing here says whether
+a lengthened path, where one exists, holds the realized stab-free type at `z`. Nor does the verdict
+say the lengthening fails on every object: an object whose idle states carry a reachable cycle
+admits longer idle runs, and `tIdle`'s own shape (`#idle states + 1`) is the bound above which an
+idle run must repeat an idle state and so become duplicable. The sharpening — the lengthening is
+available exactly where the object's idle states carry a reachable cycle — is an OBJECT hypothesis
+and not a consequence of `ParamsOk`; assuming it would be a restriction of the obligation, not a
+proof of it. The verdict refutes neither the depth-`0` cell obligation nor any `ParamsOk` conjunct.
+
+**Verification notes.** `bash .claude/scripts/lake-build-guard.sh build --timeout 840 -- env lean
+specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean` reports
+`exit_status=0` with zero `error:` and zero `warning:` lines and no `declaration uses 'sorry'`;
+`#print axioms` on both headline objects shows no `sorryAx`. `git diff --stat` shows no
+`FormalSystem/` or `Tests/` file changed by this phase. This phase's own tier is `local`, so the
+batch-stage deferral the dispatch directive describes for the plan's FINAL phase
+(`Verification Tier: full`) does not apply to it; the complete gate set remains Phase 10's
+obligation and is deferred to the batch stage there, not forgiven.
 
 **Timing**: 2 hours
 
