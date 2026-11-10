@@ -548,29 +548,29 @@ projected ~480, so the long-file ceiling of 1500 remains far off.
 
 ---
 
-### Phase 6: Iterated Lifts and Two-Way Boundedness [IN PROGRESS]
+### Phase 6: Iterated Lifts and Two-Way Boundedness [COMPLETED]
 
 **Goal**: Lift the one-step results to the iteration level by induction and discharge both fields
 of `TwoWayBounded` for the endpoint projection between the cover frame and an arbitrary regular
 base frame.
 
 **Tasks**:
-- [ ] Prove that the endpoint projection carries iterated cover steps to iterated base steps, by
+- [x] Prove that the endpoint projection carries iterated cover steps to iterated base steps, by
       induction on the iteration count, using the left-recursive shape of `iter`.
-- [ ] Prove the iterated forward lift by induction on the iteration count, generalizing over the
+- [x] Prove the iterated forward lift by induction on the iteration count, generalizing over the
       cover point.
-- [ ] Prove the iterated backward lift by induction on the iteration count, applying the one-step
+- [x] Prove the iterated backward lift by induction on the iteration count, applying the one-step
       lift **first** and the induction hypothesis **second** at the lifted predecessor -- the
       order the shape of `iter` forces.
-- [ ] Define the cover frame as the new frame constructor applied to the cover's one-step
+- [x] Define the cover frame as the new frame constructor applied to the cover's one-step
       relation, its two seriality witnesses, and `saturation_of_orientedForest` of Phase 4's
       oriented-forest proof, for an arbitrary `F : FrameOver intOrder` with `[F.IsRegular]`.
-- [ ] Prove `endpt_twoWayBounded` as a two-field structure literal: rewrite the cover's task
+- [x] Prove `endpt_twoWayBounded` as a two-field structure literal: rewrite the cover's task
       relation into `ofStepRel` form with the new constructor's task-relation equation and the
       base's with `taskRel_eq_iter`, then apply the endpoint-iteration lemma for `forth` and the
       two iterated lift lemmas for `step`, on the two sign-guarded conjuncts of `ofStepRel`
       respectively.
-- [ ] Regenerate the Typst count surface: `lake build && bash scripts/typst-sync-check.sh --fix`,
+- [x] Regenerate the Typst count surface: `lake build && bash scripts/typst-sync-check.sh --fix`,
       then stage `typst/generated/status.typ`.
 
 **Timing**: 1.75 hours
@@ -596,18 +596,35 @@ new declarations to that one module and changes no signature any other module re
 - `typst/generated/status.typ` - regenerated file and line counts
 
 **Verification**:
-- [ ] `lake build FormalSystem.Semantics.UniversalCover` is green with zero warnings, then
+- [x] `lake build FormalSystem.Semantics.UniversalCover` is green with zero warnings, then
       `lake build` is green.
-- [ ] `grep -c "sorry" FormalSystem/Semantics/UniversalCover.lean` is 0.
-- [ ] `#print axioms FormalSystem.Semantics.endpt_twoWayBounded` shows no `sorryAx`.
-- [ ] `#print axioms` on the cover frame shows no `Classical.choice` introduced by this module
+- [x] `grep -c "sorry" FormalSystem/Semantics/UniversalCover.lean` is 0.
+- [x] `#print axioms FormalSystem.Semantics.endpt_twoWayBounded` shows no `sorryAx`.
+- [x] `#print axioms` on the cover frame shows no `Classical.choice` introduced by this module
       itself; if `Classical.choice` appears, trace it to the cited frame constructor or to
       `saturation_of_orientedForest` rather than to a new choice here.
-- [ ] `bash scripts/typst-sync-check.sh --counts-only` exits 0.
+- [x] `bash scripts/typst-sync-check.sh --counts-only` exits 0.
+
+**Verification notes (Phase 6)**: scoped `lake build FormalSystem.Semantics.UniversalCover` green,
+then full `lake build` green (`--no-share`), 2968 jobs, zero errors and zero warnings.
+`grep -c sorry` = 0. `#print axioms FormalSystem.Semantics.endpt_twoWayBounded` =
+`[propext, Classical.choice, Quot.sound]` — no `sorryAx`. The same three for `endpt_iter`,
+`exists_iter_coverStep_fwd`, `exists_iter_coverStep_bwd`, `coverFrame` and `coverFrame_isRegular`.
+`Classical.choice` on the cover frame is **traced, not new**: both cited constructors already
+carry it — `#print axioms FormalSystem.Semantics.FrameOver.ofStepSat` and
+`#print axioms FormalSystem.Semantics.saturation_of_orientedForest` are each
+`[propext, Classical.choice, Quot.sound]` — as does
+`TwoWayBounded.plus_invariance_of_isZTime`, so this module introduces no choice of its own beyond
+the classical `by_cases` split already recorded for the one-step lifts.
+`typst-sync-check.sh --counts-only` exits 0 after `--fix`.
+
+**Scope Hypothesis outcome (Phase 6)**: **superseded in the cheap direction** —
+`wc -l FormalSystem/Semantics/UniversalCover.lean` reports 456 at phase close against the
+projected ~680.
 
 ---
 
-### Phase 7: Assembly, Generated Surfaces, and the Full Gate Set [NOT STARTED]
+### Phase 7: Assembly, Generated Surfaces, and the Full Gate Set [IN PROGRESS]
 
 **Goal**: Prove the headline `exists_orientedForest_cover`, reconcile every deferred generated
 surface, and run the repository's complete Lean gate set against its pre-task baseline.
