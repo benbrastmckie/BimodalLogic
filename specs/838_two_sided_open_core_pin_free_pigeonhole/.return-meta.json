@@ -1,65 +1,36 @@
 {
-  "status": "partial",
-  "started_at": "2026-11-03T17:42:40Z",
-  "completed_at": "2026-11-03T18:36:00Z",
-  "requires_user_review": true,
-  "review_reason": "Phase 5 is [BLOCKED]: its FAIL branch rests on a deletion mirror of the regime-A assembly that is not landed, and the obstruction was localized to one undischargeable register bound (the deleted walk's pin v is the original's pin v+l, so the demand exceeds pinCompat_of_ladderPath's supply by exactly l, and by m*(P+1) when iterated). No weakened statement was landed under the reserved name or under the planned new one. Phases 1-4 and 6 are [COMPLETED]. Every gate is green: unscoped full lake build exit_status=0 with zero error:, verify-deploy.sh PASS 15 checks 0 failures, all 47 wired probes compile, module invariants exit 0, sorry census 0, axiom count unchanged at 14. The single repo-wide vacuous-grep hit (FormalSystem/Examples/TemporalStructures.lean:495, int_domain_universal := trivial) is pre-existing at the plan commit and is a genuine theorem, in a file this task did not touch.",
-  "blocked_phase": 5,
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "vacuous_note": "Pre-existing and unchanged: FormalSystem/Examples/TemporalStructures.lean:495 `int_domain_universal ... := trivial`, present at the plan commit 05555493e, a genuine theorem (the Int time history's domain IS universally true) in a file this task did not touch. Zero vacuous definitions in every file this task created or changed.",
-    "axiom_count": 14,
-    "axiom_note": "Unchanged from the plan commit over the same resolved source roots; no `axiom` line added anywhere.",
-    "build_passed": true
-  },
-  "partial_progress": {
-    "stage": "phase_5_blocked",
-    "details": "Phases 1-4 and 6 completed and committed; Phase 5 could not be completed. The blocker is documented in full in the plan file's Phase 5 body and in specs/838_two_sided_open_core_pin_free_pigeonhole/handoffs/phase-5-handoff-20261103T182434Z.md.",
-    "phases_completed": 5,
-    "phases_total": 6
-  },
+  "status": "planned",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
-      "summary": "The pin layer, the pigeonhole over region starts, the exponential (K2) bound, and the decision gate's FAIL verdict; the closing phase blocked on the forward register cascade."
+      "type": "plan",
+      "path": "specs/838_two_sided_open_core_pin_free_pigeonhole/plans/01_pin-free-pigeonhole-open-core.md",
+      "summary": "Revised ten-phase plan: Phase 5's mis-anchored blocker withdrawn, the landed re-anchored deletion layer taken as input, and four new phases -- the free slack baseline, a new LadderCell.lean (common-shift inclusion plus kappa-collision case split), an idle-gap-lengthening decision gate, and a branch-selected close."
     }
   ],
-  "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderPin.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
-    "FormalSystem.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "FormalSystem/README.md",
-    "README.md",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "typst/generated/status.typ",
-    "specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/pin-free-side.lean",
-    "specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/spanning-divisibility.lean",
-    "specs/838_two_sided_open_core_pin_free_pigeonhole/plans/01_pin-free-pigeonhole-open-core.md",
-    "specs/838_two_sided_open_core_pin_free_pigeonhole/summaries/01_pin-free-pigeonhole-open-core-summary.md",
-    "specs/838_two_sided_open_core_pin_free_pigeonhole/issues.jsonl"
-  ],
-  "user_decision": {
-    "question": "Phase 4 refuted the premise behind the prior cycle's recorded answer: the depth-0 obligation's regime-restricted form is not provable from what is landed, because the obligation concludes cell EQUALITY and only the upward inclusion exists, the downward one being blocked by the forward register cascade. How should the round close?",
-    "options": [
-      "Spawn a dedicated task for the downward/deletion assembly with an explicit forward-slack hypothesis, and land the regime-restricted obligation (as an equality) only once that exists",
-      "Land the one-directional upward inclusion now under an honest NEW name that does not claim to be the obligation, with the record naming the missing reverse inclusion the consumer must supply",
-      "Open a (K1)-amendment task, accepting that it alters the parameter contract every wired probe discharges"
-    ],
-    "recommended": "Spawn a dedicated task for the downward/deletion assembly with an explicit forward-slack hypothesis, and land the regime-restricted obligation (as an equality) only once that exists",
-    "blocking": false
-  },
+  "next_steps": "Run /orchestrate 838 --implement to execute the revised plan from Phase 5; Phases 7 and 8 are the one parallel pair.",
   "metadata": {
-    "session_id": "sess_1793726849_746040",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "passed",
-    "gate_verdict": "FAIL"
+    "session_id": "sess_1794289705_1b4c8a",
+    "agent_type": "reviser-agent",
+    "delegation_path": [
+      "orchestrator",
+      "revise",
+      "reviser-agent"
+    ],
+    "dispatch_seq": 4,
+    "orchestrator_mode": false,
+    "revision_reason": "blocker",
+    "phase_count": 10,
+    "phases_preserved_completed": 5,
+    "phases_revised": 1,
+    "phases_added": 4,
+    "estimated_hours": 17.5,
+    "estimated_hours_remaining": 8.5,
+    "reports_integrated": [
+      ".dispatch/4-aux-plan-revision.md"
+    ],
+    "plan_revised_sentinel": "specs/838_two_sided_open_core_pin_free_pigeonhole/.plan-revised.json",
+    "issue_recorded": "iss_1794290566064_eorL8P",
+    "validation": "validate-artifact.sh ... plan exits 0 with 0 warnings; the two new Challenge statements elaborated standalone through the build guard (exit_status=0, zero errors, exactly two sorry warnings)",
+    "uncommitted": true
   }
 }
