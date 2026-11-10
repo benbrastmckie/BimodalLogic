@@ -101,3 +101,18 @@ unusedArguments:plus_invariance_of_isZTime
 # scoped `set_option linter.unusedVariables false in` at the same site.
 # Semantics/ConeUnravelling.lean.
 unusedArguments:coneF_surjective
+
+# `aa_sound_int`'s `hexh` hypothesis — exhaustiveness of the input family `aᵢ` — is unread, and
+# the linter is correct: the Auxiliary-Atoms antecedent's step clause is an implication, so a
+# point at which no `aᵢ` holds places no demand on the machine and `aaIdx`'s fallback branch is
+# never consulted. The declaration cannot conform: this is the published signature the theorem's
+# recorded statement fixes, and the hypothesis is what makes the rule USEFUL (it pins the
+# machine's run down to a single run, which is how Reynolds uses it) rather than what makes it
+# sound, so dropping it would change a contract signature AND erase the record that the rule
+# proved here is in that one respect stronger than the rule stated. `aaIdx_of_occurring` in the
+# same module is the declaration that does consume exhaustiveness. A measured deletion trial
+# (`lean_minimal_hypotheses`) raises no error inside the proof itself; the only breakage is the
+# positional application at `aa_sound_ztime`'s call site. The paired source-level suppression is a
+# scoped `set_option linter.unusedVariables false in` at the same site.
+# Metalogic/AuxiliaryAtoms.lean.
+unusedArguments:aa_sound_int
