@@ -1,20 +1,12 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 4 landed insPins_of_region_start in LadderAgree.lean: hpins for the inserted walk, in exactly the shape exists_ladderPath_of_walk_of_pins consumes. All nine trichotomy pairs closed with pinCompat_of_ladderPath on the two ORIGINAL region starts plus omega, on the first standalone probe; the three mirror pairs were reached by swapping pinCompat's two arguments rather than re-proving the arithmetic. No pair needed d > l, so d := l is confirmed TIGHT (the raised-pin-against-displaced-down pair needs exactly the l-sized deficit) and the plan's [BLOCKED] contingency for a general d was never reached -- the pinned signatures of Phases 3-5 stand unchanged. The cascade bookkeeping (cascadeDemand*, pinnedRegions*, pin_deficit_le_of_lengthen) is unconsumed and stays landed as the sizing record. One axiom pin added, profile [propext, Classical.choice, Quot.sound]. Both in-source longFile baselines raised in place (3200 -> 3400, 2300 -> 2400), the plan's pre-authorized remedy. Zero sorries; full library build green at 2969 jobs. Phases 5-7 remain.",
-  "phases_completed": 4,
+  "summary": "Phase 5 complete: both previously-unclaimed names landed as sorry-free theorems in LadderAgree.lean, signatures token-for-token identical to the plan's Lean Challenge Statements block. exists_ladderPath_at_region_of_idle_past composes Phases 1-4 (exists_ladderPath_of_walk_of_pins, exists_region_start_of_idle_past, insPins_of_region_start) with the four landed LOCAL inserted-walk conditions; exists_ladderPath_at_region joins both regimes by by_cases on the pending-past predicate. Two #print axioms pins added to KTypeSummaryAxiomTest.lean, both passing with [propext, Classical.choice, Quot.sound]. Full library build green (guard exit 0, 2969 jobs, zero errors, zero warnings). Also repaired a pre-existing C16 env_linter failure on the Phase 3 trichotomy's deliberately-unread hu1 binder via the documented @[nolint unusedArguments] + allowlist pair, with no signature change. Phases 6 and 7 remain.",
+  "phases_completed": 5,
   "phases_total": 7,
-  "dispatch_seq": 14,
+  "dispatch_seq": 15,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-4-handoff-20261110T130000Z.md",
-  "artifacts": [],
-  "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "typst/generated/status.typ",
-    "specs/853_ladder_path_insertion_cascade_idle_past/plans/01_insertion-cascade-idle-past.md",
-    "specs/853_ladder_path_insertion_cascade_idle_past/issues.jsonl",
-    "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-4-handoff-20261110T130000Z.md"
-  ]
+  "continuation_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-5-handoff-20261110T150000Z.md",
+  "artifacts": []
 }
