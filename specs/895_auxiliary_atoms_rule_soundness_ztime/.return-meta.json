@@ -1,22 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 13,
+  "status": "planned",
+  "dispatch_seq": 16,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/895_auxiliary_atoms_rule_soundness_ztime/reports/01_auxiliary-atoms-rule-soundness.md",
-      "summary": "Research for the formula-level Auxiliary-Atoms rule and its ZTime soundness: Reynolds 2001 Definition 4/Lemma 6 step map, the concrete-cone-API route (not exists_coneUnravelling), PlusValidInt as the statement level with the mirror by plusValidIn_reflectTime_iff, three small library gaps, and a five-phase decomposition - every semantic step backed by a compiled sorry-free probe."
-    },
-    {
-      "type": "probe",
-      "path": "specs/evidence/auxiliary-atoms-rule-soundness/aa-core-probe.lean",
-      "summary": "Compiled, sorry-free evidence probe (lake env lean exit 0, zero diagnostics) for the seven ingredients the soundness proof needs beyond landed library theorems, including the aa_expand step identity restated over WorldHistory (coneFrame F)."
+      "type": "plan",
+      "path": "specs/895_auxiliary_atoms_rule_soundness_ztime/plans/01_auxiliary-atoms-rule-soundness.md",
+      "summary": "Six-phase, 10-hour implementation plan for the formula-level Auxiliary-Atoms rule and its FrameClass.ZTime soundness, with ten type-checked Lean Challenge Statements."
     }
   ],
   "metadata": {
     "session_id": "sess_1794343738_e0026f_895",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 10,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6]]
+  },
+  "memory_candidates": [
+    {
+      "content": "A lean/lean4 plan's `## Lean Challenge Statements` block can be type-checked during the planning dispatch itself, before the plan file is written: assemble the candidate declarations with `sorry` theorem bodies into a scratch .lean file carrying the same imports, run `lake env lean <file>`, and require exit 0 with `declaration uses 'sorry'` as the only diagnostics. This converts statement-pinning from an authoring-time assertion into a measurement, and catches the three failure modes that otherwise surface only at implementation time: a missing import for a name the statement mentions, a wrong namespace or argument-type (e.g. `F.Duration` vs `↑intOrder` binders), and a definition whose shape does not elaborate. Where a research dispatch already landed a compiled probe, most declarations transcribe verbatim and only the plan's own new signatures need drafting. Cost is one `lake env lean` run against an already-built import closure.",
+      "category": "PATTERN",
+      "source_artifact": "specs/895_auxiliary_atoms_rule_soundness_ztime/plans/01_auxiliary-atoms-rule-soundness.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["lean-challenge-statements", "plan-authoring", "statement-pinning", "lake-env-lean", "signature-drift", "plan-compliance"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 895 to execute the plan"
 }

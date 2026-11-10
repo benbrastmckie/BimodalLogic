@@ -1990,15 +1990,22 @@
     {
       "project_number": 895,
       "project_name": "auxiliary_atoms_rule_soundness_ztime",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "title": "The Auxiliary-Atoms rule for L-plus at ZTime, forward and mirror, formula level with soundness",
       "description": "State the transposed Reynolds-2001 Auxiliary-Atoms rule at the formula level and prove it validity-preserving at FrameClass.ZTime. Antecedent aaAnte b0 Q a p := b0 and stab (gle (bigAnd over b in Q, i < k of ((b and a i) -> stab (next (p b i))))) and stab (gle (bigAnd over b != b' of not (b and b'))), where Q is a finite set of fresh atoms, a i are state-local formulas (PlusFormula.StateLocal) that are provably pairwise inconsistent and jointly exhaustive, and p : Q -> Fin k -> Q is the machine. The rule: if (aaAnte b0 Q a p).imp phi is ZTime-valid and no Q-atom occurs in phi or in any a i, then phi is ZTime-valid. The proof runs the premise on the cone unravelling of the given frame with the machine-run valuation coneSt (semantic core: the archived probe's aa_expand), forgets Q by plusTruthAt_congr_of_fresh, and projects by plus_invariance_of_isZTime. The mirror rule follows by plusValidIn_reflectTime-style reflection of the construction or by a mirrored cone. Depends on the cone-unravelling frame task. Home: FormalSystem/Metalogic/NamingRules.lean or a sibling FormalSystem/Metalogic/AuxiliaryAtoms.lean. No completeness claim.",
       "file_scope": [
+        "FormalSystem.lean",
+        "FormalSystem/Metalogic.lean",
         "FormalSystem/Metalogic/AuxiliaryAtoms.lean",
         "FormalSystem/Metalogic/NamingRules.lean",
-        "FormalSystem/Metalogic.lean",
-        "docs/theorem-index.md"
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "Tests/BimodalTest.lean",
+        "Tests/BimodalTest/Metalogic/AuxiliaryAtomsTest.lean",
+        "docs/theorem-index.md",
+        "typst/generated/status.typ"
       ],
       "dependencies": [
         894,
@@ -2006,16 +2013,21 @@
       ],
       "priority": "medium",
       "created": "2026-11-09T09:48:33Z",
-      "last_updated": "2026-11-10T22:30:34Z",
+      "last_updated": "2026-11-10T22:53:46Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/895_auxiliary_atoms_rule_soundness_ztime/reports/01_auxiliary-atoms-rule-soundness.md",
           "type": "report",
           "summary": "Research for the formula-level Auxiliary-Atoms rule and its ZTime soundness: Reynolds 2001 Definition 4/Lemma 6 step map, the concrete-cone-API route (not exists_coneUnravelling), PlusValidInt as the statement level with the mirror by plusValidIn_reflectTime_iff, three small library gaps, and a five-phase decomposition - every semantic step backed by a compiled sorry-free probe."
+        },
+        {
+          "path": "specs/895_auxiliary_atoms_rule_soundness_ztime/plans/01_auxiliary-atoms-rule-soundness.md",
+          "type": "plan",
+          "summary": "Six-phase, 10-hour plan for the Auxiliary-Atoms rule's ZTime soundness: three infrastructure lemmas, the cone-history machine run, the antecedent syntax, the auxiliary-atom model, the antecedent-satisfaction theorem, and the three headlines with the full gate set."
         }
       ],
-      "session_id": "sess_1794343738_e0026f_895",
+      "session_id": "sess_1794343738_e0026f",
       "audit_verdict": {
         "proposal": {
           "id": "auxiliary_atoms_rule_soundness_ztime",

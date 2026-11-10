@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 16,
+  "phases_completed": 0,
+  "phases_total": 6,
+  "summary": "Authored a six-phase implementation plan for the formula-level Auxiliary-Atoms rule at FrameClass.ZTime, assembling the research report's compiled route into one new module FormalSystem/Metalogic/AuxiliaryAtoms.lean. The plan's ten Lean Challenge Statements were type-checked against the live library with lake env lean (exit 0, sorry warnings only), so every pinned signature is measured rather than asserted. Phases 1-5 are local-tier transcription-and-assembly on the single new module; Phase 6 is the full-tier headline, axiom-profile evidence pin, documentation reconciliation and repository gate set. suite_selection_select returns __FULL_SWEEP__ for every declared path, so each non-final phase's covering check is the scoped guarded module build.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/895_auxiliary_atoms_rule_soundness_ztime/plans/01_auxiliary-atoms-rule-soundness.md",
+      "summary": "Six-phase, 10-hour plan for the Auxiliary-Atoms rule's ZTime soundness: three infrastructure lemmas, the cone-history machine run, the antecedent syntax, the auxiliary-atom model, the antecedent-satisfaction theorem, and the three headlines with the full gate set."
+    }
+  ]
+}
