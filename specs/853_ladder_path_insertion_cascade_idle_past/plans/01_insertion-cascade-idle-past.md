@@ -340,7 +340,7 @@ axiom test, changing no existing signature, so guarded scoped builds of
 
 ---
 
-### Phase 4: `hpins` for the Inserted Walk [NOT STARTED]
+### Phase 4: `hpins` for the Inserted Walk [COMPLETED]
 
 **Goal**: The pin obligation the splice refutation left open, discharged. Nine pairs of
 trichotomy cases, every one of them reducing to `pinCompat_of_ladderPath` on the ORIGINAL path
@@ -348,8 +348,8 @@ plus `omega`. This is the phase that establishes that `d := l` is enough.
 
 **Tasks**:
 
-- [ ] `insPins_of_region_start` (Goal, signature as pinned below): the same `u` hypotheses as Phase 3, concluding `hpins` for `insObj g a l u l` / `insCnt g a l u l` in exactly the shape `exists_ladderPath_of_walk_of_pins` consumes.
-- [ ] `rcases` both region starts through `insRegionStart_trichotomy` and handle the nine pairs. In each, rewrite both `insCnt` values and then close with `pinCompat_of_ladderPath` on the two original starts plus `omega`. The pairs and the bound each needs, written out so no case is discovered mid-proof:
+- [x] `insPins_of_region_start` (Goal, signature as pinned below): the same `u` hypotheses as Phase 3, concluding `hpins` for `insObj g a l u l` / `insCnt g a l u l` in exactly the shape `exists_ladderPath_of_walk_of_pins` consumes.
+- [x] `rcases` both region starts through `insRegionStart_trichotomy` and handle the nine pairs. In each, rewrite both `insCnt` values and then close with `pinCompat_of_ladderPath` on the two original starts plus `omega`. The pairs and the bound each needs, written out so no case is discovered mid-proof:
   - (raised `u`, raised `u`): reflexive, `omega` alone.
   - (raised `u`, displaced-down `y - l` with `y < u`): demand `|cntAt g (u+1) + l - cntAt g (y+1)| ≤ (u - y) + l`; compatibility gives `u - y`. THE TIGHT CASE, and the reason `d := l` is exactly enough.
   - (raised `u`, displaced-up `t + l` with `t ≥ a`): demand `≤ (t - u) + l`; compatibility gives `t - u`.
@@ -357,9 +357,9 @@ plus `omega`. This is the phase that establishes that `d := l` is enough.
   - (displaced-down `y - l`, displaced-up `t + l`): new distance `(t - y) + 2l`; compatibility gives `t - y`.
   - (displaced-up, displaced-up): distances and countdowns both unchanged; compatibility directly.
   - the three mirror pairs: by the symmetry of `natAbs` on the two arguments, not by re-proof.
-- [ ] Docstring: state that `cascadeDemand` and its closed form are NOT consumed, that the single insertion at the region start of `a`'s own region is what replaces the anticipated iteration, and that the recurrence stays landed as the sizing record for the iteration the construction turned out not to need.
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: one `#guard_msgs in #print axioms` pin.
-- [ ] Record in `issues.jsonl` whether all nine pairs closed with `pinCompat_of_ladderPath` plus `omega`, and whether the three mirror pairs were reachable by symmetry or needed writing out. If any pair genuinely needs `d > l`, mark the phase `[BLOCKED]` and report the pair and its deficit, because a general `d` changes the pinned signatures of Phases 3-5.
+- [x] Docstring: state that `cascadeDemand` and its closed form are NOT consumed, that the single insertion at the region start of `a`'s own region is what replaces the anticipated iteration, and that the recurrence stays landed as the sizing record for the iteration the construction turned out not to need.
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: one `#guard_msgs in #print axioms` pin.
+- [x] Record in `issues.jsonl` whether all nine pairs closed with `pinCompat_of_ladderPath` plus `omega`, and whether the three mirror pairs were reachable by symmetry or needed writing out. If any pair genuinely needs `d > l`, mark the phase `[BLOCKED]` and report the pair and its deficit, because a general `d` changes the pinned signatures of Phases 3-5.
 
 **Timing**: 2 hours
 

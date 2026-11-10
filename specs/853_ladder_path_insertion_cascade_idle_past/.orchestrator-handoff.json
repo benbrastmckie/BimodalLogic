@@ -1,13 +1,13 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 3 landed insRegionStart_trichotomy in LadderAgree.lean: every region start of the inserted walk (inserted at the region start of a's own region, depth d := l) is the raised pin at u with countdown cntAt g (u+1) + l, an original start strictly below u displaced down by l with its countdown unchanged, or an original start at or above the seam displaced up by l with its countdown unchanged. All three middle-band exclusions were needed and all three worked as written. One axiom pin added. Zero sorries; full library build green. Phases 4-7 remain.",
-  "phases_completed": 3,
+  "summary": "Phase 4 landed insPins_of_region_start in LadderAgree.lean: hpins for the inserted walk, in exactly the shape exists_ladderPath_of_walk_of_pins consumes. All nine trichotomy pairs closed with pinCompat_of_ladderPath on the two ORIGINAL region starts plus omega, on the first standalone probe; the three mirror pairs were reached by swapping pinCompat's two arguments rather than re-proving the arithmetic. No pair needed d > l, so d := l is confirmed TIGHT (the raised-pin-against-displaced-down pair needs exactly the l-sized deficit) and the plan's [BLOCKED] contingency for a general d was never reached -- the pinned signatures of Phases 3-5 stand unchanged. The cascade bookkeeping (cascadeDemand*, pinnedRegions*, pin_deficit_le_of_lengthen) is unconsumed and stays landed as the sizing record. One axiom pin added, profile [propext, Classical.choice, Quot.sound]. Both in-source longFile baselines raised in place (3200 -> 3400, 2300 -> 2400), the plan's pre-authorized remedy. Zero sorries; full library build green at 2969 jobs. Phases 5-7 remain.",
+  "phases_completed": 4,
   "phases_total": 7,
-  "dispatch_seq": 13,
+  "dispatch_seq": 14,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-3-handoff-20261110T095226Z.md",
+  "continuation_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-4-handoff-20261110T130000Z.md",
   "artifacts": [],
   "modified_files": [
     "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
@@ -15,6 +15,6 @@
     "typst/generated/status.typ",
     "specs/853_ladder_path_insertion_cascade_idle_past/plans/01_insertion-cascade-idle-past.md",
     "specs/853_ladder_path_insertion_cascade_idle_past/issues.jsonl",
-    "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-3-handoff-20261110T095226Z.md"
+    "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-4-handoff-20261110T130000Z.md"
   ]
 }
