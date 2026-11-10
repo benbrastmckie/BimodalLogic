@@ -387,23 +387,23 @@ covers a purely additive declaration in one module with no externally visible si
 
 ---
 
-### Phase 4: The Common-Shift Downward Inclusion at the State Level [NOT STARTED]
+### Phase 4: The Common-Shift Downward Inclusion at the State Level [COMPLETED]
 
 **Goal**: `cellAt_subset_of_common_shift_of_pend_past_rev` compiles: the same inclusion between
 cells, under `ForwardSlackWitnessed` of the higher pair at the doubled amount.
 
 **Tasks**:
-- [ ] Add the declaration to `LadderCell.lean` directly after Phase 3's, at the pinned signature
+- [x] Add the declaration to `LadderCell.lean` directly after Phase 3's, at the pinned signature
       below.
-- [ ] Body: the landed `cellAt_subset_of_shift_of_pend_past_rev` pattern verbatim — `intro T hT`,
+- [x] Body: the landed `cellAt_subset_of_shift_of_pend_past_rev` pattern verbatim — `intro T hT`,
       destructure `hw T hT` into `⟨g, τ, hg, hgz, hτ, hslack, hty⟩`, apply Phase 3's declaration,
       close with `rwa [hty] at hmem`.
-- [ ] Confirm `ForwardSlackWitnessed` is instantiated at `l := m * (P + 1) + m * (P + 1)` and
+- [x] Confirm `ForwardSlackWitnessed` is instantiated at `l := m * (P + 1) + m * (P + 1)` and
       `n := n + m * (P + 1)`, matching Phase 3's `hslack` binder exactly; a mismatch here is the
       one place this phase can fail silently in the sense of compiling a weaker statement.
-- [ ] Docstring: name it the common-shift mirror of `cellAt_subset_of_shift_of_pend_past_rev`,
+- [x] Docstring: name it the common-shift mirror of `cellAt_subset_of_shift_of_pend_past_rev`,
       and state that the hypothesis is not removable for the same compiled reason.
-- [ ] `bash scripts/typst-sync-check.sh --fix`; stage `typst/generated/status.typ`.
+- [x] `bash scripts/typst-sync-check.sh --fix`; stage `typst/generated/status.typ`.
 
 **Timing**: 45 minutes
 

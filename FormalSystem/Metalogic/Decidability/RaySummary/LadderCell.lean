@@ -462,6 +462,46 @@ theorem mem_cellAt_of_common_shift_of_hasForwardSlack_exact
     change (objAt g' z, cntAt g' z, nxtAt g' z) = (q, c, n)
     rw [ho, hc', hn, hoz]
   · exact hty τ τ' hτ hτ'
+
+/-- **THE COMMON-SHIFT DOWNWARD CELL INCLUSION AT THE STATE LEVEL.** The common-shift mirror of
+`cellAt_subset_of_shift_of_pend_past_rev`: in the pending-forever regime (`n + 2 ≤ c`) at
+countdown at least `Tc`, with the room `n + (m · (P + 1) + m · (P + 1)) ≤ c`, if every type the
+cell at `(q, c + m · (P + 1), n + m · (P + 1))` realizes is realized there by a path with
+`HasForwardSlack · z (m · (P + 1) + m · (P + 1)) (n + m · (P + 1))`, then that cell is contained
+in the cell at `(q, c, n)`. The body is
+`mem_cellAt_of_common_shift_of_hasForwardSlack_exact` applied to the witnessing path the
+hypothesis supplies.
+
+The witnessing hypothesis is NOT removable, for the same compiled reason as in the landed
+equal-register mirror: `ClimbWitness.hasForwardSlack_refuted_unconditional` refutes every
+state-level form of the regime, so the condition must be existential over the paths through the
+state. What is new here, and the whole point of the statement, is that the REGISTER MOVES: the
+landed mirror holds it, which is what forced the equal-register hypothesis on the depth-`0`
+schema. Together with the landed upward `cellAt_subset_of_common_shift_of_pend_past` this closes
+the common-shift sub-regime in both directions. -/
+theorem cellAt_subset_of_common_shift_of_pend_past_rev {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n : ℕ) (h : c ∈ Adm pend q) (m : ℕ)
+    (h' : c + m * (P + 1) ∈ Adm pend q)
+    (hgap : n + 2 ≤ c) (hroom : n + (m * (P + 1) + m * (P + 1)) ≤ c) (hTc : Tc ≤ c) (z : ℤ)
+    (hw : ForwardSlackWitnessed step pend fwd bwd lab φ
+      (⟨(q, c + m * (P + 1), n + m * (P + 1)), h'⟩ : LadderState Q pend) z
+      (m * (P + 1) + m * (P + 1)) (n + m * (P + 1))) :
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c + m * (P + 1), n + m * (P + 1)), h'⟩) :
+          (ladderFrameAdm step pend fwd bwd).WorldState) z ⊆
+      cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  intro T hT
+  obtain ⟨g, τ, hg, hgz, hτ, hslack, hty⟩ := hw T hT
+  have hmem := mem_cellAt_of_common_shift_of_hasForwardSlack_exact step pend fwd bwd lab φ
+    Tc Tn P B hp hno q c n h m h' hgap hroom hTc z g hg hgz hslack τ hτ
+  rwa [hty] at hmem
 /-- **THE FORWARD-SLACK-RESTRICTED DEPTH-`0` CELL OBLIGATION**, stated as a schema. This is NOT
 the reserved statement `CellLEZeroConstOfKappaEq`, which is claimed by nothing and stays so. Four
 hypotheses separate the two, and all four are visible in the quantifier below:
