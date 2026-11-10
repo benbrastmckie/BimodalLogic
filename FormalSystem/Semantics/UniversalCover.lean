@@ -277,4 +277,81 @@ theorem coverStep_isOrientedForest {E : W → W → Prop} : IsOrientedForest (Co
   acyclic := coverStep_acyclic
 
 
+/-! ## Double seriality and the two one-step lifts -/
+
+/--
+A cover point whose last move is the backward move `b → c` steps to its own parent, whose
+endpoint is `b`.
+
+This is the walk-destructuring half of the forward lift: `cases` on the *walk* (not on
+`CoverStep`) is legitimate, and the last-move index `some (false, b)` already rules out `nil` and
+`fwd`.
+-/
+theorem coverStep_parent_of_last_bwd {E : W → W → Prop} {o c b : W}
+    (p : RWalk E o c (some (false, b))) :
+    CoverStep E (CoverPt.mk o c (some (false, b)) p)
+        (CoverPt.mk o c (some (false, b)) p).parent ∧
+      (CoverPt.mk o c (some (false, b)) p).parent.endpt = b := by
+  cases p with
+  | bwd q h hred => exact ⟨CoverStep.down q h hred, rfl⟩
+
+/-- A cover point whose last move is the forward move `b → c` is stepped into by its own parent,
+whose endpoint is `b`. The mirror of `coverStep_parent_of_last_bwd`. -/
+theorem coverStep_parent_of_last_fwd {E : W → W → Prop} {o c b : W}
+    (p : RWalk E o c (some (true, b))) :
+    CoverStep E (CoverPt.mk o c (some (true, b)) p).parent
+        (CoverPt.mk o c (some (true, b)) p) ∧
+      (CoverPt.mk o c (some (true, b)) p).parent.endpt = b := by
+  cases p with
+  | fwd q h hred => exact ⟨CoverStep.up q h hred, rfl⟩
+
+/--
+**The forward one-step lift** — the mathematical heart: every base edge out of a cover point's
+endpoint lifts to a cover step out of that point.
+
+The lift is **total**, and the case split says why: the one move the reducedness rule forbids is
+precisely the move whose target is *already* a cover-neighbour. If the point's last move is not
+the backward move out of the target, extend by `fwd` — admitted by that very hypothesis. If it
+is, the point was built by `bwd` from a walk ending at the target, so `down` applies to its
+parent, whose endpoint is the target.
+-/
+theorem exists_coverStep_fwd {E : W → W → Prop} (x : CoverPt E) {c : W} (h : E x.endpt c) :
+    ∃ y : CoverPt E, CoverStep E x y ∧ y.endpt = c := by
+  obtain ⟨o, b, m, p⟩ := x
+  by_cases hlast : m = some (false, c)
+  · subst hlast
+    exact ⟨_, (coverStep_parent_of_last_bwd p).1, (coverStep_parent_of_last_bwd p).2⟩
+  · exact ⟨⟨o, c, some (true, b), RWalk.fwd p h hlast⟩, CoverStep.up p h hlast, rfl⟩
+
+/-- **The backward one-step lift**, by the mirrored case split on the forward-move tag. -/
+theorem exists_coverStep_bwd {E : W → W → Prop} (x : CoverPt E) {c : W} (h : E c x.endpt) :
+    ∃ y : CoverPt E, CoverStep E y x ∧ y.endpt = c := by
+  obtain ⟨o, b, m, p⟩ := x
+  by_cases hlast : m = some (true, c)
+  · subst hlast
+    exact ⟨_, (coverStep_parent_of_last_fwd p).1, (coverStep_parent_of_last_fwd p).2⟩
+  · exact ⟨⟨o, c, some (false, b), RWalk.bwd p h hlast⟩, CoverStep.down p h hlast, rfl⟩
+
+/-- **Forward seriality of the cover**, from the base relation's own forward seriality through
+the forward lift. -/
+theorem coverStep_serial_fwd {E : W → W → Prop} (hfwd : ∀ w, ∃ u, E w u) (x : CoverPt E) :
+    ∃ y, CoverStep E x y := by
+  obtain ⟨c, hc⟩ := hfwd x.endpt
+  obtain ⟨y, hy, _⟩ := exists_coverStep_fwd x hc
+  exact ⟨y, hy⟩
+
+/-- **Backward seriality of the cover**, from the base relation's own backward seriality through
+the backward lift. -/
+theorem coverStep_serial_bwd {E : W → W → Prop} (hbwd : ∀ w, ∃ v, E v w) (x : CoverPt E) :
+    ∃ y, CoverStep E y x := by
+  obtain ⟨c, hc⟩ := hbwd x.endpt
+  obtain ⟨y, hy, _⟩ := exists_coverStep_bwd x hc
+  exact ⟨y, hy⟩
+
+/-- **The endpoint projection is surjective**: the length-zero walk at `w` is the witness, which
+is exactly what taking base points over all of `W` buys. -/
+theorem endpt_surjective {E : W → W → Prop} :
+    Function.Surjective (CoverPt.endpt : CoverPt E → W) :=
+  fun w => ⟨⟨w, w, none, RWalk.nil w⟩, rfl⟩
+
 end FormalSystem.Semantics

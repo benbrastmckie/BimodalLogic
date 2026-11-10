@@ -478,26 +478,26 @@ discharged and no fourth lemma was needed.
 
 ---
 
-### Phase 5: Double Seriality and the Two One-Step Lifts [IN PROGRESS]
+### Phase 5: Double Seriality and the Two One-Step Lifts [COMPLETED]
 
 **Goal**: Prove the forward and backward one-step lifting lemmas -- the mathematical heart, where
 "directed walks are reduced paths" becomes a theorem -- and derive double seriality of the cover's
 one-step relation and surjectivity of the endpoint projection from them.
 
 **Tasks**:
-- [ ] Prove the forward one-step lift: given a base edge out of a cover point's endpoint, produce
+- [x] Prove the forward one-step lift: given a base edge out of a cover point's endpoint, produce
       a cover step out of that point landing on the edge's target. Case split on whether the
       point's last-move tag records a backward move out of that target: if not, extend by `fwd`,
       admitted by that very hypothesis; if so, the point was built by `bwd` from a walk ending at
       the target, so the `down` constructor applies to its parent, whose endpoint is the target.
-- [ ] Prove the backward one-step lift by the mirrored case split on the forward-move tag.
-- [ ] Prove forward and backward seriality of the cover's one-step relation by feeding the two
+- [x] Prove the backward one-step lift by the mirrored case split on the forward-move tag.
+- [x] Prove forward and backward seriality of the cover's one-step relation by feeding the two
       lifts with the base relation's own seriality witnesses.
-- [ ] Prove surjectivity of the endpoint projection: the length-zero walk at a base point is the
+- [x] Prove surjectivity of the endpoint projection: the length-zero walk at a base point is the
       witness, which is exactly what the base-points-over-all-of-the-carrier decision buys.
-- [ ] Record in the docstring why the lift is total: the one move the reducedness rule forbids is
+- [x] Record in the docstring why the lift is total: the one move the reducedness rule forbids is
       the one move whose target is already a cover-neighbour.
-- [ ] Regenerate the Typst count surface: `lake build && bash scripts/typst-sync-check.sh --fix`,
+- [x] Regenerate the Typst count surface: `lake build && bash scripts/typst-sync-check.sh --fix`,
       then stage `typst/generated/status.typ`.
 
 **Timing**: 1.75 hours
@@ -523,17 +523,32 @@ added here is new and confined to that one module with no external consumer yet.
 - `typst/generated/status.typ` - regenerated file and line counts
 
 **Verification**:
-- [ ] `lake build FormalSystem.Semantics.UniversalCover` is green with zero warnings, then
+- [x] `lake build FormalSystem.Semantics.UniversalCover` is green with zero warnings, then
       `lake build` is green.
-- [ ] `grep -c "sorry" FormalSystem/Semantics/UniversalCover.lean` is 0.
-- [ ] `#print axioms` on each of the five new declarations shows no `sorryAx`.
-- [ ] A `#check` confirms the two seriality lemmas have exactly the shapes the new frame
+- [x] `grep -c "sorry" FormalSystem/Semantics/UniversalCover.lean` is 0.
+- [x] `#print axioms` on each of the five new declarations shows no `sorryAx`.
+- [x] A `#check` confirms the two seriality lemmas have exactly the shapes the new frame
       constructor takes as its forward and backward arguments.
-- [ ] `bash scripts/typst-sync-check.sh --counts-only` exits 0.
+- [x] `bash scripts/typst-sync-check.sh --counts-only` exits 0.
+
+**Verification notes (Phase 5)**: scoped `lake build FormalSystem.Semantics.UniversalCover` green,
+then full `lake build` green (`--no-share`), 2968 jobs, zero errors and zero warnings.
+`grep -c sorry` = 0. `#print axioms` on all five new declarations shows no `sorryAx`:
+`exists_coverStep_fwd`, `exists_coverStep_bwd`, `coverStep_serial_fwd` and `coverStep_serial_bwd`
+carry `[propext, Classical.choice, Quot.sound]` (the `by_cases` case split is classical), and
+`endpt_surjective` "does not depend on any axioms". `#check` confirms the shapes the frame
+constructor takes: `coverStep_serial_fwd h : ∀ x, ∃ y, CoverStep E x y` against `ofStepSat`'s
+`fwd : ∀ w, ∃ u, R₁ w u`, and `coverStep_serial_bwd h : ∀ x, ∃ y, CoverStep E y x` against its
+`bwd : ∀ w, ∃ v, R₁ v w`, both at `R₁ := CoverStep E`.
+`typst-sync-check.sh --counts-only` exits 0 after `--fix`.
+
+**Scope Hypothesis outcome (Phase 5)**: **superseded in the cheap direction** —
+`wc -l FormalSystem/Semantics/UniversalCover.lean` reports 357 at phase close against the
+projected ~480, so the long-file ceiling of 1500 remains far off.
 
 ---
 
-### Phase 6: Iterated Lifts and Two-Way Boundedness [NOT STARTED]
+### Phase 6: Iterated Lifts and Two-Way Boundedness [IN PROGRESS]
 
 **Goal**: Lift the one-step results to the iteration level by induction and discharge both fields
 of `TwoWayBounded` for the endpoint projection between the cover frame and an arbitrary regular
