@@ -2,7 +2,7 @@
 
 - **Task**: 894 - The forward-cone unravelling as a regular ZTime frame: inr-layer oriented forest and the two-layer Saturation split
 - **Status**: [IMPLEMENTING]
-- **Effort**: 10 hours
+- **Effort**: 10.5 hours (7 landed across Phases 1-4; ~3.5 remaining across Phases 5-6)
 - **Dependencies**: None
 - **Research Inputs**: specs/894_cone_unravelling_frame_layer_split_saturation/reports/01_cone-unravelling-frame-layer-split.md
 - **Artifacts**: plans/01_cone-unravelling-frame-layer-split.md (this file)
@@ -20,7 +20,8 @@ and the projection `coneF` is surjective and `TwoWayBounded` so
 `plus_invariance_of_isZTime` applies. The module is modelled declaration-for-declaration on
 `FormalSystem/Semantics/UniversalCover.lean`, which is the proven template for every
 frame-assembly and `TwoWayBounded` step in this tree. Done means: the module compiles sorry-free
-and axiom-clean, the five pinned Challenge statements are proved at the recorded signatures, the
+and axiom-clean, the seven pinned Challenge statements are proved at the recorded signatures
+(`exists_coneUnravelling` at the amended, instance-projected one), the
 *Saturation* obligation recorded in `FormalSystem/Metalogic/NamingRules.lean`'s module docstring
 is discharged and that docstring no longer asserts it open, and every repository gate the new
 Lean lines disturb is regenerated and green.
@@ -57,7 +58,26 @@ mitigation asks, so a missing cell fails at a named declaration rather than mid-
 
 ### Prior Plan Reference
 
-No prior plan.
+This plan is the round-01 plan, revised in place rather than superseded by a round-02 file: no
+new research report has landed since it was written, and the revision is driven by a user
+decision on one recorded Challenge signature rather than by new findings.
+
+What the revision changed, and nothing else:
+
+- `exists_coneUnravelling`'s pinned signature, from
+  `exists_coneUnravelling_of_constraints (F) (hcomp) (hser) (hlim) (M)` to instance-projected
+  `exists_coneUnravelling (F) [F.IsRegular] (M)`, with the `_of_constraints` layer dropped
+  throughout. The trail is under `## Lean Challenge Statements`, *Amendment record*.
+- Phase 5, from `[BLOCKED]` to `[IN PROGRESS]`: the blocker narrative is replaced by a resolved
+  form, its four machine-checked findings are preserved under `## Decisions`, and its task list
+  is re-pointed at the instance-projected API (`FrameOver.taskRel_eq_iter`,
+  `TwoWayBounded.plus_invariance_of_isZTime`) with the base-*Saturation* bridge hoisted into a
+  named lemma of its own.
+- Phase 6's `NamingRules.lean` and challenge-snapshot criteria, to name the amended declarations
+  and the expected missing-manifest verdict.
+
+Phases 1-4 are `[COMPLETED]` and their content is carried through untouched. The research report
+is unchanged and remains the sole research input.
 
 ### Roadmap Alignment
 
@@ -85,7 +105,10 @@ No `roadmap_path` was supplied with this dispatch and no roadmap phases are ther
   (verbatim-copy-plus-tree vs. forest-everywhere) and the existing module's headline has its own
   consumers.
 - Unique path lifting and any `Prefunctor.IsCovering` machinery. `TwoWayBounded` has two fields
-  and `plus_invariance_of_isZTime_of_constraints` consumes those two plus surjectivity.
+  and `TwoWayBounded.plus_invariance_of_isZTime` consumes those two plus surjectivity. The
+  *instance-projected* form is the one this module calls — both the cone frame and the base carry
+  `IsRegular` instances at every call site here — so the `_of_constraints` form, which
+  `UniversalCover.lean` needs because its base is not assumed regular, is not used.
 - A coherence subtype of the carrier, a `Sigma` type, or any `HEq` discipline.
 
 ## Risks & Mitigations
@@ -175,6 +198,33 @@ mention the frame `def` itself, which cannot be stated in an isolated Challenge 
 pulling the whole assembly in. They are governed by Phase 5's task list and verification
 criteria instead.
 
+### Amendment record
+
+`exists_coneUnravelling`'s pinned signature above is **not** the statement this plan recorded
+when it was first written. It was recorded as
+`exists_coneUnravelling_of_constraints (F) (hcomp) (hser) (hlim) (M)`, and Phase 5 then
+established — machine-checked, evidence preserved under `## Decisions`, *"Base Saturation is
+inherited, not manufactured"* — that no such declaration can be proved of this construction. The
+signature above, instance-projected `exists_coneUnravelling (F) [F.IsRegular] (M)` with the
+`_of_constraints` layer dropped entirely, is a **user decision**, recorded in
+`specs/894_cone_unravelling_frame_layer_split_saturation/.decisions.json` (cycle 3). It is not a
+silent edit: `rules/plan-compliance.md`'s *Statement Fidelity* section requires exactly this
+trail — a recorded Challenge is amended by raising it and getting an answer, never by quietly
+rewriting it to match whatever turned out to be provable.
+
+Two consequences the implementer should hold on to:
+
+- **The amended signature is stronger-or-equal, not weaker.** `FrameOver.IsRegular`
+  (`FormalSystem/Semantics/TaskFrame.lean:1189`) bundles exactly `comp`, `serial`, `limit` and
+  `saturation`, so `[F.IsRegular]` supplies everything the four-hypothesis form would have
+  supplied *plus* the base *Saturation* the cone provably consumes. Dropping `_of_constraints`
+  removes an API layer, not a theorem.
+- **No consumer breaks and no name is squatted.** `coneFrame`, `coneF_twoWayBounded` and
+  `exists_coneUnravelling` are the names `FormalSystem/Semantics/ConeUnravelling.lean`'s own
+  module docstring already reserves, in its *Main definitions* and *Main results* lists; the
+  `_of_constraints` spelling was the departure from that module contract. Landed work in the file
+  stops at `coneF_surjective`, and nothing in the tree references any of the three yet.
+
 ## Decisions
 
 - **The promiscuous entry edge is load-bearing and is not narrowed.** Recorded here as well as
@@ -182,10 +232,55 @@ criteria instead.
   correctness improvement to a later reader. It is not: under it the carrier holds incoherent
   nodes `inr (v, a :: t)` with `¬ E a v` that have no predecessor at all, so
   `TaskFrame.Serial` fails and the carrier would have to be cut to a subtype.
+- **The assembly tail is routed through the instance-projected API throughout**, not through the
+  `_of_constraints` layer. Three concrete choices follow from the recorded decision and are
+  fixed here so Phase 5 does not re-litigate them mid-proof:
+  - the base-*Saturation* bridge reads `FrameOver.taskRel_eq_iter` (`IntNormalForm.lean:297`),
+    not `taskRel_eq_iter_of_constraints`;
+  - `coneF_twoWayBounded` reads the base side through the same `F.taskRel_eq_iter`;
+  - the headline calls `TwoWayBounded.plus_invariance_of_isZTime`
+    (`HistoryMorphism.lean:707`), not `..._of_constraints`. The task description names this
+    entry point directly, and both frames carry `IsRegular` instances at the call site, so the
+    constraint-threading form would only re-expand instances the synthesiser already has.
+  `UniversalCover.lean` keeps the two-layer (`_of_constraints` + instance) shape because its base
+  is deliberately *not* assumed regular; the cone's base must be, so the second layer would have
+  nothing to parameterise over.
+- **Base *Saturation* is inherited, not manufactured — and that asymmetry with
+  `UniversalCover.lean` is the substantive content of this module, not slack to be tidied away.**
+  This is the finding that produced the signature amendment, and it is machine-checked, so it is
+  recorded here rather than left in a phase's blocker narrative:
+  1. A bare `FrameOver` carries no frame axiom at all. The four axioms live in the separate
+     `FrameOver.IsRegular` class (`TaskFrame.lean:1189`), not in the structure
+     (`TaskFrame.lean:1072`).
+  2. Base *Saturation* does **not** follow from *Compositionality* + *Seriality* + *Limit*.
+     `FormalSystem/Semantics/FrameConstraintIndependence.lean`'s
+     `constraints_pairwise_independent` has as its third conjunct
+     `⟨ℤ, rayRel, rayRel_compositional, rayRel_serial, rayRel_limit, rayRel_not_saturation⟩`.
+  3. The cone's *Saturation* cannot be obtained structurally the way the cover's is.
+     `saturation_of_orientedForest` cannot apply to `coneR E`, because `IsOrientedForest (coneR E)`
+     is false: the `inl` layer is a verbatim copy of `E` and inherits its loops and opposite
+     edges. Only the `inr` layer is a forest — which is precisely why *Saturation* had to be
+     split in two, and why the `inl`-anchored half (`sInter_nonempty_of_no_inr_member`) reads
+     `hbase`.
+  4. Base *Saturation* is **necessary**, not merely convenient. Take `E := fun w u => (w ≤ u : Prop)`
+     on `ℤ`. The family `{TaskFrame.Fib (ofStepRel (coneR E)) (.inl w) 1 | w : ℤ}` has `w`-th
+     member `{.inl u | w ≤ u} ∪ {.inr q | w ≤ q.1}`; it is `⊇`-directed (the member at
+     `max w₁ w₂` sits inside the intersection, both parts being monotone in `w`), every member is
+     a nonempty `IsFiber`, and `⋂₀` of it is empty. So *Saturation* of the cone genuinely fails
+     over a base satisfying *Compositionality*, *Seriality* and *Limit*: there is no way to give
+     the cone carrier a *Saturation* field over such a base.
+  The prohibition that came with this finding stands and is permanent: `exists_coneUnravelling`
+  must **not** be discharged by delegating to `exists_orientedForest_cover`, which has a
+  satisfying witness of the right *type* and the wrong *construction*. Such a proof would assert
+  nothing about this module while passing every name-existence, `sorry` and axiom check.
+
 - **`saturation_coneR`'s signature takes `hbase` in `ofStepRel` form**, mirroring
-  `saturation_of_orientedForest'`'s own `hgen`-parameterised design, because this tree has no
+  `saturation_of_orientedForest'`'s own `hgen`-parameterised design, because this tree ships no
   relation-level `F.TaskRel = ofStepRel F.step` equality for a general regular `F` — only the
-  pointwise `taskRel_eq_iter_of_constraints`. Phase 5 bridges it once at the frame assembly.
+  pointwise biconditional `FrameOver.taskRel_eq_iter`
+  (`FormalSystem/Semantics/IntNormalForm.lean:297`, the `[F.IsRegular]` projection of
+  `taskRel_eq_iter_of_constraints`). Phase 5 closes that gap once, as its own named lemma, at the
+  frame assembly.
 - **The evidence probe is promoted, then left in place and tracked, and is NOT added to
   `scripts/check-evidence-probes.sh`'s `WIRED` list.** That list guards probes recording a design
   *obstruction*; this probe records a *construction* that the library module and Phase 6's
@@ -458,121 +553,97 @@ to hide in.
 
 ---
 
-### Phase 5: Frame assembly, TwoWayBounded, and the headline [BLOCKED]
+### Phase 5: Frame assembly, TwoWayBounded, and the headline [IN PROGRESS]
 
-**BLOCKER** (Phase 5):
+**Prior blocker, resolved.** This phase stalled once, on a signature defect: every
+frame-assembly declaration it originally declared omitted the base-*Saturation* hypothesis the
+cone construction provably consumes, so `coneFrameOfSerial (F) (hser)` could not be defined at
+all and the pinned `exists_coneUnravelling_of_constraints (F) (hcomp) (hser) (hlim) (M)` could not
+be proved of this construction. The finding was escalated and answered: the headline is stated in
+the **instance-projected** form only — `coneFrame (F) [F.IsRegular]` and
+`exists_coneUnravelling (F) [F.IsRegular] (M)` — with the `_of_constraints` layer dropped
+entirely. The decision is recorded in
+`specs/894_cone_unravelling_frame_layer_split_saturation/.decisions.json`; the signature trail is
+under `## Lean Challenge Statements`, *Amendment record*; and the four machine-checked facts that
+forced it (no axiom on a bare `FrameOver`; base *Saturation* independent of the other three; no
+structural route for `coneR`; base *Saturation* necessary, by the `ℤ`/`≤` witness) are preserved
+under `## Decisions`, *"Base Saturation is inherited, not manufactured"*, together with the
+standing prohibition on discharging the headline through `exists_orientedForest_cover`. Nothing
+about the blocker is open; the task list below is the resolved form and is executable as written.
 
-- **What failed**: every frame-assembly signature this phase declares omits the base-*Saturation*
-  hypothesis the cone construction provably consumes. Concretely:
-  `coneFrameOfSerial (F : FrameOver intOrder) (hser : TaskFrame.Serial F.TaskRel) : FrameOver intOrder`
-  cannot be defined, because `FrameOver.ofStepSat` demands
-  `TaskFrame.Saturation (ofStepRel (coneR F.step))` and the only route to it,
-  `saturation_coneR`, demands `TaskFrame.Saturation (ofStepRel F.step)` — which `hser` does not
-  supply and nothing else in scope provides. The same omission runs through
-  `coneF_twoWayBounded_of_constraints` and the pinned headline
-  `exists_coneUnravelling_of_constraints (F) (hcomp) (hser) (hlim) (M)`, and through this phase's
-  `- **Goals**:` claim that a frame "carrying only *Compositionality*, *Seriality* and *Limit*"
-  has a cone unravelling.
-- **What was tried**:
-  1. Reading the base *Saturation* off `F` — unavailable: a bare `FrameOver` carries no frame
-     axiom at all (`FormalSystem/Semantics/TaskFrame.lean:1072`, `structure FrameOver`; the four
-     axioms live in the separate `FrameOver.IsRegular` class at line 1189).
-  2. Deriving base *Saturation* from `hcomp`/`hser`/`hlim` — **refuted**, machine-checked:
-     `FormalSystem/Semantics/FrameConstraintIndependence.lean`'s
-     `constraints_pairwise_independent` has as its third conjunct
-     `⟨ℤ, rayRel, rayRel_compositional, rayRel_serial, rayRel_limit, rayRel_not_saturation⟩`.
-  3. Deriving the cone's *Saturation* structurally, as `UniversalCover.lean` does — **impossible**
-     for this construction, and this is the substantive finding. `saturation_of_orientedForest`
-     cannot apply to `coneR E`: `IsOrientedForest (coneR E)` is false, since the `inl` layer is a
-     verbatim copy of `E` and inherits its loops and opposite edges. Only the `inr` layer is a
-     forest, which is exactly why *Saturation* had to be split in two in the first place, and
-     why the `inl`-anchored half (`sInter_nonempty_of_no_inr_member`) reads `hbase`.
-  4. Checking whether base *Saturation* is merely convenient rather than necessary —
-     **necessary**. Take `E := fun w u => (w ≤ u : Prop)` on `ℤ`, i.e. `rayRel ·' 1 ·`. The family
-     `{TaskFrame.Fib (ofStepRel (coneR E)) (.inl w) 1 | w : ℤ}` has as its `w`-th member
-     `{.inl u | w ≤ u} ∪ {.inr q | w ≤ q.1}`; it is `⊇`-directed (the member at `max w₁ w₂` sits
-     inside the intersection, both parts being monotone in `w`), every member is a nonempty
-     `IsFiber`, and `⋂₀` of it is empty. So `TaskFrame.Saturation (ofStepRel (coneR E))` fails for
-     a base that satisfies *Compositionality*, *Seriality* and *Limit*: there is **no** way to
-     give the cone carrier over such a base a *Saturation* field.
-- **Why it's stuck**: the pinned `exists_coneUnravelling_of_constraints` signature is *satisfiable*
-  — but only by `exists_orientedForest_cover_of_constraints F hcomp hser hlim M`, the universal
-  cover's existing headline, whose existential witness is the cover and not the cone. Proving a
-  declaration named `exists_coneUnravelling_of_constraints` that way would be fraudulent: it
-  would assert nothing whatever about this module's construction while passing every
-  name-existence, sorry and axiom check. The honest cone headline requires one more hypothesis,
-  and `rules/plan-compliance.md`'s *Statement Fidelity* section forbids adding a hypothesis to a
-  recorded Challenge statement without raising it.
-- **What is needed**: a one-line decision on which corrected signature to adopt. Both options are
-  mechanical once chosen, and the remaining Phase 5 work is otherwise ready:
-  - **(a) thread the hypothesis** — `coneFrameOfSerialSat (F) (hcomp) (hser) (hlim) (hsat)`,
-    `coneF_twoWayBounded_of_constraints (F) (hcomp) (hser) (hlim) (hsat)`, and
-    `exists_coneUnravelling_of_constraints (F) (hcomp) (hser) (hlim) (hsat) (M)`, with `hsat :
-    TaskFrame.Saturation F.TaskRel` bridged into `ofStepRel` form once against
-    `FrameOver.taskRel_eq_iter_of_constraints` exactly as this phase's second task already
-    directs. The `_of_constraints` suffix then names all four constraints it consumes, which is
-    the house meaning of the suffix.
-  - **(b) state the headline only in the instance-projected form** —
-    `coneFrame (F) [F.IsRegular]` and `exists_coneUnravelling (F) [F.IsRegular] (M)`, dropping the
-    `_of_constraints` layer entirely. This is strictly less API but needs no signature that
-    enumerates constraints at all.
-  - Either way, record in the plan that the cone's *Saturation* is **inherited**, not
-    manufactured — the asymmetry with `UniversalCover.lean`, whose base need not be saturated, is
-    the substantive difference between the two constructions and should be stated rather than
-    smoothed over.
-- **Prohibited workarounds**: do NOT use `sorry`, `def X := True`, or any vacuous placeholder; and
-  do NOT discharge `exists_coneUnravelling_of_constraints` by delegating to
-  `exists_orientedForest_cover_of_constraints`.
-
-**RESOLUTION**: option (b) was chosen -- the headline is stated in the instance-projected form
-only, dropping the `_of_constraints` layer entirely: `coneFrame (F) [F.IsRegular]` and
-`exists_coneUnravelling (F) [F.IsRegular] (M)`. The cone's *Saturation* is **inherited** from the
-base frame's `IsRegular` instance rather than manufactured from `hcomp`/`hser`/`hlim`, which is
-the substantive asymmetry with `UniversalCover.lean` (whose base need not be saturated) that this
-phase's docstring task and Phase 6's cross-reference paragraph record. This phase's task list,
-the `## Lean Challenge Statements` block, and Phase 6's deliverables have been updated to the
-instance-projected signatures below. Phase 5 is unblocked.
-
-**Landed in this phase before the blocker** (committed, green, sorry-free):
-`coneF_surjective`, at the pinned Challenge signature, axiom-free (measured: `#print axioms`
-reports no axioms). It is independent of the frame assembly. Nothing else in this phase's task
-list was attempted, per `rules/plan-compliance.md`'s escalate-before-deviating requirement.
+**Landed in this phase before the stall** (committed, green, sorry-free): `coneF_surjective`, at
+the pinned Challenge signature, axiom-free (measured: `#print axioms` reports no axioms). It is
+independent of the frame assembly. Nothing else in the task list was attempted, per
+`rules/plan-compliance.md`'s escalate-before-deviating requirement — so no landed work needs
+revisiting and the five remaining items are all new.
 
 **Goal**: Present the carrier as a regular `FrameOver intOrder`, prove the projection surjective
 and `TwoWayBounded`, and assemble the L⁺ transfer headline — mirroring
 `UniversalCover.lean`'s assembly tail declaration-for-declaration.
 
-**Tasks**:
+**Tasks** (in order; the bridge lemma comes first because every later item reads it):
+- [ ] State and prove the base-*Saturation* bridge as its own named lemma, before the frame
+      assembly consumes it: `base_taskRel_eq_ofStepRel (F : FrameOver intOrder) [F.IsRegular] :
+      F.TaskRel = ofStepRel F.step`, by `funext w d u` then `propext` of
+      `FrameOver.taskRel_eq_iter F w u d` (`FormalSystem/Semantics/IntNormalForm.lean:297` — the
+      `[F.IsRegular]` projection; `ofStepRel F.step w d u` is *definitionally* that theorem's
+      right-hand conjunction, which is what makes the `propext` step go through). Place it in
+      `ConeUnravelling.lean`, not in `IntNormalForm.lean`: the statement is general enough to
+      belong upstream eventually, but `IntNormalForm.lean` is widely imported and this task's
+      blast radius is deliberately one module. Record that placement rationale in its doc comment
+      so a later reader can promote it deliberately rather than duplicate it.
 - [ ] `coneFrame (F : FrameOver intOrder) [F.IsRegular] : FrameOver intOrder` via
-      `FrameOver.ofStepSat (coneR F.step)`, with the two seriality fields from
-      `coneR_serial_fwd`/`coneR_serial_bwd` applied to `[F.IsRegular]`'s own `Serial` field at
-      `w 1 zero_le_one`, and the *Saturation* field from `saturation_coneR` applied to
-      `[F.IsRegular]`'s own *Saturation* field in `ofStepRel` form.
-- [ ] Bridge the base *Saturation* into `ofStepRel` form once, with `funext`/`propext` against
-      `FrameOver.taskRel_eq_iter_of_constraints`, since this tree has no relation-level
-      `F.TaskRel = ofStepRel F.step` equality for a general regular `F`.
-- [ ] `coneFrame_taskRel` and the `coneFrame_isRegular` instance, via
-      `FrameOver.ofStepSat_taskRel` / `ofStepSat_isRegular`.
+      `FrameOver.ofStepSat (coneR F.step)`: the two seriality fields from
+      `coneR_serial_fwd`/`coneR_serial_bwd` applied to `F.serial w 1 zero_le_one`, and the
+      *Saturation* field from `saturation_coneR` applied to `F.saturation` rewritten by the
+      bridge lemma. `[Nonempty (F.WorldState ⊕ _)]` is discharged by `instNonemptyCone` off
+      `FrameOver`'s instance-implicit `worldNonempty` field (`TaskFrame.lean:1072`), so no new
+      instance is needed; confirm that synthesis actually fires rather than assuming it.
+      There is **no** `coneFrameOfSerialSat` intermediate layer — see `## Decisions`.
+- [ ] `coneFrame_taskRel : (coneFrame F).TaskRel = ofStepRel (coneR F.step)` via
+      `FrameOver.ofStepSat_taskRel`, and the `coneFrame_isRegular` instance via
+      `FrameOver.ofStepSat_isRegular` — mirroring `coverFrame_taskRel` / `coverFrame_isRegular`
+      (`UniversalCover.lean:476-487`). `coneFrame_isRegular` must be an `instance`, not a
+      `theorem`: the headline's call to `plus_invariance_of_isZTime` needs it by synthesis.
 - [x] `coneF_surjective` with the `Sum.inl` section, axiom-free as `endpt_surjective` is. *(completed)*
-- [ ] `coneF_twoWayBounded (F : FrameOver intOrder) [F.IsRegular]`: `forth` from `coneF_iter` on
-      the two sign-guarded conjuncts of `ofStepRel` read against
-      `taskRel_eq_iter_of_constraints`; `step` by the four-way split — `.inl w` either sign via
-      `iter_inl_inl`; `.inr p` with `0 ≤ x` via `exists_iter_coneRin`; `.inr p` with `x < 0` via
-      `iter_inl_inr` landing on `.inl v`.
+- [ ] `coneF_twoWayBounded (F : FrameOver intOrder) [F.IsRegular] :
+      TwoWayBounded (F' := coneFrame F) (F := F) coneF`: `forth` from `coneF_iter` on the two
+      sign-guarded conjuncts of `ofStepRel`, with the source side rewritten by `coneFrame_taskRel`
+      and the base side by `F.taskRel_eq_iter` (not `taskRel_eq_iter_of_constraints`); `step` by
+      the four-way split — `.inl w` either sign via `iter_inl_inl`; `.inr p` with `0 ≤ x` via
+      `exists_iter_coneRin`; `.inr p` with `x < 0` via `iter_inl_inr` landing on `.inl v`.
+      `endpt_twoWayBounded_of_constraints` (`UniversalCover.lean:497`) is the line-for-line
+      template for the two fields; read it before writing this one.
 - [ ] `exists_coneUnravelling (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)`,
-      via `TwoWayBounded.plus_invariance_of_isZTime_of_constraints` (reading the `Compositional` /
-      `Serial` / `Limit` fields it needs off `[F.IsRegular]`) with `SuccOrder ℤ` /
-      `IsSuccArchimedean ℤ` by `inferInstanceAs`, mirroring
-      `exists_orientedForest_cover_of_constraints`.
+      via `TwoWayBounded.plus_invariance_of_isZTime` (`HistoryMorphism.lean:707` — the
+      instance-projected form, which reads `[F'.IsRegular]` and `[F.IsRegular]` by synthesis, so
+      the `coneFrame_isRegular` instance above is what makes it apply) with `SuccOrder ℤ` /
+      `IsSuccArchimedean ℤ` by `inferInstanceAs`. The existential is discharged with
+      `⟨coneFrame F, coneFrame_isRegular F, coneF, coneF_twoWayBounded F, coneF_surjective, …⟩`,
+      mirroring `exists_orientedForest_cover`'s own assembly shape.
 - [ ] Give `exists_coneUnravelling` a doc comment recording that its *Saturation* is
       **inherited** from `[F.IsRegular]`, not manufactured from `Compositional`/`Serial`/`Limit`
-      alone -- the asymmetry with `UniversalCover.lean` already recorded in the Decisions section
-      and in this phase's blocker resolution -- plus a `Paper: — (formalization-native; ...)`
-      line, as `exists_orientedForest_cover_of_constraints` does, so Phase 6's theorem-index row
-      is anchored at its declaration.
+      alone -- the asymmetry with `UniversalCover.lean` recorded in `## Decisions` -- plus a
+      `Constraints consumed:` line and a `Paper: — (formalization-native; ...)` line, as
+      `exists_orientedForest_cover_of_constraints` does, so Phase 6's theorem-index row is
+      anchored at its declaration.
+- [ ] Re-point the module's three constraint-form citations at the instance-projected entry
+      points this phase actually calls. All three are in
+      `FormalSystem/Semantics/ConeUnravelling.lean`, confirmed present at revision time:
+      line 23 (module overview) and line 114 (*What is deliberately absent*) both cite
+      `TwoWayBounded.plus_invariance_of_isZTime_of_constraints`, and line 792
+      (`saturation_coneR`'s doc comment) cites the pointwise
+      `FrameOver.taskRel_eq_iter_of_constraints`. Name `plus_invariance_of_isZTime` and
+      `FrameOver.taskRel_eq_iter` respectively, keeping the surrounding claims — "two fields plus
+      `Function.Surjective`", and that the bridge is made once at the frame assembly — both of
+      which stay true, and pointing line 792 at `base_taskRel_eq_ofStepRel` as the lemma that now
+      makes the bridge. Prose correction inside the file this phase already edits; no new
+      surface, no declaration change. If a line has moved, grep for the cited name rather than
+      trusting the number.
 - [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
 
-**Timing**: 2 hours
+**Timing**: 2.5 hours (`coneF_surjective` already landed; the bridge lemma and the docstring
+correction are the additions over the original estimate)
 
 **Depends on**: 4
 
@@ -580,13 +651,17 @@ and `TwoWayBounded`, and assemble the L⁺ transfer headline — mirroring
 
 **Commit Mode**: per-substep
 
-**Scope Hypothesis**: this phase asserts a six-declaration assembly tail
-(`coneFrame`, `coneFrame_taskRel`, `coneFrame_isRegular`, `coneF_surjective`,
-`coneF_twoWayBounded`, `exists_coneUnravelling`), all instance-projected (no `_of_constraints`
-layer, per this phase's blocker resolution), mirroring `UniversalCover.lean`'s own
-instance-projected forms. Confirm by listing `UniversalCover.lean`'s own assembly-tail
-declarations at implementation time and checking the one-to-one correspondence; record any
-declaration of that tail that has no cone analogue, and why, in the progress file.
+**Scope Hypothesis**: this phase asserts a seven-declaration assembly tail
+(`base_taskRel_eq_ofStepRel`, `coneFrame`, `coneFrame_taskRel`, `coneFrame_isRegular`,
+`coneF_surjective`, `coneF_twoWayBounded`, `exists_coneUnravelling`), all instance-projected (no
+`_of_constraints` layer, per `## Decisions`), against `UniversalCover.lean`'s eleven-declaration
+tail. The correspondence is deliberately **not** one-to-one: each of that module's
+`_of_constraints`/instance pairs collapses to a single instance-projected declaration here, and
+`base_taskRel_eq_ofStepRel` has no cover analogue because the cover never needs base
+*Saturation* in `ofStepRel` form. Confirm by listing `UniversalCover.lean`'s assembly-tail
+declarations at implementation time and checking that every one of them is either collapsed into
+a named declaration above or recorded in the progress file as having no cone analogue, with the
+reason. A cover declaration that is neither is a scope finding, not a silent omission.
 
 **Tier Justification**: `suite_selection_select` over this phase's paths returns
 `__FULL_SWEEP__`, so the covering check is the `local` row's single-module build,
@@ -595,14 +670,21 @@ the phase adds only new declarations inside one module, changes no existing sign
 import-closure and whole-library consequences are what Phase 6's `full` gate exists to observe.
 
 **Files to modify**:
-- `FormalSystem/Semantics/ConeUnravelling.lean` - the frame assembly, surjectivity, `TwoWayBounded`, and the headline, all in instance-projected form (`[F.IsRegular]`, no `_of_constraints` layer)
+- `FormalSystem/Semantics/ConeUnravelling.lean` - the base-*Saturation* bridge lemma, the frame assembly, surjectivity, `TwoWayBounded`, and the headline, all in instance-projected form (`[F.IsRegular]`, no `_of_constraints` layer); plus the one-name docstring correction in *What is deliberately absent*
 - `typst/generated/status.typ` - regenerated by `scripts/typst-sync-check.sh --fix`
 
 **Verification**:
 - `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Semantics.ConeUnravelling` is green with zero warnings.
 - `grep -c 'sorry' FormalSystem/Semantics/ConeUnravelling.lean` is 0.
-- `coneF_surjective` and `exists_coneUnravelling` match the
-  `## Lean Challenge Statements` block exactly.
+- `coneF_surjective` and `exists_coneUnravelling` match the `## Lean Challenge Statements`
+  block exactly — `exists_coneUnravelling` in its amended, instance-projected form
+  (`(F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)`), which is the recorded
+  statement as of the user decision; the superseded `_of_constraints` spelling must not reappear.
+- No declaration in the module takes `hcomp`/`hser`/`hlim`/`hsat` as an explicit
+  frame-constraint hypothesis, and `grep -n '_of_constraints'
+  FormalSystem/Semantics/ConeUnravelling.lean` returns nothing — the three prose citations are
+  re-pointed by this phase's docstring task and the module calls no constraint-form lemma, so an
+  empty result is the expected one here rather than merely an acceptable one.
 - `bash scripts/typst-sync-check.sh --counts-only` is green.
 
 ---
@@ -625,7 +707,8 @@ the complete gate set over the finished tree.
 - [ ] Amend `FormalSystem/Metalogic/NamingRules.lean`'s module docstring: rewrite the paragraph
       ending "Discharging *Saturation* for a path-recording relation directly is left open." so
       it instead records that the obligation is discharged, naming
-      `Semantics.saturation_coneR` and `Semantics.exists_coneUnravelling`, and
+      `Semantics.saturation_coneR` and `Semantics.exists_coneUnravelling` (the
+      instance-projected names; there is no `_of_constraints` form of either to cite), and
       keeping the three-routes-do-not-apply analysis (which remains true and is now the reason
       the new route was needed). Add the new module to that docstring's `## References` list.
       Introduce no import — this is a prose change only, so no new upward edge reaches
@@ -701,9 +784,17 @@ sentence before editing.
   never re-baselined to turn the build green.
 - `grep -n 'left open' FormalSystem/Metalogic/NamingRules.lean` no longer returns the
   path-recording-*Saturation* sentence.
-- `bash .claude/scripts/lean-challenge-snapshot.sh --check` is run and its verdict recorded; per
-  `rules/plan-compliance.md` the verdict is ADVISORY ONLY and a drift finding is a signal to
-  investigate, never grounds to fail the phase on its own.
+- `bash .claude/scripts/lean-challenge-snapshot.sh --check 894 .` is run and its verdict
+  recorded; per `rules/plan-compliance.md` the verdict is ADVISORY ONLY and a drift finding is a
+  signal to investigate, never grounds to fail the phase on its own. **Expect
+  `ERROR: no manifest found ... exit 71`**: no snapshot was ever taken for this task (there is no
+  `specs/894_cone_unravelling_frame_layer_split_saturation/challenge/manifest.json`), and
+  snapshot mode refuses to create one once the task's status is past `planned`. Record that
+  missing-manifest outcome as the verdict; it is the expected result, not a drift finding and not
+  a failure. Do **not** run the script without `--check` to manufacture a manifest after the
+  fact — a snapshot taken after implementation records the implementation, not the contract, and
+  would launder exactly the signature drift the mechanism exists to catch. The *Amendment record*
+  subsection under `## Lean Challenge Statements` is this task's fidelity trail in its place.
 
 ---
 
@@ -711,7 +802,9 @@ sentence before editing.
 
 - [ ] Full project build green, zero warnings (CI builds with `--wfail`; a lint warning is a CI failure).
 - [ ] Zero `sorry` and zero new axiom in both new files.
-- [ ] All seven `## Lean Challenge Statements` identifiers present at the pinned signatures.
+- [ ] All seven `## Lean Challenge Statements` identifiers present at the pinned signatures,
+      `exists_coneUnravelling` at its amended instance-projected signature (see that section's
+      *Amendment record*).
 - [ ] The five axiom-profile `#guard_msgs` blocks compile against measured profiles.
 - [ ] `scripts/check-module-invariants.sh` clean for every touched file, with any pre-existing repo-wide finding enumerated.
 - [ ] `scripts/typst-sync-check.sh` green (both Check 2 and the inventory-block check).
@@ -721,7 +814,8 @@ sentence before editing.
 
 ## Artifacts & Outputs
 
-- `FormalSystem/Semantics/ConeUnravelling.lean` — the new module (~450-600 lines expected).
+- `FormalSystem/Semantics/ConeUnravelling.lean` — the new module (842 lines landed through
+  `coneF_surjective`; ~150-250 more expected for Phase 5's assembly tail).
 - `Tests/BimodalTest/Semantics/ConeUnravellingTest.lean` — the permanent axiom-profile evidence pin.
 - `Tests/BimodalTest.lean`, `FormalSystem.lean` — root imports regenerated/extended.
 - `FormalSystem/Metalogic/NamingRules.lean` — the retired "left open" paragraph.
@@ -745,8 +839,10 @@ including its out-of-scope override flag; do not emit a bare precautionary
 the one phase whose proof is genuinely new work — use `git-snapshot.sh --no-revert`, which is
 durable without reverting the tree.
 
-If Phase 3's classification turns up a cell with no disposition, or Phase 4's case analysis
-stalls, the correct response is `[BLOCKED]` naming the stalled cell — never a `sorry`, a
-vacuous definition, or a weakened restatement of a pinned Challenge signature. Phases 1, 2 and 5
-are promotions of already-compiling probe code and the module is additive, so nothing landed
-before the stall needs reverting: the partial module stays, with the blocker recorded.
+Phases 1-4 are complete and Phase 5's prior blocker is resolved, so the live contingency
+surface is Phase 5's remaining five declarations and Phase 6's documentation reconciliation. If
+either stalls, the correct response is `[BLOCKED]` naming the stalled declaration — never a
+`sorry`, a vacuous definition, or a weakened restatement of a pinned Challenge signature, and in
+particular never a headline discharged through `exists_orientedForest_cover` (see
+`## Decisions`). The module is additive and nothing imports it yet, so nothing landed before a
+stall needs reverting: the partial module stays, with the blocker recorded.

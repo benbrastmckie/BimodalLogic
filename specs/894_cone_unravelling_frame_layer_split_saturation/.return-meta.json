@@ -1,60 +1,28 @@
 {
-  "status": "partial",
-  "requires_user_review": true,
-  "blocked_phase": 5,
-  "review_reason": "Phase 5 blocked: the plan's frame-assembly signatures, including the pinned Challenge statement exists_coneUnravelling_of_constraints, omit a base-Saturation hypothesis the cone construction provably requires. Phases 1-4 are complete and green; 6 of 7 pinned Challenge statements are proved at their pinned signatures.",
-  "user_decision": {
-    "question": "Which corrected frame-assembly signature should task 894 adopt? The cone construction provably needs the base frame's Saturation, which the plan's pinned exists_coneUnravelling_of_constraints (F) (hcomp) (hser) (hlim) (M) does not supply.",
-    "blocking": true,
-    "options": [
-      "(a) Thread the hypothesis: coneFrameOfSerialSat (F) (hcomp) (hser) (hlim) (hsat), coneF_twoWayBounded_of_constraints (F) (hcomp) (hser) (hlim) (hsat), exists_coneUnravelling_of_constraints (F) (hcomp) (hser) (hlim) (hsat) (M), with hsat : TaskFrame.Saturation F.TaskRel bridged into ofStepRel form against FrameOver.taskRel_eq_iter_of_constraints. The _of_constraints suffix then names all four constraints consumed.",
-      "(b) State the headline only in the instance-projected form: coneFrame (F) [F.IsRegular] and exists_coneUnravelling (F) [F.IsRegular] (M), dropping the _of_constraints layer entirely."
-    ],
-    "why_user": "rules/plan-compliance.md's Statement Fidelity section forbids adding a hypothesis to a recorded Challenge statement, or quietly editing the recorded Challenge, without raising it. The pinned statement is satisfiable only by delegating to UniversalCover.lean's exists_orientedForest_cover_of_constraints, which would prove nothing about this module while passing every name, sorry and axiom check. Choosing between a wider signature and a narrower API surface is a design preference the artifacts cannot infer.",
-    "evidence": "Machine-checked: a bare FrameOver carries no axiom (FormalSystem/Semantics/TaskFrame.lean:1072 vs :1189); C+S+L does not imply Saturation (FrameConstraintIndependence.lean's constraints_pairwise_independent, third conjunct, rayRel over Z); IsOrientedForest (coneR E) is false since the inl layer copies E. Necessity witness: at E := (w <= u) on Z the family {Fib (ofStepRel (coneR E)) (.inl w) 1 | w : Z} is directed with nonempty IsFiber members and empty intersection."
-  },
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true,
-    "build_output": "Full unscoped lake build via lake-build-guard.sh: guard exit 0, 2970 jobs, 'Build completed successfully', zero error: and zero warning: lines, ConeUnravelling.olean newer than source. Verification did not pass only because plan compliance reports exists_coneUnravelling_of_constraints [MISSING] -- the blocked declaration."
-  },
-  "partial_progress": {
-    "stage": "phase_5_blocked",
-    "details": "Phases 1-4 [COMPLETED] and committed. Phase 5 [BLOCKED] with the blocker documented under its heading in the plan file; coneF_surjective landed before the blocker. Phase 6 not started (its deliverables depend on the blocked declarations), except the inventory surfaces, which were reconciled because adding the module turned check-module-invariants.sh red.",
-    "phases_completed": 4,
-    "phases_total": 6
-  },
+  "status": "planned",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/894_cone_unravelling_frame_layer_split_saturation/summaries/01_cone-unravelling-frame-layer-split-summary.md",
-      "summary": "The cone-unravelling module landed sorry-free with the two-layer Saturation split proved; frame assembly blocked on a missing base-Saturation hypothesis in the plan's pinned signatures."
+      "type": "plan",
+      "path": "specs/894_cone_unravelling_frame_layer_split_saturation/plans/01_cone-unravelling-frame-layer-split.md",
+      "summary": "Revised plan: exists_coneUnravelling amended to the instance-projected [F.IsRegular] signature per the recorded user decision, the _of_constraints layer dropped throughout, Phase 5 unblocked and re-sequenced against the instance-projected API"
     }
   ],
-  "modified_files": [
-    "FormalSystem/Semantics/ConeUnravelling.lean",
-    "FormalSystem.lean",
-    "FormalSystem/Semantics/README.md",
-    "FormalSystem/README.md",
-    "README.md",
-    "scripts/nolint-attribute-allowlist.txt",
-    "typst/generated/status.typ",
-    "specs/evidence/cone-unravelling-frame-layer-split/cone-core-probe.lean",
-    "specs/894_cone_unravelling_frame_layer_split_saturation/plans/01_cone-unravelling-frame-layer-split.md",
-    "specs/894_cone_unravelling_frame_layer_split_saturation/summaries/01_cone-unravelling-frame-layer-split-summary.md",
-    "specs/894_cone_unravelling_frame_layer_split_saturation/issues.jsonl"
-  ],
+  "next_steps": "Run /orchestrate 894 --implement to execute the revised Phase 5 and then Phase 6",
   "metadata": {
-    "session_id": "sess_1794315339_51105e",
-    "agent_type": "lean-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "task_dir": "specs/894_cone_unravelling_frame_layer_split_saturation",
-    "dispatch_seq": 3,
-    "compliance_check": "failed",
-    "challenge_snapshot_check": "not_run (no manifest at specs/894_cone_unravelling_frame_layer_split_saturation/challenge/manifest.json; advisory only)",
-    "gate_tier": "scoped (batch deferral): repository Lean-side gates all green; the complete gate set was deferred to the batch stage per this dispatch's Batch Gate Deferral directive"
+    "session_id": "sess_1794328980_5b668f_894",
+    "agent_type": "reviser-agent",
+    "delegation_path": [
+      "orchestrator",
+      "revise",
+      "reviser-agent"
+    ],
+    "dispatch_seq": 10,
+    "phase_count": 6,
+    "estimated_hours": 10.5,
+    "reports_integrated": [
+      "01_cone-unravelling-frame-layer-split.md"
+    ],
+    "revision_mode": "plan_revision",
+    "phases_preserved_completed": 4
   }
 }
