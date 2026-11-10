@@ -456,14 +456,83 @@ to hide in.
 
 ---
 
-### Phase 5: Frame assembly, TwoWayBounded, and the headline [NOT STARTED]
+### Phase 5: Frame assembly, TwoWayBounded, and the headline [BLOCKED]
+
+**BLOCKER** (Phase 5):
+
+- **What failed**: every frame-assembly signature this phase declares omits the base-*Saturation*
+  hypothesis the cone construction provably consumes. Concretely:
+  `coneFrameOfSerial (F : FrameOver intOrder) (hser : TaskFrame.Serial F.TaskRel) : FrameOver intOrder`
+  cannot be defined, because `FrameOver.ofStepSat` demands
+  `TaskFrame.Saturation (ofStepRel (coneR F.step))` and the only route to it,
+  `saturation_coneR`, demands `TaskFrame.Saturation (ofStepRel F.step)` — which `hser` does not
+  supply and nothing else in scope provides. The same omission runs through
+  `coneF_twoWayBounded_of_constraints` and the pinned headline
+  `exists_coneUnravelling_of_constraints (F) (hcomp) (hser) (hlim) (M)`, and through this phase's
+  `- **Goals**:` claim that a frame "carrying only *Compositionality*, *Seriality* and *Limit*"
+  has a cone unravelling.
+- **What was tried**:
+  1. Reading the base *Saturation* off `F` — unavailable: a bare `FrameOver` carries no frame
+     axiom at all (`FormalSystem/Semantics/TaskFrame.lean:1072`, `structure FrameOver`; the four
+     axioms live in the separate `FrameOver.IsRegular` class at line 1189).
+  2. Deriving base *Saturation* from `hcomp`/`hser`/`hlim` — **refuted**, machine-checked:
+     `FormalSystem/Semantics/FrameConstraintIndependence.lean`'s
+     `constraints_pairwise_independent` has as its third conjunct
+     `⟨ℤ, rayRel, rayRel_compositional, rayRel_serial, rayRel_limit, rayRel_not_saturation⟩`.
+  3. Deriving the cone's *Saturation* structurally, as `UniversalCover.lean` does — **impossible**
+     for this construction, and this is the substantive finding. `saturation_of_orientedForest`
+     cannot apply to `coneR E`: `IsOrientedForest (coneR E)` is false, since the `inl` layer is a
+     verbatim copy of `E` and inherits its loops and opposite edges. Only the `inr` layer is a
+     forest, which is exactly why *Saturation* had to be split in two in the first place, and
+     why the `inl`-anchored half (`sInter_nonempty_of_no_inr_member`) reads `hbase`.
+  4. Checking whether base *Saturation* is merely convenient rather than necessary —
+     **necessary**. Take `E := fun w u => (w ≤ u : Prop)` on `ℤ`, i.e. `rayRel ·' 1 ·`. The family
+     `{TaskFrame.Fib (ofStepRel (coneR E)) (.inl w) 1 | w : ℤ}` has as its `w`-th member
+     `{.inl u | w ≤ u} ∪ {.inr q | w ≤ q.1}`; it is `⊇`-directed (the member at `max w₁ w₂` sits
+     inside the intersection, both parts being monotone in `w`), every member is a nonempty
+     `IsFiber`, and `⋂₀` of it is empty. So `TaskFrame.Saturation (ofStepRel (coneR E))` fails for
+     a base that satisfies *Compositionality*, *Seriality* and *Limit*: there is **no** way to
+     give the cone carrier over such a base a *Saturation* field.
+- **Why it's stuck**: the pinned `exists_coneUnravelling_of_constraints` signature is *satisfiable*
+  — but only by `exists_orientedForest_cover_of_constraints F hcomp hser hlim M`, the universal
+  cover's existing headline, whose existential witness is the cover and not the cone. Proving a
+  declaration named `exists_coneUnravelling_of_constraints` that way would be fraudulent: it
+  would assert nothing whatever about this module's construction while passing every
+  name-existence, sorry and axiom check. The honest cone headline requires one more hypothesis,
+  and `rules/plan-compliance.md`'s *Statement Fidelity* section forbids adding a hypothesis to a
+  recorded Challenge statement without raising it.
+- **What is needed**: a one-line decision on which corrected signature to adopt. Both options are
+  mechanical once chosen, and the remaining Phase 5 work is otherwise ready:
+  - **(a) thread the hypothesis** — `coneFrameOfSerialSat (F) (hcomp) (hser) (hlim) (hsat)`,
+    `coneF_twoWayBounded_of_constraints (F) (hcomp) (hser) (hlim) (hsat)`, and
+    `exists_coneUnravelling_of_constraints (F) (hcomp) (hser) (hlim) (hsat) (M)`, with `hsat :
+    TaskFrame.Saturation F.TaskRel` bridged into `ofStepRel` form once against
+    `FrameOver.taskRel_eq_iter_of_constraints` exactly as this phase's second task already
+    directs. The `_of_constraints` suffix then names all four constraints it consumes, which is
+    the house meaning of the suffix.
+  - **(b) state the headline only in the instance-projected form** —
+    `coneFrame (F) [F.IsRegular]` and `exists_coneUnravelling (F) [F.IsRegular] (M)`, dropping the
+    `_of_constraints` layer entirely. This is strictly less API but needs no signature that
+    enumerates constraints at all.
+  - Either way, record in the plan that the cone's *Saturation* is **inherited**, not
+    manufactured — the asymmetry with `UniversalCover.lean`, whose base need not be saturated, is
+    the substantive difference between the two constructions and should be stated rather than
+    smoothed over.
+- **Prohibited workarounds**: do NOT use `sorry`, `def X := True`, or any vacuous placeholder; and
+  do NOT discharge `exists_coneUnravelling_of_constraints` by delegating to
+  `exists_orientedForest_cover_of_constraints`.
+
+**Landed in this phase before the blocker** (committed, green, sorry-free):
+`coneF_surjective`, at the pinned Challenge signature, axiom-free (measured: `#print axioms`
+reports no axioms). It is independent of the frame assembly. Nothing else in this phase's task
+list was attempted, per `rules/plan-compliance.md`'s escalate-before-deviating requirement.
 
 **Goal**: Present the carrier as a regular `FrameOver intOrder`, prove the projection surjective
 and `TwoWayBounded`, and assemble the L⁺ transfer headline — mirroring
 `UniversalCover.lean`'s assembly tail declaration-for-declaration.
 
 **Tasks**:
-- [ ] `coneFrameOfSerial (F : FrameOver intOrder) (hser : TaskFrame.Serial F.TaskRel) : FrameOver intOrder`
+- [ ] `coneFrameOfSerial (F : FrameOver intOrder) (hser : TaskFrame.Serial F.TaskRel) : FrameOver intOrder` *(deviation: blocked — signature omits the base-*Saturation* hypothesis; see BLOCKER)*
       via `FrameOver.ofStepSat (coneR F.step)`, with the two seriality fields from
       `coneR_serial_fwd`/`coneR_serial_bwd` at `hser w 1 zero_le_one`, and the *Saturation* field
       from `saturation_coneR` applied to the base's own *Saturation* in `ofStepRel` form.
@@ -475,7 +544,7 @@ and `TwoWayBounded`, and assemble the L⁺ transfer headline — mirroring
 - [ ] `coneFrame (F) [F.IsRegular]`, `coneFrame_taskRel`, and the `coneFrame_isRegular` instance —
       the `[F.IsRegular]`-projected specialisations, keeping the house `_of_constraints` /
       instance-projected pairing.
-- [ ] `coneF_surjective` with the `Sum.inl` section, axiom-free as `endpt_surjective` is.
+- [x] `coneF_surjective` with the `Sum.inl` section, axiom-free as `endpt_surjective` is. *(completed)*
 - [ ] `coneF_twoWayBounded_of_constraints (F) (hcomp) (hser) (hlim)`: `forth` from `coneF_iter` on
       the two sign-guarded conjuncts of `ofStepRel` read against
       `taskRel_eq_iter_of_constraints`; `step` by the four-way split — `.inl w` either sign via

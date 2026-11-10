@@ -816,4 +816,27 @@ theorem saturation_coneR {E : W → W → Prop}
     push Not at hB
     exact sInter_nonempty_of_no_inr_member hbase hSne hd hmem hB
 
+/-! ## The projection is surjective -/
+
+-- `linter.unusedVariables`, scoped to this declaration: the `{E}` binder is genuinely unread, and
+-- a deletion trial confirms it — removing the binder leaves the statement, the proof term
+-- `fun w => ⟨.inl w, rfl⟩` and the build all unchanged, because `coneF` mentions no relation. The
+-- binder is retained because it is the published signature this theorem's recorded statement
+-- fixes; see the doc comment below and `scripts/nolint-attribute-allowlist.txt`.
+set_option linter.unusedVariables false in
+/-- **The projection is surjective**, with the `Sum.inl` section as the witness — axiom-free, as
+`UniversalCover.endpt_surjective` is. The `inl` layer being a verbatim copy of the base is exactly
+what makes this one line.
+
+The `{E}` binder is genuinely unread, and the linter is correct about that: `coneF` is the sum
+eliminator and mentions no relation at all, unlike `UniversalCover.endpt_surjective`, whose own
+`{E}` indexes the carrier `CoverPt E`. It is retained because this is the **published signature**
+that the recorded statement of this theorem fixes, so dropping it would change a contract
+signature to spare a linter; a use site supplies it as `coneF_surjective (E := E)`. Paired
+entry: `scripts/nolint-attribute-allowlist.txt`. -/
+@[nolint unusedArguments]
+theorem coneF_surjective {E : W → W → Prop} :
+    Function.Surjective (coneF (W := W)) :=
+  fun w => ⟨.inl w, rfl⟩
+
 end FormalSystem.Semantics
