@@ -144,15 +144,15 @@ tracked file.
 
 ---
 
-### Phase 2: Renumber the existing section files [NOT STARTED]
+### Phase 2: Renumber the existing section files [COMPLETED]
 
 **Goal**: Free the `sec04`-`sec07` slots by shifting the existing `sec04`-`sec10` files to
 `sec08`-`sec14`, with `chunks.json`'s `source_path` fields updated in lockstep.
 
 **Tasks**:
-- [ ] In `~/Projects/Literature/sources/reynolds_2001/`, `git mv` the seven files in **strictly descending** order: `sec10`->`sec14`, `sec09`->`sec13`, `sec08`->`sec12`, `sec07`->`sec11`, `sec06`->`sec10`, `sec05`->`sec09`, `sec04`->`sec08`, preserving each filename's slug portion unchanged.
-- [ ] Update the seven corresponding `source_path` values in `chunks.json` to the new filenames, leaving every other field (including `chunk_id`, `prev_chunk_id`, `next_chunk_id`, `token_count`) untouched.
-- [ ] Assert all 10 current `source_path` values resolve to existing files.
+- [x] In `~/Projects/Literature/sources/reynolds_2001/`, `git mv` the seven files in **strictly descending** order: `sec10`->`sec14`, `sec09`->`sec13`, `sec08`->`sec12`, `sec07`->`sec11`, `sec06`->`sec10`, `sec05`->`sec09`, `sec04`->`sec08`, preserving each filename's slug portion unchanged. *(completed)*
+- [x] Update the seven corresponding `source_path` values in `chunks.json` to the new filenames, leaving every other field (including `chunk_id`, `prev_chunk_id`, `next_chunk_id`, `token_count`) untouched. *(completed)*
+- [x] Assert all 10 current `source_path` values resolve to existing files. *(completed)*
 
 **Timing**: 0.5 hours
 
