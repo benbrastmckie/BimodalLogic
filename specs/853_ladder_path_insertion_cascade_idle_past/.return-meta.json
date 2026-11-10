@@ -1,49 +1,42 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 853,
-  "dispatch_seq": 16,
-  "phases_completed": 6,
-  "phases_total": 7,
+  "phase": "implement",
+  "dispatch_seq": 17,
   "requires_user_review": false,
-  "handoff_path": "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-6-handoff-20261110T160000Z.md",
-  "artifacts": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/853_ladder_path_insertion_cascade_idle_past/summaries/01_insertion-cascade-idle-past-summary.md",
+      "summary": "Implementation summary for the Phase 11.8 insertion cascade: seven landed declarations with roles and axiom profiles, the exact hself premise, the single-insertion finding, the unconsumed sizing record, five deviations, and the measurements table."
+    }
+  ],
   "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "typst/generated/status.typ",
+    "specs/853_ladder_path_insertion_cascade_idle_past/summaries/01_insertion-cascade-idle-past-summary.md",
     "specs/853_ladder_path_insertion_cascade_idle_past/plans/01_insertion-cascade-idle-past.md",
     "specs/853_ladder_path_insertion_cascade_idle_past/issues.jsonl",
-    "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-6-handoff-20261110T160000Z.md"
+    "specs/853_ladder_path_insertion_cascade_idle_past/handoffs/phase-7-handoff-20261110T110500Z.md",
+    "specs/853_ladder_path_insertion_cascade_idle_past/.orchestrator-handoff.json",
+    "specs/853_ladder_path_insertion_cascade_idle_past/.return-meta.json"
   ],
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
     "vacuous_count": 1,
-    "vacuous_note": "Pre-existing, in FormalSystem/Examples/TemporalStructures.lean:495 (int_domain_universal := trivial), a file this phase did not touch; no new vacuous definition introduced.",
     "axiom_count": 14,
-    "axiom_note": "Unchanged from baseline; zero axiom lines added or removed in the changed Lean files.",
     "build_passed": true,
-    "build_scope": "scoped (FormalSystem.Metalogic.Decidability.RaySummary.LadderAgree and BimodalTest.Metalogic.KTypeSummaryAxiomTest), both guard exit 0, zero error: lines; the plan's final-phase full gate set is deferred to the batch stage per the dispatch's Batch Gate Deferral directive",
-    "verification_passed": true,
-    "phase_tier": "interface",
-    "tier_gates_run": [
-      "check-module-invariants.sh --emit-inventory --check: exit 0",
-      "lake-build-guard.sh -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderAgree: exit 0",
-      "lake-build-guard.sh -- build BimodalTest.Metalogic.KTypeSummaryAxiomTest: exit 0",
-      "readme-lint.sh: exit 0, 0 broken references",
-      "check-task-references.sh --quiet: exit 0",
-      "typst-sync-check.sh --counts-only: exit 0"
-    ]
+    "verification_passed": true
   },
   "completion_data": {
-    "completion_summary": "Phase 6 of 7 complete and committed as 8a1846c7e. Brought every stale record current in FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean (section-Cascade interface docstring, the retitled idle-past-needs subsection and its four bullets, the self-loop subsection's binder sentence, the sizing paragraph's unconsumed-recurrence sentence, plus four further stale passages the plan's own grep task surfaced) and in Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean (the pend-past pin block, the idle-insertion block, and three pin blocks that said both names remain owed). Preserved byte-identical: the exists_spliced_ladderPath_of_idle_past refutation paragraph and the candidate-(b) pigeonhole paragraph with its import-DAG reason. Three generated inventory blocks rolled; typst/generated/status.typ regenerated through the pre-commit gate's own remedy. Zero declarations touched, zero sorries, zero new axioms."
+    "completion_summary": "All seven phases of task 853 are complete. exists_ladderPath_at_region_of_idle_past and exists_ladderPath_at_region are landed theorems in FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean, sorry-free, each pinned by #guard_msgs #print axioms in Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean with no sorryAx, built on five supporting declarations (drift_lipschitz_two_sided, exists_ladderPath_of_walk_of_pins, exists_region_start_of_idle_past, insRegionStart_trichotomy, insPins_of_region_start). Both carry an explicit path-local idle self-loop premise hself; the join is unconditional in the regime-dichotomy sense (no pending-past hypothesis), not hypothesis-free. The anticipated insertion cascade collapsed to a SINGLE insertion with d := l, tight rather than merely sufficient, so cascadeDemand*/pinnedRegions*/pin_deficit_le_of_lengthen remain unconsumed sizing record rather than live machinery. Phase 7 wrote and validated the summary and read a scoped gate tier green; the plan's Verification Tier: full set is deferred to the batch stage."
   },
   "memory_candidates": [
-    "In this repository, any phase whose edits move .lean line counts -- including prose-only docstring edits -- also moves typst/generated/status.typ, and the pre-commit typst-sync-check.sh Check 2 gate blocks the commit until scripts/typst-sync-check.sh --fix is run and that file is staged. Plans for prose-only Lean phases should list it among the files to modify."
+    "Lean's linter.style.longFile baseline must EQUAL the file's own round-up, not a forward-looking ceiling: setting 3400 on a 2968-line file emits 'current limit is 3400, but it is expected to be 3100' and introduces a warning. The round-up is not strictly per-hundred either -- at 3200 lines against a 3200 limit the linter demanded 3400, not 3300.",
+    "A deliberately-unread pinned binder in Lean needs TWO independent suppressions in this repo: a scoped 'set_option linter.unusedVariables false in' for the source-level linter AND an in-source @[nolint unusedArguments] attribute paired with an entry in scripts/nolint-attribute-allowlist.txt for the ENVIRONMENT linter that check-module-invariants.sh C16 reports. The environment linter is invisible to both the scoped build and the module build.",
+    "push_neg is deprecated on this toolchain (Lean v4.33.0-rc1) and emits a two-paragraph warning per use; the repository's live convention is 'push Not'.",
+    "In this repo any phase whose edits move a .lean line count will be blocked at commit by the pre-commit typst-sync-check.sh Check 2 gate; the sanctioned remedy is 'bash scripts/typst-sync-check.sh --fix' plus staging typst/generated/status.typ, never --no-verify. Per-phase 'Files to modify' lists should be read as implying that file.",
+    "git-commit-scoped.sh has no --allow-out-of-scope flag (that flag belongs to git-snapshot.sh); its V10 containment guard is --task-opt-in, so a required file outside state.json's declared file_scope must be landed in a separate commit invoked WITHOUT --task rather than by mutating file_scope from an implementation dispatch."
   ]
 }
