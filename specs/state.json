@@ -2782,7 +2782,9 @@
       "effort": "medium",
       "parent_task": 898,
       "topic": "documentation",
-      "dependencies": [],
+      "dependencies": [
+        918
+      ],
       "file_scope": [
         "FormalSystem/NomicLanguage/NomicFour.lean",
         "FormalSystem/NomicLanguage/NomicTenseFree.lean",

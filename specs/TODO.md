@@ -11,8 +11,8 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,905,906,907,908,918,924,925 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,900 | 298,428,502,743,761,873,899 | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,905,906,907,918,924,925 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,900,908 | 298,428,502,743,761,873,899,918 | algebraic-representation, completeness, dataset-enhancement, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -958,7 +958,7 @@ ORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Cit
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: documentation
-- **Dependencies**: None
+- **Dependencies**: Task 918
 - **Parent**: Task 898
 
 **Description**: Audit the 65 remaining "Constraints consumed: Compositionality, Seriality, Limit, Saturation" docstring lines across 16 library modules against what each declaration's proof actually projects, and correct the over-reporting ones.
