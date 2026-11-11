@@ -215,7 +215,49 @@ report's Recommendation 5, landed early as unconditional value rather than held 
 
 ---
 
-### Phase 4: The Deletion Above `z`'s Region, Register Held [NOT STARTED]
+### Phase 4: The Deletion Above `z`'s Region, Register Held [BLOCKED]
+
+**BLOCKER** (Phase 4):
+- **What failed**: the pinned signature of `exists_deleted_ladderPath_of_next_region_nxt` in
+  `## Lean Challenge Statements` is not provable. Its hypothesis set is incomplete by exactly one
+  inequality: `(nxtAt g z : ℤ) ≤ (cntAt g z : ℤ)`. Everything else in the phase discharges.
+- **What was tried**: the full proof was written and compiled against the real tree in two
+  variants, preserved as task evidence:
+  - `specs/917_forward_slack_witnessed_discharge_or_refutation/evidence/phase-4-pinned-signature-deficit.lean`
+    — the pinned signature PLUS `hnz : (nxtAt g z : ℤ) ≤ (cntAt g z : ℤ)`. Compiles clean
+    (`lake env lean`, no errors, no `sorry`), including the two pull lemmas `probe_low`/`probe_high`,
+    the four pin-compatibility cases (both-below with its four reach sub-cases, both-above,
+    and the two straddling directions through `hstraddle`), and the anchor clause at every pin.
+  - `.../evidence/phase-4-pinned-signature-deficit-FAILS.lean` — the SAME proof with `hnz`
+    deleted, i.e. the signature exactly as pinned. It fails at exactly ONE goal (line 123,
+    the `omega` closing the anchor clause at a low pin whose region reaches the block) with
+    omega's own counterexample constraint set printed, `i := ↑(nxtAt g z)` and
+    `c := ↑(cntAt g z)` unrelated in it.
+- **Why it's stuck**: the plan's Decision 3 reasoning ("taking the deletion ABOVE `z`'s region
+  leaves every pin between `z` and the block UNDISPLACED, so that pin's anchor clause is free
+  from `nxtAt_lipschitz_two_sided`") holds for pin POSITIONS but not for pin VALUES. The pin that
+  starts the region CONTAINING the block sits below `a` — its position is undisplaced — but
+  `delCnt`'s own definition lowers its value by exactly `l`, because that region swallows the
+  deleted block (`delCnt_of_lt`'s `if a ≤ v + cntAt g v` branch, confirmed at `v + 1 = a` through
+  `delSeg`). So the anchor's LOWER direction carries a deficit of exactly `l`:
+  `nxtAt_lipschitz_two_sided` gives `nxtAt g z ≤ nxtAt g v + (v - z)` while the clause needs
+  `nxtAt g z + l ≤ (nxtAt g v - l) + (v - z) + l`. Reducing that deficit through
+  `cntAt_ge_of_reaches` and `hcl : l ≤ cntAt g a` and `hza` leaves precisely
+  `nxtAt g z ≤ cntAt g z` and nothing else. That inequality does NOT follow from `hpast`:
+  `Drift n n' := n' = n ∨ n' = n + 1 ∨ n' + 1 = n` admits free ±1 drift, and a path pending at
+  every `p ≤ z` carries `cntAt g (z - k) = cntAt g z + k` with its register wholly unconstrained,
+  so `hpast` cannot bound `nxtAt g z` against `cntAt g z` in either direction.
+- **What is needed**: a plan revision adding `nxtAt g z ≤ cntAt g z` (or the consumer's own
+  pending-forever gap, from which it follows) to this phase's pinned Challenge statement. The
+  repair is FREE downstream and costs the discharge nothing: Phase 6's consumer instantiates at
+  the state `⟨(q, C, N), h⟩` at `z`, where `cntAt g z = C` and `nxtAt g z = N`, and already
+  carries `hgap : N + 2 ≤ C`. The compiled proof above lands unchanged the moment the hypothesis
+  is admitted.
+- **Prohibited workarounds**: do NOT use `sorry`, `def X := True`, or any vacuous placeholder;
+  do NOT quietly add the hypothesis under the pinned name, and do NOT quietly edit the recorded
+  Challenge statement to match what compiles. Both are the exact laundering
+  `.claude/rules/plan-compliance.md`'s Statement Fidelity section exists to catch.
+
 
 **Goal**: Land `exists_deleted_ladderPath_of_next_region_nxt`: the register-exposing deletion at a
 block ABOVE `z`'s region, discharging every pin obligation the landed construction can discharge

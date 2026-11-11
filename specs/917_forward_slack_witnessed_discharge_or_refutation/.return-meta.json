@@ -1,30 +1,55 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "requires_user_review": true,
+  "blocked_phase": 4,
+  "review_reason": "Phase 4 blocked: the plan's pinned Challenge signature for exists_deleted_ladderPath_of_next_region_nxt is unprovable, incomplete by exactly nxtAt g z <= cntAt g z. Measured by compiling the full proof with and without that hypothesis; both variants preserved under the task dir's evidence/. Phases 1-3 are landed, built and committed.",
+  "user_decision": {
+    "question": "Phase 4's pinned Challenge statement for exists_deleted_ladderPath_of_next_region_nxt cannot be proved: delCnt lowers by exactly l the value of the pin starting the region that CONTAINS the deleted block (a pin below a, so outside hanch's a <= v range), and closing its anchor clause needs precisely nxtAt g z <= cntAt g z, which no pending-forever hypothesis supplies because Drift admits free plus-or-minus-1 register drift. The repair is free at the Phase 6 consumer, which already carries hgap : N + 2 <= C at the state (q, C, N). Should the plan's pinned Phase 4 statement be revised to carry that hypothesis (unblocking Phases 4-9 with the already-compiled proof), or should the task instead terminate here with Route D recorded as stalled rather than refuted?",
+    "options": [
+      "Revise the Phase 4 pinned Challenge statement to add nxtAt g z <= cntAt g z (or the consumer's pending-forever gap), then re-dispatch implement; the compiled proof in evidence/ lands unchanged.",
+      "Terminate the task at Phases 1-3 and record Route D as stalled one hypothesis short rather than refuted."
+    ],
+    "blocking": true,
+    "why_user": "Editing a recorded Lean Challenge statement is exactly what .claude/rules/plan-compliance.md's Statement Fidelity section reserves for the user or a reviser dispatch: an implementation agent changing it to match what compiles launders the defect it is supposed to surface."
+  },
+  "verification": {
+    "verification_passed": false,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 0,
+    "build_passed": true,
+    "build_output": "Full unscoped guarded lake build green: 2973 jobs, 0 errors, 0 warnings. verification_passed is false because Phase 4 is BLOCKED, not because of a build or census failure. vacuous_count 1 is pre-existing and outside this task's file scope (FormalSystem/Examples/TemporalStructures.lean:495); axiom_count delta against the pre-task baseline is 0."
+  },
+  "partial_progress": {
+    "stage": "phase_4_blocked",
+    "details": "Phases 1-3 COMPLETED, each built green and committed separately. Phase 4 BLOCKED with a structured blocker record in the plan file and two compiled evidence files. Phases 5-9 NOT STARTED, each depending on Phase 4 through the plan's own dependency analysis.",
+    "phases_completed": 3,
+    "phases_total": 9
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/917_forward_slack_witnessed_discharge_or_refutation/plans/01_forward-slack-witnessed-discharge.md",
-      "summary": "Nine-phase, 14.5-hour plan for the ForwardSlackWitnessed discharge: reduction and scoping records, a deletion primitive above z's region, a decision gate on the pin cascade with a compiled-refutation contingency, the conditional discharge, and the five hypothesis-free schemas."
+      "type": "summary",
+      "path": "specs/917_forward_slack_witnessed_discharge_or_refutation/summaries/01_forward-slack-witnessed-discharge-summary.md",
+      "summary": "Phases 1-3 landed the forward-slack reduction, its iff, the three scoping records and the cell-level restatement; Phase 4's pinned Challenge signature measured unprovable and escalated."
     }
   ],
-  "next_steps": "Run /orchestrate 917 to execute the plan",
-  "memory_candidates": [
-    {
-      "content": "When authoring a lean4 plan in this repository, compile-check the plan's own '## Lean Challenge Statements' block before returning: `bash .claude/scripts/lean-challenge-snapshot.sh <task> <project_root> --dry-run --compile` assembles the pinned signatures into a module, cross-validates the Goals identifier set against the block's declarations (printing 'route: plan-declared' and the sorted theorem names), and elaborates the result against the project's own oleans, ending in '# compile: OK' or a real elaboration error. It writes nothing and needs no lake build. This converts every pinned signature -- including ones authored from scratch at plan time for declarations that do not yet exist -- from an authoring guess into compiled evidence, and catches the two failure modes a plan cannot otherwise detect: a signature that does not type-check (so the implementer would be blocked by a wrong contract under rules/plan-compliance.md's Statement Fidelity clause) and a Goals/Challenge identifier mismatch. Note the two authoring prerequisites it exposes: the block must carry its own namespace and `open` lines (names under FormalSystem.Metalogic.* do not resolve bare), and every declaration needs explicit binders because probe bodies compiled through lean_run_code rely on autoImplicit, which the package's mathlibStandardSet lint configuration plus CI's --wfail turn into a failure in-library.",
-      "category": "PATTERN",
-      "source_artifact": "specs/917_forward_slack_witnessed_discharge_or_refutation/plans/01_forward-slack-witnessed-discharge.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["lean-challenge-snapshot", "plan-authoring", "lean4", "signature-pinning", "autoImplicit", "compile-check"]
-    }
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+    "typst/generated/status.typ",
+    "specs/917_forward_slack_witnessed_discharge_or_refutation/plans/01_forward-slack-witnessed-discharge.md",
+    "specs/917_forward_slack_witnessed_discharge_or_refutation/summaries/01_forward-slack-witnessed-discharge-summary.md",
+    "specs/917_forward_slack_witnessed_discharge_or_refutation/evidence/phase-4-pinned-signature-deficit.lean",
+    "specs/917_forward_slack_witnessed_discharge_or_refutation/evidence/phase-4-pinned-signature-deficit-FAILS.lean",
+    "specs/917_forward_slack_witnessed_discharge_or_refutation/issues.jsonl"
   ],
   "metadata": {
-    "session_id": "sess_1794365863_292a3e_917",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 9,
-    "estimated_hours": 14.5,
-    "dependency_waves": [[1], [2, 3], [4], [5], [6], [7], [8], [9]]
-  },
-  "dispatch_seq": 5
+    "session_id": "sess_1794365863_292a3e",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "task_dir": "specs/917_forward_slack_witnessed_discharge_or_refutation",
+    "dispatch_seq": 6,
+    "compliance_check": "skipped"
+  }
 }
