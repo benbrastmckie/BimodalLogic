@@ -220,7 +220,7 @@ takes.
 
 ---
 
-### Phase 3: The Window-Regime Composite Splice, Both Directions [PARTIAL]
+### Phase 3: The Window-Regime Composite Splice, Both Directions [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Land the path-level primitives the window regime needs: given a ladder path through
 `(q, c, n)` at `z` with an idle position in its past and the named idle-run condition, produce a
@@ -228,13 +228,20 @@ ladder path through `(q, c ± j·(P + 1), n)` at `z` with the object state and t
 the realized stab-free type at `z` held.
 
 **Tasks**:
-- [ ] Land the RAISING primitive: the pending type-respecting block from `exists_typeBlock_of_budget_le_cnt_within` inside `z`'s region duplicated to raise `cntAt g z` by `j · (P + 1)` (the bridge putting the block length among the divisors of `P + 1` is `(K1)`'s, as `exists_ladderPath_through_shifted_of_pend_past` already consumes it), composed with the compensating idle splice below through `exists_iterIdleSpliced_ladderPath`, and lifted by `exists_ladderPath_of_walk_nxt_at` with `n₀ := nxtAt g z` and Phase 2's discharged clauses. Re-anchor by translation (`isLadderPath_shift`) so `z` keeps its position.
-- [ ] Land the LOWERING primitive: the mirror, with the in-region block deleted and the idle run shortened by the same displacement, `window_pin_compat_lower_of_spacing` discharging the pin pair clause.
-- [ ] For both, carry the type through with `tpOf_eq_spliceIdx_of_tpOf_eq` / `tpOf_eq_delIdx_of_tpOf_eq`, which need only stab-freeness and NOT pend-past — that asymmetry is the whole reason this regime is reachable and MUST be recorded in the docstrings.
-- [ ] Each docstring states, explicitly, that the compensator is the idle run BELOW and not slack above, so neither primitive goes through `HasForwardSlack` or `ForwardSlackWitnessed`, and that route (d) is not re-entered.
-- [ ] If either primitive's construction requires an additional clause not admitted by Phase 2's gate criterion, STOP and escalate rather than widening the signature: Phase 2's criterion is the contract.
-- [ ] Guarded scoped build, `bash scripts/typst-sync-check.sh --fix`, stage `typst/generated/status.typ`. Apply the `longFile` rule if the file crosses 1500.
-- [ ] If Phase 2's gate FAILED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record whose Evidence column cites Phase 2's measurement. Land nothing.
+- [x] Land the RAISING primitive: the pending type-respecting block from `exists_typeBlock_of_budget_le_cnt_within` inside `z`'s region duplicated to raise `cntAt g z` by `j · (P + 1)` (the bridge putting the block length among the divisors of `P + 1` is `(K1)`'s, as `exists_ladderPath_through_shifted_of_pend_past` already consumes it), composed with the compensating idle splice below through `exists_iterIdleSpliced_ladderPath`, and lifted by `exists_ladderPath_of_walk_nxt_at` with `n₀ := nxtAt g z` and Phase 2's discharged clauses. Re-anchor by translation (`isLadderPath_shift`) so `z` keeps its position.
+- [ ] Land the LOWERING primitive: the mirror, with the in-region block deleted and the idle run shortened by the same displacement, `window_pin_compat_lower_of_spacing` discharging the pin pair clause. *(deviation: skipped — EXCLUDED on a compiled measurement; see `#### Reasoned Exclusions` below. The anchor clause reverses direction under deletion and needs a sixth hypothesis, which Phase 2's gate criterion forbids adding.)*
+- [x] For both, carry the type through with `tpOf_eq_spliceIdx_of_tpOf_eq` / `tpOf_eq_delIdx_of_tpOf_eq`, which need only stab-freeness and NOT pend-past — that asymmetry is the whole reason this regime is reachable and MUST be recorded in the docstrings. *(deviation: altered — carried for the raising direction only, since the lowering direction is excluded, so `tpOf_eq_delIdx_of_tpOf_eq` is unused. The idle stage needed a NEW index-form iterate, `exists_iterIdleSpliced_ladderPath_idx`, because the landed `exists_iterIdleSpliced_ladderPath` exposes the realized type only strictly BELOW its block while the comparison position sits above it, and no shift argument substitutes — a stab-free realized type is not determined locally.)*
+- [x] Each docstring states, explicitly, that the compensator is the idle run BELOW and not slack above, so neither primitive goes through `HasForwardSlack` or `ForwardSlackWitnessed`, and that route (d) is not re-entered.
+- [x] If either primitive's construction requires an additional clause not admitted by Phase 2's gate criterion, STOP and escalate rather than widening the signature: Phase 2's criterion is the contract. *(EXERCISED: the lowering direction does, and it was escalated rather than widened.)*
+- [x] Guarded scoped build, `bash scripts/typst-sync-check.sh --fix`, stage `typst/generated/status.typ`. Apply the `longFile` rule if the file crosses 1500. *(the file crossed 1500, so `set_option linter.style.longFile 1700` was added at the module's own baseline position, after the docstring and before `namespace`.)*
+- [x] If Phase 2's gate FAILED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record whose Evidence column cites Phase 2's measurement. Land nothing. *(deviation: altered — Phase 2's gate PASSED, so this branch's "land nothing" does not apply; the marker and the `#### Reasoned Exclusions` record are used for the DIRECTION-SPECIFIC exclusion instead, with its own compiled measurement in the Evidence column.)*
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| The LOWERING primitive (`c − j·(P + 1)` at `z`) | The anchor clause at the region start REVERSES direction when the in-region block is deleted: its binding half becomes `nxtAt g z + jP ≤ cntAt g z + 2·d + 1`, a bound on the register from ABOVE. `kappa_collision_window_room`'s lowering branch supplies `c ≤ n`, not that; and `nxtAt_le_cntAt_region_start`'s bound `n ≤ c + 2·d + 1` is TIGHT, so the requirement is short by exactly the displacement. The pin PAIR clause is short by the same `jP` for the same reason: `window_pin_compat_lower_of_spacing`'s `hsp : W + 1 + jP ≤ DW` is region-start spacing PLUS the displacement, and `regionStart_spacing` supplies only `W + 1 ≤ DW`. Under Phase 2's own gate criterion a sixth hypothesis is a FAIL, not a widening, so the condition was NOT added. | `specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean` (three assertions, `lake env lean`, zero output), landed in the module as `window_lower_anchor_not_implied`, `window_lower_anchor_fails_at_tight_bound` and `window_lower_anchor_of_required` |
+| `tpOf_eq_delIdx_of_tpOf_eq` in the type half | Consumed only by the lowering direction, which is excluded above. The raising direction's type half is landed in full, through `tpOf_eq_spliceIdx_of_tpOf_eq` for the pending stage and the new `exists_iterIdleSpliced_ladderPath_idx` for the idle stage. | `exists_window_raise_ladderPath`'s own type clause, `lean_verify` standard profile, no `sorryAx` |
 
 **Timing**: 2.5 hours
 
@@ -632,7 +639,7 @@ not. This is recorded in the module docstring at the lemma itself.
   slack lemma, all of which Phase 3 consumes rather than re-deriving. Still far below the 1500
   `longFile` ceiling, so no baseline is owed.
 
-### Verification notes: phase 3 (measured) -- PARTIAL
+### Verification notes: phase 3, first dispatch (measured) -- PARTIAL AT THE TIME
 
 **What landed, green and committed** (`3686ab01e`, zero errors, zero warnings, no `sorry`, standard
 axiom profile):
@@ -716,3 +723,83 @@ than a convenience.
 - Scope Hypothesis outcome: estimated +220 lines for the two primitives; ACTUAL +276 for the
   raising primitive's admissibility half alone (406 -> 682 `wc -l`), with the lowering primitive
   and the type half not landed. Still below the 1500 `longFile` ceiling, so no baseline is owed.
+
+### Verification notes: phase 3, closing dispatch (measured) -- COMPLETED WITH EXCLUSIONS
+
+The three items the first dispatch left open are resolved: items 1 and 2 LANDED, item 3 EXCLUDED
+on a compiled measurement.
+
+**What landed, green and committed** (zero errors, zero warnings, no `sorry`, standard axiom
+profile):
+
+- `window_natAbs_sub_comm`, `window_iter_anchor_raise`, `window_iter_anchor_shift`,
+  `window_iter_slack_raise`, `window_iter_budget_raise`, `window_iter_no_low_shift` — the
+  iteration's arithmetic, factored into named lemmas over plain naturals.
+- `window_iter_pin_trichotomy`, `window_iter_pins` — the ITERABLE reformulation: every hypothesis
+  and every conclusion about the path being spliced, so the statement applies to the result of its
+  own conclusion. Strictly SHORTER than the relative form, because the pending stretch `(a, u + l]`
+  forces a region start at or above `a` to BE `a`, so the class-1 clause needs no agreement
+  hypothesis and the idle-run condition drops out of the trichotomy entirely.
+- `exists_window_iterSpliced_ladderPath` — the window-regime analogue of
+  `exists_iterSpliced_ladderPath_idx_of_pend_past` (item 1). The regime hypothesis the landed one
+  carries is replaced by two BUDGET invariants, each written with the spend added on the RIGHT so
+  no truncated subtraction appears and each step's reproduction is one `omega` away. The register
+  is prescribed once, by a terminal re-lift, not per step.
+- `window_idle_pin_dichotomy`, `window_idle_anchor_clause`, `window_idle_slack`,
+  `window_idle_budget` — the base case. A DICHOTOMY, not a trichotomy: no pending raise has
+  happened yet and the lengthened run contains no region start. The collision's ROOM pays the
+  anchor budget once; the insertion's LENGTH pays the pin-pair budget once; no step of the
+  iteration touches either again.
+- `exists_iterIdleSpliced_ladderPath_idx` (item 2) — the iterated idle lengthening with the
+  realized type exposed at EVERY position. Needed because the landed
+  `exists_iterIdleSpliced_ladderPath` exposes the type only strictly BELOW its block while the
+  comparison position sits above it. What makes the global form available, measured rather than
+  assumed: the idle splice is a rigid index pullback in BOTH coordinates
+  (`idleSpliceCnt g α k = cntAt g ∘ spliceIdx α k` by definition, because inserting idle positions
+  raises no countdown anywhere), so `tpOf_eq_spliceIdx_of_tpOf_eq` applies unchanged — it reads the
+  object walk relation and the block's endpoint type equality and is indifferent to whether the
+  block is pending.
+- `exists_window_raise_displaced`, `exists_window_raise_ladderPath` — the RAISING primitive, at an
+  exact multiple of `P + 1`, re-anchored at `z` itself.
+- `window_lower_anchor_not_implied`, `window_lower_anchor_fails_at_tight_bound`,
+  `window_lower_anchor_of_required` — the lowering direction's obstruction, measured.
+
+**`exists_idleBlock_of_hasIdleRunBelow` strengthened**: it now also returns
+`∀ v, α ≤ v → v ≤ a → pend (objAt g v) = false`, the stretch from the block's start up to the
+region start. The dichotomy needs it and `exists_idleTypeBlock_of_budget_le_run` already supplies
+the lower bound the previous reading dropped. Strengthening a conclusion, with no consumer outside
+this module.
+
+**The re-anchoring, which the first dispatch's note left unresolved**: it is a genuine translation
+of the path (`isLadderPath_shift`), not a restatement at a moved index, and the realized type
+crosses it through `tpOf_timeShift` composed with `tpOf_stabFree_eq_of_objAt_eq` at the shifted
+history `σ₂.timeShift E` — the same conjugation `tpOf_periodic_of_objAt_periodic` uses. No new
+model-level machinery was needed and none was added.
+
+**EXCLUDED, measured**: the lowering primitive. See this phase's `#### Reasoned Exclusions`
+record. The deficit is two-sided (anchor clause AND pin pair clause, each short by exactly `jP`)
+and it is NOT an artefact of a loose witness: `window_lower_anchor_fails_at_tight_bound` exhibits
+the failure with the path's own bound tight, so no sharpening of the path's arithmetic recovers it.
+The missing hypothesis's exact shape is recorded as `window_lower_anchor_of_required` so a later
+phase decides on its admissibility rather than rediscovering the deficit.
+
+**Build and gate evidence**
+
+- Scoped guarded build of `...RaySummary.LadderWindow` at every sub-step: green, `error:` 0,
+  `warning:` 0.
+- Phase-end FULL guarded `lake build`: see the record below this list.
+- `bash scripts/typst-sync-check.sh --fix`: run before each commit; `typst/generated/status.typ`
+  staged in each.
+- `lean_verify` on `exists_window_raise_ladderPath`: axioms `propext`, `Classical.choice`,
+  `Quot.sound`; no `sorryAx`. The `opaque` source-scan warnings are the word "opaque" occurring in
+  docstrings.
+- `bash .claude/scripts/lean-sorry-census.sh ... --cross-check`: see the record below this list.
+- Batch-gate deferral: this dispatch ran the scoped narrowing invocation that covers the files it
+  touched and DEFERRED the complete gate set to the batch stage at the end of the invocation, per
+  this dispatch's Batch Gate Deferral directive. The plan's final phase keeps
+  `**Verification Tier**: full` unedited.
+- Scope Hypothesis outcome, cumulative for phase 3: estimated +220 lines for the two primitives;
+  ACTUAL +889 for the raising direction alone plus the exclusion record (682 -> 1571 `wc -l`). The
+  file crossed the 1500 `longFile` ceiling, so `set_option linter.style.longFile 1700` was added.
+  The overshoot is attributable to item 1 and item 2 each needing a NEW iterate the plan assumed
+  could be borrowed from the pending-forever and idle layers respectively.

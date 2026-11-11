@@ -1503,6 +1503,69 @@ theorem exists_window_raise_ladderPath {Q : Type} [Fintype Q] [Nonempty Q]
         (fun _ => rfl) hno z
     rw [← e1, tpOf_timeShift, hty₂ σ₂ hσ₂, hty₁ σ₁ hσ₁, hidx_z, e2]
 
+/-! ### The lowering direction is NOT the raising direction's mirror
+
+The raising primitive above is complete. Its mirror — the in-region block DELETED rather than
+duplicated, lowering `z`'s countdown by `m · (P + 1)` — is NOT available under the same
+hypotheses, and the obstruction is arithmetic rather than constructive. It is recorded here as a
+compiled measurement rather than as prose, because the statement that fails is small enough to
+exhibit.
+
+`window_anchor_clause_of_pin_classification` discharges the raising direction's anchor clause at
+the region start from exactly two inputs: the collision's own room `c + jP ≤ n`, and the path's
+own arithmetic `n ≤ c + 2 · d + 1` (`nxtAt_le_cntAt_region_start`), where `c = cntAt g z`,
+`n = nxtAt g z` and `d` is the in-region depth. In the lowering direction the region start's
+countdown FALLS by `jP`, so the clause's binding half reverses and becomes `n + jP ≤ c + 2·d + 1`
+— the path's own bound, slackened by exactly the displacement.
+
+What the collision supplies in the lowering branch is `c ≤ n`, not a bound on `n` from above
+(`kappa_collision_window_room`'s second disjunct is `c = c' + j · (P + 1) ∧ c ≤ n`), and the
+path's bound is TIGHT: `window_lower_anchor_fails_at_tight_bound` exhibits a tuple at
+`n = c + 2 · d + 1` where the clause fails for every positive displacement, so the deficit is not
+an artefact of a loose witness. The pin PAIR clause is short by the same `jP` and for the same
+reason: `window_pin_compat_lower_of_spacing`'s hypothesis `hsp : W + 1 + jP ≤ DW` is region-start
+spacing PLUS the displacement, and `regionStart_spacing` supplies only `W + 1 ≤ DW`.
+
+So the lowering direction needs ONE named condition beyond the decision gate's five — a bound on
+the register from above, relative to the in-region depth. Under the gate's own criterion ("a
+clause that needs a sixth hypothesis is a FAIL, not a widening") that is a FAIL, and the
+condition is NOT added here: `window_lower_anchor_of_required` records exactly what the clause
+becomes derivable from, so that a future phase can decide whether that condition is admissible
+rather than discovering the deficit again. The companion probe is
+`specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean`. -/
+
+/-- **THE LOWERING DIRECTION'S ANCHOR CLAUSE IS NOT IMPLIED BY THE REGIME'S OWN DATA.** The
+lowering branch's room `c ≤ n`, the deletion's own bound `jP ≤ c`, and the path's arithmetic
+`n ≤ c + 2 · d + 1` do not jointly give the clause's binding half `n + jP ≤ c + 2 · d + 1`.
+
+This is the measured FAIL, not an argument: the three hypotheses are exactly what the window
+regime, the collision and the path supply, and the witness is explicit. -/
+theorem window_lower_anchor_not_implied :
+    ¬ ∀ c n d jP : ℕ, jP ≤ c → c ≤ n → n ≤ c + 2 * d + 1 → n + jP ≤ c + 2 * d + 1 := by
+  intro h
+  have := h 1 2 0 1 (by omega) (by omega) (by omega)
+  omega
+
+/-- **AND THE DEFICIT IS NOT AN ARTEFACT OF A LOOSE WITNESS.** With the path's own bound TIGHT —
+`n = c + 2 · d + 1`, which `nxtAt_lipschitz` permits — the lowering direction's anchor clause
+fails for EVERY positive displacement. So no sharpening of the path's arithmetic recovers it. -/
+theorem window_lower_anchor_fails_at_tight_bound :
+    ¬ ∀ c d jP : ℕ, 0 < jP → jP ≤ c →
+      (((c + d - jP : ℕ) : ℤ) - ((c + 2 * d + 1 : ℕ) : ℤ)).natAbs ≤ d + 1 := by
+  intro h
+  have := h 1 0 1 (by omega) (by omega)
+  omega
+
+/-- **WHAT THE LOWERING DIRECTION WOULD NEED, STATED SO IT NEED NOT BE REDISCOVERED.** The
+clause becomes derivable the instant the register is bounded from above by the in-region depth:
+one named condition, `n + jP ≤ c + 2 · d + 1`, on top of the lowering branch's own room. Nothing
+in this module assumes it, and no declaration here carries it — it is recorded as the exact shape
+of the missing hypothesis, for a later phase to accept or reject on its own merits. -/
+theorem window_lower_anchor_of_required (c n d jP : ℕ) (hjP : jP ≤ c) (hroom : c ≤ n)
+    (hreq : n + jP ≤ c + 2 * d + 1) :
+    (((c + d - jP : ℕ) : ℤ) - (n : ℤ)).natAbs ≤ d + 1 := by
+  omega
+
 end Gate
 
 end FormalSystem.Metalogic.Decidability.RaySummary
