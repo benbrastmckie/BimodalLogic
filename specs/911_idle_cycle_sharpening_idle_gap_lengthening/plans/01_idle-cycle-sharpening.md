@@ -321,28 +321,28 @@ covers the edit, which adds declarations to one module and changes no existing s
 
 ---
 
-### Phase 3: The idle-run type pigeonhole [NOT STARTED]
+### Phase 3: The idle-run type pigeonhole [COMPLETED]
 
 **Goal**: Produce from a long enough idle run a block matching in object state AND in realized
 type, which is what makes sub-question (ii) reachable rather than deferred.
 
 **Tasks**:
 
-- [ ] Re-read `LadderPump.lean` immediately before editing.
-- [ ] Open a section `IdlePigeonhole` beside the existing `Pigeonhole` section.
-- [ ] Define `idleBudget pend φ := (Finset.univ.filter (fun q : Q => pend q = false)).card * 2 ^ (plusSubformulaClosure φ).card`,
+- [x] Re-read `LadderPump.lean` immediately before editing.
+- [x] Open a section `IdlePigeonhole` beside the existing `Pigeonhole` section.
+- [x] Define `idleBudget pend φ := (Finset.univ.filter (fun q : Q => pend q = false)).card * 2 ^ (plusSubformulaClosure φ).card`,
       with a docstring recording that it is the idle-restricted form of the budget
       `exists_typeBlock_of_budget_le_cnt` uses and an OVER-ESTIMATE of the quantity it names.
-- [ ] Prove `exists_idleTypeBlock_of_budget_le_run`, mirroring
+- [x] Prove `exists_idleTypeBlock_of_budget_le_run`, mirroring
       `exists_typeBlock_of_budget_le_cnt_within` (`LadderPump.lean:1295`): pigeonhole the
       `idleBudget + 1` positions of the run into
       `{q : Q // pend q = false} x {T // T ∈ (plusSubformulaClosure φ).powerset}`, relating the
       subtype's card to the filter's via `Fintype.card_subtype`, and orient the resulting pair
       exactly as the landed lemma does.
-- [ ] State the conclusion so that the block's idleness (`∀ i < k, pend (objAt g (a + i)) = false`)
+- [x] State the conclusion so that the block's idleness (`∀ i < k, pend (objAt g (a + i)) = false`)
       and its containment in the run are both exposed — phases 4 and 5 consume both.
-- [ ] Re-check the `longFile` baseline and adjust `N` if the window no longer holds.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+- [x] Re-check the `longFile` baseline and adjust `N` if the window no longer holds.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
 
 **Timing**: 1 hour
 

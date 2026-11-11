@@ -1835,4 +1835,91 @@ theorem exists_idleSpliced_ladderPath {Q : Type} [Fintype Q] [Nonempty Q]
 
 end IdleSplice
 
+/-! ## The idle-restricted `(objAt, tpOf)` pigeonhole
+
+The pending pigeonhole above budgets `|Q| · 2^|cl φ|` against a region's COUNTDOWN. The idle
+mirror budgets the IDLE-state count against a run's LENGTH, which is the quantity the idle-gap
+lengthening's premise is about. The restriction matters twice: the carrier is the idle subtype
+rather than all of `Q`, so the budget is smaller, and the block the pigeonhole returns matches in
+realized TYPE as well as in object state — which is what makes sub-question (ii) of the decision
+gate reachable instead of deferred. -/
+
+section IdlePigeonhole
+
+/-- **The idle-restricted `(objAt, tpOf)` pigeonhole budget**: the idle-restricted form of the
+budget `exists_typeBlock_of_budget_le_cnt` uses, with the idle-state count in place of
+`Fintype.card Q`. An OVER-ESTIMATE of the quantity it names — the product counts every
+`(idle state, closure type)` pair, and a run need not realize all of them. -/
+def idleBudget {Q : Type} [Fintype Q] (pend : Q → Bool) (φ : PlusFormula) : ℕ :=
+  (Finset.univ.filter (fun q : Q => pend q = false)).card * 2 ^ (plusSubformulaClosure φ).card
+
+-- `linter.unusedVariables`, scoped to this declaration: the signature is pinned by the plan's
+-- Lean Challenge Statements block, and `hg` is not read — the idle mirror hypothesizes the run's
+-- idleness directly (`hrun`), where the pending form reads it off `cntAt_sub_of_pend` and so
+-- needs the path condition. The hypothesis is kept because every consumer in the idle layer has
+-- it to hand and because dropping it would split this lemma's shape from the pending one's.
+set_option linter.unusedVariables false in
+/-- **A LONG ENOUGH IDLE RUN CARRIES A BLOCK MATCHING IN OBJECT STATE AND IN REALIZED TYPE.**
+The mirror of `exists_typeBlock_of_budget_le_cnt_within`: the pigeonhole on the `idleBudget + 1`
+positions of the run, into `{q // pend q = false} × {T // T ∈ (cl φ).powerset}`, whose
+cardinality IS `idleBudget pend φ`. The conclusion exposes the block's own idleness and its
+containment in the run, because the idle-block duplication consumes both. -/
+theorem exists_idleTypeBlock_of_budget_le_run {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) {g : ℤ → LadderState Q pend}
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hg : IsLadderPath step pend g) (z : ℤ) (L : ℕ)
+    (hrun : ∀ i : ℕ, i ≤ L → pend (objAt g (z + (i : ℤ))) = false)
+    (hbud : idleBudget pend φ ≤ L) :
+    ∃ (a : ℤ) (k : ℕ), 0 < k ∧ k ≤ idleBudget pend φ ∧ z ≤ a ∧
+      a + (k : ℤ) ≤ z + (L : ℤ) ∧
+      (∀ i : ℕ, i < k → pend (objAt g (a + (i : ℤ))) = false) ∧
+      objAt g a = objAt g (a + (k : ℤ)) ∧
+      tpOf (ladderModel step pend fwd bwd lab) φ σ a
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ (a + (k : ℤ)) := by
+  classical
+  set b := idleBudget pend φ with hb
+  let f : Fin (b + 1) → {q : Q // pend q = false} ×
+      {T : Finset PlusFormula // T ∈ (plusSubformulaClosure φ).powerset} :=
+    fun i => (⟨objAt g (z + ((i : ℕ) : ℤ)), hrun (i : ℕ) (by have := i.isLt; omega)⟩,
+      ⟨tpOf (ladderModel step pend fwd bwd lab) φ σ (z + ((i : ℕ) : ℤ)),
+        Finset.mem_powerset.mpr (tpOf_subset _ φ σ _)⟩)
+  obtain ⟨x, y, hxy, hf⟩ := Fintype.exists_ne_map_eq_of_card_lt f (by
+    rw [Fintype.card_prod, Fintype.card_subtype, Fintype.card_coe, Finset.card_powerset,
+      Fintype.card_fin, hb]
+    unfold idleBudget
+    omega)
+  have hf' : f x = f y := hf
+  simp only [f, Prod.mk.injEq, Subtype.mk.injEq] at hf'
+  obtain ⟨hobj, hty⟩ := hf'
+  have hxb : (x : ℕ) ≤ b := by have := x.isLt; omega
+  have hyb : (y : ℕ) ≤ b := by have := y.isLt; omega
+  rcases lt_or_gt_of_ne (fun h : (x : ℕ) = (y : ℕ) => hxy (Fin.ext h)) with hlt | hlt
+  · have hcast : z + ((x : ℕ) : ℤ) + (((y : ℕ) - (x : ℕ) : ℕ) : ℤ) = z + ((y : ℕ) : ℤ) := by
+      push_cast [Nat.cast_sub (le_of_lt hlt)]; ring
+    refine ⟨z + ((x : ℕ) : ℤ), (y : ℕ) - (x : ℕ), by omega, by omega, by omega, ?_, ?_, ?_, ?_⟩
+    · rw [hcast]
+      have : ((y : ℕ) : ℤ) ≤ (L : ℤ) := by exact_mod_cast le_trans hyb hbud
+      omega
+    · intro i hi
+      rw [show z + ((x : ℕ) : ℤ) + (i : ℤ) = z + (((x : ℕ) + i : ℕ) : ℤ) by push_cast; ring]
+      exact hrun ((x : ℕ) + i) (by omega)
+    · rw [hcast]; exact hobj
+    · rw [hcast]; exact hty
+  · have hcast : z + ((y : ℕ) : ℤ) + (((x : ℕ) - (y : ℕ) : ℕ) : ℤ) = z + ((x : ℕ) : ℤ) := by
+      push_cast [Nat.cast_sub (le_of_lt hlt)]; ring
+    refine ⟨z + ((y : ℕ) : ℤ), (x : ℕ) - (y : ℕ), by omega, by omega, by omega, ?_, ?_, ?_, ?_⟩
+    · rw [hcast]
+      have : ((x : ℕ) : ℤ) ≤ (L : ℤ) := by exact_mod_cast le_trans hxb hbud
+      omega
+    · intro i hi
+      rw [show z + ((y : ℕ) : ℤ) + (i : ℤ) = z + (((y : ℕ) + i : ℕ) : ℤ) by push_cast; ring]
+      exact hrun ((y : ℕ) + i) (by omega)
+    · rw [hcast]; exact hobj.symm
+    · rw [hcast]; exact hty.symm
+
+end IdlePigeonhole
+
 end FormalSystem.Metalogic.Decidability.RaySummary
