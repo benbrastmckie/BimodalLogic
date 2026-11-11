@@ -1,5 +1,5 @@
 ---
-next_project_number: 916
+next_project_number: 919
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 916
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,912 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,913,914 | 298,428,502,743,761,873,912 | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,912,916 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,913,914,917 | 298,428,502,743,761,873,912,916 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 3 | 410,498,499,500,804,861,918 | 429,497,763,803,917 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -76,6 +76,9 @@ next_project_number: 916
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
+916 [NOT STARTED] — Dispatch or compile a refutation of the ANTITONE slice of a...
+  └─ 917 [NOT STARTED] — Discharge ForwardSlackWitnessed under ParamsOk, or compile a...
+    └─ 918 [NOT STARTED] — Produce a positive factorization lemma for the index of which...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Documentation
@@ -123,6 +126,75 @@ next_project_number: 916
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 918. Ladder cell index positive factorization
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 917
+- **Parent**: Task 761
+
+**Description**: Produce a positive factorization lemma for the index of which cell a ladder state has, or compile a refutation that no index meeting the recorded constraints exists. This is the SECOND, INDEPENDENT blocker on the ladder realization theorem -- the one the cell-agreement chain does not touch.
+
+VERIFIED STARTING POSITION (every refutation below is a compiled wired probe, not an argument):
+(1) The realization theorem is BLOCKED on this index, separately from the cell agreement. FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean claims NO index of a ladder cell.
+(2) The clipped-coordinate index family is REFUTED at the countdown coordinate and bounded at the gap one by specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean: the region's first idle state sits at distance exactly c + 1, where the countdown's parity is observable.
+(3) The bounded-carrier alternative is closed AS A GENERAL ROUTE by that same probe.
+(4) The residue-carrying candidate that probe exhibits is refuted at BOTH of its object-exhibited parameters by specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean (object_only_parameters_refuted, reach_period_refuted).
+
+THE CONSTRAINTS ARE THEREFORE COMPILED, NOT GUESSED. Any index must satisfy both: the threshold must be FORMULA-derived, not object-exhibited; and the modulus must be a MULTIPLE OF THE PERIOD of every letter-definable sub-object. A candidate violating either is already refuted by (4) and must not be re-attempted.
+
+TWO ADMISSIBLE OUTCOMES: the positive factorization lemma under those two constraints, or a compiled refutation that they cannot be jointly met -- which would close the ladder route for the realization theorem and is a reportable negative result, not a failure. The stabilization lemma in the pair of ladder counters is ALREADY refuted (ladder-cell-refutation.lean) and is not to be re-attempted; this task is about the index, not the stabilization.
+
+SCOPE: the index only. Different file set from the cell-agreement siblings, so this may run concurrently with them.
+
+---
+
+### 917. Forward slack witnessed discharge or refutation
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 916
+- **Parent**: Task 910
+
+**Description**: Discharge ForwardSlackWitnessed under ParamsOk, or compile a refutation showing it is unremovable. This is the hypothesis that currently keeps every landed depth-0 cell-equality schema from bearing on the reserved obligation in either direction.
+
+VERIFIED STARTING POSITION (compiled, not argued):
+(1) THREE depth-0 cell-EQUALITY schemas are landed in FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean -- cellLE_zero_const_of_kappa_eq_of_forwardSlack (equal register), cellLE_zero_const_of_kappa_eq_commonShift_of_forwardSlack (common shift, register freed), and cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack (monotone, carrying neither restriction and specializing to both the others at the equal-register and common-shift instances). ALL THREE carry ForwardSlackWitnessed as a hypothesis a consumer must supply, and nothing in the tree discharges it.
+(2) Consequently all three are STRICTLY STRONGER IN HYPOTHESES than the reserved statement and bear on its truth value in NEITHER DIRECTION. The reserved name cellLE_zero_const_of_kappa_eq has no declaration site anywhere under FormalSystem/, and CellLEZeroConstOfKappaEq under ParamsOk stays neither proved nor refuted.
+(3) ForwardSlackWitnessed (LadderCell.lean:718) lifts the forward-slack regime from one path to a whole cell: every type the cell at a state realizes is realized there by SOME path carrying HasForwardSlack. Being an existential over paths it is untouched by ClimbWitness.hasForwardSlack_refuted_unconditional (LadderChain.lean:1497), which refutes the PER-PATH state-level regime -- that asymmetry is why the existential form survives while the per-path one does not. It asserts nothing as it stands; it is a hypothesis.
+(4) A second, independent restriction travels with it: the room bounds. The monotone schema carries a room bound on the upper pair plus that pair's own gap; the common-shift one carries a DOUBLED displacement amount (one multiple of P+1 for the countdown, one for the lowered anchor) with a correspondingly doubled room bound. None of these is implied by, nor implies, the pending-forever gap.
+
+TWO ADMISSIBLE OUTCOMES: discharge ForwardSlackWitnessed from ParamsOk (plus the room bounds, if they come free), landing cellLE_zero_const_of_kappa_eq at last; or compile a refutation that it is derivable, which is itself a result -- it would force certStabK's one unclaimed Real condition to be RESTATED rather than proved, and that consequence must be recorded if so. Never leave the verdict tacit.
+
+SCOPE: the hypothesis discharge only. The antitone slice of the collision dichotomy belongs to a sibling, and this task must not land anything under the reserved name unless the discharge actually succeeds.
+
+---
+
+### 916. Antitone collision residue lower pair witnessing
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 910
+
+**Description**: Dispatch or compile a refutation of the ANTITONE slice of a kappa-class collision -- the complement that cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack excludes in its own quantifier.
+
+VERIFIED STARTING POSITION (compiled, not argued):
+(1) kappa_collision_monotone_or_antitone makes the monotone and antitone slices an EXHAUSTIVE dichotomy over collisions, with no third case. The monotone slice is dispatched as depth-0 cell EQUALITY by cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack (FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean); the antitone slice is excluded by a named hypothesis, not refuted.
+(2) The excluded slice is NOT vacuous: kappa_collision_antitone_residue_nonvacuous inhabits it inside the pending-forever regime above the threshold at the pairs (4,2) against (6,0).
+(3) The reason the free-register raise reaches the monotone side and no further is compiled, not asserted: free_register_anchor_clause_monotone_required shows the lower bound nxtAt g z <= n0 of exists_ladderPath_through_free_register_shifted_of_pend_past is NON-REMOVABLE at the arithmetic witness X = 19, nz = 8, cz = 10, mP = 0, n0 = 0, d = 11. The two bounds on the free anchor pay for OPPOSITE directions of the one anchor clause -- the lower for the register two-sided Lipschitz bound, the upper for the pin distance -- so an antitone displacement puts the register on the wrong side of the clause the raise closes.
+
+THE ROUTE IS NAMED AND CLAIMED IN NEITHER DIRECTION (recorded by its predecessor in both the necessity record docstring and RaySummary/README.md): forward-slack witnessing at the LOWER pair, to pay the upper anchor direction the necessity record compiles as failing. That is the statement to try first; it is not a prediction that it holds.
+
+TWO ADMISSIBLE OUTCOMES, both closing the dichotomy: dispatch the slice with a genuine argument, or compile a refutation. A refutation is as good an outcome as a proof and must be a compiled witness, never an argument. The reserved name cellLE_zero_const_of_kappa_eq stays reserved either way and nothing may land under it here.
+
+SCOPE: the antitone slice only. It does not reach the ForwardSlackWitnessed discharge, which a sibling owns.
+
+---
 
 ### 915. Reconvert reindex reynolds auxiliary atoms sections
 - **Effort**: small

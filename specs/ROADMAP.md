@@ -99,8 +99,9 @@ cited record, not here.
   makes TM⁺ already the proof system through `tr`. Past that, L^▷ completeness reduces to a
   question answered negatively or not at all: TM⁺ is **incomplete** at Base
   (`plus_incomplete_base`) and completeness of any recursive extension is open at every class.
-  That question was 865's, discharged as research; its owner is now **879**, with 870, 871 and
-  867 as prerequisites.
+  That question was 865's, discharged as research; **879 carried it and is closed**, its 21-row
+  ingredient table reduced to items 8 and 9 (899, 900) with everything else landed or held as
+  paper.
 - **Gate asymmetry.** `(P1)` gates at Base/Dense/RTime, where its r.e. status is open with a
   located obstruction. At ZTime it is settled affirmatively *on paper*, so `(P2)` is gated on
   `(P0b)` alone, **not** on Stage 1, which adds a constructive settlement there.
@@ -138,6 +139,25 @@ cited record, not here.
   and **no** finite model property — a *regular*-model property instead (every ZTime-refutable
   formula is refuted on a finitely presented, not finite, doubly serial oriented forest). It is
   the hedge against the Lean engine and runs beside it.
+- **No Lean formalization of the Reynolds engine's §§7–15** (901's Recommendation 8). The
+  two-sided chronicle, ban preservation, lulls and hue scheduling, universal non-acceptance, the
+  two-sided truth lemma and the final-frame assembly stay a **paper** proof. The CSLib `require`
+  question is not to be re-opened on their account either; both conclusions are inherited and
+  901 strengthens neither direction. What this leaves in Lean is the targets *stated*
+  (`LCComplete`, `LCRulesComplete`, `LCURulesComplete` in `Metalogic/LCExtension.lean`, no proof
+  and no `sorry`) and the soundness half proved (`ext_sound_ztime`, `ext_sound_validIn`). Filing
+  a formalization task for any part of §§7–15 is a ruling violation, not a judgement call.
+- **The three landed cell-equality schemas bear on the reserved obligation in NEITHER
+  direction**, and may not be described as partial progress toward it. Each is strictly stronger
+  in hypotheses than `CellLEZeroConstOfKappaEq` under `ParamsOk`, because each carries
+  `ForwardSlackWitnessed` (917's subject) and its own room bounds. `cellLE_zero_const_of_kappa_eq`
+  has **no declaration site** under `FormalSystem/` and nothing may land under it until the
+  discharge actually succeeds.
+- **The refuted ladder-cell index candidates are not to be re-attempted** (the fourteenth and
+  fifteenth wired probes). A clipped-coordinate index, a bounded carrier as a general route, and
+  any candidate whose threshold is object-exhibited or whose modulus is not a multiple of every
+  letter-definable sub-object's period are each already refuted by a compiled witness. 918 works
+  under the surviving specification, not around it.
 - **Presentation (a) for 761** (819): the set-valued per-state datum in maximum-certified form
   (`D` over `Q × ClType φ × K`, `ladderRealized` the fibre equation). **No tuple index is to be
   stated at any parameters.**
@@ -149,13 +169,34 @@ cited record, not here.
 ## Run these next
 
 ```bash
-/orchestrate 894,915,895,896 --hard --lit  # Stage 2: P2 -> P3 -> P4 of 879's ingredient table, plus the Reynolds re-ingest 895 needs. Dependency-ordered; dry-run clean. Lands soundness of the whole T3 system as a theorem
-/orchestrate 909,910 --hard --lit       # Stage 1's live open core: the register-lowering deletion and the saturated-gap residue. Needs the 909 -> 910 edge first (they share LadderCell.lean). A compiled refutation is as good an outcome as a proof
-/orchestrate 899,900 --hard             # P7/P8: the cut product lemma and the linear bridge. Both defer against 894 on docs/theorem-index.md -- run after it, or add serializing edges
-/orchestrate 905,906                    # the two research questions 901 filed: cross-certification elimination, and lcU-from-LC_n (879's Q1). Report only, no Lean
-/orchestrate 912,913,914                # agent-system: coupled generated surfaces in plan authoring, V10 pair paths, batch-gate narrowing. Off both fronts
-/todo                                   # 11 completed tasks read the open count high; CHANGE_LOG's last entry is 2026-10-04
+/orchestrate 916,917,918 --hard --lit    # Stage 1's live open core, successor batch, dependency-ordered 916 -> 917 -> 918. Dry-run clean: zero deferred, zero blocked. A compiled refutation is as good an outcome as a proof on all three
+/orchestrate 899,900 --hard              # P7/P8, the last two compiled ingredients of 879's table: the cut product lemma and the linear bridge. These FINISH the completeness front's Lean programme as scoped
+/orchestrate 905,906                     # the two research questions 901 filed: cross-certification elimination, and lcU-from-LC_n (879's Q1). Report only, no Lean
+/orchestrate 912,913,914                 # agent-system: coupled generated surfaces in plan authoring, V10 pair paths, batch-gate narrowing. Off both fronts
+/orchestrate 908                         # the `Constraints consumed:` marker-accuracy audit, which the cone-carrier work found C34a already catching by hand
+/todo                                    # 17 completed tasks read the open count high; CHANGE_LOG's last entry is 2026-10-04
 ```
+
+**Stage 2's Lean programme is all but exhausted, by ruling and not by exhaustion of effort.**
+Every row of 879's 21-row ingredient table is now landed, held as paper, or one of two small
+lemmas: items 4, 5 and 6 landed as the cone carrier (`coneFrame`, `exists_coneUnravelling`, the
+two-layer *Saturation* split), the formula-level AA⊡ rule with ZTime soundness
+(`FormalSystem/Metalogic/AuxiliaryAtoms.lean`: `aa_sound_int`, `aa_sound_ztime`,
+`aa_reflectTime_sound_ztime`) and the extended system
+(`FormalSystem/Metalogic/LCExtension.lean`: the ten-constructor `ExtDerivation`,
+`ext_sound_ztime`, `ext_sound_validIn`, and `LCComplete`/`LCRulesComplete`/`LCURulesComplete`
+stated with no proof and no `sorry`). Items 13 and 15 landed as the base-*Saturation*-free
+invariance and the universal cover. **Only items 8 and 9 remain — 899 and 900, both small.**
+Items 17–21 are paper, and 901's Recommendation 8 is a standing ruling: **do not file a Lean
+formalization of any part of its §§7–15**, and do not re-open the CSLib `require` question.
+So completeness now has its targets *stated* in Lean for the first time, its soundness half a
+theorem, and its proof deliberately on paper.
+
+**The one live external gap on the completeness front is a determinization, not a lemma of
+ours.** `Muller.toRabin_exists` (local CSLib fork, `DA/Conversions.lean`) is a `proof_wanted`
+and is the single remaining determinization gap; its named consumer is the ban/lull mechanism,
+per 903's split verdict. Nothing in this repository is blocked on it, because §§7–15 are not
+being formalized.
 
 **(H5) is fully discharged.** 870 landed `saturation_of_orientedForest` and 897 landed the
 universal cover, so 878's paper theorem that `{φ | PlusValidZTime φ}` is decidable now stands on
@@ -163,47 +204,100 @@ universal cover, so 878's paper theorem that `{φ | PlusValidZTime φ}` is decid
 no finite model property — a *regular*-model property instead. It is the hedge beside the engine,
 not a substitute for it.
 
-**The Stage 1 chain, bottom-up, is the whole of what remains on the decidability front.**
-`CellLEZeroConstOfKappaEq` under `ParamsOk` (refuted at the frozen `ParamsOkPre`, neither proved
-nor refuted under the real one — the live open core) gates `certStabK`, the one `Real` condition
-of six not claimed; which gates `real_certAdmK_of_paramsOk` and `real_subset_dmax`; which gate the
-ladder realization theorem; which is (W)'s run layer, the lift from one seam to validity; above
-which sits 763's `Decidable (PlusValidZTime φ)`, stated nowhere in the tree. The reserved name
-`cellLE_zero_const_of_kappa_eq` sits at the bottom of that chain, claimed by nothing. 909 and 910
-attack the core; 911 is the idle-cycle sharpening beside it.
+**The Stage 1 chain, bottom-up, is the whole of what remains on the decidability front, and it
+still has two independent live links.** `CellLEZeroConstOfKappaEq` under `ParamsOk` gates
+`certStabK`, the one `Real` condition of six not claimed; which gates
+`real_certAdmK_of_paramsOk` and `real_subset_dmax`; which gate the ladder realization theorem;
+which is (W)'s run layer, the lift from one seam to validity; above which sits 763's
+`Decidable (PlusValidZTime φ)`, stated nowhere in the tree.
 
-**761 stays `[HOLD]`, and lifting it buys nothing yet.** 853 discharged what its plan still marks
-`[NOT STARTED]` at Phases 11.12 and 11.13 (`exists_ladderPath_at_region_of_idle_past` and the
-unconditional join), but 761 remains `[BLOCKED]` on two independent obligations — the cell
-agreement above and the open ladder-cell index — and resuming re-imposes serialization on
-everything sharing the `RaySummary` library set, `docs/theorem-index.md`,
-`scripts/check-module-invariants.sh`, `specs/evidence/seam-gluing-ray-product/`,
-`specs/state.json` and `specs/TODO.md`. Wait for 909/910 to report.
+**The collision case split is now three-quarters dispatched, and what blocks the bottom link has
+changed shape.** `kappa_collision_regimes` has three branches, and three depth-`0` cell-EQUALITY
+schemas are landed against them in `LadderCell.lean`:
+`cellLE_zero_const_of_kappa_eq_of_forwardSlack` (equal register),
+`cellLE_zero_const_of_kappa_eq_commonShift_of_forwardSlack` (common shift, register freed) and
+`cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack` (monotone, carrying neither restriction
+and specializing to both the others' hypotheses). Two things keep them from reaching the
+reserved statement, and they are now separately owned:
+
+- **The antitone slice is EXCLUDED, not refuted** (916). `kappa_collision_monotone_or_antitone`
+  makes the two slices exhaustive with no third case, and
+  `kappa_collision_antitone_residue_nonvacuous` inhabits the excluded one at `(4,2)` against
+  `(6,0)` inside the pending-forever regime above the threshold. The reason the free-register
+  raise stops there is compiled: `free_register_anchor_clause_monotone_required` shows the
+  anchor clause's lower bound non-removable, and the clause's two bounds pay for opposite
+  directions. The route the slice would need — forward-slack witnessing at the LOWER pair — is
+  named and claimed in neither direction.
+- **`ForwardSlackWitnessed` is undischarged** (917), and this is the binding one. All three
+  schemas carry it as a hypothesis a consumer must supply; nothing in the tree discharges it.
+  Until it is discharged, all three are strictly stronger in hypotheses than the reserved
+  statement and bear on its truth value in **neither direction** — which is why
+  `cellLE_zero_const_of_kappa_eq` still has no declaration site anywhere under `FormalSystem/`.
+  The existential-over-paths form survives `ClimbWitness.hasForwardSlack_refuted_unconditional`
+  (which refutes the per-path state-level regime) precisely because it is existential; that
+  asymmetry is the opening. The room bounds travel with it and are independent of the
+  pending-forever gap.
+
+**761 stays `[HOLD]`, and lifting it still buys nothing — but its two blockers are now both
+owned.** 853 discharged what its plan still marks `[NOT STARTED]` at Phases 11.12 and 11.13
+(`exists_ladderPath_at_region_of_idle_past` and the unconditional join). The cell agreement is
+916/917's; the **open ladder-cell index is 918's**, and it is genuinely independent — the
+clipped-coordinate family is refuted at the countdown coordinate by the fourteenth wired probe
+(`ladder-cell-index-obstructions.lean`: the region's first idle state sits at distance exactly
+`c + 1`, where the countdown's parity is observable), the bounded-carrier alternative is closed
+as a general route by the same probe, and the residue-carrying candidate is refuted at both of
+its object-exhibited parameters by the fifteenth (`ladder-residue-index-refutation.lean`). What
+those refutations buy is a **specification**: any index must have a formula-derived threshold
+and a modulus that is a multiple of the period of every letter-definable sub-object. The
+positive factorization lemma under those two constraints is open and is 918's whole content.
+918's edge to 917 is a **territory** edge, not a mathematical one — the two problems are
+genuinely independent, but they share `RaySummary/README.md`, so the admission gate serializes
+them either way and an explicit edge is the sanctioned way to say so.
+Resuming 761 itself re-imposes serialization on everything sharing the `RaySummary` library set,
+`docs/theorem-index.md`, `scripts/check-module-invariants.sh`,
+`specs/evidence/seam-gluing-ray-product/`, `specs/state.json` and `specs/TODO.md`. Wait for
+916/917/918 to report.
+
+**A gap that is nobody's task and should be decided before 763 is attempted.** Requirement (S)
+is discharged only for `box`/`stab`-free `φ` at ONE seam (`presented_modelOf`,
+`hitCl_modelOf_eq_hitOf`). `box`/`stab`-bearing `φ` and every other seam are open, and
+`Decidable (PlusValidZTime φ)` needs (C), (S) and (W) together. (C) is settled in general
+(`exists_hitPresented`) and (W) is what 916/917/918 attack; (S)'s remaining scope is assigned to
+(W) in `RaySummary/README.md`'s own accounting, but no filed task carries it. Either confirm
+that assignment is sufficient or file the extension — do not discover this at 763.
 
 **The 838 chain is spent and closed.** 838 is `[COMPLETED]` at 10/10 phases: the restricted
 obligation `cellLE_zero_const_of_kappa_eq_of_forwardSlack` landed as a theorem concluding cell
 equality, and two decision gates returned compiled FAIL verdicts (the spanning-block device both
-ways, and the idle-gap lengthening — refuted one level below the pin condition, by `step` itself).
-Re-planning the area from 838's two-sided framing is barred; its residue is 909/910/911.
+ways, and the idle-gap lengthening — refuted one level below the pin condition, by `step`
+itself). Re-planning the area from 838's two-sided framing is barred. Its residue 909/910/911 is
+now `[COMPLETED]`, and the residue of *that* is 916/917.
+
+**911's verdict, for the record.** The idle-cycle sharpening landed: where the object's idle
+states carry a reachable cycle, the lengthening IS available
+(`idleGapLengtheningOfIdleRunRepeat_holds`, `LadderIdle.lean`), and the pin condition does not
+merely loosen but **discharges outright** for an idle block. The freed-increment form is
+refuted alongside it (`idleGapLengtheningAllIncrements_refuted`), so the restriction is
+necessary and not an artifact of the proof.
 **Coverage appendix (uncovered tasks)**:
 ```
 /orchestrate 178,502,570,604,664,714,743,781
 /orchestrate 817,818,821,829,830,831,832,873
-/orchestrate 890,907,908,911,915
+/orchestrate 890,907
 ```
 
 ## Next batches
 
 ```bash
 # Stage 1 — decidability of L⁺ at ZTime: the binding front
-/orchestrate 909,910 --hard --lit        # the live open core: register-lowering deletion, saturated-gap residue. Needs the 909 -> 910 edge (shared LadderCell.lean)
-/orchestrate 911 --hard --lit            # the idle-cycle sharpening: where the object's idle states carry a reachable cycle, the lengthening IS available
-/orchestrate 763 --hard --lit            # the lift and the Decidable (PlusValidZTime φ) corollary — needs 761 resumed AND the chain above closed
+/orchestrate 916,917,918 --hard --lit    # the live open core: antitone collision slice, ForwardSlackWitnessed discharge, ladder-cell index. Serialized 916 -> 917 -> 918 on shared LadderCell.lean / RaySummary README territory
+/orchestrate 862 --hard --lit            # forward pend/countdown rigidity sharpening (researched); feeds the same cell-level arithmetic
+/orchestrate 763 --hard --lit            # the lift and the Decidable (PlusValidZTime φ) corollary — needs 761 resumed AND the chain above closed. Settle the (S) scope question first
 /orchestrate 714,781 --hard              # sliced-certificate internals (781 researched)
 # Stage 2 — completeness of L⁺ at ZTime: TM⁺ plus the until-form schema
-/orchestrate 894,915,895,896 --hard --lit # P2/P3/P4 of 879's ingredient table plus the Reynolds re-ingest, dependency-ordered. Ends with T3 soundness a theorem
-/orchestrate 899,900 --hard              # P7/P8: the cut product lemma and the linear bridge. Defer against 894 on docs/theorem-index.md
+/orchestrate 899,900 --hard              # P7/P8, the LAST two compiled ingredients of 879's table: the cut product lemma and the linear bridge. These finish the front as scoped
 /orchestrate 905,906                     # the two questions 901 filed: cross-certification elimination; lcU-from-LC_n (Q1). Report only
+/orchestrate 543 --hard --lit            # MF correspondence rigidity (priority high, unscheduled since the table closed) — the only remaining high-priority L⁺ metalogic task
 # Stage 2b — supporting semantics and metalogic
 /orchestrate 664,570 --lit               # corpus ingest and the C3 open question
 /orchestrate 830 --hard                  # Γ-generalize decidableValidZTime; does NOT advance either aim
@@ -224,7 +318,7 @@ Re-planning the area from 838's two-sided framing is barred; its residue is 909/
 /orchestrate 430,412,482 --hard --lit    # the spine's terminus
 /orchestrate 502,497 --research --lit    # the STSA literature gate, then the G-operator gap
 /orchestrate 498,499,500 --hard          # the representation's two sides and their reconciliation
-/orchestrate 125,501,543 --hard          # the Jónsson–Tarski capstone, Until/Since on STSA, MF correspondence
+/orchestrate 125,501 --hard              # the Jónsson–Tarski capstone and Until/Since on STSA (543 moved to Stage 2, where its consumer is)
 /orchestrate 177                         # last in the programme: README, docs/ and docstring polish
 # Stage 5 — L^▷ exploration. Secondary, priority low; never ahead of, or batched with, Stages 1–2
 /orchestrate 873                         # subformula closure (ungated)
@@ -268,7 +362,9 @@ hold, not the aim.
 
 ## Not batched, and why
 
-- **713**, **734** are `HOLD` by ruling, **761** by the Stage 0 item above.
+- **713**, **734** are `HOLD` by ruling, **761** by the Stage 0 item above. 761's two blockers are
+  owned without lifting the hold: the cell agreement by 916/917, the ladder-cell index by 918.
+  Lift it only once both report, and never to run them.
 - **The agent-system freeze is resolved.** The records that declared edit targets resolving only
   under the source store (`~/.config/nvim/agent-system/**`) have been migrated out of this
   repository's task space and are gone from `specs/state.json`. Tasks 912–914 are the live
@@ -297,11 +393,33 @@ out of the immediate run list appears there correctly; its presence is not a gap
 - **Gate 8 is sidestepped, not passed** — the `stab`/`box` clauses are present but unexercised.
 - **`HasForwardSlack` is a genuine regime, not a missing lemma.** The upper residual inequality is
   refuted by a climbing-register ladder path (`ClimbWitness` in `LadderChain.lean`); there is no
-  Drift-level invariant to isolate. **Do not re-attempt route (a).** The live route is the one
-  `LadderChain.lean` already occupies: the upward cell inclusion
-  `cellAt_subset_of_shift_of_pend_past` and the path-level downward inclusion
-  `mem_cellAt_of_shift_of_hasForwardSlack_exact`, with the gap to `CellLEZeroConstOfKappaEq` being
-  the tight (doubling) chain of pins — not a one-sidedness gap.
+  Drift-level invariant to isolate, and `hasForwardSlack_refuted_unconditional` refutes the
+  per-path state-level regime outright. **Do not re-attempt route (a).** The surviving form is
+  `ForwardSlackWitnessed` (`LadderCell.lean`) — an existential over paths, which is exactly why
+  it escapes that refutation. The gap to `CellLEZeroConstOfKappaEq` is **no longer the tight
+  (doubling) chain of pins**: the register-lowering deletion and the free-register raise are both
+  landed, so what remains is discharging `ForwardSlackWitnessed` and its room bounds (917) plus
+  the antitone collision slice (916).
+- **The plan-specified spine for the register-lowering deletion is not implementable, and the
+  landed route is not to be "corrected" back to it.** `exists_deleted_ladderPath_overshoot_of_pend_past`
+  pins its slack amount to the shape `R*l + budget*l` at the held register in hypothesis *and*
+  conclusion, so the extra displacement a lowered anchor needs is destroyed by the loop and
+  cannot be recovered — slack transport is exact in both directions, monotonicity runs the wrong
+  way in both arguments, and the increment folds into the loop's shape only when the step
+  divides it. The landed route lowers the register *before* the surgery via
+  `exists_ladderPath_of_walk_nxt_at` on the path's own walk and countdown, then applies the
+  held-register theorem as a black box. Generalizing that loop to a free slack amount is a
+  recorded option, needed by nothing landed.
+- **The idle-gap lengthening's freed-increment form is refuted**
+  (`idleGapLengtheningAllIncrements_refuted`, `LadderIdle.lean`): idle states with a 2-cycle and
+  no self-loop admit only even-length runs. The run-local restriction — a block of the idle run
+  whose two ends carry the same object state — is **necessary**, not an artifact of the proof, and
+  under it the pin condition **discharges outright** rather than merely loosening
+  (`idleSplice_pins` carries only `IsLadderPath`, positivity and the block's idleness). Do not
+  re-propose the unrestricted form.
+- **`spliceCnt` does not transfer to an idle block.** Its region-raise clause fires vacuously at
+  an in-block position and returns the step where zero is forced, which is why `idleSpliceCnt` is
+  a separate definition. Do not attempt to reuse `spliceCnt` there.
 - **The unconditional `buildTableau_isSome` is FALSE by construction** at the engine's
   `maxBranches := 50000` guard, at any fuel. The whole decidable-branch-gate family collapses to
   `false` on any branch that mints a world, so 429 is a redesign, not a repair.
@@ -354,11 +472,18 @@ out of the immediate run list appears there correctly; its presence is not a gap
   closedness. The cure of record is the until-form `LCU` and its mirror plus the Reynolds
   automaton-and-ban machinery (Reynolds 2001 §11–§13), per 879's report finding 2.3; `LC_n`'s
   role in a language with `untl`/`snce` primitive is open (879's Q1, now owned by 906).
-- **R3, the doubled AA⊡ rule: its 870 gate is discharged and 867 has landed; still not filed.**
-  It belongs to the programme 879 owns, which files it if its ingredient table calls for it.
-  Filed instead: 894 (the cone carrier), 895 (the formula-level rule, gated on 894) and 896 (the
-  extended system, gated on 895). The Auxiliary-Atoms carrier's *Saturation* obligation is what
-  894 discharges, on 870's lemma; `NamingRules.lean` lines 57–82 record the blocker it closes.
+  **Both halves of that cure are now in hand on their own terms** — `LCU` and its mirror are
+  declared and ZTime-valid (`lcU`, `lcU_plusValidZTime`, `lcU_reflectTime_plusValidZTime`), and
+  the ban/lull machinery is written out as a paper proof — **and the obstruction is still not
+  discharged**, because the ruling above keeps §§7–15 out of Lean. Closedness is therefore the
+  front's standing open problem, owned by no task and not to be filed as one without a fresh
+  user ruling that reverses 901's Recommendation 8.
+- **R3, the doubled AA⊡ rule, is answered by what landed rather than by a task of its own.** The
+  chain 894 → 895 → 896 is `[COMPLETED]`: the cone carrier discharged the Auxiliary-Atoms
+  carrier's *Saturation* obligation on 870's lemma (the blocker `NamingRules.lean` recorded is
+  closed, and that docstring's "left open" assertion is retired); 895 landed the formula-level
+  rule forward and mirror with ZTime soundness; 896 landed the extended system. A separate R3
+  filing would duplicate `aa_sound_ztime`/`aa_reflectTime_sound_ztime` and is not to be made.
 - **The one invisible collision across Stages 2 and 5** is the one-line import in
   `FormalSystem/Semantics/Presheaf.lean`, which no task declares. Batch only tasks already
   serialized by a dependency edge, and re-run `lake build` after each aggregator edit.
