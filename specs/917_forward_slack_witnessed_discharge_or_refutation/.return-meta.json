@@ -1,27 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/917_forward_slack_witnessed_discharge_or_refutation/reports/01_forward-slack-witnessed-discharge.md",
-      "summary": "ForwardSlackWitnessed is neither discharged nor refuted; it reduces (compiled) to a bound on the next region's countdown, the discharge route via type-respecting excision in the next region is identified and sized by (K2)/(K3), and the one blocker is the forward pin cascade."
+      "type": "plan",
+      "path": "specs/917_forward_slack_witnessed_discharge_or_refutation/plans/01_forward-slack-witnessed-discharge.md",
+      "summary": "Nine-phase, 14.5-hour plan for the ForwardSlackWitnessed discharge: reduction and scoping records, a deletion primitive above z's region, a decision gate on the pin cascade with a compiled-refutation contingency, the conditional discharge, and the five hypothesis-free schemas."
     }
   ],
-  "user_decision": {
-    "question": "Discharging ForwardSlackWitnessed would NOT land the reserved cellLE_zero_const_of_kappa_eq: that schema quantifies over every kappa-collision, while all five landed inclusions carry the pending-forever gap n+2<=c (which by pend_past_of_nxtAt_lt restricts to paths pending at every earlier position) plus room bounds, and the ordinary window regime c<=n+1 is covered by nothing. Given the smaller payoff, should the multi-phase discharge route still be attempted?",
-    "options": [
-      "Proceed with the discharge route (Route D) scoped honestly as dropping one hypothesis from five schemas, not as landing the reserved name",
-      "Land only the cheap compiled value (the reduction, the amount ceiling, the seriality record, paramsOk_inflate) and stop short of the new deletion primitive",
-      "Redirect the task at the uncovered window regime c<=n+1 instead, which is the larger gap between the landed schemas and the reserved name"
-    ],
-    "recommended": "Proceed with the discharge route (Route D) scoped honestly as dropping one hypothesis from five schemas, not as landing the reserved name",
-    "blocking": false
-  },
+  "next_steps": "Run /orchestrate 917 to execute the plan",
+  "memory_candidates": [
+    {
+      "content": "When authoring a lean4 plan in this repository, compile-check the plan's own '## Lean Challenge Statements' block before returning: `bash .claude/scripts/lean-challenge-snapshot.sh <task> <project_root> --dry-run --compile` assembles the pinned signatures into a module, cross-validates the Goals identifier set against the block's declarations (printing 'route: plan-declared' and the sorted theorem names), and elaborates the result against the project's own oleans, ending in '# compile: OK' or a real elaboration error. It writes nothing and needs no lake build. This converts every pinned signature -- including ones authored from scratch at plan time for declarations that do not yet exist -- from an authoring guess into compiled evidence, and catches the two failure modes a plan cannot otherwise detect: a signature that does not type-check (so the implementer would be blocked by a wrong contract under rules/plan-compliance.md's Statement Fidelity clause) and a Goals/Challenge identifier mismatch. Note the two authoring prerequisites it exposes: the block must carry its own namespace and `open` lines (names under FormalSystem.Metalogic.* do not resolve bare), and every declaration needs explicit binders because probe bodies compiled through lean_run_code rely on autoImplicit, which the package's mathlibStandardSet lint configuration plus CI's --wfail turn into a failure in-library.",
+      "category": "PATTERN",
+      "source_artifact": "specs/917_forward_slack_witnessed_discharge_or_refutation/plans/01_forward-slack-witnessed-discharge.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean-challenge-snapshot", "plan-authoring", "lean4", "signature-pinning", "autoImplicit", "compile-check"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1794365863_292a3e_917",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 9,
+    "estimated_hours": 14.5,
+    "dependency_waves": [[1], [2, 3], [4], [5], [6], [7], [8], [9]]
+  },
+  "dispatch_seq": 5
 }
