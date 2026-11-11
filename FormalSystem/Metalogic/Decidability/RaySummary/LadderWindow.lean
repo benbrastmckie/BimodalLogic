@@ -800,6 +800,237 @@ theorem window_iter_pins
   · have := pinCompat_of_ladderPath g hg w y hw0 hw1 hy0 hy1
     omega
 
+/-- `natAbs` of a difference is symmetric. Stated here because the two budget invariants are
+written with the distance in opposite orders — the anchor clause reads `|v - z|` at a pin and the
+anchor budget reads `|z - a|` at the region start — and nothing in the ambient library names this
+in the `Int` namespace. -/
+theorem window_natAbs_sub_comm (x y : ℤ) : (x - y).natAbs = (y - x).natAbs := by omega
+
+/-- **THE ANCHOR CLAUSE AT THE RAISED REGION START, AS PURE ARITHMETIC.** One step of the
+iteration raises the region start's countdown by `l`; the anchor clause survives because the
+anchor budget `hbudg` has `El + l` of `R` still unspent. The lower half is free — subtracting
+from a countdown already within `D` of `n₀` only helps — and the upper half is exactly where the
+budget is drawn down. Scale-invariant: `El` and `l` are opaque. -/
+theorem window_iter_anchor_raise (c n₀ R D El l : ℕ)
+    (hanch : ((c : ℤ) - (n₀ : ℤ)).natAbs ≤ D) (hbudg : c + R ≤ n₀ + D + El)
+    (hle : El + l ≤ R) :
+    (((c + l : ℕ) : ℤ) - (n₀ : ℤ)).natAbs ≤ D := by omega
+
+/-- **THE ANCHOR CLAUSE AT A PIN DISPLACED UPWARD, AS PURE ARITHMETIC.** A pin at or above the
+block is pushed further from an anchor at or below it, so its clause is strictly looser. -/
+theorem window_iter_anchor_shift (c n₀ l : ℕ) (y z : ℤ) (hz : z ≤ y)
+    (h : ((c : ℤ) - (n₀ : ℤ)).natAbs ≤ (y - z).natAbs) :
+    ((c : ℤ) - (n₀ : ℤ)).natAbs ≤ (y + (l : ℤ) - z).natAbs := by omega
+
+/-- **THE PIN-PAIR BUDGET'S REPRODUCTION, AS PURE ARITHMETIC.** Raising the higher countdown by
+`l` costs at most `l` of the banked slack, and the invariant is written with the spend on the
+right so the reproduction is an identity rather than a truncated subtraction. -/
+theorem window_iter_slack_raise (ch cl R D El l E1 : ℕ)
+    (h : ((ch : ℤ) - (cl : ℤ)).natAbs + R ≤ D + El) (he : El + l = E1) :
+    (((ch + l : ℕ) : ℤ) - (cl : ℤ)).natAbs + R ≤ D + E1 := by omega
+
+/-- **THE ANCHOR BUDGET'S REPRODUCTION, AS PURE ARITHMETIC.** The countdown rises by `l` exactly
+as the unspent budget falls by `l`, so this invariant reproduces itself with no slack lost. -/
+theorem window_iter_budget_raise (c R n₀ D El l E1 : ℕ)
+    (h : c + R ≤ n₀ + D + El) (he : El + l = E1) :
+    c + l + R ≤ n₀ + D + E1 := by omega
+
+/-- **NO PIN BELOW THE REGION START IS A DISPLACED PIN FROM ABOVE THE BLOCK.** The class-3
+positions all sit at or above `u`, strictly above the region start, so the trichotomy's third
+disjunct is vacuous for a position strictly below `a`. -/
+theorem window_iter_no_low_shift (w y a u : ℤ) (l : ℕ) (hau : a < u) (huy : u ≤ y)
+    (hwy : w = y + (l : ℤ)) (hw : w < a) : False := by omega
+
+/-- **THE WINDOW REGIME'S ITERATE: `m` COPIES OF ONE BLOCK, WITH THE REGISTER PRESCRIBED.** The
+window-regime analogue of `exists_iterSpliced_ladderPath_idx_of_pend_past`. The landed one carries
+the pending-forever hypothesis in two places — its per-step
+`exists_spliced_ladderPath_of_pend_past`, and the `hpend_all` step of its own anchor proof — and
+this regime denies it. What replaces the regime hypothesis is the pair of BUDGET invariants
+`hslack` and `hbudg`: each step spends exactly `l` of each, and `hmR : m · l ≤ R` is what the
+caller must buy up front.
+
+The walk is the original read through `iterSpliceIdx u l m` at every position, the countdown is
+raised by exactly `m · l` at every position of a region that reaches `u` — `z` among them — the
+register at `z` is the PRESCRIBED `n₀`, and the realized stab-free type at every position is the
+original's at the retracted position.
+
+Scope. Nothing here is a multiple of `P + 1`: `l` is whatever block the caller supplies, and the
+bridge putting it among the divisors of `P + 1` is `(K1)`'s, applied by the caller. Nothing here
+mentions the idle run: the slack the idle lengthening created enters only as the numeric budget
+`R`, so `HasForwardSlack` and `ForwardSlackWitnessed` are absent and the refuted deletion-above
+route is not re-entered. -/
+theorem exists_window_iterSpliced_ladderPath {Q : Type} [Finite Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    {g : ℤ → LadderState Q pend} (hg : IsLadderPath step pend g)
+    (z a u : ℤ) (l R n₀ : ℕ)
+    (hl : 0 < l) (haz : a < z) (hzu : z ≤ u)
+    (hai : pend (objAt g a) = false)
+    (hpend : ∀ v : ℤ, a < v → v ≤ u + (l : ℤ) → pend (objAt g v) = true)
+    (hureg : u ≤ a + 1 + (cntAt g (a + 1) : ℤ))
+    (hcl : l ≤ cntAt g u)
+    (hrep : objAt g u = objAt g (u + (l : ℤ)))
+    (hanch : ∀ v : ℤ, pend (objAt g v) = false → pend (objAt g (v + 1)) = true →
+      ((cntAt g (v + 1) : ℤ) - n₀).natAbs ≤ (v - z).natAbs)
+    (hslack : ∀ w : ℤ, w < a → pend (objAt g w) = false → pend (objAt g (w + 1)) = true →
+      ((cntAt g (a + 1) : ℤ) - cntAt g (w + 1)).natAbs + R ≤ (a - w).natAbs)
+    (hbudg : cntAt g (a + 1) + R ≤ n₀ + (z - a).natAbs)
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t, g t))
+    (hty : tpOf (ladderModel step pend fwd bwd lab) φ σ u
+         = tpOf (ladderModel step pend fwd bwd lab) φ σ (u + (l : ℤ)))
+    (m : ℕ) (hmR : m * l ≤ R) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v : ℤ, objAt g' v = objAt g (iterSpliceIdx u l m v)) ∧
+      (∀ v : ℤ, v ≤ u → u ≤ v + (cntAt g v : ℤ) → cntAt g' v = cntAt g v + m * l) ∧
+      nxtAt g' z = n₀ ∧
+      ∀ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        ∀ w : ℤ, tpOf (ladderModel step pend fwd bwd lab) φ σ' w
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ (iterSpliceIdx u l m w) := by
+  classical
+  haveI : Fintype Q := Fintype.ofFinite Q
+  -- the induction carries the two budget invariants, the anchor clause, and the block's top
+  suffices H : ∀ e : ℕ, e * l ≤ R → ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v : ℤ, objAt g' v = objAt g (iterSpliceIdx u l e v)) ∧
+      (∀ v : ℤ, v ≤ u → u ≤ v + (cntAt g v : ℤ) → cntAt g' v = cntAt g v + e * l) ∧
+      objAt g' (u + (l : ℤ)) = objAt g u ∧
+      (∀ v : ℤ, pend (objAt g' v) = false → pend (objAt g' (v + 1)) = true →
+        ((cntAt g' (v + 1) : ℤ) - n₀).natAbs ≤ (v - z).natAbs) ∧
+      (∀ w : ℤ, w < a → pend (objAt g' w) = false → pend (objAt g' (w + 1)) = true →
+        ((cntAt g' (a + 1) : ℤ) - cntAt g' (w + 1)).natAbs + R ≤ (a - w).natAbs + e * l) ∧
+      cntAt g' (a + 1) + R ≤ n₀ + (z - a).natAbs + e * l ∧
+      (∀ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        ∀ w : ℤ, tpOf (ladderModel step pend fwd bwd lab) φ σ' w
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ (iterSpliceIdx u l e w)) by
+    obtain ⟨g₁, hg₁, hobj₁, hcnt₁, -, hanch₁, -, -, hty₁⟩ := H m hmR
+    obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
+    -- the re-lift: the same walk and countdown, the register at the prescribed `n₀`
+    obtain ⟨g₀, hg₀, hobj₀, hcnt₀, hnxt₀⟩ :=
+      exists_ladderPath_of_walk_nxt_at (objAt g₁) (cntAt g₁) z n₀ (objAt_step g₁ hg₁)
+        (fun v h => cntAt_eq_zero_of_idle g₁ hg₁ v h)
+        (fun v h0 h1 => cntAt_succ_of_pend_pend g₁ hg₁ v h0 h1)
+        (fun v h0 h1 => (cntAt_eq_zero_of_pend_idle g₁ hg₁ v h0 h1).1)
+        (fun s v hs0 hs1 hv0 hv1 => pinCompat_of_ladderPath g₁ hg₁ s v hs0 hs1 hv0 hv1) hanch₁
+    refine ⟨g₀, hg₀, fun v => by rw [hobj₀ v, hobj₁ v],
+      fun v hv hreg => by rw [hcnt₀ v, hcnt₁ v hv hreg], hnxt₀, fun σ₀ hσ₀ w => ?_⟩
+    -- the re-lift agrees with `g₁` on the object walk, which is all the type reads
+    rw [tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := (0 : ℤ)) (k' := (0 : ℤ)) σ₀ σ₁
+      (fun t => by rw [add_zero]; exact hσ₀ t) (fun t => by rw [add_zero]; exact hσ₁ t)
+      hobj₀ hno w]
+    exact hty₁ σ₁ hσ₁ w
+  intro e
+  induction e with
+  | zero =>
+      intro _
+      refine ⟨g, hg, fun _ => rfl, fun v _ _ => by simp, hrep.symm, hanch,
+        fun w hw hw0 hw1 => by simpa using hslack w hw hw0 hw1, by simpa using hbudg,
+        fun σ' hσ' w => ?_⟩
+      exact tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := (0 : ℤ)) (k' := (0 : ℤ)) σ' σ
+        (fun t => by rw [add_zero]; exact hσ' t) (fun t => by rw [add_zero]; exact hσ t)
+        (fun _ => rfl) hno w
+  | succ e ih =>
+      intro hmR'
+      have hmR₁ : e * l ≤ R := by
+        have : e * l ≤ (e + 1) * l := Nat.mul_le_mul_right l (by omega)
+        omega
+      obtain ⟨g₁, hg₁, hobj₁, hcnt₁, htop₁, hanch₁, hslack₁, hbudg₁, hty₁⟩ := ih hmR₁
+      have hau : a < u := by omega
+      -- the splice's premises, read off the two clauses the induction carries
+      have hai₁ : pend (objAt g₁ a) = false := by
+        rw [hobj₁ a, iterSpliceIdx_of_lt u l e a (by omega)]; exact hai
+      have hpend₁ : ∀ v : ℤ, a < v → v ≤ u + (l : ℤ) → pend (objAt g₁ v) = true := by
+        intro v hv0 hv1
+        rcases lt_or_eq_of_le hv1 with hlt | heq
+        · rw [hobj₁ v, iterSpliceIdx_of_lt u l e v hlt]; exact hpend v hv0 hv1
+        · rw [heq, htop₁]; exact hpend u (by omega) (by omega)
+      have hca₁ : cntAt g₁ (a + 1) = cntAt g (a + 1) + e * l :=
+        hcnt₁ (a + 1) (by omega) (by omega)
+      have hureg₁ : u ≤ a + 1 + (cntAt g₁ (a + 1) : ℤ) := by
+        rw [hca₁]; push_cast; omega
+      have hcu₁ : cntAt g₁ u = cntAt g u + e * l := hcnt₁ u le_rfl (by omega)
+      have hpu₁ : pend (objAt g₁ u) = true := hpend₁ u (by omega) (by omega)
+      have hcl₁ : l ≤ cntAt g₁ u := by rw [hcu₁]; omega
+      have hrep₁ : objAt g₁ u = objAt g₁ (u + (l : ℤ)) := by
+        rw [hobj₁ u, iterSpliceIdx_of_lt u l e u (by omega), htop₁]
+      have hpa₁ : pend (objAt g₁ (a + 1)) = true := hpend₁ (a + 1) (by omega) (by omega)
+      have htri₁ := window_iter_pin_trichotomy g₁ hg₁ a u l hl hau hai₁ hpend₁ hureg₁
+      have hpins₁ := window_iter_pins g₁ hg₁ a u l R e hl hau hai₁ hpend₁ hureg₁ hslack₁ hmR'
+      obtain ⟨g₂, hg₂, hobj₂, hcnt₂⟩ :=
+        exists_ladderPath_of_walk_of_pins (spliceObj g₁ u l) (spliceCnt g₁ u l)
+          (spliceObj_step hg₁ hrep₁) (spliceCnt_idle hg₁ hpu₁ hcl₁)
+          (spliceCnt_pend_pend hg₁ hl hpu₁ hcl₁) (spliceCnt_pend_idle hg₁ hpu₁ hcl₁) hpins₁
+      have hobj₂' : ∀ w : ℤ, objAt g₂ w = objAt g₁ (spliceIdx u l w) := fun w => by
+        rw [hobj₂ w, spliceObj_eq_objAt_spliceIdx]
+      have he1 : e * l + l = (e + 1) * l := by ring
+      have hle : e * l + l ≤ R := le_trans (le_of_eq he1) hmR'
+      have hDc : (z - a).natAbs = (a - z).natAbs := window_natAbs_sub_comm z a
+      -- the raised countdown at `a + 1`, the one value both budget invariants read
+      have hca₂ : cntAt g₂ (a + 1) = cntAt g₁ (a + 1) + l := by
+        rw [hcnt₂ (a + 1), spliceCnt_add_of_mem_region hl (a + 1) (by omega) (by omega)]
+      refine ⟨g₂, hg₂, fun v => ?_, fun v hv hreg => ?_, ?_, fun v hv0 hv1 => ?_,
+        fun w hw hw0 hw1 => ?_, ?_, fun σ₂ hσ₂ w => ?_⟩
+      · rw [hobj₂' v, hobj₁, iterSpliceIdx_succ]
+      · have hreg₁ : u ≤ v + (cntAt g₁ v : ℤ) := by
+          rw [hcnt₁ v hv hreg]; push_cast; omega
+        rw [hcnt₂ v, spliceCnt_add_of_mem_region hl v hv hreg₁, hcnt₁ v hv hreg]
+        omega
+      · rw [hobj₂, spliceObj_of_ge (g := g₁) (a := u) (l := l) (u + (l : ℤ)) le_rfl,
+          show u + (l : ℤ) - (l : ℤ) = u by ring, hobj₁ u,
+          iterSpliceIdx_of_lt u l e u (by omega)]
+      · -- the anchor clause, class by class
+        rw [hobj₂ v] at hv0
+        rw [hobj₂ (v + 1)] at hv1
+        rw [hcnt₂ (v + 1)]
+        rcases htri₁ v hv0 hv1 with ⟨hva, hv0', hv1', hvc⟩ | ⟨hvw, hvc⟩ |
+            ⟨y, huy, hy0, hy1, hvy, hvc⟩
+        · rw [hvc]; exact hanch₁ v hv0' hv1'
+        · have h1 := hanch₁ a hai₁ hpa₁
+          rw [hvc, hvw]
+          exact window_iter_anchor_raise (cntAt g₁ (a + 1)) n₀ R ((a - z).natAbs) (e * l) l h1
+            (by rw [← hDc]; exact hbudg₁) hle
+        · have h1 := hanch₁ y hy0 hy1
+          rw [hvc, hvy]
+          exact window_iter_anchor_shift (cntAt g₁ (y + 1)) n₀ l y z (le_trans hzu huy) h1
+      · -- the pin-pair budget, reproduced at `e + 1`
+        rw [hobj₂ w] at hw0
+        rw [hobj₂ (w + 1)] at hw1
+        rw [hcnt₂ (w + 1), hca₂]
+        rcases htri₁ w hw0 hw1 with ⟨hwa, hw0', hw1', hwc⟩ | ⟨hww, hwc⟩ |
+            ⟨y, huy, hy0, hy1, hwy, hwc⟩
+        · have h1 := hslack₁ w hwa hw0' hw1'
+          rw [hwc]
+          exact window_iter_slack_raise (cntAt g₁ (a + 1)) (cntAt g₁ (w + 1)) R ((a - w).natAbs)
+            (e * l) l ((e + 1) * l) h1 he1
+        · exact absurd hww (ne_of_lt hw)
+        · exact (window_iter_no_low_shift w y a u l hau huy hwy hw).elim
+      · -- the anchor budget, reproduced at `e + 1`
+        rw [hca₂]
+        exact window_iter_budget_raise (cntAt g₁ (a + 1)) R n₀ ((z - a).natAbs) (e * l) l
+          ((e + 1) * l) hbudg₁ he1
+      · -- the realized type, through one more splice index
+        obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
+        have hty_ul : tpOf (ladderModel step pend fwd bwd lab) φ σ
+            (iterSpliceIdx u l e (u + (l : ℤ)))
+            = tpOf (ladderModel step pend fwd bwd lab) φ σ u := by
+          rcases e with _ | e
+          · rw [show iterSpliceIdx u l 0 (u + (l : ℤ)) = u + (l : ℤ) from rfl]; exact hty.symm
+          · rw [show u + (l : ℤ) = u + ((1 * l : ℕ) : ℤ) by push_cast; ring,
+              iterSpliceIdx_boundary u l hl (e + 1) 1 (by omega)]
+        have hty₁' : tpOf (ladderModel step pend fwd bwd lab) φ σ₁ u
+            = tpOf (ladderModel step pend fwd bwd lab) φ σ₁ (u + (l : ℤ)) := by
+          rw [hty₁ σ₁ hσ₁ u, hty₁ σ₁ hσ₁ (u + (l : ℤ)),
+            iterSpliceIdx_of_lt u l e u (by omega), hty_ul]
+        have htr := tpOf_eq_spliceIdx_of_tpOf_eq step pend fwd bwd lab φ u l hl
+          (k := (0 : ℤ)) (k' := (0 : ℤ)) σ₁ σ₂
+          (fun t => by rw [add_zero]; exact hσ₁ t) (fun t => by rw [add_zero]; exact hσ₂ t)
+          hobj₂' hno hty₁' w
+        rw [htr, hty₁ σ₁ hσ₁, iterSpliceIdx_succ]
+
 end Gate
 
 end FormalSystem.Metalogic.Decidability.RaySummary
