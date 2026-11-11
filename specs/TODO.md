@@ -11,8 +11,8 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,918,924,925 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876 | 298,428,502,743,761,873 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,905,906,907,908,918,924,925 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,900 | 298,428,502,743,761,873,899 | algebraic-representation, completeness, dataset-enhancement, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -40,7 +40,7 @@ next_project_number: 926
 ### Completeness
 
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
-900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
+  └─ 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 905 [NOT STARTED] — Eliminate cross-certification between the forward and...
 906 [NOT STARTED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
 
@@ -1087,7 +1087,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: None
+- **Dependencies**: Task 899
 
 **Description**: A two-step bridge lemma in FormalSystem/PlusLanguage/Substitution.lean: for an L formula valid at FrameClass.ZTime, every substitution instance substPlus sigma of it is PlusDerivable FrameClass.ZTime [], by completeness_ztime followed by PlusDerivationTree.ofTMSubst; plus the corollary for box-free formulas that a formula valid on every bi-infinite Z-word (the linear fragment) yields TM-plus theorems at every substitution. This is the transposition of Reynolds 2001's use of PLTL completeness inside the CTL* proof (Lemma 7, Claims 1-2, Lemma 17, Lemma 23): the automaton-correctness and fair-scheduling facts are linear validities over Z-words with stab-headed formulas and fresh atoms as sentence letters, derived in TM-plus through this bridge.
 

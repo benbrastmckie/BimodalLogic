@@ -2269,7 +2269,9 @@
         "FormalSystem/PlusLanguage/Substitution.lean",
         "docs/theorem-index.md"
       ],
-      "dependencies": [],
+      "dependencies": [
+        899
+      ],
       "priority": "medium",
       "created": "2026-11-09T09:48:35Z",
       "last_updated": "2026-11-09T09:48:35Z",
