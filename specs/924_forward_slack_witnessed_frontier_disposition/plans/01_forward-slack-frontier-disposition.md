@@ -2,7 +2,7 @@
 
 - **Task**: 924 - Decide the fate of the `ForwardSlackWitnessed` frontier, now that its only
   landed discharge route is refuted
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None blocking. Territory-serialized against task 918 — see "Territory" below.
 - **Research Inputs**: `specs/924_forward_slack_witnessed_frontier_disposition/reports/01_forward-slack-frontier-disposition.md`
@@ -201,31 +201,31 @@ on every other phase.
 
 ---
 
-### Phase 1: The Two Route-(a) Statements, Landed in `LadderIdle.lean` [NOT STARTED]
+### Phase 1: The Two Route-(a) Statements, Landed in `LadderIdle.lean` [COMPLETED]
 
 **Goal**: `ForwardSlackWitnessed` at every amount becomes derivable, in the library, from one
 amount-free run-local premise — through the idle pump rather than through the refuted deletion.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean` immediately before
+- [x] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean` immediately before
       editing (concurrency note item (1)), and re-read
       `specs/924_forward_slack_witnessed_frontier_disposition/evidence/route-a-idle-pump-discharge.lean`
       as the source text.
-- [ ] Add `import FormalSystem.Metalogic.Decidability.RaySummary.LadderCell` beside the existing
+- [x] Add `import FormalSystem.Metalogic.Decidability.RaySummary.LadderCell` beside the existing
       `LadderChain` import. Confirm no cycle: `LadderCell` must not import `LadderIdle` (check by
       grep before building, not only by trusting the build).
-- [ ] Transcribe `IdleRunPumpable`, `hasForwardSlack_of_idleRunRepeat` and
+- [x] Transcribe `IdleRunPumpable`, `hasForwardSlack_of_idleRunRepeat` and
       `forwardSlackWitnessed_of_cell_idleRunPumpable` into a new `section` at the END of the
       module (append-only; do not insert above an existing declaration, which would shift its
       line number for no gain). Statements and proofs are lifted VERBATIM from the evidence file —
       this is transcription, not re-derivation; `plan-compliance.md`'s Statement Fidelity clause
       governs the signatures, which are pinned below under `## Lean Challenge Statements`.
-- [ ] Drop the evidence file's `namespace Probe924` wrapper and its file-level
+- [x] Drop the evidence file's `namespace Probe924` wrapper and its file-level
       `set_option linter.unusedFintypeInType false`; place the declarations inside
       `namespace FormalSystem.Metalogic.Decidability.RaySummary` and give each one its own
       `set_option linter.unusedFintypeInType false in` line, with the precedent cited in a
       preceding comment exactly as `exists_iterIdleSpliced_ladderPath` does in this same file.
-- [ ] Write each declaration's docstring carrying the three scoping clauses the research report
+- [x] Write each declaration's docstring carrying the three scoping clauses the research report
       requires, so the statement is not read as the discharge it is not: **(i)** the premise is an
       object/run datum and NOT `ParamsOk`-derivable, naming `idle_run_lt_tIdle_of_no_idleCycle`
       and `(K1)`'s three conjuncts (`prodCycleLens`, `objCycleLens`, `satPeriod` — never
@@ -233,15 +233,20 @@ amount-free run-local premise — through the idle pump rather than through the 
       cell-equality schemas of `LadderCell.lean`; **(iii)** the reserved
       `cellLE_zero_const_of_kappa_eq` stays claimed by nothing, the ordinary window regime
       `c ≤ n + 1` stays uncovered, and the room bounds remain.
-- [ ] Correct the module docstring's two now-false claims in its `## Contract` section: "Nothing
+- [x] Correct the module docstring's two now-false claims in its `## Contract` section: "Nothing
       imports this module" (already false before this phase — `LadderWindow.lean` imports it) and
       "It states NO cell-level consequence: no `cellAt` claim … and no discharge of any obligation
       reserved in `LadderCell.lean`". Replace with the accurate position: the module now states a
       CONDITIONAL cell-level consequence, which discharges nothing reserved, and bullet (iii)'s
       closing sentence "`LadderCell.lean` is not edited" stays true and is kept.
-- [ ] Append `#print axioms` lines for the three new names at the end of the file, matching the
+- [x] Append `#print axioms` lines for the three new names at the end of the file, matching the
       file's own existing convention (two such lines already sit after the namespace close).
-- [ ] Regenerate `typst/generated/status.typ` with `bash scripts/typst-sync-check.sh --fix` and
+      *(deviation: altered — the three new lines are landed inside a bare `section` with the
+      namespace `open`ed rather than fully qualified; the fully-qualified form of
+      `forwardSlackWitnessed_of_cell_idleRunPumpable` is 106 characters and trips
+      `linter.style.longLine`, which is a build failure under CI's `--wfail`. The two
+      pre-existing lines keep their fully-qualified form. All three names are pinned.)*
+- [x] Regenerate `typst/generated/status.typ` with `bash scripts/typst-sync-check.sh --fix` and
       stage it in the SAME commit as the `.lean` change — the pre-commit hook is blocking, not
       auto-regenerating.
 

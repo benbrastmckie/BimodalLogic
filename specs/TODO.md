@@ -73,7 +73,7 @@ next_project_number: 926
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-924 [PLANNED] — Decide the fate of the ForwardSlackWitnessed frontier, now...
+924 [IMPLEMENTING] — Decide the fate of the ForwardSlackWitnessed frontier, now...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Formula Refactor
@@ -146,13 +146,14 @@ PRECEDENT. The archived record ladderchain_c16_unusedarguments_clear cleared thi
 
 ### 924. Forward slack witnessed frontier disposition
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 925
 - **Parent**: Task 917
 - **Research**: [924_forward_slack_witnessed_frontier_disposition/reports/01_forward-slack-frontier-disposition.md]
 - **Plan**: [924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md]
+- **Source**: [FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean]
 
 **Description**: Decide the fate of the ForwardSlackWitnessed frontier, now that its only landed discharge route is refuted.
 

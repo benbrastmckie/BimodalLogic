@@ -1,16 +1,29 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 18,
-  "summary": "Wrote a four-phase, 5-hour implementation plan executing the research report's four recommendations: land the two compiled route-(a) statements plus their premise predicate in LadderIdle.lean (with an added LadderCell import), wire the route-space closure as an evidence probe beside pin-cascade-straddle.lean, record the disposition in the four durable places with the certStabK restatement obligation kept PROVISIONAL, then reconcile the generated surfaces and run the full gate set. The three pinned Lean Challenge signatures were verified by elaborating the extracted challenge block under lake env lean (exit 0, exactly three sorry warnings, no errors), which also confirmed the added import edge is acyclic. The plan's one substantive hazard is a declared and unavoidable file_scope collision with task 918 on typst/generated/status.typ, four ancestor-chain inventory READMEs, KTypeSummaryAxiomTest.lean and check-evidence-probes.sh.",
+  "task_number": 924,
+  "dispatch_seq": 24,
+  "phase": "implement",
+  "status": "partial",
+  "phases_completed": 1,
+  "phases_total": 4,
+  "summary": "Phase 1 of 4 landed and committed (3e23fb7ec): the two route-(a) statements plus the IdleRunPumpable premise predicate are now in FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean, transcribed verbatim from the task's compiled evidence file, with the added LadderCell import and the module docstring's two now-false Contract claims corrected. Full library build is green (2974 jobs, zero errors, zero warnings) and all three new names verify at [propext, Classical.choice, Quot.sound] with no sorry. The dispatch was scoped to phase 1 only by its HARD MODE phase mission, so phases 2, 3 and 4 remain; the plan's declared 918 territory collision did not materialize, since 918 and 925 are both completed.",
+  "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md",
-      "summary": "Four-phase plan (waves 1/2/3) landing the conditional idle-pump discharge, the route-space closure probe, and the disposition record; 5 hours, three pinned Lean Challenge statements."
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean",
+      "summary": "section Pumpable: hasForwardSlack_of_idleRunRepeat, IdleRunPumpable, forwardSlackWitnessed_of_cell_idleRunPumpable, plus the LadderCell import, the corrected Contract paragraph and three axiom pins."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-1-handoff-20261111T135800.md",
+      "summary": "Phase 1 recovery point: current state, verification evidence, the one deviation, and the territory observation."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 4,
-  "blockers": []
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean",
+    "typst/generated/status.typ",
+    "specs/924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md",
+    "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-1-handoff-20261111T135800.md",
+    "specs/924_forward_slack_witnessed_frontier_disposition/issues.jsonl"
+  ]
 }

@@ -1,30 +1,31 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md",
-      "summary": "Four-phase plan landing the conditional idle-pump discharge of ForwardSlackWitnessed, the route-space closure probe, and the disposition record with certStabK kept PROVISIONAL."
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1794400344_255305_924",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 5,
-    "dependency_waves": 3
+  "status": "partial",
+  "dispatch_seq": 24,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
   },
-  "memory_candidates": [
-    {
-      "content": "In this repository, a plan that changes ANY Lean source line count cannot keep its file scope narrow: typst/generated/status.typ's formalsystem-line-count / tests-line-count is enforced by .githooks/pre-commit as a BLOCKING check on any commit whose staged set touches a .lean path, so its regeneration must be staged in the same commit as the Lean change and cannot be deferred to a reconciliation phase. Separately, check-module-invariants.sh --emit-inventory rewrites EVERY README carrying a `<!-- BEGIN GENERATED: inventory -->` block on the edited file's ancestor-directory chain (for a FormalSystem/Metalogic/Decidability/RaySummary/ file that is four READMEs: repo root, FormalSystem/, FormalSystem/Metalogic/, and the RaySummary/ one). plan-file-scope-harvest.sh appends both surface families automatically, so running it against a draft plan at AUTHORING time is a cheap mechanical check that surfaces missed ancestor-chain READMEs before they appear as a red INV finding mid-implementation. Architectural consequence: two concurrent .lean-touching tasks in this repo ALWAYS collide on these shared surfaces and must be serialized by declaration (letting orchestrate-batch-admit.sh see the overlap), never by narrowing a plan's declared scope.",
-      "category": "PATTERN",
-      "source_artifact": "specs/924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["generated-surface", "file-scope-collision", "pre-commit-hook", "inventory-block", "plan-authoring", "lean-line-count"]
-    }
+  "partial_progress": {
+    "stage": "phase_1_completed",
+    "details": "Phase 1 of 4 complete and committed (3e23fb7ec). Phases 2, 3 and 4 remain; this dispatch was scoped to phase 1 only by its HARD MODE phase mission.",
+    "phases_completed": 1,
+    "phases_total": 4
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean",
+    "typst/generated/status.typ",
+    "specs/924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md",
+    "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-1-handoff-20261111T135800.md",
+    "specs/924_forward_slack_witnessed_frontier_disposition/issues.jsonl"
   ],
-  "next_steps": "Run /orchestrate 924 to execute the plan",
-  "dispatch_seq": 18
+  "artifacts": [],
+  "metadata": {
+    "session_id": "sess_1794425759_f1ad4f",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed"
+  }
 }
