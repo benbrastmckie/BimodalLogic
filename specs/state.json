@@ -3297,7 +3297,7 @@
         {
           "path": "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
           "type": "summary",
-          "summary": "Phases 1-4 of the window-regime plan: the arithmetic layer, the passed decision gate, the raising primitive, and its cell-level upward inclusion, with the lowering direction and its cell lift excluded on compiled measurements."
+          "summary": "Phases 1-5 of the window-regime plan: the leaf module's arithmetic, the passed decision gate, the raising composite splice, the upward cell inclusion, and the window schema plus the compiled regime exhaustiveness."
         }
       ],
       "created": "2026-11-11T02:48:57Z",
