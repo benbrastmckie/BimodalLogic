@@ -1174,6 +1174,102 @@ theorem window_idle_budget
   rw [hca, hstart]
   omega
 
+/-! ### The idle lengthening with the realized type exposed EVERYWHERE
+
+`exists_iterIdleSpliced_ladderPath` (`LadderIdle.lean`) exposes the realized type only strictly
+BELOW its block, mirroring the exposure discipline of the pending pump it was written beside.
+This construction's comparison position sits ABOVE the block, so that clause does not reach it,
+and no shift argument can substitute: a stab-free realized type is not determined locally, and
+the lengthened path is a displacement of the original only above the run.
+
+What makes the global form available is that the idle splice is a RIGID INDEX PULLBACK in both
+coordinates: `spliceObj g α k = objAt g ∘ spliceIdx α k` by definition, and
+`idleSpliceCnt g α k = cntAt g ∘ spliceIdx α k` likewise — inserting idle positions raises no
+countdown anywhere, which is exactly the difference from the pending splice. So HWZ's deletion
+lemma in the form `tpOf_eq_spliceIdx_of_tpOf_eq` applies unchanged (it reads the object walk
+relation and the block's endpoint type equality, and is indifferent to whether the block is
+pending), and the iterate below carries the type at EVERY position through `iterSpliceIdx`. -/
+
+/-- **THE ITERATED IDLE LENGTHENING, READ THROUGH THE INDEX MAP.** `d` duplications of an idle
+block `[α, α + k)` whose two ends carry the same object state and the same realized stab-free
+type: the walk, the countdown AND the realized type at every position are the original's at the
+retracted position `iterSpliceIdx α k d`.
+
+No pin side condition, no regime hypothesis and no `ParamsOk` — `idleSplice_pins` discharges the
+pin clause from the run's idleness alone. The register is NOT held at any prescribed position
+here, because the consumer prescribes it once at the end of the whole composite rather than at
+each stage. -/
+theorem exists_iterIdleSpliced_ladderPath_idx {Q : Type} [Finite Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    {g : ℤ → LadderState Q pend} (hg : IsLadderPath step pend g)
+    (α : ℤ) (k : ℕ) (hk : 0 < k)
+    (hidle : ∀ i : ℕ, i < k → pend (objAt g (α + (i : ℤ))) = false)
+    (hrep : objAt g α = objAt g (α + (k : ℤ)))
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t, g t))
+    (hty : tpOf (ladderModel step pend fwd bwd lab) φ σ α
+         = tpOf (ladderModel step pend fwd bwd lab) φ σ (α + (k : ℤ))) (d : ℕ) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v : ℤ, objAt g' v = objAt g (iterSpliceIdx α k d v)) ∧
+      (∀ v : ℤ, cntAt g' v = cntAt g (iterSpliceIdx α k d v)) ∧
+      ∀ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        ∀ w : ℤ, tpOf (ladderModel step pend fwd bwd lab) φ σ' w
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ (iterSpliceIdx α k d w) := by
+  classical
+  haveI : Fintype Q := Fintype.ofFinite Q
+  induction d with
+  | zero =>
+      refine ⟨g, hg, fun _ => rfl, fun _ => rfl, fun σ' hσ' w => ?_⟩
+      exact tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := (0 : ℤ)) (k' := (0 : ℤ)) σ' σ
+        (fun t => by rw [add_zero]; exact hσ' t) (fun t => by rw [add_zero]; exact hσ t)
+        (fun _ => rfl) hno w
+  | succ d ih =>
+      obtain ⟨g₁, hg₁, hobj₁, hcnt₁, hty₁⟩ := ih
+      -- the original's object and type at the retraction of `α + k` are those at `α`
+      have hidx_ul : objAt g (iterSpliceIdx α k d (α + (k : ℤ))) = objAt g α := by
+        rcases d with _ | d
+        · exact hrep.symm
+        · rw [show α + (k : ℤ) = α + ((1 * k : ℕ) : ℤ) by push_cast; ring,
+            iterSpliceIdx_boundary α k hk (d + 1) 1 (by omega)]
+      have hty_ul : tpOf (ladderModel step pend fwd bwd lab) φ σ
+          (iterSpliceIdx α k d (α + (k : ℤ)))
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ α := by
+        rcases d with _ | d
+        · exact hty.symm
+        · rw [show α + (k : ℤ) = α + ((1 * k : ℕ) : ℤ) by push_cast; ring,
+            iterSpliceIdx_boundary α k hk (d + 1) 1 (by omega)]
+      have hidle₁ : ∀ i : ℕ, i < k → pend (objAt g₁ (α + (i : ℤ))) = false := fun i hi => by
+        rw [hobj₁ (α + (i : ℤ)), iterSpliceIdx_of_lt α k d _ (by omega)]
+        exact hidle i hi
+      have hrep₁ : objAt g₁ α = objAt g₁ (α + (k : ℤ)) := by
+        rw [hobj₁ α, hobj₁ (α + (k : ℤ)), iterSpliceIdx_of_lt α k d α (by omega), hidx_ul]
+      obtain ⟨g₂, hg₂, hobj₂, hcnt₂⟩ :=
+        exists_idleSpliced_ladderPath g₁ hg₁ α k hk hidle₁ hrep₁
+      have hobj₂' : ∀ w : ℤ, objAt g₂ w = objAt g₁ (spliceIdx α k w) := fun w => by
+        rw [hobj₂ w, spliceObj_eq_objAt_spliceIdx]
+      refine ⟨g₂, hg₂, fun v => ?_, fun v => ?_, fun σ₂ hσ₂ w => ?_⟩
+      · rw [hobj₂' v, hobj₁, iterSpliceIdx_succ]
+      · -- the idle countdown is the same rigid pullback as the object walk
+        rw [hcnt₂ v, iterSpliceIdx_succ, ← hcnt₁ (spliceIdx α k v)]
+        rcases lt_or_ge v (α + (k : ℤ)) with h | h
+        · rw [idleSpliceCnt_of_lt v h, spliceIdx_of_lt α k v h]
+        · rw [idleSpliceCnt_of_ge v h, spliceIdx_of_ge α k v h]
+      · obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
+        have hty₁' : tpOf (ladderModel step pend fwd bwd lab) φ σ₁ α
+            = tpOf (ladderModel step pend fwd bwd lab) φ σ₁ (α + (k : ℤ)) := by
+          rw [hty₁ σ₁ hσ₁ α, hty₁ σ₁ hσ₁ (α + (k : ℤ)),
+            iterSpliceIdx_of_lt α k d α (by omega), hty_ul]
+        have htr := tpOf_eq_spliceIdx_of_tpOf_eq step pend fwd bwd lab φ α k hk
+          (k := (0 : ℤ)) (k' := (0 : ℤ)) σ₁ σ₂
+          (fun t => by rw [add_zero]; exact hσ₁ t) (fun t => by rw [add_zero]; exact hσ₂ t)
+          hobj₂' hno hty₁' w
+        rw [htr, hty₁ σ₁ hσ₁, iterSpliceIdx_succ]
+
 end Gate
 
 end FormalSystem.Metalogic.Decidability.RaySummary
