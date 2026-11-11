@@ -1270,6 +1270,125 @@ theorem exists_iterIdleSpliced_ladderPath_idx {Q : Type} [Finite Q] [Nonempty Q]
           hobj₂' hno hty₁' w
         rw [htr, hty₁ σ₁ hσ₁, iterSpliceIdx_succ]
 
+/-! ### The composite, assembled
+
+Two theorems. The first does the work at the DISPLACED comparison position `z + E`, where the
+idle lengthening has put it: it finds the type-respecting pending block of that position's region,
+spends `(K1)`'s divisibility bridge to turn the block's length into a divisor of `P + 1`, and
+feeds the iterate the three invariants the base-case lemmas supply. The second produces the
+lengthened path, chooses `E` large enough to cover the raise, and re-anchors by translation so
+that `z` keeps its position — a genuine translation of the path, with the realized type carried
+across it by `tpOf_timeShift`, not a restatement at a moved index. -/
+
+/-- **THE WINDOW REGIME'S COMPOSITE RAISE AT THE DISPLACED POSITION.** Given the path `g₁` that
+the idle lengthening returns — described by its three agreement clauses `hbel`, `hrn`, `habv` —
+a ladder path through the SAME object state as `g` at `z`, with `z`'s countdown raised by exactly
+`m · (P + 1)`, the next-deadline register held at `nxtAt g z`, and the realized stab-free type
+`g₁`'s own, all read at the displaced position `z + E`.
+
+The raise is an exact multiple of `P + 1` because `(K1)`'s bridge
+`typeBlock_length_dvd_of_paramsOk` puts the block length `l` among the divisors of `P + 1`, and
+`m · q` copies with `q · l = P + 1` give `m · q · l = m · (P + 1)`.
+
+Scope. The compensator is the idle run BELOW, so neither `HasForwardSlack` nor
+`ForwardSlackWitnessed` appears and the refuted deletion-above route is not re-entered. The one
+hypothesis beyond `ParamsOk`, the window regime's own data and the collision's room is the idle
+run itself, carried here as `hrn`/`habv` and traced back to `HasIdleRunBelow` by the caller.
+Nothing here is a cell inclusion and the reserved `cellLE_zero_const_of_kappa_eq` is untouched. -/
+theorem exists_window_raise_displaced {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (g g₁ : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (hg₁ : IsLadderPath step pend g₁)
+    (α a z : ℤ) (k E : ℕ) (hk : 0 < k) (hαa : α + (k : ℤ) ≤ a) (haz : a < z)
+    (hai : pend (objAt g a) = false)
+    (hregion : ∀ t : ℤ, a < t → t ≤ z → pend (objAt g t) = true)
+    (hidleg : ∀ v : ℤ, α ≤ v → v ≤ a → pend (objAt g v) = false)
+    (hbel : ∀ v : ℤ, v < α + (k : ℤ) → objAt g₁ v = objAt g v ∧ cntAt g₁ v = cntAt g v)
+    (hrn : ∀ i : ℕ, i < k + E → pend (objAt g₁ (α + (i : ℤ))) = false)
+    (habv : ∀ v : ℤ, α + ((k + E : ℕ) : ℤ) ≤ v →
+      objAt g₁ v = objAt g (v - (E : ℤ)) ∧ cntAt g₁ v = cntAt g (v - (E : ℤ)))
+    (hTc : Tc ≤ cntAt g z) (m : ℕ)
+    (hroom : cntAt g z + m * (P + 1) ≤ nxtAt g z) (hRE : m * (P + 1) ≤ E)
+    (σ₁ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ₁ : ∀ t : ℤ, σ₁.state t = (t, g₁ t)) :
+    ∃ g₂ : ℤ → LadderState Q pend, IsLadderPath step pend g₂ ∧
+      objAt g₂ (z + (E : ℤ)) = objAt g z ∧
+      cntAt g₂ (z + (E : ℤ)) = cntAt g z + m * (P + 1) ∧
+      nxtAt g₂ (z + (E : ℤ)) = nxtAt g z ∧
+      ∀ σ₂ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+        (∀ t : ℤ, σ₂.state t = (t, g₂ t)) →
+        tpOf (ladderModel step pend fwd bwd lab) φ σ₂ (z + (E : ℤ))
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ₁ (z + (E : ℤ)) := by
+  classical
+  have hbud := budget_le_Tc step pend lab φ Tc Tn P B hp
+  have hkE : α + ((k + E : ℕ) : ℤ) ≤ z + (E : ℤ) := by push_cast; omega
+  have hcz₁ : cntAt g₁ (z + (E : ℤ)) = cntAt g z := by
+    rw [(habv (z + (E : ℤ)) hkE).2, show z + (E : ℤ) - (E : ℤ) = z by ring]
+  have hoz₁ : objAt g₁ (z + (E : ℤ)) = objAt g z := by
+    rw [(habv (z + (E : ℤ)) hkE).1, show z + (E : ℤ) - (E : ℤ) = z by ring]
+  have hpz₁ : pend (objAt g₁ (z + (E : ℤ))) = true := by
+    rw [hoz₁]; exact hregion z (by omega) le_rfl
+  have hbz : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card ≤ cntAt g₁ (z + (E : ℤ)) := by
+    rw [hcz₁]; omega
+  -- the type-respecting pending block of the displaced position's own region
+  obtain ⟨u, l, hl, hlb, hzu, hcl, hul, hrepu, htyu⟩ :=
+    exists_typeBlock_of_budget_le_cnt_within step pend fwd bwd lab φ σ₁ hg₁ (z + (E : ℤ)) hpz₁ hbz
+  have hureg₀ : u ≤ z + (E : ℤ) + (cntAt g₁ (z + (E : ℤ)) : ℤ) := by
+    have h := Int.natCast_nonneg l
+    have h2 : ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card : ℕ) : ℤ)
+        ≤ (cntAt g₁ (z + (E : ℤ)) : ℤ) := by exact_mod_cast hbz
+    omega
+  have hpu : pend (objAt g₁ u) = true := by
+    have h := (cntAt_sub_of_pend g₁ hg₁ (z + (E : ℤ)) hpz₁ (u - (z + (E : ℤ))).toNat
+      (by omega)).1
+    rwa [show z + (E : ℤ) + (((u - (z + (E : ℤ))).toNat : ℕ) : ℤ) = u by omega] at h
+  -- `(K1)`: the block's length divides `P + 1`
+  obtain ⟨q, hq⟩ := typeBlock_length_dvd_of_paramsOk step pend fwd bwd lab φ hp σ₁
+    (fun t => by rw [add_zero]; exact hσ₁ t) hg₁ hno u l hl hlb hpu hcl hrepu htyu
+  have hdl : m * q * l = m * (P + 1) := by rw [hq]; ring
+  -- the base-case invariants, read off the dichotomy
+  have hdich := window_idle_pin_dichotomy g g₁ α a k E hk hαa hidleg hbel hrn habv
+  have hap : pend (objAt g (a + 1)) = true := hregion (a + 1) (by omega) (by omega)
+  have hregion' : ∀ i : ℕ, i ≤ (z - (a + 1)).toNat → pend (objAt g (z - (i : ℤ))) = true :=
+    fun i hi => hregion (z - (i : ℤ)) (by omega) (by omega)
+  have hca : cntAt g₁ (a + (E : ℤ) + 1) = cntAt g (a + 1) := by
+    rw [(habv (a + (E : ℤ) + 1) (by push_cast; omega)).2,
+      show a + (E : ℤ) + 1 - (E : ℤ) = a + 1 by ring]
+  have hanch₁ := window_idle_anchor_clause g g₁ hg a z E haz hdich
+  have hslack₁ := window_idle_slack g g₁ hg a E (m * (P + 1)) hRE hai hap hca hdich
+  have hbudg₁ := window_idle_budget g g₁ hg a z E (m * (P + 1)) haz hai hregion' hroom hca
+  have hai₁ : pend (objAt g₁ (a + (E : ℤ))) = false := by
+    rw [(habv (a + (E : ℤ)) (by push_cast; omega)).1, show a + (E : ℤ) - (E : ℤ) = a by ring]
+    exact hai
+  have hcstart : cntAt g (a + 1) = cntAt g z + (z - (a + 1)).toNat :=
+    (nxtAt_le_cntAt_region_start g hg a z haz hai hregion').1
+  have hpend₁ : ∀ v : ℤ, a + (E : ℤ) < v → v ≤ u + (l : ℤ) → pend (objAt g₁ v) = true := by
+    intro v hv0 hv1
+    rcases le_or_gt v (z + (E : ℤ)) with hvz | hvz
+    · rw [(habv v (by push_cast; omega)).1]
+      exact hregion (v - (E : ℤ)) (by omega) (by omega)
+    · have h := (cntAt_sub_of_pend g₁ hg₁ (z + (E : ℤ)) hpz₁ (v - (z + (E : ℤ))).toNat
+        (by omega)).1
+      rwa [show z + (E : ℤ) + (((v - (z + (E : ℤ))).toNat : ℕ) : ℤ) = v by omega] at h
+  have hureg₁ : u ≤ a + (E : ℤ) + 1 + (cntAt g₁ (a + (E : ℤ) + 1) : ℤ) := by
+    rw [hca, hcstart]
+    push_cast
+    omega
+  -- the iterate
+  obtain ⟨g₂, hg₂, hobj₂, hcnt₂, hnxt₂, hty₂⟩ :=
+    exists_window_iterSpliced_ladderPath step pend fwd bwd lab φ hno hg₁ (z + (E : ℤ))
+      (a + (E : ℤ)) u l (m * (P + 1)) (nxtAt g z) hl (by omega) hzu hai₁ hpend₁ hureg₁ hcl hrepu
+      hanch₁ hslack₁ hbudg₁ σ₁ hσ₁ htyu (m * q) (by omega)
+  refine ⟨g₂, hg₂, ?_, ?_, hnxt₂, fun σ₂ hσ₂ => ?_⟩
+  · rw [hobj₂ (z + (E : ℤ)), iterSpliceIdx_of_lt u l (m * q) _ (by omega), hoz₁]
+  · rw [hcnt₂ (z + (E : ℤ)) hzu (by omega), hcz₁, hdl]
+  · rw [hty₂ σ₂ hσ₂ (z + (E : ℤ)), iterSpliceIdx_of_lt u l (m * q) _ (by omega)]
+
 end Gate
 
 end FormalSystem.Metalogic.Decidability.RaySummary
