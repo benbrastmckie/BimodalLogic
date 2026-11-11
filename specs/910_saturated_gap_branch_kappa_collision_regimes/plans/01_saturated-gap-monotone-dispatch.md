@@ -413,15 +413,15 @@ which elaborates the single module this purely additive declaration lands in.
 
 ---
 
-### Phase 4: The Downward Half on the Monotone Residue [NOT STARTED]
+### Phase 4: The Downward Half on the Monotone Residue [COMPLETED]
 
 **Goal**: `mem_cellAt_of_free_register_shift_of_hasForwardSlack_exact` (path level) and
 `cellAt_subset_of_free_register_shift_of_pend_past_rev` (state level, under
 `ForwardSlackWitnessed`) compile in `section FreeRegister`.
 
 **Tasks**:
-- [ ] Add the path-level membership at the signature pinned in `## Lean Challenge Statements`
-      below, immediately after Phase 3's inclusion.
+- [x] Add the path-level membership at the signature pinned in `## Lean Challenge Statements`
+      below, immediately after Phase 3's inclusion. *(deviation: altered — both of this phase's declarations land in `section ForwardSlack`, beside their landed counterparts, not in `section FreeRegister`. `cellAt_subset_of_free_register_shift_of_pend_past_rev` consumes `ForwardSlackWitnessed`, which is DEFINED in `section ForwardSlack`, i.e. after `end FreeRegister`; placing it in `section FreeRegister` would be a forward reference. Names, signatures, order and proof routes are exactly as pinned.)*
 - [ ] Build its proof as the landed `mem_cellAt_of_common_shift_of_hasForwardSlack_exact` body with
       the 909 deletion called at `n₀ := n` and `k := n' - n` in place of `k := m * (P + 1)`: `hk`
       closes by `omega` from `hlo` and `hnz`, `hTc` from `hTc` and `hcz`, the deletion's own gap
@@ -457,7 +457,7 @@ so the covering check named here is
 which elaborates the single module these two purely additive declarations land in.
 
 **Files to modify**:
-- `FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean` - two new declarations in `section FreeRegister`
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean` - two new declarations in `section ForwardSlack` (see the placement deviation annotated above)
 - `typst/generated/status.typ` - regenerated line counts
 
 **Verification**:

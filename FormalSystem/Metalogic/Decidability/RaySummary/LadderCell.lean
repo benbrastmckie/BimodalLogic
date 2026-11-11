@@ -717,6 +717,128 @@ theorem cellAt_subset_of_common_shift_of_pend_past_rev {Q : Type} [Fintype Q] [N
   have hmem := mem_cellAt_of_common_shift_of_hasForwardSlack_exact step pend fwd bwd lab φ
     Tc Tn P B hp hno q c n h m h' hgap hroom hTc z g hg hgz hslack τ hτ
   rwa [hty] at hmem
+/-- **THE DOWNWARD CELL INCLUSION ON THE WITNESSING PATH, for the FREE REGISTER.** The mirror of
+`cellAt_subset_of_free_register_shift_of_pend_past`, and the second half of what closes the
+MONOTONE residue of `kappa_collision_regimes`' third branch. In the pending-forever regime at
+countdown at least `Tc`, every type realized at `(q, c + m · (P + 1), n')` BY A PATH `g`
+satisfying `HasForwardSlack g z (m · (P + 1) + (n' − n)) n'` is realized at `(q, c, n)`, for every
+`n'` with `n ≤ n'`. The body is `LadderChain.lean`'s register-LOWERING deletion
+`exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past` at `n₀ := n` and
+`k := n' − n`.
+
+**The slack amount and the room bound.** The deletion pays `m · (P + 1)` for the countdown and a
+further `k = n' − n` for lowering the anchor from `nxtAt g z = n'` to `n`; those are the two
+summands of `m · (P + 1) + (n' − n)`, not a loose bound, and `hroom : n' + (n' − n) ≤ c` is the
+room that purchase needs. Both SPECIALIZE to the landed statements:
+
+| sub-regime | `n'` | room bound | slack amount |
+|---|---|---|---|
+| equal register | `n` | `n ≤ c` (from `hgap`) | `m · (P + 1)` |
+| common shift | `n + m · (P + 1)` | `n + 2 · m · (P + 1) ≤ c` | `m · (P + 1) + m · (P + 1)` |
+| monotone residue | any `n'`, `n ≤ n'` | `n' + (n' − n) ≤ c` | `m · (P + 1) + (n' − n)` |
+
+Row 3 at `n' = n` is row 1 and at `n' = n + m · (P + 1)` is row 2, hypothesis for hypothesis.
+
+**Why `hgap'` is a named hypothesis here and is not one in the common-shift mirror.** The
+`pend_past_of_nxtAt_lt` input needs the register at `z` to sit strictly below the countdown at
+`z`, i.e. `n' < c + m · (P + 1)`. Where the register's displacement EQUALS the countdown's, that
+follows from the lower pair's `hgap`; with the register free it does not — at `m = 0` the lower
+gap `n + 2 ≤ c` says nothing about `n'`. So `hgap'` is carried. None of `hgap`, `hgap'`, `hroom`
+implies another: `hroom` is the only one that can fail at `n' = n`, `hgap'` the only one that
+constrains `n'` against the raised countdown, and `hgap` the only one that survives `m = 0` with
+`n' = n`.
+
+The statement is on the WITNESSING PATH, not on the state, for the compiled reason
+`ClimbWitness.hasForwardSlack_refuted_unconditional` gives: `cellAt` quantifies over every path
+through the state, and that refutation exhibits a path through a state satisfying every
+state-level hypothesis a consumer carries and violating the regime. The state-level form is
+`cellAt_subset_of_free_register_shift_of_pend_past_rev` below, under `ForwardSlackWitnessed`. -/
+theorem mem_cellAt_of_free_register_shift_of_hasForwardSlack_exact
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n : ℕ) (h : c ∈ Adm pend q) (m n' : ℕ)
+    (h' : c + m * (P + 1) ∈ Adm pend q)
+    (hgap : n + 2 ≤ c) (hgap' : n' + 2 ≤ c + m * (P + 1)) (hlo : n ≤ n')
+    (hroom : n' + (n' - n) ≤ c) (hTc : Tc ≤ c) (z : ℤ)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (hgz : g z = ⟨(q, c + m * (P + 1), n'), h'⟩)
+    (hslack : HasForwardSlack g z (m * (P + 1) + (n' - n)) n')
+    (τ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hτ : ∀ t : ℤ, τ.state t = (t, g t)) :
+    tpOf (ladderModel step pend fwd bwd lab) φ τ z ∈
+      cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  classical
+  have hoz : objAt g z = q := by simp [objAt, hgz]
+  have hcz : cntAt g z = c + m * (P + 1) := by simp [cntAt, hgz]
+  have hnz : nxtAt g z = n' := by simp [nxtAt, hgz]
+  have hz : pend (objAt g z) = true := by
+    by_contra hne
+    rw [Bool.not_eq_true, hoz] at hne
+    have := h hne
+    omega
+  have hpast := pend_past_of_nxtAt_lt g hg z hz (by rw [hcz, hnz]; omega)
+  obtain ⟨g', hg', ho, hc, hn, hty⟩ :=
+    exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past step pend fwd bwd lab φ
+      Tc Tn P B hp hno g hg z hpast m n (n' - n) (by rw [hnz]; omega) (by rw [hcz]; omega)
+      (by rw [hcz, hnz]; omega) (by rw [hnz]; exact hslack)
+  have hc' : cntAt g' z = c := by omega
+  obtain ⟨τ', hτ'⟩ := exists_hist_of_isLadderPath fwd bwd g' hg'
+  rw [mem_cellAt_ladder_iff]
+  refine ⟨g', τ', hg', ?_, hτ', ?_⟩
+  · apply Subtype.ext
+    change (objAt g' z, cntAt g' z, nxtAt g' z) = (q, c, n)
+    rw [ho, hc', hn, hoz]
+  · exact hty τ τ' hτ hτ'
+
+/-- **THE FREE-REGISTER DOWNWARD CELL INCLUSION AT THE STATE LEVEL.** The free-register mirror of
+`cellAt_subset_of_common_shift_of_pend_past_rev`: in the pending-forever regime at countdown at
+least `Tc`, with the room `n' + (n' − n) ≤ c` and the higher pair's own gap
+`n' + 2 ≤ c + m · (P + 1)`, if every type the cell at `(q, c + m · (P + 1), n')` realizes is
+realized there by a path with `HasForwardSlack · z (m · (P + 1) + (n' − n)) n'`, then that cell is
+contained in the cell at `(q, c, n)`. The body is
+`mem_cellAt_of_free_register_shift_of_hasForwardSlack_exact` applied to the witnessing path the
+hypothesis supplies.
+
+The witnessing hypothesis is NOT removable, for the same compiled reason as in both landed
+mirrors: `ClimbWitness.hasForwardSlack_refuted_unconditional` refutes every state-level form of
+the regime, so the condition must stay existential over the paths through the state — the regime
+is a property of the PATH, never of the state. What is new here is that the register moves by an
+amount the COUNTDOWN NEED NOT MATCH: the landed equal-register mirror holds it, the landed
+common-shift mirror moves it by exactly the countdown's displacement. Together with the upward
+`cellAt_subset_of_free_register_shift_of_pend_past` this closes the MONOTONE residue of branch 3
+in both directions. The ANTITONE residue is excluded, not closed — see
+`MonotoneCollisionDisplacement` and `kappa_collision_antitone_residue_nonvacuous`. -/
+theorem cellAt_subset_of_free_register_shift_of_pend_past_rev {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n : ℕ) (h : c ∈ Adm pend q) (m n' : ℕ)
+    (h' : c + m * (P + 1) ∈ Adm pend q)
+    (hgap : n + 2 ≤ c) (hgap' : n' + 2 ≤ c + m * (P + 1)) (hlo : n ≤ n')
+    (hroom : n' + (n' - n) ≤ c) (hTc : Tc ≤ c) (z : ℤ)
+    (hw : ForwardSlackWitnessed step pend fwd bwd lab φ
+      (⟨(q, c + m * (P + 1), n'), h'⟩ : LadderState Q pend) z
+      (m * (P + 1) + (n' - n)) n') :
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c + m * (P + 1), n'), h'⟩) :
+          (ladderFrameAdm step pend fwd bwd).WorldState) z ⊆
+      cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  intro T hT
+  obtain ⟨g, τ, hg, hgz, hτ, hslack, hty⟩ := hw T hT
+  have hmem := mem_cellAt_of_free_register_shift_of_hasForwardSlack_exact step pend fwd bwd lab φ
+    Tc Tn P B hp hno q c n h m n' h' hgap hgap' hlo hroom hTc z g hg hgz hslack τ hτ
+  rwa [hty] at hmem
+
 /-- **THE FORWARD-SLACK-RESTRICTED DEPTH-`0` CELL OBLIGATION**, stated as a schema. This is NOT
 the reserved statement `CellLEZeroConstOfKappaEq`, which is claimed by nothing and stays so. Four
 hypotheses separate the two, and all four are visible in the quantifier below:
