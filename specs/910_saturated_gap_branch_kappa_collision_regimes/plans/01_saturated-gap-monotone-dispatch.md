@@ -299,26 +299,38 @@ which elaborates the single module this phase edits with no externally visible s
 
 ---
 
-### Phase 2: Retire the Common-Shift Raise to Its Instance (CONTINGENT) [NOT STARTED]
+### Phase 2: Retire the Common-Shift Raise to Its Instance (CONTINGENT) [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: `exists_ladderPath_through_common_shifted_of_pend_past` keeps its signature
 byte-for-byte and gets a one-line proof body: the `n₀ := nxtAt g z + m * (P + 1)` instance of
 Phase 1's assembly. If that instance does not reduce exactly, the landed proof is left untouched.
 
 **Tasks**:
-- [ ] Attempt the instance: `n₀ := nxtAt g z + m * (P + 1)`, with `hlo` by `omega` and `hhi` by
+- [x] Attempt the instance: `n₀ := nxtAt g z + m * (P + 1)`, with `hlo` by `omega` and `hhi` by
       `omega` from `hgap`. Check that the instantiated conclusion's `nxtAt g' z = n₀` clause is
       syntactically the landed `nxtAt g' z = nxtAt g z + m * (P + 1)`.
 - [ ] If it reduces: replace the proof body, leaving every signature line untouched, and note in
-      the docstring that the statement is now the free-register assembly's instance.
-- [ ] If it does not reduce: STOP. Leave the landed declaration exactly as it stands, close this
+      the docstring that the statement is now the free-register assembly's instance. *(deviation: skipped — the instance reduces exactly, but applying it in place would be a forward reference: Phase 1 pins `section FreeRegister` immediately AFTER `end CommonShift`. See the Reasoned Exclusions record below.)*
+- [x] If it does not reduce: STOP. Leave the landed declaration exactly as it stands, close this
       phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record naming the
       specific clause that failed to reduce and the goal state observed, and proceed to Phase 3. Do
       NOT alter the landed signature to make the instance fit — that is the
       same-name-different-signature drift `plan-compliance.md`'s Statement Fidelity section
       forbids.
-- [ ] Either way: scoped `lake build`, then `bash scripts/typst-sync-check.sh --fix` and stage
-      `typst/generated/status.typ` with the Lean change if any Lean line moved.
+- [x] Either way: scoped `lake build`, then `bash scripts/typst-sync-check.sh --fix` and stage
+      `typst/generated/status.typ` with the Lean change if any Lean line moved. *(deviation: altered — no Lean line moved, so no build or regeneration was needed; the reduction was measured out of tree instead.)*
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Replacing `exists_ladderPath_through_common_shifted_of_pend_past`'s proof body with the `n₀ := nxtAt g z + m * (P + 1)` instance | The instance reduces EXACTLY — hypothesis for hypothesis, conclusion syntactically identical — but it cannot be applied in place. Phase 1's own task pins `section FreeRegister` immediately AFTER `end CommonShift`, so the landed theorem citing `exists_ladderPath_through_free_register_shifted_of_pend_past` would be a forward reference. The only ways to apply it are to move the new section above `section CommonShift` or to move the landed declaration below it — both re-order a module whose placement the plan pinned, for a change the plan itself classifies as a diff-reduction rather than a deliverable. The landed declaration is therefore left exactly as it stands, which is the plan's stated fallback. | The reduction was compiled out of tree (`lean_run_code` against the built `LadderCell`, importing it and restating the landed signature byte-for-byte): `exists_ladderPath_through_free_register_shifted_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno g hg z hpast hgap hTc m (nxtAt g z + m * (P + 1)) (by omega) (by omega)` closes it with ZERO diagnostics. So the retirement is a placement question, not a mathematical one. |
+
+The exclusion costs nothing downstream: no later phase depends on Phase 2, and the duplication it
+would have removed is one proof body whose generalization is now recorded in
+`exists_ladderPath_through_free_register_shifted_of_pend_past`'s own docstring ("At
+`n₀ := nxtAt g z + m · (P + 1)` ... this recovers
+`exists_ladderPath_through_common_shifted_of_pend_past` hypothesis for hypothesis").
 
 **Timing**: 45 minutes
 
