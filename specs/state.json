@@ -2050,28 +2050,39 @@
     {
       "project_number": 896,
       "project_name": "lplus_extended_proof_system_and_target_statement",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "title": "The extended L-plus proof system (TM-plus + axiom set + naming rules) with its ZTime soundness, and the completeness targets as stated Props",
       "description": "A new module FormalSystem/Metalogic/LCExtension.lean carrying: RuleSet (flags clock, aaFwd, aaBwd); ExtDerivation (fc) (Ax : PlusFormula -> Prop) (R : RuleSet) : PlusFormula -> Prop, a Prop-valued theoremhood closure whose base is PlusDerivable fc [] and whose constructors are Ax, modus ponens, necessitation, temporal necessitation, time reflection, and the three naming rules gated by R with their freshness side conditions; IsLCAxiom (lcN n alpha and its reflectTime, n >= 1) and IsLCUAxiom (lcU and its mirror); the soundness theorem ext_sound_ztime : ExtDerivation .ZTime Ax R phi -> PlusValidZTime phi under the hypothesis that Ax is ZTime-valid, assembled from plus_soundness_ztime, clock_irr_sound and the Auxiliary-Atoms soundness; and the completeness targets stated as Prop definitions with no proof and no sorry: LCComplete (RuleSet.none, IsLCAxiom), LCRulesComplete (RuleSet.all, IsLCAxiom), LCURulesComplete (RuleSet.all, IsLCUAxiom). PlusDerivationTree, PlusAxiom and PlusFormula are not modified (standing ruling). Depends on the Auxiliary-Atoms rule task for the soundness arm; the statements themselves can land first with the soundness arm parametric in a rule-soundness hypothesis.",
       "file_scope": [
-        "FormalSystem/Metalogic/LCExtension.lean",
-        "FormalSystem/Metalogic.lean",
         "FormalSystem.lean",
-        "docs/theorem-index.md"
+        "FormalSystem/Metalogic.lean",
+        "FormalSystem/Metalogic/LCExtension.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "Tests/BimodalTest.lean",
+        "Tests/BimodalTest/Metalogic/LCExtensionTest.lean",
+        "docs/theorem-index.md",
+        "typst/generated/status.typ"
       ],
       "dependencies": [
         895
       ],
       "priority": "medium",
       "created": "2026-11-09T09:48:34Z",
-      "last_updated": "2026-11-11T00:37:04Z",
+      "last_updated": "2026-11-11T00:50:36Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/896_lplus_extended_proof_system_and_target_statement/reports/01_lplus-extended-proof-system.md",
           "type": "report",
           "summary": "Research for FormalSystem/Metalogic/LCExtension.lean: every ingredient located at its exact landed signature, the complete module skeleton verified green under lean_run_code (ExtDerivation plus ext_sound_ztime with all nine cases closing), all five axiom profiles measured at [propext, Classical.choice, Quot.sound], and the two encoding divergences from the archived 879 probe identified."
+        },
+        {
+          "path": "specs/896_lplus_extended_proof_system_and_target_statement/plans/01_lplus-extended-proof-system.md",
+          "type": "plan",
+          "summary": "Three-phase implementation plan with a compiled fourteen-identifier Lean Challenge Statements block and a ten-path harvested file scope."
         }
       ],
       "session_id": "sess_1794343738_e0026f",
