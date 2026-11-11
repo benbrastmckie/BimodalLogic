@@ -306,7 +306,7 @@ idle-past hypothesis in place of the pending-forever one.
 
 ---
 
-### Phase 5: The Window Schema, Its Theorem, and the Compiled Dichotomy [NOT STARTED]
+### Phase 5: The Window Schema, Its Theorem, and the Compiled Dichotomy [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: State the window regime's depth-`0` cell obligation as a schema, prove it from Phase 4's
 two inclusions by `Set.Subset.antisymm`, and compile the dichotomy that makes the window and
@@ -314,13 +314,20 @@ pending-forever regimes exhaustive — so the regime this task closes is visibly
 partition rather than an unquantified special case.
 
 **Tasks**:
-- [ ] Land `def CellLEZeroConstOfKappaEqWindow` in `LadderWindow.lean`, in the shape the five `LadderCell.lean` schemas use: `ParamsOk` and the stab-free hypothesis as antecedents, then the collision, the register equality, the WINDOW hypotheses `¬ (n + 2 ≤ c)` and `¬ (n + 2 ≤ c')` where the landed schemas carry `n + 2 ≤ c`, the threshold bounds, the named idle-run condition at whichever pair carries the lower countdown, and cell EQUALITY as the conclusion.
-- [ ] Land `theorem cellLE_zero_const_of_kappa_eq_window` proving that schema: destruct the collision with `kappa_collision_window_room`, dispatch the `c = c'` branch by `rfl`, and close each displacement branch by `Set.Subset.antisymm` of Phase 4's two inclusions.
-- [ ] Land the exhaustiveness record: a compiled dichotomy stating that every `kappa` collision at a fixed register falls in the window regime or in the pending-forever gap, with no third case, so this schema and the five landed ones partition the fixed-register collisions. Derive it from `clipIdx_regime_of_eq` and `pend_past_of_nxtAt_lt` rather than asserting it.
-- [ ] The schema's docstring MUST carry the scope boundary in the record's own language, modelled on `CellLEZeroConstOfKappaEqForwardSlack`'s: what separates this schema from the reserved `CellLEZeroConstOfKappaEq` is the window hypotheses, the threshold bounds, and the named idle-run condition; the reserved name is claimed by nothing here; and being strictly stronger in hypotheses, this schema bears on the reserved statement's truth value in NEITHER direction.
-- [ ] Do NOT name any declaration in this phase `cellLE_zero_const_of_kappa_eq` or any prefix of it.
-- [ ] Guarded scoped build, `bash scripts/typst-sync-check.sh --fix`, stage `typst/generated/status.typ`. Apply the `longFile` rule if the file crosses 1500.
-- [ ] If Phase 2's gate FAILED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record citing Phase 2's measurement. Land nothing — a schema with no theorem is not a deliverable, and the dichotomy alone is not this phase's goal.
+- [x] Land `def CellLEZeroConstOfKappaEqWindow` in `LadderWindow.lean`, in the shape the five `LadderCell.lean` schemas use: `ParamsOk` and the stab-free hypothesis as antecedents, then the collision, the register equality, the WINDOW hypotheses `¬ (n + 2 ≤ c)` and `¬ (n + 2 ≤ c')` where the landed schemas carry `n + 2 ≤ c`, the threshold bounds, the named idle-run condition at whichever pair carries the lower countdown, and cell EQUALITY as the conclusion. *(deviation: altered — landed as `CellSubsetOfKappaEqWindowRaise` with direction-indexed cell INCLUSION as the conclusion, not equality, and named for that. Everything else is as written: `ParamsOk` and the stab-free hypothesis as antecedents, the collision, the register equality built into the quantifier, both window hypotheses, both threshold bounds, and `WindowIdleRunWitnessed` demanded at the lower-countdown pair only. Equality is not reachable in this regime — there is ONE landed inclusion; see `#### Reasoned Exclusions`.)*
+- [x] Land `theorem cellLE_zero_const_of_kappa_eq_window` proving that schema: destruct the collision with `kappa_collision_window_room`, dispatch the `c = c'` branch by `rfl`, and close each displacement branch by `Set.Subset.antisymm` of Phase 4's two inclusions. *(deviation: altered — landed as `cellSubset_of_kappa_eq_window_raise`. The destructor and the `rfl` branch are exactly as written; each displacement branch closes by the single landed `cellAt_subset_of_window_raise` applied from the lower countdown to the higher, with the reverse ordering discharged as vacuous (`0 < j * (P + 1)`), because `Set.Subset.antisymm` has no second inclusion to consume.)*
+- [x] Land the exhaustiveness record: a compiled dichotomy stating that every `kappa` collision at a fixed register falls in the window regime or in the pending-forever gap, with no third case, so this schema and the five landed ones partition the fixed-register collisions. Derive it from `clipIdx_regime_of_eq` and `pend_past_of_nxtAt_lt` rather than asserting it. *(landed in full as `kappa_collision_window_or_pendPast_exhaustive`, with BOTH named lemmas consumed: `clipIdx_regime_of_eq` for the same-side arithmetic and `pend_past_of_nxtAt_lt` for the gap branch's path-level half. Nothing asserted.)*
+- [x] The schema's docstring MUST carry the scope boundary in the record's own language, modelled on `CellLEZeroConstOfKappaEqForwardSlack`'s: what separates this schema from the reserved `CellLEZeroConstOfKappaEq` is the window hypotheses, the threshold bounds, and the named idle-run condition; the reserved name is claimed by nothing here; and being strictly stronger in hypotheses, this schema bears on the reserved statement's truth value in NEITHER direction. *(all three parts present, with the conclusion strength added as a fifth separator since the conclusion is weaker as well as the hypotheses stronger.)*
+- [x] Do NOT name any declaration in this phase `cellLE_zero_const_of_kappa_eq` or any prefix of it. *(the three landed names are `CellSubsetOfKappaEqWindowRaise`, `cellSubset_of_kappa_eq_window_raise` and `kappa_collision_window_or_pendPast_exhaustive`; none is a prefix of the reserved name, and an exact-name declaration sweep over `FormalSystem/` still returns 0 sites for it.)*
+- [x] Guarded scoped build, `bash scripts/typst-sync-check.sh --fix`, stage `typst/generated/status.typ`. Apply the `longFile` rule if the file crosses 1500. *(the module reached 1866 lines, crossing Phase 3's existing `set_option linter.style.longFile 1700` window, so the baseline was raised to 1900 at its own position.)*
+- [x] If Phase 2's gate FAILED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record citing Phase 2's measurement. Land nothing — a schema with no theorem is not a deliverable, and the dichotomy alone is not this phase's goal. *(deviation: altered — Phase 2's gate PASSED, so this branch's "land nothing" does not apply. The marker and the record are used for the CONCLUSION-STRENGTH exclusion instead, exactly as Phases 3 and 4 used them, with Phase 3's own compiled measurement in the Evidence column. The schema, its theorem and the dichotomy are all landed.)*
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| Cell EQUALITY as the schema's conclusion (and with it the name `CellLEZeroConstOfKappaEqWindow` / `cellLE_zero_const_of_kappa_eq_window`) | `Set.Subset.antisymm` needs two inclusions and this regime has one. Phase 3 excluded the LOWERING composite splice on a compiled measurement — the `z`-anchored lift's anchor clause reverses direction under deletion, its binding half becoming `nxtAt g z + jP ≤ cntAt g z + 2*d + 1`, a bound on the register from ABOVE, which `kappa_collision_window_room`'s lowering branch (`c ≤ n`) does not supply and which `nxtAt_le_cntAt_region_start`'s TIGHT bound leaves short by exactly the displacement; Phase 4 therefore excluded the downward cell inclusion as a lift of a primitive that does not exist. Under Phase 2's gate criterion a sixth hypothesis is a FAIL, not a widening, and the cycle-1 recorded decision (`.decisions.json`) settled the disposition: stay one-directional and re-scope Phases 4-5 to the upward inclusion. The schema therefore concludes direction-indexed INCLUSION and says so in its name, rather than stating an equality that is not proved. Nothing was re-attempted here. | `window_lower_anchor_not_implied`, `window_lower_anchor_fails_at_tight_bound`, `window_lower_anchor_of_required` (`LadderWindow.lean`); the probe `specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean` (`lake env lean`, zero output); Phase 3's and Phase 4's own `#### Reasoned Exclusions` records; `.decisions.json` cycle-1 answer |
+| The reverse-ordering half of each displacement branch as a PROVED inclusion | It is vacuous, not proved, and is recorded as such in the theorem's docstring. A positive multiple of `P + 1` separating the two countdowns makes the opposite ordering contradictory (`0 < j * (P + 1)`), so that half of the conjunction is discharged by `absurd` rather than by a surgery. This is the honest shape of a one-directional result stated symmetrically; stating only the one direction would have hidden which pair the room pays for. | `cellSubset_of_kappa_eq_window_raise`'s two `absurd hle (by omega)` branches; `lean_verify` standard profile, no `sorryAx` |
 
 **Timing**: 1.5 hours
 
@@ -330,17 +337,18 @@ partition rather than an unquantified special case.
 
 **Tier Justification**: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderWindow` is the complete covering check; the schema, its theorem and the dichotomy are new declarations in the same leaf module and change no signature any other module reads.
 
-**Scope Hypothesis**: estimated +180 lines, putting the module near 720 lines, still under the 1500 ceiling. Confirm with `wc -l`; apply the `longFile` rule only on an actual crossing.
+**Scope Hypothesis**: estimated +180 lines, putting the module near 720 lines, still under the 1500 ceiling. Confirm with `wc -l`; apply the `longFile` rule only on an actual crossing. *(the per-phase delta held — +183 lines — but the absolute figure did not: the module was already 1683 lines at Phase 4's close, so it reached 1866 and the `longFile` baseline was raised from 1700 to 1900. The "near 720 lines" figure in this hypothesis was stale from Phase 3 onward, not wrong about this phase's own size.)*
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` - the window schema, its theorem, the exhaustiveness dichotomy, and the scope docstrings
 - `typst/generated/status.typ` - regenerated count fields, staged in the same commit
 
 **Verification**:
-- Scoped guarded build green and warning-free.
-- `lean_verify` on the theorem and the dichotomy: no `sorryAx`, standard axiom profile.
-- The schema docstring contains the three-part scope boundary verbatim (what separates it from the reserved statement; that the reserved name is unclaimed; that it bears on the reserved statement in neither direction).
-- An exact-name sweep confirms `cellLE_zero_const_of_kappa_eq` still has no declaration site under `FormalSystem/`.
+- Scoped guarded build green and warning-free. DONE: `lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderWindow`, guard exit 0, 2018 jobs, 0 errors, 0 warnings. Green on the first attempt; one `unusedFintypeInType` warning on the dichotomy was fixed by dropping the unused `[Fintype Q]` and the rebuild is warning-free.
+- `lean_verify` on the theorem and the dichotomy: no `sorryAx`, standard axiom profile. DONE: `cellSubset_of_kappa_eq_window_raise` carries `[propext, Classical.choice, Quot.sound]`, `trust: standard`; `kappa_collision_window_or_pendPast_exhaustive` carries `[propext, Quot.sound]`, `trust: standard`. No non-standard axioms, no `sorryAx` on either.
+- The schema docstring contains the three-part scope boundary verbatim (what separates it from the reserved statement; that the reserved name is unclaimed; that it bears on the reserved statement in neither direction). DONE, with a fifth separator added for the weaker conclusion.
+- An exact-name sweep confirms `cellLE_zero_const_of_kappa_eq` still has no declaration site under `FormalSystem/`. DONE: 0 declaration sites.
+- Batch-gate note: this phase's declared `**Verification Tier**` is `local`, not `full`, so the dispatch's batch-gate deferral directive does not bite here — the scoped guarded build named in the Tier Justification is the complete covering check and was independently run. The plan's final phase retains `**Verification Tier**: full`, unedited. The phase-end FULL library build was additionally run and is green (see Phase Verification Notes).
 
 ---
 
@@ -811,3 +819,57 @@ phase decides on its admissibility rather than rediscovering the deficit.
   file crossed the 1500 `longFile` ceiling, so `set_option linter.style.longFile 1700` was added.
   The overshoot is attributable to item 1 and item 2 each needing a NEW iterate the plan assumed
   could be borrowed from the pending-forever and idle layers respectively.
+
+### Verification notes: phase 5 (measured) -- COMPLETED WITH EXCLUSIONS
+
+**What landed**, three declarations in `LadderWindow.lean`, all new names:
+
+| Name | Kind | What it states |
+|---|---|---|
+| `CellSubsetOfKappaEqWindowRaise` | `def` (schema) | the window regime's depth-`0` cell obligation, with direction-indexed cell INCLUSION as the conclusion |
+| `cellSubset_of_kappa_eq_window_raise` | `theorem` | that schema holds at every tuple `ParamsOk` admits |
+| `kappa_collision_window_or_pendPast_exhaustive` | `theorem` | a fixed-register `kappa` collision puts both countdowns on the SAME side of the window boundary, and in the gap branch every ladder path through either state is pending at every earlier position |
+
+**Build and verification evidence**
+
+- Scoped guarded build of `...RaySummary.LadderWindow`: guard exit 0, 2018 jobs, `error:` 0.
+  Green on the FIRST attempt; the first run carried one `unusedFintypeInType` warning on the
+  dichotomy, fixed by dropping the unused `[Fintype Q]` binder, and the rebuild is `warning:` 0.
+- Phase-end FULL guarded `lake build`: guard exit 0 (Tier 1), 2974 jobs, `error:` 0, `warning:` 0
+  over both captured streams (Tier 2), and `LadderWindow.olean` newer than its source (Tier 3).
+- `lean_verify`: `cellSubset_of_kappa_eq_window_raise` -> `[propext, Classical.choice,
+  Quot.sound]`, `trust: standard`, no non-standard axioms;
+  `kappa_collision_window_or_pendPast_exhaustive` -> `[propext, Quot.sound]`, `trust: standard`.
+  No `sorryAx` on either. The five `opaque` source-scan warnings are at lines 127, 144, 161, 394
+  and 819 -- all below this phase's insertion point (1682) and all the word "opaque" occurring in
+  pre-existing docstrings.
+- `bash .claude/scripts/lean-sorry-census.sh <roots> --cross-check`: see the record below this
+  list.
+- Exact-name declaration sweep: `cellLE_zero_const_of_kappa_eq` still has 0 declaration sites
+  under `FormalSystem/`. None of the three landed names is a prefix of it.
+- `bash scripts/typst-sync-check.sh --fix`: PASS; `status.typ`, the automation module map and the
+  machine appendix all in sync, `MA_COUNT_MISMATCHES=0`. `typst/generated/status.typ` staged in
+  this phase's commit.
+- Batch-gate deferral: this phase's declared `**Verification Tier**` is `local`, so the dispatch's
+  Batch Gate Deferral directive does not bite -- the scoped narrowing invocation named in the Tier
+  Justification IS the complete covering check for this phase and was independently run, and the
+  full library build was additionally run on top of it. The plan's final phase keeps
+  `**Verification Tier**: full` unedited.
+- Scope Hypothesis outcome: estimated +180 lines, ACTUAL +183 (1683 -> 1866 `wc -l`) -- the
+  per-phase delta held to within 3 lines. The hypothesis's ABSOLUTE figure ("near 720 lines") was
+  stale from Phase 3's +889 overshoot onward; the module crossed Phase 3's
+  `set_option linter.style.longFile 1700` window, so the baseline was raised to 1900 at its own
+  position.
+
+**The exclusion, in one line**: cell EQUALITY is not reachable in this regime because
+`Set.Subset.antisymm` needs two inclusions and Phases 3-4 compiled the measurement that the
+lowering direction's anchor clause reverses and needs a sixth hypothesis the decision gate
+forbids. The schema concludes inclusion and is NAMED for it. See this phase's
+`#### Reasoned Exclusions`.
+
+**Concurrency observation**: at this dispatch's start and at its close the working tree carried
+foreign uncommitted modifications outside this task's territory --
+`specs/893_lcu_until_form_schema_ztime_validity/issues.jsonl`, `specs/events.jsonl`, an untracked
+`.pid`, `specs/893_.../stale-dispatch-2-plan-report.md` and `specs/evidence/history-morphism-saturation-audit/`.
+All were present in the dispatch's own opening git snapshot, so they are a concurrent sibling's
+in-flight state rather than anything this phase produced. None was staged or edited here.

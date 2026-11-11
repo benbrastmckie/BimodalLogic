@@ -63,7 +63,7 @@ theorem, nothing is claimed about `HitPresented` or `PlusValidZTime`, no index o
 is claimed at any parameters, and no complexity bound is claimed.
 -/
 
-set_option linter.style.longFile 1700
+set_option linter.style.longFile 1900
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1677,6 +1677,189 @@ theorem cellAt_subset_of_window_raise {Q : Type} [Fintype Q] [Nonempty Q]
     change (objAt g' z, cntAt g' z, nxtAt g' z) = (q, c + m * (P + 1), n)
     rw [ho, hc, hn, hoz, hcz, hnz]
   · rw [hty τ τ' hτ hτ', hTeq]
+
+
+/-! ### LAYER C: the window regime's schema, its theorem, and the regimes' exhaustiveness
+
+The two declarations below state the window regime's depth-`0` cell obligation as a SCHEMA, in
+the shape the five `LadderCell.lean` schemas use, and prove it. One structural difference from
+those five is visible in the schema's name and in its conclusion, and is not cosmetic:
+
+* the five landed schemas conclude cell EQUALITY, closed by `Set.Subset.antisymm` of a matched
+  pair of inclusions;
+* this one concludes cell INCLUSION, in the direction the collision's own room pays for, because
+  only ONE direction of the window regime's surgery is landed. The lowering direction's anchor
+  clause reverses under deletion and needs a bound on the register from above
+  (`window_lower_anchor_of_required`), which the decision gate's criterion forbids adding, so
+  `Set.Subset.antisymm` has no second inclusion to consume and equality is NOT reachable in this
+  regime.
+
+The name says `Subset` for exactly that reason. A reader who sees `CellLEZeroConstOfKappaEq...`
+on the five landed schemas and `CellSubsetOfKappaEqWindowRaise` here can tell the two conclusion
+strengths apart without opening either statement.
+
+The third declaration is the regimes' EXHAUSTIVENESS, and it is independent of the direction
+count: a `kappa` collision at a fixed register puts both countdowns on the SAME side of the
+window boundary, so this schema's regime and the five landed schemas' regime are the two halves
+of a partition of the fixed-register collisions rather than two unrelated special cases. It is
+derived from `clipIdx_regime_of_eq` and `pend_past_of_nxtAt_lt`, not asserted.
+-/
+
+/-- **THE WINDOW-REGIME DEPTH-`0` CELL INCLUSION**, stated as a schema. This is NOT the reserved
+statement `CellLEZeroConstOfKappaEq`, and FOUR hypotheses plus a WEAKER CONCLUSION separate the
+two. All five differences are visible below:
+
+1. the WINDOW hypotheses `¬ (n + 2 ≤ c)` and `¬ (n + 2 ≤ c')`, at BOTH pairs — where the five
+   landed schemas carry the pending-forever gap `n + 2 ≤ c` instead, so this schema and those
+   five are disjoint in their regime and neither implies the other;
+2. the EQUAL-REGISTER restriction, built in by quantifying one register `n` rather than two;
+3. the threshold bounds `Tc ≤ c` and `Tc ≤ c'`, at both pairs;
+4. the named idle-run condition `WindowIdleRunWitnessed`, demanded at whichever pair carries the
+   LOWER countdown — the one the surgery raises — and at that pair only;
+5. the conclusion is INCLUSION in the direction the collision's room pays for, not EQUALITY.
+
+Why the conclusion is one-directional. The window regime's raising surgery is landed
+(`cellAt_subset_of_window_raise`); its mirror is not, and not for want of effort: under deletion
+the `z`-anchored lift's anchor clause at the region start reverses direction, its binding half
+becoming a bound on the register from ABOVE (`window_lower_anchor_of_required`), which the
+collision's lowering branch does not supply and which `nxtAt_le_cntAt_region_start`'s TIGHT bound
+leaves short by exactly the displacement. So there is no second inclusion for
+`Set.Subset.antisymm` to consume, and stating equality here would be stating something not
+proved.
+
+WHAT A CONSUMER MUST SUPPLY. The induction that wants this must, at each state it inducts
+through, exhibit (i) the register equality across the collision — built into the quantifier
+here — and (ii) for the lower of the two countdowns, a witnessed idle run below `z`'s region: for
+each type in that state's cell, a ladder path through it realizing that type with a region start
+strictly below `z` and an idle run below that start long enough to absorb the displacement.
+Neither is a consequence of `ParamsOk`, and (ii) is not a consequence of the window hypothesis
+either — `cntAt_le_nxtAt_succ_of_idle_past` runs from an idle past to the window and not back.
+
+The reserved name `cellLE_zero_const_of_kappa_eq` is claimed by nothing here, and stays so.
+Being strictly stronger in hypotheses AND weaker in conclusion, this schema bears on the
+reserved statement `CellLEZeroConstOfKappaEq`'s truth value in NEITHER direction: that schema
+is, under `ParamsOk`, still neither proved nor refuted. -/
+def CellSubsetOfKappaEqWindowRaise {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) : Prop :=
+  ParamsOk step pend lab φ Tc Tn P B →
+    (∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ) →
+    ∀ (q : Q) (c n c' : ℕ) (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q) (z : ℤ),
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n) →
+      ¬ (n + 2 ≤ c) → ¬ (n + 2 ≤ c') → Tc ≤ c → Tc ≤ c' →
+      (c ≤ c' → WindowIdleRunWitnessed step pend fwd bwd lab φ
+        (⟨(q, c, n), h⟩ : LadderState Q pend) z) →
+      (c' ≤ c → WindowIdleRunWitnessed step pend fwd bwd lab φ
+        (⟨(q, c', n), h'⟩ : LadderState Q pend) z) →
+      (c ≤ c' →
+          cellAt (ladderModel step pend fwd bwd lab) φ
+              ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z ⊆
+            cellAt (ladderModel step pend fwd bwd lab) φ
+              ((z, ⟨(q, c', n), h'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z) ∧
+        (c' ≤ c →
+          cellAt (ladderModel step pend fwd bwd lab) φ
+              ((z, ⟨(q, c', n), h'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z ⊆
+            cellAt (ladderModel step pend fwd bwd lab) φ
+              ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z)
+
+/-- **THE WINDOW-REGIME INCLUSION SCHEMA IS A THEOREM.** The schema above holds at every
+parameter tuple `ParamsOk` admits.
+
+The arithmetic is `kappa_collision_window_room`'s and nothing more: a fixed-register collision in
+the window regime either PINS the two countdowns equal, or exhibits a positive multiple of
+`P + 1` separating them TOGETHER WITH the room `c' ≤ n` for whichever of the two is larger. The
+pinned branch closes by `rfl` — the two states are the same state, their admissibility proofs
+being proof-irrelevant — and each displacement branch closes by the single landed inclusion
+`cellAt_subset_of_window_raise` applied from the lower countdown to the higher, with the
+collision's own room discharging that lemma's `hroom` and the schema's witnessing hypothesis
+discharging its `hwit`.
+
+The reverse implication in each displacement branch is VACUOUS rather than proved: a positive
+multiple of `P + 1` cannot be `≤ 0`, so the ordering hypothesis contradicts the displacement.
+That is the honest shape of a one-directional result stated symmetrically — the direction the
+room pays for is discharged, and the other is reachable only when the displacement collapses.
+
+No `Set.Subset.antisymm` appears anywhere in this proof, and that absence is the point: see the
+schema's docstring for why the second inclusion does not exist. The reserved name
+`cellLE_zero_const_of_kappa_eq` is claimed by nothing here. -/
+theorem cellSubset_of_kappa_eq_window_raise {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) :
+    CellSubsetOfKappaEqWindowRaise step pend fwd bwd lab φ Tc Tn P B := by
+  intro hp hno q c n c' h h' z hk hwin hwin' hTc hTc' hwup hwdn
+  have hB : 2 ≤ B := hp.2.2.2.2.2
+  rcases kappa_collision_window_room Tc Tn P B c n c' hB hk hwin hwin' with heq | ⟨j, hjpos, hcase⟩
+  · -- the collision PINS the two countdowns: one state, hence both inclusions by `rfl`
+    subst heq
+    exact ⟨fun _ => Set.Subset.rfl, fun _ => Set.Subset.rfl⟩
+  · have hjP : 0 < j * (P + 1) := Nat.mul_pos hjpos (Nat.succ_pos P)
+    rcases hcase with ⟨hc', hroom⟩ | ⟨hc, hroom⟩
+    · -- `c'` is the higher pair: raise from `c`, and the reverse ordering is impossible
+      subst hc'
+      refine ⟨fun hle =>
+        cellAt_subset_of_window_raise step pend fwd bwd lab φ Tc Tn P B hp hno q c n h j h'
+          hTc hroom z (hwup hle), fun hle => absurd hle (by omega)⟩
+    · -- `c` is the higher pair: the same inclusion with the roles swapped
+      subst hc
+      refine ⟨fun hle => absurd hle (by omega), fun hle =>
+        cellAt_subset_of_window_raise step pend fwd bwd lab φ Tc Tn P B hp hno q c' n h' j h
+          hTc' hroom z (hwdn hle)⟩
+
+/-- **THE TWO REGIMES ARE EXHAUSTIVE AT A FIXED REGISTER, WITH NO THIRD CASE.** A `kappa`
+collision between `(c, n)` and `(c', n)` at `2 ≤ B` puts BOTH countdowns on the SAME side of the
+window boundary: either both lie inside the ordinary window `¬ (n + 2 ≤ c)` — this module's
+regime, where `cellSubset_of_kappa_eq_window_raise` applies — or both lie in the pending-forever
+gap `n + 2 ≤ c`, where every ladder path through either state is pending at EVERY earlier
+position and the five `LadderCell.lean` schemas apply. The two disjuncts are mutually exclusive
+by inspection, so the fixed-register collisions are PARTITIONED by the two regimes.
+
+Why this is not an assertion. The window/gap split is `clipIdx_regime_of_eq`'s own content at
+`(K4)`'s `2 ≤ B`: a collision of the clipped gap coordinate at a fixed register cannot straddle,
+because for the smaller countdown it already forces `c' ≤ n ∨ n + 2 ≤ c`, and either branch pulls
+the other countdown to the same side. The path-level half of the gap branch is
+`pend_past_of_nxtAt_lt`'s, applied at whichever of the two states a path happens to realize.
+Nothing is assumed about which branch holds at any particular parameters.
+
+What this does NOT claim. It does not claim either branch is INHABITED at a given tuple, it does
+not claim the window branch's own schema is discharged (that schema carries the witnessed
+idle-run condition and the threshold bounds on top of the regime), and it does not claim the
+union of the two regimes' schemas yields the reserved `CellLEZeroConstOfKappaEq` — the window
+branch's conclusion is an inclusion and not an equality, so the partition is of the COLLISIONS,
+not of a proof of that reserved statement. -/
+theorem kappa_collision_window_or_pendPast_exhaustive {Q : Type}
+    (step : Q → Q → Bool) (pend : Q → Bool) (Tc Tn P B c n c' : ℕ) (hB : 2 ≤ B)
+    (hk : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n)) :
+    (¬ (n + 2 ≤ c) ∧ ¬ (n + 2 ≤ c')) ∨
+      ((n + 2 ≤ c ∧ n + 2 ≤ c') ∧
+        ∀ g : ℤ → LadderState Q pend, IsLadderPath step pend g → ∀ y : ℤ,
+          pend (objAt g y) = true →
+          ((cntAt g y = c ∧ nxtAt g y = n) ∨ (cntAt g y = c' ∧ nxtAt g y = n)) →
+          ∀ p : ℤ, p ≤ y → pend (objAt g p) = true) := by
+  obtain ⟨-, -, -, -, hcl⟩ := kappa_eq_components Tc Tn P B c n c' n hk
+  have hsame : (¬ (n + 2 ≤ c) ∧ ¬ (n + 2 ≤ c')) ∨ (n + 2 ≤ c ∧ n + 2 ≤ c') := by
+    rcases lt_trichotomy c c' with hlt | heq | hgt
+    · rcases clipIdx_regime_of_eq B c c' n hB hlt hcl with hw | hg
+      · exact Or.inl ⟨by omega, by omega⟩
+      · exact Or.inr ⟨hg, by omega⟩
+    · subst heq
+      rcases Nat.lt_or_ge c (n + 2) with hw | hg
+      · exact Or.inl ⟨by omega, by omega⟩
+      · exact Or.inr ⟨hg, hg⟩
+    · rcases clipIdx_regime_of_eq B c' c n hB hgt hcl.symm with hw | hg
+      · exact Or.inl ⟨by omega, by omega⟩
+      · exact Or.inr ⟨by omega, hg⟩
+  rcases hsame with hwin | hgap
+  · exact Or.inl hwin
+  · refine Or.inr ⟨hgap, ?_⟩
+    intro g hg y hy hval p hp
+    refine pend_past_of_nxtAt_lt g hg y hy ?_ p hp
+    rcases hval with ⟨hc, hn⟩ | ⟨hc, hn⟩
+    · rw [hc, hn]; omega
+    · rw [hc, hn]; omega
 
 end Gate
 
