@@ -5,10 +5,8 @@
   "status": "partial",
   "phases_completed": 3,
   "phases_total": 9,
-  "summary": "Phases 1-3 of the plan are landed, built green and committed: the forward-slack regime is now provably equivalent to a bound on one countdown (next_region_cnt_le_of_hasForwardSlack, hasForwardSlack_iff_next_region_cnt_le), the three scoping records are in the tree (hasForwardSlack_amount_le, pend_succ_of_fwd with objCycleLens_nonempty_of_pend, paramsOk_inflate), and the cell-level witnessing condition is restated as a condition on region lengths. Phase 4 is BLOCKED: its pinned Challenge signature for exists_deleted_ladderPath_of_next_region_nxt is unprovable, incomplete by exactly nxtAt g z <= cntAt g z, measured by compiling the full proof with and without that hypothesis rather than argued. ForwardSlackWitnessed is therefore neither discharged nor refuted, and Route D is stalled one hypothesis short rather than refuted; the repair is free at the Phase 6 consumer and needs a plan revision.",
-  "blockers": [
-    "Phase 4's pinned Lean Challenge statement for exists_deleted_ladderPath_of_next_region_nxt cannot be proved. The plan's Decision 3 assumed every pin between z and the deleted block is undisplaced; their POSITIONS are, but delCnt lowers by exactly l the VALUE of the pin starting the region that CONTAINS the block (a pin below a, outside hanch's a <= v range), and closing its anchor clause needs precisely nxtAt g z <= cntAt g z. That does not follow from hpast: Drift admits free plus-or-minus-1 register drift, so a pending-forever past leaves the register unconstrained. Evidence: specs/917_forward_slack_witnessed_discharge_or_refutation/evidence/phase-4-pinned-signature-deficit.lean compiles clean with the hypothesis; the -FAILS.lean variant, the signature exactly as pinned, fails at exactly one omega goal. Repair: revise the pinned statement to carry the hypothesis; Phase 6's consumer already has hgap : N + 2 <= C at the state (q, C, N), so it costs the discharge nothing."
-  ],
+  "summary": "Phases 1-3 of the plan are landed, built green and committed: the forward-slack regime is now provably equivalent to a bound on one countdown (next_region_cnt_le_of_hasForwardSlack, hasForwardSlack_iff_next_region_cnt_le), the three scoping records are in the tree (hasForwardSlack_amount_le, pend_succ_of_fwd with objCycleLens_nonempty_of_pend, paramsOk_inflate), and the cell-level witnessing condition is restated as a condition on region lengths. Phase 4 measured its pinned Challenge signature for exists_deleted_ladderPath_of_next_region_nxt incomplete by exactly nxtAt g z <= cntAt g z, established by compiling the full proof with and without that hypothesis rather than argued. The plan now admits that inequality as hnz on the pinned statement, free at the Phase 6 consumer via its existing hgap : N + 2 <= C, so Phase 4 is dispatchable: the compiled evidence proof lands unchanged and Phases 5-9 proceed as written. ForwardSlackWitnessed remains neither discharged nor refuted; Route D is stalled at Phase 4, not refuted.",
+  "blockers": [],
   "artifacts": [
     {
       "type": "summary",
@@ -37,5 +35,7 @@
     "specs/917_forward_slack_witnessed_discharge_or_refutation/evidence/phase-4-pinned-signature-deficit-FAILS.lean",
     "specs/917_forward_slack_witnessed_discharge_or_refutation/issues.jsonl"
   ],
-  "session_id": "sess_1794365863_292a3e"
+  "session_id": "sess_1794365863_292a3e",
+  "continuation_path": "specs/917_forward_slack_witnessed_discharge_or_refutation/handoffs/phase-4-continuation-20261110T224340.md",
+  "next_action_hint": "implement"
 }
