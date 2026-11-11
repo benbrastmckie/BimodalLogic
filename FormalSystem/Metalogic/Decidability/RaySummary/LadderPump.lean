@@ -25,6 +25,12 @@ can be duplicated or deleted without changing the realized type at ANY position,
 the index map. The type half is HWZ 2000 Lemma 17 (deletion) and its duplication mirror, over
 `ℤ` and for the stab-free fragment of the closure.
 
+The three `Idle`-prefixed sections at the end of the module are the IDLE mirror of the same one
+argument: the idle-cycle vocabulary and the run bound without one (`IdleCycle`), the
+idle-block duplication with its countdown and its pin clause (`IdleSplice`), and the
+idle-restricted `(objAt, tpOf)` pigeonhole (`IdlePigeonhole`). They add no certificate object and
+no `ParamsOk` — the idle-block surgery consumes neither.
+
 ## The two windows of the register
 
 The next-deadline register is read by the cell in BOTH directions. Backward,
@@ -44,6 +50,8 @@ NOT certificate-free by design), no bisimulation or truth-congruence framework b
 index-map transports the pump consumes, and no `⊡`-letter transport: every type statement of the
 layer carries the stab-free hypothesis, as `tpOf_stabFree_eq_of_objAt_eq` does.
 -/
+
+set_option linter.style.longFile 1700
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1481,5 +1489,151 @@ theorem exists_iterSpliced_ladderPath_of_pend_past
             show u + (l : ℤ) - (l : ℤ) = u by ring, hlt₁ u (by omega)]
 
 end Iterate
+
+/-! ## The idle mirror: idle cycles, and the run bound without one
+
+`objCycleLens` (`CounterQuotient.lean`) collects the cycle lengths of the object's own PENDING
+graph, which is what a long pending region forces. The idle mirror is what a long idle RUN
+forces, and it is the premise the idle-gap lengthening needs. A ladder path's object walk steps
+along `step` at every position (`objAt_step`), so an idle run of length two already requires an
+idle-to-idle edge: `no_consecutive_idle_of_no_idle_step` is the generic reading of that
+obstruction, promoted here out of the decision gate's prototype. `idleCycleLens_of_idle_segment`
+and `exists_idleCycle_of_card_le_run` are the two halves of the pigeonhole that turns a long
+enough idle run into an idle cycle, and `idle_run_lt_tIdle_of_no_idleCycle` is the NECESSITY
+direction: without an idle cycle every idle run is shorter than `tIdle pend`. That direction is
+what makes the idle-cycle premise the right one rather than an arbitrary strengthening.
+
+The binders are written out declaration by declaration rather than taken from a `variable`
+block, because `no_consecutive_idle_of_no_idle_step` reads no `Fintype Q` and an included
+section instance would add a hypothesis its statement does not need. -/
+
+section IdleCycle
+
+/-- **Cycle lengths among the IDLE object states**: the mirror of `objCycleLens`, with
+`pend (f i) = false` in place of `pend (f i) = true`. A member of this set is a closed walk of
+the object's step graph that never leaves the idle states — exactly what duplicating a block of
+an idle run forces the walk to traverse. -/
+def idleCycleLens {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool) : Set ℕ :=
+  {l | 0 < l ∧ l ≤ Fintype.card Q ∧
+    ∃ f : ℕ → Q, (∀ i, step (f i) (f (i + 1)) = true) ∧ (∀ i, pend (f i) = false) ∧ f l = f 0}
+
+/-- **AN IDLE RUN OF LENGTH TWO NEEDS AN IDLE-TO-IDLE EDGE.** The whole content of the idle-gap
+lengthening's FAIL verdict, stated once and generically: the object walk of a ladder path steps
+along `step` at every position, so an object with no idle-to-idle edge forces every idle position
+to be followed by a pending one. The idle run's length is therefore a datum of the object's step
+graph, not a parameter a construction may raise. -/
+theorem no_consecutive_idle_of_no_idle_step {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+    (hstep : ∀ x y : Q, pend x = false → pend y = false → step x y = false)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (v : ℤ)
+    (h0 : pend (objAt g v) = false) : pend (objAt g (v + 1)) = true := by
+  by_contra h
+  rw [Bool.not_eq_true] at h
+  have hs := objAt_step g hg v
+  rw [hstep _ _ h0 h] at hs
+  exact Bool.false_ne_true hs
+
+/-- **A repeated object state inside an idle run yields an idle cycle.** The periodic walk
+`j ↦ objAt g (a + (j % k))` steps along `step`, is idle throughout because the whole block lies
+inside the run, and closes up at `k` because the two ends agree. The mirror of
+`objCycleLens_of_segment` (`LadderAgree.lean`), with the block's idleness supplied directly
+rather than read off `cntAt_sub_of_pend`. -/
+theorem idleCycleLens_of_idle_segment {Q : Type} [Fintype Q] {step : Q → Q → Bool}
+    {pend : Q → Bool} (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (a : ℤ) (k : ℕ) (hk : 0 < k) (hcard : k ≤ Fintype.card Q)
+    (hidle : ∀ i : ℕ, i < k → pend (objAt g (a + (i : ℤ))) = false)
+    (hrep : objAt g a = objAt g (a + (k : ℤ))) :
+    k ∈ idleCycleLens step pend := by
+  refine ⟨hk, hcard, fun j => objAt g (a + ((j % k : ℕ) : ℤ)), ?_, ?_, ?_⟩
+  · intro j
+    dsimp only
+    have hmod : j % k < k := Nat.mod_lt _ hk
+    have hs : (j + 1) % k = (j % k + 1) % k := (Nat.mod_add_mod j k 1).symm
+    by_cases hlast : j % k + 1 = k
+    · -- the wrap-around step: the block's last position steps to the block's first
+      have hj1 : (j + 1) % k = 0 := by rw [hs, hlast, Nat.mod_self]
+      have hstep := objAt_step g hg (a + ((j % k : ℕ) : ℤ))
+      have hcast : ((j % k : ℕ) : ℤ) + 1 = (k : ℤ) := by exact_mod_cast hlast
+      rw [show a + ((j % k : ℕ) : ℤ) + 1 = a + (k : ℤ) by rw [← hcast]; ring] at hstep
+      rw [hj1, Nat.cast_zero, add_zero, hrep]
+      exact hstep
+    · -- an interior step of the block
+      have hj1 : (j + 1) % k = j % k + 1 := by
+        rw [hs, Nat.mod_eq_of_lt (by omega)]
+      have hstep := objAt_step g hg (a + ((j % k : ℕ) : ℤ))
+      rw [hj1, show ((j % k + 1 : ℕ) : ℤ) = ((j % k : ℕ) : ℤ) + 1 by push_cast; ring,
+        ← add_assoc]
+      exact hstep
+  · intro j
+    exact hidle (j % k) (Nat.mod_lt _ hk)
+  · dsimp only
+    rw [Nat.mod_self, Nat.zero_mod]
+
+/-- **AN IDLE RUN AT LEAST AS LONG AS THE IDLE-STATE COUNT CARRIES AN IDLE CYCLE.** The
+pigeonhole on the `m + 1` positions `z, …, z + m` of the run, where `m` is the number of idle
+object states: all of them are idle, so they land in the idle states, and two must agree. The
+mirror of `exists_objCycle_of_card_le_cnt`, with the pigeonhole taken over the idle-state count
+rather than `Fintype.card Q`. -/
+theorem exists_idleCycle_of_card_le_run {Q : Type} [Fintype Q] {step : Q → Q → Bool}
+    {pend : Q → Bool} (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (z : ℤ) (L : ℕ)
+    (hrun : ∀ i : ℕ, i ≤ L → pend (objAt g (z + (i : ℤ))) = false)
+    (hlen : (Finset.univ.filter (fun q : Q => pend q = false)).card ≤ L) :
+    ∃ i k : ℕ, 0 < k ∧ k ≤ (Finset.univ.filter (fun q : Q => pend q = false)).card ∧
+      i + k ≤ L ∧
+      objAt g (z + (i : ℤ)) = objAt g (z + (i : ℤ) + (k : ℤ)) ∧
+      k ∈ idleCycleLens step pend := by
+  classical
+  set m := (Finset.univ.filter (fun q : Q => pend q = false)).card with hm
+  have hmQ : m ≤ Fintype.card Q := by
+    rw [hm]
+    simpa using Finset.card_filter_le (Finset.univ : Finset Q) (fun q => pend q = false)
+  obtain ⟨x, hx, y, hy, hxy, hfe⟩ :=
+    Finset.exists_ne_map_eq_of_card_lt_of_maps_to
+      (s := Finset.range (m + 1))
+      (t := Finset.univ.filter (fun q : Q => pend q = false))
+      (by rw [Finset.card_range]; omega)
+      (f := fun j : ℕ => objAt g (z + (j : ℤ)))
+      (fun j hj => Finset.mem_filter.mpr ⟨Finset.mem_univ _,
+        hrun j (by simp only [Finset.mem_coe, Finset.mem_range] at hj; omega)⟩)
+  rw [Finset.mem_range] at hx hy
+  rcases lt_or_gt_of_ne hxy with hlt | hlt
+  · have hcast : z + (x : ℤ) + ((y - x : ℕ) : ℤ) = z + (y : ℤ) := by
+      push_cast [Nat.cast_sub (le_of_lt hlt)]; ring
+    refine ⟨x, y - x, by omega, by omega, by omega, by rw [hcast]; exact hfe, ?_⟩
+    exact idleCycleLens_of_idle_segment g hg (z + (x : ℤ)) (y - x) (by omega) (by omega)
+      (fun i hi => by
+        rw [show z + (x : ℤ) + (i : ℤ) = z + ((x + i : ℕ) : ℤ) by push_cast; ring]
+        exact hrun (x + i) (by omega))
+      (by rw [hcast]; exact hfe)
+  · have hcast : z + (y : ℤ) + ((x - y : ℕ) : ℤ) = z + (x : ℤ) := by
+      push_cast [Nat.cast_sub (le_of_lt hlt)]; ring
+    refine ⟨y, x - y, by omega, by omega, by omega, by rw [hcast]; exact hfe.symm, ?_⟩
+    exact idleCycleLens_of_idle_segment g hg (z + (y : ℤ)) (x - y) (by omega) (by omega)
+      (fun i hi => by
+        rw [show z + (y : ℤ) + (i : ℤ) = z + ((y + i : ℕ) : ℤ) by push_cast; ring]
+        exact hrun (y + i) (by omega))
+      (by rw [hcast]; exact hfe.symm)
+
+/-- **WITHOUT AN IDLE CYCLE EVERY IDLE RUN IS SHORTER THAN `tIdle pend`.** The contraposition of
+`exists_idleCycle_of_card_le_run`, read against `tIdle`'s own shape — `tIdle pend` IS the
+idle-state count plus one (`CounterQuotient.lean`), so a run of length `tIdle pend` or more is
+exactly a run long enough for the pigeonhole to fire. This is the direction that makes the
+idle-cycle premise the RIGHT premise for the lengthening: an object with no idle cycle admits no
+idle run long enough to duplicate, so nothing weaker than an idle cycle will do. -/
+theorem idle_run_lt_tIdle_of_no_idleCycle {Q : Type} [Fintype Q] {step : Q → Q → Bool}
+    {pend : Q → Bool} (hno : idleCycleLens step pend = ∅)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ) (L : ℕ)
+    (hrun : ∀ i : ℕ, i ≤ L → pend (objAt g (z + (i : ℤ))) = false) :
+    L < tIdle pend := by
+  by_contra hcon
+  rw [Nat.not_lt] at hcon
+  have hlen : (Finset.univ.filter (fun q : Q => pend q = false)).card ≤ L := by
+    unfold tIdle at hcon
+    omega
+  obtain ⟨-, k, -, -, -, -, hmem⟩ := exists_idleCycle_of_card_le_run g hg z L hrun hlen
+  rw [hno] at hmem
+  exact hmem
+
+end IdleCycle
 
 end FormalSystem.Metalogic.Decidability.RaySummary

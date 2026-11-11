@@ -1,7 +1,7 @@
 # Implementation Plan: Task #911
 
 - **Task**: 911 - Idle-cycle sharpening of the idle-gap lengthening route
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11 hours
 - **Dependencies**: 909 (completed)
 - **Research Inputs**: None (see Decisions, "No research round")
@@ -180,7 +180,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Idle-cycle vocabulary and the bound without one [NOT STARTED]
+### Phase 1: Idle-cycle vocabulary and the bound without one [COMPLETED]
 
 **Goal**: Name the idle-cycle set, promote the refutation's generic mechanism into the library,
 and prove both directions of the pigeonhole that connects an idle cycle to a long idle run — so
@@ -189,28 +189,34 @@ strengthening.
 
 **Tasks**:
 
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean` immediately before
+- [x] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean` immediately before
       editing (concurrent siblings are live on this working tree).
-- [ ] Insert `set_option linter.style.longFile N` directly after the module docstring, with `N`
+- [x] Insert `set_option linter.style.longFile N` directly after the module docstring, with `N`
       chosen so `N - 200 <= lines < N` holds at this phase's close.
-- [ ] Open a new section `IdleCycle` after the `Pigeonhole` section, with the file's existing
+- [x] Open a new section `IdleCycle` after the `Pigeonhole` section, with the file's existing
       `variable {Q : Type} [Fintype Q] [Nonempty Q] {step : Q -> Q -> Bool} {pend : Q -> Bool}`
-      shape.
-- [ ] Define `idleCycleLens`, mirroring `objCycleLens` (`CounterQuotient.lean:512`) with
+      shape. *(deviation: altered — section opened, but binders are written out per declaration
+      instead of taken from a `variable` block. Lean 4 includes a section instance binder
+      whenever a variable its type mentions is used, so a `variable [Fintype Q]` would have
+      added `[Fintype Q]` to `no_consecutive_idle_of_no_idle_step`, whose Challenge-pinned
+      signature carries no such instance. The Challenge signatures are the binding contract
+      (`plan-compliance.md`, "Statement Fidelity"), so they won; the section itself and all
+      five declarations are exactly as planned. Recorded in the section docstring.)*
+- [x] Define `idleCycleLens`, mirroring `objCycleLens` (`CounterQuotient.lean:512`) with
       `pend (f i) = false` in place of `pend (f i) = true`.
-- [ ] Prove `no_consecutive_idle_of_no_idle_step`, transcribed from
+- [x] Prove `no_consecutive_idle_of_no_idle_step`, transcribed from
       `Probe838C.no_consecutive_idle_of_no_idle_step`; its body is four lines over `objAt_step`.
-- [ ] Prove `idleCycleLens_of_idle_segment`, mirroring `objCycleLens_of_segment`
+- [x] Prove `idleCycleLens_of_idle_segment`, mirroring `objCycleLens_of_segment`
       (`LadderAgree.lean:944`): the periodic walk `k |-> objAt g (a + (k % l))` steps along
       `step`, is idle throughout because the block lies inside the run, and closes at `l`.
-- [ ] Prove `exists_idleCycle_of_card_le_run`, mirroring `exists_objCycle_of_card_le_cnt`
+- [x] Prove `exists_idleCycle_of_card_le_run`, mirroring `exists_objCycle_of_card_le_cnt`
       (`LadderAgree.lean:984`), with the pigeonhole over the idle-state count rather than
       `Fintype.card Q`.
-- [ ] Prove `idle_run_lt_tIdle_of_no_idleCycle` by contraposition of the previous lemma, citing
+- [x] Prove `idle_run_lt_tIdle_of_no_idleCycle` by contraposition of the previous lemma, citing
       `tIdle pend = (idle-state count) + 1` so the bound reads against `tIdle`'s own shape.
-- [ ] Extend the module docstring's contract paragraph with one sentence naming the new section
+- [x] Extend the module docstring's contract paragraph with one sentence naming the new section
       and recording that it adds no certificate object and no `ParamsOk`.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
 
 **Timing**: 1.5 hours
 
