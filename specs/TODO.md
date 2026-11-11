@@ -1,5 +1,5 @@
 ---
-next_project_number: 919
+next_project_number: 924
 ---
 
 # TODO
@@ -13,10 +13,10 @@ next_project_number: 919
 |------|-------|------------|--------|
 | 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,912,918 | -- | agent-system, algebraic-representation, completeness, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,913,914 | 298,428,502,743,761,873,912 | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
-| 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
-| 5 | 430,501 | 125,411 | algebraic-representation, decidability |
-| 6 | 412 | 430 | decidability |
+| 3 | 410,498,499,500,804,861,919,920 | 429,497,763,803,914 | agent-system, algebraic-representation, decidability, ... |
+| 4 | 125,411,543,921 | 410,498,499,500,920 | agent-system, algebraic-representation, decidability, ... |
+| 5 | 430,501,922 | 125,411,921 | agent-system, algebraic-representation, decidability |
+| 6 | 412,923 | 430,922 | agent-system, decidability |
 | 7 | 482 | 412 | decidability |
 | 8 | 177 | 178,282,296,481,482,543 | formula-refactor |
 
@@ -28,6 +28,11 @@ next_project_number: 919
 912 [NOT STARTED] — Make the coupled-generated-surface and longFile-baseline...
   └─ 913 [NOT STARTED] — Provide a sanctioned in-dispatch remedy for a mechanically...
   └─ 914 [NOT STARTED] — Give the batch-gate-deferral directive a narrowing form that...
+    └─ 919 [NOT STARTED] — Re-verify or timestamp a task recorded starting position at...
+    └─ 920 [NOT STARTED] — Require pinned Lean Challenge signatures to be measured at...
+      └─ 921 [NOT STARTED] — Size symmetric-pair phases and iteration obligations separately
+        └─ 922 [NOT STARTED] — Define Goal Polarity semantics for decision-gate plans
+          └─ 923 [NOT STARTED] — Separate generator-written files from hand-edited read-only...
 
 ### Algebraic Representation
 
@@ -124,6 +129,357 @@ next_project_number: 919
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 923. Separate generator-written files from hand-edited read-only scope declarations
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 912, Task 914, Task 922
+
+**Description**: Agent-system change request from the /orchestrate conclusion stage (channel b), approved by the user.
+
+ORIGINATING EVIDENCE (issue-log entry; audit the proposal against it before acting):
+- {task 918, iss_1794387273674_2UjfIi}
+
+OBSERVED DEFECT (severity: minor). Two provisions of ONE plan contradicted each other about the
+same file. 918's plan risk table declared
+`FormalSystem/Metalogic/Decidability/RaySummary/README.md` READ-ONLY (a sibling task holds it in
+its `file_scope`), while that same plan's Phase 7 Scope Hypothesis instructed the implementer to
+"add any file they touch that is absent here" -- and `check-module-invariants.sh --emit-inventory`
+rewrites four tracked files, that README among them.
+
+The implementation resolved it by running the regeneration anyway (leaving the INV gate red from
+the task's own new module was the worse outcome) and recorded the tension rather than silently
+picking a side.
+
+ROOT SHAPE OF THE DEFECT. The plan-authoring contract has a single category -- "read-only" --
+covering two materially different things: a file a HUMAN/agent must not hand-edit because another
+task owns it, and a file a GENERATOR rewrites wholesale as a side effect of a gate the plan
+itself requires to be green. The second is not an edit the plan can decline to make; declaring it
+read-only states an obligation the plan cannot keep.
+
+CHANGE REQUEST. Reconcile the contract so a risk table's read-only declaration and a phase's
+generated-file regeneration surface cannot disagree. The suggested shape (not mandated -- assess
+it): require generator-written files to be declared as a DISTINCT category from hand-edited
+read-only ones, so a plan can say "this file will be rewritten by <generator>, not hand-edited,
+and that is expected" without either lying about read-only status or being silently out of scope.
+Whatever shape is chosen must also settle how such a file interacts with the Scope-Hypothesis
+self-consistency obligation and with a sibling task's `file_scope` claim on the same path.
+
+CURRENT STATE TO READ FIRST. plan-format.md already carries a "Files to modify" authoring shape
+with its own enforcement level, a "### Scope-Hypothesis / task-list self-consistency obligation",
+and a "## Risks & Mitigations" section in the skeleton. The fix almost certainly belongs in the
+interaction between those, not in a new top-level section.
+
+EDIT TARGET (source store, NOT the deployed mirror). Per .claude/rules/source-store-deploy-boundary.md,
+`.claude/**` here is a gitignored deploy artifact; source_dir for the `core` extension resolves
+from .claude-extensions.json to /home/benjamin/.config/nvim/agent-system/extensions/core. Edit:
+- /home/benjamin/.config/nvim/agent-system/extensions/core/context/formats/plan-format.md
+  (the "Files to modify" enforcement-level subsections, the Scope-Hypothesis self-consistency
+  obligation, and the "## Risks & Mitigations" skeleton entry)
+
+NOTE ON FILE TERRITORY: plan-format.md is shared with the sibling tasks created from this same
+approved batch; this task is last in that serialized chain.
+
+OPEN-RECORD RECONCILIATION -- READ THIS BEFORE PLANNING (backlog audit run at creation time;
+verdict recorded verbatim in this entry's `audit_verdict` field). Verdict `subset-of-open` against
+#912 `coupled_generated_surfaces_in_plan_authoring` [not_started]: this task's entire declared
+file scope (`core/context/formats/plan-format.md`) is a mechanical SUBSET of #912's, and the
+subject is adjacent rather than merely co-located.
+
+#912's Defect A targets the same mechanism from the other side: it asks for "a general,
+repo-agnostic coupled-generated-surface declaration obligation in
+core/context/formats/plan-format.md's 'Files to modify' contract", i.e. that a phase whose edits
+move a quantity a generated artifact derives MUST declare that artifact's path in the SAME phase's
+Files to modify block and schedule its regeneration there. #912 names
+`scripts/check-module-invariants.sh` and the generated README inventory blocks explicitly -- the
+very generator and the very README this task's evidence is about.
+
+RULING, rendered at creation time rather than deferred: this record is filed as a REFINEMENT of
+#912's remedy (i), not as independent work, and carries a hard dependency on #912. #912 establishes
+that a generated surface must be DECLARED; this record adds the distinction #912 does not make --
+that a generator-written file is a DIFFERENT CATEGORY from a hand-edited read-only one, so a risk
+table cannot declare the former read-only without stating an obligation the plan cannot keep. The
+918 evidence is the post-#912-filing recurrence that shows declaration alone is insufficient.
+
+THEREFORE, explicitly admissible outcomes for this record, to be decided in its own research phase
+rather than assumed: (a) if #912's implementation already distinguishes generator-written from
+hand-edited read-only scope when it lands, close this record as covered, naming #912's artifact as
+the discharging evidence -- do NOT re-litigate it; (b) otherwise, implement the distinction here on
+top of #912's landed obligation. Silently duplicating #912's remedy is the one outcome ruled out.
+
+---
+
+### 922. Define Goal Polarity semantics for decision-gate plans
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 912, Task 914, Task 921
+
+**Description**: Agent-system change request from the /orchestrate conclusion stage (channel b), approved by the user.
+
+ORIGINATING EVIDENCE (issue-log entry; audit the proposal against it before acting):
+- {task 917, iss_1794372876974_DWXNdc}
+
+OBSERVED DEFECT (severity: minor). plan-format.md requires a `## Lean Challenge Statements` block
+whose identifier set equals the plan's Goals, and lean-plan-compliance-check.sh's Final
+Verification Stage spot-check then requires every named identifier to be PRESENT in the resolved
+Lean source roots. A DECISION-GATE plan -- one whose later phases may legitimately close
+`[COMPLETED WITH EXCLUSIONS]` because the gate resolved the other way -- cannot satisfy those
+must-exist semantics. The `refutation` polarity is equally wrong for it: the identifiers are not
+required to be ABSENT either.
+
+917 worked around this by declaring an explicit non-`refutation` Goal Polarity value, which makes
+the spot-check record `compliance_check: "skipped"` with a stated reason. That is the documented
+mixed-polarity escape hatch, used here for a purpose it was not written for.
+
+CHANGE REQUEST. The polarity vocabulary has no `conditional` value. Pick one of two resolutions
+and implement it fully:
+(a) add a `conditional` value with DEFINED check semantics for decision-gate plans (what the
+    spot-check asserts, and what it records, when the gate may foreclose a Goal); or
+(b) document the non-`refutation`-polarity workaround as the SANCTIONED route for decision-gate
+    plans, named as such in plan-format.md, so the next planner does not rediscover it.
+Resolution (b) is cheaper and may well be correct -- do not assume (a) is the answer. Whichever
+is chosen, the existing `refutation` and mixed-polarity semantics must not change behaviour for
+plans already relying on them.
+
+CURRENT STATE TO READ FIRST. plan-format.md's "## Goal Polarity (optional, lean/lean4 plans)"
+section already defines: field-absent default (every identifier must be present), `refutation`
+(every identifier must be absent), and the mixed-polarity ruling (any explicitly declared
+non-`refutation` value records `skipped` with a stated reason). Note the implication: the escape
+hatch already works mechanically -- what is missing is naming it for this case.
+
+EDIT TARGET (source store, NOT the deployed mirror). Per .claude/rules/source-store-deploy-boundary.md,
+`.claude/**` here is a gitignored deploy artifact; source_dir resolves from .claude-extensions.json
+to /home/benjamin/.config/nvim/agent-system/extensions/{core,lean}. Edit:
+- /home/benjamin/.config/nvim/agent-system/extensions/core/context/formats/plan-format.md
+  (the "## Goal Polarity (optional, lean/lean4 plans)" section)
+- /home/benjamin/.config/nvim/agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh
+  (only if resolution (a) is chosen)
+- /home/benjamin/.config/nvim/agent-system/extensions/lean/scripts/tests/test-lean-plan-compliance-check.sh
+
+NOTE ON FILE TERRITORY: plan-format.md and lean-plan-compliance-check.sh are shared with the
+sibling tasks created from this same approved batch; this task is serialized behind the
+symmetric-pair phase-sizing task, which is itself behind the pinned-signature-measurement task.
+
+OPEN-RECORD RECONCILIATION (backlog audit run at creation time; verdict recorded verbatim in this
+entry's `audit_verdict` field). Verdict `overlaps-open` against #912
+`coupled_generated_surfaces_in_plan_authoring` and #914
+`batch_gate_deferral_narrowing_for_project_sources`, both [not_started], 1 shared path each:
+`core/context/formats/plan-format.md`. RULING: not duplicates -- file territory only; neither
+record concerns Goal Polarity. Dependency edges on both are recorded rather than exclusions.
+Separately, the audit's highest-scoring closed match is #785
+`lean_plan_gate_collision_authoring_guidance` (semantic 0.68), which authored the gate-collision
+conditions this plan-format area sits in, and #827 `plan_self_consistency_and_artifact_existence`
+(0.64). Read both before planning and decide explicitly whether the decision-gate polarity case is
+already addressed there; the 917 evidence is a post-closure recurrence, which is why it is filed.
+
+---
+
+### 921. Size symmetric-pair phases and iteration obligations separately
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 912, Task 914, Task 920
+
+**Description**: Agent-system change request from the /orchestrate conclusion stage (channel b), approved by the user.
+
+ORIGINATING EVIDENCE (issue-log entry; audit the proposal against it before acting):
+- {task 918, iss_1794387530357_nlDygI}
+
+OBSERVED DEFECT (severity: costly). Phase sizing. 918's Phase 3 budgeted 2.5 hours and an
+estimated +220 lines for "both directions" of the composite splice. The raising primitive's
+ADMISSIBILITY HALF ALONE came to +276 lines -- the single estimate for a symmetric pair was
+already exceeded by one of its two halves.
+
+Two compounding omissions, both invisible in the plan's task list:
+- The raise must be ITERATED to reach an exact multiple of `P + 1`. The only landed iterate
+  carries the pending-forever hypothesis that the task's own regime DENIES -- in two separate
+  places. None of this appeared as a task-list item.
+- The composite's formulation had to be REDESIGNED mid-phase to be iterable at all.
+
+Outcome: three of seven phases landed rather than seven.
+
+CHANGE REQUEST. Add a plan-authoring rule with two clauses:
+(1) A phase claiming "both directions" -- or any symmetric pair, biconditional, or round-trip of
+    a primitive -- must size and schedule EACH DIRECTION SEPARATELY. One budget covering a
+    symmetric pair is not a budget.
+(2) An ITERATION or CLOSURE obligation on a landed primitive (iterate to reach a multiple, take a
+    transitive/reflexive closure, discharge a hypothesis the regime denies) must appear as its
+    OWN NAMED task-list item, not be absorbed into the primitive's phase.
+Make both clauses checkable: state the enforcement level (blocking vs advisory) in the same style
+as plan-format.md's existing enforcement-level subsections, and say what a reviewer or script
+looks for.
+
+CURRENT STATE TO READ FIRST. plan-format.md already carries "## Implementation Phases (format)",
+a "### Counts-are-hypotheses obligation", a "### Cross-phase ceiling consistency obligation", and
+per-obligation "### Enforcement level" subsections -- the new rule should match that established
+shape rather than invent a new one. hard-mode-routing.md separately states phase sizing (H8) as
+"each phase bounded to one agent run (~100-500 lines output)"; the +276-line half inside a
++220-line budget is a direct H8 datapoint, so check whether H8's wording also needs the
+symmetric-pair clause. planner-agent.md is the agent that must actually apply the rule.
+
+EDIT TARGET (source store, NOT the deployed mirror). Per .claude/rules/source-store-deploy-boundary.md,
+`.claude/**` here is a gitignored deploy artifact; source_dir for the `core` extension resolves
+from .claude-extensions.json to /home/benjamin/.config/nvim/agent-system/extensions/core. Edit:
+- /home/benjamin/.config/nvim/agent-system/extensions/core/context/formats/plan-format.md
+  ("## Implementation Phases (format)" and its obligation/enforcement-level subsections)
+- /home/benjamin/.config/nvim/agent-system/extensions/core/context/guides/hard-mode-routing.md
+  (the H8 phase-sizing entry)
+- /home/benjamin/.config/nvim/agent-system/extensions/core/agents/planner-agent.md
+
+NOTE ON FILE TERRITORY: plan-format.md is shared with the sibling tasks created from this same
+approved batch; this task is serialized behind the pinned-signature-measurement task.
+
+OPEN-RECORD RECONCILIATION (backlog audit run at creation time; verdict recorded verbatim in this
+entry's `audit_verdict` field). The audit emitted `duplicate-of-open` against #912
+`coupled_generated_surfaces_in_plan_authoring` [not_started] (2 shared paths:
+`core/context/formats/plan-format.md`, `core/agents/planner-agent.md`; semantic score 0.40).
+RULING: NOT a duplicate -- the shared verdict is driven by file territory, not subject. #912's two
+defects are (A) coupled generated surfaces going undeclared in a phase's Files to modify, and (B)
+`linter.style.longFile` acceptance-window semantics. Neither is phase SIZING of a symmetric pair,
+and neither covers an unscheduled iteration/closure obligation. What IS shared is the authoring
+surface: #912 adds a declaration obligation to plan-format.md's "Files to modify" contract and adds
+a lean-context pointer to planner-agent.md. A dependency edge on #912 is recorded rather than an
+exclusion, so this task amends plan-format.md and planner-agent.md after #912's edits land, not
+against a stale reading of them. #914 also carries plan-format.md in its scope; an edge on it is
+recorded for the same reason.
+
+---
+
+### 920. Require pinned Lean Challenge signatures to be measured at plan time
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 912, Task 914
+
+**Description**: Agent-system change request from the /orchestrate conclusion stage (channel b), approved by the user.
+
+ORIGINATING EVIDENCE (issue-log entries; audit the proposal against these before acting):
+- {task 917, iss_1794374793101_psy7sY}
+- {task 917, iss_1794375246019_OW3KwL}
+
+OBSERVED DEFECT (severity: blocking). Pinned Lean Challenge signatures were authored without
+being measured. 917's Phase 4 pinned statement for `exists_deleted_ladderPath_of_next_region_nxt`
+was unprovable AS PINNED -- incomplete by exactly one hypothesis (`nxtAt g z <= cntAt g z`).
+
+The plan's own Decision 3 had assumed every pin between `z` and the deleted block is undisplaced.
+Their POSITIONS are; but `delCnt` lowers the VALUE of the pin starting the region that contains
+the block, by exactly `l`. The deficit was measured by compiling the proof with and without the
+hypothesis (both variants preserved under that task's evidence/), the phase was marked BLOCKED
+per lean plan-compliance.md's Statement Fidelity rule rather than laundering the extra hypothesis
+under the pinned name, and a mid-task plan revision was required.
+
+THE PRACTICE THAT AVOIDED IT ALREADY EXISTS, VOLUNTARILY. 918's planner then measured all four of
+its pinned arithmetic statements through `lake env lean` BEFORE closing the plan, and deliberately
+left its gate-dependent signatures unpinned -- recording in its own Decisions that an unmeasured
+pin is exactly what forced 917's revision.
+
+CHANGE REQUEST. Promote that voluntary practice into the plan-authoring contract: a pinned
+Challenge signature must EITHER be compiled sorry-free at plan time (evidence recorded) OR be
+explicitly marked unpinned / gate-dependent. Define what "measured" means operationally (what
+command, what evidence, where recorded) and what the compliance checker does with an unmeasured
+pin, so the obligation is checkable rather than aspirational.
+
+CONSTRAINT TO PRESERVE. Statement Fidelity must stay intact: the point is not to permit
+weakening a pinned statement once reality disagrees, it is to make the disagreement surface at
+plan time instead of mid-implementation.
+
+EDIT TARGET (source store, NOT the deployed mirror). Per .claude/rules/source-store-deploy-boundary.md,
+`.claude/**` here is a gitignored deploy artifact; source_dir resolves from .claude-extensions.json
+to /home/benjamin/.config/nvim/agent-system/extensions/{core,lean}. Edit:
+- /home/benjamin/.config/nvim/agent-system/extensions/core/context/formats/plan-format.md
+  (the "## Lean Challenge Statements (format, lean/lean4 plans only)" section)
+- /home/benjamin/.config/nvim/agent-system/extensions/lean/rules/plan-compliance.md
+  (the "## Statement Fidelity" section)
+- /home/benjamin/.config/nvim/agent-system/extensions/lean/scripts/lean-plan-compliance-check.sh
+- /home/benjamin/.config/nvim/agent-system/extensions/lean/scripts/tests/test-lean-plan-compliance-check.sh
+
+NOTE ON FILE TERRITORY: plan-format.md and lean-plan-compliance-check.sh are shared with the
+sibling tasks created from this same approved batch (goal-polarity semantics for decision-gate
+plans; generator-written vs read-only scope; symmetric-pair phase sizing). This task is first in
+that serialized chain; the others depend on it.
+
+OPEN-RECORD RECONCILIATION (backlog audit run at creation time; verdict recorded verbatim in this
+entry's `audit_verdict` field). Verdict `overlaps-open` against #912
+`coupled_generated_surfaces_in_plan_authoring` and #914
+`batch_gate_deferral_narrowing_for_project_sources`, both [not_started], 1 shared path each:
+`core/context/formats/plan-format.md`. RULING: not duplicates -- neither record concerns Lean
+Challenge pin measurement; the shared verdict is file territory only. Dependency edges on both are
+recorded rather than exclusions, so this task amends plan-format.md after their edits land.
+Separately, two CLOSED records sit near this subject and must be decided explicitly rather than
+silently resurrected or silently skipped: #813 `lean_plan_challenge_block_authoring_contract` and
+#824 `fixture_dependent_challenge_statement_pinning` (both surfaced `covered-by-closed`). Read
+both before planning: if either already fixes the measurement obligation, say so and close this
+record against it; the 917 evidence is a post-closure recurrence, which is why it is filed.
+
+---
+
+### 919. Re-verify or timestamp a task recorded starting position at dispatch composition
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 914
+
+**Description**: Agent-system change request from the /orchestrate conclusion stage (channel b), approved by the user.
+
+ORIGINATING EVIDENCE (issue-log entries; audit the proposal against these before acting):
+- {task 917, iss_1794371652447_TTinEN}
+- {task 918, iss_1794383423202_EAr4Us}
+
+OBSERVED DEFECT (recurs across BOTH tasks in that batch; severity: costly). The dispatch file's
+hand-authored "VERIFIED STARTING POSITION" block carried a task-description snapshot that was
+roughly 38 wired probes out of date in both tasks.
+
+For 918 the consequence was not cosmetic: one of the task's two admissible outcomes -- a
+refutation that the two parameter constraints cannot be jointly met -- had ALREADY been
+foreclosed by compiled code (`paramsOk_params` discharges all four of (K1)-(K4) at exhibited
+parameters), so the task as described could not be executed as written.
+
+For 917 the stale block named three landed depth-0 cell-equality schemas where the tree carried
+five, and asserted that discharging `ForwardSlackWitnessed` would land
+`cellLE_zero_const_of_kappa_eq` -- which it would not, since the reserved schema quantifies over
+all kappa-collisions while every landed inclusion carries the pending-forever gap `n+2 <= c`.
+
+In both cases the receiving agent had to re-derive the current frontier from source before it
+could scope its own task, and discovered the staleness by contradiction rather than being told.
+
+CHANGE REQUEST. Provide a mechanism or convention that, at dispatch-composition time,
+re-verifies the task's recorded starting position -- or, failing that, visibly timestamps it and
+flags it as unverified -- so a research or plan agent is told the snapshot's age up front.
+
+STARTING POINT ALREADY IN THE TREE (verify before designing anything new). The dispatch composer
+already carries a "Premise re-validation block" whose owner ruling is "the composer EMITS, it
+never ADJUDICATES": it lexically extracts numeric/measurement/pass-fail/ratio/hard-claim shapes
+from the current description and emits them, but only when the task directory already holds a
+prior artifact, and it attaches no age or verification status. It also already computes a
+`description_fingerprint` (sha256 of the description) to mark recorded Prior Decisions as
+POTENTIALLY SUPERSEDED. Both mechanisms are plausible carriers for this request; a third,
+independent mechanism is probably the wrong answer. Respect the EMITS-not-ADJUDICATES ruling --
+re-deriving semantic truth of a claim inside the composer was explicitly rejected once already
+(see report-format.md's "Internal consistency" paragraph).
+
+EDIT TARGET (source store, NOT the deployed mirror). Per .claude/rules/source-store-deploy-boundary.md,
+`.claude/**` here is a gitignored deploy artifact; source_dir for the `core` extension resolves
+from .claude-extensions.json to /home/benjamin/.config/nvim/agent-system/extensions/core. Edit:
+- /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/orchestrate-build-dispatch.sh
+- /home/benjamin/.config/nvim/agent-system/extensions/core/context/formats/report-format.md
+  (the "## Carried-Figure Discipline" / "The premise a dispatch acts on" subsection that owns
+  the premise concept)
+- /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/tests/test-orchestrate-build-dispatch.sh
+  (the composer's existing test suite -- any emission change needs coverage here)
+
+OPEN-RECORD RECONCILIATION (backlog audit run at creation time; verdict recorded verbatim in this
+entry's `audit_verdict` field). Verdict `overlaps-open` against #914
+`batch_gate_deferral_narrowing_for_project_sources` [not_started], 2 shared paths:
+`core/scripts/orchestrate-build-dispatch.sh` and its test suite
+`core/scripts/tests/test-orchestrate-build-dispatch.sh`. #914's subject is different (giving the
+Batch Gate Deferral directive a narrowing form for project-only phases), but it rewrites the same
+composer and the same test file. RULING: not a duplicate -- a file-territory overlap. A dependency
+edge on #914 is recorded rather than an exclusion, so the two land as a sequence; do not plan this
+task against a pre-#914 reading of the composer.
+
+---
 
 ### 918. Ladder cell index positive factorization
 - **Effort**: high
