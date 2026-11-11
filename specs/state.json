@@ -3259,7 +3259,7 @@
     {
       "project_number": 918,
       "project_name": "ladder_cell_index_positive_factorization",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Produce a positive factorization lemma for the index of which cell a ladder state has, or compile a refutation that no index meeting the recorded constraints exists. This is the SECOND, INDEPENDENT blocker on the ladder realization theorem -- the one the cell-agreement chain does not touch.\n\nVERIFIED STARTING POSITION (every refutation below is a compiled wired probe, not an argument):\n(1) The realization theorem is BLOCKED on this index, separately from the cell agreement. FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean claims NO index of a ladder cell.\n(2) The clipped-coordinate index family is REFUTED at the countdown coordinate and bounded at the gap one by specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean: the region's first idle state sits at distance exactly c + 1, where the countdown's parity is observable.\n(3) The bounded-carrier alternative is closed AS A GENERAL ROUTE by that same probe.\n(4) The residue-carrying candidate that probe exhibits is refuted at BOTH of its object-exhibited parameters by specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean (object_only_parameters_refuted, reach_period_refuted).\n\nTHE CONSTRAINTS ARE THEREFORE COMPILED, NOT GUESSED. Any index must satisfy both: the threshold must be FORMULA-derived, not object-exhibited; and the modulus must be a MULTIPLE OF THE PERIOD of every letter-definable sub-object. A candidate violating either is already refuted by (4) and must not be re-attempted.\n\nTWO ADMISSIBLE OUTCOMES: the positive factorization lemma under those two constraints, or a compiled refutation that they cannot be jointly met -- which would close the ladder route for the realization theorem and is a reportable negative result, not a failure. The stabilization lemma in the pair of ladder counters is ALREADY refuted (ladder-cell-refutation.lean) and is not to be re-attempted; this task is about the index, not the stabilization.\n\nSCOPE: the index only. Different file set from the cell-agreement siblings, so this may run concurrently with them.\n",
       "effort": "high",
@@ -3297,13 +3297,14 @@
         {
           "path": "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
           "type": "summary",
-          "summary": "Phases 1-6 of the window-regime plan: the leaf module's arithmetic, the passed decision gate, the raising composite splice, the upward cell inclusion, the window schema plus the compiled regime exhaustiveness, and Phase 6's PASS-branch closure with the lowering-deficit probe wired into the rot guard."
+          "summary": "Task 918 implementation summary: the ordinary window regime of the depth-0 cell obligation closed positively and one-directionally, with the lowering direction excluded on a compiled measurement."
         }
       ],
       "created": "2026-11-11T02:48:57Z",
-      "last_updated": "2026-11-11T13:22:59Z",
+      "last_updated": "2026-11-11T14:50:25Z",
       "session_id": "sess_1794400344_255305",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Task 918 reached its first admissible outcome. The positive factorization of the depth-0 cell obligation is landed for the ordinary window regime c <= n + 1 as the schema CellSubsetOfKappaEqWindowRaise, proved by cellSubset_of_kappa_eq_window_raise at every parameter tuple ParamsOk admits, with the UPWARD cell inclusion only: the lowering direction is excluded on a compiled measurement (window_lower_anchor_not_implied, window_lower_anchor_fails_at_tight_bound, window_lower_anchor_of_required plus the wired probe lowering-anchor-deficit.lean), because its anchor clause reverses direction under deletion and needs a sixth hypothesis the decision gate's criterion forbids. kappa_collision_window_or_pendPast_exhaustive compiles the fact that this regime and the pending-forever gap are the only two cases at a fixed register, so the result is one half of a partition rather than an unquantified special case. The re-scope from the dispatch's words to this regime was the prior cycle's recorded decision (.decisions.json cycle 2, Target A), not a drift. The second admissible outcome -- a refutation that the parameter constraints cannot be jointly met -- was NOT reached and is not claimed: the regime is closed positively, the ladder route is closed in neither regime by this task, and the reserved cellLE_zero_const_of_kappa_eq remains claimed by nothing (0 declaration sites under FormalSystem/). Phase 7 landed the durable records: 42 #print axioms pins covering every declaration of LadderWindow.lean, nine Requirement (W) narrative sections in the summary layer's axiom-profile ledger, the verdict in the module's own docstring, both longFile baselines re-tightened at final line counts, every generated surface reconciled, and the complete nine-command gate set run and tabled."
     },
     {
       "project_number": 919,

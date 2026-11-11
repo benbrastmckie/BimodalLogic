@@ -1,7 +1,7 @@
 # Implementation Plan: The ladder cell index in the ordinary window regime
 
 - **Task**: 918 - Produce a positive factorization lemma for the index of which cell a ladder state has
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12.5 hours
 - **Dependencies**: None blocking. Reads task 917's closed record as its starting position; the idle-splice layer it builds on (`LadderPump.lean`'s three `Idle`-prefixed sections, `LadderIdle.lean`'s register-anchored assembly) is already landed by a sibling.
 - **Research Inputs**: `specs/918_ladder_cell_index_positive_factorization/reports/01_ladder-cell-index-positive-factorization.md`; the plan-time compiled gate measurement `specs/918_ladder_cell_index_positive_factorization/evidence/plan-gate-arithmetic.lean` (`lake env lean`, zero output, `sorry`-free)
