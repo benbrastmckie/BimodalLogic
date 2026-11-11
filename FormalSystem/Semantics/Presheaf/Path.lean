@@ -414,13 +414,24 @@ theorem PathHom.ext' {w u : F.WorldState} {f g : PathHom F w u} (hl : f.len = g.
   subst this
   rfl
 
-/-- **The identity at `w`**: the germ `Beh.ofGerm F w` at length `0`. Its two endpoint equations
-hold by `rfl`. The proof term reaches *Seriality* and *Limit* through `Beh.ofGerm`'s use of
-`nullity_identity`; the marker lists the whole bundle the binder supplies.
+/-- **The identity at `w`, at explicit hypotheses**: the germ
+`Beh.ofGermOfSerialLimit F hser hlim w` at length `0`. Its two endpoint equations hold by `rfl`,
+and the only domain-side obligation in the whole term is the one `Beh.ofGermOfSerialLimit`
+discharges — so *Compositionality* and *Saturation* are reached by no part of this identity.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+Constraints consumed: Seriality, Limit -/
+def PathHom.idOfSerialLimit (F : TaskFrame) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) (w : F.WorldState) : PathHom F w w :=
+  ⟨Dur.id, Beh.ofGermOfSerialLimit F hser hlim w, rfl, rfl⟩
+
+/-- **The identity at `w`**: the germ `Beh.ofGerm F w` at length `0`. This is
+`PathHom.idOfSerialLimit` with its two hypotheses projected out of a bundling instance; the
+instance's *Compositionality* and *Saturation* fields are not read, so the general form above
+applies to frames outside that class.
+
+Constraints consumed: Seriality, Limit -/
 def PathHom.id (F : TaskFrame) [F.IsRegular] (w : F.WorldState) : PathHom F w w :=
-  ⟨Dur.id, Beh.ofGerm F w, rfl, rfl⟩
+  PathHom.idOfSerialLimit F F.serial F.limit w
 
 /-- **Composition in `Path(F)`**: the *Sheaf* clause. The two sections meet at `u` — `f.tgt` and
 `g.src` supply the seam hypothesis — and glue, in sum form, to a section over the summed length;
@@ -444,29 +455,53 @@ Constraints consumed: Compositionality -/
     {w u v : F.WorldState} (f : PathHom F w u) (g : PathHom F u v) :
     (PathHom.comp hcomp f g).len = Dur.comp f.len g.len := rfl
 
-/-- The length of an identity is the identity of `BD⁺`, by `rfl`.
+/-- The length of the identity at explicit hypotheses is the identity of `BD⁺`, by `rfl`.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+Constraints consumed: Seriality, Limit -/
+theorem PathHom.id_len_of_serial_limit (F : TaskFrame) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) (w : F.WorldState) :
+    (PathHom.idOfSerialLimit F hser hlim w).len = Dur.id := rfl
+
+/-- The length of an identity is the identity of `BD⁺`, by `rfl`. This is
+`PathHom.id_len_of_serial_limit` with its two hypotheses projected out of a bundling instance.
+
+Constraints consumed: Seriality, Limit -/
 @[simp] theorem PathHom.id_len (F : TaskFrame) [F.IsRegular] (w : F.WorldState) :
-    (PathHom.id F w).len = Dur.id := rfl
+    (PathHom.id F w).len = Dur.id :=
+  PathHom.id_len_of_serial_limit F F.serial F.limit w
 
-/-- **Left unit law**: the germ at `w` composed with `f` is `f`. The length half is `Dur.id_comp`;
-the section half characterizes the glued section by `glue_unique` against `f.sec` cast to length
-`0 + l`: its left restriction to `[0, 0]` is the germ at `f(0) = w` (`Beh.ofGerm_germ`), and its
-right restriction onto `0 + l - 0` is `f.sec` itself.
+/-- **Left unit law, at explicit hypotheses**: the germ at `w` composed with `f` is `f`. The
+length half is `Dur.id_comp`; the section half characterizes the glued section by `glue_unique`
+against `f.sec` cast to length `0 + l`: its left restriction to `[0, 0]` is the germ at
+`f(0) = w`, and its right restriction onto `0 + l - 0` is `f.sec` itself. The germ-inverse step is
+proved inline as `hgerm`, because the only form of it in `Behavior.lean` (`Beh.ofGerm_germ`) is
+stated over a bundling instance and so cannot be named here.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-theorem PathHom.id_comp [F.IsRegular] {w u : F.WorldState} (f : PathHom F w u) :
-    PathHom.comp F.comp (PathHom.id F w) f = f := by
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem PathHom.id_comp_of_constraints (hcomp : TaskFrame.Compositional F.TaskRel)
+    (hser : TaskFrame.Serial F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel)
+    {w u : F.WorldState} (f : PathHom F w u) :
+    PathHom.comp hcomp (PathHom.idOfSerialLimit F hser hlim w) f = f := by
   refine PathHom.ext' (Dur.id_comp f.len) ?_
+  have hgerm : ∀ τ : Beh F 0, Beh.ofGermOfSerialLimit F hser hlim (Beh.germ τ) = τ := by
+    intro τ
+    refine Beh.ext (partialHistory_ext ?_ ?_)
+    · funext z
+      change (0 ≤ z ∧ z ≤ 0) = τ.val.domain z
+      exact propext ((τ.property z).symm)
+    · intro r _ h'
+      have hr0 : r = 0 := le_antisymm ((τ.property r).mp h').2 ((τ.property r).mp h').1
+      subst hr0
+      rfl
   have hpl : (0 : F.Duration) ≤ 0 + f.len.val := le_add_of_nonneg_right f.len.property
   let υ : Beh F (0 + f.len.val) := Beh.castLen (zero_add f.len.val).symm f.sec
-  have hL : Beh.restrict 0 0 le_rfl le_rfl (by rw [zero_add]; exact hpl) υ = Beh.ofGerm F w := by
+  have hL : Beh.restrict 0 0 le_rfl le_rfl (by rw [zero_add]; exact hpl) υ
+      = Beh.ofGermOfSerialLimit F hser hlim w := by
     have h : Beh.germ (Beh.restrict 0 0 le_rfl le_rfl (by rw [zero_add]; exact hpl) υ) = w := by
       change f.sec.val.states (0 + 0) _ = w
       exact (PartialHistory.states_eq_of_time_eq f.sec.val (0 + 0) 0 (add_zero 0) _
         (Beh.mem_dom f.sec le_rfl f.len.property)).trans f.src
-    exact (Beh.ofGerm_germ _).symm.trans (congrArg (Beh.ofGerm F) h)
+    exact (hgerm _).symm.trans (congrArg (Beh.ofGermOfSerialLimit F hser hlim) h)
   have hR : Beh.restrict 0 (0 + f.len.val - 0) le_rfl (sub_nonneg.mpr hpl)
       (by rw [add_sub_cancel]) υ = Beh.castLen (add_sub_cancel_left 0 f.len.val).symm f.sec := by
     refine Beh.ext (partialHistory_ext ?_ ?_)
@@ -477,19 +512,30 @@ theorem PathHom.id_comp [F.IsRegular] {w u : F.WorldState} (f : PathHom F w u) :
     · intro r hr h'
       change f.sec.val.states (0 + r) _ = f.sec.val.states r h'
       exact PartialHistory.states_eq_of_time_eq f.sec.val (0 + r) r (zero_add r) _ h'
-  have hu := glue_unique F.comp le_rfl hpl (Beh.ofGerm F w)
+  have hu := glue_unique hcomp le_rfl hpl (Beh.ofGermOfSerialLimit F hser hlim w)
     (Beh.castLen (add_sub_cancel_left 0 f.len.val).symm f.sec)
-    ((PathHom.id F w).tgt.trans f.src.symm) υ hL hR
+    ((PathHom.idOfSerialLimit F hser hlim w).tgt.trans f.src.symm) υ hL hR
   exact (congrArg Subtype.val hu).symm
 
-/-- **Right unit law**: `f` composed with the germ at `u` is `f`. The length half is `Dur.comp_id`;
-the section half characterizes the glued section by `glue_unique` against `f.sec` cast to length
-`l + 0`: its left restriction to `[0, l]` is `f.sec`, and its right restriction onto `l + 0 - l` is
-the one-point section at `f(l) = u`.
+/-- **Left unit law**: the germ at `w` composed with `f` is `f`. This is
+`PathHom.id_comp_of_constraints` with its three hypotheses projected out of a bundling instance;
+the instance's *Saturation* field is not read.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-theorem PathHom.comp_id [F.IsRegular] {w u : F.WorldState} (f : PathHom F w u) :
-    PathHom.comp F.comp f (PathHom.id F u) = f := by
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem PathHom.id_comp [F.IsRegular] {w u : F.WorldState} (f : PathHom F w u) :
+    PathHom.comp F.comp (PathHom.id F w) f = f :=
+  PathHom.id_comp_of_constraints F.comp F.serial F.limit f
+
+/-- **Right unit law, at explicit hypotheses**: `f` composed with the germ at `u` is `f`. The
+length half is `Dur.comp_id`; the section half characterizes the glued section by `glue_unique`
+against `f.sec` cast to length `l + 0`: its left restriction to `[0, l]` is `f.sec`, and its right
+restriction onto `l + 0 - l` is the one-point section at `f(l) = u`.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem PathHom.comp_id_of_constraints (hcomp : TaskFrame.Compositional F.TaskRel)
+    (hser : TaskFrame.Serial F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel)
+    {w u : F.WorldState} (f : PathHom F w u) :
+    PathHom.comp hcomp f (PathHom.idOfSerialLimit F hser hlim u) = f := by
   refine PathHom.ext' (Dur.comp_id f.len) ?_
   have hpl : f.len.val ≤ f.len.val + 0 := le_add_of_nonneg_right le_rfl
   let υ : Beh F (f.len.val + 0) := Beh.castLen (add_zero f.len.val).symm f.sec
@@ -504,7 +550,8 @@ theorem PathHom.comp_id [F.IsRegular] {w u : F.WorldState} (f : PathHom F w u) :
       exact PartialHistory.states_eq_of_time_eq f.sec.val (0 + r) r (zero_add r) _ h'
   have hR : Beh.restrict f.len.val (f.len.val + 0 - f.len.val) f.len.property (sub_nonneg.mpr hpl)
       (by rw [add_sub_cancel]) υ
-      = Beh.castLen (add_sub_cancel_left f.len.val 0).symm (Beh.ofGerm F u) := by
+      = Beh.castLen (add_sub_cancel_left f.len.val 0).symm
+        (Beh.ofGermOfSerialLimit F hser hlim u) := by
     refine Beh.ext (partialHistory_ext ?_ ?_)
     · funext z
       change (0 ≤ z ∧ z ≤ f.len.val + 0 - f.len.val) = (0 ≤ z ∧ z ≤ 0)
@@ -518,10 +565,19 @@ theorem PathHom.comp_id [F.IsRegular] {w u : F.WorldState} (f : PathHom F w u) :
       change f.sec.val.states (f.len.val + 0) _ = u
       exact (PartialHistory.states_eq_of_time_eq f.sec.val (f.len.val + 0) f.len.val (add_zero _) _
         (Beh.mem_dom f.sec f.len.property le_rfl)).trans f.tgt
-  have hu := glue_unique F.comp f.len.property hpl f.sec
-    (Beh.castLen (add_sub_cancel_left f.len.val 0).symm (Beh.ofGerm F u))
-    (f.tgt.trans (PathHom.id F u).src.symm) υ hL hR
+  have hu := glue_unique hcomp f.len.property hpl f.sec
+    (Beh.castLen (add_sub_cancel_left f.len.val 0).symm (Beh.ofGermOfSerialLimit F hser hlim u))
+    (f.tgt.trans (PathHom.idOfSerialLimit F hser hlim u).src.symm) υ hL hR
   exact (congrArg Subtype.val hu).symm
+
+/-- **Right unit law**: `f` composed with the germ at `u` is `f`. This is
+`PathHom.comp_id_of_constraints` with its three hypotheses projected out of a bundling instance;
+the instance's *Saturation* field is not read.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem PathHom.comp_id [F.IsRegular] {w u : F.WorldState} (f : PathHom F w u) :
+    PathHom.comp F.comp f (PathHom.id F u) = f :=
+  PathHom.comp_id_of_constraints F.comp F.serial F.limit f
 
 /-! ### The duration monoid as a one-object category -/
 
@@ -697,37 +753,78 @@ theorem PathHom.comp_assoc (hcomp : TaskFrame.Compositional F.TaskRel)
 the germs of `Beh F` with the states of `F`. -/
 def PathCat (F : TaskFrame) : Type := F.WorldState
 
-/-- **`Path(F)` as a Mathlib category**: homs the morphisms `PathHom F w u`, identities the germs,
-composition by gluing, with the three laws proved above. `F.comp` supplies *Compositionality* to
-`PathHom.comp`; the identities reach *Seriality* and *Limit* through `Beh.ofGerm`. This is
-`def:path-category`'s `Path(F) := Beh(F)‾`, the associated category of `Beh F`, built directly.
+/-- **`Path(F)` as a Mathlib category, at explicit hypotheses**: homs the morphisms
+`PathHom F w u`, identities the germs, composition by gluing, with the three laws proved above in
+their explicit-hypothesis forms. `hcomp` supplies *Compositionality* to `PathHom.comp`; the
+identities reach *Seriality* and *Limit* through `Beh.ofGermOfSerialLimit`. No field of this
+instance reads *Saturation*. This is `def:path-category`'s `Path(F) := Beh(F)‾`, the associated
+category of `Beh F`, built directly.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-instance PathCat.instCategory (F : TaskFrame) [F.IsRegular] : Category (PathCat F) where
+Constraints consumed: Compositionality, Seriality, Limit -/
+@[reducible] def PathCat.categoryOfConstraints (F : TaskFrame)
+    (hcomp : TaskFrame.Compositional F.TaskRel)
+    (hser : TaskFrame.Serial F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel) :
+    Category (PathCat F) where
   Hom w u := PathHom F w u
-  id w := PathHom.id F w
-  comp f g := PathHom.comp F.comp f g
-  id_comp f := PathHom.id_comp f
-  comp_id f := PathHom.comp_id f
-  assoc f g h := PathHom.comp_assoc F.comp f g h
+  id w := PathHom.idOfSerialLimit F hser hlim w
+  comp f g := PathHom.comp hcomp f g
+  id_comp f := PathHom.id_comp_of_constraints hcomp hser hlim f
+  comp_id f := PathHom.comp_id_of_constraints hcomp hser hlim f
+  assoc f g h := PathHom.comp_assoc hcomp f g h
 
-/-- **The length functor `len : Path(F) ⥤ BD⁺`**: every object to the one object of `BD⁺`, every
-morphism to its length. Functoriality is `rfl` on both counts, because `PathHom.id` has length
-`Dur.id` and `PathHom.comp` has length `Dur.comp` definitionally. This is `def:conduche`'s length
-functor, instantiated at `X = Beh F`.
+/-- **`Path(F)` as a Mathlib category**: `PathCat.categoryOfConstraints` with its three
+hypotheses projected out of a bundling instance; the instance's *Saturation* field is not read by
+any of the six fields.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-def PathCat.len (F : TaskFrame) [F.IsRegular] : PathCat F ⥤ BObj F.Duration where
-  obj _ := ⟨()⟩
-  map f := f.len
-  map_id _ := rfl
-  map_comp _ _ := rfl
+Constraints consumed: Compositionality, Seriality, Limit -/
+instance PathCat.instCategory (F : TaskFrame) [F.IsRegular] : Category (PathCat F) :=
+  PathCat.categoryOfConstraints F F.comp F.serial F.limit
 
-/-- `len` reads off the length of a morphism, by `rfl`.
+/-- **The length functor, at explicit hypotheses**: every object to the one object of `BD⁺`,
+every morphism to its length, over `PathCat.categoryOfConstraints` rather than over the instance.
+The source category has to be named explicitly, since the `⥤` notation would resolve it by
+instance search and the binder-free form supplies no instance. Functoriality is `rfl` on both
+counts, because `PathHom.idOfSerialLimit` has length `Dur.id` and `PathHom.comp` has length
+`Dur.comp` definitionally.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+Constraints consumed: Compositionality, Seriality, Limit -/
+@[reducible] def PathCat.lenOfConstraints (F : TaskFrame)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) :
+    @CategoryTheory.Functor (PathCat F) (PathCat.categoryOfConstraints F hcomp hser hlim)
+      (BObj F.Duration) (BObj.instCategory F.Duration) :=
+  letI : Category (PathCat F) := PathCat.categoryOfConstraints F hcomp hser hlim
+  { obj := fun _ => ⟨()⟩
+    map := fun f => f.len
+    map_id := fun _ => rfl
+    map_comp := fun _ _ => rfl }
+
+/-- **The length functor `len : Path(F) ⥤ BD⁺`**: `PathCat.lenOfConstraints` with its three
+hypotheses projected out of a bundling instance; *Saturation* is read by neither the functor nor
+the category it is defined over. This is `def:conduche`'s length functor, instantiated at
+`X = Beh F`.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+def PathCat.len (F : TaskFrame) [F.IsRegular] : PathCat F ⥤ BObj F.Duration :=
+  PathCat.lenOfConstraints F F.comp F.serial F.limit
+
+/-- The length functor at explicit hypotheses reads off the length of a morphism, by `rfl`.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem PathCat.len_map_of_constraints (F : TaskFrame)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) {w u : F.WorldState} (f : PathHom F w u) :
+    @CategoryTheory.Functor.map (PathCat F) (PathCat.categoryOfConstraints F hcomp hser hlim)
+      (BObj F.Duration) (BObj.instCategory F.Duration)
+      (PathCat.lenOfConstraints F hcomp hser hlim) w u f = PathHom.len f := rfl
+
+/-- `len` reads off the length of a morphism, by `rfl`. This is
+`PathCat.len_map_of_constraints` with its three hypotheses projected out of a bundling instance.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
 theorem PathCat.len_map (F : TaskFrame) [F.IsRegular] {w u : PathCat F} (f : w ⟶ u) :
-    (PathCat.len F).map f = PathHom.len f := rfl
+    (PathCat.len F).map f = PathHom.len f :=
+  PathCat.len_map_of_constraints F F.comp F.serial F.limit f
 
 /-! ### The discrete Conduché fibration property of `len` -/
 
@@ -898,26 +995,42 @@ theorem PathHom.factor_unique (hcomp : TaskFrame.Compositional F.TaskRel) {w u :
         (by rw [h₁]) hE hE'
       exact s1.symm.trans (s2.trans s3)
 
-/-- **The first half of `cor:path-fibration`: `len : Path(F) ⥤ BD⁺` is a discrete Conduché
-fibration.** Existence is the pair of factors with `factor_comp` and the two length readings;
-uniqueness is `factor_unique`, after which the one dependent equality `c = cutState` is
-substituted and the two factors are identified by `PathHom.ext'`. This is the fibration property
-of the instance at `X = Beh F`; the general equivalence it is an instance of is cited, not proved.
+/-- **The first half of `cor:path-fibration`, at explicit hypotheses: `len` is a discrete
+Conduché fibration.** Existence is the pair of factors with `factor_comp` and the two length
+readings; uniqueness is `factor_unique`, after which the one dependent equality `c = cutState` is
+substituted and the two factors are identified by `PathHom.ext'`. Both the source category and the
+functor have to be named explicitly, since the binder-free form supplies no instance for
+`IsDiscreteConduche`'s `[Category E]` argument to be found by.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-theorem PathCat.len_isDiscreteConduche (F : TaskFrame) [F.IsRegular] :
-    IsDiscreteConduche (PathCat.len F) := by
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem PathCat.len_isDiscreteConduche_of_constraints (F : TaskFrame)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) :
+    @IsDiscreteConduche F.Duration (PathCat F)
+      (PathCat.categoryOfConstraints F hcomp hser hlim)
+      (PathCat.lenOfConstraints F hcomp hser hlim) := by
   intro A B e fac
   refine ⟨⟨PathHom.cutState e fac, (PathHom.factorLeft e fac, PathHom.factorRight e fac)⟩,
-    ⟨PathHom.factor_comp F.comp e fac, rfl, rfl⟩, ?_⟩
+    ⟨PathHom.factor_comp hcomp e fac, rfl, rfl⟩, ?_⟩
   rintro ⟨c, e₁, e₂⟩ ⟨h, h₁, h₂⟩
-  obtain ⟨hc, hs₁, hs₂⟩ := PathHom.factor_unique F.comp e fac e₁ e₂ h h₁ h₂
+  obtain ⟨hc, hs₁, hs₂⟩ := PathHom.factor_unique hcomp e fac e₁ e₂ h h₁ h₂
   subst hc
   have he₁ : e₁ = PathHom.factorLeft e fac := PathHom.ext' (Subtype.ext h₁) hs₁
   have he₂ : e₂ = PathHom.factorRight e fac := PathHom.ext' (Subtype.ext h₂) hs₂
   subst he₁
   subst he₂
   rfl
+
+/-- **The first half of `cor:path-fibration`: `len : Path(F) ⥤ BD⁺` is a discrete Conduché
+fibration.** This is `PathCat.len_isDiscreteConduche_of_constraints` with its three hypotheses
+projected out of a bundling instance; the instance's *Saturation* field is read nowhere in the
+factorization argument. This is the fibration property of the instance at `X = Beh F`; the general
+equivalence it is an instance of is cited, not proved.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem PathCat.len_isDiscreteConduche (F : TaskFrame) [F.IsRegular] :
+    IsDiscreteConduche (PathCat.len F) :=
+  PathCat.len_isDiscreteConduche_of_constraints F F.comp F.serial F.limit
 
 /-! ### The associated presheaf of `len` is `Beh F` -/
 

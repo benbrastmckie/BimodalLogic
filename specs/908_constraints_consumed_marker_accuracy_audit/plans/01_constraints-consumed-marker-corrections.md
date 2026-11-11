@@ -317,20 +317,20 @@ routes through, and reduce `Beh.ofGerm` to a delegating definition.
 
 ---
 
-### Phase 5: `Presheaf/Path.lean` cluster A -- identity and category structure [NOT STARTED]
+### Phase 5: `Presheaf/Path.lean` cluster A -- identity and category structure [COMPLETED]
 
 **Goal**: Correct the eight over-reporting sites that carry the category structure of `Path(F)`,
 each with its own binder-free twin plus a delegating corollary.
 
 **Tasks**:
-- [ ] Add `PathHom.id_of_serial_limit` taking `hser`/`hlim` explicitly and building on `Beh.ofGerm_of_serial_limit`; mark it `Constraints consumed: Seriality, Limit`. Reduce `PathHom.id` to a delegating one-liner with the identical marker.
-- [ ] Correct `PathHom.id_len` to `Seriality, Limit` with its own binder-free twin plus delegating corollary.
-- [ ] Correct `PathHom.id_comp` and `PathHom.comp_id` to `Compositionality, Seriality, Limit`, each with a twin taking `hcomp`/`hser`/`hlim` and using `hcomp` in place of `F.comp` and the `id` twin in place of `PathHom.id F w`.
-- [ ] Correct `PathCat.instCategory`, `PathCat.len`, `PathCat.len_map` and `PathCat.len_isDiscreteConduche` to `Compositionality, Seriality, Limit`, each with its own twin plus delegating corollary.
-- [ ] For each pair, write the twin's marker and the corollary's marker as one copy-paste so `delegates()`' list-identity match cannot drift, and verify no twin's span names `IsRegular`.
-- [ ] Raise `set_option linter.style.longFile` at `Path.lean` line ~258 to the next admissible baseline above the file's new length -- see "Long-file ceiling arithmetic" above; the file enters this phase at 1,554 lines against a recorded 1700.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs, including the `Presheaf/` one.
-- [ ] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported.
+- [x] Add `PathHom.id_of_serial_limit` taking `hser`/`hlim` explicitly and building on `Beh.ofGerm_of_serial_limit`; mark it `Constraints consumed: Seriality, Limit`. Reduce `PathHom.id` to a delegating one-liner with the identical marker. *(deviation: altered -- named `PathHom.idOfSerialLimit`, since C26 enforces lowerCamelCase for `def` names; the enabler's actual name is `Beh.ofGermOfSerialLimit`, per phase 4's handoff)*
+- [x] Correct `PathHom.id_len` to `Seriality, Limit` with its own binder-free twin plus delegating corollary. *(twin `PathHom.id_len_of_serial_limit`; `@[simp]` kept on the corollary only)*
+- [x] Correct `PathHom.id_comp` and `PathHom.comp_id` to `Compositionality, Seriality, Limit`, each with a twin taking `hcomp`/`hser`/`hlim` and using `hcomp` in place of `F.comp` and the `id` twin in place of `PathHom.id F w`. *(deviation: altered -- the `id_comp` twin additionally needed the germ-inverse step proved inline as a local `have hgerm`, because `Beh.ofGerm_germ` is the only such form in `Behavior.lean` and it carries `[F.IsRegular]`, which a C34a delegate's span may not name)*
+- [x] Correct `PathCat.instCategory`, `PathCat.len`, `PathCat.len_map` and `PathCat.len_isDiscreteConduche` to `Compositionality, Seriality, Limit`, each with its own twin plus delegating corollary. *(deviation: altered -- twins `PathCat.categoryOfConstraints`, `PathCat.lenOfConstraints`, `PathCat.len_map_of_constraints`, `PathCat.len_isDiscreteConduche_of_constraints`; a binder-free twin supplies no `Category (PathCat F)` instance, so the latter three name both instances explicitly via `@CategoryTheory.Functor`, `@CategoryTheory.Functor.map` and `@IsDiscreteConduche`, the functor twin's body needs a `letI`, and both `def` twins are `@[reducible]` so that `Factorization ((len).map e)` still unifies with `Factorization e.len`)*
+- [x] For each pair, write the twin's marker and the corollary's marker as one copy-paste so `delegates()`' list-identity match cannot drift, and verify no twin's span names `IsRegular`. *(confirmed by `PASS C34a`: the delegation group moved 27 -> 35, exactly +8)*
+- [ ] Raise `set_option linter.style.longFile` at `Path.lean` line ~258 to the next admissible baseline above the file's new length -- see "Long-file ceiling arithmetic" above; the file enters this phase at 1,554 lines against a recorded 1700. *(deviation: skipped -- no raise needed. The file left this phase at 1,667 lines, still under the recorded 1700, and `PASS C30` confirms the ceiling is not stale. The plan estimated ~110 added lines; measured growth was 113. Phases 6 and 7 will cross 1700.)*
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs, including the `Presheaf/` one. *(two files rewritten: `FormalSystem/Semantics/Presheaf/README.md` and the root `README.md`; `FormalSystem/README.md` needed no rewrite, as in phases 3 and 4)*
+- [x] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported. *(deviation: altered -- `--fix` does not compose with `--counts-only` (exit 2, `unexpected extra argument(s)`); it is a standalone, build-requiring mode, so it was run bare after the full build went green)*
 
 **Timing**: 2.0 hours
 

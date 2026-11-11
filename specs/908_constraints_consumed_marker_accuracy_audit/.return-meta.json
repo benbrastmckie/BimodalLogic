@@ -3,45 +3,35 @@
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 908,
-  "dispatch_seq": 28,
-  "phases_completed": 4,
+  "dispatch_seq": 29,
+  "phase_number": 5,
+  "phases_completed": 5,
   "phases_total": 8,
   "requires_user_review": false,
   "artifacts": [],
   "modified_files": [
-    "FormalSystem/Semantics/Presheaf/Behavior.lean",
+    "FormalSystem/Semantics/Presheaf/Path.lean",
     "FormalSystem/Semantics/Presheaf/README.md",
     "README.md",
     "typst/generated/status.typ",
     "specs/908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md",
+    "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-5-handoff-20261111T174707.md",
     "specs/908_constraints_consumed_marker_accuracy_audit/issues.jsonl",
-    "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-4-handoff-20261111T170944.md",
     "specs/908_constraints_consumed_marker_accuracy_audit/.orchestrator-handoff.json",
     "specs/908_constraints_consumed_marker_accuracy_audit/.return-meta.json"
   ],
   "sorry_inventory": [],
-  "blockers": [],
-  "handoff_path": "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-4-handoff-20261111T170944.md",
   "verification": {
     "sorry_count": 0,
-    "sorry_cross_check": "MATCH",
     "vacuous_count": 1,
-    "vacuous_note": "pre-existing, outside territory: FormalSystem/Examples/TemporalStructures.lean:495",
     "axiom_count": 14,
-    "axiom_baseline": 14,
     "build_passed": true,
-    "build_evidence": "lake-build-guard full library: GUARD_EXIT=0, 'Build completed successfully (2974 jobs)', 0 error: lines, Behavior.olean newer than source",
-    "module_invariants": "C34a PASS (170 markers, 27 delegating / 2 field re-export / 60 omitting nothing), C34b PASS, C26 PASS; overall exit 1 from pre-existing FAIL C16 at RaySummary/LadderPump.lean:1825,:1868 outside territory",
-    "typst_sync": "drift re-stamped with --fix, re-checked MISMATCH_COUNT=0",
     "verification_passed": true,
-    "batch_gate_deferred": true,
-    "batch_gate_note": "suite_selection_select returns __FULL_SWEEP__ for this phase's five touched paths; no narrowing --only invocation covers them, so the full gate set is deferred to the batch stage"
+    "notes": "Full library build green via lake-build-guard (GUARD_EXIT=0, 2974 jobs, zero error: lines, Path.olean newer than source). lean-sorry-census.sh --cross-check: stripper 0, compiler 0, MATCH. Vacuous count 1 is pre-existing and outside territory (FormalSystem/Examples/TemporalStructures.lean:495). check-module-invariants.sh: PASS C34a (178 markers; 35 delegating, was 27), PASS C34b, PASS C26, PASS C30; overall exit 1 from a pre-existing FAIL C16 (env_linter unusedArguments at RaySummary/LadderPump.lean:1825 and :1868), byte-identical to the phase 1-4 records and outside territory. typst-sync-check.sh --counts-only drift re-stamped with a bare --fix, re-check PASS. Full gate set deferred to the batch stage: suite_selection_select over this phase's touched paths returns __FULL_SWEEP__, so no narrowing run-all.sh --only or verify-deploy.sh --only-gate invocation covers them."
   },
-  "completion_data": {
-    "completion_summary": "Phase 4 of 8 complete. Beh.ofGermOfSerialLimit landed in FormalSystem/Semantics/Presheaf/Behavior.lean as the binder-free germ constructor (marker 'Constraints consumed: Seriality, Limit', no IsRegular in span), routed through F.toFibre.nullity_identity_of_serial_limit because no TaskFrame-level binder-free wrapper exists; Beh.ofGerm reduced to a delegating definition with a byte-identical signature and the identical marker, and the module docstring's now-false 'Frame constraints.' paragraph rewritten. C34a passes over 170 markers with the delegating group moving 26->27 as predicted. A C26 plan/gate collision forced the twin's name from the planned snake_case ofGerm_of_serial_limit to lowerCamelCase ofGermOfSerialLimit (C26 exempts theorem but not def); the same collision will hit every def-valued twin in phases 5-7."
-  },
+  "handoff_path": "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-5-handoff-20261111T174707.md",
   "memory_candidates": [
-    "check-module-invariants.sh C26 enforces lowerCamelCase for `def`/`abbrev` names in FormalSystem/ and exempts `theorem` only (upstream's own isDefinition guard). A plan that prescribes a snake_case `_of_constraints`/`_of_serial_limit` twin name is safe for a theorem twin and will fail the gate for a def twin -- check the declaration kind before adopting a planned twin name.",
-    "TaskFrame.TaskRel is `@[reducible] def ... := F.toFibre.TaskRel`, so a hypothesis typed `TaskFrame.Serial F.TaskRel` discharges a FrameOver-level argument of type `TaskFrame.Serial F.toFibre.TaskRel` directly -- no bridging lemma or `change` is needed when routing a TaskFrame-level binder-free twin through F.toFibre."
+    "A binder-free twin of a Lean declaration stated over a Category instance cannot use the category notation (an arrow, a functor arrow, composition, the identity, or a predicate taking [Category E]): the twin supplies no instance. The working shape is an @-applied type naming both instances explicitly, a letI installing the twin instance inside the body where a structure instance is built, @-applied field projections in downstream statements, and @[reducible] on the twin def so that projection-of-constructor reductions downstream proofs relied on still fire at reducible transparency.",
+    "scripts/typst-sync-check.sh's --counts-only and --fix are mutually exclusive modes, not composable flags: passing both exits 2 with 'unexpected extra argument(s)'. --counts-only is build-free detection; --fix is build-requiring repair and must follow a green build."
   ]
 }
