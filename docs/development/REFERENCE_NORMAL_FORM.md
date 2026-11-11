@@ -183,13 +183,13 @@ attribute lines. C34 has two assertions and a census, and **both assertions are 
   attributed to it. There are exactly three ways a marker passes, and the gate's own `PASS C34a`
   line reports the live count of each:
   1. **The marker omits nothing.** An all-four list claims nothing and is exempt by
-     construction. *Measured live surface: 7 declarations.*
+     construction. *Measured live surface: 39 declarations.*
   2. **Delegation to a binder-free twin.** The declaration's code names another declaration
      carrying the *identical* marker list and mentioning no bundling class anywhere in its span.
      This is the fix pattern of record — prove the claim at the explicit hypotheses the proof
      consumes, keep the binder-carrying original as a one-line corollary whose signature line is
      byte-identical so no call site moves — and it is what keeps C34a from failing on exactly
-     the arrangement that makes such a claim honest. *Measured live surface: 18 declarations.*
+     the arrangement that makes such a claim honest. *Measured live surface: 45 declarations.*
   3. **Field re-export.** A declaration whose whole proof term is one field projection off its
      own bound instance or off the binder's subject (`h.saturation`, `F.toFibre.saturation`),
      marked at exactly that one field's constraint. Re-exporting a field is not a claim about

@@ -437,20 +437,20 @@ whose honest marker is `None` and whose binder may be removable outright.
 
 ---
 
-### Phase 8: Re-derive the C34a counts, update the two specification documents, full gate [NOT STARTED]
+### Phase 8: Re-derive the C34a counts, update the two specification documents, full gate [COMPLETED]
 
 **Goal**: Replace the stale C34a discharge-group counts in the two prose documents with figures
 re-derived from the gate's own output, re-run the classification probe over all 68 sites, and
 close the task on the complete gate set.
 
 **Tasks**:
-- [ ] Run the C34 block and capture its `PASS C34a` line verbatim; take the three discharge-group counts from that line rather than computing them by hand.
-- [ ] Update the C34a/C34b row in `docs/development/MODULE_INVARIANTS.md` with the re-derived counts.
-- [ ] Update the corresponding counts in `docs/development/REFERENCE_NORMAL_FORM.md`, and confirm its "What the line claims" and "Consumption is not elimination" sections still read correctly against the corrected tree (they are the authority this work applied; they should need no change).
-- [ ] Re-run `specs/evidence/constraints-consumed-marker-audit/marker-consumption-probe.lean` via `lake env lean` against the rebuilt olean set and confirm every one of the 68 markers now matches its declaration's transitive hit set -- including that none of the 40 accurate sites moved.
-- [ ] Confirm the 40 accurate sites are untouched: `git diff` over the whole task's commits shows no marker-line change in `NomicLanguage/`, `Nomic/Uniformity.lean`, `Nomic/Recovery.lean`, `Extension/`, `Presheaf/Directed.lean`, `Presheaf/Worlds.lean`, `Correspondence/RigidityReal.lean`, `Validity.lean`, or `ConeUnravelling.lean`'s three accurate rows.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` if drift is reported.
-- [ ] Run the complete gate set.
+- [x] Run the C34 block and capture its `PASS C34a` line verbatim; take the three discharge-group counts from that line rather than computing them by hand.
+- [x] Update the C34a/C34b row in `docs/development/MODULE_INVARIANTS.md` with the re-derived counts.
+- [x] Update the corresponding counts in `docs/development/REFERENCE_NORMAL_FORM.md`, and confirm its "What the line claims" and "Consumption is not elimination" sections still read correctly against the corrected tree (they are the authority this work applied; they should need no change).
+- [x] Re-run `specs/evidence/constraints-consumed-marker-audit/marker-consumption-probe.lean` via `lake env lean` against the rebuilt olean set and confirm every one of the 68 markers now matches its declaration's transitive hit set -- including that none of the 40 accurate sites moved.
+- [x] Confirm the 40 accurate sites are untouched: `git diff` over the whole task's commits shows no marker-line change in `NomicLanguage/`, `Nomic/Uniformity.lean`, `Nomic/Recovery.lean`, `Extension/`, `Presheaf/Directed.lean`, `Presheaf/Worlds.lean`, `Correspondence/RigidityReal.lean`, `Validity.lean`, or `ConeUnravelling.lean`'s three accurate rows.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` if drift is reported. *(deviation: altered -- all four checks were already green with zero drift, so the bare `typst-sync-check.sh` run stood in for `--fix` and `typst/generated/status.typ` was neither re-stamped nor staged)*
+- [x] Run the complete gate set. *(deviation: deferred -- this dispatch's batch-gate-deferral directive defers the complete gate set to the single end-of-batch run; `suite_selection_select` re-derived live over this phase's touched paths returns `__FULL_SWEEP__`, so no narrowing `run-all.sh --only` or `verify-deploy.sh --only-gate` invocation covers them and no scoped tier was available to run in its place. `scripts/check-module-invariants.sh` -- the repository gate that does cover these two documents -- was run in full instead)*
 
 **Timing**: 1.0 hours
 
@@ -464,6 +464,61 @@ close the task on the complete gate set.
 - `docs/development/MODULE_INVARIANTS.md` - C34a/C34b row's discharge-group counts re-derived from the gate output
 - `docs/development/REFERENCE_NORMAL_FORM.md` - the same counts where it restates them
 - `typst/generated/status.typ` - re-stamped if `typst-sync-check.sh` reports drift
+
+**Verification notes (phase 8)**:
+- `scripts/check-module-invariants.sh --no-build`: exit **0**, `ALL CHECKS PASSED`. `PASS C34`,
+  `PASS C34a`, `PASS C34b`, `PASS INV`, `PASS C9D`.
+- The `PASS C34a` line, verbatim, and the source of every count written into the two documents:
+  `all 188 marker(s) are honest: none omits a constraint its own binder supplies / (86 of them
+  carry a binder: 45 discharge it by delegating to a binder-free declaration, 2 by field
+  re-export, and 39 omit nothing and so claim nothing)`. The C34 census beside it: 338
+  declarations carry a bracketed bundling binder; 188 carry a marker, 146 omitting *Saturation*;
+  252 binder-carrying declarations carry no marker.
+- `scripts/check-module-invariants.sh` (full form, with build): exit **1**, from the single
+  **pre-existing** `FAIL C16` (env_linter `unusedArguments` at
+  `FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean:1825` and `:1868`),
+  byte-identical to the phase 1-7 records and outside this phase's file territory -- this phase
+  touched no `.lean` file at all. The criterion "exits 0" is therefore not met on the nose;
+  stated plainly rather than implied, as in phases 1-7.
+- Probe re-run: `lake env lean specs/evidence/constraints-consumed-marker-audit/marker-consumption-probe.lean`
+  exits 0 and emits 68 `R4` rows with no `TARGET NOT FOUND`. Comparing each row's transitive hit
+  set against the live marker parsed from the same declaration's docstring (via the recorded
+  `c34a-gate-simulation.py` `classify`) gives **TOTAL=68 MISMATCH=0 UNMATCHED=0**.
+- The 40 accurate sites are untouched. The task's whole `.lean` diff (`d9a95963e..HEAD`) touches
+  exactly six files -- `ConeUnravelling.lean`, `IntNormalForm.lean`, `Nomic/Witnesses.lean`,
+  `Nomic/ZTime.lean`, `Presheaf/Behavior.lean`, `Presheaf/Path.lean` -- and none of
+  `NomicLanguage/`, `Nomic/Uniformity.lean`, `Nomic/Recovery.lean`, `Nomic/Frame.lean`,
+  `Extension/`, `Presheaf/Directed.lean`, `Presheaf/Worlds.lean`,
+  `Correspondence/RigidityReal.lean` or `Validity.lean`. Removed full-four marker lines per file:
+  ConeUnravelling 1, Witnesses 2, ZTime 4, Path 21 = **28**, exactly the 28 `OVER-REPORTS` rows of
+  `classification.tsv`; ConeUnravelling's three accurate rows survive.
+- `grep -rn "Constraints consumed: Compositionality, Seriality, Limit, Saturation" FormalSystem/`
+  returns **41** lines (40 accurate sites plus the `Presheaf/Worlds.lean` prose quotation), down
+  from 69. 41 + 28 = 69.
+- `scripts/typst-sync-check.sh`: exit 0, all four checks green, `MISMATCH_COUNT=0` -- no drift, so
+  `typst/generated/status.typ` was not re-stamped and is not part of this phase's diff.
+- `scripts/check-module-invariants.sh --emit-inventory --check`: exit 0, `PASS INV`.
+- Full library build via the guard: `GUARD_EXIT=0`, `Build completed successfully (2974 jobs)`,
+  zero `error:` lines.
+- `lean-sorry-census.sh --cross-check`: stripper 0, compiler 0, `MATCH`. Axiom count 14
+  (unchanged); vacuous count 1, pre-existing and outside territory
+  (`FormalSystem/Examples/TemporalStructures.lean:495`). The task's whole `.lean` diff adds zero
+  `sorry` and zero `axiom` lines.
+- **Two figures in the documents were re-derived rather than carried, and did not move**:
+  `MODULE_INVARIANTS.md`'s "2 declarations today, of 8 the rule recognizes tree-wide" and
+  `REFERENCE_NORMAL_FORM.md`'s "8 declarations recognizable tree-wide, 2 of them marked". Running
+  the recorded `reexport_field` recognizer over both live roots returns **8**, and the gate's own
+  line reports **2** discharging. Both left unchanged on measured evidence, not on assumption.
+- **"What the line claims" and "Consumption is not elimination" need no change**, as the plan
+  predicted. Both were read against the corrected tree; the worked example the second names,
+  `PartialHistory.isTotal_of_isMax` in `FormalSystem/Semantics/Extension/Extension.lean`, is an
+  accurate site this task never touched and still carries its full-four marker.
+- **Batch gate deferral.** `suite_selection_select` re-derived live over this phase's touched
+  paths (the two documents plus the plan) returns `__FULL_SWEEP__`: no narrowing
+  `run-all.sh --only` invocation covers them, and `verify-deploy.sh`'s gates scope to the
+  `.claude/**` deploy tree, which this phase does not touch. No scoped tier was therefore
+  available to run in place of the full set, so the complete gate set is deferred to this batch
+  invocation's single end-of-batch run -- deferred, not forgiven.
 
 **Verification**:
 - `bash .claude/scripts/verify-deploy.sh` -- the complete gate set, run in full with no `--skip-slow` and no `--only-gate` narrowing, exit status checked.

@@ -1,12 +1,28 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "skeleton": false,
-  "summary": "Phase 7 of 8 complete: all five cluster-C sites in FormalSystem/Semantics/Presheaf/Path.lean (PathHom.ofStep, PathHom.ofPath, the two round trips, and PathHom.pathEquiv) corrected from the full four-constraint bundle marker to Compositionality, Seriality, Limit. Every one was route 2 -- binder-free twin plus delegating corollary -- and all five twins compiled binder-free on the first probe build, which is the evidence that Saturation is reached by no part of any of them. Path.lean now holds zero full-four marker occurrences, completing its 20 and the plan's 28. PASS C34a over 188 markers with the delegation group moving 40 -> 45 (exactly +5) and the binder-carrying population unchanged at 86 (no binder deleted this phase). The longFile baseline was raised 1800 -> 1900 against a final 1851 lines. Full library build green (2974 jobs, GUARD_EXIT=0, zero error lines), sorry count 0 (cross-check MATCH), axiom count unchanged at 14. The gate's overall exit code is 1, from the single pre-existing FAIL C16 at LadderPump.lean:1825/:1868, byte-identical to the phase 1-6 records and outside this phase's territory. Phase 8 remains: re-derive the C34a counts into the two specification documents and run the full gate.",
-  "phases_completed": 7,
+  "summary": "Phase 8 complete; all 8 of 8 phases done. Re-derived the C34a discharge-group counts from the gate's own PASS C34a line (188 markers; 86 binder-carrying: 45 delegating, 2 field re-export, 39 omitting nothing) and wrote them into docs/development/MODULE_INVARIANTS.md (18 -> 45, 7 -> 39) and docs/development/REFERENCE_NORMAL_FORM.md (7 -> 39, 18 -> 45). Re-ran the 68-site classification probe against the rebuilt olean set: TOTAL=68 MISMATCH=0 UNMATCHED=0. The 40 accurate sites are untouched; 41 full-four marker lines remain, down from 69. Full library build green (GUARD_EXIT=0, 2974 jobs); sorry 0, axioms 14 unchanged. The complete gate set is deferred to the batch stage per the dispatch directive.",
+  "phases_completed": 8,
   "phases_total": 8,
-  "dispatch_seq": 31,
+  "dispatch_seq": 32,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-7-handoff-20261111T185252.md",
-  "artifacts": []
+  "continuation_path": null,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/908_constraints_consumed_marker_accuracy_audit/summaries/01_constraints-consumed-marker-corrections-summary.md",
+      "summary": "Constraints-consumed marker accuracy audit: 28 over-reporting markers corrected across six Lean modules via binder-free twins plus delegating corollaries, 40 accurate sites left untouched, and the C34a discharge-group counts re-derived into the two specification documents."
+    }
+  ],
+  "modified_files": [
+    "docs/development/MODULE_INVARIANTS.md",
+    "docs/development/REFERENCE_NORMAL_FORM.md",
+    "specs/908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md",
+    "specs/908_constraints_consumed_marker_accuracy_audit/summaries/01_constraints-consumed-marker-corrections-summary.md",
+    "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-8-handoff-20261111T191049.md",
+    "specs/908_constraints_consumed_marker_accuracy_audit/.orchestrator-handoff.json",
+    "specs/908_constraints_consumed_marker_accuracy_audit/.return-meta.json",
+    "specs/908_constraints_consumed_marker_accuracy_audit/issues.jsonl"
+  ]
 }
