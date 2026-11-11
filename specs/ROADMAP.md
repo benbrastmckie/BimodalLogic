@@ -147,17 +147,21 @@ cited record, not here.
   (`LCComplete`, `LCRulesComplete`, `LCURulesComplete` in `Metalogic/LCExtension.lean`, no proof
   and no `sorry`) and the soundness half proved (`ext_sound_ztime`, `ext_sound_validIn`). Filing
   a formalization task for any part of §§7–15 is a ruling violation, not a judgement call.
-- **The three landed cell-equality schemas bear on the reserved obligation in NEITHER
-  direction**, and may not be described as partial progress toward it. Each is strictly stronger
-  in hypotheses than `CellLEZeroConstOfKappaEq` under `ParamsOk`, because each carries
-  `ForwardSlackWitnessed` (917's subject) and its own room bounds. `cellLE_zero_const_of_kappa_eq`
-  has **no declaration site** under `FormalSystem/` and nothing may land under it until the
-  discharge actually succeeds.
+- **The landed cell schemas bear on the reserved obligation in NEITHER direction**, and may not
+  be described as partial progress toward it. This covers the three cell-EQUALITY schemas in
+  `LadderCell.lean` and the window-regime cell-INCLUSION schema
+  `CellSubsetOfKappaEqWindowRaise` in `LadderWindow.lean` alike. Each is strictly stronger in
+  hypotheses than `CellLEZeroConstOfKappaEq` under `ParamsOk`, because each carries an
+  existential-over-paths witnessing condition (`ForwardSlackWitnessed`, or
+  `WindowIdleRunWitnessed` for the window schema) and its own room bounds.
+  `cellLE_zero_const_of_kappa_eq` has **no declaration site** under `FormalSystem/` and nothing
+  may land under it until the discharge actually succeeds.
 - **The refuted ladder-cell index candidates are not to be re-attempted** (the fourteenth and
   fifteenth wired probes). A clipped-coordinate index, a bounded carrier as a general route, and
   any candidate whose threshold is object-exhibited or whose modulus is not a multiple of every
-  letter-definable sub-object's period are each already refuted by a compiled witness. 918 works
-  under the surviving specification, not around it.
+  letter-definable sub-object's period are each already refuted by a compiled witness. The landed
+  window-regime factorization works under the surviving specification, not around it; any
+  successor must do the same.
 - **Presentation (a) for 761** (819): the set-valued per-state datum in maximum-certified form
   (`D` over `Q × ClType φ × K`, `ladderRealized` the fibre equation). **No tuple index is to be
   stated at any parameters.**
@@ -169,11 +173,11 @@ cited record, not here.
 ## Run these next
 
 ```bash
-/orchestrate 918,924,925,908 --hard --lit  # Stage 1's binding front. 918 resumes at Phase 3 (gate PASSED: the window regime is reachable with no sixth hypothesis); 924/925 are 917's residue and run in parallel on disjoint territory; 908 is edged behind 918 on typst/generated/status.typ. Dry-run clean: zero deferred, zero blocked
-/orchestrate 899,900,905,906 --hard        # Stage 2's close-out. 899/900 are the LAST two compiled ingredients of 879's table (cut product lemma, linear bridge), 900 edged behind 899 on docs/theorem-index.md; 905/906 are 901's two questions, report only, no Lean and no shared territory. Dry-run clean
-/orchestrate 502,497,500,543 --hard --lit  # the algebraic-representation chain, bottom-up, ending at the one remaining HIGH-priority L-plus metalogic task. 543 is not startable alone: its edge runs 502 -> 497 -> 500 -> 543 and the first three are all low priority, which is why 543 has sat unscheduled. Dry-run clean
-/orchestrate 714,781,873,907               # off both critical paths, all four parallel on disjoint territory: sliced-certificate internals (781 researched), open-language subformula closure, stale deploy-tree redeploy. Dry-run clean
-/todo                                      # 28 terminal tasks read the open count high; CHANGE_LOG's last entry is 2026-10-04
+/orchestrate 908,924,925 --hard --lit      # Stage 1's binding front, now that 918 is closed. All three declare FormalSystem/README.md and typst/generated/status.typ, so the admission gate serializes them to width 1 — re-run the line until each reports terminal. 908 is mid-implementation against an 8-phase plan; 924 and 925 are planned and waiting on it
+/orchestrate 899,900,905,906 --hard        # Stage 2's close-out. 899/900 are the LAST two compiled ingredients of 879's table (cut product lemma, linear bridge), 900 edged behind 899 on docs/theorem-index.md; 905/906 are 901's two questions, report only, no Lean and no shared territory
+/orchestrate 502,497,500,543 --hard --lit  # the algebraic-representation chain, bottom-up, ending at the one remaining HIGH-priority L-plus metalogic task. 543 is not startable alone: its edge runs 502 -> 497 -> 500 -> 543 and the first three are all low priority, which is why 543 has sat unscheduled
+/orchestrate 714,781,873,907               # off both critical paths, all four parallel on disjoint territory: sliced-certificate internals (781 researched), open-language subformula closure, stale deploy-tree redeploy
+/todo                                      # 29 terminal tasks read the open count high; CHANGE_LOG's last entry is 2026-10-04
 ```
 
 **Stage 2's Lean programme is all but exhausted, by ruling and not by exhaustion of effort.**
@@ -210,14 +214,15 @@ still has two independent live links.** `CellLEZeroConstOfKappaEq` under `Params
 which is (W)'s run layer, the lift from one seam to validity; above which sits 763's
 `Decidable (PlusValidZTime φ)`, stated nowhere in the tree.
 
-**The collision case split is fully dispatched, and what blocks the bottom link is now a
-settled obstruction rather than an open question.** `kappa_collision_regimes` has three branches, and three depth-`0` cell-EQUALITY
+**The collision case split is fully dispatched, and what blocks the bottom link is no longer an
+open question in either direction — it is a frontier with a known location.**
+`kappa_collision_regimes` has three branches, and three depth-`0` cell-EQUALITY
 schemas are landed against them in `LadderCell.lean`:
 `cellLE_zero_const_of_kappa_eq_of_forwardSlack` (equal register),
 `cellLE_zero_const_of_kappa_eq_commonShift_of_forwardSlack` (common shift, register freed) and
 `cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack` (monotone, carrying neither restriction
-and specializing to both the others' hypotheses). Two things keep them from reaching the
-reserved statement, and they are now separately owned:
+and specializing to both the others' hypotheses). Three findings fix where the frontier now sits,
+and each is separately owned:
 
 - **The antitone slice is EXCLUDED, not refuted** (916). `kappa_collision_monotone_or_antitone`
   makes the two slices exhaustive with no third case, and
@@ -239,36 +244,61 @@ reserved statement, and they are now separately owned:
   falls short by exactly the deleted block's length and `hstraddle` by twice it, measured
   scale-invariantly and preserved under the task's own `evidence/`. The existential-over-paths
   form still survives `ClimbWitness.hasForwardSlack_refuted_unconditional` because it is
-  existential, and that asymmetry remains the only opening — but it is now the whole of the
-  opening, and deciding it either way is a filed task of its own rather than a hoped-for
-  by-product. **Consequence to carry**: `certStabK`'s condition must be RESTATED, not proved, for
-  as long as the hypothesis stays carried.
+  existential, and that asymmetry was the only opening.
+- **That opening has now been decided POSITIVELY, conditionally, by a different mechanism** (924,
+  researched and planned; the route is compiled in the task's own `evidence/`, not yet landed in
+  the library). The refutation above closes the *deletion* route and stands unchanged; the route
+  that succeeds is the *idle pump*. `forwardSlackWitnessed_of_cell_idleRunPumpable` derives
+  `ForwardSlackWitnessed` at **every** amount `l` from one run-local premise — each type in the
+  cell realized by a path whose intervening idle run carries an `(objAt, tpOf)`-repeat block —
+  built entirely from already-landed machinery (`idleGapLengtheningOfIdleRunRepeat_holds` in
+  `LadderIdle.lean` plus `hasForwardSlack_of_next_region_cnt_le`), with no deletion and no
+  cascade budget spent. It pays where deletion could not because the regime asks
+  `K <= n + c + I - l` against a free bound `K <= n + c + I`: deletion tried to lower `K`, which a
+  saturated register has already spent, while the pump manufactures `d*k` units of `I`, and `I` is
+  bounded above by no pin obligation (`idleSplice_pins` is unconditional).
+  **It is a conditional discharge, not a removal.** The premise is an object/run datum and is
+  **not** `ParamsOk`-derivable — `(K1)` names `prodCycleLens`/`objCycleLens`/`satPeriod` and never
+  `idleCycleLens` — so the hypothesis stays on all five depth-`0` schemas. What changes is that
+  the frontier is **relocated** from an opaque existential over paths at a given amount onto a
+  checkable, amount-free condition on one idle run. **The frontier is now exactly one named
+  sub-regime**: paths whose intervening idle run has length 1, where every remaining dial is
+  closed by compiled measurement.
+  **Consequence to carry**: `certStabK`'s condition must still be RESTATED, not proved, and that
+  restatement obligation stays **PROVISIONAL** rather than permanent, for as long as the
+  hypothesis is carried.
 
-**761 stays `[HOLD]`, and lifting it still buys nothing — but its two blockers are now both
-owned.** 853 discharged what its plan still marks `[NOT STARTED]` at Phases 11.12 and 11.13
-(`exists_ladderPath_at_region_of_idle_past` and the unconditional join). The cell agreement is
-916/917's; the **open ladder-cell index is 918's**, and it is genuinely independent — the
+**761's blockers are discharged.** 853 closed what its plan still marks `[NOT STARTED]` at
+Phases 11.12 and 11.13 (`exists_ladderPath_at_region_of_idle_past` and the unconditional join);
+the cell agreement was 916/917's and the ladder-cell index 918's. The index problem was always
+genuinely independent of the agreement — the
 clipped-coordinate family is refuted at the countdown coordinate by the fourteenth wired probe
 (`ladder-cell-index-obstructions.lean`: the region's first idle state sits at distance exactly
 `c + 1`, where the countdown's parity is observable), the bounded-carrier alternative is closed
 as a general route by the same probe, and the residue-carrying candidate is refuted at both of
 its object-exhibited parameters by the fifteenth (`ladder-residue-index-refutation.lean`). What
 those refutations buy is a **specification**: any index must have a formula-derived threshold
-and a modulus that is a multiple of the period of every letter-definable sub-object. The
-positive factorization lemma under those two constraints is open and is 918's whole content.
-918's edge to 917 was a **territory** edge, not a mathematical one — the two problems are
-genuinely independent, but they share `RaySummary/README.md`, so the admission gate serializes
-them either way and an explicit edge is the sanctioned way to say so. 918 has since been
-re-scoped: its own second admissible outcome was foreclosed by the compiled `paramsOk_params`,
-and its decision gate then **PASSED** for the ordinary window regime `c <= n + 1` — reachable
-with no sixth hypothesis beyond `ParamsOk`, the two window hypotheses, `Tc <= c`, the room and
-one named idle-run condition. Its admissibility half is landed in a new leaf
-`RaySummary/LadderWindow.lean`; the iteration to an exact multiple of `P + 1`, the model-level
-half and the lowering primitive remain.
-Resuming 761 itself re-imposes serialization on everything sharing the `RaySummary` library set,
+and a modulus that is a multiple of the period of every letter-definable sub-object.
+
+**The index is now settled for one regime, one-directionally, and the other direction is CLOSED
+rather than open.** The positive factorization is landed for the ordinary window regime
+`c <= n + 1` in `RaySummary/LadderWindow.lean` as `CellSubsetOfKappaEqWindowRaise`, proved by
+`cellSubset_of_kappa_eq_window_raise`, with `kappa_collision_window_or_pendPast_exhaustive`
+giving the regimes' exhaustiveness at a fixed register. It concludes cell **inclusion**, not
+equality, and holds **upward only**; its carried condition `WindowIdleRunWitnessed` is
+existential over paths in the same shape `ForwardSlackWitnessed` already uses.
+**Do not re-attempt the lowering primitive as stated.** It is excluded on a compiled
+measurement: the anchor clause reverses direction under deletion and needs a sixth carried
+hypothesis bounding the register from above (`nxtAt g z + jP <= cntAt g z + 2*d + 1`), which the
+collision's lowering branch does not supply and the path's own bound is short of by exactly the
+displacement. Landed as `window_lower_anchor_of_required`, `window_lower_anchor_not_implied` and
+`window_lower_anchor_fails_at_tight_bound`. Admitting that sixth hypothesis to buy a
+two-directional schema is a standing open **choice**, deliberately recorded rather than taken.
+`cellLE_zero_const_of_kappa_eq` still has **no declaration site** under `FormalSystem/`.
+
+Resuming 761 re-imposes serialization on everything sharing the `RaySummary` library set,
 `docs/theorem-index.md`, `scripts/check-module-invariants.sh`,
-`specs/evidence/seam-gluing-ray-product/`, `specs/state.json` and `specs/TODO.md`. 916 and 917
-have now reported; **918 has not**, so the hold's own lift condition is not yet met. 862 and 763
+`specs/evidence/seam-gluing-ray-product/`, `specs/state.json` and `specs/TODO.md`. 862 and 763
 both sit behind it.
 
 **A gap that is nobody's task and should be decided before 763 is attempted.** Requirement (S)
@@ -279,19 +309,19 @@ is discharged only for `box`/`stab`-free `φ` at ONE seam (`presented_modelOf`,
 (W) in `RaySummary/README.md`'s own accounting, but no filed task carries it. Either confirm
 that assignment is sufficient or file the extension — do not discover this at 763.
 
-**The 838 chain is spent and closed.** 838 is `[COMPLETED]` at 10/10 phases: the restricted
-obligation `cellLE_zero_const_of_kappa_eq_of_forwardSlack` landed as a theorem concluding cell
-equality, and two decision gates returned compiled FAIL verdicts (the spanning-block device both
-ways, and the idle-gap lengthening — refuted one level below the pin condition, by `step`
-itself). Re-planning the area from 838's two-sided framing is barred. Its residue 909/910/911 is
-now `[COMPLETED]`, and the residue of *that* is 916/917.
+**The 838 chain is spent and closed, and re-planning the area from its two-sided framing is
+barred.** What it settled: the restricted obligation
+`cellLE_zero_const_of_kappa_eq_of_forwardSlack` landed as a theorem concluding cell equality, and
+two decision gates returned compiled FAIL verdicts — the spanning-block device both ways, and the
+unrestricted idle-gap lengthening, refuted one level below the pin condition by `step` itself.
 
-**911's verdict, for the record.** The idle-cycle sharpening landed: where the object's idle
-states carry a reachable cycle, the lengthening IS available
+**The idle-cycle sharpening is the one piece of that chain the live front still consumes.** Where
+the object's idle states carry a reachable cycle, the lengthening IS available
 (`idleGapLengtheningOfIdleRunRepeat_holds`, `LadderIdle.lean`), and the pin condition does not
-merely loosen but **discharges outright** for an idle block. The freed-increment form is
-refuted alongside it (`idleGapLengtheningAllIncrements_refuted`), so the restriction is
-necessary and not an artifact of the proof.
+merely loosen but **discharges outright** for an idle block. The freed-increment form is refuted
+alongside it (`idleGapLengtheningAllIncrements_refuted`), so the run-local restriction is
+necessary and not an artifact of the proof. This lemma is what 924's idle pump is built from.
+
 **Coverage appendix (uncovered tasks)**:
 ```
 /orchestrate 178,570,604,664,743,817,818,821
@@ -302,25 +332,22 @@ necessary and not an artifact of the proof.
 
 ```bash
 # Stage 1 — decidability of L⁺ at ZTime: the binding front
-/orchestrate 918,924,925,908 --hard --lit  # the live open core. 916 and 917 are CLOSED: the antitone slice is excluded-not-refuted and ForwardSlackWitnessed's discharge route is refuted at the pin layer. 918 resumes at Phase 3; 924 decides the frontier that refutation leaves open; 925 clears the C16 lint debt blocking every gate run in the module; 908 edged behind 918 on typst/generated/status.typ
-/orchestrate 862 --hard --lit            # forward pend/countdown rigidity sharpening (researched); feeds the same cell-level arithmetic. BLOCKED on 761's hold, whose own lift condition is 918 reporting
+/orchestrate 908,924,925 --hard --lit    # the live open core, 916/917/918 all CLOSED. 924 lands the idle-pump conditional discharge that relocates the ForwardSlackWitnessed frontier onto the I = 1 sub-regime; 925 clears the C16 unusedArguments debt in LadderPump.lean that currently makes check-module-invariants.sh exit 1 on every phase of every sibling in the module; 908 is mid-implementation. All three share FormalSystem/README.md and typst/generated/status.typ, so they run serialized
+/orchestrate 862 --hard --lit            # forward pend/countdown rigidity sharpening (researched); feeds the same cell-level arithmetic. Gated on 761's hold, whose substantive lift conditions are now all discharged
 /orchestrate 763 --hard --lit            # the lift and the Decidable (PlusValidZTime φ) corollary — needs 761 resumed AND the chain above closed. Settle the (S) scope question first; it is still nobody's task
-/orchestrate 714,781,873,907               # sliced-certificate internals (781 researched), open-language subformula closure, stale deploy-tree redeploy. All four parallel on disjoint territory
+/orchestrate 714,781,873,907             # sliced-certificate internals (781 researched), open-language subformula closure, stale deploy-tree redeploy. All four parallel on disjoint territory
 # Stage 2 — completeness of L⁺ at ZTime: TM⁺ plus the until-form schema
-/orchestrate 899,900,905,906 --hard        # P7/P8, the LAST two compiled ingredients of 879's table: the cut product lemma and the linear bridge, 900 edged behind 899 on docs/theorem-index.md. Batched with 901's two report-only questions, which share no territory with them
-#   (905/906 — 901's two questions — are folded into the line above; they collide with nothing)
-/orchestrate 502,497,500,543 --hard --lit  # MF correspondence rigidity, the only remaining high-priority L⁺ metalogic task — reachable ONLY through its own edge chain 502 -> 497 -> 500 -> 543. All three predecessors are low priority, which is why 543 never got scheduled on its own
+/orchestrate 899,900,905,906 --hard      # P7/P8, the LAST two compiled ingredients of 879's table: the cut product lemma and the linear bridge, 900 edged behind 899 on docs/theorem-index.md. Batched with 901's two report-only questions, which collide with nothing
+/orchestrate 502,497,500,543 --hard --lit # MF correspondence rigidity, the only remaining high-priority L⁺ metalogic task — reachable ONLY through its own edge chain 502 -> 497 -> 500 -> 543. All three predecessors are low priority, which is why 543 never got scheduled on its own
 # Stage 2b — supporting semantics and metalogic
 /orchestrate 664,570 --lit               # corpus ingest and the C3 open question
 /orchestrate 830 --hard                  # Γ-generalize decidableValidZTime; does NOT advance either aim
 # Stage 3 — hygiene, build cost, datasets, docs. Off both critical paths
-#   (the agent-system trio — coupled generated surfaces, V10 pair paths, batch-gate narrowing — MIGRATED OUT. Every task_type: meta record now lives in the repository that owns the shared source store, abandoned here with a durable slug pointer. Do not re-file agent-system work in this repository)
 /orchestrate 803,804,829                 # build-cost front: SubformulaProperty elaboration (research + plan landed), fan-in, .lake/build CI cache
 /orchestrate 298,282,296,231             # the dataset chain behind the c7 labeling bug (298/282/296 partial)
 /orchestrate 178,604,743                 # worked Examples/ pipeline, zstd .jsonl, typst-sync namespace resolution
 /orchestrate 817,818,821                 # phantom-row inventory, directory-rollup tables (821 researched)
 /orchestrate 787,832                     # unguarded .lake reader audit; local-disk reclamation (user decision on data/'s .partial files)
-#   (907 is folded into the Stage 1 off-path line above; 908 is edged behind 918 and rides the Stage 1 binding-front line)
 /orchestrate 890                         # GHR Lemma 10.2.3 case 5 erratum reference
 /orchestrate 257                         # only once the Stage 0 token exists
 # Stage 4 — the long fronts, off both critical paths
@@ -333,11 +360,12 @@ necessary and not an artifact of the proof.
 /orchestrate 125,501 --hard              # the Jónsson–Tarski capstone and Until/Since on STSA (543 moved to Stage 2, where its consumer is)
 /orchestrate 177                         # last in the programme: README, docs/ and docstring polish
 # Stage 5 — L^▷ exploration. Secondary, priority low; never ahead of, or batched with, Stages 1–2
-/orchestrate 873                         # subformula closure (ungated)
-/orchestrate 874                         # substitution closure and the direct L→L^▷ embedding
-/orchestrate 875                         # incompleteness transfer; the limit-closure schema in ▷-form at Base/Dense (its 871 gate is discharged)
-/orchestrate 869                         # open-modal invariance along a ray-agreement lifting
-/orchestrate 876                         # decision record only: could ⊡ go as an OpenFormula primitive, and at what cost. No removal
+#   What each one investigates and its gate: the backlog table under "L^▷: what is landed, and what is parked"
+/orchestrate 873
+/orchestrate 874
+/orchestrate 875
+/orchestrate 869
+/orchestrate 876
 ```
 
 Each line is one invocation. Batches are dependency-inclusive — the engine re-derives eligibility
@@ -352,19 +380,16 @@ with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
 
 ## Stage 0 — User rulings (no agent may transition these)
 
-- [ ] **Decide when 761 comes off `[HOLD]`.** Resuming it re-serializes the Stage 1 front behind
-      its 40-path scope; 763 is gated on it. 853 is done, so the Phase 11.12/11.13 reason for
-      waiting is discharged — but 761 is still `[BLOCKED]` on the cell agreement and the open
-      ladder-cell index, so there is a second reason to wait. Recommended: let 909/910 report first
+- [ ] **Decide when 761 comes off `[HOLD]`.** Both substantive reasons for waiting are now
+      discharged: 853 closed the Phase 11.12/11.13 gap, and 916/917/918 have all reported on the
+      cell agreement and the ladder-cell index. What remains is cost, not a blocker — resuming it
+      re-serializes the Stage 1 front behind its 40-path scope, and 763 is gated on it.
+      Recommended: lift it once 908/924/925 report terminal, since those three already hold the
+      `RaySummary` and generated-surface territory 761 would re-serialize
 - [ ] Supply the Hugging Face account and token **257** is blocked on
 - [ ] Rule on **428**'s scope. Its one edge is discharged and its `blockers` says "paused at
       4/5 cycles, NOT blocked", so the marker is mis-set: `/revise 428` to add phases for its four
       residual hypotheses, or `/spawn 428` to split them out
-- [ ] Rule on whether the 2026-11-06 meta-backlog pruning sweep was deliberate policy on its
-      class. Three records covering the plan-authoring/gate-collision ground were abandoned in one
-      70-second sweep with no per-record reason; the class then recurred with 10 fresh citations
-      across 838 and 853, and 912–914 were filed on that recurrence. If the pruning was policy,
-      abandon 912–914 explicitly rather than implementing them
 
 **713** is held by ruling (2026-10-03): its argued CTL⋆ 2EXPTIME lower bound is a citable ceiling
 with no consumer. **734** is `[HOLD]` on the paywalled *Handbook of Modal Logic* ch. 11
@@ -375,13 +400,14 @@ hold, not the aim.
 ## Not batched, and why
 
 - **713**, **734** are `HOLD` by ruling, **761** by the Stage 0 item above. 761's two blockers are
-  owned without lifting the hold: the cell agreement by 916/917, the ladder-cell index by 918.
-  Lift it only once both report, and never to run them.
-- **The agent-system freeze is resolved.** The records that declared edit targets resolving only
-  under the source store (`~/.config/nvim/agent-system/**`) have been migrated out of this
-  repository's task space and are gone from `specs/state.json`. Tasks 912–914 are the live
-  successors, and they declare absolute source-store paths in their own `file_scope` rather than
-  relying on a `source_dir` this repo's `.claude-extensions.json` does not declare.
+  now both discharged — the cell agreement by 916/917, the ladder-cell index by 918 — so only the
+  serialization cost keeps the hold in force.
+- **No agent-system work is filed in this repository, and none is to be.** Every `task_type: meta`
+  record has been migrated out to the repository that owns the shared source store, including the
+  three plan-authoring/gate-collision successors most recently filed here. This repository's
+  `.claude-extensions.json` does not declare a reachable `source_dir`, so a record whose edit
+  target resolves only under the source store cannot be executed from here. Re-filing one is a
+  ruling violation, not a judgement call.
 - **The blocker-research aux chain is a dead drop with no receipt** — `orchestrate-cycle-plan.sh`
   clears `aux_pending[t]` at emission time, so a fork that never writes `.blocker-research.json`
   emits no `plan-revision` row, `MAX_BLOCKER_ESCALATIONS` never fires, and an `[IMPLEMENTING]`
@@ -410,10 +436,10 @@ out of the immediate run list appears there correctly; its presence is not a gap
   `ForwardSlackWitnessed` (`LadderCell.lean`) — an existential over paths, which is exactly why
   it escapes that refutation. The gap to `CellLEZeroConstOfKappaEq` is **no longer the tight
   (doubling) chain of pins**: the register-lowering deletion and the free-register raise are both
-  landed. The antitone collision slice is settled (excluded, not refuted) and
-  `ForwardSlackWitnessed`'s discharge route is refuted at the pin layer, so what remains is
-  deciding the existential-over-paths form itself — either another route that avoids the doubling
-  cascade, or a compiled statement that the landed machinery admits none.
+  landed. The antitone collision slice is settled (excluded, not refuted), and the question of
+  whether the existential-over-paths form admits any route at all is **answered affirmatively**:
+  the idle pump avoids the doubling cascade entirely (see the collision case-split section above).
+  What remains is landing it, and the `I = 1` sub-regime it does not reach.
 - **The plan-specified spine for the register-lowering deletion is not implementable, and the
   landed route is not to be "corrected" back to it.** `exists_deleted_ladderPath_overshoot_of_pend_past`
   pins its slack amount to the shape `R*l + budget*l` at the held register in hypothesis *and*
