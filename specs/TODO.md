@@ -1,5 +1,5 @@
 ---
-next_project_number: 924
+next_project_number: 926
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 924
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,912,918 | -- | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,912,918,924,925 | -- | agent-system, algebraic-representation, completeness, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,913,914 | 298,428,502,743,761,873,912 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 410,498,499,500,804,861,919,920 | 429,497,763,803,914 | agent-system, algebraic-representation, decidability, ... |
 | 4 | 125,411,543,921 | 410,498,499,500,920 | agent-system, algebraic-representation, decidability, ... |
@@ -82,6 +82,8 @@ next_project_number: 924
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 918 [IMPLEMENTING] — Produce a positive factorization lemma for the index of which...
+924 [NOT STARTED] — Decide the fate of the ForwardSlackWitnessed frontier, now...
+925 [NOT STARTED] — Clear the C16 env\_linter unusedArguments lint debt in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Documentation
@@ -129,6 +131,50 @@ next_project_number: 924
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 925. Ladderpump c16 unused arguments lint debt
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 917
+
+**Description**: Clear the C16 env_linter unusedArguments lint debt in RaySummary/LadderPump.lean, which fails check-module-invariants.sh for every other task in the module.
+
+Originating evidence (orchestrate conclusion stage, channel (c)), cited from the parent's issue log: {task 917, iss_1794382565390_CmXKYM}.
+
+VERIFIED STARTING POSITION. check-module-invariants.sh's C16 env_linter group FAILS on two unusedArguments findings in FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean, on the declarations exists_idleSpliced_ladderPath and exists_idleTypeBlock_of_budget_le_run. Neither the parent record nor its batch sibling touched that file; git log -S attributes the declarations to a concurrent sibling record's commit 3692d517e. Both handled the finding by enumerating and attributing it as pre-existing and out of scope -- correct under their own plans, but it costs every subsequent task in this module an attribution step before it can read its own gate result.
+
+WHY THIS IS NOT A DIRECT FIX. The conclusion stage considered fixing the two findings in place and rejected it: the file sits in a concurrent sibling record's file_scope, so an in-place edit risks a territory collision with in-flight work. This task exists so the fix happens once under a declared file_scope, rather than being attempted opportunistically from a task that does not own the file.
+
+SCOPE. Resolve the two unusedArguments findings on the two named declarations -- either by removing genuinely unused arguments, or by establishing that each argument is load-bearing and suppressing the linter at that declaration with a stated reason. Verify by running check-module-invariants.sh and confirming the C16 env_linter group reaches exit 0 with no unusedArguments findings in LadderPump.lean. Out of scope: the one genuine ':= trivial' proof in FormalSystem/Examples/TemporalStructures.lean, enumerated by the sibling record as a separate pre-existing finding. Before dispatching, check for a live task holding LadderPump.lean and add a dependencies[] edge rather than racing it.
+
+PRECEDENT. The archived record ladderchain_c16_unusedarguments_clear cleared this exact C16 unusedArguments class in the sibling file LadderChain.lean; the matcher returns it as covered-by-closed (semantic 0.42). It is precedent for the method, not coverage of this file -- read its artifacts before starting. The two duplicate-of-open verdicts the matcher returns are both false positives on subject: lake_unguarded_reader_lock_audit concerns the unguarded .lake read hazard, and open_modal_invariance_ray_agreement_lifting is a demoted L-triangleright line; the subset-of-open verdict against update_readme_and_module_docstrings scores 0.19 and is territory-driven.
+
+---
+
+### 924. Forward slack witnessed frontier disposition
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Parent**: Task 917
+
+**Description**: Decide the fate of the ForwardSlackWitnessed frontier, now that its only landed discharge route is refuted.
+
+Originating evidence (orchestrate conclusion stage, channel (c)), cited from the parent's issue log: {task 917, iss_1794380410445_QbPDDB}.
+
+VERIFIED STARTING POSITION. The parent task's Phase 5 measured its decision gate as FAIL rather than arguing it: both clauses of exists_deleted_ladderPath_of_next_region_nxt are non-dischargeable from the admitted regime -- hanch short by exactly d, hstraddle by exactly 2*d, where d is the deleted block's length. The measurement compiles sorry-free at specs/917_forward_slack_witnessed_discharge_or_refutation/evidence/phase-5-gate-measurement.lean and exhibits concrete saturated assignments satisfying every available fact (pinCompat_of_ladderPath at the pin pair, nxtAt_lipschitz_two_sided from z, the gap, Tc <= C, (K3), and the pigeonhole's room and window bounds) at which each clause is false. The root cause: cascadeBound's recurrence a(k+1) <= 2*a k + J + 1 is attained WITH EQUALITY by the saturated configuration, so (K2)'s budget describes the obstruction rather than dominating it. The parent then compiled the obstruction as a theorem -- no_deleted_ladderPath_of_straddle_break in FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean shows that once the straddling pair breaks at the reduced distance, no deleted ladder path exists at all, so the primitive's own conclusion is false there rather than merely unproved.
+
+CONSEQUENCE TO RESOLVE. ForwardSlackWitnessed, being an existential over paths, is neither discharged nor refuted; it remains a hypothesis carried on all five depth-0 cell-equality schemas, and every consumer must supply it. The parent recorded in four durable places (the module docstring, the primitive's docstring, Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean, and specs/state.json) that certStabK's condition must be RESTATED rather than proved for as long as the hypothesis stays carried.
+
+SCOPE. Two admissible outcomes, both terminal: (a) identify and land a discharge route that neither passes through block deletion inside the first region above z's (the refuted route) nor re-enters the doubling cascade; or (b) record the frontier as closed, with a compiled statement of why no route through the currently landed machinery can succeed, and make the certStabK restatement obligation permanent rather than provisional. Reaching neither is a third, non-terminal result and must be reported as such rather than smoothed into (b). Amending (K1) to constrain spanning-block length is assessed in the sibling research report as carrying a blast radius of all 53 wired probes and is NOT admitted here without its own decision.
+
+BACKLOG AUDIT. The matcher's strongest signal is covered-by-closed against the parent record itself (semantic 0.74, mechanical subset) -- expected and not a duplication, since this task exists precisely to reach the outcome the parent measured it could not. The one open-task verdict, subset-of-open against update_readme_and_module_docstrings, scores 0.20 and is territory-driven (a shared FormalSystem/Metalogic/Decidability/ prefix), not subject overlap; that record is a documentation sweep and was separately flagged this invocation as an idle cross-batch file_scope overlap. Add a dependencies[] edge if the two are ever dispatched together.
+
+---
 
 ### 923. Separate generator-written files from hand-edited read-only scope declarations
 - **Status**: [NOT STARTED]
