@@ -2256,8 +2256,58 @@ WIRED=(
 # version control only because it was tracked before it was archived; a *new* file at that path
 # would not be.  `git add` on it needs `git add -u`, since plain `git add` refuses an
 # ignore-matching pathspec.  That fragility is a further reason to complete the move.
+#
+# probe (repository-relative path)                          | the decision it holds in place
+# ----------------------------------------------------------|-----------------------------------
+# specs/918_ladder_cell_index_positive_factorization/        | the LOWERING direction of the
+#   evidence/lowering-anchor-deficit.lean                    | window-regime composite splice is
+#                                                           | unavailable, so the window regime's
+#                                                           | cell result is ONE-DIRECTIONAL
+#                                                           | (inclusion, not equality).  The
+#                                                           | `z`-anchored lift's anchor clause
+#                                                           | reverses direction under deletion:
+#                                                           | its binding half becomes
+#                                                           | `n + jP <= c + 2*d + 1`, a bound on
+#                                                           | the register from ABOVE.
+#                                                           | `lowering_anchor_not_implied` shows
+#                                                           | the lowering branch's own room
+#                                                           | (`c <= n`), the deletion bound
+#                                                           | (`jP <= c`) and the path's bound
+#                                                           | (`n <= c + 2*d + 1`) do not imply it;
+#                                                           | `lowering_anchor_fails_at_tight_bound`
+#                                                           | shows it fails for EVERY positive
+#                                                           | displacement once the path bound is
+#                                                           | tight, so the deficit is not a loose
+#                                                           | witness; `lowering_anchor_of_required`
+#                                                           | shows exactly one named hypothesis is
+#                                                           | what is missing.  This is why
+#                                                           | `CellSubsetOfKappaEqWindowRaise`
+#                                                           | concludes direction-indexed INCLUSION
+#                                                           | and why `Set.Subset.antisymm` has no
+#                                                           | second inclusion to consume -- and so
+#                                                           | why `cellLE_zero_const_of_kappa_eq`
+#                                                           | stays claimed by nothing.  Axioms:
+#                                                           | none beyond the standard profile; all
+#                                                           | three theorems close by `omega`.  No
+#                                                           | `sorryAx`, no custom axiom, no
+#                                                           | `native_decide`.
+#
+# WHY THIS ONE IS NOT UNDER `specs/evidence/`.  Same shape as the entry above -- a DEFERRED MOVE
+# with a named blocker, not an exemption.  Three landed `#### Reasoned Exclusions` records (Phases
+# 3, 4 and 5 of `specs/918_ladder_cell_index_positive_factorization/plans/`
+# `01_ladder-cell-window-regime.md`) cite this probe by its task-directory path verbatim in their
+# Evidence columns, so moving the file would invalidate those citations in the same edit.  Promote
+# it to `specs/evidence/seam-gluing-ray-product/` -- where every other ladder probe in this family
+# lives -- together with updating those three citations.
+#
+# THIS MOVE IS OWED BEFORE THAT TASK IS ARCHIVED, NOT MERELY DESIRABLE.  `.gitignore` excludes
+# `specs/archive/`, so an archival `mv` of the task directory takes this probe out of version
+# control in that one commit, and this guard then reports `FAIL (untracked: ...)` on every clean
+# checkout while staying green for whoever already had the file -- the invisible-breakage case
+# this file's TRACKED, NOT MERELY PRESENT section describes.
 WIRED_REPO=(
   "specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean"
+  "specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean"
 )
 
 # --- DEFERRED -----------------------------------------------------------------------------

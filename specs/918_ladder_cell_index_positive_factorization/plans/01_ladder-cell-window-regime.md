@@ -352,7 +352,7 @@ partition rather than an unquantified special case.
 
 ---
 
-### Phase 6: CONDITIONAL -- Compile the Window-Regime Obstruction [NOT STARTED]
+### Phase 6: CONDITIONAL -- Compile the Window-Regime Obstruction [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Runs only if Phase 2's gate FAILED. Turn the obstruction into a machine-checked record,
 so the window branch is refuted rather than merely unproved, and record the consequence: the
@@ -360,11 +360,19 @@ ladder route for the realization theorem is closed in both regimes, which is the
 negative result the dispatch admits as a complete outcome.
 
 **Tasks**:
-- [ ] Write a `sorry`-free probe under `specs/evidence/ladder-window-regime/` whose theorem exhibits the failure: a ladder path in the window regime with an idle position in its past, the composite surgery at a positive displacement, and the clause whose compatibility fails for every admissible choice the construction can make. Model it on `specs/evidence/forward-slack-pin-cascade/pin-cascade-straddle.lean`'s shape — a theorem for the obstruction, a concrete object for non-vacuity, and exhaustion over the choices the construction admits.
-- [ ] Add the probe's path to `scripts/check-evidence-probes.sh`'s `WIRED` list with a one-line entry saying what it holds in place. A probe under `specs/` is reached by no Lake target, so without the entry it rots silently.
-- [ ] Record the verdict in `LadderWindow.lean`'s module docstring: the window regime is refuted at the named clause; the ladder route for the realization theorem is closed in both regimes; `cellLE_zero_const_of_kappa_eq` is unreachable by the composite-splice route and stays claimed by nothing.
-- [ ] Record the consequence in the DURABLE record — this task's own description in `specs/state.json` — rather than in any dispatch-created sidecar, and name it in the summary artifact.
-- [ ] If Phase 2's gate PASSED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record whose Evidence column cites Phase 2's passing measurement. Land nothing.
+- [ ] Write a `sorry`-free probe under `specs/evidence/ladder-window-regime/` whose theorem exhibits the failure: a ladder path in the window regime with an idle position in its past, the composite surgery at a positive displacement, and the clause whose compatibility fails for every admissible choice the construction can make. Model it on `specs/evidence/forward-slack-pin-cascade/pin-cascade-straddle.lean`'s shape — a theorem for the obstruction, a concrete object for non-vacuity, and exhaustion over the choices the construction admits. *(deviation: skipped — FAIL-branch-only task and Phase 2's gate measured PASS; there is no window-regime obstruction to compile. See `#### Reasoned Exclusions`.)*
+- [x] Add the probe's path to `scripts/check-evidence-probes.sh`'s `WIRED` list with a one-line entry saying what it holds in place. A probe under `specs/` is reached by no Lake target, so without the entry it rots silently. *(deviation: altered — no window-regime probe exists to wire (gate PASSED), so this task was discharged against the obstruction this task ACTUALLY compiled, exactly as this phase's `**Files to modify**` note directs ("adjust the directory and file name to the obstruction actually measured"): `evidence/lowering-anchor-deficit.lean`, the lowering-direction anchor deficit that Phases 3, 4 and 5 each cite as the Evidence for their own exclusion. It was unwired and therefore rotting unguarded. Wired under `WIRED_REPO` rather than `WIRED` because three landed Reasoned Exclusions records cite its task-directory path verbatim — the same deferred-move-with-a-named-blocker form the existing `WIRED_REPO` entry uses — with the owed promotion to `specs/evidence/seam-gluing-ray-product/` recorded beside the entry and flagged as due before archival.)*
+- [ ] Record the verdict in `LadderWindow.lean`'s module docstring: the window regime is refuted at the named clause; the ladder route for the realization theorem is closed in both regimes; `cellLE_zero_const_of_kappa_eq` is unreachable by the composite-splice route and stays claimed by nothing. *(deviation: skipped — FAIL-branch-only task, and its content is counterfactual: the window regime is NOT refuted and the ladder route is NOT closed in both regimes. Writing it would put a false verdict in the module docstring. See `#### Reasoned Exclusions`.)*
+- [ ] Record the consequence in the DURABLE record — this task's own description in `specs/state.json` — rather than in any dispatch-created sidecar, and name it in the summary artifact. *(deviation: skipped — FAIL-branch-only task; the consequence it would record (the ladder route closed in both regimes) did not occur. The PASS-branch outcome is recorded in the summary artifact by Phase 7's own verdict task.)*
+- [x] If Phase 2's gate PASSED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record whose Evidence column cites Phase 2's passing measurement. Land nothing. *(done — this is the branch taken. No probe, no docstring verdict, no durable-record amendment. The one edit made is the guard entry above, which lands no new obstruction and only stops an already-landed one from rotting.)*
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| The window-regime obstruction probe (`specs/evidence/ladder-window-regime/window-pin-compensation.lean`) and its `WIRED` entry | This entire phase is conditional on Phase 2's decision gate FAILING, and the gate measured PASS. Both of the lift's measured clauses closed for the composite walk with no hypothesis beyond the five the gate criterion admits — `ParamsOk`, the two window hypotheses, `Tc ≤ c`, the collision's room, and the one named idle-run condition `HasIdleRunBelow`. There is therefore no window-regime obstruction in existence to compile, and a probe asserting one would be false rather than merely unnecessary. The plan's own PASS branch for this phase is "Land nothing", and that is what was done. | Plan `## Phase Verification Notes`, `### Verification notes: phase 2 (measured) -- GATE VERDICT: PASS`, whose clause table names the discharging lemma for each of `hw`, `hidle`, `hpp`, `hpi`, `hpins`, `hn0` and records "No sixth hypothesis was needed, so this is a PASS, not a widening"; Phase 2's heading marker `[COMPLETED]` (not `[COMPLETED WITH EXCLUSIONS]`); the landed `window_anchor_clause_of_pin_classification`, `window_pin_pair_raise_of_slack`, `nxtAt_le_cntAt_region_start`, `regionStart_spacing` and `HasIdleRunBelow` in `LadderWindow.lean`, all compiled `sorry`-free with a standard axiom profile |
+| The `LadderWindow.lean` module-docstring verdict line ("the window regime is refuted at the named clause; the ladder route is closed in both regimes") | Counterfactual on the branch actually taken. The window regime is closed POSITIVELY — one-directionally, under `CellSubsetOfKappaEqWindowRaise` — not refuted; and the ladder route is closed in neither regime by this task. Landing this text would put a false statement in the record, which is a worse outcome than an absent one. The accurate verdict is Phase 7's own final task and belongs there, stated once. | `cellSubset_of_kappa_eq_window_raise` and `kappa_collision_window_or_pendPast_exhaustive`, both landed and `sorry`-free (Phase 5's verification notes; `lean_verify` standard profile, no `sorryAx`); Phase 5's `#### Reasoned Exclusions`, which records the result as one-directional INCLUSION rather than refuted |
+| The durable-record (`specs/state.json` task description) amendment | Its content is the same counterfactual consequence as the row above — "the ladder route for the realization theorem is closed in both regimes" — which did not occur. Amending the durable record to say so would be a false durable claim. No amendment is owed on the PASS branch: the task's description already states the two admissible outcomes, and the one reached is the positive one. | Same evidence as the row above; the dispatch's own recorded prior decision (`.decisions.json`, cycle 2, Target A) which re-scoped the task to this regime and anticipated the positive outcome |
 
 **Timing**: 1 hour
 
@@ -383,9 +391,10 @@ negative result the dispatch admits as a complete outcome.
 - `typst/generated/status.typ` - regenerated count fields if any `.lean` line count moved, staged in the same commit
 
 **Verification**:
-- `bash scripts/check-evidence-probes.sh` exits 0 with the new probe compiled and no pre-existing probe newly red (stated as a delta against the pre-task run, not an absolute count).
-- The probe is `sorry`-free and axiom-free beyond the standard profile.
-- The verdict appears in the durable record, not only in this plan.
+- `bash scripts/check-evidence-probes.sh` exits 0 with the new probe compiled and no pre-existing probe newly red (stated as a delta against the pre-task run, not an absolute count). DONE: exit 0, `PASS  all 54 wired probe(s) compile`. Delta against the pre-phase run: +1 wired probe (53 -> 54), that one being `specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean` at `PASS`; zero probes moved from PASS to FAIL, and the single `SKIP` (`spike-untl-unfolding-and-fwd-obstruction`, deliberately deferred in the script's own `DEFERRED` block) is unchanged. No window-regime probe was written — see `#### Reasoned Exclusions`.
+- The probe is `sorry`-free and axiom-free beyond the standard profile. DONE for the probe actually wired: `timeout 540 lake env lean specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean` exits 0 with zero output; a `sorry`/`axiom` sweep over the file returns no occurrence; all three theorems (`lowering_anchor_not_implied`, `lowering_anchor_of_required`, `lowering_anchor_fails_at_tight_bound`) close by `omega` alone, so nothing beyond the standard profile is reachable.
+- The verdict appears in the durable record, not only in this plan. NOT APPLICABLE on this branch, and deliberately so: the verdict this bullet asks for is the FAIL branch's ("the window regime is refuted; the ladder route is closed in both regimes"), which is counterfactual here. No false verdict was written to the durable record. The PASS-branch verdict is Phase 7's own final task.
+- Batch-gate note: this phase's declared `**Verification Tier**` is `local`, not `full`, so the dispatch's batch-gate deferral directive does not bite here — `bash scripts/check-evidence-probes.sh`, the covering check named in the Tier Justification, was independently run in full (all 54 probes, not a scoped subset). The plan's final phase retains `**Verification Tier**: full`, unedited.
 
 ---
 
@@ -873,3 +882,64 @@ foreign uncommitted modifications outside this task's territory --
 `.pid`, `specs/893_.../stale-dispatch-2-plan-report.md` and `specs/evidence/history-morphism-saturation-audit/`.
 All were present in the dispatch's own opening git snapshot, so they are a concurrent sibling's
 in-flight state rather than anything this phase produced. None was staged or edited here.
+
+### Verification notes: phase 6 (measured) -- COMPLETED WITH EXCLUSIONS, PASS BRANCH
+
+**The branch, read rather than re-derived**: this phase is conditional on Phase 2's decision gate
+FAILING. That gate's verdict is recorded in this file at
+`### Verification notes: phase 2 (measured) -- GATE VERDICT: PASS`, with a clause-by-clause table
+naming the discharging lemma for each of `hw`, `hidle`, `hpp`, `hpi`, `hpins` and `hn0`, and the
+sentence "No sixth hypothesis was needed, so this is a PASS, not a widening". Phase 2's heading
+carries `[COMPLETED]`, not `[COMPLETED WITH EXCLUSIONS]`. The branch is therefore PASS and this
+phase's terminal task applies: close `[COMPLETED WITH EXCLUSIONS]` with a record, land nothing.
+
+**What was NOT written, and why that is the deliverable**: no window-regime obstruction probe, no
+`LadderWindow.lean` module-docstring verdict, no `specs/state.json` description amendment. All
+three are FAIL-branch content whose substance is counterfactual on this branch -- the window
+regime is closed positively (one-directionally, under `CellSubsetOfKappaEqWindowRaise`), not
+refuted, and the ladder route is closed in neither regime by this task. Writing any of the three
+would have put a false claim into a durable record. Each is enumerated with its own row in this
+phase's `#### Reasoned Exclusions`.
+
+**The one edit made, and why it is not a widening**: `scripts/check-evidence-probes.sh` gained one
+`WIRED_REPO` entry for `specs/918_ladder_cell_index_positive_factorization/evidence/`
+`lowering-anchor-deficit.lean`. That file is this task's ACTUALLY compiled obstruction -- the
+lowering-direction anchor deficit that Phases 3, 4 and 5 each cite, by that verbatim path, as the
+Evidence for their own exclusion -- and it was wired into nothing, so no gate reached it. This
+phase's `**Files to modify**` list names `scripts/check-evidence-probes.sh` and directs that the
+directory and file name be adjusted "to the obstruction actually measured"; this is that
+adjustment. It lands no new obstruction: it stops an already-landed one from rotting.
+
+**Why `WIRED_REPO` and not `WIRED`**: the script's header prefers `WIRED` and admits `WIRED_REPO`
+only for a probe that cannot yet move, with a named blocker recorded beside the entry. The named
+blocker here is that three landed `#### Reasoned Exclusions` records cite the task-directory path
+verbatim, so moving the file would invalidate those citations in the same edit. The owed
+promotion -- to `specs/evidence/seam-gluing-ray-product/`, where every other ladder probe in this
+family lives, together with updating those three Evidence citations -- is recorded beside the
+entry and is DUE BEFORE THIS TASK IS ARCHIVED, because `.gitignore` excludes `specs/archive/` and
+an archival `mv` would take the probe out of version control in that one commit. Flagged for
+Phase 7, which owns records reconciliation.
+
+- `timeout 540 lake env lean specs/918_.../evidence/lowering-anchor-deficit.lean`: exit 0, zero
+  output. `sorry`/`axiom` sweep: no occurrence. All three theorems close by `omega`.
+- `bash scripts/check-evidence-probes.sh` (detached, bounded waiter, guard flock held by the
+  script itself): exit 0, `PASS  all 54 wired probe(s) compile`. Delta against the pre-phase run:
+  53 -> 54 wired, the new one `PASS`, zero PASS-to-FAIL transitions, the one deliberate `SKIP`
+  unchanged.
+- `bash scripts/typst-sync-check.sh --fix`: PASS, `MA_COUNT_MISMATCHES=0`; `status.typ` came back
+  unchanged, which is correct -- no `.lean` file was touched this phase, so no line count moved.
+  Nothing to stage.
+- Scope Hypothesis outcome: the hypothesis predicted "content only on the FAIL branch... one file
+  of 80-140 lines plus one `WIRED` entry", and instructed that the branch be confirmed from
+  Phase 2's recorded measurement before starting. Confirmed PASS, so the 80-140-line probe is
+  correctly absent. ACTUAL delta: 0 new `.lean` lines, +53 lines in
+  `scripts/check-evidence-probes.sh` (one array entry plus its documentation block, in the
+  format the existing `WIRED_REPO` entry establishes).
+
+**Concurrency observation**: the working tree carried the same foreign uncommitted state Phase 5
+recorded -- `specs/893_lcu_until_form_schema_ztime_validity/issues.jsonl`, `specs/events.jsonl`,
+an untracked `.pid`, `specs/893_.../stale-dispatch-2-plan-report.md` and
+`specs/evidence/history-morphism-saturation-audit/` -- unchanged in character from that record, so
+a concurrent sibling's in-flight state rather than anything this phase produced. None was staged
+or edited here. No foreign commit touched this task's files and no build was running that this
+dispatch did not start.
