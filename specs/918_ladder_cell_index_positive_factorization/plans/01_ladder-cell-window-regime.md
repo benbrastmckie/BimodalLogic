@@ -264,18 +264,25 @@ the realized stab-free type at `z` held.
 
 ---
 
-### Phase 4: The Two Cell Inclusions in the Window Regime [NOT STARTED]
+### Phase 4: The Two Cell Inclusions in the Window Regime [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Lift Phase 3's primitives to the cell level, mirroring
 `cellAt_subset_of_shift_of_pend_past` and `cellAt_subset_of_shift_of_pend_past_rev` with the
 idle-past hypothesis in place of the pending-forever one.
 
 **Tasks**:
-- [ ] Land the upward inclusion: in the window regime at countdown at least `Tc`, under the named idle-run condition, the cell at `(q, c, n)` is contained in the cell at `(q, c + j · (P + 1), n)`. Follow `cellAt_subset_of_shift_of_pend_past`'s own proof shape — `mem_cellAt_ladder_iff`, read `objAt`/`cntAt`/`nxtAt` off the witnessing state, derive the idle-past fact from the window hypothesis, apply Phase 3's raising primitive, rebuild the history with `exists_hist_of_isLadderPath`.
-- [ ] Land the downward inclusion from the lowering primitive, in the same shape.
-- [ ] Record in both docstrings that neither inclusion carries `HasForwardSlack`: the downward direction, which in the pending-forever regime needs the witnessing hypothesis, is here paid for by the idle run below.
-- [ ] Guarded scoped build, `bash scripts/typst-sync-check.sh --fix`, stage `typst/generated/status.typ`. Apply the `longFile` rule if the file crosses 1500.
-- [ ] If Phase 2's gate FAILED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record citing Phase 2's measurement. Land nothing.
+- [x] Land the upward inclusion: in the window regime at countdown at least `Tc`, under the named idle-run condition, the cell at `(q, c, n)` is contained in the cell at `(q, c + j · (P + 1), n)`. Follow `cellAt_subset_of_shift_of_pend_past`'s own proof shape — `mem_cellAt_ladder_iff`, read `objAt`/`cntAt`/`nxtAt` off the witnessing state, derive the idle-past fact from the window hypothesis, apply Phase 3's raising primitive, rebuild the history with `exists_hist_of_isLadderPath`. *(deviation: altered — the idle-past fact is NOT derivable from the window hypothesis. `cntAt_le_nxtAt_succ_of_idle_past` runs one way only (idle past ⟹ window) and its converse is false, so the region start and the idle run are CARRIED, through a new existential-over-paths condition `WindowIdleRunWitnessed`, in the exact shape the landed `ForwardSlackWitnessed` takes for the pending-forever regime. Everything else in the task is as written: `mem_cellAt_ladder_iff`, the three read-offs, `exists_window_raise_ladderPath`, `exists_hist_of_isLadderPath`.)*
+- [ ] Land the downward inclusion from the lowering primitive, in the same shape. *(deviation: skipped — EXCLUDED. The lowering primitive it consumes does not exist: Phase 3 excluded it on a compiled measurement, and the cycle-1 recorded decision re-scoped Phases 4-5 to the upward inclusion only. See `#### Reasoned Exclusions` below.)*
+- [x] Record in both docstrings that neither inclusion carries `HasForwardSlack`: the downward direction, which in the pending-forever regime needs the witnessing hypothesis, is here paid for by the idle run below. *(deviation: altered — recorded in the upward inclusion's docstring and in `WindowIdleRunWitnessed`'s, since the downward inclusion is excluded. Both state that neither `HasForwardSlack` nor `ForwardSlackWitnessed` appears, and that the compensator is the idle run BELOW.)*
+- [x] Guarded scoped build, `bash scripts/typst-sync-check.sh --fix`, stage `typst/generated/status.typ`. Apply the `longFile` rule if the file crosses 1500. *(the file is 1683 lines, inside Phase 3's existing `set_option linter.style.longFile 1700` window `1500 ≤ lines < 1700`, so no baseline change was owed.)*
+- [x] If Phase 2's gate FAILED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record citing Phase 2's measurement. Land nothing. *(deviation: altered — Phase 2's gate PASSED, so this branch's "land nothing" does not apply. The marker and the record are used for the DIRECTION-SPECIFIC exclusion instead, exactly as Phase 3 used them, with Phase 3's own compiled measurement in the Evidence column.)*
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| The DOWNWARD cell inclusion (`c − j·(P + 1)` at `z`) | It is a lift of a primitive that does not exist. Phase 3 excluded the lowering primitive on a compiled measurement — the anchor clause reverses direction under deletion and its binding half becomes `nxtAt g z + jP ≤ cntAt g z + 2·d + 1`, a bound on the register from ABOVE, which `kappa_collision_window_room`'s lowering branch (`c ≤ n`) does not supply and which `nxtAt_le_cntAt_region_start`'s TIGHT bound leaves short by exactly the displacement. Under Phase 2's gate criterion a sixth hypothesis is a FAIL, not a widening. The cycle-1 recorded decision (`.decisions.json`) settled the disposition: stay one-directional and re-scope Phases 4-5 to the upward inclusion, rather than admit the sixth carried condition. Nothing was re-attempted here. | `window_lower_anchor_not_implied`, `window_lower_anchor_fails_at_tight_bound`, `window_lower_anchor_of_required` (`LadderWindow.lean`), and the probe `specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean` (`lake env lean`, zero output) |
+| The idle-past fact as a DERIVED rather than carried input | `cntAt_le_nxtAt_succ_of_idle_past` is one-directional: an idle position in the past puts the position inside the window, never the converse. A pending-forever path can satisfy `c ≤ n + 1` outright (take `c = 0`), so the window hypothesis returns no region start and no state-level variant of the regime's path data exists. The package is therefore carried, by `WindowIdleRunWitnessed`, which is existential over the paths through the state and so exactly as weak as the landed `ForwardSlackWitnessed` precedent — not universal, and asserted to hold nowhere. | `cntAt_le_nxtAt_succ_of_idle_past` and `pend_past_of_nxtAt_lt` (`LadderAgree.lean`); `WindowIdleRunWitnessed`'s own docstring; `cellAt_subset_of_window_raise` compiles with the condition carried and with no window hypothesis of its own (the room `c + m·(P+1) ≤ n` implies `¬ (n + 2 ≤ c)` by itself) |
 
 **Timing**: 2 hours
 
@@ -292,9 +299,10 @@ idle-past hypothesis in place of the pending-forever one.
 - `typst/generated/status.typ` - regenerated count fields, staged in the same commit
 
 **Verification**:
-- Scoped guarded build green and warning-free.
-- `lean_verify` on both inclusions: no `sorryAx`.
-- An exact-name sweep confirms neither inclusion was named with any prefix of `cellLE_zero_const_of_kappa_eq`.
+- Scoped guarded build green and warning-free. DONE: `lake-build-guard.sh ... build FormalSystem.Metalogic.Decidability.RaySummary.LadderWindow`, guard exit 0, 2018 jobs, 0 errors, 0 warnings, green on the first attempt. The phase-end FULL library build is also green: guard exit 0, 2974 jobs, 0 errors, 0 warnings, `.olean` newer than source.
+- `lean_verify` on both inclusions: no `sorryAx`. DONE for the one inclusion that exists: `cellAt_subset_of_window_raise` carries the standard profile `[propext, Classical.choice, Quot.sound]`, `trust: standard`, no non-standard axioms. The downward inclusion is excluded above, so there is no second declaration to verify.
+- An exact-name sweep confirms neither inclusion was named with any prefix of `cellLE_zero_const_of_kappa_eq`. DONE: the landed names are `WindowIdleRunWitnessed` and `cellAt_subset_of_window_raise`; an exact-name declaration sweep over `FormalSystem/` returns 0 sites for `cellLE_zero_const_of_kappa_eq` itself.
+- Batch-gate note: this phase's declared `**Verification Tier**` is `local`, not `full`, so the dispatch's batch-gate deferral directive does not bite here — the scoped guarded build named in the Tier Justification is the complete covering check and was independently run. The plan's final phase retains `**Verification Tier**: full`, unedited.
 
 ---
 

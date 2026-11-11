@@ -3,53 +3,47 @@
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 918,
-  "dispatch_seq": 14,
-  "requires_user_review": true,
+  "dispatch_seq": 17,
+  "requires_user_review": false,
+  "phases_completed": 4,
+  "phases_total": 7,
+  "sorry_inventory": [],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 14,
+    "build_passed": true,
+    "verification_passed": true,
+    "notes": "Scoped guarded build of LadderWindow green on the first attempt (guard exit 0, 2018 jobs, 0 errors, 0 warnings). Phase-end FULL guarded lake build green (guard exit 0, 2974 jobs, 0 errors, 0 warnings, .olean newer than source). lean-sorry-census.sh --cross-check: stripper 0, compiler 0, MATCH. vacuous_count 1 is the pre-existing FormalSystem/Examples/TemporalStructures.lean int_domain_universal, unchanged. axiom_count 14 unchanged from baseline; LadderWindow.lean declares none. lean_verify on cellAt_subset_of_window_raise: [propext, Classical.choice, Quot.sound], trust standard, no sorryAx."
+  },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
-      "summary": "Phases 1-3 of the window-regime plan: the raising primitive landed at an exact multiple of P + 1 with the register and the realized type held at z; the lowering direction excluded on a compiled measurement."
+      "summary": "Phases 1-4 of the window-regime plan: the arithmetic layer, the passed decision gate, the raising primitive, and its cell-level upward inclusion."
     }
   ],
   "modified_files": [
     "FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean",
     "typst/generated/status.typ",
     "specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md",
-    "specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean",
     "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
-    "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-3-handoff-20261111T131951Z.md",
-    "specs/918_ladder_cell_index_positive_factorization/issues.jsonl",
+    "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-4-handoff-20261111T134005Z.md",
     "specs/918_ladder_cell_index_positive_factorization/.orchestrator-handoff.json",
     "specs/918_ladder_cell_index_positive_factorization/.return-meta.json"
   ],
-  "sorry_inventory": [],
-  "verification": {
-    "sorry_count": 0,
-    "sorry_cross_check": "MATCH",
-    "vacuous_count": 1,
-    "vacuous_note": "pre-existing and untouched: FormalSystem/Examples/TemporalStructures.lean's int_domain_universal, whose goal is definitionally True for integer time; zero introduced by this task",
-    "axiom_count": 14,
-    "axiom_baseline": 14,
-    "build_passed": true,
-    "build_evidence": "full guarded lake build, 2974 jobs, guard exit 0, error: count 0, warning: count 0, .olean newer than source for LadderWindow",
-    "verification_passed": true,
-    "batch_gate_deferred": true,
-    "batch_gate_note": "complete gate set deferred to this invocation's batch stage per the dispatch's Batch Gate Deferral directive; the scoped narrowing invocation covering the touched files was run at every sub-step"
-  },
-  "user_decision": {
-    "question": "Phase 3's lowering primitive is excluded on a compiled measurement: its anchor clause needs a sixth hypothesis -- a bound on the register from above relative to the in-region depth (nxtAt g z + jP <= cntAt g z + 2*d + 1), recorded as window_lower_anchor_of_required. Phase 2's gate criterion forbids adding it. Should the plan admit that condition as a carried hypothesis (making the window schema two-directional but with a second carried condition alongside HasIdleRunBelow), or stay with the one-directional result and re-scope Phases 4-5 to the upward inclusion only?",
-    "blocking": false,
-    "why": "This is a scope/standards judgment about how many carried conditions the window schema may accumulate before it stops being a useful result, which the artifacts cannot infer. It is non-blocking: Phase 4's upward inclusion is unblocked either way and can proceed while the decision is pending."
-  },
+  "handoff_path": "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-4-handoff-20261111T134005Z.md",
   "completion_data": {
-    "completion_summary": "Window regime phases 1-3 closed. Raising primitive landed at an exact multiple of P + 1 with the object state, register and realized stab-free type all held at z; lowering direction excluded on a compiled two-sided arithmetic deficit."
+    "completion_summary": "Phase 4 of 7 closed [COMPLETED WITH EXCLUSIONS]. Landed the window regime's upward cell inclusion cellAt_subset_of_window_raise and the carried condition WindowIdleRunWitnessed in LadderWindow.lean (1571 -> 1683 lines). The downward inclusion is excluded, lifting a primitive excluded in Phase 3 on a compiled measurement and foreclosed by the cycle-1 recorded decision. Phase 5 carries a plan defect: it specifies cell equality via Set.Subset.antisymm of two inclusions where only one exists."
   },
   "memory_candidates": [
-    "A pending-splice pin trichotomy stated RELATIVE to the original path is not iterable; restating every clause about the path being spliced makes it both iterable and shorter, because the pending stretch forces a region start at or above the region start to BE it.",
-    "Write a decreasing-budget induction invariant with the spend ADDED ON THE RIGHT rather than subtracted from the budget: no truncated natural subtraction appears and each step's reproduction is one omega call.",
-    "An idle splice is a rigid index pullback in BOTH coordinates (idleSpliceCnt = cntAt composed with spliceIdx), unlike a pending splice, which is why HWZ's deletion type lemma applies to it unchanged and the iterate can expose the realized type at every position.",
-    "omega can fail with an internal 'Application type mismatch' in its own generated proof term on a large context with Exists.choose-headed terms; factoring the arithmetic into named lemmas over plain naturals is the fix, not a tactic change.",
-    "tpOf has no position-shift lemma, but tpOf_timeShift composed with tpOf_stabFree_eq_of_objAt_eq at a shifted history is the sanctioned conjugation for carrying a realized stab-free type across a translation of the path."
+    {
+      "insight": "A one-directional lemma plus a false converse is a carried-hypothesis signal, not a derivation gap: when a plan says to DERIVE a path-level fact from a state-level regime hypothesis, check the converse direction explicitly before attempting it. Here cntAt_le_nxtAt_succ_of_idle_past (idle past => window) has a false converse, so the regime's path data had to be carried existentially over paths, in the shape an already-landed sibling condition used for the complementary regime.",
+      "category": "lean4-proof-design"
+    },
+    {
+      "insight": "Lifting a path-level Lean construction to a cell-level inclusion is a near-mechanical transcription when a sibling inclusion already exists: mem_cellAt_ladder_iff on both sides, simp [coord, hgz] for each coordinate read-off, Subtype.ext plus change on the state triple, and rw with the type-transport clause. Copying the sibling's proof shape verbatim and substituting only the regime derivation compiled on the first attempt.",
+      "category": "lean4-proof-design"
+    }
   ]
 }
