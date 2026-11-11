@@ -233,7 +233,7 @@ report's Recommendation 5, landed early as unconditional value rather than held 
 
 ---
 
-### Phase 4: The Deletion Above `z`'s Region, Register Held [NOT STARTED]
+### Phase 4: The Deletion Above `z`'s Region, Register Held [COMPLETED]
 
 **ADMITTED HYPOTHESIS, `hnz`** (this phase's pinned statement now carries it):
 - **What the measurement established**: the phase's earlier pinned signature of
@@ -292,14 +292,14 @@ block ABOVE `z`'s region, discharging every pin obligation the landed constructi
 and taking exactly the two it cannot as explicit hypotheses.
 
 **Tasks**:
-- [ ] Read `exists_deleted_ladderPath_of_pend_past_nxt` (`LadderChain.lean`, `section DelNxt`) in full. The new theorem re-runs the same construction through `exists_ladderPath_of_walk_nxt_at`, reusing `delObj_step`, `delCnt_idle`, `delCnt_pend_pend`, `delCnt_pend_idle` verbatim -- none of those four takes `hpast`.
-- [ ] Land the theorem with the pinned signature in `## Lean Challenge Statements`, `hnz` included. The register is pinned at `nxtAt g z`, not at a free `n`: that is what the consumer needs (`g' z = g z`), and it is `hnz` together with the pinned register that makes the undisplaced-position pins' anchor close.
-- [ ] Lift the compiled proof from `evidence/phase-4-pinned-signature-deficit.lean` rather than re-deriving it: both pull lemmas (`probe_low`/`probe_high`), the four pin-compatibility cases, and the anchor clause at every pin are already green against the real tree under this exact signature. `hnz` appears in no tactic — one `omega` consumes it — so no proof text changes when it is admitted.
-- [ ] Discharge, inside the proof: pins at or below `z` do not exist (`hpast` -- every `p ≤ z` is pending, so every idle position lies above `z`); the anchor for a position-undisplaced pin `v` with `z < v < a` is `nxtAt_lipschitz_two_sided g hg v z` composed with `cntAt_eq_nxtAt_of_idle_pend`, plus `hnz` at the one low pin whose region swallows the block and whose VALUE `delCnt` therefore lowers by `l`; a both-below pair is the original pair at the original distance; a both-above pair is the original pair with both positions displaced by `-l`, so its distance is unchanged -- both close through `pinCompat_of_ladderPath`.
-- [ ] Leave exactly two clauses as hypotheses, both stated in the DELETED walk's own vocabulary (`delObj`/`delCnt`) so no boundary case has to be re-derived at the statement level: `hanch` for the pins at or above `a`, and `hstraddle` for the pairs that straddle `a`.
-- [ ] Record in the docstring WHY these two and no others: the deletion leaves the undisplaced pins put while moving every later pin down by `l`, so a straddling pair's distance shrinks by `l` while its values do not move -- the `2l`-wide window `pinCompat_of_ladderPath` can fail in. Name (K2)'s `cascadeBound` and its `iter_doubling` recurrence `a (k+1) ≤ 2 * a k + J + 1` as the budget Phase 5 must spend, and state that this theorem spends none of it.
-- [ ] Do NOT drop `hpast`: the compiled evidence proof uses it, to prove `habove` (every idle position lies above `z`). The general permission still stands — dropping a genuinely unused hypothesis strengthens the theorem and is permitted; adding one beyond the pinned `hnz` is not.
-- [ ] Scoped guarded build, `typst-sync-check.sh --fix`, stage `typst/generated/status.typ`, apply the `longFile` baseline rule.
+- [x] Read `exists_deleted_ladderPath_of_pend_past_nxt` (`LadderChain.lean`, `section DelNxt`) in full. The new theorem re-runs the same construction through `exists_ladderPath_of_walk_nxt_at`, reusing `delObj_step`, `delCnt_idle`, `delCnt_pend_pend`, `delCnt_pend_idle` verbatim -- none of those four takes `hpast`.
+- [x] Land the theorem with the pinned signature in `## Lean Challenge Statements`, `hnz` included. The register is pinned at `nxtAt g z`, not at a free `n`: that is what the consumer needs (`g' z = g z`), and it is `hnz` together with the pinned register that makes the undisplaced-position pins' anchor close.
+- [x] Lift the compiled proof from `evidence/phase-4-pinned-signature-deficit.lean` rather than re-deriving it: both pull lemmas (`probe_low`/`probe_high`), the four pin-compatibility cases, and the anchor clause at every pin are already green against the real tree under this exact signature. `hnz` appears in no tactic — one `omega` consumes it — so no proof text changes when it is admitted.
+- [x] Discharge, inside the proof: pins at or below `z` do not exist (`hpast` -- every `p ≤ z` is pending, so every idle position lies above `z`); the anchor for a position-undisplaced pin `v` with `z < v < a` is `nxtAt_lipschitz_two_sided g hg v z` composed with `cntAt_eq_nxtAt_of_idle_pend`, plus `hnz` at the one low pin whose region swallows the block and whose VALUE `delCnt` therefore lowers by `l`; a both-below pair is the original pair at the original distance; a both-above pair is the original pair with both positions displaced by `-l`, so its distance is unchanged -- both close through `pinCompat_of_ladderPath`.
+- [x] Leave exactly two clauses as hypotheses, both stated in the DELETED walk's own vocabulary (`delObj`/`delCnt`) so no boundary case has to be re-derived at the statement level: `hanch` for the pins at or above `a`, and `hstraddle` for the pairs that straddle `a`.
+- [x] Record in the docstring WHY these two and no others: the deletion leaves the undisplaced pins put while moving every later pin down by `l`, so a straddling pair's distance shrinks by `l` while its values do not move -- the `2l`-wide window `pinCompat_of_ladderPath` can fail in. Name (K2)'s `cascadeBound` and its `iter_doubling` recurrence `a (k+1) ≤ 2 * a k + J + 1` as the budget Phase 5 must spend, and state that this theorem spends none of it.
+- [x] Do NOT drop `hpast`: the compiled evidence proof uses it, to prove `habove` (every idle position lies above `z`). The general permission still stands — dropping a genuinely unused hypothesis strengthens the theorem and is permitted; adding one beyond the pinned `hnz` is not.
+- [x] Scoped guarded build, `typst-sync-check.sh --fix`, stage `typst/generated/status.typ`, apply the `longFile` baseline rule.
 
 **Timing**: 2 hours
 

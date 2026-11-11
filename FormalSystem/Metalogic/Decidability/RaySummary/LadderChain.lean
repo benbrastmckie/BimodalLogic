@@ -92,7 +92,7 @@ passes through a state satisfying every state-level hypothesis the consumer carr
 downward inclusion held here is the path-level one above.
 -/
 
-set_option linter.style.longFile 2800
+set_option linter.style.longFile 3000
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1213,6 +1213,177 @@ theorem anchor_clause_of_first_region_start (g : ℤ → LadderState Q pend)
   have hbound := hfirst I hIpos hidle hnext
   have hlip := nxtAt_lipschitz_two_sided g hg (v + (l : ℤ)) (z + (cntAt g z : ℤ) + (I : ℤ))
   omega
+
+/-- **THE PIN PULL BELOW THE BLOCK.** A region start `s` of the DELETED walk lying strictly
+below the block's base `a` is a region start of the ORIGINAL walk at the SAME position — the
+deletion leaves every position below `a` put (`delObj_eq_of_le`) — and its countdown is the
+original's own, in exactly one of two regimes. Either `s`'s region REACHES the block
+(`a ≤ s + 1 + cntAt g (s + 1)`), in which case that region swallows the deleted segment and
+`delCnt` lowers its value by exactly `l` while pinning it to the block's own countdown by
+`cntAt_ge_of_reaches`; or it stops short (`s + 1 + cntAt g (s + 1) < a`), in which case
+`delCnt` leaves the value untouched. The boundary case `s + 1 = a` falls in the first regime,
+confirmed through `delSeg` rather than through `delCnt_of_lt`. This two-regime disjunction is
+the whole content of the low side: the `-l` in its first branch is where the deficit discharged
+by `hnz` in the theorem below originates. -/
+theorem del_pin_pull_of_lt {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+    (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
+    (hrep : objAt g a = objAt g (a + (l : ℤ)))
+    (s : ℤ) (hsa : s < a) (hs0 : pend (delObj g a l s) = false)
+    (hs1 : pend (delObj g a l (s + 1)) = true) :
+    pend (objAt g s) = false ∧ pend (objAt g (s + 1)) = true ∧
+      (((delCnt g a l (s + 1) : ℤ) = (cntAt g (s + 1) : ℤ) - l ∧
+          (cntAt g (s + 1) : ℤ) = (cntAt g a : ℤ) + (a - (s + 1)))
+        ∨ ((delCnt g a l (s + 1) : ℤ) = (cntAt g (s + 1) : ℤ) ∧
+            s + 1 + (cntAt g (s + 1) : ℤ) < a)) := by
+  have hpa : pend (objAt g a) = true := pend_of_del hg hl hcl
+  rw [delObj_eq_of_le hrep s (by omega)] at hs0
+  rw [delObj_eq_of_le hrep (s + 1) (by omega)] at hs1
+  refine ⟨hs0, hs1, ?_⟩
+  rcases lt_or_eq_of_le (show s + 1 ≤ a by omega) with hlt | heq
+  · rw [delCnt_of_lt (s + 1) hlt]
+    by_cases hc : a ≤ s + 1 + (cntAt g (s + 1) : ℤ)
+    · rw [if_pos hc]
+      have hge := cntAt_ge_of_reaches hg (s + 1) (by omega) hs1 hc
+      exact Or.inl ⟨by omega, by omega⟩
+    · rw [if_neg hc]
+      exact Or.inr ⟨rfl, by omega⟩
+  · rw [heq, delCnt_of_ge a le_rfl]
+    have hseg := (delSeg hg hpa hcl (a + (l : ℤ)) (by omega) le_rfl).2
+    rw [← heq] at hseg ⊢
+    exact Or.inl ⟨by omega, by omega⟩
+
+/-- **THE PIN PULL AT OR ABOVE THE BLOCK.** A region start `s` of the deleted walk lying at or
+above `a` is the original's region start at `s + l`, with its countdown read off unchanged. This
+is the same pull the landed `exists_deleted_ladderPath_of_pend_past_nxt` performs internally,
+isolated here so the two sides of `a` can be combined; unlike the low pull it needs neither
+`hg`, nor `hl`, nor `hcl`, nor `hrep`, because `delObj_of_ge`/`delCnt_of_ge` are definitional
+above the block. -/
+theorem del_pin_pull_of_ge {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+    (s : ℤ) (hsa : a ≤ s) (hs0 : pend (delObj g a l s) = false)
+    (hs1 : pend (delObj g a l (s + 1)) = true) :
+    pend (objAt g (s + (l : ℤ))) = false ∧ pend (objAt g (s + (l : ℤ) + 1)) = true ∧
+      delCnt g a l (s + 1) = cntAt g (s + (l : ℤ) + 1) := by
+  rw [delObj_of_ge s (by omega)] at hs0
+  rw [delObj_of_ge (s + 1) (by omega),
+    show s + 1 + (l : ℤ) = s + (l : ℤ) + 1 by ring] at hs1
+  refine ⟨hs0, hs1, ?_⟩
+  rw [delCnt_of_ge (s + 1) (by omega), show s + 1 + (l : ℤ) = s + (l : ℤ) + 1 by ring]
+
+/-- **THE DELETION AT A BLOCK ABOVE `z`'s REGION, WITH THE REGISTER HELD AT `z`.** The landed
+`exists_deleted_ladderPath_of_pend_past_nxt` requires the whole past BELOW THE BLOCK to be
+pending (`hpast : ∀ p ≤ a`), which forces every pin of the deleted walk above `a` and hands the
+entire pin-compatibility obligation to `hanch`. Here the pending past reaches only `z`
+(`hpast : ∀ p ≤ z`) and the block sits strictly above the end of `z`'s own region
+(`hza : z + cntAt g z + 1 ≤ a`), so pins exist on BOTH sides of `a` and the construction must
+discharge the ones it can.
+
+**What this theorem discharges internally, and how.** Pins at or below `z` do not exist: every
+such position is pending by `hpast`, so `habove` places every idle position strictly above `z`.
+A both-below pair is the original pair at the original positions and so at the original
+distance, closing through `pinCompat_of_ladderPath` after `del_pin_pull_of_lt` — with the one
+subtlety that the two pins may sit in DIFFERENT regimes of that lemma's disjunction, which is
+resolved by `cntAt_sub_of_pend`: a region that reaches the block cannot start above one that
+does not. A both-above pair is the original pair with BOTH positions displaced by `-l`, so its
+distance is unchanged and `pinCompat_of_ladderPath` applies verbatim after
+`del_pin_pull_of_ge`. The anchor clause at a position-undisplaced pin `v` with `z < v < a` is
+`nxtAt_lipschitz_two_sided g hg v z` composed with `cntAt_eq_nxtAt_of_idle_pend`.
+
+**Why `hnz` is taken.** The pin that STARTS the region containing the block sits below `a` — its
+POSITION is undisplaced — but `delCnt` lowers its VALUE by exactly `l`, because that region
+swallows the deleted segment (`del_pin_pull_of_lt`'s first branch). Its anchor obligation
+therefore carries a deficit of exactly `l` in the lower direction, and reducing that deficit
+through `cntAt_ge_of_reaches`, `hcl` and `hza` leaves precisely `nxtAt g z ≤ cntAt g z` and
+nothing else. `hpast` cannot supply it: the register relation `Drift n n' := n' = n ∨
+n' = n + 1 ∨ n' + 1 = n` admits free ±1 drift, so a path pending at every `p ≤ z` leaves its
+register wholly unconstrained against its countdown in either direction. `hnz` is named in no
+tactic below — the single `omega` closing the anchor clause at that low pin consumes it.
+
+**Why exactly `hanch` and `hstraddle` remain, and no others.** The deletion leaves the
+undisplaced pins put while moving every later pin down by `l`. For a pin at or above `a`, both
+the position and the value move, and the composite is not pinned by anything the original path
+carries — hence `hanch`. For a pair that STRADDLES `a`, the distance shrinks by `l` while the
+two values do not move relative to each other, so the pair can land in the `2l`-wide window
+`pinCompat_of_ladderPath` fails in — hence `hstraddle`. Both are stated in the DELETED walk's
+own vocabulary (`delObj`/`delCnt`), so no boundary case has to be re-derived at the statement
+level. The budget that must be spent to discharge them is `(K2)`'s `cascadeBound` and its
+`iter_doubling` recurrence `a (k + 1) ≤ 2 * a k + J + 1` (`CounterQuotient.lean`); THIS theorem
+spends none of it. -/
+theorem exists_deleted_ladderPath_of_next_region_nxt
+    {g : ℤ → LadderState Q pend} {z a : ℤ} {l : ℕ}
+    (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
+    (hza : z + (cntAt g z : ℤ) + 1 ≤ a)
+    (hnz : (nxtAt g z : ℤ) ≤ (cntAt g z : ℤ))
+    (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
+    (hrep : objAt g a = objAt g (a + (l : ℤ)))
+    (hanch : ∀ v : ℤ, a ≤ v → pend (delObj g a l v) = false →
+      pend (delObj g a l (v + 1)) = true →
+      ((delCnt g a l (v + 1) : ℤ) - (nxtAt g z : ℤ)).natAbs ≤ (v - z).natAbs)
+    (hstraddle : ∀ s v : ℤ, s < a → a ≤ v →
+      pend (delObj g a l s) = false → pend (delObj g a l (s + 1)) = true →
+      pend (delObj g a l v) = false → pend (delObj g a l (v + 1)) = true →
+      ((delCnt g a l (s + 1) : ℤ) - (delCnt g a l (v + 1) : ℤ)).natAbs
+        ≤ (s - v).natAbs) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v, objAt g' v = delObj g a l v) ∧ (∀ v, cntAt g' v = delCnt g a l v) ∧
+      nxtAt g' z = nxtAt g z := by
+  have habove : ∀ s : ℤ, pend (delObj g a l s) = false → z < s := by
+    intro s hs
+    by_contra hle
+    rw [not_lt] at hle
+    rw [delObj_eq_of_le hrep s (by omega)] at hs
+    exact Bool.false_ne_true (hs.symm.trans (hpast s (by omega)))
+  refine exists_ladderPath_of_walk_nxt_at (delObj g a l) (delCnt g a l) z (nxtAt g z)
+    (delObj_step hg hrep) (delCnt_idle hg) (delCnt_pend_pend hg hl hcl)
+    (delCnt_pend_idle hg hl hcl) (fun s v hs0 hs1 hv0 hv1 => ?_) (fun v hv0 hv1 => ?_)
+  · rcases lt_or_ge s a with hs | hs
+    · rcases lt_or_ge v a with hv | hv
+      · obtain ⟨hs0', hs1', hsc⟩ := del_pin_pull_of_lt hg hl hcl hrep s hs hs0 hs1
+        obtain ⟨hv0', hv1', hvc⟩ := del_pin_pull_of_lt hg hl hcl hrep v hv hv0 hv1
+        have hpc := pinCompat_of_ladderPath g hg (s + 1 - 1) (v + 1 - 1)
+          (by simpa using hs0') (by simpa using hs1') (by simpa using hv0')
+          (by simpa using hv1')
+        simp only [sub_add_cancel] at hpc
+        rcases hsc with ⟨hse, hsr⟩ | ⟨hse, hsr⟩
+        · rcases hvc with ⟨hve, hvr⟩ | ⟨hve, hvr⟩
+          · omega
+          · -- `s`'s region swallows the block, `v`'s does not, so `v ≤ s`
+            have hvs : v ≤ s := by
+              by_contra hgt
+              rw [not_le] at hgt
+              have := (cntAt_sub_of_pend g hg (s + 1) hs1' (v - (s + 1)).toNat (by omega)).1
+              rw [show s + 1 + (((v - (s + 1)).toNat : ℕ) : ℤ) = v by omega] at this
+              exact Bool.false_ne_true (hv0'.symm.trans this)
+            omega
+        · rcases hvc with ⟨hve, hvr⟩ | ⟨hve, hvr⟩
+          · have hsv : s ≤ v := by
+              by_contra hgt
+              rw [not_le] at hgt
+              have := (cntAt_sub_of_pend g hg (v + 1) hv1' (s - (v + 1)).toNat (by omega)).1
+              rw [show v + 1 + (((s - (v + 1)).toNat : ℕ) : ℤ) = s by omega] at this
+              exact Bool.false_ne_true (hs0'.symm.trans this)
+            omega
+          · omega
+      · exact hstraddle s v hs hv hs0 hs1 hv0 hv1
+    · rcases lt_or_ge v a with hv | hv
+      · have := hstraddle v s hv hs hv0 hv1 hs0 hs1
+        omega
+      · obtain ⟨hs0', hs1', hsc⟩ := del_pin_pull_of_ge s hs hs0 hs1
+        obtain ⟨hv0', hv1', hvc⟩ := del_pin_pull_of_ge v hv hv0 hv1
+        rw [hsc, hvc]
+        have hpc := pinCompat_of_ladderPath g hg (s + (l : ℤ)) (v + (l : ℤ))
+          hs0' hs1' hv0' hv1'
+        rw [show s + (l : ℤ) - (v + (l : ℤ)) = s - v by ring] at hpc
+        exact hpc
+  · rcases lt_or_ge v a with hv | hv
+    · obtain ⟨hv0', hv1', hvc⟩ := del_pin_pull_of_lt hg hl hcl hrep v hv hv0 hv1
+      have hzv : z < v := habove v hv0
+      have hpin := cntAt_eq_nxtAt_of_idle_pend g hg v hv0' hv1'
+      have hlip := nxtAt_lipschitz_two_sided g hg v z
+      rcases hvc with ⟨hve, hvr⟩ | ⟨hve, hvr⟩
+      · omega
+      · omega
+    · exact hanch v hv hv0 hv1
+
 
 /-- **THE FORWARD-SLACK HYPOTHESIS: a regime restriction on ONE region start, with a finite
 witness.** The collapse above reduces the anchor clause to the two-sided bound
