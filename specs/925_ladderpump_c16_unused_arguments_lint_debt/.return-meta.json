@@ -40,7 +40,11 @@
   "metadata": {
     "session_id": "sess_1794425759_f1ad4f",
     "agent_type": "lean-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
     "compliance_check": "passed",
     "phases_completed": 3,
     "phases_total": 3,

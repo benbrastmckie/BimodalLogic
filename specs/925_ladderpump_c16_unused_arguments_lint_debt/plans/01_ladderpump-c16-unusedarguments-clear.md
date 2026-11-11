@@ -1,7 +1,7 @@
 # Implementation Plan: Task #925
 
 - **Task**: 925 - Clear the C16 env_linter unusedArguments lint debt in RaySummary/LadderPump.lean
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.25 hours
 - **Dependencies**: None. No live record holds `LadderPump.lean` or
   `scripts/nolint-attribute-allowlist.txt`; the two concurrent siblings this cycle (918 on
