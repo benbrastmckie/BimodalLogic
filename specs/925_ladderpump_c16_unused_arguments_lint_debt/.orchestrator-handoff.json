@@ -1,33 +1,32 @@
 {
-  "status": "blocked",
-  "phase": "implement",
-  "dispatch_seq": 21,
-  "summary": "Phase 2 of 3 is [BLOCKED] at its own pre-edit gate. The plan requires zero term-level applications of exists_idleSpliced_ladderPath before deleting its [Fintype Q]/[Nonempty Q] binders; LadderWindow.lean:1294 is one, added by a94510cf3 after the plan was authored, so Edit A was escalated rather than overridden per plan-compliance.md. Edit B (the @[nolint unusedArguments] half) was applied and fully verified green -- guarded full build exit 0 on 2974 jobs, C26 up to 16 matched pairs with Phase 1's stale INFO extinguished, and runLinter down from two flagged declarations to exactly one -- then deliberately reverted, because Edit B alone shifts the code/comment split and trips gate INV on README.md, the unbalanced intermediate state this phase's atomic-batch commit mode forbids. The Lean tree is byte-identical to f7b64854b and check-module-invariants.sh --no-build exits 0.",
-  "phases_completed": 1,
+  "status": "partial",
+  "dispatch_seq": 22,
+  "phases_completed": 2,
   "phases_total": 3,
-  "plan_markers_verified": true,
-  "skeleton": false,
-  "sorry_inventory": [],
-  "blockers": [
-    {
-      "phase": 2,
-      "what": "Edit A's pre-edit consumer-sweep gate failed: LadderWindow.lean:1294 is a term-level application of exists_idleSpliced_ladderPath, which the plan requires to be absent before the binder removal may proceed.",
-      "needs": "A user decision on whether an instance-implicit binder removal is actually barred by a call site that passes only the seven explicit arguments. If not, amend the gate wording and land Edit A + Edit B together in one atomic commit; C16 then goes green. If so, Edit A needs the attribute + allowlist disposition instead."
-    }
-  ],
-  "continuation_path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/handoffs/phase-2-handoff-20261111T2015Z.md",
-  "next_action_hint": "Resolve the Edit A decision in the plan's Phase 2 BLOCKER block, then apply BOTH edits in one atomic commit with A_new = B_new = 5 comment lines. Never apply either half alone: the budget balances in two dimensions (total lines AND the code/comment split the root README inventory tracks) only across both edits together. Edit B's content is verified-ready in the handoff, including the C29 requirement that its comment name `linter.unusedVariables` literally.",
-  "git_checkpoint": "f7b64854ba89fb73e4b7f608552c53049fae908d",
+  "summary": "Phase 2 completed: the dispatch-21 blocker was resolved by the recorded user decision and all six of its obligations were discharged. exists_idleSpliced_ladderPath lost its [Fintype Q] and [Nonempty Q] binders along with the now-false rationale comment and its set_option; exists_idleTypeBlock_of_budget_le_run gained @[nolint unusedArguments]. Both landed in one atomic commit (48baecff7) together with four regenerated count surfaces. C16 is green: runLinter exits 0 with zero unusedArguments findings, and a full check-module-invariants.sh ends ALL CHECKS PASSED. Phase 3 (full gate, cascade confirmation, wrap-up and summary) remains.",
+  "blockers": [],
   "artifacts": [
-    {
-      "type": "other",
-      "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/handoffs/phase-2-handoff-20261111T2015Z.md",
-      "summary": "Phase 2 handoff: the Edit A blocker with its merits stated for the decider, a verified-ready Edit B specification, and the two-dimensional line-budget finding."
-    },
     {
       "type": "plan",
       "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/plans/01_ladderpump-c16-unusedarguments-clear.md",
-      "summary": "Phase 2 marked [BLOCKED] with a structured BLOCKER block and per-item deviation annotations on every Phase 2 checklist item."
+      "summary": "Phase 2 marked [COMPLETED]; 11 checklist items annotated with this dispatch's results, plus a forward note correcting Phase 3's falsified no-cascade premise."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/handoffs/phase-2-handoff-20261111T2135Z.md",
+      "summary": "Phase 2 close: obligations table, carried-figure correction, new live figures, and the INV/typst-sync disjoint-coverage lesson."
     }
+  ],
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean",
+    "README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "typst/generated/status.typ",
+    "specs/925_ladderpump_c16_unused_arguments_lint_debt/plans/01_ladderpump-c16-unusedarguments-clear.md",
+    "specs/925_ladderpump_c16_unused_arguments_lint_debt/handoffs/phase-2-handoff-20261111T2135Z.md",
+    "specs/925_ladderpump_c16_unused_arguments_lint_debt/issues.jsonl",
+    "specs/925_ladderpump_c16_unused_arguments_lint_debt/.orchestrator-handoff.json",
+    "specs/925_ladderpump_c16_unused_arguments_lint_debt/.return-meta.json"
   ]
 }

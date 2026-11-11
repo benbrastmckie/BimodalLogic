@@ -471,9 +471,14 @@ task's durable record states what was done and what was deliberately left as pre
       not `1,931`; three generated inventory blocks were regenerated — root `README.md`
       (`Live comment lines` 139,095 -> 139,090), `FormalSystem/Metalogic/README.md`
       (`Decidability/` 118,937 -> 118,932) and `RaySummary/README.md`. `typst/generated/status.typ`
-      did NOT drift and is untouched, so that half of the item still holds. Verify the AMENDED
-      figures and the untouched `status.typ`; do not treat the README deltas as an unplanned
-      cascade and do not escalate them.)*
+      DID drift and was ALSO regenerated: `formalsystem-line-count` 404,983 -> 404,978 (the same
+      -5), plus a mechanical `stamp-commit` refresh. It is in task 925's declared `file_scope` and
+      was repaired with the sanctioned generator `scripts/typst-sync-check.sh --fix`, never by
+      hand-editing a count. NOTE for Phase 3's `typst-sync-check.sh` item: it now reads
+      `MISMATCH_COUNT=0`, but only because this dispatch fixed it. Verify the AMENDED figures; do
+      not treat any of these regenerated surfaces as an unplanned cascade and do not escalate
+      them. A green `check-module-invariants.sh` does NOT imply current typst counts — the two
+      gates cover disjoint generated surfaces.)*
 - [ ] Run the agent-system aggregator `bash .claude/scripts/verify-deploy.sh` for the complete
       gate set. Record any stale-deploy finding as pre-existing: this dispatch's own
       deploy-freshness probe already reports core, lean, literature, memory and typst stale

@@ -58,7 +58,15 @@ the comment magnitude was off by one, and obligation (5) absorbs any magnitude b
 | C26 in-source nolint pairs | 15 + 1 stale INFO | **16 + 0 stale INFO** |
 | `runLinter` unusedArguments findings | 2 declarations | **0** |
 
-`typst/generated/status.typ` did **not** drift and was **not** touched.
+**CORRECTION (post-commit).** The line above was written before the pre-commit gate ran and is
+WRONG. `typst/generated/status.typ` **did** drift — `formalsystem-line-count`
+**404,983 -> 404,978**, the same -5 — and was regenerated with `scripts/typst-sync-check.sh --fix`
+(plus a mechanical `stamp-commit` refresh), then committed with the rest. It is inside task 925's
+declared `file_scope`. This drift was INVISIBLE to `check-module-invariants.sh`, which reported
+`ALL CHECKS PASSED` and `PASS INV` while `status.typ` was still stale; it surfaced only when
+`git-commit-scoped.sh`'s pre-commit hook ran `typst-sync-check.sh --counts-only` and refused the
+commit. **INV and typst-sync-check cover disjoint generated surfaces — a green invariants run is
+not evidence that typst counts are current.**
 
 ## Evidence of record
 
