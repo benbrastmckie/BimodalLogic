@@ -73,9 +73,9 @@ next_project_number: 926
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-918 [IMPLEMENTING] — Produce a positive factorization lemma for the index of which...
-924 [NOT STARTED] — Decide the fate of the ForwardSlackWitnessed frontier, now...
-925 [NOT STARTED] — Clear the C16 env\_linter unusedArguments lint debt in...
+918 [PARTIAL] — Produce a positive factorization lemma for the index of which...
+924 [RESEARCHING] — Decide the fate of the ForwardSlackWitnessed frontier, now...
+925 [RESEARCHING] — Clear the C16 env\_linter unusedArguments lint debt in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Documentation
@@ -126,7 +126,7 @@ next_project_number: 926
 
 ### 925. Ladderpump c16 unused arguments lint debt
 - **Effort**: low
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -148,7 +148,7 @@ PRECEDENT. The archived record ladderchain_c16_unusedarguments_clear cleared thi
 
 ### 924. Forward slack witnessed frontier disposition
 - **Effort**: high
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -636,7 +636,7 @@ vault renumbering, so match on the slug first and treat any number as corroborat
 
 ### 918. Ladder cell index positive factorization
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 917
