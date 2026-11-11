@@ -1,12 +1,12 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 5 of 8 complete: all eight cluster-A sites in FormalSystem/Semantics/Presheaf/Path.lean (the identity and the category structure of Path(F)) corrected from the full four-constraint bundle marker to what their proofs actually project, each via a binder-free twin plus a delegating corollary. PASS C34a over 178 markers with the delegation group moving 27 -> 35 (exactly +8). Full library build green (2974 jobs), sorry count 0, axiom count unchanged at 14.",
-  "phases_completed": 5,
+  "summary": "Phase 6 of 8 complete: all eight cluster-B sites in FormalSystem/Semantics/Presheaf/Path.lean (the adjacent-window constructor and the toPath family) corrected from the full four-constraint bundle marker to what their proofs actually project. Three were route 1 -- the transplant probe passed on the first attempt, so [F.IsRegular] was deleted outright from PathHom.toPathAux, PathHom.toPath and PathHom.toPath_length and their markers are now None. Five were route 2 (binder-free twin plus delegating corollary). PASS C34a over 183 markers with the delegation group moving 35 -> 40 (exactly +5) and the binder-carrying population 89 -> 86 (the three deletions). Full library build green (2974 jobs), sorry count 0, axiom count unchanged at 14. Five full-four markers remain in Path.lean, all phase 7's.",
+  "phases_completed": 6,
   "phases_total": 8,
-  "dispatch_seq": 29,
+  "dispatch_seq": 30,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-5-handoff-20261111T174707.md",
+  "continuation_path": "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-6-handoff-20261111T182514.md",
   "artifacts": []
 }

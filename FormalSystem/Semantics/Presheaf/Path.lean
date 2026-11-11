@@ -255,7 +255,7 @@ sheaf-clause · germs-clause · cor:path-fibration
 -- Length baseline: the module carries the whole of `cor:path-fibration` — the category, the
 -- fibration property, the associated-presheaf equality, and both layers of the `D = ℤ` clause —
 -- and the proofs compare sections at the `.val` level with every domain witness explicit.
-set_option linter.style.longFile 1700
+set_option linter.style.longFile 1800
 
 namespace FormalSystem.Semantics.Presheaf
 
@@ -1181,17 +1181,20 @@ theorem iter_of_adjacent_window (F : FrameOver intOrder) (n : ℤ) (g : ℤ → 
   rw [hkn]
   exact aux k htn
 
-/-- **The section built from an adjacency-respecting window.** Over `D = ℤ`, a function
-`g : ℤ → W` with `g i ⇒₁ g (i + 1)` for every `i ∈ [0, n)` is the state function of a section of
-`Beh F` over `n`: its task-respect obligation at `s ≤ t` is "iterating *Compositionality*" —
-`FrameOver.taskRel_natCast_iff_iter` applied to `iter_of_adjacent_window` — and at `t < s` the
-same read through the reflection convention, `FrameOver.reflection_int`. Both are the choice-free
-forms; `⇒₀` being the identity (`lem:nullity` with *Limit*) is what makes the `s = t` case of the
-iterate the base case of `taskRel_natCast_iff_iter`. The marker lists the bundle the binder
-supplies; the proof reaches it through those two lemmas.
+/-- **The section built from an adjacency-respecting window, at explicit hypotheses.** Over
+`D = ℤ`, a function `g : ℤ → W` with `g i ⇒₁ g (i + 1)` for every `i ∈ [0, n)` is the state
+function of a section of `Beh F` over `n`: its task-respect obligation at `s ≤ t` is "iterating
+*Compositionality*" — `FrameOver.taskRel_natCast_iff_iter_of_constraints` applied to
+`iter_of_adjacent_window` — and at `t < s` the same read through the reflection convention,
+`FrameOver.reflection_int_of_limit`. Both are the choice-free forms, and both are binder-free;
+`⇒₀` being the identity (`lem:nullity` with *Limit*) is what makes the `s = t` case of the
+iterate the base case of the decomposition. Those two lemmas are the whole of what this term
+reaches, so *Saturation* is reached by no part of it.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-def Beh.ofAdjacentWindow (F : FrameOver intOrder) [F.IsRegular] (n : ℤ) (hn : 0 ≤ n)
+Constraints consumed: Compositionality, Seriality, Limit -/
+def Beh.ofAdjacentWindowOfConstraints (F : FrameOver intOrder)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) (n : ℤ) (hn : 0 ≤ n)
     (g : ℤ → F.WorldState) (hg : ∀ i, 0 ≤ i → i < n → FrameOver.step F (g i) (g (i + 1))) :
     Beh F.toTaskFrame n :=
   ⟨{ domain := fun i => 0 ≤ i ∧ i ≤ n
@@ -1203,34 +1206,65 @@ def Beh.ofAdjacentWindow (F : FrameOver intOrder) [F.IsRegular] (n : ℤ) (hn : 
        · have hit := iter_of_adjacent_window F n g hg s t hs.1 hst ht.2
          have hcast : ((Int.toNat (t - s) : ℕ) : ℤ) = t - s :=
            Int.toNat_of_nonneg (sub_nonneg.mpr hst)
-         have h1 := (F.taskRel_natCast_iff_iter (Int.toNat (t - s)) (g s) (g t)).mpr hit
+         have h1 := (F.taskRel_natCast_iff_iter_of_constraints hcomp hser hlim
+           (Int.toNat (t - s)) (g s) (g t)).mpr hit
          rwa [hcast] at h1
        · have hit := iter_of_adjacent_window F n g hg t s ht.1 hts.le hs.2
          have hcast : ((Int.toNat (s - t) : ℕ) : ℤ) = s - t :=
            Int.toNat_of_nonneg (sub_nonneg.mpr hts.le)
-         have h1 := (F.taskRel_natCast_iff_iter (Int.toNat (s - t)) (g t) (g s)).mpr hit
+         have h1 := (F.taskRel_natCast_iff_iter_of_constraints hcomp hser hlim
+           (Int.toNat (s - t)) (g t) (g s)).mpr hit
          rw [hcast] at h1
-         have h2 := (F.reflection_int (g t) (s - t) (g s)).mp h1
+         have h2 := (F.reflection_int_of_limit hlim (g t) (s - t) (g s)).mp h1
          rwa [neg_sub] at h2 },
    fun _ => Iff.rfl⟩
 
-/-- The states of the window section are `g`, by `rfl`.
+/-- **The section built from an adjacency-respecting window.** This is
+`Beh.ofAdjacentWindowOfConstraints` with the three constraints its term reaches projected out of
+a bundling instance. The marker enumerates what the elaborated term reaches, not what the binder
+supplies: the instance's *Saturation* field is never read, so the general form above applies to
+frames outside that class.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+Constraints consumed: Compositionality, Seriality, Limit -/
+def Beh.ofAdjacentWindow (F : FrameOver intOrder) [F.IsRegular] (n : ℤ) (hn : 0 ≤ n)
+    (g : ℤ → F.WorldState) (hg : ∀ i, 0 ≤ i → i < n → FrameOver.step F (g i) (g (i + 1))) :
+    Beh F.toTaskFrame n :=
+  Beh.ofAdjacentWindowOfConstraints F F.comp F.serial F.limit n hn g hg
+
+/-- The states of the window section at explicit hypotheses are `g`, by `rfl`.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem Beh.ofAdjacentWindow_states_of_constraints (F : FrameOver intOrder)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) (n : ℤ) (hn : 0 ≤ n)
+    (g : ℤ → F.WorldState) (hg : ∀ i, 0 ≤ i → i < n → FrameOver.step F (g i) (g (i + 1)))
+    (i : ℤ)
+    (hi : (Beh.ofAdjacentWindowOfConstraints F hcomp hser hlim n hn g hg).val.domain i) :
+    (Beh.ofAdjacentWindowOfConstraints F hcomp hser hlim n hn g hg).val.states i hi = g i := rfl
+
+/-- The states of the window section are `g`, by `rfl`. This is
+`Beh.ofAdjacentWindow_states_of_constraints` with its three hypotheses projected out of a
+bundling instance; the instance's *Saturation* field is not read.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
 theorem Beh.ofAdjacentWindow_states (F : FrameOver intOrder) [F.IsRegular] (n : ℤ) (hn : 0 ≤ n)
     (g : ℤ → F.WorldState) (hg : ∀ i, 0 ≤ i → i < n → FrameOver.step F (g i) (g (i + 1)))
     (i : ℤ) (hi : (Beh.ofAdjacentWindow F n hn g hg).val.domain i) :
-    (Beh.ofAdjacentWindow F n hn g hg).val.states i hi = g i := rfl
+    (Beh.ofAdjacentWindow F n hn g hg).val.states i hi = g i :=
+  Beh.ofAdjacentWindow_states_of_constraints F F.comp F.serial F.limit n hn g hg i hi
 
-/-- **The first `D = ℤ` sentence of `cor:path-fibration`**: a function on `[0, n]` is the state
-function of a section of `Beh F` over `n` exactly when it respects adjacency, `g i ⇒₁ g (i + 1)`
-for every `i < n`. Forward: `respects_task` at `(i, i + 1)` is a task of duration `1`, which is
-`FrameOver.step` by definition. Backward: `Beh.ofAdjacentWindow`. Negative differences are covered
-by the reflection convention inside `ofAdjacentWindow`, as the paper's proof says.
+/-- **The first `D = ℤ` sentence of `cor:path-fibration`, at explicit hypotheses**: a function on
+`[0, n]` is the state function of a section of `Beh F` over `n` exactly when it respects
+adjacency, `g i ⇒₁ g (i + 1)` for every `i < n`. Forward: `respects_task` at `(i, i + 1)` is a
+task of duration `1`, which is `FrameOver.step` by definition, and reaches no constraint at all.
+Backward: `Beh.ofAdjacentWindowOfConstraints`, which is where all three listed constraints enter.
+Negative differences are covered by the reflection convention inside that constructor, as the
+paper's proof says.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-theorem beh_int_iff_adjacent_window (F : FrameOver intOrder) [F.IsRegular] (n : ℤ) (hn : 0 ≤ n)
-    (g : ℤ → F.WorldState) :
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem beh_int_iff_adjacent_window_of_constraints (F : FrameOver intOrder)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) (n : ℤ) (hn : 0 ≤ n) (g : ℤ → F.WorldState) :
     (∃ τ : Beh F.toTaskFrame n, ∀ i (hi : τ.val.domain i), τ.val.states i hi = g i)
       ↔ ∀ i, 0 ≤ i → i < n → FrameOver.step F (g i) (g (i + 1)) := by
   constructor
@@ -1242,7 +1276,19 @@ theorem beh_int_iff_adjacent_window (F : FrameOver intOrder) [F.IsRegular] (n : 
     rw [add_sub_cancel_left, hτ i hi, hτ (i + 1) hi1] at h
     exact h
   · intro hg
-    exact ⟨Beh.ofAdjacentWindow F n hn g hg, fun _ _ => rfl⟩
+    exact ⟨Beh.ofAdjacentWindowOfConstraints F hcomp hser hlim n hn g hg, fun _ _ => rfl⟩
+
+/-- **The first `D = ℤ` sentence of `cor:path-fibration`**: a function on `[0, n]` is the state
+function of a section of `Beh F` over `n` exactly when it respects adjacency, `g i ⇒₁ g (i + 1)`
+for every `i < n`. This is `beh_int_iff_adjacent_window_of_constraints` with its three hypotheses
+projected out of a bundling instance; the instance's *Saturation* field is not read.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem beh_int_iff_adjacent_window (F : FrameOver intOrder) [F.IsRegular] (n : ℤ) (hn : 0 ≤ n)
+    (g : ℤ → F.WorldState) :
+    (∃ τ : Beh F.toTaskFrame n, ∀ i (hi : τ.val.domain i), τ.val.states i hi = g i)
+      ↔ ∀ i, 0 ≤ i → i < n → FrameOver.step F (g i) (g (i + 1)) :=
+  beh_int_iff_adjacent_window_of_constraints F F.comp F.serial F.limit n hn g
 
 /-! ### `D = ℤ`, layer 2a: sections to paths in the one-step graph -/
 
@@ -1272,8 +1318,14 @@ path is the one for the left factor of `e` at the cut `n` (`factorLeft`, the res
 Defined at an explicit `n` with `hn : n = e.len` so that the recursion is structural; `toPath`
 instantiates `n := Int.toNat e.len`.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-def PathHom.toPathAux (F : FrameOver intOrder) [F.IsRegular] (n : ℕ) {w u : F.WorldState}
+**No frame-constraint binder.** Every ingredient the recursion reaches — `factorLeft`, `cutState`,
+`respects_task`, `states_eq_of_time_eq`, `Beh.mem_dom` — is constraint-free: the section `e.sec`
+carries its own task-respect obligation, so no constraint has to be spent to produce the steps.
+The `[F.IsRegular]` binder this declaration used to carry supplied nothing its proof term reached,
+and deleting it is what the marker below records.
+
+Constraints consumed: None -/
+def PathHom.toPathAux (F : FrameOver intOrder) (n : ℕ) {w u : F.WorldState}
     (e : PathHom F.toTaskFrame w u) (hn : (n : ℤ) = e.len.val) : StepPath F w u :=
   match n, e, hn with
   | 0, e, hn =>
@@ -1303,19 +1355,21 @@ def PathHom.toPathAux (F : FrameOver intOrder) [F.IsRegular] (n : ℕ) {w u : F.
       ⟨hstep⟩
 
 /-- **Sections to paths**: a morphism of `Path(F)` over `D = ℤ` read as a path in `(W, ⇒₁)`, at
-the natural-number length `Int.toNat e.len`.
+the natural-number length `Int.toNat e.len`. Takes no frame-constraint binder, because
+`toPathAux` takes none.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-def PathHom.toPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+Constraints consumed: None -/
+def PathHom.toPath (F : FrameOver intOrder) {w u : F.WorldState}
     (e : PathHom F.toTaskFrame w u) : StepPath F w u :=
   PathHom.toPathAux F (Int.toNat e.len.val) e (Int.toNat_of_nonneg e.len.property)
 
 /-- **Sections are paths of their own length**: `toPath e` has length `Int.toNat e.len`. By
 induction on the explicit length of `toPathAux`; the `0` case closes by reflexivity once the two
-endpoints are identified, because the transport along `w = w` reduces.
+endpoints are identified, because the transport along `w = w` reduces. Takes no frame-constraint
+binder, because the induction reaches only `toPathAux`, which takes none.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-theorem PathHom.toPath_length (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+Constraints consumed: None -/
+theorem PathHom.toPath_length (F : FrameOver intOrder) {w u : F.WorldState}
     (e : PathHom F.toTaskFrame w u) :
     (PathHom.toPath F e).length = Int.toNat e.len.val := by
   have aux : ∀ (n : ℕ) {w u : F.WorldState} (e : PathHom F.toTaskFrame w u)
@@ -1336,26 +1390,54 @@ theorem PathHom.toPath_length (F : FrameOver intOrder) [F.IsRegular] {w u : F.Wo
       exact congrArg Nat.succ (ih _ rfl)
   exact aux _ e _
 
-/-- **Identities are the empty paths**: the germ at `w` is read as `nil`. Its length is `0`, so
-the transport along `w = w` reduces and the equation holds by reflexivity.
+/-- **Identities are the empty paths, at explicit hypotheses**: the germ at `w` is read as `nil`.
+Its length is `0`, so the transport along `w = w` reduces and the equation holds by reflexivity.
+`PathHom.toPath` takes no frame-constraint binder, so the only constraints this term reaches are
+the two `PathHom.idOfSerialLimit` consumes.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
+Constraints consumed: Seriality, Limit -/
+theorem PathHom.toPath_id_of_serial_limit (F : FrameOver intOrder)
+    (hser : TaskFrame.Serial F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel) (w : F.WorldState) :
+    PathHom.toPath F (PathHom.idOfSerialLimit F.toTaskFrame hser hlim w) = Quiver.Path.nil := rfl
+
+/-- **Identities are the empty paths**: the germ at `w` is read as `nil`. This is
+`PathHom.toPath_id_of_serial_limit` with its two hypotheses projected out of a bundling instance;
+the instance's *Compositionality* and *Saturation* fields are not read.
+
+Constraints consumed: Seriality, Limit -/
 theorem PathHom.toPath_id (F : FrameOver intOrder) [F.IsRegular] (w : F.WorldState) :
-    PathHom.toPath F (PathHom.id F.toTaskFrame w) = Quiver.Path.nil := rfl
+    PathHom.toPath F (PathHom.id F.toTaskFrame w) = Quiver.Path.nil :=
+  PathHom.toPath_id_of_serial_limit F F.serial F.limit w
 
-/-- **Gluing is concatenation**: the path of a composite is the concatenation of the paths. By
-induction on the explicit length of the second factor: at `0` the second factor is the identity
-(`PathHom.comp_id`); at `n + 1` both sides peel one step (`Quiver.Path.comp_cons`), the induction
-hypothesis identifies the composite's left factor with the composite of `f` and `g`'s left factor
-up to a cast at the cut state, and that cast is discharged by comparing the two sections at the
-`.val` level through `glue_unique` and the restriction identities. The outer index is moved
-from `Int.toNat (l₁ + l₂)` to `Int.toNat l₁ + Int.toNat l₂` by `Int.toNat_add`.
+/-- **Gluing is concatenation, at explicit hypotheses**: the path of a composite is the
+concatenation of the paths. By induction on the explicit length of the second factor: at `0` the
+second factor is the identity (`PathHom.comp_id_of_constraints`); at `n + 1` both sides peel one
+step (`Quiver.Path.comp_cons`), the induction hypothesis identifies the composite's left factor
+with the composite of `f` and `g`'s left factor up to a cast at the cut state, and that cast is
+discharged by comparing the two sections at the `.val` level through `glue_unique` and the
+restriction identities. The outer index is moved from `Int.toNat (l₁ + l₂)` to
+`Int.toNat l₁ + Int.toNat l₂` by `Int.toNat_add`. The germ-inverse step of the base case is proved
+inline as `hgermInv`, because the only form of it in `Behavior.lean` (`Beh.ofGerm_germ`) is
+stated over a bundling instance and so cannot be named here.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-theorem PathHom.toPath_comp (F : FrameOver intOrder) [F.IsRegular] {w u v : F.WorldState}
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem PathHom.toPath_comp_of_constraints (F : FrameOver intOrder)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) {w u v : F.WorldState}
     (f : PathHom F.toTaskFrame w u) (g : PathHom F.toTaskFrame u v) :
-    PathHom.toPath F (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g)
+    PathHom.toPath F (PathHom.comp hcomp f g)
       = (PathHom.toPath F f).comp (PathHom.toPath F g) := by
+  have hgermInv : ∀ τ : Beh F.toTaskFrame 0,
+      Beh.ofGermOfSerialLimit F.toTaskFrame hser hlim (Beh.germ τ) = τ := by
+    intro τ
+    refine Beh.ext (partialHistory_ext ?_ ?_)
+    · funext z
+      change (0 ≤ z ∧ z ≤ 0) = τ.val.domain z
+      exact propext ((τ.property z).symm)
+    · intro r _ h'
+      have hr0 : r = 0 := le_antisymm ((τ.property r).mp h').2 ((τ.property r).mp h').1
+      subst hr0
+      rfl
   -- congruence in the index: the index proof is irrelevant
   have congr_n : ∀ {n n' : ℕ} (h : n = n') {w u : F.WorldState} (e : PathHom F.toTaskFrame w u)
       (hn : (n : ℤ) = e.len.val) (hn' : (n' : ℤ) = e.len.val),
@@ -1385,8 +1467,8 @@ theorem PathHom.toPath_comp (F : FrameOver intOrder) [F.IsRegular] {w u v : F.Wo
   have aux : ∀ (n : ℕ) {u v : F.WorldState} (g : PathHom F.toTaskFrame u v)
       (hn : (n : ℤ) = g.len.val) (m : ℕ) {w : F.WorldState} (f : PathHom F.toTaskFrame w u)
       (hm : (m : ℤ) = f.len.val)
-      (hmn : ((m + n : ℕ) : ℤ) = (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).len.val),
-      PathHom.toPathAux F (m + n) (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g) hmn
+      (hmn : ((m + n : ℕ) : ℤ) = (PathHom.comp hcomp f g).len.val),
+      PathHom.toPathAux F (m + n) (PathHom.comp hcomp f g) hmn
         = (PathHom.toPathAux F m f hm).comp (PathHom.toPathAux F n g hn) := by
     intro n
     induction n with
@@ -1400,65 +1482,67 @@ theorem PathHom.toPath_comp (F : FrameOver intOrder) [F.IsRegular] {w u v : F.Wo
       subst huv
       -- a morphism of length `0` is the identity
       have hgerm : Beh.germ (Beh.castLen h0.symm g.sec) = u := g.src
-      have hsec : g.sec.val = (Beh.ofGerm F.toTaskFrame u).val := by
-        have h := congrArg Subtype.val (Beh.ofGerm_germ (Beh.castLen h0.symm g.sec))
+      have hsec : g.sec.val = (Beh.ofGermOfSerialLimit F.toTaskFrame hser hlim u).val := by
+        have h := congrArg Subtype.val (hgermInv (Beh.castLen h0.symm g.sec))
         rw [hgerm] at h
         exact h.symm
-      have hg : g = PathHom.id F.toTaskFrame u := PathHom.ext' (Subtype.ext h0.symm) hsec
+      have hg : g = PathHom.idOfSerialLimit F.toTaskFrame hser hlim u :=
+        PathHom.ext' (Subtype.ext h0.symm) hsec
       subst hg
       change PathHom.toPathAux F m
-        (PathHom.comp (TaskFrame.comp F.toTaskFrame) f (PathHom.id F.toTaskFrame u)) hmn
+        (PathHom.comp hcomp f (PathHom.idOfSerialLimit F.toTaskFrame hser hlim u)) hmn
         = PathHom.toPathAux F m f hm
       exact congr_e m rfl _ _ hmn hm
-        (congrArg (fun x : PathHom F.toTaskFrame w u => x.sec.val) (PathHom.comp_id f))
+        (congrArg (fun x : PathHom F.toTaskFrame w u => x.sec.val)
+          (PathHom.comp_id_of_constraints hcomp hser hlim f))
     | succ n ih =>
       intro u v g hn m w f hm hmn
       have hn' : (n : ℤ) + 1 = g.len.val := (Nat.cast_succ n).symm.trans hn
       have hle_n : (n : ℤ) ≤ g.len.val := by
         rw [← hn']; exact le_add_of_nonneg_right zero_le_one
       have hmn' : ((m + n : ℕ) : ℤ) + 1
-          = (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).len.val :=
+          = (PathHom.comp hcomp f g).len.val :=
         (Nat.cast_succ (m + n)).symm.trans hmn
       have hsum : ((m + n : ℕ) : ℤ) = f.len.val + (n : ℤ) := by rw [Nat.cast_add, hm]
       -- the two factorizations the unfoldings of `toPathAux` introduce
-      let facL : Factorization (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).len :=
+      let facL : Factorization (PathHom.comp hcomp f g).len :=
         ⟨((m + n : ℕ) : ℤ), 1, Int.natCast_nonneg _, zero_le_one, hmn'⟩
       let facR : Factorization g.len := ⟨(n : ℤ), 1, Int.natCast_nonneg n, zero_le_one, hn'⟩
       obtain ⟨sL, hL⟩ : ∃ s, PathHom.toPathAux F (m + (n + 1))
-          (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g) hmn
+          (PathHom.comp hcomp f g) hmn
           = Quiver.Path.cons (PathHom.toPathAux F (m + n)
-              ((PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).factorLeft facL) rfl) ⟨s⟩ :=
+              ((PathHom.comp hcomp f g).factorLeft facL) rfl) ⟨s⟩ :=
         ⟨_, rfl⟩
       obtain ⟨sR, hR⟩ : ∃ s, PathHom.toPathAux F (n + 1) g hn
           = Quiver.Path.cons (PathHom.toPathAux F n (g.factorLeft facR) rfl) ⟨s⟩ := ⟨_, rfl⟩
       have hmn'' : ((m + n : ℕ) : ℤ)
-          = (PathHom.comp (TaskFrame.comp F.toTaskFrame) f (g.factorLeft facR)).len.val := hsum
+          = (PathHom.comp hcomp f (g.factorLeft facR)).len.val := hsum
       rw [hL, hR]
       change _ = Quiver.Path.cons
         (Quiver.Path.comp (PathHom.toPathAux F m f hm)
           (PathHom.toPathAux F n (g.factorLeft facR) rfl)) ⟨sR⟩
       rw [← ih (g.factorLeft facR) rfl m f hm hmn'']
       -- the cut states agree
-      have hc : (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).cutState facL
+      have hc : (PathHom.comp hcomp f g).cutState facL
           = g.cutState facR := by
         have hd : (Beh.restrict f.len.val g.len.val f.len.property g.len.property le_rfl
-            (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec).val.domain (n : ℤ) :=
+            (PathHom.comp hcomp f g).sec).val.domain (n : ℤ) :=
           ⟨Int.natCast_nonneg n, hle_n⟩
-        have s1 := states_eq_of_eq (glueSum_restrict_right (TaskFrame.comp F.toTaskFrame)
+        have s1 := states_eq_of_eq (glueSum_restrict_right hcomp
           f.len.property g.len.property f.sec g.sec (f.tgt.trans g.src.symm)) (n : ℤ) hd
           (Beh.mem_dom g.sec (Int.natCast_nonneg n) hle_n)
         exact (PartialHistory.states_eq_of_time_eq
-          (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val ((m + n : ℕ) : ℤ)
+          (PathHom.comp hcomp f g).sec.val ((m + n : ℕ) : ℤ)
           (f.len.val + (n : ℤ)) hsum _
           (Beh.mem_dom _ (add_nonneg f.len.property (Int.natCast_nonneg n))
             (add_le_add (le_refl f.len.val) hle_n))).trans s1
       -- the left factor of the composite is the composite of `f` with the left factor of `g`
-      have hb : ((PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).factorLeft facL).sec.val
-          = (PathHom.comp (TaskFrame.comp F.toTaskFrame) f (g.factorLeft facR)).sec.val := by
+      have hb : ((PathHom.comp hcomp f g).factorLeft facL).sec.val
+          = (PathHom.comp hcomp f (g.factorLeft facR)).sec.val := by
         have hpl : f.len.val ≤ f.len.val + (n : ℤ) :=
           le_add_of_nonneg_right (Int.natCast_nonneg n)
         let υ : Beh F.toTaskFrame (f.len.val + (n : ℤ)) :=
-          Beh.castLen hsum ((PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).factorLeft facL).sec
+          Beh.castLen hsum ((PathHom.comp hcomp f g).factorLeft facL).sec
         have hL' : Beh.restrict 0 f.len.val le_rfl f.len.property (by rw [zero_add]; exact hpl) υ
             = f.sec := by
           refine Beh.ext (partialHistory_ext ?_ ?_)
@@ -1470,19 +1554,19 @@ theorem PathHom.toPath_comp (F : FrameOver intOrder) [F.IsRegular] {w u v : F.Wo
               Beh.mem_dom υ (add_nonneg le_rfl hr.1) (by rw [zero_add]; exact le_trans hr.2 hpl)
             rw [Beh.restrict_states 0 f.len.val le_rfl f.len.property
               (by rw [zero_add]; exact hpl) υ r hr hw]
-            have s1 := states_eq_of_eq (glueSum_restrict_left (TaskFrame.comp F.toTaskFrame)
+            have s1 := states_eq_of_eq (glueSum_restrict_left hcomp
               f.len.property g.len.property f.sec g.sec (f.tgt.trans g.src.symm)) r hr h'
-            have hw2 : (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val.domain (0 + r) :=
+            have hw2 : (PathHom.comp hcomp f g).sec.val.domain (0 + r) :=
               Beh.mem_dom _ (add_nonneg le_rfl hr.1)
                 (by rw [zero_add]; exact le_trans hr.2 (le_add_of_nonneg_right g.len.property))
-            have hw1 : (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val.domain
+            have hw1 : (PathHom.comp hcomp f g).sec.val.domain
                 (0 + (0 + r)) :=
               Beh.mem_dom _ (add_nonneg le_rfl (add_nonneg le_rfl hr.1))
                 (by
                   rw [zero_add, zero_add]
                   exact le_trans hr.2 (le_add_of_nonneg_right g.len.property))
             exact (PartialHistory.states_eq_of_time_eq
-              (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val (0 + (0 + r)) (0 + r)
+              (PathHom.comp hcomp f g).sec.val (0 + (0 + r)) (0 + r)
               (by rw [zero_add]) hw1 hw2).trans s1
         have hR' : Beh.restrict f.len.val (f.len.val + (n : ℤ) - f.len.val) f.len.property
             (sub_nonneg.mpr hpl) (by rw [add_sub_cancel]) υ
@@ -1500,41 +1584,52 @@ theorem PathHom.toPath_comp (F : FrameOver intOrder) [F.IsRegular] {w u v : F.Wo
             rw [Beh.restrict_states f.len.val (f.len.val + (n : ℤ) - f.len.val) f.len.property
               (sub_nonneg.mpr hpl) (by rw [add_sub_cancel]) υ r hr hw]
             have hd : (Beh.restrict f.len.val g.len.val f.len.property g.len.property le_rfl
-                (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec).val.domain r :=
+                (PathHom.comp hcomp f g).sec).val.domain r :=
               ⟨hr.1, le_trans hrn hle_n⟩
-            have s1 := states_eq_of_eq (glueSum_restrict_right (TaskFrame.comp F.toTaskFrame)
+            have s1 := states_eq_of_eq (glueSum_restrict_right hcomp
               f.len.property g.len.property f.sec g.sec (f.tgt.trans g.src.symm)) r hd
               (Beh.mem_dom g.sec hr.1 (le_trans hrn hle_n))
-            have hw2 : (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val.domain
+            have hw2 : (PathHom.comp hcomp f g).sec.val.domain
                 (f.len.val + r) :=
               Beh.mem_dom _ (add_nonneg f.len.property hr.1)
                 (add_le_add (le_refl _) (le_trans hrn hle_n))
             have hw3 : g.sec.val.domain (0 + r) :=
               Beh.mem_dom g.sec (add_nonneg le_rfl hr.1)
                 (by rw [zero_add]; exact le_trans hrn hle_n)
-            have hw1 : (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val.domain
+            have hw1 : (PathHom.comp hcomp f g).sec.val.domain
                 (0 + (f.len.val + r)) :=
               Beh.mem_dom _ (add_nonneg le_rfl (add_nonneg f.len.property hr.1))
                 (by
                   rw [zero_add]
                   exact add_le_add (le_refl _) (le_trans hrn hle_n))
             exact ((PartialHistory.states_eq_of_time_eq
-              (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).sec.val (0 + (f.len.val + r))
+              (PathHom.comp hcomp f g).sec.val (0 + (f.len.val + r))
               (f.len.val + r) (zero_add _) hw1 hw2).trans s1).trans
               (PartialHistory.states_eq_of_time_eq g.sec.val r (0 + r) (zero_add r).symm
                 (Beh.mem_dom g.sec hr.1 (le_trans hrn hle_n)) hw3)
-        have hu := glue_unique (TaskFrame.comp F.toTaskFrame) f.len.property hpl f.sec
+        have hu := glue_unique hcomp f.len.property hpl f.sec
           (Beh.castLen (add_sub_cancel_left f.len.val (n : ℤ)).symm (g.factorLeft facR).sec)
           (f.tgt.trans (g.factorLeft facR).src.symm) υ hL' hR'
         exact congrArg Subtype.val hu
       exact cons_congr hc _ _ sL sR (congr_e (m + n) hc _ _ rfl hmn'' hb)
-  have hadd : Int.toNat (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g).len.val
+  have hadd : Int.toNat (PathHom.comp hcomp f g).len.val
       = Int.toNat f.len.val + Int.toNat g.len.val :=
     Int.toNat_add f.len.property g.len.property
   have hmn : ((Int.toNat f.len.val + Int.toNat g.len.val : ℕ) : ℤ) = f.len.val + g.len.val := by
     rw [Nat.cast_add, Int.toNat_of_nonneg f.len.property, Int.toNat_of_nonneg g.len.property]
   exact (congr_n hadd _ _ hmn).trans
     (aux _ g (Int.toNat_of_nonneg g.len.property) _ f (Int.toNat_of_nonneg f.len.property) hmn)
+
+/-- **Gluing is concatenation**: the path of a composite is the concatenation of the paths. This
+is `PathHom.toPath_comp_of_constraints` with its three hypotheses projected out of a bundling
+instance; the instance's *Saturation* field is not read.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem PathHom.toPath_comp (F : FrameOver intOrder) [F.IsRegular] {w u v : F.WorldState}
+    (f : PathHom F.toTaskFrame w u) (g : PathHom F.toTaskFrame u v) :
+    PathHom.toPath F (PathHom.comp (TaskFrame.comp F.toTaskFrame) f g)
+      = (PathHom.toPath F f).comp (PathHom.toPath F g) :=
+  PathHom.toPath_comp_of_constraints F (TaskFrame.comp F.toTaskFrame) F.serial F.limit f g
 
 /-! ### `D = ℤ`, layer 2b: paths to sections, the round trips, the free category -/
 

@@ -357,21 +357,21 @@ each with its own binder-free twin plus a delegating corollary.
 
 ---
 
-### Phase 6: `Presheaf/Path.lean` cluster B -- windows, `toPath`, and the three `None` sites [NOT STARTED]
+### Phase 6: `Presheaf/Path.lean` cluster B -- windows, `toPath`, and the three `None` sites [COMPLETED]
 
 **Goal**: Correct the eight sites in the adjacent-window and `toPath` cluster, including the three
 whose honest marker is `None` and whose binder may be removable outright.
 
 **Tasks**:
-- [ ] Correct `Beh.ofAdjacentWindow`, `Beh.ofAdjacentWindow_states` and `beh_int_iff_adjacent_window` to `Compositionality, Seriality, Limit`, each with a binder-free twin plus delegating corollary.
-- [ ] For each of `PathHom.toPathAux`, `PathHom.toPath` and `PathHom.toPath_length` (probe hits: none), run the transplant probe first -- replace `[F.IsRegular]` with no binder in a scratch copy and compile -- to decide whether the binder is removable or is still needed to elaborate a sibling instance argument. The probe proves the constraints are not *consumed*; it does not prove the binder is removable, which is why this step is a probe and not an assumption.
-- [ ] Where the probe passes, delete the binder and set the marker to `Constraints consumed: None` (route 1: no binder means C34a's `omitted` set is empty). Where it fails, fall back to route 2 (twin plus delegating corollary, marker `None` on both) and record the fallback in place.
-- [ ] Correct `PathHom.toPath_id` to `Seriality, Limit` and `PathHom.toPath_comp` to `Compositionality, Seriality, Limit`, each with its own twin plus delegating corollary.
-- [ ] Rewrite the rationale paragraph at `Path.lean` (~1168), which states "the marker lists the whole bundle the binder supplies", to the `REFERENCE_NORMAL_FORM.md` reading.
-- [ ] Verify no new twin's span names `IsRegular`.
-- [ ] Raise `set_option linter.style.longFile` to the next admissible baseline above the file's new length if this phase's growth crosses the baseline Phase 5 left in place.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs, including the `Presheaf/` one.
-- [ ] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported.
+- [x] Correct `Beh.ofAdjacentWindow`, `Beh.ofAdjacentWindow_states` and `beh_int_iff_adjacent_window` to `Compositionality, Seriality, Limit`, each with a binder-free twin plus delegating corollary. *(deviation: altered -- the `def` twin is `Beh.ofAdjacentWindowOfConstraints`, lowerCamelCase per C26; the two `theorem` twins keep the `_of_constraints` suffix. The three constraints enter through `FrameOver.taskRel_natCast_iff_iter_of_constraints` and `FrameOver.reflection_int_of_limit`, the binder-free forms already in `IntNormalForm.lean`/`IntNormalFormEffective.lean`, so no new enabler was needed)*
+- [x] For each of `PathHom.toPathAux`, `PathHom.toPath` and `PathHom.toPath_length` (probe hits: none), run the transplant probe first -- replace `[F.IsRegular]` with no binder in a scratch copy and compile -- to decide whether the binder is removable or is still needed to elaborate a sibling instance argument. The probe proves the constraints are not *consumed*; it does not prove the binder is removable, which is why this step is a probe and not an assumption. *(deviation: altered -- the probe was run in place on `Path.lean` rather than in a scratch copy, which is strictly stronger evidence: it additionally checks every call site in the module. All three binders deleted together; `lake-build-guard.sh build -- build FormalSystem.Semantics.Presheaf.Path` returned `GUARD_EXIT=0` over 1191 jobs with zero `error:` lines on the first attempt)*
+- [x] Where the probe passes, delete the binder and set the marker to `Constraints consumed: None` (route 1: no binder means C34a's `omitted` set is empty). Where it fails, fall back to route 2 (twin plus delegating corollary, marker `None` on both) and record the fallback in place. *(route 1 for all three; no route-2 fallback was needed. Confirmed by the gate: the binder-carrying population moved 89 -> 86)*
+- [x] Correct `PathHom.toPath_id` to `Seriality, Limit` and `PathHom.toPath_comp` to `Compositionality, Seriality, Limit`, each with its own twin plus delegating corollary. *(deviation: altered -- the `toPath_comp` twin additionally needed the germ-inverse step proved inline as a local `hgermInv`, the same obstruction phase 5's `id_comp` twin hit: `Beh.ofGerm_germ` is the only germ-inverse form in `Behavior.lean` and it carries `[F.IsRegular]`, which a C34a delegate's span may not name)*
+- [x] Rewrite the rationale paragraph at `Path.lean` (~1168), which states "the marker lists the whole bundle the binder supplies", to the `REFERENCE_NORMAL_FORM.md` reading. *(the sentence lived in `Beh.ofAdjacentWindow`'s own docstring; it is now split across the twin's docstring (what the elaborated term reaches) and the corollary's ("the marker enumerates what the elaborated term reaches, not what the binder supplies"))*
+- [x] Verify no new twin's span names `IsRegular`. *(confirmed by `PASS C34a`: the delegation group moved 35 -> 40, exactly +5, which only happens when every twin's span is free of a bundling class)*
+- [x] Raise `set_option linter.style.longFile` to the next admissible baseline above the file's new length if this phase's growth crosses the baseline Phase 5 left in place. *(1700 -> 1800 at line 258; the file left this phase at 1,762 lines. Phase 7's ~75 added lines will cross 1800 and must raise it again)*
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs, including the `Presheaf/` one. *(two files rewritten: `FormalSystem/Semantics/Presheaf/README.md` and the root `README.md`; `FormalSystem/README.md` needed no rewrite, as in phases 3, 4 and 5)*
+- [x] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported. *(drift reported, `formalsystem-line-count: committed=404799 live=404894`; re-stamped with a bare `--fix` after the full build went green, since `--counts-only --fix` does not compose -- the same tooling note phase 5 recorded)*
 
 **Timing**: 2.0 hours
 
