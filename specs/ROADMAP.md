@@ -173,11 +173,11 @@ cited record, not here.
 ## Run these next
 
 ```bash
-/orchestrate 908,924,925 --hard --lit      # Stage 1's binding front, now that 918 is closed. All three declare FormalSystem/README.md and typst/generated/status.typ, so the admission gate serializes them to width 1 — re-run the line until each reports terminal. 908 is mid-implementation against an 8-phase plan; 924 and 925 are planned and waiting on it
+/orchestrate 925,924 --hard --lit          # Stage 1's binding front; 918 and 908 are closed. Run 925 FIRST and in the same line: its C16 unusedArguments debt in LadderPump.lean is what makes check-module-invariants.sh exit 1 for every sibling in the module, so clearing it restores an honest gate for 924's own phases. Both are planned and share FormalSystem/README.md plus typst/generated/status.typ, so they serialize to width 1 — re-run until each reports terminal
 /orchestrate 899,900,905,906 --hard        # Stage 2's close-out. 899/900 are the LAST two compiled ingredients of 879's table (cut product lemma, linear bridge), 900 edged behind 899 on docs/theorem-index.md; 905/906 are 901's two questions, report only, no Lean and no shared territory
 /orchestrate 502,497,500,543 --hard --lit  # the algebraic-representation chain, bottom-up, ending at the one remaining HIGH-priority L-plus metalogic task. 543 is not startable alone: its edge runs 502 -> 497 -> 500 -> 543 and the first three are all low priority, which is why 543 has sat unscheduled
 /orchestrate 714,781,873,907               # off both critical paths, all four parallel on disjoint territory: sliced-certificate internals (781 researched), open-language subformula closure, stale deploy-tree redeploy
-/todo                                      # 29 terminal tasks read the open count high; CHANGE_LOG's last entry is 2026-10-04
+/todo                                      # 30 terminal tasks read the open count high; CHANGE_LOG's last entry is 2026-10-04
 ```
 
 **Stage 2's Lean programme is all but exhausted, by ruling and not by exhaustion of effort.**
@@ -332,7 +332,7 @@ necessary and not an artifact of the proof. This lemma is what 924's idle pump i
 
 ```bash
 # Stage 1 — decidability of L⁺ at ZTime: the binding front
-/orchestrate 908,924,925 --hard --lit    # the live open core, 916/917/918 all CLOSED. 924 lands the idle-pump conditional discharge that relocates the ForwardSlackWitnessed frontier onto the I = 1 sub-regime; 925 clears the C16 unusedArguments debt in LadderPump.lean that currently makes check-module-invariants.sh exit 1 on every phase of every sibling in the module; 908 is mid-implementation. All three share FormalSystem/README.md and typst/generated/status.typ, so they run serialized
+/orchestrate 925,924 --hard --lit        # the live open core; 916/917/918 and 908 all CLOSED. 925 clears the C16 unusedArguments debt at LadderPump.lean:1825/:1868 that makes check-module-invariants.sh exit 1 for every sibling in the module — run it first. 924 then lands the idle-pump conditional discharge, relocating the ForwardSlackWitnessed frontier onto the I = 1 sub-regime. Both share FormalSystem/README.md and typst/generated/status.typ, so they run serialized
 /orchestrate 862 --hard --lit            # forward pend/countdown rigidity sharpening (researched); feeds the same cell-level arithmetic. Gated on 761's hold, whose substantive lift conditions are now all discharged
 /orchestrate 763 --hard --lit            # the lift and the Decidable (PlusValidZTime φ) corollary — needs 761 resumed AND the chain above closed. Settle the (S) scope question first; it is still nobody's task
 /orchestrate 714,781,873,907             # sliced-certificate internals (781 researched), open-language subformula closure, stale deploy-tree redeploy. All four parallel on disjoint territory
@@ -384,7 +384,7 @@ with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
       discharged: 853 closed the Phase 11.12/11.13 gap, and 916/917/918 have all reported on the
       cell agreement and the ladder-cell index. What remains is cost, not a blocker — resuming it
       re-serializes the Stage 1 front behind its 40-path scope, and 763 is gated on it.
-      Recommended: lift it once 908/924/925 report terminal, since those three already hold the
+      Recommended: lift it once 924 and 925 report terminal, since those two already hold the
       `RaySummary` and generated-surface territory 761 would re-serialize
 - [ ] Supply the Hugging Face account and token **257** is blocked on
 - [ ] Rule on **428**'s scope. Its one edge is discharged and its `blockers` says "paused at
@@ -487,6 +487,12 @@ out of the immediate run list appears there correctly; its presence is not a gap
   `check-module-invariants.sh --emit-inventory --check` exits 0 while the bare invocation exits 1;
   prefer the bare form whenever the question is "is the tree green". The warning budget's counts
   are a ceiling that may only decrease — never reach for `--update`.
+- **The bare gate's current exit 1 has exactly one cause, and it is owned.** `FAIL C16`
+  (env_linter `unusedArguments`) at `RaySummary/LadderPump.lean:1825` and `:1868`, reproduced
+  byte-identically across eight consecutive phases of an unrelated task in a different subtree.
+  It is **925's** whole content. Until it clears, every phase in or near that module reports a
+  red overall gate it did not cause, and a "gate exits 0" phase criterion cannot be met on the
+  nose anywhere in the tree — so read the per-check `PASS`/`FAIL` lines, not the exit code.
 - **A probe is only measured once it is tracked.** `check_probe` tests
   `git ls-files --error-unmatch` *after* its presence test, so a new probe must be `git add`-ed in
   the same round or the gate reports `FAIL (untracked: ...)`. Probes compile outside the Lake
