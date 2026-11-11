@@ -1,20 +1,25 @@
 {
   "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "delegation_path": [
+    "orchestrator",
+    "implement",
+    "lean-implementation-hard-agent"
+  ],
   "task_number": 908,
-  "dispatch_seq": 26,
-  "phase_number": 2,
-  "phases_completed": 2,
+  "dispatch_seq": 27,
+  "phase_number": 3,
+  "phases_completed": 3,
   "phases_total": 8,
   "requires_user_review": false,
   "artifacts": [],
   "modified_files": [
-    "FormalSystem/Semantics/ConeUnravelling.lean",
+    "FormalSystem/Semantics/IntNormalForm.lean",
+    "FormalSystem/Semantics/Nomic/ZTime.lean",
     "README.md",
     "typst/generated/status.typ",
     "specs/908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md",
-    "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-2-handoff-20261111T160156.md",
+    "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-3-handoff-20261111T162724.md",
     "specs/908_constraints_consumed_marker_accuracy_audit/issues.jsonl",
     "specs/908_constraints_consumed_marker_accuracy_audit/.orchestrator-handoff.json",
     "specs/908_constraints_consumed_marker_accuracy_audit/.return-meta.json"
@@ -28,17 +33,17 @@
     "axiom_count": 14,
     "axiom_baseline": 14,
     "build_passed": true,
-    "build_evidence": "Full library via lake-build-guard.sh: GUARD_EXIT=0, 'Build completed successfully (2974 jobs)', zero `error:` lines, ConeUnravelling.olean newer than its source. Scoped FormalSystem.Semantics.ConeUnravelling build also green (1514 jobs).",
-    "gate_check_module_invariants": "PASS C34a over 164 markers (23 delegating / 2 field re-export / 61 omitting nothing; was 22/2/62). PASS C34b. Overall script exit 1 from a PRE-EXISTING FAIL C16 (env_linter unusedArguments at FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean:1825 and :1868), outside this phase's territory and byte-identical to phase 1's record.",
-    "gate_typst_sync": "typst-sync-check.sh --counts-only exits 0 after a --fix re-stamp (formalsystem-line-count 404591 -> 404610).",
-    "gate_8_deferral": "No run-all.sh suite covers this phase's paths (__FULL_SWEEP__), so no narrowing --only invocation exists. The complete gate set is deferred to this batch invocation's single end-of-batch run -- deferred, not forgiven."
+    "build_evidence": "Full library via lake-build-guard.sh: GUARD_EXIT=0, 'Build completed successfully (2974 jobs)', zero `error:` lines, both IntNormalForm.olean and Nomic/ZTime.olean newer than their sources. Scoped FormalSystem.Semantics.Nomic.ZTime build also green (1196 jobs, GUARD_EXIT=0).",
+    "gate_check_module_invariants": "PASS C34a over 168 markers (26 delegating / 2 field re-export / 60 omitting nothing; was 23/2/61). PASS C34b. Overall script exit 1 from a PRE-EXISTING FAIL C16 (env_linter unusedArguments at FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean:1825 and :1868), outside this phase's territory and byte-identical to the phase 1 and phase 2 records.",
+    "gate_typst_sync": "typst-sync-check.sh --counts-only exits 0 after a --fix re-stamp (formalsystem-line-count 404610 -> 404660).",
+    "gate_8_deferral": "suite_selection_select returns __FULL_SWEEP__ for this phase's paths (re-derived live), so no narrowing run-all.sh --only invocation exists. The complete gate set is deferred to this batch invocation's single end-of-batch run -- deferred, not forgiven."
   },
   "completion_data": {
-    "completion_summary": "Phase 2 of 8 complete. The ConeUnravelling.lean over-reporting marker is corrected to 'Compositionality, Seriality, Limit' and structurally discharged via a new binder-free twin, base_taskRel_eq_ofStepRel_of_constraints. 6 of the 28 over-reporting markers are now corrected; 22 remain across phases 3-7, plus the phase-8 documentation/gate close-out."
+    "completion_summary": "Phase 3 of 8 complete. The two binder-free enabler twins the Nomic/ZTime.lean cluster needed (FrameOver.respects_of_isStepPath_of_constraints, FrameOver.isTotal_respects_iff_adjacent_of_constraints) are landed in IntNormalForm.lean, both originals reduced to delegating corollaries with byte-identical signatures, and NomicFrame.mem_lawHist_iff_isStepPath corrected to 'Compositionality, Seriality, Limit' with its delegation discharge firing and its false rationale paragraph rewritten. 7 of the 28 over-reporting markers are now corrected; 21 remain across phases 4-7, plus the phase-8 documentation/gate close-out."
   },
   "memory_candidates": [
-    "check-module-invariants.sh C34a computes a declaration's bundling-class `mentions` set over CODE ONLY (comments masked), so a binder-free twin's DOCSTRING may freely discuss `IsRegular`; only its signature and proof term must avoid naming it.",
-    "C34a's PASS line discharge-group counts are a usable per-row attribution instrument: a binder-carrying row that newly omits a constraint is either discharged or a violation, so a one-row move from the omitting-nothing group to the delegating group under a PASS is mechanical proof that the delegation fired -- no verbose mode needed.",
-    "The repo's `Paper:` line requirement is scoped to declarations that are rows in docs/theorem-index.md, not to every theorem; a new helper twin needs none."
+    "A C34a delegating corollary can pass the three explicit constraint hypotheses as projections off an instance synthesized one layer up: NomicFrame.instAtIsRegular turns a NomicFrame-level `[F.IsRegular]` into `(F.at w).IsRegular`, so `(F.at w).comp/.serial/.limit` type-check inside the corollary with no extra argument.",
+    "Adding a `Constraints consumed:` marker to a previously unmarked binder-carrying declaration moves it INTO C34a's scope, so a bare marker addition can create a violation out of nothing; the twin plus delegation must land in the same edit, not a follow-up.",
+    "FormalSystem/Semantics/IntNormalForm.lean's established local convention is that every `_of_constraints` lemma takes `(F : FrameOver intOrder)` as an explicit first argument even when its binder-carrying corollary has F implicit; following it keeps the corollary's signature byte-identical while the twin stays callable without dot notation."
   ]
 }
