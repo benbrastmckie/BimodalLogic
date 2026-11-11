@@ -213,7 +213,7 @@ module and a typo in either aggregator's new import line.
 
 ---
 
-### Phase 2: The axiom-profile evidence module [NOT STARTED]
+### Phase 2: The axiom-profile evidence module [COMPLETED]
 
 **Goal**: every load-bearing declaration's axiom profile is pinned by a build-breaking
 `#guard_msgs` block in `Tests/BimodalTest/Metalogic/LCExtensionTest.lean`, wired into the test

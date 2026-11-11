@@ -33,6 +33,7 @@ import BimodalTest.Theorems.ModalS5Test
 import BimodalTest.Theorems.PerpetuityTest
 import BimodalTest.WalkthroughAxioms
 import BimodalTest.Metalogic.AuxiliaryAtomsTest
+import BimodalTest.Metalogic.LCExtensionTest
 import BimodalTest.Metalogic.PropDecideTest
 import BimodalTest.Metalogic.PeriodicExtensionAxiomTest
 import BimodalTest.Metalogic.EffectivePeriodicExtensionAxiomTest
