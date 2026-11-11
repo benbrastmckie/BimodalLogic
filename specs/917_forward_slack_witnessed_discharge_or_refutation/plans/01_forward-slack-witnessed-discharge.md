@@ -405,21 +405,21 @@ stays a hypothesis a consumer must supply.
 
 ---
 
-### Phase 6: The Normalization Loop and the Discharge [NOT STARTED]
+### Phase 6: The Normalization Loop and the Discharge [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Iterate Phase 5's one-pass lemma to drive the next region's countdown below `tShort`,
 then close with (K3) to land `forwardSlackWitnessed_of_paramsOk_of_pend_gap`. Conditional on
 Phase 5's gate passing.
 
 **Tasks**:
-- [ ] Build the normalization loop over the measure `cntAt g s₀` -- the countdown of the first region start above `z`'s region, which each pass lowers by `d ≥ 1` while leaving the region start and the intervening idle run fixed. State the measure over that ONE pin; keep every later pin's treatment inside Phase 4's primitive, never in the loop. The existing overshoot/iterated-splice loop in `LadderChain.lean` is the model.
-- [ ] Land the loop's conclusion: every stab-free type realized at `x` at `z` is realized there by a path whose first region above `z`'s region has countdown below `tShort Q φ`.
-- [ ] Land `forwardSlackWitnessed_of_paramsOk_of_pend_gap` in `LadderCell.lean` with the pinned signature. Close the arithmetic with Phase 1's `iff`: the loop gives `K < tShort Q φ`, `I ≥ 1`, and `hroom : tShort Q φ + l ≤ N + C` gives `K ≤ N + C + I - l`, which is the regime.
-- [ ] Discharge Phase 4's `hnz` here, where it is free: at this theorem's state `⟨(q, C, N), h⟩` at `z` we have `cntAt g z = C` and `nxtAt g z = N`, and `hgap : N + 2 ≤ C` gives `(N : ℤ) ≤ (C : ℤ)` outright. This costs the discharge no hypothesis it does not already carry — confirmed compiling at revision time — so `hnz` must NOT be propagated into this theorem's signature, which is unchanged.
-- [ ] The docstring MUST state what is and is not discharged: the hypothesis is discharged for the pending-forever regime at countdown at least `Tc`; the reserved name `cellLE_zero_const_of_kappa_eq` remains claimed by nothing; the window regime `c ≤ n + 1` is covered by no landed inclusion in either direction; the room bounds the five schemas carry are untouched (Finding 5).
-- [ ] `hroom` is stated with slack on purpose -- every consumer has `Tc ≤ c` and (K3) gives `2 · tShort + tIdle + 2 ≤ Tc`, so the slack is free. Weakening `hroom` (strengthening the theorem) is permitted; weakening the CONCLUSION is not.
-- [ ] Scoped guarded builds for both modules, `typst-sync-check.sh --fix`, stage `typst/generated/status.typ`, apply the `longFile` baseline rule to both files.
-- [ ] If Phase 5's gate FAILED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record whose Evidence column cites Phase 5's own failing measurement. Land nothing.
+- [ ] Build the normalization loop over the measure `cntAt g s₀` -- the countdown of the first region start above `z`'s region, which each pass lowers by `d ≥ 1` while leaving the region start and the intervening idle run fixed. State the measure over that ONE pin; keep every later pin's treatment inside Phase 4's primitive, never in the loop. The existing overshoot/iterated-splice loop in `LadderChain.lean` is the model. *(deviation: excluded -- Phase 5's gate measured FAIL; see this phase's #### Reasoned Exclusions)*
+- [ ] Land the loop's conclusion: every stab-free type realized at `x` at `z` is realized there by a path whose first region above `z`'s region has countdown below `tShort Q φ`. *(deviation: excluded -- Phase 5's gate measured FAIL; see this phase's #### Reasoned Exclusions)*
+- [ ] Land `forwardSlackWitnessed_of_paramsOk_of_pend_gap` in `LadderCell.lean` with the pinned signature. Close the arithmetic with Phase 1's `iff`: the loop gives `K < tShort Q φ`, `I ≥ 1`, and `hroom : tShort Q φ + l ≤ N + C` gives `K ≤ N + C + I - l`, which is the regime. *(deviation: excluded -- Phase 5's gate measured FAIL; see this phase's #### Reasoned Exclusions)*
+- [ ] Discharge Phase 4's `hnz` here, where it is free: at this theorem's state `⟨(q, C, N), h⟩` at `z` we have `cntAt g z = C` and `nxtAt g z = N`, and `hgap : N + 2 ≤ C` gives `(N : ℤ) ≤ (C : ℤ)` outright. This costs the discharge no hypothesis it does not already carry — confirmed compiling at revision time — so `hnz` must NOT be propagated into this theorem's signature, which is unchanged. *(deviation: excluded -- Phase 5's gate measured FAIL; see this phase's #### Reasoned Exclusions)*
+- [ ] The docstring MUST state what is and is not discharged: the hypothesis is discharged for the pending-forever regime at countdown at least `Tc`; the reserved name `cellLE_zero_const_of_kappa_eq` remains claimed by nothing; the window regime `c ≤ n + 1` is covered by no landed inclusion in either direction; the room bounds the five schemas carry are untouched (Finding 5). *(deviation: excluded -- Phase 5's gate measured FAIL; see this phase's #### Reasoned Exclusions)*
+- [ ] `hroom` is stated with slack on purpose -- every consumer has `Tc ≤ c` and (K3) gives `2 · tShort + tIdle + 2 ≤ Tc`, so the slack is free. Weakening `hroom` (strengthening the theorem) is permitted; weakening the CONCLUSION is not. *(deviation: excluded -- Phase 5's gate measured FAIL; see this phase's #### Reasoned Exclusions)*
+- [ ] Scoped guarded builds for both modules, `typst-sync-check.sh --fix`, stage `typst/generated/status.typ`, apply the `longFile` baseline rule to both files. *(deviation: excluded -- Phase 5's gate measured FAIL; see this phase's #### Reasoned Exclusions)*
+- [x] If Phase 5's gate FAILED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record whose Evidence column cites Phase 5's own failing measurement. Land nothing.
 
 **Timing**: 2 hours
 
@@ -442,21 +442,35 @@ Phase 5's gate passing.
 - `lean_verify` on it: no `sorryAx`, standard axiom profile.
 - Its docstring reproduces all three surviving restrictions from Finding 5.
 
+#### Reasoned Exclusions
+
+This phase lands NOTHING. It is conditional on Phase 5's decision gate passing, and the gate
+measured FAIL. No Lean declaration, no docstring and no generated surface is touched here; the
+`[COMPLETED WITH EXCLUSIONS]` marker records a branch not taken, not work abandoned mid-way.
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| The normalization loop over the measure `cntAt g s₀` | The loop's single pass IS Phase 5's one-pass shortening lemma, which exists only on the gate's PASS branch. With both clauses of `exists_deleted_ladderPath_of_next_region_nxt` non-dischargeable, there is no pass to iterate. | `evidence/phase-5-gate-measurement.lean` — `Gate917.anch_refuted`, `Gate917.straddle_refuted`, both `sorry`-free under `lake env lean` |
+| The loop's conclusion (every stab-free type at `x` at `z` realized by a path whose first region above `z`'s region has countdown below `tShort Q φ`) | Downstream of the loop; unreachable without it. | same |
+| `forwardSlackWitnessed_of_paramsOk_of_pend_gap` in `LadderCell.lean` (pinned in `## Lean Challenge Statements`) | This is the discharge itself. Landing it would require supplying the two refuted clauses, which the plan's own Phase 5 task list forbids papering over with an added hypothesis, an axiom or a `sorry`-deferred case. The pinned statement therefore stays unclaimed, and `ForwardSlackWitnessed` stays a hypothesis a consumer must supply. | `evidence/phase-5-gate-measurement.lean` plus Phase 5's **GATE VERDICT** record (which pair, which deficit, what was tried) |
+| The free discharge of Phase 4's `hnz` at this phase's consumer | `hnz` is free here (`hgap : N + 2 ≤ C` gives it outright) and remains so, but there is no consumer to discharge it at. `hnz` is carried on Phase 4's landed primitive, where it is documented. | Phase 4's **ADMITTED HYPOTHESIS, `hnz`** record; `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean`, `exists_deleted_ladderPath_of_next_region_nxt` |
+| The scoped guarded builds, `typst-sync-check.sh --fix` and the `longFile` baseline for this phase | No file changes, so no covering check is owed. `LadderChain.lean`'s baseline is Phase 4's; Phase 9 re-tightens it at the final line count. | `git status` clean under `FormalSystem/` and `typst/` after Phase 5's commit; Phase 5's full guarded build green (2973 jobs, 0 errors, 0 warnings) |
+
 ---
 
-### Phase 7: The Five Schemas Without the Witnessing Hypothesis [NOT STARTED]
+### Phase 7: The Five Schemas Without the Witnessing Hypothesis [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Drop `ForwardSlackWitnessed` from each of the five landed depth-`0` cell-equality
 schemas, keeping every other hypothesis exactly as it stands. Conditional on Phase 6.
 
 **Tasks**:
-- [ ] Enumerate all FIVE consumers (not three -- the dispatch's starting position is stale): `cellLE_zero_const_of_kappa_eq_of_forwardSlack`, `..._commonShift_of_forwardSlack`, `..._monotone_of_forwardSlack`, `..._antitone_of_forwardSlack`, `..._antitone_bounded_of_forwardSlack`, with their schema `def`s.
-- [ ] For each, add a new schema `def` that is the existing one with the witnessing conjunct DELETED and every other hypothesis -- the pending-forever gap, the threshold bounds, the equal-register or displacement hypothesis, and the room bound -- kept verbatim. The deletion must be checkable as a one-conjunct diff against the original `def`.
-- [ ] For each, add a theorem discharging the new schema by applying the existing `_of_forwardSlack` theorem with the witnessing supplied by `forwardSlackWitnessed_of_paramsOk_of_pend_gap`, confirming per schema that `hroom` follows from that schema's own room bound plus `Tc ≤ c` and (K3). The common-shift and monotone cases instantiate the discharge at the DOUBLED amount; verify the cancellation arithmetic separately for each rather than once.
-- [ ] Naming: suffix each new name so the surviving restriction is in the name (`_of_pend_past` or equivalent). NO new declaration may take the reserved name `cellLE_zero_const_of_kappa_eq`, and none may be a bare prefix of it. Schema `def` names stay CamelCase (C26 flags a non-trailing underscore in a `def` name; `theorem` is exempt).
-- [ ] Each new declaration's docstring reproduces Finding 5: the reserved schema quantifies over EVERY `kappa`-collision; these five carry the pending-forever gap, which by `pend_past_of_nxtAt_lt` restricts to paths pending at every earlier position; the ordinary window regime `c ≤ n + 1` is addressed by nothing; the room bounds remain.
-- [ ] Scoped guarded build, `typst-sync-check.sh --fix`, stage `typst/generated/status.typ`, apply the `longFile` baseline rule.
-- [ ] If Phase 6 was excluded: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record citing Phase 5's failing measurement. Land nothing.
+- [ ] Enumerate all FIVE consumers (not three -- the dispatch's starting position is stale): `cellLE_zero_const_of_kappa_eq_of_forwardSlack`, `..._commonShift_of_forwardSlack`, `..._monotone_of_forwardSlack`, `..._antitone_of_forwardSlack`, `..._antitone_bounded_of_forwardSlack`, with their schema `def`s. *(deviation: excluded -- Phase 5's gate measured FAIL; see this phase's #### Reasoned Exclusions)*
+- [ ] For each, add a new schema `def` that is the existing one with the witnessing conjunct DELETED and every other hypothesis -- the pending-forever gap, the threshold bounds, the equal-register or displacement hypothesis, and the room bound -- kept verbatim. The deletion must be checkable as a one-conjunct diff against the original `def`. *(deviation: excluded -- Phase 5's gate measured FAIL; see this phase's #### Reasoned Exclusions)*
+- [ ] For each, add a theorem discharging the new schema by applying the existing `_of_forwardSlack` theorem with the witnessing supplied by `forwardSlackWitnessed_of_paramsOk_of_pend_gap`, confirming per schema that `hroom` follows from that schema's own room bound plus `Tc ≤ c` and (K3). The common-shift and monotone cases instantiate the discharge at the DOUBLED amount; verify the cancellation arithmetic separately for each rather than once. *(deviation: excluded -- Phase 5's gate measured FAIL; see this phase's #### Reasoned Exclusions)*
+- [ ] Naming: suffix each new name so the surviving restriction is in the name (`_of_pend_past` or equivalent). NO new declaration may take the reserved name `cellLE_zero_const_of_kappa_eq`, and none may be a bare prefix of it. Schema `def` names stay CamelCase (C26 flags a non-trailing underscore in a `def` name; `theorem` is exempt). *(deviation: excluded -- Phase 5's gate measured FAIL; see this phase's #### Reasoned Exclusions)*
+- [ ] Each new declaration's docstring reproduces Finding 5: the reserved schema quantifies over EVERY `kappa`-collision; these five carry the pending-forever gap, which by `pend_past_of_nxtAt_lt` restricts to paths pending at every earlier position; the ordinary window regime `c ≤ n + 1` is addressed by nothing; the room bounds remain. *(deviation: excluded -- Phase 5's gate measured FAIL; see this phase's #### Reasoned Exclusions)*
+- [ ] Scoped guarded build, `typst-sync-check.sh --fix`, stage `typst/generated/status.typ`, apply the `longFile` baseline rule. *(deviation: excluded -- Phase 5's gate measured FAIL; see this phase's #### Reasoned Exclusions)*
+- [x] If Phase 6 was excluded: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record citing Phase 5's failing measurement. Land nothing.
 
 **Timing**: 2 hours
 
@@ -477,6 +491,24 @@ schemas, keeping every other hypothesis exactly as it stands. Conditional on Pha
 - Each new schema `def` differs from its original by exactly the deleted witnessing conjunct (checked by reading the two side by side).
 - An exact-name sweep confirms `cellLE_zero_const_of_kappa_eq` itself still has no declaration site anywhere under `FormalSystem/`.
 - `lean_verify` on each of the five new theorems: no `sorryAx`.
+
+#### Reasoned Exclusions
+
+This phase lands NOTHING. It is conditional on Phase 6, which is itself excluded on Phase 5's
+measured gate FAIL. The five existing `_of_forwardSlack` schemas stay exactly as they are, each
+still carrying `ForwardSlackWitnessed` as a hypothesis a consumer must supply.
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| The five witnessing-free schema `def`s (one per landed `_of_forwardSlack` schema) | Each would be the existing schema with the witnessing conjunct deleted. A schema `def` whose conjunct is deleted but whose discharge cannot be proved is an unusable definition with no theorem behind it — it would advertise a weakening the tree cannot deliver. | `evidence/phase-5-gate-measurement.lean` — `Gate917.anch_refuted`, `Gate917.straddle_refuted` |
+| The five discharging theorems | Each is a one-line delegation to its `_of_forwardSlack` original with the witnessing supplied by `forwardSlackWitnessed_of_paramsOk_of_pend_gap`, which Phase 6 did not land and could not. | Phase 6's `#### Reasoned Exclusions` row for `forwardSlackWitnessed_of_paramsOk_of_pend_gap` |
+| The per-schema `hroom` cancellation checks (equal-register, common-shift, monotone, antitone, antitone-bounded) | These verify that each schema's own room bound plus `Tc ≤ c` and (K3) supplies the discharge's `hroom`. With no discharge to supply it to, the check has no subject. Research Finding 3's cancellation table is therefore still CARRIED, not confirmed — it is recorded as unconfirmed rather than silently promoted. | Phase 6's exclusion record; the plan's Phase 7 **Scope Hypothesis** |
+| The scoped guarded build, the test-library build, `typst-sync-check.sh --fix` and the `longFile` baseline for this phase | No file changes, so no covering check is owed. `LadderCell.lean` is untouched by this task after Phase 3. | `git status` clean under `FormalSystem/` and `typst/` after Phase 5's commit |
+
+The one verification item this phase's FAIL branch DOES owe, and which Phase 9 runs: the
+exact-name sweep confirming `cellLE_zero_const_of_kappa_eq` still has no declaration site
+anywhere under `FormalSystem/`. On this branch that is trivially expected rather than at risk,
+since nothing was landed — but it is run, not assumed.
 
 ---
 
