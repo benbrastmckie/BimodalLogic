@@ -1,0 +1,28 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/918_ladder_cell_index_positive_factorization/reports/01_ladder-cell-index-positive-factorization.md",
+      "summary": "Identifies the positive factorization lemma as the reserved cellLE_zero_const_of_kappa_eq (claimed by nothing), compiles that the dispatch's second admissible outcome is foreclosed by paramsOk_params, narrows the gap to discharging ForwardSlackWitnessed at a positive amount, records that its only landed route was refuted by task 917, and recommends re-scoping to the untouched ordinary-window regime c <= n + 1."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794379526_029109_918",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  },
+  "dispatch_seq": 10,
+  "user_decision": {
+    "question": "Task 918's description is stale: its second admissible outcome (a refutation that the two parameter constraints cannot be jointly met) is foreclosed by the compiled paramsOk_params, and its first (the positive factorization lemma) reduces to discharging ForwardSlackWitnessed, whose only landed route task 917 just refuted. How should 918 be re-scoped before planning?",
+    "options": [
+      "Target A - re-scope to the ordinary window regime c <= n + 1, the one branch of the collision case split no landed inclusion addresses in either direction; independent of ForwardSlackWitnessed and of the parameter contract",
+      "Target B - re-scope to route (f), the register-lowering deletion, gated arithmetically before any primitive is landed",
+      "Target C - re-scope to route (e), the (K1) amendment constraining spanning-block length, accepting re-verification of all 53 wired probes",
+      "Absorb 918 into task 917's recorded follow-up list and abandon it as a separate task"
+    ],
+    "recommended": "Target A - re-scope to the ordinary window regime c <= n + 1, the one branch of the collision case split no landed inclusion addresses in either direction; independent of ForwardSlackWitnessed and of the parameter contract",
+    "blocking": false
+  }
+}
