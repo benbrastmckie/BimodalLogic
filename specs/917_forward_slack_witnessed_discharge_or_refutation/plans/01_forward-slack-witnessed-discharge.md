@@ -138,7 +138,7 @@ turns the regime from an opaque condition on a path into a bound on one countdow
 - [x] Confirm `next_region_cnt_le_of_hasForwardSlack` and `hasForwardSlack_iff_next_region_cnt_le` are absent from the tree (exact-name sweep, not a prefix anchor -- gate-collision Condition 3).
 - [x] Land `next_region_cnt_le_of_hasForwardSlack` in `LadderChain.lean`'s `section Slack`, directly after `hasForwardSlack_of_next_region_cnt_le`, using the research report's Probe 2 body verbatim. Supply `{Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}` from the section's own `variable` line or explicitly; do not rely on `autoImplicit`.
 - [x] Land `hasForwardSlack_iff_next_region_cnt_le` as the two-direction `iff`, `mpr` being the landed forward half and `mp` the new converse.
-- [ ] Optionally introduce `def NextRegionBounded` beside `HasForwardSlack` as a naming convenience for the right-hand side, and restate the `iff` against it. This is a presentation choice, not a deliverable: if it is taken, the `iff`'s pinned statement must remain propositionally the one recorded in `## Lean Challenge Statements` (unfolding a `def` is not a weakening). *(deviation: skipped — declared a presentation choice, not a deliverable; the `iff` is stated against the explicit right-hand side so its pinned statement matches the Challenge block verbatim)*
+- [ ] Optionally introduce `def NextRegionBounded` beside `HasForwardSlack` as a naming convenience for the right-hand side, and restate the `iff` against it. This is a presentation choice, not a deliverable: if it is taken, the `iff`'s pinned statement must remain propositionally the one recorded in `## Lean Challenge Statements` (unfolding a `def` is not a weakening). *(deviation: skipped — declared a presentation choice, not a deliverable; the `iff` is stated against the explicit right-hand side so its pinned statement matches the Challenge block verbatim)* *(deviation: skipped -- declined as an optional naming convenience; the `iff` is stated directly against the bound, and adding a `def` would have put a second name on the same right-hand side for no consumer. Phase 9 confirms the `NextRegionBounded` name has no declaration site.)*
 - [x] Record in the converse's docstring that the two directions are EXACT, so the regime is a condition on the WALK: the countdown is read off the walk (`cntAt_eq_of_obj_eq`), and the pin value is forced (`cntAt_eq_nxtAt_of_idle_pend`).
 - [x] Run `lake build` scoped to the module through the build guard, then `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` with the Lean change.
 - [x] If the file's line count reaches or passes its current `set_option linter.style.longFile 2700`, raise `N` in the same change to the smallest multiple of 100 strictly greater than the new count. *(2669 lines after the edit; baseline 2700 still inside the linter's 2500-2699 window, so unchanged)*
@@ -789,18 +789,18 @@ end FormalSystem.Metalogic.Decidability.RaySummary
 
 ## Testing & Validation
 
-- [ ] Every new declaration elaborates with no `sorry` and no new axiom beyond the standard
+- [x] Every new declaration elaborates with no `sorry` and no new axiom beyond the standard
       `propext`/`Classical.choice`/`Quot.sound` profile (`lean_verify` per name).
-- [ ] Every new declaration is warning-free: no `linter.autoImplicit`, no `linter.style.show`, no
+- [x] Every new declaration is warning-free: no `linter.autoImplicit`, no `linter.style.show`, no
       unused variable. CI builds with `--wfail`, so a warning is a failure.
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` builds with every `#guard_msgs`
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` builds with every `#guard_msgs`
       axiom pin satisfied, including the new ones.
-- [ ] An exact-name sweep confirms `cellLE_zero_const_of_kappa_eq` has no declaration site
+- [x] An exact-name sweep confirms `cellLE_zero_const_of_kappa_eq` has no declaration site
       anywhere under `FormalSystem/`.
-- [ ] `bash scripts/check-module-invariants.sh` and `bash scripts/typst-sync-check.sh` are green,
+- [x] `bash scripts/check-module-invariants.sh` and `bash scripts/typst-sync-check.sh` are green,
       or green modulo enumerated pre-existing findings outside this task's file scope.
-- [ ] `bash scripts/check-evidence-probes.sh` is green and no pre-existing probe is newly red.
-- [ ] Every `longFile` baseline this task touched sits inside the linter's `N - 200 ≤ lines < N`
+- [x] `bash scripts/check-evidence-probes.sh` is green and no pre-existing probe is newly red.
+- [x] Every `longFile` baseline this task touched sits inside the linter's `N - 200 ≤ lines < N`
       window at the final line count.
 
 ## Artifacts & Outputs
