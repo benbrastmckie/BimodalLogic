@@ -1566,6 +1566,118 @@ theorem window_lower_anchor_of_required (c n d jP : ℕ) (hjP : jP ≤ c) (hroom
     (((c + d - jP : ℕ) : ℤ) - (n : ℤ)).natAbs ≤ d + 1 := by
   omega
 
+/-! ## The cell level: the window regime's upward inclusion
+
+The raising primitive is stated on the WITNESSING PATH, and necessarily so: its region start `a`,
+its region run and the idle run below `a` are properties of the path, not of the state at `z`.
+`cntAt_le_nxtAt_succ_of_idle_past` runs one way only — an idle position in the past puts the
+position inside the window — and its converse is false, so the window hypothesis `c ≤ n + 1` does
+NOT return an idle position in the past, and no state-level variant of the regime's path data can
+be read off `(q, c, n)`.
+
+`WindowIdleRunWitnessed` below is therefore the same shape `ForwardSlackWitnessed`
+(`LadderCell.lean`) takes for the pending-forever regime's downward inclusion: EXISTENTIAL over
+the paths through the state, asserting that every type the cell realizes is realized there by
+SOME path carrying the region-start-plus-idle-run package. It is a carried hypothesis, asserted
+to hold nowhere, and the inclusion below is exactly as strong as it.
+-/
+
+/-- **THE WINDOW REGIME'S PATH DATA, LIFTED FROM ONE PATH TO A WHOLE CELL.** Every type the cell
+at `x` realizes at `z` is realized there by SOME ladder path through `x` that has a region start
+`a` strictly below `z` — idle at `a`, pending throughout `(a, z]` — with the named idle-run
+condition `HasIdleRunBelow pend φ · a` holding below that start.
+
+This is the weakest condition on the STATE `x` under which the raising primitive
+`exists_window_raise_ladderPath`, which is stated on the witnessing path, yields a CELL-level
+inclusion. It is existential over paths rather than universal, which is what keeps it weaker than
+demanding the package of every path through `x`: one climbing or pending-forever path through `x`
+is compatible with some other path realizing the same type with an idle run below.
+
+Nothing here asserts the condition HOLDS at any state. `HasIdleRunBelow` is not a consequence of
+`ParamsOk` (`idle_run_lt_tIdle_of_no_idleCycle`, `LadderPump.lean`, is the bound in the other
+direction), and the window hypothesis `c ≤ n + 1` does not even return the region start:
+`cntAt_le_nxtAt_succ_of_idle_past` runs from an idle past to the window and not back. So this
+RESTRICTS an obligation rather than discharging one, and the reserved
+`cellLE_zero_const_of_kappa_eq` stays claimed by nothing.
+
+`HasForwardSlack` and `ForwardSlackWitnessed` appear nowhere in it: the compensator is the idle
+run BELOW the position, never slack above it, so the route refuted for the pending-forever regime
+is not re-entered here. -/
+def WindowIdleRunWitnessed {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (x : LadderState Q pend) (z : ℤ) : Prop :=
+  ∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+      ((z, x) : (ladderFrameAdm step pend fwd bwd).WorldState) z,
+    ∃ (g : ℤ → LadderState Q pend)
+      (τ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+      IsLadderPath step pend g ∧ g z = x ∧ (∀ t : ℤ, τ.state t = (t, g t)) ∧
+      (∃ a : ℤ, a < z ∧ pend (objAt g a) = false ∧
+        (∀ t : ℤ, a < t → t ≤ z → pend (objAt g t) = true) ∧
+        HasIdleRunBelow pend φ g a) ∧
+      tpOf (ladderModel step pend fwd bwd lab) φ τ z = T
+
+/-- **THE WINDOW REGIME'S UPWARD CELL INCLUSION.** In the ordinary window regime at countdown at
+least `Tc`, under the witnessed idle-run condition, the cell at `(q, c, n)` is contained in the
+cell at `(q, c + m · (P + 1), n)`: every type realized at the former is realized at the latter by
+the window regime's composite surgery.
+
+The regime hypothesis is not carried separately — the collision's own room
+`hroom : c + m · (P + 1) ≤ n` already implies `c ≤ n`, hence `¬ (n + 2 ≤ c)`, so this statement
+lies inside the window branch by
+construction rather than by assumption. That room is what `kappa_collision_window_room` delivers
+for whichever countdown is the larger, and it is the ONE resource the anchor clause at `z`'s own
+region start is paid out of.
+
+The proof is `cellAt_subset_of_shift_of_pend_past`'s shape with the pending-forever hypothesis
+replaced: `mem_cellAt_ladder_iff` on both sides, `objAt`/`cntAt`/`nxtAt` read off the witnessing
+state, the region start and the idle run taken from `WindowIdleRunWitnessed` rather than derived
+(they are not derivable — see that definition's docstring), the raising primitive applied at that
+start, and the history rebuilt with `exists_hist_of_isLadderPath`.
+
+Scope. This inclusion carries NEITHER `HasForwardSlack` NOR `ForwardSlackWitnessed`. In the
+pending-forever regime the DOWNWARD direction is the one that needs the witnessing slack
+hypothesis; here the upward direction is paid for entirely by the idle run BELOW `z`'s region, so
+the refuted deletion-above route is not re-entered. The downward direction is NOT available in
+this regime and is not a mirror of this one: the anchor clause reverses under deletion and needs a
+sixth hypothesis, recorded as `window_lower_anchor_of_required` and excluded by the decision
+gate's own criterion. Nothing here claims `cellLE_zero_const_of_kappa_eq` or any prefix of it, and
+being strictly stronger in hypotheses this inclusion bears on that reserved statement's truth
+value in neither direction. -/
+theorem cellAt_subset_of_window_raise {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n : ℕ) (h : c ∈ Adm pend q) (m : ℕ) (h' : c + m * (P + 1) ∈ Adm pend q)
+    (hTc : Tc ≤ c) (hroom : c + m * (P + 1) ≤ n) (z : ℤ)
+    (hwit : WindowIdleRunWitnessed step pend fwd bwd lab φ
+      (⟨(q, c, n), h⟩ : LadderState Q pend) z) :
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z ⊆
+      cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c + m * (P + 1), n), h'⟩) :
+          (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  intro T hT
+  obtain ⟨g, τ, hg, hgz, hτ, ⟨a, haz, hai, hregion, hrun⟩, hTeq⟩ := hwit T hT
+  have hoz : objAt g z = q := by simp [objAt, hgz]
+  have hcz : cntAt g z = c := by simp [cntAt, hgz]
+  have hnz : nxtAt g z = n := by simp [nxtAt, hgz]
+  obtain ⟨g', hg', ho, hc, hn, hty⟩ :=
+    exists_window_raise_ladderPath step pend fwd bwd lab φ Tc Tn P B hp hno g hg z a haz hai
+      hregion hrun (by rw [hcz]; exact hTc) m (by rw [hcz, hnz]; exact hroom)
+  obtain ⟨τ', hτ'⟩ := exists_hist_of_isLadderPath fwd bwd g' hg'
+  rw [mem_cellAt_ladder_iff]
+  refine ⟨g', τ', hg', ?_, hτ', ?_⟩
+  · apply Subtype.ext
+    change (objAt g' z, cntAt g' z, nxtAt g' z) = (q, c + m * (P + 1), n)
+    rw [ho, hc, hn, hoz, hcz, hnz]
+  · rw [hty τ τ' hτ hτ', hTeq]
+
 end Gate
 
 end FormalSystem.Metalogic.Decidability.RaySummary
