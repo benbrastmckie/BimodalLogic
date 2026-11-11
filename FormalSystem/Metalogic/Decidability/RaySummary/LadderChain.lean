@@ -1302,6 +1302,60 @@ theorem hasForwardSlack_of_next_region_cnt_le {Q : Type} {step : Q → Q → Boo
     at this
   exact this
 
+/-- **The converse: the regime forces the bound on the next region's countdown.** This is the
+exact opposite direction of `hasForwardSlack_of_next_region_cnt_le`, so the two together make the
+regime EQUIVALENT to a bound on one countdown — the countdown of the first region start above
+`z`'s region.
+
+The two directions being exact is what makes `HasForwardSlack` a condition on the WALK and
+nothing else. The countdown at a region start is read off the walk (`cntAt_eq_of_obj_eq` transports
+it across an object-state repetition), and at the idle position immediately before a region start
+the register value is FORCED to equal that start's countdown
+(`cntAt_eq_nxtAt_of_idle_pend`). So the regime's register clause at
+`z + cntAt g z + I` carries no freedom of its own: it is the next region's countdown in disguise.
+Nothing about the counter STATE `(q, c, n)` at `z` enters either side. -/
+theorem next_region_cnt_le_of_hasForwardSlack {Q : Type} {step : Q → Q → Bool}
+    {pend : Q → Bool} (g : ℤ → LadderState Q pend)
+    (hg : IsLadderPath step pend g) (z : ℤ) (l n : ℕ)
+    (hs : HasForwardSlack g z l n) :
+    ∀ I : ℕ, 0 < I →
+      (∀ i : ℕ, i < I → pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false) →
+      pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true →
+      (cntAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ)) : ℤ) ≤ (n : ℤ) + cntAt g z + I - l := by
+  intro I hI hidle hnx
+  have h0 := hidle (I - 1) (by omega)
+  have hcast : z + (cntAt g z : ℤ) + 1 + ((I - 1 : ℕ) : ℤ) = z + (cntAt g z : ℤ) + (I : ℤ) := by
+    push_cast [Nat.cast_sub (by omega : 1 ≤ I)]; ring
+  rw [hcast] at h0
+  have h1 : pend (objAt g (z + (cntAt g z : ℤ) + (I : ℤ) + 1)) = true := by
+    rw [show z + (cntAt g z : ℤ) + (I : ℤ) + 1 = z + (cntAt g z : ℤ) + 1 + (I : ℤ) by ring]
+    exact hnx
+  have hpin := cntAt_eq_nxtAt_of_idle_pend g hg _ h0 h1
+  have hslack := hs I hI hidle hnx
+  rw [show z + (cntAt g z : ℤ) + (I : ℤ) + 1 = z + (cntAt g z : ℤ) + 1 + (I : ℤ) by ring] at hpin
+  omega
+
+/-- **The regime IS a bound on one countdown.** `mpr` is the entry lemma
+`hasForwardSlack_of_next_region_cnt_le`; `mp` is `next_region_cnt_le_of_hasForwardSlack`. The
+`iff` turns `HasForwardSlack` from an opaque condition on a path's register into a checkable
+statement about the first region above `z`'s region: its countdown is at most
+`n + cntAt g z + I - l`, where `I` is the length of the idle run separating the two regions.
+
+This does NOT discharge the hypothesis — it relocates it. The restated condition is still a
+condition on the path, and `ClimbWitness.hasForwardSlack_refuted_unconditional` refutes the
+per-path regime already at amount `1`. -/
+theorem hasForwardSlack_iff_next_region_cnt_le {Q : Type} {step : Q → Q → Bool}
+    {pend : Q → Bool} (g : ℤ → LadderState Q pend)
+    (hg : IsLadderPath step pend g) (z : ℤ) (l n : ℕ) :
+    HasForwardSlack g z l n ↔
+      (∀ I : ℕ, 0 < I →
+        (∀ i : ℕ, i < I → pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false) →
+        pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true →
+        (cntAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ)) : ℤ)
+          ≤ (n : ℤ) + cntAt g z + I - l) :=
+  ⟨next_region_cnt_le_of_hasForwardSlack g hg z l n,
+    hasForwardSlack_of_next_region_cnt_le g hg z l n⟩
+
 /-- **Forward slack transports across a deletion inside `z`'s region**, decreased by exactly the
 deleted length `l`: the deleted path's region at `z` is shorter by `l`, the first region start
 above it is the original's displaced by `-l` with the same countdown, so the regime at amount

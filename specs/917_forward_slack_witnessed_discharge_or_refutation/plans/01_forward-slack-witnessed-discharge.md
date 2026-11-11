@@ -1,7 +1,7 @@
 # Implementation Plan: ForwardSlackWitnessed — discharge or refutation
 
 - **Task**: 917 - Discharge `ForwardSlackWitnessed` under `ParamsOk`, or compile a refutation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14.5 hours
 - **Dependencies**: None blocking. The antitone slice of the collision dichotomy is already landed (see Overview).
 - **Research Inputs**: `specs/917_forward_slack_witnessed_discharge_or_refutation/reports/01_forward-slack-witnessed-discharge.md`
@@ -111,19 +111,19 @@ and they are file-disjoint by construction: Phase 2 touches `LadderChain.lean` a
 because the remaining phases share `LadderChain.lean` or `LadderCell.lean` and must not be run
 concurrently against the same file.
 
-### Phase 1: The Reduction and Its `iff` [NOT STARTED]
+### Phase 1: The Reduction and Its `iff` [COMPLETED]
 
 **Goal**: Land the converse of `hasForwardSlack_of_next_region_cnt_le` and the named `iff` that
 turns the regime from an opaque condition on a path into a bound on one countdown.
 
 **Tasks**:
-- [ ] Confirm `next_region_cnt_le_of_hasForwardSlack` and `hasForwardSlack_iff_next_region_cnt_le` are absent from the tree (exact-name sweep, not a prefix anchor -- gate-collision Condition 3).
-- [ ] Land `next_region_cnt_le_of_hasForwardSlack` in `LadderChain.lean`'s `section Slack`, directly after `hasForwardSlack_of_next_region_cnt_le`, using the research report's Probe 2 body verbatim. Supply `{Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}` from the section's own `variable` line or explicitly; do not rely on `autoImplicit`.
-- [ ] Land `hasForwardSlack_iff_next_region_cnt_le` as the two-direction `iff`, `mpr` being the landed forward half and `mp` the new converse.
-- [ ] Optionally introduce `def NextRegionBounded` beside `HasForwardSlack` as a naming convenience for the right-hand side, and restate the `iff` against it. This is a presentation choice, not a deliverable: if it is taken, the `iff`'s pinned statement must remain propositionally the one recorded in `## Lean Challenge Statements` (unfolding a `def` is not a weakening).
-- [ ] Record in the converse's docstring that the two directions are EXACT, so the regime is a condition on the WALK: the countdown is read off the walk (`cntAt_eq_of_obj_eq`), and the pin value is forced (`cntAt_eq_nxtAt_of_idle_pend`).
-- [ ] Run `lake build` scoped to the module through the build guard, then `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` with the Lean change.
-- [ ] If the file's line count reaches or passes its current `set_option linter.style.longFile 2700`, raise `N` in the same change to the smallest multiple of 100 strictly greater than the new count.
+- [x] Confirm `next_region_cnt_le_of_hasForwardSlack` and `hasForwardSlack_iff_next_region_cnt_le` are absent from the tree (exact-name sweep, not a prefix anchor -- gate-collision Condition 3).
+- [x] Land `next_region_cnt_le_of_hasForwardSlack` in `LadderChain.lean`'s `section Slack`, directly after `hasForwardSlack_of_next_region_cnt_le`, using the research report's Probe 2 body verbatim. Supply `{Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}` from the section's own `variable` line or explicitly; do not rely on `autoImplicit`.
+- [x] Land `hasForwardSlack_iff_next_region_cnt_le` as the two-direction `iff`, `mpr` being the landed forward half and `mp` the new converse.
+- [ ] Optionally introduce `def NextRegionBounded` beside `HasForwardSlack` as a naming convenience for the right-hand side, and restate the `iff` against it. This is a presentation choice, not a deliverable: if it is taken, the `iff`'s pinned statement must remain propositionally the one recorded in `## Lean Challenge Statements` (unfolding a `def` is not a weakening). *(deviation: skipped — declared a presentation choice, not a deliverable; the `iff` is stated against the explicit right-hand side so its pinned statement matches the Challenge block verbatim)*
+- [x] Record in the converse's docstring that the two directions are EXACT, so the regime is a condition on the WALK: the countdown is read off the walk (`cntAt_eq_of_obj_eq`), and the pin value is forced (`cntAt_eq_nxtAt_of_idle_pend`).
+- [x] Run `lake build` scoped to the module through the build guard, then `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` with the Lean change.
+- [x] If the file's line count reaches or passes its current `set_option linter.style.longFile 2700`, raise `N` in the same change to the smallest multiple of 100 strictly greater than the new count. *(2669 lines after the edit; baseline 2700 still inside the linter's 2500-2699 window, so unchanged)*
 
 **Timing**: 1.5 hours
 
