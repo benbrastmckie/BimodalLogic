@@ -1220,6 +1220,80 @@ theorem cellAt_subset_of_free_register_shift_of_pend_past_rev {Q : Type} [Fintyp
     Tc Tn P B hp hno q c n h m n' h' hgap hgap' hlo hroom hTc z g hg hgz hslack τ hτ
   rwa [hty] at hmem
 
+/-- **THE UPWARD ANTITONE CELL INCLUSION.** The countdown UP by `m · (P + 1)` and the register
+DOWN — the exact move the landed free-register raise excludes, and the direction
+`free_register_anchor_clause_monotone_required` compiles as unpayable from the facts that raise
+has in hand. In the pending-forever regime (`n + 2 ≤ c`) at countdown at least `Tc`, with
+`n' < n`, the cell at `(q, c, n)` is contained in the cell at `(q, c + m · (P + 1), n')` under
+forward-slack witnessing at the LOWER pair.
+
+**The amount, in words.** `(n − n') − m · (P + 1)`, truncated in `ℕ`: the register's descent
+BEYOND what the raise already buys. The raise widens `z`'s own region by exactly `m · (P + 1)`,
+and `exists_ladderPath_through_free_register_shifted_slack_of_pend_past`'s relaxed lower bound
+spends that widening on the anchor's upper direction for free; only a descent exceeding it needs
+paying. By `kappa_collision_antitone_descent_multiple` the descent is itself a multiple
+`j · (P + 1)`, so the comparison is `j` against `m`.
+
+**On the BOUNDED sub-slice the amount is `0`, and an amount-`0` obligation is FREE.** When
+`n − n' ≤ m · (P + 1)` the truncated amount is literally `0`, and `forwardSlackWitnessed_zero`
+discharges the hypothesis outright — which is what
+`cellLE_zero_const_of_kappa_eq_antitone_bounded_of_forwardSlack` spends. The predecessor's own
+non-vacuity witness `(4, 2)` against `(6, 0)` lies in that half
+(`kappa_collision_antitone_bounded_descent_nonvacuous`). The DEEP-DESCENT residue is where the
+hypothesis does real work, and it is non-empty too
+(`kappa_collision_antitone_deep_descent_nonvacuous`).
+
+**No room bound.** Unlike the monotone downward half, which carries `n' + (n' − n) ≤ c`, this
+inclusion carries nothing beyond the lower pair's own gap: the upper bound `n' ≤ c + m · (P + 1)`
+the raise needs follows from `n' < n` and `n + 2 ≤ c` by `omega`.
+
+The witnessing hypothesis is one a CONSUMER supplies. Nothing here discharges
+`ForwardSlackWitnessed` in general — whether such a hypothesis is satisfiable at any state the
+induction one layer up reaches is a separate question this declaration does not touch. The
+reserved name `cellLE_zero_const_of_kappa_eq` is claimed by nothing here. -/
+theorem cellAt_subset_of_antitone_register_shift_of_pend_past
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n : ℕ) (h : c ∈ Adm pend q) (m n' : ℕ)
+    (h' : c + m * (P + 1) ∈ Adm pend q)
+    (hgap : n + 2 ≤ c) (hTc : Tc ≤ c) (hlt : n' < n) (z : ℤ)
+    (hw : ForwardSlackWitnessed step pend fwd bwd lab φ
+      (⟨(q, c, n), h⟩ : LadderState Q pend) z (n - n' - m * (P + 1)) n) :
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z ⊆
+      cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c + m * (P + 1), n'), h'⟩) :
+          (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  classical
+  intro T hT
+  obtain ⟨g, τ, hg, hgz, hτ, hslack, hty⟩ := hw T hT
+  have hoz : objAt g z = q := by simp [objAt, hgz]
+  have hcz : cntAt g z = c := by simp [cntAt, hgz]
+  have hnz : nxtAt g z = n := by simp [nxtAt, hgz]
+  have hz : pend (objAt g z) = true := by
+    by_contra hne
+    rw [Bool.not_eq_true, hoz] at hne
+    have := h hne
+    omega
+  have hpast := pend_past_of_nxtAt_lt g hg z hz (by rw [hcz, hnz]; omega)
+  obtain ⟨g', hg', ho, hc, hn, hty'⟩ :=
+    exists_ladderPath_through_free_register_shifted_slack_of_pend_past step pend fwd bwd lab φ
+      Tc Tn P B hp hno g hg z hpast (by rw [hcz, hnz]; exact hgap) (by rw [hcz]; exact hTc)
+      m n' (n - n' - m * (P + 1)) (by rw [hnz]; exact hslack) (by rw [hnz]; omega)
+      (by rw [hcz]; omega)
+  obtain ⟨τ', hτ'⟩ := exists_hist_of_isLadderPath fwd bwd g' hg'
+  rw [← hty, mem_cellAt_ladder_iff]
+  refine ⟨g', τ', hg', ?_, hτ', ?_⟩
+  · apply Subtype.ext
+    change (objAt g' z, cntAt g' z, nxtAt g' z) = (q, c + m * (P + 1), n')
+    rw [ho, hc, hn, hoz, hcz]
+  · exact hty' τ τ' hτ hτ'
+
 /-- **THE FORWARD-SLACK-RESTRICTED DEPTH-`0` CELL OBLIGATION**, stated as a schema. This is NOT
 the reserved statement `CellLEZeroConstOfKappaEq`, which is claimed by nothing and stays so. Four
 hypotheses separate the two, and all four are visible in the quantifier below:

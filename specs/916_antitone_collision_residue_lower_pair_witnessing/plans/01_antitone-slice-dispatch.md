@@ -569,15 +569,21 @@ which elaborates the single module this phase edits with no externally visible s
 
 ---
 
-### Phase 5: The UPWARD Antitone Cell Inclusion [NOT STARTED]
+### Phase 5: The UPWARD Antitone Cell Inclusion [COMPLETED]
 
 **Goal**: `cellAt_subset_of_antitone_register_shift_of_pend_past` compiles: the cell at
 `(q, c, n)` is contained in the cell at `(q, c + m · (P + 1), n')` for `n' < n`, under lower-pair
 forward-slack witnessing at the truncated amount `(n − n') − m · (P + 1)`.
 
 **Tasks**:
-- [ ] Add the theorem in `section FreeRegister`, after Phase 4's two declarations, at the
-      signature pinned below.
+- [x] Add the theorem in `section FreeRegister`, after Phase 4's two declarations, at the
+      signature pinned below. *(deviation: altered — the pinned SIGNATURE is landed verbatim, but
+      the pinned PLACEMENT is impossible: `ForwardSlackWitnessed` is defined in
+      `section ForwardSlack`, which follows both `section FreeRegister` and `section Collision`,
+      so a declaration whose hypothesis mentions it cannot sit in `FreeRegister`. Landed in
+      `section ForwardSlack` immediately after the landed
+      `cellAt_subset_of_free_register_shift_of_pend_past_rev`, which is where that same
+      constraint already put the landed monotone downward inclusion.)*
 - [ ] Build the body as `cellAt_subset_of_free_register_shift_of_pend_past_rev`'s spine — the
       landed inclusion that also consumes witnessing at its SOURCE: `intro T hT`, obtain the
       witnessing path and its slack from `hw T hT`, read `objAt`/`cntAt`/`nxtAt` at `z` off
