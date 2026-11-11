@@ -13,10 +13,10 @@ next_project_number: 926
 |------|-------|------------|--------|
 | 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,912,918,924,925 | -- | agent-system, algebraic-representation, completeness, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,913,914 | 298,428,502,743,761,873,912 | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 3 | 410,498,499,500,804,861,919,920 | 429,497,763,803,914 | agent-system, algebraic-representation, decidability, ... |
-| 4 | 125,411,543,921 | 410,498,499,500,920 | agent-system, algebraic-representation, decidability, ... |
-| 5 | 430,501,922 | 125,411,921 | agent-system, algebraic-representation, decidability |
-| 6 | 412,923 | 430,922 | agent-system, decidability |
+| 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
+| 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
+| 5 | 430,501 | 125,411 | algebraic-representation, decidability |
+| 6 | 412 | 430 | decidability |
 | 7 | 482 | 412 | decidability |
 | 8 | 177 | 178,282,296,481,482,543 | formula-refactor |
 
@@ -28,11 +28,6 @@ next_project_number: 926
 912 [NOT STARTED] — Make the coupled-generated-surface and longFile-baseline...
   └─ 913 [NOT STARTED] — Provide a sanctioned in-dispatch remedy for a mechanically...
   └─ 914 [NOT STARTED] — Give the batch-gate-deferral directive a narrowing form that...
-    └─ 919 [NOT STARTED] — Re-verify or timestamp a task recorded starting position at...
-    └─ 920 [NOT STARTED] — Require pinned Lean Challenge signatures to be measured at...
-      └─ 921 [NOT STARTED] — Size symmetric-pair phases and iteration obligations separately
-        └─ 922 [NOT STARTED] — Define Goal Polarity semantics for decision-gate plans
-          └─ 923 [NOT STARTED] — Separate generator-written files from hand-edited read-only...
 
 ### Algebraic Representation
 
@@ -177,7 +172,7 @@ BACKLOG AUDIT. The matcher's strongest signal is covered-by-closed against the p
 ---
 
 ### 923. Separate generator-written files from hand-edited read-only scope declarations
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 912, Task 914, Task 922
@@ -253,11 +248,34 @@ rather than assumed: (a) if #912's implementation already distinguishes generato
 hand-edited read-only scope when it lands, close this record as covered, naming #912's artifact as
 the discharging evidence -- do NOT re-litigate it; (b) otherwise, implement the distinction here on
 top of #912's landed obligation. Silently duplicating #912's remedy is the one outcome ruled out.
+=== TERMINAL DISPOSITION: ABANDONED HERE, MIGRATED OUT (no work was lost) ===
+
+This record was filed in this repository by mistake and has been relocated, whole and one-for-one,
+into the repository that owns the shared agent-system source store. Nothing was dropped and nothing
+was divided: the migrated record carries this description verbatim, including every iss_* citation
+id, plus a migration note recording how its cross-repo citations were made resolvable.
+
+WHY ABANDONED RATHER THAN EXPANDED, decided rather than defaulted. EXPANDED is for a record divided
+into children inside the same task space; no children were created here and no part of this work
+remains in this repository. The relocation is a change of owning repository, not a decomposition,
+so the terminal state that fits is ABANDONED -- this record will never be worked here, while the
+work itself is live elsewhere.
+
+WHY IT COULD NOT STAY. Its file_scope names only paths under the shared source store at
+~/.config/nvim/agent-system/**. That work cannot be performed or committed from this repository,
+and this repository's own .claude/** tree is a gitignored, disposable deploy artifact regenerated
+from that store, so editing here would be silently wiped by the next regeneration.
+
+WHERE THE WORK WENT (durable anchors, paired with the number as the pointer hazard requires).
+Repository: /home/benjamin/.config/nvim (specs/state.json, specs/TODO.md). The migrated record
+keeps this record's own project_name slug unchanged, which is the anchor to match on; the number it
+was allocated there belongs to that repository's independent numbering space and is unstable under
+vault renumbering, so match on the slug first and treat any number as corroboration only.
 
 ---
 
 ### 922. Define Goal Polarity semantics for decision-gate plans
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 912, Task 914, Task 921
@@ -319,11 +337,34 @@ Separately, the audit's highest-scoring closed match is #785
 conditions this plan-format area sits in, and #827 `plan_self_consistency_and_artifact_existence`
 (0.64). Read both before planning and decide explicitly whether the decision-gate polarity case is
 already addressed there; the 917 evidence is a post-closure recurrence, which is why it is filed.
+=== TERMINAL DISPOSITION: ABANDONED HERE, MIGRATED OUT (no work was lost) ===
+
+This record was filed in this repository by mistake and has been relocated, whole and one-for-one,
+into the repository that owns the shared agent-system source store. Nothing was dropped and nothing
+was divided: the migrated record carries this description verbatim, including every iss_* citation
+id, plus a migration note recording how its cross-repo citations were made resolvable.
+
+WHY ABANDONED RATHER THAN EXPANDED, decided rather than defaulted. EXPANDED is for a record divided
+into children inside the same task space; no children were created here and no part of this work
+remains in this repository. The relocation is a change of owning repository, not a decomposition,
+so the terminal state that fits is ABANDONED -- this record will never be worked here, while the
+work itself is live elsewhere.
+
+WHY IT COULD NOT STAY. Its file_scope names only paths under the shared source store at
+~/.config/nvim/agent-system/**. That work cannot be performed or committed from this repository,
+and this repository's own .claude/** tree is a gitignored, disposable deploy artifact regenerated
+from that store, so editing here would be silently wiped by the next regeneration.
+
+WHERE THE WORK WENT (durable anchors, paired with the number as the pointer hazard requires).
+Repository: /home/benjamin/.config/nvim (specs/state.json, specs/TODO.md). The migrated record
+keeps this record's own project_name slug unchanged, which is the anchor to match on; the number it
+was allocated there belongs to that repository's independent numbering space and is unstable under
+vault renumbering, so match on the slug first and treat any number as corroboration only.
 
 ---
 
 ### 921. Size symmetric-pair phases and iteration obligations separately
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 912, Task 914, Task 920
@@ -390,11 +431,34 @@ a lean-context pointer to planner-agent.md. A dependency edge on #912 is recorde
 exclusion, so this task amends plan-format.md and planner-agent.md after #912's edits land, not
 against a stale reading of them. #914 also carries plan-format.md in its scope; an edge on it is
 recorded for the same reason.
+=== TERMINAL DISPOSITION: ABANDONED HERE, MIGRATED OUT (no work was lost) ===
+
+This record was filed in this repository by mistake and has been relocated, whole and one-for-one,
+into the repository that owns the shared agent-system source store. Nothing was dropped and nothing
+was divided: the migrated record carries this description verbatim, including every iss_* citation
+id, plus a migration note recording how its cross-repo citations were made resolvable.
+
+WHY ABANDONED RATHER THAN EXPANDED, decided rather than defaulted. EXPANDED is for a record divided
+into children inside the same task space; no children were created here and no part of this work
+remains in this repository. The relocation is a change of owning repository, not a decomposition,
+so the terminal state that fits is ABANDONED -- this record will never be worked here, while the
+work itself is live elsewhere.
+
+WHY IT COULD NOT STAY. Its file_scope names only paths under the shared source store at
+~/.config/nvim/agent-system/**. That work cannot be performed or committed from this repository,
+and this repository's own .claude/** tree is a gitignored, disposable deploy artifact regenerated
+from that store, so editing here would be silently wiped by the next regeneration.
+
+WHERE THE WORK WENT (durable anchors, paired with the number as the pointer hazard requires).
+Repository: /home/benjamin/.config/nvim (specs/state.json, specs/TODO.md). The migrated record
+keeps this record's own project_name slug unchanged, which is the anchor to match on; the number it
+was allocated there belongs to that repository's independent numbering space and is unstable under
+vault renumbering, so match on the slug first and treat any number as corroboration only.
 
 ---
 
 ### 920. Require pinned Lean Challenge signatures to be measured at plan time
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 912, Task 914
@@ -458,11 +522,34 @@ silently resurrected or silently skipped: #813 `lean_plan_challenge_block_author
 #824 `fixture_dependent_challenge_statement_pinning` (both surfaced `covered-by-closed`). Read
 both before planning: if either already fixes the measurement obligation, say so and close this
 record against it; the 917 evidence is a post-closure recurrence, which is why it is filed.
+=== TERMINAL DISPOSITION: ABANDONED HERE, MIGRATED OUT (no work was lost) ===
+
+This record was filed in this repository by mistake and has been relocated, whole and one-for-one,
+into the repository that owns the shared agent-system source store. Nothing was dropped and nothing
+was divided: the migrated record carries this description verbatim, including every iss_* citation
+id, plus a migration note recording how its cross-repo citations were made resolvable.
+
+WHY ABANDONED RATHER THAN EXPANDED, decided rather than defaulted. EXPANDED is for a record divided
+into children inside the same task space; no children were created here and no part of this work
+remains in this repository. The relocation is a change of owning repository, not a decomposition,
+so the terminal state that fits is ABANDONED -- this record will never be worked here, while the
+work itself is live elsewhere.
+
+WHY IT COULD NOT STAY. Its file_scope names only paths under the shared source store at
+~/.config/nvim/agent-system/**. That work cannot be performed or committed from this repository,
+and this repository's own .claude/** tree is a gitignored, disposable deploy artifact regenerated
+from that store, so editing here would be silently wiped by the next regeneration.
+
+WHERE THE WORK WENT (durable anchors, paired with the number as the pointer hazard requires).
+Repository: /home/benjamin/.config/nvim (specs/state.json, specs/TODO.md). The migrated record
+keeps this record's own project_name slug unchanged, which is the anchor to match on; the number it
+was allocated there belongs to that repository's independent numbering space and is unstable under
+vault renumbering, so match on the slug first and treat any number as corroboration only.
 
 ---
 
 ### 919. Re-verify or timestamp a task recorded starting position at dispatch composition
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 914
@@ -524,6 +611,29 @@ Batch Gate Deferral directive a narrowing form for project-only phases), but it 
 composer and the same test file. RULING: not a duplicate -- a file-territory overlap. A dependency
 edge on #914 is recorded rather than an exclusion, so the two land as a sequence; do not plan this
 task against a pre-#914 reading of the composer.
+=== TERMINAL DISPOSITION: ABANDONED HERE, MIGRATED OUT (no work was lost) ===
+
+This record was filed in this repository by mistake and has been relocated, whole and one-for-one,
+into the repository that owns the shared agent-system source store. Nothing was dropped and nothing
+was divided: the migrated record carries this description verbatim, including every iss_* citation
+id, plus a migration note recording how its cross-repo citations were made resolvable.
+
+WHY ABANDONED RATHER THAN EXPANDED, decided rather than defaulted. EXPANDED is for a record divided
+into children inside the same task space; no children were created here and no part of this work
+remains in this repository. The relocation is a change of owning repository, not a decomposition,
+so the terminal state that fits is ABANDONED -- this record will never be worked here, while the
+work itself is live elsewhere.
+
+WHY IT COULD NOT STAY. Its file_scope names only paths under the shared source store at
+~/.config/nvim/agent-system/**. That work cannot be performed or committed from this repository,
+and this repository's own .claude/** tree is a gitignored, disposable deploy artifact regenerated
+from that store, so editing here would be silently wiped by the next regeneration.
+
+WHERE THE WORK WENT (durable anchors, paired with the number as the pointer hazard requires).
+Repository: /home/benjamin/.config/nvim (specs/state.json, specs/TODO.md). The migrated record
+keeps this record's own project_name slug unchanged, which is the anchor to match on; the number it
+was allocated there belongs to that repository's independent numbering space and is unstable under
+vault renumbering, so match on the slug first and treat any number as corroboration only.
 
 ---
 
