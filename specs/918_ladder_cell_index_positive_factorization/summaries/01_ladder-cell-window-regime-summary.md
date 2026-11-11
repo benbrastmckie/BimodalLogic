@@ -1,10 +1,10 @@
 # Implementation Summary: Task #918
 
 - **Task**: 918 - Ladder cell index positive factorization (re-scoped: the ordinary window regime)
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Started**: 2026-11-11T00:00:00Z
-- **Completed**: 2026-11-11T16:05:00Z
-- **Effort**: ~6.5h across seven dispatches (phases 1-6)
+- **Completed**: 2026-11-11T18:40:00Z
+- **Effort**: ~8h across eight dispatches (phases 1-7)
 - **Dependencies**: None
 - **Artifacts**: plans/01_ladder-cell-window-regime.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -30,6 +30,20 @@ is CONDITIONAL on a Phase 2 gate FAIL, which did not occur, so it closed on its 
 no window-regime obstruction was compiled, because none exists to compile. The one edit it made
 is a guard entry for the obstruction this task DID compile -- the lowering-direction anchor
 deficit -- which three landed exclusion records cite as their Evidence and which no gate reached.
+Phase 7 landed the records and reconciled every generated surface: 42 axiom pins covering every
+declaration of `LadderWindow.lean`, nine new Requirement (W) narrative sections in the summary
+layer's axiom-profile ledger, the verdict in the module's own docstring, and the complete
+nine-command gate set run and tabled.
+
+**THE VERDICT.** Task 918 reached its FIRST admissible outcome: the positive factorization is
+landed for the ordinary window regime `c ≤ n + 1` as `CellSubsetOfKappaEqWindowRaise`, proved by
+`cellSubset_of_kappa_eq_window_raise` at every parameter tuple `ParamsOk` admits, with the UPWARD
+cell inclusion only -- the lowering direction excluded on a compiled measurement, not left
+unproved -- and the re-scope from the dispatch's words to this regime was the prior cycle's
+recorded decision (`.decisions.json`, cycle 2, Target A), not a drift from the dispatch. The
+second admissible outcome, a refutation, is NOT what was reached: the regime is closed positively,
+the ladder route is closed in neither regime by this task, and the reserved
+`cellLE_zero_const_of_kappa_eq` remains claimed by nothing.
 
 ## What Changed
 
@@ -66,6 +80,22 @@ deficit -- which three landed exclusion records cite as their Evidence and which
   than `WIRED` with a named deferred-move blocker: three landed `#### Reasoned Exclusions` records
   cite its task-directory path verbatim, so the file cannot move until those citations move with
   it. Phase 6 touched no `.lean` file at all.
+
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` — 2532 → 2873 lines in the phase-7
+  dispatch. Nine new `/-! ## Requirement (W): ...` narrative sections for the window regime, and
+  `#print axioms` pins (with `#guard_msgs`) for all 42 declarations of `LadderWindow.lean` — the
+  complete set, verified by diffing the pinned names against a declaration sweep of the module.
+  The `longFile` baseline moved from 2600 to 2900 on the crossing.
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` — 1866 → 1907 lines in the
+  phase-7 dispatch. A `## Verdict` section in the module docstring; the stale
+  `## What this module does not hold` section rewritten (it still claimed "No path-level
+  construction, no cell-level inclusion, and no schema" after Phases 3-5 landed all three); a new
+  paragraph in `## What this module holds` naming the path-level and cell-level layer; and the C9
+  repair replacing a task-directory path citation with the probe's durable name. `longFile` moved
+  from 1900 to 2000.
+- `README.md`, `FormalSystem/Metalogic/README.md`,
+  `FormalSystem/Metalogic/Decidability/RaySummary/README.md` — regenerated module-inventory
+  blocks (line-count fields only, 1-2 lines each).
 
 ## Decisions
 
@@ -112,6 +142,25 @@ deficit -- which three landed exclusion records cite as their Evidence and which
 - **The window hypothesis is not carried separately on the inclusion.** The collision's own room
   `c + m·(P+1) ≤ n` already implies `c ≤ n`, hence `¬ (n + 2 ≤ c)`, so the statement lies inside
   the window branch by construction. No regime hypothesis was added to make it so.
+
+- **Every declaration of the module is pinned, not a curated subset.** 42 declarations, 42 pins,
+  including the pure-arithmetic helpers. The alternative — pinning only the headline results —
+  would leave the module's `[propext, Quot.sound]`/standard-profile split unrecorded, and that
+  split is itself a finding: 29 of the 42 consume no choice.
+- **The pin bodies were generated from a compiled measurement, never hand-predicted.** A scratch
+  `#print axioms` probe over the module was compiled with `lake env lean` and its exact message
+  text — including the formatter's own line wrapping, which `#guard_msgs` compares verbatim —
+  was transcribed into the pin blocks. All 42 were green on the first test-library build; the
+  probe was deleted afterwards and is not part of the deliverable.
+- **The stale `## What this module does not hold` section was repaired even though no task listed
+  it.** It claimed the regime's path-level and cell-level layer was absent, which three phases had
+  since falsified. Leaving a false claim in the same docstring as a true verdict was the worse
+  option; the section now records what genuinely is not held — cell equality, hence no lowering
+  primitive and no downward inclusion — and points at the Verdict for the measurement.
+- **The C9 task-path citation was repaired rather than attributed away.** It named this task's own
+  file, so the "pre-existing and out of scope is a recorded PASS" carve-out does not reach it. Both
+  occurrences now name the probe `lowering-anchor-deficit.lean` and point at
+  `scripts/check-evidence-probes.sh`'s probe list, which is the durable anchor.
 
 ## Plan Deviations
 
@@ -166,6 +215,18 @@ deficit -- which three landed exclusion records cite as their Evidence and which
   from Phase 2's recorded measurement before starting, so the predicted 80-140-line probe is
   correctly absent. Actual: 0 new `.lean` lines.
 
+- **Phase 7, inventory-regeneration task** altered: executed EARLY (at the close of Phase 3) and
+  re-run here after the docstring repairs moved the counts again; it rewrote
+  `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, which the phase's file list omitted
+  and which was added to it per the phase's own Scope Hypothesis.
+- **Phase 7, `longFile` task** — applied to BOTH touched Lean files, not only the one the task
+  named: the test file crossed its own baseline on the same edit that crossed the module's.
+- **Phase 7, gate-set task** — the dispatch's Batch Gate Deferral directive offered a SCOPED tier
+  in place of the full set; it was not taken. All nine commands were run independently in this
+  dispatch, so nothing is owed to the batch stage on this phase's behalf.
+- **Phase 7, two unlisted-but-necessary edits** — the stale `## What this module does not hold`
+  section and the C9 task-path citation, both in files already in the phase's scope. See Decisions.
+
 ## Verification
 
 - Build: Success — phase-end FULL guarded `lake build`, 2974 jobs, guard exit 0, `error:` count 0,
@@ -214,6 +275,40 @@ deficit -- which three landed exclusion records cite as their Evidence and which
 - Phase 6 vacuous count 1 and axiom count 14, both byte-identical to the figures above: the
   phase's commit touched 0 `.lean` files (`git show --name-only` on `68e260294`), so neither
   figure could have moved.
+
+### Phase 7: the complete gate set (nine commands, each run and each result recorded)
+
+| # | Gate | Exit | Result |
+|---|---|---|---|
+| 1 | unscoped guarded `lake build` | 0 | PASS — 2974 jobs, `error:` 0, `warning:` 0, guard `exit_status=0`, `.olean` newer than source for both touched modules |
+| 2 | `lake build BimodalTest` (guarded) | 0 | PASS — 3042 jobs, 0 errors, 0 warnings; every `#guard_msgs` axiom pin satisfied, all 42 new ones green on the FIRST attempt |
+| 3 | `lake exe mk_all --lib FormalSystem --check` | 0 | PASS — "No update necessary" |
+| 4 | `bash scripts/check-module-invariants.sh` | 1 | RECORDED PASS — sole failure C16, pre-existing and out of scope (attributed below). C9 also failed, on THIS task's own file, and was repaired |
+| 5 | `bash scripts/typst-sync-check.sh` | 0 | PASS — all four checks green |
+| 6 | `bash scripts/check-metalogic-cycles.sh` | 0 | PASS |
+| 7 | `bash scripts/check-evidence-probes.sh` | 0 | PASS — all 54 wired probes compile; zero delta against the Phase 6 run |
+| 8 | `bash scripts/check-copyright-headers.sh` | 0 | PASS — 0 missing of 755 |
+| 9 | `bash .claude/scripts/validate-artifact.sh .../plans/01_ladder-cell-window-regime.md plan` | 0 | PASS — 0 warnings |
+
+- **C16 attribution**: two `env_linter` findings, both in
+  `FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean`, a file this task has never
+  touched — `exists_idleSpliced_ladderPath` (2 unused instance arguments) and
+  `exists_idleTypeBlock_of_budget_le_run` (1 unused hypothesis). `git log -S` attributes both to a
+  concurrent sibling's commits (`3692d517e`, `64b8eb6f6`). The file was left alone.
+- **C9 attribution**: one finding, at `LadderWindow.lean`, this task's OWN file — a docstring citing
+  the lowering-deficit probe by its full task-directory path, which
+  `.claude/rules/no-task-references-in-deliverables.md` forbids in a deliverable. Repaired in both
+  places it occurred; C9 is now PASS.
+- **Axiom-pin completeness, measured**: 42 declarations in `LadderWindow.lean`, 42 pins, verified by
+  a scripted diff of the pinned-name set against a declaration sweep — none pinned twice, none
+  omitted. Measured profiles: 29 at `[propext, Quot.sound]`, 13 at the standard
+  `[propext, Classical.choice, Quot.sound]`, zero `sorryAx`, zero axiom outside the standard three.
+- **`longFile` posture at FINAL line counts**: `LadderWindow.lean` 1907 lines at baseline 2000
+  (`1800 ≤ 1907 < 2000`); `KTypeSummaryAxiomTest.lean` 2873 lines at baseline 2900
+  (`2700 ≤ 2873 < 2900`). Both confirmed by warning-free builds.
+- **Zero-debt sweep at task close**: `lean-sorry-census.sh` over the resolved source roots reports
+  `sorry_count: 0`, empty inventory. Vacuous count 1, pre-existing and outside this task's scope.
+  `^axiom ` count 14, unchanged from baseline.
 
 ## Impacts
 

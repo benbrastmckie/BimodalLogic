@@ -1,18 +1,18 @@
 {
   "status": "implemented",
   "skeleton": false,
-  "summary": "Phase 6 only. Phase 6 is CONDITIONAL on Phase 2's decision gate FAILING; that gate measured PASS, so the phase closed [COMPLETED WITH EXCLUSIONS] on its own PASS branch with a three-row Reasoned Exclusions record and landed none of its FAIL-branch content: no window-regime obstruction probe (none exists to compile), no LadderWindow.lean module-docstring verdict, and no specs/state.json description amendment -- the latter two being counterfactual (the window regime is closed POSITIVELY and one-directionally, not refuted, and the ladder route is closed in neither regime by this task), so writing them would have put a false claim in a durable record. The phase's one edit discharges its WIRED-entry task against the obstruction this task ACTUALLY compiled, as the phase's own Files-to-modify note directs: evidence/lowering-anchor-deficit.lean, cited as Evidence by three landed exclusion records (Phases 3, 4, 5) and reached by no gate, hence rotting unguarded. Wired under WIRED_REPO with a named deferred-move blocker (those three records cite its task-directory path verbatim). check-evidence-probes.sh exit 0, all 54 wired probes PASS (53 -> 54, zero PASS-to-FAIL transitions). Phase-end full guarded lake build green (2974 jobs, 0 errors, 0 warnings); 0 sorries; 0 .lean files touched, so vacuous count 1 and axiom count 14 are byte-identical baseline.",
-  "phases_completed": 6,
+  "summary": "Phase 7 closed: 42 #print axioms pins covering every LadderWindow.lean declaration plus nine new Requirement (W) narrative sections in the test ledger, the task's verdict landed in the module's own docstring, both longFile baselines re-tightened at final line counts, all generated surfaces reconciled, and the complete nine-command gate set run and tabled. VERDICT: the ordinary window regime is closed POSITIVELY and ONE-DIRECTIONALLY under CellSubsetOfKappaEqWindowRaise (upward cell inclusion only; the lowering direction excluded on a compiled measurement); the regime is not refuted and the reserved cellLE_zero_const_of_kappa_eq remains claimed by nothing.",
+  "phases_completed": 7,
   "phases_total": 7,
-  "dispatch_seq": 21,
+  "dispatch_seq": 22,
   "sorry_inventory": [],
   "blockers": [],
   "continuation_path": null,
   "artifacts": [
     {
-      "type": "summary",
       "path": "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
-      "summary": "Phases 1-6 of the window-regime plan: the leaf module's arithmetic, the passed decision gate, the raising composite splice, the upward cell inclusion, the window schema plus the compiled regime exhaustiveness, and Phase 6's PASS-branch closure with the lowering-deficit probe wired into the rot guard."
+      "type": "summary",
+      "summary": "Task 918 implementation summary: the ordinary window regime of the depth-0 cell obligation closed positively and one-directionally, with the lowering direction excluded on a compiled measurement."
     }
   ]
 }
