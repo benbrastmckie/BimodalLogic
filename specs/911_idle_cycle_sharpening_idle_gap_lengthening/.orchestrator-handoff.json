@@ -1,15 +1,32 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 22,
+  "phases_completed": 7,
   "phases_total": 7,
-  "summary": "Planned the idle-cycle sharpening in seven phases. The premise is run-local (a block of the idle run whose ends share an object state), which is exactly what spliceObj_step already needs; phases 1-3 land the idle mirror of the pump layer in LadderPump.lean and phases 4-6 build a new leaf module LadderIdle.lean for the register-anchored pump, the sharpened schema, and the refutation of its freed-increment form. Two findings shaped the plan: the register-anchoring lift lives downstream of LadderPump, so a new module is required, and sub-question (ii) type preservation is discharged rather than deferred because the premise route runs through the (objAt, tpOf) pigeonhole. The plan's 14 pinned Lean signatures and both schema def bodies were compile-verified against the repo toolchain before returning.",
+  "summary": "All seven phases of the idle-cycle sharpening landed and are committed, one commit per phase. LadderPump.lean gained three sections (the idle-cycle vocabulary with the necessity bound, the idle-block splice whose pin clause discharges outright, and the idle-restricted (objAt, tpOf) pigeonhole); the new leaf module LadderIdle.lean holds the register-anchored iterated idle pump, the sharpened schema IdleGapLengtheningOfIdleRunRepeat with its theorem, and the freed-increment form refuted on a compiled three-state witness object whose idle runs are all of even length. All fourteen declarations pinned in the plan's Lean Challenge Statements are present on the standard axiom profile with no sorryAx; the full lake build is green with 0 errors and 0 warnings over 2973 jobs.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/911_idle_cycle_sharpening_idle_gap_lengthening/plans/01_idle-cycle-sharpening.md",
-      "summary": "Seven-phase plan for the idle-cycle sharpening, with the sharpened schema, its theorem, and the freed-increment refutation as named deliverables."
+      "type": "summary",
+      "path": "specs/911_idle_cycle_sharpening_idle_gap_lengthening/summaries/01_idle-cycle-sharpening-summary.md",
+      "summary": "Implementation summary for all seven phases, with the decisions, the six plan deviations, the full gate-set results and the two pre-existing out-of-scope gate findings named explicitly."
+    },
+    {
+      "type": "other",
+      "path": "FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean",
+      "summary": "New leaf module: the idle pump's register-anchored assembly, the sharpened lengthening schema and its verdict, the freed-increment form and its refutation, and a '## What this buys' determination section recording that sub-question (ii) is discharged and that the premise is not a consequence of ParamsOk."
     }
   ],
-  "dispatch_seq": 15
+  "modified_files": [
+    "FormalSystem.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
+    "README.md",
+    "scripts/debug-artifact-allowlist.txt",
+    "typst/generated/status.typ"
+  ]
 }

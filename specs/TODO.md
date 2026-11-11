@@ -11,7 +11,7 @@ next_project_number: 916
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,911,912 | -- | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,912 | -- | agent-system, algebraic-representation, completeness, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,913,914 | 298,428,502,743,761,873,912 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -76,7 +76,6 @@ next_project_number: 916
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-911 [PLANNED] — Pursue the idle-cycle sharpening left open by the idle-gap...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Documentation
@@ -218,12 +217,13 @@ NOT a repair of this repository's own gates. `.githooks/pre-commit`, `scripts/ty
 
 ### 911. Idle cycle sharpening idle gap lengthening
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 909
 - **Parent**: Task 838
 - **Plan**: [911_idle_cycle_sharpening_idle_gap_lengthening/plans/01_idle-cycle-sharpening.md]
+- **Summary**: [911_idle_cycle_sharpening_idle_gap_lengthening/summaries/01_idle-cycle-sharpening-summary.md]
 
 **Description**: Pursue the idle-cycle sharpening left open by the idle-gap lengthening decision gate's FAIL verdict: the lengthening is available exactly where the object's idle states carry a reachable cycle, which is an OBJECT hypothesis rather than a consequence of ParamsOk.
 

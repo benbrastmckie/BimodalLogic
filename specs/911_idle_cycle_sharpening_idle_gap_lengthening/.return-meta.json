@@ -1,22 +1,63 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "vacuous_count_repo_wide": 1,
+    "vacuous_note": "The single repo-wide match of the vacuity grep is FormalSystem/Examples/TemporalStructures.lean:495, 'theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial'. It is pre-existing, in a file this task never touched, and not a placeholder: the goal genuinely reduces to True for the integer-time history, so 'trivial' is the real proof. No file in this task's scope carries a vacuous definition.",
+    "axiom_count": 14,
+    "axiom_note": "All 14 matches of '^axiom ' are the word 'axiom' opening a docstring line; the count is identical to the pre-task commit 9425429d9, so no axiom declaration was introduced.",
+    "build_passed": true,
+    "build_note": "bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build (full project): guard exit 0, 'Build completed successfully (2973 jobs)', 0 error: and 0 warning: lines over both captured streams, and .olean newer than source for both touched modules. CI builds with --wfail, so the zero-warning count is the real gate."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/911_idle_cycle_sharpening_idle_gap_lengthening/plans/01_idle-cycle-sharpening.md",
-      "summary": "Seven-phase plan landing the idle-cycle sharpening of the refuted idle-gap lengthening: idle-cycle vocabulary and the no-cycle run bound, the idle-block splice with its pin condition free, the idle-run type pigeonhole, a new leaf module LadderIdle.lean holding the register-anchored idle pump, the sharpened schema with its theorem, and the freed-increment refutation."
+      "type": "summary",
+      "path": "specs/911_idle_cycle_sharpening_idle_gap_lengthening/summaries/01_idle-cycle-sharpening-summary.md",
+      "summary": "All seven phases: the idle-cycle vocabulary and run bound, the idle-block splice with its free pin clause, the idle-run type pigeonhole, the new LadderIdle module with the register-anchored idle pump, the sharpened lengthening schema and its theorem, and the freed-increment form refuted on a three-state witness object."
     }
   ],
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1794343738_e0026f_911",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 7,
-    "estimated_hours": 11,
-    "dependency_waves": [[1], [2, 3], [4], [5], [6], [7]]
+  "completion_data": {
+    "completion_summary": "Landed the idle-cycle sharpening of the refuted idle-gap lengthening: the premise under which the lengthening IS available is now an explicit run-local hypothesis (a block of the idle run matching in object state and realized type), the sharpened schema IdleGapLengtheningOfIdleRunRepeat is a theorem, and the freed-increment form IdleGapLengtheningAllIncrements is refuted on a compiled three-state object whose idle states carry a 2-cycle and no self-loop. Sub-question (ii), type preservation, is discharged rather than deferred, and the pin clause the FAIL verdict predicted would loosen discharges outright (idleSplice_pins). All fourteen named Challenge declarations are present on the standard axiom profile with no sorryAx.",
+    "roadmap_items": []
   },
-  "next_steps": "Run /orchestrate 911 to execute the plan",
-  "dispatch_seq": 15
+  "modified_files": [
+    "FormalSystem.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
+    "README.md",
+    "scripts/debug-artifact-allowlist.txt",
+    "typst/generated/status.typ",
+    "specs/911_idle_cycle_sharpening_idle_gap_lengthening/plans/01_idle-cycle-sharpening.md",
+    "specs/911_idle_cycle_sharpening_idle_gap_lengthening/summaries/01_idle-cycle-sharpening-summary.md",
+    "specs/911_idle_cycle_sharpening_idle_gap_lengthening/issues.jsonl",
+    "specs/911_idle_cycle_sharpening_idle_gap_lengthening/handoffs/phase-1-handoff-20261110174129.md",
+    "specs/911_idle_cycle_sharpening_idle_gap_lengthening/handoffs/phase-2-handoff-20261110174756.md",
+    "specs/911_idle_cycle_sharpening_idle_gap_lengthening/handoffs/phase-3-handoff-20261110175101.md",
+    "specs/911_idle_cycle_sharpening_idle_gap_lengthening/handoffs/phase-4-handoff-20261110175842.md",
+    "specs/911_idle_cycle_sharpening_idle_gap_lengthening/handoffs/phase-5-handoff-20261110180332.md",
+    "specs/911_idle_cycle_sharpening_idle_gap_lengthening/handoffs/phase-6-handoff-20261110181652.md",
+    "specs/911_idle_cycle_sharpening_idle_gap_lengthening/handoffs/phase-7-handoff-20261110183247.md"
+  ],
+  "metadata": {
+    "session_id": "sess_1794343738_e0026f",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "dispatch_seq": 22,
+    "compliance_check": "passed",
+    "gate_findings_pre_existing": [
+      "lake exe lint-style: 4 findings, all in FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean (lines 383, 390, 413, 420; space before a semicolon). File untouched by this task; last written by commit 31e1ddbc7.",
+      "scripts/check-paper-definitions.sh: 9 recorded definitions drifted between docs/reference/paper-definitions-of-record.md and a LaTeX source outside this repository. Nothing in this task's scope is involved."
+    ],
+    "batch_gate_deferral": "The dispatch declared the agent-system batch gate set (.claude/scripts/tests/run-all.sh, scripts/verify-deploy.sh) deferred to the batch stage. This task modified no path under .claude/**, so those suites have no scoped narrowing to run here; the repository's own CI gate set was run in full instead rather than deferred."
+  }
 }
