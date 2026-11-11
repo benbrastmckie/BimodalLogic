@@ -442,23 +442,35 @@ committed. One commit covers both regions.
   `-- Linting passed for FormalSystem.`.
 - `git status --short` shows only `LadderPump.lean` dirty from this phase.
 
-### Phase 3: Full gate, cascade confirmation, and wrap-up [NOT STARTED]
+### Phase 3: Full gate, cascade confirmation, and wrap-up [COMPLETED]
 
 **Goal**: the complete gate set is green, the generated surfaces are provably untouched, and the
 task's durable record states what was done and what was deliberately left as pre-existing.
 
 **Tasks**:
 
-- [ ] Run the full `bash scripts/check-module-invariants.sh` — no `--no-build`, so the
+- [x] Run the full `bash scripts/check-module-invariants.sh` — no `--no-build`, so the
       build-gated groups (C1, C2, C6, C24, C25, C36b) that the research phase explicitly did NOT
       run are covered here. Expect exit 0, `PASS  C16`, and `PASS  C26` with the pair count up by
       one and **no** `INFO  C26` stale line for
       `unusedArguments:exists_idleTypeBlock_of_budget_le_run` (Phase 1's expected INFO is
       extinguished by Phase 2's attribute; if it persists, the key and the as-written declaration
       name disagree).
-- [ ] Run `bash scripts/typst-sync-check.sh`. Expect all four checks green and
+      *(dispatch 23: PASSED exactly as specified. Exit **0**, `ALL CHECKS PASSED`, **zero**
+      `FAIL` lines. `PASS INV`, `PASS C16` (env_linter batch, incl. `unusedArguments`),
+      `PASS C16` (dupNamespace), `PASS C26` at **16** in-source nolint pairs (up by one from
+      Phase 1's 15), `PASS C29` (87 occurrences). The predicted stale-INFO extinction HELD: the
+      output contains no `INFO C26` line at all and no occurrence of `exists_idleTypeBlock`
+      anywhere, so Phase 1's allowlist key `unusedArguments:exists_idleTypeBlock_of_budget_le_run`
+      (`scripts/nolint-attribute-allowlist.txt:136`) and the as-written declaration name agree.)*
+- [x] Run `bash scripts/typst-sync-check.sh`. Expect all four checks green and
       `MISMATCH_COUNT=0`.
-- [ ] Confirm no cascade: `grep -n 'LadderPump.lean' FormalSystem/Metalogic/Decidability/RaySummary/README.md`
+      *(dispatch 23: PASSED. Exit **0**, `typst-sync-check.sh: PASS (all 4 checks green)`,
+      `MISMATCH_COUNT=0`, `MODULE_MAP_MISMATCHES=0`, `MA_COUNT_MISMATCHES=0`,
+      `TOTAL_VIOLATIONS=0`, `CHECK4_VIOLATIONS=0`. Per Phase 2's FORWARD NOTE this reads clean
+      only BECAUSE dispatch 22 regenerated `status.typ`; it is not evidence the surface never
+      drifted.)*
+- [x] Confirm no cascade: `grep -n 'LadderPump.lean' FormalSystem/Metalogic/Decidability/RaySummary/README.md`
       still reads `1,931`, and `git status --short` shows exactly two modified files for this task
       — `FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean` and
       `scripts/nolint-attribute-allowlist.txt` — with `typst/generated/status.typ` and every
@@ -479,23 +491,59 @@ task's durable record states what was done and what was deliberately left as pre
       not treat any of these regenerated surfaces as an unplanned cascade and do not escalate
       them. A green `check-module-invariants.sh` does NOT imply current typst counts — the two
       gates cover disjoint generated surfaces.)*
-- [ ] Run the agent-system aggregator `bash .claude/scripts/verify-deploy.sh` for the complete
+      *(deviation: altered — run against the AMENDED figures the FORWARD NOTE directs, not the
+      falsified `1,931`. Live: `wc -l` reads **1926** and `RaySummary/README.md:44` reads
+      **1,926** — both match. `git status --short` shows **zero** modified files from this task:
+      all four Phase 2 outputs are committed (`48baecff7`, `63304a4d7`). The only working-tree
+      dirt is the SAME pre-existing foreign set dispatch 21 and 22 both recorded and left
+      untouched: `specs/893_.../issues.jsonl`, `specs/events.jsonl`, untracked `.pid`,
+      `specs/893_.../stale-dispatch-2-plan-report.md`, `specs/evidence/history-morphism-saturation-audit/`.
+      The item's "exactly two modified files" wording is superseded: the task's real source
+      footprint is `LadderPump.lean` + `scripts/nolint-attribute-allowlist.txt` PLUS the four
+      planned generated surfaces (root `README.md`, `FormalSystem/Metalogic/README.md`,
+      `RaySummary/README.md`, `typst/generated/status.typ`), all inside the declared
+      `file_scope`. Not an unplanned cascade; not escalated.)*
+- [x] Run the agent-system aggregator `bash .claude/scripts/verify-deploy.sh` for the complete
       gate set. Record any stale-deploy finding as pre-existing: this dispatch's own
       deploy-freshness probe already reports core, lean, literature, memory and typst stale
       relative to `agent-system/extensions/`. Do **not** hand-patch any file under `.claude/**`
       to make a gate pass.
-- [ ] Run `bash .claude/scripts/lean-challenge-snapshot.sh --check` if it resolves in this tree.
+      *(deviation: altered — discharged under the dispatch's Batch Gate Deferral, which forbids
+      independently running the complete gate set and routes it to the batch stage. The
+      narrowing is structurally EMPTY here: every `verify-deploy.sh` gate lints the deployed
+      `.claude/` tree or the `agent-system/extensions/` source store, and enumerating every
+      task-925 commit shows it touched **zero** files under either. Rather than waive the
+      criterion, `--only-gate 3,4` was run to record a real verdict: exit **0**,
+      `PASS -- 1 check(s), 0 failure(s)`; gate 3 `[SKIP]` (this repo is a deploy consumer, not
+      the source store), gate 4 task-reference lint `[PASS]`. The dispatch probe's `core` stale
+      finding is PRE-EXISTING, unrelated to this task, and unfixable from it — gate 3's SKIP
+      confirms the source store is not resolvable in this tree. Nothing under `.claude/**` was
+      hand-patched.)*
+- [x] Run `bash .claude/scripts/lean-challenge-snapshot.sh --check` if it resolves in this tree.
       A drift finding on `exists_idleSpliced_ladderPath` against the older `specs/911_...` pin is
       the **expected, correct** output of a deliberate generalization, and is ADVISORY ONLY per
       `plan-compliance.md` — it must not fail the phase, flip `verification_passed`, or downgrade
       a status. Record it as expected, naming this plan's `## Lean Challenge Statements` section
       as the re-pin.
-- [ ] Record in the summary that `exists_idleSpliced_ladderPath` was **generalized**, with its new
+      *(deviation: altered — the script RESOLVES but cannot run `--check` for this task: there
+      is no Challenge manifest at `specs/925_.../challenge/manifest.json` (exit **71**, "no
+      manifest found"); repo-wide only two manifests exist, both under `specs/archive/`. The
+      anticipated drift was therefore confirmed by direct comparison instead: task 911's plan
+      pins `exists_idleSpliced_ladderPath {Q : Type} [Fintype Q] [Nonempty Q]`
+      (`specs/911_.../plans/01_idle-cycle-sharpening.md:767`), live source reads
+      `{Q : Type}` (`LadderPump.lean:1824`). This is the expected, correct drift of a deliberate
+      generalization, ADVISORY ONLY per the script's own header ("MUST NOT be used to set
+      verification_passed false or block completion"). Re-pinned by this plan's
+      `## Lean Challenge Statements` section. Did not fail the phase or flip
+      `verification_passed`.)*
+- [x] Record in the summary that `exists_idleSpliced_ladderPath` was **generalized**, with its new
       signature written out, so the next reader of the idle layer does not read the change as a
       weakening.
-- [ ] Write `specs/925_ladderpump_c16_unused_arguments_lint_debt/summaries/01_ladderpump-c16-unusedarguments-clear-summary.md`,
+      *(dispatch 23: done — the summary's `## What Changed` writes out the new signature in full
+      and states the generalization explicitly.)*
+- [x] Write `specs/925_ladderpump_c16_unused_arguments_lint_debt/summaries/01_ladderpump-c16-unusedarguments-clear-summary.md`,
       the `.orchestrator-handoff.json`, and the final `.return-meta.json`; commit with an explicit
-      pathspec list.
+      pathspec list. *(dispatch 23: done.)*
 
 **Timing**: 0.75 hours
 
@@ -590,19 +638,40 @@ theorem exists_idleSpliced_ladderPath {Q : Type}
 
 ## Testing & Validation
 
-- [ ] Guarded `lake exe runLinter FormalSystem` exits 0 with `-- Linting passed for FormalSystem.`
+- [x] Guarded `lake exe runLinter FormalSystem` exits 0 with `-- Linting passed for FormalSystem.`
       and no `unusedArguments` finding anywhere in `LadderPump.lean`.
-- [ ] Full `bash scripts/check-module-invariants.sh` exits 0 with `PASS  C16`.
-- [ ] `PASS  C26` with the in-source attribute matched to its allowlist entry, and no `INFO  C26`
+      *(dispatch 23: guard exit **0**, `-- Linting passed for FormalSystem.`; **zero**
+      `unusedArguments` matches and **zero** `LadderPump` matches in the entire output.)*
+- [x] Full `bash scripts/check-module-invariants.sh` exits 0 with `PASS  C16`.
+      *(dispatch 23: exit **0**, `ALL CHECKS PASSED`, zero `FAIL` lines, `PASS  C16`.)*
+- [x] `PASS  C26` with the in-source attribute matched to its allowlist entry, and no `INFO  C26`
       stale line for this task's key.
-- [ ] `bash scripts/typst-sync-check.sh` exits 0, four checks green, `MISMATCH_COUNT=0`.
-- [ ] `wc -l FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean` reads `1931`, and
+      *(dispatch 23: `PASS  C26  all 16 in-source nolint attribute pair(s) are on`; no `INFO C26`
+      line anywhere and no `exists_idleTypeBlock` occurrence in the output.)*
+- [x] `bash scripts/typst-sync-check.sh` exits 0, four checks green, `MISMATCH_COUNT=0`.
+      *(dispatch 23: exit **0**, all four green, `MISMATCH_COUNT=0`.)*
+- [x] `wc -l FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean` reads `1931`, and
       `RaySummary/README.md`'s inventory row still reads `1,931`.
-- [ ] Guarded scoped builds of `...RaySummary.LadderPump`, `...RaySummary.LadderIdle` and
+      *(deviation: altered — both figures are SUPERSEDED by the user decision that deleted Edit
+      A's replacement comment (-5 comment / 0 code). Live and consistent: `wc -l` reads
+      **1926**, `RaySummary/README.md:44` reads **1,926**. The drift was absorbed by
+      REGENERATION, never by hand-editing a count, and `PASS INV` confirms every generated
+      inventory block is current.)*
+- [x] Guarded scoped builds of `...RaySummary.LadderPump`, `...RaySummary.LadderIdle` and
       `...RaySummary.LadderWindow` all exit 0.
-- [ ] `bash .claude/scripts/verify-deploy.sh` run to completion with its verdict recorded.
-- [ ] `git status --short` shows exactly two source files touched plus this task's `specs/**`
+      *(deviation: altered — subsumed by a guarded FULL `lake build`, this agent's mandated
+      phase-end gate, which strictly subsumes all three. Guard exit **0**,
+      `Build completed successfully (2974 jobs)`, zero `error:` lines, and `.olean` newer than
+      source re-confirmed for all three modules.)*
+- [x] `bash .claude/scripts/verify-deploy.sh` run to completion with its verdict recorded.
+      *(deviation: altered — scoped per the Batch Gate Deferral; `--only-gate 3,4` exit **0**,
+      `PASS -- 1 check(s), 0 failure(s)`. Complete gate set deferred to the batch stage, where
+      it attributes back by `modified_files` — which contain zero `.claude/**` paths.)*
+- [x] `git status --short` shows exactly two source files touched plus this task's `specs/**`
       artifacts.
+      *(deviation: altered — the real footprint is two source files PLUS four planned generated
+      surfaces, all in the declared `file_scope` and all already committed, so `git status
+      --short` shows zero task-925 dirt. Only the pre-existing foreign dirt remains, untouched.)*
 
 ## Artifacts & Outputs
 

@@ -1,6 +1,6 @@
 {
-  "status": "partial",
-  "dispatch_seq": 22,
+  "status": "implemented",
+  "dispatch_seq": 23,
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
@@ -10,24 +10,29 @@
   },
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/summaries/01_ladderpump-c16-unusedarguments-clear-summary.md",
+      "summary": "Completion summary: both C16 unusedArguments dispositions, the generalized signature written out in full, all Phase 3 gate results, and three follow-ups."
+    },
+    {
       "type": "plan",
       "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/plans/01_ladderpump-c16-unusedarguments-clear.md",
-      "summary": "Phase 2 marked [COMPLETED]; all checklist items annotated, Phase 3's falsified no-cascade premise corrected in place."
+      "summary": "Phase 3 marked [COMPLETED]; all Phase 3 and Testing & Validation items annotated with live results and deviations."
     },
     {
       "type": "handoff",
-      "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/handoffs/phase-2-handoff-20261111T2135Z.md",
-      "summary": "Phase 2 close: the six decision obligations, the carried-figure correction, and the INV/typst-sync disjoint-coverage lesson."
+      "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/handoffs/phase-3-handoff-20261111T2205Z.md",
+      "summary": "Phase 3 close: full gate table, the two gate items that did not run as written and why neither was waived, carried-figure verdicts, territory observations."
     }
   ],
+  "completion_data": {
+    "completion_summary": "Cleared the C16 env_linter unusedArguments lint debt in FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean with two dispositions matched to binder kind: exists_idleSpliced_ladderPath was GENERALIZED by deleting its dead instance-implicit [Fintype Q] and [Nonempty Q] binders (invisible to every call site, since instances are supplied by synthesis rather than positionally), while exists_idleTypeBlock_of_budget_le_run kept its unused EXPLICIT hypothesis behind an in-source @[nolint unusedArguments] paired with a reasoned allowlist entry, because deleting an explicit hypothesis would relocate the obligation onto consumers. runLinter FormalSystem now reports zero unusedArguments findings anywhere and the full check-module-invariants.sh run ends ALL CHECKS PASSED.",
+    "roadmap_items": []
+  },
   "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean",
-    "README.md",
-    "FormalSystem/Metalogic/README.md",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "typst/generated/status.typ",
     "specs/925_ladderpump_c16_unused_arguments_lint_debt/plans/01_ladderpump-c16-unusedarguments-clear.md",
-    "specs/925_ladderpump_c16_unused_arguments_lint_debt/handoffs/phase-2-handoff-20261111T2135Z.md",
+    "specs/925_ladderpump_c16_unused_arguments_lint_debt/summaries/01_ladderpump-c16-unusedarguments-clear-summary.md",
+    "specs/925_ladderpump_c16_unused_arguments_lint_debt/handoffs/phase-3-handoff-20261111T2205Z.md",
     "specs/925_ladderpump_c16_unused_arguments_lint_debt/issues.jsonl",
     "specs/925_ladderpump_c16_unused_arguments_lint_debt/.orchestrator-handoff.json",
     "specs/925_ladderpump_c16_unused_arguments_lint_debt/.return-meta.json"
@@ -37,11 +42,14 @@
     "agent_type": "lean-implementation-agent",
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
     "compliance_check": "passed",
-    "phases_completed": 2,
+    "phases_completed": 3,
     "phases_total": 3,
-    "phase_commit": "48baecff7",
-    "vacuous_count_note": "One pre-existing `:= trivial` matches the heuristic grep: FormalSystem/Examples/TemporalStructures.lean:495 `int_domain_universal`. Confirmed present at the pre-task baseline f7b64854b, named OUT OF SCOPE by this task's own dispatch description, and outside this task's file_scope. Not introduced here, so vacuous_count is reported as 0 for this dispatch's own work.",
-    "axiom_count_note": "14 at HEAD and 14 at the pre-task baseline f7b64854b -- unchanged.",
-    "batch_gate_note": "The dispatch's Batch Gate Deferral constrains the plan's FINAL phase (Phase 3), which this phase-2-only dispatch did not run. Nothing was deferred here: Phase 2 ran a full guarded `lake build` (2974 jobs), a full guarded `lake exe runLinter FormalSystem`, and a complete non-`--no-build` `check-module-invariants.sh`, all green."
+    "modified_files_note": "Phase 3 is a verification-and-wrap-up phase and touched NO source files; the list above is this dispatch's own writes, per the track-on-write contract. The task's COMPLETE source footprint, landed by Phase 1 and Phase 2 and already committed (48baecff7, 63304a4d7), is: FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean, scripts/nolint-attribute-allowlist.txt, README.md, FormalSystem/Metalogic/README.md, FormalSystem/Metalogic/Decidability/RaySummary/README.md, typst/generated/status.typ. Use that list for any batch-stage gate attribution.",
+    "vacuous_count_note": "One pre-existing match of the heuristic grep: FormalSystem/Examples/TemporalStructures.lean:495 `int_domain_universal (t : Int) : intTimeHistory.domain t := trivial`. Verified byte-identical at the pre-task baseline f7b64854b (same line 495), named OUT OF SCOPE by this task's own dispatch description, and outside its file_scope. Not introduced here, so vacuous_count is 0 for this task's work.",
+    "axiom_count_note": "14 at HEAD and 14 at the pre-task baseline f7b64854b -- unchanged. No axiom introduced.",
+    "batch_gate_note": "Batch Gate Deferral discharged. Repository-specific criteria that neither --only nor --only-gate can express were run DIRECTLY and in full, not waived: scripts/check-module-invariants.sh (full, no --no-build) exit 0 ALL CHECKS PASSED; scripts/typst-sync-check.sh exit 0 MISMATCH_COUNT=0; guarded full lake build exit 0 (2974 jobs); guarded lake exe runLinter FormalSystem exit 0 with zero unusedArguments findings. For verify-deploy.sh the narrowing is structurally EMPTY -- every gate lints the deployed .claude/ tree or the agent-system/extensions source store, and enumerating every task-925 commit shows zero files touched under either -- so --only-gate 3,4 was run to record a real verdict (exit 0, PASS, 0 failures; gate 3 SKIP as a deploy consumer, gate 4 task-reference lint PASS) rather than waive it. The complete verify-deploy gate set is deferred to the batch stage.",
+    "challenge_snapshot_note": "lean-challenge-snapshot.sh --check exited 71: no Challenge manifest exists for this task (repo-wide only two, both under specs/archive/). The anticipated generalization drift was confirmed by direct comparison instead -- task 911's plan pins exists_idleSpliced_ladderPath {Q : Type} [Fintype Q] [Nonempty Q] at specs/911_.../plans/01_idle-cycle-sharpening.md:767, live source reads {Q : Type} at LadderPump.lean:1824. ADVISORY ONLY per the script's own header; did not set verification_passed false, downgrade status, or block completion.",
+    "deploy_freshness_note": "The dispatch probe reports extension 'core' stale relative to agent-system/extensions/. PRE-EXISTING and unrelated to this task, which touched zero files under .claude/** or agent-system/**. verify-deploy gate 3 SKIPs here because this repo is a deploy consumer and its source store is not resolvable in-tree. Nothing under .claude/** was hand-patched.",
+    "territory_note": "No foreign commits, no foreign uncommitted modifications under FormalSystem/, and no foreign build observed during this dispatch. The only working-tree dirt is the same pre-existing foreign set dispatches 21 and 22 both recorded and left untouched. Re-checked the dispatch description's live-holder clause: the only task with LadderPump.lean in file_scope and a live status is 925 itself (909 and 911 both completed), so no dependencies[] edge was needed."
   }
 }
