@@ -206,9 +206,16 @@ none is claimed.
 - `grep -c '^unusedArguments:' scripts/nolint-attribute-allowlist.txt` reads 7.
 - `git status --short` shows exactly one modified file before staging.
 
-### Phase 2: Both LadderPump dispositions, under the net-zero line budget [BLOCKED]
+### Phase 2: Both LadderPump dispositions, under the net-zero line budget [COMPLETED]
 
-**BLOCKER** (Phase 2):
+**BLOCKER** (Phase 2) — **RESOLVED** in dispatch 22 by the recorded user decision in
+`specs/925_ladderpump_c16_unused_arguments_lint_debt/.decisions.json` (cycle 2,
+2026-11-11T21:12:29Z). The gate's wording, not its purpose, was what the new call site
+tripped: the decision amends it to "zero term-level applications **that pass the binders
+positionally**" and directs the removal to proceed. The original blocker record is kept
+below unedited, as the reason the escalation was correct at the time.
+
+**BLOCKER** (Phase 2) — original record:
 
 - **What failed**: This phase's own explicit pre-edit gate for Edit A. The plan requires the
   consumer sweep to return "zero term-level applications" of `exists_idleSpliced_ladderPath`
@@ -254,7 +261,9 @@ none is claimed.
       in case a sibling has touched the file since Phase 1, and re-confirm
       `wc -l` reads 1931. *(completed: `wc -l` reads 1931; every line number this phase cites —
       1819-1823 comment, 1824 `set_option`, 1830 signature, 1862-1866 comment, 1867
-      `set_option`, 1872 `-/`, 1873 signature — confirmed exact against live source)*
+      `set_option`, 1872 `-/`, 1873 signature — confirmed exact against live source)* *(dispatch 22: re-confirmed — `wc -l` still 1931
+      pre-edit, both regions byte-identical to `f7b64854b`; one carried-figure CORRECTION, see
+      Edit A below)*
 - [x] Re-confirm the consumer sweep before deleting binders:
       `grep -rn exists_idleSpliced_ladderPath --include=*.lean FormalSystem/ Tests/` must return
       only the declaration itself plus the four docstring mentions
@@ -263,10 +272,20 @@ none is claimed.
       *(deviation: gate FAILED — `LadderWindow.lean:1294` is a term-level application, added by
       `a94510cf3`; docstrings present but at `:223,:467` not `:181,:425`. Remedy taken as
       written: removal half `[BLOCKED]`, escalated. See the BLOCKER block above.)*
-- [ ] Edit A: delete lines 1819-1824 — the 5-line `linter.unusedFintypeInType` comment and the
+      *(dispatch 22: gate PASSES as amended by the user decision — the sweep returns the same
+      one term-level application at `LadderWindow.lean:1294`, and it passes exactly the seven
+      EXPLICIT arguments `g₁ hg₁ α k hk hidle₁ hrep₁`, zero instance binders positionally.
+      Docstrings at `LadderWindow:223,467` and `LadderIdle:19,75`, unchanged from dispatch 21.)*
+- [x] Edit A: delete lines 1819-1824 — the 5-line `linter.unusedFintypeInType` comment and the
       `set_option linter.unusedFintypeInType false in` line — and change the signature's first
       line to `theorem exists_idleSpliced_ladderPath {Q : Type}`, leaving every other binder
-      untouched. *(deviation: not applied — blocked by the failed consumer-sweep gate above)*
+      untouched. *(deviation: altered — applied in dispatch 22 per the user decision, with the comment DELETED
+      outright rather than replaced, since the `set_option` it explains is gone and its central
+      claim is verified false. CARRIED-FIGURE CORRECTION: the decision calls this a "four-line
+      rationale comment at 1820-1823"; live source shows **five** lines, 1819-1823 — line 1819
+      is the block's opening sentence fragment and cannot stand alone. All five deleted. Actual
+      budget is therefore **-5 comment / 0 code**, not the decision's -4; confirmed empirically
+      by the README regeneration below.)*
 - [ ] Edit A, replacement comment: write a **5-line** `--` comment immediately above the
       docstring recording why the binders were removed rather than exempted: the body takes no
       finiteness or nonemptiness instance anywhere
@@ -276,8 +295,12 @@ none is claimed.
       break — instance arguments are supplied by synthesis, not positionally. Do **not** carry
       forward the deleted comment's stale claim that `exists_ladderPath_of_walk_of_pins` "reads
       only `Finite Q`"; it reads no instance at all.
-      *(deviation: not applied — blocked by the failed consumer-sweep gate above)*
-- [ ] Edit B: rewrite the 1862-1866 comment to **5 lines** so it names the environment linter and
+      *(deviation: skipped — the user decision supersedes this item. It prescribes a net **-4**
+      (actually -5) comment delta for Edit A and puts README inventory REGENERATION in scope to
+      absorb it, which is only coherent if no replacement comment is written. With the
+      `set_option` deleted there is no suppression left to justify, so a reason comment would
+      have nothing to explain. Rationale preserved here and in the summary instead.)*
+- [x] Edit B: rewrite the 1862-1866 comment to **5 lines** so it names the environment linter and
       its separate remedy — that the scoped `set_option linter.unusedVariables false in` cannot
       reach a Batteries `@[env_linter]`, which runs post-hoc over an imported environment where no
       source-level `set_option` is in scope, hence the paired attribute and allowlist entry. Keep
@@ -288,8 +311,10 @@ none is claimed.
       `linter.unusedVariables` **literally**. A first draft saying "the source linter" instead
       failed `FAIL C29 ... LadderPump.lean:1866: comment above does not mention
       `linter.unusedVariables``. Keep the literal option name as the comment's opening token,
-      exactly as the pre-existing comment does.)*
-- [ ] Edit B, attribute: insert `@[nolint unusedArguments]` on its own line between the
+      exactly as the pre-existing comment does.)* *(dispatch 22: applied verbatim from that
+      verified-ready spec — 5 lines, opening token the literal `` `linter.unusedVariables` ``,
+      widest line 98 chars. `PASS C29` on the first attempt, no round-trip.)*
+- [x] Edit B, attribute: insert `@[nolint unusedArguments]` on its own line between the
       docstring's closing `-/` and `theorem exists_idleTypeBlock_of_budget_le_run`, exactly as
       `LadderAgree.lean:2046` does for `insRegionStart_trichotomy`.
       *(deviation: applied, verified green, then REVERTED with Edit B's comment. Verification
@@ -299,7 +324,9 @@ none is claimed.
       survivor being exactly the blocked Edit A half; C26 went 15 pairs + 1 stale INFO -> 16
       pairs + 0 stale INFO, proving Phase 1's allowlist key and the as-written declaration name
       agree. The attribute's placement and effect are therefore confirmed, not merely planned.)*
-- [ ] Assert the budget: `wc -l FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean`
+      *(dispatch 22: re-applied and COMMITTED. `PASS C26 all 16 in-source nolint attribute
+      pair(s) are on` — 16, up from 15, with zero stale INFO.)*
+- [x] Assert the budget: `wc -l FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean`
       must read exactly **1931**. The arithmetic is
       `(A_new - 5) - 1 + (B_new - 5) + 1 = A_new + B_new - 10`, and `5 + 5 = 10`. If it reads
       anything else, adjust comment length — never the README row or `status.typ`.
@@ -314,15 +341,25 @@ none is claimed.
       exactly the unbalanced intermediate state `Commit Mode: atomic-batch` forbids, so Edit B
       was reverted rather than committed alone. Next dispatch: apply both edits with
       A_new = B_new = 5 and both dimensions balance with no README cascade.)*
-- [ ] Scoped guarded build:
+      *(deviation: altered — the user decision replaces this gate. Edit A writes NO replacement
+      comment (A_new = 0), so the budget is **not** net-zero and 1931 is not the target. Live
+      post-edit figures: `wc -l` reads **1926** (-5), and the README generated inventory moved
+      `Live comment lines` 139,095 -> 139,090 (-5) with `Live lines of code` 218,865 UNCHANGED
+      (0) — the two-dimensional budget, measured rather than predicted. The drift was absorbed
+      by REGENERATION via `check-module-invariants.sh --emit-inventory`, never by hand-editing
+      a count, and `PASS INV` confirms it. Three blocks regenerated: root `README.md`,
+      `FormalSystem/Metalogic/README.md`, `.../RaySummary/README.md`. `typst/generated/status.typ`
+      did not drift and was not touched.)*
+- [x] Scoped guarded build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderPump`,
       as a plain foreground `timeout 600 ...` call with the Bash tool `timeout` parameter raised to
       600000; if it does not fit one call, detach it as a shell-level background job and block on
       it with the bounded single-call idiom from `context/patterns/bounded-build-waiter.md`. Never
       a bare `lake`. *(deviation: altered — discharged by a guarded FULL `lake build` instead,
       which strictly subsumes the scoped build and is this agent's mandated phase-end gate.
-      Guard exit 0, 2974 jobs, zero `error:` lines.)*
-- [ ] Dependent build, same guarded shape, for the two modules that import this one and mention
+      Guard exit 0, 2974 jobs, zero `error:` lines.)* *(dispatch 22: same shape, same result —
+      guard exit 0, `Build completed successfully (2974 jobs)`, zero `error:` lines.)*
+- [x] Dependent build, same guarded shape, for the two modules that import this one and mention
       the changed declaration:
       `-- build FormalSystem.Metalogic.Decidability.RaySummary.LadderIdle` and
       `-- build FormalSystem.Metalogic.Decidability.RaySummary.LadderWindow`. These are
@@ -332,7 +369,9 @@ none is claimed.
       *(deviation: altered — subsumed by the full build above; `.olean` newer than source
       confirmed for LadderPump, LadderIdle and LadderWindow. Territory note corrected: task 918
       is COMPLETE (`51faa61b9`), so `LadderWindow.lean` is no longer live sibling territory.)*
-- [ ] Guarded linter run:
+      *(dispatch 22: same — `.olean` newer than source re-confirmed for all three modules after
+      the full build. `LadderWindow.lean` read only, never edited.)*
+- [x] Guarded linter run:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- exe runLinter FormalSystem`.
       Expect exit 0 and `-- Linting passed for FormalSystem.`. Note that `Found 0 errors` can never
       appear — that line is printed only on a failing run — so its absence is not evidence of
@@ -342,13 +381,22 @@ none is claimed.
       [Fintype Q], argument 3: [Nonempty Q]` — down from two flagged declarations. The
       `exists_idleTypeBlock_of_budget_le_run` finding was extinguished by Edit B. C16 therefore
       goes green exactly when Edit A lands, and on nothing else.)*
-- [ ] Commit the file once, both regions together:
+      *(dispatch 22: Edit A landed and the prediction held exactly — guard exit **0**,
+      `-- Linting passed for FormalSystem.`, **zero** `unusedArguments` findings anywhere in
+      the output. `PASS C16` in a full `check-module-invariants.sh` that ends `ALL CHECKS
+      PASSED` with zero `FAIL` lines.)*
+- [x] Commit the file once, both regions together:
       `git add -- FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean`, reviewed via
       `git status --short` and `git diff --staged` first. *(deviation: not performed — no commit
       was made of `LadderPump.lean`. Edit B alone is the unbalanced intermediate state this
       phase's `Commit Mode: atomic-batch` forbids committing, so it was reverted and the file
       is byte-identical to `f7b64854b`. This phase's only committed output is its own `specs/**`
       record.)*
+      *(deviation: altered — performed in dispatch 22, but the single atomic commit covers FOUR
+      files, not one: `LadderPump.lean` plus the three REGENERATED inventory blocks the user
+      decision put in scope. Both regions of `LadderPump.lean` land together, which is what
+      `Commit Mode: atomic-batch` actually requires; the generated surfaces must ride along or
+      the commit is red against `INV`.)*
 
 **Timing**: 1.0 hours
 
@@ -415,6 +463,17 @@ task's durable record states what was done and what was deliberately left as pre
       — `FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean` and
       `scripts/nolint-attribute-allowlist.txt` — with `typst/generated/status.typ` and every
       README untouched.
+      *(FORWARD NOTE from dispatch 22, which executed Phase 2 — this item's premise is FALSIFIED
+      and must be read as amended, not run as written. The user decision recorded in
+      `.decisions.json` (cycle 2) deleted Edit A's replacement comment, making the budget -5
+      comment / 0 code instead of net-zero, and put README inventory REGENERATION explicitly in
+      scope. Live post-Phase-2 state, already committed: `RaySummary/README.md` reads **1,926**,
+      not `1,931`; three generated inventory blocks were regenerated — root `README.md`
+      (`Live comment lines` 139,095 -> 139,090), `FormalSystem/Metalogic/README.md`
+      (`Decidability/` 118,937 -> 118,932) and `RaySummary/README.md`. `typst/generated/status.typ`
+      did NOT drift and is untouched, so that half of the item still holds. Verify the AMENDED
+      figures and the untouched `status.typ`; do not treat the README deltas as an unplanned
+      cascade and do not escalate them.)*
 - [ ] Run the agent-system aggregator `bash .claude/scripts/verify-deploy.sh` for the complete
       gate set. Record any stale-deploy finding as pre-existing: this dispatch's own
       deploy-freshness probe already reports core, lean, literature, memory and typst stale

@@ -1816,18 +1816,12 @@ theorem idleSplice_pins (hg : IsLadderPath step pend g) (hl : 0 < l)
 
 end Inputs
 
--- `linter.unusedFintypeInType`, scoped to this declaration: the signature is pinned by the
--- plan's Lean Challenge Statements block, and `[Fintype Q]` is the shape every consumer in the
--- idle layer already carries. `exists_ladderPath_of_walk_of_pins` reads only `Finite Q`, so the
--- instance is not consumed here; weakening it would split the idle layer's instance shape in
--- two for no gain. Same precedent as `exists_typeBlock_of_budget_le_cnt` above.
-set_option linter.unusedFintypeInType false in
 /-- **THE ADMISSIBILITY HALF OF THE IDLE-BLOCK DUPLICATION, UNCONDITIONAL.** An idle block whose
 two ends carry the same object state may be duplicated outright: the spliced walk lifts to a
 ladder path whose object walk is `spliceObj` and whose countdown is `idleSpliceCnt`. No pin side
 condition and no regime hypothesis — `idleSplice_pins` discharges the lift's pin slot, and
 `exists_ladderPath_of_walk_of_pins` derives the anchor from it. -/
-theorem exists_idleSpliced_ladderPath {Q : Type} [Fintype Q] [Nonempty Q]
+theorem exists_idleSpliced_ladderPath {Q : Type}
     {step : Q → Q → Bool} {pend : Q → Bool}
     (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (a : ℤ) (l : ℕ) (hl : 0 < l)
     (hidle : ∀ i : ℕ, i < l → pend (objAt g (a + (i : ℤ))) = false)
@@ -1859,17 +1853,18 @@ budget `exists_typeBlock_of_budget_le_cnt` uses, with the idle-state count in pl
 def idleBudget {Q : Type} [Fintype Q] (pend : Q → Bool) (φ : PlusFormula) : ℕ :=
   (Finset.univ.filter (fun q : Q => pend q = false)).card * 2 ^ (plusSubformulaClosure φ).card
 
--- `linter.unusedVariables`, scoped to this declaration: the signature is pinned by the plan's
--- Lean Challenge Statements block, and `hg` is not read — the idle mirror hypothesizes the run's
--- idleness directly (`hrun`), where the pending form reads it off `cntAt_sub_of_pend` and so
--- needs the path condition. The hypothesis is kept because every consumer in the idle layer has
--- it to hand and because dropping it would split this lemma's shape from the pending one's.
+-- `linter.unusedVariables`, scoped to this declaration, is only half the remedy. `hg` is unread
+-- here — the idle mirror hypothesizes the run's idleness directly via `hrun`, where the pending
+-- form reads it off `cntAt_sub_of_pend` — but dropping it relocates the finding one layer up
+-- into `LadderWindow.lean`. The scoped `set_option` cannot reach a Batteries `@[env_linter]`,
+-- which runs post-hoc over an imported environment, hence the paired attribute and allowlist row.
 set_option linter.unusedVariables false in
 /-- **A LONG ENOUGH IDLE RUN CARRIES A BLOCK MATCHING IN OBJECT STATE AND IN REALIZED TYPE.**
 The mirror of `exists_typeBlock_of_budget_le_cnt_within`: the pigeonhole on the `idleBudget + 1`
 positions of the run, into `{q // pend q = false} × {T // T ∈ (cl φ).powerset}`, whose
 cardinality IS `idleBudget pend φ`. The conclusion exposes the block's own idleness and its
 containment in the run, because the idle-block duplication consumes both. -/
+@[nolint unusedArguments]
 theorem exists_idleTypeBlock_of_budget_le_run {Q : Type} [Fintype Q] [Nonempty Q]
     (step : Q → Q → Bool) (pend : Q → Bool)
     (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
