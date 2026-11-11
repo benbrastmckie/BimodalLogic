@@ -76,7 +76,7 @@ next_project_number: 919
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-917 [PLANNED] — Discharge ForwardSlackWitnessed under ParamsOk, or compile a...
+917 [PARTIAL] — Discharge ForwardSlackWitnessed under ParamsOk, or compile a...
   └─ 918 [NOT STARTED] — Produce a positive factorization lemma for the index of which...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
@@ -152,13 +152,14 @@ SCOPE: the index only. Different file set from the cell-agreement siblings, so t
 
 ### 917. Forward slack witnessed discharge or refutation
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 916
 - **Parent**: Task 910
 - **Research**: [917_forward_slack_witnessed_discharge_or_refutation/reports/01_forward-slack-witnessed-discharge.md]
 - **Plan**: [917_forward_slack_witnessed_discharge_or_refutation/plans/01_forward-slack-witnessed-discharge.md]
+- **Summary**: [917_forward_slack_witnessed_discharge_or_refutation/summaries/01_forward-slack-witnessed-discharge-summary.md]
 
 **Description**: Discharge ForwardSlackWitnessed under ParamsOk, or compile a refutation showing it is unremovable. This is the hypothesis that currently keeps every landed depth-0 cell-equality schema from bearing on the reserved obligation in either direction.
 

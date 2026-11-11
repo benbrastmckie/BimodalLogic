@@ -3201,7 +3201,7 @@
     {
       "project_number": 917,
       "project_name": "forward_slack_witnessed_discharge_or_refutation",
-      "status": "planned",
+      "status": "partial",
       "task_type": "lean4",
       "description": "Discharge ForwardSlackWitnessed under ParamsOk, or compile a refutation showing it is unremovable. This is the hypothesis that currently keeps every landed depth-0 cell-equality schema from bearing on the reserved obligation in either direction.\n\nVERIFIED STARTING POSITION (compiled, not argued):\n(1) THREE depth-0 cell-EQUALITY schemas are landed in FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean -- cellLE_zero_const_of_kappa_eq_of_forwardSlack (equal register), cellLE_zero_const_of_kappa_eq_commonShift_of_forwardSlack (common shift, register freed), and cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack (monotone, carrying neither restriction and specializing to both the others at the equal-register and common-shift instances). ALL THREE carry ForwardSlackWitnessed as a hypothesis a consumer must supply, and nothing in the tree discharges it.\n(2) Consequently all three are STRICTLY STRONGER IN HYPOTHESES than the reserved statement and bear on its truth value in NEITHER DIRECTION. The reserved name cellLE_zero_const_of_kappa_eq has no declaration site anywhere under FormalSystem/, and CellLEZeroConstOfKappaEq under ParamsOk stays neither proved nor refuted.\n(3) ForwardSlackWitnessed (LadderCell.lean:718) lifts the forward-slack regime from one path to a whole cell: every type the cell at a state realizes is realized there by SOME path carrying HasForwardSlack. Being an existential over paths it is untouched by ClimbWitness.hasForwardSlack_refuted_unconditional (LadderChain.lean:1497), which refutes the PER-PATH state-level regime -- that asymmetry is why the existential form survives while the per-path one does not. It asserts nothing as it stands; it is a hypothesis.\n(4) A second, independent restriction travels with it: the room bounds. The monotone schema carries a room bound on the upper pair plus that pair's own gap; the common-shift one carries a DOUBLED displacement amount (one multiple of P+1 for the countdown, one for the lowered anchor) with a correspondingly doubled room bound. None of these is implied by, nor implies, the pending-forever gap.\n\nTWO ADMISSIBLE OUTCOMES: discharge ForwardSlackWitnessed from ParamsOk (plus the room bounds, if they come free), landing cellLE_zero_const_of_kappa_eq at last; or compile a refutation that it is derivable, which is itself a result -- it would force certStabK's one unclaimed Real condition to be RESTATED rather than proved, and that consequence must be recorded if so. Never leave the verdict tacit.\n\nSCOPE: the hypothesis discharge only. The antitone slice of the collision dichotomy belongs to a sibling, and this task must not land anything under the reserved name unless the discharge actually succeeds.\n",
       "effort": "high",
@@ -3233,10 +3233,15 @@
           "path": "specs/917_forward_slack_witnessed_discharge_or_refutation/plans/01_forward-slack-witnessed-discharge.md",
           "type": "plan",
           "summary": "Nine-phase plan: reduction and scoping records, a deletion primitive above z's region, a decision gate on the pin cascade, the conditional discharge and five hypothesis-free schemas, a compiled-refutation contingency, and a final full-gate reconciliation phase."
+        },
+        {
+          "path": "specs/917_forward_slack_witnessed_discharge_or_refutation/summaries/01_forward-slack-witnessed-discharge-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary carrying the verdict sentence, the Phase 4 blocker analysis, and the full verification record."
         }
       ],
       "created": "2026-11-11T02:48:57Z",
-      "last_updated": "2026-11-11T05:01:19Z",
+      "last_updated": "2026-11-11T05:33:56Z",
       "session_id": "sess_1794365863_292a3e",
       "next_artifact_number": 2
     },
