@@ -177,19 +177,19 @@ C34a's `omitted` set is empty whatever the marker says and the correction is a o
 
 ---
 
-### Phase 2: `ConeUnravelling.lean` -- twin plus delegating corollary [NOT STARTED]
+### Phase 2: `ConeUnravelling.lean` -- twin plus delegating corollary [COMPLETED]
 
 **Goal**: Correct `base_taskRel_eq_ofStepRel` to `Compositionality, Seriality, Limit` and give it
 a C34a delegation discharge, reusing the already-existing enabler twin.
 
 **Tasks**:
-- [ ] Confirm `FrameOver.taskRel_eq_iter_of_constraints` is present at `FormalSystem/Semantics/IntNormalForm.lean` with marker `Constraints consumed: Compositionality, Seriality, Limit` and no `IsRegular` mention in its span; this is the enabler and it already exists, so no new enabler twin is written here.
-- [ ] Add `base_taskRel_eq_ofStepRel_of_constraints (F : FrameOver intOrder)` taking `hcomp : TaskFrame.Compositional F.TaskRel`, `hser : TaskFrame.Serial F.TaskRel`, `hlim : TaskFrame.Limit F.TaskRel`, concluding `F.TaskRel = ofStepRel F.step`, proved by the original's body with `F.taskRel_eq_iter` replaced by `F.taskRel_eq_iter_of_constraints hcomp hser hlim`.
-- [ ] Mark the twin `Constraints consumed: Compositionality, Seriality, Limit` and verify its span names `IsRegular` nowhere.
-- [ ] Reduce `base_taskRel_eq_ofStepRel` to the one-line corollary `F.base_taskRel_eq_ofStepRel_of_constraints F.comp F.serial F.limit`, keeping its signature byte-identical, and give it the identical corrected marker.
-- [ ] Rewrite the rationale paragraph at `ConeUnravelling.lean` (~876) that states "the marker lists what the **binder supplies**" and that "this module deliberately has no such twin": both claims are now false. State instead that the twin exists and that the marker enumerates what the term reaches.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs.
-- [ ] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported.
+- [x] Confirm `FrameOver.taskRel_eq_iter_of_constraints` is present at `FormalSystem/Semantics/IntNormalForm.lean` with marker `Constraints consumed: Compositionality, Seriality, Limit` and no `IsRegular` mention in its span; this is the enabler and it already exists, so no new enabler twin is written here.
+- [x] Add `base_taskRel_eq_ofStepRel_of_constraints (F : FrameOver intOrder)` taking `hcomp : TaskFrame.Compositional F.TaskRel`, `hser : TaskFrame.Serial F.TaskRel`, `hlim : TaskFrame.Limit F.TaskRel`, concluding `F.TaskRel = ofStepRel F.step`, proved by the original's body with `F.taskRel_eq_iter` replaced by `F.taskRel_eq_iter_of_constraints hcomp hser hlim`.
+- [x] Mark the twin `Constraints consumed: Compositionality, Seriality, Limit` and verify its span names `IsRegular` nowhere.
+- [x] Reduce `base_taskRel_eq_ofStepRel` to the one-line corollary `F.base_taskRel_eq_ofStepRel_of_constraints F.comp F.serial F.limit`, keeping its signature byte-identical, and give it the identical corrected marker. *(deviation: altered -- the twin lives in namespace `FormalSystem.Semantics`, not `FormalSystem.Semantics.FrameOver`, so dot notation off `F` cannot resolve it; the body is the applicative `base_taskRel_eq_ofStepRel_of_constraints F F.comp F.serial F.limit`. Same lemma, same arguments, signature byte-identical)*
+- [x] Rewrite the rationale paragraph at `ConeUnravelling.lean` (~876) that states "the marker lists what the **binder supplies**" and that "this module deliberately has no such twin": both claims are now false. State instead that the twin exists and that the marker enumerates what the term reaches.
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs. *(rewrote root `README.md` only; `FormalSystem/README.md` needed no change)*
+- [x] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported. *(drift reported: `formalsystem-line-count` 404591 -> 404610; re-stamped with `--fix`, re-checked `MISMATCH_COUNT=0`)*
 
 **Timing**: 0.75 hours
 
@@ -210,6 +210,33 @@ a C34a delegation discharge, reusing the already-existing enabler twin.
 - `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Semantics.ConeUnravelling` succeeds (exit status checked).
 - `bash scripts/typst-sync-check.sh --counts-only` exits 0.
 - No `sorry` and no new axiom: `grep -n sorry` over the touched file is empty.
+
+**Verification Notes** (phase 2, dispatch 26):
+- `scripts/check-module-invariants.sh`: `PASS C34a` -- all **164** markers honest (was 163 before
+  this phase; the twin is the 164th). Discharge groups moved exactly one row:
+  **23 delegating** (was 22), 2 field re-export, **61 omitting nothing** (was 62). That single-row
+  move is the mechanical attribution of `base_taskRel_eq_ofStepRel` to the delegation group: it
+  now omits *Saturation* while carrying `[F.IsRegular]`, so it is either discharged or a C34a
+  violation, C34a PASSed, and `reexports` cannot apply to a three-constraint marker. `PASS C34b`.
+  `INFO C34` census: 341 binder-carrying declarations in 76 files.
+- The gate's overall exit code is **1**, not 0, from a **pre-existing** `FAIL C16` (env_linter
+  `unusedArguments` at `FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean:1825` and
+  `:1868`), byte-identical to the record in phase 1's handoff and outside this phase's file
+  territory. The phase's own "exits 0" criterion is therefore not met on the nose, and this
+  record says so rather than implying it was. The `FAIL INV` stale-inventory finding in the same
+  run was this phase's own and was cleared by `--emit-inventory`.
+- Scoped build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Semantics.ConeUnravelling`
+  -- `GUARD_EXIT=0`, `Build completed successfully (1514 jobs)`, zero `error:` lines.
+- Full library build (the phase-commit gate): `GUARD_EXIT=0`,
+  `Build completed successfully (2974 jobs)`, zero `error:` lines, `ConeUnravelling.olean` newer
+  than its source.
+- `scripts/typst-sync-check.sh --counts-only` exits 0 after the `--fix` re-stamp.
+- `grep -n sorry FormalSystem/Semantics/ConeUnravelling.lean` is empty; no axiom added.
+- Gate 8 / `run-all.sh`: no suite covers these paths (`__FULL_SWEEP__`), as the Tier Justification
+  records, so there is no narrowing `--only` invocation to run for this phase. This phase's tier
+  is `local`, not `full`; the dispatch's Batch Gate Deferral directive targets the plan's final
+  phase. The complete gate set is deferred to this batch invocation's single end-of-batch run --
+  deferred, not forgiven.
 
 ---
 
