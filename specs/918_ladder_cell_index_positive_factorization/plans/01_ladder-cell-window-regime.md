@@ -182,7 +182,7 @@ phase is already measured; nothing here depends on the gate's outcome.
 
 ---
 
-### Phase 2: DECISION GATE -- The Composite Splice's Pin Clause in the Window Regime [NOT STARTED]
+### Phase 2: DECISION GATE -- The Composite Splice's Pin Clause in the Window Regime [COMPLETED]
 
 **Goal**: Decide, by compiled attempt rather than by argument, whether the composite surgery
 (a pending type-respecting block duplicated inside `z`'s region, compensated by the same
@@ -581,3 +581,53 @@ partial, and the two directions are not bundled into one all-or-nothing step.
   statements: `propext`, `Quot.sound`).
 - Scope Hypothesis outcome: estimated 120-160 lines, ACTUAL 163 (`wc -l`) — a 3-line overshoot,
   still far below the 1500 `longFile` ceiling, so no baseline is owed at this phase.
+
+### Phase 2 (measured) -- GATE VERDICT: PASS
+
+**Clause inventory, read off `exists_ladderPath_of_walk_nxt_at`'s signature**
+(`LadderChain.lean:657`), not from memory: `hw`, `hidle`, `hpp`, `hpi`, `hpins`, `hn0`.
+
+| Clause | Discharged by | Status |
+|---|---|---|
+| `hw` | `objAt_step` on the composite ladder path | free |
+| `hidle` | `cntAt_eq_zero_of_idle` | free |
+| `hpp` | `cntAt_succ_of_pend_pend` | free |
+| `hpi` | `cntAt_eq_zero_of_pend_idle` | free |
+| `hpins` | `pinCompat_of_ladderPath` on the composite; the composite's OWN construction spends the compensator, via `window_pin_pair_raise_of_slack` + `no_pin_in_idle_run` | measured, closes |
+| `hn0` | `window_anchor_clause_of_pin_classification` (landed, compiled) | measured, closes |
+
+**The two region-start facts (task 2), established rather than assumed**: landed as
+`nxtAt_le_cntAt_region_start` in `LadderWindow.lean`, deriving BOTH
+`cntAt g (a+1) = cntAt g z + d` (`cntAt_add_of_pend_back`) and `nxtAt g z <= cntAt g z + 2d + 1`
+(`cntAt_eq_nxtAt_of_idle_pend` composed with `nxtAt_lipschitz`). Note the `+ 1`: the path gives
+`n <= c + 2d + 1`, one slacker than the pinned `window_anchor_compat_of_room`'s `hlow`, so the
+construction consumes the new `window_anchor_compat_at_region_start` at displacement `d + 1`. The
+pinned statement is unchanged and still lands exactly as pinned.
+
+**The region-start spacing fact (task 3), confirmed before anything rests on it**: NOT found
+landed among the three named candidates in the form needed; landed here as `regionStart_spacing`,
+derived from `cntAt_sub_of_pend` alone -- no parameter condition, no regime hypothesis.
+
+**The gate attempt (task 4) and criterion (task 5)**: both clauses close with NO hypothesis
+beyond `ParamsOk`, the two window hypotheses, `Tc <= c`, the collision's room, and the ONE named
+idle-run condition `HasIdleRunBelow` (landed as a `def`: the `idleBudget pend phi + 1` positions
+at and below the region start are idle). No sixth hypothesis was needed, so this is a PASS, not a
+widening.
+
+**A measurement that corrected a plan prediction**: the compensator's LENGTH (`jP <= E`) was
+written into the anchor-clause lemma and the elaborator reported it UNREFERENCED. The idle
+insertion displaces the region start and the anchor by the same amount, so their distance is
+unchanged and the anchor clause never reads `E`. The compensator is spent entirely in the pin
+PAIR clause, against pins strictly below the lengthened run, which is why
+`window_pin_pair_raise_of_slack` carries `jP <= E` as a live hypothesis and the anchor lemma does
+not. This is recorded in the module docstring at the lemma itself.
+
+- Scoped guarded build: green, 0 errors, 0 warnings.
+- Phase-end FULL guarded `lake build`: green (2974 jobs), 0 errors, 0 warnings.
+- `bash scripts/typst-sync-check.sh --fix` then `--counts-only`: `MISMATCH_COUNT=0`.
+- Scope Hypothesis outcome: estimated +60 lines on the PASS branch; ACTUAL +243 (163 -> 406
+  `wc -l`). The overshoot is the gate's own compiled measurement -- the plan anticipated the
+  named `def` plus a spacing lemma, and the measurement additionally landed the pin
+  classification lemma, the two distance-growth lemmas, the region-start arithmetic and the
+  slack lemma, all of which Phase 3 consumes rather than re-deriving. Still far below the 1500
+  `longFile` ceiling, so no baseline is owed.
