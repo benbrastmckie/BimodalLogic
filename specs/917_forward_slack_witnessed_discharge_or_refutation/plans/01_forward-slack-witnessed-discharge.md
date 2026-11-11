@@ -1,7 +1,7 @@
 # Implementation Plan: ForwardSlackWitnessed — discharge or refutation
 
 - **Task**: 917 - Discharge `ForwardSlackWitnessed` under `ParamsOk`, or compile a refutation
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 14.5 hours
 - **Dependencies**: None blocking. The antitone slice of the collision dichotomy is already landed (see Overview).
 - **Research Inputs**: `specs/917_forward_slack_witnessed_discharge_or_refutation/reports/01_forward-slack-witnessed-discharge.md`; the compile-verified Phase 4 signature measurement in `specs/917_forward_slack_witnessed_discharge_or_refutation/evidence/phase-4-pinned-signature-deficit.lean` and `.../evidence/phase-4-pinned-signature-deficit-FAILS.lean`

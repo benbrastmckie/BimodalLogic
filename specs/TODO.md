@@ -11,8 +11,8 @@ next_project_number: 919
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,912,917 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,913,914,918 | 298,428,502,743,761,873,912,917 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,912,918 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,913,914 | 298,428,502,743,761,873,912 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -76,8 +76,7 @@ next_project_number: 919
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-917 [IMPLEMENTING] — Discharge ForwardSlackWitnessed under ParamsOk, or compile a...
-  └─ 918 [NOT STARTED] — Produce a positive factorization lemma for the index of which...
+918 [NOT STARTED] — Produce a positive factorization lemma for the index of which...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Documentation
@@ -152,7 +151,7 @@ SCOPE: the index only. Different file set from the cell-agreement siblings, so t
 
 ### 917. Forward slack witnessed discharge or refutation
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 916
