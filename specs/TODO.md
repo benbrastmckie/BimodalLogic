@@ -6,12 +6,12 @@ next_project_number: 916
 
 ## Task Order
 
-*Updated 2026-11-10. Generated from state.json dependency graph.*
+*Updated 2026-11-11. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,896,899,900,905,906,907,908,910,911,912 | -- | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,896,899,900,905,906,907,908,911,912 | -- | agent-system, algebraic-representation, completeness, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,913,914 | 298,428,502,743,761,873,912 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -42,7 +42,7 @@ next_project_number: 916
 
 ### Completeness
 
-896 [NOT STARTED] — The extended L-plus proof system (TM-plus + axiom set +...
+896 [RESEARCHING] — The extended L-plus proof system (TM-plus + axiom set +...
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 905 [NOT STARTED] — Eliminate cross-certification between the forward and...
@@ -77,7 +77,6 @@ next_project_number: 916
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-910 [PLANNED] — Dispatch or explicitly exclude the SATURATED-GAP third branch...
 911 [PLANNED] — Pursue the idle-cycle sharpening left open by the idle-gap...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
@@ -243,12 +242,13 @@ ORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Cit
 
 ### 910. Saturated gap branch kappa collision regimes
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 909
 - **Parent**: Task 838
 - **Plan**: [910_saturated_gap_branch_kappa_collision_regimes/plans/01_saturated-gap-monotone-dispatch.md]
+- **Summary**: [910_saturated_gap_branch_kappa_collision_regimes/summaries/01_saturated-gap-monotone-dispatch-summary.md]
 
 **Description**: Dispatch or explicitly exclude the SATURATED-GAP third branch of kappa_collision_regimes, which neither landed cell inclusion addresses in either direction.
 
@@ -462,7 +462,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 896. The extended L-plus proof system (TM-plus + axiom set + naming rules) with its ZTime soundness, and the completeness targets as stated Props
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 895

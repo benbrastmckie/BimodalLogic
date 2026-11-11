@@ -1,7 +1,7 @@
 # Implementation Plan: Task #910
 
 - **Task**: 910 - Dispatch or explicitly exclude the SATURATED-GAP third branch of `kappa_collision_regimes`, which neither landed cell inclusion addresses in either direction
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: 909 (landed: `exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past`)
 - **Research Inputs**: None (no `research_artifact` on this dispatch; see "Why no research round" below)

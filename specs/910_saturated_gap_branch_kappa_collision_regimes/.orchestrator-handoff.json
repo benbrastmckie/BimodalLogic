@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "phases_completed": 7,
   "phases_total": 7,
-  "summary": "Authored a 7-phase plan that splits branch 3 of kappa_collision_regimes into a dispatchable MONOTONE residue (register displaced in the same direction as the countdown) and an explicitly excluded ANTITONE one. Three plan-time Lean runs settled the split rather than assuming it: the free-register anchor clause closes by omega from the six facts the landed common-shift proof already assembles plus exactly two bounds on the target register; the lower bound is non-removable, with an arithmetic witness; and both pinned kappa-collision witness pairs close by decide. The dispatched half covers the exact (2,0)/(4,1) pair the task description cites as reached by no landed inclusion, and the exclusion is carried as a named hypothesis backed by a compiled dichotomy and two non-vacuity records, so nothing is tacit. The reserved name cellLE_zero_const_of_kappa_eq stays claimed by nothing in every phase.",
+  "summary": "Branch 3 of kappa_collision_regimes is split into a dispatched MONOTONE slice and an explicitly excluded ANTITONE one, discharging both of the task's admissible outcomes on their own halves. Eleven new declarations in LadderCell.lean: the free-register raise with its lower bound's necessity compiled at an arithmetic witness, the upward cell inclusion (no forward slack) and the downward path- and state-level halves, the displacement predicate with an exhaustive dichotomy and two non-vacuity witnesses, and the depth-0 cell-equality schema carrying the antitone exclusion in its own quantifier. Full-library lake build green at every phase end and at the close (2971 jobs, exit 0); sorry_count 0; axiom count unchanged at 14; lean_verify clean on all eleven names; the reserved name cellLE_zero_const_of_kappa_eq has no declaration site anywhere. Phase 2 closed COMPLETED WITH EXCLUSIONS and Phase 4's declared section was altered — both because the plan assigned declarations to section FreeRegister that consume definitions appearing later in the file; no signature, name, order or proof route deviated.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/910_saturated_gap_branch_kappa_collision_regimes/summaries/01_saturated-gap-monotone-dispatch-summary.md",
+      "summary": "Implementation summary: the eleven new declarations, the two placement deviations and their shared root cause, the full verification record, and the named-not-claimed antitone route."
+    },
+    {
       "type": "plan",
       "path": "specs/910_saturated_gap_branch_kappa_collision_regimes/plans/01_saturated-gap-monotone-dispatch.md",
-      "summary": "Seven-phase lean4 plan: free-register raise, its necessity record, upward and downward cell inclusions on the monotone saturated-gap residue, the displacement dichotomy with two non-vacuity records, the monotone cell-equality schema, and a final records/gates phase. Eleven new declarations, all in LadderCell.lean."
+      "summary": "All seven phase headings closed; Phase 2 carries a #### Reasoned Exclusions record; deviations annotated inline on the affected checklist items."
     }
   ],
-  "dispatch_seq": 14
+  "dispatch_seq": 18
 }
