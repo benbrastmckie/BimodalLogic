@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "phases_completed": 3,
   "phases_total": 3,
-  "summary": "Planned FormalSystem/Metalogic/LCExtension.lean in three phases: the module plus its two aggregator imports; the Tests/BimodalTest axiom-profile evidence module; then the theorem-index rows, regenerated inventory blocks, and the full gate set. The plan's Lean Challenge Statements block (fourteen identifiers) was compiled standalone with lake env lean in this dispatch, exit 0, which also fixed the exact three-import list Phase 1 needs instead of the probe's blanket import FormalSystem. The declared file scope grows from the task's four paths to ten: the research report judged the three READMEs and typst/generated/status.typ unnecessary, but the pre-commit count-freshness gate and check-module-invariants.sh's INV check both force them.",
+  "summary": "All three plan phases closed green. FormalSystem/Metalogic/LCExtension.lean (375 lines) carries RuleSet, the ten-constructor ExtDerivation closure, IsLCAxiom/IsLCUAxiom with their ZTime validity, ext_sound_ztime and ext_sound_validIn, the two instantiated soundness corollaries, and LCComplete/LCRulesComplete/LCURulesComplete stated with no proof and no sorry; Tests/BimodalTest/Metalogic/LCExtensionTest.lean pins six measured axiom profiles, all at [propext, Classical.choice, Quot.sound]. Full project build exit 0 with zero warnings, BimodalTest exit 0 with zero warnings, sorry count 0, repo-wide axiom count back at its baseline 14, check-module-invariants.sh ALL CHECKS PASSED. Three deviations recorded: the FormalSystem.lean import went at its alphabetical position rather than beside AuxiliaryAtoms; the five definitional theorem-index rows carry a measured [propext] Axioms cell rather than pcq; and a sixth file, scripts/module-invariants-allowlist.txt, was needed to resolve a C5 failure on this task's own uppercase-initial declaration names. Per the dispatch's Batch Gate Deferral, the complete 27-gate agent-system deploy set was NOT run here (scoped invocation verify-deploy.sh --only-gate 1,2, exit 0) and is deferred to the batch stage; the repository's own gate set, which covers this phase's paths, was run in full. check-paper-definitions.sh exits 1 on nine anchors drifting against the paper's live .tex in another repository, a pre-existing baseline naming no file this task touched.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/896_lplus_extended_proof_system_and_target_statement/summaries/01_lplus-extended-proof-system-summary.md",
+      "summary": "Implementation summary for the extended L+ proof system, its ZTime soundness, and the three stated completeness targets."
+    },
+    {
       "type": "plan",
       "path": "specs/896_lplus_extended_proof_system_and_target_statement/plans/01_lplus-extended-proof-system.md",
-      "summary": "Three-phase implementation plan with a compiled fourteen-identifier Lean Challenge Statements block and a ten-path harvested file scope."
+      "summary": "All three phases [COMPLETED], every checklist item checked, three deviations annotated inline, and a Phase 3 Verification Notes block recording every gate's exit status and the batch deferral."
     }
   ],
-  "dispatch_seq": 20
+  "dispatch_seq": 21
 }

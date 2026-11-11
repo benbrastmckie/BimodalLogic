@@ -11,7 +11,7 @@ next_project_number: 916
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,896,899,900,905,906,907,908,911,912 | -- | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,911,912 | -- | agent-system, algebraic-representation, completeness, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,913,914 | 298,428,502,743,761,873,912 | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -42,7 +42,6 @@ next_project_number: 916
 
 ### Completeness
 
-896 [PLANNED] — The extended L-plus proof system (TM-plus + axiom set +...
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 905 [NOT STARTED] — Eliminate cross-certification between the forward and...
@@ -462,12 +461,13 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 896. The extended L-plus proof system (TM-plus + axiom set + naming rules) with its ZTime soundness, and the completeness targets as stated Props
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 895
 - **Research**: [896_lplus_extended_proof_system_and_target_statement/reports/01_lplus-extended-proof-system.md]
 - **Plan**: [896_lplus_extended_proof_system_and_target_statement/plans/01_lplus-extended-proof-system.md]
+- **Summary**: [896_lplus_extended_proof_system_and_target_statement/summaries/01_lplus-extended-proof-system-summary.md]
 
 **Description**: A new module FormalSystem/Metalogic/LCExtension.lean carrying: RuleSet (flags clock, aaFwd, aaBwd); ExtDerivation (fc) (Ax : PlusFormula -> Prop) (R : RuleSet) : PlusFormula -> Prop, a Prop-valued theoremhood closure whose base is PlusDerivable fc [] and whose constructors are Ax, modus ponens, necessitation, temporal necessitation, time reflection, and the three naming rules gated by R with their freshness side conditions; IsLCAxiom (lcN n alpha and its reflectTime, n >= 1) and IsLCUAxiom (lcU and its mirror); the soundness theorem ext_sound_ztime : ExtDerivation .ZTime Ax R phi -> PlusValidZTime phi under the hypothesis that Ax is ZTime-valid, assembled from plus_soundness_ztime, clock_irr_sound and the Auxiliary-Atoms soundness; and the completeness targets stated as Prop definitions with no proof and no sorry: LCComplete (RuleSet.none, IsLCAxiom), LCRulesComplete (RuleSet.all, IsLCAxiom), LCURulesComplete (RuleSet.all, IsLCUAxiom). PlusDerivationTree, PlusAxiom and PlusFormula are not modified (standing ruling). Depends on the Auxiliary-Atoms rule task for the soundness arm; the statements themselves can land first with the soundness arm parametric in a rule-soundness hypothesis.
 

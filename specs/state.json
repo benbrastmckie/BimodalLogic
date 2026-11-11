@@ -2050,7 +2050,7 @@
     {
       "project_number": 896,
       "project_name": "lplus_extended_proof_system_and_target_statement",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "title": "The extended L-plus proof system (TM-plus + axiom set + naming rules) with its ZTime soundness, and the completeness targets as stated Props",
       "description": "A new module FormalSystem/Metalogic/LCExtension.lean carrying: RuleSet (flags clock, aaFwd, aaBwd); ExtDerivation (fc) (Ax : PlusFormula -> Prop) (R : RuleSet) : PlusFormula -> Prop, a Prop-valued theoremhood closure whose base is PlusDerivable fc [] and whose constructors are Ax, modus ponens, necessitation, temporal necessitation, time reflection, and the three naming rules gated by R with their freshness side conditions; IsLCAxiom (lcN n alpha and its reflectTime, n >= 1) and IsLCUAxiom (lcU and its mirror); the soundness theorem ext_sound_ztime : ExtDerivation .ZTime Ax R phi -> PlusValidZTime phi under the hypothesis that Ax is ZTime-valid, assembled from plus_soundness_ztime, clock_irr_sound and the Auxiliary-Atoms soundness; and the completeness targets stated as Prop definitions with no proof and no sorry: LCComplete (RuleSet.none, IsLCAxiom), LCRulesComplete (RuleSet.all, IsLCAxiom), LCURulesComplete (RuleSet.all, IsLCUAxiom). PlusDerivationTree, PlusAxiom and PlusFormula are not modified (standing ruling). Depends on the Auxiliary-Atoms rule task for the soundness arm; the statements themselves can land first with the soundness arm parametric in a rule-soundness hypothesis.",
@@ -2071,7 +2071,7 @@
       ],
       "priority": "medium",
       "created": "2026-11-09T09:48:34Z",
-      "last_updated": "2026-11-11T00:50:36Z",
+      "last_updated": "2026-11-11T01:30:38Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -2083,6 +2083,11 @@
           "path": "specs/896_lplus_extended_proof_system_and_target_statement/plans/01_lplus-extended-proof-system.md",
           "type": "plan",
           "summary": "Three-phase implementation plan with a compiled fourteen-identifier Lean Challenge Statements block and a ten-path harvested file scope."
+        },
+        {
+          "path": "specs/896_lplus_extended_proof_system_and_target_statement/summaries/01_lplus-extended-proof-system-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the extended L+ proof system, its ZTime soundness, and the three stated completeness targets."
         }
       ],
       "session_id": "sess_1794343738_e0026f",
@@ -2097,7 +2102,8 @@
         "degradation_count": 0,
         "evidence_file": "specs/evidence/audit-verdicts/896.json"
       },
-      "topic": "completeness"
+      "topic": "completeness",
+      "completion_summary": "Landed FormalSystem/Metalogic/LCExtension.lean: RuleSet with its two named instances, the ten-constructor ExtDerivation closure over PlusDerivable fc [], the two LC axiom-set predicates with their ZTime validity, ext_sound_ztime (all three naming rules) and ext_sound_validIn (class-generic, both Auxiliary-Atoms rules off), the two instantiated soundness corollaries, and LCComplete / LCRulesComplete / LCURulesComplete stated with no proof and no sorry. Six axiom profiles are pinned by build-breaking #guard_msgs blocks in Tests/BimodalTest/Metalogic/LCExtensionTest.lean, all measured at [propext, Classical.choice, Quot.sound]. Eleven theorem-index rows and the regenerated inventory blocks record the module in the repository's ledgers; no completeness claim is made anywhere."
     },
     {
       "project_number": 897,
