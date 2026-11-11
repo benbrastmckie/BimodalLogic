@@ -471,7 +471,7 @@ which elaborates the single module these two purely additive declarations land i
 
 ---
 
-### Phase 5: The Displacement Dichotomy and Its Two Non-Vacuity Records [NOT STARTED]
+### Phase 5: The Displacement Dichotomy and Its Two Non-Vacuity Records [COMPLETED]
 
 **Goal**: `MonotoneCollisionDisplacement`, `kappa_collision_monotone_or_antitone`,
 `kappa_collision_monotone_saturated_gap_nonvacuous` and

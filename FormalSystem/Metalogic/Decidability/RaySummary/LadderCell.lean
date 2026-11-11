@@ -544,6 +544,115 @@ theorem kappa_collision_two_regimes_refuted_of_pend_gap :
   · omega
   · omega
 
+/-- **THE MONOTONE DISPLACEMENT SHAPE OF A COLLISION.** The two counter pairs are displaced in
+the SAME DIRECTION: whichever countdown is the higher, its register is the weakly higher one too.
+Stated over arithmetic alone, like `kappa_collision_regimes` itself, so a cell-level consumer may
+carry it as a hypothesis.
+
+What it covers. Branch 1 of `kappa_collision_regimes` (equal register, `n = n'`) and branch 2
+(common shift, both coordinates displaced by the same `m · (P + 1)`) are monotone ENTIRE — in
+branch 1 the registers are equal, in branch 2 the register moves with the countdown. Branch 3,
+the saturated-gap residue, is split by it: the MONOTONE slice is dispatched by
+`cellAt_subset_of_free_register_shift_of_pend_past` and
+`cellAt_subset_of_free_register_shift_of_pend_past_rev` in both directions, and the ANTITONE
+slice — the negation of this predicate — is the explicit EXCLUSION the depth-`0` schema
+`CellLEZeroConstOfKappaEqMonotoneForwardSlack` carries in its quantifier.
+
+The exclusion is not tacit, and these are the three compiled records that make it so:
+`kappa_collision_monotone_or_antitone` (the complement is exactly the other side of a dichotomy,
+not a gap in a case split), `kappa_collision_antitone_residue_nonvacuous` (the complement is
+non-empty inside the pending-forever regime above the threshold), and
+`kappa_collision_monotone_saturated_gap_nonvacuous` (the dispatched slice genuinely reaches
+branch 3 rather than collapsing into the two landed sub-regimes). -/
+def MonotoneCollisionDisplacement (P c n c' n' : ℕ) : Prop :=
+  (∃ m : ℕ, c' = c + m * (P + 1) ∧ n ≤ n') ∨ (∃ m : ℕ, c = c' + m * (P + 1) ∧ n' ≤ n)
+
+/-- **EVERY COLLISION IS MONOTONE OR ANTITONE, WITH NO THIRD CASE.** The displacement dichotomy.
+A `kappa`-collision displaces the countdown by a multiple of `P + 1` in one direction or the
+other — that is `kappa_eq_components`' countdown residue, read through `Nat.modEq_iff_dvd'` in
+both orientations exactly as `kappa_collision_regimes` reads it — and trichotomy on `n` against
+`n'` then leaves only the strict-opposite cases outside the monotone shape.
+
+Consequence, and the reason this is stated: the exclusion carried by
+`CellLEZeroConstOfKappaEqMonotoneForwardSlack` is the complement of an EXHAUSTIVE alternative,
+not an unexamined remainder. Every collision — branch 1, branch 2 and branch 3 of
+`kappa_collision_regimes` alike — is either dispatched by that schema or falls in the one named,
+compiled, non-empty excluded set.
+
+No `2 ≤ B` hypothesis: the countdown residue is all the arithmetic this consumes, and it does not
+read the clipped gap coordinate, so `(K4)`'s bound is not needed here (unlike in
+`kappa_collision_regimes`, whose third branch is read off `clipIdx_regime_of_eq` at `2 ≤ B`). -/
+theorem kappa_collision_monotone_or_antitone (Tc Tn P B c n c' n' : ℕ)
+    (hk : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')) :
+    MonotoneCollisionDisplacement P c n c' n' ∨
+      ((∃ m : ℕ, c' = c + m * (P + 1) ∧ n' < n) ∨
+        (∃ m : ℕ, c = c' + m * (P + 1) ∧ n < n')) := by
+  obtain ⟨-, hrc, -, -, -⟩ := kappa_eq_components Tc Tn P B c n c' n' hk
+  -- the countdown residue, read as an explicit displacement by a multiple of `P + 1`
+  obtain ⟨k, hkc⟩ : ∃ k : ℕ, c' = c + k * (P + 1) ∨ c = c' + k * (P + 1) := by
+    rcases le_total c c' with hle | hle
+    · obtain ⟨j, hj⟩ := (Nat.modEq_iff_dvd' hle).mp hrc
+      rw [Nat.mul_comm] at hj
+      exact ⟨j, Or.inl (by omega)⟩
+    · obtain ⟨j, hj⟩ := (Nat.modEq_iff_dvd' hle).mp hrc.symm
+      rw [Nat.mul_comm] at hj
+      exact ⟨j, Or.inr (by omega)⟩
+  rcases hkc with hc | hc
+  · rcases le_or_gt n n' with hn | hn
+    · exact Or.inl (Or.inl ⟨k, hc, hn⟩)
+    · exact Or.inr (Or.inl ⟨k, hc, hn⟩)
+  · rcases le_or_gt n' n with hn | hn
+    · exact Or.inl (Or.inr ⟨k, hc, hn⟩)
+    · exact Or.inr (Or.inr ⟨k, hc, hn⟩)
+
+/-- **THE DISPATCHED MONOTONE SLICE GENUINELY REACHES THE SATURATED-GAP BRANCH.** At
+`Tc = Tn = P = 0` and `B = 2` the pairs `(2, 0)` and `(4, 1)` collide inside the pending-forever
+regime at countdowns above the threshold (`0 + 2 ≤ 2`, `1 + 2 ≤ 4`, `0 ≤ 2`, `0 ≤ 4`), their
+registers DIFFER (`0 ≠ 1`), and no single `m` displaces both coordinates (`4 = 2 + m` forces
+`m = 2` while `1 = 0 + m` forces `m = 1`) — so the pair lies in neither branch 1 nor branch 2 of
+`kappa_collision_regimes`. It is nevertheless MONOTONE, at `m = 2`: the countdown rises by `2`
+and the register by `1`, in the same direction.
+
+This is exactly the pair `kappa_collision_two_regimes_refuted_of_pend_gap` pins as surviving
+regime restriction and as reached by NO landed inclusion in either direction. It is now reached,
+in both directions, by `cellAt_subset_of_free_register_shift_of_pend_past` (upward, with no
+forward slack) and `cellAt_subset_of_free_register_shift_of_pend_past_rev` (downward, under
+forward-slack witnessing at the higher pair). So the dispatched slice is not a restatement of
+the landed coverage: it strictly extends it into branch 3. -/
+theorem kappa_collision_monotone_saturated_gap_nonvacuous :
+    ∃ Tc Tn P B c n c' n' : ℕ, 2 ≤ B ∧
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') ∧
+      n + 2 ≤ c ∧ n' + 2 ≤ c' ∧ Tc ≤ c ∧ Tc ≤ c' ∧
+      MonotoneCollisionDisplacement P c n c' n' ∧ n ≠ n' ∧
+      ¬ ∃ m : ℕ, (c' = c + m * (P + 1) ∧ n' = n + m * (P + 1)) ∨
+        (c = c' + m * (P + 1) ∧ n = n' + m * (P + 1)) := by
+  refine ⟨0, 0, 0, 2, 2, 0, 4, 1, by omega, by decide, by omega, by omega, by omega, by omega,
+    ?_, by omega, ?_⟩
+  · exact Or.inl ⟨2, by omega, by omega⟩
+  · rintro ⟨m, ⟨h1, h2⟩ | ⟨h1, h2⟩⟩ <;> omega
+
+/-- **THE EXCLUDED ANTITONE SET IS NON-EMPTY INSIDE THE REGIME.** At `Tc = Tn = P = 0` and
+`B = 2` the pairs `(4, 2)` and `(6, 0)` collide inside the pending-forever regime at countdowns
+above the threshold (`2 + 2 ≤ 4`, `0 + 2 ≤ 6`, `0 ≤ 4`, `0 ≤ 6`) and are NOT monotone: the
+countdown rises by `2` from the first pair to the second while the register FALLS by `2`, and the
+mirror displacement `4 = 6 + m` has no solution.
+
+What this record is for. The exclusion `CellLEZeroConstOfKappaEqMonotoneForwardSlack` carries is
+therefore a genuine restriction and not a vacuous one — there are collisions it declines to
+dispatch, and they survive the same regime restriction the monotone witness above does. Nothing
+here claims the antitone residue is UNREACHABLE: the route it would need is named, and claimed in
+neither direction, in `free_register_anchor_clause_monotone_required`'s docstring — forward-slack
+witnessing at the LOWER pair, to pay the upper direction of the anchor clause that record
+compiles as failing. -/
+theorem kappa_collision_antitone_residue_nonvacuous :
+    ∃ Tc Tn P B c n c' n' : ℕ, 2 ≤ B ∧
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') ∧
+      n + 2 ≤ c ∧ n' + 2 ≤ c' ∧ Tc ≤ c ∧ Tc ≤ c' ∧
+      ¬ MonotoneCollisionDisplacement P c n c' n' := by
+  refine ⟨0, 0, 0, 2, 4, 2, 6, 0, by omega, by decide, by omega, by omega, by omega, by omega,
+    ?_⟩
+  rintro (⟨m, h1, h2⟩ | ⟨m, h1, h2⟩) <;> omega
+
 end Collision
 
 /-! ## The forward-slack-restricted obligation -/
