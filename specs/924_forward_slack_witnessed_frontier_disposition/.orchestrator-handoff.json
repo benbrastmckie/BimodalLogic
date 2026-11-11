@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 18,
+  "summary": "Wrote a four-phase, 5-hour implementation plan executing the research report's four recommendations: land the two compiled route-(a) statements plus their premise predicate in LadderIdle.lean (with an added LadderCell import), wire the route-space closure as an evidence probe beside pin-cascade-straddle.lean, record the disposition in the four durable places with the certStabK restatement obligation kept PROVISIONAL, then reconcile the generated surfaces and run the full gate set. The three pinned Lean Challenge signatures were verified by elaborating the extracted challenge block under lake env lean (exit 0, exactly three sorry warnings, no errors), which also confirmed the added import edge is acyclic. The plan's one substantive hazard is a declared and unavoidable file_scope collision with task 918 on typst/generated/status.typ, four ancestor-chain inventory READMEs, KTypeSummaryAxiomTest.lean and check-evidence-probes.sh.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md",
+      "summary": "Four-phase plan (waves 1/2/3) landing the conditional idle-pump discharge, the route-space closure probe, and the disposition record; 5 hours, three pinned Lean Challenge statements."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": []
+}
