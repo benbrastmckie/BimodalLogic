@@ -459,32 +459,32 @@ intermediate state this mode exists for.
 
 ---
 
-### Phase 5: The sharpened schema and its verdict [NOT STARTED]
+### Phase 5: The sharpened schema and its verdict [COMPLETED]
 
 **Goal**: State the sharpened lengthening as a named `def` with the run-repeat premise explicit
 and the increment restricted to multiples of the repeat length, and prove it.
 
 **Tasks**:
 
-- [ ] Re-read `LadderIdle.lean` immediately before editing.
-- [ ] Define `IdleGapLengtheningOfIdleRunRepeat` as a `Prop`-valued `def`, following
+- [x] Re-read `LadderIdle.lean` immediately before editing.
+- [x] Define `IdleGapLengtheningOfIdleRunRepeat` as a `Prop`-valued `def`, following
       `Probe838C.IdleGapLengthening`'s shape clause for clause, with these differences and no
       others: `ParamsOk` and `Tc <= cntAt g z` are dropped (see Decisions); the free increment
       `l` is replaced by `d * k` where `k` is the repeat length; and the run-repeat premise is
       added as four hypotheses — the block lies at or above the run's first position, ends at or
       below the run's last, carries the object repeat, and carries the type repeat for the
       history over `g`.
-- [ ] Write the `def`'s docstring stating what the schema asserts, that it is the sharpening the
+- [x] Write the `def`'s docstring stating what the schema asserts, that it is the sharpening the
       FAIL verdict's own docstring named as open, and that the premise is a datum of the object's
       step graph met by this path and is not a consequence of `ParamsOk`.
-- [ ] Prove `idleGapLengtheningOfIdleRunRepeat_holds` by applying
+- [x] Prove `idleGapLengtheningOfIdleRunRepeat_holds` by applying
       `exists_iterIdleSpliced_ladderPath` at the block the premise supplies, then reading the
       schema's seven conclusion clauses off its conclusion: the three agreements at `z` from the
       below-block clause and the register clause; the lengthened run and its terminating region
       start from the pumped-run clause and the shift clause; the displaced region start's
       countdown from the shift clause; and the type at `z` from the type clause, `z` being below
       the block.
-- [ ] Record in the theorem's docstring that sub-question (ii) is DISCHARGED here, not deferred:
+- [x] Record in the theorem's docstring that sub-question (ii) is DISCHARGED here, not deferred:
       the type clause the FAIL verdict never reached follows because the premise's block matches
       in type as well as in object state.
 

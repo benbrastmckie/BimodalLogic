@@ -203,4 +203,141 @@ theorem exists_iterIdleSpliced_ladderPath {Q : Type} [Fintype Q] [Nonempty Q]
 
 end Iterate
 
+/-! ## The sharpened lengthening schema, and its verdict
+
+`Probe838C.IdleGapLengthening`
+(`specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean`) is
+REFUTED: `idleGapLengthening_refuted` exhibits a two-state object with no idle-to-idle edge, on
+which no ladder path whatever carries an idle run of length two, so the lengthening is denied one
+level below the pin condition — by `step` itself. The schema below is the sharpening that
+refutation's own docstring names as open: the premise under which the lengthening IS available,
+stated explicitly as a run-local hypothesis, with the increment restricted to the multiples of
+the repeat length.
+
+Two differences from the refuted schema are deliberate and are recorded here rather than left to
+be inferred. `ParamsOk` and `Tc ≤ cntAt g z` are NOT hypotheses: the construction is pure
+idle-run surgery and consumes neither, so dropping both makes this schema strictly stronger than
+the corresponding restriction of the original. And the free increment `l` is replaced by `d · k`,
+`k` being the repeat length — not a weakening for convenience but a necessity, which
+`IdleGapLengtheningAllIncrements` and its refutation below compile. -/
+
+section Schema
+
+/-- **THE SHARPENED LENGTHENING.** The idle gap above `z`'s region may be lengthened by `d · k`
+when the run carries a `k`-block matching in object state and in realized type — the idle-cycle
+premise, met inside the run rather than merely somewhere in the object. `ParamsOk` and
+`Tc ≤ cntAt g z` are NOT hypotheses: the construction is idle-run surgery and consumes neither.
+
+The premise is a datum of the object's step graph MET BY THIS PATH, and it is not a consequence
+of `ParamsOk`: `idle_run_lt_tIdle_of_no_idleCycle` (`LadderPump.lean`) is the generic bound
+without an idle cycle, and nothing in the parameter conditions supplies one. Assuming it is a
+restriction of the obligation, never a proof of it. -/
+def IdleGapLengtheningOfIdleRunRepeat {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) : Prop :=
+  (∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ) →
+    ∀ (g : ℤ → LadderState Q pend), IsLadderPath step pend g →
+    ∀ (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+      (∀ t : ℤ, σ.state t = (t, g t)) →
+    ∀ (z : ℤ) (I k d : ℕ) (a : ℤ),
+      (∀ p : ℤ, p ≤ z → pend (objAt g p) = true) →
+      nxtAt g z + 2 ≤ cntAt g z →
+      0 < I → 0 < k → 0 < d →
+      (∀ i : ℕ, i < I → pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false) →
+      pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true →
+      z + (cntAt g z : ℤ) + 1 ≤ a →
+      a + (k : ℤ) ≤ z + (cntAt g z : ℤ) + 1 + (I : ℤ) →
+      objAt g a = objAt g (a + (k : ℤ)) →
+      tpOf (ladderModel step pend fwd bwd lab) φ σ a
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ (a + (k : ℤ)) →
+      ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+        objAt g' z = objAt g z ∧ cntAt g' z = cntAt g z ∧ nxtAt g' z = nxtAt g z ∧
+        (∀ i : ℕ, i < I + d * k →
+          pend (objAt g' (z + (cntAt g' z : ℤ) + 1 + (i : ℤ))) = false) ∧
+        pend (objAt g' (z + (cntAt g' z : ℤ) + 1 + ((I + d * k : ℕ) : ℤ))) = true ∧
+        cntAt g' (z + (cntAt g' z : ℤ) + 1 + ((I + d * k : ℕ) : ℤ))
+          = cntAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ)) ∧
+        ∀ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+          (∀ t : ℤ, σ'.state t = (t, g' t)) →
+          tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+            = tpOf (ladderModel step pend fwd bwd lab) φ σ z
+
+/-- **THE SHARPENED LENGTHENING IS A THEOREM.** `exists_iterIdleSpliced_ladderPath` applied at
+the block the premise supplies, with the schema's seven conclusion clauses read off the pump's:
+the three agreements at `z` from the below-block clause and the register clause; the lengthened
+run from the below-block, pumped-run and shift clauses together, split at `a` and at
+`a + (d + 1) k`; the displaced region start and its countdown from the shift clause; and the type
+at `z` from the type clause, `z` lying below the block.
+
+**Sub-question (ii), TYPE PRESERVATION, is DISCHARGED here and not deferred.** The idle-gap
+decision gate never reached it: its refutation closed from `step` alone. Here the premise's block
+matches in realized type as well as in object state, and
+`exists_idleTypeBlock_of_budget_le_run` is what produces such a block from a long enough run, so
+the type clause the FAIL verdict left untouched follows rather than being assumed away.
+
+Four of the schema's own hypotheses are NOT consumed by this proof — the pending-forever past,
+the gap `nxtAt g z + 2 ≤ cntAt g z`, `0 < I`, and `0 < d`. They are kept because the schema is
+stated in the shape its intended consumer uses, clause for clause against the refuted original;
+the proof not reading them records that the construction is available more widely than the
+schema asks, never that the schema asks for too little. -/
+theorem idleGapLengtheningOfIdleRunRepeat_holds {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) :
+    IdleGapLengtheningOfIdleRunRepeat step pend fwd bwd lab φ := by
+  intro hno g hg σ hσ z I k d a _ _ _ hk _ hrun hstart hRa hak hrep hty
+  set R : ℤ := z + (cntAt g z : ℤ) + 1 with hR
+  have nd : (d + 1) * k = d * k + k := by ring
+  have zd : (((d + 1) * k : ℕ) : ℤ) = ((d * k : ℕ) : ℤ) + (k : ℤ) := by
+    rw [nd]; push_cast; ring
+  have hsplit : ((I + d * k : ℕ) : ℤ) = (I : ℤ) + ((d * k : ℕ) : ℤ) := by push_cast; ring
+  have hza : z < a := by omega
+  -- the block lies inside the run, so it is idle throughout
+  have hidleBlk : ∀ i : ℕ, i < k → pend (objAt g (a + (i : ℤ))) = false := by
+    intro i hi
+    have h := hrun (a + (i : ℤ) - R).toNat (by omega)
+    rw [show R + (((a + (i : ℤ) - R).toNat : ℕ) : ℤ) = a + (i : ℤ) by omega] at h
+    exact h
+  obtain ⟨g', hg', hbelow, hnxt, hpumprun, habove, htyc⟩ :=
+    exists_iterIdleSpliced_ladderPath step pend fwd bwd lab φ hno hg z a k hk hza hidleBlk
+      hrep σ hσ hty d
+  have hoz : objAt g' z = objAt g z := (hbelow z (by omega)).1
+  have hcz : cntAt g' z = cntAt g z := (hbelow z (by omega)).2
+  have hpos : ∀ i : ℤ, z + (cntAt g' z : ℤ) + 1 + i = R + i := by
+    intro i; rw [hcz, hR]
+  -- the displaced region start lies above the copies
+  have hge : a + (((d + 1) * k : ℕ) : ℤ) ≤ R + ((I + d * k : ℕ) : ℤ) := by
+    rw [zd, hsplit]; omega
+  obtain ⟨hstartObj, hstartCnt⟩ := habove (R + ((I + d * k : ℕ) : ℤ)) hge
+  have hback : R + ((I + d * k : ℕ) : ℤ) - ((d * k : ℕ) : ℤ) = R + (I : ℤ) := by
+    rw [hsplit]; ring
+  refine ⟨g', hg', hoz, hcz, hnxt, fun i hi => ?_, ?_, ?_, fun σ' hσ' => ?_⟩
+  · rw [hpos (i : ℤ)]
+    by_cases hc : R + (i : ℤ) < a + (((d + 1) * k : ℕ) : ℤ)
+    · by_cases hlow : R + (i : ℤ) < a
+      · -- below the block: the walk is the original, and the position is in the original run
+        rw [(hbelow (R + (i : ℤ)) (by omega)).1]
+        have h := hrun i (by omega)
+        exact h
+      · -- inside the `(d + 1) · k` copies
+        have h := hpumprun (R + (i : ℤ) - a).toNat (by omega)
+        rw [show a + (((R + (i : ℤ) - a).toNat : ℕ) : ℤ) = R + (i : ℤ) by omega] at h
+        exact h
+    · -- above the copies: the walk is the original, `d · k` earlier
+      obtain ⟨ho, -⟩ := habove (R + (i : ℤ)) (by omega)
+      rw [ho]
+      have h := hrun (i - d * k) (by omega)
+      rw [show R + ((i - d * k : ℕ) : ℤ) = R + (i : ℤ) - ((d * k : ℕ) : ℤ) by
+        rw [Nat.cast_sub (by omega)]; ring] at h
+      exact h
+  · rw [hpos ((I + d * k : ℕ) : ℤ), hstartObj, hback]
+    exact hstart
+  · rw [hpos ((I + d * k : ℕ) : ℤ), hstartCnt, hback]
+  · exact htyc σ' hσ' z (by omega)
+
+end Schema
+
 end FormalSystem.Metalogic.Decidability.RaySummary
