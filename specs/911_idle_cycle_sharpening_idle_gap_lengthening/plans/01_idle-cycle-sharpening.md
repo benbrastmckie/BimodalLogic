@@ -600,15 +600,15 @@ import.
 
 ---
 
-### Phase 7: The record, the generated surfaces, and the full gate set [NOT STARTED]
+### Phase 7: The record, the generated surfaces, and the full gate set [COMPLETED]
 
 **Goal**: Record what the sharpening buys and what it does not, bring every generated surface
 back into agreement, and run the repository's complete gate set.
 
 **Tasks**:
 
-- [ ] Re-read every file this phase edits immediately before editing it.
-- [ ] Extend `LadderIdle.lean`'s module docstring with a `## What this buys` section recording
+- [x] Re-read every file this phase edits immediately before editing it.
+- [x] Extend `LadderIdle.lean`'s module docstring with a `## What this buys` section recording
       three determinations, each against a named declaration:
       (i) sub-question (i), ADMISSIBILITY, is available under the run-repeat premise, with the
       increment restricted to multiples of the repeat length
@@ -623,17 +623,27 @@ back into agreement, and run the repository's complete gate set.
       `cellAt_subset_of_shift_of_pend_past_rev` and the reserved unrestricted cell obligation
       stays reserved. State clause (iii) as a statement about what is NOT claimed, with no edit
       to `LadderCell.lean`.
-- [ ] Add one sentence to `LadderPump.lean`'s module docstring recording that the idle mirror of
+- [x] Add one sentence to `LadderPump.lean`'s module docstring recording that the idle mirror of
       the splice now lives in the three new sections, and that the pin condition the pending
       splice carries is free for an idle block.
-- [ ] Regenerate the module-inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`,
+- [x] Regenerate the module-inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`,
       which rewrites the row for `LadderPump.lean`, adds the row for `LadderIdle.lean`, and
       updates the root `README.md` totals block.
-- [ ] Re-tighten `LadderPump.lean`'s `longFile` baseline to the value the final measured line
+- [x] Re-tighten `LadderPump.lean`'s `longFile` baseline to the value the final measured line
       count admits under the `N - 200 <= lines < N` window, and do the same for `LadderIdle.lean`
-      if phase 6 found it crossed the ceiling.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
-- [ ] Record issues and wins for this task via `bash .claude/scripts/issue-record.sh` as they
+      if phase 6 found it crossed the ceiling. *(deviation: altered — no change needed. The final
+      measured count is 1931 lines against `N = 2000`, which satisfies
+      `1800 <= 1931 < 2000`; `LadderIdle.lean` is 860 lines, under the 1500 ceiling, so it
+      carries no baseline.)*
+- [x] *(deviation: altered — `scripts/debug-artifact-allowlist.txt` is edited, which this
+      phase's file list did not anticipate. Gate C27 of `check-module-invariants.sh` rejects a
+      live `#print` in library code unless the file carries a reasoned allowlist entry, and
+      phase 6's task list calls for the `#print axioms` lines; the entry is that gate's own
+      sanctioned remedy. Two `specs/{NNN}_{SLUG}` prototype paths were also dropped from
+      `LadderIdle.lean`'s docstrings in favour of the declaration name plus its namespace, which
+      gate C9 requires.)*
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+- [x] Record issues and wins for this task via `bash .claude/scripts/issue-record.sh` as they
       arose, or attest explicitly that there were none.
 
 **Timing**: 1 hour
@@ -668,6 +678,12 @@ implementer stages what the regeneration actually touches rather than discoverin
 `--emit-inventory --check`.
 
 **Verification**:
+
+**Batch-gate deferral, as recorded at dispatch**: the agent-system batch gate set
+(`.claude/scripts/tests/run-all.sh`, `scripts/verify-deploy.sh`) is deferred to this
+invocation's batch stage. This task modified no path under `.claude/**`, so those suites have no
+scoped narrowing to run here. The repository's own CI gate set below was therefore run IN FULL
+rather than deferred; the deferral applies only to the agent-system suites.
 
 The complete gate set for this repository is the CI gate set in `.github/workflows/ci.yml`, run
 locally. Each item is a recorded PASS when it exits 0, or when every finding it reports is

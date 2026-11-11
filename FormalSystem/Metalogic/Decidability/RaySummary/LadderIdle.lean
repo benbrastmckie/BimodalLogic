@@ -31,6 +31,38 @@ agreement of class-equivalent cells, and no discharge of any obligation reserved
 `LadderCell.lean`. The premise it runs on is an OBJECT/RUN hypothesis and not a consequence of
 `ParamsOk` (`idle_run_lt_tIdle_of_no_idleCycle`, `LadderPump.lean`, is the bound without it), so
 it cannot and does not remove a `ParamsOk`-level restriction anywhere.
+
+## What this buys
+
+Three determinations, each against a named declaration, about the idle-gap lengthening whose
+unrestricted schema is REFUTED by the compiled prototype `idleGapLengthening_refuted` (namespace
+`Probe838C`), the decision gate's own evidence record.
+
+**(i) ADMISSIBILITY is available under the run-repeat premise, with the increment restricted to
+the multiples of the repeat length.** `idleGapLengtheningOfIdleRunRepeat_holds` is the theorem.
+The premise is run-local: a block of the idle run whose two ends carry the same object state and
+the same realized type. The pin clause — the one the FAIL verdict's own docstring predicted would
+loosen — does not merely loosen, it DISCHARGES OUTRIGHT: `idleSplice_pins` (`LadderPump.lean`)
+carries no regime hypothesis, no endpoint repeat and no side condition, because the duplicated
+idle block contributes no pin of its own and the pins above it move farther from those below
+while their values stay put. The restriction to multiples of `k` is a necessity and not a
+convenience: `idleGapLengtheningAllIncrements_refuted` compiles the exclusion.
+
+**(ii) TYPE PRESERVATION is DISCHARGED, not untouched.** The decision gate never reached its
+sub-question (ii): the refutation closed from `step` alone. The premise route here runs through
+the idle-restricted `(objAt, tpOf)` pigeonhole (`exists_idleTypeBlock_of_budget_le_run`), which
+hands back a block matching in realized type as well as in object state, and the landed
+duplication type lemma (`tpOf_eq_spliceIdx_of_tpOf_eq`) then preserves the realized type at every
+position below the block — `z` among them. The type clause is therefore proved, not assumed away.
+
+**(iii) The premise is an object/run hypothesis and NOT a consequence of `ParamsOk`, so NOTHING
+here is claimed about the cell-level obligations.** `idle_run_lt_tIdle_of_no_idleCycle`
+(`LadderPump.lean`) is the bound in the other direction: without an idle cycle every idle run is
+shorter than `tIdle pend`, so no parameter condition supplies the premise and assuming it is a
+RESTRICTION of an obligation rather than a proof of one. In particular: the
+`ForwardSlackWitnessed` hypothesis of `cellAt_subset_of_shift_of_pend_past_rev` is NOT removed,
+the reserved unrestricted cell obligation stays reserved, and `LadderCell.lean` is not edited.
+That is a statement about what is NOT claimed.
 -/
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
@@ -205,8 +237,8 @@ end Iterate
 
 /-! ## The sharpened lengthening schema, and its verdict
 
-`Probe838C.IdleGapLengthening`
-(`specs/838_two_sided_open_core_pin_free_pigeonhole/prototype/idle-gap-lengthening.lean`) is
+The unrestricted schema `IdleGapLengthening` of the idle-gap decision gate (namespace
+`Probe838C`, a compiled standalone prototype) is
 REFUTED: `idleGapLengthening_refuted` exhibits a two-state object with no idle-to-idle edge, on
 which no ladder path whatever carries an idle run of length two, so the lengthening is denied one
 level below the pin condition — by `step` itself. The schema below is the sharpening that

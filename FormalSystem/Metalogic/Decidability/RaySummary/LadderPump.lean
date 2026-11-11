@@ -30,6 +30,12 @@ argument: the idle-cycle vocabulary and the run bound without one (`IdleCycle`),
 idle-block duplication with its countdown and its pin clause (`IdleSplice`), and the
 idle-restricted `(objAt, tpOf)` pigeonhole (`IdlePigeonhole`). They add no certificate object and
 no `ParamsOk` — the idle-block surgery consumes neither.
+The idle mirror is not merely the pending argument with `pend` negated at one place: the pin
+condition the pending splice carries as a genuine SIDE CONDITION is FREE for an idle block
+(`idleSplice_pins`), because the duplicated block contributes no region start of its own and the
+pins above it move farther from those below while their countdowns stay put. The
+register-anchored assembly that consumes these three sections, and the sharpened lengthening
+schema it proves, live in the leaf module `LadderIdle.lean`.
 
 ## The two windows of the register
 
