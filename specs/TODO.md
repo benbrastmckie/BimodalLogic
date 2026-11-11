@@ -11,8 +11,8 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,912,918,924,925 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,913,914 | 298,428,502,743,761,873,912 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,918,924,925 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876 | 298,428,502,743,761,873 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -25,9 +25,6 @@ next_project_number: 926
 ### Agent System
 
 907 [NOT STARTED] — Regenerate the deployed .claude/ tree in BimodalLogic, which...
-912 [NOT STARTED] — Make the coupled-generated-surface and longFile-baseline...
-  └─ 913 [NOT STARTED] — Provide a sanctioned in-dispatch remedy for a mechanically...
-  └─ 914 [NOT STARTED] — Give the batch-gate-deferral directive a narrowing form that...
 
 ### Algebraic Representation
 
@@ -735,7 +732,7 @@ SCOPE: the antitone slice only. It does not reach the ForwardSlackWitnessed disc
 ---
 
 ### 914. Give the batch-gate-deferral directive a narrowing form that covers a phase touching only project sources, not the agent-system deploy tree
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 912
@@ -753,11 +750,36 @@ PRIOR RECORD -- decide explicitly, do not silently resurrect. This is FACE 2 of 
 EDIT TARGET, binding. Re-derive the source store rather than trusting any path quoted here: `source_dir` lives PER-EXTENSION at `.extensions.<name>.source_dir` in `<project-root>/.claude-extensions.json`, not as a top-level key -- a top-level `jq -r '.source_dir'` returns null and must NOT be read as the key being absent. All seven loaded extensions resolve under /home/benjamin/.config/nvim/agent-system/extensions/<name>. Edit at the path mirroring the deployed one; a hand-authored file under .claude/** is silently wiped by the next regeneration.
 
 NOT a repair of this repository's own gates. `.githooks/pre-commit`, `scripts/typst-sync-check.sh`, `scripts/check-module-invariants.sh`, `scripts/nolint-attribute-allowlist.txt`, `typst/generated/status.typ` and the generated README inventory blocks are correct as they stand; do not edit them. The subject is agent-system guidance and mechanism only.
+=== TERMINAL DISPOSITION: ABANDONED HERE, MIGRATED OUT (no work was lost) ===
+
+This record has been relocated, whole and one-for-one, into the repository that owns the shared
+agent-system source store, following that repository's own
+context/patterns/cross-repo-task-migration.md. The migrated record carries this description
+verbatim -- every iss_* citation id, line number and enumerated sub-fault as authored -- plus a
+provenance note recording the migration, how its cross-repo citations were made resolvable, and
+the disposition of each of its dependency edges.
+
+WHY ABANDONED RATHER THAN EXPANDED, decided rather than defaulted. EXPANDED is for a record
+divided into children inside the same task space; no children were created here and no part of
+this work remains in this repository. The relocation is a change of owning repository, not a
+decomposition, so ABANDONED is the terminal state that fits: this record will never be worked
+here, while the work itself is live elsewhere.
+
+WHY IT COULD NOT STAY. Its file_scope names only paths under the shared source store at
+~/.config/nvim/agent-system/**. That work cannot be performed or committed from this repository,
+and this repository's own .claude/** tree is a gitignored, disposable deploy artifact regenerated
+from that store, so an edit made here would be silently wiped by the next regeneration.
+
+WHERE THE WORK WENT (durable anchors, paired with the number as the pointer hazard requires).
+Repository: /home/benjamin/.config/nvim (specs/state.json, specs/TODO.md). The migrated record
+keeps this record's own project_name slug unchanged, which is the anchor to match on; the number
+it was allocated there belongs to that repository's independent numbering space and is unstable
+under vault renumbering, so match on the slug first and treat any number as corroboration only.
 
 ---
 
 ### 913. Provide a sanctioned in-dispatch remedy for a mechanically coupled pair path dropped by git-commit-scoped.sh's V10 containment guard
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 912
@@ -779,11 +801,36 @@ PRIOR RECORDS -- decide explicitly, do not silently resurrect. `plan_contingency
 EDIT TARGET, binding. Re-derive the source store rather than trusting any path quoted here: `source_dir` lives PER-EXTENSION at `.extensions.<name>.source_dir` in `<project-root>/.claude-extensions.json`, not as a top-level key -- a top-level `jq -r '.source_dir'` returns null and must NOT be read as the key being absent. All seven loaded extensions resolve under /home/benjamin/.config/nvim/agent-system/extensions/<name>. Edit at the path mirroring the deployed one; a hand-authored file under .claude/** is silently wiped by the next regeneration.
 
 NOT a repair of this repository's own gates. `.githooks/pre-commit`, `scripts/typst-sync-check.sh`, `scripts/check-module-invariants.sh`, `scripts/nolint-attribute-allowlist.txt`, `typst/generated/status.typ` and the generated README inventory blocks are correct as they stand; do not edit them. The subject is agent-system guidance and mechanism only.
+=== TERMINAL DISPOSITION: ABANDONED HERE, MIGRATED OUT (no work was lost) ===
+
+This record has been relocated, whole and one-for-one, into the repository that owns the shared
+agent-system source store, following that repository's own
+context/patterns/cross-repo-task-migration.md. The migrated record carries this description
+verbatim -- every iss_* citation id, line number and enumerated sub-fault as authored -- plus a
+provenance note recording the migration, how its cross-repo citations were made resolvable, and
+the disposition of each of its dependency edges.
+
+WHY ABANDONED RATHER THAN EXPANDED, decided rather than defaulted. EXPANDED is for a record
+divided into children inside the same task space; no children were created here and no part of
+this work remains in this repository. The relocation is a change of owning repository, not a
+decomposition, so ABANDONED is the terminal state that fits: this record will never be worked
+here, while the work itself is live elsewhere.
+
+WHY IT COULD NOT STAY. Its file_scope names only paths under the shared source store at
+~/.config/nvim/agent-system/**. That work cannot be performed or committed from this repository,
+and this repository's own .claude/** tree is a gitignored, disposable deploy artifact regenerated
+from that store, so an edit made here would be silently wiped by the next regeneration.
+
+WHERE THE WORK WENT (durable anchors, paired with the number as the pointer hazard requires).
+Repository: /home/benjamin/.config/nvim (specs/state.json, specs/TODO.md). The migrated record
+keeps this record's own project_name slug unchanged, which is the anchor to match on; the number
+it was allocated there belongs to that repository's independent numbering space and is unstable
+under vault renumbering, so match on the slug first and treat any number as corroboration only.
 
 ---
 
 ### 912. Make the coupled-generated-surface and longFile-baseline plan-authoring conditions reach the plan author, and correct the longFile acceptance window
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -807,6 +854,31 @@ PRIOR RECORDS -- decide explicitly, do not silently resurrect or silently skip. 
 EDIT TARGET, binding. Re-derive the source store rather than trusting any path quoted here: `source_dir` lives PER-EXTENSION at `.extensions.<name>.source_dir` in `<project-root>/.claude-extensions.json`, not as a top-level key -- a top-level `jq -r '.source_dir'` returns null and must NOT be read as the key being absent. All seven loaded extensions resolve under /home/benjamin/.config/nvim/agent-system/extensions/<name>. Edit at the path mirroring the deployed one; a hand-authored file under .claude/** is silently wiped by the next regeneration.
 
 NOT a repair of this repository's own gates. `.githooks/pre-commit`, `scripts/typst-sync-check.sh`, `scripts/check-module-invariants.sh`, `scripts/nolint-attribute-allowlist.txt`, `typst/generated/status.typ` and the generated README inventory blocks are correct as they stand; do not edit them. The subject is agent-system guidance and mechanism only.
+=== TERMINAL DISPOSITION: ABANDONED HERE, MIGRATED OUT (no work was lost) ===
+
+This record has been relocated, whole and one-for-one, into the repository that owns the shared
+agent-system source store, following that repository's own
+context/patterns/cross-repo-task-migration.md. The migrated record carries this description
+verbatim -- every iss_* citation id, line number and enumerated sub-fault as authored -- plus a
+provenance note recording the migration, how its cross-repo citations were made resolvable, and
+the disposition of each of its dependency edges.
+
+WHY ABANDONED RATHER THAN EXPANDED, decided rather than defaulted. EXPANDED is for a record
+divided into children inside the same task space; no children were created here and no part of
+this work remains in this repository. The relocation is a change of owning repository, not a
+decomposition, so ABANDONED is the terminal state that fits: this record will never be worked
+here, while the work itself is live elsewhere.
+
+WHY IT COULD NOT STAY. Its file_scope names only paths under the shared source store at
+~/.config/nvim/agent-system/**. That work cannot be performed or committed from this repository,
+and this repository's own .claude/** tree is a gitignored, disposable deploy artifact regenerated
+from that store, so an edit made here would be silently wiped by the next regeneration.
+
+WHERE THE WORK WENT (durable anchors, paired with the number as the pointer hazard requires).
+Repository: /home/benjamin/.config/nvim (specs/state.json, specs/TODO.md). The migrated record
+keeps this record's own project_name slug unchanged, which is the anchor to match on; the number
+it was allocated there belongs to that repository's independent numbering space and is unstable
+under vault renumbering, so match on the slug first and treat any number as corroboration only.
 
 ---
 
