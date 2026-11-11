@@ -2173,6 +2173,68 @@ EVIDENCE="specs/evidence"
 #                                                           | Classical.choice, Quot.sound]`.  No
 #                                                           | `sorryAx`, no custom axiom, no
 #                                                           | `native_decide`.
+# forward-slack-pin-cascade/route-space-closure             | THE ROUTE SPACE OF THE
+#                                                           | `ForwardSlackWitnessed` FRONTIER IS
+#                                                           | SURVEYED, NOT MERELY ASSERTED.  The
+#                                                           | regime asks `K <= n + cntAt g z + I
+#                                                           | - l` with `n` and `cntAt g z` pinned
+#                                                           | by `g z = x`, so exactly two dials
+#                                                           | exist: raise `I` or lower `K`.  The
+#                                                           | idle dial is the route that LANDED
+#                                                           | in `LadderIdle.lean`
+#                                                           | (`hasForwardSlack_of_idleRunRepeat`,
+#                                                           | `IdleRunPumpable`,
+#                                                           | `forwardSlackWitnessed_of_cell_idleRunPumpable`);
+#                                                           | this probe closes the rest.  Its five
+#                                                           | headline declarations:
+#                                                           | `pend_endpoints_of_rep` (a
+#                                                           | type-respecting block has endpoints of
+#                                                           | equal object state, hence of equal
+#                                                           | pendingness, so no block spans a region
+#                                                           | boundary), `block_confined_of_hcl` (the
+#                                                           | landed deletion's own `hcl : l <= cntAt
+#                                                           | g a` confines its block to the interior
+#                                                           | of ONE pending region, so a landed
+#                                                           | deletion never removes an idle
+#                                                           | position, never removes a whole region,
+#                                                           | and never reduces the pin SET -- which
+#                                                           | is why the straddling pair the parent
+#                                                           | task refuted always survives),
+#                                                           | `idle_run_two_of_block` (the pumpable
+#                                                           | premise needs an idle run of length at
+#                                                           | least two, which is the idle-gap
+#                                                           | lengthening's own recorded premise and
+#                                                           | NOT a consequence of `ParamsOk`),
+#                                                           | `whole_region_anchor_refuted` (the one
+#                                                           | dial the landed machinery does not
+#                                                           | implement -- a PIN-SET-REDUCING
+#                                                           | deletion of an idle-aligned block
+#                                                           | spanning whole regions -- is pin-RIGID,
+#                                                           | so no cascade is entered, and its only
+#                                                           | obligation, the anchor at the pin that
+#                                                           | becomes first, FAILS by at least `l` on
+#                                                           | the same saturated configuration the
+#                                                           | parent task measured, for every choice
+#                                                           | of which regions to delete), and
+#                                                           | `saturated_chain_is_the_doubling_recurrence`
+#                                                           | (that saturated assignment IS
+#                                                           | `cascadeBound`'s `iter_doubling`
+#                                                           | recurrence attained with EQUALITY, so
+#                                                           | the dial fails for the parent task's
+#                                                           | reason and not a new one).  What it
+#                                                           | does NOT establish: it is a measurement
+#                                                           | at the arithmetic and placement layers,
+#                                                           | NOT a refutation of
+#                                                           | `ForwardSlackWitnessed`, which is an
+#                                                           | existential over paths and stays
+#                                                           | neither discharged nor refuted on the
+#                                                           | `I = 1` side; the hypothesis remains
+#                                                           | carried on all five depth-0
+#                                                           | cell-equality schemas.  Axioms: a
+#                                                           | subset of `[propext,
+#                                                           | Classical.choice, Quot.sound]` on every
+#                                                           | headline.  No `sorryAx`, no custom
+#                                                           | axiom, no `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -2226,6 +2288,7 @@ WIRED=(
   "seam-gluing-ray-product/one-sided-count-move-refutation"
   "limit-closure-schema/lc-schema-omega-chain"
   "forward-slack-pin-cascade/pin-cascade-straddle"
+  "forward-slack-pin-cascade/route-space-closure"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

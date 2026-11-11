@@ -300,32 +300,36 @@ dependents).
 
 ---
 
-### Phase 2: The Route-Space Closure, Wired as an Evidence Probe [NOT STARTED]
+### Phase 2: The Route-Space Closure, Wired as an Evidence Probe [COMPLETED]
 
 **Goal**: What remains open is exactly one named sub-regime, held in place by a compiled record
 that CI re-checks, rather than by a paragraph in a report.
 
 **Tasks**:
-- [ ] Copy
+- [x] Copy
       `specs/924_forward_slack_witnessed_frontier_disposition/evidence/route-space-closure.lean`
       to `specs/evidence/forward-slack-pin-cascade/route-space-closure.lean`, beside the parent's
       `pin-cascade-straddle.lean`. The collection path, not a task directory, is required: a probe
       under a task directory leaves version control when `/todo` archives that task.
-- [ ] Extend the copied file's module docstring with a pointer to the companion positive record —
+- [x] Extend the copied file's module docstring with a pointer to the companion positive record —
       the three declarations landed in Phase 1 — so a reader of the closure finds the route that
       succeeds, and state explicitly that this file measures the `K` dial and the placements and
-      refutes nothing about `ForwardSlackWitnessed` itself.
-- [ ] Re-read `scripts/check-evidence-probes.sh` immediately before editing (concurrency note item
+      refutes nothing about `ForwardSlackWitnessed` itself. *(note: the extension also re-pointed
+      the docstring's one existing cross-reference to the task-directory file
+      `route-a-idle-pump-discharge.lean` at the landed `LadderIdle.lean` declarations instead —
+      within this item's own scope, and required by the same archive-leaves-version-control
+      rationale the preceding item gives. No declaration, signature, or proof was touched.)*
+- [x] Re-read `scripts/check-evidence-probes.sh` immediately before editing (concurrency note item
       (1)); match the live shape of the `WIRED` array and of the comment table that precedes it,
       not the shape recorded in this plan. **This file is confirmed to exist at authoring time**
       (the `WIRED` array and its preceding comment table were read directly); if its structure has
       changed under a sibling's edits, follow the live structure. If it is absent or unreadable,
       close this phase `[BLOCKED]` and record the observed state — do not invent a wiring
       mechanism.
-- [ ] Add the `"forward-slack-pin-cascade/route-space-closure"` entry to the `WIRED` array
+- [x] Add the `"forward-slack-pin-cascade/route-space-closure"` entry to the `WIRED` array
       (collection-relative form — `WIRED_REPO` is for a stranded probe only and needs a named
       blocker recorded beside it).
-- [ ] Add the probe's row to the comment table above the array, in the established two-column
+- [x] Add the probe's row to the comment table above the array, in the established two-column
       shape, naming: what the probe holds in place (the route space is surveyed, not merely
       asserted); its five headline declarations (`pend_endpoints_of_rep`,
       `block_confined_of_hcl`, `idle_run_two_of_block`, `whole_region_anchor_refuted`,
@@ -333,7 +337,7 @@ that CI re-checks, rather than by a paragraph in a report.
       measurement at the arithmetic and placement layers, not a refutation of
       `ForwardSlackWitnessed`, which stays neither discharged nor refuted on the `I = 1` side); and
       its axiom profile.
-- [ ] Confirm the probe is TRACKED by git (`git ls-files --error-unmatch` on the new path) —
+- [x] Confirm the probe is TRACKED by git (`git ls-files --error-unmatch` on the new path) —
       presence alone is not a guard, and the script tests tracking explicitly.
 
 **Timing**: 1 hour
