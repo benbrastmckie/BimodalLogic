@@ -426,7 +426,7 @@ existing signature changed, so no dependent module's call sites move.
 
 ---
 
-### Phase 3: The Register-RAISING Exact-Shift Deletion [NOT STARTED]
+### Phase 3: The Register-RAISING Exact-Shift Deletion [COMPLETED]
 
 **Goal**: `exists_ladderPath_through_deleted_exact_raised_upfirst_of_pend_past` compiles in
 `LadderChain.lean`, delivering the register at a prescribed `n₀ ≥ nxtAt g z` at slack amount
