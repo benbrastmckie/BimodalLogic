@@ -11,8 +11,8 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,905,906,907,924,925 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,900 | 298,428,502,743,761,873,899 | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,905,906,907,925 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,900,924 | 298,428,502,743,761,873,899,925 | algebraic-representation, completeness, dataset-enhancement, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -73,8 +73,8 @@ next_project_number: 926
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-924 [PLANNED] — Decide the fate of the ForwardSlackWitnessed frontier, now...
 925 [PLANNED] — Clear the C16 env\_linter unusedArguments lint debt in...
+  └─ 924 [PLANNED] — Decide the fate of the ForwardSlackWitnessed frontier, now...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Formula Refactor
@@ -148,7 +148,7 @@ PRECEDENT. The archived record ladderchain_c16_unusedarguments_clear cleared thi
 - **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 925
 - **Parent**: Task 917
 - **Research**: [924_forward_slack_witnessed_frontier_disposition/reports/01_forward-slack-frontier-disposition.md]
 - **Plan**: [924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md]

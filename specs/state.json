@@ -4999,7 +4999,9 @@
       "effort": "high",
       "parent_task": 917,
       "topic": "decidability",
-      "dependencies": [],
+      "dependencies": [
+        925
+      ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
