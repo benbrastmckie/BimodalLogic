@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/916_antitone_collision_residue_lower_pair_witnessing/reports/01_antitone-collision-residue-witnessing.md",
+      "summary": "The antitone collision slice splits into a bounded-descent half dispatchable with no new hypothesis family (the raise buys exactly m*(P+1) of forward slack from nothing) and a deep-descent residue needing the named lower-pair witnessing at amount (n-n') - m*(P+1); ten compiled probes, DISPATCH recommended over refutation."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794365863_292a3e_916",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
