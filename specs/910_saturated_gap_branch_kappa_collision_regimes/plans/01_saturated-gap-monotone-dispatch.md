@@ -530,7 +530,7 @@ which elaborates the single module these four purely additive arithmetic declara
 
 ---
 
-### Phase 6: The Monotone Cell-Equality Schema [NOT STARTED]
+### Phase 6: The Monotone Cell-Equality Schema [COMPLETED]
 
 **Goal**: `CellLEZeroConstOfKappaEqMonotoneForwardSlack` and
 `cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack` compile in `section ForwardSlack` of

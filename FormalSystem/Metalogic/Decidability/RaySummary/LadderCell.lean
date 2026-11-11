@@ -1144,6 +1144,138 @@ theorem cellLE_zero_const_of_kappa_eq_commonShift_of_forwardSlack
       (cellAt_subset_of_common_shift_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno
         q c' n' h' m h hgap' hTc' z)
 
+/-- **THE MONOTONE DEPTH-`0` CELL OBLIGATION, WITH THE ANTITONE RESIDUE EXCLUDED IN THE
+SIGNATURE**, stated as a schema. This is NOT the reserved statement `CellLEZeroConstOfKappaEq`,
+which is claimed by nothing and stays so. Five hypotheses separate the two, and all five are
+visible in the quantifier below:
+
+1. the MONOTONE displacement `MonotoneCollisionDisplacement P c n c' n'` — the countdown and the
+   register displaced in the SAME direction;
+2. the pending-forever gap `n + 2 ≤ c` and `n' + 2 ≤ c'`, at BOTH pairs;
+3. the threshold bounds `Tc ≤ c` and `Tc ≤ c'`, at both pairs;
+4. the room bound on whichever pair carries the LOWER countdown — `n' + (n' − n) ≤ c` upward,
+   `n + (n − n') ≤ c'` downward;
+5. the forward-slack witnessing of whichever pair carries the HIGHER countdown, at the amount
+   `m · (P + 1) + (n' − n)` (respectively `m · (P + 1) + (n − n')`) the register-lowering
+   deletion actually spends.
+
+Hypotheses 4 and 5 live inside the same clause because `m` is existentially bound by hypothesis 1
+and cannot be named outside a clause that quantifies it.
+
+**WHAT HYPOTHESIS 1 TRADES, AND WHAT IT SPECIALIZES TO.** The two landed schemas carry,
+respectively, the equal-register restriction `n = n'` and the common-shift displacement; this one
+carries neither, and the monotone shape stands in their place. Its hypotheses SPECIALIZE to both:
+
+Write `mP` for `m · (P + 1)` and `d` for the register's own displacement.
+
+| sub-regime | `n'` | room bound | slack amount |
+|---|---|---|---|
+| equal register | `n` | `n ≤ c` (from the gap) | `mP`, with `d = 0` |
+| common shift | `n + mP` | `n + 2 · mP ≤ c` | `mP + mP`, with `d = mP` |
+| monotone | any `n'`, `n ≤ n'` | `n' + (n' − n) ≤ c` | `mP + d`, with `d = n' − n` |
+
+Row 3 at `n' = n` is row 1 hypothesis for hypothesis, and at `n' = n + m · (P + 1)` it is row 2.
+NEITHER LANDED SCHEMA IS RETIRED and neither signature is touched:
+`CellLEZeroConstOfKappaEqForwardSlack` and `CellLEZeroConstOfKappaEqCommonShiftForwardSlack` both
+stand exactly as they were, and the specialization above is a statement about hypotheses, not a
+subsumption claim about declarations.
+
+**THE EXCLUSION, STATED RATHER THAN TACIT.** The ANTITONE residue — the negation of hypothesis 1,
+a collision whose register moves OPPOSITE to its countdown — is excluded. It is not left as an
+unexamined remainder, and three compiled records are what make that so:
+
+* `kappa_collision_monotone_or_antitone`: the excluded set is exactly the other side of an
+  EXHAUSTIVE dichotomy over collisions, so no third case is hiding between them;
+* `kappa_collision_antitone_residue_nonvacuous`: the excluded set is NON-EMPTY inside the
+  pending-forever regime above the threshold (`(4, 2)` against `(6, 0)` at `Tc = Tn = P = 0`,
+  `B = 2`), so the exclusion is a genuine restriction;
+* `kappa_collision_monotone_saturated_gap_nonvacuous`: the DISPATCHED side genuinely reaches
+  branch 3 of `kappa_collision_regimes` (`(2, 0)` against `(4, 1)`, the pair
+  `kappa_collision_two_regimes_refuted_of_pend_gap` pins as reached by no landed inclusion), so
+  the trade is not a relabelling of the landed coverage.
+
+Nothing here claims the antitone residue is unreachable. The route it would need is NAMED and
+claimed in neither direction: forward-slack witnessing at the LOWER pair, to pay the upper
+direction of the anchor clause `free_register_anchor_clause_monotone_required` compiles as
+failing without the lower bound on the free anchor.
+
+WHAT A CONSUMER MUST SUPPLY. At each state it inducts through, the induction one layer up must
+exhibit (i) the monotone displacement across the collision, (ii) the room bound at the lower
+pair, and (iii) a forward-slack witness at the higher state: for each type in that state's cell,
+a ladder path through it realizing that type whose first region start above `z`'s region leaves
+the stated amount of room in the anchor clause. None of the three is a consequence of `ParamsOk`.
+
+The unrestricted schema `CellLEZeroConstOfKappaEq` is, under `ParamsOk`, NEITHER PROVED NOR
+REFUTED, and this schema does not change that: it is strictly stronger in hypotheses, so it bears
+on the reserved statement's truth value in NEITHER DIRECTION. The reserved name
+`cellLE_zero_const_of_kappa_eq` is claimed by nothing here. -/
+def CellLEZeroConstOfKappaEqMonotoneForwardSlack {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) : Prop :=
+  ParamsOk step pend lab φ Tc Tn P B →
+    (∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ) →
+    ∀ (q : Q) (c n c' n' : ℕ) (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q) (z : ℤ),
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') →
+      MonotoneCollisionDisplacement P c n c' n' →
+      n + 2 ≤ c → n' + 2 ≤ c' → Tc ≤ c → Tc ≤ c' →
+      (∀ m : ℕ, c' = c + m * (P + 1) → n ≤ n' →
+        n' + (n' - n) ≤ c ∧
+          ForwardSlackWitnessed step pend fwd bwd lab φ
+            (⟨(q, c', n'), h'⟩ : LadderState Q pend) z (m * (P + 1) + (n' - n)) n') →
+      (∀ m : ℕ, c = c' + m * (P + 1) → n' ≤ n →
+        n + (n - n') ≤ c' ∧
+          ForwardSlackWitnessed step pend fwd bwd lab φ
+            (⟨(q, c, n), h⟩ : LadderState Q pend) z (m * (P + 1) + (n - n')) n) →
+      cellAt (ladderModel step pend fwd bwd lab) φ
+          ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+        = cellAt (ladderModel step pend fwd bwd lab) φ
+            ((z, ⟨(q, c', n'), h'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+
+/-- **THE MONOTONE OBLIGATION IS A THEOREM.** The schema above holds at every parameter tuple
+`ParamsOk` admits, as cell EQUALITY. Each direction of the monotone displacement is closed by
+`Set.Subset.antisymm` against the two free-register inclusions: upward by
+`cellAt_subset_of_free_register_shift_of_pend_past` (no forward slack — the widened window pays
+for the anchor), downward by `cellAt_subset_of_free_register_shift_of_pend_past_rev`, whose
+register-lowering deletion at `k := n' − n` is the whole of what this schema adds over the two
+landed ones. The upward inclusion's remaining bound `n' ≤ c + m · (P + 1)` is DERIVED inside the
+proof from the higher pair's own gap by `omega`, which is why it does not appear in the
+quantifier.
+
+The collision equality itself is not consumed: the displacement comes from the explicit monotone
+hypothesis, not from `kappa_eq_components`. It is retained as a binder — discarded at `intro`
+with a `_` pattern, exactly as `cellLE_zero_const_of_kappa_eq_commonShift_of_forwardSlack` does,
+so no unused local is created — so that the schema's shape matches both landed schemas' and a
+consumer reading the three side by side sees exactly one hypothesis traded for another.
+
+The reserved name `cellLE_zero_const_of_kappa_eq` is claimed by nothing here. -/
+theorem cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) :
+    CellLEZeroConstOfKappaEqMonotoneForwardSlack step pend fwd bwd lab φ Tc Tn P B := by
+  intro hp hno q c n c' n' h h' z _ hmono hgap hgap' hTc hTc' hwup hwdn
+  rcases hmono with ⟨m, hc', hle⟩ | ⟨m, hc, hle⟩
+  · -- `(c', n')` is the higher pair: up with no slack, down through the witnessing hypothesis
+    subst hc'
+    obtain ⟨hroom, hwit⟩ := hwup m rfl hle
+    exact Set.Subset.antisymm
+      (cellAt_subset_of_free_register_shift_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno
+        q c n h m n' h' hgap hTc hle (by omega) z)
+      (cellAt_subset_of_free_register_shift_of_pend_past_rev step pend fwd bwd lab φ Tc Tn P B
+        hp hno q c n h m n' h' hgap hgap' hle hroom hTc z hwit)
+  · -- `(c, n)` is the higher pair: the same two inclusions with the roles swapped
+    subst hc
+    obtain ⟨hroom, hwit⟩ := hwdn m rfl hle
+    exact Set.Subset.antisymm
+      (cellAt_subset_of_free_register_shift_of_pend_past_rev step pend fwd bwd lab φ Tc Tn P B
+        hp hno q c' n' h' m n h hgap' hgap hle hroom hTc' z hwit)
+      (cellAt_subset_of_free_register_shift_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno
+        q c' n' h' m n h hgap' hTc' hle (by omega) z)
+
 end ForwardSlack
 
 end FormalSystem.Metalogic.Decidability.RaySummary
