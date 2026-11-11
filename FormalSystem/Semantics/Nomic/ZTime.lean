@@ -111,9 +111,11 @@ the synthesis failure that route provokes.
 
 **Choice dependence, recorded honestly.** Each member's *Saturation* is
 `TaskFrame.saturation_of_finite`, which costs `Classical.choice`. This instance inherits that
-cost; `rmk:choice` does not cover it.
+cost; `rmk:choice` does not cover it. That paragraph records what this instance *produces*
+— all four constraints, Saturation among them — not what it consumes: nothing is assumed here
+beyond bi-seriality of each `R w`, so the marker below reads `None`.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation
+Constraints consumed: None
 -/
 instance ofStepFamily_isRegular {W : Type} [Finite W] [Nonempty W] (R : W → W → W → Prop)
     (fwd : ∀ w p, ∃ q, R w p q) (bwd : ∀ w q, ∃ p, R w p q) :
@@ -147,7 +149,7 @@ every witness proof below works with.
 Routed through `refine Iff.trans … ?_` rather than `rw`, for the carrier-boundary reason recorded
 in this module's docstring.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation
+Constraints consumed: Compositionality, Seriality, Limit
 -/
 theorem mem_lawHist_ofStepFamily_iff {W : Type} [Finite W] [Nonempty W] {R : W → W → W → Prop}
     {fwd : ∀ w p, ∃ q, R w p q} {bwd : ∀ w q, ∃ p, R w p q} (w : W) (τ : ℤ → W) :
@@ -162,7 +164,7 @@ at `u`.
 Two lines on top of `mem_lawHist_ofStepFamily_iff`, and the lemma that lets a witness argue
 `H_F^a ⊆ H_F^e` from `R_a ⊆ R_e` without re-running an induction.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation
+Constraints consumed: Compositionality, Seriality, Limit
 -/
 theorem lawHist_mono_of_le {W : Type} [Finite W] [Nonempty W] {R : W → W → W → Prop}
     {fwd : ∀ w p, ∃ q, R w p q} {bwd : ∀ w q, ∃ p, R w p q} {v u : W}

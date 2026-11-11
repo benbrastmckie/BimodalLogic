@@ -507,7 +507,7 @@ Three cases, on which law-history set the world came from.
   throughout. Missing `b`, all of its steps are `R_a`-pairs, so it lies in `H_F^a`, and each
   `τ x` is then `a` or `e`, both of which it is a law-history at. Missing `a`, the mirror.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation
+Constraints consumed: Compositionality, Seriality, Limit
 -/
 theorem F2.lawful : F2.Lawful := by
   intro τ hτ x
@@ -621,7 +621,7 @@ The three witnesses and their per-witness independence theorems live in
 frame's *Saturation* comes from `TaskFrame.saturation_of_finite` through
 `FrameOver.ofStep_isRegular`. `rmk:choice` does not cover the nomic results.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation
+Constraints consumed: Compositionality, Seriality, Limit
 -/
 theorem nomic_hierarchy :
     (∃ F : NomicFrame intOrder, ∃ _ : F.IsRegular, F.Static ∧ ¬ F.Lawful) ∧

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #908
 
 - **Task**: 908 - Audit the remaining "Constraints consumed: Compositionality, Seriality, Limit, Saturation" docstring lines against what each declaration's proof actually projects, and correct the over-reporting ones
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/908_constraints_consumed_marker_accuracy_audit/reports/01_constraints-consumed-marker-audit.md
@@ -138,19 +138,19 @@ other; the edges 1->2 and 3->4 exist solely to serialize that shared file.
 
 ---
 
-### Phase 1: Marker-only corrections at the binder-free rows [NOT STARTED]
+### Phase 1: Marker-only corrections at the binder-free rows [COMPLETED]
 
 **Goal**: Correct the five over-reporting markers that carry no `[F.IsRegular]` binder, where
 C34a's `omitted` set is empty whatever the marker says and the correction is a one-line edit.
 
 **Tasks**:
-- [ ] Re-confirm each site's current marker line and line number before editing (line numbers in this plan are plan-time, carried from the research report, and drift on every edit): `Nomic/Witnesses.lean` `NomicHierarchy.F2.lawful` (~512), `Nomic/Witnesses.lean` `nomic_hierarchy` (~626), `Nomic/ZTime.lean` `NomicFrame.ofStepFamily_isRegular` (~118), `Nomic/ZTime.lean` `NomicFrame.mem_lawHist_ofStepFamily_iff` (~152), `Nomic/ZTime.lean` `NomicFrame.lawHist_mono_of_le` (~167).
-- [ ] Set the marker on `F2.lawful`, `nomic_hierarchy`, `mem_lawHist_ofStepFamily_iff` and `lawHist_mono_of_le` to `Constraints consumed: Compositionality, Seriality, Limit`.
-- [ ] Set the marker on `ofStepFamily_isRegular` to `Constraints consumed: None`.
-- [ ] Reconcile `ofStepFamily_isRegular`'s surrounding docstring, which currently records that each member's *Saturation* comes from `TaskFrame.saturation_of_finite`: that paragraph is about what the instance *produces*, not what it consumes, so keep the choice-dependence note and say so explicitly rather than deleting it.
-- [ ] Edit the four `Compositionality, Seriality, Limit` markers as one batch so the delegating pair `mem_lawHist_ofStepFamily_iff` / `lawHist_mono_of_le` keeps list identity throughout.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs (their inventory blocks carry a per-file **Lines** column, so any line-count change makes them stale).
-- [ ] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported.
+- [x] Re-confirm each site's current marker line and line number before editing (line numbers in this plan are plan-time, carried from the research report, and drift on every edit): `Nomic/Witnesses.lean` `NomicHierarchy.F2.lawful` (~512), `Nomic/Witnesses.lean` `nomic_hierarchy` (~626), `Nomic/ZTime.lean` `NomicFrame.ofStepFamily_isRegular` (~118), `Nomic/ZTime.lean` `NomicFrame.mem_lawHist_ofStepFamily_iff` (~152), `Nomic/ZTime.lean` `NomicFrame.lawHist_mono_of_le` (~167).
+- [x] Set the marker on `F2.lawful`, `nomic_hierarchy`, `mem_lawHist_ofStepFamily_iff` and `lawHist_mono_of_le` to `Constraints consumed: Compositionality, Seriality, Limit`.
+- [x] Set the marker on `ofStepFamily_isRegular` to `Constraints consumed: None`.
+- [x] Reconcile `ofStepFamily_isRegular`'s surrounding docstring, which currently records that each member's *Saturation* comes from `TaskFrame.saturation_of_finite`: that paragraph is about what the instance *produces*, not what it consumes, so keep the choice-dependence note and say so explicitly rather than deleting it.
+- [x] Edit the four `Compositionality, Seriality, Limit` markers as one batch so the delegating pair `mem_lawHist_ofStepFamily_iff` / `lawHist_mono_of_le` keeps list identity throughout.
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs (their inventory blocks carry a per-file **Lines** column, so any line-count change makes them stale). *(FormalSystem/README.md needed no rewrite: --emit-inventory rewrote README.md only, its live-comment-lines count +2)*
+- [x] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported. *(drift reported; re-stamped with --fix)*
 
 **Timing**: 0.75 hours
 
