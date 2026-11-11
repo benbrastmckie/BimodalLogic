@@ -781,7 +781,7 @@ which elaborates the single module this phase edits; `LadderCell.lean` is a leaf
 
 ---
 
-### Phase 8: Records, Generated Surfaces and Full Verification [NOT STARTED]
+### Phase 8: Records, Generated Surfaces and Full Verification [COMPLETED]
 
 **Goal**: both module docstrings and `RaySummary/README.md` record the dispatched antitone slice,
 its two-way split and what each half costs; the route the predecessor named is marked as now
@@ -864,6 +864,49 @@ blocks it rewrote, and stage only the files it actually changed.
   every finding is attributed, and NO finding names a file this task touched. A pre-existing
   finding attributable to the recorded staleness is recorded as baseline and is NOT hand-patched
   under `.claude/**`.
+
+#### Verification Notes (recorded at implementation time)
+
+**The full gate set was DEFERRED to the batch stage, not independently run here.** This dispatch
+is one `implement`-phase dispatch inside a multi-task `/orchestrate` batch invocation, and the
+dispatch directive's Batch Gate Deferral section discharges this `full`-tier phase against a
+SCOPED tier instead. The complete `verify-deploy.sh` gate set still runs exactly once, for the
+whole batch, at the end of that invocation, with its result attributed back to this task by its
+own `modified_files`. The full gate is deferred here, never forgiven.
+
+**What the scoped narrowing actually covers, and why no `--only` selection was passed.** This
+task's touched files are `FormalSystem/Metalogic/Decidability/RaySummary/{LadderCell,LadderChain}.lean`,
+four ancestor-chain `README.md` inventory surfaces, and `typst/generated/status.typ`. Zero files
+under `.claude/**` and zero shell scripts were touched. `verify-deploy.sh`'s gates compare the
+deployed `.claude/` tree against the source store, and `run-all.sh`'s suites are the agent
+system's own shell-script tests — so neither `--only-gate N` nor `--only SUITE` has any gate or
+suite whose coverage intersects this task's touched paths. That is the same finding the phase
+Tier Justifications already record as `suite_selection_select` returning `__FULL_SWEEP__` for a
+`.lean` or generated-`typst` path. The covering checks for these paths are therefore the
+repository's own Lean/doc gates, all run here:
+
+- Full-project `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`: guard
+  exit 0, 2973 jobs, 0 `error:` lines, 0 `warning:` lines, and both touched modules' `.olean`
+  newer than source.
+- `bash scripts/typst-sync-check.sh`: exit 0.
+- `bash scripts/check-module-invariants.sh --emit-inventory --check`: exit 0.
+- `bash .claude/scripts/lean-sorry-census.sh` over all eight resolved source roots:
+  `sorry_count: 0`.
+- Axiom count over the same roots: 14, unchanged from the pre-task baseline measured at Stage 0.
+- `grep -rnE "^(theorem|def|lemma|abbrev) cellLE_zero_const_of_kappa_eq\b" FormalSystem/`: 0 hits
+  — the reserved name is declared by nothing.
+- `bash .claude/scripts/check-task-references.sh`: exit 0.
+- `grep -n "named rather than claimed" …/RaySummary/README.md`: the antitone-route paragraph no
+  longer matches (only the unrelated `(K1)`-amendment paragraph does), and the replacement text
+  names what is compiled and what remains open.
+
+**Attributed baseline findings, neither caused by nor hand-patched by this task:**
+
+| Finding | Names | Attribution |
+|---|---|---|
+| `check-module-invariants.sh` exits 1 on `FAIL C16` (`env_linter` batch reports 2 findings beyond `scripts/nolints.json`) | `RaySummary/LadderPump.lean:1825` (`exists_idleSpliced_ladderPath`, unused `[Fintype Q]`/`[Nonempty Q]`) and `:1868` (`exists_idleTypeBlock_of_budget_le_run`, unused `hg`) | `LadderPump.lean` was last touched by task 911 and is NOT in this task's `modified_files` (`git log 32ebf9a2f..HEAD --name-only` shows zero `LadderPump` hits). NOT hand-patched: `lake exe runLinter --update` would grandfather a finding this task cannot assess. Every other check group passes, including C2 axiom baselines, the inventory check, C15, C20 tier 1/2 and C9D. |
+| One vacuous-pattern grep hit | `FormalSystem/Examples/TemporalStructures.lean:495` — `theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial` | Pre-existing, untouched by this task, and not vacuous in substance: `intTimeHistory.domain` is definitionally total on `Int`, so `trivial` is the honest proof rather than a placeholder. |
+| Deployed `.claude/` tree STALE for `core lean literature memory typst` | the deploy tree, per the dispatch context | Pre-existing at dispatch time, recorded as baseline, not remedied here. No file under `.claude/**` was written by this task. |
 
 ---
 

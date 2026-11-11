@@ -51,6 +51,23 @@ forward slack because the widened window pays for the anchor, and
 the landed register-holding one and at `n₀ = nxtAt g z + m · (P + 1)` it is the common-shift one,
 hypothesis for hypothesis.
 
+The RAISE WITH THE LOWER BOUND RELAXED.
+`exists_ladderPath_through_free_register_shifted_slack_of_pend_past` is that raise with the lower
+bound traded for `nxtAt g z ≤ n₀ + (m · (P + 1) + L)` under forward slack `L` at the lower pair,
+which is what pays the UPPER direction of the anchor clause the record above compiles as failing.
+Two steps differ: the inner call is `LadderChain.lean`'s
+`exists_ladderPath_through_shifted_slack_of_pend_past`, which EXPOSES the raise's own
+`m · (P + 1)` of bought slack (the landed assembly discards it), and the re-lift's pin clause is
+closed through `anchor_clause_of_first_region_start` at deleted length `0` rather than through raw
+`nxtAt_lipschitz_two_sided` — the raw bound being precisely what the necessity record has in hand
+when it fails. At `L = 0` and `nxtAt g z ≤ n₀` it is the landed raise hypothesis for hypothesis,
+and at `L = 0` the regime hypothesis is free (`hasForwardSlack_zero`).
+`free_register_anchor_clause_relaxed_bound_required` compiles the RELAXED bound as non-removable
+too, at a DEEP-DESCENT witness `X = 19`, `nz = 8`, `cz = 10`, `mP = 1`, `n₀ = 0`, `d = 12`; the
+landed record's own witness has `mP = 0`, where the relaxed bound IS the landed bound, so that
+record stays compiled and unamended — its bound is non-removable, as it says, and what is new is
+that the bound is RELAXABLE by exactly the raise.
+
 The COLLISION CASE SPLIT. `kappa_collision_regimes` reads a collision
 `kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')` as a disjunction over named ARITHMETIC
 facts — not over cells — so that a cell-level consumer may dispatch on it. It has THREE branches,
@@ -74,6 +91,18 @@ pending-forever regime above the threshold (`(4, 2)` against `(6, 0)` at `Tc = T
 genuinely reaches branch 3 rather than relabelling the landed coverage — it covers `(2, 0)`
 against `(4, 1)`, the exact pair `kappa_collision_two_regimes_refuted_of_pend_gap` pins as
 surviving regime restriction and reached by no landed inclusion in either direction.
+
+The antitone slice is NAMED and SPLIT. `AntitoneCollisionDisplacement` is the complement shape
+— definitionally the second alternative `kappa_collision_monotone_or_antitone` already produces
+— and `kappa_collision_monotone_or_antitone_named` restates the landed dichotomy over the two
+named predicates, so exhaustiveness is readable without unfolding a nested disjunction.
+`kappa_collision_antitone_descent_multiple` reads the register's descent across a collision as
+itself a multiple `j · (P + 1)`, which turns the split into a comparison of two MULTIPLIERS: the
+BOUNDED sub-slice `n − n' ≤ m · (P + 1)` (that is, `j ≤ m`) against the DEEP-DESCENT residue.
+Both halves are non-empty inside the regime above the threshold —
+`kappa_collision_antitone_bounded_descent_nonvacuous` at `(4, 2)` against `(6, 0)` with `m = 2`,
+which is the predecessor's OWN non-vacuity witness and therefore lies in the cheaper half, and
+`kappa_collision_antitone_deep_descent_nonvacuous` at `(10, 8)` against `(11, 0)` with `m = 1`.
 
 The FORWARD-SLACK DOWNWARD HALF. A downward inclusion cannot be stated on the STATE under a
 path-level regime (`ClimbWitness.hasForwardSlack_refuted_unconditional`), so `ForwardSlackWitnessed`
@@ -106,15 +135,36 @@ rather than by the mathematics. The price of moving the register is a DOUBLED re
 `m · (P + 1) + m · (P + 1)` and a room bound `n + (m · (P + 1) + m · (P + 1)) ≤ c`, both carried
 explicitly; with the register free the price is `m · (P + 1) + (n' − n)` and
 `n' + (n' − n) ≤ c`, and the two landed amounts are its `n' = n` and `n' = n + m · (P + 1)`
-instances. Of the saturated branch, the MONOTONE slice is dispatched in both directions and the
-ANTITONE slice is EXCLUDED — by a hypothesis visible in the third schema's quantifier, not
-tacitly: exhaustive against the dispatched slice by `kappa_collision_monotone_or_antitone`,
-non-empty by `kappa_collision_antitone_residue_nonvacuous`. Nothing here claims it is
-unreachable; the route it would need is named and claimed in neither direction in
-`free_register_anchor_clause_monotone_required`'s docstring. No landed schema is retired and no
-landed signature is touched. The reserved name `cellLE_zero_const_of_kappa_eq` is claimed by
-nothing in this module: all three schemas are strictly stronger in hypotheses than the reserved
-statement and bear on its truth value in neither direction.
+instances.
+
+* the ANTITONE pair — `cellAt_subset_of_antitone_register_shift_of_pend_past` upward (countdown
+  UP, register DOWN, at the truncated amount `(n − n') − m · (P + 1)` witnessed at the LOWER
+  pair) against `cellAt_subset_of_antitone_register_shift_of_pend_past_rev` downward (countdown
+  DOWN, register UP, at `m · (P + 1)` witnessed at the higher pair and under NO room bound),
+  giving `CellLEZeroConstOfKappaEqAntitoneForwardSlack` and its theorem.
+
+Of the saturated branch, BOTH slices are now dispatched in both directions, and the dichotomy
+`kappa_collision_monotone_or_antitone_named` is therefore closed: every collision in the
+pending-forever regime above the threshold is covered by the monotone schema or the antitone one.
+The antitone slice remains EXCLUDED from the monotone schema's own quantifier — that hypothesis is
+unchanged — and is dispatched by the antitone schema beside it.
+
+The two directions' prices differ in a way worth naming. The monotone downward half LOWERS the
+target register and spends `m · (P + 1) + (n' − n)` under a room bound `n' + (n' − n) ≤ c`; the
+antitone downward half RAISES it and spends `m · (P + 1)` under no room bound at all, because a
+raise is free in the direction the single anchor inequality charges for. Upward, the antitone
+amount is the register's descent BEYOND what the raise already buys, which is `0` on the bounded
+sub-slice — and `forwardSlackWitnessed_zero` compiles that an amount-`0` witnessing obligation is
+FREE, so `cellLE_zero_const_of_kappa_eq_antitone_bounded_of_forwardSlack` carries exactly ONE
+`ForwardSlackWitnessed` hypothesis and none upward. Discharging the amount-`0` case settles
+NOTHING about the general question, which stays open and is claimed in neither direction: whether
+a `ForwardSlackWitnessed` hypothesis at a POSITIVE amount is satisfiable at any state the
+induction one layer up reaches.
+
+No landed schema is retired and no landed signature is touched. The reserved name
+`cellLE_zero_const_of_kappa_eq` is claimed by nothing in this module: every schema here is
+strictly stronger in hypotheses than the reserved statement and bears on its truth value in
+neither direction.
 -/
 
 set_option linter.style.longFile 2000

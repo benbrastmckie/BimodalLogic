@@ -65,6 +65,24 @@ THE WITNESSING PATH, `mem_cellAt_of_shift_of_hasForwardSlack_exact`, under exact
 both anchor directions, `exists_ladderPath_through_deleted_exact_of_pend_past` and
 `mem_cellAt_of_shift_of_hasForwardSlack`, are corollaries.
 
+Two siblings add one clause each over their landed counterparts, and both exist because the
+landed signatures cannot be read for what the ANTITONE side of a collision needs.
+`exists_ladderPath_through_shifted_slack_of_pend_past` is the regime-A assembly returning its
+four landed clauses PLUS `HasForwardSlack g' z (L + m · (P + 1)) (nxtAt g z)`: the raise's own
+bought slack, which the landed assembly discards (its inner `_idx_` call returns the countdown
+above the run; the non-`_idx_` wrapper drops it with a `-` pattern, so the slack is not reachable
+from the landed conclusion at all). It is stated at the end of `section Slack` rather than beside
+the landed assembly in `section AssemblyFin`, because `HasForwardSlack` and
+`hasForwardSlack_raise` are both introduced below that section.
+`exists_ladderPath_through_deleted_exact_raised_upfirst_of_pend_past` is the exact-shift deletion
+with the target register RAISED rather than lowered, at the regime amount `m · (P + 1)`
+UNCHANGED: the lowered sibling spends `k` of extra slack in the UPPER direction of the single
+anchor inequality, while a RAISE costs nothing there (the held-register regime already bounds the
+first region start from above, and raising the anchor only weakens that bound). What a raise does
+need is the room condition `n₀ + 2 + m · (P + 1) ≤ cntAt g z`, carried as a NAMED hypothesis; at
+`n₀ = nxtAt g z` it is the held-register theorem hypothesis for hypothesis. Both siblings leave
+their landed counterparts' signatures and bodies untouched.
+
 ## What this module does NOT hold
 
 No cell-level agreement: the reserved name `cellLE_zero_const_of_kappa_eq` is claimed by nothing,
