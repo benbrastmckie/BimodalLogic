@@ -494,7 +494,7 @@ existing signature changed.
 
 ---
 
-### Phase 4: Widen the Free-Anchor Raise, and Record That the Relaxed Bound Is Non-Removable [NOT STARTED]
+### Phase 4: Widen the Free-Anchor Raise, and Record That the Relaxed Bound Is Non-Removable [COMPLETED]
 
 **Goal**: `exists_ladderPath_through_free_register_shifted_slack_of_pend_past` and
 `free_register_anchor_clause_relaxed_bound_required` compile in `LadderCell.lean`'s existing

@@ -117,6 +117,8 @@ nothing in this module: all three schemas are strictly stronger in hypotheses th
 statement and bear on its truth value in neither direction.
 -/
 
+set_option linter.style.longFile 1700
+
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
 open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.Semantics
@@ -390,6 +392,144 @@ theorem free_register_anchor_clause_monotone_required :
         n₀ ≤ cz + mP → (X - n₀).natAbs ≤ d.natAbs := by
   intro h
   have hbad := h 19 8 10 0 0 11 (by omega) (by omega) (by omega) (by omega) (by omega)
+    (by omega) (by omega)
+  omega
+
+/-- **THE FREE-ANCHOR RAISE WITH THE LOWER BOUND RELAXED BY THE SLACK.** The landed
+`exists_ladderPath_through_free_register_shifted_of_pend_past` carries `nxtAt g z ≤ n₀`; this
+carries `nxtAt g z ≤ n₀ + (m · (P + 1) + L)` under forward slack `L` at the lower pair. Everything
+else is the landed raise: the countdown raised by exactly `m · (P + 1)`, the object state and the
+realized stab-free type at `z` held, the register delivered at the prescribed `n₀`, and the same
+upper bound `n₀ ≤ cntAt g z + m · (P + 1)`.
+
+**Which direction the slack buys, and why it is the one that was missing.** The anchor clause is
+two-sided and its two directions charge for opposite movements of the anchor. The landed raise's
+LOWER bound pays the UPPER direction — a pin's register value overshooting a lowered anchor by
+more than the pin distance allows — and `free_register_anchor_clause_monotone_required` compiles
+that bound as NON-REMOVABLE from the facts the landed raise has in hand. Forward slack at the
+LOWER pair is exactly what bounds that pin value from above on the raised path, so it is what the
+upper direction can be paid with instead. The route is the one named, and claimed in neither
+direction, in that record's own docstring; this is the theorem that takes it.
+
+**The construction.** Two steps differ from the landed raise. First, the inner call is
+`exists_ladderPath_through_shifted_slack_of_pend_past`, so the raised path `g₁` arrives carrying
+`HasForwardSlack g₁ z (L + m · (P + 1)) (nxtAt g z)` — the raise's own `m · (P + 1)` of bought
+slack added to the hypothesis's `L`. Second, the re-lift's pin clause is closed through
+`anchor_clause_of_first_region_start` at deleted length `0` and `a := z` on `g₁`, which collapses
+the clause at every pin to the single inequality at the FIRST region start above `z`'s raised
+region, rather than through raw `nxtAt_lipschitz_two_sided`. The raw Lipschitz bound is not
+enough: it is precisely what the necessity record above has in hand when it fails.
+
+**Conservativity.** At `L = 0` and `nxtAt g z ≤ n₀` the relaxed bound is the landed bound and this
+theorem is the landed raise, hypothesis for hypothesis — and at `L = 0` the regime hypothesis is
+free (`hasForwardSlack_zero`). `free_register_anchor_clause_relaxed_bound_required` below compiles
+that the relaxed bound is itself non-removable, so the relaxation is not a removal. -/
+theorem exists_ladderPath_through_free_register_shifted_slack_of_pend_past
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ)
+    (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
+    (hgap : nxtAt g z + 2 ≤ cntAt g z) (hTc : Tc ≤ cntAt g z) (m : ℕ) (n₀ L : ℕ)
+    (hslack : HasForwardSlack g z L (nxtAt g z))
+    (hlo : nxtAt g z ≤ n₀ + (m * (P + 1) + L))
+    (hhi : n₀ ≤ cntAt g z + m * (P + 1)) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' z = objAt g z ∧ cntAt g' z = cntAt g z + m * (P + 1) ∧
+      nxtAt g' z = n₀ ∧
+      ∀ (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+        (∀ t : ℤ, σ.state t = (t, g t)) →
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+  classical
+  -- the raise, with the bought slack EXPOSED
+  obtain ⟨g₁, hg₁, hobj₁, hcnt₁, hnxt₁, hslack₁, hty₁⟩ :=
+    exists_ladderPath_through_shifted_slack_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno
+      g hg z hpast hTc m L hslack
+  have hz₁ : pend (objAt g₁ z) = true := by rw [hobj₁]; exact hpast z le_rfl
+  have hpast₁ : ∀ p : ℤ, p ≤ z → pend (objAt g₁ p) = true :=
+    pend_past_of_nxtAt_lt g₁ hg₁ z hz₁ (by rw [hnxt₁, hcnt₁]; omega)
+  have hcz₁ : (cntAt g₁ z : ℤ) = (cntAt g z : ℤ) + ((m * (P + 1) : ℕ) : ℤ) := by
+    rw [hcnt₁]; push_cast; ring
+  -- the anchor clause at the FIRST region start above `z`'s raised region, at deleted length `0`
+  have hfirst : ∀ I : ℕ, 0 < I →
+      (∀ i : ℕ, i < I → pend (objAt g₁ (z + (cntAt g₁ z : ℤ) + 1 + (i : ℤ))) = false) →
+      pend (objAt g₁ (z + (cntAt g₁ z : ℤ) + 1 + (I : ℤ))) = true →
+      ((nxtAt g₁ (z + (cntAt g₁ z : ℤ) + (I : ℤ)) : ℤ) - n₀).natAbs
+        ≤ ((cntAt g₁ z : ℤ) + I - ((0 : ℕ) : ℤ)).natAbs := fun I hI hidle hnext => by
+    have hs := hslack₁ I hI hidle hnext
+    have hcast : ((0 : ℕ) : ℤ) = 0 := by norm_num
+    rw [hcast]
+    omega
+  have hanch := anchor_clause_of_first_region_start g₁ hg₁ z hz₁ 0 n₀ hfirst z le_rfl (by
+    have hcast : ((0 : ℕ) : ℤ) = 0 := by norm_num
+    rw [hcast]; omega)
+  have hn₀ : ∀ v, pend (objAt g₁ v) = false → pend (objAt g₁ (v + 1)) = true →
+      ((cntAt g₁ (v + 1) : ℤ) - n₀).natAbs ≤ (v - z).natAbs := fun v hv0 hv1 => by
+    have hzv : z < v := by
+      by_contra hle
+      exact Bool.false_ne_true (hv0.symm.trans (hpast₁ v (by omega)))
+    have h0 : pend (objAt g₁ (v + ((0 : ℕ) : ℤ))) = false := by simpa using hv0
+    have h1 : pend (objAt g₁ (v + ((0 : ℕ) : ℤ) + 1)) = true := by simpa using hv1
+    have hres := hanch v hzv h0 h1
+    rw [cntAt_eq_nxtAt_of_idle_pend g₁ hg₁ v hv0 hv1]
+    simpa using hres
+  -- the register, rebuilt at `z` with the anchor at the prescribed `n₀`
+  have hw : ∀ v, step (objAt g₁ v) (objAt g₁ (v + 1)) = true := fun v => objAt_step g₁ hg₁ v
+  have hidle : ∀ v, pend (objAt g₁ v) = false → cntAt g₁ v = 0 := fun v h =>
+    cntAt_eq_zero_of_idle g₁ hg₁ v h
+  have hpp : ∀ v, pend (objAt g₁ v) = true → pend (objAt g₁ (v + 1)) = true →
+      cntAt g₁ (v + 1) + 1 = cntAt g₁ v := fun v h0 h1 => cntAt_succ_of_pend_pend g₁ hg₁ v h0 h1
+  have hpi : ∀ v, pend (objAt g₁ v) = true → pend (objAt g₁ (v + 1)) = false →
+      cntAt g₁ v = 0 := fun v h0 h1 => (cntAt_eq_zero_of_pend_idle g₁ hg₁ v h0 h1).1
+  have hpins : ∀ s v, pend (objAt g₁ s) = false → pend (objAt g₁ (s + 1)) = true →
+      pend (objAt g₁ v) = false → pend (objAt g₁ (v + 1)) = true →
+      ((cntAt g₁ (s + 1) : ℤ) - cntAt g₁ (v + 1)).natAbs ≤ (s - v).natAbs :=
+    fun s v hs0 hs1 hv0 hv1 => pinCompat_of_ladderPath g₁ hg₁ s v hs0 hs1 hv0 hv1
+  obtain ⟨g₂, hg₂, hobj₂, hcnt₂, hnxt₂⟩ :=
+    exists_ladderPath_of_walk_nxt_at (objAt g₁) (cntAt g₁) z n₀
+      hw hidle hpp hpi hpins hn₀
+  refine ⟨g₂, hg₂, by rw [hobj₂, hobj₁], by rw [hcnt₂, hcnt₁], hnxt₂, fun σ σ' hσ hσ' => ?_⟩
+  obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
+  have e : tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+      = tpOf (ladderModel step pend fwd bwd lab) φ σ₁ z :=
+    tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ' σ₁
+      (fun t => by rw [add_zero]; exact hσ' t) (fun t => by rw [add_zero]; exact hσ₁ t)
+      hobj₂ hno z
+  rw [e, hty₁ σ σ₁ hσ hσ₁]
+
+/-- **THE RELAXED LOWER BOUND IS NOT REMOVABLE EITHER.** The anchor clause
+`exists_ladderPath_through_free_register_shifted_slack_of_pend_past` discharges does NOT follow
+from the pin distance, the DISPLACED Lipschitz bound, the pending-forever gap and the upper bound
+on the anchor alone: dropping the relaxed lower bound `nxtAt g z ≤ n₀ + (m · (P + 1) + L)` makes
+it false. The arithmetic witness is `X = 19`, `nz = 8`, `cz = 10`, `mP = 1`, `n₀ = 0`, `d = 12`,
+under the same correspondence `free_register_anchor_clause_monotone_required` names —
+`X ↔ nxtAt g₁ v`, `nz ↔ nxtAt g z`, `cz ↔ cntAt g z`, `mP ↔ m · (P + 1)`, `d ↔ v − z`: every other
+hypothesis holds (`11 < 12`, `19 ≤ 8 + 12 − 1`, `8 + 2 ≤ 10`, `0 ≤ 11`) while the conclusion
+`(19 − 0).natAbs = 19 ≤ 12` fails.
+
+**The witness is DEEP-DESCENT.** The register's descent here is `k = 8`, strictly more than the
+`mP = 1` the raise buys — so this witness lies in the half of the antitone slice that
+`kappa_collision_antitone_deep_descent_nonvacuous` inhabits, not in the bounded half. That is the
+whole point: the relaxation buys exactly `m · (P + 1)` of descent and no more, and beyond that
+amount a hypothesis is still required.
+
+**The landed necessity record stays compiled, unamended and uncontradicted.**
+`free_register_anchor_clause_monotone_required`'s own witness has `mP = 0`, where the relaxed
+bound IS the landed bound — so that record says what it has always said, and this one says
+something different. The bound is non-removable, as that record compiles; what is new is that it
+is RELAXABLE by exactly the raise. -/
+theorem free_register_anchor_clause_relaxed_bound_required :
+    ¬ ∀ X nz cz mP n₀ d : ℤ, 0 ≤ X → 0 ≤ mP → 0 ≤ n₀ →
+        cz + mP < d → X ≤ nz + d - mP → nz + 2 ≤ cz →
+        n₀ ≤ cz + mP → (X - n₀).natAbs ≤ d.natAbs := by
+  intro h
+  have hbad := h 19 8 10 1 0 12 (by omega) (by omega) (by omega) (by omega) (by omega)
     (by omega) (by omega)
   omega
 
