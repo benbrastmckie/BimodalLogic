@@ -131,16 +131,19 @@ One term, no tactic: `lawHist` is *literally* the left-hand side of
 the all-pairs predicate on a bare function, so no `WorldHistory` detour is needed;
 `mem_HF_iff_adjacent` stays reachable through `NomicFrame.mem_lawHist_iff`.
 
-The marker below lists all four constraints because the `[F.IsRegular]` binder supplies all four,
-and no binder-free form of this statement exists: `isTotal_respects_iff_adjacent` itself takes the
-regularity instance. The *content* leans on *Compositionality* and *Limit*, but a marker records
-what the declaration consumes, not what its proof emphasises.
+The marker below lists the three constraints the term actually reaches, not the four the
+`[F.IsRegular]` binder supplies: a marker enumerates what the declaration's term consumes, and
+the binder-free `FrameOver.isTotal_respects_iff_adjacent_of_constraints` — which this statement
+is routed through — takes *Compositionality*, *Seriality* and *Limit* and nothing else. The
+instance's *Saturation* field is never read, so `H_F^w = {bi-infinite step-paths}` holds over a
+member frame outside the saturated class as well.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation
+Constraints consumed: Compositionality, Seriality, Limit
 -/
 theorem mem_lawHist_iff_isStepPath (F : NomicFrame intOrder) [F.IsRegular] (w : F.World)
     (τ : ℤ → F.World) : τ ∈ F.lawHist w ↔ IsStepPath (F.at w) τ :=
-  FrameOver.isTotal_respects_iff_adjacent (F.at w) τ
+  FrameOver.isTotal_respects_iff_adjacent_of_constraints (F.at w)
+    (F.at w).comp (F.at w).serial (F.at w).limit τ
 
 /--
 In a generated family, `H_F^w` is exactly the set of bi-infinite `R_w`-paths: the characterization

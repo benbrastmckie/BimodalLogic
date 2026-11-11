@@ -240,20 +240,20 @@ a C34a delegation discharge, reusing the already-existing enabler twin.
 
 ---
 
-### Phase 3: `IntNormalForm.lean` enabler twins plus the `ZTime.lean` binder-carrying site [NOT STARTED]
+### Phase 3: `IntNormalForm.lean` enabler twins plus the `ZTime.lean` binder-carrying site [COMPLETED]
 
 **Goal**: Land the two binder-free enabler twins the `Nomic/ZTime.lean` cluster needs, and correct
 `NomicFrame.mem_lawHist_iff_isStepPath` with a delegation discharge.
 
 **Tasks**:
-- [ ] Add `FrameOver.respects_of_isStepPath_of_constraints`, the binder-free form of `respects_of_isStepPath` (`IntNormalForm.lean` ~361), taking the three constraints explicitly and routing through `taskRel_eq_iter_of_constraints` in place of `taskRel_eq_iter`; mark it `Constraints consumed: Compositionality, Seriality, Limit`.
-- [ ] Add `FrameOver.isTotal_respects_iff_adjacent_of_constraints`, the binder-free form of `isTotal_respects_iff_adjacent` (~414), with the same three hypotheses, its `←` direction routed through the new `respects_of_isStepPath_of_constraints`; mark it identically.
-- [ ] Reduce `respects_of_isStepPath` and `isTotal_respects_iff_adjacent` to one-line corollaries of their twins, signatures byte-identical, each carrying the identical corrected marker.
-- [ ] Correct `NomicFrame.mem_lawHist_iff_isStepPath` (`Nomic/ZTime.lean` ~139) to `Constraints consumed: Compositionality, Seriality, Limit` and re-point its body at `FrameOver.isTotal_respects_iff_adjacent_of_constraints` so the delegation discharge fires.
-- [ ] Rewrite the rationale paragraph at `Nomic/ZTime.lean` (~132), which asserts that "no binder-free form of this statement exists" and that "a marker records what the declaration consumes, not what its proof emphasises": the first claim is now false and the second inverts the specification. Replace both with the `REFERENCE_NORMAL_FORM.md` reading.
-- [ ] Verify neither new twin names `IsRegular` anywhere in its span.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs.
-- [ ] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported.
+- [x] Add `FrameOver.respects_of_isStepPath_of_constraints`, the binder-free form of `respects_of_isStepPath` (`IntNormalForm.lean` ~361), taking the three constraints explicitly and routing through `taskRel_eq_iter_of_constraints` in place of `taskRel_eq_iter`; mark it `Constraints consumed: Compositionality, Seriality, Limit`.
+- [x] Add `FrameOver.isTotal_respects_iff_adjacent_of_constraints`, the binder-free form of `isTotal_respects_iff_adjacent` (~414), with the same three hypotheses, its `←` direction routed through the new `respects_of_isStepPath_of_constraints`; mark it identically.
+- [x] Reduce `respects_of_isStepPath` and `isTotal_respects_iff_adjacent` to one-line corollaries of their twins, signatures byte-identical, each carrying the identical corrected marker. *(note: neither original carried a `Constraints consumed:` line before this phase, so the "identical corrected marker" was added rather than edited; both signatures are byte-identical to their pre-phase form.)*
+- [x] Correct `NomicFrame.mem_lawHist_iff_isStepPath` (`Nomic/ZTime.lean` ~139) to `Constraints consumed: Compositionality, Seriality, Limit` and re-point its body at `FrameOver.isTotal_respects_iff_adjacent_of_constraints` so the delegation discharge fires. *(deviation: altered — the three constraints are passed as `(F.at w).comp/.serial/.limit`, projected out of `NomicFrame.instAtIsRegular`, since the twin takes them explicitly; the signature is unchanged.)*
+- [x] Rewrite the rationale paragraph at `Nomic/ZTime.lean` (~132), which asserts that "no binder-free form of this statement exists" and that "a marker records what the declaration consumes, not what its proof emphasises": the first claim is now false and the second inverts the specification. Replace both with the `REFERENCE_NORMAL_FORM.md` reading.
+- [x] Verify neither new twin names `IsRegular` anywhere in its span.
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs.
+- [x] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported. *(drift reported: `formalsystem-line-count` committed=404610 live=404660; re-stamped and re-checked clean.)*
 
 **Timing**: 1.5 hours
 

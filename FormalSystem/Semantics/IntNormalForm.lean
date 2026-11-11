@@ -357,17 +357,42 @@ theorem iter_of_isStepPath {F : FrameOver intOrder} {f : ℤ → F.WorldState} (
     have := h (s + n)
     rwa [show ((n + 1 : ℕ) : ℤ) = (n : ℤ) + 1 by push_cast; rfl, hs]
 
-/-- A bi-infinite step-path satisfies the all-pairs task-respect obligation. -/
-theorem respects_of_isStepPath {F : FrameOver intOrder} [F.IsRegular] {f : ℤ → F.WorldState}
-    (h : IsStepPath F f)
+/--
+A bi-infinite step-path satisfies the all-pairs task-respect obligation, with the three
+constraints the rebuild reaches taken as explicit hypotheses rather than projected out of a
+bundling instance.
+
+The all-pairs obligation is rebuilt from adjacency by `taskRel_eq_iter_of_constraints` and
+`iter_of_isStepPath`. Neither reaches *Saturation*, so a bi-infinite step-path over a
+non-saturated frame over ℤ-time still respects the task relation at every pair of times.
+
+Constraints consumed: Compositionality, Seriality, Limit
+-/
+theorem respects_of_isStepPath_of_constraints (F : FrameOver intOrder)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) {f : ℤ → F.WorldState} (h : IsStepPath F f)
     (s t : ℤ) : F.TaskRel (f s) (t - s) (f t) := by
-  refine (F.taskRel_eq_iter (f s) (f t) (t - s)).mpr ⟨fun hd => ?_, fun hd => ?_⟩
+  refine (F.taskRel_eq_iter_of_constraints hcomp hser hlim (f s) (f t) (t - s)).mpr
+    ⟨fun hd => ?_, fun hd => ?_⟩
   · have hst : t = s + ((t - s).natAbs : ℤ) := by omega
     have hgo := iter_of_isStepPath h (t - s).natAbs s
     rwa [← hst] at hgo
   · have hst : s = t + ((t - s).natAbs : ℤ) := by omega
     have hgo := iter_of_isStepPath h (t - s).natAbs t
     rwa [← hst] at hgo
+
+/--
+A bi-infinite step-path satisfies the all-pairs task-respect obligation:
+`respects_of_isStepPath_of_constraints` with the three constraints its term reaches projected out
+of the `[F.IsRegular]` instance. The instance's *Saturation* field is not read, so the general
+form above applies to frames outside the regular class.
+
+Constraints consumed: Compositionality, Seriality, Limit
+-/
+theorem respects_of_isStepPath {F : FrameOver intOrder} [F.IsRegular] {f : ℤ → F.WorldState}
+    (h : IsStepPath F f)
+    (s t : ℤ) : F.TaskRel (f s) (t - s) (f t) :=
+  respects_of_isStepPath_of_constraints F F.comp F.serial F.limit h s t
 
 /--
 The possible world determined by a bi-infinite step-path. Every field is discharged from
@@ -406,19 +431,41 @@ theorem mem_HF_iff_adjacent (F : FrameOver intOrder) [F.IsRegular] (f : ℤ → 
   · intro h; exact ⟨worldHistoryOfStepPath F f h, rfl⟩
 
 /--
-The predicate-on-histories form of `mem_HF_iff_adjacent`: for a convex history already known to be
-total, task-respect at consecutive times is equivalent to task-respect at all pairs. The `←`
-direction is the substantive one — it is what lets a construction discharge `respects_task` from a
-single adjacency hypothesis.
+The predicate-on-histories form of `mem_HF_iff_adjacent`, with the three constraints its term
+reaches taken as explicit hypotheses: for a convex history already known to be total,
+task-respect at consecutive times is equivalent to task-respect at all pairs. The `←` direction
+is the substantive one — it is what lets a construction discharge `respects_task` from a single
+adjacency hypothesis, and it is the only half that reaches a constraint at all, through
+`respects_of_isStepPath_of_constraints`.
+
+*Saturation* is reached nowhere: the `→` half is one instantiation at consecutive times and the
+`←` half bottoms out in `taskRel_eq_iter_of_constraints`.
+
+Constraints consumed: Compositionality, Seriality, Limit
 -/
-theorem isTotal_respects_iff_adjacent (F : FrameOver intOrder) [F.IsRegular]
-    (f : ℤ → F.WorldState) :
+theorem isTotal_respects_iff_adjacent_of_constraints (F : FrameOver intOrder)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) (f : ℤ → F.WorldState) :
     (∀ s t : ℤ, F.TaskRel (f s) (t - s) (f t)) ↔ IsStepPath F f := by
   constructor
   · intro h n
     have := h n (n + 1)
     rwa [show n + 1 - n = (1 : ℤ) by omega] at this
-  · intro h s t; exact respects_of_isStepPath h s t
+  · intro h s t
+    exact respects_of_isStepPath_of_constraints F hcomp hser hlim h s t
+
+/--
+The predicate-on-histories form of `mem_HF_iff_adjacent`:
+`isTotal_respects_iff_adjacent_of_constraints` with the three constraints its term reaches
+projected out of the `[F.IsRegular]` instance. The instance's *Saturation* field is not read, so
+the general form above applies to frames outside the regular class.
+
+Constraints consumed: Compositionality, Seriality, Limit
+-/
+theorem isTotal_respects_iff_adjacent (F : FrameOver intOrder) [F.IsRegular]
+    (f : ℤ → F.WorldState) :
+    (∀ s t : ℤ, F.TaskRel (f s) (t - s) (f t)) ↔ IsStepPath F f :=
+  isTotal_respects_iff_adjacent_of_constraints F F.comp F.serial F.limit f
 
 end FrameOver
 
