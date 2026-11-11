@@ -138,11 +138,11 @@ Phases within the same wave can execute in parallel.
 Goals, is reachable from both aggregators, and builds with zero warnings.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/LCExtension.lean` with the repo module header: the Apache
+- [x] Create `FormalSystem/Metalogic/LCExtension.lean` with the repo module header: the Apache
       copyright block copied in shape from `FormalSystem/Metalogic/AuxiliaryAtoms.lean`, then the
       three imports exactly as compiled in the Decisions entry above, then a `/-!` module
       docstring.
-- [ ] In that docstring: a `## Main Results` list naming `ExtDerivation`, `ext_sound_ztime`,
+- [x] In that docstring: a `## Main Results` list naming `ExtDerivation`, `ext_sound_ztime`,
       `ext_sound_validIn`, `ext_sound_lc_ztime`, `ext_sound_lcU_ztime`, `ExtComplete` and all
       three target Props `LCComplete`, `LCRulesComplete`, `LCURulesComplete` (this is what keeps
       C17 off the three unconsumed Props); a paragraph recording the `fc`-parameter hazard (the
@@ -150,27 +150,32 @@ Goals, is reachable from both aggregators, and builds with zero warnings.
       `.ZTime`-only, and `ext_sound_validIn` is the stated class-generic arm); and a sentence
       recording that `PlusDerivationTree`, `PlusAxiom` and `PlusFormula` are untouched. Do **not**
       use the words "sorry-free" in `FormalSystem/Metalogic.lean`'s docstring (see Phase 3).
-- [ ] Transcribe, in the probe's order: `structure RuleSet` (`clock aaFwd aaBwd : Bool`),
+- [x] Transcribe, in the probe's order: `structure RuleSet` (`clock aaFwd aaBwd : Bool`),
       `RuleSet.none`, `RuleSet.all`, `IsLCAxiom`, `IsLCUAxiom`, `isLCAxiom_plusValidZTime`,
       `isLCUAxiom_plusValidZTime`, `inductive ExtDerivation` (all ten constructors),
       `ext_sound_ztime`, `ext_sound_validIn`, `ExtComplete`, `LCComplete`, `LCRulesComplete`,
       `LCURulesComplete`, `ext_sound_lc_ztime`, `ext_sound_lcU_ztime`.
-- [ ] Do **not** redefine `lcU` or `lcN` — both are library API in
+- [x] Do **not** redefine `lcU` or `lcN` — both are library API in
       `FormalSystem/PlusLanguage/PlusLCSchema.lean`. Do **not** use the archived task-879 probe's
       `(b₀ : Atom) (Q : List Atom) … (p : Atom → ℕ → Atom)` naming-rule encoding; both `aaFwd` and
       `aaBwd` take the landed `(qa : ℕ → Atom) (m k : ℕ) (a : ℕ → PlusFormula) (p : ℕ → ℕ → ℕ)
       (b₀ : ℕ)` shape.
-- [ ] Add the four `example`s from the probe: the arbitrary-conclusion mirror shape derived via
+- [x] Add the four `example`s from the probe: the arbitrary-conclusion mirror shape derived via
       `PlusFormula.reflect_time_involution`, and inhabitation of each of `IsLCAxiom` and
       `IsLCUAxiom`. Write `change`, not `show`, at the one goal-changing site.
-- [ ] Give every declaration that will carry a theorem-index row in Phase 3 — `ExtDerivation`,
+- [x] Give every declaration that will carry a theorem-index row in Phase 3 — `ExtDerivation`,
       `isLCAxiom_plusValidZTime`, `isLCUAxiom_plusValidZTime`, `ext_sound_ztime`,
       `ext_sound_validIn`, `ext_sound_lc_ztime`, `ext_sound_lcU_ztime`, `ExtComplete`,
       `LCComplete`, `LCRulesComplete`, `LCURulesComplete` — a `/--` doc comment ending in a
       `Paper: —` line with a one-clause reason, which is what C15's second assertion checks.
-- [ ] Append `import FormalSystem.Metalogic.LCExtension` to `FormalSystem/Metalogic.lean`'s import
-      block and to `FormalSystem.lean`.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` in the
+- [x] Append `import FormalSystem.Metalogic.LCExtension` to `FormalSystem/Metalogic.lean`'s import
+      block and to `FormalSystem.lean`. *(deviation: altered — `FormalSystem.lean` is
+      alphabetically sorted, so the import went at its alphabetical position, line 506 between
+      `Independence.ZTimeSharpness` and `NamingRules`, not beside `Metalogic.AuxiliaryAtoms`.
+      Placing it beside `AuxiliaryAtoms` would have added a second sort violation to the one
+      pre-existing at line 66. `FormalSystem/Metalogic.lean` is dependency-ordered, not sorted,
+      so there the import was appended after `AuxiliaryAtoms` as written.)*
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` in the
       same commit as the Lean lines — `.githooks/pre-commit` blocks a `.lean` commit while the
       counts are stale, and `--no-verify` is not an acceptable substitute here.
 
@@ -220,23 +225,23 @@ module and a typo in either aggregator's new import line.
 library.
 
 **Tasks**:
-- [ ] Measure, in this dispatch, `#print axioms` for each of `isLCAxiom_plusValidZTime`,
+- [x] Measure, in this dispatch, `#print axioms` for each of `isLCAxiom_plusValidZTime`,
       `isLCUAxiom_plusValidZTime`, `ext_sound_ztime`, `ext_sound_validIn`, `ext_sound_lc_ztime`
       and `ext_sound_lcU_ztime`, each fully qualified under
       `FormalSystem.Metalogic.LCExtension`. Record the measured text; do **not** type a profile
       from the research report.
-- [ ] Create `Tests/BimodalTest/Metalogic/LCExtensionTest.lean` following
+- [x] Create `Tests/BimodalTest/Metalogic/LCExtensionTest.lean` following
       `Tests/BimodalTest/Metalogic/AuxiliaryAtomsTest.lean`: copyright header, a `/-!` docstring
       saying the module is permanent evidence rather than a conventional test, a "When one of
       these guards fires" paragraph (a moved profile is justified in the same commit as the change
       that moved it, never re-baselined to turn a red build green), and a "What this module does
       not pin" paragraph recording that it pins no completeness, decidability or axiomatizability
       claim, because the module under test makes none.
-- [ ] Write one `/-- info: … -/` + `#guard_msgs in` + `#print axioms …` block per measured
+- [x] Write one `/-- info: … -/` + `#guard_msgs in` + `#print axioms …` block per measured
       declaration, using the measured expected text verbatim.
-- [ ] Add `import BimodalTest.Metalogic.LCExtensionTest` to `Tests/BimodalTest.lean` (hand
+- [x] Add `import BimodalTest.Metalogic.LCExtensionTest` to `Tests/BimodalTest.lean` (hand
       maintained, not generated).
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` with
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` with
       this phase's Lean lines if the counts moved; if `--fix` rewrites nothing, record the no-op
       rather than reporting a change.
 
@@ -274,39 +279,51 @@ not include the test library).
 
 ---
 
-### Phase 3: The ledger, the generated inventory, and the full gate set [NOT STARTED]
+### Phase 3: The ledger, the generated inventory, and the full gate set [COMPLETED]
 
 **Goal**: the new module is recorded in the repository's per-theorem ledger and its generated
 inventory surfaces, and the complete gate set runs green (or with every finding attributed to a
 pre-existing baseline rather than to a file this task touched).
 
 **Tasks**:
-- [ ] Insert a new `###` subsection in `docs/theorem-index.md` — placed after the
+- [x] Insert a new `###` subsection in `docs/theorem-index.md` — placed after the
       `` ### `LC_n` — Reynolds' infinite limit-closure schema, and the ω-chain it runs on ``
       table and immediately before `### Conservativity — TM⁻ over L⁻, TM over TM⁻, TM⁺ over TM`
       (both confirmed present at authoring time; if either heading has moved, place the new
       subsection adjacent to whichever LC-schema table then exists and record the placement) —
       with the standard six-column header `| Paper label | Statement | Lean name | File | Frame
       class | Axioms |`.
-- [ ] Add one row each for `ExtDerivation`, `ExtComplete`, `LCComplete`, `LCRulesComplete`,
+- [x] Add one row each for `ExtDerivation`, `ExtComplete`, `LCComplete`, `LCRulesComplete`,
       `LCURulesComplete`, `isLCAxiom_plusValidZTime`, `isLCUAxiom_plusValidZTime`,
       `ext_sound_ztime`, `ext_sound_validIn`, `ext_sound_lc_ztime` and `ext_sound_lcU_ztime`.
       Paper-label cell `—`; Axioms cell a bare `pcq` plus "Profiles guarded by
       `Tests/BimodalTest/Metalogic/LCExtensionTest.lean`" in the Statement cell; **no**
-      `pinned:C14` cell anywhere.
-- [ ] Each of the three target Props' rows states plainly that the Prop is **stated and
+      `pinned:C14` cell anywhere. *(deviation: altered — the five definitional rows
+      (`ExtDerivation`, `ExtComplete`, `LCComplete`, `LCRulesComplete`, `LCURulesComplete`)
+      carry a measured `[propext]` Axioms cell, not `pcq`: they were measured at `[propext]`
+      in this dispatch and the measured value wins over a carried one. The six theorem rows
+      carry `pcq` as planned, and only those six carry the "Profiles guarded by" note, since
+      only those six are guarded.)*
+- [x] Each of the three target Props' rows states plainly that the Prop is **stated and
       unproved** — the row is a statement of an open target, never a claim that it holds.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` and replace the
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` and replace the
       `<!-- TODO: add description -->` cell the generator writes for the new
       `LCExtension.lean` row in `FormalSystem/Metalogic/README.md`'s `filter=non-aggregators`
       loose-row block with a real description, in the register of the neighbouring
       `AuxiliaryAtoms.lean` and `NamingRules.lean` rows: the extended proof system, its ZTime
       soundness, and that the three completeness targets are statements only.
-- [ ] Re-read each touched README immediately before staging — task 911 is live on this tree —
+- [x] Re-read each touched README immediately before staging — task 911 is live on this tree —
       and stage only this task's own hunks, never a directory or glob pathspec. A no-change
       outcome for a given README is expected, not a failure.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
-- [ ] Run the complete gate set and record its outcome per the criteria below.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+- [x] Run the complete gate set and record its outcome per the criteria below. *(deviation:
+      altered — the dispatch directive narrows this `full`-tier phase to a scoped tier because
+      this task is one `implement` dispatch inside a multi-task batch; the scoped invocation
+      `verify-deploy.sh --only-gate 1,2` was run (exit 0) and the complete 27-gate set is
+      DEFERRED to the batch stage. The repository's own gate set, which is what actually covers
+      this phase's paths, was run in full. One additional file was touched beyond the five
+      declared: `scripts/module-invariants-allowlist.txt`, five entries, to resolve a C5 failure
+      on this task's own uppercase-initial declaration names. See Verification Notes.)*
 
 **Timing**: 1.5 hours
 
@@ -343,6 +360,76 @@ it rewrites a fourth file, stage it and record it rather than reverting it.
 - `grep -rn 'sorry' FormalSystem/Metalogic/LCExtension.lean Tests/BimodalTest/Metalogic/LCExtensionTest.lean` returns nothing, and no `def X := True`-shaped vacuous declaration exists in either file.
 - `bash .claude/scripts/lean-challenge-snapshot.sh --check 896 .` is run and its verdict recorded. Per `rules/plan-compliance.md` that verdict is **ADVISORY ONLY**: a drift finding is a signal to investigate, never grounds to fail the phase on its own. If no manifest exists for this task the expected outcome is `ERROR: no manifest found … exit 71`; record that as the verdict and do **not** run the script without `--check` afterwards, which would pin the implementation rather than the contract.
 - `.githooks/pre-commit` accepted every Lean-touching commit without `--no-verify`.
+
+**Verification Notes (implement dispatch 21)**:
+
+- **The complete gate set was NOT independently run here; it is DEFERRED to the batch stage.**
+  This task is one `implement`-phase dispatch inside a multi-task `/orchestrate` batch, and the
+  dispatch directive narrows this `full`-tier phase to a scoped invocation. Scoped invocation
+  actually run: `bash .claude/scripts/verify-deploy.sh --only-gate 1,2` — exit 0, PASS, 12
+  checks, 0 failures. The remaining gates of the 27-gate agent-system deploy set run once for
+  the whole batch at the end of this invocation, and no finding of this scoped run named any
+  file this task touched. (`--only-gate 0` is rejected: the valid range is 1-27.)
+- `lake build` full project, unscoped, through the build guard: exit 0, 2972 jobs, 0 `error:`,
+  0 `warning:`. `lake build BimodalTest`: exit 0, 3040 jobs, 0 `error:`, 0 `warning:`. Both
+  re-run after the Phase-3 docstring reflow described below. `.olean` newer than source for
+  `BimodalTest/Metalogic/LCExtensionTest.lean`; `FormalSystem/Metalogic/LCExtension.olean`
+  rebuilt by the final `BimodalTest` run.
+- `scripts/check-module-invariants.sh`: exit 0, ALL CHECKS PASSED. By name — `INV` pass (every
+  generated inventory block current, every hand-maintained one exhaustive), `C15` both
+  assertions pass (93 paper-anchor citations resolve; all 454 theorem-index rows carry their
+  anchor or `Paper: —` at the declaration, the eleven new rows included), `C17` flags no dead
+  declaration for any of the three target Props, `C27` pass (66 allow-listed debug directive
+  lines in 1 file — none of them in either new file). `C5` initially FAILED with five
+  unresolved module paths, all five this task's own; resolved below.
+- `C5` resolution: `FormalSystem.Metalogic.LCExtension.{ExtDerivation, ExtComplete, LCComplete,
+  LCRulesComplete, LCURulesComplete}` are uppercase-initial DECLARATION names whose fully
+  qualified form is indistinguishable from a module path one level below the file, so C5's
+  dotted-path regex could not resolve them. Five entries were added to
+  `scripts/module-invariants-allowlist.txt`, which is that check's own documented permanent
+  exemption mechanism and already carries exactly this shape for `StarLanguage.StarAxiom`,
+  `OpenLanguage.OpenDerivationTree` and a dozen others. Each name was verified by `grep` to be a
+  live declaration before being added, as that file's charter requires. The module's six theorem
+  rows need no entry: their names begin lowercase, so C5's match terminates at `LCExtension`,
+  which resolves. **This is a sixth file beyond the five this phase declared**, recorded here
+  rather than reverted, per this phase's own Scope Hypothesis instruction.
+- `scripts/typst-sync-check.sh`: exit 0, PASS (all 4 checks green). `--fix` was run once per
+  phase; `typst/generated/status.typ` moved in Phases 1 and 2 (file and line counts) and was
+  staged with each phase's Lean lines. Phase 3 added no `.lean` file, so its `--fix` was a
+  stamp-commit-only no-op.
+- `scripts/check-metalogic-cycles.sh`: exit 0. Assertions A and B unchanged — `LCExtension.lean`
+  is a loose file directly under `Metalogic/`, so it contributes no directory-level edge as a
+  source, and its three imports introduce no new upward edge.
+- `scripts/check-copyright-headers.sh` exit 0; `scripts/check-phantom-citations.sh` exit 0;
+  `scripts/check-evidence-probes.sh` exit 0; `scripts/readme-lint.sh` exit 0.
+- `scripts/check-paper-definitions.sh`: exit **1**, PRE-EXISTING BASELINE. Nine anchors drift
+  between the pinned record and the paper's live `.tex` (`def:id`, `def:frame`,
+  `def:frame-properties`, `def:task-relation`, `def:BL-semantics`, `def:BLplus-language`,
+  `def:BLstar-semantics`, `cor:tm-completeness`, `app:discrete`, `fn:static-frame`). This task
+  touched neither `docs/reference/paper-definitions-of-record.md` nor any `.tex`, and no finding
+  names a file it touched; the paper lives in a different repository and drifted on its own.
+- Sorry/vacuity/axiom census over the resolved source roots: `sorry_count: 0`;
+  `vacuous_count: 1`, which is the pre-existing
+  `FormalSystem/Examples/TemporalStructures.lean:495` `:= trivial` (2 such lines at the plan
+  commit, unchanged — not a file this task touched); repo-wide `^axiom ` count **14, equal to
+  the baseline at the plan commit**. That count read 15 mid-phase because one `/--` doc-comment
+  line in `LCExtension.lean` wrapped so that the word "axiom" began the line; the line was
+  reflowed and both builds re-run. Zero `axiom` declarations in either new file.
+- `bash .claude/scripts/lean-challenge-snapshot.sh --check 896 .`: exit **71**,
+  `ERROR: no manifest found` — the outcome this phase's criteria predicted for a task with no
+  snapshot manifest. Recorded as the verdict; the script was **not** re-run without `--check`,
+  which would have pinned the implementation rather than the contract. Verdict is ADVISORY ONLY
+  per `rules/plan-compliance.md`.
+- `bash .claude/scripts/lean-plan-compliance-check.sh` over this plan and the resolved source
+  roots: `COMPLIANCE_CHECK: passed`, all sixteen named identifiers found.
+- `.githooks/pre-commit` accepted every Lean-touching commit without `--no-verify`.
+- Eleven theorem-index rows were added, matching this phase's Scope Hypothesis count.
+  `--emit-inventory` rewrote exactly the three predicted files
+  (`FormalSystem/Metalogic/README.md`, `FormalSystem/README.md`, `README.md`) and no fourth.
+  The five definitional rows carry a measured `[propext]` Axioms cell rather than the `pcq` the
+  phase's task list anticipated: `ExtDerivation`, `ExtComplete` and the three target Props were
+  measured at `[propext]`, and the measured value wins over a carried one. The six theorem rows
+  carry `pcq`. No `pinned:C14` cell anywhere.
 
 ---
 
@@ -457,16 +544,16 @@ end FormalSystem.Metalogic.LCExtension
 
 ## Testing & Validation
 
-- [ ] Full project build green with zero warnings, and `lake build BimodalTest` green (CI builds with `--wfail`; a lint warning is a CI failure).
-- [ ] Zero `sorry` and zero new axiom in both new files; the measured profile ceiling is `[propext, Classical.choice, Quot.sound]` or lower for every pinned declaration.
-- [ ] All fourteen `## Lean Challenge Statements` identifiers present in `FormalSystem/Metalogic/LCExtension.lean` at their pinned signatures, plus `RuleSet` and `ExtDerivation`.
-- [ ] Six axiom-profile `#guard_msgs` blocks compile against **measured** profiles.
-- [ ] The three target Props are present, unproved, `sorry`-free, and nowhere claimed to hold; the four `example`s (mirror-shape acceptance, two axiom-predicate inhabitations) compile.
-- [ ] `scripts/check-module-invariants.sh` clean for every touched file, with any pre-existing repo-wide finding enumerated; C17, C27, C15 (both assertions) and `INV` each addressed by name.
-- [ ] `scripts/typst-sync-check.sh` green, and `.githooks/pre-commit` accepted every Lean-touching commit without `--no-verify`.
-- [ ] `scripts/check-metalogic-cycles.sh` assertions A and B unchanged — no new directory-level edge, no new upward import.
-- [ ] `scripts/check-copyright-headers.sh`, `check-paper-definitions.sh`, `check-phantom-citations.sh`, `check-evidence-probes.sh`, `readme-lint.sh` each run with exit status recorded and any finding attributed to a touched file or to the pre-existing baseline.
-- [ ] `verify-deploy.sh` run with its exit status recorded and every finding attributed to the stale-deploy baseline or to a touched file.
+- [x] Full project build green with zero warnings, and `lake build BimodalTest` green (CI builds with `--wfail`; a lint warning is a CI failure).
+- [x] Zero `sorry` and zero new axiom in both new files; the measured profile ceiling is `[propext, Classical.choice, Quot.sound]` or lower for every pinned declaration.
+- [x] All fourteen `## Lean Challenge Statements` identifiers present in `FormalSystem/Metalogic/LCExtension.lean` at their pinned signatures, plus `RuleSet` and `ExtDerivation`.
+- [x] Six axiom-profile `#guard_msgs` blocks compile against **measured** profiles.
+- [x] The three target Props are present, unproved, `sorry`-free, and nowhere claimed to hold; the four `example`s (mirror-shape acceptance, two axiom-predicate inhabitations) compile.
+- [x] `scripts/check-module-invariants.sh` clean for every touched file, with any pre-existing repo-wide finding enumerated; C17, C27, C15 (both assertions) and `INV` each addressed by name.
+- [x] `scripts/typst-sync-check.sh` green, and `.githooks/pre-commit` accepted every Lean-touching commit without `--no-verify`.
+- [x] `scripts/check-metalogic-cycles.sh` assertions A and B unchanged — no new directory-level edge, no new upward import.
+- [x] `scripts/check-copyright-headers.sh`, `check-paper-definitions.sh`, `check-phantom-citations.sh`, `check-evidence-probes.sh`, `readme-lint.sh` each run with exit status recorded and any finding attributed to a touched file or to the pre-existing baseline.
+- [x] `verify-deploy.sh` run with its exit status recorded and every finding attributed to the stale-deploy baseline or to a touched file.
 
 ## Artifacts & Outputs
 

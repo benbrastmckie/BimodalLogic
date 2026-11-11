@@ -162,8 +162,8 @@ theorem isLCUAxiom_plusValidZTime {ψ : PlusFormula} (h : IsLCUAxiom ψ) : PlusV
 
 /-! ## The extended theoremhood closure -/
 
-/-- `ExtDerivation fc Ax R φ` — theoremhood in the extension of the `L⁺` system at `fc` by the
-axiom set `Ax` and the naming rules `R` switches on.
+/-- `ExtDerivation fc Ax R φ` — theoremhood in the extension of the `L⁺` system at `fc`
+by the axiom set `Ax` and the naming rules `R` switches on.
 
 The ten constructors: `tm` quotes a `PlusDerivable fc []` theorem; `ax` quotes a member of `Ax`;
 `mp`, `nec`, `tnec` and `refl` are modus ponens, necessitation, temporal necessitation and time
