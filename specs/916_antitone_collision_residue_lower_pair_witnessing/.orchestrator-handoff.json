@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 8,
+  "summary": "Planned the antitone kappa-collision slice as a DISPATCH, not a refutation, across eight phases and an estimated 14 hours. All ten of the research report's compiled probes were re-derived green at plan time, plus three new ones: the keystone two-sided anchor clause for the widened free-anchor raise, the downward half's clause showing it needs no room bound beyond the lower pair's own gap, and the finding that a ForwardSlackWitnessed obligation at amount 0 is a theorem. That last probe collapses the report's two recommended schemas into one exhaustive schema with a truncated Nat-subtraction amount plus a bounded corollary carrying no upward hypothesis. The whole Lean Challenge Statements block (15 declarations) was elaborated against the real tree with zero errors.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/916_antitone_collision_residue_lower_pair_witnessing/plans/01_antitone-slice-dispatch.md",
+      "summary": "Eight-phase dispatch plan: two new LadderChain assemblies, the split's five records, the widened free-anchor raise with its relaxed-bound necessity record, both antitone cell inclusions, the exhaustive schema with its bounded corollary, and a final records-plus-full-gate phase."
+    }
+  ],
+  "dispatch_seq": 2
+}
