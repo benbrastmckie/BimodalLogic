@@ -1,0 +1,61 @@
+{
+  "status": "researched",
+  "task_number": 924,
+  "phase": "research",
+  "dispatch_seq": 15,
+  "session_id": "sess_1794400344_255305_924",
+  "agent_type": "lean-research-hard-agent",
+  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
+  "findings_count": 6,
+  "adversarial_verification_triggered": true,
+  "verification_passed": true,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/924_forward_slack_witnessed_frontier_disposition/reports/01_forward-slack-frontier-disposition.md",
+      "summary": "Route-space survey of the ForwardSlackWitnessed frontier: a cascade-free, deletion-free discharge route exists and is assembled entirely from landed machinery (compiled), so outcome (b) is not available as worded; the frontier narrows to the non-pumpable (idle-run-length-one) side, where every remaining dial is closed by a compiled measurement."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/924_forward_slack_witnessed_frontier_disposition/evidence/route-a-idle-pump-discharge.lean",
+      "summary": "Compiles ForwardSlackWitnessed at EVERY amount from one run-local premise, via idleGapLengtheningOfIdleRunRepeat_holds composed with hasForwardSlack_of_next_region_cnt_le; sorry-free, zero diagnostics under lake env lean."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/924_forward_slack_witnessed_frontier_disposition/evidence/route-space-closure.lean",
+      "summary": "Closes the remaining placements of the K dial: type-respecting blocks cannot span a region boundary, the landed deletion is confined to one region's interior (so the pin set is never reduced), the pumpable premise forces an idle run of length two, and the pin-set-reducing dial's anchor fails by at least l on the saturated configuration."
+    }
+  ],
+  "user_decision": {
+    "required": true,
+    "blocking": false,
+    "question": "The dispatch's outcome (b) directed that the certStabK restatement obligation be made PERMANENT once the frontier was recorded closed. This dispatch found and compiled a discharge route through the landed machinery, so the frontier is NOT closed and 'no route can succeed' is false. Should the certStabK restatement obligation stay PROVISIONAL (the report's recommendation), and should an implementation phase land the two conditional-discharge statements even though they do not remove ForwardSlackWitnessed from the five depth-0 cell-equality schemas?",
+    "context": "Landing the route relocates the frontier from an opaque existential over paths at a given amount onto a checkable, amount-free condition on one idle run (the premise is an object/run datum, not ParamsOk-derivable: idle_run_lt_tIdle_of_no_idleCycle, and (K1) names prodCycleLens/objCycleLens/satPeriod but never idleCycleLens). The payoff is a sharper frontier and a checkable hypothesis, not the removal of a hypothesis, and marking the certStabK obligation permanent would now be factually wrong. Three of the four durable recording places are inside task 918's declared file_scope, so the recording phase must be sequenced behind it or carry a dependencies[] edge.",
+    "options": [
+      "Land both statements and keep the certStabK obligation provisional (report's recommendation)",
+      "Land the route-space closure probe only, and defer the conditional discharge",
+      "Record the sharpened frontier in prose only, landing nothing"
+    ]
+  },
+  "memory_candidates": [
+    {
+      "title": "In RaySummary/, idle-block duplication carries no pin obligation while pending-region surgery does",
+      "content": "The ladder layer has two surgery families with opposite pin behaviour. Pending-region deletion/splice (exists_deleted_ladderPath_of_*, exists_iterSpliced_*) lowers a region's start countdown while leaving its pin position fixed, so pinCompat_of_ladderPath breaks in a 2d-wide window and the obligation is handed to the caller. Idle-block duplication (exists_idleSpliced_ladderPath, exists_iterIdleSpliced_ladderPath) discharges its pin clause UNCONDITIONALLY (idleSplice_pins): the duplicated block contributes no pin of its own because its seam is idle-to-idle, pins below are untouched, and pins above move farther from those below with their values unchanged. When a ladder-layer construction needs slack in a distance rather than in a countdown, reach for the idle layer first.",
+      "type": "pattern",
+      "tags": ["lean4", "RaySummary", "ladder", "pin-compatibility", "surgery"]
+    },
+    {
+      "title": "Before declaring a route space closed, grep the module set's declaration lists rather than trusting a parent task's route table",
+      "content": "A parent task's route-survey table can be correct about a premise and stale about a mechanism: a row reading 'REFUTED' may refute the unrestricted schema while a sharpened, premised form of the same mechanism has since landed in a neighbouring module. The cheapest check that catches this is `grep -n '^def \\|^theorem ' <module>.lean` over every module in the layer, read as an inventory, before accepting any 'no route can succeed' framing. Here that one grep surfaced an entire landed layer that the inherited route table listed as closed.",
+      "type": "process",
+      "tags": ["research", "hard-mode", "route-survey", "lean4"]
+    },
+    {
+      "title": "omega fails when push_cast normalizes a goal's nonlinear cast but not the Nat-level hypothesis",
+      "content": "With `hpay : l <= (l + 1) * k` in Nat and a goal containing the cast `((I + (l+1)*k : Nat) : Int)`, `push_cast at hpay ⊢; omega` fails: push_cast rewrites the goal's product to `(↑l + 1) * ↑k` while the hypothesis's `(l+1)*k` stays an opaque nonlinear atom, so omega sees two unrelated atoms and reports a spurious counterexample. The fix is decomposition, not a bigger hammer: state the lemma with the multiplier as an OPAQUE variable `d` and the hypothesis as `l <= d * k`, then instantiate `d := l + 1` at the call site. omega then handles `d * k` as one consistent atom on both sides.",
+      "type": "gotcha",
+      "tags": ["lean4", "omega", "push_cast", "casts"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 924 to create implementation plan"
+}
