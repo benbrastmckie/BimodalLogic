@@ -127,8 +127,8 @@ next_project_number: 926
 - **Dependencies**: None
 - **Parent**: Task 917
 - **Research**: [925_ladderpump_c16_unused_arguments_lint_debt/reports/01_ladderpump-c16-unusedarguments-clear.md]
-- **Plan**: [925_ladderpump_c16_unused_arguments_lint_debt/plans/01_ladderpump-c16-unusedarguments-clear.md]
 - **Other**: [925_ladderpump_c16_unused_arguments_lint_debt/handoffs/phase-2-handoff-20261111T2015Z.md]
+- **Plan**: [925_ladderpump_c16_unused_arguments_lint_debt/plans/01_ladderpump-c16-unusedarguments-clear.md]
 
 **Description**: Clear the C16 env_linter unusedArguments lint debt in RaySummary/LadderPump.lean, which fails check-module-invariants.sh for every other task in the module.
 

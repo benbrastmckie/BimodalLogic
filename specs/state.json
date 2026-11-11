@@ -5147,14 +5147,14 @@
           "summary": "Confirms the two live C16 unusedArguments findings in LadderPump.lean by a guarded runLinter run, establishes that the in-source @[nolint] + nolint-attribute-allowlist.txt route has superseded the cited nolints.json precedent, and recommends an asymmetric disposition: remove the two dead instance binders from exists_idleSpliced_ladderPath (zero consumers, body needs no instance) and exempt exists_idleTypeBlock_of_budget_le_run's hg (removal would relocate the finding into sibling-owned LadderWindow.lean), at a net-zero line delta to avoid the five-file generated cascade into concurrent task 918's territory."
         },
         {
-          "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/plans/01_ladderpump-c16-unusedarguments-clear.md",
-          "type": "plan",
-          "summary": "Three-phase plan (allowlist entry, both LadderPump edits under a net-zero line budget, full gate) clearing the C16 env_linter unusedArguments debt in LadderPump.lean."
-        },
-        {
           "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/handoffs/phase-2-handoff-20261111T2015Z.md",
           "type": "other",
           "summary": "Phase 2 handoff: the Edit A blocker with its merits stated for the decider, a verified-ready Edit B specification, and the two-dimensional line-budget finding."
+        },
+        {
+          "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/plans/01_ladderpump-c16-unusedarguments-clear.md",
+          "type": "plan",
+          "summary": "Phase 2 marked [COMPLETED]; 11 checklist items annotated with this dispatch's results, plus a forward note correcting Phase 3's falsified no-cascade premise."
         }
       ],
       "audit_verdict": {
