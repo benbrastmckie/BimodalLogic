@@ -401,6 +401,282 @@ theorem window_pin_pair_raise_of_slack (ch cl E jP D : ℕ) (hE : jP ≤ E)
     (((ch + jP : ℕ) : ℤ) - (cl : ℤ)).natAbs ≤ D := by
   omega
 
+/-! ### The regime's two structural inputs
+
+The window regime is defined by an idle position in `z`'s past, and the surgery needs two things
+read off that: WHERE the region start is, and that the idle run below it carries a duplicable
+block. Neither is a hypothesis beyond the regime's own definition and the named condition. -/
+
+/-- **THE REGION START'S PENDING RUN, IN THE FORM THE ARITHMETIC CONSUMES.** The landed
+`exists_region_start_of_idle_past` (`LadderAgree.lean`) already locates the region start of a
+pending position with an idle position in its past, and states maximality as a quantifier over
+positions; `nxtAt_le_cntAt_region_start` reads the same run as a quantifier over backward
+DISTANCES, because `cntAt_add_of_pend_back` is indexed that way. This is the translation between
+the two, and it is all this module needs: the region start itself is NOT re-derived here. -/
+theorem region_run_of_region_start (g : ℤ → LadderState Q pend) (a z : ℤ) (haz : a < z)
+    (hmax : ∀ t : ℤ, a < t → t ≤ z → pend (objAt g t) = true) :
+    ∀ i : ℕ, i ≤ (z - (a + 1)).toNat → pend (objAt g (z - (i : ℤ))) = true :=
+  fun i hi => hmax _ (by omega) (by omega)
+
+/-- **THE NAMED CONDITION DELIVERS A DUPLICABLE IDLE BLOCK.** Under `HasIdleRunBelow`, the
+idle-restricted pigeonhole `exists_idleTypeBlock_of_budget_le_run` returns a nonempty block
+`[α, α + k)` lying at or below the region start `a`, idle throughout, whose two ends carry the
+same object state AND the same realized closure type — which is exactly the premise the
+unconditional idle-block duplication `exists_idleSpliced_ladderPath` (and its register-anchored
+iterate) consumes.
+
+This is the only place the named condition is spent, and it is spent on EXISTENCE of a block, not
+on any pin or regime fact. -/
+theorem exists_idleBlock_of_hasIdleRunBelow {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) {g : ℤ → LadderState Q pend}
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hg : IsLadderPath step pend g) (a : ℤ) (hrun : HasIdleRunBelow pend φ g a) :
+    ∃ (α : ℤ) (k : ℕ), 0 < k ∧ α + (k : ℤ) ≤ a ∧
+      (∀ i : ℕ, i < k → pend (objAt g (α + (i : ℤ))) = false) ∧
+      objAt g α = objAt g (α + (k : ℤ)) ∧
+      tpOf (ladderModel step pend fwd bwd lab) φ σ α
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ (α + (k : ℤ)) := by
+  obtain ⟨α, k, hk, -, -, hub, hidle, hrep, hty⟩ :=
+    exists_idleTypeBlock_of_budget_le_run step pend fwd bwd lab φ σ hg
+      (a - ((idleBudget pend φ : ℕ) : ℤ)) (idleBudget pend φ)
+      (fun i hi => by
+        have h := hrun (idleBudget pend φ - i) (by omega)
+        rwa [show a - (((idleBudget pend φ - i : ℕ)) : ℤ)
+          = a - ((idleBudget pend φ : ℕ) : ℤ) + (i : ℤ) by
+            rw [Nat.cast_sub hi]; ring] at h)
+      le_rfl
+  exact ⟨α, k, hk, by omega, hidle, hrep, hty⟩
+
+/-! ### The composite's pin classification
+
+What the gate left as a hypothesis — `window_anchor_clause_of_pin_classification`'s `hclass` — is
+proved here for the composite walk, and with it the pin PAIR clause. The composite is read in two
+stages, exactly as the plan schedules it: `g₁` is the IDLE-LENGTHENED path, which the landed
+unconditional iterate `exists_iterIdleSpliced_ladderPath` supplies with no pin side condition and
+no regime hypothesis; and the pending raise is then a SINGLE splice of a type-respecting block of
+`z`'s region of `g₁`, through the generic `exists_spliced_ladderPath`.
+
+The two stages are not interchangeable. A pure splice with no idle compensation is REFUTED in this
+regime — `LadderAgree.lean`'s `exists_ladderPath_at_region_of_idle_past` records that
+`pinCompat_of_ladderPath` makes the splice's pin demand necessary and that on a PIN-TIGHT original
+it reads `s - v + l ≤ s - v`. The composite escapes that refutation not by evading the demand but
+by paying it: stage one makes `g₁` pin-SLACK by exactly `E` at the one pair that matters, and the
+raise `l ≤ E` is drawn from that slack. `window_pin_pair_raise_of_slack` is that payment and
+`no_pin_in_idle_run` is why the slack is there.
+
+A landed sibling route exists for the state-level raise and is deliberately NOT taken here:
+`exists_ladderPath_at_region_of_idle_past` compensates by INSERTING idle positions at the region
+start (`insObj`/`insCnt`, with `insPins_of_region_start` discharging its pin clause) rather than by
+duplicating an existing idle block. That route carries `hself`, a path-local self-loop at the
+idle object states, which this one does not need, and it eliminates the anchor obligation through
+`exists_ladderPath_of_walk_of_pins` instead of holding the register at a prescribed value — so it
+cannot serve a cell inclusion, which reads `nxtAt` at the comparison position. The two are
+alternatives at the same mathematical idea (move the lower pins and the raised pin apart by
+exactly the raise), with different premises and different exposure. -/
+
+/-- **THE COMPOSITE'S PIN TRICHOTOMY.** Every region start of the pending splice of the
+idle-lengthened path `g₁` falls in exactly one of three classes, each named against the ORIGINAL
+path `g`: a pin strictly below the region start `a`, carried with its position and its countdown
+unchanged; the region start displaced to `a + E`, carrying its countdown raised by exactly the
+block length `l`; and a pin at or above `z`, displaced by `E + l` with its countdown unmoved.
+
+The three conclusions are exactly the three disjuncts of
+`window_anchor_clause_of_pin_classification`'s `hclass` at `jP := l`, so this discharges the gate's
+remaining obligation. The hypotheses are the two stages' own outputs — `g₁`'s agreement below `a`,
+the lengthened idle run `[a, a + E]`, the displacement at and above `a + E`, and the block's
+containment in `z`'s region — and the regime's own data; none of them is a new side condition. -/
+theorem window_composite_pin_trichotomy
+    (g g₁ : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (a z u : ℤ) (E l : ℕ)
+    (haz : a < z) (hl : 0 < l) (hzu : z + (E : ℤ) ≤ u)
+    (hai : pend (objAt g a) = false)
+    (hidle₁ : ∀ i : ℕ, i ≤ E → pend (objAt g₁ (a + (E : ℤ) - (i : ℤ))) = false)
+    (hpend₁ : ∀ v : ℤ, a + (E : ℤ) < v → v ≤ u + (l : ℤ) → pend (objAt g₁ v) = true)
+    (hbelow : ∀ v : ℤ, v < a → objAt g₁ v = objAt g v ∧ cntAt g₁ v = cntAt g v)
+    (habove : ∀ v : ℤ, a + (E : ℤ) ≤ v →
+      objAt g₁ v = objAt g (v - (E : ℤ)) ∧ cntAt g₁ v = cntAt g (v - (E : ℤ)))
+    (hureg : u ≤ a + (E : ℤ) + 1 + (cntAt g₁ (a + (E : ℤ) + 1) : ℤ)) :
+    ∀ s : ℤ, pend (spliceObj g₁ u l s) = false → pend (spliceObj g₁ u l (s + 1)) = true →
+      (∃ w : ℤ, w ≤ a ∧ pend (objAt g w) = false ∧ pend (objAt g (w + 1)) = true ∧
+          s = w ∧ spliceCnt g₁ u l (s + 1) = cntAt g (w + 1)) ∨
+      (s = a + (E : ℤ) ∧ spliceCnt g₁ u l (s + 1) = cntAt g (a + 1) + l) ∨
+      (∃ w : ℤ, z ≤ w ∧ pend (objAt g w) = false ∧ pend (objAt g (w + 1)) = true ∧
+          s = w + (E : ℤ) + (l : ℤ) ∧ spliceCnt g₁ u l (s + 1) = cntAt g (w + 1)) := by
+  intro s hs0 hs1
+  have hE0 : (0 : ℤ) ≤ (E : ℤ) := Int.natCast_nonneg _
+  have hau : a + (E : ℤ) < u := by omega
+  rcases lt_or_ge (s + 1) (u + (l : ℤ)) with hlt | hge
+  · -- the pin sits below the block's top, so it is a pin of `g₁` itself
+    rw [spliceObj_of_lt (g := g₁) (a := u) (l := l) s (by omega)] at hs0
+    rw [spliceObj_of_lt (g := g₁) (a := u) (l := l) (s + 1) hlt] at hs1
+    rcases lt_or_ge (s + 1) a with hsa | hsa
+    · -- CLASS 1: strictly below the region start, where `g₁` is the original
+      have h0 : pend (objAt g s) = false := by rw [← (hbelow s (by omega)).1]; exact hs0
+      have h1 : pend (objAt g (s + 1)) = true := by rw [← (hbelow (s + 1) hsa).1]; exact hs1
+      -- the region opening at `s + 1` ends strictly below the idle `a`
+      have hend : s + 1 + (cntAt g (s + 1) : ℤ) < a := by
+        by_contra hc
+        have hp := (cntAt_sub_of_pend g hg (s + 1) h1 (a - (s + 1)).toNat (by omega)).1
+        rw [show s + 1 + (((a - (s + 1)).toNat : ℕ) : ℤ) = a by omega] at hp
+        exact Bool.false_ne_true (hai.symm.trans hp)
+      refine Or.inl ⟨s, by omega, h0, h1, rfl, ?_⟩
+      rw [spliceCnt_of_lt (g := g₁) (a := u) (l := l) (s + 1) hlt,
+        if_neg (by rw [(hbelow (s + 1) hsa).2]; omega)]
+      exact (hbelow (s + 1) hsa).2
+    · -- at or above the region start: the idle run forces `s = a + E`
+      have hsE : s = a + (E : ℤ) := by
+        by_contra hne
+        rcases lt_or_ge s (a + (E : ℤ)) with h | h
+        · -- `s + 1` lies inside the idle run `[a, a + E]`
+          have hr := hidle₁ (a + (E : ℤ) - (s + 1)).toNat (by omega)
+          rw [show a + (E : ℤ) - (((a + (E : ℤ) - (s + 1)).toNat : ℕ) : ℤ) = s + 1 by omega] at hr
+          exact Bool.false_ne_true (hr.symm.trans hs1)
+        · -- `s` itself lies strictly inside the pending stretch
+          exact Bool.false_ne_true (hs0.symm.trans (hpend₁ s (by omega) (by omega)))
+      refine Or.inr (Or.inl ⟨hsE, ?_⟩)
+      rw [hsE, spliceCnt_of_lt (g := g₁) (a := u) (l := l) (a + (E : ℤ) + 1) (by omega),
+        if_pos hureg, (habove (a + (E : ℤ) + 1) (by omega)).2,
+        show a + (E : ℤ) + 1 - (E : ℤ) = a + 1 by ring]
+  · -- CLASS 3: at or above the block's top, where the walk is the original displaced by `E + l`
+    have hsu : u + (l : ℤ) ≤ s := by
+      by_contra hc
+      rw [spliceObj_of_lt (g := g₁) (a := u) (l := l) s (by omega)] at hs0
+      exact Bool.false_ne_true (hs0.symm.trans (hpend₁ s (by omega) (by omega)))
+    rw [spliceObj_of_ge (g := g₁) (a := u) (l := l) s hsu] at hs0
+    rw [spliceObj_of_ge (g := g₁) (a := u) (l := l) (s + 1) (by omega)] at hs1
+    have h0 : pend (objAt g (s - (l : ℤ) - (E : ℤ))) = false := by
+      rw [← (habove (s - (l : ℤ)) (by omega)).1]; exact hs0
+    have h1 : pend (objAt g (s - (l : ℤ) - (E : ℤ) + 1)) = true := by
+      rw [show s - (l : ℤ) - (E : ℤ) + 1 = s + 1 - (l : ℤ) - (E : ℤ) by ring,
+        ← (habove (s + 1 - (l : ℤ)) (by omega)).1]
+      exact hs1
+    refine Or.inr (Or.inr ⟨s - (l : ℤ) - (E : ℤ), by omega, h0, h1, by ring, ?_⟩)
+    rw [spliceCnt_of_ge (g := g₁) (a := u) (l := l) (s + 1) (by omega),
+      (habove (s + 1 - (l : ℤ)) (by omega)).2,
+      show s + 1 - (l : ℤ) - (E : ℤ) = s - (l : ℤ) - (E : ℤ) + 1 by ring]
+
+/-- **THE COMPOSITE'S PIN PAIR CLAUSE, DISCHARGED.** `exists_spliced_ladderPath`'s side condition
+on the pending raise of the idle-lengthened path, proved from the trichotomy and the original
+path's own pin compatibility. Nine pin-class pairs; eight of them close on
+`pinCompat_of_ladderPath` and a rigid displacement, and the ninth — the raised region start
+against a pin strictly below the lengthened run — is the one that spends the compensator, through
+`l ≤ E`.
+
+This is the clause that a pure splice with no compensation FAILS in this regime, and the hypothesis
+`hlE : l ≤ E` is exactly the payment. Nothing beyond it is carried: `hap` is the pending successor
+of the region start, a datum of the regime, and every other hypothesis is one of the two stages'
+own outputs. -/
+theorem window_composite_pins
+    (g g₁ : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (a z u : ℤ) (E l : ℕ)
+    (haz : a < z) (hl : 0 < l) (hlE : l ≤ E) (hzu : z + (E : ℤ) ≤ u)
+    (hai : pend (objAt g a) = false) (hap : pend (objAt g (a + 1)) = true)
+    (hidle₁ : ∀ i : ℕ, i ≤ E → pend (objAt g₁ (a + (E : ℤ) - (i : ℤ))) = false)
+    (hpend₁ : ∀ v : ℤ, a + (E : ℤ) < v → v ≤ u + (l : ℤ) → pend (objAt g₁ v) = true)
+    (hbelow : ∀ v : ℤ, v < a → objAt g₁ v = objAt g v ∧ cntAt g₁ v = cntAt g v)
+    (habove : ∀ v : ℤ, a + (E : ℤ) ≤ v →
+      objAt g₁ v = objAt g (v - (E : ℤ)) ∧ cntAt g₁ v = cntAt g (v - (E : ℤ)))
+    (hureg : u ≤ a + (E : ℤ) + 1 + (cntAt g₁ (a + (E : ℤ) + 1) : ℤ)) :
+    ∀ s v : ℤ, pend (spliceObj g₁ u l s) = false → pend (spliceObj g₁ u l (s + 1)) = true →
+      pend (spliceObj g₁ u l v) = false → pend (spliceObj g₁ u l (v + 1)) = true →
+      ((spliceCnt g₁ u l (s + 1) : ℤ) - spliceCnt g₁ u l (v + 1)).natAbs ≤ (s - v).natAbs := by
+  intro s v hs0 hs1 hv0 hv1
+  have htri := window_composite_pin_trichotomy g g₁ hg a z u E l haz hl hzu hai hidle₁ hpend₁
+    hbelow habove hureg
+  rcases htri s hs0 hs1 with ⟨w, hwa, hw0, hw1, hsw, hsc⟩ | ⟨hsw, hsc⟩ |
+      ⟨w, hzw, hw0, hw1, hsw, hsc⟩ <;>
+    rcases htri v hv0 hv1 with ⟨y, hya, hy0, hy1, hvy, hvc⟩ | ⟨hvy, hvc⟩ |
+      ⟨y, hzy, hy0, hy1, hvy, hvc⟩ <;>
+    rw [hsc, hvc, hsw, hvy]
+  · have := pinCompat_of_ladderPath g hg w y hw0 hw1 hy0 hy1
+    omega
+  · have := pinCompat_of_ladderPath g hg w a hw0 hw1 hai hap
+    omega
+  · have := pinCompat_of_ladderPath g hg w y hw0 hw1 hy0 hy1
+    omega
+  · have := pinCompat_of_ladderPath g hg a y hai hap hy0 hy1
+    omega
+  · omega
+  · have := pinCompat_of_ladderPath g hg a y hai hap hy0 hy1
+    omega
+  · have := pinCompat_of_ladderPath g hg w y hw0 hw1 hy0 hy1
+    omega
+  · have := pinCompat_of_ladderPath g hg w a hw0 hw1 hai hap
+    omega
+  · have := pinCompat_of_ladderPath g hg w y hw0 hw1 hy0 hy1
+    omega
+
+/-- **THE WINDOW REGIME'S COMPOSITE RAISE: THE ADMISSIBILITY HALF, WITH THE REGISTER HELD.** The
+composite walk lifts to a ladder path whose object walk is the pending splice of the
+idle-lengthened path, whose countdown is the spliced countdown — raised by exactly `l` at the
+displaced comparison position `z + E` — and whose next-deadline register at `z + E` is the
+ORIGINAL path's register at `z`.
+
+The register clause is the point: `exists_ladderPath_of_walk_of_pins` would supply a ladder path
+from the pin pair clause alone, but the register it chooses is whatever the drift extension
+returns, and a cell inclusion reads `nxtAt` at the comparison position. So the walk is lifted
+TWICE — once anchor-free, to make the pin trichotomy available on a genuine ladder path, and once
+through the `z`-anchored lift `exists_ladderPath_of_walk_nxt_at` at the PRESCRIBED value. The
+second lift's anchor clause is the gate's own measurement
+(`window_anchor_clause_of_pin_classification`) fed by the trichotomy.
+
+Scope, stated because it bounds what this buys. The raise here is ONE block length `l`, not a
+multiple of `P + 1`: the bridge putting `l` among the divisors of `P + 1` is `(K1)`'s, and the
+iteration to an exact multiple is a separate step this theorem does not take. Nothing here is a
+cell inclusion, nothing carries the realized TYPE (the model-level half, which
+`tpOf_eq_spliceIdx_of_tpOf_eq` supplies for the pending stage and
+`exists_iterIdleSpliced_ladderPath` for the idle stage), and the reserved
+`cellLE_zero_const_of_kappa_eq` is untouched. The compensator is the idle run BELOW, so neither
+`HasForwardSlack` nor `ForwardSlackWitnessed` appears, and the refuted deletion-above route is not
+re-entered. -/
+theorem exists_window_composite_ladderPath
+    (g g₁ : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (hg₁ : IsLadderPath step pend g₁) (a z u : ℤ) (E l : ℕ)
+    (haz : a < z) (hl : 0 < l) (hlE : l ≤ E) (hzu : z + (E : ℤ) ≤ u)
+    (hai : pend (objAt g a) = false)
+    (hregion : ∀ t : ℤ, a < t → t ≤ z → pend (objAt g t) = true)
+    (hidle₁ : ∀ i : ℕ, i ≤ E → pend (objAt g₁ (a + (E : ℤ) - (i : ℤ))) = false)
+    (hpend₁ : ∀ v : ℤ, a + (E : ℤ) < v → v ≤ u + (l : ℤ) → pend (objAt g₁ v) = true)
+    (hbelow : ∀ v : ℤ, v < a → objAt g₁ v = objAt g v ∧ cntAt g₁ v = cntAt g v)
+    (habove : ∀ v : ℤ, a + (E : ℤ) ≤ v →
+      objAt g₁ v = objAt g (v - (E : ℤ)) ∧ cntAt g₁ v = cntAt g (v - (E : ℤ)))
+    (hureg : u ≤ a + (E : ℤ) + 1 + (cntAt g₁ (a + (E : ℤ) + 1) : ℤ))
+    (hpu : pend (objAt g₁ u) = true) (hcl : l ≤ cntAt g₁ u)
+    (hrep : objAt g₁ u = objAt g₁ (u + (l : ℤ)))
+    (hroom : cntAt g z + l ≤ nxtAt g z) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v : ℤ, objAt g' v = spliceObj g₁ u l v) ∧
+      (∀ v : ℤ, cntAt g' v = spliceCnt g₁ u l v) ∧
+      nxtAt g' (z + (E : ℤ)) = nxtAt g z := by
+  have hap : pend (objAt g (a + 1)) = true := hregion (a + 1) (by omega) (by omega)
+  have hpins := window_composite_pins g g₁ hg a z u E l haz hl hlE hzu hai hap hidle₁ hpend₁
+    hbelow habove hureg
+  have htri := window_composite_pin_trichotomy g g₁ hg a z u E l haz hl hzu hai hidle₁ hpend₁
+    hbelow habove hureg
+  -- the anchor-free lift, to put the trichotomy on a genuine ladder path
+  obtain ⟨g₂, hg₂, hobj₂, hcnt₂⟩ :=
+    exists_ladderPath_of_walk_of_pins (spliceObj g₁ u l) (spliceCnt g₁ u l)
+      (spliceObj_step hg₁ hrep) (spliceCnt_idle hg₁ hpu hcl)
+      (spliceCnt_pend_pend hg₁ hl hpu hcl) (spliceCnt_pend_idle hg₁ hpu hcl) hpins
+  -- the gate's measurement, read on that path
+  have hanch := window_anchor_clause_of_pin_classification g g₂ hg a z E l haz hai
+    (region_run_of_region_start g a z haz hregion) hroom
+    (fun v hv0 hv1 => by
+      rw [hobj₂ v] at hv0
+      rw [hobj₂ (v + 1)] at hv1
+      rw [hcnt₂ (v + 1)]
+      exact htri v hv0 hv1)
+  -- the prescribed-register lift
+  refine exists_ladderPath_of_walk_nxt_at (spliceObj g₁ u l) (spliceCnt g₁ u l) (z + (E : ℤ))
+    (nxtAt g z) (spliceObj_step hg₁ hrep) (spliceCnt_idle hg₁ hpu hcl)
+    (spliceCnt_pend_pend hg₁ hl hpu hcl) (spliceCnt_pend_idle hg₁ hpu hcl) hpins
+    (fun v hv0 hv1 => ?_)
+  have := hanch v (by rw [hobj₂ v]; exact hv0) (by rw [hobj₂ (v + 1)]; exact hv1)
+  rwa [hcnt₂ (v + 1)] at this
+
 end Gate
 
 end FormalSystem.Metalogic.Decidability.RaySummary
