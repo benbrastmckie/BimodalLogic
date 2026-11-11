@@ -251,7 +251,7 @@ covers the edit, which adds declarations to one module and changes no existing s
 
 ---
 
-### Phase 2: The idle-block splice and its lift inputs [NOT STARTED]
+### Phase 2: The idle-block splice and its lift inputs [COMPLETED]
 
 **Goal**: Land the countdown the idle-block duplication forces, the three local readings of
 `Count` for it, the pin condition (which discharges outright rather than being carried), and the
@@ -259,31 +259,35 @@ unanchored lift.
 
 **Tasks**:
 
-- [ ] Re-read `LadderPump.lean` immediately before editing.
-- [ ] Open a section `IdleSplice`. Record in its section docstring that `spliceObj` is reused
+- [x] Re-read `LadderPump.lean` immediately before editing.
+- [x] Open a section `IdleSplice`. Record in its section docstring that `spliceObj` is reused
       verbatim (`spliceObj_step` needs only the endpoint repeat and no `pend` hypothesis) and
       that `spliceCnt` is NOT reusable, with the in-block `cntAt g v = 0` reason.
-- [ ] Define `idleSpliceCnt g a l := fun v => if v < a + (l : Int) then cntAt g v else cntAt g (v - (l : Int))`,
+- [x] Define `idleSpliceCnt g a l := fun v => if v < a + (l : Int) then cntAt g v else cntAt g (v - (l : Int))`,
       with the two read-off lemmas `idleSpliceCnt_of_lt` and `idleSpliceCnt_of_ge`.
-- [ ] Prove `idleSpliceCnt_idle`, the idle-zero reading, in both position cases from
+- [x] Prove `idleSpliceCnt_idle`, the idle-zero reading, in both position cases from
       `cntAt_eq_zero_of_idle`.
-- [ ] Prove `idleSpliceCnt_pend_pend`, the count-down reading. The wrap case `v + 1 = a + l` is
+- [x] Prove `idleSpliceCnt_pend_pend`, the count-down reading. The wrap case `v + 1 = a + l` is
       VACUOUS: `spliceObj g a l v = objAt g (a + l - 1)` is idle because the block is, so the
       hypothesis `pend (spliceObj g a l v) = true` is unsatisfiable there.
-- [ ] Prove `idleSpliceCnt_pend_idle`, the region-end reading; its wrap case is vacuous for the
+- [x] Prove `idleSpliceCnt_pend_idle`, the region-end reading; its wrap case is vacuous for the
       same reason.
-- [ ] Prove `idleSplice_pins`: the spliced walk's pin family is pairwise compatible,
+- [x] *(deviation: altered — the planned `idleSplice_pins` landed, plus one unplanned helper
+      `idleSplice_pull` that factors out the pin classification the three cases all read; and
+      `idleSplice_pins` carries NO endpoint-repeat hypothesis, since the classification needs
+      only the block's idleness. Strictly fewer hypotheses than planned, so strictly stronger.)*
+- [x] Prove `idleSplice_pins`: the spliced walk's pin family is pairwise compatible,
       UNCONDITIONALLY. The three cases are both pins below `a` (inherited from
       `pinCompat_of_ladderPath` on `g`), both at or above `a + l` (positions and values both
       shifted by `+l` and `0`, so the distance is unchanged), and mixed (the upper pin's position
       rises by `l` while its countdown is unchanged, so the demand is strictly looser). Record in
       the lemma's docstring that this is the clause the FAIL verdict's docstring predicted would
       loosen, and that it is the pending splice's carried side condition becoming free here.
-- [ ] Prove `exists_idleSpliced_ladderPath` via `exists_ladderPath_of_walk_of_pins`
+- [x] Prove `exists_idleSpliced_ladderPath` via `exists_ladderPath_of_walk_of_pins`
       (`LadderAgree.lean:1322`), feeding the five lemmas above.
-- [ ] Re-check the `longFile` baseline against the measured line count and adjust `N` if the
+- [x] Re-check the `longFile` baseline against the measured line count and adjust `N` if the
       window no longer holds.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
 
 **Timing**: 2 hours
 

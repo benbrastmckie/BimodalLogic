@@ -51,7 +51,7 @@ index-map transports the pump consumes, and no `⊡`-letter transport: every typ
 layer carries the stab-free hypothesis, as `tpOf_stabFree_eq_of_objAt_eq` does.
 -/
 
-set_option linter.style.longFile 1700
+set_option linter.style.longFile 2000
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1635,5 +1635,204 @@ theorem idle_run_lt_tIdle_of_no_idleCycle {Q : Type} [Fintype Q] {step : Q → Q
   exact hmem
 
 end IdleCycle
+
+/-! ## The idle-block splice: the countdown it forces, and its FREE pin clause
+
+Duplicating a block of an IDLE run is the same index-map surgery as duplicating a block of a
+pending region, and the object half transfers verbatim: `spliceObj_step` (`LadderAgree.lean`)
+needs only the endpoint repeat `objAt g a = objAt g (a + l)` and no `pend` hypothesis at all, so
+`spliceObj` is reused here unchanged.
+
+`spliceCnt` is NOT reusable. Its below-the-seam clause raises the countdown by `l` at every
+position whose region REACHES `a` — and at an in-block position `v` that condition
+`a ≤ v + cntAt g v` holds vacuously, because `v` is idle and so carries `cntAt g v = 0` while
+`a ≤ v`. It would therefore return `l` where an idle position is forced to carry `0`.
+`idleSpliceCnt` is the correct countdown: unchanged below the block's upper end, and the
+original's `l` positions earlier from there on. Nothing is raised anywhere, because duplicating
+an idle block lengthens no region.
+
+The payoff is the pin clause. For the pending splice it is a genuine SIDE CONDITION, carried by
+`exists_spliced_ladderPath` and discharged only in the pending-forever regime: lengthening one
+region by `l` raises that region's pin by `l` while leaving every earlier region start where it
+is. For an idle block it is FREE, and `idleSplice_pins` discharges it outright with no regime
+hypothesis. The reason is the classification `idleSplice_pull` records: the duplicated block
+contributes no pin of its own (both `a + l - 1` and `a + l` are idle, the latter reading
+`objAt g a`), so every pin of the spliced walk is a pin of the original — at its own position
+below the block and `l` positions lower above it, with its countdown UNCHANGED. The upper pins
+therefore move farther from the lower ones while their values stay put, which is exactly the
+direction the FAIL verdict's own docstring predicted would loosen. -/
+
+section IdleSplice
+
+/-- The countdown the idle-block-duplicated walk forces: unchanged below the block's upper end,
+and the original's `l` positions earlier from there on. NOT `spliceCnt`, whose region-raise
+clause fires vacuously at an in-block position and returns `l` where `0` is forced. -/
+def idleSpliceCnt {Q : Type} {pend : Q → Bool} (g : ℤ → LadderState Q pend) (a : ℤ) (l : ℕ) :
+    ℤ → ℕ :=
+  fun v => if v < a + (l : ℤ) then cntAt g v else cntAt g (v - (l : ℤ))
+
+section Inputs
+
+variable {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool} {g : ℤ → LadderState Q pend}
+  {a : ℤ} {l : ℕ}
+
+theorem idleSpliceCnt_of_lt (v : ℤ) (h : v < a + (l : ℤ)) :
+    idleSpliceCnt g a l v = cntAt g v := by
+  simp only [idleSpliceCnt, if_pos h]
+
+theorem idleSpliceCnt_of_ge (v : ℤ) (h : a + (l : ℤ) ≤ v) :
+    idleSpliceCnt g a l v = cntAt g (v - (l : ℤ)) := by
+  simp only [idleSpliceCnt, if_neg (by omega : ¬ v < a + (l : ℤ))]
+
+/-- **The idle-spliced countdown is idle-zero**: the first local reading of `Count`. Both
+position cases read an idle position of the ORIGINAL, so `cntAt_eq_zero_of_idle` closes each. -/
+theorem idleSpliceCnt_idle (hg : IsLadderPath step pend g) (v : ℤ)
+    (h : pend (spliceObj g a l v) = false) : idleSpliceCnt g a l v = 0 := by
+  rcases lt_or_ge v (a + (l : ℤ)) with hv | hv
+  · rw [spliceObj_of_lt v hv] at h
+    rw [idleSpliceCnt_of_lt v hv]
+    exact cntAt_eq_zero_of_idle g hg v h
+  · rw [spliceObj_of_ge v hv] at h
+    rw [idleSpliceCnt_of_ge v hv]
+    exact cntAt_eq_zero_of_idle g hg _ h
+
+/-- **The idle-spliced countdown counts down inside a region**: the second local reading of
+`Count`. The seam case `v + 1 = a + l` is VACUOUS: `spliceObj g a l v = objAt g (a + l - 1)` is
+idle because the block is, so the hypothesis `pend (spliceObj g a l v) = true` is unsatisfiable
+there. -/
+theorem idleSpliceCnt_pend_pend (hg : IsLadderPath step pend g) (hl : 0 < l)
+    (hidle : ∀ i : ℕ, i < l → pend (objAt g (a + (i : ℤ))) = false)
+    (v : ℤ) (hx : pend (spliceObj g a l v) = true)
+    (hy : pend (spliceObj g a l (v + 1)) = true) :
+    idleSpliceCnt g a l (v + 1) + 1 = idleSpliceCnt g a l v := by
+  rcases lt_trichotomy (v + 1) (a + (l : ℤ)) with hv | hv | hv
+  · rw [spliceObj_of_lt v (by omega)] at hx
+    rw [spliceObj_of_lt (v + 1) hv] at hy
+    rw [idleSpliceCnt_of_lt v (by omega), idleSpliceCnt_of_lt (v + 1) hv]
+    exact cntAt_succ_of_pend_pend g hg v hx hy
+  · -- the seam: `v` is the block's last position, which is idle
+    exfalso
+    rw [spliceObj_of_lt v (by omega)] at hx
+    have hb := hidle (l - 1) (by omega)
+    rw [show a + (((l - 1 : ℕ)) : ℤ) = v by
+      rw [Nat.cast_sub (by omega : 1 ≤ l), Nat.cast_one]; omega] at hb
+    exact Bool.false_ne_true (hb.symm.trans hx)
+  · have hge : a + (l : ℤ) ≤ v := by omega
+    rw [spliceObj_of_ge v hge] at hx
+    rw [spliceObj_of_ge (v + 1) (by omega),
+      show v + 1 - (l : ℤ) = v - (l : ℤ) + 1 by ring] at hy
+    rw [idleSpliceCnt_of_ge v hge, idleSpliceCnt_of_ge (v + 1) (by omega),
+      show v + 1 - (l : ℤ) = v - (l : ℤ) + 1 by ring]
+    exact cntAt_succ_of_pend_pend g hg (v - (l : ℤ)) hx hy
+
+/-- **The idle-spliced countdown is exhausted at a region end**: the third local reading of
+`Count`. The seam case is vacuous for the same reason as in `idleSpliceCnt_pend_pend`. -/
+theorem idleSpliceCnt_pend_idle (hg : IsLadderPath step pend g) (hl : 0 < l)
+    (hidle : ∀ i : ℕ, i < l → pend (objAt g (a + (i : ℤ))) = false)
+    (v : ℤ) (hx : pend (spliceObj g a l v) = true)
+    (hy : pend (spliceObj g a l (v + 1)) = false) :
+    idleSpliceCnt g a l v = 0 := by
+  rcases lt_trichotomy (v + 1) (a + (l : ℤ)) with hv | hv | hv
+  · rw [spliceObj_of_lt v (by omega)] at hx
+    rw [spliceObj_of_lt (v + 1) hv] at hy
+    rw [idleSpliceCnt_of_lt v (by omega)]
+    exact (cntAt_eq_zero_of_pend_idle g hg v hx hy).1
+  · exfalso
+    rw [spliceObj_of_lt v (by omega)] at hx
+    have hb := hidle (l - 1) (by omega)
+    rw [show a + (((l - 1 : ℕ)) : ℤ) = v by
+      rw [Nat.cast_sub (by omega : 1 ≤ l), Nat.cast_one]; omega] at hb
+    exact Bool.false_ne_true (hb.symm.trans hx)
+  · have hge : a + (l : ℤ) ≤ v := by omega
+    rw [spliceObj_of_ge v hge] at hx
+    rw [spliceObj_of_ge (v + 1) (by omega),
+      show v + 1 - (l : ℤ) = v - (l : ℤ) + 1 by ring] at hy
+    rw [idleSpliceCnt_of_ge v hge]
+    exact (cntAt_eq_zero_of_pend_idle g hg (v - (l : ℤ)) hx hy).1
+
+/-- **EVERY PIN OF THE IDLE-SPLICED WALK IS A PIN OF THE ORIGINAL, WITH ITS COUNTDOWN
+UNCHANGED.** The duplicated block contributes no pin: the position `a + l - 1` is idle because
+the block is, and `a + l` reads `objAt g a`, which is idle for the same reason, so the seam is an
+idle-to-idle transition and not a region start. Every other pin is the original's — at its own
+position strictly below `a - 1`, or `l` positions lower at or above `a + l`. The two classes are
+separated by the whole block, which is what makes the pin clause free. The classification reads
+`spliceObj` and the block's idleness alone and consumes no `IsLadderPath` hypothesis. -/
+theorem idleSplice_pull (hl : 0 < l)
+    (hidle : ∀ i : ℕ, i < l → pend (objAt g (a + (i : ℤ))) = false)
+    (s : ℤ) (h0 : pend (spliceObj g a l s) = false)
+    (h1 : pend (spliceObj g a l (s + 1)) = true) :
+    ∃ t : ℤ, pend (objAt g t) = false ∧ pend (objAt g (t + 1)) = true ∧
+      idleSpliceCnt g a l (s + 1) = cntAt g (t + 1) ∧
+      ((t = s ∧ s + 1 ≤ a - 1) ∨ (t = s - (l : ℤ) ∧ a ≤ t)) := by
+  rcases lt_trichotomy (s + 1) (a + (l : ℤ)) with hs | hs | hs
+  · rw [spliceObj_of_lt s (by omega)] at h0
+    rw [spliceObj_of_lt (s + 1) hs] at h1
+    have hb : s + 1 ≤ a - 1 := by
+      by_contra hcon
+      have hin := hidle (s + 1 - a).toNat (by omega)
+      rw [show a + (((s + 1 - a).toNat : ℕ) : ℤ) = s + 1 by omega] at hin
+      exact Bool.false_ne_true (hin.symm.trans h1)
+    exact ⟨s, h0, h1, idleSpliceCnt_of_lt (s + 1) hs, Or.inl ⟨rfl, hb⟩⟩
+  · exfalso
+    rw [spliceObj_of_ge (s + 1) (by omega), show s + 1 - (l : ℤ) = a by omega] at h1
+    have hin := hidle 0 hl
+    rw [Nat.cast_zero, add_zero] at hin
+    exact Bool.false_ne_true (hin.symm.trans h1)
+  · have hge : a + (l : ℤ) ≤ s := by omega
+    rw [spliceObj_of_ge s hge] at h0
+    rw [spliceObj_of_ge (s + 1) (by omega),
+      show s + 1 - (l : ℤ) = s - (l : ℤ) + 1 by ring] at h1
+    refine ⟨s - (l : ℤ), h0, h1, ?_, Or.inr ⟨rfl, by omega⟩⟩
+    rw [idleSpliceCnt_of_ge (s + 1) (by omega),
+      show s + 1 - (l : ℤ) = s - (l : ℤ) + 1 by ring]
+
+/-- **THE PIN CLAUSE OF THE IDLE SPLICE IS FREE.** Unconditionally — no regime hypothesis, no
+`ParamsOk`, no side condition carried to the caller. The three cases of `idleSplice_pull`'s
+classification: both pins below the block (the original's own compatibility,
+`pinCompat_of_ladderPath`), both at or above it (positions and values shifted by `+l` and `0`,
+so the distance is unchanged), and mixed (the upper pin's position rises by `l` while its
+countdown does not, so the demand is strictly looser). This is the clause the idle-gap
+lengthening's FAIL verdict predicted would loosen; here it is the pending splice's carried side
+condition becoming free. -/
+theorem idleSplice_pins (hg : IsLadderPath step pend g) (hl : 0 < l)
+    (hidle : ∀ i : ℕ, i < l → pend (objAt g (a + (i : ℤ))) = false) :
+    ∀ s v : ℤ, pend (spliceObj g a l s) = false → pend (spliceObj g a l (s + 1)) = true →
+      pend (spliceObj g a l v) = false → pend (spliceObj g a l (v + 1)) = true →
+      ((idleSpliceCnt g a l (s + 1) : ℤ) - idleSpliceCnt g a l (v + 1)).natAbs
+        ≤ (s - v).natAbs := by
+  intro s v hs0 hs1 hv0 hv1
+  obtain ⟨t, ht0, ht1, htc, htcase⟩ := idleSplice_pull hl hidle s hs0 hs1
+  obtain ⟨r, hr0, hr1, hrc, hrcase⟩ := idleSplice_pull hl hidle v hv0 hv1
+  rw [htc, hrc]
+  refine le_trans (pinCompat_of_ladderPath g hg t r ht0 ht1 hr0 hr1) ?_
+  rcases htcase with ⟨hte, htb⟩ | ⟨hte, htb⟩ <;>
+    rcases hrcase with ⟨hre, hrb⟩ | ⟨hre, hrb⟩ <;> omega
+
+end Inputs
+
+-- `linter.unusedFintypeInType`, scoped to this declaration: the signature is pinned by the
+-- plan's Lean Challenge Statements block, and `[Fintype Q]` is the shape every consumer in the
+-- idle layer already carries. `exists_ladderPath_of_walk_of_pins` reads only `Finite Q`, so the
+-- instance is not consumed here; weakening it would split the idle layer's instance shape in
+-- two for no gain. Same precedent as `exists_typeBlock_of_budget_le_cnt` above.
+set_option linter.unusedFintypeInType false in
+/-- **THE ADMISSIBILITY HALF OF THE IDLE-BLOCK DUPLICATION, UNCONDITIONAL.** An idle block whose
+two ends carry the same object state may be duplicated outright: the spliced walk lifts to a
+ladder path whose object walk is `spliceObj` and whose countdown is `idleSpliceCnt`. No pin side
+condition and no regime hypothesis — `idleSplice_pins` discharges the lift's pin slot, and
+`exists_ladderPath_of_walk_of_pins` derives the anchor from it. -/
+theorem exists_idleSpliced_ladderPath {Q : Type} [Fintype Q] [Nonempty Q]
+    {step : Q → Q → Bool} {pend : Q → Bool}
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (a : ℤ) (l : ℕ) (hl : 0 < l)
+    (hidle : ∀ i : ℕ, i < l → pend (objAt g (a + (i : ℤ))) = false)
+    (hrep : objAt g a = objAt g (a + (l : ℤ))) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v : ℤ, objAt g' v = spliceObj g a l v) ∧
+      (∀ v : ℤ, cntAt g' v = idleSpliceCnt g a l v) :=
+  exists_ladderPath_of_walk_of_pins (spliceObj g a l) (idleSpliceCnt g a l)
+    (spliceObj_step hg hrep) (idleSpliceCnt_idle hg) (idleSpliceCnt_pend_pend hg hl hidle)
+    (idleSpliceCnt_pend_idle hg hl hidle) (idleSplice_pins hg hl hidle)
+
+end IdleSplice
 
 end FormalSystem.Metalogic.Decidability.RaySummary
