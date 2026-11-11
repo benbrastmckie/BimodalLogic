@@ -146,19 +146,19 @@ turns the regime from an opaque condition on a path into a bound on one countdow
 
 ---
 
-### Phase 2: The Scoping Records [NOT STARTED]
+### Phase 2: The Scoping Records [COMPLETED]
 
 **Goal**: Land the three compiled scoping probes, each with a docstring that states exactly what
 it does and does not reach.
 
 **Tasks**:
-- [ ] Exact-name sweep confirming `hasForwardSlack_amount_le`, `pend_succ_of_fwd`, `paramsOk_inflate` and `objCycleLens_nonempty_of_pend` are absent.
-- [ ] Land `hasForwardSlack_amount_le` (Probe 4, verbatim) in `LadderChain.lean`'s `section Slack`. Its docstring MUST scope itself: it refutes the bare predicate at a freely chosen amount and says NOTHING about the five schemas, where the amount cancels against the higher countdown (Finding 3). Model the scoping language on `kappa_collision_two_regimes_refuted`'s own docstring.
-- [ ] Land `paramsOk_inflate` (Probe 1, verbatim) in `CounterQuotient.lean` beside `paramsOk_params`, recording that (K1) is divisibility INTO `P + 1` while (K2)-(K4) never mention `P`.
-- [ ] Land `pend_succ_of_fwd` (Probe 3, verbatim) in `CounterQuotient.lean` beside `objCycleLens`.
-- [ ] Land `objCycleLens_nonempty_of_pend`: from `pend_succ_of_fwd`, build a pending walk and pigeonhole it on the finite `Q` to produce `l` with `0 < l`, `l ≤ Fintype.card Q` and `f l = f 0`. ESCAPE: if the re-indexing to a cycle based at `f 0` exceeds this phase's budget, close the phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` row for this step alone; `pend_succ_of_fwd` lands regardless and the consequence (no admissible object bounds its region lengths) is recorded in its docstring either way.
-- [ ] Run the scoped guarded builds for both modules, then `typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
-- [ ] Apply the `longFile` baseline rule to `LadderChain.lean` if its count crosses `N`. `CounterQuotient.lean` is 1013 lines with no baseline; confirm it stays below 1500 or add one.
+- [x] Exact-name sweep confirming `hasForwardSlack_amount_le`, `pend_succ_of_fwd`, `paramsOk_inflate` and `objCycleLens_nonempty_of_pend` are absent.
+- [x] Land `hasForwardSlack_amount_le` (Probe 4, verbatim) in `LadderChain.lean`'s `section Slack`. Its docstring MUST scope itself: it refutes the bare predicate at a freely chosen amount and says NOTHING about the five schemas, where the amount cancels against the higher countdown (Finding 3). Model the scoping language on `kappa_collision_two_regimes_refuted`'s own docstring.
+- [x] Land `paramsOk_inflate` (Probe 1, verbatim) in `CounterQuotient.lean` beside `paramsOk_params`, recording that (K1) is divisibility INTO `P + 1` while (K2)-(K4) never mention `P`.
+- [x] Land `pend_succ_of_fwd` (Probe 3, verbatim) in `CounterQuotient.lean` beside `objCycleLens`.
+- [x] Land `objCycleLens_nonempty_of_pend` *(landed in full; the ESCAPE was not needed -- the re-basing closed via `Finset.exists_ne_map_eq_of_card_lt_of_maps_to` plus an index shift)*: from `pend_succ_of_fwd`, build a pending walk and pigeonhole it on the finite `Q` to produce `l` with `0 < l`, `l ≤ Fintype.card Q` and `f l = f 0`. ESCAPE: if the re-indexing to a cycle based at `f 0` exceeds this phase's budget, close the phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` row for this step alone; `pend_succ_of_fwd` lands regardless and the consequence (no admissible object bounds its region lengths) is recorded in its docstring either way.
+- [x] Run the scoped guarded builds for both modules, then `typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+- [x] Apply the `longFile` baseline rule to `LadderChain.lean` if its count crosses `N`. `CounterQuotient.lean` is 1013 lines with no baseline; confirm it stays below 1500 or add one. *(LadderChain crossed 2700 at 2703 lines; baseline raised to 2800. CounterQuotient at 1115 lines, still under 1500, no baseline added)*
 
 **Timing**: 1.5 hours
 

@@ -513,6 +513,81 @@ def objCycleLens {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → 
   {l | 0 < l ∧ l ≤ Fintype.card Q ∧
     ∃ f : ℕ → Q, (∀ i, step (f i) (f (i + 1)) = true) ∧ (∀ i, pend (f i) = true) ∧ f l = f 0}
 
+/-- **SERIALITY FORCES A PENDING SUCCESSOR.** Under `fwd` — forward seriality of `RladAdm`, which
+every admissible ladder object carries — a pending object state has a `step`-successor that is
+again pending. The argument is `Count`'s own idle clause: at the pending state `(q, 1, 0)` the
+forward witness `y` satisfies `Count (pend q) (pend y.1) 1 0 y.2.1`, and if `y.1` were idle that
+clause reads `y.2.1 = 0 ∧ (pend q = true → 1 = 0)`, whose second conjunct is false.
+
+**The consequence this records is negative**, and it is the reason the refutation side of the
+forward-slack question is closed: no admissible object has a bound on its pending-region lengths.
+From a single pending state, seriality produces an infinite pending walk, so the regions it
+generates can be made arbitrarily long, and a counterexample object whose region lengths are
+bounded — which is what a refutation of `ForwardSlackWitnessed` by construction would need — does
+not exist. `objCycleLens_nonempty_of_pend` below turns the same walk into a positive cycle length
+by pigeonhole, which is the (K1) consequence. -/
+theorem pend_succ_of_fwd {Q : Type} (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y) (q : Q) (hq : pend q = true) :
+    ∃ q', step q q' = true ∧ pend q' = true := by
+  have hadm : (1 : ℕ) ∈ Adm pend q := by
+    intro h; rw [hq] at h; exact absurd h (by simp)
+  obtain ⟨y, hy⟩ := fwd 0 ⟨(q, 1, 0), hadm⟩
+  obtain ⟨hstep, -, -, hcount⟩ := hy
+  refine ⟨y.1.1, hstep, ?_⟩
+  by_contra hne
+  rw [Bool.not_eq_true] at hne
+  simp only [Count, hne, Bool.false_eq_true, if_false] at hcount
+  exact absurd (hcount.2 hq) (by omega)
+
+/-- **EVERY SERIAL OBJECT WITH A PENDING STATE HAS A PENDING CYCLE**, of length at most
+`Fintype.card Q`. Iterating `pend_succ_of_fwd`'s choice on the pending subtype gives an infinite
+pending walk; pigeonholing its first `Fintype.card Q + 1` values gives a repetition `f a = f b`
+with `a < b ≤ Fintype.card Q`, and re-basing the walk at `a` turns that repetition into a cycle
+based at index `0`, which is what `objCycleLens` asks for.
+
+So (K1)'s object-side divisibility clause is never vacuous on a serial object with a pending
+state: `objCycleLens step pend` is inhabited, hence `P + 1` is constrained from below by a genuine
+divisor. The same fact is the obstruction on the refutation side — see `pend_succ_of_fwd`. -/
+theorem objCycleLens_nonempty_of_pend {Q : Type} [Fintype Q] (step : Q → Q → Bool)
+    (pend : Q → Bool) (fwd : ∀ t x, ∃ y, RladAdm step pend t x y) (q : Q) (hq : pend q = true) :
+    ∃ l : ℕ, l ∈ objCycleLens step pend := by
+  classical
+  -- The pending-successor choice function, on the subtype of pending object states.
+  let nxt : {x : Q // pend x = true} → {x : Q // pend x = true} := fun x =>
+    ⟨(pend_succ_of_fwd step pend fwd x.1 x.2).choose,
+      (pend_succ_of_fwd step pend fwd x.1 x.2).choose_spec.2⟩
+  have hnxt : ∀ x : {x : Q // pend x = true}, step x.1 (nxt x).1 = true := fun x =>
+    (pend_succ_of_fwd step pend fwd x.1 x.2).choose_spec.1
+  let f : ℕ → Q := fun i => (nxt^[i] ⟨q, hq⟩).1
+  have hfstep : ∀ i, step (f i) (f (i + 1)) = true := by
+    intro i
+    have hit : nxt^[i + 1] ⟨q, hq⟩ = nxt (nxt^[i] ⟨q, hq⟩) := Function.iterate_succ_apply' _ _ _
+    simp only [f, hit]
+    exact hnxt _
+  have hfpend : ∀ i, pend (f i) = true := fun i => (nxt^[i] ⟨q, hq⟩).2
+  -- Pigeonhole the first `Fintype.card Q + 1` values of the walk.
+  have hlt : (Finset.univ : Finset Q).card < (Finset.range (Fintype.card Q + 1)).card := by
+    simp
+  obtain ⟨i, hi, j, hj, hij, hfe⟩ :=
+    Finset.exists_ne_map_eq_of_card_lt_of_maps_to hlt
+      (fun x _ => Finset.mem_univ (f x))
+  obtain ⟨a, b, hab, hbc, hfab⟩ : ∃ a b : ℕ, a < b ∧ b ≤ Fintype.card Q ∧ f a = f b := by
+    have hi' : i < Fintype.card Q + 1 := Finset.mem_range.mp hi
+    have hj' : j < Fintype.card Q + 1 := Finset.mem_range.mp hj
+    rcases lt_or_gt_of_ne hij with h | h
+    · exact ⟨i, j, h, by omega, hfe⟩
+    · exact ⟨j, i, h, by omega, hfe.symm⟩
+  -- Re-base the walk at index `a`, turning the repetition into a cycle based at `0`.
+  have hstep' : ∀ k : ℕ, step (f (k + a)) (f (k + 1 + a)) = true := by
+    intro k
+    rw [show k + 1 + a = k + a + 1 by omega]
+    exact hfstep (k + a)
+  have hcyc' : f (b - a + a) = f (0 + a) := by
+    rw [show b - a + a = b by omega, Nat.zero_add]
+    exact hfab.symm
+  exact ⟨b - a, by omega, by omega, fun k => f (k + a), hstep',
+    fun k => hfpend (k + a), hcyc'⟩
+
 /-! ## The periodicity fixpoint, ported from the wired probe
 
 `iterate_eventually_periodic`, `prodPreStep` and the set-level periodicity statement are ported
@@ -803,6 +878,33 @@ theorem paramsOk_params {Q : Type} [Fintype Q] [Nonempty Q] (step : Q → Q → 
   · exact le_max_left _ _
   · exact le_trans (le_max_left _ _) (le_max_right _ _)
   · exact le_trans (le_max_right _ _) (le_max_right _ _)
+
+/-- **`ParamsOk` IS CLOSED UNDER INFLATING THE MODULUS.** `P` may be replaced by
+`j * (P + 1) - 1` for any `j > 0`, so the modulus `P + 1` may be inflated to any positive
+multiple of itself and the parameter conditions survive.
+
+The asymmetry that makes this work: (K1) is a DIVISIBILITY condition INTO `P + 1`, so every
+divisor of `P + 1` divides `j * (P + 1)` as well; and (K2), (K3), (K4) never mention `P` at all —
+(K2) and (K3) constrain `Tc` and `Tn`, (K4) constrains `B`. So inflation touches only the
+conjunct it cannot break.
+
+**What this does and does not buy.** It means a construction is free to choose the modulus as
+large as it needs without weakening the parameter hypothesis, which removes modulus magnitude
+from the list of possible obstructions. It does NOT make `HasForwardSlack` available at the
+inflated amount: `LadderChain.lean`'s `hasForwardSlack_amount_le` caps the regime's amount at
+`n + cntAt g z + I`, so an unboundedly inflated modulus is exactly what the regime refuses. -/
+theorem paramsOk_inflate {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B) (j : ℕ) (hj : 0 < j) :
+    ParamsOk step pend lab φ Tc Tn (j * (P + 1) - 1) B := by
+  obtain ⟨⟨h1, h2, h3⟩, hK2, hK3, hK4⟩ := hp
+  have hjP : j * (P + 1) - 1 + 1 = j * (P + 1) := by
+    have : 0 < j * (P + 1) := Nat.mul_pos hj (Nat.succ_pos P)
+    omega
+  refine ⟨⟨?_, ?_, ?_⟩, hK2, hK3, hK4⟩
+  · intro l hl; rw [hjP]; exact (h1 l hl).mul_left j
+  · intro l hl; rw [hjP]; exact (h2 l hl).mul_left j
+  · rw [hjP]; exact h3.mul_left j
 
 /-! ## The predicate is LOAD-BEARING: it fails at the refuted tuple
 

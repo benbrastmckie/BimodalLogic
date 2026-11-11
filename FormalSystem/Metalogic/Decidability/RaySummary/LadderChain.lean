@@ -92,7 +92,7 @@ passes through a state satisfying every state-level hypothesis the consumer carr
 downward inclusion held here is the path-level one above.
 -/
 
-set_option linter.style.longFile 2700
+set_option linter.style.longFile 2800
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1355,6 +1355,40 @@ theorem hasForwardSlack_iff_next_region_cnt_le {Q : Type} {step : Q → Q → Bo
           ≤ (n : ℤ) + cntAt g z + I - l) :=
   ⟨next_region_cnt_le_of_hasForwardSlack g hg z l n,
     hasForwardSlack_of_next_region_cnt_le g hg z l n⟩
+
+/-- **THE AMOUNT CEILING.** Whenever a region does follow `z`'s, the regime caps the deleted
+amount at `n + cntAt g z + I`: a countdown is a natural number, so the bound the regime places on
+the next region's countdown (`next_region_cnt_le_of_hasForwardSlack`) cannot be satisfied once
+`l` exceeds the right-hand side's non-negative part. So the regime is NOT available at an
+arbitrarily large amount — in particular it is not available at a freely chosen multiple of
+`P + 1`, which is what a construction wanting to delete one full modulus from inside the next
+region would need.
+
+The refutation is scoped to this derivation: it bounds the BARE predicate at a FREELY chosen
+amount, and asserts NOTHING about the five depth-`0` cell-equality schemas that carry
+`ForwardSlackWitnessed`. There the witnessing is asked at the HIGHER pair, so the amount cancels
+against that pair's own countdown and the required bound is the LOWER pair's Lipschitz allowance
+`K ≤ n + c + I`, independent of the displacement. A ceiling on the amount therefore reaches the
+predicate and stops there. Combined with `paramsOk_inflate` (`CounterQuotient.lean`), which says
+`ParamsOk` survives inflating the modulus to any positive multiple, this refutes only the
+would-be route that asks the regime at an unbounded amount. -/
+theorem hasForwardSlack_amount_le {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+    (g : ℤ → LadderState Q pend)
+    (hg : IsLadderPath step pend g) (z : ℤ) (l n I : ℕ) (hI : 0 < I)
+    (hidle : ∀ i : ℕ, i < I → pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false)
+    (hnx : pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true)
+    (hs : HasForwardSlack g z l n) :
+    (l : ℤ) ≤ (n : ℤ) + cntAt g z + I := by
+  have h0 := hidle (I - 1) (by omega)
+  have hcast : z + (cntAt g z : ℤ) + 1 + ((I - 1 : ℕ) : ℤ) = z + (cntAt g z : ℤ) + (I : ℤ) := by
+    push_cast [Nat.cast_sub (by omega : 1 ≤ I)]; ring
+  rw [hcast] at h0
+  have h1 : pend (objAt g (z + (cntAt g z : ℤ) + (I : ℤ) + 1)) = true := by
+    rw [show z + (cntAt g z : ℤ) + (I : ℤ) + 1 = z + (cntAt g z : ℤ) + 1 + (I : ℤ) by ring]
+    exact hnx
+  have hpin := cntAt_eq_nxtAt_of_idle_pend g hg _ h0 h1
+  have hslack := hs I hI hidle hnx
+  omega
 
 /-- **Forward slack transports across a deletion inside `z`'s region**, decreased by exactly the
 deleted length `l`: the deleted path's region at `z` is shorter by `l`, the first region start
