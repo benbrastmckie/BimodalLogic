@@ -1,20 +1,25 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "partial",
+  "phases_completed": 2,
   "phases_total": 7,
-  "summary": "Planned task 918 at its re-scoped target (the ordinary window regime c <= n + 1), per the prior cycle's recorded Target A decision, since the dispatch's own second outcome is foreclosed by paramsOk_params and its first reduces to the obligation task 917 refuted. Seven sequential phases land a new leaf module LadderWindow.lean: the four window-regime arithmetic statements (already compiled sorry-free at plan time and preserved as evidence/plan-gate-arithmetic.lean), a decision gate on the composite splice's pin clause, the two composite-splice primitives, the two cell inclusions, the window schema with its theorem and an exhaustiveness dichotomy, a conditional obstruction probe, and a final full-gate phase. Only the four compiled statements are pinned in Lean Challenge Statements; the gate-dependent signatures are deliberately left unpinned.",
+  "summary": "Phase 2's decision gate PASSED by compiled measurement: the window regime c <= n + 1 is reachable, four of the z-anchored lift's six clauses are free on a composite built as a ladder path, and the one real clause closes from the collision's own room plus the path's own pin equation with no sixth hypothesis. Phases 1 and 2 are [COMPLETED] and Phase 3 is [PARTIAL] in a new leaf module LadderWindow.lean (682 lines): the four pinned arithmetic statements, the named idle-run condition, the gate's clause-level measurement, and the composite raise's admissibility half at one block length with the next-deadline register held at the prescribed value. A measurement corrected a plan prediction -- the compensator's length is spent in the pin PAIR clause, not the anchor clause. Remaining: the iteration to an exact multiple of P + 1, the model-level type-carrying half, and the lowering primitive, with a worked-out iterable reformulation handed forward so the successor does not re-derive it.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md",
-      "summary": "Seven-phase lean4 plan for the ordinary window regime of the depth-0 ladder cell obligation, gated on the composite splice's pin clause."
+      "type": "summary",
+      "path": "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
+      "summary": "Implementation summary carrying the verdict sentence, the per-gate verification table, the two annotated plan deviations, and the enumerated pre-existing out-of-scope findings."
     },
     {
-      "type": "evidence",
-      "path": "specs/918_ladder_cell_index_positive_factorization/evidence/plan-gate-arithmetic.lean",
-      "summary": "Plan-time compiled measurement of the gate's arithmetic layer: all four pinned statements elaborate sorry-free through lake env lean."
+      "type": "handoff",
+      "path": "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-3-handoff-20261111T005756Z.md",
+      "summary": "Phase 3 partial handoff: the immediate next action, the self-contained iterable reformulation of the composite surgery, and the landed sibling route recorded as deliberately not taken."
+    },
+    {
+      "type": "plan",
+      "path": "specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md",
+      "summary": "Plan with per-phase verification notes recording each phase's measurements, the gate's PASS verdict, and Phase 3's remaining obligation."
     }
   ],
-  "dispatch_seq": 11
+  "dispatch_seq": 12
 }

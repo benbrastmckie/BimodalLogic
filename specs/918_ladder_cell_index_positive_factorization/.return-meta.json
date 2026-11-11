@@ -1,34 +1,59 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md",
-      "summary": "Seven-phase lean4 plan for the ordinary window regime c <= n + 1 of the depth-0 ladder cell obligation, landing a new LadderWindow.lean leaf module behind a decision gate."
+      "type": "summary",
+      "path": "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
+      "summary": "Phases 1-2 completed and Phase 3 partial: the window regime's arithmetic, the decision gate's PASS verdict, and the composite raise's admissibility half with the register held, all in the new leaf module LadderWindow.lean."
     },
     {
-      "type": "evidence",
-      "path": "specs/918_ladder_cell_index_positive_factorization/evidence/plan-gate-arithmetic.lean",
-      "summary": "Plan-time compiled measurement of the gate's arithmetic layer; all four Challenge-pinned statements compile sorry-free."
+      "type": "handoff",
+      "path": "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-3-handoff-20261111T005756Z.md",
+      "summary": "Phase 3 partial handoff carrying the iterable reformulation of the composite surgery worked out this dispatch, so the successor does not re-derive it."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1794379526_029109_918",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 7,
-    "estimated_hours": 12.5,
-    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7]]
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+    "FormalSystem.lean",
+    "typst/generated/status.typ",
+    "README.md",
+    "FormalSystem/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md",
+    "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
+    "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-1-handoff-20261111T002207Z.md",
+    "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-3-handoff-20261111T005756Z.md",
+    "specs/918_ladder_cell_index_positive_factorization/issues.jsonl",
+    "specs/918_ladder_cell_index_positive_factorization/.return-meta.json"
+  ],
+  "partial_progress": {
+    "stage": "phase_3_partial",
+    "details": "Phases 1 and 2 [COMPLETED]; Phase 3 [PARTIAL]; Phases 4-7 [NOT STARTED]. Phase 2's decision gate PASSED by compiled measurement, so the plan's PASS branch is the live one. Phase 3 landed the raising primitive's admissibility half at one block length, with the next-deadline register held at the prescribed value; three items remain, named precisely in the plan's Phase 3 verification notes and in the phase-3 handoff: the iteration to an exact multiple of P + 1 (a window-regime analogue of exists_iterSpliced_ladderPath_idx_of_pend_past, whose landed form carries the pending-forever hypothesis this regime denies), the model-level half carrying the realized type through both splices, and the lowering primitive. The handoff carries the self-contained iterable reformulation worked out this dispatch so the successor does not re-derive it. No sorry, no new axiom, no vacuous placeholder, and nothing substituted for the missing pieces.",
+    "phases_completed": 2,
+    "phases_total": 7
   },
-  "memory_candidates": [
-    {
-      "content": "In a layered path-surgery formalization, a 'pending forever into the past' style hypothesis typically sits on the ADMISSIBILITY half of a surgery (the walk-to-path lift and its pin-compatibility clause), never on the TYPE half (the index-map transport showing a realized type is preserved). That asymmetry is a dependency fact worth checking before declaring a complementary regime unreachable: the complementary regime fails the admissibility half for a specific, nameable reason (one pin's value moves while its distances do not), and it may supply a compensator the original regime lacks (here, an idle run below the position, which can be spliced by the same displacement so every lower pin's distance grows exactly as much as the raise cost). Phase decomposition should therefore put a two-layer gate first -- a scale-invariant arithmetic measurement of the pin deficit, then the path-level clause attempt -- rather than attempting the construction and discovering the deficit mid-proof.",
-      "category": "PATTERN",
-      "source_artifact": "specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["path-surgery", "admissibility-vs-type-half", "pin-compatibility", "decision-gate", "complementary-regime", "phase-decomposition"]
-    }
-  ],
-  "dispatch_seq": 11
+  "completion_data": {
+    "completion_summary": "Landed the ordinary window regime's arithmetic layer and its decision gate in a new leaf module LadderWindow.lean, with the gate PASSING by compiled measurement rather than argument, plus the composite raise's admissibility half at one block length with the next-deadline register held at the prescribed value. Three of seven phases executed; the remaining path-level iteration, type transport and lowering primitive are named precisely with a worked-out iterable design handed forward.",
+    "roadmap_items": []
+  },
+  "metadata": {
+    "session_id": "sess_1794379526_029109",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "gate_verdict": "PASS",
+    "preexisting_findings_out_of_scope": "check-module-invariants.sh C16: exactly two unusedArguments findings, both on FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean (exists_idleSpliced_ladderPath, exists_idleTypeBlock_of_budget_le_run) -- the concurrent sibling's standing failure the plan's risk table predicted by name; no C16 finding names LadderWindow.lean and that file was not edited. One vacuous-pattern grep hit at FormalSystem/Examples/TemporalStructures.lean:495 (int_domain_universal := trivial), pre-existing from an unrelated commit and a genuine proof of a True-valued domain, not a placeholder. The 14 '^axiom ' grep hits are all prose lines inside docstrings; there are zero axiom declarations, and C2/C14 report every pinned axiom set matching baseline.",
+    "verification_tier_note": "The plan's final phase declares Verification Tier: full and that field is unchanged. Phase 7 did not run, so its full gate set was not discharged here; per this dispatch's batch-gate deferral the complete set is deferred to the batch stage rather than independently run."
+  },
+  "dispatch_seq": 12
 }
