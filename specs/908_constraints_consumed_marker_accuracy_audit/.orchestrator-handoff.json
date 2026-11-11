@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 8,
+  "summary": "Wrote an 8-phase plan (10.5h) correcting the 28 over-reporting 'Constraints consumed:' markers the research probe identified, leaving the 40 accurate sites untouched. Two of the report's recommendations were re-derived and corrected at plan time: taskRel_eq_iter_of_constraints already exists (so ConeUnravelling needs no new enabler twin), and C34a's delegates() predicate requires a delegate named in the row's OWN body, so each binder-carrying corrected site needs its own twin -- roughly 19 per-site twins plus 3 enabler twins, not 3 total. Path.lean's 20 sites are split across three phases and will cross its recorded longFile 1700 ceiling (1,554 lines today), stated with its escape valve rather than glossed.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md",
+      "summary": "8-phase, 10.5-hour plan correcting 28 over-reporting Constraints-consumed markers via binder-free twins plus delegating corollaries, closing on a full gate run."
+    }
+  ],
+  "dispatch_seq": 24
+}

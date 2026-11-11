@@ -79,7 +79,7 @@ next_project_number: 926
 
 ### Documentation
 
-908 [RESEARCHED] — Audit the 65 remaining "Constraints consumed:...
+908 [PLANNED] — Audit the 65 remaining "Constraints consumed:...
 
 ### Formula Refactor
 
@@ -958,12 +958,13 @@ ORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Cit
 
 ### 908. Constraints consumed marker accuracy audit
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: documentation
 - **Dependencies**: Task 918
 - **Parent**: Task 898
 - **Research**: [908_constraints_consumed_marker_accuracy_audit/reports/01_constraints-consumed-marker-audit.md]
+- **Plan**: [908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md]
 
 **Description**: Audit the 65 remaining "Constraints consumed: Compositionality, Seriality, Limit, Saturation" docstring lines across 16 library modules against what each declaration's proof actually projects, and correct the over-reporting ones.
 

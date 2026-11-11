@@ -1,51 +1,30 @@
 {
-  "status": "researched",
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
-  "task_number": 908,
-  "session_id": "sess_1794400344_255305_908",
-  "dispatch_seq": 23,
-  "findings_count": 9,
-  "adversarial_verification_triggered": true,
-  "verification_passed": true,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/908_constraints_consumed_marker_accuracy_audit/reports/01_constraints-consumed-marker-audit.md",
-      "summary": "Full classification of all 68 'Constraints consumed: Compositionality, Seriality, Limit, Saturation' marker sites across 17 files by compiled closure probe: 28 over-report, 40 accurate; plus the enforced C34a gate collision that makes 22 of the 28 corrections a restructuring rather than a docstring edit, and a four-phase correction plan."
-    },
-    {
-      "type": "evidence",
-      "path": "specs/evidence/constraints-consumed-marker-audit/marker-consumption-probe.lean",
-      "summary": "The classifying metaprogram: transitive constant-closure of each declaration's elaborated term intersected with the eight constants through which FrameOver.IsRegular's four fields can be read. Re-runs in one 'lake env lean' call."
-    },
-    {
-      "type": "evidence",
-      "path": "specs/evidence/constraints-consumed-marker-audit/classification.tsv",
-      "summary": "All 68 marker sites with file, line, declaration, binder presence, C34a discharge, closure size, probe hits, verdict and corrected marker text."
-    },
-    {
-      "type": "evidence",
-      "path": "specs/evidence/constraints-consumed-marker-audit/c34a-gate-simulation.py",
-      "summary": "C34a's own predicates extracted from check-module-invariants.sh, run against the live census with substituted corrected markers; 4 of 4 representative sites FAIL."
+      "type": "plan",
+      "path": "specs/908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md",
+      "summary": "8-phase, 10.5-hour plan correcting 28 over-reporting Constraints-consumed markers via binder-free twins plus delegating corollaries, closing on a full gate run."
     }
   ],
   "memory_candidates": [
     {
-      "title": "Lean v4.33: ConstantInfo.value? is none for theorems without allowOpaque",
-      "content": "On Lean v4.33, Lean.ConstantInfo.value? returns none for every thmInfo (and opaqueInfo) unless called as value? (allowOpaque := true). A dependency-tracing probe built on bare ci.value? therefore walks declaration TYPES only and silently reports an empty, clean-looking closure for every theorem. Closure size is not a usable anti-silence signal: a type-only walk still returns hundreds to thousands of constants. Always pair such a probe with a named positive control whose hit is asserted.",
-      "tags": ["lean4", "metaprogramming", "dependency-tracing", "silent-failure"]
-    },
-    {
-      "title": "A gate that refuses a correction: C34a and downward marker edits",
-      "content": "In BimodalLogic, check-module-invariants.sh C34a (enforced) refuses any 'Constraints consumed:' marker that omits a constraint its own [F.IsRegular] binder supplies, discharged only by delegation to a binder-free twin carrying the identical list, or by a bare field re-export. An all-four marker omits nothing and is exempt, so CORRECTING an over-reporting marker downward removes its exemption and turns a one-line docstring edit into an explicit-hypothesis restatement plus corollary. When sizing audit work against a gate, simulate the gate's own predicate on the intended post-edit state before estimating; the gate may be oriented against the correction, not only against the defect.",
-      "tags": ["lean4", "gate-collision", "plan-sizing", "module-invariants"]
-    },
-    {
-      "title": "Mechanize the specification's predicate instead of running N transplant probes",
-      "content": "When an audit asks 'which hypotheses does each of N declarations actually consume', read the specification for the exact predicate before choosing a method. If it reads 'the elaborated proof term reaching the field at all' (transitive, provenance-blind), one environment-walking metaprogram settles all N sites in a single compiled run, whereas a per-site transplant probe (replace the bundling binder with explicit hypotheses in a scratch copy, recompile) costs N compiles and answers a slightly different question. Validate the metaprogram against every site whose answer was already established by hand.",
-      "tags": ["lean4", "audit-methodology", "metaprogramming", "cost-leverage"]
+      "content": "When a gate discharges a claim by DELEGATION (a declaration's corrected/narrowed docstring claim is accepted because its own code names a cleaner twin), the discharge is per-declaration, not per-dependency-chain: the delegate must be named in that declaration's own body, carry an identical claim, and itself be free of the construct being narrowed away. Enabler leverage up the call chain reduces the COST of writing each twin (the proof body is the original's with one substitution) but never the COUNT of twins needed. Sizing such work by counting enabler lemmas instead of counting gated declarations understates it by an order of magnitude. Concretely in this repo: check-module-invariants.sh C34a's delegates() predicate over 'Constraints consumed:' markers.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["c34a", "delegation-discharge", "gate-collision", "plan-sizing", "binder-free-twin", "constraints-consumed"]
     }
   ],
-  "next_steps": "Run /orchestrate 908 to create implementation plan"
+  "metadata": {
+    "session_id": "sess_1794400344_255305_908",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 10.5,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8]]
+  },
+  "next_steps": "Run /orchestrate 908 to execute the plan",
+  "dispatch_seq": 24
 }

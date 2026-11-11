@@ -2776,7 +2776,7 @@
     {
       "project_number": 908,
       "project_name": "constraints_consumed_marker_accuracy_audit",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Audit the 65 remaining \"Constraints consumed: Compositionality, Seriality, Limit, Saturation\" docstring lines across 16 library modules against what each declaration's proof actually projects, and correct the over-reporting ones.\n\nBackground. The completed work on L-plus invariance without Saturation established that such a line records the IsRegular binder PRESENT on a declaration, not the constraints the proof CONSUMES. Four lines in FormalSystem/Semantics/HistoryMorphism.lean and FormalSystem/Semantics/UniversalCover.lean over-reported in exactly that way and were corrected there; that over-claim is why the Saturation question looked open for as long as it did. Measurement found the residue is larger than first estimated: 65 occurrences across 16 files (FormalSystem/Semantics/Nomic/, Presheaf/, Extension/, Validity.lean, Correspondence/RigidityReal.lean, NomicLanguage/), not the ~20 initially reported. Correcting them was declared an explicit Non-Goal of that work, so the residue is unfiled.\n\nScope. For each occurrence, determine which constraints the proof actually projects -- the transplant-probe technique is proven: replace the bundling binder with explicit constraint hypotheses in a scratch copy and check it still compiles. Then correct the marker line where it over-reports. Many occurrences will be ACCURATE: a declaration that genuinely consumes Saturation keeps its line unchanged. This is an audit, not a sweep; a blind rewrite would be worse than the current state.\n\nConstraints to respect. The \"Constraints consumed:\" marker vocabulary is CLOSED (check-module-invariants.sh C34), and a side-attributing form such as \"source: ...; base: none\" is inadmissible on the marker line. Any phase touching a marker must name scripts/check-module-invariants.sh in its own verification tier -- a full lake build covers none of C34/C34a/C34b. typst/generated/status.typ is a mandatory file_scope member of any .lean-touching phase (typst-sync-check.sh pre-commit gate).\n\nEvidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two compiled transplant probes from the originating work.",
       "effort": "medium",
@@ -2789,28 +2789,41 @@
         "FormalSystem/NomicLanguage/NomicFour.lean",
         "FormalSystem/NomicLanguage/NomicTenseFree.lean",
         "FormalSystem/NomicLanguage/NomicValidity.lean",
+        "FormalSystem/README.md",
+        "FormalSystem/Semantics/ConeUnravelling.lean",
         "FormalSystem/Semantics/Correspondence/RigidityReal.lean",
         "FormalSystem/Semantics/Extension/Completion.lean",
         "FormalSystem/Semantics/Extension/Extension.lean",
         "FormalSystem/Semantics/Extension/Step.lean",
+        "FormalSystem/Semantics/IntNormalForm.lean",
         "FormalSystem/Semantics/Nomic/Frame.lean",
         "FormalSystem/Semantics/Nomic/Recovery.lean",
         "FormalSystem/Semantics/Nomic/Uniformity.lean",
         "FormalSystem/Semantics/Nomic/Witnesses.lean",
         "FormalSystem/Semantics/Nomic/ZTime.lean",
+        "FormalSystem/Semantics/Presheaf/Behavior.lean",
         "FormalSystem/Semantics/Presheaf/Directed.lean",
         "FormalSystem/Semantics/Presheaf/Path.lean",
+        "FormalSystem/Semantics/Presheaf/README.md",
         "FormalSystem/Semantics/Presheaf/Worlds.lean",
         "FormalSystem/Semantics/Validity.lean",
+        "README.md",
+        "docs/development/MODULE_INVARIANTS.md",
+        "docs/development/REFERENCE_NORMAL_FORM.md",
         "typst/generated/status.typ"
       ],
       "created": "2026-11-10T04:21:46Z",
-      "last_updated": "2026-11-11T15:11:07Z",
+      "last_updated": "2026-11-11T15:28:59Z",
       "artifacts": [
         {
           "path": "specs/908_constraints_consumed_marker_accuracy_audit/reports/01_constraints-consumed-marker-audit.md",
           "type": "report",
           "summary": "Full classification of all 68 'Constraints consumed: Compositionality, Seriality, Limit, Saturation' marker sites across 17 files by compiled closure probe: 28 over-report, 40 accurate; plus the enforced C34a gate collision that makes 22 of the 28 corrections a restructuring rather than a docstring edit, and a four-phase correction plan."
+        },
+        {
+          "path": "specs/908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md",
+          "type": "plan",
+          "summary": "8-phase, 10.5-hour plan correcting 28 over-reporting Constraints-consumed markers via binder-free twins plus delegating corollaries, closing on a full gate run."
         }
       ],
       "audit_verdict": {
