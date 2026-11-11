@@ -79,7 +79,7 @@ next_project_number: 926
 
 ### Documentation
 
-908 [PLANNED] — Audit the 65 remaining "Constraints consumed:...
+908 [IMPLEMENTING] — Audit the 65 remaining "Constraints consumed:...
 
 ### Formula Refactor
 
@@ -958,7 +958,7 @@ ORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Cit
 
 ### 908. Constraints consumed marker accuracy audit
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: documentation
 - **Dependencies**: Task 918
