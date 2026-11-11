@@ -3,8 +3,8 @@
 - **Task**: 918 - Ladder cell index positive factorization (re-scoped: the ordinary window regime)
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-11-11T00:00:00Z
-- **Completed**: 2026-11-11T14:35:00Z
-- **Effort**: ~6h across six dispatches (phases 1-5)
+- **Completed**: 2026-11-11T16:05:00Z
+- **Effort**: ~6.5h across seven dispatches (phases 1-6)
 - **Dependencies**: None
 - **Artifacts**: plans/01_ladder-cell-window-regime.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -25,7 +25,11 @@ region-start-plus-idle-run package through a new existential-over-paths conditio
 as the cycle-1 recorded decision settled. Phase 5 stated the regime's depth-`0` cell obligation as
 a schema, proved it, and compiled the regimes' exhaustiveness — the schema concluding direction-
 indexed cell INCLUSION rather than the equality its task list specified, because
-`Set.Subset.antisymm` has only one inclusion to consume and equality is therefore not proved.
+`Set.Subset.antisymm` has only one inclusion to consume and equality is therefore not proved. Phase 6
+is CONDITIONAL on a Phase 2 gate FAIL, which did not occur, so it closed on its own PASS branch:
+no window-regime obstruction was compiled, because none exists to compile. The one edit it made
+is a guard entry for the obstruction this task DID compile -- the lowering-direction anchor
+deficit -- which three landed exclusion records cite as their Evidence and which no gate reached.
 
 ## What Changed
 
@@ -54,6 +58,14 @@ indexed cell INCLUSION rather than the equality its task list specified, because
   register, derived from `clipIdx_regime_of_eq` and `pend_past_of_nxtAt_lt`). The `longFile`
   baseline was raised from 1700 to 1900 on the crossing.
 - `typst/generated/status.typ` — regenerated line/count fields.
+
+- `scripts/check-evidence-probes.sh` — one new `WIRED_REPO` entry plus its documentation block
+  (+53 lines), wiring `specs/918_ladder_cell_index_positive_factorization/evidence/`
+  `lowering-anchor-deficit.lean` into the probe rot guard. That probe is this task's actually
+  compiled obstruction and was previously reached by no gate. Entered under `WIRED_REPO` rather
+  than `WIRED` with a named deferred-move blocker: three landed `#### Reasoned Exclusions` records
+  cite its task-directory path verbatim, so the file cannot move until those citations move with
+  it. Phase 6 touched no `.lean` file at all.
 
 ## Decisions
 
@@ -138,6 +150,22 @@ indexed cell INCLUSION rather than the equality its task list specified, because
   hypothesis's absolute "near 720 lines" figure was stale from Phase 3's overshoot onward, and
   the module crossed the 1700 `longFile` baseline rather than the 1500 ceiling.
 
+- **Phase 6, probe task** skipped: FAIL-branch-only, and Phase 2's gate measured PASS. No
+  window-regime obstruction exists, so a probe asserting one would be false rather than merely
+  unnecessary.
+- **Phase 6, module-docstring verdict task** skipped: its text ("the window regime is refuted...
+  the ladder route is closed in both regimes") is counterfactual on the branch taken. The window
+  regime is closed positively and one-directionally; the ladder route is closed in neither regime
+  by this task.
+- **Phase 6, durable-record task** skipped: same counterfactual consequence. No false durable
+  claim was written.
+- **Phase 6, `WIRED`-entry task** altered: discharged against the obstruction actually measured,
+  as this phase's own `**Files to modify**` note directs, rather than against a non-existent
+  window-regime probe.
+- **Phase 6, Scope Hypothesis** — predicted content only on the FAIL branch; branch confirmed PASS
+  from Phase 2's recorded measurement before starting, so the predicted 80-140-line probe is
+  correctly absent. Actual: 0 new `.lean` lines.
+
 ## Verification
 
 - Build: Success — phase-end FULL guarded `lake build`, 2974 jobs, guard exit 0, `error:` count 0,
@@ -167,6 +195,26 @@ indexed cell INCLUSION rather than the equality its task list specified, because
   touched files was run at every sub-step. The plan's final phase keeps `**Verification Tier**:
   full` unedited.
 
+- Phase 6 gate (`local` tier): `bash scripts/check-evidence-probes.sh` exit 0,
+  `PASS  all 54 wired probe(s) compile`. Delta against the pre-phase run: 53 -> 54 wired, the new
+  entry `PASS`, zero PASS-to-FAIL transitions, the one deliberate `SKIP` unchanged.
+- The newly wired probe itself: `timeout 540 lake env lean` on it exits 0 with zero output;
+  `sorry`/`axiom` sweep returns no occurrence; all three theorems (`lowering_anchor_not_implied`,
+  `lowering_anchor_of_required`, `lowering_anchor_fails_at_tight_bound`) close by `omega` alone.
+- Phase 6 phase-end FULL guarded `lake build`: guard exit 0, `Build completed successfully
+  (2974 jobs)`, `error:` count 0, `warning:` count 0, `.olean` newer than source for
+  `LadderWindow`. Run although Phase 6 touched no `.lean` file, so the Lean build graph was
+  unchanged from Phase 5's close.
+- Phase 6 sorry census: `lean-sorry-census.sh` over the resolved source roots reports
+  `sorry_count: 0`, empty inventory. The compiler-side half of the cross-check is the same
+  dispatch's full build, which reports 0 `uses 'sorry'` warnings; `--cross-check`'s own `lake
+  build` was not re-run as a separate invocation, which is stated here rather than implied.
+- Phase 6 `bash scripts/typst-sync-check.sh --fix`: PASS, `MA_COUNT_MISMATCHES=0`; `status.typ`
+  came back unchanged, correctly, since no `.lean` line count moved. Nothing to stage.
+- Phase 6 vacuous count 1 and axiom count 14, both byte-identical to the figures above: the
+  phase's commit touched 0 `.lean` files (`git show --name-only` on `68e260294`), so neither
+  figure could have moved.
+
 ## Impacts
 
 - The window regime now has a path-level raising primitive at an exact multiple of `P + 1` with the
@@ -190,11 +238,21 @@ indexed cell INCLUSION rather than the equality its task list specified, because
   relative to the in-region depth, recorded as `window_lower_anchor_of_required` — is admissible.
   Until it is, the window schema stays one-directional and cell equality in this regime is
   unproved. This is now the single gate between the landed inclusion schema and an equality one.
-- Phases 6 and 7 remain. Phase 6 is CONDITIONAL on a Phase 2 gate FAIL, which did not occur, so
-  it should close with a recorded no-op rather than compile an obstruction that was not measured.
-  Phase 7 owns the generated surfaces and the stale `RaySummary/README.md` module-inventory row
-  for `LadderWindow.lean` (still recording 682 lines and no cell-level consequence; both figures
-  and the description are now wrong at 1866 lines with a schema, a theorem and a dichotomy).
+- Phase 7 remains, and is the only phase left. Phase 6 closed on its PASS branch
+  `[COMPLETED WITH EXCLUSIONS]` with a three-row record; it compiled no obstruction, because the
+  decision gate it is conditional on passed. Phase 7 owns the generated surfaces and the stale
+  `RaySummary/README.md` module-inventory row for `LadderWindow.lean` (still recording 682 lines
+  and no cell-level consequence; both figures and the description are now wrong at 1866 lines with
+  a schema, a theorem and a dichotomy).
+- PROMOTION OWED BEFORE ARCHIVAL, now Phase 7's to discharge: move
+  `specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean` to
+  `specs/evidence/seam-gluing-ray-product/`, where every other ladder probe in this family lives,
+  and update the three `#### Reasoned Exclusions` Evidence citations (Phases 3, 4, 5) that name
+  its task-directory path verbatim, then re-point its guard entry from `WIRED_REPO` to `WIRED`.
+  This is not cosmetic: `.gitignore` excludes `specs/archive/`, so an archival `mv` of the task
+  directory would take the probe out of version control in that one commit, after which the guard
+  reports `FAIL (untracked: ...)` on every clean checkout while staying green for whoever already
+  has the file.
 - `exists_window_raise_ladderPath` and `cellAt_subset_of_window_raise` carry the idle-run condition
   as a hypothesis. It RESTRICTS the
   obligation rather than discharging it, so the reserved `cellLE_zero_const_of_kappa_eq` is still

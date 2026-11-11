@@ -1,10 +1,10 @@
 {
   "status": "implemented",
   "skeleton": false,
-  "summary": "Phase 5 only: landed the window regime's depth-0 cell obligation as a schema (CellSubsetOfKappaEqWindowRaise), its theorem (cellSubset_of_kappa_eq_window_raise), and the regimes' compiled exhaustiveness at a fixed register (kappa_collision_window_or_pendPast_exhaustive). The schema concludes direction-indexed cell INCLUSION, not the cell EQUALITY the plan's task list specified: Set.Subset.antisymm needs two inclusions and Phases 3-4 excluded the lowering direction on a compiled measurement, as the cycle-1 recorded decision settled. Scoped build green on the first attempt; phase-end full library build green; 0 sorries; no new axioms.",
-  "phases_completed": 5,
+  "summary": "Phase 6 only. Phase 6 is CONDITIONAL on Phase 2's decision gate FAILING; that gate measured PASS, so the phase closed [COMPLETED WITH EXCLUSIONS] on its own PASS branch with a three-row Reasoned Exclusions record and landed none of its FAIL-branch content: no window-regime obstruction probe (none exists to compile), no LadderWindow.lean module-docstring verdict, and no specs/state.json description amendment -- the latter two being counterfactual (the window regime is closed POSITIVELY and one-directionally, not refuted, and the ladder route is closed in neither regime by this task), so writing them would have put a false claim in a durable record. The phase's one edit discharges its WIRED-entry task against the obstruction this task ACTUALLY compiled, as the phase's own Files-to-modify note directs: evidence/lowering-anchor-deficit.lean, cited as Evidence by three landed exclusion records (Phases 3, 4, 5) and reached by no gate, hence rotting unguarded. Wired under WIRED_REPO with a named deferred-move blocker (those three records cite its task-directory path verbatim). check-evidence-probes.sh exit 0, all 54 wired probes PASS (53 -> 54, zero PASS-to-FAIL transitions). Phase-end full guarded lake build green (2974 jobs, 0 errors, 0 warnings); 0 sorries; 0 .lean files touched, so vacuous count 1 and axiom count 14 are byte-identical baseline.",
+  "phases_completed": 6,
   "phases_total": 7,
-  "dispatch_seq": 20,
+  "dispatch_seq": 21,
   "sorry_inventory": [],
   "blockers": [],
   "continuation_path": null,
@@ -12,7 +12,7 @@
     {
       "type": "summary",
       "path": "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
-      "summary": "Phases 1-5 of the window-regime plan: the leaf module's arithmetic, the passed decision gate, the raising composite splice, the upward cell inclusion, and the window schema plus the compiled regime exhaustiveness."
+      "summary": "Phases 1-6 of the window-regime plan: the leaf module's arithmetic, the passed decision gate, the raising composite splice, the upward cell inclusion, the window schema plus the compiled regime exhaustiveness, and Phase 6's PASS-branch closure with the lowering-deficit probe wired into the rot guard."
     }
   ]
 }
