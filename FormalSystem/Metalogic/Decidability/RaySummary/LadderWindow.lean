@@ -30,8 +30,9 @@ are amended nowhere.
 
 ## What this module holds
 
-The window regime's ARITHMETIC layer — four statements, each measured by compilation rather than
-asserted, each scale-invariant in the displacement:
+The window regime's ARITHMETIC layer, and on top of it the path-level and cell-level layer the
+arithmetic was the skeleton for. The arithmetic first — four statements, each measured by
+compilation rather than asserted, each scale-invariant in the displacement:
 
 * `kappa_collision_window_room` — a `kappa` collision at a fixed next-deadline register, read in
   this regime, either pins the two countdowns equal or exhibits a positive displacement by a
@@ -55,15 +56,54 @@ In the three pin statements `jP` is an OPAQUE natural number. The arithmetic nev
 `j · (P + 1)`, so none of these statements depends on the modulus, on `(K1)`, or on any
 parameter tuple; they are the regime's scale-invariant skeleton and nothing more.
 
+Above the arithmetic sits the regime's path-level and cell-level layer, which was gated on a
+measurement of the composite lift's two clauses and which the measurement admitted:
+`exists_window_raise_ladderPath` is the RAISING primitive — a ladder path through
+`(objAt g z, cntAt g z + m · (P + 1), nxtAt g z)` at `z` itself, with the realized type held —
+assembled from the idle lengthening (`exists_iterIdleSpliced_ladderPath_idx`) and the pending
+splice (`exists_window_composite_ladderPath`, `exists_window_iterSpliced_ladderPath`);
+`cellAt_subset_of_window_raise` lifts it from one path to a whole cell under
+`WindowIdleRunWitnessed`; and `CellSubsetOfKappaEqWindowRaise` with
+`cellSubset_of_kappa_eq_window_raise` state and prove the regime's depth-`0` cell obligation as a
+schema at every parameter tuple `ParamsOk` admits. `kappa_collision_window_or_pendPast_exhaustive`
+is the compiled record that this regime and the pending-forever gap are the only two cases at a
+fixed register. The compensator throughout is the idle run BELOW the comparison position, named
+as `HasIdleRunBelow`; `HasForwardSlack` and `ForwardSlackWitnessed` appear nowhere in this module.
+
+## Verdict
+
+**The ordinary window regime is closed POSITIVELY and ONE-DIRECTIONALLY.** The regime's depth-`0`
+cell obligation holds as `CellSubsetOfKappaEqWindowRaise`, proved by
+`cellSubset_of_kappa_eq_window_raise`, with the UPWARD cell inclusion only: the conclusion is
+direction-indexed cell INCLUSION, not equality, and the name says so.
+
+The LOWERING direction is excluded on a compiled measurement rather than left unproved. The
+`z`-anchored lift's anchor clause reverses direction under deletion, its binding half becoming a
+bound on the register from ABOVE relative to the in-region depth (`n + jP ≤ c + 2 · d + 1`), which
+the lowering branch's own room does not supply and which the tight bound `nxtAt_lipschitz` permits
+leaves short by exactly the displacement: `window_lower_anchor_not_implied`,
+`window_lower_anchor_fails_at_tight_bound` and `window_lower_anchor_of_required` are that
+measurement, with `window_lower_anchor_of_required` naming the one condition that would close it.
+That condition is a SIXTH hypothesis and so excluded by the gate criterion the regime was admitted
+under. `Set.Subset.antisymm` therefore has no second inclusion to consume, and cell equality in
+this regime is not claimed here.
+
+The regime is NOT refuted, and the ladder route is closed in neither regime by this module. The
+reserved `CellLEZeroConstOfKappaEq` and its reserved name `cellLE_zero_const_of_kappa_eq` stay
+claimed by nothing: no declaration here carries that name or any prefix of it, and the schema
+landed here is strictly stronger in hypotheses and strictly weaker in conclusion, so it bears on
+the reserved statement's truth value in NEITHER direction. The five hypothesis-strengthened
+schemas of `LadderCell.lean` are unchanged by this module.
+
 ## What this module does not hold
 
-No path-level construction, no cell-level inclusion, and no schema: those are the regime's
-LAYER B and sit behind a decision gate measured separately. Nothing here is a realization
+No cell EQUALITY in this regime, and so no lowering primitive and no downward cell inclusion —
+see the Verdict above for the measurement that excludes them. Nothing here is a realization
 theorem, nothing is claimed about `HitPresented` or `PlusValidZTime`, no index of a ladder cell
 is claimed at any parameters, and no complexity bound is claimed.
 -/
 
-set_option linter.style.longFile 1900
+set_option linter.style.longFile 2000
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1531,8 +1571,9 @@ the register from above, relative to the in-region depth. Under the gate's own c
 clause that needs a sixth hypothesis is a FAIL, not a widening") that is a FAIL, and the
 condition is NOT added here: `window_lower_anchor_of_required` records exactly what the clause
 becomes derivable from, so that a future phase can decide whether that condition is admissible
-rather than discovering the deficit again. The companion probe is
-`specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean`. -/
+rather than discovering the deficit again. The deficit additionally carries a compiled companion
+probe, `lowering-anchor-deficit.lean`, wired into `scripts/check-evidence-probes.sh`'s probe list
+under that name. -/
 
 /-- **THE LOWERING DIRECTION'S ANCHOR CLAUSE IS NOT IMPLIED BY THE REGIME'S OWN DATA.** The
 lowering branch's room `c ≤ n`, the deletion's own bound `jP ≤ c`, and the path's arithmetic

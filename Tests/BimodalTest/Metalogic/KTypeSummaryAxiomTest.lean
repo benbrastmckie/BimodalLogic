@@ -108,7 +108,7 @@ expectation to rewrite.
 -- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): this is one
 -- axiom-profile ledger for the summary layer and its requirement sections stay together, so the
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
-set_option linter.style.longFile 2600
+set_option linter.style.longFile 2900
 
 namespace BimodalTest.Metalogic
 
@@ -2528,5 +2528,346 @@ profile. -/
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.rk_of_count_drift
+
+/-! ## Requirement (W): the ordinary window regime's arithmetic (`RaySummary/LadderWindow.lean`)
+
+The complement regime. All five hypothesis-strengthened schemas of `LadderCell.lean` carry the
+PENDING-FOREVER gap `n + 2 ≤ c`; this layer carries its exact complement `c ≤ n + 1`, and
+`kappa_collision_window_or_pendPast_exhaustive` (pinned last in this file) is the compiled
+statement that the two are the only cases at a fixed register. `kappa_collision_window_room` is
+the regime's one real arithmetic gain: a fixed-register collision read inside the window either
+pins the two countdowns equal or exhibits a positive multiple of `P + 1` separating them TOGETHER
+WITH the strict room `c' ≤ n` for the larger — the room is `clipIdx_regime_of_eq`'s own
+disjunction with the gap branch killed by the regime hypothesis, not an added assumption.
+`window_anchor_compat_of_room` says that room IS the `z`-anchored lift's anchor clause at the
+region start after a raise, and the two `window_pin_compat_*` names are the pin pair clause in
+each direction. In all three pin statements `jP` is an OPAQUE natural number: the arithmetic
+never reads it as `j · (P + 1)`, so none of them depends on the modulus, on `(K1)`, or on any
+parameter tuple. Nothing here is a path construction and nothing is a cell inclusion. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.kappa_collision_window_room' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.kappa_collision_window_room
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_anchor_compat_of_room' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_anchor_compat_of_room
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_pin_compat_raise_of_gap' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_pin_compat_raise_of_gap
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_pin_compat_lower_of_spacing' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_pin_compat_lower_of_spacing
+
+/-! ## Requirement (W): the window regime's decision gate and its clause lemmas
+
+`HasIdleRunBelow` is THE NAMED IDLE-RUN CONDITION, and it is the whole reason this regime is
+reachable: the compensator here is the idle run BELOW the comparison position, never slack above
+it, so `HasForwardSlack` and `ForwardSlackWitnessed` appear nowhere in this module and the
+refuted deletion-above route is not re-entered. The gate these pins record measured whether the
+composite lift's two clauses close on the five admissible hypotheses — `ParamsOk`, the two window
+hypotheses, `Tc ≤ c`, the collision's room, and this one named condition — and they did:
+`window_anchor_clause_of_pin_classification` is the anchor clause reduced to a pin classification
+and `window_pin_pair_raise_of_slack` the pin pair clause reduced to banked slack, with
+`nxtAt_le_cntAt_region_start` supplying the start's own arithmetic from the ORIGINAL path and
+`regionStart_spacing`, `no_pin_in_idle_run`, `region_run_of_region_start` and
+`exists_idleBlock_of_hasIdleRunBelow` supplying the geometry. No sixth hypothesis was needed, so
+this was a PASS rather than a widening — which is also why the conditional obstruction probe the
+plan reserved for the FAIL branch was never written: there is no window-regime obstruction in
+existence to compile. The standard profile on each. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.HasIdleRunBelow' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.HasIdleRunBelow
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.regionStart_spacing' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.regionStart_spacing
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_pin_dist_grows_below' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_pin_dist_grows_below
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_pin_dist_grows_above' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_pin_dist_grows_above
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_anchor_compat_at_region_start' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_anchor_compat_at_region_start
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.nxtAt_le_cntAt_region_start' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.nxtAt_le_cntAt_region_start
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_anchor_clause_of_pin_classification' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms
+  FormalSystem.Metalogic.Decidability.RaySummary.window_anchor_clause_of_pin_classification
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.no_pin_in_idle_run' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.no_pin_in_idle_run
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_pin_pair_raise_of_slack' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_pin_pair_raise_of_slack
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.region_run_of_region_start' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.region_run_of_region_start
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_idleBlock_of_hasIdleRunBelow' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_idleBlock_of_hasIdleRunBelow
+
+/-! ## Requirement (W): the composite splice's admissibility half, register held
+
+`window_composite_pin_trichotomy` sorts every region start of the composite walk into three
+classes named against the ORIGINAL path, and those three classes are exactly the three disjuncts
+the gate's anchor clause consumes. `window_composite_pins` discharges the pin pair clause from
+it: nine pin-class pairs, eight closing on `pinCompat_of_ladderPath` and a rigid displacement,
+and the ninth — the raised region start against a pin below the lengthened run — spending the
+compensator through `l ≤ E`. That ninth pair is the clause an uncompensated splice FAILS in this
+regime. `exists_window_composite_ladderPath` lifts the walk TWICE, the second time through the
+`z`-anchored `exists_ladderPath_of_walk_nxt_at` at the PRESCRIBED register value, because a cell
+inclusion reads `nxtAt` at the comparison position and the anchor-free lift chooses whatever the
+drift extension returns. Two scope facts the names do not carry: the raise here is ONE block
+length `l`, not a multiple of `P + 1` (the bridge putting `l` among the divisors is `(K1)`'s and
+the iteration to an exact multiple is a later step), and none of the three carries the realized
+TYPE. The standard profile on each. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_composite_pin_trichotomy' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_composite_pin_trichotomy
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_composite_pins' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_composite_pins
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_window_composite_ladderPath' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_window_composite_ladderPath
+
+/-! ## Requirement (W): the iterate to an exact multiple of `P + 1`
+
+The window-regime analogue of `exists_iterSpliced_ladderPath_idx_of_pend_past`, which cannot be
+reused here because the landed one carries the pending-forever hypothesis in two places.
+`window_iter_pin_trichotomy` is the trichotomy stated so that every hypothesis and every
+conclusion names only the path being spliced — which is what makes it applicable to the result of
+its own conclusion, and so iterable — and `window_iter_pins` is its pin pair clause. The five
+arithmetic names are the per-step reproduction of the three loop invariants, each as pure
+arithmetic: `window_iter_anchor_raise` and `window_iter_anchor_shift` for the anchor clause,
+`window_iter_slack_raise` for the pin-pair budget, `window_iter_budget_raise` for the anchor
+budget (reproducing with NO slack lost — the countdown rises by `l` exactly as the unspent budget
+falls by `l`), and `window_iter_no_low_shift` for the vacuity of the trichotomy's third disjunct
+below the region start. `window_natAbs_sub_comm` exists because the two budget invariants are
+written with the distance in opposite orders and the ambient library names this in neither.
+`exists_window_iterSpliced_ladderPath` is the iterate itself, with the register prescribed. The
+standard profile on each. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_iter_pin_trichotomy' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_iter_pin_trichotomy
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_iter_pins' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_iter_pins
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_natAbs_sub_comm' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_natAbs_sub_comm
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_iter_anchor_raise' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_iter_anchor_raise
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_iter_anchor_shift' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_iter_anchor_shift
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_iter_slack_raise' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_iter_slack_raise
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_iter_budget_raise' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_iter_budget_raise
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_iter_no_low_shift' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_iter_no_low_shift
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_window_iterSpliced_ladderPath' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_window_iterSpliced_ladderPath
+
+/-! ## Requirement (W): the idle lengthening and where each resource is spent
+
+`window_idle_pin_dichotomy` is the pin classification of the path the idle pump returns — two
+classes rather than three, since no pin sits inside an idle run — with the pump's own output
+clauses as hypotheses verbatim and nothing new assumed. The next three pins are worth reading
+together because each says where ONE resource goes. `window_idle_anchor_clause`: the insertion's
+length `E` is NOT spent on the anchor clause, which would hold for any `E`.
+`window_idle_slack`: the insertion IS spent here, the displaced region start leaving the
+original's own pin bound slack by exactly `E`. `window_idle_budget`: the COLLISION'S ROOM is
+spent here, and this is the only place the window hypothesis enters the construction at all —
+once, not once per step. `exists_iterIdleSpliced_ladderPath_idx` is the iterated lengthening read
+through the index map, which is what carries the realized TYPE as well as the walk and the
+countdown. The standard profile on each. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_idle_pin_dichotomy' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_idle_pin_dichotomy
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_idle_anchor_clause' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_idle_anchor_clause
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_idle_slack' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_idle_slack
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_idle_budget' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_idle_budget
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_iterIdleSpliced_ladderPath_idx' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_iterIdleSpliced_ladderPath_idx
+
+/-! ## Requirement (W): the window regime's RAISING primitive
+
+`exists_window_raise_displaced` assembles the two stages at the displaced position and
+`exists_window_raise_ladderPath` re-anchors the result at `z` itself, with the realized type
+held: a ladder path through `(objAt g z, cntAt g z + m · (P + 1), nxtAt g z)`. This is the
+regime's path-level deliverable and the thing Phase 4's cell inclusion lifts. What it is NOT:
+there is no matching LOWERING primitive, and the next section's three pins measure why. The
+standard profile on each. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_window_raise_displaced' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_window_raise_displaced
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_window_raise_ladderPath' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_window_raise_ladderPath
+
+/-! ## Requirement (W): why the LOWERING direction has no primitive — a measured deficit
+
+These three are the record that the result is one-directional by measurement rather than by
+choice, and they are the Evidence column of three separate landed `Reasoned Exclusions` records.
+`window_lower_anchor_not_implied`: the lowering branch's room `c ≤ n`, the deletion's own bound
+`jP ≤ c`, and the path's arithmetic `n ≤ c + 2 · d + 1` do not jointly give the clause's binding
+half. `window_lower_anchor_fails_at_tight_bound`: the deficit is not an artefact of a loose
+witness — with the path's bound TIGHT (which `nxtAt_lipschitz` permits) the clause fails for
+EVERY positive displacement, so no sharpening of the path's arithmetic recovers it.
+`window_lower_anchor_of_required`: what would be needed, stated so it need not be rediscovered —
+one named condition `n + jP ≤ c + 2 · d + 1`, a bound on the register from ABOVE relative to the
+in-region depth, which is a SIXTH hypothesis and therefore excluded by the decision gate's own
+criterion. The consequence is carried honestly in the next section's conclusion: cell INCLUSION,
+not equality, because `Set.Subset.antisymm` needs two inclusions and this regime has one. The
+companion wired probe is `lowering-anchor-deficit.lean`, named in
+`scripts/check-evidence-probes.sh`'s probe list. The standard profile on each. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_lower_anchor_not_implied' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_lower_anchor_not_implied
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_lower_anchor_fails_at_tight_bound' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms
+  FormalSystem.Metalogic.Decidability.RaySummary.window_lower_anchor_fails_at_tight_bound
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.window_lower_anchor_of_required' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.window_lower_anchor_of_required
+
+/-! ## Requirement (W): the window regime's upward cell inclusion
+
+`WindowIdleRunWitnessed` lifts the raising primitive's path data from one path to a whole cell:
+every type the cell realizes at `z` is realized there by SOME ladder path with a region start
+below `z` carrying the named idle-run condition. `cellAt_subset_of_window_raise` is the
+inclusion it buys — at countdown at least `Tc`, in the ordinary window regime, the cell at
+`(q, c, n)` is contained in the cell at `(q, c + m · (P + 1), n)`. Note the direction: UPWARD
+only. The downward inclusion is not landed here, and is not merely unproved but excluded on the
+measurement in the section above — it would be the lift of a primitive that does not exist. The
+standard profile on each. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.WindowIdleRunWitnessed' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.WindowIdleRunWitnessed
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_subset_of_window_raise' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cellAt_subset_of_window_raise
+
+/-! ## Requirement (W): the window schema, its theorem, and the compiled dichotomy
+
+The regime's terminus. `CellSubsetOfKappaEqWindowRaise` is the schema and
+`cellSubset_of_kappa_eq_window_raise` the theorem proving it at every parameter tuple `ParamsOk`
+admits. Five things separate this schema from the reserved `CellLEZeroConstOfKappaEq`, and all
+five are visible in its own statement: the two window hypotheses (where the landed schemas carry
+`n + 2 ≤ c`), the threshold bounds, the named idle-run condition demanded at the lower-countdown
+pair, and a WEAKER CONCLUSION — direction-indexed cell INCLUSION rather than equality. Being
+strictly stronger in hypotheses and weaker in conclusion, it bears on the reserved statement's
+truth value in NEITHER direction, and the reserved name is STILL claimed by nothing: an
+exact-name declaration sweep over `FormalSystem/` returns zero sites for
+`cellLE_zero_const_of_kappa_eq`, and the five pending-forever schemas of `LadderCell.lean` are
+unchanged by this layer. The reverse-ordering half of each displacement branch is discharged as
+VACUOUS (`0 < j * (P + 1)` contradicts the opposite ordering), not proved, and the theorem's
+docstring says so. `kappa_collision_window_or_pendPast_exhaustive` is what makes this a half of a
+partition rather than an unquantified special case: a fixed-register collision at `2 ≤ B` puts
+BOTH countdowns on the same side of the window boundary, with no third case. It is derived from
+`clipIdx_regime_of_eq` and `pend_past_of_nxtAt_lt` rather than asserted. Nothing in this layer is
+a realization theorem, nothing claims `HitPresented` or `PlusValidZTime`, and no index of a
+ladder cell is claimed at any parameters. The standard profile on each. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.CellSubsetOfKappaEqWindowRaise' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.CellSubsetOfKappaEqWindowRaise
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellSubset_of_kappa_eq_window_raise' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.cellSubset_of_kappa_eq_window_raise
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.kappa_collision_window_or_pendPast_exhaustive' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms
+  FormalSystem.Metalogic.Decidability.RaySummary.kappa_collision_window_or_pendPast_exhaustive
 
 end BimodalTest.Metalogic

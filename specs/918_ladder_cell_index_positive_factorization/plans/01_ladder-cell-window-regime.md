@@ -398,21 +398,21 @@ negative result the dispatch admits as a complete outcome.
 
 ---
 
-### Phase 7: Records, Generated Surfaces and Final Verification [NOT STARTED]
+### Phase 7: Records, Generated Surfaces and Final Verification [COMPLETED]
 
 **Goal**: Land the test-file pin block, reconcile every generated surface, set or re-tighten the
 `longFile` baseline, and run the complete gate set. The verdict — the window regime closed, or
 the window regime refuted — is stated explicitly here, never left tacit.
 
 **Tasks**:
-- [ ] Update `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`'s Requirement (W) narrative to the actual outcome. On the PASS branch: the window regime is closed under its own named schema, the five pending-forever schemas are unchanged, the two regimes are exhaustive by the Phase 5 dichotomy, and the reserved `cellLE_zero_const_of_kappa_eq` is STILL claimed by nothing because the window schema carries the idle-run condition and the threshold bounds. On the FAIL branch: the window regime is refuted at the named clause and the ladder route is closed in both regimes.
-- [ ] Add `#print axioms` pins (with `#guard_msgs`) for every declaration this task landed, following the file's existing pin convention.
-- [ ] Set or re-tighten `set_option linter.style.longFile N` in `LadderWindow.lean` to the smallest value satisfying the linter's `N - 200 ≤ lines < N` window at the file's FINAL line count — or confirm the file stayed below 1500 and that no baseline is owed. An earlier phase's judgement is wrong by construction once later phases have grown the file.
+- [x] Update `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`'s Requirement (W) narrative to the actual outcome. On the PASS branch: the window regime is closed under its own named schema, the five pending-forever schemas are unchanged, the two regimes are exhaustive by the Phase 5 dichotomy, and the reserved `cellLE_zero_const_of_kappa_eq` is STILL claimed by nothing because the window schema carries the idle-run condition and the threshold bounds. On the FAIL branch: the window regime is refuted at the named clause and the ladder route is closed in both regimes. *(PASS branch taken. Nine new `/-! ## Requirement (W): ...` sections landed, covering the regime's arithmetic, the decision gate's clause lemmas, the composite splice, the iterate, the idle lengthening and where each resource is spent, the raising primitive, the lowering direction's MEASURED deficit, the upward cell inclusion, and the schema with the compiled dichotomy. All four PASS-branch elements are stated: the regime closed under `CellSubsetOfKappaEqWindowRaise`; the five pending-forever schemas unchanged; the two regimes exhaustive by `kappa_collision_window_or_pendPast_exhaustive`; and the reserved name still claimed by nothing, with the five separators named. No pre-existing narrative needed repair: the FORWARD-SLACK section's claims (`ForwardSlackWitnessed` still a hypothesis on all five schemas; the saturated-gap branch addressed by no landed inclusion) are all still true, since the window schema carries the register equality built into its collision.)*
+- [x] Add `#print axioms` pins (with `#guard_msgs`) for every declaration this task landed, following the file's existing pin convention. *(all 42 declarations of `LadderWindow.lean` pinned -- the complete set, verified by a scripted diff of the pinned names against a declaration sweep of the module. Pin bodies were GENERATED from a compiled `#print axioms` probe over the module (`lake env lean`, exit 0) rather than hand-predicted, so the `#guard_msgs` message wrapping is measured. Measured profiles: 29 at `[propext, Quot.sound]`, 13 at the standard `[propext, Classical.choice, Quot.sound]`, zero `sorryAx`, zero axiom outside the standard three. Green on the first test-library build.)*
+- [x] Set or re-tighten `set_option linter.style.longFile N` in `LadderWindow.lean` to the smallest value satisfying the linter's `N - 200 ≤ lines < N` window at the file's FINAL line count — or confirm the file stayed below 1500 and that no baseline is owed. An earlier phase's judgement is wrong by construction once later phases have grown the file. *(this phase's own docstring edits grew the module from 1866 to 1907 lines, crossing Phase 5's baseline of 1900; raised to 2000, which satisfies `1800 ≤ 1907 < 2000`. The test file also crossed: 2532 to 2873 lines, so its baseline moved from 2600 to 2900, satisfying `2700 ≤ 2873 < 2900`. Both confirmed by a warning-free build, which is where this linter reports.)*
 - [x] Regenerate the module-inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`, then verify with `--emit-inventory --check`. This is Condition 1's surface (a) and is legitimately deferred to here. *(deviation: altered -- executed EARLY, at the close of Phase 3 rather than in Phase 7, because this dispatch ends at Phase 3 `[PARTIAL]` and the new module had turned the `INV` group RED; leaving a gate red from this task's own file was the worse option. The regeneration rewrote FOUR tracked files, two of them absent from this phase's file list -- `FormalSystem/README.md` and `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, the latter declared READ-ONLY by the risk table -- which is exactly the case this phase's Scope Hypothesis instructs be resolved by adding what the regeneration actually touches. The row's hand-written description cell was supplied rather than left at the generator's `<!-- TODO: add description -->` placeholder. `--emit-inventory --check` exits 0.)*
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` one final time and stage `typst/generated/status.typ`.
-- [ ] Run the complete gate set and record each result: the unscoped guarded `lake build`; the test library (`lake build BimodalTest`); `lake exe mk_all --lib FormalSystem --check`; `bash scripts/check-module-invariants.sh`; `bash scripts/typst-sync-check.sh`; `bash scripts/check-metalogic-cycles.sh`; `bash scripts/check-evidence-probes.sh`; `bash scripts/check-copyright-headers.sh`; and `bash .claude/scripts/validate-artifact.sh specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md plan`.
-- [ ] For each gate, distinguish findings that name this task's own touched files from the tree's standing baseline. `check-module-invariants.sh`'s C16 group is already failing on `LadderPump.lean` from a concurrent sibling: enumerate and attribute it with `git log -S`, and do NOT edit that out-of-scope file. A gate whose only failures are pre-existing and outside this task's file scope is a recorded PASS for this phase.
-- [ ] State the task's verdict in the summary artifact, in one sentence, naming which outcome was reached and that the re-scope to the window regime was the prior cycle's recorded decision rather than a drift from the dispatch.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` one final time and stage `typst/generated/status.typ`. *(run twice -- once after the pin block landed and once after the docstring repairs moved the counts again; `--fix` exit 0 both times, and the read-only re-run is PASS on all four checks.)*
+- [x] Run the complete gate set and record each result: the unscoped guarded `lake build`; the test library (`lake build BimodalTest`); `lake exe mk_all --lib FormalSystem --check`; `bash scripts/check-module-invariants.sh`; `bash scripts/typst-sync-check.sh`; `bash scripts/check-metalogic-cycles.sh`; `bash scripts/check-evidence-probes.sh`; `bash scripts/check-copyright-headers.sh`; and `bash .claude/scripts/validate-artifact.sh specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md plan`. *(all nine run and tabled in the Phase Verification Notes below. The dispatch's batch-gate deferral directive offered a SCOPED tier in place of the full set; it was NOT taken -- the complete nine-command set was run independently, so nothing is owed to the batch stage on this phase's behalf.)*
+- [x] For each gate, distinguish findings that name this task's own touched files from the tree's standing baseline. `check-module-invariants.sh`'s C16 group is already failing on `LadderPump.lean` from a concurrent sibling: enumerate and attribute it with `git log -S`, and do NOT edit that out-of-scope file. A gate whose only failures are pre-existing and outside this task's file scope is a recorded PASS for this phase. *(done, and the attribution found one finding this instruction did NOT anticipate: C9 was failing on THIS task's own `LadderWindow.lean`, which is in scope and was therefore repaired rather than attributed away. See the Phase Verification Notes for both.)*
+- [x] State the task's verdict in the summary artifact, in one sentence, naming which outcome was reached and that the re-scope to the window regime was the prior cycle's recorded decision rather than a drift from the dispatch. *(stated in the summary artifact's Overview, and additionally landed as a `## Verdict` section in `LadderWindow.lean`'s own module docstring so the record does not live only in a task artifact.)*
 
 **Timing**: 1.5 hours
 
@@ -423,19 +423,20 @@ the window regime refuted — is stated explicitly here, never left tacit.
 **Scope Hypothesis**: the file list below is the set of generated and record surfaces a Lean line-count change and a new module are expected to move, enumerated from gate-collision Conditions 1 and 7 and from C33 at authoring time. Confirm it by running the regeneration commands and reading which tracked files they actually rewrite — add any file they touch that is absent here, and drop any that comes back unchanged, rather than forcing a surface to appear in the diff.
 
 **Files to modify**:
-- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` - the Requirement (W) narrative and the new axiom pins; exists at 2532 lines with a `longFile` baseline of 2600, confirmed at authoring time, and is amended rather than created
-- `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` - the final `longFile` decision and the verdict line in the module docstring
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` - the Requirement (W) narrative and the new axiom pins; exists at 2532 lines with a `longFile` baseline of 2600, confirmed at authoring time, and is amended rather than created *(reached 2873 lines; baseline raised to 2900)*
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` - the final `longFile` decision and the verdict line in the module docstring *(reached 1907 lines; baseline raised to 2000. Two unlisted-but-necessary edits to the same file beyond the verdict: the stale `## What this module does not hold` section, which still claimed "No path-level construction, no cell-level inclusion, and no schema" after Phases 3-5 landed all three, and the C9 task-path citation repair)*
 - `README.md` - regenerated module-inventory block
 - `FormalSystem/Metalogic/README.md` - regenerated module-inventory block
+- `FormalSystem/Metalogic/Decidability/RaySummary/README.md` - regenerated module-inventory block *(added per the Scope Hypothesis: the regeneration rewrote it, and the hypothesis directs adding what the command actually touches)*
 - `typst/generated/status.typ` - final regenerated count fields
 
 **Verification**:
-- The complete gate set runs and is recorded: `bash .claude/scripts/verify-deploy.sh` is not the gate set for this repository's Lean work, so the complete set is the nine commands enumerated in this phase's task list, each run and each result tabled, with pre-existing findings outside this task's file scope enumerated and attributed rather than absorbed.
-- The unscoped guarded `lake build` is green with zero errors and zero warnings.
-- `lake build BimodalTest` is green with every `#guard_msgs` axiom pin satisfied, including the new ones.
-- `LadderWindow.lean`'s `longFile` posture is correct at the final line count: a baseline inside the linter's acceptance window, or no baseline and a count below 1500.
-- `bash .claude/scripts/validate-artifact.sh specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md plan` passes.
-- The verdict sentence is present and names the outcome reached.
+- The complete gate set runs and is recorded: `bash .claude/scripts/verify-deploy.sh` is not the gate set for this repository's Lean work, so the complete set is the nine commands enumerated in this phase's task list, each run and each result tabled, with pre-existing findings outside this task's file scope enumerated and attributed rather than absorbed. DONE: all nine run and tabled in `## Phase Verification Notes`, `### Verification notes: phase 7 (measured)`. The scoped batch-gate alternative the dispatch offered was NOT taken, so nothing is owed to the batch stage on this phase's behalf. C16 is attributed to a concurrent sibling's `LadderPump.lean` by `git log -S` and recorded PASS; C9 named this task's OWN file and was repaired rather than attributed away.
+- The unscoped guarded `lake build` is green with zero errors and zero warnings. DONE: guard exit 0, 2974 jobs, `error:` 0, `warning:` 0, and `.olean` newer than source for both touched modules.
+- `lake build BimodalTest` is green with every `#guard_msgs` axiom pin satisfied, including the new ones. DONE: guard exit 0, 3042 jobs, 0 errors, 0 warnings, all 42 new pins green on the first attempt.
+- `LadderWindow.lean`'s `longFile` posture is correct at the final line count: a baseline inside the linter's acceptance window, or no baseline and a count below 1500. DONE: 1907 lines at baseline 2000 (`1800 ≤ 1907 < 2000`). The test file's own posture was corrected on the same rule: 2873 lines at baseline 2900.
+- `bash .claude/scripts/validate-artifact.sh specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md plan` passes. DONE: exit 0, 0 warnings.
+- The verdict sentence is present and names the outcome reached. DONE: landed as a `## Verdict` section in `LadderWindow.lean`'s module docstring, not only in the task artifact, and restated in the summary artifact's Overview.
 
 ---
 
@@ -943,3 +944,77 @@ an untracked `.pid`, `specs/893_.../stale-dispatch-2-plan-report.md` and
 a concurrent sibling's in-flight state rather than anything this phase produced. None was staged
 or edited here. No foreign commit touched this task's files and no build was running that this
 dispatch did not start.
+
+### Verification notes: phase 7 (measured)
+
+**The complete gate set, each command run and each result recorded.** The dispatch's batch-gate
+deferral directive offered a SCOPED tier in place of the full set; it was not taken. All nine
+commands below were run independently in this dispatch, so nothing on this phase's behalf is owed
+to the batch stage.
+
+| # | Gate | Exit | Result |
+|---|---|---|---|
+| 1 | unscoped guarded `lake build` (`lake-build-guard.sh build --timeout 1800 -- build`) | 0 | PASS -- 2974 jobs, `error:` count 0, `warning:` count 0, guard `exit_status=0` |
+| 2 | `lake build BimodalTest` (guarded) | 0 | PASS -- 3042 jobs, 0 errors, 0 warnings; every `#guard_msgs` axiom pin satisfied, including all 42 new ones |
+| 3 | `lake exe mk_all --lib FormalSystem --check` (guarded) | 0 | PASS -- "No update necessary" |
+| 4 | `bash scripts/check-module-invariants.sh` | 1 | RECORDED PASS -- sole failure is C16, pre-existing and out of scope; see the attribution below. C9 was also failing on this task's own file and was REPAIRED, not attributed away |
+| 5 | `bash scripts/typst-sync-check.sh` | 0 | PASS -- all four checks green (status.typ, module map, machine appendix) |
+| 6 | `bash scripts/check-metalogic-cycles.sh` | 0 | PASS |
+| 7 | `bash scripts/check-evidence-probes.sh` | 0 | PASS -- all 54 wired probes compile; delta against the Phase 6 run is zero (same 54, same single deliberate `SKIP`) |
+| 8 | `bash scripts/check-copyright-headers.sh` | 0 | PASS -- 0 missing of 755 |
+| 9 | `bash .claude/scripts/validate-artifact.sh .../plans/01_ladder-cell-window-regime.md plan` | 0 | PASS -- 0 warnings |
+
+**Attribution of the two `check-module-invariants.sh` findings, pre-existing vs. this task's own.**
+
+- **C16 (`env_linter`) -- PRE-EXISTING, OUT OF SCOPE, not edited.** Two findings, both in
+  `FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean`, a file this task has never
+  touched: `exists_idleSpliced_ladderPath` (2 unused instance arguments) and
+  `exists_idleTypeBlock_of_budget_le_run` (1 unused hypothesis). `git log -S` attributes them to a
+  concurrent sibling's commits (`3692d517e`, `64b8eb6f6`) and not to any commit of this task.
+  This is exactly the collision this phase's task list anticipated; the file was left alone, and
+  the gate is a recorded PASS for this phase.
+- **C9 (task-number citations) -- THIS TASK'S OWN DEFECT, repaired.** One finding, at
+  `LadderWindow.lean`, where a docstring cited the lowering-deficit probe by its full
+  task-directory path. That path is an ephemeral task-management identifier in a deliverable file,
+  which `.claude/rules/no-task-references-in-deliverables.md` forbids and whose stated remedy is a
+  durable anchor. Repaired in both places it occurred -- the module docstring and the new test-file
+  narrative -- by naming the probe `lowering-anchor-deficit.lean` and pointing at
+  `scripts/check-evidence-probes.sh`'s probe list, which is where it is wired. C9 is now PASS.
+
+**Zero-debt sweep.** `bash .claude/scripts/lean-sorry-census.sh` over the resolved source roots
+(`lean-src-roots.sh`: `FormalSystem`, `FormalSystem.lean`, `Tests/BimodalTest`,
+`Tests/BimodalTest.lean`, `BimodalTools`, `BimodalTools.lean`, `Tests/BimodalToolsTest`,
+`Tests/BimodalToolsTest.lean`) reports `sorry_count: 0` with an empty inventory. The four `sorry`
+substring hits in the test file are prose occurrences of `sorryAx` inside docstrings, not
+sorries. Vacuous-definition sweep: 1 hit, `FormalSystem/Examples/TemporalStructures.lean:495`,
+pre-existing and outside this task's file scope (`git log -S` attributes it to an unrelated
+task's Examples pass). `^axiom ` sweep: 14, unchanged from the pre-phase baseline.
+
+**`longFile` posture at the FINAL line counts, both touched Lean files.** `LadderWindow.lean`
+reached 1907 lines, crossing Phase 5's baseline of 1900; raised to 2000, satisfying
+`1800 ≤ 1907 < 2000`. `KTypeSummaryAxiomTest.lean` reached 2873 lines, crossing its baseline of
+2600; raised to 2900, satisfying `2700 ≤ 2873 < 2900`. Both confirmed by warning-free builds,
+which is where this linter reports.
+
+**Axiom-pin completeness, measured rather than asserted.** The pinned-name set was diffed against
+a declaration sweep of `LadderWindow.lean`: 42 declarations, 42 pins, no name pinned twice and
+none omitted. The pin bodies were generated from a compiled `#print axioms` probe over the module
+rather than hand-predicted, which is why all 42 `#guard_msgs` blocks were green on the first
+build. Measured split: 29 at `[propext, Quot.sound]` and 13 at the standard
+`[propext, Classical.choice, Quot.sound]`; no `sorryAx` and no axiom outside the standard three
+anywhere in the module.
+
+**Scope Hypothesis, confirmed against what the regenerations actually rewrote.** The hypothesis
+instructed confirming the file list by running the regeneration commands and reading which
+tracked files they touch. `check-module-invariants.sh --emit-inventory` rewrote THREE files:
+`README.md` and `FormalSystem/Metalogic/README.md` as predicted, plus
+`FormalSystem/Metalogic/Decidability/RaySummary/README.md`, which the phase's list omits and which
+is added below. `typst-sync-check.sh --fix` rewrote `typst/generated/status.typ` as predicted.
+`FormalSystem/README.md` did NOT come back changed this phase (it moved at Phase 3's early
+regeneration instead) and is not claimed here.
+
+**Territory.** The working tree carried, at dispatch start and unchanged at its close, the same
+foreign uncommitted state Phase 6 recorded: a modified `specs/893_.../issues.jsonl`, a modified
+`specs/events.jsonl`, an untracked `.pid`, `specs/893_.../stale-dispatch-2-plan-report.md` and
+`specs/evidence/history-morphism-saturation-audit/`. None was staged or edited here. No foreign
+commit touched this task's files and no build was running that this dispatch did not start.
