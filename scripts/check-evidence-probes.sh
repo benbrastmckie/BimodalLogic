@@ -2130,6 +2130,49 @@ EVIDENCE="specs/evidence"
 #                                                           | Classical.choice, Quot.sound]` on
 #                                                           | every headline.  No `sorryAx`, no
 #                                                           | custom axiom, no `native_decide`.
+# forward-slack-pin-cascade/pin-cascade-straddle          | ROUTE (d) IS REFUTED AT THE PIN
+#                                                           | LAYER.  Holds in place the decision
+#                                                           | that `ForwardSlackWitnessed` stays a
+#                                                           | HYPOTHESIS on the five depth-0
+#                                                           | cell-equality schemas of
+#                                                           | `LadderCell.lean` rather than being
+#                                                           | discharged from `ParamsOk`.
+#                                                           | `no_deleted_ladderPath_of_straddle_break`
+#                                                           | shows that once the deleted walk's
+#                                                           | straddling pin pair breaks pin
+#                                                           | compatibility at the REDUCED
+#                                                           | distance, no deleted ladder path
+#                                                           | exists at all -- so the two clauses
+#                                                           | `hanch` and `hstraddle` of
+#                                                           | `exists_deleted_ladderPath_of_next_region_nxt`
+#                                                           | are not merely hard to discharge in
+#                                                           | the pending-forever regime: the
+#                                                           | theorem's CONCLUSION is false there.
+#                                                           | `obs` realizes the saturated
+#                                                           | configuration as a concrete two-state
+#                                                           | ladder path in the regime (pending
+#                                                           | forever below `z = 0`, the consumer's
+#                                                           | gap, a type-respecting block inside
+#                                                           | the first region above `z`'s region),
+#                                                           | and `obs_no_admissible_block` refutes
+#                                                           | the deletion at ALL THREE blocks that
+#                                                           | region admits, with a deficit of
+#                                                           | exactly `2 * l` each time.  What it
+#                                                           | does NOT refute:
+#                                                           | `ForwardSlackWitnessed` itself, which
+#                                                           | is an existential over paths and
+#                                                           | stays neither discharged nor refuted.
+#                                                           | `obs` does not instantiate
+#                                                           | `ParamsOk` (its countdown at `z` is
+#                                                           | `2`); the `Tc <= cntAt g z` conjunct
+#                                                           | is covered at the arithmetic layer by
+#                                                           | the companion gate measurement cited
+#                                                           | in this probe's own docstring, where
+#                                                           | the deficit is shown scale-invariant.
+#                                                           | Axioms: a subset of `[propext,
+#                                                           | Classical.choice, Quot.sound]`.  No
+#                                                           | `sorryAx`, no custom axiom, no
+#                                                           | `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -2182,6 +2225,7 @@ WIRED=(
   "seam-gluing-ray-product/ladder-idle-past-interface-decision"
   "seam-gluing-ray-product/one-sided-count-move-refutation"
   "limit-closure-schema/lc-schema-omega-chain"
+  "forward-slack-pin-cascade/pin-cascade-straddle"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

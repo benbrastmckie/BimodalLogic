@@ -90,6 +90,40 @@ because the obligation quantifies over every path through the state and conclude
 and no STATE-level downward inclusion can be stated under a path-level regime (the climbing path
 passes through a state satisfying every state-level hypothesis the consumer carries). The
 downward inclusion held here is the path-level one above.
+
+No discharge of `ForwardSlackWitnessed`, and the attempt is REFUTED rather than merely unproved.
+The route attempted was: delete a type-respecting block inside the FIRST REGION ABOVE `z`'s own
+region while holding the register at `z`, and iterate to drive that region's countdown below
+`tShort Q φ`, at which point the regime holds for free. Its deletion primitive is
+`exists_deleted_ladderPath_of_next_region_nxt` below, which takes exactly two clauses as
+hypotheses — `hanch` for the pins at or above the block, `hstraddle` for the pairs that straddle
+it. Those two clauses are NOT dischargeable from the pending-forever regime at countdown at
+least `Tc` together with `ParamsOk`, and the obstruction is not an elaboration failure: on a path
+whose straddling pin pair SATURATES pin compatibility, the primitive's own CONCLUSION is false,
+because any deleted path would itself be a ladder path and `pinCompat_of_ladderPath` would bind
+its pins at exactly the broken positions. The compiled record is
+`specs/evidence/forward-slack-pin-cascade/pin-cascade-straddle.lean`, wired into
+`scripts/check-evidence-probes.sh`: it carries the obstruction as a theorem
+(`no_deleted_ladderPath_of_straddle_break`), realizes a saturated configuration as a concrete
+two-state ladder path in the regime (`obs`), and refutes the deletion at EVERY block that path's
+next region admits (`obs_no_admissible_block`), with a deficit of exactly `2 · l` each time. The
+deletion leaves the undisplaced pins' VALUES put while shortening every later pin's distance by
+`l`, and additionally lowers by `l` the value of the pin whose region swallows the block; a
+configuration already at the compatibility bound therefore breaks by exactly what the deletion
+removes.
+
+`(K2)`'s budget cannot pay for it. `cascadeBound`'s own recurrence
+`a (k + 1) ≤ 2 · a k + J + 1` is the bound the saturated configuration ATTAINS WITH EQUALITY, so
+the budget describes the obstruction rather than dominating it; `Adm pend q` (`LadderModel.lean`)
+places no upper bound on a pending state's countdown, so a saturated register is admissible at
+every scale; and every `ParamsOk` conjunct the thresholds enter is a LOWER bound on a parameter.
+
+What this refutation does NOT establish: `ForwardSlackWitnessed` is an existential over paths, so
+a saturated path may still realize each of its types via some OTHER path carrying
+`HasForwardSlack`. The hypothesis is therefore neither discharged nor refuted, and stays a
+hypothesis a consumer must supply — which is why all five depth-`0` cell-equality schemas of
+`LadderCell.lean` still carry it. The named consequence: `certStabK`'s one unclaimed Real
+condition must be RESTATED rather than proved, for as long as that remains the case.
 -/
 
 set_option linter.style.longFile 3000
@@ -1307,7 +1341,27 @@ two values do not move relative to each other, so the pair can land in the `2l`-
 own vocabulary (`delObj`/`delCnt`), so no boundary case has to be re-derived at the statement
 level. The budget that must be spent to discharge them is `(K2)`'s `cascadeBound` and its
 `iter_doubling` recurrence `a (k + 1) ≤ 2 * a k + J + 1` (`CounterQuotient.lean`); THIS theorem
-spends none of it. -/
+spends none of it.
+
+**NEITHER CLAUSE IS DISCHARGEABLE, and that is a compiled result, not an open question.** The
+two clauses were measured against the pending-forever regime at countdown at least `Tc` together
+with `ParamsOk`, for the block the spaced type pigeonhole returns inside the first region above
+`z`'s region, and BOTH FAIL — `hanch` by exactly `l`, `hstraddle` by exactly `2 · l`. On a path
+whose straddling pin pair saturates pin compatibility this theorem's own CONCLUSION is false:
+a deleted path would itself be a ladder path, so `pinCompat_of_ladderPath` would bind its pins at
+exactly the broken positions. The compiled record is
+`specs/evidence/forward-slack-pin-cascade/pin-cascade-straddle.lean`
+(`no_deleted_ladderPath_of_straddle_break` for the obstruction as a theorem, `obs` for a
+saturated configuration realized as a concrete ladder path in the regime, and
+`obs_no_admissible_block` for its refutation at every block that path's next region admits),
+wired into `scripts/check-evidence-probes.sh`. `cascadeBound`'s recurrence is the bound the
+saturated configuration attains with EQUALITY, so `(K2)`'s budget cannot pay the deficit.
+
+Consequence for a consumer: this theorem is usable only where `hanch` and `hstraddle` are
+supplied from outside the pending-forever regime. It does NOT discharge
+`ForwardSlackWitnessed`, which remains a hypothesis on all five depth-`0` cell-equality schemas
+of `LadderCell.lean`. `ForwardSlackWitnessed` is an existential over paths and is itself neither
+discharged nor refuted; only this route through the pin layer is refuted. -/
 theorem exists_deleted_ladderPath_of_next_region_nxt
     {g : ℤ → LadderState Q pend} {z a : ℤ} {l : ℕ}
     (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)

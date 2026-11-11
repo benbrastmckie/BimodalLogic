@@ -512,18 +512,18 @@ since nothing was landed — but it is run, not assumed.
 
 ---
 
-### Phase 8: CONDITIONAL -- Compile the Route-(d) Obstruction [NOT STARTED]
+### Phase 8: CONDITIONAL -- Compile the Route-(d) Obstruction [COMPLETED]
 
 **Goal**: Runs only if Phase 5's gate FAILED. Turn the obstruction into a machine-checked record,
 so the route is refuted rather than merely unproved, and record the consequence for `certStabK`'s
 unclaimed condition.
 
 **Tasks**:
-- [ ] Write a `sorry`-free probe under `specs/evidence/` whose theorem exhibits the failure: a ladder path, a block inside the first region above `z`'s region, and a straddling pin pair whose compatibility fails at the reduced distance for every admissible choice the normalization can make. Model it on the existing refutation probes' shape.
-- [ ] Add the probe's path to `scripts/check-evidence-probes.sh`'s `WIRED` list with a one-line entry saying what it holds in place. A probe under `specs/` is reached by no Lake target, so without the entry it rots silently.
-- [ ] Record the verdict in `LadderChain.lean`'s module docstring and in Phase 4's primitive docstring: route (d) is refuted at the pin layer; the two clauses are not dischargeable from (K2)'s budget in the forward direction; `ForwardSlackWitnessed` stays a hypothesis a consumer must supply.
-- [ ] Record the dispatch's named consequence: if the hypothesis is not derivable, `certStabK`'s one unclaimed Real condition must be RESTATED rather than proved. Write that consequence into the durable record -- this task's own description in `specs/state.json` and the `KTypeSummaryAxiomTest.lean` pin block (Phase 9 stages the test-file half) -- never into a dispatch-created sidecar.
-- [ ] If Phase 5's gate PASSED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record whose Evidence column cites Phase 5's passing measurement. Land nothing.
+- [x] Write a `sorry`-free probe under `specs/evidence/` whose theorem exhibits the failure: a ladder path, a block inside the first region above `z`'s region, and a straddling pin pair whose compatibility fails at the reduced distance for every admissible choice the normalization can make. Model it on the existing refutation probes' shape.
+- [x] Add the probe's path to `scripts/check-evidence-probes.sh`'s `WIRED` list with a one-line entry saying what it holds in place. A probe under `specs/` is reached by no Lake target, so without the entry it rots silently.
+- [x] Record the verdict in `LadderChain.lean`'s module docstring and in Phase 4's primitive docstring: route (d) is refuted at the pin layer; the two clauses are not dischargeable from (K2)'s budget in the forward direction; `ForwardSlackWitnessed` stays a hypothesis a consumer must supply.
+- [x] Record the dispatch's named consequence: if the hypothesis is not derivable, `certStabK`'s one unclaimed Real condition must be RESTATED rather than proved. Write that consequence into the durable record -- this task's own description in `specs/state.json` and the `KTypeSummaryAxiomTest.lean` pin block (Phase 9 stages the test-file half) -- never into a dispatch-created sidecar.
+- [ ] If Phase 5's gate PASSED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record whose Evidence column cites Phase 5's passing measurement. Land nothing. *(not taken: Phase 5's gate measured FAIL, so this phase RAN and landed the obstruction rather than closing with exclusions)*
 
 **Timing**: 1 hour
 

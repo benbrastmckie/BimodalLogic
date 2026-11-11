@@ -76,7 +76,7 @@ next_project_number: 919
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-917 [PARTIAL] — Discharge ForwardSlackWitnessed under ParamsOk, or compile a...
+917 [IMPLEMENTING] — Discharge ForwardSlackWitnessed under ParamsOk, or compile a...
   └─ 918 [NOT STARTED] — Produce a positive factorization lemma for the index of which...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
@@ -152,7 +152,7 @@ SCOPE: the index only. Different file set from the cell-agreement siblings, so t
 
 ### 917. Forward slack witnessed discharge or refutation
 - **Effort**: high
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 916
@@ -171,7 +171,11 @@ VERIFIED STARTING POSITION (compiled, not argued):
 
 TWO ADMISSIBLE OUTCOMES: discharge ForwardSlackWitnessed from ParamsOk (plus the room bounds, if they come free), landing cellLE_zero_const_of_kappa_eq at last; or compile a refutation that it is derivable, which is itself a result -- it would force certStabK's one unclaimed Real condition to be RESTATED rather than proved, and that consequence must be recorded if so. Never leave the verdict tacit.
 
-SCOPE: the hypothesis discharge only. The antitone slice of the collision dichotomy belongs to a sibling, and this task must not land anything under the reserved name unless the discharge actually succeeds.
+SCOPE: the hypothesis discharge only. The antitone slice of the collision dichotomy belongs to a sibling, and this task must not land anything under the reserved name unless the discharge actually succeeds
+
+OUTCOME: the SECOND admissible outcome was reached, and it is RECORDED here rather than left tacit. ForwardSlackWitnessed is NOT discharged, and the discharge route is REFUTED AT THE PIN LAYER rather than merely unproved. The route attempted was to delete a type-respecting block inside the first region above z's own region with the register held at z, and iterate to drive that region's countdown below tShort. Its deletion primitive exists_deleted_ladderPath_of_next_region_nxt landed (LadderChain.lean, section DelNxt) taking exactly two clauses as hypotheses, hanch and hstraddle; BOTH are non-dischargeable from the pending-forever regime at countdown at least Tc together with ParamsOk -- hanch by exactly l, hstraddle by exactly 2*l, where l is the deleted block's length. On a path whose straddling pin pair saturates pin compatibility the primitive's own CONCLUSION is false, since any deleted path would itself be a ladder path and pinCompat_of_ladderPath would bind its pins at exactly the broken positions. (K2)'s budget cannot pay: cascadeBound's recurrence a(k+1) <= 2*a k + J + 1 is the bound the saturated configuration ATTAINS WITH EQUALITY, Adm places no upper bound on a pending state's countdown, and every ParamsOk conjunct the thresholds enter is a LOWER bound on a parameter. Compiled records: specs/evidence/forward-slack-pin-cascade/pin-cascade-straddle.lean (wired into scripts/check-evidence-probes.sh) for the path-level refutation, and this task's evidence/phase-5-gate-measurement.lean for the scale-invariant arithmetic.
+
+THE NAMED CONSEQUENCE, recorded as this description required: because the hypothesis is not derivable by this route and stays carried on all five depth-0 cell-equality schemas of LadderCell.lean, certStabK's one unclaimed Real condition must be RESTATED rather than proved for as long as that remains the case. The reserved name cellLE_zero_const_of_kappa_eq is still claimed by nothing. What is NOT established: ForwardSlackWitnessed is an existential over paths, so a saturated path may still realize each of its types via some other path carrying HasForwardSlack -- the hypothesis itself is neither discharged nor refuted, and only this route through the pin layer is refuted.
 
 ---
 
