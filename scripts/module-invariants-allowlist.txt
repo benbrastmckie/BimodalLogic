@@ -199,3 +199,16 @@ FormalSystem.Semantics.HistMorphism
 # `TwoWayBounded.exists_preimage_step_neg`, `TwoWayBounded.exists_histMorphism_of_isZTime` and
 # `TwoWayBounded.plus_invariance_of_isZTime` cite it fully qualified.
 FormalSystem.Semantics.TwoWayBounded
+
+# `inductive ExtDerivation` and `def ExtComplete`/`LCComplete`/`LCRulesComplete`/`LCURulesComplete`
+# in namespace FormalSystem.Metalogic.LCExtension -- Metalogic/LCExtension.lean:182, 311, 321, 329,
+# 338. DECLARATIONS, not modules: the namespace mirrors the module `Metalogic/LCExtension.lean`
+# exactly, and these five names are the uppercase-initial declarations inside it, so their fully
+# qualified form is indistinguishable from a path one level deeper than the file. The
+# theorem-index rows cite all five fully qualified; the module's six theorem rows need no entry
+# because their names begin lowercase and so terminate C5's match at `LCExtension`.
+FormalSystem.Metalogic.LCExtension.ExtDerivation
+FormalSystem.Metalogic.LCExtension.ExtComplete
+FormalSystem.Metalogic.LCExtension.LCComplete
+FormalSystem.Metalogic.LCExtension.LCRulesComplete
+FormalSystem.Metalogic.LCExtension.LCURulesComplete
