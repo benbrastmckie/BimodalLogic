@@ -63,6 +63,8 @@ theorem, nothing is claimed about `HitPresented` or `PlusValidZTime`, no index o
 is claimed at any parameters, and no complexity bound is claimed.
 -/
 
+set_option linter.style.longFile 1700
+
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
 open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.Semantics
@@ -1388,6 +1390,118 @@ theorem exists_window_raise_displaced {Q : Type} [Fintype Q] [Nonempty Q]
   · rw [hobj₂ (z + (E : ℤ)), iterSpliceIdx_of_lt u l (m * q) _ (by omega), hoz₁]
   · rw [hcnt₂ (z + (E : ℤ)) hzu (by omega), hcz₁, hdl]
   · rw [hty₂ σ₂ hσ₂ (z + (E : ℤ)), iterSpliceIdx_of_lt u l (m * q) _ (by omega)]
+
+/-- **THE WINDOW REGIME'S RAISING PRIMITIVE.** In the ordinary window regime — an idle position in
+`z`'s past, so `z`'s region has a region start `a` below it — and under the named idle-run
+condition, a ladder path through `(objAt g z, cntAt g z + m · (P + 1), nxtAt g z)` at `z` itself,
+carrying the realized stab-free type at `z`.
+
+The construction is the composite the decision gate measured: `m · (P + 1)` duplications of a
+type-respecting idle block below `a` lengthen the run and bank `m · (P + 1) · k` of pin slack;
+`m · q` duplications of a type-respecting pending block of `z`'s region spend `m · (P + 1)` of it
+and raise the countdown by exactly `m · (P + 1)`; the register is prescribed once, at the end, by
+the `z`-anchored lift. The idle lengthening displaces the comparison position by
+`E = m · (P + 1) · k`, and the last step is a genuine TRANSLATION of the path back by `E`
+(`isLadderPath_shift`), with the realized type carried across it by `tpOf_timeShift` — so the
+conclusion is read at `z`, not at a moved index.
+
+Where each resource is spent, measured rather than asserted: the collision's ROOM `hroom` pays the
+anchor budget once (`window_idle_budget`); the insertion's LENGTH pays the pin-pair budget once
+(`window_idle_slack`); each of the `m · q` raising steps draws `l` from the latter and nothing from
+the former. `(K1)` is spent exactly once, on `l ∣ P + 1`.
+
+Scope, stated because it bounds what this buys. The compensator is the idle run BELOW, so neither
+`HasForwardSlack` nor `ForwardSlackWitnessed` appears anywhere in the construction and the route
+refuted for the pending-forever regime is not re-entered. `HasIdleRunBelow` is a carried
+hypothesis, not a theorem: it RESTRICTS the obligation rather than discharging it, so the reserved
+`cellLE_zero_const_of_kappa_eq` is claimed by nothing here, and neither is the positive
+factorization lemma in its unconditional form. This is not yet a cell inclusion; lifting it to one
+is the next phase's work. -/
+theorem exists_window_raise_ladderPath {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z a : ℤ)
+    (haz : a < z) (hai : pend (objAt g a) = false)
+    (hregion : ∀ t : ℤ, a < t → t ≤ z → pend (objAt g t) = true)
+    (hrun : HasIdleRunBelow pend φ g a)
+    (hTc : Tc ≤ cntAt g z) (m : ℕ)
+    (hroom : cntAt g z + m * (P + 1) ≤ nxtAt g z) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' z = objAt g z ∧ cntAt g' z = cntAt g z + m * (P + 1) ∧
+      nxtAt g' z = nxtAt g z ∧
+      ∀ (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+        (∀ t : ℤ, σ.state t = (t, g t)) →
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+  classical
+  obtain ⟨σ₀, hσ₀⟩ := exists_hist_of_isLadderPath fwd bwd g hg
+  obtain ⟨α, k, hk, hαa, hidleg, hidleblk, hrepα, htyα⟩ :=
+    exists_idleBlock_of_hasIdleRunBelow step pend fwd bwd lab φ σ₀ hg a hrun
+  -- stage one: one duplication of the idle block per unit of the raise
+  obtain ⟨g₁, hg₁, hobj₁, hcnt₁, hty₁⟩ :=
+    exists_iterIdleSpliced_ladderPath_idx step pend fwd bwd lab φ hno hg α k hk hidleblk hrepα
+      σ₀ hσ₀ htyα (m * (P + 1))
+  obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
+  have hEk : k + m * (P + 1) * k = (m * (P + 1) + 1) * k := by ring
+  have hRE : m * (P + 1) ≤ m * (P + 1) * k := Nat.le_mul_of_pos_right _ hk
+  have hbel : ∀ v : ℤ, v < α + (k : ℤ) → objAt g₁ v = objAt g v ∧ cntAt g₁ v = cntAt g v :=
+    fun v hv => ⟨by rw [hobj₁ v, iterSpliceIdx_of_lt α k (m * (P + 1)) v hv],
+      by rw [hcnt₁ v, iterSpliceIdx_of_lt α k (m * (P + 1)) v hv]⟩
+  have hrn : ∀ i : ℕ, i < k + m * (P + 1) * k → pend (objAt g₁ (α + (i : ℤ))) = false := by
+    intro i hi
+    rw [hobj₁ (α + (i : ℤ))]
+    obtain ⟨h1, h2⟩ := iterSpliceIdx_mem α k (m * (P + 1)) (α + (i : ℤ)) (by omega)
+      (by rw [← hEk]; omega)
+    have h := hidleblk (iterSpliceIdx α k (m * (P + 1)) (α + (i : ℤ)) - α).toNat (by omega)
+    rwa [show α + (((iterSpliceIdx α k (m * (P + 1)) (α + (i : ℤ)) - α).toNat : ℕ) : ℤ)
+      = iterSpliceIdx α k (m * (P + 1)) (α + (i : ℤ)) by omega] at h
+  have habv : ∀ v : ℤ, α + ((k + m * (P + 1) * k : ℕ) : ℤ) ≤ v →
+      objAt g₁ v = objAt g (v - ((m * (P + 1) * k : ℕ) : ℤ)) ∧
+      cntAt g₁ v = cntAt g (v - ((m * (P + 1) * k : ℕ) : ℤ)) := by
+    intro v hv
+    have hge : α + (((m * (P + 1) + 1) * k : ℕ) : ℤ) ≤ v := by rw [← hEk]; exact hv
+    exact ⟨by rw [hobj₁ v, iterSpliceIdx_of_ge α k (m * (P + 1)) v hge],
+      by rw [hcnt₁ v, iterSpliceIdx_of_ge α k (m * (P + 1)) v hge]⟩
+  -- stage two: the raise, at the displaced comparison position
+  obtain ⟨g₂, hg₂, hobj₂, hcnt₂, hnxt₂, hty₂⟩ :=
+    exists_window_raise_displaced step pend fwd bwd lab φ Tc Tn P B hp hno g g₁ hg hg₁
+      α a z k (m * (P + 1) * k) hk hαa haz hai hregion hidleg hbel hrn habv hTc m hroom hRE
+      σ₁ hσ₁
+  obtain ⟨σ₂, hσ₂⟩ := exists_hist_of_isLadderPath fwd bwd g₂ hg₂
+  -- the retraction of the displaced position is `z` itself
+  have hidx_z : iterSpliceIdx α k (m * (P + 1)) (z + ((m * (P + 1) * k : ℕ) : ℤ)) = z := by
+    rw [iterSpliceIdx_of_ge α k (m * (P + 1)) _ (by rw [← hEk]; omega)]
+    ring
+  -- stage three: translate the path back by the insertion length
+  refine ⟨fun v => g₂ (v + ((m * (P + 1) * k : ℕ) : ℤ)), isLadderPath_shift hg₂ _, ?_, ?_, ?_,
+    fun σ σ' hσ hσ' => ?_⟩
+  · change objAt g₂ (z + ((m * (P + 1) * k : ℕ) : ℤ)) = _
+    exact hobj₂
+  · change cntAt g₂ (z + ((m * (P + 1) * k : ℕ) : ℤ)) = _
+    exact hcnt₂
+  · change nxtAt g₂ (z + ((m * (P + 1) * k : ℕ) : ℤ)) = _
+    exact hnxt₂
+  · -- the type across the translation: `tpOf_timeShift` on the history, then the two stages
+    have hshift : ∀ t : ℤ, (σ₂.timeShift ((m * (P + 1) * k : ℕ) : ℤ)).state t
+        = (t + ((m * (P + 1) * k : ℕ) : ℤ),
+          (fun v : ℤ => g₂ (v + ((m * (P + 1) * k : ℕ) : ℤ))) t) := by
+      intro t
+      rw [WorldHistory.timeShift_state, hσ₂ (t + ((m * (P + 1) * k : ℕ) : ℤ))]
+    have e1 := tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ
+      (k := ((m * (P + 1) * k : ℕ) : ℤ)) (k' := (0 : ℤ))
+      (σ₂.timeShift ((m * (P + 1) * k : ℕ) : ℤ)) σ' hshift
+      (fun t => by rw [add_zero]; exact hσ' t) (fun _ => rfl) hno z
+    have e2 : tpOf (ladderModel step pend fwd bwd lab) φ σ₀ z
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ z :=
+      tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := (0 : ℤ)) (k' := (0 : ℤ)) σ₀ σ
+        (fun t => by rw [add_zero]; exact hσ₀ t) (fun t => by rw [add_zero]; exact hσ t)
+        (fun _ => rfl) hno z
+    rw [← e1, tpOf_timeShift, hty₂ σ₂ hσ₂, hty₁ σ₁ hσ₁, hidx_z, e2]
 
 end Gate
 
