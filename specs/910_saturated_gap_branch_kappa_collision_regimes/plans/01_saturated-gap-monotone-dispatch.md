@@ -363,7 +363,7 @@ above.
 
 ---
 
-### Phase 3: The Upward Cell Inclusion on the Monotone Residue [NOT STARTED]
+### Phase 3: The Upward Cell Inclusion on the Monotone Residue [COMPLETED]
 
 **Goal**: `cellAt_subset_of_free_register_shift_of_pend_past` compiles in `section FreeRegister`:
 in the pending-forever regime at countdown at least `Tc`, the cell at `(q, c, n)` is contained in

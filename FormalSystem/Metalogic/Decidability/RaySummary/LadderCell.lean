@@ -351,6 +351,61 @@ theorem free_register_anchor_clause_monotone_required :
     (by omega) (by omega)
   omega
 
+/-- **THE UPWARD CELL INCLUSION ON THE MONOTONE RESIDUE.** The first cell inclusion to reach
+branch 3 of `kappa_collision_regimes`. In the pending-forever regime (`n + 2 ≤ c`) at countdown
+at least `Tc`, the cell at `(q, c, n)` is contained in the cell at `(q, c + m · (P + 1), n')` for
+EVERY target register `n'` with `n ≤ n' ≤ c + m · (P + 1)`: the register moves UP by an amount the
+countdown need NOT match, which is exactly the sub-regime the landed
+`cellAt_subset_of_shift_of_pend_past` (`n' = n`) and
+`cellAt_subset_of_common_shift_of_pend_past` (`n' = n + m · (P + 1)`) leave out. At those two
+values of `n'` this statement is each of them in turn.
+
+NO FORWARD SLACK is consumed. The raise widens `z`'s own region by exactly `m · (P + 1)`, and
+that widened window is the whole of what the anchor clause needs — see
+`exists_ladderPath_through_free_register_shifted_of_pend_past`, whose two bounds on the anchor
+are `hlo` and `hhi` here. The downward half is a different matter and does cost slack:
+`mem_cellAt_of_free_register_shift_of_hasForwardSlack_exact` below.
+
+ONE direction only, and nothing here is stated under the reserved name
+`cellLE_zero_const_of_kappa_eq`. -/
+theorem cellAt_subset_of_free_register_shift_of_pend_past {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n : ℕ) (h : c ∈ Adm pend q) (m n' : ℕ)
+    (h' : c + m * (P + 1) ∈ Adm pend q)
+    (hgap : n + 2 ≤ c) (hTc : Tc ≤ c) (hlo : n ≤ n') (hhi : n' ≤ c + m * (P + 1)) (z : ℤ) :
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z ⊆
+      cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c + m * (P + 1), n'), h'⟩) :
+          (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  intro T hT
+  rw [mem_cellAt_ladder_iff] at hT ⊢
+  obtain ⟨g, τ, hg, hgz, hτ, hT⟩ := hT
+  have hoz : objAt g z = q := by simp [objAt, hgz]
+  have hcz : cntAt g z = c := by simp [cntAt, hgz]
+  have hnz : nxtAt g z = n := by simp [nxtAt, hgz]
+  have hz : pend (objAt g z) = true := by
+    by_contra hne
+    rw [Bool.not_eq_true, hoz] at hne
+    have := h hne
+    omega
+  have hpast := pend_past_of_nxtAt_lt g hg z hz (by rw [hcz, hnz]; exact hgap)
+  obtain ⟨g', hg', ho, hc, hn, hty⟩ :=
+    exists_ladderPath_through_free_register_shifted_of_pend_past step pend fwd bwd lab φ
+      Tc Tn P B hp hno g hg z hpast (by rw [hcz, hnz]; exact hgap) (by rw [hcz]; exact hTc) m n'
+      (by rw [hnz]; exact hlo) (by rw [hcz]; exact hhi)
+  obtain ⟨τ', hτ'⟩ := exists_hist_of_isLadderPath fwd bwd g' hg'
+  refine ⟨g', τ', hg', ?_, hτ', ?_⟩
+  · apply Subtype.ext
+    change (objAt g' z, cntAt g' z, nxtAt g' z) = (q, c + m * (P + 1), n')
+    rw [ho, hc, hn, hoz, hcz]
+  · rw [hty τ τ' hτ hτ', hT]
+
 end FreeRegister
 
 /-! ## The collision case split -/
