@@ -5036,6 +5036,11 @@
           "path": "FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean",
           "type": "source",
           "summary": "section Pumpable: hasForwardSlack_of_idleRunRepeat, IdleRunPumpable, forwardSlackWitnessed_of_cell_idleRunPumpable, plus the LadderCell import, the corrected Contract paragraph and three axiom pins."
+        },
+        {
+          "path": "specs/evidence/forward-slack-pin-cascade/route-space-closure.lean",
+          "type": "evidence",
+          "summary": "The route-space closure probe: three placement measurements (pend_endpoints_of_rep, block_confined_of_hcl, idle_run_two_of_block) and two K-dial measurements (whole_region_anchor_refuted, saturated_chain_is_the_doubling_recurrence), now re-checked by CI."
         }
       ],
       "audit_verdict": {
