@@ -3,8 +3,8 @@
 - **Task**: 918 - Ladder cell index positive factorization (re-scoped: the ordinary window regime)
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-11-11T00:00:00Z
-- **Completed**: 2026-11-11T14:05:00Z
-- **Effort**: ~5h across five dispatches (phases 1-4)
+- **Completed**: 2026-11-11T14:35:00Z
+- **Effort**: ~6h across six dispatches (phases 1-5)
 - **Dependencies**: None
 - **Artifacts**: plans/01_ladder-cell-window-regime.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -22,7 +22,10 @@ the decision gate's own criterion forbids adding. Phase 4 lifted the raising pri
 level as `cellAt_subset_of_window_raise`, the window regime's upward cell inclusion, carrying the
 region-start-plus-idle-run package through a new existential-over-paths condition
 `WindowIdleRunWitnessed`; its downward counterpart is excluded for want of the lowering primitive,
-as the cycle-1 recorded decision settled.
+as the cycle-1 recorded decision settled. Phase 5 stated the regime's depth-`0` cell obligation as
+a schema, proved it, and compiled the regimes' exhaustiveness — the schema concluding direction-
+indexed cell INCLUSION rather than the equality its task list specified, because
+`Set.Subset.antisymm` has only one inclusion to consume and equality is therefore not proved.
 
 ## What Changed
 
@@ -43,6 +46,13 @@ as the cycle-1 recorded decision settled.
   path to a whole cell, existential over paths, in the landed `ForwardSlackWitnessed` shape) and
   `cellAt_subset_of_window_raise` (the upward cell inclusion). The `longFile` baseline stays at
   1700; 1683 is inside the linter's own `1500 ≤ lines < 1700` window.
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` — 1683 → 1866 lines in the
+  phase-5 dispatch. New: `CellSubsetOfKappaEqWindowRaise` (the window regime's depth-`0` cell
+  obligation as a schema, with direction-indexed cell inclusion as the conclusion),
+  `cellSubset_of_kappa_eq_window_raise` (its theorem), and
+  `kappa_collision_window_or_pendPast_exhaustive` (the regimes' exhaustiveness at a fixed
+  register, derived from `clipIdx_regime_of_eq` and `pend_past_of_nxtAt_lt`). The `longFile`
+  baseline was raised from 1700 to 1900 on the crossing.
 - `typst/generated/status.typ` — regenerated line/count fields.
 
 ## Decisions
@@ -73,6 +83,20 @@ as the cycle-1 recorded decision settled.
   available form — EXISTENTIAL over the paths through the state, the same shape the landed
   `ForwardSlackWitnessed` takes for the pending-forever regime's own downward inclusion — rather
   than universally over all paths.
+- **The schema concludes INCLUSION and is named for it.** `CellSubsetOfKappaEqWindowRaise`, not
+  `CellLEZeroConstOfKappaEqWindow`: a reader comparing it against the five landed
+  `CellLEZeroConstOfKappaEq...` schemas can tell the two conclusion strengths apart without
+  opening either statement. Weakening the conclusion under the equality-suggesting name would
+  have hidden the asymmetry the lowering exclusion creates.
+- **The conclusion is stated symmetrically, as two direction-indexed implications**, rather than
+  as the single inclusion the room pays for. The reverse half is discharged as vacuous
+  (`0 < j * (P + 1)` contradicts the opposite ordering) and the docstring says so; stating only
+  one direction would have left which pair the room pays for implicit in the quantifier order.
+- **The exhaustiveness record consumes both named lemmas, as the plan specified.**
+  `clipIdx_regime_of_eq` supplies the same-side arithmetic — a fixed-register collision cannot
+  straddle the window boundary at `2 ≤ B` — and `pend_past_of_nxtAt_lt` supplies the gap branch's
+  path-level half, that every ladder path through either state is pending at every earlier
+  position. Neither branch is asserted inhabited at any particular parameters.
 - **The window hypothesis is not carried separately on the inclusion.** The collision's own room
   `c + m·(P+1) ≤ n` already implies `c ≤ n`, hence `¬ (n + 2 ≤ c)`, so the statement lies inside
   the window branch by construction. No regime hypothesis was added to make it so.
@@ -98,6 +122,21 @@ as the cycle-1 recorded decision settled.
   `WindowIdleRunWitnessed`'s, there being no second inclusion.
 - **Phase 4, final task** altered: written for a gate FAIL, which did not occur; the marker and
   the exclusions record serve the direction-specific exclusion instead, as in Phase 3.
+- **Phase 5, schema and theorem** altered: landed as `CellSubsetOfKappaEqWindowRaise` /
+  `cellSubset_of_kappa_eq_window_raise` with direction-indexed cell INCLUSION as the conclusion,
+  not `CellLEZeroConstOfKappaEqWindow` with cell EQUALITY. `Set.Subset.antisymm` is unavailable —
+  there is one landed inclusion — and the cycle-1 recorded decision had already re-scoped Phases
+  4-5 to the upward direction. Everything else in both tasks is as written. See the plan's
+  phase-5 `#### Reasoned Exclusions` record.
+- **Phase 5, docstring task** altered: all three required scope-boundary parts are present, with
+  a fifth separator added for the weaker conclusion (the plan's list named four, all of which are
+  hypothesis-side).
+- **Phase 5, final task** altered: written for a gate FAIL, which did not occur; the marker and
+  the exclusions record serve the conclusion-strength exclusion instead, as in Phases 3 and 4.
+  The schema, its theorem and the dichotomy are all landed, so "land nothing" does not apply.
+- **Phase 5, Scope Hypothesis** — the per-phase delta held (+183 against an estimated +180); the
+  hypothesis's absolute "near 720 lines" figure was stale from Phase 3's overshoot onward, and
+  the module crossed the 1700 `longFile` baseline rather than the 1500 ceiling.
 
 ## Verification
 
@@ -112,11 +151,17 @@ as the cycle-1 recorded decision settled.
 - Axiom count: 14, unchanged from baseline; `LadderWindow.lean` declares none.
 - `lean_verify` on `exists_window_raise_ladderPath` and on `cellAt_subset_of_window_raise`:
   `propext`, `Classical.choice`, `Quot.sound`; `trust: standard`; no `sorryAx`, no non-standard
-  axioms.
+  axioms. Phase 5's two theorems likewise: `cellSubset_of_kappa_eq_window_raise` → `propext`,
+  `Classical.choice`, `Quot.sound`; `kappa_collision_window_or_pendPast_exhaustive` → `propext`,
+  `Quot.sound`; both `trust: standard`, no `sorryAx`.
+- Scoped guarded build of the same module in the phase-5 dispatch: green on the FIRST attempt,
+  guard exit 0, 2018 jobs, 0 errors; one `unusedFintypeInType` warning on the dichotomy was fixed
+  by dropping the unused binder and the rebuild is 0 warnings. Phase-end FULL guarded `lake
+  build`: guard exit 0, 2974 jobs, 0 errors, 0 warnings, `.olean` newer than source.
 - Scoped guarded build of `FormalSystem.Metalogic.Decidability.RaySummary.LadderWindow` green on
   the FIRST attempt in the phase-4 dispatch: guard exit 0, 2018 jobs, 0 errors, 0 warnings.
 - Exact-name sweep: 0 declaration sites for `cellLE_zero_const_of_kappa_eq` under `FormalSystem/`;
-  neither new name is a prefix of it.
+  none of the five new names across phases 4-5 is a prefix of it.
 - Batch-gate deferral: the complete gate set was DEFERRED to this invocation's batch stage, per
   this dispatch's Batch Gate Deferral directive; the scoped narrowing invocation covering the
   touched files was run at every sub-step. The plan's final phase keeps `**Verification Tier**:
@@ -127,10 +172,14 @@ as the cycle-1 recorded decision settled.
 - The window regime now has a path-level raising primitive at an exact multiple of `P + 1` with the
   object state, the register and the realized type all held at `z`, AND its cell-level lift
   `cellAt_subset_of_window_raise`. Phase 5's schema can consume the inclusion directly.
-- The downward cell inclusion and the window schema's two-directional form (Phase 5) are blocked by
-  the lowering exclusion. Phase 5's schema is therefore reachable as a cell INCLUSION only, not as
-  the cell EQUALITY its task list specifies: `Set.Subset.antisymm` needs both directions and only
-  one exists. That is a scope question for Phase 5, flagged here rather than pre-decided.
+- The window regime's depth-`0` cell obligation now has a stated schema and a theorem, as a cell
+  INCLUSION. The cell EQUALITY the plan's phase-5 task list specified is NOT proved and is not
+  claimed anywhere: `Set.Subset.antisymm` needs both directions and only one exists.
+- The regimes' exhaustiveness is compiled, so this schema and the five landed
+  `CellLEZeroConstOfKappaEq...` schemas are visibly the two halves of a partition of the
+  fixed-register collisions rather than two unrelated special cases. What the partition does NOT
+  give is a proof of the reserved statement: the window half's conclusion is an inclusion, so the
+  two halves do not compose into an equality even where both apply.
 - `exists_iterIdleSpliced_ladderPath_idx` is a general-purpose addition: an iterated idle
   lengthening with the realized type exposed at every position, usable wherever the landed idle
   pump's below-the-block exposure is too narrow.
@@ -139,12 +188,13 @@ as the cycle-1 recorded decision settled.
 
 - Decide whether the lowering direction's missing hypothesis — a bound on the register from above,
   relative to the in-region depth, recorded as `window_lower_anchor_of_required` — is admissible.
-  If it is not, Phases 4 and 5 are one-directional and the window schema is correspondingly
-  one-directional.
-- Phase 5's task list writes cell EQUALITY via `Set.Subset.antisymm`. With the downward direction
-  excluded, that is unreachable; the honest terminus is the one-directional schema plus the
-  compiled dichotomy. Phase 5 should state which it lands rather than weakening the equality
-  silently.
+  Until it is, the window schema stays one-directional and cell equality in this regime is
+  unproved. This is now the single gate between the landed inclusion schema and an equality one.
+- Phases 6 and 7 remain. Phase 6 is CONDITIONAL on a Phase 2 gate FAIL, which did not occur, so
+  it should close with a recorded no-op rather than compile an obstruction that was not measured.
+  Phase 7 owns the generated surfaces and the stale `RaySummary/README.md` module-inventory row
+  for `LadderWindow.lean` (still recording 682 lines and no cell-level consequence; both figures
+  and the description are now wrong at 1866 lines with a schema, a theorem and a dichotomy).
 - `exists_window_raise_ladderPath` and `cellAt_subset_of_window_raise` carry the idle-run condition
   as a hypothesis. It RESTRICTS the
   obligation rather than discharging it, so the reserved `cellLE_zero_const_of_kappa_eq` is still
@@ -157,3 +207,4 @@ as the cycle-1 recorded decision settled.
 - `specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean`
 - `specs/918_ladder_cell_index_positive_factorization/handoffs/phase-3-handoff-20261111T005756Z.md`
 - `specs/918_ladder_cell_index_positive_factorization/handoffs/phase-3-handoff-20261111T131951Z.md`
+- `specs/918_ladder_cell_index_positive_factorization/handoffs/phase-4-handoff-20261111T134005Z.md`

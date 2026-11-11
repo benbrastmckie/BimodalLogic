@@ -1,26 +1,16 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 918,
-  "dispatch_seq": 17,
-  "requires_user_review": false,
-  "phases_completed": 4,
+  "dispatch_seq": 20,
+  "phases_completed": 5,
   "phases_total": 7,
-  "sorry_inventory": [],
-  "verification": {
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "axiom_count": 14,
-    "build_passed": true,
-    "verification_passed": true,
-    "notes": "Scoped guarded build of LadderWindow green on the first attempt (guard exit 0, 2018 jobs, 0 errors, 0 warnings). Phase-end FULL guarded lake build green (guard exit 0, 2974 jobs, 0 errors, 0 warnings, .olean newer than source). lean-sorry-census.sh --cross-check: stripper 0, compiler 0, MATCH. vacuous_count 1 is the pre-existing FormalSystem/Examples/TemporalStructures.lean int_domain_universal, unchanged. axiom_count 14 unchanged from baseline; LadderWindow.lean declares none. lean_verify on cellAt_subset_of_window_raise: [propext, Classical.choice, Quot.sound], trust standard, no sorryAx."
-  },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
-      "summary": "Phases 1-4 of the window-regime plan: the arithmetic layer, the passed decision gate, the raising primitive, and its cell-level upward inclusion."
+      "summary": "Phase 5 landed the window regime's cell-obligation schema, its theorem, and the compiled exhaustiveness of the window and pending-forever regimes."
     }
   ],
   "modified_files": [
@@ -28,22 +18,25 @@
     "typst/generated/status.typ",
     "specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md",
     "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
-    "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-4-handoff-20261111T134005Z.md",
+    "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-5-handoff-20261111T143500Z.md",
+    "specs/918_ladder_cell_index_positive_factorization/issues.jsonl",
     "specs/918_ladder_cell_index_positive_factorization/.orchestrator-handoff.json",
     "specs/918_ladder_cell_index_positive_factorization/.return-meta.json"
   ],
-  "handoff_path": "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-4-handoff-20261111T134005Z.md",
+  "sorry_inventory": [],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 14,
+    "build_passed": true,
+    "verification_passed": true,
+    "notes": "Scoped guarded build of FormalSystem.Metalogic.Decidability.RaySummary.LadderWindow: guard exit 0, 2018 jobs, 0 errors, 0 warnings (green first attempt; one unusedFintypeInType warning fixed in one edit). Phase-end FULL guarded lake build: guard exit 0 (Tier 1), 2974 jobs, 0 errors and 0 warnings over both streams (Tier 2), LadderWindow.olean newer than source (Tier 3). lean-sorry-census.sh --cross-check: stripper 0, compiler 0, MATCH. The single vacuous-pattern hit is pre-existing and untouched (FormalSystem/Examples/TemporalStructures.lean's int_domain_universal, goal definitionally True for integer time). Axiom count unchanged at baseline 14; LadderWindow.lean declares none. lean_verify: cellSubset_of_kappa_eq_window_raise [propext, Classical.choice, Quot.sound]; kappa_collision_window_or_pendPast_exhaustive [propext, Quot.sound]; both trust standard, no sorryAx. Exact-name sweep: 0 declaration sites for cellLE_zero_const_of_kappa_eq under FormalSystem/. typst-sync-check.sh --fix: PASS, MA_COUNT_MISMATCHES=0. Batch-gate: this phase's declared tier is local, so the deferral directive does not bite; the scoped covering check was independently run and the full build was run on top of it. The plan's final phase retains Verification Tier: full, unedited."
+  },
   "completion_data": {
-    "completion_summary": "Phase 4 of 7 closed [COMPLETED WITH EXCLUSIONS]. Landed the window regime's upward cell inclusion cellAt_subset_of_window_raise and the carried condition WindowIdleRunWitnessed in LadderWindow.lean (1571 -> 1683 lines). The downward inclusion is excluded, lifting a primitive excluded in Phase 3 on a compiled measurement and foreclosed by the cycle-1 recorded decision. Phase 5 carries a plan defect: it specifies cell equality via Set.Subset.antisymm of two inclusions where only one exists."
+    "completion_summary": "Phase 5 of 7 complete. Landed three new declarations in FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean: CellSubsetOfKappaEqWindowRaise (the window regime's depth-0 cell obligation as a schema, with direction-indexed cell inclusion as the conclusion), cellSubset_of_kappa_eq_window_raise (its theorem, proved from kappa_collision_window_room plus the single landed cellAt_subset_of_window_raise), and kappa_collision_window_or_pendPast_exhaustive (the regimes' exhaustiveness at a fixed register, derived from clipIdx_regime_of_eq and pend_past_of_nxtAt_lt). Phase closed COMPLETED WITH EXCLUSIONS: the plan specified cell EQUALITY via Set.Subset.antisymm of two inclusions and only one exists, so the conclusion is an inclusion and the schema is named for it rather than weakening the equality silently."
   },
   "memory_candidates": [
-    {
-      "insight": "A one-directional lemma plus a false converse is a carried-hypothesis signal, not a derivation gap: when a plan says to DERIVE a path-level fact from a state-level regime hypothesis, check the converse direction explicitly before attempting it. Here cntAt_le_nxtAt_succ_of_idle_past (idle past => window) has a false converse, so the regime's path data had to be carried existentially over paths, in the shape an already-landed sibling condition used for the complementary regime.",
-      "category": "lean4-proof-design"
-    },
-    {
-      "insight": "Lifting a path-level Lean construction to a cell-level inclusion is a near-mechanical transcription when a sibling inclusion already exists: mem_cellAt_ladder_iff on both sides, simp [coord, hgz] for each coordinate read-off, Subtype.ext plus change on the state triple, and rw with the type-transport clause. Copying the sibling's proof shape verbatim and substituting only the regime derivation compiled on the first attempt.",
-      "category": "lean4-proof-design"
-    }
+    "A one-directional cell-inclusion result stated symmetrically as two direction-indexed implications, with the reverse half discharged as vacuous, makes which side of a collision the arithmetic pays for explicit in the statement -- strictly more informative than stating the single inclusion the quantifier order happens to admit.",
+    "When a plan specifies Set.Subset.antisymm over a matched pair of inclusions and only one inclusion is landed, renaming the schema to say Subset rather than keeping the equality-suggesting name is what keeps the weaker conclusion visible to a reader comparing it against sibling schemas."
   ]
 }

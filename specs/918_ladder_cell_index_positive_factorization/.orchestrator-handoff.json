@@ -1,18 +1,18 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "skeleton": false,
-  "summary": "Phase 4 closed [COMPLETED WITH EXCLUSIONS]: the window regime's UPWARD cell inclusion cellAt_subset_of_window_raise is landed, lifting Phase 3's raising primitive to the cell level through a new existential-over-paths condition WindowIdleRunWitnessed (the landed ForwardSlackWitnessed shape). The plan's instruction to DERIVE the idle-past fact from the window hypothesis is not executable -- cntAt_le_nxtAt_succ_of_idle_past is one-directional and its converse is false -- so the region-start-plus-idle-run package is carried, annotated inline. The DOWNWARD inclusion is excluded: it lifts a primitive Phase 3 excluded on a compiled measurement, and the cycle-1 recorded decision re-scoped Phases 4-5 to the upward direction only. Scoped build green first try (2018 jobs, 0/0); phase-end FULL build green (2974 jobs, guard exit 0, 0 errors, 0 warnings); 0 sorries, cross-check MATCH; no new axioms. Phases 5-7 remain NOT STARTED and Phase 5 carries a plan defect flagged in the handoff: its task list specifies cell EQUALITY via Set.Subset.antisymm of two inclusions, and only one exists.",
-  "phases_completed": 4,
+  "summary": "Phase 5 only: landed the window regime's depth-0 cell obligation as a schema (CellSubsetOfKappaEqWindowRaise), its theorem (cellSubset_of_kappa_eq_window_raise), and the regimes' compiled exhaustiveness at a fixed register (kappa_collision_window_or_pendPast_exhaustive). The schema concludes direction-indexed cell INCLUSION, not the cell EQUALITY the plan's task list specified: Set.Subset.antisymm needs two inclusions and Phases 3-4 excluded the lowering direction on a compiled measurement, as the cycle-1 recorded decision settled. Scoped build green on the first attempt; phase-end full library build green; 0 sorries; no new axioms.",
+  "phases_completed": 5,
   "phases_total": 7,
-  "dispatch_seq": 17,
+  "dispatch_seq": 20,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-4-handoff-20261111T134005Z.md",
+  "continuation_path": null,
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
-      "summary": "Phases 1-4 of the window-regime plan: the arithmetic layer, the passed decision gate, the raising primitive, and its cell-level upward inclusion, with the lowering direction and its cell lift excluded on compiled measurements."
+      "summary": "Phases 1-5 of the window-regime plan: the leaf module's arithmetic, the passed decision gate, the raising composite splice, the upward cell inclusion, and the window schema plus the compiled regime exhaustiveness."
     }
   ]
 }
