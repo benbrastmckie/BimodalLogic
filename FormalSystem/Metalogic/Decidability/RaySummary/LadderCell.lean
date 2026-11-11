@@ -1294,6 +1294,72 @@ theorem cellAt_subset_of_antitone_register_shift_of_pend_past
     rw [ho, hc, hn, hoz, hcz]
   · exact hty' τ τ' hτ hτ'
 
+/-- **THE DOWNWARD ANTITONE CELL INCLUSION.** The countdown DOWN by `m · (P + 1)` and the register
+UP — the mirror of `cellAt_subset_of_antitone_register_shift_of_pend_past`. In the
+pending-forever regime (`n + 2 ≤ c`) at countdown at least `Tc`, with `n' < n`, the cell at
+`(q, c + m · (P + 1), n')` is contained in the cell at `(q, c, n)` under forward-slack witnessing
+at the HIGHER pair, at amount `m · (P + 1)` — the countdown displacement ALONE — and NO room
+bound.
+
+**The comparison with the monotone downward half, which is the point.**
+`cellAt_subset_of_free_register_shift_of_pend_past_rev` spends `m · (P + 1) + (n' − n)` and
+carries a room bound `n' + (n' − n) ≤ c`, because it LOWERS the target register and a lowering is
+charged for in the upper direction of the single anchor inequality. This inclusion RAISES the
+target register, and a raise is free in exactly that direction: the amount stays at the
+held-register `m · (P + 1)` and the only room condition
+`exists_ladderPath_through_deleted_exact_raised_upfirst_of_pend_past` asks —
+`n + 2 + m · (P + 1) ≤ cntAt g z` — is the LOWER pair's own pending-forever gap `n + 2 ≤ c` and
+nothing more, since `cntAt g z = c + m · (P + 1)` here. So the antitone direction is strictly
+CHEAPER downward than the monotone one, which is the opposite of what the upward halves'
+asymmetry suggests.
+
+The witnessing hypothesis is one a CONSUMER supplies, and it sits on the PATHS through the higher
+state, never on the state — `ClimbWitness.hasForwardSlack_refuted_unconditional` refutes every
+state-level form. Nothing here discharges `ForwardSlackWitnessed` in general. The reserved name
+`cellLE_zero_const_of_kappa_eq` is claimed by nothing here. -/
+theorem cellAt_subset_of_antitone_register_shift_of_pend_past_rev
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n : ℕ) (h : c ∈ Adm pend q) (m n' : ℕ)
+    (h' : c + m * (P + 1) ∈ Adm pend q)
+    (hgap : n + 2 ≤ c) (hTc : Tc ≤ c) (hlt : n' < n) (z : ℤ)
+    (hw : ForwardSlackWitnessed step pend fwd bwd lab φ
+      (⟨(q, c + m * (P + 1), n'), h'⟩ : LadderState Q pend) z (m * (P + 1)) n') :
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c + m * (P + 1), n'), h'⟩) :
+          (ladderFrameAdm step pend fwd bwd).WorldState) z ⊆
+      cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  classical
+  intro T hT
+  obtain ⟨g, τ, hg, hgz, hτ, hslack, hty⟩ := hw T hT
+  have hoz : objAt g z = q := by simp [objAt, hgz]
+  have hcz : cntAt g z = c + m * (P + 1) := by simp [cntAt, hgz]
+  have hnz : nxtAt g z = n' := by simp [nxtAt, hgz]
+  have hz : pend (objAt g z) = true := by
+    by_contra hne
+    rw [Bool.not_eq_true, hoz] at hne
+    have := h hne
+    omega
+  have hpast := pend_past_of_nxtAt_lt g hg z hz (by rw [hcz, hnz]; omega)
+  obtain ⟨g', hg', ho, hc, hn, hty'⟩ :=
+    exists_ladderPath_through_deleted_exact_raised_upfirst_of_pend_past step pend fwd bwd lab φ
+      Tc Tn P B hp hno g hg z hpast m n (by rw [hnz]; omega) (by rw [hcz]; omega)
+      (by rw [hcz]; omega) (by rw [hnz]; exact hslack)
+  have hc' : cntAt g' z = c := by omega
+  obtain ⟨τ', hτ'⟩ := exists_hist_of_isLadderPath fwd bwd g' hg'
+  rw [← hty, mem_cellAt_ladder_iff]
+  refine ⟨g', τ', hg', ?_, hτ', ?_⟩
+  · apply Subtype.ext
+    change (objAt g' z, cntAt g' z, nxtAt g' z) = (q, c, n)
+    rw [ho, hc', hn, hoz]
+  · exact hty' τ τ' hτ hτ'
+
 /-- **THE FORWARD-SLACK-RESTRICTED DEPTH-`0` CELL OBLIGATION**, stated as a schema. This is NOT
 the reserved statement `CellLEZeroConstOfKappaEq`, which is claimed by nothing and stays so. Four
 hypotheses separate the two, and all four are visible in the quantifier below:

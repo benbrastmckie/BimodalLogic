@@ -634,15 +634,17 @@ which elaborates the single module this phase edits with no externally visible s
 
 ---
 
-### Phase 6: The DOWNWARD Antitone Cell Inclusion [NOT STARTED]
+### Phase 6: The DOWNWARD Antitone Cell Inclusion [COMPLETED]
 
 **Goal**: `cellAt_subset_of_antitone_register_shift_of_pend_past_rev` compiles: the cell at
 `(q, c + m · (P + 1), n')` is contained in the cell at `(q, c, n)` for `n' < n`, under
 higher-pair forward-slack witnessing at amount `m · (P + 1)` and NO room bound.
 
 **Tasks**:
-- [ ] Add the theorem in `section FreeRegister`, after Phase 5's declaration, at the signature
-      pinned below.
+- [x] Add the theorem in `section FreeRegister`, after Phase 5's declaration, at the signature
+      pinned below. *(deviation: altered — same declaration-order constraint as Phase 5: landed
+      in `section ForwardSlack` after Phase 5's declaration, since `ForwardSlackWitnessed` is
+      defined there. Pinned signature landed verbatim.)*
 - [ ] Build the body as `cellAt_subset_of_free_register_shift_of_pend_past_rev`'s spine with the
       landed register-LOWERING deletion replaced by Phase 3's register-RAISING one: obtain the
       witnessing path and its slack from `hw T hT`, read the counter coordinates at `z` off
