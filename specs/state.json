@@ -2776,7 +2776,7 @@
     {
       "project_number": 908,
       "project_name": "constraints_consumed_marker_accuracy_audit",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Audit the 65 remaining \"Constraints consumed: Compositionality, Seriality, Limit, Saturation\" docstring lines across 16 library modules against what each declaration's proof actually projects, and correct the over-reporting ones.\n\nBackground. The completed work on L-plus invariance without Saturation established that such a line records the IsRegular binder PRESENT on a declaration, not the constraints the proof CONSUMES. Four lines in FormalSystem/Semantics/HistoryMorphism.lean and FormalSystem/Semantics/UniversalCover.lean over-reported in exactly that way and were corrected there; that over-claim is why the Saturation question looked open for as long as it did. Measurement found the residue is larger than first estimated: 65 occurrences across 16 files (FormalSystem/Semantics/Nomic/, Presheaf/, Extension/, Validity.lean, Correspondence/RigidityReal.lean, NomicLanguage/), not the ~20 initially reported. Correcting them was declared an explicit Non-Goal of that work, so the residue is unfiled.\n\nScope. For each occurrence, determine which constraints the proof actually projects -- the transplant-probe technique is proven: replace the bundling binder with explicit constraint hypotheses in a scratch copy and check it still compiles. Then correct the marker line where it over-reports. Many occurrences will be ACCURATE: a declaration that genuinely consumes Saturation keeps its line unchanged. This is an audit, not a sweep; a blind rewrite would be worse than the current state.\n\nConstraints to respect. The \"Constraints consumed:\" marker vocabulary is CLOSED (check-module-invariants.sh C34), and a side-attributing form such as \"source: ...; base: none\" is inadmissible on the marker line. Any phase touching a marker must name scripts/check-module-invariants.sh in its own verification tier -- a full lake build covers none of C34/C34a/C34b. typst/generated/status.typ is a mandatory file_scope member of any .lean-touching phase (typst-sync-check.sh pre-commit gate).\n\nEvidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two compiled transplant probes from the originating work.",
       "effort": "medium",
@@ -2813,7 +2813,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-11-10T04:21:46Z",
-      "last_updated": "2026-11-11T15:29:32Z",
+      "last_updated": "2026-11-11T19:11:52Z",
       "artifacts": [
         {
           "path": "specs/908_constraints_consumed_marker_accuracy_audit/reports/01_constraints-consumed-marker-audit.md",
@@ -2824,6 +2824,11 @@
           "path": "specs/908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md",
           "type": "plan",
           "summary": "8-phase, 10.5-hour plan correcting 28 over-reporting Constraints-consumed markers via binder-free twins plus delegating corollaries, closing on a full gate run."
+        },
+        {
+          "path": "specs/908_constraints_consumed_marker_accuracy_audit/summaries/01_constraints-consumed-marker-corrections-summary.md",
+          "type": "summary",
+          "summary": "Constraints-consumed marker accuracy audit: 28 over-reporting markers corrected across six Lean modules via binder-free twins plus delegating corollaries, 40 accurate sites left untouched, and the C34a discharge-group counts re-derived into the two specification documents."
         }
       ],
       "audit_verdict": {
@@ -2841,7 +2846,8 @@
         "evidence_file": "specs/evidence/audit-verdicts/908.json"
       },
       "session_id": "sess_1794400344_255305",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Audited all 68 'Constraints consumed:' sites classified at research time, corrected the 28 that over-reported by proving each claim at a binder-free twin and keeping the binder-carrying original as a byte-identical delegating corollary, and left the 40 accurate sites unchanged. Re-derived the C34a discharge-group counts from the gate's own output (45 delegating, 2 field re-export, 39 omitting nothing, of 86 binder-carrying markers among 188) and wrote them into MODULE_INVARIANTS.md and REFERENCE_NORMAL_FORM.md. Full-four marker occurrences fell from 69 to 41 (40 accurate sites plus one prose quotation)."
     },
     {
       "project_number": 909,

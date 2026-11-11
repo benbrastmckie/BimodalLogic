@@ -1,7 +1,7 @@
 # Implementation Plan: Task #908
 
 - **Task**: 908 - Audit the remaining "Constraints consumed: Compositionality, Seriality, Limit, Saturation" docstring lines against what each declaration's proof actually projects, and correct the over-reporting ones
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/908_constraints_consumed_marker_accuracy_audit/reports/01_constraints-consumed-marker-audit.md

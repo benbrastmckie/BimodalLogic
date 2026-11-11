@@ -11,7 +11,7 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,905,906,907,908,924,925 | -- | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,905,906,907,924,925 | -- | agent-system, algebraic-representation, completeness, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,900 | 298,428,502,743,761,873,899 | algebraic-representation, completeness, dataset-enhancement, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -76,10 +76,6 @@ next_project_number: 926
 924 [PLANNED] — Decide the fate of the ForwardSlackWitnessed frontier, now...
 925 [PLANNED] — Clear the C16 env\_linter unusedArguments lint debt in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
-
-### Documentation
-
-908 [IMPLEMENTING] — Audit the 65 remaining "Constraints consumed:...
 
 ### Formula Refactor
 
@@ -958,13 +954,14 @@ ORIGIN: conclusion-stage channel (c) of an orchestration run, user-approved. Cit
 
 ### 908. Constraints consumed marker accuracy audit
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: documentation
 - **Dependencies**: Task 918
 - **Parent**: Task 898
 - **Research**: [908_constraints_consumed_marker_accuracy_audit/reports/01_constraints-consumed-marker-audit.md]
 - **Plan**: [908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md]
+- **Summary**: [908_constraints_consumed_marker_accuracy_audit/summaries/01_constraints-consumed-marker-corrections-summary.md]
 
 **Description**: Audit the 65 remaining "Constraints consumed: Compositionality, Seriality, Limit, Saturation" docstring lines across 16 library modules against what each declaration's proof actually projects, and correct the over-reporting ones.
 
