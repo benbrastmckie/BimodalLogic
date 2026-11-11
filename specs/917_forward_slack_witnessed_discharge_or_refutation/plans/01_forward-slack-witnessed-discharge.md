@@ -182,18 +182,18 @@ it does and does not reach.
 
 ---
 
-### Phase 3: The Walk-Level Condition at the Cell Level [NOT STARTED]
+### Phase 3: The Walk-Level Condition at the Cell Level [COMPLETED]
 
 **Goal**: Restate `ForwardSlackWitnessed` as an assertion about region lengths, so the hypothesis
 is checkable even if the discharge is defeated. This is the honest terminus from the research
 report's Recommendation 5, landed early as unconditional value rather than held as a contingency.
 
 **Tasks**:
-- [ ] Land, in `LadderCell.lean` beside `ForwardSlackWitnessed`, a named equivalence restating the definition with `HasForwardSlack` replaced by the next-region bound, proved by rewriting under the existential with Phase 1's `iff`.
-- [ ] The docstring MUST say what the restatement buys and what it does not: it converts an existential over paths into a statement about the first region above `z`'s region, and it is NOT a discharge. Reproduce Finding 5's scope note (the reserved name stays unclaimed; the window regime `c ≤ n + 1` is covered by nothing; the room bounds remain).
-- [ ] Do NOT name this declaration `cellLE_zero_const_of_kappa_eq` or any prefix of it.
-- [ ] Scoped guarded build of `LadderCell`, then `typst-sync-check.sh --fix`, stage `typst/generated/status.typ`.
-- [ ] Apply the `longFile` baseline rule: `LadderCell.lean` is 1939 lines against a baseline of 2000.
+- [x] Land, in `LadderCell.lean` beside `ForwardSlackWitnessed`, a named equivalence restating the definition with `HasForwardSlack` replaced by the next-region bound, proved by rewriting under the existential with Phase 1's `iff`.
+- [x] The docstring MUST say what the restatement buys and what it does not: it converts an existential over paths into a statement about the first region above `z`'s region, and it is NOT a discharge. Reproduce Finding 5's scope note (the reserved name stays unclaimed; the window regime `c ≤ n + 1` is covered by nothing; the room bounds remain).
+- [x] Do NOT name this declaration `cellLE_zero_const_of_kappa_eq` or any prefix of it. *(landed as `forwardSlackWitnessed_iff_next_region_cnt_le`)*
+- [x] Scoped guarded build of `LadderCell`, then `typst-sync-check.sh --fix`, stage `typst/generated/status.typ`.
+- [x] Apply the `longFile` baseline rule: `LadderCell.lean` is 1939 lines against a baseline of 2000. *(1991 lines after the edit; baseline 2000 still inside the 1800-1999 window, so unchanged)*
 
 **Timing**: 1 hour
 

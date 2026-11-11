@@ -1009,6 +1009,58 @@ def ForwardSlackWitnessed {Q : Type} [Fintype Q] [Nonempty Q]
       HasForwardSlack g z l n ∧
       tpOf (ladderModel step pend fwd bwd lab) φ τ z = T
 
+/-- **THE WITNESSING CONDITION IS A CONDITION ON REGION LENGTHS.** `HasForwardSlack` is
+EQUIVALENT to a bound on the countdown of the first region start above `z`'s region
+(`hasForwardSlack_iff_next_region_cnt_le`), so the witnessing condition — the existential over
+paths — restates as: every type the cell at `x` realizes is realized there by some path whose
+FIRST REGION ABOVE `z`'s region has countdown at most `n + cntAt g z + I - l`, where `I` is the
+length of the idle run separating the two regions. Nothing about the register survives on the
+right; the condition is about the walk's region lengths and nothing else.
+
+**What this buys**: the hypothesis becomes checkable. A consumer holding a concrete object and
+path can read off the next region's countdown and decide the condition, whereas
+`HasForwardSlack`'s register clause at `z + cntAt g z + I` reads a derived quantity.
+
+**What this does NOT buy, and must not be read as.** This is NOT a discharge. The condition is
+still a hypothesis a consumer supplies, and the following three restrictions survive untouched:
+
+* the reserved schema `cellLE_zero_const_of_kappa_eq` quantifies over EVERY `kappa`-collision,
+  while every landed depth-`0` cell-equality inclusion carries the pending-forever gap
+  `n + 2 ≤ c`, which by `pend_past_of_nxtAt_lt` restricts to paths pending at every earlier
+  position. The reserved name stays claimed by nothing;
+* the ORDINARY WINDOW REGIME `c ≤ n + 1` is addressed by no landed inclusion, in either
+  direction;
+* the ROOM BOUNDS the landed schemas carry — the monotone one's bound on the upper pair plus that
+  pair's own gap, the common-shift one's DOUBLED displacement with a correspondingly doubled
+  bound — remain, and are implied by neither the pending-forever gap nor this restatement. -/
+theorem forwardSlackWitnessed_iff_next_region_cnt_le {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (x : LadderState Q pend) (z : ℤ) (l n : ℕ) :
+    ForwardSlackWitnessed step pend fwd bwd lab φ x z l n ↔
+      ∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+          ((z, x) : (ladderFrameAdm step pend fwd bwd).WorldState) z,
+        ∃ (g : ℤ → LadderState Q pend)
+          (τ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+          IsLadderPath step pend g ∧ g z = x ∧ (∀ t : ℤ, τ.state t = (t, g t)) ∧
+          (∀ I : ℕ, 0 < I →
+            (∀ i : ℕ, i < I → pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false) →
+            pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true →
+            (cntAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ)) : ℤ)
+              ≤ (n : ℤ) + cntAt g z + I - l) ∧
+          tpOf (ladderModel step pend fwd bwd lab) φ τ z = T := by
+  constructor
+  · intro h T hT
+    obtain ⟨g, τ, hg, hgz, hτ, hs, htp⟩ := h T hT
+    exact ⟨g, τ, hg, hgz, hτ,
+      (hasForwardSlack_iff_next_region_cnt_le g hg z l n).mp hs, htp⟩
+  · intro h T hT
+    obtain ⟨g, τ, hg, hgz, hτ, hb, htp⟩ := h T hT
+    exact ⟨g, τ, hg, hgz, hτ,
+      (hasForwardSlack_iff_next_region_cnt_le g hg z l n).mpr hb, htp⟩
+
 /-- **THE DOWNWARD CELL INCLUSION AT THE STATE LEVEL, under the forward-slack witnessing of the
 HIGHER state.** The mirror of the landed upward `cellAt_subset_of_shift_of_pend_past`: in the
 pending-forever regime (`n + 2 ≤ c`) at countdown at least `Tc`, if every type the cell at
