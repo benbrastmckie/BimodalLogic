@@ -11,7 +11,7 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,905,906,907,924 | -- | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,905,906,907 | -- | agent-system, algebraic-representation, completeness, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,900 | 298,428,502,743,761,873,899 | algebraic-representation, completeness, dataset-enhancement, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -73,7 +73,6 @@ next_project_number: 926
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-924 [IMPLEMENTING] — Decide the fate of the ForwardSlackWitnessed frontier, now...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Formula Refactor
@@ -146,7 +145,7 @@ PRECEDENT. The archived record ladderchain_c16_unusedarguments_clear cleared thi
 
 ### 924. Forward slack witnessed frontier disposition
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 925
@@ -156,6 +155,7 @@ PRECEDENT. The archived record ladderchain_c16_unusedarguments_clear cleared thi
 - **Source**: [FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean]
 - **Evidence**: [evidence/forward-slack-pin-cascade/route-space-closure.lean]
 - **Handoff**: [924_forward_slack_witnessed_frontier_disposition/handoffs/phase-3-handoff-20261111T233000Z.md]
+- **Summary**: [924_forward_slack_witnessed_frontier_disposition/summaries/01_forward-slack-frontier-disposition-summary.md]
 
 **Description**: Decide the fate of the ForwardSlackWitnessed frontier, now that its only landed discharge route is refuted.
 

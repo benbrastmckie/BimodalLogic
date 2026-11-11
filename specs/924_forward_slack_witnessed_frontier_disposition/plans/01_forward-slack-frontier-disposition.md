@@ -2,7 +2,7 @@
 
 - **Task**: 924 - Decide the fate of the `ForwardSlackWitnessed` frontier, now that its only
   landed discharge route is refuted
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None blocking. Territory-serialized against task 918 — see "Territory" below.
 - **Research Inputs**: `specs/924_forward_slack_witnessed_frontier_disposition/reports/01_forward-slack-frontier-disposition.md`

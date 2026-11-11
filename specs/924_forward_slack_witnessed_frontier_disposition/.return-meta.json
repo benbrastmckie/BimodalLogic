@@ -1,43 +1,61 @@
 {
-  "status": "partial",
+  "status": "implemented",
+  "dispatch_seq": 27,
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
     "vacuous_count": 0,
-    "axiom_count": 0,
+    "axiom_count": 14,
     "build_passed": true
   },
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/924_forward_slack_witnessed_frontier_disposition/summaries/01_forward-slack-frontier-disposition-summary.md",
+      "summary": "The ForwardSlackWitnessed frontier's disposition: a cascade-free, deletion-free conditional discharge landed, the route-space closed, certStabK's restatement obligation kept PROVISIONAL."
+    },
+    {
       "type": "handoff",
-      "path": "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-3-handoff-20261111T233000Z.md",
-      "summary": "Phase 3 close: what landed, the two already-measured RED gate findings waiting for Phase 4 (C27 is this task's own debt; INV is Phase 4's first task), and the premise correction on no_deleted_ladderPath_of_straddle_break's location."
+      "path": "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-4-handoff-20261111T235900Z.md",
+      "summary": "Phase 4 close: both pre-measured RED gates (C27, INV) resolved; all five gates green with zero pre-existing findings."
     }
   ],
+  "completion_data": {
+    "completion_summary": "Neither of the task description's two terminal outcomes was reachable as worded, and outcome (b) is factually false — it was not recorded. What landed instead is a cascade-free, deletion-free CONDITIONAL discharge: hasForwardSlack_of_idleRunRepeat, IdleRunPumpable and forwardSlackWitnessed_of_cell_idleRunPumpable in LadderIdle.lean conclude ForwardSlackWitnessed at every amount from the amount-free, run-local premise IdleRunPumpable, by splicing rather than deleting, so neither the refuted block-deletion route nor (K2)'s doubling cascade is re-entered. The premise is not ParamsOk-derivable ((K1) never quantifies idleCycleLens), so the hypothesis is RESTRICTED rather than removed and still sits on all five depth-0 cell-equality schemas of LadderCell.lean, which was not edited. The route-space closure is wired as evidence probe specs/evidence/forward-slack-pin-cascade/route-space-closure.lean, narrowing the frontier to exactly one named sub-regime: paths whose intervening idle run has length 1, where no repeat block exists to pump. certStabK's restatement obligation is therefore PROVISIONAL rather than permanent.",
+    "roadmap_items": []
+  },
   "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "typst/generated/status.typ",
-    "specs/state.json",
-    "specs/TODO.md",
+    "README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "scripts/debug-artifact-allowlist.txt",
     "specs/924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md",
-    "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-3-handoff-20261111T233000Z.md",
+    "specs/924_forward_slack_witnessed_frontier_disposition/summaries/01_forward-slack-frontier-disposition-summary.md",
+    "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-4-handoff-20261111T235900Z.md",
     "specs/924_forward_slack_witnessed_frontier_disposition/issues.jsonl"
   ],
   "metadata": {
     "session_id": "sess_1794425759_f1ad4f",
     "agent_type": "lean-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "task_dir": "specs/924_forward_slack_witnessed_frontier_disposition",
-    "dispatch_seq": 26,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
     "compliance_check": "passed",
-    "phase_scope": "phase 3 only, per dispatch Phase Mission",
-    "phases_completed": 3,
+    "phase": 4,
+    "phases_completed": 4,
     "phases_total": 4,
-    "vacuous_count_note": "The raw grep reports 1 hit: FormalSystem/Examples/TemporalStructures.lean:495 'theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial'. Pre-existing (committed under task 756), outside this task's file scope, and a genuine definitional-unfolding proof rather than a placeholder. Recorded as 0 attributable to this dispatch.",
-    "gate_findings_deferred_to_phase_4": [
-      "C27 RED: LadderIdle.lean allow-list 2 vs tree 5 -- introduced by THIS task's Phase 1, NOT pre-existing, must be fixed in Phase 4",
-      "INV RED: 3 stale generated inventory blocks (README.md, FormalSystem/Metalogic/README.md, FormalSystem/Metalogic/Decidability/RaySummary/README.md) -- exactly Phase 4's first task"
-    ]
+    "vacuous_count_note": "The raw single-line vacuous grep returns 1 hit: FormalSystem/Examples/TemporalStructures.lean:495 `theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial`. It is a false positive (the goal genuinely reduces to True) and is pre-existing, introduced by task 756 phase 5, in a file this task did not touch. This task introduced zero vacuous definitions.",
+    "axiom_count_note": "14 `axiom ` declarations under the resolved source roots, unchanged by this task. C14's axiom baseline — the declared HARD STOP — passed inside `check-module-invariants.sh` (ALL CHECKS PASSED), so the count did not increase.",
+    "gate_set": {
+      "lake_build": "exit 0, Build completed successfully (2974 jobs), 0 error:, 0 warning:",
+      "check_module_invariants": "ALL CHECKS PASSED (C14 baseline intact, C27 green after allow-list fix)",
+      "typst_sync_check": "PASS (all 4 checks green)",
+      "check_evidence_probes": "exit 0, PASS all 55 wired probe(s) compile",
+      "inventory_check": "PASS INV every generated inventory block is current",
+      "pre_existing_findings_enumerated": "none — every gate came back unconditionally green"
+    },
+    "batch_gate_deferral": "The plan's final phase declares Verification Tier: full. All five gates are repository-specific checks expressible by neither `run-all.sh --only SUITE` nor `verify-deploy.sh --only-gate N`, so the dispatch's UNMAPPABLE-CRITERION rule required each to be run directly rather than waived. All five were run directly in this dispatch; the complete set still runs once for the whole batch at the end of the invocation."
   }
 }

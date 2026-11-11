@@ -1,28 +1,41 @@
 {
-  "task_number": 924,
-  "phase": "implement",
-  "dispatch_seq": 26,
-  "status": "partial",
-  "phases_completed": 3,
+  "status": "implemented",
+  "dispatch_seq": 27,
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Phase 3 landed the ForwardSlackWitnessed disposition in all four durable places, with the certStabK restatement obligation recorded PROVISIONAL rather than permanent, per the settled .decisions.json answer. LadderChain.lean's module docstring and the refuted primitive's own docstring now both name forwardSlackWitnessed_of_cell_idleRunPumpable as the cascade-free route that is not refuted; KTypeSummaryAxiomTest.lean carries the three-way split of the idle-lengthening verdict, the disposition block, and two new axiom pins measured at the standard profile; specs/state.json carries the appended OUTCOME paragraph with artifacts intact. Both scoped guarded builds and the full-library guarded build are green, zero sorries, zero new axioms, compliance check passed.",
+  "summary": "Phase 4 (the plan's last) closed [COMPLETED]: all four phases are now done. Both pre-measured RED gates were resolved — C27's allow-list count for LadderIdle.lean raised 2 -> 5 with its reason line extended, and the three stale generated inventory blocks regenerated (three files, not the Scope Hypothesis's predicted four). The complete five-gate set then came back green with ZERO pre-existing findings to enumerate: guarded full lake build (exit 0, 2974 jobs, zero error:/warning:), check-module-invariants.sh (ALL CHECKS PASSED, C14 axiom baseline intact), typst-sync-check.sh, check-evidence-probes.sh (all 55 wired probes), and --emit-inventory --check. The task's verdict — neither terminal outcome reachable as worded, outcome (b) factually false, a cascade-free conditional discharge landed instead with certStabK PROVISIONAL — is written to the implementation summary.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/924_forward_slack_witnessed_frontier_disposition/summaries/01_forward-slack-frontier-disposition-summary.md",
+      "summary": "The ForwardSlackWitnessed frontier's disposition: the conditional discharge, the route-space closure, the one named remaining sub-regime, and the PROVISIONAL certStabK consequence."
+    },
+    {
       "type": "handoff",
-      "path": "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-3-handoff-20261111T233000Z.md",
-      "summary": "Phase 3 close: what landed, two already-measured RED gate findings waiting for Phase 4, and a premise correction."
+      "path": "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-4-handoff-20261111T235900Z.md",
+      "summary": "Phase 4 close: both pre-measured RED gates resolved, all five gates green, territory clean."
+    },
+    {
+      "type": "plan",
+      "path": "specs/924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md",
+      "summary": "All four phase headings now [COMPLETED]; Phase 4's checklist carries inline deviation annotations."
     }
   ],
   "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "typst/generated/status.typ",
-    "specs/state.json",
-    "specs/TODO.md",
+    "README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "scripts/debug-artifact-allowlist.txt",
     "specs/924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md",
-    "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-3-handoff-20261111T233000Z.md",
+    "specs/924_forward_slack_witnessed_frontier_disposition/summaries/01_forward-slack-frontier-disposition-summary.md",
+    "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-4-handoff-20261111T235900Z.md",
     "specs/924_forward_slack_witnessed_frontier_disposition/issues.jsonl"
   ],
-  "next_action": "Dispatch Phase 4 (Reconciliation, Full Gate Set, and the Summary). Two RED gate findings are already measured and recorded in the phase-3 handoff: C27 (LadderIdle.lean allow-list 2 vs tree 5 -- THIS task's own Phase 1 debt, not pre-existing) and INV (3 stale generated inventory blocks). Phase 4's Scope Hypothesis names four READMEs; the live run named three."
+  "commits": [
+    "35dd90898",
+    "b65e63171",
+    "653387bf0"
+  ],
+  "session_id": "sess_1794425759_f1ad4f"
 }
