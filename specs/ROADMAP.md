@@ -321,7 +321,6 @@ the object's idle states carry a reachable cycle, the lengthening IS available
 merely loosen but **discharges outright** for an idle block. The freed-increment form is refuted
 alongside it (`idleGapLengtheningAllIncrements_refuted`), so the run-local restriction is
 necessary and not an artifact of the proof. This lemma is what 924's idle pump is built from.
-
 **Coverage appendix (uncovered tasks)**:
 ```
 /orchestrate 178,570,604,664,743,817,818,821
