@@ -4,7 +4,8 @@
 - **Status**: [IMPLEMENTING]
 - **Effort**: 14.5 hours
 - **Dependencies**: None blocking. The antitone slice of the collision dichotomy is already landed (see Overview).
-- **Research Inputs**: `specs/917_forward_slack_witnessed_discharge_or_refutation/reports/01_forward-slack-witnessed-discharge.md`
+- **Research Inputs**: `specs/917_forward_slack_witnessed_discharge_or_refutation/reports/01_forward-slack-witnessed-discharge.md`; the compile-verified Phase 4 signature measurement in `specs/917_forward_slack_witnessed_discharge_or_refutation/evidence/phase-4-pinned-signature-deficit.lean` and `.../evidence/phase-4-pinned-signature-deficit-FAILS.lean`
+- **Reports Integrated**: `reports/01_forward-slack-witnessed-discharge.md`, `evidence/phase-4-pinned-signature-deficit.lean`, `evidence/phase-4-pinned-signature-deficit-FAILS.lean`
 - **Artifacts**: plans/01_forward-slack-witnessed-discharge.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -43,11 +44,28 @@ refutation of the route and recorded as such. The verdict is stated either way, 
   `cellLE_zero_const_of_kappa_eq`. The pending-forever gap and the room bounds remain, and the
   ordinary window regime `c ≤ n + 1` is covered by nothing. Carried forward into every new
   docstring and into the test file's pin block.
-- **Plan-time sharpening, derived from the report's own compiled facts**: taking the deletion
-  ABOVE `z`'s region leaves every pin between `z` and the block UNDISPLACED, so that pin's anchor
-  clause is free from `nxtAt_lipschitz_two_sided` once the register is pinned at `nxtAt g z`.
-  Two clauses therefore become one-and-a-half: the straddling pin compatibility and the
-  above-block anchor. Phase 4 is mechanical; Phase 5 carries the whole risk.
+- **Plan-time sharpening, corrected against compiled measurement**: taking the deletion ABOVE
+  `z`'s region leaves every pin POSITION between `z` and the block undisplaced, but it does NOT
+  leave every pin VALUE put. `delCnt` lowers by exactly `l` the value of the pin that STARTS the
+  region CONTAINING the deleted block — a pin sitting below `a`, hence outside `hanch`'s `a ≤ v`
+  range — because that region swallows the block (`delCnt_of_lt`'s `if a ≤ v + cntAt g v`
+  branch). So an undisplaced-position pin's anchor clause is free from
+  `nxtAt_lipschitz_two_sided` only once `(nxtAt g z : ℤ) ≤ (cntAt g z : ℤ)` is in hand: that
+  inequality is the exact residue of the deficit after `cntAt_ge_of_reaches`, `hcl` and `hza`,
+  and it is carried as the hypothesis `hnz` on Phase 4's pinned statement (Decision 3). Two
+  clauses still become one-and-a-half: the straddling pin compatibility and the above-block
+  anchor. Phase 4 is mechanical; Phase 5 carries the whole risk.
+- **Revision input (compile-verified, not argued)**: both variants of the full Phase 4 proof are
+  preserved as task evidence and were re-compiled with `lake env lean` at revision time.
+  `evidence/phase-4-pinned-signature-deficit.lean` (signature plus `hnz`) emits ZERO output;
+  `evidence/phase-4-pinned-signature-deficit-FAILS.lean` (signature exactly as originally
+  pinned) emits exactly ONE error, at `123:8`, whose printed `omega` counterexample leaves
+  `i := ↑(nxtAt g z)` and `c := ↑(cntAt g z)` mutually unconstrained. The deficit IS `hnz` and
+  nothing else: not the stronger pending-forever gap, and not `hpast`, which stays because the
+  proof uses it (it proves `habove`). `hnz` is never named in the proof body — one `omega`
+  consumes it implicitly — so admitting it changes no proof text. Downstream cost is zero: at
+  the Phase 6 consumer's state `⟨(q, C, N), h⟩` the existing `hgap : N + 2 ≤ C` implies it,
+  verified compiling.
 
 ### Prior Plan Reference
 
@@ -215,14 +233,22 @@ report's Recommendation 5, landed early as unconditional value rather than held 
 
 ---
 
-### Phase 4: The Deletion Above `z`'s Region, Register Held [BLOCKED]
+### Phase 4: The Deletion Above `z`'s Region, Register Held [NOT STARTED]
 
-**BLOCKER** (Phase 4):
-- **What failed**: the pinned signature of `exists_deleted_ladderPath_of_next_region_nxt` in
-  `## Lean Challenge Statements` is not provable. Its hypothesis set is incomplete by exactly one
-  inequality: `(nxtAt g z : ℤ) ≤ (cntAt g z : ℤ)`. Everything else in the phase discharges.
-- **What was tried**: the full proof was written and compiled against the real tree in two
-  variants, preserved as task evidence:
+**ADMITTED HYPOTHESIS, `hnz`** (this phase's pinned statement now carries it):
+- **What the measurement established**: the phase's earlier pinned signature of
+  `exists_deleted_ladderPath_of_next_region_nxt` was incomplete by exactly one inequality,
+  `(nxtAt g z : ℤ) ≤ (cntAt g z : ℤ)`. Everything else in the phase discharges. The pinned
+  statement in `## Lean Challenge Statements` now carries that inequality as `hnz`, on one line
+  between `hza` and `hpast`, in exactly the MINIMAL cast form written above — not as the
+  stronger pending-forever gap, which would import a restriction the proof does not need.
+  `hpast` STAYS: the proof uses it, to prove `habove`.
+- **What is therefore required of the implementer**: land the signature AS PINNED, `hnz`
+  included. `hnz` is never named in the proof body — the single `omega` closing the anchor
+  clause at a low pin consumes it implicitly — so admitting it changes no proof text. Lifting
+  the already-compiled evidence proof verbatim is the expected route, not a re-derivation.
+- **The evidence, compiled twice and re-verified at revision time** (both variants preserved as
+  task evidence, both re-compiled with `lake env lean`):
   - `specs/917_forward_slack_witnessed_discharge_or_refutation/evidence/phase-4-pinned-signature-deficit.lean`
     — the pinned signature PLUS `hnz : (nxtAt g z : ℤ) ≤ (cntAt g z : ℤ)`. Compiles clean
     (`lake env lean`, no errors, no `sorry`), including the two pull lemmas `probe_low`/`probe_high`,
@@ -232,8 +258,8 @@ report's Recommendation 5, landed early as unconditional value rather than held 
     deleted, i.e. the signature exactly as pinned. It fails at exactly ONE goal (line 123,
     the `omega` closing the anchor clause at a low pin whose region reaches the block) with
     omega's own counterexample constraint set printed, `i := ↑(nxtAt g z)` and
-    `c := ↑(cntAt g z)` unrelated in it.
-- **Why it's stuck**: the plan's Decision 3 reasoning ("taking the deletion ABOVE `z`'s region
+    `c := ↑(cntAt g z)` unrelated in it. The deficit is `hnz` and nothing else.
+- **Why the deficit is real, and where Decision 3 went wrong**: Decision 3's reasoning ("taking the deletion ABOVE `z`'s region
   leaves every pin between `z` and the block UNDISPLACED, so that pin's anchor clause is free
   from `nxtAt_lipschitz_two_sided`") holds for pin POSITIONS but not for pin VALUES. The pin that
   starts the region CONTAINING the block sits below `a` — its position is undisplaced — but
@@ -247,16 +273,18 @@ report's Recommendation 5, landed early as unconditional value rather than held 
   `Drift n n' := n' = n ∨ n' = n + 1 ∨ n' + 1 = n` admits free ±1 drift, and a path pending at
   every `p ≤ z` carries `cntAt g (z - k) = cntAt g z + k` with its register wholly unconstrained,
   so `hpast` cannot bound `nxtAt g z` against `cntAt g z` in either direction.
-- **What is needed**: a plan revision adding `nxtAt g z ≤ cntAt g z` (or the consumer's own
-  pending-forever gap, from which it follows) to this phase's pinned Challenge statement. The
-  repair is FREE downstream and costs the discharge nothing: Phase 6's consumer instantiates at
-  the state `⟨(q, C, N), h⟩` at `z`, where `cntAt g z = C` and `nxtAt g z = N`, and already
-  carries `hgap : N + 2 ≤ C`. The compiled proof above lands unchanged the moment the hypothesis
-  is admitted.
-- **Prohibited workarounds**: do NOT use `sorry`, `def X := True`, or any vacuous placeholder;
-  do NOT quietly add the hypothesis under the pinned name, and do NOT quietly edit the recorded
-  Challenge statement to match what compiles. Both are the exact laundering
-  `.claude/rules/plan-compliance.md`'s Statement Fidelity section exists to catch.
+- **Why the repair is free downstream**: Phase 6's consumer instantiates at the state
+  `⟨(q, C, N), h⟩` at `z`, where `cntAt g z = C` and `nxtAt g z = N`, and already carries
+  `hgap : N + 2 ≤ C`, which implies `hnz` — verified compiling at revision time. No other
+  consumer exists, and no snapshot manifest records this signature, so nothing has to be
+  re-recorded. Phase 5's gate criterion is unchanged in substance.
+- **Prohibited workarounds, unchanged by this revision**: do NOT use `sorry`, `def X := True`,
+  or any vacuous placeholder; do NOT add any FURTHER hypothesis beyond the pinned `hnz` under
+  the pinned name, and do NOT edit the recorded Challenge statement again to match what
+  compiles. `hnz` is admitted by an explicit, user-approved plan revision recorded here and in
+  Decision 3; anything beyond it is the exact laundering
+  `.claude/rules/plan-compliance.md`'s Statement Fidelity section exists to catch. If a second
+  deficit appears, STOP and report it rather than widening the statement.
 
 
 **Goal**: Land `exists_deleted_ladderPath_of_next_region_nxt`: the register-exposing deletion at a
@@ -265,11 +293,12 @@ and taking exactly the two it cannot as explicit hypotheses.
 
 **Tasks**:
 - [ ] Read `exists_deleted_ladderPath_of_pend_past_nxt` (`LadderChain.lean`, `section DelNxt`) in full. The new theorem re-runs the same construction through `exists_ladderPath_of_walk_nxt_at`, reusing `delObj_step`, `delCnt_idle`, `delCnt_pend_pend`, `delCnt_pend_idle` verbatim -- none of those four takes `hpast`.
-- [ ] Land the theorem with the pinned signature in `## Lean Challenge Statements`. The register is pinned at `nxtAt g z`, not at a free `n`: that is what the consumer needs (`g' z = g z`) and it is what makes the undisplaced pins' anchor free.
-- [ ] Discharge, inside the proof: pins at or below `z` do not exist (`hpast` -- every `p ≤ z` is pending, so every idle position lies above `z`); the anchor for an UNDISPLACED pin `v` with `z < v < a` is `nxtAt_lipschitz_two_sided g hg v z` composed with `cntAt_eq_nxtAt_of_idle_pend`; a both-below pair is the original pair at the original distance; a both-above pair is the original pair with both positions displaced by `-l`, so its distance is unchanged -- both close through `pinCompat_of_ladderPath`.
+- [ ] Land the theorem with the pinned signature in `## Lean Challenge Statements`, `hnz` included. The register is pinned at `nxtAt g z`, not at a free `n`: that is what the consumer needs (`g' z = g z`), and it is `hnz` together with the pinned register that makes the undisplaced-position pins' anchor close.
+- [ ] Lift the compiled proof from `evidence/phase-4-pinned-signature-deficit.lean` rather than re-deriving it: both pull lemmas (`probe_low`/`probe_high`), the four pin-compatibility cases, and the anchor clause at every pin are already green against the real tree under this exact signature. `hnz` appears in no tactic — one `omega` consumes it — so no proof text changes when it is admitted.
+- [ ] Discharge, inside the proof: pins at or below `z` do not exist (`hpast` -- every `p ≤ z` is pending, so every idle position lies above `z`); the anchor for a position-undisplaced pin `v` with `z < v < a` is `nxtAt_lipschitz_two_sided g hg v z` composed with `cntAt_eq_nxtAt_of_idle_pend`, plus `hnz` at the one low pin whose region swallows the block and whose VALUE `delCnt` therefore lowers by `l`; a both-below pair is the original pair at the original distance; a both-above pair is the original pair with both positions displaced by `-l`, so its distance is unchanged -- both close through `pinCompat_of_ladderPath`.
 - [ ] Leave exactly two clauses as hypotheses, both stated in the DELETED walk's own vocabulary (`delObj`/`delCnt`) so no boundary case has to be re-derived at the statement level: `hanch` for the pins at or above `a`, and `hstraddle` for the pairs that straddle `a`.
 - [ ] Record in the docstring WHY these two and no others: the deletion leaves the undisplaced pins put while moving every later pin down by `l`, so a straddling pair's distance shrinks by `l` while its values do not move -- the `2l`-wide window `pinCompat_of_ladderPath` can fail in. Name (K2)'s `cascadeBound` and its `iter_doubling` recurrence `a (k+1) ≤ 2 * a k + J + 1` as the budget Phase 5 must spend, and state that this theorem spends none of it.
-- [ ] If `hpast` turns out to be unused by the proof, DELETE it. Dropping an unused hypothesis strengthens the theorem and is permitted; adding one is not.
+- [ ] Do NOT drop `hpast`: the compiled evidence proof uses it, to prove `habove` (every idle position lies above `z`). The general permission still stands — dropping a genuinely unused hypothesis strengthens the theorem and is permitted; adding one beyond the pinned `hnz` is not.
 - [ ] Scoped guarded build, `typst-sync-check.sh --fix`, stage `typst/generated/status.typ`, apply the `longFile` baseline rule.
 
 **Timing**: 2 hours
@@ -303,7 +332,7 @@ region. This phase decides which branch the rest of the plan takes.
 - [ ] Confirm the threshold identity the loop's arithmetic rests on: `exists_typeBlock_of_spacing` bounds its block length by `Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card` while (K3) is stated against `tShort Q φ = Fintype.card (ProdState Q φ)` with `ProdState Q φ = Q × ClType φ`. Establish `Fintype.card (ClType φ) = 2 ^ (plusSubformulaClosure φ).card`, or find it landed, BEFORE building anything on top of it.
 - [ ] Instantiate `exists_typeBlock_of_spacing` at the first region start above `z`'s region (`s₀ := z + cntAt g z + 1 + I`), `w₀ := s₀`, `s := 1`. Its only hypotheses are that `s₀` is pending and that the sampling window fits inside `s₀`'s own region -- it carries no gap, no room bound and no `ParamsOk`, so re-instantiating it away from `z` imports none of `z`'s regime hypotheses. Verify that against its signature rather than assuming it.
 - [ ] ATTEMPT the gate: discharge Phase 4's `hanch` and `hstraddle` for `a := u`, `l := d` with `d ≤ tShort`, under `ParamsOk`, the pending-forever gap at `z`, and `Tc ≤ cntAt g z`. First attack: a straddling pair `s < a ≤ v` has `v - s` at least the lower pin's own countdown plus one (a region's length is its start countdown plus one, `cntAt_sub_of_pend` with `not_pend_of_count`), so the deficit `d ≤ tShort` is payable out of the distance whenever the pin values are bounded by (K2)'s `cascadeBound ≤ Tc`; the iterated bound is `K_{j+1} ≤ 2 · K_j + I + 1`, exactly `cascadeBound`'s own recurrence.
-- [ ] GATE CRITERION, measured not asserted: both clauses elaborate for the block `exists_typeBlock_of_spacing` returns, with no new hypothesis beyond `ParamsOk`, the pending-forever gap, and `Tc ≤ cntAt g z`.
+- [ ] GATE CRITERION, measured not asserted: both clauses elaborate for the block `exists_typeBlock_of_spacing` returns, with no new hypothesis beyond `ParamsOk`, the pending-forever gap, and `Tc ≤ cntAt g z`. Unchanged in substance by Phase 4's `hnz`: the gate discharges `hanch` and `hstraddle` only, and `hnz` already follows from the pending-forever gap this criterion admits.
 - [ ] On PASS: land the one-pass shortening lemma -- given a path through `x` at `z` with pending-forever below `z` and next-region countdown at least `tShort`, produce a path with the same object state, countdown and register at `z`, the same realized stab-free type at `z` (`tpOf_eq_delIdx_of_tpOf_eq`, which needs no pin condition and no `ParamsOk`), pending-forever below `z` preserved, the same region start and intervening idle run, and next-region countdown strictly smaller.
 - [ ] On FAIL: STOP. Do not add a hypothesis to make either clause go through, do not introduce an axiom, do not leave a `sorry`-deferred case. Record the obstruction's exact shape (which pair, which deficit, what was tried) in this phase's own notes for Phase 8 to compile, and mark Phases 6 and 7 `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` row each citing this phase's measurement.
 - [ ] Scoped guarded build, `typst-sync-check.sh --fix`, stage `typst/generated/status.typ`, apply the `longFile` baseline rule.
@@ -338,6 +367,7 @@ Phase 5's gate passing.
 - [ ] Build the normalization loop over the measure `cntAt g s₀` -- the countdown of the first region start above `z`'s region, which each pass lowers by `d ≥ 1` while leaving the region start and the intervening idle run fixed. State the measure over that ONE pin; keep every later pin's treatment inside Phase 4's primitive, never in the loop. The existing overshoot/iterated-splice loop in `LadderChain.lean` is the model.
 - [ ] Land the loop's conclusion: every stab-free type realized at `x` at `z` is realized there by a path whose first region above `z`'s region has countdown below `tShort Q φ`.
 - [ ] Land `forwardSlackWitnessed_of_paramsOk_of_pend_gap` in `LadderCell.lean` with the pinned signature. Close the arithmetic with Phase 1's `iff`: the loop gives `K < tShort Q φ`, `I ≥ 1`, and `hroom : tShort Q φ + l ≤ N + C` gives `K ≤ N + C + I - l`, which is the regime.
+- [ ] Discharge Phase 4's `hnz` here, where it is free: at this theorem's state `⟨(q, C, N), h⟩` at `z` we have `cntAt g z = C` and `nxtAt g z = N`, and `hgap : N + 2 ≤ C` gives `(N : ℤ) ≤ (C : ℤ)` outright. This costs the discharge no hypothesis it does not already carry — confirmed compiling at revision time — so `hnz` must NOT be propagated into this theorem's signature, which is unchanged.
 - [ ] The docstring MUST state what is and is not discharged: the hypothesis is discharged for the pending-forever regime at countdown at least `Tc`; the reserved name `cellLE_zero_const_of_kappa_eq` remains claimed by nothing; the window regime `c ≤ n + 1` is covered by no landed inclusion in either direction; the room bounds the five schemas carry are untouched (Finding 5).
 - [ ] `hroom` is stated with slack on purpose -- every consumer has `Tc ≤ c` and (K3) gives `2 · tShort + tIdle + 2 ≤ Tc`, so the slack is free. Weakening `hroom` (strengthening the theorem) is permitted; weakening the CONCLUSION is not.
 - [ ] Scoped guarded builds for both modules, `typst-sync-check.sh --fix`, stage `typst/generated/status.typ`, apply the `longFile` baseline rule to both files.
@@ -533,6 +563,7 @@ theorem exists_deleted_ladderPath_of_next_region_nxt {Q : Type} {step : Q → Q 
     {pend : Q → Bool} {g : ℤ → LadderState Q pend} {z a : ℤ} {l : ℕ}
     (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
     (hza : z + (cntAt g z : ℤ) + 1 ≤ a)
+    (hnz : (nxtAt g z : ℤ) ≤ (cntAt g z : ℤ))
     (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
     (hrep : objAt g a = objAt g (a + (l : ℤ)))
     (hanch : ∀ v : ℤ, a ≤ v → pend (delObj g a l v) = false →
@@ -581,11 +612,24 @@ end FormalSystem.Metalogic.Decidability.RaySummary
    be expressed by the single global field is an explicit non-`refutation` value, which makes
    `lean-plan-compliance-check.sh` record `skipped` with a stated reason. The six unconditional
    goals are still verified by Phase 9's own per-name checks.
-3. **The deletion is taken ABOVE `z`'s region, with the register pinned at `nxtAt g z`.** This is
-   what reduces the research report's two-clause obstruction to one-and-a-half: every pin between
-   `z` and the deleted block is undisplaced, so its anchor is free from
-   `nxtAt_lipschitz_two_sided`. The consumer needs `g' z = g z` anyway, so pinning the register
-   at its own value costs no generality.
+3. **The deletion is taken ABOVE `z`'s region, with the register pinned at `nxtAt g z`, and the
+   statement carries `hnz : (nxtAt g z : ℤ) ≤ (cntAt g z : ℤ)`.** The deletion's position is
+   what reduces the research report's two-clause obstruction to one-and-a-half. But the
+   reduction holds for pin POSITIONS, not pin VALUES, and the distinction is load-bearing: every
+   pin position between `z` and the deleted block is undisplaced, yet `delCnt` lowers by exactly
+   `l` the VALUE of the pin that starts the region CONTAINING the block (a pin below `a`, outside
+   `hanch`'s `a ≤ v` range), because that region swallows the block. At that one pin the anchor's
+   lower direction carries a deficit of exactly `l`: `nxtAt_lipschitz_two_sided` gives
+   `nxtAt g z ≤ nxtAt g v + (v - z)` while the clause needs
+   `nxtAt g z + l ≤ (nxtAt g v - l) + (v - z) + l`. Reducing that deficit through
+   `cntAt_ge_of_reaches`, `hcl : l ≤ cntAt g a` and `hza` leaves precisely `hnz` and nothing
+   else, and `hnz` does NOT follow from `hpast`: `Drift n n' := n' = n ∨ n' = n + 1 ∨ n' + 1 = n`
+   admits free ±1 register drift, so a path pending at every `p ≤ z` has
+   `cntAt g (z - k) = cntAt g z + k` with its register wholly unconstrained. `hnz` is therefore
+   taken as an explicit hypothesis, in its minimal cast form rather than as the stronger
+   pending-forever gap. It is free at the only consumer (Phase 6's `hgap : N + 2 ≤ C` implies
+   it), so the discharge loses nothing. The consumer needs `g' z = g z` anyway, so pinning the
+   register at its own value costs no generality.
 4. **One generic discharge serves all five consumers.** The displacement cancels against the
    higher pair's countdown (research Finding 3), so `hroom : tShort Q φ + l ≤ N + C` is the single
    hypothesis each schema discharges from its own room bound plus `Tc ≤ c` and (K3). This is a
