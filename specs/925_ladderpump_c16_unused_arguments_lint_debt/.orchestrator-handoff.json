@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 3,
+  "summary": "Wrote a 3-phase implementation plan clearing the two C16 unusedArguments findings in RaySummary/LadderPump.lean with asymmetric dispositions: remove the two dead instance binders from exists_idleSpliced_ladderPath (zero term-level consumers, body takes no instance), and exempt exists_idleTypeBlock_of_budget_le_run's hg via @[nolint unusedArguments] plus a reasoned allowlist entry (removing it would relocate the finding into sibling-owned LadderWindow.lean). Reading C26 half two's source settled the edit order mechanically: the allowlist entry lands first (a stale entry is only INFO; an unlisted attribute is a blocking FAIL), so no intermediate commit is red. Corrected the research report's net-zero line budget, which was off by one: the correct balance is comment_A + comment_B = 10, not 11.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/plans/01_ladderpump-c16-unusedarguments-clear.md",
+      "summary": "Three-phase plan (allowlist entry, both LadderPump edits under a net-zero line budget, full gate) clearing the C16 env_linter unusedArguments debt in LadderPump.lean."
+    }
+  ],
+  "dispatch_seq": 19
+}

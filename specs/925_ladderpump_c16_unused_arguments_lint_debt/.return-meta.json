@@ -1,39 +1,30 @@
 {
-  "status": "researched",
-  "task_number": 925,
-  "dispatch_seq": 16,
-  "session_id": "sess_1794400344_255305_925",
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
-  "phase": "research",
-  "findings_count": 9,
-  "adversarial_verification_triggered": true,
-  "reference_grounding_tier": 3,
-  "verification_passed": true,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/reports/01_ladderpump-c16-unusedarguments-clear.md",
-      "summary": "Confirms the two live C16 unusedArguments findings in LadderPump.lean by a guarded runLinter run, establishes that the in-source @[nolint] + nolint-attribute-allowlist.txt route has superseded the cited nolints.json precedent, and recommends an asymmetric disposition: remove the two dead instance binders from exists_idleSpliced_ladderPath (zero consumers, body needs no instance) and exempt exists_idleTypeBlock_of_budget_le_run's hg (removal would relocate the finding into sibling-owned LadderWindow.lean), at a net-zero line delta to avoid the five-file generated cascade into concurrent task 918's territory."
+      "type": "plan",
+      "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/plans/01_ladderpump-c16-unusedarguments-clear.md",
+      "summary": "Three-phase plan (allowlist entry, both LadderPump edits under a net-zero line budget, full gate) clearing the C16 env_linter unusedArguments debt in LadderPump.lean."
     }
   ],
-  "modified_files": [],
   "memory_candidates": [
     {
-      "title": "Batteries env_linter findings are unreachable by set_option linter.*",
-      "content": "A Batteries @[env_linter] such as unusedArguments runs post-hoc over an IMPORTED environment (scripts/runLinter.lean calls importModules then lintCore), so no in-source `set_option linter.X false in` is in scope when it runs. Only two things reach it: the `@[nolint X]` attribute (filtered by shouldBeLinted in Frontend.lean) and scripts/nolints.json (decls.erase, per-declaration not per-argument). A declaration can therefore carry a scoped set_option with a stated reason and still fail the C16 gate.",
-      "category": "lean4-tooling"
-    },
-    {
-      "title": "Run the relocation test before removing a dead binder",
-      "content": "Before clearing an unusedArguments finding by deleting the argument, grep for the declaration's consumers. If a consumer's only use of its OWN same-named hypothesis is passing it through, deleting the binder makes the consumer's hypothesis dead and relocates the finding one layer up instead of clearing it -- and the new site may be in another task's file_scope. Conversely, a declaration with zero term-level consumers whose body requires no instance can have instance-implicit binders removed as a pure generalization, with no call site able to break.",
-      "category": "lean4-linting"
-    },
-    {
-      "title": "A net .lean line-count change is never a one-file commit here",
-      "content": "Any NET line-count change to a file under FormalSystem/ fans out to typst/generated/status.typ (typst-sync-check.sh Check 2, a pre-commit hook) and to every aggregator README inventory block above the file (check-module-invariants.sh INV group). Comment-only edits count. Sizing an edit to a net delta of zero avoids both cascades entirely -- decisive when the generated surfaces sit in a concurrent sibling's declared file_scope. scripts/ is NOT line-counted, so long-form justifications belong in a scripts/ allowlist rather than at the declaration site.",
-      "category": "repo-operations"
+      "content": "When two mechanical gates can each be satisfied by one of two edits, read the gate source to find which direction of incompleteness is merely advisory. In this repo, check-module-invariants.sh C26 half two FAILS on an in-source @[nolint X] attribute with no scripts/nolint-attribute-allowlist.txt entry, but only prints INFO on an allowlist entry matching nothing in the tree. That asymmetry fixes the edit ORDER: append the allowlist entry first, add the attribute second, and every intermediate commit stays green without needing an atomic-batch commit mode across the two files. The general pattern: before declaring atomic-batch to hide an expected-red intermediate, check whether one ordering of the same edits has no red intermediate at all.",
+      "category": "PATTERN",
+      "source_artifact": "specs/925_ladderpump_c16_unused_arguments_lint_debt/plans/01_ladderpump-c16-unusedarguments-clear.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["gate-ordering", "nolint", "allowlist", "atomic-batch", "check-module-invariants", "phase-sequencing"]
     }
   ],
-  "next_steps": "Run /orchestrate 925 to create implementation plan"
+  "metadata": {
+    "session_id": "sess_1794400344_255305_925",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 2.25,
+    "dependency_waves": [[1], [2], [3]]
+  },
+  "next_steps": "Run /orchestrate 925 to execute the plan",
+  "dispatch_seq": 19
 }
