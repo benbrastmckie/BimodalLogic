@@ -23,6 +23,7 @@ import FormalSystem.Metalogic.ConvexConsequence
 import FormalSystem.Metalogic.ZTimeProvability
 import FormalSystem.Metalogic.NamingRules
 import FormalSystem.Metalogic.AuxiliaryAtoms
+import FormalSystem.Metalogic.LCExtension
 
 /-!
 # Bimodal Metalogic

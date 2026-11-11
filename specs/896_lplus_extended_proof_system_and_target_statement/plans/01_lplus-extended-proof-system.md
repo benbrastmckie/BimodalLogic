@@ -1,7 +1,7 @@
 # Implementation Plan: Task #896
 
 - **Task**: 896 - The extended L⁺ proof system (TM⁺ + axiom set + naming rules) with its ZTime soundness, and the completeness targets as stated Props
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: Task 895 (COMPLETED — `FormalSystem/Metalogic/AuxiliaryAtoms.lean` landed), Task 893 (COMPLETED — `lcU` landed in `FormalSystem/PlusLanguage/PlusLCSchema.lean`)
 - **Research Inputs**: `specs/896_lplus_extended_proof_system_and_target_statement/reports/01_lplus-extended-proof-system.md` (with its verified-green companion `probes/01_lcextension-skeleton.lean`)
@@ -132,7 +132,7 @@ No `roadmap_path` was supplied with this dispatch and no roadmap phases are sche
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: The module and its two aggregator imports [NOT STARTED]
+### Phase 1: The module and its two aggregator imports [COMPLETED]
 
 **Goal**: `FormalSystem/Metalogic/LCExtension.lean` exists, carries every declaration named under
 Goals, is reachable from both aggregators, and builds with zero warnings.

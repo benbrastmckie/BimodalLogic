@@ -503,6 +503,7 @@ import FormalSystem.Metalogic.Independence.StaticFrame
 import FormalSystem.Metalogic.Independence.TranslationProductCoarse
 import FormalSystem.Metalogic.Independence.TranslationStateSet
 import FormalSystem.Metalogic.Independence.ZTimeSharpness
+import FormalSystem.Metalogic.LCExtension
 import FormalSystem.Metalogic.NamingRules
 import FormalSystem.Metalogic.QTime
 import FormalSystem.Metalogic.SetConsequence
