@@ -29,6 +29,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.LadderPin
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderChain
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderCell
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderIdle
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderWindow
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -271,4 +272,21 @@ nothing about `PlusValidZTime` — see the README's verdict.
   that exposes the next-deadline register at a chosen position. Nothing imports this module and
   it states NO cell-level consequence: the premise it runs on is an object/run hypothesis, not a
   consequence of `ParamsOk`, so no `ParamsOk`-level restriction is removed anywhere.
+* `RaySummary.LadderWindow` — the ORDINARY WINDOW regime `c ≤ n + 1` of the depth-`0` cell
+  obligation, the exact complement of the pending-forever gap `n + 2 ≤ c` that the five
+  `LadderCell.lean` schemas carry: the collision's own room upgrade
+  (`kappa_collision_window_room` — at `2 ≤ B` a class collision at a fixed register either pins
+  the two countdowns equal or exhibits a positive multiple of `P + 1` TOGETHER WITH the strict
+  room `c' ≤ n` for the larger one, the gap coordinate paying for it through
+  `clipIdx_regime_of_eq` with the gap branch killed), and the three scale-invariant pin
+  statements the regime's surgery reads (`window_anchor_compat_of_room`,
+  `window_pin_compat_raise_of_gap`, `window_pin_compat_lower_of_spacing`), in which the
+  displacement is an OPAQUE natural so none of them depends on the modulus, on `(K1)`, or on any
+  parameter tuple. The regime's compensator is the IDLE RUN BELOW the position and not slack
+  above it, so nothing here touches `ForwardSlackWitnessed` and the refuted deletion-above route
+  is not re-entered. The reserved `cellLE_zero_const_of_kappa_eq` is claimed by nothing here and
+  no declaration carries that name or any prefix of it; no path-level construction, no cell-level
+  inclusion and no schema is stated, nothing is claimed about `HitPresented` or
+  `PlusValidZTime`, no index of a ladder cell is claimed at any parameters, and no complexity
+  bound is claimed.
 -/

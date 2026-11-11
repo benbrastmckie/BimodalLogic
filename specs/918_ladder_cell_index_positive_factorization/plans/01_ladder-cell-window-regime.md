@@ -1,7 +1,7 @@
 # Implementation Plan: The ladder cell index in the ordinary window regime
 
 - **Task**: 918 - Produce a positive factorization lemma for the index of which cell a ladder state has
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12.5 hours
 - **Dependencies**: None blocking. Reads task 917's closed record as its starting position; the idle-splice layer it builds on (`LadderPump.lean`'s three `Idle`-prefixed sections, `LadderIdle.lean`'s register-anchored assembly) is already landed by a sibling.
 - **Research Inputs**: `specs/918_ladder_cell_index_positive_factorization/reports/01_ladder-cell-index-positive-factorization.md`; the plan-time compiled gate measurement `specs/918_ladder_cell_index_positive_factorization/evidence/plan-gate-arithmetic.lean` (`lake env lean`, zero output, `sorry`-free)
@@ -138,7 +138,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 from 1 onward writes the same new module `LadderWindow.lean`, so no two may run concurrently
 against it.
 
-### Phase 1: The New Leaf Module and the Window Regime's Arithmetic [NOT STARTED]
+### Phase 1: The New Leaf Module and the Window Regime's Arithmetic [COMPLETED]
 
 **Goal**: Create `LadderWindow.lean` with its plumbing complete, and land the four compiled
 arithmetic statements that constitute layer A of the decision gate. Every line of Lean in this
@@ -553,3 +553,31 @@ regimes and is the reportable negative the dispatch admits. If the raising primi
 the lowering one does not, the upward inclusion is landed alone and the schema is recorded as
 excluded with the specific clause that did not go through; a one-directional result is an honest
 partial, and the two directions are not bundled into one all-or-nothing step.
+
+## Phase Verification Notes
+
+### Phase 1 (measured)
+
+- Exact-name sweep: all four names (`kappa_collision_window_room`,
+  `window_anchor_compat_of_room`, `window_pin_compat_raise_of_gap`,
+  `window_pin_compat_lower_of_spacing`) had no declaration site under `FormalSystem/`, `Tests/`
+  or `specs/evidence/` before this phase.
+- Scoped guarded build of `...RaySummary.LadderWindow` + `...RaySummary`: green,
+  `error:` count 0, `warning:` count 0.
+- Phase-end FULL guarded `lake build`: green (2974 jobs), 0 errors, 0 warnings; `.olean` newer
+  than source confirmed for `LadderWindow`, `RaySummary` and `FormalSystem`.
+- `lake exe mk_all --lib FormalSystem --check`: exit 0 ("No update necessary") after
+  regeneration. The regeneration itself rewrote exactly one tracked file, `FormalSystem.lean`
+  (+1 line), confirming the Scope Hypothesis's aggregator set.
+- `bash scripts/check-copyright-headers.sh`: exit 0, total 754 -> 755 (exactly +1).
+- `bash scripts/check-metalogic-cycles.sh`: exit 0, run rather than assumed; Assertion B reports
+  "upward import set is exactly the recorded 10 line(s)" — NO surplus edge, so the frozen
+  allowlist was not extended and `scripts/check-metalogic-cycles.sh` stayed out of this phase's
+  file list.
+- `bash scripts/typst-sync-check.sh --fix` then `--counts-only`: exit 0, `MISMATCH_COUNT=0`;
+  `typst/generated/status.typ` staged in this phase's commit.
+- `lean_verify` per name: standard profile, no `sorryAx`
+  (`kappa_collision_window_room`: `propext`, `Classical.choice`, `Quot.sound`; the three pin
+  statements: `propext`, `Quot.sound`).
+- Scope Hypothesis outcome: estimated 120-160 lines, ACTUAL 163 (`wc -l`) — a 3-line overshoot,
+  still far below the 1500 `longFile` ceiling, so no baseline is owed at this phase.
