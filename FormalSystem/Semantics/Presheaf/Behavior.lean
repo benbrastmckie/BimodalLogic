@@ -39,7 +39,8 @@ sections, the restriction map and both functoriality laws hold at **no** constra
 - `Beh.restrict`: the presheaf action at raw data — an offset `p`, a new length `l'`, and the
   three order facts `0 ≤ p`, `0 ≤ l'`, `p + l' ≤ l`.
 - `Beh.restrictTr`: the same action indexed by a morphism `f : Tr l' l` of the interval site.
-- `Beh.germ`, `Beh.ofGerm`: a section over `0` to its single state, and back.
+- `Beh.germ`, `Beh.ofGerm`: a section over `0` to its single state, and back;
+  `Beh.ofGermOfSerialLimit` is the latter's binder-free form
 - `Beh.germEquiv`: the *Germs* clause as an `Equiv`, `Beh F 0 ≃ F.WorldState`.
 
 ## Main Results
@@ -83,11 +84,13 @@ rather than translating a function defined everywhere. The proofs route through
 `PartialHistory.states_eq_of_time_eq` to move a state across `0 + r = r` and
 `p + (p' + r) = p + p' + r`, which is the only step a reader is likely to find surprising.
 
-**Frame constraints.** Only the *Germs* clause reaches them, and only through the `[F.IsRegular]`
-bundle on `ofGerm`, `germ_ofGerm`, `ofGerm_germ` and `germEquiv`: building a section from a bare
-world state needs `w ⇒_0 w`, which is the derived `nullity_identity`, resting on *Seriality* and
-*Limit*. `Beh`, `restrict`, `restrict_id`, `restrict_comp`, `restrictTr` and both site-indexed
-laws carry no bundling binder at all.
+**Frame constraints.** Only the *Germs* clause reaches them: building a section from a bare world
+state needs `w ⇒_0 w`, which is the derived `nullity_identity`, resting on *Seriality* and *Limit*
+and on neither of the other two constraints. That pair is taken as explicit hypotheses by
+`ofGermOfSerialLimit`, which is where the construction actually happens; `ofGerm`,
+`germ_ofGerm`, `ofGerm_germ` and `germEquiv` carry the `[F.IsRegular]` bundle only as a
+convenience and project exactly those two fields out of it. `Beh`, `restrict`, `restrict_id`,
+`restrict_comp`, `restrictTr` and both site-indexed laws carry no bundling binder at all.
 
 **Paper state: the source appendix is cut.** As for `Semantics/Presheaf/Site.lean`, the anchors
 cited below live in `app:Structure`, which the paper **cut in full** under an explicit
@@ -236,8 +239,20 @@ theorem restrictTr_comp {l'' l' l : Obj F.Duration} (f : Tr l' l) (g : Tr l'' l'
 def germ (τ : Beh F 0) : F.WorldState :=
   τ.val.states 0 (mem_dom τ (le_refl 0) (le_refl 0))
 
-/-- Every world state is a germ: the one-point section at it. -/
-def ofGerm (F : TaskFrame) [F.IsRegular] (w : F.WorldState) : Beh F 0 :=
+/--
+Every world state is a germ: the one-point section at it, with the two constraints the
+construction reaches taken as explicit hypotheses rather than projected out of a bundling
+instance.
+
+The single domain-side obligation is `w ⇒_0 w`, discharged by
+`FrameOver.nullity_identity_of_serial_limit` at the fibre. *Compositionality* and *Saturation*
+are reached by neither half of that theorem, so the one-point section exists over any frame
+satisfying *Seriality* and *Limit* alone.
+
+Constraints consumed: Seriality, Limit
+-/
+def ofGermOfSerialLimit (F : TaskFrame) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) (w : F.WorldState) : Beh F 0 :=
   ⟨{ domain := fun t => 0 ≤ t ∧ t ≤ 0
      nonempty_domain := ⟨0, le_refl 0, le_refl 0⟩
      states := fun _ _ => w
@@ -246,8 +261,19 @@ def ofGerm (F : TaskFrame) [F.IsRegular] (w : F.WorldState) : Beh F 0 :=
        have hs0 : s = 0 := le_antisymm hs.2 hs.1
        have ht0 : t = 0 := le_antisymm ht.2 ht.1
        subst hs0; subst ht0
-       simpa [sub_self] using (F.nullity_identity w w).mpr rfl },
+       simpa [sub_self] using (F.toFibre.nullity_identity_of_serial_limit hser hlim w w).mpr rfl },
    fun _ => Iff.rfl⟩
+
+/--
+Every world state is a germ: the one-point section at it. This is
+`ofGermOfSerialLimit` with the two constraints its term reaches projected out of the
+`[F.IsRegular]` instance; the instance's *Compositionality* and *Saturation* fields are not read,
+so the general form above applies to frames outside the regular class.
+
+Constraints consumed: Seriality, Limit
+-/
+def ofGerm (F : TaskFrame) [F.IsRegular] (w : F.WorldState) : Beh F 0 :=
+  ofGermOfSerialLimit F F.serial F.limit w
 
 /-- Taking the germ of the one-point section at `w` returns `w`. -/
 theorem germ_ofGerm (F : TaskFrame) [F.IsRegular] (w : F.WorldState) :

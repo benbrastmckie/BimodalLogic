@@ -280,19 +280,19 @@ a C34a delegation discharge, reusing the already-existing enabler twin.
 
 ---
 
-### Phase 4: `Presheaf/Behavior.lean` -- the binder-free germ constructor [NOT STARTED]
+### Phase 4: `Presheaf/Behavior.lean` -- the binder-free germ constructor [COMPLETED]
 
 **Goal**: Land `Beh.ofGerm_of_serial_limit`, the enabler the whole `Presheaf/Path.lean` cluster
 routes through, and reduce `Beh.ofGerm` to a delegating definition.
 
 **Tasks**:
-- [ ] Establish which binder-free nullity route is actually available at `TaskFrame` level: `FrameOver.nullity_identity_of_serial_limit` is confirmed present at `FormalSystem/Semantics/TaskFrame.lean:1323` taking `TaskFrame.Serial F.TaskRel` and `TaskFrame.Limit F.TaskRel`. If no `TaskFrame`-level wrapper exists, route through `F.toFibre` explicitly rather than adding a new lemma.
-- [ ] Add `Beh.ofGerm_of_serial_limit (F : TaskFrame) (hser : TaskFrame.Serial F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel) (w : F.WorldState) : Beh F 0`, the body of `ofGerm` with `(F.nullity_identity w w).mpr rfl` replaced by the binder-free route; mark it `Constraints consumed: Seriality, Limit`.
-- [ ] Reduce `Beh.ofGerm` to `Beh.ofGerm_of_serial_limit F F.serial F.limit w`, signature byte-identical, and give it the identical marker.
-- [ ] Confirm `Beh.germ_ofGerm` and `Beh.ofGerm_germ` still close by `rfl` / their existing proofs after the indirection; if either breaks, invert the direction (keep `ofGerm`'s body as the real definition and prove the twin equal to it) and record the inversion in place.
-- [ ] Verify the twin's span names `IsRegular` nowhere.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs, including the `Presheaf/` one.
-- [ ] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported.
+- [x] Establish which binder-free nullity route is actually available at `TaskFrame` level: `FrameOver.nullity_identity_of_serial_limit` is confirmed present at `FormalSystem/Semantics/TaskFrame.lean:1323` taking `TaskFrame.Serial F.TaskRel` and `TaskFrame.Limit F.TaskRel`. If no `TaskFrame`-level wrapper exists, route through `F.toFibre` explicitly rather than adding a new lemma.
+- [x] Add `Beh.ofGerm_of_serial_limit (F : TaskFrame) (hser : TaskFrame.Serial F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel) (w : F.WorldState) : Beh F 0`, the body of `ofGerm` with `(F.nullity_identity w w).mpr rfl` replaced by the binder-free route; mark it `Constraints consumed: Seriality, Limit`. *(deviation: altered -- landed as `Beh.ofGermOfSerialLimit`, lowerCamelCase. The planned snake_case name is a `def`, and `check-module-invariants.sh` C26 enforces lowerCamelCase for `def`/`abbrev` names, exempting only `theorem` -- which is why phase 3's two `theorem` twins named `_of_constraints` passed. The gate reported `FAIL C26 ... Behavior.lean:254: ofGerm_of_serial_limit` on the first run; the rename cleared it to `PASS C26 zero snake_case def/abbrev names`. Signature, hypothesis order, marker and delegation direction are exactly as planned. The same collision will hit every `def`-valued twin phases 5-7 name with a snake_case suffix -- `PathHom.id_of_serial_limit` in phase 5 below, and the `toPath`/`ofStep`/`ofPath` twins in phases 6-7 -- so those must use lowerCamelCase names for `def` twins and may keep snake_case only for `theorem` twins.)*
+- [x] Reduce `Beh.ofGerm` to `Beh.ofGermOfSerialLimit F F.serial F.limit w`, signature byte-identical, and give it the identical marker.
+- [x] Confirm `Beh.germ_ofGerm` and `Beh.ofGerm_germ` still close by `rfl` / their existing proofs after the indirection (both did, unchanged -- no inversion needed); if either breaks, invert the direction (keep `ofGerm`'s body as the real definition and prove the twin equal to it) and record the inversion in place.
+- [x] Verify the twin's span names `IsRegular` nowhere.
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs, including the `Presheaf/` one. *(deviation: altered -- `--emit-inventory` rewrote `FormalSystem/Semantics/Presheaf/README.md` and the root `README.md` only; `FormalSystem/README.md` needed no rewrite, as in phase 3.)*
+- [x] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported. *(drift reported: `formalsystem-line-count: committed=404660 live=404686`; re-stamped with `--fix`, re-checked clean.)*
 
 **Timing**: 1.0 hours
 

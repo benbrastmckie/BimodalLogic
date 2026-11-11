@@ -143,7 +143,7 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Semantics/Presheaf -->
 | File | Lines | Description |
 |------|------:|-------------|
-| `Behavior.lean` | 279 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
+| `Behavior.lean` | 305 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
 | `Determinism.lean` | 254 | The *Determinism* clause below the layering lock: `Separated` as injectivity of every restriction map, the choice-free (⇒) half, the world-to-section bridge `secOf`, and the converse's frame-side conclusion with `SingletonClasses` unfolded |
 | `Directed.lean` | 521 | The *Totality* and *Directed Gluing* clauses as wrappers on `thm:extension`: the translate `place`, the cut `ofWorld`, the directed union `directedSup`, both clauses in binder-free engine form with their instantiations, and the choice record |
 | `Duration.lean` | 425 | The categorical description of the site: the duration monoid `BD⁺` as `Dur`, the factorization category `Factorization`/`Factorization.Hom` with both halves of factorization-linearity, the twisted-arrow category `Tw` with its three category laws, the hom-set bijection `Tw.toTr`/`Tw.ofTr` with `Int(D)` and its functoriality, and the coverage transport `Tw.toTr_coverLeft`/`Tw.toTr_coverRight` that makes `Tw(BD⁺) ≅ Int(D)` an isomorphism of sites |
