@@ -1,0 +1,69 @@
+file	line	decl	binder	c34a_discharge	closure	transitive	direct	manu	verdict	corrected_marker
+FormalSystem/NomicLanguage/NomicFour.lean	93	NomicLanguage.exists_refutation_of_not_uniform	IsRegular	None	3552	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/NomicLanguage/NomicFour.lean	196	Semantics.four_validOn_iff_uniform	IsRegular	None	3555	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/NomicLanguage/NomicFour.lean	218	Semantics.nomic_iff_box_validOn_iff_uniform	IsRegular	None	3556	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/NomicLanguage/NomicFour.lean	244	Semantics.not_four_nomicValid	-	delegation	5055	Comp,Ser,Lim,Sat	-	2	UNRESOLVED	(unchanged)
+FormalSystem/NomicLanguage/NomicTenseFree.lean	159	NomicLanguage.tenseFree_satSet_iff	IsRegular	None	2636	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/NomicLanguage/NomicTenseFree.lean	210	NomicLanguage.nomic_iff_box_tenseFree	IsRegular	None	2637	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/NomicLanguage/NomicTenseFree.lean	230	NomicLanguage.nomic_k_tenseFree	IsRegular	None	2637	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/NomicLanguage/NomicTenseFree.lean	250	NomicLanguage.nomic_t_tenseFree	IsRegular	None	2637	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/NomicLanguage/NomicTenseFree.lean	266	NomicLanguage.nomic_four_tenseFree	IsRegular	None	2637	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/NomicLanguage/NomicTenseFree.lean	282	NomicLanguage.nomic_five_tenseFree	IsRegular	None	2637	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/NomicLanguage/NomicTenseFree.lean	299	NomicLanguage.nomic_b_tenseFree	IsRegular	None	2637	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/NomicLanguage/NomicValidity.lean	96	Semantics.nomic_serial	IsRegular	None	2604	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/ConeUnravelling.lean	885	Semantics.base_taskRel_eq_ofStepRel	IsRegular	None	1967	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/ConeUnravelling.lean	917	Semantics.coneFrame	IsRegular	None	6178	Comp,Ser,Lim,Sat	-	1	UNRESOLVED	(unchanged)
+FormalSystem/Semantics/ConeUnravelling.lean	967	Semantics.coneF_twoWayBounded	IsRegular	None	6193	Comp,Ser,Lim,Sat	-	1	UNRESOLVED	(unchanged)
+FormalSystem/Semantics/ConeUnravelling.lean	1046	Semantics.exists_coneUnravelling	IsRegular	None	7444	Comp,Ser,Lim,Sat	-	2	UNRESOLVED	(unchanged)
+FormalSystem/Semantics/Correspondence/RigidityReal.lean	195	Semantics.FrameOver.static_of_countable	IsRegular	None	15840	Comp,Ser,Lim,Sat	Ser	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Extension/Completion.lean	325	Semantics.PartialHistory.completion_of_isRegular	IsRegular	None	2320	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Extension/Extension.lean	204	Semantics.PartialHistory.isTotal_of_isMax	IsRegular	None	2324	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Extension/Extension.lean	239	Semantics.PartialHistory.extension	IsRegular	None	2552	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Extension/Extension.lean	266	Semantics.PartialHistory.isRestriction_of_isRegular	IsRegular	None	2554	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Extension/Step.lean	198	Semantics.PartialHistory.step	IsRegular	None	2314	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Frame.lean	196	Semantics.NomicFrame.occurrence	IsRegular	None	2581	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Recovery.lean	81	Semantics.PartialHistory.exists_worldHistory_two_point	IsRegular	None	2561	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Recovery.lean	126	Semantics.NomicFrame.taskRel_imp_of_lawHist_eq	IsRegular	None	2583	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Recovery.lean	160	Semantics.NomicFrame.lawHist_eq_iff_taskRel_eq	IsRegular	None	2584	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Recovery.lean	192	Semantics.NomicFrame.static_iff_taskRel_eq	IsRegular	None	2587	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Uniformity.lean	108	Semantics.NomicFrame.exists_mem_HF_eq	IsRegular	None	2586	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Uniformity.lean	125	Semantics.NomicFrame.lawHist_nonempty	IsRegular	None	2582	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Uniformity.lean	196	Semantics.NomicFrame.uniform_of_transAt	IsRegular	None	2591	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Uniformity.lean	223	Semantics.NomicFrame.uniform_of_symmAt	IsRegular	None	2590	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Uniformity.lean	245	Semantics.NomicFrame.uniform_of_euclAt	IsRegular	None	2591	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Uniformity.lean	315	Semantics.NomicFrame.uniform_iff_taskRel_indep	IsRegular	None	2590	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Uniformity.lean	366	Semantics.NomicFrame.nomic_uniform	IsRegular	None	2610	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Uniformity.lean	404	Semantics.NomicFrame.transAtState_iff	IsRegular	None	2583	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Uniformity.lean	423	Semantics.NomicFrame.uniform_iff_forall_transAtState	IsRegular	None	2589	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Nomic/Witnesses.lean	512	Semantics.NomicHierarchy.F2.lawful	-	delegation	4794	Comp,Ser,Lim	-	2	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Nomic/Witnesses.lean	626	Semantics.nomic_hierarchy	-	delegation	4898	Comp,Ser,Lim	-	2	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Nomic/ZTime.lean	118	Semantics.NomicFrame.ofStepFamily_isRegular	-	None	4435	-	-	2	OVER-REPORTS	None
+FormalSystem/Semantics/Nomic/ZTime.lean	139	Semantics.NomicFrame.mem_lawHist_iff_isStepPath	IsRegular	None	2052	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Nomic/ZTime.lean	152	Semantics.NomicFrame.mem_lawHist_ofStepFamily_iff	-	delegation	4494	Comp,Ser,Lim	-	2	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Nomic/ZTime.lean	167	Semantics.NomicFrame.lawHist_mono_of_le	-	delegation	4495	Comp,Ser,Lim	-	2	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Directed.lean	295	Semantics.Presheaf.totality_clause	IsRegular	None	2604	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Presheaf/Directed.lean	307	Semantics.Presheaf.totality_clause_site	IsRegular	None	2614	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Presheaf/Directed.lean	508	Semantics.Presheaf.directed_gluing_clause	IsRegular	None	2616	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Presheaf/Path.lean	422	Semantics.Presheaf.PathHom.id	IsRegular	None	396	Ser,Lim	-	0	OVER-REPORTS	Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	450	Semantics.Presheaf.PathHom.id_len	IsRegular	None	398	Ser,Lim	-	0	OVER-REPORTS	Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	459	Semantics.Presheaf.PathHom.id_comp	IsRegular	None	589	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	491	Semantics.Presheaf.PathHom.comp_id	IsRegular	None	586	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	706	Semantics.Presheaf.PathCat.instCategory	IsRegular	None	646	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	720	Semantics.Presheaf.PathCat.len	IsRegular	None	659	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	729	Semantics.Presheaf.PathCat.len_map	IsRegular	None	662	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	908	Semantics.Presheaf.PathCat.len_isDiscreteConduche	IsRegular	None	703	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	1081	Semantics.Presheaf.Beh.ofAdjacentWindow	IsRegular	None	1348	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	1107	Semantics.Presheaf.Beh.ofAdjacentWindow_states	IsRegular	None	1351	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	1119	Semantics.Presheaf.beh_int_iff_adjacent_window	IsRegular	None	1354	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	1163	Semantics.Presheaf.PathHom.toPathAux	IsRegular	None	1282	-	-	0	OVER-REPORTS	None
+FormalSystem/Semantics/Presheaf/Path.lean	1196	Semantics.Presheaf.PathHom.toPath	IsRegular	None	1301	-	-	0	OVER-REPORTS	None
+FormalSystem/Semantics/Presheaf/Path.lean	1205	Semantics.Presheaf.PathHom.toPath_length	IsRegular	None	1313	-	-	0	OVER-REPORTS	None
+FormalSystem/Semantics/Presheaf/Path.lean	1230	Semantics.Presheaf.PathHom.toPath_id	IsRegular	None	1341	Ser,Lim	-	0	OVER-REPORTS	Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	1242	Semantics.Presheaf.PathHom.toPath_comp	IsRegular	None	1488	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	1435	Semantics.Presheaf.PathHom.ofStep	IsRegular	None	2091	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	1453	Semantics.Presheaf.PathHom.ofPath	IsRegular	None	2210	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	1467	Semantics.Presheaf.PathHom.ofPath_toPath	IsRegular	None	2254	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	1528	Semantics.Presheaf.PathHom.toPath_ofPath	IsRegular	None	2254	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Path.lean	1545	Semantics.Presheaf.PathHom.pathEquiv	IsRegular	None	2270	Comp,Ser,Lim	-	0	OVER-REPORTS	Compositionality, Seriality, Limit
+FormalSystem/Semantics/Presheaf/Worlds.lean	387	Semantics.Presheaf.lim_nonempty	IsRegular	None	2619	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
+FormalSystem/Semantics/Validity.lean	289	Semantics.TaskFrame.not_validOn_bot	IsRegular	None	2587	Comp,Ser,Lim,Sat	-	0	ACCURATE(prov.)	(unchanged)
