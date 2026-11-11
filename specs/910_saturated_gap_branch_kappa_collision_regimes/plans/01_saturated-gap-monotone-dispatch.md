@@ -1,7 +1,7 @@
 # Implementation Plan: Task #910
 
 - **Task**: 910 - Dispatch or explicitly exclude the SATURATED-GAP third branch of `kappa_collision_regimes`, which neither landed cell inclusion addresses in either direction
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: 909 (landed: `exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past`)
 - **Research Inputs**: None (no `research_artifact` on this dispatch; see "Why no research round" below)
@@ -238,7 +238,7 @@ blocking pre-commit surface even where their logical dependencies permit paralle
 table records the logical dependency structure; the serialization is a generated-file constraint,
 not a logical one.
 
-### Phase 1: The Free-Register Raise [NOT STARTED]
+### Phase 1: The Free-Register Raise [COMPLETED]
 
 **Goal**: `exists_ladderPath_through_free_register_shifted_of_pend_past` and
 `free_register_anchor_clause_monotone_required` compile in a new `section FreeRegister` of

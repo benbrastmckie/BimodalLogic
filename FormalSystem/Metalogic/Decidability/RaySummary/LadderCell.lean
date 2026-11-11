@@ -219,6 +219,140 @@ theorem cellAt_subset_of_common_shift_of_pend_past {Q : Type} [Fintype Q] [Nonem
 
 end CommonShift
 
+/-! ## The free-register sub-regime -/
+
+section FreeRegister
+
+variable {Q : Type} [Fintype Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **THE REGIME-A ASSEMBLY WITH THE REGISTER DELIVERED AT A FREE ANCHOR.** The landed
+`exists_ladderPath_through_shifted_of_pend_past` raises `z`'s countdown by exactly `m · (P + 1)`
+and HOLDS the register; `exists_ladderPath_through_common_shifted_of_pend_past` raises both by
+that same amount. This raises the countdown by `m · (P + 1)` and delivers the register at ANY
+prescribed `n₀` between `nxtAt g z` and `cntAt g z + m · (P + 1)`. The walk and every countdown
+are the landed path's, unchanged: only the deadline register is rebuilt, by the freed-anchor lift
+`exists_ladderPath_of_walk_nxt_at` at `z` with the anchor value `n₀`.
+
+Exactly ONE step differs from the common-shift assembly: the anchor VALUE passed to
+`exists_ladderPath_of_walk_nxt_at` is `n₀` rather than `nxtAt g z + m · (P + 1)`. The anchor
+clause then closes by `omega` from six facts — the pin distance (`hpin_far`: every pin of the
+raised path lies beyond `z + cntAt g z + m · (P + 1)`), the pin identity
+(`cntAt_eq_nxtAt_of_idle_pend`), the register's two-sided Lipschitz bound
+(`nxtAt_lipschitz_two_sided`), the pending-forever gap `hgap`, and the two bounds on `n₀`.
+
+**Which bound pays for which direction.** The LOWER bound `nxtAt g z ≤ n₀` is what the Lipschitz
+direction needs: it keeps the prescribed anchor from sitting so far below the register's value at
+`z` that the pin's own value, bounded against that value by the pin distance, overshoots `n₀` by
+more than the distance allows. The UPPER bound `n₀ ≤ cntAt g z + m · (P + 1)` is what the pin
+distance needs: a pin beyond `z + cntAt g z + m · (P + 1)` is at least that far away, so an
+anchor within that same amount of `z`'s countdown cannot be overshot in the other direction.
+Neither bound is decorative: `free_register_anchor_clause_monotone_required` compiles the lower
+one as non-removable.
+
+At `n₀ := nxtAt g z + m · (P + 1)` — admissible by `hgap`, which gives
+`nxtAt g z ≤ nxtAt g z + m · (P + 1) ≤ cntAt g z + m · (P + 1)` — this recovers
+`exists_ladderPath_through_common_shifted_of_pend_past` hypothesis for hypothesis; at
+`n₀ := nxtAt g z` it recovers the landed register-holding raise. -/
+theorem exists_ladderPath_through_free_register_shifted_of_pend_past
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ)
+    (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
+    (hgap : nxtAt g z + 2 ≤ cntAt g z) (hTc : Tc ≤ cntAt g z) (m : ℕ) (n₀ : ℕ)
+    (hlo : nxtAt g z ≤ n₀) (hhi : n₀ ≤ cntAt g z + m * (P + 1)) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' z = objAt g z ∧ cntAt g' z = cntAt g z + m * (P + 1) ∧
+      nxtAt g' z = n₀ ∧
+      ∀ (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+        (∀ t : ℤ, σ.state t = (t, g t)) →
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+  classical
+  -- the landed raise, with the register held
+  obtain ⟨g₁, hg₁, hobj₁, hcnt₁, hnxt₁, hty₁⟩ :=
+    exists_ladderPath_through_shifted_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno g hg z
+      hpast hTc m
+  have hz₁ : pend (objAt g₁ z) = true := by rw [hobj₁]; exact hpast z le_rfl
+  -- the raised path is pending forever into its own past, and its region through `z` is rigid
+  have hpast₁ : ∀ p : ℤ, p ≤ z → pend (objAt g₁ p) = true :=
+    pend_past_of_nxtAt_lt g₁ hg₁ z hz₁ (by rw [hnxt₁, hcnt₁]; omega)
+  have hpin_far : ∀ v : ℤ, pend (objAt g₁ v) = false →
+      z + (cntAt g z : ℤ) + (m * (P + 1) : ℕ) < v := fun v hv => by
+    by_contra hle
+    rw [not_lt] at hle
+    rcases le_or_gt v z with hvz | hvz
+    · exact Bool.false_ne_true (hv.symm.trans (hpast₁ v hvz))
+    · have := (cntAt_sub_of_pend g₁ hg₁ z hz₁ (v - z).toNat (by rw [hcnt₁]; omega)).1
+      rw [show z + (((v - z).toNat : ℕ) : ℤ) = v by omega] at this
+      exact Bool.false_ne_true (hv.symm.trans this)
+  -- the register, rebuilt at `z` with the anchor at the prescribed `n₀`
+  have hw : ∀ v, step (objAt g₁ v) (objAt g₁ (v + 1)) = true := fun v => objAt_step g₁ hg₁ v
+  have hidle : ∀ v, pend (objAt g₁ v) = false → cntAt g₁ v = 0 := fun v h =>
+    cntAt_eq_zero_of_idle g₁ hg₁ v h
+  have hpp : ∀ v, pend (objAt g₁ v) = true → pend (objAt g₁ (v + 1)) = true →
+      cntAt g₁ (v + 1) + 1 = cntAt g₁ v := fun v h0 h1 => cntAt_succ_of_pend_pend g₁ hg₁ v h0 h1
+  have hpi : ∀ v, pend (objAt g₁ v) = true → pend (objAt g₁ (v + 1)) = false →
+      cntAt g₁ v = 0 := fun v h0 h1 => (cntAt_eq_zero_of_pend_idle g₁ hg₁ v h0 h1).1
+  have hpins : ∀ s v, pend (objAt g₁ s) = false → pend (objAt g₁ (s + 1)) = true →
+      pend (objAt g₁ v) = false → pend (objAt g₁ (v + 1)) = true →
+      ((cntAt g₁ (s + 1) : ℤ) - cntAt g₁ (v + 1)).natAbs ≤ (s - v).natAbs :=
+    fun s v hs0 hs1 hv0 hv1 => pinCompat_of_ladderPath g₁ hg₁ s v hs0 hs1 hv0 hv1
+  have hn₀ : ∀ v, pend (objAt g₁ v) = false → pend (objAt g₁ (v + 1)) = true →
+      ((cntAt g₁ (v + 1) : ℤ) - n₀).natAbs ≤ (v - z).natAbs :=
+    fun v h0 h1 => by
+    have hfar := hpin_far v h0
+    have hpin : cntAt g₁ (v + 1) = nxtAt g₁ v := cntAt_eq_nxtAt_of_idle_pend g₁ hg₁ v h0 h1
+    have hlip := nxtAt_lipschitz_two_sided g₁ hg₁ v z
+    rw [hnxt₁] at hlip
+    rw [hpin]
+    have hbridge : ((m * (P + 1) : ℕ) : ℤ) = (m : ℤ) * ((P : ℤ) + 1) := by push_cast; ring
+    omega
+  obtain ⟨g₂, hg₂, hobj₂, hcnt₂, hnxt₂⟩ :=
+    exists_ladderPath_of_walk_nxt_at (objAt g₁) (cntAt g₁) z n₀
+      hw hidle hpp hpi hpins hn₀
+  refine ⟨g₂, hg₂, by rw [hobj₂, hobj₁], by rw [hcnt₂, hcnt₁], hnxt₂, fun σ σ' hσ hσ' => ?_⟩
+  obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
+  have e : tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+      = tpOf (ladderModel step pend fwd bwd lab) φ σ₁ z :=
+    tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ' σ₁
+      (fun t => by rw [add_zero]; exact hσ' t) (fun t => by rw [add_zero]; exact hσ₁ t)
+      hobj₂ hno z
+  rw [e, hty₁ σ σ₁ hσ hσ₁]
+
+/-- **THE LOWER BOUND ON THE FREE ANCHOR IS NOT REMOVABLE.** The anchor clause
+`exists_ladderPath_through_free_register_shifted_of_pend_past` discharges does NOT follow from the
+pin distance, the Lipschitz bound, the pending-forever gap and the UPPER bound on the anchor
+alone: dropping the lower bound `nxtAt g z ≤ n₀` makes it false. The arithmetic witness is
+`X = 19`, `nz = 8`, `cz = 10`, `mP = 0`, `n₀ = 0`, `d = 11`, under the correspondence
+`X ↔ nxtAt g₁ v` (the register at a pin), `nz ↔ nxtAt g z`, `cz ↔ cntAt g z`,
+`mP ↔ m · (P + 1)`, `d ↔ v − z` (the pin's distance from the anchor position): every other
+hypothesis holds (`10 < 11`, `(19 − 8).natAbs = 11 ≤ 11`, `8 + 2 ≤ 10`, `0 ≤ 10`) while the
+conclusion `(19 − 0).natAbs = 19 ≤ 11` fails.
+
+Which direction fails, and what paying it would cost. The failure is in the UPPER direction of
+the clause: the pin's register value overshoots a LOWERED anchor by more than the pin distance
+allows, and on the raised path nothing bounds the register at a far pin from above. Paying that
+cost would require a forward-slack hypothesis at the LOWER pair — a hypothesis family no landed
+schema carries — so the free-register raise reaches the MONOTONE side of a collision only. The
+antitone side is excluded, not refuted: see `MonotoneCollisionDisplacement` and
+`kappa_collision_antitone_residue_nonvacuous` below. -/
+theorem free_register_anchor_clause_monotone_required :
+    ¬ ∀ X nz cz mP n₀ d : ℤ, 0 ≤ X → 0 ≤ mP → 0 ≤ n₀ →
+        cz + mP < d → (X - nz).natAbs ≤ d.natAbs → nz + 2 ≤ cz →
+        n₀ ≤ cz + mP → (X - n₀).natAbs ≤ d.natAbs := by
+  intro h
+  have hbad := h 19 8 10 0 0 11 (by omega) (by omega) (by omega) (by omega) (by omega)
+    (by omega) (by omega)
+  omega
+
+end FreeRegister
+
 /-! ## The collision case split -/
 
 section Collision
