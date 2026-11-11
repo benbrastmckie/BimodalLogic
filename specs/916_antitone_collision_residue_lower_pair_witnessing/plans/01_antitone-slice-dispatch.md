@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Dispatch or compile a refutation of the ANTITONE slice of a `kappa`-class collision — the complement that `cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack` excludes in its own quantifier
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours
 - **Dependencies**: None (every predecessor artifact is landed and compiled; parent task 910)
 - **Research Inputs**: `specs/916_antitone_collision_residue_lower_pair_witnessing/reports/01_antitone-collision-residue-witnessing.md`
@@ -281,7 +281,7 @@ so two phases running concurrently would collide on that one blocking pre-commit
 where their logical dependencies permit parallelism. The wave table records the logical
 dependency structure; the serialization is a generated-file constraint, not a logical one.
 
-### Phase 1: Name the Antitone Shape and Land Its Split Records [NOT STARTED]
+### Phase 1: Name the Antitone Shape and Land Its Split Records [COMPLETED]
 
 **Goal**: `AntitoneCollisionDisplacement`, the named dichotomy, the descent destructor and the
 two non-vacuity witnesses compile in `LadderCell.lean`'s existing `section Collision`, so the

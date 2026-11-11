@@ -647,6 +647,96 @@ theorem kappa_collision_monotone_or_antitone (Tc Tn P B c n c' n' : ℕ)
     · exact Or.inl (Or.inr ⟨k, hc, hn⟩)
     · exact Or.inr (Or.inr ⟨k, hc, hn⟩)
 
+/-- **THE ANTITONE COMPLEMENT, NAMED.** The exact disjunction
+`kappa_collision_monotone_or_antitone` already produces as its second alternative: the countdown
+displaced by a multiple of `P + 1` in one direction while the register moves STRICTLY the other
+way. This is definitionally that alternative, introduced so the exhaustiveness of the dichotomy
+can be read off a name rather than off an unfolded disjunction — see
+`kappa_collision_monotone_or_antitone_named`.
+
+It is the negation of `MonotoneCollisionDisplacement` only up to the countdown displacement
+itself: a pair whose countdowns are not congruent mod `P + 1` satisfies neither predicate, and no
+such pair is a collision (`kappa_eq_components`' countdown residue). On collisions the two are
+complementary, which is exactly what the named dichotomy states. -/
+def AntitoneCollisionDisplacement (P c n c' n' : ℕ) : Prop :=
+  (∃ m : ℕ, c' = c + m * (P + 1) ∧ n' < n) ∨ (∃ m : ℕ, c = c' + m * (P + 1) ∧ n < n')
+
+/-- **THE DICHOTOMY, OVER THE TWO NAMED PREDICATES.** `kappa_collision_monotone_or_antitone`
+read through `AntitoneCollisionDisplacement`. The two theorems are THE SAME THEOREM: the
+conclusion here is definitionally the landed one, and the proof is `exact` on it. The landed
+statement and body are untouched; this is a sibling that gives the second alternative a name, so
+a consumer dispatching on the dichotomy need not unfold a nested disjunction to see that the
+slices are exhaustive.
+
+No `2 ≤ B` hypothesis, for the same reason the landed form carries none: only the countdown
+residue is consumed. -/
+theorem kappa_collision_monotone_or_antitone_named (Tc Tn P B c n c' n' : ℕ)
+    (hk : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')) :
+    MonotoneCollisionDisplacement P c n c' n' ∨
+      AntitoneCollisionDisplacement P c n c' n' :=
+  kappa_collision_monotone_or_antitone Tc Tn P B c n c' n' hk
+
+/-- **THE REGISTER'S DESCENT ACROSS A COLLISION IS A MULTIPLE OF `P + 1`.** The register residue
+of `kappa_eq_components`, read through `Nat.modEq_iff_dvd'` at `n' ≤ n` exactly as
+`kappa_collision_monotone_or_antitone` reads the countdown residue.
+
+What this record is for. The antitone slice splits along the comparison of the descent `n − n'`
+against the countdown displacement `m · (P + 1)`, and this destructor is what makes that a
+comparison of two MULTIPLIERS — `j` against `m` — rather than of a raw register difference
+against a product. The BOUNDED sub-slice (`n − n' ≤ m · (P + 1)`, i.e. `j ≤ m`) is reached with
+no upward hypothesis at all; the DEEP-DESCENT residue (`j > m`) is what pays the lower pair. Both
+halves are non-empty: `kappa_collision_antitone_bounded_descent_nonvacuous` and
+`kappa_collision_antitone_deep_descent_nonvacuous`. -/
+theorem kappa_collision_antitone_descent_multiple (Tc Tn P B c n c' n' : ℕ)
+    (hk : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')) (hlt : n' < n) :
+    ∃ j : ℕ, n = n' + j * (P + 1) := by
+  obtain ⟨-, -, -, hrn, -⟩ := kappa_eq_components Tc Tn P B c n c' n' hk
+  obtain ⟨j, hj⟩ := (Nat.modEq_iff_dvd' (le_of_lt hlt)).mp hrn.symm
+  rw [Nat.mul_comm] at hj
+  exact ⟨j, by omega⟩
+
+/-- **THE BOUNDED-DESCENT HALF OF THE ANTITONE SLICE IS NON-EMPTY INSIDE THE REGIME.** At
+`Tc = Tn = P = 0` and `B = 2` the pairs `(4, 2)` and `(6, 0)` collide inside the pending-forever
+regime above the threshold, are NOT monotone, and have the countdown displaced by `m = 2` while
+the register falls by exactly `2 = m · (P + 1)` — so the descent does not exceed what the raise
+already buys.
+
+The significant fact this record carries. This is the PREDECESSOR'S OWN non-vacuity witness:
+`kappa_collision_antitone_residue_nonvacuous` exhibits this very pair as inhabiting the excluded
+slice. It lies in the half that needs no upward forward-slack hypothesis whatever — see
+`cellLE_zero_const_of_kappa_eq_antitone_bounded_of_forwardSlack`, which carries one witnessing
+hypothesis and none upward. So the compiled demonstration that the excluded slice was non-empty
+was, all along, a demonstration about its CHEAPER half. -/
+theorem kappa_collision_antitone_bounded_descent_nonvacuous :
+    ∃ Tc Tn P B c n c' n' m : ℕ, 2 ≤ B ∧
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') ∧
+      n + 2 ≤ c ∧ n' + 2 ≤ c' ∧ Tc ≤ c ∧ Tc ≤ c' ∧
+      ¬ MonotoneCollisionDisplacement P c n c' n' ∧
+      c' = c + m * (P + 1) ∧ n' < n ∧ n - n' ≤ m * (P + 1) := by
+  refine ⟨0, 0, 0, 2, 4, 2, 6, 0, 2, by omega, by decide, by omega, by omega, by omega, by omega,
+    ?_, by omega, by omega, by omega⟩
+  rintro (⟨m, h1, h2⟩ | ⟨m, h1, h2⟩) <;> omega
+
+/-- **THE DEEP-DESCENT RESIDUE IS NON-EMPTY TOO.** At `Tc = Tn = P = 0` and `B = 2` the pairs
+`(10, 8)` and `(11, 0)` collide inside the pending-forever regime above the threshold, are NOT
+monotone, and have the countdown displaced by `m = 1` while the register falls by `8` — strictly
+more than the `m · (P + 1) = 1` the raise buys.
+
+What this record is for. The bounded sub-slice does NOT exhaust the antitone slice, so the
+lower-pair forward-slack route is not decorative: there are collisions in the slice at which the
+truncated upward amount `(n − n') − m · (P + 1)` is strictly positive and the hypothesis
+`cellAt_subset_of_antitone_register_shift_of_pend_past` carries is doing real work. Compare
+`kappa_collision_antitone_bounded_descent_nonvacuous` for the other half. -/
+theorem kappa_collision_antitone_deep_descent_nonvacuous :
+    ∃ Tc Tn P B c n c' n' m : ℕ, 2 ≤ B ∧
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') ∧
+      n + 2 ≤ c ∧ n' + 2 ≤ c' ∧ Tc ≤ c ∧ Tc ≤ c' ∧
+      ¬ MonotoneCollisionDisplacement P c n c' n' ∧
+      c' = c + m * (P + 1) ∧ n' < n ∧ m * (P + 1) < n - n' := by
+  refine ⟨0, 0, 0, 2, 10, 8, 11, 0, 1, by omega, by decide, by omega, by omega, by omega,
+    by omega, ?_, by omega, by omega, by omega⟩
+  rintro (⟨m, h1, h2⟩ | ⟨m, h1, h2⟩) <;> omega
+
 /-- **THE DISPATCHED MONOTONE SLICE GENUINELY REACHES THE SATURATED-GAP BRANCH.** At
 `Tc = Tn = P = 0` and `B = 2` the pairs `(2, 0)` and `(4, 1)` collide inside the pending-forever
 regime at countdowns above the threshold (`0 + 2 ≤ 2`, `1 + 2 ≤ 4`, `0 ≤ 2`, `0 ≤ 4`), their
