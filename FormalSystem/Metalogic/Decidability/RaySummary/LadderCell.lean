@@ -19,7 +19,7 @@ reading of the landed regime-A assembly `exists_ladderPath_through_shifted_of_pe
 the register's anchor moved, or of the landed class destructors `kappa_eq_components`,
 `eq_or_both_ge_of_min_eq` and `clipIdx_regime_of_eq`.
 
-The layer has three parts.
+The layer has four parts.
 
 The COMMON-SHIFT INCLUSION. `LadderChain.lean`'s `cellAt_subset_of_shift_of_pend_past` covers
 the sub-regime in which the register is held (`n' = n`) and the countdown rises by a multiple of
@@ -34,6 +34,23 @@ anchor clause closes from the widened window alone. ONE direction only: no downw
 claimed here either, and the reserved name `cellLE_zero_const_of_kappa_eq` is claimed by nothing
 in this module.
 
+The FREE-REGISTER RAISE. `exists_ladderPath_through_free_register_shifted_of_pend_past` is the
+same assembly once more with the anchor VALUE left free: the countdown raised by exactly
+`m · (P + 1)`, the object state and the realized stab-free type held, and the register delivered
+at ANY prescribed `n₀` with `nxtAt g z ≤ n₀ ≤ cntAt g z + m · (P + 1)`. The two bounds are not
+decorative and they pay for opposite directions of the one anchor clause: the LOWER bound is what
+the register's Lipschitz bound needs, the UPPER bound what the pin distance needs.
+`free_register_anchor_clause_monotone_required` compiles the lower bound as NON-REMOVABLE, at the
+arithmetic witness `X = 19`, `nz = 8`, `cz = 10`, `mP = 0`, `n₀ = 0`, `d = 11` — which is the
+compiled reason this raise reaches the MONOTONE side of a collision and no further. Two cell
+inclusions read it: `cellAt_subset_of_free_register_shift_of_pend_past` upward, consuming NO
+forward slack because the widened window pays for the anchor, and
+`cellAt_subset_of_free_register_shift_of_pend_past_rev` downward (path level:
+`mem_cellAt_of_free_register_shift_of_hasForwardSlack_exact`), at the deletion's own amount
+`m · (P + 1) + (n' − n)` with the room bound `n' + (n' − n) ≤ c`. At `n₀ = nxtAt g z` the raise is
+the landed register-holding one and at `n₀ = nxtAt g z + m · (P + 1)` it is the common-shift one,
+hypothesis for hypothesis.
+
 The COLLISION CASE SPLIT. `kappa_collision_regimes` reads a collision
 `kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')` as a disjunction over named ARITHMETIC
 facts — not over cells — so that a cell-level consumer may dispatch on it. It has THREE branches,
@@ -45,8 +62,18 @@ alternatives alone — is NOT a consequence of the three destructors together wi
 `2 ≤ B`: `kappa_collision_two_regimes_refuted` below is the compiled refutation, at
 `Tc = Tn = P = 0`, `B = 2` and the pairs `(0, 2)`, `(0, 3)`. The refutation is scoped to that
 derivation and says nothing about the two-branch form under full `ParamsOk`, whose `(K1)`, `(K2)`
-and `(K4)` quantify the formula and are not read here. The saturated branch is the honest
-residue: neither landed inclusion addresses it.
+and `(K4)` quantify the formula and are not read here. The saturated branch is SPLIT, by
+`MonotoneCollisionDisplacement`, into a DISPATCHED monotone
+slice — register and countdown displaced in the same direction, closed in both directions by the
+two free-register inclusions above — and an EXCLUDED antitone slice. The split is not a
+convenience and three compiled records carry it: `kappa_collision_monotone_or_antitone` makes the
+two slices an EXHAUSTIVE dichotomy over collisions, with no third case;
+`kappa_collision_antitone_residue_nonvacuous` shows the excluded slice is NON-EMPTY inside the
+pending-forever regime above the threshold (`(4, 2)` against `(6, 0)` at `Tc = Tn = P = 0`,
+`B = 2`); and `kappa_collision_monotone_saturated_gap_nonvacuous` shows the dispatched slice
+genuinely reaches branch 3 rather than relabelling the landed coverage — it covers `(2, 0)`
+against `(4, 1)`, the exact pair `kappa_collision_two_regimes_refuted_of_pend_gap` pins as
+surviving regime restriction and reached by no landed inclusion in either direction.
 
 The FORWARD-SLACK DOWNWARD HALF. A downward inclusion cannot be stated on the STATE under a
 path-level regime (`ClimbWitness.hasForwardSlack_refuted_unconditional`), so `ForwardSlackWitnessed`
@@ -58,6 +85,14 @@ give a depth-`0` cell-EQUALITY schema:
 * the EQUAL-REGISTER pair — `cellAt_subset_of_shift_of_pend_past_rev` against the landed
   `cellAt_subset_of_shift_of_pend_past`, giving `CellLEZeroConstOfKappaEqForwardSlack` and its
   theorem, which carries the equal-register restriction `n = n'`;
+* the MONOTONE pair — `cellAt_subset_of_free_register_shift_of_pend_past_rev` (whose witnessing
+  path work is `mem_cellAt_of_free_register_shift_of_hasForwardSlack_exact`, resting on the same
+  register-LOWERING deletion at `k := n' − n`) against
+  `cellAt_subset_of_free_register_shift_of_pend_past`, giving
+  `CellLEZeroConstOfKappaEqMonotoneForwardSlack` and its theorem, which carries NEITHER the
+  equal-register restriction NOR the common-shift displacement — the monotone shape stands in
+  their place, and the ANTITONE complement is excluded by that same hypothesis, visibly, in the
+  schema's own quantifier;
 * the COMMON-SHIFT pair — `cellAt_subset_of_common_shift_of_pend_past_rev` (whose witnessing path
   work is `mem_cellAt_of_common_shift_of_hasForwardSlack_exact`, resting on `LadderChain.lean`'s
   register-LOWERING deletion `exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past`)
@@ -69,10 +104,17 @@ The register-lowering deletion is what makes the second pair possible: the lande
 the register, so the equal-register restriction on the first schema is forced by the asymmetry
 rather than by the mathematics. The price of moving the register is a DOUBLED regime amount
 `m · (P + 1) + m · (P + 1)` and a room bound `n + (m · (P + 1) + m · (P + 1)) ≤ c`, both carried
-explicitly. The saturated branch remains the honest residue, in both schemas, and the reserved
-name `cellLE_zero_const_of_kappa_eq` is claimed by nothing in this module: both schemas are
-strictly stronger in hypotheses than the reserved statement and bear on its truth value in
-neither direction.
+explicitly; with the register free the price is `m · (P + 1) + (n' − n)` and
+`n' + (n' − n) ≤ c`, and the two landed amounts are its `n' = n` and `n' = n + m · (P + 1)`
+instances. Of the saturated branch, the MONOTONE slice is dispatched in both directions and the
+ANTITONE slice is EXCLUDED — by a hypothesis visible in the third schema's quantifier, not
+tacitly: exhaustive against the dispatched slice by `kappa_collision_monotone_or_antitone`,
+non-empty by `kappa_collision_antitone_residue_nonvacuous`. Nothing here claims it is
+unreachable; the route it would need is named and claimed in neither direction in
+`free_register_anchor_clause_monotone_required`'s docstring. No landed schema is retired and no
+landed signature is touched. The reserved name `cellLE_zero_const_of_kappa_eq` is claimed by
+nothing in this module: all three schemas are strictly stronger in hypotheses than the reserved
+statement and bear on its truth value in neither direction.
 -/
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary

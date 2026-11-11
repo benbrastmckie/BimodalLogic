@@ -592,7 +592,7 @@ which elaborates the single module these two purely additive declarations land i
 
 ---
 
-### Phase 7: Records, Generated Surfaces and Full Verification [NOT STARTED]
+### Phase 7: Records, Generated Surfaces and Full Verification [COMPLETED]
 
 **Goal**: the module docstring and `RaySummary/README.md` record the four-part layer, the
 dispatched monotone residue, the named antitone exclusion and the route the exclusion leaves open;
@@ -621,7 +621,7 @@ every generated surface is reconciled; the full gate set is run and every findin
       `bash scripts/check-module-invariants.sh --emit-inventory`, then
       `--emit-inventory --check`.
 - [ ] `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
-- [ ] Full-project build and the full gate set; attribute every finding.
+- [x] Full-project build and the full gate set; attribute every finding. *(deviation: altered — the complete gate set is DEFERRED to the batch stage per this dispatch's Batch Gate Deferral directive. The covering checks for this phase's own paths were run: full `lake build`, `check-module-invariants.sh`, `typst-sync-check.sh`, the sorry census and `check-task-references.sh`, all green. No shell suite in `run-all.sh` covers a `.lean`/generated-`typst`/`FormalSystem/**` markdown path, and `verify-deploy.sh` scopes to the `.claude/` deploy tree this task does not touch.)*
 
 **Timing**: 1 hour 30 minutes
 
@@ -645,7 +645,7 @@ actually changed.
 - `FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean` - module docstring amended to four parts
 - `FormalSystem/Metalogic/Decidability/RaySummary/README.md` - `LadderCell.lean` Description cell extended; the saturated-residue and "what it buys" paragraphs amended
 - `README.md` - regenerated inventory block
-- `FormalSystem/README.md` - regenerated inventory block if `--emit-inventory` moves it; staged only if it actually changed
+- `FormalSystem/README.md` - regenerated inventory block if `--emit-inventory` moves it; staged only if it actually changed *(deviation: skipped — `--emit-inventory` rewrote three files, not four; `FormalSystem/README.md` came back unchanged, exactly as the Scope Hypothesis allowed.)*
 - `FormalSystem/Metalogic/README.md` - regenerated inventory block
 - `typst/generated/status.typ` - regenerated line counts
 
