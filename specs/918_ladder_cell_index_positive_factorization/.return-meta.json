@@ -1,59 +1,55 @@
 {
   "status": "partial",
-  "verification": {
-    "verification_passed": true,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true
-  },
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "task_number": 918,
+  "dispatch_seq": 14,
+  "requires_user_review": true,
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
-      "summary": "Phases 1-2 completed and Phase 3 partial: the window regime's arithmetic, the decision gate's PASS verdict, and the composite raise's admissibility half with the register held, all in the new leaf module LadderWindow.lean."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-3-handoff-20261111T005756Z.md",
-      "summary": "Phase 3 partial handoff carrying the iterable reformulation of the composite surgery worked out this dispatch, so the successor does not re-derive it."
+      "summary": "Phases 1-3 of the window-regime plan: the raising primitive landed at an exact multiple of P + 1 with the register and the realized type held at z; the lowering direction excluded on a compiled measurement."
     }
   ],
   "modified_files": [
     "FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
-    "FormalSystem.lean",
     "typst/generated/status.typ",
-    "README.md",
-    "FormalSystem/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
     "specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md",
+    "specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean",
     "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
-    "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-1-handoff-20261111T002207Z.md",
-    "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-3-handoff-20261111T005756Z.md",
+    "specs/918_ladder_cell_index_positive_factorization/handoffs/phase-3-handoff-20261111T131951Z.md",
     "specs/918_ladder_cell_index_positive_factorization/issues.jsonl",
+    "specs/918_ladder_cell_index_positive_factorization/.orchestrator-handoff.json",
     "specs/918_ladder_cell_index_positive_factorization/.return-meta.json"
   ],
-  "partial_progress": {
-    "stage": "phase_3_partial",
-    "details": "Phases 1 and 2 [COMPLETED]; Phase 3 [PARTIAL]; Phases 4-7 [NOT STARTED]. Phase 2's decision gate PASSED by compiled measurement, so the plan's PASS branch is the live one. Phase 3 landed the raising primitive's admissibility half at one block length, with the next-deadline register held at the prescribed value; three items remain, named precisely in the plan's Phase 3 verification notes and in the phase-3 handoff: the iteration to an exact multiple of P + 1 (a window-regime analogue of exists_iterSpliced_ladderPath_idx_of_pend_past, whose landed form carries the pending-forever hypothesis this regime denies), the model-level half carrying the realized type through both splices, and the lowering primitive. The handoff carries the self-contained iterable reformulation worked out this dispatch so the successor does not re-derive it. No sorry, no new axiom, no vacuous placeholder, and nothing substituted for the missing pieces.",
-    "phases_completed": 2,
-    "phases_total": 7
+  "sorry_inventory": [],
+  "verification": {
+    "sorry_count": 0,
+    "sorry_cross_check": "MATCH",
+    "vacuous_count": 1,
+    "vacuous_note": "pre-existing and untouched: FormalSystem/Examples/TemporalStructures.lean's int_domain_universal, whose goal is definitionally True for integer time; zero introduced by this task",
+    "axiom_count": 14,
+    "axiom_baseline": 14,
+    "build_passed": true,
+    "build_evidence": "full guarded lake build, 2974 jobs, guard exit 0, error: count 0, warning: count 0, .olean newer than source for LadderWindow",
+    "verification_passed": true,
+    "batch_gate_deferred": true,
+    "batch_gate_note": "complete gate set deferred to this invocation's batch stage per the dispatch's Batch Gate Deferral directive; the scoped narrowing invocation covering the touched files was run at every sub-step"
+  },
+  "user_decision": {
+    "question": "Phase 3's lowering primitive is excluded on a compiled measurement: its anchor clause needs a sixth hypothesis -- a bound on the register from above relative to the in-region depth (nxtAt g z + jP <= cntAt g z + 2*d + 1), recorded as window_lower_anchor_of_required. Phase 2's gate criterion forbids adding it. Should the plan admit that condition as a carried hypothesis (making the window schema two-directional but with a second carried condition alongside HasIdleRunBelow), or stay with the one-directional result and re-scope Phases 4-5 to the upward inclusion only?",
+    "blocking": false,
+    "why": "This is a scope/standards judgment about how many carried conditions the window schema may accumulate before it stops being a useful result, which the artifacts cannot infer. It is non-blocking: Phase 4's upward inclusion is unblocked either way and can proceed while the decision is pending."
   },
   "completion_data": {
-    "completion_summary": "Landed the ordinary window regime's arithmetic layer and its decision gate in a new leaf module LadderWindow.lean, with the gate PASSING by compiled measurement rather than argument, plus the composite raise's admissibility half at one block length with the next-deadline register held at the prescribed value. Three of seven phases executed; the remaining path-level iteration, type transport and lowering primitive are named precisely with a worked-out iterable design handed forward.",
-    "roadmap_items": []
+    "completion_summary": "Window regime phases 1-3 closed. Raising primitive landed at an exact multiple of P + 1 with the object state, register and realized stab-free type all held at z; lowering direction excluded on a compiled two-sided arithmetic deficit."
   },
-  "metadata": {
-    "session_id": "sess_1794379526_029109",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "passed",
-    "gate_verdict": "PASS",
-    "preexisting_findings_out_of_scope": "check-module-invariants.sh C16: exactly two unusedArguments findings, both on FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean (exists_idleSpliced_ladderPath, exists_idleTypeBlock_of_budget_le_run) -- the concurrent sibling's standing failure the plan's risk table predicted by name; no C16 finding names LadderWindow.lean and that file was not edited. One vacuous-pattern grep hit at FormalSystem/Examples/TemporalStructures.lean:495 (int_domain_universal := trivial), pre-existing from an unrelated commit and a genuine proof of a True-valued domain, not a placeholder. The 14 '^axiom ' grep hits are all prose lines inside docstrings; there are zero axiom declarations, and C2/C14 report every pinned axiom set matching baseline.",
-    "verification_tier_note": "The plan's final phase declares Verification Tier: full and that field is unchanged. Phase 7 did not run, so its full gate set was not discharged here; per this dispatch's batch-gate deferral the complete set is deferred to the batch stage rather than independently run."
-  },
-  "dispatch_seq": 12
+  "memory_candidates": [
+    "A pending-splice pin trichotomy stated RELATIVE to the original path is not iterable; restating every clause about the path being spliced makes it both iterable and shorter, because the pending stretch forces a region start at or above the region start to BE it.",
+    "Write a decreasing-budget induction invariant with the spend ADDED ON THE RIGHT rather than subtracted from the budget: no truncated natural subtraction appears and each step's reproduction is one omega call.",
+    "An idle splice is a rigid index pullback in BOTH coordinates (idleSpliceCnt = cntAt composed with spliceIdx), unlike a pending splice, which is why HWZ's deletion type lemma applies to it unchanged and the iterate can expose the realized type at every position.",
+    "omega can fail with an internal 'Application type mismatch' in its own generated proof term on a large context with Exists.choose-headed terms; factoring the arithmetic into named lemmas over plain naturals is the fix, not a tactic change.",
+    "tpOf has no position-shift lemma, but tpOf_timeShift composed with tpOf_stabFree_eq_of_objAt_eq at a shifted history is the sanctioned conjugation for carrying a realized stab-free type across a translation of the path."
+  ]
 }
