@@ -5121,7 +5121,7 @@
     {
       "project_number": 925,
       "project_name": "ladderpump_c16_unused_arguments_lint_debt",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Clear the C16 env_linter unusedArguments lint debt in RaySummary/LadderPump.lean, which fails check-module-invariants.sh for every other task in the module.\n\nOriginating evidence (orchestrate conclusion stage, channel (c)), cited from the parent's issue log: {task 917, iss_1794382565390_CmXKYM}.\n\nVERIFIED STARTING POSITION. check-module-invariants.sh's C16 env_linter group FAILS on two unusedArguments findings in FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean, on the declarations exists_idleSpliced_ladderPath and exists_idleTypeBlock_of_budget_le_run. Neither the parent record nor its batch sibling touched that file; git log -S attributes the declarations to a concurrent sibling record's commit 3692d517e. Both handled the finding by enumerating and attributing it as pre-existing and out of scope -- correct under their own plans, but it costs every subsequent task in this module an attribution step before it can read its own gate result.\n\nWHY THIS IS NOT A DIRECT FIX. The conclusion stage considered fixing the two findings in place and rejected it: the file sits in a concurrent sibling record's file_scope, so an in-place edit risks a territory collision with in-flight work. This task exists so the fix happens once under a declared file_scope, rather than being attempted opportunistically from a task that does not own the file.\n\nSCOPE. Resolve the two unusedArguments findings on the two named declarations -- either by removing genuinely unused arguments, or by establishing that each argument is load-bearing and suppressing the linter at that declaration with a stated reason. Verify by running check-module-invariants.sh and confirming the C16 env_linter group reaches exit 0 with no unusedArguments findings in LadderPump.lean. Out of scope: the one genuine ':= trivial' proof in FormalSystem/Examples/TemporalStructures.lean, enumerated by the sibling record as a separate pre-existing finding. Before dispatching, check for a live task holding LadderPump.lean and add a dependencies[] edge rather than racing it.\n\nPRECEDENT. The archived record ladderchain_c16_unusedarguments_clear cleared this exact C16 unusedArguments class in the sibling file LadderChain.lean; the matcher returns it as covered-by-closed (semantic 0.42). It is precedent for the method, not coverage of this file -- read its artifacts before starting. The two duplicate-of-open verdicts the matcher returns are both false positives on subject: lake_unguarded_reader_lock_audit concerns the unguarded .lake read hazard, and open_modal_invariance_ray_agreement_lifting is a demoted L-triangleright line; the subset-of-open verdict against update_readme_and_module_docstrings scores 0.19 and is territory-driven.",
       "effort": "low",
@@ -5139,7 +5139,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-11-11T11:06:18Z",
-      "last_updated": "2026-11-11T13:45:42Z",
+      "last_updated": "2026-11-11T19:36:23Z",
       "artifacts": [
         {
           "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/reports/01_ladderpump-c16-unusedarguments-clear.md",
@@ -5150,6 +5150,11 @@
           "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/plans/01_ladderpump-c16-unusedarguments-clear.md",
           "type": "plan",
           "summary": "Three-phase plan (allowlist entry, both LadderPump edits under a net-zero line budget, full gate) clearing the C16 env_linter unusedArguments debt in LadderPump.lean."
+        },
+        {
+          "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/handoffs/phase-1-handoff-20261111T1942Z.md",
+          "type": "other",
+          "summary": "Phase 1 handoff: allowlist entry landed ahead of the attribute, with the re-derived LadderWindow.lean line numbers and the C26 asymmetry confirmed empirically."
         }
       ],
       "audit_verdict": {
@@ -5245,7 +5250,7 @@
         "closed_match_count": 29,
         "scope_blind_count": 454
       },
-      "session_id": "sess_1794400344_255305",
+      "session_id": "sess_1794425759_f1ad4f",
       "next_artifact_number": 2
     }
   ],

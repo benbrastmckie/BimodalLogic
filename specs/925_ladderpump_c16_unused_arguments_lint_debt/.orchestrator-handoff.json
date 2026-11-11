@@ -1,15 +1,22 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "partial",
+  "phase": "implement",
+  "dispatch_seq": 20,
+  "summary": "Phase 1 of 3 closed as dispatched (single-phase hard-mode mission): scripts/nolint-attribute-allowlist.txt now carries a reasoned unusedArguments:exists_idleTypeBlock_of_budget_le_run entry with all five admission-bar elements verified against live source. check-module-invariants.sh --no-build exits 0 with PASS C26 and exactly the one expected INFO C26 stale line naming only the new key, which is the correct output of this intermediate state and is extinguished by Phase 2's in-source attribute. A full guarded lake build is green (exit 0, 2974 jobs, zero errors); no Lean source was touched, so LadderPump.lean is still 1,931 lines and Phase 2's net-zero budget starts from the figure the plan assumes.",
+  "phases_completed": 1,
   "phases_total": 3,
-  "summary": "Wrote a 3-phase implementation plan clearing the two C16 unusedArguments findings in RaySummary/LadderPump.lean with asymmetric dispositions: remove the two dead instance binders from exists_idleSpliced_ladderPath (zero term-level consumers, body takes no instance), and exempt exists_idleTypeBlock_of_budget_le_run's hg via @[nolint unusedArguments] plus a reasoned allowlist entry (removing it would relocate the finding into sibling-owned LadderWindow.lean). Reading C26 half two's source settled the edit order mechanically: the allowlist entry lands first (a stale entry is only INFO; an unlisted attribute is a blocking FAIL), so no intermediate commit is red. Corrected the research report's net-zero line budget, which was off by one: the correct balance is comment_A + comment_B = 10, not 11.",
+  "plan_markers_verified": true,
+  "skeleton": false,
+  "sorry_inventory": [],
   "blockers": [],
+  "continuation_path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/handoffs/phase-1-handoff-20261111T1942Z.md",
+  "next_action_hint": "Phase 2: re-read LadderPump.lean lines 1817-1836 and 1859-1876, re-confirm wc -l reads 1931, run the exists_idleSpliced_ladderPath consumer sweep, then apply both dispositions under the A_new + B_new = 10 net-zero budget.",
+  "git_checkpoint": "f7b64854ba89fb73e4b7f608552c53049fae908d",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/plans/01_ladderpump-c16-unusedarguments-clear.md",
-      "summary": "Three-phase plan (allowlist entry, both LadderPump edits under a net-zero line budget, full gate) clearing the C16 env_linter unusedArguments debt in LadderPump.lean."
+      "type": "other",
+      "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/handoffs/phase-1-handoff-20261111T1942Z.md",
+      "summary": "Phase 1 handoff: allowlist entry landed ahead of the attribute, with the re-derived LadderWindow.lean line numbers and the C26 asymmetry confirmed empirically."
     }
-  ],
-  "dispatch_seq": 19
+  ]
 }
