@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "dispatch_seq": 4,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/917_forward_slack_witnessed_discharge_or_refutation/reports/01_forward-slack-witnessed-discharge.md",
+      "summary": "ForwardSlackWitnessed is neither discharged nor refuted; it reduces (compiled) to a bound on the next region's countdown, the discharge route via type-respecting excision in the next region is identified and sized by (K2)/(K3), and the one blocker is the forward pin cascade."
+    }
+  ],
+  "user_decision": {
+    "question": "Discharging ForwardSlackWitnessed would NOT land the reserved cellLE_zero_const_of_kappa_eq: that schema quantifies over every kappa-collision, while all five landed inclusions carry the pending-forever gap n+2<=c (which by pend_past_of_nxtAt_lt restricts to paths pending at every earlier position) plus room bounds, and the ordinary window regime c<=n+1 is covered by nothing. Given the smaller payoff, should the multi-phase discharge route still be attempted?",
+    "options": [
+      "Proceed with the discharge route (Route D) scoped honestly as dropping one hypothesis from five schemas, not as landing the reserved name",
+      "Land only the cheap compiled value (the reduction, the amount ceiling, the seriality record, paramsOk_inflate) and stop short of the new deletion primitive",
+      "Redirect the task at the uncovered window regime c<=n+1 instead, which is the larger gap between the landed schemas and the reserved name"
+    ],
+    "recommended": "Proceed with the discharge route (Route D) scoped honestly as dropping one hypothesis from five schemas, not as landing the reserved name",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1794365863_292a3e_917",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
