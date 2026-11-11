@@ -677,6 +677,129 @@ theorem exists_window_composite_ladderPath
   have := hanch v (by rw [hobj₂ v]; exact hv0) (by rw [hobj₂ (v + 1)]; exact hv1)
   rwa [hcnt₂ (v + 1)] at this
 
+/-! ### The iterable reformulation: every clause about the spliced path alone
+
+`window_composite_pin_trichotomy` and `window_composite_pins` state the composite's pin data
+RELATIVE TO the original path `g`, through the hypotheses `hbelow`/`habove` ("`g₁` is `g`
+displaced by `E`"). That is what the base case supplies and it is NOT preserved by a second
+splice: after one splice the walk is `g` displaced by `E` AND raised by `l`, which is no longer a
+pure displacement. Iterating therefore needs the same measurement restated so that every
+hypothesis and every conclusion mentions only the path being spliced.
+
+The restatement is strictly SHORTER than the relative one, and the reason is worth recording: the
+pending stretch `(a, u + l]` forces a region start at or above `a` to BE `a`, so the class-1
+clause needs no agreement hypothesis and the idle-run condition drops out of the trichotomy
+entirely. What the iteration needs instead is a BUDGET. Each step spends exactly `l` of the slack
+the idle lengthening created, at the one pin pair where the raise is not free, and the two
+invariants below are stated so that the step reproduces them:
+
+* the pin-pair budget `|cntAt g (a + 1) - cntAt g (w + 1)| + R ≤ |a - w| + e · l` at every region
+  start `w` below `a`, which is where `window_pin_pair_raise_of_slack`'s slack is banked;
+* the anchor budget `cntAt g (a + 1) + R ≤ n₀ + |z - a| + e · l`, which is where the collision's
+  ROOM is banked, spent once in the base case rather than once per step.
+
+Both are stated with `e · l` added on the RIGHT rather than subtracted from `R`, so no truncated
+subtraction appears and each step's reproduction is one `omega` away. -/
+
+/-- **THE ITERABLE PIN TRICHOTOMY.** Every region start of the pending splice of a ladder path at
+a block `[u, u + l)` lying in the region opened at `a + 1` is one of three things: a region start
+of that same path strictly below `a`, with its position AND its countdown untouched; the position
+`a` itself, with its countdown raised by exactly `l`; or a region start at or above `u`, displaced
+by `l` with its countdown unmoved.
+
+Every hypothesis and every conclusion names only the path being spliced, so this statement applies
+to the result of its own conclusion — which is exactly what the relative
+`window_composite_pin_trichotomy` cannot do. -/
+theorem window_iter_pin_trichotomy
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (a u : ℤ) (l : ℕ) (hl : 0 < l) (hau : a < u)
+    (hai : pend (objAt g a) = false)
+    (hpend : ∀ v : ℤ, a < v → v ≤ u + (l : ℤ) → pend (objAt g v) = true)
+    (hureg : u ≤ a + 1 + (cntAt g (a + 1) : ℤ)) :
+    ∀ s : ℤ, pend (spliceObj g u l s) = false → pend (spliceObj g u l (s + 1)) = true →
+      (s < a ∧ pend (objAt g s) = false ∧ pend (objAt g (s + 1)) = true ∧
+          spliceCnt g u l (s + 1) = cntAt g (s + 1)) ∨
+      (s = a ∧ spliceCnt g u l (s + 1) = cntAt g (a + 1) + l) ∨
+      (∃ w : ℤ, u ≤ w ∧ pend (objAt g w) = false ∧ pend (objAt g (w + 1)) = true ∧
+          s = w + (l : ℤ) ∧ spliceCnt g u l (s + 1) = cntAt g (w + 1)) := by
+  intro s hs0 hs1
+  rcases lt_or_ge (s + 1) (u + (l : ℤ)) with hlt | hge
+  · rw [spliceObj_of_lt (g := g) (a := u) (l := l) s (by omega)] at hs0
+    rw [spliceObj_of_lt (g := g) (a := u) (l := l) (s + 1) hlt] at hs1
+    rcases lt_or_ge s a with hsa | hsa
+    · -- CLASS 1: strictly below `a`, where the region opened at `s + 1` ends below `a`
+      have hend := regionStart_spacing g hg s a hs1 hai hsa
+      refine Or.inl ⟨hsa, hs0, hs1, ?_⟩
+      rw [spliceCnt_of_lt (g := g) (a := u) (l := l) (s + 1) hlt, if_neg (by omega)]
+    · -- CLASS 2: the pending stretch forces the pin to be `a`
+      have hsa' : s = a := by
+        by_contra hne
+        exact Bool.false_ne_true (hs0.symm.trans (hpend s (by omega) (by omega)))
+      refine Or.inr (Or.inl ⟨hsa', ?_⟩)
+      rw [hsa', spliceCnt_of_lt (g := g) (a := u) (l := l) (a + 1) (by omega), if_pos hureg]
+  · -- CLASS 3: at or above the block's top, where the walk is the original `l` earlier
+    have hsu : u + (l : ℤ) ≤ s := by
+      by_contra hc
+      rw [spliceObj_of_lt (g := g) (a := u) (l := l) s (by omega)] at hs0
+      exact Bool.false_ne_true (hs0.symm.trans (hpend s (by omega) (by omega)))
+    rw [spliceObj_of_ge (g := g) (a := u) (l := l) s hsu] at hs0
+    rw [spliceObj_of_ge (g := g) (a := u) (l := l) (s + 1) (by omega)] at hs1
+    refine Or.inr (Or.inr ⟨s - (l : ℤ), by omega, hs0, ?_, by ring, ?_⟩)
+    · rw [show s - (l : ℤ) + 1 = s + 1 - (l : ℤ) by ring]; exact hs1
+    · rw [spliceCnt_of_ge (g := g) (a := u) (l := l) (s + 1) (by omega),
+        show s + 1 - (l : ℤ) = s - (l : ℤ) + 1 by ring]
+
+/-- **THE ITERABLE PIN PAIR CLAUSE.** `exists_ladderPath_of_walk_of_pins`'s side condition for one
+step of the iteration, from the iterable trichotomy and the path's own pin compatibility. Nine
+pin-class pairs; eight close on `pinCompat_of_ladderPath` and a rigid displacement, and the ninth
+— the raised `a` against a region start strictly below it — is the one that spends `l` of the
+banked slack `hslack`.
+
+The budget is consumed at exactly the rate the invariant is written to absorb: the hypothesis is
+`|Δ| + R ≤ |a - w| + e · l` and what the step needs is `(e + 1) · l ≤ R`, so the invariant
+reproduces itself at `e + 1` with nothing re-derived. -/
+theorem window_iter_pins
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (a u : ℤ) (l R e : ℕ) (hl : 0 < l) (hau : a < u)
+    (hai : pend (objAt g a) = false)
+    (hpend : ∀ v : ℤ, a < v → v ≤ u + (l : ℤ) → pend (objAt g v) = true)
+    (hureg : u ≤ a + 1 + (cntAt g (a + 1) : ℤ))
+    (hslack : ∀ w : ℤ, w < a → pend (objAt g w) = false → pend (objAt g (w + 1)) = true →
+      ((cntAt g (a + 1) : ℤ) - cntAt g (w + 1)).natAbs + R ≤ (a - w).natAbs + e * l)
+    (hmR : (e + 1) * l ≤ R) :
+    ∀ s v : ℤ, pend (spliceObj g u l s) = false → pend (spliceObj g u l (s + 1)) = true →
+      pend (spliceObj g u l v) = false → pend (spliceObj g u l (v + 1)) = true →
+      ((spliceCnt g u l (s + 1) : ℤ) - spliceCnt g u l (v + 1)).natAbs ≤ (s - v).natAbs := by
+  intro s v hs0 hs1 hv0 hv1
+  have htri := window_iter_pin_trichotomy g hg a u l hl hau hai hpend hureg
+  have he : e * l + l = (e + 1) * l := by ring
+  rcases htri s hs0 hs1 with ⟨hsa, hs0', hs1', hsc⟩ | ⟨hsw, hsc⟩ |
+      ⟨w, huw, hw0, hw1, hsw, hsc⟩ <;>
+    rcases htri v hv0 hv1 with ⟨hva, hv0', hv1', hvc⟩ | ⟨hvw, hvc⟩ |
+      ⟨y, huy, hy0, hy1, hvy, hvc⟩ <;>
+    rw [hsc, hvc]
+  · have := pinCompat_of_ladderPath g hg s v hs0' hs1' hv0' hv1'
+    omega
+  · have := hslack s hsa hs0' hs1'
+    subst hvw
+    omega
+  · have := pinCompat_of_ladderPath g hg s y hs0' hs1' hy0 hy1
+    omega
+  · have := hslack v hva hv0' hv1'
+    subst hsw
+    omega
+  · subst hsw; subst hvw; omega
+  · have := pinCompat_of_ladderPath g hg a y hai (hpend (a + 1) (by omega) (by omega)) hy0 hy1
+    subst hsw
+    omega
+  · have := pinCompat_of_ladderPath g hg w v hw0 hw1 hv0' hv1'
+    omega
+  · have := pinCompat_of_ladderPath g hg w a hw0 hw1 hai (hpend (a + 1) (by omega) (by omega))
+    subst hvw
+    omega
+  · have := pinCompat_of_ladderPath g hg w y hw0 hw1 hy0 hy1
+    omega
+
 end Gate
 
 end FormalSystem.Metalogic.Decidability.RaySummary
