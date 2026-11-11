@@ -116,3 +116,21 @@ unusedArguments:coneF_surjective
 # scoped `set_option linter.unusedVariables false in` at the same site.
 # Metalogic/AuxiliaryAtoms.lean.
 unusedArguments:aa_sound_int
+
+# `exists_idleTypeBlock_of_budget_le_run`'s `hg : IsLadderPath step pend g` is unread, and the
+# linter is correct: the idle mirror's pigeonhole runs over positions the caller has already
+# certified idle, so the elaborated term never mentions the path condition. The declaration
+# cannot conform, because `hg` is consumed by pass-through one layer up —
+# `exists_idleBlock_of_hasIdleRunBelow` (`LadderWindow.lean:472`) takes its own
+# `hg : IsLadderPath step pend g` and passes it positionally at `:486`, so dropping the binder
+# here relocates the finding into that file rather than clearing it. `hg` is dead HERE
+# specifically because the idle mirror hypothesizes the run's idleness directly via `hrun`,
+# where the pending form `exists_typeBlock_of_budget_le_cnt_within` (`LadderPump.lean:1309`)
+# reads it off `cntAt_sub_of_pend` instead (at `:1343` and `:1351`) and so genuinely needs the
+# path condition. The pending twin `exists_typeBlock_of_budget_le_cnt` is already exempted at
+# `scripts/nolints.json:900`, so exempting the idle mirror keeps the pair symmetric rather than
+# splitting their shapes. The paired source-level suppression is the scoped
+# `set_option linter.unusedVariables false in` at the same site; it cannot reach a Batteries
+# `@[env_linter]`, which is why the in-source attribute and this entry are both needed.
+# Metalogic/Decidability/RaySummary/LadderPump.lean.
+unusedArguments:exists_idleTypeBlock_of_budget_le_run

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #925
 
 - **Task**: 925 - Clear the C16 env_linter unusedArguments lint debt in RaySummary/LadderPump.lean
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.25 hours
 - **Dependencies**: None. No live record holds `LadderPump.lean` or
   `scripts/nolint-attribute-allowlist.txt`; the two concurrent siblings this cycle (918 on
@@ -136,7 +136,7 @@ No `roadmap_path` was provided in this dispatch and no roadmap phases are requir
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Land the reasoned allowlist entry ahead of the attribute [NOT STARTED]
+### Phase 1: Land the reasoned allowlist entry ahead of the attribute [COMPLETED]
 
 **Goal**: `scripts/nolint-attribute-allowlist.txt` carries a reasoned
 `unusedArguments:exists_idleTypeBlock_of_budget_le_run` entry, so that when Phase 2 adds the
@@ -144,13 +144,13 @@ in-source attribute there is no intermediate state in which C26 half two fails.
 
 **Tasks**:
 
-- [ ] Re-read the allowlist's tail (`sed -n '92,118p' scripts/nolint-attribute-allowlist.txt`) to
+- [x] Re-read the allowlist's tail (`sed -n '92,118p' scripts/nolint-attribute-allowlist.txt`) to
       confirm the house entry shape immediately before writing: a `#` comment block, then a
       `# <Module>/<File>.lean.` locator line, then the bare `<linter>:<declaration-as-written>`
       key. The two live precedents to copy are `coneF_surjective` and `aa_sound_int`.
-- [ ] Re-derive the before-state: `grep -c '^unusedArguments:' scripts/nolint-attribute-allowlist.txt`
+- [x] Re-derive the before-state: `grep -c '^unusedArguments:' scripts/nolint-attribute-allowlist.txt`
       (expect 6) and `wc -l` (expect 118).
-- [ ] Append a `#` comment block carrying the full admission-bar reason. It must state all five
+- [x] Append a `#` comment block carrying the full admission-bar reason. *(deviation: altered — element (b)'s line numbers re-derived at implementation time; the plan's `LadderWindow.lean:430`/`:443` are stale by task 918's commits, actual `:472` declaration and `:486` pass-through, and the block carries the corrected pair)* It must state all five
       elements the bar requires: (a) `hg` is unread and the linter is correct; (b) the declaration
       cannot conform, because `hg` is consumed by pass-through one layer up —
       `exists_idleBlock_of_hasIdleRunBelow` (`LadderWindow.lean:430`) takes its own
@@ -162,14 +162,14 @@ in-source attribute there is no intermediate state in which C26 half two fails.
       `scripts/nolints.json:900`, so this keeps the pair symmetric; (e) the paired source-level
       suppression is the scoped `set_option linter.unusedVariables false in` at the same site.
       Close with the locator line `# Metalogic/Decidability/RaySummary/LadderPump.lean.`
-- [ ] Append the bare key `unusedArguments:exists_idleTypeBlock_of_budget_le_run` on its own
+- [x] Append the bare key `unusedArguments:exists_idleTypeBlock_of_budget_le_run` on its own
       line. Length is free in this file — `typst-sync-check.sh` counts only `FormalSystem/`,
       `Tests/` and `BimodalTools/`, never `scripts/`.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build`. Expect exit 0 and `PASS C26`,
+- [x] Run `bash scripts/check-module-invariants.sh --no-build`. Expect exit 0 and `PASS C26`,
       plus one new `INFO  C26  1 allow-list entr(y/ies) match nothing in the tree` line naming
       exactly `unusedArguments:exists_idleTypeBlock_of_budget_le_run`. That INFO is the expected,
       correct output of this intermediate state and does not affect the exit status.
-- [ ] Commit with an explicit single-file pathspec:
+- [x] Commit with an explicit single-file pathspec:
       `git add -- scripts/nolint-attribute-allowlist.txt`, reviewed via `git status --short` and
       `git diff --staged` first. Never a directory or glob add.
 
