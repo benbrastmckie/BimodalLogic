@@ -548,21 +548,83 @@ unclaimed condition.
 
 ---
 
-### Phase 9: Records, Generated Surfaces and Final Verification [NOT STARTED]
+### Phase 9: Records, Generated Surfaces and Final Verification [COMPLETED]
 
 **Goal**: Land the test-file pin block, reconcile every generated surface, re-tighten the
 `longFile` baselines, and run the complete gate set. The verdict -- discharge or compiled
 obstruction -- is stated explicitly here, never left tacit.
 
+
+**GATE SET OF RECORD** (every result measured, every finding attributed):
+
+| Gate | Result | Notes |
+|------|--------|-------|
+| Unscoped guarded `lake build` | **PASS** | 2973 jobs, 0 errors, 0 warnings, guard exit 0; `.olean` newer than source for every touched module |
+| Test library (`lake build BimodalTest`) | **PASS** | 3041 jobs, 0 errors, 0 warnings; all ten new `#guard_msgs` axiom pins satisfied |
+| `scripts/check-evidence-probes.sh` | **PASS** | all 53 wired probes compile, including the new `forward-slack-pin-cascade/pin-cascade-straddle` |
+| `scripts/typst-sync-check.sh` | **PASS** | all 4 checks green after a final `--fix`; `typst/generated/status.typ` staged |
+| `scripts/check-metalogic-cycles.sh` | **PASS** | no new upward import introduced, so Assertion B's frozen allowlist needed no extension — confirmed by running it, not assumed |
+| `scripts/check-copyright-headers.sh` | **PASS** | 0 missing of 754 |
+| `scripts/check-module-invariants.sh` | **PASS for this phase**, one pre-existing failure enumerated below | `--emit-inventory` then `--emit-inventory --check` green (`PASS INV`); the C16 `env_linter` group FAILS, on findings outside this task's file scope |
+| `.claude/scripts/validate-artifact.sh ... plan` | **PASS** | one advisory warning (per-phase effort estimates sum past the cited ceiling); no error |
+
+**The one gate failure, attributed rather than absorbed.** `check-module-invariants.sh`'s C16
+group reports two `unusedArguments` findings, both in
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean`:
+`exists_idleSpliced_ladderPath` (unused `[Fintype Q]`, `[Nonempty Q]`) and
+`exists_idleTypeBlock_of_budget_le_run` (one unused argument). **This task never touched
+`LadderPump.lean`** — confirmed by `git log` over this task's own commit range, which lists no
+commit against that file. `git log -S` attributes `exists_idleSpliced_ladderPath` to a CONCURRENT
+SIBLING task's commit (`3692d517e`, "phase 2: the idle-block splice and its free pin clause").
+Per this phase's own rule, a gate whose only failures are outside this task's file scope is a
+recorded PASS here and is NOT grounds to edit an out-of-scope file, so `LadderPump.lean` was left
+alone. The finding belongs to the sibling that introduced it.
+
+**`longFile` baselines at final line counts**, each the smallest round-hundred value inside the
+linter's `N - 200 ≤ lines < N` window:
+
+| File | Final lines | Baseline | Window |
+|------|-------------|----------|--------|
+| `LadderChain.lean` | 2928 | 3000 (re-tightened from 2800 in Phase 4) | `2800 ≤ 2928 < 3000` |
+| `LadderCell.lean` | 1991 | 2000 (unchanged; Phase 3's value still correct) | `1800 ≤ 1991 < 2000` |
+| `CounterQuotient.lean` | 1115 | none needed | below the package-wide 1500 limit, so no baseline is owed |
+| `KTypeSummaryAxiomTest.lean` | 2532 | 2600 (re-tightened from 2400) | `2400 ≤ 2532 < 2600` |
+
+**BATCH GATE DEFERRAL, recorded as the dispatch directive requires.** This phase's
+`**Verification Tier**` field reads `full` and is unedited. This dispatch is one `implement`
+dispatch inside a multi-task `/orchestrate` batch, so the directive asked that the phase be
+discharged against a SCOPED tier with the complete gate set deferred to the batch stage. Two
+things are recorded honestly here rather than one. First, the deferral itself: **the complete
+gate set was NOT independently run as a batch-wide battery by this dispatch; that runs once for
+the whole batch at the end of the invocation, and its result is attributed back to this task by
+its own `modified_files`.** Second, the narrowing invocation the directive named —
+`.claude/scripts/tests/run-all.sh --only SUITE[,...]` — covers SHELL test suites of the agent
+system, and **no such suite covers any file this phase touched**: a search of
+`.claude/scripts/tests/` found no suite naming `scripts/check-evidence-probes.sh`, the only shell
+script in this task's file set. Rather than report a vacuous scoped pass, every Lean-side and
+repository-side gate that actually covers this phase's files was run directly and is tabled
+above — which exceeds the scoped tier the directive asked for.
+
+**THE VERDICT.** The SECOND of the task's two admissible outcomes was reached:
+`ForwardSlackWitnessed` is NOT discharged, and the discharge route is REFUTED AT THE PIN LAYER
+rather than left stalled or merely unproved. The named consequence is recorded in the durable
+record as the task description required — `certStabK`'s one unclaimed `Real` condition must be
+RESTATED rather than proved for as long as the hypothesis stays carried — in
+`specs/state.json`'s own description for this task, in `LadderChain.lean`'s module docstring, in
+`exists_deleted_ladderPath_of_next_region_nxt`'s own docstring, and in
+`KTypeSummaryAxiomTest.lean`'s new Requirement (W) section. `ForwardSlackWitnessed` itself, being
+an existential over paths, is neither discharged nor refuted; only this route is.
+
+
 **Tasks**:
-- [ ] Update `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`'s Requirement (W) narrative to the actual outcome. On the discharge branch: the witnessing hypothesis is discharged for the pending-forever regime, the five schemas lose it, and the reserved name is STILL claimed by nothing -- with Finding 5's three surviving restrictions spelled out. On the obstruction branch: route (d) is refuted, the hypothesis is carried, and `certStabK`'s unclaimed Real condition must be restated rather than proved.
-- [ ] Add `#print axioms` pins (with `#guard_msgs`) for every new declaration the task landed, following the file's existing pin convention.
-- [ ] Re-tighten every `set_option linter.style.longFile N` this task touched to the smallest value satisfying the linter's `N - 200 ≤ lines < N` window at the file's FINAL line count -- `LadderChain.lean`, `LadderCell.lean`, and `CounterQuotient.lean` if it crossed 1500. An earlier phase's baseline is wrong by construction once later phases have grown the file.
-- [ ] Regenerate the module-inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`, then verify with `--emit-inventory --check`. This is Condition 1's surface (a) and is legitimately deferred to here.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` one final time and stage `typst/generated/status.typ`.
-- [ ] Run the full gate set and record each result: the unscoped guarded `lake build`; `bash scripts/check-module-invariants.sh`; `bash scripts/typst-sync-check.sh`; `bash scripts/check-metalogic-cycles.sh`; `bash scripts/check-evidence-probes.sh`; `bash scripts/check-copyright-headers.sh`; and the test library.
-- [ ] For each gate, distinguish findings that name this task's own touched files from the tree's standing baseline. A gate whose only failures are pre-existing and outside this task's file scope is a recorded PASS for this phase, with the pre-existing findings enumerated -- it is not grounds to edit an out-of-scope file.
-- [ ] State the task's verdict in the summary artifact, in one sentence, naming which of the two admissible outcomes was reached.
+- [x] Update `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`'s Requirement (W) narrative to the actual outcome. On the discharge branch: the witnessing hypothesis is discharged for the pending-forever regime, the five schemas lose it, and the reserved name is STILL claimed by nothing -- with Finding 5's three surviving restrictions spelled out. On the obstruction branch: route (d) is refuted, the hypothesis is carried, and `certStabK`'s unclaimed Real condition must be restated rather than proved.
+- [x] Add `#print axioms` pins (with `#guard_msgs`) for every new declaration the task landed, following the file's existing pin convention.
+- [x] Re-tighten every `set_option linter.style.longFile N` this task touched to the smallest value satisfying the linter's `N - 200 ≤ lines < N` window at the file's FINAL line count -- `LadderChain.lean`, `LadderCell.lean`, and `CounterQuotient.lean` if it crossed 1500. An earlier phase's baseline is wrong by construction once later phases have grown the file.
+- [x] Regenerate the module-inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`, then verify with `--emit-inventory --check`. This is Condition 1's surface (a) and is legitimately deferred to here.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` one final time and stage `typst/generated/status.typ`.
+- [x] Run the full gate set and record each result: the unscoped guarded `lake build`; `bash scripts/check-module-invariants.sh`; `bash scripts/typst-sync-check.sh`; `bash scripts/check-metalogic-cycles.sh`; `bash scripts/check-evidence-probes.sh`; `bash scripts/check-copyright-headers.sh`; and the test library.
+- [x] For each gate, distinguish findings that name this task's own touched files from the tree's standing baseline. A gate whose only failures are pre-existing and outside this task's file scope is a recorded PASS for this phase, with the pre-existing findings enumerated -- it is not grounds to edit an out-of-scope file.
+- [x] State the task's verdict in the summary artifact, in one sentence, naming which of the two admissible outcomes was reached.
 
 **Timing**: 1.5 hours
 

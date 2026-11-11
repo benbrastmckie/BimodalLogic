@@ -108,7 +108,7 @@ expectation to rewrite.
 -- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): this is one
 -- axiom-profile ledger for the summary layer and its requirement sections stay together, so the
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
-set_option linter.style.longFile 2400
+set_option linter.style.longFile 2600
 
 namespace BimodalTest.Metalogic
 
@@ -1915,6 +1915,165 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
  Quot.sound] -/
 #guard_msgs in
 #print axioms kappa_collision_two_regimes_refuted_of_pend_gap
+
+/-! ## Requirement (W): the forward-slack witnessing hypothesis is NOT DISCHARGEABLE by the
+pin-layer route (`RaySummary/LadderChain.lean`, `RaySummary/LadderCell.lean`,
+`RaySummary/CounterQuotient.lean`)
+
+THE VERDICT, stated and not left tacit. `ForwardSlackWitnessed` is STILL A HYPOTHESIS on all five
+depth-`0` cell-equality schemas. The route that would have discharged it is REFUTED at the pin
+layer rather than merely unproved; `ForwardSlackWitnessed` itself is an existential over paths and
+is therefore neither discharged nor refuted. The reserved name
+`cellLE_zero_const_of_kappa_eq` remains claimed by nothing, confirmed by an exact-name sweep over
+`FormalSystem/` and not by inference from the pins below.
+
+THE ROUTE, AND WHY IT FAILS. The route was: delete a type-respecting block inside the FIRST
+REGION ABOVE the compared position's own region while holding the register at that position, then
+iterate to drive that region's countdown below `tShort Q φ`, at which point the regime holds for
+free. The route is the mirror of the already-refuted idle-run LENGTHENING recorded in the section
+above, and it fails one level HIGHER: not in `step`, but in the pin layer's own compatibility
+condition.
+
+Its deletion primitive `exists_deleted_ladderPath_of_next_region_nxt` LANDED, pinned below. It
+takes exactly two clauses as hypotheses — `hanch` for the pins at or above the block, `hstraddle`
+for the pairs that straddle it — and discharges everything else internally through the two pull
+lemmas `del_pin_pull_of_lt`/`del_pin_pull_of_ge`, also pinned. Both remaining clauses are
+NON-DISCHARGEABLE from the pending-forever regime at countdown at least `Tc` together with
+`ParamsOk`: `hanch` short by exactly `l`, `hstraddle` short by exactly `2 * l`, where `l` is the
+deleted block's length. The obstruction is not an elaboration failure. On a path whose straddling
+pin pair SATURATES pin compatibility the primitive's own CONCLUSION is false, because any deleted
+path would itself be a ladder path and `pinCompat_of_ladderPath` would bind its pins at exactly
+the broken positions. The deletion leaves the undisplaced pins' VALUES put while shortening every
+later pin's distance by `l`, and additionally lowers by `l` the value of the pin whose region
+swallows the block; a configuration already at the bound breaks by exactly what the deletion
+removes.
+
+`(K2)`'s BUDGET CANNOT PAY FOR IT, and that is the substantive finding rather than a side remark.
+`cascadeBound`'s own recurrence `a (k + 1) ≤ 2 * a k + J + 1` is the bound the saturated
+configuration ATTAINS WITH EQUALITY, so the budget DESCRIBES the obstruction rather than
+dominating it. Two structural facts close the remaining escapes: `Adm pend q` places no upper
+bound on a pending state's countdown, so a saturated register is admissible at every scale; and
+every `ParamsOk` conjunct the thresholds enter is a LOWER bound on a parameter, never an upper
+bound on a path quantity.
+
+THE COMPILED RECORDS, wired rather than asserted.
+`specs/evidence/forward-slack-pin-cascade/pin-cascade-straddle.lean` is in
+`scripts/check-evidence-probes.sh`'s `WIRED` list: it carries the obstruction as a theorem
+(`no_deleted_ladderPath_of_straddle_break`), realizes the saturated configuration as a concrete
+two-state ladder path in the regime (`obs`), and refutes the deletion at EVERY block that path's
+next region admits (`obs_no_admissible_block`). The scale-invariance of the deficit — that
+`Tc ≤ cntAt g z` and `(K3)`'s `2 * tShort + tIdle + 2 ≤ Tc` are among the available facts and
+still do not close it — is the arithmetic half, recorded in the task artifact
+`phase-5-gate-measurement.lean` rather than as a wired probe, so it is not pinned here.
+
+THE NAMED CONSEQUENCE FOR `Real`. Because the hypothesis is not derivable by this route and stays
+carried, `certStabK` — the one `Real` condition that consumes the agreement of class-equivalent
+cells, and the only one of the six not claimed — must be RESTATED rather than proved, for as long
+as that remains the case. Nothing below claims `certStabK`, and nothing below consumes the
+agreement or the schema `CellLEZeroConstOfKappaEq`.
+
+WHAT DID LAND, and what each piece buys. Three things of unconditional value, independent of the
+verdict:
+
+* **The regime is now a CHECKABLE condition on one region, not an opaque condition on a register.**
+  `next_region_cnt_le_of_hasForwardSlack` and its converse-bearing
+  `hasForwardSlack_iff_next_region_cnt_le` turn `HasForwardSlack` into a bound on the countdown of
+  the first region start above the compared position's region; `hasForwardSlack_amount_le` reads
+  off the amount bound the regime forces. `forwardSlackWitnessed_iff_next_region_cnt_le` lifts the
+  restatement to the CELL level. None of the four is a discharge: each converts the hypothesis's
+  shape, and all four leave it a hypothesis.
+* **Three scoping records.** `pend_succ_of_fwd` with `objCycleLens_nonempty_of_pend`, and
+  `paramsOk_inflate` — which inflates `P` to `j * (P + 1) - 1` for any `0 < j`, so a displacement
+  argument may take any multiple of `P + 1` without re-deriving `ParamsOk`.
+* **The deletion primitive itself**, usable wherever `hanch` and `hstraddle` are supplied from
+  OUTSIDE the pending-forever regime. Its signature carries `hnz : nxtAt g z ≤ cntAt g z` as an
+  admitted hypothesis, measured necessary by compiling the proof with and without it; `hnz` is
+  free at a consumer carrying the pending-forever gap `n + 2 ≤ c`, so it costs such a consumer
+  nothing.
+
+WHAT A CONSUMER MUST STILL SUPPLY is unchanged by all of this: at each state it inducts through,
+the register equality across the collision and a forward-slack witness at the higher state.
+Neither is a consequence of `ParamsOk`.
+
+THE PROFILES SPLIT, and the split is recorded rather than smoothed over. FIVE of the ten pins
+below sit BELOW the standard profile at `[propext, Quot.sound]`, consuming no choice:
+`next_region_cnt_le_of_hasForwardSlack`, `hasForwardSlack_iff_next_region_cnt_le`,
+`hasForwardSlack_amount_le`, `pend_succ_of_fwd` and `del_pin_pull_of_ge`. The restatement of the
+regime as a bound on one region, the amount bound it forces, the pending-successor step and the
+pull above the block are all constructions that never choose. The other five carry the standard
+`[propext, Classical.choice, Quot.sound]`, from two distinct sources rather than one.
+`del_pin_pull_of_lt` and `exists_deleted_ladderPath_of_next_region_nxt` consume choice in their
+own PROOFS, through the `by_cases` on whether the lower pin's region reaches the block and the
+`by_contra` placing every idle position above the compared position; and
+`objCycleLens_nonempty_of_pend` through its `classical` block and the `.choose` it takes on
+`pend_succ_of_fwd`'s existential before the pigeonhole over object states. `paramsOk_inflate` and
+`forwardSlackWitnessed_iff_next_region_cnt_le` inherit it instead from the DEFINITIONAL closure of
+what they quantify — `ParamsOk` and `ForwardSlackWitnessed` respectively — rather than from
+anything either proof does: `paramsOk_inflate` only destructures and rebuilds the conjunction, and
+the `iff` only re-packages the existential's witness. No certificate object is named, no
+finite-fibre or finite-width hypothesis appears, and no pin is a bound. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.next_region_cnt_le_of_hasForwardSlack' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms next_region_cnt_le_of_hasForwardSlack
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.hasForwardSlack_iff_next_region_cnt_le' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms hasForwardSlack_iff_next_region_cnt_le
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.hasForwardSlack_amount_le' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms hasForwardSlack_amount_le
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.pend_succ_of_fwd' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms pend_succ_of_fwd
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.objCycleLens_nonempty_of_pend' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms objCycleLens_nonempty_of_pend
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.paramsOk_inflate' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms paramsOk_inflate
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.forwardSlackWitnessed_iff_next_region_cnt_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms forwardSlackWitnessed_iff_next_region_cnt_le
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.del_pin_pull_of_lt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms del_pin_pull_of_lt
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.del_pin_pull_of_ge' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms del_pin_pull_of_ge
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_deleted_ladderPath_of_next_region_nxt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms exists_deleted_ladderPath_of_next_region_nxt
 
 /-! ## Requirement (W): the pin layer (`RaySummary/LadderPin.lean`)
 
