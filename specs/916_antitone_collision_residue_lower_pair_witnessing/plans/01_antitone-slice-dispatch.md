@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Dispatch or compile a refutation of the ANTITONE slice of a `kappa`-class collision — the complement that `cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack` excludes in its own quantifier
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 14 hours
 - **Dependencies**: None (every predecessor artifact is landed and compiled; parent task 910)
 - **Research Inputs**: `specs/916_antitone_collision_residue_lower_pair_witnessing/reports/01_antitone-collision-residue-witnessing.md`

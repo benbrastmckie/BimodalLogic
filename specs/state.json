@@ -3158,7 +3158,7 @@
     {
       "project_number": 916,
       "project_name": "antitone_collision_residue_lower_pair_witnessing",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Dispatch or compile a refutation of the ANTITONE slice of a kappa-class collision -- the complement that cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack excludes in its own quantifier.\n\nVERIFIED STARTING POSITION (compiled, not argued):\n(1) kappa_collision_monotone_or_antitone makes the monotone and antitone slices an EXHAUSTIVE dichotomy over collisions, with no third case. The monotone slice is dispatched as depth-0 cell EQUALITY by cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack (FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean); the antitone slice is excluded by a named hypothesis, not refuted.\n(2) The excluded slice is NOT vacuous: kappa_collision_antitone_residue_nonvacuous inhabits it inside the pending-forever regime above the threshold at the pairs (4,2) against (6,0).\n(3) The reason the free-register raise reaches the monotone side and no further is compiled, not asserted: free_register_anchor_clause_monotone_required shows the lower bound nxtAt g z <= n0 of exists_ladderPath_through_free_register_shifted_of_pend_past is NON-REMOVABLE at the arithmetic witness X = 19, nz = 8, cz = 10, mP = 0, n0 = 0, d = 11. The two bounds on the free anchor pay for OPPOSITE directions of the one anchor clause -- the lower for the register two-sided Lipschitz bound, the upper for the pin distance -- so an antitone displacement puts the register on the wrong side of the clause the raise closes.\n\nTHE ROUTE IS NAMED AND CLAIMED IN NEITHER DIRECTION (recorded by its predecessor in both the necessity record docstring and RaySummary/README.md): forward-slack witnessing at the LOWER pair, to pay the upper anchor direction the necessity record compiles as failing. That is the statement to try first; it is not a prediction that it holds.\n\nTWO ADMISSIBLE OUTCOMES, both closing the dichotomy: dispatch the slice with a genuine argument, or compile a refutation. A refutation is as good an outcome as a proof and must be a compiled witness, never an argument. The reserved name cellLE_zero_const_of_kappa_eq stays reserved either way and nothing may land under it here.\n\nSCOPE: the antitone slice only. It does not reach the ForwardSlackWitnessed discharge, which a sibling owns.\n",
       "effort": "high",
@@ -3185,12 +3185,18 @@
           "path": "specs/916_antitone_collision_residue_lower_pair_witnessing/plans/01_antitone-slice-dispatch.md",
           "type": "plan",
           "summary": "Eight-phase dispatch plan: two new LadderChain assemblies, the split's five records, the widened free-anchor raise with its relaxed-bound necessity record, both antitone cell inclusions, the exhaustive schema with its bounded corollary, and a final records-plus-full-gate phase."
+        },
+        {
+          "path": "specs/916_antitone_collision_residue_lower_pair_witnessing/summaries/01_antitone-slice-dispatch-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the antitone-slice dispatch: what changed, decisions, plan deviations, verification and follow-ups."
         }
       ],
       "created": "2026-11-11T02:48:57Z",
-      "last_updated": "2026-11-11T03:33:35Z",
+      "last_updated": "2026-11-11T04:19:33Z",
       "session_id": "sess_1794365863_292a3e",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Dispatched the ANTITONE slice of a kappa-class collision as depth-0 cell EQUALITY in both directions, closing the exhaustive dichotomy kappa_collision_monotone_or_antitone on both sides. Fifteen new sibling declarations landed across RaySummary/LadderCell.lean and RaySummary/LadderChain.lean: the named complement shape and its split records, the slack-exposing regime-A raise, the register-RAISING exact-shift deletion, the free-anchor raise with its lower bound relaxed by the raise-bought slack, two compiled necessity records, both antitone cell inclusions, and the antitone schema with its theorem plus a bounded-sub-slice corollary carrying no upward hypothesis at all. Zero sorries, axiom count unchanged at 14, no landed signature edited, and the reserved name cellLE_zero_const_of_kappa_eq still claimed by nothing."
     },
     {
       "project_number": 917,

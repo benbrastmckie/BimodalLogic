@@ -11,9 +11,9 @@ next_project_number: 919
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,912,916 | -- | agent-system, algebraic-representation, completeness, ... |
-| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,913,914,917 | 298,428,502,743,761,873,912,916 | agent-system, algebraic-representation, dataset-enhancement, ... |
-| 3 | 410,498,499,500,804,861,918 | 429,497,763,803,917 | algebraic-representation, decidability, build-performance |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,899,900,905,906,907,908,912,917 | -- | agent-system, algebraic-representation, completeness, ... |
+| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,913,914,918 | 298,428,502,743,761,873,912,917 | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -76,9 +76,8 @@ next_project_number: 919
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-916 [PLANNED] — Dispatch or compile a refutation of the ANTITONE slice of a...
-  └─ 917 [NOT STARTED] — Discharge ForwardSlackWitnessed under ParamsOk, or compile a...
-    └─ 918 [NOT STARTED] — Produce a positive factorization lemma for the index of which...
+917 [NOT STARTED] — Discharge ForwardSlackWitnessed under ParamsOk, or compile a...
+  └─ 918 [NOT STARTED] — Produce a positive factorization lemma for the index of which...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Documentation
@@ -175,13 +174,14 @@ SCOPE: the hypothesis discharge only. The antitone slice of the collision dichot
 
 ### 916. Antitone collision residue lower pair witnessing
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 910
 - **Research**: [916_antitone_collision_residue_lower_pair_witnessing/reports/01_antitone-collision-residue-witnessing.md]
 - **Plan**: [916_antitone_collision_residue_lower_pair_witnessing/plans/01_antitone-slice-dispatch.md]
+- **Summary**: [916_antitone_collision_residue_lower_pair_witnessing/summaries/01_antitone-slice-dispatch-summary.md]
 
 **Description**: Dispatch or compile a refutation of the ANTITONE slice of a kappa-class collision -- the complement that cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack excludes in its own quantifier.
 

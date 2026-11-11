@@ -1,30 +1,52 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/916_antitone_collision_residue_lower_pair_witnessing/plans/01_antitone-slice-dispatch.md",
-      "summary": "Eight-phase DISPATCH of the antitone kappa-collision slice as depth-0 cell equality: two new LadderChain assemblies (slack-exposing raise, register-raising deletion), the split's five records, the widened free-anchor raise, both antitone cell inclusions, and one exhaustive schema plus a bounded corollary carrying no upward hypothesis."
+      "type": "summary",
+      "path": "specs/916_antitone_collision_residue_lower_pair_witnessing/summaries/01_antitone-slice-dispatch-summary.md",
+      "summary": "The antitone slice of a kappa-class collision dispatched in both directions as depth-0 cell equality, with the slice split into a bounded sub-slice needing no upward hypothesis and a deep-descent residue that spends the lower-pair forward-slack route."
     }
   ],
-  "next_steps": "Run /orchestrate 916 to execute the plan",
-  "memory_candidates": [
-    {
-      "content": "Forward-slack accounting in the RaySummary ladder construction is a BUDGET, not merely a hypothesis family. Three facts compose: (1) a raise of z's region by d*l increases the slack amount by exactly d*l from NO hypothesis (hasForwardSlack_raise / hasForwardSlack_raise_of_zero, LadderChain.lean), (2) a deletion spends exactly l, so a raise-then-delete round trip at z is net zero, and (3) HasForwardSlack is only the UPPER direction of the two-sided anchor-clause collapse anchor_clause_of_first_region_start, so it is the currency of register LOWERING and a register RAISE is free in the direction that costs. Rule of thumb: a register move opposite to the countdown costs slack equal to the opposing displacement MINUS whatever the raise already in the same construction bought. Two consecutive tasks framed an antitone/anchor obstruction as 'needs a hypothesis family no landed schema carries' when part of it was payable from the raise already present. Corollary found while planning: a witnessing obligation at amount 0 is a THEOREM (mem_cellAt_ladder_iff plus hasForwardSlack_zero), which lets one schema with a truncated Nat-subtraction amount replace two schemas split on a bounded/deep case distinction.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/916_antitone_collision_residue_lower_pair_witnessing/plans/01_antitone-slice-dispatch.md",
-      "confidence": 0.78,
-      "suggested_keywords": ["forward-slack", "anchor-clause", "ladder-construction", "raise-deletion-budget", "truncated-subtraction-schema", "RaySummary"]
-    }
+  "completion_data": {
+    "completion_summary": "Dispatched the ANTITONE slice of a kappa-class collision as depth-0 cell EQUALITY in both directions, closing the exhaustive dichotomy kappa_collision_monotone_or_antitone on both sides. Fifteen new sibling declarations landed across RaySummary/LadderCell.lean and RaySummary/LadderChain.lean: the named complement shape and its split records, the slack-exposing regime-A raise, the register-RAISING exact-shift deletion, the free-anchor raise with its lower bound relaxed by the raise-bought slack, two compiled necessity records, both antitone cell inclusions, and the antitone schema with its theorem plus a bounded-sub-slice corollary carrying no upward hypothesis at all. Zero sorries, axiom count unchanged at 14, no landed signature edited, and the reserved name cellLE_zero_const_of_kappa_eq still claimed by nothing.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "typst/generated/status.typ",
+    "specs/916_antitone_collision_residue_lower_pair_witnessing/plans/01_antitone-slice-dispatch.md",
+    "specs/916_antitone_collision_residue_lower_pair_witnessing/summaries/01_antitone-slice-dispatch-summary.md",
+    "specs/916_antitone_collision_residue_lower_pair_witnessing/issues.jsonl"
   ],
   "metadata": {
-    "session_id": "sess_1794365863_292a3e_916",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 8,
-    "estimated_hours": 14,
-    "dependency_waves": [[1, 2, 3], [4, 6], [5], [7], [8]]
-  },
-  "dispatch_seq": 2
+    "session_id": "sess_1794365863_292a3e",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "task_dir": "specs/916_antitone_collision_residue_lower_pair_witnessing",
+    "dispatch_seq": 3,
+    "compliance_check": "passed",
+    "phases_completed": 8,
+    "phases_total": 8,
+    "full_gate_set_deferred_to_batch": true,
+    "attributed_baseline_findings": [
+      "check-module-invariants.sh FAIL C16: two env_linter unusedArguments findings in RaySummary/LadderPump.lean:1825 and :1868, a file this task never touched (last modified by task 911). Not hand-patched.",
+      "One vacuous-pattern grep hit at FormalSystem/Examples/TemporalStructures.lean:495, pre-existing and not vacuous in substance.",
+      "Deployed .claude/ tree STALE for core lean literature memory typst, pre-existing at dispatch time, not remedied (no .claude/** file written)."
+    ]
+  }
 }
