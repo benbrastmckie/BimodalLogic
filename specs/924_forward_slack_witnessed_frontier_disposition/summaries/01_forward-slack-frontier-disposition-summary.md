@@ -197,6 +197,14 @@ came back unconditionally green.
   a wired evidence probe; `LadderChain.lean` cites the name in two docstrings only. The substance
   of the description's claim — that the obstruction is compiled as a theorem — holds; the
   location does not.
+- **`file_scope` gap** (recorded, not silently worked around): `git-commit-scoped.sh`'s V10
+  containment guard dropped `scripts/debug-artifact-allowlist.txt` from the phase-4 commit,
+  because the path is absent from this task's declared `file_scope` — although two sibling
+  `scripts/` carriers (`c20-declaration-baseline.txt`, `check-evidence-probes.sh`) are present.
+  The path is genuinely in scope: it is the carrier for this task's own C27 debt on
+  `LadderIdle.lean`, which was not foreseeable when `file_scope` was authored. The fix landed in
+  its own scoped commit (`b65e63171`) without the `--task` opt-in, rather than mutating
+  `specs/state.json`'s `file_scope` mid-task.
 - **Deploy-freshness observation** (outside this task's scope, recorded not acted on): this repo's
   deployed `.claude/` tree is stale relative to the source store for the `core` and `lean`
   extensions. No file under `.claude/**` was hand-patched by this task.
