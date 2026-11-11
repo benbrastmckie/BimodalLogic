@@ -3259,7 +3259,7 @@
     {
       "project_number": 918,
       "project_name": "ladder_cell_index_positive_factorization",
-      "status": "partial",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Produce a positive factorization lemma for the index of which cell a ladder state has, or compile a refutation that no index meeting the recorded constraints exists. This is the SECOND, INDEPENDENT blocker on the ladder realization theorem -- the one the cell-agreement chain does not touch.\n\nVERIFIED STARTING POSITION (every refutation below is a compiled wired probe, not an argument):\n(1) The realization theorem is BLOCKED on this index, separately from the cell agreement. FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean claims NO index of a ladder cell.\n(2) The clipped-coordinate index family is REFUTED at the countdown coordinate and bounded at the gap one by specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean: the region's first idle state sits at distance exactly c + 1, where the countdown's parity is observable.\n(3) The bounded-carrier alternative is closed AS A GENERAL ROUTE by that same probe.\n(4) The residue-carrying candidate that probe exhibits is refuted at BOTH of its object-exhibited parameters by specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean (object_only_parameters_refuted, reach_period_refuted).\n\nTHE CONSTRAINTS ARE THEREFORE COMPILED, NOT GUESSED. Any index must satisfy both: the threshold must be FORMULA-derived, not object-exhibited; and the modulus must be a MULTIPLE OF THE PERIOD of every letter-definable sub-object. A candidate violating either is already refuted by (4) and must not be re-attempted.\n\nTWO ADMISSIBLE OUTCOMES: the positive factorization lemma under those two constraints, or a compiled refutation that they cannot be jointly met -- which would close the ladder route for the realization theorem and is a reportable negative result, not a failure. The stabilization lemma in the pair of ladder counters is ALREADY refuted (ladder-cell-refutation.lean) and is not to be re-attempted; this task is about the index, not the stabilization.\n\nSCOPE: the index only. Different file set from the cell-agreement siblings, so this may run concurrently with them.\n",
       "effort": "high",
@@ -3297,11 +3297,11 @@
         {
           "path": "specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md",
           "type": "summary",
-          "summary": "Phases 1-3 of the window-regime plan: the raising primitive landed at an exact multiple of P + 1 with the register and the realized type held at z; the lowering direction excluded on a compiled measurement."
+          "summary": "Phases 1-4 of the window-regime plan: the arithmetic layer, the passed decision gate, the raising primitive, and its cell-level upward inclusion, with the lowering direction and its cell lift excluded on compiled measurements."
         }
       ],
       "created": "2026-11-11T02:48:57Z",
-      "last_updated": "2026-11-11T13:21:09Z",
+      "last_updated": "2026-11-11T13:22:59Z",
       "session_id": "sess_1794400344_255305",
       "next_artifact_number": 2
     },
@@ -4965,7 +4965,7 @@
     {
       "project_number": 924,
       "project_name": "forward_slack_witnessed_frontier_disposition",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "description": "Decide the fate of the ForwardSlackWitnessed frontier, now that its only landed discharge route is refuted.\n\nOriginating evidence (orchestrate conclusion stage, channel (c)), cited from the parent's issue log: {task 917, iss_1794380410445_QbPDDB}.\n\nVERIFIED STARTING POSITION. The parent task's Phase 5 measured its decision gate as FAIL rather than arguing it: both clauses of exists_deleted_ladderPath_of_next_region_nxt are non-dischargeable from the admitted regime -- hanch short by exactly d, hstraddle by exactly 2*d, where d is the deleted block's length. The measurement compiles sorry-free at specs/917_forward_slack_witnessed_discharge_or_refutation/evidence/phase-5-gate-measurement.lean and exhibits concrete saturated assignments satisfying every available fact (pinCompat_of_ladderPath at the pin pair, nxtAt_lipschitz_two_sided from z, the gap, Tc <= C, (K3), and the pigeonhole's room and window bounds) at which each clause is false. The root cause: cascadeBound's recurrence a(k+1) <= 2*a k + J + 1 is attained WITH EQUALITY by the saturated configuration, so (K2)'s budget describes the obstruction rather than dominating it. The parent then compiled the obstruction as a theorem -- no_deleted_ladderPath_of_straddle_break in FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean shows that once the straddling pair breaks at the reduced distance, no deleted ladder path exists at all, so the primitive's own conclusion is false there rather than merely unproved.\n\nCONSEQUENCE TO RESOLVE. ForwardSlackWitnessed, being an existential over paths, is neither discharged nor refuted; it remains a hypothesis carried on all five depth-0 cell-equality schemas, and every consumer must supply it. The parent recorded in four durable places (the module docstring, the primitive's docstring, Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean, and specs/state.json) that certStabK's condition must be RESTATED rather than proved for as long as the hypothesis stays carried.\n\nSCOPE. Two admissible outcomes, both terminal: (a) identify and land a discharge route that neither passes through block deletion inside the first region above z's (the refuted route) nor re-enters the doubling cascade; or (b) record the frontier as closed, with a compiled statement of why no route through the currently landed machinery can succeed, and make the certStabK restatement obligation permanent rather than provisional. Reaching neither is a third, non-terminal result and must be reported as such rather than smoothed into (b). Amending (K1) to constrain spanning-block length is assessed in the sibling research report as carrying a blast radius of all 53 wired probes and is NOT admitted here without its own decision.\n\nBACKLOG AUDIT. The matcher's strongest signal is covered-by-closed against the parent record itself (semantic 0.74, mechanical subset) -- expected and not a duplication, since this task exists precisely to reach the outcome the parent measured it could not. The one open-task verdict, subset-of-open against update_readme_and_module_docstrings, scores 0.20 and is territory-driven (a shared FormalSystem/Metalogic/Decidability/ prefix), not subject overlap; that record is a documentation sweep and was separately flagged this invocation as an idle cross-batch file_scope overlap. Add a dependencies[] edge if the two are ever dispatched together.",
       "effort": "high",
@@ -4977,7 +4977,7 @@
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean"
       ],
       "created": "2026-11-11T11:06:18Z",
-      "last_updated": "2026-11-11T13:21:29Z",
+      "last_updated": "2026-11-11T13:25:56Z",
       "artifacts": [
         {
           "path": "specs/924_forward_slack_witnessed_frontier_disposition/reports/01_forward-slack-frontier-disposition.md",
@@ -5067,13 +5067,13 @@
         "closed_match_count": 32,
         "scope_blind_count": 454
       },
-      "session_id": "sess_1794400344_255305",
+      "session_id": "sess_1794400344_255305_924",
       "next_artifact_number": 2
     },
     {
       "project_number": 925,
       "project_name": "ladderpump_c16_unused_arguments_lint_debt",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "description": "Clear the C16 env_linter unusedArguments lint debt in RaySummary/LadderPump.lean, which fails check-module-invariants.sh for every other task in the module.\n\nOriginating evidence (orchestrate conclusion stage, channel (c)), cited from the parent's issue log: {task 917, iss_1794382565390_CmXKYM}.\n\nVERIFIED STARTING POSITION. check-module-invariants.sh's C16 env_linter group FAILS on two unusedArguments findings in FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean, on the declarations exists_idleSpliced_ladderPath and exists_idleTypeBlock_of_budget_le_run. Neither the parent record nor its batch sibling touched that file; git log -S attributes the declarations to a concurrent sibling record's commit 3692d517e. Both handled the finding by enumerating and attributing it as pre-existing and out of scope -- correct under their own plans, but it costs every subsequent task in this module an attribution step before it can read its own gate result.\n\nWHY THIS IS NOT A DIRECT FIX. The conclusion stage considered fixing the two findings in place and rejected it: the file sits in a concurrent sibling record's file_scope, so an in-place edit risks a territory collision with in-flight work. This task exists so the fix happens once under a declared file_scope, rather than being attempted opportunistically from a task that does not own the file.\n\nSCOPE. Resolve the two unusedArguments findings on the two named declarations -- either by removing genuinely unused arguments, or by establishing that each argument is load-bearing and suppressing the linter at that declaration with a stated reason. Verify by running check-module-invariants.sh and confirming the C16 env_linter group reaches exit 0 with no unusedArguments findings in LadderPump.lean. Out of scope: the one genuine ':= trivial' proof in FormalSystem/Examples/TemporalStructures.lean, enumerated by the sibling record as a separate pre-existing finding. Before dispatching, check for a live task holding LadderPump.lean and add a dependencies[] edge rather than racing it.\n\nPRECEDENT. The archived record ladderchain_c16_unusedarguments_clear cleared this exact C16 unusedArguments class in the sibling file LadderChain.lean; the matcher returns it as covered-by-closed (semantic 0.42). It is precedent for the method, not coverage of this file -- read its artifacts before starting. The two duplicate-of-open verdicts the matcher returns are both false positives on subject: lake_unguarded_reader_lock_audit concerns the unguarded .lake read hazard, and open_modal_invariance_ray_agreement_lifting is a demoted L-triangleright line; the subset-of-open verdict against update_readme_and_module_docstrings scores 0.19 and is territory-driven.",
       "effort": "low",
@@ -5084,7 +5084,7 @@
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean"
       ],
       "created": "2026-11-11T11:06:18Z",
-      "last_updated": "2026-11-11T13:22:01Z",
+      "last_updated": "2026-11-11T13:28:41Z",
       "artifacts": [
         {
           "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/reports/01_ladderpump-c16-unusedarguments-clear.md",
@@ -5185,7 +5185,7 @@
         "closed_match_count": 29,
         "scope_blind_count": 454
       },
-      "session_id": "sess_1794400344_255305",
+      "session_id": "sess_1794400344_255305_925",
       "next_artifact_number": 2
     }
   ],
