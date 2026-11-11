@@ -376,14 +376,14 @@ and no module build reaches it.
 
 ---
 
-### Phase 3: Record the Disposition, with `certStabK` PROVISIONAL [NOT STARTED]
+### Phase 3: Record the Disposition, with `certStabK` PROVISIONAL [COMPLETED]
 
 **Goal**: The four durable places the parent task used say what is now true — the pin-layer route
 is refuted, a second cascade-free route exists and is conditional, the frontier is exactly the
 `I = 1` side, and the `certStabK` restatement obligation is PROVISIONAL, not permanent.
 
 **Tasks**:
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean`, module docstring: amend
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean`, module docstring: amend
       the closing "What this refutation does NOT establish" paragraph. It currently ends by naming
       the `certStabK` consequence with no qualifier. Add: a cascade-free, deletion-free route
       through the landed idle layer DOES discharge the hypothesis conditionally
@@ -391,11 +391,11 @@ is refuted, a second cascade-free route exists and is conditional, the frontier 
       that `ParamsOk` does not supply; what stays open is exactly the paths whose intervening idle
       run has length `1`; and the `certStabK` restatement obligation is therefore PROVISIONAL —
       blocked on a condition dischargeable on the pumpable side, not on one refuted outright.
-- [ ] Same file, the primitive's own docstring on `exists_deleted_ladderPath_of_next_region_nxt`:
+- [x] Same file, the primitive's own docstring on `exists_deleted_ladderPath_of_next_region_nxt`:
       amend its closing paragraph, which currently ends "only this route through the pin layer is
       refuted". Keep that sentence — it is correct — and name the route that is not refuted, by
       declaration name and module, so a reader who reaches the refutation finds the alternative.
-- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, the "WHY THE WITNESSING HYPOTHESIS
+- [x] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, the "WHY THE WITNESSING HYPOTHESIS
       IS CARRIED RATHER THAN DISCHARGED, COMPILED" paragraph: it asserts that the idle-run
       lengthening route "is REFUTED, not merely unproved". That is true of the UNRESTRICTED schema
       and of the freed-increment form (`idleGapLengtheningAllIncrements_refuted`) and FALSE of the
@@ -403,24 +403,32 @@ is refuted, a second cascade-free route exists and is conditional, the frontier 
       (`idleGapLengtheningOfIdleRunRepeat_holds`). Rewrite the paragraph to carry that split
       explicitly: the mechanism is a theorem, the PREMISE is what is refuted as universally
       available.
-- [ ] Same file, Requirement (W): add the disposition. `ForwardSlackWitnessed` is still a
+- [x] Same file, Requirement (W): add the disposition. `ForwardSlackWitnessed` is still a
       hypothesis on all five schemas (unchanged); the pin-layer route is still refuted
       (unchanged); a second, cascade-free conditional route now exists and is named; the frontier
       is the `I = 1` side; and the `certStabK` restatement obligation is PROVISIONAL rather than
       permanent, with the reason stated.
-- [ ] Same file: add `#print axioms` / `#guard_msgs` pins for
+- [x] Same file: add `#print axioms` / `#guard_msgs` pins for
       `hasForwardSlack_of_idleRunRepeat` and `forwardSlackWitnessed_of_cell_idleRunPumpable`,
       matching the established shape in that file. If the measured profile differs from
       `[propext, Classical.choice, Quot.sound]`, pin what is MEASURED and say so in the narrative;
       never adjust the declaration to hit an expected profile.
-- [ ] `specs/state.json`: append an OUTCOME paragraph to task 924's `description`, in the shape
+      *(deviation: altered — both profiles MEASURED as `[propext, Classical.choice,
+      Quot.sound]` and pinned as measured; the two pins landed in a NEW
+      `/-! ## Requirement (W): the run-local discharge route, CONDITIONAL -/` section rather
+      than appended to the pin-layer block, because that block's narrative asserts "FIVE of
+      the TEN pins below" and appending would have falsified a stated count)*
+- [x] `specs/state.json`: append an OUTCOME paragraph to task 924's `description`, in the shape
       the parent task used — the verdict sentence, the two landed declarations by name, the probe
       path, the named frontier, and the PROVISIONAL `certStabK` consequence. Append; do not
       replace the description or the `artifacts` array (`state-management.md`: artifacts are
       append-only, and wholesale `.artifacts = [...]` assignment is prohibited). Regenerate
       `specs/TODO.md` with `bash .claude/scripts/generate-todo.sh` afterwards rather than editing
       it by hand.
-- [ ] Regenerate `typst/generated/status.typ` with `bash scripts/typst-sync-check.sh --fix` and
+- [x] *(addition not in the plan: `set_option linter.style.longFile` in
+      `KTypeSummaryAxiomTest.lean` raised 2900 -> 3000, the file having grown past the old bound —
+      a mechanical consequence of the prose this phase adds, not a scope change)*
+- [x] Regenerate `typst/generated/status.typ` with `bash scripts/typst-sync-check.sh --fix` and
       stage it in the SAME commit as the `.lean` changes — both `formalsystem-line-count` and
       `tests-line-count` move in this phase.
 

@@ -108,7 +108,7 @@ expectation to rewrite.
 -- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): this is one
 -- axiom-profile ledger for the summary layer and its requirement sections stay together, so the
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
-set_option linter.style.longFile 2900
+set_option linter.style.longFile 3000
 
 namespace BimodalTest.Metalogic
 
@@ -1855,25 +1855,46 @@ of `kappa_collision_regimes` survives the regime restriction, and no landed incl
 in either direction. That refutation, like its sibling above, is scoped to the derivation from the
 collision destructors and `2 ≤ B`, and asserts nothing under full `ParamsOk`.
 
-WHY THE WITNESSING HYPOTHESIS IS CARRIED RATHER THAN DISCHARGED, COMPILED. A normalization lemma
-— every type realized at the upper state is realized there by SOME path with forward slack — would
-discharge `ForwardSlackWitnessed` outright and so drop the fourth hypothesis. The one candidate
-route to it was to LENGTHEN the idle run between the compared position's region and the first
-region start above it, which supplies exactly the amount the deletion's anchor clause is short by.
-That route is REFUTED, not merely unproved, and the obstruction is one level below the pin
-condition, in `step` itself: a ladder path's object walk satisfies
+WHY THE WITNESSING HYPOTHESIS IS CARRIED RATHER THAN DISCHARGED, COMPILED — AND WHERE THE
+REFUTATION ACTUALLY BITES. A normalization lemma — every type realized at the upper state is
+realized there by SOME path with forward slack — would discharge `ForwardSlackWitnessed` outright
+and so drop the fourth hypothesis. The one candidate route to it was to LENGTHEN the idle run
+between the compared position's region and the first region start above it, which supplies exactly
+the amount the deletion's anchor clause is short by. That route splits THREE ways, and the split
+is the substance rather than a refinement of wording: the MECHANISM is a theorem, and what is
+refuted is the universal availability of its premise and the freedom of its increment.
+
+The UNRESTRICTED schema is REFUTED, not merely unproved, and the obstruction is one level below
+the pin condition, in `step` itself: a ladder path's object walk satisfies
 `step (objAt g v) (objAt g (v + 1)) = true` at every position, so an idle run of length two
 requires an idle-to-idle edge in the object's own step graph, and an object admitted by `ParamsOk`
 need not have one — the two-state object with exactly that edge missing is serial in both
 directions and carries a path satisfying every hypothesis of the lengthening while admitting no
-lengthened path at all. The idle run's length is therefore a datum of the object, not a parameter
-the construction may raise. (The refuting object is the standalone prototype
-`idle-gap-lengthening.lean` in the task record that landed this layer, not a wired probe, so it is
-not pinned here; what IS pinned here is the restricted form that its verdict forces.) The
-refutation closes from `step` alone and never reaches
-the type clause, so it says nothing about whether a lengthened path, where one exists, holds the
-realized stab-free type; and it refutes neither the depth-`0` obligation nor any `ParamsOk`
-conjunct.
+lengthened path at all. (The refuting object is the standalone prototype
+`idle-gap-lengthening.lean` in the task record that landed this layer — `idleGapLengthening_refuted`
+in namespace `Probe838C` — not a wired probe, so it is not pinned here.) The refutation closes
+from `step` alone and never reaches the type clause, so it says nothing about whether a lengthened
+path, where one exists, holds the realized stab-free type.
+
+The FREED-INCREMENT form is refuted too, and separately — the restriction to the multiples of the
+repeat length is a necessity, not a convenience. `idleGapLengtheningAllIncrements_refuted`
+(`LadderIdle.lean`) exhibits a three-state object whose idle states carry a `2`-cycle and no
+self-loop, so every idle run has EVEN length and the run of length `4` that MEETS the run-repeat
+premise at `k = 2` — both ends of the block at the same idle state, with the same realized type —
+admits no lengthening to `5`.
+
+The SHARPENED form is a THEOREM, and that is the correction this section carries.
+`idleGapLengtheningOfIdleRunRepeat_holds` (`LadderIdle.lean`) lengthens the run under a RUN-LOCAL
+premise — a block of the idle run whose two ends carry the same object state and the same realized
+type — with the increment restricted to the multiples of the repeat length. Its pin clause does
+not merely loosen but DISCHARGES OUTRIGHT, through `idleSplice_pins` (`LadderPump.lean`), which
+carries no regime hypothesis and no side condition. So the idle run's length is a datum of the
+object rather than a parameter the construction may raise — but WHERE the object supplies a
+repeat, the construction may raise it by any multiple of the repeat length, and that is enough to
+discharge the witnessing hypothesis conditionally (see the disposition in the next section).
+
+None of the three refutes the depth-`0` obligation or any `ParamsOk` conjunct, and what IS pinned
+here is the restricted form of the cell obligation that the still-carried hypothesis forces.
 
 WHAT A CONSUMER MUST SUPPLY to use the restricted form: at each state it inducts through, the
 register equality across the collision and a forward-slack witness at the higher state. Neither is
@@ -1921,11 +1942,37 @@ pin-layer route (`RaySummary/LadderChain.lean`, `RaySummary/LadderCell.lean`,
 `RaySummary/CounterQuotient.lean`)
 
 THE VERDICT, stated and not left tacit. `ForwardSlackWitnessed` is STILL A HYPOTHESIS on all five
-depth-`0` cell-equality schemas. The route that would have discharged it is REFUTED at the pin
-layer rather than merely unproved; `ForwardSlackWitnessed` itself is an existential over paths and
-is therefore neither discharged nor refuted. The reserved name
+depth-`0` cell-equality schemas. The route recorded in this section — the deletion above the
+compared position's region — is REFUTED at the pin layer rather than merely unproved;
+`ForwardSlackWitnessed` itself is an existential over paths and is therefore neither discharged
+nor refuted. The reserved name
 `cellLE_zero_const_of_kappa_eq` remains claimed by nothing, confirmed by an exact-name sweep over
 `FormalSystem/` and not by inference from the pins below.
+
+THE DISPOSITION OF THE FRONTIER, recorded here rather than left to be re-derived. Four things are
+true together and none of them may be read as any of the others.
+
+* `ForwardSlackWitnessed` is UNCHANGED as a carried hypothesis: it still sits on all five
+  depth-`0` cell-equality schemas of `LadderCell.lean`, every consumer must still supply it, and
+  no schema's signature moved.
+* The pin-layer route is UNCHANGED as refuted. Everything below this paragraph stands.
+* A SECOND ROUTE EXISTS, is cascade-free, and is CONDITIONAL.
+  `forwardSlackWitnessed_of_cell_idleRunPumpable` (`RaySummary/LadderIdle.lean`, pinned below)
+  concludes `ForwardSlackWitnessed` at EVERY amount `l` from an amount-free run-local premise
+  `IdleRunPumpable`, through `hasForwardSlack_of_idleRunRepeat` (also pinned below). It deletes
+  nothing, so neither `hanch` nor `hstraddle` arises and none of `(K2)`'s `cascadeBound` is spent;
+  the one surgery is the duplication of an idle block inside the idle run SEPARATING the compared
+  position's region from the next one, whose pin clause `idleSplice_pins` discharges
+  unconditionally. The regime asks `K ≤ n + cntAt g z + I - l` and the free two-sided Lipschitz
+  bound already gives `K ≤ n + cntAt g z + I`; the pump leaves `K` put and raises `I`, so the
+  deficit is paid out of the pumped run. `IdleRunPumpable` is NOT `ParamsOk`-derivable — `(K1)`
+  quantifies `prodCycleLens`, `objCycleLens` and `satPeriod` and never `idleCycleLens`, and
+  `idle_run_lt_tIdle_of_no_idleCycle` is the bound the other way — so the theorem RESTRICTS the
+  obligation rather than removing it.
+* THE FRONTIER IS NOW ONE NAMED SUB-REGIME: the paths whose intervening idle run has length `1`,
+  where no repeat block exists to pump. That side is open and is claimed in neither direction;
+  the route-space closure behind the narrowing is the wired probe
+  `specs/evidence/forward-slack-pin-cascade/route-space-closure.lean`.
 
 THE ROUTE, AND WHY IT FAILS. The route was: delete a type-respecting block inside the FIRST
 REGION ABOVE the compared position's own region while holding the register at that position, then
@@ -1966,11 +2013,16 @@ next region admits (`obs_no_admissible_block`). The scale-invariance of the defi
 still do not close it — is the arithmetic half, recorded in the task artifact
 `phase-5-gate-measurement.lean` rather than as a wired probe, so it is not pinned here.
 
-THE NAMED CONSEQUENCE FOR `Real`. Because the hypothesis is not derivable by this route and stays
-carried, `certStabK` — the one `Real` condition that consumes the agreement of class-equivalent
-cells, and the only one of the six not claimed — must be RESTATED rather than proved, for as long
-as that remains the case. Nothing below claims `certStabK`, and nothing below consumes the
-agreement or the schema `CellLEZeroConstOfKappaEq`.
+THE NAMED CONSEQUENCE FOR `Real`, AND IT IS PROVISIONAL RATHER THAN PERMANENT. Because the
+hypothesis is not derivable by this route and stays carried, `certStabK` — the one `Real`
+condition that consumes the agreement of class-equivalent cells, and the only one of the six not
+claimed — must be RESTATED rather than proved, for as long as that remains the case. The word
+PROVISIONAL is load-bearing and is not a hedge: the restatement obligation is blocked on a
+condition that IS dischargeable on the pumpable side by
+`forwardSlackWitnessed_of_cell_idleRunPumpable`, not on one refuted outright, so it is expected to
+lift if and when the `I = 1` side closes — and it is NOT recorded here as permanent. Nothing below
+claims `certStabK`, and nothing below consumes the agreement or the schema
+`CellLEZeroConstOfKappaEq`.
 
 WHAT DID LAND, and what each piece buys. Three things of unconditional value, independent of the
 verdict:
@@ -2074,6 +2126,47 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
  Quot.sound] -/
 #guard_msgs in
 #print axioms exists_deleted_ladderPath_of_next_region_nxt
+
+/-! ## Requirement (W): the run-local discharge route, CONDITIONAL
+(`RaySummary/LadderIdle.lean`)
+
+WHAT THE TWO PINS BELOW CERTIFY. `hasForwardSlack_of_idleRunRepeat` is the PATH level: the pumped
+path sits at the same ladder state at the compared position, realizes the same stab-free type
+there, and carries `HasForwardSlack` at the amount `l`.
+`forwardSlackWitnessed_of_cell_idleRunPumpable` is the CELL level — `ForwardSlackWitnessed` at
+EVERY amount `l`, from the amount-free run-local premise `IdleRunPumpable`. The amount is
+universally quantified in the conclusion and appears NOWHERE in the premise, because `d := l + 1`
+pumps as much idle run as the amount demands; that asymmetry is what makes this route work where
+the deletion route of the section above could not, the deletion having had to buy `l` units of a
+quantity the saturated register had already spent.
+
+WHAT THEY DO NOT CERTIFY, because it is not true. This is a CONDITIONAL discharge and must not be
+read as an unconditional one. No schema loses a hypothesis: `LadderCell.lean` is untouched, all
+five depth-`0` cell-equality schemas still carry `ForwardSlackWitnessed`, the unrestricted
+`CellLEZeroConstOfKappaEq` is still neither proved nor refuted, and the reserved name
+`cellLE_zero_const_of_kappa_eq` is still claimed by nothing. `IdleRunPumpable` is a datum of the
+object and its run rather than a consequence of `ParamsOk` — `(K1)` quantifies `prodCycleLens`,
+`objCycleLens` and `satPeriod` and never `idleCycleLens`, and `idle_run_lt_tIdle_of_no_idleCycle`
+bounds every idle run BELOW `tIdle pend` absent an idle cycle — so a consumer must still supply
+it, exactly as it must still supply the witnessing hypothesis itself. What remains open after
+these two is the complementary side: the paths whose intervening idle run has length `1`.
+
+The standard profile on both, MEASURED rather than expected. No certificate object is named, no
+finite-fibre or finite-width hypothesis appears, and neither pin is a bound. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.hasForwardSlack_of_idleRunRepeat' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms hasForwardSlack_of_idleRunRepeat
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.forwardSlackWitnessed_of_cell_idleRunPumpable' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms forwardSlackWitnessed_of_cell_idleRunPumpable
 
 /-! ## Requirement (W): the pin layer (`RaySummary/LadderPin.lean`)
 
