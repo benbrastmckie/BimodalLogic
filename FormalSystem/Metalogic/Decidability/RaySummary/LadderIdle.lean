@@ -340,4 +340,489 @@ theorem idleGapLengtheningOfIdleRunRepeat_holds {Q : Type} [Fintype Q] [Nonempty
 
 end Schema
 
+/-! ## The increment is NOT free, even under the premise
+
+The sharpened schema restricts the increment to the multiples of the repeat length `k`. That
+restriction is a NECESSITY and not a convenience: an object whose idle states carry a `2`-cycle
+and no self-loop admits only EVEN-length idle runs, so a run of length `4` meeting the premise at
+`k = 2` admits no lengthening to `5` whatever. `IdleGapLengtheningAllIncrements` names the
+freed-increment form so the verdict on it is a theorem about a named object, and
+`idleGapLengtheningAllIncrements_refuted` is that verdict.
+
+The witness is declared fresh rather than reused: the sibling probes' objects admit every edge
+(`stepC = fun _ _ => true`) or have a single idle state, and neither carries this exclusion. -/
+
+section Freed
+
+/-- **THE FREED-INCREMENT FORM.** `IdleGapLengtheningOfIdleRunRepeat` with the increment freed
+from the multiples of the repeat length: every clause is identical, including the run-repeat
+premise, and only `d * k` is replaced by an unconstrained `l`. Named so the verdict on it is a
+theorem about a named object. -/
+def IdleGapLengtheningAllIncrements {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) : Prop :=
+  (∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ) →
+    ∀ (g : ℤ → LadderState Q pend), IsLadderPath step pend g →
+    ∀ (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+      (∀ t : ℤ, σ.state t = (t, g t)) →
+    ∀ (z : ℤ) (I k l : ℕ) (a : ℤ),
+      (∀ p : ℤ, p ≤ z → pend (objAt g p) = true) →
+      nxtAt g z + 2 ≤ cntAt g z →
+      0 < I → 0 < k → 0 < l →
+      (∀ i : ℕ, i < I → pend (objAt g (z + (cntAt g z : ℤ) + 1 + (i : ℤ))) = false) →
+      pend (objAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ))) = true →
+      z + (cntAt g z : ℤ) + 1 ≤ a →
+      a + (k : ℤ) ≤ z + (cntAt g z : ℤ) + 1 + (I : ℤ) →
+      objAt g a = objAt g (a + (k : ℤ)) →
+      tpOf (ladderModel step pend fwd bwd lab) φ σ a
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ (a + (k : ℤ)) →
+      ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+        objAt g' z = objAt g z ∧ cntAt g' z = cntAt g z ∧ nxtAt g' z = nxtAt g z ∧
+        (∀ i : ℕ, i < I + l →
+          pend (objAt g' (z + (cntAt g' z : ℤ) + 1 + (i : ℤ))) = false) ∧
+        pend (objAt g' (z + (cntAt g' z : ℤ) + 1 + ((I + l : ℕ) : ℤ))) = true ∧
+        cntAt g' (z + (cntAt g' z : ℤ) + 1 + ((I + l : ℕ) : ℤ))
+          = cntAt g (z + (cntAt g z : ℤ) + 1 + (I : ℤ)) ∧
+        ∀ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+          (∀ t : ℤ, σ'.state t = (t, g' t)) →
+          tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+            = tpOf (ladderModel step pend fwd bwd lab) φ σ z
+
+/-! ### The refuting object: one pending state, two idle states, and a `2`-cycle between them
+
+Three states with exactly five admitted edges — `pnd → pnd`, `pnd → idl0`, `idl0 → idl1`,
+`idl1 → idl0`, `idl1 → pnd`. The four denied ones carry the exclusion: `idl0 → idl0` and
+`idl1 → idl1` deny an idle self-loop, `idl0 → pnd` denies an exit from `idl0`, and
+`pnd → idl1` denies an entry at `idl1`. So every idle run BEGINS at `idl0`, alternates, ENDS at
+`idl1`, and therefore has EVEN length. -/
+
+namespace IdleIncrementWitness
+
+/-- The witness object: one pending state and two idle states. -/
+inductive QI where
+  /-- The pending state. -/
+  | pnd : QI
+  /-- The idle state an idle run begins at. -/
+  | idl0 : QI
+  /-- The idle state an idle run ends at. -/
+  | idl1 : QI
+  deriving DecidableEq
+
+/-- The three states, as a `Fintype`. Written out rather than derived: the `Fintype` deriving
+handler's generated membership proof does not elaborate on this toolchain. -/
+instance : Fintype QI :=
+  ⟨{QI.pnd, QI.idl0, QI.idl1}, fun x => by cases x <;> decide⟩
+
+instance : Inhabited QI := ⟨QI.pnd⟩
+
+instance : Nonempty QI := ⟨QI.pnd⟩
+
+/-- `pnd` is the pending state; both `idl0` and `idl1` are idle. -/
+def pendI : QI → Bool
+  | .pnd => true
+  | .idl0 => false
+  | .idl1 => false
+
+/-- The five admitted edges, and no others. -/
+def stepI : QI → QI → Bool
+  | .pnd, .pnd => true
+  | .pnd, .idl0 => true
+  | .idl0, .idl1 => true
+  | .idl1, .idl0 => true
+  | .idl1, .pnd => true
+  | _, _ => false
+
+/-- The denied edges, read off the table: no idle self-loop, no exit from `idl0`, and no entry
+at `idl1` from the pending state. The parity argument rests on this table and on nothing else. -/
+theorem stepI_denied :
+    stepI QI.idl0 QI.idl0 = false ∧ stepI QI.idl1 QI.idl1 = false ∧
+      stepI QI.idl0 QI.pnd = false ∧ stepI QI.pnd QI.idl1 = false := by decide
+
+theorem pendI_eq_true_iff : ∀ q : QI, pendI q = true ↔ q = QI.pnd := by decide
+
+/-- **An idle run begins at `idl0`**: the only admitted pending-to-idle edge is `pnd → idl0`. -/
+theorem stepI_pnd_idle : ∀ x y : QI, pendI x = true → pendI y = false → stepI x y = true →
+    y = QI.idl0 := by decide
+
+/-- **An idle run ends at `idl1`**: the only admitted idle-to-pending edge is `idl1 → pnd`. -/
+theorem stepI_idle_pnd : ∀ x y : QI, pendI y = true → stepI x y = true → pendI x = false →
+    x = QI.idl1 := by decide
+
+/-- **Inside an idle run the walk alternates**: from `idl0` the only admitted idle successor is
+`idl1`. -/
+theorem stepI_idl0_idle : ∀ y : QI, pendI y = false → stepI QI.idl0 y = true →
+    y = QI.idl1 := by decide
+
+/-- **Inside an idle run the walk alternates**: from `idl1` the only admitted idle successor is
+`idl0`. -/
+theorem stepI_idl1_idle : ∀ y : QI, pendI y = false → stepI QI.idl1 y = true →
+    y = QI.idl0 := by decide
+
+/-- A pending triple is admissible at any pair of counters. -/
+theorem admPndI (c n : ℕ) :
+    ((QI.pnd, c, n) : QI × ℕ × ℕ).2.1 ∈ Adm pendI ((QI.pnd, c, n) : QI × ℕ × ℕ).1 :=
+  fun h => by simp [pendI] at h
+
+/-- **The witness object is serial forwards on the admissible carrier.** An idle state carries
+countdown `0` and steps to the other idle state; a pending state at countdown `0` steps to
+`idl0`, and at countdown `d + 1` stays pending. -/
+theorem fwdI : ∀ (t : ℤ) (x : LadderState QI pendI), ∃ y, RladAdm stepI pendI t x y := by
+  intro _ x
+  obtain ⟨⟨q, c, n⟩, hx⟩ := x
+  cases q with
+  | pnd =>
+      cases c with
+      | zero =>
+          exact ⟨⟨(QI.idl0, 0, n), fun _ => rfl⟩, rfl, hx, Or.inl rfl, by simp [Count, pendI]⟩
+      | succ d =>
+          exact ⟨⟨(QI.pnd, d, n), admPndI d n⟩, rfl, hx, Or.inl rfl, by simp [Count, pendI]⟩
+  | idl0 =>
+      have hc : c = 0 := hx rfl
+      subst hc
+      exact ⟨⟨(QI.idl1, 0, n), fun _ => rfl⟩, rfl, hx, Or.inl rfl, by simp [Count, pendI]⟩
+  | idl1 =>
+      have hc : c = 0 := hx rfl
+      subst hc
+      exact ⟨⟨(QI.idl0, 0, n), fun _ => rfl⟩, rfl, hx, Or.inl rfl, by simp [Count, pendI]⟩
+
+/-- **The witness object is serial backwards on the admissible carrier.** A pending state is
+reached from the pending state one countdown higher; `idl0` is reached from the pending state at
+countdown `0`; and `idl1` is reached from `idl0`, which is the only edge into it. -/
+theorem bwdI : ∀ (t : ℤ) (x : LadderState QI pendI), ∃ y, RladAdm stepI pendI (t - 1) y x := by
+  intro _ x
+  obtain ⟨⟨q, c, n⟩, hx⟩ := x
+  cases q with
+  | pnd =>
+      exact ⟨⟨(QI.pnd, c + 1, n), admPndI (c + 1) n⟩, rfl, admPndI (c + 1) n, Or.inl rfl,
+        by simp [Count, pendI]⟩
+  | idl0 =>
+      have hc : c = 0 := hx rfl
+      subst hc
+      exact ⟨⟨(QI.pnd, 0, n), admPndI 0 n⟩, rfl, admPndI 0 n, Or.inl rfl,
+        by simp [Count, pendI]⟩
+  | idl1 =>
+      have hc : c = 0 := hx rfl
+      subst hc
+      exact ⟨⟨(QI.idl0, 0, n), fun _ => rfl⟩, rfl, fun _ => rfl, Or.inl rfl,
+        by simp [Count, pendI]⟩
+
+/-! ### The stab-free atomic closure -/
+
+/-- The single atom the witness reads. -/
+def pI : Atom := ⟨"p", none⟩
+
+/-- The labelling: the atom holds exactly at the pending state. -/
+def labI : QI → Atom → Bool := fun q at_ => decide (at_ = pI ∧ q = QI.pnd)
+
+/-- The stab-free atomic formula the witness is run at. -/
+def aI : PlusFormula := .atom pI
+
+theorem closure_aI : plusSubformulaClosure aI = {aI} := by
+  simp [plusSubformulaClosure, aI, PlusFormula.subformulas]
+
+theorem no_stab_in_closure_aI :
+    ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure aI := by
+  intro χ h
+  rw [closure_aI, Finset.mem_singleton] at h
+  exact PlusFormula.noConfusion h
+
+/-- **At an atomic closure the realized type is a datum of the object state alone.** Two
+positions of one history carrying the same object state realize the same type, because the
+closure is the singleton `{aI}` and an atomic letter's bit is `lab` at the position's own object
+state (`atom_mem_tpOf_ladder_iff`). This is what makes the run-repeat premise's TYPE clause
+checkable on the witness without any periodicity hypothesis. -/
+theorem tpOf_aI_eq_of_objAt_eq {g : ℤ → LadderState QI pendI}
+    (σ : WorldHistory (ladderFrameAdm stepI pendI fwdI bwdI).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t, g t)) (u v : ℤ) (h : objAt g u = objAt g v) :
+    tpOf (ladderModel stepI pendI fwdI bwdI labI) aI σ u
+      = tpOf (ladderModel stepI pendI fwdI bwdI labI) aI σ v := by
+  have hσ' : ∀ t : ℤ, σ.state t = (t + (0 : ℤ), g t) := fun t => by rw [add_zero]; exact hσ t
+  ext ψ
+  by_cases hmem : ψ ∈ plusSubformulaClosure aI
+  · have hψ : ψ = aI := by rw [closure_aI, Finset.mem_singleton] at hmem; exact hmem
+    subst hψ
+    change PlusFormula.atom pI ∈ _ ↔ PlusFormula.atom pI ∈ _
+    rw [atom_mem_tpOf_ladder_iff fwdI bwdI labI aI σ hσ' u pI,
+      atom_mem_tpOf_ladder_iff fwdI bwdI labI aI σ hσ' v pI, h]
+  · simp [mem_tpOf_iff, hmem]
+
+/-! ### The witnessing path: one long region through `0`, then idle runs of length exactly four
+
+`wI C` is pending at every position at or below `C` and above it is periodic with period `5`:
+four idle positions `idl0, idl1, idl0, idl1` then one pending. The countdown `cI C` is the
+distance up to `C`, clipped at `0`, which is the countdown the region through `0` forces together
+with the singleton regions above it; the register is constantly `0`, which the pins allow because
+every pin hands its region start the countdown `0`. -/
+
+/-- The witnessing walk. -/
+def wI (C : ℕ) : ℤ → QI := fun v =>
+  if v ≤ (C : ℤ) then QI.pnd
+  else if (v - (C : ℤ)) % 5 = 1 then QI.idl0
+  else if (v - (C : ℤ)) % 5 = 2 then QI.idl1
+  else if (v - (C : ℤ)) % 5 = 3 then QI.idl0
+  else if (v - (C : ℤ)) % 5 = 4 then QI.idl1
+  else QI.pnd
+
+/-- The countdown the witnessing walk forces. -/
+def cI (C : ℕ) : ℤ → ℕ := fun v => ((C : ℤ) - v).toNat
+
+theorem wI_of_le (C : ℕ) (v : ℤ) (h : v ≤ (C : ℤ)) : wI C v = QI.pnd := by
+  simp only [wI, if_pos h]
+
+theorem wI_pnd_iff (C : ℕ) (v : ℤ) :
+    wI C v = QI.pnd ↔ (v ≤ (C : ℤ) ∨ (v - (C : ℤ)) % 5 = 0) := by
+  have hm : (v - (C : ℤ)) % 5 = 0 ∨ (v - (C : ℤ)) % 5 = 1 ∨ (v - (C : ℤ)) % 5 = 2 ∨
+      (v - (C : ℤ)) % 5 = 3 ∨ (v - (C : ℤ)) % 5 = 4 := by omega
+  by_cases h1 : v ≤ (C : ℤ)
+  · simp [wI, h1]
+  · rcases hm with h | h | h | h | h <;> simp [wI, h1, h]
+
+theorem pendI_wI_true_iff (C : ℕ) (v : ℤ) :
+    pendI (wI C v) = true ↔ (v ≤ (C : ℤ) ∨ (v - (C : ℤ)) % 5 = 0) :=
+  (pendI_eq_true_iff _).trans (wI_pnd_iff C v)
+
+theorem pendI_wI_false_iff (C : ℕ) (v : ℤ) :
+    pendI (wI C v) = false ↔ ((C : ℤ) < v ∧ ¬ (v - (C : ℤ)) % 5 = 0) := by
+  rw [← Bool.not_eq_true, pendI_wI_true_iff]
+  omega
+
+theorem wI_eq_idl0_of_mod_one (C : ℕ) (v : ℤ) (h1 : (C : ℤ) < v)
+    (h : (v - (C : ℤ)) % 5 = 1) : wI C v = QI.idl0 := by
+  have hnl : ¬ v ≤ (C : ℤ) := by omega
+  simp [wI, hnl, h]
+
+theorem wI_eq_idl0_of_mod_three (C : ℕ) (v : ℤ) (h1 : (C : ℤ) < v)
+    (h : (v - (C : ℤ)) % 5 = 3) : wI C v = QI.idl0 := by
+  have hnl : ¬ v ≤ (C : ℤ) := by omega
+  simp [wI, hnl, h]
+
+/-- **The witnessing walk with its forced countdown lifts to a ladder path whose register at `0`
+is `0`.** Through `exists_ladderPath_of_walk_nxt_at`, the lift that exposes the register at a
+chosen position — here the origin. -/
+theorem exists_gI (C : ℕ) : ∃ g : ℤ → LadderState QI pendI, IsLadderPath stepI pendI g ∧
+    (∀ v, objAt g v = wI C v) ∧ (∀ v, cntAt g v = cI C v) ∧ nxtAt g 0 = 0 := by
+  refine exists_ladderPath_of_walk_nxt_at (wI C) (cI C) 0 0 ?_ ?_ ?_ ?_ ?_ ?_
+  · -- the walk steps along `stepI` at every position
+    intro v
+    have hm : (v - (C : ℤ)) % 5 = 0 ∨ (v - (C : ℤ)) % 5 = 1 ∨ (v - (C : ℤ)) % 5 = 2 ∨
+        (v - (C : ℤ)) % 5 = 3 ∨ (v - (C : ℤ)) % 5 = 4 := by omega
+    by_cases h1 : v + 1 ≤ (C : ℤ)
+    · rw [wI_of_le C v (by omega), wI_of_le C (v + 1) h1]
+      decide
+    · by_cases h2 : v ≤ (C : ℤ)
+      · have hv : v = (C : ℤ) := by omega
+        subst hv
+        rw [wI_of_le C (C : ℤ) le_rfl,
+          wI_eq_idl0_of_mod_one C ((C : ℤ) + 1) (by omega) (by omega)]
+        decide
+      · rcases hm with h | h | h | h | h
+        · have h' : (v + 1 - (C : ℤ)) % 5 = 1 := by omega
+          simp [wI, h1, h2, h, h', stepI]
+        · have h' : (v + 1 - (C : ℤ)) % 5 = 2 := by omega
+          simp [wI, h1, h2, h, h', stepI]
+        · have h' : (v + 1 - (C : ℤ)) % 5 = 3 := by omega
+          simp [wI, h1, h2, h, h', stepI]
+        · have h' : (v + 1 - (C : ℤ)) % 5 = 4 := by omega
+          simp [wI, h1, h2, h, h', stepI]
+        · have h' : (v + 1 - (C : ℤ)) % 5 = 0 := by omega
+          simp [wI, h1, h2, h, h', stepI]
+  · -- idle positions carry countdown `0`
+    intro v hv
+    rw [pendI_wI_false_iff] at hv
+    unfold cI
+    omega
+  · -- the countdown counts down inside the region through `0`
+    intro v h0 h1
+    rw [pendI_wI_true_iff] at h0
+    rw [pendI_wI_true_iff] at h1
+    unfold cI
+    omega
+  · -- the countdown is exhausted at a region end
+    intro v h0 h1
+    rw [pendI_wI_true_iff] at h0
+    rw [pendI_wI_false_iff] at h1
+    unfold cI
+    omega
+  · -- every pin hands its region start the countdown `0`, so the pins are compatible outright
+    intro s v hs0 _ hv0 _
+    rw [pendI_wI_false_iff] at hs0
+    rw [pendI_wI_false_iff] at hv0
+    unfold cI
+    have hs : ((C : ℤ) - (s + 1)).toNat = 0 := by omega
+    have hv : ((C : ℤ) - (v + 1)).toNat = 0 := by omega
+    rw [hs, hv]
+    simp
+  · -- the anchor at the origin, with the register constantly `0`
+    intro v hv0 _
+    rw [pendI_wI_false_iff] at hv0
+    unfold cI
+    have hv : ((C : ℤ) - (v + 1)).toNat = 0 := by omega
+    rw [hv]
+    simp
+
+/-! ### The parameter tuple the witness sits at -/
+
+/-- The periodicity fixpoint's own `T_c` for the witness. -/
+noncomputable def TcI : ℕ := Tcof stepI pendI labI aI
+
+/-- The periodicity fixpoint's own `T_n` for the witness. -/
+noncomputable def TnI : ℕ := Tnof stepI pendI labI aI
+
+/-- The periodicity fixpoint's own `P` for the witness. -/
+noncomputable def PI : ℕ := Pof stepI pendI labI aI
+
+/-- The cascade recurrence's own `B` for the witness. -/
+noncomputable def BI : ℕ := Bof stepI pendI labI aI
+
+/-- **THE EXCLUSION IS NOT AN ARTEFACT OF THE SHARPENED SCHEMA'S DROPPED PARAMETER
+HYPOTHESIS.** The witness object admits `ParamsOk` at the periodicity fixpoint's own outputs,
+discharged by the landed `paramsOk_params`, so the refutation below sits at a parameter tuple the
+parameter conditions genuinely admit rather than at a vacuous hypothesis. -/
+theorem paramsOkI : ParamsOk stepI pendI labI aI TcI TnI PI BI :=
+  paramsOk_params stepI pendI labI aI
+
+/-- `(K3)` bounds `T_c` from below by `2 T_short + T_idle + 2`, so the witnessing region's
+countdown already exceeds the gap `nxtAt g 0 + 2 ≤ cntAt g 0` demands of it at the register
+value `0`. -/
+theorem two_le_TcI : 2 ≤ TcI := by
+  have h := paramsOkI.2.2.1.2
+  omega
+
+/-! ### The parity lemma: on this object every idle run has EVEN length
+
+The whole content of the exclusion, stated once on the object's own step table. An idle run
+BEGINS at `idl0`, because `pnd → idl0` is the only admitted pending-to-idle edge; it ALTERNATES,
+because neither idle state has a self-loop; and it ENDS at `idl1`, because `idl1 → pnd` is the
+only admitted idle-to-pending edge. The position at distance `i` into the run therefore carries
+`idl0` for even `i` and `idl1` for odd `i`, and the run's last position carrying `idl1` forces
+the length to be even. Every step of the argument reads the table by `decide`. -/
+
+/-- **ON THIS OBJECT EVERY IDLE RUN HAS EVEN LENGTH.** For every ladder path: an idle run of
+length `L` beginning at `r` — pending at `r - 1`, idle at `r, …, r + L - 1`, pending again at
+`r + L` — has `L` even. -/
+theorem idleRun_even {g : ℤ → LadderState QI pendI} (hg : IsLadderPath stepI pendI g)
+    (r : ℤ) (L : ℕ)
+    (hprev : pendI (objAt g (r - 1)) = true)
+    (hidle : ∀ i : ℕ, i < L → pendI (objAt g (r + (i : ℤ))) = false)
+    (hnext : pendI (objAt g (r + (L : ℤ))) = true) : L % 2 = 0 := by
+  rcases Nat.eq_zero_or_pos L with hL | hL
+  · simp [hL]
+  have hpat : ∀ i : ℕ, i < L →
+      objAt g (r + (i : ℤ)) = (if i % 2 = 0 then QI.idl0 else QI.idl1) := by
+    intro i
+    induction i with
+    | zero =>
+        intro _
+        have hi0 : pendI (objAt g r) = false := by
+          have hz := hidle 0 (by omega); simpa using hz
+        have hs := objAt_step g hg (r - 1)
+        rw [show r - 1 + 1 = r by ring] at hs
+        have hres := stepI_pnd_idle _ _ hprev hi0 hs
+        simpa using hres
+    | succ j ih =>
+        intro hj
+        have hij := ih (by omega)
+        have hs := objAt_step g hg (r + (j : ℤ))
+        rw [hij, show r + (j : ℤ) + 1 = r + ((j + 1 : ℕ) : ℤ) by push_cast; ring] at hs
+        have hj1 : pendI (objAt g (r + ((j + 1 : ℕ) : ℤ))) = false := hidle (j + 1) hj
+        by_cases hp : j % 2 = 0
+        · rw [if_pos hp] at hs
+          rw [stepI_idl0_idle _ hj1 hs, if_neg (by omega : ¬ (j + 1) % 2 = 0)]
+        · rw [if_neg hp] at hs
+          rw [stepI_idl1_idle _ hj1 hs, if_pos (by omega : (j + 1) % 2 = 0)]
+  have hlast := hpat (L - 1) (by omega)
+  have hs := objAt_step g hg (r + ((L - 1 : ℕ) : ℤ))
+  rw [show r + ((L - 1 : ℕ) : ℤ) + 1 = r + (L : ℤ) by
+    rw [Nat.cast_sub (by omega), Nat.cast_one]; ring] at hs
+  have hpi : pendI (objAt g (r + ((L - 1 : ℕ) : ℤ))) = false := hidle (L - 1) (by omega)
+  have he := stepI_idle_pnd _ _ hnext hs hpi
+  rw [hlast] at he
+  by_cases hp : (L - 1) % 2 = 0
+  · rw [if_pos hp] at he
+    exact absurd he (by decide)
+  · omega
+
+end IdleIncrementWitness
+
+/-! ### The verdict on the freed increment -/
+
+open IdleIncrementWitness in
+/-- **THE INCREMENT IS NOT FREE, EVEN UNDER THE PREMISE.** On the three-state object whose idle
+states carry a `2`-cycle and no self-loop, every idle run has EVEN length (`idleRun_even`), so
+the run of length `4` the witnessing path carries above its region through `0` — which MEETS the
+run-repeat premise at `k = 2`, with both ends of the block at `idl0` and with the same realized
+type there — admits no lengthening to `5`.
+
+The refutation therefore does not turn on the premise being unmet: it is met. What fails is the
+freed increment, exactly as `IdleGapLengtheningOfIdleRunRepeat`'s restriction to the multiples of
+`k` anticipates. The parameters are the periodicity fixpoint's own outputs for a stab-free atomic
+closure (`paramsOkI`, `two_le_TcI`), so the exclusion is not an artefact of the sharpened
+schema's dropped parameter hypothesis either. -/
+theorem idleGapLengtheningAllIncrements_refuted :
+    ¬ ∀ (Q : Type) [Fintype Q] [Nonempty Q] (step : Q → Q → Bool) (pend : Q → Bool)
+        (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+        (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+        (lab : Q → Atom → Bool) (φ : PlusFormula),
+        IdleGapLengtheningAllIncrements step pend fwd bwd lab φ := by
+  intro h
+  obtain ⟨g, hg, hobj, hcnt, hnxt⟩ := exists_gI TcI
+  obtain ⟨σ, hσ⟩ := exists_hist_of_isLadderPath fwdI bwdI g hg
+  have h2 := two_le_TcI
+  have hC : cntAt g 0 = TcI := by rw [hcnt]; unfold cI; omega
+  -- the hypotheses, at `z = 0`, `I = 4`, `k = 2`, `l = 1`, and the block at the run's first
+  -- position
+  have hpast : ∀ p : ℤ, p ≤ 0 → pendI (objAt g p) = true := by
+    intro p hp
+    rw [hobj, pendI_wI_true_iff]
+    exact Or.inl (by omega)
+  have hgap : nxtAt g 0 + 2 ≤ cntAt g 0 := by rw [hnxt, hC]; omega
+  have hrun : ∀ i : ℕ, i < 4 →
+      pendI (objAt g (0 + (cntAt g 0 : ℤ) + 1 + (i : ℤ))) = false := by
+    intro i hi
+    rw [hobj, pendI_wI_false_iff, hC]
+    exact ⟨by omega, by omega⟩
+  have hstart : pendI (objAt g (0 + (cntAt g 0 : ℤ) + 1 + ((4 : ℕ) : ℤ))) = true := by
+    rw [hobj, pendI_wI_true_iff, hC]
+    exact Or.inr (by omega)
+  have hRa : (0 : ℤ) + (cntAt g 0 : ℤ) + 1 ≤ (TcI : ℤ) + 1 := by rw [hC]; omega
+  have hak : (TcI : ℤ) + 1 + ((2 : ℕ) : ℤ)
+      ≤ 0 + (cntAt g 0 : ℤ) + 1 + ((4 : ℕ) : ℤ) := by rw [hC]; omega
+  have hrep : objAt g ((TcI : ℤ) + 1) = objAt g ((TcI : ℤ) + 1 + ((2 : ℕ) : ℤ)) := by
+    rw [hobj, hobj, show (TcI : ℤ) + 1 + ((2 : ℕ) : ℤ) = (TcI : ℤ) + 3 by push_cast; ring,
+      wI_eq_idl0_of_mod_one TcI ((TcI : ℤ) + 1) (by omega) (by omega),
+      wI_eq_idl0_of_mod_three TcI ((TcI : ℤ) + 3) (by omega) (by omega)]
+  have hty := tpOf_aI_eq_of_objAt_eq σ hσ ((TcI : ℤ) + 1) ((TcI : ℤ) + 1 + ((2 : ℕ) : ℤ)) hrep
+  obtain ⟨g', hg', hoz, hcz, -, hrun', hstart', -, -⟩ :=
+    h QI stepI pendI fwdI bwdI labI aI no_stab_in_closure_aI g hg σ hσ 0 4 2 1
+      ((TcI : ℤ) + 1) hpast hgap (by omega) (by omega) (by omega) hrun hstart hRa hak hrep hty
+  -- the lengthened path carries an idle run of length five, which the parity lemma forbids
+  have hcz' : cntAt g' 0 = TcI := by rw [hcz, hC]
+  have hz0 : pendI (objAt g' 0) = true := by
+    rw [hoz, hobj, pendI_wI_true_iff]
+    exact Or.inl (by omega)
+  have hprev : pendI (objAt g' ((TcI : ℤ) + 1 - 1)) = true := by
+    have he : (0 : ℤ) + (cntAt g' 0 : ℤ) = (TcI : ℤ) + 1 - 1 := by rw [hcz']; ring
+    rw [← he]
+    exact (cntAt_sub_of_pend g' hg' 0 hz0 (cntAt g' 0) le_rfl).1
+  have hidle5 : ∀ i : ℕ, i < 5 → pendI (objAt g' ((TcI : ℤ) + 1 + (i : ℤ))) = false := by
+    intro i hi
+    have he : (0 : ℤ) + (cntAt g' 0 : ℤ) + 1 + (i : ℤ) = (TcI : ℤ) + 1 + (i : ℤ) := by
+      rw [hcz']; ring
+    rw [← he]
+    exact hrun' i (by omega)
+  have hnext5 : pendI (objAt g' ((TcI : ℤ) + 1 + ((5 : ℕ) : ℤ))) = true := by
+    have he : (0 : ℤ) + (cntAt g' 0 : ℤ) + 1 + (((4 + 1 : ℕ)) : ℤ)
+        = (TcI : ℤ) + 1 + ((5 : ℕ) : ℤ) := by rw [hcz']; push_cast; ring
+    rw [← he]
+    exact hstart'
+  have hpar := idleRun_even hg' ((TcI : ℤ) + 1) 5 hprev hidle5 hnext5
+  omega
+
+end Freed
+
 end FormalSystem.Metalogic.Decidability.RaySummary
+
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.idleGapLengtheningOfIdleRunRepeat_holds
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.idleGapLengtheningAllIncrements_refuted

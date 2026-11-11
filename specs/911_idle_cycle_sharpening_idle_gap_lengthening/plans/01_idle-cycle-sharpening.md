@@ -519,7 +519,7 @@ existing signature and no import.
 
 ---
 
-### Phase 6: The increment restriction, refuted at a freed increment [NOT STARTED]
+### Phase 6: The increment restriction, refuted at a freed increment [COMPLETED]
 
 **Goal**: Compile the record that freeing the increment makes the schema FALSE even granted the
 run-repeat premise — the honesty guard the task description demands, so no later reader can read
@@ -527,37 +527,42 @@ the sharpening as licensing an arbitrary lengthening.
 
 **Tasks**:
 
-- [ ] Re-read `LadderIdle.lean` immediately before editing.
-- [ ] Define `IdleGapLengtheningAllIncrements` as `IdleGapLengtheningOfIdleRunRepeat`'s shape with
+- [x] Re-read `LadderIdle.lean` immediately before editing.
+- [x] Define `IdleGapLengtheningAllIncrements` as `IdleGapLengtheningOfIdleRunRepeat`'s shape with
       `∀ l : ℕ, 0 < l -> ...` in place of `∀ d`, and `I + l` in place of `I + d * k`. Every other
       clause, including the run-repeat premise, is identical.
-- [ ] Open a namespace for the witness object and define it: three states, one pending (`p`) and
+- [x] Open a namespace for the witness object and define it: three states, one pending (`p`) and
       two idle (`i0`, `i1`), with exactly five admitted edges — `p -> p`, `p -> i0`, `i0 -> i1`,
       `i1 -> i0`, `i1 -> p`. The three denied edges that matter are `i0 -> i0`, `i1 -> i1` and
       `i0 -> p`: the first two deny an idle self-loop and the third denies an exit from `i0`, so
       every idle run begins at `i0`, alternates, ends at `i1`, and therefore has EVEN length.
-- [ ] Prove the object's forward and backward seriality on the admissible carrier, mirroring
+- [x] Prove the object's forward and backward seriality on the admissible carrier, mirroring
       `Probe838C.fwdO` and `Probe838C.bwdO` case for case: an idle state forces countdown `0`, a
       pending state at countdown `0` steps to `i0`, and at countdown `d + 1` stays pending.
-- [ ] Define the stab-free atomic closure for the object and prove its closure is a singleton
+- [x] Define the stab-free atomic closure for the object and prove its closure is a singleton
       with no `stab`, mirroring `Probe838C.closure_aO` and `Probe838C.no_stab_in_closure_aO`.
-- [ ] Define the witnessing walk: pending at every position at or below `C`, and above `C`
+- [x] Define the witnessing walk: pending at every position at or below `C`, and above `C`
       periodic with period `5` — four idle positions (`i0`, `i1`, `i0`, `i1`) then one pending —
       with the countdown the region through `0` forces (`(C - v).toNat`, clipped) and the register
       constantly `0`. Lift it with `exists_ladderPath_of_walk_nxt_at`.
-- [ ] Prove the run-repeat premise IS met on this path at `I = 4`: the block at the run's first
+- [x] Prove the run-repeat premise IS met on this path at `I = 4`: the block at the run's first
       position with `k = 2` is idle throughout and carries both the object repeat (`i0` at both
       ends) and the type repeat.
-- [ ] Prove the parity lemma: on this object no ladder path has an idle run of odd length,
+- [x] *(deviation: altered — the `Fintype QI` instance is written out
+      (`⟨{pnd, idl0, idl1}, fun x => by cases x <;> decide⟩`) rather than taken from
+      `deriving Fintype`: the deriving handler's generated membership proof does not elaborate
+      on this toolchain (`Application type mismatch: QI.enumList_nodup`). Recorded in the
+      instance's own docstring.)*
+- [x] Prove the parity lemma: on this object no ladder path has an idle run of odd length,
       because a run of length three would need an exit from `i0`, which `step` denies — the
       argument closes by `decide` on the step table plus `objAt_step`.
-- [ ] Prove `idleGapLengtheningAllIncrements_refuted`: the universally quantified freed-increment
+- [x] Prove `idleGapLengtheningAllIncrements_refuted`: the universally quantified freed-increment
       form is not a theorem, instantiated at this object with `I = 4` and `l = 1`, where the
       conclusion asks for an idle run of length `5`.
-- [ ] Prove the companion corollary that this object admits `ParamsOk` at the periodicity
+- [x] Prove the companion corollary that this object admits `ParamsOk` at the periodicity
       fixpoint's own outputs via `paramsOk_params`, and that `2 <= Tc` there, so the exclusion is
       not an artifact of the schema's dropped parameter hypothesis.
-- [ ] Add `#print axioms` lines for the exclusion theorem, following the prototype's own closing
+- [x] Add `#print axioms` lines for the exclusion theorem, following the prototype's own closing
       convention.
 
 **Timing**: 2 hours
