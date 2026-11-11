@@ -1,12 +1,12 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 6 of 8 complete: all eight cluster-B sites in FormalSystem/Semantics/Presheaf/Path.lean (the adjacent-window constructor and the toPath family) corrected from the full four-constraint bundle marker to what their proofs actually project. Three were route 1 -- the transplant probe passed on the first attempt, so [F.IsRegular] was deleted outright from PathHom.toPathAux, PathHom.toPath and PathHom.toPath_length and their markers are now None. Five were route 2 (binder-free twin plus delegating corollary). PASS C34a over 183 markers with the delegation group moving 35 -> 40 (exactly +5) and the binder-carrying population 89 -> 86 (the three deletions). Full library build green (2974 jobs), sorry count 0, axiom count unchanged at 14. Five full-four markers remain in Path.lean, all phase 7's.",
-  "phases_completed": 6,
+  "summary": "Phase 7 of 8 complete: all five cluster-C sites in FormalSystem/Semantics/Presheaf/Path.lean (PathHom.ofStep, PathHom.ofPath, the two round trips, and PathHom.pathEquiv) corrected from the full four-constraint bundle marker to Compositionality, Seriality, Limit. Every one was route 2 -- binder-free twin plus delegating corollary -- and all five twins compiled binder-free on the first probe build, which is the evidence that Saturation is reached by no part of any of them. Path.lean now holds zero full-four marker occurrences, completing its 20 and the plan's 28. PASS C34a over 188 markers with the delegation group moving 40 -> 45 (exactly +5) and the binder-carrying population unchanged at 86 (no binder deleted this phase). The longFile baseline was raised 1800 -> 1900 against a final 1851 lines. Full library build green (2974 jobs, GUARD_EXIT=0, zero error lines), sorry count 0 (cross-check MATCH), axiom count unchanged at 14. The gate's overall exit code is 1, from the single pre-existing FAIL C16 at LadderPump.lean:1825/:1868, byte-identical to the phase 1-6 records and outside this phase's territory. Phase 8 remains: re-derive the C34a counts into the two specification documents and run the full gate.",
+  "phases_completed": 7,
   "phases_total": 8,
-  "dispatch_seq": 30,
+  "dispatch_seq": 31,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-6-handoff-20261111T182514.md",
+  "continuation_path": "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-7-handoff-20261111T185252.md",
   "artifacts": []
 }

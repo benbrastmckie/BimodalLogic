@@ -3,12 +3,11 @@
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 908,
-  "phase_number": 6,
-  "dispatch_seq": 30,
-  "phases_completed": 6,
+  "dispatch_seq": 31,
+  "phases_completed": 7,
   "phases_total": 8,
+  "handoff_path": "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-7-handoff-20261111T185252.md",
   "requires_user_review": false,
-  "handoff_path": "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-6-handoff-20261111T182514.md",
   "artifacts": [],
   "modified_files": [
     "FormalSystem/Semantics/Presheaf/Path.lean",
@@ -16,7 +15,7 @@
     "README.md",
     "typst/generated/status.typ",
     "specs/908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md",
-    "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-6-handoff-20261111T182514.md",
+    "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-7-handoff-20261111T185252.md",
     "specs/908_constraints_consumed_marker_accuracy_audit/issues.jsonl",
     "specs/908_constraints_consumed_marker_accuracy_audit/.orchestrator-handoff.json",
     "specs/908_constraints_consumed_marker_accuracy_audit/.return-meta.json"
@@ -28,10 +27,13 @@
     "axiom_count": 14,
     "build_passed": true,
     "verification_passed": true,
-    "notes": "Full library build GUARD_EXIT=0, 2974 jobs, zero error: lines, Path.olean newer than source. check-module-invariants.sh: PASS C34a over 183 markers (delegation 35 -> 40), PASS C34b, PASS C26, PASS C30; overall exit 1 from a pre-existing FAIL C16 (LadderPump.lean:1825/:1868, outside territory) and a FAIL INV cleared by --emit-inventory. typst-sync-check.sh re-stamped. Vacuous count 1 is pre-existing (FormalSystem/Examples/TemporalStructures.lean:495) and outside territory. Full gate set deferred to the batch stage: suite_selection_select returns __FULL_SWEEP__ for this phase's paths, so no narrowing --only invocation covers them."
+    "notes": "Full library build GUARD_EXIT=0, 2974 jobs, zero error lines, Path.olean newer than Path.lean. lean-sorry-census.sh --cross-check: stripper 0, compiler 0, MATCH. Vacuous count 1 is pre-existing at FormalSystem/Examples/TemporalStructures.lean:495, outside territory and byte-identical to the phase 3-6 records. check-module-invariants.sh overall exit 1 from the single pre-existing FAIL C16 (env_linter unusedArguments at LadderPump.lean:1825 and :1868); PASS C34a (188 markers, 86 binder-carrying: 45 delegating, 2 field re-export, 39 omitting nothing), PASS C34b, PASS C26, PASS C30, PASS INV. typst-sync-check.sh re-stamped with --fix, then PASS. Full gate set deferred to the batch stage: suite_selection_select over this phase's four touched paths returns __FULL_SWEEP__, so no narrowing run-all.sh --only or verify-deploy.sh --only-gate invocation covers them."
+  },
+  "completion_data": {
+    "completion_summary": "Phase 7 of 8 complete. All five remaining full-four 'Constraints consumed' markers in FormalSystem/Semantics/Presheaf/Path.lean corrected to 'Compositionality, Seriality, Limit', each via a binder-free twin plus a delegating corollary. Path.lean is now at zero full-four occurrences. Phase 8 (re-derive the C34a counts into the two specification documents, full gate) remains."
   },
   "memory_candidates": [
-    "A 'Constraints consumed:' marker site whose probe hit set is empty is often a removable instance binder, not just an over-reporting marker: running the transplant probe in place (delete the binder, rebuild the module) is strictly stronger evidence than a scratch copy, because it also exercises every call site in the module.",
-    "check-module-invariants.sh's C16 env_linter stage can exceed a 900s foreground timeout on a cold linter cache, and the truncated log looks like a clean run of the checks that did print; run the gate detached with a kill -0 waiter and read its own exit code."
+    "A binder-free twin that elaborates with no [F.IsRegular] anywhere in its span is itself the transplant probe: no scratch copy is needed, and compiling in place additionally exercises every in-module call site.",
+    "check-module-invariants.sh --emit-inventory emits the inventory and exits WITHOUT running any check; running it before the gate proper is what keeps the INV check at PASS in the same cycle."
   ]
 }
