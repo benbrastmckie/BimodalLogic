@@ -1,12 +1,12 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 1 of 8 complete: the five binder-free over-reporting 'Constraints consumed:' markers corrected (4 to 'Compositionality, Seriality, Limit', 1 to 'None'), with ofStepFamily_isRegular's choice-dependence paragraph re-framed as produces-not-consumes. PASS C34a/C34b, scoped Nomic build green, typst status.typ re-stamped. 23 over-reporting sites remain, all needing binder-free twins in phases 2-7.",
-  "phases_completed": 1,
+  "summary": "Phase 2 complete: FormalSystem/Semantics/ConeUnravelling.lean gained the binder-free twin base_taskRel_eq_ofStepRel_of_constraints (marker 'Compositionality, Seriality, Limit', no IsRegular in its code span); base_taskRel_eq_ofStepRel was reduced to its one-line corollary with a byte-identical signature and the identical corrected marker, and its rationale paragraph rewritten. check-module-invariants.sh C34a passes over 164 markers with the discharge groups moved exactly one row (delegating 22->23, omitting-nothing 62->61), which is the mechanical attribution of the corrected row to the delegation group. Full library build green (GUARD_EXIT=0, 2974 jobs, zero error lines); sorry_count 0 with compiler cross-check MATCH; axiom count unchanged at 14. Phases 3-8 (22 remaining over-reporting markers) are untouched: this was a single-phase dispatch.",
+  "phases_completed": 2,
   "phases_total": 8,
-  "dispatch_seq": 25,
+  "dispatch_seq": 26,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-1-handoff-20261111T074900.md",
+  "continuation_path": "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-2-handoff-20261111T160156.md",
   "artifacts": []
 }

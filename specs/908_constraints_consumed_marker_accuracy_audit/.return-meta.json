@@ -3,37 +3,42 @@
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 908,
-  "phase": "implement",
-  "dispatch_seq": 25,
-  "phases_completed": 1,
+  "dispatch_seq": 26,
+  "phase_number": 2,
+  "phases_completed": 2,
   "phases_total": 8,
   "requires_user_review": false,
-  "handoff_path": "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-1-handoff-20261111T074900.md",
   "artifacts": [],
   "modified_files": [
-    "FormalSystem/Semantics/Nomic/Witnesses.lean",
-    "FormalSystem/Semantics/Nomic/ZTime.lean",
+    "FormalSystem/Semantics/ConeUnravelling.lean",
     "README.md",
     "typst/generated/status.typ",
     "specs/908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md",
+    "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-2-handoff-20261111T160156.md",
     "specs/908_constraints_consumed_marker_accuracy_audit/issues.jsonl",
-    "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-1-handoff-20261111T074900.md",
-    "specs/908_constraints_consumed_marker_accuracy_audit/.return-meta.json",
-    "specs/908_constraints_consumed_marker_accuracy_audit/.orchestrator-handoff.json"
+    "specs/908_constraints_consumed_marker_accuracy_audit/.orchestrator-handoff.json",
+    "specs/908_constraints_consumed_marker_accuracy_audit/.return-meta.json"
   ],
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
-    "vacuous_count": 1,
-    "vacuous_note": "Pre-existing shape-grep false positive at FormalSystem/Examples/TemporalStructures.lean:495 (intTimeHistory.domain reduces to True for a total-domain history, so `trivial` is the honest proof). Not touched by this dispatch.",
+    "sorry_cross_check": "MATCH",
+    "vacuous_count": 0,
+    "vacuous_note": "One pattern hit exists repo-wide (FormalSystem/Examples/TemporalStructures.lean:495, `int_domain_universal ... := trivial`); it is pre-existing, untouched by this phase, and is a genuine definitional-membership proof rather than a placeholder. Zero introduced by this dispatch.",
     "axiom_count": 14,
+    "axiom_baseline": 14,
     "build_passed": true,
-    "build_scope": "FormalSystem.Semantics.Nomic (scoped; phase tier is local, full gate deferred to the batch stage per the dispatch's Batch Gate Deferral directive)",
-    "module_invariants": "PASS C34a (163 markers honest), PASS C34b, INFO C34 census 341 declarations / 76 files; gate exit 1 from a PRE-EXISTING FAIL C16 (env_linter unusedArguments in FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean, byte-identical pre-dispatch, outside this phase's territory)",
-    "typst_sync": "drift reported (formalsystem-line-count 404589 -> 404591), re-stamped with --fix, re-check MISMATCH_COUNT=0"
+    "build_evidence": "Full library via lake-build-guard.sh: GUARD_EXIT=0, 'Build completed successfully (2974 jobs)', zero `error:` lines, ConeUnravelling.olean newer than its source. Scoped FormalSystem.Semantics.ConeUnravelling build also green (1514 jobs).",
+    "gate_check_module_invariants": "PASS C34a over 164 markers (23 delegating / 2 field re-export / 61 omitting nothing; was 22/2/62). PASS C34b. Overall script exit 1 from a PRE-EXISTING FAIL C16 (env_linter unusedArguments at FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean:1825 and :1868), outside this phase's territory and byte-identical to phase 1's record.",
+    "gate_typst_sync": "typst-sync-check.sh --counts-only exits 0 after a --fix re-stamp (formalsystem-line-count 404591 -> 404610).",
+    "gate_8_deferral": "No run-all.sh suite covers this phase's paths (__FULL_SWEEP__), so no narrowing --only invocation exists. The complete gate set is deferred to this batch invocation's single end-of-batch run -- deferred, not forgiven."
+  },
+  "completion_data": {
+    "completion_summary": "Phase 2 of 8 complete. The ConeUnravelling.lean over-reporting marker is corrected to 'Compositionality, Seriality, Limit' and structurally discharged via a new binder-free twin, base_taskRel_eq_ofStepRel_of_constraints. 6 of the 28 over-reporting markers are now corrected; 22 remain across phases 3-7, plus the phase-8 documentation/gate close-out."
   },
   "memory_candidates": [
-    "A 'Constraints consumed:' marker on a declaration with no bracketed bundling binder is unconstrained by check-module-invariants.sh C34a (the `omitted` set is empty whatever the marker says), so correcting such a site is a pure one-line docstring edit; only binder-carrying rows need a binder-free twin before their marker can be narrowed.",
-    "A docstring-only edit in this repository still moves three generated surfaces: README.md's live-comment-lines count (via check-module-invariants.sh --emit-inventory) and typst/generated/status.typ's formalsystem-line-count (via typst-sync-check.sh --fix), while per-file **Lines** columns stay put because only comment lines changed."
+    "check-module-invariants.sh C34a computes a declaration's bundling-class `mentions` set over CODE ONLY (comments masked), so a binder-free twin's DOCSTRING may freely discuss `IsRegular`; only its signature and proof term must avoid naming it.",
+    "C34a's PASS line discharge-group counts are a usable per-row attribution instrument: a binder-carrying row that newly omits a constraint is either discharged or a violation, so a one-row move from the omitting-nothing group to the delegating group under a PASS is mechanical proof that the delegation fired -- no verbose mode needed.",
+    "The repo's `Paper:` line requirement is scoped to declarations that are rows in docs/theorem-index.md, not to every theorem; a new helper twin needs none."
   ]
 }
