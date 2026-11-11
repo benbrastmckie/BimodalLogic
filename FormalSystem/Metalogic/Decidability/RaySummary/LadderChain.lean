@@ -122,8 +122,25 @@ What this refutation does NOT establish: `ForwardSlackWitnessed` is an existenti
 a saturated path may still realize each of its types via some OTHER path carrying
 `HasForwardSlack`. The hypothesis is therefore neither discharged nor refuted, and stays a
 hypothesis a consumer must supply — which is why all five depth-`0` cell-equality schemas of
-`LadderCell.lean` still carry it. The named consequence: `certStabK`'s one unclaimed Real
-condition must be RESTATED rather than proved, for as long as that remains the case.
+`LadderCell.lean` still carry it.
+
+A SECOND ROUTE EXISTS AND IS NOT REFUTED. `forwardSlackWitnessed_of_cell_idleRunPumpable`
+(`LadderIdle.lean`) discharges `ForwardSlackWitnessed` at EVERY amount through the duplication of
+an idle block inside the idle run SEPARATING `z`'s region from the next one. It passes through no
+block deletion above `z`'s region — the route refuted here — and spends none of `(K2)`'s
+`cascadeBound`: `idleSplice_pins` (`LadderPump.lean`) discharges its pin clause unconditionally,
+and the regime's deficit is paid out of the pumped run against the free Lipschitz bound every
+ladder path already carries. The discharge is CONDITIONAL. Its premise `IdleRunPumpable` is an
+object/run datum `ParamsOk` does not supply — `(K1)` quantifies `prodCycleLens`, `objCycleLens`
+and `satPeriod`, never `idleCycleLens`, and `idle_run_lt_tIdle_of_no_idleCycle` is the bound the
+other way — so it RESTRICTS the obligation rather than removing it, and `LadderCell.lean` is not
+edited. What stays open after it is exactly the complementary side: the paths whose intervening
+idle run has length `1`.
+
+The named consequence is therefore PROVISIONAL rather than permanent. `certStabK`'s one unclaimed
+Real condition must still be RESTATED rather than proved, for as long as the hypothesis stays
+carried — but it is now blocked on a condition that IS dischargeable on the pumpable side, not on
+one refuted outright.
 -/
 
 set_option linter.style.longFile 3000
@@ -1361,7 +1378,18 @@ Consequence for a consumer: this theorem is usable only where `hanch` and `hstra
 supplied from outside the pending-forever regime. It does NOT discharge
 `ForwardSlackWitnessed`, which remains a hypothesis on all five depth-`0` cell-equality schemas
 of `LadderCell.lean`. `ForwardSlackWitnessed` is an existential over paths and is itself neither
-discharged nor refuted; only this route through the pin layer is refuted. -/
+discharged nor refuted; only this route through the pin layer is refuted.
+
+THE ROUTE THAT IS NOT REFUTED, named here so a reader who reaches this refutation finds the
+alternative: `forwardSlackWitnessed_of_cell_idleRunPumpable` (`LadderIdle.lean`), which discharges
+`ForwardSlackWitnessed` at EVERY amount by duplicating an idle block inside the idle run
+separating `z`'s region from the next one. It deletes nothing, so neither `hanch` nor `hstraddle`
+arises and `cascadeBound`'s recurrence is never entered; `idleSplice_pins` (`LadderPump.lean`)
+discharges its one pin clause unconditionally. That discharge is CONDITIONAL on `IdleRunPumpable`,
+an object/run datum `ParamsOk` does not supply, and leaves open exactly the paths whose
+intervening idle run has length `1`. So the `certStabK` consequence above is PROVISIONAL rather
+than permanent — blocked on a condition dischargeable on the pumpable side, not on one refuted
+outright. -/
 theorem exists_deleted_ladderPath_of_next_region_nxt
     {g : ℤ → LadderState Q pend} {z a : ℤ} {l : ℕ}
     (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
