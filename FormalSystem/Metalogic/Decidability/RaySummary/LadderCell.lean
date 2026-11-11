@@ -117,7 +117,7 @@ nothing in this module: all three schemas are strictly stronger in hypotheses th
 statement and bear on its truth value in neither direction.
 -/
 
-set_option linter.style.longFile 1700
+set_option linter.style.longFile 2000
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1687,6 +1687,202 @@ theorem cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack
         hp hno q c' n' h' m n h hgap' hgap hle hroom hTc' z hwit)
       (cellAt_subset_of_free_register_shift_of_pend_past step pend fwd bwd lab φ Tc Tn P B hp hno
         q c' n' h' m n h hgap' hTc' hle (by omega) z)
+
+/-- **AN AMOUNT-`0` WITNESSING OBLIGATION IS FREE.** `ForwardSlackWitnessed … z 0 n` is a THEOREM,
+not a hypothesis, at every state and every position: a path realizing a type in the cell is
+supplied by `mem_cellAt_ladder_iff` itself, and `hasForwardSlack_zero` gives that path the regime
+at amount `0` from its being a ladder path and nothing else (the register's two-sided Lipschitz
+bound is the whole of the argument).
+
+**WHAT THIS DOES NOT SETTLE.** Discharging the amount-`0` case settles NOTHING about the general
+`ForwardSlackWitnessed` discharge — whether such a hypothesis is satisfiable, at a positive
+amount, at any state the ladder-realization induction one layer up actually reaches. That
+question is out of this module's scope and is not answered here. The amount-`0` case is free
+because it is free, not because the general question has been resolved; every other
+`ForwardSlackWitnessed` hypothesis in this module remains one a CONSUMER supplies.
+
+Its one use here is `cellLE_zero_const_of_kappa_eq_antitone_bounded_of_forwardSlack`, where the
+truncated upward amount `(n − n') − m · (P + 1)` is literally `0` on the bounded sub-slice. -/
+theorem forwardSlackWitnessed_zero {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (q : Q) (c n : ℕ) (h : c ∈ Adm pend q) (z : ℤ) :
+    ForwardSlackWitnessed step pend fwd bwd lab φ
+      (⟨(q, c, n), h⟩ : LadderState Q pend) z 0 n := by
+  intro T hT
+  rw [mem_cellAt_ladder_iff] at hT
+  obtain ⟨g, τ, hg, hgz, hτ, hty⟩ := hT
+  have hnz : nxtAt g z = n := by simp [nxtAt, hgz]
+  refine ⟨g, τ, hg, hgz, hτ, ?_, hty⟩
+  have := hasForwardSlack_zero g hg z
+  rwa [hnz] at this
+
+/-- **THE ANTITONE DEPTH-`0` CELL OBLIGATION**, stated as a schema. The complement of
+`CellLEZeroConstOfKappaEqMonotoneForwardSlack`, dispatched rather than excluded. Together with
+that schema it covers EVERY collision, by `kappa_collision_monotone_or_antitone_named`: the two
+displacement predicates are an exhaustive dichotomy with no third case.
+
+This is NOT the reserved statement `CellLEZeroConstOfKappaEq`, which is claimed by nothing and
+stays so. This schema is strictly stronger in hypotheses than the reserved statement and
+therefore bears on its truth value in NEITHER DIRECTION.
+
+**The two payments, one per direction, and NO room bound.** For each orientation of the antitone
+disjunction the schema asks for two witnessing hypotheses:
+
+| direction | at which pair | amount |
+|---|---|---|
+| countdown UP, register DOWN | the LOWER pair | `(n − n') − m · (P + 1)`, truncated in `ℕ` |
+| countdown DOWN, register UP | the HIGHER pair | `m · (P + 1)` |
+
+The upward amount is the register's descent BEYOND what the raise already buys; the downward
+amount is the countdown displacement alone. Neither direction carries a room bound. Contrast the
+monotone schema, whose downward direction spends `m · (P + 1) + (n' − n)` under
+`n' + (n' − n) ≤ c`: a register RAISE is free in the direction the single anchor inequality
+charges for, and the antitone downward half raises where the monotone one lowers. The upward
+bound `n' ≤ c + m · (P + 1)` is DERIVED inside the proof from `n' < n` and the lower pair's gap,
+which is why it does not appear in the quantifier.
+
+**WHAT A CONSUMER MUST SUPPLY**, itemized per direction. At each state the induction one layer up
+inducts through, it must exhibit:
+
+1. the antitone displacement across the collision (`AntitoneCollisionDisplacement`), which
+   `kappa_collision_monotone_or_antitone_named` supplies as the complement of the monotone case;
+2. UPWARD: for each type in the LOWER pair's cell, a ladder path through that state realizing it
+   whose first region start above `z`'s region leaves `(n − n') − m · (P + 1)` of room in the
+   anchor clause;
+3. DOWNWARD: the same at the HIGHER pair, at amount `m · (P + 1)`.
+
+NONE of 1-3 is a consequence of `ParamsOk`. Item 2 is FREE whenever the descent does not exceed
+`m · (P + 1)` — the amount is then `0` and `forwardSlackWitnessed_zero` discharges it — which is
+the whole content of `cellLE_zero_const_of_kappa_eq_antitone_bounded_of_forwardSlack`. Item 3 is
+never free.
+
+The collision equality is retained as a binder and discarded at `intro` with a `_` pattern, as in
+both landed schemas: the displacement comes from the explicit antitone hypothesis, not from
+`kappa_eq_components`. The reserved name `cellLE_zero_const_of_kappa_eq` is claimed by nothing
+here. -/
+def CellLEZeroConstOfKappaEqAntitoneForwardSlack {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) : Prop :=
+  ParamsOk step pend lab φ Tc Tn P B →
+    (∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ) →
+    ∀ (q : Q) (c n c' n' : ℕ) (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q) (z : ℤ),
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') →
+      AntitoneCollisionDisplacement P c n c' n' →
+      n + 2 ≤ c → n' + 2 ≤ c' → Tc ≤ c → Tc ≤ c' →
+      (∀ m : ℕ, c' = c + m * (P + 1) → n' < n →
+        ForwardSlackWitnessed step pend fwd bwd lab φ
+            (⟨(q, c, n), h⟩ : LadderState Q pend) z (n - n' - m * (P + 1)) n ∧
+          ForwardSlackWitnessed step pend fwd bwd lab φ
+            (⟨(q, c', n'), h'⟩ : LadderState Q pend) z (m * (P + 1)) n') →
+      (∀ m : ℕ, c = c' + m * (P + 1) → n < n' →
+        ForwardSlackWitnessed step pend fwd bwd lab φ
+            (⟨(q, c', n'), h'⟩ : LadderState Q pend) z (n' - n - m * (P + 1)) n' ∧
+          ForwardSlackWitnessed step pend fwd bwd lab φ
+            (⟨(q, c, n), h⟩ : LadderState Q pend) z (m * (P + 1)) n) →
+      cellAt (ladderModel step pend fwd bwd lab) φ
+          ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+        = cellAt (ladderModel step pend fwd bwd lab) φ
+            ((z, ⟨(q, c', n'), h'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+
+/-- **THE ANTITONE OBLIGATION IS A THEOREM.** The schema above holds at every parameter tuple
+`ParamsOk` admits, as cell EQUALITY. With the monotone theorem beside it, the DICHOTOMY of
+`kappa_collision_monotone_or_antitone_named` is now dispatched on BOTH sides: every collision in
+the pending-forever regime above the threshold is covered by one of the two schemas, and the
+excluded antitone residue the monotone schema's quantifier names is excluded there and dispatched
+here.
+
+Both orientations of the antitone disjunction close by `Set.Subset.antisymm` against the SAME two
+inclusions — `cellAt_subset_of_antitone_register_shift_of_pend_past` upward and
+`cellAt_subset_of_antitone_register_shift_of_pend_past_rev` downward — with the roles of the two
+pairs swapped, exactly as the monotone theorem handles its own two branches. Cell equality is
+symmetric, so the second orientation needs no third inclusion.
+
+Neither landed schema is retired and no landed signature is touched. The reserved name
+`cellLE_zero_const_of_kappa_eq` is claimed by nothing here, and this schema — strictly stronger
+in hypotheses than the reserved statement — bears on its truth value in NEITHER direction. -/
+theorem cellLE_zero_const_of_kappa_eq_antitone_of_forwardSlack
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) :
+    CellLEZeroConstOfKappaEqAntitoneForwardSlack step pend fwd bwd lab φ Tc Tn P B := by
+  intro hp hno q c n c' n' h h' z _ hanti hgap hgap' hTc hTc' hwup hwdn
+  rcases hanti with ⟨m, hc', hlt⟩ | ⟨m, hc, hlt⟩
+  · -- `(c', n')` is the higher pair: `(c, n)` is the lower one and pays the truncated amount
+    subst hc'
+    obtain ⟨hwu, hwd⟩ := hwup m rfl hlt
+    exact Set.Subset.antisymm
+      (cellAt_subset_of_antitone_register_shift_of_pend_past step pend fwd bwd lab φ Tc Tn P B
+        hp hno q c n h m n' h' hgap hTc hlt z hwu)
+      (cellAt_subset_of_antitone_register_shift_of_pend_past_rev step pend fwd bwd lab φ
+        Tc Tn P B hp hno q c n h m n' h' hgap hTc hlt z hwd)
+  · -- `(c, n)` is the higher pair: the same two inclusions with the roles swapped
+    subst hc
+    obtain ⟨hwu, hwd⟩ := hwdn m rfl hlt
+    exact Set.Subset.antisymm
+      (cellAt_subset_of_antitone_register_shift_of_pend_past_rev step pend fwd bwd lab φ
+        Tc Tn P B hp hno q c' n' h' m n h hgap' hTc' hlt z hwd)
+      (cellAt_subset_of_antitone_register_shift_of_pend_past step pend fwd bwd lab φ Tc Tn P B
+        hp hno q c' n' h' m n h hgap' hTc' hlt z hwu)
+
+/-- **THE BOUNDED SUB-SLICE, WITH NO UPWARD HYPOTHESIS AT ALL.** When the register's descent does
+not exceed the countdown's displacement (`n − n' ≤ m · (P + 1)`), the antitone slice is dispatched
+as depth-`0` cell EQUALITY carrying exactly ONE witnessing hypothesis — the downward one, at the
+higher pair, at amount `m · (P + 1)` — and NONE upward.
+
+**Why the upward half is free here.** The truncated amount `(n − n') − m · (P + 1)` is literally
+`0` in `ℕ` under `hbounded`, and `forwardSlackWitnessed_zero` discharges an amount-`0` obligation
+outright. So the raise's own `m · (P + 1)` of bought slack pays the whole upward direction on this
+sub-slice, from no hypothesis whatever. Nothing is weakened to get this: it is
+`cellLE_zero_const_of_kappa_eq_antitone_of_forwardSlack`'s first orientation with one of its two
+hypotheses proved instead of assumed.
+
+**The predecessor's own non-vacuity witness lies in this half.**
+`kappa_collision_antitone_residue_nonvacuous` inhabits the excluded antitone slice at `(4, 2)`
+against `(6, 0)` with `Tc = Tn = P = 0`, `B = 2`; there `m = 2` and the descent is exactly
+`2 = m · (P + 1)`, so `hbounded` holds —
+`kappa_collision_antitone_bounded_descent_nonvacuous` records precisely that. The compiled
+demonstration that the excluded slice was non-empty was, all along, a demonstration about its
+cheaper half.
+
+The bounded sub-slice does NOT exhaust the slice:
+`kappa_collision_antitone_deep_descent_nonvacuous` inhabits the complement, where the general
+schema's upward hypothesis is doing real work. The reserved name
+`cellLE_zero_const_of_kappa_eq` is claimed by nothing here, and this statement — strictly
+stronger in hypotheses than the reserved one — bears on its truth value in NEITHER direction. -/
+theorem cellLE_zero_const_of_kappa_eq_antitone_bounded_of_forwardSlack
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n : ℕ) (h : c ∈ Adm pend q) (m n' : ℕ)
+    (h' : c + m * (P + 1) ∈ Adm pend q)
+    (hgap : n + 2 ≤ c) (hTc : Tc ≤ c) (hlt : n' < n)
+    (hbounded : n - n' ≤ m * (P + 1)) (z : ℤ)
+    (hw : ForwardSlackWitnessed step pend fwd bwd lab φ
+      (⟨(q, c + m * (P + 1), n'), h'⟩ : LadderState Q pend) z (m * (P + 1)) n') :
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+      = cellAt (ladderModel step pend fwd bwd lab) φ
+          ((z, ⟨(q, c + m * (P + 1), n'), h'⟩) :
+            (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  have hzero : n - n' - m * (P + 1) = 0 := by omega
+  refine Set.Subset.antisymm
+    (cellAt_subset_of_antitone_register_shift_of_pend_past step pend fwd bwd lab φ Tc Tn P B
+      hp hno q c n h m n' h' hgap hTc hlt z ?_)
+    (cellAt_subset_of_antitone_register_shift_of_pend_past_rev step pend fwd bwd lab φ
+      Tc Tn P B hp hno q c n h m n' h' hgap hTc hlt z hw)
+  rw [hzero]
+  exact forwardSlackWitnessed_zero step pend fwd bwd lab φ q c n h z
 
 end ForwardSlack
 
