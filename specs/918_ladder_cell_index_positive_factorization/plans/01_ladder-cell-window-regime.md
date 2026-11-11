@@ -1,0 +1,555 @@
+# Implementation Plan: The ladder cell index in the ordinary window regime
+
+- **Task**: 918 - Produce a positive factorization lemma for the index of which cell a ladder state has
+- **Status**: [NOT STARTED]
+- **Effort**: 12.5 hours
+- **Dependencies**: None blocking. Reads task 917's closed record as its starting position; the idle-splice layer it builds on (`LadderPump.lean`'s three `Idle`-prefixed sections, `LadderIdle.lean`'s register-anchored assembly) is already landed by a sibling.
+- **Research Inputs**: `specs/918_ladder_cell_index_positive_factorization/reports/01_ladder-cell-index-positive-factorization.md`; the plan-time compiled gate measurement `specs/918_ladder_cell_index_positive_factorization/evidence/plan-gate-arithmetic.lean` (`lake env lean`, zero output, `sorry`-free)
+- **Reports Integrated**: `reports/01_ladder-cell-index-positive-factorization.md`, `evidence/plan-gate-arithmetic.lean`
+- **Artifacts**: plans/01_ladder-cell-window-regime.md (this file)
+- **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
+- **Type**: lean4
+- **Lean Intent**: true
+
+## Overview
+
+Research established that the task as dispatched is not executable: its second admissible
+outcome is foreclosed by the compiled `paramsOk_params`, and its first reduces to discharging
+`ForwardSlackWitnessed`, whose only landed route task 917 refuted at the pin layer three commits
+ago. The prior cycle's recorded decision re-scoped the task to **Target A, the ordinary window
+regime `c ≤ n + 1`** — the one branch of the collision case split that no landed inclusion
+addresses in either direction, independent of `ForwardSlackWitnessed` and of the parameter
+contract. This plan lands that branch in a new leaf module, through a named decision gate whose
+arithmetic layer is already compiled and whose path-level layer is measured before any
+construction is attempted. Done means: the window regime's arithmetic and its two cell
+inclusions are landed with the regime's own schema and a compiled dichotomy against the
+pending-forever schemas, or the obstruction is compiled as a wired probe and the window branch
+is closed as a reportable negative. The verdict is stated either way, never tacit.
+
+### Research Integration
+
+- **The two constraints the dispatch names are landed and jointly discharged (F1)**. `paramsOkK1`
+  is the modulus-multiple-of-period conjunct (over `prodCycleLens`, `objCycleLens`, `satPeriod`),
+  `paramsOkK2`/`paramsOkK4` the formula-derived threshold and clip, and `paramsOk_params`
+  discharges all four at `(Tcof, Tnof, Pof, Bof)`. No refutation of joint satisfiability can
+  exist, so the dispatch's outcome (b) is not planned for.
+- **The positive lemma's identity (F2)**. The reserved name is `cellLE_zero_const_of_kappa_eq`,
+  claimed by nothing. Five hypothesis-strengthened schemas exist in `LadderCell.lean`, all
+  concluding cell EQUALITY, all carrying the pending-forever gap `n + 2 ≤ c`.
+- **The untouched branch (F7)**. The complementary regime `c ≤ n + 1` is addressed by no landed
+  inclusion in either direction. `pend_past_of_nxtAt_lt` is what restricts the landed schemas to
+  paths pending at every earlier position; in the complementary regime the compared position has
+  an idle position in its past, where `cntAt_le_nxtAt_succ_of_idle_past` is available and the two
+  counters are tied together rather than free.
+- **The collision pays for the room, and this is compiled rather than argued** (plan-time
+  measurement, layer A of the Phase 2 gate, lifted into Phase 1). `clipIdx_regime_of_eq` reads a
+  collision at a fixed register as `c' ≤ n ∨ n + 2 ≤ c`; the window hypothesis kills the second
+  branch, so the window regime's own hypothesis `c ≤ n + 1` is UPGRADED by the collision to the
+  strict room `c' ≤ n` for whichever countdown is larger. That room is exactly the anchor clause
+  of the z-anchored lift `exists_ladderPath_of_walk_nxt_at` at the region start below `z`, once
+  the in-region duplication has raised that start's countdown by the displacement. All four
+  statements compile `sorry`-free; see `evidence/plan-gate-arithmetic.lean`.
+- **The planned attack, named as an attack rather than a result**. The pending in-region
+  duplication raises `cntAt g z`, but it also raises the countdown at the region start BELOW `z`,
+  whose pin compatibility against still-lower starts then falls short by exactly the displacement
+  — the same deficit shape route (d) died of, now in the backward direction. The compensator the
+  window regime makes available and the pending-forever regime does not is the IDLE RUN below
+  `z`'s region: splicing the displacement into that run grows every lower pin's distance by the
+  same amount the raise cost, and `idleSplice_pins` (`LadderPump.lean`) discharges the idle
+  splice's own pin clause UNCONDITIONALLY — "no regime hypothesis, no `ParamsOk`, no side
+  condition carried to the caller". The composite is what Phase 2's gate measures.
+- **Supporting machinery already landed (F8)**, consumed rather than rebuilt:
+  `tpOf_eq_spliceIdx_of_tpOf_eq` and `tpOf_eq_delIdx_of_tpOf_eq` (type held across a
+  duplication/deletion, needing only stab-freeness and NOT pend-past — the pend-past hypotheses
+  sit only on the admissibility halves); `exists_typeBlock_of_budget_le_cnt_within` (the pending
+  pigeonhole); `exists_idleTypeBlock_of_budget_le_run` and `exists_idleSpliced_ladderPath` (the
+  idle mirror, with `idleBudget`); `exists_iterIdleSpliced_ladderPath` and
+  `idleGapLengtheningOfIdleRunRepeat_holds` (`LadderIdle.lean`);
+  `exists_ladderPath_of_walk_nxt_at` (the z-anchored lift, pins measured from `z`);
+  `drift_extension_of_pins`; `cntAt_eq_nxtAt_of_idle_pend` (the pin equation at a region start);
+  `cntAt_add_of_pend_back` and `nxtAt_lipschitz` (the two facts behind `n ≤ c + 2·d`).
+- **Prohibited routes carried forward verbatim (Recommendation 4)**: route (d), a tuple index at
+  any parameters, the stabilization lemma, the clipped-coordinate index family, the
+  bounded-carrier route, the object-exhibited-parameter residue index, and route (e)'s `(K1)`
+  amendment.
+
+### Prior Plan Reference
+
+No prior plan. This is the task's first plan round. Task 917's plan is read as a sibling
+precedent for the two-layer gate shape, the FAIL-branch probe phase, and the gate-collision
+schedule — not as a template for content.
+
+### Roadmap Alignment
+
+No `roadmap_path` was supplied in this dispatch and no roadmap phases are scheduled.
+
+## Goals & Non-Goals
+
+**Goals**:
+- `kappa_collision_window_room` -- a `kappa` collision at a fixed register in the window regime either pins the two countdowns equal or exhibits a positive multiple-of-`P + 1` displacement together with the strict room `c' ≤ n` for the larger countdown.
+- `window_anchor_compat_of_room` -- that room is exactly the z-anchored lift's anchor clause at the region start below `z` after the raise.
+- `window_pin_compat_raise_of_gap` -- the pin pair clause is strictly looser in the raising direction once the compensating idle splice has grown the distance.
+- `window_pin_compat_lower_of_spacing` -- the pin pair clause in the lowering direction, discharged from region-start spacing alone.
+
+**Non-Goals**:
+- Landing anything under the reserved name `cellLE_zero_const_of_kappa_eq`, or any prefix of it.
+  This plan covers one regime of one case split; the reserved statement stays claimed by nothing,
+  and no declaration introduced here may take that name.
+- Re-attempting route (d) (deletion inside the first region above `z`'s with the register held at
+  `z`), the stabilization lemma, the clipped-coordinate index family, the bounded-carrier route,
+  or the object-exhibited-parameter residue index. Each is refuted on the record's own authority.
+- Any amendment to `(K1)` or to `ParamsOk` (route (e)). A phase that would touch `paramsOkK1`
+  stops and escalates.
+- Stating a tuple index at any parameters. `kappa` is a coordinate of the carrier, not an index;
+  the factorization lemma for the quotient is a corollary of the fibre equation, never its
+  hypothesis.
+- Discharging `ForwardSlackWitnessed`, or weakening it. This branch does not go through it.
+- A weakened substitute for the window-regime result. If Phase 2's gate fails, the terminus is
+  the compiled obstruction, not an inclusion with an extra hypothesis bolted on to make it pass.
+
+## Risks & Mitigations
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Phase 2's gate fails: the composite splice's pin clause is not dischargeable without a further hypothesis | H | M | Phase 2 is an explicit decision gate with a stated criterion and a STOP. On failure Phase 6 compiles the obstruction and Phases 3-5 close `[COMPLETED WITH EXCLUSIONS]` citing Phase 2's own measurement. Do not add a hypothesis to force the clause, do not introduce an axiom, do not leave a `sorry`-deferred case |
+| The idle-run condition survives as a carried hypothesis, so the window schema is itself hypothesis-strengthened | M | H | This is an expected, honest outcome, not a failure: the schema's docstring states exactly what it carries and that the reserved name stays unclaimed, in the same scoping language `kappa_collision_two_regimes_refuted` and the five landed schemas already use. A carried, CHECKABLE condition on the run below is strictly more tractable than `ForwardSlackWitnessed` and is not to be presented as the reserved statement |
+| Concurrency: three RaySummary files are hot (`LadderAgree.lean`, `LadderChain.lean`, `LadderCell.lean`), and two sibling tasks declare `LadderAgree.lean` and `RaySummary/README.md` in their own scope | M | H | Every new declaration lands in a NEW leaf module `LadderWindow.lean`; `LadderAgree.lean`, `LadderChain.lean`, `LadderCell.lean`, `LadderPump.lean`, `LadderIdle.lean` and `RaySummary/README.md` are READ-ONLY for this task and appear in no phase's file list. The only shared surfaces are the two aggregators and the regenerated generated files, all of which are regenerated by tool rather than hand-edited and are idempotent under a sibling's concurrent regeneration |
+| New-module plumbing is forgotten and a gate fails late | M | H | Phase 1 schedules every piece as named work: the copyright header (`scripts/check-copyright-headers.sh`), the aggregator import in `FormalSystem/Metalogic/Decidability/RaySummary.lean`, the library root via `lake exe mk_all --lib FormalSystem` (gate-collision C33), and the module-inventory blocks (Condition 1 surface (a), legitimately deferred to Phase 7) |
+| `check-metalogic-cycles.sh` Assertion B asserts EQUALITY against a frozen allowlist and fails on surplus as well as deficit | M | L | `LadderWindow.lean` imports only `LadderCell` and `LadderIdle`, both siblings in the same layer, so no new upward edge is expected. Phase 1 CONFIRMS that by running the script rather than assuming it (gate-collision Condition 5); if a surplus edge appears, the allowlist is extended in the same phase and `scripts/check-metalogic-cycles.sh` enters that phase's file list |
+| `.githooks/pre-commit` blocks any commit staging a `.lean` path while `typst/generated/status.typ` has drifted | M | H | Every Lean-touching phase runs `bash scripts/typst-sync-check.sh --fix` and stages `typst/generated/status.typ` in its own commit (Condition 1 surface (b) — cannot be deferred) |
+| `LadderWindow.lean` crosses the package-wide 1500-line `longFile` ceiling | L | M | The file starts empty, so no baseline is owed at first. The phase that crosses 1500 adds `set_option linter.style.longFile N` directly after the module docstring at the smallest multiple of 100 strictly greater than the count, and Phase 7 re-tightens it at the final count inside the linter's `N - 200 ≤ lines < N` window (Condition 7) |
+| A repo-wide gate is red for pre-existing, unrelated reasons | L | H | Every criterion below is scoped to the files the phase touches, or stated as a delta against the pre-task baseline, never as an absolute repo-wide zero (Condition 4). `check-module-invariants.sh`'s C16 group is already failing on `LadderPump.lean` from a concurrent sibling; enumerate and attribute it, never edit that out-of-scope file |
+| A pinned Challenge signature turns out incomplete, blocking a phase mid-flight | M | L | Every identifier named under `- **Goals**:` is already compiled `sorry`-free at plan-authoring time in `evidence/plan-gate-arithmetic.lean`. The gate-dependent declarations are deliberately NOT pinned — see Decisions |
+
+## Implementation Phases
+
+**Dependency Analysis**:
+| Wave | Phases | Blocked by |
+|------|--------|------------|
+| 1 | 1 | -- |
+| 2 | 2 | 1 |
+| 3 | 3 | 2 |
+| 4 | 4 | 3 |
+| 5 | 5 | 4 |
+| 6 | 6 | 5 |
+| 7 | 7 | 6 |
+
+Phases within the same wave can execute in parallel. This plan is fully sequential: every phase
+from 1 onward writes the same new module `LadderWindow.lean`, so no two may run concurrently
+against it.
+
+### Phase 1: The New Leaf Module and the Window Regime's Arithmetic [NOT STARTED]
+
+**Goal**: Create `LadderWindow.lean` with its plumbing complete, and land the four compiled
+arithmetic statements that constitute layer A of the decision gate. Every line of Lean in this
+phase is already measured; nothing here depends on the gate's outcome.
+
+**Tasks**:
+- [ ] Exact-name sweep (not a prefix anchor — gate-collision Condition 3) confirming `kappa_collision_window_room`, `window_anchor_compat_of_room`, `window_pin_compat_raise_of_gap` and `window_pin_compat_lower_of_spacing` have no declaration site anywhere under `FormalSystem/`, `Tests/` or `specs/evidence/`, excluding the refutation-probe paths.
+- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` with the repository copyright header, a module docstring, and `import FormalSystem.Metalogic.Decidability.RaySummary.LadderCell` plus `import FormalSystem.Metalogic.Decidability.RaySummary.LadderIdle`. Both imports are load-bearing: the arithmetic reads `kappa_eq_components` and `clipIdx_regime_of_eq` through `LadderCell`, and the construction reads the idle-splice layer through `LadderIdle`.
+- [ ] The module docstring MUST state the module's scope in the record's own terms: it holds the ORDINARY WINDOW regime `c ≤ n + 1` of the depth-`0` cell obligation, the complement of the pending-forever gap `n + 2 ≤ c` that the five `LadderCell.lean` schemas carry; it claims nothing about the reserved `cellLE_zero_const_of_kappa_eq`; and it touches neither `ForwardSlackWitnessed` nor `ParamsOk`'s own conditions.
+- [ ] Land the four arithmetic theorems, lifting the bodies VERBATIM from `specs/918_ladder_cell_index_positive_factorization/evidence/plan-gate-arithmetic.lean` rather than re-deriving them. Their statements are pinned in `## Lean Challenge Statements` below and must land exactly as pinned.
+- [ ] Each docstring states what the statement measures and what it does not: `kappa_collision_window_room` records that the room `c' ≤ n` is the GAP COORDINATE paying for it (via `clipIdx_regime_of_eq` with the gap branch killed), not an added assumption; the three pin lemmas record that `jP` is opaque, so the arithmetic is scale-invariant and never reads `j · (P + 1)` as such.
+- [ ] Add the aggregator import to `FormalSystem/Metalogic/Decidability/RaySummary.lean`, after the `LadderIdle` line.
+- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, then confirm with `lake exe mk_all --lib FormalSystem --check` (gate-collision C33).
+- [ ] Run `bash scripts/check-copyright-headers.sh` and confirm the new file is counted and passing.
+- [ ] Run `bash scripts/check-metalogic-cycles.sh` and CONFIRM no new upward import was introduced (Condition 5). If Assertion B reports surplus, extend the frozen allowlist in this same phase and add `scripts/check-metalogic-cycles.sh` to this phase's file list.
+- [ ] Guarded scoped build, then `bash scripts/typst-sync-check.sh --fix`, and stage `typst/generated/status.typ` in the same commit.
+
+**Timing**: 1.5 hours
+
+**Depends on**: none
+
+**Verification Tier**: interface
+
+**Tier Justification**: adding a module changes the two aggregators that import it, so the covering check is the changed module plus its enumerated direct dependents — `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderWindow FormalSystem.Metalogic.Decidability.RaySummary` together with `lake exe mk_all --lib FormalSystem --check`.
+
+**Scope Hypothesis**: the new module is estimated at 120-160 lines after this phase (the four statements plus their docstrings and the module docstring), which is well under the 1500-line ceiling so no `longFile` baseline is owed yet; and the two aggregator files are asserted to be the complete set of files that must change for a new RaySummary module, read from `FormalSystem/Metalogic/Decidability/RaySummary.lean`'s own import list and `FormalSystem.lean`'s line 218 at authoring time. Confirm the line count with `wc -l` and confirm the aggregator set by reading which tracked files `lake exe mk_all --lib FormalSystem` actually rewrites, rather than assuming this list is complete.
+
+**Files to modify**:
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` - new leaf module: header, module docstring, and the four compiled arithmetic theorems
+- `FormalSystem/Metalogic/Decidability/RaySummary.lean` - the aggregator import for the new module
+- `FormalSystem.lean` - regenerated library root (`lake exe mk_all --lib FormalSystem`); exists, and is machine-regenerated rather than hand-edited
+- `typst/generated/status.typ` - regenerated line/count fields (`--fix`), staged in the same commit
+
+**Verification**:
+- The scoped guarded build is green with no `linter.autoImplicit`, `linter.style.show`, or unused-variable warning on the new declarations (treat a warning as a failure: CI builds with `--wfail`).
+- `lake exe mk_all --lib FormalSystem --check` exits 0.
+- `bash scripts/check-copyright-headers.sh` exits 0 and its total file count has increased by one.
+- `bash scripts/check-metalogic-cycles.sh` exits 0, run rather than assumed.
+- `bash scripts/typst-sync-check.sh --counts-only` exits 0 before the commit is attempted.
+- `lean_verify` on each of the four names reports the standard axiom profile and no `sorryAx`.
+
+---
+
+### Phase 2: DECISION GATE -- The Composite Splice's Pin Clause in the Window Regime [NOT STARTED]
+
+**Goal**: Decide, by compiled attempt rather than by argument, whether the composite surgery
+(a pending type-respecting block duplicated inside `z`'s region, compensated by the same
+displacement spliced into the idle run immediately below `z`'s region) satisfies every clause of
+the z-anchored lift in the window regime. This phase decides which branch the rest of the plan
+takes.
+
+**Tasks**:
+- [ ] Read `exists_ladderPath_of_walk_nxt_at`'s signature and enumerate its five clauses (`hw`, `hidle`, `hpp`, `hpi`, `hpins`, `hn₀`) against the composite walk, naming for each one the landed lemma that discharges it or the arithmetic that must. Do this from the signature, not from memory.
+- [ ] Establish the two facts the window regime supplies about the region start `a = z - d` below `z`: `cntAt g a = cntAt g z + d` (`cntAt_add_of_pend_back`) and `cntAt g a = nxtAt g a` (`cntAt_eq_nxtAt_of_idle_pend`), hence `n ≤ c + 2·d` by `nxtAt_lipschitz` from `a` to `z`. This is `window_anchor_compat_of_room`'s `hlow` and is NOT a new hypothesis.
+- [ ] Establish the region-start spacing fact `window_pin_compat_lower_of_spacing`'s `hsp` consumes: for region starts `s < v`, the distance `v - s` is at least `cntAt g (s + 1) + 1`. Find it landed (`cntAt_sub_of_pend`, `not_pend_of_count`, `pinCompat_of_ladderPath` are the candidates) or land it as a named lemma in `LadderWindow.lean` before building on it.
+- [ ] ATTEMPT the gate: discharge `hpins` and `hn₀` for the composite walk at displacement `jP := j · (P + 1)`, under `ParamsOk`, the window hypotheses `¬ (n + 2 ≤ c)` and `¬ (n + 2 ≤ c')`, `Tc ≤ c`, the room from `kappa_collision_window_room`, and ONE named condition on the idle run immediately below `z`'s region (that it is at least `jP` long and carries a type-respecting idle block, which is what `exists_idleTypeBlock_of_budget_le_run`'s `hbud : idleBudget pend φ ≤ L` and `exists_idleSpliced_ladderPath`'s `hrep` jointly ask for). Define that condition as a named `def` in `LadderWindow.lean` so it is a checkable hypothesis rather than an inline existential.
+- [ ] GATE CRITERION, measured not asserted: both `hpins` and `hn₀` elaborate for the composite walk with NO hypothesis beyond `ParamsOk`, the two window hypotheses, `Tc ≤ c`, the collision's room, and the one named idle-run condition. A clause that needs a sixth hypothesis is a FAIL, not a widening.
+- [ ] On PASS: record which lemma discharged each clause, and proceed to Phase 3.
+- [ ] On FAIL: STOP. Do not add a hypothesis to make a clause go through, do not introduce an axiom, do not leave a `sorry`-deferred case. Record the obstruction's exact shape — which clause, which pin pair, which deficit, what was tried — in this phase's own notes for Phase 6 to compile, and mark Phases 3, 4 and 5 `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record each citing this phase's measurement.
+- [ ] Whatever the branch, run the guarded scoped build, `bash scripts/typst-sync-check.sh --fix`, and stage `typst/generated/status.typ` if any `.lean` line count moved.
+
+**Timing**: 2.5 hours
+
+**Depends on**: 1
+
+**Verification Tier**: local
+
+**Tier Justification**: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderWindow` is the complete covering check — on the PASS branch this phase adds declarations to one module and changes no existing signature, and on the FAIL branch it adds at most the named idle-run `def`, so nothing outside this module can observe the edit.
+
+**Scope Hypothesis**: estimated +60 lines on the PASS branch (the named idle-run condition plus the spacing lemma if it is not already landed) and +20 on the FAIL branch, and the spacing fact is asserted to be derivable from the three landed candidates named above rather than confirmed at authoring time. Confirm the spacing fact as this phase's third task, before the gate attempt rests on it; confirm the line count with `wc -l`. Nothing in this phase's task list is excluded by this hypothesis — the FAIL branch's small-delta outcome is a recorded result, not a skipped task.
+
+**Files to modify**:
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` - the named idle-run condition, the region-start spacing lemma if it is not already landed, and the gate's own notes in a module comment
+- `typst/generated/status.typ` - regenerated count fields if any `.lean` line count moved, staged in the same commit
+
+**Verification**:
+- PASS: the scoped guarded build is green, both clauses elaborate with no hypothesis beyond the five named above, and `lean_verify` reports no `sorryAx` on anything landed.
+- FAIL: the obstruction is recorded with the specific clause, pin pair and deficit that could not be closed, in a form Phase 6 can compile. A FAIL with no recorded measurement is not a completed phase.
+
+---
+
+### Phase 3: The Window-Regime Composite Splice, Both Directions [NOT STARTED]
+
+**Goal**: Land the path-level primitives the window regime needs: given a ladder path through
+`(q, c, n)` at `z` with an idle position in its past and the named idle-run condition, produce a
+ladder path through `(q, c ± j·(P + 1), n)` at `z` with the object state and the register held and
+the realized stab-free type at `z` held.
+
+**Tasks**:
+- [ ] Land the RAISING primitive: the pending type-respecting block from `exists_typeBlock_of_budget_le_cnt_within` inside `z`'s region duplicated to raise `cntAt g z` by `j · (P + 1)` (the bridge putting the block length among the divisors of `P + 1` is `(K1)`'s, as `exists_ladderPath_through_shifted_of_pend_past` already consumes it), composed with the compensating idle splice below through `exists_iterIdleSpliced_ladderPath`, and lifted by `exists_ladderPath_of_walk_nxt_at` with `n₀ := nxtAt g z` and Phase 2's discharged clauses. Re-anchor by translation (`isLadderPath_shift`) so `z` keeps its position.
+- [ ] Land the LOWERING primitive: the mirror, with the in-region block deleted and the idle run shortened by the same displacement, `window_pin_compat_lower_of_spacing` discharging the pin pair clause.
+- [ ] For both, carry the type through with `tpOf_eq_spliceIdx_of_tpOf_eq` / `tpOf_eq_delIdx_of_tpOf_eq`, which need only stab-freeness and NOT pend-past — that asymmetry is the whole reason this regime is reachable and MUST be recorded in the docstrings.
+- [ ] Each docstring states, explicitly, that the compensator is the idle run BELOW and not slack above, so neither primitive goes through `HasForwardSlack` or `ForwardSlackWitnessed`, and that route (d) is not re-entered.
+- [ ] If either primitive's construction requires an additional clause not admitted by Phase 2's gate criterion, STOP and escalate rather than widening the signature: Phase 2's criterion is the contract.
+- [ ] Guarded scoped build, `bash scripts/typst-sync-check.sh --fix`, stage `typst/generated/status.typ`. Apply the `longFile` rule if the file crosses 1500.
+- [ ] If Phase 2's gate FAILED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record whose Evidence column cites Phase 2's measurement. Land nothing.
+
+**Timing**: 2.5 hours
+
+**Depends on**: 2
+
+**Verification Tier**: local
+
+**Tier Justification**: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderWindow` is the complete covering check; both primitives are new declarations in this one leaf module and no existing signature anywhere else is touched.
+
+**Scope Hypothesis**: estimated +220 lines across the two primitives, which would put the module near 400 lines and still well under the 1500 ceiling. Confirm with `wc -l` and apply the `longFile` rule only if the count actually crosses 1500, rather than pre-emptively adding a baseline the linter would reject.
+
+**Files to modify**:
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` - the raising and lowering composite-splice primitives and their scoping docstrings
+- `typst/generated/status.typ` - regenerated count fields, staged in the same commit
+
+**Verification**:
+- Scoped guarded build green and warning-free on the new declarations.
+- `lean_verify` on both primitives: no `sorryAx`, standard axiom profile.
+- Each docstring contains the two scope statements named in the task list (the idle compensator below, and the pend-past-free type half).
+
+---
+
+### Phase 4: The Two Cell Inclusions in the Window Regime [NOT STARTED]
+
+**Goal**: Lift Phase 3's primitives to the cell level, mirroring
+`cellAt_subset_of_shift_of_pend_past` and `cellAt_subset_of_shift_of_pend_past_rev` with the
+idle-past hypothesis in place of the pending-forever one.
+
+**Tasks**:
+- [ ] Land the upward inclusion: in the window regime at countdown at least `Tc`, under the named idle-run condition, the cell at `(q, c, n)` is contained in the cell at `(q, c + j · (P + 1), n)`. Follow `cellAt_subset_of_shift_of_pend_past`'s own proof shape — `mem_cellAt_ladder_iff`, read `objAt`/`cntAt`/`nxtAt` off the witnessing state, derive the idle-past fact from the window hypothesis, apply Phase 3's raising primitive, rebuild the history with `exists_hist_of_isLadderPath`.
+- [ ] Land the downward inclusion from the lowering primitive, in the same shape.
+- [ ] Record in both docstrings that neither inclusion carries `HasForwardSlack`: the downward direction, which in the pending-forever regime needs the witnessing hypothesis, is here paid for by the idle run below.
+- [ ] Guarded scoped build, `bash scripts/typst-sync-check.sh --fix`, stage `typst/generated/status.typ`. Apply the `longFile` rule if the file crosses 1500.
+- [ ] If Phase 2's gate FAILED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record citing Phase 2's measurement. Land nothing.
+
+**Timing**: 2 hours
+
+**Depends on**: 3
+
+**Verification Tier**: local
+
+**Tier Justification**: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderWindow` is the complete covering check; the two inclusions are new declarations in the same leaf module, whose only dependents are the two aggregators Phase 1 already wired.
+
+**Scope Hypothesis**: estimated +140 lines for the two inclusions, putting the module near 540 lines. Confirm with `wc -l`; apply the `longFile` rule only on an actual crossing of 1500.
+
+**Files to modify**:
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` - the upward and downward window-regime cell inclusions
+- `typst/generated/status.typ` - regenerated count fields, staged in the same commit
+
+**Verification**:
+- Scoped guarded build green and warning-free.
+- `lean_verify` on both inclusions: no `sorryAx`.
+- An exact-name sweep confirms neither inclusion was named with any prefix of `cellLE_zero_const_of_kappa_eq`.
+
+---
+
+### Phase 5: The Window Schema, Its Theorem, and the Compiled Dichotomy [NOT STARTED]
+
+**Goal**: State the window regime's depth-`0` cell obligation as a schema, prove it from Phase 4's
+two inclusions by `Set.Subset.antisymm`, and compile the dichotomy that makes the window and
+pending-forever regimes exhaustive — so the regime this task closes is visibly one half of a
+partition rather than an unquantified special case.
+
+**Tasks**:
+- [ ] Land `def CellLEZeroConstOfKappaEqWindow` in `LadderWindow.lean`, in the shape the five `LadderCell.lean` schemas use: `ParamsOk` and the stab-free hypothesis as antecedents, then the collision, the register equality, the WINDOW hypotheses `¬ (n + 2 ≤ c)` and `¬ (n + 2 ≤ c')` where the landed schemas carry `n + 2 ≤ c`, the threshold bounds, the named idle-run condition at whichever pair carries the lower countdown, and cell EQUALITY as the conclusion.
+- [ ] Land `theorem cellLE_zero_const_of_kappa_eq_window` proving that schema: destruct the collision with `kappa_collision_window_room`, dispatch the `c = c'` branch by `rfl`, and close each displacement branch by `Set.Subset.antisymm` of Phase 4's two inclusions.
+- [ ] Land the exhaustiveness record: a compiled dichotomy stating that every `kappa` collision at a fixed register falls in the window regime or in the pending-forever gap, with no third case, so this schema and the five landed ones partition the fixed-register collisions. Derive it from `clipIdx_regime_of_eq` and `pend_past_of_nxtAt_lt` rather than asserting it.
+- [ ] The schema's docstring MUST carry the scope boundary in the record's own language, modelled on `CellLEZeroConstOfKappaEqForwardSlack`'s: what separates this schema from the reserved `CellLEZeroConstOfKappaEq` is the window hypotheses, the threshold bounds, and the named idle-run condition; the reserved name is claimed by nothing here; and being strictly stronger in hypotheses, this schema bears on the reserved statement's truth value in NEITHER direction.
+- [ ] Do NOT name any declaration in this phase `cellLE_zero_const_of_kappa_eq` or any prefix of it.
+- [ ] Guarded scoped build, `bash scripts/typst-sync-check.sh --fix`, stage `typst/generated/status.typ`. Apply the `longFile` rule if the file crosses 1500.
+- [ ] If Phase 2's gate FAILED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record citing Phase 2's measurement. Land nothing — a schema with no theorem is not a deliverable, and the dichotomy alone is not this phase's goal.
+
+**Timing**: 1.5 hours
+
+**Depends on**: 4
+
+**Verification Tier**: local
+
+**Tier Justification**: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderWindow` is the complete covering check; the schema, its theorem and the dichotomy are new declarations in the same leaf module and change no signature any other module reads.
+
+**Scope Hypothesis**: estimated +180 lines, putting the module near 720 lines, still under the 1500 ceiling. Confirm with `wc -l`; apply the `longFile` rule only on an actual crossing.
+
+**Files to modify**:
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` - the window schema, its theorem, the exhaustiveness dichotomy, and the scope docstrings
+- `typst/generated/status.typ` - regenerated count fields, staged in the same commit
+
+**Verification**:
+- Scoped guarded build green and warning-free.
+- `lean_verify` on the theorem and the dichotomy: no `sorryAx`, standard axiom profile.
+- The schema docstring contains the three-part scope boundary verbatim (what separates it from the reserved statement; that the reserved name is unclaimed; that it bears on the reserved statement in neither direction).
+- An exact-name sweep confirms `cellLE_zero_const_of_kappa_eq` still has no declaration site under `FormalSystem/`.
+
+---
+
+### Phase 6: CONDITIONAL -- Compile the Window-Regime Obstruction [NOT STARTED]
+
+**Goal**: Runs only if Phase 2's gate FAILED. Turn the obstruction into a machine-checked record,
+so the window branch is refuted rather than merely unproved, and record the consequence: the
+ladder route for the realization theorem is closed in both regimes, which is the reportable
+negative result the dispatch admits as a complete outcome.
+
+**Tasks**:
+- [ ] Write a `sorry`-free probe under `specs/evidence/ladder-window-regime/` whose theorem exhibits the failure: a ladder path in the window regime with an idle position in its past, the composite surgery at a positive displacement, and the clause whose compatibility fails for every admissible choice the construction can make. Model it on `specs/evidence/forward-slack-pin-cascade/pin-cascade-straddle.lean`'s shape — a theorem for the obstruction, a concrete object for non-vacuity, and exhaustion over the choices the construction admits.
+- [ ] Add the probe's path to `scripts/check-evidence-probes.sh`'s `WIRED` list with a one-line entry saying what it holds in place. A probe under `specs/` is reached by no Lake target, so without the entry it rots silently.
+- [ ] Record the verdict in `LadderWindow.lean`'s module docstring: the window regime is refuted at the named clause; the ladder route for the realization theorem is closed in both regimes; `cellLE_zero_const_of_kappa_eq` is unreachable by the composite-splice route and stays claimed by nothing.
+- [ ] Record the consequence in the DURABLE record — this task's own description in `specs/state.json` — rather than in any dispatch-created sidecar, and name it in the summary artifact.
+- [ ] If Phase 2's gate PASSED: close this phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record whose Evidence column cites Phase 2's passing measurement. Land nothing.
+
+**Timing**: 1 hour
+
+**Depends on**: 5
+
+**Verification Tier**: local
+
+**Tier Justification**: `bash scripts/check-evidence-probes.sh` compiles the new probe through `lake env lean` and is the complete covering check for it; the accompanying docstring edit has no elaboration surface beyond the scoped module build Phase 5 already names.
+
+**Scope Hypothesis**: this phase lands content only on the FAIL branch, and the probe is estimated at one file of 80-140 lines plus one `WIRED` entry. Confirm the branch from Phase 2's recorded measurement before starting, and confirm the probe compiles via `check-evidence-probes.sh` rather than by reading it.
+
+**Files to modify**:
+- `specs/evidence/ladder-window-regime/window-pin-compensation.lean` - the new wired probe (FAIL branch only; adjust the directory and file name to the obstruction actually measured)
+- `scripts/check-evidence-probes.sh` - the probe's `WIRED` entry (FAIL branch only); exists, and gains one line rather than being rewritten
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` - the module docstring recording the verdict (FAIL branch only)
+- `typst/generated/status.typ` - regenerated count fields if any `.lean` line count moved, staged in the same commit
+
+**Verification**:
+- `bash scripts/check-evidence-probes.sh` exits 0 with the new probe compiled and no pre-existing probe newly red (stated as a delta against the pre-task run, not an absolute count).
+- The probe is `sorry`-free and axiom-free beyond the standard profile.
+- The verdict appears in the durable record, not only in this plan.
+
+---
+
+### Phase 7: Records, Generated Surfaces and Final Verification [NOT STARTED]
+
+**Goal**: Land the test-file pin block, reconcile every generated surface, set or re-tighten the
+`longFile` baseline, and run the complete gate set. The verdict — the window regime closed, or
+the window regime refuted — is stated explicitly here, never left tacit.
+
+**Tasks**:
+- [ ] Update `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`'s Requirement (W) narrative to the actual outcome. On the PASS branch: the window regime is closed under its own named schema, the five pending-forever schemas are unchanged, the two regimes are exhaustive by the Phase 5 dichotomy, and the reserved `cellLE_zero_const_of_kappa_eq` is STILL claimed by nothing because the window schema carries the idle-run condition and the threshold bounds. On the FAIL branch: the window regime is refuted at the named clause and the ladder route is closed in both regimes.
+- [ ] Add `#print axioms` pins (with `#guard_msgs`) for every declaration this task landed, following the file's existing pin convention.
+- [ ] Set or re-tighten `set_option linter.style.longFile N` in `LadderWindow.lean` to the smallest value satisfying the linter's `N - 200 ≤ lines < N` window at the file's FINAL line count — or confirm the file stayed below 1500 and that no baseline is owed. An earlier phase's judgement is wrong by construction once later phases have grown the file.
+- [ ] Regenerate the module-inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`, then verify with `--emit-inventory --check`. This is Condition 1's surface (a) and is legitimately deferred to here.
+- [ ] Run `bash scripts/typst-sync-check.sh --fix` one final time and stage `typst/generated/status.typ`.
+- [ ] Run the complete gate set and record each result: the unscoped guarded `lake build`; the test library (`lake build BimodalTest`); `lake exe mk_all --lib FormalSystem --check`; `bash scripts/check-module-invariants.sh`; `bash scripts/typst-sync-check.sh`; `bash scripts/check-metalogic-cycles.sh`; `bash scripts/check-evidence-probes.sh`; `bash scripts/check-copyright-headers.sh`; and `bash .claude/scripts/validate-artifact.sh specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md plan`.
+- [ ] For each gate, distinguish findings that name this task's own touched files from the tree's standing baseline. `check-module-invariants.sh`'s C16 group is already failing on `LadderPump.lean` from a concurrent sibling: enumerate and attribute it with `git log -S`, and do NOT edit that out-of-scope file. A gate whose only failures are pre-existing and outside this task's file scope is a recorded PASS for this phase.
+- [ ] State the task's verdict in the summary artifact, in one sentence, naming which outcome was reached and that the re-scope to the window regime was the prior cycle's recorded decision rather than a drift from the dispatch.
+
+**Timing**: 1.5 hours
+
+**Depends on**: 6
+
+**Verification Tier**: full
+
+**Scope Hypothesis**: the file list below is the set of generated and record surfaces a Lean line-count change and a new module are expected to move, enumerated from gate-collision Conditions 1 and 7 and from C33 at authoring time. Confirm it by running the regeneration commands and reading which tracked files they actually rewrite — add any file they touch that is absent here, and drop any that comes back unchanged, rather than forcing a surface to appear in the diff.
+
+**Files to modify**:
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` - the Requirement (W) narrative and the new axiom pins; exists at 2532 lines with a `longFile` baseline of 2600, confirmed at authoring time, and is amended rather than created
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` - the final `longFile` decision and the verdict line in the module docstring
+- `README.md` - regenerated module-inventory block
+- `FormalSystem/Metalogic/README.md` - regenerated module-inventory block
+- `typst/generated/status.typ` - final regenerated count fields
+
+**Verification**:
+- The complete gate set runs and is recorded: `bash .claude/scripts/verify-deploy.sh` is not the gate set for this repository's Lean work, so the complete set is the nine commands enumerated in this phase's task list, each run and each result tabled, with pre-existing findings outside this task's file scope enumerated and attributed rather than absorbed.
+- The unscoped guarded `lake build` is green with zero errors and zero warnings.
+- `lake build BimodalTest` is green with every `#guard_msgs` axiom pin satisfied, including the new ones.
+- `LadderWindow.lean`'s `longFile` posture is correct at the final line count: a baseline inside the linter's acceptance window, or no baseline and a count below 1500.
+- `bash .claude/scripts/validate-artifact.sh specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md plan` passes.
+- The verdict sentence is present and names the outcome reached.
+
+---
+
+## Lean Challenge Statements
+
+```lean
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderCell
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderIdle
+
+namespace FormalSystem.Metalogic.Decidability.RaySummary
+
+theorem kappa_collision_window_room (Tc Tn P B c n c' : ℕ) (hB : 2 ≤ B)
+    (hk : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n))
+    (hwin : ¬ (n + 2 ≤ c)) (hwin' : ¬ (n + 2 ≤ c')) :
+    c = c' ∨ ∃ j : ℕ, 0 < j ∧
+      ((c' = c + j * (P + 1) ∧ c' ≤ n) ∨ (c = c' + j * (P + 1) ∧ c ≤ n)) := sorry
+
+theorem window_anchor_compat_of_room (c n d jP : ℕ) (hroom : c + jP ≤ n)
+    (hlow : n ≤ c + 2 * d) :
+    (((c + d + jP : ℕ) : ℤ) - (n : ℤ)).natAbs ≤ d := sorry
+
+theorem window_pin_compat_raise_of_gap (c d W jP DW : ℕ)
+    (horig : (((c + d : ℕ) : ℤ) - (W : ℤ)).natAbs ≤ DW) :
+    (((c + d + jP : ℕ) : ℤ) - (W : ℤ)).natAbs ≤ DW + jP := sorry
+
+theorem window_pin_compat_lower_of_spacing (c d W jP DW : ℕ)
+    (hsp : W + 1 + jP ≤ DW)
+    (horig : ((c + d + jP : ℕ) : ℤ) - (W : ℤ) ≤ (DW : ℤ)) :
+    (((c + d : ℕ) : ℤ) - (W : ℤ)).natAbs ≤ DW - jP := sorry
+
+end FormalSystem.Metalogic.Decidability.RaySummary
+```
+
+Every statement above is compiled `sorry`-free at plan-authoring time in
+`specs/918_ladder_cell_index_positive_factorization/evidence/plan-gate-arithmetic.lean`
+(`lake env lean`, zero output), with the bodies Phase 1 lifts verbatim. The pins are therefore
+measurements, not predictions.
+
+## Decisions
+
+- **The task is planned at its re-scoped target, not at its dispatched words.** The dispatch's
+  second admissible outcome is foreclosed by `paramsOk_params` and its first reduces to an
+  obligation task 917 refuted its only landed route against. The prior cycle's recorded decision
+  (`.decisions.json`, cycle 2) selected Target A, the ordinary window regime. Planning the
+  dispatch's two outcomes verbatim would be planning work that is either impossible or already
+  measured.
+- **The work lands in a NEW leaf module, `LadderWindow.lean`, rather than in `LadderCell.lean`.**
+  Three reasons, in order of weight. First, the construction needs the idle-splice layer, which
+  lives in `LadderIdle.lean` — a sibling leaf that `LadderCell.lean` does not import, so the
+  alternative would have been to add an import to a file two concurrent sibling tasks are already
+  reading. Second, `LadderCell.lean` sits at 1991 lines against a `longFile` baseline of 2000,
+  so any addition there forces an immediate baseline move; a new file starts with no baseline
+  owed. Third, territory: `LadderAgree.lean` is in another task's declared `file_scope` and
+  `RaySummary/README.md` in a third's, and a new module keeps this task's writes disjoint from
+  both. The cost is the new-module plumbing, which Phase 1 schedules explicitly.
+- **Only the four compiled statements are pinned in `## Lean Challenge Statements`.** The
+  gate-dependent declarations — the composite-splice primitives, the two cell inclusions, the
+  window schema and its theorem — are deliberately NOT pinned and are deliberately absent from
+  `- **Goals**:`. Their hypothesis sets are precisely what Phase 2's gate measures, and pinning
+  an unmeasured signature is the defect that forced a mid-task revision on task 917, whose Phase
+  4 pin was short by exactly one inequality. Under `rules/plan-compliance.md`'s Statement
+  Fidelity section a pinned signature is part of the contract and a deficit is grounds to mark a
+  phase `[BLOCKED]`; this plan therefore pins only what it has already compiled, and leaves the
+  rest to be stated against the gate's own output.
+- **`Goal Polarity` is left absent, i.e. must-exist.** All four named identifiers are
+  unconditional Phase 1 deliverables that land whatever the gate decides, so the default
+  must-exist semantics is the correct one and no `mixed` declaration is needed. The separate
+  must-be-ABSENT claim — that `cellLE_zero_const_of_kappa_eq` still has no declaration site — is
+  carried as a Testing & Validation criterion rather than as a Goal, so the two polarities never
+  have to share one field.
+- **The idle run below is the compensator, and that is why this regime is reachable at all.** The
+  pending-forever regime has no idle run below `z` to spend, which is exactly why it must look
+  for slack ABOVE and why route (d) died there. The window regime's defining feature is that
+  such a run exists. The plan is built on that asymmetry rather than on a variant of the refuted
+  route, and no phase re-enters route (d).
+- **A carried idle-run condition is an acceptable terminus; a weakened substitute for the
+  reserved statement is not.** If the window schema lands carrying the named idle-run condition,
+  that is a complete, honestly scoped result and the reserved name stays unclaimed. What is not
+  acceptable is naming such a result `cellLE_zero_const_of_kappa_eq`, or presenting it as the
+  positive factorization lemma the dispatch asked for.
+- **The plan file's slug names the re-scoped content.** The report round is numbered `01` and the
+  plan reuses that round number, but the slug reads `ladder-cell-window-regime` rather than
+  echoing the report's `ladder-cell-index-positive-factorization`, because the latter names an
+  outcome this plan explicitly does not claim.
+
+## Testing & Validation
+
+- [ ] Every new declaration elaborates with no `sorry` and no new axiom beyond the standard
+      `propext`/`Classical.choice`/`Quot.sound` profile (`lean_verify` per name).
+- [ ] Every new declaration is warning-free: no `linter.autoImplicit`, no `linter.style.show`, no
+      unused variable, no unused instance argument. CI builds with `--wfail`, so a warning is a
+      failure.
+- [ ] The four pinned statements land exactly as pinned in `## Lean Challenge Statements`; a
+      deficit is grounds to mark the phase `[BLOCKED]` and raise it, never to edit the pin.
+- [ ] An exact-name sweep confirms `cellLE_zero_const_of_kappa_eq` has no declaration site
+      anywhere under `FormalSystem/`, and that no declaration this task landed carries that name
+      or any prefix of it.
+- [ ] `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` builds with every `#guard_msgs`
+      axiom pin satisfied, including the new ones.
+- [ ] `lake exe mk_all --lib FormalSystem --check`, `bash scripts/check-copyright-headers.sh` and
+      `bash scripts/check-metalogic-cycles.sh` are green.
+- [ ] `bash scripts/check-module-invariants.sh` and `bash scripts/typst-sync-check.sh` are green,
+      or green modulo enumerated pre-existing findings outside this task's file scope.
+- [ ] `bash scripts/check-evidence-probes.sh` is green and no pre-existing probe is newly red.
+- [ ] `LadderWindow.lean`'s `longFile` posture is correct at the final line count: a baseline
+      inside the linter's `N - 200 ≤ lines < N` window, or no baseline and a count below 1500.
+
+## Artifacts & Outputs
+
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` — the new leaf module: the
+  four compiled arithmetic statements, the named idle-run condition, the two composite-splice
+  primitives, the two window-regime cell inclusions, the window schema with its theorem, and the
+  exhaustiveness dichotomy (the last five gate permitting).
+- `FormalSystem/Metalogic/Decidability/RaySummary.lean` and `FormalSystem.lean` — the aggregator
+  import and the regenerated library root.
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` — the updated Requirement (W)
+  narrative and the new axiom pins.
+- `specs/evidence/ladder-window-regime/` probe plus its `check-evidence-probes.sh` `WIRED` entry,
+  on the obstruction branch only.
+- Regenerated generated surfaces: `typst/generated/status.typ`, and `README.md`'s and
+  `FormalSystem/Metalogic/README.md`'s module-inventory blocks.
+- `specs/918_ladder_cell_index_positive_factorization/evidence/plan-gate-arithmetic.lean` — the
+  plan-time gate measurement, already written and already compiled, preserved as task evidence.
+- `specs/918_ladder_cell_index_positive_factorization/summaries/01_ladder-cell-window-regime-summary.md`
+  carrying the verdict sentence.
+
+## Rollback/Contingency
+
+Each phase commits once, green, with its generated-surface regeneration staged alongside its Lean
+change, so reverting is a per-phase `git revert` of a single commit and no cross-phase unwinding
+is needed. Phase 1 is independent of the gate's outcome and is kept whatever Phase 2 decides.
+Because every declaration lands in one new file, a full rollback of the Lean work is the removal
+of that file plus the two aggregator lines — a smaller blast radius than editing any existing
+RaySummary module would have given.
+
+If a phase must be abandoned mid-edit with uncommitted work in the tree, take a durable,
+non-reverting checkpoint first (`bash .claude/scripts/git-snapshot.sh 918 --no-revert`) and then
+decide; only a genuine rollback uses the default reverting mode, per
+`context/contracts/recovery.md`'s rollback rung, including its out-of-scope override flag for the
+deliberate whole-tree case.
+
+Two contingencies are planned rather than improvised. If Phase 2's gate fails, Phases 3, 4 and 5
+close `[COMPLETED WITH EXCLUSIONS]` citing its measurement and Phase 6 compiles the obstruction —
+the task still lands the new module, the four arithmetic statements, the named idle-run condition,
+and a machine-checked refutation of the window branch, which closes the ladder route in both
+regimes and is the reportable negative the dispatch admits. If the raising primitive lands but
+the lowering one does not, the upward inclusion is landed alone and the schema is recorded as
+excluded with the specific clause that did not go through; a one-directional result is an honest
+partial, and the two directions are not bundled into one all-or-nothing step.

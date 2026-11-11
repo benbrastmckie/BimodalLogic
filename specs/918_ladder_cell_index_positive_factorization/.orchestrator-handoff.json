@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 7,
+  "summary": "Planned task 918 at its re-scoped target (the ordinary window regime c <= n + 1), per the prior cycle's recorded Target A decision, since the dispatch's own second outcome is foreclosed by paramsOk_params and its first reduces to the obligation task 917 refuted. Seven sequential phases land a new leaf module LadderWindow.lean: the four window-regime arithmetic statements (already compiled sorry-free at plan time and preserved as evidence/plan-gate-arithmetic.lean), a decision gate on the composite splice's pin clause, the two composite-splice primitives, the two cell inclusions, the window schema with its theorem and an exhaustiveness dichotomy, a conditional obstruction probe, and a final full-gate phase. Only the four compiled statements are pinned in Lean Challenge Statements; the gate-dependent signatures are deliberately left unpinned.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md",
+      "summary": "Seven-phase lean4 plan for the ordinary window regime of the depth-0 ladder cell obligation, gated on the composite splice's pin clause."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/918_ladder_cell_index_positive_factorization/evidence/plan-gate-arithmetic.lean",
+      "summary": "Plan-time compiled measurement of the gate's arithmetic layer: all four pinned statements elaborate sorry-free through lake env lean."
+    }
+  ],
+  "dispatch_seq": 11
+}

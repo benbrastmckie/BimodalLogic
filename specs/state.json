@@ -3249,7 +3249,7 @@
     {
       "project_number": 918,
       "project_name": "ladder_cell_index_positive_factorization",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Produce a positive factorization lemma for the index of which cell a ladder state has, or compile a refutation that no index meeting the recorded constraints exists. This is the SECOND, INDEPENDENT blocker on the ladder realization theorem -- the one the cell-agreement chain does not touch.\n\nVERIFIED STARTING POSITION (every refutation below is a compiled wired probe, not an argument):\n(1) The realization theorem is BLOCKED on this index, separately from the cell agreement. FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean claims NO index of a ladder cell.\n(2) The clipped-coordinate index family is REFUTED at the countdown coordinate and bounded at the gap one by specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean: the region's first idle state sits at distance exactly c + 1, where the countdown's parity is observable.\n(3) The bounded-carrier alternative is closed AS A GENERAL ROUTE by that same probe.\n(4) The residue-carrying candidate that probe exhibits is refuted at BOTH of its object-exhibited parameters by specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean (object_only_parameters_refuted, reach_period_refuted).\n\nTHE CONSTRAINTS ARE THEREFORE COMPILED, NOT GUESSED. Any index must satisfy both: the threshold must be FORMULA-derived, not object-exhibited; and the modulus must be a MULTIPLE OF THE PERIOD of every letter-definable sub-object. A candidate violating either is already refuted by (4) and must not be re-attempted.\n\nTWO ADMISSIBLE OUTCOMES: the positive factorization lemma under those two constraints, or a compiled refutation that they cannot be jointly met -- which would close the ladder route for the realization theorem and is a reportable negative result, not a failure. The stabilization lemma in the pair of ladder counters is ALREADY refuted (ladder-cell-refutation.lean) and is not to be re-attempted; this task is about the index, not the stabilization.\n\nSCOPE: the index only. Different file set from the cell-agreement siblings, so this may run concurrently with them.\n",
       "effort": "high",
@@ -3259,10 +3259,18 @@
         917
       ],
       "file_scope": [
+        "FormalSystem.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary.lean",
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean",
         "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-        "specs/evidence/seam-gluing-ray-product/",
         "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+        "scripts/check-evidence-probes.sh",
+        "specs/evidence/ladder-window-regime/window-pin-compensation.lean",
+        "specs/evidence/seam-gluing-ray-product/",
         "typst/generated/status.typ"
       ],
       "artifacts": [
@@ -3270,10 +3278,15 @@
           "path": "specs/918_ladder_cell_index_positive_factorization/reports/01_ladder-cell-index-positive-factorization.md",
           "type": "report",
           "summary": "Identifies the positive factorization lemma as the reserved cellLE_zero_const_of_kappa_eq (claimed by nothing), compiles that the dispatch's second admissible outcome is foreclosed by paramsOk_params, narrows the gap to discharging ForwardSlackWitnessed at a positive amount, records that its only landed route was refuted by task 917, and recommends re-scoping to the untouched ordinary-window regime c <= n + 1."
+        },
+        {
+          "path": "specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md",
+          "type": "plan",
+          "summary": "Seven-phase lean4 plan for the ordinary window regime of the depth-0 ladder cell obligation, gated on the composite splice's pin clause."
         }
       ],
       "created": "2026-11-11T02:48:57Z",
-      "last_updated": "2026-11-11T07:54:21Z",
+      "last_updated": "2026-11-11T08:13:13Z",
       "session_id": "sess_1794379526_029109",
       "next_artifact_number": 2
     }

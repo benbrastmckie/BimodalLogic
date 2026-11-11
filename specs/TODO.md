@@ -76,7 +76,7 @@ next_project_number: 919
 781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-918 [RESEARCHED] — Produce a positive factorization lemma for the index of which...
+918 [PLANNED] — Produce a positive factorization lemma for the index of which...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Documentation
@@ -127,12 +127,13 @@ next_project_number: 919
 
 ### 918. Ladder cell index positive factorization
 - **Effort**: high
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 917
 - **Parent**: Task 761
 - **Research**: [918_ladder_cell_index_positive_factorization/reports/01_ladder-cell-index-positive-factorization.md]
+- **Plan**: [918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md]
 
 **Description**: Produce a positive factorization lemma for the index of which cell a ladder state has, or compile a refutation that no index meeting the recorded constraints exists. This is the SECOND, INDEPENDENT blocker on the ladder realization theorem -- the one the cell-agreement chain does not touch.
 

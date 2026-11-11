@@ -1,28 +1,34 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/918_ladder_cell_index_positive_factorization/reports/01_ladder-cell-index-positive-factorization.md",
-      "summary": "Identifies the positive factorization lemma as the reserved cellLE_zero_const_of_kappa_eq (claimed by nothing), compiles that the dispatch's second admissible outcome is foreclosed by paramsOk_params, narrows the gap to discharging ForwardSlackWitnessed at a positive amount, records that its only landed route was refuted by task 917, and recommends re-scoping to the untouched ordinary-window regime c <= n + 1."
+      "type": "plan",
+      "path": "specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md",
+      "summary": "Seven-phase lean4 plan for the ordinary window regime c <= n + 1 of the depth-0 ladder cell obligation, landing a new LadderWindow.lean leaf module behind a decision gate."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/918_ladder_cell_index_positive_factorization/evidence/plan-gate-arithmetic.lean",
+      "summary": "Plan-time compiled measurement of the gate's arithmetic layer; all four Challenge-pinned statements compile sorry-free."
     }
   ],
   "metadata": {
     "session_id": "sess_1794379526_029109_918",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 12.5,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7]]
   },
-  "dispatch_seq": 10,
-  "user_decision": {
-    "question": "Task 918's description is stale: its second admissible outcome (a refutation that the two parameter constraints cannot be jointly met) is foreclosed by the compiled paramsOk_params, and its first (the positive factorization lemma) reduces to discharging ForwardSlackWitnessed, whose only landed route task 917 just refuted. How should 918 be re-scoped before planning?",
-    "options": [
-      "Target A - re-scope to the ordinary window regime c <= n + 1, the one branch of the collision case split no landed inclusion addresses in either direction; independent of ForwardSlackWitnessed and of the parameter contract",
-      "Target B - re-scope to route (f), the register-lowering deletion, gated arithmetically before any primitive is landed",
-      "Target C - re-scope to route (e), the (K1) amendment constraining spanning-block length, accepting re-verification of all 53 wired probes",
-      "Absorb 918 into task 917's recorded follow-up list and abandon it as a separate task"
-    ],
-    "recommended": "Target A - re-scope to the ordinary window regime c <= n + 1, the one branch of the collision case split no landed inclusion addresses in either direction; independent of ForwardSlackWitnessed and of the parameter contract",
-    "blocking": false
-  }
+  "memory_candidates": [
+    {
+      "content": "In a layered path-surgery formalization, a 'pending forever into the past' style hypothesis typically sits on the ADMISSIBILITY half of a surgery (the walk-to-path lift and its pin-compatibility clause), never on the TYPE half (the index-map transport showing a realized type is preserved). That asymmetry is a dependency fact worth checking before declaring a complementary regime unreachable: the complementary regime fails the admissibility half for a specific, nameable reason (one pin's value moves while its distances do not), and it may supply a compensator the original regime lacks (here, an idle run below the position, which can be spliced by the same displacement so every lower pin's distance grows exactly as much as the raise cost). Phase decomposition should therefore put a two-layer gate first -- a scale-invariant arithmetic measurement of the pin deficit, then the path-level clause attempt -- rather than attempting the construction and discovering the deficit mid-proof.",
+      "category": "PATTERN",
+      "source_artifact": "specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["path-surgery", "admissibility-vs-type-half", "pin-compatibility", "decision-gate", "complementary-regime", "phase-decomposition"]
+    }
+  ],
+  "dispatch_seq": 11
 }
