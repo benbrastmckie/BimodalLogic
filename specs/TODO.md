@@ -75,7 +75,7 @@ next_project_number: 926
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 918 [PARTIAL] — Produce a positive factorization lemma for the index of which...
 924 [RESEARCHED] — Decide the fate of the ForwardSlackWitnessed frontier, now...
-925 [RESEARCHING] — Clear the C16 env\_linter unusedArguments lint debt in...
+925 [RESEARCHED] — Clear the C16 env\_linter unusedArguments lint debt in...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Documentation
@@ -126,11 +126,12 @@ next_project_number: 926
 
 ### 925. Ladderpump c16 unused arguments lint debt
 - **Effort**: low
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 917
+- **Research**: [925_ladderpump_c16_unused_arguments_lint_debt/reports/01_ladderpump-c16-unusedarguments-clear.md]
 
 **Description**: Clear the C16 env_linter unusedArguments lint debt in RaySummary/LadderPump.lean, which fails check-module-invariants.sh for every other task in the module.
 

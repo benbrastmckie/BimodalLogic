@@ -1,0 +1,39 @@
+{
+  "status": "researched",
+  "task_number": 925,
+  "dispatch_seq": 16,
+  "session_id": "sess_1794400344_255305_925",
+  "agent_type": "lean-research-hard-agent",
+  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
+  "phase": "research",
+  "findings_count": 9,
+  "adversarial_verification_triggered": true,
+  "reference_grounding_tier": 3,
+  "verification_passed": true,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/925_ladderpump_c16_unused_arguments_lint_debt/reports/01_ladderpump-c16-unusedarguments-clear.md",
+      "summary": "Confirms the two live C16 unusedArguments findings in LadderPump.lean by a guarded runLinter run, establishes that the in-source @[nolint] + nolint-attribute-allowlist.txt route has superseded the cited nolints.json precedent, and recommends an asymmetric disposition: remove the two dead instance binders from exists_idleSpliced_ladderPath (zero consumers, body needs no instance) and exempt exists_idleTypeBlock_of_budget_le_run's hg (removal would relocate the finding into sibling-owned LadderWindow.lean), at a net-zero line delta to avoid the five-file generated cascade into concurrent task 918's territory."
+    }
+  ],
+  "modified_files": [],
+  "memory_candidates": [
+    {
+      "title": "Batteries env_linter findings are unreachable by set_option linter.*",
+      "content": "A Batteries @[env_linter] such as unusedArguments runs post-hoc over an IMPORTED environment (scripts/runLinter.lean calls importModules then lintCore), so no in-source `set_option linter.X false in` is in scope when it runs. Only two things reach it: the `@[nolint X]` attribute (filtered by shouldBeLinted in Frontend.lean) and scripts/nolints.json (decls.erase, per-declaration not per-argument). A declaration can therefore carry a scoped set_option with a stated reason and still fail the C16 gate.",
+      "category": "lean4-tooling"
+    },
+    {
+      "title": "Run the relocation test before removing a dead binder",
+      "content": "Before clearing an unusedArguments finding by deleting the argument, grep for the declaration's consumers. If a consumer's only use of its OWN same-named hypothesis is passing it through, deleting the binder makes the consumer's hypothesis dead and relocates the finding one layer up instead of clearing it -- and the new site may be in another task's file_scope. Conversely, a declaration with zero term-level consumers whose body requires no instance can have instance-implicit binders removed as a pure generalization, with no call site able to break.",
+      "category": "lean4-linting"
+    },
+    {
+      "title": "A net .lean line-count change is never a one-file commit here",
+      "content": "Any NET line-count change to a file under FormalSystem/ fans out to typst/generated/status.typ (typst-sync-check.sh Check 2, a pre-commit hook) and to every aggregator README inventory block above the file (check-module-invariants.sh INV group). Comment-only edits count. Sizing an edit to a net delta of zero avoids both cascades entirely -- decisive when the generated surfaces sit in a concurrent sibling's declared file_scope. scripts/ is NOT line-counted, so long-form justifications belong in a scripts/ allowlist rather than at the declaration site.",
+      "category": "repo-operations"
+    }
+  ],
+  "next_steps": "Run /orchestrate 925 to create implementation plan"
+}
