@@ -481,36 +481,46 @@ new pins are measured at all).
 
 ---
 
-### Phase 4: Reconciliation, Full Gate Set, and the Summary [NOT STARTED]
+### Phase 4: Reconciliation, Full Gate Set, and the Summary [COMPLETED]
 
 **Goal**: Every generated surface matches the tree, the complete gate set is observed green (or
 green modulo enumerated pre-existing findings outside this task's file scope), and the task's
 verdict is written down in one place a future reader will find.
 
 **Tasks**:
-- [ ] Regenerate the module-inventory blocks with
+- [x] Regenerate the module-inventory blocks with
       `bash scripts/check-module-invariants.sh --emit-inventory`. Every README carrying a
       `<!-- BEGIN GENERATED: inventory -->` block on the edited files' ancestor-directory chain is
       a target: `README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md` (which
       carries seven such blocks) and
       `FormalSystem/Metalogic/Decidability/RaySummary/README.md`. Do not hand-edit a generated
-      block.
-- [ ] Run the full gate set (below) and read each verdict. For any failure, determine whether it
+      block. *(deviation: altered — the generator rewrote THREE files, not the four the Scope
+      Hypothesis predicted: `README.md`, `FormalSystem/Metalogic/README.md` and
+      `FormalSystem/Metalogic/Decidability/RaySummary/README.md`. `FormalSystem/README.md` was
+      left alone by the generator and was not staged, per the Scope Hypothesis's own instruction
+      to stage only what it changed.)*
+- [x] Run the full gate set (below) and read each verdict. For any failure, determine whether it
       names a file this task touched. A gate whose only failures are pre-existing and outside this
       task's file scope is a recorded PASS for this phase, WITH the pre-existing findings
       enumerated in the summary and with evidence that each touched file passes individually. It
-      is not grounds to edit an out-of-scope file.
-- [ ] If C20's third assertion reports a NEW name-bearing citation finding caused by this task's
+      is not grounds to edit an out-of-scope file. *(deviation: altered — C27 was RED on
+      `LadderIdle.lean` (allow-list 2, tree 5), a file THIS task touched, so the pre-existing
+      carve-out did not apply; fixing it required editing `scripts/debug-artifact-allowlist.txt`,
+      which is not in this phase's "Files to modify" list. All five gates then returned green
+      with ZERO pre-existing findings to enumerate.)*
+- [x] If C20's third assertion reports a NEW name-bearing citation finding caused by this task's
       line shifts in `LadderIdle.lean`, re-anchor the citation if it lives in a file this plan may
       touch, or record it as an enumerated out-of-scope finding (another task's `specs/**` report)
       and, where the recorded baseline is the right carrier, update
-      `scripts/c20-declaration-baseline.txt`.
-- [ ] Write
+      `scripts/c20-declaration-baseline.txt`. *(deviation: skipped — not applicable: C20/C35
+      returned green inside `check-module-invariants.sh`, reporting no new name-bearing citation
+      finding, so no re-anchor and no baseline edit was required.)*
+- [x] Write
       `specs/924_forward_slack_witnessed_frontier_disposition/summaries/01_forward-slack-frontier-disposition-summary.md`
       carrying: the verdict sentence (neither of the description's two terminal outcomes was
       reachable as worded; outcome (b) is factually false and was not recorded); what landed; the
       named frontier; the PROVISIONAL `certStabK` consequence; every pre-existing gate finding
-      enumerated; and every phase that closed `[BLOCKED]` on territory, if any.
+      enumerated; and every phase that closed `[BLOCKED]` on territory, if any. *(completed)*
 
 **Timing**: 1 hour
 
