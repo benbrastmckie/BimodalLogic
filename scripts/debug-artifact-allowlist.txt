@@ -23,3 +23,8 @@
 # intentional axiom-audit page; C21 asserts every name is pinned by C2/C14
 FormalSystem/MainResults.lean 66
 
+# compiled verdict record: the two `#print axioms` lines are this page's own axiom-profile
+# attestation for the sharpened lengthening schema's theorem and for the freed-increment
+# refutation. A refutation resting on `sorryAx` records nothing, so the printed profile is part
+# of the evidence the page exists to carry, not a smoke test.
+FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean 2
