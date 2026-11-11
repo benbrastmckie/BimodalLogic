@@ -435,11 +435,12 @@ theorem exists_idleBlock_of_hasIdleRunBelow {Q : Type} [Fintype Q] [Nonempty Q]
     (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
     (hg : IsLadderPath step pend g) (a : ℤ) (hrun : HasIdleRunBelow pend φ g a) :
     ∃ (α : ℤ) (k : ℕ), 0 < k ∧ α + (k : ℤ) ≤ a ∧
+      (∀ v : ℤ, α ≤ v → v ≤ a → pend (objAt g v) = false) ∧
       (∀ i : ℕ, i < k → pend (objAt g (α + (i : ℤ))) = false) ∧
       objAt g α = objAt g (α + (k : ℤ)) ∧
       tpOf (ladderModel step pend fwd bwd lab) φ σ α
         = tpOf (ladderModel step pend fwd bwd lab) φ σ (α + (k : ℤ)) := by
-  obtain ⟨α, k, hk, -, -, hub, hidle, hrep, hty⟩ :=
+  obtain ⟨α, k, hk, -, hlb, hub, hidle, hrep, hty⟩ :=
     exists_idleTypeBlock_of_budget_le_run step pend fwd bwd lab φ σ hg
       (a - ((idleBudget pend φ : ℕ) : ℤ)) (idleBudget pend φ)
       (fun i hi => by
@@ -448,7 +449,10 @@ theorem exists_idleBlock_of_hasIdleRunBelow {Q : Type} [Fintype Q] [Nonempty Q]
           = a - ((idleBudget pend φ : ℕ) : ℤ) + (i : ℤ) by
             rw [Nat.cast_sub hi]; ring] at h)
       le_rfl
-  exact ⟨α, k, hk, by omega, hidle, hrep, hty⟩
+  refine ⟨α, k, hk, by omega, fun v hv0 hv1 => ?_, hidle, hrep, hty⟩
+  -- the whole stretch from the block's start up to `a` is inside the named condition's run
+  have h := hrun (a - v).toNat (by omega)
+  rwa [show a - (((a - v).toNat : ℕ) : ℤ) = v by omega] at h
 
 /-! ### The composite's pin classification
 
@@ -1030,6 +1034,145 @@ theorem exists_window_iterSpliced_ladderPath {Q : Type} [Finite Q] [Nonempty Q]
           (fun t => by rw [add_zero]; exact hσ₁ t) (fun t => by rw [add_zero]; exact hσ₂ t)
           hobj₂' hno hty₁' w
         rw [htr, hty₁ σ₁ hσ₁, iterSpliceIdx_succ]
+
+/-! ### The base case: the idle-lengthened path's own pin data
+
+The iterate's three hypotheses — the anchor clause, the pin-pair budget and the anchor budget —
+are established ONCE, on the path the idle pump returns, and the iteration then reproduces them
+for free. The classification that supplies them is a DICHOTOMY rather than a trichotomy, because
+no pending raise has happened yet: a region start of the lengthened path is either one of the
+original's below the run, at its own position with its own countdown, or one of the original's at
+or above `a`, displaced by the insertion length `E` with its countdown unmoved. There is no third
+class because the lengthened run itself contains no region start — every position of it has an
+idle successor inside it.
+
+Where the regime's two resources are spent is visible here and nowhere else: the collision's ROOM
+pays the anchor budget, once; the insertion's LENGTH pays the pin-pair budget, once. Neither is
+touched again by any step of the iteration. -/
+
+/-- **THE IDLE-LENGTHENED PATH'S PIN DICHOTOMY.** Every region start of the path the idle pump
+returns is either a region start of the original at or below `a`, with its position and its
+countdown untouched, or a region start of the original at or above `a`, displaced by exactly the
+insertion length `E` with its countdown unmoved.
+
+The hypotheses are the pump's own output clauses verbatim (`hbelow`, `hrun`, `habove`) together
+with the one fact the named idle-run condition supplies — that the original is idle throughout
+`[α, a]`, which `exists_idleBlock_of_hasIdleRunBelow` now returns. Nothing here is a new side
+condition on the caller. -/
+theorem window_idle_pin_dichotomy
+    (g g₁ : ℤ → LadderState Q pend)
+    (α a : ℤ) (k E : ℕ) (hk : 0 < k) (hαa : α + (k : ℤ) ≤ a)
+    (hidleg : ∀ v : ℤ, α ≤ v → v ≤ a → pend (objAt g v) = false)
+    (hbelow : ∀ v : ℤ, v < α + (k : ℤ) → objAt g₁ v = objAt g v ∧ cntAt g₁ v = cntAt g v)
+    (hrun : ∀ i : ℕ, i < k + E → pend (objAt g₁ (α + (i : ℤ))) = false)
+    (habove : ∀ v : ℤ, α + ((k + E : ℕ) : ℤ) ≤ v →
+      objAt g₁ v = objAt g (v - (E : ℤ)) ∧ cntAt g₁ v = cntAt g (v - (E : ℤ))) :
+    ∀ v : ℤ, pend (objAt g₁ v) = false → pend (objAt g₁ (v + 1)) = true →
+      (v ≤ a ∧ pend (objAt g v) = false ∧ pend (objAt g (v + 1)) = true ∧
+          cntAt g₁ (v + 1) = cntAt g (v + 1)) ∨
+      (∃ w : ℤ, a ≤ w ∧ pend (objAt g w) = false ∧ pend (objAt g (w + 1)) = true ∧
+          v = w + (E : ℤ) ∧ cntAt g₁ (v + 1) = cntAt g (w + 1)) := by
+  intro v hv0 hv1
+  -- the lengthened path is idle throughout `[α, a + E]`
+  have hidle₁ : ∀ x : ℤ, α ≤ x → x ≤ a + (E : ℤ) → pend (objAt g₁ x) = false := by
+    intro x hx0 hx1
+    rcases lt_or_ge x (α + ((k + E : ℕ) : ℤ)) with h | h
+    · have hr := hrun (x - α).toNat (by push_cast at h ⊢; omega)
+      rwa [show α + (((x - α).toNat : ℕ) : ℤ) = x by omega] at hr
+    · rw [(habove x h).1]
+      exact hidleg (x - (E : ℤ)) (by push_cast at h ⊢; omega) (by omega)
+  rcases lt_or_ge v α with hvα | hvα
+  · -- below the block, where the pump leaves the path alone
+    refine Or.inl ⟨by omega, ?_, ?_, (hbelow (v + 1) (by omega)).2⟩
+    · rw [← (hbelow v (by omega)).1]; exact hv0
+    · rw [← (hbelow (v + 1) (by omega)).1]; exact hv1
+  · rcases lt_or_ge v (a + (E : ℤ)) with hva | hva
+    · -- strictly inside the lengthened run: the successor is idle too, so there is no pin here
+      exact (Bool.false_ne_true ((hidle₁ (v + 1) (by omega) (by omega)).symm.trans hv1)).elim
+    · -- at or above the run's top, where the pump is a rigid displacement by `E`
+      have hge : α + ((k + E : ℕ) : ℤ) ≤ v := by push_cast; omega
+      refine Or.inr ⟨v - (E : ℤ), by omega, ?_, ?_, by ring, ?_⟩
+      · rw [← (habove v hge).1]; exact hv0
+      · rw [show v - (E : ℤ) + 1 = v + 1 - (E : ℤ) by ring, ← (habove (v + 1) (by omega)).1]
+        exact hv1
+      · rw [(habove (v + 1) (by omega)).2, show v + 1 - (E : ℤ) = v - (E : ℤ) + 1 by ring]
+
+/-- **THE ITERATE'S ANCHOR CLAUSE, AT THE BASE.** The anchor clause at the PRESCRIBED register
+value `nxtAt g z` holds on the idle-lengthened path, with the anchor displaced to `z + E`. Both
+classes of the dichotomy close on the pin equation `cntAt_eq_nxtAt_of_idle_pend` and the
+two-sidedly `1`-Lipschitz register: a pin below the run is pushed FURTHER from the displaced
+anchor (`window_pin_dist_grows_below`), and a pin at or above `a` is displaced by exactly as much
+as the anchor is, leaving its distance unchanged.
+
+The insertion's length `E` is not spent here — the clause would hold for any `E` — which is the
+same asymmetry `window_anchor_clause_of_pin_classification` measured for the composite. -/
+theorem window_idle_anchor_clause
+    (g g₁ : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (a z : ℤ) (E : ℕ) (haz : a < z)
+    (hdich : ∀ v : ℤ, pend (objAt g₁ v) = false → pend (objAt g₁ (v + 1)) = true →
+      (v ≤ a ∧ pend (objAt g v) = false ∧ pend (objAt g (v + 1)) = true ∧
+          cntAt g₁ (v + 1) = cntAt g (v + 1)) ∨
+      (∃ w : ℤ, a ≤ w ∧ pend (objAt g w) = false ∧ pend (objAt g (w + 1)) = true ∧
+          v = w + (E : ℤ) ∧ cntAt g₁ (v + 1) = cntAt g (w + 1))) :
+    ∀ v : ℤ, pend (objAt g₁ v) = false → pend (objAt g₁ (v + 1)) = true →
+      ((cntAt g₁ (v + 1) : ℤ) - nxtAt g z).natAbs ≤ (v - (z + (E : ℤ))).natAbs := by
+  intro v hv0 hv1
+  rcases hdich v hv0 hv1 with ⟨hva, hv0', hv1', hvc⟩ | ⟨w, haw, hw0, hw1, hvw, hvc⟩
+  · rw [hvc, cntAt_eq_nxtAt_of_idle_pend g hg v hv0' hv1']
+    refine le_trans (nxtAt_lipschitz_two_sided g hg v z) ?_
+    exact window_pin_dist_grows_below v z (E : ℤ) (by omega) (Int.natCast_nonneg _)
+  · rw [hvc, cntAt_eq_nxtAt_of_idle_pend g hg w hw0 hw1, hvw,
+      show (w + (E : ℤ) - (z + (E : ℤ))) = w - z by ring]
+    exact nxtAt_lipschitz_two_sided g hg w z
+
+/-- **THE ITERATE'S PIN-PAIR BUDGET, AT THE BASE: THIS IS WHERE THE INSERTION IS SPENT.** On the
+idle-lengthened path, the region start of `z`'s region sits at `a + E` while every region start
+below the run has stayed where it was, so the original's own pin bound
+(`pinCompat_of_ladderPath`) becomes a bound slack by exactly `E`. Any budget `R ≤ E` is therefore
+available, and the iterate draws `l` from it per step.
+
+The dichotomy's second class is vacuous below `a + E`: its positions all sit at or above `a + E`.
+This is the quantitative content of `no_pin_in_idle_run`, obtained here from the displacement
+rather than from the absence of pins in the run. -/
+theorem window_idle_slack
+    (g g₁ : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (a : ℤ) (E R : ℕ) (hRE : R ≤ E)
+    (hai : pend (objAt g a) = false) (hap : pend (objAt g (a + 1)) = true)
+    (hca : cntAt g₁ (a + (E : ℤ) + 1) = cntAt g (a + 1))
+    (hdich : ∀ v : ℤ, pend (objAt g₁ v) = false → pend (objAt g₁ (v + 1)) = true →
+      (v ≤ a ∧ pend (objAt g v) = false ∧ pend (objAt g (v + 1)) = true ∧
+          cntAt g₁ (v + 1) = cntAt g (v + 1)) ∨
+      (∃ w : ℤ, a ≤ w ∧ pend (objAt g w) = false ∧ pend (objAt g (w + 1)) = true ∧
+          v = w + (E : ℤ) ∧ cntAt g₁ (v + 1) = cntAt g (w + 1))) :
+    ∀ w : ℤ, w < a + (E : ℤ) → pend (objAt g₁ w) = false → pend (objAt g₁ (w + 1)) = true →
+      ((cntAt g₁ (a + (E : ℤ) + 1) : ℤ) - cntAt g₁ (w + 1)).natAbs + R
+        ≤ (a + (E : ℤ) - w).natAbs := by
+  intro w hwa hw0 hw1
+  rcases hdich w hw0 hw1 with ⟨hw', hw0', hw1', hwc⟩ | ⟨y, hay, hy0, hy1, hwy, -⟩
+  · have hpc := pinCompat_of_ladderPath g hg a w hai hap hw0' hw1'
+    rw [hca, hwc]
+    omega
+  · omega
+
+/-- **THE ITERATE'S ANCHOR BUDGET, AT THE BASE: THIS IS WHERE THE COLLISION'S ROOM IS SPENT.**
+The region start's countdown on the lengthened path is the original's, which is `z`'s countdown
+plus the distance back to the start (`nxtAt_le_cntAt_region_start`). The collision's room
+`hroom : cntAt g z + R ≤ nxtAt g z` therefore pays the budget outright, with the one step from `a`
+to `a + 1` left over as slack.
+
+This is the ONLY place the window hypothesis enters the construction, through
+`kappa_collision_window_room`'s conclusion, and it is spent once rather than once per step. -/
+theorem window_idle_budget
+    (g g₁ : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (a z : ℤ) (E R : ℕ) (haz : a < z)
+    (hai : pend (objAt g a) = false)
+    (hregion : ∀ i : ℕ, i ≤ (z - (a + 1)).toNat → pend (objAt g (z - (i : ℤ))) = true)
+    (hroom : cntAt g z + R ≤ nxtAt g z)
+    (hca : cntAt g₁ (a + (E : ℤ) + 1) = cntAt g (a + 1)) :
+    cntAt g₁ (a + (E : ℤ) + 1) + R ≤ nxtAt g z + (z + (E : ℤ) - (a + (E : ℤ))).natAbs := by
+  obtain ⟨hstart, -⟩ := nxtAt_le_cntAt_region_start g hg a z haz hai hregion
+  rw [hca, hstart]
+  omega
 
 end Gate
 
