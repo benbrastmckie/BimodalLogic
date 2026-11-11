@@ -322,20 +322,68 @@ and taking exactly the two it cannot as explicit hypotheses.
 
 ---
 
-### Phase 5: DECISION GATE -- Spend (K2)'s Budget on the Straddling Pins [NOT STARTED]
+### Phase 5: DECISION GATE -- Spend (K2)'s Budget on the Straddling Pins [COMPLETED]
 
 **Goal**: Decide, by compiled attempt rather than by argument, whether Phase 4's two clauses can
 be discharged in the regime for the block `exists_typeBlock_of_spacing` returns inside the next
 region. This phase decides which branch the rest of the plan takes.
 
+**GATE VERDICT: FAIL.** Both clauses are non-dischargeable from the gate's admitted hypotheses,
+measured and compiled rather than argued. The FAIL branch is taken: Phases 6 and 7 close
+`[COMPLETED WITH EXCLUSIONS]`, Phase 8 compiles the obstruction, and `ForwardSlackWitnessed`
+stays a hypothesis a consumer must supply.
+
+- **Measurement of record**: `evidence/phase-5-gate-measurement.lean`, compiled `sorry`-free
+  through `lake env lean`. It defines `Gate917.Avail`, which collects EVERY fact the admitted
+  hypotheses supply about the arithmetic the two clauses reduce to, and exhibits concrete
+  assignments satisfying all of them at which each clause is FALSE
+  (`Gate917.anch_refuted`, `Gate917.straddle_refuted`), plus
+  `Gate917.deficit_is_the_block_length` showing the residual is the deletion's own length and so
+  survives every admissible choice of `u` and `d`.
+- **The two facts available about the upper pin's value**, and no others:
+  `pinCompat_of_ladderPath` at the pin pair gives `B ≤ K + (p - s)`, and
+  `nxtAt_lipschitz_two_sided` from `z` gives `B ≤ N + (p - z)`, where `B = cntAt g (p + 1) =
+  nxtAt g p` is the upper pin's value, `K = cntAt g s₀`, `s = z + cntAt g z + I` is the UNIQUE
+  pin strictly below the block, and `p = v + d` is the upper pin's undeleted position.
+- **Which pair, and which deficit**:
+  - `hanch` at the upper pin needs `B ≤ N + (p - z) - d`; the available bound is
+    `B ≤ N + (p - z)`. Deficit exactly `d`. The deletion leaves the pin's VALUE untouched while
+    shortening its distance from `z` by `d`.
+  - `hstraddle` at the pair `(s, v)` needs `B ≤ K + (p - s) - 2 · d`; the available bound is
+    `B ≤ K + (p - s)`. Deficit exactly `2 · d`. The deletion lowers the LOWER pin's value by `d`
+    (its region swallows the block, `del_pin_pull_of_lt`'s first branch) AND shortens the pair's
+    distance by `d`; the two losses add.
+  - Both violating assignments are the SATURATED ones — the register climbing at its maximum
+    `Drift` rate, so both available bounds hold with equality. A configuration already at the
+    bound breaks by exactly what the deletion removes.
+- **Why the first attack fails**: the planned attack was that a straddling pair's distance
+  `v - s` is at least the lower pin's own countdown plus one, so the deficit `d ≤ tShort` is
+  payable out of the distance once the pin values are bounded by `cascadeBound ≤ Tc`. The
+  distance IS that large — but the needed bound is not on the DISTANCE, it is on `B` relative to
+  `K + (p - s)`, and that quantity already saturates. `cascadeBound`'s recurrence
+  `K_{j+1} ≤ 2 · K_j + I + 1` is the SAME bound the saturated configuration attains with
+  equality (`B = 2K + I' + 1` at the first pin above `s₀`'s region), so (K2)'s budget does not
+  dominate the configuration — it describes it. There is no slack in the budget to spend.
+- **Why no other hypothesis helps**: `Adm pend q = {c | pend q = false → c = 0}`
+  (`LadderModel.lean`) places NO upper bound on a pending state's countdown, so the saturated
+  region countdowns are admissible; and every `ParamsOk` conjunct the thresholds enter is a
+  LOWER bound on a parameter (`CounterQuotient.lean`), never an upper bound on a path quantity.
+  `K` can be exactly `tShort` while `C ≥ Tc ≥ 2 · tShort + tIdle + 2`, which is the direction
+  that would be needed to make the Lipschitz bound beat the pin bound by `2 · d`.
+- **Scope of the verdict**: this refutes ROUTE D at the pin layer — the discharge by deleting a
+  type-respecting block inside the first region above `z`'s region with the register held at
+  `z`. It does NOT refute `ForwardSlackWitnessed`, which is an existential over paths: a
+  saturated path may still realize its types via some other path carrying `HasForwardSlack`.
+  The hypothesis remains neither discharged nor refuted.
+
 **Tasks**:
-- [ ] Confirm the threshold identity the loop's arithmetic rests on: `exists_typeBlock_of_spacing` bounds its block length by `Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card` while (K3) is stated against `tShort Q φ = Fintype.card (ProdState Q φ)` with `ProdState Q φ = Q × ClType φ`. Establish `Fintype.card (ClType φ) = 2 ^ (plusSubformulaClosure φ).card`, or find it landed, BEFORE building anything on top of it.
-- [ ] Instantiate `exists_typeBlock_of_spacing` at the first region start above `z`'s region (`s₀ := z + cntAt g z + 1 + I`), `w₀ := s₀`, `s := 1`. Its only hypotheses are that `s₀` is pending and that the sampling window fits inside `s₀`'s own region -- it carries no gap, no room bound and no `ParamsOk`, so re-instantiating it away from `z` imports none of `z`'s regime hypotheses. Verify that against its signature rather than assuming it.
-- [ ] ATTEMPT the gate: discharge Phase 4's `hanch` and `hstraddle` for `a := u`, `l := d` with `d ≤ tShort`, under `ParamsOk`, the pending-forever gap at `z`, and `Tc ≤ cntAt g z`. First attack: a straddling pair `s < a ≤ v` has `v - s` at least the lower pin's own countdown plus one (a region's length is its start countdown plus one, `cntAt_sub_of_pend` with `not_pend_of_count`), so the deficit `d ≤ tShort` is payable out of the distance whenever the pin values are bounded by (K2)'s `cascadeBound ≤ Tc`; the iterated bound is `K_{j+1} ≤ 2 · K_j + I + 1`, exactly `cascadeBound`'s own recurrence.
-- [ ] GATE CRITERION, measured not asserted: both clauses elaborate for the block `exists_typeBlock_of_spacing` returns, with no new hypothesis beyond `ParamsOk`, the pending-forever gap, and `Tc ≤ cntAt g z`. Unchanged in substance by Phase 4's `hnz`: the gate discharges `hanch` and `hstraddle` only, and `hnz` already follows from the pending-forever gap this criterion admits.
-- [ ] On PASS: land the one-pass shortening lemma -- given a path through `x` at `z` with pending-forever below `z` and next-region countdown at least `tShort`, produce a path with the same object state, countdown and register at `z`, the same realized stab-free type at `z` (`tpOf_eq_delIdx_of_tpOf_eq`, which needs no pin condition and no `ParamsOk`), pending-forever below `z` preserved, the same region start and intervening idle run, and next-region countdown strictly smaller.
-- [ ] On FAIL: STOP. Do not add a hypothesis to make either clause go through, do not introduce an axiom, do not leave a `sorry`-deferred case. Record the obstruction's exact shape (which pair, which deficit, what was tried) in this phase's own notes for Phase 8 to compile, and mark Phases 6 and 7 `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` row each citing this phase's measurement.
-- [ ] Scoped guarded build, `typst-sync-check.sh --fix`, stage `typst/generated/status.typ`, apply the `longFile` baseline rule.
+- [x] Confirm the threshold identity the loop's arithmetic rests on: `exists_typeBlock_of_spacing` bounds its block length by `Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card` while (K3) is stated against `tShort Q φ = Fintype.card (ProdState Q φ)` with `ProdState Q φ = Q × ClType φ`. Establish `Fintype.card (ClType φ) = 2 ^ (plusSubformulaClosure φ).card`, or find it landed, BEFORE building anything on top of it.
+- [x] Instantiate `exists_typeBlock_of_spacing` at the first region start above `z`'s region (`s₀ := z + cntAt g z + 1 + I`), `w₀ := s₀`, `s := 1`. Its only hypotheses are that `s₀` is pending and that the sampling window fits inside `s₀`'s own region -- it carries no gap, no room bound and no `ParamsOk`, so re-instantiating it away from `z` imports none of `z`'s regime hypotheses. Verify that against its signature rather than assuming it.
+- [x] ATTEMPT the gate: discharge Phase 4's `hanch` and `hstraddle` for `a := u`, `l := d` with `d ≤ tShort`, under `ParamsOk`, the pending-forever gap at `z`, and `Tc ≤ cntAt g z`. First attack: a straddling pair `s < a ≤ v` has `v - s` at least the lower pin's own countdown plus one (a region's length is its start countdown plus one, `cntAt_sub_of_pend` with `not_pend_of_count`), so the deficit `d ≤ tShort` is payable out of the distance whenever the pin values are bounded by (K2)'s `cascadeBound ≤ Tc`; the iterated bound is `K_{j+1} ≤ 2 · K_j + I + 1`, exactly `cascadeBound`'s own recurrence.
+- [x] GATE CRITERION, measured not asserted: both clauses elaborate for the block `exists_typeBlock_of_spacing` returns, with no new hypothesis beyond `ParamsOk`, the pending-forever gap, and `Tc ≤ cntAt g z`. Unchanged in substance by Phase 4's `hnz`: the gate discharges `hanch` and `hstraddle` only, and `hnz` already follows from the pending-forever gap this criterion admits.
+- [ ] On PASS: land the one-pass shortening lemma -- given a path through `x` at `z` with pending-forever below `z` and next-region countdown at least `tShort`, produce a path with the same object state, countdown and register at `z`, the same realized stab-free type at `z` (`tpOf_eq_delIdx_of_tpOf_eq`, which needs no pin condition and no `ParamsOk`), pending-forever below `z` preserved, the same region start and intervening idle run, and next-region countdown strictly smaller. *(not taken: the gate measured FAIL -- see **GATE VERDICT** below; the FAIL branch's zero-line outcome is a recorded result, not a skipped task, per this phase's own Scope Hypothesis)*
+- [x] On FAIL: STOP. Do not add a hypothesis to make either clause go through, do not introduce an axiom, do not leave a `sorry`-deferred case. Record the obstruction's exact shape (which pair, which deficit, what was tried) in this phase's own notes for Phase 8 to compile, and mark Phases 6 and 7 `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` row each citing this phase's measurement.
+- [x] Scoped guarded build, `typst-sync-check.sh --fix`, stage `typst/generated/status.typ`, apply the `longFile` baseline rule.
 
 **Timing**: 2 hours
 
