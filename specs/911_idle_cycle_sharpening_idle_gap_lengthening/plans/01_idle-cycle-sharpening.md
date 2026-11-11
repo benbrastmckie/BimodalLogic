@@ -373,7 +373,7 @@ covers the edit, which adds declarations to one module and changes no existing s
 
 ---
 
-### Phase 4: The new module and the register-anchored iterated idle pump [NOT STARTED]
+### Phase 4: The new module and the register-anchored iterated idle pump [COMPLETED]
 
 **Goal**: Create the leaf module `LadderIdle.lean` and land in it the `d`-fold idle pump that
 holds the register at `z`, holds every countdown at and below the block, lengthens the idle run
@@ -381,34 +381,36 @@ by `d * k`, and preserves the realized type below the block.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean` with the
+- [x] Create `FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean` with the
       repository's copyright header (`scripts/check-copyright-headers.sh --strict` is a CI gate),
       `import FormalSystem.Metalogic.Decidability.RaySummary.LadderChain`, the namespace
       `FormalSystem.Metalogic.Decidability.RaySummary`, and the same `open` lines
       `LadderPump.lean` carries.
-- [ ] Write the module docstring with a `## Contract` section stating: the module holds the idle
+- [x] Write the module docstring with a `## Contract` section stating: the module holds the idle
       pump's register-anchored assembly and the sharpened lengthening schema with its verdict; it
       imports `LadderChain` for `exists_ladderPath_of_walk_nxt_at` alone and is imported by
       nothing; and it states no cell-level consequence.
-- [ ] Add `import FormalSystem.Metalogic.Decidability.RaySummary.LadderIdle` to
+- [x] Add `import FormalSystem.Metalogic.Decidability.RaySummary.LadderIdle` to
       `FormalSystem/Metalogic/Decidability/RaySummary.lean`, placed after the `LadderCell` import
       so the aggregator's order still reads bottom-up, and add the matching bullet to that file's
       `## Modules` list.
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, then confirm
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, then confirm
       `lake exe mk_all --lib FormalSystem --check` exits 0.
-- [ ] Prove `exists_iterIdleSpliced_ladderPath` by induction on `d`. The zero case returns `g`
+- [x] Prove `exists_iterIdleSpliced_ladderPath` by induction on `d`. The zero case returns `g`
       itself with the type clause from `tpOf_stabFree_eq_of_objAt_eq`. The successor case applies
       phase 2's five lift inputs to the previous path — whose block is still idle and still
       carries the endpoint repeat, both ends now reading `objAt g a` — and performs the lift with
       `exists_ladderPath_of_walk_nxt_at` at the anchor `nxtAt g z`, discharging its `hn0`
       condition from `cntAt_eq_nxtAt_of_idle_pend` and `nxtAt_lipschitz_two_sided` on the
       previous path together with the `+l` push on the pins above the block.
-- [ ] Carry the type clause through the induction with `tpOf_eq_spliceIdx_of_tpOf_eq`, exposing
+- [x] Carry the type clause through the induction with `tpOf_eq_spliceIdx_of_tpOf_eq`, exposing
       the realized type only below `a + k`, mirroring the exposure discipline
       `exists_iterSpliced_ladderPath_of_pend_past` already follows.
-- [ ] Run `bash scripts/check-metalogic-cycles.sh`; if Assertion B fires on the new import,
-      extend its allowlist in this same phase.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+- [x] Run `bash scripts/check-metalogic-cycles.sh`; if Assertion B fires on the new import,
+      extend its allowlist in this same phase. *(deviation: altered — Assertion B did NOT
+      fire; all three assertions PASS unchanged, so `scripts/check-metalogic-cycles.sh` is not
+      touched, exactly as the phase's own file list provides for.)*
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
 
 **Timing**: 2 hours
 

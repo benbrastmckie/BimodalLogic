@@ -215,6 +215,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderAgree
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderCell
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderChain
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderIdle
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderModel
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderPin
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderPump

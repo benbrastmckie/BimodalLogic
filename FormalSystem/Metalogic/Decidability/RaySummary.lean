@@ -28,6 +28,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.LadderPump
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderPin
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderChain
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderCell
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderIdle
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -262,4 +263,12 @@ nothing about `PlusValidZTime` — see the README's verdict.
   certificate-graph fixpoint, and the `⊡` bit forces an induction on `⊡`-nesting depth. Nothing
   here is a realization theorem, nothing is claimed about `HitPresented` or `PlusValidZTime`, no
   index of a ladder cell is claimed at any parameters, and no complexity bound is claimed.
+* `RaySummary.LadderIdle` — the idle pump: the register-anchored `d`-fold duplication of an idle
+  block (`exists_iterIdleSpliced_ladderPath`), and the sharpened idle-gap lengthening schema with
+  its verdict. The pump-layer inputs (the idle-cycle vocabulary, the idle-block countdown with
+  its free pin clause, the idle-restricted `(objAt, tpOf)` pigeonhole) are `LadderPump.lean`'s;
+  `LadderChain` is imported for `exists_ladderPath_of_walk_nxt_at` alone, the only landed lift
+  that exposes the next-deadline register at a chosen position. Nothing imports this module and
+  it states NO cell-level consequence: the premise it runs on is an object/run hypothesis, not a
+  consequence of `ParamsOk`, so no `ParamsOk`-level restriction is removed anywhere.
 -/
