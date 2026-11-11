@@ -5041,6 +5041,11 @@
           "path": "specs/evidence/forward-slack-pin-cascade/route-space-closure.lean",
           "type": "evidence",
           "summary": "The route-space closure probe: three placement measurements (pend_endpoints_of_rep, block_confined_of_hcl, idle_run_two_of_block) and two K-dial measurements (whole_region_anchor_refuted, saturated_chain_is_the_doubling_recurrence), now re-checked by CI."
+        },
+        {
+          "path": "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-3-handoff-20261111T233000Z.md",
+          "type": "handoff",
+          "summary": "Phase 3 close: what landed, two already-measured RED gate findings waiting for Phase 4, and a premise correction."
         }
       ],
       "audit_verdict": {

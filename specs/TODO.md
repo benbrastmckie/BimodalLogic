@@ -155,6 +155,7 @@ PRECEDENT. The archived record ladderchain_c16_unusedarguments_clear cleared thi
 - **Plan**: [924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md]
 - **Source**: [FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean]
 - **Evidence**: [evidence/forward-slack-pin-cascade/route-space-closure.lean]
+- **Handoff**: [924_forward_slack_witnessed_frontier_disposition/handoffs/phase-3-handoff-20261111T233000Z.md]
 
 **Description**: Decide the fate of the ForwardSlackWitnessed frontier, now that its only landed discharge route is refuted.
 

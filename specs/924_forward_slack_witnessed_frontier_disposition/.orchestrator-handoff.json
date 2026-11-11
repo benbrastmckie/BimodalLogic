@@ -1,37 +1,28 @@
 {
   "task_number": 924,
   "phase": "implement",
+  "dispatch_seq": 26,
   "status": "partial",
-  "dispatch_seq": 25,
-  "session_id": "sess_1794425759_f1ad4f",
-  "phases_completed": 2,
+  "phases_completed": 3,
   "phases_total": 4,
-  "summary": "Phase 2 landed the route-space closure as a wired CI evidence probe: specs/evidence/forward-slack-pin-cascade/route-space-closure.lean (git-tracked, five headline declarations) plus its WIRED entry and comment-table row in scripts/check-evidence-probes.sh. The probe's module docstring was extended with a pointer to Phase 1's three landed LadderIdle.lean declarations and an explicit statement that it measures the K dial and the placements only and refutes nothing about ForwardSlackWitnessed. check-evidence-probes.sh reports PASS all 55 wired probes (54 -> 55, +1 exactly), typst-sync-check.sh --counts-only exits 0 with MISMATCH_COUNT=0, and a full guarded lake build is green. Phases 3 and 4 remain; the dispatch scoped this run to phase 2 only.",
+  "summary": "Phase 3 landed the ForwardSlackWitnessed disposition in all four durable places, with the certStabK restatement obligation recorded PROVISIONAL rather than permanent, per the settled .decisions.json answer. LadderChain.lean's module docstring and the refuted primitive's own docstring now both name forwardSlackWitnessed_of_cell_idleRunPumpable as the cascade-free route that is not refuted; KTypeSummaryAxiomTest.lean carries the three-way split of the idle-lengthening verdict, the disposition block, and two new axiom pins measured at the standard profile; specs/state.json carries the appended OUTCOME paragraph with artifacts intact. Both scoped guarded builds and the full-library guarded build are green, zero sorries, zero new axioms, compliance check passed.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "evidence",
-      "path": "specs/evidence/forward-slack-pin-cascade/route-space-closure.lean",
-      "summary": "The route-space closure probe: three placement measurements (pend_endpoints_of_rep, block_confined_of_hcl, idle_run_two_of_block) and two K-dial measurements (whole_region_anchor_refuted, saturated_chain_is_the_doubling_recurrence), now re-checked by CI."
-    },
-    {
-      "type": "plan",
-      "path": "specs/924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md",
-      "summary": "Phase 2 marked [COMPLETED] with all six checklist items ticked."
-    },
-    {
       "type": "handoff",
-      "path": "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-2-handoff-20261111T221246Z.md",
-      "summary": "Phase-end recovery point: next action is Phase 3, whose 918 territory collision is now cleared."
+      "path": "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-3-handoff-20261111T233000Z.md",
+      "summary": "Phase 3 close: what landed, two already-measured RED gate findings waiting for Phase 4, and a premise correction."
     }
   ],
   "modified_files": [
-    "specs/evidence/forward-slack-pin-cascade/route-space-closure.lean",
-    "scripts/check-evidence-probes.sh",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "typst/generated/status.typ",
+    "specs/state.json",
+    "specs/TODO.md",
     "specs/924_forward_slack_witnessed_frontier_disposition/plans/01_forward-slack-frontier-disposition.md",
-    "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-2-handoff-20261111T221246Z.md",
+    "specs/924_forward_slack_witnessed_frontier_disposition/handoffs/phase-3-handoff-20261111T233000Z.md",
     "specs/924_forward_slack_witnessed_frontier_disposition/issues.jsonl"
   ],
-  "next_phase": 3,
-  "commits": ["a419a77e4"]
+  "next_action": "Dispatch Phase 4 (Reconciliation, Full Gate Set, and the Summary). Two RED gate findings are already measured and recorded in the phase-3 handoff: C27 (LadderIdle.lean allow-list 2 vs tree 5 -- THIS task's own Phase 1 debt, not pre-existing) and INV (3 stale generated inventory blocks). Phase 4's Scope Hypothesis names four READMEs; the live run named three."
 }
