@@ -42,7 +42,7 @@ next_project_number: 916
 
 ### Completeness
 
-896 [RESEARCHING] — The extended L-plus proof system (TM-plus + axiom set +...
+896 [RESEARCHED] — The extended L-plus proof system (TM-plus + axiom set +...
 899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 905 [NOT STARTED] — Eliminate cross-certification between the forward and...
@@ -462,10 +462,11 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 896. The extended L-plus proof system (TM-plus + axiom set + naming rules) with its ZTime soundness, and the completeness targets as stated Props
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 895
+- **Research**: [896_lplus_extended_proof_system_and_target_statement/reports/01_lplus-extended-proof-system.md]
 
 **Description**: A new module FormalSystem/Metalogic/LCExtension.lean carrying: RuleSet (flags clock, aaFwd, aaBwd); ExtDerivation (fc) (Ax : PlusFormula -> Prop) (R : RuleSet) : PlusFormula -> Prop, a Prop-valued theoremhood closure whose base is PlusDerivable fc [] and whose constructors are Ax, modus ponens, necessitation, temporal necessitation, time reflection, and the three naming rules gated by R with their freshness side conditions; IsLCAxiom (lcN n alpha and its reflectTime, n >= 1) and IsLCUAxiom (lcU and its mirror); the soundness theorem ext_sound_ztime : ExtDerivation .ZTime Ax R phi -> PlusValidZTime phi under the hypothesis that Ax is ZTime-valid, assembled from plus_soundness_ztime, clock_irr_sound and the Auxiliary-Atoms soundness; and the completeness targets stated as Prop definitions with no proof and no sorry: LCComplete (RuleSet.none, IsLCAxiom), LCRulesComplete (RuleSet.all, IsLCAxiom), LCURulesComplete (RuleSet.all, IsLCUAxiom). PlusDerivationTree, PlusAxiom and PlusFormula are not modified (standing ruling). Depends on the Auxiliary-Atoms rule task for the soundness arm; the statements themselves can land first with the soundness arm parametric in a rule-soundness hypothesis.
 

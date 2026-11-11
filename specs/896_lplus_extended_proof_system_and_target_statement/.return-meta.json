@@ -1,0 +1,28 @@
+{
+  "status": "researched",
+  "started_at": "2026-11-11T00:05:00Z",
+  "dispatch_seq": 19,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/896_lplus_extended_proof_system_and_target_statement/reports/01_lplus-extended-proof-system.md",
+      "summary": "Research for FormalSystem/Metalogic/LCExtension.lean: every ingredient located at its exact landed signature, the complete module skeleton verified green under lean_run_code (ExtDerivation plus ext_sound_ztime with all nine cases closing), all five axiom profiles measured at [propext, Classical.choice, Quot.sound], and the two encoding divergences from the archived 879 probe identified."
+    },
+    {
+      "type": "probe",
+      "path": "specs/896_lplus_extended_proof_system_and_target_statement/probes/01_lcextension-skeleton.lean",
+      "summary": "Verified-green module skeleton: RuleSet, IsLCAxiom/IsLCUAxiom with their ZTime-validity lemmas, the ten-constructor ExtDerivation inductive, ext_sound_ztime, the optional class-generic ext_sound_validIn, the three target Props, and four acceptance/non-vacuity examples."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Researched the extended L-plus proof system module. Every ingredient already exists in the library at a known signature, and the whole module skeleton elaborated green under lean_run_code with zero errors and one style warning, so a sorry-free, axiom-free path is demonstrated end to end rather than merely argued. Two mandatory corrections to the archived 879 probe were identified: lcU is now library API and must not be redefined, and both naming-rule constructors must be re-encoded from the probe's List Atom shape to the landed aaAnte qa m k a p b0 shape. The mirror rule's conclusion is phi.reflectTime, so aaBwd should be stated to match, with the arbitrary-conclusion form derived inside the module from reflect_time_involution. Repo invariants surveyed: C27 forces the axiom pins into a Tests/BimodalTest evidence module, C17 requires the three unconsumed target Props be named in the docstring and theorem index, and a pinned:C14 cell or a SORRY-FREE bullet in Metalogic.lean would silently pull scripts/check-module-invariants.sh into scope.",
+    "roadmap_items": []
+  },
+  "metadata": {
+    "session_id": "sess_1794343738_e0026f_896",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  },
+  "next_steps": "Plan phase: two phases (module + aggregator imports; then evidence module + theorem-index rows). The plan MUST declare two file_scope paths beyond the task's declared four: Tests/BimodalTest/Metalogic/LCExtensionTest.lean and Tests/BimodalTest.lean. Implement from probes/01_lcextension-skeleton.lean, not from the superseded specs/879_lplus_ztime_completeness_tm_plus_lc_programme/probes/01_target-statements.lean."
+}
