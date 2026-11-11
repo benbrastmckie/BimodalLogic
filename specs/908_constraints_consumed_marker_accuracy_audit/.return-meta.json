@@ -1,30 +1,39 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md",
-      "summary": "8-phase, 10.5-hour plan correcting 28 over-reporting Constraints-consumed markers via binder-free twins plus delegating corollaries, closing on a full gate run."
-    }
+  "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "task_number": 908,
+  "phase": "implement",
+  "dispatch_seq": 25,
+  "phases_completed": 1,
+  "phases_total": 8,
+  "requires_user_review": false,
+  "handoff_path": "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-1-handoff-20261111T074900.md",
+  "artifacts": [],
+  "modified_files": [
+    "FormalSystem/Semantics/Nomic/Witnesses.lean",
+    "FormalSystem/Semantics/Nomic/ZTime.lean",
+    "README.md",
+    "typst/generated/status.typ",
+    "specs/908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md",
+    "specs/908_constraints_consumed_marker_accuracy_audit/issues.jsonl",
+    "specs/908_constraints_consumed_marker_accuracy_audit/handoffs/phase-1-handoff-20261111T074900.md",
+    "specs/908_constraints_consumed_marker_accuracy_audit/.return-meta.json",
+    "specs/908_constraints_consumed_marker_accuracy_audit/.orchestrator-handoff.json"
   ],
-  "memory_candidates": [
-    {
-      "content": "When a gate discharges a claim by DELEGATION (a declaration's corrected/narrowed docstring claim is accepted because its own code names a cleaner twin), the discharge is per-declaration, not per-dependency-chain: the delegate must be named in that declaration's own body, carry an identical claim, and itself be free of the construct being narrowed away. Enabler leverage up the call chain reduces the COST of writing each twin (the proof body is the original's with one substitution) but never the COUNT of twins needed. Sizing such work by counting enabler lemmas instead of counting gated declarations understates it by an order of magnitude. Concretely in this repo: check-module-invariants.sh C34a's delegates() predicate over 'Constraints consumed:' markers.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/908_constraints_consumed_marker_accuracy_audit/plans/01_constraints-consumed-marker-corrections.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["c34a", "delegation-discharge", "gate-collision", "plan-sizing", "binder-free-twin", "constraints-consumed"]
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1794400344_255305_908",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 8,
-    "estimated_hours": 10.5,
-    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8]]
+  "sorry_inventory": [],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "vacuous_note": "Pre-existing shape-grep false positive at FormalSystem/Examples/TemporalStructures.lean:495 (intTimeHistory.domain reduces to True for a total-domain history, so `trivial` is the honest proof). Not touched by this dispatch.",
+    "axiom_count": 14,
+    "build_passed": true,
+    "build_scope": "FormalSystem.Semantics.Nomic (scoped; phase tier is local, full gate deferred to the batch stage per the dispatch's Batch Gate Deferral directive)",
+    "module_invariants": "PASS C34a (163 markers honest), PASS C34b, INFO C34 census 341 declarations / 76 files; gate exit 1 from a PRE-EXISTING FAIL C16 (env_linter unusedArguments in FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean, byte-identical pre-dispatch, outside this phase's territory)",
+    "typst_sync": "drift reported (formalsystem-line-count 404589 -> 404591), re-stamped with --fix, re-check MISMATCH_COUNT=0"
   },
-  "next_steps": "Run /orchestrate 908 to execute the plan",
-  "dispatch_seq": 24
+  "memory_candidates": [
+    "A 'Constraints consumed:' marker on a declaration with no bracketed bundling binder is unconstrained by check-module-invariants.sh C34a (the `omitted` set is empty whatever the marker says), so correcting such a site is a pure one-line docstring edit; only binder-carrying rows need a binder-free twin before their marker can be narrowed.",
+    "A docstring-only edit in this repository still moves three generated surfaces: README.md's live-comment-lines count (via check-module-invariants.sh --emit-inventory) and typst/generated/status.typ's formalsystem-line-count (via typst-sync-check.sh --fix), while per-file **Lines** columns stay put because only comment lines changed."
+  ]
 }
