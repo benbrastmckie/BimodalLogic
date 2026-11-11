@@ -255,7 +255,7 @@ sheaf-clause · germs-clause · cor:path-fibration
 -- Length baseline: the module carries the whole of `cor:path-fibration` — the category, the
 -- fibration property, the associated-presheaf equality, and both layers of the `D = ℤ` clause —
 -- and the proofs compare sections at the `.val` level with every domain witness explicit.
-set_option linter.style.longFile 1800
+set_option linter.style.longFile 1900
 
 namespace FormalSystem.Semantics.Presheaf
 
@@ -1633,49 +1633,98 @@ theorem PathHom.toPath_comp (F : FrameOver intOrder) [F.IsRegular] {w u v : F.Wo
 
 /-! ### `D = ℤ`, layer 2b: paths to sections, the round trips, the free category -/
 
-/-- **A one-step morphism**: the two-point section on `[0, 1]` reading `w` at `0` and `u` at `1`,
-built by `Beh.ofAdjacentWindow` from the single step `h : w ⇒₁ u`. Its task-respect obligation is
-discharged inside `ofAdjacentWindow`: forward by `h` through "iterating *Compositionality*", at
-the same point by `⇒₀` being the identity, and backward by the reflection convention
-(`FrameOver.reflection_int`), all choice-free.
+/-- **A one-step morphism, at explicit hypotheses**: the two-point section on `[0, 1]` reading `w`
+at `0` and `u` at `1`, built by `Beh.ofAdjacentWindowOfConstraints` from the single step
+`h : w ⇒₁ u`. Its task-respect obligation is discharged inside that constructor: forward by `h`
+through "iterating *Compositionality*", at the same point by `⇒₀` being the identity, and backward
+by the reflection convention (`FrameOver.reflection_int_of_limit`), all choice-free. That
+constructor is the whole of what this term reaches, so *Saturation* is reached by no part of it.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-def PathHom.ofStep (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+Constraints consumed: Compositionality, Seriality, Limit -/
+def PathHom.ofStepOfConstraints (F : FrameOver intOrder)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) {w u : F.WorldState}
     (h : FrameOver.step F w u) : PathHom F.toTaskFrame w u where
   len := ⟨1, zero_le_one⟩
-  sec := Beh.ofAdjacentWindow F 1 zero_le_one (fun i => if i ≤ 0 then w else u) (by
-    intro i hi0 hi1
-    have hi : i = 0 := by omega
-    subst hi
-    rw [if_pos le_rfl, if_neg (by decide)]
-    exact h)
+  sec := Beh.ofAdjacentWindowOfConstraints F hcomp hser hlim 1 zero_le_one
+    (fun i => if i ≤ 0 then w else u) (by
+      intro i hi0 hi1
+      have hi : i = 0 := by omega
+      subst hi
+      rw [if_pos le_rfl, if_neg (by decide)]
+      exact h)
   src := show (if (0 : ℤ) ≤ 0 then w else u) = w from if_pos le_rfl
   tgt := show (if (1 : ℤ) ≤ 0 then w else u) = u from if_neg (by decide)
 
-/-- **Paths to sections**: the empty path to the germ, a path extended by a step to the composite
-of the path's morphism with the one-step morphism. This is Mathlib's `CategoryTheory.Paths` reading
-of the free category — `nil ↦ id`, `cons ↦ comp` — specialized to `(W, ⇒₁)`, without importing
-`PathCategory/Basic.lean`.
+/-- **A one-step morphism**: the two-point section on `[0, 1]` reading `w` at `0` and `u` at `1`,
+built from the single step `h : w ⇒₁ u`. This is `PathHom.ofStepOfConstraints` with the three
+constraints its term reaches projected out of a bundling instance. The marker enumerates what the
+elaborated term reaches, not what the binder supplies: the instance's *Saturation* field is never
+read, so the general form above applies to frames outside that class.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-def PathHom.ofPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+Constraints consumed: Compositionality, Seriality, Limit -/
+def PathHom.ofStep (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+    (h : FrameOver.step F w u) : PathHom F.toTaskFrame w u :=
+  PathHom.ofStepOfConstraints F F.comp F.serial F.limit h
+
+/-- **Paths to sections, at explicit hypotheses**: the empty path to the germ, a path extended by
+a step to the composite of the path's morphism with the one-step morphism. This is Mathlib's
+`CategoryTheory.Paths` reading of the free category — `nil ↦ id`, `cons ↦ comp` — specialized to
+`(W, ⇒₁)`, without importing `PathCategory/Basic.lean`. The `nil` branch is
+`PathHom.idOfSerialLimit`, the `cons` branch is `PathHom.comp` at `hcomp` together with
+`PathHom.ofStepOfConstraints`; no branch reaches *Saturation*.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+def PathHom.ofPathOfConstraints (F : FrameOver intOrder)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) {w u : F.WorldState}
     (p : StepPath F w u) : PathHom F.toTaskFrame w u :=
   match u, p with
-  | _, Quiver.Path.nil => PathHom.id F.toTaskFrame w
+  | _, Quiver.Path.nil => PathHom.idOfSerialLimit F.toTaskFrame hser hlim w
   | _, Quiver.Path.cons q ⟨h⟩ =>
-    PathHom.comp (TaskFrame.comp F.toTaskFrame) (PathHom.ofPath F q) (PathHom.ofStep F h)
+    PathHom.comp hcomp (PathHom.ofPathOfConstraints F hcomp hser hlim q)
+      (PathHom.ofStepOfConstraints F hcomp hser hlim h)
 
-/-- **Round trip, sections first**: reading a morphism as a path and back returns the morphism.
-By induction on the explicit length of `toPathAux`: at `0` the morphism is the germ at its common
-endpoint (`PathHom.ext'` with `Beh.ofGerm_germ`); at `n + 1` the path's last step is the right
-factor of the morphism at the cut `n` — the two-point section and the restriction to `[n, n + 1]`
-agree at both of their points — so `factor_comp` closes the case.
+/-- **Paths to sections**: the empty path to the germ, a path extended by a step to the composite
+of the path's morphism with the one-step morphism. This is `PathHom.ofPathOfConstraints` with the
+three constraints its term reaches projected out of a bundling instance. The marker enumerates
+what the elaborated term reaches, not what the binder supplies: the instance's *Saturation* field
+is never read.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-theorem PathHom.ofPath_toPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
-    (e : PathHom F.toTaskFrame w u) : PathHom.ofPath F (PathHom.toPath F e) = e := by
+Constraints consumed: Compositionality, Seriality, Limit -/
+def PathHom.ofPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+    (p : StepPath F w u) : PathHom F.toTaskFrame w u :=
+  PathHom.ofPathOfConstraints F F.comp F.serial F.limit p
+
+/-- **Round trip, sections first, at explicit hypotheses**: reading a morphism as a path and back
+returns the morphism. By induction on the explicit length of `toPathAux`: at `0` the morphism is
+the germ at its common endpoint (`PathHom.ext'` with the germ inverse); at `n + 1` the path's last
+step is the right factor of the morphism at the cut `n` — the two-point section and the
+restriction to `[n, n + 1]` agree at both of their points — so `factor_comp` closes the case. The
+germ-inverse step of the base case is proved inline as `hgermInv`, because the only form of it in
+`Behavior.lean` (`Beh.ofGerm_germ`) is stated over a bundling instance and so cannot be named
+here.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem PathHom.ofPath_toPath_of_constraints (F : FrameOver intOrder)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) {w u : F.WorldState}
+    (e : PathHom F.toTaskFrame w u) :
+    PathHom.ofPathOfConstraints F hcomp hser hlim (PathHom.toPath F e) = e := by
+  have hgermInv : ∀ τ : Beh F.toTaskFrame 0,
+      Beh.ofGermOfSerialLimit F.toTaskFrame hser hlim (Beh.germ τ) = τ := by
+    intro τ
+    refine Beh.ext (partialHistory_ext ?_ ?_)
+    · funext z
+      change (0 ≤ z ∧ z ≤ 0) = τ.val.domain z
+      exact propext ((τ.property z).symm)
+    · intro r _ h'
+      have hr0 : r = 0 := le_antisymm ((τ.property r).mp h').2 ((τ.property r).mp h').1
+      subst hr0
+      rfl
   have aux : ∀ (n : ℕ) {w u : F.WorldState} (e : PathHom F.toTaskFrame w u)
-      (hn : (n : ℤ) = e.len.val), PathHom.ofPath F (PathHom.toPathAux F n e hn) = e := by
+      (hn : (n : ℤ) = e.len.val),
+      PathHom.ofPathOfConstraints F hcomp hser hlim (PathHom.toPathAux F n e hn) = e := by
     intro n
     induction n with
     | zero =>
@@ -1686,10 +1735,10 @@ theorem PathHom.ofPath_toPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.Wo
           (Beh.mem_dom e.sec le_rfl e.len.property)
           (Beh.mem_dom e.sec e.len.property le_rfl)).trans e.tgt)
       subst hwu
-      change PathHom.id F.toTaskFrame w = e
+      change PathHom.idOfSerialLimit F.toTaskFrame hser hlim w = e
       have hgerm : Beh.germ (Beh.castLen h0.symm e.sec) = w := e.src
-      have hsec : (Beh.ofGerm F.toTaskFrame w).val = e.sec.val := by
-        have h := congrArg Subtype.val (Beh.ofGerm_germ (Beh.castLen h0.symm e.sec))
+      have hsec : (Beh.ofGermOfSerialLimit F.toTaskFrame hser hlim w).val = e.sec.val := by
+        have h := congrArg Subtype.val (hgermInv (Beh.castLen h0.symm e.sec))
         rw [hgerm] at h
         exact h
       exact PathHom.ext' (Subtype.ext h0) hsec
@@ -1701,7 +1750,7 @@ theorem PathHom.ofPath_toPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.Wo
           = Quiver.Path.cons (PathHom.toPathAux F n (e.factorLeft fac) rfl) ⟨s⟩ := ⟨_, rfl⟩
       rw [hs]
       -- the one-step morphism is the right factor at the cut `n`
-      have hstep : PathHom.ofStep F s = e.factorRight fac := by
+      have hstep : PathHom.ofStepOfConstraints F hcomp hser hlim s = e.factorRight fac := by
         refine PathHom.ext' (Subtype.ext rfl) (partialHistory_ext rfl ?_)
         intro r hr h'
         change (if r ≤ 0 then e.cutState fac else u) = e.sec.val.states ((n : ℤ) + r) _
@@ -1718,44 +1767,84 @@ theorem PathHom.ofPath_toPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.Wo
           rw [if_neg hr0]
           exact e.tgt.symm.trans (PartialHistory.states_eq_of_time_eq e.sec.val e.len.val
             ((n : ℤ) + 1) hn'.symm _ _)
-      have hrest : PathHom.comp (TaskFrame.comp F.toTaskFrame) (e.factorLeft fac)
-          (PathHom.ofStep F s) = e := by
+      have hrest : PathHom.comp hcomp (e.factorLeft fac)
+          (PathHom.ofStepOfConstraints F hcomp hser hlim s) = e := by
         rw [hstep]
-        exact PathHom.factor_comp (TaskFrame.comp F.toTaskFrame) e fac
+        exact PathHom.factor_comp hcomp e fac
       exact (congrArg
-        (fun x => PathHom.comp (TaskFrame.comp F.toTaskFrame) x (PathHom.ofStep F s))
+        (fun x => PathHom.comp hcomp x (PathHom.ofStepOfConstraints F hcomp hser hlim s))
         (ih (e.factorLeft fac) rfl)).trans hrest
   exact aux _ e _
 
-/-- **Round trip, paths first**: reading a path as a morphism and back returns the path. By
-induction on the path, using `toPath_id`, `toPath_comp`, and the fact that the one-step morphism
-reads back as the one-step path — which holds by reflexivity, because its cut state at `0` reduces
-to `w` and the transport along `w = w` collapses.
+/-- **Round trip, sections first**: reading a morphism as a path and back returns the morphism.
+This is `PathHom.ofPath_toPath_of_constraints` with the three constraints its proof reaches
+projected out of a bundling instance. The marker enumerates what the elaborated term reaches, not
+what the binder supplies: the instance's *Saturation* field is never read.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-theorem PathHom.toPath_ofPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
-    (p : StepPath F w u) : PathHom.toPath F (PathHom.ofPath F p) = p := by
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem PathHom.ofPath_toPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+    (e : PathHom F.toTaskFrame w u) : PathHom.ofPath F (PathHom.toPath F e) = e :=
+  PathHom.ofPath_toPath_of_constraints F F.comp F.serial F.limit e
+
+/-- **Round trip, paths first, at explicit hypotheses**: reading a path as a morphism and back
+returns the path. By induction on the path, using `PathHom.toPath_id_of_serial_limit`,
+`PathHom.toPath_comp_of_constraints`, and the fact that the one-step morphism reads back as the
+one-step path — which holds by reflexivity, because its cut state at `0` reduces to `w` and the
+transport along `w = w` collapses.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem PathHom.toPath_ofPath_of_constraints (F : FrameOver intOrder)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) {w u : F.WorldState} (p : StepPath F w u) :
+    PathHom.toPath F (PathHom.ofPathOfConstraints F hcomp hser hlim p) = p := by
   induction p with
   | nil => rfl
   | cons q h ih =>
     obtain ⟨h⟩ := h
-    refine (PathHom.toPath_comp F (PathHom.ofPath F q) (PathHom.ofStep F h)).trans ?_
+    refine (PathHom.toPath_comp_of_constraints F hcomp hser hlim
+      (PathHom.ofPathOfConstraints F hcomp hser hlim q)
+      (PathHom.ofStepOfConstraints F hcomp hser hlim h)).trans ?_
     rw [ih]
     rfl
 
-/-- **The `D = ℤ` clause of `cor:path-fibration`, packaged**: the morphisms `w → u` of `Path(F)`
-are in bijection with the paths from `w` to `u` in the one-step graph `(W, ⇒₁)`. With
-`toPath_id` and `toPath_comp` — identities to empty paths, gluing to concatenation — this says
-`Path(F)` is the free category on that graph, in the sense of Mathlib's
-`CategoryTheory.Paths.categoryPaths` (`Hom := Quiver.Path`, `id := nil`, `comp := Path.comp`).
+/-- **Round trip, paths first**: reading a path as a morphism and back returns the path. This is
+`PathHom.toPath_ofPath_of_constraints` with the three constraints its proof reaches projected out
+of a bundling instance. The marker enumerates what the elaborated term reaches, not what the
+binder supplies: the instance's *Saturation* field is never read.
 
-Constraints consumed: Compositionality, Seriality, Limit, Saturation -/
-def PathHom.pathEquiv (F : FrameOver intOrder) [F.IsRegular] (w u : F.WorldState) :
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem PathHom.toPath_ofPath (F : FrameOver intOrder) [F.IsRegular] {w u : F.WorldState}
+    (p : StepPath F w u) : PathHom.toPath F (PathHom.ofPath F p) = p :=
+  PathHom.toPath_ofPath_of_constraints F F.comp F.serial F.limit p
+
+/-- **The `D = ℤ` clause of `cor:path-fibration`, packaged, at explicit hypotheses**: the
+morphisms `w → u` of `Path(F)` are in bijection with the paths from `w` to `u` in the one-step
+graph `(W, ⇒₁)`. With `toPath_id_of_serial_limit` and `toPath_comp_of_constraints` — identities to
+empty paths, gluing to concatenation — this says `Path(F)` is the free category on that graph, in
+the sense of Mathlib's `CategoryTheory.Paths.categoryPaths` (`Hom := Quiver.Path`, `id := nil`,
+`comp := Path.comp`). All four fields are binder-free, so *Saturation* is reached by no part of
+this equivalence.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+def PathHom.pathEquivOfConstraints (F : FrameOver intOrder)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) (w u : F.WorldState) :
     PathHom F.toTaskFrame w u ≃ StepPath F w u where
   toFun := PathHom.toPath F
-  invFun := PathHom.ofPath F
-  left_inv := PathHom.ofPath_toPath F
-  right_inv := PathHom.toPath_ofPath F
+  invFun := PathHom.ofPathOfConstraints F hcomp hser hlim
+  left_inv := PathHom.ofPath_toPath_of_constraints F hcomp hser hlim
+  right_inv := PathHom.toPath_ofPath_of_constraints F hcomp hser hlim
+
+/-- **The `D = ℤ` clause of `cor:path-fibration`, packaged**: the morphisms `w → u` of `Path(F)`
+are in bijection with the paths from `w` to `u` in the one-step graph `(W, ⇒₁)`. This is
+`PathHom.pathEquivOfConstraints` with the three constraints its four fields reach projected out of
+a bundling instance. The marker enumerates what the elaborated term reaches, not what the binder
+supplies: the instance's *Saturation* field is never read.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+def PathHom.pathEquiv (F : FrameOver intOrder) [F.IsRegular] (w u : F.WorldState) :
+    PathHom F.toTaskFrame w u ≃ StepPath F w u :=
+  PathHom.pathEquivOfConstraints F F.comp F.serial F.limit w u
 
 end FormalSystem.Semantics.Presheaf
 

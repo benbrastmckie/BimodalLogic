@@ -399,17 +399,17 @@ whose honest marker is `None` and whose binder may be removable outright.
 
 ---
 
-### Phase 7: `Presheaf/Path.lean` cluster C -- `ofStep`, `ofPath` and the path equivalence [NOT STARTED]
+### Phase 7: `Presheaf/Path.lean` cluster C -- `ofStep`, `ofPath` and the path equivalence [COMPLETED]
 
 **Goal**: Correct the final five over-reporting sites in `Path.lean`, completing the 28.
 
 **Tasks**:
-- [ ] Correct `PathHom.ofStep`, `PathHom.ofPath`, `PathHom.ofPath_toPath`, `PathHom.toPath_ofPath` and `PathHom.pathEquiv` to `Compositionality, Seriality, Limit`, each with its own binder-free twin plus delegating corollary.
-- [ ] Re-point each twin's body at the twins landed in Phases 5 and 6 (`PathHom.id_of_serial_limit`, the `toPath` twins) rather than at the binder-carrying originals, so no twin's span names `IsRegular`.
-- [ ] Re-grep `Path.lean` for the full-four marker string and confirm zero remaining occurrences other than the docstring prose at `Presheaf/Worlds.lean:59`, which is a quotation of the form and not a marker.
-- [ ] Raise `set_option linter.style.longFile` to the next admissible baseline above the file's final length.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs, including the `Presheaf/` one.
-- [ ] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported.
+- [x] Correct `PathHom.ofStep`, `PathHom.ofPath`, `PathHom.ofPath_toPath`, `PathHom.toPath_ofPath` and `PathHom.pathEquiv` to `Compositionality, Seriality, Limit`, each with its own binder-free twin plus delegating corollary. *(deviation: altered -- the two `def`-valued twins are `ofStepOfConstraints`/`ofPathOfConstraints` and the equivalence is `pathEquivOfConstraints`, lowerCamelCase as C26 requires of `def`s; the three theorem twins keep the recorded `_of_constraints` form)*
+- [x] Re-point each twin's body at the twins landed in Phases 5 and 6 (`PathHom.idOfSerialLimit`, `PathHom.toPath_comp_of_constraints`) rather than at the binder-carrying originals, so no twin's span names `IsRegular`.
+- [x] Re-grep `Path.lean` for the full-four marker string and confirm zero remaining occurrences other than the docstring prose at `Presheaf/Worlds.lean:59`, which is a quotation of the form and not a marker.
+- [x] Raise `set_option linter.style.longFile` to the next admissible baseline above the file's final length.
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` and stage the regenerated ancestor-chain READMEs, including the `Presheaf/` one.
+- [x] Run `bash scripts/typst-sync-check.sh --counts-only`; re-stamp with `--fix` and stage `typst/generated/status.typ` only if drift is reported.
 
 **Timing**: 1.5 hours
 
