@@ -206,7 +206,42 @@ none is claimed.
 - `grep -c '^unusedArguments:' scripts/nolint-attribute-allowlist.txt` reads 7.
 - `git status --short` shows exactly one modified file before staging.
 
-### Phase 2: Both LadderPump dispositions, under the net-zero line budget [NOT STARTED]
+### Phase 2: Both LadderPump dispositions, under the net-zero line budget [BLOCKED]
+
+**BLOCKER** (Phase 2):
+
+- **What failed**: This phase's own explicit pre-edit gate for Edit A. The plan requires the
+  consumer sweep to return "zero term-level applications" of `exists_idleSpliced_ladderPath`
+  before its `[Fintype Q]`/`[Nonempty Q]` binders may be deleted, names that consumer set as
+  "what licenses the removal", and prescribes the remedy "stop and treat the removal half as
+  `[BLOCKED]`". The live sweep returns a term-level application:
+  `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean:1294`,
+  `obtain ⟨g₂, hg₂, hobj₂, hcnt₂⟩ := exists_idleSpliced_ladderPath g₁ hg₁ α k hk hidle₁ hrep₁`.
+- **What was tried**: The sweep was re-run as written. The four predicted docstring mentions are
+  all still present, at shifted line numbers (`LadderWindow.lean:223,467` — the plan predicted
+  `:181,:425`; `LadderIdle.lean:19,75` unchanged), plus the one new term-level application.
+  `git log -S` attributes it to `a94510cf3` ("task 918 phase 3.6"), which landed after this plan
+  was authored; task 918 is now complete (`51faa61b9`), so this is a landed consumer and not
+  in-flight sibling work. Edit A was therefore NOT applied.
+- **Why it's stuck**: The plan's licensing premise is falsified as written. On the merits the
+  removal still looks safe — the two binders are instance-implicit, supplied by synthesis rather
+  than positionally, and the call site passes exactly the seven explicit arguments the signature
+  declares, so dropping them generalizes the statement without moving any positional slot (the
+  plan's own Edit A rationale says precisely this). But `plan-compliance.md` governs `**/*.lean`
+  and is categorical: a would-be deviation on a Lean file is escalated, never annotated and
+  proceeded past. Overriding an explicit, twice-stated stop-condition on re-derived judgment is
+  the exact failure mode that rule exists to prevent, so the call belongs to the user.
+- **What is needed**: A user decision on one question — does the term-level call site at
+  `LadderWindow.lean:1294` actually bar the binder removal, given the binders are
+  instance-implicit? If it does not, the gate's wording should be amended to "zero term-level
+  applications **that pass the binders positionally**" and both edits land together next
+  dispatch. If it does, Edit A needs a different disposition (attribute + allowlist, as Edit B
+  received), which would require meeting the allowlist's admission bar for a declaration whose
+  body consumes no instance.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+  Do NOT edit `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, the root `README.md`
+  inventory block, or `typst/generated/status.typ` to absorb a line-count or code/comment-count
+  drift.
 
 **Goal**: `exists_idleSpliced_ladderPath` loses its two dead instance binders and
 `exists_idleTypeBlock_of_budget_le_run` gains the in-source `@[nolint unusedArguments]`, with
@@ -214,19 +249,24 @@ none is claimed.
 
 **Tasks**:
 
-- [ ] Re-read both regions immediately before editing — `sed -n '1817,1836p'` and
+- [x] Re-read both regions immediately before editing — `sed -n '1817,1836p'` and
       `sed -n '1859,1876p'` on `FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean` —
       in case a sibling has touched the file since Phase 1, and re-confirm
-      `wc -l` reads 1931.
-- [ ] Re-confirm the consumer sweep before deleting binders:
+      `wc -l` reads 1931. *(completed: `wc -l` reads 1931; every line number this phase cites —
+      1819-1823 comment, 1824 `set_option`, 1830 signature, 1862-1866 comment, 1867
+      `set_option`, 1872 `-/`, 1873 signature — confirmed exact against live source)*
+- [x] Re-confirm the consumer sweep before deleting binders:
       `grep -rn exists_idleSpliced_ladderPath --include=*.lean FormalSystem/ Tests/` must return
       only the declaration itself plus the four docstring mentions
       (`LadderWindow.lean:181,425`, `LadderIdle.lean:19,75`) and zero term-level applications.
       If a term-level application has appeared, stop and treat the removal half as `[BLOCKED]`.
+      *(deviation: gate FAILED — `LadderWindow.lean:1294` is a term-level application, added by
+      `a94510cf3`; docstrings present but at `:223,:467` not `:181,:425`. Remedy taken as
+      written: removal half `[BLOCKED]`, escalated. See the BLOCKER block above.)*
 - [ ] Edit A: delete lines 1819-1824 — the 5-line `linter.unusedFintypeInType` comment and the
       `set_option linter.unusedFintypeInType false in` line — and change the signature's first
       line to `theorem exists_idleSpliced_ladderPath {Q : Type}`, leaving every other binder
-      untouched.
+      untouched. *(deviation: not applied — blocked by the failed consumer-sweep gate above)*
 - [ ] Edit A, replacement comment: write a **5-line** `--` comment immediately above the
       docstring recording why the binders were removed rather than exempted: the body takes no
       finiteness or nonemptiness instance anywhere
@@ -236,25 +276,52 @@ none is claimed.
       break — instance arguments are supplied by synthesis, not positionally. Do **not** carry
       forward the deleted comment's stale claim that `exists_ladderPath_of_walk_of_pins` "reads
       only `Finite Q`"; it reads no instance at all.
+      *(deviation: not applied — blocked by the failed consumer-sweep gate above)*
 - [ ] Edit B: rewrite the 1862-1866 comment to **5 lines** so it names the environment linter and
       its separate remedy — that the scoped `set_option linter.unusedVariables false in` cannot
       reach a Batteries `@[env_linter]`, which runs post-hoc over an imported environment where no
       source-level `set_option` is in scope, hence the paired attribute and allowlist entry. Keep
       the `set_option linter.unusedVariables false in` line at 1867 exactly as it is: it is the
       paired source-level suppression the allowlist entry cites.
+      *(deviation: applied, verified green, then REVERTED — see the budget note below. One
+      correction for the next dispatch: C29 requires the reason comment to name
+      `linter.unusedVariables` **literally**. A first draft saying "the source linter" instead
+      failed `FAIL C29 ... LadderPump.lean:1866: comment above does not mention
+      `linter.unusedVariables``. Keep the literal option name as the comment's opening token,
+      exactly as the pre-existing comment does.)*
 - [ ] Edit B, attribute: insert `@[nolint unusedArguments]` on its own line between the
       docstring's closing `-/` and `theorem exists_idleTypeBlock_of_budget_le_run`, exactly as
       `LadderAgree.lean:2046` does for `insRegionStart_trichotomy`.
+      *(deviation: applied, verified green, then REVERTED with Edit B's comment. Verification
+      obtained while applied: guarded full `lake build` exit 0, 2974 jobs, zero `error:` lines,
+      `.olean` newer than source for LadderPump/LadderIdle/LadderWindow; guarded
+      `lake exe runLinter FormalSystem` dropped from two flagged declarations to one, the
+      survivor being exactly the blocked Edit A half; C26 went 15 pairs + 1 stale INFO -> 16
+      pairs + 0 stale INFO, proving Phase 1's allowlist key and the as-written declaration name
+      agree. The attribute's placement and effect are therefore confirmed, not merely planned.)*
 - [ ] Assert the budget: `wc -l FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean`
       must read exactly **1931**. The arithmetic is
       `(A_new - 5) - 1 + (B_new - 5) + 1 = A_new + B_new - 10`, and `5 + 5 = 10`. If it reads
       anything else, adjust comment length — never the README row or `status.typ`.
+      *(deviation: the budget is TWO-DIMENSIONAL, which this arithmetic does not capture. The
+      root `README.md` generated inventory block counts `Live lines of code` and `Live comment
+      lines` **separately**, and gate `INV` fails if either drifts. Per-edit contributions are:
+      Edit A = comment 0 / code **-1** (the deleted `set_option`); Edit B = comment 0 / code
+      **+1** (the attribute). Together they cancel in both dimensions, so the plan as written is
+      correct and complete. But with Edit A withheld, holding the 1931 total forces B_new = 4,
+      giving comment -1 / code +1 — total still 1931, yet `FAIL INV 1 file(s) carry a stale
+      generated inventory block (README.md)`, a third file this plan requires untouched. That is
+      exactly the unbalanced intermediate state `Commit Mode: atomic-batch` forbids, so Edit B
+      was reverted rather than committed alone. Next dispatch: apply both edits with
+      A_new = B_new = 5 and both dimensions balance with no README cascade.)*
 - [ ] Scoped guarded build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderPump`,
       as a plain foreground `timeout 600 ...` call with the Bash tool `timeout` parameter raised to
       600000; if it does not fit one call, detach it as a shell-level background job and block on
       it with the bounded single-call idiom from `context/patterns/bounded-build-waiter.md`. Never
-      a bare `lake`.
+      a bare `lake`. *(deviation: altered — discharged by a guarded FULL `lake build` instead,
+      which strictly subsumes the scoped build and is this agent's mandated phase-end gate.
+      Guard exit 0, 2974 jobs, zero `error:` lines.)*
 - [ ] Dependent build, same guarded shape, for the two modules that import this one and mention
       the changed declaration:
       `-- build FormalSystem.Metalogic.Decidability.RaySummary.LadderIdle` and
@@ -262,14 +329,26 @@ none is claimed.
       **read-only builds**; `LadderWindow.lean` is in task 918's `file_scope` this cycle and must
       not be edited. A failure inside `LadderWindow.lean` itself is checked against `git log` and
       `git status` for sibling in-flight work before being attributed to this task.
+      *(deviation: altered — subsumed by the full build above; `.olean` newer than source
+      confirmed for LadderPump, LadderIdle and LadderWindow. Territory note corrected: task 918
+      is COMPLETE (`51faa61b9`), so `LadderWindow.lean` is no longer live sibling territory.)*
 - [ ] Guarded linter run:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- exe runLinter FormalSystem`.
       Expect exit 0 and `-- Linting passed for FormalSystem.`. Note that `Found 0 errors` can never
       appear — that line is printed only on a failing run — so its absence is not evidence of
-      anything.
+      anything. *(deviation: ran with Edit B applied and Edit A blocked; exit 1, as expected in
+      that state. Exactly one `unusedArguments` finding remained —
+      `LadderPump.lean:1825:1: @...exists_idleSpliced_ladderPath 2 unused arguments: argument 2:
+      [Fintype Q], argument 3: [Nonempty Q]` — down from two flagged declarations. The
+      `exists_idleTypeBlock_of_budget_le_run` finding was extinguished by Edit B. C16 therefore
+      goes green exactly when Edit A lands, and on nothing else.)*
 - [ ] Commit the file once, both regions together:
       `git add -- FormalSystem/Metalogic/Decidability/RaySummary/LadderPump.lean`, reviewed via
-      `git status --short` and `git diff --staged` first.
+      `git status --short` and `git diff --staged` first. *(deviation: not performed — no commit
+      was made of `LadderPump.lean`. Edit B alone is the unbalanced intermediate state this
+      phase's `Commit Mode: atomic-batch` forbids committing, so it was reverted and the file
+      is byte-identical to `f7b64854b`. This phase's only committed output is its own `specs/**`
+      record.)*
 
 **Timing**: 1.0 hours
 
