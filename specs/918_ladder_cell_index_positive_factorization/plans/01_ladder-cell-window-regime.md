@@ -150,7 +150,7 @@ phase is already measured; nothing here depends on the gate's outcome.
 - [ ] The module docstring MUST state the module's scope in the record's own terms: it holds the ORDINARY WINDOW regime `c ≤ n + 1` of the depth-`0` cell obligation, the complement of the pending-forever gap `n + 2 ≤ c` that the five `LadderCell.lean` schemas carry; it claims nothing about the reserved `cellLE_zero_const_of_kappa_eq`; and it touches neither `ForwardSlackWitnessed` nor `ParamsOk`'s own conditions.
 - [ ] Land the four arithmetic theorems, lifting the bodies VERBATIM from `specs/918_ladder_cell_index_positive_factorization/evidence/plan-gate-arithmetic.lean` rather than re-deriving them. Their statements are pinned in `## Lean Challenge Statements` below and must land exactly as pinned.
 - [ ] Each docstring states what the statement measures and what it does not: `kappa_collision_window_room` records that the room `c' ≤ n` is the GAP COORDINATE paying for it (via `clipIdx_regime_of_eq` with the gap branch killed), not an added assumption; the three pin lemmas record that `jP` is opaque, so the arithmetic is scale-invariant and never reads `j · (P + 1)` as such.
-- [ ] Add the aggregator import to `FormalSystem/Metalogic/Decidability/RaySummary.lean`, after the `LadderIdle` line.
+- [x] Add the aggregator import to `FormalSystem/Metalogic/Decidability/RaySummary.lean`, after the `LadderIdle` line. *(deviation: altered -- the aggregator's own `## Modules` docstring list, which enumerates every module it imports, gained a matching `RaySummary.LadderWindow` bullet alongside the bare import line; an import with no entry there would have been the file's only such gap.)*
 - [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, then confirm with `lake exe mk_all --lib FormalSystem --check` (gate-collision C33).
 - [ ] Run `bash scripts/check-copyright-headers.sh` and confirm the new file is counted and passing.
 - [ ] Run `bash scripts/check-metalogic-cycles.sh` and CONFIRM no new upward import was introduced (Condition 5). If Assertion B reports surplus, extend the frozen allowlist in this same phase and add `scripts/check-metalogic-cycles.sh` to this phase's file list.
@@ -220,7 +220,7 @@ takes.
 
 ---
 
-### Phase 3: The Window-Regime Composite Splice, Both Directions [NOT STARTED]
+### Phase 3: The Window-Regime Composite Splice, Both Directions [PARTIAL]
 
 **Goal**: Land the path-level primitives the window regime needs: given a ladder path through
 `(q, c, n)` at `z` with an idle position in its past and the named idle-run condition, produce a
@@ -376,7 +376,7 @@ the window regime refuted — is stated explicitly here, never left tacit.
 - [ ] Update `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`'s Requirement (W) narrative to the actual outcome. On the PASS branch: the window regime is closed under its own named schema, the five pending-forever schemas are unchanged, the two regimes are exhaustive by the Phase 5 dichotomy, and the reserved `cellLE_zero_const_of_kappa_eq` is STILL claimed by nothing because the window schema carries the idle-run condition and the threshold bounds. On the FAIL branch: the window regime is refuted at the named clause and the ladder route is closed in both regimes.
 - [ ] Add `#print axioms` pins (with `#guard_msgs`) for every declaration this task landed, following the file's existing pin convention.
 - [ ] Set or re-tighten `set_option linter.style.longFile N` in `LadderWindow.lean` to the smallest value satisfying the linter's `N - 200 ≤ lines < N` window at the file's FINAL line count — or confirm the file stayed below 1500 and that no baseline is owed. An earlier phase's judgement is wrong by construction once later phases have grown the file.
-- [ ] Regenerate the module-inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`, then verify with `--emit-inventory --check`. This is Condition 1's surface (a) and is legitimately deferred to here.
+- [x] Regenerate the module-inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`, then verify with `--emit-inventory --check`. This is Condition 1's surface (a) and is legitimately deferred to here. *(deviation: altered -- executed EARLY, at the close of Phase 3 rather than in Phase 7, because this dispatch ends at Phase 3 `[PARTIAL]` and the new module had turned the `INV` group RED; leaving a gate red from this task's own file was the worse option. The regeneration rewrote FOUR tracked files, two of them absent from this phase's file list -- `FormalSystem/README.md` and `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, the latter declared READ-ONLY by the risk table -- which is exactly the case this phase's Scope Hypothesis instructs be resolved by adding what the regeneration actually touches. The row's hand-written description cell was supplied rather than left at the generator's `<!-- TODO: add description -->` placeholder. `--emit-inventory --check` exits 0.)*
 - [ ] Run `bash scripts/typst-sync-check.sh --fix` one final time and stage `typst/generated/status.typ`.
 - [ ] Run the complete gate set and record each result: the unscoped guarded `lake build`; the test library (`lake build BimodalTest`); `lake exe mk_all --lib FormalSystem --check`; `bash scripts/check-module-invariants.sh`; `bash scripts/typst-sync-check.sh`; `bash scripts/check-metalogic-cycles.sh`; `bash scripts/check-evidence-probes.sh`; `bash scripts/check-copyright-headers.sh`; and `bash .claude/scripts/validate-artifact.sh specs/918_ladder_cell_index_positive_factorization/plans/01_ladder-cell-window-regime.md plan`.
 - [ ] For each gate, distinguish findings that name this task's own touched files from the tree's standing baseline. `check-module-invariants.sh`'s C16 group is already failing on `LadderPump.lean` from a concurrent sibling: enumerate and attribute it with `git log -S`, and do NOT edit that out-of-scope file. A gate whose only failures are pre-existing and outside this task's file scope is a recorded PASS for this phase.
@@ -556,7 +556,7 @@ partial, and the two directions are not bundled into one all-or-nothing step.
 
 ## Phase Verification Notes
 
-### Phase 1 (measured)
+### Verification notes: phase 1 (measured)
 
 - Exact-name sweep: all four names (`kappa_collision_window_room`,
   `window_anchor_compat_of_room`, `window_pin_compat_raise_of_gap`,
@@ -582,7 +582,7 @@ partial, and the two directions are not bundled into one all-or-nothing step.
 - Scope Hypothesis outcome: estimated 120-160 lines, ACTUAL 163 (`wc -l`) — a 3-line overshoot,
   still far below the 1500 `longFile` ceiling, so no baseline is owed at this phase.
 
-### Phase 2 (measured) -- GATE VERDICT: PASS
+### Verification notes: phase 2 (measured) -- GATE VERDICT: PASS
 
 **Clause inventory, read off `exists_ladderPath_of_walk_nxt_at`'s signature**
 (`LadderChain.lean:657`), not from memory: `hw`, `hidle`, `hpp`, `hpi`, `hpins`, `hn0`.
@@ -631,3 +631,88 @@ not. This is recorded in the module docstring at the lemma itself.
   classification lemma, the two distance-growth lemmas, the region-start arithmetic and the
   slack lemma, all of which Phase 3 consumes rather than re-deriving. Still far below the 1500
   `longFile` ceiling, so no baseline is owed.
+
+### Verification notes: phase 3 (measured) -- PARTIAL
+
+**What landed, green and committed** (`3686ab01e`, zero errors, zero warnings, no `sorry`, standard
+axiom profile):
+
+- `region_run_of_region_start` -- the translation between the landed
+  `exists_region_start_of_idle_past`'s quantifier-over-positions maximality clause and the
+  quantifier-over-backward-distances form `cntAt_add_of_pend_back` is indexed by.
+- `exists_idleBlock_of_hasIdleRunBelow` -- the named idle-run condition spent, once, on the
+  EXISTENCE of a type-respecting idle block, through `exists_idleTypeBlock_of_budget_le_run`.
+- `window_composite_pin_trichotomy` -- the composite walk's pin classification, which is exactly
+  Phase 2's gate hypothesis `hclass` discharged. Three classes: a pin strictly below the region
+  start carried unchanged, the region start displaced by `E` with its countdown raised by `l`, and
+  a pin at or above `z` displaced by `E + l` with its countdown unmoved.
+- `window_composite_pins` -- the pin PAIR clause for the composite, nine pin-class pairs, eight
+  closing on `pinCompat_of_ladderPath` and a rigid displacement and the ninth spending the
+  compensator through `l <= E`.
+- `exists_window_composite_ladderPath` -- the RAISING primitive's admissibility half at ONE block
+  length: the composite walk lifted to a ladder path with the countdown raised by `l` at the
+  displaced comparison position and the register held at the ORIGINAL path's `nxtAt g z`. Lifted
+  twice -- anchor-free (`exists_ladderPath_of_walk_of_pins`) to put the trichotomy on a genuine
+  ladder path, then through the `z`-anchored lift at the PRESCRIBED register value.
+
+**What does NOT yet land, stated precisely rather than as "more work"** -- three items, in
+dependency order:
+
+1. **The iteration to an exact multiple of `P + 1`.** `exists_window_composite_ladderPath` raises
+   by one block length `l`. `(K1)` puts `l` among the divisors of `P + 1`
+   (`typeBlock_length_dvd_of_paramsOk`), so `m * q * l = m * (P + 1)` is reachable, but only
+   through an ITERATE, and the landed iterate
+   `exists_iterSpliced_ladderPath_idx_of_pend_past` carries `hpast` -- the pending-forever
+   hypothesis this regime denies -- in two places: inside its per-step
+   `exists_spliced_ladderPath_of_pend_past`, and in the `hpend_all` step of its own anchor-clause
+   proof. A window-regime analogue is owed.
+2. **The model-level half (the realized type carried through both splices).**
+   `tpOf_eq_spliceIdx_of_tpOf_eq` for the pending stage and
+   `exists_iterIdleSpliced_ladderPath`'s own type clause for the idle stage; the idle stage's
+   clause is exposed only strictly BELOW the block, so the type at the comparison position needs
+   the shift form of `tpOf_stabFree_eq_of_objAt_eq`.
+3. **The LOWERING primitive.** Untouched. Its pin pair clause is
+   `window_pin_compat_lower_of_spacing` against `regionStart_spacing`, both landed in Phase 2.
+
+**The iterable reformulation, worked out and recorded so the next dispatch does not re-derive
+it.** The landed trichotomy and pin clause are stated RELATIVE TO the original path `g` (via the
+hypotheses `hbelow`/`habove`, "`g1` is `g` displaced by `E`"), which is what the base case
+supplies but is NOT preserved by a second splice -- after one splice the path is `g` displaced by
+`E` AND raised by `l`, which is not a pure displacement. The self-contained, ITERABLE form states
+every clause about `g1` alone and carries a decreasing budget `R`:
+
+- the trichotomy's hypotheses reduce to `0 < l`, `a1 < u`, `pend (objAt g1 a1) = false`,
+  `pend` on all of `(a1, u + l]`, and `u <= a1 + 1 + cntAt g1 (a1 + 1)` -- with NO reference to
+  `g` and no idle-run hypothesis at all, since a pin at or above `a1` is forced to BE `a1` by the
+  pending stretch;
+- the classes become `w + 1 < a1` / `w = a1` / `u <= w`, all pins of `g1`, with countdowns
+  `cntAt g1 (w + 1)` / `cntAt g1 (a1 + 1) + l` / `cntAt g1 (w + 1)`;
+- the pin pair clause needs ONE extra invariant, used only at the (class 1, class 2) pair:
+  `|cntAt g1 (a1 + 1) - cntAt g1 (w + 1)| + R <= a1 - w` for every pin `w < a1`, with `l <= R`.
+  The step consumes exactly `l` from `R`, so the invariant reproduces itself;
+- the anchor clause becomes its own invariant -- `|cntAt g1 (v + 1) - nxtAt g z| <= |v - z1|` at
+  every pin of `g1` -- preserved at class 1 and class 3 directly, and at class 2 from the
+  companion budget invariant `cntAt g1 (a1 + 1) + R <= nxtAt g z + (z - a)`, which the step also
+  reproduces exactly because the countdown rises by `l` as `R` falls by `l`. That companion
+  invariant is where the collision's ROOM is spent, once, in the base case.
+
+**A landed sibling route, found during this phase and deliberately not taken.**
+`LadderAgree.lean`'s `exists_ladderPath_at_region_of_idle_past` ("THE INTERFACE, IN THE IDLE-PAST
+REGIME") already lands a STATE-LEVEL raise in this very regime, compensating by INSERTING idle
+positions at the region start (`insObj`/`insCnt`, `insPins_of_region_start`) rather than by
+duplicating an existing idle block. It is not the plan's Phase 3 primitive and does not subsume
+it: it holds neither the register (it eliminates the anchor obligation through
+`exists_ladderPath_of_walk_of_pins` instead, so it cannot serve a cell inclusion, which reads
+`nxtAt` at the comparison position) nor the realized type, it raises by one cycle length rather
+than a multiple of `P + 1`, and it carries `hself`, a path-local self-loop at the idle object
+states, which the idle-block route does not need. The plan's route was followed as written; the
+sibling is recorded here because it corroborates Phase 2's PASS verdict from an independent
+construction, and because its own docstring records that the UNCOMPENSATED splice is REFUTED in
+this regime -- which is why the compensator is not optional and why `l <= E` is a payment rather
+than a convenience.
+
+- Phase-end FULL guarded `lake build`: green, 0 errors, 0 warnings.
+- `bash scripts/typst-sync-check.sh --fix` then `--counts-only`: `MISMATCH_COUNT=0`.
+- Scope Hypothesis outcome: estimated +220 lines for the two primitives; ACTUAL +276 for the
+  raising primitive's admissibility half alone (406 -> 682 `wc -l`), with the lowering primitive
+  and the type half not landed. Still below the 1500 `longFile` ceiling, so no baseline is owed.
