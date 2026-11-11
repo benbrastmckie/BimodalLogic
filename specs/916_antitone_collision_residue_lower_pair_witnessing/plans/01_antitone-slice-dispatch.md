@@ -351,16 +351,22 @@ which elaborates the single module this phase edits with no externally visible s
 
 ---
 
-### Phase 2: Expose the Raise-Bought Forward Slack [NOT STARTED]
+### Phase 2: Expose the Raise-Bought Forward Slack [COMPLETED]
 
 **Goal**: `exists_ladderPath_through_shifted_slack_of_pend_past` compiles in
 `LadderChain.lean`'s existing `section AssemblyFin`, returning the regime-A raise's four landed
 clauses PLUS `HasForwardSlack g' z (L + m · (P + 1)) (nxtAt g z)`.
 
 **Tasks**:
-- [ ] Add the theorem immediately after `exists_ladderPath_through_shifted_of_pend_past` in
+- [x] Add the theorem immediately after `exists_ladderPath_through_shifted_of_pend_past` in
       `section AssemblyFin`, at the signature pinned below. Leave the landed assembly's signature
-      and body untouched.
+      and body untouched. *(deviation: altered — the pinned SIGNATURE is landed verbatim, but the
+      pinned PLACEMENT is impossible: `HasForwardSlack` is defined at `LadderChain.lean:1218` in
+      `section DelNxt` and `hasForwardSlack_raise` at `:1347` in `section Slack`, both BELOW
+      `section AssemblyFin` (844-1066), so a declaration whose conclusion mentions either cannot
+      sit in `AssemblyFin`. Landed at the end of `section Slack` instead, with the placement
+      reason recorded in its own docstring. The landed assembly's signature and body are
+      untouched, as required.)*
 - [ ] Build the body as the landed assembly's spine with exactly two changes: call
       `exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_past` (the `_idx_` variant, which
       RETURNS `habove`) in place of the non-`_idx_` wrapper, and assemble the raise's slack from

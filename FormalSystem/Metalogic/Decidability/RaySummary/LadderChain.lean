@@ -1427,6 +1427,91 @@ theorem hasForwardSlack_of_idle_above (g : ℤ → LadderState Q pend) (z : ℤ)
   intro I _ _ hnext
   exact absurd ((hidle_all I).symm.trans hnext) Bool.false_ne_true
 
+/-- **THE REGIME-A ASSEMBLY WITH THE RAISE-BOUGHT FORWARD SLACK EXPOSED.** The landed
+`exists_ladderPath_through_shifted_of_pend_past` with ONE clause added: the raised path carries
+the regime at `L + m · (P + 1)` whenever the original carries it at `L`. Its four landed clauses
+are returned unchanged, so this is a strict strengthening and a pure sibling — the landed
+assembly's signature and body are untouched.
+
+**The one clause the landed assembly discards, and where.** The raise's inner call is
+`exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_past`, which returns the countdown ABOVE
+the run of copies (`habove`); the non-`_idx_` wrapper
+`exists_ladderPath_through_iterSpliced_nxt_of_pend_past` drops it with a `-` pattern, and the
+landed assembly calls that wrapper. The discarded clause is exactly the second half of
+`hasForwardSlack_raise`'s `habove` input, so the raise-bought slack is not reachable from the
+landed signature at all, by any reading of its conclusion. This theorem calls the `_idx_` variant
+directly and assembles the slack from it; nothing else in the spine changes.
+
+**The accounting.** A raise by `d` copies of an `l`-block increases the regime's amount by exactly
+`d · l` — see `hasForwardSlack_raise_of_zero`'s own docstring for why, and `hasForwardSlack_raise`
+for the statement. Here `d := m · q` with `q · l = P + 1`, so the amount gained is `m · (P + 1)`.
+At `L = 0` the hypothesis costs nothing: `hasForwardSlack_zero` supplies
+`HasForwardSlack g z 0 (nxtAt g z)` for every ladder path, which is why
+`hasForwardSlack_raise_of_zero` needs no regime hypothesis either.
+
+**Placement.** This belongs with `exists_ladderPath_through_shifted_of_pend_past` in
+`section AssemblyFin` and cannot sit there: `HasForwardSlack` and `hasForwardSlack_raise` are
+both introduced below that section, so a declaration mentioning either must follow them. It is
+therefore stated here, at the end of the forward-slack section whose vocabulary its added clause
+uses. -/
+theorem exists_ladderPath_through_shifted_slack_of_pend_past
+    {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ)
+    (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
+    (hTc : Tc ≤ cntAt g z) (m : ℕ) (L : ℕ)
+    (hslack : HasForwardSlack g z L (nxtAt g z)) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' z = objAt g z ∧ cntAt g' z = cntAt g z + m * (P + 1) ∧
+      nxtAt g' z = nxtAt g z ∧
+      HasForwardSlack g' z (L + m * (P + 1)) (nxtAt g z) ∧
+      ∀ (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+        (∀ t : ℤ, σ.state t = (t, g t)) →
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+  classical
+  have hz : pend (objAt g z) = true := hpast z le_rfl
+  have hbud := budget_le_Tc step pend lab φ Tc Tn P B hp
+  -- a history of the original, and the type-respecting block of `z`'s region
+  obtain ⟨σ₀, hσ₀⟩ := exists_hist_of_isLadderPath fwd bwd g hg
+  have hσ₀' : ∀ t : ℤ, σ₀.state t = (t + 0, g t) := fun t => by rw [add_zero]; exact hσ₀ t
+  obtain ⟨u, l, hl, hlb, hzu, hcl, hul, hrep, hty⟩ :=
+    exists_typeBlock_of_budget_le_cnt_within step pend fwd bwd lab φ σ₀ hg z hz (by omega)
+  have hul' : u + (l : ℤ) ≤ z + (cntAt g z : ℤ) := by omega
+  have hpast_u : ∀ p : ℤ, p ≤ u → pend (objAt g p) = true := fun p hp' => by
+    rcases le_or_gt p z with hpz | hpz
+    · exact hpast p hpz
+    · have := (cntAt_sub_of_pend g hg z hz (p - z).toNat (by omega)).1
+      rwa [show z + (((p - z).toNat : ℕ) : ℤ) = p by omega] at this
+  have hpu : pend (objAt g u) = true := hpast_u u le_rfl
+  obtain ⟨q, hq⟩ := typeBlock_length_dvd_of_paramsOk step pend fwd bwd lab φ hp σ₀ hσ₀' hg hno
+    u l hl hlb hpu hcl hrep hty
+  have hdl : (m * q) * l = m * (P + 1) := by rw [hq]; ring
+  -- the given-block raise through the INDEX variant, which returns the countdown above the run
+  obtain ⟨g', hg', hobj', hcz', hnxt', habove', hty'⟩ :=
+    exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_past step pend fwd bwd lab φ hno hg z
+      hl hcl hzu hul' hpast_u hrep σ₀ hσ₀ hty (m * q)
+  -- the walk AND the countdown above the run: the pair `hasForwardSlack_raise` consumes
+  have hobj_above : ∀ v : ℤ, u + ((m * q + 1) * l : ℕ) ≤ v →
+      objAt g' v = objAt g (v - (m * q * l : ℕ)) ∧
+      cntAt g' v = cntAt g (v - (m * q * l : ℕ)) :=
+    fun v hv => ⟨by rw [hobj' v, iterSpliceIdx_of_ge u l _ v hv], habove' v hv⟩
+  refine ⟨g', hg', ?_, by rw [hcz', hdl], hnxt', ?_, fun σ σ' hσ hσ' => ?_⟩
+  · rw [hobj' z, iterSpliceIdx_of_lt u l _ z (by omega)]
+  · rw [← hdl]
+    exact hasForwardSlack_raise g hg z hul' hslack g' hg' hcz' hobj_above
+  · have e3 : tpOf (ladderModel step pend fwd bwd lab) φ σ₀ z
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ z :=
+      tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ₀ σ
+        hσ₀' (fun t => by rw [add_zero]; exact hσ t) (fun _ => rfl) hno z
+    rw [hty' σ' hσ' z, iterSpliceIdx_of_lt u l _ z (by omega), e3]
+
 end Slack
 
 /-! ## The two-state witness: the forward-slack regime is necessary and inhabited
