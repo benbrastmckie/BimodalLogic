@@ -1,7 +1,7 @@
 # Implementation Plan: Generalize the ZTime Decision Procedure to Finite Premises
 
 - **Task**: 830 - Generalize `Compression.decidableValidZTime` from the empty-premise case to arbitrary finite premises
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/830_generalize_decidable_validztime_finite_premises/reports/01_generalize-finite-premise-decidability.md`, `specs/830_generalize_decidable_validztime_finite_premises/reports/01_verified-general-form.lean`
@@ -134,33 +134,33 @@ a time. The wave table records dependency structure, not an execution licence.
 
 ---
 
-### Phase 1: Generalize the enumeration in `Enumerate.lean` [NOT STARTED]
+### Phase 1: Generalize the enumeration in `Enumerate.lean` [COMPLETED]
 
 **Goal**: Residue item 3. Introduce the computable context-indexed enumeration universe and the
 five context-indexed enumeration declarations, and re-express the existing `φ`-indexed names as
 thin wrappers with their signatures unchanged.
 
 **Tasks**:
-- [ ] Capture the pre-task gate baseline for later delta comparisons: run
+- [x] Capture the pre-task gate baseline for later delta comparisons: run
       `bash scripts/check-module-invariants.sh` and record its findings verbatim in the phase
       notes before making any edit. This baseline is what every later "no regression" criterion
       is measured against.
-- [ ] Add `closureList (S : Context) : List Formula := S.flatMap Formula.subformulas` and
+- [x] Add `closureList (S : Context) : List Formula := S.flatMap Formula.subformulas` and
       `mem_closureList : ψ ∈ closureList S ↔ ψ ∈ closureOf S`, transcribed from the probe
       (lines 59-63).
-- [ ] Add the context-indexed declarations, transcribed from the probe with the probe's `C`
+- [x] Add the context-indexed declarations, transcribed from the probe with the probe's `C`
       suffix renamed to `Ctx` throughout: `closureSubsetsOfCtx`, `closureSubsetsOfCtx_sub`,
       `mem_closureSubsetsOfCtx`, `rawLabelledLassosCtx`, `mem_rawLabelledLassosCtx`,
       `length_of_mem_rawLabelledLassosCtx`, `IsLabelledLassoCtx`, `instDecIsLabelledLassoCtx`,
       `boundedLassosCtx`, `mem_boundedLassosCtx`, `boundedLassosCtx_sound`, `candsCtx`,
       `mem_candsCtx_of_bounded`.
-- [ ] Re-express the five existing `φ`-indexed definitions as wrappers over the `Ctx` forms,
+- [x] Re-express the five existing `φ`-indexed definitions as wrappers over the `Ctx` forms,
       leaving each signature character-for-character unchanged:
       `closureSubsetsOf φ := closureSubsetsOfCtx [] [φ]`, and likewise for `rawLabelledLassos`,
       `IsLabelledLasso`, `boundedLassos`, `cands`; re-derive `mem_cands_of_bounded` from
       `mem_candsCtx_of_bounded` rather than keeping its current proof body.
-- [ ] Confirm no declaration added or edited in this phase carries the `noncomputable` modifier.
-- [ ] Run `lake build && bash scripts/typst-sync-check.sh --fix`, stage
+- [x] Confirm no declaration added or edited in this phase carries the `noncomputable` modifier.
+- [x] Run `lake build && bash scripts/typst-sync-check.sh --fix`, stage
       `typst/generated/status.typ` with the edited `.lean` file, and commit the two together.
 
 **Timing**: 1.5 hours

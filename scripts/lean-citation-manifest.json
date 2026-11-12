@@ -804,20 +804,20 @@
       "field": null,
       "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Enumerate.lean",
       "group": "Compression: the A1 candidate",
-      "keyword_line": 245,
+      "keyword_line": 354,
       "name": "FormalSystem.Metalogic.Decidability.cands",
-      "span_end": 250,
-      "span_start": 238,
+      "span_end": 356,
+      "span_start": 350,
       "status": "resolved"
     },
     {
       "field": null,
       "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Enumerate.lean",
       "group": "Compression: the A1 candidate",
-      "keyword_line": 258,
+      "keyword_line": 358,
       "name": "FormalSystem.Metalogic.Decidability.mem_cands_of_bounded",
-      "span_end": 279,
-      "span_start": 251,
+      "span_end": 369,
+      "span_start": 357,
       "status": "resolved"
     },
     {
