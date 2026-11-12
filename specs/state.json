@@ -1149,15 +1149,22 @@
     {
       "project_number": 832,
       "project_name": "reclaim_opencode_old_and_data_partials",
-      "status": "researching",
+      "status": "researched",
       "task_type": "general",
       "topic": "repo-hygiene",
       "description": "Two local-disk reclamations found by the 2026-11-02 review. Both are LOCAL-DISK ONLY: every path below is gitignored with zero tracked files, so nothing here produces a commit and nothing is recoverable from git afterwards. That asymmetry is the whole reason item 2 is a user decision rather than an action.\n\nSTANDING INSTRUCTION -- RE-VERIFY BEFORE DELETING. Re-check sizes, mtimes and `git ls-files` for each path before removing anything. Never delete on the strength of this description alone.\n\nITEM 1 -- `.opencode_OLD/`: SAFE TO DELETE (62 MB). Verified at filing: gitignored at `.gitignore:105`, zero tracked files; mtime 2026-05-07 against `.opencode/`'s 2026-05-14; `diff -rq .opencode .opencode_OLD` shows 38 entries differing, mostly `node_modules` plus a `python` extension present in the live `.opencode/` and absent here. It is strictly a stale subset of the live tree. Confirm the subset relation once more (`diff -rq`), then delete. No commit follows.\n\nITEM 2 -- `data/`: USER DECISION, NOT AN AUTOMATIC DELETE (2.3 GB total). Verified at filing: gitignored at `.gitignore:107`, zero tracked files. Composition: `proof_steps.jsonl` 1.6 GB, plus two abandoned checkpoints, `bmlogic-c8-clean.jsonl.partial` (375 MB) and `.checkpoint.partial` (15 MB).\n  - The two `.partial` files (390 MB combined) are the unambiguous candidates -- abandoned checkpoints of an interrupted run.\n  - `proof_steps.jsonl` is NOT a safe unilateral delete: it feeds the training-dataset pipeline consumed by the separate BimodalHarness repository (private, per `README.md`'s Related Projects section). Removing it may destroy a dataset that is not reproducible without re-running the generator. ASK before touching it; do not treat its size as justification.\n\nNOT IN SCOPE -- the rest of the top-level directories were audited and are each intentional or harmless, so do not sweep them: `Boneyard/` (5.4 MB, 225 TRACKED files, intentional and justified by `Boneyard/README.md`, ADR-009 retention and ADR-005 single-archive; `#exit`-guarded, not a Lake root -- DO NOT DELETE), `research/` (`.gitignore:90`), `training/` (:91), `other/` (:109, single `dana.md`), `build/` (:3, stray LaTeX aux output), `.memory/` (:76), `.agent-logs/` (:108), `.playwright-mcp/` (:118), `.opencode/` (:75, the LIVE tree).\n\nALSO NOT IN SCOPE -- documentation staleness. `CHANGELOG.md` is roughly six weeks stale (last touched 2026-09-21 against a 2026-11-02 last commit) and `FormalSystem/Metalogic/README.md` cites `completeness_discrete`, a name that no longer exists (renamed to the ZTime form; the README admits the discrepancy in prose). Both fold into the already-filed documentation-polish record (177), which is last in the programme. Do NOT fix them here and do not file them separately.\n\nACCEPTANCE. `.opencode_OLD/` removed after a confirming `diff -rq`; a recorded decision on the two `data/*.partial` files; `proof_steps.jsonl` untouched unless the user says otherwise. No commit is expected from this task -- if `git status` shows anything staged after it, something outside scope was touched.\n\nFILE SCOPE: `.opencode_OLD/`, `data/` (inspection and the two `.partial` files only).\n\nPROVENANCE: `specs/reviews/review-2026-11-02.md`, Low Priority Issues section.",
       "dependencies": [],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/832_reclaim_opencode_old_and_data_partials/reports/01_reclaim-opencode-old-data-partials.md",
+          "type": "report",
+          "summary": "Verifies and deletes .opencode_OLD/ (62 MB) as a confirmed strict subset of live .opencode/; inspects data/ and recommends, but does not delete, the two abandoned bmlogic-c8-clean partial-checkpoint files (390 MB); leaves proof_steps.jsonl untouched."
+        }
+      ],
       "created": "2026-11-02T17:36:58Z",
-      "last_updated": "2026-11-12T17:19:48Z",
-      "session_id": "sess_1794503933_59a2b4_832"
+      "last_updated": "2026-11-12T17:44:50Z",
+      "session_id": "sess_1794503933_59a2b4",
+      "next_artifact_number": 2
     },
     {
       "title": "Record the one-sided transport refutation in the RaySummary refutation table",

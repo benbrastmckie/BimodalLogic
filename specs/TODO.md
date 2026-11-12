@@ -88,7 +88,7 @@ next_project_number: 926
 817 [RESEARCHED] — Wrap the remaining count-carrying inventory tables under...
 818 [RESEARCHED] — Wrap the four directory-rollup inventory tables that need the...
 821 [PLANNED] — Reconcile specs/state.json's next\_project\_number against...
-832 [RESEARCHING] — Two local-disk reclamations found by the 2026-11-02 review....
+832 [RESEARCHED] — Two local-disk reclamations found by the 2026-11-02 review....
 
 ### Semantics
 
@@ -304,10 +304,11 @@ NAMING CONSTRAINT, which has already cost one round elsewhere: gate C26 and C16'
 ---
 
 ### 832. Reclaim opencode old and data partials
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
+- **Research**: [832_reclaim_opencode_old_and_data_partials/reports/01_reclaim-opencode-old-data-partials.md]
 
 **Description**: Two local-disk reclamations found by the 2026-11-02 review. Both are LOCAL-DISK ONLY: every path below is gitignored with zero tracked files, so nothing here produces a commit and nothing is recoverable from git afterwards. That asymmetry is the whole reason item 2 is a user decision rather than an action.
 
