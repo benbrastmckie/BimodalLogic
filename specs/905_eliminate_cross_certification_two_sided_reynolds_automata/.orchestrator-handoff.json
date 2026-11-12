@@ -1,15 +1,15 @@
 {
   "status": "partial",
-  "dispatch_seq": 12,
-  "summary": "Dispatch mission constrained this run to implement phase 3 only. Landed 'Lemma 8.2 (the chronicle seed; derived)' beside Lemma 8.1 in section 8 of specs/901's paper-proof report, with a four-link proof citing stab_t (Axioms.lean:288), K1, Lemma 2.4, and Lemma 2.2. Replaced Finding 14.4's Step 3 with Step 3', a six-step bootstrap that certifies the real past- and future-types via two rounds of clause (b) alone, deleting both clause-(a) reads and the cross-certification sentence. validate-artifact.sh stays [PASS] with 0 warnings; the post-edit grep for 'clause (a)' returns exactly one hit, owned by Phase 4. Phases 4-5 remain.",
-  "phases_completed": 3,
+  "dispatch_seq": 14,
+  "summary": "Dispatch mission constrained this run to implement phase 4 only. Applied the (D2) repair to specs/901's paper-proof report: Claim 1+'s consequent restated as the conditional bad-word conjunction over certified past-types (the clause-(b)-only Viol+'s actual delivery), its proof's clause-(a)/(b) case split removed, Claim 1-'s mirror spelled out, and Claim 2+'s proof re-pointed to Lemma 7.3's conditional form (consumption point S2). The forward trace to Lemma 7+ was read end to end and confirmed unaffected. validate-artifact.sh stays [PASS] with 0 warnings; the post-edit grep for 'clause (a)' now returns zero hits across the whole report. Phase 5 (close the ledger, run the full gate set) remains.",
+  "phases_completed": 4,
   "phases_total": 5,
   "blockers": [],
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-3-handoff-20261112T031051Z.md",
-      "summary": "Phase 3 completion handoff with current state, key decisions, and the next action (Phase 4)."
+      "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-4-handoff-20261112T034500Z.md",
+      "summary": "Phase 4 completion handoff with current state, key decisions, and the next action (Phase 5)."
     }
   ]
 }
