@@ -1,10 +1,41 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "dispatch_seq": 12,
+  "partial_progress": {
+    "stage": "phase_mission_single_phase_scope",
+    "details": "Dispatch mission constrained this run to Phase 3 only ('Implement phase 3 only. Do not continue past this phase.'). Phase 3 (land Lemma 2 in section 8 and replace Step 3 with Step 3') completed and verified green: validate-artifact.sh exits 0 [PASS] with 0 warnings (matching the Phase 1 baseline); grep -n 'clause (a)' now returns exactly one hit, inside Claim 1+'s proof, which is Phase 4's territory; the diff touches only section 8 (new Lemma 8.2 beside Lemma 8.1) and Finding 14.4 (Step 3 replaced by Step 3'). Phases 4-5 remain for a subsequent dispatch.",
+    "handoff_path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-3-handoff-20261112T031051Z.md",
+    "phases_completed": 3,
+    "phases_total": 5
+  },
+  "artifacts": [
+    {
+      "type": "handoff",
+      "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-3-handoff-20261112T031051Z.md",
+      "summary": "Phase 3 completion handoff: Lemma 8.2 (the chronicle seed) landed beside Lemma 8.1 in section 8 of specs/901's paper-proof report, with its four-link proof citing stab_t (Axioms.lean:288), K1, Lemma 2.4, and Lemma 2.2; Finding 14.4's Step 3 replaced by Step 3', a four-link bootstrap using only clause (b) of each automaton; both clause-(a) reads and the cross-certification sentence deleted and replaced with a purity statement and a structural-comparison remark; verified green, no deviations beyond one wording self-correction; next action is Phase 4."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Added 'Lemma 8.2 (the chronicle seed; derived)' to section 8 of specs/901's paper-proof report, beside Lemma 8.1, with a four-link proof (fcl(phi+) containment of FutLits/PastLits via the a_i inside theta_f, h's decidedness, stab_t's contrapositive, K1's consistency) closed by Lemma 2.2's colour-decidedness step, plus a remark on what the lemma does and does not use. Replaced Finding 14.4's Step 3 with Step 3', a six-step bootstrap that certifies the real past- and future-types via two rounds of clause (b) alone (no clause (a)), and replaced the deleted cross-certification sentence with a purity-based circularity explanation and a structural-comparison remark. validate-artifact.sh stays [PASS] with 0 warnings; the post-edit grep for 'clause (a)' returns exactly the one hit owned by Phase 4."
+  },
+  "modified_files": [
+    "specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a plan's verification criterion is a literal-substring grep count (e.g. 'grep -n X returns exactly N hits') and the edit adds commentary prose alongside the structural change, check that new prose for accidental re-introductions of the forbidden substring in a different grammatical register (e.g. past-tense narration like 'X dropped from both' still contains the literal substring X). A post-edit re-grep immediately after drafting, before marking the phase green, catches this cheaply.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-3-handoff-20261112T031051Z.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["grep-verification", "plan-verification-criteria", "literal-substring-check", "prose-editing", "phase-closure"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1794448865_9a2e5c",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 3,
+    "phases_total": 5
   }
 }

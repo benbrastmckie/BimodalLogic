@@ -2622,9 +2622,9 @@
           "summary": "5-phase plan (4.0h) amending task 901's paper-proof report to the clause-(a)-eliminated design, with the (D1) and (D2) defect repairs and the (Q3) ledger closure."
         },
         {
-          "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-2-handoff-20261112T025454Z.md",
+          "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-3-handoff-20261112T031051Z.md",
           "type": "handoff",
-          "summary": "Phase 2 completion handoff with current state, key decisions, and the Phase 3 next action."
+          "summary": "Phase 3 completion handoff with current state, key decisions, and the next action (Phase 4)."
         }
       ],
       "audit_verdict": {
