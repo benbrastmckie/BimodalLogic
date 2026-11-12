@@ -21,28 +21,50 @@
       "category": "TECHNIQUE",
       "source_artifact": "specs/821_state_counter_archive_numbering_reconciliation/summaries/01_counter-archive-numbering-reconciliation-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["state-write.sh", "allocate-into", "dry-run", "jq", "allocator probe"]
+      "suggested_keywords": [
+        "state-write.sh",
+        "allocate-into",
+        "dry-run",
+        "jq",
+        "allocator probe"
+      ]
     },
     {
       "content": "The counter-vs-archive numbering invariant in this agent system is MEMBERSHIP-based (smallest unused number across active+archive, excluding specs/vault/**), not MAX-based. An archive project_number sitting above next_project_number is an expected, correct steady state -- not a sign the counter 'lost track of' a range. Raising next_project_number past an archive maximum to 'fix' this is the wrong repair: it strands the dense free range below it. Documented in agent-system/extensions/core/context/reference/state-management-schema.md's '### Archive Numbers Above next_project_number' subsection.",
       "category": "INSIGHT",
       "source_artifact": "specs/821_state_counter_archive_numbering_reconciliation/summaries/01_counter-archive-numbering-reconciliation-summary.md",
       "confidence": 0.9,
-      "suggested_keywords": ["next_project_number", "Check 12", "allocation bound", "membership-based", "project-number-inuse"]
+      "suggested_keywords": [
+        "next_project_number",
+        "Check 12",
+        "allocation bound",
+        "membership-based",
+        "project-number-inuse"
+      ]
     },
     {
       "content": "Git hazard in a shared source-store repository with concurrent writers: 'git add -- <explicit files>' followed by a BARE 'git commit -m \"...\"' (no pathspec on the commit itself) commits the WHOLE index, not just the files just added -- it silently sweeps in any OTHER already-staged content left by a different, possibly-still-active writer. Confirmed by observing a foreign partially-staged file (status 'MM') get fully committed alongside intentional files. Safer pattern in a shared tree: pass the same explicit file list to 'git commit -- <files>' too, or diff --staged against the intended list immediately before committing.",
       "category": "PATTERN",
       "source_artifact": "specs/821_state_counter_archive_numbering_reconciliation/summaries/01_counter-archive-numbering-reconciliation-summary.md",
       "confidence": 0.8,
-      "suggested_keywords": ["git commit", "shared working tree", "staging hazard", "source-store", "concurrency"]
+      "suggested_keywords": [
+        "git commit",
+        "shared working tree",
+        "staging hazard",
+        "source-store",
+        "concurrency"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1794503933_59a2b4",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 4,
     "phases_total": 4
   }

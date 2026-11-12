@@ -13,7 +13,7 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,829,830,831,832,873,890 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876 | 298,428,502,743,761,873 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -87,7 +87,6 @@ next_project_number: 926
 743 [PLANNED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
 817 [PLANNED] — Wrap the remaining count-carrying inventory tables under...
 818 [PLANNED] — Wrap the four directory-rollup inventory tables that need the...
-821 [IMPLEMENTING] — Reconcile specs/state.json's next\_project\_number against...
 832 [PLANNING] — Two local-disk reclamations found by the 2026-11-02 review....
 
 ### Semantics
@@ -440,12 +439,13 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, High Priority Issues and Mediu
 
 ### 821. State counter archive numbering reconciliation
 - **Effort**: low
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Parent**: Task 819
 - **Plan**: [821_state_counter_archive_numbering_reconciliation/plans/01_counter-archive-numbering-reconciliation.md]
+- **Summary**: [821_state_counter_archive_numbering_reconciliation/summaries/01_counter-archive-numbering-reconciliation-summary.md]
 
 **Description**: Reconcile specs/state.json's next_project_number against the five archived rows carrying stray high numbers, so that validate-state.sh --deep Check 12 passes and state-write.sh --allocate-into stops refusing.
 
