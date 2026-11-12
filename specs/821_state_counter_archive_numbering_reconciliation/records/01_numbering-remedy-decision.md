@@ -108,15 +108,37 @@ edit made under this task's implementing plan lands in `agent-system/extensions/
 
 ## AFTER Reading
 
-Captured by this plan's final phase, immediately before task completion:
+Captured in this plan's final phase, after the source-store edits were committed and this
+repository's deployed `.claude/` tree was redeployed:
 
-- `bash .claude/scripts/validate-state.sh --deep specs/state.json` AFTER exit code: 0
-- Check 12 line: `[PASS] Check 12: next_project_number (926) names a free number`
-- Overall tally: 19 passed / 19 warnings / 0 failed
-- `bash .claude/scripts/verify-deploy.sh` complete gate set: scoped discharge per this dispatch's
-  Batch Gate Deferral directive — see the implementing plan's Phase 4 verification notes for the
-  scoped invocation actually run and its result.
+- `bash .claude/scripts/validate-state.sh --deep specs/state.json` AFTER exit code: **0**
+  (identical to the BEFORE exit code — no regression).
+- Check 12 line: `[PASS] Check 12: next_project_number (926) names a free number` (identical to
+  BEFORE).
+- Overall tally: 19 passed / 19 warnings / 0 failed (identical to BEFORE — no check regressed).
+- `timeout 540 bash .claude/scripts/deploy-headless.sh`: `RESULT=landed_verify_clean`, with its
+  own bundled `verify-deploy.sh` run (deploy-consumer gates only, `--skip-slow`) reporting
+  `[verify-deploy] PASS -- 15 check(s), 0 failure(s)`.
+- **Batch Gate Deferral, scoped discharge**: this dispatch's own Batch Gate Deferral directive
+  asks for a narrowing invocation (`run-all.sh --only SUITE[,...]` or `verify-deploy.sh
+  --only-gate N[,...]`) covering the files this phase touched, in place of independently running
+  the complete gate set. Neither narrowing form reaches this task's actual edits from this
+  repository: `verify-deploy.sh`'s source-store-only gates (3, 4, 6, 7, 12, and others) `[SKIP]`
+  unconditionally in a deploy-consumer repository that lacks its own `agent-system/extensions`
+  tree — confirmed directly in the `deploy-headless.sh` output above, which shows exactly that
+  skip reason on every such gate. The substantive scoped check for this task's edited files
+  (`state-write.sh`, `state-management-schema.md`, `index-entries.json`) is therefore the
+  six-suite `run-all.sh --only test-context-reachability.sh,test-deploy-orphans.sh,test-index-entries-schema.sh,test-install-uninstall-extension.sh,test-manifest-scripts-sync.sh,test-orchestrate-build-dispatch.sh`
+  subset already run from the source-store repository root in Phase 3 (6 passed, 0 failed) — the
+  UNMAPPABLE CRITERION path, since the two narrowing forms, run from this repository, cannot
+  express it. The complete gate set itself still runs once, for the whole batch, at the end of
+  this `/orchestrate` invocation, per the directive.
 - `specs/state.json`'s `next_project_number` confirmed unchanged across the whole task: 926 at
   both BEFORE and AFTER.
-- `specs/archive/state.json` confirmed byte-unchanged across the whole task (no archived row
-  touched).
+- `specs/archive/state.json` confirmed byte-unchanged across the whole task (`git diff --stat --
+  specs/archive/` reports no change; no archived row touched).
+- Deployed copies of both edited source-store files confirmed byte-identical to their
+  source-store originals (`diff` exits 0 for both `state-write.sh` and
+  `state-management-schema.md`).
+- `commands/task.md`'s Step 1 `jq -r '.next_project_number'` read, flowing into Step 6's write,
+  confirmed present and unmodified.

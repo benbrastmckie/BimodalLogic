@@ -292,29 +292,38 @@ exactly this path pair).
 
 ---
 
-### Phase 4: Redeploy, Discharge the Full Gate, and Report Both Exit Codes [NOT STARTED]
+### Phase 4: Redeploy, Discharge the Full Gate, and Report Both Exit Codes [COMPLETED]
 
 **Goal**: Propagate the source-store edits into this repository's deployed tree, run the complete
 gate set, and close the record with the AFTER `validate-state.sh --deep` reading beside the BEFORE
 reading Phase 1 captured.
 
 **Tasks**:
-- [ ] Commit the source-store edits in the source-store repository with an explicit file list
-      (never a directory or glob pathspec).
-- [ ] Redeploy this repository's `.claude/` tree: `timeout 540 bash .claude/scripts/deploy-headless.sh`,
+- [x] Commit the source-store edits in the source-store repository with an explicit file list
+      (never a directory or glob pathspec). *(deviation: altered — see progress file deviations;
+      a bare `git commit` swept in one unrelated pre-staged foreign hunk alongside the explicit
+      file list added via `git add --`. Logged and reported, not reverted)*
+- [x] Redeploy this repository's `.claude/` tree: `timeout 540 bash .claude/scripts/deploy-headless.sh`,
       invoked with the Bash tool's `timeout` parameter raised to 600000. The deployed tree is
       already flagged stale for the `core` extension before this task's own edits, so this
-      redeploy discharges both.
-- [ ] Confirm the regeneration reconciled `index-entries.json`'s `line_count` for the edited
+      redeploy discharges both. *(completed: RESULT=landed_verify_clean)*
+- [x] Confirm the regeneration reconciled `index-entries.json`'s `line_count` for the edited
       schema file, and that the deployed copies of both edited source-store files are
-      byte-identical to their sources.
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Report the result in
+      byte-identical to their sources. *(completed: `diff` exits 0 for both files)*
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Report the result in
       full; if a failure predates this task's edits, show that by name rather than asserting it.
-- [ ] Run `bash .claude/scripts/validate-state.sh --deep specs/state.json` as the AFTER reading.
+      *(deviation: altered — scoped discharge per this dispatch's Batch Gate Deferral directive;
+      see decision record's AFTER Reading section and progress file deviations for the full
+      reasoning)*
+- [x] Run `bash .claude/scripts/validate-state.sh --deep specs/state.json` as the AFTER reading.
       Report the BEFORE exit code (from Phase 1) and the AFTER exit code together, and confirm
-      Check 12 still passes and no other check regressed between the two readings.
-- [ ] Confirm `next_project_number` is unchanged by this task — this record writes no counter
+      Check 12 still passes and no other check regressed between the two readings. *(completed:
+      AFTER exit 0, identical to BEFORE; Check 12 PASS; 19 passed / 19 warnings / 0 failed, no
+      regression)*
+- [x] Confirm `next_project_number` is unchanged by this task — this record writes no counter
       value — and that `commands/task.md` Step 6's fallback route is still present and unmodified.
+      *(completed: 926 unchanged; Step 1's jq read, flowing into Step 6's write, confirmed
+      unmodified)*
 
 **Timing**: 1 hour
 
@@ -341,17 +350,20 @@ reading Phase 1 captured.
 
 ## Testing & Validation
 
-- [ ] `validate-state.sh --deep specs/state.json` run BEFORE (Phase 1) and AFTER (Phase 4), both
-      exit codes reported together.
-- [ ] `state-write.sh --allocate-into --dry-run` probe confirms the allocator derives a dense
-      number and does not refuse.
-- [ ] `bash -n` parse of the edited `state-write.sh`.
-- [ ] Six-suite `run-all.sh --only` subset for the schema/index pair, from the source-store
-      repository root.
-- [ ] `bash .claude/scripts/verify-deploy.sh` complete gate set.
-- [ ] `commands/task.md` Step 6 fallback route confirmed present and unmodified at both ends of
-      the task.
-- [ ] `specs/archive/state.json` confirmed byte-unchanged — no archived row is touched.
+- [x] `validate-state.sh --deep specs/state.json` run BEFORE (Phase 1) and AFTER (Phase 4), both
+      exit codes reported together. *(completed: BEFORE exit 0, AFTER exit 0, no regression)*
+- [x] `state-write.sh --allocate-into --dry-run` probe confirms the allocator derives a dense
+      number and does not refuse. *(completed: derives 926; the only refusal observed is the
+      unrelated audit-evidence gate, exit 5)*
+- [x] `bash -n` parse of the edited `state-write.sh`. *(completed: exits 0)*
+- [x] Six-suite `run-all.sh --only` subset for the schema/index pair, from the source-store
+      repository root. *(completed: 6 passed, 0 failed)*
+- [x] `bash .claude/scripts/verify-deploy.sh` complete gate set. *(deviation: altered — scoped
+      per Batch Gate Deferral; see decision record AFTER Reading)*
+- [x] `commands/task.md` Step 6 fallback route confirmed present and unmodified at both ends of
+      the task. *(completed)*
+- [x] `specs/archive/state.json` confirmed byte-unchanged — no archived row is touched.
+      *(completed: `git diff --stat -- specs/archive/` reports no change)*
 
 ## Artifacts & Outputs
 
