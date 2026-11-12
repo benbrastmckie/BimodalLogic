@@ -402,20 +402,20 @@ together with the two generated-surface checks below.
 
 ---
 
-### Phase 4: Full-gate verification [NOT STARTED]
+### Phase 4: Full-gate verification [COMPLETED]
 
 **Goal**: The whole repository is green with all three changes in place.
 
 **Tasks**:
 
-- [ ] Run the full guarded build, detached as a shell-level background job and blocked on with
+- [x] Run the full guarded build, detached as a shell-level background job and blocked on with
       the bounded single-call idiom (`context/patterns/bounded-build-waiter.md`): a hard timeout,
       writer liveness via `kill -0` on the captured PID, one waiter per log.
-- [ ] Run the repository's complete gate set, in the order CI runs it (see below), capturing each
+- [x] Run the repository's complete gate set, in the order CI runs it (see below), capturing each
       exit code.
-- [ ] For any red gate, enumerate its findings and separate those naming a file this task touched
+- [x] For any red gate, enumerate its findings and separate those naming a file this task touched
       from the tree's standing baseline. Only the former is this task's to fix.
-- [ ] Record the measured build-time delta for `EmbedComplete.lean` against the risk table's
+- [x] Record the measured build-time delta for `EmbedComplete.lean` against the risk table's
       build-cost entry.
 
 **Timing**: 1 hour
@@ -450,16 +450,46 @@ failures are pre-existing and outside this task's file scope is a recorded PASS 
 with the pre-existing findings enumerated and the evidence that each touched file passes
 individually.
 
+**Measured result (dispatch 14).** This dispatch carried a Batch Gate Deferral directive. Neither
+narrowing invocation it names can express this phase's criteria -- `.claude/scripts/tests/run-all.sh`
+covers the agent system's own shell suites and this task touches no `.claude/**` path, and
+`verify-deploy.sh` the plan already rules inapplicable for the same reason -- so the UNMAPPABLE
+CRITERION clause applies and each named check was run directly instead. The complete set still runs
+once for the whole batch at the end of the invocation.
+
+| Gate | Exit | Verdict |
+|------|------|---------|
+| `lake build` (full, guarded) | 0 | PASS -- 2975 jobs, zero `error:` lines, `.olean` newer than source for both touched modules |
+| `check-evidence-probes.sh` | 1 | PASS (baseline delta) -- the new probe reports PASS; the one failure is `specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean`, archived into the gitignored `specs/archive/` by commit `cf3e481fb` |
+| `check-module-invariants.sh --no-build` | 0 | PASS |
+| `check-copyright-headers.sh --strict` | 0 | PASS |
+| `readme-lint.sh` | 0 | PASS |
+| `check-metalogic-cycles.sh` | 0 | PASS -- no new upward import, Assertion B's allowlist needs no extension (confirmed, not assumed) |
+| `typst-sync-check.sh` (full) | 0 | PASS |
+| `check-paper-definitions.sh` | 1 | PASS (baseline delta) -- 9 definitions drifted against the out-of-repo LaTeX source; names no file this task touched |
+| `lake exe mk_all --lib FormalSystem --check` | 0 | PASS -- "No update necessary" (confirmed, not assumed) |
+| `lake exe lint-style` | 1 | PASS (baseline delta) -- 4 space-before-semicolon errors, all in `FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean`, whose last change precedes this task's first commit; zero findings name either touched file |
+
+**Build-cost delta.** `EmbedComplete.lean` builds in 5.9s without the `FullLabelRegression` block
+and 7.0s with it: +1.1s, roughly 19%, measured by a temporary removal and restore with a
+byte-for-byte restore check. The risk table's build-cost entry is discharged -- these are the
+cheapest fixpoints in the subtree, as it predicted.
+
+**Zero-debt census.** `sorry_count: 0` over all resolved source roots. No `axiom` line added (the
+tree's standing count of 14 is unchanged). The one vacuous-pattern grep hit,
+`FormalSystem/Examples/TemporalStructures.lean`'s `int_domain_universal`, predates this task and is
+a genuine proof rather than a placeholder.
+
 ## Testing & Validation
 
-- [ ] The three new theorems carry no `sorry`: `lean_verify` (or `#print axioms` run ad hoc
+- [x] The three new theorems carry no `sorry`: `lean_verify` (or `#print axioms` run ad hoc
       outside the library) reports `[propext, Classical.choice, Quot.sound]` for each.
-- [ ] `Stable.lean`, `Check.lean`, `Position.lean`'s `posAt`/`AgreesOnState` definitions and
+- [x] `Stable.lean`, `Check.lean`, `Position.lean`'s `posAt`/`AgreesOnState` definitions and
       `Fixture.lean` are unchanged apart from Phase 3's docstring addition:
       `git diff --stat` over the task's commits names no other declaration.
-- [ ] `scripts/check-evidence-probes.sh` lists the new probe and compiles it.
-- [ ] `git status --short` is clean of unstaged generated-surface drift at the end of each phase.
-- [ ] No commit stages a file in a concurrent sibling task's declared `file_scope`.
+- [x] `scripts/check-evidence-probes.sh` lists the new probe and compiles it.
+- [x] `git status --short` is clean of unstaged generated-surface drift at the end of each phase.
+- [x] No commit stages a file in a concurrent sibling task's declared `file_scope`.
 
 ## Artifacts & Outputs
 
