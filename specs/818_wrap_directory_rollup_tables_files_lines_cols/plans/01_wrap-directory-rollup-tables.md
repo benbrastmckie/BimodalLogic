@@ -277,28 +277,28 @@ regeneration delta in either file and is a correction, not a loss. Confirm with 
 
 ---
 
-### Phase 3: Record the Kamp blocking finding and run the full gate [NOT STARTED]
+### Phase 3: Record the Kamp blocking finding and run the full gate [COMPLETED]
 
 **Goal**: The two unwrapped Kamp rollup tables are recorded as a deliberate, reasoned exclusion
 rather than an oversight, and the complete gate set is observed green over both wrapped files.
 
 **Tasks**:
-- [ ] Confirm both `FormalSystem/Metalogic/Expressiveness/Kamp/README.md` and
+- [x] Confirm both `FormalSystem/Metalogic/Expressiveness/Kamp/README.md` and
       `FormalSystem/Metalogic/Expressiveness/Kamp/NfMultiAnchorBridge/README.md` are unmodified
-      by this task (`git diff` against the task's base commit shows nothing for either path).
-- [ ] Write the task summary at
+      by this task (`git diff` against the task's base commit shows nothing for either path). *(completed: `git diff 9e617b50c..HEAD` empty for both paths)*
+- [x] Write the task summary at
       `specs/818_wrap_directory_rollup_tables_files_lines_cols/summaries/01_wrap-directory-rollup-tables-summary.md`,
       recording: the two files wrapped and their verified outcomes; the two files deliberately not
       wrapped, with the `loose modules` aggregate-row reason and the `rows=subdirs` silent-drop /
       `rows=both` 49-and-33-row-explosion evidence; the explicit decision not to register either as
       hand-maintained and why that would turn the gate red; and the follow-up candidates (a generator
       option summing loose files into one aggregate row; `Kamp/README.md`'s missing
-      `EANegationFixFaithful/` subdirectory and stale counts).
-- [ ] Run `bash .claude/scripts/verify-deploy.sh` and confirm green, or record any pre-existing
-      failure as pre-existing by checking it against the task's base commit.
-- [ ] Run `bash scripts/readme-lint.sh FormalSystem` and confirm no new broken reference or
-      missing-README finding is attributable to this task's two files.
-- [ ] Commit the summary, staging only the summary path.
+      `EANegationFixFaithful/` subdirectory and stale counts). *(completed)*
+- [x] Run `bash .claude/scripts/verify-deploy.sh` and confirm green, or record any pre-existing
+      failure as pre-existing by checking it against the task's base commit. *(deviation: altered — per this dispatch's Batch Gate Deferral directive, the full `verify-deploy.sh` gate was deferred to the once-per-batch run at the end of this `/orchestrate` invocation rather than run independently here; neither `run-all.sh --only SUITE` nor `verify-deploy.sh --only-gate N` maps to this edit class, so the two checks that actually cover it — `check-module-invariants.sh --emit-inventory --check` and `readme-lint.sh` — were run directly instead, per the directive's UNMAPPABLE CRITERION path, and both are green)*
+- [x] Run `bash scripts/readme-lint.sh FormalSystem` and confirm no new broken reference or
+      missing-README finding is attributable to this task's two files. *(completed: overall RESULT: PASS, 0 broken file references; neither wrapped file appears in the STALE/MISSING DATE findings)*
+- [x] Commit the summary, staging only the summary path. *(completed)*
 
 **Timing**: 1 hour
 
