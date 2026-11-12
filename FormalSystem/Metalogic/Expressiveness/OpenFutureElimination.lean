@@ -33,7 +33,15 @@ modal does so in mirror image:
   decidability resp. completeness of open-future-language validity back to the corresponding L⁺
   fact, which it takes as an explicit hypothesis. What is proved is the reduction itself — that
   the open-language statement follows *given* its L⁺ antecedent. Not one of those antecedents is
-  discharged here or anywhere else in this tree; see `## What is NOT proved here`.
+  discharged here or anywhere else in this tree; see `## What is NOT proved here`;
+* the **type product** `pastType`, `futType`, `typePair`, `typePair_image_stabClass`,
+  `typePair_image_stabClass_state_congr`, `typePair_image_stabClass_of_sepClauses`: over a finite
+  list of past-determined and a finite list of future-determined formulas, the set of
+  (past-type, future-type) pairs realized across a stability cluster `⟨τ⟩_t` is the *full product*
+  of the realized past-types and the realized future-types, and that set depends only on
+  `τ.state t`. This is the formula-level image of the history-level geometry `OpenClasses.lean`
+  records, and it is the state-level datum a forward/backward Auxiliary-Atoms initialization at a
+  clock cut would read; no such automaton is constructed here or anywhere in this tree.
 
 Regularity enters through `paste` and nowhere else; it is taken exactly on the declarations whose
 proofs glue a past onto a future.
@@ -140,6 +148,12 @@ appear.
 * `openComplete_of_plusComplete_in` — given a validity-transferring translation and completeness of
   an L⁺ relation, completeness for the open language through that translation
 * `openValid_of_plusSound` — the soundness mirror, free from the same `iff`
+* `pastType`, `futType`, `typePair` — the past-type, the future-type and the type-pair of a world
+  history at a time over a finite list of L⁺ formulas
+* `typePair_image_stabClass`, `typePair_image_stabClass_state_congr`,
+  `typePair_image_stabClass_of_sepClauses` — on a regular frame the realized type set across a
+  stability cluster is the full product of its two factors, it depends only on the world state at
+  the cut, and a `SepClauses` list supplies both determinedness hypotheses
 
 ## References
 
@@ -341,6 +355,125 @@ theorem opastP_sepForm_iff [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F)
       PlusTruthAt M τ t (((PlusFormula.stab c.1).or c.2).and (opastElim L))
     rw [opastP_and, PlusTruth.and_iff, opastP_or_iff M τ t hc.1 hc.2,
       opastP_sepForm_iff M τ t L hL']
+
+/-! ## The stability cluster's type set is a product -/
+
+/-- The **past-type** of `σ` at `t` over the list `A`: the members of `A` true at `(σ, t)`.
+
+`Set`-valued rather than `Bool`- or `Finset`-valued on purpose: either of those needs
+`Decidable (PlusTruthAt M σ t φ)`, whose only general inhabitant is classical and would force
+`noncomputable` — the vacuity shape this module's docstring records as deliberately rejected. -/
+def pastType (M : TaskModel F) (A : List PlusFormula) (σ : WorldHistory F) (t : F.Duration) :
+    Set PlusFormula :=
+  {φ | φ ∈ A ∧ PlusTruthAt M σ t φ}
+
+/-- The **future-type** of `σ` at `t` over the list `B`: the members of `B` true at `(σ, t)`. The
+same `Set`-valued choice as `pastType`, for the same reason. -/
+def futType (M : TaskModel F) (B : List PlusFormula) (σ : WorldHistory F) (t : F.Duration) :
+    Set PlusFormula :=
+  {ψ | ψ ∈ B ∧ PlusTruthAt M σ t ψ}
+
+/-- The **type-pair** of `σ` at `t`: its past-type over `A` paired with its future-type over `B`.
+The two lists are indexed independently — nothing here pairs the `i`-th past formula with the
+`i`-th future one, which is why the primary shape takes two separate lists and the clause-pair
+form `typePair_image_stabClass_of_sepClauses` is derived from it. -/
+def typePair (M : TaskModel F) (A B : List PlusFormula) (σ : WorldHistory F) (t : F.Duration) :
+    Set PlusFormula × Set PlusFormula :=
+  (pastType M A σ t, futType M B σ t)
+
+/-- **The stability cluster's type set is a full product.** On a regular frame, for `A`
+pointwise past-determined and `B` pointwise future-determined, the set of (past-type, future-type)
+pairs realized by the world histories through `τ.state t` at `t` is exactly the product of the set
+of realized past-types with the set of realized future-types.
+
+The `⊆` direction is immediate. The `⊇` direction is where regularity is consumed: given a past
+witness `ρ` and a future witness `σ`, both in `⟨τ⟩_t` and hence agreeing with each other at `t`,
+the glued history `paste ρ σ t` lies in `⟨τ⟩_t` as well, and `paste_agreeUpTo` resp.
+`paste_agreeFrom` feed `PastDet` resp. `FutDet` to carry each factor onto the glued history — so
+it realizes the mixed pair.
+
+This is the formula-level image of the history-level geometry `OpenClasses.lean` already records
+in `paste_mem_openFutureClass_inter_openPastClass`, where `⟨τ⟩_t` is exhibited as the product of
+the open pasts and the open futures at `t`. That statement is about the histories; this one is
+about the types they realize.
+
+*Design intent.* Together with `typePair_image_stabClass_state_congr`, which says the same set
+depends only on `τ.state t`, this makes the realized type set a datum of the world state at the
+cut alone — the shape a forward/backward Auxiliary-Atoms initialization at a clock cut would read
+— and `typePair_image_stabClass_of_sepClauses` is the slot a separated clause list, including the
+one `separationOver_ztime` returns, plugs into without reshaping. Neither consumer exists in this
+tree: no automaton is constructed anywhere here, and `separationOver_ztime` is presently consumed
+only through `tr`.
+
+*Both determinedness hypotheses are load-bearing.* Reasoned from the definitions, not
+machine-checked, and no countermodel is exhibited: take `A := [β]` for a `β` that is
+future-determined but not past-determined. Then `pastType M A · t` *is* the future-type function
+on that one formula, so the right-hand side becomes the full square of a single image while the
+left-hand side is confined to its diagonal, and the equality fails as soon as two distinct values
+are realized in `⟨τ⟩_t`.
+
+Paper: — (formalization-native; the manuscript sets the restricted modals aside and states no
+type-product result for the stability clusters) -/
+theorem typePair_image_stabClass [F.IsRegular]
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (A B : List PlusFormula)
+    (hA : ∀ φ ∈ A, PastDet F φ) (hB : ∀ ψ ∈ B, FutDet F ψ) :
+    (fun σ => typePair M A B σ t) '' stabClass τ t
+      = ((fun σ => pastType M A σ t) '' stabClass τ t)
+        ×ˢ ((fun σ => futType M B σ t) '' stabClass τ t) := by
+  ext p
+  constructor
+  · rintro ⟨σ, hσ, rfl⟩
+    exact ⟨⟨σ, hσ, rfl⟩, ⟨σ, hσ, rfl⟩⟩
+  · rintro ⟨⟨ρ, hρ, hp1⟩, ⟨σ, hσ, hp2⟩⟩
+    have hsame : ρ.state t = σ.state t := hρ.symm.trans hσ
+    refine ⟨paste ρ σ t hsame, ?_, ?_⟩
+    · change τ.state t = (paste ρ σ t hsame).state t
+      exact hρ.trans (paste_agreeUpTo ρ σ t hsame t le_rfl).symm
+    · have hup : AgreeUpTo (paste ρ σ t hsame) ρ t := paste_agreeUpTo ρ σ t hsame
+      have hfr : AgreeFrom (paste ρ σ t hsame) σ t := paste_agreeFrom ρ σ t hsame
+      have h1 : pastType M A (paste ρ σ t hsame) t = pastType M A ρ t := by
+        ext φ
+        exact and_congr_right fun hmem => hA φ hmem M _ ρ t hup
+      have h2 : futType M B (paste ρ σ t hsame) t = futType M B σ t := by
+        ext ψ
+        exact and_congr_right fun hmem => hB ψ hmem M _ σ t hfr
+      change (pastType M A (paste ρ σ t hsame) t, futType M B (paste ρ σ t hsame) t) = p
+      rw [h1, h2, show pastType M A ρ t = p.1 from hp1, show futType M B σ t = p.2 from hp2]
+
+/-- The realized type set depends only on the world state at `t`: equal states at `t` give the
+same stability cluster, hence the same realized type-pairs.
+
+Cheap, and kept deliberately: it needs neither `[F.IsRegular]` nor either determinedness
+hypothesis, following from `stabClass`'s definition alone. It is the declaration that says, in so
+many words, that the realized type set is a datum of the state at the cut. -/
+theorem typePair_image_stabClass_state_congr
+    (M : TaskModel F) (τ τ' : WorldHistory F) (t : F.Duration)
+    (A B : List PlusFormula) (h : τ.state t = τ'.state t) :
+    (fun σ => typePair M A B σ t) '' stabClass τ t
+      = (fun σ => typePair M A B σ t) '' stabClass τ' t := by
+  have : stabClass τ t = stabClass τ' t := by
+    ext σ; exact ⟨fun hs => h.symm.trans hs, fun hs => h.trans hs⟩
+  rw [this]
+
+/-- The `SepClauses`-fed form of `typePair_image_stabClass`: a separated clause list `L` supplies
+both pointwise determinedness hypotheses at once, over `L.map Prod.fst` and `L.map Prod.snd`. This
+is the slot a consumer holding a separated conjunctive normal form plugs into with no reshaping. -/
+theorem typePair_image_stabClass_of_sepClauses [F.IsRegular]
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (L : List (PlusFormula × PlusFormula)) (hL : SepClauses F L) :
+    (fun σ => typePair M (L.map Prod.fst) (L.map Prod.snd) σ t) '' stabClass τ t
+      = ((fun σ => pastType M (L.map Prod.fst) σ t) '' stabClass τ t)
+        ×ˢ ((fun σ => futType M (L.map Prod.snd) σ t) '' stabClass τ t) :=
+  typePair_image_stabClass M τ t _ _
+    (by
+      intro φ hφ
+      obtain ⟨c, hc, rfl⟩ := List.mem_map.mp hφ
+      exact (hL c hc).1)
+    (by
+      intro ψ hψ
+      obtain ⟨c, hc, rfl⟩ := List.mem_map.mp hψ
+      exact (hL c hc).2)
 
 /-! ## The translation, conditional on separation -/
 
