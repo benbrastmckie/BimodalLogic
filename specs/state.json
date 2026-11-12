@@ -2295,7 +2295,7 @@
     {
       "project_number": 900,
       "project_name": "linear_ztime_validity_tm_plus_substitution_bridge",
-      "status": "partial",
+      "status": "implementing",
       "task_type": "lean4",
       "title": "Bridge: ZTime-valid L formulas yield TM-plus theorems under PlusFormula substitution",
       "description": "A two-step bridge lemma in FormalSystem/PlusLanguage/Substitution.lean: for an L formula valid at FrameClass.ZTime, every substitution instance substPlus sigma of it is PlusDerivable FrameClass.ZTime [], by completeness_ztime followed by PlusDerivationTree.ofTMSubst; plus the corollary for box-free formulas that a formula valid on every bi-infinite Z-word (the linear fragment) yields TM-plus theorems at every substitution. This is the transposition of Reynolds 2001's use of PLTL completeness inside the CTL* proof (Lemma 7, Claims 1-2, Lemma 17, Lemma 23): the automaton-correctness and fair-scheduling facts are linear validities over Z-words with stab-headed formulas and fresh atoms as sentence letters, derived in TM-plus through this bridge.",
@@ -2320,7 +2320,7 @@
       ],
       "priority": "medium",
       "created": "2026-11-09T09:48:35Z",
-      "last_updated": "2026-11-12T04:20:25Z",
+      "last_updated": "2026-11-12T04:38:09Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -2329,14 +2329,14 @@
           "summary": "Gate-measured siting finding plus fully compiled proof bodies for the ZTime-validity -> TM-plus substitution bridge and its box-free bi-infinite-Z-word corollary."
         },
         {
-          "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
-          "type": "plan",
-          "summary": "4-phase plan: isBoxFree relocation, new Metalogic-root bridge module with five pinned declarations, ledger/generated-surface reconciliation, full gate verification."
-        },
-        {
           "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-3-handoff-20261111-201754.md",
           "type": "handoff",
           "summary": "Phase 3 progressive handoff: the five measured axiom profiles, the three ledger decisions, the two deviations, and the escalated C16 finding Phase 4 must resolve first."
+        },
+        {
+          "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
+          "type": "plan",
+          "summary": "Phase 4 marked [BLOCKED] with a 14-row measured verification table, out-of-scope finding enumeration, scoped-tier discharge note, and the full blocker record."
         }
       ],
       "session_id": "sess_1794448865_9a2e5c",
