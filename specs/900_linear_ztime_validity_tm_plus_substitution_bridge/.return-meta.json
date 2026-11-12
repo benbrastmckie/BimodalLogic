@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 13,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/reports/01_ztime-validity-tm-plus-substitution-bridge.md",
+      "summary": "Gate-measured siting finding plus fully compiled proof bodies for the ZTime-validity -> TM-plus substitution bridge and its box-free bi-infinite-Z-word corollary."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794448865_9a2e5c_900",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
