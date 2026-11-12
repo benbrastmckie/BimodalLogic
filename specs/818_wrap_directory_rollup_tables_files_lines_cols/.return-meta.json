@@ -1,35 +1,30 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/818_wrap_directory_rollup_tables_files_lines_cols/reports/01_wrap-directory-rollup-tables.md",
-      "summary": "Establishes that cols=files-lines (with a hand-rewritten 4-column header) covers Expressiveness/README.md and WeakCanonical/README.md, verified end-to-end on a scratch copy including an INV-FAIL corrupt/restore demonstration; and that it does NOT cover Kamp/README.md or NfMultiAnchorBridge/README.md's aggregated 'loose modules' row shape, which no existing generator option reproduces without silently dropping data or restructuring the table -- reported per NON-GOALS rather than worked around."
+      "type": "plan",
+      "path": "specs/818_wrap_directory_rollup_tables_files_lines_cols/plans/01_wrap-directory-rollup-tables.md",
+      "summary": "3-phase plan wrapping 2 of the 4 scoped READMEs in cols=files-lines generated-inventory blocks, with the 2 Kamp rollup tables recorded as a reasoned exclusion."
     }
   ],
-  "next_steps": "Run /orchestrate 818 to create implementation plan",
   "metadata": {
     "session_id": "sess_1794503933_59a2b4_818",
-    "agent_type": "general-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 5
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 3,
+    "dependency_waves": 3
   },
   "memory_candidates": [
     {
-      "content": "scripts/check-module-invariants.sh's --emit-inventory generator never rewrites a BEGIN GENERATED block's header/separator itself -- render_block() carries the first row-shaped line found inside the block forward verbatim, with no validation against the cols=/desc=/rows= options or against the data rows' cell count. When changing a wrapped table's column set (e.g. cols=lines -> cols=files-lines), the header must be hand-rewritten to the new column count BEFORE the first --emit-inventory run; the generator will not detect or fix a mismatch.",
+      "content": "When converting a hand-maintained markdown table into a generated-inventory block whose column set GROWS (e.g. check-module-invariants.sh cols=lines -> cols=files-lines), every existing data row must be padded to the new cell count BEFORE the first --emit-inventory run. render_block() carries a row's description forward only when len(cells) >= ncols; any short row silently gets '<!-- TODO: add description -->' instead. The failure is total and silent: wrapping a 15-row table without padding regenerates all numbers correctly and destroys all 15 descriptions. The hazard is easy to half-fix, because loose-file rows are the obvious ones to pad and subdirectory rollup rows are the ones usually forgotten.",
       "category": "PATTERN",
-      "source_artifact": "specs/818_wrap_directory_rollup_tables_files_lines_cols/reports/01_wrap-directory-rollup-tables.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["check-module-invariants", "emit-inventory", "cols=files-lines", "render_block", "header rewrite"]
-    },
-    {
-      "content": "scripts/check-module-invariants.sh's inventory generator has no option that reproduces an aggregated single-row summary of all loose files in a directory (e.g. a 'loose modules | 49 | 26,160' row). rows=subdirs silently DROPS such a row with no error or INV FAIL (the 'pinned row' mechanism only preserves rows whose key resolves to an actual file path); rows=both explodes it into one row per loose file instead. Any README using this aggregate-row shape cannot be wrapped without either data loss or a structural table rewrite, and is a genuine generator-coverage gap, not a header/option question.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/818_wrap_directory_rollup_tables_files_lines_cols/reports/01_wrap-directory-rollup-tables.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["check-module-invariants", "emit-inventory", "rows=subdirs", "loose modules aggregate", "silent data loss"]
+      "source_artifact": "specs/818_wrap_directory_rollup_tables_files_lines_cols/plans/01_wrap-directory-rollup-tables.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["generated-inventory", "check-module-invariants", "column-widening", "markdown-table", "silent-data-loss", "emit-inventory"]
     }
   ],
-  "dispatch_seq": 2
+  "next_steps": "Run /orchestrate 818 to execute the plan",
+  "dispatch_seq": 9
 }

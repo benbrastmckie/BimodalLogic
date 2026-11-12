@@ -86,7 +86,7 @@ next_project_number: 926
 
 743 [PLANNED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
 817 [PLANNED] — Wrap the remaining count-carrying inventory tables under...
-818 [PLANNING] — Wrap the four directory-rollup inventory tables that need the...
+818 [PLANNED] — Wrap the four directory-rollup inventory tables that need the...
 821 [IMPLEMENTING] — Reconcile specs/state.json's next\_project\_number against...
 832 [PLANNING] — Two local-disk reclamations found by the 2026-11-02 review....
 
@@ -484,12 +484,13 @@ UNCHANGED BY THIS AMENDMENT: the guardrail that no live task is renumbered under
 ---
 
 ### 818. Wrap directory rollup tables files lines cols
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: markdown
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Parent**: Task 744
 - **Research**: [818_wrap_directory_rollup_tables_files_lines_cols/reports/01_wrap-directory-rollup-tables.md]
+- **Plan**: [818_wrap_directory_rollup_tables_files_lines_cols/plans/01_wrap-directory-rollup-tables.md]
 
 **Description**: Wrap the four directory-rollup inventory tables that need the cols=files-lines column set
 
