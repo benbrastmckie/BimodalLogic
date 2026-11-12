@@ -527,32 +527,40 @@ FAIL  C16  env_linter batch reports new finding(s) beyond scripts/nolints.json's
 
 ---
 
-### Phase 4: Final verification [NOT STARTED]
+### Phase 4: Final verification [BLOCKED]
 
 **Goal**: the repository's complete gate battery is green on every file this task touched, with any
 remaining red finding demonstrably pre-existing and out of scope.
 
 **Tasks**:
 
-- [ ] Run the full guarded project build:
+- [x] Run the full guarded project build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`. Detach as a
       shell-level background job and block on it with the bounded single-call idiom if it does not
       plausibly fit one foreground call.
-- [ ] Run `bash scripts/check-module-invariants.sh` in full (not `--no-build`) and read C6, C14,
+- [x] Run `bash scripts/check-module-invariants.sh` in full (not `--no-build`) and read C6, C14,
       C15, C26, the inventory assertion, and the `FAIL INV` class specifically.
-- [ ] Run `bash scripts/check-metalogic-cycles.sh` and confirm exit 0.
-- [ ] Run `bash scripts/typst-sync-check.sh` in full and confirm Check 2 is green.
-- [ ] Run `bash scripts/check-copyright-headers.sh` over the Lean scope.
-- [ ] Run `bash .claude/scripts/verify-deploy.sh` once, read its findings as a baseline delta
+- [x] Run `bash scripts/check-metalogic-cycles.sh` and confirm exit 0.
+- [x] Run `bash scripts/typst-sync-check.sh` in full and confirm Check 2 is green.
+- [x] Run `bash scripts/check-copyright-headers.sh` over the Lean scope.
+- [x] Run `bash .claude/scripts/verify-deploy.sh` once, read its findings as a baseline delta
       against the pre-task commit rather than as an absolute pass, and record that no path under
       `.claude/**` or an extension source store is in this task's scope — so any finding it reports
       is by construction pre-existing and not this task's to repair.
-- [ ] Re-confirm the two headline axiom profiles by `lean_verify` on the fully qualified names.
-- [ ] Confirm `grep -rn "sorry" FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` returns
+      *(deviation: altered — discharged under this dispatch's batch-gate deferral rather than by an
+      independent full run. `suite_selection_select` over this phase's touched paths returns
+      `__FULL_SWEEP__`, and every `verify-deploy.sh` gate is scoped to `.claude/**`,
+      `agent-system/**`, hook registration, state-writer boundary or shellcheck — none reaches a
+      `FormalSystem/**.lean` path or a `specs/**` plan file, so no `--only-gate N` narrowing
+      covers this phase's touched files at all. The complete set runs once for the whole batch at
+      the end of this invocation and is attributed back by `modified_files`; deferred, not
+      forgiven.)*
+- [x] Re-confirm the two headline axiom profiles by `lean_verify` on the fully qualified names.
+- [x] Confirm `grep -rn "sorry" FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` returns
       nothing, and that no `def X := True`-class vacuous declaration was introduced.
-- [ ] Enumerate, in the phase notes, every gate finding that names a file outside this task's
+- [x] Enumerate, in the phase notes, every gate finding that names a file outside this task's
       touched set, with the evidence that each touched file passes individually.
-- [ ] Commit the phase.
+- [ ] Commit the phase. *(deviation: deferred — the phase is `[BLOCKED]` on the user decision recorded below; its green sub-steps are committed, but no phase-closing commit fires on an ungreen phase-end gate.)*
 
 **Timing**: 1 hour
 
@@ -580,6 +588,98 @@ remaining red finding demonstrably pre-existing and out of scope.
 - Every red finding that remains is named, attributed to a file outside this task's touched set,
   and shown pre-existing against the pre-task commit.
 
+**Verification results (measured, this phase):**
+
+| Criterion | Result |
+|-----------|--------|
+| Full guarded `lake build` | PASS — guard `exit_status=0`; `Build completed successfully (2975 jobs)`; 0 `error:`, 0 `warning`, 0 `uses 'sorry'`. `.olean` for `ZTimeSubstitutionBridge.lean` is newer than its source (20:40 vs 20:39), so the one edited module genuinely re-elaborated |
+| `check-module-invariants.sh` C6 | PASS — `all 0 unreachable live module(s) are manifested`; `all 0 manifested module(s) still compile in isolation` |
+| `check-module-invariants.sh` C14 | PASS — `every pinned declaration matches its axiom baseline`, re-run *after* the `wordOf` amendment; dropping an instance binder moved no axiom profile, so all five pins and all five ledger rows stay honest |
+| `check-module-invariants.sh` C15 | PASS — `all 93 paper-anchor citation(s) resolve`; `all 460 theorem-index row(s) carry their anchor (or Paper: —) at the declaration` |
+| `check-module-invariants.sh` C26 | PASS — zero snake_case `def`/`abbrev` names; all 16 in-source `nolint` attribute pairs are on the allowlist |
+| `check-module-invariants.sh` INV | PASS — `every generated inventory block is current, every hand-maintained one is exhaustive`. The amendment changed a line's content, not any line count, so no inventory or typst surface drifted |
+| `check-module-invariants.sh` C16 | **FAIL** — one finding, inside this task's touched set, not pre-existing. See the blocker record below |
+| `check-module-invariants.sh` overall | exit 1 — exactly one `FAIL`, the C16 above |
+| `check-metalogic-cycles.sh` | PASS, exit 0 — `exactly 1 directory-level import cycle in FormalSystem/Metalogic/`; `upward import set is exactly the recorded 10 line(s)`; `no language-directory syntax module imports a semantics module` |
+| `typst-sync-check.sh` (full) | PASS, exit 0, all 4 checks green. Check 2: `MISMATCH_COUNT=0` |
+| `check-copyright-headers.sh` | PASS, exit 0 — `nonconforming: 0`, `duplicate: 0`, `missing: 0` over 756 files |
+| `lean_verify` headline pair | PASS — `plusDerivable_substPlus_of_validZTime` and `plusDerivable_substPlus_of_boxFree_intTruth` each `[propext, Classical.choice, Quot.sound]`, `trust: standard`, no non-standard axiom, no `sorryAx`. `wordOf` re-measured at `[propext]`, unchanged by the amendment |
+| Sorry inventory | PASS — `lean-sorry-census.sh` over the resolved roots reports `sorry_count: 0` with an empty inventory; `grep -c sorry` on the bridge module is 0 |
+| Vacuity / axiom delta | PASS — 1 single-line vacuous-pattern match and 14 `axiom ` lines, against 2 and 14 at the pre-task commit `47cf2e1eb`; neither increased. The one match is `FormalSystem/Examples/TemporalStructures.lean:495`, a genuinely `trivial`-closable goal outside this task's touched set |
+
+**Out-of-scope findings enumerated (none repaired, all pre-existing):** `check-module-invariants.sh`
+reports `TODO C20` (10 recorded declaration-span mismatches on `scripts/c20-declaration-baseline.txt`,
+144 of 1029 `file.lean:NNN` citations carrying no declaration name), `INFO C20` (39 citations naming
+a constructor/field/binder), and `TODO C16` (230 `env_linter` findings across 15 of 18
+non-`FormalSystem` lakefile roots, not exit-code-affecting, `ENFORCE_C16_ROOTS=0`). None names a file
+in this task's touched set; all are soft/`TODO` classes that do not affect the exit code. The one
+exit-code-affecting `FAIL` is the C16 finding below, which is this task's own.
+
+**Scoped-tier discharge (batch gate deferral).** This dispatch's directive constrains this phase.
+`suite_selection_select` over this phase's touched paths returns `__FULL_SWEEP__`, and no
+`verify-deploy.sh` gate number reaches a `FormalSystem/**.lean` path, so neither narrowing
+invocation can express this phase's criteria — the UNMAPPABLE CRITERION route applies. Every named
+repository-specific check was therefore run directly and in full: the guarded `lake build`,
+`check-module-invariants.sh`, `check-metalogic-cycles.sh`, `typst-sync-check.sh` and
+`check-copyright-headers.sh`. Only the `verify-deploy.sh` item is deferred to the batch stage, and
+it reaches none of this phase's touched files by construction.
+
+#### BLOCKER (Phase 4): the authorized C16 route relocated the finding instead of clearing it
+
+**What failed.** The cycle-10 user-authorized route — amend the `## Lean Challenge Statements` block
+and `wordOf`'s declaration together, dropping the unused `[F.IsRegular]` instance binder — was
+applied in one change, exactly as recorded. It did not clear the C16 `FAIL`. The finding moved:
+
+```
+FAIL  C16  env_linter batch reports new finding(s) beyond scripts/nolints.json's grandfathered baseline
+  -- Found 1 error in 18945 declarations (plus 28901 automatically generated ones)
+  FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean:96:1: error:
+    @FormalSystem.Metalogic.truthAt_iff_intTruth_of_boxFree 1 unused argument:
+      argument 2: [F.IsRegular]
+```
+
+**Why it moved — the route's recorded rationale was factually wrong.** The escalation record in
+Phase 3 argued the route was consumer-safe because "`[F.IsRegular]` is load-bearing on
+`truthAt_iff_intTruth_of_boxFree` and every consumer already carries it, so no consumer's statement
+changes". Measured, the opposite holds: `truthAt_iff_intTruth_of_boxFree`'s binder was load-bearing
+*only as a conduit* — its sole consumption was supplying `wordOf`'s instance argument at the one
+call site `wordOf M τ` (line 105). Its own induction on `φ` never touches regularity. Removing
+`wordOf`'s binder therefore stripped the theorem's binder of its only use, and the linter now
+reports the theorem rather than the definition. One red in, one red out.
+
+**What was tried.** Nothing beyond the authorized route itself — deliberately. No second pinned
+Challenge statement was amended, and no speculative source mutation was made to probe the cascade.
+
+**Why it is stuck.** `truthAt_iff_intTruth_of_boxFree`'s signature is a second statement pinned
+verbatim under `## Lean Challenge Statements`, and `rules/plan-compliance.md`'s Statement Fidelity
+routes a pinned-statement amendment to escalation rather than silent substitution. The cycle-10
+answer authorized that amendment for `wordOf` only; it cannot be read as pre-authorizing a
+declaration it explicitly asserted would not need to change. The alternative route remains the one
+Phase 3 already ruled out: an in-source `@[nolint unusedArguments]` plus a
+`scripts/nolint-attribute-allowlist.txt` entry, inadmissible under that allowlist's own ADMISSION
+BAR because the declaration *can* conform.
+
+**What is needed — one edit, with the cascade already bounded by evidence.** Dropping
+`[F.IsRegular]` from `truthAt_iff_intTruth_of_boxFree` (block and declaration together, as before)
+terminates the cascade; it does not continue down the chain. The next consumer,
+`validZTime_of_boxFree_intTruth`, binds its regularity instance *tactic-locally* — `rw
+[validZTime_iff_validInt]; intro F _ M τ t`, where the `_` binds the instance that `ValidInt`'s own
+statement quantifies over — so it carries no declaration-level instance argument the
+`unusedArguments` linter can reach. The module holds no other `IsRegular` binder, and
+`truthAt_iff_intTruth_of_boxFree` has zero references outside its own file, so no external
+statement changes either. The amendment is strictly generalizing, leaves the name, the C14 pin, the
+measured `[propext]` axiom profile and the `docs/theorem-index.md` row untouched, and the
+`isBoxFree` hypothesis — the one hypothesis this module's docstring declares load-bearing — is
+entirely unaffected.
+
+**Prohibited workarounds**: do NOT use `sorry`, `def X := True`, any vacuous placeholder, or a
+`@[nolint]`-plus-allowlist suppression that the ADMISSION BAR forbids.
+
+**State of the tree.** The authorized `wordOf` amendment is landed and committed; it is the correct
+conforming fix for `wordOf` on its own terms and was not reverted, since reverting would discard
+authorized work and re-pose a question the user has already answered. Every other Phase 4 criterion
+is measured green in the table above.
+
 ## Lean Challenge Statements
 
 The identifier set below is exactly the set named under `- **Goals**:` above: `wordOf`,
@@ -591,6 +691,17 @@ Phase 1's relocation**: it imports `Separation.SemanticBridge`, which resolves `
 and continues to resolve it after the relocation (`SemanticBridge` imports `Separation.Defs`). It
 is deliberately *not* the landed module's four-import set, which Phase 2 pins separately and which
 reaches `Separation.Defs` directly.
+
+**Amendment (Phase 4, user-authorized).** `wordOf`'s binder list below drops the `[F.IsRegular]`
+instance binder it was first recorded with. The binder was never consumed by the body, which
+reads only `M.valuation` and `τ.state`, and `FrameOver.toTaskFrame` requires no regularity
+instance; `check-module-invariants.sh`'s C16 `env_linter` assertion reported it as this task's
+only red finding. Dropping it makes the declaration strictly more general and changes no
+consumer, since instance arguments are supplied implicitly at the one call site
+(`wordOf M τ` inside `truthAt_iff_intTruth_of_boxFree`, which keeps its own `[F.IsRegular]`
+because its proof does depend on it). This block and the landed declaration were amended together
+in one change, under the route the user selected in cycle 10, rather than the source being
+silently edited away from the recorded statement.
 
 ```lean
 import FormalSystem.Metalogic.StrongCompleteness
@@ -606,7 +717,7 @@ open FormalSystem.PlusLanguage
 open FormalSystem.ProofSystem (FrameClass)
 open FormalSystem.Metalogic.Expressiveness.Separation
 
-def wordOf {F : FrameOver intOrder} [F.IsRegular] (M : TaskModel F.toTaskFrame)
+def wordOf {F : FrameOver intOrder} (M : TaskModel F.toTaskFrame)
     (τ : WorldHistory F.toTaskFrame) : IntStructure := sorry
 
 theorem truthAt_iff_intTruth_of_boxFree {F : FrameOver intOrder} [F.IsRegular]

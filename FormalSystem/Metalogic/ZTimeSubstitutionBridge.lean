@@ -89,7 +89,7 @@ open FormalSystem.Metalogic.Expressiveness.Separation
 /-- The bi-infinite Z-word read off a model and a world history over the carrier `ℤ`.
 
 Paper: — (formalization-native; the manuscript has no two-sided Z-word reading of a task model) -/
-def wordOf {F : FrameOver intOrder} [F.IsRegular] (M : TaskModel F.toTaskFrame)
+def wordOf {F : FrameOver intOrder} (M : TaskModel F.toTaskFrame)
     (τ : WorldHistory F.toTaskFrame) : IntStructure where
   val a := { t : ℤ | M.valuation (τ.state t) a }
 
