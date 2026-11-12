@@ -2334,9 +2334,9 @@
           "summary": "4-phase plan: isBoxFree relocation, new Metalogic-root bridge module with five pinned declarations, ledger/generated-surface reconciliation, full gate verification."
         },
         {
-          "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-1-handoff-20261111-194800.md",
+          "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-2-handoff-20261111-200025.md",
           "type": "handoff",
-          "summary": "Phase 1 close record: the relocation, the confirmed scope hypothesis, both build verdicts, and the notes for the next dispatch."
+          "summary": "Phase 2 progressive handoff carrying the five measured axiom profiles that Phase 3's ledger rows consume."
         }
       ],
       "session_id": "sess_1794448865_9a2e5c",

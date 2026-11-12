@@ -1102,7 +1102,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 - **Dependencies**: Task 899
 - **Research**: [900_linear_ztime_validity_tm_plus_substitution_bridge/reports/01_ztime-validity-tm-plus-substitution-bridge.md]
 - **Plan**: [900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md]
-- **Handoff**: [900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-1-handoff-20261111-194800.md]
+- **Handoff**: [900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-2-handoff-20261111-200025.md]
 
 **Description**: A two-step bridge lemma in FormalSystem/PlusLanguage/Substitution.lean: for an L formula valid at FrameClass.ZTime, every substitution instance substPlus sigma of it is PlusDerivable FrameClass.ZTime [], by completeness_ztime followed by PlusDerivationTree.ofTMSubst; plus the corollary for box-free formulas that a formula valid on every bi-infinite Z-word (the linear fragment) yields TM-plus theorems at every substitution. This is the transposition of Reynolds 2001's use of PLTL completeness inside the CTL* proof (Lemma 7, Claims 1-2, Lemma 17, Lemma 23): the automaton-correctness and fair-scheduling facts are linear validities over Z-words with stab-headed formulas and fresh atoms as sentence letters, derived in TM-plus through this bridge.
 

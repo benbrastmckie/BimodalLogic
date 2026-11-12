@@ -1,29 +1,25 @@
 {
   "status": "partial",
-  "dispatch_seq": 17,
-  "phases_completed": 1,
-  "phases_total": 4,
-  "summary": "Phase 1 of 4 complete and committed as e5b542fe2: isBoxFree relocated verbatim from Separation/SemanticBridge.lean into Separation/Defs.lean (+11/-11, no signature, arm-order, name or doc-comment change), with the one prose cross-reference in PlusLanguage/Subformulas.lean retargeted. The phase's Scope Hypothesis was confirmed exactly before editing -- one prose cross-reference, one SemanticBridge importer -- so no file-list widening was needed. The in-phase interface-tier build of all three isBoxFree-resolving modules and the phase-end whole-project lake build were both green (2974 jobs, 0 errors, 0 warnings, oleans newer than source for every touched module). This was a hard-mode phase-1-only dispatch, so partial is the mission-correct outcome; phases 2-4 remain [NOT STARTED] and nothing is blocked.",
-  "blockers": [],
+  "phase": "implement",
+  "dispatch_seq": 18,
+  "summary": "Phase 2 of 4 complete and committed (0869c975e): FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean landed with all five pinned declarations, compiling sorry-free at the measured axiom profiles, reachable from both the generated library root and the Metalogic aggregator. All four of this phase's repo gates passed on the first attempt (metalogic-cycles exit 0 with three PASSes, typst-sync exit 0 after the expected --fix, copyright-headers 756/756, library-root exactness 756=756) and the mandatory phase-end full-library build is green at 2975 jobs with zero errors, warnings, and sorries. Phases 3 (ledger and generated-surface reconciliation) and 4 (final verification) remain; this dispatch's mission was phase 2 only.",
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-1-handoff-20261111-194800.md",
-      "summary": "Phase 1 close record: the relocation, the confirmed scope hypothesis, both build verdicts, and the notes for the next dispatch."
-    },
-    {
-      "type": "plan",
-      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
-      "summary": "Phase 1 heading marked [COMPLETED] with all 8 checklist items checked and one inline deviation annotation on the conditional typst item."
+      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-2-handoff-20261111-200025.md",
+      "summary": "Phase 2 progressive handoff carrying the five measured axiom profiles that Phase 3's ledger rows consume."
     }
   ],
+  "phases_completed": 2,
+  "phases_total": 4,
+  "blockers": [],
   "modified_files": [
-    "FormalSystem/Metalogic/Expressiveness/Separation/Defs.lean",
-    "FormalSystem/Metalogic/Expressiveness/Separation/SemanticBridge.lean",
-    "FormalSystem/PlusLanguage/Subformulas.lean",
+    "FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean",
+    "FormalSystem.lean",
+    "FormalSystem/Metalogic.lean",
+    "typst/generated/status.typ",
     "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
     "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/issues.jsonl",
-    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-1-handoff-20261111-194800.md"
-  ],
-  "next_steps": "Re-dispatch for Phase 2: create FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean with its pinned four-import set, which Phase 1 has now made satisfiable by making isBoxFree resolvable from the light Separation.Defs."
+    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-2-handoff-20261111-200025.md"
+  ]
 }
