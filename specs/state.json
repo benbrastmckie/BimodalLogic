@@ -9,7 +9,7 @@
     {
       "project_number": 818,
       "project_name": "wrap_directory_rollup_tables_files_lines_cols",
-      "status": "researching",
+      "status": "researched",
       "task_type": "markdown",
       "description": "Wrap the four directory-rollup inventory tables that need the cols=files-lines column set\n\nMEASURED, do not re-derive. A prior sweep wrapped 23 READMEs under FormalSystem/ in BEGIN GENERATED inventory markers. Four READMEs were demoted from the clean-fit tier to report-only for one shared reason, distinct from every other deferral: their rows are SUBDIRECTORY rollups carrying numeric line totals, and the default cols=lines column set renders a subdirectory row as an em-dash placeholder, so wrapping them as-is would silently destroy the totals.\n\nSCOPE, with the measured totals that must survive:\n- FormalSystem/Metalogic/Expressiveness/README.md -- EFGames/ 11,800, GameTransfer/ 9,507, Kamp/ 77,714, Separation/ 926\n- FormalSystem/Metalogic/WeakCanonical/README.md -- same shape, five subdirectory rows with numeric totals\n- FormalSystem/Metalogic/Expressiveness/Kamp/README.md -- a `| | Files | Lines |` rollup, i.e. cols=files-lines shape with an empty leading header cell\n- FormalSystem/Metalogic/Expressiveness/Kamp/NfMultiAnchorBridge/README.md -- same empty-header-cell rollup shape\n\nTHE WORK IS A HEADER AND OPTION QUESTION, not a row question. Establish against the generator in scripts/check-module-invariants.sh -- by reading its marker option list and exercising it, not from memory -- whether cols=files-lines emits what these four tables need, and what header the wrapped block must carry. A four-column header rewrite is expected for the first two. The two Kamp rollups already carry a files-lines shape but with an empty leading header cell, so confirm whether the generator preserves that cell or requires a named one.\n\nALSO IN SCOPE: the earlier pass recorded that the `(N files)` phrases appearing inside some descriptions would need re-authoring if the column set changes, since a files count would then be a machine-owned column rather than prose. Resolve that duplication deliberately -- either re-author the prose or state why it stays.\n\nVERIFY, do not assume. Confirm on a scratch copy before committing that every numeric total survives and every hand-written description is preserved byte-for-byte (use a key-sorted before/after diff; alphabetical re-ordering and thousands separators are expected regeneration effects). scripts/check-module-invariants.sh split_row is already escape-aware, so an inline pipe in a description must be written \\| to survive. Then demonstrate coverage per newly wrapped block: corrupt one count, confirm INV FAIL names exactly that README, restore via the writer (--emit-inventory, never a pathspec checkout), confirm the diff is empty.\n\nNON-GOALS. No change to the generator algorithm beyond using an option it already supports -- if cols=files-lines turns out not to cover these shapes, REPORT that and stop rather than extending the generator under this task. No Lean source changes. No hand-correction of counts in any table this task does not wrap.",
       "topic": "repo-hygiene",
@@ -22,8 +22,16 @@
         "FormalSystem/Metalogic/Expressiveness/Kamp/NfMultiAnchorBridge/README.md"
       ],
       "created": "2026-10-17T19:27:09Z",
-      "last_updated": "2026-11-12T17:19:32Z",
-      "session_id": "sess_1794503933_59a2b4_818"
+      "last_updated": "2026-11-12T17:44:09Z",
+      "session_id": "sess_1794503933_59a2b4",
+      "artifacts": [
+        {
+          "path": "specs/818_wrap_directory_rollup_tables_files_lines_cols/reports/01_wrap-directory-rollup-tables.md",
+          "type": "report",
+          "summary": "Establishes that cols=files-lines (with a hand-rewritten 4-column header) covers Expressiveness/README.md and WeakCanonical/README.md, verified end-to-end on a scratch copy including an INV-FAIL corrupt/restore demonstration; and that it does NOT cover Kamp/README.md or NfMultiAnchorBridge/README.md's aggregated 'loose modules' row shape, which no existing generator option reproduces without silently dropping data or restructuring the table -- reported per NON-GOALS rather than worked around."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 817,

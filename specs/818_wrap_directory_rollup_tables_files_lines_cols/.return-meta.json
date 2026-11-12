@@ -1,0 +1,35 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/818_wrap_directory_rollup_tables_files_lines_cols/reports/01_wrap-directory-rollup-tables.md",
+      "summary": "Establishes that cols=files-lines (with a hand-rewritten 4-column header) covers Expressiveness/README.md and WeakCanonical/README.md, verified end-to-end on a scratch copy including an INV-FAIL corrupt/restore demonstration; and that it does NOT cover Kamp/README.md or NfMultiAnchorBridge/README.md's aggregated 'loose modules' row shape, which no existing generator option reproduces without silently dropping data or restructuring the table -- reported per NON-GOALS rather than worked around."
+    }
+  ],
+  "next_steps": "Run /orchestrate 818 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1794503933_59a2b4_818",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 5
+  },
+  "memory_candidates": [
+    {
+      "content": "scripts/check-module-invariants.sh's --emit-inventory generator never rewrites a BEGIN GENERATED block's header/separator itself -- render_block() carries the first row-shaped line found inside the block forward verbatim, with no validation against the cols=/desc=/rows= options or against the data rows' cell count. When changing a wrapped table's column set (e.g. cols=lines -> cols=files-lines), the header must be hand-rewritten to the new column count BEFORE the first --emit-inventory run; the generator will not detect or fix a mismatch.",
+      "category": "PATTERN",
+      "source_artifact": "specs/818_wrap_directory_rollup_tables_files_lines_cols/reports/01_wrap-directory-rollup-tables.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["check-module-invariants", "emit-inventory", "cols=files-lines", "render_block", "header rewrite"]
+    },
+    {
+      "content": "scripts/check-module-invariants.sh's inventory generator has no option that reproduces an aggregated single-row summary of all loose files in a directory (e.g. a 'loose modules | 49 | 26,160' row). rows=subdirs silently DROPS such a row with no error or INV FAIL (the 'pinned row' mechanism only preserves rows whose key resolves to an actual file path); rows=both explodes it into one row per loose file instead. Any README using this aggregate-row shape cannot be wrapped without either data loss or a structural table rewrite, and is a genuine generator-coverage gap, not a header/option question.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/818_wrap_directory_rollup_tables_files_lines_cols/reports/01_wrap-directory-rollup-tables.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["check-module-invariants", "emit-inventory", "rows=subdirs", "loose modules aggregate", "silent data loss"]
+    }
+  ],
+  "dispatch_seq": 2
+}
