@@ -439,20 +439,24 @@ add the dated amendment note; and discharge the task's full verification.
       the things that change finite cardinalities, and keep its conclusion — no Lean item is filed
       — unchanged, since removing a disjunct from two violation languages moves neither
       (O1) nor (O3) nor (O4). *(completed)*
-- [ ] Evidence-tier table: replace the "Cross-certification closes the circularity at no
+- [x] Evidence-tier table: replace the "Cross-certification closes the circularity at no
       syntactic cost" row with rows for Theorem 1, the section-8 seed lemma, Step 3', the
       no-seed-needed fact at the consistency site, the unchanged alphabet enlargement, and the
       two defect repairs — each at the *derived* tier — plus the bi-infinite rule-inventory row at
-      *derived* and the cut-and-split row at *recalled*.
-- [ ] Add a dated amendment note to the header block, immediately after the `**Domains**:` line
+      *derived* and the cut-and-split row at *recalled*. *(completed)*
+- [x] Add a dated amendment note to the header block, immediately after the `**Domains**:` line
       and before `## Status vocabulary`, in the house form the sibling records use:
       `**Amended by** specs/905_eliminate_cross_certification_two_sided_reynolds_automata/reports/01_eliminate-cross-certification-clauses.md, 2026-11-11:`
       followed by the substance — both clause (a)s eliminated, the seed lemma added to section 8,
       Step 3 replaced by Step 3', the (D1) and (D2) repairs applied, (Q3) answered, the
-      alphabet-shrink expectation withdrawn as not holding, and no Lean item filed.
-- [ ] Record this dispatch's issues and wins in the issue log as they arise, per the dispatch's
+      alphabet-shrink expectation withdrawn as not holding, and no Lean item filed. *(completed:
+      the substance uses "clause-(a) disjunct", hyphenated, to keep the phase's own
+      `grep -n 'clause (a)'` verification criterion at zero hits)*
+- [x] Record this dispatch's issues and wins in the issue log as they arise, per the dispatch's
       Issue Log section; if nothing arose, attest to that explicitly in the handoff prose rather
-      than recording nothing silently.
+      than recording nothing silently. *(completed: one win recorded for the ledger-reconciliation
+      scope check, one minor issue recorded for a first-draft "clause (a)" wording collision with
+      this phase's own verification criterion, caught and reworded before commit)*
 
 **Timing**: 0.75 hours
 

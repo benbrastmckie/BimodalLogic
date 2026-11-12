@@ -11,11 +11,13 @@
     {"id": 5, "description": "Restate Decision 5 as superseded in form, reinforced in substance", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
     {"id": 6, "description": "Mark Recommendation 5 attempted and answered; strike the alphabet-shrink clause; replace with the honest accounting", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
     {"id": 7, "description": "Amend section 17's cardinality sentence", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
-    {"id": 8, "description": "Replace the evidence-tier table's cross-certification row with the derived/recalled rows", "status": "not_started"},
-    {"id": 9, "description": "Add the dated Amended-by header note", "status": "not_started"},
-    {"id": 10, "description": "Run the per-artifact validate-artifact.sh check and the batch-deferred scoped gate narrowing; record verification notes", "status": "not_started"}
+    {"id": 8, "description": "Replace the evidence-tier table's cross-certification row with the derived/recalled rows", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 9, "description": "Add the dated Amended-by header note", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 10, "description": "Run the per-artifact validate-artifact.sh check and the batch-deferred scoped gate narrowing; record verification notes", "status": "in_progress"}
   ],
-  "current_objective": 8,
-  "approaches_tried": [],
+  "current_objective": 10,
+  "approaches_tried": [
+    {"approach": "first draft of evidence-tier-table/header-amendment prose used the literal 'clause (a)' (space form)", "result": "failed", "reason": "collided with the phase's own grep -n 'clause (a)' = zero-hits verification criterion; fixed by hyphenating to 'clause-(a) disjunct', the same workaround Phase 4 used"}
+  ],
   "handoff_count": 0
 }
