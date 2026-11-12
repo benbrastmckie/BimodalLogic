@@ -484,13 +484,13 @@ must be reported rather than worked around.
 
 ---
 
-### Phase 7: Demonstrate coverage for every new block, run the full gate, and report untouched stale tables [NOT STARTED]
+### Phase 7: Demonstrate coverage for every new block, run the full gate, and report untouched stale tables [COMPLETED]
 
 **Goal**: Each of the seven newly wrapped blocks is shown — not assumed — to be covered by the
 `INV` gate, and the repository's full gate set is green.
 
 **Tasks**:
-- [ ] For each newly wrapped block in turn (Chronicle, Quasimodel, RestrictedMCS, Separation,
+- [x] For each newly wrapped block in turn (Chronicle, Quasimodel, RestrictedMCS, Separation,
       WitnessFamily upper, WitnessFamily lower, BXCanonical): corrupt exactly one numeric cell
       inside the block; run `bash scripts/check-module-invariants.sh --no-build`; confirm the
       output is `FAIL INV` and names exactly that README (and, for `WitnessFamily/README.md`,
@@ -498,23 +498,32 @@ must be reported rather than worked around.
       them one at a time, not together); restore with
       `bash scripts/check-module-invariants.sh --emit-inventory`; confirm `git diff` for that file
       is empty. Never restore with a pathspec checkout — the shared-worktree discipline in this
-      dispatch's Territory block forbids it.
-- [ ] Record the seven corrupt/restore results in the implementation summary as evidence, with
-      the exact cell corrupted and the exact failure line observed for each.
-- [ ] Run the full gate: `bash scripts/check-module-invariants.sh` (no `--no-build`, so its build
+      dispatch's Territory block forbids it. *(completed: all 7 cycles pass, see summary for the
+      per-cell evidence table)*
+- [x] Record the seven corrupt/restore results in the implementation summary as evidence, with
+      the exact cell corrupted and the exact failure line observed for each. *(completed)*
+- [x] Run the full gate: `bash scripts/check-module-invariants.sh` (no `--no-build`, so its build
       pass runs). Because the build may take many minutes, run it detached with a hard timeout
       and poll per `context/patterns/bounded-build-waiter.md` (captured PID, `kill -0` liveness,
-      one waiter per log) rather than a foreground call.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory --check` and confirm it exits
-      0 (no registered block would change a byte).
-- [ ] Report, without fixing, every other count-carrying inventory table under `FormalSystem/`
+      one waiter per log) rather than a foreground call. *(completed: detached run finished with
+      `ALL CHECKS PASSED`, zero `FAIL` lines, `lake build` and `lake build BimodalTest` both
+      exit 0)*
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory --check` and confirm it exits
+      0 (no registered block would change a byte). *(completed: exit 0, `PASS INV`)*
+- [x] Report, without fixing, every other count-carrying inventory table under `FormalSystem/`
       that is still unwrapped or stale — in particular the four column-set-mismatch READMEs
       reserved for their own task and the `Compression/` 2-column tables. Listing them keeps the
-      recurrence visible, per the task's NON-GOALS.
-- [ ] Note in the summary that `.githooks/pre-commit`'s count-freshness gate never fired for this
+      recurrence visible, per the task's NON-GOALS. *(completed, see summary; one finding beyond
+      the dispatch's framing: two additional unwrapped tables not reserved by any known task were
+      found — `Decidability/Verified/Termination/MintBound/README.md` (4-column `Module | Lines
+      | Decls | Role`, a column-set mismatch like the four reserved ones) and
+      `Expressiveness/SeparationZ/README.md` (a clean 3-column table whose 13 rows match the 13
+      live files exactly — trivially wrappable, simply never wrapped, no blocker at all))*
+- [x] Note in the summary that `.githooks/pre-commit`'s count-freshness gate never fired for this
       task, because no phase staged a `.lean` path, and that `typst/generated/status.typ` is
       therefore untouched and uncoupled to this work (verified: `scripts/typst-sync-check.sh`
-      contains no inventory-block logic).
+      contains no inventory-block logic). *(completed: verified no `.lean` path was staged by any
+      phase and `typst/generated/status.typ` carries no diff across this task's 6 phase commits)*
 
 **Timing**: 1.25 hours
 
@@ -539,18 +548,28 @@ must be reported rather than worked around.
 - `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0.
 - `git status --short` shows no modified file outside `specs/` at phase end.
 
+**Batch Gate Deferral discharge note**: this dispatch's Batch Gate Deferral directive asks a
+narrowing invocation (`run-all.sh --only SUITE` or `verify-deploy.sh --only-gate N`) to cover
+this phase's full-tier verification wherever one of those tools can express it. Neither can:
+`check-module-invariants.sh` has no matching suite basename for `--only` and no matching gate
+number for `--only-gate` — it is this repository's own domain-specific Lean/markdown invariant
+gate, unrelated to the `.claude/` deploy/test surface either narrowing tool covers. Per the
+directive's own UNMAPPABLE CRITERION clause, the named check was run directly instead (exactly
+as this phase's own Verification already specifies) and that direct run is the scoped discharge
+recorded here.
+
 ## Testing & Validation
 
-- [ ] All seven blocks carry `<!-- BEGIN GENERATED: inventory ... -->` / `<!-- END GENERATED -->`
+- [x] All seven blocks carry `<!-- BEGIN GENERATED: inventory ... -->` / `<!-- END GENERATED -->`
       markers with the options this plan names.
-- [ ] No `<!-- TODO: add description -->` placeholder exists in any of the six READMEs.
-- [ ] Every surviving hand-written description is byte-identical across its phase's regeneration,
+- [x] No `<!-- TODO: add description -->` placeholder exists in any of the six READMEs.
+- [x] Every surviving hand-written description is byte-identical across its phase's regeneration,
       verified by key-sorted diff, except the three deliberate description changes in Phase 3 and
       the twelve deliberate resyncs in Phase 5.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0.
-- [ ] `bash scripts/check-module-invariants.sh` (full) reports `ALL CHECKS PASSED`.
-- [ ] Each of the seven blocks demonstrably fails `INV` when one of its counts is corrupted.
-- [ ] No `.lean` file was modified or staged by any phase.
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0.
+- [x] `bash scripts/check-module-invariants.sh` (full) reports `ALL CHECKS PASSED`.
+- [x] Each of the seven blocks demonstrably fails `INV` when one of its counts is corrupted.
+- [x] No `.lean` file was modified or staged by any phase.
 
 ## Artifacts & Outputs
 

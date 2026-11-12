@@ -1,0 +1,30 @@
+{
+  "phase": 7,
+  "phase_name": "Demonstrate coverage for every new block, run the full gate, and report untouched stale tables",
+  "started_at": "2026-11-12T01:15:00Z",
+  "last_updated": "2026-11-12T01:45:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Run 7 corrupt/restore cycles (Chronicle, Quasimodel, RestrictedMCS, Separation, WitnessFamily upper, WitnessFamily lower, BXCanonical), each confirming FAIL INV names exactly that README and restores to an empty diff",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 2,
+      "description": "Run the full gate (bash scripts/check-module-invariants.sh, including build pass) detached with bounded PID-liveness polling; confirm ALL CHECKS PASSED",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 3,
+      "description": "Run --emit-inventory --check, confirm exit 0; survey FormalSystem/ for remaining unwrapped/stale tables and report without fixing; confirm no .lean staged and typst/generated/status.typ untouched",
+      "status": "done",
+      "files_touched": []
+    }
+  ],
+  "current_objective": 3,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}
