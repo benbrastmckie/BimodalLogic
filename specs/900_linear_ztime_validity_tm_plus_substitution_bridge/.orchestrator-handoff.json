@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 15,
+  "summary": "Wrote a 4-phase, 4-hour plan for the ZTime-validity -> TM-plus substitution bridge. The plan rejects the task description's named home (FormalSystem/PlusLanguage/Substitution.lean, gate-blocked per research) and sites five declarations in a new module FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean, after relocating isBoxFree down into Separation/Defs.lean. Phases: isBoxFree relocation; module + library-root + typst count surface; C14 pins, theorem-index rows and inventory blocks; full gate battery. The Lean Challenge Statements block was re-compiled this dispatch (five expected sorry warnings, no other diagnostic), and ROADMAP.md was checked to confirm the Reynolds SS7-15 ruling does not bar this task.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
+      "summary": "4-phase plan: isBoxFree relocation, new Metalogic-root bridge module with five pinned declarations, ledger/generated-surface reconciliation, full gate verification."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "skeleton": false,
+  "sorry_inventory": [],
+  "next_action_hint": "Dispatch implement for task 900 against plans/01_ztime-validity-substitution-bridge.md, starting at Phase 1. Note that the plan's harvested file_scope replaces the task's current file_scope entry FormalSystem/PlusLanguage/Substitution.lean, which this plan deliberately leaves untouched."
+}
