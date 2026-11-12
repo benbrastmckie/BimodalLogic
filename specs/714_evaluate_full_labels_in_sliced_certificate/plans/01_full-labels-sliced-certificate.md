@@ -325,16 +325,16 @@ and asserts it is tracked by git.
 
 ---
 
-### Phase 3: Record the refutation at `Position.lean`'s header [NOT STARTED]
+### Phase 3: Record the refutation at `Position.lean`'s header [COMPLETED]
 
 **Goal**: `Position.lean`'s header states, as a positive claim, what the `posAt`
 over-approximation buys -- closing the option-3 line the way the prior round's R2 closed option 2.
 
 **Tasks**:
 
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean`
+- [x] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean`
       immediately before editing.
-- [ ] Add one paragraph to the module docstring, directly after the existing
+- [x] Add one paragraph to the module docstring, directly after the existing
       `## `posAt` over-approximates, and what that costs the tail-stability demands` section,
       under its own heading (the existing section states the COST; this one states the BENEFIT):
       - the multiplicity of labels over one state at one time is the comparison class of
@@ -353,15 +353,15 @@ over-approximation buys -- closing the option-3 line the way the prior round's R
         the three embedded certificates (Phase 1's triple, named), but fails at `Fixture.cert`, so
         it is a property of the embedding and not of the label refinement -- full labels do not
         make junk positions impossible, and the `⊇` superset failure survives them.
-- [ ] Cite the evidence probe by its Phase 2 path as backticked plain text, never as a
+- [x] Cite the evidence probe by its Phase 2 path as backticked plain text, never as a
       `[...](...)` markdown link: C32 requires every relative markdown link inside a live `.lean`
       comment to resolve relative to the citing file, and this one would not.
-- [ ] Confirm the paragraph carries no `file.lean:NNN` citation (C20 gates any that lands outside
+- [x] Confirm the paragraph carries no `file.lean:NNN` citation (C20 gates any that lands outside
       the declaration it names) and no task-number reference (C9 gates these under
       `FormalSystem/`).
-- [ ] Regenerate `bash scripts/typst-sync-check.sh --fix` and
+- [x] Regenerate `bash scripts/typst-sync-check.sh --fix` and
       `bash scripts/check-module-invariants.sh --emit-inventory`.
-- [ ] Stage with an explicit file list and commit.
+- [x] Stage with an explicit file list and commit.
 
 **Timing**: 0.75 hours
 

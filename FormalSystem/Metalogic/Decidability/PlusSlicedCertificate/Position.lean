@@ -83,6 +83,35 @@ the compression theorem's output to avoid the obstruction: the undischargeable p
 determined by `posAt` — by the closure and the slice labelling — and not by any witness family, so
 no strengthening of a family-producing theorem can exclude them.
 
+## And what the over-approximation BUYS: the `⊡` comparison class
+
+The section above states the cost. The benefit is that the over-approximation is not slack to be
+tightened away: the obvious root-level repair — carry FULL labels in the certificate, so that
+`AgreesOnState` becomes equality with `G.slab t w` and the position space at a slice is a
+singleton — is **refuted**, and the two-filter design is what stands.
+
+The multiplicity of labels over one state at one time **is** the comparison class of
+`PlusTruthAt`'s `stab` clause. `⊡` quantifies over the histories sharing the present world state,
+and the frame a certificate presents has carrier `ℤ × Fin G.n`, so that class is exactly the
+labels of the live positions over `w` at `t` — which is what `Check.StabFaithful` reads. Collapsing
+`posAt` to one label per state would therefore restrict the comparison class to models in which
+`⊡φ ↔ φ`: the deterministic collapse named by
+`FormalSystem.PlusLanguage.stab_iff_of_deterministic`.
+
+The measurement is not hypothetical. At both landed `⊡`-carrying non-vacuity witnesses —
+`TotalEdge.certA`, at target `Pp → ⊡Pp`, and `TotalEdge.certB` — two distinct live labels sit over
+one slice state at one time, and under full labels **both have an empty position space**. The slab
+is a state description, not a type; full labels do not shrink the search at these certificates,
+they destroy them.
+
+And the positive result has a limit. `FullLabelRegression.posAtFull` does equal `liveAt` at every
+window time at all three certificates reached by the embedding — that is the regression triple
+`botSnce_posAtFull_eq_liveAt`, `botUntl_posAtFull_eq_liveAt` and `liveFamily_posAtFull_eq_liveAt`
+in `EmbedComplete.lean` — but it fails at `Fixture.cert`. So it is a property of the **embedding**,
+not of the label refinement: full labels do not make junk positions impossible, and the `⊇`
+superset failure of the section above survives them independently. The full measurement is the
+evidence probe `specs/evidence/stability-modal-substrate/full-labels-collapse-stab.lean`.
+
 ## Main definitions
 
 - `PlusSlicedCertificate.Pos` — the position type, with `Fintype` and `DecidableEq`
