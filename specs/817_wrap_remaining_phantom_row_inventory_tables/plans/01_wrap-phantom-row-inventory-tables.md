@@ -1,7 +1,7 @@
 # Implementation Plan: Task #817
 
 - **Task**: 817 - Wrap the remaining count-carrying inventory tables under FormalSystem/ whose blockers are phantom or missing rows
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: None (parent task 744 completed; sibling task 818 owns a disjoint README set)
 - **Research Inputs**: specs/817_wrap_remaining_phantom_row_inventory_tables/reports/01_wrap-remaining-phantom-row-tables.md
@@ -152,26 +152,31 @@ this shared working tree. Phases 4 and 5 additionally edit the same file.
 
 ---
 
-### Phase 1: Chronicle — drop one phantom row, wrap, and describe eight un-rowed live files [NOT STARTED]
+### Phase 1: Chronicle — drop one phantom row, wrap, and describe eight un-rowed live files [COMPLETED]
 
 **Goal**: `FormalSystem/Metalogic/BXCanonical/Chronicle/README.md`'s table covers all 14 live
 `.lean` files and is under the `INV` gate.
 
 **Tasks**:
-- [ ] Delete the `HenkinDiscreteChain.lean` row (decision: obsolete — archived at
-      `Boneyard/BXPipelineGapAnalysis/HenkinDiscreteChain.lean`, no live module continues it).
-- [ ] Draft a description for each of the 8 live files with no row —
+- [x] Delete the `HenkinDiscreteChain.lean` row (decision: obsolete — archived at
+      `Boneyard/BXPipelineGapAnalysis/HenkinDiscreteChain.lean`, no live module continues it). *(completed)*
+- [x] Draft a description for each of the 8 live files with no row —
       `ChronicleGuardAccumulation.lean`, `ChronicleLimitGapWitness.lean`,
       `ChronicleLimitGuardAbove.lean`, `ChronicleLimitGuardWitness.lean`,
       `ChronicleMonadicBridge.lean`, `ChronicleRealExtension.lean`,
       `ChronicleToCountermodelBasic.lean`, `MCSMixedCase.lean` — each taken from that file's own
       module docstring, and add it as a row. Record the source file and line for each in the
       commit body. Do not leave any `<!-- TODO: add description -->` placeholder standing.
-- [ ] Escape any inline `|` in a drafted description as `\|`; cite no task number (C9 covers
-      `FormalSystem/`).
-- [ ] Wrap with
+      *(completed: each drawn from the file's own `/-! -/` module docstring, lines 10-28
+      ChronicleGuardAccumulation, 12-23 ChronicleLimitGapWitness, 12-20 ChronicleLimitGuardAbove,
+      12-20 ChronicleLimitGuardWitness, 18-27 ChronicleMonadicBridge, 11-18 ChronicleRealExtension,
+      19-28 ChronicleToCountermodelBasic, 10-19 MCSMixedCase)*
+- [x] Escape any inline `|` in a drafted description as `\|`; cite no task number (C9 covers
+      `FormalSystem/`). *(completed: no drafted description contained an inline `|` or a task
+      number; C9 confirmed PASS)*
+- [x] Wrap with
       `<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/BXCanonical/Chronicle rows=loose cols=lines -->`
-      and run the writer; apply the shared procedure's steps 3-8.
+      and run the writer; apply the shared procedure's steps 3-8. *(completed)*
 
 **Timing**: 1.0 hours
 
