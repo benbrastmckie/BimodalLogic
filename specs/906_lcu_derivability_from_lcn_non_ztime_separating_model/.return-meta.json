@@ -1,41 +1,10 @@
 {
-  "status": "partial",
-  "dispatch_seq": 25,
-  "partial_progress": {
-    "stage": "hard_mode_single_phase_complete",
-    "details": "Phase 4 (Theorem-Index Rows for the Four New Declarations) completed and committed. This dispatch's own Phase Mission restricted it to Phase 4 only (\"Implement phase 4 only. Do not continue past this phase.\"). One phase remains (5: probe custody, reconciliation, full gate set, and the summary).",
-    "handoff_path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-4-handoff-20261112T060613Z.md",
-    "phases_completed": 4,
-    "phases_total": 5
-  },
-  "artifacts": [
-    {
-      "type": "handoff",
-      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-4-handoff-20261112T060613Z.md",
-      "summary": "Phase-end handoff: docs/theorem-index.md now carries four new rows for the LCExtension.lean deterministic-frames soundness arm declarations; next action is Phase 5 (probe custody, reconciliation, full gate set, summary)."
-    }
-  ],
-  "completion_data": {
-    "completion_summary": "Added four rows to docs/theorem-index.md's LCExtension.lean section, immediately after the LCURulesComplete row, for lcAnte_iff_lcCons_of_deterministic, lcN_plusValidOn_of_deterministic, isLCAxiom_plusValidDetIn_base, and ext_sound_detIn (the deterministic-frames soundness arm landed in Phase 3). Each row names the fully qualified declaration, its file, its Frame class (— for three, Base for isLCAxiom_plusValidDetIn_base), and its Axioms cell (pcq, matching the measured [propext, Classical.choice, Quot.sound] profile pinned in LCExtensionTest.lean). Territory gate confirmed clear: task 899 is status completed with its docs/theorem-index.md edit already committed. check-module-invariants.sh --no-build's C12/C13/C15 all green (C15 second assertion: 464 anchored rows, up from 460); git diff on the file shows exactly 4 insertions, 0 deletions."
-  },
-  "modified_files": [
-    "docs/theorem-index.md"
-  ],
-  "memory_candidates": [
-    {
-      "content": "In this repository's specs/state.json, each entry in active_projects[] keys its task number under the field name `project_number`, not `number`. A jq filter written as `.active_projects[] | select(.number==N)` silently returns nothing (jq treats a missing field as null, which never equals an integer) rather than erroring, which can be misread as \"task N is not in active_projects\" when the task is actually present. Always query with `select(.project_number==N)`.",
-      "category": "PATTERN",
-      "source_artifact": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-4-handoff-20261112T060613Z.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["state.json", "jq", "project_number", "active_projects", "territory-gate"]
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 26,
   "metadata": {
     "session_id": "sess_1794448865_9a2e5c",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
-    "phases_completed": 4,
-    "phases_total": 5
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   }
 }

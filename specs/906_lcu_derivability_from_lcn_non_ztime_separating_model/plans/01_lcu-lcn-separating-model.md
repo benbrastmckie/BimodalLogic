@@ -709,7 +709,7 @@ build is involved and none is claimed.
 
 ---
 
-### Phase 5: Probe Custody, Reconciliation, Full Gate Set, and the Summary [NOT STARTED]
+### Phase 5: Probe Custody, Reconciliation, Full Gate Set, and the Summary [IN PROGRESS]
 
 **Goal**: The compiled record is in version control and watched by CI, every generated surface
 matches the tree, the complete gate set is observed green (or green modulo enumerated pre-existing
