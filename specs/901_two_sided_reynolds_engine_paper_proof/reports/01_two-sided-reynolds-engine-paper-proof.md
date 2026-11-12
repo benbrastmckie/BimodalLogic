@@ -533,6 +533,19 @@ b) `⊡G≤ ⋀_{b ≠ b'} ¬(b ∧ b') ∈ λ(x)` and exactly one `Q⁺`-atom i
 
 The mirror holds for `Q⁻` at levels `≤ 0`, downward. **This is the lemma that makes the run readable off the labels, and hence the lemma that the ban mechanism and Lemma 14.5 consume.** Note what it does *not* need: no acceptance condition appears in it, which is the inherited reason a merely deterministic automaton would suffice *here* while the ban mechanism still needs the pair shape.
 
+**Lemma 8.2 (the chronicle seed; derived).** For every `x` in a two-sided chronicle, put `h := λ(x)`, `pt_h := {α ∈ PastLits : α ∈ h}` and `ft_h := {β ∈ FutLits : β ∈ h}`. Then both `⟐δ_{pt_h} ∈ h` and `⟐δ_{ft_h} ∈ h`, hence both lie in the letter `ĉ(λ*(x))`.
+
+*Proof.* Four links, given for `ft_h`; the `pt_h` case is the `reflectTime` mirror.
+
+1. `FutLits ⊆ fcl(φ⁺)`. `FutLits ⊆ cl₀(φ)` by the closure construction (Finding 1.1), the same inclusion Lemma 4.1's proof already uses for `PastLits`. `cl₀(φ) ⊆ Sub(φ⁺)`: every member of `cl₀(φ)` is, by construction, a component of some `δ_ft ∈ cl(φ)` for `ft ⊆ FutLits` (Finding 1.3), hence of `⟐δ_ft ∈ ecl(φ)`, hence of the corresponding `a_i := γ̂_{ĉ_i}` (Finding 6) — `γ̂_ĉ` is a conjunction over all of `ecl(φ)`, Finding 2.3 — and `a_i` occurs, as written, inside `θ_f`'s own display (Finding 6), itself a conjunct of `φ⁺` (Finding 6). `Sub(φ⁺) ⊆ fcl(φ⁺)` by `fcl`'s plain-`ψ` alternative (Finding 2.1). This spells out, link by link, the inclusion `cl₀(φ) ⊆ fcl(φ⁺)` that Lemma 4.1's proof already invokes without naming the `a_i`/`θ_f` route.
+2. `h = h(a,c)` decides every member of `fcl(φ⁺)` — `h(a,c)`'s own definition (Finding 2.1) puts `δ ∈ h` for `δ ∈ a` and `¬δ ∈ h` for `δ ∈ fcl(φ⁺) \ a` — hence, by link 1, decides every member of `FutLits`. So `⊢ ⋀h → δ_{ft_h}`: every `β ∈ ft_h` is a conjunct of `⋀h`, and every `β ∈ FutLits \ ft_h` contributes `¬β` as a conjunct of `⋀h`, which is exactly `δ_{ft_h}`'s own two conjunct-blocks (Finding 1.3's `δ_a` notation).
+3. `⊢ δ_{ft_h} → ⟐δ_{ft_h}` is the contrapositive of `stab_t` (`⊢ ⊡φ → φ`; compiled, `Axioms.lean:288`) instantiated at `¬δ_{ft_h}`, since `⟐ψ := ¬⊡¬ψ`.
+4. Chaining links 2 and 3, `⊢ ⋀h → ⟐δ_{ft_h}`. By K1, `λ(x)` is consistent, hence so is `h`; by Lemma 2.4, a consistent hue is maximally consistent in `hcl(φ⁺)`, which decides `⟐δ_{ft_h}` (`ecl(φ) ⊆ hcl(φ⁺)`). `¬⟐δ_{ft_h} ∈ h` together with `⊢ ⋀h → ⟐δ_{ft_h}` would make `h` inconsistent, contradicting K1; so `⟐δ_{ft_h} ∈ h`.
+
+Lemma 2.2 closes it: consistent hues of the same colour agree on `⟐`-formulas, so `⟐δ_{ft_h}` is colour-decided, i.e. `⊢ γ_{λ*(x)} → ⟐δ_{ft_h}`, i.e. `⟐δ_{ft_h} ∈ ĉ(λ*(x))` by the letter's own definition (Finding 2.3). ∎
+
+**What the lemma does and does not use.** Only K1 from the chronicle clause list — no K2–K5, no fairness, no pioneer — so it is a fact about every node's own label, settled before any walk is in view. In particular it is not a consequence of the truth lemma (Finding 14), so it is available inside the truth lemma's own induction with no circularity. And it does **not** claim `ft_h` is the walk's future-type `ft_lin`: `h` is one representative node's label, while `ft_lin` (Finding 5.2) is read off the limit word an *emergent* walk determines, and for such a walk the two generally differ.
+
 #### 8.5 Pioneers, in both directions
 
 ```
@@ -826,15 +839,25 @@ Suppose `(S,R,g), line(t), lvl t ⊨ ⟐δ`: there is a walk `b` with `b_{lvl t}
 
 *Proof.* Induction on `i`. At `i = 0`, K0 gives `s₀⁺ ∈ λ(x₀)` for the anchor class. At `i+1`: pick `t_i ∈ b_i` with `t_i^+ ∈ b_{i+1}`; by the IH and Lemma 2.2, `q_i ∈ λ(t_i)`; every conjunct of `γ̂_{w(b)_i}` is in `λ(t_i)` (for `e ∈ w(b)_i`, by Lemma 2.2; for `e ∉ w(b)_i`, because no `t' ∈ b_i` has `e ∈ λ(t')` and `λ(t_i)` is maximal in `hcl(φ⁺) ⊇ ecl(φ)`); so Lemma 8.1(a) gives `ρ⁺(q_i, w(b)_i) = q_{i+1} ∈ λ(t_i^+)`, i.e. `q_{i+1} ∈ g(b_{i+1})`. The converse direction follows from Lemma 8.1(b). ∎
 
-**Step 3 (= Reynolds Lemma 27; derived). `w(b)` is not bad, so `⟐δ ∈ λ(t)`.**
+**Step 3' (derived). `w(b)` is not bad, so `⟐δ ∈ λ(t)`.**
 
-*Proof.* By Corollary 13.3 and Step 2, neither `A⁺` nor `A⁻` accepts its half of `w(b)`.
+*Proof.* (1) By Corollary 13.3 and Step 2, neither `A⁺` nor `A⁻` accepts its half of `w(b)`, unchanged from Step 3.
 
-Non-acceptance by `A⁻` gives, by its clause (a), that the past-type `pt_lin(w(b)) := {α ∈ PastLits : w(b), 0 ⊨ ᾱ}` is **certified**: `⟐δ_{pt_lin} ∈ w(b)_0`. Symmetrically `A⁺`'s clause (a) certifies `ft_lin(w(b))`. **This cross-certification is what breaks the apparent circularity**: `A⁺`'s useful guarantee (clause (b)) is conditional on the cut letter certifying the past-type it is run with, the past-type is a function of the backward half, and the backward automaton is exactly the object that can check a condition on the backward half.
+(2) By Lemma 8.2 applied to any representative `x₀` of the class `b_0`, there is a certified `ft_0 := {β ∈ FutLits : β ∈ λ(x₀)}` with `⟐δ_{ft_0} ∈ w(b)_0` (`λ*(x₀) = λ*(b_0)` by K3A, and `w(b)_0 = ĉ(λ*(b_0))` by definition of `w(b)`). `ft_0` is certified but not yet known to be `w(b)`'s real future-type `ft_lin(w(b)) := {β ∈ FutLits : w(b), 0 ⊨ β̄}`.
 
-Non-acceptance by `A⁺` then gives, by clause (b) instantiated at the certified `pt_lin`, that there is no forward violation at any `i ≥ 0`: for every `γ ∈ cl(φ)` and `i ≥ 0`, if `w(b), i ⊨ γ̄` then `⟐γ ∈ w(b)_i`. Non-acceptance by `A⁻` gives the same for `i ≤ 0`. So `w(b) ⊨ χ̄₀`.
+(3) Non-acceptance by `A⁻` gives, for this certified `ft_0`, no backward violation at `i = 0` under `ft_0`. Instantiate at `γ := δ_{pt_lin(w(b))}`, with `pt_lin(w(b)) := {α ∈ PastLits : w(b), 0 ⊨ ᾱ}`: this `γ` is pure-past (Finding 5.3's mirror of Finding 5.2), so by Lemma 3.1 its translation's truth at `0` is a condition on `w(b)` alone — it does not consult `ft_0` — and it is true at `0` of `w(b)` by construction, exactly as `pt_lin` is defined. So `⟐δ_{pt_lin(w(b))} ∈ w(b)_0`: the real past-type is now certified, for real, not merely hypothesized.
+
+(4) Non-acceptance by `A⁺` then gives, for this now-really-certified `pt_lin(w(b))`, forward badness-freedom for every `i ≥ 0`: for every `γ ∈ cl(φ)` and `i ≥ 0`, if `w(b), i ⊨ γ̄` then `⟐γ ∈ w(b)_i`. Instantiate at `i = 0`, `γ := δ_{ft_lin(w(b))}` (true at `0` by construction, dually to (3)): `⟐δ_{ft_lin(w(b))} ∈ w(b)_0`. The real future-type is now certified, for real.
+
+(5) Non-acceptance by `A⁻` again, now for this really-certified `ft_lin(w(b))`, gives backward badness-freedom for every `i ≤ 0`: for every `γ ∈ cl(φ)` and `i ≤ 0`, if `w(b), i ⊨ γ̄` then `⟐γ ∈ w(b)_i`.
+
+(6) (4) and (5) together say exactly `w(b) ⊨ χ̄₀`, as before.
 
 Apply this at `i := lvl t` and `γ := δ`. By Step 1, `w(b), lvl t ⊨ δ̄`; hence `⟐δ ∈ w(b)_{lvl t}`, i.e. `⟐δ ∈ λ(t')` for some `t' ≡ t`, i.e. `⟐δ ∈ λ(t)` by Lemma 2.2. ∎
+
+**Why this breaks the circularity.** Not by cross-certification between the two automata: a certified-but-possibly-wrong hypothetical type — `ft_0` at step (2) — is already a usable ticket into clause (b), because the fact step (3) extracts at position `0` is pure-past, hence does not depend on the ticket being right. Step (3)'s output is then a real certification, which licenses the unconditional guarantees of steps (4)-(5) with no further hypothesis.
+
+**Structural comparison.** The bookkeeping is one link longer than the two-clause original — four non-acceptance applications instead of two, since the hypothesis is upgraded from merely-certified to really-certified twice before both real types are in hand — while each automaton is one disjunct smaller (the omega-regularity-only clause of Finding 5, now dropped from both). The chain order matters: the seed at step (2) must be of the opposite polarity to the fact first extracted at step (3) (seeding a future-type to certify the past-type, not the reverse), and the whole chain is symmetric under `reflectTime`, which exchanges `A⁺ ↔ A⁻`, `pt ↔ ft`, and steps (2)-(3) with (4)-(5).
 
 *(Remark: `δ ∈ cl(φ⁺)` while the automata range over `cl(φ)`. For `δ ∈ cl(φ)` the above is immediate. For `δ ∈ cl(φ⁺) \ cl(φ)` — the formulas mentioning `q`, `Q⁺`, `Q⁻` — the `⟐`-case is settled without the automata: those atoms are state-local by `atom_stab`, so `⟐` of a Boolean combination of them is colour-decided by Lemma 2.2, and the only temporal combinations of them occurring in `cl(φ⁺)` are inside `θ_f`, `θ_b`, `χ₁⁺`, `χ₁⁻`, each of which is settled by Lemma 8.1 and Corollary 13.3 directly. Derived; this is the one bookkeeping point Reynolds does not have to make, because his `φ⁺` has no backward half.)*
 

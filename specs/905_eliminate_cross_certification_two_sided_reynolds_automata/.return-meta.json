@@ -1,37 +1,10 @@
 {
-  "status": "partial",
-  "dispatch_seq": 10,
-  "partial_progress": {
-    "stage": "phase_mission_single_phase_scope",
-    "details": "Dispatch mission constrained this run to Phase 2 only ('Implement phase 2 only. Do not continue past this phase.'). Phase 2 (drop both clause (a)s and the clause-(a) first-transition obligation) completed and verified green (validate-artifact.sh [PASS], 0 warnings, matching the Phase 1 baseline; post-edit grep confirms exactly the two clause-(a) hits owned by Phases 3 and 4 remain). Phases 3-5 remain for a subsequent dispatch.",
-    "handoff_path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-2-handoff-20261112T025454Z.md",
-    "phases_completed": 2,
-    "phases_total": 5
-  },
-  "artifacts": [
-    {
-      "type": "handoff",
-      "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-2-handoff-20261112T025454Z.md",
-      "summary": "Phase 2 completion handoff: both clause-(a)s and the clause-(a) first-transition obligation dropped from specs/901's paper-proof report, with a named Theorem 1 (the elimination) and Strictness paragraph landed in section 5.2, the mirror stated in 5.3, and 5.4's obligation parenthetical removed; verified green, no deviations; next action is Phase 3."
-    }
-  ],
-  "completion_data": {
-    "completion_summary": "Rewrote Viol+ in specs/901's paper-proof report to its clause-(b)-only form, added a named 'Theorem 1 (the elimination; derived)' with full proof and a Strictness paragraph to section 5.2, stated the Theorem 1 mirror under reflectTime in section 5.3 in place of the deleted Viol- clause-(a) certification sentence, and removed the clause-(a) first-transition obligation parenthetical from section 5.4. validate-artifact.sh stayed [PASS] with 0 warnings; the post-edit grep for 'clause (a)' returns exactly the two hits owned by Phases 3 and 4."
-  },
-  "modified_files": [
-    "specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"
-  ],
-  "memory_candidates": [],
+  "status": "in_progress",
+  "dispatch_seq": 12,
   "metadata": {
     "session_id": "sess_1794448865_9a2e5c",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "general-implementation-agent"
-    ],
-    "phases_completed": 2,
-    "phases_total": 5
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   }
 }

@@ -247,32 +247,35 @@ group is a new site to record and absorb, not evidence the hypothesis holds.
 
 ---
 
-### Phase 3: Land Lemma 2 in section 8 and replace Step 3 with Step 3' [NOT STARTED]
+### Phase 3: Land Lemma 2 in section 8 and replace Step 3 with Step 3' [COMPLETED]
 
 **Goal**: Add the chronicle seed as a named lemma beside Lemma 8.1, and replace Finding 14.4's
 Step 3 with the four-link bootstrap that uses no clause (a) anywhere.
 
 **Tasks**:
-- [ ] Re-read section 8.4 (Lemma 8.1) and Finding 14.4's Step 3 immediately before editing.
-- [ ] Insert a new lemma in section 8 — placed beside Lemma 8.1, because it is a fact about every
+- [x] Re-read section 8.4 (Lemma 8.1) and Finding 14.4's Step 3 immediately before editing.
+      *(completed)*
+- [x] Insert a new lemma in section 8 — placed beside Lemma 8.1, because it is a fact about every
       chronicle node proved before any walk is in view, not a fact about the anchor walk. State
       it: for every node `t` of a two-sided chronicle with `h := lambda(t)`, putting
       `pt_h := {alpha in PastLits : alpha in h}` and `ft_h := {beta in FutLits : beta in h}`, both
       `diamond-dot delta_{pt_h}` and `diamond-dot delta_{ft_h}` lie in `h`, hence in the letter
-      `c-hat(lambda*(t))`.
-- [ ] Write its four-step proof: (1) `h = h(a,c)` decides every member of `fcl(phi+)`, and
+      `c-hat(lambda*(t))`. *(completed, as "Lemma 8.2 (the chronicle seed; derived)")*
+- [x] Write its four-step proof: (1) `h = h(a,c)` decides every member of `fcl(phi+)`, and
       `FutLits` is contained in `cl_0(phi)`, in `Sub(phi+)`, in `fcl(phi+)` via the `a_i` inside
       `theta_f` — the chain Lemma 4.1 already relies on, written out link by link with the
       licensing clause named at each link; (2) the conjunction of `h` derives
       `delta_{ft_h}` by construction; (3) `|- delta -> diamond-dot delta` is the contrapositive of
       `stab_t` (compiled, `Axioms.lean:288`); (4) K1's consistency of `lambda(x)` then forces
       `diamond-dot delta_{ft_h}` into `h`. Close with the colour-decidedness step (Lemma 2.2) that
-      moves it into the letter.
-- [ ] State explicitly what the lemma does and does not use: K1 and nothing else from the
+      moves it into the letter. *(completed, all four links present with the licensing clause
+      named at each)*
+- [x] State explicitly what the lemma does and does not use: K1 and nothing else from the
       chronicle clause list; not the truth lemma, so it is available inside the truth lemma's
       induction with no circularity; and it does **not** claim `ft_h` is the walk's future-type,
-      which for an emergent walk it generally is not.
-- [ ] Replace Finding 14.4's Step 3 with Step 3': (1) Corollary 13.3 and Step 2 give
+      which for an emergent walk it generally is not. *(completed, as the "What the lemma does
+      and does not use" paragraph)*
+- [x] Replace Finding 14.4's Step 3 with Step 3': (1) Corollary 13.3 and Step 2 give
       non-acceptance of both halves, both unchanged; (2) the new section-8 lemma seeds a certified
       `ft_0` at `w_0`; (3) `A-`'s clause (b) at `ft_0`, position 0, `gamma := delta_{pt_lin(w)}`
       certifies the real past-type, because `delta_{pt_lin}` is pure-past so its translation's
@@ -280,16 +283,20 @@ Step 3 with the four-link bootstrap that uses no clause (a) anywhere.
       `pt_lin(w)` gives forward badness-freedom for `i >= 0` and, at position 0 with
       `gamma := delta_{ft_lin(w)}`, certifies the real future-type; (5) `A-`'s clause (b) at the
       real `ft_lin` gives backward badness-freedom for `i <= 0`; (6) hence `w |= chi_0-bar`, and
-      the conclusion at `i := lvl t`, `gamma := delta` is as before.
-- [ ] Delete the old Step 3's two clause-(a) reads and the bolded "This cross-certification is
+      the conclusion at `i := lvl t`, `gamma := delta` is as before. *(completed, as "Step 3'
+      (derived)")*
+- [x] Delete the old Step 3's two clause-(a) reads and the bolded "This cross-certification is
       what breaks the apparent circularity" sentence, replacing it with the purity statement: the
       circularity is broken because a certified-but-possibly-wrong hypothetical type is a ticket
       into clause (b), and the fact extracted at position 0 does not depend on the ticket.
-- [ ] Record the structural comparison: the bookkeeping is one link longer, the automata are one
+      *(completed, as the "Why this breaks the circularity" paragraph; both clause-(a) reads
+      deleted)*
+- [x] Record the structural comparison: the bookkeeping is one link longer, the automata are one
       disjunct smaller each, and the chain order matters (the seed must be of the opposite
       polarity to the first certification extracted) while being symmetric under `reflectTime`.
-- [ ] Leave the trailing `cl(phi+) \ cl(phi)` remark of Finding 14.4 untouched: it never mentioned
-      the clauses.
+      *(completed, as the "Structural comparison" paragraph)*
+- [x] Leave the trailing `cl(phi+) \ cl(phi)` remark of Finding 14.4 untouched: it never mentioned
+      the clauses. *(completed: left textually unchanged)*
 
 **Timing**: 1.25 hours
 
