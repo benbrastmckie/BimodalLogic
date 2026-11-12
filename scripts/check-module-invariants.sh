@@ -2409,6 +2409,7 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Expressiveness.decidableOpenValidRTimeOfTr' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.openComplete_of_plusComplete_in' depends on axioms: [propext]
 'FormalSystem.Metalogic.Expressiveness.openValid_of_plusSound' depends on axioms: [propext]
+'FormalSystem.Metalogic.Expressiveness.typePair_image_stabClass' depends on axioms: [propext, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_swap' depends on axioms: [propext, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_congr_of_update' depends on axioms: [propext, Quot.sound]
 'FormalSystem.Metalogic.Expressiveness.SeparationZ.toPlus_abstr' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -2773,6 +2774,7 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Expressiveness.decidableOpenValidRTimeOfTr
 #print axioms FormalSystem.Metalogic.Expressiveness.openComplete_of_plusComplete_in
 #print axioms FormalSystem.Metalogic.Expressiveness.openValid_of_plusSound
+#print axioms FormalSystem.Metalogic.Expressiveness.typePair_image_stabClass
 #print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_swap
 #print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.usTruth_congr_of_update
 #print axioms FormalSystem.Metalogic.Expressiveness.SeparationZ.toPlus_abstr

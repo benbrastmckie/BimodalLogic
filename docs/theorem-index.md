@@ -703,6 +703,14 @@ exhibited, no decision procedure and no recursive axiomatization follows either.
 **No completeness or decidability result for the open-future language is asserted by any row in
 this band, at any frame class.**
 
+The band's last row is not one of those corollaries: it is an **unconditional**, class-generic
+product statement about the types realized across a stability cluster — for a finite list of
+past-determined and a finite list of future-determined formulas, the set of (past-type,
+future-type) pairs realized by the histories through a world state at a cut is the full product of
+the realized past-types with the realized future-types. It is not a transfer corollary, it asserts
+no decidability and no completeness, and it needs no hypothesis beyond regularity of the frame and
+the two determinedness assumptions.
+
 | Paper label | Statement | Lean name | File | Frame class | Axioms |
 |-------------|-----------|-----------|------|-------------|--------|
 | — | `{U, S}` is expressively complete for Prior structures relative to monadic FO | `FormalSystem.Metalogic.Expressiveness.Kamp.kampPriorExpressiveCompleteness` | `FormalSystem/Metalogic/Expressiveness/Kamp/KampPrior.lean` | — | pcq pinned:C14 |
@@ -721,6 +729,7 @@ this band, at any frame class.**
 | — | Given separation over the dense Dedekind-complete frames and decidability of L⁺ validity at `RTime` for the single formula `tr hsep φ` — neither of which this tree supplies — open-language validity of `φ` at `RTime` is decidable | `FormalSystem.Metalogic.Expressiveness.decidableOpenValidRTimeOfTr` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | RTime | pcq pinned:C14 |
 | — | Given a translation transferring validity at a frame class and an L⁺ relation complete for validity there — the latter open at every frame class — every valid open-language formula has a derivable translation | `FormalSystem.Metalogic.Expressiveness.openComplete_of_plusComplete_in` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | [propext] pinned:C14 |
 | — | Given a translation transferring validity at a frame class and an L⁺ relation sound for validity there, derivability of a translation yields validity of the original open-language formula | `FormalSystem.Metalogic.Expressiveness.openValid_of_plusSound` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | [propext] pinned:C14 |
+| — | For a finite list of past-determined and a finite list of future-determined formulas, on every regular task frame: the set of (past-type, future-type) pairs realized across a stability cluster is the full product of the realized past-types with the realized future-types | `FormalSystem.Metalogic.Expressiveness.typePair_image_stabClass` | `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` | — | [propext, Quot.sound] pinned:C14 |
 
 #### Gabbay separation over the integer flow
 
