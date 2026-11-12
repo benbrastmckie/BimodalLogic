@@ -1,5 +1,5 @@
 ---
-next_project_number: 926
+next_project_number: 929
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,743,761,829,831,873,890 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,743,761,829,831,873,890,926,927,928 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876 | 298,428,502,743,761,873 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -34,6 +34,12 @@ next_project_number: 926
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
+
+### Completeness
+
+926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
+927 [NOT STARTED] — MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers...
+928 [NOT STARTED] — ASSESSMENT TASK, report only. Costs the single lemma that...
 
 ### Dataset Enhancement
 
@@ -100,6 +106,92 @@ next_project_number: 926
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 928. Muller torabin determinization cost assessment
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: None
+
+**Description**: ASSESSMENT TASK, report only. Costs the single lemma that gates the Lean completeness line, and decides where it would live. Does NOT prove it.
+
+WHY THIS LEMMA. specs/archive/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01 names `Muller.toRabin_exists` `the single highest-value proof_wanted in either tree`, and specs/archive/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01 row 16 names determinization to Rabin as the load-bearing gap with this as `its single named target`, explicitly labelled `Not a Mathlib-absence refusal; a located and costed gap`. specs/archive/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01 established WHY the Rabin pair shape is unavoidable: a deterministic Muller automaton suffices for the Auxiliary-Atoms rule, which carries no acceptance condition, but NOT for the ban/lull mechanism, whose banned list is indexed by the automaton's accepting pairs (Reynolds 2001 section 12, `bl : T -> (C x {1,...,K})*`). So the fork's already-proved `IsRegular.iff_da_muller` is not the determinization the architecture consumes end-to-end.
+
+WHAT IS ALREADY SETTLED, and is not to be re-litigated: `Rabin.toParity_exists` is OFF the critical path (902: the ban mechanism consumes Rabin, not parity, and `Parity.toRabin_language_eq` is already proved). (O2) is discharged for free via `Muller.exists_iSup` under a union-on-the-Muller-side-then-determinize-once composition order. The existing cost estimate on record is the fork's own docstrings: an exponential pair blowup for DMA->DRA (`2^|Q|` pairs) and the LAR permutation construction for DRA->DPA.
+
+DELIVERABLE, four findings:
+  (1) The construction of record: which determinization is actually wanted here (Safra, Piterman, or the LAR route), sourced to the held corpus, with the reason the choice matters for the pair-indexed consumer rather than for the automaton alone.
+  (2) A size and shape estimate for a Lean proof on THIS project's toolchain (Lean v4.33.0-rc1, Mathlib v4.33.0-rc1): what the statement looks like, what the induction is on, which Mathlib/CSLib pieces it can stand on, and which it would have to build. An order-of-magnitude line count with its basis is wanted; an unbasised number is not.
+  (3) Siting: the local CSLib fork versus this tree. The fork is where `Muller.toRabin_exists` is currently `proof_wanted` and where `IsRegular.iff_da_muller` already lives, so the fork is the presumptive home -- but 902's standing recommendation is `Do not require anything now`, and ROADMAP records the CSLib `require` question as not to be re-opened on sections 7-15's account. State what siting in the fork would and would not commit this repository to, and whether a `require` decision is actually entailed by proving it there.
+  (4) (O3) interaction: 902 records that the determinized automaton arrives as `an existential over Type, not as syntax`, making the Auxiliary-Atoms rule's `theta_f` non-computable under classical extraction. State whether a proof of `Muller.toRabin_exists` in the natural existential form would leave (O3) standing -- i.e. whether discharging (O1) alone unblocks the completeness line, or whether (O1) and (O3) must be discharged together.
+
+GUARDRAILS: (a) assessment only -- no proof of `Muller.toRabin_exists` is attempted, and no `.lean` file is written or edited in either tree; (b) no edit to `lakefile.toml` or `lake-manifest.json`, and no `require` added in any form -- finding (3) ASSESSES the siting question and does not act on it; (c) no formalization of any part of the Reynolds engine's sections 7-15 (Recommendation 8), which this lemma is upstream of and separate from; (d) no completeness claim; (e) cite the fork's actual `proof_wanted` sites with file and line; (f) if the corpus does not hold the construction at the rigour needed to cost it, say so and name what is missing rather than estimating from memory.
+
+FILE SCOPE: none. Report only.
+
+---
+
+### 927. Final frame step remeasure against landed cover
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: None
+
+**Description**: MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers one question: is the completeness paper proof final-frame step still open, given that both Lean pieces it was said to need have since landed?
+
+THE SITUATION. specs/archive/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md records the final-frame step as the paper proof one unclosed step. Its ingredient line reads `universal cover; invariance with no Saturation on the base | missing | the two Lean pieces the final-frame step needs`; its Risks section calls it `the weakest link`, naming as negative evidence that `plus_invariance_of_isZTime demands [F.IsRegular] on the base`; and it states `This write-up does not claim the final-frame step; it claims the engine up to it.`
+
+BOTH NAMED PIECES ARE NOW LANDED, and the second is stronger than 901 anticipated:
+  - Piece 1, the universal cover: specs/archive/897_universal_cover_oriented_forest_two_way_bounded landed `FormalSystem/Semantics/UniversalCover.lean` (519 lines) with headline `exists_orientedForest_cover`, plus `coverFrame`, `endpt_surjective`, `endpt_twoWayBounded`.
+  - Piece 2, base-Saturation-free invariance: specs/archive/898_plus_invariance_base_without_saturation settled this AFFIRMATIVELY and went further than its own task description anticipated. Per its summary: Saturation is consumed NOWHERE in the `HistoryMorphism.lean` lifting chain, and the base frame needs NO `def:frame` constraint at all -- not even reflection. Only the SOURCE frame needs anything, and it needs exactly Compositionality, Seriality and Limit. It landed `plus_invariance_of_isZTime_of_constraints`, `exists_histMorphism_of_isZTime_of_constraints`, `taskRel_eq_iter_of_constraints`, and -- named in its own summary as `the completeness programme entry point over a base with no Saturation` -- `exists_orientedForest_cover_of_constraints`. 901 negative evidence is directly answered: the base `[F.IsRegular]` binder is now genuinely unread, and the one apparent base use (`F.reflection` inside `exists_preimage_step_neg`) is discharged at nonzero step duration by `TaskFrame.reflect_reflection_of_ne`. 898 also corrected the prose surfaces that had recorded Saturation as the obstruction, reframing it as a class-membership obligation, and wired `Tests/BimodalTest/Semantics/OrientedForestSaturationTest.lean` so the headline stops compiling if a base Saturation hypothesis is ever re-acquired.
+
+901 and 898 both closed 2026-11-09, so 901 `missing` row is very likely STALE rather than wrong-at-the-time. Confirming that is part of the deliverable.
+
+THE QUESTION THAT IS ACTUALLY STILL OPEN. Because the base side now demands nothing, the obligation has MOVED to the source side: does the chronicle quotient of 901 Finding 15 satisfy Compositionality, Seriality and Limit? 901 describes that quotient as a time-sliced digraph with countably infinite slices, and notes its Saturation `is a real obligation here (unlike in Reynolds Kripke setting, which has no such axiom)`. Nobody has checked the quotient against 898 source-side hypothesis set. That check is this task.
+
+DELIVERABLE, four findings:
+  (1) Whether `exists_orientedForest_cover_of_constraints` + `saturation_of_orientedForest` + `plus_invariance_of_isZTime_of_constraints` discharge the final-frame step AS 901 Finding 15 STATES IT -- checked against the landed declarations actual signatures in source, not against either report prose.
+  (2) The source-side obligation, stated precisely: what Compositionality, Seriality and Limit each require of the chronicle quotient, and which of the three (if any) is not evidently satisfied. This is the finding with the most expected content.
+  (3) A verdict on 901 ingredient row and Risks paragraph: stale, partially stale, or still accurate -- and if stale, the exact amendment text each needs. Do not edit 901 report in place; supply the amendment for a successor to apply.
+  (4) Whether the final-frame step is now discharged, conditionally discharged (naming the condition), or still genuinely open (naming what is missing).
+
+WHY THIS NEEDS NO RULING. The final-frame step is section 15, and this task neither formalizes it nor formalizes any part of sections 7-15: it measures whether already-landed declarations discharge it and corrects a stale record. Recommendation 8 bars filing a FORMALIZATION of sections 7-15; it does not bar reading landed signatures and reporting what they compose to. If finding (1) and (4) come back positive, the paper proof one acknowledged gap closes without reversing any ruling -- which is why this is the cheapest high-value question on the completeness front.
+
+GUARDRAILS: (a) read declaration signatures from source, never from a report description of them -- 901 own stale row is the cautionary case; (b) no Lean file written or edited -- if a composition is available, state it as a finding with declaration names, do not land it; (c) no formalization of any part of sections 7-15; (d) no completeness claim, and in particular finding (4) positive does NOT make T3 complete -- rows 17-21 remain paper; (e) do not edit 901 or 879 reports in place, supply amendment text; (f) if the source-side check needs the chronicle quotient stated more precisely than 901 Finding 15 states it, record that as the blocker rather than inventing a formalization of it.
+
+FILE SCOPE: none. Report only. Reads FormalSystem/Semantics/UniversalCover.lean, HistoryMorphism.lean, IntNormalForm.lean, StateTopology/ConstraintWitnesses.lean; writes no Lean.
+
+---
+
+### 926. Lean completeness line reopen decision record
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: completeness
+- **Dependencies**: None
+
+**Description**: DECISION RECORD ONLY -- report only, file_scope: [], no Lean file written, no formalization attempted. The deliverable is a ruling with its argument, nothing else.
+
+WHY THIS EXISTS. The completeness front currently has zero tasks of any kind: no active record carries topic `completeness`, and none of the four routes named below is owned by any record. That is not because the mathematics is settled or abandoned -- specs/archive/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md Deliverable 4 returns GO for T3 as a staged paper programme -- but because specs/archive/901_two_sided_reynolds_engine_paper_proof's Recommendation 8 bars filing a Lean formalization of the Reynolds engine's sections 7-15, and ROADMAP.md records that lifting it `needs a fresh user ruling reversing that`. A research dispatch cannot reverse a user ruling, so the gap on this front is a DECISION, not missing information.
+
+WHAT IS ALREADY KNOWN, and must be read rather than re-derived (these four reports already constitute the scoping research; do not restate them):
+  - 879 reports/01: the 21-row ingredient table with per-row status; rows 17-21 (consistency of phi-plus, ban preservation with LCU, two-sided universal non-acceptance, fair scheduling, the two-sided truth lemma) are `paper`; row 16 names determinization to Rabin as the load-bearing gap with `Muller.toRabin_exists` as `its single named target`, and labels it `Not a Mathlib-absence refusal; a located and costed gap`.
+  - 901 reports/01: the paper proof itself, which `claims the engine up to the final-frame step` and NOT through it; Finding 15.3 and its Risks section name the final frame `the weakest link`.
+  - specs/archive/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01: the obstruction relocated to (O1)/(O3)/(O4); (O2) discharged via `Muller.exists_iSup`; `Muller.toRabin_exists` called `the single highest-value proof_wanted in either tree`.
+  - specs/archive/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01: the acceptance-condition split -- a deterministic Muller automaton suffices for the Auxiliary-Atoms rule (no acceptance condition) and does NOT suffice for the ban/lull mechanism, whose banned list is indexed by the automaton's accepting pairs, which is what forces the pair shape.
+
+THE FOUR ROUTES to present, each with its cost and its gate:
+  (R1) Prove `Muller.toRabin_exists` (Safra/Piterman; held in corpus). Discharges (O1). Costed separately by the companion cost-assessment task; this record consumes that costing if available and says so if not.
+  (R2) Close the final-frame step -- and note this route may already be FREE. Both Lean pieces 901 called missing have since landed: 897 universal cover (`exists_orientedForest_cover`) and, more decisively, 898, which found Saturation is consumed NOWHERE in the lifting chain and the base frame needs NO constraint at all, landing `exists_orientedForest_cover_of_constraints` as what its own summary calls `the completeness programme entry point over a base with no Saturation`. The obligation has moved to the SOURCE side (Compositionality, Seriality, Limit on the chronicle quotient), which its companion measurement task checks. If that check is positive, the paper proof one acknowledged gap closes WITHOUT touching sections 7-15 and without reversing Recommendation 8 -- making this the only route that needs no ruling at all, and the one this record should weigh first.
+  (R3) The determinization-free alternative: 879's P9 names `an explicit progress-measure argument that avoids determinization` as the ONLY route to a Lean proof that sidesteps (O1), and calls it `a research design, not an ingredient`.
+  (R4) T1's two reduced questions. T1 is NOT refuted but reduced: (Q1) is `lcU alpha beta` derivable in TM-plus + LC_n + mirror at ZTime for state-local beta -- 906 refuted it at Base/Dense/RTime by the translation frame over Q and proved the ZTime case unsettleable by ANY model (both schemata have the same ZTime models by construction), so only a proof-theoretic argument can decide it, and the guarded-until-form candidate in PlusLCSchema.lean survives as an open candidate; (Q2) are `clock`, `aaFwd`, `aaBwd` admissible over TM-plus + the schemata -- blocked on Di Maio-Zanardo 1998, not held in the local Zotero library.
+
+WHAT THE RECORD MUST DECIDE: for each of R1-R4, reopen / keep closed / reopen on stated conditions, with the argument. If any route reopens, the record states the terms (what may be filed, what stays barred) precisely enough that a successor can file against it without re-asking. Recommendation 8 stays in force for every route the ruling does not explicitly reopen.
+
+GUARDRAILS: (a) no Lean file is written or edited by this task; (b) no part of sections 7-15 is formalized, attempted, or filed by this task -- that is what the record decides, not what it does; (c) no completeness claim; (d) the four reports above are cited, not re-derived or condensed; (e) if a route's cost is unknown, say so rather than estimating.
+
+FILE SCOPE: none. Report only.
+
+---
 
 ### 890. Ghr lemma 10 2 3 case5 erratum reference manual
 - **Effort**: medium
