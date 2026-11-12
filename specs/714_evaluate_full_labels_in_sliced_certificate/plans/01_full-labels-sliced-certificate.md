@@ -1,7 +1,7 @@
 # Implementation Plan: Task #714
 
 - **Task**: 714 - Evaluate full labels in the sliced certificate
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/714_evaluate_full_labels_in_sliced_certificate/reports/01_full-labels-sliced-certificate.md
@@ -160,37 +160,40 @@ the file whose Parts C/D Phase 1 promotes, and Phase 3's prose cites the path Ph
 
 ---
 
-### Phase 1: Land the embedded-route regression triple in `EmbedComplete.lean` [NOT STARTED]
+### Phase 1: Land the embedded-route regression triple in `EmbedComplete.lean` [COMPLETED]
 
 **Goal**: The three embedded-route equalities become library declarations, pinning the
 checkable form of "the embedding produces no junk positions" independently of option 3.
 
 **Tasks**:
 
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean`
+- [x] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean`
       immediately before editing (concurrent siblings are live on this tree).
-- [ ] Open a new `namespace FullLabelRegression` directly after `end BotTargets`, inside the
+- [x] Open a new `namespace FullLabelRegression` directly after `end BotTargets`, inside the
       file's own `namespace WitnessFamily`, preceded by a `/-! ### ... -/` section header stating
       what the triple pins and that it is a fact about the EMBEDDING, not about full labels:
       full-label agreement alone does not imply it (`Fixture.cert` is the counterexample, kept in
       the evidence probe).
-- [ ] Add `def posAtFull` with the signature fixed in `## Lean Challenge Statements`, bodied as
+- [x] Add `def posAtFull` with the signature fixed in `## Lean Challenge Statements`, bodied as
       `Finset.univ.filter (fun p => LabCoherent Γ Del p.2.1 ∧ p.2.1 = G.slab t p.1)` -- the
       probe's definition verbatim, mirroring `Position.lean`'s `posAt` clause-for-clause. Give it
       a docstring (C19 docstring-coverage floor).
-- [ ] Add the three theorems with the statements fixed in `## Lean Challenge Statements`, each
+- [x] Add the three theorems with the statements fixed in `## Lean Challenge Statements`, each
       proved `by decide` under its own `set_option maxRecDepth 4000000 in` /
       `set_option maxHeartbeats 2000000 in` declaration-scoped prefix (C30 forbids an unscoped or
       infinite heartbeat budget; the `in` form and a finite literal are both required). Carry each
-      theorem's docstring across from the probe.
-- [ ] Confirm the added block contains NO `#eval`, `#print axioms`, `#check` or `#reduce` line
+      theorem's docstring across from the probe. *(deviation: altered — each `set_option
+      maxHeartbeats` prefix also needed an adjacent `--` justification comment, in
+      `Examples.lean`'s existing house style, to silence `linter.style.maxHeartbeats`, which the
+      plan did not anticipate.)*
+- [x] Confirm the added block contains NO `#eval`, `#print axioms`, `#check` or `#reduce` line
       (C27 gates these under `FormalSystem/` against `scripts/debug-artifact-allowlist.txt`).
-- [ ] Confirm no added prose carries a `file.lean:NNN` citation (C20) and no added comment carries
+- [x] Confirm no added prose carries a `file.lean:NNN` citation (C20) and no added comment carries
       a relative markdown link that does not resolve from this file (C32).
-- [ ] Regenerate the commit-blocking count surface: `bash scripts/typst-sync-check.sh --fix`.
-- [ ] Regenerate the inventory blocks:
+- [x] Regenerate the commit-blocking count surface: `bash scripts/typst-sync-check.sh --fix`.
+- [x] Regenerate the inventory blocks:
       `bash scripts/check-module-invariants.sh --emit-inventory`.
-- [ ] Stage with an explicit file list and commit.
+- [x] Stage with an explicit file list and commit.
 
 **Timing**: 1.5 hours
 

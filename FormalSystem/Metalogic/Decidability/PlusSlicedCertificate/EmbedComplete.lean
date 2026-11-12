@@ -880,6 +880,68 @@ theorem botSnceFamily_tailStable : (botSnceFamily.sliced 0).TailStable := by dec
 
 end BotTargets
 
+namespace FullLabelRegression
+
+/-! ### The embedded route produces no junk positions
+
+The option-3 position space — one label per state, the slab read as a full label rather than as a
+state description — is `posAtFull` below. At each of the three certificates reached by the
+embedding it coincides with the computed live set at every window time, so along that route the
+`posAt` over-approximation costs nothing: there is no junk position for either tail-stability
+conjunct to trip over.
+
+This is a fact about the **embedding**, not about full labels. Full-label agreement alone does not
+imply it: at `PlusSlicedCertificate.Fixture.cert` the full-label position space is still not the
+live set, so the `⊇` superset failure survives the refinement. That measurement, together with the
+`⊡`-carrying witnesses whose full-label position space is empty, is kept in the evidence probe
+`specs/evidence/stability-modal-substrate/full-labels-collapse-stab.lean`; what is landed here is
+only the positive half, which has a stable statement and is worth re-checking on every build.
+-/
+
+/-- **The position space under FULL labels**: the internally coherent labels that are *equal* to the
+slice labelling, rather than merely agreeing with it on the state shapes. Stated locally so that no
+consumer of the landed `PlusSlicedCertificate.posAt` is touched; it mirrors that definition
+clause-for-clause, with `AgreesOnState` strengthened to equality. -/
+def posAtFull {Γ Del : PlusContext} (G : PlusSlicedCertificate Γ Del) (t : ℤ) :
+    Finset G.Pos :=
+  Finset.univ.filter
+    (fun p => PlusSlicedCertificate.LabCoherent Γ Del p.2.1 ∧ p.2.1 = G.slab t p.1)
+
+set_option maxRecDepth 4000000 in
+set_option maxHeartbeats 2000000 in
+-- The kernel evaluates `posAtFull` and the `snce` liveness fixpoint at every window time of the
+-- `⊥ S ⊥` certificate. The cap is deliberately an explicit finite number rather than `0`: this is
+-- the cheapest fixpoint in this subtree (a two-element position space over four window times), so
+-- a cost regression past this envelope should fail the build rather than slow it silently.
+/-- At the `⊥ S ⊥` certificate that forced the backward filter, the full-label position space is
+exactly the computed live set at every window time. -/
+theorem botSnce_posAtFull_eq_liveAt :
+    ∀ t ∈ (BotTargets.botSnceFamily.sliced 0).winTimes,
+      posAtFull (BotTargets.botSnceFamily.sliced 0) t
+        = (BotTargets.botSnceFamily.sliced 0).liveAt t := by decide
+
+set_option maxRecDepth 4000000 in
+set_option maxHeartbeats 2000000 in
+-- Same envelope and same reason as the `⊥ S ⊥` equality above: an explicit finite cap over the
+-- `untl` fixpoint, so that a cost regression fails the build instead of slowing it silently.
+/-- The same at the `⊥ U ⊥` certificate that forced the forward filter. -/
+theorem botUntl_posAtFull_eq_liveAt :
+    ∀ t ∈ (BotTargets.botUntlFamily.sliced 0).winTimes,
+      posAtFull (BotTargets.botUntlFamily.sliced 0) t
+        = (BotTargets.botUntlFamily.sliced 0).liveAt t := by decide
+
+set_option maxRecDepth 4000000 in
+set_option maxHeartbeats 2000000 in
+-- Same envelope and same reason again, over the embedded live-eventuality certificate's six
+-- window times: an explicit finite cap, so a cost regression fails rather than slows the build.
+/-- And at the embedded live-eventuality certificate, whose raw demand also fails today. -/
+theorem liveFamily_posAtFull_eq_liveAt :
+    ∀ t ∈ (Embedded.liveFamily.sliced (-1)).winTimes,
+      posAtFull (Embedded.liveFamily.sliced (-1)) t
+        = (Embedded.liveFamily.sliced (-1)).liveAt t := by decide
+
+end FullLabelRegression
+
 /-! ## Towards `hTS` in general: every run of the embedded certificate has CONSTANT state
 
 Sub-phase 20.5 owes `(W.sliced tt).TailStable` for an **arbitrary** certifying `W`, not a verdict at
