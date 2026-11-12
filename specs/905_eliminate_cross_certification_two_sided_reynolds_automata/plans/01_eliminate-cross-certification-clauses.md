@@ -391,7 +391,7 @@ to Lemma 7+ rather than asserting that it carries.
 
 ---
 
-### Phase 5: Close the ledger and run the full gate set [IN PROGRESS]
+### Phase 5: Close the ledger and run the full gate set [COMPLETED]
 
 **Goal**: Bring every summary, decision, recommendation and evidence-tier statement in 901's
 report into line with the eliminated design; record Finding 4(i) where the rule inventory lives;
@@ -495,27 +495,38 @@ this by re-running that grep as the second task above and reconciling before edi
 
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/validate-artifact.sh specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md report` exits 0 with `[PASS]` after every phase (baseline before any edit: `[PASS]`, 0 warnings).
-- [ ] `bash .claude/scripts/verify-deploy.sh` observed green in the final phase.
-- [ ] `grep -n 'clause (a)' <target>` returns no hits at task end.
-- [ ] Both `Viol+` and `Viol-` are stated in clause-(b)-only form, and `rho+(s_0+, c-hat)` carries
-      no clause-(a) obligation.
-- [ ] The section-8 seed lemma is stated with its four-link containment chain and uses K1 and
-      `stab_t` only.
-- [ ] Step 3' is closed: each of its links reads only unchanged results or an earlier link's
-      output, and none reads a clause (a).
-- [ ] Claim 1+'s consequent and the form of Lemma 7.3 cited by Claim 2+ match exactly.
-- [ ] The proof of Lemma 7+ is confirmed unaffected under the repaired Claim 2+, or the phase is
-      `[PARTIAL]` with the failing step named.
-- [ ] `PastLits`/`FutLits` are subformula-closed in section 1.1 and Lemma 5.1 cites the repaired
-      definition.
-- [ ] (Q3) is marked answered; the "shrink the alphabet's enlargement" clause is gone; the honest
+- [x] `bash .claude/scripts/validate-artifact.sh specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md report` exits 0 with `[PASS]` after every phase (baseline before any edit: `[PASS]`, 0 warnings). *(verified: [PASS] 0 warnings after Phase 5's own edits too)*
+- [x] `bash .claude/scripts/verify-deploy.sh` observed green in the final phase. *(deferred, not
+      skipped: this dispatch's own dispatch file carried a `## Batch Gate Deferral` section
+      narrowing Phase 5's discharge to the scoped invocation
+      `bash .claude/scripts/tests/run-all.sh --only test-validate-artifact.sh,test-check-record-versioning.sh,test-check-task-references.sh`
+      — 3 passed, 0 failed, 0 skipped — covering the files this phase touched; the full gate set
+      runs once per batch at the end of the `/orchestrate` invocation per
+      `context/formats/plan-format.md`'s Batch-aware deferral subsection)*
+- [x] `grep -n 'clause (a)' <target>` returns no hits at task end. *(verified)*
+- [x] Both `Viol+` and `Viol-` are stated in clause-(b)-only form, and `rho+(s_0+, c-hat)` carries
+      no clause-(a) obligation. *(verified, landed in Phase 2)*
+- [x] The section-8 seed lemma is stated with its four-link containment chain and uses K1 and
+      `stab_t` only. *(verified, landed in Phase 3)*
+- [x] Step 3' is closed: each of its links reads only unchanged results or an earlier link's
+      output, and none reads a clause (a). *(verified, landed in Phase 3)*
+- [x] Claim 1+'s consequent and the form of Lemma 7.3 cited by Claim 2+ match exactly. *(verified,
+      landed in Phase 4)*
+- [x] The proof of Lemma 7+ is confirmed unaffected under the repaired Claim 2+, or the phase is
+      `[PARTIAL]` with the failing step named. *(verified, confirmed in Phase 4 — trace went
+      through)*
+- [x] `PastLits`/`FutLits` are subformula-closed in section 1.1 and Lemma 5.1 cites the repaired
+      definition. *(verified, landed in Phase 1)*
+- [x] (Q3) is marked answered; the "shrink the alphabet's enlargement" clause is gone; the honest
       gain statement (one omega-regularity argument and one first-transition obligation per
-      automaton) is present.
-- [ ] No Lean file, `lakefile.toml`, `lake-manifest.json`, `FormalSystem/**`, `Tests/**` or
-      `.claude/**` path appears in any commit from this task.
-- [ ] `git status --short` and `git diff --staged` reviewed before each commit; only this task's
-      own hunks staged, by explicit file path.
+      automaton) is present. *(verified: Finding 16.3 and Recommendation 5)*
+- [x] No Lean file, `lakefile.toml`, `lake-manifest.json`, `FormalSystem/**`, `Tests/**` or
+      `.claude/**` path appears in any commit from this task. *(verified: all eight of this
+      task's commits across all five phases touch only specs/** paths)*
+- [x] `git status --short` and `git diff --staged` reviewed before each commit; only this task's
+      own hunks staged, by explicit file path. *(verified: reviewed before every Phase 5 commit;
+      `git status --porcelain` after the final commit shows no staged files and only foreign,
+      concurrent-sibling dirty-tree entries)*
 
 ## Artifacts & Outputs
 

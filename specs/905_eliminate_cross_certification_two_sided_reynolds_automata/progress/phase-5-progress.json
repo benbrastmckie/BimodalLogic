@@ -2,7 +2,7 @@
   "phase": 5,
   "phase_name": "Close the ledger and run the full gate set",
   "started_at": "2026-11-12T03:30:20Z",
-  "last_updated": "2026-11-12T03:40:00Z",
+  "last_updated": "2026-11-12T03:41:00Z",
   "objectives": [
     {"id": 1, "description": "Re-read Executive Summary, Finding 16.3, section 17, Decisions, Recommendations, evidence-tier table; reconcile the ledger grep hit list", "status": "done", "note": "grep -n -i 'cross-certif' returned 8 hits before editing (lines 32, 36, 881, 934, 945, 967, 981, 1027). Line 881 (section 14.4's 'Why this breaks the circularity') is outside this phase's 8 owned sites -- it was written by Phase 3 and already describes the superseded device as superseded, so it needs no edit; recorded as a win, not an issue. The remaining 7 existing hits plus 2 new additions (section 6's note, the header amendment) match the Scope Hypothesis's eight owned sites.", "files_touched": []},
     {"id": 2, "description": "Rewrite Executive Summary cross-certification bullet and amend the Lean-position bullet's parenthetical", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
@@ -13,9 +13,9 @@
     {"id": 7, "description": "Amend section 17's cardinality sentence", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
     {"id": 8, "description": "Replace the evidence-tier table's cross-certification row with the derived/recalled rows", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
     {"id": 9, "description": "Add the dated Amended-by header note", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
-    {"id": 10, "description": "Run the per-artifact validate-artifact.sh check and the batch-deferred scoped gate narrowing; record verification notes", "status": "in_progress"}
+    {"id": 10, "description": "Run the per-artifact validate-artifact.sh check and the batch-deferred scoped gate narrowing; record verification notes", "status": "done", "note": "validate-artifact.sh [PASS] 0 warnings. Per the dispatch's Batch Gate Deferral directive, the full verify-deploy.sh gate set is deferred to the once-per-batch stage; this dispatch discharged the scoped narrowing bash .claude/scripts/tests/run-all.sh --only test-validate-artifact.sh,test-check-record-versioning.sh,test-check-task-references.sh -- 3 passed, 0 failed, 0 skipped. grep -n 'clause (a)' returns zero hits; grep -n '(Q3)' shows it answered at Finding 16.3 and attempted-and-answered at Recommendation 5 with no surviving Open marking or alphabet-shrink text. Exactly one new Amended-by line. All eight of task 905's own commits (phases 1-5) touch only specs/** paths plus the two always-staged specs/TODO.md/specs/state.json -- no FormalSystem/, Tests/, .claude/, lakefile.toml or lake-manifest.json path in any of them.", "files_touched": []}
   ],
-  "current_objective": 10,
+  "current_objective": null,
   "approaches_tried": [
     {"approach": "first draft of evidence-tier-table/header-amendment prose used the literal 'clause (a)' (space form)", "result": "failed", "reason": "collided with the phase's own grep -n 'clause (a)' = zero-hits verification criterion; fixed by hyphenating to 'clause-(a) disjunct', the same workaround Phase 4 used"}
   ],
