@@ -1,15 +1,20 @@
 {
-  "status": "partial",
-  "dispatch_seq": 14,
-  "summary": "Dispatch mission constrained this run to implement phase 4 only. Applied the (D2) repair to specs/901's paper-proof report: Claim 1+'s consequent restated as the conditional bad-word conjunction over certified past-types (the clause-(b)-only Viol+'s actual delivery), its proof's clause-(a)/(b) case split removed, Claim 1-'s mirror spelled out, and Claim 2+'s proof re-pointed to Lemma 7.3's conditional form (consumption point S2). The forward trace to Lemma 7+ was read end to end and confirmed unaffected. validate-artifact.sh stays [PASS] with 0 warnings; the post-edit grep for 'clause (a)' now returns zero hits across the whole report. Phase 5 (close the ledger, run the full gate set) remains.",
-  "phases_completed": 4,
+  "status": "implemented",
+  "dispatch_seq": 16,
+  "summary": "Implemented Phase 5 (close the ledger and run the full gate set), completing task 905's five-phase plan. Brought specs/901's paper-proof report into line with the eliminated clause-(a) design: the header's dated Amended-by note, the Executive Summary's cross-certification/Lean-position bullets, section 6's new Finding 4(i) rule-inventory point, Finding 16.3 ((Q3) answered in the affirmative, bi-infinite branch closed), Decision 5, Recommendation 5 (alphabet-shrink expectation withdrawn), section 17's cardinality sentence, and the evidence-tier table (one row replaced by eight). validate-artifact.sh stays [PASS] 0 warnings; grep -n 'clause (a)' returns zero hits across the whole report. Per this dispatch's Batch Gate Deferral directive, the full verify-deploy.sh gate was deferred to the once-per-batch stage; the scoped narrowing (test-validate-artifact.sh, test-check-record-versioning.sh, test-check-task-references.sh) passed 3/3 instead. All five plan phases are now [COMPLETED].",
+  "phases_completed": 5,
   "phases_total": 5,
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/summaries/01_eliminate-cross-certification-clauses-summary.md",
+      "summary": "Implementation summary covering all five phases of task 905."
+    },
+    {
       "type": "handoff",
-      "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-4-handoff-20261112T034500Z.md",
-      "summary": "Phase 4 completion handoff with current state, key decisions, and the next action (Phase 5)."
+      "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-5-handoff-20261112T034100Z.md",
+      "summary": "Phase 5 completion handoff recording the final ledger state and the task-level wrap-up next action."
     }
   ]
 }
