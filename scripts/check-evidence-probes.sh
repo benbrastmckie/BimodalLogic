@@ -2235,6 +2235,32 @@ EVIDENCE="specs/evidence"
 #                                                           | Classical.choice, Quot.sound]` on every
 #                                                           | headline.  No `sorryAx`, no custom
 #                                                           | axiom, no `native_decide`.
+# lcu-lcn-separation/lcu-lcn-separating-model                | `lcU` is NOT derivable from TM⁺ +
+#                                                           | `LC_n` + mirror `LC_n` at `.Base`
+#                                                           | with `RuleSet.none` -- witnessed by
+#                                                           | the translation frame over ℚ, a
+#                                                           | regular deterministic frame on a
+#                                                           | densely ordered carrier, where `lcU`
+#                                                           | is refuted while every `LC_n` axiom
+#                                                           | (mirror included) is valid on every
+#                                                           | deterministic frame.  Settles the
+#                                                           | `.Base` half of the open question
+#                                                           | `FormalSystem/PlusLanguage/PlusLCSchema.lean`
+#                                                           | documents; the `.ZTime` half stays
+#                                                           | open (a `.ZTime` countermodel cannot
+#                                                           | settle it, since `lcN` and `lcU` are
+#                                                           | both `.ZTime`-valid).  The determinism
+#                                                           | collapse and the deterministic-class
+#                                                           | soundness arm this probe once proved
+#                                                           | locally are now library declarations
+#                                                           | (`FormalSystem.PlusLanguage.dstab_iff_of_deterministic`,
+#                                                           | `FormalSystem.Metalogic.LCExtension.lcAnte_iff_lcCons_of_deterministic`,
+#                                                           | `.lcN_plusValidOn_of_deterministic`,
+#                                                           | `.isLCAxiom_plusValidDetIn_base`,
+#                                                           | `.ext_sound_detIn`); this probe keeps
+#                                                           | only the ℚ witness model and the
+#                                                           | headline.  No `sorryAx`, no custom
+#                                                           | axiom, no `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -2289,6 +2315,7 @@ WIRED=(
   "limit-closure-schema/lc-schema-omega-chain"
   "forward-slack-pin-cascade/pin-cascade-straddle"
   "forward-slack-pin-cascade/route-space-closure"
+  "lcu-lcn-separation/lcu-lcn-separating-model"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
