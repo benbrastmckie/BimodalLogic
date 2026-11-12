@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "dispatch_seq": 12,
+  "phase": "plan",
+  "summary": "Research refuted option 3 (full labels collapse the stab comparison class and empty the position space at both landed box-dot witnesses), so the plan implements the refutation's durable consequences rather than a refactor. Four linear phases: land posAtFull plus the three embedded-route equalities in EmbedComplete.lean; promote probes/FullLabels.lean into specs/evidence/stability-modal-substrate/ and wire it into check-evidence-probes.sh before archival can gitignore it; add the stab-comparison-class paragraph to Position.lean's header; run the repository's full CI gate set. Every Lean-line-moving phase carries its own typst/generated/status.typ and module-inventory regeneration, since the pre-commit hook blocks on that surface.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/714_evaluate_full_labels_in_sliced_certificate/plans/01_full-labels-sliced-certificate.md",
+      "summary": "Four-phase plan: regression triple, probe promotion and wiring, Position.lean header record, full-gate verification."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": [],
+  "next_action_hint": "Dispatch implement for task 714 against plans/01_full-labels-sliced-certificate.md, starting at Phase 1."
+}

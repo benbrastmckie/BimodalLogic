@@ -1,22 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 5,
+  "status": "planned",
+  "dispatch_seq": 12,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/714_evaluate_full_labels_in_sliced_certificate/reports/01_full-labels-sliced-certificate.md",
-      "summary": "Option 3 (full labels in the sliced certificate) evaluated and refuted: decidability survives but the stability modal does not; measured at five landed certificates with a sorry-free kernel probe."
-    },
-    {
-      "type": "probe",
-      "path": "specs/714_evaluate_full_labels_in_sliced_certificate/probes/FullLabels.lean",
-      "summary": "Ten decide-level results comparing the full-label position space against posAt and liveAt; zero sorries, standard axioms."
+      "type": "plan",
+      "path": "specs/714_evaluate_full_labels_in_sliced_certificate/plans/01_full-labels-sliced-certificate.md",
+      "summary": "Four-phase plan acting on the research round's refutation of option 3: land the three embedded-route equalities in EmbedComplete.lean, promote and wire the refutation probe into specs/evidence/, record the stab-comparison-class argument at Position.lean's header, then run the full repository gate set."
     }
   ],
   "metadata": {
     "session_id": "sess_1794503933_59a2b4_714",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 4.25,
+    "dependency_waves": [[1], [2], [3], [4]]
+  },
+  "memory_candidates": [],
+  "next_steps": "Run /orchestrate 714 to execute the plan"
 }
