@@ -239,38 +239,38 @@ itself runs against this phase's staged set.
 
 ---
 
-### Phase 2: Pin the one row and its axiom baseline [NOT STARTED]
+### Phase 2: Pin the one row and its axiom baseline [COMPLETED]
 
 **Goal**: `docs/theorem-index.md` carries exactly one new row for `typePair_image_stabClass` at
 its measured axiom profile, and `scripts/check-module-invariants.sh` asserts that profile on every
 run.
 
 **Tasks**:
-- [ ] Re-read `docs/theorem-index.md` and `scripts/check-module-invariants.sh` immediately before
+- [x] Re-read `docs/theorem-index.md` and `scripts/check-module-invariants.sh` immediately before
   editing. `docs/theorem-index.md` is this task's known contention surface with the two
   concurrently dispatched siblings.
-- [ ] Add ONE row to the open-future-elimination band's table, immediately after the
+- [x] Add ONE row to the open-future-elimination band's table, immediately after the
   `FormalSystem.Metalogic.Expressiveness.openValid_of_plusSound` row, so the
   `OpenFutureElimination.lean` cluster stays contiguous. Paper label `—`; Lean name fully
   qualified; File column a path with no line number; Frame class `—` (the theorem is
   class-generic, needing `[F.IsRegular]` only); Axioms cell the value MEASURED in Phase 1 followed
   by ` pinned:C14` (expected `[propext, Quot.sound] pinned:C14`). Do not copy the neighbouring
   rows' `pcq`.
-- [ ] Add one sentence to that band's prose stating what the row is and is not: an unconditional,
+- [x] Add one sentence to that band's prose stating what the row is and is not: an unconditional,
   class-generic product statement about the types realized across a stability cluster — not a
   transfer corollary, and not a decidability or completeness claim. Leave the existing "eight
   transfer-corollary rows" sentence and its count untouched.
-- [ ] Add the matched pair to `scripts/check-module-invariants.sh`: the line
+- [x] Add the matched pair to `scripts/check-module-invariants.sh`: the line
   `#print axioms FormalSystem.Metalogic.Expressiveness.typePair_image_stabClass` in the `C14LEAN`
   heredoc immediately after its `...openValid_of_plusSound` line, and the corresponding
   `'FormalSystem.Metalogic.Expressiveness.typePair_image_stabClass' depends on axioms: ...` line in
   the `C14_BASELINE` heredoc at the SAME relative position (immediately after its own
   `...openValid_of_plusSound` line). The two sides are compared by exact whole-output string
   equality, so the positions must agree.
-- [ ] Pin only the indexed declaration. `typePair_image_stabClass_state_congr` and
+- [x] Pin only the indexed declaration. `typePair_image_stabClass_state_congr` and
   `typePair_image_stabClass_of_sepClauses` get neither a row nor a baseline line, and therefore
   need no `Paper:` line.
-- [ ] Commit via `.claude/scripts/git-commit-scoped.sh` with an explicit two-file list.
+- [x] Commit via `.claude/scripts/git-commit-scoped.sh` with an explicit two-file list.
 
 **Timing**: 1 hour
 

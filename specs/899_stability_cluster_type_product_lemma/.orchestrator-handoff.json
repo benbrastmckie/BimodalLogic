@@ -1,35 +1,35 @@
 {
   "status": "partial",
-  "dispatch_seq": 7,
+  "dispatch_seq": 9,
   "task_number": 899,
   "phase": "implement",
   "session_id": "sess_1794448865_9a2e5c",
-  "phases_completed": 1,
+  "phases_completed": 2,
   "phases_total": 3,
-  "summary": "Phase 1 complete: the six declarations (pastType, futType, typePair, typePair_image_stabClass, typePair_image_stabClass_state_congr, typePair_image_stabClass_of_sepClauses) landed in FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean at the signatures pinned in the plan's Lean Challenge Statements, with every docstring obligation (Paper: line, design-intent framing, R5 non-vacuity remark, precedent citation) in the same hunk. Scoped and full guarded builds both exit 0 with zero warnings and zero errors; all three theorems measure [propext, Quot.sound] in-tree, exactly as the plan predicted. One sanctioned fix-forward deviation: the two transcribed `show` tactics tripped linter.style.show in-tree and became `change`. Committed as 8ce83e659 with typst/generated/status.typ in the same scoped commit; Phases 2 and 3 remain [NOT STARTED].",
+  "summary": "Phase 2 complete and committed as b3bca557c: docs/theorem-index.md carries exactly one new row for typePair_image_stabClass at its Phase-1-measured profile [propext, Quot.sound] pinned:C14, placed immediately after the openValid_of_plusSound row, plus one prose paragraph stating the row is an unconditional class-generic product statement and not a transfer corollary, decidability or completeness claim; scripts/check-module-invariants.sh carries the matched C14LEAN/C14_BASELINE pair at the same relative position on both sides. The full build-backed checker reports PASS C14 (baseline match, with the new declaration in its note lines) and PASS C15 for both assertions (93 anchors resolve; all 455 theorem-index rows anchored at their declaration). Phase-end full guarded build exit 0, 0 warnings, 0 errors, 2974 jobs; sorry_count 0, axiom count 14 = baseline, compliance check passed. The one FAIL (INV: stale generated inventory blocks in README.md and FormalSystem/Metalogic/README.md) is Phase 3's declared scope, caused by Phase 1's added lines, not by either file Phase 2 touched. Phase 3 remains [NOT STARTED]; it is the plan's final phase and the one the dispatch's Batch Gate Deferral constrains.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "source",
-      "path": "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
-      "summary": "New section with pastType, futType, typePair and the three typePair_image_stabClass theorems, plus two module-docstring list entries."
+      "type": "documentation",
+      "path": "docs/theorem-index.md",
+      "summary": "One new open-future-elimination row for typePair_image_stabClass at [propext, Quot.sound] pinned:C14, plus one prose paragraph distinguishing it from the band's transfer corollaries."
     },
     {
-      "type": "generated",
-      "path": "typst/generated/status.typ",
-      "summary": "Regenerated line/count surface (typst-sync-check.sh --fix), staged in the same commit as the Lean change."
+      "type": "script",
+      "path": "scripts/check-module-invariants.sh",
+      "summary": "One matched C14 pair -- a #print axioms line in C14LEAN and its depends-on-axioms baseline line -- each immediately after its heredoc's own openValid_of_plusSound line."
     },
     {
       "type": "handoff",
-      "path": "specs/899_stability_cluster_type_product_lemma/handoffs/phase-1-handoff-20261112T024804Z.md",
-      "summary": "Phase 1 progressive handoff: measured axiom profiles Phase 2 consumes, verification record, deviation, concurrency observations."
+      "path": "specs/899_stability_cluster_type_product_lemma/handoffs/phase-2-handoff-20261112T025821Z.md",
+      "summary": "Phase 2 progressive handoff: the verification record, the Phase-3 INV evidence already in hand, the prose-wording decision, and the concurrency observations."
     }
   ],
   "modified_files": [
-    "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
-    "typst/generated/status.typ",
+    "docs/theorem-index.md",
+    "scripts/check-module-invariants.sh",
     "specs/899_stability_cluster_type_product_lemma/plans/01_stability-cluster-type-product.md",
-    "specs/899_stability_cluster_type_product_lemma/handoffs/phase-1-handoff-20261112T024804Z.md",
+    "specs/899_stability_cluster_type_product_lemma/handoffs/phase-2-handoff-20261112T025821Z.md",
     "specs/899_stability_cluster_type_product_lemma/.return-meta.json",
     "specs/899_stability_cluster_type_product_lemma/.orchestrator-handoff.json",
     "specs/899_stability_cluster_type_product_lemma/issues.jsonl"

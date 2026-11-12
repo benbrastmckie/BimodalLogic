@@ -2265,6 +2265,11 @@
           "path": "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
           "type": "source",
           "summary": "New section with pastType, futType, typePair and the three typePair_image_stabClass theorems, plus two module-docstring list entries."
+        },
+        {
+          "path": "docs/theorem-index.md",
+          "type": "documentation",
+          "summary": "One new open-future-elimination row for typePair_image_stabClass at [propext, Quot.sound] pinned:C14, plus one prose paragraph distinguishing it from the band's transfer corollaries."
         }
       ],
       "session_id": "sess_1794448865_9a2e5c",

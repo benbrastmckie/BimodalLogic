@@ -7,34 +7,44 @@
     "axiom_count": 14,
     "axiom_baseline": 14,
     "build_passed": true,
-    "build_scope": "full guarded lake build, exit 0, 0 warnings, 0 errors, 2974 jobs; plus a warning-free scoped build of the edited module",
-    "measured_axiom_profiles": {
-      "FormalSystem.Metalogic.Expressiveness.typePair_image_stabClass": "[propext, Quot.sound]",
-      "FormalSystem.Metalogic.Expressiveness.typePair_image_stabClass_state_congr": "[propext, Quot.sound]",
-      "FormalSystem.Metalogic.Expressiveness.typePair_image_stabClass_of_sepClauses": "[propext, Quot.sound]"
+    "build_scope": "phase-end full guarded lake build (detached shell-level background job + bounded kill -0 waiter): GUARD_EXIT=0, 'Build completed successfully (2974 jobs)', 0 error:, 0 warning:; touched module's .olean confirmed newer than its source. No Lean source changed in this phase, so this is a re-verification rather than a new build surface; the phase's declared tier is local.",
+    "covering_gate": {
+      "command": "bash scripts/check-module-invariants.sh",
+      "overall_exit": 1,
+      "c14_content_scan": "PASS  C14  no stale axiom or sorry counts documented in docs/ + README.md + FormalSystem/*.lean",
+      "c14_baseline": "PASS  C14  every pinned declaration matches its axiom baseline -- note lines include 'FormalSystem.Metalogic.Expressiveness.typePair_image_stabClass' depends on axioms: [propext, Quot.sound]",
+      "c15_first_assertion": "PASS  C15  all 93 paper-anchor citation(s) resolve against docs/reference/paper-definitions-of-record.md",
+      "c15_second_assertion": "PASS  C15  all 455 theorem-index row(s) carry their anchor (or `Paper: -`) at the declaration"
+    },
+    "scope_hypothesis_confirmed": {
+      "grep_c_theorem_index": 1,
+      "grep_c_checker": 2,
+      "git_diff_stat_files": 2,
+      "git_diff_stat_insertions": 11
     },
     "pre_existing_findings": [
-      "FormalSystem/Examples/TemporalStructures.lean:495 matches the single-line vacuous-definition grep (theorem int_domain_universal ... := trivial). Pre-existing, outside this task's scope, and a genuine trivial-closed goal rather than a placeholder; not counted in vacuous_count for this task."
+      "FAIL INV: 2 file(s) carry a stale generated inventory block -- README.md and FormalSystem/Metalogic/README.md. Neither is a file Phase 2 touched; both are Phase 3's declared scope (its Scope Hypothesis predicts exactly these two for --emit-inventory), stale because of the lines Phase 1 added to a Lean module. Recorded per the phase's own 'FAIL that names no file this task touched' bullet; not a blocker and not a Phase 2 regression.",
+      "FormalSystem/Examples/TemporalStructures.lean:495 matches the single-line vacuous-definition grep (theorem int_domain_universal ... := trivial). The same pre-existing, out-of-scope hit Phase 1 recorded; a genuinely trivial-closed goal rather than a placeholder, so not counted in vacuous_count for this task."
     ]
   },
   "partial_progress": {
-    "stage": "phase_1_complete",
-    "details": "Single-phase hard-mode dispatch: Phase 1 of 3 complete and committed (8ce83e659). Phases 2 and 3 remain [NOT STARTED] in the plan. Not a failure or a blocker -- the dispatch mission was Phase 1 only.",
-    "phases_completed": 1,
+    "stage": "phase_2_complete",
+    "details": "Single-phase hard-mode dispatch: Phase 2 of 3 complete and committed (b3bca557c). Phase 3 remains [NOT STARTED] in the plan. Not a failure or a blocker -- the dispatch mission was Phase 2 only.",
+    "phases_completed": 2,
     "phases_total": 3
   },
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/899_stability_cluster_type_product_lemma/handoffs/phase-1-handoff-20261112T024804Z.md",
-      "summary": "Phase 1 progressive handoff: the measured axiom profiles Phase 2 consumes verbatim, the full verification record, the one sanctioned deviation, and the concurrency observations."
+      "path": "specs/899_stability_cluster_type_product_lemma/handoffs/phase-2-handoff-20261112T025821Z.md",
+      "summary": "Phase 2 progressive handoff: the full verification record, the Phase-3 INV evidence already produced by this phase's gate run, the prose-wording decision that keeps the Scope Hypothesis grep at 1, and the concurrency observations."
     }
   ],
   "modified_files": [
-    "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
-    "typst/generated/status.typ",
+    "docs/theorem-index.md",
+    "scripts/check-module-invariants.sh",
     "specs/899_stability_cluster_type_product_lemma/plans/01_stability-cluster-type-product.md",
-    "specs/899_stability_cluster_type_product_lemma/handoffs/phase-1-handoff-20261112T024804Z.md",
+    "specs/899_stability_cluster_type_product_lemma/handoffs/phase-2-handoff-20261112T025821Z.md",
     "specs/899_stability_cluster_type_product_lemma/.return-meta.json",
     "specs/899_stability_cluster_type_product_lemma/.orchestrator-handoff.json",
     "specs/899_stability_cluster_type_product_lemma/issues.jsonl"
@@ -44,11 +54,10 @@
     "agent_type": "lean-implementation-agent",
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
     "task_dir": "specs/899_stability_cluster_type_product_lemma",
-    "dispatch_seq": 7,
+    "dispatch_seq": 9,
     "compliance_check": "passed",
-    "phase_commit": "8ce83e659",
-    "deviations": [
-      "Phase 1, altered: the two transcribed `show` tactic lines tripped linter.style.show in-tree (the probe compiled under `lake env lean`, which does not apply the package [leanOptions]); replaced with `change` per the plan's own Rollback/Contingency fix-forward. No suppression, no left-standing warning, proof route and all six pinned signatures unchanged."
-    ]
+    "phase_commit": "b3bca557c",
+    "deviations": [],
+    "concurrency_observations": "Foreign uncommitted modifications observed at dispatch start, none touching either owned file: specs/893_.../issues.jsonl and specs/events.jsonl (both in the session-start snapshot, so pre-existing), specs/905_.../.return-meta.json and .orchestrator-handoff.json (task 905 is a declared concurrent sibling writing its own dispatch metadata). Untracked: .pid, specs/893.../stale-dispatch-2-plan-report.md, specs/evidence/{history-morphism-saturation-audit,lcu-lcn-separation}/. git log confirms no foreign commit after 8435e1d02. Reported per territory.md obligation 5 rather than dismissed."
   }
 }
