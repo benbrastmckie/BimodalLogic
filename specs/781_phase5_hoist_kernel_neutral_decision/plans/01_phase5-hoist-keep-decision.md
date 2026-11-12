@@ -286,16 +286,16 @@ changed hunk lies inside markdown prose in one `specs/**` file; the suite list
 
 ---
 
-### Phase 3: Apply the Decision to LiveFix.lean and Reconcile the Blocking Surface [NOT STARTED]
+### Phase 3: Apply the Decision to LiveFix.lean and Reconcile the Blocking Surface [COMPLETED]
 
 **Goal**: Make the module match the verdict, and reconcile in this same phase the one generated
 surface whose drift would otherwise refuse this phase's own commit.
 
 **Tasks**:
 
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean`
+- [x] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean`
       immediately before editing — a concurrent sibling is active on this same tree.
-- [ ] **KEEP branch**: rewrite the `## The hoisted inner fixpoint` module-docstring section
+- [x] **KEEP branch**: rewrite the `## The hoisted inner fixpoint` module-docstring section
       (currently at lines 167-186) so its justification is the measured one. It must state: the
       table computes the inner fixpoint once per closure member rather than once per vertex; the
       two `_eq` lemmas make the change unobservable to every consumer, which is why
@@ -306,28 +306,28 @@ surface whose drift would otherwise refuse this phase's own commit.
       table's eager `|closure|` cost dominates. Delete the counting argument's claim of a kernel
       net win. Retain the `Finset.image`-not-`toList` note and the per-formula short-circuit
       note — both are still true and still load-bearing.
-- [ ] **REVERT branch** (only if Phase 2 recorded REVERT): delete `untlLiveOf`, `snceLiveOf`,
+- [x] *(not applicable: Phase 2 recorded KEEP, so this branch was not taken)* **REVERT branch** (only if Phase 2 recorded REVERT): delete `untlLiveOf`, `snceLiveOf`,
       `untlTable`, `snceTable`, `untlLiveAtTab`, `snceLiveAtTab`, `untlLiveAtTab_eq` and
       `snceLiveAtTab_eq`; restore `fwdLiveStep`/`bwdLiveStep` to filter with
       `G.untlLiveAt X v ψ = true` / `G.snceLiveAt X v ψ = true` directly; and re-prove
       `mem_fwdLiveStep`/`mem_bwdLiveStep` under their unchanged signatures. Replace the
       `## The hoisted inner fixpoint` section with a short note recording that the table shape
       was measured and removed, and what the measurement showed. Do not alter any signature.
-- [ ] Confirm the prose carries no task-number reference and no record-versioning language —
+- [x] Confirm the prose carries no task-number reference and no record-versioning language —
       `.claude/rules/no-task-references-in-deliverables.md` and
       `.claude/rules/no-record-versioning-in-deliverables.md` both apply to `FormalSystem/**`.
       State the current design and the measured fact; never "previously", "no longer", or a
       citation of this record's own number. Cite the declaration names and the measurement
       itself as the durable anchors.
-- [ ] Regenerate the commit-blocking line-count surface in this same phase:
+- [x] Regenerate the commit-blocking line-count surface in this same phase:
       `bash scripts/typst-sync-check.sh --fix`, then confirm with
       `bash scripts/typst-sync-check.sh --counts-only`.
-- [ ] Build the changed module and its two direct dependents:
+- [x] Build the changed module and its two direct dependents:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.LiveFix`,
       then `... -- build FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Bridge`, then
       `... -- build FormalSystem.Metalogic.Decidability.PlusSlicedCertificate`. Same foreground/
       detached preference and bounded-wait idiom as Phase 1.
-- [ ] Stage exactly `LiveFix.lean` and `typst/generated/status.typ` by explicit file list — never
+- [x] Stage exactly `LiveFix.lean` and `typst/generated/status.typ` by explicit file list — never
       `git add -A`, never a directory or glob pathspec — and review `git status --short` plus
       `git diff --staged` before committing.
 
@@ -370,34 +370,34 @@ together with `scripts/typst-sync-check.sh --counts-only` for the regenerated su
 
 ---
 
-### Phase 4: Reconcile the Deferred Inventory Surfaces and Discharge the Full Gate Set [NOT STARTED]
+### Phase 4: Reconcile the Deferred Inventory Surfaces and Discharge the Full Gate Set [COMPLETED]
 
 **Goal**: Bring the two non-blocking generated inventory surfaces back in line with the module's
 new line count, and discharge the complete gate set over the whole of this record's work.
 
 **Tasks**:
 
-- [ ] Re-read `README.md` and `FormalSystem/Metalogic/README.md` immediately before editing — a
+- [x] Re-read `README.md` and `FormalSystem/Metalogic/README.md` immediately before editing — a
       concurrent sibling is active on this same tree.
-- [ ] Regenerate the inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`,
+- [x] Regenerate the inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`,
       then verify with `bash scripts/check-module-invariants.sh --emit-inventory --check`.
-- [ ] Confirm the regeneration moved only the two expected blocks — `README.md`'s
+- [x] Confirm the regeneration moved only the two expected blocks — `README.md`'s
       `dir=FormalSystem rows=totals` block and `FormalSystem/Metalogic/README.md`'s
       `dir=FormalSystem/Metalogic rows=subdirs` `Decidability/` row. If any other file appears
       in `git status --short`, stop and report it: it is either a sibling's in-flight edit or a
       surface this plan did not anticipate, and neither is this phase's to absorb silently.
-- [ ] Run the full project build:
+- [x] Run the full project build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`, detached as a
       shell-level background job and blocked on with the bounded single-call idiom.
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Per the gate-collision
+- [x] *(deviation: altered — discharged against a SCOPED tier per this dispatch's Batch Gate Deferral; see the verification note below)* Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Per the gate-collision
       checklist's Condition 2 corollary, separate findings that name this record's own touched
       files from the tree's standing baseline, and enumerate the latter explicitly in the phase
       record. A gate whose only failures are pre-existing and outside this task's file scope is a
       recorded PASS, not a blocker — and is never grounds to edit an out-of-scope file.
-- [ ] Note, without acting on it, that the dispatch reported the deployed `.claude/` tree STALE
+- [x] Note, without acting on it, that the dispatch reported the deployed `.claude/` tree STALE
       for the `core` extension; any gate finding traceable to that staleness is pre-existing and
       belongs to the redeploy record, not to this one.
-- [ ] Stage exactly `README.md` and `FormalSystem/Metalogic/README.md` by explicit file list and
+- [x] Stage exactly `README.md` and `FormalSystem/Metalogic/README.md` by explicit file list and
       review `git status --short` plus `git diff --staged` before committing.
 
 **Timing**: 1.5 hours
@@ -428,6 +428,42 @@ appearing in the diff falsifies the hypothesis and is reported rather than commi
 - `bash .claude/scripts/verify-deploy.sh` is green, or every finding is shown by name to be
   pre-existing and outside this record's file scope, with the enumeration recorded.
 - `git diff --staged` shows exactly the two declared paths.
+
+#### Verification Note: scoped gate discharge, full set deferred to the batch stage
+
+This dispatch carried a Batch Gate Deferral directive, so this phase's `full` tier was
+discharged against a SCOPED tier rather than by independently running the complete gate set. The
+complete set runs once for the whole batch at the end of the invocation, and its result is
+attributed back to this record by its own `modified_files`. The full gate is deferred here, not
+forgiven.
+
+**Unmappable criterion.** This phase's own criterion names `bash .claude/scripts/verify-deploy.sh`,
+which neither narrowing invocation can express against this record's touched files: every
+`verify-deploy.sh` gate compares a DEPLOYED `.claude/` tree against its source store, and this
+record touched no path under `.claude/` or `agent-system/` at all. There is no `--only-gate`
+number that reaches a `FormalSystem/**.lean` edit, and `run-all.sh`'s suites exercise the agent
+system's own shell scripts, not this library. The criterion was therefore discharged by running
+the repository checks that DO cover these files, directly and scoped:
+
+| check | scope | result |
+|-------|-------|--------|
+| `bash scripts/check-module-invariants.sh` | whole library, incl. every touched file | PASS — 55 checks, 0 failures, `ALL CHECKS PASSED` |
+| `bash scripts/check-module-invariants.sh --emit-inventory --check` | both regenerated inventory blocks | PASS |
+| `bash scripts/typst-sync-check.sh --counts-only` | `typst/generated/status.typ` | PASS — `MISMATCH_COUNT=0` |
+| full guarded `lake build` | whole library | PASS — exit 0, 2975 jobs, 0 errors, 0 warnings |
+| `bash .claude/scripts/check-task-references.sh` | each of the 4 touched deliverables | PASS on all 4 |
+| `bash .claude/scripts/check-record-versioning.sh` | each of the 4 touched deliverables | PASS on all 4 |
+
+**Pre-existing, out of scope.** The dispatch reported the deployed `.claude/` tree STALE for the
+`core` extension. That staleness is exactly what `verify-deploy.sh` measures, it predates this
+record, and no file this record touched can affect it. It belongs to the redeploy record. It was
+noted and not acted on, per this phase's own task list.
+
+**Evidence-probe gate.** `scripts/check-evidence-probes.sh` covers `specs/evidence/`, but has no
+coverage of this record: the three new files are deliberately unwired (D4), and the script
+compiles only its explicit `WIRED` list rather than globbing the directory — confirmed by
+inspection, `grep -c phase5-hoist` returns 0 and no `find`/glob over `$EVIDENCE` exists. The new
+probes are inert to that gate by construction, so running it would have reached none of them.
 
 ## Lean Challenge Statements
 
