@@ -8,12 +8,12 @@
     {"id": 2, "description": "Track the probe with git add (explicit pathspec)", "status": "done", "files_touched": ["specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean"]},
     {"id": 3, "description": "Wire the probe into check-evidence-probes.sh WIRED array + comment table", "status": "done", "files_touched": ["scripts/check-evidence-probes.sh"]},
     {"id": 4, "description": "Regenerate module-inventory blocks via check-module-invariants.sh --emit-inventory", "status": "done", "files_touched": ["FormalSystem/Metalogic/README.md", "FormalSystem/PlusLanguage/README.md", "README.md"], "note": "Exactly the three READMEs the Scope Hypothesis predicted; FormalSystem/README.md unchanged (generator left it alone). --emit-inventory --check now reports PASS INV, no stale block."},
-    {"id": 5, "description": "Run the full gate set and read each verdict", "status": "not_started", "files_touched": []},
-    {"id": 6, "description": "Check C20 third assertion for new name-bearing citation findings", "status": "not_started", "files_touched": []},
-    {"id": 7, "description": "Grep edited docstrings to confirm retained hedges present", "status": "not_started", "files_touched": []},
-    {"id": 8, "description": "Write the implementation summary", "status": "not_started", "files_touched": []}
+    {"id": 5, "description": "Run the full gate set and read each verdict", "status": "done", "files_touched": [], "note": "lake-build-guard.sh scoped build (FormalSystem.PlusLanguage.PlusDeterminism, FormalSystem.Metalogic.LCExtension, BimodalTest.Metalogic.LCExtensionTest): green. check-module-invariants.sh full run (C1 full lake build + BimodalTest, all checks): ALL CHECKS PASSED, zero FAIL lines, C2 and C14 hard stops both PASS. check-metalogic-cycles.sh: PASS on all three assertions (one pre-existing allowlisted BXCanonical<->WeakCanonical cycle, unrelated to this task). typst-sync-check.sh: PASS (all 4 checks green, full run not --counts-only). check-evidence-probes.sh: PASS all 56 wired probes compile, including the new lcu-lcn-separation/lcu-lcn-separating-model entry; zero pre-existing probe newly red (one pre-existing SKIP, unrelated). check-module-invariants.sh --emit-inventory --check: PASS, no stale generated inventory block. No pre-existing findings to enumerate -- every gate was unconditionally green."},
+    {"id": 6, "description": "Check C20 third assertion for new name-bearing citation findings", "status": "done", "files_touched": [], "note": "C20 declaration-span assertion PASS: all 866 named citations land inside their declaration or on the pre-existing baseline (10 recorded mismatches, unchanged count from before this task, confirmed pre-existing TODO residue, not a new finding caused by this task's docstring edits)."},
+    {"id": 7, "description": "Grep edited docstrings to confirm retained hedges present", "status": "done", "files_touched": [], "note": "Every .Base validity sentence in PlusLCSchema.lean still carries 'open and unclaimed' (grepped, 2026-11-12); every new derivability sentence names FrameClass.Base and RuleSet.none; LCExtension.lean's new docstrings likewise hedge correctly."},
+    {"id": 8, "description": "Write the implementation summary", "status": "done", "files_touched": ["specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/summaries/01_lcu-lcn-separating-model-summary.md"]}
   ],
-  "current_objective": 5,
+  "current_objective": 8,
   "approaches_tried": [],
   "handoff_count": 0
 }

@@ -709,7 +709,7 @@ build is involved and none is claimed.
 
 ---
 
-### Phase 5: Probe Custody, Reconciliation, Full Gate Set, and the Summary [IN PROGRESS]
+### Phase 5: Probe Custody, Reconciliation, Full Gate Set, and the Summary [COMPLETED]
 
 **Goal**: The compiled record is in version control and watched by CI, every generated surface
 matches the tree, the complete gate set is observed green (or green modulo enumerated pre-existing
@@ -717,7 +717,9 @@ findings outside this task's file scope), and the verdict is written down in one
 reader will find.
 
 **Tasks**:
-- [ ] Reduce the probe to what is genuinely probe-shaped. Rewrite
+- [x] Reduce the probe to what is genuinely probe-shaped. *(completed: 113 lines, down from 189;
+      compiles sorry-free via `lake env lean`; headline statement unchanged, now referring to the
+      promoted library names)* Rewrite
       `specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean` so it imports
       `FormalSystem.Metalogic.LCExtension` (which, after Phase 3, reaches
       `Deterministic.Validity`), `FormalSystem.Semantics.Frames.Standard` and
@@ -730,11 +732,11 @@ reader will find.
       **No weakening**: the headline's statement is unchanged, and if any promoted declaration's
       library form does not support it verbatim, stop and report rather than restating the
       obstruction.
-- [ ] Track the probe: `git add -- specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean`
+- [x] Track the probe: `git add -- specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean`
       (explicit file pathspec, never a directory or glob add). It is untracked today — see "Premise
       Re-Validation" — and `check-evidence-probes.sh` fails a wired-but-untracked entry with
       `FAIL (untracked: ...)` by design.
-- [ ] Re-read `scripts/check-evidence-probes.sh` immediately before editing and match the live
+- [x] *(completed: WIRED entry and comment-table row added, live structure matched)* Re-read `scripts/check-evidence-probes.sh` immediately before editing and match the live
       shape of the `WIRED` array and the comment table that precedes it, not the shape recorded in
       this plan. **This file is confirmed to exist at authoring time** (the array and its comment
       table were read directly; the array is at `:2238`-`:2292`). Add the collection-relative entry
@@ -744,25 +746,25 @@ reader will find.
       file's structure has changed under a sibling's edits, follow the live structure; if it is
       absent or unreadable, close this phase `[BLOCKED]` and record the observed state rather than
       inventing a wiring mechanism.
-- [ ] Regenerate the module-inventory blocks with
+- [x] *(completed: exactly the three READMEs predicted, FormalSystem/README.md unchanged)* Regenerate the module-inventory blocks with
       `bash scripts/check-module-invariants.sh --emit-inventory`. The targets are the
       `<!-- BEGIN GENERATED: inventory -->`-carrying READMEs on the edited files' ancestor chains:
       `FormalSystem/PlusLanguage/README.md`, `FormalSystem/Metalogic/README.md` and the root
       `README.md`. Do not hand-edit a generated block; stage only the files the generator actually
       changed.
-- [ ] Run the full gate set (below) and read each verdict. For any failure, determine whether it
+- [x] *(completed: all six gates green, zero FAIL lines, nothing to enumerate)* Run the full gate set (below) and read each verdict. For any failure, determine whether it
       names a file this task touched. A gate whose only failures are pre-existing and outside this
       task's file scope is a recorded PASS for this phase, WITH the pre-existing findings
       enumerated in the summary and with evidence that each touched file passes individually. It is
       not grounds to edit an out-of-scope file.
-- [ ] If C20's third assertion reports a NEW name-bearing citation finding caused by this task's
+- [x] *(completed: no new finding; pre-existing 10-mismatch baseline residue, unchanged)* If C20's third assertion reports a NEW name-bearing citation finding caused by this task's
       docstring line shifts, re-anchor the citation if it lives in a file this plan may touch, or
       record it as an enumerated out-of-scope finding and, where the recorded baseline is the right
       carrier, update `scripts/c20-declaration-baseline.txt`.
-- [ ] Grep each docstring edited in Phases 2 and 3 to confirm the retained hedges are present: the
+- [x] *(completed: hedges confirmed present)* Grep each docstring edited in Phases 2 and 3 to confirm the retained hedges are present: the
       words "open and unclaimed" still attach to every `.Base` **validity** sentence, and every new
       derivability sentence names its frame class and `RuleSet.none`.
-- [ ] Write
+- [x] *(completed)* Write
       `specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/summaries/01_lcu-lcn-separating-model-summary.md`
       carrying: the verdict sentence (the deliverable's separating-model branch was reached and
       compiled; the `.ZTime` question is open and not settleable by any model); what landed and
