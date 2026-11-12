@@ -826,7 +826,7 @@
       "group": "Compression: the A1 candidate",
       "keyword_line": 113,
       "name": "FormalSystem.Metalogic.Decidability.validZTime_iff_noCertifiedCandidate",
-      "span_end": 129,
+      "span_end": 128,
       "span_start": 99,
       "status": "resolved"
     },
@@ -834,10 +834,10 @@
       "field": null,
       "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean",
       "group": "Compression: the A1 candidate",
-      "keyword_line": 147,
+      "keyword_line": 179,
       "name": "FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime",
-      "span_end": 151,
-      "span_start": 130,
+      "span_end": 183,
+      "span_start": 162,
       "status": "resolved"
     },
     {
@@ -854,10 +854,10 @@
       "field": null,
       "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean",
       "group": "Compression: the A1 candidate",
-      "keyword_line": 161,
+      "keyword_line": 209,
       "name": "FormalSystem.Metalogic.Decidability.decidableSemanticConsequenceNil",
-      "span_end": 167,
-      "span_start": 152,
+      "span_end": 214,
+      "span_start": 202,
       "status": "resolved"
     }
   ],

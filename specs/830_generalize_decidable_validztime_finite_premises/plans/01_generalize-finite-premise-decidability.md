@@ -309,28 +309,28 @@ shell-suite subset is claimed.
 
 ---
 
-### Phase 4: Land the criterion and the direct-route procedure in `Assembly.lean` [NOT STARTED]
+### Phase 4: Land the criterion and the direct-route procedure in `Assembly.lean` [COMPLETED]
 
 **Goal**: The task's headline deliverable by the direct route —
 `consequence_iff_noCertifiedCandidate` and `decidableSemanticConsequenceZTime` — with the three
 pinned declarations in this module left intact.
 
 **Tasks**:
-- [ ] Add `consequence_iff_noCertifiedCandidate` and `decidableSemanticConsequenceZTime`,
+- [x] Add `consequence_iff_noCertifiedCandidate` and `decidableSemanticConsequenceZTime`,
       transcribed from the probe (lines 368-387), with `candsC` renamed to `candsCtx`.
-- [ ] Give each a doc comment ending in a `Paper: — (formalization-native; ...)` line, matching
+- [x] Give each a doc comment ending in a `Paper: — (formalization-native; ...)` line, matching
       `Assembly.lean:110` and `:144`, so the Phase 6 theorem-index rows satisfy C15.
-- [ ] Keep `decidableSemanticConsequenceZTime` a plain `def`, never an `instance`: a global
+- [x] Keep `decidableSemanticConsequenceZTime` a plain `def`, never an `instance`: a global
       `Decidable` instance would change instance resolution repository-wide, for the reason this
       module's header already gives for `Compression.decidableValidZTime`. Confirm it elaborates
       without a `noncomputable` modifier.
-- [ ] Re-express `decidableSemanticConsequenceNil` as the `Γ = []` specialization of the new
+- [x] Re-express `decidableSemanticConsequenceNil` as the `Γ = []` specialization of the new
       procedure, leaving its name and signature unchanged, and replace its now-false docstring
       paragraph ("The non-empty-premise case is unproved here… none of them yet written") with
       a pointer to the general form.
-- [ ] Leave `validZTime_iff_noCertifiedCandidate` and `Compression.decidableValidZTime`
+- [x] Leave `validZTime_iff_noCertifiedCandidate` and `Compression.decidableValidZTime`
       untouched — both are pinned under C14 in `docs/theorem-index.md`.
-- [ ] Run `lake build && bash scripts/typst-sync-check.sh --fix`, stage
+- [x] Run `lake build && bash scripts/typst-sync-check.sh --fix`, stage
       `typst/generated/status.typ` with `Assembly.lean`, and commit the two together.
 
 **Timing**: 1 hour

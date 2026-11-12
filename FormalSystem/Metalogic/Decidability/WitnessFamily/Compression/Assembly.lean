@@ -125,6 +125,38 @@ theorem validZTime_iff_noCertifiedCandidate (φ : Formula) :
     exact hall W (mem_cands_of_bounded φ W hlen hcount hbx) t
       (Finset.mem_Icc.mpr ⟨ht0, ht1⟩) hcert
 
+
+/--
+**The decision criterion at arbitrary finite premises.**
+
+`Γ ⊨_ZTime σ` exactly when no enumerated candidate certifies a refutation at any time of the
+bounded window. The candidates are `WitnessFamily Γ [σ]`, with `Γ` and `Δ` named separately — the
+shape the certificate layer exists to export.
+
+Forward, by contraposition through `exists_witnessFamily_of_not_consequence` and
+`mem_candsCtx_of_bounded`: a failure of consequence produces a certified candidate inside the
+window. Backward through `WitnessFamily.refutes_of_certifies`: a certified candidate produces a
+genuine ℤ-time countermodel satisfying every premise and failing `σ`, which refutes the
+consequence outright.
+
+Paper: — (formalization-native; the paper's `cor:tm-decidability` is commented out and
+carries no live label, and states nothing about the witness-family route)
+-/
+theorem consequence_iff_noCertifiedCandidate (Γ : Context) (σ : Formula) :
+    SemanticConsequenceIn ProofSystem.FrameClass.ZTime Γ σ ↔
+      ∀ W ∈ candsCtx Γ [σ], ∀ t ∈ Finset.Icc (0 : ℤ) (compressionBound Γ [σ] : ℤ),
+        ¬ W.Certifies t := by
+  constructor
+  · intro hv W _ t _ hcert
+    obtain ⟨F, hF, M, τ, u, hprem, hno⟩ := WitnessFamily.refutes_of_certifies W hcert
+    exact hno σ (by simp) (hv F hF M τ u hprem)
+  · intro hall
+    by_contra hnv
+    obtain ⟨W, t, hlen, hcount, hbx, ht0, ht1, hcert⟩ :=
+      exists_witnessFamily_of_not_consequence Γ σ hnv
+    exact hall W (mem_candsCtx_of_bounded Γ [σ] W hlen hcount hbx) t
+      (Finset.mem_Icc.mpr ⟨ht0, ht1⟩) hcert
+
 namespace Compression
 
 /--
@@ -150,17 +182,32 @@ def decidableValidZTime (φ : Formula) : Decidable (ValidZTime φ) :=
 end Compression
 
 /--
+**The decision procedure for `Γ ⊨_ZTime σ`** at arbitrary finite `Γ`, by the direct route.
+
+A `def` and not an `instance`, for the reason this module's header gives for
+`Compression.decidableValidZTime`: a global `Decidable` instance here would change instance
+resolution repository-wide. Callers that want it can `letI` it locally.
+
+It carries no `noncomputable` modifier — `candsCtx` and `Finset.Icc` are both computable, and
+`WitnessFamily.decidableCertifies` decides the four certificate conditions. See this module's
+header for the complexity statement and the literature's own lower bound.
+
+Paper: — (formalization-native; the paper's `cor:tm-decidability` is commented out and
+carries no live label, and states nothing about the witness-family route)
+-/
+def decidableSemanticConsequenceZTime (Γ : Context) (σ : Formula) :
+    Decidable (SemanticConsequenceIn ProofSystem.FrameClass.ZTime Γ σ) :=
+  decidable_of_iff _ (consequence_iff_noCertifiedCandidate Γ σ).symm
+
+/--
 **The empty-premise consequence corollary.**
 
-Via `semanticConsequenceIn_nil_iff`, the bridge `SemanticConsequenceIn fc [] φ ↔ ValidIn fc φ`.
-The non-empty-premise case is unproved here. A deduction theorem is what the *reduction* route
-(`Γ ⊨ σ` from `⊨ ⋀Γ → σ`) would need, and the tree has none; the *direct* route needs none, since
-everything downstream of the entry point is already stated at arbitrary `Γ Del`. See this module's
-header for the three `Γ = []`-specific items that remain, none of them yet written.
+The `Γ = []` specialization of `decidableSemanticConsequenceZTime`. Its name and signature are
+pinned, so it survives as a thin wrapper rather than being retired; the general finite-premise
+form beside it is what callers should reach for.
 -/
 def decidableSemanticConsequenceNil (σ : Formula) :
     Decidable (SemanticConsequenceIn ProofSystem.FrameClass.ZTime [] σ) :=
-  letI := Compression.decidableValidZTime σ
-  decidable_of_iff (ValidZTime σ) (semanticConsequenceIn_nil_iff _ σ).symm
+  decidableSemanticConsequenceZTime [] σ
 
 end FormalSystem.Metalogic.Decidability
