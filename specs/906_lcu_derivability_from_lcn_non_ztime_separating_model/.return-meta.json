@@ -1,30 +1,10 @@
 {
-  "status": "planned",
-  "dispatch_seq": 6,
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/plans/01_lcu-lcn-separating-model.md",
-      "summary": "Five-phase custody plan for the compiled lcU/lcN separation: promote the determinism-collapse sibling and the deterministic-class soundness arm into FormalSystem/, record the non-derivability verdict in PlusLCSchema.lean and LCExtension.lean, add four theorem-index rows, and track/wire/reduce the untracked evidence probe."
-    }
-  ],
-  "next_steps": "Run /orchestrate 906 to execute the plan. Phase 4 touches docs/theorem-index.md, which task 899 also holds, so the two will serialize at admission; if 899 is mid-flight, Phase 4 closes [BLOCKED] and the other four phases still land.",
-  "memory_candidates": [
-    {
-      "content": "Plan-decomposition pattern for a territory-contended file: when exactly one path in a plan's file scope is held by a concurrent sibling task and nothing else in the plan depends on that path, isolate it into its own minimal phase rather than folding it into the phase whose work produced it. The declared file_scope still serializes the pair at admission (which is the designed route for shared territory -- declare, never silently narrow scope to the free files), but if the implementation dispatch runs while the sibling is still mid-flight, only that one small phase closes [BLOCKED] and the plan's substance lands. Folding the contended path into a substantive phase instead makes the whole phase blockable. The pattern applies whenever the contended artifact is a downstream ledger or index that records work done elsewhere (a theorem index, a roadmap, a generated inventory) rather than the work itself.",
-      "category": "PATTERN",
-      "source_artifact": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/plans/01_lcu-lcn-separating-model.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["territory-contention", "phase-isolation", "file-scope", "concurrent-tasks", "plan-decomposition", "blocked-phase"]
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 22,
   "metadata": {
-    "session_id": "sess_1794448865_9a2e5c_906",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 5,
-    "dependency_waves": 4
+    "session_id": "sess_1794448865_9a2e5c",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   }
 }

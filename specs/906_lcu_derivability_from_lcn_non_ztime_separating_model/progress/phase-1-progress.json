@@ -1,0 +1,29 @@
+{
+  "phase": 1,
+  "phase_name": "The ⊐ Sibling of the Determinism Collapse",
+  "started_at": "2026-11-12T05:19:59Z",
+  "last_updated": "2026-11-12T05:35:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-read PlusDeterminism.lean and the probe source lines 27-38", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Confirm dstab_iff_of_deterministic is declared nowhere today", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Transcribe dstab_iff_of_deterministic verbatim after stab_iff_of_deterministic", "status": "done", "files_touched": ["FormalSystem/PlusLanguage/PlusDeterminism.lean"]},
+    {"id": 4, "description": "Add docstring with determinism-direction explanation and paper-label citation", "status": "done", "files_touched": ["FormalSystem/PlusLanguage/PlusDeterminism.lean"]},
+    {"id": 5, "description": "Measure axiom profile via lean_verify / lake env lean", "status": "done", "files_touched": [], "note": "Measured [propext, Classical.choice, Quot.sound] via mcp__lean-lsp__lean_verify -- wider than the original four ([propext] only). This is the Risk-table's anticipated non-propext branch; taken, not a failure."},
+    {"id": 6, "description": "Update Main Results list to five names and the stable-import-surface sentence", "status": "done", "files_touched": ["FormalSystem/PlusLanguage/PlusDeterminism.lean"]},
+    {"id": 7, "description": "Update Axiom pin (C4) block per measured branch", "status": "done", "files_touched": ["FormalSystem/PlusLanguage/PlusDeterminism.lean"], "note": "Non-propext branch taken: existing four-name choice-free sentence left unwidened; new paragraph records the fifth name's measured profile and names dstab_iff's own classical step as the cost. Why this is choice-free section amended to scope explicitly to the original four."},
+    {"id": 8, "description": "Update PlusLanguage/README.md inventory row description", "status": "done", "files_touched": ["FormalSystem/PlusLanguage/README.md"]},
+    {"id": 9, "description": "Regenerate typst/generated/status.typ via typst-sync-check.sh --fix and stage in same commit", "status": "done", "files_touched": ["typst/generated/status.typ"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "1.4",
+      "description": "Give it a docstring ... and a Paper: anchor line matching the shape used by the module's neighbours.",
+      "type": "altered",
+      "reason": "This module's actual neighbouring per-declaration docstrings (the existing four theorems) carry no separate 'Paper:' line at all -- the paper labels are cited inline in prose (e.g. 'lem:deterministic-singleton') and only the module docstring's References section names the JPL paper. Followed the module's ACTUAL neighbour shape (inline citation, no bolted-on Paper: line) rather than the LCExtension.lean/PlusLCSchema.lean convention the plan's phrasing seems to assume; this is purely a documentation-formatting adaptation, not a mathematical deviation.",
+      "annotation": "*(deviation: altered -- matched this module's actual inline paper-label citation shape rather than a bolted-on Paper: line, since none of its neighbours carry one)*"
+    }
+  ]
+}

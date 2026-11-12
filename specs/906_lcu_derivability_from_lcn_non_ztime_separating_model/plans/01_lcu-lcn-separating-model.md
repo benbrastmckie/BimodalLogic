@@ -2,7 +2,7 @@
 
 - **Task**: 906 - Settle whether `lcU` is derivable from TM⁺ + `LC_n` at `.ZTime` via a non-`.ZTime`
   separating model
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None blocking. Territory-serialized against task 899 on
   `docs/theorem-index.md` — see "Territory" below.
@@ -297,50 +297,63 @@ on every other phase.
 
 ---
 
-### Phase 1: The `⟐` Sibling of the Determinism Collapse [NOT STARTED]
+### Phase 1: The `⟐` Sibling of the Determinism Collapse [COMPLETED]
 
 **Goal**: `⟐φ ↔ φ` on a deterministic frame becomes a library fact beside `⊡φ ↔ φ`, with its axiom
 profile measured rather than assumed.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/PlusLanguage/PlusDeterminism.lean` and
+- [x] Re-read `FormalSystem/PlusLanguage/PlusDeterminism.lean` and
       `specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean` immediately before editing
-      (dispatch concurrency note item (1)); the probe lines 27-38 are the source text.
-- [ ] Confirm by exact-name grep over `FormalSystem/` and `Tests/` that `dstab_iff_of_deterministic`
+      (dispatch concurrency note item (1)); the probe lines 27-38 are the source text. *(completed)*
+- [x] Confirm by exact-name grep over `FormalSystem/` and `Tests/` that `dstab_iff_of_deterministic`
       is declared nowhere today, so the new name cannot create an ambiguity for a downstream
       `open FormalSystem.PlusLanguage`. (Checked at authoring time — the only occurrences anywhere
-      are inside the probe — but re-check rather than trust this line.)
-- [ ] Transcribe `dstab_iff_of_deterministic` VERBATIM from the probe, placed directly after
+      are inside the probe — but re-check rather than trust this line.) *(completed: re-grep
+      confirmed zero occurrences under FormalSystem/ or Tests/ before editing)*
+- [x] Transcribe `dstab_iff_of_deterministic` VERBATIM from the probe, placed directly after
       `stab_iff_of_deterministic` (its `⊡` partner) rather than appended at the end of the module,
       so the two collapses read together. Statement and proof are lifted unchanged; the signature
       is pinned below under `## Lean Challenge Statements` and `plan-compliance.md`'s Statement
-      Fidelity clause governs it.
-- [ ] Give it a docstring in the module's own idiom: what it says, which direction needs
+      Fidelity clause governs it. *(completed: statement and proof body transcribed unchanged;
+      added `open PlusTruth` to the module's existing open list since `dstab_iff` lives in that
+      nested namespace in the library, unlike the probe's own flat `open` list — a namespace
+      resolution adaptation, not an import and not a statement change)*
+- [x] Give it a docstring in the module's own idiom: what it says, which direction needs
       determinism (`(⇒)` is `truth_congr_ext` along `states_eq_of_deterministic`; `(⇐)` is
       `⟨τ, rfl, h⟩` and holds on every frame), and a `Paper:` anchor line matching the shape used
-      by the module's neighbours.
-- [ ] **Measure** the new profile — `#print axioms FormalSystem.PlusLanguage.dstab_iff_of_deterministic`
+      by the module's neighbours. *(deviation: altered — see progress file phase-1 deviation
+      record; the module's actual neighbours cite the paper label inline, with no separate
+      `Paper:` line, so that shape was matched instead)*
+- [x] **Measure** the new profile — `#print axioms FormalSystem.PlusLanguage.dstab_iff_of_deterministic`
       via `lake env lean` on a scratch file importing the module, or `lean_verify` on the fully
       qualified name. Record the measured value; do not type it from this plan or from the report,
-      which never pinned this name.
-- [ ] Update the module docstring's `## Main Results` list to carry the fifth name, and change
-      "Those four names are the stable import surface of this module" to name five.
-- [ ] Update the `## Axiom pin (C4)` block: add the commented `#print axioms` line for the new name
+      which never pinned this name. *(completed: measured `[propext, Classical.choice,
+      Quot.sound]` via `mcp__lean-lsp__lean_verify`, cross-checked against
+      `stab_iff_of_deterministic` measuring `[propext]` on the same tool to confirm the tool
+      discriminates correctly)*
+- [x] Update the module docstring's `## Main Results` list to carry the fifth name, and change
+      "Those four names are the stable import surface of this module" to name five. *(completed)*
+- [x] Update the `## Axiom pin (C4)` block: add the commented `#print axioms` line for the new name
       and amend the sentence after it. **Two branches, decided by the measurement, not by
       preference**: if the measured profile is `[propext]`, the sentence becomes "All five report
       `[propext]` only — in particular **no** `Classical.choice`". If it is anything else, the
       existing sentence stays scoped to the original four and the fifth is recorded on its own line
       with its measured profile and one sentence naming the step that costs the axiom; the
       `## Why this is choice-free` section is then amended to say which results it covers. Never
-      widen the existing claim to cover a name that does not satisfy it.
-- [ ] Update `FormalSystem/PlusLanguage/README.md`'s inventory row description for
+      widen the existing claim to cover a name that does not satisfy it. *(completed: non-propext
+      branch taken — measured profile is `[propext, Classical.choice, Quot.sound]`; the four-name
+      sentence stayed unwidened, a new paragraph records the fifth name's profile and names
+      `dstab_iff`'s own classical `¬∀¬ ↔ ∃` step as the cost, and the "Why this is choice-free"
+      section now opens with an explicit four-only scoping sentence)*
+- [x] Update `FormalSystem/PlusLanguage/README.md`'s inventory row description for
       `PlusDeterminism.lean` (currently naming the four results and asserting "choice-free
       (`[propext]` only)") to name the fifth and to match whichever branch above was taken. Row
       descriptions are preserved across `--emit-inventory` regeneration, so this is a hand edit of
-      the description cell only — never of a generated count cell.
-- [ ] Regenerate `typst/generated/status.typ` with `bash scripts/typst-sync-check.sh --fix` and
+      the description cell only — never of a generated count cell. *(completed)*
+- [x] Regenerate `typst/generated/status.typ` with `bash scripts/typst-sync-check.sh --fix` and
       stage it in the SAME commit as the `.lean` change; the pre-commit hook is blocking, not
-      auto-regenerating.
+      auto-regenerating. *(completed)*
 
 **Timing**: 0.75 hours
 

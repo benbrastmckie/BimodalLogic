@@ -24,11 +24,18 @@ singleton bridge it rests on.
 - `determined_of_deterministic` — *Determined* `φ → ⊡φ` is frame-valid on every deterministic
   frame
 - `stab_biconditional_plusValidOn_of_deterministic` — both halves of `⊡φ ↔ φ` as frame validities
+- `dstab_iff_of_deterministic` — the `⟐` sibling of the collapse: `⟐φ` and `φ` are equivalent at
+  every world history and time
 
-Those four names are the stable import surface of this module; downstream work consumes them
+Those five names are the stable import surface of this module; downstream work consumes them
 rather than re-deriving the collapse.
 
 ## Why this is choice-free
+
+**This section covers the original four results only** — `states_eq_of_deterministic`,
+`stab_iff_of_deterministic`, `determined_of_deterministic` and
+`stab_biconditional_plusValidOn_of_deterministic` — not `dstab_iff_of_deterministic`, whose
+measured profile is wider (see "Axiom pin (C4)" below).
 
 The proof uses only the (⇒) half of `lem:deterministic-singleton`. It never appeals to
 `thm:extension` (the Zorn-based total-history extension of `Semantics/Extension/Extension.lean`),
@@ -71,6 +78,17 @@ Recorded from `#print axioms` at the time of writing, and re-checkable by uncomm
 
 All four report `[propext]` only — in particular **no `Classical.choice`**.
 
+```
+#print axioms FormalSystem.PlusLanguage.dstab_iff_of_deterministic
+```
+
+`dstab_iff_of_deterministic` reports `[propext, Classical.choice, Quot.sound]` — wider than the
+four above, and the "choice-free" claim above is **not** widened to cover it. The extra axioms
+are paid by `dstab_iff` itself (`PlusLanguage/PlusTruth.lean`, via `Semantics/TruthClauses.lean`'s
+`dstab_iff`), whose own docstring names the step: "the classical `¬∀¬ ↔ ∃` step over the
+stability clause" — a `by_contra` discharge, not anything in this module's own determinism
+argument.
+
 ## References
 
 * JPL paper `def:deterministic`, `lem:deterministic-singleton`, `app:deterministic`
@@ -87,6 +105,7 @@ namespace FormalSystem.PlusLanguage
 
 open FormalSystem.PlusLanguage
 open FormalSystem.Semantics
+open PlusTruth
 
 variable {F : TaskFrame}
 
@@ -127,6 +146,27 @@ theorem stab_iff_of_deterministic (hD : F.Deterministic) (M : TaskModel F)
   · exact of_stab M τ t φ
   · intro h σ hsame
     exact (truth_congr_ext M φ τ σ t (states_eq_of_deterministic hD hsame)).mp h
+
+/--
+**The `⟐` sibling of the collapse**: over a deterministic frame `⟐φ` and `φ` are equivalent at
+every world history and time, for every `PlusFormula φ`.
+
+(⇐) is the trivial witness `σ := τ`, which holds on every frame — no determinism needed. (⇒) is
+where determinism enters: `dstab_iff` gives a witness `σ` agreeing with `τ`'s state at `t`; by
+`states_eq_of_deterministic` that `σ` agrees with `τ` at *every* time, so `truth_congr_ext`
+transports the truth of `φ` from `σ` back to `τ`. This is the `dstab` counterpart to
+`stab_iff_of_deterministic` above, same source as `lem:deterministic-singleton`.
+-/
+theorem dstab_iff_of_deterministic (hD : F.Deterministic) (M : TaskModel F)
+    (τ : WorldHistory F) (t : F.Duration) (φ : PlusFormula) :
+    PlusTruthAt M τ t (PlusFormula.dstab φ) ↔ PlusTruthAt M τ t φ := by
+  rw [dstab_iff]
+  constructor
+  · rintro ⟨σ, hs, h⟩
+    exact (truth_congr_ext M φ σ τ t
+      (fun s => (states_eq_of_deterministic hD hs s).symm)).mp h
+  · intro h
+    exact ⟨τ, rfl, h⟩
 
 /--
 **`app:deterministic`, positive half.** *Determined* — `φ → ⊡φ` — is valid on every deterministic

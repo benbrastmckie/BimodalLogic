@@ -39,7 +39,7 @@ next_project_number: 926
 
 ### Completeness
 
-906 [PLANNED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
+906 [IMPLEMENTING] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
 
 ### Dataset Enhancement
 
@@ -991,7 +991,7 @@ Evidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two
 ---
 
 ### 906. Settle whether LCU is derivable from TM-plus + LC_n at ZTime via a non-ZTime separating model
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal
 - **Topic**: completeness
 - **Dependencies**: None
