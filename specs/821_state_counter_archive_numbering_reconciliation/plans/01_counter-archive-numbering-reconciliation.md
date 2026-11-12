@@ -1,7 +1,7 @@
 # Implementation Plan: Task #821
 
 - **Task**: 821 - state_counter_archive_numbering_reconciliation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: None (no research artifact for this round; the task description carries a
@@ -107,38 +107,48 @@ performed and no roadmap phases are included.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Attest the Discharge and Settle the Second Remedy [NOT STARTED]
+### Phase 1: Attest the Discharge and Settle the Second Remedy [COMPLETED]
 
 **Goal**: Produce this record's own before-state measurement set, confirm both named consequences
 are resolved and both guardrails still hold, and write the durable decision record that settles
 the vault-relocation remedy on its merits.
 
 **Tasks**:
-- [ ] Run `bash .claude/scripts/validate-state.sh --deep specs/state.json`; capture the exit code
-      and the Check 12 line verbatim as the BEFORE reading.
-- [ ] Record `next_project_number`, the maximum active `project_number`, and the sorted set of
+- [x] Run `bash .claude/scripts/validate-state.sh --deep specs/state.json`; capture the exit code
+      and the Check 12 line verbatim as the BEFORE reading. *(completed: exit 0; Check 12 PASS,
+      "next_project_number (926) names a free number"; 19 passed / 19 warnings / 0 failed)*
+- [x] Record `next_project_number`, the maximum active `project_number`, and the sorted set of
       archive `project_number` values above 843, from `specs/state.json` and
-      `specs/archive/state.json`.
-- [ ] Probe the allocator non-destructively: run `state-write.sh` with `--allocate-into` and
+      `specs/archive/state.json`. *(completed: next_project_number=926, max active=907; 78
+      archive numbers above 843 — 73 dense archived values in 844-925 plus the five outliers
+      949/953/992/998/1054; this corrects the plan's own "77 values" estimate to the re-derived
+      73 — the eight gaps in 844-925 belong to live active tasks, not archive absences)*
+- [x] Probe the allocator non-destructively: run `state-write.sh` with `--allocate-into` and
       `--dry-run` and record the number it derives plus the exit path. Confirm the allocator
       itself does not refuse (an unrelated audit-evidence refusal is not an allocator refusal and
-      must be reported as such).
-- [ ] Confirm the fallback allocation route is intact: `commands/task.md` Step 6 still reads
+      must be reported as such). *(completed: derives 926; refused only by the audit-evidence
+      gate, exit 5, not by the allocator or Check 12's invariant)*
+- [x] Confirm the fallback allocation route is intact: `commands/task.md` Step 6 still reads
       `next_project_number` via `jq` immediately before its write. Record that this plan removes
-      nothing from it.
-- [ ] For each of the five outlier numbers, record whether `specs/archive/{N}_*` exists, and the
-      row's `project_name` and `status` from `specs/archive/state.json`.
-- [ ] Decide the vault-relocation remedy and state the evidence for the decision. The evidence
+      nothing from it. *(completed, with a correction: the `jq -r '.next_project_number'` read is
+      in Step 1, not Step 6; it flows into Step 6's `state-write.sh` call via `$next_num`. The
+      route itself — read-then-write without `--allocate-into` — is confirmed unmodified and
+      intact)*
+- [x] For each of the five outlier numbers, record whether `specs/archive/{N}_*` exists, and the
+      row's `project_name` and `status` from `specs/archive/state.json`. *(completed: see
+      records/01_numbering-remedy-decision.md's Outlier Row Evidence table)*
+- [x] Decide the vault-relocation remedy and state the evidence for the decision. The evidence
       already on hand points to DECLINING it: `project-number-inuse.sh`'s own header states that
       `specs/vault/**` is excluded precisely so a vault operation can *recycle* that number space,
       so relocating these rows would make their numbers re-issuable — and those numbers appear in
       committed git history and in four on-disk archived directories, which is exactly the
       recycling hazard the exclusion exists to permit only for deliberately vacated ranges. Record
-      the contrary case too if the implementer's own measurement contradicts this.
-- [ ] Create `specs/821_state_counter_archive_numbering_reconciliation/records/` and write
+      the contrary case too if the implementer's own measurement contradicts this. *(completed:
+      DECLINED, no contrary evidence found; see decision record)*
+- [x] Create `specs/821_state_counter_archive_numbering_reconciliation/records/` and write
       `01_numbering-remedy-decision.md` carrying: the measurement table, the discharge attestation,
       the remedy decision with its evidence, and the explicit statement that no archived row is
-      modified or relocated by this record.
+      modified or relocated by this record. *(completed)*
 
 **Timing**: 0.75 hours
 
