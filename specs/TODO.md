@@ -6,7 +6,7 @@ next_project_number: 926
 
 ## Task Order
 
-*Updated 2026-11-11. Generated from state.json dependency graph.*
+*Updated 2026-11-12. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -39,10 +39,10 @@ next_project_number: 926
 
 ### Completeness
 
-899 [NOT STARTED] — The stability cluster's (past-type, future-type) set is a...
+899 [RESEARCHED] — The stability cluster's (past-type, future-type) set is a...
   └─ 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
-905 [NOT STARTED] — Eliminate cross-certification between the forward and...
-906 [NOT STARTED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
+905 [RESEARCHING] — Eliminate cross-certification between the forward and...
+906 [RESEARCHING] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
 
 ### Dataset Enhancement
 
@@ -994,7 +994,7 @@ Evidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two
 ---
 
 ### 906. Settle whether LCU is derivable from TM-plus + LC_n at ZTime via a non-ZTime separating model
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: formal
 - **Topic**: completeness
 - **Dependencies**: None
@@ -1004,7 +1004,7 @@ Evidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two
 ---
 
 ### 905. Eliminate cross-certification between the forward and backward Rabin automata, or show it is load-bearing
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: formal
 - **Topic**: completeness
 - **Dependencies**: None
@@ -1102,10 +1102,11 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 899. The stability cluster's (past-type, future-type) set is a full product
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
+- **Research**: [899_stability_cluster_type_product_lemma/reports/01_stability-cluster-type-product.md]
 
 **Description**: In FormalSystem/PlusLanguage/PlusPasting.lean, for a regular frame, a model, a history tau, a time t and a finite list of past-determined and future-determined formulas, prove that the set of pairs (past-type, future-type) realized by histories through tau.state t at t equals the product of the set of realized past-types and the set of realized future-types, by paste with paste_agreeUpTo, paste_agreeFrom and the semantic PastDet/FutDet predicates of OpenFutureElimination.lean. This is the lemma that makes the initialization of the forward and backward Auxiliary-Atoms automata at the clock cut a state-level datum, and it is the exact point at which separationOver_ztime is consumed by the completeness architecture.
 

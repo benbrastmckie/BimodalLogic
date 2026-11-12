@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/899_stability_cluster_type_product_lemma/reports/01_stability-cluster-type-product.md",
+      "summary": "Research for the stability-cluster (past-type, future-type) product lemma: the full proof already compiles sorry-free via paste + paste_agreeUpTo/paste_agreeFrom + PastDet/FutDet, the declared file_scope PlusPasting.lean is import-infeasible (correct home is OpenFutureElimination.lean), and the measured axiom profile is [propext, Quot.sound], not pcq."
+    },
+    {
+      "type": "probe",
+      "path": "specs/899_stability_cluster_type_product_lemma/probes/01_type-product.lean",
+      "summary": "Compiles clean under lake env lean: pastType, futType, typePair, typePair_image_stabClass, typePair_image_stabClass_state_congr, typePair_image_stabClass_of_sepClauses."
+    },
+    {
+      "type": "probe",
+      "path": "specs/899_stability_cluster_type_product_lemma/probes/02_sepz-plug-point.lean",
+      "summary": "Compiles clean: the sepZ/separationOver_ztime instantiation of the product lemma, showing the SepClauses plug point."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794448865_9a2e5c_899",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

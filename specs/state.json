@@ -2230,7 +2230,7 @@
     {
       "project_number": 899,
       "project_name": "stability_cluster_type_product_lemma",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "title": "The stability cluster's (past-type, future-type) set is a full product",
       "description": "In FormalSystem/PlusLanguage/PlusPasting.lean, for a regular frame, a model, a history tau, a time t and a finite list of past-determined and future-determined formulas, prove that the set of pairs (past-type, future-type) realized by histories through tau.state t at t equals the product of the set of realized past-types and the set of realized future-types, by paste with paste_agreeUpTo, paste_agreeFrom and the semantic PastDet/FutDet predicates of OpenFutureElimination.lean. This is the lemma that makes the initialization of the forward and backward Auxiliary-Atoms automata at the clock cut a state-level datum, and it is the exact point at which separationOver_ztime is consumed by the completeness architecture.",
@@ -2241,10 +2241,16 @@
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T09:48:35Z",
-      "last_updated": "2026-11-09T09:48:35Z",
-      "next_artifact_number": 1,
-      "artifacts": [],
-      "session_id": "sess_1794209534_e57749",
+      "last_updated": "2026-11-12T02:22:05Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/899_stability_cluster_type_product_lemma/reports/01_stability-cluster-type-product.md",
+          "type": "report",
+          "summary": "Research for the stability-cluster (past-type, future-type) product lemma: the full proof already compiles sorry-free via paste + paste_agreeUpTo/paste_agreeFrom + PastDet/FutDet, the declared file_scope PlusPasting.lean is import-infeasible (correct home is OpenFutureElimination.lean), and the measured axiom profile is [propext, Quot.sound], not pcq."
+        }
+      ],
+      "session_id": "sess_1794448865_9a2e5c",
       "audit_verdict": {
         "proposal": {
           "id": "stability_cluster_type_product_lemma",
@@ -2563,7 +2569,7 @@
     {
       "project_number": 905,
       "project_name": "eliminate_cross_certification_two_sided_reynolds_automata",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "formal",
       "title": "Eliminate cross-certification between the forward and backward Rabin automata, or show it is load-bearing",
       "description": "RESEARCH TASK, report only. Deliverable: an answer, with its argument, to whether the clause-(a) cross-certification of specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md's Finding 5.2/14.4 is eliminable -- either a proof that the certification is automatic from the chronicle clauses of that report's Finding 8.2, or a demonstration that it is load-bearing, or a bi-infinite-automaton alternative with its cost. The question is answerable against the chronicle clauses and the two clause (a)s alone, strictly cheaper than anything in that report's Finding 17; eliminating the clauses would remove one omega-regularity argument from each automaton and shrink the alphabet's enlargement. No Lean work; no completeness claim.",
@@ -2571,7 +2577,7 @@
       "dependencies": [],
       "priority": "low",
       "created": "2026-11-09T20:01:27Z",
-      "last_updated": "2026-11-09T20:01:27Z",
+      "last_updated": "2026-11-12T02:01:59Z",
       "next_artifact_number": 1,
       "artifacts": [],
       "audit_verdict": {
@@ -2657,12 +2663,13 @@
         "scope_blind_count": 452,
         "note": "trimmed to top 6 of 13 non-scope-blind verdicts for state-write arg-size limits; full 465-verdict record committed at task-proposals-audit.ndjson"
       },
-      "topic": "completeness"
+      "topic": "completeness",
+      "session_id": "sess_1794448865_9a2e5c_905"
     },
     {
       "project_number": 906,
       "project_name": "lcu_derivability_from_lcn_non_ztime_separating_model",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "formal",
       "title": "Settle whether LCU is derivable from TM-plus + LC_n at ZTime via a non-ZTime separating model",
       "description": "RESEARCH TASK, report only. Deliverable: either a derivation of lcU alpha beta in TM-plus + LC_n + mirror LC_n for state-local beta, or a non-ZTime separating model. A ZTime countermodel cannot settle this question -- both lcN_plusValidZTime and lcU_plusValidZTime are compiled, so the two systems have the same ZTime models -- so the first target is .Base, where both schemata's validity is open and unclaimed per FormalSystem/PlusLanguage/PlusLCSchema.lean's own docstring, for a separating general frame or algebra. No Lean work beyond what is needed to state the separating model or derivation at the report level; no completeness claim.",
@@ -2670,7 +2677,7 @@
       "dependencies": [],
       "priority": "low",
       "created": "2026-11-09T20:01:38Z",
-      "last_updated": "2026-11-09T20:01:38Z",
+      "last_updated": "2026-11-12T02:02:11Z",
       "next_artifact_number": 1,
       "artifacts": [],
       "audit_verdict": {
@@ -2756,7 +2763,8 @@
         "scope_blind_count": 452,
         "note": "trimmed to top 6 of 38 non-scope-blind verdicts for state-write arg-size limits; full 490-verdict record committed at task-proposals-audit.ndjson"
       },
-      "topic": "completeness"
+      "topic": "completeness",
+      "session_id": "sess_1794448865_9a2e5c_906"
     },
     {
       "project_number": 907,
