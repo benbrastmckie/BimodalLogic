@@ -123,6 +123,47 @@ theorem semanticConsequenceIn_nil_iff (fc : ProofSystem.FrameClass) (φ : Formul
   · intro h F hF M τ t _
     exact h F hF M τ t
 
+/-! ## The consequence-form carrier normalization -/
+
+/--
+Consequence analogue of `ValidInt`: the carrier quantifier collapsed to `ℤ`.
+
+`ValidInt` is the `Γ = []` case. Stating the premises as a hypothesis rather than folding them
+into the conclusion is what keeps the general form inside the `WitnessFamily Γ [σ]` certificate
+shape, which a conjunction-folding reduction would not.
+-/
+def ConsequenceInt (Γ : Context) (φ : Formula) : Prop :=
+  ∀ (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ),
+      (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+
+/--
+**Consequence analogue of `validZTime_iff_validInt`**: compression step 0 at arbitrary premises.
+
+`truthAt_map` is stated at a fixed aligned triple `(σ, σ', t)` and quantified over the formula, so a
+single aligned pair discharges every premise and the conclusion at once; no new transfer
+machinery is needed, and in particular no context-conjunction deduction theorem.
+
+Paper: — (formalization-native; the paper's `cor:tm-decidability` is commented out and
+carries no live label, and states nothing about the witness-family route)
+-/
+theorem consequenceZTime_iff_consequenceInt (Γ : Context) (φ : Formula) :
+    SemanticConsequenceIn ProofSystem.FrameClass.ZTime Γ φ ↔ ConsequenceInt Γ φ := by
+  constructor
+  · intro h F _ M τ t hprem
+    exact h F.toTaskFrame ⟨inferInstance, TaskFrame.isZTime_of_instances _⟩ M τ t hprem
+  · intro h F hF M τ t hprem
+    sat_intro hF
+    let e : ↑F.Duration ≃+o ↑intOrder := intIso
+    have hal := aligned_map (D := F.Duration) (E := intOrder) (F := F.toFibre) e τ
+    refine (truthAt_map (D := F.Duration) (E := intOrder) (F := F.toFibre) e M φ τ
+      (WorldHistory.map τ e) hal t).mpr ?_
+    refine h (FrameOver.map F.toFibre e) (TaskModel.map (F := F.toFibre) M e)
+      (WorldHistory.map τ e) (e t) ?_
+    intro ψ hψ
+    exact (truthAt_map (D := F.Duration) (E := intOrder) (F := F.toFibre) e M ψ τ
+      (WorldHistory.map τ e) hal t).mp (hprem ψ hψ)
+
 /-! ## The compression theorem -/
 
 /--

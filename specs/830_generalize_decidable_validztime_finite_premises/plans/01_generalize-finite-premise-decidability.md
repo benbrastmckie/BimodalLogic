@@ -201,23 +201,23 @@ radius once the `φ`-indexed signatures are preserved; `suite_selection_select` 
 
 ---
 
-### Phase 2: Add the consequence-form carrier normalization to `Family.lean` [NOT STARTED]
+### Phase 2: Add the consequence-form carrier normalization to `Family.lean` [COMPLETED]
 
 **Goal**: Residue item 1 — the risk-bearing item the README caveat named. Land `ConsequenceInt`
 and `consequenceZTime_iff_consequenceInt` in `Family.lean`, directly above the compression
 theorem that will consume them.
 
 **Tasks**:
-- [ ] Transcribe `ConsequenceInt` and `consequenceZTime_iff_consequenceInt` from the probe
+- [x] Transcribe `ConsequenceInt` and `consequenceZTime_iff_consequenceInt` from the probe
       (lines 19-45) into `Family.lean`, sited immediately before the compression theorem.
-- [ ] Give `consequenceZTime_iff_consequenceInt` a doc comment ending in a
+- [x] Give `consequenceZTime_iff_consequenceInt` a doc comment ending in a
       `Paper: — (formalization-native; ...)` line, matching the shape at `Assembly.lean:110`, so
       the Phase 6 theorem-index row satisfies C15.
-- [ ] Confirm no new `import` line is needed: `truthAt_map`, `intIso`, `aligned_map` and the
+- [x] Confirm no new `import` line is needed: `truthAt_map`, `intIso`, `aligned_map` and the
       `sat_intro` macro all come from `FormalSystem.Semantics.IntTransfer`, which `Family.lean:9`
       already imports. If a build error says otherwise, stop and report rather than widening the
       `Compression/` subtree's dependency surface.
-- [ ] Run `lake build && bash scripts/typst-sync-check.sh --fix`, stage
+- [x] Run `lake build && bash scripts/typst-sync-check.sh --fix`, stage
       `typst/generated/status.typ` with `Family.lean`, and commit the two together.
 
 **Timing**: 1 hour

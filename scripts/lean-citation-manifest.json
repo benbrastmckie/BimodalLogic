@@ -794,10 +794,10 @@
       "field": null,
       "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Family.lean",
       "group": "Compression: the A1 candidate",
-      "keyword_line": 153,
+      "keyword_line": 194,
       "name": "FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime",
-      "span_end": 333,
-      "span_start": 128,
+      "span_end": 374,
+      "span_start": 169,
       "status": "resolved"
     },
     {
