@@ -1,7 +1,7 @@
 # Implementation Plan: Generalize the ZTime Decision Procedure to Finite Premises
 
 - **Task**: 830 - Generalize `Compression.decidableValidZTime` from the empty-premise case to arbitrary finite premises
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/830_generalize_decidable_validztime_finite_premises/reports/01_generalize-finite-premise-decidability.md`, `specs/830_generalize_decidable_validztime_finite_premises/reports/01_verified-general-form.lean`

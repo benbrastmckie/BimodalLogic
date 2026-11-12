@@ -13,7 +13,7 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,743,761,829,830,831,873,890 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,743,761,829,831,873,890 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876 | 298,428,502,743,761,873 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -60,7 +60,6 @@ next_project_number: 926
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
     └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
-830 [PLANNED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
@@ -361,12 +360,13 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, Medium Priority Issues section
 ---
 
 ### 830. Generalize decidable validztime finite premises
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [830_generalize_decidable_validztime_finite_premises/reports/01_generalize-finite-premise-decidability.md]
 - **Plan**: [830_generalize_decidable_validztime_finite_premises/plans/01_generalize-finite-premise-decidability.md]
+- **Summary**: [830_generalize_decidable_validztime_finite_premises/summaries/01_generalize-finite-premise-decidability-summary.md]
 
 **Description**: Generalize `Compression.decidableValidZTime` from the empty-premise case to arbitrary finite premises.
 

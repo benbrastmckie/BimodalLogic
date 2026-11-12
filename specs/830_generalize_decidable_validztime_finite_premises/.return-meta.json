@@ -1,30 +1,54 @@
 {
-  "status": "planned",
-  "dispatch_seq": 13,
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/830_generalize_decidable_validztime_finite_premises/plans/01_generalize-finite-premise-decidability.md",
-      "summary": "Six-phase plan transcribing the research dispatch's verified probe into the live tree: context-indexed enumeration, consequence-form carrier normalization, generalized compression theorem, the direct-route criterion and procedure, the reduction-route corollary, and documentation reconciliation with the full gate set."
+      "type": "summary",
+      "path": "specs/830_generalize_decidable_validztime_finite_premises/summaries/01_generalize-finite-premise-decidability-summary.md",
+      "summary": "The ZTime witness-family decision procedure generalized from the empty-premise case to arbitrary finite premises, by both the direct and the reduction route, sorry-free."
     }
+  ],
+  "completion_data": {
+    "completion_summary": "Generalized the witness-family ZTime decision procedure from Gamma = [] to arbitrary finite Gamma. All three enumerated residue items landed sorry-free: the consequence-form carrier normalization (consequenceZTime_iff_consequenceInt), WitnessFamily.Target's premise clause, and the context-indexed enumeration (candsCtx and twelve companions). Headline deliverables are consequence_iff_noCertifiedCandidate, decidableSemanticConsequenceZTime (direct route) and decidableSemanticConsequenceZTimeReduction (reduction route); every pinned phi-indexed declaration keeps its name and statement as a thin wrapper.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean",
+    "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Enumerate.lean",
+    "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Family.lean",
+    "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/README.md",
+    "FormalSystem/Metalogic/Decidability/WitnessFamily/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/ZTimeProvability.lean",
+    "README.md",
+    "docs/theorem-index.md",
+    "scripts/lean-citation-manifest.json",
+    "typst/generated/status.typ",
+    "specs/830_generalize_decidable_validztime_finite_premises/plans/01_generalize-finite-premise-decidability.md",
+    "specs/830_generalize_decidable_validztime_finite_premises/summaries/01_generalize-finite-premise-decidability-summary.md",
+    "specs/830_generalize_decidable_validztime_finite_premises/issues.jsonl",
+    "specs/830_generalize_decidable_validztime_finite_premises/handoffs/phase-1-handoff-20261112-124919.md",
+    "specs/830_generalize_decidable_validztime_finite_premises/handoffs/phase-2-handoff-20261112-125244.md",
+    "specs/830_generalize_decidable_validztime_finite_premises/handoffs/phase-3-handoff-20261112-125615.md",
+    "specs/830_generalize_decidable_validztime_finite_premises/handoffs/phase-4-handoff-20261112-125905.md",
+    "specs/830_generalize_decidable_validztime_finite_premises/handoffs/phase-5-handoff-20261112-130415.md",
+    "specs/830_generalize_decidable_validztime_finite_premises/handoffs/phase-6-handoff-20261112-131907.md"
   ],
   "metadata": {
-    "session_id": "sess_1794503933_59a2b4_830",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 7.25,
-    "dependency_waves": [[1, 2, 5], [3], [4], [6]]
-  },
-  "memory_candidates": [
-    {
-      "content": "When a research dispatch delivers a compiled probe artifact (a namespaced, out-of-build .lean file whose declarations already elaborate sorry-free with measured axioms), the plan phase changes character entirely: approach selection is already settled, and the plan's real work becomes siting decisions (which module each declaration lands in, without widening a subtree's dependency surface), naming decisions (the probe's collision-avoidance suffixes must be renamed on arrival, and repository lint rules such as a no-non-trailing-underscore rule on def names can forbid the probe's own suggested names), and gate-collision scheduling (which generated surfaces the edit moves, and which of those are commit-blocking versus deferrable). Phase decomposition should follow the probe's own dependency order, with one phase per module touched, so each phase is a self-contained transcription whose verification is a single module build.",
-      "category": "PATTERN",
-      "source_artifact": "specs/830_generalize_decidable_validztime_finite_premises/plans/01_generalize-finite-premise-decidability.md",
-      "confidence": 0.82,
-      "suggested_keywords": ["compiled-probe", "plan-from-research", "lean-transcription", "gate-collision", "phase-decomposition", "siting-decision"]
-    }
-  ],
-  "next_steps": "Run /orchestrate 830 to execute the plan"
+    "session_id": "sess_1794512651_a4fdf4",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "dispatch_seq": 16,
+    "compliance_check": "passed"
+  }
 }
