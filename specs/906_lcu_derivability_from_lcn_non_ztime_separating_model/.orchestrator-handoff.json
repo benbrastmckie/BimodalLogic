@@ -1,16 +1,19 @@
 {
   "status": "partial",
-  "phase": "implement",
-  "dispatch_seq": 22,
-  "summary": "Completed Phase 1 of 5 (the dstab sibling of the determinism collapse): dstab_iff_of_deterministic landed verbatim in FormalSystem/PlusLanguage/PlusDeterminism.lean, measured axiom profile [propext, Classical.choice, Quot.sound] via lean_verify (wider than the original four's [propext]-only), with the plan's pre-written non-matching-branch mitigation applied exactly. Scoped build, typst-sync-check --fix, and typst-sync-check --counts-only all green; phase committed. This dispatch's own Phase Mission restricted it to Phase 1 only, so Phases 2-5 remain for a future dispatch.",
+  "dispatch_seq": 23,
+  "summary": "Completed Phase 2 of the task 906 plan: recorded the research's non-derivability verdict (lcU not derivable from TM+ plus LC_n plus mirror at .Base/RuleSet.none, witnessed by the ℚ translation frame) in PlusLCSchema.lean's module and lcU docstrings, plus the .Dense/.RTime argued-not-compiled extension, the .ZTime no-separating-model position, and the guarded-until-form candidate note. All five pre-existing 'open and unclaimed' validity sentences left textually unchanged. This dispatch's own Phase Mission restricted it to Phase 2 only; three phases remain.",
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-1-handoff-20261112T052438Z.md",
-      "summary": "Phase-end handoff for Phase 1 completion: what landed, the axiom-profile decision, the Paper-anchor-line deviation, and next action (Phase 2)."
+      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-2-handoff-20261112T053703Z.md",
+      "summary": "Phase-end handoff recording Phase 2's completion and the forward-reference design decision for Phase 3's not-yet-landed declaration names."
     }
   ],
-  "phases_completed": 1,
+  "phases_completed": 2,
   "phases_total": 5,
-  "blockers": []
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-2-handoff-20261112T053703Z.md",
+  "next_action_hint": "Dispatch Phase 3: transcribe the deterministic soundness arm into FormalSystem/Metalogic/LCExtension.lean (lcAnte_iff_lcCons_of_deterministic, lcN_plusValidOn_of_deterministic, isLCAxiom_plusValidDetIn_base, ext_sound_detIn), add the Deterministic.Validity import, measure axiom profiles, and pin them in Tests/BimodalTest/Metalogic/LCExtensionTest.lean.",
+  "git_checkpoint": "8e1a67068 (task 906 phase 2: record the result in PlusLCSchema.lean) -- tree was green throughout, no separate snapshot needed"
 }

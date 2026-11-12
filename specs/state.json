@@ -2794,9 +2794,9 @@
           "summary": "Five-phase, 5-hour plan: library promotion of the separation's load-bearing halves, the docstring record, theorem-index rows, and probe custody, with the full repository gate set in the final phase."
         },
         {
-          "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-1-handoff-20261112T052438Z.md",
+          "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-2-handoff-20261112T053703Z.md",
           "type": "handoff",
-          "summary": "Phase-end handoff for Phase 1 completion: what landed, the axiom-profile decision, the Paper-anchor-line deviation, and next action (Phase 2)."
+          "summary": "Phase-end handoff recording Phase 2's completion and the forward-reference design decision for Phase 3's not-yet-landed declaration names."
         }
       ],
       "audit_verdict": {
