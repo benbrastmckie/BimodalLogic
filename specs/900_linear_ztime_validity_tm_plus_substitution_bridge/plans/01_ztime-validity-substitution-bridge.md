@@ -1,7 +1,7 @@
 # Implementation Plan: Task #900
 
 - **Task**: 900 - Bridge: ZTime-valid L formulas yield TM-plus theorems under PlusFormula substitution
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None live (899 `[COMPLETED]`; no artifact of it is read by this plan)
 - **Research Inputs**: specs/900_linear_ztime_validity_tm_plus_substitution_bridge/reports/01_ztime-validity-tm-plus-substitution-bridge.md

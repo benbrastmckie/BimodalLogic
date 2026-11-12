@@ -2295,7 +2295,7 @@
     {
       "project_number": 900,
       "project_name": "linear_ztime_validity_tm_plus_substitution_bridge",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "title": "Bridge: ZTime-valid L formulas yield TM-plus theorems under PlusFormula substitution",
       "description": "A two-step bridge lemma in FormalSystem/PlusLanguage/Substitution.lean: for an L formula valid at FrameClass.ZTime, every substitution instance substPlus sigma of it is PlusDerivable FrameClass.ZTime [], by completeness_ztime followed by PlusDerivationTree.ofTMSubst; plus the corollary for box-free formulas that a formula valid on every bi-infinite Z-word (the linear fragment) yields TM-plus theorems at every substitution. This is the transposition of Reynolds 2001's use of PLTL completeness inside the CTL* proof (Lemma 7, Claims 1-2, Lemma 17, Lemma 23): the automaton-correctness and fair-scheduling facts are linear validities over Z-words with stab-headed formulas and fresh atoms as sentence letters, derived in TM-plus through this bridge.",
@@ -2320,7 +2320,7 @@
       ],
       "priority": "medium",
       "created": "2026-11-09T09:48:35Z",
-      "last_updated": "2026-11-12T04:38:09Z",
+      "last_updated": "2026-11-12T05:16:17Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -2337,6 +2337,11 @@
           "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
           "type": "plan",
           "summary": "Phase 4 marked [BLOCKED] with a 14-row measured verification table, out-of-scope finding enumeration, scoped-tier discharge note, and the full blocker record."
+        },
+        {
+          "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/summaries/01_ztime-validity-substitution-bridge-summary.md",
+          "type": "summary",
+          "summary": "Completion summary covering all four phases, the C16 cascade resolution, and the batch-gate deferral record."
         }
       ],
       "session_id": "sess_1794448865_9a2e5c",
@@ -2351,7 +2356,8 @@
         "degradation_count": 0,
         "evidence_file": "specs/evidence/audit-verdicts/900.json"
       },
-      "topic": "completeness"
+      "topic": "completeness",
+      "completion_summary": "Landed FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean, a sorry-free five-declaration module carrying the two-step bridge from ZTime validity to TM-plus theoremhood at every substitution instance (via completeness_ztime then PlusDerivationTree.ofTMSubst) plus the box-free Z-word corollary, and relocated isBoxFree into Separation/Defs.lean. Phase 4 cleared the one in-scope C16 env_linter unusedArguments FAIL by the user-authorized amendment of two pinned Challenge signatures, dropping a dead [F.IsRegular] conduit binder; the full gate battery is now green on every touched file."
     },
     {
       "project_number": 901,

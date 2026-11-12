@@ -1,30 +1,37 @@
 {
-  "status": "blocked",
-  "dispatch_seq": 20,
-  "phases_completed": 3,
+  "status": "implemented",
+  "dispatch_seq": 21,
+  "task_number": 900,
+  "phase": "implement",
+  "session_id": "sess_1794448865_9a2e5c",
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Phase 4 ran its complete declared battery and every criterion is measured green except one: the cycle-10 authorized route (drop wordOf's unused [F.IsRegular] binder) relocated the C16 env_linter FAIL rather than clearing it, because wordOf's binder was the sole consumer of truthAt_iff_intTruth_of_boxFree's own binder. The authorized amendment is landed and committed at 68d1e76d4, with the plan's Lean Challenge Statements block amended in the same change. Phase 4 is marked [BLOCKED] with a full blocker record, and a new blocking user_decision names the second obstruction: whether to amend that second verbatim-pinned Challenge statement, whose cascade is measured to terminate in exactly one edit.",
-  "blockers": [
-    "C16 env_linter reports FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean:96 @FormalSystem.Metalogic.truthAt_iff_intTruth_of_boxFree 1 unused argument: argument 2: [F.IsRegular]. Clearing it requires amending a second verbatim-pinned Challenge statement, which rules/plan-compliance.md's Statement Fidelity routes to escalation and which the cycle-10 answer did not authorize. Blocking user_decision returned on .return-meta.json."
-  ],
+  "summary": "Phase 4 closed [COMPLETED], and with it all four plan phases. The one in-scope C16 env_linter unusedArguments FAIL was cleared by the cycle-11 user-authorized route: drop the dead [F.IsRegular] conduit binder from truthAt_iff_intTruth_of_boxFree in the plan's pinned Challenge block and at ZTimeSubstitutionBridge.lean:102, in one change. The cascade terminated there exactly as predicted from pre-edit evidence. The full battery is green: guarded lake build exit 0 (2975 jobs, 0 errors/warnings/sorries), check-module-invariants.sh exit 0 with zero FAIL lines and C16 PASS, check-metalogic-cycles.sh exit 0, typst-sync-check.sh all 4 checks green, check-copyright-headers.sh 756/0/0/0, sorry_count 0, axiom count 14 unchanged.",
+  "blockers": [],
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/summaries/01_ztime-validity-substitution-bridge-summary.md",
+      "summary": "Completion summary covering all four phases, the C16 cascade resolution, and the batch-gate deferral record."
+    },
     {
       "type": "plan",
       "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
-      "summary": "Phase 4 marked [BLOCKED] with a 14-row measured verification table, out-of-scope finding enumeration, scoped-tier discharge note, and the full blocker record."
+      "summary": "Plan with all four phases [COMPLETED], the Phase 4 measured verification table, both recorded Challenge-statement amendments, and the C16 resolution record replacing the former blocker."
     },
     {
       "type": "handoff",
-      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-4-handoff-20261111-204941.md",
-      "summary": "Phase 4 progressive handoff: the single remaining edit, the measured cascade bound, and the full gate evidence table."
+      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-4-handoff-20261111-211400.md",
+      "summary": "Phase 4 closing handoff: the obligation-discharge evidence gathered before the edit, and the corrected Phase 3 rationale."
     }
   ],
   "modified_files": [
     "FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean",
     "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
-    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-4-handoff-20261111-204941.md",
-    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/issues.jsonl",
-    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/.return-meta.json",
-    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/.orchestrator-handoff.json"
-  ]
+    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/summaries/01_ztime-validity-substitution-bridge-summary.md",
+    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-4-handoff-20261111-211400.md",
+    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/issues.jsonl"
+  ],
+  "commits": ["5cadbceac"],
+  "notes": "verify-deploy.sh remains deferred to the batch stage under this dispatch's batch-gate deferral directive; no --only-gate N narrowing reaches a FormalSystem/**.lean path, so the UNMAPPABLE CRITERION route applied and every other named check ran directly and in full. No user_decision is set: both recorded obligations (cycle 10 and cycle 11) were verified to discharge against this phase's own artifacts before any edit, and the second one did."
 }

@@ -1,83 +1,45 @@
 {
-  "status": "partial",
-  "requires_user_review": true,
-  "review_reason": "Phase 4's authorized C16 route relocated the finding instead of clearing it: dropping wordOf's unused [F.IsRegular] binder stripped truthAt_iff_intTruth_of_boxFree's own binder of its only use, so the env_linter now reports the theorem rather than the definition. Amending that second verbatim-pinned Challenge statement needs a decision the cycle-10 answer did not cover -- it explicitly asserted no consumer's statement would change, which is measurably false. Every other Phase 4 criterion is measured green.",
-  "blocked_phase": 4,
+  "status": "implemented",
   "verification": {
-    "verification_passed": false,
+    "verification_passed": true,
     "sorry_count": 0,
     "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true,
-    "build_output": "lake-build-guard exit_status=0; Build completed successfully (2975 jobs); 0 error:, 0 warning, 0 \"uses 'sorry'\"; ZTimeSubstitutionBridge.olean newer than its source. The build is green; verification_passed is false solely because scripts/check-module-invariants.sh exits 1 on one C16 env_linter FAIL that names this task's own file and is not pre-existing.",
-    "measurement_note": "Measured over the resolved source roots from .claude/scripts/lean-src-roots.sh. sorry_count is an absolute 0 (lean-sorry-census.sh: `sorry_count: 0`, empty inventory; `grep -c sorry` on FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean is 0). vacuous_count and axiom_count are recorded as baseline DELTAS, which is what the no-increase criterion asks: 1 single-line vacuous-pattern match and 14 `axiom ` lines now, against 2 and 14 at the pre-task commit 47cf2e1eb, so neither increased. The one vacuous match is FormalSystem/Examples/TemporalStructures.lean:495 `theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial`, a genuinely `trivial`-closable goal outside this task's touched set.",
-    "gates": {
-      "lake_build_full_guarded": "PASS (exit 0, 2975 jobs)",
-      "check_module_invariants_C6": "PASS",
-      "check_module_invariants_C14": "PASS (re-run after the amendment; no axiom profile moved)",
-      "check_module_invariants_C15": "PASS (93 paper anchors, 460 theorem-index rows)",
-      "check_module_invariants_C26": "PASS",
-      "check_module_invariants_INV": "PASS",
-      "check_module_invariants_C16": "FAIL (one finding, this task's own file, the blocker)",
-      "check_module_invariants_overall": "exit 1 (exactly one FAIL)",
-      "check_metalogic_cycles": "PASS (exit 0)",
-      "typst_sync_check": "PASS (exit 0, all 4 checks, Check 2 MISMATCH_COUNT=0)",
-      "check_copyright_headers": "PASS (exit 0, 0/0/0 over 756 files)",
-      "lean_verify_headline_pair": "PASS ([propext, Classical.choice, Quot.sound], trust standard, no sorryAx)",
-      "verify_deploy": "deferred to the batch stage under this dispatch's batch-gate deferral; suite_selection_select returns __FULL_SWEEP__ and no gate reaches a FormalSystem/**.lean path"
-    }
-  },
-  "partial_progress": {
-    "stage": "phase_4_blocked",
-    "details": "Phase 4 is marked [BLOCKED] in the plan with a full blocker record under '#### BLOCKER (Phase 4): the authorized C16 route relocated the finding instead of clearing it'. The authorized wordOf amendment is landed and committed at 68d1e76d4; it was deliberately not reverted. One edit remains, pending the user_decision below: drop [F.IsRegular] from truthAt_iff_intTruth_of_boxFree, block and declaration together. The cascade is measured to terminate there -- validZTime_of_boxFree_intTruth binds its instance tactic-locally from ValidInt's own quantifier, so it carries no declaration-level instance argument the linter can reach.",
-    "phases_completed": 3,
-    "phases_total": 4
+    "axiom_count": 14,
+    "build_passed": true
   },
   "artifacts": [
     {
-      "type": "handoff",
-      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-4-handoff-20261111-204941.md",
-      "summary": "Phase 4 progressive handoff: the single remaining edit, the measured cascade bound, the full gate evidence table, and why the phase is blocked rather than partial."
-    },
-    {
-      "type": "plan",
-      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
-      "summary": "Phase 4 marked [BLOCKED] with a 14-row measured verification table, the out-of-scope finding enumeration, the scoped-tier discharge note, the full blocker record, and the user-authorized wordOf amendment recorded in the Lean Challenge Statements block."
+      "type": "summary",
+      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/summaries/01_ztime-validity-substitution-bridge-summary.md",
+      "summary": "Completion summary for the linear ZTime-validity to TM-plus substitution bridge, including the Phase 4 C16 unusedArguments cascade resolution."
     }
   ],
+  "completion_data": {
+    "completion_summary": "Landed FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean, a sorry-free five-declaration module carrying the two-step bridge from ZTime validity to TM-plus theoremhood at every substitution instance (via completeness_ztime then PlusDerivationTree.ofTMSubst) plus the box-free Z-word corollary, and relocated isBoxFree into Separation/Defs.lean. Phase 4 cleared the one in-scope C16 env_linter unusedArguments FAIL by the user-authorized amendment of two pinned Challenge signatures, dropping a dead [F.IsRegular] conduit binder; the full gate battery is now green on every touched file.",
+    "roadmap_items": []
+  },
   "modified_files": [
     "FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean",
     "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
-    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-4-handoff-20261111-204941.md",
-    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/issues.jsonl",
-    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/.return-meta.json",
-    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/.orchestrator-handoff.json"
+    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/summaries/01_ztime-validity-substitution-bridge-summary.md",
+    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-4-handoff-20261111-211400.md",
+    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/issues.jsonl"
   ],
-  "user_decision": {
-    "blocking": true,
-    "question": "Dropping wordOf's unused [F.IsRegular] binder, as authorized in cycle 10, did not clear the C16 env_linter FAIL -- it relocated it to truthAt_iff_intTruth_of_boxFree, whose binder turns out to have been load-bearing only as a conduit supplying wordOf's instance argument. Clearing C16 therefore requires amending a SECOND verbatim-pinned Challenge statement, which the cycle-10 answer did not cover and explicitly asserted would not be needed. How should Phase 4 proceed?",
-    "options": [
-      {
-        "label": "Amend truthAt_iff_intTruth_of_boxFree too",
-        "detail": "Apply the same authorized shape one declaration over: drop [F.IsRegular] from the plan's ## Lean Challenge Statements block and from the declaration at ZTimeSubstitutionBridge.lean:102, in one change. Measured consequences: the cascade terminates there (validZTime_of_boxFree_intTruth binds its instance tactic-locally from ValidInt's own quantifier, so the linter cannot reach it); the theorem has zero references outside its own file, so no external statement changes; the amendment is strictly generalizing and leaves the name, the C14 pin, the measured [propext] profile and the docs/theorem-index.md row untouched; the isBoxFree hypothesis, the only one this module declares load-bearing, is unaffected. This clears C16 and closes Phase 4."
-      },
-      {
-        "label": "Stop at wordOf; accept the C16 red",
-        "detail": "Keep the landed wordOf amendment, leave truthAt_iff_intTruth_of_boxFree's signature as recorded, and close Phase 4 as [COMPLETED WITH EXCLUSIONS] with the C16 finding recorded as a known, named exclusion against this task's own file. Cost: CI's lake lint will see the finding, and a later task inherits it."
-      },
-      {
-        "label": "Revert both; take the allowlist route",
-        "detail": "Restore wordOf's original pinned signature and suppress the finding in source instead -- an @[nolint unusedArguments] attribute plus a scripts/nolint-attribute-allowlist.txt entry. Both pinned statements then stand exactly as recorded. Cost: Phase 3 already ruled this inadmissible under that allowlist's own ADMISSION BAR, which demands a reason why THIS declaration cannot conform and directs 'fix the declaration instead' when it can -- and both declarations can conform. Choosing this overrides that bar knowingly."
-      }
-    ],
-    "recommendation": "Amend truthAt_iff_intTruth_of_boxFree too -- it is the same decided principle applied to the adjacent declaration, the cascade bound is measured rather than assumed, and it is the only route that clears C16 without overriding a standing admission bar."
-  },
   "metadata": {
     "session_id": "sess_1794448865_9a2e5c",
     "agent_type": "lean-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "dispatch_seq": 20,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "dispatch_seq": 21,
     "compliance_check": "passed",
-    "commits": ["68d1e76d4"]
+    "vacuous_count_repo_wide": 1,
+    "vacuous_count_note": "One pre-existing single-line match outside this task's touched set (FormalSystem/Examples/TemporalStructures.lean:495, a genuinely trivial-closable goal), down from 2 at the pre-task commit 47cf2e1eb. Not increased; 0 in this task's touched files.",
+    "axiom_count_note": "14, unchanged from the pre-task commit baseline of 14.",
+    "phases_completed": 4,
+    "phases_total": 4,
+    "batch_gate_deferral": "verify-deploy.sh deferred to the batch stage under the dispatch's batch-gate deferral directive (UNMAPPABLE CRITERION route: no --only-gate N narrowing reaches a FormalSystem/**.lean path). Every other named repository-specific check was run directly and in full."
   }
 }
