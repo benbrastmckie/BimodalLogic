@@ -26,7 +26,7 @@ next_project_number: 926
 
 ### Agent System
 
-907 [PLANNED] — Regenerate the deployed .claude/ tree in BimodalLogic, which...
+907 [IMPLEMENTING] — Regenerate the deployed .claude/ tree in BimodalLogic, which...
 
 ### Algebraic Representation
 
@@ -114,7 +114,7 @@ next_project_number: 926
 
 ### 907. Redeploy-stale-claude-tree
 - **Effort**: small
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: agent-system
 - **Dependencies**: None

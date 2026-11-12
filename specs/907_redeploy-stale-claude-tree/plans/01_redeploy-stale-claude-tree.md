@@ -1,7 +1,7 @@
 # Implementation Plan: Task #907
 
 - **Task**: 907 - Redeploy stale .claude/ tree
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1 hour
 - **Dependencies**: None (recurrence of the condition closed by task 715; no blocking task)
 - **Research Inputs**: specs/907_redeploy-stale-claude-tree/reports/01_redeploy-stale-claude-tree.md
@@ -95,7 +95,7 @@ No `roadmap_path` was provided in this dispatch; no roadmap consultation perform
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Re-Probe Deploy Freshness [NOT STARTED]
+### Phase 1: Re-Probe Deploy Freshness [COMPLETED]
 
 **Goal**: Establish, from live probes rather than from the research report's older observation,
 whether any of the six named extensions has drifted back to `STALE`. This phase decides whether
@@ -103,18 +103,21 @@ Phase 2 must actually redeploy or only verify.
 
 **Tasks**:
 
-- [ ] Source the freshness library and query each of the six named extensions individually:
+- [x] Source the freshness library and query each of the six named extensions individually:
       `source .claude/scripts/lib/deploy-freshness-lib.sh` then
       `deploy_freshness_status "$(pwd)" <ext>` for `core`, `formal`, `lean`, `literature`,
       `memory`, `typst`. Record the three-way result (`FRESH` / `STALE` / `CANNOTVERIFY`) for each.
-- [ ] Run the actual advisory consumer: `bash .claude/scripts/check-deploy-freshness.sh`. Record
-      its exit code and any `WARN:` output.
-- [ ] Treat a `CANNOTVERIFY` result as neither pass nor fail: it means the probe could not reach a
+      *(completed: all six returned FRESH)*
+- [x] Run the actual advisory consumer: `bash .claude/scripts/check-deploy-freshness.sh`. Record
+      its exit code and any `WARN:` output. *(completed: exit 0, no WARN output)*
+- [x] Treat a `CANNOTVERIFY` result as neither pass nor fail: it means the probe could not reach a
       conclusion (missing field, non-git source_dir, missing `jq`/`git`). If any extension returns
       `CANNOTVERIFY`, record which and why, and carry that forward to Phase 2 as an explicitly
-      unverified extension rather than reporting it as fresh.
-- [ ] Record the verdict for Phase 2: `redeploy_needed = true` if any of the six returns `STALE`
-      or `check-deploy-freshness.sh` emits any `WARN:`; otherwise `false`.
+      unverified extension rather than reporting it as fresh. *(completed: no extension returned
+      CANNOTVERIFY)*
+- [x] Record the verdict for Phase 2: `redeploy_needed = true` if any of the six returns `STALE`
+      or `check-deploy-freshness.sh` emits any `WARN:`; otherwise `false`. *(completed:
+      redeploy_needed = false)*
 
 **Timing**: 0.25 hours
 
