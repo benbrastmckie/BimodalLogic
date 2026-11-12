@@ -85,7 +85,7 @@ next_project_number: 926
 ### Repo Hygiene
 
 743 [PLANNED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
-817 [PLANNING] — Wrap the remaining count-carrying inventory tables under...
+817 [PLANNED] — Wrap the remaining count-carrying inventory tables under...
 818 [PLANNING] — Wrap the four directory-rollup inventory tables that need the...
 821 [IMPLEMENTING] — Reconcile specs/state.json's next\_project\_number against...
 832 [PLANNING] — Two local-disk reclamations found by the 2026-11-02 review....
@@ -512,12 +512,13 @@ NON-GOALS. No change to the generator algorithm beyond using an option it alread
 ---
 
 ### 817. Wrap remaining phantom row inventory tables
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: markdown
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Parent**: Task 744
 - **Research**: [817_wrap_remaining_phantom_row_inventory_tables/reports/01_wrap-remaining-phantom-row-tables.md]
+- **Plan**: [817_wrap_remaining_phantom_row_inventory_tables/plans/01_wrap-phantom-row-inventory-tables.md]
 
 **Description**: Wrap the remaining count-carrying inventory tables under FormalSystem/ whose blockers are phantom or missing rows
 

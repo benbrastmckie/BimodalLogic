@@ -1,0 +1,18 @@
+{
+  "status": "planned",
+  "dispatch_seq": 8,
+  "task_number": 817,
+  "phase": "plan",
+  "session_id": "sess_1794503933_59a2b4_817",
+  "phases_completed": 0,
+  "phases_total": 7,
+  "summary": "Wrote a 7-phase implementation plan for wrapping the six Tier B phantom/missing-row inventory tables under FormalSystem/ in BEGIN GENERATED markers. Phases run strictly serially because --emit-inventory is a tree-wide writer on a shared working tree with concurrent siblings. Six phases are prose-tier markdown edits covered by scripts/check-module-invariants.sh --no-build; the final phase demonstrates INV coverage per block via corrupt-then-restore and runs the full gate. All three carried-figure trigger lines from the dispatch were re-checked against live state and recorded in the plan.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/817_wrap_remaining_phantom_row_inventory_tables/plans/01_wrap-phantom-row-inventory-tables.md",
+      "summary": "7-phase plan wrapping seven inventory blocks across six FormalSystem READMEs, with per-row obsolete/re-home decisions, a Sharing-table resync, and a per-block corrupt/restore coverage demonstration."
+    }
+  ]
+}

@@ -1,32 +1,22 @@
 {
-  "status": "researched",
-  "session_id": "sess_1794503933_59a2b4_817",
-  "dispatch_seq": 1,
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "findings_count": 6,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/817_wrap_remaining_phantom_row_inventory_tables/reports/01_wrap-remaining-phantom-row-tables.md",
-      "summary": "Re-verifies all six Tier B phantom/missing-row inventory tables, traces every phantom row to its Boneyard archive location, decides obsolete-vs-re-home per row, and finds a new issue not named in the dispatch: WitnessFamily/README.md's lower table duplicates Sharing/README.md's own current table with stale pre-refactor content."
+      "type": "plan",
+      "path": "specs/817_wrap_remaining_phantom_row_inventory_tables/plans/01_wrap-phantom-row-inventory-tables.md",
+      "summary": "7-phase plan wrapping seven inventory blocks across six FormalSystem READMEs, with per-row obsolete/re-home decisions, a Sharing-table resync, and a per-block corrupt/restore coverage demonstration."
     }
   ],
-  "memory_candidates": [
-    {
-      "content": "In this repo's check-module-invariants.sh --emit-inventory generator, a phantom inventory row (naming a file that no longer exists at that path) is dropped automatically on regeneration if the file was moved rather than deleted outright -- the pinned-row logic only keeps a non-scanned key when os.path.isfile() resolves it relative to the CURRENT scan directory, so a file relocated to Boneyard/ (archived) no longer resolves and the row vanishes with no manual deletion needed. The only required human judgment is deciding, before wrapping, whether the row's hand-written description is worth re-homing onto a live sibling file (check sibling docstrings for topical overlap first) or is simply obsolete.",
-      "category": "PATTERN",
-      "source_artifact": "specs/817_wrap_remaining_phantom_row_inventory_tables/reports/01_wrap-remaining-phantom-row-tables.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["inventory-generator", "emit-inventory", "phantom-row", "boneyard-archive", "pinned-row"]
-    },
-    {
-      "content": "When a top-level README's inventory table duplicates a nested subdirectory's own README table (same directory, same file set, same Lines column), check whether the nested README's table is itself already wrapped and current before treating the duplicate as a simple re-keying fix -- the duplicate's descriptions can be stale in CONTENT (describing a pre-refactor architecture), not just counts, and the nested table is the authoritative source to resync from. Two independently-generated blocks pointed at the same directory will not stay in sync with each other going forward (check-module-invariants.sh's INV check only verifies a block against its own directory's live files, never cross-block consistency), which is an accepted trade-off matching this repo's existing top-level-summary-plus-nested-README convention (e.g. Compression/), not a defect to eliminate.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/817_wrap_remaining_phantom_row_inventory_tables/reports/01_wrap-remaining-phantom-row-tables.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["inventory-table", "duplicate-table", "stale-content", "nested-readme", "generated-block-sync"]
-    }
-  ],
-  "next_steps": "Run /orchestrate 817 to create implementation plan"
+  "memory_candidates": [],
+  "metadata": {
+    "session_id": "sess_1794503933_59a2b4_817",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 5.5,
+    "dependency_waves": 7
+  },
+  "next_steps": "Run /orchestrate 817 to execute the plan",
+  "dispatch_seq": 8
 }
