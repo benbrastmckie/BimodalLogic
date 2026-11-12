@@ -1,7 +1,7 @@
 # Implementation Plan: Task #714
 
 - **Task**: 714 - Evaluate full labels in the sliced certificate
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/714_evaluate_full_labels_in_sliced_certificate/reports/01_full-labels-sliced-certificate.md

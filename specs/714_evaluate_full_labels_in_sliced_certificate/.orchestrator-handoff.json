@@ -1,17 +1,32 @@
 {
-  "status": "planned",
-  "dispatch_seq": 12,
-  "phase": "plan",
-  "summary": "Research refuted option 3 (full labels collapse the stab comparison class and empty the position space at both landed box-dot witnesses), so the plan implements the refutation's durable consequences rather than a refactor. Four linear phases: land posAtFull plus the three embedded-route equalities in EmbedComplete.lean; promote probes/FullLabels.lean into specs/evidence/stability-modal-substrate/ and wire it into check-evidence-probes.sh before archival can gitignore it; add the stab-comparison-class paragraph to Position.lean's header; run the repository's full CI gate set. Every Lean-line-moving phase carries its own typst/generated/status.typ and module-inventory regeneration, since the pre-commit hook blocks on that surface.",
+  "status": "implemented",
+  "dispatch_seq": 14,
+  "phases_completed": 4,
+  "phases_total": 4,
+  "summary": "All four plan phases completed and committed. The embedded-route regression triple (posAtFull plus three equalities) is landed in EmbedComplete.lean's WitnessFamily.FullLabelRegression namespace; the option-3 refutation probe is promoted to specs/evidence/stability-modal-substrate/full-labels-collapse-stab.lean and WIRED into check-evidence-probes.sh; Position.lean's header records the stab-comparison-class argument. Full guarded lake build exits 0 with zero sorries and no new axioms; 7 of 10 repository gates exit 0 and the other 3 are red on a standing baseline naming no file this task touched.",
+  "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/714_evaluate_full_labels_in_sliced_certificate/plans/01_full-labels-sliced-certificate.md",
-      "summary": "Four-phase plan: regression triple, probe promotion and wiring, Position.lean header record, full-gate verification."
+      "type": "summary",
+      "path": "specs/714_evaluate_full_labels_in_sliced_certificate/summaries/01_full-labels-sliced-certificate-summary.md",
+      "summary": "Implementation summary: regression triple, promoted evidence probe, Position.lean header section, and the full gate-set result with enumerated baseline deltas."
+    },
+    {
+      "type": "other",
+      "path": "specs/evidence/stability-modal-substrate/full-labels-collapse-stab.lean",
+      "summary": "The promoted, tracked, gate-compiled evidence probe holding the option-3 refutation in place."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 4,
-  "blockers": [],
-  "next_action_hint": "Dispatch implement for task 714 against plans/01_full-labels-sliced-certificate.md, starting at Phase 1."
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "scripts/check-evidence-probes.sh",
+    "typst/generated/status.typ",
+    "specs/evidence/stability-modal-substrate/full-labels-collapse-stab.lean",
+    "specs/714_evaluate_full_labels_in_sliced_certificate/plans/01_full-labels-sliced-certificate.md",
+    "specs/714_evaluate_full_labels_in_sliced_certificate/reports/01_full-labels-sliced-certificate.md",
+    "specs/714_evaluate_full_labels_in_sliced_certificate/summaries/01_full-labels-sliced-certificate-summary.md"
+  ]
 }
