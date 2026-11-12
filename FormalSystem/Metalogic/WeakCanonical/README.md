@@ -16,24 +16,26 @@ anything from this one, which is what makes the split a partition rather than a 
 
 ## Modules
 
-| File | Lines | Description |
-|------|-------|-------------|
-| `BackAndForth.lean` | 266 | Back-and-forth systems for the bisimulation layer |
-| `ChronicleExtraction.lean` | 192 | Extracting chronicles from the weak canonical model |
-| `ColourOrders.lean` | 328 | Coloured orders used by the model constructions |
-| `FrameProperties.lean` | 67 | Frame property verification for the weak canonical model |
-| `KTypeSummary.lean` | 22 | Aggregator for `KTypeSummary/` — Büchi's complementation chain in the monadic `k`-type idiom |
-| `MixedSum.lean` | 558 | Mixed-sum order construction |
-| `NEquivalence.lean` | 1,315 | N-equivalence relation and its properties for bisimulation games |
-| `OrderedSum.lean` | 59 | Ordered sum construction for building new models |
-| `ReflexiveCanonical.lean` | 764 | Main reflexive canonical model construction |
-| `Transfer.lean` | 1,062 | Transfer lemma (`truth_transfer`) and the signature/atom-map layer |
-| `TruthLemma.lean` | 196 | MCS-membership characterizations for the weak canonical model |
-| `DenseModelSurgery/` | 7,914 | Dense model surgery — part of the Dedekind/real route (9 files) |
-| `GroupModel/` | 3,373 | Non-Archimedean `ℚ ×ₗ ℤ` companion chain and `countermodel_discrete` (6 files) |
-| `IntegerModel/` | 5,615 | Integer model construction (6 files) |
-| `KTypeSummary/` | 122 | `k`-type summaries over the `ℤ` time axis: the finite summary alphabet, with the segment carrier, Ramsey cover and saturation steps appended as they land (1 file) |
-| `RealModel/` | 6,789 | Real-line model construction — part of the Dedekind/real route (7 files) |
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical cols=files-lines -->
+| Module | Files | Lines | Description |
+|------|------:|------:|-------------|
+| `BackAndForth.lean` | 1 | 267 | Back-and-forth systems for the bisimulation layer |
+| `ChronicleExtraction.lean` | 1 | 194 | Extracting chronicles from the weak canonical model |
+| `ColourOrders.lean` | 1 | 332 | Coloured orders used by the model constructions |
+| `FrameProperties.lean` | 1 | 53 | Frame property verification for the weak canonical model |
+| `KTypeSummary.lean` | 1 | 42 | Aggregator for `KTypeSummary/` — Büchi's complementation chain in the monadic `k`-type idiom |
+| `MixedSum.lean` | 1 | 562 | Mixed-sum order construction |
+| `NEquivalence.lean` | 1 | 1,316 | N-equivalence relation and its properties for bisimulation games |
+| `OrderedSum.lean` | 1 | 60 | Ordered sum construction for building new models |
+| `ReflexiveCanonical.lean` | 1 | 764 | Main reflexive canonical model construction |
+| `Transfer.lean` | 1 | 1,059 | Transfer lemma (`truth_transfer`) and the signature/atom-map layer |
+| `TruthLemma.lean` | 1 | 196 | MCS-membership characterizations for the weak canonical model |
+| `DenseModelSurgery/` | 9 | 7,935 | Dense model surgery — part of the Dedekind/real route |
+| `GroupModel/` | 6 | 3,150 | Non-Archimedean `ℚ ×ₗ ℤ` companion chain and `countermodel_discrete` |
+| `IntegerModel/` | 6 | 5,625 | Integer model construction |
+| `KTypeSummary/` | 6 | 958 | `k`-type summaries over the `ℤ` time axis: the finite summary alphabet, with the segment carrier, Ramsey cover and saturation steps appended as they land |
+| `RealModel/` | 7 | 6,790 | Real-line model construction — part of the Dedekind/real route |
+<!-- END GENERATED -->
 
 Measured live contents: **10 loose modules and 4 subdirectories**, 38 modules in total.
 The aggregator for this directory is the sibling `Metalogic/WeakCanonical.lean`, not a self-named
@@ -94,4 +96,4 @@ and is no longer part of the live architecture.
 
 ---
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-11-12*

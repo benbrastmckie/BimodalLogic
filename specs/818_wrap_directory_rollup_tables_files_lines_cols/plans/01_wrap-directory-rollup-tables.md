@@ -219,33 +219,33 @@ stop and determine whether it is a sibling task's in-flight edit before staging 
 
 ---
 
-### Phase 2: Wrap WeakCanonical/README.md [NOT STARTED]
+### Phase 2: Wrap WeakCanonical/README.md [COMPLETED]
 
 **Goal**: `FormalSystem/Metalogic/WeakCanonical/README.md`'s `## Modules` table becomes a
 generator-owned `cols=files-lines` block with all 16 descriptions intact and all 5 subdirectory
 totals rendered as real numbers.
 
 **Tasks**:
-- [ ] Re-read the file immediately before editing.
-- [ ] Capture the pre-edit key-sorted key/description snapshot as in Phase 1.
-- [ ] Rewrite header (line 19) and separator (line 20) to 4 columns, matching Phase 1's chosen
-      labels exactly (`Module | Files | Lines | Description`).
-- [ ] Pad **every** data row to 4 cells — 11 loose-file rows get `1`, 5 subdirectory rows get a
-      placeholder integer.
-- [ ] Strip the trailing `(N files)` / `(1 file)` parenthetical from all 5 subdirectory
+- [x] Re-read the file immediately before editing. *(completed)*
+- [x] Capture the pre-edit key-sorted key/description snapshot as in Phase 1. *(completed)*
+- [x] Rewrite header (line 19) and separator (line 20) to 4 columns, matching Phase 1's chosen
+      labels exactly (`Module | Files | Lines | Description`). *(completed)*
+- [x] Pad **every** data row to 4 cells — 11 loose-file rows get `1`, 5 subdirectory rows get a
+      placeholder integer. *(completed)*
+- [x] Strip the trailing `(N files)` / `(1 file)` parenthetical from all 5 subdirectory
       descriptions (`DenseModelSurgery/`, `GroupModel/`, `IntegerModel/`, `KTypeSummary/`,
-      `RealModel/`), then read each resulting description in full.
-- [ ] Insert `<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical cols=files-lines -->`
-      and `<!-- END GENERATED -->` around the table.
-- [ ] Record `git status --porcelain`, run `bash scripts/check-module-invariants.sh --emit-inventory`,
-      record it again, confirm exactly one new file changed relative to the Phase 1 commit.
-- [ ] Run `--emit-inventory --check` and confirm `PASS INV`.
-- [ ] Corrupt/restore demonstration scoped to this block, as in Phase 1, confirming `FAIL INV`
+      `RealModel/`), then read each resulting description in full. *(completed)*
+- [x] Insert `<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical cols=files-lines -->`
+      and `<!-- END GENERATED -->` around the table. *(completed)*
+- [x] Record `git status --porcelain`, run `bash scripts/check-module-invariants.sh --emit-inventory`,
+      record it again, confirm exactly one new file changed relative to the Phase 1 commit. *(completed: exactly 1 file rewritten; `KTypeSummary/` jumped from hand-written 1 file/122 lines to live 6 files/958 lines as the Scope Hypothesis predicted)*
+- [x] Run `--emit-inventory --check` and confirm `PASS INV`. *(completed)*
+- [x] Corrupt/restore demonstration scoped to this block, as in Phase 1, confirming `FAIL INV`
       names exactly `FormalSystem/Metalogic/WeakCanonical/README.md` and **not**
       `FormalSystem/Metalogic/Expressiveness/README.md` (this is the evidence that the two blocks
-      are independently covered).
-- [ ] Update the file's `*Last verified:*` line to today's date.
-- [ ] Commit, staging only `FormalSystem/Metalogic/WeakCanonical/README.md` by explicit path.
+      are independently covered). *(completed: FAIL INV named exactly this file only)*
+- [x] Update the file's `*Last verified:*` line to today's date. *(completed: 2026-11-12)*
+- [x] Commit, staging only `FormalSystem/Metalogic/WeakCanonical/README.md` by explicit path. *(completed)*
 
 **Timing**: 1 hour
 
