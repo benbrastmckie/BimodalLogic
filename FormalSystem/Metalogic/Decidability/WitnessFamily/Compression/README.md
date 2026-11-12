@@ -1,11 +1,12 @@
 # FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/
 
 The **completeness (compression) half** of the witness-family route: every ℤ-time countermodel of
-`φ` compresses to a `WitnessFamily [] [φ]` whose three lasso segments are bounded by a computable
-function of the closure size and which is a member of a computable candidate list. Composed with
-the soundness half that already lives one directory up (`Agreement.lean`'s
+`Γ ⊨ σ` compresses to a `WitnessFamily Γ [σ]` whose three lasso segments are bounded by a
+computable function of the closure size and which is a member of a computable candidate list.
+Composed with the soundness half that already lives one directory up (`Agreement.lean`'s
 `WitnessFamily.refutes_of_certifies`, `Decide.lean`'s `decidableCertifies`), this yields
-`Decidable (ValidZTime φ)`.
+`Decidable (SemanticConsequenceIn FrameClass.ZTime Γ σ)` at arbitrary finite `Γ`, of which
+`Decidable (ValidZTime φ)` is the `Γ = []`, `σ = φ` case.
 
 Nothing here redefines `LabelledLasso`, `WitnessFamily`, `Certifies`, `WitnessFamily.std` or the
 agreement theorem. Those are consumed as given.
@@ -35,9 +36,9 @@ agreement theorem. Those are consumed as given.
 | `Cycle.lean` | `TypeState`, `SeqStepT`, `joinPathT`, the pigeonhole plumbing, `cycleBoundC`, `exists_good_cycle_of_typeSeq` |
 | `Fulfil.lean` | `untl_propagates_to_endC`, `snce_propagates_to_startC`, `lab_add_mul_nfC`, `lab_sub_mul_nbC`, `fulfillingSeqLab_of_good_cycles` |
 | `Extract.lean` | `midBoundC`, `compressionBound`, `localCoherentSeqLab_of_edges`, `periodic_rel_of_windowC`, the three readouts, `exists_labelledLasso_of_history_realized`, `exists_labelledLasso_of_history`, `localCoherentSeqLab_congr_bx` |
-| `Family.lean` | `Formula.boxArg?`, `boxedPart`, `closureOf_nil_singleton`, `semanticConsequenceIn_nil_iff`, `exists_witnessFamily_of_not_validZTime` |
-| `Enumerate.lean` | `ListEnumC.ofLen`/`upTo`, `closureSubsetsOf`, `boundedLassos`, `cands`, `mem_cands_of_bounded` |
-| `Assembly.lean` | `validZTime_iff_noCertifiedCandidate`, `Compression.decidableValidZTime`, `decidableSemanticConsequenceNil` |
+| `Family.lean` | `Formula.boxArg?`, `boxedPart`, `closureOf_nil_singleton`, `semanticConsequenceIn_nil_iff`, `ConsequenceInt`, `consequenceZTime_iff_consequenceInt`, `exists_witnessFamily_of_not_consequence`, `exists_witnessFamily_of_not_validZTime` |
+| `Enumerate.lean` | `ListEnumC.ofLen`/`upTo`, `closureList`, `closureSubsetsOfCtx`, `boundedLassosCtx`, `candsCtx`, `mem_candsCtx_of_bounded`, and the `[] [φ]` wrappers `closureSubsetsOf`, `boundedLassos`, `cands`, `mem_cands_of_bounded` |
+| `Assembly.lean` | `validZTime_iff_noCertifiedCandidate`, `Compression.decidableValidZTime`, `consequence_iff_noCertifiedCandidate`, `decidableSemanticConsequenceZTime`, `decidableSemanticConsequenceNil` |
 
 ## Terminology map against [GKWZ] 2003
 
@@ -111,22 +112,47 @@ witness `fmp` as a hypothesis, the hypothesis `Probe476.fmp_false` refutes. This
 unconditional. Rather than rename either result or edit `BiLasso/` (held stable), the new one
 takes the sub-namespace.
 
+## Arbitrary finite premises, and the two routes to them
+
+The entry point is stated at arbitrary finite `Γ`. `Assembly.lean`'s
+`consequence_iff_noCertifiedCandidate` is the criterion and `decidableSemanticConsequenceZTime`
+the procedure; `Family.lean`'s `exists_witnessFamily_of_not_consequence` is the compression
+theorem behind them, and `Enumerate.lean`'s `candsCtx` the candidate list. The `φ`-indexed names
+(`cands`, `validZTime_iff_noCertifiedCandidate`, `exists_witnessFamily_of_not_validZTime`,
+`Compression.decidableValidZTime`, `decidableSemanticConsequenceNil`) survive unchanged as the
+`Γ = []` specializations.
+
+Three things were `Γ = []`-specific and all three are now discharged: the consequence analogue of
+`validZTime_iff_validInt` for the entry point's carrier normalization, which is
+`consequenceZTime_iff_consequenceInt`; `WitnessFamily.Target`'s premise clause, which is the
+mirror of the conclusion clause beside it, built from `WitnessFamily.premise_mem_closure`; and
+`Enumerate.lean`'s φ-specialization of the enumeration, now de-specialized to `closureList` over
+`Γ ++ Del`. Everything else — `WitnessFamily.Refutes`, `WitnessFamily.refutes_of_certifies`,
+`WitnessFamily.joint_countermodel`, `exists_labelledLasso_of_history_realized`,
+`compressionBound`, and `WitnessFamily.decidableCertifies` with its four component instances —
+was already stated at arbitrary `Γ Del` and was not touched.
+
+**On the deduction theorem.** It is true that the tree has no `Context.conj` or `bigConj`: there
+is no single formula denoting the conjunction of a context. It does not follow that the tree
+lacks a context-conjunction deduction theorem, and the stronger conclusion was wrong.
+`StrongCompleteness.lean`'s `semantic_deduction_in` supplies the iterated-implication form,
+`SemanticConsequenceIn fc Γ φ ↔ ValidIn fc (Γ.foldr Formula.imp φ)`, so the *reduction* route is
+available after all; `ZTimeProvability.lean`'s `decidableSemanticConsequenceZTimeReduction` takes
+it in four lines.
+
+The direct route above remains the primary deliverable, and not because the reduction route is
+unavailable. The reduction route's candidate objects are `WitnessFamily [] [Γ.foldr Formula.imp σ]`,
+which fold the premises into the conclusion formula and carry no separate record of which
+formulas were premises. Only the direct route produces candidates in the exported
+`WitnessFamily Γ [σ]` shape, with `Γ` and `Δ` named separately — the shape the certificate layer
+exists to export. The two are companions, not substitutes.
+
 ## What is out of scope
 
-- **General finite-premise consequence.** `decidableSemanticConsequenceNil` covers the
-  empty-premise case only. The obstruction is narrower than it may look: a context-conjunction
-  deduction theorem — which the tree does not have — is what the *reduction* route (`Γ ⊨ σ` from
-  `⊨ ⋀Γ → σ`) needs, while the *direct* route needs none, because `SemanticConsequenceIn` unfolds
-  to local consequence at a point and `WitnessFamily.Refutes`,
-  `WitnessFamily.refutes_of_certifies`, `WitnessFamily.joint_countermodel`,
-  `exists_labelledLasso_of_history_realized`, `compressionBound` and
-  `WitnessFamily.decidableCertifies` with its four component instances are already stated at
-  arbitrary `Γ Del`. Three items are genuinely `Γ = []`-specific: the consequence analogue of
-  `validZTime_iff_validInt` for the entry point's carrier normalization, `WitnessFamily.Target`'s
-  premise clause, and `Enumerate.lean`'s φ-specialization of `closureSubsetsOf`,
-  `rawLabelledLassos`, `IsLabelledLasso`, `boundedLassos` and `cands`. That residue is bounded and
-  enumerated, and it is unproved — the consequence-form normalization has never been written, so
-  the general form is not known to compile.
+- **A multi-conclusion form.** `SemanticConsequenceIn` is single-conclusion, so the headline
+  statements are at `Del = [σ]`. The enumeration below generalizes in `Del` too — `candsCtx` and
+  `exists_witnessFamily_of_not_consequence`'s inputs are stated at arbitrary `Γ Del` — but no
+  multi-conclusion headline result is claimed.
 - **A usable executable.** `cands` is astronomically large. [GKWZ] §6.5 gives an EXPSPACE-hardness
   lower bound for `PTL × S5`, so the cost is the literature's own; see `Assembly.lean`'s docstring.
 - **The stability modal `⊡`.** `ValidZTime` is stated for `FormalSystem.Syntax.Formula`, which has

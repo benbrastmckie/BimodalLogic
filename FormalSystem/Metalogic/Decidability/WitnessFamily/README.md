@@ -95,8 +95,8 @@ plus the nine modules of `Sharing/` and the seven of `Compression/` below.
 | `Compression/Fulfil.lean` | The two propagation lemmas, the two iterated periodicities, `fulfillingSeqLab_of_good_cycles` |
 | `Compression/Extract.lean` | `compressionBound`, the three readouts, `exists_labelledLasso_of_history` |
 | `Compression/Family.lean` | `boxedPart`, the canonical enumerable box guess, `exists_witnessFamily_of_not_validZTime` |
-| `Compression/Enumerate.lean` | `closureSubsetsOf`, `boundedLassos`, `cands`, `mem_cands_of_bounded` |
-| `Compression/Assembly.lean` | `validZTime_iff_noCertifiedCandidate`, `Compression.decidableValidZTime`, `decidableSemanticConsequenceNil` |
+| `Compression/Enumerate.lean` | `closureList`, `closureSubsetsOfCtx`, `boundedLassosCtx`, `candsCtx`, `mem_candsCtx_of_bounded`, and the `[] [φ]` wrappers `closureSubsetsOf`, `boundedLassos`, `cands`, `mem_cands_of_bounded` |
+| `Compression/Assembly.lean` | `validZTime_iff_noCertifiedCandidate`, `Compression.decidableValidZTime`, `consequence_iff_noCertifiedCandidate`, `decidableSemanticConsequenceZTime`, `decidableSemanticConsequenceNil` |
 
 See `Compression/README.md` for the route, the [GKWZ] terminology map, the recorded duplication
 against `../BiLasso/` with its retirement trigger, and the grid-sweep consequence of the

@@ -11,10 +11,11 @@ import FormalSystem.Semantics.IntTransfer
 /-!
 # The Compression Theorem
 
-Every ℤ-time countermodel of `φ` compresses to a `WitnessFamily [] [φ]` that certifies the
-refutation, with every lasso's three segments bounded by `compressionBound [] [φ]`, with at most
+Every ℤ-time countermodel of `Γ ⊨ σ` compresses to a `WitnessFamily Γ [σ]` that certifies the
+refutation, with every lasso's three segments bounded by `compressionBound Γ [σ]`, with at most
 `|closure| + 1` lassos, and with a box guess of the **canonical, enumerable** form
-`fun χ => decide (χ ∈ S)` for an explicit `S ⊆ closureOf ([] ++ [φ])`.
+`fun χ => decide (χ ∈ S)` for an explicit `S ⊆ closureOf (Γ ++ [σ])`. The `Γ = []`, `σ = φ` case
+is the pinned specialization `exists_witnessFamily_of_not_validZTime`.
 
 ## The enumerability trap, and how the canonical form escapes it
 
@@ -46,7 +47,7 @@ the guarded `χ`.
 `main :: (one per boxed closure member the guess sets false)`. The main lasso carries the
 refutation; each witness lasso carries a position at which its `χ` fails, which is what makes
 `BoxFaithful`'s reverse direction true rather than merely consistent. Hence the count bound
-`W.lassos.length ≤ (closureOf ([] ++ [φ])).card + 1`, which `Enumerate.lean` consumes.
+`W.lassos.length ≤ (closureOf (Γ ++ [σ])).card + 1`, which `Enumerate.lean` consumes.
 
 ## The bound is a grid, not a magnitude
 
@@ -59,12 +60,15 @@ so representability, not magnitude, is what the folding decides.
 
 - `Formula.boxArg?` — the argument of a boxed formula, as a partial function
 - `boxedPart` — the `χ` whose box lies in a given finite set
+- `ConsequenceInt` — the consequence analogue of `ValidInt`, carrier collapsed to `ℤ`
 
 ## Main Results
 
 - `mem_boxedPart` — membership in `boxedPart` is boxed membership in the set
 - `boxedPart_subset_closureOf` — the boxed part of a closure is inside that closure
-- `exists_witnessFamily_of_not_validZTime` — **the compression theorem**
+- `consequenceZTime_iff_consequenceInt` — compression step 0 at arbitrary premises
+- `exists_witnessFamily_of_not_consequence` — **the compression theorem**
+- `exists_witnessFamily_of_not_validZTime` — its pinned `[] [φ]` specialization
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -383,8 +387,9 @@ of the candidate list.
 
 The proof is the composition of everything below it:
 
-1. `validZTime_iff_validInt` normalises the countermodel's carrier to ℤ. This is compression
-   step 0 and it is free.
+1. `consequenceZTime_iff_consequenceInt` normalises the countermodel's carrier to ℤ, carrying
+   the premise hypothesis through. This is compression step 0 and it is free; at `Γ = []` it is
+   `validZTime_iff_validInt`.
 2. `exists_labelledLasso_of_history_realized` compresses the refuting history at the refuting
    time into the **main** lasso, and each history witnessing a false box guess into one further
    lasso.

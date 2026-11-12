@@ -422,14 +422,14 @@ together with `bash scripts/check-metalogic-cycles.sh`; `suite_selection_select`
 
 ---
 
-### Phase 6: Reconcile the documentation record and run the full gate set [NOT STARTED]
+### Phase 6: Reconcile the documentation record and run the full gate set [COMPLETED]
 
 **Goal**: Retire the residue narrative wherever it is recorded, correct the false
 deduction-theorem conclusion, register the new headline declarations in the theorem index, and
 close the task against the complete gate set.
 
 **Tasks**:
-- [ ] Rewrite `Compression/README.md`'s "General finite-premise consequence" bullet
+- [x] Rewrite `Compression/README.md`'s "General finite-premise consequence" bullet
       (lines 114-129, confirmed present verbatim this dispatch): the residue is discharged, the
       general form compiles, and the sentence concluding that the tree lacks a context-conjunction
       deduction theorem is replaced by the correct statement — there is no `Context.conj`, but
@@ -437,30 +437,30 @@ close the task against the complete gate set.
       form, so the reduction route is available too. If the bullet's text has moved or been
       rewritten by another writer before this phase runs, locate it by its heading
       ("## What is out of scope") rather than by line number, and report the discrepancy.
-- [ ] Rewrite `Assembly.lean`'s "## Scope: no premises, and no stability modal" section
+- [x] Rewrite `Assembly.lean`'s "## Scope: no premises, and no stability modal" section
       (lines 53-70) the same way. The stability-modal half of that section is unaffected and
       stays. The section heading itself should no longer say "no premises".
-- [ ] Update `Family.lean`'s header (lines 14-17), which states the compression result at
+- [x] Update `Family.lean`'s header (lines 14-17), which states the compression result at
       `[] [φ]` only, to state it at arbitrary `Γ Del` with the `[] [φ]` case named as the pinned
       specialization.
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/WitnessFamily/README.md` immediately before
+- [x] Re-read `FormalSystem/Metalogic/Decidability/WitnessFamily/README.md` immediately before
       editing (it is in concurrent task 817's declared file scope), then update only the
       `Compression/Enumerate.lean` and `Compression/Assembly.lean` module-table rows near
       line 97 to name the new declarations. Stage that file by explicit path. If a foreign
       uncommitted modification or foreign commit is observed, stop and report rather than
       proceeding.
-- [ ] Add `docs/theorem-index.md` rows under `### Decidability` for
+- [x] Add `docs/theorem-index.md` rows under `### Decidability` for
       `consequenceZTime_iff_consequenceInt`, `exists_witnessFamily_of_not_consequence`,
       `consequence_iff_noCertifiedCandidate`, `decidableSemanticConsequenceZTime` and
       `decidableSemanticConsequenceZTimeReduction`, following the existing row shape with
       `pcq pinned:C14`. Each row's declaration must already carry the `Paper:` line added in
       Phases 2-5, or C15 fails.
-- [ ] Regenerate the module-inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`,
+- [x] Regenerate the module-inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`,
       then verify with `--emit-inventory --check`. Stage `README.md` and
       `FormalSystem/Metalogic/README.md` if they changed.
-- [ ] Run `lake build && bash scripts/typst-sync-check.sh --fix` and stage
+- [x] Run `lake build && bash scripts/typst-sync-check.sh --fix` and stage
       `typst/generated/status.typ` with the edited `.lean` files.
-- [ ] Run the full gate set and record the result against the Phase 1 baseline.
+- [x] Run the full gate set and record the result against the Phase 1 baseline.
 
 **Timing**: 1.5 hours
 
@@ -582,21 +582,21 @@ end FormalSystem.Metalogic
 
 ## Testing & Validation
 
-- [ ] `lake build` green for the whole library, zero diagnostics including warnings (CI runs
+- [x] `lake build` green for the whole library, zero diagnostics including warnings (CI runs
       `--wfail`, so a warning is a failure).
-- [ ] Each of the five new headline declarations measures at exactly
+- [x] Each of the five new headline declarations measures at exactly
       `[propext, Classical.choice, Quot.sound]` under `#print axioms`.
-- [ ] No `sorry` introduced anywhere under
+- [x] No `sorry` introduced anywhere under
       `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/` or in
       `FormalSystem/Metalogic/ZTimeProvability.lean`.
-- [ ] No `noncomputable` modifier on any `Enumerate.lean` declaration or on
+- [x] No `noncomputable` modifier on any `Enumerate.lean` declaration or on
       `decidableSemanticConsequenceZTime`.
-- [ ] `bash scripts/check-module-invariants.sh` shows no regression against the Phase 1 baseline
+- [x] `bash scripts/check-module-invariants.sh` shows no regression against the Phase 1 baseline
       (delta, not absolute zero).
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0.
-- [ ] `bash scripts/typst-sync-check.sh` exits 0 on the full bare invocation.
-- [ ] `bash scripts/check-metalogic-cycles.sh` exits 0.
-- [ ] The five pinned C14 declarations' statements are unchanged in `git diff`.
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0.
+- [x] `bash scripts/typst-sync-check.sh` exits 0 on the full bare invocation.
+- [x] `bash scripts/check-metalogic-cycles.sh` exits 0.
+- [x] The five pinned C14 declarations' statements are unchanged in `git diff`.
 
 ## Artifacts & Outputs
 

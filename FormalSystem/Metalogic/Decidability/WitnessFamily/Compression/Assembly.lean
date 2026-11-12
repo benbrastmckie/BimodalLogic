@@ -21,9 +21,10 @@ them gives a decision procedure.
 
 ## The shape of the procedure
 
-`φ` is ℤ-valid iff **no** candidate on `cands φ` certifies a refutation at any time in
-`[0, compressionBound [] [φ]]`. Both quantifiers are over finite objects — a `List` and a
-`Finset.Icc` — so the right-hand side is decidable, and `decidable_of_iff` transports that to
+`Γ ⊨_ZTime σ` iff **no** candidate on `candsCtx Γ [σ]` certifies a refutation at any time in
+`[0, compressionBound Γ [σ]]`; `φ` is ℤ-valid iff the same holds of `cands φ`. Both
+quantifiers are over finite objects — a `List` and a `Finset.Icc` — so the right-hand side is
+decidable, and `decidable_of_iff` transports that to
 `ValidZTime φ`.
 
 ## `def`, not `instance`
@@ -36,11 +37,11 @@ can `letI` it locally.
 
 ## The complexity, stated honestly
 
-`cands φ` is astronomically large — roughly `(2^k)^{3B(1 + k)}` with `k = |closureOf ([] ++ [φ])|`
-and `B = compressionBound [] [φ]`. Nothing here should be read as a complexity claim, and the
-cost is **the literature's own, not an artefact of the Lean encoding**: [GKWZ] 2003 §6.5 gives an
-EXPSPACE-hardness lower bound for `PTL × S5`, so no encoding of this decision problem does
-materially better. `Decidable` is the deliverable.
+`candsCtx Γ [σ]` is astronomically large — roughly `(2^k)^{3B(1 + k)}` with
+`k = |closureOf (Γ ++ [σ])|` and `B = compressionBound Γ [σ]`. Nothing here should be read as a
+complexity claim, and the cost is **the literature's own, not an artefact of the Lean
+encoding**: [GKWZ] 2003 §6.5 gives an EXPSPACE-hardness lower bound for `PTL × S5`, so no
+encoding of this decision problem does materially better. `Decidable` is the deliverable.
 
 ## The bound is a grid, and a consumer that folds by modulus needs to know
 
@@ -50,27 +51,33 @@ bound `n` represents exactly the periods dividing `n`, so representability, not 
 what the folding decides. Anyone porting this bound to a model checker must sweep the grid, not
 pick a single triple.
 
-## Scope: no premises, and no stability modal
+## Scope: arbitrary finite premises, but no stability modal
 
-`decidableSemanticConsequenceNil` covers `SemanticConsequenceIn FrameClass.ZTime [] σ` only. The
-general finite-premise case is unproved, and the obstruction is narrower than a missing deduction
-theorem. It is the **reduction** route — deriving `Γ ⊨ σ` from `⊨ ⋀Γ → σ` — that needs a
-context-conjunction deduction theorem, and the tree has none: there is no `Context.conj`, `bigConj`
-or equivalent. The **direct** route needs no such theorem. `SemanticConsequenceIn` unfolds to local
-consequence at a point, so its negation is already the shape `WitnessFamily.Refutes` describes, and
-`WitnessFamily.Refutes`, `WitnessFamily.refutes_of_certifies`, `WitnessFamily.joint_countermodel`,
+`decidableSemanticConsequenceZTime` covers `SemanticConsequenceIn FrameClass.ZTime Γ σ` at
+arbitrary finite `Γ`; `decidableSemanticConsequenceNil` is its `Γ = []` specialization and
+`Compression.decidableValidZTime` the corresponding validity procedure. The route is the
+**direct** one: `SemanticConsequenceIn` unfolds to local consequence at a point, so its negation
+is already the shape `WitnessFamily.Refutes` describes, and `WitnessFamily.Refutes`,
+`WitnessFamily.refutes_of_certifies`, `WitnessFamily.joint_countermodel`,
 `exists_labelledLasso_of_history_realized`, `compressionBound` and the four `Decidable` instances
-composed as `WitnessFamily.decidableCertifies` are all already stated at arbitrary `Γ Del`.
+composed as `WitnessFamily.decidableCertifies` were already stated at arbitrary `Γ Del`.
 
-What is genuinely `Γ = []`-specific is three things: this module's entry point normalizes the
-carrier with `validZTime_iff_validInt`, and the general case needs that lemma's consequence
-analogue — available from `truthAt_map`, which is stated at a fixed aligned triple and so applies
-simultaneously to every `γ ∈ Γ` and to `σ`; `WitnessFamily.Target`'s premise clause, discharged
-here from `List.not_mem_nil`, becomes the mirror of the conclusion clause beside it; and
-`Enumerate.lean`'s `closureSubsetsOf`, `rawLabelledLassos`, `IsLabelledLasso`, `boundedLassos` and
-`cands` are specialized to a single `φ` over `closureOf ([] ++ [φ])`. That residue is bounded and
-enumerated rather than open-ended — and it is **not** discharged: the consequence-form carrier
-normalization has never been written, so nothing here claims the general form compiles.
+Three things had been `Γ = []`-specific and all three are discharged. The entry point's carrier
+normalization is now `Family.lean`'s `consequenceZTime_iff_consequenceInt`, the consequence
+analogue of `validZTime_iff_validInt`, available from `truthAt_map` — stated at a fixed aligned
+triple, so it applies simultaneously to every `γ ∈ Γ` and to `σ`. `WitnessFamily.Target`'s premise
+clause, once discharged from `List.not_mem_nil`, is now the mirror of the conclusion clause
+beside it. And `Enumerate.lean`'s enumeration is de-specialized from a single `φ` to `closureOf
+(Γ ++ Del)` via the computable `closureList`, with the `φ`-indexed names kept as wrappers.
+
+A **reduction** route exists beside the direct one. It is true that the tree has no
+`Context.conj` or `bigConj` — no single formula denotes a context's conjunction — but
+`StrongCompleteness.lean`'s `semantic_deduction_in` gives the iterated-implication form
+`SemanticConsequenceIn fc Γ φ ↔ ValidIn fc (Γ.foldr Formula.imp φ)`, which
+`ZTimeProvability.lean`'s `decidableSemanticConsequenceZTimeReduction` composes with
+`Compression.decidableValidZTime`. The direct route is kept as primary because only it yields
+candidates in the exported `WitnessFamily Γ [σ]` shape; the reduction route's candidates fold the
+premises into the conclusion formula.
 
 `ValidZTime` is stated for `FormalSystem.Syntax.Formula`, which has no stability modal `⊡`; `⊡`
 lives only in `FormalSystem.PlusLanguage.Formula`. The durable scope sentence for that is
@@ -78,17 +85,19 @@ recorded at `BiLasso/Assembly.lean`'s docstring and is not restated here.
 
 ## Axioms
 
-The three named results measure `[propext, Classical.choice, Quot.sound]`. The `Decidable`
+Every named result measures `[propext, Classical.choice, Quot.sound]`. The `Decidable`
 produced **computes** — it carries no `Classical.dec` in its data — but that is not choice-freedom
 and none is claimed; `wlem_of_saturation` shows no finite-carrier route to this result can be
 choice-free.
 
 ## Main Results
 
-- `validZTime_iff_noCertifiedCandidate` — the decision criterion
+- `validZTime_iff_noCertifiedCandidate` — the decision criterion for validity
 - `Compression.decidableValidZTime` — **the decision procedure** (sub-namespaced: see its
   docstring — `BiLasso/Assembly.lean` already owns the bare name for the *conditional* procedure)
-- `decidableSemanticConsequenceNil` — the empty-premise consequence corollary
+- `consequence_iff_noCertifiedCandidate` — the decision criterion at arbitrary finite premises
+- `decidableSemanticConsequenceZTime` — **the decision procedure** for `Γ ⊨_ZTime σ`
+- `decidableSemanticConsequenceNil` — its empty-premise specialization
 -/
 
 namespace FormalSystem.Metalogic.Decidability

@@ -121,7 +121,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 | `SetConsequence.lean` | 588 | Set-indexed consequence relation, and the `FrameClass`-indexed satisfiability / model-existence / compactness / strong-completeness family, instantiated at all four class tags including the `.RTime` row (`CompactRTime`, `StrongCompletenessRTime`, `SatisfiableRTimeSet`, `ModelExistenceRTime`) |
 | `Soundness.lean` | 1,681 | The soundness theorem itself |
 | `StrongCompleteness.lean` | 1,142 | Strong/consequence completeness, including `completeness_rtime` (`completeness_dedekind` does not exist — renamed under the Discrete/Dedekind -> ZTime/RTime convention), and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
-| `ZTimeProvability.lean` | 119 | <!-- TODO: add description --> |
+| `ZTimeProvability.lean` | 151 | <!-- TODO: add description --> |
 | `ZTimeSubstitutionBridge.lean` | 166 | Carries `ValidZTime` on an L formula over to `PlusDerivable FrameClass.ZTime []` on each of its `substPlus` images, by routing `completeness_ztime` through `plusDerivable_substPlus_nil`; a second route starts instead from truth on all bi-infinite Z-words, admissible only where `isBoxFree` holds |
 <!-- END GENERATED -->
 
@@ -160,7 +160,7 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Conservativity/`](Conservativity/README.md) | 32 | 11,157 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`ConvexConsequence/`](ConvexConsequence/README.md) | 6 | 1,388 | The metatheory of the convex-index consequence relations C3 and C4 of `Semantics/ConvexTruth.lean`: the separations from C1 and from each other, and the axiom-survival table as one theorem per row |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
-| [`Decidability/`](Decidability/README.md) | 185 | 119,294 | Tableau decision procedure and countermodel extraction |
+| [`Decidability/`](Decidability/README.md) | 185 | 119,526 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 9 | 2,072 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Expressiveness/`](Expressiveness/README.md) | 157 | 111,856 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 30 | 9,269 | Axiom-independence models |
