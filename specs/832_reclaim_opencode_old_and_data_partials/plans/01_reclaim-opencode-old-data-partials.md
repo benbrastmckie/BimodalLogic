@@ -1,7 +1,7 @@
 # Implementation Plan: Task #832
 
 - **Task**: 832 - Reclaim opencode_OLD and data partials
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/832_reclaim_opencode_old_and_data_partials/reports/01_reclaim-opencode-old-data-partials.md

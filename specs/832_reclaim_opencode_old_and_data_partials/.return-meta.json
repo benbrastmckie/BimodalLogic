@@ -22,14 +22,24 @@
       "category": "PATTERN",
       "source_artifact": "specs/832_reclaim_opencode_old_and_data_partials/summaries/01_reclaim-opencode-old-data-partials-summary.md",
       "confidence": 0.75,
-      "suggested_keywords": ["irreversible-deletion", "gitignored", "user-decision", "pre-delete-verification", "disk-reclamation"]
+      "suggested_keywords": [
+        "irreversible-deletion",
+        "gitignored",
+        "user-decision",
+        "pre-delete-verification",
+        "disk-reclamation"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1794503933_59a2b4",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 2,
     "phases_total": 2
   }

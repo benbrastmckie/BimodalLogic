@@ -13,7 +13,7 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,829,830,831,832,873,890 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,829,830,831,873,890 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876 | 298,428,502,743,761,873 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -85,7 +85,6 @@ next_project_number: 926
 ### Repo Hygiene
 
 743 [PLANNED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
-832 [IMPLEMENTING] — Two local-disk reclamations found by the 2026-11-02 review....
 
 ### Semantics
 
@@ -301,12 +300,13 @@ NAMING CONSTRAINT, which has already cost one round elsewhere: gate C26 and C16'
 ---
 
 ### 832. Reclaim opencode old and data partials
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [832_reclaim_opencode_old_and_data_partials/reports/01_reclaim-opencode-old-data-partials.md]
 - **Plan**: [832_reclaim_opencode_old_and_data_partials/plans/01_reclaim-opencode-old-data-partials.md]
+- **Summary**: [832_reclaim_opencode_old_and_data_partials/summaries/01_reclaim-opencode-old-data-partials-summary.md]
 
 **Description**: Two local-disk reclamations found by the 2026-11-02 review. Both are LOCAL-DISK ONLY: every path below is gitignored with zero tracked files, so nothing here produces a commit and nothing is recoverable from git afterwards. That asymmetry is the whole reason item 2 is a user decision rather than an action.
 
