@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Soundness
 import FormalSystem.Metalogic.BXCanonical.Completeness
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Assembly
+import FormalSystem.Metalogic.StrongCompleteness
 
 /-!
 # `Decidable (Derivable FrameClass.ZTime [] φ)`
@@ -107,10 +108,41 @@ def decidableDerivableZTime (φ : Formula) :
   letI := Decidability.Compression.decidableValidZTime φ
   decidable_of_iff (ValidZTime φ) (derivable_iff_validZTime φ).symm
 
+
+/--
+**Decidability of ℤ-time semantic consequence at arbitrary finite premises**, by the reduction
+route.
+
+`semantic_deduction_in` converts `Γ ⊨_ZTime σ` into validity of the iterated implication
+`Γ.foldr Formula.imp σ`, which `Decidability.Compression.decidableValidZTime` already decides.
+Four lines, and it is sited here rather than under `Compression/` because importing
+`StrongCompleteness` into that subdirectory would pull `Soundness.lean` and
+`BXCanonical/CompletenessDedekind.lean` into a subtree whose README is explicit about keeping its
+dependency surface minimal; this module already imports both.
+
+**What distinguishes the two routes.** `Decidability.decidableSemanticConsequenceZTime` takes the
+*direct* route and its candidate objects are `WitnessFamily Γ [σ]`, with `Γ` and `Δ` named
+separately — the shape the certificate layer exists to export. This one's candidates are
+`WitnessFamily [] [Γ.foldr Formula.imp σ]`, which fold the premises into the conclusion formula
+and so carry no separate record of which formulas were premises. The two decide the same
+proposition; only the direct route yields a general-`Γ` criterion in the exported certificate
+shape, so this is a companion to it and not a substitute.
+
+A `def` and not an `instance`, for the same repository-wide instance-resolution reason the two
+declarations above give.
+
+Paper: — (formalization-native; the paper's decidability corollary is commented out and carries no
+live label, and states nothing about the witness-family route)
+-/
+def decidableSemanticConsequenceZTimeReduction (Γ : Context) (σ : Formula) :
+    Decidable (SemanticConsequenceIn FrameClass.ZTime Γ σ) :=
+  letI := Decidability.Compression.decidableValidZTime (Γ.foldr Formula.imp σ)
+  decidable_of_iff (ValidZTime (Γ.foldr Formula.imp σ)) (semantic_deduction_in Γ σ).symm
+
 /-!
 ## Axiom audit
 
-Both declarations above measure as `[propext, Classical.choice, Quot.sound]`, which is the
+All three declarations above measure as `[propext, Classical.choice, Quot.sound]`, which is the
 repository's standard classical triple and the same value the three composed inputs carry. The
 values are pinned by the C14 matched pair in `scripts/check-module-invariants.sh`, which asserts
 them on every build-backed gate run; no live `#print axioms` directive is kept here.

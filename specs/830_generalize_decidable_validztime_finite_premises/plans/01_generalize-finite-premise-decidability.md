@@ -365,31 +365,31 @@ claimed.
 
 ---
 
-### Phase 5: Land the reduction-route corollary in `ZTimeProvability.lean` [NOT STARTED]
+### Phase 5: Land the reduction-route corollary in `ZTimeProvability.lean` [COMPLETED]
 
 **Goal**: The cheapest honest statement of the headline result, via `semantic_deduction_in`,
 sited where the decidability results are already composed with completeness.
 
 **Tasks**:
-- [ ] Add `import FormalSystem.Metalogic.StrongCompleteness` to `ZTimeProvability.lean`. Site the
+- [x] Add `import FormalSystem.Metalogic.StrongCompleteness` to `ZTimeProvability.lean`. Site the
       corollary here, not in `Compression/`: importing `StrongCompleteness` into `Compression/`
       would pull `Soundness.lean` and `BXCanonical/CompletenessDedekind.lean` into a subdirectory
       whose README is explicit about keeping its dependency surface minimal, whereas
       `ZTimeProvability.lean` already imports `Soundness` and `BXCanonical.Completeness`.
-- [ ] Add the corollary under the name `decidableSemanticConsequenceZTimeReduction` — **not** the
+- [x] Add the corollary under the name `decidableSemanticConsequenceZTimeReduction` — **not** the
       research report's `decidableSemanticConsequenceZTime_reduction`, whose non-trailing
       underscore in a `def` name fails `check-module-invariants.sh` C26 (`theorem` is exempt from
       C26; `def` is not). Body as in the research report: `letI := Compression.decidableValidZTime (Γ.foldr Formula.imp σ)`
       then `decidable_of_iff (ValidZTime (Γ.foldr Formula.imp σ)) (semantic_deduction_in Γ σ).symm`.
-- [ ] Give it a doc comment ending in a `Paper: —` line for C15, and state in that comment what
+- [x] Give it a doc comment ending in a `Paper: —` line for C15, and state in that comment what
       distinguishes the two routes: the reduction route's candidate objects are
       `WitnessFamily [] [Γ.foldr Formula.imp σ]`, which fold the premises into the conclusion
       formula, so only the direct route delivers a general-`Γ` criterion in the exported
       `Γ`/`Δ` certificate shape.
-- [ ] Run `bash scripts/check-metalogic-cycles.sh`. Assertion B asserts set EQUALITY, so it fails
+- [x] Run `bash scripts/check-metalogic-cycles.sh`. Assertion B asserts set EQUALITY, so it fails *(deviation: altered — script run, exit 0; no surplus upward edge, so the conditional allowlist extension was not needed and the script was not edited)*
       on surplus as well as deficit: if the new import produces a surplus upward edge, extend the
       allowlist in `scripts/check-metalogic-cycles.sh` **in this same phase**, never deferred.
-- [ ] Run `lake build && bash scripts/typst-sync-check.sh --fix`, stage
+- [x] Run `lake build && bash scripts/typst-sync-check.sh --fix`, stage
       `typst/generated/status.typ` with the edited files, and commit together.
 
 **Timing**: 0.75 hours
