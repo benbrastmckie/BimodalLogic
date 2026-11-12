@@ -55,14 +55,14 @@ next_project_number: 926
             └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
-714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
+714 [RESEARCHING] — Evaluate removing the TailStable junk-position obstruction at...
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 761 [IMPLEMENTING] — AMENDED 2026-10-18 (presentation chosen): the cell...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
     └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
-781 [RESEARCHED] — Decide whether the Phase 5 inner-fixpoint hoist in...
-830 [NOT STARTED] — Generalize Compression.decidableValidZTime from the...
+781 [PLANNING] — Decide whether the Phase 5 inner-fixpoint hoist in...
+830 [RESEARCHING] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
@@ -85,10 +85,10 @@ next_project_number: 926
 ### Repo Hygiene
 
 743 [PLANNED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
-817 [NOT STARTED] — Wrap the remaining count-carrying inventory tables under...
-818 [NOT STARTED] — Wrap the four directory-rollup inventory tables that need the...
-821 [RESEARCHED] — Reconcile specs/state.json's next\_project\_number against...
-832 [NOT STARTED] — Two local-disk reclamations found by the 2026-11-02 review....
+817 [RESEARCHED] — Wrap the remaining count-carrying inventory tables under...
+818 [RESEARCHING] — Wrap the four directory-rollup inventory tables that need the...
+821 [PLANNING] — Reconcile specs/state.json's next\_project\_number against...
+832 [RESEARCHING] — Two local-disk reclamations found by the 2026-11-02 review....
 
 ### Semantics
 
@@ -304,7 +304,7 @@ NAMING CONSTRAINT, which has already cost one round elsewhere: gate C26 and C16'
 ---
 
 ### 832. Reclaim opencode old and data partials
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -364,7 +364,7 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, Medium Priority Issues section
 ---
 
 ### 830. Generalize decidable validztime finite premises
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -438,7 +438,7 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, High Priority Issues and Mediu
 
 ### 821. State counter archive numbering reconciliation
 - **Effort**: low
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -481,7 +481,7 @@ UNCHANGED BY THIS AMENDMENT: the guardrail that no live task is renumbered under
 ---
 
 ### 818. Wrap directory rollup tables files lines cols
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: markdown
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -508,11 +508,12 @@ NON-GOALS. No change to the generator algorithm beyond using an option it alread
 ---
 
 ### 817. Wrap remaining phantom row inventory tables
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: markdown
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Parent**: Task 744
+- **Research**: [817_wrap_remaining_phantom_row_inventory_tables/reports/01_wrap-remaining-phantom-row-tables.md]
 
 **Description**: Wrap the remaining count-carrying inventory tables under FormalSystem/ whose blockers are phantom or missing rows
 
@@ -615,7 +616,7 @@ WHAT WOULD MAKE THIS A COMPLETE RESULT EVEN IF NO LOCK IS ADDED. A reasoned find
 ---
 
 ### 781. Phase5 hoist kernel neutral decision
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -755,7 +756,7 @@ ACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compi
 ---
 
 ### 714. Evaluate full labels in sliced certificate
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 716
