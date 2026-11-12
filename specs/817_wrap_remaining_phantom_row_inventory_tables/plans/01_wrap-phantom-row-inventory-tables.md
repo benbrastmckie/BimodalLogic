@@ -422,25 +422,38 @@ block. Confirm with `ls FormalSystem/Metalogic/Decidability/WitnessFamily/Sharin
 
 ---
 
-### Phase 6: BXCanonical — wrap the pinned-row table [NOT STARTED]
+### Phase 6: BXCanonical — wrap the pinned-row table [COMPLETED]
 
 **Goal**: `FormalSystem/Metalogic/BXCanonical/README.md` is under the gate, with the pinned
 sibling-aggregator row surviving regeneration intact.
 
 **Tasks**:
-- [ ] Make no row-set change: the table's 12 rows (8 loose + 3 subdirectory + 1 pinned
-      `../BXCanonical.lean`) already match the live scan plus the pinned-row logic.
-- [ ] Wrap with `dir=FormalSystem/Metalogic/BXCanonical rows=both cols=lines` and run the writer.
-- [ ] Confirm the pinned row survived with its hand-written description carried verbatim — this
+- [x] Make no row-set change: the table's 12 rows (8 loose + 3 subdirectory + 1 pinned
+      `../BXCanonical.lean`) already match the live scan plus the pinned-row logic. *(completed:
+      confirmed via `ls *.lean | wc -l` = 8 plus Chronicle=14, Filtration=1, Quasimodel=5)*
+- [x] Wrap with `dir=FormalSystem/Metalogic/BXCanonical rows=both cols=lines` and run the writer.
+      *(completed)*
+- [x] Confirm the pinned row survived with its hand-written description carried verbatim — this
       is the specific path the earlier sweep never exercised, and it is the reason this README was
-      deferred to this task.
-- [ ] Confirm the three subdirectory rows' embedded hand-written file counts ("(14 files)",
+      deferred to this task. *(completed: `../BXCanonical.lean` row survived with its description
+      byte-identical and its count unchanged at 43 — it was already current)*
+- [x] Confirm the three subdirectory rows' embedded hand-written file counts ("(14 files)",
       "(1 file)", "(5 files)") still match the live directories (they did at planning time); these
       stay hand-written and ungated after the wrap, so note that residual in the phase commit
       body. Correct one only if it is actually wrong — these rows are inside a table this task
       wraps, so a correction here is in scope, unlike a table the task does not touch.
-- [ ] Expect the subdirectory rows' `—` Lines cells to be replaced by real numbers under
+      *(completed: all three counts verified live-correct, no correction needed)*
+- [x] Expect the subdirectory rows' `—` Lines cells to be replaced by real numbers under
       `cols=lines`; verify this is what the writer produced rather than assuming it.
+      *(verified and the plan's expectation here was wrong, not the implementation: per
+      `scripts/check-module-invariants.sh`'s `inventory_rows()`, a subdirectory row's Lines cell
+      is driven by the `cols` option, not `rows` — `cols=files-lines` computes
+      `[file_count, total_lines]`; any other `cols` value (including this phase's `cols=lines`)
+      always emits a literal `["—"]` for a subdirectory row, with no numeric substitution. The
+      regenerated block's three subdirectory rows correctly still read `—` for Lines; this is
+      the same convention used by every other already-wrapped `rows=both cols=lines` README in
+      the tree and is why the four column-set-mismatch READMEs needing real subdirectory numbers
+      are reserved for `cols=files-lines` in their own task.)*
 
 **Timing**: 0.5 hours
 

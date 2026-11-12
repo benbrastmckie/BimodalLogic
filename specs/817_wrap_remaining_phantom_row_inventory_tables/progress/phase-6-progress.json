@@ -1,0 +1,26 @@
+{
+  "phase": 6,
+  "phase_name": "BXCanonical — wrap the pinned-row table",
+  "started_at": "2026-11-12T01:05:00Z",
+  "last_updated": "2026-11-12T01:12:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Wrap BXCanonical/README.md's 12-row table (8 loose + 3 subdirectory + 1 pinned), regenerate, verify pinned row survives",
+      "status": "done",
+      "files_touched": ["FormalSystem/Metalogic/BXCanonical/README.md"]
+    }
+  ],
+  "current_objective": 1,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "6.5",
+      "description": "Expect the subdirectory rows' em-dash Lines cells to be replaced by real numbers under cols=lines",
+      "type": "altered",
+      "reason": "Plan premise was inaccurate: the generator's cols option (not rows) gates subdirectory-row Lines substitution; cols=lines always emits an em-dash for a subdirectory row regardless of rows=both. Verified against scripts/check-module-invariants.sh's inventory_rows() subdirs branch and the writer's actual output.",
+      "annotation": "*(verified and the plan's expectation here was wrong, not the implementation)*"
+    }
+  ]
+}

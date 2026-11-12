@@ -9,20 +9,22 @@ It imports `Algebraic.FlowFrame` for the generic flow-frame countermodel engine.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/BXCanonical rows=both cols=lines -->
 | File | Lines | Description |
 |------|-------|-------------|
 | `../BXCanonical.lean` | 43 | Re-export module for the BXCanonical package. **Sibling aggregator**, at `FormalSystem/Metalogic/BXCanonical.lean` — not a file inside this directory |
-| `CanonicalChain.lean` | 119 | Chronicle chain construction and its linear order |
-| `CanonicalModel.lean` | 855 | Canonical model assembly from chronicles; frame/model structure |
-| `Completeness.lean` | 432 | Completeness theorem wiring for the Base, Dense, and Discrete variants |
-| `CompletenessDedekind.lean` | 607 | Completeness wiring for the Dedekind (real flow) variant |
-| `DiscreteCarrierProbe.lean` | 94 | Discrete-carrier probe over the flow-frame engine |
-| `Frame.lean` | 728 | Canonical frame properties: task relation, temporal accessibility |
-| `OrderedSeedConsistency.lean` | 261 | Seed consistency for the ordered chronicle construction |
-| `TruthLemma.lean` | 312 | MCS-membership characterizations feeding the canonical model |
+| `CanonicalChain.lean` | 116 | Chronicle chain construction and its linear order |
+| `CanonicalModel.lean` | 844 | Canonical model assembly from chronicles; frame/model structure |
+| `Completeness.lean` | 503 | Completeness theorem wiring for the Base, Dense, and Discrete variants |
+| `CompletenessDedekind.lean` | 620 | Completeness wiring for the Dedekind (real flow) variant |
+| `DiscreteCarrierProbe.lean` | 96 | Discrete-carrier probe over the flow-frame engine |
+| `Frame.lean` | 719 | Canonical frame properties: task relation, temporal accessibility |
+| `OrderedSeedConsistency.lean` | 258 | Seed consistency for the ordered chronicle construction |
+| `TruthLemma.lean` | 294 | MCS-membership characterizations feeding the canonical model |
 | `Chronicle/` | — | Dense chronicle construction (14 files) |
 | `Filtration/` | — | Filtration-based model construction (1 file) |
 | `Quasimodel/` | — | Quasimodel intermediate construction (5 files) |
+<!-- END GENERATED -->
 
 ## Key Results
 
