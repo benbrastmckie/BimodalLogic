@@ -7,13 +7,13 @@
     {"id": 1, "description": "Reduce the probe to Part II plus the headline, referring to promoted library names", "status": "done", "files_touched": ["specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean"], "note": "113 lines (within 110-130 Scope Hypothesis), compiles sorry-free via lake env lean, measured axioms [propext, Classical.choice, Quot.sound] on all three remaining theorems"},
     {"id": 2, "description": "Track the probe with git add (explicit pathspec)", "status": "done", "files_touched": ["specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean"]},
     {"id": 3, "description": "Wire the probe into check-evidence-probes.sh WIRED array + comment table", "status": "done", "files_touched": ["scripts/check-evidence-probes.sh"]},
-    {"id": 4, "description": "Regenerate module-inventory blocks via check-module-invariants.sh --emit-inventory", "status": "not_started", "files_touched": []},
+    {"id": 4, "description": "Regenerate module-inventory blocks via check-module-invariants.sh --emit-inventory", "status": "done", "files_touched": ["FormalSystem/Metalogic/README.md", "FormalSystem/PlusLanguage/README.md", "README.md"], "note": "Exactly the three READMEs the Scope Hypothesis predicted; FormalSystem/README.md unchanged (generator left it alone). --emit-inventory --check now reports PASS INV, no stale block."},
     {"id": 5, "description": "Run the full gate set and read each verdict", "status": "not_started", "files_touched": []},
     {"id": 6, "description": "Check C20 third assertion for new name-bearing citation findings", "status": "not_started", "files_touched": []},
     {"id": 7, "description": "Grep edited docstrings to confirm retained hedges present", "status": "not_started", "files_touched": []},
     {"id": 8, "description": "Write the implementation summary", "status": "not_started", "files_touched": []}
   ],
-  "current_objective": 4,
+  "current_objective": 5,
   "approaches_tried": [],
   "handoff_count": 0
 }
