@@ -2620,7 +2620,7 @@
     {
       "project_number": 905,
       "project_name": "eliminate_cross_certification_two_sided_reynolds_automata",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "formal",
       "title": "Eliminate cross-certification between the forward and backward Rabin automata, or show it is load-bearing",
       "description": "RESEARCH TASK, report only. Deliverable: an answer, with its argument, to whether the clause-(a) cross-certification of specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md's Finding 5.2/14.4 is eliminable -- either a proof that the certification is automatic from the chronicle clauses of that report's Finding 8.2, or a demonstration that it is load-bearing, or a bi-infinite-automaton alternative with its cost. The question is answerable against the chronicle clauses and the two clause (a)s alone, strictly cheaper than anything in that report's Finding 17; eliminating the clauses would remove one omega-regularity argument from each automaton and shrink the alphabet's enlargement. No Lean work; no completeness claim.",
@@ -2631,7 +2631,7 @@
       "dependencies": [],
       "priority": "low",
       "created": "2026-11-09T20:01:27Z",
-      "last_updated": "2026-11-12T02:39:45Z",
+      "last_updated": "2026-11-12T03:39:34Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -2648,6 +2648,11 @@
           "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-4-handoff-20261112T034500Z.md",
           "type": "handoff",
           "summary": "Phase 4 completion handoff with current state, key decisions, and the next action (Phase 5)."
+        },
+        {
+          "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/summaries/01_eliminate-cross-certification-clauses-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary covering all five phases of task 905."
         }
       ],
       "audit_verdict": {
@@ -2734,7 +2739,8 @@
         "note": "trimmed to top 6 of 13 non-scope-blind verdicts for state-write arg-size limits; full 465-verdict record committed at task-proposals-audit.ndjson"
       },
       "topic": "completeness",
-      "session_id": "sess_1794448865_9a2e5c"
+      "session_id": "sess_1794448865_9a2e5c",
+      "completion_summary": "Implemented Phase 5 (close the ledger and run the full gate set), completing task 905: brought the Executive Summary, Finding 16.3 ((Q3) answered in the affirmative, bi-infinite branch closed), section 6 (Finding 4(i) note), Decision 5, Recommendation 5 (alphabet-shrink expectation withdrawn), section 17, the evidence-tier table, and a dated amendment note into line with the eliminated clause-(a) design in specs/901's paper-proof report. validate-artifact.sh stays [PASS] 0 warnings; grep -n 'clause (a)' returns zero hits across the whole report; the batch-deferred scoped gate narrowing (test-validate-artifact.sh, test-check-record-versioning.sh, test-check-task-references.sh) passed 3/3; all five plan phases are [COMPLETED]."
     },
     {
       "project_number": 906,

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #905
 
 - **Task**: 905 - Eliminate the cross-certification clauses of the two-sided Reynolds automata, or show them load-bearing
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.0 hours
 - **Dependencies**: None blocking. Task 901 is `completed`; its report is the architecture of record and is the sole edit target of this plan.
 - **Research Inputs**: `specs/905_eliminate_cross_certification_two_sided_reynolds_automata/reports/01_eliminate-cross-certification-clauses.md`

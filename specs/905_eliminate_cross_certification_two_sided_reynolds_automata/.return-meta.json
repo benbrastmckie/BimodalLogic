@@ -21,14 +21,24 @@
       "category": "TECHNIQUE",
       "source_artifact": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/summaries/01_eliminate-cross-certification-clauses-summary.md",
       "confidence": 0.7,
-      "suggested_keywords": ["grep-verification-criterion", "literal-substring-collision", "historical-prose", "ledger-reconciliation", "formal-report-editing"]
+      "suggested_keywords": [
+        "grep-verification-criterion",
+        "literal-substring-collision",
+        "historical-prose",
+        "ledger-reconciliation",
+        "formal-report-editing"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1794448865_9a2e5c",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 5,
     "phases_total": 5
   }
