@@ -1,0 +1,43 @@
+{
+  "status": "researched",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/reports/01_lcu-lcn-separating-model.md",
+      "summary": "Research report: the separating model settling lcU's non-derivability from TM-plus + LC_n + mirror LC_n at .Base/.Dense/.RTime, with 9 findings across logic and order theory"
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean",
+      "summary": "Compiled, sorry-free probe: dstab collapse, lcAnte <-> lcCons on deterministic frames, lcU refuted on translationFrame over the rationals, and the headline lcU_not_extDerivable_base; axioms [propext, Classical.choice, Quot.sound]"
+    }
+  ],
+  "next_steps": "Run /orchestrate 906 to create the implementation plan. The report's Recommendations 1 and 2 are the actionable items (docstring updates in PlusLCSchema.lean and LCExtension.lean; promotion of the probe's dstab_iff_of_deterministic, lcN_plusValidOn_of_deterministic and ext_sound_detIn into FormalSystem/). Recommendation 5 is a do-not-do: no further search for a ZTime separating model for this pair.",
+  "metadata": {
+    "session_id": "sess_1794448865_9a2e5c_906",
+    "agent_type": "formal-research-agent",
+    "duration_seconds": 2650,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "formal-research-agent"],
+    "domains_researched": ["logic", "math"],
+    "findings_count": 9,
+    "context_files_loaded": [
+      "FormalSystem/PlusLanguage/PlusLCSchema.lean",
+      "FormalSystem/Metalogic/LCExtension.lean",
+      "FormalSystem/PlusLanguage/PlusDeterminism.lean",
+      "FormalSystem/Semantics/Frames/Standard.lean",
+      "FormalSystem/Semantics/Correspondence/DurationFrames.lean",
+      "FormalSystem/Metalogic/Deterministic/Validity.lean",
+      "FormalSystem/Semantics/FrameProperty.lean",
+      "FormalSystem/Semantics/FrameClassValidity.lean",
+      "FormalSystem/Metalogic/NamingRules.lean",
+      "context/contracts/adversarial-verification.md",
+      "context/contracts/reference-grounding.md",
+      "context/contracts/anti-analysis.md"
+    ],
+    "mathlib_lookups_performed": 0,
+    "mathlib_lookup_gated": "skipped",
+    "verification_evidence": "lake-build-guard -- env lean on specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean, exit 0, zero sorry; #print axioms on all five results reports [propext, Classical.choice, Quot.sound] with no sorryAx"
+  }
+}
