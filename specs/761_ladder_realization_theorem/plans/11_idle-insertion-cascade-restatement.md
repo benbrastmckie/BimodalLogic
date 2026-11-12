@@ -1,7 +1,7 @@
 # Implementation Plan: Task #761
 
 - **Task**: 761 - Ladder realization theorem: `LadderCons` and `ladderRealized` per ladder cell for all φ including box/stab letters
-- **Status**: [IMPLEMENTING] (Phases 1-11.5, 11.9, 12.1 and 12.3-12.6 closed; Phase 11.8 stays `[BLOCKED]` as the record of the round that landed its first declaration green, and its two unlanded declarations are RESTATED by this revision as Phases 11.10-11.13, of which Phase 11.10 is enterable now; Phase 15 is re-scoped into Phases 15.1 and 15.2; Phases 11.6, 11.7, 12.2, 13, 14, 15.1, 15.2 and 16-18 are still behind Phase 11.9's INCONCLUSIVE verdict on the open depth-`0` core)
+- **Status**: [IMPLEMENTING] (Phases 1-11.5, 11.9, 11.10, 11.11, 12.1 and 12.3-12.6 closed; Phase 11.8 stays `[BLOCKED]` as the record of the round that landed its first declaration green; Phases 11.12 and 11.13 have their declarations LANDED and sorry-free but are `[BLOCKED]` on the binder-list criterion, because both carry a self-loop hypothesis `hself` that neither recorded block admits — see each phase's `#### Recorded Outcome`, and resolve the two together by one statement-level decision; Phase 15 is re-scoped into Phases 15.1 and 15.2; Phases 11.6, 11.7, 12.2, 13, 14, 15.1, 15.2 and 16-18 are still behind Phase 11.9's INCONCLUSIVE verdict on the open depth-`0` core, and NO phase of this plan is enterable by an implementation dispatch today — the next act is a `/revise`)
 - **Effort**: 36.5 hours costable, RE-DERIVED at this revision's authoring by summing this plan's own per-phase **Timing** lines rather than carrying the predecessor header figure: **23 hours landed** (Phases 1-10 at 0.5/1/0.5/1/0.75/1.25/2/3/3.5/2, Phase 12.1 at 1.5, and Phases 12.3, 12.4, 12.5 and 12.6 at 2.5/1.5/1.5/0.5, which have CLOSED since the predecessor revision counted them as open) and **13.5 hours open** (Phases 12.2, 13, 14, 16, 17 and 18 at 1/2/1.5/2/1.5/1.5, plus the four figures this revision adds — Phase 11.10 at 1.5, Phase 11.11 at 1.5, Phase 11.13 at 0.5 and Phase 15.2 at 0.5). The predecessor's 32.5 moves to 36.5 by exactly those four figures and by nothing else: no existing phase's **Timing** line is re-estimated by this revision. Phases 11, 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7, 11.8, 11.9, 11.12 and 15.1 are NOT COSTABLE — Phases 11, 11.1, 11.2, 11.3, 11.4, 11.5, 11.9 closed against that declaration and Phase 11.8 closed `[BLOCKED]` against it, the rest are open, and no hour figure is invented for any of them. Phase 11.12 carries that declaration because it is the open construction itself; Phase 15.1 because it is the second half of the open counter-lift mathematics
 - **Dependencies**: 760, 775, 805, 806, 819, 820 — all six discharged (760/775 archived; 805/806 `[COMPLETED]`; 819 the presentation decision, archived at `specs/archive/819_ladder_cell_presentation_design_decision/`; 820 the counter-lift gate table), and none of them is reopened or re-planned by this revision. NO OPEN GATING TASK IS NAMED BY THIS PLAN, and this revision adds none: every phase it adds lands in `LadderAgree.lean`, `LadderRealize.lean`, `specs/evidence/**` or the two gate scripts, all inside this task's own `file_scope`. The external construction gate an earlier revision removed stays removed; its record is archived at `specs/archive/836_ladder_type_preserving_cell_agreement_construction/` and is `[ABANDONED]`. The live successor chain on the open depth-`0` core is task 838 (`two_sided_open_core_pin_free_pigeonhole`, status `partial`) and its closed descendants 844, 849 and 850, whose landed work is INPUT rather than a gate; whether a `state.json` dependency edge to 838 is carried is the orchestrator's call and not this plan's. Phase 11.10 is gated on nothing open and is enterable now
 - **Research Inputs**:
@@ -2625,7 +2625,7 @@ have a landable answer at this layer**: if neither (a) nor (b) can be landed, th
 
 ---
 
-### Phase 11.12: The Pin Half of the Cascade and `exists_ladderPath_at_region_of_idle_past` [NOT STARTED]
+### Phase 11.12: The Pin Half of the Cascade and `exists_ladderPath_at_region_of_idle_past` [BLOCKED]
 
 **GATED ON PHASE 11.11, AND THIS IS THE OPEN MATHEMATICS. The statement is OPEN, not known.** The
 refutation that kills the `spliceObj`-shaped conclusion establishes nothing about the restated
@@ -2772,9 +2772,59 @@ never a binder quietly added, and never a quiet narrowing of a filed statement.
 - `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0; `bash scripts/check-module-invariants.sh` passes every group except the single pre-existing `C16` finding, unchanged in content and count.
 - If the phase closes `[BLOCKED]`: the goal state is recorded with the failing pin pair and the stalling sub-case named, Phase 15.1's inherited contingency is named in the handoff, Phase 11.2's and 11.11's landed facts are left standing, and no pin hypothesis anywhere has been relaxed. If it closes on the REFUTED branch: the refuting object compiles standalone through the build guard with `#print axioms` reporting a subset of `[propext, Classical.choice, Quot.sound]`, it is wired in the same commit, and Phase 15.1's interface is named as closed-in-this-regime in the phase body and the handoff — never as landed.
 
+#### Recorded Outcome — `[BLOCKED]` on the Binder-List Criterion, Not on the Mathematics
+
+**The construction landed; the recorded statement did not.**
+`exists_ladderPath_at_region_of_idle_past` is a proved, sorry-free theorem at
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean:2227`, and the mathematics this
+phase asked for is in the tree. The phase is nevertheless `[BLOCKED]` under its own third
+verification bullet, which admits no discretion: the landed binder list carries **one hypothesis
+beyond the recorded block**, and names that exact hypothesis as the disqualifying case.
+
+**The drift, measured binder-for-binder** against this phase's own recorded block:
+
+| Binder | Recorded block | Landed at `:2227` | Disposition |
+|---|---|---|---|
+| `hg`, `hl`, `hcl`, `hrep`, `v`, `hv` | present | present | match |
+| `hreg` / `hvreg` | `hreg` | `hvreg` | match (name only) |
+| `hidle` | present | present | match |
+| `hpa : pend (objAt g a) = true` | present | **absent — derived in-proof** | STRENGTHENING, not a defect: discharged from `cntAt_eq_zero_of_idle` against `0 < l ≤ cntAt g a` |
+| `hself : ∀ p ≤ a, pend (objAt g p) = false → step (objAt g p) (objAt g p) = true` | **absent** | **present** | THE DRIFT |
+
+So the landed theorem is weaker in exactly one respect and stronger in exactly one other. One
+dropped hypothesis is a free gain; the added one is the disqualifying binder.
+
+**The addition is reasoned in-source, not accidental**, which is why this record names a
+statement-level decision rather than a repair. `LadderAgree.lean:1758-1790` records the self-loop
+obligation as real (`IsLadderPath` constrains `step` only along the original walk and supplies no
+self-loop on the collapsed block), takes the first of two candidates deliberately, carries `hself`
+path-locally as "the weakest form the collapsed block needs and is not globally over `Q`", and
+states the consequence outright: neither this name nor the join "is unconditional in that sense —
+only in the REGIME sense". The second candidate (a pigeonhole over a finite object type) is
+recorded as unavailable at this layer, because the idle-past regime hypothesis supplies ONE idle
+position at or below the splice point where the pigeonhole needs many.
+
+**This is NOT a `## Lean Challenge Statements` violation.** That block's identifier set is
+`cellAt_const_of_kappa_eq`, `ladderSound`, `ladderCons_localRun`, `ladderLift`, `ladderRealized`
+and `paramsOk_params`; no `exists_ladderPath_at_region*` name appears in it. The contract breached
+is this phase's own verification bullet, which is phase-local.
+
+**Two admissible dispositions, and the choice is the user's** — `plan-compliance.md`'s Statement
+Fidelity section routes a wrong recorded statement to the user rather than to an implementer, and
+forbids both quietly editing the implementation and quietly editing the record:
+1. **Accept `hself` by revision.** `/revise 761` amends this phase's recorded block to carry the
+   binder, with the in-source reasoning above as the input, and the regime-sense caveat stated at
+   every consumer. Phase 15.1's consumed interface is then conditional and must say so.
+2. **Rename to an auxiliary**, as this phase's bullet directs: the carrying declaration takes an
+   auxiliary's own name, and the recorded name stays unclaimed until `hself` is discharged.
+
+**Nothing downstream may read this phase as closed under either disposition until one is taken.**
+Phase 15.1 names Phase 11.13's join as the one cascade interface it consumes, and that join
+inherits `hself` verbatim (see Phase 11.13's own record).
+
 ---
 
-### Phase 11.13: The Unconditional Join, Against the Signatures That Exist [NOT STARTED]
+### Phase 11.13: The Unconditional Join, Against the Signatures That Exist [BLOCKED]
 
 **GATED ON PHASES 11.12 AND 11.8. This phase exists because the predecessor revision named a join
 that cannot type-check.** The statement-level finding is carried from the Phase 11.8 handoff and
@@ -2874,6 +2924,35 @@ Phase 11.12's landed declaration rather than a proof problem here.
 - The Cascade section's closing note no longer lists any missing component, and names which phase supplied each.
 - `#print axioms` on the new declaration: no `sorryAx`, no custom axiom, no `native_decide`. `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests` exits 0 with `sorry_count: 0`; module-scoped vacuous grep count 0; the repository-wide vacuous grep and `^axiom ` counts unchanged from their measured baselines.
 - `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0; `bash scripts/check-module-invariants.sh` passes every group except the single pre-existing `C16` finding, unchanged in content and count.
+
+#### Recorded Outcome — `[BLOCKED]` by Inheritance from Phase 11.12
+
+**The join landed, by the dichotomy this phase specified, and it is not unconditional.**
+`exists_ladderPath_at_region` is a proved, sorry-free theorem at
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean:2291`, built exactly as written:
+`by_cases` on the idle-past hypothesis, the positive branch discharged by Phase 11.12's
+`exists_ladderPath_at_region_of_idle_past` and the negative branch carried to `hpast` by `Bool`
+two-valuedness for `exists_ladderPath_at_region_of_pend_past`. `regime_exhaustive_of_clipIdx_eq`
+is correctly absent from the proof.
+
+**Why it is `[BLOCKED]` all the same.** The join takes `hself` as a binder, inherited verbatim
+from Phase 11.12's landed statement, where this phase's recorded block carries no such hypothesis
+(and, like Phase 11.12's, carries `hpa`, which the landed form derives instead). The phase's first
+task directs it to read Phase 11.12's recorded outcome and inherit it; Phase 11.12 is `[BLOCKED]`
+on the binder-list criterion, so this phase inherits `[BLOCKED]`. It is NOT the `[BLOCKED]` branch
+that task anticipated — nothing here is missing a goal state, and the mathematics is not stalled.
+
+**The word "Unconditional" in this phase's title is now precise only in the regime sense.** The
+join is unconditional with respect to the **past-regime case split** — the pend-past and idle-past
+branches are exhaustive, which is the circularity this phase existed to break — and conditional
+with respect to the **self-loop**, which `IsLadderPath` does not supply on the collapsed block.
+`LadderAgree.lean:1780-1787` records exactly this: "neither name is unconditional in that sense —
+only in the REGIME sense."
+
+**The consequence Phase 15.1 must carry.** Phase 15.1 names this join as the one cascade interface
+it consumes. Under either disposition in Phase 11.12's record, that interface is conditional on
+`hself`, and Phase 15.1 may not be entered on the assumption that it is not. Resolving Phase
+11.12's disposition resolves this phase's in the same act; no separate decision is owed.
 
 ---
 
