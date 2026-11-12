@@ -1,18 +1,18 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "task_number": 818,
-  "phase": "plan",
-  "session_id": "sess_1794503933_59a2b4_818",
-  "dispatch_seq": 9,
-  "phases_completed": 0,
+  "phase": "implement",
+  "session_id": "sess_1794503933_59a2b4",
+  "dispatch_seq": 15,
+  "phases_completed": 3,
   "phases_total": 3,
-  "summary": "Wrote a 3-phase plan scoping implementation to exactly 2 of the 4 dispatched READMEs: Expressiveness/README.md and WeakCanonical/README.md get cols=files-lines generated-inventory blocks with a 4-column Module|Files|Lines|Description header. The two Kamp rollup tables stay unwrapped, since their aggregated 'loose modules' row has no analogue under any existing marker option and NON-GOALS forbid extending the generator. Planning reproduced a destructive gap in the research's recommended procedure: padding only loose-file rows to 4 cells (as recommended) leaves every subdirectory row short, and render_block replaces a short row's description with a TODO placeholder, which wiped all 15 descriptions on a scratch run. The plan corrects this to pad every data row.",
+  "summary": "Wrapped FormalSystem/Metalogic/Expressiveness/README.md and FormalSystem/Metalogic/WeakCanonical/README.md in cols=files-lines generated-inventory blocks (4-column Module|Files|Lines|Description), with every subdirectory total now machine-owned and every hand-written description preserved except 10 deliberately stripped (N files) parentheticals. Verified via key-sorted before/after diffs and an independent corrupt/restore demonstration per file (FAIL INV named exactly the corrupted file in each case; restore via --emit-inventory produced an empty diff). The two Kamp rollup tables were left unwrapped and the reason recorded as a deliberate exclusion in the task summary: neither rows=subdirs (silently drops the loose-modules row) nor rows=both (explodes it into 49/33 rows) reproduces their shape, and extending the generator is out of this task's NON-GOALS. Per the dispatch's Batch Gate Deferral directive, the full verify-deploy.sh gate was deferred to the once-per-batch run; the two checks that actually cover this edit class (check-module-invariants.sh --emit-inventory --check, readme-lint.sh FormalSystem) were run directly and are both green.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/818_wrap_directory_rollup_tables_files_lines_cols/plans/01_wrap-directory-rollup-tables.md",
-      "summary": "3-phase plan: wrap Expressiveness/README.md, wrap WeakCanonical/README.md, then record the Kamp exclusion and run the full gate."
+      "type": "summary",
+      "path": "specs/818_wrap_directory_rollup_tables_files_lines_cols/summaries/01_wrap-directory-rollup-tables-summary.md",
+      "summary": "Completion summary recording both wrapped READMEs' verified outcomes and the Kamp exclusion with its full reasoning."
     }
   ]
 }

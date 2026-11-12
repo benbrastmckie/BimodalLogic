@@ -1,7 +1,7 @@
 # Implementation Plan: Task #818
 
 - **Task**: 818 - Wrap the four directory-rollup inventory tables that need the cols=files-lines column set
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/818_wrap_directory_rollup_tables_files_lines_cols/reports/01_wrap-directory-rollup-tables.md`
