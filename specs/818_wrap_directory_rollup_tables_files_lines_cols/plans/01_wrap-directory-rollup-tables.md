@@ -1,7 +1,7 @@
 # Implementation Plan: Task #818
 
 - **Task**: 818 - Wrap the four directory-rollup inventory tables that need the cols=files-lines column set
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/818_wrap_directory_rollup_tables_files_lines_cols/reports/01_wrap-directory-rollup-tables.md`
@@ -153,39 +153,39 @@ run's changed-file set attributable to exactly one phase.
 
 ---
 
-### Phase 1: Wrap Expressiveness/README.md [NOT STARTED]
+### Phase 1: Wrap Expressiveness/README.md [COMPLETED]
 
 **Goal**: `FormalSystem/Metalogic/Expressiveness/README.md`'s `## Modules` table becomes a
 generator-owned `cols=files-lines` block with all 15 descriptions intact and all 5 subdirectory
 totals rendered as real numbers.
 
 **Tasks**:
-- [ ] Re-read the file immediately before editing (sibling tasks are live on this tree this cycle).
-- [ ] Capture a pre-edit key-sorted snapshot of the table: for each data row, `row_key(cell[0])`
-      paired with the trailing description cell, sorted by key, written to a scratchpad file.
-- [ ] Rewrite the header (line 19) to `| Module | Files | Lines | Description |` and the separator
-      (line 20) to a 4-column separator.
-- [ ] Pad **every** data row to 4 cells: insert a files-count cell between the name cell and the
+- [x] Re-read the file immediately before editing (sibling tasks are live on this tree this cycle). *(completed)*
+- [x] Capture a pre-edit key-sorted snapshot of the table: for each data row, `row_key(cell[0])`
+      paired with the trailing description cell, sorted by key, written to a scratchpad file. *(completed)*
+- [x] Rewrite the header (line 19) to `| Module | Files | Lines | Description |` and the separator
+      (line 20) to a 4-column separator. *(completed)*
+- [x] Pad **every** data row to 4 cells: insert a files-count cell between the name cell and the
       lines cell. Loose-file rows get `1`; subdirectory rows get any placeholder integer (the
       generator overwrites it on the next run — what matters is that the cell exists, so the row
-      reaches 4 cells and its description is carried forward rather than replaced by `TODO_DESC`).
-- [ ] Strip the trailing `(N files)` / `(1 file)` parenthetical from all 5 subdirectory
+      reaches 4 cells and its description is carried forward rather than replaced by `TODO_DESC`). *(completed)*
+- [x] Strip the trailing `(N files)` / `(1 file)` parenthetical from all 5 subdirectory
       descriptions (`EFGames/`, `GameTransfer/`, `Kamp/`, `Separation/`, `SeparationZ/`), then read
-      each resulting description in full to confirm it stands as a sentence.
-- [ ] Insert `<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Expressiveness cols=files-lines -->`
-      immediately above the header and `<!-- END GENERATED -->` immediately below the last data row.
-- [ ] Record `git status --porcelain` output, then run `bash scripts/check-module-invariants.sh --emit-inventory`.
-- [ ] Record `git status --porcelain` again and confirm exactly one file changed.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory --check` and confirm `PASS INV`
-      (idempotence).
-- [ ] Corrupt/restore demonstration: change one numeric cell in the regenerated block, run
+      each resulting description in full to confirm it stands as a sentence. *(completed)*
+- [x] Insert `<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Expressiveness cols=files-lines -->`
+      immediately above the header and `<!-- END GENERATED -->` immediately below the last data row. *(completed)*
+- [x] Record `git status --porcelain` output, then run `bash scripts/check-module-invariants.sh --emit-inventory`. *(completed: exactly 1 file rewritten, sibling task 817's Chronicle/README.md edit observed concurrently and left untouched)*
+- [x] Record `git status --porcelain` again and confirm exactly one file changed. *(completed)*
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory --check` and confirm `PASS INV`
+      (idempotence). *(completed)*
+- [x] Corrupt/restore demonstration: change one numeric cell in the regenerated block, run
       `--emit-inventory --check`, confirm it reports `FAIL INV` naming exactly
       `FormalSystem/Metalogic/Expressiveness/README.md` and no other file; restore by running
       `bash scripts/check-module-invariants.sh --emit-inventory` (never a pathspec checkout —
       `git checkout -- <path>` is a blocked destructive form on a dirty tree); confirm
-      `git diff` against the post-regeneration state is empty.
-- [ ] Update the file's `*Last verified:*` line to today's date.
-- [ ] Commit, staging only `FormalSystem/Metalogic/Expressiveness/README.md` by explicit path.
+      `git diff` against the post-regeneration state is empty. *(completed: FAIL INV named exactly this file, restore via writer produced empty diff)*
+- [x] Update the file's `*Last verified:*` line to today's date. *(completed: 2026-11-12)*
+- [x] Commit, staging only `FormalSystem/Metalogic/Expressiveness/README.md` by explicit path. *(completed)*
 
 **Timing**: 1 hour
 

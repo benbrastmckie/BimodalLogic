@@ -16,23 +16,25 @@ a genuine partition; `scripts/measure-refactor-partitions.py --check` asserts th
 
 ## Modules
 
-| File | Lines | Description |
-|------|-------|-------------|
-| `EFGameTactics.lean` | 333 | EF game automation tactics for expressive completeness proofs |
-| `MonadicFO.lean` | 823 | Monadic first-order logic translation for expressiveness results |
-| `NormalForm.lean` | 882 | Normal form for TM formulas used in the expressiveness proofs |
-| `OpenFutureElimination.lean` | 743 | Elimination of a disjunction under the open-future and open-past modals, its conjunctive-normal-form version, a translation into L⁺ conditional on a named separation hypothesis, the transfer corollaries reducing open-language decidability and completeness to their L⁺ counterparts, and the stability-cluster type product: the (past-type, future-type) pairs realized across a stability cluster are exactly the product of the realized past-types with the realized future-types |
-| `PriorDefs.lean` | 47 | Shared definitions for the Prior expressiveness development |
-| `PriorDefsDense.lean` | 409 | Prior definitions specialized to the dense setting |
-| `PriorExpressiveness.lean` | 378 | Prior's theorem on temporal expressiveness |
-| `PriorExpressivenessDense.lean` | 389 | Prior expressiveness in the dense setting |
-| `StaviConnectives.lean` | 583 | Stavi connectives (Until, Since extensions) and their properties |
-| `Table.lean` | 296 | Tabular representation for N-equivalence classes |
-| `EFGames/` | 11,800 | Ehrenfeucht-Fraisse bisimulation game engine (8 files) |
-| `GameTransfer/` | 9,507 | Transfer of game equivalences across structures (5 files) |
-| `Kamp/` | 77,714 | Kamp/Rabinovich separation machinery (116 files) -- by far the largest subtree in the repository |
-| `Separation/` | 926 | Separation theorem and supporting lemmas (3 files) |
-| `SeparationZ/` | 6,875 | Gabbay separation over the integer flow, on an auxiliary until/since syntax with abstract leaves: GHR Lemmas 10.2.1-10.2.8 and Theorem 10.2.9 in full, the CNF packaging of the separated form, the discharge `separationOver_ztime : SeparationOver TaskFrame.IsZTime` with the computable `sepZ`, and the computable translation `trZ` (13 files) |
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Expressiveness cols=files-lines -->
+| Module | Files | Lines | Description |
+|------|------:|------:|-------------|
+| `EFGameTactics.lean` | 1 | 333 | EF game automation tactics for expressive completeness proofs |
+| `MonadicFO.lean` | 1 | 824 | Monadic first-order logic translation for expressiveness results |
+| `NormalForm.lean` | 1 | 884 | Normal form for TM formulas used in the expressiveness proofs |
+| `OpenFutureElimination.lean` | 1 | 743 | Elimination of a disjunction under the open-future and open-past modals, its conjunctive-normal-form version, a translation into L⁺ conditional on a named separation hypothesis, the transfer corollaries reducing open-language decidability and completeness to their L⁺ counterparts, and the stability-cluster type product: the (past-type, future-type) pairs realized across a stability cluster are exactly the product of the realized past-types with the realized future-types |
+| `PriorDefs.lean` | 1 | 47 | Shared definitions for the Prior expressiveness development |
+| `PriorDefsDense.lean` | 1 | 411 | Prior definitions specialized to the dense setting |
+| `PriorExpressiveness.lean` | 1 | 374 | Prior's theorem on temporal expressiveness |
+| `PriorExpressivenessDense.lean` | 1 | 391 | Prior expressiveness in the dense setting |
+| `StaviConnectives.lean` | 1 | 585 | Stavi connectives (Until, Since extensions) and their properties |
+| `Table.lean` | 1 | 296 | Tabular representation for N-equivalence classes |
+| `EFGames/` | 11 | 11,886 | Ehrenfeucht-Fraisse bisimulation game engine |
+| `GameTransfer/` | 5 | 9,518 | Transfer of game equivalences across structures |
+| `Kamp/` | 115 | 77,732 | Kamp/Rabinovich separation machinery -- by far the largest subtree in the repository |
+| `Separation/` | 3 | 930 | Separation theorem and supporting lemmas |
+| `SeparationZ/` | 13 | 6,902 | Gabbay separation over the integer flow, on an auxiliary until/since syntax with abstract leaves: GHR Lemmas 10.2.1-10.2.8 and Theorem 10.2.9 in full, the CNF packaging of the separated form, the discharge `separationOver_ztime : SeparationOver TaskFrame.IsZTime` with the computable `sepZ`, and the computable translation `trZ` |
+<!-- END GENERATED -->
 
 Measured live contents: **10 loose modules and 5 subdirectories**, 157 modules in total
 (10 loose + EFGames 11 + GameTransfer 5 + Kamp 115 + Separation 3 + SeparationZ 13), re-derived
@@ -118,4 +120,4 @@ MonadicFO.lean            (monadic signature, MonadicFormula, evaluation)
 
 ---
 
-*Last verified: 2026-11-11*
+*Last verified: 2026-11-12*

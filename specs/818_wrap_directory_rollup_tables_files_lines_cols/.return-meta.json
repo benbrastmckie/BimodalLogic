@@ -1,30 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/818_wrap_directory_rollup_tables_files_lines_cols/plans/01_wrap-directory-rollup-tables.md",
-      "summary": "3-phase plan wrapping 2 of the 4 scoped READMEs in cols=files-lines generated-inventory blocks, with the 2 Kamp rollup tables recorded as a reasoned exclusion."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 15,
   "metadata": {
-    "session_id": "sess_1794503933_59a2b4_818",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 3,
-    "dependency_waves": 3
-  },
-  "memory_candidates": [
-    {
-      "content": "When converting a hand-maintained markdown table into a generated-inventory block whose column set GROWS (e.g. check-module-invariants.sh cols=lines -> cols=files-lines), every existing data row must be padded to the new cell count BEFORE the first --emit-inventory run. render_block() carries a row's description forward only when len(cells) >= ncols; any short row silently gets '<!-- TODO: add description -->' instead. The failure is total and silent: wrapping a 15-row table without padding regenerates all numbers correctly and destroys all 15 descriptions. The hazard is easy to half-fix, because loose-file rows are the obvious ones to pad and subdirectory rollup rows are the ones usually forgotten.",
-      "category": "PATTERN",
-      "source_artifact": "specs/818_wrap_directory_rollup_tables_files_lines_cols/plans/01_wrap-directory-rollup-tables.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["generated-inventory", "check-module-invariants", "column-widening", "markdown-table", "silent-data-loss", "emit-inventory"]
-    }
-  ],
-  "next_steps": "Run /orchestrate 818 to execute the plan",
-  "dispatch_seq": 9
+    "session_id": "sess_1794503933_59a2b4",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }
