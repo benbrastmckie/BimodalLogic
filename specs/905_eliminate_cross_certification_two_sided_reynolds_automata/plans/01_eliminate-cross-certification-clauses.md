@@ -425,19 +425,20 @@ add the dated amendment note; and discharge the task's full verification.
       run in one direction via `box-dot G_le`, `ExtDerivation` offers it and its `reflectTime`
       mirror and nothing else, so no fresh-atom family names a bi-infinite run and the hinge is
       forced by the rule inventory rather than chosen. *(completed)*
-- [ ] Decision 5: restate as superseded in form and reinforced in substance — the circularity
+- [x] Decision 5: restate as superseded in form and reinforced in substance — the circularity
       diagnosis was right and the device was wrong; it closes on purity, not on cross-certified
       clauses; and the substantive point that `phi+` gains no conjunct survives and is
-      strengthened, since the elimination adds no syntax at all.
-- [ ] Recommendation 5: mark (Q3) attempted and answered, and **strike the "shrink the alphabet's
+      strengthened, since the elimination adds no syntax at all. *(completed)*
+- [x] Recommendation 5: mark (Q3) attempted and answered, and **strike the "shrink the alphabet's
       enlargement" clause**. Replace it with the honest accounting: both `{delta_pt}` and
       `{delta_ft}` remain required by the two clause (b)s and are additionally consumed as
       Theorem 1's `gamma`-instances, so the enlargement is exactly as forced as before; the gain
       is one omega-regularity argument and one first-transition obligation per automaton.
-- [ ] Section 17: amend the sentence listing "the cross-certification clauses (Finding 5.2)" among
+      *(completed)*
+- [x] Section 17: amend the sentence listing "the cross-certification clauses (Finding 5.2)" among
       the things that change finite cardinalities, and keep its conclusion — no Lean item is filed
       — unchanged, since removing a disjunct from two violation languages moves neither
-      (O1) nor (O3) nor (O4).
+      (O1) nor (O3) nor (O4). *(completed)*
 - [ ] Evidence-tier table: replace the "Cross-certification closes the circularity at no
       syntactic cost" row with rows for Theorem 1, the section-8 seed lemma, Step 3', the
       no-seed-needed fact at the consistency site, the unchanged alphabet enlargement, and the
