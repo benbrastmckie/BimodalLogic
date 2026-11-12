@@ -1,15 +1,15 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "dispatch_seq": 8,
+  "status": "partial",
+  "summary": "Executed Phase 1 of task 905's 5-phase plan (repair the pure-literal closure, defect (D1)) against specs/901's paper-proof report. PastLits(X)/FutLits(X) in section 1.1 are now the subformula closure of their former top-level-only definitions, and Lemma 5.1 cites the repaired PastLits explicitly with a new Formulation guard. validate-artifact.sh stayed [PASS] with 0 warnings. The dispatch mission constrained this run to Phase 1 only; Phases 2-5 remain.",
+  "phases_completed": 1,
   "phases_total": 5,
-  "summary": "Wrote a 5-phase, 4.0-hour implementation plan carrying out the research report's own Recommendations 1-5 and 7: the amendment of specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md to the eliminated design. Phases are serialized because all five edit that one file: (D1) pure-literal closure repair, drop both clause (a)s, land the chronicle seed lemma plus Step 3-prime, apply the (D2) repair and trace it to Lemma 7-plus, then close the ledger and run the full gate. Every correction target was confirmed present by grep this dispatch; the covering check is validate-artifact.sh, since suite_selection_select returns __FULL_SWEEP__ for a specs/** path (measured). No Lean work, no library change, no completeness claim.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/plans/01_eliminate-cross-certification-clauses.md",
-      "summary": "5-phase plan (4.0h) amending task 901's paper-proof report to the clause-(a)-eliminated design, with the (D1) and (D2) defect repairs and the (Q3) ledger closure."
+      "type": "handoff",
+      "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-1-handoff-20261112T024334Z.md",
+      "summary": "Phase 1 completion handoff with current state, key decisions, and the Phase 2 next action."
     }
-  ],
-  "dispatch_seq": 5
+  ]
 }

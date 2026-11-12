@@ -2609,6 +2609,11 @@
           "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/plans/01_eliminate-cross-certification-clauses.md",
           "type": "plan",
           "summary": "5-phase plan (4.0h) amending task 901's paper-proof report to the clause-(a)-eliminated design, with the (D1) and (D2) defect repairs and the (Q3) ledger closure."
+        },
+        {
+          "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-1-handoff-20261112T024334Z.md",
+          "type": "handoff",
+          "summary": "Phase 1 completion handoff with current state, key decisions, and the Phase 2 next action."
         }
       ],
       "audit_verdict": {

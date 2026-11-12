@@ -1012,6 +1012,7 @@ Evidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two
 - **Dependencies**: None
 - **Research**: [905_eliminate_cross_certification_two_sided_reynolds_automata/reports/01_eliminate-cross-certification-clauses.md]
 - **Plan**: [905_eliminate_cross_certification_two_sided_reynolds_automata/plans/01_eliminate-cross-certification-clauses.md]
+- **Handoff**: [905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-1-handoff-20261112T024334Z.md]
 
 **Description**: RESEARCH TASK, report only. Deliverable: an answer, with its argument, to whether the clause-(a) cross-certification of specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md's Finding 5.2/14.4 is eliminable -- either a proof that the certification is automatic from the chronicle clauses of that report's Finding 8.2, or a demonstration that it is load-bearing, or a bi-infinite-automaton alternative with its cost. The question is answerable against the chronicle clauses and the two clause (a)s alone, strictly cheaper than anything in that report's Finding 17; eliminating the clauses would remove one omega-regularity argument from each automaton and shrink the alphabet's enlargement. No Lean work; no completeness claim.
 
