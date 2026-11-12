@@ -8,14 +8,15 @@ Quasimodels are used as an intermediate step before the full chronicle construct
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/BXCanonical/Quasimodel rows=loose cols=lines -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `Construction.lean` | 841 | Quasimodel construction from a consistent MCS set |
-| `EnrichedClosure.lean` | 158 | Enriched subformula closure used in quasimodel construction |
-| `HintikkaPoint.lean` | 144 | Hintikka-style point consistency conditions for quasimodel nodes |
-| `LocusControl.lean` | 49 | Locus control properties: temporal focus management in quasimodels |
-| `Realization.lean` | 493 | Realization lemma: quasimodels give rise to full canonical models |
-| `SubformulaClosure.lean` | 112 | Subformula closure utilities specific to the quasimodel construction |
+| `Construction.lean` | 846 | Quasimodel construction from a consistent MCS set |
+| `HintikkaPoint.lean` | 152 | Hintikka-style point consistency conditions for quasimodel nodes |
+| `LocusControl.lean` | 56 | Locus control properties: temporal focus management in quasimodels |
+| `Realization.lean` | 509 | Realization lemma: quasimodels give rise to full canonical models |
+| `SubformulaClosure.lean` | 118 | Subformula closure utilities specific to the quasimodel construction |
+<!-- END GENERATED -->
 
 ## Key Results
 

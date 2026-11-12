@@ -207,21 +207,22 @@ must be re-derived from the directory, not from this plan.
 
 ---
 
-### Phase 2: Quasimodel and RestrictedMCS — two single-phantom-row wraps [NOT STARTED]
+### Phase 2: Quasimodel and RestrictedMCS — two single-phantom-row wraps [COMPLETED]
 
 **Goal**: Both READMEs are wrapped with no row additions; the two phantom rows are gone.
 
 **Tasks**:
-- [ ] `FormalSystem/Metalogic/BXCanonical/Quasimodel/README.md`: delete the
+- [x] `FormalSystem/Metalogic/BXCanonical/Quasimodel/README.md`: delete the
       `EnrichedClosure.lean` row (obsolete; the live `SubformulaClosure.lean` row's existing
       description already covers the G/H-enrichment territory). Wrap with
-      `dir=FormalSystem/Metalogic/BXCanonical/Quasimodel rows=loose cols=lines`.
-- [ ] `FormalSystem/Metalogic/Core/RestrictedMCS/README.md`: delete the `Deferral.lean` row
+      `dir=FormalSystem/Metalogic/BXCanonical/Quasimodel rows=loose cols=lines`. *(completed)*
+- [x] `FormalSystem/Metalogic/Core/RestrictedMCS/README.md`: delete the `Deferral.lean` row
       (obsolete; the deferral machinery was retired wholesale to
       `Boneyard/RestrictedMCSDeferral/Deferral.lean`, not merged into `Basic.lean`). Wrap with
-      `dir=FormalSystem/Metalogic/Core/RestrictedMCS rows=loose cols=lines`.
-- [ ] Run the writer once after both edits and apply the shared procedure's steps 3-8 to each
-      file.
+      `dir=FormalSystem/Metalogic/Core/RestrictedMCS rows=loose cols=lines`. *(completed)*
+- [x] Run the writer once after both edits and apply the shared procedure's steps 3-8 to each
+      file. *(completed: both files regenerated to 5 and 1 rows respectively; key-sorted
+      before/after diff empty for both)*
 
 **Timing**: 0.5 hours
 

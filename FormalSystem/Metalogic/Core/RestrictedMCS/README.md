@@ -8,10 +8,11 @@ set constrained to contain only formulas from a fixed finite subformula closure.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Core/RestrictedMCS rows=loose cols=lines -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `Basic.lean` | 653 | Restricted MCS definitions, restricted Lindenbaum's lemma, basic properties |
-| `Deferral.lean` | 764 | Deferral lemmas: extending restricted MCS and managing formula membership under closure |
+| `Basic.lean` | 368 | Restricted MCS definitions, restricted Lindenbaum's lemma, basic properties |
+<!-- END GENERATED -->
 
 ## Key Definitions
 
