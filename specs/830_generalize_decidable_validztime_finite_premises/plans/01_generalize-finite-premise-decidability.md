@@ -248,7 +248,7 @@ paths, so no shell-suite subset is claimed.
 
 ---
 
-### Phase 3: Generalize the compression theorem [NOT STARTED]
+### Phase 3: Generalize the compression theorem [COMPLETED]
 
 **Goal**: Residue item 2 plus the compression theorem at arbitrary `Γ`. Land
 `exists_witnessFamily_of_not_consequence`, and keep the pinned
@@ -256,9 +256,9 @@ paths, so no shell-suite subset is claimed.
 general form.
 
 **Tasks**:
-- [ ] Add `exists_witnessFamily_of_not_consequence` to `Family.lean`, transcribed from the probe
+- [x] Add `exists_witnessFamily_of_not_consequence` to `Family.lean`, transcribed from the probe
       (lines 186 onward), with a doc comment carrying a `Paper: —` line for C15.
-- [ ] Apply the two edits the research measured, and no others: step 0 becomes
+- [x] Apply the two edits the research measured, and no others: step 0 becomes
       `rw [consequenceZTime_iff_consequenceInt]` followed by
       `simp only [ConsequenceInt, not_forall]` — do **not** add `Classical.not_imp`, which is
       unnecessary and draws an unused-simp-argument warning that `--wfail` turns into a CI
@@ -266,11 +266,11 @@ general form.
       it, built from `WitnessFamily.premise_mem_closure` (`Predicates.lean:136`) and
       `mem_typeAtM.mpr`, replacing the `fun γ hγ => absurd hγ (List.not_mem_nil)` at the current
       `Family.lean:309`.
-- [ ] Re-express `exists_witnessFamily_of_not_validZTime` as a derivation from the general form
+- [x] Re-express `exists_witnessFamily_of_not_validZTime` as a derivation from the general form
       at `Γ = []`, routing through `semanticConsequenceIn_nil_iff` (`Family.lean:118`). Its
       statement, name and doc comment stay unchanged — it is pinned in `docs/theorem-index.md`
       under C14.
-- [ ] Run `lake build && bash scripts/typst-sync-check.sh --fix`, stage
+- [x] Run `lake build && bash scripts/typst-sync-check.sh --fix`, stage
       `typst/generated/status.typ` with `Family.lean`, and commit the two together.
 
 **Timing**: 1.5 hours

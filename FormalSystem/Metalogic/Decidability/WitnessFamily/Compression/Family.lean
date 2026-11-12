@@ -167,6 +167,212 @@ theorem consequenceZTime_iff_consequenceInt (Γ : Context) (φ : Formula) :
 /-! ## The compression theorem -/
 
 /--
+**The compression theorem at arbitrary finite premises**: every ℤ-time countermodel of
+`Γ ⊨ σ` compresses to a bounded, canonically guessed witness family that certifies the refutation.
+
+The four side conditions riding along with `Certifies` are exactly the four `Enumerate.lean`
+consumes: the three segment bounds, the lasso-count bound, the canonical-`bx` form, and the
+target time's own bound. None is decoration — a family failing any one of them is not a member
+of the candidate list.
+
+This is the **direct** route, and it needs no context-conjunction deduction theorem. Only the
+reduction route — deriving `Γ ⊨ σ` from `⊨ ⋀Γ → σ` — would, and that route's candidate objects
+are `WitnessFamily [] [⋀Γ → σ]`, which fold the premises into the conclusion formula. Only the
+direct route delivers candidates in the exported `WitnessFamily Γ [σ]` shape, with `Γ` and `Δ`
+named separately.
+
+Two things distinguish this proof from its `Γ = []` specialization below, and nothing else does.
+Step 0 normalises the carrier with `consequenceZTime_iff_consequenceInt` rather than
+`validZTime_iff_validInt`, carrying the premise hypothesis through. And `Target`'s premise
+clause — vacuous at `Γ = []`, where `List.not_mem_nil` discharges it — becomes the exact mirror
+of the conclusion clause beside it, built from `WitnessFamily.premise_mem_closure` and
+`mem_typeAtM.mpr`. Every other line is the `[] [φ]` proof with `Γ [σ]` in place of `[] [φ]`.
+
+Paper: — (formalization-native; the paper's `cor:tm-decidability` is commented out and
+carries no live label, and states nothing about the witness-family route)
+-/
+theorem exists_witnessFamily_of_not_consequence (Γ : Context) (σ : Formula)
+    (h : ¬ SemanticConsequenceIn ProofSystem.FrameClass.ZTime Γ σ) :
+    ∃ (W : WitnessFamily Γ [σ]) (t : ℤ),
+      (∀ Λ ∈ W.lassos,
+        Λ.back.length ≤ compressionBound Γ [σ] ∧
+        Λ.mid.length ≤ compressionBound Γ [σ] ∧
+        Λ.fwd.length ≤ compressionBound Γ [σ]) ∧
+      W.lassos.length ≤ (closureOf (Γ ++ [σ])).card + 1 ∧
+      (∃ S : Finset Formula, S ⊆ closureOf (Γ ++ [σ]) ∧ W.bx = fun χ => decide (χ ∈ S)) ∧
+      0 ≤ t ∧ t ≤ (compressionBound Γ [σ] : ℤ) ∧
+      W.Certifies t := by
+  classical
+  -- ### Step 0: normalise the carrier to ℤ (residue item 1)
+  rw [consequenceZTime_iff_consequenceInt] at h
+  simp only [ConsequenceInt, not_forall] at h
+  obtain ⟨F, hreg, M, τ, t₀, hprem, hfail⟩ := h
+  set C : Finset Formula := closureOf (Γ ++ [σ]) with hC
+  set B : ℕ := compressionBound Γ [σ] with hB
+  -- ### The two box guesses
+  set bxTrue : Formula → Bool := fun χ =>
+    @decide (∀ (s : WorldHistory F.toTaskFrame) (v : ℤ), TruthAt M s v χ) (Classical.dec _)
+    with hbxTrueDef
+  have hbxTrue : ∀ χ : Formula, bxTrue χ = true ↔
+      ∀ (s : WorldHistory F.toTaskFrame) (v : ℤ), TruthAt M s v χ := by
+    intro χ
+    rw [hbxTrueDef]
+    exact decide_eq_true_iff
+  set S : Finset Formula :=
+    @Finset.filter Formula (fun χ => ∀ (s : WorldHistory F.toTaskFrame) (v : ℤ), TruthAt M s v χ)
+      (Classical.decPred _) (boxedPart C) with hSdef
+  have hmemS : ∀ χ : Formula, χ ∈ S ↔
+      (χ ∈ boxedPart C ∧ ∀ (s : WorldHistory F.toTaskFrame) (v : ℤ), TruthAt M s v χ) := by
+    intro χ
+    rw [hSdef]
+    simp only [Finset.mem_filter]
+  set bxC : Formula → Bool := fun χ => decide (χ ∈ S) with hbxCdef
+  have hagree : ∀ χ : Formula, Formula.box χ ∈ C → bxTrue χ = bxC χ := by
+    intro χ hχ
+    rw [Bool.eq_iff_iff, hbxTrue χ]
+    rw [hbxCdef]
+    simp only [decide_eq_true_iff, hmemS χ]
+    constructor
+    · intro hg; exact ⟨mem_boxedPart.mpr hχ, hg⟩
+    · intro hg; exact hg.2
+  -- ### One lasso per formula: the main one, or a witness where the guess is false
+  obtain ⟨Λ₀, i₀, hb₀, hm₀, hf₀, hi₀a, hi₀b, hlab₀, hloc₀, hful₀, hreal₀⟩ :=
+    exists_labelledLasso_of_history_realized M Γ [σ] bxTrue hbxTrue τ t₀
+  have hchoice : ∀ χ : Formula, ∃ Λ : LabelledLasso C,
+      Λ.back.length ≤ B ∧ Λ.mid.length ≤ B ∧ Λ.fwd.length ≤ B ∧
+      LocalCoherentSeqLab Γ [σ] bxTrue Λ.lab ∧ FulfillingSeqLab Λ.lab ∧
+      (∀ j : ℤ, ∃ (s : WorldHistory F.toTaskFrame) (u : ℤ),
+        Λ.lab j = typeAtM M Γ [σ] s u) ∧
+      ((¬ ∀ (s : WorldHistory F.toTaskFrame) (v : ℤ), TruthAt M s v χ) →
+        ∃ j : ℤ, χ ∉ Λ.lab j) := by
+    intro χ
+    by_cases hg : ∀ (s : WorldHistory F.toTaskFrame) (v : ℤ), TruthAt M s v χ
+    · exact ⟨Λ₀, hb₀, hm₀, hf₀, hloc₀, hful₀,
+        fun j => by obtain ⟨u, hu⟩ := hreal₀ j; exact ⟨τ, u, hu⟩,
+        fun hcon => absurd hg hcon⟩
+    · simp only [not_forall] at hg
+      obtain ⟨σ₀, v₀, hv₀⟩ := hg
+      obtain ⟨Λ, i, hb, hm, hf, -, -, hlab, hloc, hful, hreal⟩ :=
+        exists_labelledLasso_of_history_realized M Γ [σ] bxTrue hbxTrue σ₀ v₀
+      refine ⟨Λ, hb, hm, hf, hloc, hful,
+        fun j => by obtain ⟨u, hu⟩ := hreal j; exact ⟨σ₀, u, hu⟩, fun _ => ⟨i, ?_⟩⟩
+      rw [hlab]
+      intro hmem
+      exact hv₀ (mem_typeAtM.mp hmem).2
+  choose wit hwitb hwitm hwitf hwitloc hwitful hwitreal hwitfail using hchoice
+  -- ### The family
+  obtain ⟨R, hR⟩ : ∃ R : Finset Formula, R = boxedPart C \ S := ⟨_, rfl⟩
+  obtain ⟨L, hL⟩ : ∃ L : List (LabelledLasso C), L = Λ₀ :: R.toList.map wit := ⟨_, rfl⟩
+  have hLne : L ≠ [] := by rw [hL]; simp
+  have hLmem : ∀ Λ ∈ L, (Λ = Λ₀) ∨ ∃ χ ∈ R, Λ = wit χ := by
+    intro Λ hΛ
+    rw [hL] at hΛ
+    rcases List.mem_cons.mp hΛ with rfl | hΛ'
+    · exact Or.inl rfl
+    · obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp hΛ'
+      exact Or.inr ⟨χ, Finset.mem_toList.mp hχ, rfl⟩
+  have hLbound : ∀ Λ ∈ L,
+      Λ.back.length ≤ B ∧ Λ.mid.length ≤ B ∧ Λ.fwd.length ≤ B := by
+    intro Λ hΛ
+    rcases hLmem Λ hΛ with rfl | ⟨χ, -, rfl⟩
+    · exact ⟨hb₀, hm₀, hf₀⟩
+    · exact ⟨hwitb χ, hwitm χ, hwitf χ⟩
+  have hLloc : ∀ Λ ∈ L, LocalCoherentSeqLab Γ [σ] bxC Λ.lab := by
+    intro Λ hΛ
+    refine localCoherentSeqLab_congr_bx (fun χ hχ => hagree χ hχ) ?_
+    rcases hLmem Λ hΛ with rfl | ⟨χ, -, rfl⟩
+    · exact hloc₀
+    · exact hwitloc χ
+  have hLful : ∀ Λ ∈ L, FulfillingSeqLab Λ.lab := by
+    intro Λ hΛ
+    rcases hLmem Λ hΛ with rfl | ⟨χ, -, rfl⟩
+    · exact hful₀
+    · exact hwitful χ
+  have hLreal : ∀ Λ ∈ L, ∀ j : ℤ, ∃ (s : WorldHistory F.toTaskFrame) (u : ℤ),
+      Λ.lab j = typeAtM M Γ [σ] s u := by
+    intro Λ hΛ
+    rcases hLmem Λ hΛ with rfl | ⟨χ, -, rfl⟩
+    · exact fun j => by obtain ⟨u, hu⟩ := hreal₀ j; exact ⟨τ, u, hu⟩
+    · exact hwitreal χ
+  obtain ⟨W, hW⟩ : ∃ W : WitnessFamily Γ [σ],
+      W = { bx := bxC, lassos := Λ₀ :: R.toList.map wit, lassos_ne := by simp } := ⟨_, rfl⟩
+  have hWbx : W.bx = bxC := by rw [hW]
+  have hWlas : W.lassos = L := by rw [hW, hL]
+  have hWL : ∀ i : Fin W.lassos.length, W.L i = (W.lassos.get i).lab := fun _ => rfl
+  have hWmemL : ∀ i : Fin W.lassos.length, W.lassos.get i ∈ L := by
+    intro i
+    rw [← hWlas]
+    exact List.get_mem _ _
+  -- ### The four certificate conditions
+  have hcoh : W.LocalCoherentLab := by
+    intro i t
+    have h := hLloc _ (hWmemL i) t
+    rw [hWbx]
+    exact h
+  have hfulW : W.FulfillingLab := by
+    constructor
+    · intro i t g e hmem
+      exact (hLful _ (hWmemL i)).1 t g e hmem
+    · intro i t g e hmem
+      exact (hLful _ (hWmemL i)).2 t g e hmem
+  have hboxW : W.BoxFaithful := by
+    intro χ hχ
+    rw [hWbx, hbxCdef]
+    simp only [decide_eq_true_iff, hmemS χ]
+    constructor
+    · rintro ⟨-, hglob⟩ i t
+      obtain ⟨s, u, hu⟩ := hLreal _ (hWmemL i) t
+      rw [hWL i, hu]
+      exact mem_typeAtM.mpr ⟨closureOf_box hχ, hglob s u⟩
+    · intro hall
+      refine ⟨mem_boxedPart.mpr hχ, ?_⟩
+      by_contra hglob
+      obtain ⟨j, hj⟩ := hwitfail χ hglob
+      have hmemR : χ ∈ R := by
+        rw [hR, Finset.mem_sdiff]
+        exact ⟨mem_boxedPart.mpr hχ, fun hS => hj (by
+          obtain ⟨-, hg⟩ := (hmemS χ).mp hS
+          exact absurd hg hglob)⟩
+      have hmemL : wit χ ∈ L := by
+        rw [hL]
+        exact List.mem_cons_of_mem _ (List.mem_map.mpr ⟨χ, Finset.mem_toList.mpr hmemR, rfl⟩)
+      obtain ⟨k, hk⟩ : ∃ k : Fin W.lassos.length, W.lassos.get k = wit χ := by
+        rw [hWlas]
+        obtain ⟨k, hk⟩ := List.mem_iff_get.mp hmemL
+        exact ⟨k, hk⟩
+      exact hj (by rw [← hk, ← hWL k]; exact hall k j)
+  have hmain : W.main = Λ₀.lab := by
+    rw [hW]
+    rfl
+  -- residue item 2: the premise clause is the mirror of the conclusion clause beside it
+  have htgt : W.Target i₀ := by
+    refine ⟨fun γ hγ => ?_, fun ψ hψ hmem => ?_⟩
+    · rw [hmain, hlab₀]
+      exact mem_typeAtM.mpr ⟨WitnessFamily.premise_mem_closure hγ, hprem γ hγ⟩
+    · rcases List.mem_singleton.mp hψ with rfl
+      rw [hmain, hlab₀] at hmem
+      exact hfail (mem_typeAtM.mp hmem).2
+  -- ### Assemble
+  refine ⟨W, i₀, ?_, ?_, ⟨S, ?_, ?_⟩, hi₀a, ?_, hcoh, hfulW, hboxW, htgt⟩
+  · intro Λ hΛ
+    rw [hWlas] at hΛ
+    exact hLbound Λ hΛ
+  · rw [hWlas, hL]
+    have hcard : R.card ≤ (closureOf (Γ ++ [σ])).card := by
+      rw [hR, hC]
+      exact le_trans (Finset.card_le_card Finset.sdiff_subset)
+        (Finset.card_le_card (boxedPart_subset_closureOf _))
+    simp only [List.length_cons, List.length_map, Finset.length_toList]
+    omega
+  · rw [hSdef]
+    exact le_trans (Finset.filter_subset _ _) (boxedPart_subset_closureOf _)
+  · rw [hWbx, hbxCdef]
+  · have hnm : Λ₀.nm = (Λ₀.mid.length : ℤ) := rfl
+    have : (Λ₀.mid.length : ℤ) ≤ (B : ℤ) := by exact_mod_cast hm₀
+    omega
+
+
+/--
 **The compression theorem**: every ℤ-time countermodel compresses to a bounded, canonically
 guessed witness family that certifies the refutation.
 
@@ -200,174 +406,8 @@ theorem exists_witnessFamily_of_not_validZTime (φ : Formula) (h : ¬ ValidZTime
       W.lassos.length ≤ (closureOf ([] ++ [φ])).card + 1 ∧
       (∃ S : Finset Formula, S ⊆ closureOf ([] ++ [φ]) ∧ W.bx = fun χ => decide (χ ∈ S)) ∧
       0 ≤ t ∧ t ≤ (compressionBound [] [φ] : ℤ) ∧
-      W.Certifies t := by
-  classical
-  -- ### Step 0: normalise the carrier to ℤ
-  rw [validZTime_iff_validInt] at h
-  simp only [ValidInt, not_forall] at h
-  obtain ⟨F, hreg, M, τ, t₀, hfail⟩ := h
-  set C : Finset Formula := closureOf (([] : Context) ++ [φ]) with hC
-  set B : ℕ := compressionBound ([] : Context) [φ] with hB
-  -- ### The two box guesses
-  set bxTrue : Formula → Bool := fun χ =>
-    @decide (∀ (σ : WorldHistory F.toTaskFrame) (v : ℤ), TruthAt M σ v χ) (Classical.dec _)
-    with hbxTrueDef
-  have hbxTrue : ∀ χ : Formula, bxTrue χ = true ↔
-      ∀ (σ : WorldHistory F.toTaskFrame) (v : ℤ), TruthAt M σ v χ := by
-    intro χ
-    rw [hbxTrueDef]
-    exact decide_eq_true_iff
-  set S : Finset Formula :=
-    @Finset.filter Formula (fun χ => ∀ (σ : WorldHistory F.toTaskFrame) (v : ℤ), TruthAt M σ v χ)
-      (Classical.decPred _) (boxedPart C) with hSdef
-  have hmemS : ∀ χ : Formula, χ ∈ S ↔
-      (χ ∈ boxedPart C ∧ ∀ (σ : WorldHistory F.toTaskFrame) (v : ℤ), TruthAt M σ v χ) := by
-    intro χ
-    rw [hSdef]
-    simp only [Finset.mem_filter]
-  set bxC : Formula → Bool := fun χ => decide (χ ∈ S) with hbxCdef
-  have hagree : ∀ χ : Formula, Formula.box χ ∈ C → bxTrue χ = bxC χ := by
-    intro χ hχ
-    rw [Bool.eq_iff_iff, hbxTrue χ]
-    rw [hbxCdef]
-    simp only [decide_eq_true_iff, hmemS χ]
-    constructor
-    · intro hg; exact ⟨mem_boxedPart.mpr hχ, hg⟩
-    · intro hg; exact hg.2
-  -- ### One lasso per formula: the main one, or a witness where the guess is false
-  obtain ⟨Λ₀, i₀, hb₀, hm₀, hf₀, hi₀a, hi₀b, hlab₀, hloc₀, hful₀, hreal₀⟩ :=
-    exists_labelledLasso_of_history_realized M ([] : Context) [φ] bxTrue hbxTrue τ t₀
-  have hchoice : ∀ χ : Formula, ∃ Λ : LabelledLasso C,
-      Λ.back.length ≤ B ∧ Λ.mid.length ≤ B ∧ Λ.fwd.length ≤ B ∧
-      LocalCoherentSeqLab ([] : Context) [φ] bxTrue Λ.lab ∧ FulfillingSeqLab Λ.lab ∧
-      (∀ j : ℤ, ∃ (σ : WorldHistory F.toTaskFrame) (u : ℤ),
-        Λ.lab j = typeAtM M ([] : Context) [φ] σ u) ∧
-      ((¬ ∀ (σ : WorldHistory F.toTaskFrame) (v : ℤ), TruthAt M σ v χ) →
-        ∃ j : ℤ, χ ∉ Λ.lab j) := by
-    intro χ
-    by_cases hg : ∀ (σ : WorldHistory F.toTaskFrame) (v : ℤ), TruthAt M σ v χ
-    · exact ⟨Λ₀, hb₀, hm₀, hf₀, hloc₀, hful₀,
-        fun j => by obtain ⟨u, hu⟩ := hreal₀ j; exact ⟨τ, u, hu⟩,
-        fun hcon => absurd hg hcon⟩
-    · simp only [not_forall] at hg
-      obtain ⟨σ₀, v₀, hv₀⟩ := hg
-      obtain ⟨Λ, i, hb, hm, hf, -, -, hlab, hloc, hful, hreal⟩ :=
-        exists_labelledLasso_of_history_realized M ([] : Context) [φ] bxTrue hbxTrue σ₀ v₀
-      refine ⟨Λ, hb, hm, hf, hloc, hful,
-        fun j => by obtain ⟨u, hu⟩ := hreal j; exact ⟨σ₀, u, hu⟩, fun _ => ⟨i, ?_⟩⟩
-      rw [hlab]
-      intro hmem
-      exact hv₀ (mem_typeAtM.mp hmem).2
-  choose wit hwitb hwitm hwitf hwitloc hwitful hwitreal hwitfail using hchoice
-  -- ### The family
-  obtain ⟨R, hR⟩ : ∃ R : Finset Formula, R = boxedPart C \ S := ⟨_, rfl⟩
-  obtain ⟨L, hL⟩ : ∃ L : List (LabelledLasso C), L = Λ₀ :: R.toList.map wit := ⟨_, rfl⟩
-  have hLne : L ≠ [] := by rw [hL]; simp
-  -- every member of the list is the main lasso or a witness lasso
-  have hLmem : ∀ Λ ∈ L, (Λ = Λ₀) ∨ ∃ χ ∈ R, Λ = wit χ := by
-    intro Λ hΛ
-    rw [hL] at hΛ
-    rcases List.mem_cons.mp hΛ with rfl | hΛ'
-    · exact Or.inl rfl
-    · obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp hΛ'
-      exact Or.inr ⟨χ, Finset.mem_toList.mp hχ, rfl⟩
-  have hLbound : ∀ Λ ∈ L,
-      Λ.back.length ≤ B ∧ Λ.mid.length ≤ B ∧ Λ.fwd.length ≤ B := by
-    intro Λ hΛ
-    rcases hLmem Λ hΛ with rfl | ⟨χ, -, rfl⟩
-    · exact ⟨hb₀, hm₀, hf₀⟩
-    · exact ⟨hwitb χ, hwitm χ, hwitf χ⟩
-  have hLloc : ∀ Λ ∈ L, LocalCoherentSeqLab ([] : Context) [φ] bxC Λ.lab := by
-    intro Λ hΛ
-    refine localCoherentSeqLab_congr_bx (fun χ hχ => hagree χ hχ) ?_
-    rcases hLmem Λ hΛ with rfl | ⟨χ, -, rfl⟩
-    · exact hloc₀
-    · exact hwitloc χ
-  have hLful : ∀ Λ ∈ L, FulfillingSeqLab Λ.lab := by
-    intro Λ hΛ
-    rcases hLmem Λ hΛ with rfl | ⟨χ, -, rfl⟩
-    · exact hful₀
-    · exact hwitful χ
-  have hLreal : ∀ Λ ∈ L, ∀ j : ℤ, ∃ (σ : WorldHistory F.toTaskFrame) (u : ℤ),
-      Λ.lab j = typeAtM M ([] : Context) [φ] σ u := by
-    intro Λ hΛ
-    rcases hLmem Λ hΛ with rfl | ⟨χ, -, rfl⟩
-    · exact fun j => by obtain ⟨u, hu⟩ := hreal₀ j; exact ⟨τ, u, hu⟩
-    · exact hwitreal χ
-  obtain ⟨W, hW⟩ : ∃ W : WitnessFamily ([] : Context) [φ],
-      W = { bx := bxC, lassos := Λ₀ :: R.toList.map wit, lassos_ne := by simp } := ⟨_, rfl⟩
-  have hWbx : W.bx = bxC := by rw [hW]
-  have hWlas : W.lassos = L := by rw [hW, hL]
-  have hWL : ∀ i : Fin W.lassos.length, W.L i = (W.lassos.get i).lab := fun _ => rfl
-  have hWmemL : ∀ i : Fin W.lassos.length, W.lassos.get i ∈ L := by
-    intro i
-    rw [← hWlas]
-    exact List.get_mem _ _
-  -- ### The four certificate conditions
-  have hcoh : W.LocalCoherentLab := by
-    intro i t
-    have h := hLloc _ (hWmemL i) t
-    rw [hWbx]
-    exact h
-  have hfulW : W.FulfillingLab := by
-    constructor
-    · intro i t g e hmem
-      exact (hLful _ (hWmemL i)).1 t g e hmem
-    · intro i t g e hmem
-      exact (hLful _ (hWmemL i)).2 t g e hmem
-  have hboxW : W.BoxFaithful := by
-    intro χ hχ
-    rw [hWbx, hbxCdef]
-    simp only [decide_eq_true_iff, hmemS χ]
-    constructor
-    · -- the guess is true: `χ` is globally true, hence in every realised type
-      rintro ⟨-, hglob⟩ i t
-      obtain ⟨σ, u, hu⟩ := hLreal _ (hWmemL i) t
-      rw [hWL i, hu]
-      exact mem_typeAtM.mpr ⟨closureOf_box hχ, hglob σ u⟩
-    · -- the guess is false: the witness lasso for `χ` fails it somewhere
-      intro hall
-      refine ⟨mem_boxedPart.mpr hχ, ?_⟩
-      by_contra hglob
-      obtain ⟨j, hj⟩ := hwitfail χ hglob
-      have hmemR : χ ∈ R := by
-        rw [hR, Finset.mem_sdiff]
-        exact ⟨mem_boxedPart.mpr hχ, fun hS => hj (by
-          obtain ⟨-, hg⟩ := (hmemS χ).mp hS
-          exact absurd hg hglob)⟩
-      have hmemL : wit χ ∈ L := by
-        rw [hL]
-        exact List.mem_cons_of_mem _ (List.mem_map.mpr ⟨χ, Finset.mem_toList.mpr hmemR, rfl⟩)
-      obtain ⟨k, hk⟩ : ∃ k : Fin W.lassos.length, W.lassos.get k = wit χ := by
-        rw [hWlas]
-        obtain ⟨k, hk⟩ := List.mem_iff_get.mp hmemL
-        exact ⟨k, hk⟩
-      exact hj (by rw [← hk, ← hWL k]; exact hall k j)
-  have hmain : W.main = Λ₀.lab := by
-    rw [hW]
-    rfl
-  have htgt : W.Target i₀ := by
-    refine ⟨fun γ hγ => absurd hγ (List.not_mem_nil), fun σ hσ hmem => ?_⟩
-    rcases List.mem_singleton.mp hσ with rfl
-    rw [hmain, hlab₀] at hmem
-    exact hfail (mem_typeAtM.mp hmem).2
-  -- ### Assemble
-  refine ⟨W, i₀, ?_, ?_, ⟨S, ?_, ?_⟩, hi₀a, ?_, hcoh, hfulW, hboxW, htgt⟩
-  · intro Λ hΛ
-    rw [hWlas] at hΛ
-    exact hLbound Λ hΛ
-  · rw [hWlas, hL]
-    have hcard : R.card ≤ (closureOf (([] : Context) ++ [φ])).card := by
-      rw [hR, hC]
-      exact le_trans (Finset.card_le_card Finset.sdiff_subset)
-        (Finset.card_le_card (boxedPart_subset_closureOf _))
-    simp only [List.length_cons, List.length_map, Finset.length_toList]
-    omega
-  · rw [hSdef]
-    exact le_trans (Finset.filter_subset _ _) (boxedPart_subset_closureOf _)
-  · rw [hWbx, hbxCdef]
-  · have hnm : Λ₀.nm = (Λ₀.mid.length : ℤ) := rfl
-    have : (Λ₀.mid.length : ℤ) ≤ (B : ℤ) := by exact_mod_cast hm₀
-    omega
+      W.Certifies t :=
+  exists_witnessFamily_of_not_consequence [] φ
+    (fun hc => h ((semanticConsequenceIn_nil_iff ProofSystem.FrameClass.ZTime φ).mp hc))
 
 end FormalSystem.Metalogic.Decidability
