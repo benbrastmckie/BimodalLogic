@@ -354,34 +354,45 @@ by `bash scripts/check-module-invariants.sh --no-build`'s INV pass over this new
 
 ---
 
-### Phase 5: WitnessFamily lower table — resync from Sharing/README.md, re-key, add three rows, wrap [NOT STARTED]
+### Phase 5: WitnessFamily lower table — resync from Sharing/README.md, re-key, add three rows, wrap [COMPLETED]
 
 **Goal**: The `### Sharing/` table keys rows the way the generator emits them, carries current
 descriptions, covers all 12 live `Sharing/` files, and is under the gate.
 
 **Tasks**:
-- [ ] Read `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md`'s existing
+- [x] Read `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md`'s existing
       generated block — it is already wrapped and already current — and treat it as the
-      authoritative description source for this phase.
-- [ ] Replace the 9 existing rows' keys with bare, non-prefixed keys (`Basic.lean`, not
+      authoritative description source for this phase. *(completed)*
+- [x] Replace the 9 existing rows' keys with bare, non-prefixed keys (`Basic.lean`, not
       `Sharing/Basic.lean`): `row_key()` strips only backticks and link syntax and performs no
       path normalization, so a `Sharing/`-prefixed key would orphan every description and the
-      generator would drop all 9 to placeholders on first regeneration.
-- [ ] Replace the 9 descriptions' *text* with `Sharing/README.md`'s current text. The existing
+      generator would drop all 9 to placeholders on first regeneration. *(completed)*
+- [x] Replace the 9 descriptions' *text* with `Sharing/README.md`'s current text. The existing
       text is stale in content, not only in counts: it describes the pre-`Skeleton.lean`-
       extraction shape of `Basic.lean`, `Thread.lean`, `Frame.lean` and `Histories.lean`.
-- [ ] Add rows for the 3 live files with no row anywhere in this table — `Skeleton.lean`,
+      *(completed)*
+- [x] Add rows for the 3 live files with no row anywhere in this table — `Skeleton.lean`,
       `Stability.lean`, `Window.lean` — using `Sharing/README.md`'s existing descriptions, rather
-      than letting the generator fill them with placeholders.
-- [ ] Escape any inline `|` carried across as `\|`.
-- [ ] Wrap with
+      than letting the generator fill them with placeholders. *(completed)*
+- [x] Escape any inline `|` carried across as `\|`. *(completed: none of the 12 resynced
+      descriptions contains an inline `|`)*
+- [x] Wrap with
       `dir=FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing rows=loose cols=lines`, run
-      the writer, apply the shared procedure's steps 3-8.
-- [ ] Textually diff the 12 resynced descriptions against `Sharing/README.md`'s block (a
+      the writer, apply the shared procedure's steps 3-8. *(completed: writer reported "no
+      generated inventory block needed a rewrite" since the pasted numeric cells were already
+      current)*
+- [x] Textually diff the 12 resynced descriptions against `Sharing/README.md`'s block (a
       copy-paste error here would plant a second independently-wrong description where there is
       currently an honestly-stale one). Record in the phase commit body that the resulting
       duplication between the two blocks is an accepted trade-off: INV checks each block against
-      its own directory, never cross-block consistency.
+      its own directory, never cross-block consistency. *(completed: diff of the 12 resynced
+      key/description pairs against Sharing/README.md's own block is empty — byte-identical.
+      The resulting duplication between `WitnessFamily/README.md`'s lower table and
+      `Sharing/README.md`'s block is an accepted trade-off per the research's Decision 3: INV
+      checks each generated block against its own directory's live files and never performs
+      cross-block consistency checking, so nothing keeps the two copies in sync going forward —
+      this mirrors the existing `Compression/` top-level-summary convention already accepted
+      elsewhere in this tree.)*
 
 **Timing**: 1.0 hours
 
