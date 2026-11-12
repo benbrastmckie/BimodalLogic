@@ -1,15 +1,15 @@
 {
-  "dispatch_seq": 8,
+  "dispatch_seq": 10,
   "status": "partial",
-  "summary": "Executed Phase 1 of task 905's 5-phase plan (repair the pure-literal closure, defect (D1)) against specs/901's paper-proof report. PastLits(X)/FutLits(X) in section 1.1 are now the subformula closure of their former top-level-only definitions, and Lemma 5.1 cites the repaired PastLits explicitly with a new Formulation guard. validate-artifact.sh stayed [PASS] with 0 warnings. The dispatch mission constrained this run to Phase 1 only; Phases 2-5 remain.",
-  "phases_completed": 1,
+  "summary": "Executed Phase 2 of task 905's 5-phase plan (drop both clause (a)s and the clause-(a) first-transition obligation) against specs/901's paper-proof report. Viol+ now stated in clause-(b)-only form with a named 'Theorem 1 (the elimination; derived)' and a Strictness paragraph in section 5.2; the mirror is stated under reflectTime in section 5.3 in place of the deleted Viol- clause-(a) certification; section 5.4's clause-(a) first-transition parenthetical is removed. validate-artifact.sh stayed [PASS] with 0 warnings. The dispatch mission constrained this run to Phase 2 only; Phases 3-5 remain.",
+  "phases_completed": 2,
   "phases_total": 5,
   "blockers": [],
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-1-handoff-20261112T024334Z.md",
-      "summary": "Phase 1 completion handoff with current state, key decisions, and the Phase 2 next action."
+      "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-2-handoff-20261112T025454Z.md",
+      "summary": "Phase 2 completion handoff with current state, key decisions, and the Phase 3 next action."
     }
   ]
 }
