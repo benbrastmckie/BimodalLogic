@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "dispatch_seq": 7,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/830_generalize_decidable_validztime_finite_premises/reports/01_generalize-finite-premise-decidability.md",
+      "summary": "All three enumerated residue items for the general finite-premise ZTime decision procedure compile sorry-free at [propext, Classical.choice, Quot.sound]; a second four-line reduction route exists via semantic_deduction_in, contradicting a claim recorded in Compression/README.md and Assembly.lean."
+    },
+    {
+      "type": "report",
+      "path": "specs/830_generalize_decidable_validztime_finite_premises/reports/01_verified-general-form.lean",
+      "summary": "394-line compiled probe (namespace Probe830, not in the build): the full general-Gamma decision procedure, verified via lake env lean with axiom measurements, preserved as a transcription target for implementation."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794503933_59a2b4_830",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

@@ -1149,15 +1149,22 @@
     {
       "project_number": 830,
       "project_name": "generalize_decidable_validztime_finite_premises",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Generalize `Compression.decidableValidZTime` from the empty-premise case to arbitrary finite premises.\n\nCLASSIFICATION: IMPLEMENTATION, bounded residue, NO OPEN MATHEMATICS. This is the one genuinely new tractable piece of decidability work the 2026-11-02 review found. It is NOT open research and must not be re-described as such.\n\nSCOPE LIMIT, STATED FIRST SO IT IS NOT MISREAD. This strengthens the BASE-LANGUAGE result and does **not** advance the L+ aim (`Decidable (PlusValidZTime phi)`, ROADMAP Stage 1). `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/README.md:132` records why: `ValidZTime` is stated for `FormalSystem.Syntax.Formula`, which carries no stability operator, and the durable scope sentence lives in `BiLasso/Assembly.lean`'s docstring. Do not let a plan or report claim this moves Stage 1.\n\nSTANDING INSTRUCTION -- RE-VERIFY BEFORE CITING. Re-read the README and re-grep every declaration name below before citing it.\n\nVERIFIED AT FILING (2026-11-02). `Compression/README.md:114-129` (\"## What is out of scope\", \"General finite-premise consequence\") enumerates the residue and bounds it. Already stated at arbitrary `Gamma Del`, so NOT part of the work: `WitnessFamily.Refutes`, `WitnessFamily.refutes_of_certifies`, `WitnessFamily.joint_countermodel`, `exists_labelledLasso_of_history_realized`, `compressionBound`, and `WitnessFamily.decidableCertifies` with its four component instances.\n\nTHE RESIDUE IS EXACTLY THREE ITEMS (README:124-127):\n1. The consequence analogue of `validZTime_iff_validInt`, for the entry point's carrier normalization.\n2. `WitnessFamily.Target`'s premise clause.\n3. `Enumerate.lean`'s phi-specializations: `closureSubsetsOf`, `rawLabelledLassos`, `IsLabelledLasso`, `boundedLassos`, `cands`.\n\nTHE README'S OWN CAVEAT, CARRIED FORWARD VERBATIM IN SUBSTANCE: \"That residue is bounded and enumerated, and it is unproved -- the consequence-form normalization has never been written, so the general form is not known to compile.\" Treat item 1 as the risk-bearing item. If it does not go through, report that as the finding rather than forcing items 2-3 around it.\n\nWHAT THIS CLOSES. The gap `decidableSemanticConsequenceNil` leaves -- it covers the empty-premise case only. The obstruction is narrower than it looks (README:116-121): a context-conjunction deduction theorem, which this tree does NOT have, is what the *reduction* route (`Gamma |= sigma` from `|= AND Gamma -> sigma`) would need; the *direct* route needs none, because `SemanticConsequenceIn` unfolds to local consequence at a point. Take the direct route.\n\nALREADY SPENT, DO NOT RE-DERIVE. `Decidable (Derivable .ZTime [] phi)` has already landed as `decidableDerivableZTime` in `FormalSystem/Metalogic/ZTimeProvability.lean`. That corollary is not available as this task's deliverable.\n\nNOT IN SCOPE. A usable executable: `cands` is astronomically large and [GKWZ] section 6.5 gives an EXPSPACE-hardness lower bound for `PTL x S5`, so the cost is the literature's own (README:130-131, `Assembly.lean` docstring). Do not file performance work against it here.\n\nACCEPTANCE. The general finite-premise form is stated and proved sorry-free, or the attempt is reported with the specific item that blocked it; `lake build` green; axioms of any new headline declaration pinned to exactly `[propext, Classical.choice, Quot.sound]`; no regression in `scripts/check-module-invariants.sh`.\n\nFILE SCOPE: `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/` (README plus the normalization entry point), `FormalSystem/Metalogic/Decidability/WitnessFamily/Enumerate.lean`, `FormalSystem/Metalogic/Decidability/WitnessFamily/Target.lean` (verify this path before relying on it).\n\nPROVENANCE: `specs/reviews/review-2026-11-02.md`, Medium Priority Issues section.",
       "dependencies": [],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/830_generalize_decidable_validztime_finite_premises/reports/01_generalize-finite-premise-decidability.md",
+          "type": "report",
+          "summary": "All three enumerated residue items for the general finite-premise ZTime decision procedure compile sorry-free at [propext, Classical.choice, Quot.sound]; a second four-line reduction route exists via semantic_deduction_in, contradicting a claim recorded in Compression/README.md and Assembly.lean."
+        }
+      ],
       "created": "2026-11-02T17:36:18Z",
-      "last_updated": "2026-11-12T17:20:17Z",
-      "session_id": "sess_1794503933_59a2b4_830"
+      "last_updated": "2026-11-12T17:45:52Z",
+      "session_id": "sess_1794503933_59a2b4",
+      "next_artifact_number": 2
     },
     {
       "project_number": 831,
