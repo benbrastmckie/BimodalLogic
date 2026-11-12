@@ -120,11 +120,24 @@ Fix an L⁺ formula `φ` with `⊬ ¬φ`; let `L` be its atom set. Write `Sub(ψ
 `sepZ` (compiled, `Discharge.lean:122`) returns, for each `ψ`, a finite list of pairs; `sepZ_sepClauses` (compiled) certifies that each pair's first component is pure-past and second pure-future, and `plusTruthAt_sepZ_iff` (compiled) that `ψ ↔ ⋀_{c ∈ sepZ ψ}(c.1 ∨ c.2)` pointwise on every regular ZTime frame. Define
 
 ```
-Lits(ψ)      := {c.1, c.2 : c ∈ sepZ ψ}
-PastLits(X)  := ⋃_{ψ ∈ X} {c.1 : c ∈ sepZ ψ}        FutLits(X) := ⋃_{ψ ∈ X} {c.2 : c ∈ sepZ ψ}
+Lits(ψ)         := {c.1, c.2 : c ∈ sepZ ψ}
+PastLits₀(X)    := ⋃_{ψ ∈ X} {c.1 : c ∈ sepZ ψ}      FutLits₀(X) := ⋃_{ψ ∈ X} {c.2 : c ∈ sepZ ψ}
+PastLits(X)     := the closure of PastLits₀(X) under pure-past subformulas of its members
+FutLits(X)      := the closure of FutLits₀(X) under pure-future subformulas of its members
 ```
 
-both finite, since `sepZ` returns a list and `X` below is finite.
+both finite: `sepZ` returns a list and `X` below is finite, so `PastLits₀(X)`/`FutLits₀(X)` are
+finite, and a finite set's subformula closure is finite, so the closure step preserves
+finiteness and the alphabet stays finite.
+
+**Why the closure is needed.** `pt ⊆ PastLits` records only which *top-level* `ᾱ` hold at the
+cut, whereas Lemma 5.1 below works with `Λ⁻`, the set of pure-past linear subformulas of those
+`ᾱ`, explicitly closed under subformulas. `sepZ`'s past components are S-only abstract formulas
+with L⁺ leaves resubstituted (compiled, `Discharge.lean:93-117`), and their own pure-past
+subformulas need not themselves be clause components of anything in `PastLits₀(X)`, so without
+this closure step `pt` alone would not determine which members of `Λ⁻` hold at the cut. Taking
+`PastLits(X)`/`FutLits(X)` to be the subformula closure, rather than the top-level set alone,
+closes that gap at no cost beyond the (still finite) enlargement recorded above.
 
 #### 1.2 One separation round suffices
 
@@ -292,7 +305,7 @@ For `pt ⊆ PastLits` and a one-sided word `v = (v_0, v_1, …) ∈ Ĉ^ω`, say 
 
 That this is well defined — that `pt` plus `v` suffices — is the content of:
 
-**Lemma 5.1 (the one-step unrolling; derived).** Let `Λ⁻` be the (finite) set of pure-past linear subformulas of the `ᾱ` for `α ∈ PastLits`, closed under subformulas. Define the *running past-type* `Π_i ⊆ Λ⁻` as the set of members true at position `i`. Then `Π_0` is determined by `pt` and `v_0`, and for `i ≥ 0`
+**Lemma 5.1 (the one-step unrolling; derived).** Let `Λ⁻` be the (finite) set of pure-past linear subformulas of the `ᾱ` for `α ∈ PastLits`, closed under subformulas. Define the *running past-type* `Π_i ⊆ Λ⁻` as the set of members true at position `i`. Then, because `PastLits` is itself the closure of its top-level members under pure-past subformulas (Finding 1.1), `Π_0` is determined by `pt` and `v_0`, and for `i ≥ 0`
 
 ```
 (ψ S χ) ∈ Π_{i+1}  ⟺  χ ∈ Π_i  or  (ψ ∈ Π_i  and  (ψ S χ) ∈ Π_i)
@@ -303,6 +316,8 @@ e       ∈ Π_{i+1}  ⟺  e ∈ v_{i+1}                      (e a letter)
 and the Boolean cases componentwise. Hence `Π_{i+1}` is a function of `Π_i` and `v_i, v_{i+1}` alone: the running past-type is computed by a **deterministic finite transducer** initialised from `pt`.
 
 *Proof.* The `S` clause: `(ψ S χ)` at `i+1` iff `∃ s < i+1` with `χ` at `s` and `ψ` on `(s, i+1)`. Either `s = i`, giving `χ ∈ Π_i` with an empty interval; or `s < i`, which needs `ψ` at `i` and `ψ` on `(s,i)`, i.e. `ψ ∈ Π_i` and `(ψ S χ) ∈ Π_i`. The step to `i+1` from `i` exists because the duration order is `ℤ`, i.e. discrete — the frame-class fact that `prior_UZ`, `prior_SZ`, `z1` axiomatise (read, `Axioms.lean:252-261`). ∎
+
+**Formulation guard.** This determinacy claim must not be read as making the forward-violation condition consult `Π_0` (or any running past-type) for a `γ̄` that is pure in the automaton's own forward-reading direction: such a `γ̄`'s truth at position `0` is, by Lemma 3.1, independent of `Π_0` and of any cut past-type altogether, depending only on `v`. This blindness — a pure-future translation's truth at `0` does not depend on which past-type is hypothesized at the cut — is exactly what later licenses treating a certified-but-possibly-wrong past-type as already sufficient to extract that fact at position `0`.
 
 **Lemma 5.2 (ω-regularity; derived + held).** For each `pt`, the set `Viol⁺_pt := {v ∈ Ĉ^ω : v has a forward violation at some i ≥ 0 under pt}` is ω-regular.
 

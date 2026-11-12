@@ -1,0 +1,19 @@
+{
+  "phase": 1,
+  "phase_name": "Repair the pure-literal closure, defect (D1)",
+  "started_at": "2026-11-11T00:00:00Z",
+  "last_updated": "2026-11-11T00:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-read section 1.1 and Lemma 5.1 before editing", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Replace PastLits/FutLits with subformula-closed definitions in section 1.1", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 3, "description": "Extend finiteness remark to cover the closure", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 4, "description": "Add sentence recording why the closure is needed", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 5, "description": "Amend Lemma 5.1's Pi_0-determinacy claim to cite the repaired PastLits explicitly", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 6, "description": "Add the formulation guard against Pi_0-consultation for pure gamma-bar", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 7, "description": "Confirm Lemma 4.1/4.2/4.3 and Finding 4.4 are unaffected (grep check)", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

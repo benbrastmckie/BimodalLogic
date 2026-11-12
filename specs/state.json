@@ -2230,7 +2230,7 @@
     {
       "project_number": 899,
       "project_name": "stability_cluster_type_product_lemma",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "title": "The stability cluster's (past-type, future-type) set is a full product",
       "description": "In FormalSystem/PlusLanguage/PlusPasting.lean, for a regular frame, a model, a history tau, a time t and a finite list of past-determined and future-determined formulas, prove that the set of pairs (past-type, future-type) realized by histories through tau.state t at t equals the product of the set of realized past-types and the set of realized future-types, by paste with paste_agreeUpTo, paste_agreeFrom and the semantic PastDet/FutDet predicates of OpenFutureElimination.lean. This is the lemma that makes the initialization of the forward and backward Auxiliary-Atoms automata at the clock cut a state-level datum, and it is the exact point at which separationOver_ztime is consumed by the completeness architecture.",
@@ -2248,7 +2248,7 @@
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T09:48:35Z",
-      "last_updated": "2026-11-12T02:38:16Z",
+      "last_updated": "2026-11-12T02:39:33Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -2581,7 +2581,7 @@
     {
       "project_number": 905,
       "project_name": "eliminate_cross_certification_two_sided_reynolds_automata",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "formal",
       "title": "Eliminate cross-certification between the forward and backward Rabin automata, or show it is load-bearing",
       "description": "RESEARCH TASK, report only. Deliverable: an answer, with its argument, to whether the clause-(a) cross-certification of specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md's Finding 5.2/14.4 is eliminable -- either a proof that the certification is automatic from the chronicle clauses of that report's Finding 8.2, or a demonstration that it is load-bearing, or a bi-infinite-automaton alternative with its cost. The question is answerable against the chronicle clauses and the two clause (a)s alone, strictly cheaper than anything in that report's Finding 17; eliminating the clauses would remove one omega-regularity argument from each automaton and shrink the alphabet's enlargement. No Lean work; no completeness claim.",
@@ -2592,7 +2592,7 @@
       "dependencies": [],
       "priority": "low",
       "created": "2026-11-09T20:01:27Z",
-      "last_updated": "2026-11-12T02:38:39Z",
+      "last_updated": "2026-11-12T02:39:45Z",
       "next_artifact_number": 2,
       "artifacts": [
         {

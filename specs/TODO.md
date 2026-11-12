@@ -39,9 +39,9 @@ next_project_number: 926
 
 ### Completeness
 
-899 [PLANNED] — The stability cluster's (past-type, future-type) set is a...
+899 [IMPLEMENTING] — The stability cluster's (past-type, future-type) set is a...
   └─ 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
-905 [PLANNED] — Eliminate cross-certification between the forward and...
+905 [IMPLEMENTING] — Eliminate cross-certification between the forward and...
 906 [PLANNED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
 
 ### Dataset Enhancement
@@ -1006,7 +1006,7 @@ Evidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two
 ---
 
 ### 905. Eliminate cross-certification between the forward and backward Rabin automata, or show it is load-bearing
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal
 - **Topic**: completeness
 - **Dependencies**: None
@@ -1106,7 +1106,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 899. The stability cluster's (past-type, future-type) set is a full product
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None

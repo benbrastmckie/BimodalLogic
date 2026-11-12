@@ -1,7 +1,7 @@
 # Implementation Plan: Task #905
 
 - **Task**: 905 - Eliminate the cross-certification clauses of the two-sided Reynolds automata, or show them load-bearing
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.0 hours
 - **Dependencies**: None blocking. Task 901 is `completed`; its report is the architecture of record and is the sole edit target of this plan.
 - **Research Inputs**: `specs/905_eliminate_cross_certification_two_sided_reynolds_automata/reports/01_eliminate-cross-certification-clauses.md`
@@ -119,35 +119,35 @@ presented as parallelizable.
 
 ---
 
-### Phase 1: Repair the pure-literal closure, defect (D1) [NOT STARTED]
+### Phase 1: Repair the pure-literal closure, defect (D1) [COMPLETED]
 
 **Goal**: Make `PastLits`/`FutLits` closed under the same-polarity subformulas of the
 translations, so that Lemma 5.1's running-past-type transducer has a well-defined initial state.
 This is independent of (Q3) and is required by clause (b), which survives the elimination.
 
 **Tasks**:
-- [ ] Re-read the target file at section 1.1 ("The pure-literal sets") and at Lemma 5.1
-      immediately before editing; sibling 906 carries an undeclared `file_scope` this cycle.
-- [ ] In section 1.1's definition block, replace `PastLits(X)` by its closure under the pure-past
-      subformulas of its members, and `FutLits(X)` dually under pure-future subformulas.
-- [ ] Extend the finiteness remark that follows the block to cover the closure: a finite set's
-      subformula closure is finite, so both sets stay finite and the alphabet stays finite.
-- [ ] Add one sentence recording *why* the closure is needed: `pt` is a subset of `PastLits` and
+- [x] Re-read the target file at section 1.1 ("The pure-literal sets") and at Lemma 5.1
+      immediately before editing; sibling 906 carries an undeclared `file_scope` this cycle. *(completed)*
+- [x] In section 1.1's definition block, replace `PastLits(X)` by its closure under the pure-past
+      subformulas of its members, and `FutLits(X)` dually under pure-future subformulas. *(completed)*
+- [x] Extend the finiteness remark that follows the block to cover the closure: a finite set's
+      subformula closure is finite, so both sets stay finite and the alphabet stays finite. *(completed)*
+- [x] Add one sentence recording *why* the closure is needed: `pt` is a subset of `PastLits` and
       so records only which top-level `alpha-bar` hold at the cut, whereas Lemma 5.1's `Lambda-`
       is explicitly subformula-closed; `sepZ`'s past components are S-only abstract formulas with
       L+ leaves resubstituted, and their own pure-past subformulas need not be clause components
-      of anything in the closure.
-- [ ] At Lemma 5.1, leave the `Pi_0`-determinacy claim in force but make it cite the repaired
+      of anything in the closure. *(completed)*
+- [x] At Lemma 5.1, leave the `Pi_0`-determinacy claim in force but make it cite the repaired
       `PastLits` explicitly, so the claim is true as stated rather than true only under the
-      repair.
-- [ ] Add the formulation guard the research report's first Risk asks for: the determinacy claim
+      repair. *(completed)*
+- [x] Add the formulation guard the research report's first Risk asks for: the determinacy claim
       must not be read as making the violation condition consult `Pi_0` for a `gamma-bar` that is
       pure in the automaton's own reading direction, since Theorem 1 (landed in Phase 2) depends
-      on exactly that blindness.
-- [ ] Confirm the four downstream quantifiers are unaffected: Lemma 4.1's
+      on exactly that blindness. *(completed)*
+- [x] Confirm the four downstream quantifiers are unaffected: Lemma 4.1's
       `PT(c_0) = {a and PastLits : a in c_0}`, Lemma 4.2's full product, Lemma 4.3's hue recovery,
       and Finding 4.4's letter content all quantify over whatever `PastLits` is. Grep each and
-      confirm no text needs changing.
+      confirm no text needs changing. *(completed: grep confirmed all four sites textually unchanged)*
 
 **Timing**: 0.5 hours
 
