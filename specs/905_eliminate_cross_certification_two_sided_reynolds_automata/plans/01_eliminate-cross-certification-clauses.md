@@ -411,20 +411,20 @@ add the dated amendment note; and discharge the task's full verification.
       `phi+` still gains no conjunct. Amend the Lean-position bullet's parenthetical so it no
       longer cites "the cross-certification clauses" as an example of a changed cardinality.
       *(completed)*
-- [ ] Finding 16.3: mark (Q3) **answered in the affirmative**, with the three-part answer named
+- [x] Finding 16.3: mark (Q3) **answered in the affirmative**, with the three-part answer named
       (Theorem 1, the section-8 seed lemma, Step 3') and with the research report cited as the
       record carrying the argument. Record the two qualifications the research report insists on:
       the certification is automatic from the chronicle clauses *plus clause (b)*, not from the
       chronicle clauses alone; and the *clauses* are eliminable while the *fact* they encode
-      remains load-bearing at the cut.
-- [ ] Finding 16.3: record the bi-infinite branch as closed rather than open, on Finding 4(i)'s
+      remains load-bearing at the cut. *(completed)*
+- [x] Finding 16.3: record the bi-infinite branch as closed rather than open, on Finding 4(i)'s
       rule-inventory argument, and mark the supporting cut-and-split claim as *recalled*, noting
-      that the Literature corpus was swept and holds no substantive source.
-- [ ] Section 6 (where `aaAnte`, `theta_f` and `theta_b` are documented): record Finding 4(i) as
+      that the Literature corpus was swept and holds no substantive source. *(completed)*
+- [x] Section 6 (where `aaAnte`, `theta_f` and `theta_b` are documented): record Finding 4(i) as
       the general reason the engine is two-sided-hinged rather than bi-infinite — `aaAnte` names a
       run in one direction via `box-dot G_le`, `ExtDerivation` offers it and its `reflectTime`
       mirror and nothing else, so no fresh-atom family names a bi-infinite run and the hinge is
-      forced by the rule inventory rather than chosen.
+      forced by the rule inventory rather than chosen. *(completed)*
 - [ ] Decision 5: restate as superseded in form and reinforced in substance — the circularity
       diagnosis was right and the device was wrong; it closes on purity, not on cross-certified
       clauses; and the substantive point that `phi+` gains no conjunct survives and is

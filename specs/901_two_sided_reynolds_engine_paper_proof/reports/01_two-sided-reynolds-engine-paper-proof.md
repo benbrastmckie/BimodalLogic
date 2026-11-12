@@ -381,12 +381,13 @@ The third language is L⁺ over `L ∪ Q⁺ ∪ Q⁻ ∪ {q}`. Enumerate `Ĉ = {
 φ⁺  := clockAnte q ∧ θ_f ∧ θ_b ∧ φ ∧ ⊡¬χ₁⁺ ∧ ⊡¬χ₁⁻
 ```
 
-Four points.
+Five points.
 
 - **Anchoring, not globalising.** `θ_f` is anchored at the evaluation point with `⊡G≤`, not with a `□`-global prefix. This is forced: on the two-layer carrier the verbatim layer has `inl u → inr (v,h)` for every `h`, so a `□A`-global `θ` is refuted there (carried from the architecture's Finding 2.4; the probe-level `aa_expand` establishes the run on the forward cone only). The `reflectTime` of `⊡G≤` is `⊡H≤`, which anchors `θ_b` on the backward cone.
 - **`θ_f` is `⊡`-stable.** `⊢ θ_f → ⊡θ_f`, by `atom_stab` on the conjunct `s₀⁺` and `stab_4` on the two `⊡`-conjuncts. Used in Finding 7.4.
 - **Both halves of non-acceptance are explicit.** `⊡¬χ₁⁺ ∧ ⊡¬χ₁⁻` rather than a single `⊡¬χ₁`. Each is required *at the anchor only*: every bi-infinite walk passes through `w₀` at time `0` exactly once (by `clockAnte`), so `⊡¬χ₁⁺` at the anchor says precisely "no walk's forward half is accepted", and dually. Finding 11.2 shows why demanding either at any other point would be both unnecessary and unobtainable.
 - **Freshness.** `q`, `Q⁺`, `Q⁻` are pairwise disjoint and fresh in `φ` and in every `a_i` (the `a_i` use atoms from `L` only, Lemma 2.6), discharging `hfresh` and the `clock` rule's `hq`.
+- **The two-sided hinge is forced by the rule inventory, not chosen.** `aaAnte` names a run in **one direction**: an initial-state atom at the evaluation point propagated along `⊡G≤`. `ExtDerivation`'s rule set offers exactly this and its `reflectTime` mirror `⊡H≤`, and nothing else; no constructor names a bi-infinite run as a single family of fresh atoms. A bi-infinite automaton therefore could not be put inside L⁺ by the Auxiliary-Atoms rule regardless of what ω-automata theory supplies — the two-sided pair `θ_f`/`θ_b` above, hinged at the cut `clockAnte q` supplies, is the general reason the engine is two-sided rather than bi-infinite, not a workaround (`specs/905_eliminate_cross_certification_two_sided_reynolds_automata/reports/01_eliminate-cross-certification-clauses.md`, Finding 4(i); derived there from this repository's rule inventory, Finding 16.3).
 
 ### 7. Lemma 7⁺: consistency of `φ⁺`, via the linear bridge and the three rules
 
@@ -931,7 +932,11 @@ The two ZTime finite-model-property refutations say a canonical model must have 
 
 #### 16.3 One further question this write-up raises
 
-**(Q3) Is the cross-certification of Finding 14.4 eliminable?** The two clause-(a)s exist only to break the circularity between "the forward automaton is run on the certified past-types" and "the walk's past-type is certified". An alternative would be a single automaton over a bi-infinite word, which ω-automata theory does not directly supply, or a proof that the certification is automatic from the chronicle clauses. Open; cheap to attempt and would simplify both automata. Derived; recorded so that a future reader does not assume the clause is load-bearing without checking.
+**(Q3) Is the cross-certification of Finding 14.4 eliminable? Answered in the affirmative.** The two clause-(a)s are redundant: each is already an instance of the same automaton's clause (b), evaluated at position 0 under a hypothetical cut type the bar-translation's purity makes irrelevant (Theorem 1); the one fact clause (b) cannot supply on its own — that the chronicle's own letter already certifies a type of each polarity — is seeded from chronicle clause K1 alone, with no circularity (the section-8 seed lemma); and Step 3 of this section's emergent-walk case is replaced by the four-link bootstrap Step 3′ above. The argument is carried in full in `specs/905_eliminate_cross_certification_two_sided_reynolds_automata/reports/01_eliminate-cross-certification-clauses.md`, which is the record of this answer.
+
+Two qualifications. First, the certification is automatic from the chronicle clauses **plus clause (b)**, not from the chronicle clauses alone: it is clause (b)'s own position-0 instance, seeded by K1, that does the work. Second, the *clauses* are eliminable while the *fact* they encoded — that each half's cut type is certified — remains load-bearing at the cut; eliminating the clauses removes a redundant device, not the fact.
+
+The third admissible answer, a bi-infinite-automaton alternative, is closed rather than left open. The Auxiliary-Atoms rule's antecedent `aaAnte` names a run in one direction only, and `ExtDerivation`'s rule set offers exactly it and its `reflectTime` mirror and nothing else, so no automaton over a bi-infinite word could be named inside L⁺ regardless of what ω-automata theory supplies (Finding 4(i) of the record above, derived from this repository's rule inventory). The supporting claim that the standard reduction for bi-infinite recognizability is itself a forward/backward cut-and-split is marked **recalled**: the Literature corpus was swept and holds no substantive source. Derived.
 
 ### 17. The Lean position: inherited, with one inventory correction
 

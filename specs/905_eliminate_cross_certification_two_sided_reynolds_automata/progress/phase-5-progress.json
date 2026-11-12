@@ -6,8 +6,8 @@
   "objectives": [
     {"id": 1, "description": "Re-read Executive Summary, Finding 16.3, section 17, Decisions, Recommendations, evidence-tier table; reconcile the ledger grep hit list", "status": "done", "note": "grep -n -i 'cross-certif' returned 8 hits before editing (lines 32, 36, 881, 934, 945, 967, 981, 1027). Line 881 (section 14.4's 'Why this breaks the circularity') is outside this phase's 8 owned sites -- it was written by Phase 3 and already describes the superseded device as superseded, so it needs no edit; recorded as a win, not an issue. The remaining 7 existing hits plus 2 new additions (section 6's note, the header amendment) match the Scope Hypothesis's eight owned sites.", "files_touched": []},
     {"id": 2, "description": "Rewrite Executive Summary cross-certification bullet and amend the Lean-position bullet's parenthetical", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
-    {"id": 3, "description": "Rewrite Finding 16.3 to mark (Q3) answered in the affirmative, with the two qualifications and the bi-infinite branch closed", "status": "not_started"},
-    {"id": 4, "description": "Add the Finding 4(i) rule-inventory note to section 6", "status": "not_started"},
+    {"id": 3, "description": "Rewrite Finding 16.3 to mark (Q3) answered in the affirmative, with the two qualifications and the bi-infinite branch closed", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 4, "description": "Add the Finding 4(i) rule-inventory note to section 6", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
     {"id": 5, "description": "Restate Decision 5 as superseded in form, reinforced in substance", "status": "not_started"},
     {"id": 6, "description": "Mark Recommendation 5 attempted and answered; strike the alphabet-shrink clause; replace with the honest accounting", "status": "not_started"},
     {"id": 7, "description": "Amend section 17's cardinality sentence", "status": "not_started"},
@@ -15,7 +15,7 @@
     {"id": 9, "description": "Add the dated Amended-by header note", "status": "not_started"},
     {"id": 10, "description": "Run the per-artifact validate-artifact.sh check and the batch-deferred scoped gate narrowing; record verification notes", "status": "not_started"}
   ],
-  "current_objective": 3,
+  "current_objective": 5,
   "approaches_tried": [],
   "handoff_count": 0
 }
