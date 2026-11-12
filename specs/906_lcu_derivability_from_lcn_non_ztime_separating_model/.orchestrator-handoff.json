@@ -1,19 +1,19 @@
 {
   "status": "partial",
-  "dispatch_seq": 24,
-  "summary": "Completed Phase 3 of the task 906 plan: transcribed the deterministic soundness arm (lcAnte_iff_lcCons_of_deterministic, lcN_plusValidOn_of_deterministic, isLCAxiom_plusValidDetIn_base, ext_sound_detIn) into FormalSystem/Metalogic/LCExtension.lean, with the Deterministic.Validity import, docstrings, Main Results update and completeness-target paragraph. Measured all four axiom profiles ([propext, Classical.choice, Quot.sound]) and pinned them in LCExtensionTest.lean, correcting its docstring count from six to ten. check-metalogic-cycles.sh green (no new cycle, no allowlist surplus); both scoped builds green and warning-free. This dispatch's own Phase Mission restricted it to Phase 3 only; two phases remain.",
+  "dispatch_seq": 25,
+  "summary": "Completed Phase 4 of the task 906 plan: added four rows to docs/theorem-index.md for the LCExtension.lean deterministic-frames soundness arm declarations landed in Phase 3 (lcAnte_iff_lcCons_of_deterministic, lcN_plusValidOn_of_deterministic, isLCAxiom_plusValidDetIn_base, ext_sound_detIn), each with its fully qualified name, file, Frame class, and pcq Axioms cell matching the measured profile. Territory gate confirmed clear (task 899 completed, its own edit to the file already committed), so the phase was entered rather than closed BLOCKED. check-module-invariants.sh --no-build's C12/C13/C15 all green; git diff on the file shows exactly 4 insertions. This dispatch's own Phase Mission restricted it to Phase 4 only; one phase remains.",
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-3-handoff-20261112T055506Z.md",
-      "summary": "Phase-end handoff recording Phase 3's completion, the show-to-rfl-lemma deviation (plan-authorized), and the open/qualify reconciliation decisions."
+      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-4-handoff-20261112T060613Z.md",
+      "summary": "Phase-end handoff recording Phase 4's completion, the territory-gate clearance evidence, and the insertion-point live-confirmation decision."
     }
   ],
-  "phases_completed": 3,
+  "phases_completed": 4,
   "phases_total": 5,
   "blockers": [],
   "plan_markers_verified": true,
-  "continuation_path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-3-handoff-20261112T055506Z.md",
-  "next_action_hint": "Dispatch Phase 4: add docs/theorem-index.md rows for the four new LCExtension.lean declarations. Territory-contended with task 899 -- check 899's live status in specs/state.json before entering; close [BLOCKED] per the plan's Territory section if 899 is still implementing.",
-  "git_checkpoint": "30d42deca (task 906 phase 3: the deterministic soundness arm in LCExtension.lean) -- tree was green throughout, no separate snapshot needed"
+  "continuation_path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-4-handoff-20261112T060613Z.md",
+  "next_action_hint": "Dispatch Phase 5 (final phase, Verification Tier full): reduce the probe to Part II plus the headline (importing the promoted library halves), track it with git, wire it into check-evidence-probes.sh, regenerate module-inventory blocks (FormalSystem/PlusLanguage/README.md, FormalSystem/Metalogic/README.md, README.md -- the pre-existing INV staleness observed during Phase 4's verification is exactly this task), run the full gate set, and write the implementation summary.",
+  "git_checkpoint": "8af779c91 (task 906 phase 4: theorem-index rows for the four new declarations) -- tree was green throughout, no separate snapshot needed"
 }

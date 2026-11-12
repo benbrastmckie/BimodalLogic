@@ -997,7 +997,7 @@ Evidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two
 - **Dependencies**: None
 - **Research**: [906_lcu_derivability_from_lcn_non_ztime_separating_model/reports/01_lcu-lcn-separating-model.md]
 - **Plan**: [906_lcu_derivability_from_lcn_non_ztime_separating_model/plans/01_lcu-lcn-separating-model.md]
-- **Handoff**: [906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-3-handoff-20261112T055506Z.md]
+- **Handoff**: [906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-4-handoff-20261112T060613Z.md]
 
 **Description**: RESEARCH TASK, report only. Deliverable: either a derivation of lcU alpha beta in TM-plus + LC_n + mirror LC_n for state-local beta, or a non-ZTime separating model. A ZTime countermodel cannot settle this question -- both lcN_plusValidZTime and lcU_plusValidZTime are compiled, so the two systems have the same ZTime models -- so the first target is .Base, where both schemata's validity is open and unclaimed per FormalSystem/PlusLanguage/PlusLCSchema.lean's own docstring, for a separating general frame or algebra. No Lean work beyond what is needed to state the separating model or derivation at the report level; no completeness claim.
 
