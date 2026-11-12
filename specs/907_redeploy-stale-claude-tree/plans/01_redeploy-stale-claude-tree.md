@@ -150,7 +150,7 @@ is itself the covering check, exercising exactly the surface the phase reads.
 
 ---
 
-### Phase 2: Conditionally Redeploy and Discharge the Full Deploy Gate [NOT STARTED]
+### Phase 2: Conditionally Redeploy and Discharge the Full Deploy Gate [COMPLETED]
 
 **Goal**: Bring the deployed tree to a verified-fresh state (redeploying only if Phase 1 found
 drift) and discharge the complete `verify-deploy.sh` gate set that the research dispatch
@@ -158,26 +158,30 @@ deliberately scoped out, closing the task.
 
 **Tasks**:
 
-- [ ] If and only if Phase 1 recorded `redeploy_needed = true`, run the sanctioned regeneration
+- [x] If and only if Phase 1 recorded `redeploy_needed = true`, run the sanctioned regeneration
       under the bounded-wait idiom: `timeout 540 bash .claude/scripts/deploy-headless.sh` with the
       Bash tool `timeout` parameter set to `600000` (per `context/patterns/external-process-wait.md`
       Rule 1). Use the default, non-destructive mode — not `--wipe`. Confirm the run ends with
-      `RESULT=landed_verify_clean`.
-- [ ] If Phase 1 recorded `redeploy_needed = false`, skip the redeploy and state in the dispatch
-      narrative that it was skipped and why. Do not run it reflexively.
-- [ ] Re-run `bash .claude/scripts/check-deploy-freshness.sh` and confirm exit 0 with no `WARN:`
+      `RESULT=landed_verify_clean`. *(deviation: skipped — Phase 1 recorded redeploy_needed=false,
+      so this branch did not fire; see next item)*
+- [x] If Phase 1 recorded `redeploy_needed = false`, skip the redeploy and state in the dispatch
+      narrative that it was skipped and why. Do not run it reflexively. *(completed: redeploy
+      skipped because Phase 1's live probes found all six extensions already FRESH with no WARN)*
+- [x] Re-run `bash .claude/scripts/check-deploy-freshness.sh` and confirm exit 0 with no `WARN:`
       output, so the `skill-base.sh` per-dispatch staleness warning is confirmed silent through
-      its real consumer surface.
-- [ ] Run the complete gate set: `timeout 540 bash .claude/scripts/verify-deploy.sh` (no
+      its real consumer surface. *(completed: exit 0, no WARN output, confirmed twice)*
+- [x] Run the complete gate set: `timeout 540 bash .claude/scripts/verify-deploy.sh` (no
       `--skip-slow`, no `--only-gate` filter), again with the Bash tool `timeout` parameter at
-      `600000`. Record the reported check count and failure count.
-- [ ] Interpret the result correctly: in this repository, gates 3, 5, 6, 7, 9–13, 15, and 17–29
+      `600000`. Record the reported check count and failure count. *(completed: RC=0;
+      "[verify-deploy] PASS -- 15 check(s), 0 failure(s)")*
+- [x] Interpret the result correctly: in this repository, gates 3, 5, 6, 7, 9–13, 15, and 17–29
       are expected to `[SKIP]` because this is a deploy *consumer*, not the source store. Judge
       pass/fail on the reported failure count being zero, never on the SKIP count. Do not attempt
-      to make a SKIPped gate run.
-- [ ] Do not hand-edit any file under `.claude/**` at any point. If a residual WARN or gate
+      to make a SKIPped gate run. *(completed: observed SKIP set matched exactly; 0 failures)*
+- [x] Do not hand-edit any file under `.claude/**` at any point. If a residual WARN or gate
       failure persists after a redeploy, record it and surface it as a blocker rather than
-      patching the deployed tree.
+      patching the deployed tree. *(completed: no hand-edits made; no residual WARN or failure to
+      surface)*
 
 **Timing**: 0.5 hours
 
@@ -214,12 +218,15 @@ asserting it, and record any divergence.
 
 ## Testing & Validation
 
-- [ ] All six named extensions report `FRESH` from `deploy_freshness_status`.
-- [ ] `bash .claude/scripts/check-deploy-freshness.sh` exits 0 with no `WARN:` output.
-- [ ] `bash .claude/scripts/verify-deploy.sh` (full run, no `--skip-slow`) reports zero failures.
-- [ ] If a redeploy ran, it reported `RESULT=landed_verify_clean`.
-- [ ] `git status --porcelain` shows no tracked change under `.claude/**` (the tree is gitignored);
-      any change shown there would indicate a hand-patch and is a failure condition.
+- [x] All six named extensions report `FRESH` from `deploy_freshness_status`. *(completed)*
+- [x] `bash .claude/scripts/check-deploy-freshness.sh` exits 0 with no `WARN:` output. *(completed)*
+- [x] `bash .claude/scripts/verify-deploy.sh` (full run, no `--skip-slow`) reports zero failures.
+      *(completed: 15 checks, 0 failures)*
+- [x] If a redeploy ran, it reported `RESULT=landed_verify_clean`. *(completed: no redeploy ran —
+      not applicable, condition vacuously satisfied)*
+- [x] `git status --porcelain` shows no tracked change under `.claude/**` (the tree is gitignored);
+      any change shown there would indicate a hand-patch and is a failure condition. *(completed:
+      no .claude/** changes in git status)*
 
 ## Artifacts & Outputs
 
