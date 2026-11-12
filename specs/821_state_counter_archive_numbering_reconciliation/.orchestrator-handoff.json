@@ -1,18 +1,20 @@
 {
-  "status": "planned",
-  "task_number": 821,
-  "phase": "plan",
-  "dispatch_seq": 3,
-  "session_id": "sess_1794503933_59a2b4_821",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 10,
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Wrote a 4-phase plan for the counter-versus-archive numbering record. Re-measured every load-bearing quantity: the membership-based allocation bound this record chose has already landed (shared lib/project-number-inuse.sh consumed by both state-write.sh and Check 12), validate-state.sh --deep now exits 0 with Check 12 PASS, the counter is dense at 926 against an active max of 907, and --allocate-into issues 926 rather than refusing. Remaining scope is attestation plus three residues: settling the vault-relocation remedy on its merits in a durable record, correcting one stale Check 12 cross-reference comment in state-write.sh, and documenting in the state-management schema why archive rows above the counter are an expected steady state. Final phase redeploys and discharges the full gate.",
+  "summary": "Confirmed the already-deployed membership-based allocator discharges both named consequences: state-write.sh --allocate-into no longer refuses on the counter-vs-archive relation, and validate-state.sh --deep Check 12 passes (BEFORE and AFTER readings both exit 0, 19 passed / 19 warnings / 0 failed, no regression). Declined the vault-relocation remedy with evidence in a new decision record, corrected state-write.sh's stale Check 12 cross-reference comment, and added a durable schema subsection so archive numbers above the counter are not mistaken for a defect. Redeployed cleanly and confirmed both edited source-store files are byte-identical to their deployed copies.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/821_state_counter_archive_numbering_reconciliation/plans/01_counter-archive-numbering-reconciliation.md",
-      "summary": "4-phase plan: attest the discharge and settle the vault-relocation remedy, correct a stale cross-reference comment, document the above-counter archive invariant, then redeploy and discharge the full gate."
+      "type": "summary",
+      "path": "specs/821_state_counter_archive_numbering_reconciliation/summaries/01_counter-archive-numbering-reconciliation-summary.md",
+      "summary": "Implementation summary covering all four phases, the vault-relocation decision, and both validate-state.sh --deep exit-code readings."
+    },
+    {
+      "type": "other",
+      "path": "specs/821_state_counter_archive_numbering_reconciliation/records/01_numbering-remedy-decision.md",
+      "summary": "Decision record: measurement tables, discharge attestation, outlier-row evidence, vault-relocation remedy decision (declined) with evidence, BEFORE/AFTER validate-state.sh --deep readings."
     }
   ]
 }
