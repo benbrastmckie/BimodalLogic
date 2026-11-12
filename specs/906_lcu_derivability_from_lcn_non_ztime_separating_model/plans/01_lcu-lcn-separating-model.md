@@ -635,34 +635,41 @@ import-graph assertions (cycle set and upward-import allowlist) a module build c
 
 ---
 
-### Phase 4: Theorem-Index Rows for the Four New Declarations [NOT STARTED]
+### Phase 4: Theorem-Index Rows for the Four New Declarations [COMPLETED]
 
 **Goal**: The repository's per-theorem ledger carries the four new `LCExtension.lean` results, so
 they are findable the same way every other declaration in that module is — and so C17's
 dead-declaration scan sees them.
 
 **Tasks**:
-- [ ] **Territory gate first.** Re-read `docs/theorem-index.md` immediately before editing and check
+- [x] **Territory gate first.** Re-read `docs/theorem-index.md` immediately before editing and check
       899's live status in `specs/state.json` plus `git log -- docs/theorem-index.md`. If 899 holds
       uncommitted changes in the file, or is `implementing`, close this phase `[BLOCKED]` with the
       observed state recorded and proceed to Phase 5; do not edit the file and do not add a
-      `dependencies[]` edge (see "Territory").
-- [ ] Add one row per new declaration, in the `### ` section and row shape the existing
+      `dependencies[]` edge (see "Territory"). *(completed: 899 confirmed `status: completed` in
+      `specs/state.json`, last touched `docs/theorem-index.md` via already-committed
+      9ed6e5e2f/b3bca557c; `git status --porcelain docs/theorem-index.md` clean — not blocked)*
+- [x] Add one row per new declaration, in the `### ` section and row shape the existing
       `FormalSystem.Metalogic.LCExtension.*` rows use (at authoring time: rows for
       `isLCAxiom_plusValidZTime` through `LCURulesComplete`, immediately preceding the
       `Deterministic/` rows). Each row names the fully qualified declaration, its file, its frame
       class and its axiom-profile cell, matching the measured profiles from Phase 3 rather than any
-      figure in this plan.
-- [ ] Write each row's description to state what the declaration is for and what it does NOT claim:
+      figure in this plan. *(completed: inserted immediately after the `LCURulesComplete` row,
+      confirmed live rather than by the authoring-time line numbers — the file had grown to 885
+      lines via tasks 899/900 — each row's Axioms cell set to `pcq`, matching
+      `LCExtensionTest.lean`'s measured `[propext, Classical.choice, Quot.sound]` for all four)*
+- [x] Write each row's description to state what the declaration is for and what it does NOT claim:
       the collapse computation; `lcN`'s deterministic validity with the note that `.Base` validity
       of `lcN` is not needed for it; the axiom-set discharge over `DetSat .Base`; and the
       deterministic-class soundness arm, with the non-derivability consequence stated at
       `.Base`/`RuleSet.none` and the `.Base`-validity question left "open and unclaimed" in those
-      words.
-- [ ] Confirm C15's second assertion is satisfiable for each new row: every theorem-index row must
+      words. *(completed)*
+- [x] Confirm C15's second assertion is satisfiable for each new row: every theorem-index row must
       be anchored at its declaration, which requires the `Paper:` anchor line Phase 3 added. If a
       row cannot be anchored, fix the declaration's doc comment in `LCExtension.lean` rather than
-      dropping the row.
+      dropping the row. *(completed: `bash scripts/check-module-invariants.sh --no-build` reports
+      C15's second assertion green — "all 464 theorem-index row(s) carry their anchor (or
+      `Paper: —`) at the declaration" — up from 460 before this phase's four rows)*
 
 **Timing**: 0.5 hours
 

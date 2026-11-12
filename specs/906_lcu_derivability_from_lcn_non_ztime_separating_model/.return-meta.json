@@ -1,50 +1,9 @@
 {
-  "status": "partial",
-  "dispatch_seq": 24,
-  "partial_progress": {
-    "stage": "hard_mode_single_phase_complete",
-    "details": "Phase 3 (The Deterministic Soundness Arm in LCExtension.lean) completed and committed. This dispatch's own Phase Mission restricted it to Phase 3 only (\"Implement phase 3 only. Do not continue past this phase.\"). Two phases remain (4: theorem-index rows, territory-contended with task 899; 5: probe custody, full gate set, summary).",
-    "handoff_path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-3-handoff-20261112T055506Z.md",
-    "phases_completed": 3,
-    "phases_total": 5
-  },
-  "artifacts": [
-    {
-      "type": "handoff",
-      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-3-handoff-20261112T055506Z.md",
-      "summary": "Phase-end handoff: LCExtension.lean now carries the deterministic-frames soundness arm (four declarations, verbatim-transcribed with one risk-authorized show-to-rfl-lemma substitution), with measured axiom profiles pinned in LCExtensionTest.lean; next action is Phase 4 (territory-contended with task 899)."
-    }
-  ],
-  "completion_data": {
-    "completion_summary": "Transcribed the deterministic soundness arm (lcAnte_iff_lcCons_of_deterministic, lcN_plusValidOn_of_deterministic, isLCAxiom_plusValidDetIn_base, ext_sound_detIn) into FormalSystem/Metalogic/LCExtension.lean, with the new Deterministic.Validity import, per-declaration docstrings with Paper: anchors, a Main Results update, and a completeness-target paragraph on LCComplete's unreachable lcU instance. Measured all four axiom profiles live ([propext, Classical.choice, Quot.sound], matching the module's existing six) and pinned them in Tests/BimodalTest/Metalogic/LCExtensionTest.lean, correcting its docstring from 'six' to 'ten' declarations. check-metalogic-cycles.sh green on all three assertions (no new cycle, no allowlist surplus); both scoped builds green and warning-free; typst-sync-check.sh --counts-only clean before commit."
-  },
-  "modified_files": [
-    "FormalSystem/Metalogic/LCExtension.lean",
-    "Tests/BimodalTest/Metalogic/LCExtensionTest.lean",
-    "typst/generated/status.typ"
-  ],
-  "memory_candidates": [
-    {
-      "content": "In this repository's Lean 4 setup, the `show` tactic is linted (`linter.style.show`) whenever it exploits a definitional equality rather than merely restating the current goal, and CI builds with `--wfail` so this lint is a hard build failure, not a cosmetic warning. When transcribing a proof that uses `show` this way (e.g. unfolding a `def` like `lcAnte`/`lcCons` to expose their `.stab`/`.dstab` wrapper before further rewriting), the remedy is a small NAMED `rfl` lemma stating the unfolding equality (e.g. `lcAnte n a = PlusFormula.stab (...) := rfl`), then `rw` through that named lemma instead of `show`-ing the unfolded form inline. This was predicted in the consuming plan's own Risks table and empirically confirmed by the scoped build.",
-      "category": "PATTERN",
-      "source_artifact": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-3-handoff-20261112T055506Z.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["show-tactic", "linter.style.show", "wfail", "rfl-lemma", "lean4"]
-    },
-    {
-      "content": "Inside an `induction d with | ctor args => exact f` match alternative in Lean 4, placing a function application's argument on an indented CONTINUATION line (`exact f\\n    (arg)`) can fail to parse as `f` applied to `arg` -- the error surfaces as a type mismatch where the unapplied function type is checked directly against the goal, as if the argument were silently dropped. Putting the full application `f (arg)` on one line (splitting instead at `| ctor args =>\\n  exact f (arg)` if a line break is needed) avoids the ambiguity. Worth checking for this shape whenever a one-line-per-alternative `induction ... with` proof needs to wrap a long `exact`.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-3-handoff-20261112T055506Z.md",
-      "confidence": 0.6,
-      "suggested_keywords": ["lean4", "induction-with", "line-continuation", "parsing-gotcha", "exact-tactic"]
-    }
-  ],
+  "status": "in_progress",
   "metadata": {
     "session_id": "sess_1794448865_9a2e5c",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
-    "phases_completed": 3,
-    "phases_total": 5
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   }
 }
