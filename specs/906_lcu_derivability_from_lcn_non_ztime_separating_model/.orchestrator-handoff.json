@@ -1,16 +1,16 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 6,
-  "summary": "Wrote a five-phase plan for task 906's custody work: promote the probe's determinism-collapse sibling into PlusDeterminism.lean and its deterministic-class soundness arm plus LC_n's deterministic validity into LCExtension.lean, record the compiled non-derivability verdict in PlusLCSchema.lean and LCExtension.lean's docstrings, add four docs/theorem-index.md rows, and track/wire/reduce the evidence probe. Premise re-validation confirmed all four carried claims in the description and surfaced one new live fact: the research dispatch's compiled probe is untracked by git and absent from check-evidence-probes.sh's WIRED array, so Phase 5 schedules that explicitly. No mathematics is re-opened; every Lean step is a verbatim transcription of an already-compiled body, with signatures pinned under Lean Challenge Statements.",
+  "status": "partial",
+  "phase": "implement",
+  "dispatch_seq": 22,
+  "summary": "Completed Phase 1 of 5 (the dstab sibling of the determinism collapse): dstab_iff_of_deterministic landed verbatim in FormalSystem/PlusLanguage/PlusDeterminism.lean, measured axiom profile [propext, Classical.choice, Quot.sound] via lean_verify (wider than the original four's [propext]-only), with the plan's pre-written non-matching-branch mitigation applied exactly. Scoped build, typst-sync-check --fix, and typst-sync-check --counts-only all green; phase committed. This dispatch's own Phase Mission restricted it to Phase 1 only, so Phases 2-5 remain for a future dispatch.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/plans/01_lcu-lcn-separating-model.md",
-      "summary": "Five-phase, 5-hour plan: library promotion of the separation's load-bearing halves, the docstring record, theorem-index rows, and probe custody, with the full repository gate set in the final phase."
+      "type": "handoff",
+      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-1-handoff-20261112T052438Z.md",
+      "summary": "Phase-end handoff for Phase 1 completion: what landed, the axiom-profile decision, the Paper-anchor-line deviation, and next action (Phase 2)."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 1,
   "phases_total": 5,
   "blockers": []
 }

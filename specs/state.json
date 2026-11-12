@@ -2792,6 +2792,11 @@
           "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/plans/01_lcu-lcn-separating-model.md",
           "type": "plan",
           "summary": "Five-phase, 5-hour plan: library promotion of the separation's load-bearing halves, the docstring record, theorem-index rows, and probe custody, with the full repository gate set in the final phase."
+        },
+        {
+          "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-1-handoff-20261112T052438Z.md",
+          "type": "handoff",
+          "summary": "Phase-end handoff for Phase 1 completion: what landed, the axiom-profile decision, the Paper-anchor-line deviation, and next action (Phase 2)."
         }
       ],
       "audit_verdict": {
