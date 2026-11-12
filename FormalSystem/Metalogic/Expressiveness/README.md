@@ -21,7 +21,7 @@ a genuine partition; `scripts/measure-refactor-partitions.py --check` asserts th
 | `EFGameTactics.lean` | 333 | EF game automation tactics for expressive completeness proofs |
 | `MonadicFO.lean` | 823 | Monadic first-order logic translation for expressiveness results |
 | `NormalForm.lean` | 882 | Normal form for TM formulas used in the expressiveness proofs |
-| `OpenFutureElimination.lean` | 599 | Elimination of a disjunction under the open-future and open-past modals, its conjunctive-normal-form version, a translation into L⁺ conditional on a named separation hypothesis, and the transfer corollaries reducing open-language decidability and completeness to their L⁺ counterparts |
+| `OpenFutureElimination.lean` | 743 | Elimination of a disjunction under the open-future and open-past modals, its conjunctive-normal-form version, a translation into L⁺ conditional on a named separation hypothesis, the transfer corollaries reducing open-language decidability and completeness to their L⁺ counterparts, and the stability-cluster type product: the (past-type, future-type) pairs realized across a stability cluster are exactly the product of the realized past-types with the realized future-types |
 | `PriorDefs.lean` | 47 | Shared definitions for the Prior expressiveness development |
 | `PriorDefsDense.lean` | 409 | Prior definitions specialized to the dense setting |
 | `PriorExpressiveness.lean` | 378 | Prior's theorem on temporal expressiveness |
@@ -118,4 +118,4 @@ MonadicFO.lean            (monadic signature, MonadicFormula, evaluation)
 
 ---
 
-*Last verified: 2026-11-09*
+*Last verified: 2026-11-11*

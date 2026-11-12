@@ -306,37 +306,37 @@ which are precisely the two checks that consume these two files.
 
 ---
 
-### Phase 3: Reconcile the generated surfaces and run the full gate set [NOT STARTED]
+### Phase 3: Reconcile the generated surfaces and run the full gate set [COMPLETED]
 
 **Goal**: every line-count surface Phase 1 moved is regenerated or corrected, and the
 repository's full gate set runs with no finding naming a file this task touched.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory`, then
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory`, then
   `bash scripts/check-module-invariants.sh --emit-inventory --check` to confirm. This is
   gate-collision Condition 1's surface (a): `README.md`'s `dir=FormalSystem rows=totals` block and
   `FormalSystem/Metalogic/README.md`'s `rows=subdirs cols=files-lines` blocks both carry counts
   that Phase 1's added lines moved. Stage only the generated blocks' files.
-- [ ] Correct the hand-maintained Modules table row for `OpenFutureElimination.lean` in
+- [x] Correct the hand-maintained Modules table row for `OpenFutureElimination.lean` in
   `FormalSystem/Metalogic/Expressiveness/README.md`: set the Lines cell to the MEASURED
   `wc -l` value of the post-Phase-1 file, and extend the Description cell to name the type-product
   result. That table is not wrapped in `BEGIN GENERATED` markers, so `--emit-inventory` does not
   touch it; its cell reads 599 against a 610-line pre-task file, so it carries drift this task did
   not cause — set it to the measured value rather than adding this task's delta to the stale one.
-- [ ] Refresh that README's `*Last verified:*` date line (`readme-lint.sh` Check 4, reported).
-- [ ] Run the full gate set and record each verdict:
+- [x] Refresh that README's `*Last verified:*` date line (`readme-lint.sh` Check 4, reported).
+- [x] Run the full gate set and record each verdict:
   `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`;
   `bash scripts/check-module-invariants.sh`;
   `bash scripts/typst-sync-check.sh`;
   `bash scripts/readme-lint.sh`;
   `bash scripts/check-metalogic-cycles.sh`;
   `bash scripts/check-copyright-headers.sh`.
-- [ ] Enumerate, by file, every FAIL or finding that names no file in this task's scope, as the
+- [x] Enumerate, by file, every FAIL or finding that names no file in this task's scope, as the
   recorded pre-existing baseline for this run.
-- [ ] Run `bash .claude/scripts/lean-challenge-snapshot.sh --check` and record its verdict. It is
+- [x] Run `bash .claude/scripts/lean-challenge-snapshot.sh --check` and record its verdict. It is
   ADVISORY: a drift finding is a signal to investigate under `rules/plan-compliance.md`, never on
   its own grounds to fail the task or downgrade a status.
-- [ ] Commit via `.claude/scripts/git-commit-scoped.sh` with an explicit file list.
+- [x] Commit via `.claude/scripts/git-commit-scoped.sh` with an explicit file list.
 
 **Timing**: 1.5 hours
 
@@ -370,6 +370,56 @@ in the phase notes rather than skipping it.
 - `bash scripts/readme-lint.sh`, `bash scripts/check-metalogic-cycles.sh` and
   `bash scripts/check-copyright-headers.sh` each exit 0, or their findings are enumerated as
   pre-existing and naming no touched file.
+
+**Verification Notes (measured, dispatch seq 11)**:
+
+The declared `**Verification Tier**: full` is unchanged. This dispatch discharged it against a
+SCOPED tier under its directive's UNMAPPABLE CRITERION clause, and the complete gate set is
+deferred to the batch stage at the end of the invocation. The narrowing was unmappable in both
+offered forms, checked rather than assumed: `.claude/scripts/tests/` carries no suite basename
+for `check-module-invariants.sh`, `scripts/typst-sync-check.sh`, `scripts/readme-lint.sh`,
+`scripts/check-metalogic-cycles.sh` or `scripts/check-copyright-headers.sh`, and
+`.claude/scripts/verify-deploy.sh` resolves deploy-tree-vs-source-store gates whose TARGET is a
+deploy root, with no gate expressing a `FormalSystem/**` Lean build. So the six named checks were
+run DIRECTLY, which is the recorded scoped discharge. No criterion was waived.
+
+- Scope Hypothesis CONFIRMED before regeneration: `--emit-inventory --check` named exactly
+  `README.md` and `FormalSystem/Metalogic/README.md` (exit 1), and no surface the hypothesis
+  omits. `--emit-inventory` then rewrote exactly those two; the re-check reports
+  `PASS INV every generated inventory block is current, every hand-maintained one is exhaustive`
+  (exit 0). The regenerated deltas are line counts only: `Expressiveness/` 111,723 -> 111,856
+  (= +133, matching 743 - 610) and the root totals.
+- `lake-build-guard.sh build --timeout 1800 -- build` (detached shell-level background job,
+  bounded `kill -0` waiter, one call): `GUARD_EXIT=0`; `Build completed successfully (2974 jobs)`;
+  0 `error:`, 0 `warning:` across both captured streams; `OpenFutureElimination.olean` confirmed
+  newer than its source. All three verdict tiers green.
+- `scripts/check-module-invariants.sh` (full, build-backed, detached + bounded waiter): exit 0,
+  ZERO `FAIL` lines. The one INV FAIL Phase 2 recorded is resolved by this phase's regeneration.
+  Read explicitly: `PASS C1` (both `lake build` and `lake build BimodalTest`), `PASS INV`,
+  `PASS C14` (both assertions), `PASS C15` (93 paper anchors; 455 index rows),
+  `PASS C16` (env_linter batch; dupNamespace), `PASS C19` (90.60% vs 90% floor),
+  `PASS C23`, `PASS C26`, `PASS C9` / `PASS C9D`.
+- `scripts/typst-sync-check.sh`: exit 0, all 4 checks green (no `typst/` file was dirty, so
+  nothing needed staging in this phase).
+- `scripts/readme-lint.sh`: exit 0, `RESULT: PASS`. 59 informational `STALE DATE` lines, of which
+  exactly one names a touched file -- `FormalSystem/Metalogic/README.md` (stamped 2026-10-02).
+  Evidenced PRE-EXISTING, not caused here: at `8ce83e659~1` that directory had already last
+  changed 2026-11-11 (task 924 phase 4) against the same stamp. Not refreshed, because the
+  phase's date-refresh step names only `Expressiveness/README.md` and the gate passes.
+- `scripts/check-metalogic-cycles.sh`: exit 0 (1 recorded directory cycle, 10 recorded upward
+  imports, syntax/semantics separation clean). `scripts/check-copyright-headers.sh`: exit 0,
+  755/755 conforming, 0 nonconforming.
+- `lean-challenge-snapshot.sh --check 899 <root>`: exit 71, no manifest at
+  `specs/899_.../challenge/manifest.json` -- no snapshot was ever taken for this task, so the
+  ADVISORY check has nothing to compare against, and taking one post-implementation would
+  trivially match and certify nothing. Substitute evidence: all six landed signatures were
+  compared against this plan's `## Lean Challenge Statements` block and match verbatim.
+- Final suite: `sorry_count: 0`; `axiom_count: 14` = baseline (no new axiom);
+  `COMPLIANCE_CHECK: passed` (all six declarations found).
+- Pre-existing findings naming no file in this task's scope: the 58 other `readme-lint` stale-date
+  lines, and the single vacuous-grep hit
+  `FormalSystem/Examples/TemporalStructures.lean:495` (`theorem int_domain_universal ... := trivial`,
+  a genuinely trivial-closed goal, not a placeholder) -- the same hit Phases 1 and 2 recorded.
 
 ---
 
@@ -461,18 +511,18 @@ end FormalSystem.Metalogic.Expressiveness
 
 ## Testing & Validation
 
-- [ ] All six declarations compile in-tree, sorry-free, under a warning-free scoped guarded build.
-- [ ] The three theorems' `#print axioms` values are measured in-tree and recorded verbatim.
-- [ ] `docs/theorem-index.md` gains exactly one row, whose Axioms cell equals the measured value.
-- [ ] `bash scripts/check-module-invariants.sh` reports `PASS C14` and `PASS C15`.
-- [ ] No new `docBlame` (C16) or docstring-coverage (C19) finding; no `lemma` declaration (C23);
+- [x] All six declarations compile in-tree, sorry-free, under a warning-free scoped guarded build.
+- [x] The three theorems' `#print axioms` values are measured in-tree and recorded verbatim.
+- [x] `docs/theorem-index.md` gains exactly one row, whose Axioms cell equals the measured value.
+- [x] `bash scripts/check-module-invariants.sh` reports `PASS C14` and `PASS C15`.
+- [x] No new `docBlame` (C16) or docstring-coverage (C19) finding; no `lemma` declaration (C23);
   no non-trailing underscore in any new `def` name (C26).
-- [ ] `bash scripts/typst-sync-check.sh` exits 0 and `typst/generated/status.typ` was staged in
+- [x] `bash scripts/typst-sync-check.sh` exits 0 and `typst/generated/status.typ` was staged in
   the same commit as the Lean change.
-- [ ] `--emit-inventory --check` reports no stale generated block.
-- [ ] A full guarded `lake build` exits 0 with no warning.
-- [ ] No task-number citation under `FormalSystem/`, `docs/` or `README.md` (C9).
-- [ ] `lean-challenge-snapshot.sh --check` verdict recorded (advisory).
+- [x] `--emit-inventory --check` reports no stale generated block.
+- [x] A full guarded `lake build` exits 0 with no warning.
+- [x] No task-number citation under `FormalSystem/`, `docs/` or `README.md` (C9).
+- [x] `lean-challenge-snapshot.sh --check` verdict recorded (advisory). *(deviation: altered — no Challenge manifest exists for this task, so `--check` exits 71 with nothing to compare against; Statement Fidelity was evidenced instead by a verbatim comparison of the six landed signatures against this plan's own `## Lean Challenge Statements` block.)*
 
 ## Artifacts & Outputs
 
