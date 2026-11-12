@@ -1,22 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 7,
+  "status": "planned",
+  "dispatch_seq": 13,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/830_generalize_decidable_validztime_finite_premises/reports/01_generalize-finite-premise-decidability.md",
-      "summary": "All three enumerated residue items for the general finite-premise ZTime decision procedure compile sorry-free at [propext, Classical.choice, Quot.sound]; a second four-line reduction route exists via semantic_deduction_in, contradicting a claim recorded in Compression/README.md and Assembly.lean."
-    },
-    {
-      "type": "report",
-      "path": "specs/830_generalize_decidable_validztime_finite_premises/reports/01_verified-general-form.lean",
-      "summary": "394-line compiled probe (namespace Probe830, not in the build): the full general-Gamma decision procedure, verified via lake env lean with axiom measurements, preserved as a transcription target for implementation."
+      "type": "plan",
+      "path": "specs/830_generalize_decidable_validztime_finite_premises/plans/01_generalize-finite-premise-decidability.md",
+      "summary": "Six-phase plan transcribing the research dispatch's verified probe into the live tree: context-indexed enumeration, consequence-form carrier normalization, generalized compression theorem, the direct-route criterion and procedure, the reduction-route corollary, and documentation reconciliation with the full gate set."
     }
   ],
   "metadata": {
     "session_id": "sess_1794503933_59a2b4_830",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 7.25,
+    "dependency_waves": [[1, 2, 5], [3], [4], [6]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When a research dispatch delivers a compiled probe artifact (a namespaced, out-of-build .lean file whose declarations already elaborate sorry-free with measured axioms), the plan phase changes character entirely: approach selection is already settled, and the plan's real work becomes siting decisions (which module each declaration lands in, without widening a subtree's dependency surface), naming decisions (the probe's collision-avoidance suffixes must be renamed on arrival, and repository lint rules such as a no-non-trailing-underscore rule on def names can forbid the probe's own suggested names), and gate-collision scheduling (which generated surfaces the edit moves, and which of those are commit-blocking versus deferrable). Phase decomposition should follow the probe's own dependency order, with one phase per module touched, so each phase is a self-contained transcription whose verification is a single module build.",
+      "category": "PATTERN",
+      "source_artifact": "specs/830_generalize_decidable_validztime_finite_premises/plans/01_generalize-finite-premise-decidability.md",
+      "confidence": 0.82,
+      "suggested_keywords": ["compiled-probe", "plan-from-research", "lean-transcription", "gate-collision", "phase-decomposition", "siting-decision"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 830 to execute the plan"
 }

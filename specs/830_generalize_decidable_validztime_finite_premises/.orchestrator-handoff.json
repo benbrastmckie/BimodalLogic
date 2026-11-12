@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 13,
+  "phases_completed": 0,
+  "phases_total": 6,
+  "summary": "Wrote a six-phase implementation plan for the general finite-premise ZTime decision procedure, built on the research dispatch's verified 394-line probe. Phases: generalize Enumerate.lean's enumeration to arbitrary contexts (keeping the five pinned phi-indexed names as wrappers); add the consequence-form carrier normalization to Family.lean; generalize the compression theorem; land the criterion and direct-route procedure in Assembly.lean; land the reduction-route corollary in ZTimeProvability.lean; reconcile the documentation record and run the full gate set. Plan validates clean (validate-artifact.sh PASS, 0 warnings).",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/830_generalize_decidable_validztime_finite_premises/plans/01_generalize-finite-premise-decidability.md",
+      "summary": "Six-phase transcription-and-siting plan; 7.25h estimate; dependency waves [[1,2,5],[3],[4],[6]]."
+    }
+  ]
+}
