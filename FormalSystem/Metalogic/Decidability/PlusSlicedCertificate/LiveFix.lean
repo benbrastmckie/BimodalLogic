@@ -166,23 +166,46 @@ theorem snceLiveAt_mono (G : PlusSlicedCertificate Γ Del) {X Y : Finset G.TPos}
 
 /-! ## The hoisted inner fixpoint
 
-`untlLive X g e` and `snceLive X g e` depend only on `(X, g, e)` — not on the vertex. The
-contractions below nevertheless evaluated them inside a filter over every `v ∈ X`, so the same
-inner fixpoint was recomputed once per vertex. The table below computes it once per
-*closure member* instead, and the two `_eq` lemmas make the change unobservable: the
-characterizations `mem_fwdLiveStep` / `mem_bwdLiveStep` are stated in terms of `untlLiveAt` /
-`snceLiveAt` exactly as before.
+`untlLive X g e` and `snceLive X g e` depend only on `(X, g, e)` — not on the vertex. A
+contraction can therefore evaluate them either inside its filter, once per `v ∈ X`, or once per
+*closure member* into a table the filter then reads. `untlTable` / `snceTable` take the second
+route, and `fwdLiveStep` / `bwdLiveStep` below read them through `untlLiveAtTab` /
+`snceLiveAtTab`.
+
+Nothing outside this section can observe which route is taken. `untlLiveAtTab_eq` /
+`snceLiveAtTab_eq` are unconditional — no side condition beyond closure membership — so the
+table lookup and the direct clause agree everywhere they are used. That is why
+`mem_fwdLiveStep` / `mem_bwdLiveStep` are stated in the `untlLiveAt` / `snceLiveAt` vocabulary:
+downstream code reads the per-vertex clause, and the table is an implementation detail of the
+contraction it never has to know about.
 
 The table is a `Finset.image`, not a `Finset.toList` traversal: `Finset.toList` is
 noncomputable, and the whole of this stack faces a kernel `decide`.
 
-The table form does evaluate the inner fixpoint eagerly at **every** table member, where the
-per-vertex form short-circuits at a vertex whose label carries no eventuality at all. That is
-still a net win, and the reason is a counting one rather than a hope: the eager count is
-`|closure|`, the short-circuiting count is at worst `|X| · |closure|`, and `|X|` — the vertex
-set — is the larger of the two by the factor this whole fix is about. The per-formula
-short-circuit itself is preserved: `untlLiveAtTab`'s `_ => true` arm still costs nothing at a
-closure member of the wrong shape.
+### What the table shape is measured to buy
+
+The two shapes have been A/B'd against one unchanged build, under the kernel, at both of the
+kernel obligations this development pays — `TotalEdge.certA`'s backward liveness fixpoint and the
+small embedded witness's `liveAt` cardinality in `Examples.lean`. The record, with raw per-run
+timings, is `specs/evidence/phase5-hoist-kernel-ab/`.
+
+**Under the kernel the two shapes are neutral**: the table is within a few per cent of the
+per-vertex clause at both sites, in both directions, which is inside the run-to-run spread. The
+reason is that the kernel's whnf cache already removes most of the per-vertex duplication, so
+there is little left for a table to remove. A counting argument — eager cost `|closure|` against
+a short-circuiting cost of at worst `|X| · |closure|` — predicts a win proportional to `|X|`, and
+the measurement does not show one. The counting argument describes the *evaluation* the two
+shapes request; it does not describe what the kernel charges for it.
+
+**Where the table does win is `#eval`**, which has no such cache: 5.4x at the hard certificate.
+That is the interactive path, used for fixture work, and it is a real margin rather than a
+few-per-cent one. Against it, `#eval` at the small embedded witness is about 25 % slower under
+the table, because evaluating the inner fixpoint eagerly at every table member dominates when the
+fixpoint itself is cheap; the absolute cost there is around 0.2 s, so the regression is immaterial
+in wall-clock terms.
+
+The per-formula short-circuit is preserved either way: `untlLiveAtTab`'s `_ => true` arm costs
+nothing at a closure member of the wrong shape.
 -/
 
 /-- The inner forward fixpoint as a total function of the formula, `∅` off the `untl` shape. The
