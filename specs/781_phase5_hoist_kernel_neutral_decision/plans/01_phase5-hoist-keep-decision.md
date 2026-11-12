@@ -1,7 +1,7 @@
 # Implementation Plan: Task #781
 
 - **Task**: 781 - Decide whether the Phase 5 inner-fixpoint hoist in LiveFix.lean should stay
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: None (no research artifact for this round; see Overview)
@@ -167,7 +167,7 @@ with a narrower evidence base, stated as such.
 
 Phases within the same wave can execute in parallel; this plan's phases form a strict chain.
 
-### Phase 1: Close the Kernel Measurement Gap [NOT STARTED]
+### Phase 1: Close the Kernel Measurement Gap [COMPLETED]
 
 **Goal**: Produce the datapoint the existing evidence lacks — a zero-rebuild kernel A/B of the
 two clause shapes at the small embedded witness — and reconfirm the certA kernel A/B on the
@@ -175,36 +175,36 @@ current tree, so the decision rule is applied to complete evidence rather than t
 
 **Tasks**:
 
-- [ ] Confirm the import closure is built, so the A/B is genuinely zero-rebuild. Run
+- [x] Confirm the import closure is built, so the A/B is genuinely zero-rebuild. Run
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.PlusSlicedCertificate`.
       Prefer the plain foreground `timeout 1800 <guard call>` form with the Bash tool `timeout`
       parameter raised to `600000`; if it does not fit one call, detach it as a shell-level
       background job and block on it with the bounded single-call idiom from
       `context/patterns/bounded-build-waiter.md`. Never `Bash(run_in_background: true)`.
-- [ ] Create `specs/evidence/phase5-hoist-kernel-ab/ab-new.lean`: a standalone file importing
+- [x] Create `specs/evidence/phase5-hoist-kernel-ab/ab-new.lean`: a standalone file importing
       `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` that re-states, under the
       library's own current (table) clause shape, both kernel obligations — the certA backward
       fixpoint and the small embedded witness's `liveAt` cardinality — each closed `by decide`.
-- [ ] Create `specs/evidence/phase5-hoist-kernel-ab/ab-old.lean`: the same two obligations
+- [x] Create `specs/evidence/phase5-hoist-kernel-ab/ab-old.lean`: the same two obligations
       against a locally defined OLD-shape mirror. Build the mirror from the library's surviving
       `untlLiveAt`/`snceLiveAt` (the pre-hoist clause, still live in `LiveFix.lean`): define
       `fwdLiveStep`/`bwdLiveStep` analogues filtering with `G.untlLiveAt X v ψ = true` /
       `G.snceLiveAt X v ψ = true` directly, take `Nu.gfp'` over each, intersect for the `liveT`
       analogue, and restate both obligations against it. Record in the file header exactly which
       library declarations are mirrored and at which commit.
-- [ ] Acquire the shared build lock for the whole measurement, following
+- [x] Acquire the shared build lock for the whole measurement, following
       `scripts/check-evidence-probes.sh`'s SHARED `.lake` LOCK block: open
       `$REPO_ROOT/.lake/build-guard.lock`, try `flock -n`, fall back to an announced bounded
       `flock -w 600`, hold the fd to exit. A timing run taken without the lock is not a result.
-- [ ] Time three runs of each file: `lake env lean specs/evidence/phase5-hoist-kernel-ab/ab-old.lean`
+- [x] *(deviation: altered — three passes per arm were taken as written, then a 10-pass-per-arm batch was added under the same lock and build because the 3-pass medians proved to be inside the ~20 % within-arm spread; both batches are recorded in the README)* Time three runs of each file: `lake env lean specs/evidence/phase5-hoist-kernel-ab/ab-old.lean`
       and `... /ab-new.lean`. Record every individual run, not only the medians. If any run
       reports `object file '...' does not exist`, discard the whole batch as an environment
       failure and re-run once the competing build has finished — never record it as a result.
-- [ ] Write `specs/evidence/phase5-hoist-kernel-ab/README.md` holding the raw per-run numbers,
+- [x] Write `specs/evidence/phase5-hoist-kernel-ab/README.md` holding the raw per-run numbers,
       the medians, the two ratios `r_certA` and `r_witness`, the toolchain and commit the
       measurement was taken at, and an explicit statement that both shapes ran against one
       unchanged build.
-- [ ] Record an issue-log entry for this phase (`issue-record.sh`, `--phase plan` superseded by
+- [x] Record an issue-log entry for this phase (`issue-record.sh`, `--phase plan` superseded by
       `--phase implement`), including an explicit `kind: win` or `kind: issue` as warranted; if
       genuinely nothing arose, attest that in the handoff prose rather than recording nothing.
 
