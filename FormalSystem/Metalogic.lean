@@ -21,6 +21,7 @@ import FormalSystem.Metalogic.Deterministic
 import FormalSystem.Metalogic.QTime
 import FormalSystem.Metalogic.ConvexConsequence
 import FormalSystem.Metalogic.ZTimeProvability
+import FormalSystem.Metalogic.ZTimeSubstitutionBridge
 import FormalSystem.Metalogic.NamingRules
 import FormalSystem.Metalogic.AuxiliaryAtoms
 import FormalSystem.Metalogic.LCExtension

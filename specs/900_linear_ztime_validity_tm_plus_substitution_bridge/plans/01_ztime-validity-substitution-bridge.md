@@ -218,20 +218,20 @@ complete enumerated set of modules that resolve `isBoxFree`.
 
 ---
 
-### Phase 2: Land `FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` [NOT STARTED]
+### Phase 2: Land `FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` [COMPLETED]
 
 **Goal**: all five declarations exist, compile sorry-free, and are reachable from the library root;
 the import-graph gate and the commit-blocking line-count surface are both green in this same phase.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` with the five-line Apache
+- [x] Create `FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` with the five-line Apache
       copyright header this tree uses verbatim (copy the block from
       `Separation/Defs.lean`), then the four imports, in this order and no others:
       `FormalSystem.Metalogic.StrongCompleteness`, `FormalSystem.PlusLanguage.Substitution`,
       `FormalSystem.Semantics.IntTransfer`,
       `FormalSystem.Metalogic.Expressiveness.Separation.Defs`.
-- [ ] Write the module docstring as the first command after the imports (the header linter requires
+- [x] Write the module docstring as the first command after the imports (the header linter requires
       this ordering). It must state, in its own prose: what the two-step bridge is; that the
       box-free hypothesis is load-bearing because `IntTruth`'s `box` arm is deliberately degenerate,
       and may never be weakened, defaulted, or discharged by a `simp` lemma; and the ω-word /
@@ -241,35 +241,46 @@ the import-graph gate and the commit-blocking line-count surface are both green 
       "the PLTL bridge". Cite `reynolds2001` (the BibKey in `references.bib`), Lemma 7 Claim 1,
       p. 1030. State in one sentence that the module is not a formalization of any part of that
       paper's §§7–15. Reference no task number anywhere in the file.
-- [ ] Open `namespace FormalSystem.Metalogic` and the five namespaces the pinned block below uses.
-- [ ] Transcribe the five declarations with the bodies recorded verbatim in the research report's
+- [x] Open `namespace FormalSystem.Metalogic` and the five namespaces the pinned block below uses.
+- [x] Transcribe the five declarations with the bodies recorded verbatim in the research report's
       Recommendation 4, in the report's order: `wordOf`, `truthAt_iff_intTruth_of_boxFree`,
       `validZTime_of_boxFree_intTruth`, `plusDerivable_substPlus_of_validZTime`,
       `plusDerivable_substPlus_of_boxFree_intTruth`. Their signatures must match
       `## Lean Challenge Statements` below character-for-character modulo whitespace. Note the arm
       order in `isBoxFree`: its `untl`/`snce` arms read `isBoxFree φ && isBoxFree ψ`, the *second*
       constructor argument first, which is why `hbf.1` feeds `ih2` and `hbf.2` feeds `ih1`.
-- [ ] Give each of the four theorems (and `wordOf`, if the convention covers definitions) a doc
+- [x] Give each of the four theorems (and `wordOf`, if the convention covers definitions) a doc
       comment carrying a `Paper: — (reason)` line — the shape C15's second assertion requires for a
       ledger row whose Paper label is `—`. This is cheaper to write now than to retrofit in Phase 3.
-- [ ] Build the module scoped and confirm zero diagnostics.
-- [ ] Re-read `FormalSystem.lean` immediately before regenerating it (sibling task live), then
+- [x] Build the module scoped and confirm zero diagnostics.
+- [x] Re-read `FormalSystem.lean` immediately before regenerating it (sibling task live), then
       regenerate the library root:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- exe mk_all --lib FormalSystem`.
       If the guard refuses a non-`build` subcommand, fall back to `lake exe mk_all --lib FormalSystem`
       and note the bypass. Confirm the diff is exactly one added `import` line.
-- [ ] Add `import FormalSystem.Metalogic.ZTimeSubstitutionBridge` to `FormalSystem/Metalogic.lean`,
+      *(deviation: altered — the guard accepted the `exe mk_all` subcommand, so no bypass was
+      needed, but it relayed `exit_status=1`: `mk_all` signals "file was updated" with a nonzero
+      status (its CI-check convention), printing `Updating 'FormalSystem.lean'`. Treated as success
+      on independent evidence rather than on the exit code: the diff is exactly one added `import`
+      line, and `diff` of the root's sorted import list against the sorted module set found under
+      `FormalSystem/` matches exactly at 756 = 756.)*
+- [x] Add `import FormalSystem.Metalogic.ZTimeSubstitutionBridge` to `FormalSystem/Metalogic.lean`,
       beside the `ZTimeProvability` and `AuxiliaryAtoms` lines. Add **no** prose bullet to that
       file's module docstring (see Decisions: a SORRY-FREE bullet there would create a second,
       independent C14 obligation and is a C18 duplication source).
-- [ ] Run `bash scripts/check-metalogic-cycles.sh` and confirm all three assertions PASS, exit 0.
-- [ ] Run `bash scripts/typst-sync-check.sh --counts-only`; on the expected drift (one new file,
+- [x] Run `bash scripts/check-metalogic-cycles.sh` and confirm all three assertions PASS, exit 0.
+- [x] Run `bash scripts/typst-sync-check.sh --counts-only`; on the expected drift (one new file,
       ~120 new lines) run `bash scripts/typst-sync-check.sh --fix` and stage
       `typst/generated/status.typ` in this same phase's commit. This surface is enforced by
       `.githooks/pre-commit` and cannot be deferred to Phase 3.
-- [ ] Run `bash scripts/check-copyright-headers.sh --strict FormalSystem` (or the invocation its
+- [x] Run `bash scripts/check-copyright-headers.sh --strict FormalSystem` (or the invocation its
       `--help` documents) and confirm the new file passes.
-- [ ] Commit the phase as one atomic change (see Commit Mode).
+      *(deviation: altered — the script supports neither `--help` nor `--strict`; `--help` emits
+      `grep: : No such file or directory` noise and the bare invocation already roots at
+      `FormalSystem`. Ran `bash scripts/check-copyright-headers.sh`: exit 0, `conforming: 756`,
+      `nonconforming: 0`, `duplicate: 0`, `missing: 0` — the new file is inside that conforming
+      count, since the total rose from 755 to 756 with this module.)*
+- [x] Commit the phase as one atomic change (see Commit Mode).
 
 **Timing**: 1.25 hours
 
@@ -290,6 +301,17 @@ FormalSystem.lean`. If the gate reports a surplus upward edge, extend the allowl
 `scripts/check-metalogic-cycles.sh` in this same phase and add that script to the phase's file list
 — per the equality-not-containment mechanism of its Assertion B, a correct import can still
 produce surplus.
+
+**Scope Hypothesis outcome (measured at implementation):** two of three figures confirmed, one
+overshot. (a) `wc -l` on the new module is **166**, not the hypothesized ~120 — a 38% overshoot
+located entirely in the module docstring, which carries the three mandated prose obligations (the
+two-step bridge, the load-bearing box-free hypothesis, and the ω/Z asymmetry plus the §§7–15
+disclaimer) at 74 lines; the five declarations and their doc comments account for the remaining 92.
+No proof body grew. (b) The four-import set passes `scripts/check-metalogic-cycles.sh` at exit 0
+with all three assertions PASS, run *after* the `FormalSystem/Metalogic.lean` edit — the unmeasured
+edit the hypothesis flagged introduced **no** surplus upward edge, so no allowlist extension was
+needed and `scripts/check-metalogic-cycles.sh` stayed out of this phase's file list. (c)
+`git diff --stat FormalSystem.lean` is exactly `1 insertion(+)`.
 
 **Files to modify**:
 
@@ -316,6 +338,23 @@ produce surplus.
   them discharge. No path under `.claude/**` or an extension source store is in this task's scope,
   so `bash .claude/scripts/verify-deploy.sh` has nothing of this task's to check; it runs once in
   Phase 4 as a baseline-delta observation only.
+
+**Verification results (measured, this phase):**
+
+| Criterion | Result |
+|-----------|--------|
+| Scoped build `FormalSystem.Metalogic.ZTimeSubstitutionBridge` | PASS — guard `exit_status=0`, `Built … (1.8s)`, `Build completed successfully (2412 jobs)`; 0 `error:`, 0 `warning`, 0 `sorry` across both captured streams |
+| Full-library `lake build` (phase-end gate) | PASS — guard `exit_status=0`, `Build completed successfully (2975 jobs)`; 0 `error:`, 0 `warning`, 0 `uses 'sorry'`; `.olean` newer than source for all three touched modules |
+| Axiom pins (`lean_verify`) | `plusDerivable_substPlus_of_validZTime` and `plusDerivable_substPlus_of_boxFree_intTruth` and `validZTime_of_boxFree_intTruth`: exactly `[propext, Classical.choice, Quot.sound]`. `truthAt_iff_intTruth_of_boxFree` and `wordOf`: `[propext]` only — **tighter than the `pcq` the research measured for the headline pair, so Phase 3's ledger rows for these two must not claim `pcq`**. No `sorryAx`, no non-standard axiom on any of the five |
+| `scripts/check-metalogic-cycles.sh` | PASS, exit 0 — all three assertions PASS (1 directory-level cycle; upward import set exactly the recorded 10 lines; no syntax→semantics import) |
+| `scripts/typst-sync-check.sh --counts-only` | PASS, exit 0 after `--fix` (pre-fix drift was the expected `755→756` file count and `405359→405526` line count, plus a mechanical `stamp-commit` advance to `743a57de7`) |
+| `scripts/check-copyright-headers.sh` | PASS, exit 0 — `conforming: 756`, `nonconforming: 0` |
+
+Scope note on the `full` tier: the gates above are the Lean-correctness half of this phase's
+declared `full` set, exactly as this phase's own tier text provides for; Phase 4's complete
+battery (including the `verify-deploy.sh` baseline-delta observation) is the other half and is
+**not** this dispatch's scope. The dispatch's batch-gate-deferral directive constrains the plan's
+FINAL phase (Phase 4), not this one, so nothing was deferred here under that directive.
 
 ---
 
