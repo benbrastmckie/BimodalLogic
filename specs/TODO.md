@@ -101,21 +101,6 @@ next_project_number: 926
 
 ## Tasks
 
-### 907. Redeploy-stale-claude-tree
-- **Effort**: small
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Topic**: agent-system
-- **Dependencies**: None
-- **Parent**: Task 901
-- **Research**: [907_redeploy-stale-claude-tree/reports/01_redeploy-stale-claude-tree.md]
-- **Plan**: [907_redeploy-stale-claude-tree/plans/01_redeploy-stale-claude-tree.md]
-- **Summary**: [907_redeploy-stale-claude-tree/summaries/01_redeploy-stale-claude-tree-summary.md]
-
-**Description**: Regenerate the deployed .claude/ tree in BimodalLogic, which two dispatches reported stale relative to the source store for six extensions (core, formal, lean, literature, memory, typst). Run deploy-headless.sh under the bounded-wait idiom (timeout 540, Bash tool timeout parameter 600000, per context/patterns/external-process-wait.md Rule 1), then verify with verify-deploy.sh and confirm the per-extension staleness warning from skill-base.sh no longer fires. Never hand-patch a deployed .claude/** file to clear the warning: that masks the divergence instead of fixing it. Neither reporting dispatch relied on a stale deployed command, so no prior work needs redoing. Recurrence of the condition addressed by closed task 715.
-
----
-
 ### 890. Ghr lemma 10 2 3 case5 erratum reference manual
 - **Effort**: medium
 - **Status**: [RESEARCHED]
@@ -296,37 +281,6 @@ NAMING CONSTRAINT, which has already cost one round elsewhere: gate C26 and C16'
 
 ---
 
-### 832. Reclaim opencode old and data partials
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Topic**: repo-hygiene
-- **Dependencies**: None
-- **Research**: [832_reclaim_opencode_old_and_data_partials/reports/01_reclaim-opencode-old-data-partials.md]
-- **Plan**: [832_reclaim_opencode_old_and_data_partials/plans/01_reclaim-opencode-old-data-partials.md]
-- **Summary**: [832_reclaim_opencode_old_and_data_partials/summaries/01_reclaim-opencode-old-data-partials-summary.md]
-
-**Description**: Two local-disk reclamations found by the 2026-11-02 review. Both are LOCAL-DISK ONLY: every path below is gitignored with zero tracked files, so nothing here produces a commit and nothing is recoverable from git afterwards. That asymmetry is the whole reason item 2 is a user decision rather than an action.
-
-STANDING INSTRUCTION -- RE-VERIFY BEFORE DELETING. Re-check sizes, mtimes and `git ls-files` for each path before removing anything. Never delete on the strength of this description alone.
-
-ITEM 1 -- `.opencode_OLD/`: SAFE TO DELETE (62 MB). Verified at filing: gitignored at `.gitignore:105`, zero tracked files; mtime 2026-05-07 against `.opencode/`'s 2026-05-14; `diff -rq .opencode .opencode_OLD` shows 38 entries differing, mostly `node_modules` plus a `python` extension present in the live `.opencode/` and absent here. It is strictly a stale subset of the live tree. Confirm the subset relation once more (`diff -rq`), then delete. No commit follows.
-
-ITEM 2 -- `data/`: USER DECISION, NOT AN AUTOMATIC DELETE (2.3 GB total). Verified at filing: gitignored at `.gitignore:107`, zero tracked files. Composition: `proof_steps.jsonl` 1.6 GB, plus two abandoned checkpoints, `bmlogic-c8-clean.jsonl.partial` (375 MB) and `.checkpoint.partial` (15 MB).
-  - The two `.partial` files (390 MB combined) are the unambiguous candidates -- abandoned checkpoints of an interrupted run.
-  - `proof_steps.jsonl` is NOT a safe unilateral delete: it feeds the training-dataset pipeline consumed by the separate BimodalHarness repository (private, per `README.md`'s Related Projects section). Removing it may destroy a dataset that is not reproducible without re-running the generator. ASK before touching it; do not treat its size as justification.
-
-NOT IN SCOPE -- the rest of the top-level directories were audited and are each intentional or harmless, so do not sweep them: `Boneyard/` (5.4 MB, 225 TRACKED files, intentional and justified by `Boneyard/README.md`, ADR-009 retention and ADR-005 single-archive; `#exit`-guarded, not a Lake root -- DO NOT DELETE), `research/` (`.gitignore:90`), `training/` (:91), `other/` (:109, single `dana.md`), `build/` (:3, stray LaTeX aux output), `.memory/` (:76), `.agent-logs/` (:108), `.playwright-mcp/` (:118), `.opencode/` (:75, the LIVE tree).
-
-ALSO NOT IN SCOPE -- documentation staleness. `CHANGELOG.md` is roughly six weeks stale (last touched 2026-09-21 against a 2026-11-02 last commit) and `FormalSystem/Metalogic/README.md` cites `completeness_discrete`, a name that no longer exists (renamed to the ZTime form; the README admits the discrepancy in prose). Both fold into the already-filed documentation-polish record (177), which is last in the programme. Do NOT fix them here and do not file them separately.
-
-ACCEPTANCE. `.opencode_OLD/` removed after a confirming `diff -rq`; a recorded decision on the two `data/*.partial` files; `proof_steps.jsonl` untouched unless the user says otherwise. No commit is expected from this task -- if `git status` shows anything staged after it, something outside scope was touched.
-
-FILE SCOPE: `.opencode_OLD/`, `data/` (inspection and the two `.partial` files only).
-
-PROVENANCE: `specs/reviews/review-2026-11-02.md`, Low Priority Issues section.
-
----
-
 ### 831. Dense time certificate dichotomy gate
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -354,46 +308,6 @@ RELATION TO THE TABLEAU SPINE. This is deliberately OFF the spine (428 / 429 / 4
 ACCEPTANCE. A report recording (a) the dichotomy as stated in Lean, (b) the attempt and its outcome -- proved, refuted, or open with the obstruction named -- and (c) a verdict on whether L-R3 is worth filing as an implementation front at all. No Lean needs to land beyond the statement itself and whatever the attempt produces.
 
 FILE SCOPE: research-only; no committed Lean required beyond a probe. Any probe goes under this task's own `specs/` directory, not into `FormalSystem/`.
-
-PROVENANCE: `specs/reviews/review-2026-11-02.md`, Medium Priority Issues section.
-
----
-
-### 830. Generalize decidable validztime finite premises
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Research**: [830_generalize_decidable_validztime_finite_premises/reports/01_generalize-finite-premise-decidability.md]
-- **Plan**: [830_generalize_decidable_validztime_finite_premises/plans/01_generalize-finite-premise-decidability.md]
-- **Summary**: [830_generalize_decidable_validztime_finite_premises/summaries/01_generalize-finite-premise-decidability-summary.md]
-
-**Description**: Generalize `Compression.decidableValidZTime` from the empty-premise case to arbitrary finite premises.
-
-CLASSIFICATION: IMPLEMENTATION, bounded residue, NO OPEN MATHEMATICS. This is the one genuinely new tractable piece of decidability work the 2026-11-02 review found. It is NOT open research and must not be re-described as such.
-
-SCOPE LIMIT, STATED FIRST SO IT IS NOT MISREAD. This strengthens the BASE-LANGUAGE result and does **not** advance the L+ aim (`Decidable (PlusValidZTime phi)`, ROADMAP Stage 1). `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/README.md:132` records why: `ValidZTime` is stated for `FormalSystem.Syntax.Formula`, which carries no stability operator, and the durable scope sentence lives in `BiLasso/Assembly.lean`'s docstring. Do not let a plan or report claim this moves Stage 1.
-
-STANDING INSTRUCTION -- RE-VERIFY BEFORE CITING. Re-read the README and re-grep every declaration name below before citing it.
-
-VERIFIED AT FILING (2026-11-02). `Compression/README.md:114-129` ("## What is out of scope", "General finite-premise consequence") enumerates the residue and bounds it. Already stated at arbitrary `Gamma Del`, so NOT part of the work: `WitnessFamily.Refutes`, `WitnessFamily.refutes_of_certifies`, `WitnessFamily.joint_countermodel`, `exists_labelledLasso_of_history_realized`, `compressionBound`, and `WitnessFamily.decidableCertifies` with its four component instances.
-
-THE RESIDUE IS EXACTLY THREE ITEMS (README:124-127):
-1. The consequence analogue of `validZTime_iff_validInt`, for the entry point's carrier normalization.
-2. `WitnessFamily.Target`'s premise clause.
-3. `Enumerate.lean`'s phi-specializations: `closureSubsetsOf`, `rawLabelledLassos`, `IsLabelledLasso`, `boundedLassos`, `cands`.
-
-THE README'S OWN CAVEAT, CARRIED FORWARD VERBATIM IN SUBSTANCE: "That residue is bounded and enumerated, and it is unproved -- the consequence-form normalization has never been written, so the general form is not known to compile." Treat item 1 as the risk-bearing item. If it does not go through, report that as the finding rather than forcing items 2-3 around it.
-
-WHAT THIS CLOSES. The gap `decidableSemanticConsequenceNil` leaves -- it covers the empty-premise case only. The obstruction is narrower than it looks (README:116-121): a context-conjunction deduction theorem, which this tree does NOT have, is what the *reduction* route (`Gamma |= sigma` from `|= AND Gamma -> sigma`) would need; the *direct* route needs none, because `SemanticConsequenceIn` unfolds to local consequence at a point. Take the direct route.
-
-ALREADY SPENT, DO NOT RE-DERIVE. `Decidable (Derivable .ZTime [] phi)` has already landed as `decidableDerivableZTime` in `FormalSystem/Metalogic/ZTimeProvability.lean`. That corollary is not available as this task's deliverable.
-
-NOT IN SCOPE. A usable executable: `cands` is astronomically large and [GKWZ] section 6.5 gives an EXPSPACE-hardness lower bound for `PTL x S5`, so the cost is the literature's own (README:130-131, `Assembly.lean` docstring). Do not file performance work against it here.
-
-ACCEPTANCE. The general finite-premise form is stated and proved sorry-free, or the attempt is reported with the specific item that blocked it; `lake build` green; axioms of any new headline declaration pinned to exactly `[propext, Classical.choice, Quot.sound]`; no regression in `scripts/check-module-invariants.sh`.
-
-FILE SCOPE: `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/` (README plus the normalization entry point), `FormalSystem/Metalogic/Decidability/WitnessFamily/Enumerate.lean`, `FormalSystem/Metalogic/Decidability/WitnessFamily/Target.lean` (verify this path before relying on it).
 
 PROVENANCE: `specs/reviews/review-2026-11-02.md`, Medium Priority Issues section.
 
@@ -432,112 +346,6 @@ ACCEPTANCE. A second CI run on an unchanged tree restores from cache rather than
 FILE SCOPE: `.github/workflows/ci.yml`, `lakefile.toml`.
 
 PROVENANCE: `specs/reviews/review-2026-11-02.md`, High Priority Issues and Medium Priority Issues sections.
-
----
-
-### 821. State counter archive numbering reconciliation
-- **Effort**: low
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Topic**: repo-hygiene
-- **Dependencies**: None
-- **Parent**: Task 819
-- **Plan**: [821_state_counter_archive_numbering_reconciliation/plans/01_counter-archive-numbering-reconciliation.md]
-- **Summary**: [821_state_counter_archive_numbering_reconciliation/summaries/01_counter-archive-numbering-reconciliation-summary.md]
-
-**Description**: Reconcile specs/state.json's next_project_number against the five archived rows carrying stray high numbers, so that validate-state.sh --deep Check 12 passes and state-write.sh --allocate-into stops refusing.
-
-OBSERVED STATE, measured and not inferred. next_project_number is 821. Five archived rows carry 949, 953, 992, 998 and 1054 -- all above the counter. Check 12 of validate-state.sh --deep fails on exactly this relation, so the validator exits 1 repo-wide, before and after any unrelated task's writes. No archived row carries 820 or 821, so no duplicate task number has been created and nothing is corrupt today; the failure is a counter-versus-archive ordering invariant, not a collision.
-
-TWO CONCRETE CONSEQUENCES, both already measured during an evidence-probe round. (1) state-write.sh --allocate-into refuses outright, forcing callers onto the literal fallback route commands/task.md Step 6 uses (re-read next_project_number immediately before the write, set next+1). That fallback works but it is a bypass of the allocator's own concurrency protection, so every task creation in this repo currently runs without it. (2) A permanently red validate-state.sh --deep masks any future real finding there: a second, genuine defect would not change the exit code and would be invisible to anyone who reads only the exit status.
-
-THE DECISION THIS TASK OWNS, which is why this is research-first rather than a mechanical fix. The validator names "reset the counter to 1055" as the repair, but that is only correct if the five high numbers are legitimate history. Determine which of the two readings holds before writing anything:
-(a) The five rows are legitimate archived tasks from a numbering range the counter lost track of -- in which case the repair is to raise next_project_number above the maximum (1055) and accept the gap from 821, documenting why the gap exists so a future reader does not "fix" it back.
-(b) The five rows are artifacts of a vault operation or an import that renumbered live tasks without renumbering the archive -- in which case raising the counter to 1055 bakes a mistake into the numbering permanently, and the right repair is to the archived rows instead.
-Read the archived directories and their CHANGE_LOG entries to establish which. State the evidence for the reading chosen, and do not raise the counter before that reading is settled.
-
-GUARDRAILS. No live task is renumbered under any reading: renumbering a live task invalidates the task-number references in its own specs/ artifacts and in git history. The archive is append-only history -- if reading (b) holds, propose the archived-row correction as its own gated step with its evidence, never apply it in passing. Whatever lands, validate-state.sh --deep must be run before and after and both exit codes reported, so the change is shown to fix Check 12 without breaking another check. Leave the fallback allocation route in place and working; this task may restore --allocate-into but must not remove the fallback that callers currently depend on.
-
-OUT OF SCOPE. The allocator's own concurrency design and git-commit-scoped.sh's cross-repository behaviour are separate standing records and are not touched here.
-AMENDED 2026-11-03 (the reading is settled; evidence measured, not inferred). The two readings above are resolved in favour of (a) IN SUBSTANCE but NOT in remedy: the five rows are legitimate history, AND raising the counter is the wrong repair. Both halves are measured below.
-
-EVIDENCE THAT THE FIVE ROWS ARE LEGITIMATE HISTORY (reading (a)'s premise, confirmed):
-  - Four of the five carry real archived directories with real artifacts: specs/archive/{949,953,992,1054}_*. Row 998 (fmp_redesign_strict_temporal) has NO directory.
-  - They are NOT duplicates of renumbered live tasks, which is reading (b)'s literal mechanism: each of the five project_name values appears exactly once across archived_projects and completed_projects. Reading (b) as stated did not happen.
-  - They predate the current repository layout. specs/archive/1054_splitting_seed_consistent/.return-meta.json names Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean -- a path under Theories/, which does not exist in the current tree (FormalSystem/). Its started_at is 2026-05-01. The sibling directories carry the superseded reports/research-00N.md artifact naming rather than the current MM_{short-slug}.md convention. Created dates run 2026-02-28 to 2026-03-19; archived 2026-05-18. Row 1054's status is orphan_archived -- swept in as an orphan, not archived through the lifecycle.
-
-EVIDENCE THAT RAISING THE COUNTER IS NEVERTHELESS THE WRONG REPAIR (the half reading (a) does not anticipate): the 844-1054 range is SPARSE, not occupied. Zero archived directories lie between 844 and 1054 apart from those four isolated outliers, against 86 directories densely filling 700-843. The counter never continuously occupied that range, so "a numbering range the counter lost track of" overstates it: five numbers are in use up there, and roughly two hundred are free.
-
-CONSEQUENCE, MEASURED. Raising the counter past the archive max was applied, and it cost real numbering: an orchestration run's conclusion stage allocated 1055 and 1056 for two follow-up tasks whose natural numbers were 844 and 845. Both were renumbered by hand immediately afterwards (no artifacts had been written, no inbound dependency or parent edge existed, and the commit messages named no number, so the renumber was safe); they are now 844 and 845, and the counter sits at 1055, the minimum value satisfying Check 12 given an archive max of 1054. validate-state.sh reports Check 12 PASS, 11 passed / 0 failed. The next allocation will jump to 1055 again, so this is contained, not fixed.
-
-THE DEFECT IS THE BOUND'S SHAPE, which neither reading named. state-write.sh --allocate-into refuses any counter not strictly greater than the combined active-plus-archive MAXIMUM. A max-based bound is conservative where a MEMBERSHIP-based bound is precise: the invariant that actually matters is that an allocated number is not already in use, and 844 and 845 were free -- allocating them collided with nothing. A smallest-unused-number allocation satisfies the real invariant, keeps numbering dense, and needs no change to the archive.
-
-TWO CANDIDATE REMEDIES, for this record to choose between with its own evidence:
-  (i) Make the allocation bound membership-based (smallest unused number across active and archive) rather than max-based. Touches agent-system/extensions/core/scripts/state-write.sh and validate-state.sh's Check 12, which must stay in sync per that script's own header; lands in the source store, never hand-authored under .claude/**. Leaves the archive untouched, which this record's own guardrail prefers.
-  (ii) Relocate the five pre-reset-era rows to specs/vault/, which state-write.sh ALREADY excludes from the allocation bound for exactly this recycling rationale. This is a migration on append-only history, so under this record's guardrail it is a gated step with its evidence, never applied in passing.
-Remedy (i) is the cheaper and more durable of the two and does not touch history; (ii) is recorded because the exclusion mechanism it uses was designed for this case and should be considered on its merits rather than passed over silently.
-
-UNCHANGED BY THIS AMENDMENT: the guardrail that no live task is renumbered under any reading still governs every task that has written artifacts or is cited by number. The two tasks renumbered above were minutes old, artifact-free and uncited, which is why they were exempt; that exemption does not generalise.
-
----
-
-### 818. Wrap directory rollup tables files lines cols
-- **Status**: [COMPLETED]
-- **Task Type**: markdown
-- **Topic**: repo-hygiene
-- **Dependencies**: None
-- **Parent**: Task 744
-- **Research**: [818_wrap_directory_rollup_tables_files_lines_cols/reports/01_wrap-directory-rollup-tables.md]
-- **Plan**: [818_wrap_directory_rollup_tables_files_lines_cols/plans/01_wrap-directory-rollup-tables.md]
-- **Summary**: [818_wrap_directory_rollup_tables_files_lines_cols/summaries/01_wrap-directory-rollup-tables-summary.md]
-
-**Description**: Wrap the four directory-rollup inventory tables that need the cols=files-lines column set
-
-MEASURED, do not re-derive. A prior sweep wrapped 23 READMEs under FormalSystem/ in BEGIN GENERATED inventory markers. Four READMEs were demoted from the clean-fit tier to report-only for one shared reason, distinct from every other deferral: their rows are SUBDIRECTORY rollups carrying numeric line totals, and the default cols=lines column set renders a subdirectory row as an em-dash placeholder, so wrapping them as-is would silently destroy the totals.
-
-SCOPE, with the measured totals that must survive:
-- FormalSystem/Metalogic/Expressiveness/README.md -- EFGames/ 11,800, GameTransfer/ 9,507, Kamp/ 77,714, Separation/ 926
-- FormalSystem/Metalogic/WeakCanonical/README.md -- same shape, five subdirectory rows with numeric totals
-- FormalSystem/Metalogic/Expressiveness/Kamp/README.md -- a `| | Files | Lines |` rollup, i.e. cols=files-lines shape with an empty leading header cell
-- FormalSystem/Metalogic/Expressiveness/Kamp/NfMultiAnchorBridge/README.md -- same empty-header-cell rollup shape
-
-THE WORK IS A HEADER AND OPTION QUESTION, not a row question. Establish against the generator in scripts/check-module-invariants.sh -- by reading its marker option list and exercising it, not from memory -- whether cols=files-lines emits what these four tables need, and what header the wrapped block must carry. A four-column header rewrite is expected for the first two. The two Kamp rollups already carry a files-lines shape but with an empty leading header cell, so confirm whether the generator preserves that cell or requires a named one.
-
-ALSO IN SCOPE: the earlier pass recorded that the `(N files)` phrases appearing inside some descriptions would need re-authoring if the column set changes, since a files count would then be a machine-owned column rather than prose. Resolve that duplication deliberately -- either re-author the prose or state why it stays.
-
-VERIFY, do not assume. Confirm on a scratch copy before committing that every numeric total survives and every hand-written description is preserved byte-for-byte (use a key-sorted before/after diff; alphabetical re-ordering and thousands separators are expected regeneration effects). scripts/check-module-invariants.sh split_row is already escape-aware, so an inline pipe in a description must be written \| to survive. Then demonstrate coverage per newly wrapped block: corrupt one count, confirm INV FAIL names exactly that README, restore via the writer (--emit-inventory, never a pathspec checkout), confirm the diff is empty.
-
-NON-GOALS. No change to the generator algorithm beyond using an option it already supports -- if cols=files-lines turns out not to cover these shapes, REPORT that and stop rather than extending the generator under this task. No Lean source changes. No hand-correction of counts in any table this task does not wrap.
-
----
-
-### 817. Wrap remaining phantom row inventory tables
-- **Status**: [COMPLETED]
-- **Task Type**: markdown
-- **Topic**: repo-hygiene
-- **Dependencies**: None
-- **Parent**: Task 744
-- **Research**: [817_wrap_remaining_phantom_row_inventory_tables/reports/01_wrap-remaining-phantom-row-tables.md]
-- **Plan**: [817_wrap_remaining_phantom_row_inventory_tables/plans/01_wrap-phantom-row-inventory-tables.md]
-- **Summary**: [817_wrap_remaining_phantom_row_inventory_tables/summaries/01_wrap-phantom-row-inventory-tables-summary.md]
-
-**Description**: Wrap the remaining count-carrying inventory tables under FormalSystem/ whose blockers are phantom or missing rows
-
-MEASURED, do not re-derive. A prior sweep wrapped 23 READMEs under FormalSystem/ in BEGIN GENERATED inventory markers and left a measured Tier B bucket unwrapped, each with a named, re-verified blocker. At measurement time 29 of roughly 33 unwrapped Lines-bearing inventory tables under FormalSystem/ were stale, and the INV check in scripts/check-module-invariants.sh was green throughout because it fails only on a STALE WRAPPED BLOCK and never sees an unwrapped one. Wrapping is the opt-in that brings a table under that gate.
-
-SCOPE: the Tier B READMEs whose blocker is a row-set mismatch, not a column-set mismatch:
-- FormalSystem/Metalogic/BXCanonical/Chronicle/README.md -- phantom row HenkinDiscreteChain.lean; 8 live files carry no row
-- FormalSystem/Metalogic/BXCanonical/Quasimodel/README.md -- phantom row EnrichedClosure.lean
-- FormalSystem/Metalogic/Core/RestrictedMCS/README.md -- phantom row Deferral.lean
-- FormalSystem/Metalogic/Expressiveness/Separation/README.md -- 10 phantom .lean rows and 2 phantom subdirectory rows (DedekindZ/, Hierarchy/); the directory now holds only Defs, KampTranslation, SemanticBridge, so the table describes a layout that has moved
-- FormalSystem/Metalogic/Decidability/WitnessFamily/README.md -- upper table is rows=loose-shaped (no subdirectory rows for Compression/, Sharing/); lower table keys rows on Sharing/-prefixed paths the generator would not emit
-- FormalSystem/Metalogic/BXCanonical/README.md -- fits apart from the pinned row ../BXCanonical.lean, which the generator keeps with refreshed numbers; left out of the earlier pass only because the pinned-row path was never exercised against the description-preservation check
-
-PROCEDURE, established and verified by the earlier pass: a phantom row has no file, so its hand-written description has no destination and regeneration drops it. Decide per row whether the description is worth re-homing onto a live module or is simply obsolete, and state the decision -- do not let the generator silently drop prose. Then wrap and regenerate via `bash scripts/check-module-invariants.sh --emit-inventory`, and verify every surviving description byte-for-byte with a key-sorted before/after diff rather than a whole-file diff (alphabetical re-ordering and thousands separators are expected regeneration effects). Note that scripts/check-module-invariants.sh split_row is already escape-aware, so an inline pipe in a description must be written \| to survive.
-
-DEMONSTRATE COVERAGE, do not assume it: for each newly wrapped block, corrupt one count, confirm INV FAIL names exactly that README, restore via the writer (--emit-inventory, never a pathspec checkout, per the shared-worktree discipline), and confirm the diff is empty.
-
-NON-GOALS. No change to the generator column set or algorithm. No Lean source changes. Do not hand-correct counts in any table this task does not wrap -- report it instead, so the recurrence stays visible. The four READMEs whose blocker is a COLUMN-set mismatch (subdirectory rows carrying numeric totals that need cols=files-lines) are deliberately excluded here and belong to their own task.
 
 ---
 
@@ -618,19 +426,6 @@ SOURCE-STORE BOUNDARY. Any candidate under .claude/scripts/ is a deploy artifact
 DELIVERABLE. A per-script determination for every surveyed candidate -- lock added, or explicitly ruled out with the reason stated where a future reader will find it (not only in a commit message). Each script that gains the lock keeps its existing exit-status contract and still passes its own gate. No probe file and no manifest array is touched by this record.
 
 WHAT WOULD MAKE THIS A COMPLETE RESULT EVEN IF NO LOCK IS ADDED. A reasoned finding that some or all remaining candidates genuinely do not need the lock -- because they build rather than read, run only in CI where nothing is concurrent, or never invoke lake at runtime -- is a complete outcome, provided the reasoning is recorded per script. Closing a hazard by establishing it does not apply is a result, not a shortfall.
-
----
-
-### 781. Phase5 hoist kernel neutral decision
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Parent**: Task 716
-- **Plan**: [781_phase5_hoist_kernel_neutral_decision/plans/01_phase5-hoist-keep-decision.md]
-- **Summary**: [781_phase5_hoist_kernel_neutral_decision/summaries/01_phase5-hoist-keep-decision-summary.md]
-
-**Description**: Decide whether the Phase 5 inner-fixpoint hoist in FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean should stay. A zero-rebuild A/B measured it NEUTRAL under the kernel (25.9 s OLD vs 24.4 s NEW on certA's backward fixpoint under decide -- 1.06x, inside variance) and roughly 25 percent WORSE at the small embedded witness, against 5.4x BETTER at certA. It is landed and proved equal via unconditional equality lemmas, so correctness is not at issue; the question is whether its justification (resting on the hard certificate alone) warrants keeping the added decomposition. Evidence: parent task issue log entry iss_1791925368675_oyqhCa, and the A/B method recorded at iss_1791925368699_dlHTwK.
 
 ---
 
@@ -760,19 +555,6 @@ LITERATURE. Part (2) is source acquisition; run with `--lit`.
 SCHEDULING. Wiring into `scripts/check-evidence-probes.sh` collides with the declared file_scope of tasks 720 and 725, and with the two sibling probe tasks filed alongside this one. Run in a separate cycle from each of them.
 
 ACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compiling under `lake env lean` and wired into `scripts/check-evidence-probes.sh`, whose header states whether `StabSaturated` is decidable on mixed germ states and what that does to R2's standing; plus the two Handbook sections present in the Literature index with an index entry. Either half landing without the other is a [PARTIAL], not a completion.
-
----
-
-### 714. Evaluate full labels in sliced certificate
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: Task 716
-- **Research**: [714_evaluate_full_labels_in_sliced_certificate/reports/01_full-labels-sliced-certificate.md]
-- **Plan**: [714_evaluate_full_labels_in_sliced_certificate/plans/01_full-labels-sliced-certificate.md]
-- **Summary**: [714_evaluate_full_labels_in_sliced_certificate/summaries/01_full-labels-sliced-certificate-summary.md]
-
-**Description**: Evaluate removing the TailStable junk-position obstruction at its root by carrying full labels in the sliced certificate. Research report 06_tailstable-backward-conjunct-repair.md established that undischargeable snce positions are determined by the certificate position space posAt, not by the witness family: at target bot-S-bot the closure is {bot S bot, bot} with no state shape, so posAt is the same two-label set for every certificate and LocalCoherentLab forces every label of every certifying family to be empty. Because posAt admits every coherent closure-subset agreeing with slab on state shapes only (atom/box/stab) while temporal obligations are pinned by nothing, carrying FULL labels in the certificate rather than only the state part would make posAt a singleton, so no junk position could exist for either obligation direction and arguably neither liveness filter would be needed. This was option 3 in the repair decision; the chosen repair was option 1 (mirror the filter, landing as TailStableMirror/bwdLiveAt). Option 3 was NOT rejected on the merits, only deferred, because it costs the decidable search that FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean is built around, i.e. most of Stage 2 again. Determine whether the obstruction can be removed at the root this way, with refactoring permitted as needed to obtain the best result. The central question is whether decidability of the certificate check survives full labels, and if not, whether a weaker label refinement makes posAt small enough to drop both filters while keeping the search decidable. Compare against the landed option-1 design: with full labels, both TailStableMirror and the forward filter would become deletable and the symmetric two-filter shape in Stable.lean would collapse. Also settle whether the superset failure mode (the Fixture.cert pre-period, repaired by absorption rather than by any filter) likewise disappears under full labels or survives independently.
 
 ---
 
