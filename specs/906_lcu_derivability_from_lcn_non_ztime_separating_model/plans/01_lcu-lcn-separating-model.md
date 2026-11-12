@@ -498,63 +498,86 @@ that module's own build —
 
 ---
 
-### Phase 3: The Deterministic Soundness Arm in `LCExtension.lean` [NOT STARTED]
+### Phase 3: The Deterministic Soundness Arm in `LCExtension.lean` [COMPLETED]
 
 **Goal**: The non-derivability argument's load-bearing half — `LC_n` valid over the deterministic
 frames, and `ExtDerivation` sound over them — stops being a probe and becomes library code under
 CI, with its axiom profiles pinned.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/LCExtension.lean`,
+- [x] Re-read `FormalSystem/Metalogic/LCExtension.lean`,
       `FormalSystem/Metalogic/Deterministic/Validity.lean`,
       `Tests/BimodalTest/Metalogic/LCExtensionTest.lean` and the probe immediately before editing
       (concurrency note item (1)); the probe lines 40-74 and 140-170 are the source text.
-- [ ] Before adding the import, confirm acyclicity by grep rather than only by build: nothing under
+      *(completed: all four read live before the first edit)*
+- [x] Before adding the import, confirm acyclicity by grep rather than only by build: nothing under
       `FormalSystem/Metalogic/Deterministic/` may import `FormalSystem.Metalogic.LCExtension`.
       (Checked at authoring time: the only importers are `FormalSystem.lean` and the test module.)
-- [ ] Add `import FormalSystem.Metalogic.Deterministic.Validity` beside the module's three existing
-      imports.
-- [ ] Transcribe, VERBATIM from the probe and in this order, into a new `/-! ## Soundness over the
+      *(completed: re-grepped live — `grep -rn "LCExtension" FormalSystem/Metalogic/Deterministic/`
+      returns zero hits; repo-wide importers of `Metalogic.LCExtension` confirmed unchanged at
+      `FormalSystem.lean`, `Tests/BimodalTest.lean`, `Tests/BimodalTest/Metalogic/LCExtensionTest.lean`,
+      the probe, a prior-task probe, `FormalSystem/Metalogic.lean`, `LCExtension.lean` itself, and
+      `PlusLCSchema.lean`)*
+- [x] Add `import FormalSystem.Metalogic.Deterministic.Validity` beside the module's three existing
+      imports. *(completed)*
+- [x] Transcribe, VERBATIM from the probe and in this order, into a new `/-! ## Soundness over the
       deterministic frames -/` section placed directly after `ext_sound_validIn` (append-only
       relative to that arm; do not insert above an existing declaration):
       `lcAnte_iff_lcCons_of_deterministic`, `lcN_plusValidOn_of_deterministic`,
       `isLCAxiom_plusValidDetIn_base`, `ext_sound_detIn`. The signatures are pinned below under
       `## Lean Challenge Statements`; `plan-compliance.md`'s Statement Fidelity clause governs them,
       and `ext_sound_detIn` keeps all three rule flags off exactly as compiled (see Non-Goals).
-- [ ] Reconcile the probe's `open`/namespace context: the probe opens
+      *(deviation: altered — the scoped build flagged the Risks table's own predicted `show`-tactic
+      lint at `lcAnte_iff_lcCons_of_deterministic`'s body (Condition 8, `--wfail`); per that same
+      Risk row's pre-authorized remedy, the `show` line was replaced with two new named `rfl`
+      lemmas, `lcAnte_eq_stab` and `lcCons_eq_dstab`, consumed by `rw` instead — proof content and
+      every other line transcribed verbatim, signatures unchanged)*
+- [x] Reconcile the probe's `open`/namespace context: the probe opens
       `FormalSystem.Metalogic.Deterministic`, `FormalSystem.Metalogic.LCExtension` and
       `FormalSystem.Metalogic.Conservativity`, and declares inside `namespace LCUSeparationProbe`.
       In the library the declarations sit inside `namespace FormalSystem.Metalogic.LCExtension`,
       which already opens `FormalSystem.Metalogic.Conservativity`; add only the `open` the module
       does not already carry, and qualify `PlusValidDetIn`/`DetSat`/`plusValidDetIn_reflectTime`
       rather than widening the module's `open` list if one line suffices.
-- [ ] Give each of the four a docstring in the module's idiom, each with a `Paper:` anchor line
+      *(completed: added `open FormalSystem.Semantics` — needed for the bare `TaskFrame`/
+      `TaskModel`/`WorldHistory` the pinned signatures use and not previously open in this module
+      — and qualified every `PlusValidDetIn`/`plusValidDetIn_reflectTime`/`PlusValidIn.toDet`
+      occurrence with its full `FormalSystem.Metalogic.Deterministic.` path rather than opening
+      that namespace; `DetSat` does not appear in any of the four transcribed statements, so
+      nothing needed qualifying there)*
+- [x] Give each of the four a docstring in the module's idiom, each with a `Paper:` anchor line
       matching the neighbouring `Paper: — (formalization-native; the manuscript states no extended
       proof system)` shape, and each saying what it is for: the collapse computation, `LC_n`'s
       deterministic validity (with the explicit note that `.Base` validity of `lcN` is NOT needed
       for it), the axiom-set discharge over `DetSat .Base`, and the deterministic-class soundness
-      arm as the third arm this module previously lacked.
-- [ ] Add, to the module docstring, (a) the four names under `## Main Results`, and (b) one
+      arm as the third arm this module previously lacked. *(completed)*
+- [x] Add, to the module docstring, (a) the four names under `## Main Results`, and (b) one
       paragraph in the `## The completeness targets` discussion recording Recommendation 1's second
       half: `LCComplete`'s `lcU` instance is unreachable from `IsLCAxiom` with `RuleSet.none` at
       `.Base`/`.Dense`/`.RTime` — the compiled record is the probe — so any derivation of `lcU` from
       `LC_n` must essentially use a `.ZTime`-only principle (`UZ`/`Z1`, or a naming rule whose
       soundness is `.ZTime`-only). State in the same paragraph that this says nothing against
       `LCRulesComplete` or `LCURulesComplete` at `.ZTime`, where `lcU` IS valid, and that all three
-      targets remain stated-and-unproved.
-- [ ] Measure each new declaration's axiom profile with `lake env lean` / `lean_verify` and add a
+      targets remain stated-and-unproved. *(completed: both (a) and (b) added)*
+- [x] Measure each new declaration's axiom profile with `lake env lean` / `lean_verify` and add a
       `#guard_msgs`-gated `#print axioms` block for each to
       `Tests/BimodalTest/Metalogic/LCExtensionTest.lean`, following that file's existing block
       shape. A live `#print axioms` under `FormalSystem/` is allow-listed for
       `FormalSystem/MainResults.lean` alone, which is why the pins go in the test module. Never type
-      an expected profile from this plan or the report.
-- [ ] Update `Tests/BimodalTest/Metalogic/LCExtensionTest.lean`'s own module docstring: it says the
+      an expected profile from this plan or the report. *(completed: measured all four via
+      `mcp__lean-lsp__lean_verify` on the fully qualified names — each
+      `[propext, Classical.choice, Quot.sound]` — and added four guard-gated blocks, matching the
+      file's existing multi-line wrapped shape for the three long names)*
+- [x] Update `Tests/BimodalTest/Metalogic/LCExtensionTest.lean`'s own module docstring: it says the
       file pins "six load-bearing declarations" and that "All six sit at the same ceiling,
       `[propext, Classical.choice, Quot.sound]`". Correct the count, and state the uniformity claim
       only if the four measured profiles actually support it — if one differs, record which and
-      why, rather than re-baselining the sentence to fit.
-- [ ] Regenerate `typst/generated/status.typ` with `bash scripts/typst-sync-check.sh --fix` and
-      stage it in the SAME commit as the `.lean` changes.
+      why, rather than re-baselining the sentence to fit. *(completed: "six" -> "ten", "All six" ->
+      "All ten"; uniformity claim kept — all four measured profiles equal the six's own ceiling —
+      with a new paragraph naming the inheritance path for each of the four)*
+- [x] Regenerate `typst/generated/status.typ` with `bash scripts/typst-sync-check.sh --fix` and
+      stage it in the SAME commit as the `.lean` changes. *(completed: --fix run, then
+      --counts-only confirmed MISMATCH_COUNT=0 before commit)*
 
 **Timing**: 1.5 hours
 

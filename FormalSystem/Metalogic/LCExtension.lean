@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.AuxiliaryAtoms
 import FormalSystem.Metalogic.Conservativity.Plus.PlusSoundness
+import FormalSystem.Metalogic.Deterministic.Validity
 import FormalSystem.PlusLanguage.PlusReversal
 
 /-!
@@ -56,16 +57,36 @@ untouched by this module: `ExtDerivation` sits strictly on top of `PlusDerivable
 - `ext_sound_validIn` — the class-generic arm, for a rule set with both Auxiliary-Atoms rules off
 - `ext_sound_lc_ztime`, `ext_sound_lcU_ztime` — the soundness half of the three targets below,
   outright
+- `lcAnte_iff_lcCons_of_deterministic`, `lcN_plusValidOn_of_deterministic`,
+  `isLCAxiom_plusValidDetIn_base`, `ext_sound_detIn` — the deterministic-class soundness arm: the
+  `LC_n` collapse on a deterministic frame, its deterministic validity (needing no `.Base`
+  validity of `lcN`), its discharge over `DetSat .Base`, and `ExtDerivation`'s third soundness
+  arm, transported to the deterministic frames of an arbitrary class
 - `ExtComplete` — completeness of an extension at `.ZTime`, as a predicate on `(Ax, R)`
 - `LCComplete`, `LCRulesComplete`, `LCURulesComplete` — the three completeness targets, **stated
   and deliberately unproved**
+
+## The completeness targets, and what the deterministic-frames arm says about `LCComplete`
+
+`LCComplete`'s `lcU` instance — whether `lcU` is derivable from `IsLCAxiom` with `RuleSet.none`
+at `.Base` — is unreachable by the deterministic-frames route: the compiled record is
+`specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean`'s headline
+`lcU_not_extDerivable_base`, which refutes `lcU` on the translation frame over ℚ, a deterministic
+frame of `.Base`, using exactly `isLCAxiom_plusValidDetIn_base` and `ext_sound_detIn` above. The
+same non-derivability also holds at `.Dense` and `.RTime` (argued by `Sat` antitonicity, not
+separately compiled — see `PlusLanguage/PlusLCSchema.lean`'s docstring). So any derivation of
+`lcU` from `LC_n`
+at `.Base`/`.Dense`/`.RTime` must essentially use a `.ZTime`-only principle (`UZ`/`Z1`, or a
+naming rule whose soundness is `.ZTime`-only). This says nothing against `LCRulesComplete` or
+`LCURulesComplete` at `.ZTime`, where `lcU` **is** valid; all three targets remain stated and
+unproved.
 
 ## Not formalized
 
 No completeness claim is made or implied anywhere in this module. `LCComplete`,
 `LCRulesComplete` and `LCURulesComplete` are `Prop`-valued `def`s with no proof term and no
 `sorry`: each names an open target, and none is asserted to hold. Nor is any decidability or
-axiomatizability claim made. What *is* proved is soundness, in the two arms above.
+axiomatizability claim made. What *is* proved is soundness, in the three arms above.
 
 ## References
 
@@ -89,6 +110,7 @@ proof system, soundness, naming rules, limit closure, completeness target
 namespace FormalSystem.Metalogic.LCExtension
 
 open FormalSystem.Syntax FormalSystem.ProofSystem FormalSystem.PlusLanguage
+open FormalSystem.Semantics
 open FormalSystem.Metalogic.NamingRules FormalSystem.Metalogic.AuxiliaryAtoms
 open FormalSystem.Metalogic.Conservativity
 
@@ -273,6 +295,115 @@ theorem ext_sound_validIn {fc : FrameClass} {Ax : PlusFormula → Prop} {R : Rul
     exact ih F hFr M τ s
   | refl _ ih => exact plusValidIn_reflectTime ih
   | clock hR hq _ ih => exact clock_irr_sound _ _ _ hq ih
+  | aaFwd hR => exact absurd hR (by rw [hFwd]; simp)
+  | aaBwd hR => exact absurd hR (by rw [hBwd]; simp)
+
+/-! ## Soundness over the deterministic frames
+
+The load-bearing half of the non-derivability argument recorded in
+`PlusLanguage/PlusLCSchema.lean`'s docstring: `lcN`'s validity on every deterministic frame,
+discharged without appeal to `LC_n`'s own open `.Base` validity, and `ExtDerivation`'s soundness
+transported down to the deterministic frames of an arbitrary class. Verbatim transcription of
+`specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean`'s Part I and Part III
+(`lcAnte_iff_lcCons_of_deterministic` through `ext_sound_detIn`); the probe's own Part II (the ℚ
+frame and the refutation) and headline stay in the probe, per this module's Non-Goals. -/
+
+variable {F : TaskFrame}
+
+/-- `lcAnte`'s definitional unfolding to `.stab` of its guarded conjunction, named so the proof
+below can `rw` through it instead of a linted `show` (`plan-authoring-gate-collisions.md`
+Condition 8: `show` exploiting a definitional equality is a `--wfail` CI failure; the remedy is a
+named `rfl` lemma). -/
+private theorem lcAnte_eq_stab (n : ℕ) (α : ℕ → PlusFormula) :
+    lcAnte n α = .stab (bigAnd n fun i =>
+      (PlusFormula.dstab (α i)).imp
+        (PlusFormula.dstab (PlusFormula.someFuture
+          (PlusFormula.dstab (α ((i + 1) % n)))))).gle := rfl
+
+/-- `lcCons`'s definitional unfolding to `.dstab` of its guarded conjunction, the `lcCons` sibling
+of `lcAnte_eq_stab` above and for the same reason. -/
+private theorem lcCons_eq_dstab (n : ℕ) (α : ℕ → PlusFormula) :
+    lcCons n α = .dstab (bigAnd n fun i =>
+      (PlusFormula.dstab (α i)).imp
+        (PlusFormula.someFuture (PlusFormula.dstab (α ((i + 1) % n))))).gle := rfl
+
+/-- **`lcN`'s antecedent and consequent are equivalent on a deterministic frame.** The collapse
+computation: on a deterministic frame `⟐φ ↔ φ` at every point
+(`FormalSystem.PlusLanguage.dstab_iff_of_deterministic`), so `lcAnte n α`'s `⊡`-guarded
+conjunction and `lcCons n α`'s `⟐`-guarded one agree termwise.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema) -/
+theorem lcAnte_iff_lcCons_of_deterministic (hD : F.Deterministic) (M : TaskModel F)
+    (τ : WorldHistory F) (t : F.Duration) (n : ℕ) (α : ℕ → PlusFormula) :
+    PlusTruthAt M τ t (lcAnte n α) ↔ PlusTruthAt M τ t (lcCons n α) := by
+  have key : ∀ (s : F.Duration) (i : ℕ),
+      PlusTruthAt M τ s ((PlusFormula.dstab (α i)).imp
+          (PlusFormula.dstab (PlusFormula.someFuture
+            (PlusFormula.dstab (α ((i + 1) % n)))))) ↔
+      PlusTruthAt M τ s ((PlusFormula.dstab (α i)).imp
+          (PlusFormula.someFuture (PlusFormula.dstab (α ((i + 1) % n))))) := by
+    intro s i
+    constructor
+    · intro h hα
+      exact (dstab_iff_of_deterministic hD M τ s _).mp (h hα)
+    · intro h hα
+      exact (dstab_iff_of_deterministic hD M τ s _).mpr (h hα)
+  rw [lcAnte_eq_stab, lcCons_eq_dstab,
+    stab_iff_of_deterministic hD, dstab_iff_of_deterministic hD, gle_iff, gle_iff]
+  constructor
+  · intro h s hs
+    rw [bigAnd_iff]
+    intro i hi
+    exact (key s i).mp ((bigAnd_iff M τ s _ n).mp (h s hs) i hi)
+  · intro h s hs
+    rw [bigAnd_iff]
+    intro i hi
+    exact (key s i).mpr ((bigAnd_iff M τ s _ n).mp (h s hs) i hi)
+
+/-- **`lcN n α` is valid on every deterministic frame**, at every arity and all parameters —
+`.Base` validity of `lcN` is **not** needed for this: the deterministic-frames route to `LC_n`'s
+validity never opens `lcN`'s own open `.Base` validity question.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema) -/
+theorem lcN_plusValidOn_of_deterministic (hD : F.Deterministic) (n : ℕ) (α : ℕ → PlusFormula) :
+    F.PlusValidOn (lcN n α) :=
+  fun M τ t hante => (lcAnte_iff_lcCons_of_deterministic hD M τ t n α).mp hante
+
+/-- Every `IsLCAxiom` member, mirror included, is valid over the deterministic frames of `.Base`
+— the axiom-set discharge over `DetSat .Base` that `ext_sound_detIn` below needs concretely. Each
+disjunct reduces to `lcN_plusValidOn_of_deterministic`, the mirror via
+`FormalSystem.Metalogic.Deterministic.plusValidDetIn_reflectTime`.
+
+Paper: — (formalization-native; the manuscript states no limit-closure schema) -/
+theorem isLCAxiom_plusValidDetIn_base {ψ : PlusFormula} (h : IsLCAxiom ψ) :
+    FormalSystem.Metalogic.Deterministic.PlusValidDetIn .Base ψ := by
+  obtain ⟨n, α, _, h | h⟩ := h
+  · exact h ▸ fun F hF => lcN_plusValidOn_of_deterministic hF.2 n α
+  · exact h ▸ FormalSystem.Metalogic.Deterministic.plusValidDetIn_reflectTime
+      (fun F hF => lcN_plusValidOn_of_deterministic hF.2 n α)
+
+/-- Soundness of `ExtDerivation` over the **deterministic** frames of `fc`, for a rule set with
+all three naming rules off: the transcription of `ext_sound_validIn` at the narrower class, and
+this module's third soundness arm (beside `ext_sound_ztime` and `ext_sound_validIn`).
+
+Paper: — (formalization-native; the manuscript states no extended proof system) -/
+theorem ext_sound_detIn {fc : FrameClass} {Ax : PlusFormula → Prop} {R : RuleSet}
+    (hClock : R.clock = false) (hFwd : R.aaFwd = false) (hBwd : R.aaBwd = false)
+    (hAx : ∀ ψ, Ax ψ → FormalSystem.Metalogic.Deterministic.PlusValidDetIn fc ψ) {φ : PlusFormula}
+    (d : ExtDerivation fc Ax R φ) : FormalSystem.Metalogic.Deterministic.PlusValidDetIn fc φ := by
+  induction d with
+  | tm h =>
+    exact FormalSystem.Metalogic.Deterministic.PlusValidIn.toDet (plus_soundness_validIn h)
+  | ax h => exact hAx _ h
+  | mp _ _ ih1 ih2 => exact fun F hFr M τ x => ih1 F hFr M τ x (ih2 F hFr M τ x)
+  | nec _ ih => exact fun F hFr M τ x σ => ih F hFr M σ x
+  | tnec _ ih =>
+    intro F hFr M τ x
+    rw [PlusTruth.allFuture_iff]
+    intro s _
+    exact ih F hFr M τ s
+  | refl _ ih => exact FormalSystem.Metalogic.Deterministic.plusValidDetIn_reflectTime ih
+  | clock hR => exact absurd hR (by rw [hClock]; simp)
   | aaFwd hR => exact absurd hR (by rw [hFwd]; simp)
   | aaBwd hR => exact absurd hR (by rw [hBwd]; simp)
 

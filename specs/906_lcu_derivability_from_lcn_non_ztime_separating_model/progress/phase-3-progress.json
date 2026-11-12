@@ -1,0 +1,61 @@
+{
+  "phase": 3,
+  "phase_name": "The Deterministic Soundness Arm in LCExtension.lean",
+  "started_at": "2026-11-12T05:40:53Z",
+  "last_updated": "2026-11-12T06:10:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Re-read LCExtension.lean, Deterministic/Validity.lean, LCExtensionTest.lean, and the probe immediately before editing; confirm acyclicity by grep",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 2,
+      "description": "Add import FormalSystem.Metalogic.Deterministic.Validity and transcribe the four declarations verbatim, with docstrings, into a new section after ext_sound_validIn",
+      "status": "done",
+      "files_touched": ["FormalSystem/Metalogic/LCExtension.lean"]
+    },
+    {
+      "id": 3,
+      "description": "Update module docstring: four names under Main Results, completeness-target paragraph",
+      "status": "done",
+      "files_touched": ["FormalSystem/Metalogic/LCExtension.lean"]
+    },
+    {
+      "id": 4,
+      "description": "Measure axiom profiles and add guard-gated #print axioms blocks to LCExtensionTest.lean; correct count/uniformity sentences",
+      "status": "done",
+      "files_touched": ["Tests/BimodalTest/Metalogic/LCExtensionTest.lean"]
+    },
+    {
+      "id": 5,
+      "description": "Run scoped build guards and check-metalogic-cycles.sh; regenerate typst/generated/status.typ",
+      "status": "done",
+      "files_touched": ["typst/generated/status.typ"]
+    }
+  ],
+  "current_objective": 5,
+  "approaches_tried": [
+    {
+      "approach": "Transcribe lcAnte_iff_lcCons_of_deterministic's proof verbatim including the probe's inline 'show' tactic",
+      "result": "failed",
+      "reason": "linter.style.show warning under --wfail (plan-authoring-gate-collisions.md Condition 8), as the plan's own Risks table predicted; replaced with two named rfl lemmas (lcAnte_eq_stab, lcCons_eq_dstab) consumed by rw, per that same Risk row's pre-authorized remedy"
+    },
+    {
+      "approach": "Multi-line function application for `exact FormalSystem.Metalogic.Deterministic.PlusValidIn.toDet` with the argument on a continuation line",
+      "result": "failed",
+      "reason": "Lean parsed the continuation as not applied (type mismatch showing the unapplied function type); moved to a two-line `tm h =>` / `exact f (arg)` form on one line instead"
+    }
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "3.4",
+      "description": "Transcribe lcAnte_iff_lcCons_of_deterministic's proof body VERBATIM from the probe",
+      "type": "altered",
+      "reason": "The probe's inline 'show' tactic trips linter.style.show under --wfail, exactly as the plan's own Risks & Mitigations table predicted for this declaration; that same table pre-authorizes the remedy (a named rfl lemma) rather than suppressing the linter",
+      "annotation": "*(deviation: altered — the scoped build flagged the Risks table's own predicted show-tactic lint ... replaced with two new named rfl lemmas ... consumed by rw instead)*"
+    }
+  ]
+}

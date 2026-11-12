@@ -10,7 +10,7 @@ import FormalSystem.Metalogic.LCExtension
 # Evidence for the extended L⁺ proof system
 
 This module is **permanent evidence**, not a conventional test. It pins the axiom profiles of
-`Metalogic/LCExtension.lean`'s six load-bearing declarations as `#guard_msgs`-gated
+`Metalogic/LCExtension.lean`'s ten load-bearing declarations as `#guard_msgs`-gated
 `#print axioms` blocks. These are build-breaking: if a profile moves, this module stops
 compiling. Every profile recorded below was *measured* in the same dispatch that landed the
 module, by `lake env lean` on a file importing it — never typed from the research report and
@@ -27,14 +27,14 @@ as the change that moved it**, with the move justified in that commit — never 
 to turn a red build green. A guard silently re-baselined to match whatever the tree now does
 records nothing and protects nothing.
 
-All six sit at the same ceiling, `[propext, Classical.choice, Quot.sound]`, and that uniformity is
+All ten sit at the same ceiling, `[propext, Classical.choice, Quot.sound]`, and that uniformity is
 itself the fact worth reading. The extension adds no axiom cost over the three soundness theorems
 it assembles: `plus_soundness_ztime`, `Metalogic.NamingRules.clock_irr_sound` and
 `Metalogic.AuxiliaryAtoms.aa_sound_ztime` are each already at that ceiling, so `ext_sound_ztime`
 inherits it rather than contributing anything of its own. `Classical.choice` is consumed
 downstream, not here — notably at `aaIdx`'s `dite` inside the Auxiliary-Atoms construction.
 
-Two of the six are worth a second look before re-baselining anything:
+Two of the original six are worth a second look before re-baselining anything:
 
 * `ext_sound_validIn` is the class-generic arm and discharges both Auxiliary-Atoms cases by
   contradiction, so it never touches the cone construction at all. It nonetheless sits at the
@@ -44,6 +44,15 @@ Two of the six are worth a second look before re-baselining anything:
 * `isLCAxiom_plusValidZTime` and `isLCUAxiom_plusValidZTime` are two-case `obtain` splits over
   the schema and its mirror, with all four arms quoting `PlusLanguage/PlusLCSchema.lean`. Their
   profile is entirely that file's; growth here would be growth there.
+
+The four added by the deterministic-frames soundness arm (`lcAnte_iff_lcCons_of_deterministic`,
+`lcN_plusValidOn_of_deterministic`, `isLCAxiom_plusValidDetIn_base`, `ext_sound_detIn`) were
+MEASURED, not typed from the plan or the report that produced this module's probe precedent, and
+land at the same ceiling: `ext_sound_detIn` inherits it through `plus_soundness_validIn`
+(`PlusValidIn.toDet`) and `clock_irr_sound`, exactly as `ext_sound_validIn` does; the other three
+inherit it from `FormalSystem.PlusLanguage.dstab_iff_of_deterministic`
+(`[propext, Classical.choice, Quot.sound]`, per `PlusDeterminism.lean`'s own C4 pin) through
+`stab_iff_of_deterministic`.
 
 ## What this module does not pin
 
@@ -112,5 +121,41 @@ These are `ext_sound_ztime` instantiated at the two axiom sets, so they add noth
 /-- info: 'FormalSystem.Metalogic.LCExtension.ext_sound_lcU_ztime' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.LCExtension.ext_sound_lcU_ztime
+
+/-! ### The deterministic-frames soundness arm
+
+The non-derivability argument's load-bearing half (recorded in
+`PlusLanguage/PlusLCSchema.lean`'s docstring): `lcN`'s validity on every deterministic frame, and
+`ExtDerivation`'s soundness transported down to the deterministic frames of an arbitrary class.
+All four were measured by `lean_verify` on the fully qualified name, in the same dispatch that
+landed them, never typed from the plan or the report. -/
+
+/--
+info: 'FormalSystem.Metalogic.LCExtension.lcAnte_iff_lcCons_of_deterministic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.LCExtension.lcAnte_iff_lcCons_of_deterministic
+
+/--
+info: 'FormalSystem.Metalogic.LCExtension.lcN_plusValidOn_of_deterministic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.LCExtension.lcN_plusValidOn_of_deterministic
+
+/--
+info: 'FormalSystem.Metalogic.LCExtension.isLCAxiom_plusValidDetIn_base' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.LCExtension.isLCAxiom_plusValidDetIn_base
+
+/-- info: 'FormalSystem.Metalogic.LCExtension.ext_sound_detIn' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.LCExtension.ext_sound_detIn
 
 end BimodalTest.Metalogic
