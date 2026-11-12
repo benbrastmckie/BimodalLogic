@@ -1,7 +1,7 @@
 # Implementation Plan: Task #781
 
 - **Task**: 781 - Decide whether the Phase 5 inner-fixpoint hoist in LiveFix.lean should stay
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: None (no research artifact for this round; see Overview)

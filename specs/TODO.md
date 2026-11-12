@@ -13,7 +13,7 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,743,761,781,829,830,831,873,890 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,743,761,829,830,831,873,890 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876 | 298,428,502,743,761,873 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -60,7 +60,6 @@ next_project_number: 926
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
     └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
-781 [PLANNED] — Decide whether the Phase 5 inner-fixpoint hoist in...
 830 [PLANNED] — Generalize Compression.decidableValidZTime from the...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
@@ -623,12 +622,13 @@ WHAT WOULD MAKE THIS A COMPLETE RESULT EVEN IF NO LOCK IS ADDED. A reasoned find
 ---
 
 ### 781. Phase5 hoist kernel neutral decision
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Parent**: Task 716
 - **Plan**: [781_phase5_hoist_kernel_neutral_decision/plans/01_phase5-hoist-keep-decision.md]
+- **Summary**: [781_phase5_hoist_kernel_neutral_decision/summaries/01_phase5-hoist-keep-decision-summary.md]
 
 **Description**: Decide whether the Phase 5 inner-fixpoint hoist in FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean should stay. A zero-rebuild A/B measured it NEUTRAL under the kernel (25.9 s OLD vs 24.4 s NEW on certA's backward fixpoint under decide -- 1.06x, inside variance) and roughly 25 percent WORSE at the small embedded witness, against 5.4x BETTER at certA. It is landed and proved equal via unconditional equality lemmas, so correctness is not at issue; the question is whether its justification (resting on the hard certificate alone) warrants keeping the added decomposition. Evidence: parent task issue log entry iss_1791925368675_oyqhCa, and the A/B method recorded at iss_1791925368699_dlHTwK.
 

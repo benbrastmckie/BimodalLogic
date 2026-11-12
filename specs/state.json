@@ -1100,7 +1100,7 @@
     {
       "project_number": 781,
       "project_name": "phase5_hoist_kernel_neutral_decision",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Decide whether the Phase 5 inner-fixpoint hoist in FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean should stay. A zero-rebuild A/B measured it NEUTRAL under the kernel (25.9 s OLD vs 24.4 s NEW on certA's backward fixpoint under decide -- 1.06x, inside variance) and roughly 25 percent WORSE at the small embedded witness, against 5.4x BETTER at certA. It is landed and proved equal via unconditional equality lemmas, so correctness is not at issue; the question is whether its justification (resting on the hard certificate alone) warrants keeping the added decomposition. Evidence: parent task issue log entry iss_1791925368675_oyqhCa, and the A/B method recorded at iss_1791925368699_dlHTwK.",
       "effort": "",
@@ -1108,15 +1108,20 @@
       "topic": "decidability",
       "dependencies": [],
       "created": "2026-10-14T00:08:05Z",
-      "last_updated": "2026-11-12T17:45:36Z",
+      "last_updated": "2026-11-12T20:37:42Z",
       "artifacts": [
         {
           "path": "specs/781_phase5_hoist_kernel_neutral_decision/plans/01_phase5-hoist-keep-decision.md",
           "type": "plan",
           "summary": "4-phase plan: kernel A/B gap closure, verdict under a pre-committed rule, LiveFix.lean justification correction with the commit-blocking surface, then inventory reconciliation plus the full gate set."
+        },
+        {
+          "path": "specs/781_phase5_hoist_kernel_neutral_decision/summaries/01_phase5-hoist-keep-decision-summary.md",
+          "type": "summary",
+          "summary": "KEEP verdict, the kernel A/B that closes the small-witness evidence gap, and the corrected module justification."
         }
       ],
-      "session_id": "sess_1794503933_59a2b4",
+      "session_id": "sess_1794512651_a4fdf4",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean",
         "FormalSystem/Metalogic/README.md",
@@ -1126,7 +1131,8 @@
         "specs/evidence/phase5-hoist-kernel-ab/ab-new.lean",
         "specs/evidence/phase5-hoist-kernel-ab/ab-old.lean",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Closed the one gap in the hoist's evidence by A/B'ing both kernel obligation sites against one unchanged build under the shared .lake lock: r_certA = 0.984 and r_witness = 1.055, both far inside the pre-committed 1.15 band, so the pre-committed rule selects KEEP. Replaced LiveFix.lean's counting argument -- which predicted a kernel win proportional to |X| that the measurement refutes -- with the measured record, and reconciled the three generated surfaces coupled to the module's line count."
     },
     {
       "project_number": 787,

@@ -1,29 +1,55 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "vacuous_note": "Pre-existing and unchanged from the pre-task commit e2c2662e0: FormalSystem/Examples/TemporalStructures.lean:495 'int_domain_universal ... := trivial', a file this record never touched. Baseline vacuous count at e2c2662e0 is also 1.",
+    "axiom_count": 14,
+    "axiom_note": "Identical to the baseline at the pre-task commit e2c2662e0. Not increased.",
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/781_phase5_hoist_kernel_neutral_decision/plans/01_phase5-hoist-keep-decision.md",
-      "summary": "4-phase plan deciding the LiveFix.lean inner-fixpoint hoist: kernel A/B gap closure, verdict under a pre-committed rule, justification correction with its commit-blocking generated surface, and final inventory reconciliation plus full gate set."
+      "type": "summary",
+      "path": "specs/781_phase5_hoist_kernel_neutral_decision/summaries/01_phase5-hoist-keep-decision-summary.md",
+      "summary": "KEEP verdict on the Phase 5 inner-fixpoint hoist, with the kernel A/B that closes the small-witness evidence gap and the corrected module justification."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/phase5-hoist-kernel-ab/README.md",
+      "summary": "Zero-rebuild kernel A/B: raw per-run timings for 10 passes per arm at two sites, medians, both ratios, measurement conditions, and the KEEP verdict."
     }
+  ],
+  "completion_data": {
+    "completion_summary": "Closed the one gap in the hoist's evidence by A/B'ing both kernel obligation sites against one unchanged build under the shared .lake lock: r_certA = 0.984 and r_witness = 1.055, both far inside the pre-committed 1.15 band, so the pre-committed rule selects KEEP. Replaced LiveFix.lean's counting argument -- which predicted a kernel win proportional to |X| that the measurement refutes -- with the measured record, and reconciled the three generated surfaces coupled to the module's line count.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean",
+    "typst/generated/status.typ",
+    "README.md",
+    "FormalSystem/Metalogic/README.md",
+    "specs/evidence/phase5-hoist-kernel-ab/ab-new.lean",
+    "specs/evidence/phase5-hoist-kernel-ab/ab-old.lean",
+    "specs/evidence/phase5-hoist-kernel-ab/README.md",
+    "specs/781_phase5_hoist_kernel_neutral_decision/plans/01_phase5-hoist-keep-decision.md",
+    "specs/781_phase5_hoist_kernel_neutral_decision/summaries/01_phase5-hoist-keep-decision-summary.md",
+    "specs/781_phase5_hoist_kernel_neutral_decision/issues.jsonl"
   ],
   "metadata": {
-    "session_id": "sess_1794503933_59a2b4_781",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 5,
-    "dependency_waves": [[1], [2], [3], [4]]
-  },
-  "memory_candidates": [
-    {
-      "content": "In a repository whose generated surfaces derive from Lean source line counts, a PURE DOCSTRING OR COMMENT EDIT is not a prose-only change for planning purposes. It moves every line-count-derived surface exactly as a declaration would. Where one of those surfaces is enforced by a pre-commit hook, the regeneration step must be scheduled inside the SAME phase as the comment edit and that surface carried in that phase's own file scope -- deferring it to a later reconciliation phase makes the comment phase's own commit unlandable. The non-blocking derived surfaces (doc inventory blocks checked by a later verification step) may legitimately be deferred to a final phase. The general planning move: before decomposing, enumerate which generated artifacts derive a quantity the edit moves, then classify each by whether its drift check is commit-blocking or verification-time, and split phases on that boundary rather than on the edit's apparent triviality.",
-      "category": "PATTERN",
-      "source_artifact": "specs/781_phase5_hoist_kernel_neutral_decision/plans/01_phase5-hoist-keep-decision.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["generated-surface-coupling", "plan-phase-split", "line-count-drift", "commit-blocking-gate", "docstring-edit"]
-    }
-  ],
-  "dispatch_seq": 6
+    "session_id": "sess_1794512651_a4fdf4",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "task_dir": "specs/781_phase5_hoist_kernel_neutral_decision",
+    "dispatch_seq": 15,
+    "compliance_check": "skipped",
+    "compliance_note": "Plan declares zero Lean goals (D3, '<!-- lean-challenge-statements:none -->'); lean-plan-compliance-check.sh reports 'skipped (no non-keyword identifiers found via backticked tokens under **Goals**)'. Correct for a plan whose KEEP branch is a prose correction plus generated-surface reconciliation.",
+    "gate_discharge": "scoped",
+    "gate_discharge_note": "Batch Gate Deferral directive, UNMAPPABLE CRITERION branch: verify-deploy.sh's gates all compare a deployed .claude/ tree against its source store, and this record touched no path under .claude/ or agent-system/, so no --only-gate number and no run-all.sh suite reaches these files. Discharged by running the repo checks that do cover them: check-module-invariants.sh (55 PASS / 0 FAIL), --emit-inventory --check, typst-sync-check.sh --counts-only, full guarded lake build (exit 0, 0 errors, 0 warnings), and check-task-references.sh plus check-record-versioning.sh per touched deliverable. The complete gate set runs once for the whole batch at the end of the invocation."
+  }
 }

@@ -1,15 +1,37 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 15,
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Wrote a 4-phase plan deciding the Phase 5 inner-fixpoint hoist in LiveFix.lean. The plan closes the one gap in the existing evidence (the small embedded witness was never A/B'd under the kernel, only under #eval), applies a pre-committed decision rule, and makes the module's recorded justification match what was measured. The expected branch is KEEP with a corrected docstring, since the hoist is encapsulated (zero references outside LiveFix.lean) and reverting buys no measured kernel gain; the REVERT branch is planned and scoped as well. Phase 3 carries typst/generated/status.typ in its own file scope because any Lean line-count change, including a pure docstring edit, is commit-blocking via .githooks/pre-commit.",
+  "summary": "Verdict is KEEP. A zero-rebuild kernel A/B at both obligation sites (10 passes per arm, interleaved, under one flock on .lake/build-guard.lock) gives r_certA = 0.984 and r_witness = 1.055, both far inside the pre-committed 1.15 band, closing the gap left by the original evidence, which never A/B'd the small embedded witness under the kernel. LiveFix.lean's counting argument -- which predicted a kernel win proportional to |X| that the measurement refutes -- is replaced by the measured record; no declaration changed. All three generated surfaces coupled to the module's line count were reconciled, and the full guarded lake build is green with zero errors and zero warnings.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/781_phase5_hoist_kernel_neutral_decision/summaries/01_phase5-hoist-keep-decision-summary.md",
+      "summary": "KEEP verdict, the kernel A/B that closes the small-witness evidence gap, and the corrected module justification."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/phase5-hoist-kernel-ab/README.md",
+      "summary": "Raw per-run timings for 10 passes per arm at two kernel sites, medians, both ratios, conditions, and the verdict."
+    },
+    {
       "type": "plan",
       "path": "specs/781_phase5_hoist_kernel_neutral_decision/plans/01_phase5-hoist-keep-decision.md",
-      "summary": "4-phase plan: kernel A/B gap closure, verdict under a pre-committed rule, LiveFix.lean justification correction with the commit-blocking surface, then inventory reconciliation plus the full gate set."
+      "summary": "All four phases marked [COMPLETED], with the scoped-gate-discharge verification note recorded in Phase 4."
     }
   ],
-  "dispatch_seq": 6
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean",
+    "typst/generated/status.typ",
+    "README.md",
+    "FormalSystem/Metalogic/README.md",
+    "specs/evidence/phase5-hoist-kernel-ab/ab-new.lean",
+    "specs/evidence/phase5-hoist-kernel-ab/ab-old.lean",
+    "specs/evidence/phase5-hoist-kernel-ab/README.md",
+    "specs/781_phase5_hoist_kernel_neutral_decision/plans/01_phase5-hoist-keep-decision.md",
+    "specs/781_phase5_hoist_kernel_neutral_decision/summaries/01_phase5-hoist-keep-decision-summary.md",
+    "specs/781_phase5_hoist_kernel_neutral_decision/issues.jsonl"
+  ]
 }
