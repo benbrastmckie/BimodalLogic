@@ -222,10 +222,9 @@ on line three.
 `scripts/check-module-invariants.sh`, `typst/generated/status.typ`). That is the price of lifting
 the hold, and it is why `/revise 761` heads the list: a task that cannot be dispatched but holds
 forty declared paths is worse than a held one.
-
 **Coverage appendix (uncovered tasks)**:
 ```
-/orchestrate 298,570,664,821,830,831
+/orchestrate 570,664,821,830,831
 ```
 
 ## Next batches
