@@ -9,21 +9,13 @@ bisimulation-invariant properties expressible in the language.
 
 ## Modules
 
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Expressiveness/Separation rows=both cols=lines -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `Defs.lean` | 553 | Core definitions for the separation argument: N-types, separating formulas |
-| `Distributivity.lean` | 188 | Distributivity lemmas for temporal connectives in separation arguments |
-| `DualEliminations.lean` | 101 | Dual elimination lemmas: eliminating Until/Since via duality |
-| `Duality.lean` | 342 | Time reflection (G/H, F/P, U/S) in the separation context |
-| `Eliminations.lean` | 902 | Elimination lemmas: reducing complex formulas in separation arguments |
-| `FormulaOps.lean` | 235 | Formula operations used in separation: substitution, normalization |
-| `IntHelpers.lean` | 131 | Integer arithmetic helpers for time-point calculations |
-| `NegationEquiv.lean` | 159 | Negation equivalence lemmas |
-| `NormalForm.lean` | 554 | Normal form reduction specific to the separation theorem |
-| `SeparationThm.lean` | 369 | Main separation theorem: N-inequivalent => formula separator exists |
-| `TemporalClosure.lean` | 674 | Temporal closure properties used in the separation argument |
-| `DedekindZ/` | — | Dedekind-complete integer order constructions (2 files) |
-| `Hierarchy/` | — | Expressive hierarchy completion (3 files) |
+| `Defs.lean` | 582 | Core definitions for the integer-time separation argument (GHR94 Chapter 10.2): `IntStructure`/`IntTruth`/`IntEquiv`, semantic purity and `U`/`S`-freeness predicates, syntactic separation, and structural depth measures |
+| `KampTranslation.lean` | 172 | Kamp-translation infrastructure for `U`/`S` expressive completeness on Z-structures: formula-list operations and atom-literal construction; the full translation is blocked on the n-variable Fraisse game argument |
+| `SemanticBridge.lean` | 176 | Bridges `IntStructure`/`IntTruth` (separation framework) with `OrderedMonadicStructure`/`TemporalTruth` (completeness framework): `zStructureToInt`, truth-matching on the Z-carrier, and order-isomorphism transfer |
+<!-- END GENERATED -->
 
 ## Key Results
 

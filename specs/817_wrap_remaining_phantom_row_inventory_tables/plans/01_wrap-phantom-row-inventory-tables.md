@@ -251,31 +251,34 @@ planning time).
 
 ---
 
-### Phase 3: Separation — drop twelve phantom rows, rewrite one description, add two rows [NOT STARTED]
+### Phase 3: Separation — drop twelve phantom rows, rewrite one description, add two rows [COMPLETED]
 
 **Goal**: `FormalSystem/Metalogic/Expressiveness/Separation/README.md` describes the directory's
 current three-file integer-time layout and is under the gate.
 
 **Tasks**:
-- [ ] Delete the 10 phantom `.lean` rows (`Distributivity.lean`, `DualEliminations.lean`,
+- [x] Delete the 10 phantom `.lean` rows (`Distributivity.lean`, `DualEliminations.lean`,
       `Duality.lean`, `Eliminations.lean`, `FormulaOps.lean`, `IntHelpers.lean`,
       `NegationEquiv.lean`, `NormalForm.lean`, `SeparationThm.lean`, `TemporalClosure.lean`) and
       the 2 phantom subdirectory rows (`DedekindZ/`, `Hierarchy/`) — all archived under
       `Boneyard/Kamp/KampWeakCanonical/Separation/` in a wholesale relocation of the superseded
-      `N`-equivalence approach.
-- [ ] Rewrite `Defs.lean`'s description to match the live module (integer-time
+      `N`-equivalence approach. *(completed)*
+- [x] Rewrite `Defs.lean`'s description to match the live module (integer-time
       `IntStructure`/`IntTruth`/`IntEquiv`, the purity and `U`/`S`-freeness predicates, syntactic
       separation, and the structural depth measures), verified against the file's own docstring.
       Carrying the existing text forward would ship a wrong description under a byte-accurate
       count, because the generator matches on the key and the key survived the approach swap.
-- [ ] Add rows for `KampTranslation.lean` and `SemanticBridge.lean`, each drafted from its own
+      *(completed: new description verified against `Defs.lean` lines 10-28's module docstring)*
+- [x] Add rows for `KampTranslation.lean` and `SemanticBridge.lean`, each drafted from its own
       module docstring (the research supplies drafts; refine against the live docstring rather
-      than pasting unverified).
-- [ ] Wrap with
+      than pasting unverified). *(completed: drafted from each file's own `/-! -/` docstring,
+      lines 10-30 KampTranslation, lines 9-23 SemanticBridge)*
+- [x] Wrap with
       `dir=FormalSystem/Metalogic/Expressiveness/Separation rows=both cols=lines`
       (`rows=both` behaves identically to `rows=loose` today since no live subdirectory remains,
       and keeps the table self-correcting if one is added back), run the writer, apply the shared
-      procedure's steps 3-8.
+      procedure's steps 3-8. *(completed: regenerated block has exactly 3 rows; before/after diff
+      shows the 12 dropped keys and the 3 surviving/new descriptions as intended)*
 
 **Timing**: 1.0 hours
 
