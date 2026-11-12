@@ -1,0 +1,25 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/reports/01_eliminate-cross-certification-clauses.md",
+      "summary": "Answers (Q3) affirmatively: both clause-(a) cross-certification clauses of the two-sided Reynolds automata are eliminable, subsumed by clause (b) of the same automaton at position 0 via the bar-translation's purity, seeded by chronicle clause K1. Covers logic (primary) and math (secondary) with 8 findings, the replacement for Step 3 of the source report's Finding 14.4, a closed verdict on the bi-infinite-automaton alternative, a correction to the expected alphabet gain, and two incidental defects located in the source report with repairs."
+    }
+  ],
+  "next_steps": "Run /orchestrate 905 to create an implementation plan, or intake Recommendations 1-5 as amendments to specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md",
+  "dispatch_seq": 2,
+  "metadata": {
+    "session_id": "sess_1794448865_9a2e5c_905",
+    "agent_type": "formal-research-agent",
+    "duration_seconds": 1920,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "formal-research-agent"],
+    "domains_researched": ["logic", "math"],
+    "findings_count": 8,
+    "context_files_loaded": ["context/patterns/mathlib-lookup-gate.md", "context/formats/report-format.md"],
+    "mathlib_lookups_performed": 0,
+    "mathlib_lookup_gated": "skipped_no_lean_target",
+    "verification": "validate-artifact.sh report: PASS, 0 warnings"
+  }
+}
