@@ -13,7 +13,7 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,829,830,831,832,873,890 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,818,829,830,831,832,873,890 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876 | 298,428,502,743,761,873 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -85,7 +85,6 @@ next_project_number: 926
 ### Repo Hygiene
 
 743 [PLANNED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
-817 [IMPLEMENTING] — Wrap the remaining count-carrying inventory tables under...
 818 [IMPLEMENTING] — Wrap the four directory-rollup inventory tables that need the...
 832 [IMPLEMENTING] — Two local-disk reclamations found by the 2026-11-02 review....
 
@@ -515,13 +514,14 @@ NON-GOALS. No change to the generator algorithm beyond using an option it alread
 ---
 
 ### 817. Wrap remaining phantom row inventory tables
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Parent**: Task 744
 - **Research**: [817_wrap_remaining_phantom_row_inventory_tables/reports/01_wrap-remaining-phantom-row-tables.md]
 - **Plan**: [817_wrap_remaining_phantom_row_inventory_tables/plans/01_wrap-phantom-row-inventory-tables.md]
+- **Summary**: [817_wrap_remaining_phantom_row_inventory_tables/summaries/01_wrap-phantom-row-inventory-tables-summary.md]
 
 **Description**: Wrap the remaining count-carrying inventory tables under FormalSystem/ whose blockers are phantom or missing rows
 

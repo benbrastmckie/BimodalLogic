@@ -1,18 +1,18 @@
 {
-  "status": "planned",
-  "dispatch_seq": 8,
+  "status": "implemented",
+  "dispatch_seq": 14,
   "task_number": 817,
-  "phase": "plan",
-  "session_id": "sess_1794503933_59a2b4_817",
-  "phases_completed": 0,
+  "phase": "implement",
+  "session_id": "sess_1794503933_59a2b4",
+  "phases_completed": 7,
   "phases_total": 7,
-  "summary": "Wrote a 7-phase implementation plan for wrapping the six Tier B phantom/missing-row inventory tables under FormalSystem/ in BEGIN GENERATED markers. Phases run strictly serially because --emit-inventory is a tree-wide writer on a shared working tree with concurrent siblings. Six phases are prose-tier markdown edits covered by scripts/check-module-invariants.sh --no-build; the final phase demonstrates INV coverage per block via corrupt-then-restore and runs the full gate. All three carried-figure trigger lines from the dispatch were re-checked against live state and recorded in the plan.",
+  "summary": "Wrapped and gated seven inventory blocks across six FormalSystem/ READMEs (Chronicle, Quasimodel, RestrictedMCS, Separation, WitnessFamily upper and lower tables, BXCanonical), resolving every phantom/missing/mis-keyed row before wrapping so no hand-written description was dropped. Demonstrated coverage via 7 corrupt/restore cycles, each producing FAIL INV naming exactly the expected README and restoring to an empty diff, then ran the full gate (including lake build and lake build BimodalTest), reporting ALL CHECKS PASSED. Surveyed and reported, without fixing, the remaining unwrapped/stale inventory tables under FormalSystem/, including two findings beyond the dispatch's original framing (MintBound/README.md and SeparationZ/README.md).",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/817_wrap_remaining_phantom_row_inventory_tables/plans/01_wrap-phantom-row-inventory-tables.md",
-      "summary": "7-phase plan wrapping seven inventory blocks across six FormalSystem READMEs, with per-row obsolete/re-home decisions, a Sharing-table resync, and a per-block corrupt/restore coverage demonstration."
+      "type": "summary",
+      "path": "specs/817_wrap_remaining_phantom_row_inventory_tables/summaries/01_wrap-phantom-row-inventory-tables-summary.md",
+      "summary": "All 7 plan phases completed: six FormalSystem READMEs wrapped across seven inventory blocks, with per-row obsolete-row decisions, a Defs.lean description rewrite, a Sharing-table resync, and a full 7-block corrupt/restore coverage demonstration plus full-gate run."
     }
   ]
 }

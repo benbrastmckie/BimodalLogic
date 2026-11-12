@@ -1,7 +1,7 @@
 # Implementation Plan: Task #817
 
 - **Task**: 817 - Wrap the remaining count-carrying inventory tables under FormalSystem/ whose blockers are phantom or missing rows
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: None (parent task 744 completed; sibling task 818 owns a disjoint README set)
 - **Research Inputs**: specs/817_wrap_remaining_phantom_row_inventory_tables/reports/01_wrap-remaining-phantom-row-tables.md
