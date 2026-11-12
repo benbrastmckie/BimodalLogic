@@ -2581,21 +2581,29 @@
     {
       "project_number": 905,
       "project_name": "eliminate_cross_certification_two_sided_reynolds_automata",
-      "status": "planning",
+      "status": "planned",
       "task_type": "formal",
       "title": "Eliminate cross-certification between the forward and backward Rabin automata, or show it is load-bearing",
       "description": "RESEARCH TASK, report only. Deliverable: an answer, with its argument, to whether the clause-(a) cross-certification of specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md's Finding 5.2/14.4 is eliminable -- either a proof that the certification is automatic from the chronicle clauses of that report's Finding 8.2, or a demonstration that it is load-bearing, or a bi-infinite-automaton alternative with its cost. The question is answerable against the chronicle clauses and the two clause (a)s alone, strictly cheaper than anything in that report's Finding 17; eliminating the clauses would remove one omega-regularity argument from each automaton and shrink the alphabet's enlargement. No Lean work; no completeness claim.",
-      "file_scope": [],
+      "file_scope": [
+        "specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md",
+        "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/issues.jsonl"
+      ],
       "dependencies": [],
       "priority": "low",
       "created": "2026-11-09T20:01:27Z",
-      "last_updated": "2026-11-12T02:23:25Z",
+      "last_updated": "2026-11-12T02:38:39Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/reports/01_eliminate-cross-certification-clauses.md",
           "type": "report",
           "summary": "Answers (Q3) affirmatively: both clause-(a) cross-certification clauses of the two-sided Reynolds automata are eliminable, subsumed by clause (b) of the same automaton at position 0 via the bar-translation's purity, seeded by chronicle clause K1. Covers logic (primary) and math (secondary) with 8 findings, the replacement for Step 3 of the source report's Finding 14.4, a closed verdict on the bi-infinite-automaton alternative, a correction to the expected alphabet gain, and two incidental defects located in the source report with repairs."
+        },
+        {
+          "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/plans/01_eliminate-cross-certification-clauses.md",
+          "type": "plan",
+          "summary": "5-phase plan (4.0h) amending task 901's paper-proof report to the clause-(a)-eliminated design, with the (D1) and (D2) defect repairs and the (Q3) ledger closure."
         }
       ],
       "audit_verdict": {
@@ -2682,7 +2690,7 @@
         "note": "trimmed to top 6 of 13 non-scope-blind verdicts for state-write arg-size limits; full 465-verdict record committed at task-proposals-audit.ndjson"
       },
       "topic": "completeness",
-      "session_id": "sess_1794448865_9a2e5c_905"
+      "session_id": "sess_1794448865_9a2e5c"
     },
     {
       "project_number": 906,
