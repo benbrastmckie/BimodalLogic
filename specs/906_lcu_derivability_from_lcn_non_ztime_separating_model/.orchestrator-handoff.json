@@ -1,19 +1,19 @@
 {
   "status": "partial",
-  "dispatch_seq": 23,
-  "summary": "Completed Phase 2 of the task 906 plan: recorded the research's non-derivability verdict (lcU not derivable from TM+ plus LC_n plus mirror at .Base/RuleSet.none, witnessed by the ℚ translation frame) in PlusLCSchema.lean's module and lcU docstrings, plus the .Dense/.RTime argued-not-compiled extension, the .ZTime no-separating-model position, and the guarded-until-form candidate note. All five pre-existing 'open and unclaimed' validity sentences left textually unchanged. This dispatch's own Phase Mission restricted it to Phase 2 only; three phases remain.",
+  "dispatch_seq": 24,
+  "summary": "Completed Phase 3 of the task 906 plan: transcribed the deterministic soundness arm (lcAnte_iff_lcCons_of_deterministic, lcN_plusValidOn_of_deterministic, isLCAxiom_plusValidDetIn_base, ext_sound_detIn) into FormalSystem/Metalogic/LCExtension.lean, with the Deterministic.Validity import, docstrings, Main Results update and completeness-target paragraph. Measured all four axiom profiles ([propext, Classical.choice, Quot.sound]) and pinned them in LCExtensionTest.lean, correcting its docstring count from six to ten. check-metalogic-cycles.sh green (no new cycle, no allowlist surplus); both scoped builds green and warning-free. This dispatch's own Phase Mission restricted it to Phase 3 only; two phases remain.",
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-2-handoff-20261112T053703Z.md",
-      "summary": "Phase-end handoff recording Phase 2's completion and the forward-reference design decision for Phase 3's not-yet-landed declaration names."
+      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-3-handoff-20261112T055506Z.md",
+      "summary": "Phase-end handoff recording Phase 3's completion, the show-to-rfl-lemma deviation (plan-authorized), and the open/qualify reconciliation decisions."
     }
   ],
-  "phases_completed": 2,
+  "phases_completed": 3,
   "phases_total": 5,
   "blockers": [],
   "plan_markers_verified": true,
-  "continuation_path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-2-handoff-20261112T053703Z.md",
-  "next_action_hint": "Dispatch Phase 3: transcribe the deterministic soundness arm into FormalSystem/Metalogic/LCExtension.lean (lcAnte_iff_lcCons_of_deterministic, lcN_plusValidOn_of_deterministic, isLCAxiom_plusValidDetIn_base, ext_sound_detIn), add the Deterministic.Validity import, measure axiom profiles, and pin them in Tests/BimodalTest/Metalogic/LCExtensionTest.lean.",
-  "git_checkpoint": "8e1a67068 (task 906 phase 2: record the result in PlusLCSchema.lean) -- tree was green throughout, no separate snapshot needed"
+  "continuation_path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-3-handoff-20261112T055506Z.md",
+  "next_action_hint": "Dispatch Phase 4: add docs/theorem-index.md rows for the four new LCExtension.lean declarations. Territory-contended with task 899 -- check 899's live status in specs/state.json before entering; close [BLOCKED] per the plan's Territory section if 899 is still implementing.",
+  "git_checkpoint": "30d42deca (task 906 phase 3: the deterministic soundness arm in LCExtension.lean) -- tree was green throughout, no separate snapshot needed"
 }
