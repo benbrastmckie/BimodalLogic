@@ -137,6 +137,17 @@ theorem int_equiv_trans {φ ψ χ : Formula} (h1 : IntEquiv φ ψ) (h2 : IntEqui
     IntEquiv φ χ :=
   fun M t => (h1 M t).trans (h2 M t)
 
+/-! ## Box-Free Formulas -/
+
+/-- A formula is box-free: contains no `box` constructor. -/
+def isBoxFree : Formula → Bool
+  | .atom _ => true
+  | .bot => true
+  | .imp φ ψ => isBoxFree φ && isBoxFree ψ
+  | .box _ => false
+  | .untl ψ φ => isBoxFree φ && isBoxFree ψ
+  | .snce ψ φ => isBoxFree φ && isBoxFree ψ
+
 /-! ## Semantic Purity Predicates -/
 
 /-- A formula is "pure past" if its truth at t depends only on the past of t. -/

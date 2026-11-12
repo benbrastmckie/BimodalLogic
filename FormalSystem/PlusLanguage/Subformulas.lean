@@ -267,7 +267,7 @@ makes the `box` and `stab` fields of an `Anchored` certificate — each of which
 hypothesis `.box ψ ∈ plusSubformulaClosure φ` or `.stab ψ ∈ plusSubformulaClosure φ` — vacuously
 satisfiable, collapsing `Anchored` to its `now` and `atom` fields.
 
-`isBoxFree` in `Metalogic/Expressiveness/Separation/SemanticBridge.lean` is the `Formula`
+`isBoxFree` in `Metalogic/Expressiveness/Separation/Defs.lean` is the `Formula`
 analogue and is NOT reusable here: it recurses over the six constructors of `Formula`, which is a
 different inductive type with no stability modal and no supertype shared with `PlusFormula`. So
 this is a parallel definition rather than a generalization, exactly as `PlusFormula.subformulas`

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #900
 
 - **Task**: 900 - Bridge: ZTime-valid L formulas yield TM-plus theorems under PlusFormula substitution
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: None live (899 `[COMPLETED]`; no artifact of it is read by this plan)
 - **Research Inputs**: specs/900_linear_ztime_validity_tm_plus_substitution_bridge/reports/01_ztime-validity-tm-plus-substitution-bridge.md
@@ -141,7 +141,7 @@ this plan:
 Phases within the same wave can execute in parallel. This plan is fully sequential: each phase
 reads a state the previous one produces.
 
-### Phase 1: Relocate `isBoxFree` into `Separation/Defs.lean` [NOT STARTED]
+### Phase 1: Relocate `isBoxFree` into `Separation/Defs.lean` [COMPLETED]
 
 **Goal**: `isBoxFree` is declared in `Separation/Defs.lean` instead of `Separation/SemanticBridge.lean`,
 with no signature change and no call-site edit, so the bridge module can import the light
@@ -149,17 +149,17 @@ with no signature change and no call-site edit, so the bridge module can import 
 
 **Tasks**:
 
-- [ ] Re-read both Separation files immediately before editing (a sibling task is live on this tree).
-- [ ] Move the `/-! ## Box-Free Formulas -/` section marker and the `def isBoxFree : Formula → Bool`
+- [x] Re-read both Separation files immediately before editing (a sibling task is live on this tree).
+- [x] Move the `/-! ## Box-Free Formulas -/` section marker and the `def isBoxFree : Formula → Bool`
       declaration, with its doc comment, verbatim out of `SemanticBridge.lean` and into
       `Defs.lean`. Place it after `IntTruth` and before the purity predicates. Do not change the
       signature, the arm order, the name, or the doc comment text.
-- [ ] Confirm no `import` line needs to be added to `Defs.lean`: it already imports
+- [x] Confirm no `import` line needs to be added to `Defs.lean`: it already imports
       `FormalSystem.Syntax.Formula`, which is all `isBoxFree` needs.
-- [ ] Confirm `SemanticBridge.lean`'s own `isBoxFree` call sites still resolve with no edit —
+- [x] Confirm `SemanticBridge.lean`'s own `isBoxFree` call sites still resolve with no edit —
       it imports `Separation.Defs` and both files share the namespace
       `FormalSystem.Metalogic.Expressiveness.Separation`.
-- [ ] Update the one prose cross-reference that names `isBoxFree`'s old home: the `##
+- [x] Update the one prose cross-reference that names `isBoxFree`'s old home: the `##
       box/stab-freeness` subsection of `FormalSystem/PlusLanguage/Subformulas.lean`'s module
       docstring says `isBoxFree` is "in `Metalogic/Expressiveness/Separation/SemanticBridge.lean`".
       Change the named file to `Defs.lean`; change nothing else in that paragraph. If the sentence
@@ -167,11 +167,13 @@ with no signature change and no call-site edit, so the bridge module can import 
       re-grep `FormalSystem/` for `isBoxFree` outside the two Separation files and repair whatever
       prose reference the grep returns instead, recording the substitution in the phase notes —
       do not skip the step and do not invent a target.
-- [ ] Verify the move by the guarded build in Verification below.
-- [ ] Run `bash scripts/typst-sync-check.sh --counts-only`. A pure relocation should leave every
+- [x] Verify the move by the guarded build in Verification below.
+- [x] Run `bash scripts/typst-sync-check.sh --counts-only`. A pure relocation should leave every
       tree total unchanged; if it reports drift, run `bash scripts/typst-sync-check.sh --fix` and
-      stage `typst/generated/status.typ` in this same phase's commit.
-- [ ] Commit the phase as one atomic change (see Commit Mode).
+      stage `typst/generated/status.typ` in this same phase's commit. *(deviation: altered — `--counts-only`
+      reported MISMATCH_COUNT=0, so the conditional `--fix` did not fire and
+      `typst/generated/status.typ` is not in this phase's commit, as the plan's conditional allowed)*
+- [x] Commit the phase as one atomic change (see Commit Mode).
 
 **Timing**: 0.75 hours
 

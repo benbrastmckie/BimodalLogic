@@ -37,17 +37,6 @@ def zStructureToInt {sig : MonadicSignature}
     (Z : ZStructure sig) (atomMap : Formula → sig.preds) : IntStructure where
   val a := { t : ℤ | Z.interp (atomMap (.atom a)) t }
 
-/-! ## Box-Free Formulas -/
-
-/-- A formula is box-free: contains no `box` constructor. -/
-def isBoxFree : Formula → Bool
-  | .atom _ => true
-  | .bot => true
-  | .imp φ ψ => isBoxFree φ && isBoxFree ψ
-  | .box _ => false
-  | .untl ψ φ => isBoxFree φ && isBoxFree ψ
-  | .snce ψ φ => isBoxFree φ && isBoxFree ψ
-
 /-! ## Core Bridge: IntTruth ↔ TemporalTruth on Z-carrier -/
 
 /--
