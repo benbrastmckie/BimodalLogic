@@ -84,6 +84,40 @@ tree, `intOrder_omega_cofinal`, available over `ℤ` alone. Nor is any derivabil
 claim made: nothing here says `lcU` is a TM⁺ theorem, that TM⁺ extended by it is complete, or
 that `lcU` follows from `lcN` or `lcN` from `lcU`.
 
+**`lcU` is not derivable from `LC_n` at `.Base`.** `lcU α β` is **not** a theorem of TM⁺ plus the
+`LC_n` axiom set plus its `reflectTime` mirror, at `FrameClass.Base` with `RuleSet.none`. The
+witness is the translation frame over `ℚ`, with every atom's truth set `{q : ℚ | q < 1}`, read at
+the identity history and time `0`; the refuting instance takes `β := α`, an atom, so the witness
+refutes the general case and the state-local-`β` restriction together. The argument runs through
+the deterministic subclass `DetSat .Base`, where `⟐φ ↔ φ` and `⊡φ ↔ φ`, so `lcAnte n α` and
+`lcCons n α` coincide and `lcN n α` is valid for the reason `X → X`, at every arity and every
+parameter — hence the argument does **not** wait on `LC_n`'s own open `.Base` validity. The
+compiled record is `specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean`, wired into
+`scripts/check-evidence-probes.sh`; the library halves it rests on are
+`dstab_iff_of_deterministic` (`PlusLanguage/PlusDeterminism.lean`) and
+`lcAnte_iff_lcCons_of_deterministic`, `lcN_plusValidOn_of_deterministic`,
+`isLCAxiom_plusValidDetIn_base`, `ext_sound_detIn` (`Metalogic/LCExtension.lean`), so a reader can
+follow the argument without the probe.
+
+**The `.Dense` and `.RTime` extension is argued, not compiled.** The same non-derivability is
+expected, by `Sat` antitonicity, to extend from `.Base` to `.Dense` and `.RTime`; this is a
+Medium-confidence finding and nothing here compiles it.
+
+**The `.ZTime` position.** `lcN_plusValidZTime` and `lcU_plusValidZTime` below are both compiled,
+so the two extensions have exactly the same `.ZTime` models and **no** `.ZTime` separating model
+exists in any form — an apparent one would be an error in the attempt. The `.ZTime` derivability
+question is therefore open and not approachable by any model-theoretic countermodel.
+
+**A candidate replacement below `.ZTime`.** The guarded until-form
+`⊡G≤(⟐α → ⟐(⟐β U ⟐α)) → ⟐G≤(⟐α → (⟐β U ⟐α))` collapses, on both sides, to `G≤(α → (β U α))`
+under determinism, so the countermodel above says nothing against it; it is the `lcN`-shaped
+candidate if an until-form schema below `.ZTime` is wanted, where `lcU` is now a non-candidate.
+This is argued, not compiled, and no `def` for it is introduced here.
+
+**Derivability and validity are different questions.** The non-derivability verdict above settles
+nothing about `.Base` **validity**: `.Base` validity of `lcN` and of `lcU` both stay
+**open and unclaimed**, in those words, everywhere this module states them.
+
 `PlusLimitClosure.lean`'s `blc` is **not** subsumed by `lcN`, and does not subsume it. `blc` is
 the `n = 1` limit-closure formula valid at `.Base`, by Zorn plus the Extension Theorem; `lcN` is
 the `n ≥ 1` **cycling** schema valid at `.ZTime`, by the ω-chain. The two differ in frame class,
@@ -238,10 +272,18 @@ present state, an until-commitment `⟐β U ⟐α` from each `⟐α`-point; the 
 an `⟐α`-point or the start of such an until-commitment.
 
 This is **not** an instance of `lcN`, and `lcN 1` is not this formula: see the module docstring's
-`LCU` section for the two side by side. The schema is a `def` only — no derivability or
-completeness claim is made about it anywhere in this tree. What is claimed is its semantic
-validity over the `ℤ` fibre and at `.ZTime`, by `lcU_plusValidInt` and `lcU_plusValidZTime`;
-`.Base` validity is **open and unclaimed**.
+`LCU` section for the two side by side. The schema is a `def` only — no completeness claim is
+made about it anywhere in this tree, and the only derivability claim made about it is the
+negative one below. What is claimed is its semantic validity over the `ℤ` fibre and at `.ZTime`,
+by `lcU_plusValidInt` and `lcU_plusValidZTime`; `.Base` validity is **open and unclaimed**.
+
+**Non-derivability at `.Base`.** `lcU α β` is **not** a theorem of TM⁺ plus `LC_n` plus its
+`reflectTime` mirror, at `FrameClass.Base` with `RuleSet.none` — witnessed by the translation
+frame over `ℚ` (atom truth set `{q : ℚ | q < 1}`, identity history, time `0`), argued through the
+deterministic subclass where `lcN` is valid for the reason `X → X`. See the module docstring's
+`LCU` section for the full argument, the library halves it rests on, and the
+`.Dense`/`.RTime`/`.ZTime` positions; `.Base` **validity** of `lcU` stays open and unclaimed,
+exactly as above.
 
 Paper: — (formalization-native; the manuscript states no limit-closure schema)
 -/

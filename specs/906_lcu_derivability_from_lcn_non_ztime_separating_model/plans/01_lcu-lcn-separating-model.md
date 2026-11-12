@@ -400,18 +400,19 @@ surface a Lean line-count change touches.
 
 ---
 
-### Phase 2: Record the Result in `PlusLCSchema.lean` [NOT STARTED]
+### Phase 2: Record the Result in `PlusLCSchema.lean` [COMPLETED]
 
 **Goal**: A reader of the limit-closure schema module learns that the until-form's derivability
 from `LC_n` is settled negatively below `.ZTime`, that its `.Base` validity is still open, and
 which shape is the live candidate — without having to find a task report.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/PlusLanguage/PlusLCSchema.lean` immediately before editing (concurrency
+- [x] Re-read `FormalSystem/PlusLanguage/PlusLCSchema.lean` immediately before editing (concurrency
       note item (1)), paying attention to the five sites carrying "open and unclaimed" (`:81`,
       `:224`, `:244`, `:454`, `:482` at authoring time — re-locate them live, since line numbers
-      move).
-- [ ] Add, to the module docstring's `LCU` discussion and to `lcU`'s own declaration docstring, the
+      move). *(completed: re-grepped live, confirmed at :81, :224, :244, :454, :482 before editing;
+      all five textually unchanged after editing, now at :81, :258, :278, :496, :524)*
+- [x] Add, to the module docstring's `LCU` discussion and to `lcU`'s own declaration docstring, the
       derivability verdict in these terms and no stronger: `lcU α β` is **not** derivable from TM⁺
       plus the `LC_n` axiom set plus its `reflectTime` mirror at `FrameClass.Base`, with
       `RuleSet.none`; the witness is the translation frame over ℚ with atom truth set
@@ -419,29 +420,41 @@ which shape is the live candidate — without having to find a task report.
       deterministic subclass, where `lcN` is valid for the reason `X → X`, so it does **not** wait
       on `LC_n`'s open `.Base` validity. Name `specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean`
       as the compiled record (it is wired into CI in Phase 5), and name the library halves landed
-      in Phases 1 and 3 so a reader can follow the argument without the probe.
-- [ ] State the extension to `.Dense` and `.RTime` as what the report says it is: a consequence of
+      in Phases 1 and 3 so a reader can follow the argument without the probe. *(completed: added
+      "`lcU` is not derivable from `LC_n` at `.Base`" paragraph to the module docstring and a
+      "Non-derivability at `.Base`" paragraph to `lcU`'s own docstring; both name the probe path
+      and the five library-half names, one landed in Phase 1, four more to land in Phase 3)*
+- [x] State the extension to `.Dense` and `.RTime` as what the report says it is: a consequence of
       `Sat` antitonicity, argued and **not compiled** (report Finding 9, Medium confidence). Do not
-      write it as a compiled fact.
-- [ ] State the `.ZTime` position explicitly, so Recommendation 5 is recorded rather than
+      write it as a compiled fact. *(completed: "The `.Dense` and `.RTime` extension is argued, not
+      compiled" paragraph added to the module docstring)*
+- [x] State the `.ZTime` position explicitly, so Recommendation 5 is recorded rather than
       re-discovered: both `lcN_plusValidZTime` and `lcU_plusValidZTime` are compiled, so the two
       extensions have exactly the same `.ZTime` models and **no** `.ZTime` separating model exists
       in any form; any apparent one would be an error in the attempt. The `.ZTime` derivability
-      question is therefore open and not model-theoretically approachable.
-- [ ] Add the guarded-until-form note (report Recommendation 3 / Finding 6):
+      question is therefore open and not model-theoretically approachable. *(completed: "The
+      `.ZTime` position" paragraph added to the module docstring)*
+- [x] Add the guarded-until-form note (report Recommendation 3 / Finding 6):
       `⊡G≤(⟐α → ⟐(⟐β U ⟐α)) → ⟐G≤(⟐α → (⟐β U ⟐α))` collapses to `G≤(α → (β U α))` on both sides
       under determinism, so this countermodel says nothing against it; it is the `lcN`-shaped
       candidate if an until-form schema is wanted below `.ZTime`, where `lcU` is now a
       non-candidate. Tag it as argued-not-compiled, and do **not** introduce a `def` for it — this
-      plan adds no new schema.
-- [ ] Leave every "open and unclaimed" **validity** sentence exactly as it stands. The additions are
+      plan adds no new schema. *(completed: "A candidate replacement below `.ZTime`" paragraph
+      added to the module docstring; no `def` introduced)*
+- [x] Leave every "open and unclaimed" **validity** sentence exactly as it stands. The additions are
       about derivability; nothing in this phase may be read as settling validity. Say so in one
-      clause at the point where the two sit closest together.
-- [ ] Update `FormalSystem/PlusLanguage/README.md`'s `PlusLCSchema.lean` inventory row description
+      clause at the point where the two sit closest together. *(completed: all five original
+      "open and unclaimed" sentences left textually unchanged; "Derivability and validity are
+      different questions" paragraph added to the module docstring, and a closing clause added to
+      `lcU`'s own docstring, both distinguishing derivability from validity)*
+- [x] Update `FormalSystem/PlusLanguage/README.md`'s `PlusLCSchema.lean` inventory row description
       with one clause recording the non-derivability verdict and its frame classes, keeping the
-      existing ".Base validity is open and unclaimed for both" clause intact.
-- [ ] Regenerate `typst/generated/status.typ` with `bash scripts/typst-sync-check.sh --fix` and
-      stage it in the SAME commit as the `.lean` change.
+      existing ".Base validity is open and unclaimed for both" clause intact. *(completed: clause
+      added right after the intact ".Base validity is open and unclaimed for both" phrase;
+      line-count cell left untouched, per the Phase 1 precedent that counts regenerate in Phase 5)*
+- [x] Regenerate `typst/generated/status.typ` with `bash scripts/typst-sync-check.sh --fix` and
+      stage it in the SAME commit as the `.lean` change. *(completed: --fix run, then --counts-only
+      confirmed MISMATCH_COUNT=0 before commit)*
 
 **Timing**: 0.75 hours
 

@@ -1,37 +1,6 @@
 {
-  "status": "partial",
-  "dispatch_seq": 22,
-  "partial_progress": {
-    "stage": "hard_mode_single_phase_complete",
-    "details": "Phase 1 (The dstab Sibling of the Determinism Collapse) completed and committed. This dispatch's own Phase Mission restricted it to Phase 1 only (\"Implement phase 1 only. Do not continue past this phase.\"). Four phases remain (2: record result in PlusLCSchema.lean; 3: deterministic soundness arm in LCExtension.lean; 4: theorem-index rows, territory-contended with task 899 which is now completed so the collision may no longer apply; 5: probe custody, full gate set, summary).",
-    "handoff_path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-1-handoff-20261112T052438Z.md",
-    "phases_completed": 1,
-    "phases_total": 5
-  },
-  "artifacts": [
-    {
-      "type": "handoff",
-      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-1-handoff-20261112T052438Z.md",
-      "summary": "Phase-end handoff: dstab_iff_of_deterministic landed in PlusDeterminism.lean, measured axiom profile [propext, Classical.choice, Quot.sound] (wider than the original four's [propext]-only), Risk-table branch taken and recorded; next action is Phase 2."
-    }
-  ],
-  "completion_data": {
-    "completion_summary": "Landed dstab_iff_of_deterministic (the dstab sibling of the determinism collapse) in FormalSystem/PlusLanguage/PlusDeterminism.lean as a verbatim transcription of the compiled probe, measured its axiom profile at [propext, Classical.choice, Quot.sound], and recorded the non-propext branch in the module's Axiom pin (C4) block and Why-this-is-choice-free section without widening the existing four-name choice-free claim. Regenerated typst/generated/status.typ and committed Phase 1."
-  },
-  "modified_files": [
-    "FormalSystem/PlusLanguage/PlusDeterminism.lean",
-    "FormalSystem/PlusLanguage/README.md",
-    "typst/generated/status.typ"
-  ],
-  "memory_candidates": [
-    {
-      "content": "When a plan's Scope Hypothesis flags an axiom-profile measurement as uncertain and pre-writes a two-branch mitigation (one branch if the measured profile matches an existing claim, another if it does not), the non-matching branch is not a failure or a deviation -- it is a planned outcome with its own pre-written instructions. Execute the named branch exactly: never widen an existing multi-declaration axiom-profile claim (e.g. \"all N report [propext] only\") to cover a new name whose measured profile differs; instead add the new name's measured profile on its own line/paragraph with one sentence naming the specific step that costs the extra axiom (traceable to a specific lemma's own proof technique, e.g. a classical by_contra discharge), and add an explicit scoping sentence to any prose claim that would otherwise read as covering the new name.",
-      "category": "PATTERN",
-      "source_artifact": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-1-handoff-20261112T052438Z.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["axiom-profile", "choice-free", "measured-not-assumed", "plan-branch", "lean4", "print-axioms"]
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 23,
   "metadata": {
     "session_id": "sess_1794448865_9a2e5c",
     "agent_type": "general-implementation-agent",
