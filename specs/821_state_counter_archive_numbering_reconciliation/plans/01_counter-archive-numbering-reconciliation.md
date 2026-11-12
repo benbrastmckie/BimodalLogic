@@ -228,31 +228,37 @@ to confirm no code hunk was crossed; no suite is claimed for a comment-only edit
 
 ---
 
-### Phase 3: Document Why Archive Rows Sit Above the Counter [NOT STARTED]
+### Phase 3: Document Why Archive Rows Sit Above the Counter [COMPLETED]
 
 **Goal**: Give a future reader a discoverable, durable statement — at the place a reader actually
 looks up `next_project_number` — that archive `project_number` values above the counter are an
 expected steady state and must not be treated as a counter defect.
 
 **Tasks**:
-- [ ] Re-read `agent-system/extensions/core/context/reference/state-management-schema.md` in the
-      source-store repository immediately before editing.
-- [ ] Add a short subsection after the `### Top-Level Fields` table and before
+- [x] Re-read `agent-system/extensions/core/context/reference/state-management-schema.md` in the
+      source-store repository immediately before editing. *(completed)*
+- [x] Add a short subsection after the `### Top-Level Fields` table and before
       `### Retired Top-Level Fields`, titled for the condition it explains (for example
       `### Archive Numbers Above next_project_number`). It states: the allocator searches upward
       from the maximum *active* `project_number` for the smallest number absent from the in-use
       set, so a counter below some archive-held number is a correct, expected steady state;
       Check 12 passes it deliberately; and raising the counter past the archive maximum strands
       the dense free range below it without satisfying any invariant the allocator enforces.
-- [ ] Ground the subsection in a durable anchor rather than an ephemeral one: cite
+      *(completed: titled "### Archive Numbers Above next_project_number")*
+- [x] Ground the subsection in a durable anchor rather than an ephemeral one: cite
       `lib/project-number-inuse.sh` and Check 12 by name. Do not cite a task number, and do not
       phrase the subsection relative to an earlier arrangement ("no longer", "previously",
-      "formerly", "used to") — both rules bind this file.
-- [ ] Declare and reconcile the coupled generated surface: the file's own
+      "formerly", "used to") — both rules bind this file. *(completed: cites
+      `scripts/lib/project-number-inuse.sh` and Check 12 by name; grep for the four forbidden
+      phrases and for a task-number citation returns no matches)*
+- [x] Declare and reconcile the coupled generated surface: the file's own
       `index-entries.json` entry carries a `line_count` that this edit moves. The detecting check
       (`check-extension-docs.sh` Rule R) is advisory in this repository, not commit-blocking, so
       the regeneration lands in Phase 4's redeploy; the declaration is owed here regardless.
-- [ ] Run the covering suite subset from the source-store repository root and record the result.
+      *(completed: `line_count` updated 762 -> 782 in `index-entries.json`)*
+- [x] Run the covering suite subset from the source-store repository root and record the result.
+      *(completed: `suite_selection_select` over both changed paths confirmed exactly the six
+      suites named in Tier Justification; `run-all.sh --only` over them: 6 passed, 0 failed)*
 
 **Timing**: 0.75 hours
 
