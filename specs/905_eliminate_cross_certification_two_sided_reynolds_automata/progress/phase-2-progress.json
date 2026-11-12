@@ -1,0 +1,21 @@
+{
+  "phase": 2,
+  "phase_name": "Drop both clause (a)s and the clause-(a) first-transition obligation",
+  "started_at": "2026-11-12T00:00:00Z",
+  "last_updated": "2026-11-12T00:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-read sections 5.1-5.4 before editing", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Reconcile the clause-(a)/cross-certif hit list before editing", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Rewrite section 5.2's Viol+ definition block to clause-(b)-only form", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 4, "description": "Keep ft_lin(v) definition and well-definedness remark unchanged", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Delete the clause-(a) naming sentence and parenthetical omega-regularity argument", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 6, "description": "Add Theorem 1 note at section 5.2 with purity citations and Lemma 3.1 transport", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 7, "description": "Record the Strictness paragraph (conditional shape of the subsumption)", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 8, "description": "In 5.3, delete the Viol- clause-(a) certification clause and state the Theorem 1 mirror", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 9, "description": "In 5.4, delete the clause-(a) first-transition parenthetical", "status": "done", "files_touched": ["specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

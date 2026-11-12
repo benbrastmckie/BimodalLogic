@@ -168,46 +168,54 @@ This is independent of (Q3) and is required by clause (b), which survives the el
 
 ---
 
-### Phase 2: Drop both clause (a)s and the clause-(a) first-transition obligation [NOT STARTED]
+### Phase 2: Drop both clause (a)s and the clause-(a) first-transition obligation [COMPLETED]
 
 **Goal**: State `Viol+` and `Viol-` in their clause-(b)-only form, delete the clause-(a)
 omega-regularity parenthetical and its mirror, and remove the clause-(a) obligation from
 `rho+(s_0+, c-hat)` — recording Theorem 1 as the licence for all of it.
 
 **Tasks**:
-- [ ] Re-read sections 5.1-5.4 immediately before editing, including Lemma 5.1 as Phase 1 left
-      it.
-- [ ] Reconcile the clause-(a) hit list before editing: `grep -n 'clause (a)' <target>` and
+- [x] Re-read sections 5.1-5.4 immediately before editing, including Lemma 5.1 as Phase 1 left
+      it. *(completed)*
+- [x] Reconcile the clause-(a) hit list before editing: `grep -n 'clause (a)' <target>` and
       `grep -n -i 'cross-certif' <target>`, and confirm the hits fall into the four sites this
       phase owns (the `Viol+` definition block, the clause-(a) parenthetical after it, the
       `Viol-` mirror sentence, the 5.4 first-transition parenthetical) plus the five sites owned
       by Phases 4 and 5 (Claim 1+'s proof; and the Executive Summary bullet, Finding 14.4's Step
       3, Finding 16.3, Decision 5, Recommendation 5, Finding 17's mention, and the evidence-tier
       row). Any hit outside those two groups is a new site: record it in the issue log and bring
-      it into this phase rather than editing silently.
-- [ ] Rewrite section 5.2's `Viol+` definition block to the clause-(b)-only form
-      `Viol+ := {v : there is pt with diamond-dot delta_pt in v_0 and v in Viol+_pt}`.
-- [ ] Keep the `ft_lin(v)` definition and its well-definedness remark: Theorem 1 instantiates
+      it into this phase rather than editing silently. *(completed: `grep -n 'clause (a)'`
+      returned 5 distinct lines, not the Scope Hypothesis's estimated 6 -- lines 335 and 826 each
+      contain the substring twice, which is the likely source of the planning-dispatch's count.
+      All 5 lines mapped cleanly into the two expected ownership groups (335/347/351 this phase,
+      415 Phase 4, 826 Phase 3); no unowned site was found. Logged as a minor issue, not a scope
+      escalation.)*
+- [x] Rewrite section 5.2's `Viol+` definition block to the clause-(b)-only form
+      `Viol+ := {v : there is pt with diamond-dot delta_pt in v_0 and v in Viol+_pt}`. *(completed)*
+- [x] Keep the `ft_lin(v)` definition and its well-definedness remark: Theorem 1 instantiates
       `gamma` at `delta_{ft_lin}`, so the notion is still consumed, now from inside clause (b).
-- [ ] Delete the sentence naming clause (a) the cross-certification clause and the parenthetical
+      *(completed: left textually unchanged)*
+- [x] Delete the sentence naming clause (a) the cross-certification clause and the parenthetical
       omega-regularity argument for it, and restate the remaining regularity claim as Lemma 5.2
-      alone, which already covers clause (b) and is unchanged.
-- [ ] Add a short Theorem-1 note at section 5.2 recording *why* the clause can go: for a `gamma`
+      alone, which already covers clause (b) and is unchanged. *(completed)*
+- [x] Add a short Theorem-1 note at section 5.2 recording *why* the clause can go: for a `gamma`
       pure in the automaton's own reading direction, `gamma-bar`'s truth at position 0 is blind to
       the hypothetical cut type, so a certified-but-possibly-wrong type is still a usable ticket
       into clause (b), and the clause-(a) condition is the instance `gamma := delta_{ft_lin(v)}`
       at `i = 0` of clause (b) itself. Cite the purity facts at their compiled locations
       (`Formula.lean:309-316` for `IsPureFuture`'s closure under `imp` and `bot`,
-      `:318-325` for `IsPurePast`) and Lemma 3.1 for transport to the linear side.
-- [ ] Record the conditional shape of the subsumption honestly: the inclusion holds on words
+      `:318-325` for `IsPurePast`) and Lemma 3.1 for transport to the linear side. *(completed,
+      as a named "Theorem 1 (the elimination; derived)" with full proof)*
+- [x] Record the conditional shape of the subsumption honestly: the inclusion holds on words
       whose first letter certifies at least one type of the opposite polarity, so `Viol+(b)` is a
-      proper subset of the old `Viol+`, and both languages strictly shrink.
-- [ ] In section 5.3, delete the clause reporting that `Viol-`'s clause (a) certifies the
-      past-type, and state the mirror of the Theorem-1 note under `reflectTime`.
-- [ ] In section 5.4, delete the parenthetical "(and, for clause (a), the obligation to check
+      proper subset of the old `Viol+`, and both languages strictly shrink. *(completed, as the
+      "Strictness" paragraph following the Theorem 1 note)*
+- [x] In section 5.3, delete the clause reporting that `Viol-`'s clause (a) certifies the
+      past-type, and state the mirror of the Theorem-1 note under `reflectTime`. *(completed)*
+- [x] In section 5.4, delete the parenthetical "(and, for clause (a), the obligation to check
       `ft_lin` against `c-hat`)", leaving `rho+(s_0+, c-hat)` resolving only
       `{pt : diamond-dot delta_pt in c-hat}`. Leave the Consequence paragraph (the single fixed
-      atom `b_0+`, `aaAnte` unchanged) untouched.
+      atom `b_0+`, `aaAnte` unchanged) untouched. *(completed)*
 
 **Timing**: 0.75 hours
 

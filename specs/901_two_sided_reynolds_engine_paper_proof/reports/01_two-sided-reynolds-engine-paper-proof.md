@@ -326,13 +326,20 @@ and the Boolean cases componentwise. Hence `Π_{i+1}` is a function of `Π_i` an
 #### 5.2 The forward automaton
 
 ```
-Viol⁺ := {v ∈ Ĉ^ω :  (a) ft_lin(v) is not certified by v_0, i.e. ⟐δ_{ft_lin(v)} ∉ v_0;  or
-                      (b) ∃ pt with ⟐δ_pt ∈ v_0 and v ∈ Viol⁺_pt }
+Viol⁺ := {v ∈ Ĉ^ω :  ∃ pt with ⟐δ_pt ∈ v_0 and v ∈ Viol⁺_pt }
 ```
 
 where `ft_lin(v) := {β ∈ FutLits : β̄ true at position 0 of v}` (well defined: `β̄` is pure-future by Lemma 3.1, so its truth at `0` depends only on `v`).
 
-Clause (b) is the forward half of badness, with the index taken over exactly the certified past-types; clause (a) is the **cross-certification** clause whose purpose is Finding 14.4. Both are ω-regular (clause (a): `ft_lin(v)` is determined by finitely many LTL conditions on `v`, and `v_0` is the first letter).
+`Viol⁺` is the forward half of badness, with the index taken over exactly the certified past-types; it is ω-regular by Lemma 5.2 alone.
+
+**Theorem 1 (the elimination; derived).** For `v ∈ Ĉ^ω` whose first letter certifies at least one past-type (`∃ pt ⊆ PastLits` with `⟐δ_pt ∈ v_0`), the condition `⟐δ_{ft_lin(v)} ∉ v_0` already implies `v ∈ Viol⁺_pt`, i.e. membership in the clause-(b)-only `Viol⁺` above. Dually for the backward direction.
+
+*Proof.* Set `γ := δ_{ft_lin(v)}`. Then `γ ∈ cl(φ)` (Finding 1.3), and `γ` is pure-future: it is a conjunction of `FutLits`-members and their negations, each a future component of a `sepZ` clause and so `IsPureFuture`, and `IsPureFuture` is closed under `imp` and has `bot` (compiled, `Formula.lean:309-316`), hence closed under negation and conjunction. By Lemma 3.1 the bar-translation sends this closure to pure-future *linear* formulas, so `γ̄`'s truth at position `0` is a condition on `v` alone — it consults no pure-past subformula value, in particular not the hypothetical cut past-type `pt` that clause (b) ranges over (that hypothetical value is all `Π_0` controls, Lemma 5.1). And `γ̄` is true at `0` of `v` by construction: `γ̄ = ⋀_{β ∈ ft_lin(v)} β̄ ∧ ⋀_{β ∈ FutLits \ ft_lin(v)} ¬β̄`, and `ft_lin(v)` is exactly the set of `β` with `β̄` true at `0`. So, for the certified `pt`, `γ̄` is true at `i = 0` of the bi-infinite word with forward half `v` and cut past-type `pt`, while `⟐γ ∉ v_0` by hypothesis — a forward violation at `i = 0` under `pt`. Hence `v ∈ Viol⁺_pt`. ∎ The mirror is the `reflectTime` image, using `IsPurePast`'s closure under `imp`/`bot` (compiled, `Formula.lean:318-325`) in place of `IsPureFuture`'s.
+
+A certified-but-possibly-wrong past-type is therefore already a usable ticket into clause (b) for a `γ` pure in the automaton's own reading direction: clause (b)'s evaluation of such a `γ̄` is blind to which `pt` is hypothesized, so the dropped clause's instance is subsumed rather than lost — this is why the clause-(b)-only definition above loses nothing that the hypothesis covers.
+
+**Strictness.** The inclusion needs the first-letter certification hypothesis: on a word whose first letter certifies no past-type at all, the clause-(b)-only `Viol⁺` is empty while the superseded two-clause form could still fire on its dropped clause, so the recognized language strictly shrinks; this is recorded honestly rather than claimed as a lossless rewrite.
 
 By Theorem 2 (held, `sec02:…`, citing McNaughton and Safra) and the inherited settled verdict that **Rabin, not Muller, is the acceptance type the ban mechanism consumes**, fix a deterministic Rabin automaton
 
@@ -344,11 +351,11 @@ over the alphabet `Ĉ`, accepting exactly `Viol⁺`, with `Q⁺ ∩ (L ∪ ecl(�
 
 #### 5.3 The backward automaton
 
-Mirror everything under `reflectTime` (compiled involution, `Formula.lean:reflect_time_involution`): `Viol⁻` reads the backward half `(v_0, v_{-1}, v_{-2}, …)`, its clause (b) ranges over certified future-types and its violations over positions `i ≤ 0`, and its clause (a) certifies the *past*-type. Fix a deterministic Rabin `A⁻ = (Q⁻, s₀⁻, ρ⁻, {(U⁻_i, V⁻_i)}_{i ≤ K⁻})`, `Q⁻` disjoint from everything else.
+Mirror everything under `reflectTime` (compiled involution, `Formula.lean:reflect_time_involution`): `Viol⁻` reads the backward half `(v_0, v_{-1}, v_{-2}, …)` and is stated in the same clause-(b)-only form, with its violations over positions `i ≤ 0` and its index ranging over certified future-types. Theorem 1's mirror licenses the same elimination here: for a `γ̄` pure-past — pure in the backward automaton's own reading direction — truth at position `0` of the backward word is a condition on `(v_0, v_{-1}, …)` alone, blind to which future-type `ft` is hypothesized at the cut, so the instance `γ := δ_{pt_lin(v)}` (`⟐δ_{pt_lin(v)} ∉ v_0`) is subsumed by clause (b) exactly as above, under the dual first-letter certification hypothesis and with the dual strictness caveat. Fix a deterministic Rabin `A⁻ = (Q⁻, s₀⁻, ρ⁻, {(U⁻_i, V⁻_i)}_{i ≤ K⁻})`, `Q⁻` disjoint from everything else.
 
 #### 5.4 The cut indexing is folded into the first transition
 
-Define `ρ⁺(s₀⁺, ĉ)` to be the initial state of the sub-automaton of `A⁺` that has already resolved `{pt : ⟐δ_pt ∈ ĉ}` (and, for clause (a), the obligation to check `ft_lin` against `ĉ`). This is legitimate because the index set is a function of the letter (Finding 4.4) and the automaton is deterministic.
+Define `ρ⁺(s₀⁺, ĉ)` to be the initial state of the sub-automaton of `A⁺` that has already resolved `{pt : ⟐δ_pt ∈ ĉ}`. This is legitimate because the index set is a function of the letter (Finding 4.4) and the automaton is deterministic.
 
 **Consequence.** The Auxiliary-Atoms rule needs only a *single fixed* initial-state atom `b₀⁺ := s₀⁺`, and `aaAnte b₀ Q k a p` (read verbatim in the probe) is used **unchanged**. This replaces the architecture's earlier reading, on which the initial state had to be "a function of `γ_{colour(w₀)}`" and `θ_f` had to state it. Derived; recorded as a decision.
 
