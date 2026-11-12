@@ -1,21 +1,15 @@
 {
-  "status": "planned",
-  "dispatch_seq": 11,
-  "phases_completed": 0,
-  "phases_total": 2,
-  "summary": "Wrote a 2-phase plan for the one reclamation item still open. Premise re-validation against live disk found Item 1 already discharged: .opencode_OLD/ was deleted during the research dispatch and no longer exists, so the plan verifies its absence rather than re-planning the deletion. Phase 1 deletes the two approved data/bmlogic-c8-clean .partial files (408,013,652 bytes combined, both re-confirmed at their recorded sizes) by explicit path under pre-delete STOP gates; Phase 2 is the final full-gate acceptance sweep confirming proof_steps.jsonl untouched and nothing staged. Plan passes validate-artifact.sh with 0 warnings.",
+  "status": "implemented",
+  "dispatch_seq": 16,
+  "summary": "Deleted the two abandoned data/bmlogic-c8-clean .partial checkpoint files (408,013,652 bytes combined) per the already-recorded user decision, re-verifying byte counts and mtimes immediately before deletion. Verified all three task acceptance criteria -- .opencode_OLD/ absent, decision recorded, proof_steps.jsonl byte-for-byte and mtime-for-mtime unchanged -- and confirmed Boneyard/ (225 tracked files) was not swept. Wrote the execution summary; approximately 451 MB reclaimed in total across both task items.",
   "blockers": [],
+  "phases_completed": 2,
+  "phases_total": 2,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/832_reclaim_opencode_old_and_data_partials/plans/01_reclaim-opencode-old-data-partials.md",
-      "summary": "Two-phase plan: delete the two user-approved data/*.partial abandoned checkpoints (389 MiB), then verify all three acceptance criteria under the full gate set."
+      "type": "summary",
+      "path": "specs/832_reclaim_opencode_old_and_data_partials/summaries/01_reclaim-opencode-old-data-partials-summary.md",
+      "summary": "Records deletion of the two abandoned data/bmlogic-c8-clean .partial checkpoint files, verification of all three acceptance criteria, and the total disk reclaimed."
     }
-  ],
-  "metadata": {
-    "session_id": "sess_1794503933_59a2b4_832",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  }
+  ]
 }

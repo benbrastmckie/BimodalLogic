@@ -1,10 +1,36 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 16,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/832_reclaim_opencode_old_and_data_partials/summaries/01_reclaim-opencode-old-data-partials-summary.md",
+      "summary": "Records deletion of the two abandoned data/bmlogic-c8-clean .partial checkpoint files (408,013,652 bytes) per the recorded user decision, verification of all three acceptance criteria, and confirmation that proof_steps.jsonl and Boneyard/ were untouched."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Deleted data/bmlogic-c8-clean.jsonl.partial (392,670,566 bytes) and data/bmlogic-c8-clean.checkpoint.partial (15,343,086 bytes) per the recorded user decision, after re-verifying byte counts and mtimes immediately beforehand. Verified all three task acceptance criteria (.opencode_OLD/ absent, decision recorded, proof_steps.jsonl byte-for-byte and mtime-for-mtime unchanged) and wrote the execution summary. Total disk reclaimed across both task items: ~451 MB."
+  },
+  "modified_files": [
+    "data/bmlogic-c8-clean.jsonl.partial",
+    "data/bmlogic-c8-clean.checkpoint.partial",
+    "specs/832_reclaim_opencode_old_and_data_partials/summaries/01_reclaim-opencode-old-data-partials-summary.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "For an irreversible deletion of a gitignored, zero-tracked-files local-disk path (no git history to recover from), use a two-step pattern: (1) record the user's decision once in a task .decisions.json, including an 'obligation' field naming exactly what the decision is meant to discharge; (2) immediately before deleting, independently re-verify the decision is still current AND re-check the target's exact byte size and mtime against the figures the decision was given about -- a changed size/mtime means the file is no longer the artifact the user approved, and is a STOP-and-report condition, not a proceed-with-caution one. Delete only by explicit full path, never glob or -r.",
+      "category": "PATTERN",
+      "source_artifact": "specs/832_reclaim_opencode_old_and_data_partials/summaries/01_reclaim-opencode-old-data-partials-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["irreversible-deletion", "gitignored", "user-decision", "pre-delete-verification", "disk-reclamation"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1794503933_59a2b4",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 2,
+    "phases_total": 2
   }
 }

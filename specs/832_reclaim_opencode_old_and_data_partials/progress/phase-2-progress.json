@@ -1,0 +1,28 @@
+{
+  "phase": 2,
+  "phase_name": "Acceptance Verification and Task-Record Disposition",
+  "started_at": "2026-11-12T18:16:00Z",
+  "last_updated": "2026-11-12T18:20:00Z",
+  "objectives": [
+    {"id": 1, "description": "Acceptance criterion 1 -- .opencode_OLD/ removed", "status": "done", "files_touched": [], "note": "ls -d .opencode_OLD -> No such file or directory"},
+    {"id": 2, "description": "Acceptance criterion 2 -- recorded decision on the two data/*.partial files", "status": "done", "files_touched": [], "note": ".decisions.json confirmed present and non-empty"},
+    {"id": 3, "description": "Acceptance criterion 3 -- proof_steps.jsonl untouched", "status": "done", "files_touched": [], "note": "1650583836 bytes, mtime 2026-10-15 21:18:22 -- exact match"},
+    {"id": 4, "description": "Confirm Boneyard/ not swept, 225 tracked files", "status": "done", "files_touched": [], "note": "git ls-files Boneyard | wc -l = 225"},
+    {"id": 5, "description": "Review git status --short and git diff --staged; zero tracked-file changes from this task", "status": "done", "files_touched": [], "note": "all foreign dirty entries attributed to siblings 817/818 per declared territory, or pre-existing infra"},
+    {"id": 6, "description": "Check for unexplained foreign tracked-file modification", "status": "done", "files_touched": [], "note": "none unexplained; all attributable to 817/818 territory block"},
+    {"id": 7, "description": "Run complete gate set (subject to Batch Gate Deferral directive)", "status": "done", "files_touched": [], "note": "scoped to --only-gate 4 per Batch Gate Deferral; PASS 1/1"},
+    {"id": 8, "description": "Record total disk reclaimed (~451 MB) and write summary", "status": "done", "files_touched": ["specs/832_reclaim_opencode_old_and_data_partials/summaries/01_reclaim-opencode-old-data-partials-summary.md"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "2.7",
+      "description": "Run the complete gate set: bash .claude/scripts/verify-deploy.sh",
+      "type": "altered",
+      "reason": "This dispatch's Batch Gate Deferral directive requires discharging the final phase's full-tier verification against a scoped narrowing instead of the independent full run, since the only files this phase touches are markdown artifacts under specs/832_.../",
+      "annotation": "*(deviation: altered — per this dispatch's Batch Gate Deferral directive, discharged against the scoped narrowing --only-gate 4 instead of the independent full run; PASS 1/1. The full gate set runs once for the whole batch at the end of this /orchestrate invocation.)*"
+    }
+  ]
+}

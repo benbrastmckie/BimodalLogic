@@ -180,39 +180,44 @@ row's single-target lint read as the post-delete `ls -la data/` / `du -sb data` 
 
 ---
 
-### Phase 2: Acceptance Verification and Task-Record Disposition [NOT STARTED]
+### Phase 2: Acceptance Verification and Task-Record Disposition [COMPLETED]
 
 **Goal**: Confirm all three of the task's acceptance criteria hold, confirm the two explicitly
 out-of-scope protections were honoured, and close the task with the full gate set green.
 
 **Tasks**:
-- [ ] Acceptance criterion 1 — `.opencode_OLD/` removed: confirm `ls -d .opencode_OLD` reports no
+- [x] Acceptance criterion 1 — `.opencode_OLD/` removed: confirm `ls -d .opencode_OLD` reports no
       such file or directory. This was discharged during the research dispatch after a confirming
       `diff -rq .opencode .opencode_OLD` showed zero "Only in `.opencode_OLD`" entries; this phase
-      verifies the end state rather than repeating the deletion.
-- [ ] Acceptance criterion 2 — a recorded decision on the two `data/*.partial` files: confirm
+      verifies the end state rather than repeating the deletion. *(completed: confirmed absent)*
+- [x] Acceptance criterion 2 — a recorded decision on the two `data/*.partial` files: confirm
       `specs/832_reclaim_opencode_old_and_data_partials/.decisions.json` holds the answered
       question, and that this plan's "Recorded User Decision" section and the task summary both
-      state the decision and its disposition.
-- [ ] Acceptance criterion 3 — `proof_steps.jsonl` untouched: confirm
+      state the decision and its disposition. *(completed)*
+- [x] Acceptance criterion 3 — `proof_steps.jsonl` untouched: confirm
       `stat -c '%n %s %y' data/proof_steps.jsonl` still reads 1,650,583,836 bytes with mtime
       2026-10-15 21:18:22. Any difference in either field is a failure, not a rounding artifact.
-- [ ] Confirm the out-of-scope directories were not swept — at minimum that `Boneyard/` still
-      exists and `git ls-files Boneyard | wc -l` still reports 225 tracked files.
-- [ ] Review `git status --short` and `git diff --staged`. The task's own work must contribute
+      *(completed: exact match)*
+- [x] Confirm the out-of-scope directories were not swept — at minimum that `Boneyard/` still
+      exists and `git ls-files Boneyard | wc -l` still reports 225 tracked files. *(completed: 225)*
+- [x] Review `git status --short` and `git diff --staged`. The task's own work must contribute
       **zero** tracked-file changes: `data/` and `.opencode_OLD/` are both gitignored with zero
       tracked files, so nothing from Phase 1 can appear. Note explicitly in the summary that this
       acceptance line governs the repository working tree — lifecycle commits of this task's own
       `specs/**` artifacts (report, plan, summary, state) are normal orchestration and are not a
-      scope violation.
-- [ ] If any tracked-file modification appears that this task did not make, check `git log` to
+      scope violation. *(completed: see summary Verification section)*
+- [x] If any tracked-file modification appears that this task did not make, check `git log` to
       confirm it is not this task's own work and then STOP and report it as a possible concurrent
       sibling's in-flight edit (tasks 817, 818, 714, 821 are dispatched this same cycle) rather
-      than dismissing it or reverting it.
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Record the result
-      verbatim, green or not.
-- [ ] Record total disk reclaimed across both items: 62 MB (`.opencode_OLD/`, research dispatch)
-      plus ~389 MiB (the two `.partial` files, Phase 1) — approximately 451 MB.
+      than dismissing it or reverting it. *(completed: all observed foreign changes attributed to
+      817/818's declared territory or pre-existing session infrastructure; nothing unexplained)*
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Record the result
+      verbatim, green or not. *(deviation: altered — per this dispatch's Batch Gate Deferral
+      directive, discharged against the scoped narrowing `--only-gate 4` instead of the
+      independent full run; PASS 1/1. The full gate set runs once for the whole batch at the end
+      of this /orchestrate invocation.)*
+- [x] Record total disk reclaimed across both items: 62 MB (`.opencode_OLD/`, research dispatch)
+      plus ~389 MiB (the two `.partial` files, Phase 1) — approximately 451 MB. *(completed)*
 
 **Timing**: 0.25 hours
 
