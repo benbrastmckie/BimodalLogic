@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phases_completed": 2,
   "phases_total": 2,
-  "summary": "Wrote a two-phase implementation plan for the stale .claude/ tree. Because the research dispatch already ran deploy-headless.sh and verified all six named extensions FRESH, the plan is a confirm-and-close sequence rather than a fresh repair: Phase 1 re-probes per-extension freshness via deploy-freshness-lib.sh and check-deploy-freshness.sh to decide whether drift has recurred; Phase 2 conditionally redeploys under the bounded-wait idiom and discharges the complete verify-deploy.sh gate set (no --skip-slow), which the research phase explicitly scoped out. Phase 2 declares the __WHOLE_TREE__ sentinel because deploy-headless.sh regenerates the entire deployed tree.",
+  "summary": "Re-probed deploy freshness for all six named extensions (core, formal, lean, literature, memory, typst) at implementation time and found no drift since the research dispatch, so the conditional redeploy branch was correctly skipped. Discharged the complete verify-deploy.sh gate set (no --skip-slow): RC=0, 15 checks, 0 failures, with the expected SKIP set matching the plan's hypothesis exactly. check-deploy-freshness.sh exits 0 with no WARN output on both probes, confirming the recurring staleness condition is closed. No file under .claude/** was hand-edited.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/907_redeploy-stale-claude-tree/summaries/01_redeploy-stale-claude-tree-summary.md",
+      "summary": "Confirm-and-close implementation summary: freshness re-probe, conditional redeploy skip, full verify-deploy.sh gate discharge."
+    },
+    {
       "type": "plan",
       "path": "specs/907_redeploy-stale-claude-tree/plans/01_redeploy-stale-claude-tree.md",
-      "summary": "Two-phase confirm-and-close plan: re-probe per-extension deploy freshness, then conditionally redeploy and discharge the full verify-deploy.sh gate set."
+      "summary": "Both phases marked [COMPLETED] with checklist items annotated."
     }
   ]
 }

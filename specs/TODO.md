@@ -13,7 +13,7 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,907 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876 | 298,428,502,743,761,873 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -23,10 +23,6 @@ next_project_number: 926
 | 8 | 177 | 178,282,296,481,482,543 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-907 [IMPLEMENTING] — Regenerate the deployed .claude/ tree in BimodalLogic, which...
 
 ### Algebraic Representation
 
@@ -114,13 +110,14 @@ next_project_number: 926
 
 ### 907. Redeploy-stale-claude-tree
 - **Effort**: small
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Parent**: Task 901
 - **Research**: [907_redeploy-stale-claude-tree/reports/01_redeploy-stale-claude-tree.md]
 - **Plan**: [907_redeploy-stale-claude-tree/plans/01_redeploy-stale-claude-tree.md]
+- **Summary**: [907_redeploy-stale-claude-tree/summaries/01_redeploy-stale-claude-tree-summary.md]
 
 **Description**: Regenerate the deployed .claude/ tree in BimodalLogic, which two dispatches reported stale relative to the source store for six extensions (core, formal, lean, literature, memory, typst). Run deploy-headless.sh under the bounded-wait idiom (timeout 540, Bash tool timeout parameter 600000, per context/patterns/external-process-wait.md Rule 1), then verify with verify-deploy.sh and confirm the per-extension staleness warning from skill-base.sh no longer fires. Never hand-patch a deployed .claude/** file to clear the warning: that masks the divergence instead of fixing it. Neither reporting dispatch relied on a stale deployed command, so no prior work needs redoing. Recurrence of the condition addressed by closed task 715.
 

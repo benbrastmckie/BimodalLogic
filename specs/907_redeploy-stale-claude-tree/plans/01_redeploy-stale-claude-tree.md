@@ -1,7 +1,7 @@
 # Implementation Plan: Task #907
 
 - **Task**: 907 - Redeploy stale .claude/ tree
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: None (recurrence of the condition closed by task 715; no blocking task)
 - **Research Inputs**: specs/907_redeploy-stale-claude-tree/reports/01_redeploy-stale-claude-tree.md

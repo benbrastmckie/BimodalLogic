@@ -1407,7 +1407,7 @@
     {
       "project_number": 907,
       "project_name": "redeploy-stale-claude-tree",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "general",
       "description": "Regenerate the deployed .claude/ tree in BimodalLogic, which two dispatches reported stale relative to the source store for six extensions (core, formal, lean, literature, memory, typst). Run deploy-headless.sh under the bounded-wait idiom (timeout 540, Bash tool timeout parameter 600000, per context/patterns/external-process-wait.md Rule 1), then verify with verify-deploy.sh and confirm the per-extension staleness warning from skill-base.sh no longer fires. Never hand-patch a deployed .claude/** file to clear the warning: that masks the divergence instead of fixing it. Neither reporting dispatch relied on a stale deployed command, so no prior work needs redoing. Recurrence of the condition addressed by closed task 715.",
       "effort": "small",
@@ -1415,7 +1415,7 @@
       "topic": "agent-system",
       "dependencies": [],
       "created": "2026-11-09T20:16:48Z",
-      "last_updated": "2026-11-12T13:44:54Z",
+      "last_updated": "2026-11-12T13:49:48Z",
       "artifacts": [
         {
           "path": "specs/907_redeploy-stale-claude-tree/reports/01_redeploy-stale-claude-tree.md",
@@ -1426,6 +1426,11 @@
           "path": "specs/907_redeploy-stale-claude-tree/plans/01_redeploy-stale-claude-tree.md",
           "type": "plan",
           "summary": "Two-phase confirm-and-close plan: re-probe per-extension deploy freshness, then conditionally redeploy and discharge the full verify-deploy.sh gate set."
+        },
+        {
+          "path": "specs/907_redeploy-stale-claude-tree/summaries/01_redeploy-stale-claude-tree-summary.md",
+          "type": "summary",
+          "summary": "Confirm-and-close implementation summary: freshness re-probe, conditional redeploy skip, full verify-deploy.sh gate discharge."
         }
       ],
       "audit_override": "Human-approved at the /orchestrate conclusion gate (channel (c)). Backlog audit returned covered-by-closed against COMPLETED task 715 (reconcile_deployed_claude_tree_with_source_store, semantic 0.68) and one low-score duplicate-of-open against 743 (typst_sync_check1_namespace_resolution, 0.48, unrelated subject). 715 is closed and this is a fresh recurrence of tree staleness measured during this session, not a re-file of unresolved work; 743 is not the same subject. Full unabridged audit NDJSON committed alongside as evidence.",
@@ -1433,7 +1438,8 @@
       "next_artifact_number": 2,
       "file_scope": [
         "__WHOLE_TREE__"
-      ]
+      ],
+      "completion_summary": "Re-probed deploy freshness for all six named extensions (core, formal, lean, literature, memory, typst) at implementation time and found no drift since the research dispatch, so the conditional redeploy branch was skipped. Discharged the complete verify-deploy.sh gate set (no --skip-slow): RC=0, 15 checks, 0 failures, with the expected SKIP set matching the plan's hypothesis exactly. check-deploy-freshness.sh exits 0 with no WARN output, confirming the recurring staleness condition is closed."
     }
   ],
   "artifacts": [
