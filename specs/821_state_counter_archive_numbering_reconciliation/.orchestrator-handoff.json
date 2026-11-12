@@ -1,0 +1,18 @@
+{
+  "status": "planned",
+  "task_number": 821,
+  "phase": "plan",
+  "dispatch_seq": 3,
+  "session_id": "sess_1794503933_59a2b4_821",
+  "phases_completed": 0,
+  "phases_total": 4,
+  "summary": "Wrote a 4-phase plan for the counter-versus-archive numbering record. Re-measured every load-bearing quantity: the membership-based allocation bound this record chose has already landed (shared lib/project-number-inuse.sh consumed by both state-write.sh and Check 12), validate-state.sh --deep now exits 0 with Check 12 PASS, the counter is dense at 926 against an active max of 907, and --allocate-into issues 926 rather than refusing. Remaining scope is attestation plus three residues: settling the vault-relocation remedy on its merits in a durable record, correcting one stale Check 12 cross-reference comment in state-write.sh, and documenting in the state-management schema why archive rows above the counter are an expected steady state. Final phase redeploys and discharges the full gate.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/821_state_counter_archive_numbering_reconciliation/plans/01_counter-archive-numbering-reconciliation.md",
+      "summary": "4-phase plan: attest the discharge and settle the vault-relocation remedy, correct a stale cross-reference comment, document the above-counter archive invariant, then redeploy and discharge the full gate."
+    }
+  ]
+}

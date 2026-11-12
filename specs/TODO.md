@@ -87,7 +87,7 @@ next_project_number: 926
 743 [PLANNED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
 817 [RESEARCHED] — Wrap the remaining count-carrying inventory tables under...
 818 [RESEARCHED] — Wrap the four directory-rollup inventory tables that need the...
-821 [PLANNING] — Reconcile specs/state.json's next\_project\_number against...
+821 [PLANNED] — Reconcile specs/state.json's next\_project\_number against...
 832 [RESEARCHING] — Two local-disk reclamations found by the 2026-11-02 review....
 
 ### Semantics
@@ -438,11 +438,12 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, High Priority Issues and Mediu
 
 ### 821. State counter archive numbering reconciliation
 - **Effort**: low
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Parent**: Task 819
+- **Plan**: [821_state_counter_archive_numbering_reconciliation/plans/01_counter-archive-numbering-reconciliation.md]
 
 **Description**: Reconcile specs/state.json's next_project_number against the five archived rows carrying stray high numbers, so that validate-state.sh --deep Check 12 passes and state-write.sh --allocate-into stops refusing.
 
