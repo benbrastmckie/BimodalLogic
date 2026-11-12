@@ -239,7 +239,7 @@ together with the two generated-surface checks named below.
 
 ---
 
-### Phase 2: Promote the probe into `specs/evidence/` and wire it into the probe gate [NOT STARTED]
+### Phase 2: Promote the probe into `specs/evidence/` and wire it into the probe gate [COMPLETED]
 
 **Goal**: The option-3 refutation becomes a tracked, task-independent, gate-compiled evidence
 probe instead of a file that leaves version control the moment this task is archived.
@@ -254,32 +254,32 @@ records this happening once already, unannounced.
 
 **Tasks**:
 
-- [ ] `git mv specs/714_evaluate_full_labels_in_sliced_certificate/probes/FullLabels.lean specs/evidence/stability-modal-substrate/full-labels-collapse-stab.lean`
+- [x] `git mv specs/714_evaluate_full_labels_in_sliced_certificate/probes/FullLabels.lean specs/evidence/stability-modal-substrate/full-labels-collapse-stab.lean`
       (the `stability-modal-substrate/` collection is the thematically correct home -- it already
       holds `closure-field-is-necessary`).
-- [ ] Add the four-line Apache-2.0 copyright header the collection's existing probe carries.
-- [ ] Rewrite the module docstring to the evidence-probe shape: the decision this probe holds in
+- [x] Add the four-line Apache-2.0 copyright header the collection's existing probe carries.
+- [x] Rewrite the module docstring to the evidence-probe shape: the decision this probe holds in
       place (option 3 is refuted; the landed two-filter design stands), and the argument.
-- [ ] Keep Part A (`certA_target_not_full`, `certB_target_not_full`,
+- [x] Keep Part A (`certA_target_not_full`, `certB_target_not_full`,
       `certA_slab_not_labCoherent`, `certA_posAtFull_empty`, `certB_posAtFull_empty`), Part B
       (`certA_live_multiplicity`, `certB_live_multiplicity`) and Part E (the `⊇` measurements)
       verbatim -- these are the refutation and have no library home.
-- [ ] Replace Parts C and D's three theorems with a one-paragraph pointer to the library
+- [x] Replace Parts C and D's three theorems with a one-paragraph pointer to the library
       declarations Phase 1 landed, naming them. Precedent for this exact move is the
       `lcu-lcn-separation/lcu-lcn-separating-model` entry, whose note records that declarations
       it once proved locally are now library declarations and that the probe keeps only its
       witness and headline. Keep Parts C/D `#eval` readouts only where they measure something the
       library theorems do not state.
-- [ ] Add the probe's documentation row to the `probe | the decision it holds in place` table
+- [x] Add the probe's documentation row to the `probe | the decision it holds in place` table
       immediately above the `WIRED=(` array in `scripts/check-evidence-probes.sh`, following the
       column widths the existing rows use.
-- [ ] Add `"stability-modal-substrate/full-labels-collapse-stab"` to the `WIRED=(` array (entries
+- [x] Add `"stability-modal-substrate/full-labels-collapse-stab"` to the `WIRED=(` array (entries
       are `<dir>/<basename>` with no `.lean` suffix; `check_probe` resolves them against
       `specs/evidence/`). Do NOT use `WIRED_REPO` -- that form is for a probe that cannot yet be
       moved into the collection, and this one can.
-- [ ] Append a one-line pointer under the research report's `### Probe` appendix heading giving
+- [x] Append a one-line pointer under the research report's `### Probe` appendix heading giving
       the probe's new path, so the record does not name a path that no longer exists.
-- [ ] Stage with an explicit file list and commit.
+- [x] Stage with an explicit file list and commit.
 
 **Timing**: 1 hour
 

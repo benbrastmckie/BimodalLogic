@@ -1,11 +1,59 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Examples
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.EmbedComplete
 
 /-!
-# Probe: full labels in the sliced certificate
+# Full Labels Collapse the `stab` Comparison Class
 
-Measures what option 3 -- replacing `AgreesOnState` by full label/slab equality -- does to the
-three landed certifying certificates of the sliced class.
+This file records, machine-checked, why the sliced certificate's position space `posAt` filters
+labels by `AgreesOnState` -- agreement on the state shapes only -- rather than by equality with
+the slice labelling. It contains **no `sorry`** and asserts nothing it does not prove.
+
+## The decision this holds in place
+
+The `TailStable` junk-position obstruction has a tempting root-level repair: carry FULL labels in
+the certificate, so that the position space at a slice is a singleton and no junk position can
+exist for either obligation direction, making both liveness filters deletable. That repair is
+**refuted**, and the landed two-filter design (`TailStable`/`TailStableMirror`, `fwdLiveAt`/
+`bwdLiveAt`) stands.
+
+The argument is that label multiplicity over one state at one time is not slack in the
+certificate -- it **is** the comparison class of `PlusTruthAt`'s `stab` clause. `⊡` quantifies
+over the histories sharing the present world state, and the frame a certificate presents has
+carrier `ℤ × Fin G.n`, so that class is exactly the labels of the live positions over one state
+at one time, which is what `StabFaithful` reads. Collapsing it to one label per state would
+restrict the comparison class to models in which `⊡φ ↔ φ` -- the deterministic collapse named by
+`FormalSystem.PlusLanguage.stab_iff_of_deterministic`.
+
+Part A measures the consequence at the two landed `⊡`-carrying non-vacuity witnesses
+(`TotalEdge.certA` at target `Pp → ⊡Pp`, and `TotalEdge.certB`): under full labels both have an
+**empty** position space, so full labels do not merely shrink the search -- they kill the landed
+certificates outright. The slab is a state description, not a type. Part B measures the
+multiplicity itself: strictly more live positions than live states at each of them.
+
+Part E is the second half of the refutation: full labels do not make junk positions impossible
+either. At `PlusSlicedCertificate.Fixture.cert` the full-label position space is still not the
+live set, so the `⊇` superset failure -- repaired by absorption, not by any filter -- survives
+the refinement independently.
+
+## What it does NOT establish
+
+Decidability is not the obstruction. The full-label position space is a `Finset.univ.filter` by a
+decidable predicate exactly as `posAt` is, and every measurement below closes `by decide`; the
+original deferral note's stated reason was a rework cost, not a decidability loss. Nor is the
+refutation a claim that the embedding produces junk positions: it does not. That positive half
+has a stable statement and now lives in the library, as
+`FormalSystem.Metalogic.Decidability.WitnessFamily.FullLabelRegression.posAtFull` together with
+`botSnce_posAtFull_eq_liveAt`, `botUntl_posAtFull_eq_liveAt` and
+`liveFamily_posAtFull_eq_liveAt`; see Part C/D below.
+
+Axioms: `[propext, Classical.choice, Quot.sound]` on every headline. No `sorryAx`, no custom
+axiom, no `native_decide`.
 -/
 
 namespace Probe714
@@ -69,7 +117,22 @@ set_option maxHeartbeats 2000000 in
 theorem certB_live_multiplicity :
     ((certB.liveAt 0).image Prod.fst).card < (certB.liveAt 0).card := by decide
 
-/-! ## Part C — the embedded (⊡-free) route -/
+/-! ## Parts C and D -- the embedded route, now a library regression triple
+
+The three equalities this probe once proved locally are now library declarations:
+`FormalSystem.Metalogic.Decidability.WitnessFamily.FullLabelRegression.botSnce_posAtFull_eq_liveAt`
+(at the `⊥ S ⊥` certificate that forced the backward filter),
+`.botUntl_posAtFull_eq_liveAt` (at the `⊥ U ⊥` certificate that forced the forward filter) and
+`.liveFamily_posAtFull_eq_liveAt` (at the embedded live-eventuality certificate), each stated
+against that namespace's own `posAtFull`, which is this file's definition verbatim. They say that
+along the embedding route the full-label position space is exactly the computed live set at every
+window time -- so the `posAt` over-approximation costs that route nothing.
+
+They are a fact about the **embedding**, not about full labels: Part E below is the same
+measurement at `Fixture.cert`, where it fails. This probe therefore keeps only the readouts the
+library theorems do not state -- the position-space cardinalities and the target-label comparisons
+that show *how* the two spaces coincide, rather than *that* they do.
+-/
 
 #eval (liveFamily.sliced (-1)).n
 #eval ((liveFamily.sliced (-1)).posAt (-1)).card
@@ -93,8 +156,6 @@ open FormalSystem.Metalogic.Decidability.PlusSlicedCertificate
 open FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded
 open FormalSystem.Metalogic.Decidability.WitnessFamily.BotTargets
 
-/-! ## Part D -- full labels against the certificates that forced each filter -/
-
 #eval ((botSnceFamily.sliced 0).winTimes).card
 #eval ((botSnceFamily.sliced 0).posAt 0).card
 #eval (posAtFull (botSnceFamily.sliced 0) 0).card
@@ -102,28 +163,6 @@ open FormalSystem.Metalogic.Decidability.WitnessFamily.BotTargets
 #eval ((botUntlFamily.sliced 0).posAt 0).card
 #eval (posAtFull (botUntlFamily.sliced 0) 0).card
 #eval ((botUntlFamily.sliced 0).liveAt 0).card
-
-set_option maxRecDepth 4000000 in
-set_option maxHeartbeats 2000000 in
-/-- At the `⊥ S ⊥` certificate that forced the backward filter, the full-label position space is
-exactly the computed live set at every window time. -/
-theorem botSnce_posAtFull_eq_liveAt :
-    ∀ t ∈ (botSnceFamily.sliced 0).winTimes,
-      posAtFull (botSnceFamily.sliced 0) t = (botSnceFamily.sliced 0).liveAt t := by decide
-
-set_option maxRecDepth 4000000 in
-set_option maxHeartbeats 2000000 in
-/-- The same at the `⊥ U ⊥` certificate that forced the forward filter. -/
-theorem botUntl_posAtFull_eq_liveAt :
-    ∀ t ∈ (botUntlFamily.sliced 0).winTimes,
-      posAtFull (botUntlFamily.sliced 0) t = (botUntlFamily.sliced 0).liveAt t := by decide
-
-set_option maxRecDepth 4000000 in
-set_option maxHeartbeats 2000000 in
-/-- And at the embedded live-eventuality certificate, whose raw demand also fails today. -/
-theorem liveFamily_posAtFull_eq_liveAt :
-    ∀ t ∈ (liveFamily.sliced (-1)).winTimes,
-      posAtFull (liveFamily.sliced (-1)) t = (liveFamily.sliced (-1)).liveAt t := by decide
 
 end Probe714
 
@@ -155,6 +194,3 @@ end Probe714
 #print axioms Probe714.certB_posAtFull_empty
 #print axioms Probe714.certA_live_multiplicity
 #print axioms Probe714.certB_live_multiplicity
-#print axioms Probe714.botSnce_posAtFull_eq_liveAt
-#print axioms Probe714.botUntl_posAtFull_eq_liveAt
-#print axioms Probe714.liveFamily_posAtFull_eq_liveAt

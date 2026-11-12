@@ -2261,6 +2261,55 @@ EVIDENCE="specs/evidence"
 #                                                           | only the ℚ witness model and the
 #                                                           | headline.  No `sorryAx`, no custom
 #                                                           | axiom, no `native_decide`.
+# stability-modal-substrate/full-labels-collapse-stab       | carrying FULL labels in the sliced
+#                                                           | certificate -- option 3's root-level
+#                                                           | repair of the `TailStable`
+#                                                           | junk-position obstruction -- is
+#                                                           | REFUTED, so the landed two-filter
+#                                                           | design
+#                                                           | (`TailStable`/`TailStableMirror`,
+#                                                           | `fwdLiveAt`/`bwdLiveAt`) stands.
+#                                                           | Label multiplicity over one state at
+#                                                           | one time is not slack: it IS the
+#                                                           | comparison class of `PlusTruthAt`'s
+#                                                           | `stab` clause, so collapsing it
+#                                                           | would restrict that class to the
+#                                                           | deterministic models of
+#                                                           | `FormalSystem.PlusLanguage.stab_iff_of_deterministic`.
+#                                                           | Measured: under full labels BOTH
+#                                                           | landed `⊡`-carrying non-vacuity
+#                                                           | witnesses (`TotalEdge.certA` at
+#                                                           | target `Pp → ⊡Pp`, and `certB`) have
+#                                                           | an EMPTY position space
+#                                                           | (`certA_posAtFull_empty`,
+#                                                           | `certB_posAtFull_empty`) -- the slab
+#                                                           | is a state description, not a type
+#                                                           | -- and each carries strictly more
+#                                                           | live positions than live states
+#                                                           | (`certA_live_multiplicity`,
+#                                                           | `certB_live_multiplicity`).  Part E
+#                                                           | adds the second half: at
+#                                                           | `Fixture.cert` the full-label
+#                                                           | position space is still not the live
+#                                                           | set, so the `⊇` superset failure
+#                                                           | survives the refinement
+#                                                           | independently.  What it does NOT
+#                                                           | establish: decidability is NOT the
+#                                                           | obstruction (every measurement
+#                                                           | closes `by decide`), and the
+#                                                           | embedding route produces no junk
+#                                                           | positions at all -- that positive
+#                                                           | half is now a library regression
+#                                                           | triple
+#                                                           | (`WitnessFamily.FullLabelRegression.posAtFull`
+#                                                           | with `botSnce_posAtFull_eq_liveAt`,
+#                                                           | `botUntl_posAtFull_eq_liveAt`,
+#                                                           | `liveFamily_posAtFull_eq_liveAt`),
+#                                                           | and this probe keeps only its
+#                                                           | readouts.  Axioms: `[propext,
+#                                                           | Classical.choice, Quot.sound]` on
+#                                                           | every headline.  No `sorryAx`, no
+#                                                           | custom axiom, no `native_decide`.
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -2316,6 +2365,7 @@ WIRED=(
   "forward-slack-pin-cascade/pin-cascade-straddle"
   "forward-slack-pin-cascade/route-space-closure"
   "lcu-lcn-separation/lcu-lcn-separating-model"
+  "stability-modal-substrate/full-labels-collapse-stab"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

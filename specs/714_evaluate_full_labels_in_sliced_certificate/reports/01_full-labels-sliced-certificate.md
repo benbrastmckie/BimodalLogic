@@ -403,6 +403,11 @@ search tool was used.
 Elaborates clean under `lake env lean`; zero `sorry`; all ten theorems report
 `[propext, Classical.choice, Quot.sound]`.
 
+The probe now lives at `specs/evidence/stability-modal-substrate/full-labels-collapse-stab.lean`,
+wired into `scripts/check-evidence-probes.sh`; Parts C and D's three theorems were promoted into
+`FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean`'s
+`WitnessFamily.FullLabelRegression` namespace, and the probe keeps their readouts only.
+
 ### Files read
 
 - `PlusSlicedCertificate/Position.lean` (whole), `Check.lean` (1-120, 350-600), `Basic.lean`
