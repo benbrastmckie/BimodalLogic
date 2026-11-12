@@ -42,7 +42,7 @@ next_project_number: 926
 899 [PLANNED] — The stability cluster's (past-type, future-type) set is a...
   └─ 900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 905 [PLANNED] — Eliminate cross-certification between the forward and...
-906 [PLANNING] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
+906 [PLANNED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
 
 ### Dataset Enhancement
 
@@ -994,11 +994,12 @@ Evidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two
 ---
 
 ### 906. Settle whether LCU is derivable from TM-plus + LC_n at ZTime via a non-ZTime separating model
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: formal
 - **Topic**: completeness
 - **Dependencies**: None
 - **Research**: [906_lcu_derivability_from_lcn_non_ztime_separating_model/reports/01_lcu-lcn-separating-model.md]
+- **Plan**: [906_lcu_derivability_from_lcn_non_ztime_separating_model/plans/01_lcu-lcn-separating-model.md]
 
 **Description**: RESEARCH TASK, report only. Deliverable: either a derivation of lcU alpha beta in TM-plus + LC_n + mirror LC_n for state-local beta, or a non-ZTime separating model. A ZTime countermodel cannot settle this question -- both lcN_plusValidZTime and lcU_plusValidZTime are compiled, so the two systems have the same ZTime models -- so the first target is .Base, where both schemata's validity is open and unclaimed per FormalSystem/PlusLanguage/PlusLCSchema.lean's own docstring, for a separating general frame or algebra. No Lean work beyond what is needed to state the separating model or derivation at the report level; no completeness claim.
 

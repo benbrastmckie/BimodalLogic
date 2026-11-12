@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 6,
+  "summary": "Wrote a five-phase plan for task 906's custody work: promote the probe's determinism-collapse sibling into PlusDeterminism.lean and its deterministic-class soundness arm plus LC_n's deterministic validity into LCExtension.lean, record the compiled non-derivability verdict in PlusLCSchema.lean and LCExtension.lean's docstrings, add four docs/theorem-index.md rows, and track/wire/reduce the evidence probe. Premise re-validation confirmed all four carried claims in the description and surfaced one new live fact: the research dispatch's compiled probe is untracked by git and absent from check-evidence-probes.sh's WIRED array, so Phase 5 schedules that explicitly. No mathematics is re-opened; every Lean step is a verbatim transcription of an already-compiled body, with signatures pinned under Lean Challenge Statements.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/plans/01_lcu-lcn-separating-model.md",
+      "summary": "Five-phase, 5-hour plan: library promotion of the separation's load-bearing halves, the docstring record, theorem-index rows, and probe custody, with the full repository gate set in the final phase."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": []
+}
