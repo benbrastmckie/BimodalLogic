@@ -527,7 +527,7 @@ FAIL  C16  env_linter batch reports new finding(s) beyond scripts/nolints.json's
 
 ---
 
-### Phase 4: Final verification [BLOCKED]
+### Phase 4: Final verification [COMPLETED]
 
 **Goal**: the repository's complete gate battery is green on every file this task touched, with any
 remaining red finding demonstrably pre-existing and out of scope.
@@ -560,7 +560,13 @@ remaining red finding demonstrably pre-existing and out of scope.
       nothing, and that no `def X := True`-class vacuous declaration was introduced.
 - [x] Enumerate, in the phase notes, every gate finding that names a file outside this task's
       touched set, with the evidence that each touched file passes individually.
-- [ ] Commit the phase. *(deviation: deferred — the phase is `[BLOCKED]` on the user decision recorded below; its green sub-steps are committed, but no phase-closing commit fires on an ungreen phase-end gate.)*
+- [x] Clear the C16 `env_linter` `FAIL` by the cycle-11 user-authorized route: drop `[F.IsRegular]`
+      from `truthAt_iff_intTruth_of_boxFree` in the `## Lean Challenge Statements` block and at
+      `ZTimeSubstitutionBridge.lean:102`, in one change. *(deviation: altered — this item was not in
+      the phase's original task list; it is the escalation-driven repair the cycle-10 and cycle-11
+      user decisions authorized, recorded here rather than left as an unlisted edit. See the C16
+      resolution record below.)*
+- [x] Commit the phase.
 
 **Timing**: 1 hour
 
@@ -598,12 +604,12 @@ remaining red finding demonstrably pre-existing and out of scope.
 | `check-module-invariants.sh` C15 | PASS — `all 93 paper-anchor citation(s) resolve`; `all 460 theorem-index row(s) carry their anchor (or Paper: —) at the declaration` |
 | `check-module-invariants.sh` C26 | PASS — zero snake_case `def`/`abbrev` names; all 16 in-source `nolint` attribute pairs are on the allowlist |
 | `check-module-invariants.sh` INV | PASS — `every generated inventory block is current, every hand-maintained one is exhaustive`. The amendment changed a line's content, not any line count, so no inventory or typst surface drifted |
-| `check-module-invariants.sh` C16 | **FAIL** — one finding, inside this task's touched set, not pre-existing. See the blocker record below |
-| `check-module-invariants.sh` overall | exit 1 — exactly one `FAIL`, the C16 above |
+| `check-module-invariants.sh` C16 | PASS — `env_linter batch (defsWithUnderscore, docBlame, simpNF, structureInType, tacticDocs, unusedArguments) has no un-nolisted finding`, re-run *after* the `truthAt_iff_intTruth_of_boxFree` amendment. Also `PASS C16 dupNamespace: zero declaration(s) with a repeated namespace component` |
+| `check-module-invariants.sh` overall | PASS, exit 0 — zero `FAIL` lines in the whole run |
 | `check-metalogic-cycles.sh` | PASS, exit 0 — `exactly 1 directory-level import cycle in FormalSystem/Metalogic/`; `upward import set is exactly the recorded 10 line(s)`; `no language-directory syntax module imports a semantics module` |
 | `typst-sync-check.sh` (full) | PASS, exit 0, all 4 checks green. Check 2: `MISMATCH_COUNT=0` |
 | `check-copyright-headers.sh` | PASS, exit 0 — `nonconforming: 0`, `duplicate: 0`, `missing: 0` over 756 files |
-| `lean_verify` headline pair | PASS — `plusDerivable_substPlus_of_validZTime` and `plusDerivable_substPlus_of_boxFree_intTruth` each `[propext, Classical.choice, Quot.sound]`, `trust: standard`, no non-standard axiom, no `sorryAx`. `wordOf` re-measured at `[propext]`, unchanged by the amendment |
+| `lean_verify` headline pair | PASS — `plusDerivable_substPlus_of_validZTime` and `plusDerivable_substPlus_of_boxFree_intTruth` each `[propext, Classical.choice, Quot.sound]`, `trust: standard`, no non-standard axiom, no `sorryAx`. `wordOf` and `truthAt_iff_intTruth_of_boxFree` each re-measured at `[propext]`, both unchanged by their amendments, so both C14 pins stay honest |
 | Sorry inventory | PASS — `lean-sorry-census.sh` over the resolved roots reports `sorry_count: 0` with an empty inventory; `grep -c sorry` on the bridge module is 0 |
 | Vacuity / axiom delta | PASS — 1 single-line vacuous-pattern match and 14 `axiom ` lines, against 2 and 14 at the pre-task commit `47cf2e1eb`; neither increased. The one match is `FormalSystem/Examples/TemporalStructures.lean:495`, a genuinely `trivial`-closable goal outside this task's touched set |
 
@@ -624,61 +630,52 @@ repository-specific check was therefore run directly and in full: the guarded `l
 `check-copyright-headers.sh`. Only the `verify-deploy.sh` item is deferred to the batch stage, and
 it reaches none of this phase's touched files by construction.
 
-#### BLOCKER (Phase 4): the authorized C16 route relocated the finding instead of clearing it
+#### C16 resolution (Phase 4): the cascade terminated at `truthAt_iff_intTruth_of_boxFree`
 
-**What failed.** The cycle-10 user-authorized route — amend the `## Lean Challenge Statements` block
-and `wordOf`'s declaration together, dropping the unused `[F.IsRegular]` instance binder — was
-applied in one change, exactly as recorded. It did not clear the C16 `FAIL`. The finding moved:
+**What the finding was.** `check-module-invariants.sh`'s C16 `env_linter` assertion reported one
+`unusedArguments` error inside this task's touched set — not pre-existing — at
+`ZTimeSubstitutionBridge.lean:96:1`:
 
 ```
-FAIL  C16  env_linter batch reports new finding(s) beyond scripts/nolints.json's grandfathered baseline
-  -- Found 1 error in 18945 declarations (plus 28901 automatically generated ones)
-  FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean:96:1: error:
-    @FormalSystem.Metalogic.truthAt_iff_intTruth_of_boxFree 1 unused argument:
-      argument 2: [F.IsRegular]
+@FormalSystem.Metalogic.truthAt_iff_intTruth_of_boxFree 1 unused argument:
+  argument 2: [F.IsRegular]
 ```
 
-**Why it moved — the route's recorded rationale was factually wrong.** The escalation record in
-Phase 3 argued the route was consumer-safe because "`[F.IsRegular]` is load-bearing on
-`truthAt_iff_intTruth_of_boxFree` and every consumer already carries it, so no consumer's statement
-changes". Measured, the opposite holds: `truthAt_iff_intTruth_of_boxFree`'s binder was load-bearing
-*only as a conduit* — its sole consumption was supplying `wordOf`'s instance argument at the one
-call site `wordOf M τ` (line 105). Its own induction on `φ` never touches regularity. Removing
-`wordOf`'s binder therefore stripped the theorem's binder of its only use, and the linter now
-reports the theorem rather than the definition. One red in, one red out.
+**Why it appeared.** `truthAt_iff_intTruth_of_boxFree`'s `[F.IsRegular]` binder was load-bearing
+*only as a conduit*: its sole consumption was supplying `wordOf`'s instance argument at the one
+call site `wordOf M τ`, and its own induction on `φ` never touches regularity. The `wordOf`
+amendment therefore stripped the theorem's binder of its only use, and the linter reported the
+theorem instead of the definition — one red in, one red out. The earlier escalation record's
+rationale ("`[F.IsRegular]` is load-bearing on `truthAt_iff_intTruth_of_boxFree` and every
+consumer already carries it") was measurably wrong on exactly this point, and the correction is
+recorded here rather than left implicit.
 
-**What was tried.** Nothing beyond the authorized route itself — deliberately. No second pinned
-Challenge statement was amended, and no speculative source mutation was made to probe the cascade.
+**How it was cleared.** The same authorized shape, applied one declaration over: drop
+`[F.IsRegular]` from the `## Lean Challenge Statements` block and from the declaration at
+`ZTimeSubstitutionBridge.lean:102`, in one change. `rules/plan-compliance.md`'s Statement
+Fidelity routes a pinned-statement amendment to escalation rather than silent substitution, so
+the amendment was made only under the user's own recorded authorization, and the block and the
+source were edited together so the recorded statement never diverges from the landed one.
 
-**Why it is stuck.** `truthAt_iff_intTruth_of_boxFree`'s signature is a second statement pinned
-verbatim under `## Lean Challenge Statements`, and `rules/plan-compliance.md`'s Statement Fidelity
-routes a pinned-statement amendment to escalation rather than silent substitution. The cycle-10
-answer authorized that amendment for `wordOf` only; it cannot be read as pre-authorizing a
-declaration it explicitly asserted would not need to change. The alternative route remains the one
-Phase 3 already ruled out: an in-source `@[nolint unusedArguments]` plus a
-`scripts/nolint-attribute-allowlist.txt` entry, inadmissible under that allowlist's own ADMISSION
-BAR because the declaration *can* conform.
+**Why the cascade terminates here, established before the edit rather than after.** The next
+consumer, `validZTime_of_boxFree_intTruth`, binds its regularity instance *tactic-locally* —
+`rw [validZTime_iff_validInt]; intro F _ M τ t`, where the `_` binds the instance `ValidInt`'s
+own statement quantifies over — so it exposes no declaration-level instance argument the
+`unusedArguments` linter can reach. Line 102 was the module's only `IsRegular` occurrence, and
+the theorem has zero references outside its own file, so no external statement changes. The
+prediction held: the single edit cleared the gate with no probing iteration.
 
-**What is needed — one edit, with the cascade already bounded by evidence.** Dropping
-`[F.IsRegular]` from `truthAt_iff_intTruth_of_boxFree` (block and declaration together, as before)
-terminates the cascade; it does not continue down the chain. The next consumer,
-`validZTime_of_boxFree_intTruth`, binds its regularity instance *tactic-locally* — `rw
-[validZTime_iff_validInt]; intro F _ M τ t`, where the `_` binds the instance that `ValidInt`'s own
-statement quantifies over — so it carries no declaration-level instance argument the
-`unusedArguments` linter can reach. The module holds no other `IsRegular` binder, and
-`truthAt_iff_intTruth_of_boxFree` has zero references outside its own file, so no external
-statement changes either. The amendment is strictly generalizing, leaves the name, the C14 pin, the
-measured `[propext]` axiom profile and the `docs/theorem-index.md` row untouched, and the
-`isBoxFree` hypothesis — the one hypothesis this module's docstring declares load-bearing — is
-entirely unaffected.
+**Measured outcome.** `check-module-invariants.sh` exits 0 with zero `FAIL` lines and
+`PASS C16 env_linter batch ... has no un-nolisted finding`. C14 re-ran green *after* the
+amendment, and `lean_verify` re-measures `truthAt_iff_intTruth_of_boxFree` at `[propext]` —
+dropping an instance binder moved no axiom profile, so the C14 pin and the
+`docs/theorem-index.md` row stay honest and untouched. The amendment is strictly generalizing:
+the name, the hypothesis set apart from the dropped instance, and the load-bearing `isBoxFree`
+hypothesis are all unchanged.
 
-**Prohibited workarounds**: do NOT use `sorry`, `def X := True`, any vacuous placeholder, or a
-`@[nolint]`-plus-allowlist suppression that the ADMISSION BAR forbids.
-
-**State of the tree.** The authorized `wordOf` amendment is landed and committed; it is the correct
-conforming fix for `wordOf` on its own terms and was not reverted, since reverting would discard
-authorized work and re-pose a question the user has already answered. Every other Phase 4 criterion
-is measured green in the table above.
+**Routes not taken.** No `sorry`, no vacuous placeholder, and no `@[nolint unusedArguments]`
+plus `scripts/nolint-attribute-allowlist.txt` entry — that suppression is inadmissible under the
+allowlist's own ADMISSION BAR, because the declaration *can* conform, and it now does.
 
 ## Lean Challenge Statements
 
@@ -692,16 +689,31 @@ and continues to resolve it after the relocation (`SemanticBridge` imports `Sepa
 is deliberately *not* the landed module's four-import set, which Phase 2 pins separately and which
 reaches `Separation.Defs` directly.
 
-**Amendment (Phase 4, user-authorized).** `wordOf`'s binder list below drops the `[F.IsRegular]`
-instance binder it was first recorded with. The binder was never consumed by the body, which
-reads only `M.valuation` and `τ.state`, and `FrameOver.toTaskFrame` requires no regularity
-instance; `check-module-invariants.sh`'s C16 `env_linter` assertion reported it as this task's
-only red finding. Dropping it makes the declaration strictly more general and changes no
-consumer, since instance arguments are supplied implicitly at the one call site
-(`wordOf M τ` inside `truthAt_iff_intTruth_of_boxFree`, which keeps its own `[F.IsRegular]`
-because its proof does depend on it). This block and the landed declaration were amended together
-in one change, under the route the user selected in cycle 10, rather than the source being
-silently edited away from the recorded statement.
+**Amendment (Phase 4, user-authorized).** Two declarations below drop the `[F.IsRegular]`
+instance binder they were first recorded with: `wordOf` and `truthAt_iff_intTruth_of_boxFree`.
+The route — amend this block and the landed declaration together in one change, rather than
+silently editing the source away from the recorded statement — is the one the user selected in
+cycle 10 for `wordOf` and, applied one declaration over, in cycle 11 for the theorem.
+
+`wordOf`'s binder was never consumed by its body, which reads only `M.valuation` and `τ.state`;
+`FrameOver.toTaskFrame` requires no regularity instance. `check-module-invariants.sh`'s C16
+`env_linter` assertion reported it as this task's only red finding.
+
+`truthAt_iff_intTruth_of_boxFree`'s binder was load-bearing *only as a conduit*: its sole
+consumption was supplying `wordOf`'s instance argument at the one call site `wordOf M τ`, and
+its own induction on `φ` never touches regularity. Dropping `wordOf`'s binder therefore stripped
+the theorem's binder of its only use, and C16 reported the theorem instead — one red in, one red
+out. Amending the theorem terminates the cascade and does not continue down the chain: the next
+consumer, `validZTime_of_boxFree_intTruth`, binds its regularity instance *tactic-locally*
+(`rw [validZTime_iff_validInt]; intro F _ M τ t`, where `_` binds the instance `ValidInt`'s own
+statement quantifies over), so it carries no declaration-level instance argument the
+`unusedArguments` linter can reach. The module holds no other `IsRegular` binder and the theorem
+has zero references outside its own file, so no external statement changes.
+
+Both amendments are strictly generalizing: every call site supplies instance arguments
+implicitly, the names, the C14 pins, the measured `[propext]` axiom profiles and the
+`docs/theorem-index.md` rows are untouched, and the `isBoxFree` hypothesis — the one hypothesis
+this module's docstring declares load-bearing — is entirely unaffected.
 
 ```lean
 import FormalSystem.Metalogic.StrongCompleteness
@@ -720,7 +732,7 @@ open FormalSystem.Metalogic.Expressiveness.Separation
 def wordOf {F : FrameOver intOrder} (M : TaskModel F.toTaskFrame)
     (τ : WorldHistory F.toTaskFrame) : IntStructure := sorry
 
-theorem truthAt_iff_intTruth_of_boxFree {F : FrameOver intOrder} [F.IsRegular]
+theorem truthAt_iff_intTruth_of_boxFree {F : FrameOver intOrder}
     (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) :
     ∀ (φ : Formula), isBoxFree φ = true → ∀ t : ℤ,
       (TruthAt M τ t φ ↔ IntTruth (wordOf M τ) t φ) := sorry
@@ -786,22 +798,22 @@ end FormalSystem.Metalogic
 
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` succeeds for the
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` succeeds for the
       whole project.
-- [ ] Zero diagnostics on `FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` — no error, no
+- [x] Zero diagnostics on `FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` — no error, no
       warning, no `sorry` (CI builds with `--wfail`, so a warning is a failure).
-- [ ] `lean_verify` reports `[propext, Classical.choice, Quot.sound]` and no `sorryAx` for both
+- [x] `lean_verify` reports `[propext, Classical.choice, Quot.sound]` and no `sorryAx` for both
       headline theorems.
-- [ ] `bash scripts/check-metalogic-cycles.sh` exits 0, all three assertions PASS.
-- [ ] `bash scripts/check-module-invariants.sh` reports C6, C14, C15 and the inventory assertion
+- [x] `bash scripts/check-metalogic-cycles.sh` exits 0, all three assertions PASS.
+- [x] `bash scripts/check-module-invariants.sh` reports C6, C14, C15 and the inventory assertion
       green for every file this task touched.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0.
-- [ ] `bash scripts/typst-sync-check.sh` Check 2 is green, and every `.lean`-touching commit was
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0.
+- [x] `bash scripts/typst-sync-check.sh` Check 2 is green, and every `.lean`-touching commit was
       made with that surface already regenerated.
-- [ ] `bash scripts/check-copyright-headers.sh` passes for the new module.
-- [ ] The declared signatures match `## Lean Challenge Statements` character-for-character modulo
+- [x] `bash scripts/check-copyright-headers.sh` passes for the new module.
+- [x] The declared signatures match `## Lean Challenge Statements` character-for-character modulo
       whitespace; no hypothesis added, no quantifier specialised, no same-named weaker restatement.
-- [ ] Every remaining red gate finding is enumerated and attributed to a file outside this task's
+- [x] Every remaining red gate finding is enumerated and attributed to a file outside this task's
       touched set.
 
 ## Artifacts & Outputs

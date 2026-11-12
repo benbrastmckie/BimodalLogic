@@ -99,7 +99,7 @@ The `box` arm is discharged by contradiction with `isBoxFree`, which is exactly 
 hypothesis pays for `IntTruth`'s degenerate modal clause.
 
 Paper: — (formalization-native; neither semantics in this statement is the manuscript's) -/
-theorem truthAt_iff_intTruth_of_boxFree {F : FrameOver intOrder} [F.IsRegular]
+theorem truthAt_iff_intTruth_of_boxFree {F : FrameOver intOrder}
     (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) :
     ∀ (φ : Formula), isBoxFree φ = true → ∀ t : ℤ,
       (TruthAt M τ t φ ↔ IntTruth (wordOf M τ) t φ) := by
