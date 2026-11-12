@@ -1,35 +1,6 @@
 {
-  "status": "partial",
-  "dispatch_seq": 14,
-  "partial_progress": {
-    "stage": "phase_mission_single_phase_scope",
-    "details": "Dispatch mission constrained this run to Phase 4 only ('Implement phase 4 only. Do not continue past this phase.'). Phase 4 (apply the (D2) repair and trace it to Lemma 7+) completed and verified green: validate-artifact.sh exits 0 [PASS] with 0 warnings; grep -n 'clause (a)' now returns zero hits (down from Phase 3's one hit, inside Claim 1+'s proof); the diff touches only section 7 (Claim 1+/Claim 1- in 7.2, Claim 2+ in 7.4). The forward trace to Lemma 7+ was read end to end and confirmed unaffected, so the phase's [PARTIAL]-on-trace-failure contingency was not triggered. Phase 5 (close the ledger, run the full gate set) remains for a subsequent dispatch.",
-    "handoff_path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-4-handoff-20261112T034500Z.md",
-    "phases_completed": 4,
-    "phases_total": 5
-  },
-  "artifacts": [
-    {
-      "type": "handoff",
-      "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-4-handoff-20261112T034500Z.md",
-      "summary": "Phase 4 completion handoff: Claim 1+'s consequent restated as the negation of the conditional conjunction over certified past-types pt subset of PastLits, with its proof now deriving the restatement directly from Viol+'s clause-(b)-only definition (no case split); Claim 1-'s mirror spelled out with its own future-type-indexed consequent; Claim 2+'s proof re-pointed from Lemma 7.3's unconditional form to its conditional form (consumption point S2), argued conjunct by conjunct; a Confirmation paragraph added recording that the Lemma 7+ proof in section 7.5 is read end to end and unaffected; a Why-this-repair-was-always-needed remark added at section 7.2 recording the pre-existing masked mismatch. Verified green: validate-artifact.sh [PASS] 0 warnings, grep for 'clause (a)' now zero hits, diff confined to section 7. One minor issue recorded (a first-draft wording collision with the grep criterion, caught and reworded before commit). Next action is Phase 5."
-    }
-  ],
-  "completion_data": {
-    "completion_summary": "Applied the (D2) repair to specs/901's paper-proof report: Claim 1+'s consequent restated as the conditional bad-word conjunction over certified past-types (matching what the clause-(b)-only Viol+ actually delivers), its proof's case split on clause (a)/(b) removed, Claim 1-'s mirror spelled out, Claim 2+'s proof re-pointed to cite Lemma 7.3's conditional form (consumption point S2) instead of its unconditional form, and the forward trace to Lemma 7+ confirmed unaffected by reading the section 7.5 proof end to end. The grep for 'clause (a)' now returns zero hits across the whole report; validate-artifact.sh stays [PASS] with 0 warnings."
-  },
-  "modified_files": [
-    "specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"
-  ],
-  "memory_candidates": [
-    {
-      "content": "When re-pointing a derived claim's proof from an unconditional theorem instance to a conditional one indexed over a finite set (e.g. certified past-types pt subset of a fixed finite literal set), write the re-derivation as: (1) the per-index instance follows from the conditional theorem by stripping any extra necessitation modality (reflexivity, phi -> box phi -> phi), (2) close the finite conjunction over the index set explicitly rather than asserting it, citing the finiteness fact by name (e.g. 'PastLits is finite'). This keeps a re-pointing proof auditable against the exact theorem it now cites, rather than leaving the reader to reconstruct why the new citation suffices.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/handoffs/phase-4-handoff-20261112T034500Z.md",
-      "confidence": 0.65,
-      "suggested_keywords": ["proof-repair", "conditional-theorem", "finite-conjunction", "citation-repointing", "formal-report-editing"]
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 16,
   "metadata": {
     "session_id": "sess_1794448865_9a2e5c",
     "agent_type": "general-implementation-agent",

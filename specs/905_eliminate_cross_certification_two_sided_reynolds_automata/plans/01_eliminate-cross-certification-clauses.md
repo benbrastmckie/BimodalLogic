@@ -391,23 +391,26 @@ to Lemma 7+ rather than asserting that it carries.
 
 ---
 
-### Phase 5: Close the ledger and run the full gate set [NOT STARTED]
+### Phase 5: Close the ledger and run the full gate set [IN PROGRESS]
 
 **Goal**: Bring every summary, decision, recommendation and evidence-tier statement in 901's
 report into line with the eliminated design; record Finding 4(i) where the rule inventory lives;
 add the dated amendment note; and discharge the task's full verification.
 
 **Tasks**:
-- [ ] Re-read the Executive Summary, Finding 16.3, section 17, the Decisions list, the
-      Recommendations list, and the evidence-tier table immediately before editing.
-- [ ] Reconcile the ledger hit list before editing: `grep -n -i 'cross-certif' <target>` should
+- [x] Re-read the Executive Summary, Finding 16.3, section 17, the Decisions list, the
+      Recommendations list, and the evidence-tier table immediately before editing. *(completed)*
+- [x] Reconcile the ledger hit list before editing: `grep -n -i 'cross-certif' <target>` should
       now hit only the sites this phase owns. Record any hit outside them in the issue log and
-      absorb it here.
-- [ ] Executive Summary: rewrite the cross-certification bullet to state the eliminated design —
+      absorb it here. *(completed: 8 hits before editing (lines 32, 36, 881, 934, 945, 967, 981,
+      1027); line 881 is outside this phase's owned sites, written by Phase 3, and already
+      describes the superseded device as superseded, so it needs no edit — recorded as a win)*
+- [x] Executive Summary: rewrite the cross-certification bullet to state the eliminated design —
       the circularity is closed by clause (b) plus K1 on the strength of the bar-translation's
       purity, each automaton's clause (b) already contains the position-0 instance it needs, and
       `phi+` still gains no conjunct. Amend the Lean-position bullet's parenthetical so it no
       longer cites "the cross-certification clauses" as an example of a changed cardinality.
+      *(completed)*
 - [ ] Finding 16.3: mark (Q3) **answered in the affirmative**, with the three-part answer named
       (Theorem 1, the section-8 seed lemma, Step 3') and with the research report cited as the
       record carrying the argument. Record the two qualifications the research report insists on:
