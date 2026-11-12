@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/907_redeploy-stale-claude-tree/reports/01_redeploy-stale-claude-tree.md",
+      "summary": "Redeployed via deploy-headless.sh under the bounded-wait idiom and verified all six previously-stale extensions (core, formal, lean, literature, memory, typst) now report FRESH, with no WARN from check-deploy-freshness.sh."
+    }
+  ],
+  "dispatch_seq": 1,
+  "next_steps": "Run /orchestrate 907 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1794490611_35254f_907",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 5
+  },
+  "memory_candidates": []
+}

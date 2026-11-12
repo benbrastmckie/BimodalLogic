@@ -8,6 +8,8 @@ next_project_number: 926
 
 *Updated 2026-11-12. Generated from state.json dependency graph.*
 
+**Goal**: Close the residual repository-hygiene backlog
+
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
@@ -24,7 +26,7 @@ next_project_number: 926
 
 ### Agent System
 
-907 [NOT STARTED] — Regenerate the deployed .claude/ tree in BimodalLogic, which...
+907 [RESEARCHED] — Regenerate the deployed .claude/ tree in BimodalLogic, which...
 
 ### Algebraic Representation
 
@@ -112,11 +114,12 @@ next_project_number: 926
 
 ### 907. Redeploy-stale-claude-tree
 - **Effort**: small
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Parent**: Task 901
+- **Research**: [907_redeploy-stale-claude-tree/reports/01_redeploy-stale-claude-tree.md]
 
 **Description**: Regenerate the deployed .claude/ tree in BimodalLogic, which two dispatches reported stale relative to the source store for six extensions (core, formal, lean, literature, memory, typst). Run deploy-headless.sh under the bounded-wait idiom (timeout 540, Bash tool timeout parameter 600000, per context/patterns/external-process-wait.md Rule 1), then verify with verify-deploy.sh and confirm the per-extension staleness warning from skill-base.sh no longer fires. Never hand-patch a deployed .claude/** file to clear the warning: that masks the divergence instead of fixing it. Neither reporting dispatch relied on a stale deployed command, so no prior work needs redoing. Recurrence of the condition addressed by closed task 715.
 
