@@ -1,22 +1,48 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 14,
+    "build_passed": true,
+    "notes": "Every Phase 1 verification criterion is green. sorry_count is 0. vacuous_count=1 and axiom_count=14 are both BASELINE-IDENTICAL to the pre-phase commit 47cf2e1eb (vacuous 1 -> 1, axiom 14 -> 14) and neither is located in any file this phase touched; the single vacuous-pattern hit is the pre-existing FormalSystem/Examples/TemporalStructures.lean:495 'int_domain_universal ... := trivial', which the plan's Non-Goals explicitly exclude from repair. Build verdict was read across all three tiers of long-builds.md 'Reading the build's verdict': guard exit_status=0; 'Build completed successfully (2974 jobs)' with 0 error: and 0 warning:; and .olean-newer-than-source confirmed individually for all four touched/dependent modules."
+  },
+  "partial_progress": {
+    "stage": "phase_1_completed",
+    "details": "Phase 1 of 4 complete and committed (e5b542fe2). This was a hard-mode single-phase dispatch whose stated mission was 'Implement phase 1 only. Do not continue past this phase.', so partial is the mission-correct outcome rather than a shortfall. Phases 2, 3 and 4 remain [NOT STARTED]; no phase is [BLOCKED].",
+    "phases_completed": 1,
+    "phases_total": 4
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
-      "summary": "4-phase, 4-hour plan: relocate isBoxFree into Separation/Defs.lean, land five declarations in a new FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean, reconcile the C14 pins, theorem-index rows and inventory blocks, then run the full gate battery."
+      "type": "handoff",
+      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-1-handoff-20261111-194800.md",
+      "summary": "Phase 1 close record: the isBoxFree relocation, the exactly-confirmed scope hypothesis, the in-phase interface-tier build and the phase-end full-build verdict."
     }
   ],
+  "modified_files": [
+    "FormalSystem/Metalogic/Expressiveness/Separation/Defs.lean",
+    "FormalSystem/Metalogic/Expressiveness/Separation/SemanticBridge.lean",
+    "FormalSystem/PlusLanguage/Subformulas.lean",
+    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
+    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/issues.jsonl",
+    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-1-handoff-20261111-194800.md"
+  ],
   "metadata": {
-    "session_id": "sess_1794448865_9a2e5c_900",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1794448865_9a2e5c",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 4,
-    "dependency_waves": [[1], [2], [3], [4]]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 17,
+    "phases_completed": 1,
+    "phases_total": 4,
+    "phase_commit": "e5b542fe2",
+    "compliance_check": "failed",
+    "compliance_check_attribution": "NOT a Phase 1 defect and NOT a Statement Fidelity violation. lean-plan-compliance-check.sh scans the plan's whole Goals block, so it reports all five bridge declarations (wordOf, truthAt_iff_intTruth_of_boxFree, validZTime_of_boxFree_intTruth, plusDerivable_substPlus_of_validZTime, plusDerivable_substPlus_of_boxFree_intTruth) as MISSING. Every one of them is Phase 2 work and is not supposed to exist yet under this dispatch's phase-1-only mission. Phase 1 declares no identifier named in the Goals block. The check reported no replacement_targets integrity finding. requires_user_review is deliberately NOT set: nothing here needs user judgment, and escalating 'phase 2 has not run yet' would be a false alarm.",
+    "no_summary_rationale": "No implementation summary was written. summary-format.md provides one summary per completion covering all phases; authoring summaries/01_*-summary.md with 3 of 4 phases [NOT STARTED] would claim a completion that has not happened. The phase-1 handoff above is the artifact of record for this dispatch."
   },
   "memory_candidates": [],
-  "next_steps": "Run /orchestrate 900 to execute the plan",
-  "dispatch_seq": 15
+  "next_steps": "Re-dispatch for Phase 2: create FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean. Phase 1 delivered its precondition -- isBoxFree now resolves from the light Separation.Defs, so Phase 2's pinned four-import set is satisfiable as written.",
+  "dispatch_seq": 17
 }
