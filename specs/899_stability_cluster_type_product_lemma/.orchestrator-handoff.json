@@ -1,37 +1,45 @@
 {
-  "status": "partial",
-  "dispatch_seq": 9,
-  "task_number": 899,
-  "phase": "implement",
-  "session_id": "sess_1794448865_9a2e5c",
-  "phases_completed": 2,
+  "status": "implemented",
+  "dispatch_seq": 11,
+  "phases_completed": 3,
   "phases_total": 3,
-  "summary": "Phase 2 complete and committed as b3bca557c: docs/theorem-index.md carries exactly one new row for typePair_image_stabClass at its Phase-1-measured profile [propext, Quot.sound] pinned:C14, placed immediately after the openValid_of_plusSound row, plus one prose paragraph stating the row is an unconditional class-generic product statement and not a transfer corollary, decidability or completeness claim; scripts/check-module-invariants.sh carries the matched C14LEAN/C14_BASELINE pair at the same relative position on both sides. The full build-backed checker reports PASS C14 (baseline match, with the new declaration in its note lines) and PASS C15 for both assertions (93 anchors resolve; all 455 theorem-index rows anchored at their declaration). Phase-end full guarded build exit 0, 0 warnings, 0 errors, 2974 jobs; sorry_count 0, axiom count 14 = baseline, compliance check passed. The one FAIL (INV: stale generated inventory blocks in README.md and FormalSystem/Metalogic/README.md) is Phase 3's declared scope, caused by Phase 1's added lines, not by either file Phase 2 touched. Phase 3 remains [NOT STARTED]; it is the plan's final phase and the one the dispatch's Batch Gate Deferral constrains.",
+  "summary": "Phase 3 of 3 complete and committed (b80b66652); the plan is now fully executed and all three phase headings read [COMPLETED]. Reconciled exactly the three markdown surfaces the Scope Hypothesis predicted: README.md and FormalSystem/Metalogic/README.md regenerated via --emit-inventory, and the hand-maintained Modules-table row in FormalSystem/Metalogic/Expressiveness/README.md corrected to the measured 743 lines with an extended Description and a refreshed verification date. The declared full tier was discharged against a scoped tier under the dispatch's UNMAPPABLE CRITERION clause -- no suite basename or gate number expresses this repository's Lean gates -- so the six named checks ran directly: all green, with check-module-invariants.sh now exiting 0 with zero FAIL lines, resolving the one INV FAIL Phase 2 recorded.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "documentation",
-      "path": "docs/theorem-index.md",
-      "summary": "One new open-future-elimination row for typePair_image_stabClass at [propext, Quot.sound] pinned:C14, plus one prose paragraph distinguishing it from the band's transfer corollaries."
-    },
-    {
-      "type": "script",
-      "path": "scripts/check-module-invariants.sh",
-      "summary": "One matched C14 pair -- a #print axioms line in C14LEAN and its depends-on-axioms baseline line -- each immediately after its heredoc's own openValid_of_plusSound line."
+      "type": "summary",
+      "path": "specs/899_stability_cluster_type_product_lemma/summaries/01_stability-cluster-type-product-summary.md",
+      "summary": "Completion summary for the stability-cluster type-product theorem: what landed, the decisions, the one plan deviation, and the full measured verification record."
     },
     {
       "type": "handoff",
-      "path": "specs/899_stability_cluster_type_product_lemma/handoffs/phase-2-handoff-20261112T025821Z.md",
-      "summary": "Phase 2 progressive handoff: the verification record, the Phase-3 INV evidence already in hand, the prose-wording decision, and the concurrency observations."
+      "path": "specs/899_stability_cluster_type_product_lemma/handoffs/phase-3-handoff-20261112T030905Z.md",
+      "summary": "Phase 3 progressive handoff with the pre-regeneration Scope Hypothesis confirmation and the six-gate verification record."
+    },
+    {
+      "type": "plan",
+      "path": "specs/899_stability_cluster_type_product_lemma/plans/01_stability-cluster-type-product.md",
+      "summary": "Plan with all three phases [COMPLETED], every checklist item ticked, and Phase 3's measured Verification Notes recording the scoped discharge and the batch-stage deferral."
     }
   ],
   "modified_files": [
-    "docs/theorem-index.md",
-    "scripts/check-module-invariants.sh",
+    "README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/Expressiveness/README.md",
     "specs/899_stability_cluster_type_product_lemma/plans/01_stability-cluster-type-product.md",
-    "specs/899_stability_cluster_type_product_lemma/handoffs/phase-2-handoff-20261112T025821Z.md",
-    "specs/899_stability_cluster_type_product_lemma/.return-meta.json",
-    "specs/899_stability_cluster_type_product_lemma/.orchestrator-handoff.json",
+    "specs/899_stability_cluster_type_product_lemma/summaries/01_stability-cluster-type-product-summary.md",
+    "specs/899_stability_cluster_type_product_lemma/handoffs/phase-3-handoff-20261112T030905Z.md",
     "specs/899_stability_cluster_type_product_lemma/issues.jsonl"
-  ]
+  ],
+  "verification": {
+    "verification_passed": true,
+    "build_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "compliance_check": "passed",
+    "tier_declared": "full",
+    "tier_discharge": "scoped (UNMAPPABLE CRITERION: six named repository gates run directly); complete gate set deferred to the batch stage"
+  },
+  "notes": "Batch-stage note: this dispatch's scoped discharge defers the complete gate set to the end of the invocation, where its result is attributed back to task 899 by the modified_files above. One deviation, annotated inline on the plan: lean-challenge-snapshot.sh --check has no manifest for this task (exit 71), so Statement Fidelity was evidenced instead by a verbatim comparison of the six landed signatures against the plan's own '## Lean Challenge Statements' block. Concurrency: task 905, the declared sibling, was observed writing its own specs/905/** and specs/901/** files during this dispatch -- expected, non-intersecting with this phase's three markdown surfaces, and reported rather than worked around."
 }

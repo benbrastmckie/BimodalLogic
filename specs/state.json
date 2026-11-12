@@ -2230,7 +2230,7 @@
     {
       "project_number": 899,
       "project_name": "stability_cluster_type_product_lemma",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "title": "The stability cluster's (past-type, future-type) set is a full product",
       "description": "In FormalSystem/PlusLanguage/PlusPasting.lean, for a regular frame, a model, a history tau, a time t and a finite list of past-determined and future-determined formulas, prove that the set of pairs (past-type, future-type) realized by histories through tau.state t at t equals the product of the set of realized past-types and the set of realized future-types, by paste with paste_agreeUpTo, paste_agreeFrom and the semantic PastDet/FutDet predicates of OpenFutureElimination.lean. This is the lemma that makes the initialization of the forward and backward Auxiliary-Atoms automata at the clock cut a state-level datum, and it is the exact point at which separationOver_ztime is consumed by the completeness architecture.",
@@ -2248,7 +2248,7 @@
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-09T09:48:35Z",
-      "last_updated": "2026-11-12T02:39:33Z",
+      "last_updated": "2026-11-12T03:12:38Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -2270,6 +2270,11 @@
           "path": "docs/theorem-index.md",
           "type": "documentation",
           "summary": "One new open-future-elimination row for typePair_image_stabClass at [propext, Quot.sound] pinned:C14, plus one prose paragraph distinguishing it from the band's transfer corollaries."
+        },
+        {
+          "path": "specs/899_stability_cluster_type_product_lemma/summaries/01_stability-cluster-type-product-summary.md",
+          "type": "summary",
+          "summary": "Completion summary for the stability-cluster type-product theorem: what landed, the decisions, the one plan deviation, and the full measured verification record."
         }
       ],
       "session_id": "sess_1794448865_9a2e5c",
@@ -2284,7 +2289,8 @@
         "degradation_count": 0,
         "evidence_file": "specs/evidence/audit-verdicts/899.json"
       },
-      "topic": "completeness"
+      "topic": "completeness",
+      "completion_summary": "Proved, in FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean, that for a regular frame the (past-type, future-type) pairs realized by histories through tau.state t at t are exactly the product of the realized past-types with the realized future-types -- via paste with paste_agreeUpTo/paste_agreeFrom feeding the semantic PastDet/FutDet predicates -- together with the state-congruence lemma that makes the pair-set a state-level datum and a SepClauses clause-pair corollary. The headline theorem is pinned in docs/theorem-index.md and the C14 baseline at its measured [propext, Quot.sound] profile, and every line-count surface the edit moved is regenerated or corrected."
     },
     {
       "project_number": 900,

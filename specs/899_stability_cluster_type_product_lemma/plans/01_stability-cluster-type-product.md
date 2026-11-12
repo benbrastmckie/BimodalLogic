@@ -1,7 +1,7 @@
 # Implementation Plan: The stability cluster's (past-type, future-type) set is a full product
 
 - **Task**: 899 - The stability cluster's (past-type, future-type) set is a full product
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/899_stability_cluster_type_product_lemma/reports/01_stability-cluster-type-product.md`; the compiled probes `specs/899_stability_cluster_type_product_lemma/probes/01_type-product.lean` and `probes/02_sepz-plug-point.lean` (both `lake env lean`, exit 0, no diagnostics)
