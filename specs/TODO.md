@@ -39,7 +39,7 @@ next_project_number: 926
 
 ### Completeness
 
-900 [NOT STARTED] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
+900 [RESEARCHING] — Bridge: ZTime-valid L formulas yield TM-plus theorems under...
 905 [IMPLEMENTING] — Eliminate cross-certification between the forward and...
 906 [PLANNED] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
 
@@ -1096,7 +1096,7 @@ PRIOR ART TO READ FIRST. The backlog audit surfaced a closed CSLib omega-automat
 ---
 
 ### 900. Bridge: ZTime-valid L formulas yield TM-plus theorems under PlusFormula substitution
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 899

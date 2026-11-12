@@ -414,14 +414,21 @@ This is the two-line bridge the architecture filed as an ingredient; it is state
 
 ```
 ⊨_ℤ  ( χ̄₁⁺  ∧  s₀⁺  ∧  G≤ ⋀_{b ∈ Q⁺, i<k}((b ∧ a_i) → X p⁺(b,i))  ∧  G≤ ⋀_{b≠b'} ¬(b ∧ b') )
-      →  ¬χ̄₀⁺
+      →  ¬⋀_{pt ⊆ PastLits}(⟐δ_pt → ⋀_{γ ∈ cl(φ)} G≤(γ̄^{pt} → ⟐γ))
 ```
 
-where `χ̄₀⁺ := ⋀_{γ ∈ cl(φ)} G≤(γ̄ → ⟐γ)` is the forward half of `χ̄₀` and `χ̄₁⁺` is `χ₁⁺` read linearly.
+read at `0`, where `χ̄₁⁺` is `χ₁⁺` read linearly. The consequent is the **conditional** bad-word
+conjunction over every certified past-type `pt ⊆ PastLits` (`γ̄^{pt}` as in Finding 7.3: `γ̄` with
+its pure-past literals' values at the cut fixed to `pt`), not the real-word form `¬χ̄₀⁺` (with
+`χ̄₀⁺ := ⋀_{γ ∈ cl(φ)} G≤(γ̄ → ⟐γ)`) a superseded statement of this claim used in its place — the
+clause-(b)-only `Viol⁺` the proof below consumes certifies a hypothetical `pt`, not necessarily
+the word's own, so only the conditional form follows.
 
-*Proof.* Reynolds' Claim 1 (held, `sec04:153-200`), with the induction anchored at `0` rather than at a floor. Let `w` be a ℤ-word satisfying the antecedent at `0`, and let `(s_0, s_1, …)` be the run of `A⁺` on `(w_0, w_1, …)`, i.e. `s_0 = s₀⁺` and `s_{i+1} = ρ⁺(s_i, w_i)`. Show by induction on `i ≥ 0` that `s ∈ w_i ⟺ s = s_i` for `s ∈ Q⁺`. The `⟸` direction at `i = 0` is the conjunct `s₀⁺`; at `i+1`, the step clause applies with the unique `i`-th letter `a_{j}` such that `w_i ⊨ a_j` (unique by exclusivity, existent by exhaustiveness, Lemma 2.6), giving `p⁺(s_i, j) = ρ⁺(s_i, ĉ_j) = s_{i+1} ∈ w_{i+1}`; the `⟹` direction then follows from the mutual-exclusivity conjunct. Since `w ⊨ χ̄₁⁺` there is `i ≤ K⁺` with no `V⁺_i`-atom infinitely often and some `U⁺_i`-atom infinitely often in `(w_j)_{j ≥ 0}`, hence the same of the run, hence `A⁺` accepts `(w_0, w_1, …)`, hence that word lies in `Viol⁺`. Clause (a) or clause (b) of `Viol⁺` therefore fires; in either case some `γ ∈ cl(φ)` has `γ̄` true at some `i ≥ 0` with `⟐γ ∉ w_i` (clause (a) is the instance `γ = δ_{ft_lin(w)}` at `i = 0`), i.e. `w ⊨ ¬χ̄₀⁺`. ∎
+*Proof.* Reynolds' Claim 1 (held, `sec04:153-200`), with the induction anchored at `0` rather than at a floor. Let `w` be a ℤ-word satisfying the antecedent at `0`, and let `(s_0, s_1, …)` be the run of `A⁺` on `(w_0, w_1, …)`, i.e. `s_0 = s₀⁺` and `s_{i+1} = ρ⁺(s_i, w_i)`. Show by induction on `i ≥ 0` that `s ∈ w_i ⟺ s = s_i` for `s ∈ Q⁺`. The `⟸` direction at `i = 0` is the conjunct `s₀⁺`; at `i+1`, the step clause applies with the unique `i`-th letter `a_{j}` such that `w_i ⊨ a_j` (unique by exclusivity, existent by exhaustiveness, Lemma 2.6), giving `p⁺(s_i, j) = ρ⁺(s_i, ĉ_j) = s_{i+1} ∈ w_{i+1}`; the `⟹` direction then follows from the mutual-exclusivity conjunct. Since `w ⊨ χ̄₁⁺` there is `i ≤ K⁺` with no `V⁺_i`-atom infinitely often and some `U⁺_i`-atom infinitely often in `(w_j)_{j ≥ 0}`, hence the same of the run, hence `A⁺` accepts `(w_0, w_1, …)`, hence that word lies in `Viol⁺`. By `Viol⁺`'s clause-(b)-only definition (Finding 5.2) there is `pt ⊆ PastLits` with `⟐δ_pt ∈ w_0` and `(w_0, w_1, …) ∈ Viol⁺_pt`, i.e. some `γ ∈ cl(φ)` has `γ̄^{pt}` true at some `i ≥ 0` with `⟐γ ∉ w_i`. This falsifies the `pt`-th conjunct of `⋀_{pt ⊆ PastLits}(⟐δ_pt → ⋀_{γ ∈ cl(φ)} G≤(γ̄^{pt} → ⟐γ))` at `0` (its antecedent `⟐δ_pt` holds at `w_0`, and its consequent fails at `i`), i.e. `w ⊨ ¬⋀_{pt ⊆ PastLits}(⟐δ_pt → ⋀_{γ ∈ cl(φ)} G≤(γ̄^{pt} → ⟐γ))`. ∎
 
-The mirror, **Claim 1⁻**, is the `reflectTime` image: same statement with `H≤`, `Y`, `A⁻`, `χ̄₁⁻`, `χ̄₀⁻`, induction over `i ≤ 0`.
+The mirror, **Claim 1⁻**, is the `reflectTime` image: same statement with `H≤`, `Y`, `A⁻`, `χ̄₁⁻`, induction over `i ≤ 0`, and consequent the negation of `⋀_{ft ⊆ FutLits}(⟐δ_ft → ⋀_{γ ∈ cl(φ)} H≤(γ̄^{ft} → ⟐γ))` read at `0`, indexed over certified future-types rather than certified past-types (the backward automaton's clause (b), Finding 5.3).
+
+**Why this repair was always needed.** The mismatch between Claim 1⁺'s consequent and what its proof can establish pre-dates this task's elimination of `Viol⁺`'s first, now-dropped disjunct: that disjunct's branch (`γ := δ_{ft_lin(w)}` at `i = 0`) was the *one* branch of the superseded two-disjunct `Viol⁺` that produced a real-word violation, so as long as that branch was present it masked the mismatch on every run that took it. Dropping the disjunct does not create the defect; it removes the one branch that was hiding it, which is why the repair above is required independently of the elimination and not a cost the elimination itself incurs.
 
 #### 7.3 `⊢ χ̄₀[⟐·]`: conditional badness is a theorem, by pasting
 
@@ -446,12 +453,28 @@ This is the *unconditional* form. The **conditional** form — the one the autom
 *Proof.* By Lemma 7.1 applied to Claim 1⁺ under the substitution sending each letter `⟐δ` to the L⁺ formula `⟐δ` and each `Q⁺`-atom to itself,
 
 ```
-⊢ ( χ₁⁺ ∧ s₀⁺ ∧ G≤ ⋀((b ∧ a_i) → X p⁺(b,i)) ∧ G≤ ⋀ ¬(b ∧ b') )  →  ¬χ̄₀⁺[⟐·].
+⊢ ( χ₁⁺ ∧ s₀⁺ ∧ G≤ ⋀((b ∧ a_i) → X p⁺(b,i)) ∧ G≤ ⋀ ¬(b ∧ b') )
+      →  ¬⋀_{pt ⊆ PastLits}(⟐δ_pt → ⋀_{γ ∈ cl(φ)} G≤(γ̄^{pt}[⟐·] → ⟐γ)).
 ```
 
-The three non-`χ₁⁺` conjuncts follow from `θ_f` by `stab_t` (which strips each `⊡`), and `χ̄₀⁺[⟐·]` is a theorem by Lemma 7.3. Hence `⊢ θ_f → ¬χ₁⁺`. Since `⊢ θ_f → ⊡θ_f` (Finding 6) and `stab_k` distributes, `⊢ θ_f → ⊡¬χ₁⁺`. ∎
+The three non-`χ₁⁺` conjuncts follow from `θ_f` by `stab_t` (which strips each `⊡`), and the
+consequent's `pt`-th conjunct, `⟐δ_pt → ⋀_{γ ∈ cl(φ)} G≤(γ̄^{pt}[⟐·] → ⟐γ)`, follows for every
+`pt ⊆ PastLits` from the matching instance of Lemma 7.3's **conditional** form — consumption
+point (S2), `⊢ ⟐δ_pt → ⊡G≤(γ̄^{pt}[⟐·] → ⟐γ)` for every `γ ∈ cl(φ)` — by stripping its `⊡`; `cl(φ)`
+is finite so the conjunction over `γ` is a theorem, and `PastLits` is finite so the further
+conjunction over `pt` is too. This is the re-pointing the (D2) repair requires: Claim 2⁺ now
+consumes Lemma 7.3's conditional form, matching Claim 1⁺'s restated consequent exactly, rather
+than Lemma 7.3's unconditional form (`⊢ χ̄₀⁺[⟐·]`), which does not match it. Hence `⊢ θ_f → ¬χ₁⁺`.
+Since `⊢ θ_f → ⊡θ_f` (Finding 6) and `stab_k` distributes, `⊢ θ_f → ⊡¬χ₁⁺`. ∎
 
 **Note on Reynolds' C15.** Reynolds' Claim 2 (held, `sec04:201-237`) uses C9, C11, C14 to pull `Eχ₁` inside and reach `E(χ₁ ∧ s₀ ∧ …)`. Here the corresponding step is the `⊡`-stability of `θ_f`, which is available from `atom_stab` + `stab_4` directly, so C15 is not needed.
+
+**Confirmation: Lemma 7⁺ is unaffected.** The (D2) repair changes only the derivation of
+`⊢ θ_f → ¬χ₁⁺` just above; it leaves the proof's two closing steps — `⊢ θ_f → ⊡θ_f` (Finding 6)
+then `stab_k`-distribution to `⊢ θ_f → ⊡¬χ₁⁺` — untouched, so Claim 2⁺'s conclusion is exactly the
+same formula as before the repair. The proof of Lemma 7⁺ at the end of section 7.5 consumes only
+that conclusion (the two conjuncts `⊡¬χ₁⁺`, `⊡¬χ₁⁻`) and nothing else from this section; reading
+it confirms it is unaffected by the repair, rather than merely asserting that it must be.
 
 #### 7.5 Claim 3⁺ and the lemma
 

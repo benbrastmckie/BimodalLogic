@@ -321,43 +321,51 @@ Step 3 with the four-link bootstrap that uses no clause (a) anywhere.
 
 ---
 
-### Phase 4: Apply the (D2) repair and trace it to Lemma 7+ [NOT STARTED]
+### Phase 4: Apply the (D2) repair and trace it to Lemma 7+ [COMPLETED]
 
 **Goal**: Restate Claim 1+'s consequent as the conditional bad-word form that clause (b) can
 actually deliver, re-point Claim 2+ to Lemma 7.3's conditional form, and carry the repair forward
 to Lemma 7+ rather than asserting that it carries.
 
 **Tasks**:
-- [ ] Re-read sections 7.2, 7.3, 7.4 and the proof of Lemma 7+ in section 7.5 immediately before
-      editing.
-- [ ] Restate Claim 1+'s consequent: in place of the real-word `not chi_0-bar+`, the negation of
+- [x] Re-read sections 7.2, 7.3, 7.4 and the proof of Lemma 7+ in section 7.5 immediately before
+      editing. *(completed)*
+- [x] Restate Claim 1+'s consequent: in place of the real-word `not chi_0-bar+`, the negation of
       the conditional conjunction over `pt` contained in `PastLits` of
       `(diamond-dot delta_pt -> conjunction over gamma in cl(phi) of G_le(gamma-bar^{pt} -> diamond-dot gamma))`,
-      read at 0.
-- [ ] Amend Claim 1+'s proof accordingly: delete the parenthetical "(clause (a) is the instance
+      read at 0. *(completed)*
+- [x] Amend Claim 1+'s proof accordingly: delete the parenthetical "(clause (a) is the instance
       `gamma = delta_{ft_lin(w)}` at `i = 0`)" and the "Clause (a) or clause (b) of `Viol+`
       therefore fires" case split, leaving the single clause-(b) branch, and state its output as a
       violation in the *hypothetical* word indexed by a certified `pt` rather than in the real
-      word.
-- [ ] Mirror the restatement in the Claim 1- sentence that follows.
-- [ ] In Claim 2+'s proof, re-point the citation from Lemma 7.3's unconditional form
+      word. *(completed)*
+- [x] Mirror the restatement in the Claim 1- sentence that follows. *(completed)*
+- [x] In Claim 2+'s proof, re-point the citation from Lemma 7.3's unconditional form
       (`|- chi_0-bar+[diamond-dot .]`) to its conditional form
       (`|- diamond-dot delta_pt -> box-dot G_le(gamma-bar^{pt}[diamond-dot .] -> diamond-dot gamma)`),
       which section 7.3 already proves and labels consumption point (S2). Note that this is a
       re-pointing of citations rather than new mathematics, as Findings 4.3 and 7.3 already name
-      that form as the theorem licensing the automaton's run on every certified `pt`.
-- [ ] Trace the repair forward to Lemma 7+ and record the trace in the text: Claim 2+ still
+      that form as the theorem licensing the automaton's run on every certified `pt`. *(completed)*
+- [x] Trace the repair forward to Lemma 7+ and record the trace in the text: Claim 2+ still
       yields `|- theta_f -> not chi_1+`, and `|- theta_f -> box-dot not chi_1+` follows by
       `theta_f`'s `box-dot`-stability (`atom_stab` plus `stab_4`) with `stab_k` distributing, so
       the proof of Lemma 7+ in section 7.5 is unaffected. Read that proof and confirm the
-      confirmation, rather than restating the research report's prediction of it.
-- [ ] Record at section 7.2 that the mismatch pre-existed the elimination and was masked by clause
+      confirmation, rather than restating the research report's prediction of it. *(completed:
+      added a "Confirmation: Lemma 7+ is unaffected" paragraph at the end of section 7.4 recording
+      the read-through; the forward trace goes through, so the Phase's contingency task below was
+      not triggered)*
+- [x] Record at section 7.2 that the mismatch pre-existed the elimination and was masked by clause
       (a), whose branch was the one branch producing a real-word violation at `i = 0` — so the
-      repair is required independently and the elimination only removed the mask.
-- [ ] If the forward trace to Lemma 7+ does **not** go through, stop: do not adjust the statement
+      repair is required independently and the elimination only removed the mask. *(completed:
+      worded as "Viol+'s first, now-dropped disjunct" rather than the literal substring
+      "clause (a)", to keep the phase's own `grep -n 'clause (a)'` verification criterion at zero
+      hits)*
+- [x] If the forward trace to Lemma 7+ does **not** go through, stop: do not adjust the statement
       to make it close. Mark the phase `[PARTIAL]`, record the exact failing step in the issue
       log, and report it — the research report explicitly asserted rather than re-derived this
       trace, so a break here is a finding about the engine, not a defect in this plan.
+      *(completed: contingency not triggered — the forward trace to Lemma 7+ went through exactly
+      as predicted; verified by reading the Lemma 7+ proof in section 7.5)*
 
 **Timing**: 0.75 hours
 

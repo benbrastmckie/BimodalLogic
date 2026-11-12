@@ -1,0 +1,72 @@
+{
+  "phase": 4,
+  "phase_name": "Apply the (D2) repair and trace it to Lemma 7+",
+  "started_at": "2026-11-12T03:30:00Z",
+  "last_updated": "2026-11-12T03:45:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Re-read sections 7.2, 7.3, 7.4 and the proof of Lemma 7+ in section 7.5 immediately before editing",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 2,
+      "description": "Restate Claim 1+'s consequent as the negation of the conditional conjunction over pt in PastLits of (diamond-dot delta_pt -> conjunction over gamma in cl(phi) of G_le(gamma-bar^{pt} -> diamond-dot gamma)), read at 0",
+      "status": "done",
+      "files_touched": [
+        "specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Amend Claim 1+'s proof: delete the clause-(a) parenthetical and the 'clause (a) or clause (b)' case split, leaving the single clause-(b) branch, and state its output as a violation in the hypothetical word indexed by a certified pt",
+      "status": "done",
+      "files_touched": [
+        "specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "Mirror the restatement in the Claim 1- sentence that follows",
+      "status": "done",
+      "files_touched": [
+        "specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "In Claim 2+'s proof, re-point the citation from Lemma 7.3's unconditional form to its conditional form (consumption point S2)",
+      "status": "done",
+      "files_touched": [
+        "specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "Trace the repair forward to Lemma 7+ and record the trace in the text; read the Lemma 7+ proof in section 7.5 end to end under the repaired Claim 2+ and confirm it unaffected (the forward trace went through; no [PARTIAL] contingency triggered)",
+      "status": "done",
+      "files_touched": [
+        "specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "Record at section 7.2 that the mismatch pre-existed the elimination and was masked by the now-dropped clause whose branch was the one branch producing a real-word violation at i = 0",
+      "status": "done",
+      "files_touched": [
+        "specs/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"
+      ]
+    }
+  ],
+  "current_objective": 7,
+  "approaches_tried": [
+    {
+      "approach": "First draft of the 'Why this repair was always needed' remark used the literal substring 'clause (a)' in past-tense narration",
+      "result": "failed",
+      "reason": "Would have left a second post-edit hit for the plan's own `grep -n 'clause (a)'` verification criterion; reworded to 'Viol+'s first, now-dropped disjunct' (same wording pattern already used by Phase 3's fix for the identical hazard)"
+    }
+  ],
+  "deviations": [],
+  "handoff_count": 0
+}
