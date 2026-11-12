@@ -1,0 +1,20 @@
+{
+  "phase": 1,
+  "phase_name": "Delete the Two Abandoned c8-clean Partial Checkpoints",
+  "started_at": "2026-11-12T18:10:01Z",
+  "last_updated": "2026-11-12T18:14:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-read .decisions.json and confirm answer is still 'Delete both .partial files now'", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Re-verify both files untracked by git and .gitignore:107 reads /data", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Re-verify identity/size immediately before deleting via stat", "status": "done", "files_touched": [], "note": "392670566 and 15343086 bytes, both mtime 2026-06-03 22:17:08 -- matches recorded figures exactly"},
+    {"id": 4, "description": "Confirm no completed data/bmlogic-c8-clean.jsonl has appeared", "status": "done", "files_touched": [], "note": "ls confirms absent"},
+    {"id": 5, "description": "Record du -sb data as pre-delete baseline", "status": "done", "files_touched": [], "note": "2455910058 bytes pre-delete baseline"},
+    {"id": 6, "description": "Delete exactly the two files by explicit full path", "status": "done", "files_touched": ["data/bmlogic-c8-clean.jsonl.partial", "data/bmlogic-c8-clean.checkpoint.partial"], "note": "deleted via rm -- with explicit full paths, no glob, no -r (local-disk-only deletion, gitignored path, no commit)"},
+    {"id": 7, "description": "Confirm removal and collateral safety via ls -la data/", "status": "done", "files_touched": [], "note": "both .partial files absent; bmlogic-c8-clean_metadata.json, bmlogic-c8-stratified.checkpoint, proof_steps.jsonl (1650583836 bytes) all still present"},
+    {"id": 8, "description": "Confirm reclamation via du -sb data delta", "status": "done", "files_touched": [], "note": "post-delete du -sb data = 2047896406; delta = 408013652 bytes, exact match to sum of the two deleted file sizes"},
+    {"id": 9, "description": "Confirm git status --porcelain lists nothing for data/", "status": "done", "files_touched": [], "note": "git status --porcelain -- data/ returned empty"}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

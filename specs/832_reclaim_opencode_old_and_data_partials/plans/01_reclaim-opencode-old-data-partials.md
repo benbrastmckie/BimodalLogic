@@ -1,7 +1,7 @@
 # Implementation Plan: Task #832
 
 - **Task**: 832 - Reclaim opencode_OLD and data partials
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/832_reclaim_opencode_old_and_data_partials/reports/01_reclaim-opencode-old-data-partials.md
@@ -110,37 +110,39 @@ authorized work rather than as a unilateral act, and no further user question is
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Delete the Two Abandoned c8-clean Partial Checkpoints [NOT STARTED]
+### Phase 1: Delete the Two Abandoned c8-clean Partial Checkpoints [COMPLETED]
 
 **Goal**: Remove `data/bmlogic-c8-clean.jsonl.partial` and
 `data/bmlogic-c8-clean.checkpoint.partial` from local disk, as authorized by the recorded user
 decision, after a final immediately-before-deletion re-verification.
 
 **Tasks**:
-- [ ] Re-read `specs/832_reclaim_opencode_old_and_data_partials/.decisions.json` and confirm the
+- [x] Re-read `specs/832_reclaim_opencode_old_and_data_partials/.decisions.json` and confirm the
       recorded answer is still "Delete both .partial files now". If it is not, STOP and report —
-      do not delete.
-- [ ] Re-verify both files are untracked: `git ls-files data` must return zero entries, and
-      `sed -n '107p' .gitignore` must read `/data`.
-- [ ] Re-verify identity and size immediately before deleting:
+      do not delete. *(completed: confirmed unchanged)*
+- [x] Re-verify both files are untracked: `git ls-files data` must return zero entries, and
+      `sed -n '107p' .gitignore` must read `/data`. *(completed: both confirmed)*
+- [x] Re-verify identity and size immediately before deleting:
       `stat -c '%n %s %y' data/bmlogic-c8-clean.jsonl.partial data/bmlogic-c8-clean.checkpoint.partial`.
       Expect 392,670,566 and 15,343,086 bytes, both mtime 2026-06-03 22:17:08. If either byte
       count differs from the recorded figure, STOP and report — a changed size means the file is
-      not the abandoned artifact the decision was given about.
-- [ ] Confirm no completed `data/bmlogic-c8-clean.jsonl` (non-`.partial`) has appeared; its
-      presence would change the interpretation of the `.partial` files.
-- [ ] Record `du -sb data` as the pre-delete baseline.
-- [ ] Delete exactly the two files, by explicit full path, with no glob, no `-r`, and no
+      not the abandoned artifact the decision was given about. *(completed: exact match)*
+- [x] Confirm no completed `data/bmlogic-c8-clean.jsonl` (non-`.partial`) has appeared; its
+      presence would change the interpretation of the `.partial` files. *(completed: still absent)*
+- [x] Record `du -sb data` as the pre-delete baseline. *(completed: 2,455,910,058 bytes)*
+- [x] Delete exactly the two files, by explicit full path, with no glob, no `-r`, and no
       directory argument:
       `rm -- data/bmlogic-c8-clean.jsonl.partial data/bmlogic-c8-clean.checkpoint.partial`
-- [ ] Confirm removal and collateral safety: `ls -la data/` shows both `.partial` files absent and
+      *(completed)*
+- [x] Confirm removal and collateral safety: `ls -la data/` shows both `.partial` files absent and
       every other entry still present (including `bmlogic-c8-clean_metadata.json`,
-      `bmlogic-c8-stratified.checkpoint`, and `proof_steps.jsonl`).
-- [ ] Confirm the reclamation: `du -sb data` is lower than the pre-delete baseline by
+      `bmlogic-c8-stratified.checkpoint`, and `proof_steps.jsonl`). *(completed: all present)*
+- [x] Confirm the reclamation: `du -sb data` is lower than the pre-delete baseline by
       408,013,652 bytes (allow for filesystem block-accounting slack; the figure is the sum of
       the two file sizes, not necessarily the exact on-disk delta).
-- [ ] Confirm `git status --porcelain` lists nothing for `data/` — the deletion must be invisible
-      to git, since the path is gitignored with zero tracked files.
+      *(completed: 2,047,896,406 bytes post-delete, exact 408,013,652-byte delta)*
+- [x] Confirm `git status --porcelain` lists nothing for `data/` — the deletion must be invisible
+      to git, since the path is gitignored with zero tracked files. *(completed: empty)*
 
 **Timing**: 0.25 hours
 

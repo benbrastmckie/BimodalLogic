@@ -85,9 +85,9 @@ next_project_number: 926
 ### Repo Hygiene
 
 743 [PLANNED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
-817 [PLANNED] — Wrap the remaining count-carrying inventory tables under...
-818 [PLANNED] — Wrap the four directory-rollup inventory tables that need the...
-832 [PLANNED] — Two local-disk reclamations found by the 2026-11-02 review....
+817 [IMPLEMENTING] — Wrap the remaining count-carrying inventory tables under...
+818 [IMPLEMENTING] — Wrap the four directory-rollup inventory tables that need the...
+832 [IMPLEMENTING] — Two local-disk reclamations found by the 2026-11-02 review....
 
 ### Semantics
 
@@ -303,7 +303,7 @@ NAMING CONSTRAINT, which has already cost one round elsewhere: gate C26 and C16'
 ---
 
 ### 832. Reclaim opencode old and data partials
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -486,7 +486,7 @@ UNCHANGED BY THIS AMENDMENT: the guardrail that no live task is renumbered under
 ---
 
 ### 818. Wrap directory rollup tables files lines cols
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: markdown
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -515,7 +515,7 @@ NON-GOALS. No change to the generator algorithm beyond using an option it alread
 ---
 
 ### 817. Wrap remaining phantom row inventory tables
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: markdown
 - **Topic**: repo-hygiene
 - **Dependencies**: None
