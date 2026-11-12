@@ -180,24 +180,29 @@ none is claimed).
 
 ---
 
-### Phase 2: Correct the Stale Check 12 Cross-Reference in state-write.sh [NOT STARTED]
+### Phase 2: Correct the Stale Check 12 Cross-Reference in state-write.sh [COMPLETED]
 
 **Goal**: Make the sibling-sync pointer comment in `state-write.sh` factually describe what
 Check 12 does today, so the two sites' stated relationship matches the shared definition both
 actually consume.
 
 **Tasks**:
-- [ ] Re-read `agent-system/extensions/core/scripts/state-write.sh` in the source-store repository
-      immediately before editing (a sibling task may have touched it).
-- [ ] Locate the `Sibling expression that must stay in sync:` comment in the `--allocate-into`
+- [x] Re-read `agent-system/extensions/core/scripts/state-write.sh` in the source-store repository
+      immediately before editing (a sibling task may have touched it). *(completed: re-read
+      lines 486-496 immediately before editing; unchanged since the earlier Phase 1 probe read)*
+- [x] Locate the `Sibling expression that must stay in sync:` comment in the `--allocate-into`
       archive-binding block. The trailing sentence currently asserts that Check 12 "computes this
       identical combined max"; Check 12 computes no maximum — it tests membership against the
-      shared in-use set.
-- [ ] Replace that trailing sentence with one that names the shared library both sites consume as
+      shared in-use set. *(completed: located at line 494-495)*
+- [x] Replace that trailing sentence with one that names the shared library both sites consume as
       the thing kept in sync. State the current arrangement only: do not describe what the
       sentence said before, and do not cite a task number — this file is a deliverable outside
-      `specs/**` and both the record-versioning and task-reference rules apply.
-- [ ] Confirm the edit is comment-only: every changed hunk lies inside a `#`-prefixed line.
+      `specs/**` and both the record-versioning and task-reference rules apply. *(completed:
+      replaced with "scripts/lib/project-number-inuse.sh is the single shared definition both
+      this prefix and scripts/validate-state.sh's Check 12 consume for their notion of 'in
+      use.'")*
+- [x] Confirm the edit is comment-only: every changed hunk lies inside a `#`-prefixed line.
+      *(completed: `diff` shows only the two `#`-prefixed lines changed; `bash -n` exits 0)*
 
 **Timing**: 0.5 hours
 
