@@ -1,10 +1,86 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 26,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/summaries/01_lcu-lcn-separating-model-summary.md",
+      "summary": "All 5 plan phases COMPLETED: lcU is not derivable from TM+ + LC_n + mirror at .Base (witnessed by the translation frame over Q); the determinism collapse and deterministic-class soundness arm promoted into the library; the verdict recorded in PlusLCSchema.lean and LCExtension.lean; the probe reduced, tracked, and wired into check-evidence-probes.sh; theorem-index rows added; the complete repository gate set observed green with zero pre-existing findings to enumerate."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-5-handoff-20261112T065653Z.md",
+      "summary": "Phase-end handoff: all five phases complete, task's implementation done, no further Lean work needed."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Settled the task's deliverable's second branch: lcU alpha beta is not a theorem of TM+ + LC_n + mirror LC_n at FrameClass.Base with RuleSet.none, witnessed by the translation frame over Q (extends for free to .Dense and .RTime; .ZTime stays open and unsettleable by any model). Promoted the determinism collapse and deterministic-class soundness arm from an untracked probe into FormalSystem/PlusLanguage/PlusDeterminism.lean and FormalSystem/Metalogic/LCExtension.lean (five new sorry-free declarations, each measuring [propext, Classical.choice, Quot.sound]), recorded the verdict in both modules' docstrings, added four theorem-index rows, reduced the probe to 113 lines and brought it under version control and CI via check-evidence-probes.sh, and ran the complete six-gate repository verification set with zero pre-existing findings to enumerate."
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/LCExtension.lean",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/PlusLanguage/PlusDeterminism.lean",
+    "FormalSystem/PlusLanguage/PlusLCSchema.lean",
+    "FormalSystem/PlusLanguage/README.md",
+    "README.md",
+    "Tests/BimodalTest/Metalogic/LCExtensionTest.lean",
+    "docs/theorem-index.md",
+    "scripts/check-evidence-probes.sh",
+    "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/summaries/01_lcu-lcn-separating-model-summary.md",
+    "specs/evidence/lcu-lcn-separation/lcu-lcn-separating-model.lean",
+    "typst/generated/status.typ"
+  ],
+  "memory_candidates": [
+    {
+      "content": "In this repository, scripts/check-module-invariants.sh's --no-build flag skips C1/C2/C6/C16/C24/C25/C36b (every build-dependent check), including C2's axiom-baseline hard stop. When a task's plan explicitly names C2 as a hard stop to verify, --no-build is not a valid shortcut: the full run (with its own internal lake build + lake build BimodalTest) must be used, even under a Batch Gate Deferral directive, when the deferral's narrowing tools (run-all.sh --only, verify-deploy.sh --only-gate) do not cover the Lean-repo-specific check at all -- that is the deferral's own UNMAPPABLE CRITERION case, which says run the named check directly rather than treating partial coverage as satisfying it.",
+      "category": "PATTERN",
+      "source_artifact": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/summaries/01_lcu-lcn-separating-model-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "check-module-invariants",
+        "batch-gate-deferral",
+        "unmappable-criterion",
+        "C2",
+        "no-build"
+      ]
+    },
+    {
+      "content": "git-commit-phase.sh's --objective flag must be a single integer matching one objective id in the phase progress file's objectives[] array, never a combined range like \"1-3\". A combined-range value fails to match any objective, so files_touched derivation returns empty, the WARNING is printed, and the commit silently proceeds with only the fixed task-directory paths staged -- excluding the real source-file edits from that commit. Recovery: a direct git-commit-scoped.sh follow-up commit naming the omitted files explicitly. When multiple objectives complete together, call git-commit-phase.sh once per single objective id, or ensure the combined-objective's own id matches by using a different field, not a hyphenated range string.",
+      "category": "PATTERN",
+      "source_artifact": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/summaries/01_lcu-lcn-separating-model-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "git-commit-phase",
+        "objective-id",
+        "files_touched",
+        "phase-commit",
+        "follow-up-commit"
+      ]
+    },
+    {
+      "content": "lake-build-guard.sh's module scoping accepts multiple space-separated targets in one call (e.g. `-- build Mod1 Mod2 Mod3`), useful for scoping a batch-deferred build to every module a multi-phase task touched in one invocation rather than running the scoped guard once per module. Module names for a lean_lib with a non-default srcDir (e.g. BimodalTest with srcDir = \"Tests\") omit the srcDir prefix: the test file Tests/BimodalTest/Metalogic/LCExtensionTest.lean is addressed as BimodalTest.Metalogic.LCExtensionTest, not Tests.BimodalTest.Metalogic.LCExtensionTest.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/summaries/01_lcu-lcn-separating-model-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": [
+        "lake-build-guard",
+        "module-scoping",
+        "srcDir",
+        "lean_lib",
+        "lakefile"
+      ]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1794448865_9a2e5c",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
+    "phases_completed": 5,
+    "phases_total": 5
   }
 }

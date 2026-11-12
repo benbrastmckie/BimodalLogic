@@ -2,7 +2,7 @@
 
 - **Task**: 906 - Settle whether `lcU` is derivable from TM⁺ + `LC_n` at `.ZTime` via a non-`.ZTime`
   separating model
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None blocking. Territory-serialized against task 899 on
   `docs/theorem-index.md` — see "Territory" below.

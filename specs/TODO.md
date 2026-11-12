@@ -11,7 +11,7 @@ next_project_number: 926
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,906,907 | -- | agent-system, algebraic-representation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,714,734,743,761,781,817,818,821,829,830,831,832,873,890,907 | -- | agent-system, algebraic-representation, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876 | 298,428,502,743,761,873 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -36,10 +36,6 @@ next_project_number: 926
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
-
-### Completeness
-
-906 [IMPLEMENTING] — Settle whether LCU is derivable from TM-plus + LC\_n at ZTime...
 
 ### Dataset Enhancement
 
@@ -991,13 +987,14 @@ Evidence anchor. specs/evidence/history-morphism-saturation-audit/ holds the two
 ---
 
 ### 906. Settle whether LCU is derivable from TM-plus + LC_n at ZTime via a non-ZTime separating model
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal
 - **Topic**: completeness
 - **Dependencies**: None
 - **Research**: [906_lcu_derivability_from_lcn_non_ztime_separating_model/reports/01_lcu-lcn-separating-model.md]
 - **Plan**: [906_lcu_derivability_from_lcn_non_ztime_separating_model/plans/01_lcu-lcn-separating-model.md]
 - **Handoff**: [906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-4-handoff-20261112T060613Z.md]
+- **Summary**: [906_lcu_derivability_from_lcn_non_ztime_separating_model/summaries/01_lcu-lcn-separating-model-summary.md]
 
 **Description**: RESEARCH TASK, report only. Deliverable: either a derivation of lcU alpha beta in TM-plus + LC_n + mirror LC_n for state-local beta, or a non-ZTime separating model. A ZTime countermodel cannot settle this question -- both lcN_plusValidZTime and lcU_plusValidZTime are compiled, so the two systems have the same ZTime models -- so the first target is .Base, where both schemata's validity is open and unclaimed per FormalSystem/PlusLanguage/PlusLCSchema.lean's own docstring, for a separating general frame or algebra. No Lean work beyond what is needed to state the separating model or derivation at the report level; no completeness claim.
 

@@ -1,19 +1,24 @@
 {
-  "status": "partial",
-  "dispatch_seq": 25,
-  "summary": "Completed Phase 4 of the task 906 plan: added four rows to docs/theorem-index.md for the LCExtension.lean deterministic-frames soundness arm declarations landed in Phase 3 (lcAnte_iff_lcCons_of_deterministic, lcN_plusValidOn_of_deterministic, isLCAxiom_plusValidDetIn_base, ext_sound_detIn), each with its fully qualified name, file, Frame class, and pcq Axioms cell matching the measured profile. Territory gate confirmed clear (task 899 completed, its own edit to the file already committed), so the phase was entered rather than closed BLOCKED. check-module-invariants.sh --no-build's C12/C13/C15 all green; git diff on the file shows exactly 4 insertions. This dispatch's own Phase Mission restricted it to Phase 4 only; one phase remains.",
+  "status": "implemented",
+  "dispatch_seq": 26,
+  "summary": "Completed Phase 5 (the plan's final phase) and with it the whole task: lcU alpha beta is not a theorem of TM+ + LC_n + mirror LC_n at FrameClass.Base with RuleSet.none, witnessed by the translation frame over Q, extending for free to .Dense and .RTime (.ZTime stays open, not settleable by any model). Reduced the custody probe to 113 lines (down from 189), tracked it with git, wired it into check-evidence-probes.sh, regenerated the three module-inventory READMEs the Scope Hypothesis predicted, and ran all six of the plan's named gates directly (none mapped to run-all.sh/verify-deploy.sh, so the Batch Gate Deferral's UNMAPPABLE CRITERION path applied): lake-build-guard.sh scoped to the three touched modules (green), check-module-invariants.sh full run (ALL CHECKS PASSED, C2/C14 hard stops both PASS), check-metalogic-cycles.sh (PASS), typst-sync-check.sh full run (PASS), check-evidence-probes.sh (PASS, 56/56 wired probes), and --emit-inventory --check (PASS, no stale block). Zero pre-existing findings to enumerate. Wrote the implementation summary.",
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/summaries/01_lcu-lcn-separating-model-summary.md",
+      "summary": "Full implementation summary: verdict, what landed and where, measured axiom profiles, Phase 1's branch decision, gate verification detail, argued-not-compiled items, and recorded follow-ups."
+    },
+    {
       "type": "handoff",
-      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-4-handoff-20261112T060613Z.md",
-      "summary": "Phase-end handoff recording Phase 4's completion, the territory-gate clearance evidence, and the insertion-point live-confirmation decision."
+      "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-5-handoff-20261112T065653Z.md",
+      "summary": "Phase-end handoff: all five phases complete, task's implementation done, no further Lean work needed."
     }
   ],
-  "phases_completed": 4,
+  "phases_completed": 5,
   "phases_total": 5,
   "blockers": [],
   "plan_markers_verified": true,
-  "continuation_path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-4-handoff-20261112T060613Z.md",
-  "next_action_hint": "Dispatch Phase 5 (final phase, Verification Tier full): reduce the probe to Part II plus the headline (importing the promoted library halves), track it with git, wire it into check-evidence-probes.sh, regenerate module-inventory blocks (FormalSystem/PlusLanguage/README.md, FormalSystem/Metalogic/README.md, README.md -- the pre-existing INV staleness observed during Phase 4's verification is exactly this task), run the full gate set, and write the implementation summary.",
-  "git_checkpoint": "8af779c91 (task 906 phase 4: theorem-index rows for the four new declarations) -- tree was green throughout, no separate snapshot needed"
+  "continuation_path": null,
+  "next_action_hint": "No further implement-phase dispatch needed for this task. Proceed to postflight / mark the task complete.",
+  "git_checkpoint": "e0501a51e (task 906 phase 5: probe custody, reconciliation, full gate set, and the summary) -- tree was green throughout, no separate snapshot needed"
 }

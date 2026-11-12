@@ -2756,7 +2756,7 @@
     {
       "project_number": 906,
       "project_name": "lcu_derivability_from_lcn_non_ztime_separating_model",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "formal",
       "title": "Settle whether LCU is derivable from TM-plus + LC_n at ZTime via a non-ZTime separating model",
       "description": "RESEARCH TASK, report only. Deliverable: either a derivation of lcU alpha beta in TM-plus + LC_n + mirror LC_n for state-local beta, or a non-ZTime separating model. A ZTime countermodel cannot settle this question -- both lcN_plusValidZTime and lcU_plusValidZTime are compiled, so the two systems have the same ZTime models -- so the first target is .Base, where both schemata's validity is open and unclaimed per FormalSystem/PlusLanguage/PlusLCSchema.lean's own docstring, for a separating general frame or algebra. No Lean work beyond what is needed to state the separating model or derivation at the report level; no completeness claim.",
@@ -2780,7 +2780,7 @@
       "dependencies": [],
       "priority": "low",
       "created": "2026-11-09T20:01:38Z",
-      "last_updated": "2026-11-12T05:17:03Z",
+      "last_updated": "2026-11-12T06:59:06Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -2797,6 +2797,11 @@
           "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/handoffs/phase-4-handoff-20261112T060613Z.md",
           "type": "handoff",
           "summary": "Phase-end handoff recording Phase 4's completion, the territory-gate clearance evidence, and the insertion-point live-confirmation decision."
+        },
+        {
+          "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/summaries/01_lcu-lcn-separating-model-summary.md",
+          "type": "summary",
+          "summary": "Full implementation summary: verdict, what landed and where, measured axiom profiles, Phase 1's branch decision, gate verification detail, argued-not-compiled items, and recorded follow-ups."
         }
       ],
       "audit_verdict": {
@@ -2883,7 +2888,8 @@
         "note": "trimmed to top 6 of 38 non-scope-blind verdicts for state-write arg-size limits; full 490-verdict record committed at task-proposals-audit.ndjson"
       },
       "topic": "completeness",
-      "session_id": "sess_1794448865_9a2e5c"
+      "session_id": "sess_1794448865_9a2e5c",
+      "completion_summary": "Settled the task's deliverable's second branch: lcU alpha beta is not a theorem of TM+ + LC_n + mirror LC_n at FrameClass.Base with RuleSet.none, witnessed by the translation frame over Q (extends for free to .Dense and .RTime; .ZTime stays open and unsettleable by any model). Promoted the determinism collapse and deterministic-class soundness arm from an untracked probe into FormalSystem/PlusLanguage/PlusDeterminism.lean and FormalSystem/Metalogic/LCExtension.lean (five new sorry-free declarations, each measuring [propext, Classical.choice, Quot.sound]), recorded the verdict in both modules' docstrings, added four theorem-index rows, reduced the probe to 113 lines and brought it under version control and CI via check-evidence-probes.sh, and ran the complete six-gate repository verification set with zero pre-existing findings to enumerate."
     },
     {
       "project_number": 907,
