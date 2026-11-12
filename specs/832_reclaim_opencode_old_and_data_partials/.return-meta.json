@@ -1,38 +1,22 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/832_reclaim_opencode_old_and_data_partials/reports/01_reclaim-opencode-old-data-partials.md",
-      "summary": "Verifies and deletes .opencode_OLD/ (62 MB) as a confirmed strict subset of live .opencode/; inspects data/ and recommends, but does not delete, the two abandoned bmlogic-c8-clean partial-checkpoint files (390 MB); leaves proof_steps.jsonl untouched."
+      "type": "plan",
+      "path": "specs/832_reclaim_opencode_old_and_data_partials/plans/01_reclaim-opencode-old-data-partials.md",
+      "summary": "Two-phase plan: delete the two user-approved data/*.partial abandoned checkpoints (408,013,652 bytes), then verify all three acceptance criteria under the full gate set."
     }
   ],
-  "dispatch_seq": 4,
-  "next_steps": "Relay the user_decision on the two data/*.partial files; no further /orchestrate phase is needed for this task beyond that confirmation.",
+  "dispatch_seq": 11,
+  "next_steps": "Run /orchestrate 832 to execute the plan",
   "metadata": {
     "session_id": "sess_1794503933_59a2b4_832",
-    "agent_type": "general-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 2,
+    "estimated_hours": 0.5,
+    "dependency_waves": [[1], [2]]
   },
-  "memory_candidates": [
-    {
-      "content": "Before deleting a suspected stale duplicate directory tree (e.g. a *_OLD backup), mechanically confirm the strict-subset relation with `diff -rq <live> <old>` and check that zero entries read 'Only in <old>' — not just that sizes/mtimes look consistent. Any entry unique to the old tree means it is not a pure subset and must not be deleted without separate review.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/832_reclaim_opencode_old_and_data_partials/reports/01_reclaim-opencode-old-data-partials.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["diff -rq", "stale directory", "disk reclamation", "subset verification", "gitignored cleanup"]
-    }
-  ],
-  "modified_files": [],
-  "user_decision": {
-    "question": "Delete the two abandoned bmlogic-c8-clean partial-checkpoint files in data/ (data/bmlogic-c8-clean.jsonl.partial, 375 MB, and data/bmlogic-c8-clean.checkpoint.partial, 15 MB; 390 MB combined), both gitignored with zero tracked files and unrecoverable once removed?",
-    "options": [
-      "Delete both .partial files now — confirmed abandoned-run artifacts of an interrupted generation run with no completed output file in data/",
-      "Keep both .partial files — retain them in case the interrupted run is resumed or inspected later"
-    ],
-    "recommended": "Delete both .partial files now — confirmed abandoned-run artifacts of an interrupted generation run with no completed output file in data/",
-    "blocking": true,
-    "obligation": "Discharge the task's Item 2 acceptance criterion ('a recorded decision on the two data/*.partial files') without performing an automatic, user-unconfirmed deletion of local-disk-only, unrecoverable data, per the dispatch's explicit 'USER DECISION, NOT AN AUTOMATIC DELETE' framing for Item 2."
-  }
+  "memory_candidates": []
 }

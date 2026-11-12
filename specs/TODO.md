@@ -87,7 +87,7 @@ next_project_number: 926
 743 [PLANNED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
 817 [PLANNED] — Wrap the remaining count-carrying inventory tables under...
 818 [PLANNED] — Wrap the four directory-rollup inventory tables that need the...
-832 [PLANNING] — Two local-disk reclamations found by the 2026-11-02 review....
+832 [PLANNED] — Two local-disk reclamations found by the 2026-11-02 review....
 
 ### Semantics
 
@@ -303,11 +303,12 @@ NAMING CONSTRAINT, which has already cost one round elsewhere: gate C26 and C16'
 ---
 
 ### 832. Reclaim opencode old and data partials
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [832_reclaim_opencode_old_and_data_partials/reports/01_reclaim-opencode-old-data-partials.md]
+- **Plan**: [832_reclaim_opencode_old_and_data_partials/plans/01_reclaim-opencode-old-data-partials.md]
 
 **Description**: Two local-disk reclamations found by the 2026-11-02 review. Both are LOCAL-DISK ONLY: every path below is gitignored with zero tracked files, so nothing here produces a commit and nothing is recoverable from git afterwards. That asymmetry is the whole reason item 2 is a user decision rather than an action.
 
