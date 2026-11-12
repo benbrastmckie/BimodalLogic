@@ -179,8 +179,9 @@ cited record, not here.
   `⊡G≤(⟐α → ⟐(⟐β U ⟐α)) → ⟐G≤(⟐α → (⟐β U ⟐α))` survives this countermodel and is recorded in
   `PlusLCSchema.lean` as an open candidate, not a claim.
 - **The landed cell schemas bear on the reserved obligation in NEITHER direction**, and may not
-  be described as partial progress toward it. This covers the three cell-EQUALITY schemas in
-  `LadderCell.lean` and the window-regime cell-INCLUSION schema
+  be described as partial progress toward it. This covers all five cell-EQUALITY schemas in
+  `LadderCell.lean` — the antitone pair included, each of which says so in its own docstring — and
+  the window-regime cell-INCLUSION schema
   `CellSubsetOfKappaEqWindowRaise` in `LadderWindow.lean` alike. Each is strictly stronger in
   hypotheses than `CellLEZeroConstOfKappaEq` under `ParamsOk`, because each carries an
   existential-over-paths witnessing condition (`ForwardSlackWitnessed`, or
@@ -341,22 +342,35 @@ claimed; which gates `real_certAdmK_of_paramsOk` and `real_subset_dmax`; which g
 realization theorem; which is (W)'s run layer, the lift from one seam to validity; above which
 sits 763's `Decidable (PlusValidZTime φ)`, stated nowhere in the tree.
 
-**The collision case split is fully dispatched, and what blocks the bottom link is a frontier with
-a known location rather than an open question in either direction.**
-`kappa_collision_regimes` has three branches, and three depth-`0` cell-EQUALITY schemas are landed
-against them in `LadderCell.lean`: `cellLE_zero_const_of_kappa_eq_of_forwardSlack` (equal
-register), `cellLE_zero_const_of_kappa_eq_commonShift_of_forwardSlack` (common shift, register
-freed) and `cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack` (monotone, carrying neither
-restriction and specializing to both the others' hypotheses). Three findings fix the frontier:
+**The collision case split is fully dispatched on BOTH sides, and what blocks the bottom link is a
+frontier with a known location rather than an open question in either direction.**
+`kappa_collision_regimes` has three branches, and **five** depth-`0` cell-EQUALITY schemas are
+landed against them in `LadderCell.lean`, every one of them carrying `ForwardSlackWitnessed`:
+`cellLE_zero_const_of_kappa_eq_of_forwardSlack` (equal register, `:1530`),
+`cellLE_zero_const_of_kappa_eq_commonShift_of_forwardSlack` (common shift, register freed,
+`:1631`), `cellLE_zero_const_of_kappa_eq_monotone_of_forwardSlack` (monotone, carrying neither
+restriction and specializing to both the others' hypotheses, `:1767`),
+`cellLE_zero_const_of_kappa_eq_antitone_of_forwardSlack` (`:1910`) and
+`cellLE_zero_const_of_kappa_eq_antitone_bounded_of_forwardSlack` (`:1961`). Three findings fix the
+frontier:
 
-- **The antitone slice is EXCLUDED, not refuted** (916). `kappa_collision_monotone_or_antitone`
-  makes the two slices exhaustive with no third case, and
-  `kappa_collision_antitone_residue_nonvacuous` inhabits the excluded one at `(4,2)` against
-  `(6,0)` inside the pending-forever regime above the threshold. The reason the free-register
-  raise stops there is compiled: `free_register_anchor_clause_monotone_required` shows the
-  anchor clause's lower bound non-removable, and the clause's two bounds pay for opposite
-  directions. The route the slice would need — forward-slack witnessing at the LOWER pair — is
-  named and claimed in neither direction.
+- **The antitone slice is DISPATCHED, not excluded** (916's own Phases 5-7, which landed after the
+  exclusion was first recorded). `kappa_collision_monotone_or_antitone` makes the two slices
+  exhaustive with no third case, and the antitone schema closes both orientations of the
+  disjunction by `Set.Subset.antisymm` against one pair of inclusions
+  (`cellAt_subset_of_antitone_register_shift_of_pend_past` upward and its `_rev` downward), with
+  the two pairs' roles swapped — cell equality being symmetric, no third inclusion is needed. With
+  the monotone theorem beside it, **every collision in the pending-forever regime above the
+  threshold is now covered by one of the two schemas.** The compiled non-vacuity witness
+  `kappa_collision_antitone_residue_nonvacuous` at `(4,2)` against `(6,0)` is re-read in-source as
+  a demonstration about the slice's *cheaper half*: there `m = 2` and the descent is exactly
+  `m · (P + 1)`, which is the bounded corollary's hypothesis
+  (`kappa_collision_antitone_bounded_descent_nonvacuous` records precisely that), while
+  `kappa_collision_antitone_deep_descent_nonvacuous` inhabits the complement where the general
+  schema's upward hypothesis does real work. The reason the free-register raise stops short is
+  still compiled: `free_register_anchor_clause_monotone_required` shows the anchor clause's lower
+  bound non-removable, and the clause's two bounds pay for opposite directions — that is why the
+  antitone case needed its own schema rather than an extension of the monotone one.
 - **`ForwardSlackWitnessed`'s deletion route is REFUTED at the pin layer** by a compiled theorem
   rather than merely unproved. `no_deleted_ladderPath_of_straddle_break` (`LadderChain.lean`)
   shows that once the straddling pair breaks at the reduced distance, no deleted ladder path
@@ -471,7 +485,8 @@ from. Do not go looking for a `reports/` file that was never written.
   `ForwardSlackWitnessed` (`LadderCell.lean`) — an existential over paths, which is exactly why
   it escapes that refutation. The gap to `CellLEZeroConstOfKappaEq` is **no longer the tight
   (doubling) chain of pins**: the register-lowering deletion and the free-register raise are both
-  landed, the antitone collision slice is excluded, and whether the existential-over-paths form
+  landed, the antitone collision slice is dispatched by its own two schemas, and whether the
+  existential-over-paths form
   admits any route at all is **answered affirmatively** by the idle pump. What remains is the
   `I = 1` sub-regime it does not reach.
 - **The plan-specified spine for the register-lowering deletion is not implementable, and the
