@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "dispatch_seq": 5,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/714_evaluate_full_labels_in_sliced_certificate/reports/01_full-labels-sliced-certificate.md",
+      "summary": "Option 3 (full labels in the sliced certificate) evaluated and refuted: decidability survives but the stability modal does not; measured at five landed certificates with a sorry-free kernel probe."
+    },
+    {
+      "type": "probe",
+      "path": "specs/714_evaluate_full_labels_in_sliced_certificate/probes/FullLabels.lean",
+      "summary": "Ten decide-level results comparing the full-label position space against posAt and liveAt; zero sorries, standard axioms."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794503933_59a2b4_714",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
