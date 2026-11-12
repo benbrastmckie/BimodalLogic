@@ -309,22 +309,25 @@ the regenerated block.
 
 ---
 
-### Phase 4: WitnessFamily upper table — wrap with no row-set change [NOT STARTED]
+### Phase 4: WitnessFamily upper table — wrap with no row-set change [COMPLETED]
 
 **Goal**: The `## Modules` table in
 `FormalSystem/Metalogic/Decidability/WitnessFamily/README.md` is under the gate.
 
 **Tasks**:
-- [ ] Confirm the 7 existing rows still match the 7 live loose `.lean` files directly under
-      `WitnessFamily/` (no phantom, no missing).
-- [ ] Wrap *only* that table with
+- [x] Confirm the 7 existing rows still match the 7 live loose `.lean` files directly under
+      `WitnessFamily/` (no phantom, no missing). *(completed: `ls *.lean | wc -l` = 7, matching
+      Closure/Basic/Predicates/Std/Agreement/Decide/Examples)*
+- [x] Wrap *only* that table with
       `dir=FormalSystem/Metalogic/Decidability/WitnessFamily rows=loose cols=lines`. `rows=loose`
       is deliberate, not a workaround: the two subdirectories are covered by their own tables
-      below, so no subdirectory rows belong in this block.
-- [ ] Run the writer; `Std.lean`'s stated 120 is expected to refresh to its live count.
-- [ ] Confirm the `Compression/` 2-column section and the lower `Sharing/` table are byte-
+      below, so no subdirectory rows belong in this block. *(completed)*
+- [x] Run the writer; `Std.lean`'s stated 120 is expected to refresh to its live count.
+      *(completed)*
+- [x] Confirm the `Compression/` 2-column section and the lower `Sharing/` table are byte-
       identical before and after this phase (they are out of this phase's scope, and
-      `Compression/` is out of the task's scope entirely).
+      `Compression/` is out of the task's scope entirely). *(completed: both sections diffed
+      byte-identical before/after)*
 
 **Timing**: 0.25 hours
 
