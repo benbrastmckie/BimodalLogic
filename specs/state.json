@@ -2260,6 +2260,11 @@
           "path": "specs/899_stability_cluster_type_product_lemma/plans/01_stability-cluster-type-product.md",
           "type": "plan",
           "summary": "Three-phase implementation plan with pinned Lean Challenge Statements for all six declarations."
+        },
+        {
+          "path": "FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean",
+          "type": "source",
+          "summary": "New section with pastType, futType, typePair and the three typePair_image_stabClass theorems, plus two module-docstring list entries."
         }
       ],
       "session_id": "sess_1794448865_9a2e5c",

@@ -1,7 +1,7 @@
 # Implementation Plan: The stability cluster's (past-type, future-type) set is a full product
 
 - **Task**: 899 - The stability cluster's (past-type, future-type) set is a full product
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/899_stability_cluster_type_product_lemma/reports/01_stability-cluster-type-product.md`; the compiled probes `specs/899_stability_cluster_type_product_lemma/probes/01_type-product.lean` and `probes/02_sepz-plug-point.lean` (both `lake env lean`, exit 0, no diagnostics)
@@ -140,60 +140,64 @@ root, and its findings for this task would be entirely the tree's standing basel
 gate set for a Lean change here is the six commands enumerated in Phase 3, and that is what the
 final phase runs.
 
-### Phase 1: Land the six declarations in `OpenFutureElimination.lean` [NOT STARTED]
+### Phase 1: Land the six declarations in `OpenFutureElimination.lean` [COMPLETED]
 
 **Goal**: the three type definitions and the three theorems compile in-tree, sorry-free and
 warning-free, with every docstring obligation (C16 `docBlame`, C15's `Paper:` line, the R4 wording
 constraint, the R5 non-vacuity remark) satisfied in the same hunk.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` immediately
+- [x] Re-read `FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean` immediately
   before editing, in case a sibling has already changed it.
-- [ ] Open a new section header `/-! ## The stability cluster's type set is a product -/` directly
+- [x] Open a new section header `/-! ## The stability cluster's type set is a product -/` directly
   after the end of `opastP_sepForm_iff`'s proof and immediately before the existing
   `/-! ## The translation, conditional on separation -/` header. Siting it there is what lets
   `typePair_image_stabClass_of_sepClauses` refer to `SepClauses`, which is defined in the
   preceding section.
-- [ ] Transcribe `pastType`, `futType`, `typePair`, `typePair_image_stabClass`,
+- [x] Transcribe `pastType`, `futType`, `typePair`, `typePair_image_stabClass`,
   `typePair_image_stabClass_state_congr` and `typePair_image_stabClass_of_sepClauses` from
   `specs/899_stability_cluster_type_product_lemma/probes/01_type-product.lean`. Signatures exactly
   as pinned in `## Lean Challenge Statements` below; proof bodies verbatim from the probe. Do not
   re-derive, do not inline, do not substitute a shorter route — `rules/plan-compliance.md` applies
   to this file.
-- [ ] Give all six declarations docstrings (C16's `docBlame`, C19's coverage floor).
-- [ ] End `typePair_image_stabClass`'s docstring with a `Paper: — (formalization-native; ...)`
+- [x] Give all six declarations docstrings (C16's `docBlame`, C19's coverage floor).
+- [x] End `typePair_image_stabClass`'s docstring with a `Paper: — (formalization-native; ...)`
   line, in the `/-- ... -/` block immediately preceding the declaration. C15's second assertion
   requires the value to begin `— (`; `ofutP_or_iff`'s own docstring in this file is the shape to
   follow.
-- [ ] Word the architectural framing in that docstring as design intent, not present consumption:
+- [x] Word the architectural framing in that docstring as design intent, not present consumption:
   that the theorem supplies the state-level datum a forward/backward Auxiliary-Atoms
   initialization would read, and that `typePair_image_stabClass_of_sepClauses` is the slot a
   separated clause list — including the one `separationOver_ztime` returns — plugs into. Do NOT
   write that an automaton is initialized by it, and do NOT write that this is where
   `separationOver_ztime` is consumed.
-- [ ] Add the non-vacuity remark to the same docstring (R5): with `A := [β]` for a `β` that is
+- [x] Add the non-vacuity remark to the same docstring (R5): with `A := [β]` for a `β` that is
   future-determined but not past-determined, `pastType M A ·` *is* the future-type function, so
   the right-hand side becomes the full square of a single image while the left-hand side is
   confined to its diagonal, and the equality fails as soon as two distinct values are realized in
   `stabClass τ t`. State it as a reasoned remark, flagged as not machine-checked; cite no theorem
   for it.
-- [ ] State in `typePair_image_stabClass_state_congr`'s docstring that it needs neither
+- [x] State in `typePair_image_stabClass_state_congr`'s docstring that it needs neither
   `[F.IsRegular]` nor the determinedness hypotheses and follows from `stabClass`'s definition
   alone — its cheapness stated, not hidden.
-- [ ] Have `typePair_image_stabClass`'s docstring cite the history-level precedent
+- [x] Have `typePair_image_stabClass`'s docstring cite the history-level precedent
   (`OpenClasses.lean`'s `paste_mem_openFutureClass_inter_openPastClass`) rather than restating the
   geometry.
-- [ ] Add one bullet to the module docstring's `## What is proved here` list and one to its
+- [x] Add one bullet to the module docstring's `## What is proved here` list and one to its
   `## Main Results` list, naming all six new identifiers and respecting the same wording
   constraint as above.
-- [ ] Use no task-number citation anywhere in the file (`rules/no-task-references-in-deliverables.md`,
+- [x] Use no task-number citation anywhere in the file (`rules/no-task-references-in-deliverables.md`,
   C9).
-- [ ] Run the scoped guarded build and confirm it is warning-free as well as exit 0.
-- [ ] Measure, in-tree, `#print axioms` for all three theorems and record the three lines verbatim
+- [x] Run the scoped guarded build and confirm it is warning-free as well as exit 0.
+  *(deviation: altered — the first scoped build exited 0 but emitted two `linter.style.show`
+  warnings at the two transcribed `show` tactic lines, the exact probe/`[leanOptions]`
+  asymmetry the Risks table predicted; applied the Rollback/Contingency fix-forward and
+  replaced both with `change`. Rebuild: exit 0, zero warnings, zero errors. No suppression.)*
+- [x] Measure, in-tree, `#print axioms` for all three theorems and record the three lines verbatim
   in the phase's notes. Phase 2 consumes these values; it does not re-predict them.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` together
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` together
   with the Lean file in THIS phase's commit (gate-collision Condition 1, surface (b)).
-- [ ] Commit via `.claude/scripts/git-commit-scoped.sh` with an explicit two-file list, after
+- [x] Commit via `.claude/scripts/git-commit-scoped.sh` with an explicit two-file list, after
   reviewing `git status --short` and `git diff --staged`.
 
 **Timing**: 2 hours
