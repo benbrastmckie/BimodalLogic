@@ -242,22 +242,22 @@ this phase's own measurement run.
 
 ---
 
-### Phase 2: Apply the Decision Rule and Record the Verdict [NOT STARTED]
+### Phase 2: Apply the Decision Rule and Record the Verdict [COMPLETED]
 
 **Goal**: Turn the completed evidence into a stated verdict under `## Decisions`' rule D1, so the
 library edit in Phase 3 executes a decision already made rather than making one mid-edit.
 
 **Tasks**:
 
-- [ ] Compare `r_certA` and `r_witness` from Phase 1 against D1's 1.15 band and state the branch
+- [x] Compare `r_certA` and `r_witness` from Phase 1 against D1's 1.15 band and state the branch
       — KEEP or REVERT — explicitly.
-- [ ] Append a "Verdict" section to `specs/evidence/phase5-hoist-kernel-ab/README.md` carrying:
+- [x] Append a "Verdict" section to `specs/evidence/phase5-hoist-kernel-ab/README.md` carrying:
       the branch taken, the two ratios it was derived from, the rule it was applied under, and
       the `#eval` figures from the original A/B as context the kernel numbers do not replace.
-- [ ] If D5's fallback was taken in Phase 1 (the measurement could not be obtained), state that
+- [x] *(D5's fallback was not taken; both sites were measured — stated as such in the Verdict section)* If D5's fallback was taken in Phase 1 (the measurement could not be obtained), state that
       plainly in the same section: which site is unmeasured, why, and that the verdict rests on
       the certA kernel A/B alone.
-- [ ] State in the same section what the verdict does **not** claim — in particular that it is a
+- [x] State in the same section what the verdict does **not** claim — in particular that it is a
       judgment about the hoist's recorded justification and maintenance cost, not about
       correctness, which the unconditional equalities settle independently.
 

@@ -167,3 +167,58 @@ site. Under the kernel it is within a few per cent of the per-vertex shape in bo
 The two measurements are consistent: the kernel's whnf cache already removes most of the
 duplication the table was built to remove, so neither the table's win nor its eager-evaluation
 cost shows up at kernel scale.
+
+## Verdict: KEEP
+
+**The rule applied.** `r = median(NEW) / median(OLD)` under the kernel at a given site. KEEP if
+`r <= 1.15` at both `certA` and the small embedded witness; REVERT if `r > 1.15` at either. The
+1.15 band sits deliberately above the 1.06x the original A/B had already characterized as inside
+variance, so the rule cannot be tripped by that noise.
+
+**The arithmetic.**
+
+| site | OLD median (kernel) | NEW median (kernel) | r | `r <= 1.15`? |
+|------|--------------------:|--------------------:|--:|:------------:|
+| certA | 880.5 ms | 866.5 ms | 0.984 | yes |
+| witness | 346.0 ms | 365.0 ms | 1.055 | yes |
+
+`866.5 / 880.5 = 0.984`. `365.0 / 346.0 = 1.055`. Both are at or under 1.15, so D1's KEEP
+condition is satisfied at both sites, and **the branch is KEEP**.
+
+The margin is not marginal. For `r_witness` to reach 1.15 the NEW arm would have to be a further
+9 % slower than measured; for `r_certA` it would have to be a further 17 % slower. The
+minimum-over-ten-passes estimator, which is less sensitive to the load spike in passes 9 and 10,
+gives 1.030 and 1.015 — further inside the band, not nearer its edge. No estimator applied to
+this data selects REVERT.
+
+**D5's fallback was not taken.** Both sites were measured, under the kernel, on one unchanged
+build, with the shared `.lake` lock held throughout. The verdict rests on the complete evidence
+D1 asks for, not on the certA site alone.
+
+**The `#eval` figures this does not replace.** Under `#eval`, the original A/B measured the table
+shape 5.4x *better* at the hard certificate and about 25 % *worse* at the small embedded witness.
+Those remain the facts about the interactive path, and they are why the hoist was written. The
+kernel numbers above neither confirm nor refute them: they are a different evaluator with a whnf
+cache the `#eval` path does not share. The honest combined reading is that the hoist is a real
+win where a developer feels it and a wash where the build pays, and that it costs nothing at
+either.
+
+## What this verdict does not claim
+
+- **Nothing about correctness.** `untlLiveAtTab_eq` and `snceLiveAtTab_eq` are unconditional, so
+  the table shape and the per-vertex shape compute the same sets, provably, with no side
+  condition. That was never in question and no timing figure could settle it either way. KEEP
+  here is a judgment about a recorded justification and an ongoing maintenance cost, nothing more.
+- **Nothing about which shape is faster in general.** Two sites were measured, both inside one
+  certificate class, at one commit, on one machine. The claim is that the table shape is not
+  materially slower at the two kernel obligations this library actually pays, which is the
+  question D1 asks and the only question this data can answer.
+- **No endorsement of the justification the module currently records.** The module docstring
+  argues for the table on a counting argument — eager cost `|closure|` against short-circuiting
+  cost at worst `|X| · |closure|` — and predicts a net kernel win from it. That prediction is what
+  the measurement refutes: the kernel's whnf cache had already removed most of the per-vertex
+  duplication the argument assumes, which is why the ratio is 0.984 and not something near
+  `|X|`. Correcting that claim is the substantive work KEEP implies; retaining the code is the
+  cheap part.
+- **Nothing about a third shape.** This record decides between two shapes that both exist. It
+  does not propose or evaluate any further optimization of either.
