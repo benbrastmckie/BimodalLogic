@@ -1,25 +1,51 @@
 {
   "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 18,
-  "summary": "Phase 2 of 4 complete and committed (0869c975e): FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean landed with all five pinned declarations, compiling sorry-free at the measured axiom profiles, reachable from both the generated library root and the Metalogic aggregator. All four of this phase's repo gates passed on the first attempt (metalogic-cycles exit 0 with three PASSes, typst-sync exit 0 after the expected --fix, copyright-headers 756/756, library-root exactness 756=756) and the mandatory phase-end full-library build is green at 2975 jobs with zero errors, warnings, and sorries. Phases 3 (ledger and generated-surface reconciliation) and 4 (final verification) remain; this dispatch's mission was phase 2 only.",
+  "dispatch_seq": 19,
+  "summary": "Phase 3 of 4 complete and committed (9ed6e5e2f): five matched C14 pairs appended to both heredocs in scripts/check-module-invariants.sh, five new docs/theorem-index.md rows in a new host section, and all three stale generated inventory blocks regenerated with a real description for the new module. Every one of this phase's own criteria is green — C14 PASS with all five declarations in its own PASS note, C15's second assertion PASS at 460 rows, INV PASS, --emit-inventory --check exit 0 changing no byte, C18 PASS, and the mandatory phase-end full-library build green at 2975 jobs with zero errors, warnings and sorries. One red remains and is escalated rather than repaired: a new C16 env_linter finding on this task's own FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean (wordOf's [F.IsRegular] is an unused argument), whose only conforming repair amends a signature pinned in the plan's ## Lean Challenge Statements. Phase 4 (final verification) remains; this dispatch's mission was phase 3 only.",
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-2-handoff-20261111-200025.md",
-      "summary": "Phase 2 progressive handoff carrying the five measured axiom profiles that Phase 3's ledger rows consume."
+      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-3-handoff-20261111-201754.md",
+      "summary": "Phase 3 progressive handoff: the five measured axiom profiles, the three ledger decisions, the two deviations, and the escalated C16 finding Phase 4 must resolve first."
+    },
+    {
+      "type": "plan",
+      "path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
+      "summary": "Phase 3 marked [COMPLETED] with its Scope Hypothesis outcome, an eight-row measured verification table, two inline deviation annotations, and the escalated C16 finding recorded in full."
     }
   ],
-  "phases_completed": 2,
+  "phases_completed": 3,
   "phases_total": 4,
-  "blockers": [],
+  "blockers": [
+    {
+      "phase": 3,
+      "target": "FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean (declaration FormalSystem.Metalogic.wordOf, line 89)",
+      "verbatim_goal": "Leave the repository's own gate battery green on every file this task touches: `bash scripts/check-module-invariants.sh` reporting no FAIL that names a file inside this task's touched set.",
+      "what_was_tried": "Ran the full `bash scripts/check-module-invariants.sh` twice (once before any ledger row, once after every Phase 3 edit). Both runs report exactly one FAIL: C16's env_linter batch, `ZTimeSubstitutionBridge.lean:89:1: error: @FormalSystem.Metalogic.wordOf 1 unused argument: argument 2: [F.IsRegular]`, 1 error in 18945 declarations. Both candidate repairs were evaluated against their governing contracts: the in-source `@[nolint unusedArguments]` plus an entry in scripts/nolint-attribute-allowlist.txt (the route the gate's own remediation text recommends), and dropping the unused `[F.IsRegular]` instance binder from wordOf.",
+      "why_it_failed": "Neither repair is available to this dispatch unilaterally. The allowlist route is inadmissible under scripts/nolint-attribute-allowlist.txt's own ADMISSION BAR, which requires a reason saying why THIS declaration cannot conform and states 'If the exemption is temporary, fix the declaration instead' -- wordOf can conform. The conforming route (dropping the binder) amends a signature pinned verbatim in the plan's `## Lean Challenge Statements`, and rules/plan-compliance.md's Statement Fidelity routes a pinned-statement amendment to escalation, not silent substitution: 'do not quietly edit the recorded Challenge to match what was implemented'. C16 is additionally named in no phase's verification criteria, so no declared criterion settles which route the plan intends. Escalated as a blocking user_decision with a recommendation rather than resolved; Phase 3's own criteria are all green and the phase is committed."
+    }
+  ],
+  "user_decision": {
+    "question": "wordOf's pinned signature carries an [F.IsRegular] instance binder its body never consumes, which the C16 env_linter now reports as this task's only red finding; should the pinned Challenge statement be amended to drop it, or should the finding be suppressed in source?",
+    "options": [
+      "Amend the plan's ## Lean Challenge Statements block and wordOf's declaration together, dropping the unused [F.IsRegular] binder in one change",
+      "Add an in-source @[nolint unusedArguments] on wordOf plus a matching permanent entry in scripts/nolint-attribute-allowlist.txt, keeping the pinned signature as written",
+      "Leave the C16 finding red and record it as accepted debt, since C16 is named in no phase's verification criteria"
+    ],
+    "recommended": "Amend the plan's ## Lean Challenge Statements block and wordOf's declaration together, dropping the unused [F.IsRegular] binder in one change",
+    "blocking": true,
+    "obligation": "Clear the single FAIL in 'bash scripts/check-module-invariants.sh' (C16 env_linter, ZTimeSubstitutionBridge.lean:89 wordOf unused argument) so Phase 4's closing battery can report that gate green on this task's own touched files, without either weakening a recorded Challenge statement silently or adding an allowlist entry that the allowlist's own ADMISSION BAR forbids."
+  },
   "modified_files": [
-    "FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean",
-    "FormalSystem.lean",
-    "FormalSystem/Metalogic.lean",
-    "typst/generated/status.typ",
+    "scripts/check-module-invariants.sh",
+    "docs/theorem-index.md",
+    "README.md",
+    "FormalSystem/README.md",
+    "FormalSystem/Metalogic/README.md",
     "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/plans/01_ztime-validity-substitution-bridge.md",
     "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/issues.jsonl",
-    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-2-handoff-20261111-200025.md"
-  ]
+    "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-3-handoff-20261111-201754.md"
+  ],
+  "continuation_path": "specs/900_linear_ztime_validity_tm_plus_substitution_bridge/handoffs/phase-3-handoff-20261111-201754.md"
 }
