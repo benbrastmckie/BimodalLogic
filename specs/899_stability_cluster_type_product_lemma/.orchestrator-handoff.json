@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "summary": "Planned the stability-cluster (past-type, future-type) product lemma as three phases over 4.5 hours. Phase 1 lands six declarations (three Set-valued defs plus typePair_image_stabClass and its state-congruence and SepClauses-fed companions) in FormalSystem/Metalogic/Expressiveness/OpenFutureElimination.lean, transcribing research's compiled probe bodies; Phase 2 pins exactly one docs/theorem-index.md row at the measured [propext, Quot.sound] profile together with a matched C14 heredoc pair; Phase 3 reconciles the generated line-count surfaces and runs the repository's full Lean gate set. The dispatched file_scope (PlusPasting.lean) is import-infeasible and is corrected by the plan's Files-to-modify blocks.",
+  "phases_completed": 0,
+  "phases_total": 3,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/899_stability_cluster_type_product_lemma/plans/01_stability-cluster-type-product.md",
+      "summary": "Three-phase implementation plan with pinned Lean Challenge Statements for all six declarations."
+    }
+  ],
+  "blockers": [],
+  "dispatch_seq": 4
+}
