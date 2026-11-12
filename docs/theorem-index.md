@@ -563,6 +563,31 @@ model (`FormalSystem/Semantics/Frames/TranslationProduct.lean`'s standing caveat
 | — | Soundness of TM⁺ at every frame class | `FormalSystem.Metalogic.Conservativity.plus_soundness_validIn` | `FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean` | — | pcq pinned:C14 |
 | — | Semantic conservativity of L⁺ over L | `FormalSystem.PlusLanguage.plusValidIn_ofFormula_iff` | `FormalSystem/PlusLanguage/PlusValidity.lean` | — | `[propext]` pinned:C14 |
 
+### From ℤ-time validity to TM⁺ theoremhood at every substitution
+
+Two steps, and the linear input side that feeds them. `completeness_ztime` (above) turns a
+`ValidZTime` L formula into a TM theorem at `FrameClass.ZTime`; `plusDerivable_substPlus_nil`
+(`FormalSystem/PlusLanguage/Substitution.lean`) runs `PlusDerivationTree.ofTMSubst` over that
+derivation and lands a TM⁺ theorem at arbitrary L⁺ arguments. The first three rows supply the
+input of the composite from the other direction: truth on every bi-infinite Z-word, in the
+`IntStructure`/`IntTruth` semantics of the separation layer. That route is admissible **only**
+under `isBoxFree`, and the hypothesis is load-bearing rather than cosmetic — `IntTruth`'s `box`
+arm returns `True` at every argument, so `□⊥` is validated by every word while being `ValidZTime`
+at no model. Nothing in this band is a formalization of any part of [reynolds2001] §§7-15.
+
+| Paper label | Statement | Lean name | File | Frame class | Axioms |
+|-------------|-----------|-----------|------|-------------|--------|
+| — | The bi-infinite Z-word read off a task model and a world history over the carrier `ℤ`: each atom goes to the set of integer times whose state satisfies it. A plain `def` | `FormalSystem.Metalogic.wordOf` | `FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` | — | `[propext]` pinned:C14 |
+| — | Box-free task-frame truth is a datum of that Z-word alone: `TruthAt M τ t φ ↔ IntTruth (wordOf M τ) t φ` at every box-free `φ` and every time. The `box` case is discharged by contradiction with the hypothesis, which is exactly where it pays for `IntTruth`'s degenerate modal clause | `FormalSystem.Metalogic.truthAt_iff_intTruth_of_boxFree` | `FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` | — | `[propext]` pinned:C14 |
+| — | A box-free formula true on every bi-infinite Z-word at every time is `ValidZTime`, by the row above and the carrier normalization `validZTime_iff_validInt`. The `isBoxFree` hypothesis may never be weakened, defaulted or discharged by a `simp` lemma: without it the statement is false at `□⊥` | `FormalSystem.Metalogic.validZTime_of_boxFree_intTruth` | `FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` | ZTime | pcq pinned:C14 |
+| — | **The bridge**: a `ValidZTime` L formula yields `PlusDerivable FrameClass.ZTime [] (substPlus σ φ)` at every `σ : Atom → PlusFormula` — completeness composed with the substitution transfer | `FormalSystem.Metalogic.plusDerivable_substPlus_of_validZTime` | `FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` | ZTime | pcq pinned:C14 |
+| — | **The corollary over the linear fragment**: a box-free formula true on every bi-infinite Z-word yields the same TM⁺ theorems at every substitution, with the `isBoxFree` hypothesis inherited from the transfer above | `FormalSystem.Metalogic.plusDerivable_substPlus_of_boxFree_intTruth` | `FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` | ZTime | pcq pinned:C14 |
+
+**What this band does NOT contain.** No ω-word (one-sided, future-only) linear semantics: there is
+none in this tree, and the bridge runs over the two-sided `U`/`S` semantics instead. No weakening
+or discharge of the box-free hypothesis at any frame class, and no bridge for box-containing
+formulas from the Z-word side — `completeness_ztime` remains the only route for those.
+
 ### TM⋆ over L⋆ — the store/recall language
 
 TM⋆ is TM⁺ plus the manuscript's time registers `↑ⁱ`/`↓ⁱ` (`FormalSystem/StarLanguage/`). Its

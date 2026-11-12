@@ -2242,6 +2242,27 @@ fi
 # `colourFibre` included, so neither new line moves the verdict from conditional to
 # unconditional.
 #
+# Five final matched pairs close this baseline pair, appended last in both heredocs, for the
+# `docs/theorem-index.md` rows of
+# `FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean` -- the two-step bridge from ℤ-time
+# validity of an L formula to TM⁺ theoremhood of every `substPlus` instance of it.
+# `...wordOf` is the bi-infinite Z-word read off a task model and a world history over the
+# carrier `ℤ`; `...truthAt_iff_intTruth_of_boxFree` says box-free task-frame truth is a datum of
+# that word alone; `...validZTime_of_boxFree_intTruth` turns truth on every such word into
+# `ValidZTime`; `...plusDerivable_substPlus_of_validZTime` is the bridge itself, composing
+# `completeness_ztime` with `plusDerivable_substPlus_nil`; and
+# `...plusDerivable_substPlus_of_boxFree_intTruth` is the corollary over the linear fragment.
+# `Classical.choice` enters the last three through `completeness_ztime` and the carrier
+# normalization `validZTime_iff_validInt` behind them; the first two measure the strict subset
+# `[propext]`, which is not a regression and is why their ledger rows must not read `pcq`.
+#
+# WHAT THESE FIVE LINES DO NOT ASSERT. The `isBoxFree` hypothesis on the last three is
+# LOAD-BEARING, not cosmetic: `IntTruth`'s `box` arm is deliberately degenerate (it returns
+# `True` at every argument), so without that hypothesis the Z-word-to-`ValidZTime` transfer is
+# outright false at `□⊥`. These lines pin axiom profiles and nothing else: no claim that the
+# bridge covers box-containing formulas, no ω-word (one-sided) linear semantics, and no
+# formalization of any part of [reynolds2001] §§7-15 is asserted anywhere here.
+#
 # The second block below (soundness onward) is the SORRY-FREE claim set of
 # FormalSystem/Metalogic.lean's module docstring. Every declaration that docstring calls
 # SORRY-FREE is pinned here or by C2, so no such claim is prose-only: the docstring asserts
@@ -2607,6 +2628,11 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Semantics.TwoWayBounded.plus_invariance_of_isZTime_of_constraints' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.exists_orientedForest_cover_of_constraints' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.StateTopology.SeparatingFrame.exists_nonSaturated_base_orientedForest_cover' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.wordOf' depends on axioms: [propext]
+'FormalSystem.Metalogic.truthAt_iff_intTruth_of_boxFree' depends on axioms: [propext]
+'FormalSystem.Metalogic.validZTime_of_boxFree_intTruth' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.plusDerivable_substPlus_of_validZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.plusDerivable_substPlus_of_boxFree_intTruth' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2972,6 +2998,11 @@ import FormalSystem
 #print axioms FormalSystem.Semantics.TwoWayBounded.plus_invariance_of_isZTime_of_constraints
 #print axioms FormalSystem.Semantics.exists_orientedForest_cover_of_constraints
 #print axioms FormalSystem.Semantics.StateTopology.SeparatingFrame.exists_nonSaturated_base_orientedForest_cover
+#print axioms FormalSystem.Metalogic.wordOf
+#print axioms FormalSystem.Metalogic.truthAt_iff_intTruth_of_boxFree
+#print axioms FormalSystem.Metalogic.validZTime_of_boxFree_intTruth
+#print axioms FormalSystem.Metalogic.plusDerivable_substPlus_of_validZTime
+#print axioms FormalSystem.Metalogic.plusDerivable_substPlus_of_boxFree_intTruth
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

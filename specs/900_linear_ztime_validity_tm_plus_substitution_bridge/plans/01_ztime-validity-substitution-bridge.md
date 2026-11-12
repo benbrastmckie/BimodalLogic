@@ -358,14 +358,14 @@ FINAL phase (Phase 4), not this one, so nothing was deferred here under that dir
 
 ---
 
-### Phase 3: Reconcile the ledger and the generated surfaces [NOT STARTED]
+### Phase 3: Reconcile the ledger and the generated surfaces [COMPLETED]
 
 **Goal**: the new declarations are axiom-pinned by the C14 baseline, carry their per-theorem ledger
 rows, and the two module-inventory blocks are regenerated with a real description.
 
 **Tasks**:
 
-- [ ] Add matched C14 pairs for the declarations that will carry a `pinned:C14` ledger cell. Each
+- [x] Add matched C14 pairs for the declarations that will carry a `pinned:C14` ledger cell. Each
       pair is two edits to `scripts/check-module-invariants.sh`: a `#print axioms <fully qualified
       name>` line in the `C14LEAN` probe-source heredoc, and the corresponding
       `'<name>' depends on axioms: [propext, Classical.choice, Quot.sound]` line in the
@@ -373,28 +373,47 @@ rows, and the two module-inventory blocks are regenerated with a real descriptio
       ordering of the added lines must correspond. Both heredocs exist in that script at authoring
       time; if either is absent or restructured at implementation time, stop and record it rather
       than inventing a pin location.
-- [ ] Run `bash scripts/check-module-invariants.sh` and confirm C14 passes with each new
+- [x] Run `bash scripts/check-module-invariants.sh` and confirm C14 passes with each new
       declaration named in its own PASS note. Do this **before** writing any ledger row, so no row
       claims a pin that does not exist.
-- [ ] Add one `docs/theorem-index.md` row per pinned declaration: Paper label `—`, Statement one
+- [x] Add one `docs/theorem-index.md` row per pinned declaration: Paper label `—`, Statement one
       line, Lean name fully qualified, File the path with no line number, Frame class `ZTime` for
       the two `PlusDerivable` results and `validZTime_of_boxFree_intTruth`, `—` for
       `truthAt_iff_intTruth_of_boxFree` (it is stated at a frame, not a frame class), Axioms
       `pcq pinned:C14`.
-- [ ] Confirm each new row's declaration site carries a `Paper: — (reason)` line in its own `/--`
+      *(deviation: altered — three particulars. (i) Five rows landed, not four: the page carries
+      rows for plain `def`s that are pinned by C14 (`...SeparationZ.sep`, `...Expressiveness.sepZ`,
+      `...Expressiveness.trZ`), so its convention covers definitions and `wordOf` gets a row; this
+      is the five-row outcome the Scope Hypothesis names as correct. (ii) The Axioms cell for
+      `wordOf` and `truthAt_iff_intTruth_of_boxFree` reads `` `[propext]` pinned:C14 ``, NOT
+      `pcq pinned:C14` — Phase 2 measured both at `[propext]` only and this dispatch re-measured
+      the same, so a `pcq` cell would have been a dishonest ledger row. The page's own convention
+      for a strict subset is the literal profile in backticks, which these two now follow.
+      (iii) `wordOf`'s Frame class cell reads `—`, which the plan did not specify: the same rule
+      the plan states for `truthAt_iff_intTruth_of_boxFree` applies, since `wordOf` too is stated
+      at a frame (`FrameOver intOrder`) rather than at a frame class. The five rows were sited in
+      a new `### From ℤ-time validity to TM⁺ theoremhood at every substitution` section with a
+      lead paragraph and a `What this band does NOT contain` note, in the page's own house style;
+      the plan named no host section, and no gate reads section placement (C15 parses rows only).)*
+- [x] Confirm each new row's declaration site carries a `Paper: — (reason)` line in its own `/--`
       doc comment — C15's second assertion requires exactly that shape for a `—` label. If Phase 2
       already wrote them, this is a read-only confirmation.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` to regenerate the registered
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` to regenerate the registered
       inventory blocks in `README.md` (`dir=FormalSystem rows=totals`) and
       `FormalSystem/Metalogic/README.md` (`dir=FormalSystem/Metalogic rows=loose
       filter=non-aggregators`).
-- [ ] Replace the `<!-- TODO: add description -->` cell the regeneration inserts for the new module's
+      *(deviation: altered — the regeneration rewrote THREE files, not the two the plan names:
+      `FormalSystem/README.md` was stale too, because its `dir=FormalSystem rows=loose` block
+      carries line counts for `../FormalSystem.lean` (755 → 756) and `Metalogic.lean` (298 → 299),
+      both of which Phase 2's one-line import edits moved. `FAIL INV` had named all three before
+      the run. `FormalSystem/README.md` is therefore added to this phase's file scope.)*
+- [x] Replace the `<!-- TODO: add description -->` cell the regeneration inserts for the new module's
       inventory row with a one-line description. Keep it distinct in wording from the module
       docstring's own sentences: C18 reports duplicated sentences across `README.md`,
       `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md` and `FormalSystem/Metalogic.lean`.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory --check` and confirm a rewrite
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory --check` and confirm a rewrite
       would change no byte.
-- [ ] Commit each green sub-step as it lands (see Commit Mode).
+- [x] Commit each green sub-step as it lands (see Commit Mode).
 
 **Timing**: 1 hour
 
@@ -425,6 +444,7 @@ this phase edits.
 - `docs/theorem-index.md` - new rows, one per pinned declaration (exists; confirmed at authoring time)
 - `README.md` - regenerated `dir=FormalSystem rows=totals` inventory block (file and line totals)
 - `FormalSystem/Metalogic/README.md` - regenerated non-aggregator inventory row plus its hand-written description cell
+- `FormalSystem/README.md` - regenerated `dir=FormalSystem rows=loose` inventory block; added at implementation time, since Phase 2's one-line import edits moved the line counts of `../FormalSystem.lean` and `Metalogic.lean` that this block carries (see the deviation annotation above)
 
 **Verification**:
 
@@ -436,6 +456,74 @@ this phase edits.
 - Every finding either gate reports that names a file outside this task's touched set is recorded
   as pre-existing, enumerated in the phase notes, and left unrepaired — these criteria are a
   touched-files scope, not an absolute repo-wide zero.
+
+**Scope Hypothesis outcome (measured at implementation):** the `wordOf` question is settled in
+favour of a row, so **five** rows landed, not four — the outcome the hypothesis itself names as
+correct rather than a deviation. `docs/theorem-index.md`'s own `How to read a row` table is
+silent on whether a row must be a theorem, but the page carries `pinned:C14` rows for three plain
+`def`s (`...SeparationZ.sep`, `...Expressiveness.sepZ`, `...Expressiveness.trZ`) and for
+`inductive` type declarations (C15's own declaration regex admits `def`, `abbrev`, `instance` and
+`inductive` for exactly this reason), so the convention covers definitions. Every one of the five
+rows that reads `pinned:C14` is in fact pinned: all five appear by name in C14's own PASS note.
+
+**Verification results (measured, this phase):**
+
+| Criterion | Result |
+|-----------|--------|
+| C14 PASS with each new declaration in its own PASS note | PASS — `check-module-invariants.sh` run *before* any ledger row was written: `PASS C14 every pinned declaration matches its axiom baseline`, with all five new lines in the note block (`wordOf` `[propext]`, `truthAt_iff_intTruth_of_boxFree` `[propext]`, and `validZTime_of_boxFree_intTruth`, `plusDerivable_substPlus_of_validZTime`, `plusDerivable_substPlus_of_boxFree_intTruth` each `[propext, Classical.choice, Quot.sound]`). Profiles independently re-measured this dispatch by a guarded `lake env lean` `#print axioms` probe over `import FormalSystem` before either heredoc was edited |
+| C15 second assertion | PASS — `all 460 theorem-index row(s) carry their anchor (or `Paper: —`) at the declaration`, up from 455: the five new rows are anchored. Phase 2's `Paper: — (reason)` lines needed no retrofit, so this task was the read-only confirmation the plan anticipated |
+| `--emit-inventory --check` exits 0 | PASS — exit 0, `PASS INV every generated inventory block is current, every hand-maintained one is exhaustive`; a rewrite changes no byte. Read as output lines and not exit code alone, since this flag selection is known not to be exit-code-affected by every assertion the full run carries |
+| `FAIL INV` cleared in the full run | PASS — the full run now reports `PASS INV`; the pre-regeneration run named `FormalSystem/Metalogic/README.md`, `FormalSystem/README.md` and `README.md` |
+| `grep -c "TODO: add description" FormalSystem/Metalogic/README.md` is 0 for the new row | PASS — the new module's row carries a real description. The file's total TODO count is unchanged at 2 (`Deterministic.lean`, `ZTimeProvability.lean`), both pre-existing at `HEAD` and out of scope |
+| C18 (the duplication source the description had to avoid) | PASS — `zero duplicated paragraph(s)` and `zero duplicated sentence(s) (>= 15 words)` across the four top-level READMEs, unchanged from the pre-edit run |
+| Full-library `lake build` (phase-end gate) | PASS — guard `exit_status=0`, `Build completed successfully (2975 jobs)`; 0 `error:`, 0 `warning`, 0 `uses 'sorry'`. No `.lean` file was edited this phase, so no `.olean` could go stale |
+| `scripts/typst-sync-check.sh --counts-only` | PASS, exit 0, `MISMATCH_COUNT=0` — no `.lean` file changed this phase, so the commit-blocking line-count surface did not drift |
+
+**Scoped-tier discharge (batch gate deferral).** This dispatch's directive constrains the plan's
+FINAL phase (Phase 4), not this one, so nothing is deferred here under it. This phase's own
+`interface` tier named a repository-specific unmappable criterion — no agent-system suite or
+`verify-deploy.sh` gate number reaches `scripts/check-module-invariants.sh`, `docs/theorem-index.md`
+or the three inventory blocks — and that criterion was run directly and in full, twice: one
+`bash scripts/check-module-invariants.sh` and one
+`bash scripts/check-module-invariants.sh --emit-inventory --check`.
+
+#### Red finding escalated, not repaired: C16 on `wordOf`
+
+The full `check-module-invariants.sh` run reports exactly one `FAIL`, and it names a file **inside**
+this task's touched set, so it is not disposable under this phase's out-of-scope clause:
+
+```
+FAIL  C16  env_linter batch reports new finding(s) beyond scripts/nolints.json's grandfathered baseline
+  FormalSystem/Metalogic/ZTimeSubstitutionBridge.lean:89:1: error: @FormalSystem.Metalogic.wordOf 1 unused argument:
+    argument 2: [F.IsRegular]
+```
+
+- **Attribution**: wholly this task's. `Found 1 error in 18945 declarations`, and that one error is
+  `wordOf`. Phase 2 did not run this gate (it ran the cycles, typst and copyright gates), so the
+  finding first became visible in this phase.
+- **Not a criterion of any phase.** C16 appears in no phase's `Verification` block: Phase 4 names
+  C6, C14, C15, C26, the inventory assertion and the `FAIL INV` class. It is recorded here because
+  it is a real regression in this task's own file that CI's `lake lint` will see, not because a
+  declared criterion caught it.
+- **Why it was not repaired in this dispatch.** Both available routes are blocked by a standing
+  contract, and choosing between them is a judgment this plan's artifacts cannot infer:
+  1. An in-source `@[nolint unusedArguments]` plus an entry in
+     `scripts/nolint-attribute-allowlist.txt` — the route `check-module-invariants.sh` itself
+     recommends — is **inadmissible under that allowlist's own ADMISSION BAR**, which demands a
+     reason saying why *this* declaration cannot conform and rules out a temporary exemption:
+     "If the exemption is temporary, fix the declaration instead". `wordOf` can conform.
+  2. Dropping `[F.IsRegular]` from `wordOf` **is** the conforming fix (the body never consumes it,
+     which is what the linter is reporting), and it makes the declaration strictly more general
+     rather than weaker. But `wordOf`'s signature is pinned verbatim in
+     `## Lean Challenge Statements`, and `rules/plan-compliance.md`'s Statement Fidelity routes a
+     pinned-statement amendment to escalation rather than silent substitution: "do not quietly
+     edit the recorded Challenge to match what was implemented".
+- **Recommended resolution**, for the user to accept or override: take route 2 — amend the
+  `## Lean Challenge Statements` block and `wordOf`'s declaration together, in one change, so the
+  recorded statement and the source stay in step. `[F.IsRegular]` is load-bearing on
+  `truthAt_iff_intTruth_of_boxFree` and every consumer already carries it, so no consumer's
+  statement changes. This is a `.lean` edit outside this phase's declared file list and belongs to
+  Phase 4 or a follow-up, not to this dispatch.
 
 ---
 

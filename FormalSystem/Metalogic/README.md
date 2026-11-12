@@ -122,6 +122,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 | `Soundness.lean` | 1,681 | The soundness theorem itself |
 | `StrongCompleteness.lean` | 1,142 | Strong/consequence completeness, including `completeness_rtime` (`completeness_dedekind` does not exist — renamed under the Discrete/Dedekind -> ZTime/RTime convention), and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
 | `ZTimeProvability.lean` | 119 | <!-- TODO: add description --> |
+| `ZTimeSubstitutionBridge.lean` | 166 | Carries `ValidZTime` on an L formula over to `PlusDerivable FrameClass.ZTime []` on each of its `substPlus` images, by routing `completeness_ztime` through `plusDerivable_substPlus_nil`; a second route starts instead from truth on all bi-infinite Z-words, admissible only where `isBoxFree` holds |
 <!-- END GENERATED -->
 
 Plus the directory's own root `Metalogic.lean`, which sits one level up, beside `Metalogic/`;
