@@ -1,7 +1,7 @@
 # Implementation Plan: Task #787
 
 - **Task**: 787 - Audit the remaining lake-invoking scripts for the unguarded .lake read hazard
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.25 hours
 - **Dependencies**: 743 (declared, completed); none technical
 - **Research Inputs**: specs/787_lake_unguarded_reader_lock_audit/reports/01_lake-reader-lock-audit.md
@@ -360,7 +360,7 @@ the whole task is verified together.
 - [x] Before writing each table row, confirm it against the landed file, not against the report:
       grep each "locked" script for `build-guard.lock` and each "ruled out" in-repository script
       for its absence. *(completed)*
-- [x] Cross-script check and full gate per Verification below. *(completed)*
+- [x] Cross-script check and full gate per Verification below. *(deviation: altered — full verify-deploy gate set deferred to the batch stage; scoped gate 4 and check-module-invariants.sh --no-build run here, both exit 0)*
 - [x] In the implementation summary, list the three follow-ups (source-store task for
       `lean-challenge-snapshot.sh` and the flock re-entrancy context note; `warning-budget.py`;
       C1 timeout residual) as recommended new tasks. *(completed)*
@@ -402,15 +402,15 @@ pure data file. Add any script the sweep finds that the table lacks, with its ow
 
 ## Testing & Validation
 
-- [ ] Each locked script: waiting announcement, timeout branch (short override), and
-      post-acquisition control flow exercised with a stub `lake`; no real build started.
-- [ ] Each build-free mode (`typst-status-counts.sh --json`, `typst-machine-appendix.sh --json`
+- [x] Each locked script: waiting announcement, timeout branch (short override), and
+      post-acquisition control flow exercised with a stub `lake`; no real build started. *(completed)*
+- [x] Each build-free mode (`typst-status-counts.sh --json`, `typst-machine-appendix.sh --json`
       and `--render-only`, `typst-sync-check.sh` no-argument and `--counts-only`, both dataset
-      runners' `--dry-run`) completes without waiting under a held lock.
-- [ ] Exit-status contracts unchanged: recorded before/after for every script and mode above.
-- [ ] `bash .claude/scripts/verify-deploy.sh` and
-      `bash scripts/check-module-invariants.sh --no-build` exit status recorded.
-- [ ] No probe file, manifest array, generated typst file, or `.claude/**` path in the diff.
+      runners' `--dry-run`) completes without waiting under a held lock. *(completed)*
+- [x] Exit-status contracts unchanged: recorded before/after for every script and mode above. *(completed)*
+- [x] `bash .claude/scripts/verify-deploy.sh` and
+      `bash scripts/check-module-invariants.sh --no-build` exit status recorded. *(deviation: altered — check-module-invariants.sh --no-build exit 0 recorded; full verify-deploy gate set deferred to the batch stage, scoped gate 4 exit 0)*
+- [x] No probe file, manifest array, generated typst file, or `.claude/**` path in the diff. *(completed)*
 
 ## Artifacts & Outputs
 

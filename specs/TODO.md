@@ -13,7 +13,7 @@ next_project_number: 931
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,787,804,829,831,869,873,890,927,928,929,930 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,804,829,831,869,873,890,927,928,929,930 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,874,875,876,926 | 298,428,502,761,873,927,928 | algebraic-representation, completeness, dataset-enhancement, ... |
 | 3 | 410,498,499,500,861 | 429,497,763 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -67,7 +67,6 @@ next_project_number: 931
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
     └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
-787 [IMPLEMENTING] — Audit the remaining lake-invoking scripts for the unguarded...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 929 [NOT STARTED] — Discharge the I = 1 idle-run sub-regime so...
 930 [NOT STARTED] — Promote and wire the two orphan open-core prototypes into the...
@@ -508,13 +507,14 @@ ACCEPTANCE. A measured, reported reduction in this module's elaboration time wit
 
 ### 787. Lake unguarded reader lock audit
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: decidability
 - **Dependencies**: Task 743
 - **Parent**: Task 786
 - **Research**: [787_lake_unguarded_reader_lock_audit/reports/01_lake-reader-lock-audit.md]
 - **Plan**: [787_lake_unguarded_reader_lock_audit/plans/01_lake-reader-lock-audit.md]
+- **Summary**: [787_lake_unguarded_reader_lock_audit/summaries/01_lake-reader-lock-audit-summary.md]
 
 **Description**: Audit the remaining lake-invoking scripts for the unguarded .lake read hazard, and take the shared build-guard lock wherever a per-script judgment says it belongs.
 
