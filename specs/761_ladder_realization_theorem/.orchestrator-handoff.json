@@ -1,32 +1,42 @@
 {
-  "task_number": 761,
-  "phase": "implement",
-  "dispatch_seq": 34,
   "status": "partial",
-  "session_id": "sess_1794531400_b511e7",
-  "phases_completed": 25,
+  "dispatch_seq": 37,
+  "phases_completed": 30,
   "phases_total": 41,
-  "summary": "Executed Phase 11.14, the one enterable phase of plan v12: a new wired evidence probe compiles the verdict that the path-local self-loop hself is NOT DERIVABLE from the binders the two landed cascade declarations already carry, refuted even with Fintype Q assumed, and additionally compiles that it is not refutable either, so hself is a genuine independent premise. That closes disposition (R) of the Stage 0 hself user ruling on the mathematics and narrows the ruling to its two remaining options, without taking it: Phase 11.15 stays [BLOCKED] and no recommendation was recorded anywhere. No library file was edited, no filed Goal moved, sorry_count is 0 and the axiom counts are unchanged at 12/2. Phase 11.14 closes [COMPLETED WITH EXCLUSIONS] because scripts/check-evidence-probes.sh exits 1 on a pre-existing WIRED_REPO failure outside this phase.",
+  "summary": "Executed the ruled hself disposition. Phase 11.15's gate closed on the checked Stage 0 user ruling of 2026-11-13 (disposition (B), RENAME to auxiliaries); Phase 11.16 took branch (B) exactly once, renaming exists_ladderPath_at_region_of_idle_past and exists_ladderPath_at_region to _of_self_loop auxiliaries with no signature change and leaving both recorded names unclaimed; Phase 11.17 authored the LadderAgree.lean row of the RaySummary README inventory. All gates green, including two full lake builds (exit 0, 2975 jobs, 0 errors, 0 warnings) and check-evidence-probes.sh, whose pre-existing failure a sibling task resolved. No filed Goal of this task landed and none was claimed; every remaining open phase sits behind Phase 11.6's unlifted depth-0 gate, which no open task owns.",
+  "blockers": [
+    "Phase 11.6's depth-0 gate is NOT lifted and no open task owns lifting it. It lifts on exactly one of two events -- cellLE_zero_const_of_kappa_eq lands as a sorryAx-free theorem, or CellLEZeroConstOfKappaEq is refuted under ParamsOk. specs/ROADMAP.md's Stage 0 carries 'Decide who owns the depth-0 gate' as its one unchecked blocking item and names the crux: whether a ForwardSlackWitnessed hypothesis at a POSITIVE amount is satisfiable at any state the depth-0 induction reaches, in its EXISTENTIAL-over-paths form only (the per-path form is already refuted by ClimbWitness.hasForwardSlack_refuted_unconditional). Ten phases are [NOT STARTED] and three are [BLOCKED] behind it; no implementation dispatch can enter any of them.",
+    "Phases 11.12 and 11.13 were re-marked from [BLOCKED] to [COMPLETED WITH EXCLUSIONS] on the authority Phase 11.15 states explicitly -- a recorded ruling PLUS Phase 11.16's closure, both of which now hold. Each gained a new #### Reasoned Exclusions subsection; neither phase's #### Recorded Outcome block was altered, as Phase 11.15's verification requires. Flagging it here so the next reviewer sees the re-marking was an act of this dispatch rather than a pre-existing state."
+  ],
   "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md",
+      "summary": "Phases 11.15, 11.16 and 11.17 marked [COMPLETED], each with a #### Recorded Outcome naming the branch taken, the re-measured figures and the gate results."
+    },
     {
       "type": "summary",
       "path": "specs/761_ladder_realization_theorem/summaries/12_hself-disposition-gate-settlement-summary.md",
-      "summary": "Phase 11.14 round summary: the hself derivability verdict, its instance, its exclusion record and the carried-figure re-validation."
-    },
-    {
-      "type": "evidence",
-      "path": "specs/evidence/seam-gluing-ray-product/ladder-self-loop-derivability-decision.lean",
-      "summary": "The decision probe: hself_not_derivable, instance_is_in_regime, instance_self_loop_fails, hself_satisfiable_at_an_instance, idle_successor_differs. Wired; axioms a subset of [propext, Classical.choice, Quot.sound] on every headline."
+      "summary": "Round-12 implementation summary, extended to cover Phases 11.15-11.17 alongside Phase 11.14."
     },
     {
       "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.14-handoff-20261113T011907Z.md",
-      "summary": "The verdict in the form Phase 11.16's first task reads: branch taken, declaration names, and what the branch implies for each of the three dispositions."
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.17-handoff-20261113T063450Z.md",
+      "summary": "Phase-end handoff: branch taken, what landed, the raised scope expansion and its correction, gates, and the one blocking gate ahead."
     }
   ],
-  "blockers": [
-    "Phase 11.15, the hself disposition ruling, is a Stage 0 user ruling in specs/ROADMAP.md that no agent may transition. It is now narrowed -- disposition (R) is closed on the mathematics by the compiled hself_not_derivable -- but the choice between the two remaining dispositions is still owed by the user, and no phase of plan v12 is enterable by an implementation dispatch until it lands.",
-    "scripts/check-evidence-probes.sh exits 1 on a PRE-EXISTING failure outside task 761: the WIRED_REPO entry specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean reports FAIL (missing) because task 918 was archived at commit cf3e481fb, moving the file into gitignored specs/archive/. The owed remedy, which that script's own comment declares owed before archival, is to promote the file into specs/evidence/seam-gluing-ray-product/ and update its three citations. Not this task's territory; surfaced rather than absorbed.",
-    "Phases 11.6, 11.7, 12.2, 13, 14, 15.1, 15.2 and 16-18 remain behind Phase 11.9's INCONCLUSIVE verdict on the open depth-0 core. Nothing in this round lifts it."
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.17-handoff-20261113T063450Z.md",
+    "specs/761_ladder_realization_theorem/issues.jsonl",
+    "specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md",
+    "specs/761_ladder_realization_theorem/summaries/12_hself-disposition-gate-settlement-summary.md",
+    "typst/generated/status.typ"
   ]
 }

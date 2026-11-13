@@ -7584,8 +7584,8 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-10-10T23:53:38Z",
-      "last_updated": "2026-11-13T01:26:35Z",
-      "session_id": "sess_1794531400_b511e7",
+      "last_updated": "2026-11-13T06:37:55Z",
+      "session_id": "sess_1794549661_43189a",
       "artifacts": [
         {
           "path": "specs/761_ladder_realization_theorem/reports/08_rk-bounded-representative-refutation.md",
@@ -7593,13 +7593,14 @@
           "summary": "Refutes rk_of_count_drift at repsCnt's current bound with three compiled decide witnesses, settles the LadderRealize docstring's open sub-question negatively, shows ParamsOk is not the repair, establishes that every class pair is liftable in a wider window, and recommends widening repsCnt to Tc+Tn+3P+2B+5 plus interface-level restatements for Phases 11.8 and 11.9."
         },
         {
-          "path": "specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md",
-          "type": "plan"
-        },
-        {
           "path": "specs/761_ladder_realization_theorem/summaries/12_hself-disposition-gate-settlement-summary.md",
           "type": "summary",
           "summary": "Phase 11.14 round summary: the hself derivability verdict, its instance, its exclusion record and the carried-figure re-validation."
+        },
+        {
+          "path": "specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md",
+          "type": "plan",
+          "summary": "Phases 11.15, 11.16 and 11.17 marked [COMPLETED], each with a #### Recorded Outcome naming the branch taken, the re-measured figures and the gate results."
         }
       ],
       "next_artifact_number": 13,

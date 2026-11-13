@@ -1,48 +1,58 @@
 {
   "status": "partial",
-  "requires_user_review": true,
-  "review_reason": "Phase 11.14 closed [COMPLETED WITH EXCLUSIONS] with verdict NOT DERIVABLE, which CLOSES disposition (R) of the hself ruling on the mathematics and narrows the Stage 0 ruling (Phase 11.15, still [BLOCKED]) to its two remaining options. The ruling itself is a user judgement no agent may take, and this dispatch deliberately records no recommendation on it. Separately, scripts/check-evidence-probes.sh exits 1 on a PRE-EXISTING WIRED_REPO failure outside this phase (the archived task 918's lowering-anchor-deficit.lean probe left version control at commit cf3e481fb); that repair is owed by task 918 and was surfaced rather than absorbed.",
   "verification": {
-    "verification_passed": true,
+    "verification_passed": false,
     "sorry_count": 0,
     "vacuous_count": 0,
     "axiom_count": 12,
-    "build_passed": true
+    "build_passed": true,
+    "build_output": "Full `lake build` through the guard, run twice (once per phase end): exit_status=0, `Build completed successfully (2975 jobs)`, 0 `error:` and 0 `warning:` occurrences over both captured streams, and every touched module's .olean newer than its source. Three guarded scoped builds (LadderRealize, LadderWindow, BimodalTest.Metalogic.KTypeSummaryAxiomTest) each exit 0 with 0 warnings."
+  },
+  "requires_user_review": true,
+  "review_reason": "compliance_check is 'failed', but ONLY because five of plan v12's filed Goal names are not yet landed -- cellAt_const_of_kappa_eq, ladderCons_localRun, ladderLift, ladderRealized, ladderSound. That is the plan's own recorded state, not a defect of this dispatch: all five sit behind Phase 11.6's depth-0 gate, which is NOT lifted and which no open task owns lifting, and neither Phase 11.16 nor Phase 11.17 claims any filed Goal. Every other verification gate is green (build, sorry census, vacuous grep, axiom counts, module invariants, evidence probes, typst sync, readme lint, task references). The thing that genuinely needs a decision is the one already recorded as the unchecked Stage 0 item of specs/ROADMAP.md: who owns lifting the depth-0 gate.",
+  "partial_progress": {
+    "stage": "phases_11.15_11.16_11.17_completed",
+    "details": "The three phases the landed hself ruling unblocked are closed [COMPLETED] with Recorded Outcomes, and Phases 11.12/11.13 were re-marked [COMPLETED WITH EXCLUSIONS] on the authority Phase 11.15 states (a recorded ruling plus Phase 11.16's closure), each with a new #### Reasoned Exclusions subsection and its #### Recorded Outcome block unaltered. No phase of plan v12 is enterable by a further implementation dispatch: ten are [NOT STARTED] and one is [BLOCKED], all behind Phase 11.6's unlifted depth-0 gate.",
+    "phases_completed": 30,
+    "phases_total": 41
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/761_ladder_realization_theorem/summaries/12_hself-disposition-gate-settlement-summary.md",
-      "summary": "Phase 11.14: the hself derivability decision probe compiles the verdict NOT DERIVABLE (and not refutable either), closing disposition (R) of the Stage 0 hself ruling without taking it."
+      "summary": "Round-12 summary extended to cover Phases 11.15-11.17: the ruled hself disposition (B) executed as a rename to auxiliaries, and the LadderAgree.lean inventory row authored."
+    },
+    {
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md",
+      "summary": "Phases 11.15, 11.16 and 11.17 marked [COMPLETED], each with a #### Recorded Outcome."
     }
   ],
-  "completion_data": {
-    "completion_summary": "Executed Phase 11.14, the one enterable phase of plan v12: a new wired evidence probe compiles the verdict that the path-local self-loop hself is NOT DERIVABLE from the binders the two landed cascade declarations carry -- refuted even with Fintype Q assumed -- and additionally compiles that it is not refutable either, so hself is a genuine independent premise. Disposition (R) of the Stage 0 user ruling is thereby closed on the mathematics; the ruling itself is untouched and Phase 11.15 stays [BLOCKED]. No library file was edited and no filed Goal moved.",
-    "roadmap_items": []
-  },
-  "partial_progress": {
-    "stage": "phase_11.14_closed",
-    "details": "Phase 11.14 closed [COMPLETED WITH EXCLUSIONS]. Phase 11.15 is the [BLOCKED] user ruling; Phases 11.16/11.17 open behind it; Phases 11.6, 11.7, 12.2, 13, 14, 15.1, 15.2 and 16-18 remain behind Phase 11.9's INCONCLUSIVE depth-0 verdict. No phase of this plan is enterable by an implementation dispatch until the ruling lands.",
-    "phases_completed": 25,
-    "phases_total": 41
-  },
   "modified_files": [
-    "specs/evidence/seam-gluing-ray-product/ladder-self-loop-derivability-decision.lean",
-    "scripts/check-evidence-probes.sh",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "typst/generated/status.typ",
     "specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.14-handoff-20261113T011907Z.md",
     "specs/761_ladder_realization_theorem/summaries/12_hself-disposition-gate-settlement-summary.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl"
+    "specs/761_ladder_realization_theorem/issues.jsonl",
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.17-handoff-20261113T063450Z.md"
   ],
   "metadata": {
-    "session_id": "sess_1794531400_b511e7",
+    "session_id": "sess_1794549661_43189a",
     "agent_type": "lean-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "task_dir": "specs/761_ladder_realization_theorem",
-    "dispatch_seq": 34,
-    "compliance_check": "passed",
-    "axiom_count_tests": 2,
-    "evidence_gate_exit": 1,
-    "evidence_gate_note": "exit 1 on a pre-existing WIRED_REPO failure outside this phase (archived task 918's lowering-anchor-deficit.lean, FAIL (missing)); all 56 WIRED probes compile, this phase's new one included"
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "dispatch_seq": 37,
+    "compliance_check": "failed",
+    "branch_taken": "B",
+    "axiom_count_tests": 2
   }
 }
