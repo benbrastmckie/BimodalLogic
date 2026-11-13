@@ -3,8 +3,8 @@
 - **Task**: 761 - Ladder realization theorem: `LadderCons` and `ladderRealized` per ladder cell for all φ including box/stab letters
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-11-13T00:57:05Z
-- **Completed**: 2026-11-13T01:23:47Z
-- **Effort**: ~0.5 hours (against the plan's 1.5-hour **Timing** figure for Phase 11.14)
+- **Completed**: 2026-11-13T06:40:00Z
+- **Effort**: ~0.5 hours for Phase 11.14 (against its 1.5-hour **Timing** figure) plus ~1.2 hours for Phases 11.15-11.17 (against their combined 2.5-hour figure)
 - **Dependencies**: 760, 775, 805, 806, 819, 820 — all six discharged; no open gating task. Phase 11.14's own `Depends on` is Phase 11.11, which is `[COMPLETED]`
 - **Artifacts**: plans/12_hself-disposition-gate-settlement.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -20,9 +20,18 @@ probe additionally compiles the converse half — `hself` is not refutable eithe
 genuinely *independent*. No disposition was taken and no recommendation on the ruling was formed:
 Phase 11.15 remains `[BLOCKED]`, exactly as the plan requires.
 
+A later dispatch of the same round then executed the three phases the ruling unblocked. The
+`hself` disposition LANDED in `specs/ROADMAP.md`'s Stage 0 as a checked user ruling dated
+2026-11-13 — **disposition (B), RENAME to auxiliaries** — so Phase 11.15's gate closed on a
+recorded ruling, Phase 11.16 executed branch (B) and Phase 11.17 wrote the cascade record into the
+directory inventory. Exactly one branch was taken; (R) is closed on the mathematics by
+`hself_not_derivable` and (A) was not the ruling.
+
 The task's five unlanded Goals (`ladderSound`, `ladderCons_localRun`, `ladderLift`,
 `ladderRealized`, `cellAt_const_of_kappa_eq`) are untouched and remain behind Phase 11.9's
-INCONCLUSIVE depth-`0` verdict. This round lands no library declaration and claims none.
+INCONCLUSIVE depth-`0` verdict, which no open task owns lifting. This round lands no new library
+declaration and claims no filed Goal: Phase 11.16 is a rename plus records, Phase 11.17 is one
+authored Markdown table cell.
 
 ## What Changed
 
@@ -53,6 +62,20 @@ clause hands over the next-deadline register. A pending region of three is there
 whose start carries `cntAt = 2`, and `hrep` needs `l = 2` here because the object repeats INSIDE
 the region (`objAt gW 1 = objAt gW 3`) rather than at distance `1`.
 
+### Phases 11.15-11.17 — the ruled disposition executed
+
+- `specs/ROADMAP.md` — read, not written: Stage 0's checked `hself` ruling is the authority Phase 11.16's first task reads
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean` — the two renames and their records:
+  - `exists_ladderPath_at_region_of_idle_past` → **`exists_ladderPath_at_region_of_idle_past_of_self_loop`** (`:2242`)
+  - `exists_ladderPath_at_region` → **`exists_ladderPath_at_region_of_self_loop`** (`:2315`)
+  - two unclaimed-name records on the convention the module already uses for `exists_spliced_ladderPath_of_idle_past` (`:1509`), plus every in-source cross-reference brought to the auxiliary names (`:1529`, `:1698`, `:1700`, `:1764`, `:1780`, `:2225`, `:2279`, `:2280`, `:2302`)
+  - NO signature changed: the renames are name-only, and `exists_ladderPath_at_region_of_pend_past` keeps its name because it reads no `hself`
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` — the consumer-side note naming the one cascade interface the counter lift will read, with its conditionality as ruled: "unconditional in the REGIME sense and conditional on the self-loop", the bare names recorded as unclaimed, and the independence probe cited by path
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean` — the one stale docstring reference at `:509`/`:517`, plus the re-wrap the 100-column `longLine` linter forces on its enclosing paragraph. **The scope expansion was RAISED, not taken silently**, via `issue-record.sh` before the edit
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` — the two axiom-profile pins renamed, their prose brought current, an unclaimed-name record added beside them, and a `set_option linter.style.longLine false in` on each renamed `#print axioms` command, on the file's own documented convention at `:785`
+- `FormalSystem/Metalogic/Decidability/RaySummary/README.md` — the `LadderAgree.lean` row at `:38`, authored over the generator placeholder: the module's five layers, its certificate-freeness, the cascade layer with the three existentials' dispositions, and what it does not settle
+- `FormalSystem/Metalogic/README.md`, `README.md`, `typst/generated/status.typ` — regenerated, never hand-edited
+
 ## Decisions
 
 - **The plan's UN-COMPILED plan-time sketch was replaced rather than weakened**, which is what the
@@ -78,6 +101,11 @@ the region (`objAt gW 1 = objAt gW 3`) rather than at distance `1`.
 - None (implementation followed plan). The DERIVABLE branch was attempted first and bounded at
   exactly the gap the plan told it to bound at, and the plan-time sketch's replacement is the
   plan's own instruction for a sketch whose clauses fail, not a deviation from it.
+- Phases 11.15-11.17: none. Exactly one branch of Phase 11.16 was taken, the scope expansion was
+  raised rather than taken, both length ceilings were re-measured before editing, and Phase
+  11.17's ownership gate was run first and resolved in the phase's favour. Two of the plan's own
+  carried figures were falsified on re-measurement and are reported rather than absorbed — see
+  **Carried-Figure Discipline** below — but neither is a deviation from a plan step.
 
 ## Verification
 
@@ -89,8 +117,20 @@ the region (`objAt gW 1 = objAt gW 3`) rather than at distance `1`.
 - Axiom count: `^axiom ` **12** under `FormalSystem`, **2** under `Tests` — unchanged from the figures re-derived at plan-v12 authoring, as expected since this phase edits neither tree
 - `check-task-references.sh --quiet`: exit 0, `PASS: 0 unexempted task-reference occurrences`
 - `git diff --stat`: no file under `FormalSystem/` or `Tests/`
-- Tests: N/A (no library or test code changed)
+- Tests: N/A for Phase 11.14; for Phases 11.16-11.17 the axiom-profile `#guard_msgs` pins in `KTypeSummaryAxiomTest.lean` are the test surface and they accept both renamed declarations' profiles unchanged
 - Files verified: Yes
+
+### Phases 11.15-11.17 verification
+
+- Build: **Success** — three guarded scoped builds, each exit 0 with **0 warnings**: `LadderRealize` (pulling `LadderAgree` transitively), `LadderWindow`, `BimodalTest.Metalogic.KTypeSummaryAxiomTest`; and two phase-end full `lake build` runs through the guard, each `exit_status=0`, `Build completed successfully (2975 jobs)`, **0** `error:` and **0** `warning:` occurrences over both captured streams, with every touched module's `.olean` newer than its source
+- `#print axioms` on both renamed declarations: exactly `[propext, Classical.choice, Quot.sound]`. No `sorryAx`, no custom axiom, no `native_decide`
+- Sorry count: **0** (`lean-sorry-census.sh`, exit 0); vacuous-shape grep **0** on each of the four touched modules
+- Axiom count: `^axiom ` **12** under `FormalSystem`, **2** under `Tests` — not increased
+- Branch (B)'s own criterion: `grep -rn` resolves NEITHER recorded name to a declaration under `FormalSystem/`; the four surviving occurrences are prose recording the name as unclaimed (`LadderAgree.lean:2229`, `:2307`; `LadderRealize.lean:158`, `:159`)
+- The three cascade existentials' CONCLUSIONS are pairwise identical by `diff` and contain no `spliceObj` or `spliceCnt`; `exists_spliced_ladderPath_of_idle_past` is still landed under nothing
+- `check-module-invariants.sh`: **ALL CHECKS PASSED**, 55 PASS groups, `INV` green after regeneration, `C34a`/`C34b` green, and the `Constraints consumed:` obligation confirmed **vacuous** (0 such lines under `RaySummary/**`)
+- `typst-sync-check.sh`, `readme-lint.sh`, `check-evidence-probes.sh` and `check-task-references.sh --quiet` each exit **0**. The probe gate's pre-existing failure recorded under Phase 11.14 has been resolved by a sibling task: it now reports `PASS all 58 wired probe(s) compile`, so **no exclusion carries forward**
+- Length ceilings, re-measured before editing and after: `LadderAgree.lean` 3,342 → **3,366** against its in-source `longFile 3400`; `KTypeSummaryAxiomTest.lean` 2,966 → **2,992** against its `3000`. Neither baseline was raised
 
 ### The one unmeetable verification bullet
 
@@ -127,6 +167,20 @@ state, and the result is stated even where it only confirms the description unch
   55 `WIRED` + 2 `WIRED_REPO` was re-counted from the two array blocks at phase start and found
   **exactly correct** — no sibling task had moved it.
 
+### Two of the plan's carried figures, falsified on re-measurement
+
+Both were re-measured because the plan's own tasks instructed it, and both are reported rather
+than absorbed:
+
+| Plan claim | Re-measured | Consequence |
+|---|---|---|
+| `LadderWindow.lean` is NOT in `specs/state.json`'s `file_scope` for this task | **FALSE.** The task carries a 43-entry `file_scope` and `LadderWindow.lean` is a member. What IS narrower is the task DESCRIPTION's prose `FILE SCOPE:` line, which names neither `LadderWindow.lean` nor `LadderAgree.lean` | the expansion was raised anyway, before the edit, and the edit kept confined; worth reconciling the prose line against the recorded scope |
+| `README.md:38` is the ONLY module row carrying the generator placeholder | **FALSE.** Five rows carry it: `Certificate.lean`, `CounterQuotient.lean`, `LadderAgree.lean`, `LadderIdle.lean`, `LadderRealize.lean` | only the `LadderAgree.lean` row was authored, which is Phase 11.17's declared scope; the other four are recorded as a follow-up |
+
+A measurement error of this dispatch's own is recorded alongside them: the `file_scope` field was
+first read with a `select(.number==761)` filter, but the key is `project_number`, so the empty
+result was misread as an absent field. Corrected in the issue log before the phase closed.
+
 ## Impacts
 
 - **Disposition (R) of the `hself` ruling is closed on the mathematics.** Phase 11.16's branch (R)
@@ -143,15 +197,23 @@ state, and the result is stated even where it only confirms the description unch
 
 ## Follow-ups
 
-- **The `hself` disposition ruling (Phase 11.15) is still owed by the user**, now with one branch
-  closed and the other two characterised. It remains a Stage 0 item of `specs/ROADMAP.md` under
-  "User rulings (no agent may transition these)".
-- **The archived task 918's owed probe promotion blocks the evidence gate's exit status.** Promote
-  `specs/archive/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean`
-  into `specs/evidence/seam-gluing-ray-product/` and update its three citations in
-  `scripts/check-evidence-probes.sh`, per that script's own instruction. Until then every
-  `check-evidence-probes.sh` run in this repository exits 1 regardless of the probe set's health.
-  This is not this task's territory and was deliberately not absorbed here.
+- **The `hself` disposition ruling is DISCHARGED.** It landed in `specs/ROADMAP.md`'s Stage 0 as a
+  checked user ruling dated 2026-11-13 — disposition (B), RENAME to auxiliaries — and Phases
+  11.15, 11.16 and 11.17 are closed against it.
+- **The archived probe promotion that blocked the evidence gate is RESOLVED** by a sibling task:
+  `check-evidence-probes.sh` now exits 0 and reports `all 58 wired probe(s) compile`. No exclusion
+  carries forward from it.
+- **Four module rows of `RaySummary/README.md` still carry the generator placeholder**:
+  `Certificate.lean`, `CounterQuotient.lean`, `LadderIdle.lean` and `LadderRealize.lean`. Only the
+  `LadderAgree.lean` row was in scope here. Worth a task of their own.
+- **The task description's prose `FILE SCOPE:` line is narrower than the recorded `file_scope`**
+  in `specs/state.json`, which has 43 entries and includes modules the prose line never names
+  (`LadderAgree.lean`, `LadderWindow.lean`). Reconcile the two, or stop citing the prose line as a
+  scope authority — a plan built on it will keep raising expansions that are not expansions.
+- **The two recorded names stay unclaimed**, reserved for whatever eventually discharges `hself`:
+  `exists_ladderPath_at_region_of_idle_past` and `exists_ladderPath_at_region`. Nothing is landed
+  under either, and `exists_spliced_ladderPath_of_idle_past` remains unclaimed and refuted beside
+  them.
 - Phases 11.6, 11.7, 12.2, 13, 14, 15.1, 15.2 and 16-18 remain behind Phase 11.9's INCONCLUSIVE
   verdict on the open depth-`0` core; nothing in this round lifts it, and nothing in this round
   claims to.
