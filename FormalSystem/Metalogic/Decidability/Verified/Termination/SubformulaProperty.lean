@@ -472,139 +472,167 @@ section Propositional
 variable {C : Finset Formula} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_andPos_arm_eq`, so `hg` only ever holds this rule's own arm: about 1.4K
+-- heartbeats measured.
 theorem applyRule_andPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
     ∀ g ∈ (applyRule .andPos sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asAnd?_eq_iff, List.mem_cons, List.not_mem_nil, or_false,
-      SignedFormula.pos, reduceCtorEq])
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hC.and_left hsf
-    | exact hC.and_right hsf
+  by_cases hs : sf.sign = .pos
+  · rw [applyRule_andPos_arm_eq sf b ord hs] at hg
+    split at hg
+    · rename_i ψ χ heq
+      rw [asAnd?_eq_iff] at heq
+      rw [heq] at hsf
+      simp only [RuleResult.emitted, List.mem_cons, List.not_mem_nil, or_false] at hg
+      rcases hg with rfl | rfl
+      · exact hC.and_left hsf
+      · exact hC.and_right hsf
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+  · rw [applyRule_offArm_eq sf b ord .andPos] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; contradiction)
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_andNeg_arm_eq`, so `hg` only ever holds this rule's own arm: about 1.4K
+-- heartbeats measured.
 theorem applyRule_andNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
     ∀ g ∈ (applyRule .andNeg sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asAnd?_eq_iff, List.flatten_cons, List.flatten_nil,
-    List.append_nil, List.mem_append, List.mem_cons, List.not_mem_nil, or_false,
-    SignedFormula.neg, reduceCtorEq])
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hC.and_left hsf
-    | exact hC.and_right hsf
+  by_cases hs : sf.sign = .neg
+  · rw [applyRule_andNeg_arm_eq sf b ord hs] at hg
+    split at hg
+    · rename_i ψ χ heq
+      rw [asAnd?_eq_iff] at heq
+      rw [heq] at hsf
+      simp only [RuleResult.emitted, List.flatten_cons, List.flatten_nil, List.append_nil,
+        List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at hg
+      rcases hg with rfl | rfl
+      · exact hC.and_left hsf
+      · exact hC.and_right hsf
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+  · rw [applyRule_offArm_eq sf b ord .andNeg] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; contradiction)
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_orPos_arm_eq`, so `hg` only ever holds this rule's own arm: about 1.4K
+-- heartbeats measured.
 theorem applyRule_orPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
     ∀ g ∈ (applyRule .orPos sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asOr?_eq_iff, List.flatten_cons, List.flatten_nil,
-    List.append_nil, List.mem_append, List.mem_cons, List.not_mem_nil, or_false,
-    SignedFormula.pos, reduceCtorEq])
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hC.or_left hsf
-    | exact hC.or_right hsf
+  by_cases hs : sf.sign = .pos
+  · rw [applyRule_orPos_arm_eq sf b ord hs] at hg
+    split at hg
+    · rename_i ψ χ heq
+      rw [asOr?_eq_iff] at heq
+      rw [heq] at hsf
+      simp only [RuleResult.emitted, List.flatten_cons, List.flatten_nil, List.append_nil,
+        List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at hg
+      rcases hg with rfl | rfl
+      · exact hC.or_left hsf
+      · exact hC.or_right hsf
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+  · rw [applyRule_offArm_eq sf b ord .orPos] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; contradiction)
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_orNeg_arm_eq`, so `hg` only ever holds this rule's own arm: about 1.4K
+-- heartbeats measured.
 theorem applyRule_orNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
     ∀ g ∈ (applyRule .orNeg sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asOr?_eq_iff, List.mem_cons, List.not_mem_nil, or_false,
-      SignedFormula.neg, reduceCtorEq])
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hC.or_left hsf
-    | exact hC.or_right hsf
+  by_cases hs : sf.sign = .neg
+  · rw [applyRule_orNeg_arm_eq sf b ord hs] at hg
+    split at hg
+    · rename_i ψ χ heq
+      rw [asOr?_eq_iff] at heq
+      rw [heq] at hsf
+      simp only [RuleResult.emitted, List.mem_cons, List.not_mem_nil, or_false] at hg
+      rcases hg with rfl | rfl
+      · exact hC.or_left hsf
+      · exact hC.or_right hsf
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+  · rw [applyRule_offArm_eq sf b ord .orNeg] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; contradiction)
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_impPos_arm_eq`, so `hg` only ever holds this rule's own arm: about 1.5K
+-- heartbeats measured.
 theorem applyRule_impPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
     ∀ g ∈ (applyRule .impPos sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [List.flatten_cons, List.flatten_nil, List.append_nil,
-    List.mem_append, List.mem_cons, List.not_mem_nil, or_false,
-    SignedFormula.pos, SignedFormula.neg, reduceCtorEq])
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hC.imp_left hsf
-    | exact hC.imp_right hsf
+  by_cases h : sf.sign = .pos ∧ ∃ ψ χ, sf.formula = .imp ψ χ
+  · obtain ⟨hs, ψ, χ, hf⟩ := h
+    rw [applyRule_impPos_arm_eq sf b ord ψ χ hs hf] at hg
+    rw [hf] at hsf
+    simp only [RuleResult.emitted, List.flatten_cons, List.flatten_nil, List.append_nil,
+      List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at hg
+    rcases hg with rfl | rfl
+    · exact hC.imp_left hsf
+    · exact hC.imp_right hsf
+  · rw [applyRule_offArm_eq sf b ord .impPos] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; first | contradiction | exact h ⟨‹_›, _, _, ‹_›⟩)
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_impNeg_arm_eq`, so `hg` only ever holds this rule's own arm: about 1.5K
+-- heartbeats measured.
 theorem applyRule_impNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
     ∀ g ∈ (applyRule .impNeg sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [List.mem_cons, List.not_mem_nil, or_false, SignedFormula.pos,
-      SignedFormula.neg, reduceCtorEq])
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hC.imp_left hsf
-    | exact hC.imp_right hsf
+  by_cases h : sf.sign = .neg ∧ ∃ ψ χ, sf.formula = .imp ψ χ
+  · obtain ⟨hs, ψ, χ, hf⟩ := h
+    rw [applyRule_impNeg_arm_eq sf b ord ψ χ hs hf] at hg
+    rw [hf] at hsf
+    simp only [RuleResult.emitted, List.mem_cons, List.not_mem_nil, or_false] at hg
+    rcases hg with rfl | rfl
+    · exact hC.imp_left hsf
+    · exact hC.imp_right hsf
+  · rw [applyRule_offArm_eq sf b ord .impNeg] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; first | contradiction | exact h ⟨‹_›, _, _, ‹_›⟩)
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_negPos_arm_eq`, so `hg` only ever holds this rule's own arm: about 1.3K
+-- heartbeats measured.
 theorem applyRule_negPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
     ∀ g ∈ (applyRule .negPos sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asNeg?_eq_iff, List.mem_cons, List.not_mem_nil, or_false,
-      SignedFormula.neg, reduceCtorEq])
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals exact hC.neg_inner hsf
+  by_cases hs : sf.sign = .pos
+  · rw [applyRule_negPos_arm_eq sf b ord hs] at hg
+    split at hg
+    · rename_i ψ heq
+      rw [asNeg?_eq_iff] at heq
+      rw [heq] at hsf
+      simp only [RuleResult.emitted, List.mem_cons, List.not_mem_nil, or_false] at hg
+      subst hg
+      exact hC.neg_inner hsf
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+  · rw [applyRule_offArm_eq sf b ord .negPos] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; contradiction)
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_negNeg_arm_eq`, so `hg` only ever holds this rule's own arm: about 1.4K
+-- heartbeats measured.
 theorem applyRule_negNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
     ∀ g ∈ (applyRule .negNeg sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asNeg?_eq_iff, List.mem_cons, List.not_mem_nil, or_false,
-      SignedFormula.pos, reduceCtorEq])
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals exact hC.neg_inner hsf
+  by_cases hs : sf.sign = .neg
+  · rw [applyRule_negNeg_arm_eq sf b ord hs] at hg
+    split at hg
+    · rename_i ψ heq
+      rw [asNeg?_eq_iff] at heq
+      rw [heq] at hsf
+      simp only [RuleResult.emitted, List.mem_cons, List.not_mem_nil, or_false] at hg
+      subst hg
+      exact hC.neg_inner hsf
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+  · rw [applyRule_offArm_eq sf b ord .negNeg] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; contradiction)
 
 end Propositional
 

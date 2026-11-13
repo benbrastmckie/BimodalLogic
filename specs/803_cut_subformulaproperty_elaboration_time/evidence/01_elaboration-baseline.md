@@ -152,14 +152,14 @@ context only.
 
 | # | Theorem | before (hb) | before secs | after R1 (hb) | after R3 (hb) |
 |---|---|---|---|---|---|
-| 1 | `applyRule_andPos_closed` | 882869 | 43 | | |
-| 2 | `applyRule_andNeg_closed` | 890965 | 49 | | |
-| 3 | `applyRule_orPos_closed` | 882968 | 58 | | |
-| 4 | `applyRule_orNeg_closed` | 890289 | 59 | | |
-| 5 | `applyRule_impPos_closed` | 858832 | 56 | | |
-| 6 | `applyRule_impNeg_closed` | 872986 | 48 | | |
-| 7 | `applyRule_negPos_closed` | 881963 | 45 | | |
-| 8 | `applyRule_negNeg_closed` | 889599 | 46 | | |
+| 1 | `applyRule_andPos_closed` | 882869 | 43 | 1376 | |
+| 2 | `applyRule_andNeg_closed` | 890965 | 49 | 1447 | |
+| 3 | `applyRule_orPos_closed` | 882968 | 58 | 1400 | |
+| 4 | `applyRule_orNeg_closed` | 890289 | 59 | 1421 | |
+| 5 | `applyRule_impPos_closed` | 858832 | 56 | 1515 | |
+| 6 | `applyRule_impNeg_closed` | 872986 | 48 | 1492 | |
+| 7 | `applyRule_negPos_closed` | 881963 | 45 | 1356 | |
+| 8 | `applyRule_negNeg_closed` | 889599 | 46 | 1402 | |
 | 9 | `applyRule_boxTemporal_closed` | 869716 | 44 | | |
 | 10 | `applyRule_denseIndicatorClosure_closed` | 879937 | 55 | | |
 | 11 | `applyRule_serialityRule_closed` | 2085983 | 111 | | |

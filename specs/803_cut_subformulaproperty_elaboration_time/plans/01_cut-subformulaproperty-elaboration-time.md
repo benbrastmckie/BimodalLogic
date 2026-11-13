@@ -250,7 +250,7 @@ would be invisible to it. The wrapper count follows Phase 1's confirmed equation
 
 ---
 
-### Phase 3: Convert the Propositional Section (Decision Gate) [NOT STARTED]
+### Phase 3: Convert the Propositional Section (Decision Gate) [COMPLETED]
 
 **Goal**: Convert the eight `Propositional` bodies to wrapper-routed `eq_N` rewrites and establish
 whether the conversion shape generalizes beyond the report's three probes. This phase is the
@@ -258,27 +258,27 @@ plan's decision gate: its measured result decides whether Phases 4 through 6 pro
 
 **Tasks**:
 
-- [ ] Convert, in file order, `applyRule_andPos_closed`, `applyRule_andNeg_closed`,
+- [x] Convert, in file order, `applyRule_andPos_closed`, `applyRule_andNeg_closed`,
   `applyRule_orPos_closed`, `applyRule_orNeg_closed`, `applyRule_impPos_closed`,
-  `applyRule_impNeg_closed`, `applyRule_negPos_closed`, `applyRule_negNeg_closed`.
-- [ ] Use the report's verified sign-only shape as the template (`cases hs : sf.sign`, `rw` the
+  `applyRule_impNeg_closed`, `applyRule_negPos_closed`, `applyRule_negNeg_closed`. *(completed — all eight converted)*
+- [x] Use the report's verified sign-only shape as the template (`cases hs : sf.sign`, `rw` the
   wrapper, `split`, `rw [asX?_eq_iff]`, `simp only [RuleResult.emitted, …] at hg`, `rcases`,
   `exact`), routing the off-sign branch through the catch-all wrapper. For the two rules carrying
   a formula pattern (`impPos`, `impNeg`), add the `match hf : sf.formula with` and hoist a
-  `have off : … → g.formula ∈ C` so the off-pattern branch is written once, not six times.
-- [ ] Prefer `simp only` with an explicit lemma list throughout; do not introduce a new
-  `simp_all` or a full simp set.
-- [ ] Replace each converted theorem's `-- unfold applyRule reduces the 36-arm match …` comment
-  with the measured attribution and the new heartbeat figure for that declaration.
-- [ ] Leave every `set_option maxHeartbeats` line in place — removal is Phase 8.
-- [ ] Record a `#count_heartbeats` after-figure for each of the eight into the Phase 1 evidence
-  file's table, under `set_option Elab.async false`.
-- [ ] Per-rule fallback: if a rule resists conversion after a bounded attempt, leave its existing
+  `have off : … → g.formula ∈ C` so the off-pattern branch is written once, not six times. *(deviation: altered — the case analysis is `by_cases hs : sf.sign = .pos` (resp. `.neg`) rather than `cases hs : sf.sign`, so the off-sign guards of the catch-all close by `intros; contradiction` with no simp call at all. For `impPos`/`impNeg` the analysis is a single `by_cases h : sf.sign = … ∧ ∃ ψ χ, sf.formula = .imp ψ χ` rather than `match hf : sf.formula with` plus a hoisted `have off`: one `by_cases` already makes the off-arm branch appear exactly once, and its guards close by `first | contradiction | exact h ⟨‹_›, _, _, ‹_›⟩`.)*
+- [x] Prefer `simp only` with an explicit lemma list throughout; do not introduce a new
+  `simp_all` or a full simp set. *(completed — no `simp_all` and no full simp set in any of the eight)*
+- [x] Replace each converted theorem's `-- unfold applyRule reduces the 36-arm match …` comment
+  with the measured attribution and the new heartbeat figure for that declaration. *(completed)*
+- [x] Leave every `set_option maxHeartbeats` line in place — removal is Phase 8. *(completed)*
+- [x] Record a `#count_heartbeats` after-figure for each of the eight into the Phase 1 evidence
+  file's table, under `set_option Elab.async false`. *(completed — 1,356 to 1,515 heartbeats each)*
+- [x] Per-rule fallback: if a rule resists conversion after a bounded attempt, leave its existing
   body and ceiling in place, record it in the evidence table with what was tried, and close this
   phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record naming the rule and
-  citing the failing goal state as Evidence.
-- [ ] Commit per green sub-step: one commit per converted theorem, or per small group that builds
-  green together.
+  citing the failing goal state as Evidence. *(completed — no fallback needed; gate criterion met 8 of 8)*
+- [x] Commit per green sub-step: one commit per converted theorem, or per small group that builds
+  green together. *(deviation: altered — one commit for the eight, which were verified together in scratch and by one full build)*
 
 **Timing**: 2 hours
 
