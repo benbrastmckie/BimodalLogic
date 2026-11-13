@@ -387,22 +387,22 @@ lines changed no parse result.
 
 ---
 
-### Phase 4: Full Gate and Recorded Verdict [NOT STARTED]
+### Phase 4: Full Gate and Recorded Verdict [COMPLETED]
 
 **Goal**: The complete gate set is green, and the task leaves behind an explicit verdict naming
 the route taken and the routes rejected.
 
 **Tasks**:
 
-- [ ] Run `bash scripts/typst-sync-check.sh` and record all four checks' output verbatim.
-- [ ] Run `bash .claude/scripts/verify-deploy.sh` (the complete gate set). Where a failure is
+- [x] Run `bash scripts/typst-sync-check.sh` and record all four checks' output verbatim. *(completed: exit 0, all four checks green; output verbatim in the summary)*
+- [x] Run `bash .claude/scripts/verify-deploy.sh` (the complete gate set). Where a failure is
       attributable to the pre-existing deployed-tree staleness this dispatch reported for the
       `core formal lean literature memory typst` extensions, record it as pre-existing **with the
       gate's own output**, separated explicitly from this task's own verification; do not redeploy
-      and do not hand-patch any file under `.claude/**`.
-- [ ] Run `bash .claude/scripts/tests/run-all.sh` (the full shell suite, Gate 8's battery) and
-      record the result.
-- [ ] Write the verdict into the task summary: **Option (a) taken** — Check 1 learned
+      and do not hand-patch any file under `.claude/**`. *(deviation: altered — full gate set deferred to the batch-level stage per the dispatch's Batch Gate Deferral directive; scoped tier run instead, no redeploy, nothing under `.claude/**` edited)*
+- [x] Run `bash .claude/scripts/tests/run-all.sh` (the full shell suite, Gate 8's battery) and
+      record the result. *(deviation: altered — unnarrowed battery deferred to the batch-level stage; `--only` run of the two reference-lint suites passed 2/2)*
+- [x] Write the verdict into the task summary: **Option (a) taken** — Check 1 learned
       comment-aware namespace resolution, added additively. **Option (b) rejected**: ruling that
       the manual may cite only module-path-plus-leaf would have made the one surviving
       fully-qualified leaf citation non-conforming and would have left the mechanism gap intact for
@@ -413,13 +413,13 @@ the route taken and the routes rejected.
       (adding the dotted cross-reference to `IntTransfer.lean`'s module docstring) rejected**: it
       formalizes the coincidence rather than fixing it, is Option (c) under another name, and
       would have forced a `typst/generated/status.typ` regeneration over a stylistically
-      inconsistent docstring entry. **No whitelist entry was added**, so nothing is suppressed.
-- [ ] State in the summary which live citation now depends on the resolver (the restored
+      inconsistent docstring entry. **No whitelist entry was added**, so nothing is suppressed. *(completed)*
+- [x] State in the summary which live citation now depends on the resolver (the restored
       `FormalSystem.Semantics.validZTime_iff_validInt` at `typst/FormalFoundations.typ`), so a
-      future reader knows the regression guard exists and where it lives.
-- [ ] Record the report's out-of-scope flag for a follow-up: Check 4's duplicated `grep_lean` body
+      future reader knows the regression guard exists and where it lives. *(completed: `typst/FormalFoundations.typ:807`)*
+- [x] Record the report's out-of-scope flag for a follow-up: Check 4's duplicated `grep_lean` body
       (`scripts/typst-sync-check.sh:425-434`) is an independent copy of the same literal-grep
-      idea and does not share this defect today only because it never assembles a dotted string.
+      idea and does not share this defect today only because it never assembles a dotted string. *(completed: helper now at `scripts/typst-sync-check.sh:430`)*
 
 **Timing**: 0.5 hours
 

@@ -1,0 +1,77 @@
+{
+  "phase": 4,
+  "phase_name": "Full Gate and Recorded Verdict",
+  "started_at": "2026-11-13T09:33:43Z",
+  "last_updated": "2026-11-13T09:37:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Run bash scripts/typst-sync-check.sh and record all four checks' output verbatim",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 2,
+      "description": "Run verify-deploy.sh gate set (scoped per Batch Gate Deferral)",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 3,
+      "description": "Run tests/run-all.sh shell suite (scoped per Batch Gate Deferral)",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 4,
+      "description": "Write the four-route verdict into the task summary",
+      "status": "done",
+      "files_touched": [
+        "specs/743_typst_sync_check1_namespace_resolution/summaries/01_check1-namespace-resolution-summary.md"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "State which live citation depends on the resolver",
+      "status": "done",
+      "files_touched": [
+        "specs/743_typst_sync_check1_namespace_resolution/summaries/01_check1-namespace-resolution-summary.md"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "Record the Check 4 duplicated grep_lean follow-up flag",
+      "status": "done",
+      "files_touched": [
+        "specs/743_typst_sync_check1_namespace_resolution/summaries/01_check1-namespace-resolution-summary.md"
+      ]
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "4.2",
+      "description": "Run bash .claude/scripts/verify-deploy.sh (the complete gate set)",
+      "type": "altered",
+      "reason": "Batch Gate Deferral directive: full gate set runs once at batch level; scoped tier run in this dispatch.",
+      "annotation": "*(deviation: altered \u2014 full gate set deferred to the batch-level stage)*"
+    },
+    {
+      "task_id": "4.3",
+      "description": "Run bash .claude/scripts/tests/run-all.sh (full shell suite)",
+      "type": "altered",
+      "reason": "Batch Gate Deferral directive: unnarrowed battery deferred; --only run of two reference-lint suites passed.",
+      "annotation": "*(deviation: altered \u2014 unnarrowed battery deferred to the batch-level stage)*"
+    }
+  ],
+  "handoff_count": 0,
+  "verification": {
+    "gate": "bash scripts/typst-sync-check.sh exit 0, all 4 checks green; Check 1 TOTAL_VIOLATIONS=0 TOTAL_CANDIDATES=893",
+    "cli": "--counts-only 0, --help 0, unknown flag 2",
+    "positive_control": "FormalFoundations.typ:807 resolves; 0 literal .lean hits; 0 whitelist entries",
+    "decidability_diff": "exit 0",
+    "scoped_suites": "run-all.sh --only test-check-record-versioning.sh,test-check-task-references.sh: 2 passed",
+    "batch_gate_deferral": "full gate set (verify-deploy.sh, unnarrowed run-all.sh) deferred to the once-per-invocation batch stage, not run independently in this dispatch; no suite or gate maps to scripts/typst-sync-check.sh, so the named check was run directly as the scoped discharge"
+  }
+}
