@@ -4,8 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Syntax
-import FormalSystem.ProofSystem
 import FormalSystem.Metalogic.Decidability.SignedFormula
 import FormalSystem.Metalogic.Decidability.Closure
 

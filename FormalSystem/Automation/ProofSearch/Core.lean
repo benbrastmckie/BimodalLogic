@@ -6,8 +6,8 @@ Authors: Benjamin Brast-McKie
 
 import Std.Data.HashMap
 import Std.Data.HashSet
-import FormalSystem.ProofSystem
-import FormalSystem.Semantics
+import FormalSystem.ProofSystem.Derivation
+import FormalSystem.ProofSystem.DerivedAxioms
 import FormalSystem.Automation.SuccessPatterns
 import FormalSystem.Theorems.Combinators
 import FormalSystem.Theorems.Perpetuity.Helpers

@@ -182,55 +182,55 @@ the report. The count of 25 termination modules is confirmed by listing the `.le
 
 ---
 
-### Phase 2: Apply the Import Narrowings [NOT STARTED]
+### Phase 2: Apply the Import Narrowings [COMPLETED]
 
 **Goal**: Land R1-R4 as one verified batch and bring the two generated surfaces the line-count
 change moves back into sync.
 
 **Tasks**:
-- [ ] `FormalSystem/Automation/ProofSearch/Core.lean`: replace `import FormalSystem.ProofSystem`
+- [x] `FormalSystem/Automation/ProofSearch/Core.lean`: replace `import FormalSystem.ProofSystem`
   with `import FormalSystem.ProofSystem.Derivation`, and replace `import FormalSystem.Semantics`
   with `import FormalSystem.ProofSystem.DerivedAxioms`. Two lines replaced in place.
-- [ ] `FormalSystem/Automation/SuccessPatterns.lean`: replace `import FormalSystem.Syntax` with
+- [x] `FormalSystem/Automation/SuccessPatterns.lean`: replace `import FormalSystem.Syntax` with
   `import FormalSystem.Syntax.Formula`.
-- [ ] `FormalSystem/Metalogic/Decidability/SignedFormula.lean`: replace
+- [x] `FormalSystem/Metalogic/Decidability/SignedFormula.lean`: replace
   `import FormalSystem.ProofSystem` with `import FormalSystem.ProofSystem.Axioms`. Leave
   `open FormalSystem.ProofSystem` as it is. Do not edit `Tableau.lean`.
-- [ ] `FormalSystem/Metalogic/Decidability/TraceCertificate.lean`: delete
+- [x] `FormalSystem/Metalogic/Decidability/TraceCertificate.lean`: delete
   `import FormalSystem.Syntax` and `import FormalSystem.ProofSystem`.
-- [ ] `FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean`: delete
+- [x] `FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean`: delete
   `import FormalSystem.Syntax.SubformulaClosure.Closure`.
-- [ ] `FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean`: add
+- [x] `FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean`: add
   `import Mathlib.Tactic.Ring` beside the existing imports.
-- [ ] `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/ClosureResidual.lean`: add
+- [x] `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/ClosureResidual.lean`: add
   `import Mathlib.Data.Finset.Max` beside the existing import.
-- [ ] Confirm with `git diff` that every changed hunk is an `import` line and nothing else.
-- [ ] Build all four library roots through the guard:
+- [x] Confirm with `git diff` that every changed hunk is an `import` line and nothing else.
+- [x] Build all four library roots through the guard:
   `bash .claude/scripts/lake-build-guard.sh build --timeout 3600 -- build FormalSystem BimodalTest BimodalTools BimodalToolsTest`.
   Read the verdict from the guard's `result`, and read the captured output for warning lines; CI
   builds with `--wfail`, so a warning is a failure. If the guard refuses a four-target vector, run
-  the four roots as four guarded builds.
+  the four roots as four guarded builds. *(deviation: altered — three roots green (3072 jobs, 0 warnings); `BimodalToolsTest` exits 1 on one module, `CertificateImportTest`, an ambiguous `closureList` that predates this change (commit `22e2afa46`) and lies outside the task file scope; see evidence 2.2)*
 - [ ] If a module fails with an unknown tactic or unknown constant, add the explicit import that
   supplies it to that module, rebuild, and record the module and the import in the evidence file.
   This is the same repair the report applied to `Fuel` and `ClosureResidual`. Do not restore a
-  removed import to fix it.
+  removed import to fix it. *(deviation: skipped — no module failed for a missing import)*
 - [ ] If `SignedFormula.lean` or a dependent fails because of the R2 variant, fall back to the
   report's R2 form (drop the import and the `open` line from `SignedFormula.lean`, add
   `import FormalSystem.ProofSystem.Axioms` to `Tableau.lean`), then repair the shifted citations
   with `python3 scripts/reanchor-lean-citations.py` using an explicit `--files` list and its
   `--exact` mode, run exactly once. Record the deviation; the citing files then join this phase's
-  commit.
-- [ ] Regenerate the commit-blocking count surface: `bash scripts/typst-sync-check.sh --fix`, then
+  commit. *(deviation: skipped — the R2 variant built; fallback not needed)*
+- [x] Regenerate the commit-blocking count surface: `bash scripts/typst-sync-check.sh --fix`, then
   `bash scripts/typst-sync-check.sh --counts-only` must exit 0.
-- [ ] Run the bare `bash scripts/typst-sync-check.sh`. If it reports
+- [x] Run the bare `bash scripts/typst-sync-check.sh`. If it reports
   `typst/generated/automation-module-map.typ` or another generated typst file as drifted, run the
   generator command it prints for that file and stage the result.
-- [ ] Regenerate the inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`,
+- [x] Regenerate the inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`,
   then `--emit-inventory --check` must exit 0.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and `bash scripts/check-metalogic-cycles.sh`.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and `bash scripts/check-metalogic-cycles.sh`.
   Compare against Phase 1: no new finding. A C20 finding here is repaired with the re-anchor tool
   as above before committing.
-- [ ] Commit the batch as one commit with an explicit file list.
+- [x] Commit the batch as one commit with an explicit file list.
 
 **Timing**: 1.5 hours
 

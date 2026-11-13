@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import Std.Data.HashMap
-import FormalSystem.Syntax
+import FormalSystem.Syntax.Formula
 
 /-!
 # Success Pattern Learning for Proof Search

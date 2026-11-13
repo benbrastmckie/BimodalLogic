@@ -5,7 +5,6 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.Tableau
-import FormalSystem.Syntax.SubformulaClosure.Closure
 
 /-!
 # T1 — The Generalized Signed Subformula Property

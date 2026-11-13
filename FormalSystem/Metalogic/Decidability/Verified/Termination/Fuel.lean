@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Decidability.Verified.Termination.TimeTypeBound
 import FormalSystem.Metalogic.Decidability.Saturation
+import Mathlib.Tactic.Ring
 
 /-!
 # T3 — Justified Fuel

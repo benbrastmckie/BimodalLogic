@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.Terminus
+import Mathlib.Data.Finset.Max
 
 /-! # C10. The repaired closure residual, and the chain stated at it
 

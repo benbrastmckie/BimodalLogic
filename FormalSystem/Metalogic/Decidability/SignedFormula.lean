@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Syntax.Formula
-import FormalSystem.ProofSystem
+import FormalSystem.ProofSystem.Axioms
 
 /-!
 # Signed Formula and Branch Types for Tableau Decidability

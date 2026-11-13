@@ -130,3 +130,54 @@ Metalogic/Decidability/Tableau.lean (not edited)
  61:open FormalSystem.Syntax
  62:open FormalSystem.ProofSystem
 ```
+
+## 2. The change as landed
+
+### 2.1 Edits
+
+Seven files, import lines only (`git diff --numstat` against `73f45155a`; every changed hunk is an
+`import` line):
+
+| File | Change | Lines |
+|---|---|---|
+| `Automation/ProofSearch/Core.lean` | `import FormalSystem.ProofSystem` -> `import FormalSystem.ProofSystem.Derivation`; `import FormalSystem.Semantics` -> `import FormalSystem.ProofSystem.DerivedAxioms` | 0 |
+| `Automation/SuccessPatterns.lean` | `import FormalSystem.Syntax` -> `import FormalSystem.Syntax.Formula` | 0 |
+| `Metalogic/Decidability/SignedFormula.lean` | `import FormalSystem.ProofSystem` -> `import FormalSystem.ProofSystem.Axioms` (`open` line kept) | 0 |
+| `Metalogic/Decidability/TraceCertificate.lean` | removed `import FormalSystem.Syntax` and `import FormalSystem.ProofSystem` | -2 |
+| `Termination/SubformulaProperty.lean` | removed `import FormalSystem.Syntax.SubformulaClosure.Closure` | -1 |
+| `Termination/Fuel.lean` | added `import Mathlib.Tactic.Ring` | +1 |
+| `Termination/MintBound/ClosureResidual.lean` | added `import Mathlib.Data.Finset.Max` | +1 |
+
+`Tableau.lean` is untouched; the R2 fallback was not needed. No further explicit import was needed
+in any module.
+
+### 2.2 Build
+
+- `lake build FormalSystem BimodalTest BimodalTools BimodalToolsTest` through the guard: exit 1.
+  120 modules re-elaborated; 119 built, one failed: `BimodalToolsTest.CertificateImportTest`,
+  `Ambiguous term closureList` at lines 146 and 152, between
+  `BimodalTools.CertificateImport.closureList` and
+  `FormalSystem.Metalogic.Decidability.closureList`. 0 warning lines.
+- That failure is not caused by this change. An import removal cannot introduce a name, and both
+  declarations were already in the test's import closure on the unedited tree
+  (`WitnessFamily/Compression/Enumerate.lean` is in the Phase 1 closure of
+  `BimodalTools.CertificateImport`). The second `closureList` was added by commit `22e2afa46`
+  (2026-11-12); the test's last successful build trace is dated 2026-11-11 and it had no `.olean`
+  on the Phase 1 tree. Default `lake build` and `check-module-invariants.sh` C1 do not build
+  `BimodalToolsTest`, which is why the Phase 1 gates were green. The other 12 modules of
+  `BimodalToolsTest` build. The test file is outside this task's file scope and was not edited.
+- `lake build FormalSystem BimodalTest BimodalTools` through the guard: exit 0,
+  `Build completed successfully (3072 jobs)`, 0 `error:` lines, 0 `warning:` lines.
+- Default `lake build` through the guard: exit 0, 2975 jobs, 0 `error:`, 0 `warning:`.
+- The `.olean` of each of the seven edited modules is newer than its source.
+
+### 2.3 Generated surfaces and build-free gates after the edit
+
+- `scripts/typst-sync-check.sh --fix` rewrote `typst/generated/status.typ` (line count 406468 ->
+  406467, stamp commit). `--counts-only` exit 0; bare `typst-sync-check.sh` exit 0 (all 4 checks),
+  `automation-module-map.typ` not drifted.
+- `check-module-invariants.sh --emit-inventory` rewrote three README blocks: `README.md`,
+  `FormalSystem/Metalogic/README.md`, `Termination/README.md`. `--emit-inventory --check` exit 0.
+- `check-module-invariants.sh --no-build`: exit 0, `ALL CHECKS PASSED`.
+  `check-metalogic-cycles.sh`: exit 0. No finding absent from the Phase 1 record (both records are
+  empty).
