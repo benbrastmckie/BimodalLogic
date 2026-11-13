@@ -1,7 +1,7 @@
 # Implementation Plan: Cut the elaboration time of SubformulaProperty.lean
 
 - **Task**: 803 - Cut the elaboration time of `FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/803_cut_subformulaproperty_elaboration_time/reports/01_cut-subformulaproperty-elaboration-time.md`
@@ -120,7 +120,7 @@ disjointness does not remove.
 
 ---
 
-### Phase 1: Baseline Evidence Capture [NOT STARTED]
+### Phase 1: Baseline Evidence Capture [COMPLETED]
 
 **Goal**: Record the pre-change axiom profiles, per-declaration heartbeat baselines, and the
 literal types of the 38 equation lemmas, so every later phase has a fixed comparison point and
@@ -128,22 +128,22 @@ Phase 2 has the exact wrapper signatures it needs.
 
 **Tasks**:
 
-- [ ] Create `specs/803_cut_subformulaproperty_elaboration_time/evidence/` and write
+- [x] Create `specs/803_cut_subformulaproperty_elaboration_time/evidence/` and write
   `01_elaboration-baseline.md` into it.
-- [ ] Capture `#print axioms` for all 37 declarations in the module (the 36 per-rule theorems plus
+- [x] Capture `#print axioms` for all 37 declarations in the module (the 36 per-rule theorems plus
   `applyRule_subformula_closed`) via a `lean_run_code` probe importing the module. Record the full
   output verbatim in the evidence file.
-- [ ] Record the pre-change `sorry` count for the two files in scope, asserted by content (the
+- [x] Record the pre-change `sorry` count for the two files in scope, asserted by content (the
   check-module-invariants C3 convention), not by line number.
-- [ ] Run the report's equation-lemma enumeration `run_cmd` (Appendix, "Enumerating the equation
+- [x] Run the report's equation-lemma enumeration `run_cmd` (Appendix, "Enumerating the equation
   lemmas") and record the pretty-printed type of all 38 `applyRule.eq_N` constants verbatim. These
   types are Phase 2's input.
-- [ ] Capture `#count_heartbeats` baselines for the 36 per-rule theorems, with
+- [x] Capture `#count_heartbeats` baselines for the 36 per-rule theorems, with
   `set_option Elab.async false` mandatory in every probe. Record each number in a table keyed by
   rule name. Reuse the three already-measured values from the research report (`andPos` 882,487;
   `serialityRule` 2,084,589; `boxNeg` 885,047) only as cross-checks against freshly measured
   values, never as substitutes for them.
-- [ ] Record the machine context alongside the numbers: core count, whether other `lean` workers
+- [x] Record the machine context alongside the numbers: core count, whether other `lean` workers
   were live, and the guard invocation used.
 
 **Timing**: 1.5 hours
