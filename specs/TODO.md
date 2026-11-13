@@ -13,9 +13,9 @@ next_project_number: 931
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,743,761,829,831,873,890,927,928,929,930 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,926 | 298,428,502,743,761,873,927,928 | algebraic-representation, completeness, dataset-enhancement, ... |
-| 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,787,803,829,831,869,873,890,927,928,929,930 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,804,862,874,875,876,926 | 298,428,502,761,803,873,927,928 | algebraic-representation, completeness, dataset-enhancement, ... |
+| 3 | 410,498,499,500,861 | 429,497,763 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -67,10 +67,10 @@ next_project_number: 931
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
     └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
+787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 929 [NOT STARTED] — Discharge the I = 1 idle-run sub-regime so...
 930 [NOT STARTED] — Promote and wire the two orphan open-core prototypes into the...
-787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Formula Refactor
 
@@ -88,19 +88,15 @@ next_project_number: 931
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
-### Repo Hygiene
-
-743 [IMPLEMENTING] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
-
 ### Semantics
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ### Build Performance
 
-829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 803 [PLANNED] — Cut the elaboration time of...
   └─ 804 [NOT STARTED] — Determine whether...
+829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ### Syntax
 
@@ -604,13 +600,14 @@ NOT COSTABLE, and why: T3 landed no bound (its stabilization lemma is refuted); 
 ---
 
 ### 743. Typst sync check1 namespace resolution
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [743_typst_sync_check1_namespace_resolution/reports/01_namespace-resolution-feasibility.md]
 - **Plan**: [743_typst_sync_check1_namespace_resolution/plans/01_check1-namespace-resolution.md]
 - **Handoff**: [743_typst_sync_check1_namespace_resolution/handoffs/phase-3-handoff-20261113T093205Z.md]
+- **Summary**: [743_typst_sync_check1_namespace_resolution/summaries/01_check1-namespace-resolution-summary.md]
 
 **Description**: Teach typst-sync-check.sh Check 1 to resolve namespaced Lean declarations, or rule on the whitelist-vs-docstring convention it currently depends on
 

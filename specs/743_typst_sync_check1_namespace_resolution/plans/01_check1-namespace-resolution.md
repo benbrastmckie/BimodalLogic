@@ -1,7 +1,7 @@
 # Implementation Plan: Task #743
 
 - **Task**: 743 - Teach typst-sync-check.sh Check 1 to resolve namespaced Lean declarations, or rule on the whitelist-vs-docstring convention it currently depends on
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/743_typst_sync_check1_namespace_resolution/reports/01_namespace-resolution-feasibility.md
