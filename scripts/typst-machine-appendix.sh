@@ -30,19 +30,26 @@
 #       --stamp-date $(date -u +%Y-%m-%d), then render the .typ strictly
 #       from the fresh JSONL. Deterministic: two runs from the same commit
 #       on the same (UTC) day produce byte-identical artifacts.
+#       Takes the shared `.lake` build lock (`.lake/build-guard.lock`)
+#       once, for both lake calls; see the SHARED `.lake` LOCK block in
+#       the default-mode section.
 #
 #   scripts/typst-machine-appendix.sh --json
 #       Emit the committed JSONL metadata line to stdout with the stamp
 #       fields normalized (zeroed), mirroring typst-status-counts.sh
 #       --json. Consumed by scripts/typst-sync-check.sh Check 3. Does NOT
-#       invoke lake.
+#       invoke lake and takes no lock.
 #
 #   scripts/typst-machine-appendix.sh --render-only FILE
 #       Render the .typ content for the given JSONL file to stdout (stamps
 #       are taken from FILE's metadata line, so re-rendering a committed
 #       JSONL reproduces the committed .typ byte-for-byte). Consumed by
 #       scripts/typst-sync-check.sh Check 3 (rendering agreement). Does
-#       NOT invoke lake.
+#       NOT invoke lake and takes no lock.
+#
+# The two build-free modes exit before the lock block and must keep doing
+# so: scripts/typst-sync-check.sh runs them from the pre-commit hook and
+# from CI, where waiting on a concurrent build would be wrong.
 #
 # Fidelity contract: the .typ is rendered ONLY from the JSONL (never from
 # Lean source, never hand-edited); the JSONL is produced ONLY by the Lean
@@ -185,6 +192,59 @@ STAMP_DATE=$(date -u +%Y-%m-%d)
 mkdir -p "${GEN_DIR}"
 
 cd "${REPO_ROOT}"
+
+# ---------------------------------------------------------------------------
+# SHARED `.lake` LOCK
+#
+# Default mode both WRITES and READS `.lake`: the scoped `lake build` below
+# rewrites the exporter's import closure, and the interpreter run after it
+# reads those oleans back. Each half races a concurrent guarded `lake build`
+# on this tree -- the scoped build can leave another reader looking at an
+# olean that was removed and not yet rewritten, and the interpreter can be
+# that reader itself, failing with `object file '...' of module ... does not
+# exist`. One hold of the writers' lock covers both calls, so the interpreter
+# reads exactly the snapshot the build just produced.
+#
+# The lock is `${REPO_ROOT}/.lake/build-guard.lock`, the path
+# `.claude/scripts/lake-build-guard.sh` publishes, taken exclusively in the
+# same shape as scripts/check-evidence-probes.sh's `SHARED .lake LOCK` block
+# and scripts/check-module-invariants.sh's `C1: build` block: a non-blocking
+# try, then an announced bounded wait, the fd held until this process exits
+# (never `flock -u`), and an audible unserialized run when `flock` is absent.
+# The rejected alternatives (probing for the guard and calling it; refusing to
+# run under detected concurrency) are recorded at that `C1: build` block.
+#
+# LEAF-ONLY. The lock is taken here, by the script that invokes lake, and by
+# no caller of this script. An flock belongs to the open file description, so
+# a parent holding the lock excludes its own child when the child re-opens the
+# lock file: a caller that locked and then ran this script would make it wait
+# out the whole bound.
+#
+# AFTER THE BUILD-FREE EXITS. This block sits below the `--render-only` and
+# `--json` exits above on purpose; neither reads a `.lake` artifact.
+#
+# `MACHINE_APPENDIX_LOCK_WAIT_S` overrides the bounded wait. It exists so the
+# timeout branch can be exercised deliberately; it is a test affordance, not a
+# tuning knob. Default: 600 s.
+# ---------------------------------------------------------------------------
+MACHINE_APPENDIX_LOCK_WAIT_S="${MACHINE_APPENDIX_LOCK_WAIT_S:-600}"
+LOCK_FILE="${REPO_ROOT}/.lake/build-guard.lock"
+mkdir -p "${REPO_ROOT}/.lake"
+if command -v flock >/dev/null 2>&1; then
+  exec {MACHINE_APPENDIX_LOCK_FD}<>"${LOCK_FILE}"
+  if ! flock -n "${MACHINE_APPENDIX_LOCK_FD}"; then
+    echo "typst-machine-appendix.sh: waiting on the shared build lock (${LOCK_FILE}, up to ${MACHINE_APPENDIX_LOCK_WAIT_S}s)" >&2
+    if ! flock -w "${MACHINE_APPENDIX_LOCK_WAIT_S}" "${MACHINE_APPENDIX_LOCK_FD}"; then
+      echo "typst-machine-appendix.sh: ENVIRONMENT failure: timed out after ${MACHINE_APPENDIX_LOCK_WAIT_S}s waiting for the shared build lock" >&2
+      echo "  ${LOCK_FILE}" >&2
+      echo "  Nothing was built, run, or written. Nothing is wrong with the exporter or the artifacts;" >&2
+      echo "  re-run once the concurrent build has finished." >&2
+      exit 1
+    fi
+  fi
+else
+  echo "typst-machine-appendix.sh: flock not found on PATH; building and running the exporter unserialized" >&2
+fi
 
 # Ensure the exporter's .olean (and its dependency closure) is fresh.
 # This is ordinary elaboration -- it does NOT trigger the native

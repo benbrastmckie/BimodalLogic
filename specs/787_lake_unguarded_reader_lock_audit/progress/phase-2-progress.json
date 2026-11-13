@@ -1,0 +1,20 @@
+{
+  "phase": 2,
+  "phase_name": "Lock the machine-appendix default mode",
+  "started_at": "2026-11-13T19:31:53Z",
+  "last_updated": "2026-11-13T19:32:24Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Insert shared lock block at the head of default mode and header notes in scripts/typst-machine-appendix.sh; verify with stub lake",
+      "status": "done",
+      "files_touched": [
+        "scripts/typst-machine-appendix.sh"
+      ]
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}

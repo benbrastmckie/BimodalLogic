@@ -189,19 +189,19 @@ before and after each run; if a run would write the file, stop and do not run it
 
 ---
 
-### Phase 2: Lock the machine-appendix default mode [NOT STARTED]
+### Phase 2: Lock the machine-appendix default mode [COMPLETED]
 
 **Goal**: `scripts/typst-machine-appendix.sh` runs its scoped build and its interpreter read
 under one hold of the shared lock.
 
 **Tasks**:
-- [ ] Re-read the file immediately before editing.
-- [ ] Insert the precedent block in the "Default mode" section, after both early-exit modes and
+- [x] Re-read the file immediately before editing. *(completed)*
+- [x] Insert the precedent block in the "Default mode" section, after both early-exit modes and
       before `lake build BimodalTools.MachineAppendixMain`, so one hold covers both lake calls.
-      Wait bound from `MACHINE_APPENDIX_LOCK_WAIT_S`, default 600.
-- [ ] On lock timeout: environment-class stderr message, exit 1, before any lake call.
-- [ ] Update the header mode descriptions: default mode takes the shared lock; `--json` and
-      `--render-only` do not and must stay that way (they are called by `typst-sync-check.sh`).
+      Wait bound from `MACHINE_APPENDIX_LOCK_WAIT_S`, default 600. *(completed)*
+- [x] On lock timeout: environment-class stderr message, exit 1, before any lake call. *(completed)*
+- [x] Update the header mode descriptions: default mode takes the shared lock; `--json` and
+      `--render-only` do not and must stay that way (they are called by `typst-sync-check.sh`). *(completed)*
 
 **Timing**: 0.5 hours
 
