@@ -1,38 +1,48 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "Phase 11.14 closed [COMPLETED WITH EXCLUSIONS] with verdict NOT DERIVABLE, which CLOSES disposition (R) of the hself ruling on the mathematics and narrows the Stage 0 ruling (Phase 11.15, still [BLOCKED]) to its two remaining options. The ruling itself is a user judgement no agent may take, and this dispatch deliberately records no recommendation on it. Separately, scripts/check-evidence-probes.sh exits 1 on a PRE-EXISTING WIRED_REPO failure outside this phase (the archived task 918's lowering-anchor-deficit.lean probe left version control at commit cf3e481fb); that repair is owed by task 918 and was surfaced rather than absorbed.",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 12,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md",
-      "summary": "Plan v12. Preserves all 24 closed phases and the 3 [BLOCKED] phases verbatim; adds Phases 11.14 (the one enterable phase: an hself derivability decision probe needing no user ruling), 11.15 (the hself disposition as a plan-time [BLOCKED] Stage 0 user-ruling gate, wave 1, Depends on: none, re-observed by name in Phase 18), 11.16 (the three-branch execution of whichever disposition is ruled) and 11.17 (the cascade record and the RaySummary README LadderAgree.lean inventory row); settles, negatively and on four grounds, whether the archived idle-pump route lifts the Phase 11.6 depth-0 gate; folds in the two history-morphism-saturation-audit probes as a negative finding with one surviving C34 obligation; re-points Phase 15.1 from 11.13 to 11.16; corrects the stale carried ^axiom 10/2 baseline to the re-derived 12/2."
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/12_hself-disposition-gate-settlement-summary.md",
+      "summary": "Phase 11.14: the hself derivability decision probe compiles the verdict NOT DERIVABLE (and not refutable either), closing disposition (R) of the Stage 0 hself ruling without taking it."
     }
   ],
-  "next_steps": "Two independent next acts. (1) The user rules on the hself disposition (Phase 11.15, an unchecked specs/ROADMAP.md Stage 0 item that no agent may transition) -- one ruling resolves Phases 11.12, 11.13 and 11.16. (2) Independently of that ruling, `/orchestrate 761 --implement` can enter Phase 11.14, the hself derivability decision probe, which needs no ruling and whose DERIVABLE branch would make the ruling moot. Phases 11.6, 11.7, 12.2, 13, 14, 15.1, 15.2 and 16-18 remain behind Phase 11.9's INCONCLUSIVE depth-0 verdict, which this revision did not lift and which the one candidate raised against it does not lift either.",
+  "completion_data": {
+    "completion_summary": "Executed Phase 11.14, the one enterable phase of plan v12: a new wired evidence probe compiles the verdict that the path-local self-loop hself is NOT DERIVABLE from the binders the two landed cascade declarations carry -- refuted even with Fintype Q assumed -- and additionally compiles that it is not refutable either, so hself is a genuine independent premise. Disposition (R) of the Stage 0 user ruling is thereby closed on the mathematics; the ruling itself is untouched and Phase 11.15 stays [BLOCKED]. No library file was edited and no filed Goal moved.",
+    "roadmap_items": []
+  },
+  "partial_progress": {
+    "stage": "phase_11.14_closed",
+    "details": "Phase 11.14 closed [COMPLETED WITH EXCLUSIONS]. Phase 11.15 is the [BLOCKED] user ruling; Phases 11.16/11.17 open behind it; Phases 11.6, 11.7, 12.2, 13, 14, 15.1, 15.2 and 16-18 remain behind Phase 11.9's INCONCLUSIVE depth-0 verdict. No phase of this plan is enterable by an implementation dispatch until the ruling lands.",
+    "phases_completed": 25,
+    "phases_total": 41
+  },
+  "modified_files": [
+    "specs/evidence/seam-gluing-ray-product/ladder-self-loop-derivability-decision.lean",
+    "scripts/check-evidence-probes.sh",
+    "specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md",
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.14-handoff-20261113T011907Z.md",
+    "specs/761_ladder_realization_theorem/summaries/12_hself-disposition-gate-settlement-summary.md",
+    "specs/761_ladder_realization_theorem/issues.jsonl"
+  ],
   "metadata": {
-    "session_id": "sess_1794522889_7fa253",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "revision_mode": "plan_revision",
-    "plan_version": 12,
-    "artifact_number": "12",
-    "phase_count": 41,
-    "preserved_phase_count": 27,
-    "preserved_closed_phase_count": 24,
-    "preserved_blocked_phase_count": 3,
-    "revised_phase_numbers": ["11.6", "15.1", "18"],
-    "new_phase_numbers": ["11.14", "11.15", "11.16", "11.17"],
-    "new_phase_range": "11.14-11.17",
-    "enterable_phase_numbers": ["11.14"],
-    "blocked_phase_numbers": ["11.8", "11.12", "11.13", "11.15"],
-    "reports_integrated_count": 0,
-    "reports_integrated": [],
-    "estimated_hours": 40.5,
-    "estimated_hours_landed": 26,
-    "estimated_hours_open": 14.5,
-    "dependency_waves": 19,
-    "revision_reason_derived": "No user reason was supplied. The rationale was derived from evidence: the three inputs the specs/ROADMAP.md Stage 0 `/revise 761` item names -- the hself binder disposition (carried as a user ruling, NOT decided), Phase 11.9's INCONCLUSIVE depth-0 verdict (unchanged), and whether the archived idle-pump route lifts the Phase 11.6 gate (settled: it does not).",
-    "validation": "bash .claude/scripts/validate-artifact.sh <plan> plan -> PASS with 1 advisory warning, a false positive on Phase 11.11's preserved Files to modify annotation (backticked identifier names, not a second path); bash .claude/scripts/plan-file-scope-harvest.sh <plan> -> 33 paths including the new probe and the branch-(B) declared scope expansion",
-    "requires_user_review": true,
-    "user_decision_pending": "The hself disposition on Phases 11.12 and 11.13 (Phase 11.15): (R) discharge if Phase 11.14 returns DERIVABLE, (A) accept the binder by a later revision, or (B) rename to auxiliaries and leave the two recorded names unclaimed."
+    "session_id": "sess_1794531400_b511e7",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "task_dir": "specs/761_ladder_realization_theorem",
+    "dispatch_seq": 34,
+    "compliance_check": "passed",
+    "axiom_count_tests": 2,
+    "evidence_gate_exit": 1,
+    "evidence_gate_note": "exit 1 on a pre-existing WIRED_REPO failure outside this phase (archived task 918's lowering-anchor-deficit.lean, FAIL (missing)); all 56 WIRED probes compile, this phase's new one included"
   }
 }
