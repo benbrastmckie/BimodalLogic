@@ -160,16 +160,16 @@ context only.
 | 6 | `applyRule_impNeg_closed` | 872986 | 48 | 1492 | |
 | 7 | `applyRule_negPos_closed` | 881963 | 45 | 1356 | |
 | 8 | `applyRule_negNeg_closed` | 889599 | 46 | 1402 | |
-| 9 | `applyRule_boxTemporal_closed` | 869716 | 44 | | |
-| 10 | `applyRule_denseIndicatorClosure_closed` | 879937 | 55 | | |
-| 11 | `applyRule_serialityRule_closed` | 2085983 | 111 | | |
-| 12 | `applyRule_timeLinearity_closed` | 2085413 | 109 | | |
-| 13 | `applyRule_boxPos_closed` | 868669 | 51 | | |
-| 14 | `applyRule_diamondNeg_closed` | 890346 | 63 | | |
-| 15 | `applyRule_allFuturePos_closed` | 868179 | 63 | | |
-| 16 | `applyRule_allPastPos_closed` | 867305 | 54 | | |
-| 17 | `applyRule_someFutureNeg_closed` | 889622 | 57 | | |
-| 18 | `applyRule_somePastNeg_closed` | 888845 | 52 | | |
+| 9 | `applyRule_boxTemporal_closed` | 869716 | 44 | 1543 | |
+| 10 | `applyRule_denseIndicatorClosure_closed` | 879937 | 55 | 1226 | |
+| 11 | `applyRule_serialityRule_closed` | 2085983 | 111 | 167 | |
+| 12 | `applyRule_timeLinearity_closed` | 2085413 | 109 | 176 | |
+| 13 | `applyRule_boxPos_closed` | 868669 | 51 | 1788 | |
+| 14 | `applyRule_diamondNeg_closed` | 890346 | 63 | 1794 | |
+| 15 | `applyRule_allFuturePos_closed` | 868179 | 63 | 1799 | |
+| 16 | `applyRule_allPastPos_closed` | 867305 | 54 | 1799 | |
+| 17 | `applyRule_someFutureNeg_closed` | 889622 | 57 | 1803 | |
+| 18 | `applyRule_somePastNeg_closed` | 888845 | 52 | 1803 | |
 | 19 | `applyRule_boxNeg_closed` | 883992 | 52 | | |
 | 20 | `applyRule_diamondPos_closed` | 884441 | 67 | | |
 | 21 | `applyRule_allFutureNeg_closed` | 886520 | 66 | | |

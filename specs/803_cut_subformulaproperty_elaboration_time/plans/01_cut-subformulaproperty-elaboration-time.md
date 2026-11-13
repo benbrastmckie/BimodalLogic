@@ -320,7 +320,7 @@ Propositional` lines before converting, and reconcile against Phase 1's total of
 
 ---
 
-### Phase 4: Convert the NonAnalytic and PersistentUniversal Sections [NOT STARTED]
+### Phase 4: Convert the NonAnalytic and PersistentUniversal Sections [COMPLETED]
 
 **Goal**: Convert the four `NonAnalytic` and six `PersistentUniversal` bodies, including the two
 most expensive theorems in the file (`serialityRule`, `timeLinearity`), which are sign-agnostic and
@@ -328,19 +328,19 @@ need no case analysis at all.
 
 **Tasks**:
 
-- [ ] Convert `applyRule_boxTemporal_closed`, `applyRule_denseIndicatorClosure_closed`,
+- [x] Convert `applyRule_boxTemporal_closed`, `applyRule_denseIndicatorClosure_closed`,
   `applyRule_serialityRule_closed`, `applyRule_timeLinearity_closed` using the report's verified
-  sign-agnostic shape for the latter two (no `cases`, no off-arm branch).
-- [ ] Convert `applyRule_boxPos_closed`, `applyRule_diamondNeg_closed`,
+  sign-agnostic shape for the latter two (no `cases`, no off-arm branch). *(completed — `serialityRule` and `timeLinearity` take no case analysis; `boxTemporal` and `denseIndicatorClosure` use the `by_cases` shape from Phase 3)*
+- [x] Convert `applyRule_boxPos_closed`, `applyRule_diamondNeg_closed`,
   `applyRule_allFuturePos_closed`, `applyRule_allPastPos_closed`,
-  `applyRule_someFutureNeg_closed`, `applyRule_somePastNeg_closed`.
-- [ ] Rewrite the per-theorem cost comment for each converted theorem with the measured
-  attribution and its new heartbeat figure.
-- [ ] Leave every `set_option maxHeartbeats` line in place, including the two `3000000` ceilings.
-- [ ] Record a `#count_heartbeats` after-figure for each of the ten into the evidence file's table,
-  under `set_option Elab.async false`.
-- [ ] Apply the same per-rule fallback and `#### Reasoned Exclusions` rule as Phase 3.
-- [ ] Commit per green sub-step.
+  `applyRule_someFutureNeg_closed`, `applyRule_somePastNeg_closed`. *(completed — pattern rules by `by_cases h : sf.sign = … ∧ ∃ ψ, sf.formula = …`; `as…?` rules by sign `by_cases`, with a `dsimp only at hg` to zeta-reduce the arm's `have`s before the inner `split`)*
+- [x] Rewrite the per-theorem cost comment for each converted theorem with the measured
+  attribution and its new heartbeat figure. *(completed — also rewrote the `serialityRule` and `timeLinearity` docstring paragraphs that described the old script)*
+- [x] Leave every `set_option maxHeartbeats` line in place, including the two `3000000` ceilings. *(completed)*
+- [x] Record a `#count_heartbeats` after-figure for each of the ten into the evidence file's table,
+  under `set_option Elab.async false`. *(completed — headline: `serialityRule` 2,085,983 -> 167; `timeLinearity` 2,085,413 -> 176)*
+- [x] Apply the same per-rule fallback and `#### Reasoned Exclusions` rule as Phase 3. *(completed — no fallback needed, 10 of 10 converted)*
+- [x] Commit per green sub-step. *(deviation: altered — one commit for the ten)*
 
 **Timing**: 2 hours
 
