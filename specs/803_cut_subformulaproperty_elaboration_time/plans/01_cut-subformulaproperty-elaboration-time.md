@@ -492,7 +492,7 @@ Phase 7's blast radius and must be noted as such.
 
 ---
 
-### Phase 7: Tighten the Fresh-Witness Propagation Block [NOT STARTED]
+### Phase 7: Tighten the Fresh-Witness Propagation Block [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Convert the `mem_filterMap_sub` sub-proof's full simp set to `simp only` with an explicit
 lemma list, which the research report identifies as the dominant residual cost across the ten
@@ -500,21 +500,21 @@ fresh-witness theorems after conversion.
 
 **Tasks**:
 
-- [ ] Locate the `simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+- [x] Locate the `simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
   Formula.self_mem_subformulas]` call inside the `mem_filterMap_sub` entry point and the
   fresh-witness bodies that invoke it. Note which is a full simp set (`simp_all [...]`) versus an
   explicit list (`simp_all only [...]`) — the report counts 48 of the latter and 11 of the former
-  file-wide, and only the former are this phase's targets within the fresh-witness family.
+  file-wide, and only the former are this phase's targets within the fresh-witness family. *(completed — 11 full-simp-set `simp_all [...]` closers, all inside the propagation block: the ten fresh-witness theorems and `densityRule`; each block also carries one `by simp`. `grep -rn mem_filterMap_sub FormalSystem/` finds no user outside the module.)*
 - [ ] Convert each targeted call to `simp only [...] at <hyp>` with an explicit lemma list derived
-  from the actual goal state, not guessed. Use `lean_goal` before and after each conversion.
-- [ ] Do not change `mem_filterMap_sub`'s statement.
-- [ ] Record a `#count_heartbeats` after-figure for each of the ten fresh-witness theorems a second
-  time, so Phase 6's and Phase 7's contributions are separately attributable in the evidence table.
-- [ ] If a targeted call cannot be converted without changing which goals close, leave it as a full
+  from the actual goal state, not guessed. Use `lean_goal` before and after each conversion. *(deviation: skipped — premise refuted by measurement; the conversion was written and measured on a scratch copy and is cost-neutral (-0.8% over the eleven users), so it was not landed. See Reasoned Exclusions.)*
+- [x] Do not change `mem_filterMap_sub`'s statement. *(completed — `mem_filterMap_sub` untouched)*
+- [x] Record a `#count_heartbeats` after-figure for each of the ten fresh-witness theorems a second
+  time, so Phase 6's and Phase 7's contributions are separately attributable in the evidence table. *(deviation: altered — the second-round figures are recorded as a not-landed trial column and in evidence section 6, since nothing landed)*
+- [x] If a targeted call cannot be converted without changing which goals close, leave it as a full
   simp set, record the goal-state evidence, and close the phase `[COMPLETED WITH EXCLUSIONS]` with
   a `#### Reasoned Exclusions` record. R1's reduction already clears the acceptance bar without
-  this phase.
-- [ ] Commit per green sub-step.
+  this phase. *(completed — this is the branch taken, on the Scope Hypothesis's own negligible-figures condition rather than on a conversion failure)*
+- [x] Commit per green sub-step. *(completed — no source change in this phase; one commit for the plan and evidence records)*
 
 **Timing**: 1 hour
 
@@ -542,6 +542,13 @@ has evaporated and it closes `[COMPLETED WITH EXCLUSIONS]` citing those figures.
   statement untouched
 - `specs/803_cut_subformulaproperty_elaboration_time/evidence/01_elaboration-baseline.md` - append
   the second round of fresh-witness after-figures, attributed to this phase
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Converting the 11 `simp_all [SignedFormula.pos, (SignedFormula.neg,) Formula.subformulas, Formula.self_mem_subformulas]` closers inside the `mem_filterMap_sub` call sites (ten fresh-witness theorems plus `densityRule`) to `simp only` | The phase's premise — that this block is the dominant residual cost after Phase 6 — does not hold. The Scope Hypothesis names this case and prescribes closing on the measured figures. | Phase 6 in-module after-figures are 2,185-6,639 heartbeats (baseline 883K-894K). The tightened block was written and measured on a scratch copy of the module, all 11 call sites, every probe clean: per-theorem delta -183 to +191 heartbeats, sum 42,570 -> 42,211 (-0.8%). Full table: `evidence/01_elaboration-baseline.md` section 6. `boxNeg`, on which the report's R3 finding rested, measures 2,258 in module context, not 27,178. |
+| Recording the second-round figures as landed after-figures | Nothing landed, so there is no second landed round; the trial figures are recorded instead, labelled as not landed. | Evidence table column `R3 trial, not landed`, rows 19-28 and 35. |
 
 **Verification**:
 

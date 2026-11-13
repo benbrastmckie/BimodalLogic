@@ -146,48 +146,50 @@ for both files.
 ## 5. Heartbeat table
 
 Columns: `before` = base commit; `after R1` = body converted to wrapper-routed equation-lemma
-rewrite; `after R3` = fresh-witness propagation block tightened (fresh-witness family only).
+rewrite; `R3 trial, not landed` = the same body with the propagation block's `simp_all [...]` and
+`by simp` replaced by `simp only [...]` and `contradiction`, measured on a scratch copy of the
+module; the working tree never carried it (see section 6).
 `secs` is single-process wall-clock for the whole probe file (import + preamble + target),
 context only.
 
-| # | Theorem | before (hb) | before secs | after R1 (hb) | after R3 (hb) |
+| # | Theorem | before (hb) | before secs | after R1 (hb) | R3 trial, not landed (hb) |
 |---|---|---|---|---|---|
-| 1 | `applyRule_andPos_closed` | 882869 | 43 | 1376 | |
-| 2 | `applyRule_andNeg_closed` | 890965 | 49 | 1447 | |
-| 3 | `applyRule_orPos_closed` | 882968 | 58 | 1400 | |
-| 4 | `applyRule_orNeg_closed` | 890289 | 59 | 1421 | |
-| 5 | `applyRule_impPos_closed` | 858832 | 56 | 1515 | |
-| 6 | `applyRule_impNeg_closed` | 872986 | 48 | 1492 | |
-| 7 | `applyRule_negPos_closed` | 881963 | 45 | 1356 | |
-| 8 | `applyRule_negNeg_closed` | 889599 | 46 | 1402 | |
-| 9 | `applyRule_boxTemporal_closed` | 869716 | 44 | 1543 | |
-| 10 | `applyRule_denseIndicatorClosure_closed` | 879937 | 55 | 1226 | |
-| 11 | `applyRule_serialityRule_closed` | 2085983 | 111 | 167 | |
-| 12 | `applyRule_timeLinearity_closed` | 2085413 | 109 | 176 | |
-| 13 | `applyRule_boxPos_closed` | 868669 | 51 | 1788 | |
-| 14 | `applyRule_diamondNeg_closed` | 890346 | 63 | 1794 | |
-| 15 | `applyRule_allFuturePos_closed` | 868179 | 63 | 1799 | |
-| 16 | `applyRule_allPastPos_closed` | 867305 | 54 | 1799 | |
-| 17 | `applyRule_someFutureNeg_closed` | 889622 | 57 | 1803 | |
-| 18 | `applyRule_somePastNeg_closed` | 888845 | 52 | 1803 | |
-| 19 | `applyRule_boxNeg_closed` | 883992 | 52 | 2258 | |
-| 20 | `applyRule_diamondPos_closed` | 884441 | 67 | 2185 | |
-| 21 | `applyRule_allFutureNeg_closed` | 886520 | 66 | 3111 | |
-| 22 | `applyRule_allPastNeg_closed` | 887427 | 66 | 3111 | |
-| 23 | `applyRule_someFuturePos_closed` | 884420 | 50 | 3114 | |
-| 24 | `applyRule_somePastPos_closed` | 883648 | 50 | 3114 | |
-| 25 | `applyRule_untlPos_closed` | 884453 | 50 | 5053 | |
-| 26 | `applyRule_sncePos_closed` | 883444 | 52 | 5053 | |
-| 27 | `applyRule_untlNeg_closed` | 893772 | 59 | 6639 | |
-| 28 | `applyRule_snceNeg_closed` | 892568 | 61 | 6639 | |
-| 29 | `applyRule_priorUZ_closed` | 876360 | 57 | 1420 | |
-| 30 | `applyRule_priorSZ_closed` | 875591 | 64 | 1420 | |
-| 31 | `applyRule_z1Rule_closed` | 864804 | 57 | 2048 | |
-| 32 | `applyRule_priorUGap_closed` | 875487 | 50 | 1631 | |
-| 33 | `applyRule_priorSGap_closed` | 874545 | 49 | 1631 | |
-| 34 | `applyRule_sepRule_closed` | 873857 | 55 | 1642 | |
-| 35 | `applyRule_densityRule_closed` | 866915 | 49 | 2293 | |
-| 36 | `applyRule_orderTrichotomy_closed` | 878351 | 50 | 2130 | |
+| 1 | `applyRule_andPos_closed` | 882869 | 43 | 1376 | n/a |
+| 2 | `applyRule_andNeg_closed` | 890965 | 49 | 1447 | n/a |
+| 3 | `applyRule_orPos_closed` | 882968 | 58 | 1400 | n/a |
+| 4 | `applyRule_orNeg_closed` | 890289 | 59 | 1421 | n/a |
+| 5 | `applyRule_impPos_closed` | 858832 | 56 | 1515 | n/a |
+| 6 | `applyRule_impNeg_closed` | 872986 | 48 | 1492 | n/a |
+| 7 | `applyRule_negPos_closed` | 881963 | 45 | 1356 | n/a |
+| 8 | `applyRule_negNeg_closed` | 889599 | 46 | 1402 | n/a |
+| 9 | `applyRule_boxTemporal_closed` | 869716 | 44 | 1543 | n/a |
+| 10 | `applyRule_denseIndicatorClosure_closed` | 879937 | 55 | 1226 | n/a |
+| 11 | `applyRule_serialityRule_closed` | 2085983 | 111 | 167 | n/a |
+| 12 | `applyRule_timeLinearity_closed` | 2085413 | 109 | 176 | n/a |
+| 13 | `applyRule_boxPos_closed` | 868669 | 51 | 1788 | n/a |
+| 14 | `applyRule_diamondNeg_closed` | 890346 | 63 | 1794 | n/a |
+| 15 | `applyRule_allFuturePos_closed` | 868179 | 63 | 1799 | n/a |
+| 16 | `applyRule_allPastPos_closed` | 867305 | 54 | 1799 | n/a |
+| 17 | `applyRule_someFutureNeg_closed` | 889622 | 57 | 1803 | n/a |
+| 18 | `applyRule_somePastNeg_closed` | 888845 | 52 | 1803 | n/a |
+| 19 | `applyRule_boxNeg_closed` | 883992 | 52 | 2258 | 2204 |
+| 20 | `applyRule_diamondPos_closed` | 884441 | 67 | 2185 | 2132 |
+| 21 | `applyRule_allFutureNeg_closed` | 886520 | 66 | 3111 | 3032 |
+| 22 | `applyRule_allPastNeg_closed` | 887427 | 66 | 3111 | 3031 |
+| 23 | `applyRule_someFuturePos_closed` | 884420 | 50 | 3114 | 3035 |
+| 24 | `applyRule_somePastPos_closed` | 883648 | 50 | 3114 | 3035 |
+| 25 | `applyRule_untlPos_closed` | 884453 | 50 | 5053 | 4870 |
+| 26 | `applyRule_sncePos_closed` | 883444 | 52 | 5053 | 4870 |
+| 27 | `applyRule_untlNeg_closed` | 893772 | 59 | 6639 | 6829 |
+| 28 | `applyRule_snceNeg_closed` | 892568 | 61 | 6639 | 6830 |
+| 29 | `applyRule_priorUZ_closed` | 876360 | 57 | 1420 | n/a |
+| 30 | `applyRule_priorSZ_closed` | 875591 | 64 | 1420 | n/a |
+| 31 | `applyRule_z1Rule_closed` | 864804 | 57 | 2048 | n/a |
+| 32 | `applyRule_priorUGap_closed` | 875487 | 50 | 1631 | n/a |
+| 33 | `applyRule_priorSGap_closed` | 874545 | 49 | 1631 | n/a |
+| 34 | `applyRule_sepRule_closed` | 873857 | 55 | 1642 | n/a |
+| 35 | `applyRule_densityRule_closed` | 866915 | 49 | 2293 | 2343 |
+| 36 | `applyRule_orderTrichotomy_closed` | 878351 | 50 | 2130 | n/a |
 
 Cross-checks against the research report's three probes (not substitutes for the fresh figures):
 `andPos` 882,869 vs 882,487 (+0.04%); `serialityRule` 2,085,983 vs 2,084,589 (+0.07%); `boxNeg`
@@ -195,6 +197,36 @@ Cross-checks against the research report's three probes (not substitutes for the
 
 Baseline total over the 36 per-rule theorems: 34095081 heartbeats; summed single-process probe
 wall-clock 2067 s (each probe also pays import and preamble, a few seconds).
+
+## 6. The propagation-block tightening (R3): measured, not landed
+
+After all 36 conversions the eleven theorems that route through `mem_filterMap_sub` (the ten
+fresh-witness rules and `densityRule`) cost 2,185 to 6,639 heartbeats each. The research report's
+R3 premise was that the block's full-simp-set closer dominates that residue, resting on a
+27,178-heartbeat post-conversion figure for `boxNeg`. In module context `boxNeg` measures 2,258
+after conversion, so that figure was itself part of the report probe's ambiguity artifact.
+
+The tightened block was written and measured on a scratch copy (11 call sites rewritten, every
+probe compiled clean):
+
+| Theorem | after R1 (landed) | R3 trial | delta |
+|---|---|---|---|
+| `boxNeg` | 2258 | 2204 | -54 |
+| `diamondPos` | 2185 | 2132 | -53 |
+| `allFutureNeg` | 3111 | 3032 | -79 |
+| `allPastNeg` | 3111 | 3031 | -80 |
+| `someFuturePos` | 3114 | 3035 | -79 |
+| `somePastPos` | 3114 | 3035 | -79 |
+| `untlPos` | 5053 | 4870 | -183 |
+| `sncePos` | 5053 | 4870 | -183 |
+| `untlNeg` | 6639 | 6829 | +190 |
+| `snceNeg` | 6639 | 6830 | +191 |
+| `densityRule` | 2293 | 2343 | +50 |
+| **sum** | **42570** | **42211** | **-359 (-0.8%)** |
+
+The tightening moves each theorem by at most 3.6 percent, with mixed sign, and the eleven together
+by 0.8 percent: 359 heartbeats against a module baseline of 34,095,081. The block is not the
+dominant residual cost, so the phase's premise does not hold and the block was left as it is.
 
 ## Appendix A. The 38 equation-lemma types (verbatim, `open`ed namespaces for brevity)
 
