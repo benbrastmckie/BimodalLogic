@@ -2470,7 +2470,7 @@ have a landable answer at this layer**: if neither (a) nor (b) can be landed, th
 
 ---
 
-### Phase 11.12: The Pin Half of the Cascade and `exists_ladderPath_at_region_of_idle_past` [BLOCKED]
+### Phase 11.12: The Pin Half of the Cascade and `exists_ladderPath_at_region_of_idle_past` [COMPLETED WITH EXCLUSIONS]
 
 **GATED ON PHASE 11.11, AND THIS IS THE OPEN MATHEMATICS. The statement is OPEN, not known.** The
 refutation that kills the `spliceObj`-shaped conclusion establishes nothing about the restated
@@ -2667,9 +2667,25 @@ forbids both quietly editing the implementation and quietly editing the record:
 Phase 15.1 names Phase 11.13's join as the one cascade interface it consumes, and that join
 inherits `hself` verbatim (see Phase 11.13's own record).
 
+#### Reasoned Exclusions
+
+**A disposition HAS now been taken**, so the sentence above is discharged and this phase is
+re-marked. The authority is Phase 11.15's own rule — a recorded ruling PLUS Phase 11.16's closure,
+both of which now hold — and the re-marking touches this heading and adds this subsection only:
+the `#### Recorded Outcome` block above is unaltered, verbatim, as Phase 11.15's verification
+requires.
+
+| Item | Reason | Evidence |
+|---|---|---|
+| The recorded name `exists_ladderPath_at_region_of_idle_past` is UNCLAIMED, not landed | Disposition 2 of this phase's own record — "Rename to an auxiliary … the recorded name stays unclaimed until `hself` is discharged" — was RULED by the user as disposition (B) on 2026-11-13 and executed by Phase 11.16. The declaration is landed, sorry-free and unchanged in statement, under the honest auxiliary name that states the premise it carries | `specs/ROADMAP.md` Stage 0, checked item dated 2026-11-13; `LadderAgree.lean:2242` carries `exists_ladderPath_at_region_of_idle_past_of_self_loop`; `grep -rn` over `FormalSystem/` resolves the recorded name to no declaration, only to the unclaimed-name records at `LadderAgree.lean:2229` and `LadderRealize.lean:159` |
+| The binder `hself` is carried rather than discharged | It is INDEPENDENT, not merely undischarged, so no amount of further work at this layer removes it. Disposition (R) — an in-library derivation — is closed on the mathematics | Phase 11.14's `hself_not_derivable`, refuting the implication with `Fintype Q` assumed, together with `hself_satisfiable_at_an_instance`, in `specs/evidence/seam-gluing-ray-product/ladder-self-loop-derivability-decision.lean` |
+
+The phase's mathematics was never stalled and no goal state is missing; what was open was a naming
+decision, and it is settled.
+
 ---
 
-### Phase 11.13: The Unconditional Join, Against the Signatures That Exist [BLOCKED]
+### Phase 11.13: The Unconditional Join, Against the Signatures That Exist [COMPLETED WITH EXCLUSIONS]
 
 **GATED ON PHASES 11.12 AND 11.8. This phase exists because the predecessor revision named a join
 that cannot type-check.** The statement-level finding is carried from the Phase 11.8 handoff and
@@ -2798,6 +2814,20 @@ only in the REGIME sense."
 it consumes. Under either disposition in Phase 11.12's record, that interface is conditional on
 `hself`, and Phase 15.1 may not be entered on the assumption that it is not. Resolving Phase
 11.12's disposition resolves this phase's in the same act; no separate decision is owed.
+
+#### Reasoned Exclusions
+
+Phase 11.12's disposition was resolved in the same act this record anticipated, so this phase is
+re-marked with it. Authority, scope and preservation are as stated in Phase 11.12's own
+`#### Reasoned Exclusions`: the `#### Recorded Outcome` block above is unaltered, verbatim.
+
+| Item | Reason | Evidence |
+|---|---|---|
+| The recorded name `exists_ladderPath_at_region` is UNCLAIMED, not landed | The ruled disposition (B) renames the carrying declaration to an auxiliary that states its premise and leaves the recorded name free for whatever eventually discharges `hself`. The join's statement is unchanged: its conclusion is identical to both halves' by `diff`, and it still discharges the past-regime case split internally | `LadderAgree.lean:2315` carries `exists_ladderPath_at_region_of_self_loop`; the unclaimed-name record is at `LadderAgree.lean:2307`; the three existentials' conclusions are pairwise identical and `spliceObj`-free |
+| The interface Phase 15.1 consumes is conditional on `hself` | Inherited verbatim from Phase 11.12, and now stated at the consumer rather than left to be rediscovered: "unconditional in the REGIME sense and conditional on the self-loop" | The consumer-side note in `LadderRealize.lean`, added by Phase 11.16, and the axiom-pin prose in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` |
+
+Phase 15.1 may now be entered against a fixed name and a fixed binder list, which is what this
+phase and Phase 11.12 existed to deliver.
 
 ---
 
