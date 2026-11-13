@@ -1,58 +1,24 @@
 {
-  "status": "partial",
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 12,
-    "build_passed": true,
-    "build_output": "Full `lake build` through the guard, run twice (once per phase end): exit_status=0, `Build completed successfully (2975 jobs)`, 0 `error:` and 0 `warning:` occurrences over both captured streams, and every touched module's .olean newer than its source. Three guarded scoped builds (LadderRealize, LadderWindow, BimodalTest.Metalogic.KTypeSummaryAxiomTest) each exit 0 with 0 warnings."
-  },
-  "requires_user_review": true,
-  "review_reason": "compliance_check is 'failed', but ONLY because five of plan v12's filed Goal names are not yet landed -- cellAt_const_of_kappa_eq, ladderCons_localRun, ladderLift, ladderRealized, ladderSound. That is the plan's own recorded state, not a defect of this dispatch: all five sit behind Phase 11.6's depth-0 gate, which is NOT lifted and which no open task owns lifting, and neither Phase 11.16 nor Phase 11.17 claims any filed Goal. Every other verification gate is green (build, sorry census, vacuous grep, axiom counts, module invariants, evidence probes, typst sync, readme lint, task references). The thing that genuinely needs a decision is the one already recorded as the unchecked Stage 0 item of specs/ROADMAP.md: who owns lifting the depth-0 gate.",
-  "partial_progress": {
-    "stage": "phases_11.15_11.16_11.17_completed",
-    "details": "The three phases the landed hself ruling unblocked are closed [COMPLETED] with Recorded Outcomes, and Phases 11.12/11.13 were re-marked [COMPLETED WITH EXCLUSIONS] on the authority Phase 11.15 states (a recorded ruling plus Phase 11.16's closure), each with a new #### Reasoned Exclusions subsection and its #### Recorded Outcome block unaltered. No phase of plan v12 is enterable by a further implementation dispatch: ten are [NOT STARTED] and one is [BLOCKED], all behind Phase 11.6's unlifted depth-0 gate.",
-    "phases_completed": 30,
-    "phases_total": 41
-  },
+  "status": "planned",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/12_hself-disposition-gate-settlement-summary.md",
-      "summary": "Round-12 summary extended to cover Phases 11.15-11.17: the ruled hself disposition (B) executed as a rename to auxiliaries, and the LadderAgree.lean inventory row authored."
-    },
-    {
       "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md",
-      "summary": "Phases 11.15, 11.16 and 11.17 marked [COMPLETED], each with a #### Recorded Outcome."
+      "path": "specs/761_ladder_realization_theorem/plans/13_depth-zero-gate-rest-state.md",
+      "summary": "Revised plan (v13): restates task 761 as a rest state behind Phase 11.6's unlifted depth-0 gate, carries all 30 closed phase bodies verbatim, and corrects two figures the last implement dispatch falsified."
     }
   ],
-  "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "typst/generated/status.typ",
-    "specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md",
-    "specs/761_ladder_realization_theorem/summaries/12_hself-disposition-gate-settlement-summary.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.17-handoff-20261113T063450Z.md"
-  ],
+  "next_steps": "Do NOT run /orchestrate 761: the plan has zero enterable phases. The next act is the unchecked specs/ROADMAP.md Stage 0 item 'Decide who owns the depth-0 gate', followed by a further /revise 761 taking that probe's verdict as its input.",
   "metadata": {
-    "session_id": "sess_1794549661_43189a",
-    "agent_type": "lean-implementation-agent",
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ],
-    "dispatch_seq": 37,
-    "compliance_check": "failed",
-    "branch_taken": "B",
-    "axiom_count_tests": 2
+    "session_id": "sess_1794551910_b9181a",
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 41,
+    "phases_closed": 30,
+    "phases_enterable": 0,
+    "estimated_hours": 40.5,
+    "estimated_hours_open": 10,
+    "reports_integrated": [],
+    "plan_version": 13,
+    "revision_mode": "plan_revision"
   }
 }
