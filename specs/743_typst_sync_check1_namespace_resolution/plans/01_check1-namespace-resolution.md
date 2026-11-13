@@ -309,35 +309,35 @@ residue.
 
 ---
 
-### Phase 3: Document the Mechanism and Its Limits Where Citation Authors Look [NOT STARTED]
+### Phase 3: Document the Mechanism and Its Limits Where Citation Authors Look [IN PROGRESS]
 
 **Goal**: The next citation author, and the next person tempted to add a whitelist entry, can see
 what namespace resolution does and does not cover without reading the implementation.
 
 **Tasks**:
 
-- [ ] Re-read `scripts/typst-sync-check.sh` immediately beforehand (Phase 1 changed it). Update
+- [x] Re-read `scripts/typst-sync-check.sh` immediately beforehand (Phase 1 changed it). Update
       the file-header block's Check 1 description (currently
       `scripts/typst-sync-check.sh:5-8`) to state that a backticked span resolves against the
       whitelist, a literal scan of live Lean source, **or** namespace-aware resolution of a
-      `<namespace-path>.<leaf>` name, and that the whole check remains build-free.
-- [ ] Add a comment immediately above Check 1's dotted-name branch naming the limits explicitly:
+      `<namespace-path>.<leaf>` name, and that the whole check remains build-free. *(completed)*
+- [x] Add a comment immediately above Check 1's dotted-name branch naming the limits explicitly:
       resolution covers declarations under `LEAN_SRC_ROOTS` (`FormalSystem`, `BimodalTools`)
       reachable through literal `namespace`/`end` nesting; a name introduced only by `export`, by
       an `open ... in` one-liner, or from outside those two roots still depends on the literal
-      scan and, failing that, the whitelist.
-- [ ] Re-read `typst/sync-check-whitelist.txt`, then extend its header comment block with a new
+      scan and, failing that, the whitelist. *(completed)*
+- [x] Re-read `typst/sync-check-whitelist.txt`, then extend its header comment block with a new
       paragraph: namespace resolution now exists, so a *valid* namespaced declaration should no
       longer need an entry; and an entry added for a valid-but-unresolvable Lean declaration name
       **suppresses a resolution gap rather than certifying the name** and must say so inline. Add
       this as `#`-prefixed comment lines only — the file is data the script parses, and
-      `#`-prefixed lines are the sanctioned comment form.
-- [ ] Re-read `typst/SYNC-MAP.md`, then amend enforcement rule 2 (currently at
+      `#`-prefixed lines are the sanctioned comment form. *(completed)*
+- [x] Re-read `typst/SYNC-MAP.md`, then amend enforcement rule 2 (currently at
       `typst/SYNC-MAP.md:46-49`) to name the sanctioned citation styles — fully-qualified
       `Namespace.Path.leaf`, module-path-plus-leaf, and bare leaf — and state that the
-      fully-qualified style resolves structurally rather than by coincidence of source text.
-- [ ] Do **not** restate the mechanism's implementation in `CONTRIBUTING.md` or `scripts/README.md`;
-      both describe the gate at a level this change does not alter.
+      fully-qualified style resolves structurally rather than by coincidence of source text. *(completed)*
+- [x] Do **not** restate the mechanism's implementation in `CONTRIBUTING.md` or `scripts/README.md`;
+      both describe the gate at a level this change does not alter. *(completed: grep confirmed no fourth location; neither file edited)*
 
 **Timing**: 0.75 hours
 

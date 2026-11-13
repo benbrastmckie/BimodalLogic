@@ -1,0 +1,57 @@
+{
+  "phase": 3,
+  "phase_name": "Document the Mechanism and Its Limits Where Citation Authors Look",
+  "started_at": "2026-11-13T09:30:00Z",
+  "last_updated": "2026-11-13T09:40:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Header-block Check 1 description: whitelist, literal scan, or namespace-aware resolution; build-free",
+      "status": "done",
+      "files_touched": [
+        "scripts/typst-sync-check.sh"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Limits comment above Check 1's dotted-name branch",
+      "status": "done",
+      "files_touched": [
+        "scripts/typst-sync-check.sh"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Whitelist header paragraph: namespace resolution exists; an entry for a valid declaration suppresses a gap",
+      "status": "done",
+      "files_touched": [
+        "typst/sync-check-whitelist.txt"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "SYNC-MAP enforcement rule 2: sanctioned citation styles and structural resolution",
+      "status": "done",
+      "files_touched": [
+        "typst/SYNC-MAP.md"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "Confirm no fourth location (CONTRIBUTING.md, scripts/README.md, typst/README.md) restates the rule; leave them unedited",
+      "status": "done",
+      "files_touched": []
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0,
+  "verification": {
+    "gate": "bash scripts/typst-sync-check.sh exit 0; Check 1 TOTAL_VIOLATIONS=0, TOTAL_CANDIDATES=893 before and after (unchanged)",
+    "diff_read_through": "every changed line in scripts/typst-sync-check.sh and typst/sync-check-whitelist.txt begins with #; bash -n clean",
+    "check-task-references": "exit 0, 0 occurrences",
+    "check-record-versioning": "exit 1 on 6 pre-existing BLOCKING findings in Boneyard/ and FormalSystem/ Lean files; per-file match counts for the three touched paths identical to HEAD (0 new)",
+    "batch_gate_deferral": "prose-tier phase, not the plan's final phase; no full gate set applies here"
+  }
+}

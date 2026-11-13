@@ -4,8 +4,13 @@
 #
 # Mechanical drift detector for typst/. Four checks:
 #   1. Name resolution   -- every backticked span in typst/**/*.typ resolves
-#                           against live Lean source (excl. Boneyard/) or
-#                           the whitelist.
+#                           against the whitelist, a literal scan of live
+#                           Lean source (excl. Boneyard/), or
+#                           namespace-aware resolution of a
+#                           `<namespace-path>.<leaf>` name (the enclosing
+#                           `namespace` path plus the declared name). All
+#                           three are build-free: text only, no lake
+#                           invocation, no .olean.
 #   2. Count freshness   -- regenerated status.typ (JSON) matches the
 #                           committed typst/generated/status.typ exactly, AND
 #                           (module-map sub-check) the committed
@@ -845,6 +850,24 @@ for cand, files in sorted(candidates.items()):
         violations.append((cand, files, f"path does not exist under any Lean source root ({roots_desc}; excl. Boneyard/ unless the candidate itself names it) nor under the repo root"))
         continue
     # Bare identifier / dotted qualified name
+    #
+    # Resolution order: the literal scan, then (dotted names only) the namespace index.
+    # LIMITS of the namespace index -- read these before citing a fully-qualified name or
+    # reaching for the whitelist:
+    #   - It covers declarations under LEAN_SRC_ROOTS (FormalSystem/, BimodalTools/; Boneyard/
+    #     excluded) that are reachable through literal `namespace` ... `end` nesting, plus a
+    #     dotted declared name (`theorem Foo.bar` inside `namespace N` is `N.Foo.bar`) and a
+    #     `_root_.` declared name.
+    #   - It indexes a name only where a declaration keyword (theorem, lemma, def, abbrev,
+    #     instance, structure, inductive, class, axiom, opaque) and the name share one source
+    #     line. Names Lean generates -- inductive constructors, structure fields, `.mk`, `.rec`
+    #     -- and names produced by a macro or a custom declaration command are not indexed.
+    #   - It does not follow `export`, `open ... in`, or `open` aliases: a name reachable only
+    #     through one of those is not the declaration's own fully-qualified name.
+    #   - It sees nothing outside the two roots (Mathlib, Lean core, external repositories).
+    # A dotted name outside these limits still depends on the literal scan and, failing that,
+    # on a whitelist entry -- which suppresses the gap rather than certifying the name (see the
+    # header of typst/sync-check-whitelist.txt).
     if grep_lean(cand):
         continue
     roots_desc = "/, ".join(os.path.basename(b) for b in bimodal_dirs) + "/"
