@@ -224,7 +224,7 @@ the hold, and it is why `/revise 761` heads the list: a task that cannot be disp
 forty declared paths is worse than a held one.
 **Coverage appendix (uncovered tasks)**:
 ```
-/orchestrate 570,664,821,830,831
+/orchestrate 570,664,831,926,927,928
 ```
 
 ## Next batches
