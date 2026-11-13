@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "summary": "Wrote a 5-phase, 3.25-hour plan: precedent-shape lock on typst-status-counts.sh and typst-machine-appendix.sh, a subshell-scoped locked prebuild on both dataset runners, recorded rulings-out in typst-sync-check.sh and typst-module-map.sh, and a scripts/README.md convention section with the full gate. Scope widens to scripts/run_dataset_generation.sh and scripts/README.md; no .claude or source-store path is edited. Verification uses a stub lake on PATH so no build runs and task 803's status.typ is untouched.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/787_lake_unguarded_reader_lock_audit/plans/01_lake-reader-lock-audit.md",
+      "summary": "5-phase implementation plan, waves [[1,2,3,4],[5]]."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
+  "dispatch_seq": 12,
+  "next_action_hint": "Dispatch implement for task 787; phases 1-4 are independent, phase 5 is the final full-gate phase."
+}

@@ -1,0 +1,22 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/787_lake_unguarded_reader_lock_audit/plans/01_lake-reader-lock-audit.md",
+      "summary": "5-phase plan: shared build-guard lock on two typst generators, subshell-scoped locked prebuild on two dataset runners, recorded rulings-out in two script headers and a scripts/README.md convention section, full gate."
+    }
+  ],
+  "next_steps": "Run /orchestrate 787 to execute the plan",
+  "memory_candidates": [],
+  "metadata": {
+    "session_id": "sess_1794588265_854f41_787",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 3.25,
+    "dependency_waves": [[1, 2, 3, 4], [5]]
+  },
+  "dispatch_seq": 12
+}
