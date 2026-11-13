@@ -93,7 +93,7 @@ next_project_number: 931
 
 ### Build Performance
 
-804 [RESEARCHING] — Determine whether...
+804 [RESEARCHED] — Determine whether...
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ### Syntax
@@ -459,10 +459,11 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, High Priority Issues and Mediu
 ---
 
 ### 804. Narrow termination syntax layer fanin
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: build-performance
 - **Dependencies**: Task 803
+- **Research**: [804_narrow_termination_syntax_layer_fanin/reports/01_termination-syntax-fanin.md]
 
 **Description**: Determine whether FormalSystem/Metalogic/Decidability/Verified/Termination/ must sit downstream of the syntax layer, and narrow the fan-in if it need not.
 

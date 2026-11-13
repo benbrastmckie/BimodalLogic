@@ -1,0 +1,49 @@
+FormalSystem.Automation.ProofSearch.Core rc=1 1s errors=1
+FormalSystem.ProofSystem.FrameClass rc=0 1s errors=0
+FormalSystem.ProofSystem.Axioms rc=0 2s errors=0
+FormalSystem.Metalogic.Decidability.Tableau rc=0 106s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.SubformulaProperty rc=0 3s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.TimeTypeBound rc=0 4s errors=0
+MAKE_EXIT=2
+FormalSystem.Metalogic.Decidability.Tableau rc=0 105s errors=0
+MAKE_EXIT=143
+--- run 13:58:13
+FormalSystem.Automation.SuccessPatterns rc=0 1s errors=0
+FormalSystem.Metalogic.Decidability.SignedFormula rc=0 2s errors=0
+FormalSystem.Automation.ProofSearch.Core rc=0 3s errors=0
+FormalSystem.Metalogic.Decidability.Tableau rc=0 101s errors=0
+FormalSystem.Metalogic.Decidability.Closure rc=0 1s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.SubformulaProperty rc=0 2s errors=0
+FormalSystem.Metalogic.Decidability.TraceCertificate rc=0 2s errors=0
+FormalSystem.Metalogic.Decidability.Saturation rc=0 2s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.TimeTypeBound rc=0 4s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel rc=1 65s errors=8
+MAKE_EXIT=2
+--- run 14:01:58
+FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel rc=0 75s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.Register rc=0 0s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.Invariants rc=0 22s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.OrderingTimes rc=0 111s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.MintPotential rc=0 133s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.Measure rc=0 5s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.Terminus rc=0 2s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.TimeReuse rc=0 2s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.ClosureResidual rc=1 2s errors=4
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.TimeCensus rc=0 41s errors=0
+MAKE_EXIT=2
+--- run 14:10:34
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.ClosureResidual rc=0 3s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.LabelHeadroom rc=0 1s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.MonotoneIssuance rc=0 2s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.OrientedGate rc=0 5s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.FourComponent rc=0 3s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.SigmaFixed rc=0 2s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.PostBlocking rc=0 14s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.UntlSnceFree rc=0 22s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.BoxFree rc=0 1s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.GapPotential rc=0 3s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.MintPaysAssembly rc=0 12s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.FiveComponent rc=0 2s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.SeedRunTermini rc=0 2s errors=0
+FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound rc=0 1s errors=0
+MAKE_EXIT=0

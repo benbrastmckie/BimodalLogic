@@ -1,0 +1,253 @@
+--- a/FormalSystem/Automation/SuccessPatterns.lean	2026-09-21 06:09:01.812553264 -0700
++++ b/FormalSystem/Automation/SuccessPatterns.lean	2026-11-13 12:53:12.957643074 -0800
+@@ -5,7 +5,7 @@
+ -/
+ 
+ import Std.Data.HashMap
+-import FormalSystem.Syntax
++import FormalSystem.Syntax.Formula
+ 
+ /-!
+ # Success Pattern Learning for Proof Search
+--- a/FormalSystem/ProofSystem/Axioms.lean	2026-10-18 02:02:49.177828260 -0700
++++ b/FormalSystem/ProofSystem/Axioms.lean	2026-11-13 13:56:25.741585461 -0800
+@@ -5,6 +5,7 @@
+ -/
+ 
+ import FormalSystem.Syntax.Formula
++import FormalSystem.ProofSystem.FrameClass
+ 
+ /-!
+ # Axioms - Burgess-Xu (BX) Axiom Schemata for TM Logic
+@@ -424,132 +425,6 @@
+         (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ))))
+   deriving Repr
+ 
+-/--
+-Frame class classification for axiom validity.
+-
+-The four frame classes form a partial order:
+-```
+-               RTime
+-                 ↑
+-    Dense --------'      ZTime
+-      ↑                     ↑
+-       \___________________/
+-                |
+-               Base
+-```
+-
+-- `Base` is the bottom element: all base axioms are valid on all linear orders.
+-- `Dense` extends Base with the density axiom (GGφ → Gφ) and `dense_indicator` (¬U(⊤,⊥)),
+-  valid on densely ordered frames.
+-- `ZTime` extends Base with Prior-UZ/SZ and Z1, valid on discrete (SuccArchimedean) frames.
+-- `RTime` extends **Dense** with Reynolds' definable-gap axioms Prior-U, Prior-S and Sep,
+-  valid on dense Dedekind-complete frames. By `Semantics.complete_duration_discrete_or_dense`
+-  (`Semantics/DurationClassification.lean`) that is not merely "ℝ-like": a Dedekind-complete
+-  duration group is either `≃+o ℤ` or densely ordered, so once the density binder is imposed
+-  the class contains, up to order-and-group isomorphism, only the real flow. `FrameClass.RTime`
+-  is therefore the paper's **TM_r** — the `ℝ`-time row of `cor:tm-completeness`.
+-- Dense and ZTime are incomparable: density contradicts discreteness.
+-- ZTime and RTime are likewise incomparable, and `RTime ≰ Dense`.
+-
+-**Why `RTime` sits strictly above `Dense` rather than being a fourth incomparable leaf.**
+-This is a primary-source placement, not an intuition. Reynolds 1992 (printed p.168) lists,
+-as part of the axiomatization US/R for real flow, "axioms for density and no end points:
+-`K⁺⊤`, `K⁻⊤`, `F⊤`, `P⊤`". Unfolding the abbreviation `K⁺A = ¬U(⊤,¬A)` gives
+-`K⁺⊤ = ¬U(⊤,¬⊤)`, and normalising `¬⊤` to `⊥` gives `¬U(⊤,⊥)` — this tree's
+-`dense_indicator` (see `Axiom.dense_indicator` above). (The two are equal after that
+-normalisation, not syntactically identical: `Formula.top.neg` is `(⊥ → ⊥) → ⊥`, not `⊥`.)
+-Likewise `F⊤` and `P⊤` are the tree's `serial_future` / `serial_past`. So Reynolds'
+-Dedekind/real axiom set genuinely contains
+-the tree's density axiom, and an `RTime` derivation must be allowed to use it. Making
+-`RTime` a fresh incomparable leaf would render `density` and `dense_indicator`
+-inadmissible in `DerivationTree .RTime` and so could not host Reynolds' system at all.
+-
+-**Why this class is named `Dense` and not `QTime`.** `ZTime` and `RTime` are named for their
+-carriers because their classes are categorical: up to order-and-group isomorphism, a `ZTime`
+-frame's durations are `ℤ` (`Semantics.intIso`), and an `RTime` frame's are `ℝ` (the paragraph
+-above). The dense class is not categorical. It contains `ℚ`, `ℝ`, `ℚ ×ₗ ℚ` and more, and it cannot
+-be narrowed to `ℚ`: `Dense ≤ RTime` requires every `ℝ`-frame to satisfy `Sat .Dense`. Its *logic*
+-is nevertheless the logic of ℚ-time, and that is machine-checked rather than asserted:
+-`Metalogic.validQTime_iff_validDense` proves that validity over the repository-only ℚ-time class
+-`Semantics.TaskFrame.IsQTime` (divisible and pairwise commensurable durations) coincides with
+-`ValidDense`, because the dense completeness countermodels are built over `ℚ`
+-(`Metalogic.BXCanonical.derivable_of_validQTime`). This is a theorem about the class, not its
+-definition, and it is stated for validity only: set-based strong completeness over ℚ-time is open.
+-ℚ-time is a predicate with its own validity notion (`Semantics.ValidQTime`), not a fifth tag. The
+-name also follows the paper: `def:frame-properties`' Dense clause and `def:BX-d`, so that
+-`Dense` / `ZTime` / `RTime` track the paper's subscripts d / z / r in TM_d, TM_z, TM_r. The paper
+-itself says "ℚ-time" only where `ℚ` and the dense class come apart, as in its remark that Kamp's
+-expressive-completeness theorem does not extend to ℚ-time, although it holds over `ℝ`.
+-
+-**Soundness caveat.** The soundness theorem for this class must target `ValidRTime`, not the
+-density-free `ValidComplete`. See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one
+-place the `ValidComplete` / `ValidRTime` distinction is argued in full.
+-
+-**`ValidComplete` is a repository-only predicate, and answers to no paper system.** It is the
+-density-free completeness binder: by `Semantics.complete_duration_discrete_or_dense` its models
+-are exactly `{ℤ, ℝ}` up to order-and-group isomorphism, and its theory is `Th(ℤ) ∩ Th(ℝ)`. No
+-element of `FrameClass` picks that class out, and none needs to — every row of
+-`cor:tm-completeness` is covered here: the `ℤ`-time row is `FrameClass.ZTime` / `ValidZTime`
+-(the complete-but-discrete branch being *exactly* `ℤ`, by
+-`Semantics.complete_not_dense_iso_int`), and the `ℝ`-time row is `FrameClass.RTime` /
+-`ValidRTime`. Their intersection is not itself a frame class, and adding one would require an
+-axiom set for `Th(ℤ) ∩ Th(ℝ)` that this tree does not have — but nothing in the paper asks for
+-one. `ValidComplete` survives for two internal purposes only: it is the target of the forgetful
+-bridge, and it is what the Hölder-style dichotomy above is stated over. It is deliberately not a
+-soundness target; its own docstring in `Semantics/Validity.lean` explains why.
+-
+-The key invariant is `ax.minFrameClass ≤ fc`: an axiom `ax` can appear in a derivation
+-parameterized by frame class `fc` only when `ax`'s minimum frame class is at most `fc`.
+-This replaces the ad-hoc predicates `isBase`, `isDenseCompatible`, `isDiscreteCompatible`.
+--/
+-inductive FrameClass where
+-  | Base
+-  | Dense
+-  | ZTime
+-  | RTime
+-  deriving Repr, DecidableEq, Inhabited, BEq, Hashable
+-
+-instance : LE FrameClass where
+-  le a b := match a, b with
+-    | .Base, _ => True
+-    | .Dense, .Dense => True
+-    | .Dense, .RTime => True
+-    | .RTime, .RTime => True
+-    | .ZTime, .ZTime => True
+-    | _, _ => False
+-
+-instance : DecidableRel (LE.le : FrameClass → FrameClass → Prop) :=
+-  fun a b => by cases a <;> cases b <;> simp only [LE.le] <;> infer_instance
+-
+-instance : PartialOrder FrameClass where
+-  le := (· ≤ ·)
+-  le_refl := by intro a; cases a <;> simp [LE.le]
+-  -- 4 constructors ⇒ le_trans is a 64-case split and le_antisymm a 16-case split.
+-  -- `trivial` discharges every `le_trans` case (each is either `True` or an absurd
+-  -- `False` hypothesis); `le_antisymm` needs `simp_all [LE.le]` for the asymmetric
+-  -- `Dense`/`RTime` pair. `by decide` remains a total fallback for any closed
+-  -- order goal, since `FrameClass` is finite with `DecidableEq` and the `DecidableRel`
+-  -- instance above.
+-  le_trans := by
+-    intro a b c hab hbc
+-    cases a <;> cases b <;> cases c <;> trivial
+-  le_antisymm := by
+-    intro a b hab hba
+-    cases a <;> cases b <;> first | rfl | simp_all [LE.le]
+-
+-/-! ### Order-shape regression checks
+-
+-These `example`s pin the exact shape of the `FrameClass` order so that a future edit to the
+-`LE` instance cannot silently change which axioms are admissible in which derivations. -/
+-
+-example : FrameClass.Base ≤ FrameClass.RTime := by decide
+-example : FrameClass.Dense ≤ FrameClass.RTime := by decide
+-example : FrameClass.RTime ≤ FrameClass.RTime := by decide
+-example : ¬(FrameClass.RTime ≤ FrameClass.Dense) := by decide
+-example : ¬(FrameClass.RTime ≤ FrameClass.ZTime) := by decide
+-example : ¬(FrameClass.ZTime ≤ FrameClass.RTime) := by decide
+-example : ¬(FrameClass.Dense ≤ FrameClass.ZTime) := by decide
+-example : ¬(FrameClass.ZTime ≤ FrameClass.Dense) := by decide
+ 
+ /--
+ Minimum frame class for each axiom constructor.
+@@ -629,15 +504,6 @@
+   | sep _ => .RTime
+   | _ => .Base
+ 
+-/-- Base is the minimum frame class: `FrameClass.Base ≤ fc` for all `fc`.
+-
+-**Why `FrameClass.Base` is essential here**: `Base` is the *subject* of this statement, not a
+-pin on it — the theorem says precisely that `Base` is the order's bottom element. It is the
+-canonical `Base`-to-any-`fc` lift used throughout `Theorems/`: at a `DerivationTree.axiom` site
+-the `le` argument is `FrameClass.base_le fc`, and for a whole derivation it is
+-`d.lift (FrameClass.base_le fc)` (packaged as `Theorems.Combinators.baseThm`). -/
+-theorem FrameClass.base_le (fc : FrameClass) : FrameClass.Base ≤ fc := by
+-  cases fc <;> trivial
+ 
+ /-! ## Strong Release and Strong Trigger Interaction
+ 
+NEW FILE FormalSystem/ProofSystem/FrameClass.lean
+--- a/FormalSystem/Metalogic/Decidability/Tableau.lean	2026-11-13 11:04:25.167629941 -0800
++++ b/FormalSystem/Metalogic/Decidability/Tableau.lean	2026-11-13 12:53:12.965643184 -0800
+@@ -5,6 +5,7 @@
+ -/
+ 
+ import FormalSystem.Metalogic.Decidability.SignedFormula
++import FormalSystem.ProofSystem.FrameClass
+ 
+ /-!
+ # Tableau Rules for TM Bimodal Logic
+--- a/FormalSystem/Metalogic/Decidability/SignedFormula.lean	2026-09-21 06:23:40.065829143 -0700
++++ b/FormalSystem/Metalogic/Decidability/SignedFormula.lean	2026-11-13 12:53:12.962643143 -0800
+@@ -5,7 +5,6 @@
+ -/
+ 
+ import FormalSystem.Syntax.Formula
+-import FormalSystem.ProofSystem
+ 
+ /-!
+ # Signed Formula and Branch Types for Tableau Decidability
+@@ -39,7 +38,6 @@
+ namespace FormalSystem.Metalogic.Decidability
+ 
+ open FormalSystem.Syntax
+-open FormalSystem.ProofSystem
+ 
+ /-!
+ ## World and Time Index Types
+--- a/FormalSystem/Metalogic/Decidability/TraceCertificate.lean	2026-09-21 06:23:40.157900015 -0700
++++ b/FormalSystem/Metalogic/Decidability/TraceCertificate.lean	2026-11-13 12:53:12.968643225 -0800
+@@ -4,8 +4,6 @@
+ Authors: Benjamin Brast-McKie
+ -/
+ 
+-import FormalSystem.Syntax
+-import FormalSystem.ProofSystem
+ import FormalSystem.Metalogic.Decidability.SignedFormula
+ import FormalSystem.Metalogic.Decidability.Closure
+ 
+--- a/FormalSystem/Automation/ProofSearch/Core.lean	2026-10-14 11:31:53.926032515 -0700
++++ b/FormalSystem/Automation/ProofSearch/Core.lean	2026-11-13 12:53:12.960643115 -0800
+@@ -6,8 +6,8 @@
+ 
+ import Std.Data.HashMap
+ import Std.Data.HashSet
+-import FormalSystem.ProofSystem
+-import FormalSystem.Semantics
++import FormalSystem.ProofSystem.Derivation
++import FormalSystem.ProofSystem.DerivedAxioms
+ import FormalSystem.Automation.SuccessPatterns
+ import FormalSystem.Theorems.Combinators
+ import FormalSystem.Theorems.Perpetuity.Helpers
+--- a/FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean	2026-11-13 10:47:56.314598035 -0800
++++ b/FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean	2026-11-13 12:53:12.971643266 -0800
+@@ -5,7 +5,6 @@
+ -/
+ 
+ import FormalSystem.Metalogic.Decidability.Tableau
+-import FormalSystem.Syntax.SubformulaClosure.Closure
+ 
+ /-!
+ # T1 — The Generalized Signed Subformula Property
+--- a/FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean	2026-09-21 08:58:19.537771751 -0700
++++ b/FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean	2026-11-13 14:01:58.236032118 -0800
+@@ -6,6 +6,7 @@
+ 
+ import FormalSystem.Metalogic.Decidability.Verified.Termination.TimeTypeBound
+ import FormalSystem.Metalogic.Decidability.Saturation
++import Mathlib.Tactic.Ring
+ 
+ /-!
+ # T3 — Justified Fuel
+--- a/FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/ClosureResidual.lean	2026-09-21 06:09:01.946566206 -0700
++++ b/FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/ClosureResidual.lean	2026-11-13 14:10:34.909602418 -0800
+@@ -5,6 +5,7 @@
+ -/
+ 
+ import FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.Terminus
++import Mathlib.Data.Finset.Max
+ 
+ /-! # C10. The repaired closure residual, and the chain stated at it
+ 
