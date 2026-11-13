@@ -228,7 +228,7 @@ the one suite `suite_selection_select "scripts/typst-sync-check.sh"` maps this p
 
 ---
 
-### Phase 2: Make the Fix Load-Bearing — Controls and Citation Restoration [IN PROGRESS]
+### Phase 2: Make the Fix Load-Bearing — Controls and Citation Restoration [COMPLETED]
 
 **Goal**: Prove by experiment that the resolver, and not an unrelated docstring, is what resolves
 the manual's namespaced citations, and leave at least one live citation whose resolution depends

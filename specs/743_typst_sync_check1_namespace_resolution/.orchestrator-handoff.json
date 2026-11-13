@@ -1,12 +1,12 @@
 {
   "status": "partial",
-  "dispatch_seq": 6,
-  "phases_completed": 1,
+  "dispatch_seq": 7,
+  "phases_completed": 2,
   "phases_total": 4,
-  "summary": "Phase 1 complete: Check 1 of scripts/typst-sync-check.sh now resolves namespace-path-plus-leaf names through a lazily built, comment-aware namespace index, consulted only after the unchanged literal grep. The gate's output is identical to the pre-change baseline (exit 0, 894 candidates, 0 violations) and the mapped test suite passes. Phases 2-4 remain not started, as this dispatch was scoped to Phase 1.",
+  "summary": "Phase 2 complete: the namespace resolver is now load-bearing. A reverted, length-preserving negative control on Decidability.lean left the gate green with zero literal hits for the dotted name, and typst/FormalFoundations.typ now cites FormalSystem.Semantics.validZTime_iff_validInt, which has no literal .lean occurrence and resolves only through the index (gate exit 0, all 4 checks green). Phases 3-4 remain not started, as this dispatch was scoped to Phase 2.",
   "blockers": [],
   "artifacts": [
-    {"type": "handoff", "path": "specs/743_typst_sync_check1_namespace_resolution/handoffs/phase-1-handoff-20261113T092358Z.md", "summary": "Phase 1 handoff with measured verification figures and decisions for Phases 2-3."}
+    {"type": "handoff", "path": "specs/743_typst_sync_check1_namespace_resolution/handoffs/phase-2-handoff-20261113T092722Z.md", "summary": "Phase 2 handoff with measured control results and verdict material for Phase 4."}
   ],
-  "next_action": "Dispatch Phase 2 and Phase 3 (wave 2)."
+  "next_action": "Dispatch Phase 3, then Phase 4."
 }
