@@ -2996,7 +2996,7 @@ and in `handoffs/phase-11.14-handoff-20261113T011907Z.md` carrying no recommenda
 
 ---
 
-### Phase 11.15: The `hself` Disposition Ruling [BLOCKED]
+### Phase 11.15: The `hself` Disposition Ruling [COMPLETED]
 
 **THIS PHASE IS A DECISION GATE THAT IS ALREADY `[BLOCKED]` AT PLAN-AUTHORING TIME, AND IT IS NOT
 ENTERABLE BY ANY DISPATCH.** It exists so the ruling that stands between this plan and a closable
@@ -3069,9 +3069,24 @@ and in this task's description; this phase authors nothing.
 - Phases 11.12 and 11.13 still carry their `#### Recorded Outcome` blocks verbatim, with the binder-for-binder tables unaltered.
 - Phase 18's final records pass re-observes this phase by name and states which disposition was ruled, or states that none was and that Phases 11.12, 11.13, 11.16 and 11.17 are consequently unclosed.
 
+#### Recorded Outcome: **DISPOSITION (B), RENAME TO AUXILIARIES**
+
+The ruling landed, in writing, in `specs/ROADMAP.md`'s Stage 0 as a CHECKED user item dated
+2026-11-13, naming exactly one of the three dispositions: "The `hself` disposition on Phases 11.12
+and 11.13 is RULED: disposition (B), RENAME to auxiliaries". It records that (R) is closed on the
+mathematics by Phase 11.14's compiled `hself_not_derivable`, gives four grounds for preferring (B)
+over (A), and instructs the executing dispatch to RAISE rather than silently take the one-line
+`LadderWindow.lean` scope expansion.
+
+This phase authored nothing, as its `Files to modify` says: no `.lean` file, no script and no
+record was edited in its name. Phases 11.12 and 11.13 still carry their `#### Recorded Outcome`
+blocks verbatim with the binder-for-binder tables unaltered — no dispatch amended either, which
+would have been a `/revise` act. Phase 11.16's branch (B) became enterable on this ruling, and is
+closed below.
+
 ---
 
-### Phase 11.16: CONDITIONAL — Execute the Ruled `hself` Disposition [NOT STARTED]
+### Phase 11.16: CONDITIONAL — Execute the Ruled `hself` Disposition [COMPLETED]
 
 **GATED ON PHASE 11.15's RULING, WHICH IS NOT A `Depends on` EDGE.** Phase 11.15 is a plan-time
 `[BLOCKED]` gate and carries no edge into this phase; the ruling is a PRECONDITION this phase's
@@ -3189,6 +3204,76 @@ sibling task edits the same axiom test.
 - `#print axioms` on every new or renamed declaration: no `sorryAx`, no custom axiom, no `native_decide`. `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests` exits 0 with `sorry_count: 0`; the module-scoped vacuous-shape grep over each touched module returns 0; the `^axiom ` counts under `FormalSystem` and `Tests` are compared against the 12 and 2 re-derived at this revision's authoring and re-measured at phase start, and are not increased.
 - `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - If the phase closes without entering a branch (no ruling recorded and Phase 11.14 inconclusive): no file was edited, both gates are reported by name, and Phases 11.12, 11.13 and 11.17 are left exactly as they stand.
+
+#### Recorded Outcome: **BRANCH (B) TAKEN — the two carrying declarations are RENAMED to auxiliaries**
+
+**The ruling read, before any branch was entered.** `specs/ROADMAP.md`'s Stage 0 carries, as a
+CHECKED user ruling dated 2026-11-13: "The `hself` disposition on Phases 11.12 and 11.13 is RULED:
+disposition (B), RENAME to auxiliaries", with its four recorded grounds and its explicit
+instruction to RAISE rather than silently take the `LadderWindow.lean` scope expansion. Exactly
+one branch was taken.
+
+**Why the other two do not apply.**
+
+| Branch | Disposition |
+|---|---|
+| (R) — derive `hself` in-library | **CLOSED on the mathematics, independently of the ruling.** Phase 11.14's `#### Recorded Outcome` is NOT DERIVABLE: the probe `specs/evidence/seam-gluing-ray-product/ladder-self-loop-derivability-decision.lean` compiles `hself_not_derivable`, refuting exactly the implication (R) needs, and refuting it with `Fintype Q` ASSUMED — strictly stronger than either landed declaration needs |
+| (A) — ACCEPT `hself` by revision | **NOT THE RULING.** The Stage 0 item names (B) and gives four grounds for preferring it over (A): the module already carries this idiom for `exists_spliced_ladderPath_of_idle_past`; a premise nothing can discharge from below belongs in the NAME; the reserved names stay available; and (A) costs an unscoped `/revise` round where (B)'s cost is mechanical |
+
+**The renames, and the binder-for-binder check Phases 11.12 and 11.13 failed, RE-RUN.**
+
+| Recorded name | Auxiliary name landed | Line |
+|---|---|---|
+| `exists_ladderPath_at_region_of_idle_past` | `exists_ladderPath_at_region_of_idle_past_of_self_loop` | `LadderAgree.lean:2242` |
+| `exists_ladderPath_at_region` | `exists_ladderPath_at_region_of_self_loop` | `LadderAgree.lean:2315` |
+
+Branch (B)'s own criterion is MET: `grep -rn` over `FormalSystem/` resolves NEITHER recorded name
+to any declaration — the four surviving occurrences are prose recording the name as unclaimed
+(`LadderAgree.lean:2229`, `:2307`; `LadderRealize.lean:158`, `:159`) — and each auxiliary carries
+`hself` under its own name, unchanged binder-for-binder from what Phases 11.12 and 11.13 landed.
+No signature was edited: the renames are name-only, and `exists_ladderPath_at_region_of_pend_past`
+keeps its own name because it reads no `hself`.
+
+**The three cascade existentials' CONCLUSIONS are identical and `spliceObj`-free.** Extracted and
+`diff`ed pairwise: all three read
+`∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧ objAt g' v = objAt g v ∧ cntAt g' v = cntAt g v + l`,
+with zero occurrences of `spliceObj` or `spliceCnt`.
+`grep -rn 'exists_spliced_ladderPath_of_idle_past' FormalSystem/ Tests/` returns 12 occurrences,
+all docstring prose naming the statement as refuted in the idle-past regime; no declaration is
+landed under it.
+
+**Re-measured figures, and two the plan got wrong.**
+
+| Figure | Plan-time | Re-measured at phase start | Outcome |
+|---|---|---|---|
+| `LadderAgree.lean` length / its `longFile` baseline | 3,342 / 3,400 | 3,342 / 3,400 — **confirmed** | 3,366 after the edit; baseline NOT raised |
+| `KTypeSummaryAxiomTest.lean` length / its baseline | 2,966 / 3,000 | 2,966 / 3,000 — **confirmed** | 2,992 after the edit; baseline NOT raised |
+| `^axiom ` counts, `FormalSystem` / `Tests` | 12 / 2 | 12 / 2 — **confirmed** | 12 / 2, not increased |
+| `Constraints consumed:` lines under `RaySummary/**` | 0 (obligation expected vacuous) | **0, confirmed by `grep -rn 'Constraints consumed:' FormalSystem/Metalogic/Decidability/RaySummary/ \| wc -l`** | vacuous; C34a and C34b both PASS |
+| `LadderWindow.lean` is outside `specs/state.json`'s `file_scope` for this task | asserted | **FALSE.** Task 761 carries a 43-entry `file_scope` that DOES include `LadderWindow.lean`. The task DESCRIPTION's prose `FILE SCOPE:` line does not name it (nor `LadderAgree.lean`), so that prose line is narrower than the recorded machine scope | expansion raised anyway, before the edit, per the ruling's instruction; edit kept confined |
+| `check-evidence-probes.sh` exits 1 on the archived `lowering-anchor-deficit` entry (Phase 11.14's Reasoned Exclusion) | carried | **RESOLVED by a sibling task.** That probe now reports `PASS` | gate exits **0**, `all 58 wired probe(s) compile`; no exclusion carried forward |
+
+**The scope expansion, RAISED and not silently taken.** Recorded via
+`bash .claude/scripts/issue-record.sh` (`iss_1794549830215_6yqnJQ`) BEFORE the `LadderWindow.lean`
+edit, and corrected by a second entry (`iss_1794550951765_8qn8m1`) once the `file_scope` key was
+re-queried correctly. The edit is confined to the stale docstring reference at `:509`/`:517` plus
+the re-wrap the 100-column `longLine` linter forces on that reference's enclosing paragraph; no
+declaration, signature or other content of that module is touched.
+
+**Gates.** Three guarded scoped builds, each exit 0 with **0 warnings**: `LadderRealize` (pulling
+`LadderAgree` transitively), `LadderWindow`, `BimodalTest.Metalogic.KTypeSummaryAxiomTest`.
+Phase-end full `lake build` through the guard: exit 0, 2,975 jobs, 0 errors, 0 warnings, every
+touched module's `.olean` newer than its source. `bash scripts/check-module-invariants.sh`:
+**ALL CHECKS PASSED**, 55 PASS groups, `INV` green after regenerating the three stale inventory
+blocks, and `C16` a PASS rather than the single carried finding the plan anticipated.
+`lean-sorry-census.sh` exit 0 with `sorry_count: 0`; the vacuous-shape grep returns 0 on each of
+the four touched modules; `typst-sync-check.sh`, `readme-lint.sh`, `check-evidence-probes.sh` and
+`check-task-references.sh --quiet` each exit 0. The `#print axioms` profile of both renamed
+declarations is pinned in `KTypeSummaryAxiomTest.lean` and `#guard_msgs` accepts it unchanged:
+`[propext, Classical.choice, Quot.sound]`, no `sorryAx`, no custom axiom, no `native_decide`.
+
+**No filed Goal of this task landed here**, so no `docs/theorem-index.md` row and no C14 entry was
+added, as the phase requires.
 
 ---
 

@@ -1526,13 +1526,14 @@ EXISTENTIAL over some ladder path delivering, at the comparison position, exactl
 `spliced_at_region` exposes there: the same object state and the countdown raised by `l`, with no
 pointwise walk identity anywhere. Three declarations carry that interface, and all three are
 landed below: `exists_ladderPath_at_region_of_pend_past` (the landed companion composed with
-`spliced_at_region`), `exists_ladderPath_at_region_of_idle_past` (landed on the INSERTED walk
-`insObj`/`insCnt` — which the refutation FORCES to differ from `spliceObj` strictly below the
-comparison position's region start — and carrying `hself`, the path-local self-loop at the path's
-own idle positions at or below `a`, as a genuine additional premise) and
-`exists_ladderPath_at_region` (landed: the plain dichotomy of the two, unconditional in the REGIME
-sense and still carrying `hself`). The `spliceObj`-shaped conclusion stays refuted exactly as
-stated above; what the insertion closes is this narrower existential and nothing else. -/
+`spliced_at_region`), `exists_ladderPath_at_region_of_idle_past_of_self_loop` (landed on the
+INSERTED walk `insObj`/`insCnt` — which the refutation FORCES to differ from `spliceObj` strictly
+below the comparison position's region start — and carrying `hself`, the path-local self-loop at
+the path's own idle positions at or below `a`, as a genuine additional premise) and
+`exists_ladderPath_at_region_of_self_loop` (landed: the plain dichotomy of the two, unconditional
+in the REGIME sense and still carrying `hself`). The `spliceObj`-shaped conclusion stays refuted
+exactly as stated above; what the insertion closes is this narrower existential and nothing else.
+-/
 
 section Cascade
 
@@ -1695,9 +1696,9 @@ theorem exists_ladderPath_at_region_of_pend_past
 
 /-! #### What the idle-past half needed, and what closed it
 
-`exists_ladderPath_at_region_of_idle_past` — the same conclusion under
-`hidle : ∃ p : ℤ, p ≤ a ∧ pend (objAt g p) = false` in place of `hpast` — IS landed at the end of
-this section, and so is the regime-unconditional `exists_ladderPath_at_region` that joins the two.
+`exists_ladderPath_at_region_of_idle_past_of_self_loop` — the same conclusion under `hidle : ∃ p :
+ℤ, p ≤ a ∧ pend (objAt g p) = false` in place of `hpast` — IS landed at the end of this section,
+and so is the regime-unconditional `exists_ladderPath_at_region_of_self_loop` that joins the two.
 Both carry `hself`. The four bullets the construction had to answer stay recorded rather than
 being deleted: the first two are why the walk had to move, and still bind; the third is what the
 insertion did instead of the anticipated iteration; the fourth is what it bought and at what cost:
@@ -1755,17 +1756,17 @@ by a further argument — and the past below is shifted down by `d`, which grows
 for a region start `s` above `u` and one `v'` below it. That growth is the relaxation the pin
 obstruction needs; converting it into `hpins` is not attempted here.
 
-**THE SELF-LOOP PRIMITIVE, DECIDED AND RECORDED.** `hw` asks for
-`step (insObj v) (insObj (v + 1)) = true` at every position, and on the collapsed block that is
-`step q q = true` for `q = objAt g u`, the inserted idle object. `IsLadderPath` constrains `step`
-only along the original walk and supplies no self-loop, so the obligation is real. Of the two
-candidates this layer takes the FIRST: the self-loop is carried as an EXPLICIT hypothesis
-`hself` on the auxiliary `insObj_step`, and it is carried from there to the two names this task
-landed: `exists_ladderPath_at_region_of_idle_past` and `exists_ladderPath_at_region` each take it
-PATH-LOCALLY, as `∀ p ≤ a, pend (objAt g p) = false → step (objAt g p) (objAt g p) = true`, which
-is the weakest form the collapsed block needs and is not globally over `Q`.
-`exists_spliced_ladderPath_of_idle_past` takes no binder because it remains an unclaimed name,
-refuted rather than merely absent.
+**THE SELF-LOOP PRIMITIVE, DECIDED AND RECORDED.** `hw` asks for `step (insObj v) (insObj (v + 1))
+= true` at every position, and on the collapsed block that is `step q q = true` for `q = objAt g
+u`, the inserted idle object. `IsLadderPath` constrains `step` only along the original walk and
+supplies no self-loop, so the obligation is real. Of the two candidates this layer takes the
+FIRST: the self-loop is carried as an EXPLICIT hypothesis `hself` on the auxiliary `insObj_step`,
+and it is carried from there to the two names this task landed:
+`exists_ladderPath_at_region_of_idle_past_of_self_loop` and
+`exists_ladderPath_at_region_of_self_loop` each take it PATH-LOCALLY, as `∀ p ≤ a, pend (objAt g
+p) = false → step (objAt g p) (objAt g p) = true`, which is the weakest form the collapsed block
+needs and is not globally over `Q`. `exists_spliced_ladderPath_of_idle_past` takes no binder
+because it remains an unclaimed name, refuted rather than merely absent.
 
 **Why not the second candidate** (insert a copy of an idle-containing cycle, obtained by a
 pigeonhole over a finite object type). The premise it needs is not available at this layer, and
@@ -1777,10 +1778,10 @@ pigeonhole of this family lives in
 import DAG; it is cited here by path and is not a proof term.
 
 **The consequence, recorded rather than buried.** With the first candidate taken,
-`exists_ladderPath_at_region_of_idle_past` is landed carrying `hself` rather than discharging it,
-and so is the join: on a general object relation the self-loop is a genuine additional premise,
-not a consequence of `IsLadderPath`, so neither name is unconditional in that sense — only in the
-REGIME sense. The wired probe
+`exists_ladderPath_at_region_of_idle_past_of_self_loop` is landed carrying `hself` rather than
+discharging it, and so is the join: on a general object relation the self-loop is a genuine
+additional premise, not a consequence of `IsLadderPath`, so neither name is unconditional in that
+sense — only in the REGIME sense. The wired probe
 `specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-decision.lean` exhibits the
 whole construction working at a single instance — and records in its own docstring that its
 carrier's `step` is TOTAL, so it pays none of this cost and decides REFUTABILITY rather than
@@ -2223,8 +2224,22 @@ of this cost: it decides REFUTABILITY and not PROVABILITY.
 
 `pend (objAt g a) = true` is DERIVED from `hl` and `hcl` through `cntAt_eq_zero_of_idle` rather
 than taken as a binder, matching `exists_ladderPath_at_region_of_pend_past`, which does not take
-it either. -/
-theorem exists_ladderPath_at_region_of_idle_past
+it either.
+
+**THE RECORDED NAME `exists_ladderPath_at_region_of_idle_past` IS UNCLAIMED, PENDING A DISCHARGE
+OF `hself`.** This declaration carries the self-loop premise, so it takes an auxiliary name that
+says so, and the bare recorded name is deliberately left unclaimed — in the same form this module
+already uses for `exists_spliced_ladderPath_of_idle_past` above — so that what is landed and what
+is still owed stay legible at the name itself rather than in a caveat held in some other file's
+docstring. The premise is INDEPENDENT, not merely undischarged: the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-self-loop-derivability-decision.lean` compiles
+`hself_not_derivable` — the implication from this declaration's other binders to `hself` is
+refuted, with `Fintype Q` ASSUMED, which is strictly stronger than this section needs, since its
+own variable block carries no finiteness instance — together with
+`hself_satisfiable_at_an_instance`, so `hself` is neither derivable from nor contradicted by the
+rest. Whatever eventually discharges it may claim the recorded name; nothing here does, and the
+difference between the two names is exactly one premise. -/
+theorem exists_ladderPath_at_region_of_idle_past_of_self_loop
     {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
     (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
     (hidle : ∃ p : ℤ, p ≤ a ∧ pend (objAt g p) = false)
@@ -2275,11 +2290,11 @@ theorem exists_ladderPath_at_region_of_idle_past
   · rw [hobj v, insObj_of_gt u l v huv, spliceObj_eq_of_le hl v hv]
   · rw [hcnt v, insCnt_of_gt u l v huv, spliceCnt_add_of_mem_region hl v hv hvreg]
 
-/-- **THE INTERFACE, JOINED OVER BOTH REGIMES.** `by_cases` on the pending-past predicate:
-the `true` branch is the landed `exists_ladderPath_at_region_of_pend_past` (which does not read
-`hself`), and the `false` branch is `exists_ladderPath_at_region_of_idle_past` on the negation's
-own witness. So the counter lift's admissibility half reads a single name at the comparison
-position and no longer has to case on the regime itself.
+/-- **THE INTERFACE, JOINED OVER BOTH REGIMES.** `by_cases` on the pending-past predicate: the
+`true` branch is the landed `exists_ladderPath_at_region_of_pend_past` (which does not read
+`hself`), and the `false` branch is `exists_ladderPath_at_region_of_idle_past_of_self_loop` on the
+negation's own witness. So the counter lift's admissibility half reads a single name at the
+comparison position and no longer has to case on the regime itself.
 
 **WHAT "UNCONDITIONAL" MEANS HERE, EXACTLY.** This name is unconditional in the REGIME sense —
 it carries no pending-past and no idle-past hypothesis, and the dichotomy is discharged inside the
@@ -2287,8 +2302,17 @@ proof — and NOT in the sense of carrying no hypotheses at all. It still takes 
 idle-past branch does, and the self-loop at an idle object is a genuine additional premise on a
 general object relation rather than a consequence of `IsLadderPath`. Any record saying these two
 names would be landed with no binder added is brought current by that: the binder is `hself`, it is
-path-local, and it is not removable at this layer. -/
-theorem exists_ladderPath_at_region
+path-local, and it is not removable at this layer.
+
+**THE RECORDED NAME `exists_ladderPath_at_region` IS UNCLAIMED, PENDING A DISCHARGE OF `hself`.**
+The join carries the self-loop premise through its idle-past branch, so it too takes an auxiliary
+name that says so, and the bare recorded name is left unclaimed on the same convention as the
+idle-past half above and as `exists_spliced_ladderPath_of_idle_past`. The regime-sense reading
+stated in the previous paragraph is unaffected by the naming: what the auxiliary name adds is that
+every use site sees the premise, instead of a reader having to arrive at this docstring to learn
+of it. `exists_ladderPath_at_region_of_pend_past` keeps its own name, because it reads no
+`hself`. -/
+theorem exists_ladderPath_at_region_of_self_loop
     {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
     (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
     (hrep : objAt g a = objAt g (a + (l : ℤ)))
@@ -2299,7 +2323,7 @@ theorem exists_ladderPath_at_region
       objAt g' v = objAt g v ∧ cntAt g' v = cntAt g v + l := by
   by_cases hpast : ∀ p : ℤ, p ≤ a → pend (objAt g p) = true
   · exact exists_ladderPath_at_region_of_pend_past hg hl hcl hpast hrep v hv hvreg
-  · refine exists_ladderPath_at_region_of_idle_past hg hl hcl ?_ hrep hself v hv hvreg
+  · refine exists_ladderPath_at_region_of_idle_past_of_self_loop hg hl hcl ?_ hrep hself v hv hvreg
     push Not at hpast
     obtain ⟨p, hp, hpne⟩ := hpast
     exact ⟨p, hp, by simpa using hpne⟩

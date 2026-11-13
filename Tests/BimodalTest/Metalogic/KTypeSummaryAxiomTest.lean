@@ -2330,9 +2330,10 @@ pair exactly tight with an idle past — so `exists_spliced_ladderPath_of_idle_p
 nothing, deliberately, and that refutation is unaffected by anything below.
 
 The NARROWER existential the consumer actually reads is a different statement, and it is landed
-in both regimes: `exists_ladderPath_at_region_of_idle_past` closes the idle-past half on the
-INSERTED walk rather than the spliced one, and `exists_ladderPath_at_region` joins the two by
-`by_cases` on the pending-past predicate. Both are pinned at the end of this file, and both carry
+in both regimes: `exists_ladderPath_at_region_of_idle_past_of_self_loop` closes the idle-past
+half on the INSERTED walk rather than the spliced one, and
+`exists_ladderPath_at_region_of_self_loop` joins the two by `by_cases` on the pending-past
+predicate. Both are pinned at the end of this file, and both carry
 `hself` — the path-local self-loop at the path's own idle positions at or below `a` — which this
 name does not. The standard profile. -/
 
@@ -2360,8 +2361,9 @@ inserted walk are not among the names in this subsection; the pin condition arri
 `insPins_of_region_start`, pinned further below, and `hn₀` is eliminated rather than produced
 (`exists_ladderPath_of_walk_of_pins` reads the pin family's own pairwise compatibility). Of the
 three `exists_ladderPath_at_region*`-family names, the two that are landed —
-`exists_ladderPath_at_region_of_idle_past` and `exists_ladderPath_at_region` — each took exactly
-one binder beyond the pending-forever half, `hself`, the path-local self-loop decided here;
+`exists_ladderPath_at_region_of_idle_past_of_self_loop` and
+`exists_ladderPath_at_region_of_self_loop` — each took exactly one binder beyond the
+pending-forever half, `hself`, the path-local self-loop decided here;
 `exists_spliced_ladderPath_of_idle_past` took none and stays unclaimed and refuted.
 
 **THE SELF-LOOP PRIMITIVE IS AN EXPLICIT HYPOTHESIS, AND `insObj_step` IS THE ONLY SITE.**
@@ -2532,7 +2534,8 @@ merely unclaimed. -/
 
 /-! ### The two existentials of the idle-past regime
 
-`exists_ladderPath_at_region_of_idle_past` and `exists_ladderPath_at_region` are the interface
+`exists_ladderPath_at_region_of_idle_past_of_self_loop` and
+`exists_ladderPath_at_region_of_self_loop` are the interface
 the counter lift reads at the comparison position, in the regime where the splice point has an
 idle position in its past and in both regimes joined. Four things these pins record that the
 names do not carry:
@@ -2548,7 +2551,8 @@ names do not carry:
   idle object does not follow from `IsLadderPath`, which constrains `step` only along the original
   walk, and the collapsed block of the inserted walk needs it at exactly one position. It is stated
   at the path's own idle positions at or below `a` rather than globally over `Q`.
-* **The join is unconditional in the REGIME sense only.** `exists_ladderPath_at_region` carries
+* **The join is unconditional in the REGIME sense only.**
+  `exists_ladderPath_at_region_of_self_loop` carries
   neither a pending-past nor an idle-past hypothesis — it `by_cases`es the dichotomy internally —
   while still carrying `hself`, because its idle-past branch does.
 * **`pend (objAt g a) = true` is derived, not assumed.** Neither name takes it as a binder; both
@@ -2558,20 +2562,42 @@ names do not carry:
 The profile on each matches `insPins_of_region_start`'s, which together with
 `exists_ladderPath_of_walk_of_pins` is the only nontrivial thing in either closure.
 `exists_spliced_ladderPath_of_idle_past` is still claimed by nothing, and remains REFUTED rather
-than merely unclaimed: the conclusion these two names carry is NOT the `spliceObj`-shaped one. -/
+than merely unclaimed: the conclusion these two names carry is NOT the `spliceObj`-shaped one.
 
-/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region_of_idle_past' depends on axioms: [propext,
+**THE `_of_self_loop` SUFFIX IS THE RECORD, AND THE BARE NAMES ARE UNCLAIMED.** Both pinned names
+carry the suffix because both carry `hself`; `exists_ladderPath_at_region_of_idle_past` and
+`exists_ladderPath_at_region` are UNCLAIMED, pending a discharge of that premise, on the same
+convention `exists_spliced_ladderPath_of_idle_past` already follows in the same module. The
+premise is INDEPENDENT rather than merely undischarged: the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-self-loop-derivability-decision.lean` compiles
+`hself_not_derivable` — the implication from the other binders to `hself` refuted with
+`Fintype Q` ASSUMED — together with `hself_satisfiable_at_an_instance`. So there is nothing for a
+pin here to measure under either bare name, and no pin claims one.
+`exists_ladderPath_at_region_of_pend_past`, pinned above, reads no `hself` and keeps its own
+name. -/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region_of_idle_past_of_self_loop' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
+-- linter.style.longLine: the fully qualified name plus the `_of_self_loop` suffix makes this
+-- `#print axioms` line over 100 characters, and the line cannot be broken (the command takes one
+-- identifier). Deleting the suppression makes the linter's warning part of the captured message,
+-- so `#guard_msgs` fails on a correct profile.
+set_option linter.style.longLine false in
 #print axioms
-  FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region_of_idle_past
+  FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region_of_idle_past_of_self_loop
 
-/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region' depends on axioms: [propext,
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region_of_self_loop' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
-#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region
+-- linter.style.longLine: the fully qualified name plus the `_of_self_loop` suffix makes this
+-- `#print axioms` line over 100 characters, and the line cannot be broken (the command takes one
+-- identifier). Deleting the suppression makes the linter's warning part of the captured message,
+-- so `#guard_msgs` fails on a correct profile.
+set_option linter.style.longLine false in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_at_region_of_self_loop
 
 /-! ### `Real`'s three RELATIONAL conditions
 

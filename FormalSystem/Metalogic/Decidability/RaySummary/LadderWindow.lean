@@ -506,7 +506,7 @@ no regime hypothesis; and the pending raise is then a SINGLE splice of a type-re
 `z`'s region of `g₁`, through the generic `exists_spliced_ladderPath`.
 
 The two stages are not interchangeable. A pure splice with no idle compensation is REFUTED in this
-regime — `LadderAgree.lean`'s `exists_ladderPath_at_region_of_idle_past` records that
+regime — `LadderAgree.lean`'s `exists_ladderPath_at_region_of_idle_past_of_self_loop` records that
 `pinCompat_of_ladderPath` makes the splice's pin demand necessary and that on a PIN-TIGHT original
 it reads `s - v + l ≤ s - v`. The composite escapes that refutation not by evading the demand but
 by paying it: stage one makes `g₁` pin-SLACK by exactly `E` at the one pair that matters, and the
@@ -514,14 +514,14 @@ raise `l ≤ E` is drawn from that slack. `window_pin_pair_raise_of_slack` is th
 `no_pin_in_idle_run` is why the slack is there.
 
 A landed sibling route exists for the state-level raise and is deliberately NOT taken here:
-`exists_ladderPath_at_region_of_idle_past` compensates by INSERTING idle positions at the region
-start (`insObj`/`insCnt`, with `insPins_of_region_start` discharging its pin clause) rather than by
-duplicating an existing idle block. That route carries `hself`, a path-local self-loop at the
-idle object states, which this one does not need, and it eliminates the anchor obligation through
-`exists_ladderPath_of_walk_of_pins` instead of holding the register at a prescribed value — so it
-cannot serve a cell inclusion, which reads `nxtAt` at the comparison position. The two are
-alternatives at the same mathematical idea (move the lower pins and the raised pin apart by
-exactly the raise), with different premises and different exposure. -/
+`exists_ladderPath_at_region_of_idle_past_of_self_loop` compensates by INSERTING idle positions at
+the region start (`insObj`/`insCnt`, with `insPins_of_region_start` discharging its pin clause)
+rather than by duplicating an existing idle block. That route carries `hself`, a path-local
+self-loop at the idle object states, which this one does not need, and it eliminates the anchor
+obligation through `exists_ladderPath_of_walk_of_pins` instead of holding the register at a
+prescribed value — so it cannot serve a cell inclusion, which reads `nxtAt` at the comparison
+position. The two are alternatives at the same mathematical idea (move the lower pins and the
+raised pin apart by exactly the raise), with different premises and different exposure. -/
 
 /-- **THE COMPOSITE'S PIN TRICHOTOMY.** Every region start of the pending splice of the
 idle-lengthened path `g₁` falls in exactly one of three classes, each named against the ORIGINAL

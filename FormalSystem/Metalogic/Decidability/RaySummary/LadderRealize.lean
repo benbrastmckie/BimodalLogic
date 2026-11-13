@@ -136,6 +136,35 @@ so none of those terms elaborates at this carrier. No new translation layer is a
 the two, because `DischPathK`, `certFwdK` and `certBwdK` already are that layer, at the carrier
 the ladder's statements are pinned at.
 
+## The one cascade interface the counter lift will read, and what it carries
+
+The admissibility half of the counter lift (`ladderLift`, not landed here) reads ONE name from
+`LadderAgree.lean` at the comparison position: `exists_ladderPath_at_region_of_self_loop`, the
+regime-joined existential delivering some ladder path that carries the original's object state at
+the comparison position with the countdown raised by exactly the cycle length. Two things about
+that interface are settled, and are stated here so a consumer does not have to rediscover them.
+
+* **It is unconditional in the REGIME sense and conditional on the self-loop**, in that wording.
+  The name takes no pending-past and no idle-past hypothesis — it `by_cases`es the dichotomy
+  internally — and it does take
+  `hself : ∀ p ≤ a, pend (objAt g p) = false → step (objAt g p) (objAt g p) = true`, the
+  path-local self-loop at the path's own idle positions at or below `a`
+  (`LadderAgree.lean`, the join's own docstring). That premise is INDEPENDENT of the others, not
+  merely undischarged: the wired probe
+  `specs/evidence/seam-gluing-ray-product/ladder-self-loop-derivability-decision.lean` compiles
+  `hself_not_derivable` — refuted with `Fintype Q` ASSUMED — together with
+  `hself_satisfiable_at_an_instance`. So whatever consumes this interface is conditional on
+  `hself` as well, and is to say so rather than describe the interface as unconditional.
+* **The name itself carries that, so every use site sees it.** `exists_ladderPath_at_region` and
+  `exists_ladderPath_at_region_of_idle_past` are UNCLAIMED names, left free for whatever
+  eventually discharges `hself`; the two landed declarations carry the `_of_self_loop` suffix.
+  The pending-forever half `exists_ladderPath_at_region_of_pend_past` reads no `hself` and keeps
+  its own name. The `spliceObj`-shaped conclusion is REFUTED in the idle-past regime rather than
+  merely absent, which is why `exists_spliced_ladderPath_of_idle_past` is unclaimed too.
+
+No declaration of this module consumes any of those names, and none of them is cited here as a
+proof term.
+
 ## What this module does NOT hold
 
 * **No soundness field on `LadderCons`.** A clause asserting that the projections of ladder
