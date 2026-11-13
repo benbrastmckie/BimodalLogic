@@ -1,5 +1,5 @@
 ---
-next_project_number: 929
+next_project_number: 931
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 929
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,743,761,829,831,873,890,926,927,928 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,743,761,829,831,873,890,926,927,928,929,930 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876 | 298,428,502,743,761,873 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -67,6 +67,8 @@ next_project_number: 929
     └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
+929 [NOT STARTED] — Discharge the I = 1 idle-run sub-regime so...
+930 [NOT STARTED] — Promote and wire the two orphan open-core prototypes into the...
 787 [NOT STARTED] — Audit the remaining lake-invoking scripts for the unguarded...
 
 ### Formula Refactor
@@ -106,6 +108,26 @@ next_project_number: 929
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 930. Wire orphan open core prototypes
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Promote and wire the two orphan open-core prototypes into the evidence gate. RaySummary/README.md cites two standalone prototypes as the sole authority for two load-bearing refutations about the depth-0 open core, and explicitly flags each as "not a wired probe": (1) tight-chain-regime-b.lean, cited at README.md:1002 as settling that the only candidate device for the two cascades on a tight chain of pins -- a type-respecting block SPANNING a region start -- is refuted in BOTH directions as a consequence of the parameter conditions; (2) spanning-divisibility.lean, cited at README.md:1039 as settling that (K1) does not constrain a spanning block length, via the ALTERNATING path (idle at every even position, pending at every odd one) carrying a type-respecting block of every even length with a pin strictly inside it, so no single modulus divides them all. BOTH FILES NOW SIT IN GITIGNORED specs/archive/: specs/archive/836_ladder_type_preserving_cell_agreement_construction/prototype/tight-chain-regime-b.lean and specs/archive/838_two_sided_open_core_pin_free_pigeonhole/prototype/spanning-divisibility.lean. This is the same defect class already repaired once for the WIRED_REPO entry that pointed into specs/archive/918_.../evidence/lowering-anchor-deficit.lean and made scripts/check-evidence-probes.sh exit 1 for every task in the repository: a compiled record the evidence gate does not hold, in a location git does not track, cited by the library as an authority. WORK: re-verify each prototype compiles against the live tree through the build guard; promote each to a tracked, durable path under specs/evidence/ alongside its siblings; wire each into scripts/check-evidence-probes.sh (table block plus WIRED array entry); update the two README citations to the new paths and drop the "not a wired probe" qualifier where it ceases to be true. VERIFY: bash scripts/check-evidence-probes.sh exits 0 with the wired pass count raised by exactly two and no other probe disturbed; #print axioms on every headline theorem of both files shows no sorryAx, no custom axiom and no native_decide; bash scripts/readme-lint.sh and bash .claude/scripts/check-task-references.sh --quiet each exit 0. If a prototype no longer compiles against the live tree, that is a finding to report with the goal state recorded, not a thing to repair by weakening the statement -- and it would mean a README authority claim is stale, which is the more serious outcome and must be surfaced rather than absorbed. Do not edit either archived original in place, and do not claim any reserved name.
+
+---
+
+### 929. Idle run length one forward slack discharge
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Discharge the I = 1 idle-run sub-regime so ForwardSlackWitnessed becomes unconditional. Task 924 landed a cascade-free CONDITIONAL discharge: forwardSlackWitnessed_of_cell_idleRunPumpable (FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean:1035) concludes ForwardSlackWitnessed at EVERY amount from the amount-free, run-local premise IdleRunPumpable, by duplicating an idle block inside the idle run separating z's region from the next. It splices rather than deletes, so the refuted deletion route is not re-entered, and it spends none of (K2)'s cascadeBound. The premise is NOT ParamsOk-derivable: (K1) quantifies prodCycleLens, objCycleLens and satPeriod, never idleCycleLens. THE REMAINING GAP, named by 924 as its entire frontier: paths whose intervening idle run has length 1, where no repeat block exists to pump. Closing it is dischargeable on the pumpable side rather than refuted, which is why 924 left certStabK's restatement obligation PROVISIONAL rather than permanent. SCOPE AND WHAT THIS DOES NOT DO: discharging I = 1 removes ForwardSlackWitnessed from the five depth-0 cell-equality schemas of LadderCell.lean (cellLE_zero_const_of_kappa_eq_of_forwardSlack and its _commonShift_, _monotone_, _antitone_, _antitone_bounded_ siblings) and lifts certStabK's provisional obligation. It does NOT lift task 761's Phase 11.6 depth-0 gate: those schemas carry three further added-hypothesis families beyond forward slack (the equal-register restriction, the pending-forever gap with its threshold bound, and the common-shift / monotone / antitone displacement), each is strictly stronger in hypotheses than the reserved statement CellLEZeroConstOfKappaEq and bears on its truth value in neither direction, and 761 plan v12 separately settled that 924's route cannot feed a stab-depth induction because forwardSlackWitnessed_of_cell_idleRunPumpable carries hno (a STAB-FREE closure) at LadderIdle.lean:1040. Do not claim the reserved name cellLE_zero_const_of_kappa_eq on any branch. PROHIBITED: the (K1) amendment constraining spanning-block length, which 924 explicitly declined to admit. A refutation of the I = 1 case is an equally reportable outcome and must be compiled, not argued.
+
+---
 
 ### 928. Muller torabin determinization cost assessment
 - **Status**: [NOT STARTED]
