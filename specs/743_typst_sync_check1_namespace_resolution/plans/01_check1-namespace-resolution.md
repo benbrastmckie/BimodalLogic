@@ -228,7 +228,7 @@ the one suite `suite_selection_select "scripts/typst-sync-check.sh"` maps this p
 
 ---
 
-### Phase 2: Make the Fix Load-Bearing — Controls and Citation Restoration [NOT STARTED]
+### Phase 2: Make the Fix Load-Bearing — Controls and Citation Restoration [IN PROGRESS]
 
 **Goal**: Prove by experiment that the resolver, and not an unrelated docstring, is what resolves
 the manual's namespaced citations, and leave at least one live citation whose resolution depends
@@ -236,32 +236,32 @@ on the new path so a future regression turns CI red.
 
 **Tasks**:
 
-- [ ] **Negative control (temporary, reverted).** Re-read
+- [x] **Negative control (temporary, reverted).** Re-read
       `FormalSystem/Metalogic/Decidability.lean` immediately beforehand. Replace the dotted name
       inside the docstring at the measured line (research recorded line 181) with a shorter form
       (e.g. `Compression.decidableValidZTime`), as a **content swap on that one line only** — never
       a line insertion or deletion, so the file's line count is unchanged and Check 2's
-      `formalsystem-line-count` cannot confound the result.
-- [ ] Run `bash scripts/typst-sync-check.sh`. Expected: exit 0, Check 1 `TOTAL_VIOLATIONS=0`,
+      `formalsystem-line-count` cannot confound the result. *(completed: line 181 swapped to `Compression.decidableValidZTime`; 202 lines before and after)*
+- [x] Run `bash scripts/typst-sync-check.sh`. Expected: exit 0, Check 1 `TOTAL_VIOLATIONS=0`,
       Check 2 still green. Record the output. A Check 1 violation here means the index did not
       cover the nested two-level case and Phase 1 is incomplete — stop and return to Phase 1
-      rather than proceeding.
-- [ ] Revert the probe. Confirm with
+      rather than proceeding. *(completed: exit 0, Check 1 TOTAL_VIOLATIONS=0, all 4 checks green, zero literal .lean hits under the probe)*
+- [x] Revert the probe. Confirm with
       `git diff --exit-code -- FormalSystem/Metalogic/Decidability.lean` (must exit 0). Nothing
-      from this probe is ever staged or committed.
-- [ ] **Positive control, made durable.** Re-read `typst/FormalFoundations.typ` immediately
+      from this probe is ever staged or committed. *(completed: `git diff --exit-code` exit 0)*
+- [x] **Positive control, made durable.** Re-read `typst/FormalFoundations.typ` immediately
       beforehand, then restore the fully-qualified citation form at the measured line (research
       recorded the current module-path-plus-leaf text at line 807: `` `validZTime_iff_validInt` ``
       in `` `Semantics/IntTransfer.lean` ``), rewriting it to cite
       `` `FormalSystem.Semantics.validZTime_iff_validInt` ``. Keep the surrounding sentence
       grammatical. This is the rendered reference manual, so read the full sentence before editing
-      rather than substituting a bare string.
-- [ ] Verify the restored citation resolves **only** through the new path: confirm
+      rather than substituting a bare string. *(completed: measured line 807)*
+- [x] Verify the restored citation resolves **only** through the new path: confirm
       `grep -rn --include=*.lean -F 'FormalSystem.Semantics.validZTime_iff_validInt' FormalSystem/ BimodalTools/`
       returns no hit (so the literal grep cannot be what resolves it) while
-      `bash scripts/typst-sync-check.sh` exits 0 with Check 1 clean.
-- [ ] Record the verdict material for Phase 4: which citation now depends on the resolver, and the
-      measured before/after of both controls.
+      `bash scripts/typst-sync-check.sh` exits 0 with Check 1 clean. *(completed: literal grep exit 1, gate exit 0)*
+- [x] Record the verdict material for Phase 4: which citation now depends on the resolver, and the
+      measured before/after of both controls. *(completed: recorded in the phase-2 handoff)*
 
 **Timing**: 1 hour
 

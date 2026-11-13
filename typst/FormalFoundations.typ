@@ -804,7 +804,7 @@ premises, and computing without being choice-free (axioms
   by Hölder's theorem; each identity reduces decidability of the left side to decidability of the
   two factors. This is a target, not a result: the Discrete factor, $op("Log")("Discrete")$, *is*
   known decidable at the $#BL$ level, by `decidableValidZTime` above together with the carrier
-  normalization `validZTime_iff_validInt` in `Semantics/IntTransfer.lean`, which identifies
+  normalization `FormalSystem.Semantics.validZTime_iff_validInt`, which identifies
   ℤ-time validity over every discrete duration carrier with validity over $ZZ$ alone. The Dense
   factor remains open, and the identity itself — $op("Log")("all task frames") =
   op("Log")("Discrete") inter op("Log")("Dense")$ — is stated nowhere as a Lean declaration;
