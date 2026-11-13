@@ -59,6 +59,88 @@ Not gates — invoked on demand to (re)generate or validate the training/benchma
 | `export-lean-citations.py` | Generates `lean-citation-manifest.json`: resolves every fully qualified declaration name in `lean-citation-seeds.txt` to its current file, keyword line and span, reusing `lib/lean_citations.py`'s `decl_spans`/`candidates` so it cannot disagree with C20 about where a declaration lives. Exists so a consuming repository's adequacy argument can cite declaration **names** and include a generated line-numbered view, instead of hand-maintaining `file.lean:NNN` citations that nothing checks — four of which had drifted by exactly +38 lines. Deterministic by construction (no timestamp, no absolute path, seed-file entry order), which is what makes the C35 freshness assertion possible; `--check` compares without writing, and a name that resolves to zero or to several declarations is a named error entry and a non-zero exit, never a silently omitted row. |
 | `generate-decidability-inventory.sh` | Regenerates the decidability programme's PROVED / NOT ESTABLISHED / WITHDRAWN / REFUTED inventory on demand from three machine sources (`docs/theorem-index.md`'s Decidability table, `check-module-invariants.sh`'s C2/C14 axiom baselines, `check-evidence-probes.sh`'s `WIRED`/`WIRED_REPO` arrays, and `Correctness.lean`'s "Retired as vacuous" section), cross-checking every `pinned:` cell against the baseline its tag names (this task's one hard-failure condition) and diffing (`--diff`) against the committed baseline below. Not a gate — an on-demand review instrument; its `--strict` mode is a ready-made hook for a future gate. |
 
+## Shared `.lake` build lock
+
+Lake has no cross-process lock on `.lake/`. A process that reads the built library while another
+rewrites it can catch an olean that has been removed and not yet rewritten, and Lean then reports
+`object file '...' of module ... does not exist`. That is a failure of the environment, not a fact
+about the code being checked, and it arrives on the same stderr a real failure would use. The
+scripts here serialize on one advisory lock to keep that from being misread.
+
+**The lock.** `<repo root>/.lake/build-guard.lock`, taken exclusively with `flock`. It is the path
+`.claude/scripts/lake-build-guard.sh` publishes; an advisory lock is keyed on the path, so these
+scripts and that guard exclude each other without any reference from this directory into
+`.claude/`, and in a clone with no agent system deployed the lock is simply uncontended.
+
+**The shape.** `flock -n` first; on contention, one stderr line naming the lock path and the
+bound, then `flock -w <bound>` (600 s by default); the fd is held until the process exits, never
+released with `flock -u`; when `flock` is not on `PATH`, one stderr notice and an unserialized
+run. A lock timeout is reported as an environment failure, with exit status 1 and nothing read
+or written. The working implementations are `check-module-invariants.sh`'s `C1: build` block,
+which also records the rejected alternatives, and `check-evidence-probes.sh`'s `SHARED .lake
+LOCK` block.
+
+**Leaf-only.** The lock is taken by the script that invokes lake and by none of its callers. An
+flock belongs to the open file description, not to the process tree: a child that re-opens the
+lock file is excluded by its own lock-holding parent and waits out its whole bound. A delegating
+script therefore takes no lock, and a locking script takes it after every build-free early exit
+(`--json`, `--render-only`, `--dry-run`), so those modes never wait on a build.
+
+**Subshell-scoped variant.** A script that runs for hours must not hold the lock to exit; that
+would starve every guarded build on the tree. It runs `lake build <targets>` inside a subshell
+that opens the lock fd, so the lock is released when the subshell exits, and then runs its
+`lake exe` calls outside the lock with nothing left to rebuild.
+
+**What the lock does not cover.** It is advisory. A bare `lake build` typed in a terminal, the
+`lake serve` language server behind an editor, and the `lean_build` MCP tool do not take it. A
+missing-object-file error can still occur; the locked scripts name it as an environment failure
+and advise a re-run.
+
+### Per-script determinations
+
+| Script | Runtime use of lake / `.lake` | Determination |
+|--------|-------------------------------|---------------|
+| `check-module-invariants.sh` | `lake build`, `lake env lean`, `lake exe` in its build-requiring checks | **Locked**, held to exit, at `C1: build`; later checks inherit the hold. |
+| `check-evidence-probes.sh` | `lake env lean` once per wired probe | **Locked**, held to exit. |
+| `typst-status-counts.sh` | one `lake env lean` in the write path | **Locked**, held to exit, after the `--json` exit. `--json` takes no lock. |
+| `typst-machine-appendix.sh` | `lake build` of the exporter, then `lake env lean --run`, in default mode | **Locked**, one hold covering both calls, after the `--json` and `--render-only` exits. Those two modes take no lock. |
+| `export-training-data.sh` | `lake exe dataset_generator`, `lake exe proof_extractor` | **Subshell-scoped locked prebuild** of the binaries the run will execute. `--dry-run` takes no lock. |
+| `run_dataset_generation.sh` | `lake exe dataset_generator` | **Subshell-scoped locked prebuild** of `dataset_generator`, for generation commands only. `--dry-run` and `help` take no lock. |
+| `typst-sync-check.sh` | none; `--fix` calls `typst-status-counts.sh`'s write path | **No lock, and must not take one** (leaf-only): the child locks itself. |
+| `generate-decidability-inventory.sh` | none; runs `check-evidence-probes.sh` as a child | **No lock** (leaf-only): the child locks itself. |
+| `typst-module-map.sh` | none; reads Lean source text only | **No lock**: never reads `.lake`. |
+| `check-copyright-headers.sh`, `move-modules.py`, `reanchor-lean-citations.py` | none; `lake` and `.lake` appear only in comments and directory prune lists | **No lock**: never read `.lake`. |
+| `lake_targets.py` | none; parses `lakefile.toml` as text | **No lock**: never reads `.lake`. |
+| `CheckInitImportsMain.lean`, `nolints-style.txt` | not scripts; `lake` appears in documentation text | Not applicable. |
+| `.githooks/pre-commit` | none; runs `typst-sync-check.sh --counts-only` and prints a `lake build` hint | **No lock**: build-free. |
+
+Scripts deployed under `.claude/scripts/` are regenerated from a source store outside this
+repository, so their determinations are recorded here and not in their own headers:
+
+| Deployed script | Runtime use of lake / `.lake` | Determination |
+|-----------------|-------------------------------|---------------|
+| `lake-build-guard.sh` | the guard itself | Publishes and takes the lock. |
+| `lean-sorry-census.sh` | `lake build` under its cross-check mode | Already serialized: routed through `lake-build-guard.sh`; bare only when the guard is absent. |
+| `lean-comparator-run.sh` | `lake exe cache get` and `lake env` inside a private temporary worktree | **No lock on this tree**: reads and writes only its own clean-room `.lake`. |
+| `lean-comparator-landrun-shim.sh` | resolves the `lake` binary path | **No lock**: no build and no library read on this tree. |
+| `plan-file-scope-harvest.sh`, `claude-refresh.sh`, `lean-mcp-preflight-check.sh`, `lean-src-roots.sh` | none; a `.lake` prune entry, process-name matching, lakefile presence tests | **No lock**: never read `.lake`. |
+| `dispatch-worktree.sh` | hard-link copy of `.lake` into a new worktree | **No lock**: not a verdict-producing reader; a copy that catches a mid-rewrite tree is repaired by the worktree's own next build. |
+
+### Known unguarded readers
+
+These read `.lake` without the lock. Each is a stated fact about the current tree, not a
+determination that the lock is unnecessary.
+
+- `.claude/scripts/lean-challenge-snapshot.sh` runs a bare `lake env lean` against this tree and
+  maps a failure to a fatal exit. It carries the hazard described above. Its source lives in the
+  agent-system source store, so the lock has to be added there.
+- `warning-budget.py` walks `.lake/build/lib/lean/**/*.trace` directly. Under a full
+  `check-module-invariants.sh` run it inherits the `C1` hold; under `--no-build`, or run alone, it
+  is unguarded. Its header documents the quiescence requirement and the spurious `FAIL C28` a
+  concurrent build produces.
+- `check-module-invariants.sh`, when `C1` times out waiting for the lock: `C1` fails, and the
+  later build-requiring checks still run, without the lock.
+
 ## `lib/` helper modules
 
 Python modules imported by the scripts above; not invoked directly.

@@ -1,0 +1,35 @@
+{
+  "phase": 5,
+  "phase_name": "Record the convention in scripts/README.md and run the full gate",
+  "started_at": "2026-11-13T19:35:51Z",
+  "last_updated": "2026-11-13T19:39:30Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Add the shared .lake build lock section with determination table and known-unguarded-readers list to scripts/README.md",
+      "status": "done",
+      "files_touched": [
+        "scripts/README.md"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Independent sweep, wording check, cross-script checks and scoped gate (full gate deferred to the batch stage)",
+      "status": "done",
+      "files_touched": [],
+      "note": "Full gate set deferred to the once-per-invocation batch stage (Batch Gate Deferral); scoped discharge: verify-deploy.sh --only-gate 4 rc=0, check-module-invariants.sh --no-build rc=0 (46 PASS, 0 FAIL)."
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "5.6",
+      "description": "Cross-script check and full gate per Verification below",
+      "type": "altered",
+      "reason": "Per the dispatch Batch Gate Deferral, the complete verify-deploy.sh gate set was deferred to the batch stage; this dispatch ran the scoped tier (verify-deploy.sh --only-gate 4) plus the unmappable repository check scripts/check-module-invariants.sh --no-build directly.",
+      "annotation": "*(deviation: altered — full verify-deploy gate set deferred to the batch stage; scoped gate 4 and check-module-invariants.sh --no-build run here, both exit 0)*"
+    }
+  ],
+  "handoff_count": 0
+}

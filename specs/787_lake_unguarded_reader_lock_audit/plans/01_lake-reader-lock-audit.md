@@ -328,19 +328,19 @@ headers.
 
 ---
 
-### Phase 5: Record the convention in scripts/README.md and run the full gate [NOT STARTED]
+### Phase 5: Record the convention in scripts/README.md and run the full gate [COMPLETED]
 
 **Goal**: One durable section names the lock convention and every per-script determination, and
 the whole task is verified together.
 
 **Tasks**:
-- [ ] Re-read `scripts/README.md` immediately before editing.
-- [ ] Add a section (after "Typst synchronization utilities" or as the README's structure best
+- [x] Re-read `scripts/README.md` immediately before editing. *(completed)*
+- [x] Add a section (after "Typst synchronization utilities" or as the README's structure best
       admits) covering: the lock path and that `.claude/scripts/lake-build-guard.sh` publishes it;
       the shape (non-blocking try, announced bounded wait, held to process exit, audible
       degradation without `flock`); the leaf-only rule and its mechanism; the subshell-scoped
-      variant for long runners; that the lock is advisory and what bypasses it.
-- [ ] In that section, a determination table built from the report's per-script table as landed
+      variant for long runners; that the lock is advisory and what bypasses it. *(completed)*
+- [x] In that section, a determination table built from the report's per-script table as landed
       by Phases 1-4: locked (`check-module-invariants.sh`, `check-evidence-probes.sh`,
       `typst-status-counts.sh`, `typst-machine-appendix.sh`); scoped prebuild
       (`export-training-data.sh`, `run_dataset_generation.sh`); ruled out with reason
@@ -350,20 +350,20 @@ the whole task is verified together.
       (`lean-sorry-census.sh` already guard-routed, `lean-comparator-run.sh` private tree,
       `lean-comparator-landrun-shim.sh`, `plan-file-scope-harvest.sh`, `claude-refresh.sh`,
       `lean-mcp-preflight-check.sh`, `lean-src-roots.sh` no runtime lake use,
-      `dispatch-worktree.sh` not a verdict-producing reader).
-- [ ] In that section, a short "known unguarded readers" list stating current facts:
+      `dispatch-worktree.sh` not a verdict-producing reader). *(completed)*
+- [x] In that section, a short "known unguarded readers" list stating current facts:
       `lean-challenge-snapshot.sh` (bare `lake env lean`; its fix belongs in the source-store
       repository), `warning-budget.py` under `--no-build`, and the lock-timeout branch of
-      `check-module-invariants.sh`'s C1.
-- [ ] Wording check on every file this task changed: no task numbers, no draft-history phrasing
-      ("no longer", "previously", "formerly", version labels).
-- [ ] Before writing each table row, confirm it against the landed file, not against the report:
+      `check-module-invariants.sh`'s C1. *(completed)*
+- [x] Wording check on every file this task changed: no task numbers, no draft-history phrasing
+      ("no longer", "previously", "formerly", version labels). *(completed)*
+- [x] Before writing each table row, confirm it against the landed file, not against the report:
       grep each "locked" script for `build-guard.lock` and each "ruled out" in-repository script
-      for its absence.
-- [ ] Cross-script check and full gate per Verification below.
-- [ ] In the implementation summary, list the three follow-ups (source-store task for
+      for its absence. *(completed)*
+- [x] Cross-script check and full gate per Verification below. *(completed)*
+- [x] In the implementation summary, list the three follow-ups (source-store task for
       `lean-challenge-snapshot.sh` and the flock re-entrancy context note; `warning-budget.py`;
-      C1 timeout residual) as recommended new tasks.
+      C1 timeout residual) as recommended new tasks. *(completed)*
 
 **Timing**: 1 hour
 
