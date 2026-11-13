@@ -231,27 +231,27 @@ under one hold of the shared lock.
 
 ---
 
-### Phase 3: Scoped locked prebuild in the dataset runners [NOT STARTED]
+### Phase 3: Scoped locked prebuild in the dataset runners [COMPLETED]
 
 **Goal**: The implicit rebuild behind `lake exe` in both dataset runners happens under the shared
 lock, without the runner holding the lock for the generation run.
 
 **Tasks**:
-- [ ] Re-read both files immediately before editing.
-- [ ] In `scripts/export-training-data.sh`, directly after the `check_prereqs` call in the
+- [x] Re-read both files immediately before editing. *(completed)*
+- [x] In `scripts/export-training-data.sh`, directly after the `check_prereqs` call in the
       non-dry-run branch, add a subshell `( <precedent block>; lake build <targets> )` where
       `<targets>` is `dataset_generator` unless `--skip-dataset`, and `proof_extractor` unless
       `--skip-proofs`; skip the subshell entirely when both are skipped. Wait bound from
       `DATASET_LOCK_WAIT_S`, default 600. The lock fd is opened inside the subshell so it closes
-      when the subshell exits.
-- [ ] In `scripts/run_dataset_generation.sh`, the same subshell after its `check_prereqs` call,
-      with target `dataset_generator`, same variable name.
-- [ ] In both: lock timeout or prebuild failure makes the subshell exit non-zero and the script
+      when the subshell exits. *(completed)*
+- [x] In `scripts/run_dataset_generation.sh`, the same subshell after its `check_prereqs` call,
+      with target `dataset_generator`, same variable name. *(completed)*
+- [x] In both: lock timeout or prebuild failure makes the subshell exit non-zero and the script
       exit 1 with a message naming which of the two happened (timeout is environment-class).
-      Under `--dry-run`, print one `[dry-run]` line describing the prebuild instead of running it.
-- [ ] In both headers: state the shape and why it is not hold-to-exit (the run lasts hours; a
+      Under `--dry-run`, print one `[dry-run]` line describing the prebuild instead of running it. *(completed)*
+- [x] In both headers: state the shape and why it is not hold-to-exit (the run lasts hours; a
       held lock would starve every guarded build), and that the `lake exe` calls are deliberately
-      left outside the lock.
+      left outside the lock. *(completed)*
 
 **Timing**: 0.75 hours
 

@@ -14,6 +14,13 @@
 #   --skip-proofs    Skip proof_extractor; only run dataset_generator
 #   -h, --help       Show this help message
 #
+# Shared `.lake` lock:
+#   Before generating, the script rebuilds the binaries it is about to run under
+#   the shared build lock (`.lake/build-guard.lock`), inside a subshell, and
+#   releases the lock when that subshell exits. It does not hold the lock for the
+#   run: an export lasts hours and a held lock would starve every guarded build.
+#   The `lake exe` calls run outside the lock by design. See `locked_prebuild`.
+#
 # Output:
 #   data/bmlogic-{TIER}.jsonl     Dataset for specified tier
 #   data/bmlogic-{TIER}_metadata.json
@@ -88,6 +95,75 @@ check_prereqs() {
         echo "Run: lake build dataset_generator proof_extractor"
         exit 1
     fi
+}
+
+# --- Scoped locked prebuild ---
+#
+# `lake exe` rebuilds its target implicitly whenever a source is stale, and that
+# rebuild WRITES `.lake` with no lock: a scoped build of this kind is what leaves
+# an import-closure olean removed-and-not-yet-rewritten under a concurrent
+# reader, which then fails with `object file '...' of module ... does not exist`.
+# So the rebuild is done here, explicitly, under the shared build lock, and the
+# `lake exe` calls that follow find their targets fresh.
+#
+# The lock is `$PROJECT_ROOT/.lake/build-guard.lock`, the path
+# `.claude/scripts/lake-build-guard.sh` publishes, taken exclusively in the same
+# acquisition shape as scripts/check-evidence-probes.sh's `SHARED .lake LOCK`
+# block and scripts/check-module-invariants.sh's `C1: build` block (non-blocking
+# try, announced bounded wait, audible unserialized run when `flock` is absent);
+# the alternatives those blocks reject are recorded at `C1: build`.
+#
+# SUBSHELL-SCOPED, NOT HELD TO EXIT. Those two scripts hold the lock until the
+# process exits. This script must not: a generation run lasts hours, and a lock
+# held that long would starve every guarded build on the tree. The lock fd is
+# therefore opened INSIDE the subshell and closes when the subshell exits; there
+# is no `flock -u`. The `lake exe` calls are deliberately left outside the lock:
+# with the targets just built they have nothing to rebuild, and a build that
+# changes the sources mid-run is outside what an advisory lock can cover.
+#
+# LEAF-ONLY. The lock is taken here and by no caller of this script: a parent
+# that held it would exclude this subshell for the whole bound.
+#
+# `DATASET_LOCK_WAIT_S` overrides the bounded wait (default 600 s). It exists so
+# the timeout branch can be exercised deliberately; it is a test affordance.
+#
+# Exit status: 1 on lock timeout (an ENVIRONMENT failure) and 1 on a failed
+# prebuild, each with its own message.
+
+locked_prebuild() {
+    # $@ = lake targets to build
+    local lock_wait="${DATASET_LOCK_WAIT_S:-600}"
+    local lock_file="$PROJECT_ROOT/.lake/build-guard.lock"
+    local rc=0
+    (
+        mkdir -p "$PROJECT_ROOT/.lake"
+        if command -v flock >/dev/null 2>&1; then
+            exec {PREBUILD_LOCK_FD}<>"$lock_file"
+            if ! flock -n "$PREBUILD_LOCK_FD"; then
+                echo "export-training-data.sh: waiting on the shared build lock ($lock_file, up to ${lock_wait}s)" >&2
+                if ! flock -w "$lock_wait" "$PREBUILD_LOCK_FD"; then
+                    exit 75
+                fi
+            fi
+        else
+            echo "export-training-data.sh: flock not found on PATH; prebuilding unserialized" >&2
+        fi
+        lake build "$@" || exit 1
+        exit 0
+    ) || rc=$?
+    case "$rc" in
+        0) ;;
+        75)
+            echo "ERROR (environment): timed out after ${lock_wait}s waiting for the shared build lock" >&2
+            echo "  $lock_file" >&2
+            echo "  Nothing was built or generated. Re-run once the concurrent build has finished." >&2
+            exit 1
+            ;;
+        *)
+            echo "ERROR: prebuild failed: lake build $*" >&2
+            exit 1
+            ;;
+    esac
 }
 
 # --- Dry-run wrapper ---
@@ -296,6 +372,20 @@ if [ "$DRY_RUN" = false ]; then
     check_prereqs
 else
     echo "[dry-run] Would check prerequisites: dataset_generator, proof_extractor"
+fi
+
+# Rebuild exactly the binaries this run will execute, under the shared build
+# lock, after the missing-binary check above so that check's contract is
+# unchanged. Nothing to prebuild when both halves are skipped.
+PREBUILD_TARGETS=()
+[ "$SKIP_DATASET" = false ] && PREBUILD_TARGETS+=(dataset_generator)
+[ "$SKIP_PROOFS" = false ] && PREBUILD_TARGETS+=(proof_extractor)
+if [ ${#PREBUILD_TARGETS[@]} -gt 0 ]; then
+    if [ "$DRY_RUN" = true ]; then
+        echo "[dry-run] lake build ${PREBUILD_TARGETS[*]} (under the shared .lake build lock, released before generation)"
+    else
+        locked_prebuild "${PREBUILD_TARGETS[@]}"
+    fi
 fi
 
 # --- Execute ---
