@@ -559,7 +559,7 @@ has evaporated and it closes `[COMPLETED WITH EXCLUSIONS]` citing those figures.
 
 ---
 
-### Phase 8: Remove the Heartbeat Ceilings and Correct the Section Notes [NOT STARTED]
+### Phase 8: Remove the Heartbeat Ceilings and Correct the Section Notes [COMPLETED]
 
 **Goal**: Delete the 34 `maxHeartbeats 1200000` and two `maxHeartbeats 3000000` lines so the module
 compiles at the 200,000 default — independent, reviewable proof the reduction is real — and replace
@@ -567,25 +567,25 @@ the remaining module-level and section-level comments that still assert the wron
 
 **Tasks**:
 
-- [ ] Delete every `set_option maxHeartbeats` line in the module, except on any declaration left
+- [x] Delete every `set_option maxHeartbeats` line in the module, except on any declaration left
   unconverted under a per-rule fallback in Phases 3 through 7 (those keep their ceiling, and the
-  exclusion record says so).
-- [ ] Decide `set_option linter.unusedTactic false` on `untlNeg` and `snceNeg` by removing it and
-  rebuilding: keep it only if the rewritten scripts still trip the linter.
-- [ ] Replace the `Propositional` section's opening note (currently: "Each case unfolds the
+  exclusion record says so). *(completed — all 34 + 2 lines deleted; no fallback declaration exists, so none is retained)*
+- [x] Decide `set_option linter.unusedTactic false` on `untlNeg` and `snceNeg` by removing it and
+  rebuilding: keep it only if the rewritten scripts still trip the linter. *(completed — both removed together with their nine-line explanatory comments: the `(simp_all only []; done)` alternative they defended is gone, and the module compiles with no linter warning without them)*
+- [x] Replace the `Propositional` section's opening note (currently: "Each case unfolds the
   900-line `applyRule` match; the default heartbeat budget is not enough for the `whnf` work that
   costs, while the *memory* ceiling is what forces one rule per declaration") with the measured
-  attribution.
-- [ ] Replace the `NonAnalytic` section note asserting that `whnf` has to step past every earlier
-  arm.
-- [ ] Sweep the module for any surviving copy of the `-- unfold applyRule reduces the 36-arm
+  attribution. *(completed — replaced by a note on which arms take a sign equation only and which take a formula equation)*
+- [x] Replace the `NonAnalytic` section note asserting that `whnf` has to step past every earlier
+  arm. *(completed — replaced by a note on which arms match on the rule name alone)*
+- [x] Sweep the module for any surviving copy of the `-- unfold applyRule reduces the 36-arm
   match … about 0.9M heartbeats measured` comment and the `whnf` cost claim. The replacement text
   states what the profiler measured (`simp` 99.2 percent, all tactic execution 0.7 percent) and
-  that the bodies now rewrite with pinned equation lemmas.
-- [ ] Add a short note recording that the memory ceiling, not elaboration time, is what still
+  that the bodies now rewrite with pinned equation lemmas. *(completed — no per-theorem copy survived Phases 3-6; the sweep also corrected the `T1, rule by rule` section note (now carries the measured attribution, 99.2 percent `simp` / 0.7 percent other tactic execution, and the rewrite-with-pinned-equation shape), the `as*?` inversion notes, the PersistentUniversal note and family paragraph, the `mem_filterMap_sub` docstring's last clause, the FreshWitness and FrameClass arm-position comments, and the assembly theorem's 'expensive work is already paid for' sentence)*
+- [x] Add a short note recording that the memory ceiling, not elaboration time, is what still
   forces one rule per declaration — that claim is independent of this task's finding and must not
-  be deleted along with the wrong ones.
-- [ ] Commit per green sub-step.
+  be deleted along with the wrong ones. *(completed — rule 2 of the `T1, rule by rule` note states the memory ceiling as independent of the elaboration-time finding and keeps the 19.2 GiB measurement)*
+- [x] Commit per green sub-step. *(deviation: altered — one commit; it also carries the machine-generated README inventory counts (`check-module-invariants.sh --emit-inventory`) that the changed line counts invalidated)*
 
 **Timing**: 1 hour
 

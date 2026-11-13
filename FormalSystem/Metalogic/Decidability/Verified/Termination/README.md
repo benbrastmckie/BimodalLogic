@@ -20,7 +20,7 @@ branch structure.
 |------|-------|-------------|
 | `Fuel.lean` | 2,705 | T3 — justified fuel. Turns T1 and T2 into a fuel figure at which `buildTableau` cannot exhaust. |
 | `MintBound.lean` | 131 | Aggregator for the mint bound: an independent ceiling on fresh-time minting along a run, needed to lift T3's totality theorem beyond non-branching runs. Declares nothing; imports the 18 modules of `MintBound/`. |
-| `SubformulaProperty.lean` | 1,467 | T1 — the generalized signed subformula property. Without it the pigeonhole argument of `TimeTypeBound.lean` has nothing finite to count against. |
+| `SubformulaProperty.lean` | 1,617 | T1 — the generalized signed subformula property. Without it the pigeonhole argument of `TimeTypeBound.lean` has nothing finite to count against. |
 | `TimeTypeBound.lean` | 1,889 | T2 — the time-type bound and the pigeonhole: a branch whose formulas lie in a `TableauClosed` stock `C` has at most `2 ^ (2 * \|C\|)` distinguishable times. |
 | `MintBound/` | — | Twenty-one modules supplying the mint bound — an independent ceiling on fresh-time minting along a run — behind the aggregator `MintBound.lean` |
 <!-- END GENERATED -->

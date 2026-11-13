@@ -327,16 +327,16 @@ end TableauClosed
 
 `applyRule`'s arms test their trigger through `asAnd?`, `asUntil?`, … rather than by pattern, so
 each case arrives with an equation `as…? sf.formula = some …` and no syntactic handle on
-`sf.formula`. These invert that equation into the raw constructor shape, which is what makes the
-subformula side-goals computable by `simp`. Stated in raw `imp`/`bot`/`untl`/`snce` form
+`sf.formula`. These invert that equation into the raw constructor shape, which is what lets the
+closure hypothesis be rewritten into the form the component-extraction lemmas take. Stated in raw
+`imp`/`bot`/`untl`/`snce` form
 deliberately: that is the form `split` leaves behind, and routing through the derived
 `Formula.and`/`Formula.neg` spellings would need an extra unfolding step in all 36 cases.
 -/
 
-/-- Stated as an `iff` on purpose: the rule cases reach these equations under inaccessible
-names, so they have to be usable as `simp_all` rewrite rules rather than as named arguments.
-Rewriting left-to-right replaces the opaque `as…? sf.formula = some …` with an equation on
-`sf.formula` itself, which `simp_all` then substitutes into the closure hypothesis. -/
+/-- Stated as an `iff` on purpose: a rule case holds `as…? sf.formula = some …` as a hypothesis,
+and rewriting that hypothesis left-to-right with the `iff` replaces it by an equation on
+`sf.formula` itself, which the case then rewrites into the closure hypothesis. -/
 theorem asAnd?_eq_iff {φ ψ χ : Formula} :
     asAnd? φ = some (ψ, χ) ↔ φ = .imp (.imp ψ (.imp χ .bot)) .bot := by
   constructor
@@ -449,31 +449,54 @@ theorem identifyTime_formula_mem {b : Branch} {src tgt : TimeIndex} {C : Finset 
 /-!
 ## T1, rule by rule
 
-Each rule gets its own theorem. That is not stylistic: `applyRule` is a 900-line `match` on 36
-constructors, and `unfold applyRule` inlines all of it into the hypothesis, so a proof that keeps
-several rules' goals alive at once holds several copies of that term. Measured on this machine —
-a single `theorem` covering 14 rules with a broad `simp_all` and a 30-alternative `first` chain
-reached **19.2 GiB** resident and was killed by `earlyoom`; the same content split one rule per
-declaration, with a `simp_all only` restricted to the lemmas that case needs and a `first` chain
-of at most seven alternatives, elaborates in about four seconds. Two rules of thumb follow, and
-they bind any later phase that extends this file:
+Each rule gets its own theorem, and every proof has the same three steps.
 
-1. **One rule, one declaration.** Never `cases rule <;> …` across families.
-2. **Never a bare `simp_all` or `simp` here.** Always
-   `simp_all only [..., SignedFormula.pos, SignedFormula.neg, reduceCtorEq]`/`simp only [...]` with
-   the case's own lemma list. A bare `simp` in a closer alternative is retried on every open goal of
-   the case, and that is where the memory goes.
+1. **Decide the arm's side conditions.** `applyRule` is one `match` on the rule, the sign and the
+   formula. A rule's arm applies under a sign equation and, for the arms that match on the
+   formula's shape, a formula equation as well. Each proof opens with a `by_cases` on exactly
+   those conditions — none at all for `serialityRule` and `timeLinearity`.
+2. **Rewrite with one arm's equation.** Where the conditions hold, the rule's wrapper
+   `applyRule_<rule>_arm_eq` from `Tableau.lean` rewrites `hg` to that arm's body. Where they
+   fail, `applyRule_offArm_eq` rewrites it to `.notApplicable`, which emits nothing; its
+   hypotheses, one refutation per arm, close by `contradiction` — against the rule name for every
+   other arm, against the failed side condition for this one.
+3. **Read the emitted formulas off.** `split` opens whatever `match` or `if` the arm's body has,
+   one `simp only` turns the membership `hg` into a disjunction of equations, and each disjunct is
+   closed by a component-extraction lemma or a `TableauClosed` field.
+
+**Where the cost is, as measured.** `applyRule` is a 900-line `match`. A proof that brings all of
+it into a hypothesis — `unfold applyRule at hg`, then `split` down to one goal per arm — pays for
+a `simp` call on every surviving goal, each over a context holding the unfolded term and the
+hypotheses the splitter accumulated. Profiling the 36 cases written in that form attributes 99.2
+percent of elaboration time to `simp` and 0.7 percent to all other tactic execution together,
+`unfold` and `split` included: roughly 880,000 heartbeats per rule, and 2,085,000 for each of the
+two last arms.
+Rewriting with a single arm's equation never creates those goals. The same 36 cases take between
+150 and 7,000 heartbeats each, inside the default budget; the figure for each is recorded above
+its declaration.
+
+Three rules follow, and they bind anything that extends this file:
+
+1. **Never `unfold applyRule`.** Rewrite with the arm's wrapper, and add a wrapper next to
+   `applyRule` when a new arm needs one.
+2. **One rule, one declaration.** Never `cases rule <;> …` across families. This is a *memory*
+   ceiling, and it stands independently of the elaboration-time finding above: a single `theorem`
+   covering 14 rules with a broad `simp_all` and a 30-alternative `first` chain reached
+   **19.2 GiB** resident and was killed by `earlyoom`.
+3. **No bare `simp` or `simp_all` on a goal that holds a rule body.** Use `simp only [...]` with
+   the case's own lemma list. The one full simp set left in the file is the closer inside the
+   propagation blocks of the fresh-witness rules and `densityRule`; it runs after `clear` has
+   emptied the context, and replacing it with `simp only` was measured to change those proofs'
+   cost by under one percent.
 -/
 
 section Propositional
 
--- Each case unfolds the 900-line `applyRule` match; the default heartbeat budget is not enough
--- for the `whnf` work that costs, while the *memory* ceiling is what forces one rule per
--- declaration (see the section note above).
+-- Six of these arms take a sign equation only and reach their trigger through `asAnd?`, `asOr?`
+-- or `asNeg?`; `impPos` and `impNeg` match on the formula's shape and take a formula equation too.
 
 variable {C : Finset Formula} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_andPos_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.4K heartbeats measured.
 theorem applyRule_andPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -494,7 +517,6 @@ theorem applyRule_andPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) 
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_andNeg_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.4K heartbeats measured.
 theorem applyRule_andNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -516,7 +538,6 @@ theorem applyRule_andNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) 
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_orPos_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.4K heartbeats measured.
 theorem applyRule_orPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -538,7 +559,6 @@ theorem applyRule_orPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_orNeg_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.4K heartbeats measured.
 theorem applyRule_orNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -559,7 +579,6 @@ theorem applyRule_orNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_impPos_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.5K heartbeats measured.
 theorem applyRule_impPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -578,7 +597,6 @@ theorem applyRule_impPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) 
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; first | contradiction | exact h ⟨‹_›, _, _, ‹_›⟩)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_impNeg_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.5K heartbeats measured.
 theorem applyRule_impNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -596,7 +614,6 @@ theorem applyRule_impNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) 
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; first | contradiction | exact h ⟨‹_›, _, _, ‹_›⟩)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_negPos_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.4K heartbeats measured.
 theorem applyRule_negPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -616,7 +633,6 @@ theorem applyRule_negPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) 
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_negNeg_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.4K heartbeats measured.
 theorem applyRule_negNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -640,13 +656,12 @@ end Propositional
 
 section NonAnalytic
 
--- `denseIndicatorClosure` and `timeLinearity` sit at positions 33 and 36 of the `applyRule`
--- match, so `whnf` has to step past every earlier arm before it reaches them; they need a
--- larger budget than the propositional rules for that reason alone.
+-- `serialityRule` and `timeLinearity` match on the rule name alone, so their proofs have no case
+-- analysis and no off-arm branch; `boxTemporal` and `denseIndicatorClosure` match on the formula's
+-- shape.
 
 variable {C : Finset Formula} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_boxTemporal_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.5K heartbeats measured.
 /-- The `boxTemp` field is what this case needs and nothing else can supply: `Gψ` and `Hψ` are
@@ -670,7 +685,6 @@ theorem applyRule_boxTemporal_closed (hC : TableauClosed C) (hsf : sf.formula �
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; first | contradiction | exact h ⟨‹_›, _, ‹_›⟩)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_denseIndicatorClosure_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.2K heartbeats measured.
 /-- `denseIndicatorClosure` emits the empty list: it exists to make `checkAxiomNeg` fire. -/
@@ -684,7 +698,6 @@ theorem applyRule_denseIndicatorClosure_closed :
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; first | contradiction | exact h ⟨‹_›, ‹_›⟩)
 
-set_option maxHeartbeats 3000000 in
 -- Rewrites with `applyRule_serialityRule_arm_eq`, so `hg` holds only this rule's arm:
 -- about 167 heartbeats measured.
 /--
@@ -707,7 +720,6 @@ theorem applyRule_serialityRule_closed (hC : TableauClosed C) :
     · exact hC.serialFuture
     · exact hC.serialPast
 
-set_option maxHeartbeats 3000000 in
 -- Rewrites with `applyRule_timeLinearity_arm_eq`, so `hg` holds only this rule's arm:
 -- about 176 heartbeats measured.
 /--
@@ -743,9 +755,6 @@ end NonAnalytic
 
 section PersistentUniversal
 
--- These six sit between arms 6 and 27 of the match, so they are cheaper than the non-analytic
--- block above, but still well past the default heartbeat budget.
-
 variable {C : Finset Formula} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
 
 /-! ### The persistent-universal family
@@ -753,12 +762,11 @@ variable {C : Finset Formula} {sf : SignedFormula} {b : Branch} {ord : TimeOrder
 `boxPos`, `diamondNeg`, `allFuturePos`, `allPastPos`, `someFutureNeg` and `somePastNeg` all have
 the same body: a `List.filterMap` over `knownWorlds`, `futureOf`, or `pastOf` whose function is
 `fun x => if branch.contains (prop x) then none else some (prop x)`. `mem_filterMap_guarded`
-collapses that to `g = prop x` in one step, so each proof is the split cascade followed by a
-single component-extraction lemma. The label varies with `x`, but the *formula* does not — which
-is exactly why one closer suffices for the whole filterMap.
+collapses that to `g = prop x` in one step, so each proof is one rewrite with the rule's arm
+equation followed by a single component-extraction lemma. The label varies with `x`, but the
+*formula* does not — which is exactly why one closer suffices for the whole filterMap.
 -/
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_boxPos_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.8K heartbeats measured.
 theorem applyRule_boxPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -777,7 +785,6 @@ theorem applyRule_boxPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) 
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; first | contradiction | exact h ⟨‹_›, _, ‹_›⟩)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_diamondNeg_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.8K heartbeats measured.
 theorem applyRule_diamondNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -800,7 +807,6 @@ theorem applyRule_diamondNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_allFuturePos_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.8K heartbeats measured.
 theorem applyRule_allFuturePos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -819,7 +825,6 @@ theorem applyRule_allFuturePos_closed (hC : TableauClosed C) (hsf : sf.formula �
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; first | contradiction | exact h ⟨‹_›, _, ‹_›⟩)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_allPastPos_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.8K heartbeats measured.
 theorem applyRule_allPastPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -838,7 +843,6 @@ theorem applyRule_allPastPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; first | contradiction | exact h ⟨‹_›, _, ‹_›⟩)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_someFutureNeg_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.8K heartbeats measured.
 theorem applyRule_someFutureNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -861,7 +865,6 @@ theorem applyRule_someFutureNeg_closed (hC : TableauClosed C) (hsf : sf.formula 
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_somePastNeg_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.8K heartbeats measured.
 theorem applyRule_somePastNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -895,7 +898,7 @@ some only relabel (`tempGProps`) — but in every case the emitted formula is ei
 the source formula or the source formula itself, and `subformulas` is reflexive
 (`Formula.self_mem_subformulas`). Routing through `sub` therefore replaces a per-block choice of
 component-extraction lemma with one uniform obligation that `simp [Formula.subformulas]` closes,
-and the obligation is discharged in a context with the 900-line `applyRule` term cleared away.
+and the obligation is discharged in a context cleared of everything but the block's own equation.
 -/
 theorem mem_filterMap_sub {C : Finset Formula} {b : Branch} {P : SignedFormula → Bool}
     {F : SignedFormula → Option SignedFormula} {g : SignedFormula} (hC : TableauClosed C)
@@ -908,7 +911,7 @@ theorem mem_filterMap_sub {C : Finset Formula} {b : Branch} {P : SignedFormula �
 
 section FreshWitness
 
--- The fresh-witness rules are the propagation-heavy ones; several sit late in the match.
+-- The fresh-witness rules are the propagation-heavy ones.
 
 variable {C : Finset Formula} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
 
@@ -935,7 +938,6 @@ expensive alternative is tried last, and only after `clear` has emptied the cont
 it does not need.
 -/
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_boxNeg_arm_eq`, so `hg` holds only this rule's arm:
 -- about 2.3K heartbeats measured.
 theorem applyRule_boxNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
@@ -965,7 +967,6 @@ theorem applyRule_boxNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; first | contradiction | exact h ⟨‹_›, _, ‹_›⟩)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_diamondPos_arm_eq`, so `hg` holds only this rule's arm:
 -- about 2.2K heartbeats measured.
 theorem applyRule_diamondPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
@@ -998,7 +999,6 @@ theorem applyRule_diamondPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_allFutureNeg_arm_eq`, so `hg` holds only this rule's arm:
 -- about 3.1K heartbeats measured.
 theorem applyRule_allFutureNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
@@ -1029,7 +1029,6 @@ theorem applyRule_allFutureNeg_closed (hC : TableauClosed C) (hsf : sf.formula �
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; first | contradiction | exact h ⟨‹_›, _, ‹_›⟩)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_allPastNeg_arm_eq`, so `hg` holds only this rule's arm:
 -- about 3.1K heartbeats measured.
 theorem applyRule_allPastNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
@@ -1060,7 +1059,6 @@ theorem applyRule_allPastNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; first | contradiction | exact h ⟨‹_›, _, ‹_›⟩)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_someFuturePos_arm_eq`, so `hg` holds only this rule's arm:
 -- about 3.1K heartbeats measured.
 theorem applyRule_someFuturePos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
@@ -1094,7 +1092,6 @@ theorem applyRule_someFuturePos_closed (hC : TableauClosed C) (hsf : sf.formula 
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_somePastPos_arm_eq`, so `hg` holds only this rule's arm:
 -- about 3.1K heartbeats measured.
 theorem applyRule_somePastPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
@@ -1140,7 +1137,6 @@ form, and it is also literally the continuing `U`/`S` formula `untlPos`/`sncePos
 `hsf` in place would lose the first.
 -/
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_untlPos_arm_eq`, so `hg` holds only this rule's arm:
 -- about 5.1K heartbeats measured.
 theorem applyRule_untlPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
@@ -1179,7 +1175,6 @@ theorem applyRule_untlPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_sncePos_arm_eq`, so `hg` holds only this rule's arm:
 -- about 5.1K heartbeats measured.
 theorem applyRule_sncePos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
@@ -1218,17 +1213,6 @@ theorem applyRule_sncePos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
--- `linter.unusedTactic` flags the `done` in the `(simp_all only []; done)` alternative below.
--- It is NOT dead: the linter reports only 'does nothing' here, never 'never executed', so the
--- alternative IS reached and `done` IS run -- it reports nothing changed because `simp_all only []`
--- had already closed the goal. `done` is the guard that stops that alternative from silently
--- accepting a goal it only partly simplified, which is exactly the failure the section note above
--- describes. Deleting it would leave a bare `(simp_all only [])` that succeeds whether or not it
--- closed the goal, so `first` would commit to it on a partial simplification and the drift would
--- be silent. Compare `applyRule_untlPos_closed`, where the compiler DID report 'never executed'
--- and the whole alternative was removed as genuinely dead.
-set_option linter.unusedTactic false in
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_untlNeg_arm_eq`, so `hg` holds only this rule's arm:
 -- about 6.6K heartbeats measured.
 theorem applyRule_untlNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
@@ -1270,17 +1254,6 @@ theorem applyRule_untlNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
--- `linter.unusedTactic` flags the `done` in the `(simp_all only []; done)` alternative below.
--- It is NOT dead: the linter reports only 'does nothing' here, never 'never executed', so the
--- alternative IS reached and `done` IS run -- it reports nothing changed because `simp_all only []`
--- had already closed the goal. `done` is the guard that stops that alternative from silently
--- accepting a goal it only partly simplified, which is exactly the failure the section note above
--- describes. Deleting it would leave a bare `(simp_all only [])` that succeeds whether or not it
--- closed the goal, so `first` would commit to it on a partial simplification and the drift would
--- be silent. Compare `applyRule_untlPos_closed`, where the compiler DID report 'never executed'
--- and the whole alternative was removed as genuinely dead.
-set_option linter.unusedTactic false in
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_snceNeg_arm_eq`, so `hg` holds only this rule's arm:
 -- about 6.6K heartbeats measured.
 theorem applyRule_snceNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
@@ -1326,8 +1299,6 @@ end FreshWitness
 
 section FrameClass
 
--- The frame-class rules sit at positions 27-34 of the match.
-
 variable {C : Finset Formula} {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
 
 /-! ### The frame-class rules
@@ -1346,7 +1317,6 @@ the trigger's shape twice, so the proof splits twice as well: once on whether th
 at all, and once on whether what is under it is an implication from a `G`.
 -/
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_priorUZ_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.4K heartbeats measured.
 theorem applyRule_priorUZ_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -1369,7 +1339,6 @@ theorem applyRule_priorUZ_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_priorSZ_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.4K heartbeats measured.
 theorem applyRule_priorSZ_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -1392,7 +1361,6 @@ theorem applyRule_priorSZ_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_z1Rule_arm_eq`, so `hg` holds only this rule's arm:
 -- about 2.0K heartbeats measured.
 theorem applyRule_z1Rule_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -1420,7 +1388,6 @@ theorem applyRule_z1Rule_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) 
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; first | contradiction | exact h ⟨‹_›, _, ‹_›⟩)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_priorUGap_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.6K heartbeats measured.
 theorem applyRule_priorUGap_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -1450,7 +1417,6 @@ theorem applyRule_priorUGap_closed (hC : TableauClosed C) (hsf : sf.formula ∈ 
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_priorSGap_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.6K heartbeats measured.
 theorem applyRule_priorSGap_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -1480,7 +1446,6 @@ theorem applyRule_priorSGap_closed (hC : TableauClosed C) (hsf : sf.formula ∈ 
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_sepRule_arm_eq`, so `hg` holds only this rule's arm:
 -- about 1.6K heartbeats measured.
 theorem applyRule_sepRule_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
@@ -1510,7 +1475,6 @@ theorem applyRule_sepRule_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     · simp only [RuleResult.emitted, List.not_mem_nil] at hg
     all_goals (intros; contradiction)
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_densityRule_arm_eq`, so `hg` holds only this rule's arm:
 -- about 2.3K heartbeats measured.
 theorem applyRule_densityRule_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
@@ -1541,7 +1505,6 @@ theorem applyRule_densityRule_closed (hC : TableauClosed C) (hsf : sf.formula �
     all_goals (intros; first | contradiction | exact h ⟨‹_›, _, ‹_›⟩)
 
 
-set_option maxHeartbeats 1200000 in
 -- Rewrites with `applyRule_orderTrichotomy_arm_eq`, so `hg` holds only this rule's arm:
 -- about 2.1K heartbeats measured.
 /--
@@ -1600,8 +1563,7 @@ T1, assembled: **no rule of the calculus emits a formula outside a `TableauClose
 
 This is the form `Fuel.lean` consumes, and it costs nothing to state now that every case is
 proved: `cases rule` does not unfold `applyRule`, so the 900-line match never enters a goal here
-and the whole theorem elaborates in the time of thirty-six `exact`s. The expensive work is
-already paid for, one declaration at a time, above.
+and the whole theorem elaborates in the time of thirty-six `exact`s.
 
 The hypotheses are the union of what the cases need. `hb` is genuinely required and not merely
 convenient: the propagation-heavy rules read universals back off the branch, and `timeLinearity`
