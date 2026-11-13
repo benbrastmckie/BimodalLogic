@@ -205,28 +205,58 @@ cited record, not here.
 
 ## Run these next
 
-```bash
-/revise 761                               # FIRST, and not an /orchestrate line. 761 is unheld and [IMPLEMENTING] with no enterable phase: Phases 11.12/11.13 are [BLOCKED] on the hself binder drift and the rest is behind Phase 11.9's depth-0 verdict. The revision's three inputs and its one live question are in Stage 0. Until this runs, 761 is a live scope-collision source that advances nothing
-/orchestrate 907                          # then, and alone: the deployed .claude/ tree is stale against the source store for six extensions, and every later dispatch reads its scripts from there. Batching it with work that consumes those scripts swaps the tooling mid-run
-/orchestrate 743,803,804,787 --hard       # the one unblocking chain left. 743 gates 803 (-> 804), 787 and 869; 803/804 are the repository's largest rebuild cost with research and a 9-phase plan landed. Shared territory (README.md, FormalSystem/README.md, typst/generated/status.typ, scripts/typst-sync-check.sh) serializes the batch, which is why it is one batch and not four lines. NOTE: it now also collides with 761's declared scope on README.md, FormalSystem/README.md, FormalSystem/Metalogic/README.md and typst/generated/status.typ -- a plan-level gate clearable with --allow-scope-collision while 761 is not actually running, and NOT clearable against a live 761 dispatch
-/orchestrate 714,781,873,817,818          # five-way parallel on disjoint territory: TailStable junk-position root removal, the LiveFix hoist keep/revert decision, open-language subformula closure, and the two README inventory-table wrapping sweeps. 817/818 touch only subdirectory READMEs, none of which 761 declares, so this line is clear of it
-/orchestrate 502,497,500,543 --hard --lit # the algebraic-representation chain, bottom-up, ending at 543 -- the last HIGH-priority L-plus metalogic task. Reachable ONLY through its own edge chain 502 -> 497 -> 500 -> 543, whose first three links are all priority low, which is why 543 has never been scheduled on its own
-/orchestrate 178,604,890,832,829          # high-priority Examples/ pipeline, zstd .jsonl datasets, the GHR erratum reference, local-disk reclamation, .lake/build CI cache. No shared territory and no edges among them
+**761 cannot be advanced by any dispatch, and has been demoted accordingly.** All six of its declared edges are discharged, but plan v13 came to rest at 30 of 41 phases closed with **zero enterable**: every remaining phase sits behind Phase 11.6's depth-`0` gate, which no open task owns. Lifting that gate is Stage 0's one unchecked item -- a user ruling, not an `/orchestrate` line. Tasks 929 and 930 are INPUTS to a future revision of that plan and NOT gates of any of its phases, which is why they now head the decidability work and 761 sits well below them.
+
+**761 remains a live scope-collision source.** Its 43 declared paths include `README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md` and `typst/generated/status.typ`, every one of which task 803 also declares. That is a plan-level gate, clearable with `--allow-scope-collision` while 761 is not actually running and **not** clearable against a live 761 dispatch.
+
+Only the first batch has to come first -- it is the one that unblocks others. The rest are independent of each other and may be run in any order or interleaved, subject to the batch-gate's live-lock rule.
+
+```
+/orchestrate 743, 803, 804, 787 --hard   # The one unblocking chain left: 743 gates 803, 804, 787 and 869, on serializing shared territory
+/orchestrate 929, 930 --hard --lit   # The only enterable depth-0 open-core work: 929's idle-run discharge, 930's prototype wiring
+/orchestrate 927, 928, 926   # Settle the Lean completeness line: both measurements first, then the reopen ruling they feed
+/orchestrate 502, 497, 500, 543 --hard --lit   # The algebraic chain bottom-up to 543, the last high-priority L-plus metalogic task still open
+/orchestrate 178, 604, 890, 829   # Four independent deliverables, no shared territory and no edges: examples, zstd, erratum, CI cache
+/orchestrate 664, 570 --lit   # Corpus ingest of the ball-space source and the C3 consequence-relation completeness question
+/orchestrate 831 --research --lit   # The dense-time dichotomy gating L-R3, the only identified non-ZTime decidability route
+/orchestrate 298, 282, 296, 231   # The dataset chain behind the c7 labeling bug; 282, 296 and 231 each carry a 298 edge
+/orchestrate 257   # Hugging Face migration for large datasets; externally blocked until the account token exists
+/orchestrate 761, 862, 861 --hard --lit   # Ladder realization and its two dependents; parked until the depth-0 gate has an owner
+/orchestrate 763 --hard --lit   # The lift and the Decidable (PlusValidZTime phi) corollary; needs 761 terminal first
+/orchestrate 481 --hard   # The refuted UnorderedSuccessorLabelClosed residual; a register entry is a complete outcome
+/orchestrate 428, 429, 410, 411 --hard   # The tableau spine's middle; needs 428's scope ruled, and 410 already carries a plan
+/orchestrate 430, 412, 482 --hard --lit   # The tableau spine's terminus, ending at 482, classified open mathematics and multi-month
+/orchestrate 498, 499 --hard   # The Jonsson-Tarski representation's two sides: complex algebra and ultrafilter frame
+/orchestrate 125, 501 --hard   # The Jonsson-Tarski capstone and Until/Since on STSA, the representation front's terminus
+/orchestrate 177   # Genuinely last in the programme: README, docs/ and module-docstring polish behind 26 edges
+/orchestrate 873, 874, 875, 876   # The L-triangle syntax line: 873 is gated on nothing and gates the other three
+/orchestrate 869   # Open-modal truth invariance along a ray-agreement-lifting history morphism; waits on 743
 ```
 
-Order matters for the first two lines. The rest are independent of each other and may be run in
-any order, or interleaved, subject to the batch-gate's live-lock rule and the 761 collision noted
-on line three.
+Why this order:
+- FIRST, because it is the only batch here that unblocks other work. 743 is `planned` and gates 803 (-> 804), 787 and 869; 803/804 are the repository's largest measured rebuild cost (SubformulaProperty.lean elaborates in 1103s as one module, about 17 percent of a 414-job incremental rebuild), with research and a landed plan already in hand. It is one batch and not four lines because the members share territory -- `README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`, `typst/generated/status.typ` -- which serializes the batch rather than breaking it. That same territory is what collides with 761's declared scope; see the preamble.
+- The head of the decidability front, and a deliberate demotion of 761 beneath it. 929 discharges the I = 1 idle-run sub-regime so `ForwardSlackWitnessed` becomes unconditional rather than conditional on the non-ParamsOk-derivable `IdleRunPumpable`; 930 promotes the two orphan prototypes (`tight-chain-regime-b.lean`, `spanning-divisibility.lean`) that `RaySummary/README.md` cites as the sole authority for two load-bearing refutations while flagging each as "not a wired probe". Both are `ready`, both are depth-0 open-core, and neither is gated on anything. 761's plan v13 derives explicitly that these two are INPUTS to a future revision and NOT gates of any of its phases -- so no dependency edge was added between them and 761, and they are scheduled ahead of it rather than behind it.
+- Ordered measurements-then-ruling, which is why the two inputs lead the line. 926 is a decision record that must rule reopen/keep-closed on four routes, and its own text names 927 as "its companion measurement task" for route R2 -- the route it says it "should weigh first", and the only one needing no ruling at all if 927's check comes back positive -- and 928 as "the companion cost-assessment task" whose costing it "consumes". Neither relationship was expressed as a dependency edge; both have been added this pass (926 now carries `dependencies: [927, 928]`). Reversing Recommendation 8's bar on formalizing the Reynolds engine's sections 7-15 is a user ruling, so this batch produces a record, not Lean.
+- 543 is reachable ONLY through the edge chain 502 -> 497 -> 500 -> 543, and its first three links are all priority `low`, which is exactly why 543 -- priority `high` -- has never been scheduled on its own. Batching the chain is the only way the high-priority terminus is ever dispatched; the intra-batch edges sequence it into successive waves rather than disqualifying any member.
+- Parallel-safe by construction. 178 (priority high) is the publication-quality Examples/ expansion, now `ready` since both its edges archived; 604 adds zstd `.jsonl` dataset support; 890 is `researched` and only needs the GHR94 Lemma 10.2.3 Case 5 erratum written into the Typst reference manual; 829 adds the missing `actions/cache` for `.lake/build`, absent from all three workflows today. This batch previously also named 832, which has since archived.
+- Both are literature-shaped and neither touches Lean. 664 closes a measured corpus gap: the manuscript's `def:frame` footnote cites Cmiel2021 for the ball-space claim, and no matching entry exists in the global index or the sub-index. 570 is an open research question, not an implementation task -- whether the logic of C3 equals Burgess-Xu without unboundedness plus S5 -- where only the containment is established and the completeness claim was explicitly declined.
+- Verdict-first research, deliberately alone on its line: the deliverable is a verdict plus grounds, not a landed theorem, and it must not be budgeted as a routine task. Every landed and in-flight decidability result in this tree is ZTime-shaped; L-R3 is the only identified route to Base/Dense/RTime, and this record is what makes the review's "NEW, UNFILED" reference resolve.
+- Dependency-inclusive and correctly headed by its blocker. 298 is `partial` and fixes the c7 labeling bug at formula ~13750; 282 and 296 are also `partial` and both wait on it, as does 231's regeneration automation. Off both critical paths, so it sits below the decidability and completeness work rather than competing with it.
+- Alone on its line and genuinely not dispatchable yet: the blocker is an external credential, not an in-repo predecessor, so no dependency edge can express it and no batch member can clear it.
+- Deliberately demoted from the head of the list, where it previously sat. All six of 761's declared edges are discharged, but plan v13 came to rest at 30 of 41 phases closed with ZERO enterable, every remaining phase behind Phase 11.6's depth-`0` gate that no open task owns -- so dispatching this line advances nothing until Stage 0's unchecked ownership item is ruled. 862 and 861 stay batched WITH 761 rather than after it, because their edge is on 761 reaching TERMINAL and a dependent without its out-of-batch blocker is dead weight; both are already `researched` and will land the moment the gate lifts.
+- Kept on its own line rather than folded into the batch above, because it needs not merely 761 terminal but the whole chain above it closed. The (S) scope question it turns on is still owned by no task.
+- Classified genuinely open -- the predicate is refuted as stated -- so the honest terminal outcome is a register entry recording the refutation, not a discharge. Scheduling it expecting a proof is the failure mode this line exists to prevent.
+- The whole Track A/Track B tableau spine is priority `low` and off both critical paths, which is why it sits below the L-plus work despite its size. Dependency-inclusive: 428 is `blocked` and heads the chain it gates (429 -> 410 -> 411).
+- Separated from the spine's middle because its terminus is a different kind of work: 482 is classified OPEN MATHEMATICS on a multi-month horizon and must not be scheduled as routine implementation.
+- Both hang off 497, which the chain-to-543 batch above already carries, so this line is placed after it rather than duplicating 497. 499 is flagged HARD in its own record.
+- 125 is the capstone, reachable only once 498 and 499 both land; 501 extends STSA with Until/Since behind it.
+- Carries 26 declared edges, more than any other record in the tree, and is a documentation sweep whose value depends entirely on the work it documents having landed. Running it early guarantees re-running it.
+- Placed below every L-plus line by standing user ruling: the repository's aim is completeness and decidability of the stability-modal language L-plus, and L^|> is a secondary line of investigation that is kept but never dispatched ahead of, or batched with, critical-path work. Within the batch, 873 is the one piece of L^|> infrastructure gated on nothing, and 874, 875 and 876 each carry an edge on it. 876 is now a decision record only -- no constructor of `OpenFormula` is to be removed.
+- The last line, and the only L-triangle task with an out-of-batch gate: its 743 edge is carried by the first batch in this list, so it cannot run until that one closes. Small, self-contained, and demoted by the same standing ruling as the batch above.
 
-**761 is now a live collision source on the generated-surface territory** (`README.md`,
-`FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`, `docs/theorem-index.md`,
-`scripts/check-module-invariants.sh`, `typst/generated/status.typ`). That is the price of lifting
-the hold, and it is why `/revise 761` heads the list: a task that cannot be dispatched but holds
-forty declared paths is worse than a held one.
-**Coverage appendix (uncovered tasks)**:
-```
-/orchestrate 570,664,831,926,927,928
-```
+Each line is one invocation, and batches are dependency-inclusive: a batch holding a blocker together with its dependent is correct, while a dependent named *without* its out-of-batch blocker is dead weight. `MAX_TASKS` is 8 and the work-cycle budget is per task per invocation (5 default, 13 under `--hard`), so **re-run the same line until every member reports terminal**. Shared file scope serializes a batch rather than breaking it, and a collision against a *live* session's lock is not bypassable by `--allow-scope-collision`: wait for the holder, or batch with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
+
+**This section is generated and is the authority on run order.** It is rendered from `specs/state.json`'s `roadmap_batches` by `scripts/roadmap-integration.sh`; change the order or the membership through `/roadmap`, never by editing the fence by hand -- a hand edit here is overwritten by the next regeneration. The `## Next batches` section further down is authored prose that no regeneration touches, and its task list has gone stale against the live graph.
 
 ## Next batches
 
