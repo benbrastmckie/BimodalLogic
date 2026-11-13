@@ -375,7 +375,7 @@ converting, and reconcile the running total against Phase 1's 36.
 
 ---
 
-### Phase 5: Convert the FrameClass Section [NOT STARTED]
+### Phase 5: Convert the FrameClass Section [COMPLETED]
 
 **Goal**: Convert the eight `FrameClass` bodies, including `z1Rule` (whose rule occupies two
 equation slots) and `orderTrichotomy` (whose guard is branch-side and carries the `TrichClosed`
@@ -383,19 +383,19 @@ hypothesis).
 
 **Tasks**:
 
-- [ ] Convert `applyRule_priorUZ_closed`, `applyRule_priorSZ_closed`, `applyRule_z1Rule_closed`,
+- [x] Convert `applyRule_priorUZ_closed`, `applyRule_priorSZ_closed`, `applyRule_z1Rule_closed`,
   `applyRule_priorUGap_closed`, `applyRule_priorSGap_closed`, `applyRule_sepRule_closed`,
-  `applyRule_densityRule_closed`, `applyRule_orderTrichotomy_closed`.
-- [ ] For `z1Rule`, route through both of its wrappers (the two arms recorded as `eq_31`/`eq_32` in
+  `applyRule_densityRule_closed`, `applyRule_orderTrichotomy_closed`. *(completed — all eight converted)*
+- [x] For `z1Rule`, route through both of its wrappers (the two arms recorded as `eq_31`/`eq_32` in
   Phase 1) rather than assuming one covers the rule; confirm against Phase 1's recorded types which
-  arm each wrapper pins.
-- [ ] For `denseIndicatorClosure` and `densityRule`, which carry literal formula patterns, use the
-  hoisted `have off : …` off-pattern shape from Phase 3.
-- [ ] Rewrite the per-theorem cost comment for each converted theorem.
-- [ ] Leave every `set_option maxHeartbeats` line in place.
-- [ ] Record `#count_heartbeats` after-figures for all eight under `set_option Elab.async false`.
-- [ ] Apply the same per-rule fallback and `#### Reasoned Exclusions` rule as Phase 3.
-- [ ] Commit per green sub-step.
+  arm each wrapper pins. *(completed — `applyRule_z1Rule_arm_eq` (eq_31, trigger `G(G inner → rhs)`) and `applyRule_z1Rule_offPattern_eq` (eq_32, any other `G φ`), confirmed against the Phase 1 types; the proof splits on `∃ φ, sf.formula = .allFuture φ` and then on `∃ inner rhs, φ = .imp (.allFuture inner) rhs`)*
+- [x] For `denseIndicatorClosure` and `densityRule`, which carry literal formula patterns, use the
+  hoisted `have off : …` off-pattern shape from Phase 3. *(deviation: altered — `denseIndicatorClosure` was converted in Phase 4, where the plan's own task list also places it; `densityRule` uses the `by_cases h : sf.sign = .pos ∧ ∃ ψ, sf.formula = .allFuture ψ` shape rather than a hoisted `have off`, as in Phase 3. Its propagation block (`mem_filterMap_sub` + the existing `simp_all [...]` closer) is kept verbatim.)*
+- [x] Rewrite the per-theorem cost comment for each converted theorem. *(completed — also rewrote the FrameClass section note's `z1Rule` sentence, which described the old `simp` closer)*
+- [x] Leave every `set_option maxHeartbeats` line in place. *(deviation: altered — every `maxHeartbeats` line is left in place, but a new `set_option linter.style.longFile 1700` baseline was added after the module docstring: the converted proofs took the file past the 1500-line default and the Phase 4 build warned)*
+- [x] Record `#count_heartbeats` after-figures for all eight under `set_option Elab.async false`. *(completed — 1,420 to 2,293 heartbeats each)*
+- [x] Apply the same per-rule fallback and `#### Reasoned Exclusions` rule as Phase 3. *(completed — no fallback needed, 8 of 8 converted)*
+- [x] Commit per green sub-step. *(deviation: altered — one commit for the eight)*
 
 **Timing**: 2 hours
 

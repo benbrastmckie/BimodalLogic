@@ -180,14 +180,14 @@ context only.
 | 26 | `applyRule_sncePos_closed` | 883444 | 52 | | |
 | 27 | `applyRule_untlNeg_closed` | 893772 | 59 | | |
 | 28 | `applyRule_snceNeg_closed` | 892568 | 61 | | |
-| 29 | `applyRule_priorUZ_closed` | 876360 | 57 | | |
-| 30 | `applyRule_priorSZ_closed` | 875591 | 64 | | |
-| 31 | `applyRule_z1Rule_closed` | 864804 | 57 | | |
-| 32 | `applyRule_priorUGap_closed` | 875487 | 50 | | |
-| 33 | `applyRule_priorSGap_closed` | 874545 | 49 | | |
-| 34 | `applyRule_sepRule_closed` | 873857 | 55 | | |
-| 35 | `applyRule_densityRule_closed` | 866915 | 49 | | |
-| 36 | `applyRule_orderTrichotomy_closed` | 878351 | 50 | | |
+| 29 | `applyRule_priorUZ_closed` | 876360 | 57 | 1420 | |
+| 30 | `applyRule_priorSZ_closed` | 875591 | 64 | 1420 | |
+| 31 | `applyRule_z1Rule_closed` | 864804 | 57 | 2048 | |
+| 32 | `applyRule_priorUGap_closed` | 875487 | 50 | 1631 | |
+| 33 | `applyRule_priorSGap_closed` | 874545 | 49 | 1631 | |
+| 34 | `applyRule_sepRule_closed` | 873857 | 55 | 1642 | |
+| 35 | `applyRule_densityRule_closed` | 866915 | 49 | 2293 | |
+| 36 | `applyRule_orderTrichotomy_closed` | 878351 | 50 | 2130 | |
 
 Cross-checks against the research report's three probes (not substitutes for the fresh figures):
 `andPos` 882,869 vs 882,487 (+0.04%); `serialityRule` 2,085,983 vs 2,084,589 (+0.07%); `boxNeg`
