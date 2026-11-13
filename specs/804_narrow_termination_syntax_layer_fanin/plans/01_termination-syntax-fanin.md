@@ -290,35 +290,35 @@ the four-root build confirms it.
 
 ---
 
-### Phase 3: Post-Change Measurement and Final Gate [NOT STARTED]
+### Phase 3: Post-Change Measurement and Final Gate [COMPLETED]
 
 **Goal**: Measure the rebuild sets on the landed tree, run the complete gate set, and finish the
 evidence record the acceptance criteria ask for.
 
 **Tasks**:
-- [ ] Re-run the Phase 1 probe on the rebuilt tree and compute the same five reverse import
+- [x] Re-run the Phase 1 probe on the rebuilt tree and compute the same five reverse import
   closures. Record each beside its Phase 1 figure, with the termination-module count.
-- [ ] State the `Axioms.lean` result plainly, whatever it is. The expected outcome is no change in
+- [x] State the `Axioms.lean` result plainly, whatever it is. The expected outcome is no change in
   that row; the expected gains are in the `Semantics.lean`, `Syntax.lean`, `Derivation.lean` and
   `Syntax/Context.lean` rows.
-- [ ] Run the full unscoped guarded build:
+- [x] Run the full unscoped guarded build:
   `bash .claude/scripts/lake-build-guard.sh build --timeout 3600 -- build`, verdict from the
   guard's `result`.
-- [ ] Run `bash scripts/check-module-invariants.sh` in full mode and require `ALL CHECKS PASSED`
+- [x] Run `bash scripts/check-module-invariants.sh` in full mode and require `ALL CHECKS PASSED`
   with exit status 0. This covers `lake build` (C1), the axiom baselines (C2, C14), zero structural
   `sorry` by content (C3), import resolution (C4), `file.lean:NNN` citations (C20), the exe roots
   (C25) and the warning budget (C28).
-- [ ] Run `bash scripts/check-metalogic-cycles.sh` and `bash scripts/typst-sync-check.sh`; each
+- [x] Run `bash scripts/check-metalogic-cycles.sh` and `bash scripts/typst-sync-check.sh`; each
   exits 0, or shows no finding absent from the Phase 1 record.
-- [ ] Confirm the sorry count is 0 by content over the seven edited files, and that `git diff`
+- [x] Confirm the sorry count is 0 by content over the seven edited files, and that `git diff`
   from the Phase 1 commit to HEAD touches no line of them other than `import` lines.
-- [ ] Run `bash .claude/scripts/check-task-references.sh` on each edited non-`specs/` file; each
+- [x] Run `bash .claude/scripts/check-task-references.sh` on each edited non-`specs/` file; each
   exits 0.
-- [ ] Run `bash .claude/scripts/verify-deploy.sh`. This task touches no `.claude/**` and no
+- [x] Run `bash .claude/scripts/verify-deploy.sh`. This task touches no `.claude/**` and no
   source-store path, and the deployed tree is known stale, so a red gate is judged by whether its
   findings name a file this task touched; findings that do not are listed as standing baseline.
-  If the dispatch carries a batch gate deferral, record the deferral instead.
-- [ ] Finish the evidence file: the before/after rebuild-set table; the edge classification table
+  If the dispatch carries a batch gate deferral, record the deferral instead. *(deviation: altered — batch gate deferral recorded instead of an independent run, as the dispatch directs)*
+- [x] Finish the evidence file: the before/after rebuild-set table; the edge classification table
   restated against the landed imports (each reducible edge marked removed, narrowed or kept, each
   essential edge with its declaration-level evidence); the recommendation taken and the two not
   taken (R5, R6) with reasons; the gate results.
@@ -368,15 +368,15 @@ nothing to pin; the rationale is recorded under Decisions.
 
 - [ ] Guarded build of `FormalSystem`, `BimodalTest`, `BimodalTools` and `BimodalToolsTest` green
   with no warning lines (Phase 2).
-- [ ] `bash scripts/typst-sync-check.sh --counts-only` exits 0 before the Phase 2 commit.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0 (Phase 2).
-- [ ] Full unscoped guarded build green (Phase 3).
-- [ ] `bash scripts/check-module-invariants.sh` prints `ALL CHECKS PASSED`, exit 0 (Phase 3).
-- [ ] `bash scripts/check-metalogic-cycles.sh` shows no new finding (Phases 2 and 3).
-- [ ] Sorry count 0 by content in the edited files (Phase 3).
-- [ ] Only `import` lines differ in the seven `.lean` files (Phases 2 and 3).
-- [ ] Reverse import closure of `FormalSystem.Semantics` contains no termination module (Phase 3).
-- [ ] Before/after rebuild set for an `Axioms.lean` edit recorded with its method (Phase 3).
+- [x] `bash scripts/typst-sync-check.sh --counts-only` exits 0 before the Phase 2 commit.
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0 (Phase 2).
+- [x] Full unscoped guarded build green (Phase 3).
+- [x] `bash scripts/check-module-invariants.sh` prints `ALL CHECKS PASSED`, exit 0 (Phase 3).
+- [x] `bash scripts/check-metalogic-cycles.sh` shows no new finding (Phases 2 and 3).
+- [x] Sorry count 0 by content in the edited files (Phase 3).
+- [x] Only `import` lines differ in the seven `.lean` files (Phases 2 and 3).
+- [x] Reverse import closure of `FormalSystem.Semantics` contains no termination module (Phase 3).
+- [x] Before/after rebuild set for an `Axioms.lean` edit recorded with its method (Phase 3).
 
 ## Artifacts & Outputs
 

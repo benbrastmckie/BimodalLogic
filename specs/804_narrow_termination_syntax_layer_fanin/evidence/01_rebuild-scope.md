@@ -181,3 +181,107 @@ in any module.
 - `check-module-invariants.sh --no-build`: exit 0, `ALL CHECKS PASSED`.
   `check-metalogic-cycles.sh`: exit 0. No finding absent from the Phase 1 record (both records are
   empty).
+
+## 3. Post-change measurement
+
+Tree: HEAD `942c0cbcc` (the commit carrying the seven edits), rebuilt. Same probe, same script and
+same 852-module universe as section 1.2.
+
+### 3.1 Rebuild sets, before and after
+
+| Edited module | Before | After | Termination before | Termination after |
+|---|---|---|---|---|
+| `FormalSystem.ProofSystem.Axioms` | 520 | 520 | 25 | 25 |
+| `FormalSystem.Semantics` (aggregator) | 251 | 204 | 23 | 0 |
+| `FormalSystem.Syntax` (aggregator) | 107 | 29 | 23 | 0 |
+| `FormalSystem.ProofSystem.Derivation` | 361 | 356 | 25 | 23 |
+| `FormalSystem.Syntax.Context` | 544 | 538 | 25 | 23 |
+| `FormalSystem.ProofSystem.Derivable` | 354 | 349 | 25 | 23 |
+| `FormalSystem.ProofSystem.DerivedAxioms` | 339 | 334 | 25 | 23 |
+| `FormalSystem.Syntax.Formula` | 769 | 769 | 25 | 25 |
+| `FormalSystem.Syntax.Subformulas` | 298 | 284 | 25 | 23 |
+| `FormalSystem.Syntax.SubformulaClosure.Closure` | 297 | 283 | 25 | 23 |
+| `FormalSystem.Syntax.SubformulaClosure.NestingDepth` | 233 | 165 | 23 | 0 |
+| `FormalSystem.Syntax.SubformulaClosure.TemporalFormulas` | 224 | 155 | 23 | 0 |
+| `FormalSystem.Semantics.Validity` | 445 | 404 | 23 | 0 |
+| `FormalSystem.Semantics.Truth` | 485 | 444 | 23 | 0 |
+| `FormalSystem.Semantics.TaskFrame` | 561 | 520 | 23 | 0 |
+
+**An edit to `ProofSystem/Axioms.lean` rebuilds the same 520 modules as before, all 25 termination
+modules among them.** No module left or entered that set. This is the acceptance metric, and the
+change does not move it: the path from the subtree to `Axioms.lean` is essential (section 3.3).
+
+The gains are elsewhere. No termination module is downstream of any `Semantics` module or of the
+`Syntax` aggregator any more. 47 modules left the rebuild set of `Semantics.lean`: `Fuel`,
+`MintBound` and its 21 submodules, `Closure`, `Saturation`, `TraceCertificate`, `ProofExtraction`,
+`Verified/Decidable`, seven `Verified/Bridge` modules, three `Automation` modules and nine test
+modules. `SubformulaProperty` and `TimeTypeBound` left the rebuild sets of `Derivation`,
+`Derivable`, `DerivedAxioms`, `Syntax.Context`, `Subformulas` and `SubformulaClosure.Closure`.
+
+Import closure of the subtree: 27 `FormalSystem` modules outside `Termination/` (was 122), none
+under `Semantics` (was 75). `Fuel`'s closure holds 3181 modules outside the project (was 4126).
+
+Every measured figure equals the plan's predicted figure for its row.
+
+### 3.2 Edge classification against the landed imports
+
+Numbering and declaration-level use counts are the research report's
+(`reports/01_termination-syntax-fanin.md`, `Expr.getUsedConstants` over types and values); the last
+column is the state of the edge on the landed tree.
+
+| # | Edge | Evidence | Class | Landed |
+|---|------|----------|-------|--------|
+| 1 | `SignedFormula` -> `Syntax.Formula` | 483 uses of `Formula` and its constructors | Essential | kept |
+| 2 | `SignedFormula` -> `ProofSystem` (aggregator) | 0 uses of any `ProofSystem.*` constant in `SignedFormula` | Reducible | narrowed to `ProofSystem.Axioms`, which `Tableau` needs through it (edge 3) |
+| 3 | `Tableau` -> `ProofSystem.Axioms` (via `SignedFormula`) | 84 uses, all `FrameClass`, its constructors and order instances | Essential for `FrameClass` | kept |
+| 4 | `Tableau` -> `Derivation`, `Derivable`, `DerivedAxioms`, `LinearityDerivedFacts`, `Syntax.Context` (via 2) | 0 uses | Reducible | removed |
+| 5 | `SubformulaProperty` -> `Tableau` | 2057 uses (`applyRule`, `isApplicable`, the `as*?` destructors) | Essential | kept |
+| 6 | `SubformulaProperty` -> `Syntax.SubformulaClosure.Closure` | 0 uses | Reducible | removed |
+| 7 | `TimeTypeBound` -> `SubformulaProperty` | uses its closure theorems | Essential | kept |
+| 8 | `Fuel` -> `Saturation` | 86 uses (`expandBranchWithFuel`, `BudgetedTableau`, `soundFuel`, ...) | Essential | kept |
+| 9 | `Fuel`/`MintPotential` -> `Syntax.SubformulaClosure.Closure` (via `Saturation`) | `subformulaClosure` (22 uses); `soundFuel` is defined with it | Essential | kept |
+| 10 | `Saturation` -> `Closure` | 402 uses (`ClosedBranch`, `findClosure`, `ClosureReason`) | Essential | kept |
+| 11 | `Saturation` -> `TraceCertificate` | 64 uses (`TraceM`) | Essential | kept |
+| 12 | `Closure` -> `Automation.ProofSearch.Core` | `matchAxiom`, `matchMirror`, `matchPriorSZ` in `checkAxiomNeg` | Essential | kept |
+| 13 | `Closure` -> `ProofSystem.Axioms`, `ProofSystem.Derivation` | `Axiom` (7), `DerivationTree` (33): `ClosureReason.axiomNeg` stores a `DerivationTree` witness | Essential | kept |
+| 14 | `Core` -> `ProofSystem` (aggregator) | uses `Axioms` (111), `Derivation` (71), `DerivedAxioms` (13); 0 of `Derivable`, `LinearityDerivedFacts` | Essential for three modules, reducible for two | narrowed to `Derivation` + `DerivedAxioms` |
+| 15 | `Core` -> `Semantics` (aggregator) | 0 uses of any constant of any Semantics module | Reducible | removed |
+| 16 | `Core` -> `Theorems.{Combinators, Perpetuity.Helpers, ConnectDerived, LinearityDerived}` | 17 uses; `matchAxiom`'s witnesses are built from them | Essential | kept |
+| 17 | `Core` -> `SuccessPatterns` -> `Syntax` (aggregator) | `SuccessPatterns` uses `Syntax.Formula` only | Reducible | narrowed to `Syntax.Formula` |
+| 18 | `TraceCertificate` -> `Syntax` (aggregator) | uses `Syntax.Formula` only | Reducible | removed (arrives via `SignedFormula`) |
+| 19 | `TraceCertificate` -> `ProofSystem` (aggregator) | 29 uses, all `FrameClass` | Reducible | removed (arrives via `Closure`) |
+| 20 | `MintBound.*` -> lower layers | `Syntax.Formula`/`Atom`, `FrameClass`, `subformulaClosure`, all inherited through `Fuel` | Essential | kept |
+
+Two tactic-provenance edges were made explicit: `Fuel` -> `Mathlib.Tactic.Ring` (`ring`,
+`norm_num` in `Fuel` and the `MintBound` cone) and `ClosureResidual` -> `Mathlib.Data.Finset.Max`
+(`Finset.max'`). Both reached the subtree only through `Core`'s Semantics import.
+
+### 3.3 Recommendation
+
+- **Taken: narrow (R1-R4).** Seven import-line edits; no declaration, statement or proof touched.
+  They remove every incidental edge in the table.
+- **`Axioms.lean`: leave as is.** `Fuel` and `MintBound` are stated over `ClosedBranch` and
+  `expandBranchWithFuel`, whose types contain `ClosureReason`, hence `DerivationTree`, hence
+  `Axiom`. `Tableau`, `SubformulaProperty` and `TimeTypeBound` need `FrameClass`, which is declared
+  in `Axioms.lean`. No import change cuts either path.
+- **Not taken: relocate `FrameClass` (R5).** It would take four modules (`SignedFormula`,
+  `Tableau`, `SubformulaProperty`, `TimeTypeBound`) out of the `Axioms.lean` rebuild set, 520 ->
+  516 by the report's simulation, at the cost of shifting 33 `Axioms.lean:NNN` citations and adding
+  a module. Open to the user as a follow-up.
+- **Not taken: abstract `findClosure` behind an interface (R6).** It would change definitions the
+  decision procedure runs and statements that are proved, which the task excludes.
+
+### 3.4 Gates on the landed tree
+
+| Gate | Result |
+|---|---|
+| `lake build` through the guard | exit 0, guard `result` `state=complete exit_status=0`, 2975 jobs, 0 `error:`, 0 `warning:` |
+| `bash scripts/check-module-invariants.sh` (full mode) | exit 0, `ALL CHECKS PASSED`; C1, C2 (fifty pinned axiom sets match baseline), C3 (zero structural sorry), C4, C14, C20, C25, C28 (0 warnings) all PASS |
+| `bash scripts/check-metalogic-cycles.sh` | exit 0 |
+| `bash scripts/typst-sync-check.sh` | exit 0, all 4 checks |
+| sorry census over all source roots | `sorry_count: 0` |
+| `^axiom ` count over the source roots | 14, same as at `6350193cc` |
+| non-import changed lines in the seven files, `73f45155a..HEAD` | 0 |
+| `check-task-references.sh` on each edited non-`specs/` file | exit 0 on all 11 |
+| `lake build BimodalToolsTest` | exit 1 on `CertificateImportTest` only; predates this change (section 2.2) |
+| `.claude/scripts/verify-deploy.sh` | not run here: the dispatch carries a batch gate deferral, so the complete gate set runs once at the batch stage. The repository-specific criteria above have no `--only`/`--only-gate` mapping and were run directly. |
