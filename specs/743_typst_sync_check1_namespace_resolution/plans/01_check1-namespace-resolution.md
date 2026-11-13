@@ -309,7 +309,7 @@ residue.
 
 ---
 
-### Phase 3: Document the Mechanism and Its Limits Where Citation Authors Look [IN PROGRESS]
+### Phase 3: Document the Mechanism and Its Limits Where Citation Authors Look [COMPLETED]
 
 **Goal**: The next citation author, and the next person tempted to add a whitelist entry, can see
 what namespace resolution does and does not cover without reading the implementation.
