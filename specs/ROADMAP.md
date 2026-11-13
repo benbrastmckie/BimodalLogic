@@ -18,16 +18,17 @@ last stage below and are never dispatched ahead of, or batched with, L⁺ critic
 
 ## Where both fronts now stand
 
-**Neither front has a dispatchable Lean line.** This is the governing fact about the current
-state of the tree, and it is the product of rulings and closed programmes rather than of
-unfinished dispatches.
+**Stage 1 has a short dispatchable Lean line again; Stage 2 has none.** This is the governing
+fact about the current state of the tree, and it is the product of rulings and closed
+programmes rather than of unfinished dispatches.
 
-- **Decidability (Stage 1).** 761's hold is **LIFTED** (2026-11-12) and it is back at
-  `[IMPLEMENTING]`, but **no phase of its plan is enterable by an implementation dispatch**: its
-  two most recent phases are `[BLOCKED]` on a binder-list drift, and everything else is behind
-  Phase 11.9's INCONCLUSIVE verdict on the open depth-`0` core. **The next act on 761 is
-  `/revise 761`, not `/orchestrate 761 --implement`.** The sub-regime the frontier was most
-  recently relocated onto is nobody's task and is not to be filed without reading 924's report.
+- **Decidability (Stage 1).** 761's hold is **LIFTED** (2026-11-12) and the `hself` disposition is
+  **RULED (B), rename to auxiliaries** (2026-11-13, Stage 0 below), so Phases 11.16 and 11.17 are
+  now enterable — roughly 2.5 hours of work that closes the idle-insertion cascade's record.
+  Everything beyond them, fourteen phases and five of the task's six filed Goals, stays behind
+  Phase 11.6's depth-`0` gate, which **no open task owns**. The crux that would decide that gate is
+  named in Stage 0 and in `RaySummary/README.md`: whether `ForwardSlackWitnessed` at a POSITIVE
+  amount is satisfiable at any state the depth-`0` induction reaches.
 - **Completeness (Stage 2).** The Lean programme is **exhausted by ruling, not by exhaustion of
   effort**: every row of 879's 21-row ingredient table is landed, held as paper, or closed, and
   901's Recommendation 8 bars filing a Lean formalization of the Reynolds engine's §§7–15.
@@ -279,30 +280,58 @@ batch with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
       recorded `prior_status`, `implementing`, and cleared `hold_reason`/`held_at`/`prior_status`).
       Both substantive reasons for waiting were discharged and the serialization cost was spent.
       **It did not produce a dispatchable line**, for the reason in the next item
-- [ ] **Decide the `hself` disposition on Phases 11.12 and 11.13 — this is now the thing standing
-      between Stage 1 and a dispatchable line, and it replaces the hold.** Both phases' declarations
-      are LANDED and sorry-free (`exists_ladderPath_at_region_of_idle_past` at
-      `LadderAgree.lean:2227`, the join `exists_ladderPath_at_region` at `:2291`), and both are
-      `[BLOCKED]` because each carries a self-loop hypothesis
+- [x] **The `hself` disposition on Phases 11.12 and 11.13 is RULED: disposition (B), RENAME to
+      auxiliaries** (2026-11-13, user ruling). Both phases' declarations are LANDED and sorry-free
+      (`exists_ladderPath_at_region_of_idle_past` at `LadderAgree.lean:2227`, the join
+      `exists_ladderPath_at_region` at `:2291`), and each carries a self-loop hypothesis
       `hself : ∀ p ≤ a, pend (objAt g p) = false → step (objAt g p) (objAt g p) = true` that
-      neither recorded block admits — Phase 11.12's own third verification bullet names a
-      self-loop binder as the disqualifying case and prescribes `[BLOCKED]` plus a rename. The
-      addition is reasoned in-source (`LadderAgree.lean:1758-1790`): `IsLadderPath` supplies no
-      self-loop on the collapsed block, so the obligation is real, and the pigeonhole alternative
-      needs many idle runs below the region start where the regime hypothesis gives one. The two
-      admissible dispositions are **accept `hself` by revision** (every consumer then states the
-      regime-sense caveat, and Phase 15.1's consumed interface is conditional) or **rename to an
-      auxiliary** and leave the recorded name unclaimed. `plan-compliance.md` routes this to the
-      user, not to an implementer. Each phase's `#### Recorded Outcome` carries the binder-for-binder
-      table; one decision resolves both
-- [ ] **Then `/revise 761`**, with three inputs: the disposition above, Phase 11.9's INCONCLUSIVE
-      depth-`0` verdict, and 924's relocation of `ForwardSlackWitnessed` onto `IdleRunPumpable`.
-      The revision's live question is whether 924's route lifts Phase 11.6's gate: that gate bars
-      a "path-selected or regime-restricted depth-`0` result" because `stab_mem_tpOf_iff_cell` is a
-      universal over the FULL cell, and `forwardSlackWitnessed_of_cell_idleRunPumpable`'s premise
-      ranges over every type in the cell rather than over one path — so it is arguably NOT the
-      path-selected kind the gate excludes. **Settle that in the revision, on the gate's own
-      wording, before any phase is re-entered**
+      neither recorded block admits. Disposition (R) is CLOSED on the mathematics: the probe
+      `specs/evidence/seam-gluing-ray-product/ladder-self-loop-derivability-decision.lean` compiles
+      `hself_not_derivable` — the implication from the recorded binders to the path-local self-loop
+      is refuted even with `Fintype Q` assumed, strictly stronger than either landed declaration
+      needs — together with `hself_satisfiable_at_an_instance`, so `hself` is neither derivable nor
+      refutable and is a genuine INDEPENDENT premise. **(B) is ruled over (A) on four grounds**: the
+      module already carries this exact idiom for `exists_spliced_ladderPath_of_idle_past`
+      (`LadderAgree.lean:1509`, unclaimed and refuted), so (B) reuses a convention rather than
+      adding a softer second one; a premise nothing can discharge from below belongs in the NAME,
+      where every use site sees it, not in a caveat held in two other files' docstrings; the
+      reserved names stay available for whatever eventually discharges `hself`; and (A)'s cost is an
+      unscoped `/revise` round to amend two recorded blocks, where (B)'s extra cost is mechanical
+      and already enumerated in Phase 11.16. Phase 11.16's branch (B) is therefore the enterable
+      branch, including its instruction to RAISE — not silently take — the one-line scope expansion
+      onto `LadderWindow.lean:509-519`
+- [ ] **Decide who owns the depth-`0` gate — this is now the thing standing between Stage 1 and a
+      dispatchable line, and it replaces the `hself` ruling above.** The `hself` ruling unblocks
+      Phases 11.16 and 11.17 only (~2.5h); the other fourteen open phases of 761, and five of its
+      six filed Goals (`ladderSound`, `ladderCons_localRun`, `ladderLift`, `Dmax ⊆ Real`,
+      `ladderRealized`), sit behind Phase 11.6's depth-`0` gate. That gate lifts on exactly one of
+      two events — `cellLE_zero_const_of_kappa_eq` lands as a `sorryAx`-free THEOREM, or
+      `CellLEZeroConstOfKappaEq` is refuted under `ParamsOk` — and **no open task owns either**.
+      The reserved name is claimed by nothing (five prose sites record it as unclaimed); the schema
+      is refuted at the ONE-DEPTH conditions (`ParamsOkPre`, the forty-seventh wired probe) but the
+      two-depth `(K4)` dissolves that collision, so under `ParamsOk` it is neither proved nor
+      refuted. The gate is nearer than "prove it from scratch": five restricted cell-EQUALITY
+      schemas are landed (`_of_forwardSlack`, `_commonShift_`, `_monotone_`, `_antitone_`,
+      `_antitone_bounded_`), the monotone/antitone dichotomy is compiled exhaustive with both slices
+      inhabited, and `forwardSlackWitnessed_zero` makes the amount-`0` case free.
+      `RaySummary/README.md` names the one remaining crux itself: **whether a
+      `ForwardSlackWitnessed` hypothesis at a POSITIVE amount is satisfiable at any state the
+      depth-`0` induction one layer up reaches**, which "stays open and claimed in neither
+      direction". A probe deciding that decides the gate in one direction or the other. **Trap for
+      whatever takes it**: the per-path state-level regime is ALREADY refuted
+      (`ClimbWitness.hasForwardSlack_refuted_unconditional`); `ForwardSlackWitnessed` survives only
+      as an existential over paths, so the existential form is the target and the per-path form is a
+      known refutation
+- [x] **The former "then `/revise 761`" item is DISCHARGED** — plan v12
+      (`specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md`) IS that
+      revision, and it settled its one live question: 924's relocation of `ForwardSlackWitnessed`
+      onto `IdleRunPumpable` does NOT lift Phase 11.6's gate, on four recorded grounds, decisively
+      because `forwardSlackWitnessed_of_cell_idleRunPumpable` carries
+      `hno : ∀ χ, PlusFormula.stab χ ∉ plusSubformulaClosure φ` at `LadderIdle.lean:1040` — a
+      STAB-FREE closure, which is the one restriction a `⊡`-nesting-depth induction cannot start
+      from. Clause (i)'s first disjunct genuinely does not fire (the premise is cell-universal); its
+      second does. **No dispatch is to re-ask this question.** The next revision of 761 takes the
+      depth-`0` crux probe's verdict as its input, not this one
 - [ ] Supply the Hugging Face account and token **257** is blocked on
 - [ ] Rule on **428**'s scope. Its one edge is discharged and its `blockers` says "paused at
       4/5 cycles, NOT blocked", so the marker is mis-set: `/revise 428` to add phases for its four
