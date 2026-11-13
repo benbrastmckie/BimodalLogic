@@ -54,7 +54,7 @@ simplified tableau system that exploits the special properties of S5
 * Wu, M. Verified Decision Procedures for Modal Logics
 -/
 
-set_option linter.style.longFile 3200
+set_option linter.style.longFile 3300
 
 namespace FormalSystem.Metalogic.Decidability
 
@@ -1553,6 +1553,152 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
                timeOrd.identifyTime (min t₁ t₂) (max t₁ t₂)) ],
            timeOrd)
   | _, _, _ => (.notApplicable, timeOrd)
+
+/-!
+## Per-arm equations for `applyRule`, under stable names
+
+`applyRule` is one `match` with 37 arms and a catch-all, and Lean's equation generator produces
+one lemma per arm: `applyRule.eq_1` … `applyRule.eq_37`, plus `applyRule.eq_38` for the catch-all.
+Each states `applyRule .<rule> sf branch timeOrd = <that arm's body>` under the arm's own side
+conditions — a sign equation, and for the arms that match on the formula's shape a formula
+equation as well. Rewriting with the right one puts a single arm into a hypothesis, where
+`unfold applyRule` would put all of them.
+
+The `eq_N` numbering is assigned by the generator and follows arm order, so reordering the arms or
+adding one silently renumbers every lemma after it. The wrappers below are the only place those
+numbers appear: each restates one generated lemma, at exactly its generated type (`type_of%`),
+under a name built from the rule. **Downstream proofs must name a wrapper, never a raw `eq_N`.**
+If the arms are ever reordered, the wrappers whose rule no longer matches stop being usable at
+their call sites — a rewrite with `applyRule_andPos_arm_eq` fails unless its left-hand side really
+is `applyRule .andPos …` — so a stale number is a compile error here or at the first use, never a
+wrong theorem.
+
+All arguments are explicit, in the order `sf branch timeOrd`, then the formula variables the arm
+binds (if any), then the sign equation, then the formula equation (if any).
+`serialityRule` and `timeLinearity` match on the rule alone and take no side condition.
+`z1Rule` has two arms and therefore two wrappers: `applyRule_z1Rule_arm_eq` for a trigger of the
+shape `G(G inner → rhs)` and `applyRule_z1Rule_offPattern_eq` for any other `G φ`.
+`applyRule_offArm_eq` is the catch-all: it takes one refutation per arm, each saying that arm's
+side conditions fail, and concludes `.notApplicable`.
+
+Stating the wrappers here also makes the generated lemmas' existence a fact about this module,
+rather than a by-product of whichever proof happened to ask for them first.
+-/
+
+/-- The `andPos` arm of `applyRule`, as an equation. -/
+theorem applyRule_andPos_arm_eq : type_of% @applyRule.eq_1 := @applyRule.eq_1
+
+/-- The `andNeg` arm of `applyRule`, as an equation. -/
+theorem applyRule_andNeg_arm_eq : type_of% @applyRule.eq_2 := @applyRule.eq_2
+
+/-- The `orPos` arm of `applyRule`, as an equation. -/
+theorem applyRule_orPos_arm_eq : type_of% @applyRule.eq_3 := @applyRule.eq_3
+
+/-- The `orNeg` arm of `applyRule`, as an equation. -/
+theorem applyRule_orNeg_arm_eq : type_of% @applyRule.eq_4 := @applyRule.eq_4
+
+/-- The `impPos` arm of `applyRule`, as an equation. -/
+theorem applyRule_impPos_arm_eq : type_of% @applyRule.eq_5 := @applyRule.eq_5
+
+/-- The `impNeg` arm of `applyRule`, as an equation. -/
+theorem applyRule_impNeg_arm_eq : type_of% @applyRule.eq_6 := @applyRule.eq_6
+
+/-- The `negPos` arm of `applyRule`, as an equation. -/
+theorem applyRule_negPos_arm_eq : type_of% @applyRule.eq_7 := @applyRule.eq_7
+
+/-- The `negNeg` arm of `applyRule`, as an equation. -/
+theorem applyRule_negNeg_arm_eq : type_of% @applyRule.eq_8 := @applyRule.eq_8
+
+/-- The `boxPos` arm of `applyRule`, as an equation. -/
+theorem applyRule_boxPos_arm_eq : type_of% @applyRule.eq_9 := @applyRule.eq_9
+
+/-- The `boxNeg` arm of `applyRule`, as an equation. -/
+theorem applyRule_boxNeg_arm_eq : type_of% @applyRule.eq_10 := @applyRule.eq_10
+
+/-- The `diamondPos` arm of `applyRule`, as an equation. -/
+theorem applyRule_diamondPos_arm_eq : type_of% @applyRule.eq_11 := @applyRule.eq_11
+
+/-- The `diamondNeg` arm of `applyRule`, as an equation. -/
+theorem applyRule_diamondNeg_arm_eq : type_of% @applyRule.eq_12 := @applyRule.eq_12
+
+/-- The `boxTemporal` arm of `applyRule`, as an equation. -/
+theorem applyRule_boxTemporal_arm_eq : type_of% @applyRule.eq_13 := @applyRule.eq_13
+
+/-- The `allFuturePos` arm of `applyRule`, as an equation. -/
+theorem applyRule_allFuturePos_arm_eq : type_of% @applyRule.eq_14 := @applyRule.eq_14
+
+/-- The `allFutureNeg` arm of `applyRule`, as an equation. -/
+theorem applyRule_allFutureNeg_arm_eq : type_of% @applyRule.eq_15 := @applyRule.eq_15
+
+/-- The `allPastPos` arm of `applyRule`, as an equation. -/
+theorem applyRule_allPastPos_arm_eq : type_of% @applyRule.eq_16 := @applyRule.eq_16
+
+/-- The `allPastNeg` arm of `applyRule`, as an equation. -/
+theorem applyRule_allPastNeg_arm_eq : type_of% @applyRule.eq_17 := @applyRule.eq_17
+
+/-- The `someFuturePos` arm of `applyRule`, as an equation. -/
+theorem applyRule_someFuturePos_arm_eq : type_of% @applyRule.eq_18 := @applyRule.eq_18
+
+/-- The `someFutureNeg` arm of `applyRule`, as an equation. -/
+theorem applyRule_someFutureNeg_arm_eq : type_of% @applyRule.eq_19 := @applyRule.eq_19
+
+/-- The `somePastPos` arm of `applyRule`, as an equation. -/
+theorem applyRule_somePastPos_arm_eq : type_of% @applyRule.eq_20 := @applyRule.eq_20
+
+/-- The `somePastNeg` arm of `applyRule`, as an equation. -/
+theorem applyRule_somePastNeg_arm_eq : type_of% @applyRule.eq_21 := @applyRule.eq_21
+
+/-- The `untlPos` arm of `applyRule`, as an equation. -/
+theorem applyRule_untlPos_arm_eq : type_of% @applyRule.eq_22 := @applyRule.eq_22
+
+/-- The `sncePos` arm of `applyRule`, as an equation. -/
+theorem applyRule_sncePos_arm_eq : type_of% @applyRule.eq_23 := @applyRule.eq_23
+
+/-- The `untlNeg` arm of `applyRule`, as an equation. -/
+theorem applyRule_untlNeg_arm_eq : type_of% @applyRule.eq_24 := @applyRule.eq_24
+
+/-- The `snceNeg` arm of `applyRule`, as an equation. -/
+theorem applyRule_snceNeg_arm_eq : type_of% @applyRule.eq_25 := @applyRule.eq_25
+
+/-- The `orderTrichotomy` arm of `applyRule`, as an equation. -/
+theorem applyRule_orderTrichotomy_arm_eq : type_of% @applyRule.eq_26 := @applyRule.eq_26
+
+/-- The `denseIndicatorClosure` arm of `applyRule`, as an equation. -/
+theorem applyRule_denseIndicatorClosure_arm_eq : type_of% @applyRule.eq_27 := @applyRule.eq_27
+
+/-- The `densityRule` arm of `applyRule`, as an equation. -/
+theorem applyRule_densityRule_arm_eq : type_of% @applyRule.eq_28 := @applyRule.eq_28
+
+/-- The `priorUZ` arm of `applyRule`, as an equation. -/
+theorem applyRule_priorUZ_arm_eq : type_of% @applyRule.eq_29 := @applyRule.eq_29
+
+/-- The `priorSZ` arm of `applyRule`, as an equation. -/
+theorem applyRule_priorSZ_arm_eq : type_of% @applyRule.eq_30 := @applyRule.eq_30
+
+/-- The first `z1Rule` arm of `applyRule`: a trigger of the shape `G(G inner → rhs)`. -/
+theorem applyRule_z1Rule_arm_eq : type_of% @applyRule.eq_31 := @applyRule.eq_31
+
+/-- The second `z1Rule` arm of `applyRule`: a `G φ` trigger whose `φ` is not `G inner → rhs`. -/
+theorem applyRule_z1Rule_offPattern_eq : type_of% @applyRule.eq_32 := @applyRule.eq_32
+
+/-- The `priorUGap` arm of `applyRule`, as an equation. -/
+theorem applyRule_priorUGap_arm_eq : type_of% @applyRule.eq_33 := @applyRule.eq_33
+
+/-- The `priorSGap` arm of `applyRule`, as an equation. -/
+theorem applyRule_priorSGap_arm_eq : type_of% @applyRule.eq_34 := @applyRule.eq_34
+
+/-- The `sepRule` arm of `applyRule`, as an equation. -/
+theorem applyRule_sepRule_arm_eq : type_of% @applyRule.eq_35 := @applyRule.eq_35
+
+/-- The `serialityRule` arm of `applyRule`, as an equation. -/
+theorem applyRule_serialityRule_arm_eq : type_of% @applyRule.eq_36 := @applyRule.eq_36
+
+/-- The `timeLinearity` arm of `applyRule`, as an equation. -/
+theorem applyRule_timeLinearity_arm_eq : type_of% @applyRule.eq_37 := @applyRule.eq_37
+
+/-- The catch-all arm of `applyRule`: if every arm's side conditions are refuted, the rule is
+not applicable. -/
+theorem applyRule_offArm_eq : type_of% @applyRule.eq_38 := @applyRule.eq_38
 
 /--
 `RuleResult.branching` is never equal to `RuleResult.notApplicable`.
