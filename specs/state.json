@@ -7465,7 +7465,7 @@
     {
       "project_number": 803,
       "project_name": "cut_subformulaproperty_elaboration_time",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Cut the elaboration time of FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean, the repository's single largest rebuild cost.\n\nMEASURED EVIDENCE (from .lake/build-guard.stdout, full guarded build, 2026-10-15, this repo): the module elaborates in 1103s (18.4 minutes) as ONE module. On that build 414 of 2848 jobs actually rebuilt, totalling 6354s of elaboration across those 414; Metalogic accounted for 5649s across 306 modules. Seven modules accounted for roughly 2500s of the total, and SubformulaProperty alone is about 17 percent of the whole incremental rebuild. Next worst: Decidability.Tableau 476s, Termination.MintBound.MintPotential 360s, Termination.Fuel 238s.\n\nWHY IT HURTS REPEATEDLY. The module imports FormalSystem.Metalogic.Decidability.Tableau and FormalSystem.Syntax.SubformulaClosure.Closure, so any edit to the syntax or proof-system layer invalidates it. Paper-alignment work routinely edits FormalSystem/ProofSystem/Axioms.lean and FormalSystem/Semantics.lean, so this 18-minute module is woken by edits unrelated to decidability.\n\nGOAL. Reduce elaboration time substantially while proving exactly the same results. Localize hotspots with lean_profile_proof BEFORE changing anything, and record before/after per-declaration timings as evidence rather than asserting an improvement. Suspects to confirm rather than assume: simp set blowup, decide on a non-trivial decidable instance, unfolding of large structures, Nat/Int arithmetic normalization. Candidate remedies: replace simp with targeted rewrites, extract heavy sublemmas into their own declarations, mark expensive defs irreducible where sound, scope set_option maxHeartbeats.\n\nNON-GOALS. No change to any statement that is proved. Zero new sorry. No new axiom dependency (verify with #print axioms before and after). No weakening of the termination argument.\n\nACCEPTANCE. A measured, reported reduction in this module's elaboration time with before/after numbers from the build log or lean_profile_proof; lake build green; check-module-invariants.sh ALL CHECKS PASSED; sorry_count 0; axiom profiles unchanged for every declaration in the module.",
       "topic": "build-performance",
@@ -7480,8 +7480,8 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-10-15T05:04:28Z",
-      "last_updated": "2026-11-05T16:06:36Z",
-      "session_id": "sess_1793893053_616f17",
+      "last_updated": "2026-11-13T19:25:12Z",
+      "session_id": "sess_1794588265_854f41",
       "artifacts": [
         {
           "path": "specs/803_cut_subformulaproperty_elaboration_time/reports/01_cut-subformulaproperty-elaboration-time.md",
@@ -7492,12 +7492,18 @@
           "path": "specs/803_cut_subformulaproperty_elaboration_time/plans/01_cut-subformulaproperty-elaboration-time.md",
           "type": "plan",
           "summary": "Nine-phase, 15-hour plan to convert 36 proof bodies to applyRule.eq_N rewrites behind named wrappers, with before/after heartbeat evidence and a per-rule exclusion fallback."
+        },
+        {
+          "path": "specs/803_cut_subformulaproperty_elaboration_time/summaries/01_cut-subformulaproperty-elaboration-time-summary.md",
+          "type": "summary",
+          "summary": "All 36 per-rule proofs converted to pinned equation-lemma rewrites; 34.1M -> 79.8K heartbeats, module ~3s in a full build, gates green."
         }
       ],
       "next_artifact_number": 2,
       "dependencies": [
         743
-      ]
+      ],
+      "completion_summary": "Rewrote all 36 per-rule proofs in SubformulaProperty.lean to rewrite with pinned per-arm equation lemmas (38 named wrappers added to Tableau.lean) instead of unfolding applyRule. Measured elaboration fell from 34,095,081 to 79,799 heartbeats summed over the 36 theorems (factor 427); Lake reports the module at about 3s, down from 438-478s. Statements unchanged, sorry count 0, axiom profiles unchanged, all 36 maxHeartbeats ceilings removed."
     },
     {
       "project_number": 763,
@@ -8424,7 +8430,7 @@
     {
       "project_number": 787,
       "project_name": "lake_unguarded_reader_lock_audit",
-      "status": "not_started",
+      "status": "planning",
       "task_type": "general",
       "description": "Audit the remaining lake-invoking scripts for the unguarded .lake read hazard, and take the shared build-guard lock wherever a per-script judgment says it belongs.\n\nWHY THIS EXISTS. A sibling record established, by measurement, that scripts/check-evidence-probes.sh read .lake artifacts while a concurrent build rewrote them, producing `object file '.../FormalSystem/<Module>.olean' ... does not exist` errors on four consecutive wired probes. Those errors were then misread as four independent probe rots, which cost two Reasoned Exclusions and a full research/plan/implement round before re-measurement showed every probe had always compiled. The cost of this hazard is measured, not hypothetical. That script now takes an flock on `$REPO_ROOT/.lake/build-guard.lock` and distinguishes an environment failure from probe rot in its output.\n\nTHE SURVEYED CONDITION, as measured at filing. Across scripts/ and .claude/scripts/, only three files reference `build-guard.lock` at all: scripts/check-evidence-probes.sh (just hardened), scripts/check-module-invariants.sh (the precedent, which documents its rejected alternatives in place at its C1 block), and .claude/scripts/lake-build-guard.sh (which publishes the lock path). Every other file that invokes `lake env lean` or `lake build` takes no lock.\n\nCANDIDATES, AND WHY EACH NEEDS ITS OWN JUDGMENT RATHER THAN A BLANKET EDIT. Do not add a lock to all of these on sight. Three distinct shapes appear among them and they do not want the same treatment:\n\n1. UNGUARDED READERS -- the exact shape just fixed. scripts/typst-module-map.sh invokes bare `lake env lean`. A reader that elaborates against .lake while another process rewrites it is the hazard verbatim; this is the strongest candidate.\n\n2. SCOPED BUILDERS -- scripts/export-training-data.sh runs `lake build dataset_generator proof_extractor`. Note the direction of the hazard here: a SCOPED build is precisely what leaves an import-closure tail stale for a later reader, so such a script is a plausible CAUSE of the fault rather than only a victim of it. Decide whether it should hold the lock (serialising it against readers) on that basis.\n\n3. PROSE-ONLY MATCHES -- .claude/scripts/lean-sorry-census.sh and .claude/scripts/plan-file-scope-harvest.sh mention `lake build` / `lake env lean --run` in comments and docstrings. Verify whether each actually invokes lake at runtime before treating it as a candidate at all; a grep hit in a comment is not an invocation.\n\nAlso present in the initial survey and needing the same per-file determination: scripts/typst-sync-check.sh, scripts/typst-machine-appendix.sh, scripts/typst-status-counts.sh, .claude/scripts/lean-comparator-run.sh, .claude/scripts/lean-comparator-landrun-shim.sh, .claude/scripts/claude-refresh.sh. Re-derive this list rather than trusting it: the survey was a grep for `lake env lean`/`lake build` over scripts/ and .claude/scripts/ and may have both false positives (comments) and gaps.\n\nREUSE THE EXISTING PRECEDENT; DO NOT INVENT A SECOND LOCK. The lock is `$REPO_ROOT/.lake/build-guard.lock`, the path .claude/scripts/lake-build-guard.sh publishes. scripts/check-module-invariants.sh's C1 block and the now-hardened scripts/check-evidence-probes.sh are both working implementations of the shape: `flock -n` first, then a bounded and announced `flock -w`, fd held to process exit, audible degradation when flock is unavailable. Follow them and cross-reference their rejected-alternatives notes rather than re-litigating the design.\n\nSOURCE-STORE BOUNDARY. Any candidate under .claude/scripts/ is a deploy artifact. Resolve the source store via .claude-extensions.json's source_dir and edit the mirrored path under agent-system/extensions/<name>/scripts/ -- never hand-author under .claude/** directly, which the next regeneration silently wipes.\n\nDELIVERABLE. A per-script determination for every surveyed candidate -- lock added, or explicitly ruled out with the reason stated where a future reader will find it (not only in a commit message). Each script that gains the lock keeps its existing exit-status contract and still passes its own gate. No probe file and no manifest array is touched by this record.\n\nWHAT WOULD MAKE THIS A COMPLETE RESULT EVEN IF NO LOCK IS ADDED. A reasoned finding that some or all remaining candidates genuinely do not need the lock -- because they build rather than read, run only in CI where nothing is concurrent, or never invoke lake at runtime -- is a complete outcome, provided the reasoning is recorded per script. Closing a hazard by establishing it does not apply is a result, not a shortfall.",
       "effort": "medium",
@@ -8441,8 +8447,15 @@
         "scripts/typst-status-counts.sh"
       ],
       "created": "2026-10-14T15:54:15Z",
-      "last_updated": "2026-11-07T07:54:08Z",
-      "artifacts": []
+      "last_updated": "2026-11-13T16:45:18Z",
+      "artifacts": [
+        {
+          "path": "specs/787_lake_unguarded_reader_lock_audit/reports/01_lake-reader-lock-audit.md",
+          "type": "report",
+          "summary": "Research report: 01_lake-reader-lock-audit.md"
+        }
+      ],
+      "session_id": "sess_1794588265_854f41_787"
     },
     {
       "project_number": 829,

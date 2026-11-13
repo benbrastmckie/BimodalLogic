@@ -1,7 +1,7 @@
 # Implementation Plan: Cut the elaboration time of SubformulaProperty.lean
 
 - **Task**: 803 - Cut the elaboration time of `FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 15 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/803_cut_subformulaproperty_elaboration_time/reports/01_cut-subformulaproperty-elaboration-time.md`

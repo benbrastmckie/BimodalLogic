@@ -1,18 +1,26 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "task_number": 803,
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "session_id": "sess_1793893053_616f17_803",
-  "phases_completed": 0,
+  "phase": "implement",
+  "dispatch_seq": 10,
+  "session_id": "sess_1794588265_854f41",
+  "phases_completed": 9,
   "phases_total": 9,
-  "summary": "Wrote a nine-phase plan converting the 36 per-rule applyRule_<rule>_closed proof bodies from the all_goals (try simp_all only) splitter cascade to wrapper-routed applyRule.eq_N rewrites, decomposed along the module's five existing sections. Phase 1 captures axiom profiles, the 38 equation-lemma types, and 36 heartbeat baselines before any edit; Phase 2 lands 37 named wrappers in Tableau.lean to pin the generator-assigned numbering; Phase 3 is a decision gate with a per-rule fallback to [COMPLETED WITH EXCLUSIONS]; Phases 7-8 handle the mem_filterMap_sub full-simp-set residue and the maxHeartbeats ceiling removal. validate-artifact.sh passes with 0 warnings.",
+  "plan_markers_verified": true,
+  "git_checkpoint": "98d53a3f7",
+  "summary": "All nine phases closed (Phase 7 with a reasoned exclusion). The 36 per-rule proofs in SubformulaProperty.lean now rewrite with 38 pinned equation wrappers added to Tableau.lean: 34,095,081 -> 79,799 heartbeats summed, module about 3s in a full build (438-478s before), all maxHeartbeats ceilings removed. Guarded full build green, check-module-invariants ALL CHECKS PASSED, axiom diff empty, sorry 0. The batch-wide gate set was deferred to the batch stage as directed.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/803_cut_subformulaproperty_elaboration_time/plans/01_cut-subformulaproperty-elaboration-time.md",
-      "summary": "Nine-phase, 15-hour plan to convert 36 proof bodies to applyRule.eq_N rewrites behind named wrappers, with before/after heartbeat evidence and a per-rule exclusion fallback."
+      "type": "summary",
+      "path": "specs/803_cut_subformulaproperty_elaboration_time/summaries/01_cut-subformulaproperty-elaboration-time-summary.md",
+      "summary": "All 36 per-rule proofs converted to pinned equation-lemma rewrites; 34.1M -> 79.8K heartbeats, module ~3s in a full build, gates green."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/803_cut_subformulaproperty_elaboration_time/evidence/01_elaboration-baseline.md",
+      "summary": "Before/after evidence record: heartbeat table, profiling blocks, axiom profiles."
     }
-  ]
+  ],
+  "next_action_hint": "Run the batch-stage complete gate set; this dispatch ran only the phase's own named checks."
 }
