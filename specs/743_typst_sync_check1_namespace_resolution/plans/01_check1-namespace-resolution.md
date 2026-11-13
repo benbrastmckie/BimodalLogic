@@ -131,7 +131,7 @@ parallelism is real rather than nominal.
 
 ---
 
-### Phase 1: Comment-Aware Namespace-Stack Resolver, Wired Additively [IN PROGRESS]
+### Phase 1: Comment-Aware Namespace-Stack Resolver, Wired Additively [COMPLETED]
 
 **Goal**: Check 1's dotted-name branch resolves a `<namespace-path>.<leaf>` citation structurally,
 with the literal grep retained unchanged as the first-tried path.

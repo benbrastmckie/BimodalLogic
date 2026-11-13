@@ -1,15 +1,12 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "partial",
+  "dispatch_seq": 6,
+  "phases_completed": 1,
   "phases_total": 4,
-  "summary": "Wrote a 4-phase implementation plan adopting the research report's recommended Option (a): teach Check 1 comment-aware namespace resolution as an additive third path in its dotted-name branch, never replacing the literal grep. Phase 1 implements the resolver in scripts/typst-sync-check.sh; Phase 2 proves it load-bearing via a length-preserving negative control on Decidability.lean's docstring plus restoring the fully-qualified citation in typst/FormalFoundations.typ; Phase 3 documents the mechanism's limits in the script header, the whitelist header and typst/SYNC-MAP.md; Phase 4 runs the full gate set and records the four-route verdict. validate-artifact.sh passes with 0 warnings.",
+  "summary": "Phase 1 complete: Check 1 of scripts/typst-sync-check.sh now resolves namespace-path-plus-leaf names through a lazily built, comment-aware namespace index, consulted only after the unchanged literal grep. The gate's output is identical to the pre-change baseline (exit 0, 894 candidates, 0 violations) and the mapped test suite passes. Phases 2-4 remain not started, as this dispatch was scoped to Phase 1.",
   "blockers": [],
   "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/743_typst_sync_check1_namespace_resolution/plans/01_check1-namespace-resolution.md",
-      "summary": "4-phase plan adopting Option (a): additive comment-aware namespace resolution in typst-sync-check.sh Check 1, made load-bearing by a restored fully-qualified citation, with limits documented and a recorded four-route verdict."
-    }
+    {"type": "handoff", "path": "specs/743_typst_sync_check1_namespace_resolution/handoffs/phase-1-handoff-20261113T092358Z.md", "summary": "Phase 1 handoff with measured verification figures and decisions for Phases 2-3."}
   ],
-  "dispatch_seq": 5
+  "next_action": "Dispatch Phase 2 and Phase 3 (wave 2)."
 }
