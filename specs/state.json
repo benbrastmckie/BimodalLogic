@@ -7638,6 +7638,11 @@
           "path": "specs/743_typst_sync_check1_namespace_resolution/plans/01_check1-namespace-resolution.md",
           "type": "plan",
           "summary": "4-phase plan adopting Option (a): additive comment-aware namespace resolution in typst-sync-check.sh Check 1, made load-bearing by a restored fully-qualified citation, with limits documented and a recorded four-route verdict."
+        },
+        {
+          "path": "specs/743_typst_sync_check1_namespace_resolution/handoffs/phase-1-handoff-20261113T092358Z.md",
+          "type": "handoff",
+          "summary": "Phase 1 handoff with measured verification figures and decisions for Phases 2-3."
         }
       ],
       "next_artifact_number": 2
