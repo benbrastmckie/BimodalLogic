@@ -1,7 +1,7 @@
 # Implementation Plan: Task #787
 
 - **Task**: 787 - Audit the remaining lake-invoking scripts for the unguarded .lake read hazard
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.25 hours
 - **Dependencies**: 743 (declared, completed); none technical
 - **Research Inputs**: specs/787_lake_unguarded_reader_lock_audit/reports/01_lake-reader-lock-audit.md
@@ -137,25 +137,25 @@ when `flock` is absent. Each block's comment cross-references the rejected alter
 `check-module-invariants.sh`'s `C1: build` block rather than restating them, and states the
 leaf-only rule. Comments state the current design only: no task numbers, no draft history.
 
-### Phase 1: Lock the status-counts write path [NOT STARTED]
+### Phase 1: Lock the status-counts write path [COMPLETED]
 
 **Goal**: `scripts/typst-status-counts.sh` reads `.lake` only under the shared lock, and names a
 raced read as an environment failure.
 
 **Tasks**:
-- [ ] Re-read the file immediately before editing (shared tree).
-- [ ] Insert the precedent block immediately before `AX_SRC=$(mktemp --suffix=.lean)`, i.e.
+- [x] Re-read the file immediately before editing (shared tree). *(completed)*
+- [x] Insert the precedent block immediately before `AX_SRC=$(mktemp --suffix=.lean)`, i.e.
       after the `--json` early exit. Lock path `${REPO_ROOT}/.lake/build-guard.lock` (the script
       has `cd`'d elsewhere; do not use `pwd`). Wait bound from
-      `STATUS_COUNTS_LOCK_WAIT_S`, default 600, documented as a test affordance.
-- [ ] On lock timeout: stderr message in the environment class (no file was read, re-run when the
-      concurrent build finishes), exit 1. Nothing is written.
-- [ ] Split the existing `lake env lean` failure message: capture the raw output; when it matches
+      `STATUS_COUNTS_LOCK_WAIT_S`, default 600, documented as a test affordance. *(completed)*
+- [x] On lock timeout: stderr message in the environment class (no file was read, re-run when the
+      concurrent build finishes), exit 1. Nothing is written. *(completed)*
+- [x] Split the existing `lake env lean` failure message: capture the raw output; when it matches
       the missing-object-file predicate used by `check-evidence-probes.sh` (locate it there and
       reuse its pattern text), report an environment failure and advise a re-run; otherwise keep
-      the existing "Run 'lake build' first" text. Exit status stays 1 in both cases.
-- [ ] Update the header usage comment to state that the write path takes the shared lock and
-      `--json` does not.
+      the existing "Run 'lake build' first" text. Exit status stays 1 in both cases. *(completed)*
+- [x] Update the header usage comment to state that the write path takes the shared lock and
+      `--json` does not. *(completed)*
 
 **Timing**: 0.75 hours
 

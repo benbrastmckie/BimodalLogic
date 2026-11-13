@@ -16,6 +16,12 @@
 #   scripts/typst-status-counts.sh --json     # emits JSON to stdout only, no lake
 #                                              # (consumed by typst-sync-check.sh)
 #
+# Shared `.lake` lock: the write path reads the built library, so it takes the
+# shared build lock (`.lake/build-guard.lock`) before its one `lake env lean`
+# call; see the SHARED `.lake` LOCK block below. `--json` never reads `.lake`
+# and takes no lock: it exits before the block, and must keep doing so, because
+# typst-sync-check.sh, the pre-commit hook and CI all run it without a build.
+#
 # Methodology (must match SYNC-MAP.md exactly):
 #   - Axiom constructors: count `  | ` lines inside the `inductive Axiom`
 #     block of ProofSystem/Axioms.lean.
@@ -290,23 +296,102 @@ AXIOM_DECLS=(
   FormalSystem.Metalogic.BXCanonical.Chronicle.countermodel_dense
 )
 
+# ---------------------------------------------------------------------------
+# SHARED `.lake` LOCK
+#
+# The `lake env lean` call below READS `.lake`: the oleans of the whole
+# `import FormalSystem` closure. Unserialized, that read races any guarded
+# `lake build` rewriting the same artifacts on this tree, and Lean then
+# reports `object file '...' of module ... does not exist` for an olean that
+# was removed and not yet rewritten. That is a failure of the environment, not
+# a fact about the library, so the read is taken under the writers' lock.
+#
+# The lock is `${REPO_ROOT}/.lake/build-guard.lock`, the path
+# `.claude/scripts/lake-build-guard.sh` publishes, taken exclusively in the
+# same shape as scripts/check-evidence-probes.sh's `SHARED .lake LOCK` block
+# and scripts/check-module-invariants.sh's `C1: build` block: a non-blocking
+# try, then an announced bounded wait, the fd held until this process exits
+# (never `flock -u`), and an audible unserialized run when `flock` is absent.
+# The rejected alternatives (probing for the guard and calling it; refusing to
+# run under detected concurrency) are recorded at that `C1: build` block.
+#
+# LEAF-ONLY. The lock is taken here, by the script that invokes lake, and by
+# no caller of this script. An flock belongs to the open file description, so
+# a parent holding the lock excludes its own child when the child re-opens the
+# lock file: a caller that locked and then ran this script would make it wait
+# out the whole bound. scripts/typst-sync-check.sh `--fix` calls this write
+# path and for that reason takes no lock itself.
+#
+# AFTER THE BUILD-FREE EXIT. This block sits below the `--json` exit above on
+# purpose; `--json` reads no `.lake` artifact and must never wait on a build.
+#
+# `STATUS_COUNTS_LOCK_WAIT_S` overrides the bounded wait. It exists so the
+# timeout branch can be exercised deliberately; it is a test affordance, not a
+# tuning knob. Default: 600 s.
+# ---------------------------------------------------------------------------
+STATUS_COUNTS_LOCK_WAIT_S="${STATUS_COUNTS_LOCK_WAIT_S:-600}"
+LOCK_FILE="${REPO_ROOT}/.lake/build-guard.lock"
+mkdir -p "${REPO_ROOT}/.lake"
+if command -v flock >/dev/null 2>&1; then
+  exec {STATUS_COUNTS_LOCK_FD}<>"${LOCK_FILE}"
+  if ! flock -n "${STATUS_COUNTS_LOCK_FD}"; then
+    echo "typst-status-counts.sh: waiting on the shared build lock (${LOCK_FILE}, up to ${STATUS_COUNTS_LOCK_WAIT_S}s)" >&2
+    if ! flock -w "${STATUS_COUNTS_LOCK_WAIT_S}" "${STATUS_COUNTS_LOCK_FD}"; then
+      echo "typst-status-counts.sh: ENVIRONMENT failure: timed out after ${STATUS_COUNTS_LOCK_WAIT_S}s waiting for the shared build lock" >&2
+      echo "  ${LOCK_FILE}" >&2
+      echo "  The built library was not read and typst/generated/status.typ was not written." >&2
+      echo "  Nothing is wrong with the counts or the library; re-run once the concurrent build has finished." >&2
+      exit 1
+    fi
+  fi
+else
+  echo "typst-status-counts.sh: flock not found on PATH; reading the built library unserialized" >&2
+fi
+
+# A failed read has two causes that want different responses. ENVIRONMENT: an
+# olean in the import closure was absent or half-written when Lean looked --
+# a build that bypassed the lock above, or a library that was never built.
+# Anything else is reported with the plain "run lake build" advice. The
+# predicate is the one scripts/check-evidence-probes.sh's `probe_env_failure`
+# uses, kept deliberately narrow: the missing-object-file shape, and an OS
+# "no such file" that names a `.lake/` path.
+axiom_read_env_failure() {
+  local out="$1"
+  if printf '%s\n' "$out" | grep -q "object file '.*' of module .* does not exist"; then
+    return 0
+  fi
+  if printf '%s\n' "$out" | grep -qi 'no such file or directory' &&
+     printf '%s\n' "$out" | grep -q '\.lake/'; then
+    return 0
+  fi
+  return 1
+}
+
 AX_SRC=$(mktemp --suffix=.lean)
 {
   echo "import FormalSystem"
   for d in "${AXIOM_DECLS[@]}"; do echo "#print axioms ${d}"; done
 } > "${AX_SRC}"
+AX_RC=0
+AX_RAW=$(cd "${REPO_ROOT}" && lake env lean "${AX_SRC}" 2>&1) || AX_RC=$?
+rm -f "${AX_SRC}"
 # The pretty-printer wraps at a fixed width, so a long axiom record spills onto
 # continuation lines beginning with a space; rejoin them before parsing or the
 # record is silently truncated.
-if ! AX_OUT=$(cd "${REPO_ROOT}" && lake env lean "${AX_SRC}" 2>&1 \
+AX_OUT=""
+if [[ "${AX_RC}" -ne 0 ]] || ! AX_OUT=$(printf '%s\n' "${AX_RAW}" \
       | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \
       | grep 'depends on axioms'); then
   echo "typst-status-counts.sh: could not read axiom sets from the built library." >&2
-  echo "  Run 'lake build' first; the axiom report is generated, never typed." >&2
-  rm -f "${AX_SRC}"
+  if axiom_read_env_failure "${AX_RAW}"; then
+    echo "  ENVIRONMENT failure: a .lake artifact in the import closure was absent or half-written." >&2
+    echo "  This says nothing about the axiom sets themselves. Re-run once any concurrent build has" >&2
+    echo "  finished; if no build is running, the library was never built: run 'lake build' first." >&2
+  else
+    echo "  Run 'lake build' first; the axiom report is generated, never typed." >&2
+  fi
   exit 1
 fi
-rm -f "${AX_SRC}"
 
 AXIOM_REPORT_TYP=$(AX_OUT="${AX_OUT}" \
   TYPST_AXIOM_MODULES="${REPO_ROOT}/scripts/typst-axiom-report-modules.txt" \
