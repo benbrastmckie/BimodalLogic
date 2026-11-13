@@ -3277,7 +3277,7 @@ added, as the phase requires.
 
 ---
 
-### Phase 11.17: The Cascade Record and the `LadderAgree.lean` Inventory Row [NOT STARTED]
+### Phase 11.17: The Cascade Record and the `LadderAgree.lean` Inventory Row [COMPLETED]
 
 **GATED ON PHASE 11.16, BECAUSE THE RECORD MUST NAME THE SETTLED NAMES.** Writing this record
 before the disposition is executed would put either a name that may be unclaimed or a binder that
@@ -3365,6 +3365,68 @@ is a declared cross-set collision surface.
 - `bash .claude/scripts/check-task-references.sh --quiet` exits 0, and the authored prose contains no record-versioning language per `.claude/rules/no-record-versioning-in-deliverables.md`.
 - `git diff --stat` shows no `.lean` file and no file outside this phase's two declared paths; `git log` and `git status` were checked for a foreign concurrent edit to the README before writing, and any found edit is preserved and reported.
 - If the phase closed `[COMPLETED WITH EXCLUSIONS]`: the `#### Reasoned Exclusions` record names the owning task or the current row text, with the `jq` or `grep` output quoted as its Evidence.
+
+#### Recorded Outcome: **THE ROW IS AUTHORED; NO OTHER LIVE TASK OWNS IT**
+
+**The ownership gate, run first and resolved in this phase's favour.** Two OTHER non-terminal
+tasks declare `FormalSystem/Metalogic/Decidability/RaySummary/README.md` in their `file_scope`,
+which the phase's first task required to be checked:
+
+```
+task 763: status=not_started name=ladder_lift_decidability_corollary scope_size=8
+task 861: status=researched  name=one_sided_refutation_table_row   scope_size=1
+```
+
+Neither owns THIS row, so the `[COMPLETED WITH EXCLUSIONS]` branch does not fire. Task 861's
+description scopes it to a different row of a different table — "Add the one-sided transport
+refutation row to the RaySummary **refutation table** … Scope: README.md only; no `.lean` edits" —
+and task 763's README entry is the boilerplate shared-library-set line of a record
+whose content is a new `Lift.lean` module. Neither names the module-inventory table, and neither
+has a pending edit to it: `git status` showed the README clean at this phase's start and
+`git log` showed its last three touches landed from sibling tasks that are closed. Both are
+recorded here rather than absorbed silently.
+
+**The measured gap, RE-MEASURED, with one figure of the plan's falsified.**
+
+| Figure | Plan-time claim | Re-measured | Outcome |
+|---|---|---|---|
+| `README.md:38`'s `LadderAgree.lean` row carries the placeholder | asserted | **confirmed** | authored |
+| that row is the ONLY module row carrying the placeholder | asserted | **FALSE — five rows carry it**: `Certificate.lean` (`:32`), `CounterQuotient.lean` (`:35`), `LadderAgree.lean` (`:38`), `LadderIdle.lean` (`:41`), `LadderRealize.lean` (`:45`) | only the `LadderAgree.lean` row is authored, which is this phase's declared scope; the other four are left untouched and recorded (`iss_1794550966484_Q0IqrZ`) as worth a follow-up |
+| `grep -c 'exists_ladderPath_at_region'` over the README | 0 | **0, confirmed** | now 1 |
+| `grep -c 'insObj\|insIdx'` over the README | 0 | **0, confirmed** | the insertion primitive is now named in the row |
+
+**Nothing in the README was stale or redundant against the new row.** The only other passages
+mentioning a "cascade" (`:999`, `:1010`, `:1027`) are about `LadderPin.lean`'s pin layer and the
+two cascades on a tight chain of pins — a different layer, naming none of the renamed
+declarations — so the third task's "bring cross-references current" obligation is discharged by
+inspection rather than by an edit, and no sibling task's content was overwritten.
+
+**The row's content, against the phase's four requirements.** It states the module's role (the
+rigid-anchor, replacement and cascade layer), the five layers it carries, that it is
+certificate-free and imports `AnchorLayer`/`CounterQuotient` alone, and what it does NOT settle
+(no filed Goal lands there; `CellLEZeroConstOfKappaEq` refuted as a schema at the periodicity
+fixpoint's outputs for a stab-free closure, `atomPreservingCountMove_refuted`, so the depth-`0`
+base is claimed in neither direction). The cascade layer is named explicitly, with the three
+existentials' dispositions each stated once and the `hself` conditionality in the REGIME-sense
+wording settled above — "unconditional in the REGIME sense and conditional on the self-loop" —
+and the `spliceObj`-shaped conclusion named as REFUTED in the idle-past regime rather than merely
+absent, with its compiled object cited by path
+(`specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean`,
+`tightChain_slack_zero`).
+
+**Generated surfaces regenerated, not hand-edited.** Only the row's description column is
+authored; `bash scripts/check-module-invariants.sh --emit-inventory` then reported "no generated
+inventory block needed a rewrite", confirming the block is current and the authored description
+survives regeneration, and `bash scripts/typst-status-counts.sh` refreshed `status.typ`'s commit
+stamp.
+
+**Gates.** `bash scripts/check-module-invariants.sh`: **ALL CHECKS PASSED**, with the `INV` group
+green. `bash scripts/readme-lint.sh` exit 0, 0 broken references. `bash scripts/typst-sync-check.sh`
+exit 0, all 4 checks green. `bash .claude/scripts/check-task-references.sh --quiet` exit 0. The
+authored prose carries no record-versioning language (scanned for the rule's forbidden forms, 0
+hits) and no task-number reference. `git diff --stat` shows no `.lean` file and nothing outside
+this phase's two declared paths. Phase-end full `lake build` through the guard: exit 0, 2,975
+jobs, 0 errors, 0 warnings.
 
 ---
 
