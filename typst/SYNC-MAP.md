@@ -46,7 +46,15 @@ Every chapter file included by `BimodalReference.typ` formerly carried a
 2. No backticked Lean identifier or path may appear anywhere in `typst/**/*.typ` that fails
    to resolve under `FormalSystem/` (excluding `Boneyard/`), per the Phase 6 extraction
    method below — external-repo (Logos) names are cited as external and commit-pinned, never
-   as if they were local Lean names.
+   as if they were local Lean names. Three citation styles are sanctioned for a declaration:
+   the fully-qualified name (`Namespace.Path.leaf`), module path plus leaf (a path span such
+   as `Semantics/IntTransfer.lean` beside a bare-leaf span), and the bare leaf alone. The
+   fully-qualified style resolves structurally — Check 1 matches the enclosing `namespace`
+   path plus the declared name — and not by coincidence of source text, so it does not
+   depend on some docstring happening to spell the dotted name out. The limits of that
+   resolution are stated in the comment above Check 1's dotted-name branch in
+   `scripts/typst-sync-check.sh`; a whitelist entry for a declaration name outside them
+   suppresses a resolution gap and does not certify the name.
 3. Per-claim overrides are allowed *inside* a chapter via inline sync-class markers (e.g. a
    ✓ chapter may inline-mark one paragraph ○ where it is quoting the paper) — the chapter
    banner states the *dominant* class; inline markers state exceptions.
