@@ -2007,6 +2007,87 @@ EVIDENCE="specs/evidence"
 #                                                           | Quot.sound]` on every headline. No
 #                                                           | `sorryAx`, no custom axiom, no
 #                                                           | `native_decide`.
+# seam-gluing-ray-product/ladder-self-loop-derivability-decision | THE PATH-LOCAL SELF-LOOP `hself` IS
+#                                                           | **NOT DERIVABLE** FROM THE BINDERS THE
+#                                                           | TWO LANDED CASCADE DECLARATIONS
+#                                                           | ALREADY CARRY, AND NOT REFUTABLE
+#                                                           | EITHER -- so it is a GENUINE
+#                                                           | INDEPENDENT PREMISE. The decision gate
+#                                                           | under the Stage 0 `hself` user ruling,
+#                                                           | settling the one question beneath it
+#                                                           | that is a matter of FACT: whether
+#                                                           | `hself : forall p <= a, pend (objAt g
+#                                                           | p) = false -> step (objAt g p) (objAt
+#                                                           | g p) = true` follows from the other
+#                                                           | binders of
+#                                                           | `exists_ladderPath_at_region_of_idle_past`
+#                                                           | (`LadderAgree.lean:2227`) and its join
+#                                                           | (`:2291`). Instance, explicit and
+#                                                           | compiled non-vacuous
+#                                                           | (`instance_is_in_regime`, which
+#                                                           | discharges EVERY binder in the
+#                                                           | declaration's own order): carrier `Qd
+#                                                           | = Fin 2` with `0` idle and `1`
+#                                                           | pending; `stepD q q' = decide (q = 1
+#                                                           | or q' = 1)`, so the ONLY forbidden
+#                                                           | transition is the idle self-loop
+#                                                           | `stepD 0 0 = false`; walk of period
+#                                                           | `4` (one idle position, then a pending
+#                                                           | region of three), countdown `2, 1, 0`
+#                                                           | forced by `Count` rather than chosen;
+#                                                           | splice point `a = 1`, cycle length `l
+#                                                           | = 2` (`l <= cntAt gW 1 = 2`),
+#                                                           | repetition INSIDE the region (`objAt
+#                                                           | gW 1 = objAt gW 3`, which is why `l =
+#                                                           | 1` would not do), idle witness `p =
+#                                                           | 0`, comparison position `v = 1`.
+#                                                           | Headline: `hself_not_derivable`
+#                                                           | refutes the universally quantified
+#                                                           | implication WITH `Fintype Q` ASSUMED
+#                                                           | -- strictly stronger than refuting it
+#                                                           | without finiteness, and stronger than
+#                                                           | the two declarations need, since both
+#                                                           | sit in `LadderAgree.lean`'s `section
+#                                                           | Path` whose variable block carries no
+#                                                           | finiteness instance.
+#                                                           | `hself_satisfiable_at_an_instance`
+#                                                           | reads the SAME walk over a total
+#                                                           | `step` and satisfies every binder AND
+#                                                           | `hself`, which is the other half of
+#                                                           | independence. `idle_successor_differs`
+#                                                           | isolates the gap the derivation stalls
+#                                                           | on: at the idle position the walk
+#                                                           | MOVES, so `isLadderPath_components`
+#                                                           | (`:636`) supplies only `step (objAt gW
+#                                                           | 0) (objAt gW 1) = true` and never
+#                                                           | touches the diagonal. **CONSEQUENCE
+#                                                           | FOR THE RULING, carrying no
+#                                                           | recommendation on it**: disposition
+#                                                           | (R), an in-library repair discharging
+#                                                           | `hself` with no binder added, asks for
+#                                                           | exactly the refuted implication and is
+#                                                           | CLOSED; the two remaining dispositions
+#                                                           | are untouched, and the choice between
+#                                                           | them is between two honest naming
+#                                                           | conventions rather than between a
+#                                                           | correct and an incorrect statement.
+#                                                           | **NON-GENERALITY**: this decides
+#                                                           | DERIVABILITY AT THIS LAYER and nothing
+#                                                           | else -- it does not say either landed
+#                                                           | declaration is wrong, does not rename
+#                                                           | or re-sign either, takes no position
+#                                                           | on the Stage 0 ruling, and says
+#                                                           | nothing about candidate (b) of the
+#                                                           | primitive-decision note
+#                                                           | (`:1758-1790`), which is a different
+#                                                           | construction at a different layer. No
+#                                                           | bound, every quantity a count. Axioms:
+#                                                           | a subset of `[propext,
+#                                                           | Classical.choice, Quot.sound]` on
+#                                                           | every headline. No `sorryAx`, no
+#                                                           | custom axiom, no `native_decide`, no
+#                                                           | raised `maxRecDepth` or
+#                                                           | `maxHeartbeats`.
 # seam-gluing-ray-product/one-sided-count-move-refutation   | THE ONE-SIDED COUNT MOVE IS
 #                                                           | REFUTED ON THE `◁` SIDE, and the
 #                                                           | recorded TWO-SIDED refutation comes
@@ -2360,6 +2441,7 @@ WIRED=(
   "seam-gluing-ray-product/ladder-tight-chain-nonliftability"
   "seam-gluing-ray-product/ladder-reps-bound-refutation"
   "seam-gluing-ray-product/ladder-idle-past-interface-decision"
+  "seam-gluing-ray-product/ladder-self-loop-derivability-decision"
   "seam-gluing-ray-product/one-sided-count-move-refutation"
   "limit-closure-schema/lc-schema-omega-chain"
   "forward-slack-pin-cascade/pin-cascade-straddle"

@@ -2801,7 +2801,7 @@ it consumes. Under either disposition in Phase 11.12's record, that interface is
 
 ---
 
-### Phase 11.14: The `hself` Derivability Decision Probe [NOT STARTED]
+### Phase 11.14: The `hself` Derivability Decision Probe [COMPLETED WITH EXCLUSIONS]
 
 **THE ONE ENTERABLE PHASE OF THIS PLAN, AND IT DECIDES NO DISPOSITION.** Phases 11.12 and 11.13
 closed `[BLOCKED]` with their declarations landed, sorry-free, and carrying one binder beyond their
@@ -2868,32 +2868,32 @@ rather than deriving it, is evidence for the NOT DERIVABLE branch; it is not a p
 this phase exists to compile the difference.
 
 **Tasks**:
-- [ ] FIRST, read `LadderAgree.lean:1758-1790` (the primitive decision: candidate (a) taken,
+- [x] FIRST, read `LadderAgree.lean:1758-1790` (the primitive decision: candidate (a) taken,
       candidate (b) recorded as unavailable at this layer), `:2214-2226` (the `hself` premise note),
       `:2227` and `:2291` (the two landed signatures), and `:2878` (the landed precedent above).
       Read Phase 11.11's recorded primitive decision in this plan. Do not begin the probe before
       all five are read.
-- [ ] Attempt the DERIVABLE branch first, and bound the attempt explicitly: `hidle` supplies ONE
+- [x] Attempt the DERIVABLE branch first, and bound the attempt explicitly: `hidle` supplies ONE
       idle position at or below `a`, `IsLadderPath` constrains `step` only along the walk
       (`isLadderPath_components`, `:638`/`:647`), and `[Fintype Q]` bounds how many distinct states
       the positions below carry rather than what `step` does on the diagonal. If the attempt stalls
       on exactly that gap, record the gap and move to the counterexample; do not keep searching.
-- [ ] Author the probe at
+- [x] Author the probe at
       `specs/evidence/seam-gluing-ray-product/ladder-self-loop-derivability-decision.lean`. A probe
       is compiled with `lake env lean` OUTSIDE the Lake module graph, so it imports no other probe
       and re-derives whatever it needs; give it its own namespace and its own `## NON-GENERALITY`
       section on the convention every probe in that directory follows.
-- [ ] State the verdict as a named top-level declaration in the probe, so the verdict is a compiled
+- [x] State the verdict as a named top-level declaration in the probe, so the verdict is a compiled
       object and not a comment: on the DERIVABLE branch a theorem concluding `hself`'s statement
       from the enumerated hypotheses; on the NOT DERIVABLE branch a theorem exhibiting the
       counterexample's ladder path together with the failing self-loop, plus a non-vacuity
       declaration establishing the instance is in the idle-past regime (the
       `instance_is_in_regime` shape Phase 11.10 used).
-- [ ] Wire the probe: its table block and its `WIRED` array entry in `scripts/check-evidence-probes.sh`.
+- [x] Wire the probe: its table block and its `WIRED` array entry in `scripts/check-evidence-probes.sh`.
       **Re-measure the wired total in the phase rather than trusting this plan**: 55 entries in the
       `WIRED` array plus 2 in `WIRED_REPO`, counted at this revision's authoring by reading the two
       array blocks, and a sibling task may have wired another since.
-- [ ] Record the verdict in the probe's own header and in the handoff, in the form Phase 11.16's
+- [x] Record the verdict in the probe's own header and in the handoff, in the form Phase 11.16's
       first task reads: the branch taken, the compiled declaration's name, and what the branch
       implies for each of the three dispositions. Do NOT record a recommendation on the ruling.
 
@@ -2936,6 +2936,63 @@ probes into the same script and the figure moves without this plan being touched
 - `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests` exits 0 with `sorry_count: 0`; the `^axiom ` counts under `FormalSystem` and `Tests` are unchanged from the 12 and 2 re-derived at this revision's authoring, which this phase cannot move because it edits neither tree.
 - `bash .claude/scripts/check-task-references.sh --quiet` exits 0.
 - The verdict is recorded in the probe header and the handoff in the form Phase 11.16's first task reads, and carries no recommendation on the Stage 0 ruling.
+
+#### Recorded Outcome: **NOT DERIVABLE**, and not refutable either
+
+The verdict, in the form Phase 11.16's first task reads. **No recommendation on the Stage 0 ruling
+is recorded here, and none was formed.**
+
+| Declaration (`Probe761SelfLoop`) | What it compiles |
+|---|---|
+| `hself_not_derivable` | THE VERDICT. The universally quantified implication from `exists_ladderPath_at_region_of_idle_past`'s recorded binders (`hg`, `hl`, `hcl`, `hidle`, `hrep`, `hv`, `hvreg`) to `hself` is FALSE — refuted with `Fintype Q` ASSUMED, which is strictly stronger than refuting it without finiteness and stronger than either landed declaration needs (both sit in `LadderAgree.lean`'s `section Path`, whose variable block carries no finiteness instance) |
+| `instance_is_in_regime` | NON-VACUITY: every binder of that declaration holds at the instance, in the declaration's own order. So the object refutes the DERIVATION, not the regime |
+| `instance_self_loop_fails` | the failing self-loop: a compiled ladder path, an idle `p = 0 ≤ a = 1`, and `stepD (objAt gW 0) (objAt gW 0) = false` |
+| `hself_satisfiable_at_an_instance` | the second half, which the phase did not require: the SAME walk over a total `step` satisfies every binder AND `hself`. `hself` is therefore INDEPENDENT — neither implied by the other binders nor contradicted by them |
+| `idle_successor_differs` | the gap the derivation stalls on, isolated: at the idle position the walk MOVES, so `isLadderPath_components` supplies only `step (objAt gW 0) (objAt gW 1) = true` and never touches the diagonal |
+
+Probe: `specs/evidence/seam-gluing-ray-product/ladder-self-loop-derivability-decision.lean`, wired
+at `scripts/check-evidence-probes.sh`. Axioms on every headline: exactly
+`[propext, Classical.choice, Quot.sound]`. No `sorryAx`, no custom axiom, no `native_decide`, no
+raised `maxRecDepth` or `maxHeartbeats`. Standalone compile: exit 0, **0 warnings**.
+
+**What the branch implies for each of the three dispositions.** Disposition (R) — an in-library
+repair discharging `hself` with no binder added — is **CLOSED by this probe**, because
+`hself_not_derivable` refutes exactly the implication (R) needs, and refutes it under finiteness
+too. Phase 11.16's branch (R) is therefore unavailable on the mathematics, independently of any
+ruling. The two remaining dispositions are UNTOUCHED: because `hself` is independent, the recorded
+blocks of Phases 11.12 and 11.13 are not wrong about the mathematics, only silent about one true
+premise, so the ruling is a choice between two honest naming conventions rather than between a
+correct and an incorrect statement. **Neither of those two is preferred here.**
+
+**The DERIVABLE branch, bounded exactly where the plan said to bound it.** `IsLadderPath` yields
+only `step (objAt g u) (objAt g (u + 1)) = true` (`isLadderPath_components`,
+`LadderAgree.lean:636`/`:647`), so a derivation at an idle `p ≤ a` needs
+`objAt g (p + 1) = objAt g p`, which no binder supplies: `hidle` gives one idle position and
+nothing about its successor, `hrep` is a repetition at the PENDING position `a` at distance `l`,
+and `hl`/`hcl`/`hv`/`hvreg` are countdown arithmetic. The search stopped there as instructed. A
+grep of every `RaySummary/` module found every diagonal `step q q = true` occurrence in the tree to
+be a HYPOTHESIS (`LadderAgree.lean:1867`, `:2233`, `:2296`, `:2878`) and never a conclusion —
+consistent with the verdict, not what establishes it.
+
+**The plan's re-measurement instruction, discharged.** The asserted wired figure was re-counted at
+phase start from the two array blocks and found exactly correct: **55 `WIRED` + 2 `WIRED_REPO`**.
+No sibling task had moved it. After this phase: **56 + 2 = 58**, a delta of exactly one,
+attributable to this probe alone.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| `bash scripts/check-evidence-probes.sh` exits 0 | **Unmeetable, for a PRE-EXISTING cause outside this phase.** The gate exits 1 on the `WIRED_REPO` entry `specs/918_ladder_cell_index_positive_factorization/evidence/lowering-anchor-deficit.lean`, which reports `FAIL (missing)`: task 918 was archived (commit `cf3e481fb`), moving the file to `specs/archive/918_.../evidence/lowering-anchor-deficit.lean` — where it still is on disk — while the entry still names the pre-archival path, and `.gitignore:94` excludes `specs/archive/`, so repointing the entry would only turn `FAIL (missing)` into `FAIL (untracked)`. The script's own comment block above `WIRED_REPO` predicted this failure and declared the remedy OWED BEFORE ARCHIVAL: promote the file into `specs/evidence/seam-gluing-ray-product/` and update its three citations. This phase does NOT take it: `Files to modify` names two paths and this phase's own verification requires `git diff --stat` to show no file outside them, so promoting a file would add a third. Surfaced rather than absorbed. | `git show HEAD:scripts/check-evidence-probes.sh` carries the entry at line 2450, so the gate was red before this phase ran. Gate log: `FAIL 1 of 58 wired probe(s) failed`, with the failure named; this phase's own probe is `PASS` at log line 52, and all 56 `WIRED` probes compile. Content recoverable from history at `d56ca7066`. |
+
+Every other verification bullet of this phase is MET: standalone compile exit 0 with 0 warnings;
+`#print axioms` a subset of `[propext, Classical.choice, Quot.sound]` on every headline; the wired
+total exactly one above the re-measured figure with the delta this probe alone;
+`instance_is_in_regime` discharging the regime non-vacuity; `git diff --stat` showing no file under
+`FormalSystem/` or `Tests/`; `lean-sorry-census.sh FormalSystem Tests` exit 0 with
+`sorry_count: 0`; the `^axiom ` counts unchanged at **12** under `FormalSystem` and **2** under
+`Tests`; `check-task-references.sh --quiet` exit 0; and the verdict recorded in the probe header
+and in `handoffs/phase-11.14-handoff-20261113T011907Z.md` carrying no recommendation on the ruling.
 
 ---
 
