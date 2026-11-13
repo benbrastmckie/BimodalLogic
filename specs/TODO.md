@@ -13,8 +13,8 @@ next_project_number: 931
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,743,761,829,831,873,890,926,927,928,929,930 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876 | 298,428,502,743,761,873 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,743,761,829,831,873,890,927,928,929,930 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,787,803,862,869,874,875,876,926 | 298,428,502,743,761,873,927,928 | algebraic-representation, completeness, dataset-enhancement, ... |
 | 3 | 410,498,499,500,804,861 | 429,497,763,803 | algebraic-representation, decidability, build-performance |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -37,9 +37,10 @@ next_project_number: 931
 
 ### Completeness
 
-926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
 927 [NOT STARTED] — MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers...
+  └─ 926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
 928 [NOT STARTED] — ASSESSMENT TASK, report only. Costs the single lemma that...
+  └─ 926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean... (see above)
 
 ### Dataset Enhancement
 
@@ -89,7 +90,7 @@ next_project_number: 931
 
 ### Repo Hygiene
 
-743 [PLANNED] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
+743 [IMPLEMENTING] — Teach typst-sync-check.sh Check 1 to resolve namespaced Lean...
 
 ### Semantics
 
@@ -189,7 +190,7 @@ FILE SCOPE: none. Report only. Reads FormalSystem/Semantics/UniversalCover.lean,
 - **Status**: [NOT STARTED]
 - **Task Type**: general
 - **Topic**: completeness
-- **Dependencies**: None
+- **Dependencies**: Task 927, Task 928
 
 **Description**: DECISION RECORD ONLY -- report only, file_scope: [], no Lean file written, no formalization attempted. The deliverable is a ruling with its argument, nothing else.
 
@@ -603,7 +604,7 @@ NOT COSTABLE, and why: T3 landed no bound (its stabilization lemma is refuted); 
 ---
 
 ### 743. Typst sync check1 namespace resolution
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None

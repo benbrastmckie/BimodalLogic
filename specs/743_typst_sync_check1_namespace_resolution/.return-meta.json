@@ -1,22 +1,12 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/743_typst_sync_check1_namespace_resolution/plans/01_check1-namespace-resolution.md",
-      "summary": "4-phase plan adopting Option (a): additive comment-aware namespace resolution in typst-sync-check.sh Check 1, made load-bearing by a restored fully-qualified citation, with limits documented and a recorded four-route verdict."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 6,
+  "artifacts": [],
+  "partial_progress": {"stage": "initializing", "details": "Phase 1 dispatch started", "phases_completed": 0, "phases_total": 4},
   "metadata": {
-    "session_id": "sess_1794079850_b31491_743",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 3.75,
-    "dependency_waves": 3
-  },
-  "memory_candidates": [],
-  "next_steps": "Run /orchestrate 743 to execute the plan",
-  "dispatch_seq": 5
+    "session_id": "sess_1794561551_de1d6c",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

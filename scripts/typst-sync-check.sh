@@ -633,6 +633,149 @@ def grep_lean(name):
     except Exception:
         return False
 
+# --- namespace index (begin) ---
+# Build-free structural resolution of `<namespace-path>.<leaf>` names: text-only, no lake, no
+# .olean. Comments and docstrings are stripped first so keyword-shaped prose inside them cannot
+# contribute a declaration.
+_NS_MODS = r"(?:(?:private|protected|noncomputable|scoped|unsafe|partial|nonrec|public|meta)\s+)*"
+_NS_ATTRS = r"(?:@\[[^\]]*\]\s*)*"
+_NS_DECL_RE = re.compile(
+    r"^\s*" + _NS_ATTRS + _NS_MODS
+    + r"(?:class\s+(?:inductive|abbrev)|theorem|lemma|def|abbrev|instance|structure|inductive"
+    + r"|class|axiom|opaque)\s+([^\s:({\[⦃]+)"
+)
+_NS_OPEN_RE = re.compile(r"^\s*namespace\s+(\S+)")
+_NS_SECTION_RE = re.compile(r"^\s*" + _NS_ATTRS + _NS_MODS + r"(section|mutual)\b\s*(\S*)")
+_NS_END_RE = re.compile(r"^\s*end\b\s*(\S*)")
+
+def strip_lean_comments(lines):
+    # Yield each source line with `--` line comments, (nested) `/- ... -/` block comments and
+    # string-literal contents blanked. One output line per input line, so line numbers survive.
+    depth = 0          # block-comment nesting depth, carried across lines
+    in_string = False  # inside a "..." literal, carried across lines
+    for line in lines:
+        if depth == 0 and not in_string:
+            if "--" not in line and "/-" not in line and '"' not in line:
+                yield line
+                continue
+        elif depth > 0 and "-/" not in line and "/-" not in line:
+            yield ""
+            continue
+        elif in_string and '"' not in line:
+            yield ""
+            continue
+        out = []
+        i, n = 0, len(line)
+        while i < n:
+            two = line[i:i + 2]
+            if depth > 0:
+                if two == "/-":
+                    depth += 1
+                    i += 2
+                elif two == "-/":
+                    depth -= 1
+                    i += 2
+                else:
+                    i += 1
+                continue
+            ch = line[i]
+            if in_string:
+                if ch == "\\":
+                    i += 2
+                elif ch == '"':
+                    in_string = False
+                    i += 1
+                else:
+                    i += 1
+                continue
+            if two == "/-":
+                depth += 1
+                i += 2
+            elif two == "--":
+                break
+            elif ch == "'" and line[i:i + 3] == "'\"'":
+                i += 3  # the char literal '"' opens no string
+            elif ch == "'" and line[i:i + 4] == "'\\\"'":
+                i += 4
+            elif ch == '"':
+                in_string = True
+                out.append(" ")
+                i += 1
+            else:
+                out.append(ch)
+                i += 1
+        yield "".join(out)
+
+def scan_lean_file(path, rel, index, strip=True):
+    # Record every namespace path and every declaration's fully-qualified name found in one
+    # file. Scope stack entries are (kind, name-components); only "ns" entries contribute to the
+    # qualifying prefix. `section`/`mutual` are tracked solely so their `end` is paired with
+    # them rather than popping an enclosing namespace.
+    try:
+        with open(path, encoding="utf-8") as fh:
+            raw = fh.read().split("\n")
+    except (OSError, UnicodeDecodeError):
+        return
+    stack = []
+    for lineno, line in enumerate(strip_lean_comments(raw) if strip else raw, start=1):
+        if not line or line.isspace():
+            continue
+        m = _NS_OPEN_RE.match(line)
+        if m:
+            for part in m.group(1).split("."):
+                stack.append(("ns", part))
+            prefix = ".".join(name for kind, name in stack if kind == "ns")
+            index.setdefault(prefix, f"{rel}:{lineno}")
+            continue
+        m = _NS_END_RE.match(line)
+        if m:
+            parts = m.group(1).split(".") if m.group(1) else [""]
+            k = len(parts)
+            # Pop only on an exact match against the innermost open scopes (Lean's pairing rule).
+            if k <= len(stack) and [name for _, name in stack[-k:]] == parts:
+                del stack[-k:]
+            continue
+        m = _NS_SECTION_RE.match(line)
+        if m:
+            name = m.group(2) if m.group(1) == "section" else ""
+            for part in (name.split(".") if name else [""]):
+                stack.append(("sec", part))
+            continue
+        m = _NS_DECL_RE.match(line)
+        if m:
+            local = m.group(1)
+            if local.startswith("_root_."):
+                fq = local[len("_root_."):]
+            else:
+                fq = ".".join([name for kind, name in stack if kind == "ns"] + [local])
+            index.setdefault(fq, f"{rel}:{lineno}")
+
+def build_ns_index(strip=True):
+    # Fully-qualified name -> "file:line" of its declaring line, over every Lean source root,
+    # Boneyard/ excluded (as in every other Check 1 branch).
+    index = {}
+    for base in bimodal_dirs:
+        for root, dirs, files in os.walk(base):
+            if "Boneyard" in dirs:
+                dirs.remove("Boneyard")
+            dirs.sort()
+            for fname in sorted(files):
+                if fname.endswith(".lean"):
+                    full = os.path.join(root, fname)
+                    scan_lean_file(full, os.path.relpath(full, repo_root), index, strip)
+    return index
+
+_ns_index = None
+
+def ns_resolves(name):
+    # Lazy: the index is built on the first dotted candidate the literal scan misses, and at
+    # most once per run.
+    global _ns_index
+    if _ns_index is None:
+        _ns_index = build_ns_index()
+    return name in _ns_index
+# --- namespace index (end) ---
+
 def strip_line_suffix(path):
     # Strip a trailing ":123" or ":123-145" line/range reference.
     return re.sub(r":\d+(-\d+)?$", "", path)
@@ -705,6 +848,11 @@ for cand, files in sorted(candidates.items()):
     if grep_lean(cand):
         continue
     roots_desc = "/, ".join(os.path.basename(b) for b in bimodal_dirs) + "/"
+    if "." in cand:
+        if ns_resolves(cand):
+            continue
+        violations.append((cand, files, f"dotted name found neither verbatim in any *.lean file nor by namespace resolution (namespace path + declared name) under the Lean source roots ({roots_desc}; excl. Boneyard/)"))
+        continue
     violations.append((cand, files, f"identifier not found in any *.lean file under the Lean source roots ({roots_desc}; excl. Boneyard/)"))
 
 if violations:

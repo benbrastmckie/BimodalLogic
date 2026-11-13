@@ -1,7 +1,7 @@
 # Implementation Plan: Task #743
 
 - **Task**: 743 - Teach typst-sync-check.sh Check 1 to resolve namespaced Lean declarations, or rule on the whitelist-vs-docstring convention it currently depends on
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/743_typst_sync_check1_namespace_resolution/reports/01_namespace-resolution-feasibility.md
@@ -131,47 +131,47 @@ parallelism is real rather than nominal.
 
 ---
 
-### Phase 1: Comment-Aware Namespace-Stack Resolver, Wired Additively [NOT STARTED]
+### Phase 1: Comment-Aware Namespace-Stack Resolver, Wired Additively [IN PROGRESS]
 
 **Goal**: Check 1's dotted-name branch resolves a `<namespace-path>.<leaf>` citation structurally,
 with the literal grep retained unchanged as the first-tried path.
 
 **Tasks**:
 
-- [ ] Capture the baseline before editing: run `bash scripts/typst-sync-check.sh` and record the
+- [x] Capture the baseline before editing: run `bash scripts/typst-sync-check.sh` and record the
       exit code and each check's violation count; run
       `grep -rno '\`FormalSystem\.[A-Za-z0-9_.]*\`' typst --include=*.typ | grep -v '/generated/'`
       and record the full span inventory, classifying each span as *namespace name* or
-      *`<path>.<leaf>` declaration citation* by checking for a matching `namespace` line in source.
-- [ ] Confirm the accidental dependency non-destructively:
+      *`<path>.<leaf>` declaration citation* by checking for a matching `namespace` line in source. *(completed: exit 0, 894 candidates, 0 violations; 8 spans = 7 namespace names + 1 leaf citation; gate 21.8s)*
+- [x] Confirm the accidental dependency non-destructively:
       `grep -rn --include=*.lean -F 'FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime' FormalSystem/ BimodalTools/`
       must return exactly one hit, a docstring line, and that line must not be the declaration's
       own site (the declaration is `def decidableValidZTime` in
       `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean`). Record the
-      measured line numbers.
-- [ ] In the Check 1 Python heredoc (`scripts/typst-sync-check.sh`, heredoc opens at line 595),
+      measured line numbers. *(completed: exactly one hit, Decidability.lean:181, a docstring; declaration is Assembly.lean:188)*
+- [x] In the Check 1 Python heredoc (`scripts/typst-sync-check.sh`, heredoc opens at line 595),
       add a comment stripper applied per file before any regex matching: remove `--` line-comment
       suffixes and `/- ... -/` block-comment spans, tracking block nesting depth (Lean permits
-      nested block comments) across lines.
-- [ ] Add a namespace-stack scanner over the stripped text: push the `.`-split components on
+      nested block comments) across lines. *(deviation: altered — also blanks string-literal contents so a `--` or `/-` inside a string cannot open a comment)*
+- [x] Add a namespace-stack scanner over the stripped text: push the `.`-split components on
       `namespace X.Y.Z`; pop on `end X.Y.Z` **only** when the argument exactly matches the current
       stack top (LIFO, mirroring Lean's own pairing rule). Do not treat `section` as
-      namespace-affecting.
-- [ ] Add declaration-keyword extraction on the stripped text: `theorem`, `lemma`, `def`,
+      namespace-affecting. *(deviation: altered — `section`/`mutual` contribute nothing to the prefix but are tracked on the scope stack so their `end` is paired with them instead of popping a namespace; namespace paths themselves are also indexed)*
+- [x] Add declaration-keyword extraction on the stripped text: `theorem`, `lemma`, `def`,
       `abbrev`, `instance`, `structure`, `inductive`, `class`, `axiom`, optionally preceded by
       `@[...]`, `private`, `protected`, `noncomputable`, `scoped`. Join the extracted identifier
       to the current stack as `".".join(stack + [local_name])` — the join handles an already-dotted
-      local name unchanged.
-- [ ] Build the index once per Check 1 run, over `bimodal_dirs` (the existing `LEAN_SRC_ROOTS`
+      local name unchanged. *(completed: also `opaque`, `class inductive`/`class abbrev`; `_root_.` honoured)*
+- [x] Build the index once per Check 1 run, over `bimodal_dirs` (the existing `LEAN_SRC_ROOTS`
       parse) with `Boneyard/` excluded to match every other Check 1 branch; build it **lazily**,
       on first need, so a run with no dotted candidate pays nothing. Map fully-qualified name ->
-      `file:line` so a future diagnostic can name the resolution site.
-- [ ] Wire additively into the dotted branch at `scripts/typst-sync-check.sh:704-708`: keep
+      `file:line` so a future diagnostic can name the resolution site. *(completed)*
+- [x] Wire additively into the dotted branch at `scripts/typst-sync-check.sh:704-708`: keep
       `if grep_lean(cand): continue` first and unchanged, then add the index lookup as a second
       `continue` condition. Do not alter the whitelist branch, the multi-word-span branch, or the
-      path-like branch.
-- [ ] Extend the violation message for a still-unresolved dotted candidate to say that neither the
-      literal scan nor namespace resolution found it, so the failure mode is distinguishable.
+      path-like branch. *(completed)*
+- [x] Extend the violation message for a still-unresolved dotted candidate to say that neither the
+      literal scan nor namespace resolution found it, so the failure mode is distinguishable. *(completed)*
 
 **Timing**: 1.5 hours
 
