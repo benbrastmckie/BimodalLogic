@@ -1,7 +1,27 @@
 # Elaboration Evidence: SubformulaProperty.lean
 
-Evidence record for task 803. Module under measurement:
+Before/after evidence record for task 803. Module under measurement:
 `FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean`.
+
+## 0. Result
+
+| Measure | Before | After | Method |
+|---|---|---|---|
+| Heartbeats, 36 per-rule theorems summed | 34,095,081 | 79,799 | `#count_heartbeats` per declaration, `set_option Elab.async false`, in-module-context probes (section 1) |
+| Heartbeats, per theorem | 858,832 - 2,085,983 | 167 - 6,639 | same |
+| Module time as Lake reports it in a full build | 478s, 438s (two builds) | 2.7s, 3.2s (two builds) | `Built …SubformulaProperty (Ns)` line of the guarded full build log, same machine, same day |
+| Cumulative `simp` time, single-module profile | 14,987.6s (research report) | 4.03s | `lake env lean -Dprofiler=true -Dprofiler.threshold=200 --stats` through the guard |
+| Wall-clock of that single-module profile run | 499s (research report) | 5s | guard `start_epoch`/`end_epoch` |
+| `set_option maxHeartbeats` lines in the module | 36 | 0 | `grep -c maxHeartbeats` |
+
+The summed heartbeat reduction is measured, not projected: 34,095,081 -> 79,799, a factor of 427
+(99.77 percent). Per theorem the factor runs from 134 (`untlNeg`) to 12,491 (`serialityRule`). All
+36 conversions landed; there is no fallback set.
+
+Heartbeats are the evidence of record. The Lake and wall-clock rows are context: the "before"
+Lake figures were taken with every per-rule theorem elaborating in parallel on 24 cores while the
+rest of the build competed for them, and the two profile rows compare a research-phase run with a
+run taken here.
 
 ## 1. Machine context and method
 
@@ -227,6 +247,141 @@ probe compiled clean):
 The tightening moves each theorem by at most 3.6 percent, with mixed sign, and the eleven together
 by 0.8 percent: 359 heartbeats against a module baseline of 34,095,081. The block is not the
 dominant residual cost, so the phase's premise does not hold and the block was left as it is.
+
+## 7. Heartbeat ceilings removed
+
+The module carried 34 `set_option maxHeartbeats 1200000 in` and two `set_option maxHeartbeats
+3000000 in` lines. All 36 are deleted, together with the two `set_option linter.unusedTactic false
+in` lines on `untlNeg`/`snceNeg`. `grep -c 'maxHeartbeats' <module>` returns 0, and the module
+builds green at the 200,000 default in the guarded full build (exit 0, 0 errors, no warning on the
+module). That is evidence of the reduction independent of every table in this file: a declaration
+needing more than 200,000 heartbeats would fail that build.
+
+One option was added: `set_option linter.style.longFile 1700` after the module docstring. The
+explicit proofs are longer than the cascade scripts (1,467 -> 1,617 lines), and the repository's
+default limit is 1,500.
+
+## 8. Cumulative profiling blocks
+
+Before — from `reports/01_cut-subformulaproperty-elaboration-time.md` (2026-11-05, same machine,
+`lake env lean -Dprofiler=true -Dprofiler.threshold=200 --stats` through the guard, wall 499s, other
+`lean` workers live). This task's Phase 1 did not re-run the baseline profile; the per-declaration
+heartbeat baselines in section 5 are this task's own "before".
+
+```
+cumulative profiling times:
+  simp                  1.52e+04 s     <-- 14,987.6 s summed over 1348 calls >200ms
+  blocked (unaccounted)     73.4 s
+  tactic execution         108   s
+  type checking             20.9 s
+  congr simp thm            15.6 s
+  instantiate metavars       2.49s
+  import                     1.55s
+  elaboration                1.72s
+```
+
+After — this task, 2026-11-13, HEAD `915bb200d`, same invocation through the guard
+(`--no-share`), exit 0, wall 5s by the guard's own `start_epoch`/`end_epoch`
+(1794597418 -> 1794597423). The only entry above the 200ms
+threshold in the whole log is `import took 729ms`; there is no `simp` entry above it at all
+(1348 before).
+
+```
+cumulative profiling times:
+	attribute application 2.11ms
+	blocked (unaccounted) 448ms
+	compilation (IR) 4.62ms
+	compilation (LCNF base) 18.5ms
+	compilation (LCNF impure) 21.5ms
+	compilation (LCNF mono) 35.4ms
+	congr simp thm 43.3ms
+	dsimp 56.3ms
+	elaboration 449ms
+	fix level params 5.68ms
+	import 729ms
+	initialization 27ms
+	instantiate metavars 53.6ms
+	interpretation 1.09s
+	let-to-have transformation 1.65ms
+	linting 243ms
+	module linting 0.00265ms
+	overlappingInstancesLinter 42.1ms
+	parsing 74.4ms
+	process pre-definitions 93.7ms
+	share common exprs 50.9ms
+	simp 4.03s
+	tactic execution 9.88s
+	tacticAnalysis 255ms
+	type checking 303ms
+	typeclass inference 396ms
+```
+
+## 9. Axiom profiles after, and the diff
+
+`#print axioms` re-run for the same 37 declarations against the final build. `diff` of the Phase 1
+output (section 3) against the new output is empty: all 37 still report exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+The 38 wrappers added to `Tableau.lean` are new declarations and have no "before". Each reports
+`[propext]`, which is exactly what the generated lemma it restates reports
+(`applyRule.eq_1`, `applyRule.eq_38` and `applyRule` itself: `[propext]`), so the wrappers add no
+axiom dependency of their own. Verbatim:
+
+```
+'FormalSystem.Metalogic.Decidability.applyRule_andPos_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_andNeg_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_orPos_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_orNeg_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_impPos_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_impNeg_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_negPos_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_negNeg_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_boxPos_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_boxNeg_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_diamondPos_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_diamondNeg_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_boxTemporal_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_allFuturePos_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_allFutureNeg_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_allPastPos_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_allPastNeg_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_someFuturePos_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_someFutureNeg_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_somePastPos_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_somePastNeg_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_untlPos_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_sncePos_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_untlNeg_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_snceNeg_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_orderTrichotomy_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_denseIndicatorClosure_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_densityRule_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_priorUZ_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_priorSZ_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_z1Rule_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_z1Rule_offPattern_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_priorUGap_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_priorSGap_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_sepRule_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_serialityRule_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_timeLinearity_arm_eq' depends on axioms: [propext]
+'FormalSystem.Metalogic.Decidability.applyRule_offArm_eq' depends on axioms: [propext]
+```
+
+## 10. Statement fidelity and remaining gates
+
+- Statements: the 36 per-rule statements (text from `theorem` through `:= by`) are identical
+  between base commit `013dd7368` and the final tree, and everything from
+  `theorem applyRule_subformula_closed` to the end of the file is byte-identical. The list of
+  declaration header lines in the module is unchanged (73 before, 73 after).
+- `sorry`: `lean-sorry-census.sh` over both edited files reports `sorry_count: 0`;
+  `grep -c '\bsorry\b'` is 0 for both.
+- `bash scripts/check-module-invariants.sh`: `ALL CHECKS PASSED`, exit 0 (full mode, with build).
+- `bash .claude/scripts/check-task-references.sh <file>`: exit 0 for each of the two edited files.
+- Guarded full build: `Build completed successfully (2975 jobs)`, exit 0, 0 `error:` lines, no
+  warning; `.olean` newer than source for `Tableau` and `SubformulaProperty`.
+- Whole-build wall-clock, context only: the first build after the Phase 2 edit took 1134s; the
+  final build, which rebuilt the same set (`Tableau.lean` and everything downstream), took 668s.
 
 ## Appendix A. The 38 equation-lemma types (verbatim, `open`ed namespaces for brevity)
 

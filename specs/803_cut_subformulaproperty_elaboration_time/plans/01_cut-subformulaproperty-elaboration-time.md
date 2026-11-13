@@ -625,37 +625,37 @@ fallback rules); a nonzero residue outside the fallback set is a missed edit, no
 
 ---
 
-### Phase 9: Final Gate and Evidence Report [IN PROGRESS]
+### Phase 9: Final Gate and Evidence Report [COMPLETED]
 
 **Goal**: Run the complete gate set, confirm every acceptance criterion with recorded evidence, and
 assemble the before/after report.
 
 **Tasks**:
 
-- [ ] Run the full unscoped guarded build:
+- [x] Run the full unscoped guarded build:
   `bash .claude/scripts/lake-build-guard.sh build --timeout 3600 -- build`, reading the verdict
-  from the guard's own `result`.
-- [ ] Run `bash scripts/check-module-invariants.sh` and require `ALL CHECKS PASSED` with exit
+  from the guard's own `result`. *(completed — `--timeout 1800 --no-share`; exit 0, `Build completed successfully (2975 jobs)`, 0 `error:` lines, no warning, oleans newer than source for both edited modules. Batch-gate note: this dispatch is one of a multi-task batch, so the batch-wide complete gate set (`.claude/scripts/tests/run-all.sh`, `verify-deploy.sh`) was DEFERRED to the batch stage and not run here; neither narrowing invocation maps to this phase's criteria (no suite or deploy gate covers `.lean` files or `specs/**` evidence), so the phase's own named checks — this build, `check-module-invariants.sh`, the axiom diff, the sorry census and the task-reference lint — were run directly as the scoped discharge.)*
+- [x] Run `bash scripts/check-module-invariants.sh` and require `ALL CHECKS PASSED` with exit
   status 0 — this is the repository's aggregate Lean gate and covers `lake build` exit 0 (C1), the
   `#print axioms` baseline for the flagship theorems (C2), zero structural `sorry` asserted by
-  content (C3), and import resolution (C4).
-- [ ] Re-capture `#print axioms` for all 37 declarations in the module plus the 37 new wrappers,
+  content (C3), and import resolution (C4). *(completed — `ALL CHECKS PASSED`, exit 0, full mode. A first `--no-build` pass failed C20: the Phase 2 insertion had shifted six `Tableau.lean:NNN` citations in five other modules. Fixed forward in sub-step 9.1 by moving the wrapper block to the end of `Tableau.lean`, so no cited line moves and no module outside this task's file scope is edited.)*
+- [x] Re-capture `#print axioms` for all 37 declarations in the module plus the 37 new wrappers,
   and diff against Phase 1's recorded profiles. Any difference for any declaration fails this
   phase; `check-module-invariants.sh` C2 pins only the flagship theorems, so this per-declaration
-  diff is a separate, non-redundant obligation.
-- [ ] Confirm `sorry` count is zero in both edited files, asserted by content.
-- [ ] Run `bash .claude/scripts/check-task-references.sh` over the two edited `.lean` deliverables
+  diff is a separate, non-redundant obligation. *(completed — diff empty for all 37 module declarations. The wrappers number 38, not 37, and are new declarations with no Phase 1 profile to diff against; each reports `[propext]`, identical to the generated `applyRule.eq_N` it restates.)*
+- [x] Confirm `sorry` count is zero in both edited files, asserted by content. *(completed — 0 in both files, by census and by content grep)*
+- [x] Run `bash .claude/scripts/check-task-references.sh` over the two edited `.lean` deliverables
   and require exit status 0 — neither may carry a task-number reference, and the rewritten comments
-  are the realistic place one would have crept in. Check the exit status, not only the output text.
-- [ ] Run a fresh `-Dprofiler=true -Dprofiler.threshold=200` single-module profile through the
+  are the realistic place one would have crept in. Check the exit status, not only the output text. *(completed — exit 0 for each file; the script takes one path per invocation)*
+- [x] Run a fresh `-Dprofiler=true -Dprofiler.threshold=200` single-module profile through the
   guard and record the new `cumulative profiling times` block beside Phase 1's, with the machine
-  context stated.
-- [ ] Assemble the evidence file into its final form: the per-declaration before/after heartbeat
+  context stated. *(completed — `simp` 4.03s cumulative, wall 5s, no `simp` entry above the 200ms threshold; the 'before' block beside it is the research report's, since Phase 1 carried no profile task)*
+- [x] Assemble the evidence file into its final form: the per-declaration before/after heartbeat
   table (37 rows, or fewer with the fallback set named), the two cumulative profiling blocks, the
-  axiom-profile diff result, and the removed-ceiling fact.
-- [ ] Record the aggregate reduction as a measured figure with its method named, never as a
+  axiom-profile diff result, and the removed-ceiling fact. *(completed — 36 per-rule rows with before/after, no fallback set; sections 0 and 5-10 of the evidence file)*
+- [x] Record the aggregate reduction as a measured figure with its method named, never as a
   projection. The research report's "roughly 36M to roughly 0.4M" is a projection and must be
-  labelled as such if it appears at all.
+  labelled as such if it appears at all. *(completed — measured: 34,095,081 -> 79,799 heartbeats summed over the 36 per-rule theorems, factor 427; method named in evidence section 0. The report's '36M to 0.4M' projection does not appear.)*
 
 **Timing**: 1.5 hours
 
@@ -712,17 +712,17 @@ import FormalSystem.Metalogic.Decidability.Verified.Termination.SubformulaProper
 
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.Tableau` green (Phase 2).
-- [ ] Guarded scoped build of each of `Tableau.lean`'s four direct importers green (Phase 2).
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.Verified.Termination.SubformulaProperty` green at the end of each of Phases 3 through 8.
-- [ ] The same scoped build green with no `set_option maxHeartbeats` present (Phase 8).
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 3600 -- build` green (Phase 9).
-- [ ] `bash scripts/check-module-invariants.sh` prints `ALL CHECKS PASSED`, exit 0 (Phase 9).
-- [ ] Per-declaration `#print axioms` diff empty across all 37 module declarations and 37 wrappers (Phase 9).
-- [ ] `sorry` count zero in both edited files, asserted by content (Phase 9).
-- [ ] `bash .claude/scripts/check-task-references.sh` exits 0 over both edited `.lean` files (Phase 9).
-- [ ] Every `#count_heartbeats` figure in the evidence file was taken with `set_option Elab.async false`.
-- [ ] Every one of the 36 per-rule statements and `applyRule_subformula_closed`'s statement is byte-identical to its pre-change form.
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.Tableau` green (Phase 2). *(covered by the Phase 2 full guarded build, which builds the module)*
+- [x] Guarded scoped build of each of `Tableau.lean`'s four direct importers green (Phase 2). *(covered by the Phase 2 full guarded build)*
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.Verified.Termination.SubformulaProperty` green at the end of each of Phases 3 through 8. *(each phase gate was a full guarded build, a superset of the scoped build)*
+- [x] The same scoped build green with no `set_option maxHeartbeats` present (Phase 8). *(Phase 8 and Phase 9 full builds)*
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 3600 -- build` green (Phase 9). *(Phase 9, `--timeout 1800`)*
+- [x] `bash scripts/check-module-invariants.sh` prints `ALL CHECKS PASSED`, exit 0 (Phase 9).
+- [x] Per-declaration `#print axioms` diff empty across all 37 module declarations and 37 wrappers (Phase 9). *(37 module declarations: empty diff; 38 wrappers: new, `[propext]`)*
+- [x] `sorry` count zero in both edited files, asserted by content (Phase 9).
+- [x] `bash .claude/scripts/check-task-references.sh` exits 0 over both edited `.lean` files (Phase 9).
+- [x] Every `#count_heartbeats` figure in the evidence file was taken with `set_option Elab.async false`.
+- [x] Every one of the 36 per-rule statements and `applyRule_subformula_closed`'s statement is byte-identical to its pre-change form.
 
 ## Artifacts & Outputs
 
