@@ -7447,7 +7447,7 @@
     {
       "project_number": 804,
       "project_name": "narrow_termination_syntax_layer_fanin",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Determine whether FormalSystem/Metalogic/Decidability/Verified/Termination/ must sit downstream of the syntax layer, and narrow the fan-in if it need not.\n\nTHE OBSERVATION (measured 2026-10-15, this repo, from .lake/build-guard.stdout on a full guarded build): a batch touching FormalSystem/ProofSystem/Axioms.lean, FormalSystem/Semantics.lean and Syntax modules rebuilt 414 of 2848 jobs, costing 6354s of elaboration. Metalogic was 5649s of that across 306 modules. The decidability and termination subtree dominated: SubformulaProperty 1103s, Decidability.Tableau 476s, MintBound.MintPotential 360s, Termination.Fuel 238s. SubformulaProperty.lean imports FormalSystem.Metalogic.Decidability.Tableau and FormalSystem.Syntax.SubformulaClosure.Closure.\n\nTHE QUESTION. Paper-alignment work edits the syntax and proof-system layers constantly, and each such edit currently invalidates the most expensive subtree in the repository. Is that fan-in ESSENTIAL (the termination argument genuinely needs the syntax layer it imports) or INCIDENTAL (it imports a broad aggregator when a narrow one would do, or depends on a definition that could be relocated or abstracted behind a smaller interface)?\n\nRESEARCH FIRST, and this may legitimately conclude NO CHANGE. A finding that the fan-in is essential, recorded with the import-path evidence that establishes it, is a successful outcome; do not manufacture a refactor to justify the task. Map the actual import paths from the termination subtree up to the syntax and proof-system layers, identify which specific declarations create each edge, and classify each edge as essential or reducible with evidence.\n\nIF REDUCIBLE. Propose the narrowing before implementing it. Candidate shapes: import a narrower module instead of an aggregator; relocate a shared definition to a lower module both sides can import; introduce a minimal interface so the termination argument depends on a stable signature rather than on the syntax layer directly. Prefer the smallest change that breaks the invalidation path.\n\nRELATIONSHIP TO THE PER-MODULE COST. Reducing this fan-in and reducing SubformulaProperty's own 1103s elaboration are complementary, not alternatives: the first reduces how OFTEN the expensive subtree rebuilds, the second how LONG it takes when it does. Neither subsumes the other.\n\nNON-GOALS. No change to any statement that is proved. Zero new sorry. No new axiom dependency. No reorganization of modules outside the dependency path actually implicated by the measured evidence.\n\nACCEPTANCE. A written classification of every import edge from the termination subtree to the syntax and proof-system layers as essential or reducible, each with the declaration-level evidence establishing it; a recommendation (narrow, relocate, abstract, or leave as is) with reasoning; if a change is made, measured before/after rebuild scope for an edit to FormalSystem/ProofSystem/Axioms.lean, plus lake build green, check-module-invariants.sh ALL CHECKS PASSED and sorry_count 0.",
       "topic": "build-performance",
@@ -7472,7 +7472,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-10-15T05:05:06Z",
-      "last_updated": "2026-11-13T22:27:18Z",
+      "last_updated": "2026-11-13T22:58:11Z",
       "dependencies": [
         803
       ],
@@ -7487,9 +7487,15 @@
           "path": "specs/804_narrow_termination_syntax_layer_fanin/plans/01_termination-syntax-fanin.md",
           "type": "plan",
           "summary": "Three-phase plan: pre-change baseline, atomic import-narrowing batch with four-root build, post-change measurement and full gate."
+        },
+        {
+          "path": "specs/804_narrow_termination_syntax_layer_fanin/summaries/01_termination-syntax-fanin-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: edits, measured before/after rebuild sets, deviations, pre-existing BimodalToolsTest failure."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Narrowed seven import lines so no termination module is downstream of any Semantics module or the Syntax aggregator (Semantics.lean rebuild set 251 -> 204, Syntax.lean 107 -> 29). The dependence on ProofSystem/Axioms.lean is essential and unchanged (520 -> 520), recorded with a 20-edge declaration-level classification."
     },
     {
       "project_number": 803,

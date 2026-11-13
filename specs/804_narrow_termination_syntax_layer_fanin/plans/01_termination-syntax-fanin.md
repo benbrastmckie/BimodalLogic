@@ -1,7 +1,7 @@
 # Implementation Plan: Task #804
 
 - **Task**: 804 - Narrow the termination subtree's fan-in from the syntax layer
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.75 hours
 - **Dependencies**: 803 (landed)
 - **Research Inputs**: `specs/804_narrow_termination_syntax_layer_fanin/reports/01_termination-syntax-fanin.md`

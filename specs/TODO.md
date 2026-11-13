@@ -13,7 +13,7 @@ next_project_number: 931
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,804,829,831,869,873,890,927,928,929,930 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,873,890,927,928,929,930 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,874,875,876,926 | 298,428,502,761,873,927,928 | algebraic-representation, completeness, dataset-enhancement, ... |
 | 3 | 410,498,499,500,861 | 429,497,763 | algebraic-representation, decidability |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -93,7 +93,6 @@ next_project_number: 931
 
 ### Build Performance
 
-804 [PLANNED] — Determine whether...
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ### Syntax
@@ -459,12 +458,13 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, High Priority Issues and Mediu
 ---
 
 ### 804. Narrow termination syntax layer fanin
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: build-performance
 - **Dependencies**: Task 803
 - **Research**: [804_narrow_termination_syntax_layer_fanin/reports/01_termination-syntax-fanin.md]
 - **Plan**: [804_narrow_termination_syntax_layer_fanin/plans/01_termination-syntax-fanin.md]
+- **Summary**: [804_narrow_termination_syntax_layer_fanin/summaries/01_termination-syntax-fanin-summary.md]
 
 **Description**: Determine whether FormalSystem/Metalogic/Decidability/Verified/Termination/ must sit downstream of the syntax layer, and narrow the fan-in if it need not.
 
