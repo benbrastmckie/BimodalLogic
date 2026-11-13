@@ -170,16 +170,16 @@ context only.
 | 16 | `applyRule_allPastPos_closed` | 867305 | 54 | 1799 | |
 | 17 | `applyRule_someFutureNeg_closed` | 889622 | 57 | 1803 | |
 | 18 | `applyRule_somePastNeg_closed` | 888845 | 52 | 1803 | |
-| 19 | `applyRule_boxNeg_closed` | 883992 | 52 | | |
-| 20 | `applyRule_diamondPos_closed` | 884441 | 67 | | |
-| 21 | `applyRule_allFutureNeg_closed` | 886520 | 66 | | |
-| 22 | `applyRule_allPastNeg_closed` | 887427 | 66 | | |
-| 23 | `applyRule_someFuturePos_closed` | 884420 | 50 | | |
-| 24 | `applyRule_somePastPos_closed` | 883648 | 50 | | |
-| 25 | `applyRule_untlPos_closed` | 884453 | 50 | | |
-| 26 | `applyRule_sncePos_closed` | 883444 | 52 | | |
-| 27 | `applyRule_untlNeg_closed` | 893772 | 59 | | |
-| 28 | `applyRule_snceNeg_closed` | 892568 | 61 | | |
+| 19 | `applyRule_boxNeg_closed` | 883992 | 52 | 2258 | |
+| 20 | `applyRule_diamondPos_closed` | 884441 | 67 | 2185 | |
+| 21 | `applyRule_allFutureNeg_closed` | 886520 | 66 | 3111 | |
+| 22 | `applyRule_allPastNeg_closed` | 887427 | 66 | 3111 | |
+| 23 | `applyRule_someFuturePos_closed` | 884420 | 50 | 3114 | |
+| 24 | `applyRule_somePastPos_closed` | 883648 | 50 | 3114 | |
+| 25 | `applyRule_untlPos_closed` | 884453 | 50 | 5053 | |
+| 26 | `applyRule_sncePos_closed` | 883444 | 52 | 5053 | |
+| 27 | `applyRule_untlNeg_closed` | 893772 | 59 | 6639 | |
+| 28 | `applyRule_snceNeg_closed` | 892568 | 61 | 6639 | |
 | 29 | `applyRule_priorUZ_closed` | 876360 | 57 | 1420 | |
 | 30 | `applyRule_priorSZ_closed` | 875591 | 64 | 1420 | |
 | 31 | `applyRule_z1Rule_closed` | 864804 | 57 | 2048 | |

@@ -429,30 +429,30 @@ rather than against the research report's table.
 
 ---
 
-### Phase 6: Convert the FreshWitness Section [NOT STARTED]
+### Phase 6: Convert the FreshWitness Section [COMPLETED]
 
 **Goal**: Convert the ten `FreshWitness` bodies — the hardest shape in the file, each with a
 formula pattern and one or two propagation blocks routed through `mem_filterMap_sub`.
 
 **Tasks**:
 
-- [ ] Re-verify `applyRule_boxNeg_closed` in place first. The research report's `boxNeg` probe left
+- [x] Re-verify `applyRule_boxNeg_closed` in place first. The research report's `boxNeg` probe left
   two unsolved goals, diagnosed there as a probe artifact: the probe's `open` made
   `Formula.subformulas` ambiguous, and the unmodified script failed identically in the same run. In
   the module there is no such ambiguity, so this is the conversion that confirms or refutes that
-  diagnosis. If it refutes it, stop and record the finding before converting the other nine.
-- [ ] Convert `applyRule_diamondPos_closed`, `applyRule_allFutureNeg_closed`,
+  diagnosis. If it refutes it, stop and record the finding before converting the other nine. *(completed — converted in place first and measured alone: it compiles with no unsolved goal at 2,258 heartbeats. This CONFIRMS the research report's probe-artifact diagnosis: the two unsolved goals of the report's probe came from the probe's `open`-induced `Formula.subformulas` ambiguity, not from the conversion.)*
+- [x] Convert `applyRule_diamondPos_closed`, `applyRule_allFutureNeg_closed`,
   `applyRule_allPastNeg_closed`, `applyRule_someFuturePos_closed`,
   `applyRule_somePastPos_closed`, `applyRule_untlPos_closed`, `applyRule_sncePos_closed`,
-  `applyRule_untlNeg_closed`, `applyRule_snceNeg_closed`.
-- [ ] Leave the shared `mem_filterMap_sub` sub-proof block exactly as it is — tightening it is
-  Phase 7, measured separately so the two reductions do not blur together.
-- [ ] Keep `set_option linter.unusedTactic false` on `untlNeg` and `snceNeg` for now; whether the
-  rewritten scripts still need it is decided in Phase 8.
-- [ ] Rewrite the per-theorem cost comment for each converted theorem.
-- [ ] Record `#count_heartbeats` after-figures for all ten under `set_option Elab.async false`.
-- [ ] Apply the same per-rule fallback and `#### Reasoned Exclusions` rule as Phase 3.
-- [ ] Commit per green sub-step.
+  `applyRule_untlNeg_closed`, `applyRule_snceNeg_closed`. *(completed — all nine converted)*
+- [x] Leave the shared `mem_filterMap_sub` sub-proof block exactly as it is — tightening it is
+  Phase 7, measured separately so the two reductions do not blur together. *(completed — the `refine mem_filterMap_sub hC hb ?_ hg; clear …; simp_all [...]` block is carried over verbatim into every converted body; `mem_filterMap_sub` itself is not in the diff)*
+- [x] Keep `set_option linter.unusedTactic false` on `untlNeg` and `snceNeg` for now; whether the
+  rewritten scripts still need it is decided in Phase 8. *(completed — both options left in place for Phase 8)*
+- [x] Rewrite the per-theorem cost comment for each converted theorem. *(completed — also rewrote the FreshWitness shape paragraph and the Until/Since note, which described the cascade script and its `(simp_all only []; done)` alternative)*
+- [x] Record `#count_heartbeats` after-figures for all ten under `set_option Elab.async false`. *(completed — 2,185 to 6,639 heartbeats each)*
+- [x] Apply the same per-rule fallback and `#### Reasoned Exclusions` rule as Phase 3. *(completed — no fallback needed, 10 of 10 converted)*
+- [x] Commit per green sub-step. *(deviation: altered — one commit for the ten)*
 
 **Timing**: 2 hours
 

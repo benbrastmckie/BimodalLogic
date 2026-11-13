@@ -925,279 +925,298 @@ temporal formulas (`allFuturePosAtTime`, `allPastPosAtTime`, `someFutureNegAtTim
 unsound, and those six accessor names were correspondingly pruned from the two `simp only` lists
 below, where they had become inert. The accessors themselves still exist in `SignedFormula.lean`.
 
-The proofs share one shape. After the split cascade, `hg` is a membership in a nest of
-`::`/`++`/`flatten`, `repeat' rcases` peels it into one goal per block, and a three-alternative
-`first` chain closes them: the witness goal by a component lemma applied to `hsf` (`rcases` has
-already substituted `g`, which is why that alternative must come first and must not mention
-`hg`), each propagation block by `mem_filterMap_sub`, and the `boxDiamondPersistence` block by
-`mem_boxDiamondPersistence`. The chain is three alternatives long, not thirty, and its expensive
-alternative runs only after `clear` has removed the unfolded `applyRule` term from the context —
-both of those are what keep this inside the memory ceiling described above.
+The proofs share one shape. Rewriting with the rule's arm equation leaves `hg` as a membership
+in a nest of `::`/`++`/`flatten`; one `simp only` turns that into a disjunction, one `rcases`
+peels it into one goal per block, and a short `first` chain closes them: the witness goals by a
+component lemma applied to `hsf` (`rcases` has already substituted `g`, which is why those
+alternatives come first and do not mention `hg`), the `boxDiamondPersistence` block by
+`mem_boxDiamondPersistence`, and each propagation block by `mem_filterMap_sub`. The chain's one
+expensive alternative is tried last, and only after `clear` has emptied the context of everything
+it does not need.
 -/
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_boxNeg_arm_eq`, so `hg` holds only this rule's arm:
+-- about 2.3K heartbeats measured.
 theorem applyRule_boxNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     (hb : ∀ x ∈ b, x.formula ∈ C) :
     ∀ g ∈ (applyRule .boxNeg sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [reduceCtorEq, List.not_mem_nil])
-  all_goals (try simp only [
-    Branch.boxPosFormulas, Branch.diamondNegFormulas,
-    List.mem_cons, List.mem_append,
-    ] at hg)
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hC.box_inner hsf
-    | (refine mem_filterMap_sub hC hb ?_ hg
-       clear hg hsf hC hb
-       intro x y hy
-       repeat' first
-         | split at hy
-         | simp only [Option.some.injEq] at hy
-       all_goals first
-         | exact absurd hy (by simp)
-         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
-             Formula.self_mem_subformulas]))
+  by_cases h : sf.sign = .neg ∧ ∃ ψ, sf.formula = .box ψ
+  · obtain ⟨hs, ψ, hf⟩ := h
+    rw [applyRule_boxNeg_arm_eq sf b ord ψ hs hf] at hg
+    rw [hf] at hsf
+    simp only [RuleResult.emitted, Branch.boxPosFormulas, Branch.diamondNegFormulas,
+      List.mem_cons, List.mem_append] at hg
+    rcases hg with (rfl | hg) | hg
+    all_goals first
+      | exact hC.box_inner hsf
+      | (refine mem_filterMap_sub hC hb ?_ hg
+         clear hg hsf hC hb
+         intro x y hy
+         repeat' first
+           | split at hy
+           | simp only [Option.some.injEq] at hy
+         all_goals first
+           | exact absurd hy (by simp)
+           | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+               Formula.self_mem_subformulas]))
+  · rw [applyRule_offArm_eq sf b ord .boxNeg] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; first | contradiction | exact h ⟨‹_›, _, ‹_›⟩)
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_diamondPos_arm_eq`, so `hg` holds only this rule's arm:
+-- about 2.2K heartbeats measured.
 theorem applyRule_diamondPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     (hb : ∀ x ∈ b, x.formula ∈ C) :
     ∀ g ∈ (applyRule .diamondPos sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asDiamond?_eq_iff, reduceCtorEq, List.not_mem_nil])
-  all_goals (try simp only [
-    Branch.boxPosFormulas, Branch.diamondNegFormulas,
-    List.mem_cons, List.mem_append,
-    ] at hg)
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hC.diamond_inner hsf
-    | (refine mem_filterMap_sub hC hb ?_ hg
-       clear hg hsf hC hb
-       intro x y hy
-       repeat' first
-         | split at hy
-         | simp only [Option.some.injEq] at hy
-       all_goals first
-         | exact absurd hy (by simp)
-         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
-             Formula.self_mem_subformulas]))
+  by_cases hs : sf.sign = .pos
+  · rw [applyRule_diamondPos_arm_eq sf b ord hs] at hg
+    split at hg
+    · rename_i ψ heq
+      rw [asDiamond?_eq_iff] at heq
+      rw [heq] at hsf
+      simp only [RuleResult.emitted, Branch.boxPosFormulas, Branch.diamondNegFormulas,
+        List.mem_cons, List.mem_append] at hg
+      rcases hg with (rfl | hg) | hg
+      all_goals first
+        | exact hC.diamond_inner hsf
+        | (refine mem_filterMap_sub hC hb ?_ hg
+           clear hg hsf hC hb
+           intro x y hy
+           repeat' first
+             | split at hy
+             | simp only [Option.some.injEq] at hy
+           all_goals first
+             | exact absurd hy (by simp)
+             | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+                 Formula.self_mem_subformulas]))
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+  · rw [applyRule_offArm_eq sf b ord .diamondPos] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; contradiction)
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_allFutureNeg_arm_eq`, so `hg` holds only this rule's arm:
+-- about 3.1K heartbeats measured.
 theorem applyRule_allFutureNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     (hb : ∀ x ∈ b, x.formula ∈ C) :
     ∀ g ∈ (applyRule .allFutureNeg sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [reduceCtorEq, List.not_mem_nil])
-  all_goals (try simp only [
-    Branch.allFuturePosFormulas, Branch.someFutureNegFormulas,
-    List.mem_cons, List.mem_append,
-    ] at hg)
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hC.allFuture_inner hsf
-    | (refine mem_filterMap_sub hC hb ?_ hg
-       clear hg hsf hC hb
-       intro x y hy
-       repeat' first
-         | split at hy
-         | simp only [Option.some.injEq] at hy
-       all_goals first
-         | exact absurd hy (by simp)
-         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
-             Formula.self_mem_subformulas]))
-    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+  by_cases h : sf.sign = .neg ∧ ∃ ψ, sf.formula = .allFuture ψ
+  · obtain ⟨hs, ψ, hf⟩ := h
+    rw [applyRule_allFutureNeg_arm_eq sf b ord ψ hs hf] at hg
+    rw [hf] at hsf
+    simp only [RuleResult.emitted, Branch.allFuturePosFormulas, Branch.someFutureNegFormulas,
+      List.mem_cons, List.mem_append] at hg
+    rcases hg with ((rfl | hg) | hg) | hg
+    all_goals first
+      | exact hC.allFuture_inner hsf
+      | (obtain ⟨s, hs', hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs')
+      | (refine mem_filterMap_sub hC hb ?_ hg
+         clear hg hsf hC hb
+         intro x y hy
+         repeat' first
+           | split at hy
+           | simp only [Option.some.injEq] at hy
+         all_goals first
+           | exact absurd hy (by simp)
+           | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+               Formula.self_mem_subformulas]))
+  · rw [applyRule_offArm_eq sf b ord .allFutureNeg] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; first | contradiction | exact h ⟨‹_›, _, ‹_›⟩)
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_allPastNeg_arm_eq`, so `hg` holds only this rule's arm:
+-- about 3.1K heartbeats measured.
 theorem applyRule_allPastNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     (hb : ∀ x ∈ b, x.formula ∈ C) :
     ∀ g ∈ (applyRule .allPastNeg sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [reduceCtorEq, List.not_mem_nil])
-  all_goals (try simp only [
-    Branch.allPastPosFormulas, Branch.somePastNegFormulas,
-    List.mem_cons, List.mem_append,
-    ] at hg)
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hC.allPast_inner hsf
-    | (refine mem_filterMap_sub hC hb ?_ hg
-       clear hg hsf hC hb
-       intro x y hy
-       repeat' first
-         | split at hy
-         | simp only [Option.some.injEq] at hy
-       all_goals first
-         | exact absurd hy (by simp)
-         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
-             Formula.self_mem_subformulas]))
-    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+  by_cases h : sf.sign = .neg ∧ ∃ ψ, sf.formula = .allPast ψ
+  · obtain ⟨hs, ψ, hf⟩ := h
+    rw [applyRule_allPastNeg_arm_eq sf b ord ψ hs hf] at hg
+    rw [hf] at hsf
+    simp only [RuleResult.emitted, Branch.allPastPosFormulas, Branch.somePastNegFormulas,
+      List.mem_cons, List.mem_append] at hg
+    rcases hg with ((rfl | hg) | hg) | hg
+    all_goals first
+      | exact hC.allPast_inner hsf
+      | (obtain ⟨s, hs', hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs')
+      | (refine mem_filterMap_sub hC hb ?_ hg
+         clear hg hsf hC hb
+         intro x y hy
+         repeat' first
+           | split at hy
+           | simp only [Option.some.injEq] at hy
+         all_goals first
+           | exact absurd hy (by simp)
+           | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+               Formula.self_mem_subformulas]))
+  · rw [applyRule_offArm_eq sf b ord .allPastNeg] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; first | contradiction | exact h ⟨‹_›, _, ‹_›⟩)
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_someFuturePos_arm_eq`, so `hg` holds only this rule's arm:
+-- about 3.1K heartbeats measured.
 theorem applyRule_someFuturePos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     (hb : ∀ x ∈ b, x.formula ∈ C) :
     ∀ g ∈ (applyRule .someFuturePos sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asSomeFuture?_eq_iff, reduceCtorEq, List.not_mem_nil])
-  all_goals (try simp only [
-    Branch.allFuturePosFormulas, Branch.someFutureNegFormulas,
-    List.mem_cons, List.mem_append,
-    ] at hg)
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hC.untl_left hsf
-    | (refine mem_filterMap_sub hC hb ?_ hg
-       clear hg hsf hC hb
-       intro x y hy
-       repeat' first
-         | split at hy
-         | simp only [Option.some.injEq] at hy
-       all_goals first
-         | exact absurd hy (by simp)
-         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
-             Formula.self_mem_subformulas]))
-    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+  by_cases hs : sf.sign = .pos
+  · rw [applyRule_someFuturePos_arm_eq sf b ord hs] at hg
+    split at hg
+    · rename_i ψ heq
+      rw [asSomeFuture?_eq_iff] at heq
+      rw [heq] at hsf
+      simp only [RuleResult.emitted, Branch.allFuturePosFormulas, Branch.someFutureNegFormulas,
+        List.mem_cons, List.mem_append] at hg
+      rcases hg with ((rfl | hg) | hg) | hg
+      all_goals first
+        | exact hC.untl_left hsf
+        | (obtain ⟨s, hs', hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs')
+        | (refine mem_filterMap_sub hC hb ?_ hg
+           clear hg hsf hC hb
+           intro x y hy
+           repeat' first
+             | split at hy
+             | simp only [Option.some.injEq] at hy
+           all_goals first
+             | exact absurd hy (by simp)
+             | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+                 Formula.self_mem_subformulas]))
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+  · rw [applyRule_offArm_eq sf b ord .someFuturePos] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; contradiction)
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_somePastPos_arm_eq`, so `hg` holds only this rule's arm:
+-- about 3.1K heartbeats measured.
 theorem applyRule_somePastPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     (hb : ∀ x ∈ b, x.formula ∈ C) :
     ∀ g ∈ (applyRule .somePastPos sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asSomePast?_eq_iff, reduceCtorEq, List.not_mem_nil])
-  all_goals (try simp only [
-    Branch.allPastPosFormulas, Branch.somePastNegFormulas,
-    List.mem_cons, List.mem_append,
-    ] at hg)
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hC.snce_left hsf
-    | (refine mem_filterMap_sub hC hb ?_ hg
-       clear hg hsf hC hb
-       intro x y hy
-       repeat' first
-         | split at hy
-         | simp only [Option.some.injEq] at hy
-       all_goals first
-         | exact absurd hy (by simp)
-         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
-             Formula.self_mem_subformulas]))
-    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+  by_cases hs : sf.sign = .pos
+  · rw [applyRule_somePastPos_arm_eq sf b ord hs] at hg
+    split at hg
+    · rename_i ψ heq
+      rw [asSomePast?_eq_iff] at heq
+      rw [heq] at hsf
+      simp only [RuleResult.emitted, Branch.allPastPosFormulas, Branch.somePastNegFormulas,
+        List.mem_cons, List.mem_append] at hg
+      rcases hg with ((rfl | hg) | hg) | hg
+      all_goals first
+        | exact hC.snce_left hsf
+        | (obtain ⟨s, hs', hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs')
+        | (refine mem_filterMap_sub hC hb ?_ hg
+           clear hg hsf hC hb
+           intro x y hy
+           repeat' first
+             | split at hy
+             | simp only [Option.some.injEq] at hy
+           all_goals first
+             | exact absurd hy (by simp)
+             | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+                 Formula.self_mem_subformulas]))
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+  · rw [applyRule_offArm_eq sf b ord .somePastPos] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; contradiction)
 /-! ### Until and Since
 
 `untlPos`/`sncePos` split into an event branch and a guard-and-continue branch; `untlNeg`/`snceNeg`
-run the Reynolds co-decomposition, and both of their arms re-include the trigger `sf` itself. That
-re-inclusion is why `untlNeg`/`snceNeg` need the `(simp_all only []; done)` alternative: `simp_all`
-has by then rewritten `hsf` through the `asUntil?`/`asSince?` inversion, so `hsf` no longer *says*
-`sf.formula ∈ C` even though the surviving arm equation still proves it. The `done` is what keeps
-that alternative from silently accepting a goal it only partly simplified.
+run the Reynolds co-decomposition, and both of their arms re-include the trigger `sf` itself.
 
-`untlPos`/`sncePos` no longer need it. The compiler reports their copy of the alternative as both
-'does nothing' and 'never executed': an earlier alternative now closes every goal before `first`
-reaches it, so the two positive cases have drifted away from the shape this paragraph once
-described for all four. Their dead copies have been removed.
+All four proofs therefore keep two copies of the trigger hypothesis. `hsf : sf.formula ∈ C` stays
+as stated, and closes the goals `rcases` leaves as `sf.formula ∈ C` — the re-included trigger of
+`untlNeg`/`snceNeg`. `hU` is the same fact rewritten through the `asUntil?`/`asSince?` inversion,
+so it speaks about `guard.untl event` (resp. `guard.snce event`): the component lemmas need that
+form, and it is also literally the continuing `U`/`S` formula `untlPos`/`sncePos` emit. Rewriting
+`hsf` in place would lose the first.
 -/
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_untlPos_arm_eq`, so `hg` holds only this rule's arm:
+-- about 5.1K heartbeats measured.
 theorem applyRule_untlPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     (hb : ∀ x ∈ b, x.formula ∈ C) :
     ∀ g ∈ (applyRule .untlPos sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asUntil?_eq_iff, reduceCtorEq, List.not_mem_nil])
-  all_goals (try simp only [
-    Branch.allFuturePosFormulas, Branch.someFutureNegFormulas,
-    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
-    List.not_mem_nil, or_false] at hg)
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hsf
-    | exact hC.untl_left hsf
-    | exact hC.untl_right hsf
-    | (refine mem_filterMap_sub hC hb ?_ hg
-       clear hg hsf hC hb
-       intro x y hy
-       repeat' first
-         | split at hy
-         | simp only [Option.some.injEq] at hy
-       all_goals first
-         | exact absurd hy (by simp)
-         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
-             Formula.self_mem_subformulas]))
-    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+  by_cases hs : sf.sign = .pos
+  · rw [applyRule_untlPos_arm_eq sf b ord hs] at hg
+    split at hg
+    · rename_i event guard heq
+      rw [asUntil?_eq_iff] at heq
+      have hU := hsf
+      rw [heq.1] at hU
+      simp only [RuleResult.emitted, Branch.allFuturePosFormulas, Branch.someFutureNegFormulas,
+        List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+        List.not_mem_nil, or_false] at hg
+      rcases hg with (rfl | (hg | hg) | hg) | ((rfl | rfl) | (hg | hg) | hg)
+      all_goals first
+        | exact hsf
+        | exact hU
+        | exact hC.untl_left hU
+        | exact hC.untl_right hU
+        | (obtain ⟨s, hs', hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs')
+        | (refine mem_filterMap_sub hC hb ?_ hg
+           clear hg hsf hC hb
+           intro x y hy
+           repeat' first
+             | split at hy
+             | simp only [Option.some.injEq] at hy
+           all_goals first
+             | exact absurd hy (by simp)
+             | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+                 Formula.self_mem_subformulas]))
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+  · rw [applyRule_offArm_eq sf b ord .untlPos] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; contradiction)
 
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_sncePos_arm_eq`, so `hg` holds only this rule's arm:
+-- about 5.1K heartbeats measured.
 theorem applyRule_sncePos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     (hb : ∀ x ∈ b, x.formula ∈ C) :
     ∀ g ∈ (applyRule .sncePos sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asSince?_eq_iff, reduceCtorEq, List.not_mem_nil])
-  all_goals (try simp only [
-    Branch.allPastPosFormulas, Branch.somePastNegFormulas,
-    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
-    List.not_mem_nil, or_false] at hg)
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hsf
-    | exact hC.snce_left hsf
-    | exact hC.snce_right hsf
-    | (refine mem_filterMap_sub hC hb ?_ hg
-       clear hg hsf hC hb
-       intro x y hy
-       repeat' first
-         | split at hy
-         | simp only [Option.some.injEq] at hy
-       all_goals first
-         | exact absurd hy (by simp)
-         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
-             Formula.self_mem_subformulas]))
-    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+  by_cases hs : sf.sign = .pos
+  · rw [applyRule_sncePos_arm_eq sf b ord hs] at hg
+    split at hg
+    · rename_i event guard heq
+      rw [asSince?_eq_iff] at heq
+      have hU := hsf
+      rw [heq.1] at hU
+      simp only [RuleResult.emitted, Branch.allPastPosFormulas, Branch.somePastNegFormulas,
+        List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+        List.not_mem_nil, or_false] at hg
+      rcases hg with (rfl | (hg | hg) | hg) | ((rfl | rfl) | (hg | hg) | hg)
+      all_goals first
+        | exact hsf
+        | exact hU
+        | exact hC.snce_left hU
+        | exact hC.snce_right hU
+        | (obtain ⟨s, hs', hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs')
+        | (refine mem_filterMap_sub hC hb ?_ hg
+           clear hg hsf hC hb
+           intro x y hy
+           repeat' first
+             | split at hy
+             | simp only [Option.some.injEq] at hy
+           all_goals first
+             | exact absurd hy (by simp)
+             | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+                 Formula.self_mem_subformulas]))
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+  · rw [applyRule_offArm_eq sf b ord .sncePos] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; contradiction)
 
 -- `linter.unusedTactic` flags the `done` in the `(simp_all only []; done)` alternative below.
 -- It is NOT dead: the linter reports only 'does nothing' here, never 'never executed', so the
@@ -1210,38 +1229,46 @@ theorem applyRule_sncePos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
 -- and the whole alternative was removed as genuinely dead.
 set_option linter.unusedTactic false in
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_untlNeg_arm_eq`, so `hg` holds only this rule's arm:
+-- about 6.6K heartbeats measured.
 theorem applyRule_untlNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     (hb : ∀ x ∈ b, x.formula ∈ C) :
     ∀ g ∈ (applyRule .untlNeg sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asUntil?_eq_iff, reduceCtorEq, List.not_mem_nil])
-  all_goals (try simp only [
-    Branch.allFuturePosFormulas, Branch.someFutureNegFormulas,
-    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
-    List.not_mem_nil, or_false] at hg)
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hsf
-    | exact hC.untl_left hsf
-    | exact hC.untl_right hsf
-    | (simp_all only []; done)
-    | (refine mem_filterMap_sub hC hb ?_ hg
-       clear hg hsf hC hb
-       intro x y hy
-       repeat' first
-         | split at hy
-         | simp only [Option.some.injEq] at hy
-       all_goals first
-         | exact absurd hy (by simp)
-         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
-             Formula.self_mem_subformulas]))
-    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+  by_cases hs : sf.sign = .neg
+  · rw [applyRule_untlNeg_arm_eq sf b ord hs] at hg
+    split at hg
+    · rename_i event guard heq
+      rw [asUntil?_eq_iff] at heq
+      have hU := hsf
+      rw [heq.1] at hU
+      dsimp only at hg
+      split at hg
+      · simp only [RuleResult.emitted, Branch.allFuturePosFormulas, Branch.someFutureNegFormulas,
+          List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+          List.not_mem_nil, or_false] at hg
+        rcases hg with ((rfl | rfl) | (hg | hg) | hg) | ((rfl | rfl) | (hg | hg) | hg)
+        all_goals first
+          | exact hsf
+          | exact hU
+          | exact hC.untl_left hU
+          | exact hC.untl_right hU
+          | (obtain ⟨s, hs', hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs')
+          | (refine mem_filterMap_sub hC hb ?_ hg
+             clear hg hsf hC hb
+             intro x y hy
+             repeat' first
+               | split at hy
+               | simp only [Option.some.injEq] at hy
+             all_goals first
+               | exact absurd hy (by simp)
+               | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+                   Formula.self_mem_subformulas]))
+      · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+  · rw [applyRule_offArm_eq sf b ord .untlNeg] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; contradiction)
 
 -- `linter.unusedTactic` flags the `done` in the `(simp_all only []; done)` alternative below.
 -- It is NOT dead: the linter reports only 'does nothing' here, never 'never executed', so the
@@ -1254,38 +1281,46 @@ theorem applyRule_untlNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
 -- and the whole alternative was removed as genuinely dead.
 set_option linter.unusedTactic false in
 set_option maxHeartbeats 1200000 in
--- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+-- Rewrites with `applyRule_snceNeg_arm_eq`, so `hg` holds only this rule's arm:
+-- about 6.6K heartbeats measured.
 theorem applyRule_snceNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
     (hb : ∀ x ∈ b, x.formula ∈ C) :
     ∀ g ∈ (applyRule .snceNeg sf b ord).1.emitted, g.formula ∈ C := by
   intro g hg
-  unfold applyRule at hg
-  repeat' first
-    | split at hg
-    | simp only [apply_ite Prod.fst] at hg
-  all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asSince?_eq_iff, reduceCtorEq, List.not_mem_nil])
-  all_goals (try simp only [
-    Branch.allPastPosFormulas, Branch.somePastNegFormulas,
-    List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
-    List.not_mem_nil, or_false] at hg)
-  all_goals (try (repeat' rcases hg with hg | hg))
-  all_goals first
-    | exact hsf
-    | exact hC.snce_left hsf
-    | exact hC.snce_right hsf
-    | (simp_all only []; done)
-    | (refine mem_filterMap_sub hC hb ?_ hg
-       clear hg hsf hC hb
-       intro x y hy
-       repeat' first
-         | split at hy
-         | simp only [Option.some.injEq] at hy
-       all_goals first
-         | exact absurd hy (by simp)
-         | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
-             Formula.self_mem_subformulas]))
-    | (obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)
+  by_cases hs : sf.sign = .neg
+  · rw [applyRule_snceNeg_arm_eq sf b ord hs] at hg
+    split at hg
+    · rename_i event guard heq
+      rw [asSince?_eq_iff] at heq
+      have hU := hsf
+      rw [heq.1] at hU
+      dsimp only at hg
+      split at hg
+      · simp only [RuleResult.emitted, Branch.allPastPosFormulas, Branch.somePastNegFormulas,
+          List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+          List.not_mem_nil, or_false] at hg
+        rcases hg with ((rfl | rfl) | (hg | hg) | hg) | ((rfl | rfl) | (hg | hg) | hg)
+        all_goals first
+          | exact hsf
+          | exact hU
+          | exact hC.snce_left hU
+          | exact hC.snce_right hU
+          | (obtain ⟨s, hs', hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs')
+          | (refine mem_filterMap_sub hC hb ?_ hg
+             clear hg hsf hC hb
+             intro x y hy
+             repeat' first
+               | split at hy
+               | simp only [Option.some.injEq] at hy
+             all_goals first
+               | exact absurd hy (by simp)
+               | (subst hy; simp_all [SignedFormula.pos, SignedFormula.neg, Formula.subformulas,
+                   Formula.self_mem_subformulas]))
+      · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+  · rw [applyRule_offArm_eq sf b ord .snceNeg] at hg
+    · simp only [RuleResult.emitted, List.not_mem_nil] at hg
+    all_goals (intros; contradiction)
 
 end FreshWitness
 
