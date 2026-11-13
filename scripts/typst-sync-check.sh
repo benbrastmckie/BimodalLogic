@@ -70,6 +70,15 @@
 #
 #   scripts/typst-sync-check.sh --help
 #       Print this usage and exit 0.
+#
+# Shared `.lake` lock: this script takes NO lock, by design. It never invokes
+# lake itself; every check is text-only. `--fix` delegates the one step that
+# reads the built library to scripts/typst-status-counts.sh, and that script
+# takes the shared build lock (`.lake/build-guard.lock`) itself. Locking here
+# as well would break `--fix`: an flock belongs to the open file description,
+# so a child that re-opens the lock file is excluded by its own lock-holding
+# parent and would wait out its whole bound before failing. The lock is taken
+# by the script that invokes lake and by none of its callers.
 # ============================================================================
 
 set -uo pipefail
@@ -527,7 +536,9 @@ if [[ "${MODE}" == "fix" ]]; then
          "(needs a built library -- this may take a while if the library is not warm)..." >&2
     if ! bash "${REPO_ROOT}/scripts/typst-status-counts.sh"; then
       echo "VIOLATION: scripts/typst-status-counts.sh failed -- see its output above" \
-           "(a common cause is a library that has not been built: run 'lake build' first)." >&2
+           "(common causes: a library that has not been built -- run 'lake build' first --" \
+           "or a concurrent build holding the shared build lock, .lake/build-guard.lock --" \
+           "re-run once that build has finished)." >&2
       FIX_FAIL=1
     else
       if run_check2_status; then

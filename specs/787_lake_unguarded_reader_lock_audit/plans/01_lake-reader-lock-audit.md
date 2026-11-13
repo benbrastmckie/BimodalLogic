@@ -245,7 +245,7 @@ lock, without the runner holding the lock for the generation run.
       `DATASET_LOCK_WAIT_S`, default 600. The lock fd is opened inside the subshell so it closes
       when the subshell exits. *(completed)*
 - [x] In `scripts/run_dataset_generation.sh`, the same subshell after its `check_prereqs` call,
-      with target `dataset_generator`, same variable name. *(completed)*
+      with target `dataset_generator`, same variable name. *(deviation: altered — prebuild gated to generation commands; help/unknown do not build)*
 - [x] In both: lock timeout or prebuild failure makes the subshell exit non-zero and the script
       exit 1 with a message naming which of the two happened (timeout is environment-class).
       Under `--dry-run`, print one `[dry-run]` line describing the prebuild instead of running it. *(completed)*
@@ -288,23 +288,23 @@ and before writing under `data/`; confirm from the stub log (no `exe` line) and
 
 ---
 
-### Phase 4: Record the rulings-out in the ruled-out scripts' headers [NOT STARTED]
+### Phase 4: Record the rulings-out in the ruled-out scripts' headers [COMPLETED]
 
 **Goal**: The two in-repository scripts that must not take the lock say so, and why, in their own
 headers.
 
 **Tasks**:
-- [ ] Re-read both files immediately before editing.
-- [ ] `scripts/typst-sync-check.sh`: header note that it takes no lock by design: it never invokes
+- [x] Re-read both files immediately before editing. *(completed)*
+- [x] `scripts/typst-sync-check.sh`: header note that it takes no lock by design: it never invokes
       lake itself, `--fix` delegates to `typst-status-counts.sh`, which locks, and a lock here
       would block that child for the full timeout because a child re-opening the lock file is
-      excluded by its own parent.
-- [ ] `scripts/typst-sync-check.sh`: extend the `--fix` failure hint (the message after the
+      excluded by its own parent. *(completed)*
+- [x] `scripts/typst-sync-check.sh`: extend the `--fix` failure hint (the message after the
       failed `typst-status-counts.sh` call) to name a concurrent build holding the shared lock as
       a second common cause alongside an unbuilt library. Message text only; no control-flow
-      change.
-- [ ] `scripts/typst-module-map.sh`: header note that it takes no lock because it never reads
-      `.lake` (source text only).
+      change. *(completed)*
+- [x] `scripts/typst-module-map.sh`: header note that it takes no lock because it never reads
+      `.lake` (source text only). *(completed)*
 
 **Timing**: 0.25 hours
 

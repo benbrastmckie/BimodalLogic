@@ -43,6 +43,10 @@
 # hand-written `Role` column is NOT emitted here; it stays hand-authored in
 # the .typ source, keyed by the same path strings this script prints.
 #
+# Shared `.lake` lock: this script takes NO lock, by design. It reads Lean
+# SOURCE TEXT only and never touches `.lake`, in either mode, so it cannot
+# observe a half-written build artifact and has nothing to serialize against.
+#
 # Usage:
 #   scripts/typst-module-map.sh            # writes
 #                                           # typst/generated/automation-module-map.typ
