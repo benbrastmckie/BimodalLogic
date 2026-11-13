@@ -625,7 +625,7 @@ fallback rules); a nonzero residue outside the fallback set is a missed edit, no
 
 ---
 
-### Phase 9: Final Gate and Evidence Report [NOT STARTED]
+### Phase 9: Final Gate and Evidence Report [IN PROGRESS]
 
 **Goal**: Run the complete gate set, confirm every acceptance criterion with recorded evidence, and
 assemble the before/after report.
