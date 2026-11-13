@@ -12,6 +12,21 @@
 #   - typst/template API names (not Lean identifiers).
 #   - Project/tool proper nouns that do not appear inside FormalSystem
 #     Lean source.
+#
+# Lean declaration names do not belong here by default. Check 1 resolves a
+# fully-qualified `Namespace.Path.leaf` name structurally (enclosing
+# `namespace` path plus declared name, under FormalSystem/ and
+# BimodalTools/), so a valid namespaced declaration needs no entry. The
+# limits of that resolution are listed in the comment above the dotted-name
+# branch of Check 1 in scripts/typst-sync-check.sh (generated names such as
+# constructors and structure fields, `export`/`open` aliases, and anything
+# outside the two source roots).
+#
+# An entry added for a valid Lean declaration name that Check 1 cannot
+# resolve SUPPRESSES A RESOLUTION GAP; IT DOES NOT CERTIFY THE NAME. Nothing
+# re-checks a whitelisted name, so it keeps passing after the declaration is
+# renamed or deleted. Any such entry must carry an inline `#` comment on the
+# line above it saying so and naming which limit it falls under.
 # ============================================================================
 
 # --- Type-signature illustrations (spacing won't literal-match source) ---
