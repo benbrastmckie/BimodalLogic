@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "summary": "Wrote a three-phase plan for task 804 that applies the research report's import-only narrowings R1-R4 to seven Lean files, with R2 changed to a line-neutral variant so no file.lean:NNN citation into SignedFormula.lean or Tableau.lean shifts. R5 (FrameClass relocation) and R6 (closure interface) are not taken. Two issue-log entries were recorded for this dispatch.",
+  "blockers": [],
+  "phases_completed": 0,
+  "phases_total": 3,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/804_narrow_termination_syntax_layer_fanin/plans/01_termination-syntax-fanin.md",
+      "summary": "Three-phase plan: pre-change baseline, atomic import-narrowing batch with four-root build, post-change measurement and full gate."
+    }
+  ],
+  "dispatch_seq": 15
+}

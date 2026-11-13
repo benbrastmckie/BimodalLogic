@@ -1,18 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 13,
-  "started_at": "2026-11-13T19:26:59Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/804_narrow_termination_syntax_layer_fanin/reports/01_termination-syntax-fanin.md",
-      "summary": "Edge-by-edge classification of the termination subtree's fan-in: the Semantics and aggregator edges are incidental (unused import in Automation/ProofSearch/Core.lean), the Axioms.lean path is essential for 23 of 25 modules; four import-only narrowings recommended and compile-verified on 91 modules, FrameClass relocation reported as optional."
+      "type": "plan",
+      "path": "specs/804_narrow_termination_syntax_layer_fanin/plans/01_termination-syntax-fanin.md",
+      "summary": "Three-phase plan applying import-only narrowings R1-R4 to seven Lean files (baseline, atomic edit batch with four-root build, post-change measurement and full gate); R5 and R6 not taken."
+    }
+  ],
+  "next_steps": "Run /orchestrate 804 to execute the plan",
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, adding or removing an import line in a Lean module shifts every later line, and check-module-invariants.sh C20 gates file.lean:NNN citations into that module from other files. Before planning an import narrowing, grep the citation count per target file; where a file is heavily cited (Tableau.lean, SignedFormula.lean, Axioms.lean), prefer a line-neutral edit (replace an aggregator import in place with the narrow module, or move the needed import to an uncited neighbour) over add/remove pairs. Net line changes also require typst-sync-check.sh --fix in the same commit (pre-commit hook) and --emit-inventory for README blocks; plan-file-scope-harvest.sh output names the coupled generated surfaces for a set of Lean paths.",
+      "category": "PATTERN",
+      "source_artifact": "specs/804_narrow_termination_syntax_layer_fanin/plans/01_termination-syntax-fanin.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["import-narrowing", "C20", "line-neutral", "citations", "generated-surfaces", "lean4"]
     }
   ],
   "metadata": {
     "session_id": "sess_1794588265_854f41_804",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 3.75,
+    "dependency_waves": [[1], [2], [3]]
+  },
+  "dispatch_seq": 15
 }
