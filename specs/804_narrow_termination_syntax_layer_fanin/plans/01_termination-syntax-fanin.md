@@ -1,7 +1,7 @@
 # Implementation Plan: Task #804
 
 - **Task**: 804 - Narrow the termination subtree's fan-in from the syntax layer
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.75 hours
 - **Dependencies**: 803 (landed)
 - **Research Inputs**: `specs/804_narrow_termination_syntax_layer_fanin/reports/01_termination-syntax-fanin.md`
@@ -128,29 +128,29 @@ No roadmap context was supplied with this dispatch.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Pre-Change Baseline [NOT STARTED]
+### Phase 1: Pre-Change Baseline [COMPLETED]
 
 **Goal**: Record, on the unedited tree, the rebuild sets and gate states that Phase 3 compares
 against.
 
 **Tasks**:
-- [ ] Confirm the tree is built: `bash .claude/scripts/lake-build-guard.sh build --timeout 3600 -- build`,
+- [x] Confirm the tree is built: `bash .claude/scripts/lake-build-guard.sh build --timeout 3600 -- build`,
   verdict read from the guard's `result`. Record the job count and exit status.
-- [ ] Re-run the report's whole-repo probe
+- [x] Re-run the report's whole-repo probe
   (`specs/804_narrow_termination_syntax_layer_fanin/probes/WholeRepoUsesProbe.lean`, invoked as the
   report's appendix states, through the build guard where its allowlist admits the subcommand) and
   compute the reverse import closure of `FormalSystem.ProofSystem.Axioms`, `FormalSystem.Semantics`,
   `FormalSystem.Syntax`, `FormalSystem.ProofSystem.Derivation` and `FormalSystem.Syntax.Context`.
   Record the module count of each set and how many of the 25 termination modules it contains.
-- [ ] Record the pre-change state of the build-free gates, each with exit status:
+- [x] Record the pre-change state of the build-free gates, each with exit status:
   `bash scripts/check-module-invariants.sh --no-build`, `bash scripts/check-metalogic-cycles.sh`,
   `bash scripts/typst-sync-check.sh --counts-only`,
   `bash scripts/check-module-invariants.sh --emit-inventory --check`. Any pre-existing finding is
   listed by name so Phase 3 can state its result as a delta.
-- [ ] Record the `file.lean:NNN` citation counts outside `specs/` for the seven files Phase 2 edits
+- [x] Record the `file.lean:NNN` citation counts outside `specs/` for the seven files Phase 2 edits
   and for `Tableau.lean`.
-- [ ] Record the leading `import` and `open` lines of the seven files as they stand.
-- [ ] Write all of the above to the evidence file, with the commit hash and the method for each
+- [x] Record the leading `import` and `open` lines of the seven files as they stand.
+- [x] Write all of the above to the evidence file, with the commit hash and the method for each
   figure.
 
 **Timing**: 0.75 hours
