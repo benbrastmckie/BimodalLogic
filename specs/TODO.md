@@ -610,7 +610,7 @@ NOT COSTABLE, and why: T3 landed no bound (its stabilization lemma is refuted); 
 - **Dependencies**: None
 - **Research**: [743_typst_sync_check1_namespace_resolution/reports/01_namespace-resolution-feasibility.md]
 - **Plan**: [743_typst_sync_check1_namespace_resolution/plans/01_check1-namespace-resolution.md]
-- **Handoff**: [743_typst_sync_check1_namespace_resolution/handoffs/phase-2-handoff-20261113T092722Z.md]
+- **Handoff**: [743_typst_sync_check1_namespace_resolution/handoffs/phase-3-handoff-20261113T093205Z.md]
 
 **Description**: Teach typst-sync-check.sh Check 1 to resolve namespaced Lean declarations, or rule on the whitelist-vs-docstring convention it currently depends on
 
