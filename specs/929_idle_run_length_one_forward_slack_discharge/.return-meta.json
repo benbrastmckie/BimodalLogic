@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/929_idle_run_length_one_forward_slack_discharge/reports/01_idle-run-one-forward-slack.md",
+      "summary": "The I = 1 sub-regime is REFUTED, not dischargeable: a compiled cell-level refutation of ForwardSlackWitnessed at amount n+c+2 on a serial no-idle-cycle object, with the boundary shown sharp and the consumer-relevant instantiation shown untouched."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/929_idle_run_length_one_forward_slack_discharge/evidence/i-one-ceiling.lean",
+      "summary": "Compiled probe, sorry-free, standard axioms: forwardSlackWitnessed_refuted_I_one, forwardSlackWitnessed_holds_below_ceiling, not_idleRunPumpable, ceiling_slack_at_consumer_amount, xState_regime."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794619593_8f19c5_929",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
