@@ -2207,6 +2207,100 @@ EVIDENCE="specs/evidence"
 #                                                           | `FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean`)
 #                                                           | name the probe only by its bare
 #                                                           | filename, unchanged by the move.
+# seam-gluing-ray-product/ladder-tight-chain-regime-b       | THE SPANNING-BLOCK DEVICE IS REFUTED
+#                                                           | IN BOTH DIRECTIONS AS A CONSEQUENCE OF
+#                                                           | THE PARAMETER CONDITIONS.  The tight
+#                                                           | doubling chain
+#                                                           | (`tightChain_isLadderPath`,
+#                                                           | `tightChain_pin`,
+#                                                           | `tightChain_slack_zero`,
+#                                                           | `tightChain_pins`) has regions of
+#                                                           | length `2^j - 1` separated by unit
+#                                                           | idle runs, with the register climbing
+#                                                           | by exactly `1` per step, so every
+#                                                           | backward gap has Lipschitz slack `0`
+#                                                           | and a cascade reaches every pin.  On
+#                                                           | that chain the ONLY candidate device
+#                                                           | for the two cascades is a
+#                                                           | type-respecting block SPANNING a
+#                                                           | region start, and BOTH halves of that
+#                                                           | device are false under `ParamsOk`:
+#                                                           | `spanningBlockBwd_refuted` (the
+#                                                           | pending-forever-into-the-past path
+#                                                           | whose one region start below `z`
+#                                                           | forces a block whose two ends carry
+#                                                           | different types) and
+#                                                           | `spanningBlockFwd_refuted` (a path
+#                                                           | with no idle-then-pending position
+#                                                           | above `z` at all).  No derivation of
+#                                                           | the device from `(K1)`-`(K4)` is
+#                                                           | therefore possible: the device is
+#                                                           | false where the parameter conditions
+#                                                           | hold.  It does NOT refute the
+#                                                           | depth-`0` obligation under the
+#                                                           | repaired `(K4)` -- at both refuting
+#                                                           | objects the register is rebuildable
+#                                                           | without any spanning block, and the
+#                                                           | open core is the chain.  Axioms: a
+#                                                           | subset of `[propext, Classical.choice,
+#                                                           | Quot.sound]` on every headline.  No
+#                                                           | `sorryAx`, no custom axiom, no
+#                                                           | `native_decide`.  PROMOTED into this
+#                                                           | collection from the same archived
+#                                                           | prototype directory
+#                                                           | `ladder-cell-obligation-refutation`
+#                                                           | came from;
+#                                                           | `FormalSystem/Metalogic/Decidability/RaySummary/README.md`
+#                                                           | cites it as the authority for this
+#                                                           | refutation.
+# seam-gluing-ray-product/ladder-spanning-divisibility      | `(K1)` DOES NOT CONSTRAIN THE LENGTH
+#                                                           | OF A TYPE-RESPECTING BLOCK THAT SPANS
+#                                                           | A PIN.  The pigeonhole over region
+#                                                           | starts produces a block `[u, u + l)`
+#                                                           | crossing an idle position, which the
+#                                                           | landed bridge
+#                                                           | `realized_typeBlock_mem_prodCycleLens`
+#                                                           | cannot reach: its hypothesis `l <=
+#                                                           | cntAt g u` puts the block INSIDE one
+#                                                           | pending region.  Each conjunct of
+#                                                           | `(K1)` is read against the schema and
+#                                                           | ruled out -- `prodCycleLens` and
+#                                                           | `objCycleLens` both require the closed
+#                                                           | walk PENDING THROUGHOUT, and
+#                                                           | `spanning_walk_not_pending` shows a
+#                                                           | spanning block's induced walk is idle
+#                                                           | at the index of the pin inside it,
+#                                                           | while `satPeriod` is not quantified
+#                                                           | over block lengths at all.
+#                                                           | `spanningBlockLengthDvd_refuted` then
+#                                                           | refutes the schema outright on the
+#                                                           | ALTERNATING path (idle at every even
+#                                                           | position, pending at every odd one),
+#                                                           | which carries a type-respecting block
+#                                                           | of EVERY even length with a pin
+#                                                           | strictly inside it, so no single
+#                                                           | modulus divides them all: the length
+#                                                           | `2 * (P + 1)` contradicts
+#                                                           | `Nat.le_of_dvd`.  The parameters are
+#                                                           | the periodicity fixpoint's own
+#                                                           | outputs, discharged by
+#                                                           | `paramsOk_params`, so the refutation
+#                                                           | is at a tuple the parameter conditions
+#                                                           | genuinely admit and not at a vacuous
+#                                                           | hypothesis.  It does NOT amend `(K1)`,
+#                                                           | and it does NOT refute the depth-`0`
+#                                                           | cell obligation.  Axioms: `[propext,
+#                                                           | Quot.sound]` on
+#                                                           | `spanning_walk_not_pending` and
+#                                                           | `[propext, Classical.choice,
+#                                                           | Quot.sound]` on the headline.  No
+#                                                           | `sorryAx`, no custom axiom, no
+#                                                           | `native_decide`.  PROMOTED into this
+#                                                           | collection from an archived prototype
+#                                                           | directory;
+#                                                           | `FormalSystem/Metalogic/Decidability/RaySummary/README.md`
+#                                                           | cites it as the authority for this
+#                                                           | refutation.
 # limit-closure-schema/lc-schema-omega-chain                | THE LC SCHEMA'S VALIDITY ON
 #                                                           | ALL-WALKS Z-MODELS IS COMPILED
 #                                                           | AND SORRY-FREE, AND THE `.Base`
@@ -2559,6 +2653,8 @@ WIRED=(
   "seam-gluing-ray-product/ladder-self-loop-derivability-decision"
   "seam-gluing-ray-product/one-sided-count-move-refutation"
   "seam-gluing-ray-product/lowering-anchor-deficit"
+  "seam-gluing-ray-product/ladder-tight-chain-regime-b"
+  "seam-gluing-ray-product/ladder-spanning-divisibility"
   "limit-closure-schema/lc-schema-omega-chain"
   "forward-slack-pin-cascade/pin-cascade-straddle"
   "forward-slack-pin-cascade/route-space-closure"

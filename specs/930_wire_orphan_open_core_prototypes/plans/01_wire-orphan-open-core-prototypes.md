@@ -210,7 +210,7 @@ exactly what the evidence gate will later run on them.
 
 ---
 
-### Phase 2: Wire both probes into `scripts/check-evidence-probes.sh` [NOT STARTED]
+### Phase 2: Wire both probes into `scripts/check-evidence-probes.sh` [COMPLETED]
 
 **Goal**: The evidence gate holds both promoted records, and reports two more passing probes than
 the live pre-edit baseline with no other probe disturbed.
