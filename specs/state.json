@@ -264,9 +264,9 @@
           "summary": "The promoted, git-tracked, CI-wired compiled refutation of the I = 1 idle-run sub-regime at the every-amount shape."
         },
         {
-          "path": "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-2-handoff-20261113-184202.md",
+          "path": "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-3-handoff-20261113185153.md",
           "type": "handoff",
-          "summary": "Phase 2 handoff: what landed, measured axiom profiles, the one lint-conformance deviation, and the pre-existing Probe838C grep-criterion observation."
+          "summary": "Phase 3 handoff: the four restated sites, the measured line counts against the longFile ceiling, the verification grep results, and the two in-scope corrections."
         }
       ],
       "next_artifact_number": 2,
