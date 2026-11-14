@@ -13,10 +13,10 @@ next_project_number: 935
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,829,831,869,890,931,933,934 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
-| 2 | 231,282,296,429,497,761,873,932 | 298,428,502,869,934 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 410,498,499,500,763,862,874,875,876 | 429,497,761,873 | algebraic-representation, decidability, metalogic, ... |
-| 4 | 125,411,543,861 | 410,498,499,500,763 | algebraic-representation, decidability, metalogic |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,933 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
+| 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
 | 7 | 482 | 412 | decidability |
@@ -56,13 +56,12 @@ next_project_number: 935
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
+761 [BLOCKED] — AMENDED 2026-10-18 (presentation chosen): the cell...
+  └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
+    └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
+  └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 933 [NOT STARTED] — AMENDED 2026-11-14 (Stage 0 rulings landed, scope narrowed):...
-934 [PLANNED] — Decide the depth-0 gate's one remaining crux by probe: is...
-  └─ 761 [BLOCKED] — AMENDED 2026-10-18 (presentation chosen): the cell...
-    └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-      └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
-    └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
 
 ### Formula Refactor
 
@@ -102,12 +101,13 @@ next_project_number: 935
 ## Tasks
 
 ### 934. Depth zero reachability probe
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [934_depth_zero_reachability_probe/reports/01_consumer-shape-reachability-probe.md]
 - **Plan**: [934_depth_zero_reachability_probe/plans/01_consumer-shape-reachability-probe.md]
+- **Summary**: [934_depth_zero_reachability_probe/summaries/01_consumer-shape-reachability-probe-summary.md]
 
 **Description**: Decide the depth-0 gate's one remaining crux by probe: is `ForwardSlackWitnessed` satisfiable at the CONSUMER INSTANTIATION that the five depth-0 cell-equality schemas actually use? This task runs the probe and reports a verdict; it does NOT take the Stage 0 ruling on the gate itself.
 

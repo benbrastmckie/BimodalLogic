@@ -1282,7 +1282,7 @@
     {
       "project_number": 934,
       "project_name": "depth_zero_reachability_probe",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "high",
@@ -1302,7 +1302,7 @@
         "degradation_count": 448,
         "evidence_file": "specs/evidence/audit-verdicts/934.json"
       },
-      "last_updated": "2026-11-14T09:31:13Z",
+      "last_updated": "2026-11-14T09:47:22Z",
       "session_id": "sess_1794647848_d925d2",
       "artifacts": [
         {
@@ -1314,6 +1314,11 @@
           "path": "specs/934_depth_zero_reachability_probe/plans/01_consumer-shape-reachability-probe.md",
           "type": "plan",
           "summary": "Two-phase plan: promote and wire the consumer-shape witness probe, then record the verdict and run the full gate set."
+        },
+        {
+          "path": "specs/934_depth_zero_reachability_probe/summaries/01_consumer-shape-reachability-probe-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary carrying the written verdict and the gate-set deltas."
         }
       ],
       "next_artifact_number": 2,
@@ -1324,7 +1329,8 @@
         "specs/934_depth_zero_reachability_probe/summaries/01_consumer-shape-reachability-probe-summary.md",
         "specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Compiled, tracked and CI-wired probe specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean shows ForwardSlackWitnessed is satisfiable at the consumer shape at a positive amount on one object (stepOr at bot, singleton cell) and that the restricted depth-0 schema fires there under ParamsOk. This supports the cellLE_zero_const_of_kappa_eq-lands lifting event as existence evidence only; it is not a general discharge, refutes nothing, and the Stage 0 gate ruling is not taken."
     }
   ],
   "artifacts": [

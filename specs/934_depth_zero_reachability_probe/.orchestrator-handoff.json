@@ -1,15 +1,15 @@
 {
-  "status": "planned",
-  "summary": "Wrote a 2-phase, 2.5-hour plan for task 934. Phase 1 promotes the research-compiled consumer-shape witness to specs/evidence/forward-slack-pin-cascade/ and wires it into scripts/check-evidence-probes.sh; Phase 2 records the verdict (supports the cellLE_zero_const_of_kappa_eq-lands event as existence evidence only, gate ruling not taken) and runs the full gate set. No FormalSystem or ROADMAP edits. Two issue-log entries recorded (one win, one minor scope issue).",
+  "status": "implemented",
+  "summary": "Both phases done. The research-compiled consumer-shape witness was promoted to specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean, wired into scripts/check-evidence-probes.sh (62 wired probes pass, 61 before), and the verdict recorded: ForwardSlackWitnessed is satisfiable at the consumer shape at a positive amount on one singleton-cell object, supporting the cellLE_zero_const_of_kappa_eq-lands lifting event as existence evidence only. No general discharge, no refutation, no FormalSystem or ROADMAP edit, gate ruling not taken. Full lake build green; lint-style and check-paper-definitions are red for pre-existing reasons outside this task's files. Three issue-log entries recorded (two minor issues, one win).",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/934_depth_zero_reachability_probe/plans/01_consumer-shape-reachability-probe.md",
-      "summary": "Two-phase plan: promote and wire the consumer-shape witness probe, then record the verdict and run the full gate set."
+      "type": "summary",
+      "path": "specs/934_depth_zero_reachability_probe/summaries/01_consumer-shape-reachability-probe-summary.md",
+      "summary": "Implementation summary carrying the written verdict and the gate-set deltas."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 2,
   "phases_total": 2,
   "blockers": [],
-  "dispatch_seq": 3
+  "dispatch_seq": 4
 }

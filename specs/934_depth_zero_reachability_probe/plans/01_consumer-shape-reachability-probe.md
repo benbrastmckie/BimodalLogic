@@ -1,7 +1,7 @@
 # Implementation Plan: Task #934
 
 - **Task**: 934 - Depth-0 reachability probe: is `ForwardSlackWitnessed` satisfiable at the consumer instantiation
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None. Consumes landed declarations of tasks 917 and 929 and edits none of them.
 - **Research Inputs**: specs/934_depth_zero_reachability_probe/reports/01_consumer-shape-reachability-probe.md
