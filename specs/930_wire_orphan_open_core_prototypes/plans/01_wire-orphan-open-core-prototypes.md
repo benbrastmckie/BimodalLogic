@@ -337,7 +337,7 @@ gates above are the covering checks and the full suite set is deferred to Phase 
 
 ---
 
-### Phase 4: Full gate set and task-level verification [NOT STARTED]
+### Phase 4: Full gate set and task-level verification [COMPLETED]
 
 **Goal**: Every VERIFY criterion the task description names is measured green on the assembled tree,
 with any pre-existing finding separated from this task's own edits.
