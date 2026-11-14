@@ -1,24 +1,17 @@
 {
   "task_number": 930,
   "phase": "implement",
+  "dispatch_seq": 13,
   "status": "partial",
-  "dispatch_seq": 12,
-  "session_id": "sess_1794619593_8f19c5",
-  "phases_completed": 2,
+  "phases_completed": 3,
   "phases_total": 4,
-  "summary": "Phase 2 closed and committed (062a7baca): both promoted probes are wired into scripts/check-evidence-probes.sh, each with its comment-table block and a WIRED array entry placed after seam-gluing-ray-product/lowering-anchor-deficit. The gate's live pre-edit baseline was 59 wired probes (not the plan's stated 58 -- task 929 wired one since the research run) and is now 61, exit 0, with a row-by-row diff showing exactly two added PASS rows and no other probe row changed. A full lake build through the build guard is green (exit 0, 0 errors, 2975 jobs) and check-module-invariants.sh --no-build passes with no finding naming the gate script. Phases 3 (README citations) and 4 (full gate set) remain NOT STARTED.",
+  "summary": "Phase 3 of 4 complete and committed (27340e645). Rewrote exactly two citation parentheticals in FormalSystem/Metalogic/Decidability/RaySummary/README.md so each names its promoted wired probe by backticked path, dropping the 'not a wired probe' and 'in the task record' framing; the diff is confined to 6 lines. All four verification criteria measured green: readme-lint.sh exit 0 (RESULT: PASS, 0 broken file references), check-task-references.sh --quiet exit 0, check-module-invariants.sh --no-build ALL CHECKS PASSED, and a full lake build through the guard exit 0 (2975 jobs, 0 errors). Phase 4 (full gate set) remains; this dispatch was scoped to phase 3 only.",
   "blockers": [],
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-2-handoff-20261113-193851.md",
-      "summary": "Phase 2 handoff: measurements, carried-figure re-validation, concurrency observations, and the Phase 3 resume point."
+      "path": "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-3-handoff-20261113-194604.md",
+      "summary": "Phase 3 close record with all measured gate results and Phase 4 observations."
     }
-  ],
-  "modified_files": [
-    "scripts/check-evidence-probes.sh",
-    "specs/930_wire_orphan_open_core_prototypes/plans/01_wire-orphan-open-core-prototypes.md",
-    "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-2-handoff-20261113-193851.md"
-  ],
-  "next_action": "Dispatch Phase 3: rewrite the two RaySummary/README.md citations to name the new wired paths, dropping the 'not a wired probe' qualifier."
+  ]
 }

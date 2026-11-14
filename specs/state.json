@@ -190,9 +190,9 @@
           "summary": "Four-phase plan: promote, wire, rewrite citations, full-gate verification."
         },
         {
-          "path": "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-2-handoff-20261113-193851.md",
+          "path": "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-3-handoff-20261113-194604.md",
           "type": "handoff",
-          "summary": "Phase 2 handoff: measurements, carried-figure re-validation, concurrency observations, and the Phase 3 resume point."
+          "summary": "Phase 3 close record with all measured gate results and Phase 4 observations."
         }
       ],
       "next_artifact_number": 2,

@@ -1,5 +1,5 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
@@ -10,33 +10,26 @@
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-2-handoff-20261113-193851.md",
-      "summary": "Phase 2 handoff: gate baseline 59 -> 61, row-by-row diff, carried-figure re-validation, and the Phase 3 resume point."
+      "path": "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-3-handoff-20261113-194604.md",
+      "summary": "Phase 3 close record: both README citations rewritten to name the wired probe paths, with all four gate results measured."
     }
   ],
-  "modified_files": [
-    "scripts/check-evidence-probes.sh",
-    "specs/930_wire_orphan_open_core_prototypes/plans/01_wire-orphan-open-core-prototypes.md",
-    "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-2-handoff-20261113-193851.md"
-  ],
-  "partial_progress": {
-    "stage": "phase_2_completed",
-    "details": "Phase 2 closed and committed (062a7baca). Phases 3 and 4 NOT STARTED. Single-phase hard-mode dispatch: this dispatch was scoped to phase 2 only.",
-    "phases_completed": 2,
-    "phases_total": 4
+  "completion_data": {
+    "completion_summary": "Phase 3 of 4 complete: the two RaySummary/README.md citations now name the promoted wired probes at specs/evidence/seam-gluing-ray-product/ladder-tight-chain-regime-b.lean and ladder-spanning-divisibility.lean, with the 'not a wired probe' and 'in the task record' qualifiers dropped. readme-lint, check-task-references --quiet, check-module-invariants --no-build and a full lake build through the guard all exit 0.",
+    "roadmap_items": []
   },
-  "handoff_path": "/home/benjamin/Projects/BimodalLogic/specs/930_wire_orphan_open_core_prototypes/.orchestrator-handoff.json",
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "specs/930_wire_orphan_open_core_prototypes/plans/01_wire-orphan-open-core-prototypes.md",
+    "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-3-handoff-20261113-194604.md"
+  ],
   "metadata": {
     "session_id": "sess_1794619593_8f19c5",
     "agent_type": "lean-implementation-agent",
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "dispatch_seq": 12,
+    "dispatch_seq": 13,
     "compliance_check": "passed",
-    "phases_completed": 2,
-    "phases_total": 4,
-    "phase_2_commit": "062a7baca",
-    "gate_baseline_wired": 59,
-    "gate_after_wired": 61,
-    "single_phase_dispatch": true
+    "phases_completed": 3,
+    "phases_total": 4
   }
 }
