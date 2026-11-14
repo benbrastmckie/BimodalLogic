@@ -1890,7 +1890,7 @@
     {
       "project_number": 927,
       "project_name": "final_frame_step_remeasure_against_landed_cover",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "high",
@@ -2050,12 +2050,22 @@
           }
         ],
         "degradation_summary": "447 project(s) judged scope-blind (no file_scope declared); per-project list omitted"
-      }
+      },
+      "last_updated": "2026-11-14T06:12:31Z",
+      "session_id": "sess_1794635603_fa0324",
+      "artifacts": [
+        {
+          "path": "specs/927_final_frame_step_remeasure_against_landed_cover/reports/01_final-frame-step-remeasure.md",
+          "type": "report",
+          "summary": "Remeasures the completeness paper proof's final-frame step against the landed cover and Saturation-free invariance: compiled probes show the step is conditionally discharged (condition is a four-lemma API refactor, not open mathematics), the chronicle quotient meets all three source-side constraints, and the 901 ingredient row plus Risks paragraph are stale with amendment text supplied."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 928,
       "project_name": "muller_torabin_determinization_cost_assessment",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "medium",
@@ -2203,7 +2213,9 @@
           }
         ],
         "degradation_summary": "448 project(s) judged scope-blind (no file_scope declared); per-project list omitted"
-      }
+      },
+      "last_updated": "2026-11-14T05:56:03Z",
+      "session_id": "sess_1794635603_fa0324_928"
     }
   ],
   "artifacts": [

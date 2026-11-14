@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/927_final_frame_step_remeasure_against_landed_cover/reports/01_final-frame-step-remeasure.md",
+      "summary": "Remeasures the completeness paper proof's final-frame step against the landed cover and Saturation-free invariance: compiled probes show the step is conditionally discharged (condition is a four-lemma API refactor, not open mathematics), the chronicle quotient meets all three source-side constraints, and the 901 ingredient row plus Risks paragraph are stale with amendment text supplied."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794635603_fa0324_927",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
