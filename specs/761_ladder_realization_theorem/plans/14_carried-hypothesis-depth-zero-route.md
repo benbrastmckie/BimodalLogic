@@ -1458,6 +1458,77 @@ Phase 11.5.
 
 ### Phase 11.6: The `⊡`-Nesting-Depth Induction, From the Restricted Base Case [BLOCKED]
 
+**BLOCKER** (Phase 11.6, SECOND obstruction — on the recorded route (R-i)), raised by dispatch 39
+(2026-11-14) while verifying, before any phase work, that the route recorded in
+`.decisions.json` discharges its named obligation. No library file was edited. This entry does
+NOT re-ask the route question; it names what (R-i) leaves unaddressed. The entry below this one
+(dispatch 38) stands unchanged.
+
+- **What was verified to hold (first half of the obligation).** The depth-`0` instance at an
+  arbitrary `φ`, from `ParamsOk` at that same `φ` with no stab-free premise at the formula index,
+  is reachable by relativization, ARGUED from landed signatures: `StabPinned (fun _ => False) ψ`
+  holds exactly when no `⊡` occurs in `ψ` outside a `□` (the `box` arm of `StabPinned` is `True`,
+  `LadderAgree.lean:488`), which is `stabDepth ψ = 0`; the landed truth-level transports
+  `plusTruthAt_iff_spliceIdx_of_tpOf_eq_of_stabPinned` (`LadderPump.lean:728`) and
+  `plusTruthAt_iff_delIdx_of_tpOf_eq_of_stabPinned` (`:1160`) are ALREADY stated at a pinned
+  parameter `L` and at `L := fun _ => False` their `hL` premise is vacuous; and the divisibility
+  `l ∣ P + 1` is read once off the ORIGINAL history's full-type block
+  (`realized_typeBlock_mem_prodCycleLens` does not read `hno`), so gap G2 of the entry below does
+  not recur. Only the type-level wrappers (`tpOf_eq_spliceIdx_of_tpOf_eq` and its consumers) take
+  `hno`, through `stabPinned_false_of_mem_closure`.
+- **What fails (second half of the obligation — the step).** At `L := stabDepth · ≤ d + 1` the
+  same transport needs
+  `hL : ∀ χ, L (⊡χ) → ∀ w, (PlusTruthAt M σ' w (⊡χ) ↔ PlusTruthAt M σ (spliceIdx u l w) (⊡χ))`
+  at EVERY position `w` of the rebuilt path. By `stab_mem_tpOf_iff_cell` each side is a universal
+  over the full cell at the state the path occupies, so `hL` at `w` is a cell agreement at the
+  pair `(σ'.state w, σ.state (ρ w))`. The depth-`d` induction hypothesis is an agreement on
+  `kappa`-classes, and the position pairs the stack produces are NOT `kappa`-collisions, from two
+  independent sources:
+  - **(O1) interior copies, off-residue.** The upward assembly
+    (`exists_ladderPath_through_shifted_of_pend_past`, `LadderChain.lean:1105`) takes a block of
+    length `l ≤ budget` from `exists_typeBlock_of_budget_le_cnt_within`, puts `l` among the
+    divisors of `P + 1`, and duplicates it `d := m · ((P + 1) / l)` times. At the position
+    `u + i·l + j` of copy `i` the retraction is `u + j` (`iterSpliceIdx_add_mul`) and the
+    countdown is the original's raised by `(d − i)·l`. For `i = d − 1` the displacement is `l`,
+    and whenever `l < P + 1` it collides with nothing.
+  - **(O2) threshold-tight pairs, any residue.** The schemas admit `c = Tc`. Then every position
+    strictly above `z` in `z`'s region has original countdown `< Tc`; `kappa`'s first coordinate
+    `min c Tc` is exact there, so a strictly displaced pair with its lower member below `Tc`
+    collides with nothing WHATEVER the displacement. This does not depend on the pump
+    construction: a monotone position correspondence `ρ` with `ρ z = z` whose every pair is
+    identical or colliding must hold `ρ` at `z` for the whole displacement `c' − c`, i.e. needs
+    the walk to stutter at `q` for that many steps. So re-spacing the blocks at `P + 1`
+    (`exists_typeBlock_of_spacing` at `s := P + 1`), which would cure (O1), does not cure (O2).
+  Scratch-compiled at this dispatch, NOT landed (axioms `propext`, `Quot.sound`), importing
+  `LadderChain.lean`:
+  `kappa_ne_of_not_dvd : ¬ (P + 1) ∣ e → kappa Tc Tn P B (c + e, n) ≠ kappa Tc Tn P B (c, n')`,
+  `kappa_ne_of_proper_block : 0 < l → l < P + 1 → kappa … (c + l, n) ≠ kappa … (c, n')`,
+  `kappa_ne_of_lt_Tc : c < Tc → 0 < e → kappa … (c + e, n) ≠ kappa … (c, n')`.
+  WHAT IS COMPILED is the non-collision arithmetic. WHAT IS ARGUED, not compiled: that the copy
+  positions carry exactly those countdowns (read off `exists_iterSpliced_ladderPath_idx_of_pend_past`'s
+  count clauses and the pending countdown), and that `hL` there is therefore underivable. No
+  fixture exhibiting a `⊡` bit that actually DIFFERS at a copy pair was built, so this is an
+  obstruction to the proof route, not a refutation of the agreement.
+- **Why it's stuck**: relativizing the stack to `L` moves the `⊡` letters from the formula index
+  into `hL`, and `hL` asks for cell agreement at pairs that the statement being proved — agreement
+  on `kappa`-classes above the thresholds — does not range over. The induction hypothesis would
+  have to be an agreement on a relation closed under the pump's own position pairs, and below
+  `Tc` cells are not expected to agree (that is what the first coordinate is exact for).
+- **What is needed**: a decision between routes none of which is designed to closure, returned as
+  a NEW blocking `user_decision`: (S-1) a research round first, to settle by compiled probe
+  whether a `⊡` bit differs at a copy pair on a small fixture and whether a margin design closes;
+  (S-2) depth-stratified threshold margins — pump only inside the zone `Tc_d ≤ countdown` with
+  `Tc_d` falling with depth, blocks at spacing `P + 1` — which strengthens `(K2)` by a
+  depth-dependent margin and therefore lifts this plan's "do NOT raise `Tc` … or further
+  strengthen `ParamsOk`" prohibition and changes the ruled `ParamsOk`, with the exact-shift
+  question for `P + 1`-spaced blocks still open; (S-3) re-open route (R-a), the depth-stratified
+  certificate family the recorded decision did not take; (S-4) rest `[BLOCKED]`.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder; do
+  NOT carry `hL` (or any per-position `⊡` agreement along the rebuilt path) as a premise of the
+  agreement — it is the conclusion at the next depth restated; do NOT land the depth-`0`
+  relativization alone under a name or docstring that presents it as the induction; do NOT raise
+  `Tc` or strengthen `ParamsOk` without a ruling.
+
 **BLOCKER** (Phase 11.6), raised on the phase's ordered FIRST task — the stab-free-closure bridge
 (RESIDUE B) — before any definition, base case or step was authored. No library file was edited
 by the dispatch that recorded this (dispatch 38, 2026-11-14).

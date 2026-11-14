@@ -1,48 +1,49 @@
 {
   "status": "blocked",
-  "dispatch_seq": 38,
+  "dispatch_seq": 39,
   "phases_completed": 30,
   "phases_total": 41,
-  "summary": "Entered Phase 11.6 and closed it [BLOCKED] on its ordered first task: the stab-free-closure bridge cannot be stated, because the five admitted depth-0 schemas take ParamsOk and the stab-free premise at one formula index and no ParamsOk transfer to a stab-free formula exists. No Lean file was edited and no build was run; sorry 0, vacuous and axiom baselines unchanged. A blocking route decision is returned for /revise.",
+  "summary": "Plan v14 was not revised after the (R-i) ruling, so this dispatch had no phase to execute; it ran the mandated obligation check. Route (R-i) discharges the depth-0 half (the landed truth-level transports are already pinned-letter) but not the step: its hL premise needs cell agreement at position pairs that are never kappa-collisions. No Lean file was edited and no build was run; sorry 0, vacuous and axiom baselines unchanged. A new blocking route decision is returned.",
   "blockers": [
-    "Phase 11.6: the bridge from the admitted stab-free schemas to cellLE 0 at an arbitrary formula cannot be stated under the fixed bundle (G1 no closure member carries the joint depth-0 type; G2 no ParamsOk at a second formula at the same tuple; G3 slack family at the wrong formula).",
-    "Phase 11.6: the planned step does not close from a cell-level induction hypothesis (both named transports are countdown-rigid; the slice-restricted hypothesis is silent at idle positions). Argued from landed signatures, not compiled.",
-    "Phase 11.6: the schemas are downstream of LadderAgree.lean in the import DAG, so the phase cannot be homed in the file its plan names."
+    "Phase 11.6: plan v14 carries no phase for route (R-i) and its task list still forbids the re-derivation; a /revise is owed before any implement dispatch.",
+    "Phase 11.6, route (R-i), step: hL at interior copies of the iterated duplication is a cell agreement at pairs displaced by a multiple of the block length l | P+1, off-residue when l < P+1 (non-collision arithmetic scratch-compiled).",
+    "Phase 11.6, route (R-i), step: at a threshold-tight pair c = Tc the region's later positions are below Tc, where kappa's first coordinate is exact, so no displaced pair there collides, whatever the pump construction (arithmetic scratch-compiled; underivability argued)."
   ],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
-      "summary": "Phase 11.6 marked [BLOCKED] with a structured BLOCKER entry."
-    },
-    {
       "type": "summary",
       "path": "specs/761_ladder_realization_theorem/summaries/14_carried-hypothesis-depth-zero-route-summary.md",
-      "summary": "Round-14 summary: blocked on the bridge, no library change."
+      "summary": "Round-14 summary covering dispatches 38 and 39: still blocked, no library change, route (R-i) fails its obligation check on the step."
+    },
+    {
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
+      "summary": "Phase 11.6 stays [BLOCKED]; second BLOCKER entry on route (R-i) added under the heading."
     },
     {
       "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T171102Z.md",
-      "summary": "Phase 11.6 handoff with the unprovable goal and successor findings."
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T221500Z.md",
+      "summary": "Dispatch-39 handoff: the obligation check, the two non-collision sources, and the scratch probe source."
     }
   ],
   "modified_files": [
     "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T171102Z.md",
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T221500Z.md",
     "specs/761_ladder_realization_theorem/summaries/14_carried-hypothesis-depth-zero-route-summary.md",
     "specs/761_ladder_realization_theorem/issues.jsonl"
   ],
   "user_decision": {
-    "question": "Phase 11.6 is blocked: the five admitted depth-0 schemas cannot be instantiated at a formula carrying a stab letter (their stab-free premise and ParamsOk sit at one formula index), and the planned step does not close from a cell-level induction hypothesis. Which route should the plan be revised to?",
+    "question": "Route (R-i) does not discharge the step half of its obligation: relativizing the splice/deletion stack to a pinned-letter parameter L leaves the transport's hL premise, which needs cell agreement at position pairs that are never kappa-collisions (interior block copies displaced off-residue; threshold-tight pairs with later positions below Tc). How should the step be approached?",
     "options": [
-      "(R-i) Re-derive the splice/deletion stack of LadderPump/LadderChain/LadderCell relative to a pinned-letter parameter L, so base case and step become one path-level induction on stab depth; lifts this plan's \"base case is NOT re-derived\" prohibition; large and NOT COSTABLE",
-      "(R-ii) Carry the depth-0 agreement on cellLE 0 at arbitrary phi itself as the bundle premise in place of ForwardSlackWitnessed; states the bridge away rather than proving it, and the step still needs a path-level argument",
-      "(R-iii) Rest the task [BLOCKED] with the obstruction recorded; no further dispatch until a new idea"
+      "(S-1) Research round first: settle by compiled probe on a small fixture whether a stab bit actually differs at a copy pair, and whether a margin design closes, before any further plan revision or implement dispatch",
+      "(S-2) Depth-stratified threshold margins: pump only where the countdown stays above a threshold that falls with stab depth, with blocks spaced at P+1; strengthens (K2) by a depth-dependent margin, so it lifts the plan's 'do NOT raise Tc or strengthen ParamsOk' prohibition and changes the ruled ParamsOk; exact shift with P+1-spaced blocks still open; NOT COSTABLE",
+      "(S-3) Re-open route (R-a), the depth-stratified certificate family the recorded decision did not take",
+      "(S-4) Rest the task [BLOCKED] with both obstructions recorded; no further dispatch until a new idea"
     ],
-    "recommended": "(R-i) Re-derive the splice/deletion stack of LadderPump/LadderChain/LadderCell relative to a pinned-letter parameter L, so base case and step become one path-level induction on stab depth; lifts this plan's \"base case is NOT re-derived\" prohibition; large and NOT COSTABLE",
+    "recommended": "(S-1) Research round first: settle by compiled probe on a small fixture whether a stab bit actually differs at a copy pair, and whether a margin design closes, before any further plan revision or implement dispatch",
     "blocking": true,
-    "obligation": "A depth-indexed agreement on cellLE d at an arbitrary phi whose depth-0 instance is PROVED from ParamsOk at that same phi (no stab-free premise at the formula index), and whose step is closed by a position-by-position path correspondence rather than by a cell-level induction hypothesis."
+    "obligation": "Evidence, compiled where it can be, that decides between a margin design and the certificate-side route: either a fixture on which a stab bit differs at a pump copy pair (so no path-level correspondence through kappa-classes exists), or a stated induction invariant whose position pairs are all inside its own scope."
   },
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T171102Z.md",
-  "continuation_context": "Phase 11.6 [BLOCKED] on the stab-free-closure bridge; resume only after /revise 761 on the returned route decision."
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T221500Z.md",
+  "continuation_context": "Phase 11.6 [BLOCKED]; route (R-i) fails its obligation check on the step. Resume only after the new route decision and /revise 761."
 }

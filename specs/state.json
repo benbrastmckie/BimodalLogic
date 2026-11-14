@@ -102,14 +102,14 @@
           "summary": "Refutes rk_of_count_drift at repsCnt's current bound with three compiled decide witnesses, settles the LadderRealize docstring's open sub-question negatively, shows ParamsOk is not the repair, establishes that every class pair is liftable in a wider window, and recommends widening repsCnt to Tc+Tn+3P+2B+5 plus interface-level restatements for Phases 11.8 and 11.9."
         },
         {
-          "path": "specs/761_ladder_realization_theorem/summaries/12_hself-disposition-gate-settlement-summary.md",
-          "type": "summary",
-          "summary": "Phase 11.14 round summary: the hself derivability verdict, its instance, its exclusion record and the carried-figure re-validation."
-        },
-        {
           "path": "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
           "type": "plan",
           "summary": "Phase 11.6 marked [BLOCKED] with a structured BLOCKER entry."
+        },
+        {
+          "path": "specs/761_ladder_realization_theorem/summaries/14_carried-hypothesis-depth-zero-route-summary.md",
+          "type": "summary",
+          "summary": "Round-14 summary covering dispatches 38 and 39: still blocked, no library change, route (R-i) fails its obligation check on the step."
         }
       ],
       "next_artifact_number": 15,

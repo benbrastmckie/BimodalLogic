@@ -1,9 +1,9 @@
 {
   "status": "partial",
-  "started_at": "2026-11-14T17:04:49Z",
+  "started_at": "2026-11-14T22:05:00Z",
   "requires_user_review": true,
   "blocked_phase": "11.6",
-  "review_reason": "Phase 11.6 blocked: the stab-free-closure bridge cannot be stated under the fixed premise bundle (no ParamsOk transfer to a stab-free formula; no closure member carrying the joint depth-0 type).",
+  "review_reason": "Phase 11.6 still blocked: plan v14 was not revised after the (R-i) ruling, and (R-i) fails its obligation check on the step (hL needs cell agreement at pairs that are not kappa-collisions).",
   "verification": {
     "verification_passed": false,
     "sorry_count": 0,
@@ -16,35 +16,36 @@
     {
       "type": "summary",
       "path": "specs/761_ladder_realization_theorem/summaries/14_carried-hypothesis-depth-zero-route-summary.md",
-      "summary": "Phase 11.6 closed [BLOCKED] on the stab-free-closure bridge; no library change; route decision returned."
+      "summary": "Round-14 summary covering dispatches 38 and 39: still blocked, no library change, route (R-i) fails its obligation check on the step."
     },
     {
       "type": "plan",
       "path": "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
-      "summary": "Phase 11.6 marked [BLOCKED] with a structured BLOCKER entry and an inline deviation annotation."
+      "summary": "Phase 11.6 stays [BLOCKED]; second BLOCKER entry on route (R-i) added under the heading."
     },
     {
       "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T171102Z.md",
-      "summary": "Phase 11.6 handoff: the blocker, the unprovable goal, and four findings for the successor."
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T221500Z.md",
+      "summary": "Dispatch-39 handoff: the obligation check, the two non-collision sources, and the scratch probe source."
     }
   ],
   "modified_files": [
     "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T171102Z.md",
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T221500Z.md",
     "specs/761_ladder_realization_theorem/summaries/14_carried-hypothesis-depth-zero-route-summary.md",
     "specs/761_ladder_realization_theorem/issues.jsonl"
   ],
   "user_decision": {
-    "question": "Phase 11.6 is blocked: the five admitted depth-0 schemas cannot be instantiated at a formula carrying a stab letter (their stab-free premise and ParamsOk sit at one formula index), and the planned step does not close from a cell-level induction hypothesis. Which route should the plan be revised to?",
+    "question": "Route (R-i) does not discharge the step half of its obligation: relativizing the splice/deletion stack to a pinned-letter parameter L leaves the transport's hL premise, which needs cell agreement at position pairs that are never kappa-collisions (interior block copies displaced off-residue; threshold-tight pairs with later positions below Tc). How should the step be approached?",
     "options": [
-      "(R-i) Re-derive the splice/deletion stack of LadderPump/LadderChain/LadderCell relative to a pinned-letter parameter L, so base case and step become one path-level induction on stab depth; lifts this plan's \"base case is NOT re-derived\" prohibition; large and NOT COSTABLE",
-      "(R-ii) Carry the depth-0 agreement on cellLE 0 at arbitrary phi itself as the bundle premise in place of ForwardSlackWitnessed; states the bridge away rather than proving it, and the step still needs a path-level argument",
-      "(R-iii) Rest the task [BLOCKED] with the obstruction recorded; no further dispatch until a new idea"
+      "(S-1) Research round first: settle by compiled probe on a small fixture whether a stab bit actually differs at a copy pair, and whether a margin design closes, before any further plan revision or implement dispatch",
+      "(S-2) Depth-stratified threshold margins: pump only where the countdown stays above a threshold that falls with stab depth, with blocks spaced at P+1; strengthens (K2) by a depth-dependent margin, so it lifts the plan's 'do NOT raise Tc or strengthen ParamsOk' prohibition and changes the ruled ParamsOk; exact shift with P+1-spaced blocks still open; NOT COSTABLE",
+      "(S-3) Re-open route (R-a), the depth-stratified certificate family the recorded decision did not take",
+      "(S-4) Rest the task [BLOCKED] with both obstructions recorded; no further dispatch until a new idea"
     ],
-    "recommended": "(R-i) Re-derive the splice/deletion stack of LadderPump/LadderChain/LadderCell relative to a pinned-letter parameter L, so base case and step become one path-level induction on stab depth; lifts this plan's \"base case is NOT re-derived\" prohibition; large and NOT COSTABLE",
+    "recommended": "(S-1) Research round first: settle by compiled probe on a small fixture whether a stab bit actually differs at a copy pair, and whether a margin design closes, before any further plan revision or implement dispatch",
     "blocking": true,
-    "obligation": "A depth-indexed agreement on cellLE d at an arbitrary phi whose depth-0 instance is PROVED from ParamsOk at that same phi (no stab-free premise at the formula index), and whose step is closed by a position-by-position path correspondence rather than by a cell-level induction hypothesis."
+    "obligation": "Evidence, compiled where it can be, that decides between a margin design and the certificate-side route: either a fixture on which a stab bit differs at a pump copy pair (so no path-level correspondence through kappa-classes exists), or a stated induction invariant whose position pairs are all inside its own scope."
   },
   "metadata": {
     "session_id": "sess_1794675657_f70522",
