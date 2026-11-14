@@ -1,26 +1,24 @@
 {
-  "status": "partial",
+  "task_number": 930,
   "phase": "implement",
-  "dispatch_seq": 11,
-  "summary": "Phase 1 of 4 complete: both orphan prototypes promoted verbatim (one header line changed each) to tracked paths specs/evidence/seam-gluing-ray-product/ladder-tight-chain-regime-b.lean and ladder-spanning-divisibility.lean, committed as 2dc16fd78. Each compiles clean through the build guard (exit 0) and all eight headline theorems report only subsets of [propext, Classical.choice, Quot.sound] -- no sorryAx, no custom axiom, no native_decide, so neither README authority claim is stale. The phase-end full lake build is green (exit 0, 0 errors, 2975 jobs). Phases 2 (wire into scripts/check-evidence-probes.sh), 3 (rewrite the two README citations) and 4 (full gate set) remain, per this hard-mode dispatch's single-phase mission.",
+  "status": "partial",
+  "dispatch_seq": 12,
+  "session_id": "sess_1794619593_8f19c5",
+  "phases_completed": 2,
+  "phases_total": 4,
+  "summary": "Phase 2 closed and committed (062a7baca): both promoted probes are wired into scripts/check-evidence-probes.sh, each with its comment-table block and a WIRED array entry placed after seam-gluing-ray-product/lowering-anchor-deficit. The gate's live pre-edit baseline was 59 wired probes (not the plan's stated 58 -- task 929 wired one since the research run) and is now 61, exit 0, with a row-by-row diff showing exactly two added PASS rows and no other probe row changed. A full lake build through the build guard is green (exit 0, 0 errors, 2975 jobs) and check-module-invariants.sh --no-build passes with no finding naming the gate script. Phases 3 (README citations) and 4 (full gate set) remain NOT STARTED.",
+  "blockers": [],
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-1-handoff-20261113-191856.md",
-      "summary": "Phase 1 handoff: promoted paths, per-file compile and axiom measurements, and the Phase 2 resume point."
-    },
-    {
-      "type": "evidence",
-      "path": "specs/evidence/seam-gluing-ray-product/ladder-tight-chain-regime-b.lean",
-      "summary": "Promoted 836B prototype: the tight-chain regime-B decision gate, refuting the spanning-block device in both directions."
-    },
-    {
-      "type": "evidence",
-      "path": "specs/evidence/seam-gluing-ray-product/ladder-spanning-divisibility.lean",
-      "summary": "Promoted 838B prototype: (K1) does not constrain a spanning block length, via the alternating path."
+      "path": "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-2-handoff-20261113-193851.md",
+      "summary": "Phase 2 handoff: measurements, carried-figure re-validation, concurrency observations, and the Phase 3 resume point."
     }
   ],
-  "phases_completed": 1,
-  "phases_total": 4,
-  "blockers": []
+  "modified_files": [
+    "scripts/check-evidence-probes.sh",
+    "specs/930_wire_orphan_open_core_prototypes/plans/01_wire-orphan-open-core-prototypes.md",
+    "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-2-handoff-20261113-193851.md"
+  ],
+  "next_action": "Dispatch Phase 3: rewrite the two RaySummary/README.md citations to name the new wired paths, dropping the 'not a wired probe' qualifier."
 }
