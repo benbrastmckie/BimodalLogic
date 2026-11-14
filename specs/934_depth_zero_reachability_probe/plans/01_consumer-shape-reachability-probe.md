@@ -241,7 +241,7 @@ task-reference lint over the script's new comment rows.
 
 ---
 
-### Phase 2: Record the verdict and run the full gate set [NOT STARTED]
+### Phase 2: Record the verdict and run the full gate set [COMPLETED]
 
 **Goal**: The written verdict is on the task record at exactly the probe's reach, and the
 repository's complete gate set is green or its every red is enumerated as pre-existing and
@@ -249,7 +249,7 @@ outside this plan's file scope.
 
 **Tasks**:
 
-- [ ] Write the verdict section of the implementation summary with this content and no more:
+- [x] Write the verdict section of the implementation summary with this content and no more:
       (1) the question, as `specs/ROADMAP.md` Stage 0 states the crux; (2) the compiled answer:
       satisfiable at the consumer shape at a positive amount, non-vacuously, and the restricted
       schema fires there under `ParamsOk`, citing the five headline names and the probe path;
@@ -264,12 +264,12 @@ outside this plan's file scope.
       roadmap's "claimed in neither direction" wording is left for the user or a `/roadmap` pass;
       (7) the candidate follow-up (a multi-type-cell instance, equivalent to route 4 at the cell
       level), named but not filed.
-- [ ] Check the three verdict carriers (probe docstring, script table row, summary) say the same
+- [x] Check the three verdict carriers (probe docstring, script table row, summary) say the same
       thing: none contains "gate is decided", "discharged" without "NOT", or a claim on the
       reserved name.
-- [ ] Run the complete gate set below and record each outcome as a delta against the pre-task
+- [x] Run the complete gate set below and record each outcome as a delta against the pre-task
       commit.
-- [ ] Confirm the out-of-scope constraints held: `git diff <pre-task-sha> -- FormalSystem/` and
+- [x] Confirm the out-of-scope constraints held: `git diff <pre-task-sha> -- FormalSystem/` and
       `git diff <pre-task-sha> -- specs/ROADMAP.md` show nothing authored by this task.
 
 **Timing**: 1.25 hours
