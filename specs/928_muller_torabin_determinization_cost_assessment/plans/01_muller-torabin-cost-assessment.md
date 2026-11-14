@@ -1,7 +1,7 @@
 # Implementation Plan: Task #928
 
 - **Task**: 928 - Muller to Rabin determinization cost assessment
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/928_muller_torabin_determinization_cost_assessment/reports/01_muller-torabin-cost-assessment.md
@@ -150,21 +150,21 @@ Phases within the same wave can execute in parallel. Phases 1 and 2 are serializ
 topically independent because both edit the same file (the report) and a concurrent sibling is
 live on this working tree.
 
-### Phase 1: De-carry Finding 1.4's K4B grounding [NOT STARTED]
+### Phase 1: De-carry Finding 1.4's K4B grounding [COMPLETED]
 
 **Goal**: Replace the CARRIED-UNVERIFIED grounding of Finding 1.4's consumer-side claim with a
 first-hand read of Reynolds 2001, or correct the claim where the primary source does not support
 what was carried.
 
 **Tasks**:
-- [ ] Re-run `grep -c "CARRIED-UNVERIFIED"` on the report and `grep -rn "K4B\|ceasing to appear" /home/benjamin/Projects/Literature/sources/reynolds_2001/` before editing; if either differs from the plan-time figures (2 markers; hits in `sec09`, `sec10`, `sec11`), widen this task list accordingly
-- [ ] Read `/home/benjamin/Projects/Literature/sources/reynolds_2001/sec09_sec-10-the-standard-basis-of-the-constru.md` around lines 225-235 — the pair-listing order and the "order of Vps ceasing to appear" passage
-- [ ] Read `/home/benjamin/Projects/Literature/sources/reynolds_2001/sec10_111-lulls-it-will-be-important-in-our-co.md` at and around line 78 (clause K4B itself) and line 346 (the stated purpose of the ordering)
-- [ ] Read `/home/benjamin/Projects/Literature/sources/reynolds_2001/sec11_132-a-new-chronicle-we-check-that-t.md` around line 264 (the most-recent-appearance formulation)
-- [ ] Adjudicate each of the three carried sub-claims separately and record the verdict for each: (i) the banned list has the shape `bl : T -> (C x {1,...,K})*`; (ii) `K` is the number of accepting pairs; (iii) K4B orders entries by recency of last appearance
-- [ ] Amend Finding 1.4 in place: cite each confirmed sub-claim by chunk filename and line; retain the `CARRIED-UNVERIFIED` marker on anything that genuinely remains carried; where a sub-claim is refuted, state the refutation and re-state the finding's conclusion on the surviving grounds (landed work preserved, proof difficulty) rather than deleting it
-- [ ] Amend the matching Risks & Mitigations row to the new evidence tier; do not delete the row while any part of the claim remains carried
-- [ ] Record an issue or win via `issue-record.sh` as the phase goes, per the dispatch's Issue Log contract
+- [x] Re-run `grep -c "CARRIED-UNVERIFIED"` on the report and `grep -rn "K4B\|ceasing to appear" /home/benjamin/Projects/Literature/sources/reynolds_2001/` before editing; if either differs from the plan-time figures (2 markers; hits in `sec09`, `sec10`, `sec11`), widen this task list accordingly
+- [x] Read `/home/benjamin/Projects/Literature/sources/reynolds_2001/sec09_sec-10-the-standard-basis-of-the-constru.md` around lines 225-235 — the pair-listing order and the "order of Vps ceasing to appear" passage
+- [x] Read `/home/benjamin/Projects/Literature/sources/reynolds_2001/sec10_111-lulls-it-will-be-important-in-our-co.md` at and around line 78 (clause K4B itself) and line 346 (the stated purpose of the ordering)
+- [x] Read `/home/benjamin/Projects/Literature/sources/reynolds_2001/sec11_132-a-new-chronicle-we-check-that-t.md` around line 264 (the most-recent-appearance formulation)
+- [x] Adjudicate each of the three carried sub-claims separately and record the verdict for each: (i) the banned list has the shape `bl : T -> (C x {1,...,K})*`; (ii) `K` is the number of accepting pairs; (iii) K4B orders entries by recency of last appearance
+- [x] Amend Finding 1.4 in place: cite each confirmed sub-claim by chunk filename and line; retain the `CARRIED-UNVERIFIED` marker on anything that genuinely remains carried; where a sub-claim is refuted, state the refutation and re-state the finding's conclusion on the surviving grounds (landed work preserved, proof difficulty) rather than deleting it
+- [x] Amend the matching Risks & Mitigations row to the new evidence tier; do not delete the row while any part of the claim remains carried
+- [x] Record an issue or win via `issue-record.sh` as the phase goes, per the dispatch's Issue Log contract
 
 **Timing**: 0.75 hours
 
