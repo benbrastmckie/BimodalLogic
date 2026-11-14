@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "summary": "Wrote a three-phase plan for task 927. The research dispatch already delivered all four findings, and the task's guardrails bar this task from acting on most of them (no Lean write, no s7-15 formalization, no in-place 901/879 edit), so the plan is measure-attest-and-hand-off: Phase 1 re-validates the dispatch's carried figures (the asserted 519-line UniversalCover.lean measures 626 live) and enumerates the complete 901 stale-anchor set, including two drifted-citation sites the report's Finding (3) did not reach; Phase 2 files two successor tasks with backlog evidence; Phase 3 writes the close-out record and runs the full gate set. No Lean source, build file, archived report or ROADMAP sentence is touched by any phase.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/927_final_frame_step_remeasure_against_landed_cover/plans/01_final-frame-step-remeasure.md",
+      "summary": "Three-phase plan: carried-figure re-validation and guardrail attestation, two successor task filings, close-out record and final gate."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 3,
+  "blockers": [],
+  "next_action_hint": "Dispatch the implement phase; Phase 1 is measurement-only and writes nothing outside this plan file.",
+  "dispatch_seq": 3
+}

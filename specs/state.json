@@ -1890,12 +1890,19 @@
     {
       "project_number": 927,
       "project_name": "final_frame_step_remeasure_against_landed_cover",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "high",
       "description": "MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers one question: is the completeness paper proof final-frame step still open, given that both Lean pieces it was said to need have since landed?\n\nTHE SITUATION. specs/archive/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md records the final-frame step as the paper proof one unclosed step. Its ingredient line reads `universal cover; invariance with no Saturation on the base | missing | the two Lean pieces the final-frame step needs`; its Risks section calls it `the weakest link`, naming as negative evidence that `plus_invariance_of_isZTime demands [F.IsRegular] on the base`; and it states `This write-up does not claim the final-frame step; it claims the engine up to it.`\n\nBOTH NAMED PIECES ARE NOW LANDED, and the second is stronger than 901 anticipated:\n  - Piece 1, the universal cover: specs/archive/897_universal_cover_oriented_forest_two_way_bounded landed `FormalSystem/Semantics/UniversalCover.lean` (519 lines) with headline `exists_orientedForest_cover`, plus `coverFrame`, `endpt_surjective`, `endpt_twoWayBounded`.\n  - Piece 2, base-Saturation-free invariance: specs/archive/898_plus_invariance_base_without_saturation settled this AFFIRMATIVELY and went further than its own task description anticipated. Per its summary: Saturation is consumed NOWHERE in the `HistoryMorphism.lean` lifting chain, and the base frame needs NO `def:frame` constraint at all -- not even reflection. Only the SOURCE frame needs anything, and it needs exactly Compositionality, Seriality and Limit. It landed `plus_invariance_of_isZTime_of_constraints`, `exists_histMorphism_of_isZTime_of_constraints`, `taskRel_eq_iter_of_constraints`, and -- named in its own summary as `the completeness programme entry point over a base with no Saturation` -- `exists_orientedForest_cover_of_constraints`. 901 negative evidence is directly answered: the base `[F.IsRegular]` binder is now genuinely unread, and the one apparent base use (`F.reflection` inside `exists_preimage_step_neg`) is discharged at nonzero step duration by `TaskFrame.reflect_reflection_of_ne`. 898 also corrected the prose surfaces that had recorded Saturation as the obstruction, reframing it as a class-membership obligation, and wired `Tests/BimodalTest/Semantics/OrientedForestSaturationTest.lean` so the headline stops compiling if a base Saturation hypothesis is ever re-acquired.\n\n901 and 898 both closed 2026-11-09, so 901 `missing` row is very likely STALE rather than wrong-at-the-time. Confirming that is part of the deliverable.\n\nTHE QUESTION THAT IS ACTUALLY STILL OPEN. Because the base side now demands nothing, the obligation has MOVED to the source side: does the chronicle quotient of 901 Finding 15 satisfy Compositionality, Seriality and Limit? 901 describes that quotient as a time-sliced digraph with countably infinite slices, and notes its Saturation `is a real obligation here (unlike in Reynolds Kripke setting, which has no such axiom)`. Nobody has checked the quotient against 898 source-side hypothesis set. That check is this task.\n\nDELIVERABLE, four findings:\n  (1) Whether `exists_orientedForest_cover_of_constraints` + `saturation_of_orientedForest` + `plus_invariance_of_isZTime_of_constraints` discharge the final-frame step AS 901 Finding 15 STATES IT -- checked against the landed declarations actual signatures in source, not against either report prose.\n  (2) The source-side obligation, stated precisely: what Compositionality, Seriality and Limit each require of the chronicle quotient, and which of the three (if any) is not evidently satisfied. This is the finding with the most expected content.\n  (3) A verdict on 901 ingredient row and Risks paragraph: stale, partially stale, or still accurate -- and if stale, the exact amendment text each needs. Do not edit 901 report in place; supply the amendment for a successor to apply.\n  (4) Whether the final-frame step is now discharged, conditionally discharged (naming the condition), or still genuinely open (naming what is missing).\n\nWHY THIS NEEDS NO RULING. The final-frame step is section 15, and this task neither formalizes it nor formalizes any part of sections 7-15: it measures whether already-landed declarations discharge it and corrects a stale record. Recommendation 8 bars filing a FORMALIZATION of sections 7-15; it does not bar reading landed signatures and reporting what they compose to. If finding (1) and (4) come back positive, the paper proof one acknowledged gap closes without reversing any ruling -- which is why this is the cheapest high-value question on the completeness front.\n\nGUARDRAILS: (a) read declaration signatures from source, never from a report description of them -- 901 own stale row is the cautionary case; (b) no Lean file written or edited -- if a composition is available, state it as a finding with declaration names, do not land it; (c) no formalization of any part of sections 7-15; (d) no completeness claim, and in particular finding (4) positive does NOT make T3 complete -- rows 17-21 remain paper; (e) do not edit 901 or 879 reports in place, supply amendment text; (f) if the source-side check needs the chronicle quotient stated more precisely than 901 Finding 15 states it, record that as the blocker rather than inventing a formalization of it.\n\nFILE SCOPE: none. Report only. Reads FormalSystem/Semantics/UniversalCover.lean, HistoryMorphism.lean, IntNormalForm.lean, StateTopology/ConstraintWitnesses.lean; writes no Lean.",
-      "file_scope": [],
+      "file_scope": [
+        "specs/927_final_frame_step_remeasure_against_landed_cover/plans/01_final-frame-step-remeasure.md",
+        "specs/927_final_frame_step_remeasure_against_landed_cover/summaries/01_final-frame-step-remeasure-summary.md",
+        "specs/927_final_frame_step_remeasure_against_landed_cover/task-proposals-audit.ndjson",
+        "specs/927_final_frame_step_remeasure_against_landed_cover/task-proposals.json",
+        "specs/TODO.md",
+        "specs/state.json"
+      ],
       "created": "2026-11-12T22:26:17Z",
       "audit_verdict": {
         "proposal": {
@@ -2051,13 +2058,18 @@
         ],
         "degradation_summary": "447 project(s) judged scope-blind (no file_scope declared); per-project list omitted"
       },
-      "last_updated": "2026-11-14T06:12:31Z",
+      "last_updated": "2026-11-14T06:26:52Z",
       "session_id": "sess_1794635603_fa0324",
       "artifacts": [
         {
           "path": "specs/927_final_frame_step_remeasure_against_landed_cover/reports/01_final-frame-step-remeasure.md",
           "type": "report",
           "summary": "Remeasures the completeness paper proof's final-frame step against the landed cover and Saturation-free invariance: compiled probes show the step is conditionally discharged (condition is a four-lemma API refactor, not open mathematics), the chronicle quotient meets all three source-side constraints, and the 901 ingredient row plus Risks paragraph are stale with amendment text supplied."
+        },
+        {
+          "path": "specs/927_final_frame_step_remeasure_against_landed_cover/plans/01_final-frame-step-remeasure.md",
+          "type": "plan",
+          "summary": "Three-phase plan: carried-figure re-validation and guardrail attestation, two successor task filings, close-out record and final gate."
         }
       ],
       "next_artifact_number": 2
@@ -2065,7 +2077,7 @@
     {
       "project_number": 928,
       "project_name": "muller_torabin_determinization_cost_assessment",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "medium",
@@ -2214,8 +2226,8 @@
         ],
         "degradation_summary": "448 project(s) judged scope-blind (no file_scope declared); per-project list omitted"
       },
-      "last_updated": "2026-11-14T06:12:45Z",
-      "session_id": "sess_1794635603_fa0324",
+      "last_updated": "2026-11-14T06:15:31Z",
+      "session_id": "sess_1794635603_fa0324_928",
       "artifacts": [
         {
           "path": "specs/928_muller_torabin_determinization_cost_assessment/reports/01_muller-torabin-cost-assessment.md",

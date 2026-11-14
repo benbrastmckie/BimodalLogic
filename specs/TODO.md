@@ -37,9 +37,9 @@ next_project_number: 931
 
 ### Completeness
 
-927 [RESEARCHED] — MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers...
+927 [PLANNED] — MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers...
   └─ 926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
-928 [RESEARCHED] — ASSESSMENT TASK, report only. Costs the single lemma that...
+928 [PLANNING] — ASSESSMENT TASK, report only. Costs the single lemma that...
   └─ 926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean... (see above)
 
 ### Dataset Enhancement
@@ -131,7 +131,7 @@ next_project_number: 931
 ---
 
 ### 928. Muller torabin determinization cost assessment
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -156,11 +156,12 @@ FILE SCOPE: none. Report only.
 ---
 
 ### 927. Final frame step remeasure against landed cover
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
 - **Research**: [927_final_frame_step_remeasure_against_landed_cover/reports/01_final-frame-step-remeasure.md]
+- **Plan**: [927_final_frame_step_remeasure_against_landed_cover/plans/01_final-frame-step-remeasure.md]
 
 **Description**: MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers one question: is the completeness paper proof final-frame step still open, given that both Lean pieces it was said to need have since landed?
 
