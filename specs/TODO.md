@@ -13,8 +13,8 @@ next_project_number: 933
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,932 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
-| 2 | 231,282,296,429,497,763,862,873 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -81,6 +81,7 @@ next_project_number: 933
 ### Semantics
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
+  └─ 932 [NOT STARTED] — Land the four ofStepRel constraint lemmas and an ofStepPlain...
 
 ### Build Performance
 
@@ -95,14 +96,13 @@ next_project_number: 933
 ### Uncategorized
 
 931 [NOT STARTED] — Apply the final-frame amendments to the 901 two-sided...
-932 [NOT STARTED] — Land the four ofStepRel constraint lemmas and an ofStepPlain...
 
 ## Tasks
 
 ### 932. Land the four ofStepRel constraint lemmas and an ofStepPlain constructor in IntNormalForm.lean
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
-- **Dependencies**: None
+- **Dependencies**: Task 869
 
 **Description**: FRAME-PRESENTATION API ONLY. Land five declarations in FormalSystem/Semantics/IntNormalForm.lean, plus one equation lemma, and rewrite `ofStepSat`'s body to cite them instead of duplicating them.
 
