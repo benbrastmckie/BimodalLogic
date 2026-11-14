@@ -1,7 +1,7 @@
 # Implementation Plan: Task #929
 
 - **Task**: 929 - Discharge the `I = 1` idle-run sub-regime so `ForwardSlackWitnessed` becomes unconditional
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: None blocking. Territory-concurrent with task 930 (no declared file scope).
 - **Research Inputs**: specs/929_idle_run_length_one_forward_slack_discharge/reports/01_idle-run-one-forward-slack.md
@@ -135,35 +135,35 @@ regenerates inventory blocks from the line counts Phases 2 and 3 produce.
 
 ---
 
-### Phase 1: Promote and wire the compiled refutation probe [NOT STARTED]
+### Phase 1: Promote and wire the compiled refutation probe [COMPLETED]
 
 **Goal**: The `I = 1` refutation lives at the collection path a probe belongs at, is tracked by
 git, and is compiled on every CI run so it cannot rot.
 
 **Tasks**:
 
-- [ ] Create `specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean` holding the
+- [x] Create `specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean` holding the
       task-local probe's content VERBATIM — all three `def`s and all ten theorems, the
       `Probe929` namespace, and the trailing `#print axioms` section (`#print axioms` in a probe
       has precedent: `seam-gluing-ray-product/ladder-cell-obligation-refutation.lean` carries 8).
-- [ ] Prepend the four-line Apache copyright header the sibling probes in the same directory
+- [x] Prepend the four-line Apache copyright header the sibling probes in the same directory
       carry (`pin-cascade-straddle.lean`, `route-space-closure.lean`), and expand the file's
       one-line `/-! ... -/` into a module docstring naming (a) what the probe refutes, (b) that
       the refutation does NOT reach the five depth-`0` schemas, citing
       `ceiling_slack_at_consumer_amount`, and (c) that the reserved name
       `cellLE_zero_const_of_kappa_eq` is claimed by nothing in it.
-- [ ] `git add -- specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean` so the
+- [x] `git add -- specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean` so the
       probe is TRACKED, not merely present — `check_probe` tests this with
       `git ls-files --error-unmatch` after the presence test.
-- [ ] Delete the task-local copy
+- [x] Delete the task-local copy
       `specs/929_idle_run_length_one_forward_slack_discharge/evidence/i-one-ceiling.lean`;
       `check-evidence-probes.sh`'s own header forbids a probe living under a task directory.
-- [ ] Add `"forward-slack-pin-cascade/idle-run-one-ceiling"` to the `WIRED` array in
+- [x] Add `"forward-slack-pin-cascade/idle-run-one-ceiling"` to the `WIRED` array in
       `scripts/check-evidence-probes.sh`, beside the two existing
       `forward-slack-pin-cascade/*` entries, AND add its row to the documentation table in the
       comment block directly above the array, in the same
       `# probe | the decision it holds in place` two-column shape the neighbouring rows use.
-- [ ] Add a one-line forward pointer to the promoted path in the research report's `**Artifacts**`
+- [x] Add a one-line forward pointer to the promoted path in the research report's `**Artifacts**`
       list, so the landed record's citation does not go stale.
 
 **Timing**: 1 hour

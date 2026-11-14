@@ -14,6 +14,9 @@ probes via `lake env lean`, `#print axioms` measurements; no literature source b
 **Artifacts**: - `specs/929_idle_run_length_one_forward_slack_discharge/reports/01_idle-run-one-forward-slack.md`
 - `specs/929_idle_run_length_one_forward_slack_discharge/evidence/i-one-ceiling.lean` (compiled,
 sorry-free, standard axioms)
+- `specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean` — the probe above,
+promoted to the tracked evidence collection and wired into `scripts/check-evidence-probes.sh`;
+cite this path, not the task-local one, which no longer exists
 **Standards**: report-format.md, subagent-return.md, lean4-anti-analysis.md,
 lean4-reference-grounding.md, lean4-adversarial-verification.md, lean4-sorry-discipline.md
 

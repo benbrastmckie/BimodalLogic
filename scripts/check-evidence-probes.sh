@@ -2356,6 +2356,81 @@ EVIDENCE="specs/evidence"
 #                                                           | Classical.choice, Quot.sound]` on every
 #                                                           | headline.  No `sorryAx`, no custom
 #                                                           | axiom, no `native_decide`.
+# forward-slack-pin-cascade/idle-run-one-ceiling            | THE `I = 1` IDLE-RUN SUB-REGIME IS
+#                                                           | REFUTED AT THE EVERY-AMOUNT SHAPE.
+#                                                           | The frontier the idle route left open
+#                                                           | -- paths whose intervening idle run
+#                                                           | has length exactly `1`, where no
+#                                                           | repeat block exists to pump -- was
+#                                                           | recorded as "dischargeable on the
+#                                                           | pumpable side rather than refuted
+#                                                           | outright".  That is FALSE for the
+#                                                           | every-amount shape, and this probe
+#                                                           | compiles the counterexample.  Its
+#                                                           | headline declarations:
+#                                                           | `forwardSlackWitnessed_refuted_I_one`
+#                                                           | (`ForwardSlackWitnessed` is FALSE at
+#                                                           | amount `4` at the state `(true, 2, 0)`
+#                                                           | on the two-state object `stepOr x y =
+#                                                           | x || y`, which is serial in both
+#                                                           | directions and has NO idle self-loop,
+#                                                           | so every idle run on every ladder path
+#                                                           | has length exactly `1`; the amount
+#                                                           | ceiling `hasForwardSlack_amount_le` is
+#                                                           | then forced by the OBJECT rather than
+#                                                           | by a choice of path, which closes the
+#                                                           | existential-over-paths escape that
+#                                                           | stops the pin-cascade refutation at
+#                                                           | the path level), `xState_regime` (the
+#                                                           | refuted state IS in the
+#                                                           | pending-forever regime `n + 2 <= c`,
+#                                                           | witnessed by the plateau path -- so
+#                                                           | the refutation is not vacuous),
+#                                                           | `forwardSlackWitnessed_holds_below_ceiling`
+#                                                           | (the SAME state carries
+#                                                           | `ForwardSlackWitnessed` at every
+#                                                           | amount `l <= 3 = n + c + 1`, so the
+#                                                           | boundary is sharp and the ceiling --
+#                                                           | not some further obstruction -- is
+#                                                           | exactly what the regime refuses),
+#                                                           | `not_idleRunPumpable`
+#                                                           | (`IdleRunPumpable` is unsatisfiable
+#                                                           | for every path, history and anchor on
+#                                                           | this object, so this refutation and
+#                                                           | the conditional discharge
+#                                                           | `forwardSlackWitnessed_of_cell_idleRunPumpable`
+#                                                           | cannot collide -- the latter's premise
+#                                                           | is simply false here), and
+#                                                           | `ceiling_slack_at_consumer_amount`.
+#                                                           | What it does NOT establish: it does
+#                                                           | NOT reach the five depth-0
+#                                                           | cell-equality schemas of
+#                                                           | `LadderCell.lean`, which ask for the
+#                                                           | hypothesis at amount `m * (P + 1)` at
+#                                                           | the HIGHER state, whose countdown is
+#                                                           | `c + m * (P + 1)` --
+#                                                           | `ceiling_slack_at_consumer_amount`
+#                                                           | compiles that the ceiling is then
+#                                                           | satisfied for free whenever `0 < I`.
+#                                                           | All five schemas KEEP
+#                                                           | `ForwardSlackWitnessed`, no signature
+#                                                           | is touched, `LadderCell.lean` is not
+#                                                           | edited, and `certStabK`'s restatement
+#                                                           | obligation stays PROVISIONAL, not
+#                                                           | permanent.  The reserved name
+#                                                           | `cellLE_zero_const_of_kappa_eq` is
+#                                                           | claimed by nothing here and this probe
+#                                                           | bears on its truth value in neither
+#                                                           | direction.  The surviving frontier is
+#                                                           | route 4 at the cell level
+#                                                           | (simultaneous multi-region
+#                                                           | shortening).  Axioms: `[propext,
+#                                                           | Classical.choice, Quot.sound]` on
+#                                                           | every headline (`[propext,
+#                                                           | Quot.sound]` on
+#                                                           | `ceiling_slack_at_consumer_amount`).
+#                                                           | No `sorryAx`, no custom axiom, no
+#                                                           | `native_decide`.
 # lcu-lcn-separation/lcu-lcn-separating-model                | `lcU` is NOT derivable from TM⁺ +
 #                                                           | `LC_n` + mirror `LC_n` at `.Base`
 #                                                           | with `RuleSet.none` -- witnessed by
@@ -2487,6 +2562,7 @@ WIRED=(
   "limit-closure-schema/lc-schema-omega-chain"
   "forward-slack-pin-cascade/pin-cascade-straddle"
   "forward-slack-pin-cascade/route-space-closure"
+  "forward-slack-pin-cascade/idle-run-one-ceiling"
   "lcu-lcn-separation/lcu-lcn-separating-model"
   "stability-modal-substrate/full-labels-collapse-stab"
 )

@@ -1,6 +1,61 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderIdle
 
-/-! Probe: the I = 1 sub-regime and the amount ceiling. -/
+/-!
+# The `I = 1` idle-run sub-regime is REFUTED at the every-amount shape
+
+**NEGATIVE.** This file is the machine-checked record of the obstruction to the remaining
+`ForwardSlackWitnessed` frontier: the paths whose intervening idle run has length exactly `1`,
+where no repeat block exists to pump. The frontier was previously recorded as "dischargeable on
+the pumpable side rather than refuted outright". That is FALSE for the every-amount shape, and
+this probe compiles the counterexample.
+
+## What this probe refutes
+
+`forwardSlackWitnessed_refuted_I_one` exhibits a concrete two-state object `stepOr x y = x || y`
+— serial in both directions (`fwdOr`, `bwdOr`), with NO idle self-loop, so `stepOr false false =
+false` is impossible and every idle run on every ladder path has length exactly `1` — on which
+`ForwardSlackWitnessed` is FALSE at amount `4` at the state `xState = (true, 2, 0)`. That state
+sits in the pending-forever gap `n + 2 ≤ c` and is realized by the plateau path, so the
+refutation is not vacuous: `xState_regime` compiles the regime membership with a concrete
+witness.
+
+The mechanism is the amount ceiling `hasForwardSlack_amount_le`
+(`FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean`), which forces
+`(l : ℤ) ≤ n + cntAt g z + I` whenever a genuine next region exists. Because the ceiling is
+forced by the OBJECT rather than by a choice of path, it binds uniformly over every path through
+the state — which closes the "existential over paths" escape that stops the pin-cascade
+refutation at the path level. `forwardSlackWitnessed_holds_below_ceiling` compiles the sharp
+boundary: the SAME state carries `ForwardSlackWitnessed` at every amount `l ≤ 3 = n + c + 1`, so
+the ceiling — and not some further obstruction — is exactly what the `I = 1` regime refuses.
+
+`not_idleRunPumpable` compiles that `IdleRunPumpable` is unsatisfiable for every path, history
+and anchor on this object, so this refutation and the conditional discharge
+`forwardSlackWitnessed_of_cell_idleRunPumpable` (`LadderIdle.lean`) cannot collide: the latter's
+premise is simply false here.
+
+## What this probe does NOT establish
+
+It does NOT reach the five depth-`0` cell-equality schemas of `LadderCell.lean`
+(`cellLE_zero_const_of_kappa_eq_of_forwardSlack` and its `_commonShift_`, `_monotone_`,
+`_antitone_`, `_antitone_bounded_` siblings). Those schemas ask for `ForwardSlackWitnessed` at
+amount `m * (P + 1)` at the HIGHER state, whose countdown is `c + m * (P + 1)`;
+`ceiling_slack_at_consumer_amount` compiles that the ceiling `l ≤ n + cntAt + I` is then
+satisfied for free whenever `0 < I`. So all five schemas KEEP `ForwardSlackWitnessed` as a
+carried hypothesis, no signature is touched, and `LadderCell.lean` is not edited. For the same
+reason `certStabK`'s restatement obligation stays PROVISIONAL, not permanent.
+
+The reserved name `cellLE_zero_const_of_kappa_eq` is claimed by NOTHING in this file, and this
+probe bears on its truth value in neither direction.
+
+The surviving frontier is route 4 at the cell level — simultaneous multi-region shortening —
+which this probe records but does not attempt.
+-/
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 namespace Probe929
