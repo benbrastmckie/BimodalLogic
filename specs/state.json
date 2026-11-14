@@ -2077,12 +2077,15 @@
     {
       "project_number": 928,
       "project_name": "muller_torabin_determinization_cost_assessment",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "medium",
       "description": "ASSESSMENT TASK, report only. Costs the single lemma that gates the Lean completeness line, and decides where it would live. Does NOT prove it.\n\nWHY THIS LEMMA. specs/archive/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01 names `Muller.toRabin_exists` `the single highest-value proof_wanted in either tree`, and specs/archive/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01 row 16 names determinization to Rabin as the load-bearing gap with this as `its single named target`, explicitly labelled `Not a Mathlib-absence refusal; a located and costed gap`. specs/archive/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01 established WHY the Rabin pair shape is unavoidable: a deterministic Muller automaton suffices for the Auxiliary-Atoms rule, which carries no acceptance condition, but NOT for the ban/lull mechanism, whose banned list is indexed by the automaton's accepting pairs (Reynolds 2001 section 12, `bl : T -> (C x {1,...,K})*`). So the fork's already-proved `IsRegular.iff_da_muller` is not the determinization the architecture consumes end-to-end.\n\nWHAT IS ALREADY SETTLED, and is not to be re-litigated: `Rabin.toParity_exists` is OFF the critical path (902: the ban mechanism consumes Rabin, not parity, and `Parity.toRabin_language_eq` is already proved). (O2) is discharged for free via `Muller.exists_iSup` under a union-on-the-Muller-side-then-determinize-once composition order. The existing cost estimate on record is the fork's own docstrings: an exponential pair blowup for DMA->DRA (`2^|Q|` pairs) and the LAR permutation construction for DRA->DPA.\n\nDELIVERABLE, four findings:\n  (1) The construction of record: which determinization is actually wanted here (Safra, Piterman, or the LAR route), sourced to the held corpus, with the reason the choice matters for the pair-indexed consumer rather than for the automaton alone.\n  (2) A size and shape estimate for a Lean proof on THIS project's toolchain (Lean v4.33.0-rc1, Mathlib v4.33.0-rc1): what the statement looks like, what the induction is on, which Mathlib/CSLib pieces it can stand on, and which it would have to build. An order-of-magnitude line count with its basis is wanted; an unbasised number is not.\n  (3) Siting: the local CSLib fork versus this tree. The fork is where `Muller.toRabin_exists` is currently `proof_wanted` and where `IsRegular.iff_da_muller` already lives, so the fork is the presumptive home -- but 902's standing recommendation is `Do not require anything now`, and ROADMAP records the CSLib `require` question as not to be re-opened on sections 7-15's account. State what siting in the fork would and would not commit this repository to, and whether a `require` decision is actually entailed by proving it there.\n  (4) (O3) interaction: 902 records that the determinized automaton arrives as `an existential over Type, not as syntax`, making the Auxiliary-Atoms rule's `theta_f` non-computable under classical extraction. State whether a proof of `Muller.toRabin_exists` in the natural existential form would leave (O3) standing -- i.e. whether discharging (O1) alone unblocks the completeness line, or whether (O1) and (O3) must be discharged together.\n\nGUARDRAILS: (a) assessment only -- no proof of `Muller.toRabin_exists` is attempted, and no `.lean` file is written or edited in either tree; (b) no edit to `lakefile.toml` or `lake-manifest.json`, and no `require` added in any form -- finding (3) ASSESSES the siting question and does not act on it; (c) no formalization of any part of the Reynolds engine's sections 7-15 (Recommendation 8), which this lemma is upstream of and separate from; (d) no completeness claim; (e) cite the fork's actual `proof_wanted` sites with file and line; (f) if the corpus does not hold the construction at the rigour needed to cost it, say so and name what is missing rather than estimating from memory.\n\nFILE SCOPE: none. Report only.",
-      "file_scope": [],
+      "file_scope": [
+        "specs/928_muller_torabin_determinization_cost_assessment/reports/01_muller-torabin-cost-assessment.md",
+        "specs/928_muller_torabin_determinization_cost_assessment/summaries/01_muller-torabin-cost-assessment-summary.md"
+      ],
       "created": "2026-11-12T22:26:17Z",
       "audit_verdict": {
         "proposal": {
@@ -2226,13 +2229,18 @@
         ],
         "degradation_summary": "448 project(s) judged scope-blind (no file_scope declared); per-project list omitted"
       },
-      "last_updated": "2026-11-14T06:15:31Z",
-      "session_id": "sess_1794635603_fa0324_928",
+      "last_updated": "2026-11-14T06:27:09Z",
+      "session_id": "sess_1794635603_fa0324",
       "artifacts": [
         {
           "path": "specs/928_muller_torabin_determinization_cost_assessment/reports/01_muller-torabin-cost-assessment.md",
           "type": "report",
           "summary": "Costs Muller.toRabin_exists: the wanted construction is the appearance-record (LAR) route, not Safra/Piterman; ~1,000 lines (800-1,200) in one new file sited in the CSLib fork; no require entailed; (O1) and (O3) are separable."
+        },
+        {
+          "path": "specs/928_muller_torabin_determinization_cost_assessment/plans/01_muller-torabin-cost-assessment.md",
+          "type": "plan",
+          "summary": "3-phase closure plan: de-carry K4B grounding, Thomas 1997 PDF fidelity check, deliverable-contract audit plus summary and full gate."
         }
       ],
       "next_artifact_number": 2

@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 4,
+  "phases_completed": 0,
+  "phases_total": 3,
+  "summary": "Wrote a 3-phase, 2-hour plan for task 928's report-only assessment. The research report already discharges all four dispatch deliverables, so the plan targets the two evidence gaps the report itself names: Finding 1.4's CARRIED-UNVERIFIED Reynolds K4B grounding (confirmed at plan time to be resolvable from held corpus chunks sec09/sec10/sec11) and the Thomas 1997 transcription-fidelity risk (PDF held). A final full-tier phase audits the report against the four deliverables and six guardrails, re-checks guardrails (a)/(b)/(e) mechanically against the live fork, and writes the completion summary. Plan passes validate-artifact.sh in strict mode.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/928_muller_torabin_determinization_cost_assessment/plans/01_muller-torabin-cost-assessment.md",
+      "summary": "3-phase closure plan: de-carry K4B grounding, Thomas 1997 PDF fidelity check, deliverable-contract audit plus summary and full gate."
+    }
+  ]
+}
