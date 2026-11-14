@@ -32,12 +32,24 @@ section's cell-level conclusion is phrased. The edge is acyclic: `LadderCell` im
 `LadderChain`, not this module.
 
 `LadderWindow.lean` imports this module. It states a CONDITIONAL cell-level consequence —
-`forwardSlackWitnessed_of_cell_idleRunPumpable`, the final section — which discharges NOTHING
-reserved in `LadderCell.lean`. The premise it runs on is an OBJECT/RUN hypothesis and not a
-consequence of `ParamsOk` (`idle_run_lt_tIdle_of_no_idleCycle`, `LadderPump.lean`, is the bound
-without it), so it cannot and does not remove a `ParamsOk`-level restriction anywhere, and
+`forwardSlackWitnessed_of_cell_idleRunPumpable` — which discharges NOTHING reserved in
+`LadderCell.lean`. The premise it runs on is an OBJECT/RUN hypothesis and not a consequence of
+`ParamsOk` (`idle_run_lt_tIdle_of_no_idleCycle`, `LadderPump.lean`, is the bound without it), so
+it cannot and does not remove a `ParamsOk`-level restriction anywhere, and
 `ForwardSlackWitnessed` stays a carried hypothesis on all five depth-`0` cell-equality schemas of
 `LadderCell.lean`.
+
+This module ALSO holds the REFUTATION of that discharge's complement: `section IOne`, the final
+section, compiles `forwardSlackWitnessed_refuted_I_one`, which falsifies `ForwardSlackWitnessed`
+at amount `4` on a serial object with no idle self-loop — hence with every idle run of length
+exactly `1` on every path. The two results cannot collide: `not_idleRunPumpable` compiles that
+`IdleRunPumpable` is unsatisfiable on that object. The refutation does NOT reach the five
+depth-`0` schemas, and the reason is compiled rather than a matter of their not having been
+edited: `ceiling_slack_at_consumer_amount` shows the amount ceiling is satisfied for free at the
+amount `m · (P + 1)` those schemas instantiate it at, on the higher state whose countdown is
+`c + m · (P + 1)`, whenever `0 < I`. `ForwardSlackWitnessed` therefore stays a carried hypothesis
+on all five for a positive reason, `certStabK`'s restatement obligation stays PROVISIONAL, and
+the reserved name `cellLE_zero_const_of_kappa_eq` is claimed by nothing in this module.
 
 ## What this buys
 
@@ -1027,8 +1039,12 @@ premise, so this theorem restricts the obligation rather than proving it.
 
 **(ii) `ForwardSlackWitnessed` is NOT removed from the five depth-`0` cell-equality schemas of
 `LadderCell.lean`.** It remains a carried hypothesis on every one of them, every consumer must
-still supply it, and `LadderCell.lean` is not edited. What is open after this theorem is exactly
-the complementary side: the paths whose intervening idle run has length `1`.
+still supply it, and `LadderCell.lean` is not edited. The complementary side this theorem leaves
+open — the paths whose intervening idle run has length `1` — is NOT a further discharge waiting
+to be found: it is REFUTED at the every-amount shape by `forwardSlackWitnessed_refuted_I_one`
+(`section IOne` below), on an object where `not_idleRunPumpable` compiles that this theorem's own
+premise is unsatisfiable. That refutation leaves the five schemas untouched for a compiled
+reason, `ceiling_slack_at_consumer_amount`, and not merely because they were not edited.
 
 **(iii) Nothing else moves.** The reserved name `cellLE_zero_const_of_kappa_eq` stays claimed by
 nothing, the ordinary window regime `c ≤ n + 1` stays uncovered, and the room bounds remain. -/
@@ -1072,10 +1088,10 @@ section IOne
 ## `I = 1`: the idle-run complement is REFUTED at the every-amount shape
 
 The section above discharges `ForwardSlackWitnessed` at every amount from `IdleRunPumpable`,
-and names its complement — the paths whose intervening idle run has length exactly `1`, where
-no repeat block exists to pump — as the remaining frontier. That complement was recorded as
-"dischargeable on the pumpable side rather than refuted outright". **This section compiles the
-counterexample that falsifies that reading for the every-amount shape.**
+and names its complement — the paths whose intervening idle run has length exactly `1`, where no
+repeat block exists to pump — as the remaining frontier. That complement is not a weaker version
+of the same discharge, reachable by a better pumping argument. **This section compiles the
+counterexample that refutes it outright for the every-amount shape.**
 
 **The object.** `stepOr x y = x || y` on `Q := Bool`, serial in both directions (`fwdOr`,
 `bwdOr`), with NO idle self-loop: `stepOr false false = false` is impossible, so every idle run

@@ -134,13 +134,33 @@ ladder path already carries. The discharge is CONDITIONAL. Its premise `IdleRunP
 object/run datum `ParamsOk` does not supply — `(K1)` quantifies `prodCycleLens`, `objCycleLens`
 and `satPeriod`, never `idleCycleLens`, and `idle_run_lt_tIdle_of_no_idleCycle` is the bound the
 other way — so it RESTRICTS the obligation rather than removing it, and `LadderCell.lean` is not
-edited. What stays open after it is exactly the complementary side: the paths whose intervening
-idle run has length `1`.
+edited. The complementary side it leaves open — the paths whose intervening idle run has length
+`1` — IS NOT A FURTHER DISCHARGE WAITING TO BE FOUND. It is REFUTED at the every-amount shape,
+and the refutation is compiled: `forwardSlackWitnessed_refuted_I_one`
+(`LadderIdle.lean`, `section IOne`) exhibits a serial object with no idle self-loop, on which
+every idle run on every path has length exactly `1`, and on which `ForwardSlackWitnessed` is
+FALSE at amount `4` at a state the plateau path realizes inside the pending-forever gap
+(`xState_regime`). The mechanism is the amount ceiling `hasForwardSlack_amount_le` below, forced
+by the OBJECT rather than by a choice of path, which is why the existential-over-paths escape
+that stops the refutation above at the path level is unavailable there;
+`forwardSlackWitnessed_holds_below_ceiling` compiles the sharp boundary at the same state.
+`not_idleRunPumpable` compiles that `IdleRunPumpable` is unsatisfiable on that object, so the
+refutation and the conditional discharge cannot collide.
 
-The named consequence is therefore PROVISIONAL rather than permanent. `certStabK`'s one unclaimed
-Real condition must still be RESTATED rather than proved, for as long as the hypothesis stays
-carried — but it is now blocked on a condition that IS dischargeable on the pumpable side, not on
-one refuted outright.
+The named consequence stays PROVISIONAL rather than permanent, and the refutation does NOT flip
+it. `certStabK`'s one unclaimed Real condition must still be RESTATED rather than proved, for as
+long as the hypothesis stays carried; the refutation reaches the every-amount shape only, never
+the consumer's own instantiation. `ceiling_slack_at_consumer_amount` (`LadderIdle.lean`) compiles
+that at the amount `m · (P + 1)` the five depth-`0` schemas ask for, at the higher state whose
+countdown is `c + m · (P + 1)`, the ceiling holds for free whenever `0 < I`. All five schemas
+therefore KEEP `ForwardSlackWitnessed` and `LadderCell.lean` is not edited. The surviving
+frontier is route 4 at the cell level — shorten EVERY region above `z` simultaneously rather than
+region 2 alone, where the `2 · l` deficit cancels exactly when the deleted amounts double,
+returning the `cascadeBound` recurrence unchanged — with three obligations undischarged on it:
+(i) every region must be long enough to carry a type-repeat block of the required length,
+(ii) the shortened sequence must stay Drift-feasible at the junctions where a region already sits
+at the budget and cannot shorten further, and (iii) each deletion must preserve the realized type
+at `z`.
 -/
 
 set_option linter.style.longFile 3000
@@ -1387,9 +1407,17 @@ separating `z`'s region from the next one. It deletes nothing, so neither `hanch
 arises and `cascadeBound`'s recurrence is never entered; `idleSplice_pins` (`LadderPump.lean`)
 discharges its one pin clause unconditionally. That discharge is CONDITIONAL on `IdleRunPumpable`,
 an object/run datum `ParamsOk` does not supply, and leaves open exactly the paths whose
-intervening idle run has length `1`. So the `certStabK` consequence above is PROVISIONAL rather
-than permanent — blocked on a condition dischargeable on the pumpable side, not on one refuted
-outright. -/
+intervening idle run has length `1`. That complement is itself REFUTED at the every-amount shape:
+`forwardSlackWitnessed_refuted_I_one` (`LadderIdle.lean`, `section IOne`) falsifies
+`ForwardSlackWitnessed` at amount `4` on a serial object with NO idle self-loop, where the amount
+ceiling `hasForwardSlack_amount_le` is forced by the OBJECT rather than by a choice of path, so
+the existential-over-paths escape that stops THIS refutation at the path level is unavailable
+there. The `certStabK` consequence above nevertheless stays PROVISIONAL rather than permanent:
+the refutation reaches the every-amount shape only, and `ceiling_slack_at_consumer_amount`
+(`LadderIdle.lean`) compiles that the ceiling is slack at the amount `m · (P + 1)` the five
+depth-`0` schemas instantiate it at, so all five keep `ForwardSlackWitnessed` and
+`LadderCell.lean` is not edited. The surviving frontier is route 4 — simultaneous multi-region
+shortening — recorded in this module's own docstring. -/
 theorem exists_deleted_ladderPath_of_next_region_nxt
     {g : ℤ → LadderState Q pend} {z a : ℤ} {l : ℕ}
     (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)

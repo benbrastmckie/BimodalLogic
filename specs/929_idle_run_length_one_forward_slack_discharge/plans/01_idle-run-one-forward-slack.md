@@ -288,15 +288,15 @@ same phase.
 
 ---
 
-### Phase 3: Restate the `I = 1` frontier at the three asserting sites [NOT STARTED]
+### Phase 3: Restate the `I = 1` frontier at the three asserting sites [COMPLETED]
 
 **Goal**: No docstring in the library still asserts that the `I = 1` case is dischargeable on the
 pumpable side; each instead names the compiled refutation and its exact reach.
 
 **Tasks**:
 
-- [ ] Re-read each file immediately before editing (concurrent sibling task 930).
-- [ ] `LadderChain.lean` module docstring (the block ending at line 142): replace "but it is now
+- [x] Re-read each file immediately before editing (concurrent sibling task 930).
+- [x] `LadderChain.lean` module docstring (the block ending at line 142): replace "but it is now
       blocked on a condition that IS dischargeable on the pumpable side, not on one refuted
       outright" with the compiled finding — the `I = 1` complement is REFUTED at the every-amount
       shape by `forwardSlackWitnessed_refuted_I_one` (`LadderIdle.lean`, `section IOne`) — while
@@ -304,25 +304,31 @@ pumpable side; each instead names the compiled refutation and its exact reach.
       `ceiling_slack_at_consumer_amount` compiles that the ceiling is slack at the consumer's own
       instantiation. Name route 4 (simultaneous multi-region shortening) as the surviving
       frontier, with its three undischarged obligations.
-- [ ] `LadderChain.lean`'s `exists_deleted_ladderPath_of_next_region_nxt` docstring (the "THE
+- [x] `LadderChain.lean`'s `exists_deleted_ladderPath_of_next_region_nxt` docstring (the "THE
       ROUTE THAT IS NOT REFUTED" block ending at line 1393): same correction, same preserved
       provisionality.
-- [ ] `LadderIdle.lean` module docstring (the `LadderWindow.lean imports this module` paragraph,
+- [x] `LadderIdle.lean` module docstring (the `LadderWindow.lean imports this module` paragraph,
       lines ~35-42): add that this module now ALSO holds the `I = 1` refutation, and that
       `ForwardSlackWitnessed` stays a carried hypothesis on all five depth-`0` schemas for the
       reason `ceiling_slack_at_consumer_amount` compiles, not merely because they were not
       edited.
-- [ ] `LadderIdle.lean`'s `forwardSlackWitnessed_of_cell_idleRunPumpable` docstring items `(ii)`
+- [x] `LadderIdle.lean`'s `forwardSlackWitnessed_of_cell_idleRunPumpable` docstring items `(ii)`
       and `(iii)` (lines ~1028-1034): correct "What is open after this theorem is exactly the
       complementary side: the paths whose intervening idle run has length `1`" to name that
       complement as now REFUTED at the every-amount shape, and leave item `(iii)`'s reserved-name
-      assertion unchanged.
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary.lean`'s aggregator docstring: add the
+      assertion unchanged. *(deviation: altered — this phase also rephrased one sentence of
+      `section IOne`'s own docstring in the same file, which quoted the superseded
+      "dischargeable on the pumpable side" wording verbatim; that quotation would have
+      failed this phase's own grep criterion and is record-versioning language
+      `no-record-versioning-in-deliverables.md` bars in a deliverable. No claim changed.)*
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary.lean`'s aggregator docstring: add the
       refutation to the `RaySummary` module's own account of the ladder layer, at the same reach.
-- [ ] Measure `wc -l FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean` after the
+- [x] Measure `wc -l FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean` after the
       edits. If it reached 3000 or more, re-tighten its `set_option linter.style.longFile` (line
-      146) to the linter's newly computed `candidate` IN THIS PHASE.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` IN THIS
+      146) to the linter's newly computed `candidate` IN THIS PHASE. *(measured: 2984 lines,
+      +28 from 2956; under 3000, so `candidate` stays 3100 and the declared 3000 remains
+      accepted — no re-tightening applied.)*
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` IN THIS
       PHASE — docstring lines are still `.lean` lines, and the pre-commit hook is blocking.
 
 **Timing**: 1.5 hours

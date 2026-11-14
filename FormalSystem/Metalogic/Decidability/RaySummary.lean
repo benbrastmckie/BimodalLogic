@@ -269,9 +269,20 @@ nothing about `PlusValidZTime` — see the README's verdict.
   its verdict. The pump-layer inputs (the idle-cycle vocabulary, the idle-block countdown with
   its free pin clause, the idle-restricted `(objAt, tpOf)` pigeonhole) are `LadderPump.lean`'s;
   `LadderChain` is imported for `exists_ladderPath_of_walk_nxt_at` alone, the only landed lift
-  that exposes the next-deadline register at a chosen position. Nothing imports this module and
-  it states NO cell-level consequence: the premise it runs on is an object/run hypothesis, not a
-  consequence of `ParamsOk`, so no `ParamsOk`-level restriction is removed anywhere.
+  that exposes the next-deadline register at a chosen position. `LadderWindow` imports it. It
+  states ONE cell-level consequence, `forwardSlackWitnessed_of_cell_idleRunPumpable`, and that
+  consequence is CONDITIONAL: the premise it runs on is an object/run hypothesis, not a
+  consequence of `ParamsOk`, so no `ParamsOk`-level restriction is removed anywhere. The module
+  ALSO holds the repository's first CELL-level REFUTATION of `ForwardSlackWitnessed`
+  (`section IOne`): `forwardSlackWitnessed_refuted_I_one` falsifies it at amount `4` on a serial
+  object with no idle self-loop, where every idle run has length exactly `1` and the amount
+  ceiling `hasForwardSlack_amount_le` is forced by the OBJECT rather than by a choice of path.
+  Its reach is bounded and the bound is compiled: `ceiling_slack_at_consumer_amount` shows the
+  ceiling is slack at the amount `m · (P + 1)` the five depth-`0` `LadderCell.lean` schemas
+  instantiate it at, so all five KEEP `ForwardSlackWitnessed`, no schema signature is touched,
+  `certStabK`'s restatement obligation stays PROVISIONAL, and `not_idleRunPumpable` compiles that
+  the refuted object cannot collide with the conditional discharge. The reserved
+  `cellLE_zero_const_of_kappa_eq` is claimed by nothing here.
 * `RaySummary.LadderWindow` — the ORDINARY WINDOW regime `c ≤ n + 1` of the depth-`0` cell
   obligation, the exact complement of the pending-forever gap `n + 2 ≤ c` that the five
   `LadderCell.lean` schemas carry: the collision's own room upgrade
