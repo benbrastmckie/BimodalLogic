@@ -382,7 +382,7 @@ above, which produced a false guardrail-(b) violation before being caught.
 
 ---
 
-### Phase 2: File the Two Owned Successor Tasks, With Backlog Evidence [NOT STARTED]
+### Phase 2: File the Two Owned Successor Tasks, With Backlog Evidence [COMPLETED]
 
 **Goal**: Two new `not_started` entries exist in `specs/state.json`, each carrying
 backlog-reconciliation evidence in its own `audit_verdict` field and a declared `file_scope`: one
@@ -499,6 +499,59 @@ proposal, the count is lower and the Phase 2 Notes say which and why.
 - `specs/TODO.md` renders both new tasks with bracket-only artifact-link format and no `[name](path)` links.
 - `git diff --staged --name-only` names only the five files above, and `git status --short` shows no foreign uncommitted hunk mixed into the commit.
 - `git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` is empty.
+
+#### Phase 2 Notes
+
+**Baseline, read immediately before filing.** `.active_projects | length` = **49**;
+`next_project_number` = **931** — both matching the plan-time figures, so task 928 filed nothing
+in between. After both filings: length **51** (+2, as hypothesized), `next_project_number`
+**933**. Allocated numbers were read from `state-write.sh`'s own output, not from the
+`next_project_number` cache.
+
+**Decision gate.** `audit-task-proposals.sh` was run over both proposals before any write. Both
+proposals drew 449 `scope-blind` verdicts each — reported as a count per the script's own
+presentation guidance, not expanded. The open-side verdicts, and their disposition:
+
+| Proposal | Verdict | Against | Mech. class | Score | Disposition |
+|---|---|---|---|---|---|
+| `apply_901_final_frame_amendments` | `duplicate-of-open` | **926** `lean_completeness_line_reopen_decision_record` | `scope-blind` (926 declares `file_scope: []`) | 0.40 | **Does not survive inspection.** 926's description reads "DECISION RECORD ONLY … The deliverable is a ruling with its argument, nothing else", with `FILE SCOPE: none. Report only.` Its deliverable is a reopen/keep-closed ruling on routes R1-R4; applying a record correction to an archived report is neither a ruling nor within its file scope. The match is Pass-2 vocabulary overlap (901, final-frame, Recommendation 8) — exactly the recall-biased over-inclusion the matcher documents. **Filed unchanged.** |
+| `apply_901_final_frame_amendments` | `duplicate-of-open` | **927** (this task) | `none` | 0.50 | **Expected self-match**, the proposal being drawn from this task's own report. Does not survive on its own: guardrail (e) bars this task from applying the amendment, which is why it is filed. **Filed unchanged.** |
+| `ofsteprel_named_constraint_lemmas_and_ofstepplain` | `overlaps-open` ×6 | 763, 761, 177, 410, 543, 869 | `overlap` | 0.17-0.32 | **Aggregator-only overlap — the gate's stated proceed condition.** Every shared path is one of the three generated/aggregator surfaces (`typst/generated/status.typ`, `README.md`, `FormalSystem/Metalogic/README.md`). **No open task shares `FormalSystem/Semantics/IntNormalForm.lean`**, the proposal's substantive target. Narrowing `file_scope` to remove the shared paths would defeat the Condition 1 obligation this proposal deliberately inherits, so it is **filed unchanged**. |
+
+Task 928 was inspected and is unrelated to both proposals: it is report-only, costing
+`Muller.toRabin_exists`, and the matcher flagged no verdict against it.
+
+**Confirmation table.**
+
+| # | `project_name` | Type | Status | `file_scope` | Deps | Backlog check |
+|---|---|---|---|---|---|---|
+| **931** | `apply_901_final_frame_amendments` | `general` | `not_started` | the 901 report (1 path) | `[]` | 449 `scope-blind`; 2 `duplicate-of-open` (926, 927) inspected and not surviving |
+| **932** | `ofsteprel_named_constraint_lemmas_and_ofstepplain` | `lean4` | `not_started` | `IntNormalForm.lean`, `typst/generated/status.typ`, `README.md`, `FormalSystem/Metalogic/README.md` | `[]` | 449 `scope-blind`; 6 `overlaps-open`, all aggregator-only |
+
+Both entries carry an `audit_verdict` field (`state-write.sh`'s audit-evidence gate accepted
+each), both `project_name`s equal their proposal `id`, and both `file_scope`s match the declared
+lists verbatim.
+
+**No dependency edge added, in either direction.** Task 926 already declares
+`dependencies: [927, 928]` and consumes this task's **report**, which already exists; neither
+successor is an input to 926's ruling, and neither blocks the other. Inspection of 926's remit at
+the decision gate confirmed this rather than overturning it, so no `+=` on 926's `dependencies`
+was issued.
+
+**Validation.** `bash .claude/scripts/validate-state.sh` exits **0** (10 passed, 25 warnings, 0
+failed), cycle check included. The only warning naming 931 or 932 is the standing
+`Unknown entry field: audit_verdict` warning, which already names thirteen other entries
+including 926, 927 and 928 — a pre-existing schema-modelling gap, not introduced here. Check 12's
+allocation invariant passes at 933. `specs/TODO.md` renders both new tasks; `grep -cE '\]\('`
+over it returns **0**, so no markdown-format artifact link is present.
+
+**Issue log.** One `win` recorded for this phase (class `tooling/scaling-fix-held`, severity
+`none`): the 902-derived lesson that a multi-proposal `--audit-verdict` file must be sliced
+against a 128 KB per-argv ceiling is **no longer binding** — `state-write.sh` now normalizes the
+file through a private temp file and re-passes it via `--argjson-file` specifically to survive a
+large one, and the 349 KB audit file here was accepted. Per-proposal slicing was still used
+(each filing is a separate call needing only its own verdict line) but was not forced by a
+ceiling. Recorded so the lesson is discharged rather than carried forward unexamined.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-next_project_number: 931
+next_project_number: 933
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 931
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,927,928 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,927,928,931,932 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,926 | 298,428,502,761,869,927,928 | algebraic-representation, completeness, dataset-enhancement, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -37,7 +37,7 @@ next_project_number: 931
 
 ### Completeness
 
-927 [PLANNED] — MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers...
+927 [IMPLEMENTING] — MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers...
   └─ 926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
 928 [PLANNED] — ASSESSMENT TASK, report only. Costs the single lemma that...
   └─ 926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean... (see above)
@@ -99,7 +99,52 @@ next_project_number: 931
   └─ 874 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
+### Uncategorized
+
+931 [NOT STARTED] — Apply the final-frame amendments to the 901 two-sided...
+932 [NOT STARTED] — Land the four ofStepRel constraint lemmas and an ofStepPlain...
+
 ## Tasks
+
+### 932. Land the four ofStepRel constraint lemmas and an ofStepPlain constructor in IntNormalForm.lean
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: None
+
+**Description**: FRAME-PRESENTATION API ONLY. Land five declarations in FormalSystem/Semantics/IntNormalForm.lean, plus one equation lemma, and rewrite `ofStepSat`'s body to cite them instead of duplicating them.
+
+THE DECLARATIONS. `ofStepRel_reflective`, `ofStepRel_compositional`, `ofStepRel_serial`, `ofStepRel_limit`, the `ofStepPlain` constructor, and the `ofStepPlain_taskRel` equation. Their statements and compiled proof bodies are transcribed VERBATIM in specs/927_final_frame_step_remeasure_against_landed_cover/reports/01_final-frame-step-remeasure.md, Appendix probe A. Cite them from there; do not restate or re-derive them here. All six elaborated sorry-free through `lean_run_code`, and the downstream composition reports axiom profile [propext, Classical.choice, Quot.sound].
+
+WHY THIS IS A REFACTOR, NOT NEW MATHEMATICS. The four constraint proofs ALREADY EXIST in the library as inline lambdas inside `FrameOver.ofStepSat` (IntNormalForm.lean:563 at measurement time). This task names them. `ofStepSat` then becomes `ofStepPlain` wrapped by `ofReflectiveRegular`, so no existing signature changes and no proof body is duplicated -- which is the point: a duplicated transcription can diverge, a citation cannot.
+
+THE IDIOM TO USE. The remeasurement report's Tactic Survey isolates it: prove each constraint as a BARE-RELATION lemma and transport with `|>`, never by rewriting a frame's `TaskRel` in place. Rewriting in place does not go through.
+
+THIS FORMALIZES NO PART OF SECTIONS 7-15. It is frame-presentation API in IntNormalForm.lean. It formalizes no chronicle, no hue, no ban, no lull and no truth lemma. The 901 report's Recommendation 8, which bars formalizing sections 7-15 of the Reynolds engine paper proof, is UNTOUCHED by this task and must stay untouched. Landing these lemmas does not make T3 complete and is not a completeness claim; it discharges the single named condition the remeasurement report's Finding (4) attaches to its `conditionally discharged` verdict.
+
+COUPLED GENERATED SURFACES -- inherited at filing time, not to be discovered at the first commit. A Lean line-count change moves two generated surfaces. (1) `typst/generated/status.typ` carries `formalsystem-line-count` and its check is PRE-COMMIT BLOCKING: regenerate via `bash .claude/scripts/typst-sync-check.sh --fix` in the SAME phase as the line-count change, not in a later reconciliation phase. (2) The module-inventory blocks in `README.md` and `FormalSystem/Metalogic/README.md` are checked later and may be deferred to a reconciliation phase: regenerate via `bash .claude/scripts/check-module-invariants.sh --emit-inventory`. All three are in this task's file_scope for that reason.
+
+---
+
+### 931. Apply the final-frame amendments to the 901 two-sided Reynolds engine paper-proof report
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Dependencies**: None
+
+**Description**: RECORD CORRECTION, no Lean. The 901 paper-proof report records the final-frame step as resting on two unlanded Lean pieces. Both landed on 2026-11-09, four to six hours after that report was committed, so the row is STALE rather than wrong-at-the-time. Apply the amendment that has already been written.
+
+SOURCE OF THE REPLACEMENT TEXT. specs/927_final_frame_step_remeasure_against_landed_cover/reports/01_final-frame-step-remeasure.md, Finding (3), supplies VERBATIM replacement text for (i) the `**missing**` ingredient-table row, (ii) the adjacent compiled row's drifted line-number citations, (iii) the `weakest link` Risks paragraph (a full dated replacement), and (iv) a one-clause correction to the companion Risks paragraph. Do not re-derive any of it and do not re-measure the landing timestamps -- they are recorded in that Finding's table.
+
+THE COMPLETE WORK LIST. specs/927_final_frame_step_remeasure_against_landed_cover/plans/01_final-frame-step-remeasure.md, the `#### Phase 1 Notes` section, carries the full SEVEN-anchor table with per-anchor disposition. Three of those anchors are NOT enumerated by Finding (3) and exist only in that table: the drifted citation pair inside the evidence/status table (line 1047 at measurement time), the same drift in the reads list (line 1075, where `exists_preimage_step_neg` is additionally cited at a stale `:306` and is live at `:335`), and the `OrientedForest.lean:134` citation inside the 15.3 route prose (line 908). Work from the Phase 1 Notes table, not from Finding (3) alone.
+
+RE-LOCATE BY CONTENT. Every line number in both records is a measurement taken at that time and is explicitly labelled as such. Locate each anchor by its matched text, never by line number.
+
+TWO THINGS THAT MUST NOT BE TOUCHED. (1) Section 15.2's assessment of why the chronicle quotient's OWN Saturation is doubtful -- countably infinite slices, the quotient is not an oriented forest -- is CORRECT and LOAD-BEARING. It is the reason the universal-cover route exists at all. Leave it exactly as written. (2) The 901 report's own refusal to claim the step (`This write-up does not claim the final-frame step; it claims the engine up to it`) sits inside the Risks paragraph being replaced. The replacement reframes what is landed; it does NOT lift that refusal. Preserve it.
+
+The `**The two missing pieces, named.**` paragraph in 15.3 is stale by the same measure; Finding (3) directs its replacement to be the Risks amendment text rather than a separate rewrite.
+
+THIS IS A RECORD CORRECTION, NOT A COMPLETENESS CLAIM. Applying it does not make T3 complete and does not advance the completeness programme. Rows 17-21 of the ingredient table remain paper, and (O1), (O3) and (O4) are untouched. The 901 report's Recommendation 8 -- which bars formalizing sections 7-15 -- is not affected by this amendment and must not be edited by it.
+
+---
 
 ### 930. Wire orphan open core prototypes
 - **Status**: [COMPLETED]
@@ -157,7 +202,7 @@ FILE SCOPE: none. Report only.
 ---
 
 ### 927. Final frame step remeasure against landed cover
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
