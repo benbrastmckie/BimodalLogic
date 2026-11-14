@@ -83,6 +83,10 @@ next_project_number: 933
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 932 [NOT STARTED] — Land the four ofStepRel constraint lemmas and an ofStepPlain...
 
+### Paper Alignment
+
+931 [NOT STARTED] — Apply the final-frame amendments to the 901 two-sided...
+
 ### Build Performance
 
 829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
@@ -93,15 +97,12 @@ next_project_number: 933
   └─ 874 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
-### Uncategorized
-
-931 [NOT STARTED] — Apply the final-frame amendments to the 901 two-sided...
-
 ## Tasks
 
 ### 932. Land the four ofStepRel constraint lemmas and an ofStepPlain constructor in IntNormalForm.lean
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
+- **Topic**: semantics
 - **Dependencies**: Task 869
 
 **Description**: FRAME-PRESENTATION API ONLY. Land five declarations in FormalSystem/Semantics/IntNormalForm.lean, plus one equation lemma, and rewrite `ofStepSat`'s body to cite them instead of duplicating them.
@@ -121,6 +122,7 @@ COUPLED GENERATED SURFACES -- inherited at filing time, not to be discovered at 
 ### 931. Apply the final-frame amendments to the 901 two-sided Reynolds engine paper-proof report
 - **Status**: [NOT STARTED]
 - **Task Type**: general
+- **Topic**: paper-alignment
 - **Dependencies**: None
 
 **Description**: RECORD CORRECTION, no Lean. The 901 paper-proof report records the final-frame step as resting on two unlanded Lean pieces. Both landed on 2026-11-09, four to six hours after that report was committed, so the row is STALE rather than wrong-at-the-time. Apply the amendment that has already been written.
@@ -136,130 +138,6 @@ TWO THINGS THAT MUST NOT BE TOUCHED. (1) Section 15.2's assessment of why the ch
 The `**The two missing pieces, named.**` paragraph in 15.3 is stale by the same measure; Finding (3) directs its replacement to be the Risks amendment text rather than a separate rewrite.
 
 THIS IS A RECORD CORRECTION, NOT A COMPLETENESS CLAIM. Applying it does not make T3 complete and does not advance the completeness programme. Rows 17-21 of the ingredient table remain paper, and (O1), (O3) and (O4) are untouched. The 901 report's Recommendation 8 -- which bars formalizing sections 7-15 -- is not affected by this amendment and must not be edited by it.
-
----
-
-### 930. Wire orphan open core prototypes
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Research**: [930_wire_orphan_open_core_prototypes/reports/01_wire-orphan-open-core-prototypes.md]
-- **Plan**: [930_wire_orphan_open_core_prototypes/plans/01_wire-orphan-open-core-prototypes.md]
-- **Handoff**: [930_wire_orphan_open_core_prototypes/handoffs/phase-3-handoff-20261113-194604.md]
-- **Summary**: [930_wire_orphan_open_core_prototypes/summaries/01_wire-orphan-open-core-prototypes-summary.md]
-
-**Description**: Promote and wire the two orphan open-core prototypes into the evidence gate. RaySummary/README.md cites two standalone prototypes as the sole authority for two load-bearing refutations about the depth-0 open core, and explicitly flags each as "not a wired probe": (1) tight-chain-regime-b.lean, cited at README.md:1002 as settling that the only candidate device for the two cascades on a tight chain of pins -- a type-respecting block SPANNING a region start -- is refuted in BOTH directions as a consequence of the parameter conditions; (2) spanning-divisibility.lean, cited at README.md:1039 as settling that (K1) does not constrain a spanning block length, via the ALTERNATING path (idle at every even position, pending at every odd one) carrying a type-respecting block of every even length with a pin strictly inside it, so no single modulus divides them all. BOTH FILES NOW SIT IN GITIGNORED specs/archive/: specs/archive/836_ladder_type_preserving_cell_agreement_construction/prototype/tight-chain-regime-b.lean and specs/archive/838_two_sided_open_core_pin_free_pigeonhole/prototype/spanning-divisibility.lean. This is the same defect class already repaired once for the WIRED_REPO entry that pointed into specs/archive/918_.../evidence/lowering-anchor-deficit.lean and made scripts/check-evidence-probes.sh exit 1 for every task in the repository: a compiled record the evidence gate does not hold, in a location git does not track, cited by the library as an authority. WORK: re-verify each prototype compiles against the live tree through the build guard; promote each to a tracked, durable path under specs/evidence/ alongside its siblings; wire each into scripts/check-evidence-probes.sh (table block plus WIRED array entry); update the two README citations to the new paths and drop the "not a wired probe" qualifier where it ceases to be true. VERIFY: bash scripts/check-evidence-probes.sh exits 0 with the wired pass count raised by exactly two and no other probe disturbed; #print axioms on every headline theorem of both files shows no sorryAx, no custom axiom and no native_decide; bash scripts/readme-lint.sh and bash .claude/scripts/check-task-references.sh --quiet each exit 0. If a prototype no longer compiles against the live tree, that is a finding to report with the goal state recorded, not a thing to repair by weakening the statement -- and it would mean a README authority claim is stale, which is the more serious outcome and must be surfaced rather than absorbed. Do not edit either archived original in place, and do not claim any reserved name.
-
----
-
-### 929. Idle run length one forward slack discharge
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Research**: [929_idle_run_length_one_forward_slack_discharge/reports/01_idle-run-one-forward-slack.md]
-- **Plan**: [929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md]
-- **Evidence**: [evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean]
-- **Handoff**: [929_idle_run_length_one_forward_slack_discharge/handoffs/phase-3-handoff-20261113185153.md]
-- **Summary**: [929_idle_run_length_one_forward_slack_discharge/summaries/01_idle-run-one-forward-slack-summary.md]
-
-**Description**: Discharge the I = 1 idle-run sub-regime so ForwardSlackWitnessed becomes unconditional. Task 924 landed a cascade-free CONDITIONAL discharge: forwardSlackWitnessed_of_cell_idleRunPumpable (FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean:1035) concludes ForwardSlackWitnessed at EVERY amount from the amount-free, run-local premise IdleRunPumpable, by duplicating an idle block inside the idle run separating z's region from the next. It splices rather than deletes, so the refuted deletion route is not re-entered, and it spends none of (K2)'s cascadeBound. The premise is NOT ParamsOk-derivable: (K1) quantifies prodCycleLens, objCycleLens and satPeriod, never idleCycleLens. THE REMAINING GAP, named by 924 as its entire frontier: paths whose intervening idle run has length 1, where no repeat block exists to pump. Closing it is dischargeable on the pumpable side rather than refuted, which is why 924 left certStabK's restatement obligation PROVISIONAL rather than permanent. SCOPE AND WHAT THIS DOES NOT DO: discharging I = 1 removes ForwardSlackWitnessed from the five depth-0 cell-equality schemas of LadderCell.lean (cellLE_zero_const_of_kappa_eq_of_forwardSlack and its _commonShift_, _monotone_, _antitone_, _antitone_bounded_ siblings) and lifts certStabK's provisional obligation. It does NOT lift task 761's Phase 11.6 depth-0 gate: those schemas carry three further added-hypothesis families beyond forward slack (the equal-register restriction, the pending-forever gap with its threshold bound, and the common-shift / monotone / antitone displacement), each is strictly stronger in hypotheses than the reserved statement CellLEZeroConstOfKappaEq and bears on its truth value in neither direction, and 761 plan v12 separately settled that 924's route cannot feed a stab-depth induction because forwardSlackWitnessed_of_cell_idleRunPumpable carries hno (a STAB-FREE closure) at LadderIdle.lean:1040. Do not claim the reserved name cellLE_zero_const_of_kappa_eq on any branch. PROHIBITED: the (K1) amendment constraining spanning-block length, which 924 explicitly declined to admit. A refutation of the I = 1 case is an equally reportable outcome and must be compiled, not argued.
-
----
-
-### 928. Muller torabin determinization cost assessment
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: None
-- **Research**: [928_muller_torabin_determinization_cost_assessment/reports/01_muller-torabin-cost-assessment.md]
-- **Plan**: [928_muller_torabin_determinization_cost_assessment/plans/01_muller-torabin-cost-assessment.md]
-- **Summary**: [928_muller_torabin_determinization_cost_assessment/summaries/01_muller-torabin-cost-assessment-summary.md]
-
-**Description**: ASSESSMENT TASK, report only. Costs the single lemma that gates the Lean completeness line, and decides where it would live. Does NOT prove it.
-
-WHY THIS LEMMA. specs/archive/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01 names `Muller.toRabin_exists` `the single highest-value proof_wanted in either tree`, and specs/archive/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01 row 16 names determinization to Rabin as the load-bearing gap with this as `its single named target`, explicitly labelled `Not a Mathlib-absence refusal; a located and costed gap`. specs/archive/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01 established WHY the Rabin pair shape is unavoidable: a deterministic Muller automaton suffices for the Auxiliary-Atoms rule, which carries no acceptance condition, but NOT for the ban/lull mechanism, whose banned list is indexed by the automaton's accepting pairs (Reynolds 2001 section 12, `bl : T -> (C x {1,...,K})*`). So the fork's already-proved `IsRegular.iff_da_muller` is not the determinization the architecture consumes end-to-end.
-
-WHAT IS ALREADY SETTLED, and is not to be re-litigated: `Rabin.toParity_exists` is OFF the critical path (902: the ban mechanism consumes Rabin, not parity, and `Parity.toRabin_language_eq` is already proved). (O2) is discharged for free via `Muller.exists_iSup` under a union-on-the-Muller-side-then-determinize-once composition order. The existing cost estimate on record is the fork's own docstrings: an exponential pair blowup for DMA->DRA (`2^|Q|` pairs) and the LAR permutation construction for DRA->DPA.
-
-DELIVERABLE, four findings:
-  (1) The construction of record: which determinization is actually wanted here (Safra, Piterman, or the LAR route), sourced to the held corpus, with the reason the choice matters for the pair-indexed consumer rather than for the automaton alone.
-  (2) A size and shape estimate for a Lean proof on THIS project's toolchain (Lean v4.33.0-rc1, Mathlib v4.33.0-rc1): what the statement looks like, what the induction is on, which Mathlib/CSLib pieces it can stand on, and which it would have to build. An order-of-magnitude line count with its basis is wanted; an unbasised number is not.
-  (3) Siting: the local CSLib fork versus this tree. The fork is where `Muller.toRabin_exists` is currently `proof_wanted` and where `IsRegular.iff_da_muller` already lives, so the fork is the presumptive home -- but 902's standing recommendation is `Do not require anything now`, and ROADMAP records the CSLib `require` question as not to be re-opened on sections 7-15's account. State what siting in the fork would and would not commit this repository to, and whether a `require` decision is actually entailed by proving it there.
-  (4) (O3) interaction: 902 records that the determinized automaton arrives as `an existential over Type, not as syntax`, making the Auxiliary-Atoms rule's `theta_f` non-computable under classical extraction. State whether a proof of `Muller.toRabin_exists` in the natural existential form would leave (O3) standing -- i.e. whether discharging (O1) alone unblocks the completeness line, or whether (O1) and (O3) must be discharged together.
-
-GUARDRAILS: (a) assessment only -- no proof of `Muller.toRabin_exists` is attempted, and no `.lean` file is written or edited in either tree; (b) no edit to `lakefile.toml` or `lake-manifest.json`, and no `require` added in any form -- finding (3) ASSESSES the siting question and does not act on it; (c) no formalization of any part of the Reynolds engine's sections 7-15 (Recommendation 8), which this lemma is upstream of and separate from; (d) no completeness claim; (e) cite the fork's actual `proof_wanted` sites with file and line; (f) if the corpus does not hold the construction at the rigour needed to cost it, say so and name what is missing rather than estimating from memory.
-
-FILE SCOPE: none. Report only.
-
----
-
-### 927. Final frame step remeasure against landed cover
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: None
-- **Research**: [927_final_frame_step_remeasure_against_landed_cover/reports/01_final-frame-step-remeasure.md]
-- **Plan**: [927_final_frame_step_remeasure_against_landed_cover/plans/01_final-frame-step-remeasure.md]
-- **Summary**: [927_final_frame_step_remeasure_against_landed_cover/summaries/01_final-frame-step-remeasure-summary.md]
-
-**Description**: MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers one question: is the completeness paper proof final-frame step still open, given that both Lean pieces it was said to need have since landed?
-
-THE SITUATION. specs/archive/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md records the final-frame step as the paper proof one unclosed step. Its ingredient line reads `universal cover; invariance with no Saturation on the base | missing | the two Lean pieces the final-frame step needs`; its Risks section calls it `the weakest link`, naming as negative evidence that `plus_invariance_of_isZTime demands [F.IsRegular] on the base`; and it states `This write-up does not claim the final-frame step; it claims the engine up to it.`
-
-BOTH NAMED PIECES ARE NOW LANDED, and the second is stronger than 901 anticipated:
-  - Piece 1, the universal cover: specs/archive/897_universal_cover_oriented_forest_two_way_bounded landed `FormalSystem/Semantics/UniversalCover.lean` (519 lines) with headline `exists_orientedForest_cover`, plus `coverFrame`, `endpt_surjective`, `endpt_twoWayBounded`.
-  - Piece 2, base-Saturation-free invariance: specs/archive/898_plus_invariance_base_without_saturation settled this AFFIRMATIVELY and went further than its own task description anticipated. Per its summary: Saturation is consumed NOWHERE in the `HistoryMorphism.lean` lifting chain, and the base frame needs NO `def:frame` constraint at all -- not even reflection. Only the SOURCE frame needs anything, and it needs exactly Compositionality, Seriality and Limit. It landed `plus_invariance_of_isZTime_of_constraints`, `exists_histMorphism_of_isZTime_of_constraints`, `taskRel_eq_iter_of_constraints`, and -- named in its own summary as `the completeness programme entry point over a base with no Saturation` -- `exists_orientedForest_cover_of_constraints`. 901 negative evidence is directly answered: the base `[F.IsRegular]` binder is now genuinely unread, and the one apparent base use (`F.reflection` inside `exists_preimage_step_neg`) is discharged at nonzero step duration by `TaskFrame.reflect_reflection_of_ne`. 898 also corrected the prose surfaces that had recorded Saturation as the obstruction, reframing it as a class-membership obligation, and wired `Tests/BimodalTest/Semantics/OrientedForestSaturationTest.lean` so the headline stops compiling if a base Saturation hypothesis is ever re-acquired.
-
-901 and 898 both closed 2026-11-09, so 901 `missing` row is very likely STALE rather than wrong-at-the-time. Confirming that is part of the deliverable.
-
-THE QUESTION THAT IS ACTUALLY STILL OPEN. Because the base side now demands nothing, the obligation has MOVED to the source side: does the chronicle quotient of 901 Finding 15 satisfy Compositionality, Seriality and Limit? 901 describes that quotient as a time-sliced digraph with countably infinite slices, and notes its Saturation `is a real obligation here (unlike in Reynolds Kripke setting, which has no such axiom)`. Nobody has checked the quotient against 898 source-side hypothesis set. That check is this task.
-
-DELIVERABLE, four findings:
-  (1) Whether `exists_orientedForest_cover_of_constraints` + `saturation_of_orientedForest` + `plus_invariance_of_isZTime_of_constraints` discharge the final-frame step AS 901 Finding 15 STATES IT -- checked against the landed declarations actual signatures in source, not against either report prose.
-  (2) The source-side obligation, stated precisely: what Compositionality, Seriality and Limit each require of the chronicle quotient, and which of the three (if any) is not evidently satisfied. This is the finding with the most expected content.
-  (3) A verdict on 901 ingredient row and Risks paragraph: stale, partially stale, or still accurate -- and if stale, the exact amendment text each needs. Do not edit 901 report in place; supply the amendment for a successor to apply.
-  (4) Whether the final-frame step is now discharged, conditionally discharged (naming the condition), or still genuinely open (naming what is missing).
-
-WHY THIS NEEDS NO RULING. The final-frame step is section 15, and this task neither formalizes it nor formalizes any part of sections 7-15: it measures whether already-landed declarations discharge it and corrects a stale record. Recommendation 8 bars filing a FORMALIZATION of sections 7-15; it does not bar reading landed signatures and reporting what they compose to. If finding (1) and (4) come back positive, the paper proof one acknowledged gap closes without reversing any ruling -- which is why this is the cheapest high-value question on the completeness front.
-
-GUARDRAILS: (a) read declaration signatures from source, never from a report description of them -- 901 own stale row is the cautionary case; (b) no Lean file written or edited -- if a composition is available, state it as a finding with declaration names, do not land it; (c) no formalization of any part of sections 7-15; (d) no completeness claim, and in particular finding (4) positive does NOT make T3 complete -- rows 17-21 remain paper; (e) do not edit 901 or 879 reports in place, supply amendment text; (f) if the source-side check needs the chronicle quotient stated more precisely than 901 Finding 15 states it, record that as the blocker rather than inventing a formalization of it.
-
-FILE SCOPE: none. Report only. Reads FormalSystem/Semantics/UniversalCover.lean, HistoryMorphism.lean, IntNormalForm.lean, StateTopology/ConstraintWitnesses.lean; writes no Lean.
-
----
-
-### 926. Lean completeness line reopen decision record
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Topic**: completeness
-- **Dependencies**: Task 927, Task 928
-- **Research**: [926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md]
-- **Plan**: [926_lean_completeness_line_reopen_decision_record/plans/01_completeness-line-reopen-ruling.md]
-- **Summary**: [926_lean_completeness_line_reopen_decision_record/summaries/01_completeness-line-reopen-ruling-summary.md]
-
-**Description**: DECISION RECORD ONLY -- report only, file_scope: [], no Lean file written, no formalization attempted. The deliverable is a ruling with its argument, nothing else.
-
-WHY THIS EXISTS. The completeness front currently has zero tasks of any kind: no active record carries topic `completeness`, and none of the four routes named below is owned by any record. That is not because the mathematics is settled or abandoned -- specs/archive/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md Deliverable 4 returns GO for T3 as a staged paper programme -- but because specs/archive/901_two_sided_reynolds_engine_paper_proof's Recommendation 8 bars filing a Lean formalization of the Reynolds engine's sections 7-15, and ROADMAP.md records that lifting it `needs a fresh user ruling reversing that`. A research dispatch cannot reverse a user ruling, so the gap on this front is a DECISION, not missing information.
-
-WHAT IS ALREADY KNOWN, and must be read rather than re-derived (these four reports already constitute the scoping research; do not restate them):
-  - 879 reports/01: the 21-row ingredient table with per-row status; rows 17-21 (consistency of phi-plus, ban preservation with LCU, two-sided universal non-acceptance, fair scheduling, the two-sided truth lemma) are `paper`; row 16 names determinization to Rabin as the load-bearing gap with `Muller.toRabin_exists` as `its single named target`, and labels it `Not a Mathlib-absence refusal; a located and costed gap`.
-  - 901 reports/01: the paper proof itself, which `claims the engine up to the final-frame step` and NOT through it; Finding 15.3 and its Risks section name the final frame `the weakest link`.
-  - specs/archive/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01: the obstruction relocated to (O1)/(O3)/(O4); (O2) discharged via `Muller.exists_iSup`; `Muller.toRabin_exists` called `the single highest-value proof_wanted in either tree`.
-  - specs/archive/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01: the acceptance-condition split -- a deterministic Muller automaton suffices for the Auxiliary-Atoms rule (no acceptance condition) and does NOT suffice for the ban/lull mechanism, whose banned list is indexed by the automaton's accepting pairs, which is what forces the pair shape.
-
-THE FOUR ROUTES to present, each with its cost and its gate:
-  (R1) Prove `Muller.toRabin_exists` (Safra/Piterman; held in corpus). Discharges (O1). Costed separately by the companion cost-assessment task; this record consumes that costing if available and says so if not.
-  (R2) Close the final-frame step -- and note this route may already be FREE. Both Lean pieces 901 called missing have since landed: 897 universal cover (`exists_orientedForest_cover`) and, more decisively, 898, which found Saturation is consumed NOWHERE in the lifting chain and the base frame needs NO constraint at all, landing `exists_orientedForest_cover_of_constraints` as what its own summary calls `the completeness programme entry point over a base with no Saturation`. The obligation has moved to the SOURCE side (Compositionality, Seriality, Limit on the chronicle quotient), which its companion measurement task checks. If that check is positive, the paper proof one acknowledged gap closes WITHOUT touching sections 7-15 and without reversing Recommendation 8 -- making this the only route that needs no ruling at all, and the one this record should weigh first.
-  (R3) The determinization-free alternative: 879's P9 names `an explicit progress-measure argument that avoids determinization` as the ONLY route to a Lean proof that sidesteps (O1), and calls it `a research design, not an ingredient`.
-  (R4) T1's two reduced questions. T1 is NOT refuted but reduced: (Q1) is `lcU alpha beta` derivable in TM-plus + LC_n + mirror at ZTime for state-local beta -- 906 refuted it at Base/Dense/RTime by the translation frame over Q and proved the ZTime case unsettleable by ANY model (both schemata have the same ZTime models by construction), so only a proof-theoretic argument can decide it, and the guarded-until-form candidate in PlusLCSchema.lean survives as an open candidate; (Q2) are `clock`, `aaFwd`, `aaBwd` admissible over TM-plus + the schemata -- blocked on Di Maio-Zanardo 1998, not held in the local Zotero library.
-
-WHAT THE RECORD MUST DECIDE: for each of R1-R4, reopen / keep closed / reopen on stated conditions, with the argument. If any route reopens, the record states the terms (what may be filed, what stays barred) precisely enough that a successor can file against it without re-asking. Recommendation 8 stays in force for every route the ruling does not explicitly reopen.
-
-GUARDRAILS: (a) no Lean file is written or edited by this task; (b) no part of sections 7-15 is formalized, attempted, or filed by this task -- that is what the record decides, not what it does; (c) no completeness claim; (d) the four reports above are cited, not re-derived or condensed; (e) if a route's cost is unknown, say so rather than estimating.
-
-FILE SCOPE: none. Report only.
 
 ---
 
@@ -511,93 +389,6 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, High Priority Issues and Mediu
 
 ---
 
-### 804. Narrow termination syntax layer fanin
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: build-performance
-- **Dependencies**: Task 803
-- **Research**: [804_narrow_termination_syntax_layer_fanin/reports/01_termination-syntax-fanin.md]
-- **Plan**: [804_narrow_termination_syntax_layer_fanin/plans/01_termination-syntax-fanin.md]
-- **Summary**: [804_narrow_termination_syntax_layer_fanin/summaries/01_termination-syntax-fanin-summary.md]
-
-**Description**: Determine whether FormalSystem/Metalogic/Decidability/Verified/Termination/ must sit downstream of the syntax layer, and narrow the fan-in if it need not.
-
-THE OBSERVATION (measured 2026-10-15, this repo, from .lake/build-guard.stdout on a full guarded build): a batch touching FormalSystem/ProofSystem/Axioms.lean, FormalSystem/Semantics.lean and Syntax modules rebuilt 414 of 2848 jobs, costing 6354s of elaboration. Metalogic was 5649s of that across 306 modules. The decidability and termination subtree dominated: SubformulaProperty 1103s, Decidability.Tableau 476s, MintBound.MintPotential 360s, Termination.Fuel 238s. SubformulaProperty.lean imports FormalSystem.Metalogic.Decidability.Tableau and FormalSystem.Syntax.SubformulaClosure.Closure.
-
-THE QUESTION. Paper-alignment work edits the syntax and proof-system layers constantly, and each such edit currently invalidates the most expensive subtree in the repository. Is that fan-in ESSENTIAL (the termination argument genuinely needs the syntax layer it imports) or INCIDENTAL (it imports a broad aggregator when a narrow one would do, or depends on a definition that could be relocated or abstracted behind a smaller interface)?
-
-RESEARCH FIRST, and this may legitimately conclude NO CHANGE. A finding that the fan-in is essential, recorded with the import-path evidence that establishes it, is a successful outcome; do not manufacture a refactor to justify the task. Map the actual import paths from the termination subtree up to the syntax and proof-system layers, identify which specific declarations create each edge, and classify each edge as essential or reducible with evidence.
-
-IF REDUCIBLE. Propose the narrowing before implementing it. Candidate shapes: import a narrower module instead of an aggregator; relocate a shared definition to a lower module both sides can import; introduce a minimal interface so the termination argument depends on a stable signature rather than on the syntax layer directly. Prefer the smallest change that breaks the invalidation path.
-
-RELATIONSHIP TO THE PER-MODULE COST. Reducing this fan-in and reducing SubformulaProperty's own 1103s elaboration are complementary, not alternatives: the first reduces how OFTEN the expensive subtree rebuilds, the second how LONG it takes when it does. Neither subsumes the other.
-
-NON-GOALS. No change to any statement that is proved. Zero new sorry. No new axiom dependency. No reorganization of modules outside the dependency path actually implicated by the measured evidence.
-
-ACCEPTANCE. A written classification of every import edge from the termination subtree to the syntax and proof-system layers as essential or reducible, each with the declaration-level evidence establishing it; a recommendation (narrow, relocate, abstract, or leave as is) with reasoning; if a change is made, measured before/after rebuild scope for an edit to FormalSystem/ProofSystem/Axioms.lean, plus lake build green, check-module-invariants.sh ALL CHECKS PASSED and sorry_count 0.
-
----
-
-### 803. Cut subformulaproperty elaboration time
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: build-performance
-- **Dependencies**: Task 743
-- **Research**: [803_cut_subformulaproperty_elaboration_time/reports/01_cut-subformulaproperty-elaboration-time.md]
-- **Plan**: [803_cut_subformulaproperty_elaboration_time/plans/01_cut-subformulaproperty-elaboration-time.md]
-- **Summary**: [803_cut_subformulaproperty_elaboration_time/summaries/01_cut-subformulaproperty-elaboration-time-summary.md]
-
-**Description**: Cut the elaboration time of FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean, the repository's single largest rebuild cost.
-
-MEASURED EVIDENCE (from .lake/build-guard.stdout, full guarded build, 2026-10-15, this repo): the module elaborates in 1103s (18.4 minutes) as ONE module. On that build 414 of 2848 jobs actually rebuilt, totalling 6354s of elaboration across those 414; Metalogic accounted for 5649s across 306 modules. Seven modules accounted for roughly 2500s of the total, and SubformulaProperty alone is about 17 percent of the whole incremental rebuild. Next worst: Decidability.Tableau 476s, Termination.MintBound.MintPotential 360s, Termination.Fuel 238s.
-
-WHY IT HURTS REPEATEDLY. The module imports FormalSystem.Metalogic.Decidability.Tableau and FormalSystem.Syntax.SubformulaClosure.Closure, so any edit to the syntax or proof-system layer invalidates it. Paper-alignment work routinely edits FormalSystem/ProofSystem/Axioms.lean and FormalSystem/Semantics.lean, so this 18-minute module is woken by edits unrelated to decidability.
-
-GOAL. Reduce elaboration time substantially while proving exactly the same results. Localize hotspots with lean_profile_proof BEFORE changing anything, and record before/after per-declaration timings as evidence rather than asserting an improvement. Suspects to confirm rather than assume: simp set blowup, decide on a non-trivial decidable instance, unfolding of large structures, Nat/Int arithmetic normalization. Candidate remedies: replace simp with targeted rewrites, extract heavy sublemmas into their own declarations, mark expensive defs irreducible where sound, scope set_option maxHeartbeats.
-
-NON-GOALS. No change to any statement that is proved. Zero new sorry. No new axiom dependency (verify with #print axioms before and after). No weakening of the termination argument.
-
-ACCEPTANCE. A measured, reported reduction in this module's elaboration time with before/after numbers from the build log or lean_profile_proof; lake build green; check-module-invariants.sh ALL CHECKS PASSED; sorry_count 0; axiom profiles unchanged for every declaration in the module.
-
----
-
-### 787. Lake unguarded reader lock audit
-- **Effort**: medium
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Topic**: decidability
-- **Dependencies**: Task 743
-- **Parent**: Task 786
-- **Research**: [787_lake_unguarded_reader_lock_audit/reports/01_lake-reader-lock-audit.md]
-- **Plan**: [787_lake_unguarded_reader_lock_audit/plans/01_lake-reader-lock-audit.md]
-- **Summary**: [787_lake_unguarded_reader_lock_audit/summaries/01_lake-reader-lock-audit-summary.md]
-
-**Description**: Audit the remaining lake-invoking scripts for the unguarded .lake read hazard, and take the shared build-guard lock wherever a per-script judgment says it belongs.
-
-WHY THIS EXISTS. A sibling record established, by measurement, that scripts/check-evidence-probes.sh read .lake artifacts while a concurrent build rewrote them, producing `object file '.../FormalSystem/<Module>.olean' ... does not exist` errors on four consecutive wired probes. Those errors were then misread as four independent probe rots, which cost two Reasoned Exclusions and a full research/plan/implement round before re-measurement showed every probe had always compiled. The cost of this hazard is measured, not hypothetical. That script now takes an flock on `$REPO_ROOT/.lake/build-guard.lock` and distinguishes an environment failure from probe rot in its output.
-
-THE SURVEYED CONDITION, as measured at filing. Across scripts/ and .claude/scripts/, only three files reference `build-guard.lock` at all: scripts/check-evidence-probes.sh (just hardened), scripts/check-module-invariants.sh (the precedent, which documents its rejected alternatives in place at its C1 block), and .claude/scripts/lake-build-guard.sh (which publishes the lock path). Every other file that invokes `lake env lean` or `lake build` takes no lock.
-
-CANDIDATES, AND WHY EACH NEEDS ITS OWN JUDGMENT RATHER THAN A BLANKET EDIT. Do not add a lock to all of these on sight. Three distinct shapes appear among them and they do not want the same treatment:
-
-1. UNGUARDED READERS -- the exact shape just fixed. scripts/typst-module-map.sh invokes bare `lake env lean`. A reader that elaborates against .lake while another process rewrites it is the hazard verbatim; this is the strongest candidate.
-
-2. SCOPED BUILDERS -- scripts/export-training-data.sh runs `lake build dataset_generator proof_extractor`. Note the direction of the hazard here: a SCOPED build is precisely what leaves an import-closure tail stale for a later reader, so such a script is a plausible CAUSE of the fault rather than only a victim of it. Decide whether it should hold the lock (serialising it against readers) on that basis.
-
-3. PROSE-ONLY MATCHES -- .claude/scripts/lean-sorry-census.sh and .claude/scripts/plan-file-scope-harvest.sh mention `lake build` / `lake env lean --run` in comments and docstrings. Verify whether each actually invokes lake at runtime before treating it as a candidate at all; a grep hit in a comment is not an invocation.
-
-Also present in the initial survey and needing the same per-file determination: scripts/typst-sync-check.sh, scripts/typst-machine-appendix.sh, scripts/typst-status-counts.sh, .claude/scripts/lean-comparator-run.sh, .claude/scripts/lean-comparator-landrun-shim.sh, .claude/scripts/claude-refresh.sh. Re-derive this list rather than trusting it: the survey was a grep for `lake env lean`/`lake build` over scripts/ and .claude/scripts/ and may have both false positives (comments) and gaps.
-
-REUSE THE EXISTING PRECEDENT; DO NOT INVENT A SECOND LOCK. The lock is `$REPO_ROOT/.lake/build-guard.lock`, the path .claude/scripts/lake-build-guard.sh publishes. scripts/check-module-invariants.sh's C1 block and the now-hardened scripts/check-evidence-probes.sh are both working implementations of the shape: `flock -n` first, then a bounded and announced `flock -w`, fd held to process exit, audible degradation when flock is unavailable. Follow them and cross-reference their rejected-alternatives notes rather than re-litigating the design.
-
-SOURCE-STORE BOUNDARY. Any candidate under .claude/scripts/ is a deploy artifact. Resolve the source store via .claude-extensions.json's source_dir and edit the mirrored path under agent-system/extensions/<name>/scripts/ -- never hand-author under .claude/** directly, which the next regeneration silently wipes.
-
-DELIVERABLE. A per-script determination for every surveyed candidate -- lock added, or explicitly ruled out with the reason stated where a future reader will find it (not only in a commit message). Each script that gains the lock keeps its existing exit-status contract and still passes its own gate. No probe file and no manifest array is touched by this record.
-
-WHAT WOULD MAKE THIS A COMPLETE RESULT EVEN IF NO LOCK IS ADDED. A reasoned finding that some or all remaining candidates genuinely do not need the lock -- because they build rather than read, run only in CI where nothing is concurrent, or never invoke lake at runtime -- is a complete outcome, provided the reasoning is recorded per script. Closing a hazard by establishing it does not apply is a result, not a shortfall.
-
----
-
 ### 763. Ladder lift decidability corollary
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -654,46 +445,6 @@ GUARDRAILS: (a) closure-indexed letters over the time axis, box/stab bits includ
 FILE SCOPE: new `LadderRealize.lean` plus the shared library set (`RaySummary.lean`, `FormalSystem.lean`, `KTypeSummaryAxiomTest.lean`, `check-module-invariants.sh`, `docs/theorem-index.md`, RaySummary README, `typst/generated/status.typ`). Durable anchors only outside specs/**. Cross-set collisions left to the admission gate: 744 (README, invariants), 410 (status.typ). Logical edge on T3.
 
 NOT COSTABLE, and why: T3 landed no bound (its stabilization lemma is refuted); sized by the open index sub-problem and by how much of `Realize.lean` (1004 lines) transfers; the README records it has no figure. Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Sections A, C and H4.
-
----
-
-### 743. Typst sync check1 namespace resolution
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Topic**: repo-hygiene
-- **Dependencies**: None
-- **Research**: [743_typst_sync_check1_namespace_resolution/reports/01_namespace-resolution-feasibility.md]
-- **Plan**: [743_typst_sync_check1_namespace_resolution/plans/01_check1-namespace-resolution.md]
-- **Handoff**: [743_typst_sync_check1_namespace_resolution/handoffs/phase-3-handoff-20261113T093205Z.md]
-- **Summary**: [743_typst_sync_check1_namespace_resolution/summaries/01_check1-namespace-resolution-summary.md]
-
-**Description**: Teach typst-sync-check.sh Check 1 to resolve namespaced Lean declarations, or rule on the whitelist-vs-docstring convention it currently depends on
-
-MEASURED 2026-10-08. `bash scripts/typst-sync-check.sh` FAILS Check 1 (backtick name resolution) on exactly one finding: VIOLATION `FormalSystem.Semantics.validZTime_iff_validInt` -- "identifier not found in any *.lean file under the Lean source roots", cited from typst/FormalFoundations.typ:790. Three separate implementation dispatches during an /orchestrate run reported it and each correctly declined to repair it as out of scope.
-
-THE CITATION IS CORRECT; THE CHECK CANNOT RESOLVE IT. `theorem validZTime_iff_validInt` is declared at FormalSystem/Semantics/IntTransfer.lean:338, inside `namespace FormalSystem.Semantics` (opened line 70, closed line 353), so the fully-qualified name the manual cites is the right name. Check 1's dotted-identifier branch does a LITERAL grep for the full dotted string and performs no namespace resolution, so a correctly-cited namespaced declaration fails unless its full dotted name happens to appear verbatim somewhere in a .lean file.
-
-WHY THAT IS FRAGILE, measured rather than asserted. Every other fully-qualified FormalSystem.* citation sampled from the typst tree DOES get a literal hit (FormalSystem.Metalogic.BXCanonical, FormalSystem.Metalogic.Conservativity, FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime, FormalSystem.ProofSystem, FormalSystem.ProofSystem.Axioms, FormalSystem.ProofSystem.DerivedAxioms) -- because the name appears in a namespace declaration or a docstring cross-reference, not because the check resolved anything. The manual's citations are therefore validated by coincidence of source text: a correct citation passes or fails depending on whether some docstring mentions it.
-
-THREE ROUTES, none obviously right, to be decided rather than assumed. (1) Teach Check 1 to resolve a dotted name against open namespaces -- correct, but the script is deliberately BUILD-FREE (no lake, no oleans, so it can run in a fast pre-commit gate), so resolution without a build means parsing namespace/end nesting. (2) Whitelist the name in typst/sync-check-whitelist.txt -- the sanctioned escape hatch, BUT it holds 89 entries and ZERO dotted FormalSystem.* entries, and its documented categories are "type-signature / turnstile illustrations" and "typst/template API names (not Lean identifiers)", so a valid-but-unresolvable declaration would set a new precedent and mask a real gap. (3) Change the manual to cite the short name, which does appear literally -- cheapest, but loses the fully-qualified form in a reference manual and does not stop the next namespaced citation from failing.
-
-A FOURTH, if route 1 is rejected: add the fully-qualified cross-reference to IntTransfer.lean's own module docstring, making the citation resolve the same way the other six do. Cost: touching a .lean file changes formalsystem-line-count (347522 at measurement) in typst/generated/status.typ, forcing a status.typ regeneration, and that docstring's existing bullet list uses SHORT names throughout, so a dotted entry would be stylistically inconsistent there.
-
-ACCEPTANCE. Either Check 1 resolves the citation and `bash scripts/typst-sync-check.sh` exits 0, with the chosen mechanism's limits stated where the next citation author will see them; or a recorded verdict naming which route was taken and why the others were rejected, with the finding left visible rather than silently suppressed. If the whitelist route is chosen, say explicitly that it is suppressing a resolution gap and not certifying the name.
-
-NON-GOALS. No change to Check 2 (status.typ counts), Check 2b (module map) or Check 3 (machine appendix). No change to what any generator emits. Do not make the script require a built library -- its build-free property is load-bearing for the pre-commit gate.
-
-BACKLOG RECONCILIATION, verified 2026-10-08 against all 51 open tasks in this repo. No open task covers Check 1 or phantom-citation resolution. Nearest records: 731 (plan-time file_scope harvest must include generated surfaces a .lean edit forces -- adjacent because it also concerns typst-sync-check.sh, but its subject is scope DECLARATION and its NON-GOALS explicitly exclude generator changes) and 741 (agent-system context extensions; mentions typst-sync staleness only as deploy-freshness context). Neither overlaps this.
-
-UPDATE 2026-10-10: THE REPRO ABOVE NO LONGER FIRES; THE MECHANISM GAP IS UNCHANGED.
-
-`scripts/typst-sync-check.sh` now exits 0 (all four checks green). That is NOT because Check 1 learned namespace resolution — it is because the single citation was rewritten at `typst/FormalFoundations.typ:790` from the fully-qualified `FormalSystem.Semantics.validZTime_iff_validInt` to the module-path-plus-leaf form `` `validZTime_iff_validInt` in `Semantics/IntTransfer.lean` ``, which resolves on both halves under the existing rules (the path through the path-exists branch, the bare leaf through the literal grep). Commit: `ci: clear the two standing red gates (PlusRayFibre layer row, stale typst citation)`.
-
-WHAT THIS CHANGES FOR THIS TASK. The measured finding above is no longer reproducible by running the gate; anyone starting here will see a green gate. The underlying defect is untouched: Check 1's dotted-identifier branch still does a literal grep with no namespace resolution, so any future correctly-cited namespaced declaration will fail the same way unless its full dotted name happens to appear verbatim in a docstring. The sibling citation `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`, in the same paragraph, resolves ONLY by that accident — the string appears at `FormalSystem/Metalogic/Decidability.lean:181`. That accidental dependency is the clearest remaining evidence and should be the new starting point.
-
-TO REPRODUCE ON DEMAND: reintroduce any fully-qualified declaration name whose dotted form appears in no `.lean` file, or delete the docstring line at `Decidability.lean:181` and re-run the gate.
-
-THE QUESTION THIS TASK STILL OWNS, now sharpened by having three resolution styles live in one paragraph: decide which citation style the manual is entitled to use, and make the checker honour it. Option (a) teach Check 1 real namespace resolution (match a dotted name against `namespace` prefix plus declared leaf); option (b) rule that the manual cites module-path-plus-leaf and document that, making the two surviving fully-qualified declaration citations non-conforming; option (c) keep the literal grep and accept that fully-qualified citations depend on a docstring mentioning them, which is the status quo and is what made this a recurring finding. Option (c) is the one the evidence argues against.
 
 ---
 

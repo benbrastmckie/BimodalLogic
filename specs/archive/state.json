@@ -5482,6 +5482,1109 @@
   ],
   "completed_projects": [
     {
+      "project_number": 930,
+      "project_name": "wire_orphan_open_core_prototypes",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Promote and wire the two orphan open-core prototypes into the evidence gate. RaySummary/README.md cites two standalone prototypes as the sole authority for two load-bearing refutations about the depth-0 open core, and explicitly flags each as \"not a wired probe\": (1) tight-chain-regime-b.lean, cited at README.md:1002 as settling that the only candidate device for the two cascades on a tight chain of pins -- a type-respecting block SPANNING a region start -- is refuted in BOTH directions as a consequence of the parameter conditions; (2) spanning-divisibility.lean, cited at README.md:1039 as settling that (K1) does not constrain a spanning block length, via the ALTERNATING path (idle at every even position, pending at every odd one) carrying a type-respecting block of every even length with a pin strictly inside it, so no single modulus divides them all. BOTH FILES NOW SIT IN GITIGNORED specs/archive/: specs/archive/836_ladder_type_preserving_cell_agreement_construction/prototype/tight-chain-regime-b.lean and specs/archive/838_two_sided_open_core_pin_free_pigeonhole/prototype/spanning-divisibility.lean. This is the same defect class already repaired once for the WIRED_REPO entry that pointed into specs/archive/918_.../evidence/lowering-anchor-deficit.lean and made scripts/check-evidence-probes.sh exit 1 for every task in the repository: a compiled record the evidence gate does not hold, in a location git does not track, cited by the library as an authority. WORK: re-verify each prototype compiles against the live tree through the build guard; promote each to a tracked, durable path under specs/evidence/ alongside its siblings; wire each into scripts/check-evidence-probes.sh (table block plus WIRED array entry); update the two README citations to the new paths and drop the \"not a wired probe\" qualifier where it ceases to be true. VERIFY: bash scripts/check-evidence-probes.sh exits 0 with the wired pass count raised by exactly two and no other probe disturbed; #print axioms on every headline theorem of both files shows no sorryAx, no custom axiom and no native_decide; bash scripts/readme-lint.sh and bash .claude/scripts/check-task-references.sh --quiet each exit 0. If a prototype no longer compiles against the live tree, that is a finding to report with the goal state recorded, not a thing to repair by weakening the statement -- and it would mean a README authority claim is stale, which is the more serious outcome and must be surfaced rather than absorbed. Do not edit either archived original in place, and do not claim any reserved name.",
+      "topic": "decidability",
+      "created": "2026-11-13T05:58:41Z",
+      "last_updated": "2026-11-14T04:02:11Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "wire_orphan_open_core_prototypes",
+          "project_number": null,
+          "title": "Promote and wire the two orphan open-core prototypes into the evidence gate. RaySummary/README.md cites two standalone prototypes as the sole authority for two load-bearing refutations about the depth-0 open core, and explicitly flags each as \"not a wired probe\": (1) tight-chain-regime-b.lean, cited at README.md:1002 as settling that the only candidate device for the two cascades on a tight chain of pins -- a type-respecting block SPANNING a region start -- is refuted in BOTH directions as a consequence of the parameter conditions; (2) spanning-divisibility.lean, cited at README.md:1039 as settling that (K1) does not constrain a spanning block length, via the ALTERNATING path (idle at every even position, pending at every odd one) carrying a type-respecting block of every even length with a pin strictly inside it, so no single modulus divides them all. BOTH FILES NOW SIT IN GITIGNORED specs/archive/: specs/archive/836_ladder_type_preserving_cell_agreement_construction/prototype/tight-chain-regime-b.lean and specs/archive/838_two_sided_open_core_pin_free_pigeonhole/prototype/spanning-divisibility.lean. This is the same defect class already repaired once for the WIRED_REPO entry that pointed into specs/archive/918_.../evidence/lowering-anchor-deficit.lean and made scripts/check-evidence-probes.sh exit 1 for every task in the repository: a compiled record the evidence gate does not hold, in a location git does not track, cited by the library as an authority. WORK: re-verify each prototype compiles against the live tree through the build guard; promote each to a tracked, durable path under specs/evidence/ alongside its siblings; wire each into scripts/check-evidence-probes.sh (table block plus WIRED array entry); update the two README citations to the new paths and drop the \"not a wired probe\" qualifier where it ceases to be true. VERIFY: bash scripts/check-evidence-probes.sh exits 0 with the wired pass count raised by exactly two and no other probe disturbed; #print axioms on every headline theorem of both files shows no sorryAx, no custom axiom and no native_decide; bash scripts/readme-lint.sh and bash .claude/scripts/check-task-references.sh --quiet each exit 0. If a prototype no longer compiles against the live tree, that is a finding to report with the goal state recorded, not a thing to repair by weakening the statement -- and it would mean a README authority claim is stale, which is the more serious outcome and must be surfaced rather than absorbed. Do not edit either archived original in place, and do not claim any reserved name."
+        },
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "verdicts": [
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 827,
+            "project_name": "plan_self_consistency_and_artifact_existence",
+            "discharging_artifact": {
+              "path": "specs/827_plan_self_consistency_and_artifact_existence/summaries/01_plan-self-consistency-and-artifact-existence-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all four phases, the mechanical-check decision, and the cross-repo commit reasoning."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4161849710982659
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 768,
+            "project_name": "lean_challenge_snapshot_chunk_and_unicode_defects",
+            "discharging_artifact": {
+              "path": "specs/768_lean_challenge_snapshot_chunk_and_unicode_defects/summaries/01_snapshot-chunk-and-unicode-defects-summary.md",
+              "type": "summary",
+              "summary": "All three lean-challenge-snapshot.sh defects repaired across 6 phases in the source store; suite extended from 17 to 29 passing cases; deployed tree regenerated and verified byte-identical, deployed suite green."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4046242774566474
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 785,
+            "project_name": "lean_plan_gate_collision_authoring_guidance",
+            "discharging_artifact": {
+              "path": "specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md",
+              "type": "summary",
+              "summary": "Full implementation summary including the four traced-foreign deploy findings and the resume action."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5202312138728323
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 720,
+            "project_name": "promote_fmp_width_refutations_to_evidence",
+            "discharging_artifact": {
+              "path": "specs/720_promote_fmp_width_refutations_to_evidence/summaries/01_ci-repair-and-citation-repoint-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: tracked-ness check, WIRED_REPO deletions, README re-points, source-store mv note, full gate results."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.41040462427745666
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 706,
+            "project_name": "lplus_finite_model_property_and_completeness",
+            "discharging_artifact": {
+              "path": "specs/706_lplus_finite_model_property_and_completeness/summaries/01_land-finite-carrier-refutation-summary.md",
+              "type": "summary",
+              "summary": "Execution summary for the library landing of the finite-carrier refutation family."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4624277456647399
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4624277456647399
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4682080924855491
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 442,
+            "project_name": "revise_bimodal_reference_book_against_paper_and_lean",
+            "discharging_artifact": {
+              "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/summaries/01_book-paper-lean-revision-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all 16 phases: what changed, decisions, plan deviations (none), impacts, follow-ups."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4277456647398844
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 414,
+            "project_name": "refactor_semantics_to_total_history_validity",
+            "discharging_artifact": {
+              "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/09_phase29-2-preguard-differential-rebaseline.md",
+              "type": "summary",
+              "summary": "Phase 29.2: pre-guard differential obtained (P0=edcecd551^, P1, P2=HEAD) via non-destructive worktree; BimodalTest mismatches 40 -> 7; 33 rows re-baselined with measured attribution to trivialEventWitnessed; the declared ten pre-existing mismatches confirmed correct and identified at row level for the first time; 7 residual rows owned by an out-of-task 2026-07-29 engine change."
+            },
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4508670520231214
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 777,
+            "project_name": "phase_commit_drops_own_plan_artifact",
+            "discharging_artifact": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.42196531791907516
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 813,
+            "project_name": "lean_plan_challenge_block_authoring_contract",
+            "discharging_artifact": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.41040462427745666
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 814,
+            "project_name": "lean_decide_authoring_and_probe_guard_facts",
+            "discharging_artifact": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4046242774566474
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 822,
+            "project_name": "bounded_waiter_detach_form_pid_fidelity",
+            "discharging_artifact": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.41040462427745666
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 834,
+            "project_name": "orchestrate_aux_carrier_and_implement_readmission",
+            "discharging_artifact": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.44508670520231214
+          }
+        ],
+        "degradation_summary": "451 project(s) judged scope-blind (no file_scope declared); per-project list omitted"
+      },
+      "session_id": "sess_1794619593_8f19c5",
+      "artifacts": [
+        {
+          "path": "specs/930_wire_orphan_open_core_prototypes/reports/01_wire-orphan-open-core-prototypes.md",
+          "type": "report",
+          "summary": "Both orphan prototypes compile clean against the live tree (no stale README authority claim); promotion into specs/evidence/seam-gluing-ray-product/ plus two WIRED entries measured end-to-end at PASS 60/60, exit 0, no other probe disturbed."
+        },
+        {
+          "path": "specs/930_wire_orphan_open_core_prototypes/plans/01_wire-orphan-open-core-prototypes.md",
+          "type": "plan",
+          "summary": "Four-phase plan: promote, wire, rewrite citations, full-gate verification."
+        },
+        {
+          "path": "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-3-handoff-20261113-194604.md",
+          "type": "handoff",
+          "summary": "Phase 3 close record with all measured gate results and Phase 4 observations."
+        },
+        {
+          "path": "specs/930_wire_orphan_open_core_prototypes/summaries/01_wire-orphan-open-core-prototypes-summary.md",
+          "type": "summary",
+          "summary": "Task-level implementation summary: both orphan prototypes promoted, wired and cited, with every gate result measured."
+        }
+      ],
+      "next_artifact_number": 2,
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+        "scripts/check-evidence-probes.sh",
+        "specs/evidence/seam-gluing-ray-product/ladder-spanning-divisibility.lean",
+        "specs/evidence/seam-gluing-ray-product/ladder-tight-chain-regime-b.lean",
+        "typst/generated/status.typ"
+      ],
+      "completion_summary": "Both orphan open-core prototypes are promoted verbatim to tracked paths under specs/evidence/seam-gluing-ray-product/, wired into scripts/check-evidence-probes.sh as WIRED entries, and cited at those paths by RaySummary/README.md with the 'not a wired probe' qualifier dropped. The evidence gate exits 0 at 61 wired probes (live baseline 59, delta exactly +2), all 8 headline theorems are axiom-clean, and readme-lint, check-task-references, check-module-invariants, typst-sync-check and a full lake build all exit 0. Neither README authority claim was stale.",
+      "archived_at": "2026-11-14T08:06:24Z"
+    },
+    {
+      "project_number": 929,
+      "project_name": "idle_run_length_one_forward_slack_discharge",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Discharge the I = 1 idle-run sub-regime so ForwardSlackWitnessed becomes unconditional. Task 924 landed a cascade-free CONDITIONAL discharge: forwardSlackWitnessed_of_cell_idleRunPumpable (FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean:1035) concludes ForwardSlackWitnessed at EVERY amount from the amount-free, run-local premise IdleRunPumpable, by duplicating an idle block inside the idle run separating z's region from the next. It splices rather than deletes, so the refuted deletion route is not re-entered, and it spends none of (K2)'s cascadeBound. The premise is NOT ParamsOk-derivable: (K1) quantifies prodCycleLens, objCycleLens and satPeriod, never idleCycleLens. THE REMAINING GAP, named by 924 as its entire frontier: paths whose intervening idle run has length 1, where no repeat block exists to pump. Closing it is dischargeable on the pumpable side rather than refuted, which is why 924 left certStabK's restatement obligation PROVISIONAL rather than permanent. SCOPE AND WHAT THIS DOES NOT DO: discharging I = 1 removes ForwardSlackWitnessed from the five depth-0 cell-equality schemas of LadderCell.lean (cellLE_zero_const_of_kappa_eq_of_forwardSlack and its _commonShift_, _monotone_, _antitone_, _antitone_bounded_ siblings) and lifts certStabK's provisional obligation. It does NOT lift task 761's Phase 11.6 depth-0 gate: those schemas carry three further added-hypothesis families beyond forward slack (the equal-register restriction, the pending-forever gap with its threshold bound, and the common-shift / monotone / antitone displacement), each is strictly stronger in hypotheses than the reserved statement CellLEZeroConstOfKappaEq and bears on its truth value in neither direction, and 761 plan v12 separately settled that 924's route cannot feed a stab-depth induction because forwardSlackWitnessed_of_cell_idleRunPumpable carries hno (a STAB-FREE closure) at LadderIdle.lean:1040. Do not claim the reserved name cellLE_zero_const_of_kappa_eq on any branch. PROHIBITED: the (K1) amendment constraining spanning-block length, which 924 explicitly declined to admit. A refutation of the I = 1 case is an equally reportable outcome and must be compiled, not argued.",
+      "topic": "decidability",
+      "created": "2026-11-13T05:57:53Z",
+      "last_updated": "2026-11-14T03:12:48Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "idle_run_length_one_forward_slack_discharge",
+          "project_number": null,
+          "title": "Discharge the I = 1 idle-run sub-regime so ForwardSlackWitnessed becomes unconditional. Task 924 landed a cascade-free CONDITIONAL discharge: forwardSlackWitnessed_of_cell_idleRunPumpable (FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean:1035) concludes ForwardSlackWitnessed at EVERY amount from the amount-free, run-local premise IdleRunPumpable, by duplicating an idle block inside the idle run separating z's region from the next. It splices rather than deletes, so the refuted deletion route is not re-entered, and it spends none of (K2)'s cascadeBound. The premise is NOT ParamsOk-derivable: (K1) quantifies prodCycleLens, objCycleLens and satPeriod, never idleCycleLens. THE REMAINING GAP, named by 924 as its entire frontier: paths whose intervening idle run has length 1, where no repeat block exists to pump. Closing it is dischargeable on the pumpable side rather than refuted, which is why 924 left certStabK's restatement obligation PROVISIONAL rather than permanent. SCOPE AND WHAT THIS DOES NOT DO: discharging I = 1 removes ForwardSlackWitnessed from the five depth-0 cell-equality schemas of LadderCell.lean (cellLE_zero_const_of_kappa_eq_of_forwardSlack and its _commonShift_, _monotone_, _antitone_, _antitone_bounded_ siblings) and lifts certStabK's provisional obligation. It does NOT lift task 761's Phase 11.6 depth-0 gate: those schemas carry three further added-hypothesis families beyond forward slack (the equal-register restriction, the pending-forever gap with its threshold bound, and the common-shift / monotone / antitone displacement), each is strictly stronger in hypotheses than the reserved statement CellLEZeroConstOfKappaEq and bears on its truth value in neither direction, and 761 plan v12 separately settled that 924's route cannot feed a stab-depth induction because forwardSlackWitnessed_of_cell_idleRunPumpable carries hno (a STAB-FREE closure) at LadderIdle.lean:1040. Do not claim the reserved name cellLE_zero_const_of_kappa_eq on any branch. PROHIBITED: the (K1) amendment constraining spanning-block length, which 924 explicitly declined to admit. A refutation of the I = 1 case is an equally reportable outcome and must be compiled, not argued."
+        },
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "verdicts": [
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 917,
+            "project_name": "forward_slack_witnessed_discharge_or_refutation",
+            "discharging_artifact": {
+              "path": "specs/917_forward_slack_witnessed_discharge_or_refutation/summaries/01_forward-slack-witnessed-discharge-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary carrying the verdict sentence, the refutation's shape, the full gate table and the plan deviations."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5641025641025641
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 924,
+            "project_name": "forward_slack_witnessed_frontier_disposition",
+            "discharging_artifact": {
+              "path": "specs/924_forward_slack_witnessed_frontier_disposition/summaries/01_forward-slack-frontier-disposition-summary.md",
+              "type": "summary",
+              "summary": "The ForwardSlackWitnessed frontier's disposition: the conditional discharge, the route-space closure, the one named remaining sub-regime, and the PROVISIONAL certStabK consequence."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5128205128205128
+          }
+        ],
+        "degradation_summary": "451 project(s) judged scope-blind (no file_scope declared); per-project list omitted"
+      },
+      "session_id": "sess_1794619593_8f19c5",
+      "artifacts": [
+        {
+          "path": "specs/929_idle_run_length_one_forward_slack_discharge/reports/01_idle-run-one-forward-slack.md",
+          "type": "report",
+          "summary": "The I = 1 sub-regime is REFUTED, not dischargeable: a compiled cell-level refutation of ForwardSlackWitnessed at amount n+c+2 on a serial no-idle-cycle object, with the boundary shown sharp and the consumer-relevant instantiation shown untouched."
+        },
+        {
+          "path": "specs/929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md",
+          "type": "plan",
+          "summary": "Four-phase refutation-disposition plan, 6h estimate, four serial dependency waves."
+        },
+        {
+          "path": "specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean",
+          "type": "evidence",
+          "summary": "The promoted, git-tracked, CI-wired compiled refutation of the I = 1 idle-run sub-regime at the every-amount shape."
+        },
+        {
+          "path": "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-3-handoff-20261113185153.md",
+          "type": "handoff",
+          "summary": "Phase 3 handoff: the four restated sites, the measured line counts against the longFile ceiling, the verification grep results, and the two in-scope corrections."
+        },
+        {
+          "path": "specs/929_idle_run_length_one_forward_slack_discharge/summaries/01_idle-run-one-forward-slack-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: the I = 1 idle-run sub-regime is refuted at the every-amount shape by a compiled object, with its reach bounded by a compiled fact; the five depth-0 schemas keep ForwardSlackWitnessed."
+        }
+      ],
+      "next_artifact_number": 2,
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/RaySummary.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "scripts/check-evidence-probes.sh",
+        "specs/929_idle_run_length_one_forward_slack_discharge/evidence/i-one-ceiling.lean",
+        "specs/929_idle_run_length_one_forward_slack_discharge/reports/01_idle-run-one-forward-slack.md",
+        "specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean",
+        "typst/generated/status.typ"
+      ],
+      "completion_summary": "The task's stated goal is refuted rather than dischargeable, and the refutation is compiled: forwardSlackWitnessed_refuted_I_one falsifies ForwardSlackWitnessed at amount 4 on a serial object with no idle self-loop, hence with every idle run of length exactly 1. Its reach is bounded by ceiling_slack_at_consumer_amount, which compiles that the ceiling is satisfied for free at the amount the five depth-0 cell-equality schemas instantiate, so all five keep ForwardSlackWitnessed, LadderCell.lean is unedited, and certStabK's restatement obligation stays PROVISIONAL.",
+      "archived_at": "2026-11-14T08:06:24Z"
+    },
+    {
+      "project_number": 804,
+      "project_name": "narrow_termination_syntax_layer_fanin",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Determine whether FormalSystem/Metalogic/Decidability/Verified/Termination/ must sit downstream of the syntax layer, and narrow the fan-in if it need not.\n\nTHE OBSERVATION (measured 2026-10-15, this repo, from .lake/build-guard.stdout on a full guarded build): a batch touching FormalSystem/ProofSystem/Axioms.lean, FormalSystem/Semantics.lean and Syntax modules rebuilt 414 of 2848 jobs, costing 6354s of elaboration. Metalogic was 5649s of that across 306 modules. The decidability and termination subtree dominated: SubformulaProperty 1103s, Decidability.Tableau 476s, MintBound.MintPotential 360s, Termination.Fuel 238s. SubformulaProperty.lean imports FormalSystem.Metalogic.Decidability.Tableau and FormalSystem.Syntax.SubformulaClosure.Closure.\n\nTHE QUESTION. Paper-alignment work edits the syntax and proof-system layers constantly, and each such edit currently invalidates the most expensive subtree in the repository. Is that fan-in ESSENTIAL (the termination argument genuinely needs the syntax layer it imports) or INCIDENTAL (it imports a broad aggregator when a narrow one would do, or depends on a definition that could be relocated or abstracted behind a smaller interface)?\n\nRESEARCH FIRST, and this may legitimately conclude NO CHANGE. A finding that the fan-in is essential, recorded with the import-path evidence that establishes it, is a successful outcome; do not manufacture a refactor to justify the task. Map the actual import paths from the termination subtree up to the syntax and proof-system layers, identify which specific declarations create each edge, and classify each edge as essential or reducible with evidence.\n\nIF REDUCIBLE. Propose the narrowing before implementing it. Candidate shapes: import a narrower module instead of an aggregator; relocate a shared definition to a lower module both sides can import; introduce a minimal interface so the termination argument depends on a stable signature rather than on the syntax layer directly. Prefer the smallest change that breaks the invalidation path.\n\nRELATIONSHIP TO THE PER-MODULE COST. Reducing this fan-in and reducing SubformulaProperty's own 1103s elaboration are complementary, not alternatives: the first reduces how OFTEN the expensive subtree rebuilds, the second how LONG it takes when it does. Neither subsumes the other.\n\nNON-GOALS. No change to any statement that is proved. Zero new sorry. No new axiom dependency. No reorganization of modules outside the dependency path actually implicated by the measured evidence.\n\nACCEPTANCE. A written classification of every import edge from the termination subtree to the syntax and proof-system layers as essential or reducible, each with the declaration-level evidence establishing it; a recommendation (narrow, relocate, abstract, or leave as is) with reasoning; if a change is made, measured before/after rebuild scope for an edit to FormalSystem/ProofSystem/Axioms.lean, plus lake build green, check-module-invariants.sh ALL CHECKS PASSED and sorry_count 0.",
+      "topic": "build-performance",
+      "file_scope": [
+        "FormalSystem/Automation/ProofSearch/Core.lean",
+        "FormalSystem/Automation/ProofSearch/README.md",
+        "FormalSystem/Automation/README.md",
+        "FormalSystem/Automation/SuccessPatterns.lean",
+        "FormalSystem/Metalogic/Decidability/SignedFormula.lean",
+        "FormalSystem/Metalogic/Decidability/Tableau.lean",
+        "FormalSystem/Metalogic/Decidability/TraceCertificate.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/ClosureResidual.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/README.md",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "FormalSystem/Syntax/SubformulaClosure/Closure.lean",
+        "README.md",
+        "specs/804_narrow_termination_syntax_layer_fanin/evidence/01_rebuild-scope.md",
+        "typst/generated/automation-module-map.typ",
+        "typst/generated/status.typ"
+      ],
+      "created": "2026-10-15T05:05:06Z",
+      "last_updated": "2026-11-13T22:58:11Z",
+      "dependencies": [
+        803
+      ],
+      "session_id": "sess_1794588265_854f41",
+      "artifacts": [
+        {
+          "path": "specs/804_narrow_termination_syntax_layer_fanin/reports/01_termination-syntax-fanin.md",
+          "type": "report",
+          "summary": "Edge-by-edge classification of the termination subtree's fan-in: the Semantics and aggregator edges are incidental (unused import in Automation/ProofSearch/Core.lean), the Axioms.lean path is essential for 23 of 25 modules; four import-only narrowings recommended and compile-verified on 91 modules, FrameClass relocation reported as optional."
+        },
+        {
+          "path": "specs/804_narrow_termination_syntax_layer_fanin/plans/01_termination-syntax-fanin.md",
+          "type": "plan",
+          "summary": "Three-phase plan: pre-change baseline, atomic import-narrowing batch with four-root build, post-change measurement and full gate."
+        },
+        {
+          "path": "specs/804_narrow_termination_syntax_layer_fanin/summaries/01_termination-syntax-fanin-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: edits, measured before/after rebuild sets, deviations, pre-existing BimodalToolsTest failure."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Narrowed seven import lines so no termination module is downstream of any Semantics module or the Syntax aggregator (Semantics.lean rebuild set 251 -> 204, Syntax.lean 107 -> 29). The dependence on ProofSystem/Axioms.lean is essential and unchanged (520 -> 520), recorded with a 20-edge declaration-level classification.",
+      "archived_at": "2026-11-14T08:06:24Z"
+    },
+    {
+      "project_number": 803,
+      "project_name": "cut_subformulaproperty_elaboration_time",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Cut the elaboration time of FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean, the repository's single largest rebuild cost.\n\nMEASURED EVIDENCE (from .lake/build-guard.stdout, full guarded build, 2026-10-15, this repo): the module elaborates in 1103s (18.4 minutes) as ONE module. On that build 414 of 2848 jobs actually rebuilt, totalling 6354s of elaboration across those 414; Metalogic accounted for 5649s across 306 modules. Seven modules accounted for roughly 2500s of the total, and SubformulaProperty alone is about 17 percent of the whole incremental rebuild. Next worst: Decidability.Tableau 476s, Termination.MintBound.MintPotential 360s, Termination.Fuel 238s.\n\nWHY IT HURTS REPEATEDLY. The module imports FormalSystem.Metalogic.Decidability.Tableau and FormalSystem.Syntax.SubformulaClosure.Closure, so any edit to the syntax or proof-system layer invalidates it. Paper-alignment work routinely edits FormalSystem/ProofSystem/Axioms.lean and FormalSystem/Semantics.lean, so this 18-minute module is woken by edits unrelated to decidability.\n\nGOAL. Reduce elaboration time substantially while proving exactly the same results. Localize hotspots with lean_profile_proof BEFORE changing anything, and record before/after per-declaration timings as evidence rather than asserting an improvement. Suspects to confirm rather than assume: simp set blowup, decide on a non-trivial decidable instance, unfolding of large structures, Nat/Int arithmetic normalization. Candidate remedies: replace simp with targeted rewrites, extract heavy sublemmas into their own declarations, mark expensive defs irreducible where sound, scope set_option maxHeartbeats.\n\nNON-GOALS. No change to any statement that is proved. Zero new sorry. No new axiom dependency (verify with #print axioms before and after). No weakening of the termination argument.\n\nACCEPTANCE. A measured, reported reduction in this module's elaboration time with before/after numbers from the build log or lean_profile_proof; lake build green; check-module-invariants.sh ALL CHECKS PASSED; sorry_count 0; axiom profiles unchanged for every declaration in the module.",
+      "topic": "build-performance",
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/Tableau.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/README.md",
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "specs/803_cut_subformulaproperty_elaboration_time/evidence/01_elaboration-baseline.md",
+        "typst/generated/status.typ"
+      ],
+      "created": "2026-10-15T05:04:28Z",
+      "last_updated": "2026-11-13T19:25:12Z",
+      "session_id": "sess_1794588265_854f41",
+      "artifacts": [
+        {
+          "path": "specs/803_cut_subformulaproperty_elaboration_time/reports/01_cut-subformulaproperty-elaboration-time.md",
+          "type": "report",
+          "summary": "Profiled baseline localizes 99.2% of SubformulaProperty.lean's elaboration cost to the all_goals simp_all cascade (14988s simp vs 108s tactic execution), not unfold/whnf as the file's comments claim; measured A/B probes show rewriting the 36 per-rule bodies against the already-generated applyRule.eq_1..eq_38 equation lemmas cuts andPos 882487->760 hb, serialityRule 2084589->146 hb, boxNeg 885047->27178 hb, with no statement, sorry, or axiom change."
+        },
+        {
+          "path": "specs/803_cut_subformulaproperty_elaboration_time/plans/01_cut-subformulaproperty-elaboration-time.md",
+          "type": "plan",
+          "summary": "Nine-phase, 15-hour plan to convert 36 proof bodies to applyRule.eq_N rewrites behind named wrappers, with before/after heartbeat evidence and a per-rule exclusion fallback."
+        },
+        {
+          "path": "specs/803_cut_subformulaproperty_elaboration_time/summaries/01_cut-subformulaproperty-elaboration-time-summary.md",
+          "type": "summary",
+          "summary": "All 36 per-rule proofs converted to pinned equation-lemma rewrites; 34.1M -> 79.8K heartbeats, module ~3s in a full build, gates green."
+        }
+      ],
+      "next_artifact_number": 2,
+      "dependencies": [
+        743
+      ],
+      "completion_summary": "Rewrote all 36 per-rule proofs in SubformulaProperty.lean to rewrite with pinned per-arm equation lemmas (38 named wrappers added to Tableau.lean) instead of unfolding applyRule. Measured elaboration fell from 34,095,081 to 79,799 heartbeats summed over the 36 theorems (factor 427); Lake reports the module at about 3s, down from 438-478s. Statements unchanged, sorry count 0, axiom profiles unchanged, all 36 maxHeartbeats ceilings removed.",
+      "archived_at": "2026-11-14T08:06:24Z"
+    },
+    {
+      "project_number": 743,
+      "project_name": "typst_sync_check1_namespace_resolution",
+      "status": "completed",
+      "task_type": "general",
+      "description": "Teach typst-sync-check.sh Check 1 to resolve namespaced Lean declarations, or rule on the whitelist-vs-docstring convention it currently depends on\n\nMEASURED 2026-10-08. `bash scripts/typst-sync-check.sh` FAILS Check 1 (backtick name resolution) on exactly one finding: VIOLATION `FormalSystem.Semantics.validZTime_iff_validInt` -- \"identifier not found in any *.lean file under the Lean source roots\", cited from typst/FormalFoundations.typ:790. Three separate implementation dispatches during an /orchestrate run reported it and each correctly declined to repair it as out of scope.\n\nTHE CITATION IS CORRECT; THE CHECK CANNOT RESOLVE IT. `theorem validZTime_iff_validInt` is declared at FormalSystem/Semantics/IntTransfer.lean:338, inside `namespace FormalSystem.Semantics` (opened line 70, closed line 353), so the fully-qualified name the manual cites is the right name. Check 1's dotted-identifier branch does a LITERAL grep for the full dotted string and performs no namespace resolution, so a correctly-cited namespaced declaration fails unless its full dotted name happens to appear verbatim somewhere in a .lean file.\n\nWHY THAT IS FRAGILE, measured rather than asserted. Every other fully-qualified FormalSystem.* citation sampled from the typst tree DOES get a literal hit (FormalSystem.Metalogic.BXCanonical, FormalSystem.Metalogic.Conservativity, FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime, FormalSystem.ProofSystem, FormalSystem.ProofSystem.Axioms, FormalSystem.ProofSystem.DerivedAxioms) -- because the name appears in a namespace declaration or a docstring cross-reference, not because the check resolved anything. The manual's citations are therefore validated by coincidence of source text: a correct citation passes or fails depending on whether some docstring mentions it.\n\nTHREE ROUTES, none obviously right, to be decided rather than assumed. (1) Teach Check 1 to resolve a dotted name against open namespaces -- correct, but the script is deliberately BUILD-FREE (no lake, no oleans, so it can run in a fast pre-commit gate), so resolution without a build means parsing namespace/end nesting. (2) Whitelist the name in typst/sync-check-whitelist.txt -- the sanctioned escape hatch, BUT it holds 89 entries and ZERO dotted FormalSystem.* entries, and its documented categories are \"type-signature / turnstile illustrations\" and \"typst/template API names (not Lean identifiers)\", so a valid-but-unresolvable declaration would set a new precedent and mask a real gap. (3) Change the manual to cite the short name, which does appear literally -- cheapest, but loses the fully-qualified form in a reference manual and does not stop the next namespaced citation from failing.\n\nA FOURTH, if route 1 is rejected: add the fully-qualified cross-reference to IntTransfer.lean's own module docstring, making the citation resolve the same way the other six do. Cost: touching a .lean file changes formalsystem-line-count (347522 at measurement) in typst/generated/status.typ, forcing a status.typ regeneration, and that docstring's existing bullet list uses SHORT names throughout, so a dotted entry would be stylistically inconsistent there.\n\nACCEPTANCE. Either Check 1 resolves the citation and `bash scripts/typst-sync-check.sh` exits 0, with the chosen mechanism's limits stated where the next citation author will see them; or a recorded verdict naming which route was taken and why the others were rejected, with the finding left visible rather than silently suppressed. If the whitelist route is chosen, say explicitly that it is suppressing a resolution gap and not certifying the name.\n\nNON-GOALS. No change to Check 2 (status.typ counts), Check 2b (module map) or Check 3 (machine appendix). No change to what any generator emits. Do not make the script require a built library -- its build-free property is load-bearing for the pre-commit gate.\n\nBACKLOG RECONCILIATION, verified 2026-10-08 against all 51 open tasks in this repo. No open task covers Check 1 or phantom-citation resolution. Nearest records: 731 (plan-time file_scope harvest must include generated surfaces a .lean edit forces -- adjacent because it also concerns typst-sync-check.sh, but its subject is scope DECLARATION and its NON-GOALS explicitly exclude generator changes) and 741 (agent-system context extensions; mentions typst-sync staleness only as deploy-freshness context). Neither overlaps this.\n\nUPDATE 2026-10-10: THE REPRO ABOVE NO LONGER FIRES; THE MECHANISM GAP IS UNCHANGED.\n\n`scripts/typst-sync-check.sh` now exits 0 (all four checks green). That is NOT because Check 1 learned namespace resolution — it is because the single citation was rewritten at `typst/FormalFoundations.typ:790` from the fully-qualified `FormalSystem.Semantics.validZTime_iff_validInt` to the module-path-plus-leaf form `` `validZTime_iff_validInt` in `Semantics/IntTransfer.lean` ``, which resolves on both halves under the existing rules (the path through the path-exists branch, the bare leaf through the literal grep). Commit: `ci: clear the two standing red gates (PlusRayFibre layer row, stale typst citation)`.\n\nWHAT THIS CHANGES FOR THIS TASK. The measured finding above is no longer reproducible by running the gate; anyone starting here will see a green gate. The underlying defect is untouched: Check 1's dotted-identifier branch still does a literal grep with no namespace resolution, so any future correctly-cited namespaced declaration will fail the same way unless its full dotted name happens to appear verbatim in a docstring. The sibling citation `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`, in the same paragraph, resolves ONLY by that accident — the string appears at `FormalSystem/Metalogic/Decidability.lean:181`. That accidental dependency is the clearest remaining evidence and should be the new starting point.\n\nTO REPRODUCE ON DEMAND: reintroduce any fully-qualified declaration name whose dotted form appears in no `.lean` file, or delete the docstring line at `Decidability.lean:181` and re-run the gate.\n\nTHE QUESTION THIS TASK STILL OWNS, now sharpened by having three resolution styles live in one paragraph: decide which citation style the manual is entitled to use, and make the checker honour it. Option (a) teach Check 1 real namespace resolution (match a dotted name against `namespace` prefix plus declared leaf); option (b) rule that the manual cites module-path-plus-leaf and document that, making the two surviving fully-qualified declaration citations non-conforming; option (c) keep the literal grep and accept that fully-qualified citations depend on a docstring mentioning them, which is the status quo and is what made this a recurring finding. Option (c) is the one the evidence argues against.",
+      "topic": "repo-hygiene",
+      "created": "2026-10-08T18:56:15Z",
+      "last_updated": "2026-11-13T09:37:32Z",
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "scripts/typst-sync-check.sh",
+        "specs/743_typst_sync_check1_namespace_resolution/summaries/01_check1-namespace-resolution-summary.md",
+        "typst/FormalFoundations.typ",
+        "typst/SYNC-MAP.md",
+        "typst/generated/status.typ",
+        "typst/sync-check-whitelist.txt"
+      ],
+      "dependencies": [],
+      "session_id": "sess_1794561551_de1d6c",
+      "artifacts": [
+        {
+          "path": "specs/743_typst_sync_check1_namespace_resolution/reports/01_namespace-resolution-feasibility.md",
+          "type": "report",
+          "summary": "Confirms Check 1's dotted-identifier branch still does literal grep with no namespace resolution; surveys current citations (only one leaf-dotted citation exists today, resolving by accidental docstring match); validates a build-free, comment-aware namespace-stack resolver against the live FormalSystem/ tree; recommends Option (a) with a concrete design, with Option (b) as fallback and Option (c) explicitly rejected."
+        },
+        {
+          "path": "specs/743_typst_sync_check1_namespace_resolution/plans/01_check1-namespace-resolution.md",
+          "type": "plan",
+          "summary": "4-phase plan adopting Option (a): additive comment-aware namespace resolution in typst-sync-check.sh Check 1, made load-bearing by a restored fully-qualified citation, with limits documented and a recorded four-route verdict."
+        },
+        {
+          "path": "specs/743_typst_sync_check1_namespace_resolution/handoffs/phase-3-handoff-20261113T093205Z.md",
+          "type": "handoff",
+          "summary": "Phase 3 handoff with verification results and decisions; Phase 4 next."
+        },
+        {
+          "path": "specs/743_typst_sync_check1_namespace_resolution/summaries/01_check1-namespace-resolution-summary.md",
+          "type": "summary",
+          "summary": "Four-route verdict, regression-guard citation, and gate evidence."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Check 1 of scripts/typst-sync-check.sh now resolves fully-qualified Lean declaration names against a build-free, comment-aware namespace index instead of a literal grep; the gate exits 0 on all four checks and the restored citation at typst/FormalFoundations.typ:807 is the live regression guard. Limits are documented in the script, the whitelist header and typst/SYNC-MAP.md; no whitelist entry was added. The summary records the verdict: option (a) taken, options (b), (c) and the docstring route rejected.",
+      "archived_at": "2026-11-14T08:06:24Z"
+    },
+    {
+      "project_number": 787,
+      "project_name": "lake_unguarded_reader_lock_audit",
+      "status": "completed",
+      "task_type": "general",
+      "description": "Audit the remaining lake-invoking scripts for the unguarded .lake read hazard, and take the shared build-guard lock wherever a per-script judgment says it belongs.\n\nWHY THIS EXISTS. A sibling record established, by measurement, that scripts/check-evidence-probes.sh read .lake artifacts while a concurrent build rewrote them, producing `object file '.../FormalSystem/<Module>.olean' ... does not exist` errors on four consecutive wired probes. Those errors were then misread as four independent probe rots, which cost two Reasoned Exclusions and a full research/plan/implement round before re-measurement showed every probe had always compiled. The cost of this hazard is measured, not hypothetical. That script now takes an flock on `$REPO_ROOT/.lake/build-guard.lock` and distinguishes an environment failure from probe rot in its output.\n\nTHE SURVEYED CONDITION, as measured at filing. Across scripts/ and .claude/scripts/, only three files reference `build-guard.lock` at all: scripts/check-evidence-probes.sh (just hardened), scripts/check-module-invariants.sh (the precedent, which documents its rejected alternatives in place at its C1 block), and .claude/scripts/lake-build-guard.sh (which publishes the lock path). Every other file that invokes `lake env lean` or `lake build` takes no lock.\n\nCANDIDATES, AND WHY EACH NEEDS ITS OWN JUDGMENT RATHER THAN A BLANKET EDIT. Do not add a lock to all of these on sight. Three distinct shapes appear among them and they do not want the same treatment:\n\n1. UNGUARDED READERS -- the exact shape just fixed. scripts/typst-module-map.sh invokes bare `lake env lean`. A reader that elaborates against .lake while another process rewrites it is the hazard verbatim; this is the strongest candidate.\n\n2. SCOPED BUILDERS -- scripts/export-training-data.sh runs `lake build dataset_generator proof_extractor`. Note the direction of the hazard here: a SCOPED build is precisely what leaves an import-closure tail stale for a later reader, so such a script is a plausible CAUSE of the fault rather than only a victim of it. Decide whether it should hold the lock (serialising it against readers) on that basis.\n\n3. PROSE-ONLY MATCHES -- .claude/scripts/lean-sorry-census.sh and .claude/scripts/plan-file-scope-harvest.sh mention `lake build` / `lake env lean --run` in comments and docstrings. Verify whether each actually invokes lake at runtime before treating it as a candidate at all; a grep hit in a comment is not an invocation.\n\nAlso present in the initial survey and needing the same per-file determination: scripts/typst-sync-check.sh, scripts/typst-machine-appendix.sh, scripts/typst-status-counts.sh, .claude/scripts/lean-comparator-run.sh, .claude/scripts/lean-comparator-landrun-shim.sh, .claude/scripts/claude-refresh.sh. Re-derive this list rather than trusting it: the survey was a grep for `lake env lean`/`lake build` over scripts/ and .claude/scripts/ and may have both false positives (comments) and gaps.\n\nREUSE THE EXISTING PRECEDENT; DO NOT INVENT A SECOND LOCK. The lock is `$REPO_ROOT/.lake/build-guard.lock`, the path .claude/scripts/lake-build-guard.sh publishes. scripts/check-module-invariants.sh's C1 block and the now-hardened scripts/check-evidence-probes.sh are both working implementations of the shape: `flock -n` first, then a bounded and announced `flock -w`, fd held to process exit, audible degradation when flock is unavailable. Follow them and cross-reference their rejected-alternatives notes rather than re-litigating the design.\n\nSOURCE-STORE BOUNDARY. Any candidate under .claude/scripts/ is a deploy artifact. Resolve the source store via .claude-extensions.json's source_dir and edit the mirrored path under agent-system/extensions/<name>/scripts/ -- never hand-author under .claude/** directly, which the next regeneration silently wipes.\n\nDELIVERABLE. A per-script determination for every surveyed candidate -- lock added, or explicitly ruled out with the reason stated where a future reader will find it (not only in a commit message). Each script that gains the lock keeps its existing exit-status contract and still passes its own gate. No probe file and no manifest array is touched by this record.\n\nWHAT WOULD MAKE THIS A COMPLETE RESULT EVEN IF NO LOCK IS ADDED. A reasoned finding that some or all remaining candidates genuinely do not need the lock -- because they build rather than read, run only in CI where nothing is concurrent, or never invoke lake at runtime -- is a complete outcome, provided the reasoning is recorded per script. Closing a hazard by establishing it does not apply is a result, not a shortfall.",
+      "effort": "medium",
+      "parent_task": 786,
+      "topic": "decidability",
+      "dependencies": [
+        743
+      ],
+      "file_scope": [
+        "scripts/README.md",
+        "scripts/export-training-data.sh",
+        "scripts/run_dataset_generation.sh",
+        "scripts/typst-machine-appendix.sh",
+        "scripts/typst-module-map.sh",
+        "scripts/typst-status-counts.sh",
+        "scripts/typst-sync-check.sh"
+      ],
+      "created": "2026-10-14T15:54:15Z",
+      "last_updated": "2026-11-13T22:20:37Z",
+      "artifacts": [
+        {
+          "path": "specs/787_lake_unguarded_reader_lock_audit/reports/01_lake-reader-lock-audit.md",
+          "type": "report",
+          "summary": "Research report: 01_lake-reader-lock-audit.md"
+        },
+        {
+          "path": "specs/787_lake_unguarded_reader_lock_audit/plans/01_lake-reader-lock-audit.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan, waves [[1,2,3,4],[5]]."
+        },
+        {
+          "path": "specs/787_lake_unguarded_reader_lock_audit/summaries/01_lake-reader-lock-audit-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with before/after exit-status table, two plan deviations, and three recommended follow-up tasks."
+        }
+      ],
+      "session_id": "sess_1794588265_854f41",
+      "completion_summary": "Added the shared .lake/build-guard.lock to typst-status-counts.sh (write path) and typst-machine-appendix.sh (default mode), a subshell-scoped locked prebuild to export-training-data.sh and run_dataset_generation.sh, and recorded every other surveyed script's ruling-out in its header and in a new scripts/README.md section. Build-free modes stay lock-free and exit-status contracts are unchanged; check-module-invariants.sh --no-build and scoped gate 4 pass, with the full verify-deploy gate set deferred to the batch stage.",
+      "archived_at": "2026-11-14T08:06:24Z"
+    },
+    {
+      "project_number": 926,
+      "project_name": "lean_completeness_line_reopen_decision_record",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "completeness",
+      "priority": "high",
+      "description": "DECISION RECORD ONLY -- report only, file_scope: [], no Lean file written, no formalization attempted. The deliverable is a ruling with its argument, nothing else.\n\nWHY THIS EXISTS. The completeness front currently has zero tasks of any kind: no active record carries topic `completeness`, and none of the four routes named below is owned by any record. That is not because the mathematics is settled or abandoned -- specs/archive/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md Deliverable 4 returns GO for T3 as a staged paper programme -- but because specs/archive/901_two_sided_reynolds_engine_paper_proof's Recommendation 8 bars filing a Lean formalization of the Reynolds engine's sections 7-15, and ROADMAP.md records that lifting it `needs a fresh user ruling reversing that`. A research dispatch cannot reverse a user ruling, so the gap on this front is a DECISION, not missing information.\n\nWHAT IS ALREADY KNOWN, and must be read rather than re-derived (these four reports already constitute the scoping research; do not restate them):\n  - 879 reports/01: the 21-row ingredient table with per-row status; rows 17-21 (consistency of phi-plus, ban preservation with LCU, two-sided universal non-acceptance, fair scheduling, the two-sided truth lemma) are `paper`; row 16 names determinization to Rabin as the load-bearing gap with `Muller.toRabin_exists` as `its single named target`, and labels it `Not a Mathlib-absence refusal; a located and costed gap`.\n  - 901 reports/01: the paper proof itself, which `claims the engine up to the final-frame step` and NOT through it; Finding 15.3 and its Risks section name the final frame `the weakest link`.\n  - specs/archive/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01: the obstruction relocated to (O1)/(O3)/(O4); (O2) discharged via `Muller.exists_iSup`; `Muller.toRabin_exists` called `the single highest-value proof_wanted in either tree`.\n  - specs/archive/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01: the acceptance-condition split -- a deterministic Muller automaton suffices for the Auxiliary-Atoms rule (no acceptance condition) and does NOT suffice for the ban/lull mechanism, whose banned list is indexed by the automaton's accepting pairs, which is what forces the pair shape.\n\nTHE FOUR ROUTES to present, each with its cost and its gate:\n  (R1) Prove `Muller.toRabin_exists` (Safra/Piterman; held in corpus). Discharges (O1). Costed separately by the companion cost-assessment task; this record consumes that costing if available and says so if not.\n  (R2) Close the final-frame step -- and note this route may already be FREE. Both Lean pieces 901 called missing have since landed: 897 universal cover (`exists_orientedForest_cover`) and, more decisively, 898, which found Saturation is consumed NOWHERE in the lifting chain and the base frame needs NO constraint at all, landing `exists_orientedForest_cover_of_constraints` as what its own summary calls `the completeness programme entry point over a base with no Saturation`. The obligation has moved to the SOURCE side (Compositionality, Seriality, Limit on the chronicle quotient), which its companion measurement task checks. If that check is positive, the paper proof one acknowledged gap closes WITHOUT touching sections 7-15 and without reversing Recommendation 8 -- making this the only route that needs no ruling at all, and the one this record should weigh first.\n  (R3) The determinization-free alternative: 879's P9 names `an explicit progress-measure argument that avoids determinization` as the ONLY route to a Lean proof that sidesteps (O1), and calls it `a research design, not an ingredient`.\n  (R4) T1's two reduced questions. T1 is NOT refuted but reduced: (Q1) is `lcU alpha beta` derivable in TM-plus + LC_n + mirror at ZTime for state-local beta -- 906 refuted it at Base/Dense/RTime by the translation frame over Q and proved the ZTime case unsettleable by ANY model (both schemata have the same ZTime models by construction), so only a proof-theoretic argument can decide it, and the guarded-until-form candidate in PlusLCSchema.lean survives as an open candidate; (Q2) are `clock`, `aaFwd`, `aaBwd` admissible over TM-plus + the schemata -- blocked on Di Maio-Zanardo 1998, not held in the local Zotero library.\n\nWHAT THE RECORD MUST DECIDE: for each of R1-R4, reopen / keep closed / reopen on stated conditions, with the argument. If any route reopens, the record states the terms (what may be filed, what stays barred) precisely enough that a successor can file against it without re-asking. Recommendation 8 stays in force for every route the ruling does not explicitly reopen.\n\nGUARDRAILS: (a) no Lean file is written or edited by this task; (b) no part of sections 7-15 is formalized, attempted, or filed by this task -- that is what the record decides, not what it does; (c) no completeness claim; (d) the four reports above are cited, not re-derived or condensed; (e) if a route's cost is unknown, say so rather than estimating.\n\nFILE SCOPE: none. Report only.",
+      "file_scope": [
+        "specs/926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md",
+        "specs/926_lean_completeness_line_reopen_decision_record/summaries/01_completeness-line-reopen-ruling-summary.md"
+      ],
+      "created": "2026-11-12T22:26:17Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "lean_completeness_line_reopen_decision_record",
+          "project_number": null,
+          "title": "Decision record: whether the Lean completeness line reopens, and on what terms"
+        },
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "verdicts": [
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 879,
+            "project_name": "lplus_ztime_completeness_tm_plus_lc_programme",
+            "discharging_artifact": {
+              "path": "specs/879_lplus_ztime_completeness_tm_plus_lc_programme/summaries/01_lplus-ztime-completeness-programme-summary.md",
+              "type": "summary",
+              "summary": "Close-out record: verdict of record, Component 7 table for 893-901 with edges, ROADMAP amendments, dispositions of every non-genuinely-new verdict, deliberately-not-filed paragraph, batch-deferral note."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.40606060606060607
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 898,
+            "project_name": "plus_invariance_base_without_saturation",
+            "discharging_artifact": {
+              "path": "specs/898_plus_invariance_base_without_saturation/summaries/01_plus-invariance-base-without-saturation-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the Saturation-free lift chain, the weakened oriented-forest cover headline, the non-saturated base witness, and the gate-driven Phase 5 scope expansion."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4393939393939394
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 901,
+            "project_name": "two_sided_reynolds_engine_paper_proof",
+            "discharging_artifact": {
+              "path": "specs/901_two_sided_reynolds_engine_paper_proof/summaries/01_two-sided-reynolds-engine-paper-proof-summary.md",
+              "type": "summary",
+              "summary": "Close-out record: result statement, paper-proof-not-machine-checked caveat, the two filed questions, the Phase 1-3 amendments and filings, and the deliberately-not-done paragraph."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.48444444444444446
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 903,
+            "project_name": "muller_sufficiency_for_auxiliary_atoms_rule_ztime",
+            "discharging_artifact": {
+              "path": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/summaries/01_muller-sufficiency-aa-rule-ban-lull-summary.md",
+              "type": "summary",
+              "summary": "Close-out record: the split verdict, the unsoundness example, the (O2) saving, what is untouched, and the deliberately-not-done paragraph with every recommendation named and reasoned."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5275590551181102
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 905,
+            "project_name": "eliminate_cross_certification_two_sided_reynolds_automata",
+            "discharging_artifact": {
+              "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/summaries/01_eliminate-cross-certification-clauses-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all five phases of task 905."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5185185185185185
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 906,
+            "project_name": "lcu_derivability_from_lcn_non_ztime_separating_model",
+            "discharging_artifact": {
+              "path": "specs/906_lcu_derivability_from_lcn_non_ztime_separating_model/summaries/01_lcu-lcn-separating-model-summary.md",
+              "type": "summary",
+              "summary": "Full implementation summary: verdict, what landed and where, measured axiom profiles, Phase 1's branch decision, gate verification detail, argued-not-compiled items, and recorded follow-ups."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5714285714285714
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 785,
+            "project_name": "lean_plan_gate_collision_authoring_guidance",
+            "discharging_artifact": {
+              "path": "specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md",
+              "type": "summary",
+              "summary": "Full implementation summary including the four traced-foreign deploy findings and the resume action."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4180602006688963
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 711,
+            "project_name": "universal_summary_substrate_stab_fibre",
+            "discharging_artifact": {
+              "path": "specs/711_universal_summary_substrate_stab_fibre/summaries/02_buechi-chain-ktype-substrate-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for the Büchi-chain k-type summary substrate and seam interface."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4080267558528428
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 719,
+            "project_name": "ray_layer_seam_gluing_and_stab_fibre",
+            "discharging_artifact": {
+              "path": "specs/719_ray_layer_seam_gluing_and_stab_fibre/summaries/01_ray-layer-seam-gluing-stab-fibre-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the two new modules, the four pinned keystone axiom rows, the measured pre-edit gate baseline, the recorded verdicts, the wired E1 probe, and five annotated plan deviations."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.431438127090301
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 718,
+            "project_name": "omega_sequence_decidability_full_lplus",
+            "discharging_artifact": {
+              "path": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for all 7 plan phases."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5183946488294314
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 706,
+            "project_name": "lplus_finite_model_property_and_completeness",
+            "discharging_artifact": {
+              "path": "specs/706_lplus_finite_model_property_and_completeness/summaries/01_land-finite-carrier-refutation-summary.md",
+              "type": "summary",
+              "summary": "Execution summary for the library landing of the finite-carrier refutation family."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4816053511705686
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5150501672240803
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.44481605351170567
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 442,
+            "project_name": "revise_bimodal_reference_book_against_paper_and_lean",
+            "discharging_artifact": {
+              "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/summaries/01_book-paper-lean-revision-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all 16 phases: what changed, decisions, plan deviations (none), impacts, follow-ups."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.42474916387959866
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 414,
+            "project_name": "refactor_semantics_to_total_history_validity",
+            "discharging_artifact": {
+              "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/09_phase29-2-preguard-differential-rebaseline.md",
+              "type": "summary",
+              "summary": "Phase 29.2: pre-guard differential obtained (P0=edcecd551^, P1, P2=HEAD) via non-destructive worktree; BimodalTest mismatches 40 -> 7; 33 rows re-baselined with measured attribution to trivialEventWitnessed; the declared ten pre-existing mismatches confirmed correct and identified at row level for the first time; 7 residual rows owned by an out-of-task 2026-07-29 engine change."
+            },
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.43478260869565216
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 88,
+            "project_name": "close_remaining_bxcanonical_sorries",
+            "discharging_artifact": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.47368421052631576
+          }
+        ],
+        "degradation_summary": "446 project(s) judged scope-blind (no file_scope declared); per-project list omitted"
+      },
+      "dependencies": [
+        927,
+        928
+      ],
+      "last_updated": "2026-11-14T07:22:49Z",
+      "session_id": "sess_1794635603_fa0324",
+      "artifacts": [
+        {
+          "path": "specs/926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md",
+          "type": "report",
+          "summary": "Decision record ruling reopen/keep-closed/reopen-on-conditions for routes R1-R4 of the completeness front: R2 (final-frame step) reopened and already executing via tasks 931/932; R1 (Muller.toRabin_exists) kept closed in this repository, blocked by the standing CSLib-require clause of Recommendation 8 rather than its engine-content clause; R3 (determinization-free progress-measure design) reopened for paper-only research; R4's Q1-as-stated kept closed as equivalent in cost to full completeness, its converse direction and the guarded-until-form candidate reopened at the schema level, and Q2 left blocked on literature acquisition rather than any ruling. Recommendation 8 is left in force for the Reynolds engine's sections 7-15 under every route."
+        },
+        {
+          "path": "specs/926_lean_completeness_line_reopen_decision_record/plans/01_completeness-line-reopen-ruling.md",
+          "type": "plan",
+          "summary": "Three-phase, specs-only plan closing out the completeness-line reopen decision record: premise re-validation, consolidated reopening-terms sheet, summary and gates."
+        },
+        {
+          "path": "specs/926_lean_completeness_line_reopen_decision_record/summaries/01_completeness-line-reopen-ruling-summary.md",
+          "type": "summary",
+          "summary": "Completion summary: one line per route ruling, Premise Re-Validation result, guardrails held, deferred R3/R4 filing preference, scoped gate-discharge note."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Discharged the three obligations the research report had not yet carried: a Premise Re-Validation section (one stale 'zero tasks' premise corrected, six other carried figures confirmed verbatim), a consolidated Reopening Terms table for all seven routes/sub-routes with per-route Recommendation-8-clause discrimination, and the completion summary. No Lean file written, no part of the Reynolds engine's sections 7-15 formalized or filed, no completeness claim made; Recommendation 8 stays in force for every route not explicitly reopened.",
+      "archived_at": "2026-11-14T08:06:24Z"
+    },
+    {
+      "project_number": 927,
+      "project_name": "final_frame_step_remeasure_against_landed_cover",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "completeness",
+      "priority": "high",
+      "description": "MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers one question: is the completeness paper proof final-frame step still open, given that both Lean pieces it was said to need have since landed?\n\nTHE SITUATION. specs/archive/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md records the final-frame step as the paper proof one unclosed step. Its ingredient line reads `universal cover; invariance with no Saturation on the base | missing | the two Lean pieces the final-frame step needs`; its Risks section calls it `the weakest link`, naming as negative evidence that `plus_invariance_of_isZTime demands [F.IsRegular] on the base`; and it states `This write-up does not claim the final-frame step; it claims the engine up to it.`\n\nBOTH NAMED PIECES ARE NOW LANDED, and the second is stronger than 901 anticipated:\n  - Piece 1, the universal cover: specs/archive/897_universal_cover_oriented_forest_two_way_bounded landed `FormalSystem/Semantics/UniversalCover.lean` (519 lines) with headline `exists_orientedForest_cover`, plus `coverFrame`, `endpt_surjective`, `endpt_twoWayBounded`.\n  - Piece 2, base-Saturation-free invariance: specs/archive/898_plus_invariance_base_without_saturation settled this AFFIRMATIVELY and went further than its own task description anticipated. Per its summary: Saturation is consumed NOWHERE in the `HistoryMorphism.lean` lifting chain, and the base frame needs NO `def:frame` constraint at all -- not even reflection. Only the SOURCE frame needs anything, and it needs exactly Compositionality, Seriality and Limit. It landed `plus_invariance_of_isZTime_of_constraints`, `exists_histMorphism_of_isZTime_of_constraints`, `taskRel_eq_iter_of_constraints`, and -- named in its own summary as `the completeness programme entry point over a base with no Saturation` -- `exists_orientedForest_cover_of_constraints`. 901 negative evidence is directly answered: the base `[F.IsRegular]` binder is now genuinely unread, and the one apparent base use (`F.reflection` inside `exists_preimage_step_neg`) is discharged at nonzero step duration by `TaskFrame.reflect_reflection_of_ne`. 898 also corrected the prose surfaces that had recorded Saturation as the obstruction, reframing it as a class-membership obligation, and wired `Tests/BimodalTest/Semantics/OrientedForestSaturationTest.lean` so the headline stops compiling if a base Saturation hypothesis is ever re-acquired.\n\n901 and 898 both closed 2026-11-09, so 901 `missing` row is very likely STALE rather than wrong-at-the-time. Confirming that is part of the deliverable.\n\nTHE QUESTION THAT IS ACTUALLY STILL OPEN. Because the base side now demands nothing, the obligation has MOVED to the source side: does the chronicle quotient of 901 Finding 15 satisfy Compositionality, Seriality and Limit? 901 describes that quotient as a time-sliced digraph with countably infinite slices, and notes its Saturation `is a real obligation here (unlike in Reynolds Kripke setting, which has no such axiom)`. Nobody has checked the quotient against 898 source-side hypothesis set. That check is this task.\n\nDELIVERABLE, four findings:\n  (1) Whether `exists_orientedForest_cover_of_constraints` + `saturation_of_orientedForest` + `plus_invariance_of_isZTime_of_constraints` discharge the final-frame step AS 901 Finding 15 STATES IT -- checked against the landed declarations actual signatures in source, not against either report prose.\n  (2) The source-side obligation, stated precisely: what Compositionality, Seriality and Limit each require of the chronicle quotient, and which of the three (if any) is not evidently satisfied. This is the finding with the most expected content.\n  (3) A verdict on 901 ingredient row and Risks paragraph: stale, partially stale, or still accurate -- and if stale, the exact amendment text each needs. Do not edit 901 report in place; supply the amendment for a successor to apply.\n  (4) Whether the final-frame step is now discharged, conditionally discharged (naming the condition), or still genuinely open (naming what is missing).\n\nWHY THIS NEEDS NO RULING. The final-frame step is section 15, and this task neither formalizes it nor formalizes any part of sections 7-15: it measures whether already-landed declarations discharge it and corrects a stale record. Recommendation 8 bars filing a FORMALIZATION of sections 7-15; it does not bar reading landed signatures and reporting what they compose to. If finding (1) and (4) come back positive, the paper proof one acknowledged gap closes without reversing any ruling -- which is why this is the cheapest high-value question on the completeness front.\n\nGUARDRAILS: (a) read declaration signatures from source, never from a report description of them -- 901 own stale row is the cautionary case; (b) no Lean file written or edited -- if a composition is available, state it as a finding with declaration names, do not land it; (c) no formalization of any part of sections 7-15; (d) no completeness claim, and in particular finding (4) positive does NOT make T3 complete -- rows 17-21 remain paper; (e) do not edit 901 or 879 reports in place, supply amendment text; (f) if the source-side check needs the chronicle quotient stated more precisely than 901 Finding 15 states it, record that as the blocker rather than inventing a formalization of it.\n\nFILE SCOPE: none. Report only. Reads FormalSystem/Semantics/UniversalCover.lean, HistoryMorphism.lean, IntNormalForm.lean, StateTopology/ConstraintWitnesses.lean; writes no Lean.",
+      "file_scope": [
+        "specs/927_final_frame_step_remeasure_against_landed_cover/plans/01_final-frame-step-remeasure.md",
+        "specs/927_final_frame_step_remeasure_against_landed_cover/summaries/01_final-frame-step-remeasure-summary.md",
+        "specs/927_final_frame_step_remeasure_against_landed_cover/task-proposals-audit.ndjson",
+        "specs/927_final_frame_step_remeasure_against_landed_cover/task-proposals.json",
+        "specs/TODO.md",
+        "specs/state.json"
+      ],
+      "created": "2026-11-12T22:26:17Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "final_frame_step_remeasure_against_landed_cover",
+          "project_number": null,
+          "title": "Verify the final-frame step against the landed Saturation-free cover, and correct the stale ingredient row"
+        },
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "verdicts": [
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 897,
+            "project_name": "universal_cover_oriented_forest_two_way_bounded",
+            "discharging_artifact": {
+              "path": "specs/897_universal_cover_oriented_forest_two_way_bounded/summaries/01_universal-cover-oriented-forest-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for the universal cover: what changed, decisions, the one plan deviation, and the full verification record."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4069767441860465
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 898,
+            "project_name": "plus_invariance_base_without_saturation",
+            "discharging_artifact": {
+              "path": "specs/898_plus_invariance_base_without_saturation/summaries/01_plus-invariance-base-without-saturation-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the Saturation-free lift chain, the weakened oriented-forest cover headline, the non-saturated base witness, and the gate-driven Phase 5 scope expansion."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.6060606060606061
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 785,
+            "project_name": "lean_plan_gate_collision_authoring_guidance",
+            "discharging_artifact": {
+              "path": "specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md",
+              "type": "summary",
+              "summary": "Full implementation summary including the four traced-foreign deploy findings and the resume action."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.43333333333333335
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 719,
+            "project_name": "ray_layer_seam_gluing_and_stab_fibre",
+            "discharging_artifact": {
+              "path": "specs/719_ray_layer_seam_gluing_and_stab_fibre/summaries/01_ray-layer-seam-gluing-stab-fibre-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the two new modules, the four pinned keystone axiom rows, the measured pre-edit gate baseline, the recorded verdicts, the wired E1 probe, and five annotated plan deviations."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.43703703703703706
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 718,
+            "project_name": "omega_sequence_decidability_full_lplus",
+            "discharging_artifact": {
+              "path": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for all 7 plan phases."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5074074074074074
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 706,
+            "project_name": "lplus_finite_model_property_and_completeness",
+            "discharging_artifact": {
+              "path": "specs/706_lplus_finite_model_property_and_completeness/summaries/01_land-finite-carrier-refutation-summary.md",
+              "type": "summary",
+              "summary": "Execution summary for the library landing of the finite-carrier refutation family."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4777777777777778
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5740740740740741
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 440,
+            "project_name": "finite_frame_discharge_of_spherical_and_limit",
+            "discharging_artifact": {
+              "path": "specs/440_finite_frame_discharge_of_spherical_and_limit/plans/01_finite-spherical-discharge.md",
+              "type": "plan",
+              "summary": "5-phase plan for finite-frame discharge of spherical and limit obligations."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4111111111111111
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.46296296296296297
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 442,
+            "project_name": "revise_bimodal_reference_book_against_paper_and_lean",
+            "discharging_artifact": {
+              "path": "specs/442_revise_bimodal_reference_book_against_paper_and_lean/summaries/01_book-paper-lean-revision-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all 16 phases: what changed, decisions, plan deviations (none), impacts, follow-ups."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4666666666666667
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 414,
+            "project_name": "refactor_semantics_to_total_history_validity",
+            "discharging_artifact": {
+              "path": "specs/414_refactor_semantics_to_total_history_validity/summaries/09_phase29-2-preguard-differential-rebaseline.md",
+              "type": "summary",
+              "summary": "Phase 29.2: pre-guard differential obtained (P0=edcecd551^, P1, P2=HEAD) via non-destructive worktree; BimodalTest mismatches 40 -> 7; 33 rows re-baselined with measured attribution to trivialEventWitnessed; the declared ten pre-existing mismatches confirmed correct and identified at row level for the first time; 7 residual rows owned by an out-of-task 2026-07-29 engine change."
+            },
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4222222222222222
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 777,
+            "project_name": "phase_commit_drops_own_plan_artifact",
+            "discharging_artifact": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4148148148148148
+          }
+        ],
+        "degradation_summary": "447 project(s) judged scope-blind (no file_scope declared); per-project list omitted"
+      },
+      "last_updated": "2026-11-14T06:39:07Z",
+      "session_id": "sess_1794635603_fa0324",
+      "artifacts": [
+        {
+          "path": "specs/927_final_frame_step_remeasure_against_landed_cover/reports/01_final-frame-step-remeasure.md",
+          "type": "report",
+          "summary": "Remeasures the completeness paper proof's final-frame step against the landed cover and Saturation-free invariance: compiled probes show the step is conditionally discharged (condition is a four-lemma API refactor, not open mathematics), the chronicle quotient meets all three source-side constraints, and the 901 ingredient row plus Risks paragraph are stale with amendment text supplied."
+        },
+        {
+          "path": "specs/927_final_frame_step_remeasure_against_landed_cover/plans/01_final-frame-step-remeasure.md",
+          "type": "plan",
+          "summary": "Three-phase plan: carried-figure re-validation and guardrail attestation, two successor task filings, close-out record and final gate."
+        },
+        {
+          "path": "specs/927_final_frame_step_remeasure_against_landed_cover/summaries/01_final-frame-step-remeasure-summary.md",
+          "type": "summary",
+          "summary": "Close-out record: the four findings, the carried-figure verdict, the guardrail attestation, the two filed successors, and what was deliberately not done."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Remeasured the completeness paper proof's final-frame step against the landed universal cover and base-Saturation-free invariance: the step is conditionally discharged on a named, compiled four-lemma API refactor rather than open. Re-validated every carried figure against live source (the dispatch's 519-line UniversalCover.lean figure is stale at a measured 626), attested all six guardrails mechanically clean, extended the 901 stale-anchor enumeration from four sites to seven, and filed two successor tasks (931 record correction, 932 the ofStepRel API) with backlog-reconciliation evidence. No Lean file written, no part of sections 7-15 formalized, no report amended in place, and no completeness claim: rows 17-21 remain paper.",
+      "archived_at": "2026-11-14T08:06:24Z"
+    },
+    {
+      "project_number": 928,
+      "project_name": "muller_torabin_determinization_cost_assessment",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "completeness",
+      "priority": "medium",
+      "description": "ASSESSMENT TASK, report only. Costs the single lemma that gates the Lean completeness line, and decides where it would live. Does NOT prove it.\n\nWHY THIS LEMMA. specs/archive/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01 names `Muller.toRabin_exists` `the single highest-value proof_wanted in either tree`, and specs/archive/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01 row 16 names determinization to Rabin as the load-bearing gap with this as `its single named target`, explicitly labelled `Not a Mathlib-absence refusal; a located and costed gap`. specs/archive/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01 established WHY the Rabin pair shape is unavoidable: a deterministic Muller automaton suffices for the Auxiliary-Atoms rule, which carries no acceptance condition, but NOT for the ban/lull mechanism, whose banned list is indexed by the automaton's accepting pairs (Reynolds 2001 section 12, `bl : T -> (C x {1,...,K})*`). So the fork's already-proved `IsRegular.iff_da_muller` is not the determinization the architecture consumes end-to-end.\n\nWHAT IS ALREADY SETTLED, and is not to be re-litigated: `Rabin.toParity_exists` is OFF the critical path (902: the ban mechanism consumes Rabin, not parity, and `Parity.toRabin_language_eq` is already proved). (O2) is discharged for free via `Muller.exists_iSup` under a union-on-the-Muller-side-then-determinize-once composition order. The existing cost estimate on record is the fork's own docstrings: an exponential pair blowup for DMA->DRA (`2^|Q|` pairs) and the LAR permutation construction for DRA->DPA.\n\nDELIVERABLE, four findings:\n  (1) The construction of record: which determinization is actually wanted here (Safra, Piterman, or the LAR route), sourced to the held corpus, with the reason the choice matters for the pair-indexed consumer rather than for the automaton alone.\n  (2) A size and shape estimate for a Lean proof on THIS project's toolchain (Lean v4.33.0-rc1, Mathlib v4.33.0-rc1): what the statement looks like, what the induction is on, which Mathlib/CSLib pieces it can stand on, and which it would have to build. An order-of-magnitude line count with its basis is wanted; an unbasised number is not.\n  (3) Siting: the local CSLib fork versus this tree. The fork is where `Muller.toRabin_exists` is currently `proof_wanted` and where `IsRegular.iff_da_muller` already lives, so the fork is the presumptive home -- but 902's standing recommendation is `Do not require anything now`, and ROADMAP records the CSLib `require` question as not to be re-opened on sections 7-15's account. State what siting in the fork would and would not commit this repository to, and whether a `require` decision is actually entailed by proving it there.\n  (4) (O3) interaction: 902 records that the determinized automaton arrives as `an existential over Type, not as syntax`, making the Auxiliary-Atoms rule's `theta_f` non-computable under classical extraction. State whether a proof of `Muller.toRabin_exists` in the natural existential form would leave (O3) standing -- i.e. whether discharging (O1) alone unblocks the completeness line, or whether (O1) and (O3) must be discharged together.\n\nGUARDRAILS: (a) assessment only -- no proof of `Muller.toRabin_exists` is attempted, and no `.lean` file is written or edited in either tree; (b) no edit to `lakefile.toml` or `lake-manifest.json`, and no `require` added in any form -- finding (3) ASSESSES the siting question and does not act on it; (c) no formalization of any part of the Reynolds engine's sections 7-15 (Recommendation 8), which this lemma is upstream of and separate from; (d) no completeness claim; (e) cite the fork's actual `proof_wanted` sites with file and line; (f) if the corpus does not hold the construction at the rigour needed to cost it, say so and name what is missing rather than estimating from memory.\n\nFILE SCOPE: none. Report only.",
+      "file_scope": [
+        "specs/928_muller_torabin_determinization_cost_assessment/reports/01_muller-torabin-cost-assessment.md",
+        "specs/928_muller_torabin_determinization_cost_assessment/summaries/01_muller-torabin-cost-assessment-summary.md"
+      ],
+      "created": "2026-11-12T22:26:17Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "muller_torabin_determinization_cost_assessment",
+          "project_number": null,
+          "title": "Cost-assess Muller.toRabin_exists: Safra/Piterman determinization on this toolchain"
+        },
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "verdicts": [
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 901,
+            "project_name": "two_sided_reynolds_engine_paper_proof",
+            "discharging_artifact": {
+              "path": "specs/901_two_sided_reynolds_engine_paper_proof/summaries/01_two-sided-reynolds-engine-paper-proof-summary.md",
+              "type": "summary",
+              "summary": "Close-out record: result statement, paper-proof-not-machine-checked caveat, the two filed questions, the Phase 1-3 amendments and filings, and the deliberately-not-done paragraph."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.41333333333333333
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 903,
+            "project_name": "muller_sufficiency_for_auxiliary_atoms_rule_ztime",
+            "discharging_artifact": {
+              "path": "specs/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/summaries/01_muller-sufficiency-aa-rule-ban-lull-summary.md",
+              "type": "summary",
+              "summary": "Close-out record: the split verdict, the unsoundness example, the (O2) saving, what is untouched, and the deliberately-not-done paragraph with every recommendation named and reasoned."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5196850393700787
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 905,
+            "project_name": "eliminate_cross_certification_two_sided_reynolds_automata",
+            "discharging_artifact": {
+              "path": "specs/905_eliminate_cross_certification_two_sided_reynolds_automata/summaries/01_eliminate-cross-certification-clauses-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary covering all five phases of task 905."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.42592592592592593
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 785,
+            "project_name": "lean_plan_gate_collision_authoring_guidance",
+            "discharging_artifact": {
+              "path": "specs/785_lean_plan_gate_collision_authoring_guidance/summaries/01_gate-collision-guidance-authoring-summary.md",
+              "type": "summary",
+              "summary": "Full implementation summary including the four traced-foreign deploy findings and the resume action."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4260869565217391
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 711,
+            "project_name": "universal_summary_substrate_stab_fibre",
+            "discharging_artifact": {
+              "path": "specs/711_universal_summary_substrate_stab_fibre/summaries/02_buechi-chain-ktype-substrate-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for the Büchi-chain k-type summary substrate and seam interface."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4260869565217391
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 719,
+            "project_name": "ray_layer_seam_gluing_and_stab_fibre",
+            "discharging_artifact": {
+              "path": "specs/719_ray_layer_seam_gluing_and_stab_fibre/summaries/01_ray-layer-seam-gluing-stab-fibre-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary: the two new modules, the four pinned keystone axiom rows, the measured pre-edit gate baseline, the recorded verdicts, the wired E1 probe, and five annotated plan deviations."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4217391304347826
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 718,
+            "project_name": "omega_sequence_decidability_full_lplus",
+            "discharging_artifact": {
+              "path": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
+              "type": "summary",
+              "summary": "Implementation summary for all 7 plan phases."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.5217391304347826
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 706,
+            "project_name": "lplus_finite_model_property_and_completeness",
+            "discharging_artifact": {
+              "path": "specs/706_lplus_finite_model_property_and_completeness/summaries/01_land-finite-carrier-refutation-summary.md",
+              "type": "summary",
+              "summary": "Execution summary for the library landing of the finite-carrier refutation family."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4826086956521739
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 468,
+            "project_name": "realign_task_programme_from_proof_state_audit",
+            "discharging_artifact": {
+              "type": "summary",
+              "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+              "summary": "Implementation summary for the nine-phase programme realignment."
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4956521739130435
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 443,
+            "project_name": "formal_foundations_report_completeness_and_representation",
+            "discharging_artifact": {
+              "path": "specs/443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md",
+              "type": "summary",
+              "summary": "Task 443 summary artifact"
+            },
+            "mechanical_class": "none",
+            "semantic_score": 0.4391304347826087
+          },
+          {
+            "verdict": "covered-by-closed",
+            "project_number": 834,
+            "project_name": "orchestrate_aux_carrier_and_implement_readmission",
+            "discharging_artifact": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          }
+        ],
+        "degradation_summary": "448 project(s) judged scope-blind (no file_scope declared); per-project list omitted"
+      },
+      "last_updated": "2026-11-14T06:49:13Z",
+      "session_id": "sess_1794635603_fa0324",
+      "artifacts": [
+        {
+          "path": "specs/928_muller_torabin_determinization_cost_assessment/reports/01_muller-torabin-cost-assessment.md",
+          "type": "report",
+          "summary": "Costs Muller.toRabin_exists: the wanted construction is the appearance-record (LAR) route, not Safra/Piterman; ~1,000 lines (800-1,200) in one new file sited in the CSLib fork; no require entailed; (O1) and (O3) are separable."
+        },
+        {
+          "path": "specs/928_muller_torabin_determinization_cost_assessment/plans/01_muller-torabin-cost-assessment.md",
+          "type": "plan",
+          "summary": "3-phase closure plan: de-carry K4B grounding, Thomas 1997 PDF fidelity check, deliverable-contract audit plus summary and full gate."
+        },
+        {
+          "path": "specs/928_muller_torabin_determinization_cost_assessment/summaries/01_muller-torabin-cost-assessment-summary.md",
+          "type": "summary",
+          "summary": "Completion summary: four findings in brief, both evidence-repair outcomes, the deliverable/guardrail audit table, disposition of all eight recommendations, and two deferred items."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Closed the report-only Muller-to-Rabin determinization cost assessment by retiring both of its weak evidence tiers against primary sources: Finding 1.4's K4B grounding is now cited first-hand to Reynolds 2001 (all three sub-claims confirmed, one carried wording error corrected), and Findings 1.2/1.3 are checked against Thomas 1997's PDF page images (all seven quotations confirmed verbatim, one overstatement about tree-specificity corrected, one omitted construction step surfaced, the rigour gap strengthened from one unproved obligation to two). Audited the report against the dispatch's four deliverables and six guardrails, verifying (a), (b) and (e) mechanically rather than by assertion.",
+      "archived_at": "2026-11-14T08:06:24Z"
+    },
+    {
       "project_number": 818,
       "project_name": "wrap_directory_rollup_tables_files_lines_cols",
       "status": "completed",

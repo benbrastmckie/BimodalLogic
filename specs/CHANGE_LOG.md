@@ -1,6 +1,24 @@
 # Change Log
 
 
+## 2026-11-14: Archive 9 completed tasks
+
+**Archived**:
+- **930** (completed, lean4): Promoted both orphan open-core prototypes to tracked paths under `specs/evidence/seam-gluing-ray-product/`, wired them into `scripts/check-evidence-probes.sh` as WIRED entries, and dropped the "not a wired probe" qualifier from the two RaySummary/README.md citations. Evidence gate exits 0 at 61 wired probes (delta +2); full gate suite clean.
+- **929** (completed, lean4): Refuted the task's stated goal rather than discharging it — `forwardSlackWitnessed_refuted_I_one` falsifies `ForwardSlackWitnessed` at amount 4 on a serial object with no idle self-loop. `LadderCell.lean` unedited; `certStabK`'s restatement obligation stays PROVISIONAL.
+- **804** (completed, lean4): Narrowed seven import lines so no termination module is downstream of any Semantics module or the Syntax aggregator (Semantics.lean rebuild set 251 → 204, Syntax.lean 107 → 29). `ProofSystem/Axioms.lean` dependence stays essential and unchanged.
+- **803** (completed, lean4): Rewrote all 36 per-rule proofs in `SubformulaProperty.lean` with pinned per-arm equation lemmas instead of unfolding `applyRule`; elaboration heartbeats fell by a factor of 427 (Lake module time ~438-478s → ~3s), sorry count 0.
+- **743** (completed, general): Check 1 of `scripts/typst-sync-check.sh` now resolves fully-qualified Lean declaration names against a build-free, comment-aware namespace index instead of a literal grep; gate exits 0 on all four checks.
+- **787** (completed, general): Added the shared `.lake/build-guard.lock` to two write-path scripts and a subshell-scoped locked prebuild to two dataset-generation scripts; recorded every other surveyed script's ruling-out in its header and in a new `scripts/README.md` section.
+- **926** (completed, general): Discharged the three remaining obligations on the Reynolds-engine completeness research report — a Premise Re-Validation section, a consolidated Reopening Terms table, and the completion summary. No Lean file written, no completeness claim made.
+- **927** (completed, lean4): Remeasured the completeness paper proof's final-frame step against the landed universal cover — conditionally discharged on a named, compiled four-lemma API refactor rather than open. Extended the 901 stale-anchor enumeration from four sites to seven and filed two successor tasks (931, 932).
+- **928** (completed, lean4): Closed the Muller-to-Rabin determinization cost assessment by retiring both weak evidence tiers against primary sources (Reynolds 2001, Thomas 1997), correcting one carried wording error and strengthening the rigour gap from one unproved obligation to two.
+
+**Directories moved**: 9 (specs/ -> specs/archive/); 1 misplaced directory (907_redeploy_stale_claude_tree) also moved into specs/archive/ to match its existing archive/state.json tracking
+**Topic backfill**: 2 active tasks (931: paper-alignment, 932: semantics)
+**Roadmap updates**: not run this pass
+**Memory harvest**: not run this pass (deferred to `/distill --learn`)
+
 ## 2026-10-04: Archive 2 completed tasks
 
 **Archived**:
