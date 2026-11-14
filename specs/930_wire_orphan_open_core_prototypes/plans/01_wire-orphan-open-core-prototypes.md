@@ -1,7 +1,7 @@
 # Implementation Plan: Task #930
 
 - **Task**: 930 - Promote and wire the two orphan open-core prototypes into the evidence gate
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/930_wire_orphan_open_core_prototypes/reports/01_wire-orphan-open-core-prototypes.md
