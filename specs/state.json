@@ -2083,7 +2083,7 @@
     {
       "project_number": 928,
       "project_name": "muller_torabin_determinization_cost_assessment",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "medium",
@@ -2235,7 +2235,7 @@
         ],
         "degradation_summary": "448 project(s) judged scope-blind (no file_scope declared); per-project list omitted"
       },
-      "last_updated": "2026-11-14T06:27:09Z",
+      "last_updated": "2026-11-14T06:49:13Z",
       "session_id": "sess_1794635603_fa0324",
       "artifacts": [
         {
@@ -2247,9 +2247,15 @@
           "path": "specs/928_muller_torabin_determinization_cost_assessment/plans/01_muller-torabin-cost-assessment.md",
           "type": "plan",
           "summary": "3-phase closure plan: de-carry K4B grounding, Thomas 1997 PDF fidelity check, deliverable-contract audit plus summary and full gate."
+        },
+        {
+          "path": "specs/928_muller_torabin_determinization_cost_assessment/summaries/01_muller-torabin-cost-assessment-summary.md",
+          "type": "summary",
+          "summary": "Completion summary: four findings in brief, both evidence-repair outcomes, the deliverable/guardrail audit table, disposition of all eight recommendations, and two deferred items."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Closed the report-only Muller-to-Rabin determinization cost assessment by retiring both of its weak evidence tiers against primary sources: Finding 1.4's K4B grounding is now cited first-hand to Reynolds 2001 (all three sub-claims confirmed, one carried wording error corrected), and Findings 1.2/1.3 are checked against Thomas 1997's PDF page images (all seven quotations confirmed verbatim, one overstatement about tree-specificity corrected, one omitted construction step surfaced, the rigour gap strengthened from one unproved obligation to two). Audited the report against the dispatch's four deliverables and six guardrails, verifying (a), (b) and (e) mechanically rather than by assertion."
     },
     {
       "project_number": 931,

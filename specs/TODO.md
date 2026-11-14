@@ -13,8 +13,8 @@ next_project_number: 933
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,928,931,932 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,862,873,926 | 298,428,502,761,869,928 | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,926,931,932 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,862,873 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -37,8 +37,7 @@ next_project_number: 933
 
 ### Completeness
 
-928 [PLANNED] — ASSESSMENT TASK, report only. Costs the single lemma that...
-  └─ 926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
+926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
 
 ### Dataset Enhancement
 
@@ -174,12 +173,13 @@ THIS IS A RECORD CORRECTION, NOT A COMPLETENESS CLAIM. Applying it does not make
 ---
 
 ### 928. Muller torabin determinization cost assessment
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
 - **Research**: [928_muller_torabin_determinization_cost_assessment/reports/01_muller-torabin-cost-assessment.md]
 - **Plan**: [928_muller_torabin_determinization_cost_assessment/plans/01_muller-torabin-cost-assessment.md]
+- **Summary**: [928_muller_torabin_determinization_cost_assessment/summaries/01_muller-torabin-cost-assessment-summary.md]
 
 **Description**: ASSESSMENT TASK, report only. Costs the single lemma that gates the Lean completeness line, and decides where it would live. Does NOT prove it.
 
