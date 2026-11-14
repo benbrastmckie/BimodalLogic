@@ -1282,7 +1282,7 @@
     {
       "project_number": 934,
       "project_name": "depth_zero_reachability_probe",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "high",
@@ -1302,16 +1302,29 @@
         "degradation_count": 448,
         "evidence_file": "specs/evidence/audit-verdicts/934.json"
       },
-      "last_updated": "2026-11-14T09:27:00Z",
+      "last_updated": "2026-11-14T09:31:13Z",
       "session_id": "sess_1794647848_d925d2",
       "artifacts": [
         {
           "path": "specs/934_depth_zero_reachability_probe/reports/01_consumer-shape-reachability-probe.md",
           "type": "report",
           "summary": "Positive compiled verdict: ForwardSlackWitnessed holds at the consumer shape at a positive amount on stepOr/bot, the restricted schema fires non-vacuously under ParamsOk, and a no-slack path through the same state is exhibited; bound on reach (singleton cell) recorded."
+        },
+        {
+          "path": "specs/934_depth_zero_reachability_probe/plans/01_consumer-shape-reachability-probe.md",
+          "type": "plan",
+          "summary": "Two-phase plan: promote and wire the consumer-shape witness probe, then record the verdict and run the full gate set."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "file_scope": [
+        "scripts/check-evidence-probes.sh",
+        "specs/934_depth_zero_reachability_probe/probe-draft/consumer-shape-witness.lean",
+        "specs/934_depth_zero_reachability_probe/reports/01_consumer-shape-reachability-probe.md",
+        "specs/934_depth_zero_reachability_probe/summaries/01_consumer-shape-reachability-probe-summary.md",
+        "specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean",
+        "typst/generated/status.typ"
+      ]
     }
   ],
   "artifacts": [
