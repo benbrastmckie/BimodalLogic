@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 6,
+  "phases_completed": 0,
+  "phases_total": 4,
+  "summary": "Authored a four-phase implementation plan for promoting and wiring the two orphan open-core prototypes. Phase 1 promotes both prototypes verbatim (one header line each) into specs/evidence/seam-gluing-ray-product/ and tracks them; Phase 2 wires two WIRED entries plus table blocks into scripts/check-evidence-probes.sh; Phase 3 rewrites the two RaySummary/README.md citations; Phase 4 runs the full gate set as a baseline delta. Two gate-collision conditions (typst-sync line-count coupling and C26 snake_case def naming) were resolved mechanically at plan time and shown not to fire, so no regeneration or rename step is owed.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/930_wire_orphan_open_core_prototypes/plans/01_wire-orphan-open-core-prototypes.md",
+      "summary": "Four-phase plan: promote, wire, rewrite citations, full-gate verification."
+    }
+  ]
+}
