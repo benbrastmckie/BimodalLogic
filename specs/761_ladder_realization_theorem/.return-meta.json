@@ -3,22 +3,26 @@
   "artifacts": [
     {
       "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/13_depth-zero-gate-rest-state.md",
-      "summary": "Revised plan (v13): restates task 761 as a rest state behind Phase 11.6's unlifted depth-0 gate, carries all 30 closed phase bodies verbatim, and corrects two figures the last implement dispatch falsified."
+      "path": "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
+      "summary": "Revised plan (v14) executing the Stage 0 carried-hypothesis ruling: the depth-0 gate is lifted by ruling, Phase 11.6 becomes the first enterable phase since Phase 11.9 returned INCONCLUSIVE, and the agreement plus all five dependent filed Goals are restated as CONDITIONAL on a carried premise bundle. Integrates task 934's two artifacts."
     }
   ],
-  "next_steps": "Do NOT run /orchestrate 761: the plan has zero enterable phases. The next act is the unchecked specs/ROADMAP.md Stage 0 item 'Decide who owns the depth-0 gate', followed by a further /revise 761 taking that probe's verdict as its input.",
+  "next_steps": "Run /orchestrate 761 --implement to enter Phase 11.6, whose FIRST task is the blocking stab-free-closure bridge (RESIDUE B). Do not enter the induction step on an unstated bridge; if the bridge cannot be stated the phase closes [BLOCKED] on it and the remedy is a further /revise. Two residues the ruling does not cover are recorded at plan level and must not be rediscovered: the pending-forever regime premise (RESIDUE A) and the stab-free closure (RESIDUE B).",
   "metadata": {
-    "session_id": "sess_1794551910_b9181a",
+    "session_id": "sess_1794674064_733a4b",
     "agent_type": "reviser-agent",
     "delegation_path": ["orchestrator", "revise", "reviser-agent"],
     "phase_count": 41,
     "phases_closed": 30,
-    "phases_enterable": 0,
+    "phases_enterable": 1,
     "estimated_hours": 40.5,
     "estimated_hours_open": 10,
-    "reports_integrated": [],
-    "plan_version": 13,
-    "revision_mode": "plan_revision"
+    "reports_integrated": [
+      "01_consumer-shape-reachability-probe.md",
+      "01_consumer-shape-reachability-probe-summary.md"
+    ],
+    "plan_version": 14,
+    "revision_mode": "plan_revision",
+    "ruling_verification": "certStabK CAN consume a family of forward-slack hypotheses: it is a bare Prop, certAdmK a plain six-fold conjunction, and the family's index set coincides with the five schemas' own quantifier prefix. Route NOT void. The threshold bounds Tc<=c / Tc<=c' are additionally derivable from kappa's min-c-Tc coordinate and are not carried."
   }
 }
