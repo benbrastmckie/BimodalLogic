@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 4,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/930_wire_orphan_open_core_prototypes/reports/01_wire-orphan-open-core-prototypes.md",
+      "summary": "Both orphan prototypes compile clean against the live tree (no stale README authority claim); promotion into specs/evidence/seam-gluing-ray-product/ plus two WIRED entries measured end-to-end at PASS 60/60, exit 0, no other probe disturbed."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794619593_8f19c5_930",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
