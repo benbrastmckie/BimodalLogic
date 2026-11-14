@@ -1,7 +1,7 @@
 # Implementation Plan: Task #929
 
 - **Task**: 929 - Discharge the `I = 1` idle-run sub-regime so `ForwardSlackWitnessed` becomes unconditional
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: None blocking. Territory-concurrent with task 930 (no declared file scope).
 - **Research Inputs**: specs/929_idle_run_length_one_forward_slack_discharge/reports/01_idle-run-one-forward-slack.md

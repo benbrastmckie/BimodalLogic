@@ -1,38 +1,54 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
     "vacuous_count": 0,
-    "axiom_count": 0,
+    "axiom_count": 14,
     "build_passed": true
   },
   "requires_user_review": false,
-  "review_reason": "Phase 3 of 4 complete by Phase Mission (phase-3-only dispatch). Not a failure: Phase 4 remains NOT STARTED and is the next dispatch's work.",
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/929_idle_run_length_one_forward_slack_discharge/summaries/01_idle-run-one-forward-slack-summary.md",
+      "summary": "The I = 1 idle-run sub-regime is refuted at the every-amount shape by a compiled object; its reach is bounded by a compiled fact and the five depth-0 cell-equality schemas keep ForwardSlackWitnessed."
+    },
+    {
       "type": "handoff",
-      "path": "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-3-handoff-20261113185153.md",
-      "summary": "Phase 3 handoff: four restated docstring sites, measured line counts, verification results."
+      "path": "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-4-handoff-20261113-191056.md",
+      "summary": "Phase 4 handoff: inventory reconciliation, the directly-run gate set, and two enumerated pre-existing reds."
     }
   ],
+  "completion_data": {
+    "completion_summary": "The task's stated goal is refuted rather than dischargeable, and the refutation is compiled: forwardSlackWitnessed_refuted_I_one falsifies ForwardSlackWitnessed at amount 4 on a serial object with no idle self-loop, hence with every idle run of length exactly 1. Its reach is bounded by ceiling_slack_at_consumer_amount, which compiles that the ceiling is satisfied for free at the amount the five depth-0 cell-equality schemas instantiate, so all five keep ForwardSlackWitnessed, LadderCell.lean is unedited, and certStabK's restatement obligation stays PROVISIONAL.",
+    "roadmap_items": []
+  },
   "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean",
-    "typst/generated/status.typ",
+    "README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
     "specs/929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md",
     "specs/929_idle_run_length_one_forward_slack_discharge/issues.jsonl",
-    "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-3-handoff-20261113185153.md"
+    "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-4-handoff-20261113-191056.md",
+    "specs/929_idle_run_length_one_forward_slack_discharge/summaries/01_idle-run-one-forward-slack-summary.md"
   ],
   "metadata": {
     "session_id": "sess_1794619593_8f19c5",
     "agent_type": "lean-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "dispatch_seq": 9,
-    "compliance_check": "skipped",
-    "phases_completed": 3,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "dispatch_seq": 10,
+    "compliance_check": "passed",
+    "phases_completed": 4,
     "phases_total": 4,
-    "commit": "126c8a75d"
+    "commit": "c46477347",
+    "gate_reds_pre_existing": [
+      "lake exe lint-style: 4 style errors at FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean:383,390,413,420 -- outside this plan's scope, zero occurrences in this task's commit range",
+      "check-paper-definitions.sh: 9 drifted definition anchors in an external .tex repository, LaTeX formatting only -- this plan touched no .tex and no docs/reference file"
+    ]
   }
 }

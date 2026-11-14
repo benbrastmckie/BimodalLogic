@@ -202,12 +202,12 @@
     {
       "project_number": 929,
       "project_name": "idle_run_length_one_forward_slack_discharge",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Discharge the I = 1 idle-run sub-regime so ForwardSlackWitnessed becomes unconditional. Task 924 landed a cascade-free CONDITIONAL discharge: forwardSlackWitnessed_of_cell_idleRunPumpable (FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean:1035) concludes ForwardSlackWitnessed at EVERY amount from the amount-free, run-local premise IdleRunPumpable, by duplicating an idle block inside the idle run separating z's region from the next. It splices rather than deletes, so the refuted deletion route is not re-entered, and it spends none of (K2)'s cascadeBound. The premise is NOT ParamsOk-derivable: (K1) quantifies prodCycleLens, objCycleLens and satPeriod, never idleCycleLens. THE REMAINING GAP, named by 924 as its entire frontier: paths whose intervening idle run has length 1, where no repeat block exists to pump. Closing it is dischargeable on the pumpable side rather than refuted, which is why 924 left certStabK's restatement obligation PROVISIONAL rather than permanent. SCOPE AND WHAT THIS DOES NOT DO: discharging I = 1 removes ForwardSlackWitnessed from the five depth-0 cell-equality schemas of LadderCell.lean (cellLE_zero_const_of_kappa_eq_of_forwardSlack and its _commonShift_, _monotone_, _antitone_, _antitone_bounded_ siblings) and lifts certStabK's provisional obligation. It does NOT lift task 761's Phase 11.6 depth-0 gate: those schemas carry three further added-hypothesis families beyond forward slack (the equal-register restriction, the pending-forever gap with its threshold bound, and the common-shift / monotone / antitone displacement), each is strictly stronger in hypotheses than the reserved statement CellLEZeroConstOfKappaEq and bears on its truth value in neither direction, and 761 plan v12 separately settled that 924's route cannot feed a stab-depth induction because forwardSlackWitnessed_of_cell_idleRunPumpable carries hno (a STAB-FREE closure) at LadderIdle.lean:1040. Do not claim the reserved name cellLE_zero_const_of_kappa_eq on any branch. PROHIBITED: the (K1) amendment constraining spanning-block length, which 924 explicitly declined to admit. A refutation of the I = 1 case is an equally reportable outcome and must be compiled, not argued.",
       "topic": "decidability",
       "created": "2026-11-13T05:57:53Z",
-      "last_updated": "2026-11-14T02:10:08Z",
+      "last_updated": "2026-11-14T03:12:48Z",
       "audit_verdict": {
         "proposal": {
           "id": "idle_run_length_one_forward_slack_discharge",
@@ -267,6 +267,11 @@
           "path": "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-3-handoff-20261113185153.md",
           "type": "handoff",
           "summary": "Phase 3 handoff: the four restated sites, the measured line counts against the longFile ceiling, the verification grep results, and the two in-scope corrections."
+        },
+        {
+          "path": "specs/929_idle_run_length_one_forward_slack_discharge/summaries/01_idle-run-one-forward-slack-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: the I = 1 idle-run sub-regime is refuted at the every-amount shape by a compiled object, with its reach bounded by a compiled fact; the five depth-0 schemas keep ForwardSlackWitnessed."
         }
       ],
       "next_artifact_number": 2,
@@ -283,7 +288,8 @@
         "specs/929_idle_run_length_one_forward_slack_discharge/reports/01_idle-run-one-forward-slack.md",
         "specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "The task's stated goal is refuted rather than dischargeable, and the refutation is compiled: forwardSlackWitnessed_refuted_I_one falsifies ForwardSlackWitnessed at amount 4 on a serial object with no idle self-loop, hence with every idle run of length exactly 1. Its reach is bounded by ceiling_slack_at_consumer_amount, which compiles that the ceiling is satisfied for free at the amount the five depth-0 cell-equality schemas instantiate, so all five keep ForwardSlackWitnessed, LadderCell.lean is unedited, and certStabK's restatement obligation stays PROVISIONAL."
     },
     {
       "project_number": 804,

@@ -1,31 +1,31 @@
 {
-  "status": "partial",
-  "dispatch_seq": 9,
-  "phases_completed": 3,
+  "task_number": 929,
+  "phase": "implement",
+  "dispatch_seq": 10,
+  "status": "implemented",
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Phase 3 restated the I = 1 frontier at four docstring sites: LadderChain.lean's module docstring and its exists_deleted_ladderPath_of_next_region_nxt 'THE ROUTE THAT IS NOT REFUTED' block, LadderIdle.lean's module docstring and item (ii) of forwardSlackWitnessed_of_cell_idleRunPumpable, and RaySummary.lean's RaySummary.LadderIdle aggregator bullet. Every site now names forwardSlackWitnessed_refuted_I_one as refuting the I = 1 complement at the every-amount shape while PRESERVING certStabK's provisionality on the compiled strength of ceiling_slack_at_consumer_amount; route 4 and its three undischarged obligations are named as the surviving frontier. No signature, declaration, or proof changed; LadderCell.lean untouched. Guarded build of the three edited modules exits 0 with zero errors and zero warnings, LadderChain landed at 2984 lines so its declared longFile 3000 needed no re-tightening, and typst/generated/status.typ was regenerated in-phase. Committed as 126c8a75d; this dispatch was phase-3-only by its Phase Mission, so Phase 4 remains NOT STARTED.",
+  "summary": "Phase 4 closed the plan: three generated inventory blocks regenerated, the RaySummary README's LadderIdle row description and frontier narrative hand-corrected, and the gate set run directly (all eleven criteria were unmappable to either batch narrowing). Full guarded lake build green at 2975/2975 with 0 error and 0 warning, lake test green, sorry_count 0, axiom count unchanged at 14. Two gate reds are pre-existing and name no file in this plan's scope: lint-style on NormalForm.lean and check-paper-definitions.sh drift against an external .tex repository. All four phases are [COMPLETED].",
   "blockers": [],
   "artifacts": [
     {
-      "type": "handoff",
-      "path": "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-3-handoff-20261113185153.md",
-      "summary": "Phase 3 handoff: the four restated sites, the measured line counts against the longFile ceiling, the verification grep results, and the two in-scope corrections."
+      "type": "summary",
+      "path": "specs/929_idle_run_length_one_forward_slack_discharge/summaries/01_idle-run-one-forward-slack-summary.md",
+      "summary": "Implementation summary: the I = 1 idle-run sub-regime is refuted at the every-amount shape by a compiled object, with its reach bounded by a compiled fact; the five depth-0 schemas keep ForwardSlackWitnessed."
     },
     {
-      "type": "plan",
-      "path": "specs/929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md",
-      "summary": "Phase 3 heading marked [COMPLETED], all eight Phase 3 checklist items ticked, one deviation and one measurement annotated inline."
+      "type": "handoff",
+      "path": "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-4-handoff-20261113-191056.md",
+      "summary": "Phase 4 handoff: inventory reconciliation detail, the gate set run directly with two enumerated pre-existing reds, and the scope-hypothesis deviations."
     }
   ],
   "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean",
-    "typst/generated/status.typ",
+    "README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
     "specs/929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md",
     "specs/929_idle_run_length_one_forward_slack_discharge/issues.jsonl",
-    "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-3-handoff-20261113185153.md"
-  ],
-  "next_action": "Phase 4: reconcile the generated inventories and run the full gate set. Phase 3 left nothing open for it beyond the inventories Phase 4 already owns; typst/generated/status.typ is already in sync as of this commit.",
-  "session_id": "sess_1794619593_8f19c5"
+    "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-4-handoff-20261113-191056.md",
+    "specs/929_idle_run_length_one_forward_slack_discharge/summaries/01_idle-run-one-forward-slack-summary.md"
+  ]
 }
