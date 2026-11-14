@@ -1,0 +1,25 @@
+{
+  "phase": 3,
+  "phase_name": "Completion Summary and Gates",
+  "started_at": "2026-11-14T07:45:00Z",
+  "last_updated": "2026-11-14T08:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Write summaries/01_completeness-line-reopen-ruling-summary.md per summary-format.md", "status": "done", "files_touched": ["specs/926_lean_completeness_line_reopen_decision_record/summaries/01_completeness-line-reopen-ruling-summary.md"]},
+    {"id": 2, "description": "State the R3/R4 follow-on filing decision as a deferred user preference, not a blocker", "status": "done", "files_touched": ["specs/926_lean_completeness_line_reopen_decision_record/summaries/01_completeness-line-reopen-ruling-summary.md"]},
+    {"id": 3, "description": "Confirm guardrails held (no .lean, no §7-15 content, no completeness claim, founding reports cited not re-derived)", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Discharge the Issue Log obligation", "status": "done", "files_touched": ["specs/926_lean_completeness_line_reopen_decision_record/issues.jsonl"]},
+    {"id": 5, "description": "Run the complete gate set", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "3.5",
+      "description": "Run the complete gate set (verify-deploy.sh)",
+      "type": "altered",
+      "reason": "This dispatch's own Batch Gate Deferral directive applies to this phase's declared Verification Tier: full. Neither narrowing invocation (run-all.sh --only SUITE, verify-deploy.sh --only-gate N) maps to specs/926/**.md-only changes -- verify-deploy.sh's gates all target deploy-tree-vs-source-store sync or shell test suites, none scoped to specs/**.md content. Treated as the dispatch's own UNMAPPABLE CRITERION carve-out: ran the phase's own named checks directly instead (validate-artifact.sh on report and summary, both PASS; git status --short scoped review). The complete verify-deploy.sh battery is deferred to the batch-level stage per the dispatch.",
+      "annotation": "*(deviation: altered -- see Phase 3 task list and summary's Verification section)*"
+    }
+  ]
+}

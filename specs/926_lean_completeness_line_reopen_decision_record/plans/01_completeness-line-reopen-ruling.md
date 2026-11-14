@@ -212,24 +212,35 @@ Findings sections or re-asking what the terms are.
 
 ---
 
-### Phase 3: Completion Summary and Gates [NOT STARTED]
+### Phase 3: Completion Summary and Gates [COMPLETED]
 
 **Goal**: Close the task with its completion summary and the complete gate set.
 
 **Tasks**:
-- [ ] Write `summaries/01_completeness-line-reopen-ruling-summary.md` per summary-format.md:
+- [x] Write `summaries/01_completeness-line-reopen-ruling-summary.md` per summary-format.md:
       the ruling in brief (one line per route), what the task did and did not do, the Premise
       Re-Validation result, and the deferred user preference on whether to file the R3/R4
-      follow-ons.
-- [ ] State in the summary that whether to file the R3 paper-research task and the R4
+      follow-ons. *(completed)*
+- [x] State in the summary that whether to file the R3 paper-research task and the R4
       converse/guarded-form task is a deferred preference, not a blocker, consistent with the
-      report's decision not to raise `user_decision`.
-- [ ] Confirm the guardrails held: no `.lean` file written or edited, no part of §§7-15
+      report's decision not to raise `user_decision`. *(completed, see summary's Decisions and
+      Follow-ups sections)*
+- [x] Confirm the guardrails held: no `.lean` file written or edited, no part of §§7-15
       formalized or filed, no completeness claim made, the four founding reports cited rather
-      than re-derived.
-- [ ] Discharge the Issue Log obligation: ensure entries were recorded as they arose, or attest
-      explicitly in the summary prose that nothing arose during this phase.
-- [ ] Run the complete gate set.
+      than re-derived. *(completed: confirmed via `git show --stat` on this task's two phase
+      commits — no `.lean` path in either; see summary's Guardrails Held section)*
+- [x] Discharge the Issue Log obligation: ensure entries were recorded as they arose, or attest
+      explicitly in the summary prose that nothing arose during this phase. *(completed: one
+      `win` entry in Phase 1, one `issue` entry in Phase 3 recording the gate-collision
+      deferral; both attested in the summary's Issue Log section)*
+- [x] Run the complete gate set. *(deviation: this dispatch's own Batch Gate Deferral directive
+      applies to this phase's declared `full` tier; neither narrowing invocation
+      (`run-all.sh --only`, `verify-deploy.sh --only-gate`) maps to specs/926/**.md-only changes
+      — the dispatch's own UNMAPPABLE CRITERION carve-out — so the named checks were run
+      directly instead: `validate-artifact.sh` on both artifacts (PASS) and a `git status
+      --short` scoped review (no `.lean`, no out-of-scope path). The complete `verify-deploy.sh`
+      battery is deferred to the batch-level stage, per the dispatch, and its result attributes
+      back to this task by `modified_files`.)*
 
 **Timing**: 0.5 hours
 
