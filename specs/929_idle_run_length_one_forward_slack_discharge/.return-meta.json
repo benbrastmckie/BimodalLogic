@@ -1,22 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 3,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/929_idle_run_length_one_forward_slack_discharge/reports/01_idle-run-one-forward-slack.md",
-      "summary": "The I = 1 sub-regime is REFUTED, not dischargeable: a compiled cell-level refutation of ForwardSlackWitnessed at amount n+c+2 on a serial no-idle-cycle object, with the boundary shown sharp and the consumer-relevant instantiation shown untouched."
-    },
-    {
-      "type": "evidence",
-      "path": "specs/929_idle_run_length_one_forward_slack_discharge/evidence/i-one-ceiling.lean",
-      "summary": "Compiled probe, sorry-free, standard axioms: forwardSlackWitnessed_refuted_I_one, forwardSlackWitnessed_holds_below_ceiling, not_idleRunPumpable, ceiling_slack_at_consumer_amount, xState_regime."
+      "type": "plan",
+      "path": "specs/929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md",
+      "summary": "Four-phase plan executing the REFUTATION disposition for the I = 1 idle-run sub-regime: promote and wire the compiled probe, land its declarations in LadderIdle.lean, restate the frontier at the sites that assert it is dischargeable, reconcile generated surfaces and run the full gate set."
     }
   ],
   "metadata": {
     "session_id": "sess_1794619593_8f19c5_929",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 6,
+    "dependency_waves": 4
+  },
+  "memory_candidates": [],
+  "next_steps": "Run /orchestrate 929 to execute the plan",
+  "dispatch_seq": 5
 }

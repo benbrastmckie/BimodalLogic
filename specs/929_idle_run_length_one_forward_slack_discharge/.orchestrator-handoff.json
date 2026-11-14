@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 5,
+  "phases_completed": 0,
+  "phases_total": 4,
+  "summary": "Planned task 929 against a falsified premise: the dispatch description asserts the I = 1 case is dischargeable on the pumpable side, but this task's own research dispatch compiled a cell-level REFUTATION of ForwardSlackWitnessed at the every-amount shape. The plan therefore executes the refutation disposition in four serial phases -- promote and CI-wire the probe, land its declarations in LadderIdle.lean as section IOne, correct the frontier statements in LadderChain.lean/LadderIdle.lean/RaySummary.lean, then reconcile the generated inventories and run the full gate set. LadderCell.lean is not edited, certStabK stays PROVISIONAL, and the reserved name cellLE_zero_const_of_kappa_eq is claimed nowhere.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md",
+      "summary": "Four-phase refutation-disposition plan, 6h estimate, four serial dependency waves."
+    }
+  ]
+}
