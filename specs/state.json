@@ -1673,7 +1673,7 @@
     {
       "project_number": 926,
       "project_name": "lean_completeness_line_reopen_decision_record",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "general",
       "topic": "completeness",
       "priority": "high",
@@ -1885,7 +1885,17 @@
       "dependencies": [
         927,
         928
-      ]
+      ],
+      "last_updated": "2026-11-14T06:59:06Z",
+      "session_id": "sess_1794635603_fa0324",
+      "artifacts": [
+        {
+          "path": "specs/926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md",
+          "type": "report",
+          "summary": "Decision record ruling reopen/keep-closed/reopen-on-conditions for routes R1-R4 of the completeness front: R2 (final-frame step) reopened and already executing via tasks 931/932; R1 (Muller.toRabin_exists) kept closed in this repository, blocked by the standing CSLib-require clause of Recommendation 8 rather than its engine-content clause; R3 (determinization-free progress-measure design) reopened for paper-only research; R4's Q1-as-stated kept closed as equivalent in cost to full completeness, its converse direction and the guarded-until-form candidate reopened at the schema level, and Q2 left blocked on literature acquisition rather than any ruling. Recommendation 8 is left in force for the Reynolds engine's sections 7-15 under every route."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 927,
