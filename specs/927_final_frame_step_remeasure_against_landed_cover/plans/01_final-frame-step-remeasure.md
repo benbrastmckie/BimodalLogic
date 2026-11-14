@@ -555,7 +555,7 @@ ceiling. Recorded so the lesson is discharged rather than carried forward unexam
 
 ---
 
-### Phase 3: Close-Out Record and Final Gate [NOT STARTED]
+### Phase 3: Close-Out Record and Final Gate [COMPLETED]
 
 **Goal**: The task's close-out record exists, states the verdict with its condition in the
 report's own words, names the two filed successors, and states explicitly what was deliberately
@@ -631,6 +631,48 @@ rather than reverting, since task 928 is live on this tree and the hunk may not 
 - `git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` is empty, and the combined `git diff --stat` over this task's own commits for the Lean, build-file, archived-report and ROADMAP paths is empty.
 - `.orchestrator-handoff.json` validates (the write-time `validate-handoff-location.sh` gate accepts it) and `.return-meta.json` carries `status: "implemented"` with `dispatch_seq` echoed verbatim.
 - The summary's deliberately-not-done paragraph names all six omissions, each with a reason, and the summary states in one sentence that T3 is not thereby complete.
+
+#### Phase 3 Notes
+
+**Gate classification, and the unmappable criterion.** This dispatch carries a
+`## Batch Gate Deferral` directive, so the complete gate set was not independently run here; it
+runs once for the whole batch at the end of this invocation and is attributed back to this task
+by its `modified_files`.
+
+This phase's declared criterion names `bash .claude/scripts/verify-deploy.sh`. That criterion is
+**unmappable** for this phase, in the directive's precise sense: `verify-deploy.sh` compares the
+deployed `.claude/` tree against the source store under `agent-system/extensions/`, and **this
+task touched no file under either**. No `--only-gate N` selection it offers reaches `specs/**`
+artifact validity or `specs/state.json` consistency, which is the entire surface this task's
+output occupies. Per the directive's unmappable-criterion clause, the named check was therefore
+run **directly**, scoped to this phase's own touched surfaces, and that is recorded as the
+scoped discharge. The criterion was neither waived, dropped, nor treated as satisfied by a
+narrowing that does not actually reach it.
+
+| Scoped check | Result |
+|---|---|
+| `run-all.sh --only test-validate-artifact.sh,test-validate-state.sh,test-audit-task-proposals.sh` | **3 passed, 0 failed, 0 skipped**, exit 0 — the three suites covering the tools this task exercised |
+| `validate-artifact.sh … plans/01_final-frame-step-remeasure.md plan` | **exit 0**, 0 warnings |
+| `validate-artifact.sh … summaries/01_final-frame-step-remeasure-summary.md summary` | **exit 0**, 0 warnings |
+| `validate-state.sh` | **exit 0** (10 passed, 25 warnings, 0 failed) |
+
+Every `validate-state.sh` warning is classified **pre-existing baseline, outside this task's file
+scope**: legacy entries missing `file_scope`, roadmap-batch members already terminal, one
+over-length batch description, and the standing `Unknown entry field: audit_verdict` warning that
+already names thirteen other entries including 926, 927 and 928. None names a file this task
+touched, and none is grounds to edit an out-of-scope file. Recorded as a **PASS with findings
+enumerated**, per the plan's Risks row on baseline-relative gate criteria.
+
+**Final cross-phase attestation**, re-run at Phase 3 rather than carried from Phase 1:
+
+- `git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` — **empty**
+- `git diff --stat e30f23b81^..HEAD -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json specs/archive/901_… specs/archive/879_… specs/ROADMAP.md` — **empty**
+- `git diff --name-only e30f23b81^..HEAD | grep -c '\.lean$'` — **0**
+
+**Issue log.** One `issue` recorded for this phase (class `process/unmappable-gate-criterion`,
+severity `minor`): a report-only task whose entire output lies under `specs/**` should name the
+`validate-artifact`/`validate-state` suites as its `full` tier rather than `verify-deploy.sh`,
+which structurally cannot reach that surface.
 
 ## Lean Challenge Statements
 
