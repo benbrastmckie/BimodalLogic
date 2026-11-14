@@ -1,22 +1,48 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 14,
+    "build_passed": true,
+    "notes": "vacuous_count=1 and axiom_count=14 are pre-existing repository baselines, UNCHANGED by this phase: it touched no file under any Lean source root (git show --name-only HEAD matches nothing under FormalSystem/, Tests/, BimodalTools/). The single vacuous-pattern hit is FormalSystem/Examples/TemporalStructures.lean:495 'theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial', a legitimate definitional proof, not a placeholder. Phase-end full build: lake-build-guard.sh build --timeout 1800 -- build exit 0, 'Build completed successfully (2975 jobs)', zero error:, zero warning:."
+  },
+  "phases_completed": 1,
+  "phases_total": 4,
+  "partial_progress": {
+    "stage": "phase_1_completed",
+    "details": "Phase 1 of 4 completed and committed (78158e7f1). This dispatch was phase-1-only by its Phase Mission; Phases 2-4 are not started. Next action: Phase 2, land the refutation in LadderIdle.lean as section IOne / namespace IdleRunOne.",
+    "phases_completed": 1,
+    "phases_total": 4
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md",
-      "summary": "Four-phase plan executing the REFUTATION disposition for the I = 1 idle-run sub-regime: promote and wire the compiled probe, land its declarations in LadderIdle.lean, restate the frontier at the sites that assert it is dischargeable, reconcile generated surfaces and run the full gate set."
+      "type": "evidence",
+      "path": "specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean",
+      "summary": "The promoted, git-tracked, CI-wired compiled refutation of the I = 1 idle-run sub-regime at the every-amount shape."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-1-handoff-20261113-183058.md",
+      "summary": "Phase 1 handoff: what landed, verification results, scope-hypothesis confirmation, next action."
     }
   ],
+  "modified_files": [
+    "specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean",
+    "scripts/check-evidence-probes.sh",
+    "specs/929_idle_run_length_one_forward_slack_discharge/evidence/i-one-ceiling.lean",
+    "specs/929_idle_run_length_one_forward_slack_discharge/reports/01_idle-run-one-forward-slack.md",
+    "specs/929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md",
+    "specs/929_idle_run_length_one_forward_slack_discharge/issues.jsonl",
+    "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-1-handoff-20261113-183058.md"
+  ],
   "metadata": {
-    "session_id": "sess_1794619593_8f19c5_929",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 6,
-    "dependency_waves": 4
-  },
-  "memory_candidates": [],
-  "next_steps": "Run /orchestrate 929 to execute the plan",
-  "dispatch_seq": 5
+    "session_id": "sess_1794619593_8f19c5",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 7,
+    "compliance_check": "passed",
+    "phase_commit": "78158e7f1"
+  }
 }

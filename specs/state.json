@@ -202,12 +202,12 @@
     {
       "project_number": 929,
       "project_name": "idle_run_length_one_forward_slack_discharge",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Discharge the I = 1 idle-run sub-regime so ForwardSlackWitnessed becomes unconditional. Task 924 landed a cascade-free CONDITIONAL discharge: forwardSlackWitnessed_of_cell_idleRunPumpable (FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean:1035) concludes ForwardSlackWitnessed at EVERY amount from the amount-free, run-local premise IdleRunPumpable, by duplicating an idle block inside the idle run separating z's region from the next. It splices rather than deletes, so the refuted deletion route is not re-entered, and it spends none of (K2)'s cascadeBound. The premise is NOT ParamsOk-derivable: (K1) quantifies prodCycleLens, objCycleLens and satPeriod, never idleCycleLens. THE REMAINING GAP, named by 924 as its entire frontier: paths whose intervening idle run has length 1, where no repeat block exists to pump. Closing it is dischargeable on the pumpable side rather than refuted, which is why 924 left certStabK's restatement obligation PROVISIONAL rather than permanent. SCOPE AND WHAT THIS DOES NOT DO: discharging I = 1 removes ForwardSlackWitnessed from the five depth-0 cell-equality schemas of LadderCell.lean (cellLE_zero_const_of_kappa_eq_of_forwardSlack and its _commonShift_, _monotone_, _antitone_, _antitone_bounded_ siblings) and lifts certStabK's provisional obligation. It does NOT lift task 761's Phase 11.6 depth-0 gate: those schemas carry three further added-hypothesis families beyond forward slack (the equal-register restriction, the pending-forever gap with its threshold bound, and the common-shift / monotone / antitone displacement), each is strictly stronger in hypotheses than the reserved statement CellLEZeroConstOfKappaEq and bears on its truth value in neither direction, and 761 plan v12 separately settled that 924's route cannot feed a stab-depth induction because forwardSlackWitnessed_of_cell_idleRunPumpable carries hno (a STAB-FREE closure) at LadderIdle.lean:1040. Do not claim the reserved name cellLE_zero_const_of_kappa_eq on any branch. PROHIBITED: the (K1) amendment constraining spanning-block length, which 924 explicitly declined to admit. A refutation of the I = 1 case is an equally reportable outcome and must be compiled, not argued.",
       "topic": "decidability",
       "created": "2026-11-13T05:57:53Z",
-      "last_updated": "2026-11-14T02:09:27Z",
+      "last_updated": "2026-11-14T02:10:08Z",
       "audit_verdict": {
         "proposal": {
           "id": "idle_run_length_one_forward_slack_discharge",
@@ -257,6 +257,11 @@
           "path": "specs/929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md",
           "type": "plan",
           "summary": "Four-phase refutation-disposition plan, 6h estimate, four serial dependency waves."
+        },
+        {
+          "path": "specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean",
+          "type": "evidence",
+          "summary": "The promoted, git-tracked, CI-wired compiled refutation of the I = 1 idle-run sub-regime at the every-amount shape."
         }
       ],
       "next_artifact_number": 2,

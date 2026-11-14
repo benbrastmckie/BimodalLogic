@@ -1,15 +1,32 @@
 {
-  "status": "planned",
-  "dispatch_seq": 5,
-  "phases_completed": 0,
+  "task_number": 929,
+  "phase": "implement",
+  "dispatch_seq": 7,
+  "status": "partial",
+  "phases_completed": 1,
   "phases_total": 4,
-  "summary": "Planned task 929 against a falsified premise: the dispatch description asserts the I = 1 case is dischargeable on the pumpable side, but this task's own research dispatch compiled a cell-level REFUTATION of ForwardSlackWitnessed at the every-amount shape. The plan therefore executes the refutation disposition in four serial phases -- promote and CI-wire the probe, land its declarations in LadderIdle.lean as section IOne, correct the frontier statements in LadderChain.lean/LadderIdle.lean/RaySummary.lean, then reconcile the generated inventories and run the full gate set. LadderCell.lean is not edited, certStabK stays PROVISIONAL, and the reserved name cellLE_zero_const_of_kappa_eq is claimed nowhere.",
+  "summary": "Phase 1 of 4 complete and committed (78158e7f1): the compiled I = 1 refutation probe is promoted to specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean, git-tracked, and wired into scripts/check-evidence-probes.sh with its documentation-table row; the task-local copy is deleted and the research report carries a forward pointer. The evidence gate reports PASS all 59 wired probe(s) compile, confirming the plan's 58 -> 59 Scope Hypothesis exactly, and no hardcoded total exists to edit. Phase-end full lake build is green (2975 jobs, zero errors, zero warnings); this dispatch was phase-1-only by its Phase Mission, so Phases 2-4 are not started.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md",
-      "summary": "Four-phase refutation-disposition plan, 6h estimate, four serial dependency waves."
+      "type": "evidence",
+      "path": "specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean",
+      "summary": "The promoted, git-tracked, CI-wired compiled refutation of the I = 1 idle-run sub-regime at the every-amount shape."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-1-handoff-20261113-183058.md",
+      "summary": "Phase 1 handoff: what landed, verification results, scope-hypothesis confirmation, next action."
     }
-  ]
+  ],
+  "modified_files": [
+    "specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean",
+    "scripts/check-evidence-probes.sh",
+    "specs/929_idle_run_length_one_forward_slack_discharge/evidence/i-one-ceiling.lean",
+    "specs/929_idle_run_length_one_forward_slack_discharge/reports/01_idle-run-one-forward-slack.md",
+    "specs/929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md",
+    "specs/929_idle_run_length_one_forward_slack_discharge/issues.jsonl",
+    "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-1-handoff-20261113-183058.md"
+  ],
+  "session_id": "sess_1794619593_8f19c5"
 }
