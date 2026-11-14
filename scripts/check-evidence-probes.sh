@@ -2542,6 +2542,82 @@ EVIDENCE="specs/evidence"
 #                                                           | `ceiling_slack_at_consumer_amount`).
 #                                                           | No `sorryAx`, no custom axiom, no
 #                                                           | `native_decide`.
+# forward-slack-pin-cascade/consumer-shape-witness          | `ForwardSlackWitnessed` IS SATISFIABLE
+#                                                           | AT THE CONSUMER SHAPE, AT A POSITIVE
+#                                                           | AMOUNT. The five depth-0 cell-equality
+#                                                           | schemas of `LadderCell.lean` consume
+#                                                           | the hypothesis at exactly one shape: at
+#                                                           | the HIGHER state `(q, c + m * (P + 1),
+#                                                           | n)`, at amount `m * (P + 1)`. The
+#                                                           | sibling `idle-run-one-ceiling` compiles
+#                                                           | that the amount ceiling cannot bite
+#                                                           | there; immunity to the ceiling is not
+#                                                           | satisfiability, and this probe compiles
+#                                                           | one object on which the hypothesis
+#                                                           | HOLDS at that shape. Its headline
+#                                                           | declarations: `fsw_consumer_shape` (on
+#                                                           | the two-state object `stepOr x y = x ||
+#                                                           | y` at the formula `bot`,
+#                                                           | `ForwardSlackWitnessed` holds at the
+#                                                           | state `(true, c + m * (P + 1), 0)` at
+#                                                           | amount `m * (P + 1)`, for every `c`,
+#                                                           | `m` and `P`, witnessed by the plateau
+#                                                           | path at that height),
+#                                                           | `plateau_next_region` (on the witness
+#                                                           | path a genuine next region exists at
+#                                                           | idle-run length `1`, so the slack
+#                                                           | premise is inhabited and the regime is
+#                                                           | not met vacuously), `consumer_fires`
+#                                                           | (the whole hypothesis set of
+#                                                           | `cellLE_zero_const_of_kappa_eq_of_forwardSlack`
+#                                                           | is jointly satisfiable at a positive
+#                                                           | amount: at the periodicity fixpoint's
+#                                                           | own parameters
+#                                                           | `Tcof`/`Tnof`/`Pof`/`Bof`, so
+#                                                           | `ParamsOk` holds by `paramsOk_params`,
+#                                                           | with `c := Tc + B + 2` and `m := 1`,
+#                                                           | the pending-forever regime `0 + 2 <= c`
+#                                                           | and `Tc <= c`, the `kappa` collision
+#                                                           | and the witnessing hypothesis at amount
+#                                                           | `P + 1` all hold, and the restricted
+#                                                           | theorem is APPLIED to give the cell
+#                                                           | equality), `climbC_isLadderPath` and
+#                                                           | `climbC_not_hasForwardSlack` (a second
+#                                                           | ladder path through the SAME state
+#                                                           | `(true, C, 0)` carries NO forward slack
+#                                                           | at ANY positive amount, so the per-path
+#                                                           | form fails where the cell-level form
+#                                                           | holds and the existential over paths is
+#                                                           | doing real work).  What it does NOT
+#                                                           | establish: the cell at the formula
+#                                                           | `bot` is the singleton holding the
+#                                                           | empty type, so ONE path witnesses every
+#                                                           | type; this is existence evidence on one
+#                                                           | object and NOT a general discharge of
+#                                                           | `ForwardSlackWitnessed`, which on a
+#                                                           | multi-type cell is route 4 at the cell
+#                                                           | level (simultaneous multi-region
+#                                                           | shortening) and is not attempted.  It
+#                                                           | refutes nothing about
+#                                                           | `CellLEZeroConstOfKappaEq`, and
+#                                                           | compiles no failure mechanism other
+#                                                           | than the ceiling in either direction.
+#                                                           | The reserved name
+#                                                           | `cellLE_zero_const_of_kappa_eq` is
+#                                                           | claimed by nothing here.  All five
+#                                                           | schemas KEEP `ForwardSlackWitnessed`,
+#                                                           | no signature is touched, and
+#                                                           | `LadderCell.lean` is not edited.  Of
+#                                                           | the two events that would lift the
+#                                                           | depth-0 gate, the result SUPPORTS
+#                                                           | `cellLE_zero_const_of_kappa_eq` landing
+#                                                           | as a theorem, as existence evidence
+#                                                           | only; it does not bring that event
+#                                                           | about and takes no ruling on the gate.
+#                                                           | Axioms: a subset of `[propext,
+#                                                           | Classical.choice, Quot.sound]` on every
+#                                                           | headline.  No `sorryAx`, no custom
+#                                                           | axiom, no `native_decide`.
 # lcu-lcn-separation/lcu-lcn-separating-model                | `lcU` is NOT derivable from TM⁺ +
 #                                                           | `LC_n` + mirror `LC_n` at `.Base`
 #                                                           | with `RuleSet.none` -- witnessed by
@@ -2676,6 +2752,7 @@ WIRED=(
   "forward-slack-pin-cascade/pin-cascade-straddle"
   "forward-slack-pin-cascade/route-space-closure"
   "forward-slack-pin-cascade/idle-run-one-ceiling"
+  "forward-slack-pin-cascade/consumer-shape-witness"
   "lcu-lcn-separation/lcu-lcn-separating-model"
   "stability-modal-substrate/full-labels-collapse-stab"
 )

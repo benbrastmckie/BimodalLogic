@@ -7,8 +7,78 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderIdle
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderCell
 
+/-!
+# `ForwardSlackWitnessed` is SATISFIABLE at the consumer shape, at a positive amount
+
+**POSITIVE.** The five depth-`0` cell-equality schemas of
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean`
+(`cellLE_zero_const_of_kappa_eq_of_forwardSlack` and its `_commonShift_`, `_monotone_`,
+`_antitone_`, `_antitone_bounded_` siblings) consume `ForwardSlackWitnessed` at exactly one
+shape: at the HIGHER state `(q, c + m * (P + 1), n)`, at the amount `m * (P + 1)`. The sibling
+probe `idle-run-one-ceiling.lean` compiles that the amount ceiling `hasForwardSlack_amount_le`
+cannot bite at that shape. Being immune to the ceiling is not the same as being satisfiable:
+the hypothesis is a `∀ T ∈ cellAt …, ∃ g τ, …` statement. This file compiles one object on
+which it HOLDS at that shape, at a positive amount, with the slack premise inhabited.
+
+## What this probe establishes
+
+* `fsw_consumer_shape`: on the two-state object `stepOr x y = x || y` of
+  `IdleRunOne` (`LadderIdle.lean`) — serial in both directions, with NO idle self-loop — at the
+  formula `φ = ⊥`, `ForwardSlackWitnessed` holds at the state `(true, c + m * (P + 1), 0)` at
+  amount `m * (P + 1)`, for EVERY `c`, `m` and `P`. The witness path is the plateau at height
+  `c + m * (P + 1)`.
+* `plateau_next_region`: on that witness path a genuine next region exists at idle-run length
+  `1` (the position just past the countdown is idle, the one after it is pending). So the
+  premise of `HasForwardSlack` is inhabited and the regime is NOT met vacuously.
+* `consumer_fires`: the whole hypothesis set of `cellLE_zero_const_of_kappa_eq_of_forwardSlack`
+  is jointly satisfiable at a positive amount. At the periodicity fixpoint's own parameters
+  `Tcof`/`Tnof`/`Pof`/`Bof` (so `ParamsOk` holds by `paramsOk_params`), with `c := Tc + B + 2`
+  and `m := 1`, it exhibits the pending-forever regime (`0 + 2 ≤ c`, `Tc ≤ c`), the `kappa`
+  collision between `(c, 0)` and `(c + (P + 1), 0)`, the witnessing hypothesis at the positive
+  amount `P + 1`, and the cell equality obtained by APPLYING the restricted theorem.
+* `climbC_isLadderPath` and `climbC_not_hasForwardSlack`: a second ladder path through the SAME
+  state `(true, C, 0)`, for every `C`, carries NO forward slack at ANY positive amount (its
+  register climbs by one per step, so the next region's countdown is `C + 1` against an
+  allowance of `C + 1 - l`). The existential over paths is therefore doing real work here: the
+  per-path form fails where the cell-level form holds, on one object.
+
+## Two reading aids
+
+* At the consumer shape `c' = c + l` the regime's inequality `nxtAt g s₀ ≤ n + c' + I - l`
+  reduces to: the next region's countdown is at most `n + c + I`, the LOWER pair's allowance.
+* The upward cell inclusion `cellAt_subset_of_shift_of_pend_past` (lower cell inside higher
+  cell) is unconditional. Only the reverse inclusion consumes `ForwardSlackWitnessed`. So a
+  failure of the hypothesis at this shape would not by itself refute a cell equality; a
+  refutation needs a type in the higher cell that is absent from the lower one.
+
+## What this probe does NOT establish
+
+The cell at `φ = ⊥` is the singleton `{∅}` (`tpOf_bot_eq_empty`), so ONE path witnesses every
+type in it. This is existence evidence on one object. It is NOT a general discharge of
+`ForwardSlackWitnessed`, at the consumer shape or anywhere else: on a formula whose cell holds
+several types, each type needs its own slack-carrying path, and that is route 4 at the cell
+level (simultaneous multi-region shortening), which this probe does not attempt.
+
+It refutes nothing about `CellLEZeroConstOfKappaEq`. No failure mechanism other than the
+ceiling is compiled here, in either direction.
+
+The reserved name `cellLE_zero_const_of_kappa_eq` is claimed by NOTHING in this file; the
+application inside `consumer_fires` is a USE of the restricted `…_of_forwardSlack` theorem. All
+five depth-`0` schemas KEEP `ForwardSlackWitnessed` as a carried hypothesis, no signature is
+touched, and `LadderCell.lean` is not edited.
+
+## Verdict
+
+Of the two events that would lift the depth-`0` gate — `cellLE_zero_const_of_kappa_eq` landing as a
+theorem resting on no placeholder axiom, or `CellLEZeroConstOfKappaEq` being refuted under
+`ParamsOk` — this result SUPPORTS THE FIRST, as existence evidence only: the witnessing hypothesis
+is satisfiable at the shape the schemas use, at a positive amount, in the pending-forever regime,
+and the restricted theorem fires there. It does not bring that event about, and the gate ruling is
+not taken here.
+-/
+
 namespace FormalSystem.Metalogic.Decidability.RaySummary
-namespace Probe934
+namespace ProbeConsumerShape
 
 open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.Semantics
 open ClimbWitness (pendT plateau plateauRaw)
@@ -160,11 +230,11 @@ theorem climbC_not_hasForwardSlack (C l : ℕ) (hl : 0 < l) :
   push_cast at this
   omega
 
-end Probe934
+end ProbeConsumerShape
 end FormalSystem.Metalogic.Decidability.RaySummary
 
 section
-open FormalSystem.Metalogic.Decidability.RaySummary.Probe934
+open FormalSystem.Metalogic.Decidability.RaySummary.ProbeConsumerShape
 #print axioms fsw_consumer_shape
 #print axioms plateau_next_region
 #print axioms consumer_fires

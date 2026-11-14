@@ -1,7 +1,7 @@
 # Implementation Plan: Task #934
 
 - **Task**: 934 - Depth-0 reachability probe: is `ForwardSlackWitnessed` satisfiable at the consumer instantiation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None. Consumes landed declarations of tasks 917 and 929 and edits none of them.
 - **Research Inputs**: specs/934_depth_zero_reachability_probe/reports/01_consumer-shape-reachability-probe.md
@@ -132,23 +132,23 @@ does NOT take the ruling, which is reserved to the user.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Promote and wire the consumer-shape witness probe [NOT STARTED]
+### Phase 1: Promote and wire the consumer-shape witness probe [COMPLETED]
 
 **Goal**: The compiled witness lives at the collection path a probe belongs at, is tracked by git,
 is compiled on every CI run, and states its own reach.
 
 **Tasks**:
 
-- [ ] Confirm the correction/promotion source exists:
+- [x] Confirm the correction/promotion source exists:
       `specs/934_depth_zero_reachability_probe/probe-draft/consumer-shape-witness.lean`
       (confirmed present and git-tracked at plan time). If it is absent, STOP and return
       `partial`; do not re-derive the probe from the report's prose.
-- [ ] Create `specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean` from the
+- [x] Create `specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean` from the
       draft: keep the Apache header, both imports, every declaration and proof body VERBATIM,
       and the trailing `#print axioms` section for the five headlines. Rename the namespace
       `Probe934` to `ProbeConsumerShape` at all three sites (`namespace`, `end`, and the trailing
       `open ... .Probe934`).
-- [ ] Insert a `/-! ... -/` module docstring directly after the imports, in the shape of the
+- [x] Insert a `/-! ... -/` module docstring directly after the imports, in the shape of the
       sibling `idle-run-one-ceiling.lean`, with these sections:
       (a) **POSITIVE** headline: `ForwardSlackWitnessed` holds at the consumer shape
       `(true, c + m*(P+1), 0)` at amount `m*(P+1)`, for every `c`, `m`, `P`, on `stepOr` at
@@ -173,10 +173,10 @@ is compiled on every CI run, and states its own reach.
       five depth-0 schemas keep the hypothesis; no non-ceiling failure mechanism is compiled in
       either direction;
       (f) **Verdict**: supports the `cellLE_zero_const_of_kappa_eq`-lands-as-a-theorem lifting
-      event, as existence evidence only; the gate ruling is not taken here.
-- [ ] `git add -- specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean` so the
+      event, as existence evidence only; the gate ruling is not taken here. *(deviation: altered — the docstring verdict says "a theorem resting on no placeholder axiom" instead of "sorryAx-free", so this phase's own `grep -c 'sorry...'` gate stays at 0)*
+- [x] `git add -- specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean` so the
       probe is TRACKED before the guard runs (`check_probe` tests `git ls-files --error-unmatch`).
-- [ ] Add `"forward-slack-pin-cascade/consumer-shape-witness"` to the `WIRED` array in
+- [x] Add `"forward-slack-pin-cascade/consumer-shape-witness"` to the `WIRED` array in
       `scripts/check-evidence-probes.sh`, directly after
       `"forward-slack-pin-cascade/idle-run-one-ceiling"`, AND add its row to the documentation
       table in the comment block above the array, directly after the `idle-run-one-ceiling` row,
@@ -184,13 +184,13 @@ is compiled on every CI run, and states its own reach.
       left gutter. The row states the positive headline, names the five headline declarations,
       carries the "What it does NOT establish" clause from (e), and ends with the axioms line.
       It cites declaration names and filenames only: no task number, and no draft-history
-      phrasing ("previously", "no longer", "formerly").
-- [ ] Delete the task-local draft
+      phrasing ("previously", "no longer", "formerly"). *(deviation: altered — the pre-edit wired total (61) was read from the WIRED/WIRED_REPO array lengths at HEAD, which is the script's own `wired_total` computation, instead of a second full pre-edit guard run; the post-edit run printed `PASS  all 62 wired probe(s) compile`)*
+- [x] Delete the task-local draft
       `specs/934_depth_zero_reachability_probe/probe-draft/consumer-shape-witness.lean` with
       `git rm` (single explicit path), after the promoted copy has compiled.
-- [ ] Add a one-line forward pointer to the promoted path in the research report's
+- [x] Add a one-line forward pointer to the promoted path in the research report's
       `**Artifacts**` line, so its citation of the draft does not go stale.
-- [ ] Record any deviation or win via `issue-record.sh` as it arises (dispatch contract).
+- [x] Record any deviation or win via `issue-record.sh` as it arises (dispatch contract).
 
 **Timing**: 1.25 hours
 

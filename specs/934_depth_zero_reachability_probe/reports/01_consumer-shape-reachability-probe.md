@@ -6,7 +6,7 @@
 **Effort**: ~1 hour research; implementation estimated 1-2 hours (transcription + wiring)
 **Dependencies**: None (consumes landed declarations of tasks 917 and 929; edits none of them)
 **Sources/Inputs**: - Codebase (`FormalSystem/Metalogic/Decidability/RaySummary/{LadderCell,LadderChain,LadderIdle,LadderAgree,CounterQuotient,RunLayer,LadderModel}.lean`), `specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean`, `scripts/check-evidence-probes.sh`, compiled scratch probes via `lake env lean` through `lake-build-guard.sh`
-**Artifacts**: - specs/934_depth_zero_reachability_probe/reports/01_consumer-shape-reachability-probe.md; compiled draft probe at specs/934_depth_zero_reachability_probe/probe-draft/consumer-shape-witness.lean
+**Artifacts**: - specs/934_depth_zero_reachability_probe/reports/01_consumer-shape-reachability-probe.md; compiled draft probe at specs/934_depth_zero_reachability_probe/probe-draft/consumer-shape-witness.lean (promoted at implementation to specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean; the task-local draft was removed)
 **Standards**: report-format.md, subagent-return.md
 
 ## Executive Summary
