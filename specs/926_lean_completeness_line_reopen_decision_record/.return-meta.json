@@ -1,10 +1,52 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 9,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/926_lean_completeness_line_reopen_decision_record/summaries/01_completeness-line-reopen-ruling-summary.md",
+      "summary": "Completion summary: one line per route ruling, Premise Re-Validation result (one stale figure, six confirmed), guardrails held, deferred R3/R4 filing preference, and the scoped gate-discharge note."
+    },
+    {
+      "type": "report",
+      "path": "specs/926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md",
+      "summary": "Amended with a '## Premise Re-Validation' section and a consolidated '## Reopening Terms' table covering all seven routes/sub-routes, each with disposition, filing scope, barred scope, change condition, and Findings citation."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Discharged the three obligations the research report had not yet carried: a Premise Re-Validation section (one stale 'zero tasks' premise corrected, six other carried figures confirmed verbatim), a consolidated Reopening Terms table for all seven routes/sub-routes with per-route Recommendation-8-clause discrimination, and the completion summary. No Lean file written, no part of the Reynolds engine's sections 7-15 formalized or filed, no completeness claim made; Recommendation 8 stays in force for every route not explicitly reopened."
+  },
+  "modified_files": [
+    "specs/926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md",
+    "specs/926_lean_completeness_line_reopen_decision_record/summaries/01_completeness-line-reopen-ruling-summary.md",
+    "specs/926_lean_completeness_line_reopen_decision_record/plans/01_completeness-line-reopen-ruling.md",
+    "specs/926_lean_completeness_line_reopen_decision_record/issues.jsonl"
+  ],
+  "memory_candidates": [
+    {
+      "content": "For a specs-only, markdown-only implement phase (report/summary file_scope, no code) whose final phase declares Verification Tier: full under a multi-task batch's Batch Gate Deferral directive: neither narrowing invocation (run-all.sh --only SUITE, verify-deploy.sh --only-gate N) maps to specs/**.md content, since every verify-deploy.sh gate targets .claude/** deploy-tree-vs-source-store sync or shell test suites. This is the dispatch's own documented UNMAPPABLE CRITERION case -- discharge it by running the phase's own named checks directly (validate-artifact.sh on each artifact, a git status --short scoped review for out-of-scope paths) and recording that the full verify-deploy.sh battery is deferred to the batch-level stage, rather than treating the full tier as unsatisfiable or independently running an irrelevant gate subset.",
+      "category": "PATTERN",
+      "source_artifact": "specs/926_lean_completeness_line_reopen_decision_record/summaries/01_completeness-line-reopen-ruling-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": [
+        "batch-gate-deferral",
+        "unmappable-criterion",
+        "verification-tier-full",
+        "specs-only-task",
+        "verify-deploy"
+      ]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1794635603_fa0324",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
+    "phases_completed": 3,
+    "phases_total": 3
   }
 }

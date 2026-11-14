@@ -13,7 +13,7 @@ next_project_number: 933
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,926,931,932 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,932 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,862,873 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -34,10 +34,6 @@ next_project_number: 933
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
-
-### Completeness
-
-926 [IMPLEMENTING] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
 
 ### Dataset Enhancement
 
@@ -235,12 +231,13 @@ FILE SCOPE: none. Report only. Reads FormalSystem/Semantics/UniversalCover.lean,
 ---
 
 ### 926. Lean completeness line reopen decision record
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: completeness
 - **Dependencies**: Task 927, Task 928
 - **Research**: [926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md]
 - **Plan**: [926_lean_completeness_line_reopen_decision_record/plans/01_completeness-line-reopen-ruling.md]
+- **Summary**: [926_lean_completeness_line_reopen_decision_record/summaries/01_completeness-line-reopen-ruling-summary.md]
 
 **Description**: DECISION RECORD ONLY -- report only, file_scope: [], no Lean file written, no formalization attempted. The deliverable is a ruling with its argument, nothing else.
 

@@ -1673,7 +1673,7 @@
     {
       "project_number": 926,
       "project_name": "lean_completeness_line_reopen_decision_record",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "general",
       "topic": "completeness",
       "priority": "high",
@@ -1889,7 +1889,7 @@
         927,
         928
       ],
-      "last_updated": "2026-11-14T07:07:12Z",
+      "last_updated": "2026-11-14T07:22:49Z",
       "session_id": "sess_1794635603_fa0324",
       "artifacts": [
         {
@@ -1901,9 +1901,15 @@
           "path": "specs/926_lean_completeness_line_reopen_decision_record/plans/01_completeness-line-reopen-ruling.md",
           "type": "plan",
           "summary": "Three-phase, specs-only plan closing out the completeness-line reopen decision record: premise re-validation, consolidated reopening-terms sheet, summary and gates."
+        },
+        {
+          "path": "specs/926_lean_completeness_line_reopen_decision_record/summaries/01_completeness-line-reopen-ruling-summary.md",
+          "type": "summary",
+          "summary": "Completion summary: one line per route ruling, Premise Re-Validation result, guardrails held, deferred R3/R4 filing preference, scoped gate-discharge note."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Discharged the three obligations the research report had not yet carried: a Premise Re-Validation section (one stale 'zero tasks' premise corrected, six other carried figures confirmed verbatim), a consolidated Reopening Terms table for all seven routes/sub-routes with per-route Recommendation-8-clause discrimination, and the completion summary. No Lean file written, no part of the Reynolds engine's sections 7-15 formalized or filed, no completeness claim made; Recommendation 8 stays in force for every route not explicitly reopened."
     },
     {
       "project_number": 927,
