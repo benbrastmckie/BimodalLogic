@@ -998,9 +998,9 @@ the past, satisfying the gap and violating it — and INHABITED at every amount
 (`ClimbWitness.exists_hasForwardSlack_inhabitant`, the plateau). The
 open core is the two cascades on a tight chain of pins — backward on the doubling chain, forward
 on its mirror — where the only candidate device, a type-respecting block SPANNING a region
-start, is refuted in both directions as a consequence of the parameter conditions (the
-standalone prototype `tight-chain-regime-b.lean` in the task record that landed this layer, not
-a wired probe). The STATE-level downward inclusion is landed too, under an existential-over-paths
+start, is refuted in both directions as a consequence of the parameter conditions (the wired
+probe `specs/evidence/seam-gluing-ray-product/ladder-tight-chain-regime-b.lean`). The
+STATE-level downward inclusion is landed too, under an existential-over-paths
 hypothesis rather than a per-path one (`ForwardSlackWitnessed`,
 `cellAt_subset_of_shift_of_pend_past_rev`, `LadderCell.lean`), and with the upward inclusion it
 assembles to the obligation's FORWARD-SLACK-RESTRICTED form as a theorem under a name of its own —
@@ -1035,9 +1035,9 @@ over a pin window does not respect; and `satPeriod` is a datum of `step`, `lab` 
 not quantified over block lengths at all. A refuting object settles it outright: the ALTERNATING
 path — idle at every even position, pending at every odd one — carries, for a stab-free atomic
 closure at the periodicity fixpoint's own outputs, a type-respecting block of EVERY even length
-with a pin strictly inside it, so no single modulus divides them all. (The standalone prototype
-`spanning-divisibility.lean` in the task record, not a wired probe.) The consequence for the
-depth-`0` obligation is that the DOWNWARD cell inclusion cannot be assembled from the
+with a pin strictly inside it, so no single modulus divides them all. (The wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-spanning-divisibility.lean`.) The consequence for
+the depth-`0` obligation is that the DOWNWARD cell inclusion cannot be assembled from the
 pigeonhole's block: the deletion mirror of the regime-A assembly demands, at the first pin above
 the compared position, a register bound stronger than the `1`-Lipschitz register supplies by
 exactly the amount deleted, and the tight chain has slack exactly `0` at every gap between pins.

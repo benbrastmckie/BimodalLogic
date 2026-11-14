@@ -268,7 +268,7 @@ collections and is the only consumer of the `WIRED` array this edit feeds.
 
 ---
 
-### Phase 3: Rewrite the two README citations [NOT STARTED]
+### Phase 3: Rewrite the two README citations [COMPLETED]
 
 **Goal**: `RaySummary/README.md` cites each refutation's wired probe by its new tracked path, with
 the "not a wired probe" qualifier and the "in the task record" framing both gone.
