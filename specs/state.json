@@ -1890,7 +1890,7 @@
     {
       "project_number": 927,
       "project_name": "final_frame_step_remeasure_against_landed_cover",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "high",
@@ -2058,7 +2058,7 @@
         ],
         "degradation_summary": "447 project(s) judged scope-blind (no file_scope declared); per-project list omitted"
       },
-      "last_updated": "2026-11-14T06:27:34Z",
+      "last_updated": "2026-11-14T06:39:07Z",
       "session_id": "sess_1794635603_fa0324",
       "artifacts": [
         {
@@ -2070,9 +2070,15 @@
           "path": "specs/927_final_frame_step_remeasure_against_landed_cover/plans/01_final-frame-step-remeasure.md",
           "type": "plan",
           "summary": "Three-phase plan: carried-figure re-validation and guardrail attestation, two successor task filings, close-out record and final gate."
+        },
+        {
+          "path": "specs/927_final_frame_step_remeasure_against_landed_cover/summaries/01_final-frame-step-remeasure-summary.md",
+          "type": "summary",
+          "summary": "Close-out record: the four findings, the carried-figure verdict, the guardrail attestation, the two filed successors, and what was deliberately not done."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Remeasured the completeness paper proof's final-frame step against the landed universal cover and base-Saturation-free invariance: the step is conditionally discharged on a named, compiled four-lemma API refactor rather than open. Re-validated every carried figure against live source (the dispatch's 519-line UniversalCover.lean figure is stale at a measured 626), attested all six guardrails mechanically clean, extended the 901 stale-anchor enumeration from four sites to seven, and filed two successor tasks (931 record correction, 932 the ofStepRel API) with backlog-reconciliation evidence. No Lean file written, no part of sections 7-15 formalized, no report amended in place, and no completeness claim: rows 17-21 remain paper."
     },
     {
       "project_number": 928,

@@ -1,17 +1,27 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "summary": "Wrote a three-phase plan for task 927. The research dispatch already delivered all four findings, and the task's guardrails bar this task from acting on most of them (no Lean write, no s7-15 formalization, no in-place 901/879 edit), so the plan is measure-attest-and-hand-off: Phase 1 re-validates the dispatch's carried figures (the asserted 519-line UniversalCover.lean measures 626 live) and enumerates the complete 901 stale-anchor set, including two drifted-citation sites the report's Finding (3) did not reach; Phase 2 files two successor tasks with backlog evidence; Phase 3 writes the close-out record and runs the full gate set. No Lean source, build file, archived report or ROADMAP sentence is touched by any phase.",
+  "task_number": 927,
+  "phase": "implement",
+  "dispatch_seq": 5,
+  "status": "implemented",
+  "phases_completed": 3,
+  "phases_total": 3,
+  "summary": "Re-validated the dispatch's carried figures against live source (the 519-line UniversalCover.lean figure is stale; measured 626), confirmed all eleven named declarations at their recorded lines, and attested all six guardrails mechanically clean: zero .lean files, zero archived-report edits, zero ROADMAP change. Extended the 901 stale-anchor enumeration from four sites to seven, finding one the research report did not reach. Filed two successor tasks with backlog-reconciliation evidence: 931 applies the 901 record correction, 932 lands the four ofStepRel constraint lemmas plus ofStepPlain that are finding (4)'s named condition. Verdict unchanged and carried forward: the final-frame step is conditionally discharged on a compiled four-lemma API refactor, which is not a completeness claim.",
+  "blockers": [],
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/927_final_frame_step_remeasure_against_landed_cover/summaries/01_final-frame-step-remeasure-summary.md",
+      "summary": "Close-out record: the four findings, the carried-figure verdict, the guardrail attestation, the two filed successors, and what was deliberately not done."
+    },
     {
       "type": "plan",
       "path": "specs/927_final_frame_step_remeasure_against_landed_cover/plans/01_final-frame-step-remeasure.md",
-      "summary": "Three-phase plan: carried-figure re-validation and guardrail attestation, two successor task filings, close-out record and final gate."
+      "summary": "Plan with Phase 1-3 Notes: carried-figure table, declaration table, guardrail attestation, seven-anchor 901 enumeration, decision gate, scoped gate discharge."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/927_final_frame_step_remeasure_against_landed_cover/task-proposals-audit.ndjson",
+      "summary": "Backlog-reconciliation verdicts for both filed proposals, consumed by state-write.sh --audit-verdict."
     }
-  ],
-  "phases_completed": 0,
-  "phases_total": 3,
-  "blockers": [],
-  "next_action_hint": "Dispatch the implement phase; Phase 1 is measurement-only and writes nothing outside this plan file.",
-  "dispatch_seq": 3
+  ]
 }

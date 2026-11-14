@@ -13,8 +13,8 @@ next_project_number: 933
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,927,928,931,932 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,862,873,926 | 298,428,502,761,869,927,928 | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,928,931,932 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,862,873,926 | 298,428,502,761,869,928 | algebraic-representation, completeness, dataset-enhancement, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
@@ -37,10 +37,8 @@ next_project_number: 933
 
 ### Completeness
 
-927 [IMPLEMENTING] — MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers...
-  └─ 926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
 928 [PLANNED] — ASSESSMENT TASK, report only. Costs the single lemma that...
-  └─ 926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean... (see above)
+  └─ 926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
 
 ### Dataset Enhancement
 
@@ -202,12 +200,13 @@ FILE SCOPE: none. Report only.
 ---
 
 ### 927. Final frame step remeasure against landed cover
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
 - **Research**: [927_final_frame_step_remeasure_against_landed_cover/reports/01_final-frame-step-remeasure.md]
 - **Plan**: [927_final_frame_step_remeasure_against_landed_cover/plans/01_final-frame-step-remeasure.md]
+- **Summary**: [927_final_frame_step_remeasure_against_landed_cover/summaries/01_final-frame-step-remeasure-summary.md]
 
 **Description**: MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers one question: is the completeness paper proof final-frame step still open, given that both Lean pieces it was said to need have since landed?
 

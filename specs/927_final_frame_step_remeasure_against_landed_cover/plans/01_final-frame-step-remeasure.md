@@ -1,7 +1,7 @@
 # Implementation Plan: Task #927
 
 - **Task**: 927 - Final frame step: remeasure against the landed cover
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/927_final_frame_step_remeasure_against_landed_cover/reports/01_final-frame-step-remeasure.md`
