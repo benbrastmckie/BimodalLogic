@@ -1,63 +1,47 @@
 {
-  "status": "partial",
-  "started_at": "2026-11-14T22:05:00Z",
-  "requires_user_review": true,
-  "blocked_phase": "11.6",
-  "review_reason": "Phase 11.6 still blocked: plan v14 was not revised after the (R-i) ruling, and (R-i) fails its obligation check on the step (hL needs cell agreement at pairs that are not kappa-collisions).",
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "axiom_count": 14,
-    "build_passed": null,
-    "build_output": "not run: no Lean source touched"
-  },
+  "status": "researched",
+  "started_at": "2026-11-14T22:30:00Z",
+  "dispatch_seq": 40,
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/14_carried-hypothesis-depth-zero-route-summary.md",
-      "summary": "Round-14 summary covering dispatches 38 and 39: still blocked, no library change, route (R-i) fails its obligation check on the step."
+      "type": "report",
+      "path": "specs/761_ladder_realization_theorem/reports/15_stab-bit-copy-pair-decision.md",
+      "summary": "Route S-1 decided: both recorded obstruction sources (O1 off-residue interior copies, O2 threshold-straddling pairs) are GENUINE stab-bit differences, so hL is false there and the pump construction must change; the margin design (S-2) survives, its exact-shift question is retired by exists_typeBlock_of_spacing at s := P+1, and the (K2) margin conjunct it needs is compiled dischargeable."
     },
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
-      "summary": "Phase 11.6 stays [BLOCKED]; second BLOCKER entry on route (R-i) added under the heading."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T221500Z.md",
-      "summary": "Dispatch-39 handoff: the obligation check, the two non-collision sources, and the scratch probe source."
+      "type": "prototype",
+      "path": "specs/761_ladder_realization_theorem/prototype/stab-bit-copy-pair-probe.lean",
+      "summary": "Compiled probe (lake env lean, exit 0, 12 declarations, axioms propext/Classical.choice/Quot.sound, no sorryAx): the two refutations, the (K1) coverage of the fixture's stab bit, and three generic ParamsOk facts (modulus unbounded at fixed Tc, upward monotonicity in Tc, margin dischargeability)."
     }
   ],
-  "modified_files": [
-    "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T221500Z.md",
-    "specs/761_ladder_realization_theorem/summaries/14_carried-hypothesis-depth-zero-route-summary.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl"
-  ],
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 0,
+    "axiom_count_note": "0 real `axiom` DECLARATIONS across FormalSystem and Tests, measured this round with `grep -rnE '^axiom [A-Za-z_][A-Za-z0-9_'\\''.]*[[:space:]]*[({:]'`. The `^axiom ` figure carried by the previous round's metadata (12 + 2 = 14) counts docstring line-wraps whose wrapped line happens to begin with the word 'axiom', not declarations; all 12 such matches were inspected and none is a declaration. Baseline unchanged either way.",
+    "build_passed": null,
+    "build_output": "not run: no library Lean source touched. The round's own artifact compiled standalone: lake env lean specs/761_ladder_realization_theorem/prototype/stab-bit-copy-pair-probe.lean, exit 0, 12 #print axioms lines all [propext, Classical.choice, Quot.sound], no sorryAx. lean-sorry-census.sh over FormalSystem, Tests and the prototype directory: sorry_count 0. check-task-references.sh --quiet: PASS."
+  },
   "user_decision": {
-    "question": "Route (R-i) does not discharge the step half of its obligation: relativizing the splice/deletion stack to a pinned-letter parameter L leaves the transport's hL premise, which needs cell agreement at position pairs that are never kappa-collisions (interior block copies displaced off-residue; threshold-tight pairs with later positions below Tc). How should the step be approached?",
+    "question": "The research round decided the evidence: both obstruction sources are genuine stab-bit differences, and the margin design's two open points are answered (block spacing at s := P+1 retires the exact-shift question; the (K2) margin conjunct is compiled dischargeable). Route S-2 lifts this plan's standing 'do NOT raise Tc or further strengthen ParamsOk without a ruling' prohibition. Should the plan be revised onto S-2?",
     "options": [
-      "(S-1) Research round first: settle by compiled probe on a small fixture whether a stab bit actually differs at a copy pair, and whether a margin design closes, before any further plan revision or implement dispatch",
-      "(S-2) Depth-stratified threshold margins: pump only where the countdown stays above a threshold that falls with stab depth, with blocks spaced at P+1; strengthens (K2) by a depth-dependent margin, so it lifts the plan's 'do NOT raise Tc or strengthen ParamsOk' prohibition and changes the ruled ParamsOk; exact shift with P+1-spaced blocks still open; NOT COSTABLE",
-      "(S-3) Re-open route (R-a), the depth-stratified certificate family the recorded decision did not take",
-      "(S-4) Rest the task [BLOCKED] with both obstructions recorded; no further dispatch until a new idea"
+      "S-2 \u2014 depth-stratified threshold margins: pump through exists_typeBlock_of_spacing at s := P+1, add one (K2) conjunct coupling Tc to P and to the stab-depth sup, redefine Tcof as a max through Pof; lifts the Tc/ParamsOk prohibition",
+      "S-3 \u2014 re-open route (R-a), the depth-stratified certificate family the recorded decision did not take; larger, and answers a question this round closed",
+      "S-4 \u2014 rest [BLOCKED] with the two refutations and the margin feasibility recorded"
     ],
-    "recommended": "(S-1) Research round first: settle by compiled probe on a small fixture whether a stab bit actually differs at a copy pair, and whether a margin design closes, before any further plan revision or implement dispatch",
-    "blocking": true,
-    "obligation": "Evidence, compiled where it can be, that decides between a margin design and the certificate-side route: either a fixture on which a stab bit differs at a pump copy pair (so no path-level correspondence through kappa-classes exists), or a stated induction invariant whose position pairs are all inside its own scope."
+    "recommended": "S-2 \u2014 depth-stratified threshold margins: pump through exists_typeBlock_of_spacing at s := P+1, add one (K2) conjunct coupling Tc to P and to the stab-depth sup, redefine Tcof as a max through Pof; lifts the Tc/ParamsOk prohibition",
+    "blocking": false,
+    "obligation": "A revision whose first phase lands the two clauses exists_iterSpliced_ladderPath_idx_of_pend_past does not expose (the interior-copy countdown cntAt g' (u + i*l + j) = cntAt g (u + j) + (d - i)*l, and the register nxtAt g' (u + i*l + j) = nxtAt g (u + j)), plus a compiled room lemma b*(P+1) <= Tc from the new (K2) conjunct, BEFORE any depth induction is attempted; and whose induction invariant is stated on q = q' AND n = n' AND c == c' mod (P+1) AND Tc_d <= min c c', not on kappa-equality, unless kappa's gap coordinate is checked saturated at the intended instantiation."
   },
   "metadata": {
-    "session_id": "sess_1794675657_f70522",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1794695736_a316b1_761",
+    "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": [
       "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ],
-    "compliance_check": "skipped",
-    "phases_completed": 30,
-    "phases_total": 41
+      "research",
+      "lean-research-agent"
+    ]
   }
 }
