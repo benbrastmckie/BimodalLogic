@@ -217,7 +217,6 @@ cited record, not here.
 Only the first batch has to come first -- it is the only one that unblocks other work. The rest are independent of each other and may be run in any order or interleaved, subject to the batch-gate's live-lock rule.
 
 ```
-/orchestrate 934 --hard   # Decide the depth-0 gate's one remaining crux by probe; the decidability front's live head
 /orchestrate 933   # Correct the decidability-front record; its stale-batch item is discharged by this pass
 /orchestrate 931   # The completeness front's one dispatchable item: apply 927's landed amendments to the 901 report
 /orchestrate 831 --research --lit   # The dense-time dichotomy gating L-R3, the only identified non-ZTime decidability route
