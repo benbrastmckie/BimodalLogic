@@ -203,36 +203,39 @@ count moved and therefore no generated surface in play.
 
 ---
 
-### Phase 2: Land the refutation in `LadderIdle.lean` as `section IOne` [NOT STARTED]
+### Phase 2: Land the refutation in `LadderIdle.lean` as `section IOne` [COMPLETED]
 
 **Goal**: The five headline declarations are part of the library, inside the module that holds
 task 924's conditional discharge, stated at exactly their reach.
 
 **Tasks**:
 
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean` immediately before
+- [x] Re-read `FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean` immediately before
       editing (sibling task 930 declares no file scope).
-- [ ] Open a new `section IOne` after the existing final section, with a section docstring that
+- [x] Open a new `section IOne` after the existing final section, with a section docstring that
       states: the refutation's statement and its object; that it is the repository's first
       CELL-level refutation of `ForwardSlackWitnessed` and why the existential-over-paths escape
       closes here (the ceiling is forced by the OBJECT, not by the path); that it does NOT reach
       the five depth-`0` schemas, citing `ceiling_slack_at_consumer_amount`; that `certStabK`'s
       obligation stays PROVISIONAL; that `LadderCell.lean` is not edited and no schema's
       signature is touched; and that `cellLE_zero_const_of_kappa_eq` is claimed by nothing here.
-- [ ] Inside it, open `namespace IdleRunOne` (confirmed free; chosen over the probe's `Probe929`
+- [x] Inside it, open `namespace IdleRunOne` (confirmed free; chosen over the probe's `Probe929`
       because `.claude/rules/no-task-references-in-deliverables.md` forbids a task-number
       reference outside `specs/**`) and transcribe, in the probe's own order: `stepOr`,
       `stepOr_idle_idle`, `fwdOr`, `bwdOr`, `plateau_isLadderPath_stepOr`, `labB`, `xState`,
       `plateau_two_at_zero`, `next_pend_of_idle`, `not_hasForwardSlack_of_four`,
       `forwardSlackWitnessed_refuted_I_one`, `xState_regime`, `not_idleRunPumpable`,
       `ceiling_slack_at_consumer_amount`, `tpOf_bot_eq_empty`,
-      `forwardSlackWitnessed_holds_below_ceiling`.
-- [ ] Give each declaration its own doc comment. Add NO `Paper:` line and NO
+      `forwardSlackWitnessed_holds_below_ceiling`. *(deviation: altered — `next_pend_of_idle`'s
+      `show objAt g (u + 1) = true` became `change ...`; the library build runs
+      `linter.style.show`, which the standalone probe's `lake env lean` compile does not, and
+      this phase's own criterion bars warnings. Proof text is otherwise verbatim.)*
+- [x] Give each declaration its own doc comment. Add NO `Paper:` line and NO
       `docs/theorem-index.md` row — C15's obligation runs row → `Paper:` line, so adding no row
       incurs no obligation; record this as a deliberate choice in the section docstring.
-- [ ] Do NOT carry over the probe's trailing `#print axioms` section — run those checks as
+- [x] Do NOT carry over the probe's trailing `#print axioms` section — run those checks as
       verification instead, so the library file emits no `info` output on every build.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` IN THIS
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` IN THIS
       PHASE. `.githooks/pre-commit` enforces this surface and fires on any staged `.lean` path,
       so drift here BLOCKS this phase's own commit and cannot be deferred.
 
