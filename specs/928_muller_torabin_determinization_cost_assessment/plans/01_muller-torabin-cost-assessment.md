@@ -193,28 +193,28 @@ and widens the task list if either has moved.
 
 ---
 
-### Phase 2: Fidelity-check Thomas 1997 Theorem 6.5 and Remark 6.6 [NOT STARTED]
+### Phase 2: Fidelity-check Thomas 1997 Theorem 6.5 and Remark 6.6 [COMPLETED]
 
 **Goal**: Settle, against the held PDF's page images, whether Finding 1.2's quoted construction
 and Finding 1.3's tree-to-word transposition claim survive contact with the source — and record
 the outcome either way, including "could not be completed".
 
 **Tasks**:
-- [ ] Map the markdown anchors Finding 1.2 cites (`Thomas_1997_Languages_Automata_Logic.md:1975`
+- [x] Map the markdown anchors Finding 1.2 cites (`Thomas_1997_Languages_Automata_Logic.md:1975`
       for Theorem 6.5, `:2004` for Remark 6.6, `:1982-1986` for the data-structure attribution)
       onto PDF pages in `/home/benjamin/Projects/Literature/sources/thomas_1997_languages/Thomas_1997_Languages_Automata_Logic.pdf`
-- [ ] Read those pages as images and check verbatim against the report: the state set
+- [x] Read those pages as images and check verbatim against the report: the state set
       (order-vectors with hit), the initial state, the transition rule, the `E_i`/`F_i` chain
       definition, and Remark 6.6's two conditions
-- [ ] Check specifically whether anything in Theorem 6.5's statement or Remark 6.6's claim is
+- [x] Check specifically whether anything in Theorem 6.5's statement or Remark 6.6's claim is
       tree-specific beyond the automaton type's name — this is Finding 1.3's load-bearing claim
-- [ ] Confirm or correct the report's statement that Thomas gives no proof of Remark 6.6
+- [x] Confirm or correct the report's statement that Thomas gives no proof of Remark 6.6
       ("one verifies the following claim"), since guardrail (f)'s partial fire rests on it
-- [ ] Amend Findings 1.2 and 1.3 with a fidelity note naming the actual PDF page numbers read,
+- [x] Amend Findings 1.2 and 1.3 with a fidelity note naming the actual PDF page numbers read,
       and correct any quoted text the page images contradict
-- [ ] Update the "stated for tree automata" Risks row with the check's outcome; if the check could
+- [x] Update the "stated for tree automata" Risks row with the check's outcome; if the check could
       not be completed, say so there explicitly and leave the risk standing rather than dropping it
-- [ ] Record an issue or win via `issue-record.sh` as the phase goes
+- [x] Record an issue or win via `issue-record.sh` as the phase goes
 
 **Timing**: 0.5 hours
 
