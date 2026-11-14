@@ -43,7 +43,8 @@
         805,
         806,
         819,
-        820
+        820,
+        934
       ],
       "file_scope": [
         "FormalSystem.lean",
@@ -18165,32 +18166,33 @@
   "roadmap_batches": [
     {
       "task_ids": [
-        743,
-        803,
-        804,
-        787
+        934
       ],
-      "flags": "--hard",
-      "description": "The one unblocking chain left: 743 gates 803, 804, 787 and 869, on serializing shared territory",
-      "rationale": "FIRST, because it is the only batch here that unblocks other work. 743 is `planned` and gates 803 (-> 804), 787 and 869; 803/804 are the repository's largest measured rebuild cost (SubformulaProperty.lean elaborates in 1103s as one module, about 17 percent of a 414-job incremental rebuild), with research and a landed plan already in hand. It is one batch and not four lines because the members share territory -- `README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`, `typst/generated/status.typ` -- which serializes the batch rather than breaking it. That same territory is what collides with 761's declared scope; see the preamble."
+      "description": "Decide the depth-0 gate's one remaining crux by probe; the decidability front's live head",
+      "rationale": "FIRST, and it is the only batch that unblocks other work on the L-plus decidability front. 929 and 930 archived on 2026-11-13, so the batch that used to head this line names only terminal tasks and is retired here. 934 replaces it: it runs the reachability probe that decides whether `ForwardSlackWitnessed` is satisfiable at the CONSUMER INSTANTIATION the five depth-`0` cell-equality schemas use -- state `(q, c', n')` with `c' = c + m * (P + 1)` at amount `l = m * (P + 1)` (`LadderCell.lean:1503-1508`). 929 bounded the question on one side and no further: its refutation mechanism is the ceiling `hasForwardSlack_amount_le`, and `ceiling_slack_at_consumer_amount` compiles that the ceiling cannot bite at the consumer shape, so 929 PROVABLY CANNOT REACH the schemas' instantiation. What is left is the other half -- immunity to the ceiling is not satisfiability. The verdict names which of the gate's two lifting events it supports; the gate RULING itself stays with the user (Stage 0), which is why this line produces a compiled probe and a verdict, not a lift. The depth-`0` gate and requirement (S)'s residue are ONE item, not two: (S) reduces to the single missing theorem `real_certStabK`, which is the `Real` condition this gate gates.",
+      "flags": "--hard"
     },
     {
       "task_ids": [
-        929,
-        930
+        933
       ],
-      "flags": "--hard --lit",
-      "description": "The only enterable depth-0 open-core work: 929's idle-run discharge, 930's prototype wiring",
-      "rationale": "The head of the decidability front, and a deliberate demotion of 761 beneath it. 929 discharges the I = 1 idle-run sub-regime so `ForwardSlackWitnessed` becomes unconditional rather than conditional on the non-ParamsOk-derivable `IdleRunPumpable`; 930 promotes the two orphan prototypes (`tight-chain-regime-b.lean`, `spanning-divisibility.lean`) that `RaySummary/README.md` cites as the sole authority for two load-bearing refutations while flagging each as \"not a wired probe\". Both are `ready`, both are depth-0 open-core, and neither is gated on anything. 761's plan v13 derives explicitly that these two are INPUTS to a future revision and NOT gates of any of its phases -- so no dependency edge was added between them and 761, and they are scheduled ahead of it rather than behind it."
+      "description": "Correct the decidability-front record; its stale-batch item is discharged by this pass",
+      "rationale": "Second because it is record hygiene whose largest item this `/roadmap` pass has already performed. 933's item (1) was `rebuild roadmap_batches so no archived task heads a batch` -- the `[929, 930]` batch is retired here, as are the two other all-terminal batches (`[743, 803, 804, 787]` and `[927, 928, 926]`) that the same defect had left standing. Item (4), `write 761's actual blocker into state.json`, is also discharged: 761 now carries a `934` edge (see the preamble). What remains for 933 is item (2) alone -- rewriting the stale `Where both fronts now stand` paragraph against 761's plan v13, whose `Stage 1 has a short dispatchable Lean line again` claim and ~2.5h Phases 11.16/11.17 figure are both spent -- plus item (3)'s residual check-off of Stage 0's `I = 1` idle-run item against 929's summary. It should be narrowed to those before dispatch rather than run as filed."
     },
     {
       "task_ids": [
-        927,
-        928,
-        926
+        931
       ],
-      "description": "Settle the Lean completeness line: both measurements first, then the reopen ruling they feed",
-      "rationale": "Ordered measurements-then-ruling, which is why the two inputs lead the line. 926 is a decision record that must rule reopen/keep-closed on four routes, and its own text names 927 as \"its companion measurement task\" for route R2 -- the route it says it \"should weigh first\", and the only one needing no ruling at all if 927's check comes back positive -- and 928 as \"the companion cost-assessment task\" whose costing it \"consumes\". Neither relationship was expressed as a dependency edge; both have been added this pass (926 now carries `dependencies: [927, 928]`). Reversing Recommendation 8's bar on formalizing the Reynolds engine's sections 7-15 is a user ruling, so this batch produces a record, not Lean."
+      "description": "The completeness front's one dispatchable item: apply 927's landed amendments to the 901 report",
+      "rationale": "The completeness front's Lean programme is exhausted BY RULING, not by unfinished dispatches: every row of 879's 21-row ingredient table is landed, held as paper or closed, and 901's Recommendation 8 bars filing a Lean formalization of the Reynolds engine's sections 7-15. One named open problem -- closedness of the canonical bundle -- is deliberately unfiled. That leaves exactly one dispatchable completeness item, and this is it: 931 applies amendments that are already WRITTEN. 927's report supplies verbatim replacement text for the `missing` ingredient-table row, the drifted line-number citations beside it, and two Risks paragraphs; 927's plan carries the full seven-anchor table, three of whose anchors Finding (3) does not enumerate. Nothing is to be re-derived or re-measured. It is raised above the hygiene lines here because the instruction prioritizes the completeness front and this is the whole of that front's live work."
+    },
+    {
+      "task_ids": [
+        831
+      ],
+      "description": "The dense-time dichotomy gating L-R3, the only identified non-ZTime decidability route",
+      "rationale": "Verdict-first research, deliberately alone on its line: the deliverable is a verdict plus grounds, not a landed theorem, and it must not be budgeted as a routine task. Every landed and in-flight decidability result in this tree is ZTime-shaped; L-R3 is the only identified route to Base/Dense/RTime, where r.e.-ness itself is still open and Craig remains the only instrument. It sits directly below the ZTime line because it is the decidability front's only other live direction.",
+      "flags": "--research --lit"
     },
     {
       "task_ids": [
@@ -18199,36 +18201,61 @@
         500,
         543
       ],
-      "flags": "--hard --lit",
       "description": "The algebraic chain bottom-up to 543, the last high-priority L-plus metalogic task still open",
-      "rationale": "543 is reachable ONLY through the edge chain 502 -> 497 -> 500 -> 543, and its first three links are all priority `low`, which is exactly why 543 -- priority `high` -- has never been scheduled on its own. Batching the chain is the only way the high-priority terminus is ever dispatched; the intra-batch edges sequence it into successive waves rather than disqualifying any member."
+      "rationale": "543 is reachable ONLY through the edge chain 502 -> 497 -> 500 -> 543, and its first three links are all priority `low`, which is exactly why 543 -- priority `high` -- has never been scheduled on its own. Batching the chain is the only way the high-priority terminus is ever dispatched; the intra-batch edges sequence it into successive waves rather than disqualifying any member. Kept high on the list because 543 is L-plus metalogic, which is what this ordering prioritizes. Note the live territory overlap with 761 (`README.md`, `FormalSystem/README.md`, `FormalSystem.lean`): that serializes the two lines against each other, it does not break either.",
+      "flags": "--hard --lit"
+    },
+    {
+      "task_ids": [
+        890,
+        570
+      ],
+      "description": "The two completeness-side records: the GHR94 erratum and the open C3 completeness question",
+      "rationale": "Grouped because both are completeness-side metalogic records that touch no Lean, and raised above the hygiene lines for the same reason 931 is. 890 is already `researched` and needs only the GHR94 Lemma 10.2.3 Case 5 erratum written into the Typst reference manual. 570 is an OPEN RESEARCH QUESTION, not an implementation task -- whether the logic of C3 equals Burgess-Xu without unboundedness plus S5 -- where only the containment is established and the completeness claim was explicitly declined; its honest terminal outcome is a recorded verdict, not a theorem.",
+      "flags": "--lit"
+    },
+    {
+      "task_ids": [
+        761,
+        862,
+        861
+      ],
+      "description": "Ladder realization and its two dependents, now ordered behind 934's depth-0 crux verdict",
+      "rationale": "Parked, and the graph now says so. All six of 761's originally declared edges are discharged, but plan v13 came to rest at 30 of 41 phases closed with ZERO enterable: every remaining phase sits behind Phase 11.6's depth-`0` gate. A `934` edge was added this pass, because Stage 0's own ruling states that 761's next revision takes the depth-`0` crux probe's verdict as its input -- an observable sequencing statement in the record, not batch co-membership. The edge expresses necessary-before and nothing stronger: 934 reaching terminal does not by itself lift the gate, which remains a user ruling. No edge was added between 761 and the archived 929/930, because plan v13 derives explicitly that those two were INPUTS to a future revision and NOT gates of any phase. 862 and 861 stay batched WITH 761 rather than after it, because their edge is on 761 reaching TERMINAL and a dependent named without its out-of-batch blocker is dead weight; both are already `researched`.",
+      "flags": "--hard --lit"
+    },
+    {
+      "task_ids": [
+        763
+      ],
+      "description": "The lift to Decidable (PlusValidZTime phi); watch real_certStabK by name, not by discovery",
+      "rationale": "Kept on its own line rather than folded into the batch above, because it needs not merely 761 terminal but the whole chain above it closed. The (S) scope question it used to turn on is SETTLED: the assignment to requirement (W) is confirmed sufficient and no extension task is filed (user ruling, 2026-11-14), so what 763 inherits is a verified premise. The one thing to watch there is `real_certStabK` by name -- five of `certAdmK`'s six conditions are discharged by `real_certLocK`, `real_certBiInfK`, `real_certFwdK`, `real_certBwdK` and `real_certBoxK` in `LadderRealize.lean`, and `real_certStabK` exists nowhere in the tree. `Decidable (PlusValidZTime phi)` is stated nowhere yet.",
+      "flags": "--hard --lit"
     },
     {
       "task_ids": [
         178,
         604,
-        890,
         829
       ],
-      "description": "Four independent deliverables, no shared territory and no edges: examples, zstd, erratum, CI cache",
-      "rationale": "Parallel-safe by construction. 178 (priority high) is the publication-quality Examples/ expansion, now `ready` since both its edges archived; 604 adds zstd `.jsonl` dataset support; 890 is `researched` and only needs the GHR94 Lemma 10.2.3 Case 5 erratum written into the Typst reference manual; 829 adds the missing `actions/cache` for `.lake/build`, absent from all three workflows today. This batch previously also named 832, which has since archived."
+      "description": "Three independent deliverables, no shared territory and no edges: examples, zstd, CI cache",
+      "rationale": "Parallel-safe by construction. 178 (priority `high`) is the publication-quality `Examples/` expansion, `ready` since both its edges archived; 604 adds zstd `.jsonl` dataset support; 829 adds the missing `actions/cache` for `.lake/build`, absent from all three workflows today. 890 was a member of this batch and has moved up to the completeness-side record line, where it belongs by subject."
     },
     {
       "task_ids": [
-        664,
-        570
+        664
       ],
-      "flags": "--lit",
-      "description": "Corpus ingest of the ball-space source and the C3 consequence-relation completeness question",
-      "rationale": "Both are literature-shaped and neither touches Lean. 664 closes a measured corpus gap: the manuscript's `def:frame` footnote cites Cmiel2021 for the ball-space claim, and no matching entry exists in the global index or the sub-index. 570 is an open research question, not an implementation task -- whether the logic of C3 equals Burgess-Xu without unboundedness plus S5 -- where only the containment is established and the completeness claim was explicitly declined."
+      "description": "Corpus ingest of the Cmiel ball-space source the manuscript's def:frame footnote cites",
+      "rationale": "Literature-shaped and touching no Lean. It closes a measured corpus gap: the manuscript's `def:frame` footnote cites Cmiel2021 for the ball-space claim, and no matching entry exists in the global index or the sub-index. Separated from 570, with which it used to share a line, because 570 is a completeness question and this is a corpus acquisition -- they are literature-shaped for different reasons.",
+      "flags": "--lit"
     },
     {
       "task_ids": [
-        831
+        481
       ],
-      "flags": "--research --lit",
-      "description": "The dense-time dichotomy gating L-R3, the only identified non-ZTime decidability route",
-      "rationale": "Verdict-first research, deliberately alone on its line: the deliverable is a verdict plus grounds, not a landed theorem, and it must not be budgeted as a routine task. Every landed and in-flight decidability result in this tree is ZTime-shaped; L-R3 is the only identified route to Base/Dense/RTime, and this record is what makes the review's \"NEW, UNFILED\" reference resolve."
+      "description": "The refuted UnorderedSuccessorLabelClosed residual; a register entry is a complete outcome",
+      "rationale": "Classified genuinely open -- the predicate is refuted as stated -- so the honest terminal outcome is a register entry recording the refutation, not a discharge. Scheduling it expecting a proof is the failure mode this line exists to prevent.",
+      "flags": "--hard"
     },
     {
       "task_ids": [
@@ -18249,40 +18276,14 @@
     },
     {
       "task_ids": [
-        761,
-        862,
-        861
-      ],
-      "flags": "--hard --lit",
-      "description": "Ladder realization and its two dependents; parked until the depth-0 gate has an owner",
-      "rationale": "Deliberately demoted from the head of the list, where it previously sat. All six of 761's declared edges are discharged, but plan v13 came to rest at 30 of 41 phases closed with ZERO enterable, every remaining phase behind Phase 11.6's depth-`0` gate that no open task owns -- so dispatching this line advances nothing until Stage 0's unchecked ownership item is ruled. 862 and 861 stay batched WITH 761 rather than after it, because their edge is on 761 reaching TERMINAL and a dependent without its out-of-batch blocker is dead weight; both are already `researched` and will land the moment the gate lifts."
-    },
-    {
-      "task_ids": [
-        763
-      ],
-      "flags": "--hard --lit",
-      "description": "The lift and the Decidable (PlusValidZTime phi) corollary; needs 761 terminal first",
-      "rationale": "Kept on its own line rather than folded into the batch above, because it needs not merely 761 terminal but the whole chain above it closed. The (S) scope question it turns on is still owned by no task."
-    },
-    {
-      "task_ids": [
-        481
-      ],
-      "flags": "--hard",
-      "description": "The refuted UnorderedSuccessorLabelClosed residual; a register entry is a complete outcome",
-      "rationale": "Classified genuinely open -- the predicate is refuted as stated -- so the honest terminal outcome is a register entry recording the refutation, not a discharge. Scheduling it expecting a proof is the failure mode this line exists to prevent."
-    },
-    {
-      "task_ids": [
         428,
         429,
         410,
         411
       ],
-      "flags": "--hard",
       "description": "The tableau spine's middle; needs 428's scope ruled, and 410 already carries a plan",
-      "rationale": "The whole Track A/Track B tableau spine is priority `low` and off both critical paths, which is why it sits below the L-plus work despite its size. Dependency-inclusive: 428 is `blocked` and heads the chain it gates (429 -> 410 -> 411)."
+      "rationale": "The whole Track A/Track B tableau spine is priority `low` and off both critical paths, which is why it sits below the L-plus work despite its size. Dependency-inclusive: 428 is `blocked` and heads the chain it gates (429 -> 410 -> 411). Ruling on 428's scope is an open Stage 0 item -- its one edge is discharged and its `blockers` says \"paused at 4/5 cycles, NOT blocked\" -- so this line is not enterable as filed until that ruling lands.",
+      "flags": "--hard"
     },
     {
       "task_ids": [
@@ -18290,27 +18291,27 @@
         412,
         482
       ],
-      "flags": "--hard --lit",
       "description": "The tableau spine's terminus, ending at 482, classified open mathematics and multi-month",
-      "rationale": "Separated from the spine's middle because its terminus is a different kind of work: 482 is classified OPEN MATHEMATICS on a multi-month horizon and must not be scheduled as routine implementation."
+      "rationale": "Separated from the spine's middle because its terminus is a different kind of work: 482 is classified OPEN MATHEMATICS on a multi-month horizon and must not be scheduled as routine implementation.",
+      "flags": "--hard --lit"
     },
     {
       "task_ids": [
         498,
         499
       ],
-      "flags": "--hard",
       "description": "The Jonsson-Tarski representation's two sides: complex algebra and ultrafilter frame",
-      "rationale": "Both hang off 497, which the chain-to-543 batch above already carries, so this line is placed after it rather than duplicating 497. 499 is flagged HARD in its own record."
+      "rationale": "Both hang off 497, which the chain-to-543 batch above already carries, so this line is placed after it rather than duplicating 497. 499 is flagged HARD in its own record.",
+      "flags": "--hard"
     },
     {
       "task_ids": [
         125,
         501
       ],
-      "flags": "--hard",
       "description": "The Jonsson-Tarski capstone and Until/Since on STSA, the representation front's terminus",
-      "rationale": "125 is the capstone, reachable only once 498 and 499 both land; 501 extends STSA with Until/Since behind it."
+      "rationale": "125 is the capstone, reachable only once 498 and 499 both land; 501 extends STSA with Until/Since behind it.",
+      "flags": "--hard"
     },
     {
       "task_ids": [
@@ -18321,10 +18322,11 @@
     },
     {
       "task_ids": [
-        869
+        869,
+        932
       ],
-      "description": "Open-modal truth invariance along a ray-agreement-lifting history morphism; waits on 743 and gates 873",
-      "rationale": "The only L-triangle task with an out-of-batch gate: its 743 edge is carried by the first batch in this list, so it cannot run until that one closes. It now also gates 873 on shared file scope (FormalSystem/OpenLanguage.lean, docs/theorem-index.md), so it runs ahead of the L-triangle syntax line rather than after it. Small, self-contained, and demoted by the same standing ruling as that batch."
+      "description": "Open-modal invariance and the IntNormalForm API behind it; 869's own gates are now discharged",
+      "rationale": "869's `743` and `898` edges have both archived, so it is `ready` -- the rationale that had it waiting on 743 is spent and is replaced here. 932 joins it rather than sitting uncovered: it carries an `869` edge and is a frame-presentation API refactor in `IntNormalForm.lean` whose five declarations and one equation lemma are transcribed verbatim in 927's report, all six already elaborated sorry-free. Dependency-inclusive, and it closes the last coverage gap in this list. Demoted beneath every L-plus line by the standing 2026-11-05 ruling, and 869 additionally gates 873 on shared file scope (`FormalSystem/OpenLanguage.lean`, `docs/theorem-index.md`), so it runs ahead of the syntax line."
     },
     {
       "task_ids": [
@@ -18334,14 +18336,15 @@
         876
       ],
       "description": "The L-triangle syntax line: 873 runs first within the batch and gates the other three",
-      "rationale": "Placed below every L-plus line by standing user ruling: the repository's aim is completeness and decidability of the stability-modal language L-plus, and L^|> is a secondary line of investigation that is kept but never dispatched ahead of, or batched with, critical-path work. Within the batch, 873 gates 874, 875 and 876, which each carry an edge on it. 873 itself carries an edge on 869 and so runs after the batch above: the two share FormalSystem/OpenLanguage.lean and docs/theorem-index.md, and the edge makes that shared territory an ordered sequence rather than a collision the admission gate refuses. 876 is a decision record only -- no constructor of `OpenFormula` is to be removed."
+      "rationale": "Placed below every L-plus line by standing user ruling: the repository's aim is completeness and decidability of the stability-modal language L-plus, and L^|> is a secondary line of investigation that is kept but never dispatched ahead of, or batched with, critical-path work. Within the batch, 873 gates 874, 875 and 876, which each carry an edge on it. 873 itself carries an edge on 869 and so runs after the batch above: the two share `FormalSystem/OpenLanguage.lean` and `docs/theorem-index.md`, and the edge makes that shared territory an ordered sequence rather than a collision the admission gate refuses. 876 is a decision record only -- no constructor of `OpenFormula` is to be removed."
     }
   ],
   "roadmap_notes": {
     "next_preamble": [
-      "**761 cannot be advanced by any dispatch, and has been demoted accordingly.** All six of its declared edges are discharged, but plan v13 came to rest at 30 of 41 phases closed with **zero enterable**: every remaining phase sits behind Phase 11.6's depth-`0` gate, which no open task owns. Lifting that gate is Stage 0's one unchecked item -- a user ruling, not an `/orchestrate` line. Tasks 929 and 930 are INPUTS to a future revision of that plan and NOT gates of any of its phases, which is why they now head the decidability work and 761 sits well below them.",
-      "**761 remains a live scope-collision source.** Its 43 declared paths include `README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md` and `typst/generated/status.typ`, every one of which task 803 also declares. That is a plan-level gate, clearable with `--allow-scope-collision` while 761 is not actually running and **not** clearable against a live 761 dispatch.",
-      "Only the first batch has to come first -- it is the one that unblocks others. The rest are independent of each other and may be run in any order or interleaved, subject to the batch-gate's live-lock rule."
+      "**The list is ordered on the instruction that L⁺ completeness and decidability come first.** The decidability front leads (934, then the record correction it supersedes most of, then 831's dense-time dichotomy); the completeness front follows immediately (931, then the two completeness-side records); everything off those two fronts sits below them, and the L^▷ exploration backlog sits last by the standing 2026-11-05 ruling.",
+      "**761 cannot be advanced by any dispatch, and the graph now says so.** All six of its originally declared edges are discharged, but plan v13 came to rest at 30 of 41 phases closed with **zero enterable**: every remaining phase sits behind Phase 11.6's depth-`0` gate. A `934` edge was added this pass on the strength of Stage 0's own ruling -- 761's next revision takes the depth-`0` crux probe's verdict as its input -- so 761's blocker is now carried in the dependency graph (`dependencies` gains `934`) rather than only in prose; its own row still renders on its explicit `BLOCKED` status marker. The edge expresses necessary-before and nothing more: 934 reaching terminal does not by itself lift the gate, whose disposition remains a user ruling. No edge was added to the archived 929/930, which plan v13 derives explicitly were INPUTS to a future revision and NOT gates of any phase.",
+      "**761's scope collision has moved, not vanished.** The `803` collision this note used to name is gone -- 803 archived. What is live today is the overlap with 543 (`README.md`, `FormalSystem/README.md`, `FormalSystem.lean`), with 763/861/862 inside its own line, with 869 and 932 (`typst/generated/status.typ`, `docs/theorem-index.md`), and with 410 and 177. Shared territory serializes those lines against each other; it never breaks a batch.",
+      "Only the first batch has to come first -- it is the only one that unblocks other work. The rest are independent of each other and may be run in any order or interleaved, subject to the batch-gate's live-lock rule."
     ],
     "next_postamble": [
       "Each line is one invocation, and batches are dependency-inclusive: a batch holding a blocker together with its dependent is correct, while a dependent named *without* its out-of-batch blocker is dead weight. `MAX_TASKS` is 8 and the work-cycle budget is per task per invocation (5 default, 13 under `--hard`), so **re-run the same line until every member reports terminal**. Shared file scope serializes a batch rather than breaking it, and a collision against a *live* session's lock is not bypassable by `--allow-scope-collision`: wait for the holder, or batch with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.",
