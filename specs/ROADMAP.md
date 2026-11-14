@@ -36,9 +36,12 @@ programmes rather than of unfinished dispatches.
   high-priority L⁺ metalogic task), off-critical-path hygiene, build cost, datasets and docs, and
   the L^▷ exploration backlog.
 
-Three items on the critical path are **owned by no task**, and each is listed under Stage 0 or
-"Not batched" below rather than batched: requirement (S)'s remaining scope, the `I = 1` idle-run
-sub-regime, and closedness of the canonical bundle.
+**One item on the critical path is owned by no task**: closedness of the canonical bundle, listed
+under "Not batched" below rather than batched, and unfiled by deliberate ruling. The other two this
+line used to name are discharged (2026-11-14 rulings, Stage 0): requirement (S)'s residue is
+CONFIRMED sufficient as assigned to (W) and reduces to the single named theorem `real_certStabK`,
+and the depth-`0` gate's crux is owned by task 934. The `I = 1` idle-run sub-regime was filed as
+929 and completed 2026-11-13.
 
 ## L^▷: what is landed, and what is parked
 
@@ -331,8 +334,10 @@ batch with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
       and already enumerated in Phase 11.16. Phase 11.16's branch (B) is therefore the enterable
       branch, including its instruction to RAISE — not silently take — the one-line scope expansion
       onto `LadderWindow.lean:509-519`
-- [ ] **Decide who owns the depth-`0` gate — this is now the thing standing between Stage 1 and a
-      dispatchable line, and it replaces the `hself` ruling above.** The `hself` ruling unblocks
+- [x] **The depth-`0` gate's crux is OWNED: task 934 runs the reachability probe** (2026-11-14,
+      user ruling). The gate ruling itself is NOT taken here — 934 returns a compiled verdict and
+      the disposition stays with the user. Original framing, retained because its detail is still
+      live: the `hself` ruling unblocks
       Phases 11.16 and 11.17 only (~2.5h); the other fourteen open phases of 761, and five of its
       six filed Goals (`ladderSound`, `ladderCons_localRun`, `ladderLift`, `Dmax ⊆ Real`,
       `ladderRealized`), sit behind Phase 11.6's depth-`0` gate. That gate lifts on exactly one of
@@ -353,6 +358,23 @@ batch with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
       (`ClimbWitness.hasForwardSlack_refuted_unconditional`); `ForwardSlackWitnessed` survives only
       as an existential over paths, so the existential form is the target and the per-path form is a
       known refutation
+
+      **WHAT 929 CHANGED, and why this is now probe-sized.** The crux above is no longer "claimed
+      in neither direction". 929 landed the first cell-level refutation of `ForwardSlackWitnessed`
+      (`forwardSlackWitnessed_refuted_I_one`: FALSE at amount `4` at `xState = (true, 2, 0)` on
+      `stepOr`, at a state whose pending-forever regime membership is compiled by `xState_regime`),
+      together with a compiled bound on its reach. The mechanism is the ceiling
+      `hasForwardSlack_amount_le` (`LadderChain.lean:1656`), `(l : ℤ) ≤ (n : ℤ) + cntAt g z + I`.
+      The five depth-`0` schemas instantiate `ForwardSlackWitnessed` at ONE shape — state
+      `(q, c', n')` with `c' = c + m * (P + 1)` and amount `l = m * (P + 1)`
+      (`LadderCell.lean:1503-1508`) — where `cntAt` is `c' ≥ l`, so the ceiling is satisfied for
+      free (`ceiling_slack_at_consumer_amount`, `LadderIdle.lean:1306`). **929's refutation
+      therefore provably cannot reach the schemas' instantiation**, and all five keep the
+      hypothesis for a positive compiled reason. What stays open is the other half: immunity to the
+      ceiling is not satisfiability, and `ForwardSlackWitnessed` is a `∀ T ∈ cellAt …, ∃ g τ, …`
+      statement (`LadderCell.lean:998-1010`). 934 decides exactly that, at exactly that
+      instantiation. **Second trap, from 917**: the pin-layer discharge route is already REFUTED
+      and wired (`pin-cascade-straddle.lean`); do not retry it
 - [x] **The former "then `/revise 761`" item is DISCHARGED** — plan v12
       (`specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md`) IS that
       revision, and it settled its one live question: 924's relocation of `ForwardSlackWitnessed`
@@ -372,14 +394,26 @@ batch with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
       this writing (`next_project_number` is 926, above every archived row), so the measured
       failure it was filed against is gone. Abandon it, or re-scope it to whatever of its report's
       wider counter-hygiene findings survives — but it should not be dispatched as written
-- [ ] Decide whether **requirement (S)**'s remaining scope is a task. (S) is discharged only for
-      `box`/`stab`-free `φ` at ONE seam (`presented_modelOf`, `hitCl_modelOf_eq_hitOf`);
-      `box`/`stab`-bearing `φ` and every other seam are open, and `Decidable (PlusValidZTime φ)`
-      needs (C), (S) and (W) together. (C) is settled in general (`exists_hitPresented`); (W) is
-      what 916, 917, 918 and 924 attacked and all four are archived, so no live task touches it
-      either. `RaySummary/README.md`'s own accounting assigns (S)'s residue to (W), but no filed
-      task carries it. **Either confirm that assignment is sufficient or file the extension — do
-      not discover this at 763.** This is the LARGEST unowned item on the decidability front
+- [x] **Requirement (S)'s residue: the assignment to (W) is CONFIRMED SUFFICIENT and no extension
+      task is filed** (2026-11-14, user ruling). The residue was re-measured against the LANDED
+      TREE rather than against prose, and it is narrower than this item recorded: it is ONE named
+      missing theorem, `real_certStabK`. `certAdmK` (`CounterQuotient.lean:1045`) has six
+      conditions and `Real` discharges FIVE — `real_certLocK`, `real_certBiInfK`, `real_certFwdK`,
+      `real_certBwdK` and `real_certBoxK` are all landed in `LadderRealize.lean` (`:438` for the
+      `box` one); `real_certStabK` exists nowhere in `FormalSystem/` or `specs/`. Both halves of
+      (S)'s residue are therefore CARRIED BY LANDED CODE rather than merely assigned in prose: the
+      `box` half is DISCHARGED outright by `real_certBoxK`, and the "every seam but the one" half
+      is carried by `Real`'s existential over the `ℤ` component, which is what lifts past the
+      one-seam restriction `presented_modelOf` carries through its explicit `(τ, t)` and anchor
+      `hτ`. `LadderCons` (`LadderRealize.lean:245`) is landed and its acceptance criterion is not
+      optional — it is `certAdmK ∧ Dmax ⊆ R`, with `certBoxK` pinning the `□` letter as one global
+      bit and `certStabK` pinning the `⊡` letter per `(q, κ)`. **Filing a standalone (S) extension
+      would duplicate `real_certStabK`**, which is the `Real` condition the depth-`0` gate already
+      gates: (S)'s residue and that gate are NOT two independent unowned items, they are one. 917's
+      own verdict already named this consequence — `certStabK`'s one unclaimed `Real` condition
+      must be RESTATED rather than proved for as long as `ForwardSlackWitnessed` stays carried.
+      **What 763 inherits is therefore a verified premise, and the thing to watch there is
+      `real_certStabK`, by name** — which is what "do not discover this at 763" was asking for
 - [ ] Decide whether the **`I = 1` idle-run sub-regime** is filed. It is the whole distance
       between 924's conditional discharge of `ForwardSlackWitnessed` and an unconditional one, and
       discharging it lifts the `certStabK` restatement obligation. The one route that would make

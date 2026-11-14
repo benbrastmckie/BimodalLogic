@@ -1,5 +1,5 @@
 ---
-next_project_number: 934
+next_project_number: 935
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 934
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,933 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,933,934 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -61,7 +61,8 @@ next_project_number: 934
     └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-933 [NOT STARTED] — Correct the decidability-front record, which misrepresents...
+933 [NOT STARTED] — AMENDED 2026-11-14 (Stage 0 rulings landed, scope narrowed):...
+934 [NOT STARTED] — Decide the depth-0 gate's one remaining crux by probe: is...
 
 ### Formula Refactor
 
@@ -100,13 +101,45 @@ next_project_number: 934
 
 ## Tasks
 
+### 934. Depth zero reachability probe
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Decide the depth-0 gate's one remaining crux by probe: is `ForwardSlackWitnessed` satisfiable at the CONSUMER INSTANTIATION that the five depth-0 cell-equality schemas actually use? This task runs the probe and reports a verdict; it does NOT take the Stage 0 ruling on the gate itself.
+
+THE CRUX, LOCALIZED. specs/ROADMAP.md Stage 0 states the crux as "whether a `ForwardSlackWitnessed` hypothesis at a POSITIVE amount is satisfiable at any state the depth-0 induction one layer up reaches", and records it as "claimed in neither direction". Task 929 moved that. Measured against the landed tree, the question is now bounded on one side:
+
+- The five schemas instantiate `ForwardSlackWitnessed` at exactly one shape. `CellLEZeroConstOfKappaEqForwardSlack` (FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean:1492, hypothesis at :1503-1508) demands it at state `(q, c', n')` with `c' = c + m * (P + 1)` and amount `l = m * (P + 1)`, and symmetrically with `c` and `c'` swapped.
+- At that shape the ceiling cannot bite. `hasForwardSlack_amount_le` (LadderChain.lean:1656) forces `(l : Z) <= (n : Z) + cntAt g z + I` whenever a genuine next region exists with idle-run length `I > 0`. At the consumer instantiation `cntAt` is `c' = c + m*(P+1) >= l`, so the ceiling is satisfied for free -- which is exactly what `ceiling_slack_at_consumer_amount` (LadderIdle.lean:1306) compiles. 929's refutation mechanism is the ceiling, so 929's refutation PROVABLY CANNOT REACH the schemas' instantiation.
+- What that leaves open: `ForwardSlackWitnessed` is a `forall T in cellAt ..., exists g tau, ...` statement (LadderCell.lean:998-1010). Being immune to the ceiling is not the same as being satisfiable. The open half is whether, at the consumer instantiation, every type in the cell is realized by some ladder path carrying `HasForwardSlack g z (m*(P+1)) n'`.
+
+WHAT THE PROBE MUST DECIDE. Exhibit a concrete finite object, a state in the pending-forever regime (`n + 2 <= c`, `Tc <= c`, matching the schemas' own hypotheses at LadderCell.lean:1502) and an `m` with `m*(P+1) > 0`, at which `ForwardSlackWitnessed` at the consumer shape either HOLDS (non-vacuously -- the regime membership compiled with a concrete witness path, as 929 did with `xState_regime`) or FAILS BY A MECHANISM OTHER THAN THE CEILING. Either outcome decides the gate in one direction and is equally reportable, provided it is compiled rather than argued.
+
+STARTING POINT, ALREADY LANDED. 929 supplies most of a positive witness: `forwardSlackWitnessed_holds_below_ceiling` (RaySummary/LadderIdle.lean, `section IOne`, namespace `IdleRunOne`) shows the same state `xState = (true, 2, 0)` on `stepOr x y = x || y` carries EVERY amount `l <= 3 = n + c + 1`, and those are positive amounts at a state whose regime membership is already compiled (`xState_regime`). The first thing to check is whether that state and object can be put in the consumer shape `c' = c + m*(P+1)` for some `P` and `m >= 1` admitted by `ParamsOk` -- if so, the positive direction may be a short transcription rather than a new construction.
+
+TRAP, RECORDED SO IT IS NOT RE-DISCOVERED. The per-path state-level regime is ALREADY refuted unconditionally by `ClimbWitness.hasForwardSlack_refuted_unconditional`. `ForwardSlackWitnessed` survives only as an existential over paths, so the existential form is the target and the per-path form is a known dead end. Do not restate the probe over the per-path form.
+
+DELIVERABLE. A probe under `specs/evidence/forward-slack-pin-cascade/`, in the shape 929's `idle-run-one-ceiling.lean` establishes (Apache header, imports from `FormalSystem.Metalogic.Decidability.RaySummary.*`, a module docstring stating what it establishes or refutes and the compiled bound on its reach), wired into `scripts/check-evidence-probes.sh` as a tracked WIRED entry with its documentation-table row. Plus a written verdict naming which of the depth-0 gate's two lifting events the result supports: `cellLE_zero_const_of_kappa_eq` landing as a sorryAx-free theorem, or `CellLEZeroConstOfKappaEq` being refuted under `ParamsOk`.
+
+OUT OF SCOPE. Taking the depth-0 gate ruling itself (specs/ROADMAP.md Stage 0, reserved to the user); editing FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean, which 929 deliberately left byte-unchanged; and `real_certStabK`, which is the `Real` condition this gate gates and which belongs to task 761's chain, not to this probe.
+
+SECOND TRAP: WHAT THE ARCHIVED PREDECESSORS ALREADY SETTLED. Task 917 ("Discharge ForwardSlackWitnessed under ParamsOk, or compile a refutation", archived at specs/archive/917_forward_slack_witnessed_discharge_or_refutation/) reached the second of its two admissible outcomes: the PIN-LAYER DISCHARGE ROUTE IS REFUTED, compiled and wired (specs/evidence/forward-slack-pin-cascade/pin-cascade-straddle.lean), not stalled and not merely unproved. Do not retry that route. 917's own verdict also records the state this probe starts from: `ForwardSlackWitnessed`, being an existential over paths, "remains neither discharged nor refuted, so it stays a hypothesis a consumer must supply on all five depth-0 cell-equality schemas", with the named consequence that `certStabK`'s one unclaimed `Real` condition must be RESTATED rather than proved for as long as the hypothesis stays carried. This probe does not reopen that; it asks only whether the consumer instantiation is satisfiable, which 917 did not reach and 929 did not cover.
+
+---
+
 ### 933. Correct decidability front record
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: None
 
-**Description**: Correct the decidability-front record, which misrepresents the front's position after tasks 929 and 930 completed on 2026-11-13. Source: specs/reviews/review-2026-11-14.md (three High findings, one Medium). Four corrections, all record-level; no mathematics changes and no Stage 0 ruling is taken here.
+**Description**: AMENDED 2026-11-14 (Stage 0 rulings landed, scope narrowed): two user rulings were taken after this task was filed and are already written into specs/ROADMAP.md, so this task must NOT redo them. (a) Requirement (S)'s residue is CONFIRMED sufficient as assigned to (W) and reduces to the single named missing theorem `real_certStabK`; Stage 0's item is checked and records the measurement (five of `certAdmK`'s six conditions discharged by `real_certLocK`/`real_certBiInfK`/`real_certFwdK`/`real_certBwdK`/`real_certBoxK` in LadderRealize.lean, with `real_certStabK` absent). (b) The depth-0 gate's crux is OWNED by task 934, which runs the reachability probe; Stage 0's item is checked, the crux is restated against 929's `forwardSlackWitnessed_refuted_I_one` and `ceiling_slack_at_consumer_amount`, and the consumer-instantiation analysis is recorded there. The "Three items ... owned by no task" summary near the top of ROADMAP.md was also corrected to one item (canonical-bundle closedness).
+
+REMAINING SCOPE for this task is therefore items (1), (2) and (4) only: rebuild roadmap_batches so no archived task heads a batch (the [929,930] batch); rewrite the stale "Where both fronts now stand" paragraph at ROADMAP.md:20-26 against 761's plan v13 (the "Stage 1 has a short dispatchable Lean line again" claim and the ~2.5h Phases 11.16/11.17 figure are both spent); and write 761's actual blocker into state.json. Item (3)'s depth-0 half is DONE; its remaining half is only to check off Stage 0's "`I = 1` idle-run sub-regime" item citing 929's summary, if that item is still unchecked when this task is dispatched.
+
+ORIGINAL RECORD FOLLOWS.Correct the decidability-front record, which misrepresents the front's position after tasks 929 and 930 completed on 2026-11-13. Source: specs/reviews/review-2026-11-14.md (three High findings, one Medium). Four corrections, all record-level; no mathematics changes and no Stage 0 ruling is taken here.
 
 (1) roadmap_batches in specs/state.json carries a batch with task_ids [929,930] described as "The only enterable depth-0 open-core work: 929's idle-run discharge, 930's prototype wiring". Both tasks are COMPLETED and archived (specs/archive/929_idle_run_length_one_forward_slack_discharge/, specs/archive/930_wire_orphan_open_core_prototypes/). specs/ROADMAP.md renders that stale batch as fact at :208 and :235, including "Both are `ready` ... and neither is gated on anything ... they are scheduled ahead of it rather than behind it". Rebuild roadmap_batches against current active_projects so no archived task heads a batch.
 
