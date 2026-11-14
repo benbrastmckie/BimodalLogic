@@ -212,7 +212,6 @@ cited record, not here.
 Only the first batch has to come first -- it is the one that unblocks others. The rest are independent of each other and may be run in any order or interleaved, subject to the batch-gate's live-lock rule.
 
 ```
-/orchestrate 743, 803, 804, 787 --hard   # The one unblocking chain left: 743 gates 803, 804, 787 and 869, on serializing shared territory
 /orchestrate 929, 930 --hard --lit   # The only enterable depth-0 open-core work: 929's idle-run discharge, 930's prototype wiring
 /orchestrate 927, 928, 926   # Settle the Lean completeness line: both measurements first, then the reopen ruling they feed
 /orchestrate 502, 497, 500, 543 --hard --lit   # The algebraic chain bottom-up to 543, the last high-priority L-plus metalogic task still open
