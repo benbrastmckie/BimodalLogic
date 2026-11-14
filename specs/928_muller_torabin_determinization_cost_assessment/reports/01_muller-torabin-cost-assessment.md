@@ -259,7 +259,7 @@ and is inherited by `IsRegular.to_da_muller` (`:409-424`, read), whose proof `ob
 5. **Site it in the fork. Do not file a port of CSLib's ω-automata stack into this tree.** — [VERIFIED: PASS — minimal statement closure measured at 956 lines across 8 files; this repository's `lake-manifest.json` measured to contain no `cslib` entry]
 6. **Do not open the `require` question on this lemma's account.** Proving it in the fork entails no `require`; the question becomes live only when this repository's Lean code consumes it, which (O4) places well downstream. — [No compiled gate applicable]
 7. **Treat (O1) and (O3) as separable.** Discharging (O1) unblocks the automaton side of the `Prop`-valued completeness line on its own; (O3) binds the decidability front and is discharged by restating `IsRegular`/`iff_da_muller`, not by changing this lemma. — [VERIFIED: PASS — `OmegaRegularLanguage.lean:39` and `:409-424` read, confirming `IsRegular` is itself existential-over-`Type` and that `to_da_muller` destructs and rebuilds existentials]
-8. **Before any attempt, budget the reconstruction of Remark 6.6's proof as original work.** The corpus states it and does not prove it. — [No compiled gate applicable]
+8. **Before any attempt, budget the reconstruction of Remark 6.6's proof as original work — and the equivalence proof alongside it.** The corpus states Remark 6.6 and does not prove it. The page-image read (Finding 1.2) establishes that the *same* is true of Theorem 6.5's final step: Thomas closes with "It is now easy to check (using the Remark above) that `A'` accepts the same trees as `A`" and stops. **Two** obligations are original work, not transcription, not one. — [No compiled gate applicable; grounded on PDF pages 49–50 read as images]
 
 ## Decisions
 

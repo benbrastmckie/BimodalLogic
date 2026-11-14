@@ -243,31 +243,31 @@ risk standing.
 
 ---
 
-### Phase 3: Deliverable-contract audit, summary, and final gate [NOT STARTED]
+### Phase 3: Deliverable-contract audit, summary, and final gate [COMPLETED]
 
 **Goal**: Confirm the report discharges all four dispatch deliverables and all six guardrails,
 write the completion summary, and run the complete gate set.
 
 **Tasks**:
-- [ ] Audit the report against deliverables (1)-(4) and guardrails (a)-(f) from the dispatch
+- [x] Audit the report against deliverables (1)-(4) and guardrails (a)-(f) from the dispatch
       description, recording for each the report section that discharges it
-- [ ] Re-confirm guardrail (e)'s citations against the live fork: `git -C /home/benjamin/Projects/cslib log -1 --format=%h`
+- [x] Re-confirm guardrail (e)'s citations against the live fork: `git -C /home/benjamin/Projects/cslib log -1 --format=%h`
       and `grep -n "proof_wanted" /home/benjamin/Projects/cslib/Cslib/Computability/Automata/DA/Conversions.lean`
       (plan-time values: HEAD `3bdf16d9f`, `Rabin.toParity_exists` at line 89,
       `Muller.toRabin_exists` at line 112). If the fork has moved, update the report's cited lines
       and say so in the summary
-- [ ] Re-check guardrails (a) and (b) mechanically rather than by assertion:
+- [x] Re-check guardrails (a) and (b) mechanically rather than by assertion:
       `git -C /home/benjamin/Projects/cslib status --porcelain -- '*.lean'` shows no modification
       attributable to this task, and `git diff --stat -- lakefile.toml lake-manifest.json` in this
       repository is empty
-- [ ] Write `specs/928_muller_torabin_determinization_cost_assessment/summaries/01_muller-torabin-cost-assessment-summary.md`
+- [x] Write `specs/928_muller_torabin_determinization_cost_assessment/summaries/01_muller-torabin-cost-assessment-summary.md`
       per `context/formats/summary-format.md`: the four findings in brief, the disposition of each
       of the report's eight recommendations, the outcome of Phases 1 and 2, and the two deferred
       items (the `omega-automata-conversions.md` context extension; the 879 row-16 correction)
       each with the reason it was deferred rather than done
-- [ ] Run the complete gate set and record its outcome, separating findings that name this task's
+- [x] Run the complete gate set and record its outcome, separating findings that name this task's
       own files from the tree's standing baseline
-- [ ] Record an issue or win via `issue-record.sh`; if this phase genuinely has nothing to record,
+- [x] Record an issue or win via `issue-record.sh`; if this phase genuinely has nothing to record,
       attest to that explicitly in the handoff prose
 
 **Timing**: 0.75 hours
@@ -300,15 +300,15 @@ differs.
 
 ## Testing & Validation
 
-- [ ] Every cited Reynolds chunk line exists and its content matches the quoted text
-- [ ] Every PDF page number cited for Thomas 1997 exists and its content matches the quoted text
-- [ ] No `CARRIED-UNVERIFIED` marker remains on a claim that was in fact read during Phase 1 or 2
-- [ ] `validate-artifact.sh` exits 0 on the report, the plan, and the summary
-- [ ] No `.lean` file is modified in either tree; `lakefile.toml` and `lake-manifest.json` are
+- [x] Every cited Reynolds chunk line exists and its content matches the quoted text
+- [x] Every PDF page number cited for Thomas 1997 exists and its content matches the quoted text
+- [x] No `CARRIED-UNVERIFIED` marker remains on a claim that was in fact read during Phase 1 or 2
+- [x] `validate-artifact.sh` exits 0 on the report, the plan, and the summary
+- [x] No `.lean` file is modified in either tree; `lakefile.toml` and `lake-manifest.json` are
       byte-identical to their pre-task state
-- [ ] The final gate set is run, and any red finding is attributed to this task's files or to the
+- [x] The final gate set is run, and any red finding is attributed to this task's files or to the
       standing baseline explicitly
-- [ ] Commits name only this task's own files — no directory or glob staging, per the territory
+- [x] Commits name only this task's own files — no directory or glob staging, per the territory
       contract and `git-staging-scope.md`
 
 ## Artifacts & Outputs
