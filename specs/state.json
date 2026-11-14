@@ -2065,7 +2065,7 @@
     {
       "project_number": 928,
       "project_name": "muller_torabin_determinization_cost_assessment",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "medium",
@@ -2214,8 +2214,16 @@
         ],
         "degradation_summary": "448 project(s) judged scope-blind (no file_scope declared); per-project list omitted"
       },
-      "last_updated": "2026-11-14T05:56:03Z",
-      "session_id": "sess_1794635603_fa0324_928"
+      "last_updated": "2026-11-14T06:12:45Z",
+      "session_id": "sess_1794635603_fa0324",
+      "artifacts": [
+        {
+          "path": "specs/928_muller_torabin_determinization_cost_assessment/reports/01_muller-torabin-cost-assessment.md",
+          "type": "report",
+          "summary": "Costs Muller.toRabin_exists: the wanted construction is the appearance-record (LAR) route, not Safra/Piterman; ~1,000 lines (800-1,200) in one new file sited in the CSLib fork; no require entailed; (O1) and (O3) are separable."
+        }
+      ],
+      "next_artifact_number": 2
     }
   ],
   "artifacts": [

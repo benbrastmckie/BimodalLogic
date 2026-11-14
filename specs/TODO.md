@@ -39,7 +39,7 @@ next_project_number: 931
 
 927 [RESEARCHED] — MEASUREMENT AND RECORD-CORRECTION TASK, report only. Answers...
   └─ 926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
-928 [RESEARCHING] — ASSESSMENT TASK, report only. Costs the single lemma that...
+928 [RESEARCHED] — ASSESSMENT TASK, report only. Costs the single lemma that...
   └─ 926 [NOT STARTED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean... (see above)
 
 ### Dataset Enhancement
@@ -131,10 +131,11 @@ next_project_number: 931
 ---
 
 ### 928. Muller torabin determinization cost assessment
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
+- **Research**: [928_muller_torabin_determinization_cost_assessment/reports/01_muller-torabin-cost-assessment.md]
 
 **Description**: ASSESSMENT TASK, report only. Costs the single lemma that gates the Lean completeness line, and decides where it would live. Does NOT prove it.
 

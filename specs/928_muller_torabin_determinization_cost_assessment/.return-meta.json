@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/928_muller_torabin_determinization_cost_assessment/reports/01_muller-torabin-cost-assessment.md",
+      "summary": "Costs Muller.toRabin_exists: the wanted construction is the appearance-record (LAR) route, not Safra/Piterman; ~1,000 lines (800-1,200) in one new file sited in the CSLib fork; no require entailed; (O1) and (O3) are separable."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794635603_fa0324_928",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
