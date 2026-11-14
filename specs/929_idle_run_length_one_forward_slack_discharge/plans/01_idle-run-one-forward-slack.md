@@ -379,7 +379,7 @@ moves; no dependent needs rebuilding because nothing externally visible changed.
 
 ---
 
-### Phase 4: Reconcile the generated inventories and run the full gate set [NOT STARTED]
+### Phase 4: Reconcile the generated inventories and run the full gate set [COMPLETED]
 
 **Goal**: Every generated surface the preceding phases moved is back in step, and the repository's
 complete gate set is green or its every red is enumerated as pre-existing and outside this
@@ -387,18 +387,18 @@ plan's file scope.
 
 **Tasks**:
 
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` to rewrite every registered
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` to rewrite every registered
       `<!-- BEGIN GENERATED: inventory -->` block in place, picking up the `LadderIdle.lean` and
       `LadderChain.lean` line counts Phases 2 and 3 moved.
-- [ ] Update the HAND-WRITTEN trailing description of the `LadderIdle.lean` row in
+- [x] Update the HAND-WRITTEN trailing description of the `LadderIdle.lean` row in
       `FormalSystem/Metalogic/Decidability/RaySummary/README.md` (the generator rewrites every
       other column but not this one) so it names the `I = 1` refutation, its exact reach, and
       that the five depth-`0` schemas keep `ForwardSlackWitnessed`.
-- [ ] Update the corresponding narrative paragraphs further down `RaySummary/README.md` that
+- [x] Update the corresponding narrative paragraphs further down `RaySummary/README.md` that
       currently restate the frontier as dischargeable, matching Phase 3's corrections.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` once more and confirm it is a no-op or stage
-      the delta.
-- [ ] Run the complete gate set and record each outcome.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` once more and confirm it is a no-op or stage
+      the delta. *(deviation: altered — a no-op; Phase 3 already settled `status.typ`, so this phase does not modify it and it is dropped from the staged file list)*
+- [x] Run the complete gate set and record each outcome. *(deviation: altered — dispatch 10's Batch Gate Deferral directive applies; every one of the eleven criteria is UNMAPPABLE to `tests/run-all.sh --only` or `verify-deploy.sh --only-gate`, which reach agent-system surfaces only, so each named check was run DIRECTLY instead, per the directive's unmappable-criterion clause)*
 
 **Timing**: 1.5 hours
 
@@ -429,23 +429,22 @@ unexpected finding rather than absorbing it.
 The complete repository gate set — the ten steps `.github/workflows/ci.yml` runs — each invoked
 directly and each outcome recorded:
 
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` exits `0` with
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` exits `0` with
       zero `error:` and zero `warning:` (CI's `--wfail` parity), and `lake test` passes.
-- [ ] `bash scripts/check-evidence-probes.sh` exits `0`, `PASS` line names 59 probes.
-- [ ] `bash scripts/check-module-invariants.sh --no-build` exits `0`.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits `0` (no block
+- [x] `bash scripts/check-evidence-probes.sh` exits `0`, `PASS` line names 59 probes.
+- [x] `bash scripts/check-module-invariants.sh --no-build` exits `0`.
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits `0` (no block
       would change a byte).
-- [ ] `bash scripts/check-copyright-headers.sh --strict` exits `0`.
-- [ ] `bash scripts/readme-lint.sh` exits `0`.
-- [ ] `bash scripts/check-metalogic-cycles.sh` exits `0` — Assertion B asserts EQUALITY against a
+- [x] `bash scripts/check-copyright-headers.sh --strict` exits `0`.
+- [x] `bash scripts/readme-lint.sh` exits `0`.
+- [x] `bash scripts/check-metalogic-cycles.sh` exits `0` — Assertion B asserts EQUALITY against a
       frozen allowlist and fails on surplus as well as deficit, so this confirms the
       no-new-import hypothesis of Phase 2.
-- [ ] `bash scripts/typst-sync-check.sh` exits `0`.
-- [ ] `bash scripts/check-paper-definitions.sh` exits `0` (expected `SKIP (neutral)` — the paper's
-      repository is not visible here).
-- [ ] `lake exe mk_all --lib FormalSystem --check` exits `0` (no `FormalSystem/**` file was added
+- [x] `bash scripts/typst-sync-check.sh` exits `0`.
+- [x] `bash scripts/check-paper-definitions.sh` *(deviation: altered — the premise was wrong. The paper repository IS visible on this machine, so the gate runs and exits `1` on 9 drifted definition anchors, all LaTeX list/spacing formatting in `/home/benjamin/Philosophy/Papers/.../possible_worlds.tex`. This plan touched no `.tex` and no `docs/reference/` file, so the drift is causally impossible to attribute here; recorded as a pre-existing, out-of-scope red per the plan's own contingency clause, not fixed)*
+- [x] `lake exe mk_all --lib FormalSystem --check` exits `0` (no `FormalSystem/**` file was added
       or removed, so this should be a clean no-op).
-- [ ] `lake exe lint-style` exits `0`.
+- [x] `lake exe lint-style` *(deviation: altered — exits `1` on 4 pre-existing style errors, all at `FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean:383,390,413,420`, a file outside this plan's scope and absent from this task's entire commit range. Enumerated as a pre-existing red per the contingency clause, not fixed)*
 
 Each gate's result is reported as a DELTA against the pre-task baseline, not as an absolute zero:
 a gate whose only findings are pre-existing and name no file in this plan's scope is a recorded
@@ -456,22 +455,22 @@ grounds to edit an out-of-scope file to force a count to zero.
 
 ## Testing & Validation
 
-- [ ] `forwardSlackWitnessed_refuted_I_one` compiles in `FormalSystem/` and in the wired probe,
+- [x] `forwardSlackWitnessed_refuted_I_one` compiles in `FormalSystem/` and in the wired probe,
       sorry-free, axioms `[propext, Classical.choice, Quot.sound]`.
-- [ ] `ceiling_slack_at_consumer_amount` compiles and is cited at every site that states the
+- [x] `ceiling_slack_at_consumer_amount` compiles and is cited at every site that states the
       refutation, so the limit on its reach is a compiled fact and not a prose caveat.
-- [ ] `not_idleRunPumpable` compiles, establishing that the refutation and task 924's conditional
+- [x] `not_idleRunPumpable` compiles, establishing that the refutation and task 924's conditional
       discharge cannot collide.
-- [ ] `LadderCell.lean` is byte-unchanged; all five depth-`0` schemas keep `ForwardSlackWitnessed`
+- [x] `LadderCell.lean` is byte-unchanged; all five depth-`0` schemas keep `ForwardSlackWitnessed`
       and their signatures.
-- [ ] `cellLE_zero_const_of_kappa_eq` is claimed by no declaration anywhere in the tree, on any
+- [x] `cellLE_zero_const_of_kappa_eq` is claimed by no declaration anywhere in the tree, on any
       branch.
-- [ ] `certStabK`'s restatement obligation is still worded PROVISIONAL, not permanent.
-- [ ] No `(K1)` condition is amended anywhere; `grep -n "spanning" ` over the edited files shows
+- [x] `certStabK`'s restatement obligation is still worded PROVISIONAL, not permanent.
+- [x] No `(K1)` condition is amended anywhere; `grep -n "spanning" ` over the edited files shows
       no new constraint on spanning-block length.
-- [ ] No file outside `specs/**` carries a task-number reference introduced by this work.
-- [ ] The full CI gate set result is recorded per Phase 4, with every red enumerated as
-      pre-existing and out of scope or else fixed.
+- [x] No file outside `specs/**` carries a task-number reference introduced by this work.
+- [x] The full CI gate set result is recorded per Phase 4, with every red enumerated as
+      pre-existing and out of scope or else fixed. *(two reds, both enumerated: `lint-style` on `NormalForm.lean` and `check-paper-definitions.sh` on an external `.tex`; neither names a file this plan touched)*
 
 ## Artifacts & Outputs
 
