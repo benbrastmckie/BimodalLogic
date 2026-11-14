@@ -1,42 +1,48 @@
 {
-  "status": "partial",
-  "dispatch_seq": 37,
+  "status": "blocked",
+  "dispatch_seq": 38,
   "phases_completed": 30,
   "phases_total": 41,
-  "summary": "Executed the ruled hself disposition. Phase 11.15's gate closed on the checked Stage 0 user ruling of 2026-11-13 (disposition (B), RENAME to auxiliaries); Phase 11.16 took branch (B) exactly once, renaming exists_ladderPath_at_region_of_idle_past and exists_ladderPath_at_region to _of_self_loop auxiliaries with no signature change and leaving both recorded names unclaimed; Phase 11.17 authored the LadderAgree.lean row of the RaySummary README inventory. All gates green, including two full lake builds (exit 0, 2975 jobs, 0 errors, 0 warnings) and check-evidence-probes.sh, whose pre-existing failure a sibling task resolved. No filed Goal of this task landed and none was claimed; every remaining open phase sits behind Phase 11.6's unlifted depth-0 gate, which no open task owns.",
+  "summary": "Entered Phase 11.6 and closed it [BLOCKED] on its ordered first task: the stab-free-closure bridge cannot be stated, because the five admitted depth-0 schemas take ParamsOk and the stab-free premise at one formula index and no ParamsOk transfer to a stab-free formula exists. No Lean file was edited and no build was run; sorry 0, vacuous and axiom baselines unchanged. A blocking route decision is returned for /revise.",
   "blockers": [
-    "Phase 11.6's depth-0 gate is NOT lifted and no open task owns lifting it. It lifts on exactly one of two events -- cellLE_zero_const_of_kappa_eq lands as a sorryAx-free theorem, or CellLEZeroConstOfKappaEq is refuted under ParamsOk. specs/ROADMAP.md's Stage 0 carries 'Decide who owns the depth-0 gate' as its one unchecked blocking item and names the crux: whether a ForwardSlackWitnessed hypothesis at a POSITIVE amount is satisfiable at any state the depth-0 induction reaches, in its EXISTENTIAL-over-paths form only (the per-path form is already refuted by ClimbWitness.hasForwardSlack_refuted_unconditional). Ten phases are [NOT STARTED] and three are [BLOCKED] behind it; no implementation dispatch can enter any of them.",
-    "Phases 11.12 and 11.13 were re-marked from [BLOCKED] to [COMPLETED WITH EXCLUSIONS] on the authority Phase 11.15 states explicitly -- a recorded ruling PLUS Phase 11.16's closure, both of which now hold. Each gained a new #### Reasoned Exclusions subsection; neither phase's #### Recorded Outcome block was altered, as Phase 11.15's verification requires. Flagging it here so the next reviewer sees the re-marking was an act of this dispatch rather than a pre-existing state."
+    "Phase 11.6: the bridge from the admitted stab-free schemas to cellLE 0 at an arbitrary formula cannot be stated under the fixed bundle (G1 no closure member carries the joint depth-0 type; G2 no ParamsOk at a second formula at the same tuple; G3 slack family at the wrong formula).",
+    "Phase 11.6: the planned step does not close from a cell-level induction hypothesis (both named transports are countdown-rigid; the slice-restricted hypothesis is silent at idle positions). Argued from landed signatures, not compiled.",
+    "Phase 11.6: the schemas are downstream of LadderAgree.lean in the import DAG, so the phase cannot be homed in the file its plan names."
   ],
   "artifacts": [
     {
       "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md",
-      "summary": "Phases 11.15, 11.16 and 11.17 marked [COMPLETED], each with a #### Recorded Outcome naming the branch taken, the re-measured figures and the gate results."
+      "path": "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
+      "summary": "Phase 11.6 marked [BLOCKED] with a structured BLOCKER entry."
     },
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/12_hself-disposition-gate-settlement-summary.md",
-      "summary": "Round-12 implementation summary, extended to cover Phases 11.15-11.17 alongside Phase 11.14."
+      "path": "specs/761_ladder_realization_theorem/summaries/14_carried-hypothesis-depth-zero-route-summary.md",
+      "summary": "Round-14 summary: blocked on the bridge, no library change."
     },
     {
       "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.17-handoff-20261113T063450Z.md",
-      "summary": "Phase-end handoff: branch taken, what landed, the raised scope expansion and its correction, gates, and the one blocking gate ahead."
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T171102Z.md",
+      "summary": "Phase 11.6 handoff with the unprovable goal and successor findings."
     }
   ],
   "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.17-handoff-20261113T063450Z.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl",
-    "specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md",
-    "specs/761_ladder_realization_theorem/summaries/12_hself-disposition-gate-settlement-summary.md",
-    "typst/generated/status.typ"
-  ]
+    "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T171102Z.md",
+    "specs/761_ladder_realization_theorem/summaries/14_carried-hypothesis-depth-zero-route-summary.md",
+    "specs/761_ladder_realization_theorem/issues.jsonl"
+  ],
+  "user_decision": {
+    "question": "Phase 11.6 is blocked: the five admitted depth-0 schemas cannot be instantiated at a formula carrying a stab letter (their stab-free premise and ParamsOk sit at one formula index), and the planned step does not close from a cell-level induction hypothesis. Which route should the plan be revised to?",
+    "options": [
+      "(R-i) Re-derive the splice/deletion stack of LadderPump/LadderChain/LadderCell relative to a pinned-letter parameter L, so base case and step become one path-level induction on stab depth; lifts this plan's \"base case is NOT re-derived\" prohibition; large and NOT COSTABLE",
+      "(R-ii) Carry the depth-0 agreement on cellLE 0 at arbitrary phi itself as the bundle premise in place of ForwardSlackWitnessed; states the bridge away rather than proving it, and the step still needs a path-level argument",
+      "(R-iii) Rest the task [BLOCKED] with the obstruction recorded; no further dispatch until a new idea"
+    ],
+    "recommended": "(R-i) Re-derive the splice/deletion stack of LadderPump/LadderChain/LadderCell relative to a pinned-letter parameter L, so base case and step become one path-level induction on stab depth; lifts this plan's \"base case is NOT re-derived\" prohibition; large and NOT COSTABLE",
+    "blocking": true,
+    "obligation": "A depth-indexed agreement on cellLE d at an arbitrary phi whose depth-0 instance is PROVED from ParamsOk at that same phi (no stab-free premise at the formula index), and whose step is closed by a position-by-position path correspondence rather than by a cell-level induction hypothesis."
+  },
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T171102Z.md",
+  "continuation_context": "Phase 11.6 [BLOCKED] on the stab-free-closure bridge; resume only after /revise 761 on the returned route decision."
 }

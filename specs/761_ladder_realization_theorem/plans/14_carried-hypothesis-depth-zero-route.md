@@ -1,7 +1,7 @@
 # Implementation Plan: Task #761
 
 - **Task**: 761 - Ladder realization theorem: `LadderCons` and `ladderRealized` per ladder cell for all φ including box/stab letters
-- **Status**: [BLOCKED] (30 of 41 phases closed; **Phase 11.6 is ENTERABLE for the first time since Phase 11.9 returned INCONCLUSIVE.** The depth-`0` gate is LIFTED BY A STAGE 0 USER RULING (option A, the carried-hypothesis route, 2026-11-14), not by a discharge: Phase 11.6 now takes the five RESTRICTED depth-`0` cell-equality schemas already landed in `LadderCell.lean` as its base case and carries their premises through the induction. Eleven phases remain open — ten `[NOT STARTED]` plus Phase 11.8 `[BLOCKED]`. The plan-level marker stays `[BLOCKED]` because `update-plan-status.sh` owns this field and no dispatch has yet run under the ruling; the enterable work is Phase 11.6, and postflight will stamp this field from that dispatch's own return)
+- **Status**: [IMPLEMENTING] (30 of 41 phases closed; **Phase 11.6 is ENTERABLE for the first time since Phase 11.9 returned INCONCLUSIVE.** The depth-`0` gate is LIFTED BY A STAGE 0 USER RULING (option A, the carried-hypothesis route, 2026-11-14), not by a discharge: Phase 11.6 now takes the five RESTRICTED depth-`0` cell-equality schemas already landed in `LadderCell.lean` as its base case and carries their premises through the induction. Eleven phases remain open — ten `[NOT STARTED]` plus Phase 11.8 `[BLOCKED]`. The plan-level marker stays `[BLOCKED]` because `update-plan-status.sh` owns this field and no dispatch has yet run under the ruling; the enterable work is Phase 11.6, and postflight will stamp this field from that dispatch's own return)
 - **Effort**: 40.5 hours costable, UNCHANGED in total from the predecessor plan and re-partitioned by nothing: **30.5 hours landed** and **10 hours open** (Phases 12.2, 13, 14, 16, 17 and 18 at 1/2/1.5/2/1.5/1.5, and Phase 15.2 at 0.5). No phase's **Timing** line is re-estimated by this revision and no new figure is invented, because this revision adds no phase. Phases 11, 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7, 11.8, 11.9, 11.12, 11.15 and 15.1 are NOT COSTABLE, and Phases 11.6, 11.7 and 15.1 are the three of those that are open; no hour figure is invented for any of them. **The 10 open hours are now schedulable in principle rather than only hypothetically** — the gate that made them unschedulable is lifted — but every one of them still sits behind Phase 11.6, so nothing downstream of it is enterable until it closes
 - **Dependencies**: 760, 775, 805, 806, 819, 820, 934 — all seven discharged or terminal (760/775 archived; 805/806 `[COMPLETED]`; 819 archived at `specs/archive/819_ladder_cell_presentation_design_decision/`; 820 the counter-lift gate table; **934 `[COMPLETED]`**, the depth-`0` reachability probe whose verdict is an input to this revision). **No open task is named as a gate by this plan.** What stood between this plan and its five unlanded filed Goals was Phase 11.6's depth-`0` gate; that gate is lifted by the Stage 0 ruling recorded below, and no edge replaces it. Tasks 929 and 930 are archived and were derived by the predecessor plan to be INPUTS rather than gates; that derivation stands
 - **Research Inputs**:
@@ -1456,7 +1456,95 @@ Phase 11.5.
 
 ---
 
-### Phase 11.6: The `⊡`-Nesting-Depth Induction, From the Restricted Base Case [NOT STARTED]
+### Phase 11.6: The `⊡`-Nesting-Depth Induction, From the Restricted Base Case [BLOCKED]
+
+**BLOCKER** (Phase 11.6), raised on the phase's ordered FIRST task — the stab-free-closure bridge
+(RESIDUE B) — before any definition, base case or step was authored. No library file was edited
+by the dispatch that recorded this (dispatch 38, 2026-11-14).
+
+- **What failed**: the bridge from the five admitted schemas to the base-case object `cellLE 0`
+  at an ARBITRARY `φ` cannot be stated as a theorem under the plan's fixed premise bundle. The
+  goal the bridge owes is, for every `φ` (stab letters included) and every `kappa`-colliding pair
+  in the bundle's slice,
+  `cellLE 0 M φ (z, ⟨(q, c, n), h⟩) z = cellLE 0 M φ (z, ⟨(q, c', n'), h'⟩) z` from
+  `hp : ParamsOk step pend lab φ Tc Tn P B` and the two families AT `φ`. The only producers in the
+  tree conclude `cellAt M φ₀ … = cellAt M φ₀ …` and each takes, at ONE AND THE SAME formula `φ₀`:
+  `ParamsOk step pend lab φ₀ Tc Tn P B`, `∀ χ, PlusFormula.stab χ ∉ plusSubformulaClosure φ₀`, and
+  `ForwardSlackWitnessed … φ₀ …`. At `φ₀ := φ` the second premise is FALSE whenever `φ` carries a
+  `⊡` letter, which is the only case the induction exists for; so every instantiation is at some
+  `φ₀ ≠ φ`, and three gaps open, none closable from what is landed:
+  - **G1 (the object).** No stab-free `φ₀` is available whose type determines the JOINT depth-`0`
+    type of `φ`. The depth-`0` members of `plusSubformulaClosure φ` are not themselves stab-free —
+    `stabDepth (□ψ) = 0` whatever `ψ` is, so `□⊡p` has depth `0` and `⊡p` in its closure (compiled
+    in scratch at this dispatch: `stabDepth (.box (.stab (.atom p))) = 0 ∧ .stab (.atom p) ∈
+    plusSubformulaClosure (.box (.stab (.atom p)))`, axioms `propext, Classical.choice,
+    Quot.sound`). And a cell is a set of JOINT types: agreeing separately on each stab-free
+    subformula's projection does not give agreement of the joint depth-`0` type, and a formula
+    carrying the joint type (a conjunction of the depth-`0` members with their `□` letters replaced
+    by constants) is not a member of `plusSubformulaClosure φ`.
+  - **G2 (the parameters) — the decisive gap.** `ParamsOk` is indexed by the formula, and the
+    schemas need it at `φ₀` AT THE SAME TUPLE `(Tc, Tn, P, B)` that `kappa` is read at. No transfer
+    lemma `ParamsOk … φ … → ParamsOk … φ₀ …` exists and none is derivable from the definitions:
+    `(K1)` quantifies `prodCycleLens step pend lab φ` (cycles of the certificate graph on
+    `ProdState Q φ = Q × ClType φ`) and `satPeriod step lab φ`; `(K2)` reads `satThreshold step lab
+    φ`; and `satThreshold`/`satPeriod` are `.choose` outputs of `prodPre_periodic step lab φ`
+    (`CounterQuotient.lean:638`, `:643`), opaque across two formulas. The schemas genuinely consume
+    the formula-indexed part: `typeBlock_length_dvd_of_paramsOk` is `hp.1.1` applied to
+    `realized_typeBlock_mem_prodCycleLens` (`LadderChain.lean`), and the budget lemmas read
+    `hp.2.1.1` against `cascadeBound pend φ`.
+  - **G3 (the premise).** The forward-slack family would be needed at `φ₀`, while the bundle fixed
+    at plan time carries it at `φ`. This one WOULD follow from G1 if a `φ₀` existed whose types
+    are functions of `φ`'s; it is listed because it is a third instantiation, not because it is
+    independent.
+- **What was tried**: (1) `φ₀ := φ` — refuted by the schemas' own `hno` premise, above. (2) `φ₀` a
+  stab-free subformula of `φ` — covers one projection, not the joint type (G1), and has no
+  `ParamsOk` (G2). (3) `φ₀` a stab-free "skeleton" (conjunction of depth-`0` members, `□` letters
+  replaced by their global bits) — outside the closure (G1), model-dependent, and has no
+  `ParamsOk` (G2). (4) Reading the schemas' proofs for a weaker formula hypothesis: `hno` is
+  consumed through `stabPinned_false_of_mem_closure` in every splice/deletion type transport of
+  `LadderPump.lean`/`LadderChain.lean`/`LadderCell.lean` (the transport of the FULL closure type
+  across a reindexed walk), so no schema's conclusion survives dropping it; replacing it is a
+  re-derivation of that stack relative to a pinned-letter parameter, which this phase's own task
+  list forbids ("The base case is NOT re-derived here").
+- **Why it's stuck**: the ruling admitted a base case whose statements are indexed by a stab-free
+  formula, and the plan's first-task verification checked that the CONSUMER (`certStabK`) can take
+  a family but not that the PRODUCERS can be instantiated at a formula carrying `⊡`. They cannot:
+  the stab-free premise and `ParamsOk` sit at the same formula index.
+- **A second finding, about the STEP, read off landed signatures while establishing the above. No
+  step was attempted.** The phase's step names two transport tools, and both are pointwise in
+  time: `truthAt_iff_of_objAt_eq_of_stabPinned` needs equal object walks, which by the landed
+  `cntAt_eq_of_obj_eq` forces equal countdowns at every position; and
+  `truthAt_iff_of_lab_eq_of_stabPinned` needs equal atom rows, which by the landed
+  `cntAt_eq_of_lab_eq_of_pendFactorsLab` / `atomPreservingCountMove_refuted` forces equal
+  countdowns whenever the pending bit factors through the atom row. So neither tool connects a
+  `kappa`-colliding pair with `c ≠ c'`, which is every collision the equal-register, common-shift,
+  monotone and antitone schemas address. Where `c = c'`, the pinned-letter hypothesis `hL` asks
+  the `⊡` bits to agree at EVERY position `v` of the two paths, i.e. the depth-`d` agreement at
+  the pair of states the paths occupy at `v`; at an idle position the countdown is `0`, so that
+  pair is outside the bundle's slice `n + 2 ≤ c` and the induction hypothesis, restricted to the
+  slice, says nothing there. And the base case, used as a black box, returns SOME history through
+  the other state with the same depth-`0` type at `z` only, with no control at other positions.
+  ARGUED from landed signatures, NOT compiled as a refutation: a step that closes needs a
+  PATH-LEVEL correspondence (a reindexed walk with types matching position by position), which is
+  what the splice stack proves under `hno` and what a cell-level induction hypothesis does not
+  supply.
+- **A third finding, about the FILE**: the import DAG is `LadderAgree → LadderPump → LadderChain →
+  LadderCell`, so the five schemas are DOWNSTREAM of `LadderAgree.lean` and a base case citing them
+  cannot be authored in the module this phase's Files-to-modify line names. Whatever route a
+  revision takes, the induction is homed in or below `LadderCell.lean`.
+- **What is needed**: a `/revise` on a route decision this dispatch returns as a blocking
+  `user_decision`, because each candidate changes the Stage 0 ruling's scope or lifts a standing
+  prohibition of this plan: (R-i) re-derive the splice/deletion stack RELATIVE to a pinned-letter
+  parameter `L` (the shape `truthAt_iff_of_objAt_eq_of_stabPinned` already has at the bottom),
+  which yields base case and step together as one path-level induction on depth and lifts the "NOT
+  re-derived" prohibition; (R-ii) carry the depth-`0` agreement on `cellLE 0` at arbitrary `φ`
+  itself as the bundle's premise in place of `ForwardSlackWitnessed` — this states the bridge away
+  rather than proving it and still leaves the step's path-level gap; (R-iii) rest `[BLOCKED]`.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder; do
+  NOT restrict `cellAt_le_const_of_kappa_eq` to a stab-free `φ` and present it as the agreement
+  (under `hno`, `cellLE d = cellAt` for every `d` and the induction is the base case restated); do
+  NOT land a schema under the reserved name; do NOT add a `ParamsOk … φ₀ …` binder to the bundle
+  without a ruling.
 
 **ENTERABLE. THE DEPTH-`0` GATE IS LIFTED BY THE STAGE 0 USER RULING RECORDED IN THIS PLAN'S
 OVERVIEW, NOT BY A DISCHARGE.** The ruling admits as this phase's base case the five RESTRICTED
@@ -1548,7 +1636,7 @@ carries them has made the conclusion gratuitously weaker than the ruling require
       real obligation and not a formality. **If the bridge cannot be stated, this phase closes
       `[BLOCKED]` on the BRIDGE** — with the goal state recorded and the remedy a further
       `/revise` — and NOT on the slack family, which this revision verified is carryable. Do not
-      proceed to the step on an unstated bridge.
+      proceed to the step on an unstated bridge. *(deviation: skipped — the bridge cannot be stated under the fixed bundle; see the BLOCKER entry under this phase's heading. Every later item of this list is unentered for the same reason.)*
 - [ ] Define the depth-restricted type and cell: `tpLE d M φ σ z` (the filter of `tpOf` by
       `stabDepth · ≤ d`) and `cellLE d M φ w z` (its image over histories through `w` at `z`).
       Prove the two readings the induction needs: `tpLE` at the closure's own bound is `tpOf`, and
