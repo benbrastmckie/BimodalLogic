@@ -262,6 +262,29 @@ a genuine open candidate rather than a settled non-candidate (unlike `lcU` itsel
   ruling. A literature task (`/literature` ingestion, or a Zotero-gap check via `/cite --gaps`)
   is the correct next step, not a research or Lean task against the completeness front.
 
+## Reopening Terms
+
+One row per route and sub-route, consolidated so a successor can file against a reopened route
+without re-reading the Findings above or re-asking what the terms are.
+
+**Recommendation 8 stays in force for every route this table does not explicitly mark REOPEN.**
+No disposition below is a reversal of Recommendation 8 or of the separate CSLib `require`
+ruling; every REOPEN row below is a route this record finds was never actually blocked by
+either standing ruling in the first place. §§7-15 of the Reynolds engine — the two-sided
+chronicle, ban preservation, lulls and hue scheduling, universal non-acceptance, and the
+two-sided truth lemma — stay barred from any Lean filing under every row in this table,
+including the REOPEN rows.
+
+| Route | Disposition | What may be filed | What stays barred | Condition that would change the disposition | Findings citation |
+|---|---|---|---|---|---|
+| **R1** — `Muller.toRabin_exists` | KEEP CLOSED, in this repository — trips the **CSLib `require` clause**, not the engine-content clause (R1 is general automata infrastructure, not §§7-15 content) | Nothing, as a task against this repository. (Proving the lemma in the fork itself is a separate codebase under separate ownership and is not this record's to file or bar.) | Filing R1 as a Lean task in this repository while the `require` ruling stands; re-opening the CSLib `require` question on R1's account | (a) the `require` ruling is separately reversed by the user; or (b) the lemma is accepted upstream into Mathlib proper (no fixed timeline — 902 records 0/11 of this author's prior PRs merged); or (c) Recommendation 8 itself is reversed and the engine comes to need (O1) directly | `## Findings` → "R1 — Prove `Muller.toRabin_exists`", both ruling paragraphs |
+| **R2** — final-frame step | REOPEN — already executing, no further ruling act needed | Nothing further; tasks 931 (`apply_901_final_frame_amendments`) and 932 (`ofsteprel_named_constraint_lemmas_and_ofstepplain`) already carry it, scoped to frame-presentation API (`IntNormalForm.lean`, `UniversalCover.lean`, `OrientedForest.lean`, `HistoryMorphism.lean`), not Reynolds-engine files | §§7-15 content, as always; this route touches no part of the engine | Not applicable — this disposition is already settled, not conditional | `## Findings` → "R2 — Close the final-frame step", both paragraphs |
+| **R3** — determinization-free progress-measure design | REOPEN, for paper research only | A `formal`/research task, `FILE SCOPE: none`, no Lean, modeled on 879's P9 / 901's own paper-only posture, asking whether a determinization-free progress-measure argument for T3 exists and what it would need | Any Lean filing of the resulting design, regardless of outcome — a different construction reaching the same completeness result still trips the engine-content clause, which is aimed at the result, not the lemmas used to reach it | A separate Recommendation 8 reversal — the same reversal any other route into §§7-15 requires, win or lose on the paper design | `## Findings` → "R3 — The determinization-free alternative", both paragraphs |
+| **R4-Q1, as stated** (`lcU` from `LC_n` + mirror at ZTime) | KEEP CLOSED — trips the **engine-content clause** ("do not file a Lean formalization of any part of §§7-15"), not the CSLib `require` clause | Nothing | Filing a Lean task targeting whether `ExtDerivation .ZTime IsLCAxiom RuleSet.all` derives `lcU` | Recommendation 8 reversal — 906's own cost assessment makes this "no cheaper than `LCRulesComplete` itself", i.e. a successful derivation would in substance be a proof of completeness via the full engine apparatus the engine-content clause keeps out of Lean | `## Findings` → "R4 — T1's two reduced questions", "Q1, as stated" paragraph |
+| **R4-Q1, converse** (does `lcU` derive `lcN`?) | REOPEN | A research or Lean task scoped to `PlusLCSchema.lean` / `LCExtension.lean` only — the schema/derivation-calculus files, not any Reynolds-engine file | §§7-15 content; nothing in this sub-route touches the engine | Not applicable — no model-theoretic obstruction has been established; reopened now | `## Findings` → "R4 — T1's two reduced questions", "Q1, converse direction" paragraph |
+| **R4-guarded-until-form** (`.Base` validity of `⊡G≤(⟐α → ⟐(⟐β U ⟐α)) → ⟐G≤(⟐α → (⟐β U ⟐α))`) | REOPEN | A research or Lean task scoped to `PlusLCSchema.lean` / `LCExtension.lean` only, targeting this schema's `.Base` validity | §§7-15 content; this sub-route is schema-level, outside the engine | Not applicable — already an open candidate on the same Zorn-plus-Extension-Theorem footing as `lcN`'s; reopened now | `## Findings` → "R4 — T1's two reduced questions", "The guarded-until-form candidate" paragraph |
+| **R4-Q2** (admissibility of `clock`, `aaFwd`, `aaBwd`) | BLOCKED, on literature acquisition — not a ruling | A literature task only: `/literature` ingestion of Di Maio-Zanardo 1998, or a Zotero-gap check via `/cite --gaps` | A research or Lean task against Q2 before the source is acquired — there is nothing to work from yet | Di Maio-Zanardo 1998 acquired into the local Zotero library / literature corpus | `## Findings` → "R4 — T1's two reduced questions", "Q2" paragraph |
+
 ## Recommendations
 
 1. **File no task against R1 in this repository.** If the `require` ruling or Recommendation 8

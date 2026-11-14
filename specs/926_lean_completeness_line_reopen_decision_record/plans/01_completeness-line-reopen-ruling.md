@@ -160,31 +160,35 @@ preserving the count asserted here.
 
 ---
 
-### Phase 2: Consolidated Reopening-Terms Sheet [NOT STARTED]
+### Phase 2: Consolidated Reopening-Terms Sheet [COMPLETED]
 
 **Goal**: Give the report one section a successor can file against without re-reading the four
 Findings sections or re-asking what the terms are.
 
 **Tasks**:
-- [ ] Append a `## Reopening Terms` section to the report with one row per route and sub-route:
+- [x] Append a `## Reopening Terms` section to the report with one row per route and sub-route:
       R1; R2; R3; R4-Q1-as-stated; R4-Q1-converse; R4-guarded-until-form; R4-Q2. Each row carries
       the disposition (REOPEN / KEEP CLOSED / BLOCKED), what may be filed (task type and file
       scope), what stays barred, and the condition that would change the disposition.
-- [ ] For each KEEP CLOSED row, name which clause of 901's Recommendation 8 it trips — the
+      *(completed: all seven rows present exactly once, verified by grep count)*
+- [x] For each KEEP CLOSED row, name which clause of 901's Recommendation 8 it trips — the
       engine-content clause ("do not file a Lean formalization of any part of §§7-15") or the
       separate CSLib `require` clause — rather than citing Recommendation 8 undifferentiated.
       This is the discrimination the report's own Context Extension Recommendation asks a future
       record to make; its R1/R2 contrast is the worked example.
-- [ ] Cite, for every row, the Findings subsection that carries its argument. A row that cannot
+      *(completed: R1 names the require clause, R4-Q1-as-stated names the engine-content clause)*
+- [x] Cite, for every row, the Findings subsection that carries its argument. A row that cannot
       cite one is a new claim, not a consolidation: drop it rather than writing it.
-- [ ] State in the section's preamble, once, that Recommendation 8 stays in force for every route
+      *(completed: every row's rightmost column cites its Findings subsection)*
+- [x] State in the section's preamble, once, that Recommendation 8 stays in force for every route
       the ruling does not explicitly reopen, and that no reopening recorded here is a reversal of
-      it.
-- [ ] For R2, state that the route is already executing under tasks 931 and 932 and that nothing
-      further is owed here.
-- [ ] For R4-Q2, state that the block is literature acquisition (Di Maio-Zanardo 1998), not a
-      ruling, and name the acquisition route rather than a research or Lean task.
-- [ ] Continue recording issues and wins as they arise.
+      it. *(completed)*
+- [x] For R2, state that the route is already executing under tasks 931 and 932 and that nothing
+      further is owed here. *(completed)*
+- [x] For R4-Q2, state that the block is literature acquisition (Di Maio-Zanardo 1998), not a
+      ruling, and name the acquisition route rather than a research or Lean task. *(completed)*
+- [x] Continue recording issues and wins as they arise. *(completed: nothing new arose in this
+      phase beyond Phase 1's win entry; attested explicitly here)*
 
 **Timing**: 0.75 hours
 
