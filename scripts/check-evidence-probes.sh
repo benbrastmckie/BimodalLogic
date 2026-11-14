@@ -94,6 +94,23 @@ set -uo pipefail
 
 cd "$(dirname "$0")/.." || exit 1
 
+# ROOT SANITY CHECK.  The `cd` above resolves relative to THIS SCRIPT FILE's own location, not
+# to any notion of "the repository" -- so a copy of this script placed somewhere else (a
+# scratch directory, a different checkout, a tarball) silently resolves "the repo root" to that
+# copy's own parent directory instead of erroring out.  Without this check, every WIRED/
+# WIRED_REPO probe below is then reported `FAIL (missing: ...)`, which looks exactly like mass
+# probe rot and sends whoever is debugging it down the wrong path entirely (see issue
+# iss_1794621152913_vc6RPh).  Guard against it by confirming the resolved root actually looks
+# like this repository before doing anything else.
+_resolved_root="$(pwd)"
+if [ ! -f "$_resolved_root/lakefile.toml" ] || [ ! -d "$_resolved_root/specs/evidence" ]; then
+  echo "check-evidence-probes.sh: refusing to run -- resolved root '$_resolved_root' does not look like the BimodalLogic repository (missing lakefile.toml and/or specs/evidence/)." >&2
+  echo "This script resolves its root relative to its OWN file location ('\$(dirname \"\$0\")/..'), not to the current working directory or any repository search." >&2
+  echo "Run it as 'bash scripts/check-evidence-probes.sh' from within a checkout of this repository, not from a copy placed elsewhere." >&2
+  exit 1
+fi
+unset _resolved_root
+
 # Collection-relative: each WIRED entry below is a path under `specs/evidence/`, so several
 # probe collections can be guarded by the one loop.
 EVIDENCE="specs/evidence"
