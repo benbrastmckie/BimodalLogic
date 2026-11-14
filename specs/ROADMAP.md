@@ -212,7 +212,6 @@ cited record, not here.
 Only the first batch has to come first -- it is the one that unblocks others. The rest are independent of each other and may be run in any order or interleaved, subject to the batch-gate's live-lock rule.
 
 ```
-/orchestrate 927, 928, 926   # Settle the Lean completeness line: both measurements first, then the reopen ruling they feed
 /orchestrate 502, 497, 500, 543 --hard --lit   # The algebraic chain bottom-up to 543, the last high-priority L-plus metalogic task still open
 /orchestrate 178, 604, 890, 829   # Four independent deliverables, no shared territory and no edges: examples, zstd, erratum, CI cache
 /orchestrate 664, 570 --lit   # Corpus ingest of the ball-space source and the C3 consequence-relation completeness question
@@ -255,6 +254,10 @@ Why this order:
 Each line is one invocation, and batches are dependency-inclusive: a batch holding a blocker together with its dependent is correct, while a dependent named *without* its out-of-batch blocker is dead weight. `MAX_TASKS` is 8 and the work-cycle budget is per task per invocation (5 default, 13 under `--hard`), so **re-run the same line until every member reports terminal**. Shared file scope serializes a batch rather than breaking it, and a collision against a *live* session's lock is not bypassable by `--allow-scope-collision`: wait for the holder, or batch with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
 
 **This section is generated and is the authority on run order.** It is rendered from `specs/state.json`'s `roadmap_batches` by `scripts/roadmap-integration.sh`; change the order or the membership through `/roadmap`, never by editing the fence by hand -- a hand edit here is overwritten by the next regeneration. The `## Next batches` section further down is authored prose that no regeneration touches, and its task list has gone stale against the live graph.
+**Coverage appendix (uncovered tasks)**:
+```
+/orchestrate 931,932
+```
 
 ## Next batches
 
