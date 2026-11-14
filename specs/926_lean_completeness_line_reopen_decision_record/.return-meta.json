@@ -1,36 +1,22 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md",
-      "summary": "Decision record ruling reopen/keep-closed/reopen-on-conditions for routes R1-R4 of the completeness front: R2 (final-frame step) reopened and already executing via tasks 931/932; R1 (Muller.toRabin_exists) kept closed in this repository, blocked by the standing CSLib-require clause of Recommendation 8 rather than its engine-content clause; R3 (determinization-free progress-measure design) reopened for paper-only research; R4's Q1-as-stated kept closed as equivalent in cost to full completeness, its converse direction and the guarded-until-form candidate reopened at the schema level, and Q2 left blocked on literature acquisition rather than any ruling. Recommendation 8 is left in force for the Reynolds engine's sections 7-15 under every route."
+      "type": "plan",
+      "path": "specs/926_lean_completeness_line_reopen_decision_record/plans/01_completeness-line-reopen-ruling.md",
+      "summary": "Three-phase, specs-only plan closing out the completeness-line reopen decision record: premise re-validation and record correction, a consolidated per-route reopening-terms sheet, then completion summary and full gate set."
     }
   ],
-  "dispatch_seq": 7,
-  "next_steps": "Run /orchestrate 926 to create an implementation plan (if any of the reopened routes -- R2's already-filed tasks 931/932, an R3 paper-research filing, or an R4 schema-level filing -- is to be acted on); otherwise this decision record is the terminus for task 926 itself.",
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1794635603_fa0324_926",
-    "agent_type": "general-research-agent",
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 2,
+    "dependency_waves": 3
   },
-  "memory_candidates": [
-    {
-      "content": "A compound ruling bar (e.g. 901's Recommendation 8, which in one sentence bars both 'filing a Lean formalization of §§7-15' and 're-opening the CSLib require question') should be analyzed clause-by-clause when assessing whether a specific candidate route trips it. In this repository's completeness programme, a general automata lemma (Muller.toRabin_exists) does not trip the engine-content clause at all, but its only path to being useful here trips the require clause -- a distinction a single undifferentiated reading of 'Recommendation 8' would miss, producing either an overly permissive or overly restrictive ruling.",
-      "category": "PATTERN",
-      "source_artifact": "specs/926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["ruling-analysis", "recommendation-8", "cslib-require", "decision-record", "clause-separation"]
-    },
-    {
-      "content": "When a report (e.g. 906) states that answering a question 'is no cheaper than' a separately-barred result, that question is effectively entangled with the bar even though nothing names it directly -- reopening it in the direction that would resolve the original question is, in substance, reopening the barred result. The question's logical *converse* can still be genuinely independent and cheap, so check both directions before ruling a reduced question closed or open as a whole.",
-      "category": "PATTERN",
-      "source_artifact": "specs/926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["derivability", "cost-entanglement", "converse-question", "ztime", "lcu-lcn"]
-    }
-  ],
-  "modified_files": [
-    "specs/926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md"
-  ]
+  "next_steps": "Run /orchestrate 926 to execute the plan",
+  "dispatch_seq": 8
 }

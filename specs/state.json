@@ -1673,12 +1673,15 @@
     {
       "project_number": 926,
       "project_name": "lean_completeness_line_reopen_decision_record",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "topic": "completeness",
       "priority": "high",
       "description": "DECISION RECORD ONLY -- report only, file_scope: [], no Lean file written, no formalization attempted. The deliverable is a ruling with its argument, nothing else.\n\nWHY THIS EXISTS. The completeness front currently has zero tasks of any kind: no active record carries topic `completeness`, and none of the four routes named below is owned by any record. That is not because the mathematics is settled or abandoned -- specs/archive/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md Deliverable 4 returns GO for T3 as a staged paper programme -- but because specs/archive/901_two_sided_reynolds_engine_paper_proof's Recommendation 8 bars filing a Lean formalization of the Reynolds engine's sections 7-15, and ROADMAP.md records that lifting it `needs a fresh user ruling reversing that`. A research dispatch cannot reverse a user ruling, so the gap on this front is a DECISION, not missing information.\n\nWHAT IS ALREADY KNOWN, and must be read rather than re-derived (these four reports already constitute the scoping research; do not restate them):\n  - 879 reports/01: the 21-row ingredient table with per-row status; rows 17-21 (consistency of phi-plus, ban preservation with LCU, two-sided universal non-acceptance, fair scheduling, the two-sided truth lemma) are `paper`; row 16 names determinization to Rabin as the load-bearing gap with `Muller.toRabin_exists` as `its single named target`, and labels it `Not a Mathlib-absence refusal; a located and costed gap`.\n  - 901 reports/01: the paper proof itself, which `claims the engine up to the final-frame step` and NOT through it; Finding 15.3 and its Risks section name the final frame `the weakest link`.\n  - specs/archive/902_reassess_lplus_ztime_nogo_cslib_omega_automata/reports/01: the obstruction relocated to (O1)/(O3)/(O4); (O2) discharged via `Muller.exists_iSup`; `Muller.toRabin_exists` called `the single highest-value proof_wanted in either tree`.\n  - specs/archive/903_muller_sufficiency_for_auxiliary_atoms_rule_ztime/reports/01: the acceptance-condition split -- a deterministic Muller automaton suffices for the Auxiliary-Atoms rule (no acceptance condition) and does NOT suffice for the ban/lull mechanism, whose banned list is indexed by the automaton's accepting pairs, which is what forces the pair shape.\n\nTHE FOUR ROUTES to present, each with its cost and its gate:\n  (R1) Prove `Muller.toRabin_exists` (Safra/Piterman; held in corpus). Discharges (O1). Costed separately by the companion cost-assessment task; this record consumes that costing if available and says so if not.\n  (R2) Close the final-frame step -- and note this route may already be FREE. Both Lean pieces 901 called missing have since landed: 897 universal cover (`exists_orientedForest_cover`) and, more decisively, 898, which found Saturation is consumed NOWHERE in the lifting chain and the base frame needs NO constraint at all, landing `exists_orientedForest_cover_of_constraints` as what its own summary calls `the completeness programme entry point over a base with no Saturation`. The obligation has moved to the SOURCE side (Compositionality, Seriality, Limit on the chronicle quotient), which its companion measurement task checks. If that check is positive, the paper proof one acknowledged gap closes WITHOUT touching sections 7-15 and without reversing Recommendation 8 -- making this the only route that needs no ruling at all, and the one this record should weigh first.\n  (R3) The determinization-free alternative: 879's P9 names `an explicit progress-measure argument that avoids determinization` as the ONLY route to a Lean proof that sidesteps (O1), and calls it `a research design, not an ingredient`.\n  (R4) T1's two reduced questions. T1 is NOT refuted but reduced: (Q1) is `lcU alpha beta` derivable in TM-plus + LC_n + mirror at ZTime for state-local beta -- 906 refuted it at Base/Dense/RTime by the translation frame over Q and proved the ZTime case unsettleable by ANY model (both schemata have the same ZTime models by construction), so only a proof-theoretic argument can decide it, and the guarded-until-form candidate in PlusLCSchema.lean survives as an open candidate; (Q2) are `clock`, `aaFwd`, `aaBwd` admissible over TM-plus + the schemata -- blocked on Di Maio-Zanardo 1998, not held in the local Zotero library.\n\nWHAT THE RECORD MUST DECIDE: for each of R1-R4, reopen / keep closed / reopen on stated conditions, with the argument. If any route reopens, the record states the terms (what may be filed, what stays barred) precisely enough that a successor can file against it without re-asking. Recommendation 8 stays in force for every route the ruling does not explicitly reopen.\n\nGUARDRAILS: (a) no Lean file is written or edited by this task; (b) no part of sections 7-15 is formalized, attempted, or filed by this task -- that is what the record decides, not what it does; (c) no completeness claim; (d) the four reports above are cited, not re-derived or condensed; (e) if a route's cost is unknown, say so rather than estimating.\n\nFILE SCOPE: none. Report only.",
-      "file_scope": [],
+      "file_scope": [
+        "specs/926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md",
+        "specs/926_lean_completeness_line_reopen_decision_record/summaries/01_completeness-line-reopen-ruling-summary.md"
+      ],
       "created": "2026-11-12T22:26:17Z",
       "audit_verdict": {
         "proposal": {
@@ -1886,13 +1889,18 @@
         927,
         928
       ],
-      "last_updated": "2026-11-14T06:59:06Z",
+      "last_updated": "2026-11-14T07:06:46Z",
       "session_id": "sess_1794635603_fa0324",
       "artifacts": [
         {
           "path": "specs/926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md",
           "type": "report",
           "summary": "Decision record ruling reopen/keep-closed/reopen-on-conditions for routes R1-R4 of the completeness front: R2 (final-frame step) reopened and already executing via tasks 931/932; R1 (Muller.toRabin_exists) kept closed in this repository, blocked by the standing CSLib-require clause of Recommendation 8 rather than its engine-content clause; R3 (determinization-free progress-measure design) reopened for paper-only research; R4's Q1-as-stated kept closed as equivalent in cost to full completeness, its converse direction and the guarded-until-form candidate reopened at the schema level, and Q2 left blocked on literature acquisition rather than any ruling. Recommendation 8 is left in force for the Reynolds engine's sections 7-15 under every route."
+        },
+        {
+          "path": "specs/926_lean_completeness_line_reopen_decision_record/plans/01_completeness-line-reopen-ruling.md",
+          "type": "plan",
+          "summary": "Three-phase, specs-only plan closing out the completeness-line reopen decision record: premise re-validation, consolidated reopening-terms sheet, summary and gates."
         }
       ],
       "next_artifact_number": 2

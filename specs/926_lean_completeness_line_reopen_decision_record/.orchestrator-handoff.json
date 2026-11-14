@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 8,
+  "phases_completed": 0,
+  "phases_total": 3,
+  "summary": "Planned task 926's decision-record close-out as three phases over specs/926 markdown only: premise re-validation and record correction in the report, a consolidated per-route Reopening Terms section, then the completion summary and full gate set. The research report already carries the ruling (Recommendation 8 stays in force for all four routes; R2/R3-as-paper/R4-converse were never actually blocked by it), so the plan re-decides nothing and instead delivers the three things the dispatch asks for that the report does not yet carry. No Lean, no task filing, no ROADMAP edit, no completeness claim.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/926_lean_completeness_line_reopen_decision_record/plans/01_completeness-line-reopen-ruling.md",
+      "summary": "Three-phase, specs-only plan closing out the completeness-line reopen decision record: premise re-validation, consolidated reopening-terms sheet, summary and gates."
+    }
+  ]
+}

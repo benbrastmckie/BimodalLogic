@@ -37,7 +37,7 @@ next_project_number: 933
 
 ### Completeness
 
-926 [RESEARCHED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
+926 [PLANNED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
 
 ### Dataset Enhancement
 
@@ -235,11 +235,12 @@ FILE SCOPE: none. Report only. Reads FormalSystem/Semantics/UniversalCover.lean,
 ---
 
 ### 926. Lean completeness line reopen decision record
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: completeness
 - **Dependencies**: Task 927, Task 928
 - **Research**: [926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md]
+- **Plan**: [926_lean_completeness_line_reopen_decision_record/plans/01_completeness-line-reopen-ruling.md]
 
 **Description**: DECISION RECORD ONLY -- report only, file_scope: [], no Lean file written, no formalization attempted. The deliverable is a ruling with its argument, nothing else.
 
