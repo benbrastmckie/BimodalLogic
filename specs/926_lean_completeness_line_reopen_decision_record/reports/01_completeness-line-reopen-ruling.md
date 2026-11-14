@@ -48,8 +48,11 @@
 
 This is a decision record only: no Lean file is written or edited, no part of the Reynolds
 engine's §§7-15 is formalized, attempted, or filed, and no completeness claim is made. The task
-exists because the completeness front currently carries zero active tasks of any kind, not
-because the mathematics is settled: `specs/archive/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md`
+was motivated by the premise that the completeness front carried zero active tasks of any kind
+at dispatch time; that premise is now stale (see `## Premise Re-Validation` below — the front
+has since gained tasks, all on the never-barred R2 route) but the motivation it gave rise to is
+unaffected, not because the mathematics is settled:
+`specs/archive/879_lplus_ztime_completeness_tm_plus_lc_programme/reports/01_lplus-ztime-completeness-programme.md`
 Deliverable 4 returns GO for T3 as a staged paper programme, but
 `specs/archive/901_two_sided_reynolds_engine_paper_proof`'s Recommendation 8 bars filing a Lean
 formalization of the Reynolds engine's §§7-15, and `specs/ROADMAP.md` records that lifting it
@@ -64,6 +67,36 @@ the two companion dispatches this task depends on, both completed since the disp
 written: task 927 (final-frame remeasurement) and task 928 (determinization cost assessment).
 Their findings are load-bearing for this ruling and are read from their reports/summaries
 directly, not re-derived.
+
+## Premise Re-Validation
+
+Re-run at implementation time against live state and live source, per the dispatch's
+Carried-Figure Discipline obligation. Every claim this report carries from its description or
+from a cited artifact is checked here, including the ones that only confirm unchanged.
+
+| Carried claim | Check performed | Result |
+|---|---|---|
+| "The completeness front currently has zero tasks of any kind: no active record carries topic `completeness`" | Queried live `specs/state.json` for `topic == "completeness"` | **STALE.** Three active records now carry `topic: completeness`: 926 (this task, `implementing`), 927 (`completed`), 928 (`completed`). Two further records on R2's route — 931 (`apply_901_final_frame_amendments`) and 932 (`ofsteprel_named_constraint_lemmas_and_ofstepplain`) — are filed with `status: not_started`, `dependencies: []`, but carry no `topic` tag at all. This is the one stale figure the plan's Scope Hypothesis anticipated; no additional stale figure was found. |
+| 901's Recommendation 8, full two-clause wording | `grep -n` against `specs/archive/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md` | **CONFIRMED.** Line 991, verbatim: "Do not file a Lean formalization of any part of §§7-15 above, and do not re-open the CSLib `require` question. Both conclusions are inherited and this write-up strengthens neither direction." |
+| `specs/ROADMAP.md`'s "CSLib `require` question is not to be re-opened" sentence | `grep -n` against `specs/ROADMAP.md` | **CONFIRMED.** Line 160, verbatim: "The CSLib `require` question is not to be re-opened on their account either." |
+| `specs/ROADMAP.md`'s "needs a fresh user ruling reversing that" sentence | `grep -n` against `specs/ROADMAP.md` | **CONFIRMED.** Line 503, verbatim: "Filing it needs a fresh user ruling reversing that." |
+| 927's three landed declarations and their locations | `grep -rn` for each declaration's `theorem` header against `FormalSystem/Semantics/` | **CONFIRMED**, at the exact cited lines: `exists_orientedForest_cover_of_constraints` at `UniversalCover.lean:591`, `saturation_of_orientedForest` at `OrientedForest.lean:880`, `plus_invariance_of_isZTime_of_constraints` at `HistoryMorphism.lean:681`. |
+| 927's axiom profile `[propext, Classical.choice, Quot.sound]` | `grep -n` against 927's summary | **CONFIRMED**, verbatim at `specs/927_final_frame_step_remeasure_against_landed_cover/summaries/01_final-frame-step-remeasure-summary.md:44`. |
+| 928's ~1,000-line (800-1,200) costing and fork siting | `grep -n` against 928's summary | **CONFIRMED.** "~1,000 lines (800-1,200), one new file in the fork, 4-7 phases"; "Siting: the fork, and no `require` is entailed. The minimal statement closure is 956 [lines]"; no `lakefile.toml`/`lake-manifest.json` edit, mechanically verified via empty `git diff --stat`. |
+| 906's Recommendation 4 wording on Q1's cost and the converse direction | `grep -n` against 906's archived report | **CONFIRMED**, verbatim at `specs/archive/906_lcu_derivability_from_lcn_non_ztime_separating_model/reports/01_lcu-lcn-separating-model.md:327-328`: "the honest prior is that it is no cheaper than `LCRulesComplete` itself, since `lcU` is `.ZTime`-valid and would follow from completeness immediately. A cheap follow-up is the converse direction instead: does `IsLCUAxiom` derive `lcN`? ... no model-theoretic obstruction to looking has been established here." |
+
+**Why the one stale premise does not disturb the ruling.** The front gained tasks *because of*
+this task's own companions (927, 928) and the two tasks 927 filed as the named condition and
+amendment for R2 (931, 932) — all on the route this record finds (R2) was never actually
+blocked by Recommendation 8. None of the four routes' dispositions below rests on the front
+being empty; the "zero tasks" sentence was this task's motivating observation, not a premise any
+Finding or Recommendation below is conditioned on. The motivation is stale; the ruling is not.
+
+**Observation, not action, on 931/932's missing topic tag.** Both records should carry
+`topic: completeness` for the front's task inventory to stay discoverable by that query; this is
+recorded here as an observation for a successor to act on. This task's `file_scope` is
+report/summary-only, and a `state.json` mutation on records this task does not own is outside
+that scope — it is not performed here.
 
 ## Findings
 

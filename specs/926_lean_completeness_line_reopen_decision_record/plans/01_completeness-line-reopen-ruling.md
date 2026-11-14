@@ -1,7 +1,7 @@
 # Implementation Plan: Task #926
 
 - **Task**: 926 - Lean completeness line reopen decision record
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: 927 (completed), 928 (completed)
 - **Research Inputs**: specs/926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md
@@ -95,35 +95,42 @@ makes (its "needs a fresh user ruling reversing that" sentence); it is not modif
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Premise Re-Validation and Record Correction [NOT STARTED]
+### Phase 1: Premise Re-Validation and Record Correction [COMPLETED]
 
 **Goal**: Discharge the dispatch's Premise Re-Validation obligation against live state and
 correct, inside the report, the carried premise found stale.
 
 **Tasks**:
-- [ ] Re-check the description's carried claim that "the completeness front currently has zero
+- [x] Re-check the description's carried claim that "the completeness front currently has zero
       tasks of any kind: no active record carries topic `completeness`" against live
       `specs/state.json`. At plan time this measured as STALE: three active records carry
       `topic: completeness` (926 itself, 927, 928), and two further records on R2's route (931,
       932) are filed with no topic tag at all. Re-measure rather than adopting this figure.
-- [ ] Re-check each carried figure the report itself asserts, and record a confirmed/stale
+      *(completed: re-measured against live state.json at implementation time; confirmed the
+      same three-plus-two figure, no drift since plan time)*
+- [x] Re-check each carried figure the report itself asserts, and record a confirmed/stale
       verdict for each: 901's Recommendation 8 two-clause wording; `specs/ROADMAP.md`'s "needs a
       fresh user ruling reversing that" sentence; 927's three landed declarations and their
       `[propext, Classical.choice, Quot.sound]` axiom profile; 928's ~1,000-line costing and fork
       siting; 906's Recommendation 4 wording on Q1's cost and the converse direction.
-- [ ] Add a clearly-labelled `## Premise Re-Validation` section to the report recording the
+      *(completed: all six confirmed verbatim at their cited lines; no additional stale figure
+      found)*
+- [x] Add a clearly-labelled `## Premise Re-Validation` section to the report recording the
       result for every claim checked, including those that only confirm unchanged — per
       report-format.md's Carried-Figure Discipline, a confirmation is stated explicitly, not
-      omitted as uninteresting.
-- [ ] For the stale "zero tasks" premise specifically, state what changed and why it does not
+      omitted as uninteresting. *(completed)*
+- [x] For the stale "zero tasks" premise specifically, state what changed and why it does not
       disturb the ruling: the front gained tasks *because of* this task's own companions (927,
       928) and the two tasks 927 filed (931, 932), all on R2's never-barred route, so the premise
       that motivated the task is stale while every disposition it reached is unaffected.
-- [ ] Record the missing `topic: completeness` tag on 931 and 932 as an observation only; do not
-      edit `state.json`.
-- [ ] Record issues and wins as they arise via `bash .claude/scripts/issue-record.sh
+      *(completed)*
+- [x] Record the missing `topic: completeness` tag on 931 and 932 as an observation only; do not
+      edit `state.json`. *(completed: recorded in the new section's closing paragraph, no
+      state.json edit made)*
+- [x] Record issues and wins as they arise via `bash .claude/scripts/issue-record.sh
       --task-dir "$TASK_DIR" --kind issue|win --class "..." --severity ... --what-happened "..."
-      --phase implement --dispatch-seq <seq>`, non-fatally.
+      --phase implement --dispatch-seq <seq>`, non-fatally. *(completed: one `win` entry recorded
+      — clean confirmation pass, no additional stale figure)*
 
 **Timing**: 0.75 hours
 

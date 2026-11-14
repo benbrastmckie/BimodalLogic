@@ -37,7 +37,7 @@ next_project_number: 933
 
 ### Completeness
 
-926 [PLANNED] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
+926 [IMPLEMENTING] — DECISION RECORD ONLY -- report only, file\_scope: ], no Lean...
 
 ### Dataset Enhancement
 
@@ -235,7 +235,7 @@ FILE SCOPE: none. Report only. Reads FormalSystem/Semantics/UniversalCover.lean,
 ---
 
 ### 926. Lean completeness line reopen decision record
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: completeness
 - **Dependencies**: Task 927, Task 928
