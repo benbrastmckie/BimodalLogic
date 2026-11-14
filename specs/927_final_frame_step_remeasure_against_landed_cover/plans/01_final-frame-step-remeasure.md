@@ -1,7 +1,7 @@
 # Implementation Plan: Task #927
 
 - **Task**: 927 - Final frame step: remeasure against the landed cover
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/927_final_frame_step_remeasure_against_landed_cover/reports/01_final-frame-step-remeasure.md`
@@ -176,7 +176,7 @@ descriptions cite Phase 1's anchor enumeration and its guardrail attestation, an
 close-out record cites Phase 2's allocated task numbers, so no two phases here are genuinely
 independent and none is presented as such.
 
-### Phase 1: Premise Re-Validation, Guardrail Attestation, and the Full 901 Anchor Enumeration [NOT STARTED]
+### Phase 1: Premise Re-Validation, Guardrail Attestation, and the Full 901 Anchor Enumeration [COMPLETED]
 
 **Goal**: This plan's Phase 1 Notes carry (i) each of the dispatch's carried figures re-measured
 against live source with its verdict, (ii) a mechanical attestation that guardrails (a)-(f) were
@@ -275,6 +275,110 @@ the live value and the discrepancy rather than editing blind.
 - The Phase 1 Notes name the measured `UniversalCover.lean` line count and state the 519-line dispatch figure's verdict in words.
 - The Phase 1 Notes carry one row per declaration with a live line number, and one row per 901 anchor with its matched text and disposition, including the two sites Finding (3) did not enumerate.
 - `git diff --staged --name-only` names only this plan file.
+
+#### Phase 1 Notes
+
+All measurements below were taken live at implementation time against working-tree source, never
+against a report's description of them (guardrail (a)).
+
+**Carried-figure re-validation.**
+
+| Carried figure | Source of the claim | Measured live | Verdict |
+|---|---|---|---|
+| `FormalSystem/Semantics/UniversalCover.lean` is 519 lines | dispatch description line 6, carried from task 897's landing | **626** (`wc -l`) | **STALE.** The file grew by 107 lines after 897 closed, when task 898 added the `_of_constraints` forms. The staleness does not touch the substance of either task 897's or the dispatch's claim — the headline `exists_orientedForest_cover` is present and the `_of_constraints` form the remeasurement actually depends on is one of the additions that moved the count. Recorded explicitly rather than silently corrected. |
+| Guardrails (a)-(f), dispatch description line 21 | dispatch description | attested below | **ACCURATE**, all six honored. |
+
+**Declaration confirmation.** Every declaration the dispatch and the research report name is
+present in source at the line recorded. All eleven plan-time line numbers re-confirmed unchanged.
+
+| Declaration | File | Live line | Note |
+|---|---|---|---|
+| `exists_orientedForest_cover_of_constraints` | `FormalSystem/Semantics/UniversalCover.lean` | 591 | the constraint-form headline the remeasurement composes |
+| `exists_orientedForest_cover` | `FormalSystem/Semantics/UniversalCover.lean` | 617 | the `[F.IsRegular]` specialisation |
+| `coverFrameOfSerial` | `FormalSystem/Semantics/UniversalCover.lean` | 475 | takes `TaskFrame.Serial F.TaskRel`, no base class binder |
+| `coverFrame` | `FormalSystem/Semantics/UniversalCover.lean` | 500 | `[F.IsRegular]` specialisation |
+| `endpt_surjective` | `FormalSystem/Semantics/UniversalCover.lean` | 409 | |
+| `endpt_twoWayBounded` | `FormalSystem/Semantics/UniversalCover.lean` | 550 | `[F.IsRegular]` form; **this is the one the dispatch names** |
+| `endpt_twoWayBounded_of_constraints` | `FormalSystem/Semantics/UniversalCover.lean` | 523 | constraint form; **this is the one the cover headline actually consumes** |
+| `plus_invariance_of_isZTime_of_constraints` | `FormalSystem/Semantics/HistoryMorphism.lean` | 681 | no base `def:frame` binder |
+| `plus_invariance_of_isZTime` | `FormalSystem/Semantics/HistoryMorphism.lean` | 707 | retains `[F.IsRegular]` on the base, unread |
+| `saturation_of_orientedForest` | `FormalSystem/Semantics/OrientedForest.lean` | 880 | a primed variant `saturation_of_orientedForest'` sits at 837; the unprimed form is the one cited |
+| `FrameOver.ofStepSat` | `FormalSystem/Semantics/IntNormalForm.lean` | 563 | the presentation whose *Saturation* demand is finding (4)'s condition |
+
+Two incidental corrections to the dispatch's own prose, recorded under guardrail (a) and not
+affecting any finding:
+
+- The dispatch names `endpt_twoWayBounded` among the pieces task 897 landed. Both forms exist; the
+  constraint-form headline consumes `endpt_twoWayBounded_of_constraints` (`:523`), not the
+  `[F.IsRegular]` form (`:550`). The record says which is which.
+- The dispatch's piece-2 paragraph attributes `taskRel_eq_iter_of_constraints` to "the
+  `HistoryMorphism.lean` lifting chain" by adjacency. It is in fact declared in
+  `FormalSystem/Semantics/IntNormalForm.lean:259`. The declaration exists as claimed; only its
+  file attribution was loose.
+
+**Guardrail attestation.** This task's first commit is `e30f23b81` (2026-11-13, `task 927:
+complete research`). See the Phase 1 issue-log entry for why a bare
+`git log --grep='^task 927'` cannot be used to derive it: three further commits dated 2026-02-25
+carry the same `task 927:` prefix and belong to a prior vault generation's unrelated task.
+
+| Guardrail | Check | Result |
+|---|---|---|
+| (b) no Lean file written or edited; `FILE SCOPE: none` | `git status --short -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` | **empty** |
+| (b) same, across this task's own commits | `git diff --stat e30f23b81^..HEAD -- FormalSystem/ Tests/ lakefile.toml lake-manifest.json` | **empty** |
+| (b) corollary | `git diff --name-only e30f23b81^..HEAD \| grep -c '\.lean$'` | **0** |
+| (e) no in-place edit of the 901 or 879 report | `git diff --stat e30f23b81^..HEAD -- specs/archive/901_.../ specs/archive/879_.../` | **empty** |
+| (non-goal) no ROADMAP amendment | `git diff --stat e30f23b81^..HEAD -- specs/ROADMAP.md` | **empty** |
+
+The complete set of files this task's commits touch is `specs/927_.../` artifacts, `specs/TODO.md`
+and `specs/state.json` — plus `specs/928_.../` artifacts, which belong to the concurrently
+dispatched sibling and are not this task's writes.
+
+Guardrails (c), (d) and (f), attested by reading the research report rather than by a grep:
+
+- **(c) no formalization of any part of §§7-15.** None exists anywhere in this task's output. The
+  three probes live in the report's Appendix (lines 414-529) as text; they were elaborated through
+  `lean_run_code` and never landed, and the `.lean` count above is zero.
+- **(d) no completeness claim.** The report's Finding (4) is headed "CONDITIONALLY DISCHARGED" and
+  carries its own "**What is NOT claimed**" bullet preserving rows 17-21 as paper and leaving (O1),
+  (O3) and (O4) untouched.
+- **(f) no blocker on quotient precision.** The report did not need the chronicle quotient stated
+  more precisely than §15 states it: Finding (2) resolves the source-side obligation from §13.1's
+  double seriality and §15.1's statement, and raises no blocker.
+
+**The 901 stale-anchor enumeration.** Target:
+`specs/archive/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md`,
+**1084 lines** live (matching the plan-time figure). All six anchors confirmed at their plan-time
+line numbers, and one further site found that neither Finding (3) nor this plan's task list
+reached. Line numbers are implementation-time measurements; a successor re-locates **by content**.
+
+| # | Matched text (anchor) | Line | Disposition |
+|---|---|---|---|
+| 1 | `the two Lean pieces the final-frame step needs` (the `**missing**` ingredient row) | 110 | **Replace.** Verbatim replacement supplied by report Finding (3). |
+| 2 | `` `OrientedForest.lean:134`, `HistoryMorphism.lean:589` `` (adjacent compiled row) | 109 | **Correct citations** to `` `OrientedForest.lean:880`, `HistoryMorphism.lean:707` ``. Supplied by Finding (3). |
+| 3 | `Risk: the final-frame step is the weakest link` | 1001 | **Replace.** Full dated replacement paragraph supplied by Finding (3). |
+| 4 | `one step (the final frame) resting on two unlanded pieces` | 1002 | **One-clause correction** to "one step (the final frame), now resting on landed pieces". Finding (3) rules the rest of this paragraph **still accurate**; its substantive claim (no machine checking of the whole) survives and is load-bearing. |
+| 5 | `OrientedForest.lean:134`, `HistoryMorphism.lean:589` inside the evidence/status table | 1047 | **Correct citations** (`:880`, `:707`). **Not enumerated by Finding (3).** |
+| 6 | `Semantics/OrientedForest.lean:134` … `Semantics/HistoryMorphism.lean:306,589` in the reads list | 1075 | **Correct citations**: `:134`→`:880`, `:306`→`:335` (`exists_preimage_step_neg`, measured live), `:589`→`:707`. **Not enumerated by Finding (3).** |
+| 7 | `saturation_of_orientedForest` (compiled, `OrientedForest.lean:134`) inside §15.3's route prose | 908 | **Correct citation** (`:134`→`:880`). **Found at implementation time; reached by neither Finding (3) nor this plan's plan-time task list.** This extends the enumeration from six anchors to seven. |
+
+Two deliberate non-anchors, recorded so a successor does not treat either as an oversight:
+
+- **Line 910**, `**The two missing pieces, named.**` — stale by the same measure as anchors 1 and
+  3. Finding (3) directs its replacement to be the Risks amendment text of anchor 3 rather than a
+  separate rewrite. It also carries the drifted `HistoryMorphism.lean:589` citation, which the
+  replacement text supersedes.
+- **Line 904**, §15.2's assessment of why the quotient's *own* *Saturation* is doubtful (countably
+  infinite slices; the quotient is not an oriented forest, so `saturation_of_orientedForest` does
+  not apply directly). **Correct and load-bearing — must not be touched.** It is the reason the
+  cover route exists at all, and the research report's Recommendations say so explicitly.
+
+The amendment must also preserve the 901 report's own refusal to claim the step ("This write-up
+does not claim the final-frame step; it claims the engine up to it"), which appears inside anchor
+3's paragraph: the replacement reframes what is landed, it does not lift the refusal.
+
+**Issue log.** One `issue` recorded for this phase (class `tooling/ambiguous-anchor`, severity
+`minor`): the task-number collision across vault generations described under Guardrail attestation
+above, which produced a false guardrail-(b) violation before being caught.
 
 ---
 
