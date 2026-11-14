@@ -20295,20 +20295,20 @@
     },
     {
       "task_ids": [
+        869
+      ],
+      "description": "Open-modal truth invariance along a ray-agreement-lifting history morphism; waits on 743 and gates 873",
+      "rationale": "The only L-triangle task with an out-of-batch gate: its 743 edge is carried by the first batch in this list, so it cannot run until that one closes. It now also gates 873 on shared file scope (FormalSystem/OpenLanguage.lean, docs/theorem-index.md), so it runs ahead of the L-triangle syntax line rather than after it. Small, self-contained, and demoted by the same standing ruling as that batch."
+    },
+    {
+      "task_ids": [
         873,
         874,
         875,
         876
       ],
-      "description": "The L-triangle syntax line: 873 is gated on nothing and gates the other three",
-      "rationale": "Placed below every L-plus line by standing user ruling: the repository's aim is completeness and decidability of the stability-modal language L-plus, and L^|> is a secondary line of investigation that is kept but never dispatched ahead of, or batched with, critical-path work. Within the batch, 873 is the one piece of L^|> infrastructure gated on nothing, and 874, 875 and 876 each carry an edge on it. 876 is now a decision record only -- no constructor of `OpenFormula` is to be removed."
-    },
-    {
-      "task_ids": [
-        869
-      ],
-      "description": "Open-modal truth invariance along a ray-agreement-lifting history morphism; waits on 743",
-      "rationale": "The last line, and the only L-triangle task with an out-of-batch gate: its 743 edge is carried by the first batch in this list, so it cannot run until that one closes. Small, self-contained, and demoted by the same standing ruling as the batch above."
+      "description": "The L-triangle syntax line: 873 runs first within the batch and gates the other three",
+      "rationale": "Placed below every L-plus line by standing user ruling: the repository's aim is completeness and decidability of the stability-modal language L-plus, and L^|> is a secondary line of investigation that is kept but never dispatched ahead of, or batched with, critical-path work. Within the batch, 873 gates 874, 875 and 876, which each carry an edge on it. 873 itself carries an edge on 869 and so runs after the batch above: the two share FormalSystem/OpenLanguage.lean and docs/theorem-index.md, and the edge makes that shared territory an ordered sequence rather than a collision the admission gate refuses. 876 is a decision record only -- no constructor of `OpenFormula` is to be removed."
     }
   ],
   "roadmap_notes": {

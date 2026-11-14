@@ -47,14 +47,14 @@ system, both conservativity directions, the `Determined` collapse, `⊡φ ↔ �
 frame, and the definability split by frame class all in the tree. The ledger of L⁺ headline
 results against their L^▷ counterparts is 872's report.
 
-The exploration backlog, every row `priority: low`, each gated on 873:
+The exploration backlog, every row `priority: low`. 869 heads the line and gates 873, which gates the rest:
 
 | Task | What it investigates | Gate |
 |---|---|---|
-| 873 | `OpenLanguage/Subformulas.lean` — subformula closure, `Finset`, decidable membership, and `subformulas_ofPlus` | none |
+| 869 | open-modal truth invariance along a ray-agreement lifting; shares `OpenLanguage.lean` and `docs/theorem-index.md` with 873, so it runs ahead of it | 743 |
+| 873 | `OpenLanguage/Subformulas.lean` — subformula closure, `Finset`, decidable membership, and `subformulas_ofPlus` | 869 |
 | 874 | `OpenLanguage/Substitution.lean` — `substOpen`, `OpenAxiom.ofTMSubst`, and the direct L→L^▷ embedding | 873 |
 | 875 | incompleteness at Base, through both conservativity directions; the limit-closure schema in `▷`-form at Base/Dense | 873 |
-| 869 | open-modal truth invariance along a ray-agreement lifting | 743 |
 | 876 | **decision record only**: whether `⊡` *could* be removed as an `OpenFormula` primitive, and at what cost. No removal is attempted | 873 |
 
 **872's six proposals (T1–T6) are not filed.** They stand in its report as the rest of this
@@ -228,8 +228,8 @@ Only the first batch has to come first -- it is the one that unblocks others. Th
 /orchestrate 498, 499 --hard   # The Jonsson-Tarski representation's two sides: complex algebra and ultrafilter frame
 /orchestrate 125, 501 --hard   # The Jonsson-Tarski capstone and Until/Since on STSA, the representation front's terminus
 /orchestrate 177   # Genuinely last in the programme: README, docs/ and module-docstring polish behind 26 edges
-/orchestrate 873, 874, 875, 876   # The L-triangle syntax line: 873 is gated on nothing and gates the other three
-/orchestrate 869   # Open-modal truth invariance along a ray-agreement-lifting history morphism; waits on 743
+/orchestrate 869   # Open-modal truth invariance along a ray-agreement-lifting history morphism; waits on 743 and gates 873
+/orchestrate 873, 874, 875, 876   # The L-triangle syntax line: 873 runs first within the batch and gates the other three
 ```
 
 Why this order:
@@ -250,8 +250,8 @@ Why this order:
 - Both hang off 497, which the chain-to-543 batch above already carries, so this line is placed after it rather than duplicating 497. 499 is flagged HARD in its own record.
 - 125 is the capstone, reachable only once 498 and 499 both land; 501 extends STSA with Until/Since behind it.
 - Carries 26 declared edges, more than any other record in the tree, and is a documentation sweep whose value depends entirely on the work it documents having landed. Running it early guarantees re-running it.
-- Placed below every L-plus line by standing user ruling: the repository's aim is completeness and decidability of the stability-modal language L-plus, and L^|> is a secondary line of investigation that is kept but never dispatched ahead of, or batched with, critical-path work. Within the batch, 873 is the one piece of L^|> infrastructure gated on nothing, and 874, 875 and 876 each carry an edge on it. 876 is now a decision record only -- no constructor of `OpenFormula` is to be removed.
-- The last line, and the only L-triangle task with an out-of-batch gate: its 743 edge is carried by the first batch in this list, so it cannot run until that one closes. Small, self-contained, and demoted by the same standing ruling as the batch above.
+- The only L-triangle task with an out-of-batch gate: its 743 edge is carried by the first batch in this list, so it cannot run until that one closes. It now also gates 873 on shared file scope (FormalSystem/OpenLanguage.lean, docs/theorem-index.md), so it runs ahead of the L-triangle syntax line rather than after it. Small, self-contained, and demoted by the same standing ruling as that batch.
+- Placed below every L-plus line by standing user ruling: the repository's aim is completeness and decidability of the stability-modal language L-plus, and L^|> is a secondary line of investigation that is kept but never dispatched ahead of, or batched with, critical-path work. Within the batch, 873 gates 874, 875 and 876, which each carry an edge on it. 873 itself carries an edge on 869 and so runs after the batch above: the two share FormalSystem/OpenLanguage.lean and docs/theorem-index.md, and the edge makes that shared territory an ordered sequence rather than a collision the admission gate refuses. 876 is a decision record only -- no constructor of `OpenFormula` is to be removed.
 
 Each line is one invocation, and batches are dependency-inclusive: a batch holding a blocker together with its dependent is correct, while a dependent named *without* its out-of-batch blocker is dead weight. `MAX_TASKS` is 8 and the work-cycle budget is per task per invocation (5 default, 13 under `--hard`), so **re-run the same line until every member reports terminal**. Shared file scope serializes a batch rather than breaking it, and a collision against a *live* session's lock is not bypassable by `--allow-scope-collision`: wait for the holder, or batch with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
 
