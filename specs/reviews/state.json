@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Review state tracking",
-  "_last_updated": "2026-11-02T17:35:00Z",
+  "_last_updated": "2026-11-14",
   "reviews": [
     {
       "review_id": "review-20260331",
@@ -541,12 +541,29 @@
         832
       ],
       "registries_updated": []
+    },
+    {
+      "review_id": "review-2026-11-14",
+      "date": "2026-11-14",
+      "scope": "Progress on completeness and decidability for L+ -- what is landed, what remains",
+      "report_path": "specs/reviews/review-2026-11-14.md",
+      "summary": {
+        "files_reviewed": 25,
+        "critical_issues": 0,
+        "high_issues": 3,
+        "medium_issues": 2,
+        "low_issues": 1
+      },
+      "tasks_created": [
+        933
+      ],
+      "registries_updated": []
     }
   ],
   "statistics": {
-    "total_reviews": 29,
-    "last_review": "2026-11-02",
-    "total_issues_found": 355,
-    "total_tasks_created": 62
+    "total_reviews": 30,
+    "last_review": "2026-11-14",
+    "total_issues_found": 361,
+    "total_tasks_created": 63
   }
 }

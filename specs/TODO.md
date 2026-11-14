@@ -1,5 +1,5 @@
 ---
-next_project_number: 933
+next_project_number: 934
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 933
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,933 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -61,6 +61,7 @@ next_project_number: 933
     └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
+933 [NOT STARTED] — Correct the decidability-front record, which misrepresents...
 
 ### Formula Refactor
 
@@ -98,6 +99,26 @@ next_project_number: 933
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 933. Correct decidability front record
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Correct the decidability-front record, which misrepresents the front's position after tasks 929 and 930 completed on 2026-11-13. Source: specs/reviews/review-2026-11-14.md (three High findings, one Medium). Four corrections, all record-level; no mathematics changes and no Stage 0 ruling is taken here.
+
+(1) roadmap_batches in specs/state.json carries a batch with task_ids [929,930] described as "The only enterable depth-0 open-core work: 929's idle-run discharge, 930's prototype wiring". Both tasks are COMPLETED and archived (specs/archive/929_idle_run_length_one_forward_slack_discharge/, specs/archive/930_wire_orphan_open_core_prototypes/). specs/ROADMAP.md renders that stale batch as fact at :208 and :235, including "Both are `ready` ... and neither is gated on anything ... they are scheduled ahead of it rather than behind it". Rebuild roadmap_batches against current active_projects so no archived task heads a batch.
+
+(2) specs/ROADMAP.md:20-26 ("Where both fronts now stand") states "Stage 1 has a short dispatchable Lean line again" and that Phases 11.16 and 11.17 "are now enterable -- roughly 2.5 hours of work". Both claims are spent. specs/ROADMAP.md:208 and task 761's plan v13 (specs/761_ladder_realization_theorem/plans/13_depth-zero-gate-rest-state.md) both record that plan v13 came to rest at 30 of 41 phases closed with ZERO phases enterable, Phases 11.15/11.16/11.17 having closed [COMPLETED]. Rewrite the governing paragraph against plan v13.
+
+(3) specs/ROADMAP.md Stage 0 carries an unchecked item "Decide whether the `I = 1` idle-run sub-regime is filed". It was filed as task 929 and completed 2026-11-13. Check it off citing 929's summary. Separately, Stage 0's depth-0 crux is stated as "stays open and claimed in neither direction"; 929 landed a compiled refutation at a positive amount (forwardSlackWitnessed_refuted_I_one, amount 4, at a state inhabiting the pending-forever regime) together with a compiled bound on its reach (ceiling_slack_at_consumer_amount, under which the five depth-0 cell-equality schemas of LadderCell.lean keep ForwardSlackWitnessed for a positive reason). Restate the crux against that evidence. DO NOT take the depth-0 ruling itself -- that remains a Stage 0 user ruling.
+
+(4) Task 761 carries status "blocked" with blockers null, hold_reason null and depends_on null, while all six of its declared edges are discharged. Its actual blocker -- Phase 11.6's depth-0 gate, owned by no open task -- is recorded only in prose. Write that blocker into state.json via update-task-status.sh.
+
+OUT OF SCOPE, explicitly: requirement (S)'s remaining scope and ownership of 761's depth-0 gate. Both are specs/ROADMAP.md Stage 0 items marked "no agent may transition these" and are reserved to the user.
+
+---
 
 ### 932. Land the four ofStepRel constraint lemmas and an ofStepPlain constructor in IntNormalForm.lean
 - **Status**: [NOT STARTED]
