@@ -1,0 +1,18 @@
+{
+  "status": "researched",
+  "started_at": "2026-11-14T09:20:54Z",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/934_depth_zero_reachability_probe/reports/01_consumer-shape-reachability-probe.md",
+      "summary": "Positive compiled verdict: ForwardSlackWitnessed holds at the consumer shape at a positive amount on stepOr/bot, the restricted schema fires non-vacuously under ParamsOk, and a no-slack path through the same state is exhibited; bound on reach (singleton cell) recorded."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1794647848_d925d2_934",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
