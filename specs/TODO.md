@@ -6,16 +6,16 @@ next_project_number: 931
 
 ## Task Order
 
-*Updated 2026-11-13. Generated from state.json dependency graph.*
+*Updated 2026-11-14. Generated from state.json dependency graph.*
 
 **Goal**: Close the residual repository-hygiene backlog
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,873,890,927,928,929,930 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,862,874,875,876,926 | 298,428,502,761,873,927,928 | algebraic-representation, completeness, dataset-enhancement, ... |
-| 3 | 410,498,499,500,861 | 429,497,763 | algebraic-representation, decidability |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,927,928,929,930 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,862,873,926 | 298,428,502,761,869,927,928 | algebraic-representation, completeness, dataset-enhancement, ... |
+| 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
@@ -315,7 +315,7 @@ VERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, th
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: syntax
-- **Dependencies**: None
+- **Dependencies**: Task 869
 
 **Description**: PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise.
 

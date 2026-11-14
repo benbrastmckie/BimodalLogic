@@ -8661,7 +8661,9 @@
       ],
       "artifacts": [],
       "session_id": "sess_1793898929_f3f6c6",
-      "dependencies": [],
+      "dependencies": [
+        869
+      ],
       "audit_verdict": {
         "proposal": {
           "id": "open_language_subformula_closure",
