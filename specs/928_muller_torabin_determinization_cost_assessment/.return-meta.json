@@ -1,22 +1,40 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "build_note": "No Lean build surface: this is a report-only assessment task (plan metadata Lean Intent: false) and guardrail (a) forbids writing or editing any .lean file in either tree. Mechanically verified: `git -C ~/Projects/cslib status --porcelain -- '*.lean'` is empty, and this tree's only untracked .lean files predate the dispatch by ~4 days and belong to a different task. The applicable gate is validate-artifact.sh, which exits 0 on the report, the plan, and the summary."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/928_muller_torabin_determinization_cost_assessment/plans/01_muller-torabin-cost-assessment.md",
-      "summary": "3-phase, 2-hour closure plan for the report-only assessment: de-carry Finding 1.4's K4B grounding against Reynolds 2001, fidelity-check Thomas 1997 Theorem 6.5/Remark 6.6 against the held PDF, then audit the report against the dispatch's four deliverables and six guardrails and write the summary."
+      "type": "summary",
+      "path": "specs/928_muller_torabin_determinization_cost_assessment/summaries/01_muller-torabin-cost-assessment-summary.md",
+      "summary": "Closure summary for the Muller-to-Rabin cost assessment: both evidence repairs completed first-hand, four deliverables and six guardrails audited, three corrections disclosed."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1794635603_fa0324_928",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 2,
-    "dependency_waves": 3
+  "completion_data": {
+    "completion_summary": "Closed the report-only Muller-to-Rabin determinization cost assessment by retiring both of its weak evidence tiers against primary sources: Finding 1.4's K4B grounding is now cited first-hand to Reynolds 2001 (all three sub-claims confirmed, one carried wording error corrected), and Findings 1.2/1.3 are checked against Thomas 1997's PDF page images (all seven quotations confirmed verbatim, one overstatement about tree-specificity corrected, one omitted construction step surfaced, the rigour gap strengthened from one unproved obligation to two). Audited the report against the dispatch's four deliverables and six guardrails, verifying (a), (b) and (e) mechanically rather than by assertion.",
+    "roadmap_items": []
   },
-  "memory_candidates": [],
-  "next_steps": "Run /orchestrate 928 to execute the plan",
-  "dispatch_seq": 4
+  "modified_files": [
+    "specs/928_muller_torabin_determinization_cost_assessment/reports/01_muller-torabin-cost-assessment.md",
+    "specs/928_muller_torabin_determinization_cost_assessment/plans/01_muller-torabin-cost-assessment.md",
+    "specs/928_muller_torabin_determinization_cost_assessment/summaries/01_muller-torabin-cost-assessment-summary.md",
+    "specs/928_muller_torabin_determinization_cost_assessment/issues.jsonl"
+  ],
+  "metadata": {
+    "session_id": "sess_1794635603_fa0324",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "phases_completed": 3,
+    "phases_total": 3,
+    "gate_discharge": "scoped",
+    "gate_discharge_note": "Per this dispatch's Batch Gate Deferral directive, Phase 3's declared `full` tier was discharged against the covering check for its touched files. suite_selection_select returned __FULL_SWEEP__ for pure specs/** prose paths, making the criterion unmappable to any --only suite basename or --only-gate number; validate-artifact.sh was therefore run directly on the report, plan, and summary (all PASS, 0 warnings) and recorded as the scoped discharge. The complete gate set is deferred to the batch stage, not forgiven."
+  },
+  "dispatch_seq": 6
 }
