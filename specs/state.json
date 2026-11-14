@@ -262,6 +262,11 @@
           "path": "specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean",
           "type": "evidence",
           "summary": "The promoted, git-tracked, CI-wired compiled refutation of the I = 1 idle-run sub-regime at the every-amount shape."
+        },
+        {
+          "path": "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-2-handoff-20261113-184202.md",
+          "type": "handoff",
+          "summary": "Phase 2 handoff: what landed, measured axiom profiles, the one lint-conformance deviation, and the pre-existing Probe838C grep-criterion observation."
         }
       ],
       "next_artifact_number": 2,

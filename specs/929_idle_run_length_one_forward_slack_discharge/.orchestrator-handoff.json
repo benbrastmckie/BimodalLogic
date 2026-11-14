@@ -1,32 +1,29 @@
 {
-  "task_number": 929,
-  "phase": "implement",
-  "dispatch_seq": 7,
   "status": "partial",
-  "phases_completed": 1,
+  "dispatch_seq": 8,
+  "phases_completed": 2,
   "phases_total": 4,
-  "summary": "Phase 1 of 4 complete and committed (78158e7f1): the compiled I = 1 refutation probe is promoted to specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean, git-tracked, and wired into scripts/check-evidence-probes.sh with its documentation-table row; the task-local copy is deleted and the research report carries a forward pointer. The evidence gate reports PASS all 59 wired probe(s) compile, confirming the plan's 58 -> 59 Scope Hypothesis exactly, and no hardcoded total exists to edit. Phase-end full lake build is green (2975 jobs, zero errors, zero warnings); this dispatch was phase-1-only by its Phase Mission, so Phases 2-4 are not started.",
+  "summary": "Phase 2 landed the compiled I = 1 refutation in the library: FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean gained a new section IOne / namespace IdleRunOne (1080 to 1342 lines) holding all sixteen declarations of the evidence probe in its own order, each doc-commented, with a section docstring stating the refutation's reach, that it does not touch the five depth-0 schemas (citing ceiling_slack_at_consumer_amount), and that certStabK's obligation stays provisional. Full lake build exits 0 with zero errors and zero warnings; the five headline axiom profiles match the plan's predicted values exactly and no sorry was added. typst/generated/status.typ was regenerated and staged in this same phase because the pre-commit hook blocks on it. Committed as 85790a121; this dispatch was phase-2-only by its Phase Mission, so Phases 3 and 4 remain NOT STARTED.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "evidence",
-      "path": "specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean",
-      "summary": "The promoted, git-tracked, CI-wired compiled refutation of the I = 1 idle-run sub-regime at the every-amount shape."
+      "type": "handoff",
+      "path": "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-2-handoff-20261113-184202.md",
+      "summary": "Phase 2 handoff: what landed, measured axiom profiles, the one lint-conformance deviation, and the pre-existing Probe838C grep-criterion observation."
     },
     {
-      "type": "handoff",
-      "path": "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-1-handoff-20261113-183058.md",
-      "summary": "Phase 1 handoff: what landed, verification results, scope-hypothesis confirmation, next action."
+      "type": "plan",
+      "path": "specs/929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md",
+      "summary": "Phase 2 heading marked [COMPLETED], all six Phase 2 checklist items ticked, one deviation annotated inline."
     }
   ],
   "modified_files": [
-    "specs/evidence/forward-slack-pin-cascade/idle-run-one-ceiling.lean",
-    "scripts/check-evidence-probes.sh",
-    "specs/929_idle_run_length_one_forward_slack_discharge/evidence/i-one-ceiling.lean",
-    "specs/929_idle_run_length_one_forward_slack_discharge/reports/01_idle-run-one-forward-slack.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderIdle.lean",
+    "typst/generated/status.typ",
     "specs/929_idle_run_length_one_forward_slack_discharge/plans/01_idle-run-one-forward-slack.md",
     "specs/929_idle_run_length_one_forward_slack_discharge/issues.jsonl",
-    "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-1-handoff-20261113-183058.md"
+    "specs/929_idle_run_length_one_forward_slack_discharge/handoffs/phase-2-handoff-20261113-184202.md"
   ],
+  "next_action": "Phase 3: restate the I = 1 frontier at the three asserting docstring sites (LadderChain.lean module docstring ending ~line 142 and its certStabK site ~1391-1393, plus the third site the plan names). Re-read each file immediately before editing.",
   "session_id": "sess_1794619593_8f19c5"
 }
