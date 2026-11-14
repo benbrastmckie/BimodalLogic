@@ -1,15 +1,26 @@
 {
-  "status": "planned",
-  "dispatch_seq": 6,
-  "phases_completed": 0,
-  "phases_total": 4,
-  "summary": "Authored a four-phase implementation plan for promoting and wiring the two orphan open-core prototypes. Phase 1 promotes both prototypes verbatim (one header line each) into specs/evidence/seam-gluing-ray-product/ and tracks them; Phase 2 wires two WIRED entries plus table blocks into scripts/check-evidence-probes.sh; Phase 3 rewrites the two RaySummary/README.md citations; Phase 4 runs the full gate set as a baseline delta. Two gate-collision conditions (typst-sync line-count coupling and C26 snake_case def naming) were resolved mechanically at plan time and shown not to fire, so no regeneration or rename step is owed.",
-  "blockers": [],
+  "status": "partial",
+  "phase": "implement",
+  "dispatch_seq": 11,
+  "summary": "Phase 1 of 4 complete: both orphan prototypes promoted verbatim (one header line changed each) to tracked paths specs/evidence/seam-gluing-ray-product/ladder-tight-chain-regime-b.lean and ladder-spanning-divisibility.lean, committed as 2dc16fd78. Each compiles clean through the build guard (exit 0) and all eight headline theorems report only subsets of [propext, Classical.choice, Quot.sound] -- no sorryAx, no custom axiom, no native_decide, so neither README authority claim is stale. The phase-end full lake build is green (exit 0, 0 errors, 2975 jobs). Phases 2 (wire into scripts/check-evidence-probes.sh), 3 (rewrite the two README citations) and 4 (full gate set) remain, per this hard-mode dispatch's single-phase mission.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/930_wire_orphan_open_core_prototypes/plans/01_wire-orphan-open-core-prototypes.md",
-      "summary": "Four-phase plan: promote, wire, rewrite citations, full-gate verification."
+      "type": "handoff",
+      "path": "specs/930_wire_orphan_open_core_prototypes/handoffs/phase-1-handoff-20261113-191856.md",
+      "summary": "Phase 1 handoff: promoted paths, per-file compile and axiom measurements, and the Phase 2 resume point."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/seam-gluing-ray-product/ladder-tight-chain-regime-b.lean",
+      "summary": "Promoted 836B prototype: the tight-chain regime-B decision gate, refuting the spanning-block device in both directions."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/seam-gluing-ray-product/ladder-spanning-divisibility.lean",
+      "summary": "Promoted 838B prototype: (K1) does not constrain a spanning block length, via the alternating path."
     }
-  ]
+  ],
+  "phases_completed": 1,
+  "phases_total": 4,
+  "blockers": []
 }

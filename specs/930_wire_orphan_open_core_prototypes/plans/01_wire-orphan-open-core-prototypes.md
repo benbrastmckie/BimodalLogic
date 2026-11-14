@@ -1,7 +1,7 @@
 # Implementation Plan: Task #930
 
 - **Task**: 930 - Promote and wire the two orphan open-core prototypes into the evidence gate
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/930_wire_orphan_open_core_prototypes/reports/01_wire-orphan-open-core-prototypes.md
@@ -140,7 +140,7 @@ text names paths that must exist) but not on Phase 2.
 
 ---
 
-### Phase 1: Promote both prototypes into `specs/evidence/seam-gluing-ray-product/` [NOT STARTED]
+### Phase 1: Promote both prototypes into `specs/evidence/seam-gluing-ray-product/` [COMPLETED]
 
 **Goal**: Both compiled records exist at tracked, durable paths, verbatim apart from one header
 line each, re-verified against the live tree.
