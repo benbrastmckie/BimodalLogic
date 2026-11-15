@@ -20,8 +20,8 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 | Metric | Count |
 |--------|-------|
 | Live `.lean` files | 756 |
-| Live lines of code | 219,864 |
-| Live comment lines | 140,145 |
+| Live lines of code | 220,115 |
+| Live comment lines | 140,322 |
 <!-- END GENERATED -->
 
 The table above is generated: `bash scripts/check-module-invariants.sh --emit-inventory`

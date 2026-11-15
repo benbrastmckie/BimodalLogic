@@ -4934,7 +4934,47 @@ editing.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - If the phase closes `[BLOCKED]`: the goal state is recorded with the clause that would not close named, and Phase 11.20 is marked as waiting on it — **the induction is NOT entered on an argued clause**, which is the whole point of the recorded obligation's ordering.
 
-### Phase 11.20: The Register Discriminator, and the `~_d` Relation It Fixes [NOT STARTED]
+### Phase 11.20: The Register Discriminator, and the `~_d` Relation It Fixes [BLOCKED]
+
+**BLOCKER** (Phase 11.20):
+- **What failed**: the decision rule reached none of its three candidates. Both sides of the
+  discriminator landed as compiled objects in
+  `FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean`, and they disagree.
+  Side (A), the producer: `register_displacement_bound_of_anchor` and
+  `register_interior_displacement_bound_at_block` land the `Drift`-distance reading (R-a) at the
+  bound `i · l + 2 · j`, which grows with the copy index;
+  `iterSpliced_register_clipped_interior_forces_block_drift` with
+  `iterSpliced_register_clipped_interior_refuted` REFUTE the clipped/residue reading (R-b) at every
+  `Tn ≥ 3` and every `P`, with the residue conjunct carried in the refuted hypothesis, so the
+  conjunction and not merely the clipped half is refuted. Side (B), the consumer: `stab_alphaR_iff`
+  computes the `⊡` bit of the probe formula `alphaR := X r → X X ¬ r` at an idle ladder state
+  exactly — the bit IS `register = 0` — and off it `stab_bit_ne_of_register_ne` REFUTES (R-c) at
+  every `m > 0` and (R-a) at `m = 1`, while `stab_alphaR_eq_of_clipped_eq` CONSUMES (R-b) at every
+  `Tn ≥ 1` from the clipped half alone.
+- **What was tried**: both measurements, in the order the phase pins, with no candidate chosen
+  before both were compiled. The side-(A) refutation reuses the climbing-register fixture Phase
+  11.19 already carries (`ClimbWitness.climb`, `fwdT`, `bwdT`, `labT`) rather than building a
+  second one; the side-(B) measurement needed a new forced-pending-continuation path (`regPath`)
+  and a new pending-tracking labelling (`labR`), because no landed fixture reads the register
+  coordinate at all.
+- **Why it's stuck**: the two facts meet in one place and disagree there. Below the threshold the
+  clipped reading IS equality, so side (B) needs the original's exact register at a copy pair, and
+  side (A) says a ladder path carrying it at the top of copy `0` and the bottom of copy `1` would
+  have to move the register across the whole block in one position, which `Drift` forbids whenever
+  the original's register is not nearly constant on the block. Nothing in the depth-stratified
+  invariant keeps either member above `Tn`: its threshold conjunct bounds the COUNTDOWN only.
+- **What is needed**: a `/revise` ruling between two routes, neither costable from here and
+  neither a move inside a phase. (i) Restrict the pump's block selection to blocks across which
+  the original's register is already nearly constant, so side (A)'s obstruction is hypothesised
+  away; the cost is a new block-selection condition on top of `exists_typeBlock_of_spacing`, and
+  nothing landed says such blocks exist at the needed spacing. (ii) Move the register bridging off
+  the path level onto the certificate side, so no position-pair relation carries a register
+  conjunct at all; the cost is that the transport the depth induction was to consume is no longer
+  a path-level correspondence.
+- **Prohibited workarounds**: do NOT use `sorry`, `axiom`, `native_decide`, `def X := True`, or any
+  vacuous placeholder; do NOT define `~_d` on an unmeasured or refuted register conjunct; do NOT
+  raise `Tc`, re-base `Tc_d` at a non-zero `Tc_0`, or strengthen `ParamsOk` (each a new ruling);
+  do NOT reinstate `n = n'` or state the refuted interior register clause.
 
 **THIS IS THE ONE ENTERABLE PHASE OF THIS PLAN, AND IT IS A DECISION GATE.** Its deliverable is a
 MEASUREMENT plus the relation that measurement fixes — never a conjunct chosen in prose. The (W-2)
@@ -4998,7 +5038,8 @@ out rather than taking it.** A second `ParamsOk` strengthening, a second `Tc` ra
 re-based at a non-zero `Tc_0` are route decisions for a `/revise`, never moves inside a phase.
 
 **Tasks**:
-- [ ] **Side (A) — measure what the splice delivers.** Re-read `drift_extension_of_pins`
+- [x] **Side (A) — measure what the splice delivers.** *(completed: `register_displacement_bound_of_anchor` and `register_interior_displacement_bound_at_block` LAND (R-a); `iterSpliced_register_clipped_interior_forces_block_drift` with `iterSpliced_register_clipped_interior_refuted` REFUTE (R-b), reusing `ClimbWitness.climb`)*
+      Re-read `drift_extension_of_pins`
       (`RunLayer.lean:388`), `walkPin`, `iterSpliceIdx` with its characterizations
       (`LadderChain.lean:759`, `:769`, `:776`, `:790`) and the landed
       `exists_iterSpliced_ladderPath_idx_interior_of_pend_past` against their LIVE signatures at
@@ -5008,7 +5049,8 @@ re-based at a non-zero `Tc_0` are route decisions for a `/revise`, never moves i
       candidate of the ladder above as LANDED or REFUTED on this side**, and where a refutation is
       owed, reuse the compiled fixture `iterSpliced_register_interior_refuted` already carries
       rather than building a second one — a reused compiled counterexample is cheaper and stronger.
-- [ ] **Side (B) — measure what the `⊡`-bit agreement needs.** `stab_state_only`
+- [x] **Side (B) — measure what the `⊡`-bit agreement needs.** *(completed: `stab_alphaR_iff` computes the bit as `register = 0`; `stab_bit_ne_of_register_ne` refutes (R-c) and (R-a); `stab_alphaR_eq_of_clipped_eq` consumes (R-b))*
+      `stab_state_only`
       (`PlusTruth.lean:338`) makes a `⊡` bit a function of the STATE, so the requirement is a
       statement about two states' coordinates and is provable or refutable on a two-state fixture.
       Derive it from `clipIdx`'s landed definition (`CounterQuotient.lean:151`) and from the
@@ -5017,21 +5059,25 @@ re-based at a non-zero `Tc_0` are route decisions for a `/revise`, never moves i
       already fix how the bit reads the counter. **Land the register requirement as a STATEMENT,
       not as prose**, so the decision rule compares two compiled objects and not an object against
       an argument.
-- [ ] **Apply the decision rule and define `~_d`** with the chosen `R`, as a named Prop-valued
+- [ ] **Apply the decision rule and define `~_d`** *(deviation: altered — the rule WAS applied and reached NO candidate, so no relation, no `Tc_d` and no `D` were defined, which is this phase's own `[BLOCKED]` outcome; `Tc_0 = 0` and the threshold's vacuity at `d = D` are recorded in the section docstring from `margin_room_at_depth` rather than re-landed)*
+      with the chosen `R`, as a named Prop-valued
       relation on `LadderState Q pend × LadderState Q pend` (or on the counter pairs with `q`
       carried beside, whichever the pump's own clauses deliver without a coercion). Define `Tc_d`
       and `D` as named definitions, and prove the two readings the induction needs — `Tc_D = Tc_0`
       and `Tc_0 ≤ Tc_d` for every `d ≤ D` — from Phase 11.18's `margin_room_at_depth`. **Record
       WHICH candidate was taken and why the earlier ones were not**, with each refusal pointing at
       the compiled side-(A) or side-(B) object that refused it.
-- [ ] **Land the properness witness**: a compiled pair outside `~_d`, so the relation is not
+- [ ] **Land the properness witness** *(deviation: skipped — no relation was defined, so there is nothing for a pair to be outside of)*
+      a compiled pair outside `~_d`, so the relation is not
       vacuously total. Record it in the section docstring beside the definition.
-- [ ] **Record, in the section docstring, what `~_d` does NOT say**: it is not `kappa`-equality;
+- [x] **Record, in the section docstring, what `~_d` does NOT say** *(deviation: altered — the two measurement sections' docstrings and the `## The decision` docstring record what each MEASUREMENT does not say: no `⊡` bit on the producer side, no pump on the consumer side, no cell agreement and no `kappa` application on either, and membership of no pair anywhere)*
+      it is not `kappa`-equality;
       its register conjunct is the measured `R` and NOT `n = n'`, the equality clause being refuted
       by compiled theorem; its threshold conjunct is `Tc_d`, not `Tc`, and is VACUOUS at `d = D`;
       membership of any pair in it is not agreement of the cell at that pair (Phase 11.6's), and
       this phase proves membership of nothing (Phase 11.22's).
-- [ ] Wire the new declarations: axiom pins, docstring, generated inventory blocks, `status.typ`.
+- [x] Wire the new declarations: axiom pins, docstring, generated inventory blocks, `status.typ`. *(completed)*
+      
       No `docs/theorem-index.md` row — no filed Goal lands here.
 
 **Prohibited workarounds**: do NOT reinstate `n = n'`, state the refuted interior register clause,
@@ -5093,7 +5139,12 @@ wiring edits are LISTED below.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - If the phase closes `[BLOCKED]`: both sides' measurements are recorded, the gap between them is named, and Phase 11.22 is marked as waiting on it — **the membership proof is NOT entered on an unmeasured conjunct**, which is the whole point of this phase's ordering.
 
-### Phase 11.22: Membership of Every Pump Pair in the Re-Stated `~_d`, and the Promoted Probe [NOT STARTED]
+### Phase 11.22: Membership of Every Pump Pair in the Re-Stated `~_d`, and the Promoted Probe [BLOCKED]
+
+**WAITING ON PHASE 11.20, WHICH CLOSED `[BLOCKED]`.** Phase 11.20's decision gate reached none of
+its three register candidates, so there is no `~_d` to prove membership in: the membership proof is
+NOT entered on an unmeasured conjunct, which is that phase's own ordering rule. This phase becomes
+enterable only once a `/revise` rules between the two routes Phase 11.20's blocker record names.
 
 **THIS IS THE PHASE THAT MAKES PHASE 11.6 ENTERABLE**, and it carries the membership proof the
 predecessor revision's Phase 11.20 owned. It is numbered 11.22 because that is the next free number

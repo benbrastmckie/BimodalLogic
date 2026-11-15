@@ -177,7 +177,7 @@ here rather than in `LadderChain.lean` because that module has fourteen lines of
 its own in-source `longFile` baseline, and this one imports the whole pump spine.
 -/
 
-set_option linter.style.longFile 2400
+set_option linter.style.longFile 2900
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -2340,5 +2340,497 @@ theorem iterSpliced_register_interior_refuted :
     simp [Drift, nxtAt, climb, climbRaw] at hd
 
 end RegisterRefutation
+
+/-! ## The register discriminator: side (A), what the iterated splice delivers
+
+Phase 11.19 closed the register clause `nxtAt g' (u + i · l + j) = nxtAt g (u + j)` as REFUTED
+(`iterSpliced_register_interior_refuted`). What replaces it is a MEASUREMENT: of the three
+candidate register relations a depth-stratified invariant could carry — the clipped/residue
+reading `kappa` itself uses, a `Drift`-distance bound, or no register conjunct at all — which does
+the construction actually deliver at its own position pairs?
+
+This section answers the PRODUCER half. It lands the `Drift`-distance reading and refutes the
+clipped/residue reading; the consumer half, and the decision the two together force, are in the
+section below.
+
+LANDED — the `Drift`-distance reading. `register_displacement_bound_of_anchor` is the whole of
+what two ladder paths agreeing at one anchor position give in the register coordinate: each path's
+register is `1`-Lipschitz (`nxtAt_lipschitz_two_sided`), so the displacement between their values
+at two positions is bounded by the sum of those positions' distances to the anchor and by nothing
+smaller. `register_interior_displacement_bound_at_block` reads that at the pump's own pairs, with
+the anchor at the block's start: the bound at position `j` of copy `i` is `i · l + 2 · j`. It GROWS
+with the copy index, which is the honest shape of the fact — the construction displaces the copies
+and the register follows them only up to `Drift`.
+
+REFUTED — the clipped/residue reading. `iterSpliced_register_clipped_interior_forces_block_drift`
+weakens Phase 11.19's hypothesis from register EQUALITY to `kappa`'s own clipped reading
+`min · Tn` and derives the SAME consequence, provided the original's register sits below the
+threshold at the block's two ends: below `Tn` the clipped reading IS equality, so the step from
+the top of copy `0` to the bottom of copy `1` again has to carry the original's register across
+the whole block in one position, which `Drift` forbids.
+`iterSpliced_register_clipped_interior_refuted` exhibits that on the climbing-register path
+already carried here, at every `Tn ≥ 3` and every `P`: the fixture is REUSED, not rebuilt, and the
+refutation is of the clause for every `g'` whatever, not of a proof route for it. Adding the
+residue conjunct `n ≡ n' [MOD P + 1]` only strengthens the refuted hypothesis, so the (R-b)
+CONJUNCTION is refuted along with its clipped half.
+
+**What this section does NOT say.** It says nothing about any `⊡` bit, about the agreement of a
+cell at any pair of states, or about `kappa` as a whole: `min · Tn` appears here as an arithmetic
+reading of a natural number and no class map is applied. It proves membership of no pump pair in
+any relation, and it defines no relation. -/
+
+section RegisterProducer
+
+variable {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **SIDE (A), LANDED: the whole of the register coordinate's transport.** Two ladder paths
+agreeing at a single anchor position `z` have their registers at any two positions `v`, `w`
+displaced by at most `|v − z| + |w − z|`. Both halves are `nxtAt_lipschitz_two_sided`, one per
+path, glued at the anchor; nothing stronger is available, because the register's only constraint
+along a ladder path away from a region start is `Drift` (`nxtAt_drift`). -/
+theorem register_displacement_bound_of_anchor
+    (g g' : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (hg' : IsLadderPath step pend g') (z : ℤ) (hz : nxtAt g' z = nxtAt g z) (v w : ℤ) :
+    ((nxtAt g' v : ℤ) - nxtAt g w).natAbs ≤ (v - z).natAbs + (w - z).natAbs := by
+  have h1 := nxtAt_lipschitz_two_sided g' hg' v z
+  have h2 := nxtAt_lipschitz_two_sided g hg w z
+  rw [hz] at h1
+  omega
+
+/-- **The bound at the pump's own position pairs.** With the anchor at the block's start `u` — the
+one position at which the register-held wrapper
+`exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_past` does pin the register — the
+displacement at position `j` of copy `i` is at most `i · l + 2 · j`. This is the (R-a) candidate's
+actual content on this construction: a bound that GROWS with the copy index, not a relation that
+holds uniformly across the run. -/
+theorem register_interior_displacement_bound_at_block
+    (g g' : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (hg' : IsLadderPath step pend g') (u : ℤ) (hz : nxtAt g' u = nxtAt g u) (l i j : ℕ) :
+    ((nxtAt g' (u + ((i * l : ℕ) : ℤ) + (j : ℤ)) : ℤ) - nxtAt g (u + (j : ℤ))).natAbs
+      ≤ i * l + 2 * j := by
+  have h := register_displacement_bound_of_anchor g g' hg hg' u hz
+    (u + ((i * l : ℕ) : ℤ) + (j : ℤ)) (u + (j : ℤ))
+  have e1 : (u + ((i * l : ℕ) : ℤ) + (j : ℤ) - u).natAbs = i * l + j := by
+    push_cast; omega
+  have e2 : (u + (j : ℤ) - u).natAbs = j := by omega
+  rw [e1, e2] at h
+  omega
+
+/-- **SIDE (A), REFUTED: `kappa`'s own clipped reading of the register forces the same block
+`Drift`.** If a ladder path `g'` carries the original's CLIPPED register `min · Tn` at position
+`j` of copies `0` and `1` of the block `[u, u + l)`, and the original's register sits strictly
+below `Tn` at the block's first and last positions, then the original's register at the block's
+last position is within one of its value at the first.
+
+Below the threshold the clipped reading is equality, so this is Phase 11.19's own obstruction
+reached from a strictly weaker hypothesis: the clause identifies `nxtAt g' (u + (l − 1))` with
+`nxtAt g (u + (l − 1))` and `nxtAt g' (u + l)` with `nxtAt g u`, and those two positions of `g'`
+are one step apart, where `Drift` holds. The threshold hypothesis is the regime the depth-
+stratified invariant actually occupies: its own threshold conjunct bounds the COUNTDOWN, never the
+register, so nothing in it keeps either member above `Tn`. -/
+theorem iterSpliced_register_clipped_interior_forces_block_drift
+    (g : ℤ → LadderState Q pend) {g' : ℤ → LadderState Q pend}
+    (hg' : IsLadderPath step pend g') (u : ℤ) (l Tn : ℕ) (hl : 0 < l)
+    (hreg : ∀ i j : ℕ, i ≤ 1 → j < l →
+      min (nxtAt g' (u + ((i * l : ℕ) : ℤ) + (j : ℤ))) Tn
+        = min (nxtAt g (u + (j : ℤ))) Tn)
+    (hlo : nxtAt g (u + ((l - 1 : ℕ) : ℤ)) < Tn) (hhi : nxtAt g u < Tn) :
+    Drift (nxtAt g (u + ((l - 1 : ℕ) : ℤ))) (nxtAt g u) := by
+  have hcast : ((l - 1 : ℕ) : ℤ) = (l : ℤ) - 1 := by omega
+  have h0 := hreg 0 (l - 1) (by omega) (by omega)
+  have e0 : u + ((0 * l : ℕ) : ℤ) + ((l - 1 : ℕ) : ℤ) = u + ((l - 1 : ℕ) : ℤ) := by
+    push_cast; ring
+  rw [e0] at h0
+  have h1 := hreg 1 0 le_rfl hl
+  have e1 : u + ((1 * l : ℕ) : ℤ) + ((0 : ℕ) : ℤ) = u + ((l - 1 : ℕ) : ℤ) + 1 := by
+    rw [hcast]; push_cast; ring
+  rw [e1] at h1
+  simp only [Nat.cast_zero, add_zero] at h1
+  have hd := nxtAt_drift g' hg' (u + ((l - 1 : ℕ) : ℤ))
+  have ex0 : nxtAt g' (u + ((l - 1 : ℕ) : ℤ)) = nxtAt g (u + ((l - 1 : ℕ) : ℤ)) := by omega
+  have ex1 : nxtAt g' (u + ((l - 1 : ℕ) : ℤ) + 1) = nxtAt g u := by omega
+  rw [ex0, ex1] at hd
+  exact hd
+
+end RegisterProducer
+
+section RegisterClippedRefutation
+
+open ClimbWitness
+
+/-- **THE CLIPPED REGISTER READING IS REFUTED TOO, AT EVERY `Tn ≥ 3` AND EVERY `P`.** On the
+climbing-register path of `ClimbWitness` with the block `[0, 3)` of its pending-forever past —
+the very fixture `iterSpliced_register_interior_refuted` already carries, and every hypothesis of
+`exists_iterSpliced_ladderPath_idx_of_pend_past` holds on it — NO ladder path at all carries the
+original's clipped register `min · Tn` at the corresponding positions of copies `0` and `1`. The
+register climbs `0, 1, 2` across the block, so with `2 < Tn` the clipped reading is exact there
+and the step from the top of copy `0` to the bottom of copy `1` would have to carry the register
+from `2` to `0` in one position.
+
+The residue conjunct is carried in the hypothesis alongside the clipped one, so what is refuted is
+the (R-b) CONJUNCTION `min n Tn = min n' Tn ∧ n ≡ n' [MOD P + 1]` and not merely its clipped half.
+This refutes the clause and not a proof route for it: the conclusion fails for every `g'`. -/
+theorem iterSpliced_register_clipped_interior_refuted (Tn P : ℕ) (hTn : 3 ≤ Tn) :
+    ∃ (g : ℤ → LadderState Bool pendT) (u : ℤ) (l : ℕ) (p : Atom)
+      (σ : WorldHistory (ladderFrameAdm stepT pendT fwdT bwdT).toTaskFrame),
+      IsLadderPath stepT pendT g ∧
+      (∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure (PlusFormula.atom p)) ∧
+      0 < l ∧ l ≤ cntAt g u ∧
+      (∀ r : ℤ, r ≤ u → pendT (objAt g r) = true) ∧
+      objAt g u = objAt g (u + (l : ℤ)) ∧
+      (∀ t : ℤ, σ.state t = (t, g t)) ∧
+      tpOf (ladderModel stepT pendT fwdT bwdT labT) (PlusFormula.atom p) σ u
+        = tpOf (ladderModel stepT pendT fwdT bwdT labT) (PlusFormula.atom p) σ (u + (l : ℤ)) ∧
+      ∀ g' : ℤ → LadderState Bool pendT, IsLadderPath stepT pendT g' →
+        ¬ ∀ i j : ℕ, i ≤ 1 → j < l →
+            min (nxtAt g' (u + ((i * l : ℕ) : ℤ) + (j : ℤ))) Tn
+                = min (nxtAt g (u + (j : ℤ))) Tn ∧
+              nxtAt g' (u + ((i * l : ℕ) : ℤ) + (j : ℤ)) % (P + 1)
+                = nxtAt g (u + (j : ℤ)) % (P + 1) := by
+  obtain ⟨σ, hσ⟩ := exists_hist_of_isLadderPath fwdT bwdT climb climb_isLadderPath
+  refine ⟨climb, 0, 3, Atom.freshBase, σ, climb_isLadderPath, ?_, by omega, ?_, ?_, ?_, hσ,
+    tpOf_labT_atom_const σ Atom.freshBase 0 (0 + (3 : ℕ)), ?_⟩
+  · intro χ hχ
+    simp [plusSubformulaClosure, PlusFormula.subformulas] at hχ
+  · simp [cntAt, climb, climbRaw]
+  · intro r hr
+    exact climb_pend_past r hr
+  · simp [objAt, climb, climbRaw]
+  · intro g' hg' hreg
+    have hclip : ∀ i j : ℕ, i ≤ 1 → j < 3 →
+        min (nxtAt g' (0 + ((i * 3 : ℕ) : ℤ) + (j : ℤ))) Tn
+          = min (nxtAt climb (0 + (j : ℤ))) Tn := fun i j hi hj => (hreg i j hi hj).1
+    have hd := iterSpliced_register_clipped_interior_forces_block_drift climb hg' 0 3 Tn
+      (by omega) hclip (by simp [nxtAt, climb, climbRaw]; omega)
+      (by simp [nxtAt, climb, climbRaw]; omega)
+    simp [Drift, nxtAt, climb, climbRaw] at hd
+
+end RegisterClippedRefutation
+
+/-! ## The register discriminator: side (B), what the `⊡`-bit agreement needs
+
+`stab_state_only` (`PlusTruth.lean`) makes a `⊡` bit a function of the WORLD STATE, so what the
+bit agreement requires of two states is a statement about their coordinates and is provable or
+refutable on a two-state fixture. This section measures the REGISTER requirement on one.
+
+The fixture is the two-state ladder already carried above, with the labelling changed: `labR`
+makes every letter track the pending bit, so the atom `r` reads "the object is pending". The
+probe formula is
+
+  `alphaR := X r → X X ¬ r`,
+
+with `X χ := ⊥ U χ` the next-time reading (`nextR_iff`). `stab_alphaR_iff` computes its `⊡` bit at
+an IDLE ladder state exactly: the bit is `nxtAt g t = 0`, because from an idle position the next
+region's countdown IS the register (`cntAt_eq_nxtAt_of_idle_pend`), so a pending successor is
+followed by an idle position at the next step precisely when that register is `0`, and `⊡`
+quantifies over the histories that realize the pending successor.
+
+Two consequences, both compiled:
+
+* NEEDED — `stab_bit_ne_of_register_ne`: for every `m > 0` the bits at register `0` and at
+  register `m` DIFFER, at the same object and the same countdown. So the (R-c) candidate — drop
+  the register conjunct — is REFUTED, and so is the (R-a) candidate: at `m = 1` the two registers
+  are within the `Drift` distance of one single step, which is the smallest bound any
+  displacement reading can offer, and the bits differ across it anyway. At `m = P + 1` the two
+  registers agree modulo `P + 1`, so the residue conjunct alone is refuted as well: this bit reads
+  the register's EXACT value, not its residue.
+* CONSUMED — `stab_alphaR_eq_of_clipped_eq`: at any threshold `Tn ≥ 1` the clipped reading
+  `min n Tn = min n' Tn` — `kappa`'s own register coordinate — delivers the agreement of this bit.
+  So the (R-b) candidate is the one side (B) consumes, and it is consumed at the clipped half
+  alone, with no residue conjunct needed.
+
+**What this section does NOT say.** It computes one bit on one fixture and claims no bound on the
+`⊡` bits of an arbitrary formula; `stab_alphaR_eq_of_clipped_eq` is sufficiency for `alphaR` and
+not for a closure. It says nothing about any pump, about `iterSpliceIdx`, or about the agreement
+of a cell at any pair of states, and it defines no relation. -/
+
+section RegisterConsumer
+
+open ClimbWitness
+
+/-- The pending-tracking labelling of the two-state object: every letter reads the pending bit.
+`labT`, the all-true labelling beside it, makes every letter blind to the object and is what the
+refutation witnesses above need; this one is what a REGISTER measurement needs, because a bit
+that cannot see the object cannot see the region structure the register governs. -/
+def labR : Bool → Atom → Bool := fun q _ => q
+
+/-- The probe atom. -/
+def rR : PlusFormula := PlusFormula.atom Atom.freshBase
+
+/-- The next-time reading `X χ := ⊥ U χ`: the `untl` whose guard is unsatisfiable fires at the
+next position and nowhere else. -/
+def nextR (χ : PlusFormula) : PlusFormula := PlusFormula.untl .bot χ
+
+/-- **The probe formula.** "If the next position is pending, then two positions on it is not." At
+an idle state its `⊡` bit is exactly `register = 0`. -/
+def alphaR : PlusFormula := (nextR rR).imp (nextR (nextR (PlusFormula.neg rR)))
+
+/-- **`X` is next-time on this frame.** The `untl` guard is `⊥`, which no position satisfies, so
+the witness position is forced to be the immediate successor. -/
+theorem nextR_iff (σ : WorldHistory (ladderFrameAdm stepT pendT fwdT bwdT).toTaskFrame)
+    (t : ℤ) (χ : PlusFormula) :
+    PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) σ t (nextR χ)
+      ↔ PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) σ (t + 1) χ := by
+  unfold nextR
+  rw [PlusTruth.untl_iff]
+  constructor
+  · rintro ⟨(s : ℤ), hs, hχ, hguard⟩
+    have hs' : (t : ℤ) < s := hs
+    have he : s = t + 1 := by
+      by_contra hne
+      have h1 : (t : ℤ) < t + 1 := by omega
+      have h2 : (t + 1 : ℤ) < s := by omega
+      exact PlusTruth.bot_false
+        (M := ladderModel stepT pendT fwdT bwdT labR) (τ := σ) (t := (t + 1 : ℤ))
+        (hguard (t + 1) h1 h2)
+    rw [he] at hχ
+    exact hχ
+  · intro h
+    refine ⟨t + 1, ?_, h, ?_⟩
+    · change (t : ℤ) < t + 1
+      omega
+    · intro (r : ℤ) h1 h2
+      have h1' : (t : ℤ) < r := h1
+      have h2' : r < (t : ℤ) + 1 := h2
+      exact absurd h2' (not_lt.mpr (by omega))
+
+/-- **The probe atom reads the pending bit of the object walk.** -/
+theorem truth_rR_iff (g : ℤ → LadderState Bool pendT)
+    (σ : WorldHistory (ladderFrameAdm stepT pendT fwdT bwdT).toTaskFrame)
+    (hσ : ∀ s : ℤ, σ.state s = (s, g s)) (t : ℤ) :
+    PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) σ t rR ↔ objAt g t = true := by
+  unfold rR
+  rw [PlusTruth.atom_iff]
+  change (labR ((σ.state t).2.1.1) Atom.freshBase = true) ↔ _
+  rw [hσ t]
+  rfl
+
+/-! ### The forced pending continuation at a prescribed register
+
+To refute the bits' agreement at two registers, one history per register value is needed through
+the state that carries it — and the state is idle, so the history has to be exhibited rather than
+read off anything already landed. `regPath t m` is it: idle at and before `t` with register `m`,
+a pending region of length `m + 1` starting at `t + 1` (the length the register forces,
+`cntAt_eq_nxtAt_of_idle_pend`), idle again after it, and register `m` throughout. -/
+
+/-- The underlying triples of the forced pending continuation at register `m`. -/
+def regRaw (t : ℤ) (m : ℕ) (v : ℤ) : Bool × ℕ × ℕ :=
+  if v ≤ t then (false, 0, m)
+  else if v ≤ t + 1 + (m : ℤ) then (true, (t + 1 + (m : ℤ) - v).toNat, m)
+  else (false, 0, m)
+
+theorem regRaw_adm (t : ℤ) (m : ℕ) (v : ℤ) :
+    (regRaw t m v).2.1 ∈ Adm pendT (regRaw t m v).1 := by
+  intro h
+  unfold regRaw at *
+  split_ifs at * <;> simp_all [pendT]
+
+/-- The forced pending continuation as a ladder state function. -/
+def regPath (t : ℤ) (m : ℕ) (v : ℤ) : LadderState Bool pendT := ⟨regRaw t m v, regRaw_adm t m v⟩
+
+theorem regPath_isLadderPath (t : ℤ) (m : ℕ) : IsLadderPath stepT pendT (regPath t m) := by
+  intro u
+  change Rlad stepT pendT u (regRaw t m u) (regRaw t m (u + 1))
+  unfold Rlad Drift Count regRaw stepT pendT
+  split_ifs <;> simp_all <;> omega
+
+@[simp] theorem regPath_nxtAt (t : ℤ) (m : ℕ) (v : ℤ) : nxtAt (regPath t m) v = m := by
+  unfold nxtAt regPath regRaw
+  split_ifs <;> rfl
+
+@[simp] theorem regPath_objAt_self (t : ℤ) (m : ℕ) : objAt (regPath t m) t = false := by
+  simp [objAt, regPath, regRaw]
+
+@[simp] theorem regPath_cntAt_self (t : ℤ) (m : ℕ) : cntAt (regPath t m) t = 0 := by
+  simp [cntAt, regPath, regRaw]
+
+theorem regPath_objAt_succ (t : ℤ) (m : ℕ) : objAt (regPath t m) (t + 1) = true := by
+  simp [objAt, regPath, regRaw, show ¬ (t + 1 ≤ t) by omega,
+    show t + 1 ≤ t + 1 + (m : ℤ) by omega]
+
+theorem regPath_objAt_succ_succ (t : ℤ) (m : ℕ) (hm : 0 < m) :
+    objAt (regPath t m) (t + 1 + 1) = true := by
+  have h1 : ¬ (t + 1 + 1 ≤ t) := by omega
+  have h2 : t + 1 + 1 ≤ t + 1 + (m : ℤ) := by
+    have : (1 : ℤ) ≤ (m : ℕ) := by exact_mod_cast hm
+    omega
+  simp [objAt, regPath, regRaw, h1, h2]
+
+/-- **The forced continuation passes through any idle ladder state with the same register.** -/
+theorem regPath_eq_of_idle (g : ℤ → LadderState Bool pendT)
+    (hg : IsLadderPath stepT pendT g) (t : ℤ) (hidle : objAt g t = false) :
+    regPath t (nxtAt g t) t = g t := by
+  refine Subtype.ext ?_
+  have hg1 : (g t).1 = (objAt g t, cntAt g t, nxtAt g t) := rfl
+  have hc : cntAt g t = 0 :=
+    cntAt_eq_zero_of_idle g hg t (by simpa [pendT] using hidle)
+  change regRaw t (nxtAt g t) t = (g t).1
+  rw [hg1, hidle, hc]
+  simp [regRaw]
+
+/-! ### The measurement -/
+
+/-- **SIDE (B), THE BIT COMPUTED: the `⊡` bit of `alphaR` at an idle ladder state is
+`register = 0`.** Generic in the path and the history, not a fixture-restricted reading.
+
+Both directions go through the region structure the register forces. If the register is `0`, then
+on EVERY history through the state a pending successor carries countdown `0`
+(`cntAt_eq_nxtAt_of_idle_pend`), so the position after it cannot be pending
+(`cntAt_succ_of_pend_pend` would need `c + 1 = 0`) and `alphaR` holds. If the register is `m > 0`,
+then `regPath t m` is a ladder path through the SAME state whose next two positions are both
+pending, so `alphaR` fails on the history it carries and the `⊡` bit is `false`. -/
+theorem stab_alphaR_iff (g : ℤ → LadderState Bool pendT) (hg : IsLadderPath stepT pendT g)
+    (σ : WorldHistory (ladderFrameAdm stepT pendT fwdT bwdT).toTaskFrame)
+    (hσ : ∀ s : ℤ, σ.state s = (s, g s)) (t : ℤ) (hidle : objAt g t = false) :
+    PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) σ t (PlusFormula.stab alphaR)
+      ↔ nxtAt g t = 0 := by
+  rw [PlusTruth.stab_iff]
+  constructor
+  · intro h
+    by_contra hne
+    have hm : 0 < nxtAt g t := by omega
+    obtain ⟨ρ, hρ⟩ := exists_hist_of_isLadderPath fwdT bwdT
+      (regPath t (nxtAt g t)) (regPath_isLadderPath t (nxtAt g t))
+    have hstate : σ.state t = ρ.state t := by
+      rw [hσ t, hρ t, regPath_eq_of_idle g hg t hidle]
+    have hα := h ρ hstate
+    unfold alphaR at hα
+    rw [PlusTruth.imp_iff] at hα
+    have hant : PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) ρ t (nextR rR) := by
+      rw [nextR_iff, truth_rR_iff _ ρ hρ]
+      exact regPath_objAt_succ t (nxtAt g t)
+    have hcon := hα hant
+    rw [nextR_iff, nextR_iff, PlusTruth.neg_iff, truth_rR_iff _ ρ hρ] at hcon
+    exact hcon (regPath_objAt_succ_succ t (nxtAt g t) hm)
+  · intro h0 ρ hstate
+    obtain ⟨k, hh, hhp, hρp⟩ := exists_isLadderPath_of_hist fwdT bwdT ρ
+    have hpair : ((t + k : ℤ), hh t) = ((t : ℤ), g t) := by
+      rw [← hρp t, ← hstate, hσ t]
+    have hk : k = 0 := by
+      have := congrArg Prod.fst hpair
+      simp at this
+      omega
+    subst hk
+    have hht : hh t = g t := by
+      have := congrArg Prod.snd hpair
+      simpa using this
+    have hρ : ∀ s : ℤ, ρ.state s = (s, hh s) := fun s => by
+      rw [hρp s, add_zero]
+    unfold alphaR
+    rw [PlusTruth.imp_iff]
+    intro hant
+    rw [nextR_iff, truth_rR_iff _ ρ hρ] at hant
+    rw [nextR_iff, nextR_iff, PlusTruth.neg_iff, truth_rR_iff _ ρ hρ]
+    intro hpend2
+    have hidle0 : pendT (objAt hh t) = false := by
+      simpa [pendT, objAt, hht] using hidle
+    have hpend1 : pendT (objAt hh (t + 1)) = true := by simpa [pendT] using hant
+    have hc1 : cntAt hh (t + 1) = nxtAt hh t :=
+      cntAt_eq_nxtAt_of_idle_pend hh hhp t hidle0 hpend1
+    have hnxe : nxtAt hh t = nxtAt g t := by simp [nxtAt, hht]
+    have hnx : nxtAt hh t = 0 := by rw [hnxe]; exact h0
+    have hstep := cntAt_succ_of_pend_pend hh hhp (t + 1) hpend1 (by simpa [pendT] using hpend2)
+    omega
+
+/-- **SIDE (B), THE REGISTER CONJUNCT IS NEEDED, AT EVERY AMOUNT.** For every `m > 0` there are
+two ladder paths whose states at `0` share the object and the countdown and differ ONLY in the
+register — `0` against `m` — and whose `⊡ alphaR` bits DIFFER.
+
+Three candidate register relations die here. (R-c), the register conjunct dropped: refuted
+outright. (R-a), a `Drift`-distance bound: refuted at `m = 1`, where the two registers are within
+one step's drift — the smallest displacement any bound can name — and the bits differ anyway.
+The residue reading on its own: refuted at `m = P + 1` for any `P`, where the two registers are
+congruent modulo `P + 1`. What survives is the CLIPPED reading, and the lemma below consumes it. -/
+theorem stab_bit_ne_of_register_ne (m : ℕ) (hm : 0 < m) :
+    ∃ (g h : ℤ → LadderState Bool pendT)
+      (σ τ : WorldHistory (ladderFrameAdm stepT pendT fwdT bwdT).toTaskFrame),
+      IsLadderPath stepT pendT g ∧ IsLadderPath stepT pendT h ∧
+      (∀ s : ℤ, σ.state s = (s, g s)) ∧ (∀ s : ℤ, τ.state s = (s, h s)) ∧
+      objAt g 0 = objAt h 0 ∧ cntAt g 0 = cntAt h 0 ∧
+      nxtAt g 0 = 0 ∧ nxtAt h 0 = m ∧
+      ¬ (PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) σ 0 (PlusFormula.stab alphaR)
+          ↔ PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) τ 0
+              (PlusFormula.stab alphaR)) := by
+  obtain ⟨σ, hσ⟩ := exists_hist_of_isLadderPath fwdT bwdT
+    (regPath 0 0) (regPath_isLadderPath 0 0)
+  obtain ⟨τ, hτ⟩ := exists_hist_of_isLadderPath fwdT bwdT
+    (regPath 0 m) (regPath_isLadderPath 0 m)
+  refine ⟨regPath 0 0, regPath 0 m, σ, τ, regPath_isLadderPath 0 0, regPath_isLadderPath 0 m,
+    hσ, hτ, by simp, by simp, by simp, by simp, ?_⟩
+  intro hiff
+  rw [stab_alphaR_iff _ (regPath_isLadderPath 0 0) σ hσ 0 (by simp),
+    stab_alphaR_iff _ (regPath_isLadderPath 0 m) τ hτ 0 (by simp)] at hiff
+  have hm0 : nxtAt (regPath (0 : ℤ) m) 0 = 0 := hiff.mp (regPath_nxtAt 0 0 0)
+  rw [regPath_nxtAt] at hm0
+  omega
+
+/-- **SIDE (B), THE CLIPPED READING IS CONSUMED.** At any threshold `Tn ≥ 1`, `kappa`'s own
+clipped register coordinate `min n Tn` delivers the agreement of this bit at two idle states. The
+residue coordinate is not needed and is not used.
+
+This is the positive half of the measurement, and it is what makes (R-b) the candidate the
+decision rule reaches: side (B) consumes it where it refuses both of the others. -/
+theorem stab_alphaR_eq_of_clipped_eq (g h : ℤ → LadderState Bool pendT)
+    (hg : IsLadderPath stepT pendT g) (hh : IsLadderPath stepT pendT h)
+    (σ τ : WorldHistory (ladderFrameAdm stepT pendT fwdT bwdT).toTaskFrame)
+    (hσ : ∀ s : ℤ, σ.state s = (s, g s)) (hτ : ∀ s : ℤ, τ.state s = (s, h s))
+    (t : ℤ) (hgi : objAt g t = false) (hhi : objAt h t = false)
+    (Tn : ℕ) (hTn : 1 ≤ Tn) (hclip : min (nxtAt g t) Tn = min (nxtAt h t) Tn) :
+    PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) σ t (PlusFormula.stab alphaR)
+      ↔ PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) τ t (PlusFormula.stab alphaR) := by
+  rw [stab_alphaR_iff g hg σ hσ t hgi, stab_alphaR_iff h hh τ hτ t hhi]
+  omega
+
+end RegisterConsumer
+
+/-! ## The decision: no candidate passes both sides, and the gap between them
+
+The two sides above are COMPILED objects, and the decision rule the plan of record pins — take the
+first candidate that side (A) lands positively for every pump pair AND side (B) consumes — reaches
+none of its three candidates. One table, each cell pointing at the declaration that decided it:
+
+**(R-b), the clipped/residue reading** `min n Tn = min n' Tn ∧ n ≡ n' [MOD P + 1]`.
+Side (A): **REFUTED** by `iterSpliced_register_clipped_interior_refuted`, at every `Tn ≥ 3` and
+every `P`, with the residue conjunct carried in the refuted hypothesis alongside the clipped one.
+Side (B): **CONSUMED** by `stab_alphaR_eq_of_clipped_eq`, at every `Tn ≥ 1`, and by the clipped
+half alone — the residue coordinate is neither needed nor used there.
+
+**(R-a), a `Drift`-distance bound** on the displacement `n − n'`.
+Side (A): **LANDED** by `register_interior_displacement_bound_at_block`, at the bound
+`i · l + 2 · j`, which GROWS with the copy index.
+Side (B): **NOT CONSUMED** — `stab_bit_ne_of_register_ne` at `m = 1` puts the two registers
+within one step's drift, the smallest displacement any bound can name, and the bits differ across
+it anyway.
+
+**(R-c), the register conjunct dropped.**
+Side (A): vacuous, nothing to deliver.
+Side (B): **REFUTED** by `stab_bit_ne_of_register_ne`, at every `m > 0`.
+
+**THE GAP, NAMED.** The pump cannot hold the register's clipped value at the interior of its own
+window, and the `⊡` bit cannot read anything weaker than that clipped value. The two facts meet in
+one place and disagree there: below the threshold the clipped reading IS equality, so side (B)
+needs the original's exact register at a copy pair, and side (A) says a ladder path carrying it at
+the top of copy `0` and the bottom of copy `1` would have to move the register across the whole
+block in one position, which `Drift` forbids whenever the original's register is not nearly
+constant on the block. The climbing-register fixture is a path on which it is not.
+
+So NO relation `~_d` is defined here, and no membership claim is made: a relation whose register
+conjunct nobody measured is exactly what the (W-2) ruling forbids, and the two measurements are
+this section's product. The threshold conjunct is left as `margin_room_at_depth` found it — its
+base `Tc_0` is `0`, forced by the `(K2)` conjunct's own size, so the threshold says nothing at the
+deepest level `d = D`; this section does not cure that and takes no new `(K2)` ruling.
+
+**What a successor round has to choose between** — both route decisions, neither a move inside a
+phase:
+
+* Restrict the pump's block selection to blocks across which the original's register is already
+  nearly constant, so side (A)'s obstruction is hypothesised away rather than argued around. The
+  cost is a new block-selection condition on top of `exists_typeBlock_of_spacing`, and nothing
+  landed says such blocks exist at the needed spacing.
+* Move the register bridging off the path level entirely, onto the certificate side, so that no
+  position-pair relation has to carry a register conjunct at all. The cost is that the transport
+  the depth induction consumes would then not be a path-level correspondence at all.
+
+Neither is costable from here, and the choice is not this section's to make. -/
 
 end FormalSystem.Metalogic.Decidability.RaySummary

@@ -110,7 +110,7 @@ expectation to rewrite.
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
 -- The baseline is raised one chunk at a time, as the ledger grows; the `longFile` linter requires
 -- the value to be at least the file's length and refuses a value more than one chunk above it.
-set_option linter.style.longFile 3100
+set_option linter.style.longFile 3300
 
 namespace BimodalTest.Metalogic
 
@@ -3093,5 +3093,79 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
  Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.iterSpliced_register_interior_refuted
+
+/-! ## The register discriminator (`RaySummary/LadderCell.lean`)
+
+The two-sided measurement the register weakening needed, and the decision it forces. SIDE (A),
+the producer: `register_displacement_bound_of_anchor` is the whole of the register coordinate's
+transport between two ladder paths agreeing at one anchor — the sum of the two positions'
+distances to it — and `register_interior_displacement_bound_at_block` reads that at the pump's own
+copy pairs, at the bound `i * l + 2 * j`, which grows with the copy index.
+`iterSpliced_register_clipped_interior_forces_block_drift` then weakens the refuted register
+clause from equality to `kappa`'s own clipped reading `min . Tn` and derives the SAME block
+`Drift`, because below the threshold the clipped reading IS equality; and
+`iterSpliced_register_clipped_interior_refuted` exhibits that on the climbing-register fixture
+already carried, at every `Tn >= 3` and every `P`, with the residue conjunct carried alongside, so
+the clipped/residue CONJUNCTION is refuted and not merely its clipped half.
+
+SIDE (B), the consumer: `stab_alphaR_iff` computes the `stab` bit of one probe formula at an idle
+ladder state exactly — the bit IS `register = 0`, because from an idle position the next region's
+countdown is the register. `stab_bit_ne_of_register_ne` reads the negative half off it: at every
+amount `m > 0` two states sharing object and countdown but differing in the register carry
+differing bits, which refutes dropping the register conjunct outright, refutes a `Drift`-distance
+bound at `m = 1`, and refutes the residue reading alone at `m = P + 1`.
+`stab_alphaR_eq_of_clipped_eq` reads the positive half: the clipped reading alone delivers the
+bit's agreement at every threshold `Tn >= 1`.
+
+The two sides disagree, so no relation is defined here and no membership of any pump pair in one
+is claimed. Nothing in this layer is a realization theorem and nothing claims `HitPresented` or
+`PlusValidZTime`. The standard profile throughout; the three arithmetic statements need no
+choice. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.register_displacement_bound_of_anchor' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms register_displacement_bound_of_anchor
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.register_interior_displacement_bound_at_block' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms register_interior_displacement_bound_at_block
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.iterSpliced_register_clipped_interior_forces_block_drift' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms iterSpliced_register_clipped_interior_forces_block_drift
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.iterSpliced_register_clipped_interior_refuted' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms iterSpliced_register_clipped_interior_refuted
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stab_alphaR_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms stab_alphaR_iff
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stab_bit_ne_of_register_ne' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms stab_bit_ne_of_register_ne
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stab_alphaR_eq_of_clipped_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms stab_alphaR_eq_of_clipped_eq
 
 end BimodalTest.Metalogic
