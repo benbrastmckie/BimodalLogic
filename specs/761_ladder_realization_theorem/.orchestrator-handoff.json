@@ -1,28 +1,19 @@
 {
   "task_number": 761,
   "phase": "implement",
-  "dispatch_seq": 46,
   "status": "blocked",
-  "summary": "Phase 11.20, the plan's one enterable phase and a decision gate, was executed as written: both sides of the register discriminator landed as compiled Lean objects before any candidate was chosen. The decision rule then reached NONE of its three candidates - side (A) refutes the clipped/residue reading that side (B) consumes, and side (B) refutes the Drift-distance and register-free readings - so the phase closes [BLOCKED] with both measurements compiled and the gap named, which is the outcome the phase body itself sanctions. No relation ~_d was defined; Phase 11.22 is marked waiting on the gate.",
+  "dispatch_seq": 47,
+  "session_id": "sess_1794727080_294a7c",
   "phases_completed": 32,
   "phases_total": 46,
+  "summary": "No implement work was possible: the plan of record (plans/17_weakened-register-conjunct-route.md) has no enterable phase. Phase 11.20 closed [BLOCKED] in dispatch 46 after its two-sided register discriminator reached none of its three candidates; Phases 11.22, 11.6 and 11.21 are gated behind it, Phase 11.8 is closed-BLOCKED and explicitly not re-entered, and every remaining [NOT STARTED] phase traces its Depends on back through 11.20/11.22/11.6/11.7. The answered route (B-1) is recorded but not absorbed by any plan phase, and its own answer text makes it RESEARCH-FIRST. The tree was verified green and left byte-identical: 0 sorries, vacuous grep at its 1-hit baseline, 14 axioms (unchanged), full lake build exit 0 with 0 errors.",
   "blockers": [
-    "Phase 11.20's decision gate reached no candidate: iterSpliced_register_clipped_interior_refuted refutes on the producer side the clipped/residue register reading that stab_alphaR_eq_of_clipped_eq consumes on the consumer side, while stab_bit_ne_of_register_ne refutes the Drift-distance reading (at m = 1) and the register-free reading (at every m > 0). The pump cannot hold the register's clipped value at its window's interior and the stab bit cannot read anything weaker, so no position-pair relation carrying a register conjunct is available. Phases 11.22, 11.21 and 11.6 are gated on a /revise ruling between two named routes: (i) restrict the pump's block selection to blocks across which the original's register is nearly constant, or (ii) move the register bridging off the path level onto the certificate side.",
-    "Blocking user_decision returned on .return-meta.json: this is a NEW, second obstruction the (W-2) route left unaddressed, not a re-ask of the register-weakening question."
+    "No enterable phase in the plan of record: Phase 11.20 is [BLOCKED] with its decision gate closed as its own sanctioned outcome, and every open phase is gated on 11.20, 11.22, 11.6 or 11.7.",
+    "The recorded (B-1) ruling of 2026-11-15T11:05:36Z has not been absorbed into any plan: it owes a NEW block-selection condition on top of exists_typeBlock_of_spacing, which no phase of plan 17 carries, so there is no plan step to execute.",
+    "B-1's own answer text makes it RESEARCH-FIRST ('a research round must first establish whether blocks with a near-constant register exist at spacing P+1'), and its Obligation -- a block-selection condition proved non-vacuous at spacing P+1 under which the register's clipped value is held across the block -- is UNDISCHARGED as of this dispatch. Deriving it here would be an off-plan decomposition, which .claude/rules/plan-compliance.md forbids an implement dispatch from inventing.",
+    "Next routing: a research round on the B-1 non-vacuity question, then /revise 761 onto B-1. An implement dispatch cannot advance this task until a plan phase exists for that route."
   ],
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/17_register-discriminator-blocked-summary.md",
-      "summary": "Phase 11.20 closed [BLOCKED]: both sides of the register discriminator compiled, the decision rule reached no candidate, the gap and the two successor routes named."
-    },
-    {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/17_weakened-register-conjunct-route.md",
-      "summary": "Phase 11.20 marked [BLOCKED] with a structured BLOCKER record; Phase 11.22 marked [BLOCKED] and waiting on it; six checklist items annotated."
-    }
-  ],
-  "next_steps": [
-    "Run /revise 761 to rule between the two register-bridging routes named in Phase 11.20's blocker record; no implement dispatch can proceed on this plan until that ruling lands."
-  ]
+  "artifacts": [],
+  "modified_files": [],
+  "next_action": "Dispatch a research round on B-1's non-vacuity question (do blocks with a clipped-constant register exist at spacing P+1, on top of exists_typeBlock_of_spacing?), then /revise 761 onto route B-1. Do not re-dispatch implement against plan 17."
 }

@@ -2,62 +2,31 @@
   "status": "partial",
   "requires_user_review": true,
   "blocked_phase": "11.20",
-  "review_reason": "Phase 11.20's decision gate reached no candidate: the register reading the pump delivers and the one the stab-bit agreement needs are different readings, both compiled. The phase closes [BLOCKED] per its own sanctioned outcome; Phases 11.22, 11.21 and 11.6 are gated on a /revise ruling between two named routes.",
+  "review_reason": "ROUTING, not a new question. This dispatch was routed as 'implement' but plan 17 has no enterable phase: Phase 11.20 closed [BLOCKED] in dispatch 46 as its own sanctioned decision-gate outcome, and Phases 11.22, 11.6, 11.21, 11.7, 12.2, 13, 14, 15.1, 15.2, 16, 17 and 18 all trace their Depends on back through it; Phase 11.8 is closed-BLOCKED and its own body forbids re-entry. The (B-1) ruling of 2026-11-15T11:05:36Z is recorded but absorbed by no plan phase, and its answer text makes it RESEARCH-FIRST with an undischarged Obligation. What is owed is a research round followed by /revise 761 onto B-1 -- NOT another implement dispatch against plan 17. No user question is posed and none is re-asked.",
   "partial_progress": {
-    "stage": "phase_11.20_blocked",
-    "details": "Phase 11.20's decision gate was entered and BOTH of its measurements landed as compiled theorems in FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean, with axiom pins in Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean. The decision rule then reached none of its three register candidates, so no relation ~_d was defined and no membership of any pump pair was claimed. See the plan file's Phase 11.20 BLOCKER record for what failed, what was tried, why it is stuck, and what is needed. Phase 11.22 is marked [BLOCKED] and waiting on it.",
+    "stage": "no_enterable_phase",
+    "details": "Dispatch 47 read the dispatch file, the plan of record, .decisions.json and the live Lean surface of the Phase 11.20 discriminator (LadderCell.lean:2340-2810), then verified that no phase of plan 17 is enterable. B-1's named Obligation -- a block-selection condition on top of exists_typeBlock_of_spacing, proved non-vacuous at spacing P+1, under which the register's clipped value is held across the block -- is UNDISCHARGED: no landed declaration carries it, and deriving it here would be an off-plan decomposition that .claude/rules/plan-compliance.md forbids an implement dispatch from inventing. The working tree was left byte-identical in every Lean and plan file. Carried-Figure Discipline was discharged: Realize.lean is exactly 1004 lines; specs/evidence/seam-gluing-ray-product/w-soundness-shape-refuted.lean exists and names both modelOf_incomplete and stab_iff_of_presented_nowUnique; ladderFrameAdm_isRegular (LadderModel.lean:210), no_fwd (:124), no_bwd_of_idle (:144), Rlad_slice_infinite (RunLayer.lean:328) and presented_modelOf (Realize.lean:916) all exist as named. All three extracted description lines are CONFIRMED UNCHANGED and accurate against live state.",
     "phases_completed": 32,
     "phases_total": 46
   },
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
-    "vacuous_count": 0,
+    "vacuous_count": 1,
     "axiom_count": 14,
     "build_passed": true
   },
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/17_register-discriminator-blocked-summary.md",
-      "summary": "Phase 11.20's two-sided register discriminator landed as seven compiled theorems; the decision rule reached none of its three candidates, so the gate closed BLOCKED with both measurements and the gap recorded."
-    }
-  ],
+  "artifacts": [],
   "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "typst/generated/status.typ",
-    "specs/761_ladder_realization_theorem/plans/17_weakened-register-conjunct-route.md",
-    "specs/761_ladder_realization_theorem/summaries/17_register-discriminator-blocked-summary.md",
     "specs/761_ladder_realization_theorem/issues.jsonl"
   ],
-  "user_decision": {
-    "blocking": true,
-    "question": "Phase 11.20's register discriminator is measured on both sides and the two sides disagree: the iterated splice delivers only a Drift-distance bound that grows with the copy index (register_interior_displacement_bound_at_block) and REFUTES kappa's clipped/residue register reading at the window's interior (iterSpliced_register_clipped_interior_refuted, at every Tn >= 3 and every P), while the stab-bit agreement REFUTES both the Drift-distance reading and dropping the register conjunct (stab_bit_ne_of_register_ne) and consumes only the clipped reading (stab_alphaR_eq_of_clipped_eq). So no position-pair relation carrying a register conjunct exists for the depth induction. Which route should the plan be revised onto?",
-    "options": [
-      "(B-1) Restrict the pump's block selection to blocks across which the original's register is already nearly constant, so side (A)'s Drift obstruction is hypothesised away rather than argued around. Cost: a new block-selection condition on top of exists_typeBlock_of_spacing, and nothing landed says such blocks exist at the needed spacing -- a research round would be owed first.",
-      "(B-2) Move the register bridging off the path level entirely, onto the certificate side, so no position-pair relation carries a register conjunct at all. Cost: the transport the depth induction consumes would then not be a path-level correspondence, which re-opens the shape of Phases 11.21 and 11.6.",
-      "(B-3) Abandon the depth-stratified path-level route for this task and mark the realization theorem [BLOCKED] whole on the register coordinate, keeping the two compiled measurements as the recorded obstruction."
-    ],
-    "recommendation": "(B-1), but only after a research round: the obstruction is specifically a CLIMBING register across the block, and the pump's blocks come from a pigeonhole over (object, type) pairs that says nothing about the register, so whether blocks with a near-constant register exist at spacing P+1 is a measurable question rather than an open-ended one. (B-2) discards the position-pair correspondence the whole stratification was built to supply.",
-    "why_user": "This is a route decision with a large and NOT COSTABLE scope difference between the options, and it lifts or discards work already landed in Phases 11.18 through 11.20; the artifacts cannot infer which cost the user is willing to pay. It is a NEW, second obstruction that route (W-2) left unaddressed -- (W-2) authorised weakening the register conjunct to whatever the pump's pairs satisfy, and the measurement now shows that what they satisfy is strictly weaker than what the bit needs -- so the original question is not re-asked."
-  },
   "metadata": {
     "session_id": "sess_1794727080_294a7c",
     "agent_type": "lean-implementation-agent",
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ],
-    "task_dir": "specs/761_ladder_realization_theorem",
-    "dispatch_seq": 46,
-    "compliance_check": "passed",
-    "phases_completed": 32,
-    "phases_total": 46,
-    "commit": "0a2217ac4"
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 47,
+    "compliance_check": "skipped",
+    "vacuous_count_note": "1 hit is the repository-wide baseline recorded by plan 17's own verification criteria; unchanged by this dispatch, which edited no Lean file",
+    "no_summary_artifact_reason": "artifact_number 17 is already occupied by summaries/17_register-discriminator-blocked-summary.md, written by dispatch 46 for the round-17 work. This dispatch landed no implementation work, so a second summary at the same number would duplicate rather than report."
   }
 }
