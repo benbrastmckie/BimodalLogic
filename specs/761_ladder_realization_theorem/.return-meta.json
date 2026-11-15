@@ -1,53 +1,23 @@
 {
-  "status": "partial",
-  "started_at": "2026-11-15T19:56:30Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/19_pending-state-measurement-kill-criterion-summary.md",
-      "summary": "Phase 11.23 closed on outcome (ii): gap reading landed on the consumer side, refuted on ProbeB1.ramp on the producer side; path-level route closed; /revise onto (P-2) owed."
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/20_certificate-side-register-bridging.md",
+      "summary": "Revised plan on route (P-2), certificate-side register bridging: three new phases (11.25 design gate, 11.26 transport, 11.27 certStabK/agreement), three bypassed phases closed [COMPLETED WITH EXCLUSIONS], Phase 11.7 re-pointed, and explicit rulings on the clipped gap and on completeness of the gap reading."
     }
   ],
-  "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "docs/theorem-index.md",
-    "scripts/check-evidence-probes.sh",
-    "specs/evidence/seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity.lean",
-    "typst/generated/status.typ",
-    "specs/761_ladder_realization_theorem/issues.jsonl",
-    "specs/761_ladder_realization_theorem/plans/19_pending-state-gap-register-measurement.md",
-    "specs/761_ladder_realization_theorem/summaries/19_pending-state-measurement-kill-criterion-summary.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.23-handoff-20261115T202150Z.md"
-  ],
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "axiom_count": 14,
-    "build_passed": true
-  },
-  "requires_user_review": true,
-  "review_reason": "Phase 11.23 completed on kill-criterion outcome (ii): the path-level route is closed and a /revise onto (P-2) is owed. Zero-debt checks all pass (0 sorries, vacuous grep at its pre-existing 1-hit baseline, axioms unchanged at 14, full build green); verification_passed is false only because the plan-compliance spot-check reports the five filed Goals absent from the tree, which is their recorded OPEN state.",
-  "partial_progress": {
-    "stage": "phase_11.23_completed_route_closed",
-    "details": "Phase 11.23 [COMPLETED], outcome (ii). No enterable phase remains; /revise onto (P-2) required.",
-    "phases_completed": 33,
-    "phases_total": 48
-  },
+  "next_steps": "Run /orchestrate 761 to execute the revised plan. Phase 11.25 is the one enterable phase.",
   "metadata": {
-    "session_id": "sess_1794772483_c2ea25",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ],
-    "compliance_check": "failed",
-    "phase_commit": "a39bef9d1"
+    "session_id": "sess_1794774805_db69cf",
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 51,
+    "phases_closed": 36,
+    "estimated_hours": 12,
+    "reports_integrated": [],
+    "plan_version": 20,
+    "route": "(P-2) certificate-side register bridging",
+    "notes": "new_research_paths was empty; this revision integrates compiled output (Phase 11.23's Recorded Outcome, summary 19, the phase-11.23 handoff, and LadderCell.lean's two decision docstrings) rather than a report. validate-artifact.sh: PASS with 1 advisory warning, located in Phase 11.11's byte-identical carried-forward body (a comma-joined path entry inherited from the predecessor plan), untouched because closed phase bodies are carried verbatim."
   }
 }
