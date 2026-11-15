@@ -1,35 +1,25 @@
 {
-  "status": "researched",
-  "dispatch_seq": 49,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/761_ladder_realization_theorem/reports/18_clipped-register-block-nonvacuity.md",
-      "summary": "B-1 non-vacuity question answered NO by compiled probe: on a Fin 4 fixture at the paramsOk_params parameters, no block of the Tc room at spacing P+1 admits any ladder path carrying the clipped register at pump copies 0 and 1; (K3) puts the clipped-register pigeonhole's room strictly above Tc. Route B-1's Obligation is not dischargeable as filed."
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/19_pending-state-gap-register-measurement.md",
+      "summary": "Revised plan on the (P-1) ruling: 48 phases, 32 preserved closed, two new phases (11.23 bounded measurement with kill criterion, 11.24 conditional relation restatement) and the downstream chain re-pointed off the closed Phase 11.20"
     }
   ],
-  "modified_files": [
-    "specs/761_ladder_realization_theorem/reports/18_clipped-register-block-nonvacuity.md",
-    "specs/761_ladder_realization_theorem/prototype/clipped-register-block-nonvacuity-probe.lean",
-    "specs/761_ladder_realization_theorem/issues.jsonl"
-  ],
-  "user_decision": {
-    "question": "Route (B-1) does not discharge its Obligation: the block-selection condition is refuted as non-vacuous (ProbeB1.no_clipped_block_at_params -- on a finite object at the paramsOk_params parameters no block of the Tc room at spacing P+1 admits any ladder path carrying the clipped register at copies 0 and 1; and (K3) forces Tc <= Tn+1, so a clipped-register pigeonhole needs room strictly above Tc under every ParamsOk instance). Every landed consumer-side measurement is at an IDLE state, while the pump's block positions are all PENDING. How should the register coordinate be handled now?",
-    "options": [
-      "(P-1) One bounded research round re-measuring the consumer side at PENDING states (countdown >= Tc_d, and at threshold 0) on a fixture: decide by compilation whether the stab bit there reads the clipped register, the gap n - c, or neither, and whether a gap-shaped register conjunct is delivered by the iterated splice on this round's ramp fixture. Kill criterion: if the gap-shaped conjunct is refuted on ramp, the path-level route is closed and (P-2) is entered with no further path-level round.",
-      "(P-2) Enter the certificate-side route now: move the register bridging off the path level so no position-pair relation carries a register conjunct (the second successor named in LadderCell.lean's decision docstring). Not costable.",
-      "(P-3) Leave the task [BLOCKED] with this refutation as the recorded goal state, per the description's CONTINGENCY."
-    ],
-    "recommended": "(P-1) One bounded research round re-measuring the consumer side at PENDING states (countdown >= Tc_d, and at threshold 0) on a fixture: decide by compilation whether the stab bit there reads the clipped register, the gap n - c, or neither, and whether a gap-shaped register conjunct is delivered by the iterated splice on this round's ramp fixture. Kill criterion: if the gap-shaped conjunct is refuted on ramp, the path-level route is closed and (P-2) is entered with no further path-level round.",
-    "blocking": true,
-    "obligation": "A compiled measurement, at pending states on both sides of the level threshold, of which register reading a stab bit consumes there, together with a compiled verdict on the ramp fixture (ProbeB1.ramp) of whether the iterated splice delivers that same reading at copies 0 and 1 -- a reading that passes BOTH on ramp, or a refutation that closes the path-level route."
-  },
+  "next_steps": "Run /orchestrate 761 to execute the revised plan; Phase 11.23 is the one enterable phase",
   "metadata": {
-    "session_id": "sess_1794760192_80dbe9_761",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1794765604_a2913f",
+    "agent_type": "reviser-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "probe_verification": "lake env lean on the probe file: zero errors, zero warnings; #print axioms on 9 theorems within [propext, Classical.choice, Quot.sound]; no library module edited, no lake build run",
-    "handoff_written": false
-  }
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 48,
+    "estimated_hours": 54,
+    "reports_integrated": ["18_clipped-register-block-nonvacuity.md"],
+    "issue_log_contribution": 0
+  },
+  "modified_files": [
+    "specs/761_ladder_realization_theorem/plans/19_pending-state-gap-register-measurement.md",
+    "specs/761_ladder_realization_theorem/.plan-revised.json"
+  ]
 }
