@@ -1,25 +1,22 @@
 {
+  "task_number": 761,
+  "phase": "implement",
+  "dispatch_seq": 54,
   "status": "partial",
-  "dispatch_seq": 53,
-  "phases_completed": 37,
+  "phases_completed": 38,
   "phases_total": 51,
-  "summary": "Phase 11.25 — the one bounded design round route (P-2) is entered through, and a decision gate — was executed and closed [COMPLETED] with outcome (iii): the cell-side obligation is NAMED and the class-representative transport is OPEN. Eight declarations landed in LadderRealize.lean (642 -> 926 lines), reducing certStabK of Real to a single written-out cell-side hypothesis, discharging its backward direction UNCONDITIONALLY with no cell transfer, and exhibiting register-displaced kappa-collisions inside the forward direction's domain at a fixed countdown. Route (P-2) is NOT closed — outcome (ii) was not reached — so Phases 11.26 and 11.27 are enterable, 11.26 on its branch OPEN, and no /revise is owed by this gate. Full lake build exit 0 with 0 errors and 0 warnings, sorry_count 0, axiom count 14 unchanged, evidence gate 63 wired PASS unchanged.",
+  "summary": "Phase 11.26 executed and closed [COMPLETED] on branch OPEN (read off Phase 11.25's outcome (iii)). Five declarations landed in LadderRealize.lean (926 to 1,098 lines): the register-raise transport cellAt_subset_of_register_raise with its room conditions as named binders and the kappa-collision as its conclusion's first conjunct, the m=0 raised-deletion instance it rests on, the downward-saturated collision family it covers, and two compiled objects naming the coordinates that refuse the rest. ClassRepTransport itself remains OPEN: the raise tool's room ceiling n0+2<=c contradicts the obligation's own exhibited family c+B<=n0, and both register-moving deletions carry a stab-free premise under which certStabK is vacuous. Full lake build exit 0, sorry_count 0, axiom count 14 unchanged, all five gates green.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/20_certificate-side-register-bridging-summary.md",
-      "summary": "Phase 11.25's record: the two legs, the per-direction pair-set reading, the scope reading, the OPEN transport verdict, and the full verification block."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.25-handoff-20261115T214500Z.md",
-      "summary": "Phase-end handoff: immediate next action is Phase 11.26 on branch OPEN; no second design round is bought."
-    },
-    {
       "type": "plan",
       "path": "specs/761_ladder_realization_theorem/plans/20_certificate-side-register-bridging.md",
-      "summary": "Plan of record; Phase 11.25 marked [COMPLETED] with its #### Recorded Outcome block."
+      "summary": "Phase 11.26 marked [COMPLETED] with its Recorded Outcome: branch OPEN, the regime covered and not covered, the refusing coordinate and the inequality."
+    },
+    {
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/20_certificate-side-register-bridging-summary.md",
+      "summary": "Round-20 summary extended with Phase 11.26's What Changed, Decisions, Verification and Follow-ups."
     }
   ]
 }

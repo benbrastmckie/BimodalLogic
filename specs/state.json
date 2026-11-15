@@ -108,10 +108,6 @@
           "summary": "B-1 non-vacuity question answered NO by compiled probe: on a Fin 4 fixture at the paramsOk_params parameters, no block of the Tc room at spacing P+1 admits any ladder path carrying the clipped register at pump copies 0 and 1; (K3) puts the clipped-register pigeonhole's room strictly above Tc. Route B-1's Obligation is not dischargeable as filed."
         },
         {
-          "path": "specs/761_ladder_realization_theorem/plans/19_pending-state-gap-register-measurement.md",
-          "type": "plan"
-        },
-        {
           "path": "specs/761_ladder_realization_theorem/reports/01_ladder-realization-theorem.md",
           "type": "report",
           "summary": "ladder realization theorem (backfilled by --sync)"
@@ -132,89 +128,14 @@
           "summary": "stab bit copy pair decision (backfilled by --sync)"
         },
         {
-          "path": "specs/761_ladder_realization_theorem/plans/01_ladder-realization-blocked-probe.md",
-          "type": "plan",
-          "summary": "ladder realization blocked probe (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/01_ladder-realization-presentation-a.md",
-          "type": "plan",
-          "summary": "ladder realization presentation a (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/03_ladder-paramsok-parameter-repair.md",
-          "type": "plan",
-          "summary": "ladder paramsok parameter repair (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/04_ladder-agreement-first-decomposition.md",
-          "type": "plan",
-          "summary": "ladder agreement first decomposition (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/05_ladder-truth-transport-layer.md",
-          "type": "plan",
-          "summary": "ladder truth transport layer (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/07_cell-level-agreement-route.md",
-          "type": "plan",
-          "summary": "cell level agreement route (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/08_cell-agreement-construction-handoff.md",
-          "type": "plan",
-          "summary": "cell agreement construction handoff (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/09_tight-chain-gate-regated-graph.md",
-          "type": "plan",
-          "summary": "tight chain gate regated graph (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/10_rk-bounded-representative-widening.md",
-          "type": "plan",
-          "summary": "rk bounded representative widening (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/11_idle-insertion-cascade-restatement.md",
-          "type": "plan",
-          "summary": "idle insertion cascade restatement (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md",
-          "type": "plan",
-          "summary": "hself disposition gate settlement (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/13_depth-zero-gate-rest-state.md",
-          "type": "plan",
-          "summary": "depth zero gate rest state (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
-          "type": "plan",
-          "summary": "carried hypothesis depth zero route (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/15_depth-stratified-threshold-margins.md",
-          "type": "plan",
-          "summary": "depth stratified threshold margins (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/plans/17_weakened-register-conjunct-route.md",
-          "type": "plan",
-          "summary": "weakened register conjunct route (backfilled by --sync)"
+          "path": "specs/761_ladder_realization_theorem/summaries/20_certificate-side-register-bridging-summary.md",
+          "type": "summary",
+          "summary": "Phase 11.25's record: the two legs, the per-direction pair-set reading, the scope reading, the OPEN transport verdict, and the full verification block."
         },
         {
           "path": "specs/761_ladder_realization_theorem/plans/20_certificate-side-register-bridging.md",
           "type": "plan",
-          "summary": "certificate side register bridging (backfilled by --sync)"
-        },
-        {
-          "path": "specs/761_ladder_realization_theorem/summaries/20_certificate-side-register-bridging-summary.md",
-          "type": "summary",
-          "summary": "Phase 11.25's record: the two legs, the per-direction pair-set reading, the scope reading, the OPEN transport verdict, and the full verification block."
+          "summary": "Phase 11.26 marked [COMPLETED] with its Recorded Outcome: branch OPEN, the regime covered and not covered, the refusing coordinate and the inequality."
         }
       ],
       "next_artifact_number": 21,
