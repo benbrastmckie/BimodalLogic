@@ -1311,6 +1311,133 @@ theorem real_certStabK_of_stabFree (lab : Q → Atom → Bool) (φ : PlusFormula
     certStabK φ Tc Tn P B (Real step pend lab φ Tc Tn P B fwd bwd) :=
   certStabK_of_stabFree φ Tc Tn P B hno _
 
+/-! ### Phase 11.7: the filed agreement, ATTEMPTED FIRST and left OPEN, and the instantiation
+over the covered collisions
+
+**THE FILED STATEMENT WAS ATTEMPTED AT ITS RECORDED SIGNATURE, TOKEN-FOR-TOKEN, BEFORE ANYTHING
+BELOW WAS WRITTEN, AND IT IS NOT LANDED.** The signature elaborates — it names no object that
+does not exist — and the residual goal after the only reduction the landed machinery offers
+(`kappa_eq_components`, the collision read coordinate by coordinate) is the statement's own
+conclusion with the five coordinate equations in context and no tool applicable to it:
+
+```
+hp : ParamsOk step pend lab φ Tc Tn P B
+h : c ∈ Adm pend q,  h' : c' ∈ Adm pend q
+hk : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')
+h1 : min c Tc = min c' Tc        h2 : c % (P + 1) = c' % (P + 1)
+h3 : min n Tn = min n' Tn        h4 : n % (P + 1) = n' % (P + 1)
+h5 : clipIdx B c n = clipIdx B c' n'
+⊢ cellAt (ladderModel step pend fwd bwd lab) φ (t, ⟨(q, c, n), h⟩) z
+    = cellAt (ladderModel step pend fwd bwd lab) φ (t, ⟨(q, c', n'), h'⟩) z
+```
+
+Five coordinates of its domain are OUTSIDE the covered set, each for a reason that is a landed
+object and not an assessment: the filed signature carries no stab-free premise, and both
+register-moving deletions carry one; it carries no `c = c'`, and `h1`/`h2` give only
+`min c Tc = min c' Tc` and a common residue, while no landed tool moves a countdown while
+holding a class; its first world-state component `t` is general, while every landed inclusion is
+DIAGONAL (`t = z`); it carries no per-path regime; and it carries none of the room, threshold or
+clip conditions the deletions ask for. **So the filed `cellAt_const_of_kappa_eq` is OPEN on those
+collisions SPECIFICALLY** — the upward-saturated register family, moved countdowns, general time
+components, closures carrying a `⊡` letter, and paths outside the regime — and not as a general
+failure. It is landed here under no name, and adding a hypothesis to a recorded statement is not
+an implementer's move.
+
+**WHICH CONDITION OF THE COVERED FAMILY EACH `kappa` COORDINATE SUPPLIES, so the gap is visible
+in the record rather than inferred.**
+
+| Condition of the covered family | Supplied by | Binder? |
+|---|---|---|
+| `n % (P + 1) = n' % (P + 1)` | `kappa`'s FOURTH coordinate, via `kappa_eq_components` | NO |
+| `n = n' ∨ n + B ≤ c ∨ c + B ≤ n'` | `kappa`'s FIFTH coordinate at a held countdown | NO |
+| `c' = c`, the held countdown | nothing: `h1`, `h2` give only a `min` and a residue | `hcnt` |
+| `Tn ≤ n'`, the register threshold | nothing; `h3` then gives `Tn ≤ n` too | `hTn` |
+| `n' ≤ n`, the orientation | nothing — the dichotomy's branch is a choice | `hle` |
+| `n + B ≤ c`, downward saturation | the dichotomy's SECOND branch, a disjunct | `hgap` |
+| `Tc ≤ c`, `2 ≤ B`, the lowering room | nothing | `hTc`, `hB`, `hroom` |
+| stab-freeness, the per-path regimes | nothing | `hno`, `hregLo`, `hregHi` |
+
+The two `NO` rows are derived inside the proofs below; the second is
+`register_dichotomy_of_kappa_eq_held_countdown`.
+
+**THE ROUTE TAKEN IS THE CELL-LEVEL ONE, AND THE PATH-LEVEL INVARIANCE IT REPLACES IS REFUTED,
+NOT MERELY ABSENT.** The agreement below equates CELLS — the set of closure types realized at a
+ladder state over all admissible histories through it — and never puts two positions of two paths
+into correspondence. The path-level statement it replaces, that a splice preserves the realized
+stab-free type at a distance from its splice point, is a compiled REFUTATION:
+`splice_type_invariance_refuted` in
+`specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean`, cited by path as
+evidence and not as a proof term.
+
+**WHAT THE AGREEMENT DOES NOT SAY.** It equates cells at `kappa`-colliding states inside the
+covered family, and asserts no tuple index of a ladder cell at any parameters, no bound of any
+kind, and no device discrimination. The ladder's structural liveness stays FORWARD-ONLY and is
+untouched by it (`gPast_isPath`,
+`specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean`). It is not the
+factorization lemma, it is not `cellAt_const_of_kappa_eq` and nothing below consumes
+`ladderSound`, `ladderLift`, `ladderCons_localRun` or any (S)/(C') statement. It takes no new
+parameter ruling: `Tc` is not raised and `ParamsOk` is not strengthened. -/
+
+/-- **A REGISTER-DISPLACED COLLISION AT A HELD COUNTDOWN IS TRIVIAL, DOWNWARD-SATURATED, OR
+UPWARD-SATURATED — there is no fourth case.** The gap coordinate's own content at `c' = c`: two
+registers with `n' ≤ n` colliding under `kappa` are either equal, or sit at least `B` below the
+countdown (the family `cellAt_eq_of_register_displacement` covers), or the lower of them sits at
+least `B` above it (the family `raise_room_excludes_upward_displacement` puts outside every
+landed tool's reach). This is the compiled form of the covered/uncovered split on the register
+coordinate: the covered set is the second branch, and the third is named rather than assumed
+away. -/
+theorem register_dichotomy_of_kappa_eq_held_countdown (Tc Tn P B c n n' : ℕ)
+    (hB : 1 ≤ B) (hle : n' ≤ n)
+    (hk : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c, n')) :
+    n = n' ∨ n + B ≤ c ∨ c + B ≤ n' := by
+  have h5 : clipIdx B c n = clipIdx B c n' := (kappa_eq_components Tc Tn P B c n c n' hk).2.2.2.2
+  unfold clipIdx at h5
+  split at h5 <;> split at h5 <;> omega
+
+/-- **THE AGREEMENT AT THE FILED STATEMENT'S OWN SHAPE, RESTRICTED TO THE COVERED COLLISIONS.**
+The filed `cellAt_const_of_kappa_eq` takes the `kappa`-collision as a HYPOTHESIS and concludes the
+two cells equal; this is that statement with every coordinate outside Phase 11.26's covered
+family carried as an explicit named binder — the held countdown `hcnt`, the orientation `hle`,
+the register threshold `hTn`, the downward saturation `hgap`, the countdown threshold `hTc`, the
+clip `hB`, the lowering room `hroom`, the stab-free closure `hno`, the diagonal world state, and
+the two per-path regimes, one through each state because the two inclusions are carried by
+different tools through different source states. **It is NOT the filed statement**, which
+quantifies over every `kappa`-collision at every time component and at every closure and is OPEN
+on exactly the coordinates listed above; it is landed under its own name precisely so that the
+difference is visible. `hk` is load-bearing: it supplies the residue conjunct through
+`kappa_eq_components`, and nothing below re-assumes it.
+
+Paper: — (the counter quotient, the ladder carrier and the cell of a ladder state are the
+formalization's own objects; the paper states no agreement of class-equivalent cells and no
+counter quotient to state one over) -/
+theorem cellAt_const_of_kappa_eq_of_covered [Fintype Q]
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n c' n' : ℕ) (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q)
+    (hk : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n'))
+    (hcnt : c' = c) (hTn : Tn ≤ n') (hle : n' ≤ n)
+    (hgap : n + B ≤ c) (hTc : Tc ≤ c) (hB : 2 ≤ B) (hroom : n + (n - n') ≤ c)
+    (z : ℤ)
+    (hregLo : ∀ g : ℤ → LadderState Q pend, IsLadderPath step pend g →
+      g z = (⟨(q, c', n'), h'⟩ : LadderState Q pend) →
+      (∀ p : ℤ, p ≤ z → pend (objAt g p) = true) ∧ HasForwardSlack g z 0 n')
+    (hregHi : ∀ g : ℤ → LadderState Q pend, IsLadderPath step pend g →
+      g z = (⟨(q, c, n), h⟩ : LadderState Q pend) →
+      (∀ p : ℤ, p ≤ z → pend (objAt g p) = true) ∧ HasForwardSlack g z (n - n') n) :
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+      = cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c', n'), h'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  subst hcnt
+  have hres : n % (P + 1) = n' % (P + 1) :=
+    (kappa_eq_components Tc Tn P B c' n c' n' hk).2.2.2.1
+  exact (cellAt_eq_of_register_displacement fwd bwd lab φ Tc Tn P B hp hno q c' n n' h z
+    hTn hle hres hgap hTc hB hroom hregLo hregHi).2
+
+
 end CertificateBridge
 
 end FormalSystem.Metalogic.Decidability.RaySummary

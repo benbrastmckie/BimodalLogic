@@ -3402,4 +3402,29 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 #print axioms real_certStabK_of_stabFree
 
 
+/-! ### Phase 11.7: the filed agreement left OPEN, and the instantiation over the covered set
+
+`register_dichotomy_of_kappa_eq_held_countdown` is the gap coordinate's own split at a held
+countdown — trivial, downward-saturated (the covered family), or upward-saturated (outside every
+landed tool's reach) — and `cellAt_const_of_kappa_eq_of_covered` is the agreement at the FILED
+statement's own shape, with the `kappa`-collision as a hypothesis, restricted to the covered
+family by explicit named binders. Neither is the filed `cellAt_const_of_kappa_eq`, which is
+attempted at its recorded signature and left OPEN on the uncovered collisions specifically and
+which is landed in this tree under no name; neither consumes `ladderSound`, `ladderLift` or any
+(S)/(C') statement. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.register_dichotomy_of_kappa_eq_held_countdown' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms register_dichotomy_of_kappa_eq_held_countdown
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_const_of_kappa_eq_of_covered' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms cellAt_const_of_kappa_eq_of_covered
+
+
 end BimodalTest.Metalogic

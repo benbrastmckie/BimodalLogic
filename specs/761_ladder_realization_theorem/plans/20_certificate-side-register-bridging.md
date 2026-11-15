@@ -2703,7 +2703,7 @@ depth is itself the useful datum for a successor round.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - If the phase closes `[BLOCKED]`: the goal state and the stalling point — the ceiling, or the step with its stalling depth — are recorded in the phase body and the handoff, with no `sorry`, axiom, vacuous definition, trace-level hypothesis, finite-fibre retreat, further-raised `Tc` or positionwise restatement anywhere in the tree.
 
-### Phase 11.7: The Agreement `cellAt_const_of_kappa_eq` [NOT STARTED]
+### Phase 11.7: The Agreement `cellAt_const_of_kappa_eq` [BLOCKED]
 
 **RE-POINTED BY THIS REVISION: this phase's gates are now Phase 11.27 ALONE, not the bypassed `11.6, 11.21`.** Phases 11.21, 11.22 and 11.24 are closed `[COMPLETED WITH EXCLUSIONS]` on the (P-1) kill criterion and Phase 11.6 stays `[BLOCKED]`, so every edge this phase previously carried pointed at a phase that will never produce an input. **This phase is NOT excluded with them, because its deliverable is a filed Goal of this task that route (P-2) still reaches.** Everything below is the historical body written against the path-level route, and TWO of its sentences are now FALSE and are corrected here rather than by editing a carried body: there is no `~_d` and no `~_D`, so "`~_d` holds `n = n'`" and "Phase 11.6 lands `cellLE_le_const_of_rel`" describe objects that do not exist; and "Phase 11.21's reduction" is a reduction that was never run. **Read the task list below with Phase 11.27's product substituted for Phase 11.6's and Phase 11.21's throughout**: this phase instantiates the agreement Phase 11.27 landed over the COVERED collisions, at the filed Challenge signature token-for-token, and on any collision Phase 11.27 did not cover it lands the honestly named auxiliary and marks the filed statement `[BLOCKED]` on the uncovered collisions SPECIFICALLY — which is exactly the contingency branch the body below already carries, reached by a different route. The C14 pin and the `docs/theorem-index.md` row are still owed here, and the Goal, its signature fidelity and its Non-Goals are unchanged.
 
@@ -2745,35 +2745,35 @@ two presentations. This is the phase that breaks the circularity, and the certif
 module is the mechanical form of that claim.
 
 **Tasks**:
-- [ ] Instantiate Phase 11.6's `cellLE_le_const_of_rel` at the closure's depth bound and rewrite
+- [x] Instantiate Phase 11.6's `cellLE_le_const_of_rel` at the closure's depth bound and rewrite
       `cellLE` to `cellAt`. The hypothesis `hp` is CONSUMED in the argument and must appear in the
       proof, not be discarded at the top. If a proof appears to close without using `hp`, stop and
-      record it.
-- [ ] **Move from `~_D` to `kappa`-equality through Phase 11.21, never by assertion.** At a
+      record it. *(deviation: altered — Phase 11.6's `cellLE_le_const_of_rel` does not exist; the re-pointing's substitution was executed and Phase 11.27's `cellAt_eq_of_register_displacement` was instantiated instead. `hp` is load-bearing, confirmed by `lean_minimal_hypotheses`.)*
+- [x] **Move from `~_D` to `kappa`-equality through Phase 11.21, never by assertion.** At a
       `kappa`-collision the threshold bounds `Tc ≤ c` and `Tc ≤ c'` are derivable from `min c Tc`
       (so `Tc_D ≤ min c c'` is available), the residue conjunct is immediate from `kappa`'s second
       coordinate, and `q = q'` comes from the consumer's own common-`q` prefix — **but `n = n'`
       does NOT follow**, and Phase 11.21 is the only licensed route to it. Record which of the
       four conjuncts of `~_D` each `kappa` coordinate supplies, so the gap is visible in the
-      record rather than inferred.
-- [ ] **Land the result under the conditional auxiliary name
+      record rather than inferred. *(deviation: altered — there is no `~_D` and Phase 11.21's reduction was never run; the coordinate table is recorded instead, with `register_dichotomy_of_kappa_eq_held_countdown` as its compiled form.)*
+- [x] **Land the result under the conditional auxiliary name
       `cellAt_const_of_kappa_eq_of_forwardSlack`, carrying Phase 11.6's premise bundle as explicit
       named binders**, and mark the filed `cellAt_const_of_kappa_eq` `[BLOCKED]` with the goal
       state recorded. The filed signature is attempted token-for-token FIRST and only then
       abandoned: if the bundle turns out to be discharged by something landed (it is not, as of
       this revision's authoring), the filed statement is what lands. Record which happened.
-- [ ] Add the `docs/theorem-index.md` row carrying `pinned:C14` and the matching C14 heredoc entry in
+- [x] Add the `docs/theorem-index.md` row carrying `pinned:C14` and the matching C14 heredoc entry in
       `scripts/check-module-invariants.sh`. Unlike Phases 11 through 11.6, this phase DOES land a
       filed Goal, so the C14 pin is owed here.
-- [ ] Pin the declaration in `KTypeSummaryAxiomTest.lean` and resync the generated README inventory
+- [x] Pin the declaration in `KTypeSummaryAxiomTest.lean` and resync the generated README inventory
       blocks and `typst/generated/status.typ`.
-- [ ] Record in the module docstring and in the README paragraph what the agreement does and does NOT
+- [x] Record in the module docstring and in the README paragraph what the agreement does and does NOT
       say: it equates CELLS at `kappa`-colliding states; it asserts no tuple index, no bound, and no
       device discrimination; and the forward-only character of the ladder's structural liveness is
       unaffected by it (guardrail (e)). Record also that the route taken is the cell-level one and
       that the path-level splice invariance it replaces is REFUTED, not merely absent — in a sentence
       that names the refutation probe by path.
-- [ ] **Contingency branch, taken ONLY if Phase 11.5, 11.6 or 11.9 closed `[BLOCKED]` while a
+- [x] **Contingency branch, taken ONLY if Phase 11.5, 11.6 or 11.9 closed `[BLOCKED]` while a
       strictly weaker, honestly named auxiliary did land**: record the auxiliary under its own name,
       mark the filed `cellAt_const_of_kappa_eq` `[BLOCKED]` with the goal state recorded, and name
       both in `docs/theorem-index.md` with the filed statement listed as OPEN. Adding any hypothesis
@@ -2814,6 +2814,8 @@ patched by inlining a new argument here.
 - `FormalSystem/Metalogic/Decidability/RaySummary/README.md` - the generated inventory blocks and the paragraph recording what the agreement does and does not say
 - `typst/generated/status.typ` - the regenerated line counts
 
+*(deviation: altered — the two declarations land in `LadderRealize.lean`, not `LadderAgree.lean`. `grep ^import` shows `LadderAgree` is UPSTREAM of `LadderPump` -> `LadderChain` -> `LadderRealize`, so a declaration consuming Phase 11.27's product cannot live in `LadderAgree.lean`; the re-pointing's own substitution of that product forces the module. `LadderAgree.lean` is untouched, so its certificate-freedom grep and import list are unchanged by construction.)*
+
 **Verification**:
 - The guarded scoped build of `LadderAgree.lean` exits 0 with 0 warnings; the unscoped guarded build exits 0 at the end of the phase. Guarded, explicit `--timeout`, bounded single-call idiom.
 - `cellAt_const_of_kappa_eq`'s signature matches the `## Lean Challenge Statements` block token-for-token, by direct `diff` of the extracted signature text — the parameter hypothesis included, in the recorded position. `lean-challenge-snapshot.sh` is NOT a gate (it refuses past `planned`, and its `--check` verdict is advisory in any case).
@@ -2825,6 +2827,117 @@ patched by inlining a new argument here.
 - `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests` exits 0 with `sorry_count: 0`; module-scoped vacuous grep count 0; the repository-wide vacuous grep and `^axiom ` counts unchanged from their measured baselines.
 - `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - If the phase closes `[BLOCKED]` or on the contingency branch: the goal state is recorded in the phase body and the handoff, the filed statement is named as OPEN in `docs/theorem-index.md`, the README paragraph and the summary — never as landed — and no `sorry`, axiom, vacuous definition, trace-level hypothesis, finite-fibre retreat, raised `Tc` or positionwise restatement appears anywhere in the tree.
+
+
+#### Recorded Outcome
+
+**THE PHASE CLOSED `[BLOCKED]` ON THE FILED NAME, WITH THE CONTINGENCY BRANCH FIRED: the
+honestly named auxiliary LANDED and the filed `cellAt_const_of_kappa_eq` marked `[BLOCKED]` on the
+uncovered collisions SPECIFICALLY.** No `sorry`, no axiom, no vacuous definition, no trace-level
+hypothesis, no finite-fibre or finite-width retreat, no raised `Tc`, no strengthened `ParamsOk`
+and no positionwise restatement appears anywhere in the tree. A landed auxiliary never promotes a
+phase out of `[BLOCKED]` on a filed name, which is why this phase is not `[COMPLETED]`.
+
+**THE FILED SIGNATURE WAS ATTEMPTED TOKEN-FOR-TOKEN FIRST, AND THE GOAL STATE IS RECORDED.** The
+signature elaborates — it names no object that does not exist — and the residual goal after the
+one reduction the landed machinery offers is:
+
+```
+hp : ParamsOk step pend lab φ Tc Tn P B
+h : c ∈ Adm pend q,  h' : c' ∈ Adm pend q
+hk : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')
+h1 : min c Tc = min c' Tc        h2 : c % (P + 1) = c' % (P + 1)
+h3 : min n Tn = min n' Tn        h4 : n % (P + 1) = n' % (P + 1)
+h5 : clipIdx B c n = clipIdx B c' n'
+⊢ cellAt (ladderModel step pend fwd bwd lab) φ (t, ⟨(q, c, n), h⟩) z
+    = cellAt (ladderModel step pend fwd bwd lab) φ (t, ⟨(q, c', n'), h'⟩) z
+```
+
+Five coordinates of its domain lie outside Phase 11.27's covered set, each for a reason that is a
+landed object: no stab-free premise (both register-moving deletions carry one); no `c = c'`
+(`h1`/`h2` give only a common `min` against `Tc` and a common residue, and no landed tool moves a
+countdown while holding a class); a general first world-state component `t` (every landed
+inclusion is DIAGONAL); no per-path regime; and none of the room, threshold or clip conditions.
+
+**WHAT LANDED — two declarations, both in `LadderRealize.lean`, both compiled.**
+
+| Declaration | What it is |
+|---|---|
+| `register_dichotomy_of_kappa_eq_held_countdown` | the gap coordinate's own split at a held countdown: a register-displaced `kappa`-collision with `n' ≤ n` is TRIVIAL, DOWNWARD-saturated (`n + B ≤ c`, the covered family) or UPWARD-saturated (`c + B ≤ n'`, outside every landed tool's reach by `raise_room_excludes_upward_displacement`) — no fourth case |
+| `cellAt_const_of_kappa_eq_of_covered` | the agreement at the FILED statement's own shape — the `kappa`-collision as a HYPOTHESIS, `(c, n)` against `(c', n')`, both admissibility witnesses present — restricted to the covered family by explicit named binders |
+
+**WHICH `kappa` COORDINATE SUPPLIES WHAT, recorded as the task list asks rather than inferred.**
+`kappa`'s FOURTH coordinate supplies the residue conjunct (`hk` is load-bearing in the proof for
+exactly that); its FIFTH supplies the covered/uncovered trichotomy through the dichotomy lemma.
+Nothing supplies the held countdown `c' = c`, the register threshold `Tn ≤ n'` (though `h3` then
+gives `Tn ≤ n` as well), the orientation `n' ≤ n`, the downward saturation `n + B ≤ c` (a disjunct
+of the dichotomy, never its conclusion), the countdown threshold, the clip, the lowering room, the
+stab-free closure or either per-path regime — ten explicit named binders, each one a coordinate on
+which the filed statement stays OPEN. The same table is written into the module docstring.
+
+**THE FINDING, AND WHY A NEW DECISION IS OWED.** The covered family's own defining premise is
+stab-freeness, and `certStabK_of_stabFree` already gives condition (5) outright there, for `Real`
+and for every other set. So the landed agreement is a real cell equality over a real family of
+`kappa`-collisions that buys the certificate side nothing — the same vacuity Phase 11.27 measured
+at the `certStabK` end, now measured at the agreement end. **No live route to the filed
+`cellAt_const_of_kappa_eq` remains in this plan**: the path level is closed by the (P-1) kill
+criterion at Phase 11.23, and the certificate side closes vacuously on the set it covers. That is
+a route decision, not a phase move, and it is returned as a blocking `user_decision` rather than
+improvised here.
+
+**BLOCKER** (Phase 11.7):
+- **What failed**: the filed Challenge statement `cellAt_const_of_kappa_eq`, at its recorded
+  signature. The goal state is recorded above.
+- **What was tried**: the filed signature, elaborated token-for-token and reduced by
+  `kappa_eq_components`; then the instantiation of Phase 11.27's `cellAt_eq_of_register_displacement`,
+  which succeeds only after ten restricting binders are added — and adding a hypothesis to a
+  recorded Challenge statement is routed to the user by Statement Fidelity.
+- **Why it is stuck**: the only landed tools that move a counter coordinate while holding a
+  `kappa` class are the two exact-shift register deletions, and both carry
+  `hno : ∀ χ, PlusFormula.stab χ ∉ plusSubformulaClosure φ`. At a stab-free closure the condition
+  the agreement feeds is empty (`certStabK_of_stabFree`); at a `⊡`-bearing closure no tool exists.
+  The upward-saturated register family is excluded by an inequality
+  (`raise_room_excludes_upward_displacement`), moved countdowns by the absence of any tool, and the
+  general time component by the unlanded offset-invariance of `tpOf`.
+- **What is needed**: a route decision. Either a new mechanism that moves a register (or a
+  countdown) at a `⊡`-bearing closure, or a ruling that the filed statement is re-filed, or the
+  task rests here with the obstruction landed.
+- **Prohibited workarounds**: no `sorry`, no `axiom`, no `def X := True`, no trace-level
+  hypothesis, no finite-fibre or finite-width assumption, no raised `Tc`, no positionwise
+  restatement.
+
+**Verification measured at close.** Module build of
+`FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize` exit 0, 0 errors, 0 warnings;
+`BimodalTest.Metalogic.KTypeSummaryAxiomTest` exit 0, 0 errors, 0 warnings, both new
+`#guard_msgs` pins green. `#print axioms register_dichotomy_of_kappa_eq_held_countdown` is
+`[propext, Quot.sound]` and `#print axioms cellAt_const_of_kappa_eq_of_covered` is
+`[propext, Classical.choice, Quot.sound]` — both subsets of the permitted set, no `sorryAx`, no
+custom axiom, no `native_decide`. `lean_minimal_hypotheses` reports EVERY explicit binder
+load-bearing, `hp`, `hk`, `hno`, `hcnt` and both regimes included. `lean-sorry-census.sh` over the
+resolved source roots exit 0 with `sorry_count: 0`; the module-scoped vacuous grep returns 0; the
+repository-wide vacuous grep is at its 1-hit baseline, unchanged; the `^axiom ` grep-match count
+is 14, unchanged. The filed/reserved-name grep over the module's additions returns nothing; the
+circularity grep returns docstring prose only; the tuple-index-shape grep returns one
+`CounterQuotient.lean` docstring hit naming it as refuted. `LadderAgree.lean` is UNTOUCHED, so its
+certificate-freedom grep and import list are unchanged by construction.
+`check-module-invariants.sh` reports ALL CHECKS PASSED (C14 and C15 green WITH the new baseline
+entry and the new row), and `typst-sync-check.sh`, `readme-lint.sh`,
+`check-evidence-probes.sh` (63 wired, unchanged — no probe authored here) and
+`check-task-references.sh --quiet` each exit 0. The **full unscoped `lake build` exits 0 with 0
+errors, 0 warnings and 2,975 jobs**, and both touched modules' `.olean` are newer than their
+sources.
+
+**Figures re-measured rather than carried.** `LadderRealize.lean` entered at **1,316 lines** and
+closes at **1,440**; `KTypeSummaryAxiomTest.lean` entered at **3,405** against its in-source
+`longFile` baseline of **3,500** and closes at **3,430**, so no baseline was raised here. The
+Scope Hypothesis said "one Goal declaration plus five wiring/record files"; what landed is TWO
+auxiliary declarations (the Goal itself is not landed) plus six files touched — the sixth being
+`scripts/check-module-invariants.sh`, which the phase's own task list already names.
+
+**Plan-revision sentinel checked at phase start**, as the dispatch requires:
+`.plan-revised.json` carries `revised_at: 1794776400`, EARLIER than this dispatch's
+`dispatch_start_ts: 1794781346`, so there was no fresh hit and this phase's section was executed
+as re-read from the live plan file.
 
 ---
 
