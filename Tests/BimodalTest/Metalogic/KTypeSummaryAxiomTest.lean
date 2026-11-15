@@ -3054,4 +3054,44 @@ inherited from `ParamsOk`'s own definitional closure and not from any choice eit
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.margin_room_at_depth
 
+/-! ## The iterated splice's interior clauses (`RaySummary/LadderCell.lean`)
+
+One clause landed and one refuted, both as siblings leaving the pump spine byte-identical.
+
+LANDED. `exists_iterSpliced_ladderPath_idx_interior_of_pend_past` carries the four clauses of
+`exists_iterSpliced_ladderPath_idx_of_pend_past` plus the countdown at position `j` of copy `i`,
+which is the original's at the retracted position plus the `(d - i) * l` positions of the copies
+still above it. The parent is untouched; the clause is proved by re-running the parent's induction
+with it carried, since the parent's existential exposes no interior countdown to derive it from.
+This says nothing about any stability bit, cell or counter class, and claims no index of a ladder
+cell at any parameters.
+
+REFUTED. The companion register clause is NOT a clause of this construction.
+`iterSpliced_register_interior_forces_block_drift` derives from it, on any ladder path, that the
+original's register at the block's last position is within one of its value at the block's first;
+`iterSpliced_register_interior_refuted` exhibits a path on which that fails while every hypothesis
+of the parent holds, so no path at all satisfies the clause there. The register coordinate of the
+pump is uncontrolled at the window's interior. Nothing in this layer is a realization theorem and
+nothing claims `HitPresented` or `PlusValidZTime`. The standard profile on the first and the
+third; the second needs no choice. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_iterSpliced_ladderPath_idx_interior_of_pend_past' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms exists_iterSpliced_ladderPath_idx_interior_of_pend_past
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.iterSpliced_register_interior_forces_block_drift' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms iterSpliced_register_interior_forces_block_drift
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.iterSpliced_register_interior_refuted' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.iterSpliced_register_interior_refuted
+
 end BimodalTest.Metalogic

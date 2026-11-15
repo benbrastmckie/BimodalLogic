@@ -13,8 +13,11 @@ import FormalSystem.Metalogic.Decidability.RaySummary.LadderChain
 
 This module holds ONE argument: inclusions between the cells of the ladder model at two counter
 states whose classes under `kappa` COLLIDE, and the arithmetic case split that says which
-sub-regimes such a collision can occupy. It imports `LadderChain.lean` alone and says nothing
-about pumps or pins beyond what that module already landed — every construction here is a
+sub-regimes such a collision can occupy. Beside it, and consumed by no part of it, sits one layer
+of PUMP BOOKKEEPING — the iterated splice's two interior clauses, the first landed and the second
+refuted (`## The iterated splice's two interior clauses` below). The cell argument imports
+`LadderChain.lean` alone and says nothing about pumps or pins beyond what that module already
+landed — every construction here is a
 reading of the landed regime-A assembly `exists_ladderPath_through_shifted_of_pend_past` with
 the register's anchor moved, or of the landed class destructors `kappa_eq_components`,
 `eq_or_both_ge_of_min_eq` and `clipIdx_regime_of_eq`.
@@ -165,9 +168,16 @@ No landed schema is retired and no landed signature is touched. The reserved nam
 `cellLE_zero_const_of_kappa_eq` is claimed by nothing in this module: every schema here is
 strictly stronger in hypotheses than the reserved statement and bears on its truth value in
 neither direction.
+
+The PUMP BOOKKEEPING layer is independent of all four parts above and is read by none of them. It
+lands the interior-copy countdown of the iterated splice as a sibling of the landed pump theorem,
+refutes the companion register clause, and says nothing about any cell, any `⊡` bit or any `kappa`
+coordinate; its own section docstring states both what it says and what it does not. It is homed
+here rather than in `LadderChain.lean` because that module has fourteen lines of headroom against
+its own in-source `longFile` baseline, and this one imports the whole pump spine.
 -/
 
-set_option linter.style.longFile 2000
+set_option linter.style.longFile 2400
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1987,5 +1997,348 @@ theorem cellLE_zero_const_of_kappa_eq_antitone_bounded_of_forwardSlack
   exact forwardSlackWitnessed_zero step pend fwd bwd lab φ q c n h z
 
 end ForwardSlack
+
+/-! ## The iterated splice's two interior clauses: the countdown landed, the register refuted
+
+`exists_iterSpliced_ladderPath_idx_of_pend_past` (`LadderChain.lean`) exposes FOUR clauses — the
+object at every position, the countdown raised by `d · l` below the window, the countdown
+displaced above the run, and the stab-free realized type at every position. It exposes NO
+countdown value at a position INSIDE the run of copies, and no register value anywhere; the
+register-held wrapper `exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_past` exposes the
+register at the single anchor `z` and nowhere else. The two readings a position-pair induction on
+the pump's own window needs are therefore both absent from the landed surface. This section lands
+the first of them and REFUTES the second, as siblings that leave every landed statement
+byte-identical: neither parent, nor `iterSpliceIdx`, nor any of its characterization lemmas is
+touched here.
+
+LANDED — the interior-copy countdown.
+`exists_iterSpliced_ladderPath_idx_interior_of_pend_past` carries its parent's four clauses and
+adds, for `i ≤ d` and `j < l`,
+
+  `cntAt g' (u + i · l + j) = cntAt g (u + j) + (d − i) · l`,
+
+at exactly the positions `iterSpliceIdx_add_mul` retracts to `u + j`. The pending countdown at a
+copy position is the original's at the retracted position plus the `(d − i) · l` positions of
+copies still above it, and `i = d` recovers the parent's own value at the top copy. The proof is
+the parent's induction on `d` with the clause carried through it — the clause is NOT derived from
+the parent, because the parent's existential exposes no interior countdown to derive from. One
+call delivers all five clauses, so a consumer needs no second call.
+
+REFUTED — the register at the interior. The companion clause
+`nxtAt g' (u + i · l + j) = nxtAt g (u + j)` is not a true statement of this construction at any
+`d ≥ 1` with `l ≥ 3`, and what refutes it is the ladder's own drift condition, not a limitation of
+some proof route. `iterSpliced_register_interior_forces_block_drift` derives from the clause at
+`i ≤ 1` alone that `Drift (nxtAt g (u + (l − 1))) (nxtAt g u)` — the original's register at the
+block's last position is within one of its value at the block's first, because the clause makes
+the step from the top of copy `0` to the bottom of copy `1` a step of `g'` between those two
+values. `iterSpliced_register_interior_refuted` exhibits a ladder path on which that fails while
+EVERY hypothesis of the parent holds — `0 < l`, `l ≤ cntAt g u`, the uniformly pending past, the
+object-closed block, a history over the path, the realized-type equality at the block's ends, and
+the stab-free closure condition — so no `g'` whatever satisfies the register clause there, however
+the register is rebuilt.
+
+Which of the two readings of "the register is held at the interior" is the true one: NEITHER. The
+walk does not determine it — `Count` constrains the register only at a region start
+(`count_ft`: `c' = n`), and a block of a pending-forever past carries no region start at all, so
+the register's only constraint inside the window is `Drift`. And the re-lift does not pin it —
+`exists_ladderPath_of_walk_nxt` pins the register at the single position `0`,
+`exists_ladderPath_of_walk_nxt_at` at the single position `z`, and
+`exists_ladderPath_of_walk_of_pins` at none; the McShane extension `drift_extension_of_pins`
+builds the rest from the NEW path's pins, which inside the run are the original's own pins
+displaced by `d · l`, and its value at an interior position is a `sInf` over those and not the
+original's value. Phase 11.20 needs this answer, and the answer is that the register coordinate of
+the pump is uncontrolled at the interior.
+
+**What the landed clause does NOT say.** It is a clause of the pump's own construction. It says
+nothing about any `⊡` bit, nothing about the agreement of a cell at any pair of states, and
+nothing about `kappa` or any of its coordinates. The interior positions it describes are exactly
+the positions at which a `⊡` bit CAN differ between a copy pair when the displacement is
+off-residue, which is the obstruction the stab-bit copy-pair fixture exhibits; the clause is
+bookkeeping a position-pair induction consumes, never a step of one. -/
+
+section IterInterior
+
+/-- **THE ITERATED DUPLICATION WITH THE INTERIOR-COPY COUNTDOWN EXPOSED.** A sibling of
+`exists_iterSpliced_ladderPath_idx_of_pend_past` carrying its four clauses and one more: the
+countdown at position `j` of copy `i` is the original's countdown at the retracted position
+`u + j` plus `(d − i) · l`, the positions of the copies still above it. The parent is untouched;
+this is a re-run of its induction with the fifth clause carried, since the parent's existential
+exposes no interior countdown from which the clause could be derived.
+
+Why the value is what it is. At `i = 0` the position lies below `u + l`, inside the lengthened
+region, so one splice raises it by `l` and the induction hypothesis has already raised it by
+`d · l`. At `i = i' + 1` the position lies at or above `u + l`, so one splice reads the previous
+stage `l` positions lower, which is position `j` of copy `i'` there. At `i = d` the clause
+degenerates to the top copy's own value, which is the original's at `u + j`.
+
+This says nothing about the register, which the construction does not hold at the interior
+(`iterSpliced_register_interior_refuted`), and nothing about any `⊡` bit, cell or `kappa`
+coordinate. -/
+theorem exists_iterSpliced_ladderPath_idx_interior_of_pend_past {Q : Type} [Finite Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    {g : ℤ → LadderState Q pend} (hg : IsLadderPath step pend g) {u : ℤ} {l : ℕ}
+    (hl : 0 < l) (hcl : l ≤ cntAt g u)
+    (hpast : ∀ p : ℤ, p ≤ u → pend (objAt g p) = true)
+    (hrep : objAt g u = objAt g (u + (l : ℤ)))
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t, g t))
+    (hty : tpOf (ladderModel step pend fwd bwd lab) φ σ u
+         = tpOf (ladderModel step pend fwd bwd lab) φ σ (u + (l : ℤ))) (d : ℕ) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v : ℤ, objAt g' v = objAt g (iterSpliceIdx u l d v)) ∧
+      (∀ v : ℤ, v ≤ u → u ≤ v + (cntAt g v : ℤ) → cntAt g' v = cntAt g v + d * l) ∧
+      (∀ v : ℤ, u + ((d + 1) * l : ℕ) ≤ v → cntAt g' v = cntAt g (v - (d * l : ℕ))) ∧
+      (∀ i j : ℕ, i ≤ d → j < l →
+        cntAt g' (u + ((i * l : ℕ) : ℤ) + (j : ℤ)) = cntAt g (u + (j : ℤ)) + (d - i) * l) ∧
+      ∀ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        ∀ w : ℤ, tpOf (ladderModel step pend fwd bwd lab) φ σ' w
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ (iterSpliceIdx u l d w) := by
+  classical
+  haveI : Fintype Q := Fintype.ofFinite Q
+  induction d with
+  | zero =>
+      refine ⟨g, hg, fun _ => rfl, fun v _ _ => by simp, fun v _ => by simp,
+        fun i j hi hj => ?_, fun σ' hσ' w => ?_⟩
+      · have hi0 : i = 0 := by omega
+        subst hi0
+        simp
+      · exact tpOf_stabFree_eq_of_objAt_eq fwd bwd lab φ (k := 0) (k' := 0) σ' σ
+          (fun t => by rw [add_zero]; exact hσ' t) (fun t => by rw [add_zero]; exact hσ t)
+          (fun _ => rfl) hno w
+  | succ d ih =>
+      obtain ⟨g₁, hg₁, hobj₁, hcnt₁, habove₁, hint₁, hty₁⟩ := ih
+      have hidx_ul : objAt g (iterSpliceIdx u l d (u + (l : ℤ))) = objAt g u := by
+        rcases d with _ | d
+        · rw [iterSpliceIdx_zero]; exact hrep.symm
+        · rw [show u + (l : ℤ) = u + ((1 * l : ℕ) : ℤ) by push_cast; ring,
+            iterSpliceIdx_boundary u l hl (d + 1) 1 (by omega)]
+      have hty_ul : tpOf (ladderModel step pend fwd bwd lab) φ σ (iterSpliceIdx u l d (u + (l : ℤ)))
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ u := by
+        rcases d with _ | d
+        · rw [iterSpliceIdx_zero]; exact hty.symm
+        · rw [show u + (l : ℤ) = u + ((1 * l : ℕ) : ℤ) by push_cast; ring,
+            iterSpliceIdx_boundary u l hl (d + 1) 1 (by omega)]
+      have hpast₁ : ∀ p : ℤ, p ≤ u → pend (objAt g₁ p) = true := fun p hp => by
+        rw [hobj₁ p, iterSpliceIdx_of_lt u l d p (by omega)]; exact hpast p hp
+      have hrep₁ : objAt g₁ u = objAt g₁ (u + (l : ℤ)) := by
+        rw [hobj₁ u, hobj₁ (u + (l : ℤ)), iterSpliceIdx_of_lt u l d u (by omega), hidx_ul]
+      have hcu₁ : cntAt g₁ u = cntAt g u + d * l := hcnt₁ u le_rfl (by omega)
+      have hcl₁ : l ≤ cntAt g₁ u := by rw [hcu₁]; omega
+      obtain ⟨g₂, hg₂, hobj₂, hcnt₂⟩ :=
+        exists_spliced_ladderPath_of_pend_past hg₁ hl hcl₁ hpast₁ hrep₁
+      have hobj₂' : ∀ w : ℤ, objAt g₂ w = objAt g₁ (spliceIdx u l w) := fun w => by
+        rw [hobj₂ w, spliceObj_eq_objAt_spliceIdx]
+      refine ⟨g₂, hg₂, fun v => ?_, fun v hv hreg => ?_, fun v hv => ?_, fun i j hi hj => ?_,
+        fun σ₂ hσ₂ w => ?_⟩
+      · rw [hobj₂' v, hobj₁, iterSpliceIdx_succ]
+      · have hreg₁ : u ≤ v + (cntAt g₁ v : ℤ) := by rw [hcnt₁ v hv hreg]; push_cast; omega
+        rw [hcnt₂ v, spliceCnt_add_of_mem_region hl v hv hreg₁, hcnt₁ v hv hreg]
+        ring
+      · have e : (((d + 1 + 1) * l : ℕ) : ℤ) = ((d + 1) * l : ℕ) + (l : ℤ) := by push_cast; ring
+        rw [e] at hv
+        have hge : u + (l : ℤ) ≤ v := by
+          have : (0 : ℤ) ≤ (((d + 1) * l : ℕ) : ℤ) := Int.natCast_nonneg _
+          omega
+        rw [hcnt₂ v, spliceCnt_of_ge v hge, habove₁ (v - (l : ℤ)) (by omega)]
+        congr 1; push_cast; ring
+      · -- the interior countdown: the `i = 0` copy is raised once more, every higher copy reads
+        -- the previous stage one block lower
+        rcases Nat.eq_zero_or_pos i with hi0 | hipos
+        · subst hi0
+          have e0 : u + ((0 * l : ℕ) : ℤ) + (j : ℤ) = u + (j : ℤ) := by push_cast; ring
+          have hjl : (j : ℤ) < (l : ℤ) := by exact_mod_cast hj
+          have hlt : u + (j : ℤ) < u + (l : ℤ) := by omega
+          have hreg : u ≤ u + (j : ℤ) + (cntAt g₁ (u + (j : ℤ)) : ℤ) := by
+            have h1 : (0 : ℤ) ≤ (j : ℤ) := Int.natCast_nonneg _
+            have h2 : (0 : ℤ) ≤ (cntAt g₁ (u + (j : ℤ)) : ℤ) := Int.natCast_nonneg _
+            omega
+          have hprev := hint₁ 0 j (by omega) hj
+          rw [e0] at hprev ⊢
+          rw [hcnt₂ (u + (j : ℤ)), spliceCnt_of_lt (u + (j : ℤ)) hlt, if_pos hreg, hprev]
+          simp only [Nat.sub_zero]
+          ring
+        · obtain ⟨i', rfl⟩ : ∃ i', i = i' + 1 := ⟨i - 1, by omega⟩
+          have ecast : (((i' + 1) * l : ℕ) : ℤ) = ((i' * l : ℕ) : ℤ) + (l : ℤ) := by
+            push_cast; ring
+          have hge : u + (l : ℤ) ≤ u + (((i' + 1) * l : ℕ) : ℤ) + (j : ℤ) := by
+            have h2 : (0 : ℤ) ≤ ((i' * l : ℕ) : ℤ) := Int.natCast_nonneg _
+            have h3 : (0 : ℤ) ≤ (j : ℤ) := Int.natCast_nonneg _
+            rw [ecast]; omega
+          have esub : u + (((i' + 1) * l : ℕ) : ℤ) + (j : ℤ) - (l : ℤ)
+              = u + ((i' * l : ℕ) : ℤ) + (j : ℤ) := by rw [ecast]; ring
+          have hd : d + 1 - (i' + 1) = d - i' := by omega
+          rw [hcnt₂ _, spliceCnt_of_ge _ hge, esub, hint₁ i' j (by omega) hj, hd]
+      · obtain ⟨σ₁, hσ₁⟩ := exists_hist_of_isLadderPath fwd bwd g₁ hg₁
+        have hty₁' : tpOf (ladderModel step pend fwd bwd lab) φ σ₁ u
+            = tpOf (ladderModel step pend fwd bwd lab) φ σ₁ (u + (l : ℤ)) := by
+          rw [hty₁ σ₁ hσ₁ u, hty₁ σ₁ hσ₁ (u + (l : ℤ)), iterSpliceIdx_of_lt u l d u (by omega),
+            hty_ul]
+        have htr := tpOf_eq_spliceIdx_of_tpOf_eq step pend fwd bwd lab φ u l hl (k := 0) (k' := 0)
+          σ₁ σ₂ (fun t => by rw [add_zero]; exact hσ₁ t) (fun t => by rw [add_zero]; exact hσ₂ t)
+          hobj₂' hno hty₁' w
+        rw [htr, hty₁ σ₁ hσ₁, iterSpliceIdx_succ]
+
+/-- **THE REGISTER CLAUSE'S OWN CONSEQUENCE, ON ANY LADDER PATH.** If a ladder path `g'` holds the
+original's register at position `j` of copies `0` and `1` of the block `[u, u + l)`, then the
+original's register at the block's LAST position is within one of its value at the block's FIRST:
+the clause identifies `nxtAt g' (u + (l − 1))` with `nxtAt g (u + (l − 1))` and
+`nxtAt g' (u + l)` with `nxtAt g u`, and those two positions of `g'` are one step apart, where
+`Drift` holds.
+
+This is the whole obstruction. Nothing about the pump's hypotheses supplies the conclusion: the
+register's only constraint inside a block of a pending-forever past is `Drift` along the ORIGINAL,
+which bounds the same difference by `l − 1` and not by `1`. -/
+theorem iterSpliced_register_interior_forces_block_drift
+    {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+    (g : ℤ → LadderState Q pend) {g' : ℤ → LadderState Q pend}
+    (hg' : IsLadderPath step pend g') (u : ℤ) (l : ℕ) (hl : 0 < l)
+    (hreg : ∀ i j : ℕ, i ≤ 1 → j < l →
+      nxtAt g' (u + ((i * l : ℕ) : ℤ) + (j : ℤ)) = nxtAt g (u + (j : ℤ))) :
+    Drift (nxtAt g (u + ((l - 1 : ℕ) : ℤ))) (nxtAt g u) := by
+  have hcast : ((l - 1 : ℕ) : ℤ) = (l : ℤ) - 1 := by omega
+  have h0 := hreg 0 (l - 1) (by omega) (by omega)
+  have e0 : u + ((0 * l : ℕ) : ℤ) + ((l - 1 : ℕ) : ℤ) = u + ((l - 1 : ℕ) : ℤ) := by
+    push_cast; ring
+  rw [e0] at h0
+  have h1 := hreg 1 0 le_rfl hl
+  have e1 : u + ((1 * l : ℕ) : ℤ) + ((0 : ℕ) : ℤ) = u + ((l - 1 : ℕ) : ℤ) + 1 := by
+    rw [hcast]; push_cast; ring
+  rw [e1] at h1
+  simp only [Nat.cast_zero, add_zero] at h1
+  have hd := nxtAt_drift g' hg' (u + ((l - 1 : ℕ) : ℤ))
+  rw [h0, h1] at hd
+  exact hd
+
+end IterInterior
+
+/-! ## The refutation witness for the register clause
+
+The two-state ladder of `ClimbWitness` already carries a path whose register climbs by one per
+position across a block of its pending-forever past. All that is added here is what the pump's
+hypotheses need beyond the path itself: the two seriality conditions of the admissible carrier for
+that object (`fwdT`, `bwdT`), the all-true labelling (`labT`), and the observation that under it
+every realized type is the whole closure, so the pump's type hypothesis is free at an atomic
+formula. The witness then satisfies EVERY hypothesis of
+`exists_iterSpliced_ladderPath_idx_of_pend_past` and refutes the register clause on it.
+
+Nothing here is a fixture-restricted proof of a positive statement: the positive clause of this
+section is `exists_iterSpliced_ladderPath_idx_interior_of_pend_past` above, proved generically. -/
+
+section RegisterRefutation
+
+open ClimbWitness
+
+/-- **Forward seriality of the two-state ladder on the admissible carrier.** `no_fwd` refutes this
+on the unrestricted carrier; on `LadderState Bool pendT` it holds, because the only source the
+unrestricted statement had no successor for — an idle state with a positive countdown — is not
+admissible. A pending state counts down, a pending state at countdown `0` goes idle, an idle state
+stays idle, and the register is held in each case. -/
+theorem fwdT (t : ℤ) (x : LadderState Bool pendT) : ∃ y, RladAdm stepT pendT t x y := by
+  obtain ⟨⟨q, c, n⟩, hx⟩ := x
+  by_cases hq : q = true
+  · subst hq
+    match c with
+    | 0 =>
+        refine ⟨⟨(false, 0, n), fun _ => rfl⟩, rfl, ?_, Or.inl rfl, ?_⟩
+        · intro h; simp [pendT] at h
+        · simp [Count, pendT]
+    | k + 1 =>
+        refine ⟨⟨(true, k, n), ?_⟩, rfl, ?_, Or.inl rfl, ?_⟩
+        · intro h; simp [pendT] at h
+        · intro h; simp [pendT] at h
+        · simp [Count, pendT]
+  · have hq' : q = false := by simpa using hq
+    subst hq'
+    have hc : c = 0 := hx (by simp [pendT])
+    subst hc
+    exact ⟨⟨(false, 0, n), fun _ => rfl⟩, rfl, fun _ => rfl, Or.inl rfl, by simp [Count, pendT]⟩
+
+/-- **Backward seriality of the two-state ladder on the admissible carrier.** `no_bwd_of_idle`
+refutes this on the unrestricted carrier; on the admissible one a pending state is reached from
+the same object one count higher, and an idle state — whose countdown is `0` by admissibility —
+from an idle one. -/
+theorem bwdT (t : ℤ) (x : LadderState Bool pendT) : ∃ y, RladAdm stepT pendT (t - 1) y x := by
+  obtain ⟨⟨q, c, n⟩, hx⟩ := x
+  by_cases hq : q = true
+  · subst hq
+    refine ⟨⟨(true, c + 1, n), ?_⟩, rfl, ?_, Or.inl rfl, ?_⟩
+    · intro h; simp [pendT] at h
+    · intro h; simp [pendT] at h
+    · simp [Count, pendT]
+  · have hq' : q = false := by simpa using hq
+    subst hq'
+    have hc : c = 0 := hx (by simp [pendT])
+    subst hc
+    exact ⟨⟨(false, 0, n), fun _ => rfl⟩, rfl, fun _ => rfl, Or.inl rfl, by simp [Count, pendT]⟩
+
+/-- The all-true labelling of the two-state object. -/
+def labT : Bool → Atom → Bool := fun _ _ => true
+
+/-- **Under the all-true labelling every realized type of an atomic formula is position
+independent**, because the closure of an atom is the atom alone and the atom holds at every state.
+This is what makes the pump's type hypothesis free on the refutation witness: the hypothesis
+constrains the object walk through the closure, and at an atomic formula it constrains nothing. -/
+theorem tpOf_labT_atom_const
+    (σ : WorldHistory (ladderFrameAdm stepT pendT fwdT bwdT).toTaskFrame) (p : Atom) (z z' : ℤ) :
+    tpOf (ladderModel stepT pendT fwdT bwdT labT) (PlusFormula.atom p) σ z
+      = tpOf (ladderModel stepT pendT fwdT bwdT labT) (PlusFormula.atom p) σ z' := by
+  have key : ∀ (w : ℤ) (ψ : PlusFormula),
+      ψ ∈ plusSubformulaClosure (PlusFormula.atom p) →
+      PlusTruthAt (ladderModel stepT pendT fwdT bwdT labT) σ w ψ := by
+    intro w ψ hψ
+    have heq : ψ = PlusFormula.atom p := by
+      simpa [plusSubformulaClosure, PlusFormula.subformulas] using hψ
+    subst heq
+    exact rfl
+  ext ψ
+  simp only [mem_tpOf_iff]
+  exact ⟨fun h => ⟨h.1, key z' ψ h.1⟩, fun h => ⟨h.1, key z ψ h.1⟩⟩
+
+/-- **THE REGISTER CLAUSE OF THE ITERATED SPLICE IS REFUTED.** On the climbing-register path of
+`ClimbWitness`, with the block `[0, 3)` of its pending-forever past, EVERY hypothesis of
+`exists_iterSpliced_ladderPath_idx_of_pend_past` holds — the block is non-degenerate, fits inside
+the countdown at its start, lies in a uniformly pending past, is closed in the object, carries a
+history over the path, and has equal realized types at its two ends at an atomic formula whose
+closure contains no `stab` — and yet NO ladder path at all holds the original's register at the
+corresponding positions of copies `0` and `1`. The register at the interior of the window is
+therefore not a clause of this construction, at `d = 1` already; `nxtAt` climbs `0, 1, 2` across
+the block, so the step from the top of copy `0` to the bottom of copy `1` would have to carry the
+register from `2` to `0` in one position, which `Drift` forbids.
+
+This refutes the clause, not a proof route for it: the conclusion fails for every `g'`, so no
+choice of how the register is rebuilt can recover it. -/
+theorem iterSpliced_register_interior_refuted :
+    ∃ (g : ℤ → LadderState Bool pendT) (u : ℤ) (l : ℕ) (p : Atom)
+      (σ : WorldHistory (ladderFrameAdm stepT pendT fwdT bwdT).toTaskFrame),
+      IsLadderPath stepT pendT g ∧
+      (∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure (PlusFormula.atom p)) ∧
+      0 < l ∧ l ≤ cntAt g u ∧
+      (∀ r : ℤ, r ≤ u → pendT (objAt g r) = true) ∧
+      objAt g u = objAt g (u + (l : ℤ)) ∧
+      (∀ t : ℤ, σ.state t = (t, g t)) ∧
+      tpOf (ladderModel stepT pendT fwdT bwdT labT) (PlusFormula.atom p) σ u
+        = tpOf (ladderModel stepT pendT fwdT bwdT labT) (PlusFormula.atom p) σ (u + (l : ℤ)) ∧
+      ∀ g' : ℤ → LadderState Bool pendT, IsLadderPath stepT pendT g' →
+        ¬ ∀ i j : ℕ, i ≤ 1 → j < l →
+            nxtAt g' (u + ((i * l : ℕ) : ℤ) + (j : ℤ)) = nxtAt g (u + (j : ℤ)) := by
+  obtain ⟨σ, hσ⟩ := exists_hist_of_isLadderPath fwdT bwdT climb climb_isLadderPath
+  refine ⟨climb, 0, 3, Atom.freshBase, σ, climb_isLadderPath, ?_, by omega, ?_, ?_, ?_, hσ,
+    tpOf_labT_atom_const σ Atom.freshBase 0 (0 + (3 : ℕ)), ?_⟩
+  · intro χ hχ
+    simp [plusSubformulaClosure, PlusFormula.subformulas] at hχ
+  · simp [cntAt, climb, climbRaw]
+  · intro r hr
+    exact climb_pend_past r hr
+  · simp [objAt, climb, climbRaw]
+  · intro g' hg' hreg
+    have hd := iterSpliced_register_interior_forces_block_drift climb hg' 0 3 (by omega) hreg
+    simp [Drift, nxtAt, climb, climbRaw] at hd
+
+end RegisterRefutation
 
 end FormalSystem.Metalogic.Decidability.RaySummary

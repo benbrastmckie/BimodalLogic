@@ -4572,7 +4572,45 @@ Phase 11.20 owns the instantiation that ships.
 depth induction, a cell agreement, or a pump. Phase 11.19's two unexposed splice clauses are
 untouched and remain the other half of the recorded S-2 obligation's first gate.
 
-### Phase 11.19: The Two Unexposed Clauses of the Iterated Splice — Interior-Copy Countdown and Register [NOT STARTED]
+### Phase 11.19: The Two Unexposed Clauses of the Iterated Splice — Interior-Copy Countdown and Register [BLOCKED]
+
+**BLOCKER** (Phase 11.19):
+- **What failed**: the SECOND of the phase's two Goal clauses — the register clause
+  `nxtAt g' (u + i·l + j) = nxtAt g (u + j)` — is REFUTED, not merely unproved. The FIRST clause,
+  the interior-copy countdown, is LANDED and green.
+- **What was tried**: the register clause was read against the two primitives the phase names.
+  `exists_ladderPath_of_walk_nxt` (`LadderChain.lean:665`) exposes the register at the single
+  position `0`; `exists_ladderPath_of_walk_nxt_at` (`:694`) at the single parameter position `z`;
+  `exists_ladderPath_of_walk_of_pins` (`LadderAgree.lean:1318`) exposes none. All three build the
+  register through the McShane extension `drift_extension_of_pins` (`RunLayer.lean:388`) from the
+  NEW path's pins — `walkPin` pins at `0` and at each idle→pend region start only — so its value
+  at an interior window position is a `sInf` over pins that are the original's own, displaced by
+  `d · l`, and not the original's value. A block of a pending-forever past carries NO region start
+  at all (`hpast`), so the walk does not determine the register there either: `Count`'s only
+  register clause is `count_ft` (`c' = n`) at a region start.
+- **Why it's stuck**: the clause is false. `iterSpliced_register_interior_forces_block_drift`
+  (compiled, `LadderCell.lean`) derives from the clause at `i ≤ 1` alone that
+  `Drift (nxtAt g (u + (l − 1))) (nxtAt g u)` — the step from the top of copy `0` to the bottom of
+  copy `1` is one step of `g'` between those two values. `iterSpliced_register_interior_refuted`
+  (compiled) exhibits a ladder path on which that fails while EVERY hypothesis of
+  `exists_iterSpliced_ladderPath_idx_of_pend_past` holds: `0 < l`, `l ≤ cntAt g u`, the uniformly
+  pending past, the object-closed block, a history over the path, the realized-type equality at
+  the block's ends, and the stab-free closure condition. So no `g'` whatever satisfies the clause
+  there, for any choice of how the register is rebuilt.
+- **The downstream consequence, which is larger than this phase**: Phase 11.20's `~_d` carries
+  `n = n'`, and cases 3 and 4 of its membership lemma were to be discharged by exactly this
+  clause. The pump's own position pairs do NOT satisfy `n = n'`. The recorded S-2 obligation names
+  both clauses as required BEFORE any depth induction is attempted, so S-2 does not discharge its
+  own obligation as filed, and Phase 11.20 is NOT enterable.
+- **What is needed**: a ruling on the register coordinate — either a pigeonhole that samples the
+  register (so a block is register-closed, `nxtAt g u = nxtAt g (u + l)`, which is exactly what
+  makes the periodic extension `Drift`-compatible at the copy boundaries and is NOT available from
+  `exists_typeBlock_of_spacing`, whose samples are `(objAt, tpOf)` only), or an invariant whose
+  register conjunct is weaker than equality and still closes the transport. Returned as a blocking
+  `user_decision` on this dispatch.
+- **Prohibited workarounds**: do NOT use `sorry`, `axiom`, `def X := True`, or any vacuous
+  placeholder; do NOT state the register clause as a hypothesis of anything; do NOT enter
+  Phase 11.20 or Phase 11.6 on the argued clause.
 
 **THE RECORDED S-2 OBLIGATION NAMES THIS PHASE FIRST, JOINTLY WITH 11.18**, and both must land
 before any depth induction is attempted. It is independent of 11.18 and can run in parallel with
@@ -4601,26 +4639,39 @@ register-held wrapper `exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_pas
 landed theorem exposes no register at all.
 
 **Tasks**:
-- [ ] Name and state the two siblings — suggested
+- [x] Name and state the two siblings — suggested
       `exists_iterSpliced_ladderPath_idx_interior_of_pend_past` and
       `exists_ladderPath_through_iterSpliced_nxt_idx_interior_of_pend_past` — each carrying its
       parent's clauses PLUS its new one, so a consumer needs ONE call and not two. **Do not edit
       either parent**: a changed signature re-elaborates every consumer, and the pump spine has
-      several.
-- [ ] Prove the countdown clause by the same induction on `d` the parent uses, reading the
+      several. *(deviation: altered — only the first sibling is landed, carrying all four parent
+      clauses plus the interior countdown in one call; the second is NOT landed because its clause
+      is refuted, see the BLOCKER above. Neither parent was edited: `git diff` over this phase
+      shows no change to `LadderChain.lean`.)*
+- [x] Prove the countdown clause by the same induction on `d` the parent uses, reading the
       interior positions through `iterSpliceIdx_add_mul`. The pending countdown at a copy position
       is the original's at the retracted position plus the copies still above it, which is
-      `(d − i) · l`; `i = d` is the top copy and recovers the parent's own value.
+      `(d − i) · l`; `i = d` is the top copy and recovers the parent's own value. *(completed —
+      `exists_iterSpliced_ladderPath_idx_interior_of_pend_past`, profile
+      `[propext, Classical.choice, Quot.sound]`)*
 - [ ] Prove the register clause through `exists_ladderPath_of_walk_nxt` / `..._nxt_at`, the
       primitives the register-held wrapper already re-lifts the walk with. **Record whether the
       register is held at the interior because the walk determines it or because the re-lift pins
-      it** — the two have different reach, and Phase 11.20 needs to know which.
-- [ ] **Record, in the section docstring, what the two clauses do NOT say**: they are clauses of
+      it** — the two have different reach, and Phase 11.20 needs to know which. *(deviation:
+      skipped — the clause is REFUTED, see the BLOCKER above. The recorded answer to the phase's
+      own question is NEITHER: the walk constrains the register inside a pending-forever block
+      only through `Drift`, and the re-lift pins it at one position. Both halves of that answer
+      are stated in the section docstring.)*
+- [x] **Record, in the section docstring, what the two clauses do NOT say**: they are clauses of
       the pump's own construction and say nothing about any `⊡` bit, nothing about cell agreement,
       and nothing about `kappa`; and the interior positions they describe are exactly the ones at
       which the round-15 fixture shows a `⊡` bit CAN differ when the displacement is off-residue.
-- [ ] Wire the new declarations: axiom pins, docstring, generated inventory blocks, `status.typ`.
-      No `docs/theorem-index.md` row.
+      *(completed — recorded in the `## The iterated splice's two interior clauses` docstring and
+      in the module's own Contract paragraph)*
+- [x] Wire the new declarations: axiom pins, docstring, generated inventory blocks, `status.typ`.
+      No `docs/theorem-index.md` row. *(completed — three axiom pins in
+      `KTypeSummaryAxiomTest.lean`, the `LadderCell.lean` inventory row's prose, and the
+      regenerated counts; no `docs/theorem-index.md` row added)*
 
 **Prohibited workarounds**: do NOT edit `exists_iterSpliced_ladderPath_idx_of_pend_past`,
 `exists_ladderPath_through_iterSpliced_nxt_idx_of_pend_past`, `iterSpliceIdx` or any of its
@@ -4754,7 +4805,12 @@ reason this relation exists); and do NOT use `sorry`, `axiom` or a vacuous defin
 **Timing**: 2 hours
 
 **Depends on**: 11.18, 11.19 — **both are entry gates**, and this is the ordering the recorded S-2
-obligation imposes.
+obligation imposes. **WAITING, NOT ENTERABLE**: Phase 11.19 closed `[BLOCKED]` on its register
+clause, which is REFUTED (`iterSpliced_register_interior_refuted`). This phase's `~_d` carries
+`n = n'` and its cases 3 and 4 were to be discharged by exactly that clause, so the relation as
+pinned above is not what the pump's own position pairs satisfy. The phase's own prohibition — "do
+NOT prove any case of the membership lemma from an ARGUED clause of the pump" — bars entry until
+the register coordinate is ruled on.
 
 **Verification Tier**: interface
 
