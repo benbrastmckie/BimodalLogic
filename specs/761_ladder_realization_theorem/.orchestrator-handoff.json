@@ -1,40 +1,25 @@
 {
-  "task_number": 761,
-  "phase": "implement",
   "status": "partial",
-  "dispatch_seq": 50,
-  "session_id": "sess_1794772483_c2ea25",
-  "phases_completed": 33,
-  "phases_total": 48,
-  "summary": "Phase 11.23 (the one bounded (P-1) measurement round) closed [COMPLETED] on outcome (ii). LEG 1: stab_gapR_iff computes the stab bit at any pending state as c+1<n; the gap reading is consumed at both measurement points, the clipped register is refuted at every countdown c >= Tn-1. LEG 2: the exact-gap conjunct is refuted on ProbeB1.ramp (gap_conjunct_refuted_on_ramp, wired evidence probe), so the kill criterion fires: the path-level route is closed, Phase 11.24 is not entered, and the task needs a /revise onto (P-2). Full build green, 0 sorries, axioms unchanged at 14.",
-  "blockers": [
-    "Kill criterion fired (outcome ii): the gap-shaped register conjunct is REFUTED on ProbeB1.ramp. Phases 11.24, 11.22, 11.6, 11.21 and 11.7 are not entered; no enterable phase remains in plan 19.",
-    "Next routing: /revise 761 onto route (P-2), certificate-side register bridging. An implement dispatch cannot advance until a plan phase exists for that route.",
-    "Not measured, for the reviser to weigh: the refutation is of the EXACT signed gap. A gap clipped to a window (kappa's clipIdx coordinate) would also be consumed by the measured bit and its producer side is untested; plan 19 classes it as a weakened conjunct outside the (P-1) ruling, so it was neither landed nor refuted."
-  ],
+  "dispatch_seq": 53,
+  "phases_completed": 37,
+  "phases_total": 51,
+  "summary": "Phase 11.25 — the one bounded design round route (P-2) is entered through, and a decision gate — was executed and closed [COMPLETED] with outcome (iii): the cell-side obligation is NAMED and the class-representative transport is OPEN. Eight declarations landed in LadderRealize.lean (642 -> 926 lines), reducing certStabK of Real to a single written-out cell-side hypothesis, discharging its backward direction UNCONDITIONALLY with no cell transfer, and exhibiting register-displaced kappa-collisions inside the forward direction's domain at a fixed countdown. Route (P-2) is NOT closed — outcome (ii) was not reached — so Phases 11.26 and 11.27 are enterable, 11.26 on its branch OPEN, and no /revise is owed by this gate. Full lake build exit 0 with 0 errors and 0 warnings, sorry_count 0, axiom count 14 unchanged, evidence gate 63 wired PASS unchanged.",
+  "blockers": [],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/19_pending-state-measurement-kill-criterion-summary.md",
-      "summary": "Phase 11.23 closed on outcome (ii): gap reading landed on the consumer side, refuted on ProbeB1.ramp on the producer side; path-level route closed; /revise onto (P-2) owed."
+      "path": "specs/761_ladder_realization_theorem/summaries/20_certificate-side-register-bridging-summary.md",
+      "summary": "Phase 11.25's record: the two legs, the per-direction pair-set reading, the scope reading, the OPEN transport verdict, and the full verification block."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.25-handoff-20261115T214500Z.md",
+      "summary": "Phase-end handoff: immediate next action is Phase 11.26 on branch OPEN; no second design round is bought."
+    },
+    {
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/20_certificate-side-register-bridging.md",
+      "summary": "Plan of record; Phase 11.25 marked [COMPLETED] with its #### Recorded Outcome block."
     }
-  ],
-  "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "docs/theorem-index.md",
-    "scripts/check-evidence-probes.sh",
-    "specs/evidence/seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity.lean",
-    "typst/generated/status.typ",
-    "specs/761_ladder_realization_theorem/issues.jsonl",
-    "specs/761_ladder_realization_theorem/plans/19_pending-state-gap-register-measurement.md",
-    "specs/761_ladder_realization_theorem/summaries/19_pending-state-measurement-kill-criterion-summary.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.23-handoff-20261115T202150Z.md"
-  ],
-  "next_action": "/revise 761 onto route (P-2), certificate-side register bridging, with Phase 11.23's Recorded Outcome and the clipped-gap observation as inputs. Do not re-dispatch implement against plan 19.",
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.23-handoff-20261115T202150Z.md",
-  "continuation_context": "Phase 11.23 closed on kill-criterion outcome (ii); no enterable phase remains in plan 19. Resume only after /revise 761 onto route (P-2)."
+  ]
 }
