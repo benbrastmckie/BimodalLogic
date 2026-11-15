@@ -1,21 +1,59 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
+  "requires_user_review": false,
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/16_depth-stratified-threshold-margins-summary.md",
+      "summary": "Phase 11.18: the (K2) depth-stratified margin conjunct, Tcof through Pof, paramsOk_params re-proved, the inflation lemma restated with an unconditional sibling, and the two compiled room lemmas."
+    },
     {
       "type": "plan",
       "path": "specs/761_ladder_realization_theorem/plans/15_depth-stratified-threshold-margins.md",
-      "summary": "Revised plan on route S-2 (depth-stratified threshold margins), integrating the round-15 stab-bit copy-pair decision report"
+      "summary": "Plan v15 with Phase 11.18 closed [COMPLETED] and its Completion Record."
     }
   ],
-  "next_steps": "Run /orchestrate 761 to execute the revised plan; Phase 11.18 (the parameter margin) is the one enterable phase, and Phase 11.19 is enterable in parallel with it.",
+  "completion_data": {
+    "completion_summary": "Phase 11.18 of plan v15 landed: the (K2) parameter condition now carries the pinned depth-stratified margin conjunct coupling Tc to the modulus and to the closure's stab-depth sup, Tcof reads it through Pof, paramsOk_params is re-proved green at the raised Tcof with its filed signature unchanged, paramsOk_inflate is restated with an explicit room premise beside a new unconditional paramsOk_inflate_raise, and the two room lemmas budget_mul_spacing_le_Tc and margin_room_at_depth are compiled. The task remains partial with 12 phases NOT STARTED and 2 BLOCKED.",
+    "roadmap_items": []
+  },
+  "partial_progress": {
+    "stage": "phase_11.18_completed",
+    "details": "Phase 11.18 [COMPLETED] with one annotated deviation (stabDepth relocated from LadderAgree.lean into CounterQuotient.lean as an import-direction prerequisite the plan did not anticipate). Phase 11.19 is next and enterable; it is the other half of the recorded S-2 obligation's first gate. Phases 11.20, 11.21 and 11.6 follow in that order.",
+    "phases_completed": 31,
+    "phases_total": 45
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "typst/generated/status.typ",
+    "specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean",
+    "specs/761_ladder_realization_theorem/plans/15_depth-stratified-threshold-margins.md",
+    "specs/761_ladder_realization_theorem/summaries/16_depth-stratified-threshold-margins-summary.md",
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.18-handoff-20261114-203711.md",
+    "specs/761_ladder_realization_theorem/.orchestrator-handoff.json",
+    "specs/761_ladder_realization_theorem/.return-meta.json",
+    "specs/761_ladder_realization_theorem/issues.jsonl"
+  ],
   "metadata": {
-    "session_id": "sess_1794699385_4f7c40_761",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "dispatch_seq": 41,
-    "phase_count": 45,
-    "phases_closed": 30,
-    "estimated_hours": 48,
-    "reports_integrated": ["15_stab-bit-copy-pair-decision.md"]
+    "session_id": "sess_1794715258_f96bc3",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "task_dir": "specs/761_ladder_realization_theorem",
+    "dispatch_seq": 42,
+    "compliance_check": "passed",
+    "phase_completed": "11.18"
   }
 }

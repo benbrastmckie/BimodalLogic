@@ -1,16 +1,25 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 41,
-  "summary": "Revised task 761's plan onto route S-2 (depth-stratified threshold margins), integrating reports/15_stab-bit-copy-pair-decision.md. Four phases added (11.18 the (K2) margin conjunct with Tcof through Pof and the compiled room lemma; 11.19 the two clauses the iterated splice does not expose; 11.20 the ~_d relation, the s := P+1 instantiation and pump-pair membership; 11.21 the register-displaced reduction), Phase 11.6 re-decomposed onto the ~_d invariant and relocated from LadderAgree.lean to LadderCell.lean because finding 9 puts the pump spine out of its import reach, and the standing 'no raised Tc / no ParamsOk strengthening' prohibition lifted scoped to Phase 11.18 alone. All 30 closed phase bodies carried forward verbatim; the six-identifier Lean Challenge Statements block is byte-identical.",
+  "status": "partial",
+  "dispatch_seq": 42,
+  "phases_completed": 31,
+  "phases_total": 45,
+  "summary": "Executed Phase 11.18 of plan v15, the one enterable phase and the phase that spends route S-2's price: (K2) gains the pinned depth-stratified margin conjunct b*(P+1)*(D+1) <= Tc with a new P binder, Tcof is redefined as a max through Pof, paramsOk_params is re-proved green at the raised Tcof with its filed signature unchanged token-for-token, paramsOk_inflate is restated with an explicit room premise beside a new unconditional paramsOk_inflate_raise, and both room lemmas (budget_mul_spacing_le_Tc, margin_room_at_depth) are landed. Full lake build and lake build BimodalTest are 0 errors / 0 warnings, sorry_count 0, axiom count unchanged at 14, and every gate (evidence probes, module invariants, typst sync, readme lint, task refs) exits 0. The task stays partial: 12 phases remain NOT STARTED and 2 BLOCKED, with Phase 11.19 the next enterable step and the other half of the recorded S-2 obligation's first gate.",
+  "blockers": [],
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/16_depth-stratified-threshold-margins-summary.md",
+      "summary": "Phase 11.18 implementation summary: the (K2) depth-stratified margin conjunct, Tcof through Pof, the re-proved discharge lemma, the restated inflation lemma with its unconditional sibling, and the two compiled room lemmas."
+    },
     {
       "type": "plan",
       "path": "specs/761_ladder_realization_theorem/plans/15_depth-stratified-threshold-margins.md",
-      "summary": "Route-S-2 plan: 45 phases, 30 closed, 15 open, 48 hours costable (30.5 landed / 17.5 open); Phase 11.18 is the one enterable phase"
+      "summary": "Plan v15 with Phase 11.18 closed [COMPLETED] and its Completion Record, including the written-out compiled instantiation of the room lemma into exists_typeBlock_of_spacing at s := P + 1."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.18-handoff-20261114-203711.md",
+      "summary": "Phase-end handoff: next action is Phase 11.19, with the stabDepth relocation and the forced Tc_0 = 0 base recorded as the phase's two load-bearing decisions."
     }
-  ],
-  "phases_completed": 30,
-  "phases_total": 45,
-  "blockers": []
+  ]
 }
