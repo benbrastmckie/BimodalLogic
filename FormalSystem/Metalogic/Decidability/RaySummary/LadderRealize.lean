@@ -1093,6 +1093,224 @@ theorem cellAt_subset_of_register_raise [Fintype Q]
       exact hnxt
   · rw [hty τ τ' hτ hτ', hTy]
 
+/-! ### Phase 11.27: the composition over the COVERED collisions, and what it buys
+
+**THE COVERED COLLISION SET, READ OFF PHASE 11.26'S RECORDED OUTCOME AND STATED BEFORE ANY PROOF
+IS ATTEMPTED.** Phase 11.26 closed on branch OPEN with a transport over a NARROWED regime. The
+collisions it covers are exactly these, and this section quantifies over no others:
+
+* the DOWNWARD-saturated register-displaced pairs `(c, n)`, `(c, n')` at a HELD countdown, with
+  `Tn ≤ n'`, `n' ≤ n`, `n ≡ n' [MOD P + 1]` and `n + B ≤ c` — the family
+  `kappa_eq_register_raise_down` exhibits as `kappa`-collisions;
+* at the DIAGONAL world state `(z, ⟨(q, c, n), hq⟩)` evaluated at `z`, never at a general time
+  component — the third gap Phase 11.26 recorded rather than closed;
+* at a STAB-FREE closure `φ`, because both register-moving deletions carry
+  `hno : ∀ χ, PlusFormula.stab χ ∉ plusSubformulaClosure φ`;
+* under the per-path regime each direction's tool asks of the paths through its own source state.
+
+**Register-displaced collisions in the UPWARD-saturated family are NOT covered**, by
+`raise_room_excludes_upward_displacement`, and `ClassRepTransport` itself remains OPEN.
+
+**WHICH HYPOTHESIS OF THE REDUCTION THE TRANSPORT DISCHARGES, AND WHICH IT LEAVES STANDING — the
+table Phase 11.7 inherits.** `real_certStabK_of_cell_stab_transfer` carries ONE hypothesis,
+`hcell`, universally quantified over `q`, `c`, `n`, `c'`, `n'`, `t`, `t'`, `z`, `z'` with
+`kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')`.
+
+| Coordinate of `hcell`'s domain | Discharged by the transport? |
+|---|---|
+| the register, downward-saturated, countdown held | **YES**, both orientations (see below) |
+| the register, upward-saturated (`c + B ≤ n`) | NO — `raise_room_excludes_upward_displacement` |
+| the countdown (`c ≠ c'`) | NO — no tool here moves a countdown while holding a class |
+| the time components (`t`, `t'`, `z`, `z'` general) | NO — the diagonal gap, not landed |
+| closures carrying a `⊡` letter | NO — the stab-free premise of both deletions |
+| paths through the source state outside the regime | NO — `hreg` is an explicit binder |
+
+The YES row is `cell_stab_transfer_of_register_displacement`, in both orientations.
+
+**WHAT THE COMPOSITION BUYS, STATED LOUDLY BECAUSE IT IS THE PHASE'S RESULT.** Over the covered
+collisions the composition's `certStabK` conclusion DOES hold — and the transport is NOT
+load-bearing in it. The covered regime's own defining premise, stab-freeness, already gives
+`certStabK φ Tc Tn P B (Real …)` outright through `certStabK_of_stabFree`, with no transport, no
+cell agreement and no parameter condition: `real_certStabK_of_stabFree` is that conclusion at
+`Real`, and its proof consumes nothing from this section. So route (P-2)'s composition closes on
+the covered set and closes VACUOUSLY there. This is recorded as the measurement it is; it is not
+a discharge of condition (5) at any closure carrying a `⊡` letter, and nothing downstream may
+read it as one.
+
+**WHAT THIS SECTION DOES NOT SAY.** It does not land `cellAt_const_of_kappa_eq`, which is Phase
+11.7's at its filed signature and is NOT landed here under any name. It is not the factorization
+lemma. It claims `ClassRepTransport` neither proved nor refuted. It defines no relation on
+position pairs and carries no register conjunct on one, the clipped gap included (Ruling 1). It
+claims neither `real_certAdmK_of_paramsOk`, nor `real_subset_dmax`, nor `Dmax ⊆ Real`. It does not
+derive anything from `ladderSound`, `ladderLift`, `ladderCons_localRun` or any (S)/(C') statement
+— the circularity that would close a cycle through Phases 13, 15.1 and 11.7. It takes no new
+parameter ruling: `Tc` is not raised, `Tc_d` is not re-based and `ParamsOk` is not strengthened. -/
+
+/-- **THE REGISTER LOWER AT A HELD COUNTDOWN.** The exact-shift LOWERED deletion at `m = 0`, the
+mirror of `exists_ladderPath_register_raised_at_held_countdown`: nothing is deleted, so the
+countdown at `z` is held, the object state and the realized stab-free type at `z` are held, and
+the register is delivered at the prescribed value `n₀ ≤ nxtAt g z`. Its room conditions are the
+tool's own with `m = 0` substituted: the lowering budget `n₀ + k = nxtAt g z`, the threshold
+`Tc ≤ cntAt g z`, the gap `nxtAt g z + k ≤ cntAt g z`, and the regime
+`HasForwardSlack g z k (nxtAt g z)` — at amount `k`, the `k` of the lowering, and not at `0`:
+lowering an anchor is paid for in the upper direction of the single anchor inequality where
+raising it is free. -/
+theorem exists_ladderPath_register_lowered_at_held_countdown [Fintype Q]
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ)
+    (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
+    (n₀ k : ℕ) (hk : n₀ + k = nxtAt g z)
+    (hTc : Tc ≤ cntAt g z) (hgap : nxtAt g z + k ≤ cntAt g z)
+    (hslack : HasForwardSlack g z k (nxtAt g z)) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' z = objAt g z ∧ cntAt g' z = cntAt g z ∧ nxtAt g' z = n₀ ∧
+      ∀ (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+        (∀ t : ℤ, σ.state t = (t, g t)) →
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+  have hz : (0 : ℕ) * (P + 1) = 0 := Nat.zero_mul _
+  obtain ⟨g', hg', hobj, hcnt, hnxt, hty⟩ :=
+    exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past step pend fwd bwd lab φ
+      Tc Tn P B hp hno g hg z hpast 0 n₀ k hk (by rw [hz]; omega) (by rw [hz]; omega)
+      (by rw [hz, Nat.zero_add]; exact hslack)
+  exact ⟨g', hg', hobj, by rw [hz] at hcnt; omega, hnxt, hty⟩
+
+/-- **THE TRANSPORT'S REVERSE INCLUSION, OVER THE SAME COVERED REGIME.** The mirror of
+`cellAt_subset_of_register_raise`, from the HIGHER register to the LOWER one, carried by the
+lowered exact-shift deletion at `m = 0`. Its extra room over the raise's is exactly the lowering
+budget: `hroom : n + (n - n') ≤ c`, carried as an explicit named binder rather than derived from
+`hgap`, because `n - n' ≤ B` is not implied by anything in the covered family's definition. The
+regime is at amount `n - n'` and is asked of the paths through the SOURCE state `(q, c, n)`,
+which is the other state from the one the raise constrains. -/
+theorem cellAt_subset_of_register_lower [Fintype Q]
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n n' : ℕ) (hq : c ∈ Adm pend q) (z : ℤ)
+    (hle : n' ≤ n) (hTc : Tc ≤ c) (hroom : n + (n - n') ≤ c)
+    (hreg : ∀ g : ℤ → LadderState Q pend, IsLadderPath step pend g →
+      g z = (⟨(q, c, n), hq⟩ : LadderState Q pend) →
+      (∀ p : ℤ, p ≤ z → pend (objAt g p) = true) ∧ HasForwardSlack g z (n - n') n) :
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z ⊆
+      cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n'), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  intro T hT
+  obtain ⟨g, τ, hg, hgz, hτ, hTy⟩ :=
+    (mem_cellAt_ladder_iff fwd bwd lab φ (⟨(q, c, n), hq⟩ : LadderState Q pend) z T).mp hT
+  obtain ⟨hpast, hslack⟩ := hreg g hg hgz
+  have hobjz : objAt g z = q := by rw [objAt, hgz]
+  have hcntz : cntAt g z = c := by rw [cntAt, hgz]
+  have hnxtz : nxtAt g z = n := by rw [nxtAt, hgz]
+  obtain ⟨g', hg', hobj, hcnt, hnxt, hty⟩ :=
+    exists_ladderPath_register_lowered_at_held_countdown fwd bwd lab φ Tc Tn P B hp hno g hg z
+      hpast n' (n - n') (by omega) (by omega) (by omega) (by rw [hnxtz]; exact hslack)
+  obtain ⟨τ', hτ'⟩ := exists_hist_of_isLadderPath fwd bwd g' hg'
+  refine (mem_cellAt_ladder_iff fwd bwd lab φ (⟨(q, c, n'), hq⟩ : LadderState Q pend) z T).mpr
+    ⟨g', τ', hg', ?_, hτ', ?_⟩
+  · apply Subtype.ext
+    refine Prod.ext (show objAt g' z = q from hobj.trans hobjz) (Prod.ext ?_ ?_)
+    · change cntAt g' z = c
+      omega
+    · change nxtAt g' z = n'
+      exact hnxt
+  · rw [hty τ τ' hτ hτ', hTy]
+
+/-- **THE CELL-LEVEL AGREEMENT OVER THE COVERED COLLISIONS.** Both inclusions of the covered
+regime together: the cells of two class-equal ladder states differing in the REGISTER alone, at
+the diagonal world state, are EQUAL. This is an agreement over the COVERED set and is NOT the
+filed statement `cellAt_const_of_kappa_eq`, which quantifies over every `kappa`-collision at every
+time component and at every closure; it is landed here under its own name precisely so that the
+difference is visible. Every restriction is an explicit named binder: the downward-saturated
+collision conditions (`hTn`, `hle`, `hres`, `hgap`), the threshold `hTc` and the clip `hB`, the
+lowering room `hroom`, the stab-free closure `hno`, and the two per-path regimes — one asked of
+the paths through each of the two states, because the two directions are carried by different
+tools through different source states. -/
+theorem cellAt_eq_of_register_displacement [Fintype Q]
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n n' : ℕ) (hq : c ∈ Adm pend q) (z : ℤ)
+    (hTn : Tn ≤ n') (hle : n' ≤ n) (hres : n % (P + 1) = n' % (P + 1))
+    (hgap : n + B ≤ c) (hTc : Tc ≤ c) (hB : 2 ≤ B) (hroom : n + (n - n') ≤ c)
+    (hregLo : ∀ g : ℤ → LadderState Q pend, IsLadderPath step pend g →
+      g z = (⟨(q, c, n'), hq⟩ : LadderState Q pend) →
+      (∀ p : ℤ, p ≤ z → pend (objAt g p) = true) ∧ HasForwardSlack g z 0 n')
+    (hregHi : ∀ g : ℤ → LadderState Q pend, IsLadderPath step pend g →
+      g z = (⟨(q, c, n), hq⟩ : LadderState Q pend) →
+      (∀ p : ℤ, p ≤ z → pend (objAt g p) = true) ∧ HasForwardSlack g z (n - n') n) :
+    kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c, n') ∧
+      cellAt (ladderModel step pend fwd bwd lab) φ
+          ((z, ⟨(q, c, n), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z =
+        cellAt (ladderModel step pend fwd bwd lab) φ
+          ((z, ⟨(q, c, n'), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  refine ⟨kappa_eq_register_raise_down Tc Tn P B c n n' hTn hle hres hgap, ?_⟩
+  refine Set.Subset.antisymm
+    (cellAt_subset_of_register_lower fwd bwd lab φ Tc Tn P B hp hno q c n n' hq z hle hTc hroom
+      hregHi) ?_
+  exact (cellAt_subset_of_register_raise fwd bwd lab φ Tc Tn P B hp hno q c n n' hq z hTn hle
+    hres hgap hTc hB hregLo).2
+
+/-- **THE REDUCTION'S HYPOTHESIS, DISCHARGED ON THE COVERED COLLISIONS AND IN BOTH ORIENTATIONS.**
+`real_certStabK_of_cell_stab_transfer`'s `hcell` binder, instantiated at the covered family: a
+formula lying in every closure type of one cell lies in every closure type of the other, at the
+diagonal world state and in either orientation. It is the agreement above read in the shape the
+certificate side consumes, and it is the compiled form of this section's table — the row that
+says YES. Every other row of that table is a coordinate on which `hcell` is left STANDING, which
+is why no `certStabK` conclusion is drawn from this declaration anywhere below. -/
+theorem cell_stab_transfer_of_register_displacement [Fintype Q]
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n n' : ℕ) (hq : c ∈ Adm pend q) (z : ℤ)
+    (hTn : Tn ≤ n') (hle : n' ≤ n) (hres : n % (P + 1) = n' % (P + 1))
+    (hgap : n + B ≤ c) (hTc : Tc ≤ c) (hB : 2 ≤ B) (hroom : n + (n - n') ≤ c)
+    (hregLo : ∀ g : ℤ → LadderState Q pend, IsLadderPath step pend g →
+      g z = (⟨(q, c, n'), hq⟩ : LadderState Q pend) →
+      (∀ p : ℤ, p ≤ z → pend (objAt g p) = true) ∧ HasForwardSlack g z 0 n')
+    (hregHi : ∀ g : ℤ → LadderState Q pend, IsLadderPath step pend g →
+      g z = (⟨(q, c, n), hq⟩ : LadderState Q pend) →
+      (∀ p : ℤ, p ≤ z → pend (objAt g p) = true) ∧ HasForwardSlack g z (n - n') n)
+    (χ : PlusFormula) :
+    ((∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z, χ ∈ T) →
+      (∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n'), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z, χ ∈ T)) ∧
+    ((∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n'), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z, χ ∈ T) →
+      (∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z, χ ∈ T)) := by
+  have hcell := (cellAt_eq_of_register_displacement fwd bwd lab φ Tc Tn P B hp hno q c n n' hq z
+    hTn hle hres hgap hTc hB hroom hregLo hregHi).2
+  exact ⟨fun H T hT => H T (hcell ▸ hT), fun H T hT => H T (hcell ▸ hT)⟩
+
+/-- **THE COMPOSITION'S `certStabK` PRODUCT OVER THE COVERED REGIME — AND IT IS VACUOUS THERE.**
+Condition (5) of `Real` at a stab-free closure. This IS what route (P-2)'s composition delivers on
+the collisions Phase 11.26's transport covers, because the covered regime is confined to stab-free
+closures by the register-moving deletions' own premise — and its proof consumes NOTHING from the
+transport, the agreement above, or `real_certStabK_of_cell_stab_transfer`: `certStabK_of_stabFree`
+alone gives it, for `Real` and for every other set. The restriction is the explicit named binder
+`hno`, and it is recorded here rather than left implicit because it is the phase's finding: the
+composition closes on the covered set and closes vacuously there. It is NOT a discharge of
+condition (5) at any closure carrying a `⊡` letter. -/
+theorem real_certStabK_of_stabFree (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ) :
+    certStabK φ Tc Tn P B (Real step pend lab φ Tc Tn P B fwd bwd) :=
+  certStabK_of_stabFree φ Tc Tn P B hno _
+
 end CertificateBridge
 
 end FormalSystem.Metalogic.Decidability.RaySummary

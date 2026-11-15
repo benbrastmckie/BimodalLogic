@@ -3,8 +3,8 @@
 - **Task**: 761 - Ladder realization theorem: `LadderCons` and `ladderRealized` per ladder cell for all φ including box/stab letters
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-11-15T20:25:17Z
-- **Completed**: 2026-11-15T22:40:00Z
-- **Effort**: ~2 hours (Phase 11.25, the bounded design round) + ~1 hour (Phase 11.26, NOT COSTABLE as filed)
+- **Completed**: 2026-11-15T23:55:00Z
+- **Effort**: ~2 hours (Phase 11.25, the bounded design round) + ~1 hour (Phase 11.26, NOT COSTABLE as filed) + ~1 hour (Phase 11.27, NOT COSTABLE as filed)
 - **Dependencies**: 760, 775, 805, 806, 819, 820, 934 — all discharged or terminal
 - **Artifacts**: plans/20_certificate-side-register-bridging.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -26,6 +26,17 @@ transport on its own ground. Five further declarations landed in the same module
 downward-saturated register-displaced collisions — together with two compiled objects naming the
 two coordinates that refuse the rest, and a third gap recorded rather than closed.
 `ClassRepTransport` remains OPEN exactly as Phase 11.25 left it.
+
+Phase 11.27 then composed the two. Five further declarations landed in the same module. The
+covered collision set was stated before any proof was attempted, the reduction's one hypothesis
+was discharged on it **in both orientations**, and the composition's `certStabK` product over the
+covered regime was landed as the restricted form with its restriction an explicit named binder.
+**The phase's result is what that restriction is worth**: the covered regime is confined to
+stab-free closures by both register-moving deletions' own premise, and at a stab-free closure
+`certStabK_of_stabFree` already gives condition (5) outright, so the composition closes on the
+covered set and closes VACUOUSLY there — the transport is not load-bearing in it. The genuine
+gain of the phase is on the cell side: the reverse inclusion landed too, so what the covered
+family carries is a real cell-level **AGREEMENT**, an equality and not merely an inclusion.
 
 ## What Changed
 
@@ -96,6 +107,37 @@ for what those rounds were trying to deliver, but it asks for half as much of it
   coordinates that refuse the rest.
 - `typst/generated/status.typ` — regenerated line counts.
 
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` — 1,098 → 1,316 lines.
+  Phase 11.27's five new declarations and its section docstring, which states the covered
+  collision set, the discharged/left-standing table, and what the composition buys:
+  - `exists_ladderPath_register_lowered_at_held_countdown` — the LOWERED exact-shift deletion at
+    `m = 0`, the mirror of Phase 11.26's raise instance. Countdown held, object state and realized
+    stab-free type held, register delivered at the prescribed `n₀ ≤ nxtAt g z`; its regime is at
+    amount `k` (the `k` of the lowering) rather than at `0`, because lowering an anchor is paid
+    for in the upper direction of the single anchor inequality where raising it is free.
+  - `cellAt_subset_of_register_lower` — the reverse cell inclusion it yields, with its one extra
+    room condition `hroom : n + (n - n') ≤ c` an explicit named binder, since nothing in the
+    covered family implies `n - n' ≤ B`.
+  - `cellAt_eq_of_register_displacement` — **the cell-level AGREEMENT over the covered set**: an
+    EQUALITY of the cells of two class-equal ladder states differing in the REGISTER alone, by
+    `Set.Subset.antisymm` on the raise and the lower, with two per-path regimes (one through each
+    state, because the two directions are carried by different tools through different source
+    states). Its docstring records that it is an agreement over the COVERED set and is NOT the
+    filed `cellAt_const_of_kappa_eq`.
+  - `cell_stab_transfer_of_register_displacement` — that agreement read in the shape
+    `real_certStabK_of_cell_stab_transfer`'s `hcell` binder consumes, in BOTH orientations; the
+    compiled form of the phase's table.
+  - `real_certStabK_of_stabFree` — **the composition's `certStabK` product over the covered
+    regime**: condition (5) of `Real` at a stab-free closure. Its proof consumes nothing from the
+    transport, the agreement, or the reduction.
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` — 3,354 → 3,405 lines; five new
+  `#guard_msgs`-pinned `#print axioms` entries and their section docstring. In-source `longFile`
+  baseline raised ONE chunk, 3,400 → 3,500, that file's own documented convention.
+- `FormalSystem/Metalogic/Decidability/RaySummary/README.md` — the generated inventory blocks
+  (line counts) plus a paragraph recording, in terms, what is covered and what is not, and that
+  the composition closes vacuously on the covered set.
+- `typst/generated/status.typ` — regenerated line counts and stamp commit.
+
 ## Decisions
 
 - **The LEG A hypothesis is written out inline in every theorem that takes it**, rather than
@@ -124,9 +166,22 @@ for what those rounds were trying to deliver, but it asks for half as much of it
   alone. Deleting them would have left a statement not visibly about class-equal states; carrying
   the collision as the conclusion's first conjunct makes every binder load-bearing and records the
   finding that the surgery never consults the class.
-- **Phase 11.27 was left `[NOT STARTED]`**, not entered. The collisions it is scoped to are now a
-  named compiled family, but the two refusals mean they are covered only at a stab-free closure,
-  where `certStabK_of_stabFree` already gives the conclusion outright.
+- **Phase 11.27 WAS entered**, against exactly that measurement, as its entry condition permits
+  (Phase 11.26 landed the transport over a named sub-regime). What it could buy was known in
+  advance to be bounded by the stab-free confinement; it was entered to land the agreement and to
+  record the covered set precisely, which is what Phases 11.7 and 12.2 need in order to quantify
+  over what is actually covered.
+- **The restricted form was landed, not the unconditional one.** The covered set is not the whole
+  of what `certStabK` quantifies over, so `certStabK … Real` was landed under the explicit named
+  binder `hno` — and the phase records, rather than hides, that this binder is strong enough to
+  make the conclusion free.
+- **The agreement is an EQUALITY, not the one-directional inclusion Phase 11.26 left.** The
+  lowered exact-shift deletion at `m = 0` supplies the reverse direction, so
+  `cellAt_eq_of_register_displacement` is a genuine cell agreement over the covered family. This
+  is the phase's substantive gain and is the reason five declarations landed where the Scope
+  Hypothesis estimated two.
+- **No `docs/theorem-index.md` row was added.** The filed Goal lands in Phase 11.7, which owes the
+  C14 pin; nothing filed landed here.
 
 ## Plan Deviations
 
@@ -183,6 +238,44 @@ for what those rounds were trying to deliver, but it asks for half as much of it
   `check-evidence-probes.sh` (**63 wired, unchanged** — no probe authored) and
   `check-task-references.sh --quiet` each exit 0.
 
+### Phase 11.27 verification (the composition over the covered collisions)
+
+- Build: Success. Module-scoped `FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize`
+  exit 0 with **0 errors and 0 warnings**; `BimodalTest.Metalogic.KTypeSummaryAxiomTest` exit 0
+  with **0 errors, 0 warnings** and all five new `#guard_msgs` pins green; **full unscoped
+  `lake build` exit 0, 0 errors, 0 warnings, 2,975 jobs**, with both touched modules' `.olean`
+  newer than their sources.
+- Sorry count: **0** (`lean-sorry-census.sh` over the resolved source roots, exit 0). Vacuous
+  grep: repository-wide **1-hit baseline, unchanged**; **0** in `LadderRealize.lean`. `^axiom `
+  grep-match count **14, unchanged**.
+- `#print axioms` on each of the five new declarations is `[propext, Classical.choice, Quot.sound]`
+  — a subset of the permitted set. No `sorryAx`, no custom axiom, no `native_decide`.
+- The phase body states the covered collision set, read off Phase 11.26's recorded outcome, and
+  the module's own section docstring states it before the first declaration of the phase.
+- Circularity grep (`ladderSound|ladderLift|ladderCons_localRun`) over this phase's own additions:
+  **one docstring-prose hit** (the sentence recording that nothing is derived from them) and
+  nothing in any proof term. Filed/reserved-name grep
+  (`theorem (cellAt_const_of_kappa_eq|ladderSound|ladderCons_localRun|ladderLift|ladderRealized|cellLE_zero_const_of_kappa_eq)`)
+  over the module: **nothing**. Three-claims grep: one docstring-prose hit recording that they are
+  NOT claimed. Position-pair grep (`iterSpliceIdx|nxtAt … = nxtAt …|min (nxtAt …)`): **nothing**.
+- Hypothesis non-redundancy, in mechanical form: the module builds with **0 warnings**, so Lean's
+  unused-variable linter flags no binder of any of the five declarations — the same check Phase
+  11.26 used in place of a separate `lean_minimal_hypotheses` call. `real_certStabK_of_stabFree`
+  is the one declaration whose route is deliberately NOT through the transport, and that is
+  recorded in its docstring rather than concealed.
+- No probe cited as a library fact; `grep -n '^import'` on `LadderRealize.lean` still names
+  `CounterQuotient` and `LadderChain` alone — **no `LadderWindow` edge, no path under `specs/`**.
+- `check-module-invariants.sh`, `typst-sync-check.sh`, `readme-lint.sh`,
+  `check-evidence-probes.sh` (**63 wired, PASS, unchanged** — no probe authored) and
+  `check-task-references.sh --quiet` each exit 0.
+- Figures re-measured rather than carried: `LadderRealize.lean` **1,098 → 1,316** (no in-source
+  `longFile` baseline; package-wide limit 1,500), `KTypeSummaryAxiomTest.lean` **3,354 → 3,405**
+  with its in-source baseline raised one chunk **3,400 → 3,500**.
+- Plan-revision sentinel: `.plan-revised.json` carries `revised_at: 1794776400`, EARLIER than this
+  dispatch's `dispatch_start_ts: 1794779733` — no fresh hit, so Phase 11.27's section was executed
+  as re-read from the live plan file.
+- Files verified: Yes
+
 ### Carried-figure check against live state
 
 The dispatch extracted three description lines for re-checking. Each was checked rather than
@@ -214,15 +307,26 @@ assumed, and the result is stated even where it only confirms the description:
   onto 11.27 by the plan of record and is unaffected by this round.
 - Route (P-2) is **not** closed: outcome (ii) was not reached, so the task does not rest
   `[BLOCKED]` on this gate and no `/revise` is owed by it.
+- **Phase 11.7 and Phase 12.2 now have a named, compiled covered set to quantify over**, plus the
+  discharged/left-standing table in both the plan's `#### Recorded Outcome` and the module's
+  section docstring — a table rather than an argument, which is what Phase 11.27's task list owed
+  them.
+- **The filed `cellAt_const_of_kappa_eq` remains OPEN on the uncovered collisions SPECIFICALLY** —
+  the upward-saturated register family, moved countdowns, general time components, and every
+  closure carrying a `⊡` letter — and not as a general failure. Phase 11.7's contingency branch is
+  the one that applies to it.
+- **A genuine cell-level agreement now exists in the tree over a real family of
+  `kappa`-collisions** (`cellAt_eq_of_register_displacement`), which is new: every earlier landed
+  cell result on this route was a one-directional inclusion.
 
 ## Follow-ups
 
-- **Phase 11.26, branch OPEN**: attempt `ClassRepTransport` on its own ground — a history-level
-  re-realization at a class-equal representative — never from `ladderSound`, `ladderLift` or any
-  (S)/(C') statement, which is a circularity on the plan's own graph. If it does not close, the
-  deliverable is the recorded goal state with the refusing coordinate, the pairs and the room
-  condition.
 - **No second design round is bought by Phase 11.25**, and none is owed.
+- **The stab-free confinement is now the binding obstruction on this route, measured twice.** It
+  blocked Phase 11.6 on the path side and it empties route (P-2)'s payoff on the certificate side.
+  Any continuation must either supply a register-moving surgery whose type half survives a `⊡`
+  letter in the closure, or leave the surgery route entirely. That is a route decision for a
+  `/revise`, not a move inside a phase.
 - The task description's citation of the design of record still names the unarchived path; the
   archive path is the live one. Correcting the description is not an act a phase performs.
 - **The class-representative transport `ClassRepTransport` is still OPEN.** The landed transport
@@ -238,9 +342,13 @@ assumed, and the result is stated even where it only confirms the description:
 ## References
 
 - `specs/761_ladder_realization_theorem/plans/20_certificate-side-register-bridging.md` — the plan
-  of record; Phase 11.25's body and its `#### Recorded Outcome`
-- `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` — the eight declarations and
-  the section docstring carrying the verdict
+  of record; Phases 11.25, 11.26 and 11.27 and each one's `#### Recorded Outcome`
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` — the eighteen declarations
+  of the three rounds and the three section docstrings carrying their verdicts
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean` — the two register-moving
+  deletions this round's `m = 0` instances come from
+  (`exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past` `:2576`,
+  `exists_ladderPath_through_deleted_exact_raised_upfirst_of_pend_past` `:2703`)
 - `FormalSystem/Metalogic/Decidability/RaySummary/README.md` — the certificate-side bridge
   paragraph and the path-level closure paragraph
 - `specs/761_ladder_realization_theorem/summaries/19_pending-state-measurement-kill-criterion-summary.md`

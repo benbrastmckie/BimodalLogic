@@ -6354,7 +6354,7 @@ outright. Phase 11.27 is therefore left `[NOT STARTED]` and is entered, if at al
 that measurement; widening, weakening or re-measuring the obligation to make the transport close
 is a route decision for a `/revise`, not a move inside a phase.
 
-### Phase 11.27: CONDITIONAL — `certStabK` of `Real` Over the Covered Collisions, and the Cell-Level Agreement [NOT STARTED]
+### Phase 11.27: CONDITIONAL — `certStabK` of `Real` Over the Covered Collisions, and the Cell-Level Agreement [COMPLETED]
 
 **ENTRY CONDITION: Phase 11.26 landed the transport, in full or over a named sub-regime.** If Phase
 11.26 closed `[BLOCKED]`, this phase is not entered and the chain rests there with Phase 11.26's
@@ -6387,25 +6387,25 @@ form of it — together with the cell-level agreement the composition yields, an
 set precisely enough for Phases 11.7 and 12.2 to quantify over what is actually covered.
 
 **Tasks**:
-- [ ] **Read Phase 11.26's recorded outcome and state the covered collision set**, in the phase
+- [x] **Read Phase 11.26's recorded outcome and state the covered collision set**, in the phase
       body, before any proof is attempted — including whether register-displaced collisions are in
       it and under which room condition.
-- [ ] Compose Phase 11.25's LEG A reduction with Phase 11.26's transport. **Record which hypothesis
+- [x] Compose Phase 11.25's LEG A reduction with Phase 11.26's transport. **Record which hypothesis
       of the reduction the transport discharges and which it leaves standing**, so Phase 11.7
       inherits a table and not an argument.
-- [ ] Land `certStabK … Real` if the covered set is the whole of what `certStabK` quantifies over,
+- [x] Land `certStabK … Real` if the covered set is the whole of what `certStabK` quantifies over,
       and otherwise land the restricted form under an honestly named auxiliary with the restriction
       as an explicit named binder. **Record which happened.** Do NOT claim `certAdmK` of `Real`,
       `real_subset_dmax` or `Dmax ⊆ Real` here; those are Phases 12.2 and 15.2.
-- [ ] Read off the cell-level agreement over the covered collisions and land it under its own
+- [x] Read off the cell-level agreement over the covered collisions and land it under its own
       auxiliary name, matching the naming convention `LadderCell.lean`'s schemas already use.
       Record, in the docstring, that it is an agreement over the COVERED set and not the filed
       statement.
-- [ ] **Record, in the module docstring and in the README paragraph, what is covered and what is
+- [x] **Record, in the module docstring and in the README paragraph, what is covered and what is
       not**, in terms of the branch taken, so Phase 12.2's restatement quantifies over what is
       actually covered. If the coverage is one-directional or holds only under an extra room
       condition, that condition is NAMED in the statement and in the docstring.
-- [ ] Wire the new declarations: axiom pins, docstring, generated inventory blocks, `status.typ`.
+- [x] Wire the new declarations: axiom pins, docstring, generated inventory blocks, `status.typ`.
       No `docs/theorem-index.md` row — the filed Goal lands in Phase 11.7, which owes the C14 pin.
 
 **Prohibited workarounds**: do NOT derive the agreement from `ladderSound`, `ladderLift` or any
@@ -6455,6 +6455,122 @@ branch is written against.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - If the phase closes `[BLOCKED]`: the goal state is recorded, the failing direction of `certStabK` and the uncovered collisions are named precisely, and Phase 11.7's contingency branch is the one that fires — the auxiliary lands and the filed `cellAt_const_of_kappa_eq` is marked `[BLOCKED]` on the uncovered collisions SPECIFICALLY, never as a general failure.
 
+
+
+#### Recorded Outcome
+
+**THE PHASE CLOSED WITH THE RESTRICTED FORM PLUS THE RECORDED COVERED SET — the branch its own
+Scope Hypothesis is written against, and a complete and reportable outcome.** No `sorry`, no
+axiom, no vacuous definition, no weakened conjunct and no filed name claimed anywhere in the tree.
+
+**THE COVERED COLLISION SET, STATED BEFORE ANY PROOF WAS ATTEMPTED**, read off Phase 11.26's
+recorded outcome and written into the section docstring of `LadderRealize.lean` before the first
+declaration of this phase. The collisions covered are exactly: the DOWNWARD-saturated
+register-displaced pairs `(c, n)`, `(c, n')` at a HELD countdown with `Tn ≤ n'`, `n' ≤ n`,
+`n ≡ n' [MOD P + 1]` and `n + B ≤ c`; at the DIAGONAL world state `(z, ⟨(q, c, n), hq⟩)` evaluated
+at `z`; at a STAB-FREE closure; and under the per-path regime each direction's tool asks of the
+paths through its own source state. **Register-displaced collisions in the UPWARD-saturated
+family are NOT in it** (`raise_room_excludes_upward_displacement`), and `ClassRepTransport`
+remains OPEN.
+
+**THE COMPOSITION, AND THE TABLE PHASE 11.7 INHERITS.** `real_certStabK_of_cell_stab_transfer`
+carries ONE hypothesis, `hcell`, quantified over `q`, `c`, `n`, `c'`, `n'`, `t`, `t'`, `z`, `z'`
+at a `kappa`-collision. What the transport discharges and what it leaves standing:
+
+| Coordinate of `hcell`'s domain | Discharged? | By / why not |
+|---|---|---|
+| register, downward-saturated, countdown held | **YES**, both orientations | `cell_stab_transfer_of_register_displacement` |
+| register, upward-saturated (`c + B ≤ n`) | NO | `raise_room_excludes_upward_displacement` |
+| the countdown (`c ≠ c'`) | NO | no landed tool moves a countdown while holding a class |
+| general time components (`t`, `t'`, `z`, `z'`) | NO | the diagonal gap Phase 11.26 recorded, unlanded |
+| closures carrying a `⊡` letter | NO | the stab-free premise of both register-moving deletions |
+| paths through the source state outside the regime | NO | `hreg`/`hregLo`/`hregHi` are explicit binders |
+
+**WHAT LANDED — five declarations, all in `LadderRealize.lean`, all compiled.**
+
+| Declaration | What it is |
+|---|---|
+| `exists_ladderPath_register_lowered_at_held_countdown` | the LOWERED exact-shift deletion at `m = 0`, the mirror of Phase 11.26's raise instance: countdown held, register delivered at `n₀ ≤ nxtAt g z`, regime at amount `k` (the `k` of the lowering) rather than at `0` |
+| `cellAt_subset_of_register_lower` | the reverse cell inclusion it yields, with its one extra room condition `hroom : n + (n - n') ≤ c` an explicit named binder — nothing in the covered family implies `n - n' ≤ B` |
+| `cellAt_eq_of_register_displacement` | **the cell-level AGREEMENT over the covered set**: an EQUALITY of the cells of two class-equal ladder states differing in the register alone, by `Set.Subset.antisymm` on the raise and the lower |
+| `cell_stab_transfer_of_register_displacement` | that agreement in the shape `hcell` consumes, in both orientations — the compiled form of the table's YES row |
+| `real_certStabK_of_stabFree` | **the composition's `certStabK` product over the covered regime** — condition (5) of `Real` at a stab-free closure |
+
+**WHICH OF THE TWO BRANCHES FIRED, RECORDED AS THE TASK LIST ASKS: the restricted form.** The
+covered set is NOT the whole of what `certStabK` quantifies over, so `certStabK … Real` was NOT
+landed unconditionally; the restricted form was landed with its restriction as the explicit named
+binder `hno`. **And the finding of this phase is what that restriction turns out to be worth.**
+The covered regime's own defining premise is stab-freeness — both register-moving deletions carry
+`hno`, so no transport of this shape exists at a closure carrying a `⊡` letter — and at a
+stab-free closure `certStabK_of_stabFree` already gives condition (5) outright, for `Real` and for
+every other set. `real_certStabK_of_stabFree`'s proof therefore consumes NOTHING from the
+transport, from `cellAt_eq_of_register_displacement`, or from
+`real_certStabK_of_cell_stab_transfer`. **Route (P-2)'s composition closes on the covered set and
+closes VACUOUSLY there.** That is recorded as the measurement it is: it is not a discharge of
+condition (5) at any closure carrying a `⊡` letter, and nothing downstream may read it as one.
+
+**THE AGREEMENT IS LANDED UNDER ITS OWN AUXILIARY NAME AND IS NOT THE FILED STATEMENT.**
+`cellAt_eq_of_register_displacement` carries, as explicit named binders, the downward-saturated
+collision conditions, the threshold and clip, the lowering room, the stab-free closure and TWO
+per-path regimes — one through each of the two states, because the two directions are carried by
+different tools through different source states. Its docstring records in terms that it is an
+agreement over the COVERED set and not `cellAt_const_of_kappa_eq`, which is Phase 11.7's at its
+filed signature and is landed here under no name. No filed Challenge name and no reserved name is
+claimed: the name grep returns empty.
+
+**Figures RE-MEASURED at phase start and at phase close rather than carried.**
+`LadderRealize.lean` entered at **1,098 lines with no in-source `longFile` baseline** and closes
+at **1,316**, still far under the package-wide 1,500, so the `longFile` remedy did not arise.
+`KTypeSummaryAxiomTest.lean` entered at **3,354 against its in-source 3,400**; the five new pins
+and their section docstring take it to **3,405**, so the in-source baseline was raised ONE chunk
+to **3,500**, which is that file's own documented convention and is recorded here rather than
+left silent. The evidence gate was re-measured at phase start at **63 wired probes, PASS, exit 0**
+and is UNCHANGED at 63 — no probe was authored here.
+
+**Scope measured against the hypothesis.** The Scope Hypothesis said "roughly two declarations";
+FIVE landed. The excess is the reverse direction: the agreement the task list asks for is an
+EQUALITY, which needs the lowered tool's `m = 0` instance and its cell inclusion as well as Phase
+11.26's raise. Recorded as a measured deviation from an estimate the plan itself marks as to be
+measured, not as a plan deviation.
+
+**What this phase does NOT say.** It does not land `cellAt_const_of_kappa_eq` and does not make it
+a hypothesis of anything. It is not the factorization lemma. It claims `ClassRepTransport` neither
+proved nor refuted. It defines no relation on position pairs and carries no register conjunct on
+one, the clipped gap included (Ruling 1). It claims neither `real_certAdmK_of_paramsOk`, nor
+`real_subset_dmax`, nor `Dmax ⊆ Real`. It derives nothing from `ladderSound`, `ladderLift`,
+`ladderCons_localRun` or any (S)/(C') statement. It takes no new parameter ruling: `Tc` is not
+raised, `Tc_d` is not re-based, `ParamsOk` is not strengthened. No probe is cited as a library
+fact and no import names a path under `specs/`. No `docs/theorem-index.md` row was added — the
+filed Goal lands in Phase 11.7, which owes the C14 pin.
+
+**Phase 11.7's standing, stated so it is not improvised.** The covered set is now a named,
+compiled family, and Phase 11.7 can quantify over exactly it. But the coverage is confined to
+stab-free closures, where the conclusion is free, so **the filed `cellAt_const_of_kappa_eq`
+remains OPEN on the uncovered collisions SPECIFICALLY** — the upward-saturated register family,
+moved countdowns, general time components, and every closure carrying a `⊡` letter — and not as a
+general failure. Widening, weakening or re-measuring the obligation to make the transport reach
+further is a route decision for a `/revise`, not a move inside a phase.
+
+**Verification measured at close.** Module build of
+`FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize` exit 0, 0 errors, 0 warnings;
+`BimodalTest.Metalogic.KTypeSummaryAxiomTest` exit 0, 0 errors, 0 warnings, all five new
+`#guard_msgs` pins green. `#print axioms` on each of the five new declarations is
+`[propext, Classical.choice, Quot.sound]` — a subset of the permitted set, no `sorryAx`, no custom
+axiom, no `native_decide`. `lean-sorry-census.sh` over the resolved source roots exit 0 with
+`sorry_count: 0`; the module-scoped vacuous grep returns 0; the repository-wide vacuous grep is at
+its 1-hit baseline, unchanged; the `^axiom ` grep-match count is 14, unchanged. The circularity
+grep over this phase's own additions returns one docstring-prose hit and nothing else; the
+filed/reserved-name grep returns nothing; the three-claims grep returns one docstring-prose hit
+recording that they are NOT claimed; the position-pair grep returns nothing.
+`check-module-invariants.sh`, `typst-sync-check.sh`, `readme-lint.sh`,
+`check-evidence-probes.sh` (63 wired, unchanged) and `check-task-references.sh --quiet` each exit
+0. The **full unscoped `lake build` exits 0 with 0 errors, 0 warnings and 2,975 jobs**, and both
+touched modules' `.olean` are newer than their sources.
+
+**Plan-revision sentinel checked at phase start**, as the dispatch requires:
+`.plan-revised.json` carries `revised_at: 1794776400`, which is EARLIER than this dispatch's
+`dispatch_start_ts: 1794779733`, so there was no fresh hit and Phase 11.27's section was executed
+as re-read from the live plan file.
 
 ### Phase 11.22: Membership of Every Pump Pair in the Re-Stated `~_d`, and the Promoted Probe [COMPLETED WITH EXCLUSIONS]
 

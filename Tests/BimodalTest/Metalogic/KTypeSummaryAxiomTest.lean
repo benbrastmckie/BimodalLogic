@@ -110,7 +110,7 @@ expectation to rewrite.
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
 -- The baseline is raised one chunk at a time, as the ledger grows; the `longFile` linter requires
 -- the value to be at least the file's length and refuses a value more than one chunk above it.
-set_option linter.style.longFile 3400
+set_option linter.style.longFile 3500
 
 namespace BimodalTest.Metalogic
 
@@ -3349,6 +3349,57 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
  Quot.sound] -/
 #guard_msgs in
 #print axioms cellAt_subset_of_register_raise
+
+
+/-! ### Phase 11.27: the composition over the covered collisions, and what it buys
+
+The certificate-side bridge composed on the collisions Phase 11.26's transport covers.
+`exists_ladderPath_register_lowered_at_held_countdown` is the `m = 0` instance of the LOWERED
+exact-shift deletion, the reverse direction of the register raise at a held countdown;
+`cellAt_subset_of_register_lower` is the cell inclusion it yields;
+`cellAt_eq_of_register_displacement` is the two inclusions together — the cell-level
+AGREEMENT over the COVERED set, which is NOT the filed `cellAt_const_of_kappa_eq` and is
+landed under its own name precisely so the difference is visible;
+`cell_stab_transfer_of_register_displacement` is that agreement in the shape the reduction's
+`hcell` binder consumes, in both orientations; and `real_certStabK_of_stabFree` is the
+composition's `certStabK` product over the covered regime — which is VACUOUS there, its proof
+consuming nothing from the transport or the agreement. None of these claims `ClassRepTransport`,
+the filed agreement, or any inclusion between `Real` and `Dmax`. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_register_lowered_at_held_countdown' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms exists_ladderPath_register_lowered_at_held_countdown
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_subset_of_register_lower' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms cellAt_subset_of_register_lower
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_eq_of_register_displacement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms cellAt_eq_of_register_displacement
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cell_stab_transfer_of_register_displacement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms cell_stab_transfer_of_register_displacement
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.real_certStabK_of_stabFree' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms real_certStabK_of_stabFree
 
 
 end BimodalTest.Metalogic

@@ -1,22 +1,27 @@
 {
   "task_number": 761,
   "phase": "implement",
-  "dispatch_seq": 54,
+  "dispatch_seq": 55,
   "status": "partial",
-  "phases_completed": 38,
-  "phases_total": 51,
-  "summary": "Phase 11.26 executed and closed [COMPLETED] on branch OPEN (read off Phase 11.25's outcome (iii)). Five declarations landed in LadderRealize.lean (926 to 1,098 lines): the register-raise transport cellAt_subset_of_register_raise with its room conditions as named binders and the kappa-collision as its conclusion's first conjunct, the m=0 raised-deletion instance it rests on, the downward-saturated collision family it covers, and two compiled objects naming the coordinates that refuse the rest. ClassRepTransport itself remains OPEN: the raise tool's room ceiling n0+2<=c contradicts the obligation's own exhibited family c+B<=n0, and both register-moving deletions carry a stab-free premise under which certStabK is vacuous. Full lake build exit 0, sorry_count 0, axiom count 14 unchanged, all five gates green.",
+  "summary": "Phase 11.27 closed [COMPLETED]: five compiled declarations landed in LadderRealize.lean (1,098 -> 1,316 lines), composing Phase 11.25's reduction with Phase 11.26's transport over the covered collisions. The lowered exact-shift deletion at m = 0 supplied the reverse direction, so what the covered family now carries is a genuine cell-level AGREEMENT (an equality, not an inclusion) between class-equal ladder states differing in the register alone. The phase's finding is that the composition's certStabK conclusion over that regime holds VACUOUSLY: both register-moving deletions carry the stab-free premise, and at a stab-free closure certStabK_of_stabFree already gives condition (5) outright, so the transport is not load-bearing. The filed cellAt_const_of_kappa_eq remains OPEN on the uncovered collisions specifically. Full lake build exit 0, 0 errors, 0 warnings, 2,975 jobs; sorry_count 0; axiom count 14 unchanged; evidence gate 63 wired PASS unchanged.",
   "blockers": [],
+  "phases_completed": 39,
+  "phases_total": 51,
   "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/20_certificate-side-register-bridging.md",
-      "summary": "Phase 11.26 marked [COMPLETED] with its Recorded Outcome: branch OPEN, the regime covered and not covered, the refusing coordinate and the inequality."
-    },
     {
       "type": "summary",
       "path": "specs/761_ladder_realization_theorem/summaries/20_certificate-side-register-bridging-summary.md",
-      "summary": "Round-20 summary extended with Phase 11.26's What Changed, Decisions, Verification and Follow-ups."
+      "summary": "Round summary for Phases 11.25-11.27; Phase 11.27's covered-set table, its five declarations and its full verification block."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.27-handoff-20261115T235500Z.md",
+      "summary": "Phase-end handoff: next action is Phase 12.2 and Phase 11.7's contingency branch; ClassRepTransport still OPEN."
+    },
+    {
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/20_certificate-side-register-bridging.md",
+      "summary": "Plan of record; Phase 11.27 marked [COMPLETED] with its #### Recorded Outcome block."
     }
   ]
 }
