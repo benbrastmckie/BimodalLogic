@@ -2318,6 +2318,60 @@ EVIDENCE="specs/evidence"
 #                                                           | `FormalSystem/Metalogic/Decidability/RaySummary/README.md`
 #                                                           | cites it as the authority for this
 #                                                           | refutation.
+# seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity
+#                                                           | NO REGISTER CONJUNCT SURVIVES AT THE
+#                                                           | PUMP'S OWN POSITION PAIRS.  Two
+#                                                           | decisions on one fixture, the ramp
+#                                                           | (`Fin 4`: a pending 3-cycle and an
+#                                                           | idle sink; pending for ever into the
+#                                                           | past, countdown `C` at `0`, register
+#                                                           | climbing by one per position).  (1)
+#                                                           | The block-selection condition on a
+#                                                           | CLIPPED register is VACUOUS:
+#                                                           | `no_clipped_block_at_params` shows
+#                                                           | that at the parameters
+#                                                           | `paramsOk_params` discharges no block
+#                                                           | of the room at spacing `Pof + 1` with
+#                                                           | a repeated object state admits ANY
+#                                                           | ladder path carrying the original's
+#                                                           | clipped register at copies `0` and
+#                                                           | `1`, with no type hypothesis;
+#                                                           | `clipped_seam_necessary` is the
+#                                                           | generic necessary condition, so the
+#                                                           | whole family of such conditions is
+#                                                           | covered and not one formulation; and
+#                                                           | `clipped_pigeonhole_room_exceeds_Tc`
+#                                                           | shows the three-coordinate pigeonhole
+#                                                           | needs room `ParamsOk` itself puts
+#                                                           | strictly above `Tc`, so no
+#                                                           | `ParamsOk`-compatible re-basing
+#                                                           | repairs it.  (2) The GAP-SHAPED
+#                                                           | conjunct is REFUTED:
+#                                                           | `gap_conjunct_refuted_on_ramp` shows
+#                                                           | that at every height and every block
+#                                                           | of length at least two NO ladder path
+#                                                           | is pending at copies `0` and `1`
+#                                                           | while carrying the ramp's signed gap
+#                                                           | `n - c` there (the ramp's gap rises
+#                                                           | by two per position;
+#                                                           | `iterSpliced_gap_interior_forces_block_gap_le`
+#                                                           | forbids any rise across the block),
+#                                                           | and `gap_conjunct_refuted_at_params`
+#                                                           | reads it at the discharged
+#                                                           | parameters.  This is why no
+#                                                           | position-pair relation of the depth
+#                                                           | induction carries a register
+#                                                           | conjunct, and why a block-selection
+#                                                           | restriction, a clipped-register
+#                                                           | pigeonhole or an exact-gap conjunct
+#                                                           | must not be re-proposed at the path
+#                                                           | level.  It does NOT refute a gap
+#                                                           | clipped to a window, which is a
+#                                                           | strictly weaker conjunct.  Axioms: a
+#                                                           | subset of `[propext,
+#                                                           | Classical.choice, Quot.sound]` on
+#                                                           | every headline.  No `sorryAx`, no
+#                                                           | custom axiom, no `native_decide`.
 # limit-closure-schema/lc-schema-omega-chain                | THE LC SCHEMA'S VALIDITY ON
 #                                                           | ALL-WALKS Z-MODELS IS COMPILED
 #                                                           | AND SORRY-FREE, AND THE `.Base`
@@ -2748,6 +2802,7 @@ WIRED=(
   "seam-gluing-ray-product/lowering-anchor-deficit"
   "seam-gluing-ray-product/ladder-tight-chain-regime-b"
   "seam-gluing-ray-product/ladder-spanning-divisibility"
+  "seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity"
   "limit-closure-schema/lc-schema-omega-chain"
   "forward-slack-pin-cascade/pin-cascade-straddle"
   "forward-slack-pin-cascade/route-space-closure"

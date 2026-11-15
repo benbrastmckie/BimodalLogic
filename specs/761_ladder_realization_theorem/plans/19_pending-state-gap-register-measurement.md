@@ -5241,7 +5241,7 @@ wiring edits are LISTED below.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - If the phase closes `[BLOCKED]`: both sides' measurements are recorded, the gap between them is named, and Phase 11.22 is marked as waiting on it — **the membership proof is NOT entered on an unmeasured conjunct**, which is the whole point of this phase's ordering.
 
-### Phase 11.23: The Pending-State Consumer Re-Measurement, the `ramp` Delivery Verdict, and the Kill-Criterion Gate [NOT STARTED]
+### Phase 11.23: The Pending-State Consumer Re-Measurement, the `ramp` Delivery Verdict, and the Kill-Criterion Gate [COMPLETED]
 
 **THIS PHASE IS THE WHOLE OF THE BOUNDED ROUND THE (P-1) RULING AUTHORISES, AND IT IS A DECISION
 GATE.** The ruling buys ONE round, and this is it. The phase's deliverable is a VERDICT backed by
@@ -5293,7 +5293,7 @@ promote route (B-1)'s compiled refutation into a wired evidence probe so its clo
 artifact rather than a sentence in a report.
 
 **Tasks**:
-- [ ] **Re-read the live signatures first.** `stab_alphaR_iff`, `stab_bit_ne_of_register_ne`,
+- [x] **Re-read the live signatures first.** `stab_alphaR_iff`, `stab_bit_ne_of_register_ne`,
       `stab_alphaR_eq_of_clipped_eq`, `labR`/`rR`/`nextR`/`alphaR`/`regRaw`/`regPath` with
       `regPath_isLadderPath`, `stab_state_only` (`PlusTruth.lean:338`), `clipIdx`
       (`CounterQuotient.lean:151`), `kappa` (`:160`), and
@@ -5301,7 +5301,7 @@ artifact rather than a sentence in a report.
       at phase entry. **No clause of any of them is treated as established from this plan's prose.**
       Re-read `ProbeB1.ramp` and `ProbeB1.no_clipped_block_at_params` in the prototype probe the
       same way.
-- [ ] **PROMOTE route (B-1)'s refutation into a wired evidence probe**, unconditionally and FIRST,
+- [x] **PROMOTE route (B-1)'s refutation into a wired evidence probe**, unconditionally and FIRST,
       so the closure survives whichever way the two legs go. Author
       `specs/evidence/seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity.lean` from
       the prototype probe, carrying at least `no_clipped_block_at_params` (the non-vacuity
@@ -5311,37 +5311,37 @@ artifact rather than a sentence in a report.
       formulation), and wire it into `scripts/check-evidence-probes.sh` (documentation row plus
       array entry, the Phase 3 form). **The `prototype/` file is NOT edited and is NOT cited as a
       library fact.**
-- [ ] **LEG 1, at a POSITIVE threshold.** Author or extend a PENDING-state fixture — the
+- [x] **LEG 1, at a POSITIVE threshold.** Author or extend a PENDING-state fixture — the
       forced-pending continuation `regPath` with `labR` is the landed starting point, and a
       pending companion to it is the expected shape — and compute the `⊡` bit EXACTLY at a pending
       state with countdown `≥ Tc_d` for a positive `Tc_d`. **Land the reading as a STATEMENT**, and
       record each of the three candidates as LANDED or REFUTED on this side:
       the clipped register `min n Tn`; the gap `n − c`; neither. A candidate recorded without a
       compiled object fails this task.
-- [ ] **LEG 1, at threshold `0`.** Repeat the measurement at countdown threshold `0`, where
+- [x] **LEG 1, at threshold `0`.** Repeat the measurement at countdown threshold `0`, where
       `Tc_D = Tc_0 = 0` leaves the invariant's threshold conjunct vacuous. **Record whether the
       reading AGREES with the positive-threshold reading or differs from it** — a difference is
       itself a first-class finding and is what the Obligation's "both sides of the level threshold"
       exists to expose. **A single-point measurement does not discharge the Obligation.**
-- [ ] **LEG 2 — the `ramp` verdict.** State the gap-shaped register conjunct LEG 1 landed (or, if
+- [x] **LEG 2 — the `ramp` verdict.** State the gap-shaped register conjunct LEG 1 landed (or, if
       LEG 1 landed NEITHER reading, state so and go straight to the kill criterion) at copies `0`
       and `1` of a block on `ProbeB1.ramp`, and DECIDE it by compilation: LANDED or REFUTED. Where
       a refutation is owed, reuse the compiled `ramp` fixture rather than building a second one — a
-      reused compiled counterexample is cheaper and stronger.
-- [ ] **Apply the kill criterion and record the verdict in the section docstring**, in the phase
+      reused compiled counterexample is cheaper and stronger. *(deviation: altered — the generic forcing lemma `iterSpliced_gap_interior_forces_block_gap_le` is in `LadderCell.lean`; its `ramp` instantiation `ProbeB1.gap_conjunct_refuted_on_ramp` / `ProbeB1.gap_conjunct_refuted_at_params` is in the promoted wired evidence probe, because `ProbeB1.ramp` exists only in probe files and no library module may import one)*
+- [x] **Apply the kill criterion and record the verdict in the section docstring**, in the phase
       body and in the handoff. The three outcomes, named here so none is improvised: (i) BOTH legs
       positive — the route continues and Phase 11.24 is enterable; (ii) LEG 2 REFUTED — **the
       path-level route is CLOSED**, Phase 11.24 is never entered, and the remedy is a `/revise`
       onto (P-2); (iii) LEG 1 lands NEITHER reading — the gap-shaped conjunct has no content to
       test on `ramp`, which is the same closure as (ii) reached one step earlier, and is recorded
       as such.
-- [ ] **Record, in the section docstring, what this measurement does NOT say**: it is not a
+- [x] **Record, in the section docstring, what this measurement does NOT say**: it is not a
       relation and defines none; it says nothing about the cell at any pair; it applies `kappa`
       nowhere; it proves membership of nothing; it does not re-open, weaken or supersede Phase
       11.20's landed measurements, which stand at the idle state they were taken at; and it does
       not revive route (B-1), which is refuted.
-- [ ] Wire the new declarations: axiom pins, docstring, generated inventory blocks, `status.typ`,
-      and the evidence-gate entry above. No `docs/theorem-index.md` row — no filed Goal lands here.
+- [x] Wire the new declarations: axiom pins, docstring, generated inventory blocks, `status.typ`,
+      and the evidence-gate entry above. No `docs/theorem-index.md` row — no filed Goal lands here. *(deviation: altered — a prose paragraph, not a row, was added to `docs/theorem-index.md` naming the five dependent filed Goals OPEN, as this phase's own Verification requires on outcome (ii))*
 
 **Prohibited workarounds**: do NOT define `~_d`, `Tc_d` or `D` in this phase — that is Phase
 11.24's, and defining a relation in the dispatch that measures what should go in it is how a
@@ -5417,6 +5417,66 @@ below.
 - `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests` exits 0 with `sorry_count: 0`; the module-scoped vacuous grep returns 0; the repository-wide vacuous grep is unchanged from its 1-hit baseline.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - If the phase closes on outcome (ii) or (iii): the closure is recorded as a COMPLETE outcome with both legs' objects named, the five dependent filed Goals are named OPEN in `docs/theorem-index.md`, the README and the summary, and the handoff names (P-2) as the next route — **with no `sorry`, axiom, vacuous definition or weakened conjunct anywhere in the tree**.
+
+#### Recorded Outcome: **OUTCOME (ii) — LEG 1 LANDS THE GAP READING, LEG 2 REFUTES IT ON `ProbeB1.ramp`; THE KILL CRITERION FIRES**
+
+Closed by dispatch 50 (2026-11-15). Both legs are compiled objects; every declaration named below
+reports a subset of `[propext, Classical.choice, Quot.sound]`.
+
+**LEG 1 — the consumer at PENDING states** (`LadderCell.lean`, `section PendingConsumer`). The
+measured bit is `⊡ gapR` with `gapR := ¬ (r U (¬ r ∧ X r ∧ X X ¬ r))` on the two-state fixture under
+`labR` — report 18's uncompiled conjecture, compiled as stated. `stab_gapR_iff`: at ANY pending
+ladder state `(true, c, n)`, generically in the path and the history, the bit is `c + 1 < n` — a
+threshold on the signed gap `n − c`.
+
+| Candidate | Positive threshold (countdown above any `Tc_d > 0`) | Threshold `0` | Object |
+|---|---|---|---|
+| gap `n − c` | **LANDED** (consumed) | **LANDED** (consumed) | `stab_gapR_eq_of_gap_eq` — any two pending states, countdowns arbitrary and possibly different |
+| clipped register `min n Tn` | **REFUTED** at every countdown `c ≥ Tn − 1`, with the residue conjunct carried | **LANDED only on the slice of equal countdowns `c + 2 ≤ Tn`** (countdown `0` at `Tn ≥ 2`); the positive-threshold refutation's pairs are also admissible under a vacuous threshold | `stab_gapR_ne_of_clipped_eq`; `stab_gapR_eq_of_clipped_eq_of_low`, `stab_gapR_iff_of_cnt_zero` |
+| neither | **REFUTED** | **REFUTED** | the gap's own landed sufficiency |
+
+**The two points AGREE on the gap and DIFFER on the clipped register**: the clipped register is
+the reading only where the countdown is too short to hide the register, and at countdown `0` it
+coincides with the gap. Fixtures: `pendPath` (constant register, a ladder path at every `c`, `n`)
+and `gapPath` (falling register, a ladder path exactly when `n ≤ c + 1`).
+
+**LEG 2 — the producer on `ProbeB1.ramp`.** The conjunct tested: position `j` of copies `0` and
+`1` of a block is pending and carries the original's signed gap at `u + j`.
+`iterSpliced_gap_interior_forces_block_gap_le` (`LadderCell.lean`, generic) derives that the
+original's gap does not rise from the block's first position to its last.
+`ProbeB1.gap_conjunct_refuted_on_ramp` (the promoted evidence probe): on `ProbeB1.ramp` at every
+height, for every block of length at least two in the region, NO ladder path carries the conjunct
+— **REFUTED**. `ProbeB1.gap_conjunct_refuted_at_params` reads it at the discharged parameters at
+spacing `Pof + 1`.
+
+**KILL CRITERION APPLIED AS WRITTEN: outcome (ii).** The path-level route is CLOSED. Phase 11.24
+is NOT entered; Phases 11.22, 11.6, 11.21 and 11.7 are NOT entered. The remedy is a `/revise` onto
+route (P-2), certificate-side register bridging. The five dependent filed Goals
+(`cellAt_const_of_kappa_eq`, `ladderSound`, `ladderCons_localRun`, `ladderLift`, `ladderRealized`)
+are OPEN and are named OPEN in `docs/theorem-index.md`, the RaySummary README and the summary.
+
+**One thing this round did NOT measure, recorded so the `/revise` has it and so it is not read as
+closed.** The measured bit is a THRESHOLD on the gap, so a gap CLIPPED to a window — `kappa`'s own
+`clipIdx` coordinate — would also be consumed by it, and LEG 2's refutation is of the EXACT gap
+only: it needs the gap to rise inside the block and says nothing where a clipped gap is saturated.
+This plan classes a weakened gap conjunct as outside the ruling that bought this round, so it was
+neither landed nor refuted, and nothing here licenses it. Likewise UNCOMPILED: whether the gap is
+the only quantity a `⊡` bit reads at a pending state (`stab_gapR_eq_of_gap_eq` is sufficiency for
+one formula, not for a closure).
+
+**Promoted (B-1) probe.** `specs/evidence/seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity.lean`
+is wired; `bash scripts/check-evidence-probes.sh` exits 0, PASS, wired total 63 against 62 at
+phase start (`WIRED` 61 → 62, plus the one `WIRED_REPO` entry). The `prototype/` file is
+byte-identical.
+
+**Measurements at close.** `LadderCell.lean` 3,229 lines against an in-source `longFile` baseline
+raised 2,900 → 3,300; `KTypeSummaryAxiomTest.lean` 3,240 against 3,300. Full `lake build` through
+the guard: exit 0, 0 errors, 0 warnings. Test-module build: exit 0. `sorry_count: 0`; module-scoped
+vacuous grep 0; repository-wide vacuous grep 1 (the baseline); `^axiom ` count 14, unchanged.
+`check-module-invariants.sh`, `typst-sync-check.sh`, `readme-lint.sh`,
+`check-task-references.sh --quiet`: each exit 0. No change to any Phase 11.20 declaration, to
+`ParamsOk`/`paramsOkK1`-`K4`, or to `Tcof`/`Tnof`/`Pof`/`Bof`/`paramsOk_params`; no relation
+defined; no cell-agreement claim.
 
 ### Phase 11.24: CONDITIONAL — The Gap-Shaped `~_d`, Its Threshold Companions, and the Properness Witness [NOT STARTED]
 

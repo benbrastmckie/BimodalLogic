@@ -3168,4 +3168,73 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 #guard_msgs in
 #print axioms stab_alphaR_eq_of_clipped_eq
 
+/-! ### The pending-state measurement
+
+The consumer measurement above is taken at an idle state; the positions of a pump block are all
+pending. `stab_gapR_iff` computes the `stab` bit of the probe formula `gapR` at a PENDING ladder
+state exactly, as the threshold `c + 1 < n` on the signed gap, with `gapPath` the falling-register
+path through the state and `pendPath` the constant-register one. Off it:
+`stab_gapR_eq_of_gap_eq` consumes equality of the gap at every pending state;
+`stab_gapR_ne_of_clipped_eq` refutes the clipped/residue conjunction at every countdown
+`c >= Tn - 1`; `stab_gapR_eq_of_clipped_eq_of_low` consumes the clipped register on the slice of
+equal countdowns `c + 2 <= Tn`, and `stab_gapR_iff_of_cnt_zero` reads the bit at countdown `0`.
+PRODUCER side: `iterSpliced_gap_interior_forces_block_gap_le` derives from the gap-shaped conjunct
+at copies `0` and `1` that the original's gap does not rise across the block. No relation is
+defined and no cell agreement is claimed. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stab_gapR_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms stab_gapR_iff
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stab_gapR_iff_of_cnt_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms stab_gapR_iff_of_cnt_zero
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stab_gapR_eq_of_gap_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms stab_gapR_eq_of_gap_eq
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stab_gapR_ne_of_clipped_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms stab_gapR_ne_of_clipped_eq
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.stab_gapR_eq_of_clipped_eq_of_low' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms stab_gapR_eq_of_clipped_eq_of_low
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.gapPath_isLadderPath' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms gapPath_isLadderPath
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.pendPath_isLadderPath' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms pendPath_isLadderPath
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.iterSpliced_gap_interior_forces_block_gap_le' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms iterSpliced_gap_interior_forces_block_gap_le
+
 end BimodalTest.Metalogic

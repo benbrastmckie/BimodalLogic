@@ -177,7 +177,7 @@ here rather than in `LadderChain.lean` because that module has fourteen lines of
 its own in-source `longFile` baseline, and this one imports the whole pump spine.
 -/
 
-set_option linter.style.longFile 2900
+set_option linter.style.longFile 3300
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -2832,5 +2832,398 @@ phase:
   the depth induction consumes would then not be a path-level correspondence at all.
 
 Neither is costable from here, and the choice is not this section's to make. -/
+
+/-! ## The pending-state measurement: which register reading a `⊡` bit consumes there
+
+The consumer measurement above is taken at an IDLE state (`stab_alphaR_iff` carries
+`objAt g t = false`). The positions of a pump block inside a pending-forever past are all
+PENDING, so that measurement says what a `⊡` bit reads at a state shape the window's interior
+never occupies. This section measures the shape that matters, on the same two-state fixture with
+the same labelling `labR`, and then tests on the producer side the reading it finds.
+
+The probe formula is
+
+  `betaR := r U (¬ r ∧ X r ∧ X X ¬ r)`,   `gapR := ¬ betaR`,
+
+"the current pending region ends, and the region that starts immediately after it has length
+one". `stab_gapR_iff` computes the `⊡` bit of `gapR` at a PENDING ladder state `(true, c, n)`
+exactly, generically in the path and the history:
+
+  `⊡ gapR` holds iff `c + 1 < n`.
+
+The mechanism: the region's end is forced `c + 1` positions on (`cntAt_sub_of_pend`), the region
+after it is handed the register's value there (`cntAt_eq_nxtAt_of_idle_pend`), and the register
+can have fallen by at most `c + 1` in between (`nxtAt_lipschitz_two_sided`). So some history
+through the state reaches register `0` at the hand-off exactly when `n ≤ c + 1`, and `gapPath`
+is that history. The bit is a threshold on the signed GAP `n − c`.
+
+**THE CONSUMER LEG, the three candidate readings, each decided by a compiled object.**
+
+* The gap `n − c`: **CONSUMED**, at every pending state. `stab_gapR_eq_of_gap_eq` delivers the
+  agreement of this bit from equality of the signed gap alone, at two pending states with
+  arbitrary and possibly different countdowns. It holds at a countdown above any positive
+  threshold and at countdown `0` alike, so the two measurement points AGREE on it.
+* The clipped register `min n Tn`: **REFUTED at every countdown `c ≥ Tn − 1`**, hence above any
+  positive countdown threshold whatever. `stab_gapR_ne_of_clipped_eq` exhibits, for every `Tn`,
+  every `P` and every such `c`, two pending states with the same object, the same countdown `c`,
+  the same clipped register and the same register residue modulo `P + 1` whose bits DIFFER — so
+  the clipped/residue conjunction is refuted, not only its clipped half. **CONSUMED on the slice
+  of equal countdowns `c + 2 ≤ Tn`**, which contains countdown `0` at every `Tn ≥ 2`
+  (`stab_gapR_eq_of_clipped_eq_of_low`; `stab_gapR_iff_of_cnt_zero` reads the bit there as
+  `2 ≤ n`). So the two measurement points DIFFER on this candidate, and the difference is the
+  finding: the clipped register is the reading only where the countdown is too short to hide the
+  register, and at countdown `0` it coincides with the gap.
+* Neither: **REFUTED**, by the gap's own landed sufficiency.
+
+**THE PRODUCER LEG.** The gap-shaped register conjunct at the pump's own position pairs reads:
+position `j` of copies `0` and `1` of the block is pending and carries the signed gap of the
+original at `u + j`. `iterSpliced_gap_interior_forces_block_gap_le` derives from it that the
+original's gap at the block's LAST position is at most its gap at the block's FIRST: the step
+from the top of copy `0` to the bottom of copy `1` is one pending-to-pending step, across which
+the gap moves by `0`, `1` or `2` and never down. Along a pending block of the original the gap is
+itself non-decreasing, so the conjunct forces the original's gap to be CONSTANT across the block —
+the register falling in step with the countdown — and is refuted on any path whose gap rises
+anywhere inside the block. The verdict on the ramp fixture is compiled against that fixture where
+it lives, as `ProbeB1.gap_conjunct_refuted_on_ramp` and `ProbeB1.gap_conjunct_refuted_at_params` in
+`specs/evidence/seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity.lean`: on
+`ProbeB1.ramp` the gap rises by two per position, so NO ladder path whatever carries the conjunct
+at copies `0` and `1` of any block of length at least two in the region.
+
+**THE VERDICT.** The consumer leg lands the gap reading; the producer leg REFUTES the gap-shaped
+conjunct on `ProbeB1.ramp`. A position-pair relation carrying the gap as its register conjunct is
+therefore not delivered by the iterated splice, and with the clipped/residue reading and the
+`Drift`-distance reading already closed above, no register conjunct measured at the path level
+passes both sides. What remains is the second successor named in the decision above: register
+bridging on the certificate side, with no position-pair relation carrying a register conjunct.
+
+**What this section does NOT say.** It is not a relation and defines none. It says nothing about
+the agreement of a cell at any pair of states, applies `kappa` nowhere, and proves membership of
+no pump pair in anything. It computes ONE bit of ONE formula on one fixture:
+`stab_gapR_eq_of_gap_eq` is sufficiency for `gapR` and not for a closure, and nothing here says
+the gap is the only quantity a `⊡` bit reads at a pending state. The conjunct tested on the
+producer side is the EXACT signed gap; a gap clipped to a window, which is what `kappa`'s own gap
+coordinate carries, is a strictly weaker conjunct and is neither landed nor refuted here. The
+idle-state measurements above stand at the state shape they were taken at and are not weakened
+or superseded; and the block-selection condition on a clipped register is not revived — it is
+refuted as non-vacuous in the evidence file named above. -/
+
+section PendingConsumer
+
+open ClimbWitness
+
+/-- The event of the pending-state probe: "this position is idle, the next is pending, and the
+one after that is idle again" — an idle position followed by a pending region of length one. -/
+def gapEventR : PlusFormula :=
+  (PlusFormula.neg rR).and ((nextR rR).and (nextR (nextR (PlusFormula.neg rR))))
+
+/-- "The object stays pending until `gapEventR`": from a pending state, the current region ends
+and the region that starts immediately after it has length one. -/
+def betaR : PlusFormula := PlusFormula.untl rR gapEventR
+
+/-- **The pending-state probe formula**, the negation of `betaR`. At a pending state its `⊡` bit
+is exactly `c + 1 < n` (`stab_gapR_iff`). -/
+def gapR : PlusFormula := PlusFormula.neg betaR
+
+/-! ### Two ladder paths through a prescribed pending state -/
+
+/-- The underlying triples of the constant-register path through the pending state `(true, c, n)`
+at `t`: pending for ever into the past, the countdown running out at `t + c`, idle after it. -/
+def pendRaw (t : ℤ) (c n : ℕ) (v : ℤ) : Bool × ℕ × ℕ :=
+  if v ≤ t + (c : ℤ) then (true, (t + (c : ℤ) - v).toNat, n) else (false, 0, n)
+
+theorem pendRaw_adm (t : ℤ) (c n : ℕ) (v : ℤ) :
+    (pendRaw t c n v).2.1 ∈ Adm pendT (pendRaw t c n v).1 := by
+  intro h
+  unfold pendRaw at *
+  split_ifs at * <;> simp_all [pendT]
+
+/-- The constant-register path through a prescribed pending state, as a ladder state function.
+It exists at EVERY countdown and register, which is what the refutation witnesses need. -/
+def pendPath (t : ℤ) (c n : ℕ) (v : ℤ) : LadderState Bool pendT :=
+  ⟨pendRaw t c n v, pendRaw_adm t c n v⟩
+
+theorem pendPath_isLadderPath (t : ℤ) (c n : ℕ) : IsLadderPath stepT pendT (pendPath t c n) := by
+  intro u
+  change Rlad stepT pendT u (pendRaw t c n u) (pendRaw t c n (u + 1))
+  unfold Rlad Drift Count pendRaw stepT pendT
+  split_ifs <;> simp_all <;> omega
+
+@[simp] theorem pendPath_objAt_self (t : ℤ) (c n : ℕ) : objAt (pendPath t c n) t = true := by
+  simp [objAt, pendPath, pendRaw]
+
+@[simp] theorem pendPath_cntAt_self (t : ℤ) (c n : ℕ) : cntAt (pendPath t c n) t = c := by
+  simp [cntAt, pendPath, pendRaw]
+
+@[simp] theorem pendPath_nxtAt_self (t : ℤ) (c n : ℕ) : nxtAt (pendPath t c n) t = n := by
+  unfold nxtAt pendPath pendRaw
+  split_ifs <;> rfl
+
+/-- The underlying triples of the falling-register path through the pending state `(true, c, n)`
+at `t`: pending for ever into the past with register `n`, the register falling by one per
+position after `t`, the region ending at `t + c`, then one idle position, one pending position
+with countdown `0`, and idle after it. It is a ladder path exactly when the register can reach
+`0` by the hand-off, `n ≤ c + 1`. -/
+def gapRaw (t : ℤ) (c n : ℕ) (v : ℤ) : Bool × ℕ × ℕ :=
+  if v ≤ t + (c : ℤ) then (true, (t + (c : ℤ) - v).toNat, ((n : ℤ) - max 0 (v - t)).toNat)
+  else if v = t + (c : ℤ) + 2 then (true, 0, 0)
+  else (false, 0, 0)
+
+theorem gapRaw_adm (t : ℤ) (c n : ℕ) (v : ℤ) :
+    (gapRaw t c n v).2.1 ∈ Adm pendT (gapRaw t c n v).1 := by
+  intro h
+  unfold gapRaw at *
+  split_ifs at * <;> simp_all [pendT]
+
+/-- The falling-register path as a ladder state function. -/
+def gapPath (t : ℤ) (c n : ℕ) (v : ℤ) : LadderState Bool pendT :=
+  ⟨gapRaw t c n v, gapRaw_adm t c n v⟩
+
+theorem gapPath_isLadderPath (t : ℤ) (c n : ℕ) (h : n ≤ c + 1) :
+    IsLadderPath stepT pendT (gapPath t c n) := by
+  intro u
+  change Rlad stepT pendT u (gapRaw t c n u) (gapRaw t c n (u + 1))
+  unfold Rlad Drift Count gapRaw stepT pendT
+  split_ifs <;> simp_all <;> omega
+
+theorem gapPath_objAt (t : ℤ) (c n : ℕ) (v : ℤ) :
+    objAt (gapPath t c n) v = decide (v ≤ t + (c : ℤ) ∨ v = t + (c : ℤ) + 2) := by
+  unfold objAt gapPath gapRaw
+  split_ifs <;> simp_all
+
+/-- **The falling-register path passes through any pending ladder state** with that state's own
+countdown and register. -/
+theorem gapPath_eq_of_pend (g : ℤ → LadderState Bool pendT) (t : ℤ)
+    (hpend : objAt g t = true) : gapPath t (cntAt g t) (nxtAt g t) t = g t := by
+  refine Subtype.ext ?_
+  have hg1 : (g t).1 = (objAt g t, cntAt g t, nxtAt g t) := rfl
+  change gapRaw t (cntAt g t) (nxtAt g t) t = (g t).1
+  rw [hg1, hpend]
+  simp [gapRaw]
+
+/-! ### The measurement at a pending state -/
+
+/-- **THE BIT COMPUTED AT A PENDING STATE: the `⊡` bit of `gapR` is `c + 1 < n`.** Generic in
+the path and the history, at every countdown — not a fixture-restricted reading.
+
+If `n ≤ c + 1`, `gapPath` is a ladder path through the SAME state on which the register reaches
+`0` at the first idle position, so the region after it has length one, `betaR` holds on the
+history it carries and the `⊡` bit is `false`. If `c + 1 < n`, then on EVERY history through the
+state the current region ends exactly `c + 1` positions on (`cntAt_sub_of_pend`, and
+`cntAt_succ_of_pend_pend` forbids a longer one), the register there is still positive
+(`nxtAt_lipschitz_two_sided`), a region starting next is handed it
+(`cntAt_eq_nxtAt_of_idle_pend`), and a region with a positive countdown cannot end after one
+position (`cntAt_eq_zero_of_pend_idle`) — so `betaR` fails on all of them. -/
+theorem stab_gapR_iff (g : ℤ → LadderState Bool pendT)
+    (σ : WorldHistory (ladderFrameAdm stepT pendT fwdT bwdT).toTaskFrame)
+    (hσ : ∀ s : ℤ, σ.state s = (s, g s)) (t : ℤ) (hpend : objAt g t = true) :
+    PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) σ t (PlusFormula.stab gapR)
+      ↔ cntAt g t + 1 < nxtAt g t := by
+  rw [PlusTruth.stab_iff]
+  constructor
+  · intro h
+    by_contra hne
+    have hle : nxtAt g t ≤ cntAt g t + 1 := by omega
+    obtain ⟨ρ, hρ⟩ := exists_hist_of_isLadderPath fwdT bwdT
+      (gapPath t (cntAt g t) (nxtAt g t)) (gapPath_isLadderPath t _ _ hle)
+    have hstate : σ.state t = ρ.state t := by
+      rw [hσ t, hρ t, gapPath_eq_of_pend g t hpend]
+    have hα := h ρ hstate
+    unfold gapR at hα
+    rw [PlusTruth.neg_iff] at hα
+    apply hα
+    unfold betaR
+    rw [PlusTruth.untl_iff]
+    refine ⟨t + (cntAt g t : ℤ) + 1, ?_, ?_, ?_⟩
+    · change (t : ℤ) < t + (cntAt g t : ℤ) + 1
+      omega
+    · unfold gapEventR
+      rw [PlusTruth.and_iff, PlusTruth.and_iff, PlusTruth.neg_iff, nextR_iff, nextR_iff,
+        nextR_iff, PlusTruth.neg_iff, truth_rR_iff _ ρ hρ, truth_rR_iff _ ρ hρ,
+        truth_rR_iff _ ρ hρ, gapPath_objAt, gapPath_objAt, gapPath_objAt]
+      refine ⟨by simp, by simp; omega, by simp; omega⟩
+    · intro (r : ℤ) h1 h2
+      have h1' : (t : ℤ) < r := h1
+      have h2' : r < t + (cntAt g t : ℤ) + 1 := h2
+      rw [truth_rR_iff _ ρ hρ, gapPath_objAt]
+      simp; omega
+  · intro hgap ρ hstate
+    obtain ⟨k, hh, hhp, hρp⟩ := exists_isLadderPath_of_hist fwdT bwdT ρ
+    have hpair : ((t + k : ℤ), hh t) = ((t : ℤ), g t) := by
+      rw [← hρp t, ← hstate, hσ t]
+    have hk : k = 0 := by
+      have := congrArg Prod.fst hpair
+      simp at this
+      omega
+    subst hk
+    have hht : hh t = g t := by
+      have := congrArg Prod.snd hpair
+      simpa using this
+    have hρ : ∀ s : ℤ, ρ.state s = (s, hh s) := fun s => by
+      rw [hρp s, add_zero]
+    have hc : cntAt hh t = cntAt g t := by simp [cntAt, hht]
+    have hn : nxtAt hh t = nxtAt g t := by simp [nxtAt, hht]
+    have hp0 : pendT (objAt hh t) = true := by simpa [pendT, objAt, hht] using hpend
+    have hrun := cntAt_sub_of_pend hh hhp t hp0
+    unfold gapR
+    rw [PlusTruth.neg_iff]
+    intro hβ
+    unfold betaR at hβ
+    rw [PlusTruth.untl_iff] at hβ
+    obtain ⟨(s : ℤ), hs, hχ, hguard⟩ := hβ
+    have hs' : (t : ℤ) < s := hs
+    unfold gapEventR at hχ
+    rw [PlusTruth.and_iff, PlusTruth.and_iff, PlusTruth.neg_iff, nextR_iff, nextR_iff,
+      nextR_iff, PlusTruth.neg_iff, truth_rR_iff _ ρ hρ, truth_rR_iff _ ρ hρ,
+      truth_rR_iff _ ρ hρ] at hχ
+    obtain ⟨hidle, hpend1, hidle2⟩ := hχ
+    have hlast := hrun (cntAt hh t) le_rfl
+    have hse : s = t + (cntAt hh t : ℤ) + 1 := by
+      by_contra hne
+      rcases lt_or_gt_of_ne hne with hlt | hgt
+      · have hj := hrun (s - t).toNat (by omega)
+        rw [show t + (((s - t).toNat : ℕ) : ℤ) = s by omega] at hj
+        exact hidle (by simpa [pendT] using hj.1)
+      · have hg1 : PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) ρ
+            (t + (cntAt hh t : ℤ) + 1) rR :=
+          hguard (t + (cntAt hh t : ℤ) + 1) (by change (t : ℤ) < _; omega) hgt
+        rw [truth_rR_iff _ ρ hρ] at hg1
+        have hstep := cntAt_succ_of_pend_pend hh hhp (t + (cntAt hh t : ℤ)) hlast.1
+          (by simpa [pendT] using hg1)
+        omega
+    have hidle' : pendT (objAt hh s) = false := by simpa [pendT] using hidle
+    have hc1 : cntAt hh (s + 1) = nxtAt hh s :=
+      cntAt_eq_nxtAt_of_idle_pend hh hhp s hidle' (by simpa [pendT] using hpend1)
+    have hz := (cntAt_eq_zero_of_pend_idle hh hhp (s + 1) (by simpa [pendT] using hpend1)
+      (by simpa [pendT] using hidle2)).1
+    have hlip := nxtAt_lipschitz_two_sided hh hhp s t
+    omega
+
+/-- **THE READING AT COUNTDOWN `0`.** At a pending state whose countdown is exhausted the bit is
+`2 ≤ n`: a function of the register alone, and of its clipped value at any threshold `Tn ≥ 2`.
+This is the measurement point at which the countdown threshold is vacuous. -/
+theorem stab_gapR_iff_of_cnt_zero (g : ℤ → LadderState Bool pendT)
+    (σ : WorldHistory (ladderFrameAdm stepT pendT fwdT bwdT).toTaskFrame)
+    (hσ : ∀ s : ℤ, σ.state s = (s, g s)) (t : ℤ) (hpend : objAt g t = true)
+    (hcnt : cntAt g t = 0) :
+    PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) σ t (PlusFormula.stab gapR)
+      ↔ 2 ≤ nxtAt g t := by
+  rw [stab_gapR_iff g σ hσ t hpend, hcnt]
+  omega
+
+/-- **THE GAP READING IS CONSUMED, AT EVERY PENDING STATE.** Equality of the signed gap `n − c`
+at two pending states delivers the agreement of this bit, whatever the two countdowns are and
+whether or not they are equal — above any positive countdown threshold and at countdown `0`
+alike.
+
+Sufficiency for `gapR`, not for a closure: nothing here says the gap is the only quantity a `⊡`
+bit reads at a pending state. -/
+theorem stab_gapR_eq_of_gap_eq (g h : ℤ → LadderState Bool pendT)
+    (σ τ : WorldHistory (ladderFrameAdm stepT pendT fwdT bwdT).toTaskFrame)
+    (hσ : ∀ s : ℤ, σ.state s = (s, g s)) (hτ : ∀ s : ℤ, τ.state s = (s, h s))
+    (t t' : ℤ) (hgp : objAt g t = true) (hhp : objAt h t' = true)
+    (hgap : (nxtAt g t : ℤ) - cntAt g t = (nxtAt h t' : ℤ) - cntAt h t') :
+    PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) σ t (PlusFormula.stab gapR)
+      ↔ PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) τ t' (PlusFormula.stab gapR) := by
+  rw [stab_gapR_iff g σ hσ t hgp, stab_gapR_iff h τ hτ t' hhp]
+  omega
+
+/-- **THE CLIPPED REGISTER READING IS REFUTED AT A PENDING STATE, AT EVERY COUNTDOWN
+`c ≥ Tn − 1`.** For every register threshold `Tn`, every `P` and every countdown `c` with
+`Tn ≤ c + 1` there are two ladder paths whose states at `0` are both pending, share the countdown
+`c`, share the clipped register `min · Tn` AND the register residue modulo `P + 1`, and whose
+`⊡ gapR` bits DIFFER. The registers are `c + 1` and `c + 1 + (P + 1)`: both at or above `Tn`,
+congruent modulo `P + 1`, and on opposite sides of the gap threshold.
+
+The countdown is arbitrary above `Tn − 1`, so the refutation sits above any positive countdown
+threshold whatever. What is refuted is the clipped/residue CONJUNCTION as a sufficient condition
+for this bit, not merely its clipped half. -/
+theorem stab_gapR_ne_of_clipped_eq (Tn P c : ℕ) (hc : Tn ≤ c + 1) :
+    ∃ (g h : ℤ → LadderState Bool pendT)
+      (σ τ : WorldHistory (ladderFrameAdm stepT pendT fwdT bwdT).toTaskFrame),
+      IsLadderPath stepT pendT g ∧ IsLadderPath stepT pendT h ∧
+      (∀ s : ℤ, σ.state s = (s, g s)) ∧ (∀ s : ℤ, τ.state s = (s, h s)) ∧
+      objAt g 0 = true ∧ objAt h 0 = true ∧ cntAt g 0 = c ∧ cntAt h 0 = c ∧
+      min (nxtAt g 0) Tn = min (nxtAt h 0) Tn ∧
+      nxtAt g 0 % (P + 1) = nxtAt h 0 % (P + 1) ∧
+      ¬ (PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) σ 0 (PlusFormula.stab gapR)
+          ↔ PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) τ 0
+              (PlusFormula.stab gapR)) := by
+  obtain ⟨σ, hσ⟩ := exists_hist_of_isLadderPath fwdT bwdT
+    (pendPath 0 c (c + 1)) (pendPath_isLadderPath 0 c (c + 1))
+  obtain ⟨τ, hτ⟩ := exists_hist_of_isLadderPath fwdT bwdT
+    (pendPath 0 c (c + 1 + (P + 1))) (pendPath_isLadderPath 0 c (c + 1 + (P + 1)))
+  refine ⟨pendPath 0 c (c + 1), pendPath 0 c (c + 1 + (P + 1)), σ, τ,
+    pendPath_isLadderPath 0 c _, pendPath_isLadderPath 0 c _, hσ, hτ, by simp, by simp,
+    by simp, by simp, ?_, by simp, ?_⟩
+  · rw [pendPath_nxtAt_self, pendPath_nxtAt_self]
+    omega
+  · intro hiff
+    rw [stab_gapR_iff _ σ hσ 0 (by simp), stab_gapR_iff _ τ hτ 0 (by simp)] at hiff
+    simp only [pendPath_cntAt_self, pendPath_nxtAt_self] at hiff
+    omega
+
+/-- **THE CLIPPED REGISTER READING IS CONSUMED ONLY WHERE THE COUNTDOWN IS SHORT.** At two
+pending states with EQUAL countdown `c` and `c + 2 ≤ Tn`, the clipped register `min · Tn`
+delivers the agreement of this bit. Countdown `0` is in scope at every `Tn ≥ 2`.
+
+Together with `stab_gapR_ne_of_clipped_eq` this is the difference between the two measurement
+points: the clipped register is consumed on the slice `c + 2 ≤ Tn` and refuted at every
+`c ≥ Tn − 1`, with nothing in between. -/
+theorem stab_gapR_eq_of_clipped_eq_of_low (g h : ℤ → LadderState Bool pendT)
+    (σ τ : WorldHistory (ladderFrameAdm stepT pendT fwdT bwdT).toTaskFrame)
+    (hσ : ∀ s : ℤ, σ.state s = (s, g s)) (hτ : ∀ s : ℤ, τ.state s = (s, h s))
+    (t t' : ℤ) (hgp : objAt g t = true) (hhp : objAt h t' = true)
+    (hcnt : cntAt g t = cntAt h t') (Tn : ℕ) (hlow : cntAt g t + 2 ≤ Tn)
+    (hclip : min (nxtAt g t) Tn = min (nxtAt h t') Tn) :
+    PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) σ t (PlusFormula.stab gapR)
+      ↔ PlusTruthAt (ladderModel stepT pendT fwdT bwdT labR) τ t' (PlusFormula.stab gapR) := by
+  rw [stab_gapR_iff g σ hσ t hgp, stab_gapR_iff h τ hτ t' hhp]
+  omega
+
+end PendingConsumer
+
+section GapProducer
+
+variable {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **THE PRODUCER LEG: the gap-shaped register conjunct forces the original's gap not to rise
+across the block.** If a ladder path `g'` is pending at position `j` of copies `0` and `1` of the
+block `[u, u + l)` and carries there the signed gap `n − c` of the original at `u + j`, then the
+original's gap at the block's last position is at most its gap at the block's first.
+
+The top of copy `0` and the bottom of copy `1` are one step of `g'` apart and both pending, so the
+countdown falls by exactly one (`cntAt_succ_of_pend_pend`) while the register moves by at most one
+(`nxtAt_drift`): the gap moves by `0`, `1` or `2` and never down. The conjunct identifies those two
+gaps with the original's at the block's last and first positions.
+
+Generic in the object and in both paths. The pendingness of `g'` at the copy positions is what the
+iterated splice's object clause delivers on a block of a pending past, and it is carried in the
+hypothesis because without it an idle-to-pending step could drop the gap. -/
+theorem iterSpliced_gap_interior_forces_block_gap_le
+    (g : ℤ → LadderState Q pend) {g' : ℤ → LadderState Q pend}
+    (hg' : IsLadderPath step pend g') (u : ℤ) (l : ℕ) (hl : 0 < l)
+    (hgap : ∀ i j : ℕ, i ≤ 1 → j < l →
+      pend (objAt g' (u + ((i * l : ℕ) : ℤ) + (j : ℤ))) = true ∧
+      (nxtAt g' (u + ((i * l : ℕ) : ℤ) + (j : ℤ)) : ℤ)
+          - cntAt g' (u + ((i * l : ℕ) : ℤ) + (j : ℤ))
+        = (nxtAt g (u + (j : ℤ)) : ℤ) - cntAt g (u + (j : ℤ))) :
+    (nxtAt g (u + ((l - 1 : ℕ) : ℤ)) : ℤ) - cntAt g (u + ((l - 1 : ℕ) : ℤ))
+      ≤ (nxtAt g u : ℤ) - cntAt g u := by
+  have hcast : ((l - 1 : ℕ) : ℤ) = (l : ℤ) - 1 := by omega
+  have h0 := hgap 0 (l - 1) (by omega) (by omega)
+  have e0 : u + ((0 * l : ℕ) : ℤ) + ((l - 1 : ℕ) : ℤ) = u + ((l - 1 : ℕ) : ℤ) := by
+    push_cast; ring
+  rw [e0] at h0
+  have h1 := hgap 1 0 le_rfl hl
+  have e1 : u + ((1 * l : ℕ) : ℤ) + ((0 : ℕ) : ℤ) = u + ((l - 1 : ℕ) : ℤ) + 1 := by
+    rw [hcast]; push_cast; ring
+  rw [e1] at h1
+  simp only [Nat.cast_zero, add_zero] at h1
+  have hd := nxtAt_drift g' hg' (u + ((l - 1 : ℕ) : ℤ))
+  have hc := cntAt_succ_of_pend_pend g' hg' (u + ((l - 1 : ℕ) : ℤ)) h0.1 h1.1
+  unfold Drift at hd
+  omega
+
+end GapProducer
 
 end FormalSystem.Metalogic.Decidability.RaySummary
