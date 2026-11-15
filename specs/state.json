@@ -99,7 +99,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-10-10T23:53:38Z",
-      "last_updated": "2026-11-15T22:57:22Z",
+      "last_updated": "2026-11-15T23:32:42Z",
       "session_id": "sess_1794776699_aa0fb6",
       "artifacts": [
         {
@@ -133,9 +133,9 @@
           "summary": "Phase 11.26 marked [COMPLETED] with its Recorded Outcome: branch OPEN, the regime covered and not covered, the refusing coordinate and the inequality."
         },
         {
-          "path": "specs/761_ladder_realization_theorem/summaries/20_filed-agreement-blocked-covered-instantiation-summary.md",
+          "path": "specs/761_ladder_realization_theorem/summaries/20_diagonal-gap-offset-invariance-summary.md",
           "type": "summary",
-          "summary": "Phase 11.7: the filed agreement attempted token-for-token and left BLOCKED with its goal state recorded; the covered-set instantiation landed under its own name."
+          "summary": "Route (E-2): offset-invariance of tpOf under ladderModel and the covered agreement at a general time component."
         }
       ],
       "next_artifact_number": 21,
