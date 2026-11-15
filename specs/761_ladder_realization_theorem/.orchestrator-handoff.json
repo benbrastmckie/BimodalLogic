@@ -1,49 +1,16 @@
 {
-  "status": "blocked",
-  "dispatch_seq": 39,
-  "phases_completed": 30,
-  "phases_total": 41,
-  "summary": "Plan v14 was not revised after the (R-i) ruling, so this dispatch had no phase to execute; it ran the mandated obligation check. Route (R-i) discharges the depth-0 half (the landed truth-level transports are already pinned-letter) but not the step: its hL premise needs cell agreement at position pairs that are never kappa-collisions. No Lean file was edited and no build was run; sorry 0, vacuous and axiom baselines unchanged. A new blocking route decision is returned.",
-  "blockers": [
-    "Phase 11.6: plan v14 carries no phase for route (R-i) and its task list still forbids the re-derivation; a /revise is owed before any implement dispatch.",
-    "Phase 11.6, route (R-i), step: hL at interior copies of the iterated duplication is a cell agreement at pairs displaced by a multiple of the block length l | P+1, off-residue when l < P+1 (non-collision arithmetic scratch-compiled).",
-    "Phase 11.6, route (R-i), step: at a threshold-tight pair c = Tc the region's later positions are below Tc, where kappa's first coordinate is exact, so no displaced pair there collides, whatever the pump construction (arithmetic scratch-compiled; underivability argued)."
-  ],
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 41,
+  "summary": "Revised task 761's plan onto route S-2 (depth-stratified threshold margins), integrating reports/15_stab-bit-copy-pair-decision.md. Four phases added (11.18 the (K2) margin conjunct with Tcof through Pof and the compiled room lemma; 11.19 the two clauses the iterated splice does not expose; 11.20 the ~_d relation, the s := P+1 instantiation and pump-pair membership; 11.21 the register-displaced reduction), Phase 11.6 re-decomposed onto the ~_d invariant and relocated from LadderAgree.lean to LadderCell.lean because finding 9 puts the pump spine out of its import reach, and the standing 'no raised Tc / no ParamsOk strengthening' prohibition lifted scoped to Phase 11.18 alone. All 30 closed phase bodies carried forward verbatim; the six-identifier Lean Challenge Statements block is byte-identical.",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/14_carried-hypothesis-depth-zero-route-summary.md",
-      "summary": "Round-14 summary covering dispatches 38 and 39: still blocked, no library change, route (R-i) fails its obligation check on the step."
-    },
-    {
       "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
-      "summary": "Phase 11.6 stays [BLOCKED]; second BLOCKER entry on route (R-i) added under the heading."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T221500Z.md",
-      "summary": "Dispatch-39 handoff: the obligation check, the two non-collision sources, and the scratch probe source."
+      "path": "specs/761_ladder_realization_theorem/plans/15_depth-stratified-threshold-margins.md",
+      "summary": "Route-S-2 plan: 45 phases, 30 closed, 15 open, 48 hours costable (30.5 landed / 17.5 open); Phase 11.18 is the one enterable phase"
     }
   ],
-  "modified_files": [
-    "specs/761_ladder_realization_theorem/plans/14_carried-hypothesis-depth-zero-route.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T221500Z.md",
-    "specs/761_ladder_realization_theorem/summaries/14_carried-hypothesis-depth-zero-route-summary.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl"
-  ],
-  "user_decision": {
-    "question": "Route (R-i) does not discharge the step half of its obligation: relativizing the splice/deletion stack to a pinned-letter parameter L leaves the transport's hL premise, which needs cell agreement at position pairs that are never kappa-collisions (interior block copies displaced off-residue; threshold-tight pairs with later positions below Tc). How should the step be approached?",
-    "options": [
-      "(S-1) Research round first: settle by compiled probe on a small fixture whether a stab bit actually differs at a copy pair, and whether a margin design closes, before any further plan revision or implement dispatch",
-      "(S-2) Depth-stratified threshold margins: pump only where the countdown stays above a threshold that falls with stab depth, with blocks spaced at P+1; strengthens (K2) by a depth-dependent margin, so it lifts the plan's 'do NOT raise Tc or strengthen ParamsOk' prohibition and changes the ruled ParamsOk; exact shift with P+1-spaced blocks still open; NOT COSTABLE",
-      "(S-3) Re-open route (R-a), the depth-stratified certificate family the recorded decision did not take",
-      "(S-4) Rest the task [BLOCKED] with both obstructions recorded; no further dispatch until a new idea"
-    ],
-    "recommended": "(S-1) Research round first: settle by compiled probe on a small fixture whether a stab bit actually differs at a copy pair, and whether a margin design closes, before any further plan revision or implement dispatch",
-    "blocking": true,
-    "obligation": "Evidence, compiled where it can be, that decides between a margin design and the certificate-side route: either a fixture on which a stab bit differs at a pump copy pair (so no path-level correspondence through kappa-classes exists), or a stated induction invariant whose position pairs are all inside its own scope."
-  },
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.6-handoff-20261114T221500Z.md",
-  "continuation_context": "Phase 11.6 [BLOCKED]; route (R-i) fails its obligation check on the step. Resume only after the new route decision and /revise 761."
+  "phases_completed": 30,
+  "phases_total": 45,
+  "blockers": []
 }

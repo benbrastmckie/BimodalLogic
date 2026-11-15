@@ -1,47 +1,21 @@
 {
-  "status": "researched",
-  "started_at": "2026-11-14T22:30:00Z",
-  "dispatch_seq": 40,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/761_ladder_realization_theorem/reports/15_stab-bit-copy-pair-decision.md",
-      "summary": "Route S-1 decided: both recorded obstruction sources (O1 off-residue interior copies, O2 threshold-straddling pairs) are GENUINE stab-bit differences, so hL is false there and the pump construction must change; the margin design (S-2) survives, its exact-shift question is retired by exists_typeBlock_of_spacing at s := P+1, and the (K2) margin conjunct it needs is compiled dischargeable."
-    },
-    {
-      "type": "prototype",
-      "path": "specs/761_ladder_realization_theorem/prototype/stab-bit-copy-pair-probe.lean",
-      "summary": "Compiled probe (lake env lean, exit 0, 12 declarations, axioms propext/Classical.choice/Quot.sound, no sorryAx): the two refutations, the (K1) coverage of the fixture's stab bit, and three generic ParamsOk facts (modulus unbounded at fixed Tc, upward monotonicity in Tc, margin dischargeability)."
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/15_depth-stratified-threshold-margins.md",
+      "summary": "Revised plan on route S-2 (depth-stratified threshold margins), integrating the round-15 stab-bit copy-pair decision report"
     }
   ],
-  "verification": {
-    "verification_passed": true,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "axiom_count": 0,
-    "axiom_count_note": "0 real `axiom` DECLARATIONS across FormalSystem and Tests, measured this round with `grep -rnE '^axiom [A-Za-z_][A-Za-z0-9_'\\''.]*[[:space:]]*[({:]'`. The `^axiom ` figure carried by the previous round's metadata (12 + 2 = 14) counts docstring line-wraps whose wrapped line happens to begin with the word 'axiom', not declarations; all 12 such matches were inspected and none is a declaration. Baseline unchanged either way.",
-    "build_passed": null,
-    "build_output": "not run: no library Lean source touched. The round's own artifact compiled standalone: lake env lean specs/761_ladder_realization_theorem/prototype/stab-bit-copy-pair-probe.lean, exit 0, 12 #print axioms lines all [propext, Classical.choice, Quot.sound], no sorryAx. lean-sorry-census.sh over FormalSystem, Tests and the prototype directory: sorry_count 0. check-task-references.sh --quiet: PASS."
-  },
-  "user_decision": {
-    "question": "The research round decided the evidence: both obstruction sources are genuine stab-bit differences, and the margin design's two open points are answered (block spacing at s := P+1 retires the exact-shift question; the (K2) margin conjunct is compiled dischargeable). Route S-2 lifts this plan's standing 'do NOT raise Tc or further strengthen ParamsOk without a ruling' prohibition. Should the plan be revised onto S-2?",
-    "options": [
-      "S-2 \u2014 depth-stratified threshold margins: pump through exists_typeBlock_of_spacing at s := P+1, add one (K2) conjunct coupling Tc to P and to the stab-depth sup, redefine Tcof as a max through Pof; lifts the Tc/ParamsOk prohibition",
-      "S-3 \u2014 re-open route (R-a), the depth-stratified certificate family the recorded decision did not take; larger, and answers a question this round closed",
-      "S-4 \u2014 rest [BLOCKED] with the two refutations and the margin feasibility recorded"
-    ],
-    "recommended": "S-2 \u2014 depth-stratified threshold margins: pump through exists_typeBlock_of_spacing at s := P+1, add one (K2) conjunct coupling Tc to P and to the stab-depth sup, redefine Tcof as a max through Pof; lifts the Tc/ParamsOk prohibition",
-    "blocking": false,
-    "obligation": "A revision whose first phase lands the two clauses exists_iterSpliced_ladderPath_idx_of_pend_past does not expose (the interior-copy countdown cntAt g' (u + i*l + j) = cntAt g (u + j) + (d - i)*l, and the register nxtAt g' (u + i*l + j) = nxtAt g (u + j)), plus a compiled room lemma b*(P+1) <= Tc from the new (K2) conjunct, BEFORE any depth induction is attempted; and whose induction invariant is stated on q = q' AND n = n' AND c == c' mod (P+1) AND Tc_d <= min c c', not on kappa-equality, unless kappa's gap coordinate is checked saturated at the intended instantiation."
-  },
+  "next_steps": "Run /orchestrate 761 to execute the revised plan; Phase 11.18 (the parameter margin) is the one enterable phase, and Phase 11.19 is enterable in parallel with it.",
   "metadata": {
-    "session_id": "sess_1794695736_a316b1_761",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "research",
-      "lean-research-agent"
-    ]
+    "session_id": "sess_1794699385_4f7c40_761",
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "dispatch_seq": 41,
+    "phase_count": 45,
+    "phases_closed": 30,
+    "estimated_hours": 48,
+    "reports_integrated": ["15_stab-bit-copy-pair-decision.md"]
   }
 }
