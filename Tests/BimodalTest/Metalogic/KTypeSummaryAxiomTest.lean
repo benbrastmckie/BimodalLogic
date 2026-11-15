@@ -3304,4 +3304,51 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 #guard_msgs in
 #print axioms real_certStabK_of_classRepTransport
 
+/-! ### Phase 11.26: the register-raise transport, and the two coordinates that refuse it
+
+Branch OPEN of the certificate-side bridge. `kappa_eq_register_raise_down` is the
+DOWNWARD-saturated family of register-displaced `kappa`-collisions;
+`raise_room_excludes_upward_displacement` is the compiled inequality by which the raise tool's
+room ceiling excludes the UPWARD-saturated family Phase 11.25 exhibited inside the obligation's
+own domain; `certStabK_of_stabFree` records that at a stab-free closure — the only closure at
+which the register-moving deletions are available — condition (5) is vacuous;
+`exists_ladderPath_register_raised_at_held_countdown` is the `m = 0` instance of the raised
+exact-shift deletion, the one instance that holds a countdown fixed; and
+`cellAt_subset_of_register_raise` is the transport it yields, with the `kappa`-collision as the
+first conjunct of its conclusion. None of these claims `ClassRepTransport`, which stays OPEN,
+and none claims the agreement or any inclusion between `Real` and `Dmax`. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.kappa_eq_register_raise_down' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms kappa_eq_register_raise_down
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.raise_room_excludes_upward_displacement' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms raise_room_excludes_upward_displacement
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.certStabK_of_stabFree' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms certStabK_of_stabFree
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_ladderPath_register_raised_at_held_countdown' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms exists_ladderPath_register_raised_at_held_countdown
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_subset_of_register_raise' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms cellAt_subset_of_register_raise
+
+
 end BimodalTest.Metalogic

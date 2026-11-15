@@ -6127,7 +6127,7 @@ grep-match count 14, unchanged; `check-module-invariants.sh`, `typst-sync-check.
 `readme-lint.sh`, `check-evidence-probes.sh` (63 wired, unchanged) and
 `check-task-references.sh --quiet` each exit 0.
 
-### Phase 11.26: CONDITIONAL — The Class-Representative Transport the Bridge Names [NOT STARTED]
+### Phase 11.26: CONDITIONAL — The Class-Representative Transport the Bridge Names [COMPLETED]
 
 **ENTRY CONDITION, AND IT IS NOT A FORMALITY: Phase 11.25 recorded outcome (i) or (iii).** If Phase
 11.25 recorded outcome (ii) — the transport REFUTED at the register-displaced instances — route
@@ -6165,24 +6165,24 @@ carried bundle confines to — or record precisely why it does not close, naming
 pairs and the room condition.
 
 **Tasks**:
-- [ ] **Read Phase 11.25's recorded outcome and state which branch this phase is on**, in the phase
+- [x] **Read Phase 11.25's recorded outcome and state which branch this phase is on**, in the phase
       body, before any proof is attempted. A phase that proves something on a branch it did not
       identify has not executed the route.
-- [ ] Re-read, against their LIVE signatures, every tool the branch names: `kappa_eq_of_shift`,
+- [x] Re-read, against their LIVE signatures, every tool the branch names: `kappa_eq_of_shift`,
       `clipIdx_sub_sub`, both register-moving deletions, and whatever Phase 11.25 added. Record
       which conjunct each one preserves and which it moves — **a move that moves the residue, or
       that drops a counter below the threshold the obligation relies on, does not transport
       anything.**
-- [ ] State the transport as a declaration with its room conditions as explicit named binders, never
+- [x] State the transport as a declaration with its room conditions as explicit named binders, never
       as a side remark in a proof, and record in the phase body which regime it covers and which it
       does not.
-- [ ] Prove it, or record precisely why it does not close. **If a room ceiling refuses it — the
+- [x] Prove it, or record precisely why it does not close. **If a room ceiling refuses it — the
       regime's `hasForwardSlack_amount_le` ceiling or whatever Phase 11.25 names — say so and give
       the inequality.**
-- [ ] **Record, in the section docstring, what the transport does NOT say**: it is not a cell
+- [x] **Record, in the section docstring, what the transport does NOT say**: it is not a cell
       agreement and asserts none; it is not `certStabK` and claims none; it is not a position-pair
       correspondence and defines none; and it does not discharge the carried premise bundle.
-- [ ] Wire the new declarations: axiom pins, docstring, generated inventory blocks, `status.typ`. No
+- [x] Wire the new declarations: axiom pins, docstring, generated inventory blocks, `status.typ`. No
       `docs/theorem-index.md` row — no filed Goal lands here.
 
 **Prohibited workarounds**: do NOT derive the transport from `ladderSound`, `ladderLift`,
@@ -6235,6 +6235,124 @@ goal state, the named refusing coordinate and the branch it failed on.**
 - No cell-agreement claim was landed here: `grep -rnE 'cellAt .*= cellAt|cellLE .*= cellLE'` over the phase's own additions returns nothing outside a docstring sentence recording that a transport is not an agreement.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - If the phase closes `[BLOCKED]`: the goal state is recorded with the refusing coordinate, the pairs and the room condition or inequality all written out, and Phase 11.27 is marked as waiting on it. **Do not widen, weaken or re-measure the obligation to make the transport close** — that is a route decision for a `/revise`, not a move inside a phase.
+
+#### Recorded Outcome
+
+**THE BRANCH IS OPEN, read off Phase 11.25's recorded outcome (iii) and stated here before any
+proof was attempted.** Phase 11.25 recorded the obligation named and the transport neither proved
+nor refuted, so this phase entered on **branch OPEN**: it attempted `ClassRepTransport` on its own
+ground. The transport does NOT close in general; what landed is a transport over a NARROWED
+regime, together with two compiled objects naming the two coordinates that refuse the rest, and a
+third gap recorded rather than closed. Under the task description's CONTINGENCY clause this is a
+complete and reportable outcome, not a failure — no `sorry`, no axiom, no vacuous definition, no
+weakened conjunct anywhere in the tree.
+
+**Live signatures re-read at phase entry (2026-11-15), with the figures re-measured.**
+`kappa_eq_of_shift` `LadderAgree.lean:3320` (COMMON downward/upward shift of BOTH counters by a
+multiple of `P + 1`; moves both, holds all five coordinates under `Tc ≤ c`, `Tn ≤ n`);
+`clipIdx_sub_sub` `CounterQuotient.lean:289` (its gap half: a COMMON shift moves neither the order
+nor the distance — hence preserves nothing when only ONE counter moves); `clipIdx`
+`CounterQuotient.lean:160`, `kappa` `:169`, `certStabK` `:1221`; the two register-moving
+deletions at `LadderChain.lean:2576`
+(`exists_ladderPath_through_deleted_exact_lowered_upfirst_of_pend_past`, which moves the register
+DOWN at the cost of `k` extra forward slack in the upper direction and lowers the countdown by
+`m · (P + 1)`) and `LadderChain.lean:2703`
+(`exists_ladderPath_through_deleted_exact_raised_upfirst_of_pend_past`, which moves the register
+UP free in that direction under the named room `n₀ + 2 + m · (P + 1) ≤ cntAt g z` and lowers the
+countdown by the same `m · (P + 1)`); `HasForwardSlack` `LadderChain.lean:1517`; `ParamsOk`
+`CounterQuotient.lean:929`; `mem_cellAt_ladder_iff` and `exists_hist_of_isLadderPath`
+`LadderAgree.lean:2664`/`:2626`. **Which conjunct each tool preserves and which it moves,
+recorded as the phase asks**: `kappa_eq_of_shift` moves BOTH counters together and so cannot
+reach a pair at a held countdown; each deletion moves the REGISTER to a prescribed value and
+lowers the COUNTDOWN by `m · (P + 1)`, so **`m = 0` is the only instance of either that holds a
+countdown fixed** — and a held countdown is exactly what a register-displaced `kappa`-collision
+asks for. **`LadderRealize.lean` re-measured at phase start: 926 lines, no in-source
+`longFile` baseline** (it closes at 1,098, still far under the package-wide 1,500);
+**`KTypeSummaryAxiomTest.lean` re-measured at 3,307 against its in-source 3,400** — the five new
+pins and their section docstring take it to 3,355, inside that baseline, so no baseline was
+raised here.
+
+**WHAT LANDED — five declarations, all in `LadderRealize.lean`, all compiled.**
+
+| Declaration | What it is |
+|---|---|
+| `kappa_eq_register_raise_down` | the DOWNWARD-saturated register-displaced collisions: `Tn ≤ n' ≤ n`, `n ≡ n' [MOD P + 1]`, `n + B ≤ c` give the same class at a held countdown |
+| `exists_ladderPath_register_raised_at_held_countdown` | the raised exact-shift deletion at `m = 0` — the one instance that holds the countdown fixed — with the room conditions as explicit named binders |
+| `cellAt_subset_of_register_raise` | **the transport**, `ClassRepTransport`'s own inclusion direction at the diagonal world state, with the `kappa`-collision carried as the FIRST conjunct of the conclusion |
+| `raise_room_excludes_upward_displacement` | the compiled inequality by which the raise tool's room ceiling `n₀ + 2 ≤ c` excludes the UPWARD-saturated family `c + B ≤ n₀` |
+| `certStabK_of_stabFree` | condition (5) is VACUOUS at a stab-free closure — the only closure at which the register-moving deletions are available |
+
+**THE REGIME IT COVERS AND THE REGIME IT DOES NOT, stated as the phase requires.** It covers the
+downward-saturated collisions above, at a held countdown, where the register sits at least `B`
+below the countdown. It does NOT cover the UPWARD-saturated family — the one Phase 11.25's
+`register_displaced_collision_in_domain` exhibits INSIDE the obligation's own domain, at
+`c + B ≤ n`. **The refusing coordinate is the REGISTER, the pairs are exactly that family, and
+the inequality is given**: the tool delivers its prescribed anchor only under
+`n₀ + 2 ≤ cntAt g z`, while that family carries `c + B ≤ n₀` at the same countdown `c`, so
+`B + 2 ≤ 0` — `raise_room_excludes_upward_displacement` is that contradiction as an object, and
+it asserts nothing about whether the transport holds there.
+
+**A SECOND, INDEPENDENT REFUSING COORDINATE: the `⊡` letters themselves.** Both register-moving
+deletions carry `hno : ∀ χ, PlusFormula.stab χ ∉ plusSubformulaClosure φ`, so the transport landed
+here exists only at a stab-free closure — and `certStabK_of_stabFree` compiles that at exactly
+those `φ` the obligation the bridge consumes is VACUOUS. **So the regime the transport covers is
+the regime in which condition (5) asks nothing**, and the landing buys the certificate side
+nothing. This is the same stab-free premise that blocked Phase 11.6, met here on the certificate
+side rather than the path side, and it is recorded as a measurement rather than a re-opening of
+that phase.
+
+**A THIRD GAP, RECORDED RATHER THAN CLOSED.** The inclusion is stated at the DIAGONAL world state
+`(z, ⟨(q, c, n), h⟩)` evaluated at `z` — `CellLEZeroConstOfKappaEq`'s and
+`mem_cellAt_ladder_iff`'s own shape — while `real_certStabK_of_cell_stab_transfer`'s `hcell`
+binder is at the general `(t, ⟨(q, c, n), h⟩)` evaluated at `z`. Bridging them is an
+offset-invariance of `tpOf` under the ladder model, an induction over the closure, and it is NOT
+landed here.
+
+**One in-phase repair, recorded rather than silently fixed.** The first landed form of
+`cellAt_subset_of_register_raise` consumed neither `hTn` nor `hres` — the unused-variable linter
+flagged both, which is this phase's `lean_minimal_hypotheses` check in mechanical form. The
+inclusion follows from the raise tool and the room conditions ALONE. Rather than delete the two
+binders (which would have left a statement that is not visibly about class-equal states), the
+`kappa`-collision was moved into the conclusion as its first conjunct, so every collision binder
+is load-bearing and the statement is honestly a transport between CLASS-EQUAL states. That the
+surgery itself never consults the class is a finding of the phase, recorded in the docstring.
+
+**What this phase does NOT say**, recorded in the section docstring and repeated here: it is not a
+cell AGREEMENT and asserts none — every statement is a one-directional inclusion under named room
+conditions, never an equality of cells; it is not `certStabK` of `Real` and claims none, the
+vacuous case excepted; it defines no relation on POSITION PAIRS and carries no register conjunct
+on one, the clipped gap included (Ruling 1); it does not discharge `ClassRepTransport`, which
+remains OPEN exactly as Phase 11.25 left it; it claims neither `real_certAdmK_of_paramsOk`, nor
+`real_subset_dmax`, nor `Dmax ⊆ Real`; it does not re-open, weaken or supersede any Phase 11.20 or
+Phase 11.23 declaration; it takes no new `(K2)` ruling and does not raise `Tc`, re-base `Tc_d` or
+strengthen `ParamsOk`; and it claims no reserved name. **The pre-authorized `LadderWindow` import
+edge was NOT added** — no declaration here consumes `cellSubset_of_kappa_eq_window_raise`, and
+`LadderRealize.lean` still imports `CounterQuotient` and `LadderChain` alone.
+
+**Verification measured at close.** Module build of
+`FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize` exit 0, 0 errors, 0 warnings;
+`BimodalTest.Metalogic.KTypeSummaryAxiomTest` exit 0, all five new `#guard_msgs` pins green;
+**full unscoped `lake build` exit 0, 0 errors, 2,975 jobs**, with both touched modules' `.olean`
+newer than their sources. `#print axioms` on each of the five new declarations a subset of
+`[propext, Classical.choice, Quot.sound]` — `kappa_eq_register_raise_down` and
+`raise_room_excludes_upward_displacement` at `[propext, Quot.sound]`, the other three at the full
+standard profile. `lean-sorry-census.sh` exit 0 with `sorry_count: 0`; repository-wide vacuous
+grep at its 1-hit baseline, unchanged; `^axiom ` grep-match count 14, unchanged. The circularity
+grep (`ladderSound|ladderLift|ladderCons_localRun|real_certStabK`) over this phase's own additions
+returns one docstring-prose hit and nothing else; the position-pair grep
+(`~_d|iterSpliceIdx|nxtAt … = nxtAt …|min (nxtAt …) Tn`) returns nothing; the three-claims grep
+returns one docstring-prose hit recording that they are NOT claimed; the cell-agreement grep
+returns nothing; no probe declaration is cited as a library fact and no import names a path under
+`specs/`. `check-module-invariants.sh`, `typst-sync-check.sh`, `readme-lint.sh`,
+`check-evidence-probes.sh` (63 wired, unchanged — no probe was authored here) and
+`check-task-references.sh --quiet` each exit 0.
+
+**Phase 11.27's standing.** Phase 11.27 is `certStabK` of `Real` over the COVERED collisions. The
+covered collisions are now a named, compiled family — but the two refusals above mean they are
+covered only at a stab-free closure, where `certStabK_of_stabFree` already gives the conclusion
+outright. Phase 11.27 is therefore left `[NOT STARTED]` and is entered, if at all, only against
+that measurement; widening, weakening or re-measuring the obligation to make the transport close
+is a route decision for a `/revise`, not a move inside a phase.
 
 ### Phase 11.27: CONDITIONAL — `certStabK` of `Real` Over the Covered Collisions, and the Cell-Level Agreement [NOT STARTED]
 

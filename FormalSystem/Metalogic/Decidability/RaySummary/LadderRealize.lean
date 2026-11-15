@@ -921,6 +921,178 @@ theorem real_certStabK_of_classRepTransport (lab : Q → Atom → Bool) (φ : Pl
   real_certStabK_of_cell_stab_transfer lab φ Tc Tn P B fwd bwd
     (cell_stab_transfer_of_classRepTransport lab φ Tc Tn P B fwd bwd htr)
 
+/-! ### Phase 11.26, BRANCH OPEN: the transport on the register-RAISE regime, and the two
+coordinates that refuse it outside that regime
+
+**THE BRANCH IS READ OFF PHASE 11.25'S RECORDED OUTCOME, AND IT IS OPEN.** Phase 11.25 recorded
+outcome (iii) — the obligation named, the transport neither proved nor refuted — so this section
+is on branch OPEN: it attempts `ClassRepTransport` on its own ground and records, as compiled
+objects, exactly how far the landed machinery reaches and which coordinate refuses the rest.
+
+**WHAT THE LANDED MACHINERY DELIVERS.** The one tool that moves a register at a HELD countdown is
+`exists_ladderPath_through_deleted_exact_raised_upfirst_of_pend_past` at `m = 0`: the exact-shift
+deletion with nothing deleted, which re-lifts the ORIGINAL walk and countdown at a prescribed
+anchor value. `exists_ladderPath_register_raised_at_held_countdown` is that instance, named, and
+`cellAt_subset_of_register_raise` is the cell-level inclusion it yields — a transport in exactly
+`ClassRepTransport`'s direction, with every room condition an explicit named binder.
+
+**THE REGIME IT COVERS, AND THE REGIME IT DOES NOT.** It covers the DOWNWARD-saturated
+register-displaced collisions: pairs `(c, n)`, `(c, n')` at a held countdown with
+`Tn ≤ n' ≤ n`, `n ≡ n' [MOD P + 1]` and `n + B ≤ c`, which `kappa_eq_register_raise_down` shows
+are `kappa`-collisions. It does NOT cover the UPWARD-saturated ones — the family Phase 11.25's
+`register_displaced_collision_in_domain` exhibits inside the obligation's own domain, at
+`c + B ≤ n` — and the exclusion is an inequality rather than an assessment:
+`raise_room_excludes_upward_displacement` is the compiled contradiction between the raise tool's
+room ceiling `n₀ + 2 ≤ cntAt g z` and that family's `c + B ≤ n₀`.
+
+**THE SECOND, INDEPENDENT COORDINATE THAT REFUSES IT: the `⊡` letters themselves.** Both
+register-moving deletions carry the stab-free premise
+`hno : ∀ χ, PlusFormula.stab χ ∉ plusSubformulaClosure φ`, so the transport landed here is
+available only at a stab-free closure — and `certStabK_of_stabFree` is the compiled object
+showing that at exactly those `φ` the obligation the bridge consumes is VACUOUS. So the
+inclusion below is a real transport over a real family of `kappa`-collisions, and it buys the
+certificate side nothing: the regime it covers is the regime in which condition (5) asks nothing.
+
+**WHAT THIS SECTION DOES NOT SAY.** It is not a cell AGREEMENT and asserts none — every statement
+below is a one-directional inclusion under named room conditions, never an equality of cells. It
+is not `certStabK` of `Real` and claims none: `certStabK_of_stabFree` is the vacuous case and
+nothing else. It is not a position-pair correspondence and defines no relation on position pairs;
+no register conjunct on such a pair appears, the clipped gap included. It does not discharge
+`ClassRepTransport`, which remains OPEN exactly as Phase 11.25 left it, and it discharges neither
+`real_certAdmK_of_paramsOk`, `real_subset_dmax` nor `Dmax ⊆ Real`. It re-opens, weakens and
+supersedes no landed measurement of Phases 11.20 or 11.23.
+
+**A THIRD GAP, RECORDED RATHER THAN CLOSED.** The inclusion is stated at the DIAGONAL world state
+`(z, ⟨(q, c, n), h⟩)` evaluated at `z` — the shape `CellLEZeroConstOfKappaEq` and
+`mem_cellAt_ladder_iff` use — while `real_certStabK_of_cell_stab_transfer`'s `hcell` binder is at
+the general `(t, ⟨(q, c, n), h⟩)` evaluated at `z`. Bridging the two is an offset-invariance of
+`tpOf` under the ladder model, which is an induction over the closure and is NOT landed here. -/
+
+/-- **THE `kappa`-COLLISIONS THE REGISTER RAISE REACHES: downward-saturated, countdown held.**
+Two registers above the register threshold, congruent modulo the period, both at or below the
+countdown by at least the gap clip, give the same class: the countdown coordinates are untouched,
+the clipped register coordinate is pinned at `Tn`, the residues agree by hypothesis, and the gap
+coordinate is pinned at `0` because each register sits at least `B` below the countdown. This is
+the family `cellAt_subset_of_register_raise` transports across, and it is DISJOINT from the
+family `register_displaced_collision_in_domain` exhibits. -/
+theorem kappa_eq_register_raise_down (Tc Tn P B c n n' : ℕ)
+    (hTn : Tn ≤ n') (hle : n' ≤ n) (hres : n % (P + 1) = n' % (P + 1))
+    (hgap : n + B ≤ c) :
+    kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c, n') := by
+  have h1 : min n Tn = min n' Tn := by omega
+  have h3 : clipIdx B c n = clipIdx B c n' := by
+    unfold clipIdx; split <;> split <;> omega
+  simp only [kappa, h1, h3, hres]
+
+/-- **THE ROOM CEILING EXCLUDES THE UPWARD-SATURATED FAMILY, AS AN INEQUALITY.** The register
+raise delivers its prescribed anchor only under `n₀ + 2 ≤ cntAt g z`; the collisions Phase 11.25
+exhibited inside the obligation's domain carry `c + B ≤ n₀` at the same countdown `c`. The two
+are contradictory, so the one landed tool that holds a countdown fixed cannot reach a single pair
+of that family. This names the coordinate that refuses the transport — the REGISTER — and the
+inequality that refuses it; it asserts nothing about whether the transport holds there. -/
+theorem raise_room_excludes_upward_displacement (B c n₀ : ℕ) (hB : c + B ≤ n₀) :
+    ¬ (n₀ + 2 ≤ c) := by omega
+
+omit [Finite Q] [Nonempty Q] in
+/-- **CONDITION (5) IS VACUOUS AT A STAB-FREE CLOSURE.** Every set whatever satisfies `certStabK`
+when no `⊡` letter lies in the closure, because the clause's own quantifier is empty. Compiled
+here because it is what fixes the standing of the transport below: the register-moving deletions
+carry the stab-free premise, so the regime in which the transport is available is exactly the
+regime in which the obligation it would discharge asks nothing. -/
+theorem certStabK_of_stabFree (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (R : Set (Q × ClType φ × CK Tc Tn P B)) :
+    certStabK φ Tc Tn P B R := by
+  intro x _ ψ hψ hs
+  obtain ⟨χ, rfl⟩ : ∃ χ, ψ = PlusFormula.stab χ := by
+    cases ψ <;> first | exact ⟨_, rfl⟩ | simp [isStab] at hs
+  exact absurd hψ (hno χ)
+
+/-- **THE REGISTER RAISE AT A HELD COUNTDOWN.** The exact-shift raised deletion at `m = 0`:
+nothing is deleted, so the countdown at `z` is held rather than lowered, the object state is
+held, the realized stab-free type at `z` is held, and the register is delivered at the prescribed
+value `n₀`. Its room conditions are the tool's own, with `m = 0` substituted: the raise
+`nxtAt g z ≤ n₀`, the threshold `Tc ≤ cntAt g z`, the room `n₀ + 2 ≤ cntAt g z`, and the regime
+`HasForwardSlack g z 0 (nxtAt g z)`. Nothing here is new machinery — the point of naming the
+instance is that `m = 0` is the ONLY instance that holds a countdown fixed, and a held countdown
+is what a register-displaced `kappa`-collision asks for. -/
+theorem exists_ladderPath_register_raised_at_held_countdown [Fintype Q]
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (z : ℤ)
+    (hpast : ∀ p : ℤ, p ≤ z → pend (objAt g p) = true)
+    (n₀ : ℕ) (hraise : nxtAt g z ≤ n₀)
+    (hTc : Tc ≤ cntAt g z) (hroom : n₀ + 2 ≤ cntAt g z)
+    (hslack : HasForwardSlack g z 0 (nxtAt g z)) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      objAt g' z = objAt g z ∧ cntAt g' z = cntAt g z ∧ nxtAt g' z = n₀ ∧
+      ∀ (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame),
+        (∀ t : ℤ, σ.state t = (t, g t)) →
+        (∀ t : ℤ, σ'.state t = (t, g' t)) →
+        tpOf (ladderModel step pend fwd bwd lab) φ σ' z
+          = tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+  have hz : (0 : ℕ) * (P + 1) = 0 := Nat.zero_mul _
+  obtain ⟨g', hg', hobj, hcnt, hnxt, hty⟩ :=
+    exists_ladderPath_through_deleted_exact_raised_upfirst_of_pend_past step pend fwd bwd lab φ
+      Tc Tn P B hp hno g hg z hpast 0 n₀ hraise (by rw [hz]; omega) (by rw [hz]; omega)
+      (by rw [hz]; exact hslack)
+  exact ⟨g', hg', hobj, by rw [hz] at hcnt; omega, hnxt, hty⟩
+
+/-- **THE TRANSPORT, OVER THE REGIME THE RAISE COVERS.** `ClassRepTransport`'s inclusion at the
+diagonal world state, between two ladder states differing in the REGISTER alone, with the
+`kappa`-collision carried as the FIRST conjunct of the conclusion rather than assumed — so the
+statement is a transport between CLASS-EQUAL states and every one of its collision binders is
+load-bearing. Note what the second conjunct's own proof shows: the inclusion follows from the
+raise tool and the room conditions ALONE, and consumes neither `hTn` nor `hres`. The class
+equality is therefore a certificate that the two states are the pair the certificate side asks
+about, not an input to the surgery. Every room condition is an explicit named binder: the
+downward-saturated collision conditions (`hTn`, `hle`, `hres`, `hgap`), the threshold `hTc`, and
+the per-path regime `hreg` the raise tool asks of every path through the source state — a
+pending past at `z` and forward slack at amount `0`. The narrowing is deliberate and is recorded
+in the section docstring above: this is NOT `ClassRepTransport`, which quantifies over every
+class-equal pair with no room condition and no regime hypothesis, and which remains OPEN. -/
+theorem cellAt_subset_of_register_raise [Fintype Q]
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n n' : ℕ) (hq : c ∈ Adm pend q) (z : ℤ)
+    (hTn : Tn ≤ n') (hle : n' ≤ n) (hres : n % (P + 1) = n' % (P + 1))
+    (hgap : n + B ≤ c) (hTc : Tc ≤ c) (hB : 2 ≤ B)
+    (hreg : ∀ g : ℤ → LadderState Q pend, IsLadderPath step pend g →
+      g z = (⟨(q, c, n'), hq⟩ : LadderState Q pend) →
+      (∀ p : ℤ, p ≤ z → pend (objAt g p) = true) ∧ HasForwardSlack g z 0 n') :
+    kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c, n') ∧
+      cellAt (ladderModel step pend fwd bwd lab) φ
+          ((z, ⟨(q, c, n'), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z ⊆
+        cellAt (ladderModel step pend fwd bwd lab) φ
+          ((z, ⟨(q, c, n), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  refine ⟨kappa_eq_register_raise_down Tc Tn P B c n n' hTn hle hres hgap, ?_⟩
+  intro T hT
+  obtain ⟨g, τ, hg, hgz, hτ, hTy⟩ :=
+    (mem_cellAt_ladder_iff fwd bwd lab φ (⟨(q, c, n'), hq⟩ : LadderState Q pend) z T).mp hT
+  obtain ⟨hpast, hslack⟩ := hreg g hg hgz
+  have hobjz : objAt g z = q := by rw [objAt, hgz]
+  have hcntz : cntAt g z = c := by rw [cntAt, hgz]
+  have hnxtz : nxtAt g z = n' := by rw [nxtAt, hgz]
+  obtain ⟨g', hg', hobj, hcnt, hnxt, hty⟩ :=
+    exists_ladderPath_register_raised_at_held_countdown fwd bwd lab φ Tc Tn P B hp hno g hg z
+      hpast n (by omega) (by omega) (by omega) (by rw [hnxtz]; exact hslack)
+  obtain ⟨τ', hτ'⟩ := exists_hist_of_isLadderPath fwd bwd g' hg'
+  refine (mem_cellAt_ladder_iff fwd bwd lab φ (⟨(q, c, n), hq⟩ : LadderState Q pend) z T).mpr
+    ⟨g', τ', hg', ?_, hτ', ?_⟩
+  · apply Subtype.ext
+    refine Prod.ext (show objAt g' z = q from hobj.trans hobjz) (Prod.ext ?_ ?_)
+    · change cntAt g' z = c
+      omega
+    · change nxtAt g' z = n
+      exact hnxt
+  · rw [hty τ τ' hτ hτ', hTy]
+
 end CertificateBridge
 
 end FormalSystem.Metalogic.Decidability.RaySummary
