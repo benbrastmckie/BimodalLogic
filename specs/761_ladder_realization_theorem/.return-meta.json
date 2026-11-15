@@ -1,55 +1,29 @@
 {
-  "status": "partial",
-  "requires_user_review": true,
-  "review_reason": "Phase 11.19's register clause is REFUTED by compiled theorem, so route S-2 does not discharge its own recorded obligation and Phase 11.20 is not enterable. A blocking user_decision names the register coordinate as the second obstruction.",
-  "blocked_phase": "11.19",
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 14,
-    "build_passed": true,
-    "build_output": "Full project build exit 0, 0 error: lines, 2975 jobs, touched module's .olean newer than source. Module-scoped builds green too (LadderCell exit 0, 0 warnings; KTypeSummaryAxiomTest exit 0, 0 warnings, 2413 jobs). verification_passed is false on the REFUTED register clause, not on any build failure; no phase-closing commit was fired because the phase closes [BLOCKED], and the green work landed as a sub-step commit."
-  },
-  "partial_progress": {
-    "stage": "phase_11.19_blocked",
-    "details": "Phase 11.19's first Goal clause (the iterated splice's interior-copy countdown) is LANDED and green as exists_iterSpliced_ladderPath_idx_interior_of_pend_past, with the pump spine in LadderChain.lean byte-identical. Its second Goal clause (the interior register) is REFUTED by iterSpliced_register_interior_forces_block_drift and iterSpliced_register_interior_refuted, both compiled. See the plan file's BLOCKER record under Phase 11.19.",
-    "phases_completed": 0,
-    "phases_total": 1
-  },
-  "user_decision": {
-    "blocking": true,
-    "question": "Route S-2's first requirement is not dischargeable as filed: the iterated splice's interior REGISTER clause is refuted by compiled theorem, and with it Phase 11.20's ~_d relation, whose n = n' conjunct the pump's own position pairs do not satisfy. The countdown half of the same requirement is landed. How should the register coordinate be handled?",
-    "options": [
-      "(W-1) Register-closed blocks: strengthen the type pigeonhole to sample a bounded register observable alongside (objAt, tpOf), so a pumped block satisfies nxtAt g u = nxtAt g (u + l) and the periodic extension of the original's register IS Drift-compatible at every copy boundary.",
-      "(W-2) Weaken the invariant's register conjunct: replace ~_d's n = n' by what the pump's pairs actually satisfy (a Drift-distance bound, or a clipped/residue reading of the register), and re-derive the transport on that; Phase 11.21 already exists to bridge ~_d to the kappa-collision the consumer needs.",
-      "(W-3) Block the realization record whole on the register coordinate, landing the obstruction as the finding of record and stopping the depth-induction line here."
-    ],
-    "recommendation": "(W-2)"
-  },
+  "status": "planned",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/16_iterated-splice-interior-clauses-summary.md",
-      "summary": "Phase 11.19: the interior-copy countdown clause landed, the interior register clause refuted, the phase blocked."
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/17_weakened-register-conjunct-route.md",
+      "summary": "Revised plan folding the (W-2) register-coordinate ruling into Phase 11.20's ~_d relation: 46 phases, 32 closed, Phase 11.20 enterable"
     }
   ],
-  "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "typst/generated/status.typ",
-    "specs/761_ladder_realization_theorem/plans/15_depth-stratified-threshold-margins.md",
-    "specs/761_ladder_realization_theorem/summaries/16_iterated-splice-interior-clauses-summary.md"
-  ],
+  "next_steps": "Run /orchestrate 761 --implement to enter Phase 11.20, the re-stated register discriminator and the one enterable phase of the revised plan",
   "metadata": {
-    "session_id": "sess_1794715258_f96bc3",
-    "agent_type": "lean-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "task_dir": "specs/761_ladder_realization_theorem",
-    "dispatch_seq": 44,
-    "compliance_check": "passed"
-  }
+    "session_id": "sess_1794724973_cd995f",
+    "agent_type": "reviser-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 46,
+    "phases_completed": 32,
+    "phases_total": 46,
+    "estimated_hours": 51,
+    "reports_integrated": [],
+    "revision_mode": "plan_revision",
+    "artifact_number": "17",
+    "plan_revised_sentinel": "specs/761_ladder_realization_theorem/.plan-revised.json"
+  },
+  "modified_files": [
+    "specs/761_ladder_realization_theorem/plans/17_weakened-register-conjunct-route.md",
+    "specs/761_ladder_realization_theorem/.plan-revised.json"
+  ]
 }
