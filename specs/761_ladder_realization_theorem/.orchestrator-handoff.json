@@ -1,19 +1,40 @@
 {
   "task_number": 761,
   "phase": "implement",
-  "status": "blocked",
-  "dispatch_seq": 47,
-  "session_id": "sess_1794727080_294a7c",
-  "phases_completed": 32,
-  "phases_total": 46,
-  "summary": "No implement work was possible: the plan of record (plans/17_weakened-register-conjunct-route.md) has no enterable phase. Phase 11.20 closed [BLOCKED] in dispatch 46 after its two-sided register discriminator reached none of its three candidates; Phases 11.22, 11.6 and 11.21 are gated behind it, Phase 11.8 is closed-BLOCKED and explicitly not re-entered, and every remaining [NOT STARTED] phase traces its Depends on back through 11.20/11.22/11.6/11.7. The answered route (B-1) is recorded but not absorbed by any plan phase, and its own answer text makes it RESEARCH-FIRST. The tree was verified green and left byte-identical: 0 sorries, vacuous grep at its 1-hit baseline, 14 axioms (unchanged), full lake build exit 0 with 0 errors.",
+  "status": "partial",
+  "dispatch_seq": 50,
+  "session_id": "sess_1794772483_c2ea25",
+  "phases_completed": 33,
+  "phases_total": 48,
+  "summary": "Phase 11.23 (the one bounded (P-1) measurement round) closed [COMPLETED] on outcome (ii). LEG 1: stab_gapR_iff computes the stab bit at any pending state as c+1<n; the gap reading is consumed at both measurement points, the clipped register is refuted at every countdown c >= Tn-1. LEG 2: the exact-gap conjunct is refuted on ProbeB1.ramp (gap_conjunct_refuted_on_ramp, wired evidence probe), so the kill criterion fires: the path-level route is closed, Phase 11.24 is not entered, and the task needs a /revise onto (P-2). Full build green, 0 sorries, axioms unchanged at 14.",
   "blockers": [
-    "No enterable phase in the plan of record: Phase 11.20 is [BLOCKED] with its decision gate closed as its own sanctioned outcome, and every open phase is gated on 11.20, 11.22, 11.6 or 11.7.",
-    "The recorded (B-1) ruling of 2026-11-15T11:05:36Z has not been absorbed into any plan: it owes a NEW block-selection condition on top of exists_typeBlock_of_spacing, which no phase of plan 17 carries, so there is no plan step to execute.",
-    "B-1's own answer text makes it RESEARCH-FIRST ('a research round must first establish whether blocks with a near-constant register exist at spacing P+1'), and its Obligation -- a block-selection condition proved non-vacuous at spacing P+1 under which the register's clipped value is held across the block -- is UNDISCHARGED as of this dispatch. Deriving it here would be an off-plan decomposition, which .claude/rules/plan-compliance.md forbids an implement dispatch from inventing.",
-    "Next routing: a research round on the B-1 non-vacuity question, then /revise 761 onto B-1. An implement dispatch cannot advance this task until a plan phase exists for that route."
+    "Kill criterion fired (outcome ii): the gap-shaped register conjunct is REFUTED on ProbeB1.ramp. Phases 11.24, 11.22, 11.6, 11.21 and 11.7 are not entered; no enterable phase remains in plan 19.",
+    "Next routing: /revise 761 onto route (P-2), certificate-side register bridging. An implement dispatch cannot advance until a plan phase exists for that route.",
+    "Not measured, for the reviser to weigh: the refutation is of the EXACT signed gap. A gap clipped to a window (kappa's clipIdx coordinate) would also be consumed by the measured bit and its producer side is untested; plan 19 classes it as a weakened conjunct outside the (P-1) ruling, so it was neither landed nor refuted."
   ],
-  "artifacts": [],
-  "modified_files": [],
-  "next_action": "Dispatch a research round on B-1's non-vacuity question (do blocks with a clipped-constant register exist at spacing P+1, on top of exists_typeBlock_of_spacing?), then /revise 761 onto route B-1. Do not re-dispatch implement against plan 17."
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/19_pending-state-measurement-kill-criterion-summary.md",
+      "summary": "Phase 11.23 closed on outcome (ii): gap reading landed on the consumer side, refuted on ProbeB1.ramp on the producer side; path-level route closed; /revise onto (P-2) owed."
+    }
+  ],
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "docs/theorem-index.md",
+    "scripts/check-evidence-probes.sh",
+    "specs/evidence/seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity.lean",
+    "typst/generated/status.typ",
+    "specs/761_ladder_realization_theorem/issues.jsonl",
+    "specs/761_ladder_realization_theorem/plans/19_pending-state-gap-register-measurement.md",
+    "specs/761_ladder_realization_theorem/summaries/19_pending-state-measurement-kill-criterion-summary.md",
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.23-handoff-20261115T202150Z.md"
+  ],
+  "next_action": "/revise 761 onto route (P-2), certificate-side register bridging, with Phase 11.23's Recorded Outcome and the clipped-gap observation as inputs. Do not re-dispatch implement against plan 19.",
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.23-handoff-20261115T202150Z.md",
+  "continuation_context": "Phase 11.23 closed on kill-criterion outcome (ii); no enterable phase remains in plan 19. Resume only after /revise 761 onto route (P-2)."
 }
