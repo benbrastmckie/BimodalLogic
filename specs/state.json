@@ -128,14 +128,14 @@
           "summary": "stab bit copy pair decision (backfilled by --sync)"
         },
         {
-          "path": "specs/761_ladder_realization_theorem/summaries/20_certificate-side-register-bridging-summary.md",
-          "type": "summary",
-          "summary": "Phase 11.25's record: the two legs, the per-direction pair-set reading, the scope reading, the OPEN transport verdict, and the full verification block."
-        },
-        {
           "path": "specs/761_ladder_realization_theorem/plans/20_certificate-side-register-bridging.md",
           "type": "plan",
           "summary": "Phase 11.26 marked [COMPLETED] with its Recorded Outcome: branch OPEN, the regime covered and not covered, the refusing coordinate and the inequality."
+        },
+        {
+          "path": "specs/761_ladder_realization_theorem/summaries/20_certificate-side-register-bridging-summary.md",
+          "type": "summary",
+          "summary": "Round summary for Phases 11.25-11.27; Phase 11.27's covered-set table, its five declarations and its full verification block."
         }
       ],
       "next_artifact_number": 21,
