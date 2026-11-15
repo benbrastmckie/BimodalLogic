@@ -92,11 +92,13 @@ blocking `user_decision` returned.
 
 ## Verification
 
-- Build: Success. `lake build FormalSystem.Metalogic.Decidability.RaySummary.LadderCell` exits 0
-  with 0 warnings and 0 errors; `lake build BimodalTest.Metalogic.KTypeSummaryAxiomTest` exits 0
-  with 0 warnings and 0 errors (2,413 jobs), its three new axiom pins green. Both guarded, with an
-  explicit `--timeout`, in the bounded single-call idiom. A full-project build was NOT run: the
-  phase closes `[BLOCKED]`, so no phase-closing commit is fired on it.
+- Build: Success. The full project build exits 0 with 0 `error:` lines over both captured streams,
+  `Build completed successfully (2975 jobs)`, and the touched module's `.olean` newer than its
+  source — all three tiers of the build verdict. The two module-scoped builds
+  (`...RaySummary.LadderCell`, `BimodalTest.Metalogic.KTypeSummaryAxiomTest`) each exit 0 with 0
+  warnings and 0 errors, the three new axiom pins green. All guarded, with an explicit
+  `--timeout`, in the bounded single-call idiom. No PHASE-CLOSING commit was fired: the phase
+  closes `[BLOCKED]`, so the green work landed as a sub-step commit instead.
 - Sorry count: 0 (`lean-sorry-census.sh` over the four resolved source roots, exit 0).
 - Vacuous count: 0 module-scoped; 1 repository-wide, unchanged from its baseline.
 - Axiom count: 14 `^axiom ` occurrences over `FormalSystem`/`Tests`, unchanged — no `axiom` was
