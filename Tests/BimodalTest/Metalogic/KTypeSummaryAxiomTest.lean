@@ -3427,4 +3427,59 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 #print axioms cellAt_const_of_kappa_eq_of_covered
 
 
+/-! ### Route (E-2): the diagonal gap — offset-invariance of `tpOf`, and the covered agreement at
+a general time component
+
+The world state's own `ℤ` component is one of the five coordinates on which the filed
+`cellAt_const_of_kappa_eq` is open, and it is the one coordinate tractable independently of the
+register question: `Rlad` ignores its time argument, so one ladder walk is a world history at
+every offset (`exists_hist_of_isLadderPath_at_offset`), the offset is invisible to every clause of
+`PlusTruthAt` (`truthAt_iff_of_worldTime_offset`, the `⊡` letters INCLUDED and no stab-free
+premise anywhere), hence invisible to the realized type (`tpOf_eq_of_worldTime_offset`) and to the
+cell (`cellAt_ladder_eq_of_worldTime`). `cellAt_const_of_kappa_eq_of_covered_at_time` is the
+covered agreement with its diagonal world state replaced by a general `t`, every other binder
+unchanged.
+
+What is NOT pinned here because it is not claimed: the filed `cellAt_const_of_kappa_eq` stays
+OPEN on the other four coordinates (the upward-saturated register family, moved countdowns,
+closures carrying a `⊡` letter, paths outside the regime), nothing below consumes
+`ladderSound`, `ladderLift`, `ladderCons_localRun` or any (S)/(C') statement, and no parameter
+ruling is taken. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_hist_of_isLadderPath_at_offset' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms exists_hist_of_isLadderPath_at_offset
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.truthAt_iff_of_worldTime_offset' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms truthAt_iff_of_worldTime_offset
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.tpOf_eq_of_worldTime_offset' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms tpOf_eq_of_worldTime_offset
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_ladder_eq_of_worldTime' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms cellAt_ladder_eq_of_worldTime
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_const_of_kappa_eq_of_covered_at_time' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms cellAt_const_of_kappa_eq_of_covered_at_time
+
+
 end BimodalTest.Metalogic

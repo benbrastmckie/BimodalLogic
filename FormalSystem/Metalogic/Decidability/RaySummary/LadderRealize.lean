@@ -185,6 +185,10 @@ proof term.
 open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.Semantics
 open FormalSystem.Metalogic.Decidability
 
+-- The module's recorded length ceiling: the offset-invariance section takes the file past the
+-- default limit.
+set_option linter.style.longFile 1800
+
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
 /-! ## The closure component's projection
@@ -1335,13 +1339,14 @@ Five coordinates of its domain are OUTSIDE the covered set, each for a reason th
 object and not an assessment: the filed signature carries no stab-free premise, and both
 register-moving deletions carry one; it carries no `c = c'`, and `h1`/`h2` give only
 `min c Tc = min c' Tc` and a common residue, while no landed tool moves a countdown while
-holding a class; its first world-state component `t` is general, while every landed inclusion is
-DIAGONAL (`t = z`); it carries no per-path regime; and it carries none of the room, threshold or
-clip conditions the deletions ask for. **So the filed `cellAt_const_of_kappa_eq` is OPEN on those
-collisions SPECIFICALLY** — the upward-saturated register family, moved countdowns, general time
-components, closures carrying a `⊡` letter, and paths outside the regime — and not as a general
-failure. It is landed here under no name, and adding a hypothesis to a recorded statement is not
-an implementer's move.
+holding a class; its first world-state component `t` is general, while the inclusions below are
+stated at the DIAGONAL (`t = z`) — the one coordinate the offset-invariance section at the end of
+this module closes, by `cellAt_ladder_eq_of_worldTime`; it carries no per-path regime; and it
+carries none of the room, threshold or clip conditions the deletions ask for. **So the filed
+`cellAt_const_of_kappa_eq` is OPEN on those collisions SPECIFICALLY** — the upward-saturated
+register family, moved countdowns, closures carrying a `⊡` letter, and paths outside the regime
+— and not as a general failure. It is landed here under no name, and adding a hypothesis to a
+recorded statement is not an implementer's move.
 
 **WHICH CONDITION OF THE COVERED FAMILY EACH `kappa` COORDINATE SUPPLIES, so the gap is visible
 in the record rather than inferred.**
@@ -1436,6 +1441,244 @@ theorem cellAt_const_of_kappa_eq_of_covered [Fintype Q]
     (kappa_eq_components Tc Tn P B c' n c' n' hk).2.2.2.1
   exact (cellAt_eq_of_register_displacement fwd bwd lab φ Tc Tn P B hp hno q c' n n' h z
     hTn hle hres hgap hTc hB hroom hregLo hregHi).2
+
+
+/-! ### Route (E-2): the DIAGONAL gap — offset-invariance of `tpOf` under `ladderModel`, and the
+covered agreement at a general time component
+
+One of the five coordinates on which the filed `cellAt_const_of_kappa_eq` is open above is the
+world state's own TIME component: every landed inclusion is DIAGONAL (`t = z`), while the filed
+statement quantifies over a general `t`. That coordinate is closed here, and it is closed
+INDEPENDENTLY of the register question and of the stab-free premise: no declaration in this
+section carries `hno`, none mentions `kappa`'s register coordinate, none raises `Tc` and none
+strengthens `ParamsOk`.
+
+**WHY IT CLOSES AT ALL, when `cellAt_eq_cellAt` does not already give it.** `cellAt_eq_cellAt`
+says a cell does not depend on the time at which a state is VISITED — the `z` argument. It says
+nothing about the `ℤ` component of the world STATE, which on this carrier is a coordinate of the
+state itself: `cellAt … (t, x) z` and `cellAt … (t', x) z` are cells of two DIFFERENT world
+states, and no history through one is a history through the other. What makes them equal is that
+`Rlad` ignores its time argument (`isSlicedStepPath_iff_isLadderPath`), so one ladder walk is a
+history at EVERY offset (`exists_hist_of_isLadderPath_at_offset`), and the model's valuation reads
+the object component alone — the offset is invisible to every clause of `PlusTruthAt`.
+
+**WHERE THE `⊡` CLAUSE GOES, since it is the clause that reads the world state.** It is the only
+clause that is not structural here, and it closes by the same shift: a history through
+`(z + k', g z)` is an offset step path at some offset, hence the SAME walk re-offset to `k`, and
+the induction hypothesis at that walk transports its truth. This is why no stab-free premise is
+needed — the obligation route (E-2) names, and the reason this coordinate is tractable while the
+register coordinate is not.
+
+**WHAT THIS SECTION DOES NOT SAY.** It does not close the filed `cellAt_const_of_kappa_eq`: four
+of the five uncovered coordinates (the upward-saturated register family, moved countdowns,
+closures carrying a `⊡` letter, and paths outside the regime) are untouched, and the agreement
+below is still restricted to Phase 11.26's covered family by the same named binders. It asserts no
+tuple index of a ladder cell, no bound of any kind, no device discrimination, and it consumes
+neither `ladderSound`, `ladderLift`, `ladderCons_localRun` nor any (S)/(C') statement. -/
+
+/-- **Every ladder path is a world history of the ladder frame at EVERY offset.**
+`exists_hist_of_isLadderPath` is the instance `k = 0`. The offset is invisible to the step
+condition (`isSlicedStepPath_iff_isLadderPath`, because `Rlad` ignores its time argument), so one
+walk is an offset step path at every `k`, and the history it yields occupies world time `t + k`
+while the walk is at `t`.
+
+Paper: — (the frame-scheme constructor's history space is the formalization's own object) -/
+theorem exists_hist_of_isLadderPath_at_offset
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (k : ℤ) (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) :
+    ∃ τ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+      ∀ t : ℤ, τ.state t = (t + k, g t) := by
+  obtain ⟨τ, hτ⟩ :=
+    (ofSlicedStepFinBranch_mem_HF_iff (RladAdm step pend) (RladAdm_fwd step pend)
+        (RladAdm_bwd step pend) fwd bwd (fun t => (t + k, g t))).mpr
+      ⟨k, g, (isSlicedStepPath_iff_isLadderPath k g).mpr hg, rfl⟩
+  refine ⟨τ, fun t => ?_⟩
+  have h : τ.path t = (t + k, g t) := by rw [hτ]
+  exact h
+
+/-- **OFFSET-INVARIANCE OF TRUTH UNDER `ladderModel`.** Two world histories carrying the SAME
+ladder walk at two different offsets satisfy the same formulas at every position. No premise on
+the formula: the `⊡` letters are included, so there is no stab-free hypothesis and no pinned-letter
+parameter, and no finiteness of the fibre or of the width enters anywhere.
+
+One case per clause of `PlusTruthAt`, as half (i) is
+(`truthAt_iff_of_objAt_eq_of_stabPinned`), with the `⊡` clause PROVED rather than carried: the
+atomic letters read the object component of the walk and the offset is invisible to the
+valuation; `⊥` and `→` are structural; `□` names no history at all; `U` and `S` quantify over the
+time axis of the same history and are the induction hypothesis at the other positions; and `⊡`
+quantifies over the histories through the world state at that position, where a history through
+the offset-`k'` state is the same walk at offset `k'` and re-offsetting it to `k`
+(`exists_hist_of_isLadderPath_at_offset`) lands inside the other side's quantifier, with the
+induction hypothesis at THAT walk transporting the truth back.
+
+Paper: — (a statement about the frame-scheme constructor's offset, which has no counterpart in
+HWZ 2000, where histories are the runs of a freely chosen run set) -/
+theorem truthAt_iff_of_worldTime_offset
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) :
+    ∀ (ψ : PlusFormula) (k k' : ℤ) (g : ℤ → LadderState Q pend), IsLadderPath step pend g →
+      ∀ σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+        (∀ t : ℤ, σ.state t = (t + k, g t)) → (∀ t : ℤ, σ'.state t = (t + k', g t)) →
+        ∀ z : ℤ,
+          (PlusTruthAt (ladderModel step pend fwd bwd lab) σ z ψ ↔
+            PlusTruthAt (ladderModel step pend fwd bwd lab) σ' z ψ) := by
+  intro ψ
+  induction ψ with
+  | atom p =>
+      intro k k' g _ σ σ' hσ hσ' z
+      rw [PlusTruth.atom_iff, PlusTruth.atom_iff, hσ z, hσ' z]
+      exact Iff.rfl
+  | bot => intro _ _ _ _ _ _ _ _ _; exact Iff.rfl
+  | imp a b iha ihb =>
+      intro k k' g hg σ σ' hσ hσ' z
+      exact imp_congr (iha k k' g hg σ σ' hσ hσ' z) (ihb k k' g hg σ σ' hσ hσ' z)
+  | box a _ => intro _ _ _ _ _ _ _ _ _; exact Iff.rfl
+  | untl a b iha ihb =>
+      intro k k' g hg σ σ' hσ hσ' z
+      rw [PlusTruth.untl_iff, PlusTruth.untl_iff]
+      constructor
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb k k' g hg σ σ' hσ hσ' s).mp he,
+          fun r h1 h2 => (iha k k' g hg σ σ' hσ hσ' r).mp (hgd r h1 h2)⟩
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb k k' g hg σ σ' hσ hσ' s).mpr he,
+          fun r h1 h2 => (iha k k' g hg σ σ' hσ hσ' r).mpr (hgd r h1 h2)⟩
+  | snce a b iha ihb =>
+      intro k k' g hg σ σ' hσ hσ' z
+      rw [PlusTruth.snce_iff, PlusTruth.snce_iff]
+      constructor
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb k k' g hg σ σ' hσ hσ' s).mp he,
+          fun r h1 h2 => (iha k k' g hg σ σ' hσ hσ' r).mp (hgd r h1 h2)⟩
+      · rintro ⟨s, hs, he, hgd⟩
+        exact ⟨s, hs, (ihb k k' g hg σ σ' hσ hσ' s).mpr he,
+          fun r h1 h2 => (iha k k' g hg σ σ' hσ hσ' r).mpr (hgd r h1 h2)⟩
+  | stab a iha =>
+      have key : ∀ (k k' : ℤ) (g : ℤ → LadderState Q pend), IsLadderPath step pend g →
+          ∀ σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame,
+            (∀ t : ℤ, σ.state t = (t + k, g t)) → (∀ t : ℤ, σ'.state t = (t + k', g t)) →
+            ∀ z : ℤ,
+              PlusTruthAt (ladderModel step pend fwd bwd lab) σ z (PlusFormula.stab a) →
+                PlusTruthAt (ladderModel step pend fwd bwd lab) σ' z (PlusFormula.stab a) := by
+        intro k k' g hg σ σ' hσ hσ' z H τ hτeq
+        obtain ⟨m, h, hh, hp⟩ := exists_isLadderPath_of_hist fwd bwd τ
+        have hstate : ((z + k', g z) : (ladderFrameAdm step pend fwd bwd).WorldState)
+            = (z + m, h z) := (hσ' z).symm.trans (hτeq.trans (hp z))
+        have hm : m = k' := by
+          have := congrArg Prod.fst hstate
+          simp only at this
+          omega
+        have hgz : h z = g z := by
+          have := congrArg Prod.snd hstate
+          simpa using this.symm
+        obtain ⟨ρ, hρ⟩ := exists_hist_of_isLadderPath_at_offset fwd bwd k h hh
+        have hρz : σ.state z = ρ.state z := by
+          rw [hσ z, hρ z, hgz]
+        exact (iha k m h hh ρ τ hρ hp z).mp (H ρ hρz)
+      intro k k' g hg σ σ' hσ hσ' z
+      exact ⟨key k k' g hg σ σ' hσ hσ' z, key k' k g hg σ' σ hσ' hσ z⟩
+
+/-- **OFFSET-INVARIANCE OF THE REALIZED CLOSURE TYPE.** `truthAt_iff_of_worldTime_offset` on
+types: the type realized by a ladder walk at a position does not depend on the offset its history
+carries. Box and `⊡` letters included; no stab-free premise. -/
+theorem tpOf_eq_of_worldTime_offset
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) {k k' : ℤ} {g : ℤ → LadderState Q pend}
+    (hg : IsLadderPath step pend g)
+    (σ σ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hσ : ∀ t : ℤ, σ.state t = (t + k, g t)) (hσ' : ∀ t : ℤ, σ'.state t = (t + k', g t))
+    (z : ℤ) :
+    tpOf (ladderModel step pend fwd bwd lab) φ σ z
+      = tpOf (ladderModel step pend fwd bwd lab) φ σ' z := by
+  ext ψ
+  rw [mem_tpOf_iff, mem_tpOf_iff]
+  exact and_congr_right fun _ =>
+    truthAt_iff_of_worldTime_offset fwd bwd lab ψ k k' g hg σ σ' hσ hσ' z
+
+/-- **THE CELL OF A LADDER STATE DOES NOT DEPEND ON THE WORLD STATE'S TIME COMPONENT.** The
+coordinate `cellAt_eq_cellAt` does NOT give: that one is the time at which the state is VISITED
+(`z`), this one the `ℤ` COMPONENT OF THE STATE, whose two values name two different world states
+with disjoint history sets. They carry the same cell because one ladder walk is a history at
+every offset and the offset is invisible to truth (`tpOf_eq_of_worldTime_offset`).
+
+This is the diagonal gap of route (E-2), landed: it lifts any inclusion or equality stated at the
+diagonal world state `(z, x)` to the general `(t, x)` the filed statements quantify over.
+
+Paper: — (as `exists_hist_of_isLadderPath_at_offset`: the constructor's offset has no literature
+counterpart) -/
+theorem cellAt_ladder_eq_of_worldTime
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (x : LadderState Q pend) (t t' z : ℤ) :
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((t, x) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+      = cellAt (ladderModel step pend fwd bwd lab) φ
+        ((t', x) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  have key : ∀ u u' : ℤ,
+      cellAt (ladderModel step pend fwd bwd lab) φ
+          ((u, x) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+        ⊆ cellAt (ladderModel step pend fwd bwd lab) φ
+          ((u', x) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+    intro u u' T hT
+    obtain ⟨σ, hs, hT⟩ := hT
+    obtain ⟨k, g, hg, hp⟩ := exists_isLadderPath_of_hist fwd bwd σ
+    have hstate : ((u, x) : (ladderFrameAdm step pend fwd bwd).WorldState) = (z + k, g z) :=
+      hs.symm.trans (hp z)
+    have hk : z + k = u := by
+      have := congrArg Prod.fst hstate
+      simp only at this
+      omega
+    have hgz : g z = x := by
+      have := congrArg Prod.snd hstate
+      simpa using this.symm
+    obtain ⟨σ', hσ'⟩ := exists_hist_of_isLadderPath_at_offset fwd bwd (u' - z) g hg
+    refine ⟨σ', ?_, ?_⟩
+    · rw [hσ' z, hgz]
+      have : z + (u' - z) = u' := by omega
+      rw [this]
+    · rw [← hT]
+      exact (tpOf_eq_of_worldTime_offset fwd bwd lab φ hg σ σ' hp hσ' z).symm
+  exact Set.Subset.antisymm (key t t') (key t' t)
+
+/-- **THE COVERED AGREEMENT AT A GENERAL TIME COMPONENT.** `cellAt_const_of_kappa_eq_of_covered`
+with its DIAGONAL world state replaced by the filed statement's general `t`, which is what route
+(E-2) owes: every other binder is unchanged, token for token, and the two per-path regimes stay at
+`z` because they are conditions on the walk and not on the world state's time component.
+
+**What is still open after it**: four of the five coordinates listed above — the upward-saturated
+register family, moved countdowns, closures carrying a `⊡` letter, and paths outside the regime.
+This widens the covered family by one coordinate and closes nothing else; the filed
+`cellAt_const_of_kappa_eq` remains OPEN.
+
+Paper: — (as `cellAt_const_of_kappa_eq_of_covered`) -/
+theorem cellAt_const_of_kappa_eq_of_covered_at_time [Fintype Q]
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hno : ∀ χ : PlusFormula, PlusFormula.stab χ ∉ plusSubformulaClosure φ)
+    (q : Q) (c n c' n' : ℕ) (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q)
+    (hk : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n'))
+    (hcnt : c' = c) (hTn : Tn ≤ n') (hle : n' ≤ n)
+    (hgap : n + B ≤ c) (hTc : Tc ≤ c) (hB : 2 ≤ B) (hroom : n + (n - n') ≤ c)
+    (t z : ℤ)
+    (hregLo : ∀ g : ℤ → LadderState Q pend, IsLadderPath step pend g →
+      g z = (⟨(q, c', n'), h'⟩ : LadderState Q pend) →
+      (∀ p : ℤ, p ≤ z → pend (objAt g p) = true) ∧ HasForwardSlack g z 0 n')
+    (hregHi : ∀ g : ℤ → LadderState Q pend, IsLadderPath step pend g →
+      g z = (⟨(q, c, n), h⟩ : LadderState Q pend) →
+      (∀ p : ℤ, p ≤ z → pend (objAt g p) = true) ∧ HasForwardSlack g z (n - n') n) :
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((t, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+      = cellAt (ladderModel step pend fwd bwd lab) φ
+        ((t, ⟨(q, c', n'), h'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z := by
+  rw [cellAt_ladder_eq_of_worldTime fwd bwd lab φ ⟨(q, c, n), h⟩ t z z,
+    cellAt_ladder_eq_of_worldTime fwd bwd lab φ ⟨(q, c', n'), h'⟩ t z z]
+  exact cellAt_const_of_kappa_eq_of_covered fwd bwd lab φ Tc Tn P B hp hno q c n c' n' h h' hk
+    hcnt hTn hle hgap hTc hB hroom z hregLo hregHi
 
 
 end CertificateBridge
