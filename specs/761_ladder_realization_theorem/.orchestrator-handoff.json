@@ -43,5 +43,6 @@
     "specs/761_ladder_realization_theorem/plans/20_certificate-side-register-bridging.md",
     "specs/761_ladder_realization_theorem/summaries/20_filed-agreement-blocked-covered-instantiation-summary.md",
     "specs/761_ladder_realization_theorem/handoffs/phase-11.7-handoff-20261115T225442Z.md"
-  ]
+  ],
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.7-handoff-20261115T225442Z.md"
 }
