@@ -83,6 +83,7 @@
         "specs/archive/757_lplus_decidability_successor_task_set/followup-scope-spec.md",
         "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
         "specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean",
+        "specs/evidence/seam-gluing-ray-product/ladder-certificate-side-bridge.lean",
         "specs/evidence/seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity.lean",
         "specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-decision.lean",
         "specs/evidence/seam-gluing-ray-product/ladder-idle-past-interface-refutation.lean",
@@ -301,7 +302,7 @@
           "summary": "register discriminator blocked summary (backfilled by --sync)"
         }
       ],
-      "next_artifact_number": 20,
+      "next_artifact_number": 21,
       "previous_status": "blocked"
     },
     {
