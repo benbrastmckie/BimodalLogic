@@ -1,29 +1,63 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "requires_user_review": true,
+  "blocked_phase": "11.20",
+  "review_reason": "Phase 11.20's decision gate reached no candidate: the register reading the pump delivers and the one the stab-bit agreement needs are different readings, both compiled. The phase closes [BLOCKED] per its own sanctioned outcome; Phases 11.22, 11.21 and 11.6 are gated on a /revise ruling between two named routes.",
+  "partial_progress": {
+    "stage": "phase_11.20_blocked",
+    "details": "Phase 11.20's decision gate was entered and BOTH of its measurements landed as compiled theorems in FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean, with axiom pins in Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean. The decision rule then reached none of its three register candidates, so no relation ~_d was defined and no membership of any pump pair was claimed. See the plan file's Phase 11.20 BLOCKER record for what failed, what was tried, why it is stuck, and what is needed. Phase 11.22 is marked [BLOCKED] and waiting on it.",
+    "phases_completed": 32,
+    "phases_total": 46
+  },
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/17_weakened-register-conjunct-route.md",
-      "summary": "Revised plan folding the (W-2) register-coordinate ruling into Phase 11.20's ~_d relation: 46 phases, 32 closed, Phase 11.20 enterable"
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/17_register-discriminator-blocked-summary.md",
+      "summary": "Phase 11.20's two-sided register discriminator landed as seven compiled theorems; the decision rule reached none of its three candidates, so the gate closed BLOCKED with both measurements and the gap recorded."
     }
   ],
-  "next_steps": "Run /orchestrate 761 --implement to enter Phase 11.20, the re-stated register discriminator and the one enterable phase of the revised plan",
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "typst/generated/status.typ",
+    "specs/761_ladder_realization_theorem/plans/17_weakened-register-conjunct-route.md",
+    "specs/761_ladder_realization_theorem/summaries/17_register-discriminator-blocked-summary.md",
+    "specs/761_ladder_realization_theorem/issues.jsonl"
+  ],
+  "user_decision": {
+    "blocking": true,
+    "question": "Phase 11.20's register discriminator is measured on both sides and the two sides disagree: the iterated splice delivers only a Drift-distance bound that grows with the copy index (register_interior_displacement_bound_at_block) and REFUTES kappa's clipped/residue register reading at the window's interior (iterSpliced_register_clipped_interior_refuted, at every Tn >= 3 and every P), while the stab-bit agreement REFUTES both the Drift-distance reading and dropping the register conjunct (stab_bit_ne_of_register_ne) and consumes only the clipped reading (stab_alphaR_eq_of_clipped_eq). So no position-pair relation carrying a register conjunct exists for the depth induction. Which route should the plan be revised onto?",
+    "options": [
+      "(B-1) Restrict the pump's block selection to blocks across which the original's register is already nearly constant, so side (A)'s Drift obstruction is hypothesised away rather than argued around. Cost: a new block-selection condition on top of exists_typeBlock_of_spacing, and nothing landed says such blocks exist at the needed spacing -- a research round would be owed first.",
+      "(B-2) Move the register bridging off the path level entirely, onto the certificate side, so no position-pair relation carries a register conjunct at all. Cost: the transport the depth induction consumes would then not be a path-level correspondence, which re-opens the shape of Phases 11.21 and 11.6.",
+      "(B-3) Abandon the depth-stratified path-level route for this task and mark the realization theorem [BLOCKED] whole on the register coordinate, keeping the two compiled measurements as the recorded obstruction."
+    ],
+    "recommendation": "(B-1), but only after a research round: the obstruction is specifically a CLIMBING register across the block, and the pump's blocks come from a pigeonhole over (object, type) pairs that says nothing about the register, so whether blocks with a near-constant register exist at spacing P+1 is a measurable question rather than an open-ended one. (B-2) discards the position-pair correspondence the whole stratification was built to supply.",
+    "why_user": "This is a route decision with a large and NOT COSTABLE scope difference between the options, and it lifts or discards work already landed in Phases 11.18 through 11.20; the artifacts cannot infer which cost the user is willing to pay. It is a NEW, second obstruction that route (W-2) left unaddressed -- (W-2) authorised weakening the register conjunct to whatever the pump's pairs satisfy, and the measurement now shows that what they satisfy is strictly weaker than what the bit needs -- so the original question is not re-asked."
+  },
   "metadata": {
-    "session_id": "sess_1794724973_cd995f",
-    "agent_type": "reviser-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "phase_count": 46,
+    "session_id": "sess_1794727080_294a7c",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "task_dir": "specs/761_ladder_realization_theorem",
+    "dispatch_seq": 46,
+    "compliance_check": "passed",
     "phases_completed": 32,
     "phases_total": 46,
-    "estimated_hours": 51,
-    "reports_integrated": [],
-    "revision_mode": "plan_revision",
-    "artifact_number": "17",
-    "plan_revised_sentinel": "specs/761_ladder_realization_theorem/.plan-revised.json"
-  },
-  "modified_files": [
-    "specs/761_ladder_realization_theorem/plans/17_weakened-register-conjunct-route.md",
-    "specs/761_ladder_realization_theorem/.plan-revised.json"
-  ]
+    "commit": "0a2217ac4"
+  }
 }
