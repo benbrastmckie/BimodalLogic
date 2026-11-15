@@ -470,17 +470,13 @@ and the depth of its argument is irrelevant to transport. -/
 
 section Pinned
 
-/-- **The `⊡`-nesting depth of a formula**: `0` on the atomic arms and on `□` (whose clause is
-path-independent), the `max` across the three binary arms, and one more than its argument's on
-`⊡`. -/
-def stabDepth : PlusFormula → ℕ
-  | .atom _ => 0
-  | .bot => 0
-  | .imp a b => max (stabDepth a) (stabDepth b)
-  | .box _ => 0
-  | .untl a b => max (stabDepth a) (stabDepth b)
-  | .snce a b => max (stabDepth a) (stabDepth b)
-  | .stab a => stabDepth a + 1
+-- `stabDepth` itself is NOT defined here. It lives in `CounterQuotient.lean`, beside the
+-- parameter conditions, because `(K2)`'s margin conjunct reads
+-- `(plusSubformulaClosure φ).sup stabDepth` and this module sits ABOVE `CounterQuotient.lean` in
+-- the import DAG. The measure is purely syntactic and carries no dependency on anything in this
+-- module, so the relocation changes no namespace and no statement; the three arithmetic facts
+-- about it (`stabDepth_stab`, `stabDepth_arg_le_of_le_succ`, `stabDepth_le_sup`) stay here with
+-- the pinned-letter layer that consumes them.
 
 /-- **Every `⊡` subformula of this formula is pinned by `L`.** The `box` arm is `True` for the
 reason `stabDepth` is `0` there: the clause names no path. The `⊡` arm asks `L` of the LETTER

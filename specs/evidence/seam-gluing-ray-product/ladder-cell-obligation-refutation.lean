@@ -50,7 +50,7 @@ def paramsOkK4Pre (φ : PlusFormula) (B : ℕ) : Prop :=
 
 def ParamsOkPre {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
     (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) : Prop :=
-  paramsOkK1 step pend lab φ P ∧ paramsOkK2 step pend lab φ Tc ∧
+  paramsOkK1 step pend lab φ P ∧ paramsOkK2 step pend lab φ Tc P ∧
     paramsOkK3 Q pend φ Tc Tn ∧ paramsOkK4Pre φ B
 
 def CellLEZeroConstOfKappaEqPre {Q : Type} [Fintype Q] [Nonempty Q]

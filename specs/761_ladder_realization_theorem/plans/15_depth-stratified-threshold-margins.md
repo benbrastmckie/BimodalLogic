@@ -4336,7 +4336,7 @@ jobs, 0 errors, 0 warnings.
 
 ---
 
-### Phase 11.18: The Parameter Margin — the `(K2)` Conjunct, `Tcof` Through `Pof`, and the Compiled Room Lemma [NOT STARTED]
+### Phase 11.18: The Parameter Margin — the `(K2)` Conjunct, `Tcof` Through `Pof`, and the Compiled Room Lemma [COMPLETED]
 
 **THIS IS THE ONE ENTERABLE PHASE OF THIS PLAN, AND IT IS THE PHASE THAT SPENDS ROUTE S-2'S
 PRICE.** It is the only phase of this plan that edits `CounterQuotient.lean` and the only one that
@@ -4367,20 +4367,26 @@ to it. `Tcof` becomes the `max` of its present value — `max (cascadeBound pend
 does not read `Tc`, verified against the live definition at `CounterQuotient.lean:760`.
 
 **Tasks**:
-- [ ] Add `(P : ℕ)` to `paramsOkK2` and the conjunct above; update `ParamsOk`'s application
-      (`CounterQuotient.lean:853`) to pass `P`. Record in the definition's docstring what the
+- [x] Add `(P : ℕ)` to `paramsOkK2` and the conjunct above; update `ParamsOk`'s application
+      (`CounterQuotient.lean:853`) to pass `P`. *(deviation: altered — the conjunct reads
+      `(plusSubformulaClosure φ).sup stabDepth`, and `stabDepth` was declared in
+      `LadderAgree.lean`, which IMPORTS `CounterQuotient.lean`, so the pinned conjunct could not
+      elaborate at the pinned site. The purely syntactic `def stabDepth` was relocated DOWN into
+      `CounterQuotient.lean`, same namespace, with the pinned-letter layer and the three depth
+      facts left in `LadderAgree.lean` behind a pointer comment. The conjunct itself is landed
+      token-for-token as pinned; `LadderAgree.lean` is one file beyond the phase's listed set.)* Record in the definition's docstring what the
       conjunct buys (the room for the spaced pigeonhole at `s := P + 1`, and one margin per
       `⊡`-depth level) and what it costs (`paramsOk_inflate`'s unconditional form).
-- [ ] **Correct the docstring sentence at `CounterQuotient.lean:423`**, which asserts that "`(K2)`
+- [x] **Correct the docstring sentence at `CounterQuotient.lean:423`**, which asserts that "`(K2)`
       and `(K3)` … never mention `P`". It becomes FALSE with this phase and is a load-bearing
       explanation of why `paramsOk_inflate` works, so it is corrected, not deleted.
-- [ ] Redefine `Tcof` as the `max` through `Pof`, and RE-PROVE `paramsOk_params` green at the new
+- [x] Redefine `Tcof` as the `max` through `Pof`, and RE-PROVE `paramsOk_params` green at the new
       `Tcof`. **`paramsOk_params` is a filed Challenge Goal**: its signature is unchanged
       token-for-token, it gains no binder, and the new conjunct is discharged as a new subgoal.
       `(K3)`'s ordering conjunct `Tc + 2 * ell0 Q φ ≤ Tn + 1` is the one that needs re-establishing
       at a raised `Tcof`; `Tnof := Tcof + 2 * ell0 Q φ` already tracks `Tcof`, so check it rather
       than assume it.
-- [ ] **Restate `paramsOk_inflate` and add `paramsOk_inflate_raise`.** The landed statement becomes
+- [x] **Restate `paramsOk_inflate` and add `paramsOk_inflate_raise`.** The landed statement becomes
       FALSE at the new conjunct — inflating the modulus to `j * (P + 1)` multiplies the conjunct's
       requirement by `j`, which is `paramsOk_modulus_unbounded_at_fixed_Tc` read in the other
       direction. Restate `paramsOk_inflate` with the inflated room premise as an EXPLICIT
@@ -4389,7 +4395,7 @@ does not read `Tc`, verified against the live definition at `CounterQuotient.lea
       `paramsOk_raise_Tc`, compiled generically in the round-15 probe. Record in both docstrings
       that no proof in the tree applies `paramsOk_inflate`, which is why the restatement breaks
       nothing.
-- [ ] **Land the compiled room lemma.** `budget_mul_spacing_le_Tc`:
+- [x] **Land the compiled room lemma.** `budget_mul_spacing_le_Tc`:
       `Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (P + 1) ≤ Tc` from the new conjunct,
       and the depth-indexed form `margin_room_at_depth` giving
       `Tc_d + b * (P + 1) ≤ Tc` for `Tc_d := Tc_0 + (D − d) * b * (P + 1)` at every `d ≤ D`. Both
@@ -4398,18 +4404,18 @@ does not read `Tc`, verified against the live definition at `CounterQuotient.lea
       `exists_typeBlock_of_spacing`'s single room hypothesis consumes at `s := P + 1`**, and they
       are the "compiled room lemma `b*(P+1) <= Tc`" the recorded obligation requires BEFORE any
       depth induction is attempted.
-- [ ] **Update the evidence probe
+- [x] **Update the evidence probe
       `specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean:53`**, whose
       `ParamsOkPre` applies `paramsOkK2` at the old arity. Its frozen `(K4)` conjunct
       (`paramsOkK4Pre`) is the thing it exists to refute against and is **NOT** touched; only the
       `paramsOkK2` application is. If this is skipped, `check-evidence-probes.sh` goes red at a
       phase that did not touch the probe.
-- [ ] Bring `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` current: the axiom pins for
+- [x] Bring `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` current: the axiom pins for
       `paramsOk_params`, `paramsOk_inflate` and the new declarations, plus the two prose paragraphs
       at `:2038` and `:2061` that explain `paramsOk_inflate`'s inflation argument. **EIGHT lines of
       headroom against that file's own `longFile 3000` (`:111`) — re-measure before editing and
       take the baseline-raise remedy if needed.**
-- [ ] Wire the new declarations: docstrings, generated inventory blocks, `status.typ`. No
+- [x] Wire the new declarations: docstrings, generated inventory blocks, `status.typ`. No
       `docs/theorem-index.md` row — this phase lands no filed Goal, and `paramsOk_params` already
       has its row.
 
@@ -4462,6 +4468,109 @@ and the axiom pins — to be MEASURED at phase close rather than trusted from he
 - `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - No filed Challenge signature changed: `git diff` over this phase's commits shows no edit to the statement of `cellAt_const_of_kappa_eq`, `ladderSound`, `ladderCons_localRun`, `ladderLift`, `ladderRealized` or `paramsOk_params`.
 - If the phase closes `[BLOCKED]` or `[PARTIAL]`: the goal state is recorded, `ParamsOk` is left in a state where `paramsOk_params` elaborates green — a tree in which the parameter conditions are undischargeable is NOT an acceptable rest state — and no `sorry`, axiom or vacuous definition exists anywhere.
+
+#### Phase 11.18 Completion Record
+
+**Landed, measured at phase close** (the Scope Hypothesis above predicted roughly four touched
+declarations, two restated or new parameter theorems, two room lemmas, one docstring correction,
+one evidence-probe line and the axiom pins; the measured figures follow and are what the phase
+actually spent):
+
+| Item | Measured |
+|------|----------|
+| `paramsOkK2` | `(P : ℕ)` binder added; third conjunct `b * (P + 1) * (D + 1) ≤ Tc` landed token-for-token as pinned |
+| `ParamsOk` | application updated to pass `P`; conjunct ORDER unchanged, so every `hp.1.*`, `hp.2.1.1`, `hp.2.2.*` projection in the tree still resolves |
+| `Tcof` | redefined as `max (max A (max B C)) M`, the new outer arm read at `Pof`; no circularity (`Pof` reads `modulusOf` only) |
+| `paramsOk_params` | RE-PROVED green at the new `Tcof`; signature unchanged token-for-token against the `## Lean Challenge Statements` block, no binder gained; axiom profile unchanged at `[propext, Classical.choice, Quot.sound]` |
+| `paramsOk_inflate` | RESTATED with explicit `hroom` premise, not deleted |
+| `paramsOk_inflate_raise` | NEW, existential in the raised `(Tc', Tn')` pair, unconditional beyond `0 < j` |
+| `budget_mul_spacing_le_Tc` | NEW room lemma, `b * (P + 1) ≤ Tc` |
+| `margin_room_at_depth` | NEW depth-indexed room lemma, at the base `Tc_0 = 0` the conjunct forces; no `d ≤ D` side condition needed (truncated subtraction), so it IMPLIES the `d ≤ D` form |
+| `stabDepth` | RELOCATED from `LadderAgree.lean` to `CounterQuotient.lean` (import-direction prerequisite; see the deviation annotation above) |
+| Docstring corrections | `CounterQuotient.lean:423` (the "`(K2)` … never mention `P`" sentence), the module docstring's `(K2)` bullet, `LadderChain.lean`'s inflation-lemma sentence, three prose passages in `KTypeSummaryAxiomTest.lean` |
+| Line counts | `CounterQuotient.lean` 1,115 → 1,305 (no in-source baseline; package-wide 1,500 holds). `LadderAgree.lean` 3,366 → 3,362 (baseline 3,400). `LadderChain.lean` 2,984 → 2,986 (baseline 3,000). `KTypeSummaryAxiomTest.lean` 2,992 → 3,057, baseline RAISED 3,000 → 3,100 (the predicted eight lines of headroom were insufficient for three pins plus prose; this is the baseline-raise remedy the task text named) |
+
+**THE ROOM LEMMA'S INSTANTIATION, WRITTEN OUT AND COMPILED** — the verification item asked for
+this to be checked by writing the instantiation out rather than by inspecting the name. The
+following elaborated green under `lake env lean` (exit 0, no errors, no warnings) against the
+built library:
+
+```lean
+theorem spacing_at_modulus {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) {g : ℤ → LadderState Q pend}
+    (σ : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame)
+    (hg : IsLadderPath step pend g) (z : ℤ) (hz : pend (objAt g z) = true)
+    (Tc Tn P B : ℕ) (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hTc : Tc ≤ cntAt g z) :
+    ∃ (u : ℤ) (d : ℕ), 0 < d ∧ d ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card ∧ z ≤ u ∧
+      u + ((d * (P + 1) : ℕ) : ℤ)
+        ≤ z + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (P + 1) : ℕ) : ℤ) ∧
+      d * (P + 1) ≤ cntAt g u ∧
+      objAt g u = objAt g (u + ((d * (P + 1) : ℕ) : ℤ)) ∧
+      tpOf (ladderModel step pend fwd bwd lab) φ σ u
+        = tpOf (ladderModel step pend fwd bwd lab) φ σ (u + ((d * (P + 1) : ℕ) : ℤ)) := by
+  refine exists_typeBlock_of_spacing step pend fwd bwd lab φ σ hg z hz z (P + 1) (le_refl z) ?_
+  have hroom : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (P + 1) ≤ cntAt g z :=
+    le_trans (budget_mul_spacing_le_Tc step pend lab φ Tc Tn P B hp) hTc
+  omega
+```
+
+So `budget_mul_spacing_le_Tc` discharges `exists_typeBlock_of_spacing`'s single `hroom`
+hypothesis at `s := P + 1`, from `w₀ := z`, with one `le_trans` against the caller's own
+`Tc ≤ cntAt g z` and nothing else. Phase 11.20 instantiates through this route, not through
+`exists_typeBlock_of_budget_le_cnt_within`. **This check is a verification artifact, not a
+library declaration**: it was compiled in the scratchpad and is recorded here rather than landed,
+because the phase's own prohibition on adding declarations beyond the pinned set applies and
+Phase 11.20 owns the instantiation that ships.
+
+**Verification results, all green:**
+
+- Full `lake build`: exit 0, 0 errors, 0 warnings (guarded, `--timeout 1800`, detached with the
+  bounded single-call waiter). `lake build BimodalTest`: exit 0, 0 errors, 0 warnings, every
+  `#guard_msgs` axiom pin green.
+- `#print axioms` on `paramsOk_params`, `paramsOk_inflate`, `paramsOk_inflate_raise`,
+  `budget_mul_spacing_le_Tc` and `margin_room_at_depth`: each exactly
+  `[propext, Classical.choice, Quot.sound]` — a subset of the permitted set, no `sorryAx`, no
+  custom axiom, no `native_decide`. `stabDepth` depends on no axioms. All five pinned in
+  `KTypeSummaryAxiomTest.lean`.
+- The new conjunct is NON-VACUOUS and the strengthened condition SATISFIABLE: `paramsOk_params`
+  is the in-tree witness, discharged at `Tcof`'s new `max` arm; `exists_paramsOk_with_margin`
+  (round 15, compiled) is the generic one.
+- `paramsOk_inflate` is restated and not deleted; `grep -rn 'paramsOk_inflate' FormalSystem/
+  Tests/` shows all ten occurrences current — `LadderChain.lean:1655` and
+  `KTypeSummaryAxiomTest.lean:2045`/`:2073`/`:2076` now describe the ROOM-HYPOTHESIS form and name
+  `paramsOk_inflate_raise` as the unconditional sibling.
+- `bash scripts/check-evidence-probes.sh`: exit 0, `PASS all 62 wired probe(s) compile`, with
+  `seam-gluing-ray-product/ladder-cell-obligation-refutation` PASS after its `paramsOkK2`
+  application was brought to the new arity. Its frozen `paramsOkK4Pre` was NOT touched.
+  **CARRIED-FIGURE CORRECTION**: this phase's own verification text cited a re-measured 57
+  `WIRED` / 1 `WIRED_REPO` figure. The live gate reports no `WIRED`/`WIRED_REPO` tokens at all —
+  it prints a per-probe `PASS`/`SKIP` table and a single `all 62 wired probe(s) compile` total.
+  62 wired (61 PASS + the archived-repo probe) with 1 SKIP, unchanged by this phase, which added
+  no probe.
+- Every touched module's in-source `longFile` ceiling re-measured before editing and holds after;
+  both scoped builds report 0 warnings.
+- `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests`: exit 0, `sorry_count: 0`. The
+  module-scoped vacuous grep over `CounterQuotient.lean` returns 0; the repository-wide vacuous
+  grep returns 1, unchanged from baseline. `grep -rn '^axiom ' FormalSystem Tests` returns 14,
+  identical to the count at `HEAD`.
+- `bash scripts/check-module-invariants.sh`: exit 0. Every group passes; the single pre-existing
+  `C16` finding is unchanged in content and count (230 `env_linter` findings across 16 of 18
+  non-`FormalSystem` roots, `TODO`-tier and non-exit-affecting), and the C34 family is green
+  (`C34a` 188 honest markers, `C34b` zero unmarked binder-carrying constraint claims).
+- `bash scripts/typst-sync-check.sh`: exit 0, all 4 checks green after regenerating
+  `typst/generated/status.typ`. `bash scripts/readme-lint.sh`: exit 0.
+  `bash .claude/scripts/check-task-references.sh --quiet`: exit 0.
+- No filed Challenge signature changed: `git diff` over this phase's additions shows no edit to
+  the statement of `cellAt_const_of_kappa_eq`, `ladderSound`, `ladderCons_localRun`,
+  `ladderLift`, `ladderRealized` or `paramsOk_params`.
+
+**WHAT THIS PHASE DOES NOT SETTLE.** The margin is landed and dischargeable; nothing here is a
+depth induction, a cell agreement, or a pump. Phase 11.19's two unexposed splice clauses are
+untouched and remain the other half of the recorded S-2 obligation's first gate.
 
 ### Phase 11.19: The Two Unexposed Clauses of the Iterated Splice — Interior-Copy Countdown and Register [NOT STARTED]
 

@@ -108,7 +108,9 @@ expectation to rewrite.
 -- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500): this is one
 -- axiom-profile ledger for the summary layer and its requirement sections stay together, so the
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
-set_option linter.style.longFile 3000
+-- The baseline is raised one chunk at a time, as the ledger grows; the `longFile` linter requires
+-- the value to be at least the file's length and refuses a value more than one chunk above it.
+set_option linter.style.longFile 3100
 
 namespace BimodalTest.Metalogic
 
@@ -1339,7 +1341,12 @@ no certificate object is named, and no pin is a complexity bound. -/
 
 Eleven further pins, one per declaration of the module's transport layer. The `⊡`-nesting depth
 and the pinned-letter predicate (`stabDepth`, `StabPinned`) with the three facts an induction on
-that depth steps by (`stabDepth_stab`, `stabDepth_arg_le_of_le_succ`, `stabDepth_le_sup` — the
+that depth steps by. `stabDepth` itself is declared in `RaySummary/CounterQuotient.lean`, not in
+the transport module: `(K2)`'s margin conjunct and `Tcof` both read
+`(plusSubformulaClosure φ).sup stabDepth`, and the transport module imports the parameter layer
+rather than the other way round. The measure is purely syntactic, so the home makes no difference
+to what it says, and its namespace is unchanged. The three facts (`stabDepth_stab`,
+`stabDepth_arg_le_of_le_succ`, `stabDepth_le_sup` — the
 depth is bounded on a closure by a `φ`-determined quantity, so the induction terminates) and the
 two bridges to the hypothesis the transport statements take (`stabPinned_of_stabDepth_le`,
 `stabPinned_false_of_mem_closure`). Then HALF (i) itself: two ladder paths with the SAME object
@@ -2036,7 +2043,12 @@ verdict:
   shape, and all four leave it a hypothesis.
 * **Three scoping records.** `pend_succ_of_fwd` with `objCycleLens_nonempty_of_pend`, and
   `paramsOk_inflate` — which inflates `P` to `j * (P + 1) - 1` for any `0 < j`, so a displacement
-  argument may take any multiple of `P + 1` without re-deriving `ParamsOk`.
+  argument may take any multiple of `P + 1` without re-deriving `ParamsOk`, PROVIDED the inflated
+  modulus still fits under `(K2)`'s margin conjunct. That proviso is the lemma's explicit `hroom`
+  hypothesis and not a consequence of the parameter conditions: the margin is linear in `P`, so
+  inflating by `j` multiplies the requirement by `j`. `paramsOk_inflate_raise`, pinned in the
+  margin section at the end of this file, is the unconditional sibling that pays for the inflation
+  by raising `Tc` and `Tn` with `P`.
 * **The deletion primitive itself**, usable wherever `hanch` and `hstraddle` are supplied from
   OUTSIDE the pending-forever regime. Its signature carries `hnz : nxtAt g z ≤ cntAt g z` as an
   admitted hypothesis, measured necessary by compiling the proof with and without it; `hnz` is
@@ -2061,9 +2073,11 @@ own PROOFS, through the `by_cases` on whether the lower pin's region reaches the
 `pend_succ_of_fwd`'s existential before the pigeonhole over object states. `paramsOk_inflate` and
 `forwardSlackWitnessed_iff_next_region_cnt_le` inherit it instead from the DEFINITIONAL closure of
 what they quantify — `ParamsOk` and `ForwardSlackWitnessed` respectively — rather than from
-anything either proof does: `paramsOk_inflate` only destructures and rebuilds the conjunction, and
-the `iff` only re-packages the existential's witness. No certificate object is named, no
-finite-fibre or finite-width hypothesis appears, and no pin is a bound. -/
+anything either proof does: `paramsOk_inflate` only destructures and rebuilds the conjunction —
+now carrying its margin hypothesis through to the rebuilt third `(K2)` conjunct, which changes the
+signature and not the proof's axiom sources — and the `iff` only re-packages the existential's
+witness. No certificate object is named, no finite-fibre or finite-width hypothesis appears, and
+no pin is a bound. -/
 
 open FormalSystem.Metalogic.Decidability.RaySummary in
 /-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.next_region_cnt_le_of_hasForwardSlack' depends on axioms: [propext,
@@ -2988,5 +3002,56 @@ ladder cell is claimed at any parameters. The standard profile on each. -/
 #guard_msgs in
 #print axioms
   FormalSystem.Metalogic.Decidability.RaySummary.kappa_collision_window_or_pendPast_exhaustive
+
+/-! ## The depth-stratified parameter margin (`RaySummary/CounterQuotient.lean`)
+
+Three pins for `(K2)`'s margin conjunct and the two forms its consumers read it at. The conjunct
+asks `b · (P + 1) · (D + 1) ≤ T_c` for `b` the type-pigeonhole budget, `P + 1` the modulus and
+`D := (plusSubformulaClosure φ).sup stabDepth` the `⊡`-nesting depth of the closure. It is a
+STRENGTHENING of the parameter conditions, and the two things that have to be said about a
+strengthening are both said here.
+
+FIRST, IT IS DISCHARGEABLE. `paramsOk_params` is re-proved at the new `T_cof`, whose definition
+gains one `max` arm reading `Pof` — and `Pof` is the modulus minus one, computed from the
+certificate graph's cycle lengths and the periodicity fixpoint's period, so it does not read
+`T_c` and there is no circularity. Its pin above is unchanged at the standard profile, and its
+signature gained no binder: a parameter hypothesis nobody can discharge is indistinguishable from
+an unproved statement for every consumer downstream, which is the one failure mode this layer
+exists to prevent. The generic satisfiability statement is the round-15 probe's
+`exists_paramsOk_with_margin`.
+
+SECOND, IT COSTS THE UNCONDITIONAL INFLATION LEMMA. `paramsOk_inflate` now carries the inflated
+room as an explicit hypothesis, because the margin is LINEAR in `P` and
+`paramsOk_modulus_unbounded_at_fixed_Tc` (round-15 probe) says no bound on the inflation factor
+at a fixed `T_c` follows from (K1)-(K4). `paramsOk_inflate_raise` is the sibling that keeps the
+capability unconditional by raising `T_c` and `T_n` with `P`; its statement is existential in the
+raised pair, which is why it reports `Classical.choice` on the same footing as its sibling rather
+than below it.
+
+NEITHER ROOM LEMMA IS A BOUND. `budget_mul_spacing_le_Tc` is the shape
+`exists_typeBlock_of_spacing`'s single room hypothesis consumes at spacing `s := P + 1`, the
+spacing at which a pumped block's length is a multiple of the modulus;
+`margin_room_at_depth` is the same quantity with one block of room reserved per `⊡`-depth level,
+at the base `Tc_0 = 0` the conjunct forces. Both are lower bounds on `T_c` read in the available
+direction, and neither bounds `P`, the cell, the fibre or the width. The standard profile on each,
+inherited from `ParamsOk`'s own definitional closure and not from any choice either proof makes.-/
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.paramsOk_inflate_raise' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.paramsOk_inflate_raise
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.budget_mul_spacing_le_Tc' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.budget_mul_spacing_le_Tc
+
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.margin_room_at_depth' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.margin_room_at_depth
 
 end BimodalTest.Metalogic

@@ -59,8 +59,17 @@ load-bearing: it FAILS at the tuple the refutation turns on, on that probe's own
 * **(K2)** `T_c`: at least the cascade bound — the largest region countdown a rigid (all-exact)
   past can force, exponential in the number of pinned regions by `iter_doubling`
   (`specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean`) — and at least the semantic
-  periodicity threshold (`satThreshold`, the fixpoint's own threshold). `T_c` may NOT come from
-  the formula alone: `short_idle_threshold_refuted` is the compiled refutation of that.
+  periodicity threshold (`satThreshold`, the fixpoint's own threshold), and at least the
+  DEPTH-STRATIFIED MARGIN `b · (P + 1) · (D + 1)` for `b` the type-pigeonhole budget and `D` the
+  `⊡`-nesting depth of the closure. `T_c` may NOT come from the formula alone:
+  `short_idle_threshold_refuted` is the compiled refutation of that. The margin conjunct is the
+  one place (K2) reads `P`: it buys the room a spaced type pigeonhole needs at spacing `P + 1`
+  (`budget_mul_spacing_le_Tc`, exactly `exists_typeBlock_of_spacing`'s single room hypothesis at
+  that spacing), one such room per `⊡`-depth level (`margin_room_at_depth`). It is a
+  STRENGTHENING of the conditions, discharged at `Tcof`'s own new `max` arm by `paramsOk_params`
+  and paid for at `paramsOk_inflate`, which now takes the inflated room as a hypothesis rather
+  than deriving it; `paramsOk_inflate_raise` keeps the inflation capability unconditional by
+  raising `T_c` and `T_n` with `P`.
 * **(K3)** Ordering: `T_n + 1 ≥ T_c + 2ℓ₀` for `ℓ₀` the longest shortest path between saturated
   classes, and `T_c ≥ 2 T_short + T_idle + 2`.
 * **(K4)** `B`: at least `2 d_back + 1` for the formula's backward exactness depth `dBack`, at
@@ -420,8 +429,12 @@ the reduced next deadline.
 
 **`ParamsOk` is NOT a hypothesis here, and must not be added.** It cannot close any gap this
 statement has, because it does not bound `P` from above: `(K1)` (`paramsOkK1`) is a DIVISIBILITY
-condition into `P + 1`, and `(K2)` and `(K3)` (`paramsOkK2`, `paramsOkK3`) never mention `P` at
-all, so `ParamsOk` constrains `P` from below only — while the refutation of the narrower
+condition into `P + 1`; `(K3)` (`paramsOkK3`) does not mention `P` at all; and `(K2)`
+(`paramsOkK2`) mentions `P` only through its margin conjunct
+`b · (P + 1) · (D + 1) ≤ Tc`, which is a lower bound on `Tc` AT a given `P` and so bounds `P`
+from above only once `Tc` is itself held fixed — which this statement, quantifying `Tc` freely,
+does not do. So `ParamsOk` constrains `P` from below only here — while the refutation of the
+narrower
 `repsCnt` bound runs in the direction of LARGER `P` (and, at `Probe761W.witnessC_not_RKPre`,
 at `P = 0`, where `ParamsOk`'s own `not_paramsOk_allZero` already fails for an unrelated reason).
 Adding a parameter, size or regime hypothesis would weaken the statement without buying anything;
@@ -768,13 +781,48 @@ theorem Pof.succ {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → 
   unfold Pof
   omega
 
+/-! ## The `⊡`-nesting depth
+
+The measure the `(K2)` margin conjunct is stratified by. It is purely syntactic — a recursion on
+`PlusFormula` reading nothing of `step`, `pend`, `lab` or any parameter — and it is defined HERE
+rather than beside the pinned-letter layer of `LadderAgree.lean` that consumes its arithmetic
+facts, because `LadderAgree.lean` imports this module while `(K2)` and `Tcof` both read
+`(plusSubformulaClosure φ).sup stabDepth`. -/
+
+/-- **The `⊡`-nesting depth of a formula**: `0` on the atomic arms and on `□` (whose clause is
+path-independent), the `max` across the three binary arms, and one more than its argument's on
+`⊡`.
+
+`stabDepth` is `0` on `□ψ` whatever `ψ` is, and that is deliberate: the `box` clause of
+`PlusTruthAt` carries no state constraint and no history argument on its right-hand side
+(`box_mem_tpOf_transfer`), so a `□` letter's bit is the same proposition at both compared points
+and the depth of its argument is irrelevant to transport. -/
+def stabDepth : PlusFormula → ℕ
+  | .atom _ => 0
+  | .bot => 0
+  | .imp a b => max (stabDepth a) (stabDepth b)
+  | .box _ => 0
+  | .untl a b => max (stabDepth a) (stabDepth b)
+  | .snce a b => max (stabDepth a) (stabDepth b)
+  | .stab a => stabDepth a + 1
+
+/-! ## The four parameter outputs, continued -/
+
 /-- **(K2)'s and (K3)'s parameter output `T_c`.** The largest of the cascade bound (K2), the
-semantic periodicity threshold (K2), and (K3)'s `2 T_short + T_idle + 2`. Source: (K2) via
-`cascadeBound` (`iter_doubling`) and `satThreshold` (`prodPre_periodic`), and (K3)'s ordering. -/
+semantic periodicity threshold (K2), (K3)'s `2 T_short + T_idle + 2`, and (K2)'s DEPTH-STRATIFIED
+MARGIN read at `Pof`. Source: (K2) via `cascadeBound` (`iter_doubling`), `satThreshold`
+(`prodPre_periodic`) and the margin, and (K3)'s ordering.
+
+**The margin arm reads `Pof`, and there is no circularity**: `Pof` is
+`modulusOf step pend lab φ - 1`, and `modulusOf` is the lcm of the certificate graph's cycle
+lengths times the periodicity fixpoint's period. Neither reads `Tc`, `Tcof` or `Tnof`. The
+dependency runs `Pof → Tcof → Tnof` in one direction only. -/
 noncomputable def Tcof {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
     (lab : Q → Atom → Bool) (φ : PlusFormula) : ℕ :=
-  max (cascadeBound pend φ)
-    (max (satThreshold step lab φ) (2 * tShort Q φ + tIdle pend + 2))
+  max (max (cascadeBound pend φ)
+      (max (satThreshold step lab φ) (2 * tShort Q φ + tIdle pend + 2)))
+    (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (Pof step pend lab φ + 1) *
+      ((plusSubformulaClosure φ).sup stabDepth + 1))
 
 /-- **(K3)'s parameter output `T_n`.** `T_c` plus twice `ℓ₀`, which satisfies (K3)'s ordering
 `T_n + 1 ≥ T_c + 2ℓ₀`. Source: (K3). -/
@@ -821,12 +869,42 @@ def paramsOkK1 {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bo
     (∀ l ∈ objCycleLens step pend, l ∣ (P + 1)) ∧
     satPeriod step lab φ ∣ (P + 1)
 
-/-- **(K2)**: `T_c` is at least the cascade bound and at least the semantic periodicity
-threshold. Compiled anchors: `iter_doubling` (the recurrence the cascade bound iterates) and
-`short_idle_threshold_refuted` (why `T_c` may not come from the formula alone). -/
+/-- **(K2)**: `T_c` is at least the cascade bound, at least the semantic periodicity threshold,
+and at least the DEPTH-STRATIFIED MARGIN. Compiled anchors: `iter_doubling` (the recurrence the
+cascade bound iterates) and `short_idle_threshold_refuted` (why `T_c` may not come from the
+formula alone).
+
+**The third conjunct is the margin, and it is why this predicate takes `P`.** With
+`b := Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card` the type-pigeonhole budget
+(`budget_le_cascadeBound`, `card_prodState`) and `D := (plusSubformulaClosure φ).sup stabDepth`
+the `⊡`-nesting depth of the closure, it asks
+
+  `b * (P + 1) * (D + 1) ≤ Tc`.
+
+**What it buys.** `b * (P + 1)` is exactly the room `exists_typeBlock_of_spacing`'s single
+`hroom` hypothesis consumes at spacing `s := P + 1` — the spacing at which every block the
+pigeonhole returns has length a multiple of `P + 1`, so that a pump through it is a
+`kappa`-residue-preserving shift rather than an arbitrary one. The factor `D + 1` buys ONE SUCH
+ROOM PER `⊡`-DEPTH LEVEL, which is what a depth-stratified induction spends: the level-`d`
+invariant carries a threshold `Tc_d` with `Tc_d + b * (P + 1) ≤ Tc` still available above it
+(`margin_room_at_depth`), so the step may pump once more without leaving the margin.
+`budget_mul_spacing_le_Tc` and `margin_room_at_depth` are the two consumable forms.
+
+**What it costs.** `paramsOk_inflate`'s unconditional form: inflating the modulus from `P + 1` to
+`j * (P + 1)` multiplies this conjunct's requirement by `j`, which
+`paramsOk_modulus_unbounded_at_fixed_Tc` (round-15 probe) says is NOT a consequence of (K1)-(K4)
+at a fixed `Tc`. So the inflation lemma takes the inflated room as an explicit hypothesis, and
+`paramsOk_inflate_raise` is the unconditional sibling that pays for it by raising `Tc` and `Tn`
+with `P`.
+
+The condition is SATISFIABLE: `paramsOk_params` discharges it at the periodicity fixpoint's own
+parameters, through `Tcof`'s new `max` arm, and `exists_paramsOk_with_margin` (round-15 probe,
+compiled) is the generic statement that a margin is available at every size. -/
 def paramsOkK2 {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
-    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc : ℕ) : Prop :=
-  cascadeBound pend φ ≤ Tc ∧ satThreshold step lab φ ≤ Tc
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc P : ℕ) : Prop :=
+  cascadeBound pend φ ≤ Tc ∧ satThreshold step lab φ ≤ Tc ∧
+    Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (P + 1) *
+      ((plusSubformulaClosure φ).sup stabDepth + 1) ≤ Tc
 
 /-- **(K3)**: the ordering. `T_n + 1 ≥ T_c + 2ℓ₀` for `ℓ₀` the longest shortest path between
 saturated classes, and `T_c ≥ 2 T_short + T_idle + 2`. Compiled anchor: `gate9_sep_cell_ne`, the
@@ -850,7 +928,7 @@ predicate can express. Only (K3)'s ordering is partly numeric. All four conjunct
 predicate missing one is the same contract gap one level down. -/
 def ParamsOk {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
     (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) : Prop :=
-  paramsOkK1 step pend lab φ P ∧ paramsOkK2 step pend lab φ Tc ∧
+  paramsOkK1 step pend lab φ P ∧ paramsOkK2 step pend lab φ Tc P ∧
     paramsOkK3 Q pend φ Tc Tn ∧ paramsOkK4 φ B
 
 /-- **THE DISCHARGE LEMMA.** The parameter conditions hold at the four parameters the periodicity
@@ -862,7 +940,7 @@ theorem paramsOk_params {Q : Type} [Fintype Q] [Nonempty Q] (step : Q → Q → 
     ParamsOk step pend lab φ (Tcof step pend lab φ) (Tnof step pend lab φ)
       (Pof step pend lab φ) (Bof step pend lab φ) := by
   classical
-  refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ⟨?_, ?_⟩, ?_, ?_, ?_⟩
+  refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ?_, ?_, ?_⟩
   · intro l hl
     rw [Pof.succ, modulusOf]
     exact Dvd.dvd.mul_right (Finset.dvd_lcm (mem_cycleLensF_of_prod step pend lab φ hl)) _
@@ -871,40 +949,152 @@ theorem paramsOk_params {Q : Type} [Fintype Q] [Nonempty Q] (step : Q → Q → 
     exact Dvd.dvd.mul_right (Finset.dvd_lcm (mem_cycleLensF_of_obj step pend lab φ hl)) _
   · rw [Pof.succ, modulusOf]
     exact Dvd.dvd.mul_left dvd_rfl _
-  · exact le_max_left _ _
-  · exact le_trans (le_max_left _ _) (le_max_right _ _)
+  -- (K2), the cascade bound: `Tcof`'s inner `max`, left arm.
+  · exact le_trans (le_max_left _ _) (le_max_left _ _)
+  -- (K2), the periodicity threshold: inner `max`, right arm, left.
+  · exact le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) (le_max_left _ _)
+  -- (K2), THE MARGIN: `Tcof`'s new outer arm, at `Pof` itself.
+  · exact le_max_right _ _
+  -- (K3)'s ordering, which tracks `Tcof` through `Tnof` whatever `Tcof` is.
   · unfold Tnof; omega
-  · exact le_trans (le_max_right _ _) (le_max_right _ _)
+  -- (K3)'s `2 T_short + T_idle + 2`: inner `max`, right arm, right.
+  · exact le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) (le_max_left _ _)
   · exact le_max_left _ _
   · exact le_trans (le_max_left _ _) (le_max_right _ _)
   · exact le_trans (le_max_right _ _) (le_max_right _ _)
 
-/-- **`ParamsOk` IS CLOSED UNDER INFLATING THE MODULUS.** `P` may be replaced by
-`j * (P + 1) - 1` for any `j > 0`, so the modulus `P + 1` may be inflated to any positive
-multiple of itself and the parameter conditions survive.
+/-- **`ParamsOk` IS CLOSED UNDER INFLATING THE MODULUS, GIVEN THE INFLATED ROOM.** `P` may be
+replaced by `j * (P + 1) - 1` for any `j > 0`, so the modulus `P + 1` may be inflated to any
+positive multiple of itself and the parameter conditions survive — PROVIDED the inflated margin
+still fits under `Tc`, which is the explicit hypothesis `hroom`.
 
-The asymmetry that makes this work: (K1) is a DIVISIBILITY condition INTO `P + 1`, so every
-divisor of `P + 1` divides `j * (P + 1)` as well; and (K2), (K3), (K4) never mention `P` at all —
-(K2) and (K3) constrain `Tc` and `Tn`, (K4) constrains `B`. So inflation touches only the
-conjunct it cannot break.
+**Why the room hypothesis is explicit and not derivable.** (K1) is a DIVISIBILITY condition INTO
+`P + 1`, so every divisor of `P + 1` divides `j * (P + 1)` as well: that conjunct inflation
+cannot break. (K3) and (K4) never mention `P`. But `(K2)`'s margin conjunct does, LINEARLY, so
+inflating the modulus by `j` multiplies its requirement by `j` — and
+`paramsOk_modulus_unbounded_at_fixed_Tc` (round-15 probe) says exactly that no bound on `j` at a
+fixed `Tc` follows from (K1)-(K4). The requirement is therefore taken as a hypothesis, which the
+caller discharges by choosing `j` small enough against the margin it already has, or avoids
+altogether by raising `Tc` with `P` through `paramsOk_inflate_raise`.
 
 **What this does and does not buy.** It means a construction is free to choose the modulus as
-large as it needs without weakening the parameter hypothesis, which removes modulus magnitude
-from the list of possible obstructions. It does NOT make `HasForwardSlack` available at the
-inflated amount: `LadderChain.lean`'s `hasForwardSlack_amount_le` caps the regime's amount at
-`n + cntAt g z + I`, so an unboundedly inflated modulus is exactly what the regime refuses. -/
+large as the margin allows without weakening the parameter hypothesis. It does NOT make
+`HasForwardSlack` available at the inflated amount: `LadderChain.lean`'s
+`hasForwardSlack_amount_le` caps the regime's amount at `n + cntAt g z + I`, so an unboundedly
+inflated modulus is exactly what the regime refuses.
+
+**Nothing in the tree applies this lemma**, which is why taking the room as a hypothesis breaks
+no consumer: it is a capability record about the parameter layer, read by prose and by no proof
+term. -/
 theorem paramsOk_inflate {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
     (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
-    (hp : ParamsOk step pend lab φ Tc Tn P B) (j : ℕ) (hj : 0 < j) :
+    (hp : ParamsOk step pend lab φ Tc Tn P B) (j : ℕ) (hj : 0 < j)
+    (hroom : Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (j * (P + 1)) *
+      ((plusSubformulaClosure φ).sup stabDepth + 1) ≤ Tc) :
     ParamsOk step pend lab φ Tc Tn (j * (P + 1) - 1) B := by
   obtain ⟨⟨h1, h2, h3⟩, hK2, hK3, hK4⟩ := hp
   have hjP : j * (P + 1) - 1 + 1 = j * (P + 1) := by
     have : 0 < j * (P + 1) := Nat.mul_pos hj (Nat.succ_pos P)
     omega
-  refine ⟨⟨?_, ?_, ?_⟩, hK2, hK3, hK4⟩
+  refine ⟨⟨?_, ?_, ?_⟩, ⟨hK2.1, hK2.2.1, ?_⟩, hK3, hK4⟩
   · intro l hl; rw [hjP]; exact (h1 l hl).mul_left j
   · intro l hl; rw [hjP]; exact (h2 l hl).mul_left j
   · rw [hjP]; exact h3.mul_left j
+  · rw [hjP]; exact hroom
+
+/-- **THE INFLATION CAPABILITY, UNCONDITIONALLY, AT A RAISED `T_c`.** The sibling of
+`paramsOk_inflate` that pays the margin's price instead of assuming it away: the modulus is
+inflated to `j * (P + 1)` and `Tc` and `Tn` are raised together to cover the inflated margin, so
+the capability survives with no hypothesis beyond `0 < j`.
+
+The `Tc`/`Tn` half is the generic upward monotonicity of the parameter conditions in `Tc` once
+`Tn` is raised with it — `paramsOk_raise_Tc` in the round-15 probe. (K1) is untouched by a change
+of `Tc`; (K2)'s three conjuncts and (K3)'s `2 T_short + T_idle + 2` are all lower bounds on `Tc`
+and so survive a raise; (K3)'s ordering survives because `Tn` is raised by the same amount. -/
+theorem paramsOk_inflate_raise {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B) (j : ℕ) (hj : 0 < j) :
+    ∃ Tc' Tn' : ℕ, Tc ≤ Tc' ∧ Tn ≤ Tn' ∧
+      ParamsOk step pend lab φ Tc' Tn' (j * (P + 1) - 1) B := by
+  classical
+  obtain ⟨⟨h1, h2, h3⟩, hK2, hK3, hK4⟩ := hp
+  have hjP : j * (P + 1) - 1 + 1 = j * (P + 1) := by
+    have : 0 < j * (P + 1) := Nat.mul_pos hj (Nat.succ_pos P)
+    omega
+  refine ⟨Tc + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (j * (P + 1)) *
+      ((plusSubformulaClosure φ).sup stabDepth + 1),
+    Tn + Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (j * (P + 1)) *
+      ((plusSubformulaClosure φ).sup stabDepth + 1),
+    Nat.le_add_right _ _, Nat.le_add_right _ _, ?_⟩
+  refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, hK4⟩
+  · intro l hl; rw [hjP]; exact (h1 l hl).mul_left j
+  · intro l hl; rw [hjP]; exact (h2 l hl).mul_left j
+  · rw [hjP]; exact h3.mul_left j
+  · exact le_trans hK2.1 (Nat.le_add_right _ _)
+  · exact le_trans hK2.2.1 (Nat.le_add_right _ _)
+  · rw [hjP]; exact Nat.le_add_left _ _
+  · have h := hK3.1; omega
+  · exact le_trans hK3.2 (Nat.le_add_right _ _)
+
+/-! ## The two consumable forms of the margin
+
+`(K2)`'s margin conjunct is stated once, as a product. Its two consumers read it at two different
+shapes, and both are landed here so that no caller re-derives the arithmetic. -/
+
+/-- **THE ROOM FOR THE SPACED PIGEONHOLE AT SPACING `P + 1`.** `b · (P + 1) ≤ Tc` for `b` the
+type-pigeonhole budget.
+
+This is EXACTLY the quantity `exists_typeBlock_of_spacing`'s single `hroom` hypothesis consumes at
+`s := P + 1`: that hypothesis is
+`w₀ + ((Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * s : ℕ) : ℤ) ≤ z + (cntAt g z : ℤ)`,
+so a caller sampling from `w₀ := z` inside a region of countdown at least `Tc` discharges it from
+this lemma and `Int.ofNat_le` alone. Spacing `P + 1` is the spacing at which every block the
+pigeonhole returns has length a multiple of `P + 1`, hence at which a pump through it shifts the
+countdown by a multiple of the modulus and so preserves `kappa`'s residue coordinate.
+
+`budget_mul_succ_le_Tc` (`LadderChain.lean`) is the OLD room bound at spacing at most `b`, from
+`cascadeBound` alone; it is untouched and remains what the overshoot loop reads. This lemma is not
+derivable from it: `P` is unrelated to `b`. -/
+theorem budget_mul_spacing_le_Tc {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B) :
+    Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (P + 1) ≤ Tc := by
+  have hm := hp.2.1.2.2
+  calc Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (P + 1)
+      ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (P + 1) *
+          ((plusSubformulaClosure φ).sup stabDepth + 1) :=
+        Nat.le_mul_of_pos_right _ (Nat.succ_pos _)
+    _ ≤ Tc := hm
+
+/-- **ONE ROOM PER `⊡`-DEPTH LEVEL.** At the depth-indexed threshold
+`Tc_d := (D − d) · (b · (P + 1))`, there is still a whole block of room above it:
+`Tc_d + b · (P + 1) ≤ Tc`. This is what a depth-stratified induction spends — the level-`d`
+invariant asks the compared countdowns to exceed `Tc_d`, and the step pumps once more, costing one
+block and landing at level `d + 1`'s lower threshold.
+
+**The base `Tc_0` of the plan's `Tc_d := Tc_0 + (D − d) · b · (P + 1)` is `0` here, and that is
+forced rather than chosen.** The conjunct supplies `b · (P + 1) · (D + 1)` and no more, so the
+`D + 1` blocks the stratification needs consume all of it; a positive base is bought only by
+raising `Tc`, which is what `paramsOk_inflate_raise` does for the modulus and what a caller
+needing a non-trivial threshold at the DEEPEST level would have to do here. The two readings an
+induction takes off this definition — `Tc_D = 0` and `0 ≤ Tc_d` — are then immediate.
+
+No `d ≤ D` side condition is needed: `D − d` is truncated subtraction, so the statement holds at
+every `d` and implies the `d ≤ D` form. -/
+theorem margin_room_at_depth {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B) (d : ℕ) :
+    ((plusSubformulaClosure φ).sup stabDepth - d) *
+        (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (P + 1)) +
+      Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (P + 1) ≤ Tc := by
+  have hm := hp.2.1.2.2
+  set b := Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (P + 1) with hb
+  set D := (plusSubformulaClosure φ).sup stabDepth with hD
+  have h1 : D - d + 1 ≤ D + 1 := by omega
+  calc (D - d) * b + b = (D - d + 1) * b := by ring
+    _ ≤ (D + 1) * b := Nat.mul_le_mul h1 (le_refl b)
+    _ = b * (D + 1) := by ring
+    _ ≤ Tc := hm
 
 /-! ## The predicate is LOAD-BEARING: it fails at the refuted tuple
 

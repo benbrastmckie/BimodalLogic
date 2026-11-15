@@ -1650,9 +1650,11 @@ amount, and asserts NOTHING about the five depth-`0` cell-equality schemas that 
 `ForwardSlackWitnessed`. There the witnessing is asked at the HIGHER pair, so the amount cancels
 against that pair's own countdown and the required bound is the LOWER pair's Lipschitz allowance
 `K ≤ n + c + I`, independent of the displacement. A ceiling on the amount therefore reaches the
-predicate and stops there. Combined with `paramsOk_inflate` (`CounterQuotient.lean`), which says
-`ParamsOk` survives inflating the modulus to any positive multiple, this refutes only the
-would-be route that asks the regime at an unbounded amount. -/
+predicate and stops there. Combined with `paramsOk_inflate_raise` (`CounterQuotient.lean`), which
+says `ParamsOk` survives inflating the modulus to any positive multiple once `Tc` and `Tn` are
+raised with it — the plain `paramsOk_inflate` holds `Tc` fixed and so takes the inflated margin of
+`(K2)`'s third conjunct as an explicit hypothesis — this refutes only the would-be route that asks
+the regime at an unbounded amount. -/
 theorem hasForwardSlack_amount_le {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
     (g : ℤ → LadderState Q pend)
     (hg : IsLadderPath step pend g) (z : ℤ) (l n I : ℕ) (hI : 0 < I)
