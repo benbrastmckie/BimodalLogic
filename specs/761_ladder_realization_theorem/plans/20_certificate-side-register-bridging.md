@@ -5832,7 +5832,7 @@ its wiring edits are LISTED below.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - If the phase closes `[BLOCKED]`: the goal state is recorded with the conjunct that would not land named, and Phase 11.22 is marked as waiting on it — **the membership proof is NOT entered on an undefined relation**, which is the whole point of this phase's ordering.
 
-### Phase 11.25: The Certificate-Side Bridge's Statement, and the (P-2) Design Gate [NOT STARTED]
+### Phase 11.25: The Certificate-Side Bridge's Statement, and the (P-2) Design Gate [COMPLETED]
 
 **THIS PHASE IS THE WHOLE OF THE BOUNDED DESIGN ROUND ROUTE (P-2) IS ENTERED THROUGH, AND IT IS A
 DECISION GATE.** Its deliverable is a VERDICT backed by compiled objects — not a transport, not a
@@ -5920,7 +5920,7 @@ verdict — the named obligation, the transport's disposition, and which of the 
 reached.
 
 **Tasks**:
-- [ ] **Re-read the live signatures first**, and record the date and the line numbers found:
+- [x] **Re-read the live signatures first**, and record the date and the line numbers found:
       `Real`, `certStabK` (`CounterQuotient.lean:1221`), `certAdmK`, `Dmax`,
       `stab_bit_agree_of_certStabK` (`LadderRealize.lean:266`), `stab_mem_tpOf_iff_cell`
       (`LadderAgree.lean`), `cellAt`/`cellLE`, `kappa` and `clipIdx` (`CounterQuotient.lean:160`,
@@ -5928,21 +5928,21 @@ reached.
       (`CounterQuotient.lean:289`), and both register-moving deletions. **No clause of any of them
       is treated as established from this plan's prose.** Re-verify the import closure and the two
       line-count figures above rather than trusting them.
-- [ ] **LEG A — land the reduction.** State and prove, in `LadderRealize.lean`, a theorem whose
+- [x] **LEG A — land the reduction.** State and prove, in `LadderRealize.lean`, a theorem whose
       conclusion is `certStabK … Real` and whose hypothesis is the cell-side obligation, written out
       rather than abbreviated. **Both directions of `certStabK`'s iff are accounted for in the
       statement or in a companion**, and the phase body records, per direction, the pair set it
       ranges over.
-- [ ] **LEG A, the scope reading.** Record, as a statement of the phase and not as prose, whether
+- [x] **LEG A, the scope reading.** Record, as a statement of the phase and not as prose, whether
       the obligation's pair set contains register-displaced `kappa`-collisions — pairs `(q, c, n)`
       and `(q, c', n')` with the same class and `n ≠ n'`. **If it does not, say so loudly and name
       the compiled object that shows it**: that would be the finding that route (P-2) buys, and it
       would mean the certificate side never asked for what four path-level rounds tried to deliver.
-- [ ] **LEG B — decide the transport.** State the class-representative transport at the shape LEG A's
+- [x] **LEG B — decide the transport.** State the class-representative transport at the shape LEG A's
       obligation actually needs, and DECIDE it: DELIVERED (a compiled proof from the tools above),
       REFUTED (a compiled object on a fixture — never an argument), or OPEN (neither, with the goal
       state recorded and the coordinate that refuses it named).
-- [ ] **Apply this gate's kill criterion and record the verdict in the section docstring**, in the
+- [x] **Apply this gate's kill criterion and record the verdict in the section docstring**, in the
       phase body and in the handoff. The three outcomes, named here so none is improvised: (i) the
       obligation is named AND the transport is DELIVERED — Phases 11.26 and 11.27 are enterable;
       (ii) the transport is REFUTED at the register-displaced instances — **route (P-2) is CLOSED**,
@@ -5950,18 +5950,18 @@ reached.
       recorded under the description's CONTINGENCY clause, and the remedy is a `/revise` recording
       a NEW ruling; (iii) the obligation is named and the transport is OPEN — Phase 11.26 is entered
       as an open obligation, and **no second design round is bought by this phase**.
-- [ ] **Record, in the section docstring, what this measurement does NOT say**: it is not a
+- [x] **Record, in the section docstring, what this measurement does NOT say**: it is not a
       transport and proves none unless LEG B landed one; it asserts no cell equality; it claims
       neither `real_certAdmK_of_paramsOk` nor `real_subset_dmax` nor `Dmax ⊆ Real`; it defines no
       relation on position pairs; it does not re-open, weaken or supersede any landed measurement of
       Phases 11.20 or 11.23; and it does not revive route (B-1) or any path-level register conjunct,
       the clipped gap included (Ruling 1).
-- [ ] **Record the path-level closure in the honest form Ruling 2 fixes**, in the section docstring
+- [x] **Record the path-level closure in the honest form Ruling 2 fixes**, in the section docstring
       and in the README paragraph this phase touches: four readings were MEASURED, each failed one
       of the two sides the decision rule requires, and the (P-1) ruling closed the level on that
       evidence — **never that the path level is refuted in general**, and never that completeness of
       the gap reading is settled.
-- [ ] Wire the new declarations: axiom pins, docstring, generated inventory blocks, `status.typ`. No
+- [x] Wire the new declarations: axiom pins, docstring, generated inventory blocks, `status.typ`. No
       `docs/theorem-index.md` row — no filed Goal lands here. On outcome (ii) ONLY, author the
       refutation as a wired evidence probe and add its documentation row and array entry to
       `scripts/check-evidence-probes.sh`, so route (P-2)'s closure is a gated artifact rather than a
@@ -6036,6 +6036,96 @@ of this plan does not arise in a 642-line module with 858 lines of headroom.
 - On outcome (ii) ONLY: `bash scripts/check-evidence-probes.sh` exits 0 with the new probe PASS and the wired total exactly ONE higher than the 63 re-measured at phase start, the delta attributable to this phase's probe alone.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - If the phase closes on outcome (ii): the closure is recorded as a COMPLETE outcome with both legs' objects named, the five dependent filed Goals are named OPEN in `docs/theorem-index.md`, the README and the summary, and the handoff names the `/revise` and Ruling 1's gate as the next decision — **with no `sorry`, axiom, vacuous definition or weakened conjunct anywhere in the tree**.
+
+#### Recorded Outcome
+
+**THE VERDICT IS OUTCOME (iii): THE OBLIGATION IS NAMED AND THE TRANSPORT IS OPEN.** Phases 11.26
+and 11.27 are therefore ENTERABLE, 11.26 on its **branch OPEN**, and **no second design round is
+bought by this phase**. Route (P-2) is NOT closed: outcome (ii) was not reached, no object landed
+here refutes anything, and none is claimed to.
+
+**Live signatures re-read at phase entry (2026-11-15), with the figures re-measured rather than
+carried.** `certStabK` at `CounterQuotient.lean:1221`, `certBoxK` `:1228`, `certAdmK` `:1235`,
+`Dmax` `:1248`, `dmax_maximal` `:1261`, `clipIdx` `:160`, `kappa` `:169`, `clipIdx_sub_sub` `:289`;
+`cellAt` `AnchorLayer.lean:132` with `cellAt_eq_cellAt` `:154` and `stab_mem_tpOf_iff` `:208`;
+`stab_mem_tpOf_iff_cell` `LadderAgree.lean:377`; `kappa_eq_of_shift` `LadderAgree.lean:3320`;
+`Adm` `LadderModel.lean:159`, `LadderState` `:163`, `ladderFrameAdm` `:194`, `ladderModel` `:225`;
+`Real` and `stab_bit_agree_of_certStabK` in `LadderRealize.lean`. **Import closure re-verified from
+live `import` lines**: `LadderRealize.lean` imports `CounterQuotient` and `LadderChain` and nothing
+else, so `Real`, `certStabK`, `Dmax`, `stab_mem_tpOf_iff_cell`, `cellAt`, `kappa` and `clipIdx` are
+all in one closure — **confirmed, the plan's figure unchanged**. **`LadderRealize.lean` measured at
+642 lines with NO in-source `longFile` baseline — confirmed**; it closes at 926, still under the
+package-wide 1,500. **`KTypeSummaryAxiomTest.lean` measured at 3,240 against its in-source 3,300 —
+confirmed**; the eight new pins and their section docstring take it to 3,307, so the in-source
+baseline was raised one chunk to 3,400, which is the file's own documented convention and is
+recorded here rather than left silent. **The evidence gate measured at 63 wired probes, PASS,
+exit 0 — confirmed**, and it is UNCHANGED at 63 because outcome (ii) was not reached.
+
+**LEG A — the obligation, named, with the two directions accounted for SEPARATELY.** The headline
+finding of this leg is that `certStabK`'s iff is NOT symmetric in what it costs:
+
+| Direction | Declaration | The pair set it ranges over | Register-displaced pairs in range? |
+|---|---|---|---|
+| `⟸` (fibre forces the letter) | `real_certStabK_mpr` | the member's OWN cell — every history through its own witnessing world state, projected by `mem_real_realItem` at the same `(q, κ)` | **NO.** The counter pair is literally the member's own, so the direction is **landed UNCONDITIONALLY**, from `Real`'s definition and nothing else |
+| `⟹` (letter forces the fibre) | `real_certStabK_mp_of_cell_stab_transfer` | every pair of admissible ladder states `(q, c, n)`, `(q, c', n')` at the same object component with `kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')` | **YES** — see the scope reading below |
+
+`real_certStabK_of_cell_stab_transfer` joins them: `certStabK φ Tc Tn P B (Real …)` from ONE
+cell-side hypothesis, its quantifier domain written out in the binder rather than abbreviated, with
+**no parameter condition, no `ParamsOk`, and no relation on position pairs anywhere in it**. That
+half the condition is free is exactly the kind of thing the four path-level rounds never measured,
+and it is this round's concrete return.
+
+**LEG A, the scope reading — stated loudly, because the opposite finding would have been the prize
+this route bought.** The obligation's pair set DOES contain register-displaced `kappa`-collisions,
+and the compiled objects that show it are `kappa_eq_register_displaced` (all five `kappa`
+coordinates held across `n ↦ n + (P + 1)` once `Tn ≤ n` and `c + B ≤ n`) and
+`register_displaced_collision_in_domain` (the two DISTINCT admissible ladder states carrying that
+collision, at a FIXED countdown and sharing ONE admissibility witness). So the certificate side
+does ask for what the path-level rounds were trying to deliver — and it asks for it in the register
+coordinate alone, with the countdown held.
+
+**LEG B — the transport, DECIDED: OPEN.** `ClassRepTransport` states it at the HISTORY level and
+not as a correspondence between positions: every closure type realized at `(q, c', n')` is realized
+at `(q, c, n)` whenever the two counter pairs share a `kappa` class. **Its own body IS the recorded
+goal state** — from a history whose state at `z'` is `(t', ⟨(q, c', n'), _⟩)`, produce one whose
+state at `z` is `(t, ⟨(q, c, n), _⟩)` carrying the same closure type.
+`cell_stab_transfer_of_classRepTransport` compiles the implication to LEG A's obligation and
+`real_certStabK_of_classRepTransport` the bridge end to end, so the reduction is complete in both
+links; the transport itself is **neither proved nor refuted here**. **The coordinate that refuses
+it is named, and the naming is compiled rather than argued**: the REGISTER. The one landed tool
+that produces `kappa`-collisions — `kappa_eq_of_shift`, the common shift of BOTH counters by a
+multiple of `P + 1`, with `clipIdx_sub_sub` its gap half — does not reach a pair whose countdown is
+held fixed, and `register_displaced_ne_common_shift` is that gap as an object.
+
+**What this measurement does NOT say**, recorded in the section docstring and repeated here: it is
+not a transport and proves none; it asserts no cell equality and no agreement of class-equivalent
+cells; it claims none of the three statements that wait on the agreement; it defines no relation on
+position pairs and carries no register conjunct on one, the clipped gap included (Ruling 1); and it
+does not re-open, weaken or supersede any Phase 11.20 or Phase 11.23 declaration — `git diff` shows
+`LadderCell.lean`, `LadderAgree.lean` and `CounterQuotient.lean` untouched by this phase.
+
+**The path-level closure, in Ruling 2's honest form**, in the section docstring and in the README
+paragraph this phase added: FOUR readings were MEASURED — clipped, Drift-distance, no register
+conjunct, and gap — each failed one of the two sides the decision rule requires, and the level was
+closed by the recorded ruling on exactly that evidence. No general impossibility is asserted at
+that level, and the completeness of the gap reading is not settled.
+
+**The pre-authorized `LadderWindow` import edge was NOT added**, because no declaration here
+consumes `cellSubset_of_kappa_eq_window_raise`: an import edge added without a consumer is a
+layering change with no reason, and the phase's own verification rejects it. `LadderRealize.lean`
+still imports `CounterQuotient` and `LadderChain` alone.
+
+**Verification measured at close**: module build of
+`FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize` exit 0, 0 errors, 0 warnings;
+`BimodalTest.Metalogic.KTypeSummaryAxiomTest` exit 0, 0 errors, 0 warnings, all eight new
+`#guard_msgs` pins green; `#print axioms` on each of the eight new declarations a subset of
+`[propext, Classical.choice, Quot.sound]` — `kappa_eq_register_displaced`,
+`register_displaced_collision_in_domain` and `register_displaced_ne_common_shift` at
+`[propext, Quot.sound]`, the other five at the full standard profile; `lean-sorry-census.sh` exit 0
+with `sorry_count: 0`; repository-wide vacuous grep at its 1-hit baseline, unchanged; `^axiom `
+grep-match count 14, unchanged; `check-module-invariants.sh`, `typst-sync-check.sh`,
+`readme-lint.sh`, `check-evidence-probes.sh` (63 wired, unchanged) and
+`check-task-references.sh --quiet` each exit 0.
 
 ### Phase 11.26: CONDITIONAL — The Class-Representative Transport the Bridge Names [NOT STARTED]
 

@@ -110,7 +110,7 @@ expectation to rewrite.
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
 -- The baseline is raised one chunk at a time, as the ledger grows; the `longFile` linter requires
 -- the value to be at least the file's length and refuses a value more than one chunk above it.
-set_option linter.style.longFile 3300
+set_option linter.style.longFile 3400
 
 namespace BimodalTest.Metalogic
 
@@ -3236,5 +3236,72 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
  Quot.sound] -/
 #guard_msgs in
 #print axioms iterSpliced_gap_interior_forces_block_gap_le
+
+/-! ### The certificate-side bridge, route (P-2) (`RaySummary/LadderRealize.lean`)
+
+The design round's two legs. LEG A: `real_certStabK_mpr` is the direction of `certStabK`'s clause
+that needs NO cell transfer and is landed unconditionally, `real_certStabK_mp_of_cell_stab_transfer`
+is the direction that carries it, and `real_certStabK_of_cell_stab_transfer` joins them into the
+reduction of condition (5) of `Real` to the cell-side obligation. The scope reading is
+`kappa_eq_register_displaced` with `register_displaced_collision_in_domain`, which exhibit the
+register-displaced collisions inside that obligation's domain, together with
+`register_displaced_ne_common_shift`, which shows the landed common-shift tool does not reach
+them. LEG B: `ClassRepTransport` is the
+transport, OPEN here — neither proved nor refuted — with `cell_stab_transfer_of_classRepTransport`
+and `real_certStabK_of_classRepTransport` the implications out of it. Every pin is a reduction or a
+scope reading; none claims the transport, the agreement, or any inclusion between `Real` and
+`Dmax`. The standard profile on each. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.real_certStabK_mpr' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms real_certStabK_mpr
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.real_certStabK_mp_of_cell_stab_transfer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms real_certStabK_mp_of_cell_stab_transfer
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.real_certStabK_of_cell_stab_transfer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms real_certStabK_of_cell_stab_transfer
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.kappa_eq_register_displaced' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms kappa_eq_register_displaced
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.register_displaced_collision_in_domain' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms register_displaced_collision_in_domain
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.register_displaced_ne_common_shift' depends on axioms: [propext,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms register_displaced_ne_common_shift
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cell_stab_transfer_of_classRepTransport' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms cell_stab_transfer_of_classRepTransport
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.real_certStabK_of_classRepTransport' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms real_certStabK_of_classRepTransport
 
 end BimodalTest.Metalogic

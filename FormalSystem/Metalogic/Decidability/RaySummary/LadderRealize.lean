@@ -639,4 +639,288 @@ theorem real_certBwdK (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B 
 
 end Realizable
 
+/-! ## Route (P-2): the certificate-side bridge, and what `certStabK` of `Real` actually asks for
+
+**THE DESIGN GATE'S RECORD.** This section is the whole of the bounded design round route (P-2)
+is entered through, and its deliverable is a VERDICT backed by compiled objects rather than a
+transport, a certificate condition or an agreement. Nothing above this section is re-opened,
+weakened or re-proved by it, and no second measurement round is bought by it.
+
+**THE VERDICT: OUTCOME (iii) — THE OBLIGATION IS NAMED AND THE TRANSPORT IS OPEN.** The two legs
+landed as compiled objects, and the third possible outcome — a refutation at the
+register-displaced instances, which would close route (P-2) — was NOT reached: no object below
+refutes anything, and none is claimed to.
+
+### LEG A, the obligation, named — and the two directions are NOT symmetric
+
+`certStabK`'s clause at a member `x` is an IFF
+(`ψ ∈ x.2.1.val ↔ ∀ y ∈ R, y.1 = x.1 → y.2.2 = x.2.2 → argOf ψ ∈ y.2.1.val`), and the finding of
+this leg is that only ONE of its two directions needs anything transported at all.
+
+* **`⟸` (the right-hand side forces the letter) needs NO transfer whatever, and is landed
+  UNCONDITIONALLY**: `real_certStabK_mpr`. Its pair set is the fibre of `Real` over the member's
+  OWN `(q, κ)` read at the member's OWN ladder state: every history through `σ.state z` projects
+  by `mem_real_realItem` into `Real` at the same object component and the same class, so the
+  right-hand side already says the `⊡` argument lies in every type of that one cell, which is
+  `stab_mem_tpOf_iff_cell`'s left-hand side. **It ranges over NO register-displaced pair**: the
+  counter pair `(c, n)` it quantifies at is literally the member's own, so the direction is
+  discharged by `Real`'s definition and by nothing else. This is what the four path-level rounds
+  never measured, and it halves the obligation.
+* **`⟹` (the letter forces the right-hand side) is the direction that carries the transfer**:
+  `real_certStabK_mp_of_cell_stab_transfer`. Its pair set is every pair of admissible ladder
+  states `(q, c, n)` and `(q, c', n')` at the SAME object component whose counter classes agree
+  under `kappa Tc Tn P B`, and the obligation it consumes is the CELL-SIDE transfer written out
+  in its own hypothesis binder: if the `⊡` argument lies in every type of the cell at `(q, c, n)`,
+  it lies in every type of the cell at `(q, c', n')`.
+
+`real_certStabK_of_cell_stab_transfer` is the two directions joined: `certStabK` of `Real` from
+that one cell-side hypothesis, with no parameter condition and no relation on position pairs
+anywhere in it.
+
+### LEG A, the scope reading: the obligation's pair set DOES contain register-displaced collisions
+
+Stated loudly, because the opposite finding would have been the prize of this round. The domain
+of the `⟹` direction's hypothesis contains pairs with the same object component, the same
+countdown `c`, the same admissibility witness and `n ≠ n'`: `kappa_eq_register_displaced`
+exhibits the class equality at `n' = n + (P + 1)` whenever `Tn ≤ n` and `c + B ≤ n`, and
+`register_displaced_collision_in_domain` exhibits the two DISTINCT admissible ladder states that
+carry it. So the certificate side does ask for what the path-level rounds were trying to deliver,
+and it asks for it at a FIXED countdown, where the displacement is in the register coordinate
+alone.
+
+### LEG B, the transport, decided: OPEN
+
+`ClassRepTransport` states the class-representative transport at the shape the obligation needs —
+at the HISTORY level, not as a correspondence between positions: every closure type realized at
+`(q, c', n')` is realized at `(q, c, n)` whenever the two counter pairs share a `kappa` class. It
+is a HYPOTHESIS this section decides, never a premise it carries, and its own body is the goal
+state the verdict records: from a history whose state at `z'` is `(t', ⟨(q, c', n'), _⟩)`,
+produce one whose state at `z` is `(t, ⟨(q, c, n), _⟩)` realizing the same closure type.
+
+`cell_stab_transfer_of_classRepTransport` compiles the implication from it to LEG A's obligation,
+and `real_certStabK_of_classRepTransport` is the bridge end to end. **The transport itself is
+neither proved nor refuted here, and the coordinate that refuses it is named**: the REGISTER. At
+the register-displaced instances above the countdown is held fixed while `n` moves by `P + 1`,
+and the one landed tool that produces `kappa`-collisions — `kappa_eq_of_shift`, the COMMON
+downward shift of both counters by a multiple of `P + 1`, with `clipIdx_sub_sub` its gap half —
+provably does not reach them: `register_displaced_ne_common_shift`. The gap between the
+obligation's domain and the landed collision tool is therefore a compiled object rather than an
+assessment.
+
+### What this measurement does NOT say
+
+It is not a transport and proves none, since LEG B landed none. It asserts no cell equality and
+no agreement of class-equivalent cells. It claims neither the admissibility of `Real` under the
+parameter conditions, nor any inclusion between `Real` and `Dmax` in either direction — those are
+other phases' and are untouched here. It defines no relation on position pairs and carries no
+register conjunct on one, the clipped gap included. It does not re-open, weaken or supersede any
+landed measurement of the register discriminator or of the pending-state readings; every one of
+those declarations is byte-identical to its landed form. And it revives no path-level route.
+
+### The path-level closure, recorded in its honest form
+
+Four register readings were MEASURED — the clipped reading, the Drift-distance reading, dropping
+the register conjunct, and the gap reading — and each failed one of the two sides a position-pair
+relation has to pass: delivery by the iterated splice at the window's interior, and consumption
+by the `⊡` bit. The path level was closed on exactly that evidence, by the recorded ruling. That
+is the whole of the claim: nothing here asserts a general impossibility at that level, and the
+completeness of the gap reading is not settled by it.
+-/
+
+section CertificateBridge
+
+variable {Q : Type} [Finite Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **LEG A, THE DIRECTION THAT NEEDS NO TRANSFER.** The `⟸` half of `certStabK`'s clause at a
+member of `Real`, landed UNCONDITIONALLY: if the `⊡` argument lies in the closure type of every
+member of `Real` sharing the object component and the counter class, then the `⊡` letter itself
+lies in the member's own type. Its pair set is the member's own cell and nothing else — every
+history through the member's witnessing state projects into `Real` at the same `(q, κ)` by
+`mem_real_realItem` — so no register-displaced pair is in its range and no cell transfer enters
+its proof. -/
+theorem real_certStabK_mpr (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (x : Q × ClType φ × CK Tc Tn P B)
+    (hx : x ∈ Real step pend lab φ Tc Tn P B fwd bwd)
+    (ψ : PlusFormula) (hψ : ψ ∈ plusSubformulaClosure φ) (hs : isStab ψ = true)
+    (H : ∀ y ∈ Real step pend lab φ Tc Tn P B fwd bwd, y.1 = x.1 → y.2.2 = x.2.2 →
+      argOf ψ ∈ y.2.1.val) :
+    ψ ∈ x.2.1.val := by
+  obtain ⟨χ, rfl⟩ : ∃ χ, ψ = PlusFormula.stab χ := by
+    cases ψ <;> first | exact ⟨_, rfl⟩ | simp [isStab] at hs
+  obtain ⟨c, n, h, t, z, σ, hst, hk, hT⟩ := hx
+  rw [← hT, stab_mem_tpOf_iff_cell (ladderModel step pend fwd bwd lab) φ σ z hψ]
+  rintro T ⟨σ', hs', rfl⟩
+  have hmem := mem_real_realItem lab φ Tc Tn P B fwd bwd σ' z
+  have h1 : (realItem step pend lab φ Tc Tn P B fwd bwd σ' z).1 = x.1 := by
+    change (σ'.state z).2.1.1 = x.1
+    rw [hs', hst]
+  have h2 : (realItem step pend lab φ Tc Tn P B fwd bwd σ' z).2.2 = x.2.2 := by
+    change kappa Tc Tn P B ((σ'.state z).2.1.2.1, (σ'.state z).2.1.2.2) = x.2.2
+    rw [hs', hst]; exact hk
+  exact H _ hmem h1 h2
+
+/-- **LEG A, THE DIRECTION THAT CARRIES THE TRANSFER.** The `⟹` half, from the CELL-SIDE
+obligation written out in its own binder: for two admissible ladder states at the same object
+component whose counter pairs share a `kappa` class, a formula lying in every closure type of the
+cell at the first lies in every closure type of the cell at the second. Its pair set is exactly
+that family of class-equal pairs, and it DOES contain register-displaced ones
+(`register_displaced_collision_in_domain`). -/
+theorem real_certStabK_mp_of_cell_stab_transfer (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (hcell : ∀ (q : Q) (c n c' n' : ℕ) (hq : c ∈ Adm pend q) (hq' : c' ∈ Adm pend q)
+      (t t' z z' : ℤ) (χ : PlusFormula),
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') →
+      (∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+          ((t, ⟨(q, c, n), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z, χ ∈ T) →
+      (∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+          ((t', ⟨(q, c', n'), hq'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z', χ ∈ T))
+    (x : Q × ClType φ × CK Tc Tn P B)
+    (hx : x ∈ Real step pend lab φ Tc Tn P B fwd bwd)
+    (ψ : PlusFormula) (hψ : ψ ∈ plusSubformulaClosure φ) (hs : isStab ψ = true)
+    (H : ψ ∈ x.2.1.val) :
+    ∀ y ∈ Real step pend lab φ Tc Tn P B fwd bwd, y.1 = x.1 → y.2.2 = x.2.2 →
+      argOf ψ ∈ y.2.1.val := by
+  obtain ⟨χ, rfl⟩ : ∃ χ, ψ = PlusFormula.stab χ := by
+    cases ψ <;> first | exact ⟨_, rfl⟩ | simp [isStab] at hs
+  obtain ⟨c, n, h, t, z, σ, hst, hk, hT⟩ := hx
+  have Hc : ∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+      ((t, ⟨(x.1, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z, χ ∈ T := by
+    have hmem : PlusFormula.stab χ ∈ tpOf (ladderModel step pend fwd bwd lab) φ σ z := by
+      rw [hT]; exact H
+    have hcl := (stab_mem_tpOf_iff_cell (ladderModel step pend fwd bwd lab) φ σ z hψ).mp hmem
+    rwa [hst] at hcl
+  rintro ⟨q, Ty, ky⟩ ⟨c', n', h', t', z', σ', hst', hk', hT'⟩ hy1 hy2
+  dsimp only at hy1 hy2 h' hst' hk' hT' ⊢
+  subst hy1
+  have hkeq : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') := by
+    rw [hk, ← hy2, ← hk']
+  exact hcell x.1 c n c' n' h h' t t' z z' χ hkeq Hc Ty.val ⟨σ', hst', hT'⟩
+
+/-- **LEG A'S PRODUCT: `certStabK` of `Real` FROM THE CELL-SIDE OBLIGATION.** The reduction the
+certificate-side bridge is, with the obligation's quantifier domain written out in the hypothesis
+binder rather than abbreviated: condition (5) of `Real` holds as soon as a formula lying in every
+closure type of one cell lies in every closure type of every class-equal cell at the same object
+component. No parameter condition enters, no relation on position pairs is defined, and neither
+half of the bundle is weakened. -/
+theorem real_certStabK_of_cell_stab_transfer (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (hcell : ∀ (q : Q) (c n c' n' : ℕ) (hq : c ∈ Adm pend q) (hq' : c' ∈ Adm pend q)
+      (t t' z z' : ℤ) (χ : PlusFormula),
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') →
+      (∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+          ((t, ⟨(q, c, n), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z, χ ∈ T) →
+      (∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+          ((t', ⟨(q, c', n'), hq'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z', χ ∈ T)) :
+    certStabK φ Tc Tn P B (Real step pend lab φ Tc Tn P B fwd bwd) := by
+  intro x hx ψ hψ hs
+  exact ⟨fun H => real_certStabK_mp_of_cell_stab_transfer lab φ Tc Tn P B fwd bwd hcell x hx
+      ψ hψ hs H,
+    fun H => real_certStabK_mpr lab φ Tc Tn P B fwd bwd x hx ψ hψ hs H⟩
+
+/-! ### The scope reading: register-displaced collisions are inside the obligation's domain -/
+
+/-- **THE REGISTER-DISPLACED COLLISION, AT A FIXED COUNTDOWN.** Raising the register alone by the
+modulus `P + 1` leaves all five `kappa` coordinates alone once the register is at or above its own
+threshold and the gap is saturated: the two countdown coordinates are untouched because `c` does
+not move, the register's clipped coordinate is pinned at `Tn`, its residue is unmoved by a
+multiple of the modulus, and the gap is pinned at `B` because `c + B ≤ n`. So the obligation's
+pair set contains pairs that differ in the REGISTER and in nothing else. -/
+theorem kappa_eq_register_displaced (Tc Tn P B c n : ℕ) (hn : Tn ≤ n) (hB : c + B ≤ n) :
+    kappa Tc Tn P B (c, n + (P + 1)) = kappa Tc Tn P B (c, n) := by
+  have h1 : min (n + (P + 1)) Tn = min n Tn := by omega
+  have h2 : (n + (P + 1)) % (P + 1) = n % (P + 1) := by
+    simp [Nat.add_mod_right]
+  have h3 : clipIdx B c (n + (P + 1)) = clipIdx B c n := by
+    unfold clipIdx; split <;> split <;> omega
+  simp only [kappa, h1, h2, h3]
+
+omit [Finite Q] [Nonempty Q] in
+/-- **THE SAME COLLISION, READ IN THE OBLIGATION'S OWN DOMAIN.** Two DISTINCT admissible ladder
+states at the same object component, sharing one admissibility witness because the countdown does
+not move, whose counter classes agree. This is the compiled object behind the scope reading: the
+cell-side obligation `real_certStabK_of_cell_stab_transfer` consumes is asked at pairs of this
+shape, so route (P-2) does not avoid the register-displaced instances. -/
+theorem register_displaced_collision_in_domain (Tc Tn P B : ℕ) (q : Q) (c n : ℕ)
+    (hq : c ∈ Adm pend q) (hn : Tn ≤ n) (hB : c + B ≤ n) :
+    kappa Tc Tn P B (c, n + (P + 1)) = kappa Tc Tn P B (c, n) ∧
+      (⟨(q, c, n + (P + 1)), hq⟩ : LadderState Q pend) ≠ ⟨(q, c, n), hq⟩ := by
+  refine ⟨kappa_eq_register_displaced Tc Tn P B c n hn hB, ?_⟩
+  intro hcon
+  have h2 : n + (P + 1) = n :=
+    congrArg (fun s : LadderState Q pend => s.1.2.2) hcon
+  omega
+
+/-- **THE LANDED COLLISION TOOL DOES NOT REACH THEM.** `kappa_eq_of_shift` produces its
+collisions by shifting BOTH counters down by a common multiple of `P + 1`; the register-displaced
+pair above holds the countdown fixed. So no instance of the common shift is that pair, and the
+gap between the obligation's domain and the one landed tool for populating it is a compiled
+object rather than an assessment. This names the coordinate that refuses the transport and
+asserts nothing about whether the transport holds. -/
+theorem register_displaced_ne_common_shift (P c n m : ℕ) (hm : 0 < m) :
+    ((c, n + (P + 1)) : ℕ × ℕ) ≠ (c + m * (P + 1), n + m * (P + 1)) := by
+  intro hcon
+  have h1 : c = c + m * (P + 1) := congrArg Prod.fst hcon
+  have hpos : 0 < m * (P + 1) := Nat.mul_pos hm (Nat.succ_pos P)
+  omega
+
+/-! ### LEG B: the class-representative transport, stated and left OPEN -/
+
+/-- **THE CLASS-REPRESENTATIVE TRANSPORT.** The shape route (P-2)'s name points at, at the
+HISTORY level: every closure type realized at an admissible ladder state is realized at every
+class-equal ladder state with the same object component. Its body IS the goal state this round's
+verdict records — from a history whose state at `z'` is `(t', ⟨(q, c', n'), _⟩)`, produce one
+whose state at `z` is `(t, ⟨(q, c, n), _⟩)` carrying the same closure type — and it is a
+HYPOTHESIS, never a premise carried by anything above. It is not a correspondence between
+positions of two paths and defines no relation on position pairs. -/
+def ClassRepTransport (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
+    (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x) : Prop :=
+  ∀ (q : Q) (c n c' n' : ℕ) (hq : c ∈ Adm pend q) (hq' : c' ∈ Adm pend q) (t t' z z' : ℤ),
+    kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') →
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((t', ⟨(q, c', n'), hq'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z' ⊆
+      cellAt (ladderModel step pend fwd bwd lab) φ
+        ((t, ⟨(q, c, n), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+
+/-- **THE TRANSPORT DELIVERS LEG A'S OBLIGATION.** One line, and that is the point: the
+certificate side asks only that a formula true throughout one cell be true throughout every
+class-equal cell, and a transport of realized types in the opposite direction gives exactly
+that. -/
+theorem cell_stab_transfer_of_classRepTransport (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (htr : ClassRepTransport step pend lab φ Tc Tn P B fwd bwd) :
+    ∀ (q : Q) (c n c' n' : ℕ) (hq : c ∈ Adm pend q) (hq' : c' ∈ Adm pend q)
+      (t t' z z' : ℤ) (χ : PlusFormula),
+      kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') →
+      (∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+          ((t, ⟨(q, c, n), hq⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z, χ ∈ T) →
+      (∀ T ∈ cellAt (ladderModel step pend fwd bwd lab) φ
+          ((t', ⟨(q, c', n'), hq'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z',
+            χ ∈ T) := by
+  intro q c n c' n' hq hq' t t' z z' χ hk Hc T hTmem
+  exact Hc T (htr q c n c' n' hq hq' t t' z z' hk hTmem)
+
+/-- **THE BRIDGE, END TO END.** Condition (5) of `Real` from the class-representative transport
+alone. The transport is OPEN — this round neither proves nor refutes it — so this is a reduction
+and not a discharge, and nothing downstream may read it as one. -/
+theorem real_certStabK_of_classRepTransport (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (Tc Tn P B : ℕ)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (htr : ClassRepTransport step pend lab φ Tc Tn P B fwd bwd) :
+    certStabK φ Tc Tn P B (Real step pend lab φ Tc Tn P B fwd bwd) :=
+  real_certStabK_of_cell_stab_transfer lab φ Tc Tn P B fwd bwd
+    (cell_stab_transfer_of_classRepTransport lab φ Tc Tn P B fwd bwd htr)
+
+end CertificateBridge
+
 end FormalSystem.Metalogic.Decidability.RaySummary
