@@ -1,25 +1,44 @@
 {
   "status": "partial",
-  "dispatch_seq": 42,
-  "phases_completed": 31,
-  "phases_total": 45,
-  "summary": "Executed Phase 11.18 of plan v15, the one enterable phase and the phase that spends route S-2's price: (K2) gains the pinned depth-stratified margin conjunct b*(P+1)*(D+1) <= Tc with a new P binder, Tcof is redefined as a max through Pof, paramsOk_params is re-proved green at the raised Tcof with its filed signature unchanged token-for-token, paramsOk_inflate is restated with an explicit room premise beside a new unconditional paramsOk_inflate_raise, and both room lemmas (budget_mul_spacing_le_Tc, margin_room_at_depth) are landed. Full lake build and lake build BimodalTest are 0 errors / 0 warnings, sorry_count 0, axiom count unchanged at 14, and every gate (evidence probes, module invariants, typst sync, readme lint, task refs) exits 0. The task stays partial: 12 phases remain NOT STARTED and 2 BLOCKED, with Phase 11.19 the next enterable step and the other half of the recorded S-2 obligation's first gate.",
-  "blockers": [],
+  "dispatch_seq": 44,
+  "phases_completed": 0,
+  "phases_total": 1,
+  "summary": "Phase 11.19 of plan v15 was entered and closes [BLOCKED]. Its first Goal clause -- the iterated splice's interior-copy countdown -- is LANDED and green as exists_iterSpliced_ladderPath_idx_interior_of_pend_past, carrying all four parent clauses plus the new one in one call, with the pump spine in LadderChain.lean byte-identical. Its second Goal clause, the interior register, is REFUTED by two compiled theorems: the clause at i <= 1 forces Drift between the original's register at the block's last and first positions, and a ladder path satisfying EVERY hypothesis of the parent violates that. This breaks the recorded S-2 obligation, which requires both clauses before any depth induction, and breaks Phase 11.20's ~_d relation, whose n = n' conjunct the pump's position pairs do not satisfy; a blocking user_decision is returned naming the register coordinate.",
+  "blockers": [
+    "Phase 11.19's register clause nxtAt g' (u + i*l + j) = nxtAt g (u + j) is refuted, not open: iterSpliced_register_interior_forces_block_drift plus iterSpliced_register_interior_refuted (both compiled, LadderCell.lean). No landed primitive pins the register inside the window -- exists_ladderPath_of_walk_nxt pins at 0, ..._nxt_at at z, ..._of_walk_of_pins at none -- and a block of a pending-forever past carries no region start, so Count's only register clause never fires there.",
+    "Phase 11.20 is NOT enterable: its ~_d carries n = n' and its membership cases 3 and 4 were to consume exactly the refuted clause. Its own prohibition bars proving any case from an argued pump clause. Phases 11.6 and 12-18 sit downstream."
+  ],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/16_depth-stratified-threshold-margins-summary.md",
-      "summary": "Phase 11.18 implementation summary: the (K2) depth-stratified margin conjunct, Tcof through Pof, the re-proved discharge lemma, the restated inflation lemma with its unconditional sibling, and the two compiled room lemmas."
+      "path": "specs/761_ladder_realization_theorem/summaries/16_iterated-splice-interior-clauses-summary.md",
+      "summary": "Phase 11.19: the interior-copy countdown clause landed, the interior register clause refuted, the phase blocked."
     },
     {
       "type": "plan",
       "path": "specs/761_ladder_realization_theorem/plans/15_depth-stratified-threshold-margins.md",
-      "summary": "Plan v15 with Phase 11.18 closed [COMPLETED] and its Completion Record, including the written-out compiled instantiation of the room lemma into exists_typeBlock_of_spacing at s := P + 1."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/phase-11.18-handoff-20261114-203711.md",
-      "summary": "Phase-end handoff: next action is Phase 11.19, with the stabDepth relocation and the forced Tc_0 = 0 base recorded as the phase's two load-bearing decisions."
+      "summary": "Phase 11.19 marked [BLOCKED] with a structured BLOCKER record; Phase 11.20 annotated WAITING, NOT ENTERABLE."
     }
+  ],
+  "next_action": "Rule on the register coordinate before any further implement dispatch: either a pigeonhole that samples a bounded register observable so a pumped block is register-closed (nxtAt g u = nxtAt g (u + l), which is exactly what makes the periodic extension Drift-compatible at the copy boundaries, and which exists_typeBlock_of_spacing cannot supply since it samples (objAt, tpOf) only), or a transport invariant whose register conjunct is weaker than equality. Then /revise plan v15 off that ruling.",
+  "user_decision": {
+    "blocking": true,
+    "question": "Route S-2's first requirement is not dischargeable as filed: the iterated splice's interior REGISTER clause is refuted by compiled theorem, and with it Phase 11.20's ~_d relation, whose n = n' conjunct the pump's own position pairs do not satisfy. The countdown half of the same requirement is landed. How should the register coordinate be handled?",
+    "options": [
+      "(W-1) Register-closed blocks: strengthen the type pigeonhole to sample a bounded register observable alongside (objAt, tpOf), so a pumped block satisfies nxtAt g u = nxtAt g (u + l) and the periodic extension of the original's register IS Drift-compatible at every copy boundary. This makes the refuted clause true under the strengthened block, at the cost of a new design question -- the register is unbounded in a pending-forever region, so the observable must be chosen and its own room charged against Tc.",
+      "(W-2) Weaken the invariant's register conjunct: replace ~_d's n = n' by whatever the pump's pairs actually satisfy (a Drift-distance bound, or a clipped/residue reading of the register), and re-derive the transport on that. Phase 11.21 already exists to bridge ~_d to the kappa-collision the consumer needs, so this moves the register bridging one phase earlier and re-opens Phase 11.20's pinned relation.",
+      "(W-3) Block the realization record whole on the register coordinate, landing the obstruction as the finding of record (the two compiled theorems are already landed) and stopping the depth-induction line here."
+    ],
+    "recommendation": "(W-2). The refutation shows the pump cannot hold the register, so (W-1) asks the pigeonhole to buy a property the construction destroys and then rebuilds -- a second design round with its own room budget, and the round-15 evidence already charges Tc once for the margin. (W-2) accepts the pump as it is and moves the register bridging into the invariant, which is where Phase 11.21 already puts it; it re-opens one pinned relation rather than one lemma plus a parameter condition. (W-3) discards a landed countdown clause and a live margin layer for an obstruction that is local to one coordinate."
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "typst/generated/status.typ",
+    "specs/761_ladder_realization_theorem/plans/15_depth-stratified-threshold-margins.md",
+    "specs/761_ladder_realization_theorem/summaries/16_iterated-splice-interior-clauses-summary.md"
   ]
 }
