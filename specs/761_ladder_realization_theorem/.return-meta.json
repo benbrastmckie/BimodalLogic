@@ -1,32 +1,35 @@
 {
-  "status": "partial",
-  "requires_user_review": true,
-  "blocked_phase": "11.20",
-  "review_reason": "ROUTING, not a new question. This dispatch was routed as 'implement' but plan 17 has no enterable phase: Phase 11.20 closed [BLOCKED] in dispatch 46 as its own sanctioned decision-gate outcome, and Phases 11.22, 11.6, 11.21, 11.7, 12.2, 13, 14, 15.1, 15.2, 16, 17 and 18 all trace their Depends on back through it; Phase 11.8 is closed-BLOCKED and its own body forbids re-entry. The (B-1) ruling of 2026-11-15T11:05:36Z is recorded but absorbed by no plan phase, and its answer text makes it RESEARCH-FIRST with an undischarged Obligation. What is owed is a research round followed by /revise 761 onto B-1 -- NOT another implement dispatch against plan 17. No user question is posed and none is re-asked.",
-  "partial_progress": {
-    "stage": "no_enterable_phase",
-    "details": "Dispatch 47 read the dispatch file, the plan of record, .decisions.json and the live Lean surface of the Phase 11.20 discriminator (LadderCell.lean:2340-2810), then verified that no phase of plan 17 is enterable. B-1's named Obligation -- a block-selection condition on top of exists_typeBlock_of_spacing, proved non-vacuous at spacing P+1, under which the register's clipped value is held across the block -- is UNDISCHARGED: no landed declaration carries it, and deriving it here would be an off-plan decomposition that .claude/rules/plan-compliance.md forbids an implement dispatch from inventing. The working tree was left byte-identical in every Lean and plan file. Carried-Figure Discipline was discharged: Realize.lean is exactly 1004 lines; specs/evidence/seam-gluing-ray-product/w-soundness-shape-refuted.lean exists and names both modelOf_incomplete and stab_iff_of_presented_nowUnique; ladderFrameAdm_isRegular (LadderModel.lean:210), no_fwd (:124), no_bwd_of_idle (:144), Rlad_slice_infinite (RunLayer.lean:328) and presented_modelOf (Realize.lean:916) all exist as named. All three extracted description lines are CONFIRMED UNCHANGED and accurate against live state.",
-    "phases_completed": 32,
-    "phases_total": 46
-  },
-  "verification": {
-    "verification_passed": true,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "axiom_count": 14,
-    "build_passed": true
-  },
-  "artifacts": [],
+  "status": "researched",
+  "dispatch_seq": 49,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/761_ladder_realization_theorem/reports/18_clipped-register-block-nonvacuity.md",
+      "summary": "B-1 non-vacuity question answered NO by compiled probe: on a Fin 4 fixture at the paramsOk_params parameters, no block of the Tc room at spacing P+1 admits any ladder path carrying the clipped register at pump copies 0 and 1; (K3) puts the clipped-register pigeonhole's room strictly above Tc. Route B-1's Obligation is not dischargeable as filed."
+    }
+  ],
   "modified_files": [
+    "specs/761_ladder_realization_theorem/reports/18_clipped-register-block-nonvacuity.md",
+    "specs/761_ladder_realization_theorem/prototype/clipped-register-block-nonvacuity-probe.lean",
     "specs/761_ladder_realization_theorem/issues.jsonl"
   ],
+  "user_decision": {
+    "question": "Route (B-1) does not discharge its Obligation: the block-selection condition is refuted as non-vacuous (ProbeB1.no_clipped_block_at_params -- on a finite object at the paramsOk_params parameters no block of the Tc room at spacing P+1 admits any ladder path carrying the clipped register at copies 0 and 1; and (K3) forces Tc <= Tn+1, so a clipped-register pigeonhole needs room strictly above Tc under every ParamsOk instance). Every landed consumer-side measurement is at an IDLE state, while the pump's block positions are all PENDING. How should the register coordinate be handled now?",
+    "options": [
+      "(P-1) One bounded research round re-measuring the consumer side at PENDING states (countdown >= Tc_d, and at threshold 0) on a fixture: decide by compilation whether the stab bit there reads the clipped register, the gap n - c, or neither, and whether a gap-shaped register conjunct is delivered by the iterated splice on this round's ramp fixture. Kill criterion: if the gap-shaped conjunct is refuted on ramp, the path-level route is closed and (P-2) is entered with no further path-level round.",
+      "(P-2) Enter the certificate-side route now: move the register bridging off the path level so no position-pair relation carries a register conjunct (the second successor named in LadderCell.lean's decision docstring). Not costable.",
+      "(P-3) Leave the task [BLOCKED] with this refutation as the recorded goal state, per the description's CONTINGENCY."
+    ],
+    "recommended": "(P-1) One bounded research round re-measuring the consumer side at PENDING states (countdown >= Tc_d, and at threshold 0) on a fixture: decide by compilation whether the stab bit there reads the clipped register, the gap n - c, or neither, and whether a gap-shaped register conjunct is delivered by the iterated splice on this round's ramp fixture. Kill criterion: if the gap-shaped conjunct is refuted on ramp, the path-level route is closed and (P-2) is entered with no further path-level round.",
+    "blocking": true,
+    "obligation": "A compiled measurement, at pending states on both sides of the level threshold, of which register reading a stab bit consumes there, together with a compiled verdict on the ramp fixture (ProbeB1.ramp) of whether the iterated splice delivers that same reading at copies 0 and 1 -- a reading that passes BOTH on ramp, or a refutation that closes the path-level route."
+  },
   "metadata": {
-    "session_id": "sess_1794727080_294a7c",
-    "agent_type": "lean-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "dispatch_seq": 47,
-    "compliance_check": "skipped",
-    "vacuous_count_note": "1 hit is the repository-wide baseline recorded by plan 17's own verification criteria; unchanged by this dispatch, which edited no Lean file",
-    "no_summary_artifact_reason": "artifact_number 17 is already occupied by summaries/17_register-discriminator-blocked-summary.md, written by dispatch 46 for the round-17 work. This dispatch landed no implementation work, so a second summary at the same number would duplicate rather than report."
+    "session_id": "sess_1794760192_80dbe9_761",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "probe_verification": "lake env lean on the probe file: zero errors, zero warnings; #print axioms on 9 theorems within [propext, Classical.choice, Quot.sound]; no library module edited, no lake build run",
+    "handoff_written": false
   }
 }
