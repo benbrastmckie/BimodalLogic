@@ -1,37 +1,34 @@
 {
-  "status": "partial",
-  "requires_user_review": false,
-  "verification": {
-    "verification_passed": true,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 14,
-    "build_passed": true,
-    "note": "Phase 11.42 only, closed by exclusion; no Lean source edited. Full guarded lake build exit 0 (2976 jobs, zero error: lines). sorry/vacuous are counts introduced (none possible: no source edit); the sorry census, the axiom grep and BimodalTest were NOT re-run this dispatch -- axiom_count 14 is carried from dispatch 74's return on an unchanged tree."
-  },
+  "status": "planned",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/25_conditional-phase-closed-by-exclusion-summary.md",
-      "summary": "Dispatch 75: Phase 11.42 closed [COMPLETED WITH EXCLUSIONS] on its entry gate (Phase 11.41 outcome (a), no_rowLinked_path_of_Srel); no Lean edit; 55 of 66 phases closed; a /revise onto route (N-1) is owed."
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/26_object-dependent-threshold-refutation-first.md",
+      "summary": "Plan v26: route (N-1), refutation-first on an object-dependent countdown threshold; adds Phases 11.43 (branching-pending fixture), 11.44 (Mrel + refutation attempt first on R4 and the branching object) and 11.45 (conditional path forth); re-points Phase 11.40 onto 11.45; 55 of 69 phases closed."
     }
   ],
-  "modified_files": [
-    "specs/761_ladder_realization_theorem/plans/25_residue-relation-refutation-first.md",
-    "specs/761_ladder_realization_theorem/records/round-25-residue-relation-verdict.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.42-handoff-20261116T141500Z.md",
-    "specs/761_ladder_realization_theorem/summaries/25_conditional-phase-closed-by-exclusion-summary.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl"
+  "next_steps": "Run /orchestrate 761 to execute the revised plan. The one enterable phase is 11.43 (the branching-pending fixture); 11.44 is gated on it and 11.45 on 11.44's outcome (b). Do NOT dispatch Phase 11.40 before 11.45 returns.",
+  "proposed_file_scope": [
+    "specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean"
   ],
-  "next_steps": "/revise onto decision 19's route (N-1); plan v25 has no phase for it. Do not dispatch Phase 11.40: its Depends on (11.42) is marker-satisfied but its input exists_rowLinked_path does not exist and is false over Srel.",
-  "handoff_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.42-handoff-20261116T141500Z.md",
   "metadata": {
     "session_id": "sess_1794832980_46db75",
-    "agent_type": "lean-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "skipped",
-    "dispatch_seq": 75,
-    "phase": "11.42",
-    "outcome": "closed_by_exclusion"
+    "agent_type": "reviser-agent",
+    "delegation_path": [
+      "orchestrator",
+      "revise",
+      "reviser-agent"
+    ],
+    "phase_count": 69,
+    "phases_closed": 55,
+    "estimated_hours": 79.5,
+    "estimated_hours_open": 19,
+    "reports_integrated": [],
+    "records_integrated": [
+      "round-25-residue-relation-verdict.md"
+    ],
+    "decision_implemented": "19 (N-1)",
+    "revision_mode": "plan_revision",
+    "file_scope_note": "specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean is absent from the task's 58-entry file_scope; git-commit-scoped.sh dropped it from Phase 11.41's commit. The three new phases name it in their Files to modify lists so plan-file-scope-harvest.sh can forward it."
   }
 }
