@@ -56,6 +56,7 @@
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderChain.lean",
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean",
         "FormalSystem/Metalogic/Decidability/RaySummary/LadderWindow.lean",
         "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
         "FormalSystem/Metalogic/Decidability/RaySummary/RunLayer.lean",
@@ -73,6 +74,10 @@
         "specs/761_ladder_realization_theorem/records/761-amendment.txt",
         "specs/761_ladder_realization_theorem/records/round-21-refutation-verdict.md",
         "specs/761_ladder_realization_theorem/records/round-22-gap-clip-verdict.md",
+        "specs/761_ladder_realization_theorem/records/round-24-jump-clause-statements.md",
+        "specs/761_ladder_realization_theorem/records/round-24-jump-clause-verdict.md",
+        "specs/761_ladder_realization_theorem/records/round-24-k4-deletion-trial.md",
+        "specs/761_ladder_realization_theorem/records/round-24-repaired-clip-verdict.md",
         "specs/761_ladder_realization_theorem/summaries/01_ladder-realization-blocked-probe-summary.md",
         "specs/761_ladder_realization_theorem/summaries/02_ladder-paramsok-parameter-repair-summary.md",
         "specs/761_ladder_realization_theorem/summaries/04_ladder-agreement-first-decomposition-summary.md",
@@ -96,6 +101,7 @@
         "specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean",
         "specs/evidence/seam-gluing-ray-product/ladder-stab-acceptance.lean",
         "specs/evidence/seam-gluing-ray-product/ladder-stab-bit-copy-pair.lean",
+        "specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean",
         "specs/evidence/seam-gluing-ray-product/ladder-tight-chain-nonliftability.lean",
         "specs/state.json",
         "typst/generated/status.typ"
@@ -135,11 +141,11 @@
           "summary": "Filed agreement refuted at the gap coordinate; (K4) clip exceeded without bound; Phase 11.32 closed with exclusions; route decision returned."
         },
         {
-          "path": "specs/761_ladder_realization_theorem/plans/22_repaired-gap-clip-refutation.md",
+          "path": "specs/761_ladder_realization_theorem/plans/24_step-system-jump-clause-derivation.md",
           "type": "plan"
         }
       ],
-      "next_artifact_number": 23,
+      "next_artifact_number": 25,
       "previous_status": "blocked"
     },
     {

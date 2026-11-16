@@ -3,47 +3,23 @@
   "artifacts": [
     {
       "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/22_repaired-gap-clip-refutation.md",
-      "summary": "Plan v22: route (G-1) -- one bounded round stating a candidate repaired (K4) gap clip and attempting to refute the agreement at that clip before any proof attempt, plus the library-side refutation landing and the conditional parameter surgery"
+      "path": "specs/761_ladder_realization_theorem/plans/24_step-system-jump-clause-derivation.md",
+      "summary": "Revised plan on route (D-1): 64 phases, 42 closed byte-identical, five new derivation phases, the (G-1) refutation attempt demoted to a time-boxed gate"
     }
   ],
-  "next_steps": "Run /orchestrate 761 to dispatch Phase 11.33, the one enterable phase: state the candidate repaired (K4) clip, compile that both gap families (thetaC, mixC) fail to collide at it, then attempt to refute the agreement at the repaired clip on the two-state fixture",
+  "next_steps": "Run /orchestrate 761 to execute the revised plan; the enterable phases are 11.36 (the (K4) dead-conjunct deletion trial, 1 hour), 11.37 (promote the step system as the derivation's base case, 2.5 hours) and 11.33 (the demoted time-boxed (G-1) gate, 1.5 hours)",
   "metadata": {
-    "session_id": "sess_1794805942_7bcf13",
+    "session_id": "sess_1794810055_890b71",
     "agent_type": "reviser-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "phase_count": 59,
-    "phases_closed": 42,
-    "estimated_hours": 61,
-    "plan_version": 22,
-    "reports_integrated": [],
-    "inputs_integrated": [
-      ".decisions.json entry 17 (route (G-1), user-answered)",
-      ".decisions.json entry 16 (route (T-1), superseded; obligation recorded undischarged)",
-      "summaries/21_filed-agreement-refuted-gap-clip-summary.md",
-      "summaries/21_count-move-transfer-principle-blocked-summary.md",
-      "summaries/21_refutation-first-run-level-adequacy-summary.md",
-      "records/round-21-refutation-verdict.md (sections Round 3 and Round 4)",
-      "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean (fourth section, lines 1848-2823)",
-      "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
-      "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
-      "FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean",
-      "docs/theorem-index.md"
-    ],
-    "phases_added": ["11.33", "11.34", "11.35"],
-    "depends_on_repointed": ["11.7 (11.29 -> 11.33)", "11.30 (11.29 -> 11.33)", "18 (gains 11.34)"],
-    "enterable_phase": "11.33",
-    "rulings_executed": [
-      "Ruling 4: (E-5)'s spent-parameter-axis premise is contradicted; Phases 11.30/11.31 are not entered on it",
-      "Ruling 5: the ParamsOk prohibition is lifted for the (K4) conjunct; Statement Fidelity -- the Challenge text is unchanged while ParamsOk's meaning changes",
-      "Ruling 6: the tree asserts REFUTED in prose with no compiled library declaration; Phase 11.34 owns that gap",
-      "Ruling 7: whether any clip makes the agreement true is undecided, and the tight family's (T-1) obligation is recorded undischarged"
-    ]
+    "phase_count": 64,
+    "estimated_hours": 72.5,
+    "reports_integrated": ["23_gap-reading-depth-derived.md"],
+    "issue_log_contribution": 0
   },
   "modified_files": [
-    "specs/761_ladder_realization_theorem/plans/22_repaired-gap-clip-refutation.md",
-    "specs/761_ladder_realization_theorem/.plan-revised.json",
-    "specs/761_ladder_realization_theorem/.return-meta.json"
+    "specs/761_ladder_realization_theorem/plans/24_step-system-jump-clause-derivation.md",
+    "specs/761_ladder_realization_theorem/.plan-revised.json"
   ]
 }
