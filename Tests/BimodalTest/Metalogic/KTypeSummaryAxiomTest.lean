@@ -3538,8 +3538,13 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 restriction to the window link; `exists_rowLinked_path_zero` is the `⊡` clause against it at the
 budget `(0, 0)`.
 
-What is NOT pinned here because it is not declared: the `untl` and `snce` clauses of a truth lemma
-over `LnkRow`, and the path forth with a whole-row correspondence at a positive budget. -/
+`LnkRow.refl` is its reflexivity; `truth_iff_of_lnkRow` is the truth lemma over it at the `⊡`-free
+level (`RowFrag`), `untl` and `snce` at every guard; `LnkRow.first_zero` and
+`LnkRow.region_end_obj` are a necessary condition on a row link (the two current pending regions
+end at one object state).
+
+What is NOT pinned here because it is not declared: the path forth with a whole-row
+correspondence at a positive budget. -/
 
 open FormalSystem.Metalogic.Decidability.RaySummary in
 /-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.LnkRow' depends on axioms: [propext, Quot.sound] -/
@@ -3567,6 +3572,28 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
  Quot.sound] -/
 #guard_msgs in
 #print axioms exists_rowLinked_path_zero
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.LnkRow.refl' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms LnkRow.refl
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.LnkRow.first_zero' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms LnkRow.first_zero
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.LnkRow.region_end_obj' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms LnkRow.region_end_obj
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.truth_iff_of_lnkRow' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms truth_iff_of_lnkRow
 
 
 end BimodalTest.Metalogic

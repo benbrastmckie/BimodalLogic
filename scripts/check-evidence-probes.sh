@@ -2574,6 +2574,35 @@ EVIDENCE="specs/evidence"
 #                                                           | Quot.sound]` on every headline. No
 #                                                           | `sorryAx`, no custom axiom, no
 #                                                           | `native_decide`.
+# seam-gluing-ray-product/ladder-row-link-residue-obstruction| THE ROW LINK READS A RESIDUE OF THE
+#                                                           | COUNTDOWN.
+#                                                           | `no_rowLinked_path_of_Zrel`: on a
+#                                                           | three-state object (a pending
+#                                                           | `2`-cycle with an idle sink), for
+#                                                           | every pair of budgets `(A, B)` there
+#                                                           | are `Zrel A B`-related ladder states,
+#                                                           | a ladder path through the first, and
+#                                                           | NO ladder path through the second that
+#                                                           | is row-linked (`LnkRow`) to it at a
+#                                                           | budget `(a, b + 1)` with `1 <= a + b`
+#                                                           | -- the two current pending regions end
+#                                                           | at different object states, which the
+#                                                           | library's `LnkRow.region_end_obj`
+#                                                           | forbids. WHAT IT HOLDS IN PLACE: the
+#                                                           | state relation of the OWED path forth
+#                                                           | with a whole-row correspondence must
+#                                                           | carry an object-dependent residue of
+#                                                           | the countdown; a relation of `Zrel`'s
+#                                                           | shape, at any thresholds, must not be
+#                                                           | re-proposed as that hypothesis. It
+#                                                           | does NOT say which relation works,
+#                                                           | does NOT refute the row link, the
+#                                                           | truth lemma over it or any agreement
+#                                                           | of cells, and is ONE fixture. Axioms:
+#                                                           | `[propext, Classical.choice,
+#                                                           | Quot.sound]` on the headline. No
+#                                                           | `sorryAx`, no custom axiom, no
+#                                                           | `native_decide`.
 # limit-closure-schema/lc-schema-omega-chain                | THE LC SCHEMA'S VALIDITY ON
 #                                                           | ALL-WALKS Z-MODELS IS COMPILED
 #                                                           | AND SORRY-FREE, AND THE `.Base`
@@ -3006,6 +3035,7 @@ WIRED=(
   "seam-gluing-ray-product/ladder-spanning-divisibility"
   "seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity"
   "seam-gluing-ray-product/ladder-step-fragment-gap-depth"
+  "seam-gluing-ray-product/ladder-row-link-residue-obstruction"
   "limit-closure-schema/lc-schema-omega-chain"
   "forward-slack-pin-cascade/pin-cascade-straddle"
   "forward-slack-pin-cascade/route-space-closure"

@@ -29,7 +29,8 @@ for an ARBITRARY finite object `(step, pend, lab)`.
 Supporting declarations: `glue`, `glue_isPath`, `exists_path_through`, `Lnk`, `Lnk.succ`,
 `Lnk.pred`, `StepFrag`, `frag_of_mem`, `truth_nxt`, `truth_prv`, `cellAt_subset_of_Zrel`.
 
-The statement layer of the two jump clauses is landed beside it, and it is a statement layer only:
+The row link and the truth lemma over it are landed beside it; the path forth that would PRODUCE
+row-linked pairs at a positive budget is not:
 
 * `LnkRow a b g g' t t'` — the row link: the states at position `t` of `g` and `t'` of `g'` are
   related at the budget `(a, b)`, and for each jump the budget still allows the jump condition
@@ -40,6 +41,13 @@ The statement layer of the two jump clauses is landed beside it, and it is a sta
   the adjacent position, so a row link at one position of both paths restricts to the window link
   `Lnk a b` there.
 * `exists_rowLinked_path_zero` — the `⊡` clause against the row link at the budget `(0, 0)`.
+* `LnkRow.refl` — every position of a row answers itself.
+* `RowFrag`, `truth_iff_of_lnkRow` — the truth lemma over the row link at the `⊡`-free level:
+  two ladder histories whose paths are row-linked at `(t, t')` agree there on every formula with
+  no `⊡` and no `□`, `untl` and `snce` at EVERY guard.  No path is constructed in it.
+* `LnkRow.first_zero`, `LnkRow.region_end_obj` — a NECESSARY condition on a row link: with one
+  forward jump and one further unit of budget, the two current pending regions end at the same
+  object state.
 
 ## Two properties of the system, and one obligation it leaves owed
 
@@ -83,23 +91,13 @@ answering pairs are linked at the budget left after the jump. It relates a posit
 a position of the other, since the answer to a far witness need not sit at the same distance; the
 window is recovered as a theorem (`LnkRow.toLnk`), not assumed.
 
-The statements below are OWED. They are written here as text, and no declaration of this module
-carries either name.
+**The truth lemma over the row link** is `truth_iff_of_lnkRow`, with `RowFrag` the predicate "no
+`⊡` and no `□`".  Its `untl` case reads the two forward jump conditions of the link and its
+`snce` case the two backward ones.  It is a statement about pairs of paths that ARE row-linked
+and produces none: on its own it yields no agreement of cells.
 
-**The `untl` clause** (`⊡`-free level; the `snce` clause is its mirror, with `BwdJump`, the
-budget `(a - 1, b)` and `s < t`):
-
-```
-truth_iff_of_lnkRow :
-  ∀ ψ, (no `stab` and no `box` in ψ) → ∀ a b, dBack ψ ≤ a → dFwd ψ ≤ b →
-    ∀ τ τ' k k' g g' t t', IsLadderPath step pend g → IsLadderPath step pend g' →
-      (∀ u, τ.state u = (u + k, g u)) → (∀ u, τ'.state u = (u + k', g' u)) →
-      LnkRow a b g g' t t' →
-      (PlusTruthAt M τ t ψ ↔ PlusTruthAt M τ' t' ψ)
-```
-
-**The path forth with a whole-row correspondence**, the engine of both clauses and the `⊡`
-clause at a positive budget:
+**The path forth with a whole-row correspondence is OWED.** It is written here as text, and no
+declaration of this module carries its name:
 
 ```
 exists_rowLinked_path :
@@ -107,9 +105,33 @@ exists_rowLinked_path :
     ∃ h', IsLadderPath step pend h' ∧ h' t = y ∧ LnkRow a b h h' t t
 ```
 
-for a state relation `S a b` that is NOT fixed here. Three facts bound what it can be.
+for a state relation `S a b` that is NOT fixed here. Four facts bound what it can be.
 
-1. **`S a b` cannot be `Zrel a b`.** The wired probe
+0. **`S a b` cannot be `Zrel A B` at ANY budgets `(A, B)`, nor any relation that leaves the
+   countdown unconstrained above a threshold.** `LnkRow.region_end_obj` shows a row link at a
+   budget `(a, b + 1)` with `1 ≤ a + b` forces the two current pending regions to end at the same
+   object state: `objAt g' (t' + cntAt g' t') = objAt g (t + cntAt g t)`.  When the countdowns
+   differ these are walks of two different lengths, and on an object whose pending part is a
+   `2`-cycle the two ends differ whenever the countdowns differ in parity.  The wired probe
+   `specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean` compiles
+   this (`no_rowLinked_path_of_Zrel`): for every `(A, B)` there are `Zrel A B`-related states
+   with a ladder path through the first and NO row-linked ladder path through the second.  So
+   `S` must carry a condition that depends on the OBJECT — a residue of the countdown — and
+   `Zrel`'s own shape (thresholds that are solutions of one-step closure conditions, for every
+   object) does not survive a jump.  The attempt at the path forth stops at its first step, the
+   choice of `h'`, at the goal
+
+   ```
+   hq : (h t).1.1 = y.1.1
+   hc : 1 ≤ cntAt h t
+   hne : cntAt h t ≠ y.1.2.1
+   hbig : 2 * (a + (b + 2) + 1 + (a + (b + 2))) ≤ cntAt h t ∧
+     2 * (a + (b + 2) + 1 + (a + (b + 2))) ≤ y.1.2.1
+   ⊢ ∃ h', IsLadderPath step pend h' ∧ h' t = y ∧ LnkRow a (b + 2) h h' t t
+   ```
+
+   which the probe shows has no solution on that object.
+1. **`S a b` cannot be `Zrel a b`, for a second and independent reason.** The wired probe
    `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` compiles a
    formula family `mixC a k` (`k ≥ 1`) with `dBack = a`, `dFwd = k + 2` that holds throughout
    the cell at the gap `2 a + k` (`mixC_mem`) and fails throughout the cell at every gap
@@ -127,14 +149,16 @@ for a state relation `S a b` that is NOT fixed here. Three facts bound what it c
 3. **What is proved and what is conjectured.** The step-fragment clip
    `max (2 dBack) (2 dFwd + 2)` is PROVED and TIGHT on the forward arm. That `2 (a + b) + 2`
    suffices on the whole language is a CONJECTURE: the envelope is a lower bound, and `thetaC`
-   and `mixC` each use one jump, so neither is reached by anything compiled in this module.
+   and `mixC` each use one jump, so neither is reached by any agreement compiled in this module.
 
 ## The fragment boundary
 
-Nothing here concerns a formula with an `untl` or `snce` at a guard other than `⊥`. The truth
-lemma's window `Lnk` has width `a + b` and says nothing about a witness further away, which is
-what an unbounded jump reads. The separating families `thetaC` and `mixC` each use one such jump
-and are NOT covered, so nothing landed here weakens, qualifies or bears on
+No AGREEMENT OF CELLS here concerns a formula with an `untl` or `snce` at a guard other than `⊥`.
+The truth lemma's window `Lnk` has width `a + b` and says nothing about a witness further away,
+which is what an unbounded jump reads; `truth_iff_of_lnkRow` does read it, but only between paths
+already row-linked, and no such pair is produced at a positive budget. The separating families
+`thetaC` and `mixC` each use one such jump and are NOT covered, so nothing landed here weakens,
+qualifies or bears on
 `cellAt_const_of_kappa_eq_schema_refuted` or `no_fibre_equation_over_kappa`. No agreement over
 `kappa`-classes, no fibre equation, no soundness or lift statement and no certificate inclusion is
 stated in this module; every quantity named is a count, and no complexity bound is claimed.
@@ -968,5 +992,207 @@ theorem cellAt_eq_of_Zrel
     (cellAt_subset_of_Zrel fwd bwd lab φ hφ y x (Zrel.symm hZ) z)
 
 end Truth
+
+/-! ### The row link is reflexive, and what a row link forces at a region's end -/
+
+section RowBasics
+
+variable {Q : Type} {pend : Q → Bool}
+
+/-- **THE ROW LINK IS REFLEXIVE**: every position of a row answers itself. -/
+theorem LnkRow.refl (a b : ℕ) (g : ℤ → LadderState Q pend) (t : ℤ) : LnkRow a b g g t t := by
+  induction hn : a + b using Nat.strong_induction_on generalizing a b t with
+  | _ n ih =>
+    rw [LnkRow]
+    refine ⟨Zrel.refl a b _, fun b₀ hb₀ => ⟨?_, ?_⟩, fun a₀ ha₀ => ⟨?_, ?_⟩⟩
+    · intro s hs
+      exact ⟨s, hs, ih (a + b₀) (by omega) a b₀ s rfl,
+        fun r' h1 h2 => ⟨r', h1, h2, ih (a + b₀) (by omega) a b₀ r' rfl⟩⟩
+    · intro s hs
+      exact ⟨s, hs, ih (a + b₀) (by omega) a b₀ s rfl,
+        fun r' h1 h2 => ⟨r', h1, h2, ih (a + b₀) (by omega) a b₀ r' rfl⟩⟩
+    · intro s hs
+      exact ⟨s, hs, ih (a₀ + b) (by omega) a₀ b s rfl,
+        fun r' h1 h2 => ⟨r', h1, h2, ih (a₀ + b) (by omega) a₀ b r' rfl⟩⟩
+    · intro s hs
+      exact ⟨s, hs, ih (a₀ + b) (by omega) a₀ b s rfl,
+        fun r' h1 h2 => ⟨r', h1, h2, ih (a₀ + b) (by omega) a₀ b r' rfl⟩⟩
+
+/-- **THE FIRST EXHAUSTED COUNTDOWN IS ANSWERED BY THE FIRST EXHAUSTED COUNTDOWN.** Under a row
+link with one forward jump and at least one further unit of budget, the first position after `t`
+at which the first row's countdown is `0` is answered by the first position after `t'` at which
+the second row's countdown is `0`, and the two carry the same object state. -/
+theorem LnkRow.first_zero {a b : ℕ} {g g' : ℤ → LadderState Q pend} {t t' : ℤ}
+    (hab : 1 ≤ a + b) (h : LnkRow a (b + 1) g g' t t') {s : ℤ} (hts : t < s)
+    (hs0 : cntAt g s = 0) (hpos : ∀ r : ℤ, t < r → r < s → cntAt g r ≠ 0) :
+    ∃ s' : ℤ, t' < s' ∧ cntAt g' s' = 0 ∧ objAt g' s' = objAt g s ∧
+      ∀ r' : ℤ, t' < r' → r' < s' → cntAt g' r' ≠ 0 := by
+  rw [LnkRow] at h
+  obtain ⟨h1, -⟩ := h.2.1 b rfl
+  obtain ⟨s', hs', hR, hbt⟩ := h1 s hts
+  obtain ⟨hq, hc, -, -⟩ := hR.zero
+  refine ⟨s', hs', ?_, hq.symm, fun r' h1 h2 => ?_⟩
+  · unfold cntAt at hs0 ⊢
+    omega
+  · obtain ⟨r, hr1, hr2, hRr⟩ := hbt r' h1 h2
+    obtain ⟨-, hc', -, -⟩ := hRr.zero
+    have := hpos r hr1 hr2
+    unfold cntAt at this ⊢
+    omega
+
+/-- **A ROW LINK FORCES THE OBJECT STATE AT WHICH THE CURRENT REGION ENDS.** If two ladder paths
+are row-linked at `(t, t')` with one forward jump and one further unit of budget, and the first is
+pending at `t` with a positive countdown, then the last pending positions of the two current
+regions — `cntAt g t` steps after `t` and `cntAt g' t'` steps after `t'` — carry the same object
+state.  When the two countdowns differ this is a condition on the object's walks of two different
+lengths, which no threshold on the counters expresses. -/
+theorem LnkRow.region_end_obj {step : Q → Q → Bool} {a b : ℕ} {g g' : ℤ → LadderState Q pend}
+    {t t' : ℤ} (hg : IsLadderPath step pend g) (hg' : IsLadderPath step pend g')
+    (hab : 1 ≤ a + b) (h : LnkRow a (b + 1) g g' t t') (hc : 1 ≤ cntAt g t) :
+    objAt g' (t' + (cntAt g' t' : ℤ)) = objAt g (t + (cntAt g t : ℤ)) := by
+  have hp : pend (objAt g t) = true := by
+    by_contra hne
+    have := cntAt_eq_zero_of_idle g hg t (by simpa using hne)
+    omega
+  have hsub := cntAt_sub_of_pend g hg t hp
+  obtain ⟨s', hs', hs0', hobj, hpos'⟩ :=
+    LnkRow.first_zero hab h (s := t + (cntAt g t : ℤ)) (by omega)
+      (by have := (hsub (cntAt g t) le_rfl).2; omega)
+      (fun r hr1 hr2 => by
+        have := (hsub (r - t).toNat (by omega)).2
+        rw [show t + (((r - t).toNat : ℕ) : ℤ) = r by omega] at this
+        omega)
+  have hc' : 1 ≤ cntAt g' t' := by
+    obtain ⟨-, hcc, -, -⟩ := h.zero
+    unfold cntAt at hc ⊢
+    omega
+  have hp' : pend (objAt g' t') = true := by
+    by_contra hne
+    have := cntAt_eq_zero_of_idle g' hg' t' (by simpa using hne)
+    omega
+  have hsub' := cntAt_sub_of_pend g' hg' t' hp'
+  have hs'eq : s' = t' + (cntAt g' t' : ℤ) := by
+    rcases lt_trichotomy s' (t' + (cntAt g' t' : ℤ)) with hlt | heq | hgt
+    · have := (hsub' (s' - t').toNat (by omega)).2
+      rw [show t' + (((s' - t').toNat : ℕ) : ℤ) = s' by omega] at this
+      omega
+    · exact heq
+    · have h0 := (hsub' (cntAt g' t') le_rfl).2
+      have := hpos' (t' + (cntAt g' t' : ℤ)) (by omega) hgt
+      omega
+  rw [← hs'eq]
+  exact hobj
+
+end RowBasics
+
+/-! ### The truth lemma over the row link, at the `⊡`-free level -/
+
+/-- **THE ROW FRAGMENT.** `untl` and `snce` at every guard, with no `⊡` and no `□`: the level at
+which a formula is evaluated along ONE history, so that a correspondence between two rows is all
+its truth reads. -/
+def RowFrag : PlusFormula → Prop
+  | .atom _ => True
+  | .bot => True
+  | .imp α β => RowFrag α ∧ RowFrag β
+  | .box _ => False
+  | .untl γ α => RowFrag γ ∧ RowFrag α
+  | .snce γ α => RowFrag γ ∧ RowFrag α
+  | .stab _ => False
+
+section RowTruth
+
+variable {Q : Type} [Finite Q] [Nonempty Q] {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **THE TRUTH LEMMA OVER THE ROW LINK, AT THE `⊡`-FREE LEVEL.** Two ladder histories whose paths
+are row-linked at `(t, t')` with a budget at least the formula's two exactness depths agree on it
+there, for every formula of the row fragment — `untl` and `snce` at EVERY guard.  The `untl` case
+reads the two forward jump conditions of the link and the `snce` case the two backward ones; no
+path is constructed.  The lemma says nothing about which pairs of paths ARE row-linked: that is
+the path forth with a whole-row correspondence, which this module does not prove. -/
+theorem truth_iff_of_lnkRow
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x) (lab : Q → Atom → Bool) :
+    ∀ ψ : PlusFormula, RowFrag ψ → ∀ a b : ℕ, dBack ψ ≤ a → dFwd ψ ≤ b →
+      ∀ (τ τ' : WorldHistory (ladderFrameAdm step pend fwd bwd).toTaskFrame) (k k' : ℤ)
+        (g g' : ℤ → LadderState Q pend) (t t' : ℤ),
+        IsLadderPath step pend g → IsLadderPath step pend g' →
+        (∀ u : ℤ, τ.state u = (u + k, g u)) → (∀ u : ℤ, τ'.state u = (u + k', g' u)) →
+        LnkRow a b g g' t t' →
+        (PlusTruthAt (ladderModel step pend fwd bwd lab) τ t ψ ↔
+          PlusTruthAt (ladderModel step pend fwd bwd lab) τ' t' ψ) := by
+  intro ψ
+  induction ψ with
+  | atom p =>
+    intro _ a b _ _ τ τ' k k' g g' t t' _ _ hτ hτ' hl
+    change lab (τ.state t).2.1.1 p = true ↔ lab (τ'.state t').2.1.1 p = true
+    rw [hτ t, hτ' t']
+    change lab (g t).1.1 p = true ↔ lab (g' t').1.1 p = true
+    rw [(LnkRow.zero hl).1]
+  | bot =>
+    intro _ a b _ _ τ τ' k k' g g' t t' _ _ _ _ _
+    exact Iff.rfl
+  | imp α β iha ihb =>
+    intro hf a b hda hdb τ τ' k k' g g' t t' hg hg' hτ hτ' hl
+    have h1 := iha hf.1 a b (le_trans (le_max_left _ _) hda) (le_trans (le_max_left _ _) hdb)
+      τ τ' k k' g g' t t' hg hg' hτ hτ' hl
+    have h2 := ihb hf.2 a b (le_trans (le_max_right _ _) hda) (le_trans (le_max_right _ _) hdb)
+      τ τ' k k' g g' t t' hg hg' hτ hτ' hl
+    exact ⟨fun hi x => h2.mp (hi (h1.mpr x)), fun hi x => h2.mpr (hi (h1.mp x))⟩
+  | box α _ =>
+    intro hf
+    exact hf.elim
+  | untl γ α ihg iha =>
+    intro hf a b hda hdb τ τ' k k' g g' t t' hg hg' hτ hτ' hl
+    have hdb' : max (dFwd γ) (dFwd α) + 1 ≤ b := hdb
+    obtain ⟨b₀, rfl⟩ : ∃ b₀ : ℕ, b = b₀ + 1 := ⟨b - 1, by omega⟩
+    have hm : max (dFwd γ) (dFwd α) ≤ b₀ := Nat.le_of_succ_le_succ hdb'
+    have hγa : dBack γ ≤ a := le_trans (le_max_left _ _) hda
+    have hαa : dBack α ≤ a := le_trans (le_max_right _ _) hda
+    have hγb : dFwd γ ≤ b₀ := le_trans (le_max_left _ _) hm
+    have hαb : dFwd α ≤ b₀ := le_trans (le_max_right _ _) hm
+    rw [LnkRow] at hl
+    obtain ⟨hF1, hF2⟩ := hl.2.1 b₀ rfl
+    constructor
+    · rintro ⟨s, hts, hs, hr⟩
+      obtain ⟨s', hs', hR, hbt⟩ := hF1 s hts
+      refine ⟨s', hs', (iha hf.2 a b₀ hαa hαb τ τ' k k' g g' s s' hg hg' hτ hτ' hR).mp hs,
+        fun r' h1 h2 => ?_⟩
+      obtain ⟨r, hr1, hr2, hRr⟩ := hbt r' h1 h2
+      exact (ihg hf.1 a b₀ hγa hγb τ τ' k k' g g' r r' hg hg' hτ hτ' hRr).mp (hr r hr1 hr2)
+    · rintro ⟨s', hts, hs, hr⟩
+      obtain ⟨s, hs', hR, hbt⟩ := hF2 s' hts
+      refine ⟨s, hs', (iha hf.2 a b₀ hαa hαb τ τ' k k' g g' s s' hg hg' hτ hτ' hR).mpr hs,
+        fun r h1 h2 => ?_⟩
+      obtain ⟨r', hr1, hr2, hRr⟩ := hbt r h1 h2
+      exact (ihg hf.1 a b₀ hγa hγb τ τ' k k' g g' r r' hg hg' hτ hτ' hRr).mpr (hr r' hr1 hr2)
+  | snce γ α ihg iha =>
+    intro hf a b hda hdb τ τ' k k' g g' t t' hg hg' hτ hτ' hl
+    have hda' : max (dBack γ) (dBack α) + 1 ≤ a := hda
+    obtain ⟨a₀, rfl⟩ : ∃ a₀ : ℕ, a = a₀ + 1 := ⟨a - 1, by omega⟩
+    have hm : max (dBack γ) (dBack α) ≤ a₀ := Nat.le_of_succ_le_succ hda'
+    have hγa : dBack γ ≤ a₀ := le_trans (le_max_left _ _) hm
+    have hαa : dBack α ≤ a₀ := le_trans (le_max_right _ _) hm
+    have hγb : dFwd γ ≤ b := le_trans (le_max_left _ _) hdb
+    have hαb : dFwd α ≤ b := le_trans (le_max_right _ _) hdb
+    rw [LnkRow] at hl
+    obtain ⟨hB1, hB2⟩ := hl.2.2 a₀ rfl
+    constructor
+    · rintro ⟨s, hts, hs, hr⟩
+      obtain ⟨s', hs', hR, hbt⟩ := hB1 s hts
+      refine ⟨s', hs', (iha hf.2 a₀ b hαa hαb τ τ' k k' g g' s s' hg hg' hτ hτ' hR).mp hs,
+        fun r' h1 h2 => ?_⟩
+      obtain ⟨r, hr1, hr2, hRr⟩ := hbt r' h1 h2
+      exact (ihg hf.1 a₀ b hγa hγb τ τ' k k' g g' r r' hg hg' hτ hτ' hRr).mp (hr r hr1 hr2)
+    · rintro ⟨s', hts, hs, hr⟩
+      obtain ⟨s, hs', hR, hbt⟩ := hB2 s' hts
+      refine ⟨s, hs', (iha hf.2 a₀ b hαa hαb τ τ' k k' g g' s s' hg hg' hτ hτ' hR).mpr hs,
+        fun r h1 h2 => ?_⟩
+      obtain ⟨r', hr1, hr2, hRr⟩ := hbt r h1 h2
+      exact (ihg hf.1 a₀ b hγa hγb τ τ' k k' g g' r r' hg hg' hτ hτ' hRr).mpr (hr r' hr1 hr2)
+  | stab α _ =>
+    intro hf
+    exact hf.elim
+
+end RowTruth
 
 end FormalSystem.Metalogic.Decidability.RaySummary

@@ -1,10 +1,10 @@
 # Implementation Summary: Task #761
 
 - **Task**: 761 - Ladder realization theorem
-- **Status**: [IN PROGRESS]
+- **Status**: [BLOCKED]
 - **Started**: 2026-11-16T06:20:00Z
-- **Completed**: 2026-11-16T08:10:00Z
-- **Effort**: ~2 hours (three phases of plan v24, over dispatches 64 and 66)
+- **Completed**: 2026-11-16T08:30:38Z
+- **Effort**: ~3 hours (four phases of plan v24 entered, over dispatches 64, 66 and 67)
 - **Dependencies**: None open (760, 775, 805, 806, 819, 820 discharged)
 - **Artifacts**: plans/24_step-system-jump-clause-derivation.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -21,6 +21,29 @@ nothing blocked.
 **Dispatch 66 (Phase 11.38).** The statement layer of the two jump clauses is landed in
 `LadderStepFrag.lean`: the row link `LnkRow`, its basic lemmas, the window restriction, and the
 `⊡` clause at the budget `(0, 0)`. Neither jump clause is attempted; the count move is not shrunk.
+
+**Dispatch 67 (Phase 11.39) — `[BLOCKED]`, outcome (b).** The truth lemma over the row link is
+compiled at the `⊡`-free level (`truth_iff_of_lnkRow`: `untl` and `snce` at every guard). The
+path forth with a whole-row correspondence — the lemma that would turn it into an agreement of
+cells — is NOT proved, and is refuted by compilation for every `Zrel`-shaped hypothesis. No
+agreement of cells for a formula with a jump is landed.
+
+## Path Forth Refuted for Every `Zrel`-Shaped Hypothesis (dispatch 67)
+
+- `LnkRow.region_end_obj` (library): a row link at a budget `(a, b + 1)` with `1 ≤ a + b` forces
+  the two current pending regions to end at the same object state.
+- `ProbeRowResidue.no_rowLinked_path_of_Zrel` (new wired probe): on a three-state object (a
+  pending `2`-cycle with an idle sink), for EVERY `(A, B)` there are `Zrel A B`-related states
+  with a ladder path through the first and no row-linked ladder path through the second. The
+  candidate hypothesis `Zrel (a + b + 1) (a + b)` recorded by Phase 11.38 is one instance.
+- Obstruction: `(K1)`'s modulus — the state relation must carry an object-dependent residue of
+  the countdown. `(K2)`'s margin was not reached; `LnkRow` was not weakened and is not at fault.
+- Move attempted: lengthen a region. The attempt stops at the choice of `h'`; the goal state is
+  quoted verbatim in `records/round-24-jump-clause-verdict.md` section 3.
+- The phase's Scope Hypothesis STOP condition ("a change to `Zrel` itself") is met. A `/revise`
+  is owed; a non-blocking route decision is returned with this dispatch.
+- NOT established: which relation works; anything at the row budget `(0, 1)`; anything about
+  the gap clip, which remains a CONJECTURE.
 
 ## What Changed
 
@@ -55,6 +78,19 @@ nothing blocked.
 - `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `FormalSystem/Metalogic/README.md`,
   `README.md`, `typst/generated/status.typ` — inventory row and generated line counts refreshed.
 
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean` (Phase 11.39) —
+  `LnkRow.refl`, `LnkRow.first_zero`, `LnkRow.region_end_obj`, `RowFrag`, `truth_iff_of_lnkRow`;
+  module docstring re-stated (the truth lemma is declared; the path forth is owed; fact 0 on its
+  state relation with the goal state). 972 → 1197 lines.
+- `specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean` — CREATED:
+  `C3`, `stepC`, `pendC`, `fwdC`, `bwdC`, `objAt_flip`, `Zrel_xC_yC`, `not_lnkRow_xC_yC`,
+  `no_rowLinked_path_of_Zrel`.
+- `scripts/check-evidence-probes.sh` — the new probe's table row and `WIRED` entry (64 → 65).
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` — four `#guard_msgs` axiom pins.
+- `specs/761_ladder_realization_theorem/records/round-24-jump-clause-verdict.md` — CREATED.
+- `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `FormalSystem/Metalogic/README.md`,
+  `README.md`, `typst/generated/status.typ` — inventory row re-stated; generated counts refreshed.
+
 ## Decisions
 
 - The trial also trimmed the producer `paramsOk_params`: left failing, it would stop Lake in
@@ -74,6 +110,16 @@ nothing blocked.
 - **No `Lnk` conjunct in `LnkRow`**: the window is recovered as a theorem (`LnkRow.toLnk`).
 - **Phase 11.39 was not entered** in dispatch 66: it is the trunk's deciding phase, bounded at
   one round, and is left for a fresh dispatch rather than started on a re-prompt.
+
+- **(Dispatch 67) The refutation was compiled rather than argued**, as a wired probe: the
+  previous round's refutation of `Zrel a b` was argued only, and the plan's kill criterion asks
+  for a measured account. It was reached as the reason the attempt's first step has no witness;
+  the round did not replace the clause attempt by it.
+- **(Dispatch 67) `truth_iff_of_lnkRow` is landed whole**, `snce` case included: it is the
+  recorded signature, and the mirror case is free once the relation is the clause's condition.
+  It does not discharge Phase 11.40, whose content is the backward path forth.
+- **(Dispatch 67) Phase 11.33 was not entered**: the dispatch stops at the phase boundary with
+  the trunk's deciding phase blocked and a route decision returned.
 
 ## Plan Deviations
 
@@ -98,6 +144,15 @@ nothing blocked.
   (`check-module-invariants.sh` INV, `typst-sync-check.sh` Check 2) fail on until refreshed. The
   scope hypothesis's "FOUR basic lemmas" landed as six (`zero`, `symm`, `mono`, `succ`, `pred`,
   `toLnk`) plus two `mono` helpers for the jump conditions.
+
+- **Phase 11.39, "State the path-forth lemma ... attempt it FIRST"** altered: attempted at the
+  candidate hypothesis; it stops at the choice of `h'` and is refuted on a fixture. The
+  truth-lemma clause is not a corollary of it and was closed independently.
+- **Phase 11.39, "Attempt the `untl` clause"** altered: the truth-lemma half is compiled with no
+  path construction; the path-forth half is not landed.
+- **Phase 11.39, "On outcome (a)"** skipped: outcome (a) not reached.
+- **Phase 11.39, scope** altered: a wired probe and its entry in `check-evidence-probes.sh` were
+  added (outside the phase's file list); README inventory surfaces and `status.typ` regenerated.
 
 ## Verification
 
@@ -140,6 +195,29 @@ nothing blocked.
   (11.29–11.37) and were discharged or ruled there; Phase 11.38 carries no answered question of
   its own, and no new user decision is raised.
 
+- **Dispatch 67 (Phase 11.39), all after the last Lean edit**: guarded `lake build` exit 0, 2976
+  jobs, zero `error:` lines (run twice, the second as the final build); guarded
+  `build BimodalTest` exit 0, 3044 jobs; `.olean` newer than source for `LadderStepFrag` and
+  `KTypeSummaryAxiomTest`. Sorry count 0; vacuous count 1 (the same pre-existing line); axiom
+  count 14, unchanged. `check-module-invariants.sh` ALL CHECKS PASSED (after `--emit-inventory`);
+  `readme-lint.sh` PASS; `check-evidence-probes.sh` PASS, 65 probes; `typst-sync-check.sh` PASS
+  (after regenerating `status.typ`); `verify-deploy.sh` PASS, 15 checks.
+- Axiom profiles (Phase 11.39): `LnkRow.refl`, `LnkRow.first_zero`, `LnkRow.region_end_obj`
+  `[propext, Quot.sound]`; `truth_iff_of_lnkRow` and the probe's `no_rowLinked_path_of_Zrel`
+  `[propext, Classical.choice, Quot.sound]`.
+- Statement fidelity (Phase 11.39): `truth_iff_of_lnkRow` as landed against Phase 11.38's
+  recorded text — no hypothesis added or dropped; `fwd`, `bwd`, `lab` are the model's parameters
+  and `RowFrag` is "no `⊡`, no `□`". Diff recorded in the verdict record, section 2.
+- The path-forth goal state in the record was produced in dispatch 67 by `trace_state` in a
+  scratch file outside the repository; nothing with a placeholder body entered the tree.
+- Premise re-validation (dispatch 67): the description's carried figures were not re-measured
+  beyond the build (the modules it names compile); no figure the phase acts on changed. The
+  plan-revision sentinel (`revised_at` 1794811307) predates this dispatch's start
+  (1794816241): no fresh revision.
+- Prior-decision obligations (dispatch 67): Phase 11.39 belongs to route (D-1) of plan v24, which
+  carries no recorded obligation of its own; (G-1)'s obligation is Phase 11.33's and is untouched.
+  No answered question is re-asked. One NEW route decision is returned (non-blocking).
+
 ## Impacts
 
 - Phases 11.38-11.40 can now state the jump clauses against library declarations.
@@ -152,6 +230,12 @@ nothing blocked.
   claimed anywhere.
 - (Phase 11.38) The finding that the path forth's hypothesis cannot be `Zrel a b` constrains the
   statement Phase 11.39 attempts: candidate hypothesis `Zrel (a + b + 1) (a + b)`.
+
+- (Phase 11.39) Any later attempt at the path forth must state a relation carrying a countdown
+  residue; `LnkRow.first_zero` / `LnkRow.region_end_obj` are the test a candidate must pass, and
+  the new probe keeps a `Zrel`-shaped candidate from being re-proposed.
+- (Phase 11.39) Phase 11.40 depends on 11.39 and cannot be entered; Phases 12.2 and 13–18 are
+  unaffected in status (they were already gated).
 
 ## Follow-ups
 
@@ -168,6 +252,12 @@ nothing blocked.
   compile it (in the wired probe that owns `mixC`) first.
 - That the gap clip `2 (dBack + dFwd) + 2` suffices on the whole language remains a conjecture.
 
+- (After dispatch 67) Phase 11.39 is `[BLOCKED]` — a `/revise` is owed on the path forth's state
+  relation. Phases 11.33, 11.34, 11.35, 11.40 are `[NOT STARTED]`; 11.33 alone is enterable.
+  45 of 64 phases closed; 5 `[BLOCKED]`.
+- Promotion-to-hard-gate criteria for the comparator: not applicable this dispatch
+  (`compare_flag` not set; no comparator run).
+
 ## References
 
 - `specs/761_ladder_realization_theorem/plans/24_step-system-jump-clause-derivation.md`
@@ -177,3 +267,6 @@ nothing blocked.
 - `specs/761_ladder_realization_theorem/reports/23_gap-reading-depth-derived.md`
 - `specs/761_ladder_realization_theorem/records/round-24-jump-clause-statements.md`
 - `specs/761_ladder_realization_theorem/handoffs/phase-11.38-handoff-20261116T080037Z.md`
+- `specs/761_ladder_realization_theorem/records/round-24-jump-clause-verdict.md`
+- `specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean`
+- `specs/761_ladder_realization_theorem/handoffs/phase-11.39-handoff-20261116T083038Z.md`

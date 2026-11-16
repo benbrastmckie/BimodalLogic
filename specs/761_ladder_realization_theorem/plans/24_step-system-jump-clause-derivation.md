@@ -8891,7 +8891,32 @@ is a route question, not a drafting detail.
 
 ---
 
-### Phase 11.39: The `untl` Jump Clause at the `⊡`-Free Level [NOT STARTED]
+### Phase 11.39: The `untl` Jump Clause at the `⊡`-Free Level [BLOCKED]
+
+**BLOCKER** (Phase 11.39), raised by dispatch 67 — outcome (b), the measured account:
+- **What failed**: the path forth with a whole-row correspondence
+  (`exists_rowLinked_path : IsLadderPath step pend h → S a b (h t) y → ∃ h', IsLadderPath step pend h' ∧ h' t = y ∧ LnkRow a b h h' t t`).
+  The truth-lemma half of the Goal is COMPILED (`truth_iff_of_lnkRow`, `LadderStepFrag.lean`);
+  outcome (a) is not met because the lemma that would deliver it to cells does not exist.
+- **What was tried**: the candidate hypothesis `S a b := Zrel (a + b + 1) (a + b)` at a row budget
+  `(a, b + 2)`, in the case of DIFFERENT countdowns both above the threshold. The attempt stops at
+  its first step, the choice of `h'`, at the goal
+  `⊢ ∃ h', IsLadderPath step pend h' ∧ h' t = y ∧ LnkRow a (b + 2) h h' t t` (full state verbatim
+  in `records/round-24-jump-clause-verdict.md` section 3). Move attempted: LENGTHEN A REGION.
+- **Why it's stuck**: the goal has no solution in general. `LnkRow.region_end_obj` (compiled,
+  library) shows a row link at `(a, b + 1)`, `1 ≤ a + b`, forces the two current pending regions
+  to end at one object state; `no_rowLinked_path_of_Zrel` (compiled, wired probe
+  `specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean`) exhibits, for
+  EVERY `(A, B)`, two `Zrel A B`-related states of a three-state object with a ladder path
+  through the first and no row-linked ladder path through the second. The obstruction is
+  `(K1)`'s modulus: the row link reads a residue of the countdown that `Zrel` does not carry.
+  `(K2)`'s margin was not reached; `LnkRow`'s shape is not at fault.
+- **What is needed**: a `/revise`. The Scope Hypothesis's STOP condition is met ("a change to
+  `Zrel` itself"): the path forth needs a state relation carrying an object-dependent residue of
+  the countdown, which is a new relation and a route question, not a step of this phase.
+- **Prohibited workarounds**: do NOT use `sorry`, an axiom or a vacuous placeholder; do NOT weaken
+  `LnkRow`; do NOT re-propose a `Zrel`-shaped hypothesis at other thresholds; do NOT land a
+  path forth restricted to equal countdowns under the name `exists_rowLinked_path`.
 
 **ADDED BY THIS REVISION. THIS IS THE TRUNK'S DECIDING PHASE (Ruling 12), AND IT IS BOUNDED AT ONE
 ROUND.** Everything before it is preparation: the clip is derived, the base case is promoted, the
@@ -8922,21 +8947,21 @@ to consume exactly that margin. If it does, that is a finding about `(K2)` and a
 phase of this plan, and not something this phase repairs on its own authority. Record it and stop.
 
 **Tasks**:
-- [ ] Re-derive `LnkRow`, its basic lemmas and the recorded `untl` signature from Phase 11.38 at
-      entry, and quote the live goal state before attempting anything.
-- [ ] State the path-forth lemma with the whole-row correspondence as the clause's engine, and
-      attempt it FIRST — the truth-lemma clause is a corollary of it, not a separate construction.
-- [ ] Attempt the `untl` clause. Reuse `glue`/`glue_isPath`/`exists_path_through` and the
-      `Zrel_succ`/`Zrel_pred` back-and-forth rather than re-deriving a path construction.
-- [ ] **On outcome (a)**: land the clause and the path-forth lemma with `#print axioms` on both,
+- [x] Re-derive `LnkRow`, its basic lemmas and the recorded `untl` signature from Phase 11.38 at
+      entry, and quote the live goal state before attempting anything. *(completed)*
+- [x] State the path-forth lemma with the whole-row correspondence as the clause's engine, and
+      attempt it FIRST — the truth-lemma clause is a corollary of it, not a separate construction. *(deviation: altered — attempted at the candidate `Zrel (a + b + 1) (a + b)`; it stops at the choice of `h'`, and the goal has NO solution on a three-state object for any `Zrel`-shaped hypothesis (`no_rowLinked_path_of_Zrel`, wired probe). The truth-lemma clause turned out NOT to be a corollary of the path forth: it is independent of it and closed on its own)*
+- [x] Attempt the `untl` clause. Reuse `glue`/`glue_isPath`/`exists_path_through` and the
+      `Zrel_succ`/`Zrel_pred` back-and-forth rather than re-deriving a path construction. *(deviation: altered — the truth-lemma half is COMPILED as `truth_iff_of_lnkRow` (`untl` and `snce` cases, every guard, over `RowFrag`); no path construction is needed for it. The half that needs one, the path forth, is not landed)*
+- [ ] *(deviation: skipped — outcome (a) not reached; the path-forth lemma does not exist)* **On outcome (a)**: land the clause and the path-forth lemma with `#print axioms` on both,
       and record in `records/round-24-jump-clause-verdict.md` exactly which fragment of the
       language is now covered — **`untl` at the `⊡`-free level and nothing more**, with `snce` and
       the `⊡` lift named as still owed.
-- [ ] **On outcome (b)**: commit the compiled scaffolding, write the account, mark the phase
+- [x] *(completed — obstruction: `(K1)`'s modulus; record `records/round-24-jump-clause-verdict.md`)* **On outcome (b)**: commit the compiled scaffolding, write the account, mark the phase
       `[BLOCKED]`, and record whether the obstruction is `(K2)`'s margin, `(K1)`'s modulus, or the
       row correspondence's shape. **A `/revise` is owed on that verdict and the record says so.**
-- [ ] Either way, re-state in the record that the whole-language clip remains CONJECTURED until
-      BOTH clauses close and the lift is done (Ruling 10).
+- [x] Either way, re-state in the record that the whole-language clip remains CONJECTURED until
+      BOTH clauses close and the lift is done (Ruling 10). *(completed)*
 
 **Prohibited workarounds**: do NOT weaken `LnkRow` mid-proof to make the clause typecheck; do NOT
 add a hypothesis to the clause's statement beyond those Phase 11.38 recorded (adding one is a
