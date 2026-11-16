@@ -219,3 +219,350 @@ end ProbeRowResidue
 /-- info: 'ProbeRowResidue.no_rowLinked_path_of_Zrel' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms ProbeRowResidue.no_rowLinked_path_of_Zrel
+
+/-!
+# THE RESIDUE CONJUNCT ON THE STATES IS NOT THE MISSING COORDINATE EITHER
+
+The library's `Srel P a b` is `Zrel a b` with the two countdowns congruent modulo `P + 1`, the
+modulus `paramsOkK1` constrains.  This part attacks the path forth from `Srel` before any attempt
+to prove it, on two objects.
+
+## The first object, `C3` (a pending `2`-cycle): the attack does not break it
+
+* `two_mem_objCycleLens_C3` — `2` is a pending cycle length of `C3`, so `(K1)` gives `2 ∣ P + 1`.
+* `not_Srel_xC_yC` — the pair that defeats `Zrel` is NOT `Srel`-related once `2 ∣ P + 1`: its
+  countdowns differ in parity.  The residue conjunct excludes exactly that pair.
+* `Srel_xT_yT` — the TIGHT pair `(p0, 2 (a + b) + 2, ·)`, `(p0, 2 (a + b) + 2 + (P + 1), ·)` is
+  `Srel P a (b + 1)`-related at every `P`.
+* `Zrel_tight_answer_C3` — the challenge that breaks the second object is ANSWERED here at the
+  level of states: two steps into both regions the object state is `p0` again and the shorter
+  region's countdown `2 (a + b)` still meets the threshold left after one jump.  A `2`-cycle has
+  two residues and the shorter region has two positions above the threshold.  This is a statement
+  about two states; no row-linked pair of paths is constructed on `C3`, and none is refuted.
+
+## The second object, `R4` (a pending `3`-cycle): REFUTED
+
+* `R4`, `stepR`, `pendR`, `fwdR`, `bwdR`, `objAt_rot` — a pending `3`-cycle `r0 → r1 → r2 → r0`,
+  each state of which may exit to an idle sink; the ladder over it is serial both ways and the
+  object walk inside a pending region is forced.  `three_mem_objCycleLens_R4`.
+* `Srel_xR_yR` — the tight pair `xR a b = (r0, 2 (a + b) + 2, ·)`,
+  `yR P a b = (r0, 2 (a + b) + 2 + (P + 1), ·)` is `Srel P a (b + 1)`-related, at EVERY `P`.
+* `not_lnkRow_xR_yR` — no ladder path through the first is row-linked at `(a, b + 1)`,
+  `1 ≤ a + b`, to a ladder path through the second.  Position `t + 3` of the second path carries
+  `r0` with a countdown above every threshold; an answer inside the first path's current region
+  must sit at `t + 1` or `t + 2` (the only positions whose countdown is still `≥ 2 (a + b)`, or
+  equal to the challenger's), which carry `r1` and `r2`; an answer beyond the region passes the
+  region's last position, whose countdown `0` nothing in `(t, t + 3)` on the second path matches.
+* `no_rowLinked_path_of_Srel` — THE HEADLINE of this part.
+
+## The failing coordinate
+
+Of the three coordinates a failure could sit on — the residue, the register offset after the
+lengthened region, the past row — it is THE RESIDUE, and neither of the other two: the registers
+and gaps of the refuting pair are matched and never read, and no backward jump is used.  More
+exactly it is the residue of the INTERMEDIATE positions: the conjunct fixes the residue of the two
+countdowns at the linked pair, while the row link asks every position of the longer region to be
+answered at its own residue by a position of the shorter region whose countdown is above `Zrel`'s
+threshold, and that threshold's margin (`2` per forward unit of budget) does not depend on the
+object's cycle length.
+
+## What this part does NOT settle
+
+It does not say which relation works.  That a countdown threshold raised by a margin the object
+determines would survive is NOT proved here or anywhere; the refuting pair sits exactly at the
+threshold, and nothing is claimed about pairs above it.  It does not refute the row link, the
+truth lemma over it, or any agreement of cells, and it bears on neither
+`cellAt_const_of_kappa_eq_schema_refuted` nor `no_fibre_equation_over_kappa`, nor on any gap clip.
+Every quantity named is a COUNT; no complexity bound is claimed.
+-/
+
+namespace ProbeRowResidue
+
+/-! ### The first object: the residue excludes the old pair, and the tight attack is answered -/
+
+/-- `2` is a pending cycle length of `C3`. -/
+theorem two_mem_objCycleLens_C3 : (2 : ℕ) ∈ objCycleLens stepC pendC := by
+  refine ⟨by omega, by decide, fun i => if i % 2 = 0 then C3.p0 else C3.p1, ?_, ?_, ?_⟩
+  · intro i
+    rcases Nat.mod_two_eq_zero_or_one i with h0 | h1
+    · have h : (i + 1) % 2 = 1 := by omega
+      simp [h0, h, stepC]
+    · have h : (i + 1) % 2 = 0 := by omega
+      simp [h1, h, stepC]
+  · intro i
+    rcases Nat.mod_two_eq_zero_or_one i with h0 | h1 <;> simp [*, pendC]
+  · simp
+
+/-- **THE RESIDUE CONJUNCT EXCLUDES THE PAIR THAT DEFEATS `Zrel`.** -/
+theorem not_Srel_xC_yC (P A B m : ℕ) (h2 : 2 ∣ P + 1) : ¬ Srel P A B (xC m) (yC m) := by
+  intro h
+  have h1 : ((2 * m : ℕ) : ℤ) ≡ ((2 * m + 1 : ℕ) : ℤ) [ZMOD ((P : ℤ) + 1)] := h.2
+  have h3 := h1.dvd
+  obtain ⟨k, hk⟩ := h2
+  have h4 : (2 : ℤ) ∣ (P : ℤ) + 1 := ⟨k, by exact_mod_cast hk⟩
+  have h5 := dvd_trans h4 h3
+  push_cast at h5
+  omega
+
+/-- The tight pair on `C3`. -/
+def xT (a b : ℕ) : LadderState C3 pendC :=
+  ⟨(C3.p0, 2 * (a + b) + 2, 2 * (a + b) + 2), fun h => by simp [pendC] at h⟩
+
+def yT (P a b : ℕ) : LadderState C3 pendC :=
+  ⟨(C3.p0, 2 * (a + b) + 2 + (P + 1), 2 * (a + b) + 2 + (P + 1)), fun h => by simp [pendC] at h⟩
+
+theorem Srel_xT_yT (P a b : ℕ) : Srel P a (b + 1) (xT a b) (yT P a b) := by
+  refine ⟨⟨rfl, Or.inr ⟨?_, ?_⟩, Or.inr ⟨?_, ?_⟩, Or.inl ?_⟩, ?_⟩
+  · change 2 * (a + (b + 1)) ≤ 2 * (a + b) + 2; omega
+  · change 2 * (a + (b + 1)) ≤ 2 * (a + b) + 2 + (P + 1); omega
+  · change 2 * (a + (b + 1)) ≤ 2 * (a + b) + 2; omega
+  · change 2 * (a + (b + 1)) ≤ 2 * (a + b) + 2 + (P + 1); omega
+  · change ((2 * (a + b) + 2 : ℕ) : ℤ) - ((2 * (a + b) + 2 : ℕ) : ℤ) =
+      ((2 * (a + b) + 2 + (P + 1) : ℕ) : ℤ) - ((2 * (a + b) + 2 + (P + 1) : ℕ) : ℤ)
+    omega
+  · change ((2 * (a + b) + 2 : ℕ) : ℤ) ≡ ((2 * (a + b) + 2 + (P + 1) : ℕ) : ℤ) [ZMOD ((P : ℤ) + 1)]
+    exact Int.modEq_iff_dvd.mpr ⟨1, by push_cast; ring⟩
+
+/-- **THE TIGHT ATTACK IS ANSWERED ON THE `2`-CYCLE, AT THE LEVEL OF STATES.** Two steps into the
+two regions of the tight pair the object state is `p0` again, and the two states — countdowns
+`2 (a + b)` and `2 (a + b) + (P + 1)` — are related at the budget `(a, b)` left after one forward
+jump, whatever registers they carry above the threshold with equal gaps. -/
+theorem Zrel_tight_answer_C3 (P a b : ℕ) :
+    Zrel a b
+      (⟨(C3.p0, 2 * (a + b), 2 * (a + b)), fun h => by simp [pendC] at h⟩ : LadderState C3 pendC)
+      (⟨(C3.p0, 2 * (a + b) + (P + 1), 2 * (a + b) + (P + 1)), fun h => by simp [pendC] at h⟩ :
+        LadderState C3 pendC) := by
+  refine ⟨rfl, Or.inr ⟨?_, ?_⟩, Or.inr ⟨?_, ?_⟩, Or.inl ?_⟩
+  · change 2 * (a + b) ≤ 2 * (a + b); omega
+  · change 2 * (a + b) ≤ 2 * (a + b) + (P + 1); omega
+  · change 2 * (a + b) ≤ 2 * (a + b); omega
+  · change 2 * (a + b) ≤ 2 * (a + b) + (P + 1); omega
+  · change ((2 * (a + b) : ℕ) : ℤ) - ((2 * (a + b) : ℕ) : ℤ) =
+      ((2 * (a + b) + (P + 1) : ℕ) : ℤ) - ((2 * (a + b) + (P + 1) : ℕ) : ℤ)
+    omega
+
+/-! ### The second object: a pending `3`-cycle -/
+
+/-- A four-state object: a pending `3`-cycle `r0 → r1 → r2 → r0`, each state of which may exit to
+the idle sink. -/
+inductive R4 : Type
+  | r0 | r1 | r2 | idle
+  deriving DecidableEq
+
+instance : Fintype R4 := ⟨{R4.r0, R4.r1, R4.r2, R4.idle}, fun x => by cases x <;> simp⟩
+
+def stepR : R4 → R4 → Bool
+  | .r0, .r1 => true
+  | .r1, .r2 => true
+  | .r2, .r0 => true
+  | .r0, .idle => true
+  | .r1, .idle => true
+  | .r2, .idle => true
+  | .idle, .idle => true
+  | _, _ => false
+
+def pendR : R4 → Bool
+  | .idle => false
+  | _ => true
+
+/-- The next pending state. -/
+def rotR : R4 → R4
+  | .r0 => .r1
+  | .r1 => .r2
+  | .r2 => .r0
+  | .idle => .idle
+
+theorem stepR_pend {q q' : R4} (hq : pendR q = true) (hq' : pendR q' = true)
+    (hs : stepR q q' = true) : q' = rotR q := by
+  cases q <;> cases q' <;> simp_all [stepR, pendR, rotR]
+
+/-- `3` is a pending cycle length of `R4`. -/
+theorem three_mem_objCycleLens_R4 : (3 : ℕ) ∈ objCycleLens stepR pendR := by
+  refine ⟨by omega, by decide, fun i => rotR^[i] R4.r0, ?_, ?_, ?_⟩
+  · intro i
+    show stepR (rotR^[i] R4.r0) (rotR^[i + 1] R4.r0) = true
+    rw [Function.iterate_succ_apply']
+    generalize rotR^[i] R4.r0 = q
+    cases q <;> simp [stepR, rotR]
+  · intro i
+    induction i with
+    | zero => rfl
+    | succ i ih =>
+      have ih' : pendR (rotR^[i] R4.r0) = true := ih
+      show pendR (rotR^[i + 1] R4.r0) = true
+      rw [Function.iterate_succ_apply']
+      revert ih'
+      generalize rotR^[i] R4.r0 = q
+      cases q <;> simp [pendR, rotR]
+  · rfl
+
+/-- Forward seriality of the ladder over the object. -/
+theorem fwdR : ∀ (t : ℤ) (x : LadderState R4 pendR), ∃ y, RladAdm stepR pendR t x y := by
+  rintro t ⟨⟨q, c, n⟩, hx⟩
+  have hx' : pendR q = false → c = 0 := hx
+  cases q with
+  | idle =>
+    have hc : c = 0 := hx' rfl
+    subst hc
+    exact ⟨⟨(R4.idle, 0, n), fun _ => rfl⟩, rfl, fun _ => rfl, Or.inl rfl, by simp [Count, pendR]⟩
+  | r0 =>
+    cases c with
+    | zero =>
+      exact ⟨⟨(R4.idle, 0, n), fun _ => rfl⟩, rfl, fun h => by simp [pendR] at h, Or.inl rfl,
+        by simp [Count, pendR]⟩
+    | succ c =>
+      exact ⟨⟨(R4.r1, c, n), fun h => by simp [pendR] at h⟩, rfl, fun h => by simp [pendR] at h,
+        Or.inl rfl, by simp [Count, pendR]⟩
+  | r1 =>
+    cases c with
+    | zero =>
+      exact ⟨⟨(R4.idle, 0, n), fun _ => rfl⟩, rfl, fun h => by simp [pendR] at h, Or.inl rfl,
+        by simp [Count, pendR]⟩
+    | succ c =>
+      exact ⟨⟨(R4.r2, c, n), fun h => by simp [pendR] at h⟩, rfl, fun h => by simp [pendR] at h,
+        Or.inl rfl, by simp [Count, pendR]⟩
+  | r2 =>
+    cases c with
+    | zero =>
+      exact ⟨⟨(R4.idle, 0, n), fun _ => rfl⟩, rfl, fun h => by simp [pendR] at h, Or.inl rfl,
+        by simp [Count, pendR]⟩
+    | succ c =>
+      exact ⟨⟨(R4.r0, c, n), fun h => by simp [pendR] at h⟩, rfl, fun h => by simp [pendR] at h,
+        Or.inl rfl, by simp [Count, pendR]⟩
+
+/-- Backward seriality of the ladder over the object. -/
+theorem bwdR : ∀ (t : ℤ) (x : LadderState R4 pendR), ∃ y, RladAdm stepR pendR (t - 1) y x := by
+  rintro t ⟨⟨q, c, n⟩, hx⟩
+  have hx' : pendR q = false → c = 0 := hx
+  cases q with
+  | idle =>
+    have hc : c = 0 := hx' rfl
+    subst hc
+    exact ⟨⟨(R4.idle, 0, n), fun _ => rfl⟩, rfl, fun _ => rfl, Or.inl rfl, by simp [Count, pendR]⟩
+  | r0 =>
+    exact ⟨⟨(R4.r2, c + 1, n), fun h => by simp [pendR] at h⟩, rfl, fun h => by simp [pendR] at h,
+      Or.inl rfl, by simp [Count, pendR]⟩
+  | r1 =>
+    exact ⟨⟨(R4.r0, c + 1, n), fun h => by simp [pendR] at h⟩, rfl, fun h => by simp [pendR] at h,
+      Or.inl rfl, by simp [Count, pendR]⟩
+  | r2 =>
+    exact ⟨⟨(R4.r1, c + 1, n), fun h => by simp [pendR] at h⟩, rfl, fun h => by simp [pendR] at h,
+      Or.inl rfl, by simp [Count, pendR]⟩
+
+/-- **THE OBJECT WALK INSIDE A PENDING REGION IS FORCED**: it rotates. -/
+theorem objAt_rot (g : ℤ → LadderState R4 pendR) (hg : IsLadderPath stepR pendR g) (u : ℤ)
+    (hu : pendR (objAt g u) = true) :
+    ∀ j : ℕ, j ≤ cntAt g u → objAt g (u + (j : ℤ)) = rotR^[j] (objAt g u) := by
+  intro j
+  induction j with
+  | zero => intro _; simp
+  | succ j ih =>
+    intro hj
+    have h1 := (cntAt_sub_of_pend g hg u hu j (by omega)).1
+    have h2 := (cntAt_sub_of_pend g hg u hu (j + 1) hj).1
+    have hcast : u + ((j + 1 : ℕ) : ℤ) = u + (j : ℤ) + 1 := by push_cast; ring
+    rw [hcast] at h2 ⊢
+    rw [stepR_pend h1 h2 (objAt_step g hg _), ih (by omega), Function.iterate_succ_apply']
+
+/-- The tight pair: one object state, the shorter countdown exactly at the threshold of the budget
+`(a, b + 1)`, the longer one modulus above it, registers equal to the countdowns. -/
+def xR (a b : ℕ) : LadderState R4 pendR :=
+  ⟨(R4.r0, 2 * (a + b) + 2, 2 * (a + b) + 2), fun h => by simp [pendR] at h⟩
+
+def yR (P a b : ℕ) : LadderState R4 pendR :=
+  ⟨(R4.r0, 2 * (a + b) + 2 + (P + 1), 2 * (a + b) + 2 + (P + 1)), fun h => by simp [pendR] at h⟩
+
+/-- The tight pair is related by the residue-carrying relation, at EVERY modulus. -/
+theorem Srel_xR_yR (P a b : ℕ) : Srel P a (b + 1) (xR a b) (yR P a b) := by
+  refine ⟨⟨rfl, Or.inr ⟨?_, ?_⟩, Or.inr ⟨?_, ?_⟩, Or.inl ?_⟩, ?_⟩
+  · change 2 * (a + (b + 1)) ≤ 2 * (a + b) + 2; omega
+  · change 2 * (a + (b + 1)) ≤ 2 * (a + b) + 2 + (P + 1); omega
+  · change 2 * (a + (b + 1)) ≤ 2 * (a + b) + 2; omega
+  · change 2 * (a + (b + 1)) ≤ 2 * (a + b) + 2 + (P + 1); omega
+  · change ((2 * (a + b) + 2 : ℕ) : ℤ) - ((2 * (a + b) + 2 : ℕ) : ℤ) =
+      ((2 * (a + b) + 2 + (P + 1) : ℕ) : ℤ) - ((2 * (a + b) + 2 + (P + 1) : ℕ) : ℤ)
+    omega
+  · change ((2 * (a + b) + 2 : ℕ) : ℤ) ≡ ((2 * (a + b) + 2 + (P + 1) : ℕ) : ℤ) [ZMOD ((P : ℤ) + 1)]
+    exact Int.modEq_iff_dvd.mpr ⟨1, by push_cast; ring⟩
+
+/-- **NO TWO LADDER PATHS THROUGH THE TIGHT PAIR ARE ROW-LINKED** once the budget allows one
+forward jump and one further unit.  Position `t + 3` of the longer region carries `r0` with a
+large countdown; inside the shorter region only `t + 1` and `t + 2` can answer it on the
+countdown, and they carry `r1` and `r2`; beyond the shorter region an answer passes a position of
+countdown `0`, which nothing before `t + 3` on the longer region matches. -/
+theorem not_lnkRow_xR_yR (P a b : ℕ) (hab : 1 ≤ a + b)
+    (h h' : ℤ → LadderState R4 pendR) (hh : IsLadderPath stepR pendR h)
+    (hh' : IsLadderPath stepR pendR h') (t : ℤ) (ht : h t = xR a b) (ht' : h' t = yR P a b) :
+    ¬ LnkRow a (b + 1) h h' t t := by
+  intro hl
+  have hc : cntAt h t = 2 * (a + b) + 2 := by unfold cntAt; rw [ht]; rfl
+  have hc' : cntAt h' t = 2 * (a + b) + 2 + (P + 1) := by unfold cntAt; rw [ht']; rfl
+  have ho : objAt h t = R4.r0 := by unfold objAt; rw [ht]; rfl
+  have ho' : objAt h' t = R4.r0 := by unfold objAt; rw [ht']; rfl
+  have hp : pendR (objAt h t) = true := by rw [ho]; rfl
+  have hp' : pendR (objAt h' t) = true := by rw [ho']; rfl
+  have hsub := cntAt_sub_of_pend h hh t hp
+  have hsub' := cntAt_sub_of_pend h' hh' t hp'
+  rw [LnkRow] at hl
+  obtain ⟨-, hj⟩ := hl.2.1 b rfl
+  obtain ⟨s, hs, hR, hbt⟩ := hj (t + 3) (by omega)
+  -- the challenger: position `t + 3` of the longer region
+  have e3 : objAt h' (t + 3) = R4.r0 := by
+    have := objAt_rot h' hh' t hp' 3 (by omega)
+    rw [ho'] at this
+    simpa [rotR] using this
+  have c3 : cntAt h' (t + 3) = 2 * (a + b) + 2 + (P + 1) - 3 := by
+    have := (hsub' 3 (by omega)).2
+    rw [hc'] at this
+    simpa using this
+  obtain ⟨hq, hcnt, -, -⟩ := hR.zero
+  have hq' : objAt h s = objAt h' (t + 3) := hq
+  have hcnt' : cntAt h s = cntAt h' (t + 3) ∨
+      (2 * (a + b) ≤ cntAt h s ∧ 2 * (a + b) ≤ cntAt h' (t + 3)) := hcnt
+  by_cases hin : s ≤ t + (cntAt h t : ℤ)
+  · -- the answer sits inside the shorter region
+    have hsj := (hsub (s - t).toNat (by omega)).2
+    rw [show t + (((s - t).toNat : ℕ) : ℤ) = s by omega] at hsj
+    have hs12 : s = t + 1 ∨ s = t + 2 := by omega
+    rcases hs12 with rfl | rfl
+    · have := objAt_rot h hh t hp 1 (by omega)
+      rw [ho] at this
+      have e1 : objAt h (t + 1) = R4.r1 := by simpa [rotR] using this
+      rw [e1, e3] at hq'
+      cases hq'
+    · have := objAt_rot h hh t hp 2 (by omega)
+      rw [ho] at this
+      have e2 : objAt h (t + 2) = R4.r2 := by simpa [rotR] using this
+      rw [e2, e3] at hq'
+      cases hq'
+  · -- the answer sits beyond the shorter region, and passes its last position
+    obtain ⟨r', hr1, hr2, hRr⟩ := hbt (t + (cntAt h t : ℤ)) (by omega) (by omega)
+    obtain ⟨-, hcr, -, -⟩ := hRr.zero
+    have hcr' : cntAt h (t + (cntAt h t : ℤ)) = cntAt h' r' ∨
+        (2 * (a + b) ≤ cntAt h (t + (cntAt h t : ℤ)) ∧ 2 * (a + b) ≤ cntAt h' r') := hcr
+    have h0 := (hsub (cntAt h t) le_rfl).2
+    have hr := (hsub' (r' - t).toNat (by omega)).2
+    rw [show t + (((r' - t).toNat : ℕ) : ℤ) = r' by omega] at hr
+    omega
+
+/-- **THE PATH FORTH WITH A WHOLE-ROW CORRESPONDENCE FAILS FROM THE RESIDUE-CARRYING RELATION.**
+At every modulus `P + 1` and every row budget `(a, b + 1)` with `1 ≤ a + b` there are two
+`Srel P a (b + 1)`-related states of the `3`-cycle object, a ladder path through the first, and NO
+ladder path through the second that is row-linked to it.  The modulus is arbitrary, so the
+statement covers every `P` the parameter condition `(K1)` admits for this object (those with
+`3 ∣ P + 1`, by `three_mem_objCycleLens_R4`). -/
+theorem no_rowLinked_path_of_Srel (P a b : ℕ) (hab : 1 ≤ a + b) :
+    ∃ x y : LadderState R4 pendR, Srel P a (b + 1) x y ∧
+      ∃ h : ℤ → LadderState R4 pendR, IsLadderPath stepR pendR h ∧ h 0 = x ∧
+        ¬ ∃ h' : ℤ → LadderState R4 pendR, IsLadderPath stepR pendR h' ∧ h' 0 = y ∧
+          LnkRow a (b + 1) h h' 0 0 := by
+  obtain ⟨h, hh, h0⟩ := exists_path_through fwdR bwdR (xR a b) 0
+  refine ⟨xR a b, yR P a b, Srel_xR_yR P a b, h, hh, h0, ?_⟩
+  rintro ⟨h', hh', h0', hl⟩
+  exact not_lnkRow_xR_yR P a b hab h h' hh hh' 0 h0 h0' hl
+
+end ProbeRowResidue
+
+/-- info: 'ProbeRowResidue.no_rowLinked_path_of_Srel' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.no_rowLinked_path_of_Srel
