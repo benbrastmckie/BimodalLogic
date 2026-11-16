@@ -1,22 +1,23 @@
 {
-  "status": "blocked",
+  "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 67,
-  "summary": "Phase 11.39 of plan v24 closed [BLOCKED] on outcome (b). Landed with all gates green: truth_iff_of_lnkRow (the truth lemma over the row link at the stab-free level, untl and snce at every guard), LnkRow.refl, and the necessary condition LnkRow.region_end_obj. The path forth with a whole-row correspondence is not proved and is refuted by compilation for every Zrel-shaped hypothesis (new wired probe, no_rowLinked_path_of_Zrel): its state relation must carry an object-dependent countdown residue. A /revise is owed; a non-blocking route decision is returned.",
+  "dispatch_seq": 68,
+  "summary": "Phase 11.33 of plan v24 closed [COMPLETED] on outcome (a): the repaired gap clip 2*(dBack+dFwd)+2 is refuted by compilation (repaired_clip_refuted; the dblC family pays one snce jump per doubling of the idle register and reads the gap at 2^(j+1)-1), and every clip below 2^(j+1) with it. Phase 11.35 closed [COMPLETED WITH EXCLUSIONS] on its own entry condition. All gates green; a /revise is owed because the derivation phases rest on the refuted clip and the (M-1) round has no phase in this plan.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/761_ladder_realization_theorem/summaries/24_step-system-jump-clause-derivation-summary.md",
-      "summary": "Phase 11.39 blocked on outcome (b); truth lemma over LnkRow landed; path forth refuted for Zrel-shaped hypotheses."
+      "summary": "Phase 11.33 outcome (a): repaired gap clip refuted by compilation; Phase 11.35 closed with exclusions; /revise owed."
     }
   ],
-  "phases_completed": 45,
+  "phases_completed": 47,
   "phases_total": 64,
   "blockers": [
-    "Phase 11.39: the path forth with a whole-row correspondence (exists_rowLinked_path) has no solution from any Zrel-shaped state relation — a row link forces the two current pending regions to end at one object state (LnkRow.region_end_obj), which Zrel's countdown thresholds do not determine (probe no_rowLinked_path_of_Zrel). Obstruction: (K1)'s modulus. /revise owed; Phase 11.40 depends on 11.39."
+    "Phase 11.39 remains [BLOCKED] from dispatch 67 (path forth needs a residue-carrying state relation); the recorded (M-1) refutation-first round has no phase in plan v24, so it cannot be executed by an implement dispatch until a /revise adds it.",
+    "The gap clip 2*(dBack+dFwd)+2 that Phases 11.38-11.40 and the candidate S a b := Zrel (a+b+1) (a+b) rest on is refuted (Probe761C.repaired_clip_refuted, Probe761C.gap_clip_below_exponential_refuted): any repaired (K4) must dominate 2^(dBack+1). /revise owed."
   ],
-  "next_action_hint": "/revise plan v24 on the returned route decision (recommended M-1: refutation-first round on a residue-carrying state relation). Independently enterable now: Phase 11.33 (time-boxed gap-clip gate, which unblocks 11.34 and 11.35).",
-  "git_checkpoint": "f466fed84",
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.39-handoff-20261116T083038Z.md",
-  "continuation_context": "Record: records/round-24-jump-clause-verdict.md. Any candidate relation must pass LnkRow.first_zero / LnkRow.region_end_obj; the probe ladder-row-link-residue-obstruction.lean is the fixture to test it on."
+  "next_action_hint": "/revise plan v24 with two inputs: records/round-24-repaired-clip-verdict.md (the repaired clip is refuted; a clip of order 2^(dBack+1) is the only candidate left and is untested) and the recorded (M-1) decision. Phase 11.34 is enterable but its statement choice (thetaC at the filed clip vs dblC, which refutes both clips) should be settled by that revision first.",
+  "git_checkpoint": "5e50c8117",
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.33-handoff-20261116T090735Z.md",
+  "continuation_context": "Record: records/round-24-repaired-clip-verdict.md. Fixture: specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean, fifth section (lines 2824-3343). Mechanism lemma: nxt_le_double."
 }

@@ -3,8 +3,8 @@
 - **Task**: 761 - Ladder realization theorem
 - **Status**: [BLOCKED]
 - **Started**: 2026-11-16T06:20:00Z
-- **Completed**: 2026-11-16T08:30:38Z
-- **Effort**: ~3 hours (four phases of plan v24 entered, over dispatches 64, 66 and 67)
+- **Completed**: 2026-11-16T09:20:00Z
+- **Effort**: ~4 hours (six phases of plan v24 closed or blocked, over dispatches 64, 66, 67 and 68)
 - **Dependencies**: None open (760, 775, 805, 806, 819, 820 discharged)
 - **Artifacts**: plans/24_step-system-jump-clause-derivation.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -28,6 +28,12 @@ path forth with a whole-row correspondence — the lemma that would turn it into
 cells — is NOT proved, and is refuted by compilation for every `Zrel`-shaped hypothesis. No
 agreement of cells for a formula with a jump is landed.
 
+**Dispatch 68 (Phases 11.33 and 11.35) — the repaired gap clip is REFUTED.** Phase 11.33, the
+time-boxed refutation attempt against the clip `2 * (dBack φ + dFwd φ) + 2`, closed on outcome
+(a): a compiled `kappa`-collision at the repaired parameter conditions whose cells differ, with
+the separating formula exhibited. Phase 11.35 (landing that clip in the library) closed
+`[COMPLETED WITH EXCLUSIONS]` on its own entry condition. Phase 11.34 was not entered.
+
 ## Path Forth Refuted for Every `Zrel`-Shaped Hypothesis (dispatch 67)
 
 - `LnkRow.region_end_obj` (library): a row link at a budget `(a, b + 1)` with `1 ≤ a + b` forces
@@ -44,6 +50,35 @@ agreement of cells for a formula with a jump is landed.
   is owed; a non-blocking route decision is returned with this dispatch.
 - NOT established: which relation works; anything at the row budget `(0, 1)`; anything about
   the gap clip, which remains a CONJECTURE.
+
+## The Repaired Gap Clip Is Refuted (dispatch 68)
+
+**Verdict: outcome (a) of Phase 11.33.** This supersedes the last bullet of the section above:
+the gap clip is not a conjecture any more, it is refuted.
+
+- **The formula.** `lvlC 0 := ◇ X (p ∧ X ¬p)`, `lvlC (j + 1) := ◇ (p S (¬p ∧ lvlC j))`,
+  `dblC j := ◇ (p U (¬p ∧ lvlC j))`. Depths `dBack = j`, `dFwd = 3`; repaired clip `2 j + 8`.
+- **The mechanism.** A region entered from an idle state with register `r₀` has exactly `r₀ + 1`
+  positions, so the next idle state carries a register at most `2 r₀ + 2` (`nxt_le_double`).
+  `⊡` re-chooses the past at every idle state, so each `snce` at the guard `p` doubles the idle
+  register the reader reaches: `lvlC j` holds at an idle state exactly when its register is at
+  most `Kc j = 2 ^ (j + 1) - 2` (`lvlC_false`, `lvlC_true`).
+- **The memberships.** `dblC j` is in EVERY realized type at gap `2 ^ (j + 1) - 1` (`dblC_mem`)
+  and in NONE at any larger gap (`dblC_not_mem`).
+- **The headline.** `repaired_clip_refuted`: for every `j ≥ 3`, at `(K1)`-`(K3)` as the library
+  states them and `(K4)` at the repaired clip, discharged at `Tcof`, `Tnof`, `Pof`
+  (`paramsOkRep_params`), the gaps `2 ^ (j + 1) - 1` and `2 ^ (j + 1) - 1 + (P + 1)` are one
+  `kappa`-class with different cells. `gap_clip_below_exponential_refuted`: the same at EVERY
+  `Tc`, `Tn`, `P` and every clip `B < 2 ^ (j + 1)`.
+- **Established**: no clip polynomial in the two exactness depths repairs `(K4)`;
+  `F (a, 3) ≥ 2 ^ (a + 1)`. The envelope of `reports/23_gap-reading-depth-derived.md` is a lower
+  bound and is not tight.
+- **NOT established**: that any clip makes the agreement true. Nothing here proves or refutes
+  the agreement at a clip exponential in `dBack φ`; no search for a faster-growing family was
+  made, and its absence from this record is not evidence about the agreement.
+- **Untouched**: the step-fragment results (`stepFrag_gap_depth_exact`,
+  `cellAt_const_of_kappa_eq_stepFrag`, `sigC_refutes`); the tight family; `(K1)`-`(K3)`.
+- Record: `records/round-24-repaired-clip-verdict.md`.
 
 ## What Changed
 
@@ -90,6 +125,22 @@ agreement of cells for a formula with a jump is landed.
 - `specs/761_ladder_realization_theorem/records/round-24-jump-clause-verdict.md` — CREATED.
 - `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `FormalSystem/Metalogic/README.md`,
   `README.md`, `typst/generated/status.typ` — inventory row re-stated; generated counts refreshed.
+- (Dispatch 68) `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` —
+  fifth section APPENDED (lines 2824-3343, 520 lines; no earlier line edited): `Kc`, `Kc_eq`,
+  `Kc_lb`, `lvlC`, `dblC`, `dBack_dblC`, `dFwd_dblC`, `hist_reselect`, `truth_jumpBack`,
+  `truth_jumpFwd`, `nxt_le_double`, `lvlC_false`, `lvlC_true`, `dblC_not_mem`, `dblC_mem`,
+  `dblC_cell_ne`, `paramsOkK4Rep`, `ParamsOkRep`, `BRep`, `paramsOkRep_params`, `BRep_dblC`,
+  `gap_clip_below_exponential_refuted`, `repaired_clip_refuted`.
+- (Dispatch 68) `specs/761_ladder_realization_theorem/records/round-24-repaired-clip-verdict.md`
+  — CREATED.
+- (Dispatch 68) `docs/theorem-index.md` — the `(K4)` verdict paragraph: the repaired clip's
+  refutation, each refutation's clip named.
+- (Dispatch 68) `FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean` — module
+  docstring item 3 only (the clip is refuted, not conjectured); no declaration changed.
+- (Dispatch 68) `FormalSystem/Metalogic/Decidability/RaySummary/README.md`,
+  `scripts/check-evidence-probes.sh` (comment rows), `FormalSystem/Metalogic/README.md`,
+  `README.md`, `typst/generated/status.typ` — the same sentence corrected; generated counts
+  refreshed.
 
 ## Decisions
 
@@ -120,6 +171,13 @@ agreement of cells for a formula with a jump is landed.
   It does not discharge Phase 11.40, whose content is the backward path forth.
 - **(Dispatch 67) Phase 11.33 was not entered**: the dispatch stops at the phase boundary with
   the trunk's deciding phase blocked and a route decision returned.
+- **(Dispatch 68) The `ParamsOk` at the repaired clip is stated in the fixture** (`ParamsOkRep`:
+  the library's `paramsOkK1`, `paramsOkK2`, `paramsOkK3` verbatim plus `paramsOkK4Rep`), because
+  Phase 11.33 may not edit the library's `(K4)`.
+- **(Dispatch 68) Phase 11.34 was not entered.** It is enterable, but its statement shape was
+  fixed at plan time around `thetaC` at the filed clip, and `dblC j` (`j ≥ 3`) now refutes the
+  filed clip and the repaired one with one object (`gap_clip_below_exponential_refuted` covers
+  both). Which of the two the library declaration should carry is the owed `/revise`'s call.
 
 ## Plan Deviations
 
@@ -153,6 +211,16 @@ agreement of cells for a formula with a jump is landed.
 - **Phase 11.39, "On outcome (a)"** skipped: outcome (a) not reached.
 - **Phase 11.39, scope** altered: a wired probe and its entry in `check-evidence-probes.sh` were
   added (outside the phase's file list); README inventory surfaces and `status.typ` regenerated.
+- **Phase 11.33, "state with `sorry` bodies first"** altered: the candidate and its signatures
+  were written out before compilation, but no `sorry`-bodied intermediate was committed — the
+  first compile left one arithmetic identity open and nothing to isolate.
+- **Phase 11.33, "On outcome (b)"** skipped: outcome (a) reached.
+- **Phase 11.33, scope** altered: `LadderStepFrag.lean`'s docstring, the RaySummary README row
+  and a comment row of `check-evidence-probes.sh` were amended (outside the phase's file list)
+  because each asserted the refuted clip as a conjecture; README inventories and `status.typ`
+  regenerated.
+- **Phase 11.35, all tasks** skipped: closed `[COMPLETED WITH EXCLUSIONS]` on Phase 11.33's
+  outcome (a), as the phase's entry condition directs.
 
 ## Verification
 
@@ -217,6 +285,20 @@ agreement of cells for a formula with a jump is landed.
 - Prior-decision obligations (dispatch 67): Phase 11.39 belongs to route (D-1) of plan v24, which
   carries no recorded obligation of its own; (G-1)'s obligation is Phase 11.33's and is untouched.
   No answered question is re-asked. One NEW route decision is returned (non-blocking).
+- **Dispatch 68, measured in that dispatch**: guarded `lake build` exit 0 (2976 jobs, zero
+  `error:` lines, `LadderStepFrag.olean` newer than its source) at the phase end and again as the
+  final build; `build BimodalTest` exit 0 (3044 jobs); the fixture compiles with exit 0 and zero
+  `sorry`; `#print axioms` on the nine printed theorems of the new section:
+  `[propext, Quot.sound]` or `[propext, Classical.choice, Quot.sound]`;
+  `check-evidence-probes.sh` PASS, 65 of 65 wired probes; `check-module-invariants.sh` ALL CHECKS
+  PASS; `readme-lint.sh` PASS; `typst-sync-check.sh` PASS (4 checks); `verify-deploy.sh` PASS
+  (15 checks). Sorry count 0; vacuous count 1 (the same pre-existing proved line); axiom count
+  14, unchanged. `git diff` on the fixture: 520 insertions, 0 deletions. Compliance check:
+  skipped by the script (Goal Polarity `mixed`). 47 of 64 phases closed; 5 `[BLOCKED]`.
+- Prior-decision obligations (dispatch 68): (G-1)'s obligation is DISCHARGED by its first
+  disjunct (a refutation at the repaired `ParamsOk`, the separating formula exhibited; both
+  earlier gap families cited as non-collisions there). (M-1)'s obligation is NOT addressed: plan
+  v24 carries no phase for it, so it stays owed to a `/revise`. No answered question is re-asked.
 
 ## Impacts
 
@@ -236,6 +318,11 @@ agreement of cells for a formula with a jump is landed.
   the new probe keeps a `Zrel`-shaped candidate from being re-proposed.
 - (Phase 11.39) Phase 11.40 depends on 11.39 and cannot be entered; Phases 12.2 and 13–18 are
   unaffected in status (they were already gated).
+- (Dispatch 68) The candidate `S a b := Zrel (a + b + 1) (a + b)` of the jump-clause trunk has
+  gap arms linear in the budget; a state relation for the jump clauses needs a gap threshold of
+  order `2 ^ dBack`. This is additional to the countdown-residue obstruction of Phase 11.39.
+- (Dispatch 68) The doubling `dblC` exploits is the one `(K2)`'s cascade bound iterates, so a
+  repaired gap clip has to come from that source and not from the formula's depths alone.
 
 ## Follow-ups
 
@@ -257,6 +344,12 @@ agreement of cells for a formula with a jump is landed.
   45 of 64 phases closed; 5 `[BLOCKED]`.
 - Promotion-to-hard-gate criteria for the comparator: not applicable this dispatch
   (`compare_flag` not set; no comparator run).
+- (Dispatch 68) A `/revise` is owed, with two inputs: this dispatch's refutation
+  (`records/round-24-repaired-clip-verdict.md`) and the recorded (M-1) decision. Phases 11.34,
+  11.40, 12.2 and 13-18 remain; 11.34 is enterable but its statement choice should be re-read
+  first (see Plan Deviations).
+- (Dispatch 68) Open: whether a gap clip of order `2 ^ (dBack φ + 1)` makes the agreement true.
+  A refutation-first round against it is the consistent next step; none was made here.
 
 ## References
 
@@ -270,3 +363,5 @@ agreement of cells for a formula with a jump is landed.
 - `specs/761_ladder_realization_theorem/records/round-24-jump-clause-verdict.md`
 - `specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean`
 - `specs/761_ladder_realization_theorem/handoffs/phase-11.39-handoff-20261116T083038Z.md`
+- `specs/761_ladder_realization_theorem/records/round-24-repaired-clip-verdict.md`
+- `specs/761_ladder_realization_theorem/handoffs/phase-11.33-handoff-20261116T090735Z.md`
