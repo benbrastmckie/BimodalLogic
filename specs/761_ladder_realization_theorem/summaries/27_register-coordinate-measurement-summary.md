@@ -37,6 +37,13 @@ Phase 11.47 is licensed and no `/revise` is owed.
 - `specs/761_ladder_realization_theorem/records/round-27-register-coordinate-measurement.md` — the
   round's record (entry gate re-derivation, the register's local law, `Zrel`'s verbatim obligation,
   the values reached on each fixture, the verdict, the residual, and the Ruling 25 check).
+- `README.md`, `FormalSystem/Metalogic/README.md`,
+  `FormalSystem/Metalogic/Decidability/RaySummary/README.md` — one line each, the generated
+  inventory's line count for `LadderStepFrag.lean`, regenerated mechanically by
+  `scripts/check-module-invariants.sh --emit-inventory` after that file grew by 28 lines.
+- `typst/generated/status.typ` — three lines, re-stamped by `scripts/typst-sync-check.sh --fix`
+  (the commit stamp and the live `FormalSystem` line count); the pre-commit gate refuses the commit
+  without it, and the file is inside this task's declared FILE SCOPE.
 
 ## Decisions
 
@@ -83,6 +90,10 @@ Phase 11.47 is licensed and no `/revise` is owed.
   particular `no_rowLinked_path_of_Mrel` is asserted nowhere by this round and exists nowhere in
   the tree.
 - Tests: N/A beyond the `BimodalTest` build above.
+- `bash scripts/check-module-invariants.sh` — PASS, all checks, after the inventory regeneration
+  above (it failed first on exactly those three stale blocks and names that remedy itself).
+- `bash scripts/readme-lint.sh` — PASS.
+- `bash .claude/scripts/verify-deploy.sh` — PASS, 15 checks, 0 failures.
 - Files verified: Yes.
 
 ## Impacts
