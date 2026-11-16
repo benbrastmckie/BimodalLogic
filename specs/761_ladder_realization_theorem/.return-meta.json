@@ -1,44 +1,49 @@
 {
   "status": "partial",
-  "started_at": "2026-11-16T01:36:00Z",
-  "completed_at": "2026-11-16T02:47:00Z",
+  "started_at": "2026-11-16T02:50:00Z",
+  "completed_at": "2026-11-16T03:40:00Z",
   "requires_user_review": true,
-  "blocked_phase": "11.32",
-  "review_reason": "Phase 11.32 blocked: the general non-atom-preserving count move is not built; it refuses at the past pending row (cnt_cap_of_row, tight_state_refuses_C) and at the stab clause (slide_closure_transferSys's state link). The filed cellAt_const_of_kappa_eq stays OPEN.",
+  "review_reason": "The filed cellAt_const_of_kappa_eq and ladderRealized are REFUTED by compiled objects (gap coordinate, (K4) clip). No phase is BLOCKED on an unproved goal; the plan has no enterable phase whose premise survives, and a route decision is required.",
   "verification": {
     "verification_passed": false,
     "sorry_count": 0,
     "vacuous_count": 1,
     "axiom_count": 14,
     "build_passed": true,
-    "note": "No check failed: sorry 0, vacuous and axiom counts unchanged (no library file edited), full build green. verification_passed is false only because the phase is BLOCKED and no filed Goal is landed."
+    "note": "No check failed: sorry 0, vacuous and axiom counts unchanged from baseline (docstring-only library edits), full build green with .olean newer than source for both touched modules. verification_passed is false only because two filed Goals are refuted and the task cannot be implemented as filed."
   },
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/21_count-move-transfer-principle-blocked-summary.md",
-      "summary": "Phase 11.32 blocked: count move stated and proved equivalent to the agreement, transfer principle with stab clauses landed at fixture level, construction refuses at the past-row cap."
+      "path": "specs/761_ladder_realization_theorem/summaries/21_filed-agreement-refuted-gap-clip-summary.md",
+      "summary": "Filed agreement refuted at the gap coordinate; (K4) clip exceeded without bound; Phase 11.32 closed with exclusions; route decision returned."
     }
   ],
   "modified_files": [
-    "docs/theorem-index.md",
-    "scripts/check-evidence-probes.sh",
     "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
+    "scripts/check-evidence-probes.sh",
+    "docs/theorem-index.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "typst/generated/status.typ",
     "specs/761_ladder_realization_theorem/plans/21_refutation-first-run-level-adequacy.md",
     "specs/761_ladder_realization_theorem/records/round-21-refutation-verdict.md",
-    "specs/761_ladder_realization_theorem/summaries/21_count-move-transfer-principle-blocked-summary.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.32-handoff-20261116T024500Z.md"
+    "specs/761_ladder_realization_theorem/summaries/21_filed-agreement-refuted-gap-clip-summary.md",
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.32-handoff-20261116T033500Z.md"
   ],
   "user_decision": {
-    "question": "Phase 11.32 (Round 3) is blocked: the non-atom-preserving count move is not one construction but a theory. It refuses at the PAST pending row (cnt_cap_of_row, attained at every scale by tight_state_refuses_C), and at a closure carrying a stab letter the slide owes the lower-level agreement of states along the run (slide_closure_transferSys). Both debts are one object stated nowhere: a transfer system between ladder histories whose region lengths differ at infinitely many regions. Which way should the plan be revised?",
+    "question": "The filed cellAt_const_of_kappa_eq is REFUTED by compilation (cellAt_const_of_kappa_eq_schema_refuted, fourth section of ladder-cell-agreement-refutation.lean), and ladderRealized with it (no_fibre_equation_over_kappa). The defect is a parameter source: kappa's gap coordinate n - c is clipped at B, (K4) asks only B >= max(2*dBack+1, 2*dFwd+1, 2), and a stab-carrying formula reads the gap further (thetaC: clip 3, separates gap -3 from gap <= -4; mixC (k+2) k: clip 2k+5, separates gap 3k+4, for every k >= 1). Decision (E-5) pre-assigned outcome (a) to Round 2 on the premise that the parameter axis is spent; that premise is now contradicted, and certStabK_fails_of_contains_realized shows the run-level soundness leg inherits the same defect (condition (5) fails on the realized set at the filed clip). Which way should the plan be revised?",
     "options": [
-      "(T-1) One bounded research round first, at the two-state fixture: state the region-reshaping relation as a TransferSys instance, compile its until/since clauses and its stab clause at depth 1, and decide by compilation whether typePreservingCountMove_of_transferSys's link is dischargeable at the tight family; also compile the count of doubling steps against (K2)'s margin. Then revise on the verdict.",
-      "(T-2) Commit now to building the whole-language region-reshaping transfer system (region-length changes at infinitely many regions, whole-region insertion/deletion, stab clause by induction on the level), fixture first then general objects through (K1). Large and NOT COSTABLE.",
-      "(T-3) Enter the run-level adequacy pair (Round 2's statement layer) although Round 1 returned outcome (b): replace the cell-agreement step by soundness plus existential realization, leaving cellAt_const_of_kappa_eq and ladderRealized recorded OPEN under their pinned names. This re-opens decision (E-5)'s own conditioning of Round 2 on outcome (a)."
+      "(G-1) Repair first, refutation-first again: one bounded round that states a candidate (K4) (the two families both die at B >= 2*(dBack+dFwd)+2; an exponential or closure-size clip is the conservative alternative) and ATTEMPTS TO REFUTE the agreement at the repaired clip on the two-state fixture, before any proof attempt. Lifts the 'do not strengthen ParamsOk' prohibition; the Challenge block's theorem text is unchanged but ParamsOk's meaning changes, which is a Statement Fidelity ruling.",
+      "(G-2) Enter Round 2 (Phases 11.30/11.31, the run-level adequacy pair) as decision (E-5) literally says on outcome (a), at kappa and ParamsOk as they are. The soundness leg cannot go through Real's certification at the filed clip (certStabK_fails_of_contains_realized), so this route must also find a different proof of soundness or accept the pair is stated over a certificate the realized set does not satisfy.",
+      "(G-3) Both, ordered: (G-1)'s repair round first, then Round 2 stated over the repaired parameters, with cellAt_const_of_kappa_eq and ladderRealized recorded REFUTED under their pinned names and never re-proved in weaker form."
     ],
-    "recommended": "(T-1) One bounded research round first, at the two-state fixture: state the region-reshaping relation as a TransferSys instance, compile its until/since clauses and its stab clause at depth 1, and decide by compilation whether typePreservingCountMove_of_transferSys's link is dischargeable at the tight family; also compile the count of doubling steps against (K2)'s margin. Then revise on the verdict.",
-    "blocking": false,
-    "obligation": "A compiled verdict, at the two-state object of ladder-cell-agreement-refutation.lean, on whether a TransferSys relating a ladder history to a region-reshaped one exists whose link discharges typePreservingCountMove_of_transferSys's hlink at the tight states of tight_state_refuses_C (countdown 2m+2 against a larger countdown) for a closure carrying a stab letter: either the system with its clauses compiled and the link exhibited at that family, or a compiled object naming the clause that fails. A verdict reached only on closures with no stab letter does not discharge it."
+    "recommended": "(G-1) Repair first, refutation-first again: one bounded round that states a candidate (K4) (the two families both die at B >= 2*(dBack+dFwd)+2; an exponential or closure-size clip is the conservative alternative) and ATTEMPTS TO REFUTE the agreement at the repaired clip on the two-state fixture, before any proof attempt. Lifts the 'do not strengthen ParamsOk' prohibition; the Challenge block's theorem text is unchanged but ParamsOk's meaning changes, which is a Statement Fidelity ruling.",
+    "blocking": true,
+    "obligation": "A compiled verdict, at the two-state object, on the agreement at a stated repaired gap clip: either a refutation (a kappa-collision at the repaired ParamsOk whose cells differ, the separating formula exhibited) or a measured account of the step at which the refutation attempt fails, with both gap families of this round (thetaC, mixC) shown not to collide at the repaired clip. A repaired clip adopted without a refutation attempt against it does not discharge this."
   },
   "metadata": {
     "session_id": "sess_1794792608_460ef7",
@@ -50,8 +55,8 @@
       "skill-lean-implementation"
     ],
     "compliance_check": "skipped",
-    "phases_completed": 41,
+    "phases_completed": 42,
     "phases_total": 56,
-    "git_checkpoint": "9cccabb83"
+    "git_checkpoint": "a91170716"
   }
 }
