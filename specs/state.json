@@ -142,7 +142,7 @@
         {
           "path": "specs/761_ladder_realization_theorem/summaries/24_step-system-jump-clause-derivation-summary.md",
           "type": "summary",
-          "summary": "Phases 11.36, 11.37 and 11.38 of plan v24 closed; five phases of the live chain (11.33-11.35, 11.39, 11.40) remain."
+          "summary": "Phase 11.39 blocked on outcome (b); truth lemma over LnkRow landed; path forth refuted for Zrel-shaped hypotheses."
         }
       ],
       "next_artifact_number": 25,
