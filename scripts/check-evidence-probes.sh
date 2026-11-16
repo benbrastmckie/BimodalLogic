@@ -2479,6 +2479,101 @@ EVIDENCE="specs/evidence"
 #                                                           | Classical.choice, Quot.sound]` on
 #                                                           | every headline.  No `sorryAx`, no
 #                                                           | custom axiom, no `native_decide`.
+# seam-gluing-ray-product/ladder-step-fragment-gap-depth    | THE GAP-READING DEPTH OF THE STEP
+#                                                           | FRAGMENT IS DERIVED, PROVED AND EXACT
+#                                                           | -- ON THE STEP FRAGMENT ONLY. SCOPE,
+#                                                           | READ FIRST: the fragment is every
+#                                                           | connective, `⊡` and `□` included, with
+#                                                           | `untl`/`snce` admitted ONLY at the
+#                                                           | guard `⊥` (that is, as `X` and its
+#                                                           | mirror); the unbounded temporal jump
+#                                                           | is EXCLUDED. Nothing here settles the
+#                                                           | agreement for the full language: the
+#                                                           | two landed separating families
+#                                                           | `thetaC` and `mixC` each use one jump
+#                                                           | and are NOT covered, the
+#                                                           | whole-language gap-reading depth is
+#                                                           | NOT computed, and the whole-language
+#                                                           | upper bound `2 * (dBack + dFwd) + 2`
+#                                                           | is a CONJECTURE recorded in the
+#                                                           | round's report, not a theorem of this
+#                                                           | file or of any other.
+#                                                           | `cellAt_const_of_kappa_eq`,
+#                                                           | `ladderRealized`, `ladderSound`,
+#                                                           | `ladderLift` and `ladderCons_localRun`
+#                                                           | are neither proved nor re-stated. WHAT
+#                                                           | IS COMPILED. `Zrel a b`, a relation on
+#                                                           | ladder states indexed by a budget of
+#                                                           | `a` backward and `b` forward steps:
+#                                                           | same object state, countdowns equal or
+#                                                           | both `>= 2 (a + b)`, registers equal
+#                                                           | or both `>= 2 (a + b)`, gaps equal or
+#                                                           | both `>= 2 a` or both `<= -(2 b + 2)`;
+#                                                           | its thresholds are the solution of the
+#                                                           | one-step closure conditions
+#                                                           | `Zrel_succ` and `Zrel_pred`, which
+#                                                           | hold for EVERY object `(step, pend)`.
+#                                                           | `exists_linked_path` (the path forth,
+#                                                           | which is the `⊡` clause),
+#                                                           | `truth_iff_of_lnk` (the truth lemma on
+#                                                           | the fragment) and `cellAt_eq_of_Zrel`
+#                                                           | (related states have the same cell)
+#                                                           | give the agreement as a COROLLARY of
+#                                                           | the back-and-forth, for every finite
+#                                                           | object, with no `ParamsOk`.
+#                                                           | `cellAt_const_of_kappa_eq_stepFrag`
+#                                                           | and its `_at_time` form state it over
+#                                                           | counter classes at the gap clip `B >=
+#                                                           | max (2 dBack) (2 dFwd + 2)` and
+#                                                           | thresholds `>= 2 (dBack + dFwd)`,
+#                                                           | taken as explicit hypotheses and NOT
+#                                                           | discharged from `ParamsOk`; the
+#                                                           | residue coordinates are not read.
+#                                                           | `cellAt_eq_of_exact_gap_shift`: at the
+#                                                           | exact gap reading, no clip, a common
+#                                                           | shift of countdown and register keeps
+#                                                           | the cell. `real_subset_Dmax_stepFrag`:
+#                                                           | on the fragment at those parameters
+#                                                           | the realized set satisfies all six
+#                                                           | `certAdmK` conditions, condition (5)
+#                                                           | through the landed reduction to
+#                                                           | `ClassRepTransport`, hence `Real ⊆
+#                                                           | Dmax`; the converse inclusion is NOT
+#                                                           | addressed. THE LOWER BOUND, on the
+#                                                           | two-state object (RE-DERIVED here,
+#                                                           | since no probe can import another):
+#                                                           | `sigC_refutes` -- for every `b >= 1`
+#                                                           | the fragment formula `sigC b` has
+#                                                           | `dBack = 1`, `dFwd = b`, (K4)'s output
+#                                                           | `2 b + 1`, and at `paramsOk_params`
+#                                                           | two counter pairs of one class have
+#                                                           | different cells;
+#                                                           | `stepFrag_gap_depth_exact` puts the
+#                                                           | failure at clip `2 b + 1` beside the
+#                                                           | agreement at clip `2 b + 2`.
+#                                                           | `thetaC_pair_not_collision` and
+#                                                           | `mixC_pair_not_collision` are
+#                                                           | arithmetic on `kappa` alone: the two
+#                                                           | landed refuting collisions stop being
+#                                                           | collisions at the clips `4` and `3 k +
+#                                                           | 5`. They say the landed WITNESSES are
+#                                                           | gone there and NOT that the agreement
+#                                                           | holds there. WHAT IT HOLDS IN PLACE:
+#                                                           | (K4)'s forward arm `2 dFwd + 1` is one
+#                                                           | short even with no jump, so a repair
+#                                                           | of the clip may not go below `2 dFwd +
+#                                                           | 2`; and the two arms differ (`2 dBack`
+#                                                           | against `2 dFwd + 2`). The thresholds
+#                                                           | `2 (dBack + dFwd)` are shown
+#                                                           | sufficient, not necessary. Every
+#                                                           | quantity is a COUNT; no complexity
+#                                                           | bound, no finite-width and no
+#                                                           | finite-fibre assumption, no
+#                                                           | trace-level hypothesis. Axioms: a
+#                                                           | subset of `[propext, Classical.choice,
+#                                                           | Quot.sound]` on every headline. No
+#                                                           | `sorryAx`, no custom axiom, no
+#                                                           | `native_decide`.
 # limit-closure-schema/lc-schema-omega-chain                | THE LC SCHEMA'S VALIDITY ON
 #                                                           | ALL-WALKS Z-MODELS IS COMPILED
 #                                                           | AND SORRY-FREE, AND THE `.Base`
@@ -2910,6 +3005,7 @@ WIRED=(
   "seam-gluing-ray-product/ladder-tight-chain-regime-b"
   "seam-gluing-ray-product/ladder-spanning-divisibility"
   "seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity"
+  "seam-gluing-ray-product/ladder-step-fragment-gap-depth"
   "limit-closure-schema/lc-schema-omega-chain"
   "forward-slack-pin-cascade/pin-cascade-straddle"
   "forward-slack-pin-cascade/route-space-closure"
