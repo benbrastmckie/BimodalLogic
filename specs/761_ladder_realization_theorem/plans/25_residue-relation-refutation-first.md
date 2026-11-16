@@ -1,6 +1,6 @@
 # Implementation Plan: Task #761
 - **Task**: 761 - Ladder realization theorem: `LadderCons` and `ladderRealized` per ladder cell for all φ including box/stab letters
-- **Status**: [IMPLEMENTING] (47 of 66 phases closed; **the route is ROUTE (M-1) — REFUTATION-FIRST ON A RESIDUE-CARRYING STATE RELATION, AND THE GAP-CLIP AXIS IS PARKED WITH A COMPILED LOWER BOUND ON IT**. The governing inputs are two records written by this plan's own dispatches 67 and 68 — `records/round-24-jump-clause-verdict.md` (the path forth has NO solution from any `Zrel`-shaped hypothesis, compiled: `no_rowLinked_path_of_Zrel`) and `records/round-24-repaired-clip-verdict.md` (the repaired gap clip `2 * (dBack φ + dFwd φ) + 2` is REFUTED by compilation, `repaired_clip_refuted`, and with it every clip below `2 ^ (dBack φ + 1)`, `gap_clip_below_exponential_refuted`) — together with decision 18's USER-ANSWERED route (M-1). **Neither blocker is an open proof problem: both are statement-level defects settled by compilation, and the only state transition that discharges them is this revision.** This revision ADDS TWO phases — 11.41 (the residue-carrying relation stated, and the refutation attempted against it FIRST) and 11.42 (CONDITIONAL — the remaining two count moves and `exists_rowLinked_path` over the adopted relation) — REWRITES TWO open `[NOT STARTED]` bodies (11.34, whose witness family and clip are settled here at plan level rather than left to the dispatch; 11.40, re-pointed off the `[BLOCKED]` 11.39 onto 11.42 and re-stated with its clip-status item corrected, because the clip it was to promote from CONJECTURED to PROVED is now refuted), WIDENS Phase 18's `Depends on` and its records pass, and **re-marks no `[COMPLETED]`, `[COMPLETED WITH EXCLUSIONS]` or `[BLOCKED]` phase.** Phase 11.39 stays `[BLOCKED]` with its body and its measured account untouched; its owed deliverable is RE-POINTED onto 11.41 and 11.42, and the disposition table says so by name. Nineteen phases are open — fourteen `[NOT STARTED]` plus Phases 11.6, 11.7, 11.8, 11.20 and 11.39 `[BLOCKED]`. **Two phases are ENTERABLE: 11.41 and 11.34, in that order of value, and they touch disjoint files.** The plan-level marker is owned by `update-plan-status.sh`; postflight stamps it from the next dispatch's own return)
+- **Status**: [IMPLEMENTING] (52 of 66 phases closed; **the route is ROUTE (M-1) — REFUTATION-FIRST ON A RESIDUE-CARRYING STATE RELATION, AND THE GAP-CLIP AXIS IS PARKED WITH A COMPILED LOWER BOUND ON IT**. The governing inputs are two records written by this plan's own dispatches 67 and 68 — `records/round-24-jump-clause-verdict.md` (the path forth has NO solution from any `Zrel`-shaped hypothesis, compiled: `no_rowLinked_path_of_Zrel`) and `records/round-24-repaired-clip-verdict.md` (the repaired gap clip `2 * (dBack φ + dFwd φ) + 2` is REFUTED by compilation, `repaired_clip_refuted`, and with it every clip below `2 ^ (dBack φ + 1)`, `gap_clip_below_exponential_refuted`) — together with decision 18's USER-ANSWERED route (M-1). **Neither blocker is an open proof problem: both are statement-level defects settled by compilation, and the only state transition that discharges them is this revision.** This revision ADDS TWO phases — 11.41 (the residue-carrying relation stated, and the refutation attempted against it FIRST) and 11.42 (CONDITIONAL — the remaining two count moves and `exists_rowLinked_path` over the adopted relation) — REWRITES TWO open `[NOT STARTED]` bodies (11.34, whose witness family and clip are settled here at plan level rather than left to the dispatch; 11.40, re-pointed off the `[BLOCKED]` 11.39 onto 11.42 and re-stated with its clip-status item corrected, because the clip it was to promote from CONJECTURED to PROVED is now refuted), WIDENS Phase 18's `Depends on` and its records pass, and **re-marks no `[COMPLETED]` or `[COMPLETED WITH EXCLUSIONS]` phase.** **AMENDMENT, 2026-11-16 — THE FIVE `[BLOCKED]` MARKERS ARE RE-MARKED `[COMPLETED WITH EXCLUSIONS]`.** Phases 11.6, 11.7, 11.8, 11.20 and 11.39 now carry `[COMPLETED WITH EXCLUSIONS]`, each with its own `#### Reasoned Exclusions` record at the head of its body. Every one of those five bodies is otherwise carried byte-identical, every measured account stands, and no landed declaration is re-opened or re-derived — what changed is the MARKER and nothing else. The reason is mechanical: `[BLOCKED]` is a member of `PHASE_STATUS_OPEN_ALT` in `scripts/lib/phase-heading-patterns.sh`, so every phase-accounting and resume-scan consumer reads these five as OPEN and RESUMABLE and selects them for dispatch, which is how dispatch 71 came to be sent at Phase 11.6 and to return having done no work. The plan already meant `closed`: Phase 11.22's own body calls Phase 11.20's outcome "a CLOSED outcome rather than a resumable one", and Phase 11.7's own body directs this exact closure on Phase 11.33's outcome (a), which is the outcome 11.33 recorded. This amendment supersedes Ruling 17 on the marker alone; see that ruling's own amendment note. Fourteen phases are open, all `[NOT STARTED]`. **Two phases are ENTERABLE: 11.41 and 11.34, in that order of value, and they touch disjoint files.** The plan-level marker is owned by `update-plan-status.sh`; postflight stamps it from the next dispatch's own return)
 - **Effort**: 75.5 hours costable: **56.5 hours landed** and **19 hours open**. The landed figure is RE-DERIVED at this revision's authoring from the predecessor plan's own `Timing` lines and the five phases its dispatches closed since: the predecessor's **47 landed** plus 11.36 at 1, 11.37 at 2.5, 11.38 at 2, 11.33 at 1.5 and 11.39 at 2.5 — the last of these SPENT AND BLOCKED, counted as landed because the hours were paid and the scaffolding (`truth_iff_of_lnkRow`, `LnkRow.first_zero`, `LnkRow.region_end_obj`, `LnkRow.refl`, `RowFrag` and the wired probe) is in the tree. **Phase 11.35 contributes 0**: it closed `[COMPLETED WITH EXCLUSIONS]` on its own entry condition and `CounterQuotient.lean` was not edited. No closed phase's `Timing` line is re-estimated by this revision. The open figure is RE-DERIVED from the open phases' own `Timing` lines: 11.34 at 1.5, 12.2 at 1, 13 at 2, 14 at 1.5, 15.2 at 0.5, 16 at 2, 17 at 1.5 and 18 at 1.5 — **11.5 carried** — plus 11.40 at 2.5 (carried unchanged although its body is rewritten; the two lemmas and the record it owes are the same count of objects) and this revision's two new phases: **11.41 at 2.5** (one relation, one refutation attempt on two fixtures, one record, bounded by its own kill criterion) and **11.42 at 2.5** (CONDITIONAL; the two count moves and the path forth, bounded the same way). Phases 11, 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7, 11.8, 11.9, 11.12, 11.15, 11.21, 11.26, 11.27, 11.30, 11.31, 11.32 and 15.1 remain NOT COSTABLE, and Phases 11.7, 11.30, 11.31 and 15.1 are the four of those that are open; no hour figure is invented for any of them
 - **Dependencies**: 760, 775, 805, 806, 819, 820, 934 — all seven discharged or terminal (760/775 archived; 805/806 `[COMPLETED]`; 819 archived at `specs/archive/819_ladder_cell_presentation_design_decision/`; 820 the counter-lift gate table; **934 `[COMPLETED]`**, the depth-`0` reachability probe). **No open task is named as a gate by this plan, and task 836 is NOT carried as a `dependencies[]` edge** — the recorded decision of cycle 0 (2026-11-04) forbids re-adding it, because 836 is `[BLOCKED]` on an obligation its own Phase 3 gate refuted and can never reach a terminal status; its relationship to this task is an ARTIFACT INPUT, named under Research Inputs. Tasks 929 and 930 are archived and were derived by an earlier plan round to be INPUTS rather than gates; that derivation stands
 - **Research Inputs**:
@@ -11,7 +11,7 @@
   - FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean — **THE MODULE THE TRUNK LIVES IN**, re-derived against the live file: **1,202 lines**, and — measured, not assumed — it carries **NO in-source `set_option linter.style.longFile` baseline**, so it sits against the package-wide limit of **1500** (`lakefile.toml:34`) with **298 lines of headroom**. A phase that crosses that adds the baseline IN PLACE and never splits the module. Declarations re-derived at this revision's authoring: `Zrel` (`:188`), `Zrel.refl/.symm/.mono` (`:197`, `:200`, `:204`), `Zrel.succ` (`:210`), `Zrel.pred` (`:299`), `glue` (`:395`), `glue_isPath` (`:398`), `exists_path_through` (`:425`), `Lnk` (`:456`), `exists_linked_path` (`:490`), `FwdJump` (`:599`), `BwdJump` (`:604`), `LnkRow` (`:629`), `LnkRow.zero/.symm/.mono/.succ/.pred/.toLnk` (`:640`-`:700`), `exists_rowLinked_path_zero` (`:737`), `StepFrag` (`:756`), `truth_iff_of_lnk` (`:871`), `cellAt_subset_of_Zrel` (`:949`), `cellAt_eq_of_Zrel` (`:986`), `LnkRow.refl` (`:1007`), `LnkRow.first_zero` (`:1029`), `LnkRow.region_end_obj` (`:1053`), `RowFrag` (`:1097`), `truth_iff_of_lnkRow` (`:1116`)
   - FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean — **1,305 lines**, read at this revision's authoring for the modulus route (M-1)'s residue conjunct is to be taken from. `paramsOkK1` (`:866`) is a DIVISIBILITY condition: every product cycle length, **every object cycle length** (`objCycleLens step pend`) and `satPeriod` divides `P + 1`. **`P + 1` is therefore the object-derived modulus the decision names**, and it is already a parameter of the filed `ParamsOk` rather than a new one. `paramsOkK4` (`:920`) is UNEDITED and stays at its filed shape (Phase 11.35 closed by exclusion); `ParamsOk` (`:929`); `paramsOk_params` (`:938`)
   - specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean — **3,343 lines**, the refutation fixture, whose FIFTH SECTION (appended by dispatch 68) carries the clip refutation: `Kc` (`:2897`), `Kc_eq` (`:2903`), `lvlC` (`:2920`), `dblC` (`:2928`), `nxt_le_double` (`:3018`), `gap_clip_below_exponential_refuted` (`:3295`), `repaired_clip_refuted` (`:3314`). WIRED; APPEND ONLY for every phase that touches it
-  - specs/761_ladder_realization_theorem/plans/24_step-system-jump-clause-derivation.md — **THE PREDECESSOR PLAN AND THIS REVISION'S STRUCTURAL INPUT.** Read at this revision's authoring: its metadata block, its Overview's route and ruling sections, its Dependency Analysis and the narrative under it, the bodies of Phases 11.33, 11.34, 11.35, 11.36, 11.37, 11.38, 11.39 and 11.40, and its Phase 18 body. **Sixty-one of its sixty-four phase bodies are carried forward byte-identical** — status markers, `Timing` lines, `Depends on` sets, NOT COSTABLE declarations, recorded statement blocks, `#### Recorded Outcome` blocks and `#### Reasoned Exclusions` records alike — **with exactly three exceptions, every one of them on a `[NOT STARTED]` body and every one named in the Dependency Analysis**: Phase 11.34's body is REWRITTEN (its witness family and clip settled at plan level, and three stale measurements corrected), Phase 11.40's body is REWRITTEN (re-pointed and its clip-status item corrected), and Phase 18's `Depends on` line and records pass ALONE are WIDENED with the rest of its body untouched. **No closed phase's heading marker, body or record is changed by this revision, and no `[BLOCKED]` phase's body is edited** — Phase 11.39's included
+  - specs/761_ladder_realization_theorem/plans/24_step-system-jump-clause-derivation.md — **THE PREDECESSOR PLAN AND THIS REVISION'S STRUCTURAL INPUT.** Read at this revision's authoring: its metadata block, its Overview's route and ruling sections, its Dependency Analysis and the narrative under it, the bodies of Phases 11.33, 11.34, 11.35, 11.36, 11.37, 11.38, 11.39 and 11.40, and its Phase 18 body. **Sixty-one of its sixty-four phase bodies are carried forward byte-identical** — status markers, `Timing` lines, `Depends on` sets, NOT COSTABLE declarations, recorded statement blocks, `#### Recorded Outcome` blocks and `#### Reasoned Exclusions` records alike — **with exactly three exceptions, every one of them on a `[NOT STARTED]` body and every one named in the Dependency Analysis**: Phase 11.34's body is REWRITTEN (its witness family and clip settled at plan level, and three stale measurements corrected), Phase 11.40's body is REWRITTEN (re-pointed and its clip-status item corrected), and Phase 18's `Depends on` line and records pass ALONE are WIDENED with the rest of its body untouched. **No closed phase's heading marker, body or record is changed by this revision** — and no `[BLOCKED]` phase's body was edited by it either, Phase 11.39's included. (The 2026-11-16 amendment recorded in the Status line above later re-marked the five `[BLOCKED]` headings to `[COMPLETED WITH EXCLUSIONS]` and prepended a `#### Reasoned Exclusions` record to each; the bodies below those records remain byte-identical)
   - Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean — **3,599 lines against an in-source `set_option linter.style.longFile 3700` (`:113`), so 101 lines of headroom**, RE-MEASURED at this revision's authoring. The predecessor plan's Phase 11.34 carried "3,485 lines, 15 lines of headroom against `longFile 3500`"; both figures moved when dispatches 66-68 landed their pins, and this revision corrects them in that phase's body rather than leaving a dispatch to meet a stale number
   - docs/theorem-index.md — **990 lines**, read at this revision's authoring to establish that the tree is ALREADY consistent with the clip refutation: `:317`, `:326` and `:329` name `repaired_clip_refuted` and state which clip each refutation is about. **No claim-site correction phase is owed for the clip**, which is why this revision adds none
   - The predecessor plan's own Research Inputs list is carried forward in full and is not re-enumerated here: every item of it remains an input to the phases it was read for, and the items above are what THIS revision read that the predecessor did not.
@@ -228,9 +228,11 @@ the definitions and is a theorem of no file**; it is recorded here so that no ph
 exponential lower bound as a finiteness obstruction, and it is listed in the Open-follow-ups table
 as the question it actually is.
 
-### RULING 17 — PHASE 11.39 STAYS `[BLOCKED]`, AND ITS DELIVERABLE IS RE-POINTED RATHER THAN RE-FILED
+### RULING 17 — PHASE 11.39 IS NOT RE-ENTERED, AND ITS DELIVERABLE IS RE-POINTED RATHER THAN RE-FILED
 
-Phase 11.39 returned a measured account and is `[BLOCKED]`. **This revision does not edit its body,
+**Amended by the Status line's 2026-11-16 marker amendment, on the marker alone:** this ruling as authored read "PHASE 11.39 STAYS `[BLOCKED]`", and Phase 11.39 now carries `[COMPLETED WITH EXCLUSIONS]` instead. Everything else in this ruling is unchanged and is carried out in full — the body is not edited, the deliverable is re-pointed rather than re-filed, the scaffolding stays an INPUT, and Phase 18's records pass still states the re-pointing as a route fact. The marker moved because `[BLOCKED]` reads as OPEN to every phase-accounting consumer, not because anything about the phase's mathematics or its re-pointing changed.
+
+Phase 11.39 returned a measured account and did not close on its own deliverable. **This revision does not edit its body,
 does not re-mark it, and does not re-open it.** Its scaffolding is landed and is an INPUT to what
 follows: `truth_iff_of_lnkRow`, `LnkRow.refl`, `LnkRow.first_zero`, `LnkRow.region_end_obj`,
 `RowFrag` and the wired probe, none of them re-proved by any phase of this plan. What it was
@@ -238,7 +240,7 @@ blocked OWING — the path forth with a whole-row correspondence — is RE-POINT
 and 11.42, which attempt it over a different relation under a different discipline.
 
 **The consequence for the dependency graph, stated so no dispatch meets it as a surprise.** Phase
-11.41 therefore depends on **11.38**, not on 11.39. A `Depends on` edge to a `[BLOCKED]` phase that
+11.41 therefore depends on **11.38**, not on 11.39. A `Depends on` edge to a phase that
 will never close would make 11.41 unenterable under the admission gate, which is precisely the
 failure this revision exists to fix — a live route that no dispatch can execute. Phase 11.39's
 landed declarations are named as INPUTS in Phase 11.41's body instead, which is what they are.
@@ -2331,7 +2333,7 @@ every one of them still binds; these are additional):
 | **`Dmax ⊆ Real` is carried as a corollary and its open input disappears into a proof body** | H | H | Exactly what Phase 12.6's MOVED verdict warns against, and why Phase 15 is split. Phase 15.2 is its own closable phase whose single gated input is Phase 15.1, whose first task re-reads the archived record's statement (finding 34 marks the quoted hypothesis CARRIED-UNVERIFIED), and whose `[BLOCKED]` branch names `ladderRealized`'s right-hand side as inheriting the same contingency through `Dmax` |
 | **`ladderLift`'s filed signature is unchanged but what it asserts has grown, and a dispatch proves the pre-widening statement** | H | M | Named in Phase 15.1's body: `relK`'s counter conjunct grew with `repsCnt`, so strictly more bi-infinite certificate chains are admitted and the filed statement is strictly stronger than it was. Phase 15.1 carries a verification item that the proof is read against the LANDED `relK` and that no step of it assumes the pre-widening bound; the frozen pre-widening bound lives only inside `ladder-reps-bound-refutation.lean` and must not be reached for from the library |
 | **`LadderAgree.lean`'s headroom is 34 lines** | M | H | Re-measured at THIS revision's authoring: 3,366 against the in-source `set_option linter.style.longFile 3400` (`:361`). The 2,558/2,600 pair the predecessor carried, and the 42-line headroom it derived, are both stale. Every phase of the restatement that edits that module names the primary remedy (raise the in-source baseline in place, never split) and LISTS the contingency module `LadderCascade.lean` with both import edges under `Files to modify`, because an unlisted contingency file is dropped from the commit by `git-commit-scoped.sh` while its import edges are committed |
-| **Phase 11.8 stays `[BLOCKED]` and a reader reads the plan as deadlocked on it** | M | M | Recorded rather than papered over: `[COMPLETED WITH EXCLUSIONS]` is NOT admissible for that phase, because conditions 1 and 5 of the five-condition admission test fail — it was a stuck attempt, not a decision of non-applicability, and its items DO remain, re-homed onto Phases 11.10-11.13. The forward pointer at the head of its body says where, and the task cannot complete on any reading until the depth-`0` gate lifts, so the `[BLOCKED]` marker creates no false deadlock |
+| **Phase 11.8 is read as deadlocking the plan** | M | M | **Row resolved by the 2026-11-16 marker amendment, and the reasoning it replaces is kept here because it was correct when written.** As authored this row recorded that `[COMPLETED WITH EXCLUSIONS]` was NOT admissible for that phase, because conditions 1 and 5 of the five-condition admission test failed — it was a stuck attempt, not a decision of non-applicability, and its items DID remain, re-homed onto Phases 11.10-11.13. Condition 5 is now satisfied because that re-homing COMPLETED: 11.10 and 11.11 closed `[COMPLETED]`, 11.12 and 11.13 closed `[COMPLETED WITH EXCLUSIONS]`, so nothing remains that a dispatch would enter THIS phase to do. Condition 1 is satisfied by the re-homing decision itself. The phase now carries `[COMPLETED WITH EXCLUSIONS]` with the record at the head of its body |
 
 | **The `hself` ruling never arrives** — **RESOLVED** | H | M | **The ruling ARRIVED** (2026-11-13, disposition (B)) and dispatch 37 executed it: Phases 11.15, 11.16 and 11.17 closed `[COMPLETED]` and Phases 11.12 and 11.13 were promoted to `[COMPLETED WITH EXCLUSIONS]`. The row is retained as the record of a risk that did not materialise. Its original mitigation, for the record: Phase 11.14 was deliberately constructed to need NO ruling — its whole territory is one new file under `specs/evidence/**` plus two blocks in one script — so the plan has an enterable phase whatever happens to the ruling, and its DERIVABLE branch would make the ruling moot outright. Phase 11.15 carries `Depends on: none` and is re-observed by name in Phase 18's verification, so the gate is visible in the accounting rather than silently deadlocking a dependency chain. If the ruling does not arrive and Phase 11.14 closes INCONCLUSIVE, the honest outcome is that the plan has no enterable phase and the next act is a further `/revise` or a `/spawn`, which is what the records are to say |
 | **A dispatch reads Phase 11.14's verdict as the ruling and enters Phase 11.16 on it** | H | M | Phase 11.14's task list forbids recording a recommendation on the ruling, Phase 11.15's Prohibited workarounds forbid inferring one, and Phase 11.16's first task requires reading the recorded ruling — with the ONE exception stated explicitly in both places: branch (R) is authorized by a compiled DERIVABLE verdict alone, because that branch asserts nothing about the recorded statements beyond proving them as recorded. The distinction is written three times on purpose |
@@ -2379,7 +2381,7 @@ every one of them still binds; these are additional):
 | **The uncompiled gap conjecture is carried as a premise rather than decided** — the bit is "expected" to read `n − c`, and a later phase builds on it | M | **H** | The report labels it uncompiled and this plan repeats that label in its own Overview section, in Phase 11.23's tasks and in Phase 11.23's prohibitions. Phase 11.23's verification requires the gap reading to appear as a COMPILED statement with `#print axioms` clean, and requires the phase body to record it as LANDED or REFUTED — a reading recorded as "clear" or "immediate" in place of an object fails that item, exactly as Phase 11.20's own decision rule required |
 | **The measurement is taken only at a positive threshold and the `Tc_D = Tc_0 = 0` level is left unmeasured** | M | H | Named by report 18 as its own last risk and carried into Phase 11.23's tasks as an explicit TWO-POINT obligation: the consumer reading is measured at countdown `≥ Tc_d` for a positive `Tc_d` AND at threshold `0`, which is the level the consumer actually needs and the level at which a register reading within two steps is plausible. A one-point measurement does not discharge the Obligation, which says "on both sides of the level threshold" |
 | **Route (B-1) is re-entered** — a block-selection condition, a near-constant-register restriction, or a clipped-register pigeonhole appears in a later phase | M | H | It is REFUTED by compiled probe at the discharged parameters with no type hypothesis, and `clipped_pigeonhole_room_exceeds_Tc` forecloses the parameter-re-basing repair under every `ParamsOk` instance. The prohibition is carried in Goals & Non-Goals and in Phase 11.23's prohibitions; the mechanical backstop is Phase 11.23's own promotion of the refutation into a WIRED evidence probe, so a later re-entry has to contradict a gated artifact rather than a paragraph |
-| **Phase 11.20's landed declarations are re-derived, re-opened or re-marked because its heading reads `[BLOCKED]`** | M | M | Its `[BLOCKED]` marker is a CLOSED decision-gate outcome that the phase body itself sanctions, not a resumable state, and this revision preserves the body, the marker and the BLOCKER record untouched. Its seven declarations are AVAILABLE INPUTS named in this plan's Research Inputs and in Phase 11.23's body; the downstream chain is unstranded by re-pointing Phase 11.22's and Phase 11.6's `Depends on` lines onto Phase 11.24, never by re-entering 11.20 |
+| **Phase 11.20's landed declarations are re-derived or re-opened because a reader misreads its marker** | M | M | Its outcome is a CLOSED decision-gate outcome that the phase body itself sanctions, not a resumable state. This revision preserved the body, the marker and the BLOCKER record untouched; the 2026-11-16 amendment then corrected the marker alone to `[COMPLETED WITH EXCLUSIONS]`, which is what the body already meant, leaving the BLOCKER record and every declaration untouched. Its seven declarations are AVAILABLE INPUTS named in this plan's Research Inputs and in Phase 11.23's body; the downstream chain is unstranded by re-pointing Phase 11.22's and Phase 11.6's `Depends on` lines onto Phase 11.24, never by re-entering 11.20 |
 | **The two new phases are collapsed into one, so the relation is defined in the same dispatch that measures what it should contain** | M | H | This is exactly the failure Phase 11.20's ordering rule exists to prevent, restated one route later: a relation defined in the measuring dispatch is a relation fitted to whichever leg looked more tractable. Phase 11.24 is a separate phase with Phase 11.23 as its only gate, and its own prohibitions forbid re-measuring; Phase 11.23's prohibitions forbid defining `~_d`, `Tc_d` or `D` |
 | **`LadderCell.lean`'s `longFile` ceiling is tripped** — the module grew by 492 lines under Phase 11.20 and its baseline was raised in place to 2,900 against 2,836 lines at that phase's close | H | L | Carried as a MEASURED figure from Phase 11.20's own verification record, and explicitly flagged CARRIED rather than re-measured by this revision, which ran no build: **64 lines of headroom as of that close**. Every phase landing there names the remedy on its own `Files to modify` line — raise the in-source baseline in place, never split — and LISTS the contingency module `LadderCascade.lean` with both wiring edits so `git-commit-scoped.sh` does not drop an unlisted contingency file while committing its import edges (`iss_1793680346301_9l9mvq`). `KTypeSummaryAxiomTest.lean` is 3,171 against a baseline raised in place to 3,300 at the same close. **Both figures are to be RE-MEASURED at phase start** |
 
@@ -2442,12 +2444,12 @@ every one of them still binds; these are additional):
 | 12 | 11.12, 11.14, 11.23 | 11.11 (11.12); 11.11 (11.14); 11.18, 11.19, 11.20 (11.23) |
 | 13 | 11.24 (EXCLUDED), 11.25 | 11.23 |
 | 14 | 11.22 (EXCLUDED), 11.26 | 11.24 (11.22); 11.25 (11.26) |
-| 15 | 11.6 (BLOCKED), 11.27 | 11.5, 11.9, 11.24, 11.22 (11.6); 11.26 (11.27) |
+| 15 | 11.6 (EXCLUDED), 11.27 | 11.5, 11.9, 11.24, 11.22 (11.6); 11.26 (11.27) |
 | 16 | 11.13, 11.21 (EXCLUDED), 11.28 | 11.8, 11.12 (11.13); 11.6 (11.21); 11.27 (11.28) |
 | 17 | 11.16, 11.29 | 11.13, 11.14 (11.16); 11.28 (11.29) |
 | 18 | **11.36**, **11.37**, 11.33, 11.32 (CLOSED) | 11.29 (all four) |
 | 19 | **11.35**, **11.38**, 11.34, 11.30 | **11.33, 11.36** (11.35); **11.37** (11.38); 11.33 (11.34, 11.30) |
-| 20 | 11.39 (BLOCKED), **11.41**, 11.31 | 11.38 (11.39, **11.41**); 11.30 (11.31) |
+| 20 | 11.39 (EXCLUDED), **11.41**, 11.31 | 11.38 (11.39, **11.41**); 11.30 (11.31) |
 | 21 | **11.42**, 11.7 | **11.41** (11.42); 11.33 (11.7) |
 | 22 | **11.40**, 11.17, 12.2 | **11.42** (11.40); 11.16 (11.17); 12.1, 11.7, 12.5 (12.2) |
 | 23 | 13, 15.1 | 12.2 (13); 7, 11.16, 11.7, 12.2 (15.1) |
@@ -2509,11 +2511,11 @@ INFERENCE.** The predecessor plan left nineteen phases not closed. None is silen
 
 | Phase found open | Marker | Disposition under route (M-1) |
 |---|---|---|
-| **11.39** the `untl` jump clause | `[BLOCKED]` | **UNCHANGED, NOT RE-MARKED, NOT RE-ENTERED, AND ITS DELIVERABLE RE-POINTED** (Ruling 17). Its body and measured account are carried byte-identical. Its landed half (`truth_iff_of_lnkRow` and the three `LnkRow` lemmas) is an INPUT to 11.41 and 11.42 and is not re-proved. If 11.42 lands `exists_rowLinked_path`, this phase STAYS `[BLOCKED]` and Phase 18's records pass states the re-pointing as a route fact — the same treatment Ruling 4 gives 11.30/11.31 |
+| **11.39** the `untl` jump clause | `[COMPLETED WITH EXCLUSIONS]` (2026-11-16; `[BLOCKED]` as this revision found it) | **NOT RE-ENTERED, AND ITS DELIVERABLE RE-POINTED** (Ruling 17, amended on the marker alone). Its body and measured account are carried byte-identical below its `#### Reasoned Exclusions` record. Its landed half (`truth_iff_of_lnkRow` and the three `LnkRow` lemmas) is an INPUT to 11.41 and 11.42 and is not re-proved. If 11.42 lands `exists_rowLinked_path`, this phase is still not re-entered and Phase 18's records pass states the re-pointing as a route fact — the same treatment Ruling 4 gives 11.30/11.31 |
 | **11.40** the `snce` mirror and the `⊡` lift | `[NOT STARTED]` | **REWRITTEN and RE-POINTED** onto `11.42` (Ruling 17), with its clip-status item CORRECTED (Ruling 16): the clip it was written to promote from CONJECTURED to PROVED is refuted, so the item is replaced by a record of what the jump clauses actually deliver — an agreement over a DERIVED relation with no `ParamsOk` hypothesis, whose bridge to `kappa`-classes is a separate and currently refuted question. `Timing` unchanged at 2.5. On 11.42's non-entry it closes `[COMPLETED WITH EXCLUSIONS]` |
 | **11.34** the library-side refutation declaration | `[NOT STARTED]` | **REWRITTEN, still owed, and now ENTERABLE.** `Depends on` UNCHANGED at `11.33` (now `[COMPLETED]`); `Timing` unchanged at 1.5. What this revision settles at plan level rather than leaving to the dispatch: WHICH witness family and at WHICH clip (the `thetaC`-shaped witness at the FILED clip, matching the prose the phase exists to back), and three stale file measurements corrected |
-| 11.7 `cellAt_const_of_kappa_eq` | `[BLOCKED]` | **UNCHANGED, and not re-entered.** Its filed Goal is REFUTED at the filed clip, at the repaired clip, and at every clip below `2 ^ (dBack + 1)` (Ruling 16), and is landed under NO name on any branch. The phase that would bear on it is the derivation, and the bridge it needs is the one Ruling 16 parks |
-| 11.6, 11.8, 11.20 | `[BLOCKED]` | **UNCHANGED, and not re-entered.** Each REPORTED; their landed declarations are inputs. Route (M-1) does not re-open the path level (carried Ruling 3) |
+| 11.7 `cellAt_const_of_kappa_eq` | `[COMPLETED WITH EXCLUSIONS]` (2026-11-16, on Phase 11.33's outcome (a), as this phase's own body directs; `[BLOCKED]` as this revision found it) | **NOT RE-ENTERED.** Its filed Goal is REFUTED at the filed clip, at the repaired clip, and at every clip below `2 ^ (dBack + 1)` (Ruling 16), and is landed under NO name on any branch. The phase that would bear on it is the derivation, and the bridge it needs is the one Ruling 16 parks |
+| 11.6, 11.8, 11.20 | `[COMPLETED WITH EXCLUSIONS]` (2026-11-16; `[BLOCKED]` as this revision found them) | **NOT RE-ENTERED.** Each REPORTED; their landed declarations are inputs, carried byte-identical below each phase's `#### Reasoned Exclusions` record. Route (M-1) does not re-open the path level (carried Ruling 3) |
 | 11.30, 11.31 ROUND 2 | `[NOT STARTED]` | **CARRIED, gates unchanged, and still NOT ENTERED on decision (E-5)'s premise** (carried Ruling 4). Nothing in either record revives that premise |
 | 12.2 `Real`'s certification and `Real ⊆ Dmax` | `[NOT STARTED]` | **CARRIED, gate unchanged.** `real_subset_Dmax_stepFrag` remains ONE INCLUSION on the STEP FRAGMENT at derived parameters, and nothing in it addresses the converse (`ladderLift`) or the whole language |
 | 13 `ladderSound`, 14 `ladderCons_localRun`, 15.1 `ladderLift`, 15.2 `Dmax ⊆ Real` | `[NOT STARTED]` | **CARRIED, gates unchanged, none refuted.** `ladderLift` in particular is addressed by no phase of this revision and no phase claims progress on it |
@@ -2530,8 +2532,8 @@ verdict even on the branch where 11.42 and 11.40 close by exclusion. Phases NOT 
 exempt from the edge the final-phase transitivity rule would otherwise impose: Phase 11.15 (the
 plan-time `[BLOCKED]` gate, exempted by earlier plan rounds and re-observed by name), Phases 11.24,
 11.22, 11.21, 11.32 and **11.35** (each closed by exclusion), Phase 11.6 (which reported), Phases
-11.30 and 11.31 (held off decision (E-5)'s premise by carried Ruling 4), Phase 11.7 (`[BLOCKED]`),
-and **Phase 11.39** (`[BLOCKED]`, its deliverable re-pointed by Ruling 17). **In exchange, Phase
+11.30 and 11.31 (held off decision (E-5)'s premise by carried Ruling 4), Phase 11.7 (closed by exclusion),
+and **Phase 11.39** (closed by exclusion, its deliverable re-pointed by Ruling 17). **In exchange, Phase
 18's verification criteria RE-OBSERVE each of them by name**, and this revision ADDS four items to
 that pass: Phase 11.41's refutation-attempt verdict, recorded whichever way it fell and with the
 relation it was about stated in full; Phase 11.42's disposition, compiled or closed by exclusion;
@@ -2551,13 +2553,14 @@ live**, as are the entry conditions, kill criteria and forward references inside
 `### THE ROUTE IS NOW (E-5)` and `### THE ROUTE WAS (P-2)` sections of the Overview. **The enterable
 phases of THIS plan are 11.36, 11.37 and 11.33.**
 
-**What is closed.** Forty-seven of sixty-six phases. Thirty-one are `[COMPLETED]` — Phases 1-8,
+**What is closed.** Fifty-two of sixty-six phases. Thirty-one are `[COMPLETED]` — Phases 1-8,
 10, 11.2, 11.3, 11.4, 11.10, 11.11, 11.15, 11.16, 11.17, 11.18, 11.23, 11.25, 11.26, 11.27, 11.28,
-11.29, **11.33**, **11.36**, **11.37**, 12.3, 12.4, 12.5 and 12.6. Sixteen are
+11.29, **11.33**, **11.36**, **11.37**, 12.3, 12.4, 12.5 and 12.6. Twenty-one are
 `[COMPLETED WITH EXCLUSIONS]`, each with its own `#### Reasoned Exclusions` record — Phases 9, 11,
-11.1, 11.5, 11.9, 11.12, 11.13, 11.14, 11.19, 11.21, 11.22, 11.24, 11.32, **11.35**, **11.38** and
-12.1. **Every one of those forty-seven bodies is carried forward byte-identical by this revision**,
-as are the five `[BLOCKED]` bodies (11.6, 11.7, 11.8, 11.20 and **11.39**) and the ten carried
+11.1, 11.5, 11.9, 11.12, 11.13, 11.14, 11.19, 11.21, 11.22, 11.24, 11.32, **11.35**, **11.38**,
+12.1 and, by the 2026-11-16 marker amendment, **11.6**, **11.7**, **11.8**, **11.20** and
+**11.39**. **Every one of those bodies is carried forward byte-identical by this revision** — the
+five amended ones below their newly prepended exclusion records — as are the ten carried
 `[NOT STARTED]` bodies other than 11.34 and 11.40 (11.30, 11.31, 12.2, 13, 14, 15.1, 15.2, 16, 17
 and 18, the last of these edited only in its `Depends on` line and its records pass). **No landed work is reopened, re-verified or
 re-derived**, and in particular Phase 11.37's promoted step system, Phase 11.38's `LnkRow` layer and
@@ -2567,12 +2570,16 @@ plan.
 
 **One arithmetic note on the count, so it is checkable rather than asserted.** The predecessor plan
 reported forty-two of sixty-four. Five phases closed since (11.36, 11.37, 11.38, 11.33, 11.35) and
-one blocked (11.39, which is not counted as closed), giving forty-seven; two phases are added by
-this revision (11.41, 11.42), giving sixty-six. The `[COMPLETED]` list above gains 11.33, 11.36 and
-11.37 — thirty-one names; the `[COMPLETED WITH EXCLUSIONS]` list gains 11.35 and 11.38 — sixteen
-names; 31 + 16 = 47. The open side: fourteen `[NOT STARTED]` (11.30, 11.31, 11.34, **11.41**,
-**11.42**, 11.40, 12.2, 13, 14, 15.1, 15.2, 16, 17, 18) plus five `[BLOCKED]` (11.6, 11.7, 11.8,
-11.20, 11.39) = 19; and 47 + 19 = 66.
+one blocked (11.39, which this revision did not count as closed), giving forty-seven; two phases are
+added by this revision (11.41, 11.42), giving sixty-six. The `[COMPLETED]` list above gains 11.33,
+11.36 and 11.37 — thirty-one names; the `[COMPLETED WITH EXCLUSIONS]` list gains 11.35 and 11.38 —
+sixteen names; 31 + 16 = 47, which is the count as this revision was authored.
+
+**The count after the 2026-11-16 marker amendment.** The five re-marked phases (11.6, 11.7, 11.8,
+11.20, 11.39) move from the open side to the `[COMPLETED WITH EXCLUSIONS]` list, which gains five
+names: 16 + 5 = 21. Closed is then 31 + 21 = 52. The open side is fourteen `[NOT STARTED]` (11.30,
+11.31, 11.34, **11.41**, **11.42**, 11.40, 12.2, 13, 14, 15.1, 15.2, 16, 17, 18) and nothing else;
+and 52 + 14 = 66. No phase was added, removed or renumbered by the amendment — five moved sides.
 
 **Phase 11.15's missing edge, and the obligation it still buys.** Phase 11.15 was authored as a
 plan-time `[BLOCKED]` decision gate with `Depends on: none`, placed in wave 1 on
@@ -3187,7 +3194,22 @@ Phase 11.5.
 
 ---
 
-### Phase 11.6: The `⊡`-Nesting-Depth Induction on the `~_d` Invariant [BLOCKED]
+### Phase 11.6: The `⊡`-Nesting-Depth Induction on the `~_d` Invariant [COMPLETED WITH EXCLUSIONS]
+
+**CLOSED BY EXCLUSION, AND NOT ENTERED. EVERYTHING BELOW THIS RECORD IS THE HISTORICAL BODY OF A
+PHASE THAT DID NOT RUN** — its `ROUTE S-2` block, its two blocker entries, its tasks and its
+forward references all describe a route the (P-1) gate closed. STOP HERE; do not execute any item
+below. This phase was carried `[BLOCKED]` while route (M-1) was being settled; the marker is
+corrected here because `[BLOCKED]` reads as OPEN and resumable to every phase-accounting consumer
+(`PHASE_STATUS_OPEN_ALT` in `scripts/lib/phase-heading-patterns.sh`), which is not this phase's
+state. The live successor is Phase 11.41.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| The depth-`d` induction on the `~_d` invariant, and its depth-`0` base and step | The induction is stated on a relation `~_d` that was never defined. Its two entry gates closed by exclusion without ever running, and Phase 11.22's own body carries the sentence "THIS IS THE PHASE THAT MAKES PHASE 11.6 ENTERABLE" about a route the gate closed. Route (M-1) does not re-open the path level (carried Ruling 3) | Phases 11.24 and 11.22 in this plan, both `[COMPLETED WITH EXCLUSIONS]` on the (P-1) kill criterion, each citing `ProbeB1.gap_conjunct_refuted_on_ramp` and `ProbeB1.gap_conjunct_refuted_at_params` in `specs/evidence/seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity.lean` |
+| The phase's downstream delivery to `cellAt_const_of_kappa_eq` | The statement this induction was to feed is refuted by compilation at the filed clip, at the repaired clip, and at every clip below `2 ^ (dBack φ + 1)` — so there is no true consumer left for the induction to serve | `cellAt_const_of_kappa_eq_schema_refuted` (Phase 11.29); `repaired_clip_refuted` and `gap_clip_below_exponential_refuted` (Phase 11.33), recorded in `records/round-24-repaired-clip-verdict.md` |
 
 **READ THE `ROUTE S-2` BLOCK BELOW THE TWO BLOCKER ENTRIES FIRST.** This phase is `[BLOCKED]`,
 and under route S-2 as amended by the (W-2) and (P-1) rulings it is also NOT ENTERABLE until
@@ -3601,7 +3623,23 @@ depth is itself the useful datum for a successor round.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - If the phase closes `[BLOCKED]`: the goal state and the stalling point — the ceiling, or the step with its stalling depth — are recorded in the phase body and the handoff, with no `sorry`, axiom, vacuous definition, trace-level hypothesis, finite-fibre retreat, further-raised `Tc` or positionwise restatement anywhere in the tree.
 
-### Phase 11.7: The Agreement `cellAt_const_of_kappa_eq` [BLOCKED]
+### Phase 11.7: The Agreement `cellAt_const_of_kappa_eq` [COMPLETED WITH EXCLUSIONS]
+
+**CLOSED BY EXCLUSION ON PHASE 11.33's OUTCOME (a), EXACTLY AS THIS PHASE'S OWN BODY DIRECTS.**
+The paragraph immediately below states: "On Phase 11.33's outcome (a) this phase closes
+`[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record citing both compiled
+refutations by declaration name and by clip." Phase 11.33 recorded outcome (a). That record is
+the table below, and this close is the instruction being carried out, not a new decision.
+**EVERYTHING BELOW THIS RECORD IS THE HISTORICAL BODY OF A PHASE THAT DID NOT RUN**; its
+prohibitions stand, its routing does not. STOP HERE; do not execute any item below.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| The filed Goal `cellAt_const_of_kappa_eq` at the filed clip | REFUTED by compilation at its own quantifier prefix, at parameters satisfying `ParamsOk` as `(K4)` defines it, with the separating formula `thetaC` exhibited and the excess over the clip unbounded along `mixC` | `cellAt_const_of_kappa_eq_schema_refuted`, Phase 11.29's `#### Recorded Outcome` in this plan |
+| The same text at the repaired clip — the one question Phase 11.33 was inserted to decide | REFUTED by compilation too, and with it every clip below `2 ^ (dBack φ + 1)`. Phase 11.33's outcome (a) is the branch this phase's own body assigns to exclusion-closure; outcome (b), the branch that would have kept it `[BLOCKED]`, did not occur | `repaired_clip_refuted` with `gap_clip_below_exponential_refuted` beside it; `records/round-24-repaired-clip-verdict.md` |
+| Any weakened, regime-narrowed or same-named restatement landed under `cellAt_const_of_kappa_eq` | Prohibited by Ruling 5, which stands and is not relaxed by this closure. The name is recorded as refuted, not as unlanded | Ruling 5 in this plan; `grep -rn` over `FormalSystem/` resolves the name to no declaration |
 
 **THE FILED GOAL OF THIS PHASE IS REFUTED AT THE FILED CLIP, AND THIS PHASE'S GATE IS NOW PHASE
 11.33 — INSERTED BY THIS REVISION. STOP HERE AND READ THIS PARAGRAPH BEFORE EITHER PARAGRAPH BELOW
@@ -3880,7 +3918,29 @@ as re-read from the live plan file.
 
 ---
 
-### Phase 11.8: The Pin Cascade, The Construction — The Interface-Level Statement in the Remaining Regime [BLOCKED]
+### Phase 11.8: The Pin Cascade, The Construction — The Interface-Level Statement in the Remaining Regime [COMPLETED WITH EXCLUSIONS]
+
+**CLOSED BY EXCLUSION BECAUSE ITS RE-HOMED ITEMS HAVE SINCE LANDED. READ THIS BEFORE THE BODY,
+WHICH ARGUES THE OPPOSITE AND IS SUPERSEDED ON THIS ONE POINT.** The carried paragraph below says
+the marker "stays `[BLOCKED]` rather than moving to `[COMPLETED WITH EXCLUSIONS]` because
+conditions 1 and 5 of that outcome's five-condition admission test fail: this was a stuck attempt
+and not a decision of non-applicability, and its remaining items DO remain — re-homed, not
+excluded." That reasoning was correct when written and is no longer. Condition 5 is now satisfied
+because the re-homing COMPLETED: Phases 11.10 and 11.11 closed `[COMPLETED]` and Phases 11.12 and
+11.13 closed `[COMPLETED WITH EXCLUSIONS]`, so nothing remains that a future dispatch would enter
+THIS phase to do. Condition 1 is satisfied by the re-homing decision itself — a deliberate
+assignment of the remaining items to other phases, which is what makes them not applicable here.
+**The rest of the body below is the historical record of the round and is carried verbatim**; its
+first landed task is an input to Phase 11.13 and is not re-proved. STOP HERE; do not act on this
+phase's task list — the items landed in Phases 11.10-11.13.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `exists_ladderPath_at_region_of_idle_past` and the unconditional `exists_ladderPath_at_region` | RE-HOMED, not abandoned: restated as Phases 11.10, 11.11, 11.12 and 11.13 at the level the landed `exists_ladderPath_of_walk` constructor actually admits, and those phases have since closed. Under the ruled `hself` disposition (B) both recorded names stay deliberately UNCLAIMED, with the carrying declarations landed under auxiliary names that state the premise they carry | `LadderAgree.lean:2242` carries `exists_ladderPath_at_region_of_idle_past_of_self_loop`; `LadderAgree.lean:2315` carries `exists_ladderPath_at_region_of_self_loop`; the unclaimed-name records at `LadderAgree.lean:2229` and `LadderRealize.lean:159`; Phases 11.10-11.13 in this plan |
+| The `spliceObj`-shaped conclusion this phase's blocker record refutes | Refuted as diagnosed, re-checked against the landed source (finding 22). What the single consumer actually reads is the narrower pair `spliced_at_region` exposes, which is what the re-homed phases landed | This phase's own carried `BLOCKER` record below; Phase 11.13's `#### Reasoned Exclusions` |
+| This phase's own first ordered task | Already landed green and consumed elsewhere, so nothing is excluded about it — recorded here only so the table enumerates 100% of the phase's items rather than the unlanded remainder alone | `exists_ladderPath_at_region_of_pend_past`, a proved `sorryAx`-free theorem at `LadderAgree.lean:1544`, consumed by Phase 11.13 |
 
 **FORWARD POINTER ADDED BY THIS REVISION — THIS PHASE IS CLOSED `[BLOCKED]` AND IS NOT
 RE-ENTERED.** It landed its ordered FIRST task green: `exists_ladderPath_at_region_of_pend_past`
@@ -6302,7 +6362,23 @@ editing.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/typst-sync-check.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` and `bash .claude/scripts/check-task-references.sh --quiet` each exit 0.
 - If the phase closes `[BLOCKED]`: the goal state is recorded with the clause that would not close named, and Phase 11.20 is marked as waiting on it — **the induction is NOT entered on an argued clause**, which is the whole point of the recorded obligation's ordering.
 
-### Phase 11.20: The Register Discriminator, and the `~_d` Relation It Fixes [BLOCKED]
+### Phase 11.20: The Register Discriminator, and the `~_d` Relation It Fixes [COMPLETED WITH EXCLUSIONS]
+
+**CLOSED BY EXCLUSION, AND NOT RE-ENTERED. EVERYTHING BELOW THIS RECORD IS THE HISTORICAL BODY OF
+A ROUND THAT RAN AND REACHED NO CANDIDATE** — including the sentence "THE ONE ENTERABLE PHASE OF
+THIS PLAN" about itself, which describes the plan round under which it was written. STOP HERE; do
+not execute any item below. Phase 11.22's own body already reads this phase's outcome as "a CLOSED
+outcome rather than a resumable one"; the marker is corrected here to say so, because `[BLOCKED]`
+reads as OPEN and resumable to every phase-accounting consumer
+(`PHASE_STATUS_OPEN_ALT` in `scripts/lib/phase-heading-patterns.sh`). Its compiled measurements on
+both sides are INPUTS and are not re-derived.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Choose a register discriminator among the three candidates (R-a), (R-b), (R-c) | The phase's own decision rule reached NONE of its three candidates: both sides landed as compiled objects and they disagree. This is a measured negative result, not an unfinished measurement — both measurements ran, in the order the phase pins | Side (A): `register_displacement_bound_of_anchor`, `register_interior_displacement_bound_at_block`, `iterSpliced_register_clipped_interior_forces_block_drift`, `iterSpliced_register_clipped_interior_refuted`. Side (B): `stab_alphaR_iff`, `stab_bit_ne_of_register_ne`, `stab_alphaR_eq_of_clipped_eq`. All in `FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean` |
+| Fix the `~_d` relation the discriminator was to determine | The relation was to be defined by Phase 11.24, which is itself `[COMPLETED WITH EXCLUSIONS]` on the (P-1) kill criterion and was never entered. There is no relation left for a discriminator to fix, and route (M-1) does not re-open the path level (carried Ruling 3) | Phases 11.24 and 11.22 in this plan, both `[COMPLETED WITH EXCLUSIONS]` on the (P-1) kill criterion, each citing `ProbeB1.gap_conjunct_refuted_on_ramp` and `ProbeB1.gap_conjunct_refuted_at_params` in `specs/evidence/seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity.lean` |
 
 **BLOCKER** (Phase 11.20):
 - **What failed**: the decision rule reached none of its three candidates. Both sides of the
@@ -9215,7 +9291,24 @@ is a route question, not a drafting detail.
 
 ---
 
-### Phase 11.39: The `untl` Jump Clause at the `⊡`-Free Level [BLOCKED]
+### Phase 11.39: The `untl` Jump Clause at the `⊡`-Free Level [COMPLETED WITH EXCLUSIONS]
+
+**CLOSED BY EXCLUSION WITH ITS DELIVERABLE RE-POINTED. THIS AMENDS RULING 17, WHICH DIRECTED THAT
+THIS PHASE STAY `[BLOCKED]`.** Ruling 17's substance is unchanged and is carried out in full — the
+body below is untouched, the measured account stands, the landed half is an input to Phases 11.41
+and 11.42 and is not re-proved, and Phase 18's records pass still states the re-pointing as a route
+fact. What changes is only the MARKER: `[BLOCKED]` reads as OPEN and resumable to every
+phase-accounting consumer (`PHASE_STATUS_OPEN_ALT` in `scripts/lib/phase-heading-patterns.sh`), so
+a phase whose deliverable has been re-pointed onto other phases is repeatedly selected for dispatch
+and returns having done no work. STOP HERE; do not execute any item below — act on Phase 11.41.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| The path forth `exists_rowLinked_path` from a `Zrel`-shaped hypothesis | REFUTED in general, not merely unproved: for EVERY `(A, B)` there are two `Zrel A B`-related states of a three-state object with a ladder path through the first and no row-linked ladder path through the second. The obstruction is `(K1)`'s modulus — the row link reads a residue of the countdown that `Zrel` does not carry. `(K2)`'s margin was never reached and `LnkRow`'s shape is not at fault | `no_rowLinked_path_of_Zrel` (compiled, wired probe `specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean`); `LnkRow.region_end_obj` (compiled, library); `records/round-24-jump-clause-verdict.md` section 3 |
+| The deliverable the path forth was to supply | RE-POINTED onto Phases 11.41 and 11.42 by Ruling 17, which this closure carries out rather than revokes: the needed object is a state relation carrying an object-dependent residue of the countdown, which is a new relation and a route question. Route (M-1) is that relation, and Phase 11.41 attempts the refutation against it FIRST | Ruling 17 in this plan; Phases 11.41 and 11.42; decision 18's user-answered route (M-1) |
+| The truth-lemma half of this phase's Goal | Already COMPILED and landed, so nothing is excluded about it — recorded here so the table enumerates 100% of the phase's items rather than the unlanded remainder alone. It is an INPUT to 11.41 and 11.42 | `truth_iff_of_lnkRow` and the three `LnkRow` lemmas in `FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean` |
 
 **BLOCKER** (Phase 11.39), raised by dispatch 67 — outcome (b), the measured account:
 - **What failed**: the path forth with a whole-row correspondence
