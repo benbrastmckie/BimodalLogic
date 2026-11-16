@@ -181,6 +181,12 @@ qualifies or bears on
 stated in this module; every quantity named is a count, and no complexity bound is claimed.
 -/
 
+-- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500).  The module is NOT
+-- split: the row link, its induction scaffold and the path forth over it are one argument, and
+-- the scaffold's three closure clauses are read against `LnkRow`'s own unfolding in this file.
+-- The baseline is raised in place, one chunk at a time, and the linter checks it stays tight.
+set_option linter.style.longFile 1700
+
 open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.PlusLanguage
 open FormalSystem.Metalogic.Decidability
 
@@ -1481,5 +1487,43 @@ theorem Mrel.threshold_le_Tc {Q : Type} [Fintype Q] {step : Q → Q → Bool} {p
         ((plusSubformulaClosure φ).sup stabDepth + 1) := Nat.le_mul_of_pos_right _ (by omega)
 
 end RaisedMargin
+
+/-! ### The bridge from `ParamsOk` to the object half of `(K1)`
+
+The hypothesis the path forth carries is `(K1)`'s SECOND conjunct and nothing else:
+
+```
+∀ l ∈ objCycleLens step pend, l ∣ (P + 1)
+```
+
+It is a NEW condition rather than a named one — no predicate in the library is equal to it.
+`paramsOkK1` bundles it with the product-cycle and `satPeriod` conjuncts and takes `lab` and `φ`,
+and carrying `paramsOkK1` whole would drag the formula index into a row-link layer that is free
+of it.  So the bridge below is the projection that discharges the added hypothesis from a
+`ParamsOk` in hand, landed beside the consumer so that no later phase re-derives a projection
+path.
+
+**What already existed, recorded rather than silently re-used.**  `objCycle_dvd_succ_of_paramsOk`
+(`LadderAgree.lean`) performs this same projection in POINTWISE form — `{l : ℕ} (hl : l ∈ …)` —
+and `LadderAgree` is in this module's import closure.  The bridge owed here is the BUNDLED `∀`
+form, which is what the path forth's binder list contains, and it is a one-line corollary of the
+same projection rather than a fresh derivation. -/
+
+section K1Bridge
+
+/-- **THE BRIDGE.**  `ParamsOk`'s `(K1)` conjunct projects onto the object half alone, in the
+bundled form the path forth takes as a hypothesis.  Every pending cycle length of the object
+divides `P + 1`.
+
+This is the lemma whose absence would make the path forth undischargeable at the parameters the
+periodicity fixpoint defines: `paramsOk_params` supplies a `ParamsOk` at
+`(Tcof, Tnof, Pof, Bof)`, and this turns it into the added hypothesis. -/
+theorem objHalfK1_of_paramsOk {Q : Type} [Fintype Q] {step : Q → Q → Bool} {pend : Q → Bool}
+    {lab : Q → Atom → Bool} {φ : PlusFormula} {Tc Tn P B : ℕ}
+    (hp : ParamsOk step pend lab φ Tc Tn P B) :
+    ∀ l ∈ objCycleLens step pend, l ∣ (P + 1) :=
+  hp.1.2.1
+
+end K1Bridge
 
 end FormalSystem.Metalogic.Decidability.RaySummary
