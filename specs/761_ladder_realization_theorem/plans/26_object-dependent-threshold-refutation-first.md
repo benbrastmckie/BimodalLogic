@@ -9807,7 +9807,7 @@ modules do not have, record that the estimate was wrong and treat it as a route 
 
 ---
 
-### Phase 11.43: ROUTE (N-1) — The BRANCHING-Pending Fixture, Constructed Because It Does Not Exist [NOT STARTED]
+### Phase 11.43: ROUTE (N-1) — The BRANCHING-Pending Fixture, Constructed Because It Does Not Exist [COMPLETED]
 
 **ADDED BY THIS REVISION (Ruling 19).** Decision 19 requires the refutation attempt of Phase 11.44
 to run on `R4` **and** on an object whose pending part BRANCHES, and names a relation adopted
@@ -9865,16 +9865,16 @@ Exactly one of:
   Phase 11.44 is NOT entered on outcome (b) with a single-fixture attack.
 
 **Tasks**:
-- [ ] Re-derive at entry, against the live probe rather than against this plan: the `R4` block's
+- [x] Re-derive at entry, against the live probe rather than against this plan: the `R4` block's
       declarations and their line numbers, the file's length, and that the gate still lists it at
       `scripts/check-evidence-probes.sh:3057`. Record any drift.
-- [ ] Re-derive `objCycleLens`'s definition and the shape `three_mem_objCycleLens_R4` proves, so the
+- [x] Re-derive `objCycleLens`'s definition and the shape `three_mem_objCycleLens_R4` proves, so the
       two membership lemmas are stated in the form the existing ones use.
-- [ ] Define `B5`, its instances, `stepB` and `pendB`, APPENDED to the probe.
-- [ ] Land `branching_pendB`, the two `objCycleLens` memberships, `fwdB` and `bwdB`.
-- [ ] Land the non-vacuity witness `gB` and `gB_isLadderPath`. **If it will not go through, STOP and
+- [x] Define `B5`, its instances, `stepB` and `pendB`, APPENDED to the probe. *(deviation: altered — the `R4` block's namespace closes at `:564` before the headline's axiom pin, so the block is appended at end of file inside a re-opened `namespace ProbeRowResidue`; 259 insertions, 0 deletions)*
+- [x] Land `branching_pendB`, the two `objCycleLens` memberships, `fwdB` and `bwdB`.
+- [x] Land the non-vacuity witness `gB` and `gB_isLadderPath`. **If it will not go through, STOP and
       record outcome (b)** rather than shipping an object nobody has walked.
-- [ ] Record in `records/round-26-threshold-relation-verdict.md` (CREATED by this phase, section 1):
+- [x] Record in `records/round-26-threshold-relation-verdict.md` (CREATED by this phase, section 1):
       the fixture as built, the `(K1)` constraint `6 ∣ P + 1` it imposes on any refutation stated
       over it, the non-vacuity witness, and **which obstruction lemma it is aimed at** —
       `LnkRow.region_end_obj`, because a branch means the second path's walk is not determined by

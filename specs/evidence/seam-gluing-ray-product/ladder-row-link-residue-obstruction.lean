@@ -566,3 +566,262 @@ end ProbeRowResidue
 /-- info: 'ProbeRowResidue.no_rowLinked_path_of_Srel' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms ProbeRowResidue.no_rowLinked_path_of_Srel
+
+/-!
+# The third object: a BRANCHING pending part
+
+`C3`'s pending part is a forced `2`-cycle and `R4`'s a forced `3`-cycle: inside a pending region
+the object walk over either is determined by the countdown (`objAt_flip`, `objAt_rot`).  The
+object below is the first one of this file whose pending part BRANCHES: the pending state `b0` has
+two distinct pending successors, `b1` and `b2`, the first closing a pending cycle of length `2`
+(`b0 → b1 → b0`) and the second one of length `3` (`b0 → b2 → b3 → b0`).
+
+## What this section compiles
+
+* `B5`, `stepB`, `pendB` — the five-state object: `b0`-`b3` pending, each of which may exit to an
+  idle sink.
+* `branching_pendB` — THE DEFINING PROPERTY: `b0` is pending and steps to two distinct pending
+  states.
+* `two_mem_objCycleLens_B5`, `three_mem_objCycleLens_B5` — both `2` and `3` are pending cycle
+  lengths, so a modulus `P + 1` admitted by `(K1)` for this object is divisible by both.
+* `fwdB`, `bwdB` — the ladder over it is serial in both directions.
+* `gB`, `gB_isLadderPath` — NON-VACUITY: an explicit ladder path, pending at every position `≤ 0`
+  and idle after, whose object walk has period `5` and takes each branch in turn
+  (`gB_takes_both_branches`).
+
+## What this section does NOT settle
+
+It states no relation between ladder states and attempts no refutation and no path forth.  It
+does not say that the object walk inside a pending region is free in any stronger sense than
+`branching_pendB` and `gB_takes_both_branches` record.  The divisibility of `P + 1` is a
+consequence of `(K1)` read at this object, not a parameter condition added anywhere.
+-/
+
+namespace ProbeRowResidue
+
+/-- A five-state object whose pending part branches: from `b0` the walk may take the `2`-cycle
+`b0 → b1 → b0` or the `3`-cycle `b0 → b2 → b3 → b0`; each pending state may exit to the idle
+sink. -/
+inductive B5 : Type
+  | b0 | b1 | b2 | b3 | idle
+  deriving DecidableEq
+
+instance : Fintype B5 := ⟨{B5.b0, B5.b1, B5.b2, B5.b3, B5.idle}, fun x => by cases x <;> simp⟩
+
+def stepB : B5 → B5 → Bool
+  | .b0, .b1 => true
+  | .b0, .b2 => true
+  | .b1, .b0 => true
+  | .b2, .b3 => true
+  | .b3, .b0 => true
+  | .b0, .idle => true
+  | .b1, .idle => true
+  | .b2, .idle => true
+  | .b3, .idle => true
+  | .idle, .idle => true
+  | _, _ => false
+
+def pendB : B5 → Bool
+  | .idle => false
+  | _ => true
+
+/-- **THE PENDING PART BRANCHES**: the pending state `b0` has two DISTINCT pending successors. -/
+theorem branching_pendB :
+    pendB B5.b0 = true ∧ stepB B5.b0 B5.b1 = true ∧ stepB B5.b0 B5.b2 = true ∧
+      B5.b1 ≠ B5.b2 ∧ pendB B5.b1 = true ∧ pendB B5.b2 = true := by
+  decide
+
+/-- `2` is a pending cycle length of `B5`: `b0 → b1 → b0`. -/
+theorem two_mem_objCycleLens_B5 : (2 : ℕ) ∈ objCycleLens stepB pendB := by
+  refine ⟨by omega, by decide, fun i => if i % 2 = 0 then B5.b0 else B5.b1, ?_, ?_, ?_⟩
+  · intro i
+    rcases Nat.mod_two_eq_zero_or_one i with h0 | h1
+    · have h : (i + 1) % 2 = 1 := by omega
+      simp [h0, h, stepB]
+    · have h : (i + 1) % 2 = 0 := by omega
+      simp [h1, h, stepB]
+  · intro i
+    rcases Nat.mod_two_eq_zero_or_one i with h0 | h1 <;> simp [*, pendB]
+  · simp
+
+/-- The walk of the `3`-cycle `b0 → b2 → b3 → b0`, by residue. -/
+def cyc3B (r : ℕ) : B5 :=
+  match r with
+  | 0 => .b0
+  | 1 => .b2
+  | _ => .b3
+
+/-- `3` is a pending cycle length of `B5`: `b0 → b2 → b3 → b0`. -/
+theorem three_mem_objCycleLens_B5 : (3 : ℕ) ∈ objCycleLens stepB pendB := by
+  refine ⟨by omega, by decide, fun i => cyc3B (i % 3), ?_, ?_, ?_⟩
+  · intro i
+    show stepB (cyc3B (i % 3)) (cyc3B ((i + 1) % 3)) = true
+    have h : i % 3 = 0 ∨ i % 3 = 1 ∨ i % 3 = 2 := by omega
+    rcases h with h | h | h
+    · rw [h, show (i + 1) % 3 = 1 by omega]; rfl
+    · rw [h, show (i + 1) % 3 = 2 by omega]; rfl
+    · rw [h, show (i + 1) % 3 = 0 by omega]; rfl
+  · intro i
+    show pendB (cyc3B (i % 3)) = true
+    have h : i % 3 = 0 ∨ i % 3 = 1 ∨ i % 3 = 2 := by omega
+    rcases h with h | h | h <;> rw [h] <;> rfl
+  · rfl
+
+/-- Forward seriality of the ladder over the object. -/
+theorem fwdB : ∀ (t : ℤ) (x : LadderState B5 pendB), ∃ y, RladAdm stepB pendB t x y := by
+  rintro t ⟨⟨q, c, n⟩, hx⟩
+  have hx' : pendB q = false → c = 0 := hx
+  cases q with
+  | idle =>
+    have hc : c = 0 := hx' rfl
+    subst hc
+    exact ⟨⟨(B5.idle, 0, n), fun _ => rfl⟩, rfl, fun _ => rfl, Or.inl rfl, by simp [Count, pendB]⟩
+  | b0 =>
+    cases c with
+    | zero =>
+      exact ⟨⟨(B5.idle, 0, n), fun _ => rfl⟩, rfl, fun h => by simp [pendB] at h, Or.inl rfl,
+        by simp [Count, pendB]⟩
+    | succ c =>
+      exact ⟨⟨(B5.b1, c, n), fun h => by simp [pendB] at h⟩, rfl, fun h => by simp [pendB] at h,
+        Or.inl rfl, by simp [Count, pendB]⟩
+  | b1 =>
+    cases c with
+    | zero =>
+      exact ⟨⟨(B5.idle, 0, n), fun _ => rfl⟩, rfl, fun h => by simp [pendB] at h, Or.inl rfl,
+        by simp [Count, pendB]⟩
+    | succ c =>
+      exact ⟨⟨(B5.b0, c, n), fun h => by simp [pendB] at h⟩, rfl, fun h => by simp [pendB] at h,
+        Or.inl rfl, by simp [Count, pendB]⟩
+  | b2 =>
+    cases c with
+    | zero =>
+      exact ⟨⟨(B5.idle, 0, n), fun _ => rfl⟩, rfl, fun h => by simp [pendB] at h, Or.inl rfl,
+        by simp [Count, pendB]⟩
+    | succ c =>
+      exact ⟨⟨(B5.b3, c, n), fun h => by simp [pendB] at h⟩, rfl, fun h => by simp [pendB] at h,
+        Or.inl rfl, by simp [Count, pendB]⟩
+  | b3 =>
+    cases c with
+    | zero =>
+      exact ⟨⟨(B5.idle, 0, n), fun _ => rfl⟩, rfl, fun h => by simp [pendB] at h, Or.inl rfl,
+        by simp [Count, pendB]⟩
+    | succ c =>
+      exact ⟨⟨(B5.b0, c, n), fun h => by simp [pendB] at h⟩, rfl, fun h => by simp [pendB] at h,
+        Or.inl rfl, by simp [Count, pendB]⟩
+
+/-- Backward seriality of the ladder over the object. -/
+theorem bwdB : ∀ (t : ℤ) (x : LadderState B5 pendB), ∃ y, RladAdm stepB pendB (t - 1) y x := by
+  rintro t ⟨⟨q, c, n⟩, hx⟩
+  have hx' : pendB q = false → c = 0 := hx
+  cases q with
+  | idle =>
+    have hc : c = 0 := hx' rfl
+    subst hc
+    exact ⟨⟨(B5.idle, 0, n), fun _ => rfl⟩, rfl, fun _ => rfl, Or.inl rfl, by simp [Count, pendB]⟩
+  | b0 =>
+    exact ⟨⟨(B5.b1, c + 1, n), fun h => by simp [pendB] at h⟩, rfl, fun h => by simp [pendB] at h,
+      Or.inl rfl, by simp [Count, pendB]⟩
+  | b1 =>
+    exact ⟨⟨(B5.b0, c + 1, n), fun h => by simp [pendB] at h⟩, rfl, fun h => by simp [pendB] at h,
+      Or.inl rfl, by simp [Count, pendB]⟩
+  | b2 =>
+    exact ⟨⟨(B5.b0, c + 1, n), fun h => by simp [pendB] at h⟩, rfl, fun h => by simp [pendB] at h,
+      Or.inl rfl, by simp [Count, pendB]⟩
+  | b3 =>
+    exact ⟨⟨(B5.b2, c + 1, n), fun h => by simp [pendB] at h⟩, rfl, fun h => by simp [pendB] at h,
+      Or.inl rfl, by simp [Count, pendB]⟩
+
+/-- The object walk of the witness path, by residue modulo `5`: the `2`-cycle then the `3`-cycle,
+`b0 → b1 → b0 → b2 → b3 → b0`. -/
+def walkB (r : ℤ) : B5 :=
+  if r = 0 then .b0 else if r = 1 then .b1 else if r = 2 then .b0 else if r = 3 then .b2 else .b3
+
+theorem pendB_walkB (r : ℤ) : pendB (walkB r) = true := by
+  unfold walkB; split_ifs <;> rfl
+
+/-- The non-vacuity witness: pending with countdown `-u` at every position `u ≤ 0`, the object
+walking with period `5` through both branches; idle at every position `u > 0`. -/
+def gB (u : ℤ) : LadderState B5 pendB :=
+  if u ≤ 0 then ⟨(walkB (u % 5), (-u).toNat, 0), fun h => by simp [pendB_walkB] at h⟩
+  else ⟨(B5.idle, 0, 0), fun _ => rfl⟩
+
+/-- **NON-VACUITY**: `gB` is a ladder path over the branching object, at every position. -/
+theorem gB_isLadderPath : IsLadderPath stepB pendB gB := by
+  intro u
+  show Rlad stepB pendB u (gB u).1 (gB (u + 1)).1
+  by_cases h0 : u + 1 ≤ 0
+  · -- both positions pending
+    have hu : u ≤ 0 := by omega
+    have e1 : (gB u).1 = (walkB (u % 5), (-u).toNat, 0) := by unfold gB; rw [if_pos hu]
+    have e2 : (gB (u + 1)).1 = (walkB ((u + 1) % 5), (-(u + 1)).toNat, 0) := by
+      unfold gB; rw [if_pos h0]
+    rw [e1, e2]
+    refine ⟨?_, fun h => by simp [pendB_walkB] at h, Or.inl rfl, ?_⟩
+    · show stepB (walkB (u % 5)) (walkB ((u + 1) % 5)) = true
+      have h : u % 5 = 0 ∨ u % 5 = 1 ∨ u % 5 = 2 ∨ u % 5 = 3 ∨ u % 5 = 4 := by omega
+      rcases h with h | h | h | h | h
+      · rw [h, show (u + 1) % 5 = 1 by omega]; decide
+      · rw [h, show (u + 1) % 5 = 2 by omega]; decide
+      · rw [h, show (u + 1) % 5 = 3 by omega]; decide
+      · rw [h, show (u + 1) % 5 = 4 by omega]; decide
+      · rw [h, show (u + 1) % 5 = 0 by omega]; decide
+    · show Count (pendB (walkB (u % 5))) (pendB (walkB ((u + 1) % 5))) (-u).toNat 0
+        (-(u + 1)).toNat
+      rw [pendB_walkB, pendB_walkB]
+      show (-(u + 1)).toNat + 1 = (-u).toNat
+      omega
+  · by_cases h1 : u ≤ 0
+    · -- the region ends: `u = 0`
+      have hu : u = 0 := by omega
+      subst hu
+      exact ⟨by decide, fun h => by simp [gB, walkB, pendB] at h, Or.inl rfl, by decide⟩
+    · -- both positions idle
+      have e1 : (gB u).1 = (B5.idle, 0, 0) := by unfold gB; rw [if_neg h1]
+      have e2 : (gB (u + 1)).1 = (B5.idle, 0, 0) := by unfold gB; rw [if_neg h0]
+      rw [e1, e2]
+      exact ⟨rfl, fun _ => rfl, Or.inl rfl, by simp [Count, pendB]⟩
+
+/-- **THE WITNESS WALKS THE BRANCH**: `gB` leaves `b0` to `b1` at one position and to `b2` at
+another, so both successors named by `branching_pendB` are taken on one ladder path. -/
+theorem gB_takes_both_branches :
+    objAt gB (-5) = B5.b0 ∧ objAt gB (-4) = B5.b1 ∧ objAt gB (-3) = B5.b0 ∧
+      objAt gB (-2) = B5.b2 := by
+  refine ⟨?_, ?_, ?_, ?_⟩ <;> rfl
+
+/-- The witness is pending with a positive countdown before `0`, so it is not an idle path. -/
+theorem cntAt_gB_neg (k : ℕ) : cntAt gB (-(k : ℤ)) = k := by
+  have h : -(k : ℤ) ≤ 0 := by omega
+  unfold cntAt gB
+  rw [if_pos h]
+  show (- -(k : ℤ)).toNat = k
+  omega
+
+end ProbeRowResidue
+
+/-- info: 'ProbeRowResidue.branching_pendB' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.branching_pendB
+
+/-- info: 'ProbeRowResidue.two_mem_objCycleLens_B5' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.two_mem_objCycleLens_B5
+
+/-- info: 'ProbeRowResidue.three_mem_objCycleLens_B5' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.three_mem_objCycleLens_B5
+
+/-- info: 'ProbeRowResidue.fwdB' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.fwdB
+
+/-- info: 'ProbeRowResidue.bwdB' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.bwdB
+
+/-- info: 'ProbeRowResidue.gB_isLadderPath' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.gB_isLadderPath
+
+/-- info: 'ProbeRowResidue.gB_takes_both_branches' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.gB_takes_both_branches
