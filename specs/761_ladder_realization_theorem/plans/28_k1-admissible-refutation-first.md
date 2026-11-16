@@ -10923,7 +10923,7 @@ wrong**: that is a route question.
 
 ---
 
-### Phase 11.48: ROUTE (R-3) — Refute the Path Forth AT A `(K1)`-ADMISSIBLE MODULUS, on BOTH `R4` and `B5`, BEFORE Any Repaired Relation Is Adopted [NOT STARTED]
+### Phase 11.48: ROUTE (R-3) — Refute the Path Forth AT A `(K1)`-ADMISSIBLE MODULUS, on BOTH `R4` and `B5`, BEFORE Any Repaired Relation Is Adopted [COMPLETED]
 
 **ADDED BY THIS REVISION. THIS IS THE TRUNK, AND ITS DISCIPLINE IS THE USER'S RULING RATHER THAN
 THIS PLAN'S PREFERENCE (Ruling 27, decision 21).** Three relations have now been refuted as the
@@ -10999,34 +10999,34 @@ the order the record's own residual puts them, and the phase tries them in that 
    the option set, so a refutation THERE is strictly stronger and is the honest place to look last.
 
 **Tasks**:
-- [ ] Re-derive Phase 11.47's disposition at entry by **READING `records/round-27-register-coordinate-measurement.md`
+- [x] Re-derive Phase 11.47's disposition at entry by **READING `records/round-27-register-coordinate-measurement.md`
       sections 8–14**, not a marker, and re-grep every declaration those sections call compiled
       (Ruling 25): `LnkRow.of_closed`, `Mrel.threshold_le_Tc`, `Mrel_xR_yR_of_small_modulus`,
       `no_rowLinked_path_of_Mrel_at_small_modulus`, `exists_rowLinked_path_over_Mrel_refuted`.
-- [ ] Re-derive the two fixtures and their admissibility constraints against the live probe before
+- [x] Re-derive the two fixtures and their admissibility constraints against the live probe before
       writing anything: `R4` with `3 ∣ P + 1`, `B5` with `6 ∣ P + 1`, `gB_isLadderPath`,
       `gLad_isLadderPath`, `region_end_agrees_R4`, `region_end_matchable_B5`,
       `register_answerable_R4`, `register_answerable_B5`, `not_Mrel_xR_yR`.
-- [ ] **State, in the record and BEFORE the first attempt, which pair is attacked on each fixture
+- [x] **State, in the record and BEFORE the first attempt, which pair is attacked on each fixture
       and which coordinate the attack is aimed at.** An attack whose target is chosen inside the
       proof cannot be audited, and four rounds have now turned on exactly that.
-- [ ] Attack on `R4` at `3 ∣ P + 1`, lead 1 first. Record the goal state reached whether or not it
+- [x] Attack on `R4` at `3 ∣ P + 1`, lead 1 first. Record the goal state reached whether or not it
       closes.
-- [ ] Attack on `B5` at `6 ∣ P + 1`, leads 2 and 3. **`B5` is NOT optional**: a verdict on `R4`
+- [x] Attack on `B5` at `6 ∣ P + 1`, leads 2 and 3. **`B5` is NOT optional**: a verdict on `R4`
       alone does not discharge decision 21's obligation, by its own closing sentence.
-- [ ] **If a refutation compiles**: land it in the wired probe APPEND ONLY, with its `#print axioms`
+- [ ] **If a refutation compiles**: land it in the wired probe APPEND ONLY, with its `#print axioms` *(deviation: skipped — outcome (b): no refutation compiled on either fixture)*
       guard, the failing coordinate named IN THE STATEMENT'S DOCSTRING, and the obstruction lemma it
       breaks named. Return outcome (a).
-- [ ] **If neither attack refutes**: record both goal states and both stalled coordinates, state
+- [x] **If neither attack refutes**: record both goal states and both stalled coordinates, state
       explicitly that **no refutation was found and the path forth is NOT thereby asserted to be
       provable**, and return outcome (b). The two are different claims and the record says which
       one it is making.
-- [ ] Write `records/round-28-k1-admissible-refutation.md` with the attack targets as stated in
+- [x] Write `records/round-28-k1-admissible-refutation.md` with the attack targets as stated in
       advance, the per-fixture verdicts reported SEPARATELY, and the outcome letter.
-- [ ] Record, in the same place, that Phases 11.39, 11.42, 11.44, 11.45 and 11.47 stay closed or
+- [x] Record, in the same place, that Phases 11.39, 11.42, 11.44, 11.45 and 11.47 stay closed or
       `[PARTIAL]` at their own markers and that **this phase re-marks and writes into none of
       them** (Rulings 17, 21, 24, 26, 28).
-- [ ] Ruling 25's check before committing: every "is compiled" claim names a declaration `grep`
+- [x] Ruling 25's check before committing: every "is compiled" claim names a declaration `grep`
       finds.
 
 **Prohibited workarounds**: do NOT adopt a repaired relation, add a conjunct, raise a threshold or
@@ -11073,7 +11073,7 @@ in the same commit and never split the module.** If the attack needs a THIRD fix
 the estimate was wrong and treat it as a route finding.
 
 **Files to modify**:
-- `specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean` - the refutation theorems and their `#print axioms` guards on outcome (a); untouched on outcome (b). **APPEND ONLY**, 1,599 lines at this revision's authoring, WIRED at `scripts/check-evidence-probes.sh`
+- `specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean` - the refutation theorems and their `#print axioms` guards on outcome (a); untouched on outcome (b). **APPEND ONLY**, 1,599 lines at this revision's authoring, WIRED at `scripts/check-evidence-probes.sh` *(deviation: altered — six MEASUREMENT declarations appended on outcome (b), where the Scope Hypothesis said none; required by Ruling 25 so the record's "is compiled" claims name declarations `grep` finds. Append-only: 287 insertions, 0 deletions. Nothing adopted.)*
 - `specs/761_ladder_realization_theorem/records/round-28-k1-admissible-refutation.md` - NEW: the attack targets stated in advance, the two per-fixture verdicts reported separately, the failing coordinate or the stalled coordinate for each, and the outcome letter
 - `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` - the axiom-profile pins for whatever lands; 71 lines of headroom against the in-source `longFile 3800`, raise the baseline IN PLACE in the same commit if crossed
 - `FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean` - ONE docstring paragraph recording the attack's verdict beside `Mrel`, on outcome (a) only. **15 lines of headroom against the package-wide `longFile 1500` — add the in-source baseline IN PLACE if crossed, never split the module**

@@ -1597,3 +1597,290 @@ end ProbeRowResidue
 /-- info: 'ProbeRowResidue.exists_rowLinked_path_over_Mrel_refuted' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms ProbeRowResidue.exists_rowLinked_path_over_Mrel_refuted
+
+/-!
+## ROUND 28 — THE PATH FORTH ATTACKED AT A `(K1)`-ADMISSIBLE MODULUS
+
+`exists_rowLinked_path_over_Mrel_refuted` above refutes the owed statement with `P` unconstrained,
+and its refutation runs through `P + 1 ≤ 2`, where `not_Mrel_xR_yR` shows the tight pair is no
+longer available once `3 ∣ P + 1`.  This section records an attack on the REMAINING direction: the
+path forth AT a modulus the object admits — `3 ∣ P + 1` on `R4`, `6 ∣ P + 1` on `B5` — attempted
+BEFORE any repaired relation is adopted.
+
+**NOTHING HERE IS A REFUTATION, AND NOTHING HERE ASSERTS THE PATH FORTH.**  Every declaration below
+is a MEASUREMENT of why a refutation attempt does not close, stated so that the round's verdict is
+`grep`-checkable rather than carried in prose.  The attack found no refutation on either fixture;
+that the attack failed is NOT evidence that the path forth is provable, and no such claim is made
+here or anywhere else in this file.
+
+The verdicts, each naming the coordinate its attack stalled on:
+
+* `attackA_stall_countdown` — on `R4` the landed refutation's object-exclusion step FAILS at an
+  admissible modulus.  `not_lnkRow_xR_yR` works because the tight pair's margin of `2` leaves only
+  `t + 1` and `t + 2` able to answer the challenger `t + 3` on the countdown, and they carry `r1`
+  and `r2`.  At the raised threshold the shorter region's own `t + 3` answers: same object (the
+  forced walk has period `3`), and both countdowns above `2 (a + b)`.  **The stalled coordinate is
+  the COUNTDOWN**, and what moved it is the raised threshold's margin.
+* `attackA_mirror_register_joins` — on `R4` the switch of the exhibited answering map JOINS, so the
+  register is not an obstruction either.  `regM`'s two branches fail to meet because its first
+  branch raises the shorter register by `P + 1` while its second copies it unshifted; the register
+  that does join is the shorter path's own register raised by `P + 1` THROUGHOUT, which is a `Drift`
+  walk because the shorter path's is, starts exactly at `yM`'s register, and makes the gap clause
+  hold by EQUALITY at every offset.  **The stalled coordinate is the REGISTER**, and the stall is
+  that no discontinuity is forced.
+* `region_end_matchable_B5_cyc3` — on `B5` the `3`-cycle branch `b0 → b2 → b3 → b0`, which
+  `region_end_matchable_B5` does not exercise (Ruling 23), supplies a splice of its own at
+  `3 ∣ P + 1`.  The attack this answers is real: `spliceB` spends the extra `P + 1` positions in the
+  `2`-cycle, so a shorter walk that never visits `b1` would leave those positions unanswered on the
+  object.  **The stalled coordinate is the OBJECT**, and what moved it is the second half of the
+  admissibility constraint.
+* `avoid_b1_walk_forced` / `avoid_b1_closed_walk_three_dvd` — the boundary of that escape, stated
+  exactly: every closed pending walk at `b0` avoiding `b1` has length divisible by `3`.  So the
+  escape above is available precisely when `3 ∣ P + 1`, which is why `(K1)` — which demands
+  `l ∣ P + 1` for EVERY pending cycle length `l`, and `B5` has both `2` and `3` — yields `6 ∣ P + 1`
+  on this object.  The attack of `region_end_matchable_B5_cyc3` SUCCEEDS at a modulus with
+  `2 ∣ P + 1` and `3 ∤ P + 1`; such a modulus is not `(K1)`-admissible for `B5`.
+* `attackB_past_row_answerable` — on `B5` the PAST row is answered by the identity correspondence.
+  Going back from the pair, both regions lengthen together, so the objects agree at equal offsets
+  while both countdowns and both registers stay above every threshold and both gaps stay `0`.
+  **The stalled coordinate is the COUNTDOWN in the past**, and the stall is that the backward
+  direction is strictly easier than the forward one on this fixture, not harder.
+-/
+
+namespace ProbeRowResidue
+
+open FormalSystem.Metalogic.Decidability.RaySummary
+
+/-- **ATTACK A's STALL ON `R4`, COMPILED — THE COORDINATE IS THE COUNTDOWN.**  At a
+`(K1)`-admissible modulus the step by which `not_lnkRow_xR_yR` excludes every answer fails: the
+shorter region's position `t + 3` carries the SAME object as the challenger `t + 3` of the longer
+region, and both countdowns clear `2 (a + b)`.  This refutes no row link and asserts none; it
+records that the landed refutation's mechanism is unavailable here. -/
+theorem attackA_stall_countdown (P a b : ℕ) (h3 : 3 ∣ P + 1) (hab : 1 ≤ a + b)
+    (h h' : ℤ → LadderState R4 pendR) (hh : IsLadderPath stepR pendR h)
+    (hh' : IsLadderPath stepR pendR h') (t : ℤ) (ht : h t = xM P a b) (ht' : h' t = yM P a b) :
+    objAt h (t + 3) = objAt h' (t + 3) ∧
+      2 * (a + b) ≤ cntAt h (t + 3) ∧ 2 * (a + b) ≤ cntAt h' (t + 3) := by
+  have h3' : 3 ≤ P + 1 := Nat.le_of_dvd (by omega) h3
+  have hCge : 3 * (a + (b + 1)) ≤ (P + 1) * (a + (b + 1)) := Nat.mul_le_mul_right _ h3'
+  have hc : cntAt h t = (P + 1) * (a + (b + 1)) := by unfold cntAt; rw [ht]; rfl
+  have hc' : cntAt h' t = (P + 1) * (a + (b + 1)) + (P + 1) := by unfold cntAt; rw [ht']; rfl
+  have ho : objAt h t = R4.r0 := by unfold objAt; rw [ht]; rfl
+  have ho' : objAt h' t = R4.r0 := by unfold objAt; rw [ht']; rfl
+  have hp : pendR (objAt h t) = true := by rw [ho]; rfl
+  have hp' : pendR (objAt h' t) = true := by rw [ho']; rfl
+  have hcj := (cntAt_sub_of_pend h hh t hp 3 (by omega)).2
+  have hcj' := (cntAt_sub_of_pend h' hh' t hp' 3 (by omega)).2
+  rw [hc] at hcj; rw [hc'] at hcj'
+  have hcast : ((3 : ℕ) : ℤ) = (3 : ℤ) := by norm_num
+  rw [hcast] at hcj hcj'
+  refine ⟨?_, by omega, by omega⟩
+  have e1 := objAt_rot h hh t hp 3 (by omega)
+  have e2 := objAt_rot h' hh' t hp' 3 (by omega)
+  rw [ho] at e1; rw [ho'] at e2
+  rw [hcast] at e1 e2
+  rw [e1, e2]
+
+/-- **LEAD 1's VERDICT ON `R4` — THE SWITCH JOINS.**  The shorter path's own register raised by
+`P + 1` is a `Drift` walk, starts at `yM`'s register, and makes the gap clause hold by EQUALITY at
+every offset of the longer region.  So the discontinuity of `regM` at `j = P → j = P + 1` is a
+property of `regM`, not an obstruction: a register joining the two branches exists for EVERY ladder
+path through `xM`.  This exhibits no row link and asserts none — a row link additionally demands the
+recursive jump structure and the back-matching condition, neither of which is addressed here. -/
+theorem attackA_mirror_register_joins (P a b : ℕ)
+    (h : ℤ → LadderState R4 pendR) (hh : IsLadderPath stepR pendR h) (t : ℤ)
+    (ht : h t = xM P a b) :
+    nxtAt h t + (P + 1) = (yM P a b).1.2.2 ∧
+      (∀ u : ℤ, Drift (nxtAt h u + (P + 1)) (nxtAt h (u + 1) + (P + 1))) ∧
+      (∀ j : ℕ, j ≤ cM P a b →
+        ((nxtAt h (t + (j : ℤ)) + (P + 1) : ℕ) : ℤ)
+            - ((cM P a b + (P + 1) - j : ℕ) : ℤ)
+          = ((nxtAt h (t + (j : ℤ)) : ℕ) : ℤ) - ((cM P a b - j : ℕ) : ℤ)) := by
+  refine ⟨?_, ?_, ?_⟩
+  · unfold nxtAt; rw [ht]; rfl
+  · intro u
+    have hd := (isLadderPath_components h hh u).2.2.1
+    unfold Drift at hd ⊢
+    omega
+  · intro j hj
+    have h1 : ((cM P a b + (P + 1) - j : ℕ) : ℤ) = (cM P a b : ℤ) + ((P : ℤ) + 1) - (j : ℤ) := by
+      have hle : j ≤ cM P a b + (P + 1) := by omega
+      push_cast [Nat.cast_sub hle]; ring
+    have h2 : ((cM P a b - j : ℕ) : ℤ) = (cM P a b : ℤ) - (j : ℤ) := by
+      push_cast [Nat.cast_sub hj]; ring
+    rw [h1, h2]; push_cast; ring
+
+/-! ### Lead 3 on `B5`: the `3`-cycle branch `region_end_matchable_B5` does not exercise -/
+
+/-- The `3`-cycle walk `b0 → b2 → b3 → b0`, indexed by the offset. -/
+def cyc3Bidx (i : ℕ) : B5 := cyc3B (i % 3)
+
+theorem cyc3Bidx_step (i : ℕ) : stepB (cyc3Bidx i) (cyc3Bidx (i + 1)) = true := by
+  unfold cyc3Bidx
+  have h : i % 3 = 0 ∨ i % 3 = 1 ∨ i % 3 = 2 := by omega
+  rcases h with h | h | h
+  · rw [h, show (i + 1) % 3 = 1 by omega]; rfl
+  · rw [h, show (i + 1) % 3 = 2 by omega]; rfl
+  · rw [h, show (i + 1) % 3 = 0 by omega]; rfl
+
+theorem cyc3Bidx_pend (i : ℕ) : pendB (cyc3Bidx i) = true := by
+  unfold cyc3Bidx
+  have h : i % 3 = 0 ∨ i % 3 = 1 ∨ i % 3 = 2 := by omega
+  rcases h with h | h | h <;> rw [h] <;> rfl
+
+/-- The `3`-cycle walk never visits `b1`: it is confined to the OTHER branch. -/
+theorem cyc3Bidx_ne_b1 (i : ℕ) : cyc3Bidx i ≠ B5.b1 := by
+  unfold cyc3Bidx
+  have h : i % 3 = 0 ∨ i % 3 = 1 ∨ i % 3 = 2 := by omega
+  rcases h with h | h | h <;> rw [h] <;> decide
+
+/-- The `3`-cycle splice: spend the extra `P + 1` positions in the `3`-cycle, then copy. -/
+def splice3B (P : ℕ) (w : ℕ → B5) (i : ℕ) : B5 :=
+  if i ≤ P then cyc3Bidx i else w (i - (P + 1))
+
+/-- **LEAD 3's VERDICT ON `B5` — THE OBJECT COORDINATE IS ANSWERED IN THE OTHER BRANCH.**  The
+mirror of `region_end_matchable_B5` for the `3`-cycle: at `3 ∣ P + 1` every pending walk of length
+`L` from `b0` is matched by one of length `L + (P + 1)` ending at the same state whose extra
+positions AVOID `b1` entirely.  This is what answers the attack that `spliceB` invites — a shorter
+walk confined to the `3`-cycle never visits `b1`, so the `2`-cycle splice's `b1` positions would
+have no object-matching partner.  It constructs an object WALK, not a ladder path, and asserts no
+row link. -/
+theorem region_end_matchable_B5_cyc3 {P : ℕ} (h3 : 3 ∣ P + 1) (L : ℕ)
+    (w : ℕ → B5) (hw0 : w 0 = B5.b0)
+    (hstep : ∀ i, i < L → stepB (w i) (w (i + 1)) = true)
+    (hpend : ∀ i, i ≤ L → pendB (w i) = true) :
+    ∃ v : ℕ → B5, v 0 = B5.b0 ∧
+      (∀ i, i < L + (P + 1) → stepB (v i) (v (i + 1)) = true) ∧
+      (∀ i, i ≤ L + (P + 1) → pendB (v i) = true) ∧
+      v (L + (P + 1)) = w L ∧
+      (∀ i, i ≤ P → v i ≠ B5.b1) := by
+  have hP3 : P % 3 = 2 := by omega
+  refine ⟨splice3B P w, ?_, ?_, ?_, ?_, ?_⟩
+  · unfold splice3B; rw [if_pos (Nat.zero_le P)]; rfl
+  · intro i hi
+    unfold splice3B
+    by_cases h1 : i ≤ P
+    · by_cases h2' : i + 1 ≤ P
+      · rw [if_pos h1, if_pos h2']; exact cyc3Bidx_step i
+      · have hiP : i = P := by omega
+        rw [if_pos h1, if_neg (by omega), show i + 1 - (P + 1) = 0 by omega, hw0]
+        show stepB (cyc3B (i % 3)) B5.b0 = true
+        rw [hiP, hP3]; rfl
+    · rw [if_neg h1, if_neg (by omega), show i + 1 - (P + 1) = (i - (P + 1)) + 1 by omega]
+      exact hstep (i - (P + 1)) (by omega)
+  · intro i hi
+    unfold splice3B
+    by_cases h1 : i ≤ P
+    · rw [if_pos h1]; exact cyc3Bidx_pend i
+    · rw [if_neg h1]; exact hpend _ (by omega)
+  · unfold splice3B
+    rw [if_neg (by omega), show L + (P + 1) - (P + 1) = L by omega]
+  · intro i hi
+    unfold splice3B
+    rw [if_pos hi]
+    exact cyc3Bidx_ne_b1 i
+
+/-- A pending walk on `B5` from `b0` that avoids `b1` IS the `3`-cycle walk: the branch is forced
+once `b1` is excluded, because `b0`'s only other pending successor is `b2`, and `b2` and `b3` have
+one pending successor each. -/
+theorem avoid_b1_walk_forced (v : ℕ → B5) (n : ℕ) (hv0 : v 0 = B5.b0)
+    (hstep : ∀ i, i < n → stepB (v i) (v (i + 1)) = true)
+    (hpend : ∀ i, i ≤ n → pendB (v i) = true)
+    (hne : ∀ i, i ≤ n → v i ≠ B5.b1) :
+    ∀ i, i ≤ n → v i = cyc3Bidx i := by
+  intro i
+  induction i with
+  | zero => intro _; rw [hv0]; rfl
+  | succ i ih =>
+    intro hi
+    have hvi : v i = cyc3Bidx i := ih (by omega)
+    have hs := hstep i (by omega)
+    have hp := hpend (i + 1) hi
+    have hb1 := hne (i + 1) hi
+    rw [hvi] at hs
+    unfold cyc3Bidx at hs ⊢
+    have h : i % 3 = 0 ∨ i % 3 = 1 ∨ i % 3 = 2 := by omega
+    rcases h with h | h | h
+    · rw [h] at hs
+      rw [show (i + 1) % 3 = 1 by omega]
+      revert hs hp hb1; cases v (i + 1) <;> simp [stepB, pendB, cyc3B]
+    · rw [h] at hs
+      rw [show (i + 1) % 3 = 2 by omega]
+      revert hs hp hb1; cases v (i + 1) <;> simp [stepB, pendB, cyc3B]
+    · rw [h] at hs
+      rw [show (i + 1) % 3 = 0 by omega]
+      revert hs hp hb1; cases v (i + 1) <;> simp [stepB, pendB, cyc3B]
+
+/-- **THE ADMISSIBILITY BOUNDARY ON `B5`, COMPILED.**  Every closed pending walk at `b0` avoiding
+`b1` has length divisible by `3`.  So the escape `region_end_matchable_B5_cyc3` supplies exists
+EXACTLY when `3 ∣ P + 1`: at a modulus with `2 ∣ P + 1` and `3 ∤ P + 1` a shorter walk confined to
+the `3`-cycle admits no matching longer walk confined to the objects it visits, and lead 3's attack
+would succeed.  Such a modulus is not `(K1)`-admissible for `B5`, `3` being a pending cycle length
+of it (`three_mem_objCycleLens_B5`).  This is why the admissible modulus here is `6 ∣ P + 1` and not
+`2 ∣ P + 1`: the constraint is not slack. -/
+theorem avoid_b1_closed_walk_three_dvd (v : ℕ → B5) (n : ℕ) (hv0 : v 0 = B5.b0)
+    (hstep : ∀ i, i < n → stepB (v i) (v (i + 1)) = true)
+    (hpend : ∀ i, i ≤ n → pendB (v i) = true)
+    (hne : ∀ i, i ≤ n → v i ≠ B5.b1) (hvn : v n = B5.b0) : 3 ∣ n := by
+  have hw := avoid_b1_walk_forced v n hv0 hstep hpend hne n le_rfl
+  rw [hvn] at hw
+  unfold cyc3Bidx cyc3B at hw
+  have h : n % 3 = 0 ∨ n % 3 = 1 ∨ n % 3 = 2 := by omega
+  rcases h with h | h | h
+  · omega
+  · rw [h] at hw; exact absurd hw (by decide)
+  · rw [h] at hw; exact absurd hw (by decide)
+
+/-- **LEAD 2's VERDICT ON `B5` — THE PAST ROW IS ANSWERED BY THE IDENTITY CORRESPONDENCE.**  At
+every position before the `Mrel` pair of `Mrel_gLad` the two states are `Zrel`-related at every
+budget: both regions lengthen together going back, so the objects agree at equal offsets, both
+countdowns and both registers stay above every threshold, and both gaps stay `0`.  The backward
+direction of the row link is therefore strictly easier than the forward one on this fixture.  This
+is a statement about the two paths' PAST STATES; it is not a `BwdJump` and not a row link. -/
+theorem attackB_past_row_answerable (P a b : ℕ) (h6 : 6 ∣ P + 1) (t : ℤ) (k : ℕ) :
+    Zrel a b (gLad (cM P a b + (P + 1)) t (t - (k : ℤ))) (gLad (cM P a b) t (t - (k : ℤ))) := by
+  have h6' : 6 ≤ P + 1 := Nat.le_of_dvd (by omega) h6
+  have hCge : 6 * (a + (b + 1)) ≤ (P + 1) * (a + (b + 1)) := Nat.mul_le_mul_right _ h6'
+  have hCbig : 2 * (a + b) ≤ cM P a b := by unfold cM; omega
+  have e1 : gLad (cM P a b + (P + 1)) t (t - (k : ℤ)) =
+      ⟨(cyc2Bz (t - (k : ℤ) - t), cM P a b + (P + 1) + k, cM P a b + (P + 1) + k),
+        fun hq => by simp [cyc2Bz_pend] at hq⟩ := by
+    unfold gLad; rw [if_pos (by omega)]
+    apply Subtype.ext
+    simp only [Prod.mk.injEq]
+    refine ⟨trivial, ?_, ?_⟩ <;> omega
+  have e2 : gLad (cM P a b) t (t - (k : ℤ)) =
+      ⟨(cyc2Bz (t - (k : ℤ) - t), cM P a b + k, cM P a b + k),
+        fun hq => by simp [cyc2Bz_pend] at hq⟩ := by
+    unfold gLad; rw [if_pos (by omega)]
+    apply Subtype.ext
+    simp only [Prod.mk.injEq]
+    refine ⟨trivial, ?_, ?_⟩ <;> omega
+  rw [e1, e2]
+  refine ⟨rfl, Or.inr ⟨?_, ?_⟩, Or.inr ⟨?_, ?_⟩, Or.inl ?_⟩ <;> dsimp only <;> omega
+
+end ProbeRowResidue
+
+/-- info: 'ProbeRowResidue.attackA_stall_countdown' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.attackA_stall_countdown
+
+/-- info: 'ProbeRowResidue.attackA_mirror_register_joins' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.attackA_mirror_register_joins
+
+/-- info: 'ProbeRowResidue.region_end_matchable_B5_cyc3' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.region_end_matchable_B5_cyc3
+
+/-- info: 'ProbeRowResidue.avoid_b1_walk_forced' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.avoid_b1_walk_forced
+
+/-- info: 'ProbeRowResidue.avoid_b1_closed_walk_three_dvd' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.avoid_b1_closed_walk_three_dvd
+
+/-- info: 'ProbeRowResidue.attackB_past_row_answerable' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.attackB_past_row_answerable
