@@ -1,26 +1,30 @@
 {
-  "status": "implemented",
-  "dispatch_seq": 81,
+  "status": "partial",
+  "dispatch_seq": 82,
   "phases_completed": 59,
   "phases_total": 73,
-  "summary": "Phase 11.48 (route R-3, Ruling 27 'attack before adopt') executed and closed [COMPLETED]. The path forth was attacked at a (K1)-admissible modulus on BOTH fixtures -- R4 under 3 | P+1 and the branching B5 under 6 | P+1 -- before any repaired relation was adopted; nothing was adopted, repaired, or re-marked. Outcome is (b): no refutation found on either fixture, with the stalled coordinate named and compiled for each (R4: countdown, then register; B5: countdown-in-the-past, then object). Six append-only measurement declarations landed in the wired probe, all [propext, Quot.sound]; full build 2,976 jobs and BimodalTest 3,044 jobs, zero errors; all 65 wired probes compile. Phase 11.49 (route R-2) is thereby licensed and was deliberately NOT entered.",
-  "blockers": [],
+  "summary": "Phase 11.49 executed route (R-2), the user-answered decision 21: the object half of (K1) alone as a hypothesis of exists_rowLinked_path. The entry gate was re-derived by reading round-28's record (outcome (b)), the repaired signature was written into the record before it was attempted with its diff against the owed one, and the bridge objHalfK1_of_paramsOk landed so the added hypothesis is dischargeable at the periodicity fixpoint's own parameters. Count move 1 (exists_lengthened_region) landed with its register offset stated in the conclusion, and Zrel.forall_iff_eq shows the budget cannot be stripped from the scaffold's relation. exists_rowLinked_path did NOT close: the stall is LnkRow.of_closed's hfw/hbw jump clauses and the coordinate is the register, with the goal state recorded verbatim.",
+  "blockers": [
+    "exists_rowLinked_path did not close. LnkRow.of_closed instantiates cleanly at S k m s s' := Mrel P k m (h s) (h' s') and its soundness clause is Mrel.toZrel outright, so the two jump clauses are the whole content. The splice correspondence spliceEmb transports the object perfectly and the countdown in a stated two-regime way, but exists_ladderPath_of_walk -- which every splice in the library factors through -- concludes objAt and cntAt only, while Zrel reads the register in two of its four clauses at every matched pair.",
+    "Newly stated seam obstruction: gap-preservation by equality demands the register raised by l below the splice seam and unraised above it, at ADJACENT positions; Drift permits a change of at most one per step, so for l >= 2 no register walk meets both. Whether Zrel's threshold disjuncts cover the l-step transition is open and claimed neither way.",
+    "Second coordinate, reported not repaired: count move 1 carries Fintype.card Q <= cntAt g t (the pigeonhole's room for exists_objCycle_of_card_le_cnt). Mrel supplies (P+1)*(a+b) and the added hypothesis supplies l | P+1 for the object's cycle lengths; neither forces P+1 >= Fintype.card Q. Adding a second hypothesis is outside decision 21's authorization, so it is named for the next revision to route.",
+    "Count moves 2 and 3 (cascade through the cap; insert a region in a tight chain) and the untl corollary were not reached, per the phase's own one-dispatch stop rule."
+  ],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/28_k1-admissible-refutation-first-summary.md",
-      "summary": "Phase 11.48 implementation summary: route (R-3), outcome (b), per-fixture verdicts and the three recorded plan deviations."
+      "path": "specs/761_ladder_realization_theorem/summaries/28_object-half-k1-count-move-summary.md",
+      "summary": "Phase 11.49 implementation summary: what landed, the deviations, and the stalling coordinate."
     },
     {
       "type": "record",
       "path": "specs/761_ladder_realization_theorem/records/round-28-k1-admissible-refutation.md",
-      "summary": "Round-28 record: attack targets stated in advance of the first attempt, R4 goal state verbatim, R4 and B5 verdicts reported separately, outcome letter (b), Ruling 25 check."
+      "summary": "Sections 10-16: the entry gate re-derived, the repaired signature stated in advance with its statement-fidelity diff, the bridge, the mechanical checks, the goal state verbatim, and the covered fragment."
     },
     {
-      "type": "evidence",
-      "path": "specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean",
-      "summary": "Append-only (287 insertions, 0 deletions): attackA_stall_countdown, attackA_mirror_register_joins, region_end_matchable_B5_cyc3, avoid_b1_walk_forced, avoid_b1_closed_walk_three_dvd, attackB_past_row_answerable, each with an inline #print axioms guard."
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/28_k1-admissible-refutation-first.md",
+      "summary": "Phase 11.49 marked [PARTIAL] with its blocker record and inline deviation annotations."
     }
-  ],
-  "next_action": "Phase 11.49 (route R-2) is licensed by this phase's outcome (b): add ONLY the object half of (K1) -- 'forall l in objCycleLens step pend, l | (P + 1)' -- as a hypothesis of exists_rowLinked_path, keeping the row-link layer free of lab and phi, and record the bridge from that condition to ParamsOk. avoid_b1_closed_walk_three_dvd is direct evidence that the hypothesis must quantify over EVERY pending cycle length, not one. LnkRow.of_closed is the inherited tool and must not be re-derived (Ruling 29); (K2)'s margin is settled (Ruling 30). Note that this round addressed the Zrel clauses at exhibited pairs only -- the recursive jump structure and the back-matching condition remain untouched and are 11.49's real work."
+  ]
 }

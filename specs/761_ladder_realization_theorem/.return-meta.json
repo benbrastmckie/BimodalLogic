@@ -1,5 +1,7 @@
 {
-  "status": "implemented",
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "Phase 11.49 executed route (R-2) and landed the bridge, count move 1 and the budget-essentiality lemma, but exists_rowLinked_path did not close. The phase's own one-dispatch stop rule fired. The stalling clause is LnkRow.of_closed's hfw/hbw jump clauses and the coordinate is the register; count moves 2 and 3 and the untl corollary are untouched. A second coordinate (Fintype.card Q <= cntAt g t, count move 1's pigeonhole room) is NOT supplied by Mrel plus the object half of (K1), and is reported rather than repaired because adding a second hypothesis is outside decision 21's authorization.",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
@@ -10,33 +12,37 @@
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/28_k1-admissible-refutation-first-summary.md",
-      "summary": "Phase 11.48 (route R-3): the path forth attacked at a (K1)-admissible modulus on both R4 and B5; outcome (b), no refutation found, nothing adopted."
+      "path": "specs/761_ladder_realization_theorem/summaries/28_object-half-k1-count-move-summary.md",
+      "summary": "Route (R-2): the object half of (K1) added with its ParamsOk bridge landed; count move 1 landed with the register offset stated; exists_rowLinked_path did not close and the stalling clause is recorded."
     },
     {
       "type": "record",
       "path": "specs/761_ladder_realization_theorem/records/round-28-k1-admissible-refutation.md",
-      "summary": "Attack targets stated in advance, the R4 goal state verbatim, per-fixture verdicts reported separately, outcome letter (b), Ruling 25 check."
+      "summary": "Sections 10-16: entry gate, repaired signature stated in advance with its diff, the bridge, mechanical checks, what landed, the goal state verbatim, the stalling coordinate, the covered fragment."
     }
   ],
-  "completion_data": {
-    "completion_summary": "Phase 11.48 executed as route (R-3): the path forth was attacked at a (K1)-admissible modulus on BOTH R4 (3 | P+1) and B5 (6 | P+1) before any repaired relation was adopted. Outcome (b): no refutation was found on either fixture, with the coordinate each attack stalled on named and compiled -- six append-only measurement declarations in the wired probe, all [propext, Quot.sound]. Phase 11.49 (route R-2) is thereby licensed and was not entered; the path forth is NOT asserted to be provable.",
-    "roadmap_items": []
+  "partial_progress": {
+    "stage": "phase_11.49_partial",
+    "details": "Items 1 (signature recorded) and 2 (bridge) complete; item 3 one of three count moves; items 1's path forth and item 4's untl corollary not closed.",
+    "phases_completed": 59,
+    "phases_total": 73
   },
   "modified_files": [
-    "specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "typst/generated/status.typ",
     "specs/761_ladder_realization_theorem/plans/28_k1-admissible-refutation-first.md",
     "specs/761_ladder_realization_theorem/records/round-28-k1-admissible-refutation.md",
-    "specs/761_ladder_realization_theorem/summaries/28_k1-admissible-refutation-first-summary.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl"
+    "specs/761_ladder_realization_theorem/summaries/28_object-half-k1-count-move-summary.md"
   ],
   "metadata": {
     "session_id": "sess_1794844360_ab750d",
     "agent_type": "lean-implementation-agent",
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "dispatch_seq": 81,
-    "compliance_check": "passed",
-    "phase": "11.48",
-    "outcome_letter": "b"
+    "dispatch_seq": 82,
+    "compliance_check": "passed"
   }
 }
