@@ -3531,4 +3531,42 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 #print axioms cellAt_eq_of_Zrel
 
 
+/-! ### The row link (`RaySummary/LadderStepFrag.lean`)
+
+`LnkRow a b g g' t t'` is the relation the two jump clauses of `PlusTruthAt` read; `LnkRow.symm`,
+`LnkRow.mono` and `LnkRow.toLnk` are its symmetry, its monotonicity in the budgets and its
+restriction to the window link; `exists_rowLinked_path_zero` is the `⊡` clause against it at the
+budget `(0, 0)`.
+
+What is NOT pinned here because it is not declared: the `untl` and `snce` clauses of a truth lemma
+over `LnkRow`, and the path forth with a whole-row correspondence at a positive budget. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.LnkRow' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms LnkRow
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.LnkRow.symm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms LnkRow.symm
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.LnkRow.mono' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms LnkRow.mono
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.LnkRow.toLnk' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms LnkRow.toLnk
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_rowLinked_path_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms exists_rowLinked_path_zero
+
+
 end BimodalTest.Metalogic

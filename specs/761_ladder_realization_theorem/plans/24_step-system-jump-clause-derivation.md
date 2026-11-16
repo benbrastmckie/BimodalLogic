@@ -8783,7 +8783,7 @@ probe's two-state fixture section (`Qc`, `pendC`, `stepC`, `labC`, `sigC` and th
 
 ---
 
-### Phase 11.38: The Two Jump Clauses' Statement Layer, `⊡`-Free Level First [IN PROGRESS]
+### Phase 11.38: The Two Jump Clauses' Statement Layer, `⊡`-Free Level First [COMPLETED WITH EXCLUSIONS]
 
 **ADDED BY THIS REVISION, AND IT IS THE TRUNK'S FIRST PHASE (Ruling 12).** What is owed is
 `exists_linked_path` with a WHOLE-ROW correspondence in place of the window. The research round's
@@ -8828,21 +8828,21 @@ history at every state and multiplies the correspondence obligation. Phase 11.40
 and only after Phase 11.39 has closed the one-history case.
 
 **Tasks**:
-- [ ] Re-read `truth_iff_of_lnk` (`:595`) and `exists_linked_path` (`:382`) in the promoted module
+- [x] Re-read `truth_iff_of_lnk` (`:595`) and `exists_linked_path` (`:382`) in the promoted module
       and record the exact point at which the window is consumed. **Quote the goal state from the
-      live tree rather than from this plan.**
-- [ ] Define `LnkRow` and compile its symmetry, monotonicity and `LnkRow → Lnk` lemmas.
-- [ ] Restate the `⊡` clause against `LnkRow` and compile it. **If it does not go through, that is
+      live tree rather than from this plan.** *(completed — goal read by `lean_goal` at the `untl` case, quoted in the record, section 1)*
+- [x] Define `LnkRow` and compile its symmetry, monotonicity and `LnkRow → Lnk` lemmas. *(completed — `LnkRow a b g g' t t'` is two-positioned; `LnkRow.symm`, `LnkRow.mono`, `LnkRow.zero`, `LnkRow.succ`, `LnkRow.pred`, `LnkRow.toLnk` compiled)*
+- [x] Restate the `⊡` clause against `LnkRow` and compile it. **If it does not go through, that is
       a finding about the row correspondence's shape and the phase records it rather than weakening
-      the relation to fit.**
-- [ ] Write the two jump clauses' signatures into the module docstring and into
+      the relation to fit.** *(deviation: altered — compiled at the budget `(0, 0)` only, `exists_rowLinked_path_zero`; at a positive budget the restated clause IS the path forth with a whole-row correspondence, which this phase is prohibited from attempting, and with the hypothesis `Zrel a b` it is expected false by `mixC_mem`/`mixC_not_mem`; recorded as the finding this task names, record sections 3 and 5, relation not weakened)*
+- [x] Write the two jump clauses' signatures into the module docstring and into
       `records/round-24-jump-clause-statements.md`, each with: what it must deliver, which of
       `(K1)`'s modulus and `(K2)`'s margin it is expected to consume, and the count-move move it
       corresponds to (lengthen a region; cascade through the cap; insert a region in a tight
-      chain).
-- [ ] Record, in the same file, the three facts that bound what the trunk can claim: the whole-
+      chain). *(completed — module docstring and record section 4; the path forth's state relation `S a b` is left unfixed, candidate `Zrel (a + b + 1) (a + b)`)*
+- [x] Record, in the same file, the three facts that bound what the trunk can claim: the whole-
       language upper bound is a CONJECTURE; the step-fragment bound is PROVED AND TIGHT; and
-      `thetaC`/`mixC` each use ONE JUMP and are therefore outside everything compiled so far.
+      `thetaC`/`mixC` each use ONE JUMP and are therefore outside everything compiled so far. *(completed — record section 5)*
 
 **Prohibited workarounds**: do NOT attempt either jump clause in this phase; do NOT state a clause
 with a `sorry` body in a library module; do NOT weaken `LnkRow` to whatever makes a clause
