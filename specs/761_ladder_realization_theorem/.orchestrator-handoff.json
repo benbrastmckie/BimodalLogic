@@ -1,19 +1,36 @@
 {
-  "status": "partial",
+  "task_number": 761,
   "phase": "implement",
-  "dispatch_seq": 76,
-  "summary": "Phase 11.43 of plan v26 completed with outcome (a) and committed (04339ef38): the branching-pending fixture B5 is appended to the wired probe with branching_pendB, both objCycleLens memberships (2 and 3), fwdB/bwdB and the explicit non-vacuity path gB (gB_isLadderPath, taking both branches). No relation stated, no refutation attempted, no library module edited; full guarded build, evidence gate (65 wired, unchanged) and verify-deploy all exit 0. Phase 11.44 is licensed.",
+  "dispatch_seq": 78,
+  "status": "partial",
+  "phases_completed": 56,
+  "phases_total": 69,
+  "summary": "Phase 11.44 (route N-1, decision 19) implemented and returned its plan-defined outcome (c). The object-dependent threshold relation Mrel := Srel plus the countdown clause at threshold (P+1)*(a+b) is landed in LadderStepFrag.lean with Mrel.toSrel/toZrel/refl/symm/mono, axiom-pinned, and both owed refutation attacks were carried out on both fixtures: NEITHER broke the relation, and the reason each cannot is compiled in the wired probe (not_Mrel_xR_yR, Mrel_xM_yM, region_end_agrees_R4, region_end_matchable_B5; 223 insertions, 0 deletions, append-only). The LENGTHEN-A-REGION path forth did not compile within the bounded round, so this is outcome (c), the phase is [PARTIAL], and Phase 11.45 is NOT licensed. Full build, BimodalTest, all 65 wired probes, module invariants, readme-lint and verify-deploy all pass; zero sorries, zero new axioms.",
+  "blockers": [
+    "Outcome (c) does not license Phase 11.45; the plan states a /revise is owed on the round-26 verdict record before any further implement dispatch on this route.",
+    "The one unmeasured coordinate is the REGISTER at an intermediate position of the longer region: Zrel at the budget left reads the gap n - c inside a window of 2(a+b)+1 values, and neither Mrel nor either obstruction lemma constrains it there. Attack 1 settled the countdown coordinate, attack 2 the object coordinate.",
+    "Decision 19's premise about the branching fixture cuts against a refutation rather than for one: branching enlarges the second path's option set, so B5 cannot supply the obstruction the attack was aimed at. That is compiled (region_end_matchable_B5), and a revision should re-aim the fixture class rather than retry it."
+  ],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/26_object-dependent-threshold-refutation-first-summary.md",
-      "summary": "Dispatch 76: Phase 11.43 outcome (a), fixture B5 landed in the wired probe; 56 of 69 phase headings closed; Phase 11.44 licensed."
+      "path": "specs/761_ladder_realization_theorem/summaries/26_threshold-relation-attacks-summary.md",
+      "summary": "Phase 11.44 implementation summary: outcome (c), both attacks, what was compiled and what was not."
+    },
+    {
+      "type": "record",
+      "path": "specs/761_ladder_realization_theorem/records/round-26-threshold-relation-verdict.md",
+      "summary": "Round 26 verdict section 2: the relation in full, the two attacks separately, and the path forth's goal state written out."
+    },
+    {
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/26_object-dependent-threshold-refutation-first.md",
+      "summary": "Phase 11.44 marked [PARTIAL] with its checklist annotated for the two unreached outcome branches."
     }
   ],
-  "phases_completed": 56,
-  "phases_total": 69,
-  "blockers": [],
-  "next_action_hint": "Dispatch Phase 11.44 (threshold relation Mrel, refutation attempt FIRST on R4 and on B5; B5 statements carry 6 | P+1 as a hypothesis). No /revise is owed by this phase.",
-  "git_checkpoint": "04339ef38",
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.43-handoff-20261116T151500Z.md"
+  "user_decision": {
+    "blocking": false,
+    "question": "Phase 11.44 returned outcome (c): Mrel survived both owed refutation attacks (neither broke it, and both reasons are compiled) but the path forth did not compile, so nothing licenses Phase 11.45. The plan calls for a /revise. The round also found that decision 19's branching-fixture premise argues against a refutation rather than for one. How should the route proceed?",
+    "recommendation": "Revise onto a bounded MEASUREMENT round on the register coordinate at the Mrel pair -- the one coordinate of the three that no round has measured, and a measurement rather than a fourth relation (which this plan prohibits designing inside a round). The countdown coordinate is settled by region_end_agrees_R4 and the object coordinate by region_end_matchable_B5; the register is where both attacks stop and where the path forth's FwdJump/BwdJump conjuncts would have to be argued."
+  }
 }
