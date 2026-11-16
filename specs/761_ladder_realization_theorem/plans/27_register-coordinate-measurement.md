@@ -10843,7 +10843,7 @@ wrong**: that is a route question.
 
 ---
 
-### Phase 11.47: CONDITIONAL — The `LnkRow` Recursive-Induction Scaffold, `exists_rowLinked_path`, and the `untl` Clause [NOT STARTED]
+### Phase 11.47: CONDITIONAL — The `LnkRow` Recursive-Induction Scaffold, `exists_rowLinked_path`, and the `untl` Clause [IN PROGRESS]
 
 **ADDED BY THIS REVISION (Ruling 24), AND IT IS THE FOURTH PHASE TO CARRY THIS DELIVERABLE.** Phase
 11.39 was blocked owing it over `Zrel`; Phase 11.42 closed by exclusion owing it over `Srel`; Phase

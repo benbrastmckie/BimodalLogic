@@ -203,3 +203,68 @@ fixtures (`R4`, `B5`) that do not exist in the library; consequently no axiom-pr
 and `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` was **not touched**, so its nine-line
 `longFile` headroom was not spent. `LadderStepFrag.lean` went from 1,368 to 1,396 lines, inside the
 package-wide `longFile 1500`, so no in-source baseline was added.
+
+---
+
+# Phase 11.47 — the `LnkRow` recursive-induction scaffold
+
+## 8. Entry gate, re-derived (not read off a marker)
+
+Section 5 above records **outcome (b)**, read here from this record's own text and not from any
+phase marker. Every declaration section 7 calls compiled was re-grepped at this phase's entry
+with `grep -rnE '(theorem|lemma|def|abbrev) +<name>\b' FormalSystem/ Tests/ specs/evidence/`:
+`nxt_ge_sub` (`ladder-row-link-residue-obstruction.lean:1091`), `gap_mono_of_pend` (`:1109`),
+`regM` (`:1141`), `longer_region_forced` (`:1178`), `register_answerable_R4` (`:1209`),
+`exists_path_through_xM` (`:1290`), `gLad_isLadderPath` (`:1328`), `Mrel_gLad` (`:1385`),
+`register_answerable_B5` (`:1433`). All found. Ruling 25 discharged at entry.
+
+The library inventory was re-derived the same way, against
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean`:
+
+| Declaration | Line | What it already carries |
+|---|---|---|
+| `Zrel` | 201 | object equal; countdowns equal or both `≥ 2(a+b)`; registers equal or both `≥ 2(a+b)`; gaps equal, or both `≥ 2a`, or both `≤ -(2b+2)` |
+| `Zrel.succ` / `Zrel.pred` | 223 / 312 | the one-step closure conditions, forward and backward |
+| `exists_path_through` | 438 | a ladder path through any state at any position, from the two seriality hypotheses |
+| `Lnk` | 469 | the WINDOW link: `Zrel` at `t+i` for `-a ≤ i ≤ b`, at the budget left |
+| `exists_linked_path` | 503 | the path forth **at the window level**, by two `Nat` inductions |
+| `FwdJump` / `BwdJump` | 612 / 617 | the jump conditions, with their back-matching clause |
+| `FwdJump.mono` / `BwdJump.mono` | 621 / 629 | relation-monotonicity of both jump conditions |
+| `LnkRow` | 642 | the ROW link, by well-founded recursion on `a + b` |
+| `LnkRow.zero/.symm/.mono/.succ/.pred/.toLnk` | 653–713 | projections and budget monotonicity |
+| `exists_rowLinked_path_zero` | 750 | the path forth at budget `(0,0)` ONLY — `LnkRow 0 0` |
+| `truth_iff_of_lnkRow` | 1129 | the whole `⊡`-free truth lemma over the row link, `untl` and `snce` cases included |
+| `Srel` / `Mrel` | 1255 / 1338 | the residue-carrying and threshold-carrying state relations |
+
+`LadderPump` / `LadderChain`: re-derived by `grep` at this phase's entry — see section 11.
+
+## 9. The induction's invariant and its closure property, STATED BEFORE THE ATTEMPT
+
+`LnkRow a b g g' t t'` is a well-founded recursion on `a + b` whose unfolding is a conjunction of
+(i) `Zrel a b (g t) (g' t')` and (ii) four jump conditions, each over `LnkRow` at a budget one
+smaller. Nothing in the tree derives (ii) at a positive budget. The invariant that does is a
+BUDGET-INDEXED POSITION RELATION, carried abstractly so the induction can be audited:
+
+> **Invariant.** A family `S : ℕ → ℕ → ℤ → ℤ → Prop`, read as "position `t` of `g` and position
+> `t'` of `g'` answer each other at the budget `(a, b)".
+
+> **Closure property (three clauses, and they are exactly the three conjuncts of `LnkRow`):**
+> 1. **soundness** — `S a b t t' → Zrel a b (g t) (g' t')`;
+> 2. **forward closure** — `S a (b+1) t t'` implies `FwdJump (S a b) t t'` AND
+>    `FwdJump (flip (S a b)) t' t`;
+> 3. **backward closure** — `S (a+1) b t t'` implies `BwdJump (S a b) t t'` AND
+>    `BwdJump (flip (S a b)) t' t`.
+
+> **Conclusion.** `S a b t t' → LnkRow a b g g' t t'`, for EVERY `(a, b)`, positive included.
+
+The induction is `Nat.strong_induction_on` on `a + b`, mirroring `LnkRow.symm` and `LnkRow.mono`;
+`FwdJump.mono` and `BwdJump.mono` transport the induction hypothesis under the jump conditions and
+are re-used rather than re-proved. At `(0,0)` both jump clauses are vacuous and the conclusion is
+`Zrel 0 0`, which is what `exists_rowLinked_path_zero` already supplies — that lemma is the base
+case of the CONSUMER (`exists_rowLinked_path`), not of the scaffold, whose own base case is the
+vacuity of clauses 2 and 3.
+
+This is deliberately a COINDUCTION-SHAPED principle: it converts "build the whole row
+correspondence" into "exhibit one relation and check it is closed under both jumps". It adds no
+hypothesis to `LnkRow`, weakens nothing, and is positionwise in neither direction — its conclusion
+is a `LnkRow` at an arbitrary budget, read from the signature.

@@ -1393,4 +1393,58 @@ claimed about the clip, about `ladderLift`, or about `cellAt_const_of_kappa_eq`.
 
 end Threshold
 
+/-! ### The recursive-induction scaffold for the row link
+
+`LnkRow` unfolds, at every budget, into a state relation and four jump conditions over `LnkRow`
+at a smaller budget.  Nothing above derives one at a POSITIVE budget: `exists_rowLinked_path_zero`
+lands the budget `(0, 0)` case, where both jump clauses are vacuous, and `LnkRow.mono`,
+`LnkRow.succ` and `LnkRow.pred` only ever consume one.  The scaffold below is the missing
+direction, and it is deliberately coinduction-shaped: it converts "build the whole row
+correspondence" into "exhibit a budget-indexed relation between POSITIONS and check it is closed
+under both jumps".
+-/
+
+section Scaffold
+
+variable {Q : Type} {pend : Q → Bool}
+
+/-- **THE INDUCTION SCAFFOLD FOR THE ROW LINK.**  A budget-indexed relation between a position of
+`g` and a position of `g'` which is sound for `Zrel` and closed under both jump conditions, in
+both directions, entails the row link at EVERY budget — positive budgets included.
+
+The three hypotheses are exactly the three conjuncts of `LnkRow`'s own unfolding, with `S` in
+place of the recursive occurrence; the induction is on `a + b`, as `LnkRow`'s definition is, and
+`FwdJump.mono` / `BwdJump.mono` transport the induction hypothesis under the jump conditions.
+At `a + b = 0` the second and third hypotheses are never invoked and the conclusion is the state
+relation alone, which is the content of `exists_rowLinked_path_zero`.
+
+Nothing here is positionwise: `S` relates a position of one row to a position of the other, the
+two need not be at the same distance from their anchors, and the conclusion is read off the
+signature as a `LnkRow` at the quantified budget. -/
+theorem LnkRow.of_closed {g g' : ℤ → LadderState Q pend} (S : ℕ → ℕ → ℤ → ℤ → Prop)
+    (hzr : ∀ a b t t', S a b t t' → Zrel a b (g t) (g' t'))
+    (hfw : ∀ a b t t', S a (b + 1) t t' →
+      FwdJump (fun s s' => S a b s s') t t' ∧ FwdJump (fun s' s => S a b s s') t' t)
+    (hbw : ∀ a b t t', S (a + 1) b t t' →
+      BwdJump (fun s s' => S a b s s') t t' ∧ BwdJump (fun s' s => S a b s s') t' t)
+    (a b : ℕ) (t t' : ℤ) (h : S a b t t') : LnkRow a b g g' t t' := by
+  induction hn : a + b using Nat.strong_induction_on generalizing a b t t' with
+  | _ n ih =>
+    rw [LnkRow]
+    refine ⟨hzr _ _ _ _ h, fun b₀ hb₀ => ?_, fun a₀ ha₀ => ?_⟩
+    · subst hb₀
+      have hIH : ∀ u v : ℤ, S a b₀ u v → LnkRow a b₀ g g' u v :=
+        fun u v hS => ih (a + b₀) (by omega) _ _ _ _ hS rfl
+      obtain ⟨h1, h2⟩ := hfw a b₀ t t' h
+      exact ⟨FwdJump.mono (fun s s' hS => hIH _ _ hS) h1,
+        FwdJump.mono (fun s s' hS => hIH _ _ hS) h2⟩
+    · subst ha₀
+      have hIH : ∀ u v : ℤ, S a₀ b u v → LnkRow a₀ b g g' u v :=
+        fun u v hS => ih (a₀ + b) (by omega) _ _ _ _ hS rfl
+      obtain ⟨h1, h2⟩ := hbw a₀ b t t' h
+      exact ⟨BwdJump.mono (fun s s' hS => hIH _ _ hS) h1,
+        BwdJump.mono (fun s s' hS => hIH _ _ hS) h2⟩
+
+end Scaffold
+
 end FormalSystem.Metalogic.Decidability.RaySummary
