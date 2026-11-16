@@ -15,7 +15,7 @@ Dispatch 76 implemented Phase 11.43 of plan v26 (route (N-1), decision 19) and n
 phase's outcome is **(a) — THE FIXTURE LANDS**: the branching-pending object `B5` is compiled in
 the wired probe with its branch lemma, both pending cycle lengths, two-sided seriality and an
 explicit ladder path that takes each branch. No relation was stated and no refutation attempted;
-Phase 11.44 is licensed. 56 of 66 phase headings are closed.
+Phase 11.44 is licensed. 56 of 69 phase headings (plan v26 added three; the dispatch's "55 of 66" predates them) are closed.
 
 ## What Changed
 

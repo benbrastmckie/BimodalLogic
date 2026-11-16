@@ -1,6 +1,6 @@
 # Phase 11.43 handoff — the branching-pending fixture `B5` landed (outcome (a))
 
-**Status**: Phase 11.43 `[COMPLETED]` (plan v26, dispatch 76). 56 of 66 phase headings closed.
+**Status**: Phase 11.43 `[COMPLETED]` (plan v26, dispatch 76). 56 of 69 phase headings (plan v26 added three; the dispatch's "55 of 66" predates them) closed.
 
 **Immediate next action**: dispatch Phase 11.44 — state the object-dependent threshold relation
 (`Mrel`) and ATTEMPT TO REFUTE the path forth from it on `R4` AND on `B5`, before any proof

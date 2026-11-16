@@ -56,7 +56,7 @@ next_project_number: 935
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-761 [PLANNED] — AMENDED 2026-10-18 (presentation chosen): the cell...
+761 [IMPLEMENTING] — AMENDED 2026-10-18 (presentation chosen): the cell...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
     └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
@@ -470,7 +470,7 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 ---
 
 ### 761. Ladder realization theorem
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 760, Task 775, Task 805, Task 806, Task 819, Task 820, Task 934
@@ -480,8 +480,8 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
   - [761_ladder_realization_theorem/reports/02_spawn-analysis.md]
   - [761_ladder_realization_theorem/reports/08_rk-bounded-representative-refutation.md]
   - [761_ladder_realization_theorem/reports/15_stab-bit-copy-pair-decision.md]
-- **Summary**: [761_ladder_realization_theorem/summaries/25_conditional-phase-closed-by-exclusion-summary.md]
 - **Plan**: [761_ladder_realization_theorem/plans/26_object-dependent-threshold-refutation-first.md]
+- **Summary**: [761_ladder_realization_theorem/summaries/26_object-dependent-threshold-refutation-first-summary.md]
 
 **Description**: AMENDED 2026-10-18 (presentation chosen): the cell presentation is (a), the set-valued per-state datum — the maximum certAdm-certified subset D of Q × ClType φ × K, with ladderRealized the fibre equation and the factorization lemma for K its corollary; no tuple index is to be stated at any parameters (K is a carrier coordinate whose parameters are outputs of the counter-lift lemma). The realization theorem now waits on the counter-lift lemma (obligations (2) and (3) jointly), filed as task 820, gated before any sufficiency attempt; the label-level results of the certificate rounds are region-interior (wired probe specs/evidence/seam-gluing-ray-product/no-pending-forever-ray.lean) and compose only through that lemma. Route A is not entered. See specs/819_ladder_cell_presentation_design_decision/reports/01_ladder-cell-presentation-decision.md. All six declared edges (760, 775, 805, 806, 819, 820) are DISCHARGED: 760/775 archived, 805/806 completed, 819 the presentation decision, 820 the counter-lift gate table — which compiled with BOTH decision gates COLLIDING (`gate9_col_cell_eq`, `gap_shift_cell_eq`), so the lemma's two halves are licensed in PUMPING form and no open edge remains. The positionwise statement shape is refuted for every finite counter quotient (`no_positionwise_lift`). Live route: specs/761_ladder_realization_theorem/plans/01_ladder-realization-presentation-a.md.
 

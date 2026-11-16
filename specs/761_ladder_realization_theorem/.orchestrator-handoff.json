@@ -1,26 +1,19 @@
 {
   "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 75,
-  "summary": "Phase 11.42 closed [COMPLETED WITH EXCLUSIONS] on its own entry gate and committed (942335c41): it is conditional on Phase 11.41 outcome (b), and the verdict record reports outcome (a) (no_rowLinked_path_of_Srel). No Lean source was edited and nothing was proved; a full guarded lake build of the unchanged tree exited 0. Decision 19's route (N-1) has no phase in plan v25, so a /revise is owed before any further trunk dispatch.",
+  "dispatch_seq": 76,
+  "summary": "Phase 11.43 of plan v26 completed with outcome (a) and committed (04339ef38): the branching-pending fixture B5 is appended to the wired probe with branching_pendB, both objCycleLens memberships (2 and 3), fwdB/bwdB and the explicit non-vacuity path gB (gB_isLadderPath, taking both branches). No relation stated, no refutation attempted, no library module edited; full guarded build, evidence gate (65 wired, unchanged) and verify-deploy all exit 0. Phase 11.44 is licensed.",
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/25_conditional-phase-closed-by-exclusion-summary.md",
-      "summary": "Dispatch 75: Phase 11.42 closed by exclusion on its entry gate; no Lean edit; 55 of 66 phases closed; a /revise onto route (N-1) is owed."
+      "path": "specs/761_ladder_realization_theorem/summaries/26_object-dependent-threshold-refutation-first-summary.md",
+      "summary": "Dispatch 76: Phase 11.43 outcome (a), fixture B5 landed in the wired probe; 56 of 69 phase headings closed; Phase 11.44 licensed."
     }
   ],
-  "phases_completed": 55,
-  "phases_total": 66,
-  "blockers": [
-    {
-      "phase": "11.40",
-      "target": "specs/761_ladder_realization_theorem/plans/25_residue-relation-refutation-first.md",
-      "why_it_failed": "Route (N-1) (decision 19) has no phase in plan v25. Phase 11.40 is the next open heading and its Depends on (11.42) now reads satisfied, but the deliverable it consumes, exists_rowLinked_path, does not exist and is false over Srel.",
-      "what_was_tried": "Nothing beyond reading the gate: Phase 11.42's own text directs closure by exclusion on outcome (a) and forbids designing a relation inside it."
-    }
-  ],
-  "next_action_hint": "/revise plan v25 onto route (N-1) (object-dependent threshold relation, refutation-first on R4 and a branching pending object), re-pointing Phase 11.40. Do not dispatch 11.40 before that revision.",
-  "git_checkpoint": "942335c41",
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.42-handoff-20261116T141500Z.md"
+  "phases_completed": 56,
+  "phases_total": 69,
+  "blockers": [],
+  "next_action_hint": "Dispatch Phase 11.44 (threshold relation Mrel, refutation attempt FIRST on R4 and on B5; B5 statements carry 6 | P+1 as a hypothesis). No /revise is owed by this phase.",
+  "git_checkpoint": "04339ef38",
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.43-handoff-20261116T151500Z.md"
 }

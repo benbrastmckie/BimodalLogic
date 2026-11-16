@@ -9879,7 +9879,7 @@ Exactly one of:
       over it, the non-vacuity witness, and **which obstruction lemma it is aimed at** —
       `LnkRow.region_end_obj`, because a branch means the second path's walk is not determined by
       the countdown and the congruence does not supply one (Ruling 19).
-- [ ] **If `git-commit-scoped.sh` drops the probe path from the phase commit** (Ruling 20: it is not
+- [ ] *(deviation: skipped — the condition did not arise: commit 04339ef38 carries the probe path)* **If `git-commit-scoped.sh` drops the probe path from the phase commit** (Ruling 20: it is not
       in the task's 58-entry `file_scope`), commit it separately and say so in the record. **Do not
       treat a dropped path as uncommitted work and do not edit `specs/state.json`.**
 
