@@ -1,46 +1,19 @@
 {
-  "status": "partial",
-  "started_at": "2026-11-16T14:30:00Z",
-  "completed_at": "2026-11-16T15:20:00Z",
-  "summary": "Phase 11.43 of plan v26 completed with outcome (a) and committed (04339ef38): the branching-pending fixture B5 is appended to the wired probe with branching_pendB, both objCycleLens memberships (2 and 3), fwdB/bwdB and the explicit non-vacuity path gB (gB_isLadderPath, taking both branches). No relation stated, no refutation attempted, no library module edited; full guarded build, evidence gate (65 wired, unchanged) and verify-deploy all exit 0. Phase 11.44 is licensed.",
-  "verification": {
-    "verification_passed": true,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count_delta": 0,
-    "build_passed": true
+  "status": "in_progress",
+  "started_at": "2026-11-16T15:45:00Z",
+  "artifacts": [],
+  "modified_files": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Phase 11.44 of plan v26: agent started, reading live files",
+    "phases_completed": 56,
+    "phases_total": 69
   },
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/26_object-dependent-threshold-refutation-first-summary.md",
-      "summary": "Phase 11.43 outcome (a): the branching-pending fixture B5 with its non-vacuity witness, appended to the wired probe."
-    }
-  ],
-  "modified_files": [
-    "specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean",
-    "specs/761_ladder_realization_theorem/records/round-26-threshold-relation-verdict.md",
-    "specs/761_ladder_realization_theorem/plans/26_object-dependent-threshold-refutation-first.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.43-handoff-20261116T151500Z.md",
-    "specs/761_ladder_realization_theorem/summaries/26_object-dependent-threshold-refutation-first-summary.md"
-  ],
-  "phases_completed": 56,
-  "phases_total": 69,
-  "handoff_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.43-handoff-20261116T151500Z.md",
   "metadata": {
     "session_id": "sess_1794832980_46db75",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ],
-    "dispatch_seq": 76,
-    "compliance_check": "skipped",
-    "phase_implemented": "11.43",
-    "phase_outcome": "a",
-    "git_checkpoint": "04339ef38",
-    "partial_reason": "single-phase dispatch; later plan phases remain open"
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 77
   }
 }
