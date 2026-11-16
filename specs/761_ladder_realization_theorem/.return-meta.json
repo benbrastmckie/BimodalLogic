@@ -1,57 +1,24 @@
 {
-  "status": "partial",
-  "requires_user_review": true,
-  "review_reason": "Phase 11.47's owed exists_rowLinked_path over Mrel is FALSE as owed (compiled refutation). Items 2-4 cannot be landed at the recorded signature; the only repair left open adds a hypothesis to that signature, which the phase routes to the user.",
-  "verification": {
-    "verification_passed": true,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 12,
-    "build_passed": true
-  },
-  "partial_progress": {
-    "stage": "phase_11.47_partial",
-    "details": "Item 1 (LnkRow.of_closed) landed with its axiom pin and a positive-budget restriction check. Item 3's (K2) margin measurement at the raised threshold landed as Mrel.threshold_le_Tc. Items 2, 3's count moves and item 4 are refuted at the owed signature.",
-    "phases_completed": 58,
-    "phases_total": 71
-  },
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/27_lnkrow-induction-scaffold-summary.md",
-      "summary": "Phase 11.47: the LnkRow induction scaffold landed; exists_rowLinked_path over Mrel refuted as owed; the (K2) margin measured at the raised threshold."
-    }
-  ],
-  "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean",
-    "specs/761_ladder_realization_theorem/records/round-27-register-coordinate-measurement.md",
-    "specs/761_ladder_realization_theorem/plans/27_register-coordinate-measurement.md",
-    "specs/761_ladder_realization_theorem/summaries/27_lnkrow-induction-scaffold-summary.md",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "typst/generated/status.typ"
-  ],
-  "user_decision": {
-    "blocking": true,
-    "question": "Phase 11.47's owed exists_rowLinked_path over Mrel is refuted as filed: Mrel carries P as a bare natural number with no hypothesis relating P+1 to the object, and at P+1 <= 2 the raised countdown threshold is met by the very tight pair the landed Srel refutation already kills (exists_rowLinked_path_over_Mrel_refuted, compiled; not_lnkRow_xR_yR carries no divisibility hypothesis). The refutation does NOT reach a (K1)-admissible modulus for R4, so the (K1)-restricted path forth is untouched and is the only direction left open. Repairing the signature adds a hypothesis beyond Mrel and the row budget, which the phase routes here rather than taking. How should the owed signature be repaired?",
-    "options": [
-      "(R-1) Add the full (K1) condition `paramsOkK1 step pend lab phi P` as a hypothesis of exists_rowLinked_path and re-attempt items 2-4 over it. This is the condition the counter-quotient side already states, so the consumer of the path forth carries it anyway; it also drags in `lab` and `phi`, which the row-link layer is otherwise free of.",
-      "(R-2) Add only the object half of (K1) -- `forall l in objCycleLens step pend, l | (P + 1)` -- which is the conjunct the region-end agreement actually consumes and keeps the row-link layer free of `lab` and `phi`. Weaker than (R-1) and strictly cheaper, but it is a NEW condition rather than a named one, so the bridge to ParamsOk must be recorded.",
-      "(R-3) Refutation-first again at the repaired clip: before any construction, attempt to refute the path forth AT a (K1)-admissible modulus on R4 and on the branching object B5, since every prior round that adopted a relation without attacking it first lost that round. Costs one more round but matches the standing route discipline.",
-      "(R-4) Abandon the path-forth route for the untl clause and re-scope to what truth_iff_of_lnkRow plus exists_rowLinked_path_zero already cover, recording the row-level agreement as reachable only at budget (0,0)."
-    ],
-    "recommendation": "(R-3), then (R-2). Three rounds (11.39 over Zrel, 11.41/11.42 over Srel, 11.44/11.45 over Mrel) each adopted a relation and then discovered it refuted; the one round that attacked first (11.44) is the one whose relation survived. (R-2) is the right target of that attack because objCycleLens is exactly the conjunct the region-end agreement consumes and it keeps the row-link layer free of the formula index -- but it should be attacked before it is adopted, not after.",
-    "context": "Landed this round and unaffected by the decision: LnkRow.of_closed (the recursive-induction scaffold, reusable over any repaired relation) and Mrel.threshold_le_Tc ((K2)'s margin covers the raised threshold, so room is not the obstruction). Phase 11.40's gate on 11.47 is not satisfied either way."
-  },
+  "status": "planned",
+  "artifacts": [{
+    "type": "plan",
+    "path": "specs/761_ladder_realization_theorem/plans/28_k1-admissible-refutation-first.md",
+    "summary": "Plan v28 (route (R-3) then (R-2)): integrates records/round-27-register-coordinate-measurement.md and user-answered decision 21. Adds Phase 11.48 (refute the path forth at a (K1)-admissible modulus on BOTH R4 and B5 before any repaired relation is adopted) and Phase 11.49 (CONDITIONAL: add only the object half of (K1) as a hypothesis of exists_rowLinked_path, keep the row-link layer free of lab/phi, record the bridge to ParamsOk) as a sequence, never one phase. Fixes the selector hazard structurally: both [PARTIAL] headings (11.44, 11.47) relocated past Phase 18 in file order and every RE-ENTRY NOTICE re-worded to name its continuation by rule. Phase 11.40 re-pointed onto 11.49 (fourth re-pointing, stated plainly). Rulings 27-30 added."
+  }],
+  "next_steps": "Run /orchestrate 761 to execute Phase 11.48 (the one enterable phase)",
   "metadata": {
     "session_id": "sess_1794844360_ab750d",
-    "agent_type": "lean-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "dispatch_seq": 80,
-    "blocked_phase": "11.47",
-    "compliance_check": "passed"
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 73,
+    "phases_closed": 58,
+    "estimated_hours": 79.5,
+    "reports_integrated": [],
+    "records_integrated": ["records/round-27-register-coordinate-measurement.md"],
+    "decisions_integrated": [21],
+    "rulings_added": [27, 28, 29, 30],
+    "phases_added": ["11.48", "11.49"],
+    "phases_relocated": ["11.44", "11.47"],
+    "phases_repointed": ["11.40"]
   }
 }
