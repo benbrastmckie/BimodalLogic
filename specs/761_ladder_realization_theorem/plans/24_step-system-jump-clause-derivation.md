@@ -8562,7 +8562,7 @@ widen the file list explicitly rather than silently.
 
 ---
 
-### Phase 11.36: The `(K4)` Dead-Conjunct Deletion Trial [NOT STARTED]
+### Phase 11.36: The `(K4)` Dead-Conjunct Deletion Trial [COMPLETED]
 
 **ADDED BY THIS REVISION, AND PLACED FIRST BECAUSE IT IS CHEAP AND BECAUSE ITS OUTCOME RESHAPES
 WHAT `ParamsOk` IS FOR (Ruling 9).** The research round found, by grep, that the only conjunct of
@@ -8592,22 +8592,22 @@ with `paramsOkK4` still missing its depth conjuncts and no repair landed has lef
 layer weaker than it found it, which is a defect, not an outcome.
 
 **Tasks**:
-- [ ] Re-derive the consumer set at entry rather than trusting this plan: `grep -rn 'paramsOkK4\|hK4\|\.2\.2\.2\.2' FormalSystem/ Tests/` and read every hit. Record the set and any drift from the single hit this plan carries (`LadderWindow.lean:1835`).
-- [ ] Delete the two depth conjuncts from `paramsOkK4` in the working tree, leaving `2 ≤ B`, and
+- [x] Re-derive the consumer set at entry rather than trusting this plan: `grep -rn 'paramsOkK4\|hK4\|\.2\.2\.2\.2' FormalSystem/ Tests/` and read every hit. Record the set and any drift from the single hit this plan carries (`LadderWindow.lean:1835`).
+- [x] Delete the two depth conjuncts from `paramsOkK4` in the working tree, leaving `2 ≤ B`, and
       adjust ONLY what the positional projection requires (the `hp.2.2.2.2.2` index moves when the
       conjunct count changes — fix it, and record that the projection is positional and therefore
-      silently fragile).
-- [ ] Rebuild: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`. Record the
+      silently fragile). *(deviation: altered — the PRODUCER `paramsOk_params` was also trimmed (its `refine` pattern and two bullets), since a producer failing in `CounterQuotient.lean` stops Lake before any consumer is elaborated; see `records/round-24-k4-deletion-trial.md` section 2)*
+- [x] Rebuild: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`. Record the
       exit status, and on failure the complete list of failing declarations with their files and
       the goal each fails at. **Do NOT repair a failing proof in this phase** — the failure IS the
       measurement.
-- [ ] Rebuild the test library as well (`-- build BimodalTest`) and run
+- [x] Rebuild the test library as well (`-- build BimodalTest`) and run
       `bash scripts/check-evidence-probes.sh`, because a probe may consume `ParamsOk` positionally
       where a library module does not.
-- [ ] Write `records/round-24-k4-deletion-trial.md`: the consumer grep, the deletion diff, the
+- [x] Write `records/round-24-k4-deletion-trial.md`: the consumer grep, the deletion diff, the
       build verdict, the failing set if any, and the consequence for Phase 11.35 stated in one
       paragraph. **The record states which outcome fell, never both and never neither.**
-- [ ] **REVERT the working-tree deletion** (restore `paramsOkK4` exactly as it was) unless Phase
+- [x] **REVERT the working-tree deletion** (restore `paramsOkK4` exactly as it was) unless Phase
       11.35 lands in the same dispatch, and verify the restoration by a clean build plus
       `git diff --stat` showing `CounterQuotient.lean` unchanged.
 
