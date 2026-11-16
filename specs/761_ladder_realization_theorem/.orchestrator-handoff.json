@@ -1,46 +1,18 @@
 {
   "status": "partial",
-  "dispatch_seq": 58,
-  "phases_completed": 39,
-  "phases_total": 51,
-  "summary": "Route (E-2)'s one bounded round landed and discharged its recorded obligation: the diagonal gap is closed. Five new compiled theorems in LadderRealize.lean give offset-invariance of truth and of tpOf under ladderModel (the stab clause PROVED, with no stab-free premise, no finite-fibre or finite-width assumption, no raised Tc and no strengthened ParamsOk), hence cellAt_ladder_eq_of_worldTime -- a ladder state's cell does not depend on the world state's Z component -- and cellAt_const_of_kappa_eq_of_covered_at_time, the covered agreement at a general time component with every other binder unchanged. The filed cellAt_const_of_kappa_eq stays OPEN on the four remaining coordinates, and no plan phase marker moved because plan v20 carries no phase for this round.",
-  "blockers": [
-    "Plan v20 predates decision (E-2) and has no phase for the diagonal gap, so this round was executed against the recorded decision's own Obligation text and no phase marker was moved. A /revise is owed to fold it in before the next implement dispatch.",
-    "lean-plan-compliance-check.sh reports COMPLIANCE_CHECK: failed on exactly the five statements the plan itself records as OPEN (cellAt_const_of_kappa_eq, ladderSound, ladderCons_localRun, ladderLift, ladderRealized). This is the task's recorded state, not a regression introduced here."
-  ],
+  "phase": "implement",
+  "dispatch_seq": 60,
+  "summary": "Phase 11.29 (refutation attempt on the filed cellAt_const_of_kappa_eq) closed with outcome (b), OPEN WITH A MEASURED ACCOUNT, zero sorry: the separating type sepC k is exhibited with both memberships compiled, but (K2)'s margin makes every separated pair a non-collision and the agreement is proved at that family. Phase 11.32 (Round 3) is the enterable successor and was not entered; its fixture-level instance is landed.",
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/20_diagonal-gap-offset-invariance-summary.md",
-      "summary": "Route (E-2): offset-invariance of tpOf under ladderModel and the covered agreement at a general time component."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/route-e2-handoff-20261115T232035Z.md",
-      "summary": "Round handoff: what landed, what stays open, and the /revise owed."
+      "path": "specs/761_ladder_realization_theorem/summaries/21_refutation-first-run-level-adequacy-summary.md",
+      "summary": "Phase 11.29 verdict: outcome (b), open with a measured account; separating type compiled, never at a collision."
     }
   ],
-  "user_decision": {
-    "blocking": true,
-    "question": "Route (E-2) closed: the diagonal coordinate of the filed cellAt_const_of_kappa_eq is now proved for the whole family (cellAt_ladder_eq_of_worldTime), and the covered agreement is landed at a general time component. The four remaining uncovered coordinates each have a landed refutation or a measured dead end: the upward-saturated register family is excluded by raise_room_excludes_upward_displacement, no tool moves a countdown while holding a kappa-class, both register-moving deletions carry a stab-free premise (so the covered family stays confined to closures where certStabK_of_stabFree already gives condition (5) outright), and the per-path regimes are genuine restrictions on the state. The path level was closed by the (P-1) kill criterion. Which way should the task go?",
-    "options": [
-      "(E-1) Rest the task here with the obstruction landed: mark the realization theorem BLOCKED whole on the recorded gap -- now a four-coordinate gap, with the diagonal coordinate closed -- keep every landed auxiliary including this round's offset-invariance and the covered-set record, and attempt no further route. RECOMMENDED: the one coordinate that was tractable independently of the register question is the one that just closed, and closing it changed nothing on the consumer side.",
-      "(E-3) One further bounded round on the stab-free premise itself -- the coordinate both the path route and the certificate route foundered on -- asking whether a register-moving deletion can be re-derived without `hno`, with a kill criterion stated before the round.",
-      "(E-4) Restate the filed cellAt_const_of_kappa_eq as the covered statement plus a recorded gap (a /revise of the Challenge line, not an implementer's move), so the task's remaining phases 12.2-18 can be entered against a statement that is actually available."
-    ],
-    "recommendation": "(E-1)"
-  },
-  "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "docs/theorem-index.md",
-    "scripts/check-module-invariants.sh",
-    "typst/generated/status.typ",
-    "specs/761_ladder_realization_theorem/issues.jsonl",
-    "specs/761_ladder_realization_theorem/summaries/20_diagonal-gap-offset-invariance-summary.md",
-    "specs/761_ladder_realization_theorem/handoffs/route-e2-handoff-20261115T232035Z.md"
-  ]
+  "phases_completed": 41,
+  "phases_total": 56,
+  "blockers": [],
+  "next_action_hint": "Phase 11.32 (Round 3, the general non-atom-preserving count move) is enterable; it is NOT COSTABLE and likely needs a /revise to state a reach obligation first. Phases 11.30/11.31 are excluded on the outcome-(b) branch.",
+  "git_checkpoint": "340bcfd41"
 }

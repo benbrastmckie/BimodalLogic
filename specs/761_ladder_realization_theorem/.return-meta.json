@@ -1,10 +1,29 @@
 {
   "status": "partial",
-  "agent_type": "lean-implementation-agent",
-  "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-  "dispatch_seq": 58,
-  "requires_user_review": true,
-  "review_reason": "Route (E-2)'s bounded round landed and discharged its obligation, but the task is not complete: lean-plan-compliance-check.sh reports COMPLIANCE_CHECK: failed on exactly the five statements the plan itself records as OPEN (cellAt_const_of_kappa_eq, ladderSound, ladderCons_localRun, ladderLift, ladderRealized) -- the task's recorded state, not a regression from this dispatch. In addition, plan v20 carries no phase for this round, so a /revise is owed, and a blocking route decision is returned.",
+  "started_at": "2026-11-16T01:35:17Z",
+  "completed_at": "2026-11-16T02:05:00Z",
+  "summary": "Phase 11.29 (refutation attempt on the filed cellAt_const_of_kappa_eq) closed with outcome (b), OPEN WITH A MEASURED ACCOUNT, zero sorry: the separating type sepC k is exhibited with both memberships compiled, but (K2)'s margin makes every separated pair a non-collision and the agreement is proved at that family. Phase 11.32 (Round 3) is the enterable successor and was not entered; its fixture-level instance is landed.",
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/21_refutation-first-run-level-adequacy-summary.md",
+      "summary": "Phase 11.29 verdict: outcome (b), open with a measured account; separating type compiled, never at a collision."
+    }
+  ],
+  "modified_files": [
+    "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "docs/theorem-index.md",
+    "scripts/check-evidence-probes.sh",
+    "typst/generated/status.typ",
+    "specs/761_ladder_realization_theorem/plans/21_refutation-first-run-level-adequacy.md",
+    "specs/761_ladder_realization_theorem/records/round-21-refutation-verdict.md",
+    "specs/761_ladder_realization_theorem/handoffs/phase-11.29-handoff-20261116T020024Z.md",
+    "specs/761_ladder_realization_theorem/summaries/21_refutation-first-run-level-adequacy-summary.md"
+  ],
   "verification": {
     "verification_passed": false,
     "sorry_count": 0,
@@ -12,54 +31,25 @@
     "axiom_count": 14,
     "build_passed": true
   },
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/20_diagonal-gap-offset-invariance-summary.md",
-      "summary": "Route (E-2): offset-invariance of tpOf under ladderModel, and the covered cell agreement lifted to a general time component."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/761_ladder_realization_theorem/handoffs/route-e2-handoff-20261115T232035Z.md",
-      "summary": "Round handoff: what landed, the four coordinates still uncovered, and the /revise owed."
-    }
-  ],
+  "requires_user_review": false,
+  "review_reason": "No check introduced by this dispatch failed. Status is partial because the plan has 11 NOT STARTED and 4 BLOCKED phases downstream of the still-open agreement, and the plan-compliance spot-check fails on the open Goal statements (pre-existing). The vacuous grep's one hit is pre-existing (Examples/TemporalStructures.lean:495).",
+  "phases_completed": 41,
+  "phases_total": 56,
   "completion_data": {
-    "completion_summary": "Landed the offset-invariance of truth and of tpOf under ladderModel (stab clause proved, no stab-free premise), hence that a ladder state's cell does not depend on the world state's time component, and lifted the covered kappa-collision agreement from the diagonal world state to a general time component. The filed cellAt_const_of_kappa_eq remains open on four coordinates.",
+    "completion_summary": "Phase 11.29 (refutation attempt on the filed cellAt_const_of_kappa_eq) closed with outcome (b), OPEN WITH A MEASURED ACCOUNT, zero sorry: the separating type sepC k is exhibited with both memberships compiled, but (K2)'s margin makes every separated pair a non-collision and the agreement is proved at that family. Phase 11.32 (Round 3) is the enterable successor and was not entered; its fixture-level instance is landed.",
     "roadmap_items": []
   },
-  "partial_progress": {
-    "stage": "route_e2_round_complete",
-    "details": "The (E-2) round is complete and its obligation discharged; no plan phase marker moved because plan v20 has no phase for it. The filed realization statements (cellAt_const_of_kappa_eq, ladderSound, ladderCons_localRun, ladderLift, ladderRealized) remain unlanded; a /revise plus a route decision is the next step.",
-    "phases_completed": 39,
-    "phases_total": 51
-  },
-  "user_decision": {
-    "blocking": true,
-    "question": "Route (E-2) closed: the diagonal coordinate of the filed cellAt_const_of_kappa_eq is proved for the whole family, and the covered agreement is landed at a general time component. The four remaining coordinates each have a landed refutation or a measured dead end (raise_room_excludes_upward_displacement for the upward-saturated register family; no tool moves a countdown while holding a kappa-class; both register-moving deletions carry a stab-free premise, where certStabK_of_stabFree already gives condition (5) outright; the per-path regimes are genuine restrictions). The path level was closed by the (P-1) kill criterion. Which way should the task go?",
-    "options": [
-      "(E-1) Rest the task here with the obstruction landed: BLOCKED whole on the now four-coordinate gap, keeping every landed auxiliary. RECOMMENDED.",
-      "(E-3) One further bounded round on the stab-free premise itself, with a kill criterion stated before the round.",
-      "(E-4) Restate the filed cellAt_const_of_kappa_eq as the covered statement plus a recorded gap (a /revise of the Challenge line), so phases 12.2-18 can be entered against an available statement."
-    ],
-    "recommendation": "(E-1)"
-  },
-  "modified_files": [
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
-    "docs/theorem-index.md",
-    "scripts/check-module-invariants.sh",
-    "typst/generated/status.typ",
-    "specs/761_ladder_realization_theorem/issues.jsonl",
-    "specs/761_ladder_realization_theorem/summaries/20_diagonal-gap-offset-invariance-summary.md",
-    "specs/761_ladder_realization_theorem/handoffs/route-e2-handoff-20261115T232035Z.md"
-  ],
   "metadata": {
-    "session_id": "sess_1794776699_aa0fb6",
+    "session_id": "sess_1794792608_460ef7",
     "agent_type": "lean-implementation-agent",
-    "compliance_check": "failed"
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "failed",
+    "phase_outcome": "11.29: outcome (b)",
+    "next_enterable_phase": "11.32"
   }
 }
