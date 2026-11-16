@@ -1,37 +1,26 @@
 {
   "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 74,
-  "summary": "Phase 11.41 completed with outcome (a), REFUTED, and committed (ae11faa81, eabe9e203). The residue-carrying relation Srel is landed in LadderStepFrag.lean with its structural lemmas, and the wired probe compiles no_rowLinked_path_of_Srel: on a pending 3-cycle object, at every modulus, two Srel-related states admit no row-linked pair of ladder paths; the failing coordinate is the residue at intermediate positions. All gates green (full build, BimodalTest, sorry census 0, module invariants, 65 evidence probes, readme-lint, typst-sync, verify-deploy). Phase 11.42 is not licensed; a /revise is owed.",
+  "dispatch_seq": 75,
+  "summary": "Phase 11.42 closed [COMPLETED WITH EXCLUSIONS] on its own entry gate and committed (942335c41): it is conditional on Phase 11.41 outcome (b), and the verdict record reports outcome (a) (no_rowLinked_path_of_Srel). No Lean source was edited and nothing was proved; a full guarded lake build of the unchanged tree exited 0. Decision 19's route (N-1) has no phase in plan v25, so a /revise is owed before any further trunk dispatch.",
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/25_residue-relation-refutation-first-summary.md",
-      "summary": "Dispatch 74: Phase 11.41 completed with outcome (a) — Srel landed in LadderStepFrag.lean and refuted as the path forth's hypothesis by the wired probe's no_rowLinked_path_of_Srel; 54 of 66 phases closed; a /revise is owed."
+      "path": "specs/761_ladder_realization_theorem/summaries/25_conditional-phase-closed-by-exclusion-summary.md",
+      "summary": "Dispatch 75: Phase 11.42 closed by exclusion on its entry gate; no Lean edit; 55 of 66 phases closed; a /revise onto route (N-1) is owed."
     }
   ],
-  "phases_completed": 54,
+  "phases_completed": 55,
   "phases_total": 66,
   "blockers": [
     {
-      "phase": "11.42",
-      "target": "specs/761_ladder_realization_theorem/records/round-25-residue-relation-verdict.md",
-      "why_it_failed": "Phase 11.42 is conditional on outcome (b) and Phase 11.41 returned outcome (a); Phase 11.40 depends on 11.42. No trunk phase is enterable until a /revise rules on the verdict record (see user_decision).",
-      "what_was_tried": "Phase 11.41's refutation attempt against Srel, which compiled (no_rowLinked_path_of_Srel)."
+      "phase": "11.40",
+      "target": "specs/761_ladder_realization_theorem/plans/25_residue-relation-refutation-first.md",
+      "why_it_failed": "Route (N-1) (decision 19) has no phase in plan v25. Phase 11.40 is the next open heading and its Depends on (11.42) now reads satisfied, but the deliverable it consumes, exists_rowLinked_path, does not exist and is false over Srel.",
+      "what_was_tried": "Nothing beyond reading the gate: Phase 11.42's own text directs closure by exclusion on outcome (a) and forbids designing a relation inside it."
     }
   ],
-  "next_action_hint": "/revise on records/round-25-residue-relation-verdict.md with the returned user_decision. Do not dispatch 11.42 or 11.40, and do not re-dispatch 11.41.",
-  "git_checkpoint": "eabe9e203",
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.41-handoff-20261116T134500Z.md",
-  "user_decision": {
-    "question": "Phase 11.41 returned outcome (a): the residue-carrying relation Srel (Zrel plus the countdowns congruent mod P+1) is refuted as the hypothesis of the path forth, on a pending 3-cycle object at every modulus (no_rowLinked_path_of_Srel). The failing coordinate is the residue at the INTERMEDIATE positions: Zrel's countdown threshold has an object-independent margin of 2 per forward jump, and a cycle of length 3 has three residues to answer. Which way should the plan be revised?",
-    "options": [
-      "(N-1) Refutation-first on an object-dependent THRESHOLD: one bounded round that states a relation whose countdown clause is 'equal, or congruent mod P+1 and both at least a threshold carrying a margin of P+1 per unit of budget', and ATTEMPTS TO REFUTE the path forth from it on R4 and on an object with a BRANCHING pending part before any proof attempt",
-      "(N-2) Leave the state-relation route for the path forth and enter Round 2's run-level adequacy pair (Phases 11.30/11.31), which does not need exists_rowLinked_path",
-      "(N-3) Stop: mark the jump-clause derivation blocked on this record and take no further round"
-    ],
-    "recommended": "(N-1) Refutation-first on an object-dependent THRESHOLD: one bounded round that states a relation whose countdown clause is 'equal, or congruent mod P+1 and both at least a threshold carrying a margin of P+1 per unit of budget', and ATTEMPTS TO REFUTE the path forth from it on R4 and on an object with a BRANCHING pending part before any proof attempt",
-    "blocking": false,
-    "obligation": "A stated relation whose countdown threshold depends on the object through P+1, together with a compiled verdict on the path forth from it at a row budget (a, b+1) with 1 <= a+b: either a fixture (R4, or an object whose pending part branches) on which two related states admit no row-linked pair of ladder paths, with the failing coordinate named, or a compiled forward path forth for the lengthen-a-region move at the first region with the register offset stated in its conclusion. A relation whose threshold margin is object-independent, or one adopted without a refutation attempt on a branching object, does not discharge this."
-  }
+  "next_action_hint": "/revise plan v25 onto route (N-1) (object-dependent threshold relation, refutation-first on R4 and a branching pending object), re-pointing Phase 11.40. Do not dispatch 11.40 before that revision.",
+  "git_checkpoint": "942335c41",
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.42-handoff-20261116T141500Z.md"
 }

@@ -107,7 +107,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-10-10T23:53:38Z",
-      "last_updated": "2026-11-16T13:42:36Z",
+      "last_updated": "2026-11-16T13:47:00Z",
       "session_id": "sess_1794832980_46db75",
       "artifacts": [
         {
@@ -140,9 +140,9 @@
           "type": "plan"
         },
         {
-          "path": "specs/761_ladder_realization_theorem/summaries/25_residue-relation-refutation-first-summary.md",
+          "path": "specs/761_ladder_realization_theorem/summaries/25_conditional-phase-closed-by-exclusion-summary.md",
           "type": "summary",
-          "summary": "Dispatch 74: Phase 11.41 completed with outcome (a) — Srel landed in LadderStepFrag.lean and refuted as the path forth's hypothesis by the wired probe's no_rowLinked_path_of_Srel; 54 of 66 phases closed; a /revise is owed."
+          "summary": "Dispatch 75: Phase 11.42 closed by exclusion on its entry gate; no Lean edit; 55 of 66 phases closed; a /revise onto route (N-1) is owed."
         }
       ],
       "next_artifact_number": 25,
