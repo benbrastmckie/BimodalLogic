@@ -1,8 +1,8 @@
 {
-  "status": "blocked",
+  "status": "partial",
   "phase": "implement",
   "dispatch_seq": 71,
-  "summary": "Dispatch 71 named Phase 11.6, which plan v25 carries as a closed [BLOCKED] report that route (M-1) explicitly does not re-enter (its gates 11.24 and 11.22 closed by exclusion; the path level is closed by carried Ruling 3; its target statement is refuted). No phase work was done and no file outside the task directory was edited. The enterable phases are 11.41 (trunk) and 11.34.",
+  "summary": "Stale blocker cleared by operator: plan v25 now marks Phases 11.6/11.7/11.8/11.20/11.39 [COMPLETED WITH EXCLUSIONS] and places 11.41 (trunk) and 11.34 ahead of the relocated 11.30/11.31, so the phase selector reaches an enterable phase. Dispatch 71 named Phase 11.6, which plan v25 carries as a closed [BLOCKED] report that route (M-1) explicitly does not re-enter (its gates 11.24 and 11.22 closed by exclusion; the path level is closed by carried Ruling 3; its target statement is refuted). No phase work was done and no file outside the task directory was edited. The enterable phases are 11.41 (trunk) and 11.34.",
   "artifacts": [
     {
       "type": "summary",
@@ -12,9 +12,7 @@
   ],
   "phases_completed": 47,
   "phases_total": 66,
-  "blockers": [
-    "Phase 11.6 is not enterable: plan v25's disposition table marks it '[BLOCKED] UNCHANGED, and not re-entered'; the relation ~_d its Goal is stated on was never landed (Phases 11.24 and 11.22 closed by exclusion on the (P-1) kill criterion). The dispatcher must select Phase 11.41 or 11.34 by number; selecting the first non-closed heading in file order will return 11.6 (then 11.7, 11.8, 11.20, 11.39) again."
-  ],
+  "blockers": [],
   "next_action_hint": "Dispatch Phase 11.41 (route (M-1) trunk) by explicit phase number; Phase 11.34 is independently enterable on disjoint files. Do not re-dispatch 11.6, 11.7, 11.8, 11.20 or 11.39.",
   "git_checkpoint": "8228f96fd",
   "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.33-handoff-20261116T090735Z.md"
