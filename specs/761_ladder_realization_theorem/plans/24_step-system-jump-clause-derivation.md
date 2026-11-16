@@ -8450,7 +8450,28 @@ shaped, which is a route finding for the record and not a silent widening.
 
 ---
 
-### Phase 11.35: The Repaired `(K4)` in the Library, at the Derived Shape [NOT STARTED]
+### Phase 11.35: The Repaired `(K4)` in the Library, at the Derived Shape [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+Closed by dispatch 68 on this phase's own entry condition: **Phase 11.33 returned outcome (a)**.
+No task below was entered and `CounterQuotient.lean` is not edited.
+
+- **Excluded**: the whole Goal — restating `paramsOkK4` at
+  `2 * (dBack φ + dFwd φ) + 2 ≤ B ∧ 2 ≤ B`, raising `Bof`, re-proving `paramsOk_params`, and
+  restating the `paramsOk_inflate` family.
+- **Reason, by declaration name and by clip**: `Probe761C.repaired_clip_refuted`
+  (`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`, fifth section,
+  wired and green) compiles, for every `j ≥ 3`, a `kappa`-collision at `(K1)`-`(K3)` as stated and
+  `(K4)` at exactly this clip — value `2 j + 8` at the formula `dblC j` — whose two cells differ.
+  `Probe761C.gap_clip_below_exponential_refuted` compiles the same at every `Tc`, `Tn`, `P` and
+  every clip `B < 2 ^ (j + 1)`. A clip that is itself refuted is not a repair worth landing.
+- **What stays true**: the step-fragment results (`stepFrag_gap_depth_exact`,
+  `cellAt_const_of_kappa_eq_stepFrag`, `sigC_refutes`); Phase 11.36's deletion-trial outcome (no
+  library proof consumes a depth conjunct).
+- **What is owed instead**: a `/revise`. Any repaired `(K4)` must dominate `2 ^ (dBack φ + 1)`;
+  whether a clip of that order makes the agreement true is undecided.
+  Record: `records/round-24-repaired-clip-verdict.md`.
 
 **REWRITTEN AND RE-POINTED BY THIS REVISION (Ruling 10).** The predecessor plan made this phase
 conditional on a refutation outcome and left the clip for the round to choose. This revision fixes
@@ -8485,31 +8506,31 @@ conjectured**:
       any library proof consumed a depth conjunct, and which. **If the deletion trial found real
       consumers, the repaired `(K4)` must keep whatever they consume** — that is the one way this
       phase's shape may legitimately widen beyond Ruling 10's, and it is recorded as a deviation
-      with the consuming proofs named.
+      with the consuming proofs named. *(deviation: skipped — Phase 11.33 outcome (a): the clip is refuted, `repaired_clip_refuted`)*
 - [ ] Restate `paramsOkK4` at the derived shape (`CounterQuotient.lean:920`), with the three-part
       docstring above. **The `2 ≤ B` conjunct is RETAINED unconditionally** — it is the one conjunct
       `LadderWindow.lean:1835` projects today, and it is implied by the new first conjunct only when
       `dBack + dFwd ≥ 0`, which holds, but the projection is positional (`hp.2.2.2.2.2`) and breaks
       if the conjunct count moves. **Re-derive every positional projection of `ParamsOk` in the
       library and fix each one in the same commit**, or keep the conjunct count and order such that
-      none moves; state in the commit message which of the two was done.
+      none moves; state in the commit message which of the two was done. *(deviation: skipped — Phase 11.33 outcome (a): the clip is refuted, `repaired_clip_refuted`)*
 - [ ] Raise `Bof` (`:854`) to `max (2 * (dBack φ + dFwd φ) + 2) 2` and re-prove `paramsOk_params`
-      (`:938`) at the raised output. The `(K1)`, `(K2)` and `(K3)` legs are untouched.
+      (`:938`) at the raised output. The `(K1)`, `(K2)` and `(K3)` legs are untouched. *(deviation: skipped — Phase 11.33 outcome (a): the clip is refuted, `repaired_clip_refuted`)*
 - [ ] Restate the `paramsOk_inflate` family (`:995`, `:1029`) against the new conjunct shape. These
       re-pack `hK4` unread today; if that is still true after the restatement, say so in the
-      docstring rather than leaving the reader to grep.
+      docstring rather than leaving the reader to grep. *(deviation: skipped — Phase 11.33 outcome (a): the clip is refuted, `repaired_clip_refuted`)*
 - [ ] Re-derive the `CK` cost: a larger `B` is a larger clip index and therefore a larger `CK`
       COUNT, and nothing else. **Confirm by reading the consumers** (`Dmax`, `certAdmK`, `Real`,
       `ClassRepTransport` all quantify `∀ Tc Tn P B`; `Certificate.lean` has zero references to
-      `kappa`, `CK`, `Dmax`, `Bof` or `ParamsOk`) rather than asserting it.
+      `kappa`, `CK`, `Dmax`, `Bof` or `ParamsOk`) rather than asserting it. *(deviation: skipped — Phase 11.33 outcome (a): the clip is refuted, `repaired_clip_refuted`)*
 - [ ] Record the Statement Fidelity consequence (carried Ruling 5) in `docs/theorem-index.md` and
       in the task's records: the `## Lean Challenge Statements` block's theorem TEXT does not move,
       `ParamsOk`'s MEANING does, and **the compiled refutation of the FILED clip is never cited as
-      refuting a statement at the repaired one** — each refutation's record names its own clip.
+      refuting a statement at the repaired one** — each refutation's record names its own clip. *(deviation: skipped — Phase 11.33 outcome (a): the clip is refuted, `repaired_clip_refuted`)*
 - [ ] Re-run both wired probes. The refutation fixture's `paramsOkC` and the step-fragment probe's
       own parameter instances are frozen reproductions by design; if either goes red because it
       reads the library `paramsOkK4` rather than a frozen copy, **fix the probe's application and
-      not the frozen conjunct it exists to refute against**.
+      not the frozen conjunct it exists to refute against**. *(deviation: skipped — Phase 11.33 outcome (a): the clip is refuted, `repaired_clip_refuted`)*
 
 **Prohibited workarounds**: do NOT strengthen `(K1)`, `(K2)` or `(K3)`; do NOT add a fifth
 parameter source; do NOT raise `Tc` or `Tn`; do NOT describe the landed clip as the proved
