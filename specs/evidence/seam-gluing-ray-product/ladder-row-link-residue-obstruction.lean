@@ -1048,3 +1048,469 @@ end ProbeRowResidue
 /-- info: 'ProbeRowResidue.region_end_matchable_B5' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in
 #print axioms ProbeRowResidue.region_end_matchable_B5
+
+/-!
+# THE REGISTER COORDINATE AT THE `Mrel` PAIR, MEASURED
+
+This section is appended by the round that measures the ONE coordinate the threshold round left
+unmeasured.  Nothing above it is edited.
+
+**THE REGISTER'S LOCAL LAW, RE-DERIVED FROM `RladAdm` ALONE.**  `RladAdm step pend t x y` is
+`Rlad step pend t x.1 y.1`, whose four conjuncts are `step x.1 y.1`, `pend x.1 = false → x.2.1 = 0`,
+`Drift x.2.2 y.2.2` and `Count (pend x.1) (pend y.1) x.2.1 x.2.2 y.2.1`.  The register `n = x.2.2`
+occurs in exactly two of them:
+
+* in `Drift n n'`, which is `n' = n ∨ n' = n + 1 ∨ n' + 1 = n` — a free `±1`/`0` walk;
+* inside `Count`, and there ONLY at an idle-to-pending transition, where `c' = n` seeds the new
+  countdown.  Inside a pending region (`px = py = true`) `Count` is `c' + 1 = c` and does not
+  mention the register at all.  `Adm pend q = {c | pend q = false → c = 0}` constrains the
+  COUNTDOWN, never the register.
+
+So inside a pending region the register is an unconstrained `Drift` walk, and the only forced
+consequences are the two recorded here: it falls by at most one per step (`nxt_ge_sub`), and
+since the countdown inside a region falls by EXACTLY one per step, the gap `n - c` is
+non-decreasing along a region and rises by at most two per step (`gap_mono_of_pend`).
+
+**WHAT `Zrel a b` DEMANDS OF AN ANSWERING PAIR** (`LadderStepFrag.lean:201`, read verbatim): one
+object state; countdowns equal or both `≥ 2 (a + b)`; registers equal or both `≥ 2 (a + b)`; and
+gaps `n - c` equal, or both `≥ 2 a`, or both `≤ -(2 b + 2)`.
+
+**WHAT IS MEASURED AND WHAT IS NOT.**  Both statements below are POINTWISE: each position of the
+longer region is given an answering position of the shorter one and the four `Zrel` clauses are
+checked there.  Neither is a row link: `LnkRow` additionally demands the recursive jump structure
+and the back-matching condition at every budget, and nothing here supplies either.  No `def`
+relating two ladder states is added, `Mrel` is not edited, and no path forth is landed.
+-/
+
+namespace ProbeRowResidue
+
+/-! ### The register's forced law, in the ladder conditions' own terms -/
+
+/-- **THE REGISTER FALLS BY AT MOST ONE PER STEP.**  The only law `RladAdm` places on the register
+is `Drift`, so over `i` steps it can fall by at most `i`.  Nothing bounds its rise. -/
+theorem nxt_ge_sub {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (u : ℤ) :
+    ∀ i : ℕ, nxtAt g u ≤ nxtAt g (u + (i : ℤ)) + i := by
+  intro i
+  induction i with
+  | zero => simp
+  | succ i ih =>
+    have hd : Drift (nxtAt g (u + (i : ℤ))) (nxtAt g (u + (i : ℤ) + 1)) :=
+      (isLadderPath_components g hg (u + (i : ℤ))).2.2.1
+    unfold Drift at hd
+    have hcast : u + ((i + 1 : ℕ) : ℤ) = u + (i : ℤ) + 1 := by push_cast; ring
+    rw [hcast]
+    omega
+
+/-- **THE GAP IS NON-DECREASING INSIDE A PENDING REGION, AND RISES BY AT MOST TWO PER STEP.**  The
+countdown falls by exactly one per step inside a region while the register drifts, so the two
+laws compose into a one-sided bound on the gap.  This is the whole of what the ladder conditions
+force about the register at an intermediate position. -/
+theorem gap_mono_of_pend {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+    (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (u : ℤ)
+    (hu : pend (objAt g u) = true) (hc : 1 ≤ cntAt g u) :
+    (nxtAt g u : ℤ) - cntAt g u ≤ (nxtAt g (u + 1) : ℤ) - cntAt g (u + 1) ∧
+      (nxtAt g (u + 1) : ℤ) - cntAt g (u + 1) ≤ (nxtAt g u : ℤ) - cntAt g u + 2 := by
+  obtain ⟨-, -, hd, hcnt⟩ := isLadderPath_components g hg u
+  have h1 := (cntAt_sub_of_pend g hg u hu 1 (by omega)).1
+  rw [show u + ((1 : ℕ) : ℤ) = u + 1 by push_cast; ring] at h1
+  rw [hu, h1] at hcnt
+  unfold Count at hcnt
+  rw [if_pos rfl, if_pos rfl] at hcnt
+  unfold Drift at hd
+  omega
+
+end ProbeRowResidue
+
+namespace ProbeRowResidue
+
+/-! ### The measurement on `R4`, at the landed pair `xM`/`yM` -/
+
+/-- The length of the SHORTER region of the landed pair: the countdown `xM` carries. -/
+def cM (P a b : ℕ) : ℕ := (P + 1) * (a + (b + 1))
+
+/-- **THE EXHIBITED ANSWERING POSITION.**  Offset `j` of the longer region is answered at offset
+`j` of the shorter one while `j ≤ P` — there is no countdown-matching partner for the longer
+region's first `P + 1` positions, and the threshold escape carries them — and at offset
+`j - (P + 1)` afterwards, where every clause holds by equality. -/
+def ansM (P : ℕ) (t : ℤ) (j : ℕ) : ℤ :=
+  if j ≤ P then t + (j : ℤ) else t + ((j - (P + 1) : ℕ) : ℤ)
+
+/-- **THE EXHIBITED REGISTER**, as a function of the offset: the shorter path's own register,
+raised by exactly the modulus over the first `P + 1` positions and copied unshifted afterwards. -/
+def regM (P : ℕ) (h : ℤ → LadderState R4 pendR) (t : ℤ) (j : ℕ) : ℕ :=
+  if j ≤ P then nxtAt h (t + (j : ℤ)) + (P + 1) else nxtAt h (t + ((j - (P + 1) : ℕ) : ℤ))
+
+/-- The forced walk never leaves the pending part. -/
+theorem pendR_rotR_iterate (j : ℕ) : pendR (rotR^[j] R4.r0) = true := by
+  induction j with
+  | zero => rfl
+  | succ j ih =>
+    rw [Function.iterate_succ_apply']
+    revert ih
+    generalize rotR^[j] R4.r0 = q
+    cases q <;> simp [pendR, rotR]
+
+/-- The exhibited state at offset `j` of the LONGER region: the object and the countdown as the
+ladder conditions force them at every ladder path through `yM` (`longer_region_forced`), and the
+register as `regM` exhibits it. -/
+def stM (P a b : ℕ) (h : ℤ → LadderState R4 pendR) (t : ℤ) (j : ℕ) : LadderState R4 pendR :=
+  ⟨(rotR^[j] R4.r0, cM P a b + (P + 1) - j, regM P h t j),
+    fun hq => by rw [pendR_rotR_iterate] at hq; exact absurd hq (by simp)⟩
+
+/-- The exhibited family starts AT the landed pair's second state. -/
+theorem stM_zero (P a b : ℕ) (h : ℤ → LadderState R4 pendR) (t : ℤ)
+    (ht : h t = xM P a b) : stM P a b h t 0 = yM P a b := by
+  have hn : nxtAt h t = cM P a b := by unfold nxtAt cM; rw [ht]; rfl
+  apply Subtype.ext
+  show (rotR^[0] R4.r0, cM P a b + (P + 1) - 0, regM P h t 0) = _
+  have hr : regM P h t 0 = cM P a b + (P + 1) := by
+    unfold regM
+    rw [if_pos (Nat.zero_le P)]
+    simpa using hn
+  rw [hr]
+  show (R4.r0, cM P a b + (P + 1) - 0, cM P a b + (P + 1)) = _
+  simp [yM, cM]
+
+/-- **THE LONGER REGION'S OBJECT AND COUNTDOWN ARE FORCED**, at every ladder path through `yM`:
+only the register is free.  This is what makes `stM` a measurement of the register rather than a
+choice of three coordinates. -/
+theorem longer_region_forced (P a b : ℕ) (h' : ℤ → LadderState R4 pendR)
+    (hh' : IsLadderPath stepR pendR h') (t : ℤ) (ht' : h' t = yM P a b) (j : ℕ)
+    (hj : j ≤ cM P a b + (P + 1)) :
+    objAt h' (t + (j : ℤ)) = rotR^[j] R4.r0 ∧
+      cntAt h' (t + (j : ℤ)) = cM P a b + (P + 1) - j := by
+  have ho : objAt h' t = R4.r0 := by unfold objAt; rw [ht']; rfl
+  have hc : cntAt h' t = cM P a b + (P + 1) := by unfold cntAt cM; rw [ht']; rfl
+  have hp : pendR (objAt h' t) = true := by rw [ho]; rfl
+  refine ⟨?_, ?_⟩
+  · rw [objAt_rot h' hh' t hp j (by omega), ho]
+  · have := (cntAt_sub_of_pend h' hh' t hp j (by omega)).2
+    omega
+
+/-- **THE MEASUREMENT ON `R4`.**  At the landed `Mrel` pair `xM`/`yM`, EVERY position of the
+longer region admits an answering position of the shorter one — `ansM`, exhibited — at which all
+four clauses of `Zrel` at the budget left hold, with the longer region's register EXHIBITED by
+`regM` and its object and countdown the forced ones.
+
+The two branches are different in kind and the difference is the measurement's content.  Past the
+modulus every clause holds by EQUALITY: the countdowns agree because the regions differ by exactly
+`P + 1`, the objects because `3 ∣ P + 1` returns the forced walk to where it started, and the
+register and gap because `regM` copies the shorter path's own register.  Over the first `P + 1`
+positions no countdown-matching partner exists, and what carries them is the register's one-sided
+law: `nxt_ge_sub` forces the shorter path's register to stay at least `cM - j` there, which the
+`(K1)`-admissible modulus keeps above `2 (a + b)`, so the countdown and register clauses pass on
+their thresholds while the gap clause passes by equality, `regM` being the shorter register raised
+by exactly `P + 1`.
+
+This is POINTWISE.  It is not a row link and does not become one: `LnkRow` demands the recursive
+jump structure and the back-matching condition at every budget, and `regM`'s two branches are each
+a `Drift` walk but are not shown to join into one at the switch. -/
+theorem register_answerable_R4 (P a b : ℕ) (h3 : 3 ∣ P + 1)
+    (h : ℤ → LadderState R4 pendR) (hh : IsLadderPath stepR pendR h) (t : ℤ)
+    (ht : h t = xM P a b) (j : ℕ) (hj : j ≤ cM P a b + (P + 1)) :
+    Zrel a b (stM P a b h t j) (h (ansM P t j)) := by
+  have h3' : 3 ≤ P + 1 := Nat.le_of_dvd (by omega) h3
+  have hC : cM P a b = (P + 1) * (a + b) + (P + 1) := by
+    unfold cM; ring
+  have hCge : 3 * (a + b) ≤ (P + 1) * (a + b) := Nat.mul_le_mul_right _ h3'
+  have ho : objAt h t = R4.r0 := by unfold objAt; rw [ht]; rfl
+  have hc : cntAt h t = cM P a b := by unfold cntAt cM; rw [ht]; rfl
+  have hn : nxtAt h t = cM P a b := by unfold nxtAt cM; rw [ht]; rfl
+  have hp : pendR (objAt h t) = true := by rw [ho]; rfl
+  by_cases hjP : j ≤ P
+  · -- the longer region's extra prefix: the threshold escape, carried by `nxt_ge_sub`
+    have hjC : j ≤ cM P a b := by omega
+    have hcj : cntAt h (t + (j : ℤ)) = cM P a b - j :=
+      by have := (cntAt_sub_of_pend h hh t hp j (by omega)).2; omega
+    have hoj : objAt h (t + (j : ℤ)) = rotR^[j] R4.r0 := by
+      rw [objAt_rot h hh t hp j (by omega), ho]
+    have hnj : cM P a b ≤ nxtAt h (t + (j : ℤ)) + j := by
+      have := nxt_ge_sub h hh t j; omega
+    have hbig : 2 * (a + b) ≤ nxtAt h (t + (j : ℤ)) := by omega
+    have hans : ansM P t j = t + (j : ℤ) := by unfold ansM; rw [if_pos hjP]
+    have hreg : regM P h t j = nxtAt h (t + (j : ℤ)) + (P + 1) := by
+      unfold regM; rw [if_pos hjP]
+    rw [hans]
+    refine ⟨?_, Or.inr ⟨?_, ?_⟩, Or.inr ⟨?_, ?_⟩, Or.inl ?_⟩
+    · show rotR^[j] R4.r0 = (h (t + (j : ℤ))).1.1
+      rw [← hoj]; rfl
+    · show 2 * (a + b) ≤ cM P a b + (P + 1) - j; omega
+    · show 2 * (a + b) ≤ (h (t + (j : ℤ))).1.2.1
+      change 2 * (a + b) ≤ cntAt h (t + (j : ℤ)); omega
+    · show 2 * (a + b) ≤ regM P h t j; omega
+    · show 2 * (a + b) ≤ (h (t + (j : ℤ))).1.2.2
+      change 2 * (a + b) ≤ nxtAt h (t + (j : ℤ)); omega
+    · show ((regM P h t j : ℤ) - ((cM P a b + (P + 1) - j : ℕ) : ℤ)) =
+        (((h (t + (j : ℤ))).1.2.2 : ℕ) : ℤ) - (((h (t + (j : ℤ))).1.2.1 : ℕ) : ℤ)
+      change (regM P h t j : ℤ) - ((cM P a b + (P + 1) - j : ℕ) : ℤ) =
+        ((nxtAt h (t + (j : ℤ)) : ℕ) : ℤ) - ((cntAt h (t + (j : ℤ)) : ℕ) : ℤ)
+      rw [hreg, hcj]
+      have h1 : (((cM P a b + (P + 1) - j : ℕ)) : ℤ) = (cM P a b : ℤ) + (P + 1) - j := by
+        have : j ≤ cM P a b + (P + 1) := by omega
+        push_cast [Nat.cast_sub this]; ring
+      have h2 : (((cM P a b - j : ℕ)) : ℤ) = (cM P a b : ℤ) - j := by
+        push_cast [Nat.cast_sub hjC]; ring
+      rw [h1, h2]; push_cast; ring
+  · -- past the modulus: every clause by equality
+    have hjP' : P + 1 ≤ j := by omega
+    set i : ℕ := j - (P + 1) with hi
+    have hiC : i ≤ cM P a b := by omega
+    have hji : j = i + (P + 1) := by omega
+    have hcj : cntAt h (t + (i : ℤ)) = cM P a b - i :=
+      by have := (cntAt_sub_of_pend h hh t hp i (by omega)).2; omega
+    have hoj : objAt h (t + (i : ℤ)) = rotR^[i] R4.r0 := by
+      rw [objAt_rot h hh t hp i (by omega), ho]
+    have hrot : rotR^[j] R4.r0 = rotR^[i] R4.r0 := by
+      rw [hji, Function.iterate_add_apply, rotR_iterate_dvd_three h3]
+    have hans : ansM P t j = t + (i : ℤ) := by unfold ansM; rw [if_neg hjP]
+    have hreg : regM P h t j = nxtAt h (t + (i : ℤ)) := by
+      unfold regM; rw [if_neg hjP]
+    rw [hans]
+    refine ⟨?_, Or.inl ?_, Or.inl ?_, Or.inl ?_⟩
+    · show rotR^[j] R4.r0 = (h (t + (i : ℤ))).1.1
+      rw [hrot, ← hoj]; rfl
+    · show cM P a b + (P + 1) - j = (h (t + (i : ℤ))).1.2.1
+      change _ = cntAt h (t + (i : ℤ))
+      omega
+    · show regM P h t j = (h (t + (i : ℤ))).1.2.2
+      change _ = nxtAt h (t + (i : ℤ))
+      exact hreg
+    · show ((regM P h t j : ℕ) : ℤ) - ((cM P a b + (P + 1) - j : ℕ) : ℤ) =
+        (((h (t + (i : ℤ))).1.2.2 : ℕ) : ℤ) - (((h (t + (i : ℤ))).1.2.1 : ℕ) : ℤ)
+      change ((regM P h t j : ℕ) : ℤ) - ((cM P a b + (P + 1) - j : ℕ) : ℤ) =
+        ((nxtAt h (t + (i : ℤ)) : ℕ) : ℤ) - ((cntAt h (t + (i : ℤ)) : ℕ) : ℤ)
+      rw [hreg, hcj]
+      have h1 : ((cM P a b + (P + 1) - j : ℕ) : ℤ) = ((cM P a b - i : ℕ) : ℤ) := by
+        congr 1; omega
+      rw [h1]
+
+/-- **NON-VACUITY**: ladder paths through `xM` exist at every position, so the measurement is a
+statement about something. -/
+theorem exists_path_through_xM (P a b : ℕ) (t : ℤ) :
+    ∃ h : ℤ → LadderState R4 pendR, IsLadderPath stepR pendR h ∧ h t = xM P a b :=
+  exists_path_through fwdR bwdR (xM P a b) t
+
+end ProbeRowResidue
+
+namespace ProbeRowResidue
+
+/-! ### The measurement on `B5`, over the walk `region_end_matchable_B5` supplies -/
+
+/-- The `2`-cycle walk of the branching object, read on `ℤ`.  This is the walk
+`region_end_matchable_B5` spends the extra `P + 1` positions in; with `2 ∣ P + 1` the walk
+`spliceB P` builds from it is the same walk again, so the longer region here IS the `2`-cycle. -/
+def cyc2Bz (u : ℤ) : B5 := if u % 2 = 0 then B5.b0 else B5.b1
+
+theorem cyc2Bz_pend (u : ℤ) : pendB (cyc2Bz u) = true := by
+  unfold cyc2Bz; split_ifs <;> rfl
+
+theorem cyc2Bz_step (u : ℤ) : stepB (cyc2Bz u) (cyc2Bz (u + 1)) = true := by
+  unfold cyc2Bz
+  by_cases h : u % 2 = 0
+  · rw [if_pos h, if_neg (by omega)]; rfl
+  · rw [if_neg h, if_pos (by omega)]; rfl
+
+theorem cyc2Bz_idle (u : ℤ) : stepB (cyc2Bz u) B5.idle = true := by
+  unfold cyc2Bz; split_ifs <;> rfl
+
+/-- **A CONCRETE LADDER PATH ON THE BRANCHING OBJECT**: a pending region ending at `t + c₀`, the
+object walking the `2`-cycle, the register descending in lockstep with the countdown, idle after.
+The region extends infinitely into the past because `idle` is a sink in `B5` — a pending state has
+no idle predecessor — which is the ladder conditions' own doing and not a choice made here. -/
+def gLad (c₀ : ℕ) (t : ℤ) (u : ℤ) : LadderState B5 pendB :=
+  if u ≤ t + (c₀ : ℤ) then
+    ⟨(cyc2Bz (u - t), ((c₀ : ℤ) + t - u).toNat, ((c₀ : ℤ) + t - u).toNat),
+      fun hq => by simp [cyc2Bz_pend] at hq⟩
+  else ⟨(B5.idle, 0, 0), fun _ => rfl⟩
+
+/-- **NON-VACUITY ON `B5`**: `gLad` is a ladder path at every region length and every position. -/
+theorem gLad_isLadderPath (c₀ : ℕ) (t : ℤ) : IsLadderPath stepB pendB (gLad c₀ t) := by
+  intro u
+  show Rlad stepB pendB u (gLad c₀ t u).1 (gLad c₀ t (u + 1)).1
+  by_cases h1 : u + 1 ≤ t + (c₀ : ℤ)
+  · have h0 : u ≤ t + (c₀ : ℤ) := by omega
+    have e1 : (gLad c₀ t u).1 =
+        (cyc2Bz (u - t), ((c₀ : ℤ) + t - u).toNat, ((c₀ : ℤ) + t - u).toNat) := by
+      unfold gLad; rw [if_pos h0]
+    have e2 : (gLad c₀ t (u + 1)).1 =
+        (cyc2Bz (u + 1 - t), ((c₀ : ℤ) + t - (u + 1)).toNat,
+          ((c₀ : ℤ) + t - (u + 1)).toNat) := by
+      unfold gLad; rw [if_pos h1]
+    rw [e1, e2]
+    refine ⟨?_, fun hq => by simp [cyc2Bz_pend] at hq,
+      Or.inr (Or.inr ?_), ?_⟩
+    · show stepB (cyc2Bz (u - t)) (cyc2Bz (u + 1 - t)) = true
+      rw [show u + 1 - t = (u - t) + 1 by ring]
+      exact cyc2Bz_step _
+    · show ((c₀ : ℤ) + t - (u + 1)).toNat + 1 = ((c₀ : ℤ) + t - u).toNat
+      omega
+    · show Count (pendB (cyc2Bz (u - t))) (pendB (cyc2Bz (u + 1 - t)))
+        ((c₀ : ℤ) + t - u).toNat ((c₀ : ℤ) + t - u).toNat ((c₀ : ℤ) + t - (u + 1)).toNat
+      rw [cyc2Bz_pend, cyc2Bz_pend]
+      show ((c₀ : ℤ) + t - (u + 1)).toNat + 1 = ((c₀ : ℤ) + t - u).toNat
+      omega
+  · by_cases h0 : u ≤ t + (c₀ : ℤ)
+    · have e1 : (gLad c₀ t u).1 = (cyc2Bz (u - t), 0, 0) := by
+        unfold gLad
+        rw [if_pos h0]
+        show (cyc2Bz (u - t), ((c₀ : ℤ) + t - u).toNat, ((c₀ : ℤ) + t - u).toNat) =
+          (cyc2Bz (u - t), 0, 0)
+        rw [show ((c₀ : ℤ) + t - u).toNat = 0 by omega]
+      have e2 : (gLad c₀ t (u + 1)).1 = (B5.idle, 0, 0) := by
+        unfold gLad; rw [if_neg h1]
+      rw [e1, e2]
+      refine ⟨cyc2Bz_idle _, fun hq => by simp [cyc2Bz_pend] at hq,
+        Or.inl rfl, ?_⟩
+      show Count (pendB (cyc2Bz (u - t))) (pendB B5.idle) 0 0 0
+      rw [cyc2Bz_pend]
+      simp [Count, pendB]
+    · have e1 : (gLad c₀ t u).1 = (B5.idle, 0, 0) := by unfold gLad; rw [if_neg h0]
+      have e2 : (gLad c₀ t (u + 1)).1 = (B5.idle, 0, 0) := by unfold gLad; rw [if_neg h1]
+      rw [e1, e2]
+      exact ⟨rfl, fun _ => rfl, Or.inl rfl, by simp [Count, pendB]⟩
+
+/-- The three coordinates of `gLad` inside its region. -/
+theorem gLad_at (c₀ : ℕ) (t : ℤ) (j : ℕ) (hj : j ≤ c₀) :
+    (gLad c₀ t (t + (j : ℤ))).1 = (cyc2Bz (j : ℤ), c₀ - j, c₀ - j) := by
+  unfold gLad
+  rw [if_pos (by omega)]
+  show (cyc2Bz (t + (j : ℤ) - t), ((c₀ : ℤ) + t - (t + (j : ℤ))).toNat,
+      ((c₀ : ℤ) + t - (t + (j : ℤ))).toNat) = (cyc2Bz (j : ℤ), c₀ - j, c₀ - j)
+  rw [show t + (j : ℤ) - t = (j : ℤ) by ring,
+    show ((c₀ : ℤ) + t - (t + (j : ℤ))).toNat = c₀ - j by omega]
+
+/-- **THE `Mrel` PAIR ON THE BRANCHING OBJECT**, at the same arithmetic as `Mrel_xM_yM`: one
+object state, countdowns `cM` and `cM + (P + 1)`, registers equal to the countdowns. -/
+theorem Mrel_gLad (P a b : ℕ) (h3 : 3 ∣ P + 1) (t : ℤ) :
+    Mrel P a (b + 1) (gLad (cM P a b) t t) (gLad (cM P a b + (P + 1)) t t) := by
+  have h3' : 3 ≤ P + 1 := Nat.le_of_dvd (by omega) h3
+  have hmul : 2 * (a + (b + 1)) ≤ (P + 1) * (a + (b + 1)) := by
+    calc 2 * (a + (b + 1)) ≤ 3 * (a + (b + 1)) := by omega
+      _ ≤ (P + 1) * (a + (b + 1)) := Nat.mul_le_mul_right _ h3'
+  have e1 : (gLad (cM P a b) t t).1 = (cyc2Bz 0, cM P a b, cM P a b) := by
+    have := gLad_at (cM P a b) t 0 (Nat.zero_le _)
+    simpa using this
+  have e2 : (gLad (cM P a b + (P + 1)) t t).1 =
+      (cyc2Bz 0, cM P a b + (P + 1), cM P a b + (P + 1)) := by
+    have := gLad_at (cM P a b + (P + 1)) t 0 (Nat.zero_le _)
+    simpa using this
+  have hc : cM P a b = (P + 1) * (a + (b + 1)) := rfl
+  refine ⟨⟨⟨?_, Or.inr ⟨?_, ?_⟩, Or.inr ⟨?_, ?_⟩, Or.inl ?_⟩, ?_⟩, Or.inr ⟨?_, ?_⟩⟩
+  · rw [e1, e2]
+  · rw [e1]; show 2 * (a + (b + 1)) ≤ cM P a b; omega
+  · rw [e2]; show 2 * (a + (b + 1)) ≤ cM P a b + (P + 1); omega
+  · rw [e1]; show 2 * (a + (b + 1)) ≤ cM P a b; omega
+  · rw [e2]; show 2 * (a + (b + 1)) ≤ cM P a b + (P + 1); omega
+  · rw [e1, e2]
+    show ((cM P a b : ℕ) : ℤ) - ((cM P a b : ℕ) : ℤ) =
+      ((cM P a b + (P + 1) : ℕ) : ℤ) - ((cM P a b + (P + 1) : ℕ) : ℤ)
+    omega
+  · rw [e1, e2]
+    show ((cM P a b : ℕ) : ℤ) ≡ ((cM P a b + (P + 1) : ℕ) : ℤ) [ZMOD ((P : ℤ) + 1)]
+    exact Int.modEq_iff_dvd.mpr ⟨1, by push_cast; ring⟩
+  · rw [e1]; show (P + 1) * (a + (b + 1)) ≤ cM P a b; omega
+  · rw [e2]; show (P + 1) * (a + (b + 1)) ≤ cM P a b + (P + 1); omega
+
+/-- **THE MEASUREMENT ON `B5`.**  At the `Mrel` pair of `Mrel_gLad`, every position of the longer
+region is answered by a position of the shorter one — the SAME exhibited map `ansM` — at which all
+four `Zrel` clauses at the budget left hold.
+
+Here the exhibited register is the longer path's OWN register, so on this fixture the exhibition
+is realized by an actual ladder path (`gLad_isLadderPath`) rather than only pointwise: the register
+descends in lockstep with the countdown, which is the `Drift` walk `C + (P + 1) - j`, and the gap is
+`0` on both sides at every position.  `6 ∣ P + 1` carries the object coordinate: `2 ∣ P + 1` makes
+the `2`-cycle agree across the shift of the modulus, which is exactly the walk
+`region_end_matchable_B5` supplies when its extra `P + 1` positions are spent in that cycle.
+
+**RULING 23.**  `B5` is used here as a SATISFIABILITY fixture, not as a refutation carrier: the
+branching enlarges the answering path's option set, so nothing is refuted on it and nothing is
+claimed to be.  The `3`-cycle branch `b0 → b2 → b3 → b0` is not exercised by this measurement; what
+is measured is that the `2`-cycle route `region_end_matchable_B5` itself constructs carries every
+`Zrel` clause, and the measurement says nothing about walks that take the other branch.
+
+This is not a row link either, for the same reason as on `R4`. -/
+theorem register_answerable_B5 (P a b : ℕ) (h6 : 6 ∣ P + 1) (t : ℤ) (j : ℕ)
+    (hj : j ≤ cM P a b + (P + 1)) :
+    Zrel a b (gLad (cM P a b + (P + 1)) t (t + (j : ℤ))) (gLad (cM P a b) t (ansM P t j)) := by
+  obtain ⟨k, hk⟩ := h6
+  have h3' : 6 ≤ P + 1 := by omega
+  have hC : cM P a b = (P + 1) * (a + b) + (P + 1) := by unfold cM; ring
+  have hCge : 6 * (a + b) ≤ (P + 1) * (a + b) := Nat.mul_le_mul_right _ h3'
+  have eL : (gLad (cM P a b + (P + 1)) t (t + (j : ℤ))).1 =
+      (cyc2Bz (j : ℤ), cM P a b + (P + 1) - j, cM P a b + (P + 1) - j) :=
+    gLad_at _ t j hj
+  by_cases hjP : j ≤ P
+  · have hjC : j ≤ cM P a b := by omega
+    have hans : ansM P t j = t + (j : ℤ) := by unfold ansM; rw [if_pos hjP]
+    have eR : (gLad (cM P a b) t (ansM P t j)).1 =
+        (cyc2Bz (j : ℤ), cM P a b - j, cM P a b - j) := by
+      rw [hans]; exact gLad_at _ t j hjC
+    refine ⟨?_, Or.inr ⟨?_, ?_⟩, Or.inr ⟨?_, ?_⟩, Or.inl ?_⟩
+    · rw [eL, eR]
+    · rw [eL]; show 2 * (a + b) ≤ cM P a b + (P + 1) - j; omega
+    · rw [eR]; show 2 * (a + b) ≤ cM P a b - j; omega
+    · rw [eL]; show 2 * (a + b) ≤ cM P a b + (P + 1) - j; omega
+    · rw [eR]; show 2 * (a + b) ≤ cM P a b - j; omega
+    · rw [eL, eR]
+      show ((cM P a b + (P + 1) - j : ℕ) : ℤ) - ((cM P a b + (P + 1) - j : ℕ) : ℤ) =
+        ((cM P a b - j : ℕ) : ℤ) - ((cM P a b - j : ℕ) : ℤ)
+      omega
+  · have hjP' : P + 1 ≤ j := by omega
+    set i : ℕ := j - (P + 1) with hi
+    have hiC : i ≤ cM P a b := by omega
+    have hans : ansM P t j = t + (i : ℤ) := by unfold ansM; rw [if_neg hjP]
+    have eR : (gLad (cM P a b) t (ansM P t j)).1 =
+        (cyc2Bz (i : ℤ), cM P a b - i, cM P a b - i) := by
+      rw [hans]; exact gLad_at _ t i hiC
+    have hpar : cyc2Bz (j : ℤ) = cyc2Bz (i : ℤ) := by
+      unfold cyc2Bz
+      have : (j : ℤ) % 2 = (i : ℤ) % 2 := by omega
+      rw [this]
+    have hcnt : cM P a b + (P + 1) - j = cM P a b - i := by omega
+    refine ⟨?_, Or.inl ?_, Or.inl ?_, Or.inl ?_⟩
+    · rw [eL, eR]; exact hpar
+    · rw [eL, eR]; exact hcnt
+    · rw [eL, eR]; exact hcnt
+    · rw [eL, eR]
+      show ((cM P a b + (P + 1) - j : ℕ) : ℤ) - ((cM P a b + (P + 1) - j : ℕ) : ℤ) =
+        ((cM P a b - i : ℕ) : ℤ) - ((cM P a b - i : ℕ) : ℤ)
+      omega
+
+end ProbeRowResidue
+
+/-- info: 'ProbeRowResidue.nxt_ge_sub' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.nxt_ge_sub
+
+/-- info: 'ProbeRowResidue.gap_mono_of_pend' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.gap_mono_of_pend
+
+/-- info: 'ProbeRowResidue.stM_zero' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.stM_zero
+
+/-- info: 'ProbeRowResidue.longer_region_forced' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.longer_region_forced
+
+/-- info: 'ProbeRowResidue.register_answerable_R4' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.register_answerable_R4
+
+/-- info: 'ProbeRowResidue.exists_path_through_xM' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.exists_path_through_xM
+
+/-- info: 'ProbeRowResidue.gLad_isLadderPath' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.gLad_isLadderPath
+
+/-- info: 'ProbeRowResidue.Mrel_gLad' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.Mrel_gLad
+
+/-- info: 'ProbeRowResidue.register_answerable_B5' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.register_answerable_B5

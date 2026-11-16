@@ -1363,6 +1363,34 @@ theorem Mrel.mono {P a b a' b' : ℕ} {x y : LadderState Q pend} (ha : a' ≤ a)
   have hm : (P + 1) * (a' + b') ≤ (P + 1) * (a + b) := Nat.mul_le_mul_left _ (by omega)
   exact ⟨le_trans hm e.1, le_trans hm e.2⟩
 
+/-! ### What the register coordinate measures at the `Mrel` pair
+
+**THE REGISTER'S LOCAL LAW.**  `RladAdm` mentions the register `n` in exactly two of its four
+conjuncts: in `Drift n n'`, a free `±1`/`0` walk, and inside `Count` ONLY at an idle-to-pending
+transition, where `c' = n` seeds the new countdown.  Inside a pending region `Count` is `c' + 1 = c`
+and does not mention the register; `Adm pend q` constrains the countdown, never the register.  Two
+consequences are forced and nothing else is: the register falls by at most one per step, and since
+the countdown inside a region falls by exactly one per step, the gap `n - c` is non-decreasing
+along a region and rises by at most two per step.
+
+**WHAT WAS MEASURED.**  At the landed `Mrel` pair, with the countdown coordinate settled by
+`region_end_agrees_R4` and the object coordinate by `region_end_matchable_B5`, the register
+coordinate is SATISFIABLE pointwise on both fixtures of the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean`: every position
+of the longer region admits an answering position of the shorter one at which all four `Zrel`
+clauses at the budget left hold, with the answering register exhibited as a function of the offset.
+Past the modulus every clause holds by equality; over the longer region's extra `P + 1` positions
+no countdown-matching partner exists, and what carries them is the register's one-sided law, which
+holds the shorter path's register above the threshold there while the gap clause is met by raising
+the exhibited register by exactly the modulus.
+
+**WHAT THIS DOES NOT SAY.**  It is not a path forth and not a row link: `LnkRow` additionally
+demands the recursive jump structure and the back-matching condition at every budget, and on the
+first fixture the exhibited register's two branches are each a `Drift` walk but are not shown to
+join into one at the switch.  No relation is stated here, `Mrel` is unchanged, and nothing is
+claimed about the clip, about `ladderLift`, or about `cellAt_const_of_kappa_eq`.
+-/
+
 end Threshold
 
 end FormalSystem.Metalogic.Decidability.RaySummary

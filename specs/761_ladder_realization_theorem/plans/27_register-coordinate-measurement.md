@@ -10673,7 +10673,7 @@ modules do not have, record that the estimate was wrong and treat it as a route 
 
 ---
 
-### Phase 11.46: ROUTE (O-1) — The REGISTER Coordinate at the `Mrel` Pair, MEASURED [NOT STARTED]
+### Phase 11.46: ROUTE (O-1) — The REGISTER Coordinate at the `Mrel` Pair, MEASURED [COMPLETED]
 
 **ADDED BY THIS REVISION. THIS IS THE TRUNK, AND IT IS A MEASUREMENT RATHER THAN A RELATION
 (Ruling 22, decision 20).** Phase 11.44 attacked `Mrel` on both owed fixtures and broke it on
@@ -10734,45 +10734,45 @@ and will re-select it. `[PARTIAL]` is the honest resumable marker for a round th
 without a verdict.
 
 **Tasks**:
-- [ ] Re-derive at entry, against the live files rather than against this plan: `Zrel` and its
+- [x] Re-derive at entry, against the live files rather than against this plan: `Zrel` and its
       register and gap clauses (`LadderStepFrag.lean:201`), `Mrel` and its five lemmas
       (`:1338`-`:1360`), `LnkRow` (`:642`), `LnkRow.first_zero` (`:1042`), `LnkRow.region_end_obj`
       (`:1066`), `exists_rowLinked_path_zero` (`:750`), and in the probe `xM`/`yM` (`:897`, `:900`),
       `Mrel_xM_yM` (`:905`), `region_end_agrees_R4` (`:948`), `region_end_matchable_B5` (`:997`),
       `gB_isLadderPath` (`:749`). **Record any drift from the line numbers this plan carries**, and
       re-measure both `longFile` headrooms.
-- [ ] **Re-derive the register's local law from `RladAdm`/`IsLadderPath` and write it into the
+- [x] **Re-derive the register's local law from `RladAdm`/`IsLadderPath` and write it into the
       record in the definitions' own terms** — item 1 of the Goal — BEFORE any statement is
       attempted. A measurement that starts by guessing what the register does has measured nothing.
-- [ ] **Write out, at the landed pair and a stated budget, the exact obligation `Zrel` at the budget
+- [x] **Write out, at the landed pair and a stated budget, the exact obligation `Zrel` at the budget
       left places on an answering pair's register and gap** — item 2 — as a goal state in the
       record, quoted from the live definition.
-- [ ] **Attempt the measurement on `R4` first**, at `xM`/`yM`: for each intermediate position of the
+- [x] **Attempt the measurement on `R4` first**, at `xM`/`yM`: for each intermediate position of the
       longer region, the position of the shorter one that answers it on the countdown is already
       determined by `region_end_agrees_R4`'s arithmetic; state and attempt the register obligation
       there. **APPEND ONLY** to the probe.
-- [ ] **Then on `B5`**, over the walk `region_end_matchable_B5` supplies, with `6 ∣ P + 1` carried.
+- [x] **Then on `B5`**, over the walk `region_end_matchable_B5` supplies, with `6 ∣ P + 1` carried.
       **Ruling 23 applies and is stated in the record**: `B5` is here as a SATISFIABILITY fixture,
       not as a refutation carrier, and a refutation reached on `B5` must say why the enlarged option
       set does not defeat it.
-- [ ] **On outcome (a)**: land the refutation with `#print axioms`, NAME the coordinate and the
+- [ ] **On outcome (a)**: land the refutation with `#print axioms`, NAME the coordinate and the *(deviation: skipped — branch not taken; the round returned outcome (b))*
       obligation it breaks, and record it in `records/round-27-register-coordinate-measurement.md`.
       **A `/revise` is owed and the record says so.**
-- [ ] **On outcome (b)**: land the satisfiability statement with `#print axioms` and with the
+- [x] **On outcome (b)**: land the satisfiability statement with `#print axioms` and with the
       answering registers EXHIBITED in the statement, and record what it does and does not license —
       it licenses Phase 11.47 and nothing else; in particular it is NOT a path forth, NOT a
       `LnkRow`, and NOT an agreement of cells.
-- [ ] **On outcome (c)**: commit what compiled, write the goal state VERBATIM, mark the phase
+- [ ] **On outcome (c)**: commit what compiled, write the goal state VERBATIM, mark the phase *(deviation: skipped — branch not taken; the round returned outcome (b))*
       `[PARTIAL]`, and say which item it stalled on.
-- [ ] Either way, re-state in the record what this phase does NOT establish: it bears on the path
+- [x] Either way, re-state in the record what this phase does NOT establish: it bears on the path
       forth's register coordinate and on nothing else. It says nothing about the clip (Ruling 16),
       nothing about `ladderLift`, and it does not revive `cellAt_const_of_kappa_eq` or
       `ladderRealized` under their pinned names.
-- [ ] **Ruling 25's check, run before the phase commits**: every "is compiled" sentence this phase
+- [x] **Ruling 25's check, run before the phase commits**: every "is compiled" sentence this phase
       writes — in a docstring, in its record, in a README row — names a declaration that
       `grep -rn '<name>' FormalSystem/ Tests/ specs/evidence/` finds as a declaration line. Any that
       does not is WITHDRAWN, not softened.
-- [ ] If `git-commit-scoped.sh` drops the probe path, commit it separately and say so (Ruling 20, as
+- [x] If `git-commit-scoped.sh` drops the probe path, commit it separately and say so (Ruling 20, as
       corrected: `file_scope` now carries the probe, so this is not expected — if it happens anyway,
       the correction is stale and the record says so). Do not edit `specs/state.json`.
 

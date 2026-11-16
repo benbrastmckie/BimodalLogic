@@ -1,0 +1,205 @@
+# Round 27 — The REGISTER Coordinate at the `Mrel` Pair, Measured
+
+Phase 11.46 of plan v27 (`plans/27_register-coordinate-measurement.md`), route (O-1),
+decision 20, Ruling 22. **Verdict: outcome (b) — SATISFIABLE, AND EXHIBITED, on both fixtures.**
+
+**Re-entry note.** The dispatch that produced this record selected Phase 11.44, whose `[PARTIAL]`
+marker parses as open. Per that phase's RE-ENTRY NOTICE it executed **Phase 11.46** instead.
+Phase 11.44 was not re-entered, re-marked, or written into.
+
+## 0. Entry gate, re-derived against the live files (not read off a marker)
+
+Every declaration Phase 11.46's entry condition names was re-derived by `grep` against the live
+tree before any edit. The plan's line numbers held exactly, with no drift:
+
+| Declaration | File | Line |
+|---|---|---|
+| `Zrel` | `FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean` | 201 |
+| `LnkRow` | same | 642 |
+| `exists_rowLinked_path_zero` | same | 750 |
+| `LnkRow.first_zero` | same | 1042 |
+| `LnkRow.region_end_obj` | same | 1066 |
+| `Mrel` | same | 1338 |
+| `gB_isLadderPath` | `specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean` | 749 |
+| `not_Mrel_xR_yR` | same | 884 |
+| `xM` / `yM` | same | 897 / 900 |
+| `Mrel_xM_yM` | same | 905 |
+| `region_end_agrees_R4` | same | 948 |
+| `region_end_matchable_B5` | same | 997 |
+
+`records/round-26-threshold-relation-verdict.md` section 2 was read: it records outcome (c), and
+it already **withdraws** the fabricated `no_rowLinked_path_of_Mrel` claim from the interrupted
+dispatch. `grep -rnE '(theorem|lemma|def) +no_rowLinked_path_of_Mrel' FormalSystem/ Tests/ specs/evidence/`
+returns nothing, and this round asserts no such declaration anywhere.
+
+**Headrooms, re-measured at entry** (the plan's figures confirmed unchanged):
+`LadderStepFrag.lean` 1,368 lines, no in-source `longFile` baseline, package limit 1500
+(`lakefile.toml:34`) — 132 lines of headroom; wired probe 1,050 lines;
+`KTypeSummaryAxiomTest.lean` 3,691 against an in-source `longFile 3700` — 9 lines of headroom.
+
+## 1. The register's local law, in the ladder conditions' own terms
+
+Re-derived from the live `RladAdm` / `Rlad` / `Count` / `Drift` / `Adm` definitions, not from any
+record. `RladAdm step pend t x y` is `Rlad step pend t x.1 y.1`, whose four conjuncts are
+
+```
+step x.1 y.1 = true  ∧  (pend x.1 = false → x.2.1 = 0)  ∧
+Drift x.2.2 y.2.2    ∧  Count (pend x.1) (pend y.1) x.2.1 x.2.2 y.2.1
+```
+
+The register `n = x.2.2` occurs in exactly two of them:
+
+* in `Drift n n'`, which is `n' = n ∨ n' = n + 1 ∨ n' + 1 = n` — a free `±1`/`0` walk;
+* inside `Count px py c n c'`, and there **only** at an idle-to-pending transition, where the
+  branch `c' = n` seeds the new countdown. Inside a pending region (`px = py = true`) `Count` is
+  `c' + 1 = c` and does not mention the register at all.
+
+`Adm pend q = {c | pend q = false → c = 0}` constrains the **countdown**, never the register. So
+**inside a pending region the register is an unconstrained `Drift` walk**, and exactly two
+consequences are forced:
+
+* `ProbeRowResidue.nxt_ge_sub` — the register falls by at most one per step; nothing bounds its
+  rise;
+* `ProbeRowResidue.gap_mono_of_pend` — since the countdown inside a region falls by exactly one
+  per step, the gap `n - c` is **non-decreasing** along a region and rises by **at most two** per
+  step.
+
+`Probe761C.nxt_le_double` is about the IDLE register across a region. It is a different object,
+is cited here only as context, and is not used.
+
+## 2. What `Zrel` at the budget left demands of an answering pair
+
+Quoted from the live definition (`LadderStepFrag.lean:201`), not paraphrased:
+
+```lean
+def Zrel (a b : ℕ) (x y : LadderState Q pend) : Prop :=
+  x.1.1 = y.1.1 ∧
+  (x.1.2.1 = y.1.2.1 ∨ (2 * (a + b) ≤ x.1.2.1 ∧ 2 * (a + b) ≤ y.1.2.1)) ∧
+  (x.1.2.2 = y.1.2.2 ∨ (2 * (a + b) ≤ x.1.2.2 ∧ 2 * (a + b) ≤ y.1.2.2)) ∧
+  ((x.1.2.2 : ℤ) - x.1.2.1 = (y.1.2.2 : ℤ) - y.1.2.1 ∨
+    (2 * (a : ℤ) ≤ (x.1.2.2 : ℤ) - x.1.2.1 ∧ 2 * (a : ℤ) ≤ (y.1.2.2 : ℤ) - y.1.2.1) ∨
+    ((x.1.2.2 : ℤ) - x.1.2.1 ≤ -(2 * (b : ℤ) + 2) ∧
+      (y.1.2.2 : ℤ) - y.1.2.1 ≤ -(2 * (b : ℤ) + 2)))
+```
+
+At a budget `(a, b + 1)` one forward jump leaves `(a, b)`. The obligation on an answering pair is
+therefore: one object state; countdowns **equal or both `≥ 2 (a + b)`**; registers **equal or both
+`≥ 2 (a + b)`**; gaps **equal, or both `≥ 2 a`, or both `≤ -(2 b + 2)`**.
+
+Inside a pending region both gaps start at `0` on this pair and are non-decreasing (section 1), so
+the third gap escape `≤ -(2 b + 2)` is **dead** there and only the first two are live. This is the
+measurement's governing arithmetic.
+
+## 3. Fixture `R4` — the landed pair `xM` / `yM`
+
+Write `C := cM P a b = (P + 1) * (a + (b + 1))`, the countdown `xM` carries; `yM` carries
+`C + (P + 1)`; both registers equal their countdowns; `(K1)` gives `3 ∣ P + 1`, hence `P + 1 ≥ 3`.
+
+**The longer region's object and countdown are forced** at every ladder path through `yM`
+(`longer_region_forced`): at offset `j` they are `rotR^[j] R4.r0` and `C + (P + 1) - j`. Only the
+register is free, which is what makes this a measurement of the register rather than a choice of
+three coordinates. `stM_zero` anchors the exhibited family at the pair: `stM P a b h t 0 = yM P a b`.
+
+**The exhibited answering position** is `ansM P t j = if j ≤ P then t + j else t + (j - (P + 1))`.
+**The exhibited register** is `regM P h t j = if j ≤ P then nxtAt h (t + j) + (P + 1) else nxtAt h (t + (j - (P + 1)))`
+— the shorter path's own register, raised by exactly the modulus over the longer region's extra
+`P + 1` positions and copied unshifted afterwards.
+
+`register_answerable_R4` compiles: for every `j ≤ C + (P + 1)`,
+`Zrel a b (stM P a b h t j) (h (ansM P t j))`, for an arbitrary ladder path `h` through `xM`.
+Non-vacuity: `exists_path_through_xM`.
+
+**Values reached, by branch.**
+
+* `j ≥ P + 1` (answer `i = j - (P + 1)`): **all four clauses by equality**. Countdowns
+  `C + (P + 1) - j = C - i`; objects `rotR^[j] r0 = rotR^[i] r0` because `3 ∣ P + 1` returns the
+  forced walk to where it started; register `regM = nxtAt h (t + i)`; gap equal as a consequence.
+* `j ≤ P` (answer `i = j`): no countdown-matching partner exists — the longer region's countdown
+  there exceeds every countdown in the shorter region. What carries it is section 1's one-sided
+  law. `nxt_ge_sub` forces `nxtAt h (t + j) ≥ C - j ≥ C - P = (P + 1) (a + b) + 1 ≥ 3 (a + b) + 1`,
+  so the **countdown and register clauses pass on their thresholds** `2 (a + b)`, while the **gap
+  clause passes by equality**: `regM j - (C + (P+1) - j) = nxtAt h (t+j) - (C - j)`, the shorter
+  path's own gap.
+
+The overlap of the two branches is non-empty (`P + 1 ≤ C - 2(a+b)` because `(P+1)(a+b) ≥ 3(a+b) ≥ 2(a+b)`),
+so the switch point is not forced to `P`; `P` is the one chosen.
+
+## 4. Fixture `B5` — over the walk `region_end_matchable_B5` supplies, with `6 ∣ P + 1`
+
+`region_end_matchable_B5` spends the longer region's extra `P + 1` positions in the `2`-cycle
+`b0 → b1 → b0` and then copies the shorter walk, which needs `2 ∣ P + 1`. With `2 ∣ P + 1` the
+walk `spliceB P` builds out of that cycle **is that cycle again**, so the longer region here walks
+the `2`-cycle throughout. `6 ∣ P + 1` is the `(K1)` constraint carried in the statement's
+hypotheses; `2 ∣ P + 1` is the part the object coordinate consumes.
+
+`gLad c₀ t` is a concrete ladder path on `B5` (`gLad_isLadderPath`): a pending region ending at
+`t + c₀`, object walking the `2`-cycle, register descending in lockstep with the countdown, idle
+afterwards. The region extends infinitely into the past because `idle` is a sink in `B5` — a
+pending state has no idle predecessor — which is the ladder conditions' own doing, not a choice.
+
+`Mrel_gLad` puts the pair `gLad C t t` / `gLad (C + (P+1)) t t` at the same arithmetic as
+`Mrel_xM_yM`. `register_answerable_B5` compiles: for every `j ≤ C + (P + 1)`,
+`Zrel a b (gLad (C + (P+1)) t (t + j)) (gLad C t (ansM P t j))` — the **same** exhibited answering
+map `ansM`.
+
+**Values reached**: the exhibited register is `C + (P + 1) - j`, which is the longer path's **own**
+register, so on this fixture the exhibition is realized by an actual ladder path rather than only
+pointwise. The gap is `0` on both sides at every position. Past the modulus every clause holds by
+equality; over the first `P + 1` positions the countdown and register clauses pass on their
+thresholds (`C - j ≥ C - P ≥ 2(a+b)`) and the gap clause by equality (`0 = 0`).
+
+**Ruling 23.** `B5` is used here as a **satisfiability** fixture, not as a refutation carrier:
+nothing is refuted on it and nothing is claimed to be, so the enlarged option set the branching
+supplies cannot defeat anything. The `3`-cycle branch `b0 → b2 → b3 → b0` is **not** exercised by
+this measurement; what is measured is that the `2`-cycle route `region_end_matchable_B5` itself
+constructs carries every `Zrel` clause. The measurement says nothing about walks taking the other
+branch.
+
+## 5. The verdict, and what it licenses
+
+**Outcome (b).** The register coordinate is satisfiable at the `Mrel` pair on both landed fixtures,
+with the answering registers exhibited as functions (`regM`; on `B5`, the path's own register).
+The coordinate at which both of Phase 11.44's attacks stopped is therefore not an obstruction.
+
+This **licenses Phase 11.47 and nothing else**. In particular it is **NOT a path forth**, **NOT a
+`LnkRow`**, and **NOT an agreement of cells**. `LnkRow` additionally demands the recursive jump
+structure and the back-matching condition at every budget; neither statement here supplies either,
+and neither is named `exists_rowLinked_path`.
+
+**The residual, stated so Phase 11.47 inherits it rather than discovers it.** On `R4` the exhibited
+register's two branches are each a `Drift` walk, but they are **not shown to join into one** at the
+switch: `regM`'s value just below the switch is the shorter register raised by `P + 1`, and just
+above it is the shorter register unshifted at a position `P + 1` earlier, and `Drift` relates the
+two only by accident. A `LnkRow` needs the longer row to be an actual ladder path, so Phase 11.47's
+induction must either carry a single `Drift`-continuous register across the switch or re-choose
+the answering map so that no switch is needed. `B5` shows the obstacle is not universal: there the
+single walk `C + (P + 1) - j` works throughout and is realized by `gLad`.
+
+## 6. What this phase does NOT establish
+
+It bears on the path forth's **register** coordinate and on nothing else. It says nothing about the
+clip (Ruling 16), nothing about `ladderLift`, and it does **not** revive `cellAt_const_of_kappa_eq`
+or `ladderRealized` under their pinned names — both remain unclaimed in `FormalSystem/` and
+`Tests/`. No fourth relation is stated, no conjunct is added to `Mrel`, no new `def` relating two
+ladder states is landed, and the countdown and object coordinates are consumed as settled inputs
+rather than re-attacked (Ruling 22).
+
+## 7. Compiled declarations (Ruling 25: every name below is a declaration `grep` finds)
+
+Appended to `specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean`
+(append-only; 466 insertions, 0 deletions):
+
+`nxt_ge_sub`, `gap_mono_of_pend`, `cM`, `ansM`, `regM`, `pendR_rotR_iterate`, `stM`, `stM_zero`,
+`longer_region_forced`, `register_answerable_R4`, `exists_path_through_xM`, `cyc2Bz`,
+`cyc2Bz_pend`, `cyc2Bz_step`, `cyc2Bz_idle`, `gLad`, `gLad_isLadderPath`, `gLad_at`, `Mrel_gLad`,
+`register_answerable_B5`.
+
+Nine `#print axioms` guards, each reporting a subset of `[propext, Classical.choice, Quot.sound]`.
+
+In `FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean`: an appended
+`/-! ### What the register coordinate measures at the `Mrel` pair -/` block in the `Threshold`
+section. **No library-side theorem was landed**, because both measurements are stated at probe-local
+fixtures (`R4`, `B5`) that do not exist in the library; consequently no axiom-profile pin was owed
+and `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` was **not touched**, so its nine-line
+`longFile` headroom was not spent. `LadderStepFrag.lean` went from 1,368 to 1,396 lines, inside the
+package-wide `longFile 1500`, so no in-source baseline was added.
