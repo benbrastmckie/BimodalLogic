@@ -1,23 +1,21 @@
 {
-  "status": "partial",
+  "status": "blocked",
   "phase": "implement",
-  "dispatch_seq": 68,
-  "summary": "Phase 11.33 of plan v24 closed [COMPLETED] on outcome (a): the repaired gap clip 2*(dBack+dFwd)+2 is refuted by compilation (repaired_clip_refuted; the dblC family pays one snce jump per doubling of the idle register and reads the gap at 2^(j+1)-1), and every clip below 2^(j+1) with it. Phase 11.35 closed [COMPLETED WITH EXCLUSIONS] on its own entry condition. All gates green; a /revise is owed because the derivation phases rest on the refuted clip and the (M-1) round has no phase in this plan.",
+  "dispatch_seq": 71,
+  "summary": "Dispatch 71 named Phase 11.6, which plan v25 carries as a closed [BLOCKED] report that route (M-1) explicitly does not re-enter (its gates 11.24 and 11.22 closed by exclusion; the path level is closed by carried Ruling 3; its target statement is refuted). No phase work was done and no file outside the task directory was edited. The enterable phases are 11.41 (trunk) and 11.34.",
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/24_step-system-jump-clause-derivation-summary.md",
-      "summary": "Phase 11.33 outcome (a): repaired gap clip refuted by compilation; Phase 11.35 closed with exclusions; /revise owed."
+      "path": "specs/761_ladder_realization_theorem/summaries/25_residue-relation-refutation-first-summary.md",
+      "summary": "Dispatch 71: Phase 11.6 not entered (closed [BLOCKED] report under route (M-1)); enterable phases are 11.41 and 11.34."
     }
   ],
   "phases_completed": 47,
-  "phases_total": 64,
+  "phases_total": 66,
   "blockers": [
-    "Phase 11.39 remains [BLOCKED] from dispatch 67 (path forth needs a residue-carrying state relation); the recorded (M-1) refutation-first round has no phase in plan v24, so it cannot be executed by an implement dispatch until a /revise adds it.",
-    "The gap clip 2*(dBack+dFwd)+2 that Phases 11.38-11.40 and the candidate S a b := Zrel (a+b+1) (a+b) rest on is refuted (Probe761C.repaired_clip_refuted, Probe761C.gap_clip_below_exponential_refuted): any repaired (K4) must dominate 2^(dBack+1). /revise owed."
+    "Phase 11.6 is not enterable: plan v25's disposition table marks it '[BLOCKED] UNCHANGED, and not re-entered'; the relation ~_d its Goal is stated on was never landed (Phases 11.24 and 11.22 closed by exclusion on the (P-1) kill criterion). The dispatcher must select Phase 11.41 or 11.34 by number; selecting the first non-closed heading in file order will return 11.6 (then 11.7, 11.8, 11.20, 11.39) again."
   ],
-  "next_action_hint": "/revise plan v24 with two inputs: records/round-24-repaired-clip-verdict.md (the repaired clip is refuted; a clip of order 2^(dBack+1) is the only candidate left and is untested) and the recorded (M-1) decision. Phase 11.34 is enterable but its statement choice (thetaC at the filed clip vs dblC, which refutes both clips) should be settled by that revision first.",
-  "git_checkpoint": "5e50c8117",
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.33-handoff-20261116T090735Z.md",
-  "continuation_context": "Record: records/round-24-repaired-clip-verdict.md. Fixture: specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean, fifth section (lines 2824-3343). Mechanism lemma: nxt_le_double."
+  "next_action_hint": "Dispatch Phase 11.41 (route (M-1) trunk) by explicit phase number; Phase 11.34 is independently enterable on disjoint files. Do not re-dispatch 11.6, 11.7, 11.8, 11.20 or 11.39.",
+  "git_checkpoint": "8228f96fd",
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.33-handoff-20261116T090735Z.md"
 }

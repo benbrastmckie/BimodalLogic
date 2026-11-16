@@ -1,48 +1,33 @@
 {
   "status": "partial",
-  "started_at": "2026-11-16T08:37:45Z",
-  "completed_at": "2026-11-16T09:20:00Z",
+  "requires_user_review": true,
+  "blocked_phase": "11.6",
+  "review_reason": "Phase 11.6 blocked (not enterable): Phase 11.6 is not enterable: plan v25's disposition table marks it '[BLOCKED] UNCHANGED, and not re-entered'; the relation ~_d its Goal is stated on was never landed (Phases 11.24 and 11.22 closed by exclusion on the (P-1) kill criterion). The dispatcher must select Phase 11.41 or 11.34 by number; selecting the first non-closed heading in file order will return 11.6 (then 11.7, 11.8, 11.20, 11.39) again.",
+  "verification": {
+    "verification_passed": false,
+    "build_passed": null,
+    "note": "No source file changed; no build or census was run."
+  },
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/24_step-system-jump-clause-derivation-summary.md",
-      "summary": "Phase 11.33 closed on outcome (a): the repaired gap clip 2*(dBack+dFwd)+2 is refuted by compilation (repaired_clip_refuted, dblC family); Phase 11.35 closed with exclusions; a /revise is owed."
+      "path": "specs/761_ladder_realization_theorem/summaries/25_residue-relation-refutation-first-summary.md",
+      "summary": "Dispatch 71: Phase 11.6 not entered; enterable phases are 11.41 and 11.34."
     }
   ],
-  "modified_files": [
-    "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
-    "docs/theorem-index.md",
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "scripts/check-evidence-probes.sh",
-    "typst/generated/status.typ",
-    "specs/761_ladder_realization_theorem/plans/24_step-system-jump-clause-derivation.md",
-    "specs/761_ladder_realization_theorem/records/round-24-repaired-clip-verdict.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.33-handoff-20261116T090735Z.md",
-    "specs/761_ladder_realization_theorem/summaries/24_step-system-jump-clause-derivation-summary.md"
-  ],
-  "verification": {
-    "verification_passed": true,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "axiom_count": 14,
-    "build_passed": true
-  },
-  "requires_user_review": true,
-  "blocked_phase": "11.39",
-  "review_reason": "This dispatch's two phases closed green (11.33 completed on outcome (a), 11.35 completed with exclusions), but the task is not complete: Phase 11.39 remains blocked from dispatch 67 and the repaired gap clip that plan v24's derivation phases are built on is now refuted by compilation, so a /revise is owed. Every gate is green; vacuous_count 1 is the pre-existing proved line FormalSystem/Examples/TemporalStructures.lean:495; axiom_count 14 is unchanged.",
+  "modified_files": [],
+  "next_steps": "Dispatch Phase 11.41 by explicit phase number (Phase 11.34 independently). No /revise is needed: the plan already states the disposition.",
   "metadata": {
-    "session_id": "sess_1794811492_85c96f",
+    "session_id": "sess_1794830144_bc30b8",
     "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "dispatch_seq": 68,
-    "compliance_check": "skipped",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "dispatch_seq": 71,
     "phases_completed": 47,
-    "phases_total": 64,
-    "phases_blocked": 5,
-    "handoff_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.33-handoff-20261116T090735Z.md"
+    "phases_total": 66,
+    "compliance_check": "skipped"
   }
 }
