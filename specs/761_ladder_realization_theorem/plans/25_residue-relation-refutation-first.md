@@ -9408,7 +9408,26 @@ is a route question.
 
 ---
 
-### Phase 11.42: CONDITIONAL — The Remaining Two Count Moves and `exists_rowLinked_path` Over the Adopted Relation [NOT STARTED]
+### Phase 11.42: CONDITIONAL — The Remaining Two Count Moves and `exists_rowLinked_path` Over the Adopted Relation [COMPLETED WITH EXCLUSIONS]
+
+**CLOSED BY EXCLUSION ON ITS OWN ENTRY GATE (dispatch 75).** Phase 11.41 returned outcome (a), read
+from `records/round-25-residue-relation-verdict.md` line 3 and not inferred from a marker; the
+entry condition below (outcome (b)) is therefore not met and this phase's own text directs this
+closure. Nothing below was executed, no Lean source was edited, and no relation was designed.
+Decision 19's route (N-1) — the object-dependent THRESHOLD relation, refutation-first on `R4` and
+on a branching pending object — has NO phase in this plan; it is owed to a `/revise`, which also
+decides what replaces this phase's deliverable. STOP HERE; do not execute any item below.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Re-derive Phase 11.41's relation and confirm the gate from the verdict record | DONE as far as the gate goes: the record was read and reports outcome (a), REFUTED, with "Phase 11.42 is NOT licensed". The first-move path forth the item also names does not exist — Phase 11.41 stopped at the refutation step, which its order binding places first | `records/round-25-residue-relation-verdict.md` (header and its closing section) |
+| The cascade-through-the-cap move and the insert-a-region-in-a-tight-chain move | Not attempted: the relation they were to be built over is refuted as the path forth's hypothesis — on the pending `3`-cycle object `R4`, at every modulus `P` and every row budget `(a, b + 1)` with `1 ≤ a + b`, two `Srel`-related states admit no row-linked pair of ladder paths. Two further moves over a refuted relation would be unauditable | `no_rowLinked_path_of_Srel` (compiled, wired probe `specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean`) |
+| `exists_rowLinked_path` over `S`, and the `untl` clause as its corollary | Not stated: over `S := Srel` the statement is FALSE by the same declaration, so there is nothing to prove; the `(K2)` margin measurement was never reached. The deliverable is re-pointed to whatever phase the owed `/revise` writes for route (N-1) | `no_rowLinked_path_of_Srel`; decision 19 (route (N-1)) in `.decisions.json` |
+| The covered-fragment record | Recorded as: NO fragment is covered by an agreement of cells through a path forth after this phase; `truth_iff_of_lnkRow` stands landed and unconsumed. Appended to the verdict record | `records/round-25-residue-relation-verdict.md`, section "Phase 11.42 — closed by exclusion" |
+| The Phase 11.39 record | Phase 11.39 was not closed, re-marked or written into by this phase; its marker and re-pointing are as the plan's own amendment left them | Phase 11.39's heading and body in this plan, unmodified by dispatch 75 |
+
 
 **ADDED BY THIS REVISION. ENTRY CONDITION, AND IT IS A GATE: Phase 11.41 returned outcome (b)** —
 no refutation was found and the lengthen-a-region move's path forth compiled with its register
@@ -9444,22 +9463,22 @@ recorded. A dispatch that enters this phase and finds itself back at the choice 
 FIRST region has entered without its gate.
 
 **Tasks**:
-- [ ] Re-derive Phase 11.41's landed relation, its structural lemmas and its first-move path forth
+- [x] Re-derive Phase 11.41's landed relation, its structural lemmas and its first-move path forth
       at entry; confirm the gate by reading `records/round-25-residue-relation-verdict.md` rather
-      than by inferring it from a marker.
+      than by inferring it from a marker. *(deviation: altered — the gate was confirmed from the record as NOT met (outcome (a)); no first-move path forth exists to re-derive)*
 - [ ] Attempt the cascade-through-the-cap move, re-using `LadderPump`/`LadderChain`; record the
-      register offset it leaves.
+      register offset it leaves. *(deviation: skipped — entry gate not met: Phase 11.41 outcome (a), `no_rowLinked_path_of_Srel`)*
 - [ ] Attempt the insert-a-region-in-a-tight-chain move. **If `(K2)`'s margin is consumed, STOP**,
       record the measurement with the arithmetic written out, and return `[PARTIAL]` with the
-      margin finding named as a new ruling that is owed.
+      margin finding named as a new ruling that is owed. *(deviation: skipped — entry gate not met: Phase 11.41 outcome (a), `no_rowLinked_path_of_Srel`)*
 - [ ] State and prove `exists_rowLinked_path` over `S`, then derive the `untl` clause from it and
-      the landed `truth_iff_of_lnkRow`. `#print axioms` on both.
-- [ ] Record in `records/round-25-residue-relation-verdict.md` exactly which fragment of the
+      the landed `truth_iff_of_lnkRow`. `#print axioms` on both. *(deviation: skipped — entry gate not met: Phase 11.41 outcome (a), `no_rowLinked_path_of_Srel`)*
+- [x] Record in `records/round-25-residue-relation-verdict.md` exactly which fragment of the
       language is covered by an AGREEMENT OF CELLS after this phase — **`untl` at the `⊡`-free
       level over `S` and nothing more**, with the `snce` mirror and the `⊡` lift named as still
-      owed to Phase 11.40.
-- [ ] Record, in the same place, that Phase 11.39 stays `[BLOCKED]` and that its deliverable was
-      re-pointed here (Ruling 17). **This phase does not close, re-mark or write into Phase 11.39.**
+      owed to Phase 11.40. *(deviation: altered — recorded as a closure by exclusion: no fragment covered; Phase 11.39 untouched)*
+- [x] Record, in the same place, that Phase 11.39 stays `[BLOCKED]` and that its deliverable was
+      re-pointed here (Ruling 17). **This phase does not close, re-mark or write into Phase 11.39.** *(deviation: altered — recorded as a closure by exclusion: no fragment covered; Phase 11.39 untouched)*
 
 **Prohibited workarounds**: do NOT enter without Phase 11.41's outcome (b); do NOT weaken `LnkRow`
 or `S` mid-proof to make a move typecheck; do NOT add a hypothesis to `exists_rowLinked_path`

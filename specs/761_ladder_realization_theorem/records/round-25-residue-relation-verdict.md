@@ -124,3 +124,21 @@ about `ladderLift`, and it does not revive `cellAt_const_of_kappa_eq` or `ladder
 their pinned names. It does not refute the row link, `truth_iff_of_lnkRow`, or any agreement of
 cells. Phase 11.39 is untouched and stays as it was. No path forth was attempted: outcome (a) was
 reached at the refutation step, which the order binding on this phase places first.
+
+## Phase 11.42 — closed by exclusion
+
+Phase 11.42 was dispatched (dispatch 75) and closed `[COMPLETED WITH EXCLUSIONS]` on its own entry
+gate: this record reports outcome (a), and that phase is licensed by outcome (b) only. Nothing was
+attempted — no count move, no `exists_rowLinked_path`, no Lean edit — because the statement over
+`Srel` is false by `no_rowLinked_path_of_Srel`.
+
+- **Fragment covered by an agreement of cells through a path forth**: none. `truth_iff_of_lnkRow`
+  is landed and has no path-forth lemma delivering it to cells; the `snce` mirror and the `⊡` lift
+  (Phase 11.40) remain owed and depend on a deliverable that does not exist.
+- **`(K2)` margin**: not reached, not measured.
+- **Phase 11.39**: not closed, re-marked or written into by Phase 11.42.
+- **What is owed**: a `/revise` carrying decision 19's route (N-1) — a relation whose countdown
+  clause is "equal, or congruent mod `P + 1` and both at least a threshold with a margin of `P + 1`
+  per unit of budget", with the refutation attempted FIRST on `R4` and on an object whose pending
+  part branches. This plan has no phase for it. Phase 11.40 is not enterable until that revision
+  re-points its dependency.
