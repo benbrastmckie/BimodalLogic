@@ -1,6 +1,6 @@
 # Implementation Plan: Task #761
 - **Task**: 761 - Ladder realization theorem: `LadderCons` and `ladderRealized` per ladder cell for all φ including box/stab letters
-- **Status**: [IMPLEMENTING] (52 of 66 phases closed; **the route is ROUTE (M-1) — REFUTATION-FIRST ON A RESIDUE-CARRYING STATE RELATION, AND THE GAP-CLIP AXIS IS PARKED WITH A COMPILED LOWER BOUND ON IT**. The governing inputs are two records written by this plan's own dispatches 67 and 68 — `records/round-24-jump-clause-verdict.md` (the path forth has NO solution from any `Zrel`-shaped hypothesis, compiled: `no_rowLinked_path_of_Zrel`) and `records/round-24-repaired-clip-verdict.md` (the repaired gap clip `2 * (dBack φ + dFwd φ) + 2` is REFUTED by compilation, `repaired_clip_refuted`, and with it every clip below `2 ^ (dBack φ + 1)`, `gap_clip_below_exponential_refuted`) — together with decision 18's USER-ANSWERED route (M-1). **Neither blocker is an open proof problem: both are statement-level defects settled by compilation, and the only state transition that discharges them is this revision.** This revision ADDS TWO phases — 11.41 (the residue-carrying relation stated, and the refutation attempted against it FIRST) and 11.42 (CONDITIONAL — the remaining two count moves and `exists_rowLinked_path` over the adopted relation) — REWRITES TWO open `[NOT STARTED]` bodies (11.34, whose witness family and clip are settled here at plan level rather than left to the dispatch; 11.40, re-pointed off the `[BLOCKED]` 11.39 onto 11.42 and re-stated with its clip-status item corrected, because the clip it was to promote from CONJECTURED to PROVED is now refuted), WIDENS Phase 18's `Depends on` and its records pass, and **re-marks no `[COMPLETED]` or `[COMPLETED WITH EXCLUSIONS]` phase.** **AMENDMENT, 2026-11-16 — THE FIVE `[BLOCKED]` MARKERS ARE RE-MARKED `[COMPLETED WITH EXCLUSIONS]`.** Phases 11.6, 11.7, 11.8, 11.20 and 11.39 now carry `[COMPLETED WITH EXCLUSIONS]`, each with its own `#### Reasoned Exclusions` record at the head of its body. Every one of those five bodies is otherwise carried byte-identical, every measured account stands, and no landed declaration is re-opened or re-derived — what changed is the MARKER and nothing else. The reason is mechanical: `[BLOCKED]` is a member of `PHASE_STATUS_OPEN_ALT` in `scripts/lib/phase-heading-patterns.sh`, so every phase-accounting and resume-scan consumer reads these five as OPEN and RESUMABLE and selects them for dispatch, which is how dispatch 71 came to be sent at Phase 11.6 and to return having done no work. The plan already meant `closed`: Phase 11.22's own body calls Phase 11.20's outcome "a CLOSED outcome rather than a resumable one", and Phase 11.7's own body directs this exact closure on Phase 11.33's outcome (a), which is the outcome 11.33 recorded. This amendment supersedes Ruling 17 on the marker alone; see that ruling's own amendment note. Fourteen phases are open, all `[NOT STARTED]`. **Two phases are ENTERABLE: 11.41 and 11.34, in that order of value, and they touch disjoint files.** The plan-level marker is owned by `update-plan-status.sh`; postflight stamps it from the next dispatch's own return)
+- **Status**: [IMPLEMENTING] (52 of 66 phases closed; **the route is ROUTE (M-1) — REFUTATION-FIRST ON A RESIDUE-CARRYING STATE RELATION, AND THE GAP-CLIP AXIS IS PARKED WITH A COMPILED LOWER BOUND ON IT**. The governing inputs are two records written by this plan's own dispatches 67 and 68 — `records/round-24-jump-clause-verdict.md` (the path forth has NO solution from any `Zrel`-shaped hypothesis, compiled: `no_rowLinked_path_of_Zrel`) and `records/round-24-repaired-clip-verdict.md` (the repaired gap clip `2 * (dBack φ + dFwd φ) + 2` is REFUTED by compilation, `repaired_clip_refuted`, and with it every clip below `2 ^ (dBack φ + 1)`, `gap_clip_below_exponential_refuted`) — together with decision 18's USER-ANSWERED route (M-1). **Neither blocker is an open proof problem: both are statement-level defects settled by compilation, and the only state transition that discharges them is this revision.** This revision ADDS TWO phases — 11.41 (the residue-carrying relation stated, and the refutation attempted against it FIRST) and 11.42 (CONDITIONAL — the remaining two count moves and `exists_rowLinked_path` over the adopted relation) — REWRITES TWO open `[NOT STARTED]` bodies (11.34, whose witness family and clip are settled here at plan level rather than left to the dispatch; 11.40, re-pointed off the `[BLOCKED]` 11.39 onto 11.42 and re-stated with its clip-status item corrected, because the clip it was to promote from CONJECTURED to PROVED is now refuted), WIDENS Phase 18's `Depends on` and its records pass, and **re-marks no `[COMPLETED]` or `[COMPLETED WITH EXCLUSIONS]` phase.** **AMENDMENT, 2026-11-16 — THE FIVE `[BLOCKED]` MARKERS ARE RE-MARKED `[COMPLETED WITH EXCLUSIONS]`.** Phases 11.6, 11.7, 11.8, 11.20 and 11.39 now carry `[COMPLETED WITH EXCLUSIONS]`, each with its own `#### Reasoned Exclusions` record at the head of its body. Every one of those five bodies is otherwise carried byte-identical, every measured account stands, and no landed declaration is re-opened or re-derived — what changed is the MARKER and nothing else. The reason is mechanical: `[BLOCKED]` is a member of `PHASE_STATUS_OPEN_ALT` in `scripts/lib/phase-heading-patterns.sh`, so every phase-accounting and resume-scan consumer reads these five as OPEN and RESUMABLE and selects them for dispatch, which is how dispatch 71 came to be sent at Phase 11.6 and to return having done no work. The plan already meant `closed`: Phase 11.22's own body calls Phase 11.20's outcome "a CLOSED outcome rather than a resumable one", and Phase 11.7's own body directs this exact closure on Phase 11.33's outcome (a), which is the outcome 11.33 recorded. This amendment supersedes Ruling 17 on the marker alone; see that ruling's own amendment note. Fourteen phases are open, all `[NOT STARTED]`. **A SECOND AMENDMENT OF THE SAME DATE moves Phases 11.30 and 11.31's bodies later in the FILE, to sit between Phase 17 and Phase 18 — position only.** Both markers, both `Depends on` lines, both bodies and the Dependency Analysis wave table are unchanged; the two phases remain `[NOT STARTED]` and held against entry by Ruling 4, which is NOT revoked, narrowed or re-interpreted. The reason is the same selector: it takes the first heading in FILE ORDER whose marker parses as open, it cannot read a ruling, and these two sat ahead of every enterable phase while their own `Depends on` (Phase 11.33) was satisfied — so they were selected instead of the live trunk. After the move the selector's order is 11.34, 11.41, 11.42, 11.40, 12.2, 13, 14, 15.1, 15.2, 16, 17, then 11.30 and 11.31, then 18, and every one of those selections has its own `Depends on` satisfied at the point it is reached. **Numerically out-of-order file position carries no meaning in this plan** — 11.23 through 11.27 already precede 11.22 and 11.21, and 11.41 and 11.42 already precede 11.40. **Two phases are ENTERABLE: 11.41 and 11.34, in that order of value, and they touch disjoint files.** The plan-level marker is owned by `update-plan-status.sh`; postflight stamps it from the next dispatch's own return)
 - **Effort**: 75.5 hours costable: **56.5 hours landed** and **19 hours open**. The landed figure is RE-DERIVED at this revision's authoring from the predecessor plan's own `Timing` lines and the five phases its dispatches closed since: the predecessor's **47 landed** plus 11.36 at 1, 11.37 at 2.5, 11.38 at 2, 11.33 at 1.5 and 11.39 at 2.5 — the last of these SPENT AND BLOCKED, counted as landed because the hours were paid and the scaffolding (`truth_iff_of_lnkRow`, `LnkRow.first_zero`, `LnkRow.region_end_obj`, `LnkRow.refl`, `RowFrag` and the wired probe) is in the tree. **Phase 11.35 contributes 0**: it closed `[COMPLETED WITH EXCLUSIONS]` on its own entry condition and `CounterQuotient.lean` was not edited. No closed phase's `Timing` line is re-estimated by this revision. The open figure is RE-DERIVED from the open phases' own `Timing` lines: 11.34 at 1.5, 12.2 at 1, 13 at 2, 14 at 1.5, 15.2 at 0.5, 16 at 2, 17 at 1.5 and 18 at 1.5 — **11.5 carried** — plus 11.40 at 2.5 (carried unchanged although its body is rewritten; the two lemmas and the record it owes are the same count of objects) and this revision's two new phases: **11.41 at 2.5** (one relation, one refutation attempt on two fixtures, one record, bounded by its own kill criterion) and **11.42 at 2.5** (CONDITIONAL; the two count moves and the path forth, bounded the same way). Phases 11, 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7, 11.8, 11.9, 11.12, 11.15, 11.21, 11.26, 11.27, 11.30, 11.31, 11.32 and 15.1 remain NOT COSTABLE, and Phases 11.7, 11.30, 11.31 and 15.1 are the four of those that are open; no hour figure is invented for any of them
 - **Dependencies**: 760, 775, 805, 806, 819, 820, 934 — all seven discharged or terminal (760/775 archived; 805/806 `[COMPLETED]`; 819 archived at `specs/archive/819_ladder_cell_presentation_design_decision/`; 820 the counter-lift gate table; **934 `[COMPLETED]`**, the depth-`0` reachability probe). **No open task is named as a gate by this plan, and task 836 is NOT carried as a `dependencies[]` edge** — the recorded decision of cycle 0 (2026-11-04) forbids re-adding it, because 836 is `[BLOCKED]` on an obligation its own Phase 3 gate refuted and can never reach a terminal status; its relationship to this task is an ARTIFACT INPUT, named under Research Inputs. Tasks 929 and 930 are archived and were derived by an earlier plan round to be INPUTS rather than gates; that derivation stands
 - **Research Inputs**:
@@ -2516,7 +2516,7 @@ INFERENCE.** The predecessor plan left nineteen phases not closed. None is silen
 | **11.34** the library-side refutation declaration | `[NOT STARTED]` | **REWRITTEN, still owed, and now ENTERABLE.** `Depends on` UNCHANGED at `11.33` (now `[COMPLETED]`); `Timing` unchanged at 1.5. What this revision settles at plan level rather than leaving to the dispatch: WHICH witness family and at WHICH clip (the `thetaC`-shaped witness at the FILED clip, matching the prose the phase exists to back), and three stale file measurements corrected |
 | 11.7 `cellAt_const_of_kappa_eq` | `[COMPLETED WITH EXCLUSIONS]` (2026-11-16, on Phase 11.33's outcome (a), as this phase's own body directs; `[BLOCKED]` as this revision found it) | **NOT RE-ENTERED.** Its filed Goal is REFUTED at the filed clip, at the repaired clip, and at every clip below `2 ^ (dBack + 1)` (Ruling 16), and is landed under NO name on any branch. The phase that would bear on it is the derivation, and the bridge it needs is the one Ruling 16 parks |
 | 11.6, 11.8, 11.20 | `[COMPLETED WITH EXCLUSIONS]` (2026-11-16; `[BLOCKED]` as this revision found them) | **NOT RE-ENTERED.** Each REPORTED; their landed declarations are inputs, carried byte-identical below each phase's `#### Reasoned Exclusions` record. Route (M-1) does not re-open the path level (carried Ruling 3) |
-| 11.30, 11.31 ROUND 2 | `[NOT STARTED]` | **CARRIED, gates unchanged, and still NOT ENTERED on decision (E-5)'s premise** (carried Ruling 4). Nothing in either record revives that premise |
+| 11.30, 11.31 ROUND 2 | `[NOT STARTED]` | **CARRIED, gates unchanged, and still NOT ENTERED on decision (E-5)'s premise** (carried Ruling 4). Nothing in either record revives that premise. **Their bodies were RELOCATED in the file (2026-11-16) to sit between Phases 17 and 18 — position only, no marker, dependency or content change** — because the orchestrator's phase selector reads file order and cannot read a ruling. They were deliberately NOT closed by exclusion: Ruling 4's own words are that the pair "becomes enterable only once the parameter question has a verdict", so conditions 1 and 5 of the `[COMPLETED WITH EXCLUSIONS]` admission test fail and the honest marker is the one they carry |
 | 12.2 `Real`'s certification and `Real ⊆ Dmax` | `[NOT STARTED]` | **CARRIED, gate unchanged.** `real_subset_Dmax_stepFrag` remains ONE INCLUSION on the STEP FRAGMENT at derived parameters, and nothing in it addresses the converse (`ladderLift`) or the whole language |
 | 13 `ladderSound`, 14 `ladderCons_localRun`, 15.1 `ladderLift`, 15.2 `Dmax ⊆ Real` | `[NOT STARTED]` | **CARRIED, gates unchanged, none refuted.** `ladderLift` in particular is addressed by no phase of this revision and no phase claims progress on it |
 | 16 `ladderRealized` | `[NOT STARTED]` | **CARRIED.** Its filed Goal is REFUTED at every clip the tree has tried (`no_fibre_equation_over_kappa` at the filed clip; Ruling 16 above it) and is not attempted there on any branch; no weakened same-named restatement is landed under it |
@@ -8238,197 +8238,6 @@ a drafting detail.
 
 ---
 
-### Phase 11.30: CONDITIONAL ON OUTCOME (a) — ROUND 2's Statement Layer: the Run-Level Adequacy Pair [NOT STARTED]
-
-**RULING 4 — THIS PHASE IS NOT ENTERED ON DECISION (E-5)'s PREMISE, AND ITS GATE IS NOW PHASE
-11.33. INSERTED BY THIS REVISION; READ IT BEFORE THE CARRIED ENTRY CONDITION BELOW.** Phase 11.29
-DID reach outcome (a) — the filed `cellAt_const_of_kappa_eq` is REFUTED — so this phase's carried
-entry condition is literally met. **It is still not entered, because the premise the condition was
-written on is contradicted.** Decision (E-5) pre-assigned outcome (a) to the run-level pair on the
-reasoning that the parameter axis was already spent and that the failure would be `kappa`'s
-incompleteness as an invariant. The refutation that landed is of a different kind: a parameter
-SOURCE is wrong (`(K4)`'s gap clip), and `certStabK_fails_of_contains_realized` compiles that
-condition (5) fails on every set containing the realized triples at that clip — **so this pair's
-SOUNDNESS leg inherits the same defect unrepaired and cannot go through `Real`'s certification as
-filed.** This phase therefore stays `[NOT STARTED]` with its body unedited, its `Depends on` is
-re-pointed onto `11.33`, and when it does become enterable both legs are stated against whichever
-clip the tree then carries rather than against the spent-axis premise. A dispatch that enters this
-phase citing (E-5)'s outcome-(a) routing alone has read a superseded premise.
-
-**CARRIED ENTRY CONDITION, AND IT IS A GATE: Phase 11.29 returned outcome (a) and the filed
-`cellAt_const_of_kappa_eq` is REFUTED by a compiled object.** On outcome (b) this phase and Phase
-11.31 close `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record citing Phase
-11.29's verdict, and Phase 11.32 runs instead. **The two branches are mutually exclusive and
-exactly one runs.** (That branch resolved: outcome (a) was reached at the gap coordinate and Phase
-11.32 closed on its own outcome-(a) rule. What governs this phase's entry now is the paragraph
-above it, not this one.)
-
-**Goal**: State — before anything is proved — the RUN-LEVEL ADEQUACY PAIR that replaces the
-refuted cell-agreement step, and retire the demand that a class run project back POINTWISE:
-
-- **SOUNDNESS**: every ladder history projects to a class run.
-- **EXISTENTIAL REALIZATION**: every accepting class run is realized by SOME history.
-
-**Why this is the only direction left open, derived here so no dispatch re-derives it.** A finer
-finite quotient is REFUTED, not merely unpromising: `no_positionwise_lift`
-(`specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean:801`) refutes positionwise lifting
-for EVERY finite `K` and every sound `R`, by pigeonhole on the idle classes `kappa(0, k+2)`. And the
-parameter axis is already spent: `Tcof`, `Tnof`, `Pof` and `Bof` are `φ`-dependent and
-`paramsOk_params` discharges `ParamsOk` at them, so there is no freedom there either. What remains
-is to stop asking `kappa` to be a COMPLETE invariant — which decidability never required — and the
-measured asymmetry that **`real_certStabK_mpr` lands the BACKWARD direction UNCONDITIONALLY, with
-no cell transfer, over no displaced pair**, is direct evidence the certificate side only ever needed
-one direction.
-
-**Tasks**:
-- [ ] Write both legs out as `theorem` signatures with `sorry` bodies in `LadderRealize.lean`,
-      named so the pair is legible as a pair, and pin the existential leg's quantifier shape
-      explicitly: **`∃ σ : WorldHistory ...`, never `∀ t, ... = ξ t`**. State in the docstring that
-      the positionwise form is REFUTED by `no_positionwise_lift` and is therefore FALSE rather than
-      merely stronger.
-- [ ] Record, in the same docstring, exactly WHAT IS GIVEN UP relative to the refuted agreement:
-      the pointwise project-back, and with it the filed `ladderRealized` fibre EQUATION in its
-      current form. Name which filed Goals the pair feeds (`ladderSound` at Phase 13,
-      `ladderLift` at Phase 15.1) and which it does NOT (`ladderRealized` at Phase 16, whose
-      re-statement is Phase 11.31's).
-- [ ] Derive, at plan-execution time and in writing, whether `Dmax`, `Real`, `certStabK` and
-      `certAdmK` need any change to carry the pair. **If they do, that is a route finding and goes
-      in the record** — it is not a licence to edit a landed certificate-side definition inside
-      this phase.
-- [ ] Add the `docs/theorem-index.md` rows for the two statements, listed as OPEN with `sorry`
-      bodies, so the pair is visible before it is proved.
-
-**Prohibited workarounds**: do NOT attempt a finer finite quotient, a new quotient constructor, a
-fifth parameter source, or any enrichment of `kappa` — `no_positionwise_lift` is dispositive and
-quoted above; do NOT state the existential leg in positionwise form; do NOT prove either leg here
-(this phase is a statement layer, and proving is Phase 11.31's); do NOT derive either leg from
-`ladderSound`, `ladderLift` or `ladderCons_localRun`, which closes a cycle on this plan's own
-graph; do NOT edit the `## Lean Challenge Statements` block; do NOT edit a landed certificate-side
-definition; do NOT use `sorry` outside the two pinned signatures, and no `axiom`, `native_decide`
-or vacuous definition at all; do NOT reach for the pump spine or any path-level reading.
-
-**Timing**: NOT COSTABLE. It is the statement layer of a route whose shape is decided by Phase
-11.29's verdict; no estimate is invented for it.
-
-**Depends on**: 11.33 — **RE-POINTED BY THIS REVISION** off `11.29`. The edge is not the whole gate: Ruling 4 forbids entering this phase on decision (E-5)'s premise that the parameter axis is spent, which the refutation contradicts, so the run-level pair becomes enterable only once the parameter question has a verdict and is then re-derived against whichever clip the tree carries.
-
-**Verification Tier**: interface
-
-**Commit Mode**: per-substep
-
-**Tier Justification**: the phase adds two `sorry`-bodied signatures to `LadderRealize.lean` plus
-a docs row and changes no existing signature, so the covering check is the scoped build
-`bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize`
-plus a build of its one-hop dependents enumerated at implementation time.
-
-**Scope Hypothesis**: TWO new signatures and no change to any existing one. Confirm at
-implementation time with `git diff` over `LadderRealize.lean`: a diff that touches an existing
-signature means the pair did not fit as stated, which is a route finding for the record and not a
-silent widening.
-
-**Files to modify**:
-- `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` - the two pinned signatures and the docstring recording what is given up
-- `docs/theorem-index.md` - the two rows, listed OPEN
-- `specs/761_ladder_realization_theorem/records/round-21-refutation-verdict.md` - the route finding, appended to the record Phase 11.29 created
-
-**Verification**:
-- Scoped build of `FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize` plus its enumerated one-hop dependents — exit 0, errors zero, and exactly TWO new `declaration uses 'sorry'` warnings.
-- `grep -nE 'ladderSound|ladderLift|ladderCons_localRun'` over this phase's own additions — any hit inside a derivation is a cycle and a prohibited-workaround finding.
-- `grep -n 'no_positionwise_lift'` finds the refutation cited in the docstring; diff read-through confirms no positionwise conjunct in either signature.
-- `bash scripts/check-module-invariants.sh` — PASS.
-
----
-
-### Phase 11.31: CONDITIONAL — ROUND 2's Two Legs Compiled, and the Downstream Re-Statement [NOT STARTED]
-
-**RULING 4 REACHES THIS PHASE THROUGH ITS GATE — INSERTED BY THIS REVISION.** This phase's
-`Depends on` is unchanged (`11.30`), and Phase 11.30 is now gated on Phase 11.33 and held off
-decision (E-5)'s contradicted premise, so this phase inherits both. Nothing in its body is edited:
-when the pair's statement layer does land, this phase proves what that layer pinned, against
-whichever clip the tree then carries. **It is NOT enterable now, and `certStabK_fails_of_contains_realized`
-is the compiled reason its SOUNDNESS leg cannot be reached through `Real`'s certification at the
-filed clip.**
-
-**ENTRY CONDITION: Phase 11.30 closed with both legs STATED.** This phase proves them and
-propagates the consequence; it does not re-state them.
-
-**Goal**: Compile the soundness leg and the existential realization leg at the signatures Phase
-11.30 pinned, and re-state the downstream filed obligations against the pair rather than against
-the refuted agreement — honestly, naming what each re-statement gives up.
-
-**Tasks**:
-- [ ] Prove the SOUNDNESS leg. `HistMorphism.plus_invariance`
-      (`FormalSystem/Semantics/HistoryMorphism.lean:181`) and the offset-invariance chain Phase
-      11.28 recorded are available and are the expected tools; the covered agreement
-      `cellAt_const_of_kappa_eq_of_covered_at_time` remains citable at its own eleven-binder
-      bundle, which is a legitimate input here precisely because the pair does not need it
-      everywhere.
-- [ ] Prove the EXISTENTIAL REALIZATION leg. The history is EXHIBITED — `exists_hist_of_isLadderPath`
-      and `exists_hist_of_isLadderPath_at_offset` are the construction sites — and the proof must
-      not smuggle a positionwise correspondence back in; the realized history agrees with the class
-      run at the ORIGIN and in ACCEPTANCE, not position by position.
-- [ ] Re-state Phase 13's `ladderSound` and Phase 15.1's `ladderLift` consumption against the pair,
-      in each phase's own terms, and record in this phase's `#### Recorded Outcome` what changed for
-      each. **Do not edit those phases' bodies** — a `Depends on` graph is a plan-level object and
-      changing one is a `/revise`, not a move inside a phase.
-- [ ] **Re-state Phase 16's `ladderRealized`.** Its filed fibre EQUATION is the refuted agreement
-      with the cell identified outright, so it cannot stand as filed. Either land an honestly named
-      run-level replacement — a containment or a two-sided statement whose own name says which it
-      is — or record that the re-statement does not close and that Phase 16 therefore closes
-      `[BLOCKED]` naming Phase 11.29's refutation. **A same-named weaker restatement of
-      `ladderRealized` is never an implementer's move**; Statement Fidelity routes it to the user.
-- [ ] Record the pair, what it buys, and what it does NOT say in the `LadderRealize.lean` module
-      docstring, in `docs/theorem-index.md`, and in the README paragraph — including that `kappa`
-      is NOT claimed to be a complete invariant and that no device discrimination, tuple index or
-      bound is asserted.
-- [ ] Resync the generated inventories, the C14-style pins and `typst/generated/status.typ` for
-      every newly landed declaration.
-
-**Prohibited workarounds**: everything Phase 11.30 prohibits, carried verbatim, plus: do NOT prove
-the existential leg by proving the positionwise lift (it is FALSE by `no_positionwise_lift`); do
-NOT weaken a pinned Challenge signature under its own name; do NOT edit the
-`## Lean Challenge Statements` block; do NOT edit Phases 13, 15.1 or 16; do NOT close this phase
-`[COMPLETED]` with either leg carrying a `sorry` — a leg that does not close means `[BLOCKED]` or
-`[COMPLETED WITH EXCLUSIONS]` with the goal state recorded and the uncovered quantifier named.
-
-**Timing**: NOT COSTABLE.
-
-**Depends on**: 11.30
-
-**Verification Tier**: full
-
-**Commit Mode**: per-substep
-
-**Tier Justification**: the phase lands library theorems consumed across the realization layer and
-edits the generated inventories and the axiom-pinning test, which is a cross-cutting surface no
-cheaper tier reaches.
-
-**Scope Hypothesis**: TWO legs proved and FOUR downstream statements re-read (Phases 13, 15.1, 16
-and 12.2), with new declarations confined to `LadderRealize.lean`. Confirm at implementation time
-by listing the declarations added and the modules touched; a new module or a fifth affected
-downstream phase is a route finding for the record, not a drafting detail.
-
-**Files to modify**:
-- `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` - the two proved legs, the run-level replacement for `ladderRealized`, and the module docstring
-- `docs/theorem-index.md` - the rows for everything landed, with the refuted filed statement still recorded AS REFUTED
-- `scripts/check-module-invariants.sh` - the pin entries
-- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` - the axiom pins
-- `FormalSystem/Metalogic/Decidability/RaySummary/README.md` - the inventory row and the paragraph
-- `FormalSystem/Metalogic/README.md` - the inventory row
-- `README.md` - the generated inventory block
-- `typst/generated/status.typ` - the regenerated status block
-- `specs/761_ladder_realization_theorem/records/round-21-refutation-verdict.md` - the downstream re-statement record
-
-**Verification**:
-- `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` — exit 0, zero errors, and `sorry_count: 0` across the library.
-- `#print axioms` on both legs and on every new declaration.
-- `grep -nE 'ladderSound|ladderLift|ladderCons_localRun'` over this phase's own additions — a hit inside either leg's derivation is a cycle.
-- Diff read-through of the existential leg confirming no positionwise conjunct.
-- `bash scripts/check-evidence-probes.sh` and `bash scripts/check-module-invariants.sh` — PASS.
-- `bash .claude/scripts/verify-deploy.sh` — the full gate set.
-
----
-
 ### Phase 11.32: CONDITIONAL ON OUTCOME (b) — ROUND 3: The Non-Atom-Preserving Count Move [COMPLETED WITH EXCLUSIONS]
 
 **CLOSED ON THIS PHASE'S OWN RULE FOR OUTCOME (a)** ("On outcome (a) this phase closes `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record citing Phase 11.29's compiled refutation"). Dispatch 62 compiled the refutation the Round 1 attempt did not reach: `RefutationTargetC` HOLDS (`refutationTargetC_holds`) and this phase's own target `CountMoveTargetC` is FALSE (`not_countMoveTargetC`), fourth section of `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`. The construction this phase was to build does not exist at the filed parameters. **The `BLOCKER` record below is the historical account of the attempt made before the refutation and is kept as written**; its "What is needed" line is superseded by the route decision returned with dispatch 62. The (T-1) measurement was run inside this phase's file scope: the verdict is the compiled object `no_transferSys_links_collisions` (no whole-language `TransferSys` carries the link at the filed parameters) with the failing clause named as the `⊡` clause read at the gap coordinate; the tight family itself (gaps in `{-1, 0, 1}`, inside every clip) is NOT decided. Record: `records/round-21-refutation-verdict.md`, section "Round 4".
@@ -10957,6 +10766,218 @@ read for its exit status.
 - `#print axioms` on every headline reports a subset of `[propext, Classical.choice, Quot.sound]`.
 - `bash scripts/check-evidence-probes.sh` exits 0 with the new probe PASS and one more wired probe than its count at the start of the phase.
 - The fixture's closure carries a `⊡` letter: the probe's own non-vacuity conjunct says so and compiles.
+
+---
+
+### Phase 11.30: CONDITIONAL ON OUTCOME (a) — ROUND 2's Statement Layer: the Run-Level Adequacy Pair [NOT STARTED]
+**RELOCATED IN THE FILE, 2026-11-16 — POSITION ONLY; NOTHING ELSE ABOUT THIS PHASE OR PHASE 11.31
+IS CHANGED.** Both bodies are byte-identical to where they previously sat between Phases 11.29 and
+11.32, both markers are unchanged at `[NOT STARTED]`, both `Depends on` lines are unchanged, and
+the Dependency Analysis wave table is unchanged (these two phases are logically in waves 19 and 20
+regardless of where their text sits). The plan already stores phases out of numeric order — 11.23
+through 11.27 precede 11.22 and 11.21, and 11.41 and 11.42 precede 11.40 — so a numerically
+out-of-order position carries no meaning here beyond the ordering the `Depends on` lines state.
+
+**Why they were moved.** `/orchestrate`'s hard-mode phase selector scopes a dispatch to the first
+heading in FILE ORDER whose marker parses as open (`orchestrate-cycle-plan.sh`'s `next_phase` grep
+against `PHASE_STATUS_OPEN_ERE`, taken with `head -1`). It cannot see a ruling. Ruling 4 holds
+these two phases closed against entry while their own `Depends on` (Phase 11.33) is satisfied, so
+to that grep they looked like the next phase to work on and were selected ahead of every phase
+that is actually enterable. Moving them past Phase 17 puts every currently enterable phase ahead
+of them in file order without misreporting any phase's state. **This is a workaround for a
+selector that has no notion of enterability, not a statement about these phases**: they are NOT
+closed, NOT excluded, and NOT abandoned — Ruling 4's own words are that the pair "becomes
+enterable only once the parameter question has a verdict", and when it does, both legs are stated
+against whichever clip the tree then carries. A dispatch that reaches this phase should check
+Ruling 4 and the clip's status under Ruling 16 before entering it.
+
+
+**RULING 4 — THIS PHASE IS NOT ENTERED ON DECISION (E-5)'s PREMISE, AND ITS GATE IS NOW PHASE
+11.33. INSERTED BY THIS REVISION; READ IT BEFORE THE CARRIED ENTRY CONDITION BELOW.** Phase 11.29
+DID reach outcome (a) — the filed `cellAt_const_of_kappa_eq` is REFUTED — so this phase's carried
+entry condition is literally met. **It is still not entered, because the premise the condition was
+written on is contradicted.** Decision (E-5) pre-assigned outcome (a) to the run-level pair on the
+reasoning that the parameter axis was already spent and that the failure would be `kappa`'s
+incompleteness as an invariant. The refutation that landed is of a different kind: a parameter
+SOURCE is wrong (`(K4)`'s gap clip), and `certStabK_fails_of_contains_realized` compiles that
+condition (5) fails on every set containing the realized triples at that clip — **so this pair's
+SOUNDNESS leg inherits the same defect unrepaired and cannot go through `Real`'s certification as
+filed.** This phase therefore stays `[NOT STARTED]` with its body unedited, its `Depends on` is
+re-pointed onto `11.33`, and when it does become enterable both legs are stated against whichever
+clip the tree then carries rather than against the spent-axis premise. A dispatch that enters this
+phase citing (E-5)'s outcome-(a) routing alone has read a superseded premise.
+
+**CARRIED ENTRY CONDITION, AND IT IS A GATE: Phase 11.29 returned outcome (a) and the filed
+`cellAt_const_of_kappa_eq` is REFUTED by a compiled object.** On outcome (b) this phase and Phase
+11.31 close `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record citing Phase
+11.29's verdict, and Phase 11.32 runs instead. **The two branches are mutually exclusive and
+exactly one runs.** (That branch resolved: outcome (a) was reached at the gap coordinate and Phase
+11.32 closed on its own outcome-(a) rule. What governs this phase's entry now is the paragraph
+above it, not this one.)
+
+**Goal**: State — before anything is proved — the RUN-LEVEL ADEQUACY PAIR that replaces the
+refuted cell-agreement step, and retire the demand that a class run project back POINTWISE:
+
+- **SOUNDNESS**: every ladder history projects to a class run.
+- **EXISTENTIAL REALIZATION**: every accepting class run is realized by SOME history.
+
+**Why this is the only direction left open, derived here so no dispatch re-derives it.** A finer
+finite quotient is REFUTED, not merely unpromising: `no_positionwise_lift`
+(`specs/evidence/seam-gluing-ray-product/counter-lift-gates.lean:801`) refutes positionwise lifting
+for EVERY finite `K` and every sound `R`, by pigeonhole on the idle classes `kappa(0, k+2)`. And the
+parameter axis is already spent: `Tcof`, `Tnof`, `Pof` and `Bof` are `φ`-dependent and
+`paramsOk_params` discharges `ParamsOk` at them, so there is no freedom there either. What remains
+is to stop asking `kappa` to be a COMPLETE invariant — which decidability never required — and the
+measured asymmetry that **`real_certStabK_mpr` lands the BACKWARD direction UNCONDITIONALLY, with
+no cell transfer, over no displaced pair**, is direct evidence the certificate side only ever needed
+one direction.
+
+**Tasks**:
+- [ ] Write both legs out as `theorem` signatures with `sorry` bodies in `LadderRealize.lean`,
+      named so the pair is legible as a pair, and pin the existential leg's quantifier shape
+      explicitly: **`∃ σ : WorldHistory ...`, never `∀ t, ... = ξ t`**. State in the docstring that
+      the positionwise form is REFUTED by `no_positionwise_lift` and is therefore FALSE rather than
+      merely stronger.
+- [ ] Record, in the same docstring, exactly WHAT IS GIVEN UP relative to the refuted agreement:
+      the pointwise project-back, and with it the filed `ladderRealized` fibre EQUATION in its
+      current form. Name which filed Goals the pair feeds (`ladderSound` at Phase 13,
+      `ladderLift` at Phase 15.1) and which it does NOT (`ladderRealized` at Phase 16, whose
+      re-statement is Phase 11.31's).
+- [ ] Derive, at plan-execution time and in writing, whether `Dmax`, `Real`, `certStabK` and
+      `certAdmK` need any change to carry the pair. **If they do, that is a route finding and goes
+      in the record** — it is not a licence to edit a landed certificate-side definition inside
+      this phase.
+- [ ] Add the `docs/theorem-index.md` rows for the two statements, listed as OPEN with `sorry`
+      bodies, so the pair is visible before it is proved.
+
+**Prohibited workarounds**: do NOT attempt a finer finite quotient, a new quotient constructor, a
+fifth parameter source, or any enrichment of `kappa` — `no_positionwise_lift` is dispositive and
+quoted above; do NOT state the existential leg in positionwise form; do NOT prove either leg here
+(this phase is a statement layer, and proving is Phase 11.31's); do NOT derive either leg from
+`ladderSound`, `ladderLift` or `ladderCons_localRun`, which closes a cycle on this plan's own
+graph; do NOT edit the `## Lean Challenge Statements` block; do NOT edit a landed certificate-side
+definition; do NOT use `sorry` outside the two pinned signatures, and no `axiom`, `native_decide`
+or vacuous definition at all; do NOT reach for the pump spine or any path-level reading.
+
+**Timing**: NOT COSTABLE. It is the statement layer of a route whose shape is decided by Phase
+11.29's verdict; no estimate is invented for it.
+
+**Depends on**: 11.33 — **RE-POINTED BY THIS REVISION** off `11.29`. The edge is not the whole gate: Ruling 4 forbids entering this phase on decision (E-5)'s premise that the parameter axis is spent, which the refutation contradicts, so the run-level pair becomes enterable only once the parameter question has a verdict and is then re-derived against whichever clip the tree carries.
+
+**Verification Tier**: interface
+
+**Commit Mode**: per-substep
+
+**Tier Justification**: the phase adds two `sorry`-bodied signatures to `LadderRealize.lean` plus
+a docs row and changes no existing signature, so the covering check is the scoped build
+`bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize`
+plus a build of its one-hop dependents enumerated at implementation time.
+
+**Scope Hypothesis**: TWO new signatures and no change to any existing one. Confirm at
+implementation time with `git diff` over `LadderRealize.lean`: a diff that touches an existing
+signature means the pair did not fit as stated, which is a route finding for the record and not a
+silent widening.
+
+**Files to modify**:
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` - the two pinned signatures and the docstring recording what is given up
+- `docs/theorem-index.md` - the two rows, listed OPEN
+- `specs/761_ladder_realization_theorem/records/round-21-refutation-verdict.md` - the route finding, appended to the record Phase 11.29 created
+
+**Verification**:
+- Scoped build of `FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize` plus its enumerated one-hop dependents — exit 0, errors zero, and exactly TWO new `declaration uses 'sorry'` warnings.
+- `grep -nE 'ladderSound|ladderLift|ladderCons_localRun'` over this phase's own additions — any hit inside a derivation is a cycle and a prohibited-workaround finding.
+- `grep -n 'no_positionwise_lift'` finds the refutation cited in the docstring; diff read-through confirms no positionwise conjunct in either signature.
+- `bash scripts/check-module-invariants.sh` — PASS.
+
+---
+
+### Phase 11.31: CONDITIONAL — ROUND 2's Two Legs Compiled, and the Downstream Re-Statement [NOT STARTED]
+
+**RULING 4 REACHES THIS PHASE THROUGH ITS GATE — INSERTED BY THIS REVISION.** This phase's
+`Depends on` is unchanged (`11.30`), and Phase 11.30 is now gated on Phase 11.33 and held off
+decision (E-5)'s contradicted premise, so this phase inherits both. Nothing in its body is edited:
+when the pair's statement layer does land, this phase proves what that layer pinned, against
+whichever clip the tree then carries. **It is NOT enterable now, and `certStabK_fails_of_contains_realized`
+is the compiled reason its SOUNDNESS leg cannot be reached through `Real`'s certification at the
+filed clip.**
+
+**ENTRY CONDITION: Phase 11.30 closed with both legs STATED.** This phase proves them and
+propagates the consequence; it does not re-state them.
+
+**Goal**: Compile the soundness leg and the existential realization leg at the signatures Phase
+11.30 pinned, and re-state the downstream filed obligations against the pair rather than against
+the refuted agreement — honestly, naming what each re-statement gives up.
+
+**Tasks**:
+- [ ] Prove the SOUNDNESS leg. `HistMorphism.plus_invariance`
+      (`FormalSystem/Semantics/HistoryMorphism.lean:181`) and the offset-invariance chain Phase
+      11.28 recorded are available and are the expected tools; the covered agreement
+      `cellAt_const_of_kappa_eq_of_covered_at_time` remains citable at its own eleven-binder
+      bundle, which is a legitimate input here precisely because the pair does not need it
+      everywhere.
+- [ ] Prove the EXISTENTIAL REALIZATION leg. The history is EXHIBITED — `exists_hist_of_isLadderPath`
+      and `exists_hist_of_isLadderPath_at_offset` are the construction sites — and the proof must
+      not smuggle a positionwise correspondence back in; the realized history agrees with the class
+      run at the ORIGIN and in ACCEPTANCE, not position by position.
+- [ ] Re-state Phase 13's `ladderSound` and Phase 15.1's `ladderLift` consumption against the pair,
+      in each phase's own terms, and record in this phase's `#### Recorded Outcome` what changed for
+      each. **Do not edit those phases' bodies** — a `Depends on` graph is a plan-level object and
+      changing one is a `/revise`, not a move inside a phase.
+- [ ] **Re-state Phase 16's `ladderRealized`.** Its filed fibre EQUATION is the refuted agreement
+      with the cell identified outright, so it cannot stand as filed. Either land an honestly named
+      run-level replacement — a containment or a two-sided statement whose own name says which it
+      is — or record that the re-statement does not close and that Phase 16 therefore closes
+      `[BLOCKED]` naming Phase 11.29's refutation. **A same-named weaker restatement of
+      `ladderRealized` is never an implementer's move**; Statement Fidelity routes it to the user.
+- [ ] Record the pair, what it buys, and what it does NOT say in the `LadderRealize.lean` module
+      docstring, in `docs/theorem-index.md`, and in the README paragraph — including that `kappa`
+      is NOT claimed to be a complete invariant and that no device discrimination, tuple index or
+      bound is asserted.
+- [ ] Resync the generated inventories, the C14-style pins and `typst/generated/status.typ` for
+      every newly landed declaration.
+
+**Prohibited workarounds**: everything Phase 11.30 prohibits, carried verbatim, plus: do NOT prove
+the existential leg by proving the positionwise lift (it is FALSE by `no_positionwise_lift`); do
+NOT weaken a pinned Challenge signature under its own name; do NOT edit the
+`## Lean Challenge Statements` block; do NOT edit Phases 13, 15.1 or 16; do NOT close this phase
+`[COMPLETED]` with either leg carrying a `sorry` — a leg that does not close means `[BLOCKED]` or
+`[COMPLETED WITH EXCLUSIONS]` with the goal state recorded and the uncovered quantifier named.
+
+**Timing**: NOT COSTABLE.
+
+**Depends on**: 11.30
+
+**Verification Tier**: full
+
+**Commit Mode**: per-substep
+
+**Tier Justification**: the phase lands library theorems consumed across the realization layer and
+edits the generated inventories and the axiom-pinning test, which is a cross-cutting surface no
+cheaper tier reaches.
+
+**Scope Hypothesis**: TWO legs proved and FOUR downstream statements re-read (Phases 13, 15.1, 16
+and 12.2), with new declarations confined to `LadderRealize.lean`. Confirm at implementation time
+by listing the declarations added and the modules touched; a new module or a fifth affected
+downstream phase is a route finding for the record, not a drafting detail.
+
+**Files to modify**:
+- `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` - the two proved legs, the run-level replacement for `ladderRealized`, and the module docstring
+- `docs/theorem-index.md` - the rows for everything landed, with the refuted filed statement still recorded AS REFUTED
+- `scripts/check-module-invariants.sh` - the pin entries
+- `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` - the axiom pins
+- `FormalSystem/Metalogic/Decidability/RaySummary/README.md` - the inventory row and the paragraph
+- `FormalSystem/Metalogic/README.md` - the inventory row
+- `README.md` - the generated inventory block
+- `typst/generated/status.typ` - the regenerated status block
+- `specs/761_ladder_realization_theorem/records/round-21-refutation-verdict.md` - the downstream re-statement record
+
+**Verification**:
+- `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` — exit 0, zero errors, and `sorry_count: 0` across the library.
+- `#print axioms` on both legs and on every new declaration.
+- `grep -nE 'ladderSound|ladderLift|ladderCons_localRun'` over this phase's own additions — a hit inside either leg's derivation is a cycle.
+- Diff read-through of the existential leg confirming no positionwise conjunct.
+- `bash scripts/check-evidence-probes.sh` and `bash scripts/check-module-invariants.sh` — PASS.
+- `bash .claude/scripts/verify-deploy.sh` — the full gate set.
 
 ---
 
