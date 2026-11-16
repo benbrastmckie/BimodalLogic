@@ -3595,6 +3595,41 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 #guard_msgs in
 #print axioms truth_iff_of_lnkRow
 
+/-! ### The residue-carrying state relation (`RaySummary/LadderStepFrag.lean`)
+
+`Srel P a b` is `Zrel a b` with the two countdowns congruent modulo `P + 1`; `Srel.toZrel` is its
+projection to the step system's relation, and `Srel.refl`, `Srel.symm`, `Srel.mono` its three
+structural lemmas.
+
+What is NOT pinned here because it is not declared: a path forth from `Srel`.  The wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean` refutes it
+(`no_rowLinked_path_of_Srel`). -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Srel' does not depend on any axioms -/
+#guard_msgs in
+#print axioms Srel
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Srel.toZrel' does not depend on any axioms -/
+#guard_msgs in
+#print axioms Srel.toZrel
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Srel.refl' does not depend on any axioms -/
+#guard_msgs in
+#print axioms Srel.refl
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Srel.symm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Srel.symm
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Srel.mono' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Srel.mono
+
 /-! ### The agreement on `kappa`-classes refuted at (K4)'s clip (`RaySummary/LadderRealize.lean`)
 
 One pin: the existential refutation of the agreement's schema at the clip

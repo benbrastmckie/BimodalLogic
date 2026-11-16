@@ -9238,7 +9238,7 @@ itself, **STOP and record that the scope estimate was wrong**: that is a route q
 
 ---
 
-### Phase 11.41: ROUTE (M-1) — The Residue-Carrying State Relation, and the Refutation Attempt FIRST [NOT STARTED]
+### Phase 11.41: ROUTE (M-1) — The Residue-Carrying State Relation, and the Refutation Attempt FIRST [COMPLETED]
 
 **ADDED BY THIS REVISION. THIS IS THE TRUNK, AND ITS DISCIPLINE IS THE USER'S RULING RATHER THAN
 THIS PLAN'S PREFERENCE (Ruling 15, decision 18).** Phase 11.39 attempted the path forth from a
@@ -9309,43 +9309,43 @@ against the live fixture, and the refutation attempt then goes looking for a pai
 NOT exclude, on an object whose cycle structure is richer than a single `2`-cycle.
 
 **Tasks**:
-- [ ] Re-derive at entry, against the live files rather than against this plan: `LnkRow`,
+- [x] Re-derive at entry, against the live files rather than against this plan: `LnkRow`,
       `LnkRow.first_zero`, `LnkRow.region_end_obj`, `truth_iff_of_lnkRow` and `Zrel` in
       `LadderStepFrag.lean`; `no_rowLinked_path_of_Zrel` and its supporting objects in the wired
       probe; and `paramsOkK1`'s divisibility conjuncts in `CounterQuotient.lean`. Record any drift
-      from the line numbers this plan carries.
-- [ ] Re-derive the fixture argument above: confirm on `C3` that the refuting pair's countdowns
+      from the line numbers this plan carries. *(completed — no drift in the cited line numbers; the test file had 88 lines of headroom at entry, not 101)*
+- [x] Re-derive the fixture argument above: confirm on `C3` that the refuting pair's countdowns
       differ modulo `2`, and that `2 ∈ objCycleLens stepC pendC`. **If either fails, the relation's
       motivation is wrong and that is the phase's first finding** — record it and stop before
-      stating `S`.
-- [ ] **State `S`** in `LadderStepFrag.lean` with the shape above, plus the three structural lemmas
+      stating `S`. *(completed — both now COMPILED in the probe: `two_mem_objCycleLens_C3`, `not_Srel_xC_yC`)*
+- [x] **State `S`** in `LadderStepFrag.lean` with the shape above, plus the three structural lemmas
       any relation of this kind owes and all of which are provable without touching the path forth:
       reflexivity, symmetry, and monotonicity in `(a, b)`. **State also `S → Zrel a b`**, so every
-      consumer of the step system's results keeps working over `S` unchanged.
-- [ ] **Test `S` against the two compiled obstruction lemmas BEFORE attempting anything else.**
+      consumer of the step system's results keeps working over `S` unchanged. *(deviation: altered — the library name is `Srel`, parallel to `Zrel`; content unchanged; `Srel.toZrel`, `Srel.refl`, `Srel.symm`, `Srel.mono`)*
+- [x] **Test `S` against the two compiled obstruction lemmas BEFORE attempting anything else.**
       Instantiate `LnkRow.first_zero` and `LnkRow.region_end_obj` at `S`-related states and record,
       in the module docstring, exactly what each one now says and what it still does not. This is
-      cheap, it is what killed `Zrel`, and skipping it is how the previous round spent its budget.
-- [ ] **ATTEMPT TO REFUTE the path forth from `S`**, on TWO fixtures and in this order: (1) the
+      cheap, it is what killed `Zrel`, and skipping it is how the previous round spent its budget. *(deviation: altered — recorded in the `Srel` section docstring plus one entry in the module header, not in the header alone)*
+- [x] **ATTEMPT TO REFUTE the path forth from `S`**, on TWO fixtures and in this order: (1) the
       three-state cycle object `C3` the wired probe already carries — **APPEND ONLY, never edit or
       re-prove what is there** — and (2) a tight-chain object. The second fixture may be an object
       already defined elsewhere under `specs/evidence/`; **re-use beats authoring**, and if none
-      fits, the phase authors the smallest one that does and says why in the record.
-- [ ] **On outcome (a)**: land the refutation with `#print axioms`, NAME the failing coordinate as
+      fits, the phase authors the smallest one that does and says why in the record. *(deviation: altered — fixture 2 is a pending `3`-cycle object `R4` AUTHORED in the probe, no existing object re-used: the attack needs a forced pending walk of period at least 3; `C3` did not break, `R4` did)*
+- [x] **On outcome (a)**: land the refutation with `#print axioms`, NAME the failing coordinate as
       one of the three the obligation enumerates (the residue; the register offset after the
       lengthened region; the past row), and record it in
       `records/round-25-residue-relation-verdict.md`. **A `/revise` is owed on that verdict and the
-      record says so.**
+      record says so.** *(completed — OUTCOME (a): `ProbeRowResidue.no_rowLinked_path_of_Srel`; failing coordinate THE RESIDUE, at the intermediate positions)*
 - [ ] **On outcome (b)**: land the forward path forth for the LENGTHEN-A-REGION move at the FIRST
       region, with `#print axioms`, and **with the register offset it leaves stated explicitly in
       the statement**. Record in the same file what was attacked and did not break, stated as
-      "no refutation was found in this round" and never as "the relation is correct".
+      "no refutation was found in this round" and never as "the relation is correct". *(deviation: skipped — outcome (a) reached; no path forth attempted)*
 - [ ] **On outcome (c)**: commit the compiled scaffolding, write the goal state VERBATIM, mark the
-      phase `[BLOCKED]`, and say which coordinate the attempt stalled on.
-- [ ] Either way, re-state in the record what this phase does NOT establish: it bears on the path
+      phase `[BLOCKED]`, and say which coordinate the attempt stalled on. *(deviation: skipped — outcome (a) reached)*
+- [x] Either way, re-state in the record what this phase does NOT establish: it bears on the path
       forth and on nothing else. It says nothing about the clip (Ruling 16), nothing about
       `ladderLift`, and it does not revive `cellAt_const_of_kappa_eq` or `ladderRealized` under
-      their pinned names.
+      their pinned names. *(completed — in `records/round-25-residue-relation-verdict.md`)*
 
 **Prohibited workarounds**: do NOT skip the refutation attempt or run it after the proof attempt —
 decision 18's obligation makes the order binding, and a relation adopted without it does not

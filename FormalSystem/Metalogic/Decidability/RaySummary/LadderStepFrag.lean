@@ -49,6 +49,12 @@ row-linked pairs at a positive budget is not:
   forward jump and one further unit of budget, the two current pending regions end at the same
   object state.
 
+The residue-carrying relation is landed beside the row link, and it is not the hypothesis of the
+owed path forth either:
+
+* `Srel P a b` — `Zrel a b` with the two countdowns congruent modulo `P + 1`, the modulus `(K1)`
+  constrains.  `Srel.refl`, `Srel.symm`, `Srel.mono`, `Srel.toZrel`.
+
 ## Two properties of the system, and one obligation it leaves owed
 
 1. **The agreement follows from the truth lemma with no `ParamsOk` hypothesis.**
@@ -1198,5 +1204,65 @@ theorem truth_iff_of_lnkRow
     exact hf.elim
 
 end RowTruth
+
+/-! ### The residue-carrying state relation
+
+`Srel P a b` is `Zrel a b` with one conjunct added: the two countdowns are congruent modulo
+`P + 1`.  The modulus is the one `paramsOkK1` already constrains — every pending cycle length of
+the object divides `P + 1` — so the relation reads a residue the OBJECT determines and adds no
+parameter.
+
+**What the two necessary conditions on a row link say at `Srel`-related states.**  `LnkRow` is
+stated over `Zrel`, so `LnkRow.first_zero` and `LnkRow.region_end_obj` are unchanged; what changes
+is which pairs of states can satisfy them.
+
+* `LnkRow.region_end_obj` asks the two current pending regions, of lengths the two countdowns, to
+  end at one object state.  On an object whose pending walk is forced and periodic with a period
+  dividing `P + 1`, congruent countdowns give equal ends, so the pairs that defeat `Zrel` by this
+  lemma are not `Srel`-related.  On an object whose pending walk branches the lemma constrains the
+  CHOICE of the second path's walk and the congruence does not by itself supply one.
+* `LnkRow.first_zero` asks the first exhausted countdown after `t` to be answered by the first
+  exhausted countdown after `t'`, with every position before the answer answered back.  The
+  congruence says nothing about those intermediate positions: each one needs an answer carrying
+  its own object state whose countdown is equal to its own or above `Zrel`'s threshold
+  `2 (a + b)`, and that threshold does not depend on the object.
+
+**`Srel` does NOT deliver the path forth with a whole-row correspondence.**  The second point is
+an obstruction and not a remark: on an object with a pending `3`-cycle, at EVERY modulus `P + 1`
+and every row budget `(a, b + 1)` with `1 ≤ a + b`, there are `Srel P a (b + 1)`-related states
+with a ladder path through the first and no row-linked ladder path through the second.  The
+shorter region has only `2` positions whose countdown stays above the threshold left after one
+jump, and a `3`-cycle has three residues to answer.  This is compiled in the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean`
+(`no_rowLinked_path_of_Srel`).  So the hypothesis of the owed `exists_rowLinked_path` is not
+`Srel P a b` either: a residue conjunct on the two STATES leaves `Zrel`'s object-independent
+countdown threshold in place, and it is the threshold's margin against the object's cycle length
+that the row link reads. -/
+
+section Residue
+
+variable {Q : Type} {pend : Q → Bool}
+
+/-- **THE RESIDUE-CARRYING RELATION.** `Zrel a b` together with the congruence of the two
+countdowns modulo `P + 1`. -/
+def Srel (P a b : ℕ) (x y : LadderState Q pend) : Prop :=
+  Zrel a b x y ∧ (x.1.2.1 : ℤ) ≡ (y.1.2.1 : ℤ) [ZMOD ((P : ℤ) + 1)]
+
+/-- The residue-carrying relation refines the step system's relation at the same budget, so every
+consumer of `Zrel a b` reads `Srel P a b` unchanged. -/
+theorem Srel.toZrel {P a b : ℕ} {x y : LadderState Q pend} (h : Srel P a b x y) : Zrel a b x y :=
+  h.1
+
+theorem Srel.refl (P a b : ℕ) (x : LadderState Q pend) : Srel P a b x x :=
+  ⟨Zrel.refl a b x, Int.ModEq.refl _⟩
+
+theorem Srel.symm {P a b : ℕ} {x y : LadderState Q pend} (h : Srel P a b x y) : Srel P a b y x :=
+  ⟨h.1.symm, h.2.symm⟩
+
+theorem Srel.mono {P a b a' b' : ℕ} {x y : LadderState Q pend} (ha : a' ≤ a) (hb : b' ≤ b)
+    (h : Srel P a b x y) : Srel P a' b' x y :=
+  ⟨Zrel.mono ha hb h.1, h.2⟩
+
+end Residue
 
 end FormalSystem.Metalogic.Decidability.RaySummary
