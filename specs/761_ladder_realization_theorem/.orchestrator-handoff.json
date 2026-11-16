@@ -1,19 +1,19 @@
 {
   "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 71,
-  "summary": "Stale blocker cleared by operator: plan v25 now marks Phases 11.6/11.7/11.8/11.20/11.39 [COMPLETED WITH EXCLUSIONS] and places 11.41 (trunk) and 11.34 ahead of the relocated 11.30/11.31, so the phase selector reaches an enterable phase. Dispatch 71 named Phase 11.6, which plan v25 carries as a closed [BLOCKED] report that route (M-1) explicitly does not re-enter (its gates 11.24 and 11.22 closed by exclusion; the path level is closed by carried Ruling 3; its target statement is refuted). No phase work was done and no file outside the task directory was edited. The enterable phases are 11.41 (trunk) and 11.34.",
+  "dispatch_seq": 73,
+  "summary": "Phase 11.34 completed and committed (dd13ea881): the refutation of the filed cell agreement on kappa-classes is now one compiled library theorem, exists_kappa_collision_cellAt_ne_at_K4_clip in RaySummary/LadderRealize.lean, stated at the filed (K4) clip, with axioms propext/Classical.choice/Quot.sound, a C14 pin, an axiom-test pin and a theorem-index row. Route (i) was taken by measurement; the two-state witness is private. All gates green (full build, BimodalTest, sorry census 0, module invariants, 65 evidence probes, readme-lint, typst-sync, verify-deploy). The task stays partial only because 13 phase headings remain open.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/761_ladder_realization_theorem/summaries/25_residue-relation-refutation-first-summary.md",
-      "summary": "Dispatch 71: Phase 11.6 not entered (closed [BLOCKED] report under route (M-1)); enterable phases are 11.41 and 11.34."
+      "summary": "Dispatch 73: Phase 11.34 completed; one library refutation declaration landed, pinned and indexed."
     }
   ],
-  "phases_completed": 47,
+  "phases_completed": 53,
   "phases_total": 66,
   "blockers": [],
-  "next_action_hint": "Dispatch Phase 11.41 (route (M-1) trunk) by explicit phase number; Phase 11.34 is independently enterable on disjoint files. Do not re-dispatch 11.6, 11.7, 11.8, 11.20 or 11.39.",
-  "git_checkpoint": "8228f96fd",
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.33-handoff-20261116T090735Z.md"
+  "next_action_hint": "Dispatch Phase 11.41 (route (M-1) trunk) by explicit phase number. Do not re-dispatch 11.34, 11.6, 11.7, 11.8, 11.20 or 11.39.",
+  "git_checkpoint": "dd13ea881",
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.34-handoff-20261116T131335Z.md"
 }
