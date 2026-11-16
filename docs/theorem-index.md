@@ -313,10 +313,23 @@ entered right after the current one be over within `k` positions — has clip `2
 (`mixC_refutes`), so no constant added to the larger of the two exactness depths repairs (K4).
 Condition (5) of the `K`-indexed certificate fails with the agreement: every set containing the
 realized triples of that object's pending states is not `certStabK`-certified at the clip `3`
-(`certStabK_fails_of_contains_realized`). **What is NOT settled**: whether a larger gap clip
-makes the agreement true. Both families are defeated by a clip of the form
-`2 * (dBack φ + dFwd φ) + 2`; no proof of the agreement at any clip exists, and no such clip is
-adopted.
+(`certStabK_fails_of_contains_realized`). Both families are defeated by a clip of the form
+`2 * (dBack φ + dFwd φ) + 2` (`thetaC_pair_not_collision`, `mixC_pair_not_collision`, wired probe
+`ladder-step-fragment-gap-depth.lean`). **The agreement is REFUTED at that clip as well.** A
+region entered from an idle state with register `r₀` has exactly `r₀ + 1` positions, so the next
+idle state carries a register at most `2 r₀ + 2` (`nxt_le_double`), and `⊡` re-chooses the past
+at every idle state: `lvlC j`, with one `snce` at the guard `p` per level, holds at an idle state
+exactly when its register is at most `2 ^ (j + 1) - 2` (`lvlC_false`, `lvlC_true`). The formula
+`dblC j := ◇ (p U (¬p ∧ lvlC j))` has `dBack = j`, `dFwd = 3`, is in EVERY realized type at gap
+`2 ^ (j + 1) - 1` (`dblC_mem`) and in NONE at any larger gap (`dblC_not_mem`). For every `j ≥ 3`
+that pair is a `kappa`-collision at (K1)-(K3) as stated and (K4) replaced by
+`2 * (dBack φ + dFwd φ) + 2 ≤ B` (`repaired_clip_refuted`, clip `2 j + 8`); and at every
+threshold pair, modulus and clip `B < 2 ^ (j + 1)` (`gap_clip_below_exponential_refuted`). Each
+refutation names its clip: `refutationTargetC_holds` and `mixC_refutes` are about the clip
+`max (2 dBack + 1) (2 dFwd + 1) 2`, `repaired_clip_refuted` about `2 * (dBack + dFwd) + 2`. The
+step-fragment results are untouched: `dblC` uses jumps and the step fragment has none.
+**What is NOT settled**: whether a clip exponential in `dBack φ` makes the agreement true. No
+proof of the agreement at any clip exists, and no such clip is adopted.
 
 **What the other measurements cover.** The certificate-side route reaches the agreement over
 one named family: the row above records exactly what it covers, and that family is confined to

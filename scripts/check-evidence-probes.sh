@@ -1853,6 +1853,25 @@ EVIDENCE="specs/evidence"
 #                                                           | that section prints: `[propext,
 #                                                           | Quot.sound]` or `[propext,
 #                                                           | Classical.choice, Quot.sound]`.
+#                                                           | THE CLIP `2 * (dBack + dFwd) + 2` IS
+#                                                           | REFUTED TOO (fifth section): `dblC j`
+#                                                           | pays one `snce` at the guard `p` per
+#                                                           | DOUBLING of the idle register
+#                                                           | (`nxt_le_double`, `lvlC_false`,
+#                                                           | `lvlC_true`), has depths `(j, 3)` and
+#                                                           | separates the gap `2 ^ (j + 1) - 1`
+#                                                           | from the gap one modulus above it
+#                                                           | (`dblC_mem`, `dblC_not_mem`); for
+#                                                           | every `j >= 3` that is a collision at
+#                                                           | the repaired parameter conditions
+#                                                           | (`repaired_clip_refuted`), and at
+#                                                           | every clip below `2 ^ (j + 1)`
+#                                                           | (`gap_clip_below_exponential_refuted`).
+#                                                           | NOT settled: the agreement at a clip
+#                                                           | exponential in `dBack`. Axioms on the
+#                                                           | nine theorems that section prints:
+#                                                           | `[propext, Quot.sound]` or `[propext,
+#                                                           | Classical.choice, Quot.sound]`.
 # seam-gluing-ray-product/ladder-cell-obligation-refutation | THE DEPTH-0 CELL OBLIGATION AS
 #                                                           | FILED IS REFUTED: the schema
 #                                                           | `CellLEZeroConstOfKappaEqPre` (the
@@ -2494,10 +2513,10 @@ EVIDENCE="specs/evidence"
 #                                                           | and are NOT covered, the
 #                                                           | whole-language gap-reading depth is
 #                                                           | NOT computed, and the whole-language
-#                                                           | upper bound `2 * (dBack + dFwd) + 2`
-#                                                           | is a CONJECTURE recorded in the
-#                                                           | round's report, not a theorem of this
-#                                                           | file or of any other.
+#                                                           | clip `2 * (dBack + dFwd) + 2` is
+#                                                           | REFUTED by the fifth section of
+#                                                           | `ladder-cell-agreement-refutation`
+#                                                           | (`repaired_clip_refuted`).
 #                                                           | `cellAt_const_of_kappa_eq`,
 #                                                           | `ladderRealized`, `ladderSound`,
 #                                                           | `ladderLift` and `ladderCons_localRun`

@@ -146,10 +146,14 @@ for a state relation `S a b` that is NOT fixed here. Four facts bound what it ca
    `(1, 1)`, needs `4`), `mixC a k` (depths `(a, k + 2)`, needs `2 a + k + 1`). The clip
    `2 (a + b) + 2` dominates the envelope; the candidate `S a b := Zrel (a + b + 1) (a + b)`
    carries that clip on both gap arms.
-3. **What is proved and what is conjectured.** The step-fragment clip
-   `max (2 dBack) (2 dFwd + 2)` is PROVED and TIGHT on the forward arm. That `2 (a + b) + 2`
-   suffices on the whole language is a CONJECTURE: the envelope is a lower bound, and `thetaC`
-   and `mixC` each use one jump, so neither is reached by any agreement compiled in this module.
+3. **What is proved and what is refuted.** The step-fragment clip
+   `max (2 dBack) (2 dFwd + 2)` is PROVED and TIGHT on the forward arm. The clip `2 (a + b) + 2`
+   does NOT suffice on the whole language: the family `dblC j` of the wired probe
+   `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` pays one `snce`
+   at the guard `p` per doubling of the idle register, has depths `(j, 3)`, and separates the gap
+   `2 ^ (j + 1) - 1` from the gap one modulus above it (`repaired_clip_refuted`,
+   `gap_clip_below_exponential_refuted`). So `F (a, 3) ≥ 2 ^ (a + 1)`: no clip polynomial in the
+   two depths works, and whether a clip exponential in `dBack` does is OPEN.
 
 ## The fragment boundary
 

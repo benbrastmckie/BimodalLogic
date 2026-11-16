@@ -8178,7 +8178,7 @@ object or a new module is a route finding for the record, not a drafting detail.
 
 ---
 
-### Phase 11.33: TIME-BOXED GATE — The Refutation Attempt AGAINST the Repaired Gap Clip [NOT STARTED]
+### Phase 11.33: TIME-BOXED GATE — The Refutation Attempt AGAINST the Repaired Gap Clip [COMPLETED]
 
 **DEMOTED BY THIS REVISION FROM THE PLAN'S MAIN LINE TO A TIME-BOXED GATE (Ruling 14), AND RE-COST
 FROM 2.5 HOURS TO 1.5.** Decision 17 is SETTLED and is not re-opened; what moved is this phase's
@@ -8238,36 +8238,36 @@ monotone in time along a single history, and `untl`/`snce` jumps saturate) — a
 which is exactly why this phase attempts it rather than concluding from it.
 
 **Tasks**:
-- [ ] Re-derive, at entry, the signatures and live lines of `thetaC_pair_not_collision`,
+- [x] Re-derive, at entry, the signatures and live lines of `thetaC_pair_not_collision`,
       `mixC_pair_not_collision` and `not_kappa_collision_of_gap_inside` in the step-fragment probe,
       and of the fourth section's objects in the refutation fixture. **Record any drift rather than
-      working around it.** Do NOT re-prove either non-collision lemma.
-- [ ] **STATE THE ATTEMPT BEFORE MAKING IT.** Write the candidate separating formula down as a
+      working around it.** Do NOT re-prove either non-collision lemma. *(completed — signatures unchanged; live lines `:1185`, `:1196`, `:1203` against the carried `:1180`, `:1191`, `:1198`, a +5 line drift recorded in the round record)*
+- [x] **STATE THE ATTEMPT BEFORE MAKING IT.** Write the candidate separating formula down as a
       `def` in the refutation fixture with a docstring saying what gap distance it is supposed to
       read and which jump buys it, and state the two membership goals (IN the cell at one state,
       NOT in the cell at the other) together with the `kappa`-collision at the REPAIRED clip as
       explicit `theorem` signatures with `sorry` bodies, BEFORE either is attempted. **This is the
-      step that makes outcome (b) an object instead of a sentence.**
-- [ ] **ATTEMPT THE REFUTATION at the repaired clip.** Reuse `gluePath`/`gluePath_isPath`,
+      step that makes outcome (b) an object instead of a sentence.** *(deviation: altered — the candidate `dblC j` and its signatures were written out in full before compilation, but no `sorry`-bodied intermediate was committed: the first compile closed every goal but one arithmetic identity, so there was no unclosed goal to isolate)*
+- [x] **ATTEMPT THE REFUTATION at the repaired clip.** Reuse `gluePath`/`gluePath_isPath`,
       `exists_upRamp`, `exists_downRamp` and `cnt_le_nxt_succ_of_past_idle` from the fixture, and
       the `thetaC`/`mixC` membership arguments' structure, rather than re-inventing the
-      cell-membership route.
-- [ ] **On outcome (a)**: assemble the refutation as a single headline theorem APPENDED to the
+      cell-membership route. *(completed — the refutation closes; reused `gluePath`/`gluePath_isPath`, `exists_upRamp`, `exists_downRamp`, `kappa_collision_pos`; `cnt_le_nxt_succ_of_past_idle` was not needed)*
+- [x] **On outcome (a)**: assemble the refutation as a single headline theorem APPENDED to the
       fixture — the two states, the `kappa`-collision at the repaired clip, the repaired `ParamsOk`
       predicate, and the separating formula with both memberships — with `#print axioms` on it.
       Record the verdict in `records/round-24-repaired-clip-verdict.md`, naming the clip each
       refutation is about (carried Ruling 5), and state explicitly that the step-fragment results
-      are untouched by it.
+      are untouched by it. *(completed — headline `repaired_clip_refuted`, with `gap_clip_below_exponential_refuted` beside it; record `records/round-24-repaired-clip-verdict.md`)*
 - [ ] **On outcome (b)**: commit the attempt with its `sorry` isolated to the one unclosed goal
       **inside the fixture only, never in a library module**, and write the account into the
       fixture's docstring: the goal state reached verbatim, the step that fails, and what would have
-      to be true for it to close. Record the verdict in the same record file.
-- [ ] **Either way, record the asymmetry explicitly** in the fixture docstring and in the record: a
+      to be true for it to close. Record the verdict in the same record file. *(deviation: skipped — outcome (a) reached; the fixture carries no `sorry`)*
+- [x] **Either way, record the asymmetry explicitly** in the fixture docstring and in the record: a
       failed refutation attempt is evidence about the ATTEMPT and is NOT evidence that the agreement
-      is true at the repaired clip. A record that blurs this does not discharge the phase.
-- [ ] Run the evidence gate and confirm BOTH probes are still GATED and GREEN, since this phase
+      is true at the repaired clip. A record that blurs this does not discharge the phase. *(completed — fixture section docstring and record section 5)*
+- [x] Run the evidence gate and confirm BOTH probes are still GATED and GREEN, since this phase
       edits a wired fixture. Re-measure the wired probe total in this dispatch rather than quoting
-      the carried figure.
+      the carried figure. *(completed — 65 wired probes, all PASS, measured in this dispatch)*
 
 **Prohibited workarounds**: do NOT attempt to PROVE the agreement, at the filed clip or at the
 repaired one — this is a refutation round and a proof attempt is a prohibited workaround of it, not
