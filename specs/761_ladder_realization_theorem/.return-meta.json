@@ -1,62 +1,49 @@
 {
-  "status": "partial",
-  "started_at": "2026-11-16T02:50:00Z",
-  "completed_at": "2026-11-16T03:40:00Z",
-  "requires_user_review": true,
-  "review_reason": "The filed cellAt_const_of_kappa_eq and ladderRealized are REFUTED by compiled objects (gap coordinate, (K4) clip). No phase is BLOCKED on an unproved goal; the plan has no enterable phase whose premise survives, and a route decision is required.",
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "axiom_count": 14,
-    "build_passed": true,
-    "note": "No check failed: sorry 0, vacuous and axiom counts unchanged from baseline (docstring-only library edits), full build green with .olean newer than source for both touched modules. verification_passed is false only because two filed Goals are refuted and the task cannot be implemented as filed."
-  },
+  "status": "planned",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/21_filed-agreement-refuted-gap-clip-summary.md",
-      "summary": "Filed agreement refuted at the gap coordinate; (K4) clip exceeded without bound; Phase 11.32 closed with exclusions; route decision returned."
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/22_repaired-gap-clip-refutation.md",
+      "summary": "Plan v22: route (G-1) -- one bounded round stating a candidate repaired (K4) gap clip and attempting to refute the agreement at that clip before any proof attempt, plus the library-side refutation landing and the conditional parameter surgery"
     }
   ],
-  "modified_files": [
-    "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
-    "scripts/check-evidence-probes.sh",
-    "docs/theorem-index.md",
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "typst/generated/status.typ",
-    "specs/761_ladder_realization_theorem/plans/21_refutation-first-run-level-adequacy.md",
-    "specs/761_ladder_realization_theorem/records/round-21-refutation-verdict.md",
-    "specs/761_ladder_realization_theorem/summaries/21_filed-agreement-refuted-gap-clip-summary.md",
-    "specs/761_ladder_realization_theorem/handoffs/phase-11.32-handoff-20261116T033500Z.md"
-  ],
-  "user_decision": {
-    "question": "The filed cellAt_const_of_kappa_eq is REFUTED by compilation (cellAt_const_of_kappa_eq_schema_refuted, fourth section of ladder-cell-agreement-refutation.lean), and ladderRealized with it (no_fibre_equation_over_kappa). The defect is a parameter source: kappa's gap coordinate n - c is clipped at B, (K4) asks only B >= max(2*dBack+1, 2*dFwd+1, 2), and a stab-carrying formula reads the gap further (thetaC: clip 3, separates gap -3 from gap <= -4; mixC (k+2) k: clip 2k+5, separates gap 3k+4, for every k >= 1). Decision (E-5) pre-assigned outcome (a) to Round 2 on the premise that the parameter axis is spent; that premise is now contradicted, and certStabK_fails_of_contains_realized shows the run-level soundness leg inherits the same defect (condition (5) fails on the realized set at the filed clip). Which way should the plan be revised?",
-    "options": [
-      "(G-1) Repair first, refutation-first again: one bounded round that states a candidate (K4) (the two families both die at B >= 2*(dBack+dFwd)+2; an exponential or closure-size clip is the conservative alternative) and ATTEMPTS TO REFUTE the agreement at the repaired clip on the two-state fixture, before any proof attempt. Lifts the 'do not strengthen ParamsOk' prohibition; the Challenge block's theorem text is unchanged but ParamsOk's meaning changes, which is a Statement Fidelity ruling.",
-      "(G-2) Enter Round 2 (Phases 11.30/11.31, the run-level adequacy pair) as decision (E-5) literally says on outcome (a), at kappa and ParamsOk as they are. The soundness leg cannot go through Real's certification at the filed clip (certStabK_fails_of_contains_realized), so this route must also find a different proof of soundness or accept the pair is stated over a certificate the realized set does not satisfy.",
-      "(G-3) Both, ordered: (G-1)'s repair round first, then Round 2 stated over the repaired parameters, with cellAt_const_of_kappa_eq and ladderRealized recorded REFUTED under their pinned names and never re-proved in weaker form."
-    ],
-    "recommended": "(G-1) Repair first, refutation-first again: one bounded round that states a candidate (K4) (the two families both die at B >= 2*(dBack+dFwd)+2; an exponential or closure-size clip is the conservative alternative) and ATTEMPTS TO REFUTE the agreement at the repaired clip on the two-state fixture, before any proof attempt. Lifts the 'do not strengthen ParamsOk' prohibition; the Challenge block's theorem text is unchanged but ParamsOk's meaning changes, which is a Statement Fidelity ruling.",
-    "blocking": true,
-    "obligation": "A compiled verdict, at the two-state object, on the agreement at a stated repaired gap clip: either a refutation (a kappa-collision at the repaired ParamsOk whose cells differ, the separating formula exhibited) or a measured account of the step at which the refutation attempt fails, with both gap families of this round (thetaC, mixC) shown not to collide at the repaired clip. A repaired clip adopted without a refutation attempt against it does not discharge this."
-  },
+  "next_steps": "Run /orchestrate 761 to dispatch Phase 11.33, the one enterable phase: state the candidate repaired (K4) clip, compile that both gap families (thetaC, mixC) fail to collide at it, then attempt to refute the agreement at the repaired clip on the two-state fixture",
   "metadata": {
-    "session_id": "sess_1794792608_460ef7",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1794805942_7bcf13",
+    "agent_type": "reviser-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 59,
+    "phases_closed": 42,
+    "estimated_hours": 61,
+    "plan_version": 22,
+    "reports_integrated": [],
+    "inputs_integrated": [
+      ".decisions.json entry 17 (route (G-1), user-answered)",
+      ".decisions.json entry 16 (route (T-1), superseded; obligation recorded undischarged)",
+      "summaries/21_filed-agreement-refuted-gap-clip-summary.md",
+      "summaries/21_count-move-transfer-principle-blocked-summary.md",
+      "summaries/21_refutation-first-run-level-adequacy-summary.md",
+      "records/round-21-refutation-verdict.md (sections Round 3 and Round 4)",
+      "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean (fourth section, lines 1848-2823)",
+      "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
+      "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+      "FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean",
+      "docs/theorem-index.md"
     ],
-    "compliance_check": "skipped",
-    "phases_completed": 42,
-    "phases_total": 56,
-    "git_checkpoint": "a91170716"
-  }
+    "phases_added": ["11.33", "11.34", "11.35"],
+    "depends_on_repointed": ["11.7 (11.29 -> 11.33)", "11.30 (11.29 -> 11.33)", "18 (gains 11.34)"],
+    "enterable_phase": "11.33",
+    "rulings_executed": [
+      "Ruling 4: (E-5)'s spent-parameter-axis premise is contradicted; Phases 11.30/11.31 are not entered on it",
+      "Ruling 5: the ParamsOk prohibition is lifted for the (K4) conjunct; Statement Fidelity -- the Challenge text is unchanged while ParamsOk's meaning changes",
+      "Ruling 6: the tree asserts REFUTED in prose with no compiled library declaration; Phase 11.34 owns that gap",
+      "Ruling 7: whether any clip makes the agreement true is undecided, and the tight family's (T-1) obligation is recorded undischarged"
+    ]
+  },
+  "modified_files": [
+    "specs/761_ladder_realization_theorem/plans/22_repaired-gap-clip-refutation.md",
+    "specs/761_ladder_realization_theorem/.plan-revised.json",
+    "specs/761_ladder_realization_theorem/.return-meta.json"
+  ]
 }
