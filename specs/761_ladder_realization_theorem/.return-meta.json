@@ -1,27 +1,48 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/27_register-coordinate-measurement.md",
-      "summary": "Plan v27: route (O-1) — a bounded MEASUREMENT of the register coordinate at the landed Mrel pair (new Phase 11.46), the LnkRow recursive-induction scaffold as its own NOT COSTABLE Phase 11.47, Phase 11.45 closed by exclusion on its own written gate with its deliverable re-pointed, Phase 11.40 re-pointed onto 11.47, and Phase 11.44 kept [PARTIAL] with a re-entry notice."
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/27_register-coordinate-measurement-summary.md",
+      "summary": "Phase 11.46 measured the REGISTER coordinate at the Mrel pair on both landed fixtures and returned outcome (b): satisfiable, with the answering registers exhibited."
+    },
+    {
+      "type": "record",
+      "path": "specs/761_ladder_realization_theorem/records/round-27-register-coordinate-measurement.md",
+      "summary": "The round's record: entry-gate re-derivation, the register's local law in RladAdm's own terms, Zrel's verbatim obligation, values reached on R4 and B5, the verdict and the residual."
     }
   ],
-  "next_steps": "Run /orchestrate 761 to execute the revised plan; the one enterable phase is 11.46 (the register measurement).",
+  "completion_data": {
+    "completion_summary": "Executed Phase 11.46 (route (O-1), decision 20) after plan v27's RE-ENTRY NOTICE redirected the dispatch off the spent Phase 11.44. The REGISTER coordinate at the landed Mrel pair is SATISFIABLE on both fixtures: register_answerable_R4 and register_answerable_B5 compile, exhibiting an answering position map and an answering register function at which all four Zrel clauses at the budget left hold at every position of the longer region. Phase 11.47 is licensed; no /revise is owed.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "typst/generated/status.typ",
+    "specs/761_ladder_realization_theorem/records/round-27-register-coordinate-measurement.md",
+    "specs/761_ladder_realization_theorem/summaries/27_register-coordinate-measurement-summary.md",
+    "specs/761_ladder_realization_theorem/plans/27_register-coordinate-measurement.md"
+  ],
   "metadata": {
     "session_id": "sess_1794844360_ab750d",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "phase_count": 71,
-    "phases_closed": 57,
-    "phases_open": 14,
-    "estimated_hours": 77,
-    "estimated_hours_open": 15,
-    "not_costable_phases": ["11.47"],
-    "reports_integrated": [],
-    "records_integrated": ["round-26-threshold-relation-verdict.md"],
-    "decisions_integrated": [20],
-    "new_rulings": [22, 23, 24, 25, 26],
-    "plan_revised_sentinel": "specs/761_ladder_realization_theorem/.plan-revised.json"
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 79,
+    "compliance_check": "passed",
+    "phase_executed": "11.46",
+    "phase_selected_by_dispatch": "11.44",
+    "reentry_notice_applied": true,
+    "round_outcome": "(b) satisfiable, and exhibited"
   }
 }
