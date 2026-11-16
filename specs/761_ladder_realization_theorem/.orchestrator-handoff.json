@@ -1,39 +1,20 @@
 {
-  "status": "blocked",
+  "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 62,
-  "summary": "The filed cellAt_const_of_kappa_eq is REFUTED by a compiled object at parameters satisfying ParamsOk as defined: a stab-carrying formula reads kappa's gap coordinate past (K4)'s clip (thetaC at clip 3; mixC (k+2) k exceeds the clip by k-1). ladderRealized falls with it and condition (5) fails on the realized set. Phase 11.32 closed with exclusions on its own outcome-(a) rule; Phases 11.30/11.31 not entered because their premise is contradicted; a blocking route decision is returned.",
+  "dispatch_seq": 64,
+  "summary": "Phases 11.36 and 11.37 of plan v24 closed. The (K4) deletion trial fell on outcome (a): library and test library build with the two depth conjuncts deleted (one probe statement about the predicate fails); the trial is reverted. The step system is promoted into RaySummary/LadderStepFrag.lean with all gates green; Zrel_succ/Zrel_pred land as Zrel.succ/Zrel.pred under the naming gate. Phases 11.33-11.35 and 11.38-11.40 not entered; nothing blocked.",
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/21_filed-agreement-refuted-gap-clip-summary.md",
-      "summary": "Filed agreement refuted at the gap coordinate; (K4) clip exceeded without bound; Phase 11.32 closed with exclusions; route decision returned."
+      "path": "specs/761_ladder_realization_theorem/summaries/24_step-system-jump-clause-derivation-summary.md",
+      "summary": "Phases 11.36 (K4 deletion trial, outcome (a)) and 11.37 (step system promoted to LadderStepFrag.lean) closed; six phases of the live chain remain."
     }
   ],
-  "phases_completed": 42,
-  "phases_total": 56,
-  "blockers": [
-    {
-      "phase": "11.30",
-      "target": "specs/761_ladder_realization_theorem/plans/21_refutation-first-run-level-adequacy.md",
-      "verbatim_goal": "cellAt_const_of_kappa_eq at the filed ParamsOk (refuted: Probe761C.cellAt_const_of_kappa_eq_schema_refuted)",
-      "what_was_tried": "Refutation attempt at the gap coordinate on the two-state fixture; both memberships and the collision compile.",
-      "why_it_failed": "The filed statement is false: (K4)'s gap clip is exceeded by a stab-carrying formula, without bound. Phase 11.30's premise that the parameter axis is spent is contradicted, and condition (5) fails on the realized set, so no open phase of plan v21 has a surviving premise."
-    }
-  ],
-  "next_action_hint": "Surface the blocking route decision ((G-1) recommended), then /revise. Do not re-dispatch implement on plan v21.",
-  "git_checkpoint": "a91170716",
-  "user_decision": {
-    "question": "The filed cellAt_const_of_kappa_eq is REFUTED by compilation (cellAt_const_of_kappa_eq_schema_refuted, fourth section of ladder-cell-agreement-refutation.lean), and ladderRealized with it (no_fibre_equation_over_kappa). The defect is a parameter source: kappa's gap coordinate n - c is clipped at B, (K4) asks only B >= max(2*dBack+1, 2*dFwd+1, 2), and a stab-carrying formula reads the gap further (thetaC: clip 3, separates gap -3 from gap <= -4; mixC (k+2) k: clip 2k+5, separates gap 3k+4, for every k >= 1). Decision (E-5) pre-assigned outcome (a) to Round 2 on the premise that the parameter axis is spent; that premise is now contradicted, and certStabK_fails_of_contains_realized shows the run-level soundness leg inherits the same defect (condition (5) fails on the realized set at the filed clip). Which way should the plan be revised?",
-    "options": [
-      "(G-1) Repair first, refutation-first again: one bounded round that states a candidate (K4) (the two families both die at B >= 2*(dBack+dFwd)+2; an exponential or closure-size clip is the conservative alternative) and ATTEMPTS TO REFUTE the agreement at the repaired clip on the two-state fixture, before any proof attempt. Lifts the 'do not strengthen ParamsOk' prohibition; the Challenge block's theorem text is unchanged but ParamsOk's meaning changes, which is a Statement Fidelity ruling.",
-      "(G-2) Enter Round 2 (Phases 11.30/11.31, the run-level adequacy pair) as decision (E-5) literally says on outcome (a), at kappa and ParamsOk as they are. The soundness leg cannot go through Real's certification at the filed clip (certStabK_fails_of_contains_realized), so this route must also find a different proof of soundness or accept the pair is stated over a certificate the realized set does not satisfy.",
-      "(G-3) Both, ordered: (G-1)'s repair round first, then Round 2 stated over the repaired parameters, with cellAt_const_of_kappa_eq and ladderRealized recorded REFUTED under their pinned names and never re-proved in weaker form."
-    ],
-    "recommended": "(G-1) Repair first, refutation-first again: one bounded round that states a candidate (K4) (the two families both die at B >= 2*(dBack+dFwd)+2; an exponential or closure-size clip is the conservative alternative) and ATTEMPTS TO REFUTE the agreement at the repaired clip on the two-state fixture, before any proof attempt. Lifts the 'do not strengthen ParamsOk' prohibition; the Challenge block's theorem text is unchanged but ParamsOk's meaning changes, which is a Statement Fidelity ruling.",
-    "blocking": true,
-    "obligation": "A compiled verdict, at the two-state object, on the agreement at a stated repaired gap clip: either a refutation (a kappa-collision at the repaired ParamsOk whose cells differ, the separating formula exhibited) or a measured account of the step at which the refutation attempt fails, with both gap families of this round (thetaC, mixC) shown not to collide at the repaired clip. A repaired clip adopted without a refutation attempt against it does not discharge this."
-  },
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.32-handoff-20261116T033500Z.md",
-  "continuation_context": "Filed agreement REFUTED; record: records/round-21-refutation-verdict.md, section \"Round 4\". Resume only after a route decision and a /revise."
+  "phases_completed": 44,
+  "phases_total": 64,
+  "blockers": [],
+  "next_action_hint": "Re-dispatch implement on plan v24: Phase 11.38 (jump clauses' statement layer, against LadderStepFrag.lean's dotted names) or Phase 11.33 (time-boxed gate, which unblocks 11.34 and 11.35).",
+  "git_checkpoint": "af9d15664",
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.37-handoff-20261116T072756Z.md",
+  "continuation_context": "Phases 11.36, 11.37 [COMPLETED]. Trial record: records/round-24-k4-deletion-trial.md. Library names are Zrel.succ / Zrel.pred; Zrel_of_kappa_eq is still probe-only."
 }
