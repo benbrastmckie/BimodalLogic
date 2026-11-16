@@ -1,20 +1,20 @@
 {
   "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 64,
-  "summary": "Phases 11.36 and 11.37 of plan v24 closed. The (K4) deletion trial fell on outcome (a): library and test library build with the two depth conjuncts deleted (one probe statement about the predicate fails); the trial is reverted. The step system is promoted into RaySummary/LadderStepFrag.lean with all gates green; Zrel_succ/Zrel_pred land as Zrel.succ/Zrel.pred under the naming gate. Phases 11.33-11.35 and 11.38-11.40 not entered; nothing blocked.",
+  "dispatch_seq": 66,
+  "summary": "Phase 11.38 of plan v24 closed [COMPLETED WITH EXCLUSIONS]: the row link LnkRow (two-positioned, derived from the untl goal), its symmetry, monotonicity and window restriction LnkRow.toLnk, and the stab clause at budget (0,0) are landed in LadderStepFrag.lean with all gates green; the two jump clauses are recorded as text, declared nowhere. Finding: the path forth's hypothesis cannot be Zrel a b (argued from mixC_mem/mixC_not_mem, not compiled). Phase 11.39 not entered; nothing newly blocked.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/761_ladder_realization_theorem/summaries/24_step-system-jump-clause-derivation-summary.md",
-      "summary": "Phases 11.36 (K4 deletion trial, outcome (a)) and 11.37 (step system promoted to LadderStepFrag.lean) closed; six phases of the live chain remain."
+      "summary": "Phases 11.36, 11.37 and 11.38 of plan v24 closed; five phases of the live chain (11.33-11.35, 11.39, 11.40) remain."
     }
   ],
-  "phases_completed": 44,
+  "phases_completed": 45,
   "phases_total": 64,
   "blockers": [],
-  "next_action_hint": "Re-dispatch implement on plan v24: Phase 11.38 (jump clauses' statement layer, against LadderStepFrag.lean's dotted names) or Phase 11.33 (time-boxed gate, which unblocks 11.34 and 11.35).",
-  "git_checkpoint": "af9d15664",
-  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.37-handoff-20261116T072756Z.md",
-  "continuation_context": "Phases 11.36, 11.37 [COMPLETED]. Trial record: records/round-24-k4-deletion-trial.md. Library names are Zrel.succ / Zrel.pred; Zrel_of_kappa_eq is still probe-only."
+  "next_action_hint": "Re-dispatch implement on plan v24: Phase 11.39 (the untl jump clause and the path forth with a whole-row correspondence, against LnkRow; candidate hypothesis Zrel (a+b+1) (a+b)) or Phase 11.33 (time-boxed gate, which unblocks 11.34 and 11.35).",
+  "git_checkpoint": "a8d9b6d78",
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.38-handoff-20261116T080037Z.md",
+  "continuation_context": "Phase 11.38 closed. Record: records/round-24-jump-clause-statements.md. LnkRow unfolds with rw [LnkRow]; the untl truth clause over it is immediate from the definition, the cost is the path forth."
 }
