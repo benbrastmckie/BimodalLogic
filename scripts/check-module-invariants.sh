@@ -2593,6 +2593,7 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_const_of_kappa_eq_of_covered' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_ladder_eq_of_worldTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_const_of_kappa_eq_of_covered_at_time' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.exists_kappa_collision_cellAt_ne_at_K4_clip' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.realizes_of_certAdm_cohBi' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.RaySummary.exists_dovetail_chain' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.PartialHistory.convexGlue' depends on axioms: [propext, Quot.sound]
@@ -2966,6 +2967,7 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.cellAt_const_of_kappa_eq_of_covered
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.cellAt_ladder_eq_of_worldTime
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.cellAt_const_of_kappa_eq_of_covered_at_time
+#print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_kappa_collision_cellAt_ne_at_K4_clip
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.realizes_of_certAdm_cohBi
 #print axioms FormalSystem.Metalogic.Decidability.RaySummary.exists_dovetail_chain
 #print axioms FormalSystem.Semantics.PartialHistory.convexGlue

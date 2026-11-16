@@ -3595,5 +3595,18 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 #guard_msgs in
 #print axioms truth_iff_of_lnkRow
 
+/-! ### The agreement on `kappa`-classes refuted at (K4)'s clip (`RaySummary/LadderRealize.lean`)
+
+One pin: the existential refutation of the agreement's schema at the clip
+`max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)`. Its two-state witness is `private` to the
+module and is pinned through this theorem. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_kappa_collision_cellAt_ne_at_K4_clip' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms exists_kappa_collision_cellAt_ne_at_K4_clip
+
 
 end BimodalTest.Metalogic

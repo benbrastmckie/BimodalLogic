@@ -116,3 +116,21 @@ the guard `⊥` only. `dblC` uses a `snce` and an `untl` at the guard `p`.
 
 Recorded in the dispatch summary
 (`summaries/24_step-system-jump-clause-derivation-summary.md`), measured in this dispatch.
+
+## Landing in the library (Phase 11.34, dispatch 73)
+
+The refutation of the filed agreement's schema at the FILED `(K4)` clip is now a compiled library
+declaration: `FormalSystem.Metalogic.Decidability.RaySummary.exists_kappa_collision_cellAt_ne_at_K4_clip`
+(`RaySummary/LadderRealize.lean`), axioms `[propext, Classical.choice, Quot.sound]`.
+
+- **Route**: (i), by measurement — the two-state object and the `thetaC` argument elaborate inside
+  `LadderRealize.lean`'s import closure (`LadderChain` -> `LadderPump` -> `LadderAgree`), with nothing
+  imported from `specs/`.
+- **Statement**: existential — a finite object, labelling, formula, `Tc Tn P` with `ParamsOk` at
+  `B = max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)`, a `kappa`-collision at those parameters,
+  and the two cells unequal at world time `0`, evaluation time `0`.
+- **Witness**: `private`, namespace `K4ClipWitness` (47 declarations copied from the fixture's
+  `thetaC` chain). The fixture is unedited and stays the independently-gated duplicate.
+- **NOT landed**: the `dblC` strengthening of this record (`repaired_clip_refuted`,
+  `gap_clip_below_exponential_refuted`, lower bound `2 ^ (dBack phi + 1)`). It is named in the
+  declaration's docstring and stays probe-only; landing it is a second declaration family.

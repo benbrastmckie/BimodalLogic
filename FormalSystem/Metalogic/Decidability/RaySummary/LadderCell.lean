@@ -3229,9 +3229,12 @@ end GapProducer
 /-! ## The refutation of the agreement over counter classes
 
 The agreement of `cellAt` on `kappa`-classes under `ParamsOk` — the statement every section above
-measures a route to — is **REFUTED AS FILED**, at the two-state object of
-`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`, where the pending
-bit is a readable atom. No declaration in the tree carries the statement's name.
+measures a route to — is **REFUTED AS FILED**, at (K4)'s own clip, by the library theorem
+`exists_kappa_collision_cellAt_ne_at_K4_clip` (`LadderRealize.lean`, a module downstream of this
+one), at a two-state object where the pending bit is a readable atom. The wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` compiles the same
+object independently, and every other name cited below is a declaration of that probe. No
+declaration in the tree carries the statement's name.
 
 **The coordinate that fails is the gap.** `kappa`'s fifth coordinate clips the gap `n - c`
 between the register and the countdown to `[-B, B]`, and (K4) asks `B` to dominate only
@@ -3242,7 +3245,7 @@ falls by at most one per step); one step forward the gap rises by up to two and 
 it falls by up to two; and `⊡` re-chooses the history at every state. A formula therefore reads
 the gap at twice its temporal depth plus a reader's own threshold.
 
-**What the probe compiles.** `thetaC := ⊡ X ⊡ ¬ P ¬p` has `dBack = dFwd = 1`, so (K4)'s least
+**What is compiled.** `thetaC := ⊡ X ⊡ ¬ P ¬p` has `dBack = dFwd = 1`, so (K4)'s least
 clip for it is `3`. It is in no realized type at the pending state with gap `-3`
 (`thetaC_not_mem`) and in every realized type at a pending state with gap at most `-4`
 (`thetaC_mem`), while the counter pairs `(Tc + 3, Tc)` and `(Tc + 3 + (P + 1), Tc)` are one

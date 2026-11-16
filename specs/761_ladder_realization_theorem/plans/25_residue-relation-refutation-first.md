@@ -8488,7 +8488,7 @@ that is a route question, not a drafting detail.
 
 ---
 
-### Phase 11.34: The Library-Side Refutation Declaration the Tree's Prose Already Asserts [NOT STARTED]
+### Phase 11.34: The Library-Side Refutation Declaration the Tree's Prose Already Asserts [COMPLETED]
 
 **WHY THIS IS A PHASE OF ITS OWN AND NOT A TASK OF THE ROUND ABOVE (Ruling 6).** Measured at this
 revision's authoring by reading the files: `docs/theorem-index.md` reads REFUTED AS FILED at `:279`,
@@ -8552,34 +8552,34 @@ BY MEASUREMENT rather than preference:
   described as one.
 
 **Tasks**:
-- [ ] Re-derive, at phase start, the list of prose assertions the tree makes: read
+- [x] Re-derive, at phase start, the list of prose assertions the tree makes: read
       `docs/theorem-index.md` at `:279`, `:281`, `:284`, `:297`, `LadderCell.lean:3229`,
       `LadderRealize.lean:1348` and the RaySummary README, and record what each asserts and what it
       cites. **The point of the phase is that this list currently outruns the compiled tree**, so
       the list is the phase's own baseline and is recorded rather than assumed.
-- [ ] **Decide route (i) versus route (ii) BY MEASUREMENT**: check whether the two-state object
+- [x] **Decide route (i) versus route (ii) BY MEASUREMENT**: check whether the two-state object
       elaborates inside `LadderRealize.lean`'s import closure (a scoped build or `lean_run_code`
       probe), record the measurement and the decision, and only then state the declaration. A route
       chosen without that measurement is a guess, and route (ii) adopted without it understates what
       the library can carry.
-- [ ] State the declaration **with the clip explicit in both its statement and its docstring**, then
+- [x] State the declaration **with the clip explicit in both its statement and its docstring**, then
       prove it. `#print axioms` on it; no `sorry`, no `axiom`, no `native_decide`, no
-      `def … : Prop` standing in for a theorem.
-- [ ] Pin it: add the entry in `scripts/check-module-invariants.sh` and the axiom pin in
+      `def … : Prop` standing in for a theorem. *(deviation: altered — route (i) measured and taken; the witness's 47 support declarations are landed `private` in namespace `K4ClipWitness` beside the ONE public theorem `exists_kappa_collision_cellAt_ne_at_K4_clip`, stated as the existential form of the schema's negation)*
+- [x] Pin it: add the entry in `scripts/check-module-invariants.sh` and the axiom pin in
       `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`. **That test has 101 lines of headroom
       against its in-source `longFile 3700` (3,599 lines, RE-MEASURED at this revision's authoring;
       the predecessor plan's "15 lines against 3500" is stale — both figures moved when dispatches
       66-68 landed their pins), so raise the baseline IN PLACE in the same commit as the pin, never
       split the file** — re-measure before editing rather than trusting either figure.
-- [ ] Re-sync the generated inventories and the index so every prose assertion now names the
+- [x] Re-sync the generated inventories and the index so every prose assertion now names the
       compiled declaration rather than only the fixture path:
       `FormalSystem/Metalogic/Decidability/RaySummary/README.md`, `FormalSystem/Metalogic/README.md`,
       `README.md`, `typst/generated/status.typ`, and the `docs/theorem-index.md` rows.
-- [ ] `LadderRealize.lean` has **110 lines of headroom** against its in-source `longFile 1800`
+- [x] `LadderRealize.lean` has **110 lines of headroom** against its in-source `longFile 1800`
       (1,690 lines, re-derived at this revision's authoring). Re-measure at phase start; if the
       declaration plus its docstring crosses the baseline, raise it IN PLACE in the same commit —
-      never split the module.
-- [ ] Record the Statement Fidelity boundary in the declaration's own docstring (Ruling 5): the
+      never split the module. *(deviation: altered — measured 1,690 at phase start, 2,154 after; baseline raised IN PLACE 1800 -> 2300, the value the linter names)*
+- [x] Record the Statement Fidelity boundary in the declaration's own docstring (Ruling 5): the
       refutation is about `ParamsOk` as `(K4)` defines it at the time of landing; the filed
       `## Lean Challenge Statements` text is unedited; and neither `cellAt_const_of_kappa_eq` nor
       `ladderRealized` is claimed, in any form, by this declaration's name or statement.
