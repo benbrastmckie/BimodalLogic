@@ -9934,7 +9934,7 @@ is a route question and it is outcome (b).
 
 ---
 
-### Phase 11.44: ROUTE (N-1) — The Object-Dependent Threshold Relation, and the Refutation Attempt FIRST [IN PROGRESS]
+### Phase 11.44: ROUTE (N-1) — The Object-Dependent Threshold Relation, and the Refutation Attempt FIRST [PARTIAL]
 
 **ADDED BY THIS REVISION. THIS IS THE TRUNK, AND ITS DISCIPLINE IS THE USER'S RULING RATHER THAN
 THIS PLAN'S PREFERENCE (Ruling 18, decision 19).** Two relations have now been refuted as the path
@@ -10024,48 +10024,48 @@ and **raising a countdown threshold does nothing about a choice of walk**. A rec
 two into one verdict does not discharge the obligation.
 
 **Tasks**:
-- [ ] Re-derive at entry, against the live files rather than against this plan: `Zrel` and its
+- [x] Re-derive at entry, against the live files rather than against this plan: `Zrel` and its
       countdown clause (`LadderStepFrag.lean:194`), `Srel` and its four lemmas (`:1248`-`:1262`),
       `LnkRow.first_zero` (`:1035`), `LnkRow.region_end_obj` (`:1059`), `truth_iff_of_lnkRow`
       (`:1122`), the probe's `R4` block and `no_rowLinked_path_of_Srel` (`:554`), and Phase 11.43's
       `B5` block with its non-vacuity witness. Record any drift from the line numbers this plan
       carries, and re-measure both `longFile` headrooms.
-- [ ] **Confirm Ruling 18's arithmetic against the live fixture**: the landed `R4` pair is not
+- [x] **Confirm Ruling 18's arithmetic against the live fixture**: the landed `R4` pair is not
       `Mrel`-related at any `P` with `3 ∣ P + 1`. Compile it if it is cheap (suggested name
       `not_Mrel_xR_yR`); otherwise record the computation in the verdict record. **If the pair IS
       `Mrel`-related at some admissible parameters, that is an immediate outcome (a)** —
       `not_lnkRow_xR_yR` is already compiled and transfers verbatim — and the phase records it and
-      stops there.
-- [ ] **State `Mrel`** in `LadderStepFrag.lean` with the shape above, plus the structural lemmas any
+      stops there. *(deviation: altered — the pair is NOT `Mrel`-related, so this item's immediate-outcome-(a) branch did not fire; confirmed by compilation as `not_Mrel_xR_yR` rather than recorded only in the verdict record)*
+- [x] **State `Mrel`** in `LadderStepFrag.lean` with the shape above, plus the structural lemmas any
       relation of this kind owes and all of which are provable without touching the path forth:
       `Mrel.toSrel`, `Mrel.toZrel`, `Mrel.refl`, `Mrel.symm`, and monotonicity in `(a, b)` in
       whichever direction `Zrel.mono` (`:210`) has — **re-derived at entry, not assumed; if the
       direction does not carry because the threshold grows with the budget, that asymmetry is a
       finding and is recorded rather than worked around.**
-- [ ] **Test `Mrel` against the two compiled obstruction lemmas BEFORE attempting anything else.**
+- [x] **Test `Mrel` against the two compiled obstruction lemmas BEFORE attempting anything else.**
       Instantiate `LnkRow.first_zero` and `LnkRow.region_end_obj` at `Mrel`-related states and
       record, in the `Mrel` section docstring, exactly what each one now says and what it still does
       not. This is cheap, it is what killed both predecessors, and skipping it is how a round spends
       its budget.
-- [ ] **ATTEMPT TO REFUTE the path forth from `Mrel`, on BOTH fixtures and in this order**: (1) `R4`
+- [x] **ATTEMPT TO REFUTE the path forth from `Mrel`, on BOTH fixtures and in this order**: (1) `R4`
       at a pair ABOVE the raised threshold, aimed at `LnkRow.first_zero`; (2) `B5`, aimed at
       `LnkRow.region_end_obj`, with the `(K1)` constraint `6 ∣ P + 1` carried in the statement's
       hypotheses. **APPEND ONLY** to the probe.
 - [ ] **On outcome (a)**: land the refutation with `#print axioms`, NAME the failing coordinate and
       the obstruction lemma it broke, and record both attacks separately in
       `records/round-26-threshold-relation-verdict.md`. **A `/revise` is owed on that verdict and
-      the record says so.**
+      the record says so.** *(deviation: skipped — outcome (a) was not reached: neither attack broke the relation, and the reason each cannot is compiled instead)*
 - [ ] **On outcome (b)**: land the forward path forth for the LENGTHEN-A-REGION move at the FIRST
       region, with `#print axioms`, and **with the register offset it leaves stated explicitly in
       the statement**. Record in the same file what was attacked on each fixture and did not break,
-      stated as "no refutation was found in this round" and **never as "the relation is correct"**.
-- [ ] **On outcome (c)**: commit the compiled scaffolding, write the goal state VERBATIM, mark the
+      stated as "no refutation was found in this round" and **never as "the relation is correct"**. *(deviation: altered — outcome (b) was not reached: the LENGTHEN-A-REGION path forth did not compile, so this item's RECORDING half was executed under outcome (c) and its path-forth half was not)*
+- [x] **On outcome (c)**: commit the compiled scaffolding, write the goal state VERBATIM, mark the
       phase `[PARTIAL]`, and say which coordinate each attempt stalled on.
-- [ ] Either way, re-state in the record what this phase does NOT establish: it bears on the path
+- [x] Either way, re-state in the record what this phase does NOT establish: it bears on the path
       forth and on nothing else. It says nothing about the clip (Ruling 16), nothing about
       `ladderLift`, and it does not revive `cellAt_const_of_kappa_eq` or `ladderRealized` under
       their pinned names.
-- [ ] **If `git-commit-scoped.sh` drops the probe path** (Ruling 20), commit it separately and say
+- [x] **If `git-commit-scoped.sh` drops the probe path** (Ruling 20), commit it separately and say
       so in the record. Do not edit `specs/state.json`.
 
 **Prohibited workarounds**: do NOT skip the refutation attempt, reorder it after the proof attempt,

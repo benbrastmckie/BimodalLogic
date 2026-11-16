@@ -825,3 +825,226 @@ end ProbeRowResidue
 /-- info: 'ProbeRowResidue.gB_takes_both_branches' depends on axioms: [propext] -/
 #guard_msgs in
 #print axioms ProbeRowResidue.gB_takes_both_branches
+
+/-!
+# The object-dependent THRESHOLD relation, and the two attacks on it
+
+The library module now carries `Mrel P a b` — `Srel P a b` with one conjunct added, the two
+countdowns equal or both at least `(P + 1) * (a + b)`.  Its countdown threshold has the margin
+`P + 1` per unit of budget, where `Zrel`'s own has the object-independent margin `2`, so the
+margin grows with the object's pending cycle lengths through the modulus `(K1)` constrains.
+
+This section records the round that attacked it, on BOTH fixtures and in the order the attacks
+were owed.  **It lands NO refutation and NO path forth.**  What it compiles is why each of the two
+attacks cannot break the relation — statements about the attacks, not about `Mrel`.
+
+## Attack 1, on the forced pending `3`-cycle `R4`, aimed at the residue count
+
+* `not_Mrel_xR_yR` — the pair that refutes `Srel` is NOT `Mrel`-related at any modulus `(K1)`
+  admits for this object.  At the budget `(a, b + 1)` the raised threshold is
+  `(P + 1) * (a + b + 1)` while that pair's shorter countdown is exactly `2 * (a + b) + 2`, and
+  `3 ∣ P + 1` forces `3 * (a + b + 1) ≤ 2 * (a + b) + 2`, which is false for every `a` and `b`.
+  So `not_lnkRow_xR_yR` does not transfer and the attack must be re-aimed upward.
+* `xM`, `yM`, `Mrel_xM_yM` — the re-aimed pair, both countdowns at or above the raised threshold
+  and a modulus apart, with registers equal to the countdowns so both gaps are `0`.
+* `rotR_iterate_dvd_three`, `region_end_agrees_R4` — at the re-aimed pair the necessary condition
+  `LnkRow.region_end_obj` is SATISFIED rather than broken: the two regions, of lengths differing
+  by `P + 1`, end at one object state, because the forced walk has period `3` and `3 ∣ P + 1`.
+  This is the residue count the raised threshold was designed to survive, and it survives it.
+
+## Attack 2, on the BRANCHING object `B5`, aimed at the choice of walk
+
+* `region_end_matchable_B5` — raising a countdown threshold indeed says nothing about a choice of
+  walk, but on this object the branching cuts the OTHER way for a refutation: it enlarges the
+  second path's option set.  For EVERY pending object walk of length `L` from `b0` there is a
+  pending object walk of length `L + (P + 1)` from `b0` ending at the same state, whenever
+  `2 ∣ P + 1` — the second walk spends the difference in the `2`-cycle `b0 → b1 → b0` and then
+  copies the first.  So the object coordinate of `LnkRow.region_end_obj` is satisfiable here too,
+  and the branching does not supply the obstruction the attack was aimed at.
+
+## What this section does NOT settle
+
+It does not refute the path forth from `Mrel` and it does not prove one.  Both results above are
+about the two NECESSARY conditions `LnkRow.first_zero` and `LnkRow.region_end_obj`; satisfying a
+necessary condition is not a row link, and `region_end_matchable_B5` is a statement about object
+walks that constructs no ladder path and asserts no `LnkRow`.  The coordinate left unmeasured is
+what an INTERMEDIATE position of the longer region must be answered on beyond its countdown and
+its object state: `Zrel` at the budget left also reads the gap `n - c`, and neither `Mrel` nor
+either obstruction lemma constrains the register at an intermediate position.  Nothing here bears
+on the clip, on `ladderLift`, or on `cellAt_const_of_kappa_eq`.
+-/
+
+namespace ProbeRowResidue
+
+/-! ### Attack 1: the landed pair does not transfer, and the re-aimed pair is not broken -/
+
+/-- **THE LANDED TIGHT PAIR IS NOT `Mrel`-RELATED.**  Ruling 18's arithmetic, against the live
+fixture: at every modulus `(K1)` admits for `R4` the raised threshold already exceeds the shorter
+countdown of the pair that refutes `Srel`. -/
+theorem not_Mrel_xR_yR (P a b : ℕ) (h3 : 3 ∣ P + 1) :
+    ¬ Mrel P a (b + 1) (xR a b) (yR P a b) := by
+  rintro ⟨-, h⟩
+  have hx : (xR a b).1.2.1 = 2 * (a + b) + 2 := rfl
+  have hy : (yR P a b).1.2.1 = 2 * (a + b) + 2 + (P + 1) := rfl
+  have h3' : 3 ≤ P + 1 := Nat.le_of_dvd (by omega) h3
+  have hmul : 3 * (a + (b + 1)) ≤ (P + 1) * (a + (b + 1)) :=
+    Nat.mul_le_mul_right _ h3'
+  rw [hx, hy] at h
+  omega
+
+/-- The re-aimed pair: the shorter countdown exactly AT the raised threshold, the longer one a
+modulus above it, registers equal to the countdowns. -/
+def xM (P a b : ℕ) : LadderState R4 pendR :=
+  ⟨(R4.r0, (P + 1) * (a + (b + 1)), (P + 1) * (a + (b + 1))), fun h => by simp [pendR] at h⟩
+
+def yM (P a b : ℕ) : LadderState R4 pendR :=
+  ⟨(R4.r0, (P + 1) * (a + (b + 1)) + (P + 1), (P + 1) * (a + (b + 1)) + (P + 1)),
+    fun h => by simp [pendR] at h⟩
+
+/-- The re-aimed pair IS `Mrel`-related at the budget `(a, b + 1)`, so the attack has a target. -/
+theorem Mrel_xM_yM (P a b : ℕ) (h3 : 3 ∣ P + 1) :
+    Mrel P a (b + 1) (xM P a b) (yM P a b) := by
+  have h3' : 3 ≤ P + 1 := Nat.le_of_dvd (by omega) h3
+  have hmul : 2 * (a + (b + 1)) ≤ (P + 1) * (a + (b + 1)) := by
+    calc 2 * (a + (b + 1)) ≤ 3 * (a + (b + 1)) := by omega
+      _ ≤ (P + 1) * (a + (b + 1)) := Nat.mul_le_mul_right _ h3'
+  refine ⟨⟨⟨rfl, Or.inr ⟨?_, ?_⟩, Or.inr ⟨?_, ?_⟩, Or.inl ?_⟩, ?_⟩, Or.inr ⟨?_, ?_⟩⟩
+  · show 2 * (a + (b + 1)) ≤ (P + 1) * (a + (b + 1))
+    exact hmul
+  · show 2 * (a + (b + 1)) ≤ (P + 1) * (a + (b + 1)) + (P + 1)
+    omega
+  · show 2 * (a + (b + 1)) ≤ (P + 1) * (a + (b + 1))
+    exact hmul
+  · show 2 * (a + (b + 1)) ≤ (P + 1) * (a + (b + 1)) + (P + 1)
+    omega
+  · change (((P + 1) * (a + (b + 1)) : ℕ) : ℤ) - (((P + 1) * (a + (b + 1)) : ℕ) : ℤ) =
+      (((P + 1) * (a + (b + 1)) + (P + 1) : ℕ) : ℤ) -
+        (((P + 1) * (a + (b + 1)) + (P + 1) : ℕ) : ℤ)
+    omega
+  · change (((P + 1) * (a + (b + 1)) : ℕ) : ℤ) ≡
+      (((P + 1) * (a + (b + 1)) + (P + 1) : ℕ) : ℤ) [ZMOD ((P : ℤ) + 1)]
+    exact Int.modEq_iff_dvd.mpr ⟨1, by push_cast; ring⟩
+  · show (P + 1) * (a + (b + 1)) ≤ (P + 1) * (a + (b + 1))
+    exact le_rfl
+  · show (P + 1) * (a + (b + 1)) ≤ (P + 1) * (a + (b + 1)) + (P + 1)
+    omega
+
+/-- The forced walk of `R4` has period `3`. -/
+theorem rotR_iterate_three (q : R4) : rotR^[3] q = q := by cases q <;> rfl
+
+/-- Every multiple of `3` is a period of the forced walk. -/
+theorem rotR_iterate_dvd_three {m : ℕ} (h : 3 ∣ m) (q : R4) : rotR^[m] q = q := by
+  obtain ⟨k, rfl⟩ := h
+  induction k with
+  | zero => rfl
+  | succ k ih =>
+    rw [show 3 * (k + 1) = 3 * k + 3 by ring, Function.iterate_add_apply, rotR_iterate_three, ih]
+
+/-- **ATTACK 1 DOES NOT BREAK THE RELATION.**  At the re-aimed pair the necessary condition
+`LnkRow.region_end_obj` is satisfied: the two current regions, whose lengths differ by exactly the
+modulus, end at ONE object state.  The forced walk of `R4` has period `3` and `(K1)` forces
+`3 ∣ P + 1`, so the extra `P + 1` positions of the longer region return the walk to where it
+started.  This is the residue count the raised threshold was designed to survive. -/
+theorem region_end_agrees_R4 (P a b : ℕ) (h3 : 3 ∣ P + 1)
+    (h h' : ℤ → LadderState R4 pendR) (hh : IsLadderPath stepR pendR h)
+    (hh' : IsLadderPath stepR pendR h') (t : ℤ)
+    (ht : h t = xM P a b) (ht' : h' t = yM P a b) :
+    objAt h' (t + (cntAt h' t : ℤ)) = objAt h (t + (cntAt h t : ℤ)) := by
+  have hc : cntAt h t = (P + 1) * (a + (b + 1)) := by unfold cntAt; rw [ht]; rfl
+  have hc' : cntAt h' t = (P + 1) * (a + (b + 1)) + (P + 1) := by unfold cntAt; rw [ht']; rfl
+  have ho : objAt h t = R4.r0 := by unfold objAt; rw [ht]; rfl
+  have ho' : objAt h' t = R4.r0 := by unfold objAt; rw [ht']; rfl
+  have hp : pendR (objAt h t) = true := by rw [ho]; rfl
+  have hp' : pendR (objAt h' t) = true := by rw [ho']; rfl
+  rw [hc, hc']
+  rw [objAt_rot h hh t hp _ (by omega), objAt_rot h' hh' t hp' _ (by omega), ho, ho',
+    show (P + 1) * (a + (b + 1)) + (P + 1) = (P + 1) * (a + (b + 1)) + (P + 1) from rfl,
+    Function.iterate_add_apply, rotR_iterate_dvd_three h3]
+
+/-! ### Attack 2: the branching object enlarges the second walk's options -/
+
+/-- The `2`-cycle walk `b0 → b1 → b0`, by residue. -/
+def cyc2B (r : ℕ) : B5 := if r % 2 = 0 then B5.b0 else B5.b1
+
+theorem cyc2B_pend (i : ℕ) : pendB (cyc2B i) = true := by
+  unfold cyc2B
+  rcases Nat.mod_two_eq_zero_or_one i with h | h
+  · rw [if_pos h]; rfl
+  · rw [if_neg (by omega)]; rfl
+
+theorem cyc2B_step (i : ℕ) : stepB (cyc2B i) (cyc2B (i + 1)) = true := by
+  unfold cyc2B
+  rcases Nat.mod_two_eq_zero_or_one i with h | h
+  · rw [if_pos h, if_neg (by omega)]; rfl
+  · rw [if_neg (by omega), if_pos (by omega)]; rfl
+
+theorem cyc2B_odd {i : ℕ} (h : i % 2 = 1) : cyc2B i = B5.b1 := by
+  unfold cyc2B; rw [if_neg (by omega)]
+
+/-- The second walk: spend the extra `P + 1` positions in the `2`-cycle, then copy the first. -/
+def spliceB (P : ℕ) (w : ℕ → B5) (i : ℕ) : B5 :=
+  if i ≤ P then cyc2B i else w (i - (P + 1))
+
+/-- **ATTACK 2 DOES NOT BREAK THE RELATION EITHER.**  On the branching object, for EVERY pending
+object walk of length `L` from `b0` there is a pending object walk of length `L + (P + 1)` from
+`b0` ending at the same state, whenever `2 ∣ P + 1` — which `(K1)` forces here, `2` being a
+pending cycle length of `B5` (`two_mem_objCycleLens_B5`).  The second walk spends the extra
+`P + 1` positions in the `2`-cycle and then copies the first.  So the object coordinate of
+`LnkRow.region_end_obj` is satisfiable at the longer length, and the branching — which enlarges
+the second path's option set rather than shrinking it — supplies no obstruction.
+
+This constructs an object WALK, not a ladder path, and asserts no row link. -/
+theorem region_end_matchable_B5 {P : ℕ} (h2 : 2 ∣ P + 1) (L : ℕ)
+    (w : ℕ → B5) (hw0 : w 0 = B5.b0)
+    (hstep : ∀ i, i < L → stepB (w i) (w (i + 1)) = true)
+    (hpend : ∀ i, i ≤ L → pendB (w i) = true) :
+    ∃ v : ℕ → B5, v 0 = B5.b0 ∧
+      (∀ i, i < L + (P + 1) → stepB (v i) (v (i + 1)) = true) ∧
+      (∀ i, i ≤ L + (P + 1) → pendB (v i) = true) ∧
+      v (L + (P + 1)) = w L := by
+  have hPodd : P % 2 = 1 := by omega
+  refine ⟨spliceB P w, ?_, ?_, ?_, ?_⟩
+  · unfold spliceB
+    rw [if_pos (Nat.zero_le P)]
+    unfold cyc2B
+    rw [if_pos rfl]
+  · intro i hi
+    unfold spliceB
+    by_cases h1 : i ≤ P
+    · by_cases h2' : i + 1 ≤ P
+      · rw [if_pos h1, if_pos h2']
+        exact cyc2B_step i
+      · have hiP : i = P := by omega
+        rw [if_pos h1, if_neg (by omega), cyc2B_odd (show i % 2 = 1 by omega),
+          show i + 1 - (P + 1) = 0 by omega, hw0]
+        rfl
+    · rw [if_neg h1, if_neg (by omega),
+        show i + 1 - (P + 1) = (i - (P + 1)) + 1 by omega]
+      exact hstep (i - (P + 1)) (by omega)
+  · intro i hi
+    unfold spliceB
+    by_cases h1 : i ≤ P
+    · rw [if_pos h1]
+      exact cyc2B_pend i
+    · rw [if_neg h1]
+      exact hpend _ (by omega)
+  · unfold spliceB
+    rw [if_neg (by omega), show L + (P + 1) - (P + 1) = L by omega]
+
+end ProbeRowResidue
+
+/-- info: 'ProbeRowResidue.not_Mrel_xR_yR' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.not_Mrel_xR_yR
+
+/-- info: 'ProbeRowResidue.Mrel_xM_yM' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.Mrel_xM_yM
+
+/-- info: 'ProbeRowResidue.region_end_agrees_R4' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.region_end_agrees_R4
+
+/-- info: 'ProbeRowResidue.region_end_matchable_B5' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.region_end_matchable_B5

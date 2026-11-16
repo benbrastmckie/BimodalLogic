@@ -3644,4 +3644,48 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 #print axioms exists_kappa_collision_cellAt_ne_at_K4_clip
 
 
+/-! ### The threshold-carrying state relation
+
+`Mrel P a b` is `Srel P a b` with the countdown clause raised: the two countdowns are equal, or
+both at least `(P + 1) * (a + b)`.  Its margin per unit of budget is the object-dependent `P + 1`
+where `Zrel`'s own is the object-independent `2`.  `Mrel.toSrel` and `Mrel.toZrel` are its two
+projections, so every consumer of the step system's results reads it unchanged.
+
+What is NOT pinned here because it is not declared: a path forth from `Mrel`, and a refutation of
+one.  Neither exists.  The wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean` records what the
+round that stated this relation attacked and what each attack compiled instead
+(`not_Mrel_xR_yR`, `region_end_agrees_R4`, `region_end_matchable_B5`). -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Mrel' does not depend on any axioms -/
+#guard_msgs in
+#print axioms Mrel
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Mrel.toSrel' does not depend on any axioms -/
+#guard_msgs in
+#print axioms Mrel.toSrel
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Mrel.toZrel' does not depend on any axioms -/
+#guard_msgs in
+#print axioms Mrel.toZrel
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Mrel.refl' does not depend on any axioms -/
+#guard_msgs in
+#print axioms Mrel.refl
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Mrel.symm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Mrel.symm
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Mrel.mono' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Mrel.mono
+
+
 end BimodalTest.Metalogic

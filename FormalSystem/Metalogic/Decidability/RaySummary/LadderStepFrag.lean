@@ -55,6 +55,13 @@ owed path forth either:
 * `Srel P a b` — `Zrel a b` with the two countdowns congruent modulo `P + 1`, the modulus `(K1)`
   constrains.  `Srel.refl`, `Srel.symm`, `Srel.mono`, `Srel.toZrel`.
 
+The threshold-carrying relation is landed beside it, with NO verdict on it either way:
+
+* `Mrel P a b` — `Srel P a b` with the two countdowns equal or both at least `(P + 1) * (a + b)`.
+  `Mrel.refl`, `Mrel.symm`, `Mrel.mono`, `Mrel.toSrel`, `Mrel.toZrel`.  Neither a path forth from
+  it nor a refutation of one is landed; see the section docstring for what was attacked and what
+  the attacks compiled instead.
+
 ## Two properties of the system, and one obligation it leaves owed
 
 1. **The agreement follows from the truth lemma with no `ParamsOk` hypothesis.**
@@ -1264,5 +1271,98 @@ theorem Srel.mono {P a b a' b' : ℕ} {x y : LadderState Q pend} (ha : a' ≤ a)
   ⟨Zrel.mono ha hb h.1, h.2⟩
 
 end Residue
+
+/-! ### The threshold-carrying state relation
+
+`Mrel P a b` is `Srel P a b` with one conjunct added: the two countdowns are equal, or both at
+least `(P + 1) * (a + b)`.  The countdown threshold of `Zrel` has the margin `2` per unit of
+budget whatever the object is; this one has the margin `P + 1`, the modulus `paramsOkK1`
+constrains, so it grows with the object's pending cycle lengths.  Equal countdowns are congruent
+countdowns, so the added conjunct is the countdown clause "equal, or congruent modulo `P + 1` and
+both at least `(P + 1) * (a + b)`" conjoined with the rest of `Srel`.
+
+**What the two necessary conditions on a row link say at `Mrel`-related states.**  `LnkRow` is
+stated over `Zrel`, so `LnkRow.first_zero` and `LnkRow.region_end_obj` are unchanged; what changes
+is which pairs of states can satisfy them.
+
+* `LnkRow.region_end_obj` asks the two current pending regions to end at one object state.  At
+  `Mrel`-related states the two countdowns are congruent modulo `P + 1` exactly as at
+  `Srel`-related ones, and the raised threshold adds nothing to this condition: on an object
+  whose pending walk is forced and periodic with a period dividing `P + 1` the ends agree, and on
+  an object whose pending walk branches the condition is one on the CHOICE of the second path's
+  walk, which no countdown threshold supplies.
+* `LnkRow.first_zero` asks the first exhausted countdown after `t` to be answered by the first
+  exhausted countdown after `t'`, with every position before the answer answered back.  The pair
+  that defeats `Srel` — the shorter countdown exactly `2 (a + b) + 2` at the budget `(a, b + 1)` —
+  is not `Mrel`-related when a pending cycle of length `≥ 3` divides `P + 1`: the shorter region
+  now has at least `(P + 1) (a + b + 1)` positions, so on the countdown and the object state
+  alone every residue of the longer region has an answer above the threshold left after one jump.
+  What the lemma still does not say is what else an intermediate position must be answered ON:
+  the row link relates the answer by `Zrel` at the budget left, which reads the gap `n - c`
+  exactly inside a window of `2 (a + b) + 1` values, and neither `Mrel` nor `LnkRow.first_zero`
+  mentions the register at an intermediate position.
+
+**WHAT THIS SECTION DOES NOT CLAIM.**  No path forth with a whole-row correspondence is landed
+over `Mrel`, and no refutation of one is landed either.  The round that stated this relation
+attacked it on both fixtures of the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean` and broke
+neither; what it compiled instead is why each attack cannot break it, which is a statement about
+the two attacks and not about the relation:
+
+* On the forced pending `3`-cycle `R4`, the pair that refutes `Srel` is not `Mrel`-related at any
+  `(K1)`-admissible parameters (`not_Mrel_xR_yR`), so the landed refutation does not transfer; and
+  at a pair re-aimed ABOVE the raised threshold both necessary conditions are met rather than
+  broken — the two regions end at one object state because `3 ∣ P + 1` (`region_end_agrees_R4`),
+  which is the residue count the raised threshold was designed to survive.
+* On the branching object `B5`, raising a countdown threshold indeed does nothing about a choice
+  of walk — but the branching cuts the other way for a REFUTATION: it enlarges the second path's
+  option set rather than shrinking it, and a walk of the longer region's length reaching the first
+  region's end state always exists, because `2 ∣ P + 1` lets the second walk spend the difference
+  in the `2`-cycle before copying the first (`region_end_matchable_B5`).
+
+So `LnkRow.region_end_obj` is satisfied at `Mrel`-related states on BOTH fixtures, and the
+coordinate that killed both predecessors is not available against this relation.  The coordinate
+that remains unmeasured is the one the second bullet above names: what an INTERMEDIATE position of
+the longer region must be answered on beyond its countdown and its object state.  `Zrel` at the
+budget left reads the gap `n - c` exactly inside a window of `2 (a + b) + 1` values, and neither
+`Mrel` nor either obstruction lemma constrains the register at an intermediate position, so
+neither a refutation nor a path forth follows from what is compiled here.  Nothing is claimed
+about a modulus that is a larger multiple of a cycle length. -/
+
+section Threshold
+
+variable {Q : Type} {pend : Q → Bool}
+
+/-- **THE THRESHOLD-CARRYING RELATION.** `Srel P a b` together with the raised countdown clause:
+the two countdowns are equal, or both at least `(P + 1) * (a + b)`. -/
+def Mrel (P a b : ℕ) (x y : LadderState Q pend) : Prop :=
+  Srel P a b x y ∧
+    (x.1.2.1 = y.1.2.1 ∨ ((P + 1) * (a + b) ≤ x.1.2.1 ∧ (P + 1) * (a + b) ≤ y.1.2.1))
+
+/-- The threshold-carrying relation refines the residue-carrying one at the same parameters. -/
+theorem Mrel.toSrel {P a b : ℕ} {x y : LadderState Q pend} (h : Mrel P a b x y) :
+    Srel P a b x y :=
+  h.1
+
+/-- The threshold-carrying relation refines the step system's relation at the same budget, so
+every consumer of `Zrel a b` reads `Mrel P a b` unchanged. -/
+theorem Mrel.toZrel {P a b : ℕ} {x y : LadderState Q pend} (h : Mrel P a b x y) : Zrel a b x y :=
+  h.1.1
+
+theorem Mrel.refl (P a b : ℕ) (x : LadderState Q pend) : Mrel P a b x x :=
+  ⟨Srel.refl P a b x, Or.inl rfl⟩
+
+theorem Mrel.symm {P a b : ℕ} {x y : LadderState Q pend} (h : Mrel P a b x y) : Mrel P a b y x :=
+  ⟨h.1.symm, h.2.elim (fun e => Or.inl e.symm) (fun e => Or.inr ⟨e.2, e.1⟩)⟩
+
+/-- Monotonicity in the budget, in the direction `Zrel.mono` has: the raised threshold
+`(P + 1) * (a + b)` shrinks with the budget, as `Zrel`'s own thresholds do. -/
+theorem Mrel.mono {P a b a' b' : ℕ} {x y : LadderState Q pend} (ha : a' ≤ a) (hb : b' ≤ b)
+    (h : Mrel P a b x y) : Mrel P a' b' x y := by
+  refine ⟨Srel.mono ha hb h.1, h.2.elim Or.inl fun e => Or.inr ?_⟩
+  have hm : (P + 1) * (a' + b') ≤ (P + 1) * (a + b) := Nat.mul_le_mul_left _ (by omega)
+  exact ⟨le_trans hm e.1, le_trans hm e.2⟩
+
+end Threshold
 
 end FormalSystem.Metalogic.Decidability.RaySummary
