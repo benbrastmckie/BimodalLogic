@@ -160,9 +160,13 @@
         {
           "path": "specs/761_ladder_realization_theorem/reports/31_gkwz-ptl-s5-quasimodels.md",
           "type": "report"
+        },
+        {
+          "path": "specs/761_ladder_realization_theorem/reports/32_laddermodel-construction-falsifier.md",
+          "type": "report"
         }
       ],
-      "next_artifact_number": 32,
+      "next_artifact_number": 33,
       "previous_status": "implementing"
     },
     {
