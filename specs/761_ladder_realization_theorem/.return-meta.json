@@ -1,17 +1,24 @@
 {
   "status": "researched",
+  "started_at": "2026-11-16T14:23:51-08:00",
   "requires_user_review": true,
-  "review_reason": "The round's answer is adversarial: exists_rowLinked_path is FALSE at the Phase 11.49 signature (Mrel plus the object half of (K1)), refuted through the gap coordinate by a scratch probe compiled against the tree, and the route's projected end result (agreement of cells over Mrel) is refuted by the tree's own dblC family. The report recommends stopping the row-link route and taking the statement question (quasistate-keyed certificate vs. jump-closed exponential thresholds) to the user. The two refuting probes are NOT wired; their source is in the report's appendix.",
+  "review_reason": "Literature verification of report 29 Q4. Claim 2 is half wrong: HWZ quasistates are EXACT type sets (Def. 7 is an equality), not merely sound; only runs are existential (Def. 12). Theorem 14's converse CONSTRUCTS its model and the paper has no stab/box. Claim 1's 'exponential thresholds are the normal form' is contradicted by Etessami-Wilke (linear thresholds, k+1 and 2k+1). Evidence supports quasistate keying but not a fixed-ladderModel 'soundness + existential realization' restatement; the statement decision belongs to the user. GKWZ 13.2 (PTL x S5 quasimodels) was not read and is the next source to consult.",
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/761_ladder_realization_theorem/reports/29_row-link-route-viability.md",
-      "summary": "Viability review of the row-link route: compiled refutation of exists_rowLinked_path at the Phase 11.49 signature via the gap coordinate, compiled refutation of cell agreement over Mrel below exponential budgets, the row-link layer shown to be a leaf of the plan graph, route (N-2) shown blocked by certStabK's (q, kappa)-fibre clause, and ranked recommendations with stopping the route first."
+      "path": "specs/761_ladder_realization_theorem/reports/30_quasimodel-abstraction-literature.md",
+      "summary": "Sourced verification of report 29's three literature claims against HWZ 2000 (local corpus) and Etessami-Wilke 2000 (full text fetched): 4 questions answered with SOURCED/INFERRED/UNSOURCED marks, extent of reading stated, 5 recommendations."
     }
   ],
+  "next_steps": "Correct report 29 Q4, then take the statement question to the user with the three-way framing in the report's Recommendations; read GKWZ 2003 section 13.2 before choosing the HWZ-shaped restatement.",
   "metadata": {
-    "agent_type": "lean-research-agent",
+    "agent_type": "logic-research-agent",
+    "duration_seconds": 320,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
+    "findings_count": 4,
+    "context_files_loaded": ["logic/README.md", "logic/domain/ztime-no-finite-carrier-fmp.md", "formats/report-format.md", "patterns/mathlib-lookup-gate.md", "patterns/early-metadata-pattern.md"],
+    "mathlib_lookups_performed": 2,
+    "mathlib_lookup_gated": "performed"
   }
 }

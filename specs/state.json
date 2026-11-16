@@ -152,9 +152,13 @@
         {
           "path": "specs/761_ladder_realization_theorem/reports/29_row-link-route-viability.md",
           "type": "report"
+        },
+        {
+          "path": "specs/761_ladder_realization_theorem/reports/30_quasimodel-abstraction-literature.md",
+          "type": "report"
         }
       ],
-      "next_artifact_number": 30,
+      "next_artifact_number": 31,
       "previous_status": "implementing"
     },
     {
