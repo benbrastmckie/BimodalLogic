@@ -10843,7 +10843,42 @@ wrong**: that is a route question.
 
 ---
 
-### Phase 11.47: CONDITIONAL — The `LnkRow` Recursive-Induction Scaffold, `exists_rowLinked_path`, and the `untl` Clause [IN PROGRESS]
+### Phase 11.47: CONDITIONAL — The `LnkRow` Recursive-Induction Scaffold, `exists_rowLinked_path`, and the `untl` Clause [PARTIAL]
+
+**BLOCKER** (Phase 11.47):
+- **What failed**: Items 2, 3 and 4 — the three count moves, `exists_rowLinked_path` over `Mrel`,
+  and the `untl` clause as its corollary. Item 1, the scaffold, LANDED (`LnkRow.of_closed`), and
+  item 3's `(K2)` margin measurement at the raised threshold was taken and is NOT consumed
+  (`Mrel.threshold_le_Tc`).
+- **What was tried**: before writing a count move, the owed consumer's signature was read against
+  the relation it is owed over. `Mrel P a b` carries `P` as a BARE NATURAL NUMBER — nothing in its
+  definition, and nothing in the owed signature, relates `P + 1` to the object. At `P + 1 ≤ 2` the
+  raised countdown threshold `(P + 1) * (a + (b + 1))` is at most `2 * (a + b) + 2`, which the
+  shorter countdown of the tight pair `xR` / `yR` meets exactly, so that pair IS `Mrel`-related
+  there — and `not_lnkRow_xR_yR`, which carries NO divisibility hypothesis, already refutes the
+  path forth from it.
+- **Why it's stuck**: the owed statement is FALSE as owed, by compilation:
+  `Mrel_xR_yR_of_small_modulus`, `no_rowLinked_path_of_Mrel_at_small_modulus` and
+  `exists_rowLinked_path_over_Mrel_refuted` (appended to
+  `specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean`, each with its
+  `#print axioms` guard). No construction can discharge items 2–4 at this signature. The
+  refutation does NOT reach a `(K1)`-admissible modulus for `R4` (every such modulus has
+  `3 ∣ P + 1`, where `not_Mrel_xR_yR` excludes the pair), so the `(K1)`-restricted path forth is
+  untouched and remains the live question.
+- **What is needed**: a USER DECISION. Repairing the owed signature means adding a hypothesis
+  beyond `Mrel` and the row budget — the `(K1)` condition `paramsOkK1 step pend lab φ P`, or a
+  bare divisibility `∀ l ∈ objCycleLens step pend, l ∣ (P + 1)` — and this phase's own
+  prohibitions route adding one to the user as a Statement Fidelity question rather than taking
+  it. `Mrel.threshold_le_Tc` establishes that `(K2)` supplies the room such a repair would need.
+- **Prohibited workarounds**: do NOT use `sorry`, `def X := True`, an added hypothesis taken on
+  the agent's own authority, or a weakening of `LnkRow`/`Mrel`/`Zrel`.
+
+**What landed** (see `records/round-27-register-coordinate-measurement.md` sections 10–14):
+`LnkRow.of_closed` and `Mrel.threshold_le_Tc` in
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean`, their axiom pins and a
+positive-budget restriction check in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`
+(in-source `longFile` baseline raised in place, 3700 → 3800), and the three refutation theorems in
+the wired probe.
 
 **ADDED BY THIS REVISION (Ruling 24), AND IT IS THE FOURTH PHASE TO CARRY THIS DELIVERABLE.** Phase
 11.39 was blocked owing it over `Zrel`; Phase 11.42 closed by exclusion owing it over `Srel`; Phase
@@ -10901,30 +10936,30 @@ marker — the failure mode Phase 11.40 exhibited twice, and the reason Rulings 
    (`LadderStepFrag.lean:1129`), which is **not re-proved by this phase**.
 
 **Tasks**:
-- [ ] Re-derive Phase 11.46's landed measurement at entry and **confirm the gate by READING
+- [x] Re-derive Phase 11.46's landed measurement at entry and **confirm the gate by READING
       `records/round-27-register-coordinate-measurement.md`** rather than inferring it from a marker;
       re-grep every declaration name that record calls compiled (Ruling 25).
-- [ ] Re-read `LnkRow`, `FwdJump`, `BwdJump`, `LnkRow.mono`, `exists_rowLinked_path_zero` and
+- [x] Re-read `LnkRow`, `FwdJump`, `BwdJump`, `LnkRow.mono`, `exists_rowLinked_path_zero` and
       `LadderPump`/`LadderChain` before writing anything, and record what each already carries.
-- [ ] **State the induction's invariant and its closure property EXPLICITLY, in the record, before
+- [x] **State the induction's invariant and its closure property EXPLICITLY, in the record, before
       attempting the scaffold.** An induction whose invariant is discovered inside the proof cannot
       be audited, and three rounds have now ended at this obligation.
-- [ ] Attempt the scaffold (item 1). **If it does not close within the first half of the round, the
+- [x] Attempt the scaffold (item 1). **If it does not close within the first half of the round, the
       phase STOPS**, records the goal state reached, and returns `[PARTIAL]` with items 2-4
       untouched.
-- [ ] Attempt the first count move (item 2) over the scaffold, with the register offset explicit.
+- [ ] Attempt the first count move (item 2) over the scaffold, with the register offset explicit. *(deviation: skipped — the consumer it serves is refuted at the owed signature; `exists_rowLinked_path_over_Mrel_refuted`)*
 - [ ] Attempt the remaining two count moves (item 3), re-using `LadderPump`/`LadderChain`; record the
-      register offset each leaves and the `(K2)` margin measurement at the raised threshold.
+      register offset each leaves and the `(K2)` margin measurement at the raised threshold. *(deviation: altered — the two count moves are skipped for the same reason as item 2; the `(K2)` margin measurement at the raised threshold WAS taken and landed as `Mrel.threshold_le_Tc`, record section 12)*
 - [ ] State and prove `exists_rowLinked_path` over `Mrel`, then derive the `untl` clause from it and
-      the landed `truth_iff_of_lnkRow`. `#print axioms` on both.
-- [ ] Record in `records/round-27-register-coordinate-measurement.md` exactly which fragment of the
+      the landed `truth_iff_of_lnkRow`. `#print axioms` on both. *(deviation: skipped — REFUTED as owed; see the BLOCKER above)*
+- [x] Record in `records/round-27-register-coordinate-measurement.md` exactly which fragment of the
       language is covered by an AGREEMENT OF CELLS after this phase — **`untl` at the `⊡`-free level
       over `Mrel` and nothing more**, with the `snce` mirror and the `⊡` lift named as still owed to
       Phase 11.40.
-- [ ] Record, in the same place, that Phases 11.39, 11.42 and 11.45 stay closed and that the
+- [x] Record, in the same place, that Phases 11.39, 11.42 and 11.45 stay closed and that the
       deliverable was re-pointed here (Rulings 17, 21, 24 and 26). **This phase does not re-mark or
       write into any of them.**
-- [ ] Ruling 25's check before committing: every "is compiled" claim names a declaration `grep`
+- [x] Ruling 25's check before committing: every "is compiled" claim names a declaration `grep`
       finds.
 
 **Prohibited workarounds**: do NOT enter without Phase 11.46's outcome (b) read from its record; do

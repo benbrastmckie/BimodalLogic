@@ -110,7 +110,7 @@ expectation to rewrite.
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
 -- The baseline is raised one chunk at a time, as the ledger grows; the `longFile` linter requires
 -- the value to be at least the file's length and refuses a value more than one chunk above it.
-set_option linter.style.longFile 3700
+set_option linter.style.longFile 3800
 
 namespace BimodalTest.Metalogic
 
@@ -3687,5 +3687,43 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 #guard_msgs in
 #print axioms Mrel.mono
 
+
+/-! ### The recursive-induction scaffold for the row link (`RaySummary/LadderStepFrag.lean`)
+
+`LnkRow.of_closed` is the first derivation of a row link at a POSITIVE budget anywhere in the
+tree: a budget-indexed relation between POSITIONS which is sound for `Zrel` and closed under both
+jump conditions entails `LnkRow` at every budget. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.LnkRow.of_closed' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms LnkRow.of_closed
+
+/-! **THE RESTRICTION CHECK.**  The scaffold is instantiated at the POSITIVE budget `(3, 5)`, so a
+version silently restricted to the budget `(0, 0)` — the one `exists_rowLinked_path_zero` already
+covers — fails to typecheck here rather than passing review. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+example {Q : Type} {pend : Q → Bool} {g g' : ℤ → LadderState Q pend}
+    (S : ℕ → ℕ → ℤ → ℤ → Prop)
+    (hzr : ∀ a b t t', S a b t t' → Zrel a b (g t) (g' t'))
+    (hfw : ∀ a b t t', S a (b + 1) t t' →
+      FwdJump (fun s s' => S a b s s') t t' ∧ FwdJump (fun s' s => S a b s s') t' t)
+    (hbw : ∀ a b t t', S (a + 1) b t t' →
+      BwdJump (fun s s' => S a b s s') t t' ∧ BwdJump (fun s' s => S a b s s') t' t)
+    (t t' : ℤ) (h : S 3 5 t t') : LnkRow 3 5 g g' t t' :=
+  LnkRow.of_closed S hzr hfw hbw 3 5 t t' h
+
+/-! ### The `(K2)` margin at `Mrel`'s raised countdown threshold
+(`RaySummary/LadderStepFrag.lean`) -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/--
+info: 'FormalSystem.Metalogic.Decidability.RaySummary.Mrel.threshold_le_Tc' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms Mrel.threshold_le_Tc
 
 end BimodalTest.Metalogic

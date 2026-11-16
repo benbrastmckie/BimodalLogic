@@ -1447,4 +1447,39 @@ theorem LnkRow.of_closed {g g' : ℤ → LadderState Q pend} (S : ℕ → ℕ �
 
 end Scaffold
 
+/-! ### The `(K2)` margin at `Mrel`'s RAISED countdown threshold
+
+`Zrel`'s countdown threshold has the object-independent margin `2` per unit of budget; `Mrel`'s
+has the margin `P + 1`, which grows with the object's pending cycle lengths through `(K1)`.  A
+construction that lengthens a region therefore needs `(P + 1) * (a + b)` of room where `Zrel`
+needed `2 * (a + b)`, and whether `(K2)` still supplies it is a measurement rather than an
+assumption.  It does: `(K2)`'s third conjunct is
+`card Q * 2 ^ |closure φ| * (P + 1) * (sup stabDepth + 1) ≤ Tc`, whose factor `P + 1` is exactly
+the raised margin and whose factor `card Q * 2 ^ |closure φ|` is the type-pigeonhole budget the
+row budget of this layer is bounded by.  The margin is NOT consumed by the raise.
+-/
+
+section RaisedMargin
+
+/-- **THE `(K2)` MARGIN COVERS `Mrel`'s RAISED THRESHOLD.**  At any parameters satisfying
+`ParamsOk`, and for any row budget `(a, b)` within the type-pigeonhole budget
+`card Q * 2 ^ |closure φ|`, the countdown `Mrel P a b` demands — `(P + 1) * (a + b)` — is at most
+`Tc`.  The measurement is at the RAISED threshold, not at `Zrel`'s `2 * (a + b)`: the `(P + 1)`
+factor is carried by `(K2)`'s own margin conjunct and the remaining factor
+`(sup stabDepth + 1) ≥ 1` is slack. -/
+theorem Mrel.threshold_le_Tc {Q : Type} [Fintype Q] {step : Q → Q → Bool} {pend : Q → Bool}
+    {lab : Q → Atom → Bool} {φ : PlusFormula} {Tc Tn P B : ℕ} (a b : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hab : a + b ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card) :
+    (P + 1) * (a + b) ≤ Tc := by
+  refine le_trans ?_ hp.2.1.2.2
+  calc (P + 1) * (a + b)
+      ≤ (P + 1) * (Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card) :=
+        Nat.mul_le_mul_left _ hab
+    _ = Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (P + 1) := by ring
+    _ ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (P + 1) *
+        ((plusSubformulaClosure φ).sup stabDepth + 1) := Nat.le_mul_of_pos_right _ (by omega)
+
+end RaisedMargin
+
 end FormalSystem.Metalogic.Decidability.RaySummary

@@ -1514,3 +1514,86 @@ end ProbeRowResidue
 /-- info: 'ProbeRowResidue.register_answerable_B5' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in
 #print axioms ProbeRowResidue.register_answerable_B5
+
+/-!
+# THE OWED `exists_rowLinked_path` OVER `Mrel`, AS STATED, IS FALSE
+
+`Mrel P a b` raises `Srel P a b`'s countdown clause to the threshold `(P + 1) * (a + b)`.  The
+raised threshold is what excludes the tight pair `xR` / `yR` that refutes `Srel`: at a modulus
+`P + 1` large enough, `2 (a + b) + 2 < (P + 1) (a + b + 1)` and the pair is not `Mrel`-related
+(`not_Mrel_xR_yR`, which carries `3 ∣ P + 1` for exactly that reason).
+
+**But `Mrel` carries `P` as a BARE NATURAL NUMBER, with no hypothesis relating it to the object.**
+The modulus condition `(K1)` — `P + 1` divisible by every pending cycle length of the object —
+lives on the counter-quotient side (`objCycleLens`, `CounterQuotient.lean:525`) and appears in
+neither `Mrel`'s definition nor the owed signature of `exists_rowLinked_path`.  At `P + 1 ≤ 2` the
+raised threshold is `≤ 2 (a + b + 1) = 2 (a + b) + 2`, which the SHORTER countdown of the tight
+pair meets exactly, so the pair IS `Mrel`-related and `not_lnkRow_xR_yR` — which carries no
+divisibility hypothesis at all — refutes the path forth from it.
+
+The two theorems below are the measurement.  They do NOT refute the path forth at a
+`(K1)`-admissible modulus for `R4` (every such modulus has `3 ∣ P + 1`, hence `P + 1 ≥ 3`, where
+`not_Mrel_xR_yR` applies and this pair is excluded); what they refute is the statement as the plan
+owes it, with `P` universally quantified and unconstrained.
+-/
+
+namespace ProbeRowResidue
+
+open FormalSystem.Metalogic.Decidability.RaySummary
+
+/-- At a modulus `P + 1 ≤ 2` the raised countdown threshold of `Mrel` is met by the tight pair,
+which is therefore `Mrel P a (b + 1)`-related. -/
+theorem Mrel_xR_yR_of_small_modulus (P a b : ℕ) (hP : P ≤ 1) :
+    Mrel P a (b + 1) (xR a b) (yR P a b) := by
+  refine ⟨Srel_xR_yR P a b, Or.inr ⟨?_, ?_⟩⟩
+  · change (P + 1) * (a + (b + 1)) ≤ 2 * (a + b) + 2
+    calc (P + 1) * (a + (b + 1)) ≤ 2 * (a + (b + 1)) := Nat.mul_le_mul_right _ (by omega)
+      _ = 2 * (a + b) + 2 := by ring
+  · change (P + 1) * (a + (b + 1)) ≤ 2 * (a + b) + 2 + (P + 1)
+    calc (P + 1) * (a + (b + 1)) ≤ 2 * (a + (b + 1)) := Nat.mul_le_mul_right _ (by omega)
+      _ ≤ 2 * (a + b) + 2 + (P + 1) := by omega
+
+/-- **THE PATH FORTH FAILS FROM `Mrel` AT A SMALL MODULUS.**  At `P ≤ 1` and every row budget
+`(a, b + 1)` with `1 ≤ a + b` there are two `Mrel P a (b + 1)`-related states of the `3`-cycle
+object, a ladder path through the first, and NO ladder path through the second that is row-linked
+to it. -/
+theorem no_rowLinked_path_of_Mrel_at_small_modulus (P a b : ℕ) (hP : P ≤ 1) (hab : 1 ≤ a + b) :
+    ∃ x y : LadderState R4 pendR, Mrel P a (b + 1) x y ∧
+      ∃ h : ℤ → LadderState R4 pendR, IsLadderPath stepR pendR h ∧ h 0 = x ∧
+        ¬ ∃ h' : ℤ → LadderState R4 pendR, IsLadderPath stepR pendR h' ∧ h' 0 = y ∧
+          LnkRow a (b + 1) h h' 0 0 := by
+  obtain ⟨h, hh, h0⟩ := exists_path_through fwdR bwdR (xR a b) 0
+  refine ⟨xR a b, yR P a b, Mrel_xR_yR_of_small_modulus P a b hP, h, hh, h0, ?_⟩
+  rintro ⟨h', hh', h0', hl⟩
+  exact not_lnkRow_xR_yR P a b hab h h' hh hh' 0 h0 h0' hl
+
+/-- **THE OWED STATEMENT, AS OWED, IS FALSE.**  No lemma of the shape "`Mrel P a b` at the budget,
+plus the two seriality hypotheses, delivers a row-linked ladder path" holds with `P` universally
+quantified and unconstrained by the object.  Read as a Statement Fidelity finding: the path forth
+over `Mrel` needs a hypothesis tying the modulus `P + 1` to the object's pending cycle lengths —
+the condition `(K1)` already states on the counter-quotient side — and `Mrel` does not carry it. -/
+theorem exists_rowLinked_path_over_Mrel_refuted :
+    ¬ ∀ (Q : Type) (step : Q → Q → Bool) (pend : Q → Bool),
+        (∀ (t : ℤ) (x : LadderState Q pend), ∃ y, RladAdm step pend t x y) →
+        (∀ (t : ℤ) (x : LadderState Q pend), ∃ y, RladAdm step pend (t - 1) y x) →
+        ∀ (P a b : ℕ) (h : ℤ → LadderState Q pend), IsLadderPath step pend h →
+          ∀ (t : ℤ) (y : LadderState Q pend), Mrel P a b (h t) y →
+            ∃ h' : ℤ → LadderState Q pend, IsLadderPath step pend h' ∧ h' t = y ∧
+              LnkRow a b h h' t t := by
+  intro hall
+  obtain ⟨x, y, hM, h, hh, h0, hno⟩ := no_rowLinked_path_of_Mrel_at_small_modulus 0 1 0 (by omega) (by omega)
+  exact hno (hall R4 stepR pendR fwdR bwdR 0 1 (0 + 1) h hh 0 y (by rw [h0]; exact hM))
+
+end ProbeRowResidue
+
+/-- info: 'ProbeRowResidue.Mrel_xR_yR_of_small_modulus' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.Mrel_xR_yR_of_small_modulus
+
+/-- info: 'ProbeRowResidue.no_rowLinked_path_of_Mrel_at_small_modulus' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.no_rowLinked_path_of_Mrel_at_small_modulus
+
+/-- info: 'ProbeRowResidue.exists_rowLinked_path_over_Mrel_refuted' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms ProbeRowResidue.exists_rowLinked_path_over_Mrel_refuted

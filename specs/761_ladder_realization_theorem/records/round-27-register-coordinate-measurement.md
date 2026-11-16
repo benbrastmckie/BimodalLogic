@@ -268,3 +268,123 @@ This is deliberately a COINDUCTION-SHAPED principle: it converts "build the whol
 correspondence" into "exhibit one relation and check it is closed under both jumps". It adds no
 hypothesis to `LnkRow`, weakens nothing, and is positionwise in neither direction — its conclusion
 is a `LnkRow` at an arbitrary budget, read from the signature.
+
+## 10. Item 1 — the scaffold, LANDED
+
+`LnkRow.of_closed` (`FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean`, section
+`Scaffold`). It is the first derivation of a row link at a POSITIVE budget anywhere in the tree.
+Signature, read off the source:
+
+```
+theorem LnkRow.of_closed {g g' : ℤ → LadderState Q pend} (S : ℕ → ℕ → ℤ → ℤ → Prop)
+    (hzr : ∀ a b t t', S a b t t' → Zrel a b (g t) (g' t'))
+    (hfw : ∀ a b t t', S a (b + 1) t t' →
+      FwdJump (fun s s' => S a b s s') t t' ∧ FwdJump (fun s' s => S a b s s') t' t)
+    (hbw : ∀ a b t t', S (a + 1) b t t' →
+      BwdJump (fun s s' => S a b s s') t t' ∧ BwdJump (fun s' s => S a b s s') t' t)
+    (a b : ℕ) (t t' : ℤ) (h : S a b t t') : LnkRow a b g g' t t'
+```
+
+`#print axioms`: `[propext, Quot.sound]`. The three hypotheses are literally the three conjuncts of
+`LnkRow`'s unfolding with `S` for the recursive occurrence; the proof is
+`Nat.strong_induction_on` on `a + b`, re-using `FwdJump.mono` and `BwdJump.mono` and re-proving
+nothing. `LnkRow`, `Zrel`, `Mrel`, `Srel` and `FwdJump`/`BwdJump` are untouched; no hypothesis was
+added to any of them.
+
+It is checked as RECURSIVE rather than positionwise two ways: the budget `(a, b)` is universally
+quantified and the conclusion is a `LnkRow` at it, read from the signature above; and
+`Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` instantiates it at the POSITIVE budget
+`(3, 5)` in an `example`, so a version silently restricted to `(0, 0)` would fail to typecheck.
+
+## 11. Items 2–4 — the owed `exists_rowLinked_path` over `Mrel` is FALSE AS OWED
+
+Before writing a count move, the owed consumer's statement was read against the relation it is
+owed over. `Mrel P a b` carries `P` as a **bare natural number**: nothing in its definition, and
+nothing in the signature Phase 11.47 owes, relates `P + 1` to the object. The modulus condition is
+`(K1)` = `paramsOkK1` (`CounterQuotient.lean:866`), and it lives on the counter-quotient side.
+
+At `P + 1 ≤ 2` the raised countdown threshold `(P + 1) * (a + (b + 1))` is at most
+`2 * (a + b) + 2`, which the SHORTER countdown of the tight pair `xR` / `yR` meets exactly. So that
+pair — the pair `no_rowLinked_path_of_Srel` already refutes the path forth from, via
+`not_lnkRow_xR_yR`, which carries no divisibility hypothesis at all — **is `Mrel`-related at
+`P ≤ 1`**. Three theorems, appended to
+`specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean` (append-only) and
+compiled with their `#print axioms` guards:
+
+| Declaration | What it states |
+|---|---|
+| `Mrel_xR_yR_of_small_modulus` | at `P ≤ 1` the tight pair IS `Mrel P a (b+1)`-related |
+| `no_rowLinked_path_of_Mrel_at_small_modulus` | at `P ≤ 1` and every row budget `(a, b+1)` with `1 ≤ a+b`, two `Mrel`-related states of `R4`, a path through the first, and no row-linked path through the second |
+| `exists_rowLinked_path_over_Mrel_refuted` | the owed statement, quantified over `Q`, `step`, `pend`, `P`, `a`, `b` exactly as owed, is FALSE |
+
+**What this does and does not close.** It closes the statement AS OWED: items 2, 3 and 4 cannot be
+landed over `Mrel` at the signature the plan fixes, because no construction can exist. It does
+**not** refute the path forth at a `(K1)`-admissible modulus for `R4` — every such modulus has
+`3 ∣ P + 1`, hence `P + 1 ≥ 3`, where `not_Mrel_xR_yR` excludes this pair and section 5's
+measurement found the register coordinate answerable at a re-aimed pair. The live question is the
+`(K1)`-RESTRICTED path forth, and restricting it adds a hypothesis to a recorded signature, which
+this phase's own prohibitions route to the user rather than take.
+
+`LadderPump` / `LadderChain`, re-read as the second task requires: `LadderPump` is the splice and
+deletion INDEX layer (`delIdx`, `spliceEmb`, `delIdx_strictMono`, `spliceIdx_delIdx`, `delObj`,
+`delCnt` — `LadderPump.lean:78–139`), and `LadderChain` carries the budget and margin lemmas
+(`budget_le_cascadeBound:189`, `budget_le_Tc:203`, `budget_mul_succ_le_Tc:212`,
+`two_pow_card_prodState_le_Tc:240`). Neither was consumed: both are machinery for the count moves,
+and the count moves have no statement left to serve.
+
+## 12. The `(K2)` margin AT THE RAISED THRESHOLD — MEASURED, and NOT consumed
+
+The phase's `(K2)` item is taken as a measurement rather than deferred, at `Mrel`'s raised
+threshold and not at `Zrel`'s. `(K2)` = `paramsOkK2` (`CounterQuotient.lean`) has as its third
+conjunct
+
+```
+card Q * 2 ^ |closure φ| * (P + 1) * (sup stabDepth + 1) ≤ Tc
+```
+
+whose `(P + 1)` factor is exactly `Mrel`'s raised margin per unit of budget, and whose
+`card Q * 2 ^ |closure φ|` factor is the type-pigeonhole budget this layer's row budget is bounded
+by (`budget_le_cascadeBound`, `card_prodState`). Landed in `LadderStepFrag.lean`, section
+`RaisedMargin`:
+
+```
+theorem Mrel.threshold_le_Tc {Q : Type} [Fintype Q] {step pend lab φ} {Tc Tn P B : ℕ} (a b : ℕ)
+    (hp : ParamsOk step pend lab φ Tc Tn P B)
+    (hab : a + b ≤ Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card) :
+    (P + 1) * (a + b) ≤ Tc
+```
+
+`#print axioms`: `[propext, Classical.choice, Quot.sound]`. **The margin is NOT consumed by the
+raise**, so no `(K2)` finding and no new ruling on `(K2)` is owed. The remaining factor
+`(sup stabDepth + 1) ≥ 1` is slack.
+
+A second, independently checkable fact bearing on the repair: `(K1)` is a DIVISIBILITY condition
+into `P + 1` and **does not bound `P` from above** — stated at `CounterQuotient.lean:431` and
+re-read here. So a `(K1)`-restricted repair of the owed signature constrains `P` from below only,
+and `Mrel.threshold_le_Tc` is what supplies the room it then needs.
+
+## 13. What fragment of the language is covered by an AGREEMENT OF CELLS after this phase
+
+**None that was not covered before it.** `truth_iff_of_lnkRow` (`LadderStepFrag.lean:1129`) is a
+whole `⊡`-free truth lemma over the row link and was already landed; the `untl` clause this phase
+owed is its corollary against `exists_rowLinked_path`, and `exists_rowLinked_path` did not land —
+it is refuted at the signature owed. So the covered fragment is still the budget-`(0,0)` level that
+`exists_rowLinked_path_zero` reaches, and **not** `untl` at the `⊡`-free level over `Mrel`. The
+`snce` mirror and the `⊡` lift remain owed to Phase 11.40 exactly as before, and that phase's gate
+on this one is NOT satisfied.
+
+Phases 11.39, 11.42 and 11.45 stay closed at their own markers, and this phase neither re-marked
+nor wrote into any of them (Rulings 17, 21, 24, 26). The deliverable was re-pointed here and has
+now been measured rather than re-pointed again: the measurement is that the deliverable's
+STATEMENT, not its construction, is what is wrong.
+
+## 14. Ruling 25's check before committing
+
+Every declaration this round asserts as compiled, re-grepped with
+`grep -rnE '(theorem|lemma|def|abbrev) +<name>\b' FormalSystem/ Tests/ specs/evidence/`:
+`LnkRow.of_closed`, `Mrel.threshold_le_Tc` (both `FormalSystem/.../LadderStepFrag.lean`);
+`Mrel_xR_yR_of_small_modulus`, `no_rowLinked_path_of_Mrel_at_small_modulus`,
+`exists_rowLinked_path_over_Mrel_refuted` (all `specs/evidence/.../ladder-row-link-residue-obstruction.lean`).
+`exists_rowLinked_path` itself is NOT claimed compiled and `grep` finds no declaration of that name
+— only `exists_rowLinked_path_zero`. `cellAt_const_of_kappa_eq` and `ladderRealized` remain
+unclaimed in `FormalSystem/` and `Tests/`.
