@@ -1,29 +1,26 @@
 {
-  "task_number": 761,
-  "dispatch_seq": 80,
-  "phase": "implement",
-  "status": "partial",
-  "phases_completed": 58,
-  "phases_total": 71,
-  "summary": "Phase 11.47 landed item 1, the LnkRow recursive-induction scaffold owed across three prior rounds: LnkRow.of_closed derives a row link at EVERY budget from a budget-indexed position relation closed under both jump conditions. Items 2-4 are REFUTED at the signature the plan owes: Mrel carries P as a bare natural with no hypothesis tying P+1 to the object, so at P+1 <= 2 the raised countdown threshold is met by the very tight pair the landed Srel refutation already kills (exists_rowLinked_path_over_Mrel_refuted, compiled). The (K2) margin at Mrel's raised threshold was measured and is NOT consumed (Mrel.threshold_le_Tc). Full build, BimodalTest, all 65 wired probes, module invariants, readme-lint, typst sync and verify-deploy are green; sorry count 0, axiom count unchanged.",
-  "blockers": [
-    "exists_rowLinked_path over Mrel is FALSE as owed (exists_rowLinked_path_over_Mrel_refuted). Repairing the signature means adding the (K1) condition paramsOkK1 step pend lab phi P (or the bare object-cycle divisibility) beyond Mrel and the row budget, which this phase's own prohibitions route to the user as a Statement Fidelity question rather than take. Phase 11.40's gate on 11.47 is NOT satisfied."
-  ],
+  "status": "implemented",
+  "dispatch_seq": 81,
+  "phases_completed": 59,
+  "phases_total": 73,
+  "summary": "Phase 11.48 (route R-3, Ruling 27 'attack before adopt') executed and closed [COMPLETED]. The path forth was attacked at a (K1)-admissible modulus on BOTH fixtures -- R4 under 3 | P+1 and the branching B5 under 6 | P+1 -- before any repaired relation was adopted; nothing was adopted, repaired, or re-marked. Outcome is (b): no refutation found on either fixture, with the stalled coordinate named and compiled for each (R4: countdown, then register; B5: countdown-in-the-past, then object). Six append-only measurement declarations landed in the wired probe, all [propext, Quot.sound]; full build 2,976 jobs and BimodalTest 3,044 jobs, zero errors; all 65 wired probes compile. Phase 11.49 (route R-2) is thereby licensed and was deliberately NOT entered.",
+  "blockers": [],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/27_lnkrow-induction-scaffold-summary.md",
-      "summary": "Phase 11.47: the LnkRow induction scaffold landed; exists_rowLinked_path over Mrel refuted as owed; the (K2) margin measured at the raised threshold."
+      "path": "specs/761_ladder_realization_theorem/summaries/28_k1-admissible-refutation-first-summary.md",
+      "summary": "Phase 11.48 implementation summary: route (R-3), outcome (b), per-fixture verdicts and the three recorded plan deviations."
     },
     {
       "type": "record",
-      "path": "specs/761_ladder_realization_theorem/records/round-27-register-coordinate-measurement.md",
-      "summary": "Sections 8-14: entry gate re-derivation, library inventory, the stated induction invariant, what landed, the refutation, the (K2) measurement, the covered fragment, Ruling 25's check."
+      "path": "specs/761_ladder_realization_theorem/records/round-28-k1-admissible-refutation.md",
+      "summary": "Round-28 record: attack targets stated in advance of the first attempt, R4 goal state verbatim, R4 and B5 verdicts reported separately, outcome letter (b), Ruling 25 check."
     },
     {
       "type": "evidence",
       "path": "specs/evidence/seam-gluing-ray-product/ladder-row-link-residue-obstruction.lean",
-      "summary": "Appended Mrel_xR_yR_of_small_modulus, no_rowLinked_path_of_Mrel_at_small_modulus and exists_rowLinked_path_over_Mrel_refuted, each with its #print axioms guard."
+      "summary": "Append-only (287 insertions, 0 deletions): attackA_stall_countdown, attackA_mirror_register_joins, region_end_matchable_B5_cyc3, avoid_b1_walk_forced, avoid_b1_closed_walk_three_dvd, attackB_past_row_answerable, each with an inline #print axioms guard."
     }
-  ]
+  ],
+  "next_action": "Phase 11.49 (route R-2) is licensed by this phase's outcome (b): add ONLY the object half of (K1) -- 'forall l in objCycleLens step pend, l | (P + 1)' -- as a hypothesis of exists_rowLinked_path, keeping the row-link layer free of lab and phi, and record the bridge from that condition to ParamsOk. avoid_b1_closed_walk_three_dvd is direct evidence that the hypothesis must quantify over EVERY pending cycle length, not one. LnkRow.of_closed is the inherited tool and must not be re-derived (Ruling 29); (K2)'s margin is settled (Ruling 30). Note that this round addressed the Zrel clauses at exhibited pairs only -- the recursive jump structure and the back-matching condition remain untouched and are 11.49's real work."
 }
