@@ -1746,6 +1746,40 @@ EVIDENCE="specs/evidence"
 #                                                           | Quot.sound]` on the other fourteen
 #                                                           | printed theorems. No `sorryAx`, no
 #                                                           | custom axiom, no `native_decide`.
+#                                                           | THE REFUTATION ATTEMPT ON THE FILED
+#                                                           | AGREEMENT, appended as a second
+#                                                           | section: the predicted separating
+#                                                           | formula `sepC k` (`X^(k+1) ¬p`, the
+#                                                           | pending bit released exactly `k + 1`
+#                                                           | steps on) DOES separate the countdown
+#                                                           | `k` from every larger one
+#                                                           | (`sepC_cell_ne`, both memberships
+#                                                           | closed; `stabSepC_cell_ne` one `⊡`
+#                                                           | up), and NEVER at a collision: under
+#                                                           | `ParamsOk` at any formula the
+#                                                           | closure's cardinality is below `Tc`
+#                                                           | (`lt_Tc_of_closure_card`, (K2)'s
+#                                                           | margin), so every countdown the
+#                                                           | formula records sits where `kappa` is
+#                                                           | injective (`sepC_no_collision`,
+#                                                           | `stabSepC_no_collision`), and at every
+#                                                           | collision with countdown at or above
+#                                                           | `k` the two cells are EQUAL
+#                                                           | (`sepC_agreement_at_collision`).
+#                                                           | VERDICT: the filed
+#                                                           | `cellAt_const_of_kappa_eq` is OPEN
+#                                                           | WITH A MEASURED ACCOUNT -- not
+#                                                           | refuted, not proved; the target is
+#                                                           | stated undecided as
+#                                                           | `RefutationTargetC`.
+#                                                           | `exists_non_atom_preserving_count_move`:
+#                                                           | two ladder paths at different
+#                                                           | countdowns realizing the same `sepC k`
+#                                                           | type with DIFFERENT atom rows, on this
+#                                                           | family only. Axioms on the fourteen
+#                                                           | theorems that section prints:
+#                                                           | `[propext, Quot.sound]` or `[propext,
+#                                                           | Classical.choice, Quot.sound]`.
 # seam-gluing-ray-product/ladder-cell-obligation-refutation | THE DEPTH-0 CELL OBLIGATION AS
 #                                                           | FILED IS REFUTED: the schema
 #                                                           | `CellLEZeroConstOfKappaEqPre` (the

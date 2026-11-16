@@ -303,6 +303,22 @@ closed for the whole family by `cellAt_ladder_eq_of_worldTime`, and
 statement's own signature elaborates and was attempted at it; the residual goal is its
 conclusion with `kappa`'s five coordinate equations in context and no landed tool applicable.
 
+**The refutation attempt: OPEN WITH A MEASURED ACCOUNT.** `cellAt_const_of_kappa_eq` has also
+been attempted in the negative, at the two-state object of
+`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` (the pending bit a
+readable atom). It is NOT REFUTED and it is not proved. The separating formula `X^(k+1) ¬p` does
+separate the cell at countdown `k` from the cell at every larger countdown (`sepC_cell_ne`; one
+`⊡` up, `stabSepC_cell_ne`), but never at a collision: under `ParamsOk` at any formula the
+closure's cardinality is strictly below `Tc` (`lt_Tc_of_closure_card`, by (K2)'s margin), so
+every countdown the formula records lies where `kappa` is injective (`sepC_no_collision`,
+`stabSepC_no_collision`), and at every collision with countdown at or above `k` its two cells
+are EQUAL (`sepC_agreement_at_collision`). The refutation's target is stated, undecided, as
+`RefutationTargetC`; the families tried are box-free with `⊡`-depth at most one, on one object.
+The same probe exhibits two ladder paths at different countdowns realizing one closure type with
+different atom rows (`exists_non_atom_preserving_count_move`), at that formula family only
+(`RaySummary/LadderCell.lean`, section "The refutation attempt on the agreement over counter
+classes: the verdict").
+
 ### Characterization and definability
 
 The two open-future non-definability rows are **conditional on an unformalized inexpressibility

@@ -7207,7 +7207,9 @@ exists to DECIDE rather than to narrow further.
 
 ---
 
-### Phase 11.29: ROUND 1 — Attempt to REFUTE the Filed `cellAt_const_of_kappa_eq` [NOT STARTED]
+### Phase 11.29: ROUND 1 — Attempt to REFUTE the Filed `cellAt_const_of_kappa_eq` [COMPLETED]
+
+**OUTCOME: (b) — OPEN WITH A MEASURED ACCOUNT, zero `sorry`.** The separating type `sepC k` is exhibited and BOTH memberships compile (`sepC_cell_ne`); the step that fails is its instantiation at a `kappa`-collision, whose negation compiles (`sepC_no_collision`, `sepC_agreement_at_collision`, via `lt_Tc_of_closure_card`: (K2)'s margin puts `Tc` above `2 ^ card (closure φ)`). Scope Hypothesis exceeded and recorded: two formulas and fourteen printed theorems, one fixture, no library declaration. Phase 11.32 is the enterable successor; `exists_non_atom_preserving_count_move` is already its fixture-level instance. Record: `records/round-21-refutation-verdict.md`.
 
 **THIS IS THE ONE ENTERABLE PHASE OF THIS PLAN, AND IT IS A DECISION GATE WITH TWO PRE-DECLARED
 OUTCOMES, BOTH OF WHICH ARE RESULTS.** Five cycles have all tried to PROVE this statement. No round
@@ -7247,40 +7249,40 @@ refutes `AtomPreservingCountMove` and declines, in its own `## What this probe d
 section, to refute the obligation. **The open step is the separating type and nothing else.**
 
 **Tasks**:
-- [ ] Re-read the fixture in full, including `## What this probe does NOT settle`, and confirm each
+- [x] Re-read the fixture in full, including `## What this probe does NOT settle`, and confirm each
       object named above is present at its live signature. Record any drift rather than working
-      around it.
-- [ ] **State the separating type before attempting it.** Write the candidate formula down as a
+      around it. *(completed — every named object present at its live signature; no drift)*
+- [x] **State the separating type before attempting it.** Write the candidate formula down as a
       `def` in the fixture with a docstring saying what it is supposed to record (how long the
       pending bit is held), and state the two membership goals — IN the cell at `(q, c, n)`, NOT in
       the cell at `(q, c', n')` — as two explicit `theorem` signatures with `sorry` bodies, BEFORE
-      either is attempted. This is the step that makes outcome (b) an object instead of a sentence.
-- [ ] Attempt the positive membership through `mem_cell_of_gC`'s own route
+      either is attempted. This is the step that makes outcome (b) an object instead of a sentence. *(deviation: altered — `sepC k := X^(k+1) ¬p` and `stabSepC k := ⊡(sepC k)` stated as `def`s with docstrings before the memberships; the two membership signatures were never committed with `sorry` bodies because both closed on first compile)*
+- [x] Attempt the positive membership through `mem_cell_of_gC`'s own route
       (`mem_cellAt_ladder_iff` plus the walk), reusing the landed atom-membership lemma
-      `atom_mem_tpOf_ladder_iff` rather than re-deriving it.
-- [ ] Attempt the NEGATIVE membership. This is the content of the round: show no ladder path through
+      `atom_mem_tpOf_ladder_iff` rather than re-deriving it. *(completed — `sepC_mem_of_cnt_eq`, through `mem_cellAt_ladder_iff` and `not_pend_of_count`; `atom_mem_tpOf_ladder_iff` not needed, the atom clause is read directly by `truth_neg_pC`)*
+- [x] Attempt the NEGATIVE membership. This is the content of the round: show no ladder path through
       `(q, c', n')` realizes the separating type, by the pend-profile argument — `cntAt_eq_of_pend_eq`
       forces the countdown from the pend profile, the collision moves `c`, and `labC` reads the
-      moved bit.
+      moved bit. *(completed — `sepC_not_mem_of_lt_cnt` CLOSES for every `c' > k`; the step that FAILS is instantiating the pair at a `kappa`-collision: `sepC_no_collision` forces `c' = k`, and `sepC_agreement_at_collision` proves the two cells EQUAL at every collision with countdown ≥ k)*
 - [ ] **On outcome (a)**: assemble the refutation as a single headline theorem in the fixture,
       alongside `exists_refuting_collision` and WITHOUT editing it, exhibiting the two states, the
       `kappa`-collision, `paramsOkC`, and the separating type with both memberships. Add
       `#print axioms` on it. Then land the library-side statement of the refutation in
       `LadderRealize.lean` — the negation of the filed agreement's schema, stated so a reader sees
       WHICH quantifier fails — and record the verdict in a third `## ` decision docstring in
-      `LadderCell.lean`.
-- [ ] **On outcome (b)**: commit the attempt WITH its `sorry` isolated to the one unclosed
+      `LadderCell.lean`. *(deviation: skipped — outcome (a) not reached; no library declaration in `LadderRealize.lean`)*
+- [x] **On outcome (b)**: commit the attempt WITH its `sorry` isolated to the one unclosed
       membership goal **inside the fixture only, never in a library module**, and write the account
       into the fixture's docstring: the goal state reached verbatim, the step that fails, and what
       would have to be true for it to close. Then record the verdict in the `LadderCell.lean`
-      decision docstring and in `specs/761_ladder_realization_theorem/records/`.
-- [ ] Either way: record the verdict in `docs/theorem-index.md` against the filed name — **REFUTED
+      decision docstring and in `specs/761_ladder_realization_theorem/records/`. *(deviation: altered — outcome (b) reached with ZERO `sorry`: the failing step is a compiled negative, not an unclosed goal, so the undecided target is carried as `def RefutationTargetC : Prop`; account in the fixture's second module docstring, verdict in `LadderCell.lean`'s new `## ` section and in `records/round-21-refutation-verdict.md`)*
+- [x] Either way: record the verdict in `docs/theorem-index.md` against the filed name — **REFUTED
       on (a), OPEN WITH A MEASURED ACCOUNT on (b), and never the two conflated** — add the matching
       pin entry in `scripts/check-module-invariants.sh` for any new library declaration, resync the
       generated README inventories and `typst/generated/status.typ`, and pin any new library
-      declaration in `KTypeSummaryAxiomTest.lean`.
-- [ ] Run the evidence gate and confirm the fixture is still GATED and GREEN, since this phase edits
-      a wired probe.
+      declaration in `KTypeSummaryAxiomTest.lean`. *(deviation: altered — `docs/theorem-index.md` records OPEN WITH A MEASURED ACCOUNT; generated README inventories and `typst/generated/status.typ` resynced (line counts and stamp only); no new library declaration, so no pin entry in `check-module-invariants.sh` or `KTypeSummaryAxiomTest.lean` is owed; the gate table row in `scripts/check-evidence-probes.sh` extended)*
+- [x] Run the evidence gate and confirm the fixture is still GATED and GREEN, since this phase edits
+      a wired probe. *(completed — `check-evidence-probes.sh` PASS, 63 wired probes, fixture still wired and green)*
 
 **Prohibited workarounds** — the first four are quoted from `.decisions.json` entry 14's own
 obligation and are not this plan's additions: do NOT reach a refutation **by raising `Tc`**, **by
