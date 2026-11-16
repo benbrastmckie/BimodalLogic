@@ -110,7 +110,7 @@ expectation to rewrite.
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
 -- The baseline is raised one chunk at a time, as the ledger grows; the `longFile` linter requires
 -- the value to be at least the file's length and refuses a value more than one chunk above it.
-set_option linter.style.longFile 3500
+set_option linter.style.longFile 3700
 
 namespace BimodalTest.Metalogic
 
@@ -3480,6 +3480,55 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
  Quot.sound] -/
 #guard_msgs in
 #print axioms cellAt_const_of_kappa_eq_of_covered_at_time
+
+/-! ### The step system on the step fragment (`RaySummary/LadderStepFrag.lean`)
+
+`Zrel a b` is the derived relation on ladder states at a budget of `a` backward and `b` forward
+steps; `Zrel.succ` and `Zrel.pred` are its one-step back-and-forth; `exists_linked_path` is the
+path forth the `⊡` clause reads; `truth_iff_of_lnk` is the truth lemma on `StepFrag` (every
+connective, `⊡` and `□` included, `untl`/`snce` only at the guard `⊥`); `cellAt_eq_of_Zrel` is the
+cell agreement, a corollary carrying no `ParamsOk` hypothesis.
+
+What is NOT pinned here because it is not claimed: an agreement over `kappa`-classes, a fibre
+equation, or anything about a formula with an `untl` or `snce` jump at a guard other than `⊥`. The
+thresholds `2 * (dBack + dFwd) ≤ Tc, Tn` an instantiation at a formula needs are hypotheses of
+that instantiation and are discharged nowhere. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Zrel' does not depend on any axioms -/
+#guard_msgs in
+#print axioms Zrel
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Zrel.succ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Zrel.succ
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Zrel.pred' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Zrel.pred
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_linked_path' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms exists_linked_path
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.truth_iff_of_lnk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms truth_iff_of_lnk
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_eq_of_Zrel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms cellAt_eq_of_Zrel
 
 
 end BimodalTest.Metalogic

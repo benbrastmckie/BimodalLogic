@@ -30,6 +30,7 @@ import FormalSystem.Metalogic.Decidability.RaySummary.LadderChain
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderCell
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderIdle
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderWindow
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderStepFrag
 
 /-!
 # `RaySummary` — the seam interface for `⊡` over the time axis
@@ -300,4 +301,12 @@ nothing about `PlusValidZTime` — see the README's verdict.
   inclusion and no schema is stated, nothing is claimed about `HitPresented` or
   `PlusValidZTime`, no index of a ladder cell is claimed at any parameters, and no complexity
   bound is claimed.
+* `RaySummary.LadderStepFrag` — the STEP SYSTEM on the step fragment `StepFrag` (every
+  connective, `⊡` and `□` included, with `untl`/`snce` only at the guard `⊥`): the derived
+  relation `Zrel a b` on ladder states, its one-step back-and-forth (`Zrel.succ`, `Zrel.pred`),
+  the path forth (`exists_linked_path`), the truth lemma (`truth_iff_of_lnk`) and the cell
+  agreement `cellAt_eq_of_Zrel` as its corollary, for an arbitrary finite object and with no
+  `ParamsOk` hypothesis. It imports `LadderRealize` alone. A formula with an `untl` or `snce`
+  jump at a guard other than `⊥` is outside the fragment, so nothing here bears on the agreement
+  over `kappa`-classes or on the fibre equation.
 -/

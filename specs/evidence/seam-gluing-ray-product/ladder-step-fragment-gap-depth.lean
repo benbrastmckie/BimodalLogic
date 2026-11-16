@@ -57,6 +57,11 @@ trace-level hypothesis, no `ParamsOk` strengthening.
 
 Compile: `lake env lean` on this file
 (`specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean`).
+
+The six headline declarations `Zrel`, `Zrel_succ`, `Zrel_pred`, `exists_linked_path`,
+`truth_iff_of_lnk` and `cellAt_eq_of_Zrel`, with their supporting lemmas, are ALSO in the library
+module `FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean` (there `Zrel.succ`,
+`Zrel.pred` under the library's naming gate), which this probe does not import.
 -/
 import FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize
 

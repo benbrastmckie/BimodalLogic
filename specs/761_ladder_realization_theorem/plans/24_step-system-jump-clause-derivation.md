@@ -8655,7 +8655,7 @@ says so — it is not a reason to widen this phase into a repair round.
 
 ---
 
-### Phase 11.37: Promote the Step System into the Library as the Derivation's Base Case [NOT STARTED]
+### Phase 11.37: Promote the Step System into the Library as the Derivation's Base Case [COMPLETED]
 
 **ADDED BY THIS REVISION (Ruling 11). THIS IS A PROMOTION, NOT A RE-PROOF.** The six declarations
 below are compiled, object-generic, and import only `LadderRealize`; they live today in the wired
@@ -8692,14 +8692,14 @@ states that in those terms, and the phase's verification greps its own additions
 that pairs a `stepFrag` name with `thetaC` or `mixC` without saying `jump`.
 
 **Tasks**:
-- [ ] Re-derive every promoted declaration's signature and live line in the probe at entry
+- [x] Re-derive every promoted declaration's signature and live line in the probe at entry
       (`Zrel` `:80`, `Zrel_succ` `:102`, `Zrel_pred` `:191`, `exists_linked_path` `:382`,
       `truth_iff_of_lnk` `:595`, `cellAt_eq_of_Zrel` `:710`, with the supporting `glue` `:287`,
       `glue_isPath` `:290`, `exists_path_through` `:317`, `Lnk` `:348`, `Lnk_succ` `:365`,
       `Lnk_pred` `:372`, `StepFrag` `:480`, `frag_of_mem` `:490`, `truth_nxt` `:562`,
       `truth_prv` `:577`, `cellAt_subset_of_Zrel` `:673`). **Record any drift rather than working
-      around it.**
-- [ ] Create the library module
+      around it.** *(completed — no drift: every listed line matches the live probe, 1,210 lines, single import at `:61`, namespace at `:66`)*
+- [x] Create the library module
       `FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean`, importing
       `FormalSystem.Metalogic.Decidability.RaySummary.LadderRealize` and nothing else from this
       tree — the same single import the probe carries (`:61`). **A new module rather than an
@@ -8707,25 +8707,25 @@ that pairs a `stepFrag` name with `thetaC` or `mixC` without saying `jump`.
       `set_option linter.style.longFile 1800` at the predecessor plan's measurement, i.e. about 110
       lines of headroom, and the promoted content is several hundred. Re-measure at phase start; if
       the headroom has changed enough to make an in-place addition sound, record the decision
-      either way rather than defaulting.
-- [ ] Move the six headline declarations and their supporting lemmas into the module, **with their
+      either way rather than defaulting. *(completed — re-measured: `LadderRealize.lean` is 1,690 lines against its 1,800 ceiling, so the new 727-line module stands)*
+- [x] Move the six headline declarations and their supporting lemmas into the module, **with their
       proofs transplanted, not re-derived**. The transplant is allowed to adjust namespace,
       universe and `variable` boilerplate and nothing else; any proof-term change is a deviation
-      and is recorded as one with the reason.
-- [ ] Register the module: add its `import` line to
+      and is recorded as one with the reason. *(deviation: altered — (1) the library naming gate C23 of `check-module-invariants.sh` rejects `Zrel_refl/_symm/_mono/_succ/_pred` and `Lnk_symm/_mono/_zero/_succ/_pred`, so those ten land as `Zrel.refl` … `Lnk.pred`, a namespace adjustment with statements unchanged; (2) the warning budget C28 rejects 43 `linter.style.show` hits, so those `show` tactics are `change` with the same term; (3) `Zrel_of_kappa_eq` and everything after it stay in the probe)*
+- [x] Register the module: add its `import` line to
       `FormalSystem/Metalogic/Decidability/RaySummary.lean` in the existing order, and author its
       row in `FormalSystem/Metalogic/Decidability/RaySummary/README.md`'s inventory table.
       **Author a real description; do not emit the generator's `<!-- TODO: add description -->`
       placeholder**, which four rows of that table already carry and which is a recorded follow-up,
-      not a licence.
-- [ ] Leave the probe in place, wired and unedited, except for one appended docstring sentence
+      not a licence. *(deviation: altered — the generated surfaces `FormalSystem.lean` (`lake exe mk_all`), `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md` and the root `README.md` count rows were regenerated too, and the aggregator docstring gained the module's bullet)*
+- [x] Leave the probe in place, wired and unedited, except for one appended docstring sentence
       recording that its six headline declarations are now ALSO in the library and naming the
       module. **The probe is the evidence record of the round that derived them and is not
-      emptied.**
-- [ ] Add the axiom-profile pin entries for the promoted declarations to
+      emptied.** *(completed)*
+- [x] Add the axiom-profile pin entries for the promoted declarations to
       `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, measuring that file's `longFile`
       headroom first and raising its in-source baseline IN PLACE in the same commit if the entries
-      cross it.
+      cross it. *(completed — six pins; the ledger is 3,534 lines, baseline raised in place 3500 → 3700)*
 
 **Prohibited workarounds**: do NOT re-prove any promoted declaration; do NOT weaken a promoted
 signature to make a transplant typecheck (a transplant that will not typecheck is a finding — record
