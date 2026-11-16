@@ -164,9 +164,13 @@
         {
           "path": "specs/761_ladder_realization_theorem/reports/32_laddermodel-construction-falsifier.md",
           "type": "report"
+        },
+        {
+          "path": "specs/761_ladder_realization_theorem/reports/33_exponential-clip-cell-constancy.md",
+          "type": "report"
         }
       ],
-      "next_artifact_number": 33,
+      "next_artifact_number": 34,
       "previous_status": "implementing"
     },
     {

@@ -1,22 +1,22 @@
 {
   "status": "researched",
-  "started_at": "2026-11-16T14:49:13-08:00",
+  "started_at": "2026-11-16T15:00:00-08:00",
   "requires_user_review": true,
-  "review_reason": "Falsifier (4) settled. As worded it is not well-posed: no construction half over Dmax exists in the tree (no carrier, frame, valuation or truth lemma built from Dmax or any certAdmK set; certStabK/certBoxK of Dmax are unproved; ladderRealized is undeclared). In the only form that could rescue the filed equation it FAILS, compiled: no model whose cells are the (q, kappa)-fibres of Dmax (or of any set) receives ladderModel by a key-respecting, cell-preserving map at the filed ParamsOk. Differing coordinate: the cell as a function of the counter gap n - c. The re-statement decision (read-off / construction pair) belongs to the user; the probe is scratch-only and unwired.",
+  "review_reason": "The exponential-clip rescue is REFUTED with a compiled reason, and more broadly than asked: no gap clip that is a function of the formula alone is constant on kappa-classes. On an object with a forced idle chain of m+1 states, one fixed formula (dBack 0, dFwd 3) separates gap m+1 from every larger gap, so for every clip B the chain object at m := B carries a kappa-collision with different cells, at the filed ParamsOk tuple (Probe761G.exponential_clip_refuted, no_formula_only_clip, gap_clip_refuted_at_every_clip). Separating coordinate: the gap n - c. NOT refuted and OPEN: a clip that reads the object as well as the formula (every clip up to card Q - 2 refuted by compilation, a lower bound of order card Q * 2^dBack inferred). The re-statement decision and any decision to pursue an object-dependent clip belong to the user; the probe is scratch-only and unwired.",
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/761_ladder_realization_theorem/reports/32_laddermodel-construction-falsifier.md",
-      "summary": "Tests report 31's falsifier (4): Step 1 finds by grep that the construction half over Dmax does not exist in the tree; Step 2 compiles seven theorems (Probe761F, source in the appendix) showing ladderModel is not cell-and-key-isomorphic to any model satisfying the construction's truth lemma over a (q, kappa)-keyed set, Dmax included, naming the gap coordinate; 5 recommendations and overturn conditions."
+      "path": "specs/761_ladder_realization_theorem/reports/33_exponential-clip-cell-constancy.md",
+      "summary": "Settles decision 25's question negatively: a self-contained scratch probe (Probe761G, 521 lines, source in the appendix) compiles that cellAt is not constant on kappa-classes at any formula-only clip, 2^(dBack+1) included, via a chain-object family at one fixed formula; names the gap coordinate, the open object-dependent residual with its missing piece, the cost note, 5 recommendations and overturn conditions."
     }
   ],
-  "next_steps": "Record falsifier (4) as failed with the compiled reason and proceed to the re-statement as the read-off / construction pair; wire the appendix namespace into ladder-cell-agreement-refutation.lean (import widened to LadderRealize) and run check-evidence-probes.sh; in the re-statement, name the construction half's carrier first and carry certAdmK of the input set as an explicit hypothesis.",
+  "next_steps": "Record the exponential-clip rescue as failed with the compiled reason and proceed to the read-off / construction re-statement; wire the appendix as a standalone evidence probe and run check-evidence-probes.sh; correct citations that describe the exponential clip as open; do not adopt an object-dependent clip without an attack-first round (composed chain-times-doubling lower bound, then two-chain and cycle-in-region objects).",
   "metadata": {
     "session_id": "unspecified",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "findings_count": 3,
+    "findings_count": 5,
     "probes_compiled": 1,
     "probes_wired": 0,
     "check_evidence_probes_run": false
