@@ -8783,7 +8783,7 @@ probe's two-state fixture section (`Qc`, `pendC`, `stepC`, `labC`, `sigC` and th
 
 ---
 
-### Phase 11.38: The Two Jump Clauses' Statement Layer, `⊡`-Free Level First [NOT STARTED]
+### Phase 11.38: The Two Jump Clauses' Statement Layer, `⊡`-Free Level First [IN PROGRESS]
 
 **ADDED BY THIS REVISION, AND IT IS THE TRUNK'S FIRST PHASE (Ruling 12).** What is owed is
 `exists_linked_path` with a WHOLE-ROW correspondence in place of the window. The research round's
