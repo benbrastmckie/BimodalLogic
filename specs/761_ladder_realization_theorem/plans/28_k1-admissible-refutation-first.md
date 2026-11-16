@@ -11093,7 +11093,28 @@ the estimate was wrong and treat it as a route finding.
 
 ---
 
-### Phase 11.49: CONDITIONAL — ROUTE (R-2): The Object Half of `(K1)` as a Hypothesis of `exists_rowLinked_path`, Its Bridge to `ParamsOk`, and the `untl` Clause [IN PROGRESS]
+### Phase 11.49: CONDITIONAL — ROUTE (R-2): The Object Half of `(K1)` as a Hypothesis of `exists_rowLinked_path`, Its Bridge to `ParamsOk`, and the `untl` Clause [PARTIAL]
+
+**PARTIAL** (Phase 11.49) — the path forth did not close; the stop rule fired.
+- **What landed**: `objHalfK1_of_paramsOk` (the bridge), `exists_spliced_ladderPath_nxt_of_pend_past`
+  (the splice lift with the register pinned at a chosen anchor), `exists_lengthened_region`
+  (count move 1, register offset in the conclusion), `Zrel.forall_iff_eq` (the budget cannot be
+  stripped). All four compiled, pinned, axioms a subset of `[propext, Classical.choice, Quot.sound]`.
+- **What stalls**: `LnkRow.of_closed`'s `hfw`/`hbw` jump clauses. Its soundness clause is
+  `Mrel.toZrel` outright, so the two jump clauses are the whole content. The coordinate is the
+  REGISTER: the splice correspondence transports the object perfectly and the countdown in a
+  stated two-regime way, but `exists_ladderPath_of_walk` — which every splice in the library
+  factors through — concludes `objAt` and `cntAt` only, while `Zrel` reads the register in two of
+  its four clauses at every matched pair.
+- **The seam obstruction**, newly stated: gap-preservation by equality demands the register raised
+  by `l` below the splice seam and unraised above it, at ADJACENT positions; `Drift` permits a
+  change of at most one per step, so for `l ≥ 2` no register walk meets both.
+- **A second coordinate, reported not repaired**: count move 1 carries `Fintype.card Q ≤ cntAt g t`,
+  which `Mrel` plus the object half of `(K1)` does not supply. Adding a second hypothesis is
+  outside this phase's authorization (decision 21), so it is named rather than taken.
+- **Goal states**: recorded verbatim in `records/round-28-k1-admissible-refutation.md` section 14.
+- **Prohibited workarounds**: no `sorry`, no `axiom`, no vacuous definition, no trace-level
+  hypothesis, no finite-fibre or finite-width assumption, no second hypothesis. None was used.
 
 **ADDED BY THIS REVISION, AND IT IS THE ONLY PHASE OF THIS PLAN AUTHORIZED TO ADD A HYPOTHESIS TO
 A RECORDED SIGNATURE (decision 21, Ruling 27).** That authorization is narrow and is spelled out
@@ -11160,31 +11181,31 @@ phase owes is its COROLLARY against the path forth.
    the `⊡` lift named as still owed to Phase 11.40.
 
 **Tasks**:
-- [ ] Re-derive Phase 11.48's verdict at entry by **READING `records/round-28-k1-admissible-refutation.md`**,
+- [x] Re-derive Phase 11.48's verdict at entry by **READING `records/round-28-k1-admissible-refutation.md`**,
       not a marker, and re-grep every declaration it calls compiled (Ruling 25). On outcome (a) or
       (c), close `[COMPLETED WITH EXCLUSIONS]` with the record cited and attempt nothing.
-- [ ] Re-read `LnkRow.of_closed`, `Mrel`, `LnkRow`, `FwdJump`, `BwdJump`, `exists_rowLinked_path_zero`,
+- [x] Re-read `LnkRow.of_closed`, `Mrel`, `LnkRow`, `FwdJump`, `BwdJump`, `exists_rowLinked_path_zero`,
       `truth_iff_of_lnkRow`, `paramsOkK1` and `objCycleLens` against the live files before writing
       anything, and record what each already carries.
-- [ ] **State the repaired signature in the record BEFORE attempting it**, with the added
+- [x] **State the repaired signature in the record BEFORE attempting it**, with the added
       hypothesis quoted verbatim and the diff against the recorded signature written out.
-- [ ] Land the bridge lemma discharging the new hypothesis from `ParamsOk`, with its `#print axioms`
+- [x] Land the bridge lemma discharging the new hypothesis from `ParamsOk`, with its `#print axioms`
       guard, and record it as item 2 requires.
-- [ ] **Exhibit the budget-indexed relation `S` and its three closure clauses**, then instantiate
+- [x] **Exhibit the budget-indexed relation `S` and its three closure clauses**, then instantiate
       `LnkRow.of_closed` at it. If the closure clauses do not hold at the repaired hypothesis, that
       is the phase's finding and it is recorded as one — **not repaired by adding a second
       hypothesis**, which is outside this phase's authorization.
 - [ ] Attempt the three count moves over the scaffold, re-using `LadderPump`/`LadderChain`, with the
-      register offset each leaves stated in its own conclusion.
+      register offset each leaves stated in its own conclusion. *(deviation: altered — count move 1 (`exists_lengthened_region`) landed with its register offset in the conclusion; cascade-through-the-cap and insert-a-region-in-a-tight-chain NOT reached, per this phase's own one-dispatch stop rule)*
 - [ ] State and prove `exists_rowLinked_path` at the repaired signature, then derive the `untl`
-      clause from it and the landed `truth_iff_of_lnkRow`. `#print axioms` on both.
-- [ ] Record in `records/round-28-k1-admissible-refutation.md` exactly which fragment of the
+      clause from it and the landed `truth_iff_of_lnkRow`. `#print axioms` on both. *(deviation: deferred — `exists_rowLinked_path` did not close; the scaffold instantiates and its soundness clause is `Mrel.toZrel` outright, but the `hfw`/`hbw` jump clauses stall on the REGISTER coordinate. Goal state recorded verbatim in records/round-28-k1-admissible-refutation.md section 14. The `untl` clause is its corollary and is deferred with it.)*
+- [x] Record in `records/round-28-k1-admissible-refutation.md` exactly which fragment of the
       language is covered by an AGREEMENT OF CELLS after this phase, with the `snce` mirror and the
       `⊡` lift named as still owed to Phase 11.40.
-- [ ] Record, in the same place, that Phases 11.39, 11.42, 11.44, 11.45 and 11.47 stay at their own
+- [x] Record, in the same place, that Phases 11.39, 11.42, 11.44, 11.45 and 11.47 stay at their own
       markers and that the deliverable was re-pointed here rather than re-filed (Rulings 17, 21, 24,
       26, 28). **This phase does not re-mark or write into any of them.**
-- [ ] Ruling 25's check before committing: every "is compiled" claim names a declaration `grep`
+- [x] Ruling 25's check before committing: every "is compiled" claim names a declaration `grep`
       finds.
 
 **Prohibited workarounds**: do NOT enter without Phase 11.48's outcome (b) read from its record; do

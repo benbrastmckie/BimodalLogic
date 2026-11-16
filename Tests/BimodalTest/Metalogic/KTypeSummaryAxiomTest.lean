@@ -3726,4 +3726,70 @@ info: 'FormalSystem.Metalogic.Decidability.RaySummary.Mrel.threshold_le_Tc' depe
 #guard_msgs in
 #print axioms Mrel.threshold_le_Tc
 
+
+/-! ### Route (R-2): the object half of `(K1)`, count move 1, and the budget's essentiality
+(`RaySummary/LadderStepFrag.lean`)
+
+Phase 11.49 added the object half of `(K1)` — `∀ l ∈ objCycleLens step pend, l ∣ (P + 1)` — as a
+hypothesis, under the user's decision 21, and landed its bridge from `ParamsOk`, the first of the
+three count moves, and the mechanical reason the scaffold's relation must stay budget-indexed.
+`exists_rowLinked_path` itself did NOT close; it is not pinned here, and no declaration of that
+name exists.
+
+**The added-hypothesis check is mechanical and it lives here.** The bridge's own statement is the
+added hypothesis, and the restriction check below instantiates count move 1 at a positive splice
+with the register offset read off its conclusion — a version that silently dropped the register
+clause would fail to typecheck rather than passing review. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/--
+info: 'FormalSystem.Metalogic.Decidability.RaySummary.objHalfK1_of_paramsOk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms objHalfK1_of_paramsOk
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/--
+info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_lengthened_region' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms exists_lengthened_region
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.Zrel.forall_iff_eq' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms Zrel.forall_iff_eq
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+open FormalSystem.Syntax FormalSystem.PlusLanguage in
+/-- **THE BRIDGE CHECK, mechanical.** A `ParamsOk` in hand discharges the added hypothesis in the
+bundled form the path forth's binder list would carry. If the bridge were dropped or restated at
+a different shape this would fail to elaborate. -/
+example {Q : Type} [Fintype Q] {step : Q → Q → Bool} {pend : Q → Bool}
+    {lab : Q → Atom → Bool} {φ : PlusFormula} {Tc Tn P B : ℕ}
+    (hp : ParamsOk step pend lab φ Tc Tn P B) :
+    ∀ l ∈ objCycleLens step pend, l ∣ (P + 1) :=
+  objHalfK1_of_paramsOk hp
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- **THE RESTRICTION CHECK on count move 1.** The move is instantiated with its register offset
+and its countdown offset BOTH read off the conclusion and BOTH equal to the same positive `l`, so
+the gap `n - c` is carried unchanged. A version that moved the countdown while leaving the
+register alone — the shape every earlier round's register obstruction took — would not typecheck
+here. -/
+example {Q : Type} [Fintype Q] {step : Q → Q → Bool} {pend : Q → Bool}
+    {g : ℤ → LadderState Q pend} (hg : IsLadderPath step pend g) (t : ℤ)
+    (hpast : ∀ p : ℤ, p ≤ t → pend (objAt g p) = true)
+    (hroom : Fintype.card Q ≤ cntAt g t)
+    {P : ℕ} (hK1 : ∀ l ∈ objCycleLens step pend, l ∣ (P + 1)) :
+    ∃ (l : ℕ) (g' : ℤ → LadderState Q pend), 0 < l ∧ l ∣ (P + 1) ∧
+      IsLadderPath step pend g' ∧ objAt g' t = objAt g t ∧
+      ((nxtAt g' t : ℤ) - cntAt g' t = (nxtAt g t : ℤ) - cntAt g t) := by
+  obtain ⟨l, g', hl, hdvd, hg', ho, hc, hn⟩ := exists_lengthened_region hg t hpast hroom hK1
+  exact ⟨l, g', hl, hdvd, hg', ho, by rw [hc, hn]; push_cast; ring⟩
+
 end BimodalTest.Metalogic

@@ -1595,9 +1595,7 @@ theorem exists_spliced_ladderPath_nxt_of_pend_past {g : ℤ → LadderState Q pe
     rw [hvc, cntAt_eq_nxtAt_of_idle_pend g hg (v - (l : ℤ)) hv0' hv1']
     -- the register is 1-Lipschitz, so the pinned value `nxtAt g t + l` is within `v - t`
     have hlip := nxtAt_lipschitz_two_sided g hg (v - (l : ℤ)) t
-    have hlz : (0 : ℤ) ≤ (l : ℤ) := Int.ofNat_nonneg l
-    push_cast
-    push_cast at hlip
+    have hlz : (0 : ℤ) ≤ (l : ℤ) := Int.natCast_nonneg l
     omega
   obtain ⟨g', hg', hobj, hcnt, hnxt⟩ :=
     exists_ladderPath_of_walk_nxt_at (step := step) (pend := pend)
@@ -1650,5 +1648,48 @@ theorem exists_lengthened_region [Fintype Q] {g : ℤ → LadderState Q pend}
   exact ⟨l, g', hl0, hK1 l hmem, hg', ho, hc, hnxt⟩
 
 end Lengthen
+
+/-! ### Why the budget cannot be stripped from the scaffold's relation
+
+`LnkRow.of_closed` takes a BUDGET-INDEXED relation `S : ℕ → ℕ → ℤ → ℤ → Prop`.  The obvious
+simplification — supply a budget-FREE correspondence `C : ℤ → ℤ → Prop` between positions, sound
+for `Zrel` at every budget and closed under both jumps — would reduce the row link to a purely
+combinatorial condition on a reparametrization, with no arithmetic thresholds anywhere.  It is
+worth recording, once and mechanically, that this simplification is unavailable, because it is
+the shape a later round would otherwise reach for.
+
+`Zrel a b` at EVERY budget says the two states are EQUAL.  Each of `Zrel`'s four clauses is a
+disjunction of an equality with a threshold, and every threshold grows without bound in `a + b`
+while the components are natural numbers; at a budget past all of them only the equality
+disjunct survives.  So a budget-free correspondence sound for `Zrel` at every budget relates only
+positions carrying the identical state, the two paths agree along it, and the row link it proves
+is `LnkRow.refl` in disguise.
+
+The consequence for the path forth: the thresholds are not scaffolding to be discharged once at
+the anchor, they are the content, and the relation handed to `LnkRow.of_closed` must carry the
+budget through every jump. -/
+
+section BudgetEssential
+
+variable {Q : Type} {pend : Q → Bool}
+
+/-- **THE BUDGET CANNOT BE STRIPPED.**  `Zrel` at every budget is state equality.  Hence no
+budget-free correspondence can be fed to `LnkRow.of_closed` through its soundness clause except
+the diagonal, and the budget indexing of the scaffold's relation is essential rather than
+bookkeeping. -/
+theorem Zrel.forall_iff_eq (x y : LadderState Q pend) :
+    (∀ a b : ℕ, Zrel a b x y) ↔ x = y := by
+  constructor
+  · intro hall
+    obtain ⟨hq, hc, hn, _hgap⟩ := hall (x.1.2.1 + y.1.2.1 + x.1.2.2 + y.1.2.2 + 1)
+      (x.1.2.1 + y.1.2.1 + x.1.2.2 + y.1.2.2 + 1)
+    have hc' : x.1.2.1 = y.1.2.1 := by omega
+    have hn' : x.1.2.2 = y.1.2.2 := by omega
+    exact Subtype.ext (Prod.ext hq (Prod.ext hc' hn'))
+  · rintro rfl
+    intro a b
+    exact Zrel.refl a b x
+
+end BudgetEssential
 
 end FormalSystem.Metalogic.Decidability.RaySummary

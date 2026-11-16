@@ -308,3 +308,162 @@ assumed). The bridge owed here is the BUNDLED `∀` form the path forth's binder
 it is a one-line corollary rather than a fresh derivation. It is still landed under its own name,
 because the plan's reason for demanding it — that no downstream phase re-derive a projection
 path — is served by the bundled form existing beside the consumer.
+
+## 13. The mechanical checks the phase owes, run and reported
+
+| Check | Result |
+|---|---|
+| `lab`/`φ` do NOT enter the row-link layer | **PASS.** `exists_lengthened_region`, `exists_spliced_ladderPath_nxt_of_pend_past` and `Zrel.forall_iff_eq` each carry neither string in their binder lists (checked by parsing the headers out of the source, not by eye). `objHalfK1_of_paramsOk` carries both, **and that is the point of (R-2)**: the bridge is exactly where `lab` and `φ` appear and where they stop. Nothing downstream of it mentions either. |
+| the full `paramsOkK1` is NOT taken (rejected (R-1)) | **PASS.** `paramsOkK1` occurs nowhere in anything this phase landed. |
+| no second induction principle beside the scaffold (Ruling 29) | **PASS.** `Nat.strong_induction_on` occurs at `LadderStepFrag.lean:666, 680, 1027, 1437` — all four pre-existing (`LnkRow.symm`, `LnkRow.mono`, `LnkRow.toLnk`'s neighbourhood, and `LnkRow.of_closed` itself). This phase added none, and `LnkRow.of_closed` is instantiated rather than re-derived. |
+| `(K2)`'s margin not re-measured (Ruling 30) | **PASS.** `Mrel.threshold_le_Tc` untouched. |
+| no `sorry`, `axiom`, `native_decide`, vacuous definition | **PASS.** The only `sorry` occurrences anywhere in the touched files are the word in prose docstrings about axiom profiles. |
+| nothing landed under `cellAt_const_of_kappa_eq` or `ladderRealized` | **PASS.** `grep` finds no declaration of either. |
+| Ruling 25 — every "is compiled" claim names a declaration `grep` finds | **PASS.** `objHalfK1_of_paramsOk`, `exists_spliced_ladderPath_nxt_of_pend_past`, `exists_lengthened_region`, `Zrel.forall_iff_eq`: one hit each. |
+| `exists_rowLinked_path` | **STILL ABSENT, and not claimed.** `grep` finds only `exists_rowLinked_path_zero`. |
+
+Guarded full `lake build`: exit 0, zero `error:`, 2976 jobs, with the `.olean` of both touched
+modules newer than its source. Guarded `-- build BimodalTest`: exit 0, zero errors.
+
+## 14. WHAT LANDED, AND WHERE THE PATH FORTH STALLED
+
+### Landed
+
+| Declaration | Content | Axioms |
+|---|---|---|
+| `objHalfK1_of_paramsOk` | the bridge: `ParamsOk → ∀ l ∈ objCycleLens step pend, l ∣ (P + 1)` | `[propext, Classical.choice, Quot.sound]` |
+| `exists_spliced_ladderPath_nxt_of_pend_past` | the splice lift with the register pinned at a CHOSEN anchor rather than at the hardwired `-(l : ℤ)` | `[propext, Classical.choice, Quot.sound]` |
+| `exists_lengthened_region` | **count move 1**, with the register offset in the conclusion | `[propext, Classical.choice, Quot.sound]` |
+| `Zrel.forall_iff_eq` | `(∀ a b, Zrel a b x y) ↔ x = y` — the budget cannot be stripped | `[propext, Quot.sound]` |
+
+All four are pinned in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`, together with the
+bridge check and the restriction check on count move 1 (which reads the register offset and the
+countdown offset off the conclusion and requires them EQUAL, so a move that shifted the countdown
+while leaving the register alone would fail to typecheck).
+
+### The goal state the path forth reaches, recorded verbatim
+
+The scaffold instantiates cleanly at the natural relation
+`S k m s s' := Mrel P k m (h s) (h' s')`: its soundness clause is `Mrel.toZrel` outright, with
+nothing to prove. The whole content is the two jump clauses, and this is the goal `LnkRow.of_closed`
+leaves (produced by `trace_state` in a scratch file outside the repository; nothing with a
+placeholder body entered the tree):
+
+```
+case refine_1
+Q : Type
+inst✝ : Fintype Q
+step : Q → Q → Bool
+pend : Q → Bool
+P : ℕ
+h h' : ℤ → LadderState Q pend
+a b : ℕ
+t : ℤ
+hS : Mrel P a b (h t) (h' t)
+k m : ℕ
+s s' : ℤ
+hs : Mrel P k (m + 1) (h s) (h' s')
+⊢ FwdJump (fun s s' => Mrel P k m (h s) (h' s')) s s' ∧ FwdJump (fun s' s => Mrel P k m (h s) (h' s')) s' s
+```
+
+And the top-level goal in the case the step system never meets — countdowns both above the raised
+threshold — with the added hypothesis in scope:
+
+```
+case inr
+...
+hK1 : ∀ l ∈ objCycleLens step pend, l ∣ P + 1
+hres : ↑(↑(h t)).2.1 ≡ ↑(↑y).2.1 [ZMOD ↑P + 1]
+hq : (↑(h t)).1 = (↑y).1
+hb1 : (P + 1) * (a + b) ≤ (↑(h t)).2.1
+hb2 : (P + 1) * (a + b) ≤ (↑y).2.1
+⊢ ∃ h', IsLadderPath step pend h' ∧ h' t = y ∧ LnkRow a b h h' t t
+```
+
+### The clause it stalls on, and the coordinate
+
+**It stalls on `hfw`/`hbw` — the jump clauses — and the coordinate is the REGISTER.** The stall is
+in the CONSTRUCTION layer, not in the added hypothesis, and this round can say exactly where.
+
+1. The correspondence the splice supplies is `spliceEmb a l`, and it transports the OBJECT
+   coordinate perfectly: `objAt h' (spliceEmb a l v) = objAt h v` at every `v`, below the splice
+   point by `spliceObj_eq_of_le` and above it by `spliceObj_of_ge`.
+2. It transports the COUNTDOWN in a stated, two-regime way: `cntAt h' v = cntAt h v + l` for
+   `v ≤ a` (every such `v` is in the region, the past being pending-forever) and
+   `cntAt h' (v + l) = cntAt h v` for `v ≥ a`.
+3. It does **not** transport the REGISTER at all. `exists_ladderPath_of_walk` — the lift every
+   splice in the library factors through — concludes `objAt` and `cntAt` and nothing else; the
+   register it produces is whatever `drift_extension_of_pins` chooses through the region-start
+   pins. `exists_ladderPath_of_walk_nxt_at` pins it at ONE anchor, which is what count move 1
+   above exploits, and that is the whole of what is available.
+4. `Zrel` reads the register in TWO of its four clauses — the register clause and the gap clause
+   `n - c` — at EVERY matched pair. `Zrel.forall_iff_eq` (landed) says the budget cannot be
+   stripped to avoid this, so the thresholds are the content rather than bookkeeping.
+
+**Why pinning the register everywhere is not merely unlanded but obstructed.** The gap clause
+wants equality on both sides of the splice seam, and that is two incompatible demands one step
+apart. At a matched pair below the seam the countdown is raised by `l`, so the gap is preserved
+only if the register is raised by `l` too — which is exactly count move 1's conclusion, and
+exactly the offset `attackA_mirror_register_joins` exhibited. At a matched pair above the seam the
+countdown reverts to EQUALITY, so the gap is preserved only if the register reverts too. The two
+demands sit at adjacent positions `a + l - 1` and `a + l`, and `Drift` permits a change of at most
+one per step. For `l ≥ 2` no register walk meets both. The register must therefore spend the drop
+over `l` steps, during which the gap is wrong by between `1` and `l` and has to be carried by
+`Zrel`'s threshold disjuncts instead — and whether those disjuncts cover it is not decided here
+and is NOT claimed either way.
+
+**A second, independent coordinate, stated because it is a hypothesis of count move 1 and not of
+the consumer.** `exists_lengthened_region` carries `Fintype.card Q ≤ cntAt g t`, the room the
+pigeonhole `exists_objCycle_of_card_le_cnt` needs to find a cycle on the region's own walk. `Mrel`
+supplies `(P + 1) * (a + b)` and the added hypothesis supplies `l ∣ P + 1` for the object's cycle
+lengths; neither forces `P + 1 ≥ Fintype.card Q`. **This is reported as a finding and is NOT
+repaired by adding a second hypothesis**, which is outside this phase's authorization (decision 21
+admits the object half of `(K1)` and nothing else). It is named here so the next revision can
+route it rather than rediscover it.
+
+`exists_lengthened_region` also carries the pending-forever past, which is the regime
+`exists_spliced_ladderPath_of_pend_past` discharges without a pin cascade. Count moves 2 and 3 —
+cascade through the cap, and insert a region in a tight chain — are what lift that restriction,
+and **they were not reached**, per the phase's own stop rule.
+
+## 15. The fragment covered by an agreement of cells after this phase
+
+**Unchanged by this phase.** The `untl` clause of `truth_iff_of_lnkRow` is a corollary of the path
+forth, the path forth did not close, and the corollary was therefore not derived. What is covered
+by an agreement of cells after this round is exactly what was covered before it: the budget-`(0, 0)`
+case, via `exists_rowLinked_path_zero` and `truth_iff_of_lnkRow` at `dBack ψ = dFwd ψ = 0`. The
+`snce` mirror and the lift to the `⊡`-carrying level remain owed to **Phase 11.40** and are
+untouched here.
+
+## 16. Phase-marker hygiene, and the deviation from plan v28
+
+Phases 11.39, 11.42, 11.44, 11.45 and 11.47 stay exactly at their own markers. **This phase
+re-marked none of them and wrote into none of them** (Rulings 17, 21, 24, 26, 28). The only
+plan-file edit is to the Phase 11.49 heading itself. The deliverable was re-pointed here rather
+than re-filed.
+
+**Deviation, recorded rather than annotated silently.** Plan v28's Scope Hypothesis for this phase
+names ONE bridge, ONE scaffold instantiation, THREE count moves, ONE path-forth lemma and ONE
+corollary clause. The bridge landed; the scaffold instantiation was reached and its goal recorded
+but not discharged; ONE of the three count moves landed; the path-forth lemma and the corollary
+did NOT land. One object landed that the Scope Hypothesis does not name —
+`exists_spliced_ladderPath_nxt_of_pend_past`, the register-exposing splice lift — because the
+landed splice layer pins the register at a hardwired position and count move 1's own statement
+requires it pinned at the anchor; without it the "register offset stated IN THE STATEMENT"
+requirement of item 3 could not be met at all. A second unnamed object landed,
+`Zrel.forall_iff_eq`, because the budget-free simplification it refutes is the shape the next
+round would otherwise reach for. The estimate was wrong in the direction the phase's own text
+anticipated, and it is recorded as a route finding rather than absorbed.
+
+**The gate collision**, recorded: `typst-sync-check.sh` Check 2 blocked the first sub-step commit
+on `formalsystem-line-count` drift caused by this phase's own appends (committed 411272 vs live
+411316). This is the cross-set collision with the `status.typ` owner that the task description's
+FILE SCOPE anticipates. Remedy applied in-phase: `typst-sync-check.sh --fix`, with
+`typst/generated/status.typ` staged alongside each sub-step.
+
+**Module headroom**, re-measured live rather than carried: `LadderStepFrag.lean` stood at 1485
+before this phase (matching plan v28's figure) and stands at 1697 after. It crossed the
+package-wide `longFile 1500`, so an in-source `set_option linter.style.longFile 1700` baseline was
+added **in place**, with a comment saying why the module is not split. The module was NOT split.
+`KTypeSummaryAxiomTest.lean` stood at 3729 (matching) and stands at 3794, inside its in-source
+`longFile 3800`; its baseline was not raised.
