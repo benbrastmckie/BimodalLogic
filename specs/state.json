@@ -148,9 +148,13 @@
           "path": "specs/761_ladder_realization_theorem/summaries/28_object-half-k1-count-move-summary.md",
           "type": "summary",
           "summary": "Phase 11.49 implementation summary: what landed, the deviations, and the stalling coordinate."
+        },
+        {
+          "path": "specs/761_ladder_realization_theorem/reports/29_row-link-route-viability.md",
+          "type": "report"
         }
       ],
-      "next_artifact_number": 29,
+      "next_artifact_number": 30,
       "previous_status": "implementing"
     },
     {
