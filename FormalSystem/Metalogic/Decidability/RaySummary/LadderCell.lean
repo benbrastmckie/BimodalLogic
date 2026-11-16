@@ -3226,39 +3226,57 @@ theorem iterSpliced_gap_interior_forces_block_gap_le
 
 end GapProducer
 
-/-! ## The refutation attempt on the agreement over counter classes: the verdict
+/-! ## The refutation of the agreement over counter classes
 
 The agreement of `cellAt` on `kappa`-classes under `ParamsOk` — the statement every section above
-measures a route to — has been attempted in the NEGATIVE, at the two-state object of
+measures a route to — is **REFUTED AS FILED**, at the two-state object of
 `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`, where the pending
-bit is a readable atom. The verdict is **OPEN WITH A MEASURED ACCOUNT**: the statement is not
-refuted and it is not proved, and no declaration in the tree carries its name.
+bit is a readable atom. No declaration in the tree carries the statement's name.
 
-**What the attempt compiles.** The mechanism it rests on is real: `cntAt_eq_of_pend_eq` makes
-the countdown a function of the pend profile, the pend profile is an atom row at that object, and
-the formula `X^(k+1) ¬p` separates the cell at countdown `k` from the cell at every larger
-countdown (`sepC_cell_ne`, with both memberships closed; the `⊡`-prefixed sibling does the same,
-`stabSepC_cell_ne`).
+**The coordinate that fails is the gap.** `kappa`'s fifth coordinate clips the gap `n - c`
+between the register and the countdown to `[-B, B]`, and (K4) asks `B` to dominate only
+`2 * dBack φ + 1` and `2 * dFwd φ + 1`. Three facts at a pending state `(c, n)` let a formula
+read the gap further than that: a history through it has an idle position in its past only if
+`c ≤ n + 1` (the region was entered with the countdown set to the register, and the register
+falls by at most one per step); one step forward the gap rises by up to two and one step backward
+it falls by up to two; and `⊡` re-chooses the history at every state. A formula therefore reads
+the gap at twice its temporal depth plus a reader's own threshold.
 
-**Where it stops.** The separated pair is never a collision. (K2)'s margin conjunct carries the
-factor `2 ^ card (closure φ)`, so under `ParamsOk` at any formula the closure's cardinality is
-strictly below `Tc` (`lt_Tc_of_closure_card`); a formula recording a hold of length `k` has at
-least `k + 2` closure members (`sepC_closure_card`); hence every countdown it records lies below
-the clipping threshold, where `kappa`'s first coordinate is injective (`sepC_no_collision`,
-`stabSepC_no_collision`). At every collision whose countdown is at or above `k` the two cells of
-that formula are EQUAL (`sepC_agreement_at_collision`). The step that fails is the instantiation
-of the separating type at a collision, not either membership: the thresholds are functions of the
-formula and grow faster than the formula's reach.
+**What the probe compiles.** `thetaC := ⊡ X ⊡ ¬ P ¬p` has `dBack = dFwd = 1`, so (K4)'s least
+clip for it is `3`. It is in no realized type at the pending state with gap `-3`
+(`thetaC_not_mem`) and in every realized type at a pending state with gap at most `-4`
+(`thetaC_mem`), while the counter pairs `(Tc + 3, Tc)` and `(Tc + 3 + (P + 1), Tc)` are one
+`kappa`-class (`kappa_collision_theta`). So the two cells of a collision differ at the periodicity
+fixpoint's own four parameter outputs, with `ParamsOk` discharged by `paramsOk_params`
+(`refutationTargetC_holds`, `cellAt_const_of_kappa_eq_schema_refuted`); no function of the counter
+class equals the cell there, which refutes the fibre equation with it
+(`no_fibre_equation_over_kappa`); and every set containing the realized triples of that object's
+pending states fails condition (5) of the `K`-indexed certificate at the clip `3`
+(`certStabK_fails_of_contains_realized`). No threshold is raised, `ParamsOk` is not strengthened,
+and no stab-free, finite-fibre or finite-width premise appears.
 
-**What it leaves open.** A formula reading a countdown above `2 ^ card (closure φ)` at parameters
-satisfying `ParamsOk` at that same formula would refute the agreement; the probe states that
-target as the undecided proposition `RefutationTargetC`. The families tried are box-free with
-`⊡`-depth at most one, on one object.
+**The excess over the clip is unbounded.** The family `mixC (k + 2) k` steps back `k + 2` times
+through pending positions and then asks that the region entered right after the current one be
+over within `k` positions. Its clip is `2 k + 5` and it separates the gap `3 k + 4` from the gap
+one modulus above it (`mixC_refutes`). No constant added to the larger of the two exactness
+depths repairs (K4).
 
-**What it found for the count move.** `exists_non_atom_preserving_count_move` exhibits two ladder
-paths through ladder states with different countdowns that realize the same closure type while
-their atom rows differ — the rows differ beyond the formula's reach. `AtomPreservingCountMove` is
-refuted at that object; a count move that does not preserve the atom row exists there, at that
-one formula family, with explicit paths and no general construction. -/
+**What is not settled.** Whether a larger gap clip makes the agreement true. Both families are
+defeated by a clip of the form `2 * (dBack φ + dFwd φ) + 2`; no proof of the agreement at any
+clip exists and no such clip is adopted. The countdown coordinate is not separated at a
+collision: the formula `X^(k+1) ¬p` separates the cell at countdown `k` from the cell at every
+larger countdown (`sepC_cell_ne`; `stabSepC_cell_ne` one `⊡` up), but (K2)'s margin conjunct
+carries the factor `2 ^ card (closure φ)`, so under `ParamsOk` the closure's cardinality is
+strictly below `Tc` (`lt_Tc_of_closure_card`), every countdown such a formula records lies where
+`kappa`'s first coordinate is injective (`sepC_no_collision`, `stabSepC_no_collision`), and at
+every collision whose countdown is at or above `k` its two cells are equal
+(`sepC_agreement_at_collision`).
+
+**The count move.** The agreement is equivalent to a count move — every ladder path through one
+state of a collision answered by one through the other realizing the same closure type — and that
+move is false at the same parameters (`not_countMoveTargetC`). At one formula family, with
+explicit paths, two ladder paths through states with different countdowns do realize the same
+closure type while their atom rows differ (`exists_non_atom_preserving_count_move`);
+`AtomPreservingCountMove` is refuted at that object. -/
 
 end FormalSystem.Metalogic.Decidability.RaySummary

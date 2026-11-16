@@ -7211,6 +7211,8 @@ exists to DECIDE rather than to narrow further.
 
 **OUTCOME: (b) — OPEN WITH A MEASURED ACCOUNT, zero `sorry`.** The separating type `sepC k` is exhibited and BOTH memberships compile (`sepC_cell_ne`); the step that fails is its instantiation at a `kappa`-collision, whose negation compiles (`sepC_no_collision`, `sepC_agreement_at_collision`, via `lt_Tc_of_closure_card`: (K2)'s margin puts `Tc` above `2 ^ card (closure φ)`). Scope Hypothesis exceeded and recorded: two formulas and fourteen printed theorems, one fixture, no library declaration. Phase 11.32 is the enterable successor; `exists_non_atom_preserving_count_move` is already its fixture-level instance. Record: `records/round-21-refutation-verdict.md`.
 
+**OUTCOME REVISED TO (a) — REFUTED — BY DISPATCH 62.** The gap coordinate, which this round did not try, separates a collision: `thetaC := ⊡ X ⊡ ¬ P ¬p` has (K4) clip `3` and its cells differ at `(Tc + 3, Tc)` against `(Tc + 3 + (P + 1), Tc)` at `paramsOk_params` (`refutationTargetC_holds`, `cellAt_const_of_kappa_eq_schema_refuted`); the excess over the clip is unbounded (`mixC_refutes`). The countdown-coordinate account above stands as measured. Phase 11.32 is closed on its own outcome-(a) rule. **Phases 11.30/11.31 are NOT entered by that dispatch**: Phase 11.30's derivation rests on "the parameter axis is already spent", which the refutation contradicts (the defect IS a parameter-source defect, (K4)), and `certStabK_fails_of_contains_realized` shows the soundness leg inherits it. A route decision is returned instead.
+
 **THIS IS THE ONE ENTERABLE PHASE OF THIS PLAN, AND IT IS A DECISION GATE WITH TWO PRE-DECLARED
 OUTCOMES, BOTH OF WHICH ARE RESULTS.** Five cycles have all tried to PROVE this statement. No round
 has tried to REFUTE it. **The deliverable of this phase is a VERDICT, not a proof of the agreement**
@@ -7264,13 +7266,13 @@ section, to refute the obligation. **The open step is the separating type and no
       `(q, c', n')` realizes the separating type, by the pend-profile argument — `cntAt_eq_of_pend_eq`
       forces the countdown from the pend profile, the collision moves `c`, and `labC` reads the
       moved bit. *(completed — `sepC_not_mem_of_lt_cnt` CLOSES for every `c' > k`; the step that FAILS is instantiating the pair at a `kappa`-collision: `sepC_no_collision` forces `c' = k`, and `sepC_agreement_at_collision` proves the two cells EQUAL at every collision with countdown ≥ k)*
-- [ ] **On outcome (a)**: assemble the refutation as a single headline theorem in the fixture,
+- [x] **On outcome (a)**: assemble the refutation as a single headline theorem in the fixture,
       alongside `exists_refuting_collision` and WITHOUT editing it, exhibiting the two states, the
       `kappa`-collision, `paramsOkC`, and the separating type with both memberships. Add
       `#print axioms` on it. Then land the library-side statement of the refutation in
       `LadderRealize.lean` — the negation of the filed agreement's schema, stated so a reader sees
       WHICH quantifier fails — and record the verdict in a third `## ` decision docstring in
-      `LadderCell.lean`. *(deviation: skipped — outcome (a) not reached; no library declaration in `LadderRealize.lean`)*
+      `LadderCell.lean`. *(deviation: altered — outcome (a) reached at dispatch 62: headline `refutationTargetC_holds` with `cellAt_const_of_kappa_eq_schema_refuted` in the fixture's fourth section, `#print axioms` on eighteen theorems, verdict recorded in `LadderCell.lean`'s decision docstring; the library-side statement in `LadderRealize.lean` is NOT landed — it needs the two-state object in the library and is held for the route ruling on which statement the library should carry)*
 - [x] **On outcome (b)**: commit the attempt WITH its `sorry` isolated to the one unclosed
       membership goal **inside the fixture only, never in a library module**, and write the account
       into the fixture's docstring: the goal state reached verbatim, the step that fails, and what
@@ -7515,7 +7517,17 @@ downstream phase is a route finding for the record, not a drafting detail.
 
 ---
 
-### Phase 11.32: CONDITIONAL ON OUTCOME (b) — ROUND 3: The Non-Atom-Preserving Count Move [BLOCKED]
+### Phase 11.32: CONDITIONAL ON OUTCOME (b) — ROUND 3: The Non-Atom-Preserving Count Move [COMPLETED WITH EXCLUSIONS]
+
+**CLOSED ON THIS PHASE'S OWN RULE FOR OUTCOME (a)** ("On outcome (a) this phase closes `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` record citing Phase 11.29's compiled refutation"). Dispatch 62 compiled the refutation the Round 1 attempt did not reach: `RefutationTargetC` HOLDS (`refutationTargetC_holds`) and this phase's own target `CountMoveTargetC` is FALSE (`not_countMoveTargetC`), fourth section of `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`. The construction this phase was to build does not exist at the filed parameters. **The `BLOCKER` record below is the historical account of the attempt made before the refutation and is kept as written**; its "What is needed" line is superseded by the route decision returned with dispatch 62. The (T-1) measurement was run inside this phase's file scope: the verdict is the compiled object `no_transferSys_links_collisions` (no whole-language `TransferSys` carries the link at the filed parameters) with the failing clause named as the `⊡` clause read at the gap coordinate; the tight family itself (gaps in `{-1, 0, 1}`, inside every clip) is NOT decided. Record: `records/round-21-refutation-verdict.md`, section "Round 4".
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Build the general non-atom-preserving count move at the fixture level | The move is equivalent to the diagonal agreement (`typePreservingCountMove_iff_cellAt_const`) and the agreement is false at parameters satisfying `ParamsOk` as defined: the gap `n - c` is read past (K4)'s clip. A construction of a false statement is not a task | `refutationTargetC_holds`, `not_countMoveTargetC`, `thetaC_not_mem`, `thetaC_mem`, `kappa_collision_theta` in `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` |
+| Promote the construction into `LadderRealize.lean` and derive the agreement at the filed signature | The filed signature is refuted with its quantifiers (`cellAt_const_of_kappa_eq_schema_refuted`); `ladderRealized` falls with it (`no_fibre_equation_over_kappa`) | same file |
+
 
 **BLOCKER** (Phase 11.32):
 - **What failed**: the GENERAL construction — for arbitrary `Q`, `φ` (with `⊡`) and a `kappa`-collision, a ladder path through the other state realizing the same closure type. Goal state reached, with the cap attained on the given path `g` and `c < c'`: `⊢ ∃ g' τ', IsLadderPath step pend g' ∧ g' 0 = ⟨(q, c', n'), h'⟩ ∧ (∀ t, τ'.state t = (t, g' t)) ∧ tpOf … φ τ' 0 = tpOf … φ τ 0`, with the compiled side fact that every such `g'` rewrites `g`'s pending row inside the two regions before `0`.

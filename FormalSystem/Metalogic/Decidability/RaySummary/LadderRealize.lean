@@ -1342,10 +1342,14 @@ register-moving deletions carry one; it carries no `c = c'`, and `h1`/`h2` give 
 holding a class; its first world-state component `t` is general, while the inclusions below are
 stated at the DIAGONAL (`t = z`) — the one coordinate the offset-invariance section at the end of
 this module closes, by `cellAt_ladder_eq_of_worldTime`; it carries no per-path regime; and it
-carries none of the room, threshold or clip conditions the deletions ask for. **So the filed
-`cellAt_const_of_kappa_eq` is OPEN on those collisions SPECIFICALLY** — the upward-saturated
-register family, moved countdowns, closures carrying a `⊡` letter, and paths outside the regime
-— and not as a general failure. It is landed here under no name, and adding a hypothesis to a
+carries none of the room, threshold or clip conditions the deletions ask for. **So the covered
+family stops short of the filed `cellAt_const_of_kappa_eq` on those collisions SPECIFICALLY** — the
+upward-saturated register family, moved countdowns, closures carrying a `⊡` letter, and paths
+outside the regime. **The filed statement itself is REFUTED**, on a `⊡`-carrying closure at the
+gap coordinate, by the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`
+(`cellAt_const_of_kappa_eq_schema_refuted`; `LadderCell.lean`, section "The refutation of the
+agreement over counter classes"). It is landed here under no name, and adding a hypothesis to a
 recorded statement is not an implementer's move.
 
 **WHICH CONDITION OF THE COVERED FAMILY EACH `kappa` COORDINATE SUPPLIES, so the gap is visible

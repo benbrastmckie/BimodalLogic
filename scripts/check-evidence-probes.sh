@@ -1815,6 +1815,44 @@ EVIDENCE="specs/evidence"
 #                                                           | fifteen theorems that section prints:
 #                                                           | `[propext, Quot.sound]` or `[propext,
 #                                                           | Classical.choice, Quot.sound]`.
+#                                                           | THE AGREEMENT IS REFUTED (fourth
+#                                                           | section): the GAP `n - c`, `kappa`'s
+#                                                           | fifth coordinate, is read past (K4)'s
+#                                                           | clip. `thetaC := ⊡ X ⊡ ¬ P ¬p` has
+#                                                           | `dBack = dFwd = 1`, so its clip is `3`
+#                                                           | (`Bof_thetaC`); it is in NO realized
+#                                                           | type at gap `-3` (`thetaC_not_mem`) and
+#                                                           | in EVERY one at gap `≤ -4`
+#                                                           | (`thetaC_mem`), while `(Tc + 3, Tc)`
+#                                                           | and `(Tc + 3 + (P + 1), Tc)` are one
+#                                                           | class (`kappa_collision_theta`). So
+#                                                           | `RefutationTargetC` HOLDS at the
+#                                                           | fixpoint's own parameters
+#                                                           | (`refutationTargetC_holds`),
+#                                                           | `CountMoveTargetC` is FALSE
+#                                                           | (`not_countMoveTargetC`), the filed
+#                                                           | schema is false
+#                                                           | (`cellAt_const_of_kappa_eq_schema_refuted`),
+#                                                           | no function of the class equals the
+#                                                           | cell (`no_fibre_equation_over_kappa`),
+#                                                           | no whole-language `TransferSys` links
+#                                                           | the collisions
+#                                                           | (`no_transferSys_links_collisions`),
+#                                                           | and condition (5) fails on every set
+#                                                           | containing the realized triples
+#                                                           | (`certStabK_fails_of_contains_realized`).
+#                                                           | THE EXCESS IS UNBOUNDED:
+#                                                           | `mixC (k + 2) k` has clip `2 k + 5`
+#                                                           | (`Bof_mixC`) and separates the gap
+#                                                           | `3 k + 4` from the gap one modulus
+#                                                           | above it (`mixC_refutes`). NOT
+#                                                           | settled: whether a larger clip makes
+#                                                           | the agreement true, and the tight
+#                                                           | family, whose gaps lie inside every
+#                                                           | clip. Axioms on the eighteen theorems
+#                                                           | that section prints: `[propext,
+#                                                           | Quot.sound]` or `[propext,
+#                                                           | Classical.choice, Quot.sound]`.
 # seam-gluing-ray-product/ladder-cell-obligation-refutation | THE DEPTH-0 CELL OBLIGATION AS
 #                                                           | FILED IS REFUTED: the schema
 #                                                           | `CellLEZeroConstOfKappaEqPre` (the

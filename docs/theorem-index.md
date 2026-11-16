@@ -276,55 +276,70 @@ class — see `deterministic_not_plusDefinable` above.
 | — | **The regular ladder frame on the admissible carrier**: `ladderFrameAdm step pend fwd bwd`, on the carrier `ℤ × LadderState Q pend` with `LadderState Q pend := {x : Q × ℕ × ℕ // x.2.1 ∈ Adm pend x.1}`, is regular — `Saturation` from `saturation_of_finBranch` through `RladAdm_fwd`/`RladAdm_bwd` (`Rlad_fwd`/`Rlad_bwd` pulled back along `Subtype.val`), no `[Finite W]` on the carrier, so `not_finite_width_fmp` is not contradicted; `[Finite Q]` on the OBJECT only and the slice `LadderState Q pend` infinite; seriality `fwd`/`bwd` a genuine object condition on this carrier, taken as hypotheses exactly as `ladderFrame` takes its own. Landed beside `ladderFrame`, which stays instance-free; a carrier restriction of this shape is one of several equally valid (in-place repair, a sigma over `Adm`), none foreclosed. **What it is not**: no realization theorem (the run layer's phase 2, open — the stabilization of `ladderModel`'s cells in the pair of ladder counters is refuted by the wired probe `specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`, which consumes these declarations), no index of a ladder cell claimed in any shape, and the clipped-coordinate index family is itself refuted at the countdown coordinate as well as bounded at the gap one by the wired probe `specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean` (a pending region's first idle state sits at distance exactly `c + 1`, where the countdown's parity is observable, so `cell_succ_ne` separates `(q, c, n)` from `(q, c+1, n)` at every `c` with `n` held fixed), with the bounded-carrier alternative closed as a general route by the same probe, and the residue-carrying six-coordinate candidate that probe exhibits refuted at BOTH of its object-exhibited parameters by the wired probe `specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean` (`object_only_parameters_refuted`: the forced first idle state's exact distance is observable to the formula's `untl`-nesting depth; `reach_period_refuted`: the reach-set period of the full step graph is not the period of a letter-restricted sub-object — the threshold must be formula-derived and the modulus must be a multiple of the period of every letter-definable sub-object, a necessary condition, with the positive lemma for jointly derived parameters open and the fixture-level `qp_cell_eq_of_depth_parity` explicitly not that lemma) and the positive factorization lemma for any index open, nothing about `HitPresented`, nothing about `PlusValidZTime` in any form, no complexity bound — every quantity named is a count | `FormalSystem.Metalogic.Decidability.RaySummary.ladderFrameAdm_isRegular` | `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean` | ZTime | pcq pinned:C14 |
 | — | **The ladder model on the admissible carrier**: `ladderModel step pend fwd bwd lab : TaskModel (ladderFrameAdm step pend fwd bwd).toTaskFrame`, whose valuation reads the object component only — at `(t, ⟨(q, c, n), h⟩)` the letter `p` holds iff `lab q p = true`; the time and both counters are invisible to it. **What it is not**: no realization theorem (the run layer's phase 2, open — the stabilization of `ladderModel`'s cells in the pair of ladder counters is refuted by the wired probe `specs/evidence/seam-gluing-ray-product/ladder-cell-refutation.lean`, which consumes these declarations; the realization theorem itself is `[BLOCKED]` on the open index of which cell a ladder state has, and the ladder's structural liveness is forward-only — an admissible history pending at every past time, wired probe `specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean`), no index of a ladder cell claimed in any shape, and the clipped-coordinate index family is itself refuted at the countdown coordinate as well as bounded at the gap one by the wired probe `specs/evidence/seam-gluing-ray-product/ladder-cell-index-obstructions.lean` (a pending region's first idle state sits at distance exactly `c + 1`, where the countdown's parity is observable, so `cell_succ_ne` separates `(q, c, n)` from `(q, c+1, n)` at every `c` with `n` held fixed), with the bounded-carrier alternative closed as a general route by the same probe, and the residue-carrying six-coordinate candidate that probe exhibits refuted at BOTH of its object-exhibited parameters by the wired probe `specs/evidence/seam-gluing-ray-product/ladder-residue-index-refutation.lean` (`object_only_parameters_refuted`: the forced first idle state's exact distance is observable to the formula's `untl`-nesting depth; `reach_period_refuted`: the reach-set period of the full step graph is not the period of a letter-restricted sub-object — the threshold must be formula-derived and the modulus must be a multiple of the period of every letter-definable sub-object, a necessary condition, with the positive lemma for jointly derived parameters open and the fixture-level `qp_cell_eq_of_depth_parity` explicitly not that lemma) and the positive factorization lemma for any index open, nothing about `HitPresented`, nothing about `PlusValidZTime` in any form, no complexity bound — every quantity named is a count; the refuted stabilization statement is direction-neutral and the witness refuting it is forward-only | `FormalSystem.Metalogic.Decidability.RaySummary.ladderModel` | `FormalSystem/Metalogic/Decidability/RaySummary/LadderModel.lean` | ZTime | pcq pinned:C14 |
 
-| — | **The cell agreement over the COVERED collisions, at the filed statement's own shape**: at a `kappa`-collision with the countdown HELD (`c' = c`), the two registers downward-saturated (`Tn ≤ n' ≤ n` and `n + B ≤ c`) and the closure STAB-FREE, the cells of `⟨(q, c, n), h⟩` and `⟨(q, c', n'), h'⟩` at the diagonal world state are EQUAL. The residue conjunct is supplied by `kappa`'s FOURTH coordinate and the covered/uncovered split by its FIFTH (`register_dichotomy_of_kappa_eq_held_countdown`: a register-displaced collision at a held countdown is trivial, downward-saturated or upward-saturated, with no fourth case); every other condition is an explicit named binder, including the two per-path regimes. **What it is not**: it is NOT the filed `cellAt_const_of_kappa_eq`, which stays OPEN — the upward-saturated register family, moved countdowns, general time components, every closure carrying a `⊟` letter and every path outside the regime lie outside this row, and the filed statement is landed in the tree under no name; no tuple index of a ladder cell at any parameters, no bound and no device discrimination, and the ladder's structural liveness stays forward-only (`specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean`); the path-level splice invariance this cell-level route replaces is itself REFUTED (`specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean`, `splice_type_invariance_refuted`), not merely absent; and nothing here consumes `ladderSound`, `ladderLift`, `ladderCons_localRun` or any (S)/(C') statement. At a stab-free closure the certificate condition this agreement would feed asks nothing at all (`certStabK_of_stabFree`), so on the set it covers it buys the certificate side nothing | `FormalSystem.Metalogic.Decidability.RaySummary.cellAt_const_of_kappa_eq_of_covered` | `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` | ZTime | pcq pinned:C14 |
+| — | **The cell agreement over the COVERED collisions, at the filed statement's own shape**: at a `kappa`-collision with the countdown HELD (`c' = c`), the two registers downward-saturated (`Tn ≤ n' ≤ n` and `n + B ≤ c`) and the closure STAB-FREE, the cells of `⟨(q, c, n), h⟩` and `⟨(q, c', n'), h'⟩` at the diagonal world state are EQUAL. The residue conjunct is supplied by `kappa`'s FOURTH coordinate and the covered/uncovered split by its FIFTH (`register_dichotomy_of_kappa_eq_held_countdown`: a register-displaced collision at a held countdown is trivial, downward-saturated or upward-saturated, with no fourth case); every other condition is an explicit named binder, including the two per-path regimes. **What it is not**: it is NOT the filed `cellAt_const_of_kappa_eq`, which is REFUTED as filed (`cellAt_const_of_kappa_eq_schema_refuted`, wired probe `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`) — the upward-saturated register family, moved countdowns, general time components, every closure carrying a `⊟` letter and every path outside the regime lie outside this row, and the filed statement is landed in the tree under no name; no tuple index of a ladder cell at any parameters, no bound and no device discrimination, and the ladder's structural liveness stays forward-only (`specs/evidence/seam-gluing-ray-product/ladder-liveness-forward-only.lean`); the path-level splice invariance this cell-level route replaces is itself REFUTED (`specs/evidence/seam-gluing-ray-product/ladder-splice-type-refutation.lean`, `splice_type_invariance_refuted`), not merely absent; and nothing here consumes `ladderSound`, `ladderLift`, `ladderCons_localRun` or any (S)/(C') statement. At a stab-free closure the certificate condition this agreement would feed asks nothing at all (`certStabK_of_stabFree`), so on the set it covers it buys the certificate side nothing | `FormalSystem.Metalogic.Decidability.RaySummary.cellAt_const_of_kappa_eq_of_covered` | `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` | ZTime | pcq pinned:C14 |
 | — | **The cell of a ladder state does not depend on the world state's TIME component**: for every `x : LadderState Q pend` and all `t t' z : ℤ`, `cellAt (ladderModel step pend fwd bwd lab) φ (t, x) z = cellAt (ladderModel step pend fwd bwd lab) φ (t', x) z`. This is NOT `cellAt_eq_cellAt`, which holds the state fixed and varies the time at which it is VISITED (the `z` argument): here the `ℤ` component of the world STATE varies, so the two cells belong to two different world states whose history sets are disjoint. What makes them equal is that `Rlad` ignores its time argument, so one ladder walk is a world history at EVERY offset (`exists_hist_of_isLadderPath_at_offset`, the `k = 0` instance of which is `exists_hist_of_isLadderPath`), together with offset-invariance of truth (`truthAt_iff_of_worldTime_offset`) and hence of the realized closure type (`tpOf_eq_of_worldTime_offset`) — one case per clause of `PlusTruthAt`, the `⊡` letters INCLUDED and PROVED rather than carried by a pinned-letter parameter, so there is no stab-free premise anywhere, no finite-fibre and no finite-width assumption. **What it is not**: it is no agreement between DISTINCT ladder states, asserts no tuple index of a ladder cell at any parameters, no bound and no device discrimination, and nothing in it consumes `ladderSound`, `ladderLift`, `ladderCons_localRun` or any (S)/(C') statement | `FormalSystem.Metalogic.Decidability.RaySummary.cellAt_ladder_eq_of_worldTime` | `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` | ZTime | pcq pinned:C14 |
-| — | **The covered cell agreement at a GENERAL time component**: `cellAt_const_of_kappa_eq_of_covered` with its DIAGONAL world state `(z, x)` replaced by the filed statement's general `(t, x)`, by `cellAt_ladder_eq_of_worldTime`; every other binder is unchanged token for token, and the two per-path regimes stay at `z` because they are conditions on the walk and not on the world state's time component. This closes ONE of the five coordinates on which the filed `cellAt_const_of_kappa_eq` is open — the general time component — and closes no other. **What stays OPEN**: the upward-saturated register family, moved countdowns, every closure carrying a `⊡` letter, and every path outside the regime; the filed statement is still landed in the tree under no name, no parameter ruling is taken (`Tc` is not raised and `ParamsOk` is not strengthened), and at a stab-free closure the certificate condition this agreement would feed still asks nothing at all (`certStabK_of_stabFree`) | `FormalSystem.Metalogic.Decidability.RaySummary.cellAt_const_of_kappa_eq_of_covered_at_time` | `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` | ZTime | pcq pinned:C14 |
+| — | **The covered cell agreement at a GENERAL time component**: `cellAt_const_of_kappa_eq_of_covered` with its DIAGONAL world state `(z, x)` replaced by the filed statement's general `(t, x)`, by `cellAt_ladder_eq_of_worldTime`; every other binder is unchanged token for token, and the two per-path regimes stay at `z` because they are conditions on the walk and not on the world state's time component. This covers ONE of the five coordinates on which the filed `cellAt_const_of_kappa_eq` lies outside the covered family — the general time component — and no other. **What it does not cover**: the upward-saturated register family, moved countdowns, every closure carrying a `⊡` letter, and every path outside the regime; the filed statement is REFUTED at the gap coordinate on a `⊡`-carrying closure (`cellAt_const_of_kappa_eq_schema_refuted`) and is landed in the tree under no name, no parameter ruling is taken (`Tc` is not raised and `ParamsOk` is not strengthened), and at a stab-free closure the certificate condition this agreement would feed still asks nothing at all (`certStabK_of_stabFree`) | `FormalSystem.Metalogic.Decidability.RaySummary.cellAt_const_of_kappa_eq_of_covered_at_time` | `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` | ZTime | pcq pinned:C14 |
 
-**Open statements of the ladder realization layer.** Five statements of this layer are OPEN — no
-declaration in the tree carries any of these names and nothing proves them: the cell agreement on
-counter classes `cellAt_const_of_kappa_eq`, and the four statements that depend on it,
-`ladderSound`, `ladderCons_localRun`, `ladderLift` and the fibre equation `ladderRealized`. Four
-register conjuncts for a position-pair relation between the pump's copies have been measured, and
-each fails by a compiled object on the producer side or the consumer side — the clipped/residue
+**Refuted and open statements of the ladder realization layer.** No declaration in the tree
+carries any of the following five names. Two are REFUTED as filed, by compiled objects of the wired
+probe `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`: the cell
+agreement on counter classes `cellAt_const_of_kappa_eq`
+(`cellAt_const_of_kappa_eq_schema_refuted`), and the fibre equation `ladderRealized`, whose
+right-hand side reads the counter class alone (`no_fibre_equation_over_kappa`). Three are OPEN
+and nothing proves them: `ladderSound`, `ladderCons_localRun` and `ladderLift`. Four register
+conjuncts for a position-pair relation between the pump's copies have been measured, and each
+fails by a compiled object on the producer side or the consumer side — the clipped/residue
 reading, the `Drift`-distance reading, the block-selection restriction and the exact-gap reading (`RaySummary/LadderCell.lean`, sections "The register
 discriminator" and "The pending-state measurement";
 `specs/evidence/seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity.lean`). No row
 is added for them above: a row records a landed statement.
 
-The certificate-side route reaches the agreement over one named family and no further: the row
-above records exactly what it covers, and that family is confined to STAB-FREE closures, where
-the certificate condition the agreement would feed asks nothing (`certStabK_of_stabFree`). So
-`cellAt_const_of_kappa_eq` is OPEN on the uncovered collisions SPECIFICALLY — the
-upward-saturated register family (`raise_room_excludes_upward_displacement`), collisions whose
-countdowns differ, every closure carrying a `⊟` letter, and paths outside the per-path regime
-— and not as a general failure. The world state's own time component is NOT among them: it is
-closed for the whole family by `cellAt_ladder_eq_of_worldTime`, and
-`cellAt_const_of_kappa_eq_of_covered_at_time` is the covered agreement at a general `t`. The filed
-statement's own signature elaborates and was attempted at it; the residual goal is its
-conclusion with `kappa`'s five coordinate equations in context and no landed tool applicable.
+**The agreement on counter classes: REFUTED AS FILED, at the gap coordinate.** `kappa`'s fifth
+coordinate clips the gap `n - c` between the register and the countdown to `[-B, B]`, and (K4)
+asks `B` to dominate only `2 * dBack φ + 1` and `2 * dFwd φ + 1`. A formula reads the gap
+further than that. At a pending state a history has an idle position in its past only if
+`c ≤ n + 1` (`cnt_le_nxt_succ_of_past_idle`); one step forward the gap rises by up to two; and
+`⊡` re-chooses the history at every state. So `thetaC := ⊡ X ⊡ ¬ P ¬p`, with
+`dBack = dFwd = 1` and clip `3` (`Bof_thetaC`), is in NO realized type at gap `-3`
+(`thetaC_not_mem`) and in EVERY realized type at gap at most `-4` (`thetaC_mem`), while
+`(Tc + 3, Tc)` and `(Tc + 3 + (P + 1), Tc)` are one `kappa`-class (`kappa_collision_theta`):
+the two cells of a collision differ at the two-state object, at the periodicity fixpoint's own
+parameter outputs (`refutationTargetC_holds`, discharging `ParamsOk` by `paramsOk_params`). No
+threshold is raised, `ParamsOk` is not strengthened, and no stab-free, finite-fibre or
+finite-width premise appears. **The excess over the clip is unbounded**: the family
+`mixC (k + 2) k` — step back `k + 2` times through pending positions, then ask that the region
+entered right after the current one be over within `k` positions — has clip `2 k + 5`
+(`Bof_mixC`) and separates the gap `3 k + 4` from the gap one modulus above it
+(`mixC_refutes`), so no constant added to the larger of the two exactness depths repairs (K4).
+Condition (5) of the `K`-indexed certificate fails with the agreement: every set containing the
+realized triples of that object's pending states is not `certStabK`-certified at the clip `3`
+(`certStabK_fails_of_contains_realized`). **What is NOT settled**: whether a larger gap clip
+makes the agreement true. Both families are defeated by a clip of the form
+`2 * (dBack φ + dFwd φ) + 2`; no proof of the agreement at any clip exists, and no such clip is
+adopted.
 
-**The refutation attempt: OPEN WITH A MEASURED ACCOUNT.** `cellAt_const_of_kappa_eq` has also
-been attempted in the negative, at the two-state object of
-`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` (the pending bit a
-readable atom). It is NOT REFUTED and it is not proved. The separating formula `X^(k+1) ¬p` does
-separate the cell at countdown `k` from the cell at every larger countdown (`sepC_cell_ne`; one
-`⊡` up, `stabSepC_cell_ne`), but never at a collision: under `ParamsOk` at any formula the
-closure's cardinality is strictly below `Tc` (`lt_Tc_of_closure_card`, by (K2)'s margin), so
-every countdown the formula records lies where `kappa` is injective (`sepC_no_collision`,
-`stabSepC_no_collision`), and at every collision with countdown at or above `k` its two cells
-are EQUAL (`sepC_agreement_at_collision`). The refutation's target is stated, undecided, as
-`RefutationTargetC`; the families tried are box-free with `⊡`-depth at most one, on one object.
-The same probe exhibits two ladder paths at different countdowns realizing one closure type with
-different atom rows (`exists_non_atom_preserving_count_move`), at that formula family only
-(`RaySummary/LadderCell.lean`, section "The refutation attempt on the agreement over counter
-classes: the verdict").
+**What the other measurements cover.** The certificate-side route reaches the agreement over
+one named family: the row above records exactly what it covers, and that family is confined to
+STAB-FREE closures, where the certificate condition the agreement would feed asks nothing
+(`certStabK_of_stabFree`). The world state's own time component is closed for every ladder state
+by `cellAt_ladder_eq_of_worldTime`, and `cellAt_const_of_kappa_eq_of_covered_at_time` is the
+covered agreement at a general `t`. On the countdown coordinate the agreement is not separated:
+the formula `X^(k+1) ¬p` separates the cell at countdown `k` from the cell at every larger
+countdown (`sepC_cell_ne`; one `⊡` up, `stabSepC_cell_ne`), but never at a collision — under
+`ParamsOk` the closure's cardinality is strictly below `Tc` (`lt_Tc_of_closure_card`, by (K2)'s
+margin), so every countdown the formula records lies where `kappa` is injective
+(`sepC_no_collision`, `stabSepC_no_collision`), and at every collision with countdown at or above
+`k` its two cells are EQUAL (`sepC_agreement_at_collision`). The same probe exhibits two ladder
+paths at different countdowns realizing one closure type with different atom rows
+(`exists_non_atom_preserving_count_move`), at that formula family only
+(`RaySummary/LadderCell.lean`, section "The refutation of the agreement over counter classes").
 
-**The count move the agreement needs: STATED, REDUCED, NOT BUILT.** The same probe's third section
+**The count move the agreement would need: STATED, REDUCED, AND FALSE AT THE FILED PARAMETERS.** The same probe's third section
 states the construction as `TypePreservingCountMove` — every ladder path through one state of a
 `kappa`-collision answered by one through the other realizing the same closure type, with no
 atom-row clause — and proves it EQUIVALENT to the diagonal agreement
-(`typePreservingCountMove_iff_cellAt_const`); its instance at the two-state object is stated,
-undecided, as `CountMoveTargetC`. Positionwise comparison of the two paths is excluded twice over
+(`typePreservingCountMove_iff_cellAt_const`); its instance at the two-state object, `CountMoveTargetC`, is FALSE
+(`not_countMoveTargetC`). Positionwise comparison of the two paths is excluded twice over
 (`no_positionwise_lift`, `countMove_rows_differ`), so the probe lands what replaces it: a
 depth-indexed back-and-forth `TransferSys` with one clause per operator, `⊡` and `□` included,
 whose related points satisfy the same formulas up to the level's operator depth
@@ -339,9 +354,10 @@ closure carrying `⊡`: the agreement, one level down, of the states along the r
 refuses**: the pending row of the two regions before a position caps its countdown
 (`cnt_cap_of_row`), a path with a larger countdown there rewrites that window
 (`exists_past_row_change_of_cap_lt`), and the cap is attained at every scale
-(`tight_state_refuses_C`). What is owed and stated nowhere is a transfer system relating two
-histories whose region lengths differ at infinitely many regions. `cellAt_const_of_kappa_eq`
-stays OPEN; no library declaration is added by that section.
+(`tight_state_refuses_C`). A transfer system relating two histories whose region lengths differ at infinitely many regions
+is stated nowhere; at the filed parameters none can carry the link, because the move it would
+deliver is false (`no_transferSys_links_collisions`). The tight family itself has gaps inside
+every clip and is not decided. No library declaration is added by that section.
 
 ### Characterization and definability
 

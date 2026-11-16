@@ -232,3 +232,79 @@ the fixture first and promoted once") does not hold — the construction is a th
   new file, no library module.
 - A fragment instance with a `⊡`-free premise is present (item 3 above) and is labelled as not
   being the construction.
+
+# Round 4 — the gap coordinate (dispatch 62): the filed agreement is REFUTED
+
+**Status: outcome (a).** `RefutationTargetC` HOLDS; `CountMoveTargetC` is FALSE; the statement
+filed as `cellAt_const_of_kappa_eq` is false with its quantifiers, and `ladderRealized` with it.
+The Round 1 verdict above ("NOT REFUTED") and the Round 3 status ("stays OPEN") describe the
+countdown coordinate and are superseded on the truth value; their measurements stand.
+
+**Where it is compiled.** Fourth section of
+`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`
+(`# THE FILED AGREEMENT IS REFUTED: THE GAP CLIP OF (K4) IS TOO SMALL, BY AN UNBOUNDED AMOUNT`),
+appended; nothing above it is edited. Zero `sorry`. Eighteen printed theorems, axioms
+`[propext, Quot.sound]` or `[propext, Classical.choice, Quot.sound]`.
+
+## The mechanism
+
+Rounds 1 and 3 read the countdown `c`, which (K2)'s margin `2 ^ card (closure φ) ≤ Tc` puts out of
+reach. The gap `n - c` is `kappa`'s fifth coordinate, clipped to `[-B, B]`, and (K4) asks only
+`2 * dBack φ + 1 ≤ B`, `2 * dFwd φ + 1 ≤ B`, `2 ≤ B` — linear in the LARGER of two nesting
+depths, with no margin. At a pending state `(c, n)`:
+
+1. a history through it has an idle position in its past only if `c ≤ n + 1`
+   (`cnt_le_nxt_succ_of_past_idle`);
+2. one step forward the gap rises by up to `2`, one step backward it falls by up to `2`;
+3. `⊡` re-chooses the history at each state.
+
+## The separating objects
+
+| Object | Declaration | Content |
+|--------|-------------|---------|
+| Formula | `thetaC := ⊡ X ⊡ ¬ P ¬p` | `dBack = dFwd = 1`, `Bof = 3` (`Bof_thetaC`) |
+| Out of the cell at gap `-3` | `thetaC_not_mem` | state `(n + 3, n)`; witness histories built by `gluePath` |
+| In the cell at gap `≤ -4` | `thetaC_mem` | every state `(c, n)`, `n + 4 ≤ c` |
+| Collision | `kappa_collision_theta` | `(Tc + 3, Tc)` vs `(Tc + 3 + (P + 1), Tc)` at clip `3`, every `Tc Tn P` |
+| Headline | `refutationTargetC_holds` | at `Tcof/Tnof/Pof/Bof` of `thetaC`, `paramsOk_params` |
+| Filed schema | `cellAt_const_of_kappa_eq_schema_refuted` | the filed quantifier prefix, negated |
+| Count move | `not_countMoveTargetC` | |
+| Fibre equation | `no_fibre_equation_over_kappa` | no function of the class equals the cell |
+| Transfer systems | `no_transferSys_links_collisions` | the (T-1) verdict object |
+| Certificate | `certStabK_fails_of_contains_realized` | condition (5) fails on every set containing the realized triples, clip `3` |
+| Unbounded excess | `mixC_refutes` | `mixC (k + 2) k`: clip `2 k + 5`, separated gap `3 k + 4`, every `k ≥ 1` |
+
+## What is NOT settled
+
+- Whether a larger clip makes the agreement true. Both families are defeated by
+  `B ≥ 2 * (dBack φ + dFwd φ) + 2`. That bound is a READING of the two families, not a theorem:
+  no proof of the agreement at any clip exists. Further amplification through `⊡` alternation was
+  looked for by hand and not found (the gap is monotone in time along one history, `until`/`since`
+  jumps saturate), and that search is argued, not compiled.
+- The tight family of Round 3: its gaps are in `{-1, 0, 1}`, inside every clip. Decision (T-1)'s
+  literal obligation — a verdict AT that family — is not discharged; what is compiled is that no
+  `TransferSys` links ALL collisions at the filed parameters.
+- `ladderSound`, `ladderLift`, `ladderCons_localRun`: not refuted. `certStabK_fails_of_contains_realized`
+  says the set of realized triples is not certified at the clip `3`, which is the route by which
+  `ladderSound` was to be proved (`Real ⊆ Dmax` through `Real`'s own certification); it does not
+  say `Dmax` misses a realized triple.
+
+## Consequence for the route
+
+Decision (E-5) pre-assigned outcome (a) to Round 2 (the run-level adequacy pair) on the premise
+that "the parameter axis is already spent" and that the failure would be `kappa`'s incompleteness
+as an invariant. The refutation found is of a different kind: a parameter SOURCE is wrong ((K4)'s
+clip), and the certificate's condition (5) fails at the same place, so the soundness leg of the
+run-level pair inherits the defect unrepaired. Phases 11.30/11.31 were therefore not entered and
+a route decision is returned.
+
+## Deviations
+
+- Dispatch 62 was an implement dispatch on a plan whose recorded next step was a research round
+  and a `/revise`. The (T-1) measurement was run inside Phase 11.32's file scope.
+- Phase 11.29's outcome-(a) task "land the library-side statement in `LadderRealize.lean`" is not
+  done: it needs the two-state object in the library, and which statement the library should
+  carry is the route question.
+- `docs/theorem-index.md`, `LadderCell.lean`'s decision docstring, one docstring sentence of
+  `LadderRealize.lean` and two sentences of the RaySummary README were corrected from OPEN to
+  REFUTED; no library declaration was added or changed.

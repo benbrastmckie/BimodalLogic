@@ -1844,3 +1844,980 @@ theorem tight_state_refuses_C (m : ℕ) :
 #print axioms Probe761C.tight_state_refuses_C
 
 end Probe761C
+
+/-!
+# THE FILED AGREEMENT IS REFUTED: THE GAP CLIP OF (K4) IS TOO SMALL, BY AN UNBOUNDED AMOUNT
+
+The two sections above leave `RefutationTargetC` and `CountMoveTargetC` stated and undecided, and
+their docstrings say so ("nothing in this file proves it or refutes it").  THIS SECTION DECIDES
+BOTH: `RefutationTargetC` HOLDS and `CountMoveTargetC` is FALSE.  Those two docstrings, and the
+second section's "It is NOT REFUTED", describe the file as it stood before this section; they are
+not edited (the file is append-only) and they are superseded here.
+
+## The mechanism
+
+Every earlier attempt read the COUNTDOWN, which (K2)'s margin puts out of a formula's reach.  This
+section reads the GAP `n - c` between the register and the countdown — `kappa`'s fifth coordinate,
+clipped to `[-B, B]`, where (K4) asks only `2 * dBack φ + 1 ≤ B`, `2 * dFwd φ + 1 ≤ B`, `2 ≤ B`.
+Three facts about a pending state `(c, n)`:
+
+* a history through it has an idle position in its past only if `c ≤ n + 1`
+  (`cnt_le_nxt_succ_of_past_idle`): the region was entered with the countdown set to the register,
+  and the register falls by at most one per step;
+* one step FORWARD the gap rises by up to two (the countdown falls by one, the register may rise
+  by one), and one step BACKWARD it falls by up to two;
+* `⊡` re-chooses the history at every state, so a formula can walk the register up or down at
+  two per step and then read the gap with a reader of fixed cost.
+
+So a formula reads the gap at a distance from `0` that is TWICE its temporal depth plus the
+reader's own threshold, while (K4) clips it at twice the LARGER of the two exactness depths plus
+one.
+
+## What is compiled
+
+**The refutation, at the tie.**  `thetaC := ⊡ X ⊡ ¬ P ¬p` has `dBack = dFwd = 1`, so
+`Bof … thetaC = 3` (`Bof_thetaC`).
+
+* `thetaC_not_mem`: at the pending state `(n + 3, n)` — gap `-3` — NO realized type contains
+  `thetaC`.
+* `thetaC_mem`: at every pending state `(c, n)` with `n + 4 ≤ c` — gap at most `-4` — EVERY
+  realized type contains it.
+* `kappa_collision_theta`: `(Tc + 3, Tc)` and `(Tc + 3 + (P + 1), Tc)` are one `kappa`-class at
+  the clip `3`, for every `Tc`, `Tn`, `P`.
+* `refutationTargetC_holds`: **`RefutationTargetC`** — at `thetaC`, the periodicity fixpoint's own
+  four outputs (`paramsOk_params`), and that pair, the two cells differ.
+* `not_countMoveTargetC`: **`¬ CountMoveTargetC`**.
+* `cellAt_const_of_kappa_eq_schema_refuted`: the statement filed as `cellAt_const_of_kappa_eq`,
+  quantifiers and all, is FALSE.  The instance: the two-state object, `thetaC`, the fixpoint's
+  parameters, world time `0`, evaluation time `0`.
+* `no_fibre_equation_over_kappa`: no function of the counter class equals the cell at this object
+  — so the statement filed as `ladderRealized`, whose right-hand side reads `(q, kappa (c, n))`
+  alone, is false with it, whatever `Dmax` is.
+* `no_transferSys_links_collisions`: no whole-language `TransferSys` carries the link
+  `typePreservingCountMove_of_transferSys` consumes at these parameters.
+* `certStabK_fails_of_contains_realized`: every set of triples containing the realized triples of
+  this object's pending states fails condition (5) at the clip `3`.  The set of realized triples
+  is such a set; so is any certified set a soundness statement would put them in.
+
+**The excess is unbounded.**  `mixC a k := ◇ Y_p^a ◇ readC k` steps back `a` times through pending
+positions (gap down by two each) and then asks the forward reader `readC k` ("the pending bit is
+released, the next position starts a region, and that region is over within `k` positions"),
+which fails at every pending position whose gap exceeds `k` (`readC_false_of_gap`).
+
+* `dBack_mixC`, `dFwd_mixC`: `dBack = a`, `dFwd = k + 2`; `Bof_mixC`: at `a = k + 2` the clip is
+  `2 k + 5`.
+* `mixC_mem`: at gap exactly `2 a + k` every realized type contains `mixC a k` (`k ≥ 1`).
+* `mixC_not_mem`: at every gap above `2 a + k` none does.
+* `mixC_refutes`: for every `k ≥ 1`, at `mixC (k + 2) k` and the fixpoint's own parameters, the
+  gap `3 k + 4` and the gap one modulus above it are one `kappa`-class with different cells.  The
+  separated gap exceeds the clip `2 k + 5` by `k - 1`.
+
+## What this section does and does not settle
+
+It settles the truth value of the filed `cellAt_const_of_kappa_eq`: FALSE, at parameters
+satisfying `ParamsOk` as it is defined, with no `Tc` raise, no `ParamsOk` strengthening, no
+`⊡`-free premise and no finite-fibre or finite-width assumption.  The quantifier that fails is
+the one over counter pairs whose gaps both lie outside the clip.
+
+It does NOT show that `kappa`'s SHAPE is wrong.  Both families are defeated by a larger clip:
+`thetaC` by `B ≥ 4`, `mixC a k` by `B ≥ 2 a + k + 1`, which a clip of the form
+`2 * (dBack φ + dFwd φ) + 2` dominates.  Whether any clip that is a function of the formula makes
+the agreement TRUE is not decided here; no proof of the agreement at any clip is offered.
+
+It does NOT decide the tight family of the section above (`tight_state_refuses_C`): those states
+have gap in `{-1, 0, 1}`, inside every clip, and neither family here separates them.
+
+## Verification
+
+`#print axioms` on every headline theorem of this section.  No `sorry`, no axiom, no
+`native_decide`, no placeholder body and no vacuous definition.
+-/
+
+namespace Probe761C
+
+/-! ### Gluing ladder paths -/
+
+section Glue
+
+variable {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- Follow `g₁` up to and including `z`, and `g₂` from `z + 1` on. -/
+def gluePath (g₁ g₂ : ℤ → LadderState Q pend) (z : ℤ) : ℤ → LadderState Q pend :=
+  fun v => if v ≤ z then g₁ v else g₂ v
+
+theorem gluePath_isPath (g₁ g₂ : ℤ → LadderState Q pend)
+    (h₁ : IsLadderPath step pend g₁) (h₂ : IsLadderPath step pend g₂) (z : ℤ)
+    (hz : RladAdm step pend z (g₁ z) (g₂ (z + 1))) :
+    IsLadderPath step pend (gluePath g₁ g₂ z) := by
+  intro u
+  unfold gluePath
+  by_cases h : u + 1 ≤ z
+  · rw [if_pos (by omega), if_pos h]
+    exact h₁ u
+  · by_cases h' : u ≤ z
+    · have hu : u = z := by omega
+      subst hu
+      rw [if_pos le_rfl, if_neg h]
+      exact hz
+    · rw [if_neg h', if_neg h]
+      exact h₂ u
+
+theorem gluePath_of_le (g₁ g₂ : ℤ → LadderState Q pend) (z v : ℤ) (h : v ≤ z) :
+    gluePath g₁ g₂ z v = g₁ v := by
+  unfold gluePath; rw [if_pos h]
+
+theorem gluePath_of_gt (g₁ g₂ : ℤ → LadderState Q pend) (z v : ℤ) (h : z < v) :
+    gluePath g₁ g₂ z v = g₂ v := by
+  unfold gluePath; rw [if_neg (by omega)]
+
+/-- A ladder path read at a shifted clock is a ladder path: the relation ignores its time. -/
+theorem shiftPath_isPath (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g) (k : ℤ) :
+    IsLadderPath step pend (fun v => g (v - k)) := by
+  intro u
+  have h := hg (u - k)
+  rw [show u - k + 1 = u + 1 - k by ring] at h
+  exact h
+
+/-- **A FINITE PAST FORCES THE GAP.** On a ladder path, a pending position with an idle position
+somewhere before it carries a countdown at most one above its register: the region it sits in was
+entered with the countdown set to the register, and since then the countdown fell by one per step
+while the register fell by at most one per step. -/
+theorem cnt_le_nxt_succ_of_past_idle (g : ℤ → LadderState Q pend) (hg : IsLadderPath step pend g)
+    (z s : ℤ) (hs : s < z) (hidle : pend (objAt g s) = false) (hz : pend (objAt g z) = true) :
+    cntAt g z ≤ nxtAt g z + 1 := by
+  have hex : ∃ k : ℕ, pend (objAt g (z - (k : ℤ) - 1)) = false :=
+    ⟨(z - s - 1).toNat, by rw [show z - (((z - s - 1).toNat : ℕ) : ℤ) - 1 = s by omega]; exact hidle⟩
+  have hk := Nat.find_spec hex
+  have hmin : ∀ i : ℕ, i < Nat.find hex → pend (objAt g (z - (i : ℤ) - 1)) = true := by
+    intro i hi
+    have := Nat.find_min hex hi
+    simpa using this
+  set k := Nat.find hex with hkdef
+  have hall : ∀ i : ℕ, i ≤ k → pend (objAt g (z - (i : ℤ))) = true := by
+    intro i hi
+    cases i with
+    | zero => simpa using hz
+    | succ j =>
+      have := hmin j (by omega)
+      rwa [show z - ((j + 1 : ℕ) : ℤ) = z - (j : ℤ) - 1 by push_cast; ring]
+  have hpin := cntAt_eq_nxtAt_of_idle_pend g hg (z - (k : ℤ) - 1) hk
+    (by rw [show z - (k : ℤ) - 1 + 1 = z - (k : ℤ) by ring]; exact hall k le_rfl)
+  rw [show z - (k : ℤ) - 1 + 1 = z - (k : ℤ) by ring] at hpin
+  have hback := cntAt_add_of_pend_back g hg z k hall
+  have hlip := nxtAt_lipschitz g hg (z - (k : ℤ) - 1) (k + 1)
+  rw [show z - (k : ℤ) - 1 + ((k + 1 : ℕ) : ℤ) = z by push_cast; ring] at hlip
+  omega
+
+end Glue
+
+/-! ### The separating formula -/
+
+/-- The constant idle path with register `r`. -/
+def gI (r : ℕ) : ℤ → LadderState Qc pendC := fun _ => ⟨((1 : Qc), 0, r), fun _ => rfl⟩
+
+theorem gI_isPath (r : ℕ) : IsLadderPath stepC pendC (gI r) := by
+  intro u
+  refine ⟨rfl, fun _ => rfl, Or.inl rfl, ?_⟩
+  show Count (pendC 1) (pendC 1) 0 r 0
+  simp [Count, pendC_one]
+
+/-- `P ¬p`: the pending bit was released at some earlier time. -/
+def pastIdleC : PlusFormula := .snce (.imp .bot .bot) (PlusFormula.neg (.atom pC))
+
+/-- **THE SEPARATING FORMULA.** `⊡ X ⊡ ¬ P ¬p`: on every history through this state, one step
+on, every history through the state reached there has been pending at every earlier time. -/
+def thetaC : PlusFormula := .stab (nxtF (.stab (PlusFormula.neg pastIdleC)))
+
+theorem truth_neg_pC_off (τ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame)
+    (g : ℤ → LadderState Qc pendC) (k : ℤ) (hτ : ∀ t : ℤ, τ.state t = (t + k, g t)) (s : ℤ) :
+    PlusTruthAt MC τ s (PlusFormula.neg (.atom pC)) ↔ pendC (objAt g s) = false := by
+  show (labC (τ.state s).2.1.1 pC = true → False) ↔ _
+  rw [hτ s]
+  show (labC (objAt g s) pC = true → False) ↔ _
+  rw [labC_pC]
+  cases pendC (objAt g s) <;> simp
+
+theorem truth_pastIdleC (τ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame)
+    (g : ℤ → LadderState Qc pendC) (k : ℤ) (hτ : ∀ t : ℤ, τ.state t = (t + k, g t)) (t : ℤ) :
+    PlusTruthAt MC τ t pastIdleC ↔ ∃ s : ℤ, s < t ∧ pendC (objAt g s) = false := by
+  constructor
+  · rintro ⟨s, hs, h, -⟩
+    exact ⟨s, hs, (truth_neg_pC_off τ g k hτ s).mp h⟩
+  · rintro ⟨s, hs, h⟩
+    exact ⟨s, hs, (truth_neg_pC_off τ g k hτ s).mpr h, fun _ _ _ hf => hf⟩
+
+theorem dBack_thetaC : dBack thetaC = 1 := rfl
+
+theorem dFwd_thetaC : dFwd thetaC = 1 := rfl
+
+/-- (K4)'s least admissible gap clip at the separating formula is `3`. -/
+theorem Bof_thetaC : Bof stepC pendC labC thetaC = 3 := by
+  unfold Bof
+  rw [dBack_thetaC, dFwd_thetaC]
+  rfl
+
+/-- **NEGATIVE MEMBERSHIP: gap `n - c = -3`.** At the pending state with countdown `n + 3` and
+register `n`, no realized type contains the separating formula: one step on the register can have
+risen to `n + 1` against a countdown `n + 2`, and that state is also reached one step after an
+idle state with register `n + 2`. -/
+theorem thetaC_not_mem (n : ℕ) (T : Finset PlusFormula)
+    (hT : T ∈ cellAt MC thetaC
+      ((0, stC (n + 3) n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0) :
+    thetaC ∉ T := by
+  obtain ⟨τ, hs, rfl⟩ := hT
+  rw [mem_tpOf_iff]
+  rintro ⟨-, h⟩
+  -- the common future: the path through `(n + 2, n + 1)` at time `1`
+  have hfut := shiftPath_isPath (gC (n + 2) (n + 1)) (gC_isPath (n + 2) (n + 1)) 1
+  have hfut1 : gC (n + 2) (n + 1) (0 + 1 - 1) = stC (n + 2) (n + 1) := by
+    rw [show (0 : ℤ) + 1 - 1 = 0 by norm_num, gC_zero_eq]
+  -- `σ`: through `(n + 3, n)` at `0`, register rising
+  have hσp : IsLadderPath stepC pendC
+      (gluePath (gC (n + 3) n) (fun v : ℤ => gC (n + 2) (n + 1) (v - 1)) 0) := by
+    refine gluePath_isPath _ _ (gC_isPath _ _) hfut 0 ?_
+    rw [hfut1, gC_zero_eq]
+    refine ⟨rfl, admZeroC _ _, Or.inr (Or.inl rfl), ?_⟩
+    show Count (pendC 0) (pendC 0) (n + 3) n (n + 2)
+    simp [Count, pendC_zero]
+  -- `ρ`: idle at `0` with register `n + 2`, the same state at `1`
+  have hρp : IsLadderPath stepC pendC
+      (gluePath (gI (n + 2)) (fun v : ℤ => gC (n + 2) (n + 1) (v - 1)) 0) := by
+    refine gluePath_isPath _ _ (gI_isPath _) hfut 0 ?_
+    rw [hfut1]
+    refine ⟨rfl, fun _ => rfl, Or.inr (Or.inr rfl), ?_⟩
+    show Count (pendC 1) (pendC 0) 0 (n + 2) (n + 2)
+    simp [Count, pendC_zero, pendC_one]
+  obtain ⟨σ, hσ⟩ := exists_hist_of_isLadderPath fwdC bwdC _ hσp
+  obtain ⟨ρ, hρ⟩ := exists_hist_of_isLadderPath fwdC bwdC _ hρp
+  have h1 : PlusTruthAt MC σ 0 (nxtF (.stab (PlusFormula.neg pastIdleC))) := by
+    refine h σ ?_
+    rw [hs, hσ 0, gluePath_of_le _ _ 0 0 le_rfl, gC_zero_eq]
+  rw [truth_nxtF] at h1
+  have h2 : PlusTruthAt MC ρ (0 + 1) pastIdleC → False := by
+    refine h1 ρ ?_
+    rw [hσ (0 + 1), hρ (0 + 1), gluePath_of_gt _ _ 0 (0 + 1) (by norm_num),
+      gluePath_of_gt _ _ 0 (0 + 1) (by norm_num)]
+  refine h2 ((truth_pastIdleC ρ _ 0 (fun t => by rw [hρ t, add_zero]) (0 + 1)).mpr
+    ⟨0, by norm_num, ?_⟩)
+  show pendC (gluePath (gI (n + 2)) (fun v : ℤ => gC (n + 2) (n + 1) (v - 1)) 0 0).1.1 = false
+  rw [gluePath_of_le _ _ 0 0 le_rfl]
+  exact pendC_one
+
+/-- **POSITIVE MEMBERSHIP: gap `n - c ≤ -4`.** At a pending state whose countdown exceeds its
+register by at least four, every realized type contains the separating formula: one step on the
+countdown still exceeds the register by at least two, and `cnt_le_nxt_succ_of_past_idle` leaves
+such a state no history with an idle past. -/
+theorem thetaC_mem (c n : ℕ) (hgap : n + 4 ≤ c) (T : Finset PlusFormula)
+    (hT : T ∈ cellAt MC thetaC
+      ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0) :
+    thetaC ∈ T := by
+  obtain ⟨τ, hs, rfl⟩ := hT
+  rw [mem_tpOf_iff]
+  refine ⟨self_mem_plusSubformulaClosure _, fun σ hσ => ?_⟩
+  show PlusTruthAt MC σ 0 (nxtF (.stab (PlusFormula.neg pastIdleC)))
+  rw [truth_nxtF]
+  intro ρ hρ hpast
+  obtain ⟨k, g, hg, hp⟩ := exists_isLadderPath_of_hist fwdC bwdC σ
+  obtain ⟨k', g', hg', hp'⟩ := exists_isLadderPath_of_hist fwdC bwdC ρ
+  have h0 : ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) = (0 + k, g 0) :=
+    hs.symm.trans (hσ.trans (hp 0))
+  have hg0 : g 0 = stC c n := (congrArg Prod.snd h0).symm
+  have h1 : ((0 + 1 + k, g (0 + 1)) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState)
+      = (0 + 1 + k', g' (0 + 1)) := (hp (0 + 1)).symm.trans (hρ.trans (hp' (0 + 1)))
+  have hg1 : g (0 + 1) = g' (0 + 1) := congrArg Prod.snd h1
+  have hobj : objAt g 0 = 0 := by rw [objAt, hg0]; rfl
+  have hcnt : cntAt g 0 = c := by rw [cntAt, hg0]; rfl
+  have hnxt : nxtAt g 0 = n := by rw [nxtAt, hg0]; rfl
+  have e1 : (0 : ℤ) + ((1 : ℕ) : ℤ) = 0 + 1 := by norm_num
+  have hstep := cntAt_sub_of_pend g hg 0 (by rw [hobj]; exact pendC_zero) 1 (by omega)
+  have hlip := nxtAt_lipschitz g hg 0 1
+  rw [e1] at hstep hlip
+  obtain ⟨s, hs1, hidle⟩ := (truth_pastIdleC ρ g' k' hp' (0 + 1)).mp hpast
+  have hcap := cnt_le_nxt_succ_of_past_idle g' hg' (0 + 1) s hs1 hidle
+    (by rw [show objAt g' (0 + 1) = objAt g (0 + 1) by rw [objAt, objAt, hg1]]; exact hstep.1)
+  rw [show cntAt g' (0 + 1) = cntAt g (0 + 1) by rw [cntAt, cntAt, hg1],
+    show nxtAt g' (0 + 1) = nxtAt g (0 + 1) by rw [nxtAt, nxtAt, hg1]] at hcap
+  have hs2 := hstep.2
+  omega
+
+/-- **THE COLLISION.** At every threshold pair, every modulus and the gap clip `3`, the counter
+pairs `(Tc + 3, Tc)` and `(Tc + 3 + (P + 1), Tc)` have the same class: both countdowns are at or
+above `Tc`, they differ by the modulus, the register is shared, and both gaps are at or below
+`-3`, where the clip stops reading. -/
+theorem kappa_collision_theta (Tc Tn P : ℕ) :
+    kappa Tc Tn P 3 (Tc + 3, Tc) = kappa Tc Tn P 3 (Tc + 3 + (P + 1), Tc) := by
+  unfold kappa
+  refine Prod.ext (Fin.ext ?_) (Prod.ext (Fin.ext ?_) (Prod.ext rfl (Prod.ext rfl (Fin.ext ?_))))
+  · show min (Tc + 3) Tc = min (Tc + 3 + (P + 1)) Tc
+    omega
+  · show (Tc + 3) % (P + 1) = (Tc + 3 + (P + 1)) % (P + 1)
+    rw [Nat.add_mod_right]
+  · show clipIdx 3 (Tc + 3) Tc = clipIdx 3 (Tc + 3 + (P + 1)) Tc
+    unfold clipIdx
+    split_ifs <;> omega
+
+/-- **THE CELLS DIFFER.** -/
+theorem thetaC_cell_ne (n c' : ℕ) (hgap : n + 4 ≤ c') :
+    cellAt MC thetaC ((0, stC (n + 3) n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0
+      ≠ cellAt MC thetaC
+          ((0, stC c' n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0 := by
+  intro heq
+  obtain ⟨T, hT⟩ := cellC_nonempty thetaC (n + 3) n
+  exact thetaC_not_mem n T hT (thetaC_mem c' n hgap T (heq ▸ hT))
+
+/-- **THE REFUTATION TARGET HOLDS.** At the separating formula and the periodicity fixpoint's own
+four parameter outputs for it — which satisfy `ParamsOk` by `paramsOk_params` — the counter pairs
+`(Tc + 3, Tc)` and `(Tc + 3 + (P + 1), Tc)` are a `kappa`-collision at the pending state of this
+object, and their cells differ. -/
+theorem refutationTargetC_holds : RefutationTargetC := by
+  refine ⟨thetaC, Tcof stepC pendC labC thetaC, Tnof stepC pendC labC thetaC,
+    Pof stepC pendC labC thetaC, Bof stepC pendC labC thetaC,
+    Tcof stepC pendC labC thetaC + 3, Tcof stepC pendC labC thetaC,
+    Tcof stepC pendC labC thetaC + 3 + (Pof stepC pendC labC thetaC + 1),
+    Tcof stepC pendC labC thetaC, paramsOk_params stepC pendC labC thetaC, ?_, ?_⟩
+  · rw [Bof_thetaC]
+    exact kappa_collision_theta _ _ _
+  · exact thetaC_cell_ne _ _ (by omega)
+
+/-- **THE COUNT MOVE'S TARGET AT THIS OBJECT IS FALSE.** -/
+theorem not_countMoveTargetC : ¬ CountMoveTargetC := by
+  intro hmove
+  obtain ⟨φ, Tc, Tn, P, B, c, n, c', n', hp, hk, hne⟩ := refutationTargetC_holds
+  exact hne ((typePreservingCountMove_iff_cellAt_const fwdC bwdC labC φ Tc Tn P B).mp
+    (hmove φ Tc Tn P B hp) 0 c n c' n' (admZeroC c n) (admZeroC c' n') hk)
+
+/-- **THE FILED AGREEMENT'S SCHEMA IS FALSE.** The statement filed as `cellAt_const_of_kappa_eq`
+— for every finite object, labelling, formula and parameter tuple satisfying `ParamsOk`, the cells
+of a `kappa`-collision are equal at every world time and evaluation time — fails at the two-state
+object, the separating formula, the periodicity fixpoint's own parameters, world time `0` and
+evaluation time `0`.  The quantifier that fails is the one over the counter pairs of a collision
+whose gaps both lie below the clip. -/
+theorem cellAt_const_of_kappa_eq_schema_refuted :
+    ¬ (∀ (Q : Type) [Fintype Q] [Nonempty Q]
+        (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
+        (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+        (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+        (phi : PlusFormula) (Tc Tn P B : ℕ), ParamsOk step pend lab phi Tc Tn P B →
+        ∀ (q : Q) (c n c' n' : ℕ) (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q),
+          kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') → ∀ t z : ℤ,
+          cellAt (ladderModel step pend fwd bwd lab) phi
+              ((t, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z
+            = cellAt (ladderModel step pend fwd bwd lab) phi
+              ((t, ⟨(q, c', n'), h'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z) := by
+  intro hall
+  obtain ⟨φ, Tc, Tn, P, B, c, n, c', n', hp, hk, hne⟩ := refutationTargetC_holds
+  exact hne (hall Qc stepC pendC labC fwdC bwdC φ Tc Tn P B hp 0 c n c' n'
+    (admZeroC c n) (admZeroC c' n') hk 0 0)
+
+
+/-- **NO FIBRE EQUATION OVER `kappa`.** Whatever the right-hand side is, the cell at the pending
+state of this object is not a function of the counter class at the separating formula and the
+periodicity fixpoint's own parameters.  The statement filed as `ladderRealized` equates the cell
+with a set read off `(q, kappa (c, n))` alone, so it is an instance of what is refuted here. -/
+theorem no_fibre_equation_over_kappa :
+    ¬ ∃ F : CK (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
+        (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC) → Set (Finset PlusFormula),
+      ∀ c n : ℕ,
+        cellAt MC thetaC ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0
+          = F (kappa (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
+            (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC) (c, n)) := by
+  rintro ⟨F, hF⟩
+  have hk : kappa (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
+      (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC)
+        (Tcof stepC pendC labC thetaC + 3, Tcof stepC pendC labC thetaC)
+      = kappa (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
+        (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC)
+        (Tcof stepC pendC labC thetaC + 3 + (Pof stepC pendC labC thetaC + 1),
+          Tcof stepC pendC labC thetaC) := by
+    rw [Bof_thetaC]
+    exact kappa_collision_theta _ _ _
+  refine thetaC_cell_ne (Tcof stepC pendC labC thetaC)
+    (Tcof stepC pendC labC thetaC + 3 + (Pof stepC pendC labC thetaC + 1)) (by omega) ?_
+  rw [hF, hF, hk]
+
+/-- **NO TRANSFER SYSTEM LINKS THE COLLISIONS.** At the separating formula and the periodicity
+fixpoint's own parameters, no whole-language transfer system carries the link
+`typePreservingCountMove_of_transferSys` consumes: the count move it would deliver is false at
+this object. -/
+theorem no_transferSys_links_collisions
+    (R : ℕ → WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame → ℤ →
+      WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame → ℤ → Prop)
+    (hR : TransferSys MC True True R) :
+    ¬ (∀ (q : Qc) (c n c' n' : ℕ) (h : c ∈ Adm pendC q) (h' : c' ∈ Adm pendC q),
+      kappa (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
+          (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC) (c, n)
+        = kappa (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
+          (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC) (c', n') →
+      ∀ (g : ℤ → LadderState Qc pendC)
+        (τ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame),
+        IsLadderPath stepC pendC g → g 0 = (⟨(q, c, n), h⟩ : LadderState Qc pendC) →
+        (∀ t : ℤ, τ.state t = (t, g t)) →
+        ∃ (g' : ℤ → LadderState Qc pendC)
+          (τ' : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame),
+          IsLadderPath stepC pendC g' ∧ g' 0 = (⟨(q, c', n'), h'⟩ : LadderState Qc pendC) ∧
+          (∀ t : ℤ, τ'.state t = (t, g' t)) ∧
+          R ((plusSubformulaClosure thetaC).sup opDepth) τ 0 τ' 0) := by
+  intro hlink
+  have hmove := typePreservingCountMove_of_transferSys fwdC bwdC labC thetaC
+    (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
+    (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC) R hR hlink
+  have hcell := (typePreservingCountMove_iff_cellAt_const fwdC bwdC labC thetaC
+    (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
+    (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC)).mp hmove
+  apply no_fibre_equation_over_kappa
+  refine ⟨fun κ => {T | ∃ c n : ℕ, kappa (Tcof stepC pendC labC thetaC)
+    (Tnof stepC pendC labC thetaC) (Pof stepC pendC labC thetaC)
+    (Bof stepC pendC labC thetaC) (c, n) = κ ∧
+    T ∈ cellAt MC thetaC
+      ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0}, fun c n => ?_⟩
+  ext T
+  constructor
+  · intro hT
+    exact ⟨c, n, rfl, hT⟩
+  · rintro ⟨c', n', hk, hT⟩
+    have := hcell 0 c' n' c n (admZeroC c' n') (admZeroC c n) hk
+    exact this ▸ hT
+
+/-- **CONDITION (5) FAILS ON EVERY SET CONTAINING THE REALIZED TRIPLES.** At the separating
+formula, the gap clip `3` and any thresholds and modulus: a set of `(object, closure type,
+counter class)` triples containing the triple of every history through every pending state of
+this object at time `0` is not `certStabK`-certified.  The fibre over the class of
+`(Tc + 3, Tc)` holds a type carrying the `⊡` letter and a type in which its argument fails. -/
+theorem certStabK_fails_of_contains_realized (Tc Tn P : ℕ)
+    (R : Set (Qc × ClType thetaC × CK Tc Tn P 3))
+    (hR : ∀ (c n : ℕ) (σ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame),
+      σ.state 0 = ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) →
+      (((0 : Qc), ⟨tpOf MC thetaC σ 0, Finset.mem_powerset.mpr (tpOf_subset MC thetaC σ 0)⟩,
+        kappa Tc Tn P 3 (c, n)) : Qc × ClType thetaC × CK Tc Tn P 3) ∈ R) :
+    ¬ certStabK thetaC Tc Tn P 3 R := by
+  intro hcert
+  -- a history through the state where the letter holds
+  obtain ⟨τ', hτ'⟩ := exists_hist_of_isLadderPath fwdC bwdC (gC (Tc + 3 + (P + 1)) Tc)
+    (gC_isPath _ _)
+  have hs' : τ'.state 0
+      = ((0, stC (Tc + 3 + (P + 1)) Tc) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) := by
+    rw [hτ' 0, gC_zero_eq]
+  have hθ' : thetaC ∈ tpOf MC thetaC τ' 0 :=
+    thetaC_mem (Tc + 3 + (P + 1)) Tc (by omega) _ ⟨τ', hs', rfl⟩
+  -- a history through the state where the letter's argument fails
+  obtain ⟨τ, hτ⟩ := exists_hist_of_isLadderPath fwdC bwdC (gC (Tc + 3) Tc) (gC_isPath _ _)
+  have hs : τ.state 0
+      = ((0, stC (Tc + 3) Tc) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) := by
+    rw [hτ 0, gC_zero_eq]
+  have hθ : thetaC ∉ tpOf MC thetaC τ 0 := thetaC_not_mem Tc _ ⟨τ, hs, rfl⟩
+  have hfalse : ¬ PlusTruthAt MC τ 0 thetaC := fun h =>
+    hθ ((mem_tpOf_iff _ _ _ _ _).mpr ⟨self_mem_plusSubformulaClosure _, h⟩)
+  have hex : ∃ σ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame,
+      τ.state 0 = σ.state 0 ∧
+      ¬ PlusTruthAt MC σ 0 (nxtF (.stab (PlusFormula.neg pastIdleC))) := by
+    by_contra hn
+    exact hfalse (fun σ e => by_contra (fun hσ => hn ⟨σ, e, hσ⟩))
+  obtain ⟨σ, hσe, hσ⟩ := hex
+  have hall := (hcert _ (hR _ _ τ' hs') thetaC (self_mem_plusSubformulaClosure _) rfl).mp hθ'
+  have hmem := hall _ (hR (Tc + 3) Tc σ (hσe.symm.trans hs)) rfl (kappa_collision_theta Tc Tn P)
+  exact hσ ((mem_tpOf_iff _ _ _ _ _).mp hmem).2
+
+#print axioms Probe761C.gluePath_isPath
+#print axioms Probe761C.cnt_le_nxt_succ_of_past_idle
+#print axioms Probe761C.thetaC_not_mem
+#print axioms Probe761C.thetaC_mem
+#print axioms Probe761C.kappa_collision_theta
+#print axioms Probe761C.thetaC_cell_ne
+#print axioms Probe761C.refutationTargetC_holds
+#print axioms Probe761C.not_countMoveTargetC
+#print axioms Probe761C.cellAt_const_of_kappa_eq_schema_refuted
+#print axioms Probe761C.no_fibre_equation_over_kappa
+#print axioms Probe761C.no_transferSys_links_collisions
+#print axioms Probe761C.certStabK_fails_of_contains_realized
+
+end Probe761C
+
+namespace Probe761C
+
+/-! ### (K4)'s shape: the larger of the two exactness depths is exceeded without bound -/
+
+/-- Conjunction, in the primitive connectives. -/
+def andF (a b : PlusFormula) : PlusFormula := PlusFormula.neg (.imp a (PlusFormula.neg b))
+
+/-- Disjunction, in the primitive connectives. -/
+def orF (a b : PlusFormula) : PlusFormula := .imp (PlusFormula.neg a) b
+
+/-- `Y ψ`, written with the strict `snce` at the guard `⊥`. -/
+def prvF (ψ : PlusFormula) : PlusFormula := .snce .bot ψ
+
+/-- The dual of `⊡`: some history through this state. -/
+def diaF (ψ : PlusFormula) : PlusFormula := PlusFormula.neg (.stab (PlusFormula.neg ψ))
+
+theorem truth_andF (τ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame)
+    (t : ℤ) (a b : PlusFormula) :
+    PlusTruthAt MC τ t (andF a b) ↔ PlusTruthAt MC τ t a ∧ PlusTruthAt MC τ t b := by
+  show ((PlusTruthAt MC τ t a → (PlusTruthAt MC τ t b → False)) → False) ↔ _
+  tauto
+
+theorem truth_orF (τ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame)
+    (t : ℤ) (a b : PlusFormula) :
+    PlusTruthAt MC τ t (orF a b) ↔ PlusTruthAt MC τ t a ∨ PlusTruthAt MC τ t b := by
+  show ((PlusTruthAt MC τ t a → False) → PlusTruthAt MC τ t b) ↔ _
+  tauto
+
+theorem int_lt_pred_of_ne (t s : ℤ) (h : s < t) (hne : s ≠ t - 1) : s < t - 1 := by omega
+
+theorem int_pred_lt (t : ℤ) : t - 1 < t := by omega
+
+theorem int_not_between_pred (t r : ℤ) (h1 : t - 1 < r) (h2 : r < t) : False := by omega
+
+theorem truth_prvF (τ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame)
+    (t : ℤ) (ψ : PlusFormula) :
+    PlusTruthAt MC τ t (prvF ψ) ↔ PlusTruthAt MC τ (t - 1) ψ := by
+  constructor
+  · rintro ⟨s, hst, hs, hr⟩
+    by_cases he : s = t - 1
+    · rw [he] at hs
+      exact hs
+    · exact (hr (t - 1) (int_lt_pred_of_ne t s hst he) (int_pred_lt t)).elim
+  · intro h
+    exact ⟨t - 1, int_pred_lt t, h, fun r h1 h2 => (int_not_between_pred t r h1 h2).elim⟩
+
+theorem truth_diaF (τ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame)
+    (t : ℤ) (ψ : PlusFormula) :
+    PlusTruthAt MC τ t (diaF ψ) ↔
+      ∃ σ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame,
+        τ.state t = σ.state t ∧ PlusTruthAt MC σ t ψ := by
+  show ((∀ σ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame,
+    τ.state t = σ.state t → (PlusTruthAt MC σ t ψ → False)) → False) ↔ _
+  constructor
+  · intro h
+    by_contra hn
+    exact h (fun σ e hψ => hn ⟨σ, e, hψ⟩)
+  · rintro ⟨σ, e, hψ⟩ h
+    exact h σ e hψ
+
+theorem truth_pC_off (τ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame)
+    (g : ℤ → LadderState Qc pendC) (k : ℤ) (hτ : ∀ t : ℤ, τ.state t = (t + k, g t)) (s : ℤ) :
+    PlusTruthAt MC τ s (.atom pC) ↔ pendC (objAt g s) = true := by
+  show labC (τ.state s).2.1.1 pC = true ↔ _
+  rw [hτ s]
+  show labC (objAt g s) pC = true ↔ _
+  rw [labC_pC]
+
+/-- `withinC k`: the pending bit is released at one of the next `k` positions. -/
+def withinC : ℕ → PlusFormula
+  | 0 => .bot
+  | k + 1 => nxtF (orF (PlusFormula.neg (.atom pC)) (withinC k))
+
+theorem truth_withinC (τ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame)
+    (g : ℤ → LadderState Qc pendC) (k₀ : ℤ) (hτ : ∀ t : ℤ, τ.state t = (t + k₀, g t)) (k : ℕ) :
+    ∀ t : ℤ, PlusTruthAt MC τ t (withinC k) ↔
+      ∃ j : ℕ, 1 ≤ j ∧ j ≤ k ∧ pendC (objAt g (t + (j : ℤ))) = false := by
+  induction k with
+  | zero =>
+    intro t
+    show False ↔ _
+    constructor
+    · exact False.elim
+    · rintro ⟨j, h1, h2, -⟩
+      omega
+  | succ k ih =>
+    intro t
+    rw [show withinC (k + 1) = nxtF (orF (PlusFormula.neg (.atom pC)) (withinC k)) from rfl,
+      truth_nxtF, truth_orF, truth_neg_pC_off τ g k₀ hτ, ih]
+    constructor
+    · rintro (h | ⟨j, h1, h2, h3⟩)
+      · exact ⟨1, le_rfl, by omega, by rw [show t + ((1 : ℕ) : ℤ) = t + 1 by norm_num]; exact h⟩
+      · exact ⟨j + 1, by omega, by omega,
+          by rw [show t + ((j + 1 : ℕ) : ℤ) = t + 1 + (j : ℤ) by push_cast; ring]; exact h3⟩
+    · rintro ⟨j, h1, h2, h3⟩
+      by_cases hj : j = 1
+      · left
+        subst hj
+        rwa [show t + ((1 : ℕ) : ℤ) = t + 1 by norm_num] at h3
+      · right
+        refine ⟨j - 1, by omega, by omega, ?_⟩
+        rwa [show t + 1 + ((j - 1 : ℕ) : ℤ) = t + (j : ℤ) by omega]
+
+/-- **THE FORWARD READER.** `readC k`: the pending bit holds until it is released, the very next
+position starts a new region, and that region is over within `k` positions.  At a pending state it
+asks the register to come down to `k - 1` by the end of the current region. -/
+def readC (k : ℕ) : PlusFormula :=
+  .untl (.atom pC)
+    (andF (PlusFormula.neg (.atom pC)) (nxtF (andF (.atom pC) (withinC k))))
+
+theorem truth_readC (τ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame)
+    (g : ℤ → LadderState Qc pendC) (k₀ : ℤ) (hτ : ∀ t : ℤ, τ.state t = (t + k₀, g t)) (k : ℕ)
+    (t : ℤ) :
+    PlusTruthAt MC τ t (readC k) ↔
+      ∃ s : ℤ, t < s ∧ pendC (objAt g s) = false ∧ pendC (objAt g (s + 1)) = true ∧
+        (∃ j : ℕ, 1 ≤ j ∧ j ≤ k ∧ pendC (objAt g (s + 1 + (j : ℤ))) = false) ∧
+        ∀ r : ℤ, t < r → r < s → pendC (objAt g r) = true := by
+  show (∃ s : ℤ, t < s ∧
+    PlusTruthAt MC τ s (andF (PlusFormula.neg (.atom pC)) (nxtF (andF (.atom pC) (withinC k)))) ∧
+      ∀ r : ℤ, t < r → r < s → PlusTruthAt MC τ r (.atom pC)) ↔ _
+  constructor
+  · rintro ⟨s, h1, h2, h3⟩
+    rw [truth_andF, truth_neg_pC_off τ g k₀ hτ, truth_nxtF, truth_andF, truth_pC_off τ g k₀ hτ,
+      truth_withinC τ g k₀ hτ] at h2
+    exact ⟨s, h1, h2.1, h2.2.1, h2.2.2, fun r a b => (truth_pC_off τ g k₀ hτ r).mp (h3 r a b)⟩
+  · rintro ⟨s, h1, h2, h3, h4, h5⟩
+    refine ⟨s, h1, ?_, fun r a b => (truth_pC_off τ g k₀ hτ r).mpr (h5 r a b)⟩
+    rw [truth_andF, truth_neg_pC_off τ g k₀ hτ, truth_nxtF, truth_andF, truth_pC_off τ g k₀ hτ,
+      truth_withinC τ g k₀ hτ]
+    exact ⟨h2, h3, h4⟩
+
+/-- `backC a ψ`: step back `a` times through pending positions, then `ψ`. -/
+def backC : ℕ → PlusFormula → PlusFormula
+  | 0, ψ => ψ
+  | a + 1, ψ => prvF (andF (.atom pC) (backC a ψ))
+
+theorem truth_backC (τ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame)
+    (g : ℤ → LadderState Qc pendC) (k₀ : ℤ) (hτ : ∀ t : ℤ, τ.state t = (t + k₀, g t))
+    (ψ : PlusFormula) (a : ℕ) :
+    ∀ t : ℤ, PlusTruthAt MC τ t (backC a ψ) ↔
+      (∀ i : ℕ, 1 ≤ i → i ≤ a → pendC (objAt g (t - (i : ℤ))) = true) ∧
+        PlusTruthAt MC τ (t - (a : ℤ)) ψ := by
+  induction a with
+  | zero =>
+    intro t
+    rw [show backC 0 ψ = ψ from rfl, show t - ((0 : ℕ) : ℤ) = t by norm_num]
+    exact ⟨fun h => ⟨fun i h1 h2 => by omega, h⟩, fun h => h.2⟩
+  | succ a ih =>
+    intro t
+    rw [show backC (a + 1) ψ = prvF (andF (.atom pC) (backC a ψ)) from rfl, truth_prvF,
+      truth_andF, truth_pC_off τ g k₀ hτ, ih]
+    constructor
+    · rintro ⟨hp, hall, hψ⟩
+      refine ⟨fun i h1 h2 => ?_, ?_⟩
+      · by_cases hi : i = 1
+        · subst hi
+          rw [show t - ((1 : ℕ) : ℤ) = t - 1 by norm_num]
+          exact hp
+        · have := hall (i - 1) (by omega) (by omega)
+          rwa [show t - 1 - ((i - 1 : ℕ) : ℤ) = t - (i : ℤ) by omega] at this
+      · rwa [show t - ((a + 1 : ℕ) : ℤ) = t - 1 - (a : ℤ) by push_cast; ring]
+    · rintro ⟨hall, hψ⟩
+      refine ⟨?_, fun i h1 h2 => ?_, ?_⟩
+      · have := hall 1 le_rfl (by omega)
+        rwa [show t - ((1 : ℕ) : ℤ) = t - 1 by norm_num] at this
+      · have := hall (i + 1) (by omega) (by omega)
+        rwa [show t - ((i + 1 : ℕ) : ℤ) = t - 1 - (i : ℤ) by push_cast; ring] at this
+      · rwa [show t - ((a + 1 : ℕ) : ℤ) = t - 1 - (a : ℤ) by push_cast; ring] at hψ
+
+/-- **THE MIXED FAMILY.** `◇ Y_p^a ◇ readC k`: some history through this state was pending at the
+`a` previous positions, and some history through the state it carried `a` steps ago satisfies the
+forward reader.  The backward steps lower the gap by two each; the reader then reads it at
+`k`. -/
+def mixC (a k : ℕ) : PlusFormula := diaF (backC a (diaF (readC k)))
+
+/-! #### Its two exactness depths -/
+
+theorem dBack_withinC (k : ℕ) : dBack (withinC k) = 0 := by
+  induction k with
+  | zero => rfl
+  | succ k ih =>
+    show max (dBack PlusFormula.bot) (max (max (max (dBack (PlusFormula.atom pC)) 0) 0)
+      (dBack (withinC k))) = 0
+    rw [ih]; rfl
+
+theorem dFwd_withinC (k : ℕ) : dFwd (withinC k) = k := by
+  induction k with
+  | zero => rfl
+  | succ k ih =>
+    show max (dFwd PlusFormula.bot) (max (max (max (dFwd (PlusFormula.atom pC)) 0) 0)
+      (dFwd (withinC k))) + 1 = k + 1
+    rw [ih]
+    show max 0 (max (max (max 0 0) 0) k) + 1 = k + 1
+    omega
+
+theorem dBack_readC (k : ℕ) : dBack (readC k) = 0 := by
+  have h := dBack_withinC k
+  simp only [readC, andF, nxtF, PlusFormula.neg, dBack, h]
+  rfl
+
+theorem dFwd_readC (k : ℕ) : dFwd (readC k) = k + 2 := by
+  have h := dFwd_withinC k
+  simp only [readC, andF, nxtF, PlusFormula.neg, dFwd, h]
+  omega
+
+theorem dBack_backC (a : ℕ) (ψ : PlusFormula) : dBack (backC a ψ) = a + dBack ψ := by
+  induction a with
+  | zero => simp [backC]
+  | succ a ih =>
+    simp only [backC, prvF, andF, PlusFormula.neg, dBack, ih]
+    omega
+
+theorem dFwd_backC (a : ℕ) (ψ : PlusFormula) : dFwd (backC a ψ) = dFwd ψ := by
+  induction a with
+  | zero => simp [backC]
+  | succ a ih =>
+    simp only [backC, prvF, andF, PlusFormula.neg, dFwd, ih]
+    omega
+
+theorem dBack_mixC (a k : ℕ) : dBack (mixC a k) = a := by
+  have h1 := dBack_backC a (diaF (readC k))
+  have h2 := dBack_readC k
+  simp only [mixC, diaF, PlusFormula.neg, dBack] at h1 ⊢
+  omega
+
+theorem dFwd_mixC (a k : ℕ) : dFwd (mixC a k) = k + 2 := by
+  have h1 := dFwd_backC a (diaF (readC k))
+  have h2 := dFwd_readC k
+  simp only [mixC, diaF, PlusFormula.neg, dFwd] at h1 ⊢
+  omega
+
+/-- (K4)'s least admissible gap clip at `mixC (k + 2) k` is `2 k + 5`. -/
+theorem Bof_mixC (k : ℕ) : Bof stepC pendC labC (mixC (k + 2) k) = 2 * k + 5 := by
+  unfold Bof
+  rw [dBack_mixC, dFwd_mixC]
+  omega
+
+/-! #### The reader fails above its gap -/
+
+/-- **THE READER'S CEILING.** At a pending position whose register exceeds its countdown by more
+than `k`, the forward reader fails: the register cannot come down to `k - 1` by the end of the
+current region, so the region entered right after it lasts more than `k` positions. -/
+theorem readC_false_of_gap (g : ℤ → LadderState Qc pendC) (hg : IsLadderPath stepC pendC g)
+    (τ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame) (k₀ : ℤ)
+    (hτ : ∀ t : ℤ, τ.state t = (t + k₀, g t)) (k : ℕ) (t : ℤ)
+    (hp : pendC (objAt g t) = true) (hgap : cntAt g t + k + 1 ≤ nxtAt g t) :
+    ¬ PlusTruthAt MC τ t (readC k) := by
+  rw [truth_readC τ g k₀ hτ]
+  rintro ⟨s, hts, hidle, hpend1, ⟨j, hj1, hjk, hjidle⟩, hguard⟩
+  have hend := not_pend_of_count g hg t hp
+  have hs : s = t + (cntAt g t : ℤ) + 1 := by
+    rcases lt_trichotomy s (t + (cntAt g t : ℤ) + 1) with hlt | heq | hgt
+    · have := (cntAt_sub_of_pend g hg t hp (s - t).toNat (by omega)).1
+      rw [show t + (((s - t).toNat : ℕ) : ℤ) = s by omega] at this
+      exact absurd (this.symm.trans hidle) (by simp)
+    · exact heq
+    · exact absurd ((hguard _ (by omega) hgt).symm.trans hend) (by simp)
+  have hpin := cntAt_eq_nxtAt_of_idle_pend g hg s hidle hpend1
+  have hlip := nxtAt_lipschitz g hg t (cntAt g t + 1)
+  rw [show t + ((cntAt g t + 1 : ℕ) : ℤ) = s by rw [hs]; push_cast; ring] at hlip
+  have := (cntAt_sub_of_pend g hg (s + 1) hpend1 j (by omega)).1
+  exact absurd (this.symm.trans hjidle) (by simp)
+
+/-- **NEGATIVE MEMBERSHIP: gap above `2 a + k`.** -/
+theorem mixC_not_mem (a k c n : ℕ) (hgap : c + 2 * a + k + 1 ≤ n) (T : Finset PlusFormula)
+    (hT : T ∈ cellAt MC (mixC a k)
+      ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0) :
+    mixC a k ∉ T := by
+  obtain ⟨τ, hs, rfl⟩ := hT
+  rw [mem_tpOf_iff]
+  rintro ⟨-, h⟩
+  obtain ⟨σ, hσ, hback⟩ := (truth_diaF τ 0 (backC a (diaF (readC k)))).mp h
+  obtain ⟨k₀, g, hg, hp⟩ := exists_isLadderPath_of_hist fwdC bwdC σ
+  rw [truth_backC σ g k₀ hp] at hback
+  obtain ⟨hall, hdia⟩ := hback
+  obtain ⟨ρ, hρ, hread⟩ := (truth_diaF σ _ _).mp hdia
+  obtain ⟨k₁, g₁, hg₁, hp₁⟩ := exists_isLadderPath_of_hist fwdC bwdC ρ
+  have h0 : ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) = (0 + k₀, g 0) :=
+    hs.symm.trans (hσ.trans (hp 0))
+  have hg0 : g 0 = stC c n := (congrArg Prod.snd h0).symm
+  have hobj : objAt g 0 = 0 := by rw [objAt, hg0]; rfl
+  have hcnt : cntAt g 0 = c := by rw [cntAt, hg0]; rfl
+  have hnxt : nxtAt g 0 = n := by rw [nxtAt, hg0]; rfl
+  have hpend : ∀ i : ℕ, i ≤ a → pendC (objAt g (0 - (i : ℤ))) = true := by
+    intro i hi
+    cases i with
+    | zero => simpa [hobj] using pendC_zero
+    | succ j => exact hall (j + 1) (by omega) hi
+  have hback := cntAt_add_of_pend_back g hg 0 a hpend
+  have hlip := nxtAt_lipschitz g hg (0 - (a : ℤ)) a
+  rw [show (0 : ℤ) - (a : ℤ) + (a : ℤ) = 0 by ring] at hlip
+  have h1 : ((0 - (a : ℤ) + k₀, g (0 - (a : ℤ))) :
+      (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) = (0 - (a : ℤ) + k₁, g₁ (0 - (a : ℤ))) :=
+    (hp (0 - (a : ℤ))).symm.trans (hρ.trans (hp₁ (0 - (a : ℤ))))
+  have hg1 : g (0 - (a : ℤ)) = g₁ (0 - (a : ℤ)) := congrArg Prod.snd h1
+  refine readC_false_of_gap g₁ hg₁ ρ k₁ hp₁ k (0 - (a : ℤ)) ?_ ?_ hread
+  · rw [show objAt g₁ (0 - (a : ℤ)) = objAt g (0 - (a : ℤ)) by rw [objAt, objAt, hg1]]
+    exact hpend a le_rfl
+  · rw [show cntAt g₁ (0 - (a : ℤ)) = cntAt g (0 - (a : ℤ)) by rw [cntAt, cntAt, hg1],
+      show nxtAt g₁ (0 - (a : ℤ)) = nxtAt g (0 - (a : ℤ)) by rw [nxtAt, nxtAt, hg1]]
+    omega
+
+/-! #### The two ramps -/
+
+/-- A ladder path whose register RISES at each of `m` consecutive pending steps. -/
+theorem exists_upRamp (m c : ℕ) : ∀ n : ℕ, ∃ g : ℤ → LadderState Qc pendC,
+    IsLadderPath stepC pendC g ∧ g 0 = stC (c + m) n ∧ g (m : ℤ) = stC c (n + m) := by
+  induction m with
+  | zero =>
+    intro n
+    exact ⟨gC c n, gC_isPath c n, gC_zero_eq c n, by simpa using gC_zero_eq c n⟩
+  | succ m ih =>
+    intro n
+    obtain ⟨g, hg, h0, hm⟩ := ih (n + 1)
+    refine ⟨gluePath (gC (c + m + 1) n) (fun v : ℤ => g (v - 1)) 0,
+      gluePath_isPath _ _ (gC_isPath _ _) (shiftPath_isPath g hg 1) 0 ?_, ?_, ?_⟩
+    · show RladAdm stepC pendC 0 (gC (c + m + 1) n 0) (g (0 + 1 - 1))
+      rw [show (0 : ℤ) + 1 - 1 = 0 by norm_num, h0, gC_zero_eq]
+      refine ⟨rfl, admZeroC _ _, Or.inr (Or.inl rfl), ?_⟩
+      show Count (pendC 0) (pendC 0) (c + m + 1) n (c + m)
+      simp [Count, pendC_zero]
+    · rw [gluePath_of_le _ _ 0 0 le_rfl, gC_zero_eq]
+      rfl
+    · rw [gluePath_of_gt _ _ 0 _ (by push_cast; omega)]
+      show g (((m + 1 : ℕ) : ℤ) - 1) = _
+      rw [show ((m + 1 : ℕ) : ℤ) - 1 = (m : ℤ) by push_cast; ring, hm,
+        show n + 1 + m = n + (m + 1) by omega]
+
+/-- A ladder path whose register FALLS at each of `m` consecutive pending steps. -/
+theorem exists_downRamp (m c n : ℕ) : ∃ g : ℤ → LadderState Qc pendC,
+    IsLadderPath stepC pendC g ∧ g 0 = stC (c + m) (n + m) ∧ g (m : ℤ) = stC c n := by
+  induction m with
+  | zero => exact ⟨gC c n, gC_isPath c n, gC_zero_eq c n, by simpa using gC_zero_eq c n⟩
+  | succ m ih =>
+    obtain ⟨g, hg, h0, hm⟩ := ih
+    refine ⟨gluePath (gC (c + m + 1) (n + m + 1)) (fun v : ℤ => g (v - 1)) 0,
+      gluePath_isPath _ _ (gC_isPath _ _) (shiftPath_isPath g hg 1) 0 ?_, ?_, ?_⟩
+    · show RladAdm stepC pendC 0 (gC (c + m + 1) (n + m + 1) 0) (g (0 + 1 - 1))
+      rw [show (0 : ℤ) + 1 - 1 = 0 by norm_num, h0, gC_zero_eq]
+      refine ⟨rfl, admZeroC _ _, Or.inr (Or.inr rfl), ?_⟩
+      show Count (pendC 0) (pendC 0) (c + m + 1) (n + m + 1) (c + m)
+      simp [Count, pendC_zero]
+    · rw [gluePath_of_le _ _ 0 0 le_rfl, gC_zero_eq]
+      rfl
+    · rw [gluePath_of_gt _ _ 0 _ (by push_cast; omega)]
+      show g (((m + 1 : ℕ) : ℤ) - 1) = _
+      rw [show ((m + 1 : ℕ) : ℤ) - 1 = (m : ℤ) by push_cast; ring, hm]
+
+/-- **POSITIVE MEMBERSHIP: gap exactly `2 a + k`.** The register rose at each of the `a` steps
+before `0`, so `a` steps back the gap was `k`; from that state the register can fall at every
+remaining step of the region, reach `k` at its last position and `k - 1` at the idle position
+after it, and the region entered there lasts exactly `k` positions. -/
+theorem mixC_mem (a k c : ℕ) (hk : 1 ≤ k) (T : Finset PlusFormula)
+    (hT : T ∈ cellAt MC (mixC a k)
+      ((0, stC c (c + 2 * a + k)) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0) :
+    mixC a k ∈ T := by
+  obtain ⟨τ, hs, rfl⟩ := hT
+  rw [mem_tpOf_iff]
+  refine ⟨self_mem_plusSubformulaClosure _, ?_⟩
+  obtain ⟨gu, hgu, hu0, hua⟩ := exists_upRamp a c (c + a + k)
+  rw [show c + a + k + a = c + 2 * a + k by omega] at hua
+  obtain ⟨gd, hgd, hd0, hdm⟩ := exists_downRamp (c + a) 0 k
+  rw [show 0 + (c + a) = c + a by omega, show k + (c + a) = c + a + k by omega] at hd0
+  obtain ⟨M, hM⟩ : ∃ M : ℤ, M = ((c + a : ℕ) : ℤ) := ⟨_, rfl⟩
+  rw [← hM] at hdm
+  have hMc : M = (c : ℤ) + (a : ℤ) := by rw [hM]; push_cast; ring
+  -- the tail: idle at `M + 1` with register `k - 1`, then a region of exactly `k` positions
+  have htail : IsLadderPath stepC pendC
+      (gluePath (gI (k - 1)) (fun v : ℤ => gC (k - 1) (k - 1) (v - (M + 2))) (M + 1)) := by
+    refine gluePath_isPath _ _ (gI_isPath _)
+      (shiftPath_isPath _ (gC_isPath (k - 1) (k - 1)) (M + 2)) (M + 1) ?_
+    show RladAdm stepC pendC (M + 1) (gI (k - 1) (M + 1)) (gC (k - 1) (k - 1) (M + 1 + 1 - (M + 2)))
+    rw [show M + 1 + 1 - (M + 2) = 0 by ring, gC_zero_eq]
+    refine ⟨rfl, fun _ => rfl, Or.inl rfl, ?_⟩
+    show Count (pendC 1) (pendC 0) 0 (k - 1) (k - 1)
+    simp [Count, pendC_zero, pendC_one]
+  have hρ0 : IsLadderPath stepC pendC (gluePath gd
+      (gluePath (gI (k - 1)) (fun v : ℤ => gC (k - 1) (k - 1) (v - (M + 2))) (M + 1)) M) := by
+    refine gluePath_isPath _ _ hgd htail M ?_
+    rw [hdm, gluePath_of_le _ _ (M + 1) (M + 1) le_rfl]
+    refine ⟨rfl, admZeroC _ _, Or.inr (Or.inr (show k - 1 + 1 = k by omega)), ?_⟩
+    show Count (pendC 0) (pendC 1) 0 k 0
+    simp [Count, pendC_zero, pendC_one]
+  obtain ⟨ρ0, hρ0def⟩ : ∃ ρ0 : ℤ → LadderState Qc pendC, ρ0 = gluePath gd
+      (gluePath (gI (k - 1)) (fun v : ℤ => gC (k - 1) (k - 1) (v - (M + 2))) (M + 1)) M :=
+    ⟨_, rfl⟩
+  rw [← hρ0def] at hρ0
+  -- values of `ρ0`
+  have hρlow : ∀ v : ℤ, v ≤ M → ρ0 v = gd v := fun v hv => by
+    rw [hρ0def, gluePath_of_le _ _ M v hv]
+  have hρidle : ρ0 (M + 1) = gI (k - 1) (M + 1) := by
+    rw [hρ0def, gluePath_of_gt _ _ M (M + 1) (by omega), gluePath_of_le _ _ (M + 1) (M + 1) le_rfl]
+  have hρhigh : ∀ v : ℤ, M + 1 < v → ρ0 v = gC (k - 1) (k - 1) (v - (M + 2)) := fun v hv => by
+    rw [hρ0def, gluePath_of_gt _ _ M v (by omega), gluePath_of_gt _ _ (M + 1) v hv]
+  obtain ⟨σ, hσ⟩ := exists_hist_of_isLadderPath fwdC bwdC _ (shiftPath_isPath gu hgu (-(a : ℤ)))
+  obtain ⟨ρ, hρ⟩ := exists_hist_of_isLadderPath fwdC bwdC _ (shiftPath_isPath ρ0 hρ0 (-(a : ℤ)))
+  have hu_obj : objAt gu 0 = 0 := by rw [objAt, hu0]; rfl
+  have hu_cnt : cntAt gu 0 = c + a := by rw [cntAt, hu0]; rfl
+  have hd_obj : objAt gd 0 = 0 := by rw [objAt, hd0]; rfl
+  have hd_cnt : cntAt gd 0 = c + a := by rw [cntAt, hd0]; rfl
+  refine (truth_diaF τ 0 (backC a (diaF (readC k)))).mpr ⟨σ, ?_, ?_⟩
+  · rw [hs, hσ 0]
+    show _ = ((0 : ℤ), gu (0 - -(a : ℤ)))
+    rw [show (0 : ℤ) - -(a : ℤ) = (a : ℤ) by ring, hua]
+  · rw [truth_backC σ _ 0 (fun t => by rw [hσ t, add_zero])]
+    refine ⟨fun i h1 h2 => ?_, (truth_diaF σ _ _).mpr ⟨ρ, ?_, ?_⟩⟩
+    · show pendC (objAt gu (0 - (i : ℤ) - -(a : ℤ))) = true
+      have := (cntAt_sub_of_pend gu hgu 0 (by rw [hu_obj]; exact pendC_zero) (a - i)
+        (by omega)).1
+      rwa [show (0 : ℤ) + ((a - i : ℕ) : ℤ) = 0 - (i : ℤ) - -(a : ℤ) by omega] at this
+    · rw [hσ, hρ]
+      show ((0 : ℤ) - (a : ℤ), gu (0 - (a : ℤ) - -(a : ℤ))) = (0 - (a : ℤ), ρ0 (0 - (a : ℤ) - -(a : ℤ)))
+      rw [show (0 : ℤ) - (a : ℤ) - -(a : ℤ) = 0 by ring, hu0, hρlow 0 (by omega), hd0]
+    · rw [truth_readC ρ _ 0 (fun t => by rw [hρ t, add_zero])]
+      refine ⟨(c : ℤ) + 1, by omega, ?_, ?_, ⟨k, hk, le_rfl, ?_⟩, fun r hr1 hr2 => ?_⟩
+      · show pendC (objAt ρ0 ((c : ℤ) + 1 - -(a : ℤ))) = false
+        rw [show (c : ℤ) + 1 - -(a : ℤ) = M + 1 by omega, objAt, hρidle]
+        exact pendC_one
+      · show pendC (objAt ρ0 ((c : ℤ) + 1 + 1 - -(a : ℤ))) = true
+        rw [show (c : ℤ) + 1 + 1 - -(a : ℤ) = M + 2 by omega, objAt, hρhigh _ (by omega),
+          show M + 2 - (M + 2) = 0 by ring, gC_zero_eq]
+        exact pendC_zero
+      · show pendC (objAt ρ0 ((c : ℤ) + 1 + 1 + (k : ℤ) - -(a : ℤ))) = false
+        rw [show (c : ℤ) + 1 + 1 + (k : ℤ) - -(a : ℤ) = M + 2 + (k : ℤ) by omega, objAt,
+          hρhigh _ (by omega), show M + 2 + (k : ℤ) - (M + 2) = (k : ℤ) by ring]
+        exact pendC_wC_of_gt (k - 1) (k : ℤ) (by omega)
+      · show pendC (objAt ρ0 (r - -(a : ℤ))) = true
+        rw [objAt, hρlow _ (by omega)]
+        have := (cntAt_sub_of_pend gd hgd 0 (by rw [hd_obj]; exact pendC_zero)
+          (r - -(a : ℤ)).toNat (by omega)).1
+        rwa [show (0 : ℤ) + (((r - -(a : ℤ)).toNat : ℕ) : ℤ) = r - -(a : ℤ) by omega] at this
+
+/-- **THE COLLISION ON THE POSITIVE SIDE.** A register at or above `Tn` and a gap at or above the
+clip `B`: raising the register by the modulus stays in the class. -/
+theorem kappa_collision_pos (Tc Tn P B c n : ℕ) (hn : Tn ≤ n) (hB : c + B ≤ n) :
+    kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c, n + (P + 1)) := by
+  unfold kappa
+  refine Prod.ext rfl (Prod.ext rfl (Prod.ext (Fin.ext ?_) (Prod.ext (Fin.ext ?_) (Fin.ext ?_))))
+  · show min n Tn = min (n + (P + 1)) Tn
+    omega
+  · show n % (P + 1) = (n + (P + 1)) % (P + 1)
+    rw [Nat.add_mod_right]
+  · show clipIdx B c n = clipIdx B c (n + (P + 1))
+    unfold clipIdx
+    split_ifs <;> omega
+
+/-- **THE EXCESS IS UNBOUNDED.** For every `k ≥ 1`, at the formula `mixC (k + 2) k` and the
+periodicity fixpoint's own parameter outputs: (K4)'s gap clip is `2 k + 5`, while the cell at the
+pending state separates the gap `3 k + 4` from the gap one modulus above it — two counter pairs of
+one `kappa`-class.  The separated gap exceeds the clip by `k - 1`: no constant added to the larger
+of the two exactness depths repairs (K4). -/
+theorem mixC_refutes (k : ℕ) (hk : 1 ≤ k) :
+    Bof stepC pendC labC (mixC (k + 2) k) = 2 * k + 5 ∧
+    ∃ c n n' : ℕ, n = c + (3 * k + 4) ∧
+      ParamsOk stepC pendC labC (mixC (k + 2) k)
+        (Tcof stepC pendC labC (mixC (k + 2) k)) (Tnof stepC pendC labC (mixC (k + 2) k))
+        (Pof stepC pendC labC (mixC (k + 2) k)) (Bof stepC pendC labC (mixC (k + 2) k)) ∧
+      kappa (Tcof stepC pendC labC (mixC (k + 2) k)) (Tnof stepC pendC labC (mixC (k + 2) k))
+          (Pof stepC pendC labC (mixC (k + 2) k)) (Bof stepC pendC labC (mixC (k + 2) k)) (c, n)
+        = kappa (Tcof stepC pendC labC (mixC (k + 2) k)) (Tnof stepC pendC labC (mixC (k + 2) k))
+          (Pof stepC pendC labC (mixC (k + 2) k)) (Bof stepC pendC labC (mixC (k + 2) k)) (c, n') ∧
+      cellAt MC (mixC (k + 2) k)
+          ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0
+        ≠ cellAt MC (mixC (k + 2) k)
+          ((0, stC c n') : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0 := by
+  refine ⟨Bof_mixC k, Tnof stepC pendC labC (mixC (k + 2) k),
+    Tnof stepC pendC labC (mixC (k + 2) k) + (3 * k + 4),
+    Tnof stepC pendC labC (mixC (k + 2) k) + (3 * k + 4)
+      + (Pof stepC pendC labC (mixC (k + 2) k) + 1), rfl,
+    paramsOk_params stepC pendC labC (mixC (k + 2) k), ?_, ?_⟩
+  · exact kappa_collision_pos _ _ _ _ _ _ (by omega) (by rw [Bof_mixC]; omega)
+  · intro heq
+    obtain ⟨T, hT⟩ := cellC_nonempty (mixC (k + 2) k) (Tnof stepC pendC labC (mixC (k + 2) k))
+      (Tnof stepC pendC labC (mixC (k + 2) k) + (3 * k + 4))
+    have hmem : mixC (k + 2) k ∈ T := by
+      refine mixC_mem (k + 2) k (Tnof stepC pendC labC (mixC (k + 2) k)) hk T ?_
+      rw [show Tnof stepC pendC labC (mixC (k + 2) k) + 2 * (k + 2) + k
+        = Tnof stepC pendC labC (mixC (k + 2) k) + (3 * k + 4) by omega]
+      exact hT
+    exact mixC_not_mem (k + 2) k _ _ (by omega) T (heq ▸ hT) hmem
+
+#print axioms Probe761C.readC_false_of_gap
+#print axioms Probe761C.mixC_not_mem
+#print axioms Probe761C.mixC_mem
+#print axioms Probe761C.kappa_collision_pos
+#print axioms Probe761C.Bof_mixC
+#print axioms Probe761C.mixC_refutes
+
+end Probe761C
