@@ -482,6 +482,7 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
   - [761_ladder_realization_theorem/reports/15_stab-bit-copy-pair-decision.md]
   - [761_ladder_realization_theorem/reports/29_row-link-route-viability.md]
   - [761_ladder_realization_theorem/reports/30_quasimodel-abstraction-literature.md]
+  - [761_ladder_realization_theorem/reports/31_gkwz-ptl-s5-quasimodels.md]
 - **Plan**: [761_ladder_realization_theorem/plans/28_k1-admissible-refutation-first.md]
 - **Summary**: [761_ladder_realization_theorem/summaries/28_object-half-k1-count-move-summary.md]
 

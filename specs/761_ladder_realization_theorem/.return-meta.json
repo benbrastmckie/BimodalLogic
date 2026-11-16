@@ -1,24 +1,24 @@
 {
   "status": "researched",
-  "started_at": "2026-11-16T14:23:51-08:00",
+  "started_at": "2026-11-16T14:30:43-08:00",
   "requires_user_review": true,
-  "review_reason": "Literature verification of report 29 Q4. Claim 2 is half wrong: HWZ quasistates are EXACT type sets (Def. 7 is an equality), not merely sound; only runs are existential (Def. 12). Theorem 14's converse CONSTRUCTS its model and the paper has no stab/box. Claim 1's 'exponential thresholds are the normal form' is contradicted by Etessami-Wilke (linear thresholds, k+1 and 2k+1). Evidence supports quasistate keying but not a fixed-ladderModel 'soundness + existential realization' restatement; the statement decision belongs to the user. GKWZ 13.2 (PTL x S5 quasimodels) was not read and is the next source to consult.",
+  "review_reason": "GKWZ 13.2 read. Negative on the expectation: Theorem 13.6's proof is written only for L = K (tree quasistates); the S5 case is one 'left to the reader' sentence deferring to chapter 6, so the single-S5 quasimodel was read from 5.2 / Thm 6.44 / Thm 6.61. Result: the exact/existential split is the same as HWZ (quasistate exact via internal (qm1), runs existential via (qm3), converse constructs the model on W x R). certStabK is (qm1), cellAt is the quasistate read-off, Dmax matches the maximal satisfying set by elimination. The filed fixed-model fibre equation over a fixed finite coordinate is UNSUPPORTED (not contradicted); the supported shape is the read-off / construction pair. The dispatch premise that the setting is PTL x S5 conflicts with the project's own note (not a product; stab is state-keyed). Statement decision belongs to the user.",
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/761_ladder_realization_theorem/reports/30_quasimodel-abstraction-literature.md",
-      "summary": "Sourced verification of report 29's three literature claims against HWZ 2000 (local corpus) and Etessami-Wilke 2000 (full text fetched): 4 questions answered with SOURCED/INFERRED/UNSOURCED marks, extent of reading stated, 5 recommendations."
+      "path": "specs/761_ladder_realization_theorem/reports/31_gkwz-ptl-s5-quasimodels.md",
+      "summary": "Sourced reading of GKWZ 2003 section 13.2 / Theorem 13.6 and the chapter 5, 6, 11 and 13.1 material it defers to; Q1-Q5 answered with SOURCED/INFERRED marks, extent of reading and falsifiers stated, 6 recommendations."
     }
   ],
-  "next_steps": "Correct report 29 Q4, then take the statement question to the user with the three-way framing in the report's Recommendations; read GKWZ 2003 section 13.2 before choosing the HWZ-shaped restatement.",
+  "next_steps": "Take the statement question to the user as a split (read-off + construction) versus the filed fused equation; if the fused equation is kept, name its two unsourced obligations (factorization through (q, kappa); realization of the whole maximum set). Correct the context file's sentence on Theorem 13.6 in the source store.",
   "metadata": {
     "agent_type": "logic-research-agent",
-    "duration_seconds": 320,
+    "duration_seconds": 337,
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 4,
-    "context_files_loaded": ["logic/README.md", "logic/domain/ztime-no-finite-carrier-fmp.md", "formats/report-format.md", "patterns/mathlib-lookup-gate.md", "patterns/early-metadata-pattern.md"],
-    "mathlib_lookups_performed": 2,
+    "findings_count": 5,
+    "context_files_loaded": ["logic/domain/ztime-no-finite-carrier-fmp.md", "formats/report-format.md"],
+    "mathlib_lookups_performed": 1,
     "mathlib_lookup_gated": "performed"
   }
 }

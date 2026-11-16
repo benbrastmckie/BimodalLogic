@@ -156,9 +156,13 @@
         {
           "path": "specs/761_ladder_realization_theorem/reports/30_quasimodel-abstraction-literature.md",
           "type": "report"
+        },
+        {
+          "path": "specs/761_ladder_realization_theorem/reports/31_gkwz-ptl-s5-quasimodels.md",
+          "type": "report"
         }
       ],
-      "next_artifact_number": 31,
+      "next_artifact_number": 32,
       "previous_status": "implementing"
     },
     {
