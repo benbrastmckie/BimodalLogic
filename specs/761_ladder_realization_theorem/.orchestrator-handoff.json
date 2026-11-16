@@ -1,18 +1,33 @@
 {
-  "status": "partial",
+  "status": "blocked",
   "phase": "implement",
-  "dispatch_seq": 60,
-  "summary": "Phase 11.29 (refutation attempt on the filed cellAt_const_of_kappa_eq) closed with outcome (b), OPEN WITH A MEASURED ACCOUNT, zero sorry: the separating type sepC k is exhibited with both memberships compiled, but (K2)'s margin makes every separated pair a non-collision and the agreement is proved at that family. Phase 11.32 (Round 3) is the enterable successor and was not entered; its fixture-level instance is landed.",
+  "dispatch_seq": 61,
+  "summary": "Phase 11.32 (Round 3, the non-atom-preserving count move) closed BLOCKED with zero sorry. The construction's type is stated and proved equivalent to the diagonal agreement, and a non-positionwise transfer principle with stab/box clauses plus the interface theorem are landed at fixture level; the general construction is not built. It refuses at the past pending row by a compiled cap attained at every scale, and at a stab-carrying closure the slide owes a state link along the run.",
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/21_refutation-first-run-level-adequacy-summary.md",
-      "summary": "Phase 11.29 verdict: outcome (b), open with a measured account; separating type compiled, never at a collision."
+      "path": "specs/761_ladder_realization_theorem/summaries/21_count-move-transfer-principle-blocked-summary.md",
+      "summary": "Phase 11.32 blocked: count move stated and reduced, transfer principle landed, construction refuses at the past-row cap."
     }
   ],
   "phases_completed": 41,
   "phases_total": 56,
-  "blockers": [],
-  "next_action_hint": "Phase 11.32 (Round 3, the general non-atom-preserving count move) is enterable; it is NOT COSTABLE and likely needs a /revise to state a reach obligation first. Phases 11.30/11.31 are excluded on the outcome-(b) branch.",
-  "git_checkpoint": "340bcfd41"
+  "blockers": [
+    "Phase 11.32: the general count move needs a transfer system between ladder histories whose region lengths differ at infinitely many regions (region insertion on exactly-doubling chains; state link along the run at closures with a stab letter). Stated nowhere in the tree; a /revise is required."
+  ],
+  "next_action_hint": "/revise on the surfaced route decision (recommended T-1: one bounded research round at the two-state fixture on the region-reshaping TransferSys, stab clause included). Do not re-dispatch implement on plan v21: its only remaining enterable phase is the blocked one.",
+  "git_checkpoint": "9cccabb83",
+  "user_decision": {
+    "question": "Phase 11.32 (Round 3) is blocked: the non-atom-preserving count move is not one construction but a theory. It refuses at the PAST pending row (cnt_cap_of_row, attained at every scale by tight_state_refuses_C), and at a closure carrying a stab letter the slide owes the lower-level agreement of states along the run (slide_closure_transferSys). Both debts are one object stated nowhere: a transfer system between ladder histories whose region lengths differ at infinitely many regions. Which way should the plan be revised?",
+    "options": [
+      "(T-1) One bounded research round first, at the two-state fixture: state the region-reshaping relation as a TransferSys instance, compile its until/since clauses and its stab clause at depth 1, and decide by compilation whether typePreservingCountMove_of_transferSys's link is dischargeable at the tight family; also compile the count of doubling steps against (K2)'s margin. Then revise on the verdict.",
+      "(T-2) Commit now to building the whole-language region-reshaping transfer system (region-length changes at infinitely many regions, whole-region insertion/deletion, stab clause by induction on the level), fixture first then general objects through (K1). Large and NOT COSTABLE.",
+      "(T-3) Enter the run-level adequacy pair (Round 2's statement layer) although Round 1 returned outcome (b): replace the cell-agreement step by soundness plus existential realization, leaving cellAt_const_of_kappa_eq and ladderRealized recorded OPEN under their pinned names. This re-opens decision (E-5)'s own conditioning of Round 2 on outcome (a)."
+    ],
+    "recommended": "(T-1) One bounded research round first, at the two-state fixture: state the region-reshaping relation as a TransferSys instance, compile its until/since clauses and its stab clause at depth 1, and decide by compilation whether typePreservingCountMove_of_transferSys's link is dischargeable at the tight family; also compile the count of doubling steps against (K2)'s margin. Then revise on the verdict.",
+    "blocking": false,
+    "obligation": "A compiled verdict, at the two-state object of ladder-cell-agreement-refutation.lean, on whether a TransferSys relating a ladder history to a region-reshaped one exists whose link discharges typePreservingCountMove_of_transferSys's hlink at the tight states of tight_state_refuses_C (countdown 2m+2 against a larger countdown) for a closure carrying a stab letter: either the system with its clauses compiled and the link exhibited at that family, or a compiled object naming the clause that fails. A verdict reached only on closures with no stab letter does not discharge it."
+  },
+  "continuation_path": "specs/761_ladder_realization_theorem/handoffs/phase-11.32-handoff-20261116T024500Z.md",
+  "continuation_context": "Phase 11.32 is [BLOCKED]; resume only after a /revise on the surfaced route decision. Record: records/round-21-refutation-verdict.md, section \"Round 3\"."
 }

@@ -133,9 +133,9 @@
           "summary": "Plan v21: route (E-5) -- decide the truth value of the filed cellAt_const_of_kappa_eq by attempting its refutation (Round 1, Phase 11.29), then repair at the run level (Round 2) or build the non-atom-preserving count move (Round 3). 56 phases, 40 closed."
         },
         {
-          "path": "specs/761_ladder_realization_theorem/summaries/21_refutation-first-run-level-adequacy-summary.md",
+          "path": "specs/761_ladder_realization_theorem/summaries/21_count-move-transfer-principle-blocked-summary.md",
           "type": "summary",
-          "summary": "Phase 11.29 verdict: outcome (b), open with a measured account; separating type compiled, never at a collision."
+          "summary": "Phase 11.32 blocked: count move stated and reduced, transfer principle landed, construction refuses at the past-row cap."
         }
       ],
       "next_artifact_number": 22,
