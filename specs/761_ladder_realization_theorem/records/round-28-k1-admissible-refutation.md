@@ -228,3 +228,83 @@ approached: both stand unchanged at 1,485 and 3,729 lines.
 | `scripts/readme-lint.sh` | **PASS** (0 broken file references) |
 | `grep -rn 'sorry\|native_decide'` on probe + `LadderStepFrag.lean` | only the header docstring's "No `sorry`" sentence |
 | `git diff` on the wired probe | **287 insertions, 0 deletions — appended hunks only** |
+
+---
+
+# Round 28, part 2 — Phase 11.49, route (R-2): the object half of `(K1)` as a hypothesis
+
+## 10. Entry gate, re-derived from section 5 of this same record
+
+Section 5 above reads **outcome (b)**: both fixtures reached a verdict, neither yielded a
+refutation. The gate was read from that text and not from a phase marker. Every declaration
+section 7 lists as compiled was re-grepped at entry with
+`grep -rnE '(theorem|lemma|def|abbrev) +<name>\b' FormalSystem/ Tests/ specs/evidence/`; all
+eleven were found, and `exists_rowLinked_path` was confirmed still absent (only
+`exists_rowLinked_path_zero`, `LadderStepFrag.lean:750`). Phase 11.49 is therefore licensed.
+
+**What section 5 licenses, and what it does not.** It licenses ADDING the hypothesis. It is not
+evidence that the path forth is provable: the attacks of sections 3 and 4 address the `Zrel`
+clauses at exhibited pairs, and a row link additionally demands the recursive jump structure and
+the back-matching condition at every budget. Neither was touched there, and the induction is this
+phase's own work.
+
+## 11. The repaired signature, STATED IN ADVANCE OF THE FIRST ATTEMPT
+
+```lean
+theorem exists_rowLinked_path {Q : Type} [Fintype Q] {step : Q → Q → Bool} {pend : Q → Bool}
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    {P : ℕ} (hK1 : ∀ l ∈ objCycleLens step pend, l ∣ (P + 1))
+    (a b : ℕ) (h : ℤ → LadderState Q pend) (hh : IsLadderPath step pend h) (t : ℤ)
+    (y : LadderState Q pend) (hM : Mrel P a b (h t) y) :
+    ∃ h' : ℤ → LadderState Q pend, IsLadderPath step pend h' ∧ h' t = y ∧
+      LnkRow a b h h' t t
+```
+
+### The diff against the signature `round-24-jump-clause-verdict.md` section 3 recorded as owed
+
+The owed goal recorded there, at the candidate hypothesis of that round, was
+
+```
+⊢ ∃ h', IsLadderPath step pend h' ∧ h' t = y ∧ LnkRow a (b + 2) h h' t t
+```
+
+under `fwd`, `bwd`, `h`, `hh : IsLadderPath step pend h`, `t`, `y`, and a state relation on
+`(h t, y)`.
+
+| Difference | Verdict |
+|---|---|
+| `(hK1 : ∀ l ∈ objCycleLens step pend, l ∣ (P + 1))` added | **THE ONE SANCTIONED DIFFERENCE** (decision 21, route (R-2)) |
+| `[Fintype Q]` added | **Forced by the sanctioned difference, not a second hypothesis**: `objCycleLens` does not elaborate without it. It is an instance binder, carries no mathematical content beyond finiteness of the object, and `Mrel.threshold_le_Tc` already takes it in this same module. Recorded rather than passed over. |
+| the state relation is `Mrel P a b` rather than round 24's `Zrel (a + b + 1) (a + b)` | Not a difference introduced here: round 24's candidate was refuted (`no_rowLinked_path_of_Zrel`), `Srel` after it (`no_rowLinked_path_of_Srel`), and `Mrel` is the relation Phase 11.44 landed and Phase 11.47 re-aimed. Carried, not chosen. |
+| budget `(a, b)` universally quantified rather than `(a, b + 2)` | A strengthening, not a weakening: the recorded goal was one instantiation of this. |
+| no `lab`, no `φ` | **The point of (R-2).** See the mechanical check in section 13. |
+
+Nothing else is added. In particular `paramsOkK1` in full is **NOT** taken — that is (R-1), and
+it is rejected by the user because it drags `lab` and `φ` into a layer free of the formula index.
+
+## 12. The bridge to `ParamsOk`, landed and recorded (item 2)
+
+```lean
+theorem objHalfK1_of_paramsOk {Q : Type} [Fintype Q] {step : Q → Q → Bool} {pend : Q → Bool}
+    {lab : Q → Atom → Bool} {φ : PlusFormula} {Tc Tn P B : ℕ}
+    (hp : ParamsOk step pend lab φ Tc Tn P B) :
+    ∀ l ∈ objCycleLens step pend, l ∣ (P + 1) :=
+  hp.1.2.1
+```
+
+Landed in `LadderStepFrag.lean`, beside the consumer, so that no later phase re-derives a
+projection path. `#print axioms` (via `lean_verify`): `[propext, Classical.choice, Quot.sound]`, a
+subset of the permitted set. Composed with `paramsOk_params` it discharges the added hypothesis at
+the four parameters the periodicity fixpoint defines, so the repaired consumer is not vacuous.
+
+**A STATEMENT FIDELITY OBSERVATION, recorded rather than silently absorbed.** Plan v28 item 2
+says "There is no predicate in the library equal to the object half alone" and treats the bridge
+as wholly new. The first clause is correct — no *predicate* equals it. But the *projection lemma*
+already existed: `objCycle_dvd_succ_of_paramsOk` (`LadderAgree.lean:1032`) is literally
+`hp.1.2.1` in POINTWISE form, `{l : ℕ} (hl : l ∈ objCycleLens step pend) : l ∣ (P + 1)`, and
+`LadderAgree` is in `LadderStepFrag`'s import closure (computed over the `import` graph, not
+assumed). The bridge owed here is the BUNDLED `∀` form the path forth's binder list contains, and
+it is a one-line corollary rather than a fresh derivation. It is still landed under its own name,
+because the plan's reason for demanding it — that no downstream phase re-derive a projection
+path — is served by the bundled form existing beside the consumer.

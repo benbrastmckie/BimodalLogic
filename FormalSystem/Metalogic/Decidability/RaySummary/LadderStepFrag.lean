@@ -1526,4 +1526,129 @@ theorem objHalfK1_of_paramsOk {Q : Type} [Fintype Q] {step : Q → Q → Bool} {
 
 end K1Bridge
 
+/-! ### Count move 1: lengthen a region, with the register offset STATED
+
+The first of the three count moves.  The existing splice layer
+(`exists_spliced_ladderPath_of_pend_past`, `LadderAgree.lean`) is REUSED rather than re-invented:
+it inserts one object cycle into a pending region and delivers the new path's object walk and
+countdown.  What it does NOT deliver is the REGISTER — `exists_ladderPath_of_walk` exposes only
+`objAt` and `cntAt`, and the register it builds is whatever `drift_extension_of_pins` chooses
+through the pins.  `Zrel` reads the register in two of its four clauses, so a count move whose
+register is unstated cannot be fed to the row link at all.
+
+So the lift is re-routed through `exists_ladderPath_of_walk_nxt_at` (`LadderChain.lean`), which
+exposes `nxtAt g' z = n₀` at an anchor `z` of one's choosing, and the register at the anchor is
+PINNED TO `nxtAt g t + l` — stated in the conclusion, not hidden in the proof.  That is the
+offset `attackA_mirror_register_joins` exhibited one round earlier: the shorter path's register
+raised by the splice length.  It keeps the GAP `n - c` fixed, which is the `Zrel` clause the
+offset has to answer. -/
+
+section Lengthen
+
+variable {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+
+/-- **THE REGISTER-EXPOSING SPLICE LIFT.**  `exists_spliced_ladderPath_of_pend_past` with the
+register pinned at a chosen anchor `t ≤ a` instead of at the hardwired `-(l : ℤ)`.  The walk, the
+pin discharge and the pending-forever regime are the landed ones; only the anchor and the pinned
+value change, and the value is `nxtAt g t + l`. -/
+theorem exists_spliced_ladderPath_nxt_of_pend_past {g : ℤ → LadderState Q pend} {a : ℤ} {l : ℕ}
+    (hg : IsLadderPath step pend g) (hl : 0 < l) (hcl : l ≤ cntAt g a)
+    (hpast : ∀ p : ℤ, p ≤ a → pend (objAt g p) = true)
+    (hrep : objAt g a = objAt g (a + (l : ℤ))) (t : ℤ) (ht : t ≤ a) :
+    ∃ g' : ℤ → LadderState Q pend, IsLadderPath step pend g' ∧
+      (∀ v, objAt g' v = spliceObj g a l v) ∧ (∀ v, cntAt g' v = spliceCnt g a l v) ∧
+      nxtAt g' t = nxtAt g t + l := by
+  -- every region start of the spliced walk sits at or above `a + l`
+  have hstart : ∀ s : ℤ, pend (spliceObj g a l s) = false → a + (l : ℤ) ≤ s := by
+    intro s hs
+    by_contra hlt
+    exact Bool.false_ne_true
+      (hs.symm.trans (spliceObj_pend_of_lt_of_pend_past hg hcl hpast s (by omega)))
+  -- and is the original's own region start, displaced by `l`
+  have hpull : ∀ s : ℤ, pend (spliceObj g a l s) = false →
+      pend (spliceObj g a l (s + 1)) = true →
+      pend (objAt g (s - (l : ℤ))) = false ∧ pend (objAt g (s - (l : ℤ) + 1)) = true ∧
+        spliceCnt g a l (s + 1) = cntAt g (s - (l : ℤ) + 1) := by
+    intro s h0 h1
+    have hge := hstart s h0
+    rw [spliceObj_of_ge s hge] at h0
+    rw [spliceObj_of_ge (s + 1) (by omega), show s + 1 - (l : ℤ) = s - (l : ℤ) + 1 by ring] at h1
+    refine ⟨h0, h1, ?_⟩
+    rw [spliceCnt_of_ge (s + 1) (by omega), show s + 1 - (l : ℤ) = s - (l : ℤ) + 1 by ring]
+  have hpinA : ∀ s v : ℤ, pend (spliceObj g a l s) = false →
+      pend (spliceObj g a l (s + 1)) = true → pend (spliceObj g a l v) = false →
+      pend (spliceObj g a l (v + 1)) = true →
+      ((spliceCnt g a l (s + 1) : ℤ) - spliceCnt g a l (v + 1)).natAbs ≤ (s - v).natAbs := by
+    intro s v hs0 hs1 hv0 hv1
+    obtain ⟨hs0', hs1', hsc⟩ := hpull s hs0 hs1
+    obtain ⟨hv0', hv1', hvc⟩ := hpull v hv0 hv1
+    rw [hsc, hvc]
+    have := pinCompat_of_ladderPath g hg (s - (l : ℤ)) (v - (l : ℤ)) hs0' hs1' hv0' hv1'
+    rw [show s - (l : ℤ) - (v - (l : ℤ)) = s - v by ring] at this
+    exact this
+  have hpinB : ∀ v : ℤ, pend (spliceObj g a l v) = false →
+      pend (spliceObj g a l (v + 1)) = true →
+      ((spliceCnt g a l (v + 1) : ℤ) - (nxtAt g t + l)).natAbs ≤ (v - t).natAbs := by
+    intro v hv0 hv1
+    obtain ⟨hv0', hv1', hvc⟩ := hpull v hv0 hv1
+    have hge : a + (l : ℤ) ≤ v := hstart v hv0
+    rw [hvc, cntAt_eq_nxtAt_of_idle_pend g hg (v - (l : ℤ)) hv0' hv1']
+    -- the register is 1-Lipschitz, so the pinned value `nxtAt g t + l` is within `v - t`
+    have hlip := nxtAt_lipschitz_two_sided g hg (v - (l : ℤ)) t
+    have hlz : (0 : ℤ) ≤ (l : ℤ) := Int.ofNat_nonneg l
+    push_cast
+    push_cast at hlip
+    omega
+  obtain ⟨g', hg', hobj, hcnt, hnxt⟩ :=
+    exists_ladderPath_of_walk_nxt_at (step := step) (pend := pend)
+      (spliceObj g a l) (spliceCnt g a l) t (nxtAt g t + l)
+      (spliceObj_step hg hrep) (spliceCnt_idle hg (hpast a le_rfl) hcl)
+      (spliceCnt_pend_pend hg hl (hpast a le_rfl) hcl)
+      (spliceCnt_pend_idle hg (hpast a le_rfl) hcl) hpinA hpinB
+  exact ⟨g', hg', hobj, hcnt, hnxt⟩
+
+/-- **COUNT MOVE 1 — LENGTHEN A REGION AT THE FIRST REGION.**  A ladder path pending throughout
+the past of `t`, whose region at `t` has room for an object cycle, admits a second ladder path
+through the SAME object state at `t` whose countdown and register are both raised by a divisor of
+`P + 1`.
+
+**The register offset is in the conclusion.**  `nxtAt g' t = nxtAt g t + l` alongside
+`cntAt g' t = cntAt g t + l`: the GAP `n - c` is unmoved, which is the `Zrel` clause an offset has
+to answer, and the countdown's residue modulo `P + 1` is unmoved because `l ∣ P + 1`, which is
+where the added hypothesis — and only the OBJECT half of `(K1)` — is consumed.
+
+**`Fintype.card Q ≤ cntAt g t` is a hypothesis of this lemma and is NOT derivable from
+`Mrel`.**  It is the room the pigeonhole `exists_objCycle_of_card_le_cnt` needs, and it is stated
+here rather than assumed away; section 14 of `round-28-k1-admissible-refutation.md` records what
+that costs the consumer. -/
+theorem exists_lengthened_region [Fintype Q] {g : ℤ → LadderState Q pend}
+    (hg : IsLadderPath step pend g) (t : ℤ)
+    (hpast : ∀ p : ℤ, p ≤ t → pend (objAt g p) = true)
+    (hroom : Fintype.card Q ≤ cntAt g t)
+    {P : ℕ} (hK1 : ∀ l ∈ objCycleLens step pend, l ∣ (P + 1)) :
+    ∃ (l : ℕ) (g' : ℤ → LadderState Q pend), 0 < l ∧ l ∣ (P + 1) ∧
+      IsLadderPath step pend g' ∧
+      objAt g' t = objAt g t ∧ cntAt g' t = cntAt g t + l ∧
+      nxtAt g' t = nxtAt g t + l := by
+  have hpt : pend (objAt g t) = true := hpast t le_rfl
+  obtain ⟨i, l, hl0, _hlc, hil, hrep, hmem⟩ := exists_objCycle_of_card_le_cnt g hg t hpt hroom
+  -- the splice point sits inside the region at `t`
+  have hpa : pend (objAt g (t + (i : ℤ))) = true :=
+    (cntAt_sub_of_pend g hg t hpt i (by omega)).1
+  have hca : cntAt g (t + (i : ℤ)) = cntAt g t - i :=
+    (cntAt_sub_of_pend g hg t hpt i (by omega)).2
+  -- pending throughout the past of the splice point
+  have hpast' : ∀ p : ℤ, p ≤ t + (i : ℤ) → pend (objAt g p) = true := by
+    intro p hp
+    rcases le_total p t with h | h
+    · exact hpast p h
+    · have := (cntAt_sub_of_pend g hg t hpt (p - t).toNat (by omega)).1
+      rwa [show t + (((p - t).toNat : ℕ) : ℤ) = p by omega] at this
+  obtain ⟨g', hg', hobj, hcnt, hnxt⟩ :=
+    exists_spliced_ladderPath_nxt_of_pend_past hg hl0 (by omega) hpast' hrep t (by omega)
+  obtain ⟨ho, hc⟩ := spliced_at_region hl0 hobj hcnt t (by omega) (by omega)
+  exact ⟨l, g', hl0, hK1 l hmem, hg', ho, hc, hnxt⟩
+
+end Lengthen
+
 end FormalSystem.Metalogic.Decidability.RaySummary
