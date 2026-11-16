@@ -1780,6 +1780,41 @@ EVIDENCE="specs/evidence"
 #                                                           | theorems that section prints:
 #                                                           | `[propext, Quot.sound]` or `[propext,
 #                                                           | Classical.choice, Quot.sound]`.
+#                                                           | THE COUNT MOVE (third section):
+#                                                           | its TYPE `TypePreservingCountMove`,
+#                                                           | EQUIVALENT to the diagonal agreement
+#                                                           | (`typePreservingCountMove_iff_cellAt_const`),
+#                                                           | target stated undecided as
+#                                                           | `CountMoveTargetC`; rows must differ
+#                                                           | (`countMove_rows_differ`). A
+#                                                           | depth-indexed back-and-forth
+#                                                           | `TransferSys` with `⊡`/`□` clauses and
+#                                                           | its transfer theorem
+#                                                           | (`truth_iff_of_transferSys`), from
+#                                                           | which the move follows given one link
+#                                                           | per collision
+#                                                           | (`typePreservingCountMove_of_transferSys`);
+#                                                           | instances: the time shift
+#                                                           | (`shiftR_transferSys`, whole language),
+#                                                           | the slide inside a one-row stretch
+#                                                           | (`tpOf_eq_of_homStretch`, fragment
+#                                                           | with no `⊡`/`□`; `slide_count_move_C`
+#                                                           | moves the countdown along ANY path
+#                                                           | deep in its run), the slide closure of
+#                                                           | any system under the state link
+#                                                           | (`slide_closure_transferSys`, whole
+#                                                           | language). REFUSAL: the past row caps
+#                                                           | the countdown (`cnt_cap_of_row`), a
+#                                                           | larger countdown rewrites the window
+#                                                           | two regions back
+#                                                           | (`exists_past_row_change_of_cap_lt`),
+#                                                           | and the cap is attained at every scale
+#                                                           | (`tight_state_refuses_C`). The general
+#                                                           | construction is NOT built; the filed
+#                                                           | agreement stays OPEN. Axioms on the
+#                                                           | fifteen theorems that section prints:
+#                                                           | `[propext, Quot.sound]` or `[propext,
+#                                                           | Classical.choice, Quot.sound]`.
 # seam-gluing-ray-product/ladder-cell-obligation-refutation | THE DEPTH-0 CELL OBLIGATION AS
 #                                                           | FILED IS REFUTED: the schema
 #                                                           | `CellLEZeroConstOfKappaEqPre` (the

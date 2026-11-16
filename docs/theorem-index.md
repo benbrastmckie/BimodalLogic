@@ -319,6 +319,30 @@ different atom rows (`exists_non_atom_preserving_count_move`), at that formula f
 (`RaySummary/LadderCell.lean`, section "The refutation attempt on the agreement over counter
 classes: the verdict").
 
+**The count move the agreement needs: STATED, REDUCED, NOT BUILT.** The same probe's third section
+states the construction as `TypePreservingCountMove` — every ladder path through one state of a
+`kappa`-collision answered by one through the other realizing the same closure type, with no
+atom-row clause — and proves it EQUIVALENT to the diagonal agreement
+(`typePreservingCountMove_iff_cellAt_const`); its instance at the two-state object is stated,
+undecided, as `CountMoveTargetC`. Positionwise comparison of the two paths is excluded twice over
+(`no_positionwise_lift`, `countMove_rows_differ`), so the probe lands what replaces it: a
+depth-indexed back-and-forth `TransferSys` with one clause per operator, `⊡` and `□` included,
+whose related points satisfy the same formulas up to the level's operator depth
+(`truth_iff_of_transferSys`), and from which the count move follows given one link per collision
+(`typePreservingCountMove_of_transferSys`). Three instances compile: the time shift for the whole
+language (`shiftR_transferSys`); the slide inside a stretch carrying one atom row, on closures
+with no `⊡` and no `□` member (`tpOf_eq_of_homStretch`), which at the two-state object moves the
+countdown along every ladder path deep in its pending run (`slide_count_move_C`) — a fragment
+instance, not the construction; and the closure of any whole-language system under slides whose
+stretch is state-linked (`slide_closure_transferSys`), which writes out what a slide owes at a
+closure carrying `⊡`: the agreement, one level down, of the states along the run. **Where it
+refuses**: the pending row of the two regions before a position caps its countdown
+(`cnt_cap_of_row`), a path with a larger countdown there rewrites that window
+(`exists_past_row_change_of_cap_lt`), and the cap is attained at every scale
+(`tight_state_refuses_C`). What is owed and stated nowhere is a transfer system relating two
+histories whose region lengths differ at infinitely many regions. `cellAt_const_of_kappa_eq`
+stays OPEN; no library declaration is added by that section.
+
 ### Characterization and definability
 
 The two open-future non-definability rows are **conditional on an unformalized inexpressibility

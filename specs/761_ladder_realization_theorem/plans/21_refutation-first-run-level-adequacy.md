@@ -7515,7 +7515,14 @@ downstream phase is a route finding for the record, not a drafting detail.
 
 ---
 
-### Phase 11.32: CONDITIONAL ON OUTCOME (b) — ROUND 3: The Non-Atom-Preserving Count Move [NOT STARTED]
+### Phase 11.32: CONDITIONAL ON OUTCOME (b) — ROUND 3: The Non-Atom-Preserving Count Move [BLOCKED]
+
+**BLOCKER** (Phase 11.32):
+- **What failed**: the GENERAL construction — for arbitrary `Q`, `φ` (with `⊡`) and a `kappa`-collision, a ladder path through the other state realizing the same closure type. Goal state reached, with the cap attained on the given path `g` and `c < c'`: `⊢ ∃ g' τ', IsLadderPath step pend g' ∧ g' 0 = ⟨(q, c', n'), h'⟩ ∧ (∀ t, τ'.state t = (t, g' t)) ∧ tpOf … φ τ' 0 = tpOf … φ τ 0`, with the compiled side fact that every such `g'` rewrites `g`'s pending row inside the two regions before `0`.
+- **What was tried**: the construction's type stated and proved EQUIVALENT to the diagonal agreement (`TypePreservingCountMove`, `typePreservingCountMove_iff_cellAt_const`); a non-positionwise transfer principle with `⊡`/`□` clauses landed (`TransferSys`, `truth_iff_of_transferSys`, `typePreservingCountMove_of_transferSys`); the FUTURE half of the move closed by a slide inside the pending run on arbitrary paths (`slide_count_move_C`, fragment with no `⊡`/`□` — NOT the construction); the slide's `⊡` step written out as a closure theorem conditional on the state link (`slide_closure_transferSys`).
+- **Why it's stuck**: REFUSING COORDINATE — the PAST pending row. `cnt_cap_of_row`: `cntAt g z + (z - e - 1) ≤ (x₀ - e₀ - 1) + (e - e₀)`. PAIRS — every collision raising a countdown past the cap (`exists_past_row_change_of_cap_lt`), attained at every scale (`tight_state_refuses_C`, countdown `2 m + 2` for every `m`). Lengthening the previous region cascades and bottoms out on exactly-doubling chains at a region too short to lengthen invisibly; the remaining move is inserting a whole region. At a closure carrying `⊡` the slide additionally owes `StateLinked` — the lower-level agreement of same-countdown, different-register states along the run — which needs later regions reshaped. Both debts are one object that is stated nowhere: a transfer system between histories whose region lengths differ at infinitely many regions.
+- **What is needed**: a `/revise`. The Scope Hypothesis ("ONE construction") does not hold: the construction is a theory. The candidate object is a whole-language `TransferSys` on ladder histories closed under (a) region-length changes above a depth-indexed threshold at infinitely many regions, (b) insertion/deletion of whole regions in chains longer than the level, (c) the `⊡` clause by induction on the level. Record: `records/round-21-refutation-verdict.md`, section "Round 3".
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder; do NOT land the fragment slide as the construction; do NOT weaken the filed signature.
 
 **ENTRY CONDITION, AND IT IS A GATE: Phase 11.29 returned outcome (b) — the refutation attempt was
 MADE and measured, and the step that fails is named with its goal state.** The obligation is then
@@ -7532,23 +7539,23 @@ met by a construction that does not preserve the valuation pointwise. No such co
 stated anywhere in the tree and none is supplied here."
 
 **Tasks**:
-- [ ] Quote that sentence into this phase's working record and state the construction's TYPE before
+- [x] Quote that sentence into this phase's working record and state the construction's TYPE before
       building it: the two paths, the common closure type, and the atom row on which they differ,
-      written as signatures with `sorry` bodies first.
+      written as signatures with `sorry` bodies first. *(deviation: altered — sentence quoted in the fixture's third module docstring and in the record; the type is `TypePreservingCountMove` with `typePreservingCountMove_iff_cellAt_const` and `countMove_rows_differ`; no `sorry`-bodied signature — the undecided target is `def CountMoveTargetC : Prop`)*
 - [ ] Build the construction at the fixture level first, in
       `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` or a sibling
       fixture, so that a failure is a measured fixture-level object rather than a library-level
       blocker. `atomPreservingCountMove_refutedC` is the compiled fact that the
       ATOM-PRESERVING version is impossible, so the construction must be non-atom-preserving BY
-      DESIGN and that is not a workaround.
+      DESIGN and that is not a workaround. *(deviation: altered — NOT built in general; landed instead: the transfer principle `TransferSys`/`truth_iff_of_transferSys` with `⊡`/`□` clauses, the interface `typePreservingCountMove_of_transferSys`, the slide `slide_count_move_C` on arbitrary paths (fragment with no `⊡`/`□`, not the construction) and the conditional `⊡` step `slide_closure_transferSys`; the failure is the measured fixture-level object `cnt_cap_of_row` / `tight_state_refuses_C`)*
 - [ ] Only once the fixture carries it, promote the construction into
       `LadderRealize.lean` as the count-move the agreement needs, and derive the agreement from it
-      at the filed signature token-for-token.
-- [ ] If the construction does not close: `[BLOCKED]` with the refusing coordinate, the pairs at
+      at the filed signature token-for-token. *(deviation: skipped — the fixture does not carry the construction; nothing promoted, no library declaration)*
+- [x] If the construction does not close: `[BLOCKED]` with the refusing coordinate, the pairs at
       which it refuses, and the inequality or room condition written out — and the goal state
       recorded in `specs/761_ladder_realization_theorem/records/`. **Do NOT widen the obligation,
       add a premise, or weaken the filed signature to make it close**; that is a route decision for
-      a `/revise`, and it is the exact failure mode that produced five successive rounds.
+      a `/revise`, and it is the exact failure mode that produced five successive rounds. *(completed — coordinate: the past pending row; inequality: `cnt_cap_of_row`; pairs: `tight_state_refuses_C`; goal state in `records/round-21-refutation-verdict.md`, section "Round 3")*
 
 **Prohibited workarounds**: do NOT build an ATOM-PRESERVING count move (`atomPreservingCountMove_refutedC`
 refutes it, so the attempt is refuted and not merely hard); do NOT add a `stab`-free premise, a
