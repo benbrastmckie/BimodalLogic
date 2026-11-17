@@ -1,5 +1,5 @@
 ---
-next_project_number: 935
+next_project_number: 936
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 935
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,933 | -- | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,933,935 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -34,6 +34,10 @@ next_project_number: 935
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
+
+### Completeness
+
+935 [NOT STARTED] — ROUTE R3 -- THE DETERMINIZATION-FREE PROGRESS-MEASURE DESIGN....
 
 ### Dataset Enhancement
 
@@ -99,6 +103,32 @@ next_project_number: 935
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 935. Determinization free progress measure design
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Topic**: completeness
+- **Dependencies**: None
+
+**Description**: ROUTE R3 -- THE DETERMINIZATION-FREE PROGRESS-MEASURE DESIGN. PAPER RESEARCH ONLY, FILE SCOPE: none, no Lean. Filed on the exact terms the completeness-line reopen decision record sets for this route (specs/archive/926_lean_completeness_line_reopen_decision_record/reports/01_completeness-line-reopen-ruling.md, the Reopening Terms table's R3 row and its recommendation 3), modeled on 879's P9 and on 901's own paper-only posture.
+
+THE QUESTION. Does a determinization-free progress-measure argument for T3 (L-plus ZTime completeness of TM-plus + LC_n + mirror) exist, and what would it need? Deliverable is a VERDICT plus grounds and, on a positive verdict, a DESIGN -- never a theorem and never a Lean declaration.
+
+WHY THIS ROUTE AND NOT THE OTHERS. The determinization obstruction (O1) is `Muller.toRabin_exists`, a `proof_wanted` at Cslib/Computability/Automata/DA/Conversions.lean:112 in the local CSLib fork, whose named consumer is the ban/lull mechanism. R1 -- proving it -- is KEEP CLOSED in this repository, and specifically on the CSLib `require` clause rather than on Recommendation 8's engine-content clause, because a general automata lemma is not sections 7-15 content. "File no task against R1 in this repository" is that record's recommendation 1. A determinization-free progress measure needs no Rabin determinization at all, so it is the one reopened route that bears on the completeness theorem itself while standing clear of both standing rulings.
+
+WHAT A POSITIVE RESULT DOES NOT BUY, STATED UP FRONT. A positive design result does NOT authorize a Lean filing of the design, and this must be written into the report's own framing rather than discovered at its end. The engine-content clause is aimed at the RESULT, not at the lemmas used to reach it: a different construction reaching the same completeness result still trips it. Any Lean filing of whatever this task designs requires a separate, explicit Recommendation 8 reversal by the user, win or lose on the paper design.
+
+DO NOT RE-DERIVE OR RE-MEASURE. (1) The determinization costing is settled: the construction of record is the APPEARANCE-RECORD (LAR) route, Thomas 1997 section 6.1 Theorem 6.5 with Remark 6.6 -- not Safra's and not Piterman's -- on the ground that the lemma's input `a : Muller State Symbol` is ALREADY deterministic, so no determinization construction is removing nondeterminism; the archived Safra/Piterman attribution is a misattribution as to this lemma, accurate only about the composite NBA-to-DRA step. Costed at roughly 1,000 lines over 4-7 phases. If a figure is ever needed, re-cost against those rather than re-measuring from scratch. (2) The acceptance-condition split is settled: a deterministic Muller automaton suffices for the Auxiliary-Atoms rule, which carries no acceptance condition, and does NOT suffice for the ban/lull mechanism, whose banned list is indexed by the automaton's accepting pairs and does not present as a Muller family without a walk-dependent choice only an LAR can make. (3) The architecture of record for the two-sided engine, including the level split, the eliminated cross-certification clauses, the chronicle seed lemma and the four-link Step 3-prime, is already written as a paper proof and is read, not re-derived.
+
+WHERE THE PROGRESS MEASURE WOULD HAVE TO BITE. The ban/lull mechanism is the sole named consumer of the pair-indexed acceptance condition, so it is the component a progress measure must replace. Address, at minimum: what well-founded quantity decreases along a chronicle in place of the banned list; whether it can be read from the hue/type data the alphabet already carries, or demands new syntax the Auxiliary-Atoms rule's freshness side condition would have to admit; whether it survives the two-sidedness, where forward badness is prefix-invariant and backward badness is not; and whether the clock rule's canonical cut still supplies the anchor the level split relies on.
+
+PROHIBITIONS, RULING-LEVEL AND NOT PREFERENCES. (a) NO Lean file is written, edited or filed, under any outcome. Sections 7-15 of the Reynolds engine -- the two-sided chronicle, ban preservation, lulls and hue scheduling, universal non-acceptance, the two-sided truth lemma, the final-frame assembly -- stay barred from any Lean filing under every reopened route, this one included. (b) NO `require` of CSLib in either form; no lakefile.toml edit, no lake-manifest.json edit; the `require` question is not re-opened on this route's account. (c) NO task is filed against R1, and no attempt is made on `Muller.toRabin_exists`, in this repository. (d) NO edit, commit or push in the CSLib fork at /home/benjamin/Projects/cslib. (e) NO upstream PR. (f) Do NOT amend specs/ROADMAP.md's existing Recommendation 8 sentence: the reopen record's recommendation 5 rules explicitly that no amendment is needed, because that sentence's truth is unchanged -- the ruling settles only which parts of each route are reachable without reversing it. (g) The assessment of why the chronicle quotient's OWN Saturation is doubtful -- countably infinite slices, the quotient is not an oriented forest -- is CORRECT and LOAD-BEARING, the reason the universal-cover route exists at all; it is read as a premise, not revisited. (h) No completeness claim lands from this task.
+
+CONFLICT AVOIDANCE, STRUCTURAL RATHER THAN NEGOTIATED. FILE SCOPE is none: this task writes its own specs/ artifacts and touches nothing under FormalSystem/, Tests/, docs/, typst/ or any shared library file, so it collides with no live task's territory by construction -- not with the ladder-realization line, not with the final-frame tasks carrying R2, not with the algebraic chain. It also files nothing, so it cannot contend for a task number or a ruling with any sibling.
+
+CONTINGENCY. A negative verdict is a COMPLETE outcome, not a failure: if no determinization-free progress measure is available, or one is available only at a cost exceeding the LAR route's own, record that with its grounds and with what the obstruction actually is. Either verdict leaves the CSLib `require` decision and Recommendation 8 exactly where they stand; neither is reversed, weakened or re-opened by this task's result.
+
+---
 
 ### 934. Depth zero reachability probe
 - **Status**: [COMPLETED]
