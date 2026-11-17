@@ -629,3 +629,20 @@ so Phase 26's fallback must find its seriality in the relation and not in the se
 | Description line: "the construction half is UNWRITTEN in all four of its components" | **still stale**, as Phase 23's §8 and Phase 24's §14 already recorded: carrier, frame and valuation landed in Phase 21; only the truth lemma is unwritten | **stale in the description**; `docs/theorem-index.md` carries the corrected reading |
 | Description line: `CONTINGENCY` — "never sorry, axiom, vacuous definition, a trace-level hypothesis, or any finite-fibre/finite-width assumption" | `sorry_count: 0`; `^axiom ` count **14**, unchanged, zero `+axiom ` lines in this dispatch's diff; vacuous-grep **1**, the pre-existing `FormalSystem/Examples/TemporalStructures.lean:495` baseline; no finite-fibre or finite-width hypothesis in any landed signature — the fixture's finiteness is a property of the EXHIBITED object, never a hypothesis of any statement | **confirmed** |
 | A concurrent writer was observed during Phase 24's first dispatch (`0ad12f9ae`, task 935) | at this re-entry's start: `git log` shows that commit and `822827814` ("orchestration paused (cycle 3)") already landed; the only untracked paths are `.pid` (a dead pid, `kill -0` fails) and `specs/evidence/history-morphism-saturation-audit/` (dated 2026-11-09, foreign to this task), and no `lake` process was running but the LSP's `lake serve` | **no live foreign writer at entry; the two untracked paths are reported and were not touched** |
+
+## 23. Gate readings at the re-entry's close
+
+| Gate | Reading |
+|---|---|
+| `lake build` (full library) | **exit 0**, `Build completed successfully (2976 jobs)`, zero `error:` over both captured streams; through `lake-build-guard.sh`, detached with the bounded PID-liveness waiter. **Tier 3 checked rather than assumed**: the touched module's `.olean` (epoch `1794913005`) is newer than its source (`1794912991`), which is what distinguishes a real compile from the guard replaying a matching completed result |
+| `lake build BimodalTest` | **exit 0**, `Build completed successfully (3044 jobs)`; the eight new `#guard_msgs` axiom pins are inside it, so they are checked by this build |
+| `lean-sorry-census.sh` | **exit 0**, `sorry_count: 0` |
+| vacuous-definition grep | **1** — the pre-existing `FormalSystem/Examples/TemporalStructures.lean:495` baseline, unchanged |
+| `^axiom ` count | **14**, unchanged; zero `+axiom ` lines in this dispatch's diff |
+| `#print axioms` on every landed declaration | `[propext, Classical.choice, Quot.sound]`, measured standalone before the section was appended and pinned in `KTypeSummaryAxiomTest.lean` afterwards |
+| `check-module-invariants.sh` | **PASS**, zero FAIL groups, on the FIRST pass this time — `PASS C14` (both assertions), `PASS C23` (all three assertions, including the outer-shadows-inner one: the fixture's names were checked against every ancestor namespace BEFORE the section was written, which is why no rename was needed) |
+| `readme-lint.sh` | **PASS** |
+| `check-evidence-probes.sh` | **PASS** — `all 67 wired probe(s) compile`, zero FAIL, one pre-existing SKIP (`bi-lasso-decision-layer/spike-untl-unfolding-and-fwd-obstruction`, deferred for frame-class uniformity work); guard exit 0 |
+| `verify-deploy.sh` | **PASS** — 15 checks, 0 failures. Run this time rather than recorded as not run |
+| `validate-artifact.sh` (plan) | one pre-existing WARN on Phase 11.11's `Files to modify` comma-joined path, untouched by this dispatch and not introduced by it |
+| `typst-sync-check.sh --fix` | **PASS** after the fix — the repository's own pre-commit gate refused the first commit attempt on `MISMATCH_COUNT=2` in `typst/generated/status.typ`, which the module's growth caused. **The gate found this, not review** |

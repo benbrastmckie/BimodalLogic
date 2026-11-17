@@ -1,32 +1,25 @@
 {
-  "status": "partial",
-  "dispatch_seq": 89,
-  "phases_completed": 66,
+  "dispatch_seq": 90,
+  "status": "implemented",
+  "phases_completed": 67,
   "phases_total": 81,
-  "summary": "Phase 24 only, per the dispatch mission. The elimination lemma at a GENERAL certified R did NOT land and the phase returns [PARTIAL], the outcome its own Timing paragraph provides for. What landed is a REDUCTION of the whole question to one property (conStepStrong is serial on any KEY-INJECTIVE certified set, from certificate condition (2) alone) with Phase 23's two fixture seriality results re-derived as its instances, plus a COMPILED obstruction that pays one of the three debts Phase 23 named: condition (5) is NOT monotone under shrinking at a stab-bearing closure (certStabK_not_monotone). The general lemma is OPEN, not refuted, and its remaining step is now exactly named. Phase 23's removal rule was found NOT to generalize as an iterate, which is this phase's one decomposition deviation and is reported rather than annotated away.",
+  "summary": "Phase 24 was re-entered at its one remaining step and that step is REFUTED by compilation: no certified nonempty set need have a key-injective certified subset (exists_certified_keyFibreInj_subset_refuted), and Phase 24's own Goal -- a certified nonempty subset on which conStepStrong is serial -- is FALSE (exists_certified_serial_subset_refuted). The witness is a newly certified fixture NoElim (all six certAdmK conditions, closure bearing two stab letters) every one of whose members carries a stab letter's argument without the letter, plus the general obstruction not_keyFibreInj_of_noncollapsed. Route (Q-2)'s elimination therefore does not close and decision 29's sanctioned fallback, Phase 26's third step relation, carries the route; ladderConstruct at (Q-2) is NOT refuted and stays open.",
   "blockers": [],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-reduced-to-key-injectivity-summary.md",
-      "summary": "Phase 24: the elimination reduced to key-injectivity, and condition (5)'s non-monotonicity compiled at a stab-bearing closure."
+      "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-lemma-refuted-summary.md",
+      "summary": "Phase 24's elimination lemma and the key-injectivity it reduces to, both refuted at a certified fixture."
     },
     {
       "type": "record",
       "path": "specs/761_ladder_realization_theorem/records/round-35-construction-over-certified-subset.md",
-      "summary": "Sections 9-14: the lemma stated before any Lean, the (Q-2) token diff, the compiled instance check, the reduction, the obstruction, the six-condition table, the branch, and the carried-figure check."
+      "summary": "Sections 17-22: the attack-first posture, the verdict table, the six-condition check on the refuting fixture, statement fidelity, scope and branch, carried-figure check."
     },
     {
-      "type": "source",
-      "path": "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
-      "summary": "New section ConstructionEliminationGeneral: KeyFibreInj, conStepStrong_serial_of_keyFibreInj, exists_certified_serial_subset_of_keyFibreInj_subset, certStabK_iff_collapse_of_keyFibreInj, the ConAttack subsumption instances, the StabShrink stab-bearing fixture and certStabK_not_monotone."
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/35_construction-over-certified-subset.md",
+      "summary": "Phase 24 closed [COMPLETED WITH EXCLUSIONS] with a re-entry Recorded Outcome and a Reasoned Exclusions record."
     }
-  ],
-  "next_action": "Phase 24 is not closed and may be re-entered on its named remaining step: produce a certified nonempty subset on which every key carries one member, against conditions (2), (3), (4) which a key-injective selection need not preserve and condition (5) which it provably need not inherit. Decision 29's sanctioned attack-first fallback is Phase 26 (the third step relation as a greatest fixpoint of the largest composing subrelation of conStep, ATTACKED for seriality at ConAttack.attR BEFORE adoption). No user decision is required.",
-  "metadata": {
-    "session_id": "sess_1794907363_4ea8f3",
-    "agent_type": "lean-implementation-agent",
-    "phase": "implement",
-    "task_number": 761
-  }
+  ]
 }
