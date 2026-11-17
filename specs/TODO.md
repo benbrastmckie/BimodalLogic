@@ -1,5 +1,5 @@
 ---
-next_project_number: 936
+next_project_number: 937
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 936
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,933,935 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,933,935,936 | -- | algebraic-representation, automation, completeness, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -34,6 +34,10 @@ next_project_number: 936
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
+
+### Automation
+
+936 [NOT STARTED] — Add proof-mode acceptance tests for the tactic surface that...
 
 ### Completeness
 
@@ -103,6 +107,48 @@ next_project_number: 936
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 936. Add proof mode tactic coverage tests
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: automation
+- **Dependencies**: None
+
+**Description**: Add proof-mode acceptance tests for the tactic surface that the compositional proof-mode contribution (PR #6, branch `feature/compositional-proof-mode` on fork `tannerduve/BimodalLogic`, `maintainerCanModify: true`) declares and documents but never exercises.
+
+## Scope
+
+Extend `Tests/BimodalTest/Automation/ProofModeTest.lean` with cases for five untested tactics and six untested variants.
+
+Untested tactics: `lmodal_use`, `lleft`, `lright`, `lsince guard`, `lsince event`.
+
+Untested variants: `luntil event` (only `guard` is covered), `lstep past` (only `future`), `linvariant past`, `ltemporal_cases` on `somePast`, `lmodal_intro possibility`, `ltemporal_use` on TM (only the TM-plus path is covered), and `lhave` without the `:=` form.
+
+## This closes a coverage gap, not a defect
+
+All twelve cases were written and run against PR #6 merged onto main, and ALL TWELVE PASS. Nothing is broken today. The cases are worth having anyway because of how the tactics resolve constants: `FormalSystem/Automation/ProofMode/` appends single-backtick name literals to a namespace inside `MetaM` (`box`, `stab`, `diamond`, `dstab`, `allFuture`, `allPast`, `someFuture`, `somePast`, `next`, `prev`, `untl`, `snce`, `imp`, `and`, `or`, `modal_t`, `stab_t`, `axiom`, `assumption`, `modus_ponens`, `weakening`, `lift` — about twenty in all) rather than using checked double-backtick `Name` literals. A rename of `Formula.box` or of the `DerivationTree.modus_ponens` constructor would leave every one of these files compiling and break the tactics only at invocation time. Tests are the only backstop for those paths, and for eleven of them there is currently none.
+
+## Deliberately excluded: lexit
+
+Do NOT add a test for `lexit`. It elaborates to `pure ()`, so every use emits `warning: 'lexit' tactic does nothing`, and CI builds with `--wfail` (`.github/workflows/ci.yml:42`) — a test using it would fail the build. PR #6 has been asked to either drop `lexit` or add it to the `linter.unusedTactic` allowlist. Revisit only once that is resolved upstream.
+
+## Conventions to follow
+
+Match the existing test file: `example` declarations inside `namespace BimodalTest.Automation.ProofModeTest`, `variable (A B C : Formula)`, `open FormalSystem.Syntax FormalSystem.ProofSystem`, and the `Copyright (c) 2026 Tanner Duve` header already on the file. Prefer the explicit `using [...]` selection form over the implicit one throughout, matching the author's own style — implicit selection makes a proof's meaning depend on what else is in context.
+
+## Verification
+
+`lake build BimodalTest.Automation.ProofModeTest` must pass with `--wfail`.
+
+## Push constraint
+
+`.claude/rules/pr-prohibition.md` bars agents from pushing to remotes. This task ends at a local commit on a branch tracking the PR head. The push to the fork's `feature/compositional-proof-mode` branch must be a separate user-invoked `/please`. Do not attempt `git push`.
+
+## Dependency
+
+The work targets a branch owned by an external contributor. Confirm before pushing that they have not already added these cases in response to the review comment on PR #6, which offered to hand them over.
+
+---
 
 ### 935. Determinization free progress measure design
 - **Status**: [NOT STARTED]
