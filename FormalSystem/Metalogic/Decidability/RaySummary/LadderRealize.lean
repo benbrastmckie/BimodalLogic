@@ -193,7 +193,7 @@ open FormalSystem.Metalogic.Decidability
 
 -- The module's recorded length ceiling: the offset-invariance section takes the file past the
 -- default limit.
-set_option linter.style.longFile 2300
+set_option linter.style.longFile 2700
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -2281,5 +2281,321 @@ theorem exists_paramsOk_real_not_certAdmK :
   · exact real_not_certStabK _ _ _
   · exact fun h => real_not_certStabK _ _ _ h.2.2.2.2.1
 
+
+/-! ## The CONSTRUCTION half's carrier, frame and model
+
+Half (ii) of the read-off/construction pair builds a model FROM a certified set: the input is a
+set `R` carrying `certAdmK` as an EXPLICIT hypothesis (never `Dmax`, whose `certStabK` and
+`certBoxK` are open, and whose defining union does not preserve conditions (5) and (6) —
+`CounterQuotient.lean`), and the output is a frame, a model over it and a key map whose cells are
+that set's fibres. The model is an OUTPUT and is NOT `ladderModel`: that identification is refuted
+(`no_dmax_construction_receives_ladderModel`, `ladderModel_realizes_no_set`, both wired under
+`specs/evidence/`).
+
+**Why the carrier is KEY-LEVEL.** The target equation says the cell at a world state is the WHOLE
+fibre of `R` over that state's key — so a fibre with two distinct closure types forces two
+histories through ONE world state realizing two different types. A carrier whose points carry the
+closure type cannot do that, and neither can the runs-with-shift carrier: the shift is
+deterministic in both directions, and `cellAt_subsingleton_of_det` below proves that a frame of
+this scheme whose step relation is two-sided deterministic has SUBSINGLETON cells, so
+`fibre_subsingleton_of_det_cell_eq` turns the target equation at such a frame into the statement
+that the fibre is a singleton. Hence the type coordinate is projected away and the multiplicity
+comes from the frame's BRANCHING. `ConKey` is that carrier.
+
+The keying is matched by the certificate's own acceptance clauses rather than merely forced:
+`certStabK` reads the `⊡` bit off the fibre over `(q, κ)` while `stab_mem_tpOf_iff` reads it off
+the cell of one world state (the same object exactly when the cell is that fibre); `certBoxK` is
+one global bit and `box_mem_tpOf_iff` is the same global bit; `certLocK` matches a valuation
+reading `lab` at the object coordinate. One consequence: by those three clauses the members of a
+fibre agree on every `⊡`-letter, every `□`-letter and every atom, so they can differ ONLY in
+temporal (`untl`/`snce`) content — which is exactly the content a branching frame distinguishes
+between histories through one state.
+
+**What is landed here, and what is not.** The carrier, the frame, the valuation and the COVERAGE
+conjunct of the target statement are landed. The cell equation — the truth lemma — is NOT, and
+`ladderConstruct` is declared nowhere. The obstruction is recorded rather than hidden: the WEAK
+(existential) key-level relation `conStep` is SERIAL, straight from `certBiInfK`, but a
+bi-infinite `conStep`-path need not lift to a `relK`-path inside `R`, because the witness chosen
+for one edge and the witness chosen for the next may disagree at the shared key; the STRONG
+(uniform) relation `conStepStrong` lifts by dependent choice from any member of the fibre and so
+would give both directions of the truth lemma at once, but its seriality asks for one key serving
+EVERY member over a key at once, which `certBiInfK` does not supply. `conStep_of_strong` is the
+one landed relation between the two. The construction round's own record,
+`round-34-readoff-construction-pair.md`, carries the carrier statement and this account in full.
+
+**Width.** The slice `ConKey` is FINITE — it embeds into `Q × CK Tc Tn P B` — so the constructed
+model has finite width, which guardrail (b) of the task record does not meet. That is recorded as
+a finding of the construction and is NOT repaired by an assumption: no finite-width or
+finite-fibre hypothesis is taken anywhere below, and the finiteness is a property of the output
+forced by the key-level carrier, not a condition on an input. A model of this shape is therefore
+not a candidate for a decidability consumer, and nothing here says it is.
+-/
+
+section Construction
+
+/-- **The construction's carrier slice**: the KEYS realized in `R`, i.e. the pairs `(q, κ)` for
+which some closure type `S` has `(q, S, κ) ∈ R`. The closure-type coordinate is projected away;
+the module docstring above says why that projection is forced. Finite whenever the object is — a
+COUNT of candidate keys, bounded by `card Q · (Tc+1) · (P+1) · (Tn+1) · (P+1) · (2B+1)`, and no
+bound on anything. -/
+abbrev ConKey {Q : Type} (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R : Set (Q × ClType φ × CK Tc Tn P B)) : Type :=
+  {s : Q × CK Tc Tn P B // ∃ S : ClType φ, (s.1, S, s.2) ∈ R}
+
+/-- The carrier is inhabited whenever `R` is: a member's object state and counter class is a key.
+
+Paper: — (a carrier the construction direction defines; no literature counterpart, see the
+section docstring) -/
+theorem conKey_nonempty {Q : Type} {φ : PlusFormula} {Tc Tn P B : ℕ}
+    {R : Set (Q × ClType φ × CK Tc Tn P B)} (hne : R.Nonempty) :
+    Nonempty (ConKey φ Tc Tn P B R) := by
+  obtain ⟨⟨q, S, k⟩, hx⟩ := hne
+  exact ⟨⟨(q, k), S, hx⟩⟩
+
+/-- **The key map** the construction's statement asks for: the subtype projection, read off the
+slice component of a world state. The time component is invisible to it, as it is to `cellAt`
+(`cellAt_eq_cellAt`). -/
+def conKeyMap {Q : Type} (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R : Set (Q × ClType φ × CK Tc Tn P B)) :
+    ℤ × ConKey φ Tc Tn P B R → Q × CK Tc Tn P B :=
+  fun u => u.2.val
+
+/-- **The WEAK (existential) key-level step relation**: the image of `relK` on keys. Serial by
+`conStep_fwd`/`conStep_bwd`, and the relation the landed frame is built from. What it does NOT
+carry is liftability: a bi-infinite path of these edges need not come from any `relK`-path inside
+`R`. -/
+def conStep {Q : Type} (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
+    (φ : PlusFormula) (Tc Tn P B : ℕ) (R : Set (Q × ClType φ × CK Tc Tn P B)) :
+    ℤ → ConKey φ Tc Tn P B R → ConKey φ Tc Tn P B R → Prop :=
+  fun _ s s' => ∃ x ∈ R, ∃ y ∈ R,
+    (x.1, x.2.2) = s.val ∧ (y.1, y.2.2) = s'.val ∧ relK step pend lab φ Tc Tn P B x y
+
+/-- Forward finite branching, from the carrier's finiteness alone.
+
+Paper: — (a branching condition of this repository's frame scheme) -/
+theorem conStep_fwdFin {Q : Type} [Finite Q] (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R : Set (Q × ClType φ × CK Tc Tn P B)) :
+    FwdFinBranch (conStep step pend lab φ Tc Tn P B R) :=
+  fun _ _ => Set.toFinite _
+
+/-- Backward finite branching, from the carrier's finiteness alone.
+
+Paper: — (the backward twin of `conStep_fwdFin`) -/
+theorem conStep_bwdFin {Q : Type} [Finite Q] (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R : Set (Q × ClType φ × CK Tc Tn P B)) :
+    BwdFinBranch (conStep step pend lab φ Tc Tn P B R) :=
+  fun _ _ => Set.toFinite _
+
+/-- **Forward seriality of the weak relation, from condition (2) alone**: `certBiInfK` hands every
+member a successor inside `R`, and its key is a successor key. The parameter conditions are NOT
+consumed — `ParamsOk` appears nowhere in this section.
+
+Paper: — (the frame scheme's seriality hypothesis, discharged from a certificate condition) -/
+theorem conStep_fwd {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+    {lab : Q → Atom → Bool} {φ : PlusFormula} {Tc Tn P B : ℕ}
+    {R : Set (Q × ClType φ × CK Tc Tn P B)}
+    (hR : certAdmK step pend lab φ Tc Tn P B R) :
+    ∀ (t : ℤ) (s : ConKey φ Tc Tn P B R), ∃ s', conStep step pend lab φ Tc Tn P B R t s s' := by
+  rintro t ⟨⟨q, k⟩, S, hS⟩
+  obtain ⟨⟨⟨q', S', k'⟩, hy, hxy⟩, -⟩ := hR.2.1 (q, S, k) hS
+  exact ⟨⟨(q', k'), S', hy⟩, ⟨(q, S, k), hS, (q', S', k'), hy, rfl, rfl, hxy⟩⟩
+
+/-- **Backward seriality of the weak relation**, the mirror of `conStep_fwd` through the second
+conjunct of `certBiInfK`.
+
+Paper: — (the backward twin of `conStep_fwd`) -/
+theorem conStep_bwd {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+    {lab : Q → Atom → Bool} {φ : PlusFormula} {Tc Tn P B : ℕ}
+    {R : Set (Q × ClType φ × CK Tc Tn P B)}
+    (hR : certAdmK step pend lab φ Tc Tn P B R) :
+    ∀ (t : ℤ) (s : ConKey φ Tc Tn P B R),
+      ∃ s', conStep step pend lab φ Tc Tn P B R (t - 1) s' s := by
+  rintro t ⟨⟨q, k⟩, S, hS⟩
+  obtain ⟨-, ⟨⟨q', S', k'⟩, hy, hyx⟩⟩ := hR.2.1 (q, S, k) hS
+  exact ⟨⟨(q', k'), S', hy⟩, ⟨(q', S', k'), hy, (q, S, k), hS, rfl, rfl, hyx⟩⟩
+
+/-- **The constructed frame**: the key-level carrier stepped by the weak relation, through
+`ofSlicedStepFinBranch`. Its seriality hypotheses are discharged from `certAdmK`'s condition (2),
+so no parameter condition and no object seriality hypothesis enters. It is NOT `ladderFrameAdm`
+and is NOT claimed to be isomorphic to it. -/
+def conFrame {Q : Type} [Finite Q] (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R : Set (Q × ClType φ × CK Tc Tn P B))
+    (hR : certAdmK step pend lab φ Tc Tn P B R) (hne : R.Nonempty) : FrameOver intOrder :=
+  haveI := conKey_nonempty hne
+  ofSlicedStepFinBranch (conStep step pend lab φ Tc Tn P B R)
+    (conStep_fwdFin step pend lab φ Tc Tn P B R) (conStep_bwdFin step pend lab φ Tc Tn P B R)
+    (conStep_fwd hR) (conStep_bwd hR)
+
+/-- **The constructed model**: the valuation reads the object coordinate of the key and nothing
+else — the time component and the counter class are invisible to it, which is what `certLocK`
+asks of it. No truth lemma is claimed for it here. -/
+def conModel {Q : Type} [Finite Q] (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R : Set (Q × ClType φ × CK Tc Tn P B))
+    (hR : certAdmK step pend lab φ Tc Tn P B R) (hne : R.Nonempty) :
+    TaskModel (conFrame step pend lab φ Tc Tn P B R hR hne).toTaskFrame where
+  valuation := fun (w : ℤ × ConKey φ Tc Tn P B R) p => lab w.2.val.1 p = true
+
+/-- **COVERAGE — the first conjunct of the construction's target statement, landed**: every member
+of `R` has its `(object, counter class)` pair hit by a world state of the constructed frame. It
+holds of the carrier alone and consumes no certificate condition.
+
+Paper: — (the surjectivity half of GKWZ §5.2's construction onto its quasistates, transferred BY
+SHAPE; no theorem there applies to this semantics) -/
+theorem conKeyMap_covers {Q : Type} (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R : Set (Q × ClType φ × CK Tc Tn P B)) :
+    ∀ x ∈ R, ∃ u : ℤ × ConKey φ Tc Tn P B R,
+      conKeyMap φ Tc Tn P B R u = (x.1, x.2.2) := by
+  rintro ⟨q, S, k⟩ hx
+  exact ⟨(0, ⟨(q, k), S, hx⟩), rfl⟩
+
+/-! ### The determinism no-go: why the carrier may not determine a member -/
+
+/-- Forward determinism of a sliced frame's one-step relation, from forward determinism of the
+slice relation.
+
+Paper: — (a determinism reading of this repository's frame scheme) -/
+theorem sliced_step_detFwd {W : Type} [Nonempty W] (Rl : ℤ → W → W → Prop)
+    (hf : FwdFinBranch Rl) (hb : BwdFinBranch Rl)
+    (fwd : ∀ t w, ∃ u, Rl t w u) (bwd : ∀ t w, ∃ v, Rl (t - 1) v w)
+    (hdf : ∀ t w u u', Rl t w u → Rl t w u' → u = u') (p q q' : ℤ × W)
+    (h1 : (ofSlicedStepFinBranch Rl hf hb fwd bwd).step p q)
+    (h2 : (ofSlicedStepFinBranch Rl hf hb fwd bwd).step p q') : q = q' := by
+  rw [ofSlicedStepFinBranch_step] at h1 h2
+  obtain ⟨a, b⟩ := q
+  obtain ⟨a', b'⟩ := q'
+  have ha : a = p.1 + 1 := h1.1
+  have ha' : a' = p.1 + 1 := h2.1
+  have hbb : b = b' := hdf p.1 p.2 b b' h1.2 h2.2
+  subst hbb
+  rw [ha, ha']
+
+/-- Backward determinism of a sliced frame's one-step relation, from backward determinism of the
+slice relation.
+
+Paper: — (the backward twin of `sliced_step_detFwd`) -/
+theorem sliced_step_detBwd {W : Type} [Nonempty W] (Rl : ℤ → W → W → Prop)
+    (hf : FwdFinBranch Rl) (hb : BwdFinBranch Rl)
+    (fwd : ∀ t w, ∃ u, Rl t w u) (bwd : ∀ t w, ∃ v, Rl (t - 1) v w)
+    (hdb : ∀ t w w' u, Rl t w u → Rl t w' u → w = w') (p p' q : ℤ × W)
+    (h1 : (ofSlicedStepFinBranch Rl hf hb fwd bwd).step p q)
+    (h2 : (ofSlicedStepFinBranch Rl hf hb fwd bwd).step p' q) : p = p' := by
+  rw [ofSlicedStepFinBranch_step] at h1 h2
+  obtain ⟨a, b⟩ := p
+  obtain ⟨a', b'⟩ := p'
+  have ha : q.1 = a + 1 := h1.1
+  have ha' : q.1 = a' + 1 := h2.1
+  have haa : a = a' := by omega
+  subst haa
+  have hbb : b = b' := hdb a b b' q.2 h1.2 h2.2
+  rw [hbb]
+
+/-- **A two-sided DETERMINISTIC sliced frame has SUBSINGLETON cells.** Two histories through one
+world state agree at time `0` and are then pinned to each other in both directions by
+determinism, so they are the same history (`WorldHistory.ext_state`) and realize the same closure
+type. No finiteness of the carrier, no regularity beyond the scheme's own, and no condition on
+the model.
+
+Paper: — (a no-go about this repository's frame scheme; quasimodel constructions in the
+literature carry no counterpart, their S5 dimension being a separate coordinate rather than the
+branching of histories through one state) -/
+theorem cellAt_subsingleton_of_det {W : Type} [Nonempty W] (Rl : ℤ → W → W → Prop)
+    (hf : FwdFinBranch Rl) (hb : BwdFinBranch Rl)
+    (fwd : ∀ t w, ∃ u, Rl t w u) (bwd : ∀ t w, ∃ v, Rl (t - 1) v w)
+    (hdf : ∀ t w u u', Rl t w u → Rl t w u' → u = u')
+    (hdb : ∀ t w w' u, Rl t w u → Rl t w' u → w = w')
+    (M : TaskModel (ofSlicedStepFinBranch Rl hf hb fwd bwd).toTaskFrame) (φ : PlusFormula)
+    (w : (ofSlicedStepFinBranch Rl hf hb fwd bwd).WorldState) :
+    (cellAt M φ w 0).Subsingleton := by
+  have hadj : ∀ (ρ : WorldHistory (ofSlicedStepFinBranch Rl hf hb fwd bwd).toTaskFrame) (t : ℤ),
+      (ofSlicedStepFinBranch Rl hf hb fwd bwd).step (ρ.state t) (ρ.state (t + 1)) := by
+    intro ρ t
+    have h := ρ.respects_task t (t + 1)
+    rw [show (t + 1 : ℤ) - t = 1 by ring] at h
+    exact h
+  intro T hT T' hT'
+  obtain ⟨σ, hσ, rfl⟩ := hT
+  obtain ⟨τ, hτ, rfl⟩ := hT'
+  have hst : ∀ t : ℤ, σ.state t = τ.state t := by
+    intro t
+    induction t using Int.induction_on with
+    | zero => rw [hσ, hτ]
+    | succ n ih =>
+      have h1 := hadj σ (n : ℤ)
+      have h2 := hadj τ (n : ℤ)
+      rw [ih] at h1
+      exact sliced_step_detFwd Rl hf hb fwd bwd hdf _ _ _ h1 h2
+    | pred n ih =>
+      have h1 := hadj σ (-(n : ℤ) - 1)
+      have h2 := hadj τ (-(n : ℤ) - 1)
+      rw [show (-(n : ℤ) - 1 + 1) = -(n : ℤ) by ring] at h1 h2
+      rw [ih] at h1
+      exact sliced_step_detBwd Rl hf hb fwd bwd hdb _ _ _ h1 h2
+  exact congrArg (fun ρ => tpOf M φ ρ 0) (WorldHistory.ext_state hst)
+
+/-- **THE NO-GO, at the construction's own target equation**: at a two-sided deterministic frame
+of this scheme, the cell equation the construction direction asks for forces the fibre of `R`
+over the world state's key to be a SINGLETON. The runs-with-shift carrier — world states the
+`relK`-paths inside `R`, stepped by the shift, which is the only step relation making a run a
+run — is two-sided deterministic, so it cannot satisfy the target equation for a certified set
+with a non-singleton fibre. This is why the carrier above projects the closure type away.
+
+Paper: — (a no-go against the naive reading of GKWZ §5.2's `W × R` carrier in this semantics; the
+transfer is BY SHAPE and no theorem there applies here) -/
+theorem fibre_subsingleton_of_det_cell_eq {W : Type} [Nonempty W] (Rl : ℤ → W → W → Prop)
+    (hf : FwdFinBranch Rl) (hb : BwdFinBranch Rl)
+    (fwd : ∀ t w, ∃ u, Rl t w u) (bwd : ∀ t w, ∃ v, Rl (t - 1) v w)
+    (hdf : ∀ t w u u', Rl t w u → Rl t w u' → u = u')
+    (hdb : ∀ t w w' u, Rl t w u → Rl t w' u → w = w')
+    (M : TaskModel (ofSlicedStepFinBranch Rl hf hb fwd bwd).toTaskFrame)
+    {Q : Type} (φ : PlusFormula) {Tc Tn P B : ℕ}
+    (R : Set (Q × ClType φ × CK Tc Tn P B))
+    (key : (ofSlicedStepFinBranch Rl hf hb fwd bwd).WorldState → Q × CK Tc Tn P B)
+    (u : (ofSlicedStepFinBranch Rl hf hb fwd bwd).WorldState)
+    (hcell : cellAt M φ u 0 =
+      {T | ∃ S : ClType φ, typeOfCl S = T ∧ ((key u).1, S, (key u).2) ∈ R})
+    (S S' : ClType φ) (hS : ((key u).1, S, (key u).2) ∈ R)
+    (hS' : ((key u).1, S', (key u).2) ∈ R) : S = S' := by
+  have h1 : typeOfCl S ∈ cellAt M φ u 0 := by rw [hcell]; exact ⟨S, rfl, hS⟩
+  have h2 : typeOfCl S' ∈ cellAt M φ u 0 := by rw [hcell]; exact ⟨S', rfl, hS'⟩
+  exact Subtype.ext (cellAt_subsingleton_of_det Rl hf hb fwd bwd hdf hdb M φ u h1 h2)
+
+/-! ### The STRONG (uniform) candidate relation -/
+
+/-- **The STRONG (uniform) key-level step relation**: every member over `s` steps to some member
+over `s'`, and every member over `s'` is stepped into from some member over `s`. A bi-infinite
+path of these edges LIFTS, by dependent choice, to a `relK`-path inside `R` through ANY chosen
+member of the fibre at position `0` — which is what the truth lemma's two directions need. What
+is NOT available is its seriality: it asks for one key `s'` serving EVERY member over `s` at
+once, and `certBiInfK` gives only a per-member successor. That tension is the construction's open
+content; it is stated here rather than worked around, and nothing below assumes either half. -/
+def conStepStrong {Q : Type} (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
+    (φ : PlusFormula) (Tc Tn P B : ℕ) (R : Set (Q × ClType φ × CK Tc Tn P B)) :
+    ℤ → ConKey φ Tc Tn P B R → ConKey φ Tc Tn P B R → Prop :=
+  fun _ s s' =>
+    (∀ x ∈ R, (x.1, x.2.2) = s.val →
+      ∃ y ∈ R, (y.1, y.2.2) = s'.val ∧ relK step pend lab φ Tc Tn P B x y) ∧
+    (∀ y ∈ R, (y.1, y.2.2) = s'.val →
+      ∃ x ∈ R, (x.1, x.2.2) = s.val ∧ relK step pend lab φ Tc Tn P B x y)
+
+/-- **The strong relation REFINES the weak one**: the carrier's own membership witness supplies a
+member over `s` to feed the uniform clause. So the strong relation is a candidate REPLACEMENT for
+the weak one and not a different graph; what separates them is seriality, not their edges'
+direction.
+
+Paper: — (a comparison of two key-level projections of this repository's certificate relation) -/
+theorem conStep_of_strong {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+    {lab : Q → Atom → Bool} {φ : PlusFormula} {Tc Tn P B : ℕ}
+    {R : Set (Q × ClType φ × CK Tc Tn P B)} {t : ℤ} {s s' : ConKey φ Tc Tn P B R}
+    (h : conStepStrong step pend lab φ Tc Tn P B R t s s') :
+    conStep step pend lab φ Tc Tn P B R t s s' := by
+  obtain ⟨⟨q, k⟩, S, hS⟩ := s
+  obtain ⟨⟨q', S', k'⟩, hy, hkey, hxy⟩ := h.1 (q, S, k) hS rfl
+  exact ⟨(q, S, k), hS, (q', S', k'), hy, rfl, hkey, hxy⟩
+
+end Construction
 
 end FormalSystem.Metalogic.Decidability.RaySummary

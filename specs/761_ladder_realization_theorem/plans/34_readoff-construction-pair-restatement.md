@@ -13875,7 +13875,7 @@ commit; never split the module.
 
 ---
 
-### Phase 21: The CONSTRUCTION Half — A Model Built From a Certified Set: Carrier, Frame, Valuation, Truth Lemma [IN PROGRESS]
+### Phase 21: The CONSTRUCTION Half — A Model Built From a Certified Set: Carrier, Frame, Valuation, Truth Lemma [PARTIAL]
 
 **ADDED BY THE (Q-1) REVISION, AND IT GETS ITS OWN PHASE BECAUSE IT IS UNWRITTEN — NOT BECAUSE IT
 IS LARGE (decision 26 obligation 2).** `grep` at this revision's authoring, re-confirming report
@@ -13929,21 +13929,21 @@ NOT instantiated at `Dmax`**, because `certStabK`/`certBoxK` of `Dmax` are open)
 over it, and a truth lemma whose statement is the cell equation at the constructed points.
 
 **Tasks**:
-- [ ] **State the CARRIER first, in `records/round-34-readoff-construction-pair.md`, before any
+- [x] **State the CARRIER first, in `records/round-34-readoff-construction-pair.md`, before any
       Lean is written**, together with its slice cardinality and the reason it is not the `frameOf`
       idiom. A phase that writes a frame before its carrier is recorded has skipped the one step
       report 32 found missing.
-- [ ] Carry `certAdmK R` as an explicit hypothesis. **Do NOT state the construction over `Dmax`
+- [x] Carry `certAdmK R` as an explicit hypothesis. **Do NOT state the construction over `Dmax`
       until `dmax_certStabK` and `dmax_certBoxK` are landed** — they are open, and the union
       argument that gives the other four does not give them
       (`CounterQuotient.lean:105-113`). Whether to attempt them is a separate finding, reported not
       taken.
 - [ ] Build the frame from `relK` (`CounterQuotient.lean:1177`), its valuation, and the truth
-      lemma. `#print axioms` on each.
-- [ ] Record, against GKWZ Lemma 5.24 (⇐) and Theorem 6.61 (`reports/31_gkwz-ptl-s5-quasimodels.md`),
+      lemma. `#print axioms` on each. *(deviation: altered — the frame (`conFrame`), its valuation (`conModel`) and the key map LANDED with `#print axioms` on each; the TRUTH LEMMA did NOT land and is this phase's open content, which is why the phase stays `[PARTIAL]`. A second alteration, compiled rather than argued: the frame is built from the KEY-LEVEL projection of `relK`, not from `relK` on the certified set itself, because `cellAt_subsingleton_of_det`/`fibre_subsingleton_of_det_cell_eq` refute the carrier whose points carry a closure type — see the Recorded Outcome)*
+- [x] Record, against GKWZ Lemma 5.24 (⇐) and Theorem 6.61 (`reports/31_gkwz-ptl-s5-quasimodels.md`),
       which clause of the construction each landed object discharges — and record explicitly that
       the transfer is by SHAPE and that no published theorem applies to this semantics.
-- [ ] Record whether the constructed model is `ZTime`-admissible and whether it has the width the
+- [x] Record whether the constructed model is `ZTime`-admissible and whether it has the width the
       task's guardrail (b) requires. **If it does not, that is the phase's finding**, recorded as
       one rather than repaired by a finite-width assumption.
 
@@ -14013,6 +14013,41 @@ about the estimate and is recorded as one before the module is created.
 - `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests` exits 0 with `sorry_count: 0`.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` — each PASS.
 - `bash .claude/scripts/verify-deploy.sh` — the full gate set.
+
+---
+
+#### Recorded Outcome
+
+**THREE OF THE FOUR OBJECTS LANDED, PLUS THE PINNED STATEMENT'S FIRST CONJUNCT. THE TRUTH LEMMA
+IS OPEN AND THE PHASE IS `[PARTIAL]` BY ITS OWN WRITTEN RULE** ("if the frame has not been built
+by the end of the first dispatch, the phase records the carrier and returns `[PARTIAL]`" — the
+frame WAS built, so this dispatch is past that bar, and the marker stays open because the fourth
+object is not landed). Dispatch 86, record
+`records/round-34-readoff-construction-pair.md` §13-§20. **This phase IS re-entered**: its
+remaining work is the truth lemma and nothing else.
+
+| Item | Disposition | Evidence |
+|---|---|---|
+| The CARRIER, stated in the record BEFORE any Lean | **DONE, and committed first** | `records/round-34-readoff-construction-pair.md` §14, commit `2004d2a30`, whose two files are the record and this plan — no Lean in it. The carrier is `ConKey`, the KEYS realized in `R`, with its slice count and the reason it is not the `frameOf` idiom |
+| `certAdmK R` carried as an EXPLICIT hypothesis, never instantiated at `Dmax` | **HONOURED** | every landed declaration takes `R` and `hR : certAdmK …` as binders; `grep -rnE '(theorem\|lemma) +dmax_(certStabK\|certBoxK\|certAdmK)\b' FormalSystem/` still returns nothing, which is the reason, re-run at phase close |
+| The FRAME from the key-level projection of `relK`, its valuation | **LANDED** | `conFrame`, `conModel` (`LadderRealize.lean`, section `## The CONSTRUCTION half's carrier, frame and model`). Seriality is discharged from `certAdmK`'s condition (2) ALONE (`conStep_fwd`, `conStep_bwd`): no parameter condition and no object seriality hypothesis enters |
+| The TRUTH LEMMA | **NOT LANDED — the phase's open content** | nothing states the cell equation; `ladderConstruct` is declared nowhere. The obstruction is NAMED and compiled around, not hidden: record §16 |
+| The pinned statement's FIRST conjunct (coverage) | **LANDED** | `conKeyMap_covers`, with a mechanical `example` in `KTypeSummaryAxiomTest.lean` instantiating it AT `(conFrame …).WorldState` |
+| **A DEPARTURE FROM THIS PHASE'S OWN ORIENTATION, compiled rather than argued** | the body's *"a runs-based carrier — GKWZ's `W × R` … — is the shape the literature uses"* does NOT survive contact with the pinned equation | `cellAt_subsingleton_of_det`: a two-sided deterministic frame of this scheme has SUBSINGLETON cells; `fibre_subsingleton_of_det_cell_eq`: at such a frame the target equation forces the fibre to be a singleton. The shift on runs is two-sided deterministic. Record §15 |
+| GKWZ clause map and the shape-transfer caveat | **RECORDED** | record §15 (the three-clause table) and §20; no record describes either half as an instance of a published theorem |
+| Admissibility / width | **RECORDED AS A FINDING, not repaired** | record §19: the slice `ConKey` is FINITE, so the model's width is finite. No finite-width or finite-fibre HYPOTHESIS was added; the finiteness is a property of the OUTPUT forced by the key-level carrier. `ZTime`-admissibility is not claimed |
+| Whether to attempt `dmax_certStabK`/`dmax_certBoxK` | **REPORTED, NOT TAKEN** | record §20 |
+
+**Axiom profiles**: every landed declaration reports `[propext, Classical.choice, Quot.sound]`,
+pinned in `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`. Both in-source `longFile`
+baselines were crossed and raised IN PLACE in the same commit (`LadderRealize.lean` 2300 → 2700,
+`KTypeSummaryAxiomTest.lean` 3900 → 4000); neither module was split.
+
+**What this phase does NOT establish**: it bears on the construction direction and on nothing
+else. It says nothing about the clip, nothing about the READ-OFF half's right-hand side, and it
+does not revive `cellAt_const_of_kappa_eq` or `ladderRealized` under their pinned names — both
+still unclaimed in `FormalSystem/` and `Tests/`. The constructed model is not claimed to be, or
+to be isomorphic to, `ladderModel`.
 
 ---
 

@@ -110,7 +110,7 @@ expectation to rewrite.
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
 -- The baseline is raised one chunk at a time, as the ledger grows; the `longFile` linter requires
 -- the value to be at least the file's length and refuses a value more than one chunk above it.
-set_option linter.style.longFile 3900
+set_option linter.style.longFile 4000
 
 namespace BimodalTest.Metalogic
 
@@ -3825,5 +3825,121 @@ example {Q : Type} [Fintype Q] {step : Q → Q → Bool} {pend : Q → Bool}
       ((nxtAt g' t : ℤ) - cntAt g' t = (nxtAt g t : ℤ) - cntAt g t) := by
   obtain ⟨l, g', hl, hdvd, hg', ho, hc, hn⟩ := exists_lengthened_region hg t hpast hroom hK1
   exact ⟨l, g', hl, hdvd, hg', ho, by rw [hc, hn]; push_cast; ring⟩
+
+/-! ## The CONSTRUCTION half's carrier, frame and model
+
+The construction direction's landed layer: the key-level carrier `ConKey`, the weak key-level
+step relation and its two seriality halves (discharged from `certAdmK`'s condition (2) alone, no
+parameter condition entering), the COVERAGE conjunct of the construction's target statement, and
+the determinism no-go that forces the carrier to project the closure type away. The truth lemma
+is NOT landed and `ladderConstruct` is declared nowhere; these profiles certify what exists, not
+the construction.
+-/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/--
+info: 'FormalSystem.Metalogic.Decidability.RaySummary.conKey_nonempty' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms conKey_nonempty
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/--
+info: 'FormalSystem.Metalogic.Decidability.RaySummary.conStep_fwdFin' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms conStep_fwdFin
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/--
+info: 'FormalSystem.Metalogic.Decidability.RaySummary.conStep_bwdFin' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms conStep_bwdFin
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/--
+info: 'FormalSystem.Metalogic.Decidability.RaySummary.conKeyMap_covers' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms conKeyMap_covers
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/--
+info: 'FormalSystem.Metalogic.Decidability.RaySummary.sliced_step_detFwd' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms sliced_step_detFwd
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/--
+info: 'FormalSystem.Metalogic.Decidability.RaySummary.sliced_step_detBwd' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms sliced_step_detBwd
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/--
+info: 'FormalSystem.Metalogic.Decidability.RaySummary.cellAt_subsingleton_of_det' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms cellAt_subsingleton_of_det
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/--
+info: 'FormalSystem.Metalogic.Decidability.RaySummary.fibre_subsingleton_of_det_cell_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms fibre_subsingleton_of_det_cell_eq
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/--
+info: 'FormalSystem.Metalogic.Decidability.RaySummary.conStep_of_strong' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms conStep_of_strong
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.conStep_fwd' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms conStep_fwd
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.conStep_bwd' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms conStep_bwd
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.Semantics in
+/-- **THE COVERAGE-CONJUNCT CHECK, mechanical.** The landed coverage theorem is checked AT the
+constructed frame's own `WorldState`, which is the fidelity content: it says the carrier the
+frame is built on really is `ℤ × ConKey`, so the coverage conjunct of the construction's target
+statement is discharged at the frame the construction produces and not at some other carrier. A
+carrier change that broke that identification would fail to elaborate here. -/
+example {Q : Type} [Fintype Q] {step : Q → Q → Bool} {pend : Q → Bool}
+    {lab : Q → Atom → Bool} {φ : PlusFormula} {Tc Tn P B : ℕ}
+    {R : Set (Q × ClType φ × CK Tc Tn P B)}
+    (hR : certAdmK step pend lab φ Tc Tn P B R) (hne : R.Nonempty) :
+    ∀ x ∈ R, ∃ u : (conFrame step pend lab φ Tc Tn P B R hR hne).WorldState,
+      conKeyMap φ Tc Tn P B R u = (x.1, x.2.2) :=
+  conKeyMap_covers φ Tc Tn P B R
 
 end BimodalTest.Metalogic

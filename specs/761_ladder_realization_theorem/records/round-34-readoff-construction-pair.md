@@ -424,9 +424,80 @@ is not available — the pinned equation names the fibres of the GIVEN `R`.
 
 ## 17. WHAT THIS DISPATCH LANDED
 
-See §18 for the compiled inventory and §20 for what is not claimed.
+Three of Phase 21's four objects — the carrier, the frame and the valuation — plus the FIRST
+conjunct of the pinned statement, which is coverage. The fourth, the truth lemma, is NOT landed
+and `ladderConstruct` is declared nowhere.
 
-## 18. (Filled in after the Lean of this phase — see the Phase 21 compiled inventory below.)
+## 18. The compiled inventory
+
+Every declaration below is in
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean`, section
+`## The CONSTRUCTION half's carrier, frame and model`, APPENDED — no landed declaration of that
+module was edited or re-proved. **Every one has axiom profile
+`[propext, Classical.choice, Quot.sound]`**, measured by `#print axioms` and pinned in
+`Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`.
+
+| Declaration | What it is | Status |
+|---|---|---|
+| `ConKey` | the carrier of §14 | LANDED (`abbrev`) |
+| `conKey_nonempty` | inhabited when `R` is | LANDED |
+| `conKeyMap` | the key map: the subtype projection | LANDED (`def`) |
+| `conStep` | the WEAK key-level relation of §16 | LANDED (`def`) |
+| `conStep_fwdFin`, `conStep_bwdFin` | two-sided finite branching, from the carrier's finiteness alone | LANDED |
+| `conStep_fwd`, `conStep_bwd` | **seriality, from `certAdmK`'s condition (2) ALONE** — no parameter condition and no object seriality hypothesis enters | LANDED |
+| `conFrame` | the frame, through `ofSlicedStepFinBranch` | LANDED (`def`) |
+| `conModel` | the valuation, reading `lab` at the object coordinate | LANDED (`def`) |
+| `conKeyMap_covers` | **the pinned statement's FIRST conjunct** | LANDED |
+| `sliced_step_detFwd`, `sliced_step_detBwd` | determinism of the scheme's one-step relation from determinism of the slice relation | LANDED |
+| `cellAt_subsingleton_of_det` | **a two-sided deterministic frame of this scheme has SUBSINGLETON cells** | LANDED |
+| `fibre_subsingleton_of_det_cell_eq` | **the no-go of §15, at the target equation itself**: at such a frame the equation forces the fibre to be a singleton | LANDED |
+| `conStepStrong` | the STRONG key-level relation of §16 | LANDED (`def`) |
+| `conStep_of_strong` | the strong relation REFINES the weak one | LANDED |
+| the truth lemma / `ladderConstruct` | the pinned statement's SECOND conjunct | **NOT LANDED — open at the §16 tension** |
+
+**What §15's claim is now worth, stated so the compiled/inferred line is not blurred.** The
+runs-with-shift carrier's failure is COMPILED, not argued: `cellAt_subsingleton_of_det` plus
+`fibre_subsingleton_of_det_cell_eq` apply to it verbatim, the shift being two-sided
+deterministic. The wider design observation — that ANY carrier whose world state determines a
+member of `R`, under a truth lemma reading the type off that member, collapses the cell to a
+singleton — is INFERRED and is not compiled, because "a truth lemma reading the type off that
+member" is not a statement about a fixed object. Nothing in this record or in the module rests on
+the wider version where the compiled one suffices.
+
+**One mechanical fidelity check is carried in the test file beside the pins**: an `example` that
+instantiates `conKeyMap_covers` AT `(conFrame …).WorldState`, so the identification of the
+frame's carrier with `ℤ × ConKey` is checked by elaboration rather than asserted. A carrier
+change that broke it would fail there.
+
+## 18b. THE GKWZ CLAUSE MAP — which clause of Lemma 5.24 (⇐) each landed object discharges
+
+Read against `reports/31_gkwz-ptl-s5-quasimodels.md`, whose quotations are SOURCED from GKWZ 2003
+§5.2 (Theorem 5.22, Lemma 5.24) and §6.5 (Theorem 6.61). **The transfer is BY SHAPE. No theorem
+of GKWZ applies to this semantics**, and nothing below is an instance of a published theorem: HWZ
+2000 has no `□` and no `⊡` at all, GKWZ §13.2's proof is written for `L = K`, and this setting is
+not PTL × S5 — `stab_state_only` makes `⊡` state-keyed across times, so a time slice holds many
+clusters while GKWZ has exactly one per time point.
+
+| GKWZ Lemma 5.24 (⇐) | This phase's object | Status |
+|---|---|---|
+| the carrier: the product of the universal frames on `W₁` and on `R`, a point being a (time point, run) pair | `ConKey` — **NOT** a (point, run) pair; see below | LANDED, and deliberately NOT the published shape |
+| the valuation `𝔙(p) = {⟨x, r⟩ \| p ∈ r(x)}` | `conModel`, reading `lab` at the object coordinate — equivalent here because `certLocK` ties a member's atoms to its object state | LANDED |
+| a run: `r(w) ∈ q(w)` for every `w`, coherent and saturated for the first-dimension operators | a `relK`-path inside `R`; coherence and saturation are `certAdmK`'s conditions (1)-(4) | the relation and its seriality LANDED (`conStep`, `conStep_fwd`, `conStep_bwd`); the PATH-level object is what the truth lemma needs and is not landed |
+| **(qm3)**: for every `w` and every `t ∈ q(w)` there is a run `r ∈ R` with `r(w) = t` | the `⊇` half of the cell equation | NOT LANDED — the §16 tension |
+| the truth lemma `(𝔐, ⟨x, r⟩) ⊨ ψ ⟺ ψ ∈ r(x)`, whose `◇` step reads `(qm1)` one way and `(qm1)` + `(qm3)` the other | the cell equation | **NOT LANDED — the phase's open content** |
+| **(qm1)**, `◇ψ ∈ t ⟺ ∃ t' ∈ T, ψ ∈ t'` | `certStabK`, relativised to the fibre over `(q, κ)` rather than to a whole time slice | already landed in `CounterQuotient.lean`; carried here as a hypothesis |
+| "𝔎 ⊇ S" — every satisfying set lies inside the maximal one | `dmax_maximal` | already landed; NOT used here, the construction being stated at an arbitrary `R` |
+
+**Where the shapes part company, and it is the carrier.** In GKWZ the S5 dimension is a SEPARATE
+COORDINATE of the carrier: the cluster at `x` is the set of points `⟨x, r⟩` for `r ∈ R`, so a
+point determines its type (`r(x)`) and the cluster is a set of WORLD STATES. In this semantics
+`⊡` quantifies over the histories through ONE world state (`stab_mem_tpOf_iff`), so the cluster
+is a set of HISTORIES and a point that determined its type would collapse the cluster to a
+singleton — which is exactly what §15's `cellAt_subsingleton_of_det` /
+`fibre_subsingleton_of_det_cell_eq` compile. **That is why the published carrier cannot simply be
+transcribed, and why the closure type is projected away here.** It is also why the published
+proof has no counterpart to the lifting obligation of §16: GKWZ never needs a path to lift,
+because its runs are the carrier rather than a decoration on it.
 
 ## 19. ADMISSIBILITY AND WIDTH — this phase's finding, recorded rather than repaired
 

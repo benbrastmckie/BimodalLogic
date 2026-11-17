@@ -1004,6 +1004,26 @@ is not read as an oversight:
   `2 ^ (dBack + 1)` refuted on the doubling object; at every formula-only clip refuted on the
   chain family; an object-dependent clip OPEN.
 
+- **Building a model FROM a certified set — the CONSTRUCTION direction — is OPEN at its truth
+  lemma**, and is landed in three of its four components. In
+  [`LadderRealize.lean`](../FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean):
+  `ConKey` is the carrier (the KEYS realized in the certified set, the closure-type coordinate
+  projected away), `conFrame` the frame over it — its seriality discharged from `certAdmK`'s
+  condition (2) alone, through `conStep_fwd`/`conStep_bwd` — `conModel` the valuation, and
+  `conKeyMap_covers` the COVERAGE conjunct of the construction's target statement. What is NOT
+  landed is the cell equation, the truth lemma: no declaration anywhere states that the
+  constructed model's cells are the certified set's fibres, and nothing is claimed under the name
+  `ladderConstruct`. Two facts frame the gap and both are compiled. Why the carrier may not carry
+  a closure type: `cellAt_subsingleton_of_det` says a frame of this scheme whose step relation is
+  two-sided deterministic has SUBSINGLETON cells, so `fibre_subsingleton_of_det_cell_eq` turns the
+  target equation at such a frame into the statement that the fibre is a singleton — which rules
+  out the runs-with-shift carrier for any certified set with a non-singleton fibre. Where the
+  remaining content sits: the weak key-level relation `conStep` is serial but a path of its edges
+  need not lift to a path inside the certified set, while the uniform `conStepStrong` lifts by
+  choice and refines it (`conStep_of_strong`) but asks for a seriality `certBiInfK` does not
+  supply. The constructed model has FINITE width, the slice `ConKey` being finite: that is a
+  property of the output, not an assumption on an input, and it is recorded rather than repaired.
+
 ## Related documentation
 
 - [`README.md`](../README.md) — project overview and the `## Verifying the main theorems` recipe
