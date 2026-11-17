@@ -14754,7 +14754,7 @@ whether iterating the rule terminates at a uniformly singleton-fibred subset at 
 
 ---
 
-### Phase 24: The ELIMINATION LEMMA at a GENERAL Certified `R` — CONDITIONAL ON PHASE 23's OUTCOME (a) [NOT STARTED]
+### Phase 24: The ELIMINATION LEMMA at a GENERAL Certified `R` — CONDITIONAL ON PHASE 23's OUTCOME (a) [IN PROGRESS]
 
 **ADDED BY THE (Q-2) REVISION (decision 29, obligation: "the elimination that forms it is itself
 owed"). ENTERED ONLY ON PHASE 23's OUTCOME (a).** On outcome (b) this phase closes

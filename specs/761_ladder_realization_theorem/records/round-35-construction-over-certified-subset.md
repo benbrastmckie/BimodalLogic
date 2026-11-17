@@ -277,3 +277,73 @@ Read against record §16 of `round-34-readoff-construction-pair.md` and
 | Description line: "the construction half is UNWRITTEN in all four of its components" | **no longer accurate as written** — Phase 21 landed carrier, frame and valuation (`ConKey`, `conFrame`, `conModel`, `conKeyMap_covers`); only the TRUTH LEMMA is unwritten | **stale in the description**; `docs/theorem-index.md` already carries the corrected "landed in three of its four components" |
 | Description line: "`Dmax` is not even known to be certified" | `dmax_certStabK`/`dmax_certBoxK` still have no hits; unchanged by this round | **confirmed** |
 | Description line: "`ladderRealized` is declared nowhere" | re-grepped: `grep -rnE '(theorem\|lemma\|def\|abbrev) +(cellAt_const_of_kappa_eq\|ladderRealized)\b' FormalSystem/ Tests/` returns nothing | **confirmed** |
+
+---
+
+# Phase 24 — The ELIMINATION LEMMA at a GENERAL certified `R`
+
+Entered on Phase 23's recorded outcome **(a) SURVIVES**, read from that phase's `#### Recorded
+Outcome` table rather than assumed. Phase 26 is therefore not entered by Phase 23's branch rule;
+whether it is entered by *this* phase's verdict is section 13.
+
+## 9. THE LEMMA, STATED BEFORE ANY LEAN WAS WRITTEN
+
+### 9.1 The statement
+
+```lean
+theorem exists_certified_serial_subset {Q : Type} [Fintype Q]
+    (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
+    (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R : Set (Q × ClType φ × CK Tc Tn P B))
+    (hR : certAdmK step pend lab φ Tc Tn P B R) (hne : R.Nonempty) :
+    ∃ R' : Set (Q × ClType φ × CK Tc Tn P B),
+      R' ⊆ R ∧ R'.Nonempty ∧ certAdmK step pend lab φ Tc Tn P B R' ∧
+        ∀ (t : ℤ) (s : ConKey φ Tc Tn P B R'),
+          ∃ s', conStepStrong step pend lab φ Tc Tn P B R' t s s'
+```
+
+`R'` is bound EXISTENTIALLY in the conclusion and appears in no binder (Ruling 38). The fourth
+conjunct is not part of the `(Q-2)` pin: it is the property the construction actually needs and
+the one `conStepStrong_serial_refuted` denies at the un-eliminated `attR`.
+
+### 9.2 The token-for-token diff against the `(Q-2)` sub-block's first three conjuncts
+
+The governing text is the `(Q-2)` sub-block, never the retired `(Q-1)` one. Its conclusion opens
+
+```
+    exists R' : Set (Q × ClType phi × CK Tc Tn P B),
+      R' ⊆ R ∧ R'.Nonempty ∧ certAdmK step pend lab phi Tc Tn P B R' ∧
+```
+
+| Token of the pin | In 9.1 | Verdict |
+|---|---|---|
+| `R' ⊆ R` | `R' ⊆ R` | identical |
+| `R'.Nonempty` | `R'.Nonempty` | identical |
+| `certAdmK step pend lab phi Tc Tn P B R'` | `certAdmK step pend lab φ Tc Tn P B R'` | identical modulo the pin's ASCII `phi` for `φ` |
+| `R' : Set (Q × ClType phi × CK Tc Tn P B)` | same type, `φ` for `phi` | identical modulo the same transliteration |
+| `(hR : certAdmK …) (hne : R.Nonempty)` | carried unchanged | identical |
+| `[Fintype Q] [Nonempty Q]` | `[Fintype Q]` only | **DIVERGENCE, and it is a WEAKENING of the hypothesis set, not of the conclusion**: `hne : R.Nonempty` already inhabits `Q` through a member's object component, so `[Nonempty Q]` is redundant here. Taking fewer instances proves more. Reported, not accepted silently |
+
+**No Statement Fidelity finding against the conclusion.** The three conjuncts are the pin's, token
+for token. The one divergence is in the instance binders and is in the strengthening direction.
+
+### 9.3 THE FINITENESS INSTANCE CHECK, run at entry and COMPILED rather than read off type
+definitions
+
+Phase 24's own task list required this be checked at entry rather than assumed, and recorded that
+the plan "does not assert one exists". **It exists — all four, by instance search, with nothing to
+land.** Compiled standalone against the module (`lean_run_code`, zero diagnostics):
+
+| Instance | Resolved by | Needed for |
+|---|---|---|
+| `Fintype (ClType φ)` | Mathlib's `Finset` subtype instance — `ClType φ` is an `abbrev` for `{T : Finset PlusFormula // T ∈ (plusSubformulaClosure φ).powerset}`, so the subtype-of-a-`Finset`-membership instance applies through the reducible unfolding | the ambient finiteness a descending elimination's termination needs |
+| `Fintype (CK Tc Tn P B)` | a product of five `Fin`s | the same |
+| `Fintype (ClType φ × CK Tc Tn P B)` | the product instance | the same |
+| `Fintype (Q × ClType φ × CK Tc Tn P B)` | the above plus `[Fintype Q]` | the same |
+| `DecidableEq (ClType φ)` | `Finset`'s `DecidableEq` through the subtype | any decidable removal rule |
+| `Finite (Q × ClType φ × CK Tc Tn P B)` | from `[Fintype Q]` alone | the well-founded descent |
+
+**No `Finite`/`Fintype` instance is landed by this phase**, because none is needed: the plan's
+hypothesis that "the types look finite from their own definitions" is CONFIRMED by compilation,
+and the `grep` that found no instance found none because none had to be written. That is a
+positive finding about the route, recorded as one.
