@@ -1,30 +1,35 @@
 {
-  "status": "partial",
-  "dispatch_seq": 82,
-  "phases_completed": 59,
-  "phases_total": 73,
-  "summary": "Phase 11.49 executed route (R-2), the user-answered decision 21: the object half of (K1) alone as a hypothesis of exists_rowLinked_path. The entry gate was re-derived by reading round-28's record (outcome (b)), the repaired signature was written into the record before it was attempted with its diff against the owed one, and the bridge objHalfK1_of_paramsOk landed so the added hypothesis is dischargeable at the periodicity fixpoint's own parameters. Count move 1 (exists_lengthened_region) landed with its register offset stated in the conclusion, and Zrel.forall_iff_eq shows the budget cannot be stripped from the scaffold's relation. exists_rowLinked_path did NOT close: the stall is LnkRow.of_closed's hfw/hbw jump clauses and the coordinate is the register, with the goal state recorded verbatim.",
-  "blockers": [
-    "exists_rowLinked_path did not close. LnkRow.of_closed instantiates cleanly at S k m s s' := Mrel P k m (h s) (h' s') and its soundness clause is Mrel.toZrel outright, so the two jump clauses are the whole content. The splice correspondence spliceEmb transports the object perfectly and the countdown in a stated two-regime way, but exists_ladderPath_of_walk -- which every splice in the library factors through -- concludes objAt and cntAt only, while Zrel reads the register in two of its four clauses at every matched pair.",
-    "Newly stated seam obstruction: gap-preservation by equality demands the register raised by l below the splice seam and unraised above it, at ADJACENT positions; Drift permits a change of at most one per step, so for l >= 2 no register walk meets both. Whether Zrel's threshold disjuncts cover the l-step transition is open and claimed neither way.",
-    "Second coordinate, reported not repaired: count move 1 carries Fintype.card Q <= cntAt g t (the pigeonhole's room for exists_objCycle_of_card_le_cnt). Mrel supplies (P+1)*(a+b) and the added hypothesis supplies l | P+1 for the object's cycle lengths; neither forces P+1 >= Fintype.card Q. Adding a second hypothesis is outside decision 21's authorization, so it is named for the next revision to route.",
-    "Count moves 2 and 3 (cascade through the cap; insert a region in a tight chain) and the untl corollary were not reached, per the phase's own one-dispatch stop rule."
-  ],
+  "status": "implemented",
+  "dispatch_seq": 83,
+  "phases_completed": 64,
+  "phases_total": 77,
+  "summary": "Executed Phase 19 (wave 1, Depends on: none), NOT the Phase 12.5 the dispatch named: the working tree carried four closed headings (12.5, 12.6, 15.2, 16) downgraded to [PARTIAL] by the H1 marker/handoff gate at this dispatch's own preflight, exactly enough to force the plan's closed count from its true 63 to the stale handoff's 59. The four markers were restored and the handoff count resynced here. Phase 19 wired all four previously report-only refutation units into specs/evidence/: two new probe files (ladder-gap-jump-refutation.lean, ladder-chain-object-clip-refutation.lean) plus units 2 and 3 appended to ladder-cell-agreement-refutation.lean under the plan's derived LadderStepFrag import, which compiled first try. check-evidence-probes.sh exits 0 over all 67 wired probes; full lake build exits 0 with 0 errors and 0 warnings; eleven stale 'unwired pending Phase 19' citations re-pointed at their wired path and line.",
+  "blockers": [],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/28_object-half-k1-count-move-summary.md",
-      "summary": "Phase 11.49 implementation summary: what landed, the deviations, and the stalling coordinate."
+      "path": "specs/761_ladder_realization_theorem/summaries/34_evidence-probe-wiring-summary.md",
+      "summary": "Phase 19 implementation summary: the four wired units, the entry-gate repair, the one plan deviation and the full verification run."
     },
     {
       "type": "record",
-      "path": "specs/761_ladder_realization_theorem/records/round-28-k1-admissible-refutation.md",
-      "summary": "Sections 10-16: the entry gate re-derived, the repaired signature stated in advance with its statement-fidelity diff, the bridge, the mechanical checks, the goal state verbatim, and the covered fragment."
+      "path": "specs/761_ladder_realization_theorem/records/round-34-readoff-construction-pair.md",
+      "summary": "Round 34 record: the entry-gate measurement, unit provenance, axiom profiles, the six-row citation map and Ruling 35's mechanical check."
     },
     {
       "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/28_k1-admissible-refutation-first.md",
-      "summary": "Phase 11.49 marked [PARTIAL] with its blocker record and inline deviation annotations."
+      "path": "specs/761_ladder_realization_theorem/plans/34_readoff-construction-pair-restatement.md",
+      "summary": "Phase 19 [COMPLETED] with tasks checked and the deviation annotated; four corrupted markers restored; closed count 63 -> 64."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/seam-gluing-ray-product/ladder-gap-jump-refutation.lean",
+      "summary": "NEW wired probe: exists_rowLinked_path_K1_refuted and the object-independent register obstruction."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/seam-gluing-ray-product/ladder-chain-object-clip-refutation.lean",
+      "summary": "NEW wired probe: no_formula_only_clip over ALL clip functions, and exponential_clip_refuted."
     }
   ]
 }
