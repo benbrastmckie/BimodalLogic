@@ -209,9 +209,9 @@
           "type": "plan"
         },
         {
-          "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-attacked-at-fixture-summary.md",
+          "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-reduced-to-key-injectivity-summary.md",
           "type": "summary",
-          "summary": "Phase 23: the elimination survives its attack at the fixture that forced the restatement; outcome (a), Phase 24 enterable."
+          "summary": "Phase 24: the elimination reduced to key-injectivity, and condition (5)'s non-monotonicity compiled at a stab-bearing closure."
         }
       ],
       "next_artifact_number": 36,

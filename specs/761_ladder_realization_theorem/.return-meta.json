@@ -1,39 +1,52 @@
 {
-  "status": "implemented",
+  "status": "partial",
+  "requires_user_review": false,
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
     "vacuous_count": 1,
-    "axiom_count": 0,
-    "build_passed": true
+    "vacuous_note": "The single hit is the pre-existing FormalSystem/Examples/TemporalStructures.lean:495 baseline (int_domain_universal := trivial), unchanged by this dispatch. Zero vacuous definitions were introduced.",
+    "axiom_count": 14,
+    "axiom_note": "Unchanged from the dispatch base; zero '+axiom ' lines in this dispatch's diff.",
+    "build_passed": true,
+    "build_note": "lake build (full library) exit 0, zero error: occurrences, 'Build completed successfully (2976 jobs)'; lake build BimodalTest exit 0, '(3044 jobs)'. Both through lake-build-guard.sh, detached as shell-level background jobs and blocked on with the bounded single-call PID-liveness idiom. Tier-3 check: the touched module's .olean is newer than its source. Re-run green after the C23 rename.",
+    "gates": {
+      "check-module-invariants.sh": "PASS (zero FAIL groups after the C23 renames and the inventory regeneration; PASS C14 unchanged, no C14 entry owed)",
+      "readme-lint.sh": "PASS",
+      "axiom_pins": "ten new #print axioms pins, all [propext, Classical.choice, Quot.sound]",
+      "check-evidence-probes.sh": "PASS -- 'all 67 wired probe(s) compile', zero FAIL, one pre-existing SKIP (bi-lasso-decision-layer/spike-untl-unfolding-and-fwd-obstruction, deferred for frame-class uniformity work). The guard exit was 0. An earlier partial reading in this dispatch was superseded by the completed run."
+    },
+    "concurrency_observation": "A FOREIGN COMMIT landed in this repo mid-dispatch: 0ad12f9ae 'task 935: create determinization-free progress-measure design (route R3)', interleaved between this dispatch's 24.2 and 24 commits. Reported rather than dismissed, per the territory contract. It touches specs/TODO.md and specs/state.json ONLY -- zero overlap with this dispatch's owned files -- so it did not interfere, and this dispatch's phase commit sits cleanly on top of it. No action taken against it."
+  },
+  "phase_outcome": {
+    "phase": 24,
+    "marker": "PARTIAL",
+    "landed": "The elimination REDUCED to key-injectivity (conStepStrong_serial_of_keyFibreInj, from certificate condition (2) alone), with Phase 23's two fixture seriality results re-derived as its instances; and the obstruction COMPILED (certStabK_not_monotone: condition (5) is not monotone under shrinking at a stab-bearing closure), which pays one of the three debts Phase 23 named.",
+    "not_landed": "The general elimination lemma at an arbitrary certified R. It is OPEN, neither landed nor refuted. Remaining step: produce a certified nonempty subset on which every key carries one member, against conditions (2), (3), (4) which a key-injective selection need not preserve and condition (5) which it provably need not inherit.",
+    "deviation": "Phase 23's removal rule does NOT generalize as an iterate (its component cuts the fibre at attR only because relK there is two disjoint two-cycles); replaced by the key-injectivity reduction. Reported in the plan's Recorded Outcome, the summary's Plan Deviations, and record section 10.",
+    "guardrail_b": "UNMET, and not addressed, narrowed or reported as met (Ruling 39)."
   },
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-attacked-at-fixture-summary.md",
-      "summary": "Phase 23: the elimination survives its attack at ConAttack.attR; outcome (a) SURVIVES, Phase 24 enterable, Phase 26 not entered."
-    },
-    {
-      "type": "record",
-      "path": "specs/761_ladder_realization_theorem/records/round-35-construction-over-certified-subset.md",
-      "summary": "The removal rule stated before any Lean, the attack's outcome, the four-candidate enumeration, the dissolution table, the branch, and the shape-transfer caveat."
+      "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-reduced-to-key-injectivity-summary.md",
+      "summary": "Phase 24: the elimination reduced to key-injectivity, and condition (5)'s non-monotonicity compiled at a stab-bearing closure."
     }
   ],
-  "completion_data": {
-    "completion_summary": "Phase 23 of plan v35 landed: the removal rule (keep the relK-connected component inside R of one chosen member of a multi-member fibre) was recorded before any Lean, the attack on its output's existence at ConAttack.attR was carried out first and did not break the claim, and both of the rule's outputs there are certAdmK-certified, uniformly serial, and carry exactly one member over the key of object state 0. Outcome (a) SURVIVES: Phase 24 is enterable and Phase 26's fallback is not entered. Guardrail (b) stays unmet and the construction half's truth lemma stays open.",
-    "roadmap_items": []
-  },
   "modified_files": [
     "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
-    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
     "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
     "FormalSystem/Metalogic/README.md",
     "README.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
     "docs/theorem-index.md",
     "typst/generated/status.typ",
     "specs/761_ladder_realization_theorem/plans/35_construction-over-certified-subset.md",
     "specs/761_ladder_realization_theorem/records/round-35-construction-over-certified-subset.md",
-    "specs/761_ladder_realization_theorem/summaries/35_elimination-attacked-at-fixture-summary.md"
+    "specs/761_ladder_realization_theorem/summaries/35_elimination-reduced-to-key-injectivity-summary.md",
+    "specs/761_ladder_realization_theorem/.orchestrator-handoff.json",
+    "specs/761_ladder_realization_theorem/.return-meta.json",
+    "specs/761_ladder_realization_theorem/issues.jsonl"
   ],
   "metadata": {
     "session_id": "sess_1794907363_4ea8f3",
@@ -43,12 +56,9 @@
       "implement",
       "skill-lean-implementation"
     ],
-    "task_dir": "specs/761_ladder_realization_theorem",
-    "dispatch_seq": 88,
-    "compliance_check": "skipped",
-    "phase_executed": "23",
-    "phase_dispatched": "11.44",
-    "phase_redirect": "Phase 11.44's RE-ENTRY NOTICE (Ruling 28) names its continuation by rule; evaluated against the live file it passes 12.2 [BLOCKED] (held so by decision 28), eight headings with unmet Depends on, and Phase 21 [PARTIAL] whose own notice redirects to 'the first open phase at or after 23', landing on Phase 23. Recorded in record section 0 and in Phase 23's Recorded Outcome, as both notices require.",
-    "compliance_check_note": "lean-plan-compliance-check.sh declined by design: the plan declares Goal Polarity 'mixed', which its single global field cannot express, so the spot-check was deliberately not attempted. Statement fidelity was instead checked by hand: nothing was landed under ladderConstruct, ladderRealized or cellAt_const_of_kappa_eq (all three re-grepped, zero declaration hits)."
+    "dispatch_seq": 89,
+    "compliance_check": "passed",
+    "phases_completed": 66,
+    "phases_total": 81
   }
 }

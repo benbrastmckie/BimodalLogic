@@ -1,27 +1,32 @@
 {
-  "dispatch_seq": 88,
-  "status": "implemented",
+  "status": "partial",
+  "dispatch_seq": 89,
   "phases_completed": 66,
   "phases_total": 81,
-  "summary": "Phase 23 landed: the ELIMINATION attacked at ConAttack.attR before anything was built on it. The removal rule (keep the relK-connected component of one member of a multi-member fibre) was stated and committed before any Lean; the attack was then carried out first and DID NOT break the claim, so the outcome is (a) SURVIVES -- both outputs attRp={m0p,m1p} and attRm={m0m,m2m} are certAdmK-certified with the box/stab clauses carried not inherited, conStepStrong is serial on each, and each carries exactly ONE member over the key of object state 0 (exists_certified_serial_dissolving_subset_at_attR). Phase 24 is enterable, Phase 26 (fallback A) is not entered, Phases 24/25 do not close by exclusion. Dispatch 88 was scoped to Phase 11.44, a spent [PARTIAL] round; its by-rule RE-ENTRY NOTICE plus Phase 21's second notice redirect to Phase 23, which is what was executed and is recorded as such.",
+  "summary": "Phase 24 only, per the dispatch mission. The elimination lemma at a GENERAL certified R did NOT land and the phase returns [PARTIAL], the outcome its own Timing paragraph provides for. What landed is a REDUCTION of the whole question to one property (conStepStrong is serial on any KEY-INJECTIVE certified set, from certificate condition (2) alone) with Phase 23's two fixture seriality results re-derived as its instances, plus a COMPILED obstruction that pays one of the three debts Phase 23 named: condition (5) is NOT monotone under shrinking at a stab-bearing closure (certStabK_not_monotone). The general lemma is OPEN, not refuted, and its remaining step is now exactly named. Phase 23's removal rule was found NOT to generalize as an iterate, which is this phase's one decomposition deviation and is reported rather than annotated away.",
   "blockers": [],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-attacked-at-fixture-summary.md",
-      "summary": "Phase 23: the elimination survives its attack at the fixture that forced the restatement; outcome (a), Phase 24 enterable."
+      "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-reduced-to-key-injectivity-summary.md",
+      "summary": "Phase 24: the elimination reduced to key-injectivity, and condition (5)'s non-monotonicity compiled at a stab-bearing closure."
     },
     {
       "type": "record",
       "path": "specs/761_ladder_realization_theorem/records/round-35-construction-over-certified-subset.md",
-      "summary": "The removal rule stated first, the attack's outcome, the four-candidate enumeration with compiled certification and seriality verdicts, the dissolution table, the branch selection and the shape-transfer caveat."
+      "summary": "Sections 9-14: the lemma stated before any Lean, the (Q-2) token diff, the compiled instance check, the reduction, the obstruction, the six-condition table, the branch, and the carried-figure check."
     },
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/35_construction-over-certified-subset.md",
-      "summary": "Phase 23 marked [COMPLETED] with its Recorded Outcome block and the file-list deviations."
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
+      "summary": "New section ConstructionEliminationGeneral: KeyFibreInj, conStepStrong_serial_of_keyFibreInj, exists_certified_serial_subset_of_keyFibreInj_subset, certStabK_iff_collapse_of_keyFibreInj, the ConAttack subsumption instances, the StabShrink stab-bearing fixture and certStabK_not_monotone."
     }
   ],
-  "next_phase": "24",
-  "notes": "Guardrail (b) (infinite width) stays UNMET and is not reported as met (Ruling 39). The truth lemma stays open: conStep_two_step_lift_refuted is untouched. ladderConstruct is declared nowhere; ladderRealized and cellAt_const_of_kappa_eq remain refuted and unclaimed. Phase 24 inherits three named debts (record section 5): condition (2) at a non-cyclic component's edges, conditions (5)/(6) under shrinking at a BOX/STAB-BEARING closure (a verdict on a stab-free closure does not discharge it), and whether iterating the rule terminates. Routing friction worth a plan edit: Phase 11.44's by-rule continuation resolves literally to Phase 12.2, which decision 28 deliberately holds [BLOCKED]."
+  "next_action": "Phase 24 is not closed and may be re-entered on its named remaining step: produce a certified nonempty subset on which every key carries one member, against conditions (2), (3), (4) which a key-injective selection need not preserve and condition (5) which it provably need not inherit. Decision 29's sanctioned attack-first fallback is Phase 26 (the third step relation as a greatest fixpoint of the largest composing subrelation of conStep, ATTACKED for seriality at ConAttack.attR BEFORE adoption). No user decision is required.",
+  "metadata": {
+    "session_id": "sess_1794907363_4ea8f3",
+    "agent_type": "lean-implementation-agent",
+    "phase": "implement",
+    "task_number": 761
+  }
 }
