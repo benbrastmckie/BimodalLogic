@@ -193,7 +193,7 @@ open FormalSystem.Metalogic.Decidability
 
 -- The module's recorded length ceiling: the offset-invariance section takes the file past the
 -- default limit.
-set_option linter.style.longFile 3100
+set_option linter.style.longFile 3500
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -3063,5 +3063,428 @@ theorem conStep_two_step_lift_refuted :
       conStep_sK1_sK0 conStep_sK0_sK2)
 
 end ConstructionAttack
+
+/-! ## The ELIMINATION, ATTACKED at the fixture before anything is built on it
+
+Decision 29 re-pinned the construction half's conclusion over the fibres of a certified
+**SUBSET** of `R`, because elimination — restricting the certified set until the uniform relation
+becomes serial on what survives — is the device the published converse directions use and the one
+`conStepStrong_serial_refuted` says is missing here. **The restatement does not make the subset
+exist**, so this section decides by compilation, at the ONE certified set that forced the
+weakening, whether a fibre-dissolving certified subset exists there at all.
+
+**The removal rule**, stated in `specs/761_ladder_realization_theorem/records/`'s round-35 record
+before any declaration below was written: given a certified `R` and a key whose fibre carries two
+or more members, choose one member `m` of that fibre and keep exactly the `relK`-connected
+component of `m` inside `R`. It is a removal rule — its output is a subset of its input, produced
+from `R` and a chosen member — and **nothing here assumes its output is certified**; that is what
+is decided per candidate below.
+
+**What the rule preserves and what it may destroy.** Conditions (1), (3) and (4) are inherited by
+any `relK`-closed subset: `locCoh` is a predicate on a single member, and a `DischPathK` out of a
+member of the component runs along `relK` edges inside `R`, so every position of it stays in the
+same component. Condition (2) survives because the component is closed under the successor and
+predecessor the certificate supplies. **Conditions (5) and (6) are NOT inherited in general**:
+both are an iff whose right-hand side is a universal quantifier over `R`, so removing members
+makes that side MORE often true and the `←` direction can fail at a member that did not carry the
+`⊡` (or `□`) letter. At this fixture both are discharged by `no_stab_closure`/`no_box_closure` —
+the closure of `g U e` carries no `⊡` and no `□` letter — which is a FACT about this closure and
+never a licence to omit the clauses; each is carried and discharged explicitly on every candidate
+below.
+
+**What the rule produces here.** `relK` on `attR` is two disjoint two-cycles, `m0p ↔ m1p` and
+`m0m ↔ m2m`, so the rule applied at the two-member fibre over the key of object state `0` yields
+exactly `attRp = {m0p, m1p}` and `attRm = {m0m, m2m}`. The enumeration compiled below is those
+two, `attR` itself, and `∅`.
+
+**What this section does NOT establish.** It is a verdict AT THIS FIXTURE and at nothing else: no
+declaration below quantifies over a general certified set, and none takes a certified subset as a
+binder — the subset is produced, never assumed. Whether every certified set admits such a subset
+is open and is asserted nowhere; the transfer to the published elimination is by SHAPE, no theorem
+of GKWZ §5.2 or HWZ applying to this semantics. Guardrail (b) — infinite width — stays UNMET and
+is not addressed here. Nothing below is stated under `ladderConstruct`, `ladderRealized` or
+`cellAt_const_of_kappa_eq`.
+-/
+
+section ConstructionElimination
+
+namespace ConAttack
+
+/-- `attR ↾ m0p`: the `relK`-connected component of the letter-carrying member at `0` inside
+`attR`, which is what the removal rule returns when the chosen member of the two-member fibre is
+`m0p`. -/
+def attRp : Set Item := {m0p, m1p}
+
+/-- `attR ↾ m0m`: the other component, returned when the chosen member is `m0m`. -/
+def attRm : Set Item := {m0m, m2m}
+
+/-- Paper: — (a fixture membership, unfolded) -/
+theorem mem_attRp {x : Item} : x ∈ attRp ↔ (x = m0p ∨ x = m1p) := by
+  simp [attRp, Set.mem_insert_iff, Set.mem_singleton_iff]
+
+/-- Paper: — (a fixture membership, unfolded) -/
+theorem mem_attRm {x : Item} : x ∈ attRm ↔ (x = m0m ∨ x = m2m) := by
+  simp [attRm, Set.mem_insert_iff, Set.mem_singleton_iff]
+
+/-- Paper: — (the removal rule's output is a subset of its input) -/
+theorem attRp_subset_attR : attRp ⊆ attR := by
+  intro x hx
+  rw [mem_attRp] at hx
+  rw [mem_attR]
+  rcases hx with rfl | rfl
+  · exact Or.inl rfl
+  · exact Or.inr (Or.inl rfl)
+
+/-- Paper: — (the removal rule's output is a subset of its input) -/
+theorem attRm_subset_attR : attRm ⊆ attR := by
+  intro x hx
+  rw [mem_attRm] at hx
+  rw [mem_attR]
+  rcases hx with rfl | rfl
+  · exact Or.inr (Or.inr (Or.inl rfl))
+  · exact Or.inr (Or.inr (Or.inr rfl))
+
+/-- Paper: — (a fixture membership) -/
+theorem memp_m0p : m0p ∈ attRp := by rw [mem_attRp]; exact Or.inl rfl
+
+/-- Paper: — (a fixture membership) -/
+theorem memp_m1p : m1p ∈ attRp := by rw [mem_attRp]; exact Or.inr rfl
+
+/-- Paper: — (a fixture membership) -/
+theorem memm_m0m : m0m ∈ attRm := by rw [mem_attRm]; exact Or.inl rfl
+
+/-- Paper: — (a fixture membership) -/
+theorem memm_m2m : m2m ∈ attRm := by rw [mem_attRm]; exact Or.inr rfl
+
+/-- The removal rule never returns the empty set: the chosen member survives.
+
+Paper: — (nonemptiness of the removal rule's output) -/
+theorem attRp_nonempty : attRp.Nonempty := ⟨m0p, memp_m0p⟩
+
+/-- Paper: — (nonemptiness of the removal rule's output) -/
+theorem attRm_nonempty : attRm.Nonempty := ⟨m0m, memm_m0m⟩
+
+/-! ### Candidate 1 — `attRp`, certified condition by condition -/
+
+/-- Paper: — (condition (1) at a candidate subset) -/
+theorem attRp_certLocK : certLocK labA phiA 0 0 0 0 attRp := by
+  intro x hx
+  rw [mem_attRp] at hx
+  rcases hx with rfl | rfl <;> decide
+
+/-- Paper: — (condition (2) at a candidate subset) -/
+theorem attRp_certBiInfK : certBiInfK stepA pendA labA phiA 0 0 0 0 attRp := by
+  intro x hx
+  rw [mem_attRp] at hx
+  rcases hx with rfl | rfl
+  · exact ⟨⟨m1p, memp_m1p, rel_m0p_m1p⟩, ⟨m1p, memp_m1p, rel_m1p_m0p⟩⟩
+  · exact ⟨⟨m0p, memp_m0p, rel_m1p_m0p⟩, ⟨m0p, memp_m0p, rel_m0p_m1p⟩⟩
+
+/-- Condition (3) at the candidate: the discharge paths of `att_certFwdK`'s first two branches run
+entirely inside this component, so they survive the removal unchanged.
+
+Paper: — (condition (3) at a candidate subset) -/
+theorem attRp_certFwdK : certFwdK stepA pendA labA phiA 0 0 0 0 attRp := by
+  intro x hx ψ hψ hu
+  rw [mem_attRp] at hx
+  rcases hx with rfl | rfl
+  · have hp : ψ = phiA := untl_T0p ψ hψ hu
+    subst hp
+    rw [argsOf_phiA]
+    refine ⟨1, fun i => if i = 0 then m0p else m1p, Nat.one_pos, by simp, ?_, ?_, by decide, ?_⟩
+    · intro i hi; interval_cases i; simpa using memp_m0p
+    · intro i hi; interval_cases i
+      exact ⟨by simpa using rel_m0p_m1p, by simpa using memp_m1p⟩
+    · intro i h1 h2; omega
+  · have hp : ψ = phiA := untl_T1p ψ hψ hu
+    subst hp
+    rw [argsOf_phiA]
+    refine ⟨2, fun i => if i % 2 = 0 then m1p else m0p, by omega, by simp, ?_, ?_, by decide, ?_⟩
+    · intro i hi; interval_cases i
+      · simpa using memp_m1p
+      · simpa using memp_m0p
+    · intro i hi; interval_cases i
+      · exact ⟨by simpa using rel_m1p_m0p, by simpa using memp_m0p⟩
+      · exact ⟨by simpa using rel_m0p_m1p, by simpa using memp_m1p⟩
+    · intro i h1 h2
+      interval_cases i
+      · decide
+
+/-- Paper: — (condition (4) at a candidate subset) -/
+theorem attRp_certBwdK : certBwdK stepA pendA labA phiA 0 0 0 0 attRp := by
+  intro x hx ψ hψ hs
+  rw [mem_attRp] at hx
+  rcases hx with rfl | rfl
+  · exact absurd hs (by rw [no_snce_T0p ψ hψ]; simp)
+  · exact absurd hs (by rw [no_snce_T1p ψ hψ]; simp)
+
+/-- Condition (5) at the candidate — the `⊡` acceptance clause, CARRIED and discharged on the
+subset rather than inherited from `attR`, since shrinking `R` does not preserve it in general.
+
+Paper: — (condition (5) at a candidate subset) -/
+theorem attRp_certStabK : certStabK phiA 0 0 0 0 attRp := by
+  intro x _ ψ hψ hs
+  exact absurd hs (by rw [no_stab_closure ψ hψ]; simp)
+
+/-- Condition (6) at the candidate — the `□` acceptance clause, carried for the same reason.
+
+Paper: — (condition (6) at a candidate subset) -/
+theorem attRp_certBoxK : certBoxK phiA 0 0 0 0 attRp := by
+  intro x _ ψ hψ hb
+  exact absurd hb (by rw [no_box_closure ψ hψ]; simp)
+
+/-- **CANDIDATE 1 IS CERTIFIED**: all six conditions, the two acceptance clauses included.
+
+Paper: — (this repository's `K`-indexed certificate, witnessed at a candidate subset) -/
+theorem attRp_certAdmK : certAdmK stepA pendA labA phiA 0 0 0 0 attRp :=
+  ⟨attRp_certLocK, attRp_certBiInfK, attRp_certFwdK, attRp_certBwdK, attRp_certStabK,
+    attRp_certBoxK⟩
+
+/-! ### Candidate 2 — `attRm`, certified condition by condition -/
+
+/-- Paper: — (condition (1) at a candidate subset) -/
+theorem attRm_certLocK : certLocK labA phiA 0 0 0 0 attRm := by
+  intro x hx
+  rw [mem_attRm] at hx
+  rcases hx with rfl | rfl <;> decide
+
+/-- Paper: — (condition (2) at a candidate subset) -/
+theorem attRm_certBiInfK : certBiInfK stepA pendA labA phiA 0 0 0 0 attRm := by
+  intro x hx
+  rw [mem_attRm] at hx
+  rcases hx with rfl | rfl
+  · exact ⟨⟨m2m, memm_m2m, rel_m0m_m2m⟩, ⟨m2m, memm_m2m, rel_m2m_m0m⟩⟩
+  · exact ⟨⟨m0m, memm_m0m, rel_m2m_m0m⟩, ⟨m0m, memm_m0m, rel_m0m_m2m⟩⟩
+
+/-- Condition (3) at the candidate: neither member's type carries an until letter.
+
+Paper: — (condition (3) at a candidate subset) -/
+theorem attRm_certFwdK : certFwdK stepA pendA labA phiA 0 0 0 0 attRm := by
+  intro x hx ψ hψ hu
+  rw [mem_attRm] at hx
+  rcases hx with rfl | rfl
+  · exact absurd hu (by rw [no_untl_T0m ψ hψ]; simp)
+  · exact absurd hu (by rw [no_untl_T2m ψ hψ]; simp)
+
+/-- Paper: — (condition (4) at a candidate subset) -/
+theorem attRm_certBwdK : certBwdK stepA pendA labA phiA 0 0 0 0 attRm := by
+  intro x hx ψ hψ hs
+  rw [mem_attRm] at hx
+  rcases hx with rfl | rfl
+  · exact absurd hs (by rw [no_snce_T0m ψ hψ]; simp)
+  · exact absurd hs (by rw [no_snce_T2m ψ hψ]; simp)
+
+/-- Paper: — (condition (5) at a candidate subset) -/
+theorem attRm_certStabK : certStabK phiA 0 0 0 0 attRm := by
+  intro x _ ψ hψ hs
+  exact absurd hs (by rw [no_stab_closure ψ hψ]; simp)
+
+/-- Paper: — (condition (6) at a candidate subset) -/
+theorem attRm_certBoxK : certBoxK phiA 0 0 0 0 attRm := by
+  intro x _ ψ hψ hb
+  exact absurd hb (by rw [no_box_closure ψ hψ]; simp)
+
+/-- **CANDIDATE 2 IS CERTIFIED** as well, so the removal rule's two outputs at this fixture are
+both certified and the choice of member does not decide the verdict.
+
+Paper: — (this repository's `K`-indexed certificate, witnessed at a candidate subset) -/
+theorem attRm_certAdmK : certAdmK stepA pendA labA phiA 0 0 0 0 attRm :=
+  ⟨attRm_certLocK, attRm_certBiInfK, attRm_certFwdK, attRm_certBwdK, attRm_certStabK,
+    attRm_certBoxK⟩
+
+/-! ### Candidate 4 — the empty set, certified and EXCLUDED by nonemptiness -/
+
+/-- The empty set satisfies all six conditions vacuously. It is in the enumeration because a
+certification verdict that did not exclude it would be discharged by it, and the conclusion the
+construction half needs is stated over a NONEMPTY subset.
+
+Paper: — (the degenerate candidate of this round's enumeration) -/
+theorem empty_certAdmK : certAdmK stepA pendA labA phiA 0 0 0 0 (∅ : Set Item) := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩ <;> intro x hx <;> exact absurd hx (by simp)
+
+/-- …and is excluded: the removal rule's output is nonempty and the empty set is not.
+
+Paper: — (the exclusion of the degenerate candidate) -/
+theorem empty_not_nonempty : ¬ (∅ : Set Item).Nonempty := by simp
+
+/-! ### The dissolution verdicts: how many members the fibre over the key of object state `0`
+carries in each candidate -/
+
+/-- The key of object state `0` inside candidate 1. -/
+def pK0 : ConKey phiA 0 0 0 0 attRp := ⟨((0 : Qa), kA), T0p, memp_m0p⟩
+
+/-- The key of object state `1` inside candidate 1. -/
+def pK1 : ConKey phiA 0 0 0 0 attRp := ⟨((1 : Qa), kA), T1p, memp_m1p⟩
+
+/-- The key of object state `0` inside candidate 2. -/
+def mK0 : ConKey phiA 0 0 0 0 attRm := ⟨((0 : Qa), kA), T0m, memm_m0m⟩
+
+/-- The key of object state `2` inside candidate 2. -/
+def mK2 : ConKey phiA 0 0 0 0 attRm := ⟨((2 : Qa), kA), T2m, memm_m2m⟩
+
+/-- **THE FIBRE IS DISSOLVED IN CANDIDATE 1**: over the key of object state `0`, `attRp` carries
+exactly ONE member. This is the fact decision 29's "visibly dissolve THAT fibre" clause asks for,
+cashed out by compilation rather than by argument.
+
+Paper: — (a fibre computation at a candidate subset) -/
+theorem over_pK0 {x : Item} (hx : x ∈ attRp) (h : (x.1, x.2.2) = pK0.val) : x = m0p := by
+  rw [mem_attRp] at hx
+  rcases hx with rfl | rfl
+  · rfl
+  · exact absurd h (by decide)
+
+/-- Paper: — (a fibre computation at a candidate subset) -/
+theorem over_pK1 {x : Item} (hx : x ∈ attRp) (h : (x.1, x.2.2) = pK1.val) : x = m1p := by
+  rw [mem_attRp] at hx
+  rcases hx with rfl | rfl
+  · exact absurd h (by decide)
+  · rfl
+
+/-- **THE FIBRE IS DISSOLVED IN CANDIDATE 2** as well, by the other member.
+
+Paper: — (a fibre computation at a candidate subset) -/
+theorem over_mK0 {x : Item} (hx : x ∈ attRm) (h : (x.1, x.2.2) = mK0.val) : x = m0m := by
+  rw [mem_attRm] at hx
+  rcases hx with rfl | rfl
+  · rfl
+  · exact absurd h (by decide)
+
+/-- Paper: — (a fibre computation at a candidate subset) -/
+theorem over_mK2 {x : Item} (hx : x ∈ attRm) (h : (x.1, x.2.2) = mK2.val) : x = m2m := by
+  rw [mem_attRm] at hx
+  rcases hx with rfl | rfl
+  · exact absurd h (by decide)
+  · rfl
+
+/-! ### Seriality of the UNIFORM relation on each candidate -/
+
+/-- Paper: — (an edge of the uniform key-level relation at a candidate subset) -/
+theorem strong_pK0_pK1 (t : ℤ) :
+    conStepStrong stepA pendA labA phiA 0 0 0 0 attRp t pK0 pK1 := by
+  refine ⟨?_, ?_⟩
+  · intro x hx hk
+    rw [over_pK0 hx hk]
+    exact ⟨m1p, memp_m1p, rfl, rel_m0p_m1p⟩
+  · intro y hy hk
+    rw [over_pK1 hy hk]
+    exact ⟨m0p, memp_m0p, rfl, rel_m0p_m1p⟩
+
+/-- Paper: — (an edge of the uniform key-level relation at a candidate subset) -/
+theorem strong_pK1_pK0 (t : ℤ) :
+    conStepStrong stepA pendA labA phiA 0 0 0 0 attRp t pK1 pK0 := by
+  refine ⟨?_, ?_⟩
+  · intro x hx hk
+    rw [over_pK1 hx hk]
+    exact ⟨m0p, memp_m0p, rfl, rel_m1p_m0p⟩
+  · intro y hy hk
+    rw [over_pK0 hy hk]
+    exact ⟨m1p, memp_m1p, rfl, rel_m1p_m0p⟩
+
+/-- Candidate 1 has exactly the two keys `pK0` and `pK1`.
+
+Paper: — (a carrier computation at a candidate subset) -/
+theorem conKey_attRp_cases (s : ConKey phiA 0 0 0 0 attRp) : s = pK0 ∨ s = pK1 := by
+  obtain ⟨⟨q, k⟩, S, hS⟩ := s
+  rw [mem_attRp] at hS
+  rcases hS with h | h
+  · exact Or.inl (Subtype.ext (by simpa [pK0, m0p] using congrArg (fun z : Item => (z.1, z.2.2)) h))
+  · exact Or.inr (Subtype.ext (by simpa [pK1, m1p] using congrArg (fun z : Item => (z.1, z.2.2)) h))
+
+/-- **THE UNIFORM RELATION IS SERIAL ON CANDIDATE 1** — the property
+`conStepStrong_not_serial` denies at `attR`, recovered on the certified subset the removal rule
+produces. Both keys have a singleton fibre, so the uniform clause asking for one successor key
+serving EVERY member over a key has only one member to serve.
+
+Paper: — (seriality of the uniform key-level projection on a certified subset of a fixture) -/
+theorem conStepStrong_serial_attRp (t : ℤ) (s : ConKey phiA 0 0 0 0 attRp) :
+    ∃ s', conStepStrong stepA pendA labA phiA 0 0 0 0 attRp t s s' := by
+  rcases conKey_attRp_cases s with rfl | rfl
+  · exact ⟨pK1, strong_pK0_pK1 t⟩
+  · exact ⟨pK0, strong_pK1_pK0 t⟩
+
+/-- Paper: — (an edge of the uniform key-level relation at a candidate subset) -/
+theorem strong_mK0_mK2 (t : ℤ) :
+    conStepStrong stepA pendA labA phiA 0 0 0 0 attRm t mK0 mK2 := by
+  refine ⟨?_, ?_⟩
+  · intro x hx hk
+    rw [over_mK0 hx hk]
+    exact ⟨m2m, memm_m2m, rfl, rel_m0m_m2m⟩
+  · intro y hy hk
+    rw [over_mK2 hy hk]
+    exact ⟨m0m, memm_m0m, rfl, rel_m0m_m2m⟩
+
+/-- Paper: — (an edge of the uniform key-level relation at a candidate subset) -/
+theorem strong_mK2_mK0 (t : ℤ) :
+    conStepStrong stepA pendA labA phiA 0 0 0 0 attRm t mK2 mK0 := by
+  refine ⟨?_, ?_⟩
+  · intro x hx hk
+    rw [over_mK2 hx hk]
+    exact ⟨m0m, memm_m0m, rfl, rel_m2m_m0m⟩
+  · intro y hy hk
+    rw [over_mK0 hy hk]
+    exact ⟨m2m, memm_m2m, rfl, rel_m2m_m0m⟩
+
+/-- Paper: — (a carrier computation at a candidate subset) -/
+theorem conKey_attRm_cases (s : ConKey phiA 0 0 0 0 attRm) : s = mK0 ∨ s = mK2 := by
+  obtain ⟨⟨q, k⟩, S, hS⟩ := s
+  rw [mem_attRm] at hS
+  rcases hS with h | h
+  · exact Or.inl (Subtype.ext (by simpa [mK0, m0m] using congrArg (fun z : Item => (z.1, z.2.2)) h))
+  · exact Or.inr (Subtype.ext (by simpa [mK2, m2m] using congrArg (fun z : Item => (z.1, z.2.2)) h))
+
+/-- **THE UNIFORM RELATION IS SERIAL ON CANDIDATE 2** as well.
+
+Paper: — (seriality of the uniform key-level projection on a certified subset of a fixture) -/
+theorem conStepStrong_serial_attRm (t : ℤ) (s : ConKey phiA 0 0 0 0 attRm) :
+    ∃ s', conStepStrong stepA pendA labA phiA 0 0 0 0 attRm t s s' := by
+  rcases conKey_attRm_cases s with rfl | rfl
+  · exact ⟨mK2, strong_mK0_mK2 t⟩
+  · exact ⟨mK0, strong_mK2_mK0 t⟩
+
+/-- Seriality on the empty candidate holds, but VACUOUSLY and for the wrong reason: the key-level
+carrier over `∅` is itself empty, so there is no key to serve. Compiled so the enumeration's
+degenerate row is backed by a declaration rather than by prose.
+
+Paper: — (the degenerate row of this round's seriality column) -/
+theorem conStepStrong_serial_empty (t : ℤ) (s : ConKey phiA 0 0 0 0 (∅ : Set Item)) :
+    ∃ s', conStepStrong stepA pendA labA phiA 0 0 0 0 (∅ : Set Item) t s s' := by
+  obtain ⟨-, S, hS⟩ := s
+  exact absurd hS (by simp)
+
+end ConAttack
+
+open ConAttack in
+/-- **THE ELIMINATION SURVIVES ITS ATTACK AT THE FIXTURE THAT FORCED THE RESTATEMENT.** The attack
+this section was written to carry out is the attempt to REFUTE, at `ConAttack.attR`, the existence
+of a `certAdmK`-certified nonempty subset on which `conStepStrong` is serial. **The attack fails,
+and its failure is this theorem**: the subset the removal rule returns from the letter-carrying
+member of the two-member fibre is certified, nonempty, uniformly serial, and its fibre over the key
+of object state `0` carries exactly ONE member — the last conjunct being decision 29's "visibly
+dissolve THAT fibre" clause, discharged by compilation.
+
+Read with `conStepStrong_serial_refuted`, which says the uniform relation is NOT serial on `attR`
+itself, this locates the obstruction precisely: it is not a property of the certificate conditions
+but of a certified set carrying two members over one key, and a certified subset can lack them.
+
+**What it does NOT say.** It is a verdict at ONE fixture. It does not quantify over certified
+sets, it produces no elimination operator at a general certified `R`, and it does not say the
+construction half's truth lemma is provable — `conStep_two_step_lift_refuted` is untouched, since
+the weak relation is not what this subset is serial for. The subset is PRODUCED here, never taken
+as a hypothesis. The transfer to GKWZ §5.2's elimination is by SHAPE: no theorem there applies to
+this semantics. Guardrail (b) — infinite width — stays UNMET and is not addressed.
+
+Paper: — (a fixture-level analogue of the elimination step of GKWZ 2003 §5.2's converse direction,
+transferred BY SHAPE; no theorem there applies to this semantics) -/
+theorem exists_certified_serial_dissolving_subset_at_attR :
+    ∃ R' : Set (Qa × ClType phiA × CK 0 0 0 0),
+      R' ⊆ attR ∧ R'.Nonempty ∧
+      certAdmK stepA pendA labA phiA 0 0 0 0 R' ∧
+      (∀ (t : ℤ) (s : ConKey phiA 0 0 0 0 R'),
+        ∃ s', conStepStrong stepA pendA labA phiA 0 0 0 0 R' t s s') ∧
+      (∃ x ∈ R', x.1 = (0 : Qa) ∧ ∀ y ∈ R', (y.1, y.2.2) = (x.1, x.2.2) → y = x) :=
+  ⟨attRp, attRp_subset_attR, attRp_nonempty, attRp_certAdmK, conStepStrong_serial_attRp,
+    m0p, memp_m0p, rfl, fun _y hy hk => over_pK0 hy hk⟩
+
+end ConstructionElimination
 
 end FormalSystem.Metalogic.Decidability.RaySummary

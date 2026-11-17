@@ -3987,4 +3987,84 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 #guard_msgs in
 #print axioms conStep_two_step_lift_refuted
 
+
+/-! ### The ELIMINATION, attacked at the fixture — the candidate enumeration's verdicts
+
+`exists_certified_serial_dissolving_subset_at_attR` is the verdict of the round that attacked the
+restated construction half's missing device: the removal rule keeps the `relK`-connected component
+of one member of a two-member fibre, and at `ConAttack.attR` its output is certified, nonempty,
+uniformly serial, and carries exactly ONE member over the key of object state `0`. The attack
+sought a refutation of that existence and did not find one.
+
+The per-candidate verdicts are pinned beside it because the headline theorem is an EXISTENTIAL: a
+candidate that silently stopped being certified, or a seriality proof that silently became
+vacuous, would not show up in the headline's own profile. `conStepStrong_serial_empty` is pinned
+for exactly that reason — it is the row whose seriality holds because the carrier is EMPTY, and
+the enumeration's nonemptiness exclusion (`empty_not_nonempty`) is what keeps it out of the
+verdict.
+-/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ConAttack.attRp_certAdmK' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms ConAttack.attRp_certAdmK
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ConAttack.attRm_certAdmK' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms ConAttack.attRm_certAdmK
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ConAttack.empty_certAdmK' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms ConAttack.empty_certAdmK
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ConAttack.conStepStrong_serial_attRp' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms ConAttack.conStepStrong_serial_attRp
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ConAttack.conStepStrong_serial_attRm' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms ConAttack.conStepStrong_serial_attRm
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ConAttack.conStepStrong_serial_empty' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms ConAttack.conStepStrong_serial_empty
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ConAttack.over_pK0' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms ConAttack.over_pK0
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ConAttack.over_mK0' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms ConAttack.over_mK0
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_certified_serial_dissolving_subset_at_attR' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms exists_certified_serial_dissolving_subset_at_attR
+
 end BimodalTest.Metalogic
