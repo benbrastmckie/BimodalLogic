@@ -1,23 +1,34 @@
 {
-  "task_number": 761,
-  "dispatch_seq": 85,
-  "phase": "implement",
-  "status": "implemented",
+  "dispatch_seq": 86,
+  "status": "partial",
   "phases_completed": 65,
   "phases_total": 77,
-  "summary": "Phase 22 only: the object-dependent gap clip B(Q, phi) is now recorded as a NAMED OPEN QUESTION on three surfaces (the round-34 record, docs/theorem-index.md, the RaySummary README), with its compiled boundary reproduced as a table whose every row carries COMPILED / INFERRED / OPEN and whose every COMPILED row cites a wired probe path and declaration name. No clip adopted, no agreement attempted, no Lean declaration landed, ParamsOk/paramsOkK4/Bof untouched. All carried figures were re-measured against the live tree with zero drift, and the card Q - 2 ceiling was derived from the probe source rather than carried.",
+  "summary": "Ran Phase 21, the CONSTRUCTION half (Phase 11.44 was named by the dispatch; its re-entry rule points at the first open phase from 11.48, which is the [BLOCKED] Phase 12.2, and decision 27 routes past that to Phase 21). Landed three of the phase's four objects plus the pinned ladderConstruct statement's coverage conjunct: the key-level carrier ConKey, the frame conFrame with seriality from certAdmK's condition (2) alone, the valuation conModel, and conKeyMap_covers. The truth lemma is open, so Phase 21 is [PARTIAL] and is to be re-entered. The round's principal finding is compiled: cellAt_subsingleton_of_det and fibre_subsingleton_of_det_cell_eq refute the runs-based carrier the phase body oriented toward, forcing the key-level carrier.",
   "blockers": [],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/34_object-dependent-clip-open-question-summary.md",
-      "summary": "Phase 22: the object-dependent clip recorded as a named open question with its compiled boundary."
+      "path": "specs/761_ladder_realization_theorem/summaries/34_construction-half-carrier-frame-summary.md",
+      "summary": "Phase 21: carrier, frame, valuation and coverage landed; truth lemma open; runs-based carrier refuted by compilation."
     },
     {
       "type": "record",
       "path": "specs/761_ladder_realization_theorem/records/round-34-readoff-construction-pair.md",
-      "summary": "Sections 7-12: boundary table, missing piece (i)-(iii), signature cost, attack-first sketch, scope-sentence sweep."
+      "summary": "Sections 13-20: the carrier statement committed before any Lean, the forced-key-level argument, the two candidate relations and their tension, the compiled inventory, the GKWZ Lemma 5.24 clause map, and the width finding."
+    },
+    {
+      "type": "plan",
+      "path": "specs/761_ladder_realization_theorem/plans/34_readoff-construction-pair-restatement.md",
+      "summary": "Phase 21 marked [PARTIAL] with a full Recorded Outcome block; its checklist items ticked or annotated."
     }
   ],
-  "next_action": "Phase 21 (the CONSTRUCTION half) under decision 27 option (C): certAdmK as an explicit hypothesis on an arbitrary R, untouched by the Phase 12.2 refutation. Phase 20's READ-OFF right-hand side is chosen only once the construction exists."
+  "user_decision": {
+    "blocking": false,
+    "question": "The key-level carrier Phase 21's compiled no-go forces is FINITE, so the constructed model has finite width, which guardrail (b) does not meet. Proceed at this carrier, or is infinite width a requirement that changes what half (ii) must deliver?",
+    "recommendation": "Proceed at the key-level carrier and attack the truth lemma's serial-vs-liftable tension next. The finiteness is a property of the output forced by the pinned equation, not an assumption on an input, and Phase 21's own task list directed that it be recorded as a finding rather than repaired."
+  },
+  "next_steps": [
+    "Re-enter Phase 21 for its remaining object, the truth lemma, at the tension recorded in the round record section 16: the weak relation conStep is serial but its paths need not lift into R; the strong relation conStepStrong lifts by choice and refines it (conStep_of_strong) but asks a seriality certBiInfK does not supply. Both relations are now landed objects, so the next round attacks rather than designs.",
+    "Then Phase 20: choose the READ-OFF half's right-hand side with the constructed model in hand, which is the second half of decision 27's obligation. Do not restate the READ-OFF target before the construction's truth lemma exists."
+  ]
 }

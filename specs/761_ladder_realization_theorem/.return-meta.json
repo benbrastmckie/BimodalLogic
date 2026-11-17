@@ -1,38 +1,57 @@
 {
-  "status": "implemented",
+  "status": "partial",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
     "vacuous_count": 0,
-    "axiom_count": 12,
+    "axiom_count": 0,
     "build_passed": true
   },
+  "requires_user_review": false,
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/34_object-dependent-clip-open-question-summary.md",
-      "summary": "Phase 22: the object-dependent gap clip recorded as a named open question with its compiled boundary on three surfaces."
+      "path": "specs/761_ladder_realization_theorem/summaries/34_construction-half-carrier-frame-summary.md",
+      "summary": "Phase 21 (CONSTRUCTION half): carrier, frame, valuation and the pinned statement's coverage conjunct landed; the truth lemma is open and the runs-based carrier is refuted by compilation."
     }
   ],
   "completion_data": {
-    "completion_summary": "Phase 22 landed: the object-dependent gap clip B(Q, phi) -- the one unrefuted route in this chain -- is recorded as a NAMED OPEN QUESTION in the round-34 record, in docs/theorem-index.md's gap section and in the RaySummary README, with a boundary table whose every row carries COMPILED / INFERRED / OPEN and whose every COMPILED row cites a wired probe. No clip is adopted, no agreement attempted, no Lean declaration landed, and paramsOkK4/Bof/ParamsOk are untouched.",
+    "completion_summary": "Phase 21's construction half landed three of its four objects -- the key-level carrier ConKey, the frame conFrame (seriality from certAdmK's condition (2) alone) and the valuation conModel -- plus conKeyMap_covers, the pinned ladderConstruct statement's first conjunct. The truth lemma is open; the phase is [PARTIAL]. The round's principal finding is compiled rather than argued: cellAt_subsingleton_of_det and fibre_subsingleton_of_det_cell_eq show a two-sided deterministic frame of this scheme has subsingleton cells, so the runs-based carrier the phase body oriented toward cannot satisfy the pinned cell equation for any certified set with a non-singleton fibre.",
     "roadmap_items": []
   },
   "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
     "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
     "docs/theorem-index.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl",
+    "typst/generated/status.typ",
     "specs/761_ladder_realization_theorem/plans/34_readoff-construction-pair-restatement.md",
     "specs/761_ladder_realization_theorem/records/round-34-readoff-construction-pair.md",
-    "specs/761_ladder_realization_theorem/summaries/34_object-dependent-clip-open-question-summary.md"
+    "specs/761_ladder_realization_theorem/summaries/34_construction-half-carrier-frame-summary.md",
+    "specs/761_ladder_realization_theorem/issues.jsonl"
   ],
+  "user_decision": {
+    "blocking": false,
+    "question": "Phase 21's carrier is forced key-level by compilation, and a key-level carrier is FINITE, so the constructed model has finite width -- which guardrail (b) ('infinite width, no fibre bound') does not meet. Should the construction half proceed at this carrier (attacking the truth lemma's serial-vs-liftable tension next), or is an infinite-width carrier a requirement that changes what half (ii) is asked to deliver?",
+    "recommendation": "Proceed at the key-level carrier. The finiteness is a property of the OUTPUT forced by the pinned cell equation, not an assumption on an input: cellAt_subsingleton_of_det plus fibre_subsingleton_of_det_cell_eq rule out every carrier whose world state determines a member, and the pinned ladderConstruct statement asks only for cells = fibres, which a finite-slice model can satisfy. Phase 21's own task list anticipated exactly this and directed that it be RECORDED as a finding rather than repaired, which is what was done. The open question -- whether a carrier satisfying the equation with infinite width exists -- is recorded and asserted nowhere.",
+    "context": "Guardrail (b) is a task-level constraint on the realization theorem; the pinned ladderConstruct signature carries no width clause. If the user wants half (ii) usable by a decidability consumer, that is a different and larger statement than the one pinned, and it would be a signature change."
+  },
+  "partial_progress": {
+    "stage": "phase_21_partial",
+    "details": "Phase 21 [PARTIAL]: carrier, frame, valuation and coverage landed; the truth lemma is the remaining object. Phase 12.2 remains [BLOCKED] and was deliberately not entered, per decision 27.",
+    "phases_completed": 65,
+    "phases_total": 77
+  },
   "metadata": {
     "session_id": "sess_1794873265_b9bafc",
     "agent_type": "lean-implementation-agent",
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "dispatch_seq": 85,
+    "task_dir": "specs/761_ladder_realization_theorem",
+    "dispatch_seq": 86,
     "compliance_check": "passed",
-    "phases_completed": 65,
-    "phases_total": 77
+    "phase_executed": "21",
+    "phase_named_by_dispatch": "11.44"
   }
 }

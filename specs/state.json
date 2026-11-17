@@ -169,9 +169,9 @@
           "type": "plan"
         },
         {
-          "path": "specs/761_ladder_realization_theorem/summaries/34_object-dependent-clip-open-question-summary.md",
+          "path": "specs/761_ladder_realization_theorem/summaries/34_construction-half-carrier-frame-summary.md",
           "type": "summary",
-          "summary": "Phase 22: the object-dependent clip recorded as a named open question with its compiled boundary."
+          "summary": "Phase 21: carrier, frame, valuation and coverage landed; truth lemma open; runs-based carrier refuted by compilation."
         }
       ],
       "next_artifact_number": 35,
