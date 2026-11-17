@@ -3691,10 +3691,10 @@ def mkTS (L : List PlusFormula) : ClType phiS :=
 
 /-- The empty type: it carries neither `⊡p` nor `p`. It is the member whose deletion breaks the
 clause. -/
-def Sempty : ClType phiS := mkTS []
+def clEmpty : ClType phiS := mkTS []
 
 /-- The type carrying `p` and NOT `⊡p`. -/
-def Sp : ClType phiS := mkTS [pF]
+def clP : ClType phiS := mkTS [pF]
 
 /-- The one counter class: the parameters are all `0`, so `CK 0 0 0 0` is a subsingleton and the
 class coordinate separates nothing — every member here shares one key. -/
@@ -3704,24 +3704,24 @@ def kS : CK 0 0 0 0 := kappa 0 0 0 0 (0, 0)
 abbrev ItemS : Type := Qs × ClType phiS × CK 0 0 0 0
 
 /-- The member with the empty type. -/
-def n0 : ItemS := ((0 : Qs), Sempty, kS)
+def n0 : ItemS := ((0 : Qs), clEmpty, kS)
 
 /-- The member carrying `p`. -/
-def n1 : ItemS := ((0 : Qs), Sp, kS)
+def n1 : ItemS := ((0 : Qs), clP, kS)
 
 /-- The larger set, on which condition (5) HOLDS. -/
-def RS : Set ItemS := {n0, n1}
+def bigR : Set ItemS := {n0, n1}
 
 /-- The subset, on which condition (5) FAILS. -/
-def RS' : Set ItemS := {n1}
+def subR : Set ItemS := {n1}
 
 /-- Paper: — (a fixture membership, unfolded) -/
-theorem mem_RS {x : ItemS} : x ∈ RS ↔ (x = n0 ∨ x = n1) := by
-  simp [RS, Set.mem_insert_iff, Set.mem_singleton_iff]
+theorem mem_bigR {x : ItemS} : x ∈ bigR ↔ (x = n0 ∨ x = n1) := by
+  simp [bigR, Set.mem_insert_iff, Set.mem_singleton_iff]
 
 /-- Paper: — (a fixture membership, unfolded) -/
-theorem mem_RS' {x : ItemS} : x ∈ RS' ↔ x = n1 := by
-  simp [RS', Set.mem_singleton_iff]
+theorem mem_subR {x : ItemS} : x ∈ subR ↔ x = n1 := by
+  simp [subR, Set.mem_singleton_iff]
 
 /-- The closure's only `⊡` letter is the formula itself.
 
@@ -3745,57 +3745,57 @@ theorem exists_stab_in_closure : ∃ ψ ∈ plusSubformulaClosure phiS, isStab �
   ⟨phiS, phiS_mem_closure, isStab_phiS⟩
 
 /-- Paper: — (a fixture type computation) -/
-theorem phiS_notin_Sempty : phiS ∉ Sempty.val := by decide
+theorem phiS_notin_clEmpty : phiS ∉ clEmpty.val := by decide
 
 /-- Paper: — (a fixture type computation) -/
-theorem phiS_notin_Sp : phiS ∉ Sp.val := by decide
+theorem phiS_notin_clP : phiS ∉ clP.val := by decide
 
 /-- Paper: — (a fixture type computation) -/
-theorem pF_notin_Sempty : pF ∉ Sempty.val := by decide
+theorem pF_notin_clEmpty : pF ∉ clEmpty.val := by decide
 
 /-- Paper: — (a fixture type computation) -/
-theorem pF_mem_Sp : pF ∈ Sp.val := by decide
+theorem pF_mem_clP : pF ∈ clP.val := by decide
 
 /-- Paper: — (the removal's output is a subset of its input) -/
-theorem RS'_subset_RS : RS' ⊆ RS := by
-  intro x hx; rw [mem_RS'] at hx; rw [mem_RS]; exact Or.inr hx
+theorem subR_subset_bigR : subR ⊆ bigR := by
+  intro x hx; rw [mem_subR] at hx; rw [mem_bigR]; exact Or.inr hx
 
 /-- Paper: — (nonemptiness of the smaller set) -/
-theorem RS'_nonempty : RS'.Nonempty := ⟨n1, by rw [mem_RS']⟩
+theorem subR_nonempty : subR.Nonempty := ⟨n1, by rw [mem_subR]⟩
 
 /-- **CONDITION (5) HOLDS ON THE LARGER SET**: neither member carries `⊡p`, and the clause's right
 side is false at both because `n0` carries no `p`.
 
 Paper: — (condition (5) at a fixture) -/
-theorem RS_certStabK : certStabK phiS 0 0 0 0 RS := by
+theorem bigR_certStabK : certStabK phiS 0 0 0 0 bigR := by
   intro x hx ψ hψ hs
   rw [stab_only ψ hψ hs, argOf_phiS]
-  rw [mem_RS] at hx
-  have hn0 : n0 ∈ RS := by rw [mem_RS]; exact Or.inl rfl
+  rw [mem_bigR] at hx
+  have hn0 : n0 ∈ bigR := by rw [mem_bigR]; exact Or.inl rfl
   constructor
   · intro hmem
     rcases hx with h | h <;> subst h
-    · exact absurd hmem phiS_notin_Sempty
-    · exact absurd hmem phiS_notin_Sp
+    · exact absurd hmem phiS_notin_clEmpty
+    · exact absurd hmem phiS_notin_clP
   · intro hall
     rcases hx with h | h <;> subst h
-    · exact absurd (hall n0 hn0 rfl rfl) pF_notin_Sempty
-    · exact absurd (hall n0 hn0 rfl rfl) pF_notin_Sempty
+    · exact absurd (hall n0 hn0 rfl rfl) pF_notin_clEmpty
+    · exact absurd (hall n0 hn0 rfl rfl) pF_notin_clEmpty
 
 /-- **AND FAILS ON THE SUBSET**: with `n0` deleted, the clause's right side at `n1` becomes
 `p ∈ n1`, which is TRUE, while `⊡p ∈ n1` is false. The `←` direction fails at a member that did
 not carry the letter — exactly the mechanism Phase 23's record stated as a hazard.
 
 Paper: — (the non-inheritance of condition (5) under shrinking) -/
-theorem RS'_not_certStabK : ¬ certStabK phiS 0 0 0 0 RS' := by
+theorem subR_not_certStabK : ¬ certStabK phiS 0 0 0 0 subR := by
   intro h
-  have hn1 : n1 ∈ RS' := by rw [mem_RS']
+  have hn1 : n1 ∈ subR := by rw [mem_subR]
   have hmp := (h n1 hn1 phiS phiS_mem_closure isStab_phiS).2
   rw [argOf_phiS] at hmp
-  refine absurd (hmp ?_) phiS_notin_Sp
+  refine absurd (hmp ?_) phiS_notin_clP
   intro y hy _ _
-  rw [mem_RS'] at hy; subst hy
-  exact pF_mem_Sp
+  rw [mem_subR] at hy; subst hy
+  exact pF_mem_clP
 
 end StabShrink
 
@@ -3816,9 +3816,9 @@ theorem certStabK_not_monotone :
       (R R' : Set (Q × ClType φ × CK Tc Tn P B)),
       R' ⊆ R ∧ R'.Nonempty ∧ (∃ ψ ∈ plusSubformulaClosure φ, isStab ψ = true) ∧
         certStabK φ Tc Tn P B R ∧ ¬ certStabK φ Tc Tn P B R' :=
-  ⟨StabShrink.Qs, StabShrink.phiS, 0, 0, 0, 0, StabShrink.RS, StabShrink.RS',
-    StabShrink.RS'_subset_RS, StabShrink.RS'_nonempty, StabShrink.exists_stab_in_closure,
-    StabShrink.RS_certStabK, StabShrink.RS'_not_certStabK⟩
+  ⟨StabShrink.Qs, StabShrink.phiS, 0, 0, 0, 0, StabShrink.bigR, StabShrink.subR,
+    StabShrink.subR_subset_bigR, StabShrink.subR_nonempty, StabShrink.exists_stab_in_closure,
+    StabShrink.bigR_certStabK, StabShrink.subR_not_certStabK⟩
 
 end ConstructionEliminationGeneral
 

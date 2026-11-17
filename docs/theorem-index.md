@@ -1061,6 +1061,32 @@ is not read as an oversight:
   2003 §5.2's elimination is by SHAPE: no theorem there applies to this semantics. The
   constructed model's finite width is unchanged by any of this.
 
+- **At a GENERAL certified set the elimination is REDUCED, not landed — and the obstruction it
+  reduces to is now COMPILED rather than argued.** Two results in
+  [`LadderRealize.lean`](../FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean).
+  First the reduction: call a certified set KEY-INJECTIVE when every key carries at most one
+  member (`KeyFibreInj`); then the uniform key-level relation IS serial on it
+  (`conStepStrong_serial_of_keyFibreInj`), from certificate condition (2) alone, with no parameter
+  condition consumed and no finiteness instance used — so the whole elimination question reduces,
+  with nothing left over, to producing a key-injective certified nonempty subset
+  (`exists_certified_serial_subset_of_keyFibreInj_subset`). That reduction is not vacuous: the two
+  fixture seriality results above are its instances (`serial_attRp_via_general`,
+  `serial_attRm_via_general`), re-derived from the general statement. Second the cost: on a
+  key-injective set the `⊡` acceptance clause is EQUIVALENT to the collapse of the letter onto its
+  argument at every member (`certStabK_iff_collapse_of_keyFibreInj`), and a certified set supplies
+  only the `⟹` half of that collapse, so a key-injective candidate owes the converse at every
+  member it keeps. The non-inheritance of condition (5) under shrinking, stated as prose above, is
+  now a theorem at a closure that DOES bear a `⊡` letter: `certStabK_not_monotone` exhibits a
+  nonempty subset on which the clause fails while it holds on the larger set, with the closure's
+  `⊡`-bearing-ness carried as a conjunct of the statement so the verdict is not about a `⊡`-free
+  closure. **What this does not establish**: the elimination lemma at a general certified set is
+  OPEN — neither landed nor refuted. No declaration produces a key-injective certified subset of
+  an arbitrary certified set or asserts one exists; none takes a certified subset as a binder of a
+  conclusion, asserts maximality, or is stated at `Dmax` (`dmax_certStabK`/`dmax_certBoxK` still
+  have no hits). The finiteness instances a descending elimination would need (`Fintype (ClType
+  φ)`, `Fintype (CK Tc Tn P B)`, and their product with a finite object) are all derivable by
+  instance search and none had to be written. Guardrail (b) — infinite width — stays UNMET.
+
 ## Related documentation
 
 - [`README.md`](../README.md) — project overview and the `## Verifying the main theorems` recipe

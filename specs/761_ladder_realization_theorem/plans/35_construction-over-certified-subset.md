@@ -14754,7 +14754,7 @@ whether iterating the rule terminates at a uniformly singleton-fibred subset at 
 
 ---
 
-### Phase 24: The ELIMINATION LEMMA at a GENERAL Certified `R` — CONDITIONAL ON PHASE 23's OUTCOME (a) [IN PROGRESS]
+### Phase 24: The ELIMINATION LEMMA at a GENERAL Certified `R` — CONDITIONAL ON PHASE 23's OUTCOME (a) [PARTIAL]
 
 **ADDED BY THE (Q-2) REVISION (decision 29, obligation: "the elimination that forms it is itself
 owed"). ENTERED ONLY ON PHASE 23's OUTCOME (a).** On outcome (b) this phase closes
@@ -14767,9 +14767,11 @@ outcome, not by assuming it.**
 needs, seriality of `conStepStrong` on `R'`. The subset is CONSTRUCTED; it is never a binder.
 
 **Tasks**:
-- [ ] State the lemma in the record **before** attempting it, and diff it against the `(Q-2)`
+- [x] State the lemma in the record **before** attempting it, and diff it against the `(Q-2)`
       sub-block's first three conjuncts token-for-token. Any difference is a Statement Fidelity
-      finding, reported rather than accepted.
+      finding, reported rather than accepted. *(completed — record §9.1/§9.2; the three conjuncts
+      match token for token, and the one divergence (`[Nonempty Q]` dropped) is in the
+      strengthening direction and is reported there)*
 - [ ] **CHECK THE FINITENESS INSTANCES AT ENTRY RATHER THAN ASSUMING THEM.** The termination of a
       descending elimination needs the ambient type to be finite. At this revision's authoring the
       types look finite from their own definitions — `Q` carries `[Fintype Q]` in the pin, `ClType
@@ -14777,22 +14779,51 @@ needs, seriality of `conStepStrong` on `R'`. The subset is CONSTRUCTED; it is ne
       `Fin`s — **but no `Finite`/`Fintype` instance for `ClType φ × CK …` was located by `grep` at
       this revision's authoring, and this plan does not assert one exists.** Locate or land the
       instances, and record which. If they cannot be landed cheaply, that is a finding about the
-      route, recorded as one before any workaround is attempted.
-- [ ] Define the elimination as the iterate of Phase 23's removal rule and prove it reaches a
+      route, recorded as one before any workaround is attempted. *(completed — record §9.3; all
+      four instances plus `DecidableEq (ClType φ)` and `Finite (Q × ClType φ × CK …)` are
+      DERIVABLE by instance search and none had to be written. The plan's `grep` finding is
+      confirmed and the inference from it corrected)*
+- [x] Define the elimination as the iterate of Phase 23's removal rule and prove it reaches a
       fixpoint. **State it existentially, never as a maximum** (Ruling 38: the union of two
-      certified serial subsets need not be one).
+      certified serial subsets need not be one). *(deviation: altered — the iterate does NOT
+      generalize, and the reason is a fact about the rule rather than a preference about proofs:
+      Phase 23's rule keeps the `relK`-connected component of a chosen member, which cuts the
+      fibre at `attR` only because `relK` there is two DISJOINT two-cycles. When the two members
+      over one key are `relK`-connected inside `R` the component contains both, the rule returns
+      the fibre intact, and the iterate has no descent to perform — its fixpoint is
+      "`relK`-connected", which is not the property the construction needs. Replaced by the
+      KEY-INJECTIVITY reduction: `KeyFibreInj` plus `conStepStrong_serial_of_keyFibreInj` plus
+      `exists_certified_serial_subset_of_keyFibreInj_subset`, which reduces this phase's whole
+      target to producing a key-injective certified nonempty subset, with Phase 23's two fixture
+      seriality results re-derived as its instances. Stated existentially throughout and asserting
+      no maximum. Record §10)*
 - [ ] Prove `certAdmK` of the fixpoint, condition by condition, with the `⊡` and `□` acceptance
       clauses discharged EXPLICITLY rather than inherited by handwave — they are the two conditions
       `CounterQuotient.lean:105-113` records as not preserved by unions, and a subset argument owes
-      them separately.
+      them separately. *(deviation: NOT DONE — there is no fixpoint to certify, the iterate having
+      been found not to generalize. Condition (5) is REFUTED as inherited at a `⊡`-bearing closure
+      by `certStabK_not_monotone`, which PAYS one of the three debts Phase 23's §5 assigned to this
+      phase; condition (6) is recorded UNMEASURED, not discharged; conditions (2), (3) and (4) are
+      the open positive side. Six-condition table at record §12)*
 - [ ] Prove nonemptiness of the fixpoint from `hne`, or record the compiled counterexample. **A
       nonemptiness that cannot be proved is a refutation of (C) at the general statement**, which
-      returns the route to Phase 26 and is a complete, reportable outcome.
-- [ ] Prove `conStepStrong` serial on the fixpoint. This is the property `ofSlicedStepFinBranch`
+      returns the route to Phase 26 and is a complete, reportable outcome. *(deviation: NOT DONE —
+      no fixpoint, so neither branch is reached. This is explicitly NOT the refutation this task
+      names: the general lemma is OPEN, not refuted, and record §11/§13 say so)*
+- [x] Prove `conStepStrong` serial on the fixpoint. This is the property `ofSlicedStepFinBranch`
       needs and the one `conStepStrong_serial_refuted` denies at the un-eliminated `attR`; the
-      contrast between the two is recorded explicitly, with both declarations named.
-- [ ] `#print axioms` on each landed declaration; add the `docs/theorem-index.md` rows, the
-      matching `check-module-invariants.sh` C14 entries, and the axiom pins.
+      contrast between the two is recorded explicitly, with both declarations named. *(deviation:
+      altered — proved on any KEY-INJECTIVE certified set rather than on a fixpoint:
+      `conStepStrong_serial_of_keyFibreInj`, from condition (2) alone, no `ParamsOk` and no
+      finiteness instance consumed. The contrast with `conStepStrong_serial_refuted` is recorded
+      with both declarations named, in the section docstring, record §10 and the theorem index)*
+- [x] `#print axioms` on each landed declaration; add the `docs/theorem-index.md` rows, the
+      matching `check-module-invariants.sh` C14 entries, and the axiom pins. *(completed — ten
+      pins in `KTypeSummaryAxiomTest.lean`, all `[propext, Classical.choice, Quot.sound]`; one new
+      `docs/theorem-index.md` bullet. **No C14 heredoc entry is owed**, for the same reason Phase
+      23 recorded: C14's pinned set is the consequence/compactness stack plus `Metalogic.lean`'s
+      SORRY-FREE claims, none of which this section touches, and `check-module-invariants.sh`
+      reports `PASS C14` unchanged)*
 
 **Prohibited workarounds**: do NOT take `R'` as a hypothesis in any landed statement; do NOT state
 the elimination as a greatest or maximum subset; do NOT instantiate at `Dmax` while
@@ -14852,6 +14883,54 @@ against `longFile 3100` at this revision's authoring and **Phase 23 will have mo
 - `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests` exits 0 with `sorry_count: 0`.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` — each PASS.
 - `bash .claude/scripts/verify-deploy.sh` — the full gate set.
+
+**Recorded file-list deviations** *(deviation: altered)*: `scripts/check-module-invariants.sh` was
+NOT edited — **no C14 heredoc entry is owed**, for the reason Phase 23 recorded and this phase
+re-checked: C14's pinned set is the consequence/compactness stack plus every SORRY-FREE claim of
+`Metalogic.lean`, none of which this section touches, and `check-module-invariants.sh` reports
+`PASS C14` unchanged. *(deviation: altered)* THREE FILES NOT IN THE LIST WERE WRITTEN: `README.md`,
+`FormalSystem/Metalogic/README.md` and
+`FormalSystem/Metalogic/Decidability/RaySummary/README.md`, whose GENERATED inventory blocks carry
+per-module line counts and went stale the moment the module grew. They were regenerated through
+the sanctioned entry point, `bash scripts/check-module-invariants.sh --emit-inventory`; the phase's
+own Verification requires that script PASS, so the alternative was a failing gate. Cross-set
+collision with task 744 (README, invariants) is left to the admission gate, as the task's FILE
+SCOPE paragraph directs.
+
+#### Recorded Outcome
+
+**`[PARTIAL]` — THE ELIMINATION IS REDUCED, NOT LANDED, AND THE OBSTRUCTION IT REDUCES TO IS
+COMPILED.** This is the outcome this phase's own `Timing` paragraph provides for. The general
+elimination lemma at an arbitrary certified `R` is **OPEN — neither landed nor refuted** — and the
+step it is open at is now exactly named. Record:
+`records/round-35-construction-over-certified-subset.md`, sections 9–14.
+
+| Item | Disposition | Evidence |
+|---|---|---|
+| The lemma, stated in the record BEFORE any Lean | **RECORDED FIRST**, in its own commit | record §9.1, commit `a724cd3a1`; the Lean landed in `cec98e0dd`, so the rule-before-operator check holds in commit order |
+| Token-for-token diff against the `(Q-2)` pin's first three conjuncts | **MATCH**; one divergence, `[Nonempty Q]` dropped, which is a WEAKENING OF THE HYPOTHESIS SET and so proves more | record §9.2 |
+| The finiteness instances | **ALL DERIVABLE by instance search; NONE had to be written** — the plan's `grep` finding is confirmed and the inference from it corrected | record §9.3, compiled standalone against the module |
+| Phase 23's removal rule as an ITERATE at a general `R` | **DOES NOT GENERALIZE** — the component of a chosen member contains the other fibre member whenever the two are `relK`-connected inside `R`, so the iterate has no descent and its fixpoint is "`relK`-connected", not key-injective | record §10; this is the phase's one decomposition deviation and it is reported, not annotated away |
+| THE REDUCTION | **LANDED** — the uniform relation is serial on any KEY-INJECTIVE certified set, from condition (2) alone; no `ParamsOk`, no finiteness instance, no width assumption | `KeyFibreInj`, `conStepStrong_serial_of_keyFibreInj`, `exists_certified_serial_subset_of_keyFibreInj_subset` |
+| The reduction is NOT VACUOUS | **SUBSUMPTION COMPILED** — Phase 23's two seriality results are its instances | `ConAttack.attRp_keyFibreInj`, `attRm_keyFibreInj`, `serial_attRp_via_general`, `serial_attRm_via_general` |
+| What key-injectivity costs at condition (5) | **CHARACTERIZED** — on a key-injective set condition (5) IS the collapse `⊡ψ ∈ x ↔ ψ ∈ x` at every member; the clause is carried in full, this is an equivalence to it | `certStabK_iff_collapse_of_keyFibreInj` |
+| Phase 23's debt "conditions (5)/(6) under shrinking at a `⊡`-BEARING closure" | **PAID for (5), in the negative direction** — condition (5) is NOT monotone under shrinking, at a closure that bears a `⊡` letter, the `⊡`-bearing-ness carried as a conjunct of the statement | `certStabK_not_monotone`; `StabShrink.bigR_certStabK`, `StabShrink.subR_not_certStabK`, `StabShrink.exists_stab_in_closure` |
+| Condition (6) under shrinking | **UNMEASURED, and recorded as unmeasured rather than discharged** — its right side is a universal over the WHOLE set, so key-injectivity does not collapse it and a separate witness is owed | record §12 |
+| Conditions (2), (3), (4) on a key-injective candidate | **OPEN — the positive side of the remaining step** | record §12 |
+| The six-condition check | **ANSWERED by stating there is no fixpoint to discharge six conditions on**, not by listing six declarations about something else | record §12 |
+| NO-HYPOTHESIS check | **HOLDS** — no binder of any landed statement is a certified subset; the one statement that mentions a subset in a hypothesis quantifies it existentially | record §10 |
+| NOT-A-MAXIMUM check | **HOLDS** — no landed statement asserts maximality or greatest-ness | Ruling 38 |
+| Axiom profile of every landed declaration | `[propext, Classical.choice, Quot.sound]` | ten pins in `KTypeSummaryAxiomTest.lean`; `sorry_count: 0`, vacuous-grep 1 (the pre-existing `TemporalStructures.lean:495` baseline), zero new `^axiom ` |
+| Guardrail (b) | **UNMET**, and not addressed, narrowed or reported as met | Ruling 39; record §13 |
+
+**The branch, and why no `user_decision` is raised.** Decision 29 already names the sanctioned
+attack-first fallback for the case where route (C) does not close: option (A), **Phase 26's** third
+step relation as the greatest fixpoint of the largest composing subrelation of `conStep`, ATTACKED
+for seriality at `ConAttack.attR` BEFORE adoption. Nothing in this outcome requires a judgement the
+artifacts cannot supply, so the route continues on the recorded decision. **Phase 24 is not closed
+and may be re-entered**: its remaining step is to produce a certified nonempty subset on which every
+key carries one member, against conditions (2), (3), (4) which a key-injective selection need not
+preserve and condition (5) which it provably need not inherit.
 
 ---
 
