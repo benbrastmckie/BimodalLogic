@@ -193,7 +193,7 @@ open FormalSystem.Metalogic.Decidability
 
 -- The module's recorded length ceiling: the offset-invariance section takes the file past the
 -- default limit.
-set_option linter.style.longFile 2700
+set_option linter.style.longFile 3100
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -2597,5 +2597,471 @@ theorem conStep_of_strong {Q : Type} {step : Q → Q → Bool} {pend : Q → Boo
   exact ⟨(q, S, k), hS, (q', S', k'), hy, rfl, hkey, hxy⟩
 
 end Construction
+
+/-! ## The two landed key-level relations, ATTACKED — and both refuted
+
+The construction's truth lemma was left open at a named tension: the WEAK key-level relation
+`conStep` is serial straight from `certAdmK`'s condition (2) (`conStep_fwd`, `conStep_bwd`) but
+its edges are witnessed one at a time and need not compose inside `R`; the UNIFORM relation
+`conStepStrong` composes — a path of its edges lifts by dependent choice from any member of the
+fibre — but asks for a successor key serving EVERY member over a key at once, which `certBiInfK`
+does not supply. This section ATTACKS both, and **both are refuted at one explicit
+`certAdmK`-certified set**:
+
+* `conStepStrong_serial_refuted` — the uniform relation is NOT serial under `certAdmK`. So the
+  liftable relation cannot be the frame's step relation: `ofSlicedStepFinBranch` needs seriality.
+* `conStep_two_step_lift_refuted` — the weak relation's edges do NOT compose inside `R`, and the
+  failure is already at length TWO. So no bi-infinite-path argument is needed to see it, and no
+  weakening of the lifting demand to finite windows rescues it.
+
+**The fixture, and why it is this one.** The object is `Fin 3` with `0 → 1`, `0 → 2`, `1 → 0`,
+`2 → 0` and no state pending; the formula is `g U e` with `g` true exactly at `0` and `e` true
+exactly at `1`; the parameters are all `0`. `locPred` leaves a strict-until letter unconstrained,
+so each object state carries exactly TWO locally coherent closure types — with and without the
+letter — and `linkPred` then PINS which successor each of them admits: the letter-carrying type
+at `0` can only step to `1` (where `e` holds), the letter-free type at `0` only to `2` (where
+neither `g` nor `e` holds). The fibre over the key of `0` therefore has two members whose
+successor KEYS are disjoint, which is exactly what both refutations consume. Nothing about the
+counter quotient is used: the parameters are all `0`, every member carries the one class
+`kappa 0 0 0 0 (0, 0)`, and the separation is on the OBJECT coordinate alone. That is deliberate
+— the construction direction takes `certAdmK` as an explicit hypothesis and consumes no parameter
+condition (`ParamsOk` appears nowhere in this module's construction section), so a refutation at
+any parameters refutes the general statement.
+
+**What this does NOT say.** It does not refute the construction's target equation, and it does
+not say the truth lemma is false: it says that NEITHER of the two landed relations proves it, the
+one that is serial failing to lift and the one that lifts failing to be serial. What a third
+relation could do is not addressed here and nothing below asserts anything about one.
+-/
+
+section ConstructionAttack
+
+namespace ConAttack
+
+/-- The attack's object: three states. -/
+abbrev Qa : Type := Fin 3
+
+/-- The object's step graph: `0 → 1`, `0 → 2`, `1 → 0`, `2 → 0`, and nothing else. -/
+def stepA : Qa → Qa → Bool := fun q q' =>
+  (q == 0 && (q' == 1 || q' == 2)) || ((q == 1 || q == 2) && q' == 0)
+
+/-- No state is pending: the counter side of `relK` is the idle one throughout. -/
+def pendA : Qa → Bool := fun _ => false
+
+/-- The guard atom. -/
+def gAtom : Atom := ⟨"g", none⟩
+
+/-- The event atom. -/
+def eAtom : Atom := ⟨"e", none⟩
+
+/-- The guard, as a formula. -/
+def gF : PlusFormula := .atom gAtom
+
+/-- The event, as a formula. -/
+def eF : PlusFormula := .atom eAtom
+
+/-- `g` holds exactly at `0`, `e` exactly at `1`, and nothing else holds anywhere. -/
+def labA : Qa → Atom → Bool := fun q at_ =>
+  if at_ = gAtom then q == 0 else if at_ = eAtom then q == 1 else false
+
+/-- The attack's formula: one strict until, whose letter `locPred` leaves unconstrained. -/
+def phiA : PlusFormula := .untl gF eF
+
+/-- A closure type from a membership list, as a `filter` — the standard fixture idiom. -/
+def mkTA (L : List PlusFormula) : ClType phiA :=
+  ⟨(plusSubformulaClosure phiA).filter (fun ψ => ψ ∈ L),
+    Finset.mem_powerset.mpr (Finset.filter_subset _ _)⟩
+
+/-- At `0`, the type WITH the until letter. -/
+def T0p : ClType phiA := mkTA [gF, phiA]
+
+/-- At `0`, the type WITHOUT the until letter. -/
+def T0m : ClType phiA := mkTA [gF]
+
+/-- At `1`, the type with the event and the until letter. -/
+def T1p : ClType phiA := mkTA [eF, phiA]
+
+/-- At `2`, the empty type. -/
+def T2m : ClType phiA := mkTA []
+
+/-- The one counter class every member carries: the parameters are all `0`, so `CK 0 0 0 0` is a
+subsingleton and the class coordinate separates nothing. -/
+def kA : CK 0 0 0 0 := kappa 0 0 0 0 (0, 0)
+
+/-- The carrier of the attack's certified set. -/
+abbrev Item : Type := Qa × ClType phiA × CK 0 0 0 0
+
+/-- The letter-carrying member at `0`. -/
+def m0p : Item := ((0 : Qa), T0p, kA)
+
+/-- The member at `1`. -/
+def m1p : Item := ((1 : Qa), T1p, kA)
+
+/-- The letter-free member at `0`. -/
+def m0m : Item := ((0 : Qa), T0m, kA)
+
+/-- The member at `2`. -/
+def m2m : Item := ((2 : Qa), T2m, kA)
+
+/-- **The certified set**: two two-cycles sharing the key of the object state `0`, one carrying
+the until letter and one not. -/
+def attR : Set Item := {m0p, m1p, m0m, m2m}
+
+/-- Membership in the attack's set, unfolded.
+
+Paper: — (a fixture of this repository's construction direction) -/
+theorem mem_attR {x : Item} : x ∈ attR ↔ (x = m0p ∨ x = m1p ∨ x = m0m ∨ x = m2m) := by
+  simp [attR, Set.mem_insert_iff, Set.mem_singleton_iff]
+
+/-- The certificate relation at the attack's parameters. -/
+abbrev relA : Item → Item → Prop := relK stepA pendA labA phiA 0 0 0 0
+
+/-- The counter side of every edge below: idle to idle at the one class.
+
+Paper: — (the counter component of this repository's `relK` at degenerate parameters) -/
+theorem rk_self : RK 0 0 0 0 false false kA kA := by decide
+
+/-- The letter-carrying member at `0` steps to `1`.
+
+Paper: — (a fixture edge) -/
+theorem rel_m0p_m1p : relA m0p m1p := ⟨by decide, rk_self⟩
+
+/-- `1` steps back to the letter-carrying member at `0`.
+
+Paper: — (a fixture edge) -/
+theorem rel_m1p_m0p : relA m1p m0p := ⟨by decide, rk_self⟩
+
+/-- The letter-free member at `0` steps to `2`.
+
+Paper: — (a fixture edge) -/
+theorem rel_m0m_m2m : relA m0m m2m := ⟨by decide, rk_self⟩
+
+/-- `2` steps back to the letter-free member at `0`.
+
+Paper: — (a fixture edge) -/
+theorem rel_m2m_m0m : relA m2m m0m := ⟨by decide, rk_self⟩
+
+/-- Paper: — (a fixture non-edge: `stepA 0 0 = false`) -/
+theorem not_rel_m0p_m0p : ¬ relA m0p m0p := fun h => absurd h.1 (by decide)
+
+/-- Paper: — (a fixture non-edge: `stepA 0 0 = false`) -/
+theorem not_rel_m0p_m0m : ¬ relA m0p m0m := fun h => absurd h.1 (by decide)
+
+/-- **The separating non-edge, forward**: the letter-carrying type at `0` cannot step to `2`,
+because `linkPred` demands the event or the guard-plus-letter at the successor and `2` has
+neither.
+
+Paper: — (a fixture non-edge forced by `linkPred`) -/
+theorem not_rel_m0p_m2m : ¬ relA m0p m2m := fun h => absurd h.1 (by decide)
+
+/-- Paper: — (a fixture non-edge: `stepA 0 0 = false`) -/
+theorem not_rel_m0m_m0p : ¬ relA m0m m0p := fun h => absurd h.1 (by decide)
+
+/-- Paper: — (a fixture non-edge: `stepA 0 0 = false`) -/
+theorem not_rel_m0m_m0m : ¬ relA m0m m0m := fun h => absurd h.1 (by decide)
+
+/-- **The separating non-edge, the other side**: the letter-FREE type at `0` cannot step to `1`,
+because the event holds there and `linkPred` would then force the letter.
+
+Paper: — (a fixture non-edge forced by `linkPred`) -/
+theorem not_rel_m0m_m1p : ¬ relA m0m m1p := fun h => absurd h.1 (by decide)
+
+/-- Paper: — (a fixture non-edge forced by `linkPred`) -/
+theorem not_rel_m1p_m0m : ¬ relA m1p m0m := fun h => absurd h.1 (by decide)
+
+/-- Paper: — (the arguments of the fixture's until letter) -/
+theorem argsOf_phiA : argsOf phiA = (gF, eF) := rfl
+
+/-- Paper: — (a fixture closure fact) -/
+theorem untl_T0p : ∀ ψ ∈ T0p.val, isUntl ψ = true → ψ = phiA := by decide
+
+/-- Paper: — (a fixture closure fact) -/
+theorem untl_T1p : ∀ ψ ∈ T1p.val, isUntl ψ = true → ψ = phiA := by decide
+
+/-- Paper: — (a fixture closure fact) -/
+theorem no_untl_T0m : ∀ ψ ∈ T0m.val, isUntl ψ = false := by decide
+
+/-- Paper: — (a fixture closure fact) -/
+theorem no_untl_T2m : ∀ ψ ∈ T2m.val, isUntl ψ = false := by decide
+
+/-- Paper: — (a fixture closure fact) -/
+theorem no_snce_T0p : ∀ ψ ∈ T0p.val, isSnce ψ = false := by decide
+
+/-- Paper: — (a fixture closure fact) -/
+theorem no_snce_T1p : ∀ ψ ∈ T1p.val, isSnce ψ = false := by decide
+
+/-- Paper: — (a fixture closure fact) -/
+theorem no_snce_T0m : ∀ ψ ∈ T0m.val, isSnce ψ = false := by decide
+
+/-- Paper: — (a fixture closure fact) -/
+theorem no_snce_T2m : ∀ ψ ∈ T2m.val, isSnce ψ = false := by decide
+
+/-- The fixture's closure carries no `⊡` letter, so condition (5) is discharged without being
+weakened: the acceptance clause is present and vacuously satisfied, not dropped.
+
+Paper: — (a fixture closure fact) -/
+theorem no_stab_closure : ∀ ψ ∈ plusSubformulaClosure phiA, isStab ψ = false := by decide
+
+/-- The fixture's closure carries no `□` letter; the remark on `no_stab_closure` applies.
+
+Paper: — (a fixture closure fact) -/
+theorem no_box_closure : ∀ ψ ∈ plusSubformulaClosure phiA, isBox ψ = false := by decide
+
+/-- Paper: — (a fixture membership) -/
+theorem mem_m0p : m0p ∈ attR := by rw [mem_attR]; exact Or.inl rfl
+
+/-- Paper: — (a fixture membership) -/
+theorem mem_m1p : m1p ∈ attR := by rw [mem_attR]; exact Or.inr (Or.inl rfl)
+
+/-- Paper: — (a fixture membership) -/
+theorem mem_m0m : m0m ∈ attR := by rw [mem_attR]; exact Or.inr (Or.inr (Or.inl rfl))
+
+/-- Paper: — (a fixture membership) -/
+theorem mem_m2m : m2m ∈ attR := by rw [mem_attR]; exact Or.inr (Or.inr (Or.inr rfl))
+
+/-- Condition (1) at the fixture.
+
+Paper: — (condition (1) of this repository's `K`-indexed certificate, at a fixture) -/
+theorem att_certLocK : certLocK labA phiA 0 0 0 0 attR := by
+  intro x hx
+  rw [mem_attR] at hx
+  rcases hx with rfl | rfl | rfl | rfl <;> decide
+
+/-- Condition (2) at the fixture: the set is two two-cycles, so every member has a successor and
+a predecessor inside it.
+
+Paper: — (condition (2) of this repository's `K`-indexed certificate, at a fixture) -/
+theorem att_certBiInfK : certBiInfK stepA pendA labA phiA 0 0 0 0 attR := by
+  intro x hx
+  rw [mem_attR] at hx
+  rcases hx with rfl | rfl | rfl | rfl
+  · exact ⟨⟨m1p, mem_m1p, rel_m0p_m1p⟩, ⟨m1p, mem_m1p, rel_m1p_m0p⟩⟩
+  · exact ⟨⟨m0p, mem_m0p, rel_m1p_m0p⟩, ⟨m0p, mem_m0p, rel_m0p_m1p⟩⟩
+  · exact ⟨⟨m2m, mem_m2m, rel_m0m_m2m⟩, ⟨m2m, mem_m2m, rel_m2m_m0m⟩⟩
+  · exact ⟨⟨m0m, mem_m0m, rel_m2m_m0m⟩, ⟨m0m, mem_m0m, rel_m0m_m2m⟩⟩
+
+/-- Condition (3) at the fixture: the until letter is discharged in one step from `0` (the event
+holds at `1`) and in two from `1` (through `0`, where the guard holds).
+
+Paper: — (condition (3) of this repository's `K`-indexed certificate, at a fixture) -/
+theorem att_certFwdK : certFwdK stepA pendA labA phiA 0 0 0 0 attR := by
+  intro x hx ψ hψ hu
+  rw [mem_attR] at hx
+  rcases hx with rfl | rfl | rfl | rfl
+  · have hp : ψ = phiA := untl_T0p ψ hψ hu
+    subst hp
+    rw [argsOf_phiA]
+    refine ⟨1, fun i => if i = 0 then m0p else m1p, Nat.one_pos, by simp, ?_, ?_, by decide, ?_⟩
+    · intro i hi; interval_cases i; simpa using mem_m0p
+    · intro i hi; interval_cases i
+      exact ⟨by simpa using rel_m0p_m1p, by simpa using mem_m1p⟩
+    · intro i h1 h2; omega
+  · have hp : ψ = phiA := untl_T1p ψ hψ hu
+    subst hp
+    rw [argsOf_phiA]
+    refine ⟨2, fun i => if i % 2 = 0 then m1p else m0p, by omega, by simp, ?_, ?_, by decide, ?_⟩
+    · intro i hi; interval_cases i
+      · simpa using mem_m1p
+      · simpa using mem_m0p
+    · intro i hi; interval_cases i
+      · exact ⟨by simpa using rel_m1p_m0p, by simpa using mem_m0p⟩
+      · exact ⟨by simpa using rel_m0p_m1p, by simpa using mem_m1p⟩
+    · intro i h1 h2
+      interval_cases i
+      · decide
+  · exact absurd hu (by rw [no_untl_T0m ψ hψ]; simp)
+  · exact absurd hu (by rw [no_untl_T2m ψ hψ]; simp)
+
+/-- Condition (4) at the fixture: no member's type carries a since letter.
+
+Paper: — (condition (4) of this repository's `K`-indexed certificate, at a fixture) -/
+theorem att_certBwdK : certBwdK stepA pendA labA phiA 0 0 0 0 attR := by
+  intro x hx ψ hψ hs
+  rw [mem_attR] at hx
+  rcases hx with rfl | rfl | rfl | rfl
+  · exact absurd hs (by rw [no_snce_T0p ψ hψ]; simp)
+  · exact absurd hs (by rw [no_snce_T1p ψ hψ]; simp)
+  · exact absurd hs (by rw [no_snce_T0m ψ hψ]; simp)
+  · exact absurd hs (by rw [no_snce_T2m ψ hψ]; simp)
+
+/-- Condition (5) at the fixture — the `⊡` acceptance clause, present and discharged.
+
+Paper: — (condition (5) of this repository's `K`-indexed certificate, at a fixture) -/
+theorem att_certStabK : certStabK phiA 0 0 0 0 attR := by
+  intro x _ ψ hψ hs
+  exact absurd hs (by rw [no_stab_closure ψ hψ]; simp)
+
+/-- Condition (6) at the fixture — the `□` acceptance clause, present and discharged.
+
+Paper: — (condition (6) of this repository's `K`-indexed certificate, at a fixture) -/
+theorem att_certBoxK : certBoxK phiA 0 0 0 0 attR := by
+  intro x _ ψ hψ hb
+  exact absurd hb (by rw [no_box_closure ψ hψ]; simp)
+
+/-- **THE FIXTURE IS CERTIFIED**: all six conditions, the two acceptance clauses included.
+
+Paper: — (this repository's `K`-indexed certificate, witnessed at a fixture) -/
+theorem att_certAdmK : certAdmK stepA pendA labA phiA 0 0 0 0 attR :=
+  ⟨att_certLocK, att_certBiInfK, att_certFwdK, att_certBwdK, att_certStabK, att_certBoxK⟩
+
+/-- The key of the object state `0`: the key whose fibre has TWO members. -/
+def sK0 : ConKey phiA 0 0 0 0 attR := ⟨((0 : Qa), kA), T0p, mem_m0p⟩
+
+/-- The key of the object state `1`. -/
+def sK1 : ConKey phiA 0 0 0 0 attR := ⟨((1 : Qa), kA), T1p, mem_m1p⟩
+
+/-- The key of the object state `2`. -/
+def sK2 : ConKey phiA 0 0 0 0 attR := ⟨((2 : Qa), kA), T2m, mem_m2m⟩
+
+/-- The letter-carrying member at `0` has exactly ONE successor in the set.
+
+Paper: — (a fixture successor analysis) -/
+theorem succ_of_m0p {y : Item} (hy : y ∈ attR) (h : relA m0p y) : y = m1p := by
+  rw [mem_attR] at hy
+  rcases hy with rfl | rfl | rfl | rfl
+  · exact absurd h not_rel_m0p_m0p
+  · rfl
+  · exact absurd h not_rel_m0p_m0m
+  · exact absurd h not_rel_m0p_m2m
+
+/-- The letter-free member at `0` has exactly ONE successor in the set, and it is a different key.
+
+Paper: — (a fixture successor analysis) -/
+theorem succ_of_m0m {y : Item} (hy : y ∈ attR) (h : relA m0m y) : y = m2m := by
+  rw [mem_attR] at hy
+  rcases hy with rfl | rfl | rfl | rfl
+  · exact absurd h not_rel_m0m_m0p
+  · exact absurd h not_rel_m0m_m1p
+  · exact absurd h not_rel_m0m_m0m
+  · rfl
+
+/-- Paper: — (a fixture fibre computation) -/
+theorem over_key_one {x : Item} (hx : x ∈ attR) (h : (x.1, x.2.2) = sK1.val) : x = m1p := by
+  rw [mem_attR] at hx
+  rcases hx with rfl | rfl | rfl | rfl
+  · exact absurd h (by decide)
+  · rfl
+  · exact absurd h (by decide)
+  · exact absurd h (by decide)
+
+/-- Paper: — (a fixture fibre computation) -/
+theorem over_key_two {x : Item} (hx : x ∈ attR) (h : (x.1, x.2.2) = sK2.val) : x = m2m := by
+  rw [mem_attR] at hx
+  rcases hx with rfl | rfl | rfl | rfl
+  · exact absurd h (by decide)
+  · exact absurd h (by decide)
+  · exact absurd h (by decide)
+  · rfl
+
+/-- **The two-member fibre**, which is what both refutations consume.
+
+Paper: — (a fixture fibre computation) -/
+theorem over_key_zero {x : Item} (hx : x ∈ attR) (h : (x.1, x.2.2) = sK0.val) :
+    x = m0p ∨ x = m0m := by
+  rw [mem_attR] at hx
+  rcases hx with rfl | rfl | rfl | rfl
+  · exact Or.inl rfl
+  · exact absurd h (by decide)
+  · exact Or.inr rfl
+  · exact absurd h (by decide)
+
+/-- **THE UNIFORM RELATION IS NOT SERIAL AT THE TWO-MEMBER KEY**: no key whatsoever serves both
+members over `sK0`, because their only successors lie over the two distinct keys `sK1` and `sK2`.
+
+Paper: — (a no-go about the uniform key-level projection of this repository's certificate
+relation) -/
+theorem conStepStrong_not_serial (t : ℤ) (s' : ConKey phiA 0 0 0 0 attR) :
+    ¬ conStepStrong stepA pendA labA phiA 0 0 0 0 attR t sK0 s' := by
+  intro h
+  obtain ⟨y1, hy1, hk1, hr1⟩ := h.1 m0p mem_m0p rfl
+  obtain ⟨y2, hy2, hk2, hr2⟩ := h.1 m0m mem_m0m rfl
+  rw [succ_of_m0p hy1 hr1] at hk1
+  rw [succ_of_m0m hy2 hr2] at hk2
+  exact absurd (hk1.trans hk2.symm) (by decide)
+
+/-- A weak edge into the two-member key.
+
+Paper: — (a fixture edge of the weak key-level relation) -/
+theorem conStep_sK1_sK0 : conStep stepA pendA labA phiA 0 0 0 0 attR 0 sK1 sK0 :=
+  ⟨m1p, mem_m1p, m0p, mem_m0p, rfl, rfl, rel_m1p_m0p⟩
+
+/-- A weak edge out of the two-member key — witnessed by the OTHER member.
+
+Paper: — (a fixture edge of the weak key-level relation) -/
+theorem conStep_sK0_sK2 : conStep stepA pendA labA phiA 0 0 0 0 attR 1 sK0 sK2 :=
+  ⟨m0m, mem_m0m, m2m, mem_m2m, rfl, rfl, rel_m0m_m2m⟩
+
+/-- **THE WEAK RELATION'S EDGES DO NOT COMPOSE INSIDE THE SET**: the two edges above are both
+weak edges, but no member over `sK0` is both a successor of a member over `sK1` and a predecessor
+of a member over `sK2` — the first forces the letter-carrying member and the second the
+letter-free one.
+
+Paper: — (a no-go about the weak key-level projection of this repository's certificate
+relation) -/
+theorem no_lift_sK1_sK0_sK2 :
+    ¬ ∃ x ∈ attR, ∃ y ∈ attR, ∃ z ∈ attR,
+      (x.1, x.2.2) = sK1.val ∧ (y.1, y.2.2) = sK0.val ∧ (z.1, z.2.2) = sK2.val ∧
+      relA x y ∧ relA y z := by
+  rintro ⟨x, hx, y, hy, z, hz, hkx, hky, hkz, hxy, hyz⟩
+  rw [over_key_one hx hkx] at hxy
+  rw [over_key_two hz hkz] at hyz
+  rcases over_key_zero hy hky with rfl | rfl
+  · exact not_rel_m0p_m2m hyz
+  · exact not_rel_m1p_m0m hxy
+
+end ConAttack
+
+open ConAttack in
+/-- **THE UNIFORM KEY-LEVEL RELATION IS NOT SERIAL UNDER `certAdmK`.** `conStepStrong` is the
+relation whose paths LIFT into the certified set — by dependent choice, from any member of the
+fibre — and it is therefore the relation the construction's truth lemma would want its frame
+built from. It cannot be: `ofSlicedStepFinBranch` requires seriality, and seriality fails already
+at a four-member certified set with ONE two-member fibre, because the two members' successors
+lie over different keys. No parameter condition is involved — the witness has all four
+parameters `0`, where the counter quotient is a subsingleton.
+
+Paper: — (a no-go about the uniform key-level projection of this repository's certificate
+relation; the published quasimodel constructions carry no counterpart, their runs being the
+carrier rather than a decoration on it) -/
+theorem conStepStrong_serial_refuted :
+    ¬ (∀ (Q : Type) (_ : Finite Q) (step : Q → Q → Bool) (pend : Q → Bool)
+        (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+        (R : Set (Q × ClType φ × CK Tc Tn P B)),
+        certAdmK step pend lab φ Tc Tn P B R →
+        ∀ (t : ℤ) (s : ConKey φ Tc Tn P B R),
+          ∃ s', conStepStrong step pend lab φ Tc Tn P B R t s s') := by
+  intro h
+  obtain ⟨s', hs'⟩ := h Qa inferInstance stepA pendA labA phiA 0 0 0 0 attR att_certAdmK 0 sK0
+  exact conStepStrong_not_serial 0 s' hs'
+
+open ConAttack in
+/-- **THE WEAK KEY-LEVEL RELATION'S EDGES DO NOT COMPOSE INSIDE THE CERTIFIED SET, ALREADY AT
+LENGTH TWO.** `conStep` is the relation the landed frame `conFrame` is built from, and it is
+serial from `certAdmK`'s condition (2) alone. What it does not carry is liftability, and the
+failure needs no bi-infinite path: TWO consecutive weak edges can fail to have a common
+realization inside `R`, because the witness chosen for the first and the witness chosen for the
+second disagree at the shared key. So the truth lemma's `⊆` direction — every history through a
+world state realizing a type of that key's fibre — is not available over this relation, and no
+restriction of the lifting demand to finite windows rescues it.
+
+Paper: — (a no-go about the weak key-level projection of this repository's certificate relation)
+-/
+theorem conStep_two_step_lift_refuted :
+    ¬ (∀ (Q : Type) (_ : Finite Q) (step : Q → Q → Bool) (pend : Q → Bool)
+        (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+        (R : Set (Q × ClType φ × CK Tc Tn P B)),
+        certAdmK step pend lab φ Tc Tn P B R →
+        ∀ (t : ℤ) (s s' s'' : ConKey φ Tc Tn P B R),
+          conStep step pend lab φ Tc Tn P B R t s s' →
+          conStep step pend lab φ Tc Tn P B R (t + 1) s' s'' →
+          ∃ x ∈ R, ∃ y ∈ R, ∃ z ∈ R,
+            (x.1, x.2.2) = s.val ∧ (y.1, y.2.2) = s'.val ∧ (z.1, z.2.2) = s''.val ∧
+            relK step pend lab φ Tc Tn P B x y ∧ relK step pend lab φ Tc Tn P B y z) := by
+  intro h
+  exact no_lift_sK1_sK0_sK2
+    (h Qa inferInstance stepA pendA labA phiA 0 0 0 0 attR att_certAdmK 0 sK1 sK0 sK2
+      conStep_sK1_sK0 conStep_sK0_sK2)
+
+end ConstructionAttack
 
 end FormalSystem.Metalogic.Decidability.RaySummary

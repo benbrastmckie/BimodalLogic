@@ -110,7 +110,7 @@ expectation to rewrite.
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
 -- The baseline is raised one chunk at a time, as the ledger grows; the `longFile` linter requires
 -- the value to be at least the file's length and refuses a value more than one chunk above it.
-set_option linter.style.longFile 4000
+set_option linter.style.longFile 4100
 
 namespace BimodalTest.Metalogic
 
@@ -3941,5 +3941,50 @@ example {Q : Type} [Fintype Q] {step : Q → Q → Bool} {pend : Q → Bool}
     ∀ x ∈ R, ∃ u : (conFrame step pend lab φ Tc Tn P B R hR hne).WorldState,
       conKeyMap φ Tc Tn P B R u = (x.1, x.2.2) :=
   conKeyMap_covers φ Tc Tn P B R
+
+
+/-! ### The construction's two landed relations, ATTACKED — and both refuted
+
+`conStepStrong_serial_refuted` and `conStep_two_step_lift_refuted` are the verdict of the round
+that attacked the construction half's open truth lemma at its named tension. Both are refutations
+at ONE explicit `certAdmK`-certified fixture (`ConAttack.attR`, four members over a three-state
+object at all-zero parameters), so the certificate witness is pinned here beside them: a fixture
+that silently stopped being certified would make both refutations vacuous.
+-/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ConAttack.att_certAdmK' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms ConAttack.att_certAdmK
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ConAttack.conStepStrong_not_serial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms ConAttack.conStepStrong_not_serial
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.ConAttack.no_lift_sK1_sK0_sK2' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms ConAttack.no_lift_sK1_sK0_sK2
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.conStepStrong_serial_refuted' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms conStepStrong_serial_refuted
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.conStep_two_step_lift_refuted' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms conStep_two_step_lift_refuted
 
 end BimodalTest.Metalogic
