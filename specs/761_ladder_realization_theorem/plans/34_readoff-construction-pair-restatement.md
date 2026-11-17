@@ -13939,7 +13939,7 @@ over it, and a truth lemma whose statement is the cell equation at the construct
       (`CounterQuotient.lean:105-113`). Whether to attempt them is a separate finding, reported not
       taken.
 - [ ] Build the frame from `relK` (`CounterQuotient.lean:1177`), its valuation, and the truth
-      lemma. `#print axioms` on each. *(deviation: altered — the frame (`conFrame`), its valuation (`conModel`) and the key map LANDED with `#print axioms` on each; the TRUTH LEMMA did NOT land and is this phase's open content, which is why the phase stays `[PARTIAL]`. A second alteration, compiled rather than argued: the frame is built from the KEY-LEVEL projection of `relK`, not from `relK` on the certified set itself, because `cellAt_subsingleton_of_det`/`fibre_subsingleton_of_det_cell_eq` refute the carrier whose points carry a closure type — see the Recorded Outcome)*
+      lemma. `#print axioms` on each. *(deviation: altered, twice — dispatch 86 and dispatch 87. Dispatch 87 ATTACKED the truth lemma at its landed tension per decision 29 and REFUTED BOTH landed relations — `conStepStrong_serial_refuted`, `conStep_two_step_lift_refuted` — so the truth lemma is still not landed and its two candidate routes are now closed by compilation rather than open. Dispatch 86's note follows.)* *(deviation: altered — the frame (`conFrame`), its valuation (`conModel`) and the key map LANDED with `#print axioms` on each; the TRUTH LEMMA did NOT land and is this phase's open content, which is why the phase stays `[PARTIAL]`. A second alteration, compiled rather than argued: the frame is built from the KEY-LEVEL projection of `relK`, not from `relK` on the certified set itself, because `cellAt_subsingleton_of_det`/`fibre_subsingleton_of_det_cell_eq` refute the carrier whose points carry a closure type — see the Recorded Outcome)*
 - [x] Record, against GKWZ Lemma 5.24 (⇐) and Theorem 6.61 (`reports/31_gkwz-ptl-s5-quasimodels.md`),
       which clause of the construction each landed object discharges — and record explicitly that
       the transfer is by SHAPE and that no published theorem applies to this semantics.
@@ -14048,6 +14048,43 @@ else. It says nothing about the clip, nothing about the READ-OFF half's right-ha
 does not revive `cellAt_const_of_kappa_eq` or `ladderRealized` under their pinned names — both
 still unclaimed in `FormalSystem/` and `Tests/`. The constructed model is not claimed to be, or
 to be isomorphic to, `ladderModel`.
+
+---
+
+#### Recorded Outcome — SECOND ROUND (dispatch 87): BOTH LANDED RELATIONS ATTACKED, BOTH REFUTED
+
+**Decision 29's obligation is DISCHARGED, and its answer is negative on both sides.** The round
+was required to "ATTACK one of the two rather than design a third". It attacked BOTH, at one
+`certAdmK`-certified fixture that refutes both, and designed no third relation. Record
+`records/round-34-readoff-construction-pair.md` §21-§25. The phase **stays `[PARTIAL]`**: the
+truth lemma is still not landed and `ladderConstruct` is still declared nowhere — what changed is
+that its two candidate routes are now closed by compilation instead of merely open.
+
+| Item | Disposition | Evidence |
+|---|---|---|
+| The certified fixture the attack runs at | **LANDED** | `ConAttack.att_certAdmK` — all six conditions, the `⊡` and `□` acceptance clauses PRESENT and vacuously discharged (`no_stab_closure`, `no_box_closure`), never dropped. Axiom-pinned in `KTypeSummaryAxiomTest.lean` |
+| The UNIFORM relation `conStepStrong` | **REFUTED as serial under `certAdmK`** | `conStepStrong_serial_refuted` (schema), `ConAttack.conStepStrong_not_serial` (at the fixture, for every `t` and every candidate successor key). `ofSlicedStepFinBranch` needs seriality, so the relation whose paths lift cannot be the frame's |
+| The WEAK relation `conStep` | **REFUTED as liftable, already at LENGTH TWO** | `conStep_two_step_lift_refuted` (schema), `ConAttack.no_lift_sK1_sK0_sK2` (at the fixture). Stronger than the bi-infinite failure the record anticipated: restricting the lifting demand to finite windows does not help |
+| The common cause | **IDENTIFIED and compiled** | a two-member fibre whose members' successor KEYS are disjoint, forced by `linkPred` alone (`not_rel_m0p_m2m`, `not_rel_m0m_m1p`). No parameter condition is involved: the fixture's parameters are all `0`, where `CK` is a subsingleton |
+| A third relation | **NOT DESIGNED — prohibited by decision 29 and not attempted** | nothing landed assumes or asserts anything about one |
+| Guardrail (b) | **STILL NOT MET, and not treated as met** | §19's finite-width finding stands unchanged; this round neither repairs it nor leans on it |
+
+**BLOCKER** (Phase 21, remaining content):
+- **What failed**: the truth lemma — the cell equation at the constructed points — is not landed,
+  and after this round neither landed key-level relation can carry it.
+- **What was tried**: both. `conStepStrong`'s seriality and `conStep`'s liftability are each
+  refuted at `ConAttack.attR`, by compilation, at the full `certAdmK` hypothesis.
+- **Why it is stuck**: the pinned equation names the fibres of the GIVEN `R`, so GKWZ's own
+  device — elimination, which restricts the set until the uniform relation becomes serial on what
+  survives — is not available (record §16). With `R` fixed and the carrier forced key-level
+  (`cellAt_subsingleton_of_det`, `fibre_subsingleton_of_det_cell_eq`), no landed object supplies
+  a step relation that is both serial and liftable.
+- **What is needed**: a ROUTE DECISION, which is a `/revise` and not an implement round — this
+  plan carries no phase for designing a third step relation, and decision 29 forbade designing
+  one inside this round.
+- **Prohibited workarounds**: no `sorry`, no `axiom`, no vacuous definition, no `BoxStabFree`
+  restriction landed under the construction half's name, no finite-fibre or finite-width
+  assumption, and nothing landed under `ladderRealized` or `cellAt_const_of_kappa_eq`.
 
 ---
 

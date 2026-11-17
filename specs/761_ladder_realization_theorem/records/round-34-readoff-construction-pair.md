@@ -537,3 +537,117 @@ read-off and `Dmax` as the maximal satisfying set is an identification of shape,
 of GKWZ §5.2 (Theorem 5.22, Lemma 5.24, Theorem 6.61) or of HWZ 2000 applies to this semantics** —
 HWZ has no `□` and no `⊡` at all, and this setting is not PTL × S5 (`stab_state_only`). No
 `sorry`, `axiom`, `native_decide` or vacuous definition was written.
+
+---
+
+# Phase 21, re-entered — THE TRUTH LEMMA'S TENSION, ATTACKED: both relations refuted
+
+**Dispatch 87.** Phase 21 was re-entered by its own Recorded Outcome ("This phase IS re-entered:
+its remaining work is the truth lemma and nothing else") and by decision 29, cycle 4,
+`2026-11-17T01:55:19Z`, whose Obligation is carried verbatim:
+
+> Attack the truth lemma at the landed serial-vs-liftable tension: `conStep` is serial from
+> `certAdmK` condition (2) alone but its paths need not lift into `R`; `conStepStrong` lifts by
+> choice but asks a seriality `certBiInfK` does not supply. Both are landed objects, so the next
+> round must ATTACK one of the two rather than design a third. Do not silently treat finite width
+> as discharging guardrail (b).
+
+## 21. Which phase this dispatch ran, and why it is not the one the Phase Mission named
+
+Dispatch 87's Phase Mission again named **Phase 11.44**, whose `RE-ENTRY NOTICE` is a RULE rather
+than a number: a dispatch selecting that heading "executes THE FIRST OPEN PHASE AT OR AFTER 11.48
+IN FILE ORDER — evaluated against the live file". Evaluated against the live plan that is 12.2
+`[BLOCKED]`, and §13 above already recorded why 12.2 is not entered: its own `BLOCKER` record asks
+for a route decision, decision 27 IS that decision and routes past it to Phase 21, and decision 29
+— more recent still — names Phase 21's remaining content as this round's target by object name.
+This dispatch therefore ran **Phase 21**, and this paragraph is the record that it did so.
+
+## 22. THE ATTACK, AND WHY ITS FIXTURE SEPARATES
+
+The round attacked **both** landed relations rather than one, because one fixture turned out to
+refute both. The fixture is in
+`FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean`, section
+`## The two landed key-level relations, ATTACKED — and both refuted`, namespace `ConAttack`.
+
+| Component | Value | Why |
+|---|---|---|
+| object `Qa` | `Fin 3`, edges `0 → 1`, `0 → 2`, `1 → 0`, `2 → 0` | two two-cycles sharing the state `0` |
+| `pendA` | `fun _ => false` | every member idle, so the counter side of `relK` is one `RK` edge |
+| formula `phiA` | `g U e` (`.untl gF eF`), `g`, `e` atoms | `locPred` leaves a strict-until letter UNCONSTRAINED, so each object state carries exactly TWO locally coherent types |
+| `labA` | `g` true exactly at `0`, `e` true exactly at `1` | makes `linkPred` pin which successor each of the two types at `0` admits |
+| parameters | `Tc = Tn = P = B = 0` | `CK 0 0 0 0` is a subsingleton: the separation is on the OBJECT coordinate alone |
+| `attR` | `{m0p, m1p, m0m, m2m}` | `(0, {g, gUe})→(1, {e, gUe})→(0, …)` and `(0, {g})→(2, ∅)→(0, …)` |
+
+**The separating mechanism, which is `linkPred` and nothing else.** `linkPred` reads
+`gUe ∈ T ↔ (e ∈ T' ∨ (g ∈ T' ∧ gUe ∈ T'))`. At `1` the event holds, so the right-hand side is
+true and only the LETTER-CARRYING type at `0` may step there (`not_rel_m0m_m1p`). At `2` neither
+the event nor the guard holds, so the right-hand side is false and only the LETTER-FREE type at
+`0` may step there (`not_rel_m0p_m2m`). The fibre over the key of `0` therefore has two members
+whose successor KEYS are **disjoint** — `(1, κ)` and `(2, κ)`.
+
+**The fixture is certified, all six conditions, the acceptance clauses included**
+(`ConAttack.att_certAdmK`, axiom-pinned in `KTypeSummaryAxiomTest.lean`). Conditions (5) and (6)
+are discharged because the closure of `g U e` carries no `⊡` and no `□` letter
+(`no_stab_closure`, `no_box_closure`) — the clauses are PRESENT and vacuously satisfied, never
+dropped. Condition (4) likewise: no member's type carries a since letter. Condition (3) is
+discharged concretely, in one step from `0` and in two from `1` through `0` where the guard holds.
+
+**Why the degenerate parameters do not weaken the verdict.** The construction half takes
+`certAdmK` as an EXPLICIT hypothesis and consumes no parameter condition — `ParamsOk` appears
+nowhere in the module's construction section, and §18's inventory records seriality as discharged
+"from `certAdmK`'s condition (2) ALONE". A refutation of a statement quantified over all
+parameters is discharged by any one instance; this one takes the instance where the counter
+quotient contributes nothing, so the obstruction is visibly structural rather than an artefact of
+the clip.
+
+## 23. THE TWO VERDICTS, COMPILED
+
+| Statement | What it says | Status |
+|---|---|---|
+| `conStepStrong_serial_refuted` | the UNIFORM relation is NOT serial under `certAdmK` | **REFUTED** |
+| `conStep_two_step_lift_refuted` | the WEAK relation's edges do NOT compose inside `R`, already at length TWO | **REFUTED** |
+
+**Half one — the liftable relation cannot be the frame's.** `conStepStrong`'s forward clause asks
+for a single key `s'` serving EVERY member over `s`. At the fixture's two-member key the two
+members' only successors lie over `(1, κ)` and `(2, κ)`, so no `s'` serves both
+(`conStepStrong_not_serial`, for every `t` and every candidate `s'`). Since
+`ofSlicedStepFinBranch` requires seriality, the relation whose paths lift cannot be the relation
+the frame is built from. This is not a failure to find a proof: it is a refutation of the
+property the proof would have needed.
+
+**Half two — the serial relation's edges do not compose, and the failure is finite.** The two
+weak edges `sK1 → sK0` (witnessed by `m1p → m0p`) and `sK0 → sK2` (witnessed by `m0m → m2m`) both
+hold, but no member over `sK0` is simultaneously a successor of a member over `sK1` and a
+predecessor of a member over `sK2`: the first forces the letter-carrying member, the second the
+letter-free one (`no_lift_sK1_sK0_sK2`). The round's own expectation going in was that liftability
+would fail only in the limit, at a bi-infinite path assembled from individually-witnessed edges.
+It fails at **length two**, which is strictly stronger and closes a repair that was never written
+down: restricting the lifting demand to finite windows does not help, because the smallest
+non-trivial window already fails.
+
+## 24. WHAT THIS DOES NOT ESTABLISH
+
+- It does **not** refute the construction's target cell equation, and it does **not** show the
+  truth lemma is false. It shows that NEITHER landed relation proves it — the serial one does not
+  lift, the lifting one is not serial — and that the two failures have a common cause, the
+  two-member fibre whose members' successor keys part company.
+- It says nothing about a third relation. Decision 29 forbids designing one inside this round and
+  nothing above designs or assumes one; what an elimination-style restriction of `R` (GKWZ's own
+  device, §15) could buy is untouched and is asserted nowhere.
+- It does not revive `ladderRealized` or `cellAt_const_of_kappa_eq`, both still unclaimed in
+  `FormalSystem/` and `Tests/`, and it does not bear on the READ-OFF half or on the clip.
+- **Guardrail (b) is still not met and is not treated as met.** §19's width finding stands
+  unchanged: the slice `ConKey` is finite, and nothing in this round repairs that or treats the
+  finiteness as discharging the guardrail.
+
+## 25. CARRIED-FIGURE CHECK FOR THIS DISPATCH
+
+The dispatch's extracted trigger lines were checked against live state rather than carried:
+
+| Carried claim | Live check | Result |
+|---|---|---|
+| "The construction half is UNWRITTEN in all four of its components" | the description's own AMENDED 2026-11-16 text, predating dispatch 86 | **STALE**: three of four (carrier, frame, valuation) landed at commit `b8eb11f5a`; only the truth lemma is unwritten |
+| "`ladderRealized` is declared nowhere" | `grep -rnE '(theorem\|lemma\|def\|abbrev) +(cellAt_const_of_kappa_eq\|ladderRealized)\b' FormalSystem/ Tests/` | **CONFIRMED**: no hits |
+| "`dmax_certStabK`/`dmax_certBoxK` have no hits" | `grep -rnE '(theorem\|lemma) +dmax_(certStabK\|certBoxK\|certAdmK)\b' FormalSystem/` | **CONFIRMED**: no hits, re-run at phase close |
+| "`Realize.lean` (1004 lines)" | `wc -l FormalSystem/Metalogic/Decidability/RaySummary/Realize.lean` | **CONFIRMED** |
+| "PHASES COMPLETED: 65 of 77" | phase headings of the live plan | checked at close; see the summary |

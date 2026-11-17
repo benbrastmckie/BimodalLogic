@@ -1021,8 +1021,17 @@ is not read as an oversight:
   remaining content sits: the weak key-level relation `conStep` is serial but a path of its edges
   need not lift to a path inside the certified set, while the uniform `conStepStrong` lifts by
   choice and refines it (`conStep_of_strong`) but asks for a seriality `certBiInfK` does not
-  supply. The constructed model has FINITE width, the slice `ConKey` being finite: that is a
-  property of the output, not an assumption on an input, and it is recorded rather than repaired.
+  supply. **Both of those relations have since been ATTACKED, and both are REFUTED at one
+  explicit certified set** (`ConAttack.att_certAdmK`, four members over a three-state object at
+  all-zero parameters, same file): `conStepStrong_serial_refuted` says the uniform relation is
+  NOT serial under `certAdmK`, so the relation whose paths lift cannot be the one the frame is
+  built from; `conStep_two_step_lift_refuted` says the weak relation's edges do NOT compose
+  inside the certified set, and the failure is already at length TWO, so no restriction of the
+  lifting demand to finite windows rescues it. The common cause is a two-member fibre whose
+  members' successor KEYS are disjoint, forced by `linkPred` alone. Neither statement refutes the
+  cell equation itself, and neither says anything about a third relation. The constructed model
+  has FINITE width, the slice `ConKey` being finite: that is a property of the output, not an
+  assumption on an input, and it is recorded rather than repaired.
 
 ## Related documentation
 
