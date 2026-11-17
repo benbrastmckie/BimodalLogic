@@ -117,6 +117,9 @@ now exactly named rather than diffuse.
 - `check-module-invariants.sh`: **PASS** (zero FAIL groups after the C23 renames and the inventory
   regeneration)
 - `readme-lint.sh`: **PASS**
+- `check-evidence-probes.sh`: **PASS** — `all 67 wired probe(s) compile`, zero FAIL, one
+  pre-existing SKIP (`spike-untl-unfolding-and-fwd-obstruction`, deferred for frame-class
+  uniformity work); guard exit 0
 - `grep -rnE '(theorem|lemma|def|abbrev) +(cellAt_const_of_kappa_eq|ladderRealized|ladderConstruct)\b' FormalSystem/ Tests/`:
   **no hits**, before and after
 - `grep -rnE '(theorem|lemma) +dmax_(certStabK|certBoxK|certAdmK)\b' FormalSystem/`: **no hits**,
@@ -125,6 +128,14 @@ now exactly named rather than diffuse.
 - NOT-A-MAXIMUM check: **holds** — no landed statement asserts maximality or greatest-ness
 - Tests: Passed (the axiom-pin `#guard_msgs` suite is the test surface here)
 - Files verified: Yes
+
+## Concurrency
+
+A foreign commit landed mid-dispatch — `0ad12f9ae` "task 935: create determinization-free
+progress-measure design (route R3)" — interleaved between this dispatch's `24.2` and `24` commits.
+It is **reported rather than dismissed**, per the territory contract. It touches `specs/TODO.md`
+and `specs/state.json` only, so it has zero overlap with this dispatch's owned files, it did not
+interfere, and this phase's commit sits cleanly on top of it. No action was taken against it.
 
 ## Impacts
 

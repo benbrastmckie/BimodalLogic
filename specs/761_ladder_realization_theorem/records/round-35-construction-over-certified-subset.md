@@ -481,5 +481,18 @@ making that relation serial does not make the carrier wide.
 | `^axiom ` count | **14**, unchanged; zero `+axiom ` lines in this dispatch's diff |
 | `check-module-invariants.sh` | **PASS** — zero FAIL groups. It took two passes: the first flagged `FAIL C23` on three `RS'_*` names and on an `Sp` shadowing `Conservativity/SpWitness.lean:82`, plus `FAIL INV` on three stale generated inventory blocks. The fixture was renamed (`bigR`/`subR`/`clEmpty`/`clP`), the inventories regenerated through `--emit-inventory`, and both builds re-run green. **The gate found this, not review** |
 | `readme-lint.sh` | **PASS** |
-| `check-evidence-probes.sh` | **PARTIAL READING — reported as partial and NOT as a PASS.** 65 of 76 probes verdicted with **zero FAIL** when this phase closed; the run was still compiling `stability-modal-substrate/full-labels-collapse-stab`. Exposure to this phase is nil by inspection: no probe under `specs/evidence/` references any declaration added here (`grep` for `KeyFibreInj`, `certStabK_not_monotone`, `StabShrink`, `conStepStrong_serial_of_keyFibreInj` returns nothing), and the library every probe imports builds green. **The gate is owed a run to completion** by the next dispatch or by CI; a partial reading is recorded rather than a PASS claimed on 65 of 76 |
+| `check-evidence-probes.sh` | **PASS** — `all 67 wired probe(s) compile`, zero FAIL, one pre-existing SKIP (`bi-lasso-decision-layer/spike-untl-unfolding-and-fwd-obstruction`, deferred for frame-class uniformity work); guard exit 0. An earlier reading in this dispatch recorded 65-of-76 as PARTIAL because the run had not finished and the denominator was taken from a file count rather than the wired-probe count; the completed run supersedes it |
 | `verify-deploy.sh` | **NOT RUN** in this dispatch, and recorded as not run rather than passed |
+
+## 16. A CONCURRENT WRITER, OBSERVED AND REPORTED
+
+A foreign commit landed in this repository while this phase was running: **`0ad12f9ae` "task 935:
+create determinization-free progress-measure design (route R3)"**, interleaved between this
+phase's `24.2` and `24` commits. It is reported here rather than dismissed, as the territory
+contract requires of any foreign commit observed mid-dispatch.
+
+**It did not interfere.** `git show --name-only` reports it touches `specs/TODO.md` and
+`specs/state.json` and nothing else — zero overlap with this dispatch's owned files (the Lean
+module, the axiom test, `docs/theorem-index.md`, the three READMEs, `typst/generated/status.typ`,
+and this task's own plan/record/summary). This phase's commit sits cleanly on top of it, and no
+action was taken against it.
