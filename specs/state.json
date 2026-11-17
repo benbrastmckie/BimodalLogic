@@ -169,9 +169,9 @@
           "type": "plan"
         },
         {
-          "path": "specs/761_ladder_realization_theorem/summaries/34_real-not-certified-blocked-summary.md",
+          "path": "specs/761_ladder_realization_theorem/summaries/34_object-dependent-clip-open-question-summary.md",
           "type": "summary",
-          "summary": "Phase 12.2 blocked: Real is not certAdmK-certified at the (K4) clip; the compiled refutation is landed in the library."
+          "summary": "Phase 22: the object-dependent clip recorded as a named open question with its compiled boundary."
         }
       ],
       "next_artifact_number": 35,

@@ -1,22 +1,23 @@
 {
-  "dispatch_seq": 84,
-  "status": "blocked",
-  "phases_completed": 64,
+  "task_number": 761,
+  "dispatch_seq": 85,
+  "phase": "implement",
+  "status": "implemented",
+  "phases_completed": 65,
   "phases_total": 77,
-  "summary": "Phase 12.2's three filed deliverables are not landable: Phase 11.7 landed no agreement (closed with its Goal refuted), and certStabK of Real is itself refuted at the (K4) clip. Landed the compiled library record instead -- exists_paramsOk_real_not_certAdmK, with its private witness real_not_certStabK -- naming the forward direction of condition (5) as the half that fails, while real_certStabK_mpr stands. Phase 12.2 closed [BLOCKED] with a BLOCKER record; full build, module invariants, sorry census and axiom profile all green.",
-  "blockers": [
-    "real_certAdmK_of_paramsOk is FALSE at its filed signature (exists_paramsOk_real_not_certAdmK), so real_subset_dmax's dmax_maximal route is closed and Phases 13, 15.1 and 20 (the READ-OFF half ladderReadOff, whose right-hand side is the Dmax fibre) are gated on a route decision requiring /revise."
-  ],
+  "summary": "Phase 22 only: the object-dependent gap clip B(Q, phi) is now recorded as a NAMED OPEN QUESTION on three surfaces (the round-34 record, docs/theorem-index.md, the RaySummary README), with its compiled boundary reproduced as a table whose every row carries COMPILED / INFERRED / OPEN and whose every COMPILED row cites a wired probe path and declaration name. No clip adopted, no agreement attempted, no Lean declaration landed, ParamsOk/paramsOkK4/Bof untouched. All carried figures were re-measured against the live tree with zero drift, and the card Q - 2 ceiling was derived from the probe source rather than carried.",
+  "blockers": [],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/34_real-not-certified-blocked-summary.md",
-      "summary": "Phase 12.2 blocked: Real is not certAdmK-certified at the (K4) clip; the compiled refutation is landed in the library."
+      "path": "specs/761_ladder_realization_theorem/summaries/34_object-dependent-clip-open-question-summary.md",
+      "summary": "Phase 22: the object-dependent clip recorded as a named open question with its compiled boundary."
     },
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/34_readoff-construction-pair-restatement.md",
-      "summary": "Phase 12.2 marked [BLOCKED] with a BLOCKER record and inline deviation annotations on its five checklist items."
+      "type": "record",
+      "path": "specs/761_ladder_realization_theorem/records/round-34-readoff-construction-pair.md",
+      "summary": "Sections 7-12: boundary table, missing piece (i)-(iii), signature cost, attack-first sketch, scope-sentence sweep."
     }
-  ]
+  ],
+  "next_action": "Phase 21 (the CONSTRUCTION half) under decision 27 option (C): certAdmK as an explicit hypothesis on an arbitrary R, untouched by the Phase 12.2 refutation. Phase 20's READ-OFF right-hand side is chosen only once the construction exists."
 }
