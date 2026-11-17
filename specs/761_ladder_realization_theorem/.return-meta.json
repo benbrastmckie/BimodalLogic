@@ -1,31 +1,54 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/35_construction-over-certified-subset.md",
-      "summary": "Revision executing decision 29: ladderConstruct re-pinned from the fibres of the GIVEN R to the fibres of a certified SUBSET of R, with the elimination that forms the subset given its own attack-first phases and the sanctioned fallback (A) carried as a separate phase"
+      "type": "summary",
+      "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-attacked-at-fixture-summary.md",
+      "summary": "Phase 23: the elimination survives its attack at ConAttack.attR; outcome (a) SURVIVES, Phase 24 enterable, Phase 26 not entered."
+    },
+    {
+      "type": "record",
+      "path": "specs/761_ladder_realization_theorem/records/round-35-construction-over-certified-subset.md",
+      "summary": "The removal rule stated before any Lean, the attack's outcome, the four-candidate enumeration, the dissolution table, the branch, and the shape-transfer caveat."
     }
   ],
-  "next_steps": "Run /orchestrate 761 to execute the revised plan; Phase 23 (the elimination, ATTACKED at ConAttack.attR before adoption) is the enterable phase",
+  "completion_data": {
+    "completion_summary": "Phase 23 of plan v35 landed: the removal rule (keep the relK-connected component inside R of one chosen member of a multi-member fibre) was recorded before any Lean, the attack on its output's existence at ConAttack.attR was carried out first and did not break the claim, and both of the rule's outputs there are certAdmK-certified, uniformly serial, and carry exactly one member over the key of object state 0. Outcome (a) SURVIVES: Phase 24 is enterable and Phase 26's fallback is not entered. Guardrail (b) stays unmet and the construction half's truth lemma stays open.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "docs/theorem-index.md",
+    "typst/generated/status.typ",
+    "specs/761_ladder_realization_theorem/plans/35_construction-over-certified-subset.md",
+    "specs/761_ladder_realization_theorem/records/round-35-construction-over-certified-subset.md",
+    "specs/761_ladder_realization_theorem/summaries/35_elimination-attacked-at-fixture-summary.md"
+  ],
   "metadata": {
-    "session_id": "sess_1794884681_bd7e5f",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "phase_count": 81,
-    "phases_closed": 65,
-    "phases_added": 4,
-    "estimated_hours": 86.5,
-    "reports_integrated": [],
-    "revision_reason": "decision 29 (cycle 5, user-granted Statement Fidelity ruling): re-open the pinned ladderConstruct conclusion from the fibres of the GIVEN R to the fibres of SOME CERTIFIED SUBSET of R",
-    "inputs_integrated": [
-      "records/round-34-readoff-construction-pair.md",
-      "summaries/34_construction-relations-attacked-summary.md",
-      "summaries/34_construction-half-carrier-frame-summary.md",
-      "summaries/34_real-not-certified-blocked-summary.md",
-      "summaries/34_object-dependent-clip-open-question-summary.md",
-      "summaries/34_evidence-probe-wiring-summary.md",
-      ".decisions.json entries 27, 28, 29"
-    ]
+    "session_id": "sess_1794907363_4ea8f3",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "task_dir": "specs/761_ladder_realization_theorem",
+    "dispatch_seq": 88,
+    "compliance_check": "skipped",
+    "phase_executed": "23",
+    "phase_dispatched": "11.44",
+    "phase_redirect": "Phase 11.44's RE-ENTRY NOTICE (Ruling 28) names its continuation by rule; evaluated against the live file it passes 12.2 [BLOCKED] (held so by decision 28), eight headings with unmet Depends on, and Phase 21 [PARTIAL] whose own notice redirects to 'the first open phase at or after 23', landing on Phase 23. Recorded in record section 0 and in Phase 23's Recorded Outcome, as both notices require.",
+    "compliance_check_note": "lean-plan-compliance-check.sh declined by design: the plan declares Goal Polarity 'mixed', which its single global field cannot express, so the spot-check was deliberately not attempted. Statement fidelity was instead checked by hand: nothing was landed under ladderConstruct, ladderRealized or cellAt_const_of_kappa_eq (all three re-grepped, zero declaration hits)."
   }
 }

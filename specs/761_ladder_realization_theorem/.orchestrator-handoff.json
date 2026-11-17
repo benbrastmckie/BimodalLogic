@@ -1,38 +1,27 @@
 {
-  "task_number": 761,
-  "dispatch_seq": 87,
-  "phase": "implement",
-  "status": "partial",
-  "phases_completed": 65,
-  "phases_total": 77,
-  "summary": "Phase 21 (not the dispatch-named 11.44, whose re-entry notice is a redirecting rule) was re-entered to discharge decision 29's obligation. Both landed key-level step relations were attacked at one explicit certAdmK-certified fixture and BOTH are refuted by compilation: conStepStrong is not serial under certAdmK, and conStep's edges do not compose inside R already at length two. The construction's truth lemma is still unlanded and now has no landed route; the phase stays [PARTIAL] and a /revise is owed.",
-  "blockers": [
-    "Phase 21's truth lemma has no landed route after this round: both candidate step relations are refuted, and the pinned statement names the fibres of the GIVEN R, so elimination (restricting R) is not available. A route decision is owed and is surfaced as a non-blocking user_decision on .return-meta.json; this plan carries no phase for designing a third relation."
-  ],
+  "dispatch_seq": 88,
+  "status": "implemented",
+  "phases_completed": 66,
+  "phases_total": 81,
+  "summary": "Phase 23 landed: the ELIMINATION attacked at ConAttack.attR before anything was built on it. The removal rule (keep the relK-connected component of one member of a multi-member fibre) was stated and committed before any Lean; the attack was then carried out first and DID NOT break the claim, so the outcome is (a) SURVIVES -- both outputs attRp={m0p,m1p} and attRm={m0m,m2m} are certAdmK-certified with the box/stab clauses carried not inherited, conStepStrong is serial on each, and each carries exactly ONE member over the key of object state 0 (exists_certified_serial_dissolving_subset_at_attR). Phase 24 is enterable, Phase 26 (fallback A) is not entered, Phases 24/25 do not close by exclusion. Dispatch 88 was scoped to Phase 11.44, a spent [PARTIAL] round; its by-rule RE-ENTRY NOTICE plus Phase 21's second notice redirect to Phase 23, which is what was executed and is recorded as such.",
+  "blockers": [],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/34_construction-relations-attacked-summary.md",
-      "summary": "Phase 21 re-entry: both landed key-level step relations attacked and both refuted at one certified fixture."
+      "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-attacked-at-fixture-summary.md",
+      "summary": "Phase 23: the elimination survives its attack at the fixture that forced the restatement; outcome (a), Phase 24 enterable."
     },
     {
       "type": "record",
-      "path": "specs/761_ladder_realization_theorem/records/round-34-readoff-construction-pair.md",
-      "summary": "Sections 21-25: which phase ran and why, the fixture and its separating mechanism, the two compiled verdicts, the non-establishment list, and the carried-figure check."
+      "path": "specs/761_ladder_realization_theorem/records/round-35-construction-over-certified-subset.md",
+      "summary": "The removal rule stated first, the attack's outcome, the four-candidate enumeration with compiled certification and seriality verdicts, the dissolution table, the branch selection and the shape-transfer caveat."
     },
     {
       "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/34_readoff-construction-pair-restatement.md",
-      "summary": "Phase 21 annotated with a second Recorded Outcome block and a structured BLOCKER entry; marker stays [PARTIAL]."
+      "path": "specs/761_ladder_realization_theorem/plans/35_construction-over-certified-subset.md",
+      "summary": "Phase 23 marked [COMPLETED] with its Recorded Outcome block and the file-list deviations."
     }
   ],
-  "verification": {
-    "build_passed": true,
-    "sorry_count": 0,
-    "gates": "lake build (full) exit 0; lake build BimodalTest exit 0; check-module-invariants PASS; readme-lint PASS; check-evidence-probes PASS (67/67); typst-sync-check PASS; verify-deploy PASS (15 checks, 0 failures)"
-  },
-  "commits": [
-    "f70dbb1fe task 761 phase 21.3: both key-level relations attacked; both refuted at one certified fixture",
-    "c243e269a task 761 phase 21.4: the two refutations recorded in the index, the record and the plan"
-  ]
+  "next_phase": "24",
+  "notes": "Guardrail (b) (infinite width) stays UNMET and is not reported as met (Ruling 39). The truth lemma stays open: conStep_two_step_lift_refuted is untouched. ladderConstruct is declared nowhere; ladderRealized and cellAt_const_of_kappa_eq remain refuted and unclaimed. Phase 24 inherits three named debts (record section 5): condition (2) at a non-cyclic component's edges, conditions (5)/(6) under shrinking at a BOX/STAB-BEARING closure (a verdict on a stab-free closure does not discharge it), and whether iterating the rule terminates. Routing friction worth a plan edit: Phase 11.44's by-rule continuation resolves literally to Phase 12.2, which decision 28 deliberately holds [BLOCKED]."
 }
