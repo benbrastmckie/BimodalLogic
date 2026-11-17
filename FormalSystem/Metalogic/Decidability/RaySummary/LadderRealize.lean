@@ -49,7 +49,13 @@ the candidate set over `(q, κ)`, and `stab_mem_tpOf_iff_cell` (`LadderAgree.lea
 a datum of the CELL at the member's own world state, so the condition asks exactly for the
 agreement and for nothing weaker (`stab_bit_agree_of_certStabK` below is the statement of that
 collapse). It is not claimed here, and neither is `real_certAdmK_of_paramsOk` or
-`real_subset_dmax`: all three wait on the agreement.
+`real_subset_dmax`. They do NOT wait on the agreement: the agreement is REFUTED at `(K4)`'s gap
+clip (`exists_kappa_collision_cellAt_ne_at_K4_clip` at the end of this module), and condition (5)
+is refuted ON `Real` itself at that clip, together with `certAdmK` of `Real`
+(`exists_paramsOk_real_not_certAdmK`, likewise at the end of this module). So no theorem of the
+shape `ParamsOk … → certAdmK … (Real …)` exists, and the route to `Real ⊆ Dmax` through
+`dmax_maximal` is closed. Whether `Real ⊆ Dmax` holds by some other route is open and is not
+claimed either way here.
 
 **THE MAXIMUM-CERTIFIED-SET FINDING UNDER THE WIDENED `RK`: the sufficiency half has MOVED.**
 Re-read, not inherited, because the widening is not semantically free. `Dmax` is literally the
@@ -2150,5 +2156,130 @@ theorem exists_kappa_collision_cellAt_ne_at_K4_clip :
   · rw [clip_thetaC]
     exact kappa_collision_theta _ _ _
   · exact thetaC_cell_ne _ _ (by omega)
+
+/-! ## `Real` is NOT certified: condition (5)'s `⟹` direction fails at `(K4)`'s clip
+
+The cell agreement `certStabK` of `Real` would be proved across is refuted at the gap clip
+`paramsOkK4` admits (`exists_kappa_collision_cellAt_ne_at_K4_clip` above), so the question of
+whether `Real` is certified is not left open by that refutation: it is settled against, and the
+two declarations below settle it inside this module rather than by appeal to a probe.
+
+**Which direction fails, stated exactly.** `certStabK`'s clause at a member is an IFF. Its `⟸`
+half is landed UNCONDITIONALLY by `real_certStabK_mpr` and is untouched here. Its `⟹` half — the
+`⊡` letter in a member's type forces the letter's argument into the type of every member sharing
+the object state and the counter class — is the half that fails, and it fails on `Real` itself at
+the `K4ClipWitness` object, at the separating formula `⊡ X ⊡ ¬ P ¬p`, at the periodicity
+fixpoint's own four parameter outputs, and at the counter-pair collision `(Tc + 3, Tc)` against
+`(Tc + 3 + (P + 1), Tc)` whose two gaps the clip `3` identifies and whose cells differ.
+
+**What this does and does not claim.** It claims that no theorem of the shape
+`ParamsOk step pend lab φ Tc Tn P B → certAdmK step pend lab φ Tc Tn P B (Real …)` exists, so the
+route to `Real ⊆ Dmax` through `dmax_maximal` is closed. It does NOT claim `Real ⊄ Dmax`:
+`Dmax` is a union over certified subsets, and nothing here rules out each member of `Real` lying
+in some certified set. It asserts no agreement, no fibre equation, and no inclusion between
+`Real` and `Dmax` in either direction. Every quantity named is a count. -/
+
+namespace K4ClipWitness
+
+/-- Every point of a history through `stC c n` at time `0` realizes a member of `Real`. -/
+private theorem mem_real_of_state (Tc Tn P c n : ℕ)
+    (σ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame)
+    (hs : σ.state 0
+      = ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState)) :
+    (((0 : Qc), ⟨tpOf MC thetaC σ 0,
+        Finset.mem_powerset.mpr (tpOf_subset MC thetaC σ 0)⟩,
+      kappa Tc Tn P 3 (c, n)) : Qc × ClType thetaC × CK Tc Tn P 3)
+      ∈ Real stepC pendC labC thetaC Tc Tn P 3 fwdC bwdC :=
+  ⟨c, n, admZeroC c n, 0, 0, σ, hs, rfl, rfl⟩
+
+/-- **CONDITION (5) FAILS ON `Real`**, at every threshold pair and modulus, at the gap clip `3`.
+The member is the triple realized by a history through the pending state with countdown
+`Tc + 3 + (P + 1)` and register `Tc`, whose type carries the `⊡` letter; the class-mate that
+refutes the `⟹` direction is the triple realized by a history through the pending state with
+countdown `Tc + 3` and the same register, chosen so that the letter's argument fails on it. -/
+private theorem real_not_certStabK (Tc Tn P : ℕ) :
+    ¬ certStabK thetaC Tc Tn P 3
+        (Real stepC pendC labC thetaC Tc Tn P 3 fwdC bwdC) := by
+  intro hcert
+  -- the high-gap side: the `⊡` letter lies in the realized type
+  obtain ⟨τ', hτ'⟩ := exists_hist_of_isLadderPath fwdC bwdC
+    (gC (Tc + 3 + (P + 1)) Tc) (gC_isPath _ _)
+  have hs' : τ'.state 0
+      = ((0, stC (Tc + 3 + (P + 1)) Tc) :
+          (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) := by
+    rw [hτ' 0, gC_zero_eq]
+  have hθ' : thetaC ∈ tpOf MC thetaC τ' 0 :=
+    thetaC_mem (Tc + 3 + (P + 1)) Tc (by omega) _ ⟨τ', hs', rfl⟩
+  -- the gap `-3` side: the `⊡` letter does not
+  obtain ⟨τ, hτ⟩ := exists_hist_of_isLadderPath fwdC bwdC (gC (Tc + 3) Tc) (gC_isPath _ _)
+  have hs : τ.state 0
+      = ((0, stC (Tc + 3) Tc) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) := by
+    rw [hτ 0, gC_zero_eq]
+  have hθ : thetaC ∉ tpOf MC thetaC τ 0 := thetaC_not_mem Tc _ ⟨τ, hs, rfl⟩
+  have hfalse : ¬ PlusTruthAt MC τ 0 thetaC := fun h =>
+    hθ ((mem_tpOf_iff _ _ _ _ _).mpr ⟨self_mem_plusSubformulaClosure _, h⟩)
+  -- so some history through that same ladder state falsifies the letter's argument
+  have hex : ∃ σ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame,
+      τ.state 0 = σ.state 0 ∧
+      ¬ PlusTruthAt MC σ 0 (nxtF (.stab (PlusFormula.neg pastIdleC))) := by
+    by_contra hn
+    exact hfalse (fun σ e => by_contra (fun hσ => hn ⟨σ, e, hσ⟩))
+  obtain ⟨σ, hσe, hσ⟩ := hex
+  -- and that history's own realized triple is a class-mate of the member
+  have hall := (hcert _ (mem_real_of_state Tc Tn P _ Tc τ' hs') thetaC
+    (self_mem_plusSubformulaClosure _) rfl).mp hθ'
+  have hmem := hall _ (mem_real_of_state Tc Tn P (Tc + 3) Tc σ (hσe.symm.trans hs)) rfl
+    (kappa_collision_theta Tc Tn P)
+  exact hσ ((mem_tpOf_iff _ _ _ _ _).mp hmem).2
+
+end K4ClipWitness
+
+open K4ClipWitness in
+/-- **`Real` IS NOT CERTIFIED UNDER THE PARAMETER CONDITIONS.** There are a finite object, a
+labelling, a formula `phi` and thresholds and a modulus satisfying `ParamsOk` at the gap clip
+`B = max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)` — the least clip `paramsOkK4` admits and
+the value `Bof` outputs — at which the actually realizable subset `Real` fails condition (5), and
+hence fails `certAdmK`.
+
+**Which quantifier fails.** The schema "for every finite object, labelling, formula and parameter
+tuple satisfying `ParamsOk`, `Real` is `certAdmK`-certified" is false, and the clause it fails at
+is `certStabK`'s `⟹` direction at a `kappa`-collision whose two cells differ — the collision
+`exists_kappa_collision_cellAt_ne_at_K4_clip` exhibits, read from the certificate side. The `⟸`
+direction is landed unconditionally by `real_certStabK_mpr` and is not contradicted.
+
+**The consequence for `Dmax`.** `dmax_maximal` places a certified set inside `Dmax`; with no
+certification of `Real` available, that route to `Real ⊆ Dmax` is closed. This theorem does NOT
+state `Real ⊄ Dmax`: `Dmax` is a union over the certified subsets of the carrier, and a member of
+`Real` may lie in a certified set that does not contain all of `Real`.
+
+**Statement fidelity.** This is a statement about `ParamsOk` as `paramsOkK4` defines it in
+`CounterQuotient.lean`. It proves no agreement, no certification and no inclusion; the names
+`cellAt_const_of_kappa_eq`, `ladderRealized`, `real_certStabK`, `real_certAdmK_of_paramsOk` and
+`real_subset_dmax` are carried by no declaration. It is not a device-discrimination claim, and
+every quantity named is a count.
+
+Paper: — (a refutation of this library's own certificate at its own gap clip; `certStabK`, `Real`
+and (K4) have no literature counterpart) -/
+theorem exists_paramsOk_real_not_certAdmK :
+    ∃ (Q : Type) (_ : Fintype Q) (_ : Nonempty Q)
+      (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
+      (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+      (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+      (phi : PlusFormula) (Tc Tn P : ℕ),
+      ParamsOk step pend lab phi Tc Tn P
+          (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)) ∧
+      ¬ certStabK phi Tc Tn P (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2))
+          (Real step pend lab phi Tc Tn P
+            (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)) fwd bwd) ∧
+      ¬ certAdmK step pend lab phi Tc Tn P
+          (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2))
+          (Real step pend lab phi Tc Tn P
+            (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)) fwd bwd) := by
+  refine ⟨Qc, inferInstance, inferInstance, stepC, pendC, labC, fwdC, bwdC, thetaC,
+    Tcof stepC pendC labC thetaC, Tnof stepC pendC labC thetaC, Pof stepC pendC labC thetaC,
+    paramsOk_params stepC pendC labC thetaC, ?_, ?_⟩
+  · exact real_not_certStabK _ _ _
+  · exact fun h => real_not_certStabK _ _ _ h.2.2.2.2.1
+
 
 end FormalSystem.Metalogic.Decidability.RaySummary

@@ -1,47 +1,48 @@
 {
-  "status": "implemented",
+  "status": "partial",
+  "requires_user_review": true,
+  "blocked_phase": "12.2",
+  "review_reason": "Phase 12.2 blocked: real_certAdmK_of_paramsOk is FALSE at its filed signature (compiled refutation landed), so real_subset_dmax's dmax_maximal route is closed and the READ-OFF half (Phase 20) is gated on a route decision.",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
     "vacuous_count": 1,
     "axiom_count": 14,
-    "build_passed": true
+    "build_passed": true,
+    "notes": "vacuous_count 1 and axiom_count 14 are the PRE-EXISTING repository baselines, unchanged by this dispatch (the diff adds neither); the single vacuous grep hit is FormalSystem/Examples/TemporalStructures.lean:495, untouched here. Full guarded lake build exit 0, 2976 jobs, zero error: lines; scripts/check-module-invariants.sh exits 0 with zero FAIL lines."
   },
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/34_evidence-probe-wiring-summary.md",
-      "summary": "Phase 19: four report-only refutation units wired into specs/evidence/ and the evidence gate."
-    },
-    {
-      "type": "record",
-      "path": "specs/761_ladder_realization_theorem/records/round-34-readoff-construction-pair.md",
-      "summary": "Round 34 record: entry-gate measurement, unit provenance, axiom profiles, citation map, Ruling 35 check."
+      "path": "specs/761_ladder_realization_theorem/summaries/34_real-not-certified-blocked-summary.md",
+      "summary": "Phase 12.2 blocked: Real is not certAdmK-certified at the (K4) clip; the compiled refutation exists_paramsOk_real_not_certAdmK is landed in the library."
     }
   ],
-  "completion_data": {
-    "completion_summary": "Phase 19 wired all four previously report-only refutation units into specs/evidence/ -- two new probe files plus two units appended under the plan's derived LadderStepFrag import -- and listed the two new probes in the evidence gate's WIRED array. The gate passes over all 67 wired probes, the full lake build exits 0 with zero errors and zero warnings, and eleven stale 'unwired pending Phase 19' citations were re-pointed at their wired probe path and declaration line.",
-    "roadmap_items": []
-  },
   "modified_files": [
-    "specs/evidence/seam-gluing-ray-product/ladder-gap-jump-refutation.lean",
-    "specs/evidence/seam-gluing-ray-product/ladder-chain-object-clip-refutation.lean",
-    "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
-    "scripts/check-evidence-probes.sh",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "typst/generated/status.typ",
     "specs/761_ladder_realization_theorem/plans/34_readoff-construction-pair-restatement.md",
-    "specs/761_ladder_realization_theorem/records/round-34-readoff-construction-pair.md",
-    "specs/761_ladder_realization_theorem/summaries/34_evidence-probe-wiring-summary.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl",
-    "specs/761_ladder_realization_theorem/.orchestrator-handoff.json"
+    "specs/761_ladder_realization_theorem/summaries/34_real-not-certified-blocked-summary.md"
   ],
+  "user_decision": {
+    "blocking": true,
+    "question": "Phase 12.2 is blocked: `Real` is now PROVED not to be certAdmK-certified at the (K4) clip (`exists_paramsOk_real_not_certAdmK`, landed and pinned this dispatch), so `real_subset_dmax`'s `dmax_maximal` route is dead and Phase 20's READ-OFF half `ladderReadOff` -- whose right-hand side is the `Dmax` fibre -- has no landed route to its conclusion. `Real \\u2286 Dmax` itself is NOT refuted (Dmax is a union over certified subsets, so each member of Real may lie in a certified set that does not contain all of Real). Which way should the plan be revised?",
+    "options": [
+      "(A) Pointwise-coverage route: keep `ladderReadOff`'s filed right-hand side and prove `Real \\u2286 Dmax` by covering each member with its OWN certified set, never certifying `Real` as a whole. Attack-first per Rulings 27/28: a bounded round that attempts to REFUTE pointwise coverage on the K4ClipWitness object BEFORE any construction is adopted -- the refuting pair's two triples would each need a certified set containing it, and certStabK's fibre clause may force the class-mate in.",
+      "(B) Restate the READ-OFF half's right-hand side: replace the `Dmax` fibre by an object the refutation does not kill -- e.g. the fibre of a set certified only in the conditions that survive, or a quasistate-keyed target -- and record the departure from GKWZ Lemma 5.24's maximal-set containment as a named divergence.",
+      "(C) Enter the CONSTRUCTION half (Phase 21) first and defer the READ-OFF half: Phase 21 takes `certAdmK` as an EXPLICIT hypothesis on an arbitrary R and is untouched by this refutation, so it is enterable now; the READ-OFF half's target is then chosen with the construction's output in hand."
+    ],
+    "recommendation": "(C) then (A). Phase 21 is the only phase of the live plan that this refutation leaves fully enterable -- its hypothesis is explicit, not read off `Dmax` -- and the description already declares the construction half unwritten in all four components and owed under every remaining route. Entering it first buys forward progress while the READ-OFF target is decided, and its built model is direct evidence for what the READ-OFF half's right-hand side should be. (A) is the honest attack-first follow-up once that is in hand; (B) is premature before the construction exists, since it would choose a target with nothing to check it against."
+  },
   "metadata": {
     "session_id": "sess_1794873265_b9bafc",
     "agent_type": "lean-implementation-agent",
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "dispatch_seq": 83,
-    "compliance_check": "passed",
-    "phase_executed": 19,
-    "phase_dispatched": "12.5",
-    "phase_redirect_reason": "Dispatch 83 named Phase 12.5, whose [PARTIAL] marker was manufactured in the working tree by the H1 marker/handoff gate at this dispatch's own preflight (recurrence of iss_1794847364431_bAgQCh, escalated from one heading to four). Phase 12.5's three deliverables are landed and committed at LadderRealize.lean:549/571/610. The four corrupted markers were restored to their committed values and the plan's genuinely live phase -- 19, wave 1, Depends on: none, named by the plan as 'the first thing any dispatch should run' -- was executed instead."
+    "dispatch_seq": 84,
+    "compliance_check": "skipped"
   }
 }

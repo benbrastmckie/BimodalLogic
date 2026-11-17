@@ -110,7 +110,7 @@ expectation to rewrite.
 -- `#guard_msgs` block for a declaration sits beside the prose that says what it certifies.
 -- The baseline is raised one chunk at a time, as the ledger grows; the `longFile` linter requires
 -- the value to be at least the file's length and refuses a value more than one chunk above it.
-set_option linter.style.longFile 3800
+set_option linter.style.longFile 3900
 
 namespace BimodalTest.Metalogic
 
@@ -3642,6 +3642,40 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
  Quot.sound] -/
 #guard_msgs in
 #print axioms exists_kappa_collision_cellAt_ne_at_K4_clip
+
+/-! ### `Real` is NOT certified at (K4)'s clip (`RaySummary/LadderRealize.lean`)
+
+One pin: the existential refutation of `certStabK` — condition (5) — and hence of `certAdmK` ON
+`Real` itself, at the same clip and the same two-state witness. It is the certificate-side reading
+of the entry above, and it closes the route to `Real ⊆ Dmax` through `dmax_maximal`. It does NOT
+state `Real ⊄ Dmax`. -/
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_paramsOk_real_not_certAdmK' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms exists_paramsOk_real_not_certAdmK
+
+open FormalSystem.Metalogic.Decidability.RaySummary in
+open FormalSystem.Syntax FormalSystem.PlusLanguage in
+/-- **THE RESTRICTION CHECK.** The refutation is read at the `(K4)` clip `Bof` itself outputs, with
+`ParamsOk` discharged at the same tuple — not at a clip chosen to defeat it. A version stated at an
+unconstrained `B`, or without the `ParamsOk` conjunct, would not typecheck here. -/
+example : ∃ (Q : Type) (_ : Fintype Q) (_ : Nonempty Q)
+      (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
+      (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+      (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+      (phi : PlusFormula) (Tc Tn P : ℕ),
+      ParamsOk step pend lab phi Tc Tn P
+          (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)) ∧
+      ¬ certAdmK step pend lab phi Tc Tn P
+          (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2))
+          (Real step pend lab phi Tc Tn P
+            (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)) fwd bwd) := by
+  obtain ⟨Q, hQ, hne, step, pend, lab, fwd, bwd, phi, Tc, Tn, P, hp, -, hadm⟩ :=
+    exists_paramsOk_real_not_certAdmK
+  exact ⟨Q, hQ, hne, step, pend, lab, fwd, bwd, phi, Tc, Tn, P, hp, hadm⟩
 
 
 /-! ### The threshold-carrying state relation

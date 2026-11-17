@@ -1,35 +1,22 @@
 {
-  "status": "implemented",
-  "dispatch_seq": 83,
+  "dispatch_seq": 84,
+  "status": "blocked",
   "phases_completed": 64,
   "phases_total": 77,
-  "summary": "Executed Phase 19 (wave 1, Depends on: none), NOT the Phase 12.5 the dispatch named: the working tree carried four closed headings (12.5, 12.6, 15.2, 16) downgraded to [PARTIAL] by the H1 marker/handoff gate at this dispatch's own preflight, exactly enough to force the plan's closed count from its true 63 to the stale handoff's 59. The four markers were restored and the handoff count resynced here. Phase 19 wired all four previously report-only refutation units into specs/evidence/: two new probe files (ladder-gap-jump-refutation.lean, ladder-chain-object-clip-refutation.lean) plus units 2 and 3 appended to ladder-cell-agreement-refutation.lean under the plan's derived LadderStepFrag import, which compiled first try. check-evidence-probes.sh exits 0 over all 67 wired probes; full lake build exits 0 with 0 errors and 0 warnings; eleven stale 'unwired pending Phase 19' citations re-pointed at their wired path and line.",
-  "blockers": [],
+  "summary": "Phase 12.2's three filed deliverables are not landable: Phase 11.7 landed no agreement (closed with its Goal refuted), and certStabK of Real is itself refuted at the (K4) clip. Landed the compiled library record instead -- exists_paramsOk_real_not_certAdmK, with its private witness real_not_certStabK -- naming the forward direction of condition (5) as the half that fails, while real_certStabK_mpr stands. Phase 12.2 closed [BLOCKED] with a BLOCKER record; full build, module invariants, sorry census and axiom profile all green.",
+  "blockers": [
+    "real_certAdmK_of_paramsOk is FALSE at its filed signature (exists_paramsOk_real_not_certAdmK), so real_subset_dmax's dmax_maximal route is closed and Phases 13, 15.1 and 20 (the READ-OFF half ladderReadOff, whose right-hand side is the Dmax fibre) are gated on a route decision requiring /revise."
+  ],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/34_evidence-probe-wiring-summary.md",
-      "summary": "Phase 19 implementation summary: the four wired units, the entry-gate repair, the one plan deviation and the full verification run."
-    },
-    {
-      "type": "record",
-      "path": "specs/761_ladder_realization_theorem/records/round-34-readoff-construction-pair.md",
-      "summary": "Round 34 record: the entry-gate measurement, unit provenance, axiom profiles, the six-row citation map and Ruling 35's mechanical check."
+      "path": "specs/761_ladder_realization_theorem/summaries/34_real-not-certified-blocked-summary.md",
+      "summary": "Phase 12.2 blocked: Real is not certAdmK-certified at the (K4) clip; the compiled refutation is landed in the library."
     },
     {
       "type": "plan",
       "path": "specs/761_ladder_realization_theorem/plans/34_readoff-construction-pair-restatement.md",
-      "summary": "Phase 19 [COMPLETED] with tasks checked and the deviation annotated; four corrupted markers restored; closed count 63 -> 64."
-    },
-    {
-      "type": "evidence",
-      "path": "specs/evidence/seam-gluing-ray-product/ladder-gap-jump-refutation.lean",
-      "summary": "NEW wired probe: exists_rowLinked_path_K1_refuted and the object-independent register obstruction."
-    },
-    {
-      "type": "evidence",
-      "path": "specs/evidence/seam-gluing-ray-product/ladder-chain-object-clip-refutation.lean",
-      "summary": "NEW wired probe: no_formula_only_clip over ALL clip functions, and exponential_clip_refuted."
+      "summary": "Phase 12.2 marked [BLOCKED] with a BLOCKER record and inline deviation annotations on its five checklist items."
     }
   ]
 }

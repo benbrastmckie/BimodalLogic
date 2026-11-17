@@ -12085,7 +12085,42 @@ pre-authorized primary remedy the 11-series phases use, on a file this phase's
 
 ---
 
-### Phase 12.2: `Real`'s Certification Under the Parameter Conditions, and `Real ⊆ Dmax` [NOT STARTED]
+### Phase 12.2: `Real`'s Certification Under the Parameter Conditions, and `Real ⊆ Dmax` [BLOCKED]
+
+**BLOCKER** (Phase 12.2) — recorded by dispatch 84, 2026-11-17:
+
+- **What failed**: all three filed deliverables. `real_certStabK` has no input: Phase 11.7 closed
+  `[COMPLETED WITH EXCLUSIONS]` with its filed Goal REFUTED (`cellAt_const_of_kappa_eq_schema_refuted`,
+  `repaired_clip_refuted`), so there is no agreement — unconditional OR conditional-auxiliary — to
+  consume at a `⊟`-carrying closure. `real_certAdmK_of_paramsOk` at its filed signature is not merely
+  unproved but FALSE, and `real_subset_dmax`'s filed route through `dmax_maximal` dies with it.
+- **Which direction of the biconditional failed** (the record this phase's Scope Hypothesis asks for):
+  the `⟹` direction of `certStabK`'s clause — the `⊟` letter in a member's type forcing the letter's
+  argument into the type of every member sharing the object state and the counter class. The `⟸`
+  direction is landed UNCONDITIONALLY by `real_certStabK_mpr` and is NOT contradicted.
+- **What was landed instead, compiled**: `exists_paramsOk_real_not_certAdmK`
+  (`FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean`), with its private witness
+  `K4ClipWitness.real_not_certStabK`. It exhibits a finite object, a labelling, the formula
+  `⊟ X ⊟ ¬ P ¬p`, and the periodicity fixpoint's own four parameter outputs discharging `ParamsOk`
+  at the `(K4)` clip `Bof` itself returns, at which `Real` fails condition (5) and hence `certAdmK`.
+  Axiom profile `[propext, Classical.choice, Quot.sound]`; pinned in
+  `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` with a restriction check.
+- **What is NOT claimed**: `Real ⊄ Dmax`. `Dmax` is a union over the certified subsets of the
+  carrier, so a member of `Real` may lie in a certified set that does not contain all of `Real`.
+  The inclusion `Real ⊆ Dmax` is OPEN; only its `dmax_maximal` route is closed.
+- **Why no honest conditional shape exists**: a restatement under Phase 11.6's carried premise
+  bundle would carry a premise refuted at the very collision the conclusion needs — the bundle's
+  regime premise `n + 2 ≤ c` HOLDS at the refuting pair `(Tc + 3, Tc)` / `(Tc + 3 + (P + 1), Tc)`,
+  so the restriction does not exclude it and the conditional is vacuous rather than restrictive,
+  which this plan's zero-debt gate forbids. The already-landed
+  `real_certStabK_of_cell_stab_transfer` is that conditional under its honest name and is untouched.
+- **What is needed**: a route decision (a `/revise`). Phase 20's `ladderReadOff` reads
+  `cellAt (ladderModel …) ⊆ Dmax`-fibre, and Phases 13 and 15.1 consume `real_subset_dmax`; all
+  three now need either a route to `Real ⊆ Dmax` that does not pass through certifying `Real`, or
+  a restatement of the READ-OFF half's right-hand side.
+- **Prohibited workarounds**: no `sorry`, no `axiom`, no vacuous definition, no shrinking of `Real`,
+  no union argument, and no same-named weakened restatement of `real_certStabK`,
+  `real_certAdmK_of_paramsOk` or `real_subset_dmax`.
 
 **CONDITIONAL ON PHASE 11.6'S CARRIED PREMISE BUNDLE, AND THE OWNER OF THE PERMANENT RESTATEMENT
 OBLIGATION.** Split out by an earlier revision from its Phase 12 as the agreement-consuming half;
@@ -12128,22 +12163,22 @@ both inheriting the bundle.
 
 **Tasks**:
 - [ ] **Land `real_certStabK` from Phase 11.7's conditional agreement, as a restatement under the
-      bundle.** Both directions reduce, by `stab_mem_tpOf_iff_cell`, to the cells of
+      bundle.** *(deviation: skipped — Phase 11.7 landed NO agreement; closed `[COMPLETED WITH EXCLUSIONS]` with its Goal refuted. See the BLOCKER record above.)* Both directions reduce, by `stab_mem_tpOf_iff_cell`, to the cells of
       class-equivalent states agreeing — which is whatever Phase 11.7 actually landed: the filed
       `cellAt_const_of_kappa_eq` if it landed unconditionally, otherwise the conditional auxiliary.
       **Read which before writing the statement**; do not assume the unconditional form.
-- [ ] **Name the regime restriction in `real_certStabK`'s own statement**, as a restriction on the
+- [ ] **Name the regime restriction in `real_certStabK`'s own statement** *(deviation: skipped — the regime premise does NOT exclude the refuting pair, so no honest restriction exists; see the BLOCKER record)*, as a restriction on the
       candidate set or on the pairs quantified, and record which. The bundle's slice does not cover
       the ordinary window regime and `Real` reaches it — see this phase's opening note. A statement
       that assumes the regime where `Real` violates it is unsatisfiable, not restrictive.
-- [ ] Assemble the six conditions — `real_certLocK` and `real_certBoxK` from Phase 12.1,
+- [ ] Assemble the six conditions *(deviation: skipped — the assembly is REFUTED at its filed signature by `exists_paramsOk_real_not_certAdmK`, landed this dispatch)* — `real_certLocK` and `real_certBoxK` from Phase 12.1,
       `real_certBiInfK`, `real_certFwdK` and `real_certBwdK` from Phase 12.5, and this phase's own
       `certStabK` — as `real_certAdmK_of_paramsOk : ParamsOk step pend lab φ Tc Tn P B →
       certAdmK step pend lab φ Tc Tn P B (Real …)`. The parameter hypothesis enters here and only here
       on the certificate side, through the agreement.
-- [ ] Conclude `real_subset_dmax : Real … ⊆ Dmax …` by `dmax_maximal` applied to
+- [ ] Conclude `real_subset_dmax : Real … ⊆ Dmax …` *(deviation: skipped — its `dmax_maximal` route is closed by the refutation above; the inclusion itself stays OPEN and unclaimed)* by `dmax_maximal` applied to
       `real_certAdmK_of_paramsOk`, so the inclusion is likewise stated under `hp`.
-- [ ] **Do not state or prove `Dmax ⊆ Real`.** That is Phase 15's corollary of `ladderLift` plus the
+- [x] **Do not state or prove `Dmax ⊆ Real`.** *(honoured: no such statement was written)* That is Phase 15's corollary of `ladderLift` plus the
       landed `dmax_certBiInfK`; attempting it here pulls (C') forward and re-closes a loop.
 
 **Prohibited workarounds**: do NOT re-derive the agreement inside this phase; do NOT confine `Real` to
