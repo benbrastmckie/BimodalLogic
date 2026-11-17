@@ -14581,7 +14581,7 @@ plan's own prose. **A count of objects, not of hours.**
 
 ---
 
-### Phase 23: The ELIMINATION, ATTACKED AT `ConAttack.attR` BEFORE ANYTHING IS BUILT ON IT [NOT STARTED]
+### Phase 23: The ELIMINATION, ATTACKED AT `ConAttack.attR` BEFORE ANYTHING IS BUILT ON IT [IN PROGRESS]
 
 **ADDED BY THE (Q-2) REVISION (decision 29). IT IS AN ATTACK, AND IT COMES FIRST BECAUSE THE
 RESTATEMENT IT TESTS IS THE WHOLE ROUTE (Rulings 27, 31, 38).** Decision 29 re-pinned
