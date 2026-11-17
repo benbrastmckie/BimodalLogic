@@ -1033,6 +1033,34 @@ is not read as an oversight:
   has FINITE width, the slice `ConKey` being finite: that is a property of the output, not an
   assumption on an input, and it is recorded rather than repaired.
 
+- **The ELIMINATION the construction direction needs SURVIVES ITS ATTACK at the certified set that
+  forced the restatement — a verdict at ONE fixture and nothing wider.** Because
+  `conStepStrong_serial_refuted` denies the uniform relation's seriality on `ConAttack.attR`
+  itself, the construction's conclusion is stated over the fibres of a certified SUBSET, and the
+  device that produces such a subset is elimination. The removal rule compiled in
+  [`LadderRealize.lean`](../FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean)
+  keeps the `relK`-connected component, inside the certified set, of one chosen member of a
+  multi-member fibre. At `ConAttack.attR` that relation is two disjoint two-cycles, so the rule
+  returns `ConAttack.attRp = {m0p, m1p}` and `ConAttack.attRm = {m0m, m2m}`, and the round's
+  verdict is `exists_certified_serial_dissolving_subset_at_attR`: a subset of the certified set
+  that is nonempty, `certAdmK`-certified (`attRp_certAdmK`, `attRm_certAdmK` — all six conditions,
+  the `⊡`/`□` acceptance clauses CARRIED on the subset rather than inherited), uniformly serial
+  (`conStepStrong_serial_attRp`, `conStepStrong_serial_attRm`), and carrying exactly ONE member
+  over the key of object state `0` (`over_pK0`, `over_mK0`). So the obstruction both earlier
+  refutations consumed is a property of a certified set with two members over one key, not of the
+  certificate conditions, and a certified subset can lack it. **What this does not establish**:
+  nothing here quantifies over certified sets, no elimination operator at a general certified set
+  exists, and the truth lemma stays open — `conStep_two_step_lift_refuted` is untouched, the weak
+  relation not being what the subset is serial for. Conditions (5) and (6) are NOT inherited by
+  shrinking in general (each is an iff whose right side is a universal over the set, so removal
+  makes that side more often true and the `←` direction can fail); at this fixture both are
+  discharged by `no_stab_closure`/`no_box_closure`, a fact about the closure of `g U e` and never
+  a licence to omit the clauses. The empty set is certified (`empty_certAdmK`) and serial for the
+  degenerate reason that its key carrier is empty (`conStepStrong_serial_empty`); it is excluded
+  by nonemptiness (`empty_not_nonempty`), which is why that row is pinned. The transfer to GKWZ
+  2003 §5.2's elimination is by SHAPE: no theorem there applies to this semantics. The
+  constructed model's finite width is unchanged by any of this.
+
 ## Related documentation
 
 - [`README.md`](../README.md) — project overview and the `## Verifying the main theorems` recipe

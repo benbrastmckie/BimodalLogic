@@ -3073,8 +3073,9 @@ becomes serial on what survives — is the device the published converse directi
 exist**, so this section decides by compilation, at the ONE certified set that forced the
 weakening, whether a fibre-dissolving certified subset exists there at all.
 
-**The removal rule**, stated in `specs/761_ladder_realization_theorem/records/`'s round-35 record
-before any declaration below was written: given a certified `R` and a key whose fibre carries two
+**The removal rule**, stated in the round's own record
+(`round-35-construction-over-certified-subset.md`) before any declaration below was written:
+given a certified `R` and a key whose fibre carries two
 or more members, choose one member `m` of that fibre and keep exactly the `relK`-connected
 component of `m` inside `R`. It is a removal rule — its output is a subset of its input, produced
 from `R` and a chosen member — and **nothing here assumes its output is certified**; that is what
