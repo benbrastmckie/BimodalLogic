@@ -14581,7 +14581,7 @@ plan's own prose. **A count of objects, not of hours.**
 
 ---
 
-### Phase 23: The ELIMINATION, ATTACKED AT `ConAttack.attR` BEFORE ANYTHING IS BUILT ON IT [IN PROGRESS]
+### Phase 23: The ELIMINATION, ATTACKED AT `ConAttack.attR` BEFORE ANYTHING IS BUILT ON IT [COMPLETED]
 
 **ADDED BY THE (Q-2) REVISION (decision 29). IT IS AN ATTACK, AND IT COMES FIRST BECAUSE THE
 RESTATEMENT IT TESTS IS THE WHOLE ROUTE (Rulings 27, 31, 38).** Decision 29 re-pinned
@@ -14611,29 +14611,29 @@ member.**
 `ConAttack.attR`, together with the fibre-dissolution fact for each candidate subset enumerated.
 
 **Tasks**:
-- [ ] **State the elimination step in `records/round-35-construction-over-certified-subset.md`
+- [x] **State the elimination step in `records/round-35-construction-over-certified-subset.md`
       BEFORE any Lean is written**: the removal rule, what it is intended to preserve
       (`certAdmK`'s six conditions and nonemptiness), and what it may destroy. A dispatch that
       writes a Lean operator before its rule is recorded has skipped the step this phase exists to
       make unskippable.
-- [ ] **ATTACK FIRST.** Attempt to REFUTE, at `ConAttack.attR`, the claim that a `certAdmK`-certified
+- [x] **ATTACK FIRST.** Attempt to REFUTE, at `ConAttack.attR`, the claim that a `certAdmK`-certified
       nonempty subset exists on which `conStepStrong` is serial. Record the outcome either way
       **before** anything positive is attempted.
-- [ ] **ENUMERATE the candidate subsets of `attR` and decide `certAdmK` on each by compilation**,
+- [x] **ENUMERATE the candidate subsets of `attR` and decide `certAdmK` on each by compilation**,
       not by argument. The enumeration to check — stated as the work, **not** as a prediction of its
       outcome — is at minimum `{m0p, m1p}`, `{m0m, m2m}`, `attR` itself, and the empty set; any
       subset the removal rule actually produces is added to it. For each: `certAdmK` or its failure,
-      with the failing condition NAMED, and `conStepStrong` seriality or its failure.
-- [ ] **STATE THE DISSOLUTION VERDICT EXPLICITLY**, for each candidate: does the fibre over the key
+      with the failing condition NAMED, and `conStepStrong` seriality or its failure. *(no condition fails on any candidate at this fixture, so the "failing condition NAMED" column is empty by outcome rather than by omission — record section 3)*
+- [x] **STATE THE DISSOLUTION VERDICT EXPLICITLY**, for each candidate: does the fibre over the key
       of object state `0` survive with ONE member or TWO? A phase that reports certification
       without reporting this has not discharged decision 29's "visibly dissolve" clause.
-- [ ] **Record the branch this phase selects, by rule and not by preference.** Outcome **(a)
+- [x] **Record the branch this phase selects, by rule and not by preference.** Outcome **(a)
       SURVIVES** — some candidate is certified, nonempty and fibre-dissolving: Phase 24 is
       enterable and Phase 26 is NOT entered. Outcome **(b) REFUTED** — every fibre-dissolving
       candidate fails certification or is empty: route (C) does not close at this fixture, Phases
       24 and 25 close `[COMPLETED WITH EXCLUSIONS]` with records citing this verdict, and Phase 26
       (fallback (A)) is entered.
-- [ ] Record, against record §16 and `reports/31_gkwz-ptl-s5-quasimodels.md`, which part of the
+- [x] Record, against record §16 and `reports/31_gkwz-ptl-s5-quasimodels.md`, which part of the
       published elimination this fixture-level result does and does not stand in for — and record
       explicitly that the transfer is by SHAPE, no published theorem applying to this semantics.
 
@@ -14681,6 +14681,20 @@ lines** against an in-source `longFile 4100` (`:113`) — 110 lines of headroom.
 - `specs/761_ladder_realization_theorem/records/round-35-construction-over-certified-subset.md` - **CREATED BY THIS PHASE**: the removal rule stated first, the attack outcome, the candidate enumeration with its per-candidate certification and seriality verdicts, the dissolution table, and the shape-transfer caveat
 - `typst/generated/status.typ` - the regenerated line counts
 
+**Recorded file-list deviations** *(deviation: altered)*: `scripts/check-module-invariants.sh` was
+NOT edited — **no C14 heredoc entry is owed**. C14's pinned set is the consequence/compactness
+stack plus every SORRY-FREE claim of `Metalogic.lean`, none of which this section touches, and
+`check-module-invariants.sh` reports `PASS C14` unchanged. The axiom pins for this round live in
+`KTypeSummaryAxiomTest.lean`, as the plan's own file list has them. *(deviation: altered)* THREE
+FILES NOT IN THE LIST WERE WRITTEN: `README.md`, `FormalSystem/Metalogic/README.md` and
+`FormalSystem/Metalogic/Decidability/RaySummary/README.md`, whose GENERATED inventory blocks carry
+per-module line counts and went stale the moment the module grew (`FAIL INV 3 file(s) carry a
+stale generated inventory block`). They were regenerated through the sanctioned entry point,
+`bash scripts/check-module-invariants.sh --emit-inventory`, which rewrote one line-count cell in
+each and nothing else; the phase's own Verification requires `check-module-invariants.sh` PASS, so
+the alternative was a failing gate. Cross-set collision with task 744 (README, invariants) is left
+to the admission gate, as the task's FILE SCOPE paragraph directs.
+
 **Verification**:
 - `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` and `-- build BimodalTest` — each exit 0, zero errors.
 - **THE DISSOLUTION CHECK, MECHANICAL**: for every candidate subset in the record's table, the
@@ -14696,6 +14710,47 @@ lines** against an in-source `longFile 4100` (`:113`) — 110 lines of headroom.
 - `bash .claude/scripts/lean-sorry-census.sh FormalSystem Tests` exits 0 with `sorry_count: 0`.
 - `bash scripts/check-module-invariants.sh`, `bash scripts/readme-lint.sh`, `bash scripts/check-evidence-probes.sh` — each PASS.
 - `bash .claude/scripts/verify-deploy.sh` — the full gate set.
+
+#### Recorded Outcome
+
+**OUTCOME (a) — SURVIVES.** The attack was carried out first and **did not break the claim**: a
+`certAdmK`-certified, nonempty, uniformly serial subset of `ConAttack.attR` exists, and its fibre
+over the key of object state `0` carries exactly ONE member. Record:
+`records/round-35-construction-over-certified-subset.md`, sections 2–5. **Phase 24 is enterable;
+Phase 26 (fallback (A)) is NOT entered; Phases 24 and 25 do NOT close by exclusion.**
+
+**Dispatch routing, recorded because Phase 11.44's RE-ENTRY NOTICE requires it.** Dispatch 88 was
+scoped to Phase **11.44**, whose notice names its continuation by rule ("the first open phase at or
+after 11.48 in file order", Ruling 28). Evaluated against the live file, that walk passes 12.2
+(`[BLOCKED]`, held so by decision 28 and by this revision's own "Phase 12.2 stays `[BLOCKED]`"),
+13/14/15.1/17/11.30/11.31/18/20 (unmet `Depends on`, and 20 deferred by decisions 27/28) and 21
+(`[PARTIAL]`, whose own notice redirects to "the first open phase at or after 23"), landing on
+**Phase 23**. Record section 0 carries the table.
+
+| Item | Disposition | Evidence |
+|---|---|---|
+| The removal rule, stated BEFORE any Lean | **RECORDED FIRST**, in its own commit | record §1, commit `24dfbd79c`; the Lean operator landed in `b913b6599`, so the rule-before-operator check holds in commit order |
+| The attack at `ConAttack.attR` | **CARRIED OUT FIRST; DID NOT BREAK THE CLAIM** | `exists_certified_serial_dissolving_subset_at_attR` (`LadderRealize.lean`, top level) is the compiled failure of the attack; record §2 |
+| `attRp = {m0p, m1p}` | **CERTIFIED** (six conditions, `⊡`/`□` clauses CARRIED not inherited) and **SERIAL** | `attRp_certAdmK`, `conStepStrong_serial_attRp` |
+| `attRm = {m0m, m2m}` | **CERTIFIED** and **SERIAL** — so the choice of member does not decide the branch | `attRm_certAdmK`, `conStepStrong_serial_attRm` |
+| `attR` itself | **CERTIFIED** but **NOT SERIAL** | `att_certAdmK` (Phase 21), `conStepStrong_not_serial` |
+| `∅` | **CERTIFIED** vacuously, serial only because its key carrier is EMPTY, and **EXCLUDED** | `empty_certAdmK`, `conStepStrong_serial_empty`, `empty_not_nonempty` |
+| Dissolution, per candidate | **COMPILED, member by member** — ONE over `attRp` and `attRm`, TWO over `attR`, ZERO over `∅` | `over_pK0`, `over_mK0`, `over_key_zero`; carried as a conjunct of the headline theorem's own statement |
+| Failing condition on any candidate | **NONE at this fixture** — the column is empty by outcome, not by omission | record §3; the obstruction is the ARITY of one fibre, not a condition resisting restriction |
+| Axiom profile of every landed declaration | `[propext, Classical.choice, Quot.sound]` | pinned in `KTypeSummaryAxiomTest.lean`; `sorry_count: 0`, vacuous-grep 1 (the pre-existing `TemporalStructures.lean:495` baseline), no new `^axiom ` |
+| The shape-transfer caveat | **RECORDED** against record §16 and `reports/31_gkwz-ptl-s5-quasimodels.md` | record §6: one removal at one fixture, with NO iteration, NO termination argument and NO maximality claim, against GKWZ's fixpoint elimination |
+
+**What this phase does NOT establish, carried from its own record.** No declaration quantifies over
+certified sets and **none takes a certified subset as a binder** — the subsets are PRODUCED by the
+removal rule (Ruling 38, and the phase's NO-HYPOTHESIS check). The truth lemma stays open:
+`conStep_two_step_lift_refuted` is untouched, the weak relation not being what these subsets are
+serial for. **Guardrail (b) stays UNMET** and is not addressed or reported as met (Ruling 39).
+`ladderConstruct` is declared nowhere; `ladderRealized` and `cellAt_const_of_kappa_eq` remain
+refuted and unclaimed in `FormalSystem/` and `Tests/`; the object-dependent clip remains Phase 22's
+OPEN QUESTION; the row-link route stays STOPPED. Record §5 names the three debts Phase 24 inherits:
+condition (2) at a component's edges on a non-cyclic certified set, conditions (5)/(6) under
+shrinking at a `⊡`-BEARING closure (a verdict on a `⊡`-free closure would not discharge it), and
+whether iterating the rule terminates at a uniformly singleton-fibred subset at all.
 
 ---
 
