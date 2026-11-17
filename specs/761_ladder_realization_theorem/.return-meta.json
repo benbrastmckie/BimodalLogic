@@ -1,5 +1,7 @@
 {
-  "status": "implemented",
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "Phase 25 returns [PARTIAL]: its entry gate ('ENTERED ONLY after Phase 24 lands') is unsatisfied because Phase 24's Goal is REFUTED, and the phase's own route to the truth lemma is refuted rather than unfinished. The route-independent deliverables landed and every gate is green; the next implement dispatch should be Phase 26, not a Phase 25 re-entry.",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
@@ -10,50 +12,38 @@
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-lemma-refuted-summary.md",
-      "summary": "Phase 24's elimination lemma and the key-injectivity it reduces to, both REFUTED at a newly certified fixture; route (Q-2)'s elimination does not close."
+      "path": "specs/761_ladder_realization_theorem/summaries/35_construction-remaining-obligation-named-summary.md",
+      "summary": "Phase 25 PARTIAL: entry gate unsatisfied, the construction half's remaining obligation named as ConCellEq, the truth lemma's base cases landed, the phase's own route refuted."
     },
     {
       "type": "record",
       "path": "specs/761_ladder_realization_theorem/records/round-35-construction-over-certified-subset.md",
-      "summary": "Sections 17-23: posture, verdict, six-condition check on the refuting fixture, statement fidelity, scope and branch, carried-figure check, gate readings."
-    },
-    {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/35_construction-over-certified-subset.md",
-      "summary": "Phase 24 closed [COMPLETED WITH EXCLUSIONS] with a re-entry Recorded Outcome and a Reasoned Exclusions record."
+      "summary": "Sections 24-34: the entry-gate check, the two entry checks, the named obligation, why both routes to it are closed, the base cases, guardrail (b) UNMET, the GKWZ clause map, statement fidelity, carried figures and gate readings."
     }
   ],
-  "completion_data": {
-    "completion_summary": "Phase 24 was re-entered at its one remaining step and refuted it by compilation: no certified nonempty set need have a key-injective certified subset, and Phase 24's own Goal -- a certified nonempty subset on which conStepStrong is serial -- is FALSE. The witness is a newly certified six-member fixture whose every member carries a stab letter's argument without the letter, together with the general obstruction not_keyFibreInj_of_noncollapsed. Route (Q-2)'s elimination does not close; decision 29's sanctioned fallback (Phase 26) carries the route, and ladderConstruct at (Q-2) stays open and unrefuted.",
-    "roadmap_items": []
-  },
   "modified_files": [
     "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
     "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
     "docs/theorem-index.md",
-    "README.md",
-    "FormalSystem/Metalogic/README.md",
-    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
     "typst/generated/status.typ",
     "specs/761_ladder_realization_theorem/plans/35_construction-over-certified-subset.md",
     "specs/761_ladder_realization_theorem/records/round-35-construction-over-certified-subset.md",
-    "specs/761_ladder_realization_theorem/summaries/35_elimination-lemma-refuted-summary.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl"
+    "specs/761_ladder_realization_theorem/summaries/35_construction-remaining-obligation-named-summary.md",
+    "specs/761_ladder_realization_theorem/issues.jsonl",
+    "specs/761_ladder_realization_theorem/.orchestrator-handoff.json",
+    "specs/761_ladder_realization_theorem/.return-meta.json"
   ],
   "metadata": {
     "session_id": "sess_1794907363_4ea8f3",
     "agent_type": "lean-implementation-agent",
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ],
-    "task_dir": "specs/761_ladder_realization_theorem",
-    "dispatch_seq": 90,
-    "compliance_check": "skipped",
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 91,
+    "compliance_check": "passed",
     "phases_completed": 67,
     "phases_total": 81,
-    "compliance_check_note": "lean-plan-compliance-check.sh exits 0 and reports 'skipped' by its own rule: the plan's declared Goal Polarity is 'mixed', which that single global field cannot express, so the spot-check is deliberately not attempted. Not a failure and not a pass."
+    "next_phase_recommended": 26
   }
 }

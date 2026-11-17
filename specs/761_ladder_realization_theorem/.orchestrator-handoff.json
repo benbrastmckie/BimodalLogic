@@ -1,25 +1,23 @@
 {
-  "dispatch_seq": 90,
-  "status": "implemented",
+  "dispatch_seq": 91,
+  "status": "partial",
   "phases_completed": 67,
   "phases_total": 81,
-  "summary": "Phase 24 was re-entered at its one remaining step and that step is REFUTED by compilation: no certified nonempty set need have a key-injective certified subset (exists_certified_keyFibreInj_subset_refuted), and Phase 24's own Goal -- a certified nonempty subset on which conStepStrong is serial -- is FALSE (exists_certified_serial_subset_refuted). The witness is a newly certified fixture NoElim (all six certAdmK conditions, closure bearing two stab letters) every one of whose members carries a stab letter's argument without the letter, plus the general obstruction not_keyFibreInj_of_noncollapsed. Route (Q-2)'s elimination therefore does not close and decision 29's sanctioned fallback, Phase 26's third step relation, carries the route; ladderConstruct at (Q-2) is NOT refuted and stays open.",
-  "blockers": [],
+  "summary": "Phase 25 was dispatched although its own entry gate ('ENTERED ONLY after Phase 24 lands') is unsatisfied: Phase 24 closed with its Goal REFUTED and its record states Phase 25 is not entered, Phase 26 carrying the route. This dispatch executed the route-independent part of Phase 25 and landed the construction half's remaining obligation as one named library object (ConCellEq), the compiled instantiation check (conStruct_frame_model_key_covers), the reduction to it (ladderConstruct_of_conCellEq), and the truth lemma's two base cases at an arbitrary certified set for all phi with no BoxStabFree premise. The truth lemma itself did NOT land: its named route is refuted, not unfinished. Full build and BimodalTest both exit 0, sorry_count 0, axiom count unchanged at 14, guardrail (b) re-recorded UNMET.",
+  "blockers": [
+    "Phase 25's route is dead, not merely unfinished: the dependent-choice lifting it needs is conStepStrong's, whose seriality conStepStrong_serial_refuted denies and which exists_certified_serial_subset_refuted proves unrecoverable by shrinking the certified set. No witness exists for the (Q-2) pin's existential, Phase 24's elimination being refuted and an ad hoc R' prohibited.",
+    "ROUTING: the next implement dispatch should be Phase 26, not a re-entry of Phase 25. Decision 29 pre-sanctioned fallback (A) -- a third step relation as the greatest fixpoint of the largest composing subrelation of conStep, ATTACKED for seriality at ConAttack.attR BEFORE adoption -- and Phase 24's re-entry record directs the route there. Seriality must be sought in the RELATION, not in the SET."
+  ],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-lemma-refuted-summary.md",
-      "summary": "Phase 24's elimination lemma and the key-injectivity it reduces to, both refuted at a certified fixture."
+      "path": "specs/761_ladder_realization_theorem/summaries/35_construction-remaining-obligation-named-summary.md",
+      "summary": "Phase 25 PARTIAL: entry gate unsatisfied, remaining obligation named as ConCellEq, truth lemma's base cases landed, route refuted."
     },
     {
       "type": "record",
       "path": "specs/761_ladder_realization_theorem/records/round-35-construction-over-certified-subset.md",
-      "summary": "Sections 17-22: the attack-first posture, the verdict table, the six-condition check on the refuting fixture, statement fidelity, scope and branch, carried-figure check."
-    },
-    {
-      "type": "plan",
-      "path": "specs/761_ladder_realization_theorem/plans/35_construction-over-certified-subset.md",
-      "summary": "Phase 24 closed [COMPLETED WITH EXCLUSIONS] with a re-entry Recorded Outcome and a Reasoned Exclusions record."
+      "summary": "Sections 24-34: entry-gate check, two entry checks, the named obligation, why both routes to it are closed, the base cases, guardrail (b) UNMET, the GKWZ clause map, statement fidelity, carried figures and gate readings."
     }
   ]
 }
