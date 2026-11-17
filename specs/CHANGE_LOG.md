@@ -1,6 +1,15 @@
 # Change Log
 
 
+## 2026-11-17: Archive 1 completed task
+
+**Archived**:
+- **934** (completed, lean4): Compiled, tracked and CI-wired probe `specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean` shows `ForwardSlackWitnessed` is satisfiable at the consumer shape at a positive amount on one object (stepOr at bot, singleton cell) and that the restricted depth-0 schema fires there under `ParamsOk`. Supports the `cellLE_zero_const_of_kappa_eq`-lands lifting event as existence evidence only; refutes nothing, Stage 0 gate ruling not taken.
+
+**Directories moved**: 1 (specs/ -> specs/archive/)
+**Roadmap updates**: not run this pass
+**Memory harvest**: not run this pass (deferred to `/distill --learn`)
+
 ## 2026-11-14: Archive 9 completed tasks
 
 **Archived**:
