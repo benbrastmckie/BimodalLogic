@@ -1,5 +1,11 @@
 import FormalSystem.Automation
 import FormalSystem.Automation.Normalization
+import FormalSystem.Automation.ProofMode
+import FormalSystem.Automation.ProofMode.Basic
+import FormalSystem.Automation.ProofMode.Discrete
+import FormalSystem.Automation.ProofMode.Meta
+import FormalSystem.Automation.ProofMode.Modal
+import FormalSystem.Automation.ProofMode.Temporal
 import FormalSystem.Automation.ProofSearch.Core
 import FormalSystem.Automation.ProofSearch.Strategies
 import FormalSystem.Automation.SuccessPatterns
@@ -750,6 +756,15 @@ import FormalSystem.Theorems.Perpetuity
 import FormalSystem.Theorems.Perpetuity.Helpers
 import FormalSystem.Theorems.Perpetuity.MonotonicityDuality
 import FormalSystem.Theorems.Perpetuity.Principles
+import FormalSystem.Theorems.ProofMode
+import FormalSystem.Theorems.ProofMode.Basic
+import FormalSystem.Theorems.ProofMode.Discrete
+import FormalSystem.Theorems.ProofMode.PlusDiscrete
+import FormalSystem.Theorems.ProofMode.PlusModal
+import FormalSystem.Theorems.ProofMode.PlusRules
+import FormalSystem.Theorems.ProofMode.PlusTemporal
+import FormalSystem.Theorems.ProofMode.Possibility
+import FormalSystem.Theorems.ProofMode.Temporal
 import FormalSystem.Theorems.Propositional.Connectives
 import FormalSystem.Theorems.Propositional.Core
 import FormalSystem.Theorems.Propositional.Reasoning

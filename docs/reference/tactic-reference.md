@@ -2,6 +2,10 @@
 
 Reference for custom tactics in the Bimodal TM logic library.
 
+For named compositional steps over native TM/TM⁺ derivations, see the
+[derivation proof mode](../user-guide/derivation-proof-mode.md). It includes modal and temporal
+scopes, eventuality/progress composition, Until/Since monotonicity, and discrete invariance.
+
 ## Available Tactics
 
 | Tactic | Purpose | Call sites in the library |

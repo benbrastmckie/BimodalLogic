@@ -19,6 +19,7 @@ import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.Theorems.ConnectDerived
 import FormalSystem.Theorems.LinearityDerived
 import FormalSystem.Theorems.Interaction
+import FormalSystem.Theorems.ProofMode
 /-!
 # FormalSystem.Theorems - Key Theorems
 

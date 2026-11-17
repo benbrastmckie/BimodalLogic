@@ -12,6 +12,7 @@ import FormalSystem.Automation.ProofSearch.Strategies
 import FormalSystem.Automation.SuccessPatterns
 import FormalSystem.Metalogic.Expressiveness.EFGameTactics
 import FormalSystem.Automation.Normalization
+import FormalSystem.Automation.ProofMode
 -- This aggregator is LIBRARY-ONLY. It used to import eight tooling modules -- FormulaEnumerator,
 -- DatasetGenerator, DataExport, EnrichedCountermodel, DatasetAssembly, ProofStepExtractor,
 -- InterestingnessMetrics and PrefilterSoundness -- and was the single reason `lake build`
@@ -29,6 +30,8 @@ export and benchmark modules this file used to import are now `lean_lib BimodalT
 
 ## Submodules
 
+- `ProofMode`: named, compositional steps over native TM/TM⁺ derivations; see
+  `docs/user-guide/derivation-proof-mode.md`.
 - `Tactics`: Custom tactics including:
   - `modal_search`: Bounded proof search for TM derivability goals -- the single
     proof-search entry point. It replaced `temporal_search`, `propositional_search`

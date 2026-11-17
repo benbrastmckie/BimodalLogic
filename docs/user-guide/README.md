@@ -49,6 +49,9 @@ This directory contains integration guides applicable across all theories:
 2. [Bimodal Tutorial](tutorial.md) - Step-by-step introduction
 3. [Bimodal Examples](examples.md) - Worked examples
 
+For compositional proofs:
+- [Derivation Proof Mode](derivation-proof-mode.md) - Named assertions and checked modal/temporal scopes
+
 For advanced tactic development:
 - [Tactic Development](tactic-development.md) - Custom tactics for Bimodal
 
