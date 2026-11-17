@@ -60,7 +60,7 @@ next_project_number: 936
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-761 [IMPLEMENTING] — AMENDED 2026-11-16 (statement replaced — the READ-OFF /...
+761 [PARTIAL] — AMENDED 2026-11-16 (statement replaced — the READ-OFF /...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
     └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
@@ -500,7 +500,7 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 ---
 
 ### 761. Ladder realization theorem
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 760, Task 775, Task 805, Task 806, Task 819, Task 820, Task 934
@@ -516,7 +516,7 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
   - [761_ladder_realization_theorem/reports/32_laddermodel-construction-falsifier.md]
   - [761_ladder_realization_theorem/reports/33_exponential-clip-cell-constancy.md]
 - **Plan**: [761_ladder_realization_theorem/plans/35_construction-over-certified-subset.md]
-- **Summary**: [761_ladder_realization_theorem/summaries/35_elimination-lemma-refuted-summary.md]
+- **Summary**: [761_ladder_realization_theorem/summaries/35_construction-remaining-obligation-named-summary.md]
 
 **Description**: AMENDED 2026-11-16 (statement replaced — the READ-OFF / CONSTRUCTION PAIR): five research rounds (reports 29-33) refuted the filed single fibre equation over a pre-given `ladderModel` and the row-link route that served it, and decision 26 adopts in its place the PAIR the published quasimodel literature actually proves: (i) READ-OFF, `ladderReadOff` -- given model implies certified, hence the cell is CONTAINED IN the `Dmax` fibre (GKWZ Lemma 5.24 forward direction plus the maximal-set containment); and (ii) CONSTRUCTION, `ladderConstruct` -- certified set implies a model BUILT FROM IT (Lemma 5.24 converse). `ladderRealized` stays REFUTED under its pinned name and is never landed in any weakened, regime-narrowed or same-named form. The row-link route is STOPPED: `exists_rowLinked_path_K1_refuted` kills the path forth at its own signature with EQUAL countdowns of arbitrary size, so no countdown-side hypothesis helps, and `cell_agreement_over_Mrel_refuted` kills the route's own projected end result. The construction half is UNWRITTEN in all four of its components (no carrier, no frame, no valuation, no truth lemma; `ladderRealized` is declared nowhere; `Dmax` is not even known to be certified) and gets its own phase, declared NOT COSTABLE. Live route: specs/761_ladder_realization_theorem/plans/34_readoff-construction-pair-restatement.md.
 
