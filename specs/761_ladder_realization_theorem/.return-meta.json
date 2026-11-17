@@ -7,16 +7,15 @@
     "axiom_count": 0,
     "build_passed": true
   },
-  "requires_user_review": false,
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/34_construction-half-carrier-frame-summary.md",
-      "summary": "Phase 21 (CONSTRUCTION half): carrier, frame, valuation and the pinned statement's coverage conjunct landed; the truth lemma is open and the runs-based carrier is refuted by compilation."
+      "path": "specs/761_ladder_realization_theorem/summaries/34_construction-relations-attacked-summary.md",
+      "summary": "Phase 21 re-entry: both landed key-level step relations attacked and both refuted at one certAdmK-certified fixture; the construction's truth lemma now has no landed route."
     }
   ],
   "completion_data": {
-    "completion_summary": "Phase 21's construction half landed three of its four objects -- the key-level carrier ConKey, the frame conFrame (seriality from certAdmK's condition (2) alone) and the valuation conModel -- plus conKeyMap_covers, the pinned ladderConstruct statement's first conjunct. The truth lemma is open; the phase is [PARTIAL]. The round's principal finding is compiled rather than argued: cellAt_subsingleton_of_det and fibre_subsingleton_of_det_cell_eq show a two-sided deterministic frame of this scheme has subsingleton cells, so the runs-based carrier the phase body oriented toward cannot satisfy the pinned cell equation for any certified set with a non-singleton fibre.",
+    "completion_summary": "Decision 29's obligation is discharged: the construction half's truth lemma was attacked at its serial-vs-liftable tension and BOTH landed relations are refuted by compilation -- conStepStrong_serial_refuted (the uniform relation is not serial under certAdmK) and conStep_two_step_lift_refuted (the weak relation's edges do not compose inside R, already at length two). Both run at one explicit certified fixture, ConAttack.att_certAdmK, which is the tree's first positive certAdmK witness under lake build. The truth lemma itself is neither proved nor refuted; what is closed is both of its candidate routes.",
     "roadmap_items": []
   },
   "modified_files": [
@@ -25,22 +24,29 @@
     "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
     "FormalSystem/Metalogic/README.md",
     "README.md",
-    "docs/theorem-index.md",
     "typst/generated/status.typ",
-    "specs/761_ladder_realization_theorem/plans/34_readoff-construction-pair-restatement.md",
+    "docs/theorem-index.md",
     "specs/761_ladder_realization_theorem/records/round-34-readoff-construction-pair.md",
-    "specs/761_ladder_realization_theorem/summaries/34_construction-half-carrier-frame-summary.md",
-    "specs/761_ladder_realization_theorem/issues.jsonl"
+    "specs/761_ladder_realization_theorem/plans/34_readoff-construction-pair-restatement.md",
+    "specs/761_ladder_realization_theorem/summaries/34_construction-relations-attacked-summary.md"
   ],
+  "requires_user_review": true,
+  "review_reason": "Phase 21 stays [PARTIAL]: the truth lemma is not landed and, after this round, neither landed key-level relation can carry it. A route decision (a /revise) is owed -- this plan carries no phase for designing a third step relation, and decision 29 forbade designing one inside this round.",
   "user_decision": {
     "blocking": false,
-    "question": "Phase 21's carrier is forced key-level by compilation, and a key-level carrier is FINITE, so the constructed model has finite width -- which guardrail (b) ('infinite width, no fibre bound') does not meet. Should the construction half proceed at this carrier (attacking the truth lemma's serial-vs-liftable tension next), or is an infinite-width carrier a requirement that changes what half (ii) is asked to deliver?",
-    "recommendation": "Proceed at the key-level carrier. The finiteness is a property of the OUTPUT forced by the pinned cell equation, not an assumption on an input: cellAt_subsingleton_of_det plus fibre_subsingleton_of_det_cell_eq rule out every carrier whose world state determines a member, and the pinned ladderConstruct statement asks only for cells = fibres, which a finite-slice model can satisfy. Phase 21's own task list anticipated exactly this and directed that it be RECORDED as a finding rather than repaired, which is what was done. The open question -- whether a carrier satisfying the equation with infinite width exists -- is recorded and asserted nowhere.",
-    "context": "Guardrail (b) is a task-level constraint on the realization theorem; the pinned ladderConstruct signature carries no width clause. If the user wants half (ii) usable by a decidability consumer, that is a different and larger statement than the one pinned, and it would be a signature change."
+    "question": "Both landed key-level step relations are now refuted by compilation: conStepStrong is not serial under certAdmK, and conStep's edges do not compose inside R already at length two. The pinned construction statement names the fibres of the GIVEN R, so GKWZ's own device -- elimination, restricting the set until the uniform relation becomes serial on what survives -- is not available. Which way should the plan be revised?",
+    "options": [
+      "(A) Design a THIRD step relation on the key-level carrier, attack-first per this task's standing discipline: state a candidate (the largest subrelation of conStep whose edges compose, taken as a greatest fixpoint) and ATTEMPT TO REFUTE its seriality at ConAttack.attR before adopting it. Keeps the carrier, the pinned statement and the explicit-hypothesis form unchanged.",
+      "(B) Re-open the CARRIER instead of the relation: the determinism no-go (cellAt_subsingleton_of_det) forbids only a carrier whose world state determines a member under a type-reading truth lemma; a carrier that determines the key plus a bounded extra coordinate is not addressed by it. Attack-first on whether any such carrier satisfies the pinned equation.",
+      "(C) Re-open the pinned CONSTRUCTION statement: weaken its conclusion from the GIVEN R's fibres to the fibres of some certified subset of R, which is exactly what elimination delivers and what the published construction actually proves. This is a Statement Fidelity change and needs an explicit ruling.",
+      "(D) Park the construction half at this verdict and return to the READ-OFF half (Phase 20 / Phase 12.2), choosing its right-hand side with the construction's compiled obstructions in hand rather than its output."
+    ],
+    "recommendation": "(C) then (A). The round's own evidence points at the statement rather than at the relation: the obstruction is a two-member fibre of the GIVEN R whose members' successor keys part company, and no choice of step relation on a fixed R removes it -- both halves of the tension are instances of the same fact. Report 31 records that every converse direction in the published literature CONSTRUCTS its model from a set obtained BY ELIMINATION, which is precisely the subset-forming move option (C) would license. (C) is a Statement Fidelity ruling and is therefore the user's call, not the agent's; if it is declined, (A) is the next honest attempt and is attack-first.",
+    "context": "Decision 29's obligation is discharged and its prohibition on designing a third relation is spent. Evidence: FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean (conStepStrong_serial_refuted, conStep_two_step_lift_refuted, ConAttack.att_certAdmK), record sections 21-25 of specs/761_ladder_realization_theorem/records/round-34-readoff-construction-pair.md."
   },
   "partial_progress": {
-    "stage": "phase_21_partial",
-    "details": "Phase 21 [PARTIAL]: carrier, frame, valuation and coverage landed; the truth lemma is the remaining object. Phase 12.2 remains [BLOCKED] and was deliberately not entered, per decision 27.",
+    "stage": "phase_21_partial_both_relations_refuted",
+    "details": "Phase 21 re-entered and left [PARTIAL]. Three of four objects were already landed (dispatch 86); this dispatch added the compiled verdict on the fourth object's two candidate routes. The truth lemma and ladderConstruct remain unlanded.",
     "phases_completed": 65,
     "phases_total": 77
   },
@@ -48,10 +54,9 @@
     "session_id": "sess_1794873265_b9bafc",
     "agent_type": "lean-implementation-agent",
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "task_dir": "specs/761_ladder_realization_theorem",
-    "dispatch_seq": 86,
-    "compliance_check": "passed",
-    "phase_executed": "21",
+    "dispatch_seq": 87,
+    "compliance_check": "skipped",
+    "phase_run": "21",
     "phase_named_by_dispatch": "11.44"
   }
 }

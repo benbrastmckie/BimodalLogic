@@ -1,34 +1,38 @@
 {
-  "dispatch_seq": 86,
+  "task_number": 761,
+  "dispatch_seq": 87,
+  "phase": "implement",
   "status": "partial",
   "phases_completed": 65,
   "phases_total": 77,
-  "summary": "Ran Phase 21, the CONSTRUCTION half (Phase 11.44 was named by the dispatch; its re-entry rule points at the first open phase from 11.48, which is the [BLOCKED] Phase 12.2, and decision 27 routes past that to Phase 21). Landed three of the phase's four objects plus the pinned ladderConstruct statement's coverage conjunct: the key-level carrier ConKey, the frame conFrame with seriality from certAdmK's condition (2) alone, the valuation conModel, and conKeyMap_covers. The truth lemma is open, so Phase 21 is [PARTIAL] and is to be re-entered. The round's principal finding is compiled: cellAt_subsingleton_of_det and fibre_subsingleton_of_det_cell_eq refute the runs-based carrier the phase body oriented toward, forcing the key-level carrier.",
-  "blockers": [],
+  "summary": "Phase 21 (not the dispatch-named 11.44, whose re-entry notice is a redirecting rule) was re-entered to discharge decision 29's obligation. Both landed key-level step relations were attacked at one explicit certAdmK-certified fixture and BOTH are refuted by compilation: conStepStrong is not serial under certAdmK, and conStep's edges do not compose inside R already at length two. The construction's truth lemma is still unlanded and now has no landed route; the phase stays [PARTIAL] and a /revise is owed.",
+  "blockers": [
+    "Phase 21's truth lemma has no landed route after this round: both candidate step relations are refuted, and the pinned statement names the fibres of the GIVEN R, so elimination (restricting R) is not available. A route decision is owed and is surfaced as a non-blocking user_decision on .return-meta.json; this plan carries no phase for designing a third relation."
+  ],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/761_ladder_realization_theorem/summaries/34_construction-half-carrier-frame-summary.md",
-      "summary": "Phase 21: carrier, frame, valuation and coverage landed; truth lemma open; runs-based carrier refuted by compilation."
+      "path": "specs/761_ladder_realization_theorem/summaries/34_construction-relations-attacked-summary.md",
+      "summary": "Phase 21 re-entry: both landed key-level step relations attacked and both refuted at one certified fixture."
     },
     {
       "type": "record",
       "path": "specs/761_ladder_realization_theorem/records/round-34-readoff-construction-pair.md",
-      "summary": "Sections 13-20: the carrier statement committed before any Lean, the forced-key-level argument, the two candidate relations and their tension, the compiled inventory, the GKWZ Lemma 5.24 clause map, and the width finding."
+      "summary": "Sections 21-25: which phase ran and why, the fixture and its separating mechanism, the two compiled verdicts, the non-establishment list, and the carried-figure check."
     },
     {
       "type": "plan",
       "path": "specs/761_ladder_realization_theorem/plans/34_readoff-construction-pair-restatement.md",
-      "summary": "Phase 21 marked [PARTIAL] with a full Recorded Outcome block; its checklist items ticked or annotated."
+      "summary": "Phase 21 annotated with a second Recorded Outcome block and a structured BLOCKER entry; marker stays [PARTIAL]."
     }
   ],
-  "user_decision": {
-    "blocking": false,
-    "question": "The key-level carrier Phase 21's compiled no-go forces is FINITE, so the constructed model has finite width, which guardrail (b) does not meet. Proceed at this carrier, or is infinite width a requirement that changes what half (ii) must deliver?",
-    "recommendation": "Proceed at the key-level carrier and attack the truth lemma's serial-vs-liftable tension next. The finiteness is a property of the output forced by the pinned equation, not an assumption on an input, and Phase 21's own task list directed that it be recorded as a finding rather than repaired."
+  "verification": {
+    "build_passed": true,
+    "sorry_count": 0,
+    "gates": "lake build (full) exit 0; lake build BimodalTest exit 0; check-module-invariants PASS; readme-lint PASS; check-evidence-probes PASS (67/67); typst-sync-check PASS; verify-deploy PASS (15 checks, 0 failures)"
   },
-  "next_steps": [
-    "Re-enter Phase 21 for its remaining object, the truth lemma, at the tension recorded in the round record section 16: the weak relation conStep is serial but its paths need not lift into R; the strong relation conStepStrong lifts by choice and refines it (conStep_of_strong) but asks a seriality certBiInfK does not supply. Both relations are now landed objects, so the next round attacks rather than designs.",
-    "Then Phase 20: choose the READ-OFF half's right-hand side with the constructed model in hand, which is the second half of decision 27's obligation. Do not restate the READ-OFF target before the construction's truth lemma exists."
+  "commits": [
+    "f70dbb1fe task 761 phase 21.3: both key-level relations attacked; both refuted at one certified fixture",
+    "c243e269a task 761 phase 21.4: the two refutations recorded in the index, the record and the plan"
   ]
 }
