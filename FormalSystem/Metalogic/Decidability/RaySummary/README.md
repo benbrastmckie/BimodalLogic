@@ -1455,3 +1455,45 @@ clipped reading, the Drift-distance reading, dropping the register conjunct, and
 Each failed one of the two sides, and the level was closed by the recorded ruling on exactly that
 evidence. That is the whole of the claim: no general impossibility is asserted at that level, and
 the completeness of the gap reading is not settled here.
+
+**The object-dependent gap clip: a NAMED OPEN QUESTION, with its compiled boundary.** `kappa`'s
+gap coordinate clips `n - c` at `B`, and `(K4)` fixes `B` from the formula alone. Whether the
+cells are constant on `kappa`-classes at a clip `B(Q, φ)` that reads the OBJECT as well is
+**OPEN** — neither proved nor refuted, here or anywhere. What is compiled is strictly narrower
+than that question, by construction, and each of these is a wired probe. In
+`specs/evidence/seam-gluing-ray-product/ladder-chain-object-clip-refutation.lean`:
+`no_formula_only_clip`, quantified over ALL clip functions `E : PlusFormula → ℕ`, refutes every
+clip reading the formula alone, with `exponential_clip_refuted` its instance at
+`E φ := 2 ^ (dBack φ + 1)`. In
+`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`:
+`gap_clip_below_exponential_refuted` and `no_keyed_cell_map_below_exponential` refute every clip
+`B` with `B + 1 ≤ 2 ^ (j + 1)` on the doubling object `Qc`. The lever in all of them is the
+OBJECT, not the formula: the gap threshold a formula can read scales with the object, which is
+exactly why no formula-only clip survives. The refuting chain family reaches `card Q − 2` and no
+further — on the chain object `Qm m := Fin (m + 3)`, `chainC_cell_ne` separates gap `m + 1` from
+gap `≥ m + 2` under `c + m + 2 ≤ n'`, and a `kappa`-collision needs both gaps saturated at the
+clip, so the family says nothing at `B ≥ m + 2`. That any surviving clip is of order
+`card Q · 2 ^ (dBack φ)` is **INFERRED and NOT COMPILED**: no induction establishing it exists in
+the tree. The accurate scope sentence is therefore: below `2 ^ (dBack + 1)` refuted on `Qc`; at
+every formula-only clip refuted on the chain family; an object-dependent clip OPEN.
+
+What a positive result would need, and what is absent: a closure theorem for definable register
+sets on ARBITRARY finite objects — (i) which sets of idle registers are definable at each operator
+depth (conjecturally eventually periodic with period dividing `P + 1` and a depth-indexed
+threshold), (ii) closure of that class under the four jump moves and under `⊡`'s re-selection, and
+(iii) the same for pending states, where the gap is converted to an exit register. No statement of
+(i)–(iii) exists anywhere in the tree. The nearest compiled objects are probe-level and
+object-specific: `stepFrag_gap_depth_exact`
+(`specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean`), which is **step
+fragment only** — that fragment admits `untl`/`snce` at the guard `⊥` alone, so the separating
+formulas `thetaC` and `mixC`, each using one jump, are NOT covered by it — and `nxt_le_double`
+(`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`), on `Qc` only.
+Adopting an object-dependent clip would also be a signature change rather than a proof:
+`paramsOkK4` and `Bof` (`CounterQuotient.lean`), the latter
+`max (2 * dBack φ + 1) (max (2 * dFwd φ + 1) 2)` with its three object binders documented in its
+own body as unused, both read the formula alone, so the change would reach `paramsOk_params` and
+every consumer of `ParamsOk`. The order of `K` is not the obstacle: `Tcof` already carries
+`Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (Pof + 1) * (stabDepth sup + 1)`, so `K` is
+already exponential in the formula and already reads `card Q`. No clip is adopted here, no
+agreement at one is attempted, and the question is recorded as open rather than as settled,
+likely or dead.

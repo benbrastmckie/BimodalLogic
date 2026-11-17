@@ -967,8 +967,8 @@ Three of the rows above are negative results, and they are easy to misread as un
   characterizations of `Mod (AxiomSet .ZTime)` and `Mod (AxiomSet .RTime)` remain open and are
   not promised.
 
-One status here *is* a genuine gap, and is recorded so that its absence from the ledger above is
-not read as an oversight:
+Two statuses here *are* genuine gaps, and are recorded so that their absence from the ledger above
+is not read as an oversight:
 
 - **Completeness for TM⋆, at every frame class, is OPEN** and is not promised. It is stated
   nowhere in the tree and is never discharged with `sorry`; the two recorded obstructions are in
@@ -981,6 +981,28 @@ not read as an oversight:
   this does *not* decide conservativity at Base, since incompleteness yields no separating
   witness. At Dense, ZTime and RTime the hypothesis is still open, as is completeness of any
   extension of the TM⁺ axiom set at every class.
+
+- **Whether the ladder cells are constant on `kappa`-classes at an OBJECT-dependent gap clip
+  `B(Q, φ)` is OPEN**, and is neither proved nor refuted anywhere. The refutations around it are
+  compiled and are deliberately narrower than the question, so none of them closes it. In
+  `specs/evidence/seam-gluing-ray-product/ladder-chain-object-clip-refutation.lean`:
+  `no_formula_only_clip`, quantified over ALL clip functions `E : PlusFormula → ℕ`, kills every
+  clip that reads the FORMULA alone, with `exponential_clip_refuted` its instance at
+  `E φ := 2 ^ (dBack φ + 1)`. In
+  `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`:
+  `gap_clip_below_exponential_refuted` and `no_keyed_cell_map_below_exponential` kill every clip
+  `B` with `B + 1 ≤ 2 ^ (j + 1)` on the doubling object. All of these vary the OBJECT, which is
+  why no clip reading the formula alone survives: the gap threshold a formula can read scales
+  with the object. The refuting chain family itself reaches only to `card Q − 2` — on the chain
+  object `Qm m := Fin (m + 3)` it separates gap `m + 1` from gap `≥ m + 2` (`chainC_cell_ne`,
+  same file), and a `kappa`-collision needs both gaps saturated, so the family is silent at
+  `B ≥ m + 2`. That any surviving clip is of order `card Q · 2 ^ (dBack φ)` is **INFERRED and not
+  compiled**: no induction establishing it exists in the tree. Adopting such a clip would be a
+  signature change — `paramsOkK4` and `Bof`
+  ([`CounterQuotient.lean`](../FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean))
+  both read the formula alone — and is not taken here. The accurate scope sentence is: below
+  `2 ^ (dBack + 1)` refuted on the doubling object; at every formula-only clip refuted on the
+  chain family; an object-dependent clip OPEN.
 
 ## Related documentation
 

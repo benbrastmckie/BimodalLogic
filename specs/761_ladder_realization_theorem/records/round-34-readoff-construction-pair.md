@@ -142,3 +142,124 @@ weakened or strengthened; nothing was moved out of `specs/evidence/`; nothing wa
 `FormalSystem/`. The read-off half (Phase 20) and the construction half (Phase 21) are untouched
 and remain unwritten, and the object-dependent clip remains the one unrefuted route and an open
 question, not a closed one.
+
+---
+
+# Phase 22 — The object-dependent clip, recorded as a NAMED OPEN QUESTION
+
+Phase 22 of `plans/34_readoff-construction-pair-restatement.md`, decision 26 obligation 5,
+Ruling 36. **This section records a question and does not answer it.** No clip is adopted, no
+agreement is attempted, no Lean declaration is landed, and `paramsOkK4`, `Bof` and `ParamsOk` are
+not edited. The object-dependent clip `B(Q, φ)` is **the one route in this chain that is not
+refuted**; recording it as dead would be as wrong as adopting it untested, and this task has spent
+five rounds learning the cost of the second error.
+
+## 7. The boundary, stated exactly
+
+Every row carries COMPILED, INFERRED or OPEN, and every COMPILED row cites a **wired** probe path
+under `specs/evidence/` together with the declaration name. Each line number below was re-measured
+against the live file in this dispatch, not quoted from the plan.
+
+| Claim | Status |
+|---|---|
+| Every clip that is a function of the FORMULA alone fails, at every `(Tc, Tn, P)` | **COMPILED** — `no_formula_only_clip (E : PlusFormula → ℕ)`, quantified over ALL `E`, wired at `specs/evidence/seam-gluing-ray-product/ladder-chain-object-clip-refutation.lean:521` |
+| The exponential clip `E φ := 2 ^ (dBack φ + 1)` fails | **COMPILED** — `exponential_clip_refuted`, its instance, wired at `specs/evidence/seam-gluing-ray-product/ladder-chain-object-clip-refutation.lean:555` |
+| On `Qc`, every clip `B` with `B + 1 ≤ 2 ^ (j + 1)` fails at `dblC j` | **COMPILED** — `gap_clip_below_exponential_refuted`, wired at `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean:3295` |
+| The same, for the keyed cell map rather than the agreement | **COMPILED** — `no_keyed_cell_map_below_exponential`, wired at `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean:3482` |
+| The refuting chain family reaches up to `card Q − 2` and no further | **COMPILED** — at `Qm m` (`…/ladder-chain-object-clip-refutation.lean:70`, `abbrev Qm (m : ℕ) := Fin (m + 3)`, so `card Q = m + 3`), `chainC_cell_ne` (`:433`) separates gap `m + 1` from gap `≥ m + 2` under `hgap : c + m + 2 ≤ n'`. A `kappa`-collision needs both gaps saturated at the clip, so the family speaks only for `B ≤ m + 1 = card Q − 2` and is **silent at `B ≥ m + 2`** |
+| Any surviving clip is of order `card Q · 2 ^ (dBack φ)` | **INFERRED, NOT COMPILED** — report 33 F4 did not build the `lvlC` induction over `Qm m`. **No record states this as compiled, and this one does not either.** |
+| Cells are constant on `kappa`-classes at some `B(Q, φ)` | **OPEN** — neither proved nor refuted, by anyone, anywhere |
+
+**The accurate scope sentence, which supersedes any shorter one**: below `2 ^ (dBack + 1)` refuted
+on `Qc`; at every formula-only clip refuted on the chain family; an object-dependent clip OPEN.
+
+**A correct clip EXCEEDS the clips at which the filed families separate; it never reproduces
+them.** `Bof thetaC = 3` and `Bof (mixC (k + 2) k) = 2 · k + 5` are the clips that FAIL; the
+compiled non-collision results stand at `B ≥ 4` and `B ≥ 3 · k + 5`.
+
+## 8. The missing piece for a positive result, named
+
+A closure theorem for definable register sets on ARBITRARY finite objects:
+
+1. **which sets of idle registers are definable at each operator depth** — conjecture: eventually
+   periodic with period dividing `P + 1` and threshold `≤ T(Q, depth)`;
+2. **closure of that class under the four jump moves and under `⊡`'s re-selection**, with `T`
+   solving Ruling 32's jump recurrences;
+3. **the same for pending states**, where the gap is converted to an exit register.
+
+`grep` finds no statement of (i)–(iii) anywhere in the tree, re-run at this phase's entry. The
+nearest compiled objects are probe-level and object-specific: `stepFrag_gap_depth_exact`
+(`specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean:1160`), **step
+fragment only** — the step fragment admits `untl`/`snce` only at the guard `⊥`, and `thetaC` and
+`mixC` each use one jump and are therefore **NOT covered** by it — and `nxt_le_double`
+(`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean:3018`), on `Qc`
+only.
+
+**This is Phase 11.7 at a larger clip — a theorem-sized programme, not a missing lemma.** Phase
+11.7's own `#### Reasoned Exclusions` record (this plan, under
+`### Phase 11.7: The Agreement cellAt_const_of_kappa_eq [COMPLETED WITH EXCLUSIONS]`) closed the
+filed Goal at the filed clip and again at the repaired clip, and its third row records that no
+weakened, regime-narrowed or same-named restatement may be landed under
+`cellAt_const_of_kappa_eq`. Nothing in this section relaxes that; the open question here is a
+DIFFERENT claim — a clip reading the OBJECT — under a signature that does not yet exist.
+
+## 9. The signature cost, and why taking it is a user decision
+
+| Object | Where | What it reads today |
+|---|---|---|
+| `paramsOkK4 (φ : PlusFormula) (B : ℕ)` | `FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean:920` | the FORMULA and the clip; no object binder |
+| `Bof` | same file, `:854` | `max (2 * dBack φ + 1) (max (2 * dFwd φ + 1) 2)` — the FORMULA alone; its three object binders are documented in its own body as unused |
+| `paramsOk_params` | same file, `:938` | the discharge lemma for the whole tuple |
+| every statement carrying `ParamsOk` as a hypothesis | across `RaySummary/` | the tuple as filed |
+
+An object-dependent clip edits a pinned predicate and its discharge lemma, hence every consumer.
+**That is a Statement Fidelity change** (`.claude/rules/plan-compliance.md`): the theorem text of
+the Challenge block would be unchanged while `ParamsOk`'s MEANING changed. It is therefore routed
+to the user and is not taken by any phase of this plan.
+
+**The order of `K` is NOT the obstacle.** `K = (Tc + 1) · (P + 1)² · (Tn + 1) · (2 B + 1)`, and
+`Tcof` (`CounterQuotient.lean:820`) already carries
+`Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card * (Pof + 1) * (stabDepth sup + 1)` — so `K`
+is already exponential in the formula and already reads `card Q`. The worry that an
+object-dependent clip would make `K` exponential is moot: it is exponential today.
+
+## 10. What an attack-first round would do, if the user ever takes it
+
+Ruling 31's discipline applies: **attack before adopt**. Every hypothesis adopted untested in this
+task (`Zrel`, `Srel`, `Mrel` as filed) turned out refuted; the two rounds that attacked first
+(11.44, 11.48) are the ones whose hypotheses survived. So such a round would, in this order:
+
+1. **First compile the composed `card Q · 2 ^ (dBack φ)` lower bound** — the `lvlC` induction
+   re-proved over `Qm m` — so that the figure stops being INFERRED. Until that compiles, no clip
+   is even stated.
+2. **Then attack**, with two families the chain family does not reach: two-chain objects of
+   DIFFERENT lengths joined at the pending state, and objects whose pending region must traverse a
+   cycle.
+3. **Only then**, and only if both attacks fail, a proof attempt — which would owe (i)–(iii) of
+   §8 and the signature change of §9.
+
+## 11. The scope-sentence sweep, and a plan defect found while running it
+
+The sweep is for the stale sentence saying that the sub-exponential refutations `leave(s) the
+exponential clip open`. It returns **no assertion of that sentence anywhere in the tree**. The
+only hits were inside Phase 22's OWN text in the plan: the task bullet that quoted the sentence in
+order to ask for its correction, and the verification criterion, whose filed form spelled the
+pattern out as two literal alternatives. **That criterion was unsatisfiable by construction** — it
+greps a directory that contains the grep, so writing the criterion down falsifies it, and so does
+writing down any faithful record of having run it.
+
+The repair is a pattern, not an exclusion list: the criterion now uses the single regex
+`leaves? the exponential clip open`, which matches both inflections while **not itself being a
+literal occurrence of either**, so the criterion line, this record and the task bullet are all
+exempt by construction rather than by a `grep -v` that could also hide a genuine hit. The one
+carved-out path is `issues.jsonl`, the machine capture log, whose entry on this very defect quotes
+the sentence as its content; it is a capture log, not prose. The substantive check the criterion
+exists to make — that nothing in the tree ASSERTS the stale sentence — is discharged and passes.
+Nothing else in the tree's prose was edited, because nothing else said it.
+
+## 12. What this section does NOT do
+
+No clip is adopted. No agreement is attempted. No phase of this plan takes this route. The
+question is not described as settled, likely, nearly-settled or dead, and the
+`card Q · 2 ^ (dBack φ)` figure is not stated as compiled. `paramsOkK4`, `Bof` and `ParamsOk` are
+unedited, Phase 11.7 is not re-opened, and no `sorry`, `axiom` or vacuous definition was written.

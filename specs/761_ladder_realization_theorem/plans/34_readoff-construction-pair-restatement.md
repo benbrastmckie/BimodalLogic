@@ -14016,7 +14016,7 @@ about the estimate and is recorded as one before the module is created.
 
 ---
 
-### Phase 22: Record the Object-Dependent Clip as a NAMED OPEN QUESTION, With Its Compiled Boundary [NOT STARTED]
+### Phase 22: Record the Object-Dependent Clip as a NAMED OPEN QUESTION, With Its Compiled Boundary [COMPLETED]
 
 **ADDED BY THE (Q-1) REVISION (decision 26 obligation 5, Ruling 36). THIS PHASE RECORDS A QUESTION
 AND DOES NOT ANSWER IT.** The object-dependent clip `B(Q, φ)` is **the one route in this chain
@@ -14062,23 +14062,34 @@ above reproduced, the compiled/inferred line intact, and the signature cost name
 adopted. No agreement is attempted. No phase of this plan takes this route.**
 
 **Tasks**:
-- [ ] Reproduce the boundary table in the record, with every row carrying COMPILED / INFERRED /
+- [x] Reproduce the boundary table in the record, with every row carrying COMPILED / INFERRED /
       OPEN, and with each COMPILED row citing its wired probe path and declaration name (Phase 19 has
       CLOSED; every COMPILED row cites its wired probe path and declaration name).
-- [ ] Name the missing piece (i)-(iii) and state that it is Phase 11.7 at a larger clip, citing
-      Phase 11.7's own `#### Reasoned Exclusions` record.
-- [ ] State the signature cost: `paramsOkK4`, `Bof`, `paramsOk_params`, and every `ParamsOk`
+      *(landed: `records/round-34-readoff-construction-pair.md` §7; every cited line number
+      re-measured against the live file in this dispatch)*
+- [x] Name the missing piece (i)-(iii) and state that it is Phase 11.7 at a larger clip, citing
+      Phase 11.7's own `#### Reasoned Exclusions` record. *(landed: record §8)*
+- [x] State the signature cost: `paramsOkK4`, `Bof`, `paramsOk_params`, and every `ParamsOk`
       consumer; and state that it is a Statement Fidelity change routed to the user.
-- [ ] **State what an attack-first round would do** if the user ever takes it (Ruling 31): first
+      *(landed: record §9; all four anchors re-measured at `CounterQuotient.lean:920/854/938/820`)*
+- [x] **State what an attack-first round would do** if the user ever takes it (Ruling 31): first
       compile the composed `card Q · 2^dBack` lower bound (the `lvlC` induction re-proved over
       `Qm m`), then attack with two-chain objects of different lengths joined at the pending state
       and with objects whose pending region must traverse a cycle — **before** any proof attempt.
-- [ ] Add the open-question row to `docs/theorem-index.md` and the `RaySummary` README, with the
-      compiled/inferred line preserved in both.
-- [ ] **Correct, wherever this plan or the tree's prose says it, the scope sentence "the
-      sub-exponential refutations leave the exponential clip open".** After report 33 the accurate
-      sentence is: below `2^(dBack+1)` refuted on `Qc`; at every formula-only clip refuted on the
-      chain family; an object-dependent clip OPEN.
+      *(landed: record §10)*
+- [x] Add the open-question row to `docs/theorem-index.md` and the `RaySummary` README, with the
+      compiled/inferred line preserved in both. *(landed: `docs/theorem-index.md`'s gap section,
+      now reading "Two statuses here *are* genuine gaps"; and the README's closing
+      object-dependent-clip paragraphs)*
+- [x] **Correct, wherever this plan or the tree's prose says it, the stale scope sentence
+      asserting that the sub-exponential refutations `leave(s) the exponential clip open`.** The
+      accurate sentence is: below `2^(dBack+1)` refuted on `Qc`; at every formula-only clip
+      refuted on the chain family; an object-dependent clip OPEN. *(deviation: altered — the
+      sweep found ZERO assertions of the stale sentence anywhere in the tree. Its only two
+      occurrences were inside this phase's own text: this bullet, which quoted it verbatim, and
+      the verification criterion below, which contains the grep pattern itself. This bullet now
+      describes the sentence instead of quoting it, and the criterion is scoped past its own
+      self-reference; the reason is recorded in record §11.)*
 
 **Prohibited workarounds**: do NOT adopt an object-dependent clip; do NOT attempt an agreement at
 one; do NOT describe the question as settled, likely, nearly-settled or dead; do NOT state the
@@ -14111,7 +14122,7 @@ plan's own prose. **A count of objects, not of hours.**
 - `specs/761_ladder_realization_theorem/plans/34_readoff-construction-pair-restatement.md` - the correction sweep over the stale scope sentence
 
 **Verification**:
-- `grep -rn 'leave the exponential clip open\|leaves the exponential clip open' specs/761_ladder_realization_theorem/ docs/ FormalSystem/` returns nothing.
+- `grep -rnE 'leaves? the exponential clip open' specs/761_ladder_realization_theorem/ docs/ FormalSystem/ --exclude=issues.jsonl` returns nothing. **The regex is the repair, not a weakening**: the filed form spelled the pattern out as two literal alternatives, so the criterion line itself — and any faithful record of having run it — matched, making the check unsatisfiable by construction. `leaves?` matches both inflections while being no literal occurrence of either, so the criterion is self-exempting by shape rather than by a `grep -v` that could also hide a genuine hit. `issues.jsonl` is excluded as a machine capture log whose entry on this defect quotes the sentence as its content. The substantive check — that nothing in the tree ASSERTS the stale sentence — passes (record §11).
 - Every COMPILED row of the landed table cites a path under `specs/evidence/` and a declaration
   name that `grep -rnE '(theorem|lemma) +<name>\b' specs/evidence/` finds (Rulings 25 and 35).
 - `grep -n 'card Q' specs/761_ladder_realization_theorem/records/round-34-readoff-construction-pair.md`
