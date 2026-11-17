@@ -2622,6 +2622,80 @@ EVIDENCE="specs/evidence"
 #                                                           | Quot.sound]` on the headline. No
 #                                                           | `sorryAx`, no custom axiom, no
 #                                                           | `native_decide`.
+# seam-gluing-ray-product/ladder-gap-jump-refutation        | THE ROW-LINK PATH FORTH IS FALSE
+#                                                           | AT ITS OWN SIGNATURE.
+#                                                           | `exists_rowLinked_path_K1_refuted`:
+#                                                           | the path forth over `Mrel`,
+#                                                           | carrying BOTH hypotheses the route
+#                                                           | accumulated -- the object half of
+#                                                           | `(K1)` (`l | (P + 1)` for every
+#                                                           | object cycle length) and the
+#                                                           | forward/backward totality of
+#                                                           | `RladAdm` -- is refuted on a
+#                                                           | two-state `ramp` fixture at every
+#                                                           | even modulus.
+#                                                           | `region_exit_register` names the
+#                                                           | failing coordinate and it is
+#                                                           | OBJECT-INDEPENDENT: a row link with
+#                                                           | one forward jump forces a register
+#                                                           | of at least `2 * a` at the region
+#                                                           | exit, and the ramp's register falls
+#                                                           | at every step.
+#                                                           | `no_rowLinked_path_gap_any_room`
+#                                                           | re-runs it with EQUAL countdowns of
+#                                                           | ARBITRARY size `N`. WHAT IT HOLDS IN
+#                                                           | PLACE: the row-link route is STOPPED
+#                                                           | and no countdown-side hypothesis,
+#                                                           | threshold or room condition revives
+#                                                           | it; it must not be re-proposed. It
+#                                                           | does NOT refute `Mrel` (which
+#                                                           | survived both owed attacks), does
+#                                                           | NOT refute `LnkRow`, the
+#                                                           | relation-agnostic `LnkRow.of_closed`
+#                                                           | or the truth lemma over the row
+#                                                           | link, and is ONE fixture family.
+#                                                           | Axioms: `[propext,
+#                                                           | Classical.choice, Quot.sound]` on
+#                                                           | every headline. No `sorryAx`, no
+#                                                           | custom axiom, no `native_decide`.
+# seam-gluing-ray-product/ladder-chain-object-clip-refutation| EVERY FORMULA-ONLY GAP CLIP IS
+#                                                           | REFUTED.
+#                                                           | `no_formula_only_clip`, quantified
+#                                                           | over ALL `E : PlusFormula -> Nat`:
+#                                                           | for every clip function of the
+#                                                           | formula there is a CHAIN object on
+#                                                           | which `ParamsOk` holds, the clip is
+#                                                           | met (`E chainC <= B` and
+#                                                           | `Bof ... <= B`), and two
+#                                                           | `kappa`-equal states still have
+#                                                           | DIFFERENT cells.
+#                                                           | `exponential_clip_refuted` is its
+#                                                           | instance at `2 ^ (dBack phi + 1)`,
+#                                                           | the clip the preceding round left
+#                                                           | open; `chainC_cell_ne` exhibits the
+#                                                           | separating type. The reason is
+#                                                           | structural: the gap threshold a
+#                                                           | formula can read scales with the
+#                                                           | OBJECT (here the chain length), not
+#                                                           | only with formula depth. WHAT IT
+#                                                           | HOLDS IN PLACE: the single fibre
+#                                                           | equation over `kappa` cannot be
+#                                                           | rescued by reading the gap further
+#                                                           | under any formula-determined clip,
+#                                                           | so `ladderRealized` is never landed
+#                                                           | and no formula-only re-parametrised
+#                                                           | `kappa` may be proposed. It leaves
+#                                                           | the OBJECT-dependent clip `B(Q,
+#                                                           | phi)` OPEN -- deliberately, that
+#                                                           | being a signature change, since
+#                                                           | `paramsOkK4` and `Bof` read the
+#                                                           | formula alone -- and says nothing
+#                                                           | about the read-off direction, the
+#                                                           | construction direction or `Dmax`.
+#                                                           | Axioms: `[propext,
+#                                                           | Classical.choice, Quot.sound]` on
+#                                                           | every headline. No `sorryAx`, no
+#                                                           | custom axiom, no `native_decide`.
 # limit-closure-schema/lc-schema-omega-chain                | THE LC SCHEMA'S VALIDITY ON
 #                                                           | ALL-WALKS Z-MODELS IS COMPILED
 #                                                           | AND SORRY-FREE, AND THE `.Base`
@@ -3055,6 +3129,8 @@ WIRED=(
   "seam-gluing-ray-product/ladder-clipped-register-block-nonvacuity"
   "seam-gluing-ray-product/ladder-step-fragment-gap-depth"
   "seam-gluing-ray-product/ladder-row-link-residue-obstruction"
+  "seam-gluing-ray-product/ladder-gap-jump-refutation"
+  "seam-gluing-ray-product/ladder-chain-object-clip-refutation"
   "limit-closure-schema/lc-schema-omega-chain"
   "forward-slack-pin-cascade/pin-cascade-straddle"
   "forward-slack-pin-cascade/route-space-closure"

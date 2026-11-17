@@ -65,7 +65,7 @@ placeholder body and no vacuous definition anywhere in this file.
 Compile: `lake env lean` on this file
 (`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`).
 -/
-import FormalSystem.Metalogic.Decidability.RaySummary.LadderAgree
+import FormalSystem.Metalogic.Decidability.RaySummary.LadderStepFrag
 
 open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.PlusLanguage
 open FormalSystem.Metalogic.Decidability.RaySummary
@@ -3341,3 +3341,204 @@ theorem repaired_clip_refuted (j : ℕ) (hj : 3 ≤ j) :
 #print axioms Probe761C.repaired_clip_refuted
 
 end Probe761C
+
+/-! ## UNIT 2 (report 29 Appendix B) — the cell agreement over `Mrel`, refuted -/
+
+namespace Probe761C
+
+/-- The `dblC` pair is `Mrel`-related at EVERY modulus and every budget `(a, b)` whose backward
+component satisfies `2 a ≤ 2 ^ (j + 1) - 1`: equal countdowns, large registers, gaps both `≥ 2 a`. -/
+theorem Mrel_dblC_pair (P a b j c n' : ℕ) (ha : 2 * a ≤ Kc j + 1) (hc : 2 * (a + b) ≤ c)
+    (hgap : c + Kc j + 2 ≤ n') :
+    Mrel P a b (stC c (c + Kc j + 1)) (stC c n') := by
+  refine ⟨⟨⟨rfl, Or.inl rfl, Or.inr ⟨?_, ?_⟩, Or.inr (Or.inl ⟨?_, ?_⟩)⟩, Int.ModEq.refl _⟩,
+    Or.inl rfl⟩
+  · show 2 * (a + b) ≤ c + Kc j + 1
+    omega
+  · show 2 * (a + b) ≤ n'
+    omega
+  · show 2 * (a : ℤ) ≤ ((c + Kc j + 1 : ℕ) : ℤ) - (c : ℤ)
+    push_cast; omega
+  · show 2 * (a : ℤ) ≤ ((n' : ℕ) : ℤ) - (c : ℤ)
+    omega
+
+/-- **NO AGREEMENT OF CELLS OVER `Mrel`, AT ANY BUDGET BELOW THE EXPONENTIAL.** -/
+theorem cell_agreement_over_Mrel_refuted (P a b j : ℕ) (ha : 2 * a ≤ Kc j + 1) :
+    ∃ c n' : ℕ, Mrel P a b (stC c (c + Kc j + 1)) (stC c n') ∧
+      cellAt MC (dblC j)
+          ((0, stC c (c + Kc j + 1)) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0
+        ≠ cellAt MC (dblC j)
+            ((0, stC c n') : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0 :=
+  ⟨2 * (a + b), 2 * (a + b) + Kc j + 2, Mrel_dblC_pair P a b j _ _ ha le_rfl le_rfl,
+    dblC_cell_ne j _ _ le_rfl⟩
+
+/-- At the formula's OWN exactness depths. -/
+theorem cell_agreement_over_Mrel_refuted_at_depths (P j : ℕ) :
+    ∃ c n' : ℕ, Mrel P (dBack (dblC j)) (dFwd (dblC j)) (stC c (c + Kc j + 1)) (stC c n') ∧
+      cellAt MC (dblC j)
+          ((0, stC c (c + Kc j + 1)) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0
+        ≠ cellAt MC (dblC j)
+            ((0, stC c n') : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0 := by
+  refine cell_agreement_over_Mrel_refuted P _ _ j ?_
+  rw [dBack_dblC]
+  have h1 := Kc_eq j
+  have h2 : j < 2 ^ j := Nat.lt_two_pow_self
+  rw [pow_succ] at h1
+  omega
+
+end Probe761C
+
+#print axioms Probe761C.cell_agreement_over_Mrel_refuted
+#print axioms Probe761C.cell_agreement_over_Mrel_refuted_at_depths
+
+/-! ## UNIT 3 (report 32 Appendix) — no `(q, kappa)`-keyed construction receives `ladderModel` -/
+
+namespace Probe761F
+
+open Probe761C
+
+/-- The periodicity fixpoint's own four parameter outputs at the separating formula: the tuple
+`paramsOk_params` certifies `ParamsOk` at. -/
+noncomputable abbrev Tc0 : ℕ := Tcof stepC pendC labC thetaC
+noncomputable abbrev Tn0 : ℕ := Tnof stepC pendC labC thetaC
+noncomputable abbrev P0 : ℕ := Pof stepC pendC labC thetaC
+noncomputable abbrev B0 : ℕ := Bof stepC pendC labC thetaC
+
+/-- The parameter tuple is the filed one: `ParamsOk` holds at it. -/
+theorem paramsOk_filed : ParamsOk stepC pendC labC thetaC Tc0 Tn0 P0 B0 :=
+  paramsOk_params stepC pendC labC thetaC
+
+/-- **NO KEYED MODEL RECEIVES `ladderModel`.** Let `M'` be ANY model over ANY frame whose cells
+at `thetaC` are a function `G` of a key in `Q × CK` (the truth lemma of a construction keyed by
+object state and counter class). Then no map `e` of ladder world states into `M'` both respects
+the key `(q, kappa (c, n))` and preserves cells. Nothing is assumed of the frame, the carrier,
+the relation, the valuation or `G`. -/
+theorem no_keyed_cell_map
+    (F' : FrameOver intOrder) (M' : TaskModel F'.toTaskFrame)
+    (key : F'.WorldState → Qc × CK Tc0 Tn0 P0 B0)
+    (G : Qc × CK Tc0 Tn0 P0 B0 → Set (Finset PlusFormula))
+    (htruth : ∀ u, cellAt M' thetaC u 0 = G (key u))
+    (e : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState → F'.WorldState)
+    (hkey : ∀ c n : ℕ, key (e (0, stC c n)) = ((0 : Qc), kappa Tc0 Tn0 P0 B0 (c, n)))
+    (hcell : ∀ c n : ℕ, cellAt M' thetaC (e (0, stC c n)) 0
+      = cellAt MC thetaC ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0) :
+    False := by
+  apply no_fibre_equation_over_kappa
+  refine ⟨fun κ => G ((0 : Qc), κ), fun c n => ?_⟩
+  rw [← hcell c n, htruth, hkey]
+
+/-- **THE CONSTRUCTION-HALF INSTANCE, FOR EVERY CANDIDATE SET.** If a model `M'` satisfies the
+construction direction's truth lemma for a set `R ⊆ Q × ClType φ × CK` — the cell at a point is
+the fibre of `R` over the point's key — then `ladderModel` admits no key-respecting,
+cell-preserving map into it. `R` is arbitrary: certified or not, `Dmax` or not. -/
+theorem no_construction_receives_ladderModel
+    (R : Set (Qc × ClType thetaC × CK Tc0 Tn0 P0 B0))
+    (F' : FrameOver intOrder) (M' : TaskModel F'.toTaskFrame)
+    (key : F'.WorldState → Qc × CK Tc0 Tn0 P0 B0)
+    (htruth : ∀ u, cellAt M' thetaC u 0
+      = {T | ∃ S : ClType thetaC, typeOfCl S = T ∧ ((key u).1, S, (key u).2) ∈ R})
+    (e : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState → F'.WorldState)
+    (hkey : ∀ c n : ℕ, key (e (0, stC c n)) = ((0 : Qc), kappa Tc0 Tn0 P0 B0 (c, n)))
+    (hcell : ∀ c n : ℕ, cellAt M' thetaC (e (0, stC c n)) 0
+      = cellAt MC thetaC ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0) :
+    False :=
+  no_keyed_cell_map F' M' key
+    (fun k => {T | ∃ S : ClType thetaC, typeOfCl S = T ∧ (k.1, S, k.2) ∈ R})
+    htruth e hkey hcell
+
+/-- **AT `Dmax`.** The instance decision 24 names: no model realizing the fibres of the maximum
+certified subset receives `ladderModel` by a key-respecting, cell-preserving map, at the filed
+parameter conditions (`paramsOk_filed`). -/
+theorem no_dmax_construction_receives_ladderModel
+    (F' : FrameOver intOrder) (M' : TaskModel F'.toTaskFrame)
+    (key : F'.WorldState → Qc × CK Tc0 Tn0 P0 B0)
+    (htruth : ∀ u, cellAt M' thetaC u 0
+      = {T | ∃ S : ClType thetaC, typeOfCl S = T ∧
+          ((key u).1, S, (key u).2) ∈ Dmax stepC pendC labC thetaC Tc0 Tn0 P0 B0})
+    (e : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState → F'.WorldState)
+    (hkey : ∀ c n : ℕ, key (e (0, stC c n)) = ((0 : Qc), kappa Tc0 Tn0 P0 B0 (c, n)))
+    (hcell : ∀ c n : ℕ, cellAt M' thetaC (e (0, stC c n)) 0
+      = cellAt MC thetaC ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0) :
+    False :=
+  no_construction_receives_ladderModel _ F' M' key htruth e hkey hcell
+
+/-- **`ladderModel` IS NOT ITSELF THE CONSTRUCTION, FOR ANY SET.** The identity instance: the
+ladder model's own cells are the fibres of NO set `R` over `(q, kappa (c, n))` — in particular
+not of `Dmax`. This is the filed fibre equation's instance at this object, refuted for every
+right-hand set at once. -/
+theorem ladderModel_realizes_no_set (R : Set (Qc × ClType thetaC × CK Tc0 Tn0 P0 B0)) :
+    ¬ ∀ c n : ℕ,
+      cellAt MC thetaC ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0
+        = {T | ∃ S : ClType thetaC, typeOfCl S = T ∧
+            ((0 : Qc), S, kappa Tc0 Tn0 P0 B0 (c, n)) ∈ R} := by
+  intro h
+  apply no_fibre_equation_over_kappa
+  exact ⟨fun κ => {T | ∃ S : ClType thetaC, typeOfCl S = T ∧ ((0 : Qc), S, κ) ∈ R}, h⟩
+
+/-- **THE SAME AT EVERY SUB-EXPONENTIAL CLIP.** At every threshold pair, every modulus and every
+gap clip `B < 2 ^ (j + 1)`, no model whose cells at `dblC j` are a function of a key in
+`Q × CK` receives `ladderModel` by a key-respecting, cell-preserving map. So no re-sizing of the
+clip below `2 ^ (j + 1)` re-opens the comparison. -/
+theorem no_keyed_cell_map_below_exponential (j B Tc Tn P : ℕ) (hB : B + 1 ≤ 2 ^ (j + 1))
+    (F' : FrameOver intOrder) (M' : TaskModel F'.toTaskFrame)
+    (key : F'.WorldState → Qc × CK Tc Tn P B)
+    (G : Qc × CK Tc Tn P B → Set (Finset PlusFormula))
+    (htruth : ∀ u, cellAt M' (dblC j) u 0 = G (key u))
+    (e : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState → F'.WorldState)
+    (hkey : ∀ c n : ℕ, key (e (0, stC c n)) = ((0 : Qc), kappa Tc Tn P B (c, n)))
+    (hcell : ∀ c n : ℕ, cellAt M' (dblC j) (e (0, stC c n)) 0
+      = cellAt MC (dblC j)
+          ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0) :
+    False := by
+  obtain ⟨c, n, n', -, hk, hne⟩ := gap_clip_below_exponential_refuted j B Tc Tn P hB
+  apply hne
+  rw [← hcell c n, ← hcell c n', htruth, htruth, hkey, hkey, hk]
+
+/-! ### The carrier coordinate: a slice read off a certified set is finite -/
+
+/-- The admissible ladder slice is infinite, for every nonempty object. -/
+theorem ladderState_not_finite {Q : Type} [Nonempty Q] (pend : Q → Bool) :
+    ¬ Finite (LadderState Q pend) := by
+  intro hfin
+  have hinj : Function.Injective
+      (fun n : ℕ => (⟨(Classical.arbitrary Q, 0, n), fun _ => rfl⟩ : LadderState Q pend)) := by
+    intro a b hab
+    have := congrArg (fun x : LadderState Q pend => x.1.2.2) hab
+    exact this
+  haveI : Finite ℕ := Finite.of_injective _ hinj
+  exact not_finite ℕ
+
+/-- **NO SLICE-RESPECTING INJECTION INTO A FINITE-SLICE CARRIER.** For any finite slice `S` — in
+particular a certified subset of `Q × ClType φ × CK`, or the state set of a `Cons` presentation —
+no injection of the ladder world states `ℤ × LadderState Q pend` into `ℤ × S` sends a time slice
+into a time slice. A bare bijection of the two countable carriers exists; what fails is one
+compatible with the time coordinate, which any isomorphism of sliced frames must be. -/
+theorem no_slice_respecting_injection {Q : Type} [Nonempty Q] (pend : Q → Bool)
+    (S : Type) [Finite S] (e : ℤ × LadderState Q pend → ℤ × S)
+    (hinj : Function.Injective e)
+    (hslice : ∀ w w' : ℤ × LadderState Q pend, w.1 = w'.1 → (e w).1 = (e w').1) : False := by
+  apply ladderState_not_finite pend
+  refine Finite.of_injective (fun x : LadderState Q pend => (e (0, x)).2) ?_
+  intro x y hxy
+  have h1 : (e (0, x)).1 = (e (0, y)).1 := hslice _ _ rfl
+  have : e (0, x) = e (0, y) := Prod.ext h1 hxy
+  exact (Prod.mk.inj (hinj this)).2
+
+/-- The instance at a candidate set: the slice `↥R` of any `R ⊆ Q × ClType φ × CK` is finite for
+a finite object, so the previous theorem applies to the sliced frame over `R`, `Dmax` included. -/
+theorem no_slice_respecting_injection_into_set {Q : Type} [Finite Q] [Nonempty Q]
+    (pend : Q → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R : Set (Q × ClType φ × CK Tc Tn P B)) (e : ℤ × LadderState Q pend → ℤ × R)
+    (hinj : Function.Injective e)
+    (hslice : ∀ w w' : ℤ × LadderState Q pend, w.1 = w'.1 → (e w).1 = (e w').1) : False :=
+  no_slice_respecting_injection pend R e hinj hslice
+
+end Probe761F
+
+#print axioms Probe761F.no_keyed_cell_map
+#print axioms Probe761F.no_construction_receives_ladderModel
+#print axioms Probe761F.no_dmax_construction_receives_ladderModel
+#print axioms Probe761F.ladderModel_realizes_no_set
+#print axioms Probe761F.no_keyed_cell_map_below_exponential
+#print axioms Probe761F.no_slice_respecting_injection
+#print axioms Probe761F.no_slice_respecting_injection_into_set
