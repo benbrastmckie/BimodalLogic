@@ -1115,6 +1115,35 @@ is not read as an oversight:
   stated at `Dmax`, no statement asserts maximality, and guardrail (b) — infinite width — stays
   UNMET and is not addressed here.
 
+- **THE CONSTRUCTION HALF'S REMAINING OBLIGATION IS ONE NAMED OBJECT, and the truth lemma's base
+  cases are landed.** `ConCellEq`, `conStruct_frame_model_key_covers` and
+  `ladderConstruct_of_conCellEq` in
+  [`LadderRealize.lean`](../FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean).
+  `conStruct_frame_model_key_covers` is the compiled instantiation check: `conFrame`, `conModel`,
+  `conKeyMap` and `conKeyMap_covers` take the certified set as a PARAMETER, so they instantiate at
+  ANY certified nonempty set and in particular at any certified nonempty SUBSET of a given set,
+  with no new carrier and nothing specialised to the set the subset came from. `ConCellEq` names
+  the one conjunct that layer does not supply — the cell of every world state of the constructed
+  frame is exactly the fibre of the set over that state's key — and
+  `ladderConstruct_of_conCellEq` derives the construction statement's full conclusion from it at
+  any certified nonempty subset. **Both candidate routes to `ConCellEq` are closed**: the weak
+  relation `conStep` is serial but its paths do not lift (`conStep_two_step_lift_refuted`), the
+  uniform relation `conStepStrong` lifts but is not serial (`conStepStrong_serial_refuted`), and
+  its seriality is not recoverable by SHRINKING either (`exists_certified_serial_subset_refuted`),
+  so a third step relation — sought in the RELATION rather than in the SET — is where the open
+  question sits. **What IS landed on `ConCellEq`**: the truth lemma's two base cases at an
+  arbitrary certified set, for ALL `φ`, with no `BoxStabFree` premise, no parameter condition and
+  no finite-fibre or finite-width assumption. The atom clause is definitional in the constructed
+  valuation (`conModel_atom_truth`) and agrees with condition (1) at every member over the world
+  state's key (`tpOf_atom_iff_mem_of_over_key`, via `locPred_atom_iff`); the `⊥` clause holds on
+  both sides (`bot_notMem_tpOf`, `bot_notMem_clType_of_mem`). **SCOPE**: `ConCellEq` is a
+  DEFINITION of the remaining obligation and no declaration proves any instance of it;
+  `ladderConstruct_of_conCellEq` takes it as an explicit hypothesis and so discharges nothing on
+  its own; `ladderConstruct` is declared nowhere and stays OPEN; the `→`, `□`, `⊡`, `▷` and `◁`
+  clauses of the truth lemma are not attempted; nothing is stated at `Dmax`; and guardrail (b) —
+  infinite width — stays UNMET, the constructed slice being the finite `ConKey` exactly as the
+  carrier section records.
+
 ## Related documentation
 
 - [`README.md`](../README.md) — project overview and the `## Verifying the main theorems` recipe

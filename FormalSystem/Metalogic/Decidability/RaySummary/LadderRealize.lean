@@ -193,7 +193,7 @@ open FormalSystem.Metalogic.Decidability
 
 -- The module's recorded length ceiling: the offset-invariance section takes the file past the
 -- default limit.
-set_option linter.style.longFile 4600
+set_option linter.style.longFile 4800
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -4549,5 +4549,224 @@ theorem exists_certified_serial_subset_refuted :
   exact NoElim.not_serial_subset hsub hne hcert hser
 
 end ConstructionEliminationRefuted
+
+/-! ## The CONSTRUCTION half's remaining obligation, named — and the truth lemma's base cases
+
+**What this section is, and what it is not.** The re-stated construction statement asks for a
+certified nonempty SUBSET of a certified set `R`, together with a frame, a model, a key map, a
+coverage conjunct and a CELL EQUATION. Three of those five are already discharged by the
+carrier/frame/valuation layer above, at ANY certified nonempty set and so in particular at any
+certified nonempty subset: `conStruct_frame_model_key_covers` below is that instantiation check,
+compiled rather than read off signatures. The CELL EQUATION is the whole of what remains; it is
+given a name here, `ConCellEq`, and `ladderConstruct_of_conCellEq` is the reduction showing that
+the named equation at any certified nonempty subset is the single remaining obligation.
+
+**Nothing here claims the cell equation**, and nothing here is the construction statement itself:
+`ladderConstruct` is declared nowhere in this library. `ladderConstruct_of_conCellEq` takes
+`ConCellEq` as an EXPLICIT hypothesis, so it proves no instance of the construction on its own —
+it says only what the construction reduces to once the frame layer is fixed.
+
+**Why the two candidate routes to the cell equation are both closed.** The `⊆` direction needs the
+closure type realized along a bi-infinite path of the frame's step relation to be the type of a
+member of the subset — i.e. the path must LIFT to a `relK`-chain inside the subset. The weak
+relation `conStep` is serial from condition (2) alone but does not lift (`no_lift_sK1_sK0_sK2`,
+`conStep_two_step_lift_refuted`); the uniform relation `conStepStrong` lifts by dependent choice
+but is not serial (`conStepStrong_serial_refuted`), and its seriality is not recoverable by
+SHRINKING the set either: `exists_certified_serial_subset_refuted` above exhibits a certified
+nonempty set, every certified nonempty subset of which carries two members over one key whose
+successor keys are disjoint. So the lifting route to the cell equation has no landed source of
+seriality, and a third step relation — sought in the RELATION rather than in the SET — is where
+the open question now sits.
+
+**What IS landed on the cell equation here**: its truth lemma's two base cases, at an arbitrary
+certified set, for ALL `φ`, with no `BoxStabFree` premise, no parameter condition and no
+finite-fibre or finite-width assumption. The atom clause is definitional in the constructed
+valuation (`conModel_atom_truth`) and is matched to condition (1) at every member over the world
+state's key (`tpOf_atom_iff_mem_of_over_key`); the `⊥` clause holds on both sides
+(`bot_notMem_tpOf`, `bot_notMem_clType_of_mem`). The `→`, `□` and `⊡` clauses need the induction
+hypothesis and the `▷`/`◁` clauses need the lifting above, so none of the three is attempted.
+
+**Width.** The constructed model's slice is still the FINITE `ConKey`, exactly as the
+carrier/frame/model section above records: naming the remaining obligation changes neither the
+carrier nor the width, so guardrail (b) of the task record is UNMET here as it is there. Whether
+an infinite-width carrier satisfying the equation exists is open and is asserted nowhere.
+
+**Paper.** The transfer is by SHAPE and no published theorem applies to this semantics. The shape
+is GKWZ 2003 §5.2's converse direction (Lemma 5.24 ⇐, restated for a linear first component at
+Theorem 6.61), whose truth lemma is an induction over the closure with the temporal letters
+discharged from the quasimodel's run conditions; `certFwdK`/`certBwdK` are those conditions here,
+`certStabK` is (qm1), and `certLocK` is the Hintikka condition the atom and `⊥` clauses below
+consume. In every source read, quasistates are EXACT and only runs are existential.
+-/
+
+section ConstructionRemainingObligation
+
+/-- **THE CELL EQUATION, NAMED**: the one conjunct of the re-stated construction statement that
+the carrier/frame/valuation layer does not supply. It says the cell of every world state of the
+constructed frame is exactly the fibre of `R` over that state's key, read through `typeOfCl`.
+
+This is a DEFINITION of the remaining obligation and not a claim that it holds: no theorem below
+proves any instance of it, and `ladderConstruct_of_conCellEq` takes it as a hypothesis. -/
+def ConCellEq {Q : Type} [Finite Q] (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R : Set (Q × ClType φ × CK Tc Tn P B))
+    (hR : certAdmK step pend lab φ Tc Tn P B R) (hne : R.Nonempty) : Prop :=
+  ∀ u : ℤ × ConKey φ Tc Tn P B R,
+    cellAt (conModel step pend lab φ Tc Tn P B R hR hne) φ u 0
+      = {T | ∃ S : ClType φ, typeOfCl S = T ∧
+          ((conKeyMap φ Tc Tn P B R u).1, S, (conKeyMap φ Tc Tn P B R u).2) ∈ R}
+
+/-- **THE INSTANTIATION CHECK, COMPILED.** `conFrame`, `conModel`, `conKeyMap` and
+`conKeyMap_covers` take the certified set as a PARAMETER, so they instantiate at ANY certified
+nonempty set, and in particular at any certified nonempty SUBSET of a given set — which is what
+the re-stated construction statement's existential ranges over. Nothing is specialised to the
+set the subset came from, and no new carrier is needed.
+
+Three of the construction statement's conjuncts are discharged here (a frame, a model over it, a
+key map, and COVERAGE of every member's key by a world state). The cell equation is NOT, and is
+not claimed.
+
+Paper: — (the surjectivity half of GKWZ §5.2's construction onto its quasistates, transferred BY
+SHAPE; no theorem there applies to this semantics) -/
+theorem conStruct_frame_model_key_covers {Q : Type} [Finite Q] (step : Q → Q → Bool)
+    (pend : Q → Bool) (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R' : Set (Q × ClType φ × CK Tc Tn P B))
+    (hR' : certAdmK step pend lab φ Tc Tn P B R') (hne' : R'.Nonempty) :
+    ∃ (F : FrameOver intOrder) (_M : TaskModel F.toTaskFrame)
+      (key : F.WorldState → Q × CK Tc Tn P B),
+      ∀ x ∈ R', ∃ u : F.WorldState, key u = (x.1, x.2.2) :=
+  ⟨conFrame step pend lab φ Tc Tn P B R' hR' hne',
+    conModel step pend lab φ Tc Tn P B R' hR' hne',
+    conKeyMap φ Tc Tn P B R', conKeyMap_covers φ Tc Tn P B R'⟩
+
+-- linter.unusedFintypeInType, scoped to this declaration. The instance is NOT droppable and
+-- cannot be "supplied in the proof": the witness the proof exhibits is `conFrame`, whose
+-- definition consumes `[Finite Q]`, while the conclusion is an existential over frames that
+-- mentions no finiteness at all -- so there is no other source for it. The pinned signature in
+-- the plan's `## Lean Challenge Statements` block carries `[Fintype Q]` as well, and dropping a
+-- binder would change the statement.
+set_option linter.unusedFintypeInType false in
+/-- **THE REDUCTION: the cell equation is the single remaining obligation.** Given a certified
+nonempty subset `R'` of a certified set `R` on which the named cell equation holds, the re-stated
+construction statement's full conclusion follows, with `R'` as the witness and the
+carrier/frame/valuation layer above supplying the frame, the model, the key map and coverage.
+
+**This is NOT the construction statement and does not discharge it.** Its `ConCellEq` hypothesis
+is the whole unproved content, and its `R'` is a binder rather than something it produces — so it
+inverts nothing: a proof of the construction statement must still EXHIBIT the subset and PROVE the
+equation. What this theorem buys is that the remaining work is one named object and not four.
+
+Paper: — (bookkeeping for GKWZ §5.2's converse direction, transferred BY SHAPE) -/
+theorem ladderConstruct_of_conCellEq {Q : Type} [Fintype Q]
+    (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
+    (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R R' : Set (Q × ClType φ × CK Tc Tn P B))
+    (hsub : R' ⊆ R) (hne' : R'.Nonempty)
+    (hR' : certAdmK step pend lab φ Tc Tn P B R')
+    (hcell : ConCellEq step pend lab φ Tc Tn P B R' hR' hne') :
+    ∃ S : Set (Q × ClType φ × CK Tc Tn P B),
+      S ⊆ R ∧ S.Nonempty ∧ certAdmK step pend lab φ Tc Tn P B S ∧
+      ∃ (F : FrameOver intOrder) (M : TaskModel F.toTaskFrame)
+        (key : F.WorldState → Q × CK Tc Tn P B),
+        (∀ x, x ∈ S → ∃ u : F.WorldState, key u = (x.1, x.2.2)) ∧
+        (∀ u : F.WorldState,
+          cellAt M φ u 0
+            = {T | ∃ T' : ClType φ, typeOfCl T' = T ∧ ((key u).1, T', (key u).2) ∈ S}) :=
+  ⟨R', hsub, hne', hR',
+    conFrame step pend lab φ Tc Tn P B R' hR' hne',
+    conModel step pend lab φ Tc Tn P B R' hR' hne',
+    conKeyMap φ Tc Tn P B R', conKeyMap_covers φ Tc Tn P B R', hcell⟩
+
+/-! ### The truth lemma's base cases, at an arbitrary certified set -/
+
+section TruthBase
+
+variable {Q : Type} [Finite Q] {step : Q → Q → Bool} {pend : Q → Bool}
+  {lab : Q → Atom → Bool} {φ : PlusFormula} {Tc Tn P B : ℕ}
+  {R' : Set (Q × ClType φ × CK Tc Tn P B)}
+
+/-- **The atom clause is DEFINITIONAL in the constructed valuation**: truth of an atom along any
+history of the constructed frame is `lab` read at the object coordinate of the world state's key,
+because that is what `conModel`'s valuation is. No certificate condition and no parameter
+condition enters.
+
+Paper: — (the valuation clause of GKWZ §5.2's constructed model, transferred BY SHAPE) -/
+theorem conModel_atom_truth
+    (hR' : certAdmK step pend lab φ Tc Tn P B R') (hne' : R'.Nonempty)
+    (σ : WorldHistory (conFrame step pend lab φ Tc Tn P B R' hR' hne').toTaskFrame)
+    (z : ℤ) (a : Atom) :
+    PlusTruthAt (conModel step pend lab φ Tc Tn P B R' hR' hne') σ z (.atom a)
+      ↔ lab (σ.state z).2.val.1 a = true := Iff.rfl
+
+omit [Finite Q] in
+/-- Condition (1)'s atom arm, unfolded: at a locally coherent product state the atom's membership
+in the closure type is its `lab` bit.
+
+Paper: — (the Hintikka condition at an atom) -/
+theorem locPred_atom_iff (q : Q) (T : Finset PlusFormula) (a : Atom)
+    (h : locPred lab q T (.atom a) = true) :
+    ((.atom a : PlusFormula) ∈ T ↔ lab q a = true) := by
+  simp only [locPred, beq_iff_eq] at h
+  rw [← h]
+  exact decide_eq_true_iff.symm
+
+/-- **THE ATOM CLAUSE OF THE TRUTH LEMMA**: at every member of the certified set lying over a
+world state's key, the atom's membership in that member's closure type agrees with the atom's
+membership in the closure type realized at that world state by ANY history through it.
+
+This is the base case the cell equation's induction starts from, and it holds for ALL `φ`: no
+`BoxStabFree` premise, no `ParamsOk`, no finiteness instance beyond the one the frame already
+needs, and no finite-fibre or finite-width assumption. It consumes condition (1) and nothing
+else.
+
+Paper: — (the atomic base case of GKWZ §5.2's truth lemma, transferred BY SHAPE) -/
+theorem tpOf_atom_iff_mem_of_over_key
+    (hR' : certAdmK step pend lab φ Tc Tn P B R') (hne' : R'.Nonempty)
+    (σ : WorldHistory (conFrame step pend lab φ Tc Tn P B R' hR' hne').toTaskFrame)
+    (z : ℤ) (x : Q × ClType φ × CK Tc Tn P B) (hx : x ∈ R')
+    (hkey : (x.1, x.2.2) = (σ.state z).2.val)
+    (a : Atom) (ha : (.atom a : PlusFormula) ∈ plusSubformulaClosure φ) :
+    ((.atom a : PlusFormula)
+        ∈ tpOf (conModel step pend lab φ Tc Tn P B R' hR' hne') φ σ z
+      ↔ (.atom a : PlusFormula) ∈ x.2.1.val) := by
+  have hloc := hR'.1 x hx
+  have hall : ∀ ψ ∈ plusSubformulaClosure φ, locPred lab x.1 x.2.1.val ψ = true := by
+    simpa [locCoh] using hloc
+  have hiff := locPred_atom_iff x.1 x.2.1.val a (hall _ ha)
+  have hq : x.1 = (σ.state z).2.val.1 := by rw [← hkey]
+  rw [mem_tpOf_iff, hiff, conModel_atom_truth hR' hne' σ z a, hq]
+  exact and_iff_right ha
+
+/-- **THE `⊥` CLAUSE, MODEL SIDE**: `⊥` is in no realized closure type, because it is true at no
+point of any model.
+
+Paper: — (the `⊥` base case of GKWZ §5.2's truth lemma, transferred BY SHAPE) -/
+theorem bot_notMem_tpOf
+    (hR' : certAdmK step pend lab φ Tc Tn P B R') (hne' : R'.Nonempty)
+    (σ : WorldHistory (conFrame step pend lab φ Tc Tn P B R' hR' hne').toTaskFrame)
+    (z : ℤ) :
+    (.bot : PlusFormula)
+      ∉ tpOf (conModel step pend lab φ Tc Tn P B R' hR' hne') φ σ z := by
+  rw [mem_tpOf_iff]
+  exact fun h => h.2
+
+omit [Finite Q] in
+/-- **THE `⊥` CLAUSE, CERTIFICATE SIDE**: `⊥` is in no member's closure type either, by condition
+(1). With the model side above, the two sides of the `⊥` clause agree.
+
+Paper: — (the `⊥` arm of the Hintikka condition) -/
+theorem bot_notMem_clType_of_mem
+    (hR' : certAdmK step pend lab φ Tc Tn P B R')
+    (x : Q × ClType φ × CK Tc Tn P B) (hx : x ∈ R')
+    (hb : (.bot : PlusFormula) ∈ plusSubformulaClosure φ) :
+    (.bot : PlusFormula) ∉ x.2.1.val := by
+  have hloc := hR'.1 x hx
+  have hall : ∀ ψ ∈ plusSubformulaClosure φ, locPred lab x.1 x.2.1.val ψ = true := by
+    simpa [locCoh] using hloc
+  simpa [locPred] using hall _ hb
+
+end TruthBase
+
+end ConstructionRemainingObligation
 
 end FormalSystem.Metalogic.Decidability.RaySummary

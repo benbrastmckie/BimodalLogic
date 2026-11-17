@@ -15001,7 +15001,7 @@ gate, as the task's FILE SCOPE paragraph directs.
 
 ---
 
-### Phase 25: `ladderConstruct` AT ITS RE-STATED `(Q-2)` SIGNATURE — THE TRUTH LEMMA OVER THE ELIMINATED SUBSET [NOT STARTED]
+### Phase 25: `ladderConstruct` AT ITS RE-STATED `(Q-2)` SIGNATURE — THE TRUTH LEMMA OVER THE ELIMINATED SUBSET [PARTIAL]
 
 **ADDED BY THE (Q-2) REVISION. THIS PHASE CARRIES PHASE 21's REMAINING CONTENT — the truth lemma,
 and nothing else — AT THE RE-STATED PIN (Ruling 37).** Phase 21 stays `[PARTIAL]` and is not
@@ -15024,24 +15024,47 @@ full statement, all four conjuncts, with the subset existentially bound and inst
 24's elimination.
 
 **Tasks**:
-- [ ] Re-`grep` `ladderConstruct` at entry. It must still be declared nowhere; if something has
+- [x] Re-`grep` `ladderConstruct` at entry. It must still be declared nowhere; if something has
       landed under the name, this phase stops and reports it as a Statement Fidelity finding.
-- [ ] Confirm by reading that `conFrame`/`conModel`/`conKeyMap_covers` instantiate at the
-      eliminated subset, and record the confirmation.
+      *(completed — exit 1, no hits, re-run at entry and at close; record §25)*
+- [x] Confirm by reading that `conFrame`/`conModel`/`conKeyMap_covers` instantiate at the
+      eliminated subset, and record the confirmation. *(deviation: altered — confirmed BY
+      COMPILATION rather than by reading, and at an ARBITRARY certified nonempty subset rather
+      than at "the eliminated subset", there being no eliminated subset: Phase 24's Goal is
+      refuted. `conStruct_frame_model_key_covers` is the compiled witness; no object had to be
+      rebuilt and none is specialised to the set a subset came from. Record §26)*
 - [ ] Land the truth lemma — the cell equation at the constructed points, over the eliminated
       subset — by the dependent-choice lifting record §16 names, and `#print axioms` it.
+      *(deviation: NOT DONE — the named route is REFUTED, not merely unfinished: the
+      dependent-choice lifting is `conStepStrong`'s, whose seriality
+      `conStepStrong_serial_refuted` denies and which `exists_certified_serial_subset_refuted`
+      proves unrecoverable by shrinking the set. What landed instead: the obligation NAMED
+      (`ConCellEq`) and the truth lemma's two BASE CASES at an arbitrary certified set, for all
+      φ, with no `BoxStabFree` premise — `conModel_atom_truth`, `locPred_atom_iff`,
+      `tpOf_atom_iff_mem_of_over_key`, `bot_notMem_tpOf`, `bot_notMem_clType_of_mem`, all
+      `#print axioms`-pinned. Record §28, §29)*
 - [ ] Land `ladderConstruct`, instantiating the existential at Phase 24's elimination **by name**,
       and diff the landed signature against the `(Q-2)` sub-block token-for-token. Any difference
-      is a Statement Fidelity finding, reported rather than accepted.
-- [ ] **RE-RECORD GUARDRAIL (b) AT THE RE-STATED SIGNATURE, as unmet** (Ruling 39): the slice is
+      is a Statement Fidelity finding, reported rather than accepted. *(deviation: NOT DONE —
+      Phase 24's elimination does not exist (its Goal is refuted), so the witness the phase's own
+      WITNESS CHECK demands cannot be named, and an ad hoc `R'` is prohibited. `ladderConstruct`
+      is landed under no name, before and after this dispatch alike. What landed instead is the
+      REDUCTION `ladderConstruct_of_conCellEq`, which takes `ConCellEq` as an EXPLICIT hypothesis
+      and so discharges none of the pin; its conclusion is diffed against the `(Q-2)` sub-block
+      with the one hypothesis-set divergence (`[Nonempty Q]` dropped, a weakening) reported at
+      record §32)*
+- [x] **RE-RECORD GUARDRAIL (b) AT THE RE-STATED SIGNATURE, as unmet** (Ruling 39): the slice is
       still finite, the restatement did not change the carrier, the finiteness is a property of the
       OUTPUT, and whether an infinite-width carrier satisfying the equation exists stays open and
-      is asserted nowhere.
-- [ ] Record which clause of GKWZ Lemma 5.24 (⇐) and Theorem 6.61 each landed object discharges,
+      is asserted nowhere. *(completed — record §30, in those terms)*
+- [x] Record which clause of GKWZ Lemma 5.24 (⇐) and Theorem 6.61 each landed object discharges,
       and record explicitly that the transfer is by SHAPE and that no published theorem applies to
-      this semantics.
-- [ ] Add the `docs/theorem-index.md` rows, the matching `check-module-invariants.sh` C14 entries,
-      and the axiom pins.
+      this semantics. *(completed — record §31, one row per landed object)*
+- [x] Add the `docs/theorem-index.md` rows, the matching `check-module-invariants.sh` C14 entries,
+      and the axiom pins. *(deviation: altered — one `docs/theorem-index.md` bullet and seven
+      axiom pins landed; **no C14 heredoc entry is owed**, for the reason Phases 23 and 24 both
+      recorded and this phase re-checked: C14's pinned set is the consequence/compactness stack
+      plus `Metalogic.lean`'s SORRY-FREE claims, none of which this section touches)*
 
 **Prohibited workarounds**: do NOT satisfy the pin with an ad hoc `R'` — the witness is Phase 24's
 elimination, checked by name; do NOT weaken the truth lemma to the `BoxStabFree` fragment and land

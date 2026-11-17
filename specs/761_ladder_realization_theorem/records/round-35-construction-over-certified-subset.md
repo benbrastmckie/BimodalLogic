@@ -646,3 +646,205 @@ so Phase 26's fallback must find its seriality in the relation and not in the se
 | `verify-deploy.sh` | **PASS** — 15 checks, 0 failures. Run this time rather than recorded as not run |
 | `validate-artifact.sh` (plan) | one pre-existing WARN on Phase 11.11's `Files to modify` comma-joined path, untouched by this dispatch and not introduced by it |
 | `typst-sync-check.sh --fix` | **PASS** after the fix — the repository's own pre-commit gate refused the first commit attempt on `MISMATCH_COUNT=2` in `typst/generated/status.typ`, which the module's growth caused. **The gate found this, not review** |
+
+---
+
+# Phase 25 — `ladderConstruct` AT ITS RE-STATED `(Q-2)` SIGNATURE: the entry gate, the remaining obligation named, and the truth lemma's base cases
+
+## 24. THE ENTRY GATE, CHECKED RATHER THAN ASSUMED — AND IT IS NOT SATISFIED
+
+Phase 25's head paragraph reads **"ENTERED ONLY after Phase 24 lands"**. Phase 24 did not land:
+it closed `[COMPLETED WITH EXCLUSIONS]` with **its own Goal REFUTED** by compilation, and its
+`#### Recorded Outcome — RE-ENTRY (dispatch 90)` block states verbatim:
+
+> **Phase 25 is not entered**: its entry gate is "after Phase 24 lands", and Phase 24's Goal is
+> refuted rather than landed.
+
+The plan's sanctioned route after that refutation is **Phase 26** (decision 29's fallback (A): a
+third step relation as the greatest fixpoint of the largest composing subrelation of `conStep`,
+ATTACKED for seriality at `ConAttack.attR` BEFORE adoption). This dispatch (seq 91) was
+nevertheless dispatched onto Phase 25 by the orchestrator. The divergence is **recorded here and
+in this round's summary rather than worked around**, and it is logged in the task's issue log
+(class `plan/dispatch routing`, severity `costly`).
+
+**What this dispatch therefore did.** It executed exactly the subset of Phase 25's task list that
+is INDEPENDENT of the dead route — the two entry checks the phase's own `Timing` paragraph names
+as "its first deliverables ... reportable on their own" — plus the first cases of the truth lemma
+the phase's Goal names, and it returns `[PARTIAL]`, which is the outcome that paragraph provides
+for when the truth lemma has not landed. **No part of the dead route was simulated, narrowed or
+reported as landed.**
+
+## 25. ENTRY CHECK 1 — `ladderConstruct` IS STILL DECLARED NOWHERE
+
+```
+grep -rnE '(theorem|lemma|def|abbrev) +ladderConstruct\b' FormalSystem/ Tests/   -> exit 1, no hits
+grep -rnE '(theorem|lemma|def|abbrev) +(cellAt_const_of_kappa_eq|ladderRealized)\b' FormalSystem/ Tests/
+                                                                                 -> exit 1, no hits
+grep -rnE '(theorem|lemma) +dmax_(certStabK|certBoxK|certAdmK)\b' FormalSystem/   -> exit 1, no hits
+```
+
+Re-run at entry and at close, with the same readings both times. Nothing has landed under the
+name, so the `(Q-2)` re-pin's own premise (Ruling 37) still holds, and nothing is stated at
+`Dmax`.
+
+## 26. ENTRY CHECK 2 — THE INSTANTIATION CHECK, COMPILED RATHER THAN READ OFF SIGNATURES
+
+Phase 25's task list asks that `conFrame`/`conModel`/`conKeyMap_covers` be confirmed to
+instantiate at a certified subset, **"by reading"**. This dispatch did better than the task asked
+and confirmed it **by compilation**:
+
+| Object | Line | Takes the set as | Instantiates at a subset? |
+|---|---|---|---|
+| `ConKey` | `LadderRealize.lean:2341` | a parameter `R` | yes — a subtype of `Q × CK` cut by membership in the parameter |
+| `conKeyMap` | `:2358` | a parameter `R` | yes — the subtype projection, independent of which set |
+| `conFrame` | `:2423` | a parameter `R` plus `hR : certAdmK … R` and `hne : R.Nonempty` | yes — the two hypotheses are exactly what a certified nonempty subset carries |
+| `conModel` | `:2435` | the same three | yes |
+| `conKeyMap_covers` | `:2448` | a parameter `R`, no certificate condition at all | yes |
+
+**Nothing in the layer is specialised to the set a subset came from.** The compiled witness is
+`conStruct_frame_model_key_covers`: at an ARBITRARY certified nonempty set it produces a frame, a
+model over it, a key map and the COVERAGE conjunct. **The finding the task item asks for is
+therefore NEGATIVE in the useful direction**: no object had to be rebuilt, and the plan's worry
+("if any of them is specialised to the given `R` in a way the eliminated subset does not satisfy")
+does not arise.
+
+## 27. THE REMAINING OBLIGATION, NAMED: `ConCellEq`
+
+The `(Q-2)` pin has five pieces of content. Four are now discharged at any certified nonempty
+subset; the fifth is the whole of what remains, and it is given a name in the library:
+
+| `(Q-2)` conjunct | Status | Declaration |
+|---|---|---|
+| `R' ⊆ R` | supplied by whatever produces the subset | — (a binder of the reduction) |
+| `R'.Nonempty` | same | — |
+| `certAdmK … R'` | same | — |
+| `∃ F M key`, plus COVERAGE | **LANDED at any certified nonempty set** | `conStruct_frame_model_key_covers` |
+| the CELL EQUATION | **NOT LANDED; named** | `ConCellEq` (a `def`, not a theorem) |
+
+`ladderConstruct_of_conCellEq` closes the bookkeeping: from a certified nonempty subset `R' ⊆ R`
+together with `ConCellEq … R'`, the `(Q-2)` conclusion follows in full, with the frame layer
+supplying `F`, `M`, `key` and coverage.
+
+**This is NOT `ladderConstruct` and discharges none of it.** Three things are true of it at once
+and all three are stated in its own docstring: (a) `ConCellEq` is its explicit hypothesis, so the
+theorem proves no instance of the construction; (b) its `R'` is a BINDER, which is precisely why
+it is not the pin — a proof of the pin must still EXHIBIT the subset, and the reduction says only
+what remains once the frame layer is fixed; (c) `ladderConstruct` is declared nowhere, before and
+after this dispatch alike. **The pin's own "WHAT THIS RE-PIN DOES NOT DO" bullet — "A landed
+statement taking `R'` as a binder has inverted the obligation" — is about a landed
+`ladderConstruct`, and nothing here is landed under that name.** It is recorded here so that no
+later reader mistakes the reduction for the theorem.
+
+## 28. WHY BOTH ROUTES TO `ConCellEq` ARE CLOSED, STATED AT THIS PHASE'S OWN LEVEL
+
+The `⊆` direction of the cell equation needs the closure type realized along a bi-infinite path
+of the constructed frame's step relation to be the type of a MEMBER of the subset — i.e. the path
+must LIFT to a `relK`-chain inside it. Both landed key-level relations fail, and the elimination
+that would have repaired the second is refuted:
+
+| Route | What it gives | What it fails | Declaration |
+|---|---|---|---|
+| weak `conStep` | seriality from condition (2) alone (`conStep_fwd`, `conStep_bwd`) | its edges do not compose inside `R` at length two, so paths do not lift | `conStep_two_step_lift_refuted`, `ConAttack.no_lift_sK1_sK0_sK2` |
+| uniform `conStepStrong` | lifting by dependent choice from any member of the fibre | seriality — one successor key serving EVERY member over a key | `conStepStrong_serial_refuted` |
+| `conStepStrong` on a SHRUNK set | — | no certified nonempty subset is serial, at a certified set exhibited in the tree | `exists_certified_serial_subset_refuted` (Phase 24, re-entry) |
+
+So **the open question is now in the RELATION and not in the SET**, which is exactly what Phase
+24's re-entry record says Phase 26's fallback must respect. This dispatch adds no new relation:
+designing one inside an implement round is what Rulings 27 and 31's attack-before-adopt
+discipline forbids, and Phase 26 is the phase that carries it.
+
+## 29. WHAT IS LANDED ON THE TRUTH LEMMA: ITS TWO BASE CASES, AT AN ARBITRARY CERTIFIED SET
+
+The truth lemma is an induction over the closure. Its first two cases are landed here, at an
+arbitrary certified set, **for ALL `φ`**:
+
+| Clause | Model side | Certificate side | Consumes |
+|---|---|---|---|
+| atom | `conModel_atom_truth` — DEFINITIONAL (`Iff.rfl`): truth of an atom along any history is `lab` at the object coordinate of the world state's key, because that is what `conModel`'s valuation is | `locPred_atom_iff` — condition (1)'s atom arm unfolded | condition (1), nothing else |
+| atom, the two sides matched | `tpOf_atom_iff_mem_of_over_key` — at every member over a world state's key, the atom's membership in that member's type agrees with its membership in the type realized at that world state by ANY history through it | — | condition (1) |
+| `⊥` | `bot_notMem_tpOf` — `⊥` is in no realized type | `bot_notMem_clType_of_mem` — `⊥` is in no member's type | condition (1) |
+
+**The all-`φ` check, mechanically**: no landed declaration of this section carries a
+`BoxStabFree` binder. `grep` of the appended block returns `BoxStabFree` twice, both inside
+docstring PROSE ("with no `BoxStabFree` premise"), at block lines 30 and 159, and neither in a
+binder list. No `ParamsOk` is consumed anywhere in the section, no finiteness instance beyond the
+`[Finite Q]` the frame already needs, and no finite-fibre or finite-width assumption.
+
+**What is NOT attempted, and why.** The `→` clause needs the induction hypothesis on proper
+subformulas; the `□` and `⊡` clauses need it too (their `PlusTruthAt` clauses are a universal over
+ALL histories and over histories through the SAME world state, which match conditions (6) and (5)
+structurally, but the match is through the cell equation at the argument); and the `▷`/`◁` clauses
+need the lifting that §28 shows has no landed source. Attempting the induction's step at a dead
+lifting route would be attempting the refuted route under another name.
+
+## 30. GUARDRAIL (b), RE-RECORDED AT THE RE-STATED SIGNATURE AS **UNMET** (Ruling 39)
+
+- The constructed slice is still `ConKey`, which is **FINITE** — it embeds into `Q × CK Tc Tn P B`.
+- **Nothing in this dispatch changed the carrier.** Naming the remaining obligation changes
+  neither the carrier nor the width; neither does the `(Q-2)` restatement, which only narrows
+  which fibres the equation is asserted about.
+- The finiteness is a property of the **OUTPUT**, forced by `cellAt_subsingleton_of_det` /
+  `fibre_subsingleton_of_det_cell_eq` ruling out the runs-based `W × R` carrier — **not an
+  assumption on an INPUT**. No finite-width or finite-fibre hypothesis is taken anywhere in the
+  appended block.
+- **Whether an infinite-width carrier satisfying the equation exists stays OPEN and is asserted
+  nowhere.** Guardrail (b) is **UNMET**, and is not reported as met, as met-in-effect, or as
+  superseded by the restatement.
+
+## 31. THE GKWZ CLAUSE MAP FOR WHAT IS LANDED — AND THAT THE TRANSFER IS BY SHAPE
+
+**No published theorem in either source applies to this semantics**, and this setting is NOT
+PTL × S5: `stab_state_only` makes the stability modal state-keyed across times, so a time slice
+holds many clusters. The transfer is by SHAPE only.
+
+| Landed object | Shape it transfers | Source |
+|---|---|---|
+| `conStruct_frame_model_key_covers` (coverage) | the surjectivity of the constructed model onto the quasistates | GKWZ 2003 §5.2, Lemma 5.24 (⇐); linear first component at Theorem 6.61 |
+| `ConCellEq` | the statement that the constructed model's quasistate read-off is EXACTLY the given set's fibre — quasistates are EXACT in every source read, only runs are existential | GKWZ Lemma 5.24 (⇐) |
+| `conModel_atom_truth`, `tpOf_atom_iff_mem_of_over_key`, `locPred_atom_iff` | the atomic base case of the truth lemma, against the Hintikka condition | GKWZ §5.2; `certLocK` IS that condition here |
+| `bot_notMem_tpOf`, `bot_notMem_clType_of_mem` | the `⊥` base case | same |
+| the unattempted `⊡` clause | the (qm1) clause | `certStabK` IS (qm1) here |
+
+HWZ 2000 Theorem 14 is a satisfiability iff for MONODIC FIRST-ORDER temporal logic and that paper
+has **no box and no stab modality at all**, so it names no published result about this semantics
+and is a pointer to a proof SHAPE only. GKWZ §13.2 / Theorem 13.6 is NOT the pointer either: its
+proof is written for L = K with the S5 case left to the reader in one sentence.
+
+## 32. STATEMENT FIDELITY — THE ONE DIVERGENCE, REPORTED
+
+`ladderConstruct_of_conCellEq`'s conclusion is the `(Q-2)` sub-block's conclusion with two
+cosmetic renamings and one hypothesis-set divergence, all reported rather than accepted silently:
+
+| Item | `(Q-2)` pin | Landed reduction | Direction |
+|---|---|---|---|
+| the existentially bound subset | `R'` | `S` (because `R'` is already a binder of the reduction) | a bound variable's name; no change of statement |
+| the inner closure-type witness | `S` | `T'` (for the same reason) | same |
+| object-type binders | `[Fintype Q] [Nonempty Q]` | `[Fintype Q]` | **WEAKENING OF THE HYPOTHESIS SET — the landed statement therefore proves MORE**, as Phase 24's §9.2 recorded for the same binder |
+
+Every other token of the conclusion matches the `(Q-2)` sub-block, and the `(Q-2)` text was
+diffed against, never the superseded `(Q-1)` text. **The `## Lean Challenge Statements` block was
+not edited.**
+
+## 33. Carried-figure check (this dispatch's own premise lines, verified against live state)
+
+| Premise line in the dispatch's `## Description` | Verified? | Live reading |
+|---|---|---|
+| "`ladderRealized` is declared nowhere" | **CONFIRMED** | `grep` exit 1, §25 |
+| "`dmax_certStabK`/`dmax_certBoxK` have no hits" | **CONFIRMED** | `grep` exit 1, §25 |
+| "The construction half is UNWRITTEN in all four of its components (no carrier, no frame, no valuation, no truth lemma)" | **PARTLY STALE, and corrected here** | the carrier, frame and valuation ARE written (`ConKey:2341`, `conFrame:2423`, `conModel:2435`, landed by Phase 21 and recorded in `round-34`); only the TRUTH LEMMA is unwritten. The description's line reflects the state before Phase 21 |
+| "`Realize.lean` (1004 lines)" | **CONFIRMED** | `wc -l` reports exactly 1004 lines; the figure is current |
+| "`LadderRealize.lean` was 3,067 lines against `longFile 3100`" (Phase 25's `Scope Hypothesis`) | **STALE, as the plan predicted it would be** | 4,553 lines at entry against `longFile 4600`; 4,765 lines at close, baseline raised IN PLACE to `4800` in the same commit, module not split |
+| "PHASES COMPLETED: 67 of 81" | **CONFIRMED against the plan's own markers** | 67 closed of 81 headings at entry |
+
+## 34. Gate readings at this phase's close
+
+| Gate | Reading |
+|---|---|
+| `lake-build-guard.sh build --timeout 1800 -- build` | **exit 0**, zero `error:` over both streams, `Build completed successfully (2976 jobs)`, and `LadderRealize.olean` newer than its source |
+| `lake-build-guard.sh build --timeout 1800 -- build BimodalTest` | **exit 0**, zero `error:`, `Build completed successfully (3044 jobs)` — all seven new axiom pins pass |
+| `lean-sorry-census.sh` over the resolved source roots | **exit 0**, `sorry_count: 0` |
+| vacuous-definition grep | **1**, the pre-existing `FormalSystem/Examples/TemporalStructures.lean:495` baseline; no new hit |
+| `^axiom ` count | **14**, unchanged from Phase 24's re-entry reading |
+| `cellAt_const_of_kappa_eq` / `ladderRealized` declaration grep | no hits |
+| `#print axioms` on every landed declaration | `[propext, Classical.choice, Quot.sound]`, pinned in `KTypeSummaryAxiomTest.lean` |
+| `scripts/check-module-invariants.sh` C14 heredoc entry | **none owed**, for the reason Phases 23 and 24 both recorded and this phase re-checked: C14's pinned set is the consequence/compactness stack plus `Metalogic.lean`'s SORRY-FREE claims, none of which this section touches |
