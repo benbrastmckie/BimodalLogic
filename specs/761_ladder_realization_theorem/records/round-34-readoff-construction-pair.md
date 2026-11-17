@@ -263,3 +263,206 @@ No clip is adopted. No agreement is attempted. No phase of this plan takes this 
 question is not described as settled, likely, nearly-settled or dead, and the
 `card Q · 2 ^ (dBack φ)` figure is not stated as compiled. `paramsOkK4`, `Bof` and `ParamsOk` are
 unedited, Phase 11.7 is not re-opened, and no `sorry`, `axiom` or vacuous definition was written.
+
+---
+
+# Phase 21 — The CONSTRUCTION half: THE CARRIER, STATED FIRST
+
+**Dispatch 86. This section was written and committed BEFORE any Lean of this phase, which is
+Phase 21's own first verification item ("the record names the carrier and its slice cardinality
+before the frame's definition in commit order; a phase whose first commit is a frame fails this
+check").**
+
+## 13. Which phase this dispatch ran, and why it is not the one the Phase Mission named
+
+Dispatch 86's Phase Mission named **Phase 11.44**. That heading's `RE-ENTRY NOTICE` is a RULE and
+not a number: *"a dispatch that selects this heading because `[PARTIAL]` parses as open executes
+THE FIRST OPEN PHASE AT OR AFTER 11.48 IN FILE ORDER — evaluated against the live file — and says
+in its record that it did so."* Evaluated against the live plan, the phases at or after 11.48 in
+file order are 11.48 `[COMPLETED]`, 11.49 and 11.40 `[COMPLETED WITH EXCLUSIONS]`, 12.1
+`[COMPLETED WITH EXCLUSIONS]`, then **12.2 `[BLOCKED]`** — the first open one.
+
+Phase 12.2 is not entered. Its own `BLOCKER` record says, in its "What is needed" line, that what
+it needs is **a route decision (a `/revise`)**. Decision 27 — cycle 2, `2026-11-17T00:51:09Z`, the
+most recent recorded decision and the only one in the dispatch's `## Prior Decisions` block NOT
+marked POTENTIALLY SUPERSEDED — IS that route decision, and it routes past 12.2 by name:
+
+> **(C) Enter the CONSTRUCTION half (Phase 21) first and defer the READ-OFF half**: Phase 21
+> takes `certAdmK` as an EXPLICIT hypothesis on an arbitrary `R` and is untouched by this
+> refutation, so it is enterable now; the READ-OFF half's target is then chosen with the
+> construction's output in hand.
+
+Its Obligation: *"Land Phase 21's CONSTRUCTION half (`certAdmK` as explicit hypothesis on an
+arbitrary `R`), then choose Phase 20's READ-OFF right-hand side using the constructed model as
+evidence; do NOT restate the READ-OFF target (option B) before the construction exists."* This
+dispatch therefore ran **Phase 21**, and this paragraph is the record that it did so.
+
+## 14. THE CARRIER
+
+**Stated before any Lean, as the phase requires.**
+
+```lean
+/-- The construction's carrier slice: the KEYS realized in `R`. -/
+def ConKey {Q : Type} (φ : PlusFormula) (Tc Tn P B : ℕ)
+    (R : Set (Q × ClType φ × CK Tc Tn P B)) : Type :=
+  {s : Q × CK Tc Tn P B // ∃ S : ClType φ, (s.1, S, s.2) ∈ R}
+```
+
+The frame's world-state type is then `ℤ × ConKey φ Tc Tn P B R`, through
+`ofSlicedStepFinBranch`, and the key map the pinned statement asks for is **the subtype
+projection**:
+
+```lean
+key : ℤ × ConKey … → Q × CK Tc Tn P B := fun u => u.2.val
+```
+
+**Slice cardinality — FINITE, and the exact count.**
+`ConKey` embeds into `Q × CK Tc Tn P B`, so
+
+> `card (ConKey φ Tc Tn P B R) ≤ card Q · (Tc + 1) · (P + 1) · (Tn + 1) · (P + 1) · (2B + 1)`
+
+a COUNT of candidate keys and no bound on anything. The world-state type `ℤ × ConKey` is
+infinite — through `ℤ`, exactly as `ofSlicedStepFinBranch_not_finite_worldState` records for
+every frame of this scheme — but **the SLICE is finite**, and §19 below records that as this
+phase's width finding rather than repairing it with an assumption.
+
+**Why it is NOT the `frameOf` idiom.** `frameOf`/`modelOf` (`RaySummary/Realize.lean:689`, `:725`)
+takes the certified set ITSELF as its slice: its points carry the closure type as a coordinate.
+`ConKey`'s points do not — **the closure-type coordinate is projected away, and that projection is
+the whole content of the carrier choice** (§15). The four counts Phase 21's body already records
+against `frameOf`/`modelOf` are unaffected and are not restated here; this is a fifth and
+independent reason, and it is the one that bites: a carrier whose points carry a closure type
+cannot satisfy the pinned cell equation at all, by §15.
+
+**Why it is not the ladder carrier `LadderState Q pend`.** The pinned statement's FIRST conjunct is
+coverage — `∀ x ∈ R, ∃ u, key u = (x.1, x.2.2)` — so every counter CLASS occurring in `R` must be
+the key of some carrier point. Over the ladder carrier the key of `(q, c, n)` can only be
+`(q, kappa Tc Tn P B (c, n))`, and `kappa` is not surjective onto `CK Tc Tn P B`: its first two
+coordinates are `min c Tc` and `c % (P + 1)`, which are not independent below the threshold, so
+e.g. a class whose first coordinate is `2 < Tc` and whose second is not `2 % (P + 1)` has no
+preimage. `certAdmK` places no constraint confining `R`'s classes to `kappa`'s image, so coverage
+over the ladder carrier is not available for an arbitrary certified `R`. (Status: the
+non-surjectivity is elementary arithmetic and is stated here as such; the step from it to "some
+certified `R` actually contains an off-image class" is NOT compiled and is NOT claimed — what is
+claimed is only that `certAdmK` does not rule it out.)
+
+## 15. WHY THE CARRIER IS FORCED TO BE KEY-LEVEL — and why the runs-based carrier Phase 21's body expects does NOT satisfy the pinned equation
+
+Phase 21's body says *"a runs-based carrier — GKWZ's `W × R` with `R` a set of runs, which is not
+finite — is the shape the literature uses"*. **That orientation does not survive contact with the
+pinned statement, and this is this dispatch's principal finding.** The reason is the semantics of
+`cellAt`, not a preference:
+
+`cellAt M φ u 0 = {tpOf M φ σ 0 | σ.state 0 = u}` — the cell at a world state is the set of types
+realized by the histories THROUGH THAT STATE. The pinned conclusion demands
+
+> `cellAt M φ u 0 = {T | ∃ S, typeOfCl S = T ∧ ((key u).1, S, (key u).2) ∈ R}`
+
+i.e. the cell is the WHOLE fibre of `R` over `key u`. A fibre with two distinct closure types
+therefore forces **two histories through the one world state `u` realizing two different types**.
+
+Now take the runs carrier in its literal form — world states the runs of `R` (bi-infinite
+`relK`-paths inside `R`), stepped by the SHIFT, which is the only step relation that makes a run a
+run. That relation is deterministic in both directions, so by
+`ofSlicedStepFinBranch_mem_HF_iff` the history through a world state is UNIQUE and every cell is a
+singleton. The pinned equation would then force every fibre of `R` to be a singleton — which
+`certStabK` not only fails to give but is interesting precisely when it fails, since its clause
+quantifies over the fibre. **The runs-with-shift carrier therefore cannot satisfy the pinned
+equation for a general certified `R`.** (Compiled status: §18. The general design observation that
+follows — any carrier whose world state DETERMINES a member of `R`, under a truth lemma reading
+the type off that member, collapses the cell to a singleton — is INFERRED, not compiled, and is
+marked as such wherever it is used.)
+
+What the argument leaves is forced: the world state may determine the KEY and must not determine
+the member; the type multiplicity has to come from the frame's BRANCHING. `ConKey` is that
+carrier. The three certificate clauses then read exactly as the model-side facts they have to
+match, which is the independent reason to believe the keying is right rather than merely forced:
+
+| Certificate clause | Model-side equation | Match |
+|---|---|---|
+| `certStabK`: `⊡ψ ∈ x.2.1 ↔ ∀ y ∈ R, y.1 = x.1 → y.2.2 = x.2.2 → argOf ψ ∈ y.2.1` | `stab_mem_tpOf_iff`: `⊡ψ ∈ tpOf(σ,z) ↔ ∀ σ' through `σ.state z`, ψ ∈ tpOf(σ',z)` | the `⊡` bit is read off the fibre over `(q, κ)` on one side and off the cell of one world state on the other — the SAME object exactly when the cell is that fibre |
+| `certBoxK`: `□ψ ∈ x.2.1 ↔ ∀ y ∈ R, argOf ψ ∈ y.2.1` | `box_mem_tpOf_iff`: one GLOBAL bit over all histories and times | matches when the model's points are exactly `R`'s keys |
+| `certLocK` | the valuation reads `lab` at the object coordinate | matches, atoms depending on `q` alone |
+
+A consequence worth recording, because it is what makes the keying CONSISTENT rather than merely
+forced: by `certStabK` and `certBoxK`, all members of one fibre agree on every `⊡`-letter and
+every `□`-letter, and by `certLocK` they agree on atoms. **Members of a fibre can differ only in
+temporal (`untl`/`snce`) content** — which is precisely the content a branching frame can
+distinguish between histories through one state.
+
+## 16. THE STEP RELATION — two candidates, and the tension that is this phase's real obstruction
+
+Both candidates are the projection of `relK` along the key map; they differ in the quantifier.
+
+```lean
+-- WEAK (existential): the image of relK on keys
+conStep s s' := ∃ x ∈ R, ∃ y ∈ R, key x = s ∧ key y = s' ∧ relK … x y
+
+-- STRONG (uniform): every member at s steps to some member at s', and conversely
+conStepStrong s s' := (∀ x ∈ R, key x = s → ∃ y ∈ R, key y = s' ∧ relK … x y)
+                    ∧ (∀ y ∈ R, key y = s' → ∃ x ∈ R, key x = s ∧ relK … x y)
+```
+
+- **The WEAK relation is SERIAL** — directly from `certBiInfK`, which hands every member a
+  successor and a predecessor inside `R` — **but it is not LIFTABLE.** The truth lemma's `⊆`
+  direction needs every bi-infinite `conStep`-path through `s` to lift to a `relK`-path inside
+  `R`, and a chain of individually-witnessed edges need not compose: the witness `y` chosen for the
+  step `s → s'` and the witness chosen for `s' → s''` may disagree at `s'`, and nothing in
+  `certAdmK` reconciles them.
+- **The STRONG relation is LIFTABLE** — by dependent choice a `conStepStrong`-path lifts forward
+  and backward from ANY chosen member of the fibre at position `0`, which gives BOTH directions of
+  the truth lemma at once (`⊇`: lift through the chosen `x`; `⊆`: lift through some `x`, and its
+  type is in the fibre by construction) — **but its seriality is not available.** It asks for a
+  single key `s'` that serves EVERY member over `s` at once, and `certBiInfK` gives only a
+  per-member successor.
+
+**This tension is the construction's open content**, and it is where GKWZ's own machinery sits:
+their maximal set is obtained *by elimination*, and elimination is exactly the device that would
+make the uniform relation serial on what survives. Here `R` is an arbitrary `certAdmK`-certified
+set carried as an explicit hypothesis, so no elimination has been run on it, and restricting `R`
+is not available — the pinned equation names the fibres of the GIVEN `R`.
+
+## 17. WHAT THIS DISPATCH LANDED
+
+See §18 for the compiled inventory and §20 for what is not claimed.
+
+## 18. (Filled in after the Lean of this phase — see the Phase 21 compiled inventory below.)
+
+## 19. ADMISSIBILITY AND WIDTH — this phase's finding, recorded rather than repaired
+
+Phase 21's own task list asks for this, and the answer is recorded as a finding and not repaired
+by an assumption: **the constructed frame's SLICE is finite** (§14), so the model has finite
+width, and guardrail (b)'s "infinite width, no fibre bound" is NOT met by this carrier. Three
+things follow, and none of them is papered over:
+
+1. No finite-width or finite-fibre HYPOTHESIS was added anywhere — the finiteness is a property of
+   the constructed output, not an assumption on an input. `R ⊆ Q × ClType φ × CK Tc Tn P B` is
+   finite whenever the object is, which is a COUNT of candidates and the same count
+   `CounterQuotient.lean` already records for `Dmax`'s family.
+2. The finiteness is FORCED by §15 together with the pinned key map, not chosen: the carrier may
+   not carry the closure type, and the key coordinate `Q × CK` is finite by construction.
+   `Probe747.modelOf_incomplete`'s WIDTH fact is therefore not contradicted but inherited — a
+   model of this shape is not a candidate for the decidability consumer, and no record here says
+   it is.
+3. `ZTime`-admissibility is NOT claimed for the constructed model in this dispatch. The frame is
+   regular (`ofSlicedStepFinBranch_isRegular`); nothing further is asserted.
+
+**The consequence for the read-off/construction pair, stated plainly**: half (ii) at this carrier
+is a statement about `certAdmK`-certified sets and their fibres, and it is NOT a construction of a
+countermodel for a decidability argument. Whether a carrier exists that satisfies the pinned
+equation AND has infinite width is open and is asserted nowhere.
+
+## 20. WHAT THIS PHASE DOES NOT ESTABLISH
+
+`ladderConstruct` is NOT landed: its second conjunct, the cell equation, is the truth lemma and is
+open, blocked at the tension of §16. Nothing is landed under `ladderRealized` or
+`cellAt_const_of_kappa_eq`, both of which remain unclaimed in `FormalSystem/` and `Tests/`. No
+construction is stated at `Dmax` — `dmax_certStabK` and `dmax_certBoxK` still have no hits, and
+whether to attempt them is reported, not taken. The constructed model is not claimed to be, or to
+be isomorphic to, `ladderModel`; that is refuted
+(`no_dmax_construction_receives_ladderModel`, `ladderModel_realizes_no_set`, wired by Phase 19).
+The transfer to GKWZ is BY SHAPE: `certStabK` reading as `(qm1)`, `cellAt` as the quasistate
+read-off and `Dmax` as the maximal satisfying set is an identification of shape, and **no theorem
+of GKWZ §5.2 (Theorem 5.22, Lemma 5.24, Theorem 6.61) or of HWZ 2000 applies to this semantics** —
+HWZ has no `□` and no `⊡` at all, and this setting is not PTL × S5 (`stab_state_only`). No
+`sorry`, `axiom`, `native_decide` or vacuous definition was written.

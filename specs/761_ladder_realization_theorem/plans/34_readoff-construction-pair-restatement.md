@@ -13875,7 +13875,7 @@ commit; never split the module.
 
 ---
 
-### Phase 21: The CONSTRUCTION Half — A Model Built From a Certified Set: Carrier, Frame, Valuation, Truth Lemma [NOT STARTED]
+### Phase 21: The CONSTRUCTION Half — A Model Built From a Certified Set: Carrier, Frame, Valuation, Truth Lemma [IN PROGRESS]
 
 **ADDED BY THE (Q-1) REVISION, AND IT GETS ITS OWN PHASE BECAUSE IT IS UNWRITTEN — NOT BECAUSE IT
 IS LARGE (decision 26 obligation 2).** `grep` at this revision's authoring, re-confirming report
