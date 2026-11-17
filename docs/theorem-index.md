@@ -1079,13 +1079,41 @@ is not read as an oversight:
   now a theorem at a closure that DOES bear a `⊡` letter: `certStabK_not_monotone` exhibits a
   nonempty subset on which the clause fails while it holds on the larger set, with the closure's
   `⊡`-bearing-ness carried as a conjunct of the statement so the verdict is not about a `⊡`-free
-  closure. **What this does not establish**: the elimination lemma at a general certified set is
-  OPEN — neither landed nor refuted. No declaration produces a key-injective certified subset of
-  an arbitrary certified set or asserts one exists; none takes a certified subset as a binder of a
-  conclusion, asserts maximality, or is stated at `Dmax` (`dmax_certStabK`/`dmax_certBoxK` still
-  have no hits). The finiteness instances a descending elimination would need (`Fintype (ClType
-  φ)`, `Fintype (CK Tc Tn P B)`, and their product with a finite object) are all derivable by
-  instance search and none had to be written. Guardrail (b) — infinite width — stays UNMET.
+  closure. **What the reduction's remaining step turns out to cost** is settled by the bullet
+  below: producing the key-injective subset is REFUTED. No declaration here takes a certified
+  subset as a binder of a conclusion, asserts maximality, or is stated at `Dmax`
+  (`dmax_certStabK`/`dmax_certBoxK` have no hits). The finiteness instances a descending
+  elimination would need (`Fintype (ClType φ)`, `Fintype (CK Tc Tn P B)`, and their product with a
+  finite object) are all derivable by instance search and none had to be written. Guardrail (b) —
+  infinite width — stays UNMET.
+
+- **THE ELIMINATION LEMMA IS REFUTED at a general certified set, and so is the key-injectivity it
+  reduces to.** `exists_certified_serial_subset_refuted` and
+  `exists_certified_keyFibreInj_subset_refuted` in
+  [`LadderRealize.lean`](../FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean).
+  The general obstruction is `not_keyFibreInj_of_noncollapsed`, stated at an arbitrary certified
+  set: a member carrying a `⊡` letter's ARGUMENT without the letter itself cannot sit in a
+  key-injective certified set, because on such a set condition (5) IS the collapse
+  `⊡ψ ∈ x ↔ ψ ∈ x`. The witness that the shape is inhabited is the certified fixture `NoElim`
+  (`NoElim.elim_certAdmK`, all six conditions, both acceptance clauses discharged at a closure
+  bearing TWO `⊡` letters): three object states in a star, two members over each key carrying the
+  two `untl` letters `ρ` and `σ` respectively, so each member is the other's non-collapse witness
+  at its own key (`NoElim.noncollapsed_mem`). Two `⊡` letters is the minimum — with one, condition
+  (5) forces the letter onto every member of a fibre all of whose members carry its argument — and
+  an `untl` pair is the only arm that may differ across one fibre, atoms being pinned by condition
+  (1), `⊡` letters per key by condition (5) and `□` letters globally by condition (6). Every
+  certified nonempty subset of that fixture fails key-injectivity (`NoElim.no_keyFibreInj_subset`)
+  and must keep BOTH members over the state-`0` key (`NoElim.both_mem_subset`), whose successors
+  lie over the two disjoint keys of states `1` and `2` (`NoElim.succ_state_of_nX1`,
+  `NoElim.succ_state_of_nX2`), so no key serves both and the uniform relation is serial on no
+  certified nonempty subset (`NoElim.not_serial_subset`). This is the same obstruction
+  `conStepStrong_serial_refuted` finds at `ConAttack.attR`, with the elimination that would remove
+  it proved unable to. **SCOPE**: this refutes the elimination lemma and the key-injectivity route
+  to it. It does NOT refute `ladderConstruct`, which mentions neither key-injectivity nor
+  `conStepStrong` and is declared nowhere; that statement stays OPEN. No parameter condition is
+  involved (all four parameters are `0`, where the counter quotient is a subsingleton), nothing is
+  stated at `Dmax`, no statement asserts maximality, and guardrail (b) — infinite width — stays
+  UNMET and is not addressed here.
 
 ## Related documentation
 

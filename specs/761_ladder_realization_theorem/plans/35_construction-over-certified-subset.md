@@ -14754,7 +14754,7 @@ whether iterating the rule terminates at a uniformly singleton-fibred subset at 
 
 ---
 
-### Phase 24: The ELIMINATION LEMMA at a GENERAL Certified `R` — CONDITIONAL ON PHASE 23's OUTCOME (a) [PARTIAL]
+### Phase 24: The ELIMINATION LEMMA at a GENERAL Certified `R` — CONDITIONAL ON PHASE 23's OUTCOME (a) [COMPLETED WITH EXCLUSIONS]
 
 **ADDED BY THE (Q-2) REVISION (decision 29, obligation: "the elimination that forms it is itself
 owed"). ENTERED ONLY ON PHASE 23's OUTCOME (a).** On outcome (b) this phase closes
@@ -14804,12 +14804,21 @@ needs, seriality of `conStepStrong` on `R'`. The subset is CONSTRUCTED; it is ne
       been found not to generalize. Condition (5) is REFUTED as inherited at a `⊡`-bearing closure
       by `certStabK_not_monotone`, which PAYS one of the three debts Phase 23's §5 assigned to this
       phase; condition (6) is recorded UNMEASURED, not discharged; conditions (2), (3) and (4) are
-      the open positive side. Six-condition table at record §12)*
-- [ ] Prove nonemptiness of the fixpoint from `hne`, or record the compiled counterexample. **A
+      the open positive side. Six-condition table at record §12)* *(re-entry, dispatch 90: there is no
+      fixpoint to certify and never will be — the phase's target is now REFUTED
+      (`exists_certified_serial_subset_refuted`), and conditions (2), (3) and (4) are no longer an
+      open positive side. The six conditions ARE discharged, by name, on the REFUTING FIXTURE whose
+      certificate the refutation consumes: record §19)*
+- [x] Prove nonemptiness of the fixpoint from `hne`, or record the compiled counterexample. **A
       nonemptiness that cannot be proved is a refutation of (C) at the general statement**, which
-      returns the route to Phase 26 and is a complete, reportable outcome. *(deviation: NOT DONE —
-      no fixpoint, so neither branch is reached. This is explicitly NOT the refutation this task
-      names: the general lemma is OPEN, not refuted, and record §11/§13 say so)*
+      returns the route to Phase 26 and is a complete, reportable outcome. *(completed on re-entry,
+      dispatch 90, in the SECOND branch this item provides for: the compiled counterexample is
+      recorded. `NoElim.elim_certAdmK` is a certified nonempty set, every one of whose members
+      carries a `⊞` letter's argument without the letter, so it has no key-injective certified
+      subset (`NoElim.no_keyFibreInj_subset`) and no certified nonempty subset on which the uniform
+      relation is serial (`NoElim.not_serial_subset`). Hence
+      `exists_certified_keyFibreInj_subset_refuted` and `exists_certified_serial_subset_refuted`.
+      Record §17-§21)*
 - [x] Prove `conStepStrong` serial on the fixpoint. This is the property `ofSlicedStepFinBranch`
       needs and the one `conStepStrong_serial_refuted` denies at the un-eliminated `attR`; the
       contrast between the two is recorded explicitly, with both declarations named. *(deviation:
@@ -14899,11 +14908,13 @@ SCOPE paragraph directs.
 
 #### Recorded Outcome
 
-**`[PARTIAL]` — THE ELIMINATION IS REDUCED, NOT LANDED, AND THE OBSTRUCTION IT REDUCES TO IS
+**FIRST DISPATCH — THE ELIMINATION IS REDUCED, NOT LANDED, AND THE OBSTRUCTION IT REDUCES TO IS
 COMPILED.** This is the outcome this phase's own `Timing` paragraph provides for. The general
-elimination lemma at an arbitrary certified `R` is **OPEN — neither landed nor refuted** — and the
-step it is open at is now exactly named. Record:
-`records/round-35-construction-over-certified-subset.md`, sections 9–14.
+elimination lemma at an arbitrary certified `R` was left **OPEN — neither landed nor refuted** —
+with the step it is open at exactly named. **That step is CLOSED, in the negative, by the re-entry
+recorded below: the phase's own Goal is REFUTED.** Record:
+`records/round-35-construction-over-certified-subset.md`, sections 9–14 for that dispatch and
+17–22 for the re-entry.
 
 | Item | Disposition | Evidence |
 |---|---|---|
@@ -14927,10 +14938,66 @@ step it is open at is now exactly named. Record:
 attack-first fallback for the case where route (C) does not close: option (A), **Phase 26's** third
 step relation as the greatest fixpoint of the largest composing subrelation of `conStep`, ATTACKED
 for seriality at `ConAttack.attR` BEFORE adoption. Nothing in this outcome requires a judgement the
-artifacts cannot supply, so the route continues on the recorded decision. **Phase 24 is not closed
-and may be re-entered**: its remaining step is to produce a certified nonempty subset on which every
+artifacts cannot supply, so the route continues on the recorded decision. **Phase 24 was left open and re-enterable**
+at that dispatch: its remaining step was to produce a certified nonempty subset on which every
 key carries one member, against conditions (2), (3), (4) which a key-injective selection need not
-preserve and condition (5) which it provably need not inherit.
+preserve and condition (5) which it provably need not inherit. **That step is answered in the
+negative by the re-entry below, and the phase is closed.**
+
+
+#### Recorded Outcome — RE-ENTRY (dispatch 90)
+
+**`[COMPLETED WITH EXCLUSIONS]` — THE PHASE'S GOAL IS REFUTED BY COMPILATION, WHICH IS THE OUTCOME
+ITS OWN TASK LIST PROVIDES FOR.** The re-entry attacked the remaining step before attempting it,
+per decisions 21-23, 27 and 29's attack-first discipline, and the attack succeeded. Record:
+`records/round-35-construction-over-certified-subset.md`, sections 17-22.
+
+| Item | Disposition | Evidence |
+|---|---|---|
+| The general obstruction, at an ARBITRARY certified set | **LANDED** — a member carrying a `⊡` letter's argument without the letter cannot sit in a key-injective certified set; three lines from this round's own `certStabK_iff_collapse_of_keyFibreInj`, with no fixture, no `ParamsOk` and no finiteness instance consumed | `not_keyFibreInj_of_noncollapsed` |
+| A certified set all of whose members have that shape | **EXHIBITED AND CERTIFIED** — all six conditions, both acceptance clauses discharged at a closure bearing TWO `⊡` letters; three object states in a star, two members over each key carrying the two `untl` letters | `NoElim.elim_certAdmK`, `NoElim.stab_closure_E` (non-vacuity), `NoElim.noncollapsed_mem` |
+| Why the fixture has that shape | **DERIVED, not searched for**: two `⊡` letters is the minimum (with one, condition (5) forces the letter onto every member of a fibre whose members all carry its argument), and an `untl`/`snce` pair is the only arm that may differ across one fibre — atoms pinned by (1), `⊡` per key by (5), `□` globally by (6) | record §18 |
+| The reduced target (produce a key-injective certified nonempty subset) | **REFUTED** | `exists_certified_keyFibreInj_subset_refuted`, via `NoElim.no_keyFibreInj_subset` |
+| **THE PHASE'S OWN GOAL** (record §9.1: the `(Q-2)` pin's first three conjuncts plus `conStepStrong`'s seriality) | **REFUTED**, by a second independent route: every certified nonempty subset must keep BOTH members over the state-`0` key, and their successors lie over disjoint keys | `exists_certified_serial_subset_refuted`, via `NoElim.both_mem_subset`, `NoElim.succ_state_of_nX1`, `NoElim.succ_state_of_nX2`, `NoElim.not_serial_subset` |
+| Statement fidelity of the refuted schema against record §9.1 | **TOKEN-FOR-TOKEN MATCH**, binders turned into the universal quantifiers a refutation needs — the shape `conStepStrong_serial_refuted` already uses | record §20 |
+| THE SIX-CONDITION CHECK | **ANSWERED WITH SIX DECLARATIONS**, on the refuting fixture's certificate, each named | record §19 |
+| NO-HYPOTHESIS check | **HOLDS** — the three per-subset helpers quantify a subset in a hypothesis, but they are universal NEGATIVE statements ("every certified nonempty subset fails ..."), the opposite of assuming the subset a positive statement must produce; both headline theorems obtain their subset from the refuted existential | record §20 |
+| NOT-A-MAXIMUM check | **HOLDS** — no landed statement asserts maximality or greatest-ness | Ruling 38 |
+| Nothing stated at `Dmax` | **HOLDS** — `grep -rnE '(theorem\|lemma) +dmax_(certStabK\|certBoxK\|certAdmK)\b' FormalSystem/` returns nothing, re-run at entry and at close | record §22 |
+| Axiom profile of every landed declaration | `[propext, Classical.choice, Quot.sound]` | eight new pins in `KTypeSummaryAxiomTest.lean`; `sorry_count: 0`, `^axiom ` count 14 unchanged, vacuous-grep 1 (the pre-existing `TemporalStructures.lean:495` baseline) |
+| `ladderConstruct` at `(Q-2)` | **NOT REFUTED and still OPEN** — it mentions neither key-injectivity nor `conStepStrong`; what dies is this ROUTE to it | record §21 |
+| Guardrail (b) | **UNMET**, and not addressed, narrowed or reported as met | Ruling 39; record §21 |
+
+**The branch.** Decision 29's sanctioned fallback for "route (C) does not close" is option (A),
+**Phase 26**: a third step relation as the greatest fixpoint of the largest composing subrelation
+of `conStep`, ATTACKED for seriality at `ConAttack.attR` BEFORE adoption. That relation is not
+`conStepStrong` and is untouched by this refutation, so the route continues on the recorded
+decision and **no `user_decision` is raised**. What this re-entry adds for that round: the
+obstruction is now known to be unremovable by SHRINKING at all, so Phase 26's fallback must find
+its seriality in the relation and not in the set. **Phase 25 is not entered**: its entry gate is
+"after Phase 24 lands", and Phase 24's Goal is refuted rather than landed.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| The elimination as the ITERATE of Phase 23's removal rule, and its fixpoint lemma | The rule does not generalize — the `relK`-connected component of a chosen member contains the other fibre member whenever the two are connected inside `R`, so the iterate has no descent and its fixpoint is "`relK`-connected", not key-injective | record §10 |
+| `certAdmK` of the fixpoint, condition by condition | There is no fixpoint and there cannot be one: the subset the phase was to certify is now proved not to exist at a certified set exhibited here. The six conditions are instead discharged on the REFUTING FIXTURE, by name | record §19; `exists_certified_serial_subset_refuted` |
+| Nonemptiness of the fixpoint | Same reason, and this is the SECOND branch the phase's own task item provides for: "record the compiled counterexample ... a complete, reportable outcome" | the phase's task list; record §21 |
+| `conStepStrong` serial on the fixpoint | Landed in the only form that exists — on any KEY-INJECTIVE certified set (`conStepStrong_serial_of_keyFibreInj`) — and then proved unreachable, no certified nonempty subset of the fixture being key-injective | record §10, §18 |
+| `scripts/check-module-invariants.sh` C14 heredoc entry | **No entry is owed**, for the reason Phases 23 and 24 both recorded and this re-entry re-checked: C14's pinned set is the consequence/compactness stack plus `Metalogic.lean`'s SORRY-FREE claims, none of which this section touches. `check-module-invariants.sh` reports `PASS C14` unchanged | gate reading at §22 |
+| `.claude/scripts/verify-deploy.sh` | Run and reported in this re-entry's gate readings rather than skipped | §22 |
+
+**Recorded file-list deviations for the re-entry** *(deviation: altered)*: `scripts/check-module-invariants.sh`
+was NOT edited, per the exclusion row above. *(deviation: altered)* THREE FILES NOT IN THE LIST WERE
+WRITTEN AGAIN: `README.md`, `FormalSystem/Metalogic/README.md` and
+`FormalSystem/Metalogic/Decidability/RaySummary/README.md`, whose GENERATED inventory blocks carry
+per-module line counts and went stale the moment the module grew by 728 lines. They were
+regenerated through the sanctioned entry point, `bash scripts/check-module-invariants.sh
+--emit-inventory`. `typst/generated/status.typ` was regenerated through `bash
+scripts/typst-sync-check.sh --fix`, which the repository's own pre-commit gate required before the
+commit would land. Cross-set collision with task 744 (README, invariants) is left to the admission
+gate, as the task's FILE SCOPE paragraph directs.
 
 ---
 

@@ -496,3 +496,136 @@ contract requires of any foreign commit observed mid-dispatch.
 module, the axiom test, `docs/theorem-index.md`, the three READMEs, `typst/generated/status.typ`,
 and this task's own plan/record/summary). This phase's commit sits cleanly on top of it, and no
 action was taken against it.
+
+---
+
+# Phase 24, re-entered — THE ELIMINATION LEMMA IS REFUTED
+
+Phase 24 returned `[PARTIAL]` with its target OPEN and its remaining step exactly named (section
+13): "produce a certified nonempty subset on which every key carries one member, against
+conditions (2), (3), (4) which a key-injective selection need not preserve and condition (5) which
+it provably need not inherit." This re-entry answers that step. **The answer is negative, and it is
+compiled.**
+
+## 17. THE POSTURE: ATTACK FIRST, BECAUSE THIS TASK'S OWN LEDGER SAYS TO
+
+Phase 24's task list provided for this outcome in advance: "Prove nonemptiness of the fixpoint from
+`hne`, or record the compiled counterexample. **A nonemptiness that cannot be proved is a
+refutation of (C) at the general statement**, which returns the route to Phase 26 and is a
+complete, reportable outcome." Decisions 21, 22, 23, 27 and 29 all record the same lesson from this
+task's own history: every hypothesis adopted in this task without a prior attack (`Zrel` at 11.39,
+`Srel` at 11.41/11.42, `Mrel` as filed at 11.47) turned out refuted, while the rounds that attacked
+first (11.44, 11.48) produced hypotheses that survived. So this re-entry attacked the remaining
+step before attempting it, and the attack succeeded.
+
+**The design was derived on paper from the conditions' own shapes before any Lean was written**,
+which is why no edge of the fixture had to be adjusted afterwards: all eight claimed `relK` edges,
+all eight claimed non-edges, `locCoh` at all six members and the `RK` self-loop compiled green on
+the first attempt.
+
+## 18. THE VERDICT
+
+| Landed | What it says |
+|---|---|
+| `not_keyFibreInj_of_noncollapsed` | **THE GENERAL OBSTRUCTION**, at an arbitrary certified set: a member carrying a `⊡` letter's ARGUMENT without the letter itself cannot sit in a KEY-INJECTIVE certified set. No fixture, no `ParamsOk`, no finiteness instance. It is three lines from `certStabK_iff_collapse_of_keyFibreInj`, which section 10 landed |
+| `NoElim.elim_certAdmK` | **THE FIXTURE IS CERTIFIED** — all six conditions, both acceptance clauses discharged at a closure that BEARS two `⊡` letters (`NoElim.stab_closure_E` is the non-vacuity guard) |
+| `NoElim.noncollapsed_mem` | **EVERY member of the fixture is non-collapsed** — not a distinguished one, all six |
+| `NoElim.no_keyFibreInj_subset` | **No certified nonempty subset of it is key-injective** |
+| `NoElim.both_mem_subset` | **The two-member fibre cannot be cut**: every certified nonempty subset keeps BOTH members over the state-`0` key. Dropping either leaves the other alone over that key and condition (5) then fails at it — `certStabK_not_monotone`'s mechanism, here as a constraint on every candidate rather than as one counterexample |
+| `NoElim.not_serial_subset` | **The uniform relation is serial on NO certified nonempty subset** of the fixture, the two kept members' successors lying over the disjoint keys of states `1` and `2` |
+| `exists_certified_keyFibreInj_subset_refuted` | **THE REDUCED TARGET IS FALSE** |
+| `exists_certified_serial_subset_refuted` | **PHASE 24'S OWN GOAL (section 9.1) IS FALSE** |
+
+**WHY THE FIXTURE HAS THE SHAPE IT HAS, derived rather than searched for.** Two `⊡` letters is the
+MINIMUM: with one, condition (5) forces the letter onto every member of a fibre all of whose
+members carry its argument, so the non-collapsed shape is unreachable at every member at once. The
+two free letters must be an `untl`/`snce` pair, because those are the only arms that may differ
+between two members over ONE key — atoms are pinned to the object's labelling by condition (1),
+`⊡` letters are pinned per key by condition (5), and `□` letters are pinned globally by condition
+(6). Hence `phiE = ⊡ρ → ⊡σ` with `ρ = g₁ U e₁` and `σ = g₂ U e₂`, three object states in a star so
+that each `untl` letter has an event state to be discharged at and a guard state to pass through,
+and two members over each key carrying `ρ` and `σ` respectively.
+
+## 19. THE SIX-CONDITION CHECK, ANSWERED WITH SIX DECLARATIONS THIS TIME
+
+Phase 24's verification asks the record to name each of `certAdmK`'s six conditions and the
+declaration discharging it. Section 12 answered it by stating there was no fixpoint to discharge
+them on. **This re-entry has an object**: the fixture whose certificate the refutation consumes.
+
+| Condition | Declaration | Note |
+|---|---|---|
+| (1) `certLocK` | `NoElim.elim_certLocK` | the atom rows match `labE`; the one implication is pinned by `locPred` at every member |
+| (2) `certBiInfK` | `NoElim.elim_certBiInfK` | a successor and a predecessor INSIDE the set for each of the six members, by name |
+| (3) `certFwdK` | `NoElim.elim_certFwdK` | both `untl` letters discharged — in one step from state `0`, in two from the event states through `0` where the guard holds |
+| (4) `certBwdK` | `NoElim.elim_certBwdK` | discharged through `NoElim.no_snce_closure_E`: the closure carries no `S` letter, so no member's type can. The clause is present, not dropped |
+| (5) `certStabK` | `NoElim.elim_certStabK` | **at a closure that DOES bear `⊡` letters.** Neither letter is in any member's type and the clause's right side is false at every member, because the other member over the same key lacks that letter's argument — which is exactly what makes every member non-collapsed |
+| (6) `certBoxK` | `NoElim.elim_certBoxK` | discharged through `NoElim.no_box_closure_E`, same reading as (4) |
+
+## 20. STATEMENT FIDELITY
+
+**The refuted statement, diffed against section 9.1 token for token.** The schema inside
+`exists_certified_serial_subset_refuted`'s negation is section 9.1's statement with its binders
+turned into the universal quantifiers a refutation needs:
+
+| Section 9.1 | In the refutation's schema | Verdict |
+|---|---|---|
+| `[Fintype Q]` | `(_ : Fintype Q)` | identical, as an explicit argument rather than an instance binder — the shape `conStepStrong_serial_refuted` already uses |
+| `(hR : certAdmK …) (hne : R.Nonempty)` | `certAdmK … R → R.Nonempty → …` | identical, as arrows |
+| `R' ⊆ R ∧ R'.Nonempty ∧ certAdmK … R'` | same, token for token | identical |
+| `∀ (t : ℤ) (s : ConKey φ Tc Tn P B R'), ∃ s', conStepStrong … t s s'` | same, token for token | identical |
+
+**No Statement Fidelity finding.** What is refuted is the statement that was recorded before any
+Lean was written, not a convenient neighbour of it.
+
+**ON THE HELPER STATEMENTS' SHAPE, raised here rather than left to be noticed.**
+`NoElim.no_keyFibreInj_subset`, `NoElim.both_mem_subset` and `NoElim.not_serial_subset` take a
+subset `R'` as a hypothesis, which Phase 24's prohibited-workarounds list forbids of the positive
+lemma (Ruling 38). The prohibition is against ASSUMING the subset a statement is supposed to
+PRODUCE; these are universal NEGATIVE statements — *every* certified nonempty subset fails the
+property — which is the opposite shape, and the two headline theorems obtain their subset from the
+refuted existential rather than assuming one. No landed statement asserts maximality or
+greatest-ness, and none is stated at `Dmax`.
+
+## 21. SCOPE, AND THE BRANCH
+
+**What is refuted**: Phase 24's elimination lemma, and the key-injectivity route the reduction
+named. Route (Q-2)'s elimination therefore does not close, which is one of the two honest
+possibilities the `(Q-2)` sub-block itself named in advance ("every fibre-dissolving removal
+destroys one of the two (route (C) does not close, and Phase 26's fallback (A) is entered)").
+
+**What is NOT refuted, stated so it cannot be read as more than it is**: `ladderConstruct` at its
+`(Q-2)` signature. That statement asks for a certified nonempty subset plus a frame, a model and a
+key map satisfying the cell equation, and mentions neither key-injectivity nor `conStepStrong`; it
+stays OPEN and is declared nowhere. `ladderRealized` and `cellAt_const_of_kappa_eq` stay REFUTED
+under their pinned names and are declared nowhere. Guardrail (b) — infinite width — stays **UNMET**
+and is not addressed, narrowed or reported as met (Ruling 39).
+
+**One INFERRED consequence, marked as inferred and not compiled.** Since every certified nonempty
+subset of `NoElim.elimR` keeps two members with DISTINCT closure types over one key
+(`NoElim.both_mem_subset`, and `TX1 ≠ TX2` decides), any model satisfying the `(Q-2)` equation at
+that fixture has a cell with at least two types over that key, so it cannot be a two-sided
+deterministic frame of the sliced scheme (`fibre_subsingleton_of_det_cell_eq`, contrapositive).
+**This is an inference from two compiled facts, not itself a compiled theorem**, and Phase 25 or 26
+is where it would be stated if it is wanted.
+
+**No `user_decision` is raised.** Decision 29 already names the sanctioned attack-first fallback
+for the case where route (C) does not close: option (A), **Phase 26's** third step relation as the
+greatest fixpoint of the largest composing subrelation of `conStep`, ATTACKED for seriality at
+`ConAttack.attR` BEFORE adoption. That relation is not `conStepStrong` and is untouched by this
+refutation, so the route continues on the recorded decision rather than asking again. What this
+re-entry adds for that round: the obstruction is now known to be unremovable by SHRINKING at all,
+so Phase 26's fallback must find its seriality in the relation and not in the set.
+
+## 22. Carried-figure check (this re-entry's own premise lines, verified against live state)
+
+| Figure carried in | Live measurement | Verdict |
+|---|---|---|
+| Phase 24's own `#### Recorded Outcome`: the general lemma is "OPEN — neither landed nor refuted", open at producing a key-injective certified nonempty subset | read from the plan's Phase 24 body at entry, not assumed; the step named there is exactly the one this re-entry closed | **confirmed as the entry state, and now superseded by a theorem** |
+| `.plan-revised.json` sentinel `revised_at` | `1794885650`, against this dispatch's `dispatch_start_ts` `1794911951` — the sentinel is OLDER, so no plan revision landed under this dispatch and Phase 24's section as re-read at entry is current | **no sentinel hit; checked rather than assumed** |
+| `LadderRealize.lean` was 3,825 lines against `longFile 3900` at Phase 24's first dispatch | at entry **3,825 against 3,900, 75 lines of headroom**; this re-entry's section crossed it and the baseline was raised **in place** to `4600`; file now **4,553** | **confirmed, and acted on** |
+| `KTypeSummaryAxiomTest.lean` at `longFile 4200`, file 4,141 | at entry **4,141 against 4,200, 59 lines**; the eight new pins crossed it; baseline raised in place to `4300`, file now **4,200** | **confirmed, and acted on** |
+| `dmax_certStabK`/`dmax_certBoxK` have no hits | re-grepped at entry and at close: `grep -rnE '(theorem\|lemma) +dmax_(certStabK\|certBoxK\|certAdmK)\b' FormalSystem/` returns nothing | **confirmed, both times** |
+| `ladderConstruct`, `ladderRealized`, `cellAt_const_of_kappa_eq` declared nowhere | re-grepped at close across `FormalSystem/` and `Tests/`: nothing | **confirmed** |
+| Description line: "the construction half is UNWRITTEN in all four of its components" | **still stale**, as Phase 23's §8 and Phase 24's §14 already recorded: carrier, frame and valuation landed in Phase 21; only the truth lemma is unwritten | **stale in the description**; `docs/theorem-index.md` carries the corrected reading |
+| Description line: `CONTINGENCY` — "never sorry, axiom, vacuous definition, a trace-level hypothesis, or any finite-fibre/finite-width assumption" | `sorry_count: 0`; `^axiom ` count **14**, unchanged, zero `+axiom ` lines in this dispatch's diff; vacuous-grep **1**, the pre-existing `FormalSystem/Examples/TemporalStructures.lean:495` baseline; no finite-fibre or finite-width hypothesis in any landed signature — the fixture's finiteness is a property of the EXHIBITED object, never a hypothesis of any statement | **confirmed** |
+| A concurrent writer was observed during Phase 24's first dispatch (`0ad12f9ae`, task 935) | at this re-entry's start: `git log` shows that commit and `822827814` ("orchestration paused (cycle 3)") already landed; the only untracked paths are `.pid` (a dead pid, `kill -0` fails) and `specs/evidence/history-morphism-saturation-audit/` (dated 2026-11-09, foreign to this task), and no `lake` process was running but the LSP's `lake serve` | **no live foreign writer at entry; the two untracked paths are reported and were not touched** |
