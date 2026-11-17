@@ -193,7 +193,7 @@ open FormalSystem.Metalogic.Decidability
 
 -- The module's recorded length ceiling: the offset-invariance section takes the file past the
 -- default limit.
-set_option linter.style.longFile 3900
+set_option linter.style.longFile 4600
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -3821,5 +3821,733 @@ theorem certStabK_not_monotone :
     StabShrink.bigR_certStabK, StabShrink.subR_not_certStabK⟩
 
 end ConstructionEliminationGeneral
+
+/-! ## THE ELIMINATION IS REFUTED AT A GENERAL CERTIFIED SET
+
+The section above REDUCED the elimination lemma to one property of the subset — produce a
+KEY-INJECTIVE certified nonempty subset and the uniform relation is serial on it
+(`conStepStrong_serial_of_keyFibreInj`, `exists_certified_serial_subset_of_keyFibreInj_subset`) —
+and left the production of that subset OPEN. **This section closes it in the NEGATIVE, by
+compilation.** Both the reduced target and the elimination lemma's own statement are FALSE at a
+certified fixture, so route (Q-2)'s elimination does not close and the question is no longer open.
+
+**THE MECHANISM, AND IT IS GENERAL RATHER THAN A FIXTURE ACCIDENT.** On a key-injective set
+condition (5) collapses to `⊡ψ ∈ x ↔ ψ ∈ x` at every member
+(`certStabK_iff_collapse_of_keyFibreInj`). So a member carrying a `⊡` letter's ARGUMENT without
+the letter itself can never sit in a key-injective certified set, whatever set it came from:
+`not_keyFibreInj_of_noncollapsed`, stated at an arbitrary `R` with no fixture in sight. A
+certified `R` all of whose members are of that shape therefore has NO key-injective certified
+subset at all — not a small one, not a cleverly chosen one, none.
+
+**AND SUCH AN `R` EXISTS, FULLY CERTIFIED.** `NoElim` is it: three object states, two members over
+each key, all six conditions of `certAdmK` discharged. Its closure carries TWO `⊡` letters, which
+is the minimum — with one, condition (5) forces the letter onto every member of a fibre whose
+members all carry its argument, and the shape is unreachable. Its two free letters are an `untl`
+pair, which is the only arm `locPred` leaves open to differ across one fibre: atoms are pinned to
+the object's labelling by condition (1), `⊡` letters are pinned per key by condition (5), and `□`
+letters are pinned globally by condition (6). The members `nX1` and `nX2` sit over the key of
+object state `0` carrying `ρ` and `σ` respectively, so each is the other's non-collapse witness.
+
+**THE TWO REFUTATIONS.** `exists_certified_keyFibreInj_subset_refuted` kills the reduced target.
+`exists_certified_serial_subset_refuted` kills the elimination lemma AS STATED in this round's
+record §9.1 — the first three conjuncts of the `(Q-2)` pin plus the seriality the construction
+needs — at the same fixture and through a second, independent route: every certified nonempty
+subset of `NoElim.elimR` contains BOTH members over the state-`0` key (`both_mem_subset`; drop
+either one and condition (5) fails at the one that stays), and those two members' successors lie
+over DISJOINT keys, so no key serves both. This is the same obstruction
+`conStepStrong_serial_refuted` found at `ConAttack.attR`, now with the elimination that was
+supposed to remove it proved unable to.
+
+**WHAT THIS DOES AND DOES NOT SAY, STATED PLAINLY.** It refutes the elimination lemma and the
+key-injectivity route to it. It does NOT refute the `(Q-2)` statement `ladderConstruct`, which
+asks for a certified nonempty subset plus a frame, model and key map with the cell equation and
+mentions neither key-injectivity nor `conStepStrong`: what dies here is the ROUTE to it through an
+elimination and the uniform relation, not the statement. `ladderConstruct`, `ladderRealized` and
+`cellAt_const_of_kappa_eq` are declared nowhere, here or elsewhere. Nothing here is stated at
+`Dmax` (`dmax_certStabK`/`dmax_certBoxK` still have no hits), asserts maximality or
+greatest-ness (Ruling 38), or adds a finite-fibre or finite-width assumption (Ruling 39) — and
+guardrail (b), infinite width, stays UNMET and is neither addressed nor reported as met.
+
+**ON THE SHAPE OF THE HELPER STATEMENTS.** `no_keyFibreInj_subset`, `both_mem_subset` and
+`not_serial_subset` take a subset `R'` as a hypothesis, which the positive lemma was forbidden to
+do (Ruling 38). The prohibition is against ASSUMING the subset a statement is supposed to
+PRODUCE; these are universal NEGATIVE statements — every certified nonempty subset fails the
+property — which is the opposite shape, and the two headline theorems below obtain their subset
+from the refuted existential rather than assuming one.
+-/
+
+section ConstructionEliminationRefuted
+
+/-- **THE OBSTRUCTION, AT AN ARBITRARY CERTIFIED SET.** A member carrying a `⊡` letter's ARGUMENT
+without the letter itself cannot sit in a KEY-INJECTIVE certified set. On such a set condition (5)
+is the collapse `⊡ψ ∈ x ↔ ψ ∈ x` (`certStabK_iff_collapse_of_keyFibreInj`), and this member
+witnesses the collapse's failure.
+
+No fixture, no parameter condition and no finiteness instance is consumed: this is the general
+reason the elimination's remaining step cannot be taken, and the fixture below only has to exhibit
+a certified set all of whose members are of this shape.
+
+Paper: — (the obstruction to key-injectivity of this repository's certified subsets; no literature
+counterpart, see the section docstring) -/
+theorem not_keyFibreInj_of_noncollapsed {Q : Type} {φ : PlusFormula} {Tc Tn P B : ℕ}
+    {R : Set (Q × ClType φ × CK Tc Tn P B)} (h5 : certStabK φ Tc Tn P B R)
+    {x : Q × ClType φ × CK Tc Tn P B} (hx : x ∈ R) {ψ : PlusFormula}
+    (hψ : ψ ∈ plusSubformulaClosure φ) (hs : isStab ψ = true)
+    (harg : argOf ψ ∈ x.2.1.val) (hnot : ψ ∉ x.2.1.val) : ¬ KeyFibreInj R := by
+  intro hinj
+  exact hnot ((((certStabK_iff_collapse_of_keyFibreInj hinj).mp h5) x hx ψ hψ hs).mpr harg)
+
+/-! ### The fixture: a certified set with NO key-injective certified subset
+
+Three object states in a star, `0` stepping to `1` and `2` and both stepping back. Two `untl`
+letters, `ρ` guarded by `g₁` with event `e₁` at state `1`, and `σ` guarded by `g₂` with event `e₂`
+at state `2`. The formula is `⊡ρ → ⊡σ`, whose closure carries both `⊡` letters and whose only
+implication is pinned by `locPred` at every member. Each state carries TWO members, one with `ρ`
+and one with `σ`, so each is the other's non-collapse witness at its own key.
+-/
+
+namespace NoElim
+
+/-- The fixture's object: three states in a star. -/
+abbrev Qe : Type := Fin 3
+
+/-- The step graph: `0 → 1`, `0 → 2`, `1 → 0`, `2 → 0`, and nothing else. In particular `0` does
+not step to itself, which is what keeps the two members over the state-`0` key from being each
+other's successor. -/
+def stepE : Qe → Qe → Bool := fun q q' =>
+  (q == 0 && (q' == 1 || q' == 2)) || ((q == 1 || q == 2) && q' == 0)
+
+/-- No state is pending: the counter side of `relK` is the idle one throughout, as at
+`ConAttack`. -/
+def pendE : Qe → Bool := fun _ => false
+
+/-- The first guard atom. -/
+def g1Atom : Atom := ⟨"g1", none⟩
+
+/-- The second guard atom. -/
+def g2Atom : Atom := ⟨"g2", none⟩
+
+/-- The first event atom. -/
+def e1Atom : Atom := ⟨"e1", none⟩
+
+/-- The second event atom. -/
+def e2Atom : Atom := ⟨"e2", none⟩
+
+/-- The first guard, as a formula. -/
+def g1F : PlusFormula := .atom g1Atom
+
+/-- The second guard, as a formula. -/
+def g2F : PlusFormula := .atom g2Atom
+
+/-- The first event, as a formula. -/
+def e1F : PlusFormula := .atom e1Atom
+
+/-- The second event, as a formula. -/
+def e2F : PlusFormula := .atom e2Atom
+
+/-- Both guards hold exactly at `0`, the first event exactly at `1`, the second exactly at `2`.
+The labelling is what condition (1) pins, and it is why the two members over one key may differ
+only on the temporal letters. -/
+def labE : Qe → Atom → Bool := fun q a =>
+  if a = g1Atom then q == 0
+  else if a = g2Atom then q == 0
+  else if a = e1Atom then q == 1
+  else if a = e2Atom then q == 2
+  else false
+
+/-- The first free letter: `g₁` strict-until `e₁`. -/
+def rhoE : PlusFormula := .untl g1F e1F
+
+/-- The second free letter: `g₂` strict-until `e₂`. -/
+def sigmaE : PlusFormula := .untl g2F e2F
+
+/-- **The fixture's formula**, `⊡ρ → ⊡σ`. The implication is there to put BOTH `⊡` letters in one
+closure; with a single `⊡` letter the non-collapsed shape is unreachable, because condition (5)
+forces the letter onto every member of a fibre all of whose members carry its argument. -/
+def phiE : PlusFormula := .imp (.stab rhoE) (.stab sigmaE)
+
+/-- A closure type from a membership list, as a `filter` — the standard fixture idiom. -/
+def mkTE (L : List PlusFormula) : ClType phiE :=
+  ⟨(plusSubformulaClosure phiE).filter (fun ψ => ψ ∈ L),
+    Finset.mem_powerset.mpr (Finset.filter_subset _ _)⟩
+
+/-- At `0`, the type carrying `ρ`. -/
+def TX1 : ClType phiE := mkTE [g1F, g2F, phiE, rhoE]
+
+/-- At `0`, the type carrying `σ`. -/
+def TX2 : ClType phiE := mkTE [g1F, g2F, phiE, sigmaE]
+
+/-- At `1`, the type carrying `ρ`. -/
+def TY1 : ClType phiE := mkTE [e1F, phiE, rhoE]
+
+/-- At `1`, the type carrying `σ`. -/
+def TY2 : ClType phiE := mkTE [e1F, phiE, sigmaE]
+
+/-- At `2`, the type carrying `ρ`. -/
+def TZ1 : ClType phiE := mkTE [e2F, phiE, rhoE]
+
+/-- At `2`, the type carrying `σ`. -/
+def TZ2 : ClType phiE := mkTE [e2F, phiE, sigmaE]
+
+/-- The one counter class: the parameters are all `0`, so `CK 0 0 0 0` is a subsingleton and a key
+is the object state alone. -/
+def kE : CK 0 0 0 0 := kappa 0 0 0 0 (0, 0)
+
+/-- The carrier of the fixture's certified set. -/
+abbrev ItemE : Type := Qe × ClType phiE × CK 0 0 0 0
+
+/-- The `ρ`-member at `0`. -/
+def nX1 : ItemE := ((0 : Qe), TX1, kE)
+
+/-- The `σ`-member at `0`. -/
+def nX2 : ItemE := ((0 : Qe), TX2, kE)
+
+/-- The `ρ`-member at `1`. -/
+def nY1 : ItemE := ((1 : Qe), TY1, kE)
+
+/-- The `σ`-member at `1`. -/
+def nY2 : ItemE := ((1 : Qe), TY2, kE)
+
+/-- The `ρ`-member at `2`. -/
+def nZ1 : ItemE := ((2 : Qe), TZ1, kE)
+
+/-- The `σ`-member at `2`. -/
+def nZ2 : ItemE := ((2 : Qe), TZ2, kE)
+
+/-- **THE CERTIFIED SET**: two members over each of three keys, each the other's non-collapse
+witness at its own key. -/
+def elimR : Set ItemE := {nX1, nX2, nY1, nY2, nZ1, nZ2}
+
+/-- Membership in the fixture's set, unfolded.
+
+Paper: — (a fixture of this repository's elimination question) -/
+theorem mem_elimR {x : ItemE} :
+    x ∈ elimR ↔ (x = nX1 ∨ x = nX2 ∨ x = nY1 ∨ x = nY2 ∨ x = nZ1 ∨ x = nZ2) := by
+  simp [elimR, Set.mem_insert_iff, Set.mem_singleton_iff]
+
+/-- Paper: — (a fixture membership) -/
+theorem mem_nX1 : nX1 ∈ elimR := by rw [mem_elimR]; exact Or.inl rfl
+
+/-- Paper: — (a fixture membership) -/
+theorem mem_nX2 : nX2 ∈ elimR := by rw [mem_elimR]; exact Or.inr (Or.inl rfl)
+
+/-- Paper: — (a fixture membership) -/
+theorem mem_nY1 : nY1 ∈ elimR := by rw [mem_elimR]; exact Or.inr (Or.inr (Or.inl rfl))
+
+/-- Paper: — (a fixture membership) -/
+theorem mem_nY2 : nY2 ∈ elimR := by
+  rw [mem_elimR]; exact Or.inr (Or.inr (Or.inr (Or.inl rfl)))
+
+/-- Paper: — (a fixture membership) -/
+theorem mem_nZ1 : nZ1 ∈ elimR := by
+  rw [mem_elimR]; exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))
+
+/-- Paper: — (a fixture membership) -/
+theorem mem_nZ2 : nZ2 ∈ elimR := by
+  rw [mem_elimR]; exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl))))
+
+/-- The certificate relation at the fixture's parameters. -/
+abbrev relE : ItemE → ItemE → Prop := relK stepE pendE labE phiE 0 0 0 0
+
+/-- The counter side of every edge below: idle to idle at the one class.
+
+Paper: — (the counter component of this repository's `relK` at degenerate parameters) -/
+theorem rk_self_E : RK 0 0 0 0 false false kE kE := by decide
+
+/-- Paper: — (a fixture edge) -/
+theorem rel_nX1_nY1 : relE nX1 nY1 := ⟨by decide, rk_self_E⟩
+
+/-- Paper: — (a fixture edge) -/
+theorem rel_nY1_nX1 : relE nY1 nX1 := ⟨by decide, rk_self_E⟩
+
+/-- Paper: — (a fixture edge) -/
+theorem rel_nX1_nY2 : relE nX1 nY2 := ⟨by decide, rk_self_E⟩
+
+/-- Paper: — (a fixture edge) -/
+theorem rel_nY2_nX2 : relE nY2 nX2 := ⟨by decide, rk_self_E⟩
+
+/-- Paper: — (a fixture edge) -/
+theorem rel_nX2_nZ1 : relE nX2 nZ1 := ⟨by decide, rk_self_E⟩
+
+/-- Paper: — (a fixture edge) -/
+theorem rel_nX2_nZ2 : relE nX2 nZ2 := ⟨by decide, rk_self_E⟩
+
+/-- Paper: — (a fixture edge) -/
+theorem rel_nZ1_nX1 : relE nZ1 nX1 := ⟨by decide, rk_self_E⟩
+
+/-- Paper: — (a fixture edge) -/
+theorem rel_nZ2_nX2 : relE nZ2 nX2 := ⟨by decide, rk_self_E⟩
+
+/-- Paper: — (a fixture non-edge: `stepE 0 0 = false`) -/
+theorem not_rel_nX1_nX1 : ¬ relE nX1 nX1 := fun h => absurd h.1 (by decide)
+
+/-- Paper: — (a fixture non-edge: `stepE 0 0 = false`) -/
+theorem not_rel_nX1_nX2 : ¬ relE nX1 nX2 := fun h => absurd h.1 (by decide)
+
+/-- **The separating non-edge, `ρ`-side**: the `ρ`-member at `0` cannot step to state `2`, because
+`linkPred` demands `e₁` or `g₁`-plus-`ρ` at the successor and neither holds there.
+
+Paper: — (a fixture non-edge forced by `linkPred`) -/
+theorem not_rel_nX1_nZ1 : ¬ relE nX1 nZ1 := fun h => absurd h.1 (by decide)
+
+/-- Paper: — (a fixture non-edge forced by `linkPred`) -/
+theorem not_rel_nX1_nZ2 : ¬ relE nX1 nZ2 := fun h => absurd h.1 (by decide)
+
+/-- Paper: — (a fixture non-edge: `stepE 0 0 = false`) -/
+theorem not_rel_nX2_nX1 : ¬ relE nX2 nX1 := fun h => absurd h.1 (by decide)
+
+/-- Paper: — (a fixture non-edge: `stepE 0 0 = false`) -/
+theorem not_rel_nX2_nX2 : ¬ relE nX2 nX2 := fun h => absurd h.1 (by decide)
+
+/-- **The separating non-edge, `σ`-side**: the `σ`-member at `0` cannot step to state `1`, by the
+mirror of `not_rel_nX1_nZ1`. The two together are what make the two members' successor keys
+disjoint.
+
+Paper: — (a fixture non-edge forced by `linkPred`) -/
+theorem not_rel_nX2_nY1 : ¬ relE nX2 nY1 := fun h => absurd h.1 (by decide)
+
+/-- Paper: — (a fixture non-edge forced by `linkPred`) -/
+theorem not_rel_nX2_nY2 : ¬ relE nX2 nY2 := fun h => absurd h.1 (by decide)
+
+/-- The closure carries no `S` letter, so condition (4) is discharged without being weakened.
+
+Paper: — (a fixture closure fact) -/
+theorem no_snce_closure_E : ∀ ψ ∈ plusSubformulaClosure phiE, isSnce ψ = false := by decide
+
+/-- The closure carries no `□` letter; the remark on `no_snce_closure_E` applies.
+
+Paper: — (a fixture closure fact) -/
+theorem no_box_closure_E : ∀ ψ ∈ plusSubformulaClosure phiE, isBox ψ = false := by decide
+
+/-- **THE NON-VACUITY GUARD**: the closure bears exactly the two `⊡` letters, so what follows is
+not a verdict on a `⊡`-free closure.
+
+Paper: — (a fixture closure fact) -/
+theorem stab_closure_E :
+    ∀ ψ ∈ plusSubformulaClosure phiE, isStab ψ = true →
+      ψ = (.stab rhoE : PlusFormula) ∨ ψ = (.stab sigmaE : PlusFormula) := by decide
+
+/-- Paper: — (a fixture closure fact) -/
+theorem stabRho_mem_closure : (.stab rhoE : PlusFormula) ∈ plusSubformulaClosure phiE := by decide
+
+/-- Paper: — (a fixture closure fact) -/
+theorem stabSigma_mem_closure :
+    (.stab sigmaE : PlusFormula) ∈ plusSubformulaClosure phiE := by decide
+
+/-- Paper: — (a fixture closure fact) -/
+theorem isStab_stabRho : isStab (.stab rhoE : PlusFormula) = true := by decide
+
+/-- Paper: — (a fixture closure fact) -/
+theorem isStab_stabSigma : isStab (.stab sigmaE : PlusFormula) = true := by decide
+
+/-- Paper: — (the argument of the first `⊡` letter) -/
+theorem argOf_stabRho : argOf (.stab rhoE : PlusFormula) = rhoE := rfl
+
+/-- Paper: — (the argument of the second `⊡` letter) -/
+theorem argOf_stabSigma : argOf (.stab sigmaE : PlusFormula) = sigmaE := rfl
+
+/-- Paper: — (the arguments of the first `untl` letter) -/
+theorem argsOf_rhoE : argsOf rhoE = (g1F, e1F) := rfl
+
+/-- Paper: — (the arguments of the second `untl` letter) -/
+theorem argsOf_sigmaE : argsOf sigmaE = (g2F, e2F) := rfl
+
+/-- Paper: — (a fixture type computation) -/
+theorem untl_TX1 : ∀ ψ ∈ TX1.val, isUntl ψ = true → ψ = rhoE := by decide
+
+/-- Paper: — (a fixture type computation) -/
+theorem untl_TX2 : ∀ ψ ∈ TX2.val, isUntl ψ = true → ψ = sigmaE := by decide
+
+/-- Paper: — (a fixture type computation) -/
+theorem untl_TY1 : ∀ ψ ∈ TY1.val, isUntl ψ = true → ψ = rhoE := by decide
+
+/-- Paper: — (a fixture type computation) -/
+theorem untl_TY2 : ∀ ψ ∈ TY2.val, isUntl ψ = true → ψ = sigmaE := by decide
+
+/-- Paper: — (a fixture type computation) -/
+theorem untl_TZ1 : ∀ ψ ∈ TZ1.val, isUntl ψ = true → ψ = rhoE := by decide
+
+/-- Paper: — (a fixture type computation) -/
+theorem untl_TZ2 : ∀ ψ ∈ TZ2.val, isUntl ψ = true → ψ = sigmaE := by decide
+
+/-- Condition (1) at the fixture: the atom rows match the labelling and the one implication is
+pinned by it.
+
+Paper: — (condition (1) of this repository's `K`-indexed certificate, at a fixture) -/
+theorem elim_certLocK : certLocK labE phiE 0 0 0 0 elimR := by
+  intro x hx
+  rw [mem_elimR] at hx
+  rcases hx with rfl | rfl | rfl | rfl | rfl | rfl <;> decide
+
+/-- Condition (2) at the fixture: every member has a successor and a predecessor inside the set.
+
+Paper: — (condition (2) of this repository's `K`-indexed certificate, at a fixture) -/
+theorem elim_certBiInfK : certBiInfK stepE pendE labE phiE 0 0 0 0 elimR := by
+  intro x hx
+  rw [mem_elimR] at hx
+  rcases hx with rfl | rfl | rfl | rfl | rfl | rfl
+  · exact ⟨⟨nY1, mem_nY1, rel_nX1_nY1⟩, ⟨nY1, mem_nY1, rel_nY1_nX1⟩⟩
+  · exact ⟨⟨nZ2, mem_nZ2, rel_nX2_nZ2⟩, ⟨nZ2, mem_nZ2, rel_nZ2_nX2⟩⟩
+  · exact ⟨⟨nX1, mem_nX1, rel_nY1_nX1⟩, ⟨nX1, mem_nX1, rel_nX1_nY1⟩⟩
+  · exact ⟨⟨nX2, mem_nX2, rel_nY2_nX2⟩, ⟨nX1, mem_nX1, rel_nX1_nY2⟩⟩
+  · exact ⟨⟨nX1, mem_nX1, rel_nZ1_nX1⟩, ⟨nX2, mem_nX2, rel_nX2_nZ1⟩⟩
+  · exact ⟨⟨nX2, mem_nX2, rel_nZ2_nX2⟩, ⟨nX2, mem_nX2, rel_nX2_nZ2⟩⟩
+
+/-- Condition (3) at the fixture: each `untl` letter is discharged in one step from state `0`,
+where its event holds at the successor, and in two from the event states, through `0` where its
+guard holds.
+
+Paper: — (condition (3) of this repository's `K`-indexed certificate, at a fixture) -/
+theorem elim_certFwdK : certFwdK stepE pendE labE phiE 0 0 0 0 elimR := by
+  intro x hx ψ hψ hu
+  rw [mem_elimR] at hx
+  rcases hx with rfl | rfl | rfl | rfl | rfl | rfl
+  · have hp : ψ = rhoE := untl_TX1 ψ hψ hu
+    subst hp
+    rw [argsOf_rhoE]
+    refine ⟨1, fun i => if i = 0 then nX1 else nY1, Nat.one_pos, by simp, ?_, ?_, by decide, ?_⟩
+    · intro i hi; interval_cases i; simpa using mem_nX1
+    · intro i hi; interval_cases i
+      exact ⟨by simpa using rel_nX1_nY1, by simpa using mem_nY1⟩
+    · intro i h1 h2; omega
+  · have hp : ψ = sigmaE := untl_TX2 ψ hψ hu
+    subst hp
+    rw [argsOf_sigmaE]
+    refine ⟨1, fun i => if i = 0 then nX2 else nZ2, Nat.one_pos, by simp, ?_, ?_, by decide, ?_⟩
+    · intro i hi; interval_cases i; simpa using mem_nX2
+    · intro i hi; interval_cases i
+      exact ⟨by simpa using rel_nX2_nZ2, by simpa using mem_nZ2⟩
+    · intro i h1 h2; omega
+  · have hp : ψ = rhoE := untl_TY1 ψ hψ hu
+    subst hp
+    rw [argsOf_rhoE]
+    refine ⟨2, fun i => if i % 2 = 0 then nY1 else nX1, by omega, by simp, ?_, ?_, by decide, ?_⟩
+    · intro i hi; interval_cases i
+      · simpa using mem_nY1
+      · simpa using mem_nX1
+    · intro i hi; interval_cases i
+      · exact ⟨by simpa using rel_nY1_nX1, by simpa using mem_nX1⟩
+      · exact ⟨by simpa using rel_nX1_nY1, by simpa using mem_nY1⟩
+    · intro i h1 h2
+      interval_cases i
+      · decide
+  · have hp : ψ = sigmaE := untl_TY2 ψ hψ hu
+    subst hp
+    rw [argsOf_sigmaE]
+    refine ⟨2, fun i => if i = 0 then nY2 else if i = 1 then nX2 else nZ2, by omega, by simp, ?_,
+      ?_, by decide, ?_⟩
+    · intro i hi; interval_cases i
+      · simpa using mem_nY2
+      · simpa using mem_nX2
+    · intro i hi; interval_cases i
+      · exact ⟨by simpa using rel_nY2_nX2, by simpa using mem_nX2⟩
+      · exact ⟨by simpa using rel_nX2_nZ2, by simpa using mem_nZ2⟩
+    · intro i h1 h2
+      interval_cases i
+      · decide
+  · have hp : ψ = rhoE := untl_TZ1 ψ hψ hu
+    subst hp
+    rw [argsOf_rhoE]
+    refine ⟨2, fun i => if i = 0 then nZ1 else if i = 1 then nX1 else nY1, by omega, by simp, ?_,
+      ?_, by decide, ?_⟩
+    · intro i hi; interval_cases i
+      · simpa using mem_nZ1
+      · simpa using mem_nX1
+    · intro i hi; interval_cases i
+      · exact ⟨by simpa using rel_nZ1_nX1, by simpa using mem_nX1⟩
+      · exact ⟨by simpa using rel_nX1_nY1, by simpa using mem_nY1⟩
+    · intro i h1 h2
+      interval_cases i
+      · decide
+  · have hp : ψ = sigmaE := untl_TZ2 ψ hψ hu
+    subst hp
+    rw [argsOf_sigmaE]
+    refine ⟨2, fun i => if i % 2 = 0 then nZ2 else nX2, by omega, by simp, ?_, ?_, by decide, ?_⟩
+    · intro i hi; interval_cases i
+      · simpa using mem_nZ2
+      · simpa using mem_nX2
+    · intro i hi; interval_cases i
+      · exact ⟨by simpa using rel_nZ2_nX2, by simpa using mem_nX2⟩
+      · exact ⟨by simpa using rel_nX2_nZ2, by simpa using mem_nZ2⟩
+    · intro i h1 h2
+      interval_cases i
+      · decide
+
+/-- Condition (4) at the fixture: the closure carries no `S` letter, so no member's type can.
+
+Paper: — (condition (4) of this repository's `K`-indexed certificate, at a fixture) -/
+theorem elim_certBwdK : certBwdK stepE pendE labE phiE 0 0 0 0 elimR := by
+  intro x hx ψ hψ hs
+  have hsub : ψ ∈ plusSubformulaClosure phiE :=
+    Finset.mem_powerset.mp x.2.1.property hψ
+  exact absurd hs (by rw [no_snce_closure_E ψ hsub]; simp)
+
+/-- Condition (5) at the fixture — the `⊡` acceptance clause, present and discharged, at a closure
+that DOES bear `⊡` letters. Neither letter is in any member's type, and the clause's right side is
+false at every member because the other member over the same key lacks the letter's argument.
+**That is exactly what makes every member non-collapsed**, and it is the whole mechanism of this
+section.
+
+Paper: — (condition (5) of this repository's `K`-indexed certificate, at a fixture) -/
+theorem elim_certStabK : certStabK phiE 0 0 0 0 elimR := by
+  intro x hx ψ hψ hs
+  rw [mem_elimR] at hx
+  rcases stab_closure_E ψ hψ hs with rfl | rfl <;>
+    rcases hx with rfl | rfl | rfl | rfl | rfl | rfl
+  · exact ⟨fun hmem => absurd hmem (by decide),
+      fun hall => absurd (hall nX2 mem_nX2 rfl rfl) (by decide)⟩
+  · exact ⟨fun hmem => absurd hmem (by decide),
+      fun hall => absurd (hall nX2 mem_nX2 rfl rfl) (by decide)⟩
+  · exact ⟨fun hmem => absurd hmem (by decide),
+      fun hall => absurd (hall nY2 mem_nY2 rfl rfl) (by decide)⟩
+  · exact ⟨fun hmem => absurd hmem (by decide),
+      fun hall => absurd (hall nY2 mem_nY2 rfl rfl) (by decide)⟩
+  · exact ⟨fun hmem => absurd hmem (by decide),
+      fun hall => absurd (hall nZ2 mem_nZ2 rfl rfl) (by decide)⟩
+  · exact ⟨fun hmem => absurd hmem (by decide),
+      fun hall => absurd (hall nZ2 mem_nZ2 rfl rfl) (by decide)⟩
+  · exact ⟨fun hmem => absurd hmem (by decide),
+      fun hall => absurd (hall nX1 mem_nX1 rfl rfl) (by decide)⟩
+  · exact ⟨fun hmem => absurd hmem (by decide),
+      fun hall => absurd (hall nX1 mem_nX1 rfl rfl) (by decide)⟩
+  · exact ⟨fun hmem => absurd hmem (by decide),
+      fun hall => absurd (hall nY1 mem_nY1 rfl rfl) (by decide)⟩
+  · exact ⟨fun hmem => absurd hmem (by decide),
+      fun hall => absurd (hall nY1 mem_nY1 rfl rfl) (by decide)⟩
+  · exact ⟨fun hmem => absurd hmem (by decide),
+      fun hall => absurd (hall nZ1 mem_nZ1 rfl rfl) (by decide)⟩
+  · exact ⟨fun hmem => absurd hmem (by decide),
+      fun hall => absurd (hall nZ1 mem_nZ1 rfl rfl) (by decide)⟩
+
+/-- Condition (6) at the fixture — the `□` acceptance clause, present and discharged.
+
+Paper: — (condition (6) of this repository's `K`-indexed certificate, at a fixture) -/
+theorem elim_certBoxK : certBoxK phiE 0 0 0 0 elimR := by
+  intro x hx ψ hψ hb
+  exact absurd hb (by rw [no_box_closure_E ψ hψ]; simp)
+
+/-- **THE FIXTURE IS CERTIFIED**: all six conditions, both acceptance clauses included, at a
+closure bearing two `⊡` letters.
+
+Paper: — (this repository's `K`-indexed certificate, witnessed at a fixture) -/
+theorem elim_certAdmK : certAdmK stepE pendE labE phiE 0 0 0 0 elimR :=
+  ⟨elim_certLocK, elim_certBiInfK, elim_certFwdK, elim_certBwdK, elim_certStabK, elim_certBoxK⟩
+
+/-- Paper: — (nonemptiness of the fixture) -/
+theorem elimR_nonempty : elimR.Nonempty := ⟨nX1, mem_nX1⟩
+
+/-! ### What every certified subset of the fixture must look like -/
+
+/-- The object component of any edge is a step of the object's graph.
+
+Paper: — (an unfolding of this repository's `relK`) -/
+theorem step_of_relE {a b : ItemE} (h : relE a b) : stepE a.1 b.1 = true := by
+  have h1 := h.1
+  unfold cohIdle at h1
+  simp only [Bool.and_eq_true] at h1
+  exact h1.1.1.1.1
+
+/-- Every step out of a non-`0` state lands at `0`.
+
+Paper: — (a fixture object computation) -/
+theorem step_to_zero : ∀ (a b : Qe), stepE a b = true → a ≠ 0 → b = 0 := by decide
+
+/-- The fibre over the state-`0` key is exactly the two members `nX1` and `nX2`.
+
+Paper: — (a fixture fibre computation) -/
+theorem obj_zero_mem {u : ItemE} (hu : u ∈ elimR) (h : u.1 = 0) : u = nX1 ∨ u = nX2 := by
+  rw [mem_elimR] at hu
+  rcases hu with rfl | rfl | rfl | rfl | rfl | rfl
+  · exact Or.inl rfl
+  · exact Or.inr rfl
+  · exact absurd h (by decide)
+  · exact absurd h (by decide)
+  · exact absurd h (by decide)
+  · exact absurd h (by decide)
+
+/-- **EVERY MEMBER IS NON-COLLAPSED**: each carries a `⊡` letter's argument without the letter.
+This is the hypothesis `not_keyFibreInj_of_noncollapsed` consumes, and it holds at every member
+rather than at a distinguished one.
+
+Paper: — (the fixture's defining property) -/
+theorem noncollapsed_mem :
+    ∀ x ∈ elimR, ∃ ψ ∈ plusSubformulaClosure phiE, isStab ψ = true ∧
+      argOf ψ ∈ x.2.1.val ∧ ψ ∉ x.2.1.val := by
+  intro x hx
+  rw [mem_elimR] at hx
+  rcases hx with rfl | rfl | rfl | rfl | rfl | rfl
+  · exact ⟨.stab rhoE, stabRho_mem_closure, isStab_stabRho, by decide, by decide⟩
+  · exact ⟨.stab sigmaE, stabSigma_mem_closure, isStab_stabSigma, by decide, by decide⟩
+  · exact ⟨.stab rhoE, stabRho_mem_closure, isStab_stabRho, by decide, by decide⟩
+  · exact ⟨.stab sigmaE, stabSigma_mem_closure, isStab_stabSigma, by decide, by decide⟩
+  · exact ⟨.stab rhoE, stabRho_mem_closure, isStab_stabRho, by decide, by decide⟩
+  · exact ⟨.stab sigmaE, stabSigma_mem_closure, isStab_stabSigma, by decide, by decide⟩
+
+/-- **NO CERTIFIED NONEMPTY SUBSET IS KEY-INJECTIVE.** One line of consequence from the general
+obstruction and the fixture's defining property: any member of the subset witnesses the collapse's
+failure.
+
+Paper: — (the key-injectivity half of this section's refutation) -/
+theorem no_keyFibreInj_subset {R' : Set ItemE} (hsub : R' ⊆ elimR) (hne : R'.Nonempty)
+    (hcert : certAdmK stepE pendE labE phiE 0 0 0 0 R') : ¬ KeyFibreInj R' := by
+  obtain ⟨w, hw⟩ := hne
+  obtain ⟨ψ, hψ, hs, harg, hnot⟩ := noncollapsed_mem w (hsub hw)
+  exact not_keyFibreInj_of_noncollapsed hcert.2.2.2.2.1 hw hψ hs harg hnot
+
+/-- Every certified nonempty subset contains a member over the state-`0` key: condition (2) gives
+any member of it a successor inside, and every step out of states `1` and `2` lands at `0`.
+
+Paper: — (a consequence of condition (2) at a fixture) -/
+theorem state_zero_mem_subset {R' : Set ItemE} (hsub : R' ⊆ elimR) (hne : R'.Nonempty)
+    (h2 : certBiInfK stepE pendE labE phiE 0 0 0 0 R') : nX1 ∈ R' ∨ nX2 ∈ R' := by
+  obtain ⟨w, hw⟩ := hne
+  have hwe := hsub hw
+  by_cases hz : w.1 = 0
+  · rcases obj_zero_mem hwe hz with rfl | rfl
+    · exact Or.inl hw
+    · exact Or.inr hw
+  · obtain ⟨⟨u, hu, hwu⟩, -⟩ := h2 w hw
+    have hu0 : u.1 = 0 := step_to_zero w.1 u.1 (step_of_relE hwu) hz
+    rcases obj_zero_mem (hsub hu) hu0 with rfl | rfl
+    · exact Or.inl hu
+    · exact Or.inr hu
+
+/-- **THE TWO-MEMBER FIBRE CANNOT BE CUT.** Every certified nonempty subset contains BOTH members
+over the state-`0` key. Dropping either one leaves the other alone over that key, and then
+condition (5)'s right side at it becomes true while its `⊡` letter is absent — which is
+`certStabK_not_monotone`'s mechanism, here as a constraint on every candidate subset rather than
+as one counterexample.
+
+Paper: — (the fibre-arity half of this section's refutation) -/
+theorem both_mem_subset {R' : Set ItemE} (hsub : R' ⊆ elimR) (hne : R'.Nonempty)
+    (hcert : certAdmK stepE pendE labE phiE 0 0 0 0 R') : nX1 ∈ R' ∧ nX2 ∈ R' := by
+  rcases state_zero_mem_subset hsub hne hcert.2.1 with h1 | h2
+  · refine ⟨h1, ?_⟩
+    by_contra hx2
+    have hiff := hcert.2.2.2.2.1 nX1 h1 (.stab rhoE) stabRho_mem_closure isStab_stabRho
+    rw [argOf_stabRho] at hiff
+    refine absurd (hiff.2 ?_) (by decide)
+    intro y hy hy1 _
+    rcases obj_zero_mem (hsub hy) hy1 with rfl | rfl
+    · exact (by decide : rhoE ∈ TX1.val)
+    · exact absurd hy hx2
+  · refine ⟨?_, h2⟩
+    by_contra hx1
+    have hiff := hcert.2.2.2.2.1 nX2 h2 (.stab sigmaE) stabSigma_mem_closure isStab_stabSigma
+    rw [argOf_stabSigma] at hiff
+    refine absurd (hiff.2 ?_) (by decide)
+    intro y hy hy1 _
+    rcases obj_zero_mem (hsub hy) hy1 with rfl | rfl
+    · exact absurd hy hx1
+    · exact (by decide : sigmaE ∈ TX2.val)
+
+/-- The `ρ`-member at `0` steps only into state `1`.
+
+Paper: — (a fixture successor analysis) -/
+theorem succ_state_of_nX1 {y : ItemE} (hy : y ∈ elimR) (h : relE nX1 y) : y.1 = 1 := by
+  rw [mem_elimR] at hy
+  rcases hy with rfl | rfl | rfl | rfl | rfl | rfl
+  · exact absurd h not_rel_nX1_nX1
+  · exact absurd h not_rel_nX1_nX2
+  · rfl
+  · rfl
+  · exact absurd h not_rel_nX1_nZ1
+  · exact absurd h not_rel_nX1_nZ2
+
+/-- The `σ`-member at `0` steps only into state `2`.
+
+Paper: — (a fixture successor analysis) -/
+theorem succ_state_of_nX2 {y : ItemE} (hy : y ∈ elimR) (h : relE nX2 y) : y.1 = 2 := by
+  rw [mem_elimR] at hy
+  rcases hy with rfl | rfl | rfl | rfl | rfl | rfl
+  · exact absurd h not_rel_nX2_nX1
+  · exact absurd h not_rel_nX2_nX2
+  · exact absurd h not_rel_nX2_nY1
+  · exact absurd h not_rel_nX2_nY2
+  · rfl
+  · rfl
+
+/-- **THE UNIFORM RELATION IS NOT SERIAL ON ANY CERTIFIED NONEMPTY SUBSET.** The subset must keep
+both members over the state-`0` key, and their successors lie over the two disjoint keys of states
+`1` and `2`, so no key serves both.
+
+Paper: — (the seriality half of this section's refutation) -/
+theorem not_serial_subset {R' : Set ItemE} (hsub : R' ⊆ elimR) (hne : R'.Nonempty)
+    (hcert : certAdmK stepE pendE labE phiE 0 0 0 0 R') :
+    ¬ ∀ (t : ℤ) (s : ConKey phiE 0 0 0 0 R'),
+        ∃ s', conStepStrong stepE pendE labE phiE 0 0 0 0 R' t s s' := by
+  intro hser
+  obtain ⟨h1, h2⟩ := both_mem_subset hsub hne hcert
+  obtain ⟨s', hs'⟩ := hser 0 ⟨((0 : Qe), kE), TX1, h1⟩
+  obtain ⟨u, hu, hku, hru⟩ := hs'.1 nX1 h1 rfl
+  obtain ⟨v, hv, hkv, hrv⟩ := hs'.1 nX2 h2 rfl
+  have hu1 : u.1 = 1 := succ_state_of_nX1 (hsub hu) hru
+  have hv2 : v.1 = 2 := succ_state_of_nX2 (hsub hv) hrv
+  have huv : u.1 = v.1 := by
+    have h := hku.trans hkv.symm
+    exact (Prod.mk.injEq _ _ _ _ ▸ h : _).1
+  rw [hu1, hv2] at huv
+  exact absurd huv (by decide)
+
+end NoElim
+
+/-- **THE REDUCED TARGET IS REFUTED.** No certified nonempty set need have a KEY-INJECTIVE
+certified nonempty subset: at `NoElim.elimR` every member carries a `⊡` letter's argument without
+the letter, so every certified nonempty subset fails key-injectivity by
+`not_keyFibreInj_of_noncollapsed`. This closes, in the negative, the one step
+`exists_certified_serial_subset_of_keyFibreInj_subset` reduced the elimination lemma to.
+
+Paper: — (a no-go about key-injective certified subsets in this repository's certificate; no
+literature counterpart, the published eliminations restricting a set until a uniform relation is
+serial on what survives rather than until one member per key remains) -/
+theorem exists_certified_keyFibreInj_subset_refuted :
+    ¬ (∀ (Q : Type) (_ : Fintype Q) (step : Q → Q → Bool) (pend : Q → Bool)
+        (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+        (R : Set (Q × ClType φ × CK Tc Tn P B)),
+        certAdmK step pend lab φ Tc Tn P B R → R.Nonempty →
+        ∃ R₀ : Set (Q × ClType φ × CK Tc Tn P B),
+          R₀ ⊆ R ∧ R₀.Nonempty ∧ certAdmK step pend lab φ Tc Tn P B R₀ ∧ KeyFibreInj R₀) := by
+  intro h
+  obtain ⟨R₀, hsub, hne, hcert, hinj⟩ :=
+    h NoElim.Qe inferInstance NoElim.stepE NoElim.pendE NoElim.labE NoElim.phiE 0 0 0 0
+      NoElim.elimR NoElim.elim_certAdmK NoElim.elimR_nonempty
+  exact NoElim.no_keyFibreInj_subset hsub hne hcert hinj
+
+/-- **THE ELIMINATION LEMMA IS REFUTED.** The statement is the first three conjuncts of the
+`(Q-2)` pin together with the seriality the construction needs — a certified nonempty subset on
+which `conStepStrong` is serial — and it is FALSE: at `NoElim.elimR` every certified nonempty
+subset must keep both members over the state-`0` key (`NoElim.both_mem_subset`), and those two
+members' successors lie over disjoint keys (`NoElim.succ_state_of_nX1`,
+`NoElim.succ_state_of_nX2`), so no key serves both.
+
+The obstruction is the same two-member fibre `conStepStrong_serial_refuted` found at
+`ConAttack.attR`; what is new is that the elimination which was supposed to remove it provably
+cannot. No parameter condition is involved — all four parameters are `0`, where the counter
+quotient is a subsingleton — and nothing here is stated at `Dmax` or asserts maximality.
+
+**SCOPE, STATED RATHER THAN LEFT TO BE INFERRED.** This refutes the elimination lemma and the
+key-injectivity route to it. It does NOT refute `ladderConstruct` at its `(Q-2)` signature, which
+mentions neither key-injectivity nor `conStepStrong`: that statement stays OPEN, and what dies
+here is this route to it.
+
+Paper: — (a no-go about the elimination step of this repository's construction direction; the
+published converse directions eliminate until their uniform relation is serial, which is exactly
+what fails here) -/
+theorem exists_certified_serial_subset_refuted :
+    ¬ (∀ (Q : Type) (_ : Fintype Q) (step : Q → Q → Bool) (pend : Q → Bool)
+        (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ)
+        (R : Set (Q × ClType φ × CK Tc Tn P B)),
+        certAdmK step pend lab φ Tc Tn P B R → R.Nonempty →
+        ∃ R' : Set (Q × ClType φ × CK Tc Tn P B),
+          R' ⊆ R ∧ R'.Nonempty ∧ certAdmK step pend lab φ Tc Tn P B R' ∧
+            ∀ (t : ℤ) (s : ConKey φ Tc Tn P B R'),
+              ∃ s', conStepStrong step pend lab φ Tc Tn P B R' t s s') := by
+  intro h
+  obtain ⟨R', hsub, hne, hcert, hser⟩ :=
+    h NoElim.Qe inferInstance NoElim.stepE NoElim.pendE NoElim.labE NoElim.phiE 0 0 0 0
+      NoElim.elimR NoElim.elim_certAdmK NoElim.elimR_nonempty
+  exact NoElim.not_serial_subset hsub hne hcert hser
+
+end ConstructionEliminationRefuted
 
 end FormalSystem.Metalogic.Decidability.RaySummary
