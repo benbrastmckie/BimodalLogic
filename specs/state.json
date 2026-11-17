@@ -209,9 +209,9 @@
           "type": "plan"
         },
         {
-          "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-reduced-to-key-injectivity-summary.md",
+          "path": "specs/761_ladder_realization_theorem/summaries/35_elimination-lemma-refuted-summary.md",
           "type": "summary",
-          "summary": "Phase 24: the elimination reduced to key-injectivity, and condition (5)'s non-monotonicity compiled at a stab-bearing closure."
+          "summary": "Phase 24's elimination lemma and the key-injectivity it reduces to, both refuted at a certified fixture."
         }
       ],
       "next_artifact_number": 36,
