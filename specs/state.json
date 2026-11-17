@@ -169,9 +169,9 @@
           "type": "plan"
         },
         {
-          "path": "specs/761_ladder_realization_theorem/summaries/34_evidence-probe-wiring-summary.md",
+          "path": "specs/761_ladder_realization_theorem/summaries/34_real-not-certified-blocked-summary.md",
           "type": "summary",
-          "summary": "Phase 19 implementation summary: the four wired units, the entry-gate repair, the one plan deviation and the full verification run."
+          "summary": "Phase 12.2 blocked: Real is not certAdmK-certified at the (K4) clip; the compiled refutation is landed in the library."
         }
       ],
       "next_artifact_number": 35,
