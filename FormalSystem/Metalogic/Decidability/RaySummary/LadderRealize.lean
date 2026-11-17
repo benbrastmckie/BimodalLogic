@@ -193,7 +193,7 @@ open FormalSystem.Metalogic.Decidability
 
 -- The module's recorded length ceiling: the offset-invariance section takes the file past the
 -- default limit.
-set_option linter.style.longFile 3500
+set_option linter.style.longFile 3900
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -3487,5 +3487,339 @@ theorem exists_certified_serial_dissolving_subset_at_attR :
     m0p, memp_m0p, rfl, fun _y hy hk => over_pK0 hy hk⟩
 
 end ConstructionElimination
+
+/-! ## The elimination at a GENERAL certified set: the reduction, and the compiled obstruction
+
+Phase 23 decided the elimination AT ONE FIXTURE. This section asks the same question at an
+ARBITRARY certified nonempty `R`, which is what `ladderConstruct`'s re-pinned conclusion needs,
+and lands two things: a REDUCTION of the whole question to one property of the subset, and a
+COMPILED obstruction saying what that property costs. **The general lemma itself does NOT land
+here**, and the reason is stated rather than worked around.
+
+**THE REDUCTION.** Call a set KEY-INJECTIVE when every key carries at most one member
+(`KeyFibreInj`) — the fixpoint property of a fibre-dissolving removal rule, stated on the SET and
+on no relation. Then `conStepStrong`, the uniform key-level relation whose seriality
+`conStepStrong_serial_refuted` denies at the un-eliminated `attR`, is SERIAL on any key-injective
+certified set (`conStepStrong_serial_of_keyFibreInj`), from condition (2) alone and with no
+parameter condition consumed. So the elimination lemma reduces, with nothing left over, to
+producing a key-injective certified nonempty subset
+(`exists_certified_serial_subset_of_keyFibreInj_subset`). The reduction is not vacuous: Phase
+23's two compiled seriality results are its instances (`serial_attRp_via_general`,
+`serial_attRm_via_general`), re-derived here from the general statement rather than re-proved.
+
+**WHAT KEY-INJECTIVITY COSTS, EXACTLY.** On a key-injective set, condition (5) is EQUIVALENT to
+the collapse of the `⊡` letter onto its argument at every member — `⊡ψ ∈ x` iff `ψ ∈ x`
+(`certStabK_iff_collapse_of_keyFibreInj`). A certified `R` supplies only the LEFT-to-right half of
+that collapse at a member whose own fibre is larger, so a key-injective candidate owes the
+converse at every member it keeps, and `R`'s certification does not pay it.
+
+**AND THAT DEBT IS REAL, NOT A HAZARD.** Phase 23's record stated the non-inheritance of
+conditions (5) and (6) as a hazard rather than a prediction, discharging both at its fixture by
+`no_stab_closure`/`no_box_closure` — a fact about that closure. Here it is COMPILED, at a closure
+that DOES bear a `⊡` letter: `certStabK_not_monotone` exhibits `R' ⊆ R`, `R'` nonempty, with
+condition (5) holding on `R` and FAILING on `R'`. The witness is minimal and its mechanism is the
+clause's own shape — both sides of the iff are an iff between a membership and a universal
+quantifier over the set, so deleting a member makes the right side MORE often true and the `←`
+direction fails at a member that did not carry the letter. A verdict on a `⊡`-free closure would
+not have discharged this, which is why the witness carries its own non-vacuity conjunct.
+
+**WHAT THIS SECTION DOES NOT ESTABLISH, STATED PLAINLY.** The general elimination lemma is NOT
+landed and is NOT refuted. No declaration here produces a key-injective certified subset of an
+arbitrary `R`, and none asserts one exists; the quantified statement stays open with its remaining
+step named by the reduction above. Nothing here takes a certified subset as a binder of a
+conclusion (Ruling 38), asserts maximality or greatest-ness, adds a finite-fibre or finite-width
+assumption, or is stated at `Dmax` (`dmax_certStabK`/`dmax_certBoxK` still have no hits, re-grepped
+at this section's authoring). Guardrail (b) — infinite width — stays UNMET and is neither
+addressed nor reported as met (Ruling 39). `ladderConstruct`, `ladderRealized` and
+`cellAt_const_of_kappa_eq` are declared nowhere, here or elsewhere.
+-/
+
+section ConstructionEliminationGeneral
+
+/-- **KEY-INJECTIVITY**: every key of `R` carries at most one member. This is the fixpoint
+property a fibre-dissolving removal rule aims at, stated on the SET alone — no relation, no
+chosen member, no iteration. -/
+def KeyFibreInj {Q : Type} {φ : PlusFormula} {Tc Tn P B : ℕ}
+    (R : Set (Q × ClType φ × CK Tc Tn P B)) : Prop :=
+  ∀ x ∈ R, ∀ y ∈ R, (x.1, x.2.2) = (y.1, y.2.2) → x = y
+
+/-- **THE REDUCTION.** The uniform key-level relation IS serial on a key-injective certified set.
+Its seriality asks for one key serving EVERY member over a key at once, and key-injectivity makes
+"every member" a single member, so condition (2)'s per-member successor discharges it. No
+parameter condition is consumed — `ParamsOk` appears nowhere — and no finiteness instance is used.
+
+This is the exact complement of `conStepStrong_serial_refuted`, which denies the same seriality at
+`ConAttack.attR`, where one key carries TWO members whose successor keys are disjoint.
+
+Paper: — (a seriality criterion for this repository's uniform key-level relation; no literature
+counterpart, see the section docstring) -/
+theorem conStepStrong_serial_of_keyFibreInj {Q : Type} {step : Q → Q → Bool} {pend : Q → Bool}
+    {lab : Q → Atom → Bool} {φ : PlusFormula} {Tc Tn P B : ℕ}
+    {R : Set (Q × ClType φ × CK Tc Tn P B)}
+    (hR : certAdmK step pend lab φ Tc Tn P B R) (hinj : KeyFibreInj R) :
+    ∀ (t : ℤ) (s : ConKey φ Tc Tn P B R),
+      ∃ s', conStepStrong step pend lab φ Tc Tn P B R t s s' := by
+  rintro t ⟨⟨q, k⟩, S, hS⟩
+  obtain ⟨⟨y, hy, hxy⟩, -⟩ := hR.2.1 (q, S, k) hS
+  refine ⟨⟨(y.1, y.2.2), y.2.1, hy⟩, ?_, ?_⟩
+  · intro x' hx' hkey
+    have hx'eq : x' = (q, S, k) := hinj x' hx' (q, S, k) hS (by simpa using hkey)
+    exact ⟨y, hy, rfl, by rw [hx'eq]; exact hxy⟩
+  · intro y' hy' hkey
+    have hy'eq : y' = y := hinj y' hy' y hy (by simpa using hkey)
+    exact ⟨(q, S, k), hS, rfl, by rw [hy'eq]; exact hxy⟩
+
+/-- **WHAT KEY-INJECTIVITY COSTS AT CONDITION (5).** On a key-injective set the `⊡` acceptance
+clause is EXACTLY the collapse of the letter onto its argument at every member. The clause is
+carried in full, never dropped: this is an equivalence between it and the collapse, not a
+weakening of it.
+
+The consequence for the elimination is the one the section docstring names: a certified `R` gives
+the `⟹` half of the collapse at every member (take `y := x` in its own clause), and a
+key-injective candidate owes the `⟸` half at every member it keeps.
+
+Paper: — (a reading of this repository's condition (5) at a key-injective set) -/
+theorem certStabK_iff_collapse_of_keyFibreInj {Q : Type} {φ : PlusFormula} {Tc Tn P B : ℕ}
+    {R : Set (Q × ClType φ × CK Tc Tn P B)} (hinj : KeyFibreInj R) :
+    certStabK φ Tc Tn P B R ↔
+      ∀ x ∈ R, ∀ ψ ∈ plusSubformulaClosure φ, isStab ψ = true →
+        (ψ ∈ x.2.1.val ↔ argOf ψ ∈ x.2.1.val) := by
+  constructor
+  · intro h x hx ψ hψ hs
+    refine ⟨fun hmem => (h x hx ψ hψ hs).1 hmem x hx rfl rfl, fun harg => ?_⟩
+    refine (h x hx ψ hψ hs).2 ?_
+    intro y hy h1 h2
+    have hyx : y = x := hinj y hy x hx (by rw [h1, h2])
+    rw [hyx]; exact harg
+  · intro h x hx ψ hψ hs
+    refine ⟨fun hmem y hy h1 h2 => ?_, fun hall => (h x hx ψ hψ hs).2 (hall x hx rfl rfl)⟩
+    have hyx : y = x := hinj y hy x hx (by rw [h1, h2])
+    rw [hyx]
+    exact (h x hx ψ hψ hs).1 hmem
+
+/-- **THE ELIMINATION LEMMA, REDUCED.** Phase 24's target — a certified nonempty subset on which
+the uniform relation is serial — follows from a KEY-INJECTIVE certified nonempty subset, with
+nothing left over. The hypothesis quantifies its subset EXISTENTIALLY, so no binder of this
+statement is a certified subset (Ruling 38): what is reduced is the production of the subset, not
+its assumption.
+
+Paper: — (the reduction step of this repository's elimination; no literature counterpart) -/
+theorem exists_certified_serial_subset_of_keyFibreInj_subset {Q : Type} {step : Q → Q → Bool}
+    {pend : Q → Bool} {lab : Q → Atom → Bool} {φ : PlusFormula} {Tc Tn P B : ℕ}
+    {R : Set (Q × ClType φ × CK Tc Tn P B)}
+    (h : ∃ R₀ : Set (Q × ClType φ × CK Tc Tn P B),
+          R₀ ⊆ R ∧ R₀.Nonempty ∧ certAdmK step pend lab φ Tc Tn P B R₀ ∧ KeyFibreInj R₀) :
+    ∃ R' : Set (Q × ClType φ × CK Tc Tn P B),
+      R' ⊆ R ∧ R'.Nonempty ∧ certAdmK step pend lab φ Tc Tn P B R' ∧
+        ∀ (t : ℤ) (s : ConKey φ Tc Tn P B R'),
+          ∃ s', conStepStrong step pend lab φ Tc Tn P B R' t s s' := by
+  obtain ⟨R₀, hsub, hne, hcert, hinj⟩ := h
+  exact ⟨R₀, hsub, hne, hcert, conStepStrong_serial_of_keyFibreInj hcert hinj⟩
+
+/-! ### The reduction's instances: Phase 23's fixture seriality, re-derived -/
+
+namespace ConAttack
+
+/-- Candidate 1 is key-injective: its two members sit over the keys of object states `0` and `1`.
+
+Paper: — (a fixture fibre computation) -/
+theorem attRp_keyFibreInj : KeyFibreInj attRp := by
+  intro x hx y hy hkey
+  rw [mem_attRp] at hx hy
+  rcases hx with h | h <;> rcases hy with h' | h' <;> subst h <;> subst h' <;>
+    first
+      | rfl
+      | exact absurd hkey (by decide)
+
+/-- Candidate 2 is key-injective for the same reason, at object states `0` and `2`.
+
+Paper: — (a fixture fibre computation) -/
+theorem attRm_keyFibreInj : KeyFibreInj attRm := by
+  intro x hx y hy hkey
+  rw [mem_attRm] at hx hy
+  rcases hx with h | h <;> rcases hy with h' | h' <;> subst h <;> subst h' <;>
+    first
+      | rfl
+      | exact absurd hkey (by decide)
+
+/-- **SUBSUMPTION CHECK**: `conStepStrong_serial_attRp`, which Phase 23 proved by enumerating the
+candidate's two keys, is an INSTANCE of the general reduction. The general statement is therefore
+not vacuous at the one fixture where the question has been decided.
+
+Paper: — (a fixture instance of the general reduction) -/
+theorem serial_attRp_via_general (t : ℤ) (s : ConKey phiA 0 0 0 0 attRp) :
+    ∃ s', conStepStrong stepA pendA labA phiA 0 0 0 0 attRp t s s' :=
+  conStepStrong_serial_of_keyFibreInj attRp_certAdmK attRp_keyFibreInj t s
+
+/-- The same for candidate 2.
+
+Paper: — (a fixture instance of the general reduction) -/
+theorem serial_attRm_via_general (t : ℤ) (s : ConKey phiA 0 0 0 0 attRm) :
+    ∃ s', conStepStrong stepA pendA labA phiA 0 0 0 0 attRm t s s' :=
+  conStepStrong_serial_of_keyFibreInj attRm_certAdmK attRm_keyFibreInj t s
+
+end ConAttack
+
+/-! ### The obstruction, COMPILED at a `⊡`-BEARING closure
+
+Phase 23 discharged conditions (5) and (6) at its fixture by `no_stab_closure`/`no_box_closure`,
+a fact about that closure, and recorded their non-inheritance under shrinking as a HAZARD. This
+fixture carries a `⊡` letter and turns the hazard into a theorem. The object is one object state,
+all-zero parameters and the formula `⊡p`, which is the smallest shape in which the clause's `←`
+direction can fail.
+-/
+
+namespace StabShrink
+
+/-- One object state: the obstruction is about the CLOSURE coordinate, so the object is trivial. -/
+abbrev Qs : Type := Fin 1
+
+/-- The one atom. -/
+def pAtom : Atom := ⟨"p", none⟩
+
+/-- The atom, as a formula. -/
+def pF : PlusFormula := .atom pAtom
+
+/-- The fixture's formula: ONE `⊡` letter, which is what makes this a verdict about condition (5)
+and not about a `⊡`-free closure. -/
+def phiS : PlusFormula := .stab pF
+
+/-- A closure type from a membership list, the standard fixture idiom. -/
+def mkTS (L : List PlusFormula) : ClType phiS :=
+  ⟨(plusSubformulaClosure phiS).filter (fun ψ => ψ ∈ L),
+    Finset.mem_powerset.mpr (Finset.filter_subset _ _)⟩
+
+/-- The empty type: it carries neither `⊡p` nor `p`. It is the member whose deletion breaks the
+clause. -/
+def Sempty : ClType phiS := mkTS []
+
+/-- The type carrying `p` and NOT `⊡p`. -/
+def Sp : ClType phiS := mkTS [pF]
+
+/-- The one counter class: the parameters are all `0`, so `CK 0 0 0 0` is a subsingleton and the
+class coordinate separates nothing — every member here shares one key. -/
+def kS : CK 0 0 0 0 := kappa 0 0 0 0 (0, 0)
+
+/-- The carrier. -/
+abbrev ItemS : Type := Qs × ClType phiS × CK 0 0 0 0
+
+/-- The member with the empty type. -/
+def n0 : ItemS := ((0 : Qs), Sempty, kS)
+
+/-- The member carrying `p`. -/
+def n1 : ItemS := ((0 : Qs), Sp, kS)
+
+/-- The larger set, on which condition (5) HOLDS. -/
+def RS : Set ItemS := {n0, n1}
+
+/-- The subset, on which condition (5) FAILS. -/
+def RS' : Set ItemS := {n1}
+
+/-- Paper: — (a fixture membership, unfolded) -/
+theorem mem_RS {x : ItemS} : x ∈ RS ↔ (x = n0 ∨ x = n1) := by
+  simp [RS, Set.mem_insert_iff, Set.mem_singleton_iff]
+
+/-- Paper: — (a fixture membership, unfolded) -/
+theorem mem_RS' {x : ItemS} : x ∈ RS' ↔ x = n1 := by
+  simp [RS', Set.mem_singleton_iff]
+
+/-- The closure's only `⊡` letter is the formula itself.
+
+Paper: — (a fixture closure fact) -/
+theorem stab_only : ∀ ψ ∈ plusSubformulaClosure phiS, isStab ψ = true → ψ = phiS := by decide
+
+/-- Paper: — (a fixture closure fact) -/
+theorem argOf_phiS : argOf phiS = pF := rfl
+
+/-- Paper: — (a fixture closure fact) -/
+theorem phiS_mem_closure : phiS ∈ plusSubformulaClosure phiS := by decide
+
+/-- Paper: — (a fixture closure fact) -/
+theorem isStab_phiS : isStab phiS = true := by decide
+
+/-- **THE NON-VACUITY GUARD**: the closure DOES bear a `⊡` letter, so what follows is not a
+verdict on a `⊡`-free closure.
+
+Paper: — (a fixture closure fact) -/
+theorem exists_stab_in_closure : ∃ ψ ∈ plusSubformulaClosure phiS, isStab ψ = true :=
+  ⟨phiS, phiS_mem_closure, isStab_phiS⟩
+
+/-- Paper: — (a fixture type computation) -/
+theorem phiS_notin_Sempty : phiS ∉ Sempty.val := by decide
+
+/-- Paper: — (a fixture type computation) -/
+theorem phiS_notin_Sp : phiS ∉ Sp.val := by decide
+
+/-- Paper: — (a fixture type computation) -/
+theorem pF_notin_Sempty : pF ∉ Sempty.val := by decide
+
+/-- Paper: — (a fixture type computation) -/
+theorem pF_mem_Sp : pF ∈ Sp.val := by decide
+
+/-- Paper: — (the removal's output is a subset of its input) -/
+theorem RS'_subset_RS : RS' ⊆ RS := by
+  intro x hx; rw [mem_RS'] at hx; rw [mem_RS]; exact Or.inr hx
+
+/-- Paper: — (nonemptiness of the smaller set) -/
+theorem RS'_nonempty : RS'.Nonempty := ⟨n1, by rw [mem_RS']⟩
+
+/-- **CONDITION (5) HOLDS ON THE LARGER SET**: neither member carries `⊡p`, and the clause's right
+side is false at both because `n0` carries no `p`.
+
+Paper: — (condition (5) at a fixture) -/
+theorem RS_certStabK : certStabK phiS 0 0 0 0 RS := by
+  intro x hx ψ hψ hs
+  rw [stab_only ψ hψ hs, argOf_phiS]
+  rw [mem_RS] at hx
+  have hn0 : n0 ∈ RS := by rw [mem_RS]; exact Or.inl rfl
+  constructor
+  · intro hmem
+    rcases hx with h | h <;> subst h
+    · exact absurd hmem phiS_notin_Sempty
+    · exact absurd hmem phiS_notin_Sp
+  · intro hall
+    rcases hx with h | h <;> subst h
+    · exact absurd (hall n0 hn0 rfl rfl) pF_notin_Sempty
+    · exact absurd (hall n0 hn0 rfl rfl) pF_notin_Sempty
+
+/-- **AND FAILS ON THE SUBSET**: with `n0` deleted, the clause's right side at `n1` becomes
+`p ∈ n1`, which is TRUE, while `⊡p ∈ n1` is false. The `←` direction fails at a member that did
+not carry the letter — exactly the mechanism Phase 23's record stated as a hazard.
+
+Paper: — (the non-inheritance of condition (5) under shrinking) -/
+theorem RS'_not_certStabK : ¬ certStabK phiS 0 0 0 0 RS' := by
+  intro h
+  have hn1 : n1 ∈ RS' := by rw [mem_RS']
+  have hmp := (h n1 hn1 phiS phiS_mem_closure isStab_phiS).2
+  rw [argOf_phiS] at hmp
+  refine absurd (hmp ?_) phiS_notin_Sp
+  intro y hy _ _
+  rw [mem_RS'] at hy; subst hy
+  exact pF_mem_Sp
+
+end StabShrink
+
+/-- **CONDITION (5) IS NOT MONOTONE UNDER SHRINKING, AT A CLOSURE THAT BEARS A `⊡` LETTER.** The
+`⊡` acceptance clause can hold on a certified-set candidate `R` and FAIL on a nonempty subset of
+it. The non-vacuity conjunct is part of the statement: the closure carries a `⊡` letter, so this
+is not a verdict about a `⊡`-free closure, which is what Phase 23's own record said would not
+discharge the debt.
+
+This is the obstruction the general elimination lemma has to answer, and it is why no removal rule
+can be proved to preserve certification by inheritance alone. It says nothing about whether a
+certified key-injective subset exists at any particular `R`: the general lemma is open, not
+refuted.
+
+Paper: — (a non-monotonicity verdict on this repository's condition (5)) -/
+theorem certStabK_not_monotone :
+    ∃ (Q : Type) (φ : PlusFormula) (Tc Tn P B : ℕ)
+      (R R' : Set (Q × ClType φ × CK Tc Tn P B)),
+      R' ⊆ R ∧ R'.Nonempty ∧ (∃ ψ ∈ plusSubformulaClosure φ, isStab ψ = true) ∧
+        certStabK φ Tc Tn P B R ∧ ¬ certStabK φ Tc Tn P B R' :=
+  ⟨StabShrink.Qs, StabShrink.phiS, 0, 0, 0, 0, StabShrink.RS, StabShrink.RS',
+    StabShrink.RS'_subset_RS, StabShrink.RS'_nonempty, StabShrink.exists_stab_in_closure,
+    StabShrink.RS_certStabK, StabShrink.RS'_not_certStabK⟩
+
+end ConstructionEliminationGeneral
 
 end FormalSystem.Metalogic.Decidability.RaySummary
