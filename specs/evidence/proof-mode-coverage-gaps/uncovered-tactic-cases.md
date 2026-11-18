@@ -1,25 +1,43 @@
 # Proof-mode tactic coverage: the two remaining gaps
 
-Every tactic declared in `FormalSystem/Automation/ProofMode/` now has at least one case in
-`Tests/BimodalTest/Automation/ProofModeTest.lean`, landed with PR #6's review-feedback commit.
-Two *variants* remain unexercised:
+Every tactic declared in `FormalSystem/Automation/ProofMode/` has at least one case in
+`Tests/BimodalTest/Automation/ProofModeTest.lean`. Two *variants* remain unexercised, and both
+cases below compile green against the current test suite (`lake build
+BimodalTest.Automation.ProofModeTest`, 721/721).
 
-- `ltemporal_use` on plain TM. The existing case at `ProofModeTest.lean:136-140` is on the TM+
-  `PlusDerivationTree` path, not the `⊢` judgment.
-- `lhave` without `:=`, the form that leaves the intermediate assertion as its own obligation.
-  Only the `lhave h : A := d` form is covered.
+## `ltemporal_use` on a future goal in TM
 
-Both tactics resolve their constants by appending single-backtick name literals to a namespace
-inside `MetaM` rather than through checked `` ``Name `` literals, so a rename of `Formula.box` or
-of a `DerivationTree` constructor would leave the implementation compiling and break these paths
-only at invocation. Tests are the only backstop.
+The only `ltemporal_use` case in the suite (`ProofModeTest.lean:135-141`) is a TM⁺
+`PlusDerivationTree` on an `allPast` goal. Two independent branches of the elaborator are
+therefore never taken by any test:
+
+- **The scope match.** `Temporal.lean`'s `temporalUse` matches `allFuture` first and falls back to
+  `allPast`. Only the `allPast` arm is reached, so the `Scope.future` arm — and with it the
+  `gDistribution` selection, as against `hDistribution` — is untested in *either* language.
+- **The language dispatch.** `Language.ruleName language tm plus = if language == .tm then tm
+  else plus` (`Meta.lean:50-51`). Only the `plus` arm is reached.
+
+The two constants that arm selects are not interchangeable in shape:
+`Theorems.TemporalDerived.gDistribution {fc : FrameClass} (φ ψ : Formula)` against
+`PlusLanguage.ProofMode.gDistribution` (`Theorems/ProofMode/PlusRules.lean:215`). Both are applied
+through one `mkAppOptM name #[some judgment.frame, some _, some _]`, so the argument array is
+built dynamically and nothing in a library compile checks that it still fits the TM constant. A
+signature change that the static call site in
+`Metalogic/Conservativity/Plus/Corollaries.lean:151` still satisfies could leave this arm broken
+with the suite green.
+
+## `lhave` without `:=`
+
+Only the `lhave h : A := d` form is covered. `haveProof` (`Basic.lean:100-124`) shares all of its
+setup between the two forms and diverges in one line: the `none` arm leaves two goals,
+`[proofGoal, continuationGoal]`, where the `some` arm checks `isDefEq` and leaves one. The
+untested behaviour is the goal count and their order, which is user-facing — the bullet structure
+of any proof using the bare form depends on it. Thinner than the gap above, but it is the only
+test that would pin it.
 
 ## The cases
 
-Both were written and verified passing against PR #6's first commit merged onto main, before the
-review-feedback commit landed. They need a re-run against current `main` before use.
-
-They go inside `namespace BimodalTest.Automation.ProofModeTest`, which supplies
+Both go inside `namespace BimodalTest.Automation.ProofModeTest`, which supplies
 `open FormalSystem.Syntax FormalSystem.ProofSystem` and `variable (A B C : Formula)`.
 
 ```lean
