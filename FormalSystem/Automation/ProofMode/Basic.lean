@@ -197,9 +197,6 @@ syntax (name := lleft) "lleft" : tactic
 /-- Prove an object disjunction through its right alternative. -/
 syntax (name := lright) "lright" : tactic
 
-/-- Leave the current native judgment available to ordinary Lean tactics. -/
-syntax (name := lexit) "lexit" : tactic
-
 elab_rules : tactic
   | `(tactic| lstart $names:ident*) => start names
   | `(tactic| lintro $name:ident) => introduce name.getId
@@ -212,6 +209,4 @@ elab_rules : tactic
     casesProof proof left.getId right.getId
   | `(tactic| lleft) => introduceDisjunction true
   | `(tactic| lright) => introduceDisjunction false
-  | `(tactic| lexit) => pure ()
-
 end FormalSystem.Automation.ProofMode

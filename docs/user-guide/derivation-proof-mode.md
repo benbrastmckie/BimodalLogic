@@ -19,7 +19,6 @@ or completeness argument replaces a derivation. Ordinary Lean tactics remain ava
 | `lhave h : A [:= d]` | Prove an intermediate assertion and continue through checked cut |
 | `lsplit`, `lcases d as h₁ h₂` | Introduce conjunction; project conjunction or prove both disjunction branches |
 | `lleft`, `lright` | Select a disjunction alternative |
-| `lexit` | Optional marker; ordinary Lean tactics are available throughout |
 
 Composition reuses a statement's guarantees with its source assumptions, parameters and frame
 class. A disjunction join requires both branches to establish the same conclusion. Proof bodies
@@ -60,6 +59,10 @@ matching explicit assumptions; `using []` selects none. Introductions may name b
 with `as h₁ …`; cases require names for the event first, then selected assumptions.
 For abstract contexts, supply guarantees explicitly. The source contexts of outer Lean locals
 remain in their types: `lexact` and `lapply` reject unavailable assumptions inside a new scope.
+
+Prefer explicit `using [...]` in reusable proofs: it records exactly what a scope captures.
+Omitting it is convenient interactively, but adding a matching modal assumption to the outer
+context then changes the selected body assumptions.
 
 ```lean
 example (A B : Formula) : [A.allFuture, B.someFuture] ⊢ (A.and B).someFuture := by

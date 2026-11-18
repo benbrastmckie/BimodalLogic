@@ -53,16 +53,6 @@ def pastCollapse (φ : Formula) : ⊢[fc] φ.somePast.somePast.imp φ.somePast :
     Formula.reflect_time_involution] using
       DerivationTree.time_reflection _ (futureCollapse (fc := fc) φ.reflectTime)
 
-/-- Collapse a nested future eventuality in the current context. -/
-def futureCollapseAt {φ : Formula} (hφ : Γ ⊢[fc] φ.someFuture.someFuture) :
-    Γ ⊢[fc] φ.someFuture :=
-  ctxMp (thmIn (futureCollapse φ)) hφ
-
-/-- Collapse a nested past eventuality in the current context. -/
-def pastCollapseAt {φ : Formula} (hφ : Γ ⊢[fc] φ.somePast.somePast) :
-    Γ ⊢[fc] φ.somePast :=
-  ctxMp (thmIn (pastCollapse φ)) hφ
-
 /-- Persistent future information can be joined with an eventuality at its witness point. -/
 def futureConjunction (φ ψ : Formula) :
     ⊢[fc] φ.allFuture.imp (ψ.someFuture.imp (φ.and ψ).someFuture) := by
@@ -118,35 +108,6 @@ def pastBind {φ ψ : Formula}
     (hMap : Γ ⊢[fc] (φ.imp ψ.somePast).allPast) (hφ : Γ ⊢[fc] φ.somePast) :
     Γ ⊢[fc] ψ.somePast :=
   ctxMp (ctxMp (thmIn (pastBindRule φ ψ)) hMap) hφ
-
-/-- Eliminate a future eventuality into a future goal using only future-scoped assumptions. -/
-def futureCases {Δ : Context} {φ ψ : Formula}
-    (hφ : Context.map Formula.allFuture Δ ⊢[fc] φ.someFuture)
-    (hBody : φ :: Δ ⊢[fc] ψ) :
-    Context.map Formula.allFuture Δ ⊢[fc] ψ.someFuture :=
-  futureConsequence
-    (generalizedTemporalK Δ _ (deductionTheorem Δ φ ψ hBody)) hφ
-
-/-- Eliminate a past eventuality into a past goal using only past-scoped assumptions. -/
-def pastCases {Δ : Context} {φ ψ : Formula}
-    (hφ : Context.map Formula.allPast Δ ⊢[fc] φ.somePast)
-    (hBody : φ :: Δ ⊢[fc] ψ) :
-    Context.map Formula.allPast Δ ⊢[fc] ψ.somePast :=
-  pastConsequence (generalizedPastK Δ _ (deductionTheorem Δ φ ψ hBody)) hφ
-
-/-- Future eventuality elimination with an eventual conclusion and explicit scope mapping. -/
-def futureBindCases {Δ : Context} {φ ψ : Formula}
-    (hφ : Context.map Formula.allFuture Δ ⊢[fc] φ.someFuture)
-    (hBody : φ :: Δ ⊢[fc] ψ.someFuture) :
-    Context.map Formula.allFuture Δ ⊢[fc] ψ.someFuture :=
-  futureBind (generalizedTemporalK Δ _ (deductionTheorem Δ φ ψ.someFuture hBody)) hφ
-
-/-- Past eventuality elimination with an eventual conclusion and explicit scope mapping. -/
-def pastBindCases {Δ : Context} {φ ψ : Formula}
-    (hφ : Context.map Formula.allPast Δ ⊢[fc] φ.somePast)
-    (hBody : φ :: Δ ⊢[fc] ψ.somePast) :
-    Context.map Formula.allPast Δ ⊢[fc] ψ.somePast :=
-  pastBind (generalizedPastK Δ _ (deductionTheorem Δ φ ψ.somePast hBody)) hφ
 
 /-- Compose future progress guarantees, retaining the second guarantee through temporal 4. -/
 def progressTrans {φ ψ χ : Formula}
