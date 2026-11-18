@@ -1,5 +1,5 @@
 ---
-next_project_number: 938
+next_project_number: 939
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 938
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,933,935,937 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,933,935,937,938 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -86,6 +86,7 @@ next_project_number: 938
 ### Repo Hygiene
 
 937 [NOT STARTED] — Fix the two independently red CI workflows on main. Both were...
+938 [NOT STARTED] — Convert the repository's measured-but-unenforced health...
 
 ### Semantics
 
@@ -107,6 +108,45 @@ next_project_number: 938
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 938. Enforceable repo health baselines
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Convert the repository's measured-but-unenforced health signals into pinned baselines that block regressions. The aim is uniform standards a gate actually checks, not a one-time cleanup pass.
+
+## Why a baseline, not a burn-down
+
+Each signal below is already measured by an existing script and already printed, but at an advisory tier that never affects an exit code. The counts therefore drift upward silently while every gate reports PASS. The completion criterion for this task is **"no new findings"** -- a pinned baseline plus a gate that fails on an increase -- NOT "zero findings", which does not terminate and would turn this record into an open-ended sweep.
+
+## The three signals, as measured 2026-11-18
+
+**1. README verification dates.** `bash scripts/readme-lint.sh` reports 62 `STALE DATE` findings against 84 total READMEs, and still exits `PASS` because stale dates are advisory. Decide the policy -- refresh-on-touch, a pinned baseline, or dropping the `Last verified` convention in the directories where it demonstrably is not maintained -- and make whichever policy is chosen checkable. 62 of 84 is the finding that most directly contradicts a claim of uniform standards.
+
+**2. C20 citation tiers** (`bash scripts/check-module-invariants.sh`):
+
+- 10 recorded declaration-span mismatches on `scripts/c20-declaration-baseline.txt` still to repair
+- 145 of 1030 `file.lean:NNN` citations carry no declaration name (only tier 1 can check those)
+- 39 citations name something the target file does not declare, or declares ambiguously
+- 30 citations name a filename that is ambiguous or resolves to no live file
+
+A baseline file already exists for the first of these; extending that mechanism to the other three is the model to follow rather than inventing a new one.
+
+**3. C16 env_linter roots** (same script): 231 findings across 16 of 18 non-FormalSystem lakefile roots, reported as "not yet enforced". `FormalSystem` itself is already clean through the grandfathering in `scripts/nolints.json`, so the mechanism to copy is established in-repo.
+
+## Scope boundary
+
+This record owns making the signals enforceable. It does NOT own the two red CI workflows (separately filed) and does NOT own content rewrites of the mathematics. Where burning a finding down is cheaper than baselining it, do that -- but a gate that fails on an increase is the deliverable in every case, including for any finding burned to zero.
+
+## Verification
+
+- Each of the three signals has a committed, pinned baseline and a gate invocation that exits nonzero when its count rises above that baseline.
+- Falsification, recorded with commands and output: introducing one new finding of each kind makes the corresponding gate fail, and removing it makes the gate pass again. A gate that has never been seen to fail has not been shown to check anything.
+- `bash scripts/readme-lint.sh` and `bash scripts/check-module-invariants.sh` both still exit 0 on an otherwise unmodified tree.
+
+---
 
 ### 937. Fix red ci workflows on main
 - **Status**: [NOT STARTED]
