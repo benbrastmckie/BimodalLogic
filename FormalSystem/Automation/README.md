@@ -56,7 +56,9 @@ The rule is enforced by `scripts/check-module-invariants.sh` check C25N.
 | File | Lines | Description |
 |------|-------|-------------|
 | `Normalization.lean` | 929 | Bidirectional normalization for derived operators: the unfold direction reduces them to primitives, the fold direction restores them |
+| `ProofMode.lean` | 17 | Re-export for native TM/TM⁺ proof-mode tactics |
 | `SuccessPatterns.lean` | 419 | Successful proof patterns: heuristic patterns for guided proof search |
+| `ProofMode/` | — | Named assertions and checked modal/temporal scopes |
 | `ProofSearch/` | — | Proof search engine: bounded derivation search (Core.lean, Strategies.lean) |
 | `Tactics/` | — | Tactic elaborators: `modal_search`, `apply_axiom`, `modal_t`, `assumption_search`, `deduction`, `undischarge`, `propDecide` (Commands.lean, UserTactics.lean, Deduction.lean, Meta.lean, PropDecide.lean, Search.lean) |
 <!-- END GENERATED -->
