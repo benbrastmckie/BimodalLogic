@@ -85,8 +85,8 @@ next_project_number: 939
 
 ### Repo Hygiene
 
-937 [NOT STARTED] — Fix the two independently red CI workflows on main. Both were...
-938 [NOT STARTED] — Convert the repository's measured-but-unenforced health...
+937 [RESEARCHING] — Fix the two independently red CI workflows on main. Both were...
+938 [RESEARCHING] — Convert the repository's measured-but-unenforced health...
 
 ### Semantics
 
@@ -99,7 +99,7 @@ next_project_number: 939
 
 ### Build Performance
 
-829 [NOT STARTED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
+829 [RESEARCHING] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ### Syntax
 
@@ -110,7 +110,7 @@ next_project_number: 939
 ## Tasks
 
 ### 938. Enforceable repo health baselines
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -149,7 +149,7 @@ This record owns making the signals enforceable. It does NOT own the two red CI 
 ---
 
 ### 937. Fix red ci workflows on main
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -508,7 +508,7 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, Medium Priority Issues section
 ---
 
 ### 829. Ci lake build cache and job config
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: general
 - **Topic**: build-performance
 - **Dependencies**: None

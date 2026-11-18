@@ -9,12 +9,12 @@
     {
       "project_number": 938,
       "project_name": "enforceable_repo_health_baselines",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "general",
       "description": "Convert the repository's measured-but-unenforced health signals into pinned baselines that block regressions. The aim is uniform standards a gate actually checks, not a one-time cleanup pass.\n\n## Why a baseline, not a burn-down\n\nEach signal below is already measured by an existing script and already printed, but at an advisory tier that never affects an exit code. The counts therefore drift upward silently while every gate reports PASS. The completion criterion for this task is **\"no new findings\"** -- a pinned baseline plus a gate that fails on an increase -- NOT \"zero findings\", which does not terminate and would turn this record into an open-ended sweep.\n\n## The three signals, as measured 2026-11-18\n\n**1. README verification dates.** `bash scripts/readme-lint.sh` reports 62 `STALE DATE` findings against 84 total READMEs, and still exits `PASS` because stale dates are advisory. Decide the policy -- refresh-on-touch, a pinned baseline, or dropping the `Last verified` convention in the directories where it demonstrably is not maintained -- and make whichever policy is chosen checkable. 62 of 84 is the finding that most directly contradicts a claim of uniform standards.\n\n**2. C20 citation tiers** (`bash scripts/check-module-invariants.sh`):\n\n- 10 recorded declaration-span mismatches on `scripts/c20-declaration-baseline.txt` still to repair\n- 145 of 1030 `file.lean:NNN` citations carry no declaration name (only tier 1 can check those)\n- 39 citations name something the target file does not declare, or declares ambiguously\n- 30 citations name a filename that is ambiguous or resolves to no live file\n\nA baseline file already exists for the first of these; extending that mechanism to the other three is the model to follow rather than inventing a new one.\n\n**3. C16 env_linter roots** (same script): 231 findings across 16 of 18 non-FormalSystem lakefile roots, reported as \"not yet enforced\". `FormalSystem` itself is already clean through the grandfathering in `scripts/nolints.json`, so the mechanism to copy is established in-repo.\n\n## Scope boundary\n\nThis record owns making the signals enforceable. It does NOT own the two red CI workflows (separately filed) and does NOT own content rewrites of the mathematics. Where burning a finding down is cheaper than baselining it, do that -- but a gate that fails on an increase is the deliverable in every case, including for any finding burned to zero.\n\n## Verification\n\n- Each of the three signals has a committed, pinned baseline and a gate invocation that exits nonzero when its count rises above that baseline.\n- Falsification, recorded with commands and output: introducing one new finding of each kind makes the corresponding gate fail, and removing it makes the gate pass again. A gate that has never been seen to fail has not been shown to check anything.\n- `bash scripts/readme-lint.sh` and `bash scripts/check-module-invariants.sh` both still exit 0 on an otherwise unmodified tree.",
       "topic": "repo-hygiene",
       "created": "2026-11-18T23:14:17Z",
-      "last_updated": "2026-11-18T23:14:17Z",
+      "last_updated": "2026-11-18T23:27:36Z",
       "audit_verdict": {
         "proposal": {
           "id": "enforceable_repo_health_baselines",
@@ -31,17 +31,18 @@
           "semantic": true
         },
         "degradations_count": 451
-      }
+      },
+      "session_id": "sess_1795044397_89c580_938"
     },
     {
       "project_number": 937,
       "project_name": "fix_red_ci_workflows_on_main",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Fix the two independently red CI workflows on `main`. Both were red before the proof-mode contribution merged, and no existing active task owns either.\n\n## Finding 1: `CI / Build and Test` -- a name ambiguity in a tools test\n\n`lake build BimodalToolsTest.CertificateImportTest` fails locally and in CI with the same four lines:\n\n```\nerror: Tests/BimodalToolsTest/CertificateImportTest.lean:146:8: Ambiguous term\nerror: Tests/BimodalToolsTest/CertificateImportTest.lean:146:0: cannot evaluate code because 'sorryAx' uses 'sorry' and/or contains errors\nerror: Tests/BimodalToolsTest/CertificateImportTest.lean:152:8: Ambiguous term\nerror: Tests/BimodalToolsTest/CertificateImportTest.lean:152:0: cannot evaluate code because 'sorryAx' uses 'sorry' and/or contains errors\n```\n\n`closureList` is declared twice:\n\n- `BimodalTools/CertificateImport.lean:149`\n- `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Enumerate.lean:137`\n\nand `Tests/BimodalToolsTest/CertificateImportTest.lean` opens both namespaces (`open FormalSystem.Metalogic.Decidability` at line 37, `open BimodalTools.CertificateImport` at line 40). Both failing sites are `#guard` terms whose head is `closureList`; column 8 is that identifier. The `sorryAx` lines are a consequence of the ambiguity, not independent sorry debt.\n\nQualifying the two call sites is the obvious fix, but decide deliberately whether the two same-named declarations should instead be reconciled or one renamed. They take the same argument type (`Context`), and the test's own comment records that the certificate path moved to the verified codec -- so which of the two the test should be reaching may not be what the current `open` order happens to pick.\n\n## Finding 2: `API Documentation` -- doc-gen4 dependency source URIs\n\nIndependent root cause, same redness. The workflow reaches doc-gen4 and then fails:\n\n```\nSome required targets logged failures:\n- Qq:srcUri.github\n- aesop:srcUri.github\n- importGraph:srcUri.github\n- mathlib:srcUri.github\nerror: build failed\n```\n\nConfiguration, not library code. This workflow has been green before: the closed record `specs/578_fix_api_documentation_ci_integration/plans/01_docgen-ci-fix-path.md` carried it to green via a `docs.yml` rewrite plus a verified green run. Treat this as a regression of that work -- start from what that plan established and establish what changed since, rather than re-deriving a fix from scratch.\n\n## Scope boundary\n\nDo NOT take on the absence of a `.lake/build` CI cache; that is task 829's record and this task must not grow into it. Touch `.github/workflows/` only as far as the doc-gen4 fix requires.\n\n## Verification\n\n- `bash .claude/scripts/lake-build-guard.sh build --timeout 1500 -- build BimodalToolsTest.CertificateImportTest` exits 0.\n- A `--wfail` build over the roots the CI workflow builds exits 0.\n- Both workflows report success on a real run, not only locally. The push and any workflow re-run are user-invoked (`.claude/rules/pr-prohibition.md` bars agent pushes): this task ends at a local commit plus the local build evidence, and names the push as the user's remaining step.",
       "topic": "repo-hygiene",
       "created": "2026-11-18T23:13:24Z",
-      "last_updated": "2026-11-18T23:13:24Z",
+      "last_updated": "2026-11-18T23:26:59Z",
       "audit_verdict": {
         "proposal": {
           "id": "fix_red_ci_workflows_on_main",
@@ -58,7 +59,8 @@
           "semantic": true
         },
         "degradations_count": 450
-      }
+      },
+      "session_id": "sess_1795044397_89c580_937"
     },
     {
       "project_number": 935,
@@ -1042,13 +1044,15 @@
     {
       "project_number": 829,
       "project_name": "ci_lake_build_cache_and_job_config",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "general",
       "topic": "build-performance",
       "description": "**NO BUILD CACHE FOR `.lake/build` IN ANY CI WORKFLOW.** Every CI run re-elaborates the whole library from scratch.\n\nSTANDING INSTRUCTION -- RE-VERIFY BEFORE CITING. Re-grep the workflow files before citing any line number below.\n\nVERIFIED AT FILING (2026-11-02):\n- All three workflows set `use-mathlib-cache: true` (`ci.yml:55`, `docs.yml:92`, `release.yml:115`), so Mathlib oleans are FETCHED, not built. That part is correct and is not what this record is about.\n- There is NO `actions/cache` step anywhere under `.github/workflows/`: grep returns no `actions/cache`, no `key:`, no `restore-keys`. The project's OWN build artifacts are therefore discarded between runs.\n- Scale being discarded: 716 `FormalSystem` modules, 371,441 lines; local `.lake/build` is 6.3 GB.\n\nTHIS IS DISTINCT FROM THE TWO FILED BUILD-COST TASKS (803 SubformulaProperty elaboration time, 804 its fan-in). Those reduce the cost of elaborating one module and its dependents; this one is cross-run artifact reuse. Neither subsumes the other, and this one is independent of both -- do not fold it into either.\n\nTWO SUBORDINATE CONFIGURATION FINDINGS, same surface:\n1. `ci.yml`'s `build` job (declared at `:17`, `runs-on: ubuntu-latest` at `:19`) has NO `timeout-minutes`, inheriting GitHub's 360-minute default, while `docs.yml:57` sets 300. Parity is the cheap fix.\n2. `lakefile.toml` carries ZERO build-performance configuration: no `moreLeanArgs`, no `precompileModules`, no `extraDepTargets`, no parallelism or memory setting. All its `leanOptions` are linter-related (`linter.mathlibStandardSet`, `linter.style.longFile = 1500`, `unicodeLinter = false`). This is a greenfield area, NOT a misconfiguration -- say it that way in any report.\n3. CI is a single serial job with no `strategy:`/`matrix:`. Four further sequential `lake build` invocations stack after the main step: the 15-target `lean_exe` root loop, `BimodalTools --wfail`, `BimodalToolsTest --wfail`, and the check scripts.\n\nDELIVERABLE, ORDERED. (a) Add an `actions/cache` step scoped to `.lake/build` ONLY (Mathlib stays on `use-mathlib-cache`), keyed on the toolchain plus `lake-manifest.json` plus a cache-epoch segment -- an epoch segment such as `lake-recheck-v3-` is a sanctioned durable version axis under `rules/no-record-versioning-in-deliverables.md`, so it is permitted in the key. (b) Set `timeout-minutes` on `ci.yml`'s build job for parity with `docs.yml`.\n\nGUARDRAIL. `precompileModules` and any matrix split are MEASURED EXPERIMENTS, not part of (a) or (b). Do not land either without a before/after timing recorded in the task's own artifacts. If a matrix split is ever evaluated, the natural seams are the two subdirectories that are 57% of the library: `Metalogic/Decidability/` (179 files, 106,266 lines) and `Metalogic/Expressiveness/` (143 files, 104,211 lines), then `WeakCanonical/` (45 / 29,303) and `BXCanonical/` (28 / 23,165).\n\nNOT IN SCOPE. The agent-side mitigations are already in place and are a different problem: `.claude/context/project/lean4/operations/long-builds.md`, `multi-instance-optimization.md`, and `lake-build-guard.sh` (flock serialization, PSI/swap preflight, opt-in cgroup bounding) mitigate MULTI-SESSION CONTENTION, not build duration. Do not touch them here; they also live in the source store, not this repo.\n\nACCEPTANCE. A second CI run on an unchanged tree restores from cache rather than re-elaborating (visible in the run log); `ci.yml` declares a `timeout-minutes`; no change to what any check step verifies.\n\nFILE SCOPE: `.github/workflows/ci.yml`, `lakefile.toml`.\n\nPROVENANCE: `specs/reviews/review-2026-11-02.md`, High Priority Issues and Medium Priority Issues sections.",
       "dependencies": [],
       "artifacts": [],
-      "created": "2026-11-02T17:35:56Z"
+      "created": "2026-11-02T17:35:56Z",
+      "last_updated": "2026-11-18T23:27:13Z",
+      "session_id": "sess_1795044397_89c580_829"
     },
     {
       "project_number": 831,
