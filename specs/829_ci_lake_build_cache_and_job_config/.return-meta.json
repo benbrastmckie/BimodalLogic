@@ -1,0 +1,37 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/829_ci_lake_build_cache_and_job_config/reports/01_ci-lake-build-cache-and-job-config.md",
+      "summary": "Finds leanprover/lean-action@v1 already caches .lake/build via its built-in GitHub Actions cache (confirmed live in run logs and the repo's cache store); recommends dropping deliverable (a) as filed and keeping only the ci.yml timeout-minutes parity fix (b)."
+    }
+  ],
+  "next_steps": "Run /orchestrate 829 to create implementation plan",
+  "dispatch_seq": 2,
+  "claim_invalidations": [
+    {
+      "declaration_names": ["actions/cache", ".lake/build", "use-github-cache", "leanprover/lean-action"],
+      "kind": "refutation",
+      "claim": "The task's filed premise that '.lake/build' has NO build cache in any CI workflow (and that the project's own build artifacts are discarded between runs) is refuted for FormalSystem/Mathlib: leanprover/lean-action@v1, used by ci.yml/docs.yml/release.yml, defaults use-github-cache to true and already caches the whole .lake directory via its own actions/cache/restore+save steps, confirmed live via a run log cache-hit/restore and 4 real cache entries in this repository's Actions cache store.",
+      "evidence_path": "specs/829_ci_lake_build_cache_and_job_config/reports/01_ci-lake-build-cache-and-job-config.md"
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "leanprover/lean-action@v1 (the composite action used for `lake build`/test/lint in CI) has a built-in GitHub Actions cache of the whole .lake directory, controlled by a `use-github-cache` input that defaults to true. It restores/saves via actions/cache keyed on runner os/arch + lean-toolchain hash + lake-manifest.json hash + commit sha, with a sha-less restore-keys fallback for incremental cross-commit restores. The save happens inside that one composite step, so any lake build invoked in a LATER step of the same job is not covered by it. Before concluding a Lean project's CI has no build-artifact cache from a grep of the workflow YAML alone, check whether leanprover/lean-action (or any composite action) is already doing it internally -- verify with `gh api repos/<owner>/<repo>/actions/caches` and a run log grep for 'Cache restored from key'.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/829_ci_lake_build_cache_and_job_config/reports/01_ci-lake-build-cache-and-job-config.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["lean-action", "actions/cache", "lake build cache", "CI caching", "use-github-cache"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795044397_89c580_829",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 5,
+    "issue_log_contribution": 1
+  }
+}
