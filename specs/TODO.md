@@ -1,5 +1,5 @@
 ---
-next_project_number: 937
+next_project_number: 938
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 937
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,933,935 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,933,935,937 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -83,6 +83,10 @@ next_project_number: 937
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
+### Repo Hygiene
+
+937 [NOT STARTED] — Fix the two independently red CI workflows on main. Both were...
+
 ### Semantics
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
@@ -103,6 +107,61 @@ next_project_number: 937
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 937. Fix red ci workflows on main
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Fix the two independently red CI workflows on `main`. Both were red before the proof-mode contribution merged, and no existing active task owns either.
+
+## Finding 1: `CI / Build and Test` -- a name ambiguity in a tools test
+
+`lake build BimodalToolsTest.CertificateImportTest` fails locally and in CI with the same four lines:
+
+```
+error: Tests/BimodalToolsTest/CertificateImportTest.lean:146:8: Ambiguous term
+error: Tests/BimodalToolsTest/CertificateImportTest.lean:146:0: cannot evaluate code because 'sorryAx' uses 'sorry' and/or contains errors
+error: Tests/BimodalToolsTest/CertificateImportTest.lean:152:8: Ambiguous term
+error: Tests/BimodalToolsTest/CertificateImportTest.lean:152:0: cannot evaluate code because 'sorryAx' uses 'sorry' and/or contains errors
+```
+
+`closureList` is declared twice:
+
+- `BimodalTools/CertificateImport.lean:149`
+- `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Enumerate.lean:137`
+
+and `Tests/BimodalToolsTest/CertificateImportTest.lean` opens both namespaces (`open FormalSystem.Metalogic.Decidability` at line 37, `open BimodalTools.CertificateImport` at line 40). Both failing sites are `#guard` terms whose head is `closureList`; column 8 is that identifier. The `sorryAx` lines are a consequence of the ambiguity, not independent sorry debt.
+
+Qualifying the two call sites is the obvious fix, but decide deliberately whether the two same-named declarations should instead be reconciled or one renamed. They take the same argument type (`Context`), and the test's own comment records that the certificate path moved to the verified codec -- so which of the two the test should be reaching may not be what the current `open` order happens to pick.
+
+## Finding 2: `API Documentation` -- doc-gen4 dependency source URIs
+
+Independent root cause, same redness. The workflow reaches doc-gen4 and then fails:
+
+```
+Some required targets logged failures:
+- Qq:srcUri.github
+- aesop:srcUri.github
+- importGraph:srcUri.github
+- mathlib:srcUri.github
+error: build failed
+```
+
+Configuration, not library code. This workflow has been green before: the closed record `specs/578_fix_api_documentation_ci_integration/plans/01_docgen-ci-fix-path.md` carried it to green via a `docs.yml` rewrite plus a verified green run. Treat this as a regression of that work -- start from what that plan established and establish what changed since, rather than re-deriving a fix from scratch.
+
+## Scope boundary
+
+Do NOT take on the absence of a `.lake/build` CI cache; that is task 829's record and this task must not grow into it. Touch `.github/workflows/` only as far as the doc-gen4 fix requires.
+
+## Verification
+
+- `bash .claude/scripts/lake-build-guard.sh build --timeout 1500 -- build BimodalToolsTest.CertificateImportTest` exits 0.
+- A `--wfail` build over the roots the CI workflow builds exits 0.
+- Both workflows report success on a real run, not only locally. The push and any workflow re-run are user-invoked (`.claude/rules/pr-prohibition.md` bars agent pushes): this task ends at a local commit plus the local build evidence, and names the push as the user's remaining step.
+
+---
 
 ### 935. Determinization free progress measure design
 - **Status**: [NOT STARTED]
