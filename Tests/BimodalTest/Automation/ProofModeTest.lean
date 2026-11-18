@@ -214,4 +214,20 @@ example (p : FormalSystem.PlusLanguage.PlusFormula) :
   lmodal_intro settled_possibility
   lmodal_use hP
 
+-- A G-scoped implication applied in TM, leaving its G premise.
+example : [(A.imp B).allFuture, A.allFuture] ⊢ B.allFuture := by
+  lstart hMap hA
+  ltemporal_use hMap
+  lexact hA
+
+-- `lhave` without `:=` leaves the intermediate assertion as its own obligation.
+example : [A, A.imp B] ⊢ B.and A := by
+  lstart hA hAB
+  lhave hB : B
+  · lapply hAB
+    lexact hA
+  · lsplit
+    · lexact hB
+    · lexact hA
+
 end BimodalTest.Automation.ProofModeTest
