@@ -86,7 +86,7 @@ next_project_number: 939
 ### Repo Hygiene
 
 937 [RESEARCHING] — Fix the two independently red CI workflows on main. Both were...
-938 [RESEARCHING] — Convert the repository's measured-but-unenforced health...
+938 [RESEARCHED] — Convert the repository's measured-but-unenforced health...
 
 ### Semantics
 
@@ -110,10 +110,11 @@ next_project_number: 939
 ## Tasks
 
 ### 938. Enforceable repo health baselines
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
+- **Research**: [938_enforceable_repo_health_baselines/reports/01_enforceable-health-baselines.md]
 
 **Description**: Convert the repository's measured-but-unenforced health signals into pinned baselines that block regressions. The aim is uniform standards a gate actually checks, not a one-time cleanup pass.
 

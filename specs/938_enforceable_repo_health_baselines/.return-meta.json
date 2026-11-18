@@ -1,0 +1,35 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/938_enforceable_repo_health_baselines/reports/01_enforceable-health-baselines.md",
+      "summary": "Research on converting README-date, C20-citation, and C16-env_linter-root advisory findings into pinned, regression-blocking baselines, reusing the repo's existing nolints.json/c20-declaration-baseline.txt/warning-budget.txt ratchet model."
+    }
+  ],
+  "dispatch_seq": 3,
+  "findings_count": 3,
+  "next_steps": "Run /orchestrate 938 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1795044397_89c580_938",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  },
+  "memory_candidates": [
+    {
+      "content": "This repo's canonical ratchet-baseline pattern (nolints.json, c20-declaration-baseline.txt, warning-budget.txt) is deliberately keyed by stable item identity (declaration name, citer|target|names triple, or path|linter) rather than a bare aggregate count -- warning-budget.py's own docstring explains an aggregate count cannot distinguish 'one fixed, one new, net unchanged' from 'no new finding.' When adding a new enforceable baseline in a Lean/Mathlib-style repo, prefer per-item keying and reuse an existing mechanism (e.g. nolints.json, read unconditionally by runLinter.lean regardless of module argument) over inventing a parallel file.",
+      "category": "PATTERN",
+      "source_artifact": "specs/938_enforceable_repo_health_baselines/reports/01_enforceable-health-baselines.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["baseline", "ratchet", "nolints.json", "enforce-flag", "ceiling", "ENFORCE_C16_ROOTS"]
+    },
+    {
+      "content": "A check-module-invariants.sh-style script's RUN_BUILD-gated blocks can be invisible to CI even when the script itself is wired into CI, if CI calls it with --no-build. Before assuming 'flip ENFORCE_X to 1' adds CI coverage, verify which flag/path CI actually exercises (grep the workflow for --no-build and for separate build/lint steps such as lean-action's lint:true) -- local full-mode enforcement and CI enforcement can diverge silently.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/938_enforceable_repo_health_baselines/reports/01_enforceable-health-baselines.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["CI", "RUN_BUILD", "--no-build", "lean-action", "lake lint", "gating"]
+    }
+  ]
+}
