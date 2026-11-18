@@ -5482,6 +5482,34 @@
   ],
   "completed_projects": [
     {
+      "project_number": 936,
+      "project_name": "add_proof_mode_tactic_coverage_tests",
+      "status": "abandoned",
+      "task_type": "lean4",
+      "description": "Add proof-mode acceptance tests for the tactic surface that the compositional proof-mode contribution (PR #6, branch `feature/compositional-proof-mode` on fork `tannerduve/BimodalLogic`, `maintainerCanModify: true`) declares and documents but never exercises.\n\n## Scope\n\nExtend `Tests/BimodalTest/Automation/ProofModeTest.lean` with cases for five untested tactics and six untested variants.\n\nUntested tactics: `lmodal_use`, `lleft`, `lright`, `lsince guard`, `lsince event`.\n\nUntested variants: `luntil event` (only `guard` is covered), `lstep past` (only `future`), `linvariant past`, `ltemporal_cases` on `somePast`, `lmodal_intro possibility`, `ltemporal_use` on TM (only the TM-plus path is covered), and `lhave` without the `:=` form.\n\n## This closes a coverage gap, not a defect\n\nAll twelve cases were written and run against PR #6 merged onto main, and ALL TWELVE PASS. Nothing is broken today. The cases are worth having anyway because of how the tactics resolve constants: `FormalSystem/Automation/ProofMode/` appends single-backtick name literals to a namespace inside `MetaM` (`box`, `stab`, `diamond`, `dstab`, `allFuture`, `allPast`, `someFuture`, `somePast`, `next`, `prev`, `untl`, `snce`, `imp`, `and`, `or`, `modal_t`, `stab_t`, `axiom`, `assumption`, `modus_ponens`, `weakening`, `lift` — about twenty in all) rather than using checked double-backtick `Name` literals. A rename of `Formula.box` or of the `DerivationTree.modus_ponens` constructor would leave every one of these files compiling and break the tactics only at invocation time. Tests are the only backstop for those paths, and for eleven of them there is currently none.\n\n## Deliberately excluded: lexit\n\nDo NOT add a test for `lexit`. It elaborates to `pure ()`, so every use emits `warning: 'lexit' tactic does nothing`, and CI builds with `--wfail` (`.github/workflows/ci.yml:42`) — a test using it would fail the build. PR #6 has been asked to either drop `lexit` or add it to the `linter.unusedTactic` allowlist. Revisit only once that is resolved upstream.\n\n## Conventions to follow\n\nMatch the existing test file: `example` declarations inside `namespace BimodalTest.Automation.ProofModeTest`, `variable (A B C : Formula)`, `open FormalSystem.Syntax FormalSystem.ProofSystem`, and the `Copyright (c) 2026 Tanner Duve` header already on the file. Prefer the explicit `using [...]` selection form over the implicit one throughout, matching the author's own style — implicit selection makes a proof's meaning depend on what else is in context.\n\n## Verification\n\n`lake build BimodalTest.Automation.ProofModeTest` must pass with `--wfail`.\n\n## Push constraint\n\n`.claude/rules/pr-prohibition.md` bars agents from pushing to remotes. This task ends at a local commit on a branch tracking the PR head. The push to the fork's `feature/compositional-proof-mode` branch must be a separate user-invoked `/please`. Do not attempt `git push`.\n\n## Dependency\n\nThe work targets a branch owned by an external contributor. Confirm before pushing that they have not already added these cases in response to the review comment on PR #6, which offered to hand them over.",
+      "topic": "automation",
+      "created": "2026-11-17T23:09:22Z",
+      "last_updated": "2026-11-17T23:09:22Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "add_proof_mode_tactic_coverage_tests",
+          "project_number": null,
+          "title": "Add proof-mode acceptance tests for untested tactics"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 1,
+          "scope-blind": 450
+        },
+        "verdicts_detail": [],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 450
+      },
+      "abandoned": "2026-11-18T22:10:34Z"
+    },
+    {
       "project_number": 934,
       "project_name": "depth_zero_reachability_probe",
       "status": "completed",
