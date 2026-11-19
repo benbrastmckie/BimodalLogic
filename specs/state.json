@@ -1378,7 +1378,7 @@
     {
       "project_number": 942,
       "project_name": "test_coverage_nomic_formathlib_tactic",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "code-quality",
       "priority": "medium",
@@ -1416,7 +1416,17 @@
           "semantic": true
         },
         "degradations_count": 449
-      }
+      },
+      "last_updated": "2026-11-19T21:18:15Z",
+      "session_id": "sess_1795122329_77078c",
+      "artifacts": [
+        {
+          "path": "specs/942_test_coverage_nomic_formathlib_tactic/reports/01_test-coverage-nomic-formathlib-tactic.md",
+          "type": "report",
+          "summary": "Confirms the three-group coverage gap; rules out both suggested extension points for NomicLanguage on structural grounds; specifies and compile-verifies four artifacts (new NomicLanguageTest + ForMathlib SmokeTest modules, two Automation folds); records the C6/C16/C28 gate obligations; and reports a measured live bug in FormalSystem/Tactic/Meta.lean's buildContextExpr."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 943,

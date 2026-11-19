@@ -37,7 +37,7 @@ next_project_number: 944
 
 ### Code Quality
 
-942 [NOT STARTED] — Add regression test coverage for three FormalSystem module...
+942 [RESEARCHED] — Add regression test coverage for three FormalSystem module...
 
 ### Completeness
 
@@ -128,10 +128,11 @@ VERIFICATION: `bash scripts/check-module-invariants.sh` and `bash scripts/readme
 ---
 
 ### 942. Test coverage nomic formathlib tactic
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: None
+- **Research**: [942_test_coverage_nomic_formathlib_tactic/reports/01_test-coverage-nomic-formathlib-tactic.md]
 
 **Description**: Add regression test coverage for three FormalSystem module groups that currently have none.
 

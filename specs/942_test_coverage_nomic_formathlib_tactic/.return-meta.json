@@ -1,0 +1,28 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/942_test_coverage_nomic_formathlib_tactic/reports/01_test-coverage-nomic-formathlib-tactic.md",
+      "summary": "Confirms the three-group coverage gap; rules out both suggested extension points for NomicLanguage on structural grounds; specifies and compile-verifies four artifacts (new NomicLanguageTest + ForMathlib SmokeTest modules, two Automation folds); records the C6/C16/C28 gate obligations; and reports a measured live bug in FormalSystem/Tactic/Meta.lean's buildContextExpr."
+    }
+  ],
+  "user_decision": {
+    "required": true,
+    "blocking": false,
+    "question": "FormalSystem/Tactic/Meta.lean's buildContextExpr is broken and throws on every call (measured): its first line is `mkAppM ``List.nil #[formulaType]`, but List.nil's type argument is implicit, so mkAppM raises 'too many explicit arguments provided to @List.nil'. Its two consumers (Search.lean:475 tryModalK, Search.lean:527 tryTemporalK) call it outside their `observing?` block, so `example : |-[FrameClass.Base] box (p imp p) := by modal_search` hard-fails with that error. Repairing it requires editing a FormalSystem declaration, which this task's description places explicitly out of scope. Which do you want? (a) widen this task's scope by one objective to apply the one-line repair (two candidate repairs were compiled and both work: `mkAppOptM ``List.nil #[some formulaType]`, or `Lean.mkApp (Lean.mkConst ``List.nil [Level.zero]) formulaType`); (b) keep this task's scope as written -- the item (C) probe then #checks buildContextExpr without invoking it -- and spawn a separate task for the repair; or (c) keep scope and leave the repair unfiled.",
+    "options": [
+      "(a) widen scope by one objective and apply the pre-validated one-line repair here",
+      "(b) keep scope; spawn a separate task for the repair (research's default recommendation)",
+      "(c) keep scope; leave the repair unfiled"
+    ],
+    "recommendation": "(b) -- the repair is a genuine FormalSystem bug fix, not a testability change, so it deserves its own task record rather than being folded into a test-coverage task; the pre-validated fix makes that follow-up cheap."
+  },
+  "metadata": {
+    "session_id": "sess_1795122329_77078c_942",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
