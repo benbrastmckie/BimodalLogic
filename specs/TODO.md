@@ -89,7 +89,7 @@ next_project_number: 941
 
 ### Paper Alignment
 
-931 [NOT STARTED] — Apply the final-frame amendments to the 901 two-sided...
+931 [RESEARCHED] — Apply the final-frame amendments to the 901 two-sided...
 
 ### Syntax
 
@@ -361,10 +361,11 @@ COUPLED GENERATED SURFACES -- inherited at filing time, not to be discovered at 
 ---
 
 ### 931. Apply the final-frame amendments to the 901 two-sided Reynolds engine paper-proof report
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: paper-alignment
 - **Dependencies**: None
+- **Research**: [931_apply_901_final_frame_amendments/reports/01_apply-final-frame-amendments.md]
 
 **Description**: RECORD CORRECTION, no Lean. The 901 paper-proof report records the final-frame step as resting on two unlanded Lean pieces. Both landed on 2026-11-09, four to six hours after that report was committed, so the row is STALE rather than wrong-at-the-time. Apply the amendment that has already been written.
 
