@@ -128,13 +128,14 @@ private def modalUse (term : Syntax) (name : Option Name) : TacticM Unit := with
         | some args => pure (`stab_t, args)
         | none => throwError "lmodal_use expected necessity or settledness"
       else throwError "lmodal_use expected necessity"
-  let axiomNamespace := judgment.language.ruleName
-    ``FormalSystem.ProofSystem.Axiom ``FormalSystem.PlusLanguage.PlusAxiom
-  let axiomWitness ← mkAppM (axiomNamespace ++ operator) #[args[0]!]
+  let axiomName := if operator == `stab_t then
+      ``FormalSystem.PlusLanguage.PlusAxiom.stab_t
+    else judgment.language.ruleName
+      ``FormalSystem.ProofSystem.Axiom.modal_t ``FormalSystem.PlusLanguage.PlusAxiom.modal_t
+  let axiomWitness ← mkAppM axiomName #[args[0]!]
   let compatible ← mkAppM ``FormalSystem.ProofSystem.FrameClass.base_le #[judgment.frame]
-  let implication ← mkAppM (judgment.language.formulaNamespace ++ `imp)
-    #[source.formula, args[0]!]
-  let axiomProof ← mkAppM (judgment.language.derivationName ++ `axiom)
+  let implication ← formulaApp judgment.language `imp #[source.formula, args[0]!]
+  let axiomProof ← mkAppM (← judgment.language.derivationRule `axiom)
     #[judgment.context, implication, axiomWitness, compatible]
   let result ← modusPonens judgment axiomProof proof
   match name with

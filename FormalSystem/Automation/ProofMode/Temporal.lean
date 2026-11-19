@@ -133,7 +133,7 @@ private def temporalUse (term : Syntax) : TacticM Unit := withMainContext do
     | _, _ => throwError "the goal must have the implication's future or past direction"
   unless ← isDefEq implicationArgs[1]! conclusion do
     throwError "the scoped implication's conclusion does not match the temporal goal"
-  let premiseFormula ← mkAppM (judgment.language.formulaNamespace ++ operator)
+  let premiseFormula ← formulaApp judgment.language operator
     #[implicationArgs[0]!]
   let premise ← mkFreshExprSyntheticOpaqueMVar
     (← derivationType judgment judgment.context premiseFormula)
@@ -196,7 +196,7 @@ private def binaryTemporal (past guard : Bool) (term : Syntax) : TacticM Unit :=
   unless ← isDefEq implicationArgs[1]! goalArgs[targetIndex]! do
     throwError "the implication's conclusion does not match the selected operand"
   let sourceArgs := goalArgs.set! targetIndex implicationArgs[0]!
-  let sourceFormula ← mkAppM (judgment.language.formulaNamespace ++ operator) sourceArgs
+  let sourceFormula ← formulaApp judgment.language operator sourceArgs
   let premise ← mkFreshExprSyntheticOpaqueMVar
     (← derivationType judgment judgment.context sourceFormula)
   let name := match past, guard with

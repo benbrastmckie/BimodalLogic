@@ -12,6 +12,8 @@ Tests for proof automation tactics.
 | ProofSearchBenchmark.lean | Proof search benchmarks |
 | EdgeCaseTest.lean | Edge case coverage |
 | NormalizationTest.lean | Normalization, fold/unfold simp sets, serialization and enumerator counts |
+| ProofModeTest.lean | Native compositional TM/Plus scopes and opaque guarantees |
+| ProofModeExtensionsTest.lean | Scoped rewriting, bounded simplification and extension acceptance examples |
 | DatasetGeneratorTest.lean | Structural pre-filter pins and hybrid labelling smoke tests |
 
 ## Coverage
@@ -29,4 +31,4 @@ Tests for proof automation tactics.
 
 ---
 
-*Last Updated: 2026-03-16*
+*Last Updated: 2026-11-19*
