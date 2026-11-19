@@ -15,6 +15,15 @@ name: API Documentation
 #     publish. The first step checks it and fails fast.
 #   - A `push` event. The action builds the API docs and deploys only on push; a
 #     `workflow_dispatch` run exercises the setup steps but publishes nothing.
+#   - Swap space beyond the runner's RAM. The doc build runs `lake build` over roughly 6,300 doc
+#     targets whose doc-gen4 processes each hold the full Mathlib-plus-`FormalSystem`
+#     environment, and a standard runner's memory alone is insufficient for the concurrent set
+#     Lake schedules. The kill surfaces as `error: resource exhausted (error code: 12, cannot
+#     allocate memory)`, and the failure summary attributes it to whichever `srcUri.github`
+#     targets were in flight when memory ran out -- those cheap `git`-subprocess jobs are the
+#     symptom, not the cause, and no URI or git configuration is involved. The swap step below
+#     supplies the headroom; it prints `free -h` and `df -h` on both sides so a shortfall names
+#     itself in the log.
 #
 # The action supplies doc-gen4 itself (a throwaway `docbuild/` package pinned to the doc-gen4
 # tag matching `lean-toolchain`), which is why `lakefile.toml` and `lake-manifest.json` carry no
@@ -102,6 +111,19 @@ jobs:
           <meta http-equiv="refresh" content="0; url=docs/">
           <a href="docs/">BimodalLogic API documentation</a>
           HTML
+
+      - name: Enlarge swap for the doc build
+        run: |
+          set -euo pipefail
+          free -h
+          df -h /mnt /
+          sudo swapoff -a || true
+          sudo rm -f /mnt/swapfile || true
+          sudo fallocate -l 16G /mnt/swapfile
+          sudo chmod 600 /mnt/swapfile
+          sudo mkswap /mnt/swapfile
+          sudo swapon /mnt/swapfile
+          free -h
 
       - name: Build and deploy doc-gen4 documentation
         id: docgen

@@ -265,19 +265,19 @@ re-elaborating that single module covers it.
 
 ---
 
-### Phase 3: Give the doc-gen4 build memory headroom, and correct docs.yml's diagnosis [NOT STARTED]
+### Phase 3: Give the doc-gen4 build memory headroom, and correct docs.yml's diagnosis [COMPLETED]
 
 **Goal**: Address the measured cause of `API Documentation`'s redness — an out-of-memory kill
 during the doc build — and record the corrected diagnosis in the workflow's own header so the
 next reader is not sent down the `srcUri` path.
 
 **Tasks**:
-- [ ] Re-read the LATEST `API Documentation` failure before editing: `gh run list
+- [x] Re-read the LATEST `API Documentation` failure before editing: `gh run list
       --workflow=docs.yml --branch main --limit 3`, then `gh run view <id> --log-failed`.
       Confirm the error class is still `resource exhausted (error code: 12, cannot allocate
       memory)` and that no other error class is present. If the signature has changed, stop and
       re-diagnose rather than applying this phase as written.
-- [ ] Add a swap-enlargement step to `.github/workflows/docs.yml`, immediately before the
+- [x] Add a swap-enlargement step to `.github/workflows/docs.yml`, immediately before the
       `Build and deploy doc-gen4 documentation` step. Write it defensively and self-diagnosing,
       so neither a pre-existing active swapfile nor a space shortfall fails silently:
 
@@ -296,7 +296,7 @@ next reader is not sent down the `srcUri` path.
           free -h
       ```
 
-- [ ] Extend the header's `PREREQUISITES` list with one bullet recording the memory requirement
+- [x] Extend the header's `PREREQUISITES` list with one bullet recording the memory requirement
       and what the failure looks like: the doc build runs `lake build` over ~6,273 doc targets
       with doc-gen4 processes that each import the full Mathlib-plus-`FormalSystem` environment,
       and the runner's RAM alone is insufficient — the kill surfaces as `error: resource
@@ -306,10 +306,10 @@ next reader is not sent down the `srcUri` path.
       write it as draft history ("this used to work", "previously green") —
       `.claude/rules/no-record-versioning-in-deliverables.md` applies to this file. Do NOT cite a
       task number in it (`.claude/rules/no-task-references-in-deliverables.md`).
-- [ ] Change nothing else in the file: the SHA pin, `homepage: api-site`, `build-page: false`,
+- [x] Change nothing else in the file: the SHA pin, `homepage: api-site`, `build-page: false`,
       the Pages fail-fast check, the `references.bib` input, the concurrency group, and the
       `lean-action` ordering are all load-bearing and documented as such.
-- [ ] Do NOT add a parallelism knob. Measured this dispatch: Lake 5.0.0's `lake --help` and
+- [x] Do NOT add a parallelism knob. Measured this dispatch: Lake 5.0.0's `lake --help` and
       `lake help build` expose no `--jobs`/`-j` option (`-j` returns `unknown short option`),
       and the doc build's `lake build` invocation lives inside the pinned action's own
       `scripts/build_docs.sh`, which the workflow cannot pass arguments to (the action's
