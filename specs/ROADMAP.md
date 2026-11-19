@@ -232,7 +232,6 @@ cited record, not here.
 One line on this list now unblocks another: 942 is a declared predecessor of 177 after this pass filed that edge, the two sharing `Tests/BimodalTest/Automation/TacticsTest.lean` with 942 writing test logic and 177 editing only that file's prose. Nothing else here gates anything else -- the one line that used to, the depth-`0` crux probe, has landed and archived, and what it feeds is a user ruling rather than a dispatch. Beyond that single edge the lines are independent and may be run in any order or interleaved, subject to the batch-gate's live-lock rule; the order below is a priority judgment, not a dependency.
 
 ```
-/orchestrate 942   # Cover three FormalSystem module groups that have zero referencing tests anywhere under Tests/
 /orchestrate 298, 282, 296, 231   # Half-finished dataset cleanup: three PARTIAL records behind 298's c7 bug, plus 231's automation
 /orchestrate 935 --hard --lit   # Route R3: does a determinization-free progress measure for L-plus ZTime completeness exist
 /orchestrate 831 --research --lit   # The dense-time dichotomy gating L-R3, the only identified non-ZTime decidability route
@@ -302,6 +301,10 @@ Why this order:
 Each line is one invocation, and batches are dependency-inclusive: a batch holding a blocker together with its dependent is correct, while a dependent named *without* its out-of-batch blocker is dead weight. `MAX_TASKS` is 8 and the work-cycle budget is per task per invocation (5 default, 13 under `--hard`), so **re-run the same line until every member reports terminal**. Shared file scope serializes a batch rather than breaking it, and a collision against a *live* session's lock is not bypassable by `--allow-scope-collision`: wait for the holder, or batch with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
 
 **This section is generated and is the authority on run order.** It is rendered from `specs/state.json`'s `roadmap_batches` by `scripts/roadmap-integration.sh`; change the order or the membership through `/roadmap`, never by editing the fence by hand -- a hand edit here is overwritten by the next regeneration. The `## Next batches` section further down is authored prose that no regeneration touches, and its task list has gone stale against the live graph: it still names archived tasks, still describes 761's hold as newly lifted, and still lists the L^▷ lines individually. No task is filed for that correction, though 177 is the one record that declares `specs/ROADMAP.md` in its own `file_scope` and whose residual scope -- re-auditing touched documentation for accumulated drift -- would cover it; it is parked behind that record's 27 edges along with its README finding.
+**Coverage appendix (uncovered tasks)**:
+```
+/orchestrate 944
+```
 
 ## Next batches
 
