@@ -3740,14 +3740,13 @@ fi
 # scripts/nolints.json model. A module reachable from two roots is counted once per root in that
 # baseline, so its total is a per-root sum, not a count of distinct declarations.
 #
-# ONE ROOT IS CURRENTLY UNMEASURABLE, NOT ZERO: `BimodalToolsTest`'s own build fails (an
-# "Ambiguous term closureList" error between two same-named declarations, independent of
-# env_linter), so `lake exe runLinter BimodalToolsTest` cannot import the module at all. This is
-# recorded in scripts/c16-roots-unmeasurable.txt and excused, loudly (an INFO line on every run),
-# from the sweep's anti-silence exit-2 guard -- never silently treated as a clean root. The
-# defect is pre-existing and already filed and owned outside this check's scope; fixing it is
-# not this check's job, and scripts/c16_roots_baseline.py refuses to generate or compare a
-# baseline that would otherwise paper over the crash as "0 findings".
+# ZERO ROOTS ARE CURRENTLY UNMEASURABLE: every root `lake exe runLinter` can reach -- including
+# `BimodalToolsTest` -- imports and lints cleanly (`lake exe runLinter BimodalToolsTest` reports
+# "-- Linting passed"). scripts/c16-roots-unmeasurable.txt retains its header documenting the
+# format and the sweep's anti-silence exit-2 guard for any root that becomes unmeasurable in the
+# future, but currently lists no excused row, and scripts/c16_roots_baseline.py's refusal to
+# generate or compare a baseline that would paper over a crashed root as "0 findings" remains in
+# place as a standing safeguard regardless.
 #
 # PINNED AND ENFORCED FROM THE OUTSET (ENFORCE_C16_ROOTS, see that flag's own comment), on the
 # same reasoning C20's residual ceiling and C12-C15 already ship flagless with: the baseline
