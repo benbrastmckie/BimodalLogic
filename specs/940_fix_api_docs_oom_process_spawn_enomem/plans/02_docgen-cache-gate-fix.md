@@ -338,20 +338,20 @@ two must be identical.
 
 ---
 
-### Phase 5: Full-gate validation, local commit, and push handoff [NOT STARTED]
+### Phase 5: Full-gate validation, local commit, and push handoff [COMPLETED]
 
 **Goal**: Close the task at a verified local commit that states honestly what has and has not
 been proven, and names the user's push as the remaining step.
 
 **Tasks**:
-- [ ] Re-read the whole of `.github/workflows/docs.yml` top to bottom and confirm step order: Pages check, checkout, lean-action build, redirect, swap, pre-docgen memory snapshot, docgen, cache save, memory trace report.
-- [ ] Confirm the full step inventory parses and that `if: always()` is present on both the cache-save and the memory-trace steps, so neither is skipped on the failure path the workflow currently always takes.
-- [ ] Optionally lint with `actionlint` if it can be obtained without network cost (`nix run nixpkgs#actionlint -- .github/workflows/docs.yml`); record the result either way, and treat an unavailable linter as an absence of evidence rather than a pass.
-- [ ] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Observe it green in this dispatch; do not trust it on sight.
-- [ ] Commit with `bash .claude/scripts/git-commit-scoped.sh`, staging `.github/workflows/docs.yml` and the task directory explicitly. Never `git add -A`, `git add .`, or a directory/glob pathspec.
-- [ ] Write the commit body so the verification state is unambiguous: what is proven locally (the cache key reproduces exactly; the workflow parses; the pinned SHA resolves to `actions/cache` v4.2.3), what is not proven (that the OOM is fixed), and the two-run convergence -- the first push proves the cache *saves*, the second proves the restore shrinks the fan-out.
-- [ ] Do not push, do not open a PR, do not invoke `/merge`. Report the push as the user's remaining step, per `.claude/rules/pr-prohibition.md`.
-- [ ] State in the summary and handoff that the objective is NOT met and cannot be claimed met until a green `API Documentation` run exists -- naming the success signals to check on the user's first push (the cache-save step reports a completed save rather than `outcome=skipped`, and the memory trace prints) and on the second (a `Cache restored from key: Docs-a123379d...` line, and a materially shorter docgen step).
+- [x] Re-read the whole of `.github/workflows/docs.yml` top to bottom and confirm step order: Pages check, checkout, lean-action build, redirect, swap, pre-docgen memory snapshot, docgen, cache save, memory trace report. *(completed)*
+- [x] Confirm the full step inventory parses and that `if: always()` is present on both the cache-save and the memory-trace steps, so neither is skipped on the failure path the workflow currently always takes. *(completed)*
+- [x] Optionally lint with `actionlint` if it can be obtained without network cost (`nix run nixpkgs#actionlint -- .github/workflows/docs.yml`); record the result either way, and treat an unavailable linter as an absence of evidence rather than a pass. *(completed: obtained via `nix run nixpkgs#actionlint`, exit 0 -- one info-level shellcheck SC2016 note on the detached-sampler `bash -c '...'` block, which is the intended deferred-expansion pattern, not a defect)*
+- [x] Run the complete gate set: `bash .claude/scripts/verify-deploy.sh`. Observe it green in this dispatch; do not trust it on sight. *(completed: PASS -- 12 checks, 0 failures, observed directly in this dispatch)*
+- [x] Commit with `bash .claude/scripts/git-commit-scoped.sh`, staging `.github/workflows/docs.yml` and the task directory explicitly. Never `git add -A`, `git add .`, or a directory/glob pathspec. *(completed; `.github/workflows/docs.yml` was already fully committed across Phases 1-4 with no further edits in this phase, so this phase's own commit stages only the task directory's plan/progress/handoff updates)*
+- [x] Write the commit body so the verification state is unambiguous: what is proven locally (the cache key reproduces exactly; the workflow parses; the pinned SHA resolves to `actions/cache` v4.2.3), what is not proven (that the OOM is fixed), and the two-run convergence -- the first push proves the cache *saves*, the second proves the restore shrinks the fan-out. *(completed)*
+- [x] Do not push, do not open a PR, do not invoke `/merge`. Report the push as the user's remaining step, per `.claude/rules/pr-prohibition.md`. *(completed: not performed)*
+- [x] State in the summary and handoff that the objective is NOT met and cannot be claimed met until a green `API Documentation` run exists -- naming the success signals to check on the user's first push (the cache-save step reports a completed save rather than `outcome=skipped`, and the memory trace prints) and on the second (a `Cache restored from key: Docs-a123379d...` line, and a materially shorter docgen step). *(completed)*
 
 **Timing**: 30 minutes
 
