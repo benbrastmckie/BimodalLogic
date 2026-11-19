@@ -1415,15 +1415,15 @@
     {
       "project_number": 943,
       "project_name": "gitignore_and_loose_file_hygiene",
-      "status": "planning",
+      "status": "planned",
       "task_type": "general",
       "topic": "repo-hygiene",
       "priority": "low",
       "description": "Close three small gitignore and loose-file hygiene gaps at the repository root.\n\nSource of record: specs/reviews/review-2026-11-19.md (one Medium, two Low severity findings).\n\n(A) MEDIUM -- retired latex/ build artifacts are untracked but unignored. The latex/ edition was deliberately retired and its .tex sources removed from git, and .gitignore gained a `latex/**/*.log` rule at the same time. The remaining build byproducts in latex/build/ and latex/subfiles/ (.pdf, .aux, .fls, .fdb_latexmk, .out, .toc, .xdv) are untracked yet matched by no .gitignore pattern, so they sit as unignored cruft and any future `git add` touching that path risks reintroducing retired build output into history.\n    Fix: extend .gitignore with a single `latex/build/` rule (preferred over enumerating extensions), matching the intent of the existing `latex/**/*.log` line. Verify with `git status --porcelain --ignored` that the artifacts move from untracked to ignored, and confirm no currently-TRACKED file becomes ignored as a side effect.\n\n(B) LOW -- `.pid` at the repo root is a stray runtime PID file, untracked but absent from .gitignore, unlike the sibling runtime paths .agent-logs/ and .playwright-mcp/ which are both correctly ignored.\n    Fix: add `/.pid` to .gitignore (anchored, so it cannot match a nested path).\n\n(C) LOW -- Challenge.lean at the repo root is a loose .lean scratch file containing a sorry-bearing theorem. It is not a Lake root (absent from lakefile.toml), is not built, and is not listed in ORGANISATION.md's \"Everything else\" table alongside the other top-level paths, so a reader cannot tell why it exists or whether it is safe to ignore.\n    Fix: EITHER add one line to ORGANISATION.md's \"Everything else\" table explaining its purpose, OR relocate it into Boneyard/ following that directory's existing archival conventions (which are ADR-backed and gate-enforced -- read its README before moving anything there). Decide from the file's git history which is appropriate; do not delete it.\n\nEXPLICITLY OUT OF SCOPE: Boneyard/ itself (verified deliberate, ADR-backed and gate-enforced -- not cruft); the already-gitignored other/, research/, training/ and data/ directories; and any change to lakefile.toml.\n\nVERIFICATION: `bash scripts/check-module-invariants.sh` and `bash scripts/readme-lint.sh` both no worse than before the change; `git status --porcelain` clean of the newly-ignored paths; no tracked file newly ignored.",
       "file_scope": [
         ".gitignore",
-        "ORGANISATION.md",
-        "Challenge.lean"
+        "Challenge.lean",
+        "ORGANISATION.md"
       ],
       "created": "2026-11-19T19:09:08Z",
       "audit_verdict": {
@@ -1453,13 +1453,18 @@
         },
         "degradations_count": 445
       },
-      "last_updated": "2026-11-19T19:49:56Z",
-      "session_id": "sess_1795117390_6c8a38_943",
+      "last_updated": "2026-11-19T19:57:02Z",
+      "session_id": "sess_1795117390_6c8a38",
       "artifacts": [
         {
           "path": "specs/943_gitignore_and_loose_file_hygiene/reports/01_gitignore-loose-file-hygiene.md",
           "type": "report",
           "summary": "Research on the three gitignore/loose-file hygiene gaps: (A) the latex/build/ cruft is already fully covered by an existing generic build/ rule (review premise refuted by git check-ignore evidence, but adding an explicit rule is still worth doing for clarity); (B) /.pid is a confirmed, uncomplicated gap; (C) Challenge.lean is not a stray scratch file but the committed trust-boundary artifact of lean-challenge-snapshot.sh (the Comparator statement-pinning mechanism) -- it must be documented in ORGANISATION.md, not relocated to Boneyard/, which would break the mechanism."
+        },
+        {
+          "path": "specs/943_gitignore_and_loose_file_hygiene/plans/01_gitignore-loose-file-hygiene.md",
+          "type": "plan",
+          "summary": "Two-phase plan: .gitignore rules (latex/build/, anchored /.pid), then ORGANISATION.md row for Challenge.lean."
         }
       ],
       "next_artifact_number": 2
