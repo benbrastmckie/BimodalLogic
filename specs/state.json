@@ -1608,7 +1608,7 @@
     {
       "project_number": 933,
       "project_name": "correct_decidability_front_record",
-      "status": "researched",
+      "status": "planned",
       "task_type": "meta",
       "topic": "decidability",
       "priority": "high",
@@ -1628,16 +1628,26 @@
         "degradation_count": 446,
         "evidence_file": "specs/evidence/audit-verdicts/933.json"
       },
-      "last_updated": "2026-11-19T16:59:46Z",
+      "last_updated": "2026-11-19T17:11:48Z",
       "session_id": "sess_1795107126_0059c2",
       "artifacts": [
         {
           "path": "specs/933_correct_decidability_front_record/reports/01_record-correction-scope-remeasured.md",
           "type": "report",
           "summary": "Re-measures all four record-correction items against the live tree: item (1) already discharged by independent /roadmap passes; item (2) still stale (ROADMAP.md:19-44 contradicts plan v13 and 934's archival); item (3) widened beyond the task's own AMENDED note (checkbox still unchecked, plus a crux restatement against 934's landed SAT verdict); item (4)'s literal mechanism (update-task-status.sh) does not exist and its premise is stale (761 is partial, not blocked, with seven edges not six), but the underlying blockers:null defect is still real and fixable via a direct scoped edit, precedented by task 298."
+        },
+        {
+          "path": "specs/933_correct_decidability_front_record/plans/01_record-correction-roadmap-state.md",
+          "type": "plan",
+          "summary": "4 phases across 3 waves, 2 hours: 761's blockers field in state.json; Stage 0's I=1 check-off plus depth-0 crux restatement against 934's landed verdict; the 'Where both fronts now stand' rewrite against plan v13; final cross-file consistency sweep under the complete gate set."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "file_scope": [
+        "specs/933_correct_decidability_front_record/summaries/01_record-correction-roadmap-state-summary.md",
+        "specs/ROADMAP.md",
+        "specs/state.json"
+      ]
     }
   ],
   "artifacts": [

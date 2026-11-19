@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 2,
+  "phases_completed": 0,
+  "phases_total": 4,
+  "summary": "Wrote a 4-phase, 2-hour plan for the three live record defects of the four originally filed. Item (1) (roadmap_batches archived head) is re-confirmed discharged and becomes a Non-Goal; items (2), (3a+3b) and (4) each get a phase, plus a final full-gate consistency phase. Item (4)'s filed mechanism (update-task-status.sh) is refuted and replaced with a scoped Edit adding a canonical array-of-strings blockers field to task 761. Plan validates clean in both default and --strict mode (0 warnings).",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/933_correct_decidability_front_record/plans/01_record-correction-roadmap-state.md",
+      "summary": "4 phases across 3 waves, 2 hours: 761's blockers field in state.json; Stage 0's I=1 check-off plus depth-0 crux restatement against 934's landed verdict; the 'Where both fronts now stand' rewrite against plan v13; final cross-file consistency sweep under the complete gate set."
+    }
+  ]
+}

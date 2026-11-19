@@ -65,7 +65,7 @@ next_project_number: 941
     └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-933 [RESEARCHED] — AMENDED 2026-11-14 (Stage 0 rulings landed, scope narrowed):...
+933 [PLANNED] — AMENDED 2026-11-14 (Stage 0 rulings landed, scope narrowed):...
 
 ### Formula Refactor
 
@@ -315,11 +315,12 @@ CONTINGENCY. A negative verdict is a COMPLETE outcome, not a failure: if no dete
 ---
 
 ### 933. Correct decidability front record
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [933_correct_decidability_front_record/reports/01_record-correction-scope-remeasured.md]
+- **Plan**: [933_correct_decidability_front_record/plans/01_record-correction-roadmap-state.md]
 
 **Description**: AMENDED 2026-11-14 (Stage 0 rulings landed, scope narrowed): two user rulings were taken after this task was filed and are already written into specs/ROADMAP.md, so this task must NOT redo them. (a) Requirement (S)'s residue is CONFIRMED sufficient as assigned to (W) and reduces to the single named missing theorem `real_certStabK`; Stage 0's item is checked and records the measurement (five of `certAdmK`'s six conditions discharged by `real_certLocK`/`real_certBiInfK`/`real_certFwdK`/`real_certBwdK`/`real_certBoxK` in LadderRealize.lean, with `real_certStabK` absent). (b) The depth-0 gate's crux is OWNED by task 934, which runs the reachability probe; Stage 0's item is checked, the crux is restated against 929's `forwardSlackWitnessed_refuted_I_one` and `ceiling_slack_at_consumer_amount`, and the consumer-instantiation analysis is recorded there. The "Three items ... owned by no task" summary near the top of ROADMAP.md was also corrected to one item (canonical-bundle closedness).
 

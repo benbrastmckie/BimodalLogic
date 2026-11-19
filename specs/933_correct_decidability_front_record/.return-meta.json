@@ -1,34 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/933_correct_decidability_front_record/reports/01_record-correction-scope-remeasured.md",
-      "summary": "Re-measures all four record-correction items against the live tree: item (1) already discharged by independent /roadmap passes; item (2) still stale (ROADMAP.md:19-44 contradicts plan v13 and 934's archival); item (3) widened beyond the task's own AMENDED note (checkbox still unchecked, plus a crux restatement against 934's landed SAT verdict); item (4)'s literal mechanism (update-task-status.sh) does not exist and its premise is stale (761 is partial, not blocked, with seven edges not six), but the underlying blockers:null defect is still real and fixable via a direct scoped edit, precedented by task 298."
+      "type": "plan",
+      "path": "specs/933_correct_decidability_front_record/plans/01_record-correction-roadmap-state.md",
+      "summary": "4-phase, 2-hour record-correction plan for specs/ROADMAP.md and specs/state.json; item (1) re-confirmed discharged and made a Non-Goal, item (4)'s filed mechanism refuted and replaced."
     }
   ],
-  "next_steps": "Run /orchestrate 933 to create an implementation plan for items (2), (3) and (4) as re-scoped in the report (item (1) needs no plan phase work).",
-  "metadata": {
-    "session_id": "sess_1795107126_0059c2_933",
-    "agent_type": "general-research-agent",
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
-  },
-  "findings_count": 4,
+  "next_steps": "Run /orchestrate 933 to execute the plan",
+  "phase_count": 4,
+  "estimated_hours": 2,
+  "dependency_waves": [[1, 2], [3], [4]],
   "memory_candidates": [
     {
-      "content": "BimodalLogic's update-task-status.sh has no flag or code path that sets a free-text `blockers` field on a task record -- its only state-mutating flags are --file-scope-add, --research-questions, --hold-reason, --depends-on-add. hold_reason is a [HOLD]-specific triad (hold_reason/held_at/prior_status), not a general blocker annotation. Tasks with a populated free-text `blockers` field (298, 428, 257, 481) were set by a direct state.json edit, not through this script, and this is independent of a task's `status` value -- task 298 is status=partial with a populated prose blockers field, so 'partial' does not preclude a blockers entry.",
-      "category": "CONFIG",
-      "source_artifact": "specs/933_correct_decidability_front_record/reports/01_record-correction-scope-remeasured.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["update-task-status.sh", "blockers field", "state.json", "hold_reason", "task status schema"]
-    },
-    {
-      "content": "In BimodalLogic, state.json's `roadmap_batches` array (maintained by /roadmap, a separate periodic maintenance pass distinct from any individual task's own lifecycle) can carry a batch rationale that is temporally more current than a task's own filed/AMENDED description, when /roadmap runs between the task's filing and its dispatch. When a task's research phase finds the two disagree, cross-check both against direct reads of the live files rather than trusting either source outright -- /roadmap is explicitly barred from writing specs/ROADMAP.md itself, so a roadmap_batches rationale can correctly identify that ROADMAP.md prose needs updating without that update having happened yet.",
+      "content": "BimodalLogic's specs/ROADMAP.md is a STAGE-layout roadmap under scripts/roadmap-integration.sh: in that mode every '## ' section is retained byte-for-byte EXCEPT the single section whose body holds a fenced /orchestrate block ('## Run these next'), which is re-rendered wholly from specs/state.json's roadmap_batches/roadmap_notes. So a hand edit to any OTHER section (e.g. '## Where both fronts now stand', '## Stage 0', '## Next batches') is durable and is the correct edit target, while a hand edit inside '## Run these next' is silently overwritten by the next regeneration. The cheap, exit-status-checkable proof that a hand edit landed in a retained region is 'bash .claude/scripts/roadmap-integration.sh --regenerate --dry-run', which prints 'layout=stage ... retained=N' plus either 'no content change' or a diff -- a far better covering check for a ROADMAP.md prose edit than any shell suite, since suite_selection_select maps specs/ROADMAP.md to only 4 roadmap-generation suites and specs/state.json to 76 (every suite that READS state.json, i.e. effectively a full sweep).",
       "category": "PATTERN",
-      "source_artifact": "specs/933_correct_decidability_front_record/reports/01_record-correction-scope-remeasured.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["roadmap_batches", "/roadmap", "ROADMAP.md", "scope reconciliation", "task description staleness"]
+      "source_artifact": "specs/933_correct_decidability_front_record/plans/01_record-correction-roadmap-state.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["roadmap-integration", "stage-layout", "retained-sections", "roadmap-regenerate-dry-run", "suite-selection", "hand-edit-durability"]
     }
-  ]
+  ],
+  "metadata": {
+    "session_id": "sess_1795107126_0059c2_933",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 2
 }
