@@ -1,7 +1,7 @@
 # Implementation Plan: Task #942
 
 - **Task**: 942 - Add regression test coverage for three FormalSystem module groups that currently have none
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None (territory overlap with open task 177 on `TacticsTest.lean` is avoided outright -- see Decisions)
 - **Research Inputs**: specs/942_test_coverage_nomic_formathlib_tactic/reports/01_test-coverage-nomic-formathlib-tactic.md
@@ -194,61 +194,61 @@ reconciliation-and-verification phase.
 
 ---
 
-### Phase 1: NomicLanguage regression module [NOT STARTED]
+### Phase 1: NomicLanguage regression module [COMPLETED]
 
 **Goal**: Close the Medium-severity gap: `FormalSystem/NomicLanguage/` is referenced from a test
 module for the first time, exercising `NomicFormula`, `NomicTruth` and `NomicValidity`.
 
 **Tasks**:
 
-- [ ] Capture the pre-edit gate baseline, before touching any file, and record each verdict in
+- [x] Capture the pre-edit gate baseline, before touching any file, and record each verdict in
       the phase notes: `bash scripts/check-module-invariants.sh --no-build`,
       `bash scripts/typst-sync-check.sh --counts-only`, `lake exe runLinter BimodalTest`
       (for the current `BimodalTest` `docBlame`/`defsWithUnderscore`/`synTaut` rows), and the
       current `scripts/warning-budget.txt` statement. This is what makes a later red gate
       attributable or not.
-- [ ] Create `Tests/BimodalTest/Semantics/NomicLanguageTest.lean` with the four-line Apache
+- [x] Create `Tests/BimodalTest/Semantics/NomicLanguageTest.lean` with the four-line Apache
       copyright header every file under `Tests/` carries, the two imports
       `FormalSystem.NomicLanguage` and `FormalSystem.Semantics.Nomic`, and a module docstring
       that (a) states what the module covers and (b) carries
       `OpenLanguageAxiomTest.lean`'s guard-fired policy paragraph verbatim in substance: when a
       `#guard_msgs` block goes red, update the expected block in the same commit as the change
       that moved the profile, never re-baseline it alone to turn a red build green.
-- [ ] Section 1, syntax: `#guard`s over `NomicFormula`'s `DecidableEq`, pins on `ofFormula`, and a
+- [x] Section 1, syntax: `#guard`s over `NomicFormula`'s `DecidableEq`, pins on `ofFormula`, and a
       use of `ofFormula_injective`.
-- [ ] Section 2, truth clauses: apply `NomicTruth.nomic_iff`, `box_iff`, `always_iff` and
+- [x] Section 2, truth clauses: apply `NomicTruth.nomic_iff`, `box_iff`, `always_iff` and
       `diamond_iff` at an arbitrary `NomicFrame D`. These lemmas are `Iff.rfl`-shaped, so direct
       terms suffice (e.g. `NomicTruth.nomic_iff M τ x φ`); no tactic is needed.
-- [ ] Section 3, concrete frame: build a `NomicModel` over
+- [x] Section 3, concrete frame: build a `NomicModel` over
       `FormalSystem.Semantics.NomicHierarchy.F3`, evaluate truth at it, instantiate
       `Semantics.nomic_serial` at `F3` under
       `haveI : F3.IsRegular := NomicFrame.ofStepFamily_isRegular R3 R3.fwd R3.bwd`, and witness
       axiom 4's failure at `F3` via `Semantics.four_validOn_iff_uniform` together with
       `NomicHierarchy.F3.not_uniform`. Also pin a `TenseFree` negative:
       `¬ TenseFree (NomicFormula.someFuture (.atom p))` closes by `intro h; cases h`.
-- [ ] Section 4, axiom-profile pins: `#guard_msgs`-gated `#print axioms` blocks for the seven
+- [x] Section 4, axiom-profile pins: `#guard_msgs`-gated `#print axioms` blocks for the seven
       declarations in the measured table under "Research Integration" above. Re-read each profile
       from the compiler rather than copying the table on faith -- a mismatched expected string is
       a compile error, which is the point of the pin.
-- [ ] Docstring (or make `private`) every new public declaration in the module -- the
+- [x] Docstring (or make `private`) every new public declaration in the module -- the
       `NomicModel F3` valuation and any atom abbreviation above all. This module has no row in
       `scripts/c16-roots-baseline.txt`, so its `docBlame` ceiling is 0. Avoid a non-trailing
       underscore in any `def`/`abbrev` name (C26/`defsWithUnderscore`) and avoid a tautological
       statement (`synTaut`).
-- [ ] Add `import BimodalTest.Semantics.NomicLanguageTest` to `Tests/BimodalTest.lean`, beside the
+- [x] Add `import BimodalTest.Semantics.NomicLanguageTest` to `Tests/BimodalTest.lean`, beside the
       other `BimodalTest.Semantics.*` entries. This is part of this phase, not a later one:
       omitting it is a C6 unreachable-module failure.
-- [ ] Verify no task-number citation appears anywhere in the new `.lean` file: it is a deliverable
+- [x] Verify no task-number citation appears anywhere in the new `.lean` file: it is a deliverable
       outside `specs/**`, so `.claude/rules/no-task-references-in-deliverables.md` applies. Name
       durable anchors (a file path, a declaration name) in every comment.
-- [ ] Build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
+- [x] Build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
       BimodalTest.Semantics.NomicLanguageTest`, then
       `bash scripts/check-module-invariants.sh --no-build` for C6.
-- [ ] Regenerate the commit-blocking count surface, in THIS phase: `bash
+- [x] Regenerate the commit-blocking count surface, in THIS phase: `bash
       scripts/typst-sync-check.sh --fix`, then review `git diff typst/generated/status.typ` and
       confirm only `tests-file-count` and `tests-line-count` moved. Any other field moving means a
       concurrent writer's `FormalSystem/` edit -- stop and diagnose rather than staging it.
-- [ ] Commit once, with an explicit three-path staging list: the new module,
+- [x] Commit once, with an explicit three-path staging list: the new module,
       `Tests/BimodalTest.lean`, and `typst/generated/status.typ`. Omitting the third path is
       refused by `.githooks/pre-commit`, not merely untidy.
 
