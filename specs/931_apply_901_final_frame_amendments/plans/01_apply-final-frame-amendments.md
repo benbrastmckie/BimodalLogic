@@ -1,7 +1,7 @@
 # Implementation Plan: Task #931
 
 - **Task**: 931 - Apply the final-frame amendments to the 901 two-sided Reynolds engine paper-proof report
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/931_apply_901_final_frame_amendments/reports/01_apply-final-frame-amendments.md`
@@ -119,13 +119,13 @@ record correction and advances no roadmap item: applying it does not make T3 com
 Phases within the same wave can execute in parallel. All three phases write the same single file,
 so they are deliberately serialized into three waves of one.
 
-### Phase 1: Correct the four drift-only citation sites [NOT STARTED]
+### Phase 1: Correct the four drift-only citation sites [COMPLETED]
 
 **Goal**: Every stale Lean line-number citation in the 901 report points at the live declaration,
 with no claim, status, or prose change anywhere in this phase.
 
 **Tasks**:
-- [ ] Locate by content and correct the adjacent compiled ingredient row (live line 109). Replace
+- [x] Locate by content and correct the adjacent compiled ingredient row (live line 109). Replace
       the exact row:
       ```
       | `saturation_of_orientedForest`, `plus_invariance_of_isZTime` | compiled | `OrientedForest.lean:134`, `HistoryMorphism.lean:589` |
@@ -134,10 +134,12 @@ with no claim, status, or prose change anywhere in this phase.
       ```
       | `saturation_of_orientedForest`, `plus_invariance_of_isZTime` | compiled | `OrientedForest.lean:880`, `HistoryMorphism.lean:707` |
       ```
-- [ ] Locate by content and correct §15.3's route-prose citation (live line 908): change
+      *(completed)*
+- [x] Locate by content and correct §15.3's route-prose citation (live line 908): change
       `OrientedForest.lean:134` to `OrientedForest.lean:880` inside the sentence beginning
       "Replace `S` by its **universal cover** `S̃`". No other word of that sentence changes.
-- [ ] Locate by content and correct the evidence/status table row (live line 1047). Replace:
+      *(completed)*
+- [x] Locate by content and correct the evidence/status table row (live line 1047). Replace:
       ```
       | `saturation_of_orientedForest`; `plus_invariance_of_isZTime` demands `[F.IsRegular]` on the base | compiled (`OrientedForest.lean:134`, `HistoryMorphism.lean:589`) |
       ```
@@ -145,7 +147,8 @@ with no claim, status, or prose change anywhere in this phase.
       ```
       | `saturation_of_orientedForest`; `plus_invariance_of_isZTime` demands `[F.IsRegular]` on the base | compiled (`OrientedForest.lean:880`, `HistoryMorphism.lean:707`) |
       ```
-- [ ] Locate by content and correct the reads list (live line 1075). Replace:
+      *(completed)*
+- [x] Locate by content and correct the reads list (live line 1075). Replace:
       ```
       `Semantics/OrientedForest.lean:134` (`saturation_of_orientedForest`), `Semantics/HistoryMorphism.lean:306,589` (`exists_preimage_step_neg`, `plus_invariance_of_isZTime`).
       ```
@@ -153,11 +156,16 @@ with no claim, status, or prose change anywhere in this phase.
       ```
       `Semantics/OrientedForest.lean:880` (`saturation_of_orientedForest`), `Semantics/HistoryMorphism.lean:335,707` (`exists_preimage_step_neg`, `plus_invariance_of_isZTime`).
       ```
-- [ ] Re-grep each of the three stale strings (`OrientedForest.lean:134`, `HistoryMorphism.lean:589`,
+      *(completed)*
+- [x] Re-grep each of the three stale strings (`OrientedForest.lean:134`, `HistoryMorphism.lean:589`,
       `HistoryMorphism.lean:306`) and confirm the only surviving hit is `HistoryMorphism.lean:589`
       at the §15.3 paragraph Phase 2 replaces (live line 910). Any other surviving hit is an
-      unenumerated ninth site — stop and record it before continuing.
-- [ ] Commit this green sub-step.
+      unenumerated ninth site — stop and record it before continuing. *(completed: confirmed, zero
+      unenumerated hits — counts 0/0/1 for the three stale strings, 1 surviving hit at line 910 as
+      expected)*
+- [x] Commit this green sub-step. *(completed — see phase-closing commit below; the deviation re:
+      git-diff-based hunk verification is recorded in the Phase 1 progress file's `deviations`
+      array)*
 
 **Timing**: 0.25 hours
 

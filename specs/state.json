@@ -1544,7 +1544,7 @@
     {
       "project_number": 931,
       "project_name": "apply_901_final_frame_amendments",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "general",
       "title": "Apply the final-frame amendments to the 901 two-sided Reynolds engine paper-proof report",
       "description": "RECORD CORRECTION, no Lean. The 901 paper-proof report records the final-frame step as resting on two unlanded Lean pieces. Both landed on 2026-11-09, four to six hours after that report was committed, so the row is STALE rather than wrong-at-the-time. Apply the amendment that has already been written.\n\nSOURCE OF THE REPLACEMENT TEXT. specs/927_final_frame_step_remeasure_against_landed_cover/reports/01_final-frame-step-remeasure.md, Finding (3), supplies VERBATIM replacement text for (i) the `**missing**` ingredient-table row, (ii) the adjacent compiled row's drifted line-number citations, (iii) the `weakest link` Risks paragraph (a full dated replacement), and (iv) a one-clause correction to the companion Risks paragraph. Do not re-derive any of it and do not re-measure the landing timestamps -- they are recorded in that Finding's table.\n\nTHE COMPLETE WORK LIST. specs/927_final_frame_step_remeasure_against_landed_cover/plans/01_final-frame-step-remeasure.md, the `#### Phase 1 Notes` section, carries the full SEVEN-anchor table with per-anchor disposition. Three of those anchors are NOT enumerated by Finding (3) and exist only in that table: the drifted citation pair inside the evidence/status table (line 1047 at measurement time), the same drift in the reads list (line 1075, where `exists_preimage_step_neg` is additionally cited at a stale `:306` and is live at `:335`), and the `OrientedForest.lean:134` citation inside the 15.3 route prose (line 908). Work from the Phase 1 Notes table, not from Finding (3) alone.\n\nRE-LOCATE BY CONTENT. Every line number in both records is a measurement taken at that time and is explicitly labelled as such. Locate each anchor by its matched text, never by line number.\n\nTWO THINGS THAT MUST NOT BE TOUCHED. (1) Section 15.2's assessment of why the chronicle quotient's OWN Saturation is doubtful -- countably infinite slices, the quotient is not an oriented forest -- is CORRECT and LOAD-BEARING. It is the reason the universal-cover route exists at all. Leave it exactly as written. (2) The 901 report's own refusal to claim the step (`This write-up does not claim the final-frame step; it claims the engine up to it`) sits inside the Risks paragraph being replaced. The replacement reframes what is landed; it does NOT lift that refusal. Preserve it.\n\nThe `**The two missing pieces, named.**` paragraph in 15.3 is stale by the same measure; Finding (3) directs its replacement to be the Risks amendment text rather than a separate rewrite.\n\nTHIS IS A RECORD CORRECTION, NOT A COMPLETENESS CLAIM. Applying it does not make T3 complete and does not advance the completeness programme. Rows 17-21 of the ingredient table remain paper, and (O1), (O3) and (O4) are untouched. The 901 report's Recommendation 8 -- which bars formalizing sections 7-15 -- is not affected by this amendment and must not be edited by it.",
@@ -1554,7 +1554,7 @@
       "dependencies": [],
       "priority": "medium",
       "created": "2026-11-14T06:34:28Z",
-      "last_updated": "2026-11-19T18:04:12Z",
+      "last_updated": "2026-11-19T18:04:47Z",
       "next_artifact_number": 2,
       "audit_verdict": {
         "proposal": {

@@ -89,7 +89,7 @@ next_project_number: 941
 
 ### Paper Alignment
 
-931 [PLANNED] — Apply the final-frame amendments to the 901 two-sided...
+931 [IMPLEMENTING] — Apply the final-frame amendments to the 901 two-sided...
 
 ### Syntax
 
@@ -361,7 +361,7 @@ COUPLED GENERATED SURFACES -- inherited at filing time, not to be discovered at 
 ---
 
 ### 931. Apply the final-frame amendments to the 901 two-sided Reynolds engine paper-proof report
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: paper-alignment
 - **Dependencies**: None
