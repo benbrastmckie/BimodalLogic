@@ -1,7 +1,7 @@
 # Implementation Plan: Task #941
 
 - **Task**: 941 - Local aggregator that mirrors ci.yml's check gate
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/941_local_verify_all_ci_check_aggregator/reports/01_local-verify-all-aggregator.md
@@ -134,28 +134,30 @@ No `roadmap_path` was provided in this dispatch; no roadmap consultation perform
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Write scripts/verify-all.sh [NOT STARTED]
+### Phase 1: Write scripts/verify-all.sh [COMPLETED]
 
 **Goal**: A working, executable `scripts/verify-all.sh` that runs all nine CI check
 invocations in order, continues past every failure, and reports in `ci.yml`'s `Report results`
 shape with a nonzero exit on any failure.
 
 **Tasks**:
-- [ ] Re-derive the nine invocations from `.github/workflows/ci.yml` before writing anything,
+- [x] Re-derive the nine invocations from `.github/workflows/ci.yml` before writing anything,
       confirming the Research Integration list above still matches the live file (it is a
-      hypothesis as of plan-authoring time, not a fact at implementation time).
-- [ ] Create `scripts/verify-all.sh` with a `#!/usr/bin/env bash` shebang and a header comment
+      hypothesis as of plan-authoring time, not a fact at implementation time). *(completed:
+      re-read lines 100-365 of the live workflow; the Research Integration list matched
+      exactly, no discrepancies)*
+- [x] Create `scripts/verify-all.sh` with a `#!/usr/bin/env bash` shebang and a header comment
       block in the house style of the other `scripts/*.sh` files: purpose, usage, the
       successful-`lake build` precondition (Decision 2), exit-code contract, and a pointer to
-      `.github/workflows/ci.yml` as the source of record for the check list.
-- [ ] Use `set -uo pipefail` (deliberately **not** `-e`) so a failing check cannot abort the
+      `.github/workflows/ci.yml` as the source of record for the check list. *(completed)*
+- [x] Use `set -uo pipefail` (deliberately **not** `-e`) so a failing check cannot abort the
       run; guard every check invocation as `rc=0; <invocation> || rc=$?` and feed `rc` to the
-      reporter.
-- [ ] Port `ci.yml`'s `report()` function: `seen`/`passed`/`failed`/`skipped` counters,
+      reporter. *(completed)*
+- [x] Port `ci.yml`'s `report()` function: `seen`/`passed`/`failed`/`skipped` counters,
       `expected=9`, and the three-way classification (exit 0 -> `PASS`; the explicit
       not-run marker -> `SKIPPED`; anything else -> `FAIL`), printing `  PASS     <label>` /
-      `  SKIPPED  <label>` / `  FAIL     <label> (exit: N)`.
-- [ ] Invoke the nine checks in `ci.yml`'s order, each preceded by a comment naming its
+      `  SKIPPED  <label>` / `  FAIL     <label> (exit: N)`. *(completed)*
+- [x] Invoke the nine checks in `ci.yml`'s order, each preceded by a comment naming its
       `ci.yml` step name and step `id` (drift tripwire, per Risks): (1)
       `bash scripts/check-evidence-probes.sh`; (2)
       `bash scripts/check-module-invariants.sh --no-build`; (3)
@@ -164,21 +166,22 @@ shape with a nonzero exit on any failure.
       `bash scripts/check-metalogic-cycles.sh`; (6) `bash scripts/typst-sync-check.sh`; (7)
       `bash scripts/check-paper-definitions.sh`; (8)
       `lake exe mk_all --lib FormalSystem --check`; (9) the three-part lint-style check below.
-- [ ] Implement check 9 as three sub-checks run unconditionally in `ci.yml`'s order, with one
+      *(completed)*
+- [x] Implement check 9 as three sub-checks run unconditionally in `ci.yml`'s order, with one
       combined verdict (Decision 1): `lake exe lint-style`; then
       `git ls-files -s -- '*.lean' | awk '$1 == "100755" { print $4 }'` must be empty; then
       `git ls-files | tr '[:upper:]' '[:lower:]' | sort | uniq -d` must be empty. Print each
-      sub-check's own failure detail, and report check 9 `FAIL` if any failed.
-- [ ] Apply Decision 3's `SKIPPED` path: if `command -v lake` fails, mark checks 8 and 9
-      `SKIPPED` without invoking them.
-- [ ] Reproduce `ci.yml`'s terminal block verbatim in shape: the `seen -ne expected`
+      sub-check's own failure detail, and report check 9 `FAIL` if any failed. *(completed)*
+- [x] Apply Decision 3's `SKIPPED` path: if `command -v lake` fails, mark checks 8 and 9
+      `SKIPPED` without invoking them. *(completed)*
+- [x] Reproduce `ci.yml`'s terminal block verbatim in shape: the `seen -ne expected`
       out-of-sync error and exit 1; `RESULT: FAIL (N failed, M passed, K skipped)` and exit 1
       when `failed > 0`; `RESULT: PASS for all N checks that ran, but K were skipped` and
       exit 0 when `skipped > 0`; otherwise
       `RESULT: PASS (all N checks ran and passed)` and exit 0. Use plain stderr/stdout text,
-      not `::error::`/`::group::` GitHub Actions annotations.
-- [ ] `chmod +x scripts/verify-all.sh` so it is tracked at mode `100755`, matching all 16
-      existing `scripts/*.sh` files.
+      not `::error::`/`::group::` GitHub Actions annotations. *(completed)*
+- [x] `chmod +x scripts/verify-all.sh` so it is tracked at mode `100755`, matching all 16
+      existing `scripts/*.sh` files. *(completed)*
 
 **Timing**: 1.5 hours
 
