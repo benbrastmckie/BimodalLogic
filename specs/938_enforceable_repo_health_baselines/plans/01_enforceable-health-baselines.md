@@ -1,7 +1,7 @@
 # Implementation Plan: Task #938
 
 - **Task**: 938 - Convert the repository's measured-but-unenforced health signals into pinned baselines that block regressions
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: None. Concurrent sibling task 829 (plan phase, no declared `file_scope`) shares this working tree; task 937 owns the red CI workflows this record explicitly does not.
 - **Research Inputs**: specs/938_enforceable_repo_health_baselines/reports/01_enforceable-health-baselines.md
@@ -162,54 +162,54 @@ second half); they are in different waves, so they never run concurrently.
 
 ---
 
-### Phase 1: Pin the README verification-date baseline and gate it [NOT STARTED]
+### Phase 1: Pin the README verification-date baseline and gate it [COMPLETED]
 
 **Goal**: `readme-lint.sh` Check 4 exits non-zero on a README that is newly stale or newly
 missing a `Last verified` stamp, and exits 0 on the tree as it stands.
 
 **Tasks**:
 
-- [ ] Re-measure before writing anything: run `bash scripts/readme-lint.sh` and
+- [x] Re-measure before writing anything: run `bash scripts/readme-lint.sh` and
       `bash scripts/readme-lint.sh FormalSystem BimodalTools`, recording both STALE/MISSING counts
-      and both exit statuses. Treat the Scope Hypothesis below as refuted if either differs.
-- [ ] Create `scripts/readme-date-baseline.txt` with a comment header stating: one row per
+      and both exit statuses. Treat the Scope Hypothesis below as refuted if either differs. *(completed)*
+- [x] Create `scripts/readme-date-baseline.txt` with a comment header stating: one row per
       finding, shape `<class> <path> <stamp>` where `<class>` is `stale` or `missing` and
       `<stamp>` is the README's recorded `YYYY-MM-DD` stamp (`-` for a `missing` row); the file
       only ever SHRINKS; a `stale` row matches only while the README still carries the recorded
       stamp, so refreshing a stamp un-grandfathers that README permanently; never add a row to
-      quiet a new finding — refresh the stamp instead.
-- [ ] Generate the rows from the union of both invocations above (`FormalSystem` and
+      quiet a new finding — refresh the stamp instead. *(completed)*
+- [x] Generate the rows from the union of both invocations above (`FormalSystem` and
       `FormalSystem BimodalTools`), so one committed file covers every root subset. Sort rows
-      deterministically (class, then path).
-- [ ] Add `ENFORCE_README_DATES=${ENFORCE_README_DATES:-1}` near the top of `readme-lint.sh`,
+      deterministically (class, then path). *(completed)*
+- [x] Add `ENFORCE_README_DATES=${ENFORCE_README_DATES:-1}` near the top of `readme-lint.sh`,
       with a comment stating it defaults to enforced because the baseline pins the current debt
-      in this same change, and that it must never be flipped to 0 to quiet a new finding.
-- [ ] In the Summary block (not the Check 4 loop — that loop runs in a `while read` subshell and
+      in this same change, and that it must never be flipped to 0 to quiet a new finding. *(completed)*
+- [x] In the Summary block (not the Check 4 loop — that loop runs in a `while read` subshell and
       its `WARNINGS` increments do not reach the parent, which is why the Summary already
       recomputes `NO_DATE`), recompute the stale set and the missing set, diff each against the
       baseline, and set two new counters: `STALE_NEW` (a stale README with no matching baseline
-      row) and `NODATE_NEW` (a missing-stamp README with no matching baseline row).
-- [ ] Print, in the Summary block, the total `Stale dates (info):` count — absent there today,
+      row) and `NODATE_NEW` (a missing-stamp README with no matching baseline row). *(completed)*
+- [x] Print, in the Summary block, the total `Stale dates (info):` count — absent there today,
       so the 62 figure is currently visible only by scrolling the per-line warnings — alongside
-      `Stale dates (new):` and `Missing dates (new):`.
-- [ ] Report, not fail, each baseline row that no longer matches a live finding, with the
-      instruction to prune it (the `c20-declaration-baseline.txt` stale-key precedent).
-- [ ] Extend the final exit condition to
+      `Stale dates (new):` and `Missing dates (new):`. *(completed)*
+- [x] Report, not fail, each baseline row that no longer matches a live finding, with the
+      instruction to prune it (the `c20-declaration-baseline.txt` stale-key precedent). *(completed)*
+- [x] Extend the final exit condition to
       `[ "$MISSING" -gt 0 ] || [ "$BROKEN" -gt 0 ] || [ "$STALE_NEW" -gt 0 ] || [ "$NODATE_NEW" -gt 0 ]`
       when `ENFORCE_README_DATES` is 1, and update the `RESULT: FAIL (...)` message to name which
-      counter failed.
-- [ ] Update the script's own header: Check 4 is no longer described as reported-only, and the
-      gated-vs-reported section names the baseline file.
-- [ ] **Falsify.** Pick one README that is currently clean and NOT on the baseline. Edit its
+      counter failed. *(completed)*
+- [x] Update the script's own header: Check 4 is no longer described as reported-only, and the
+      gated-vs-reported section names the baseline file. *(completed)*
+- [x] **Falsify.** Pick one README that is currently clean and NOT on the baseline. Edit its
       `Last verified` stamp to a date before its directory's last commit date
       (`git log -1 --format=%cs -- <dir>`). Run `bash scripts/readme-lint.sh FormalSystem BimodalTools`
       and record both the printed `STALE DATE` / `RESULT: FAIL` lines and `echo $?`, confirming a
       non-zero status in the same run. Then also falsify the missing-stamp arm: delete the stamp
       line from a clean README not on the baseline and re-observe FAIL + non-zero exit. Revert
       both edits with a targeted `git checkout -- <path>` only after confirming `git status --short`
-      shows no staged content, and re-observe `RESULT: PASS` and exit 0.
-- [ ] Commit only `scripts/readme-lint.sh` and `scripts/readme-date-baseline.txt`, staged by
-      explicit file list.
+      shows no staged content, and re-observe `RESULT: PASS` and exit 0. *(completed)*
+- [x] Commit only `scripts/readme-lint.sh` and `scripts/readme-date-baseline.txt`, staged by
+      explicit file list. *(completed)*
 
 **Timing**: 1.5 hours
 

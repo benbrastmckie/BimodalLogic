@@ -1,29 +1,12 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/938_enforceable_repo_health_baselines/plans/01_enforceable-health-baselines.md",
-      "summary": "Six-phase plan pinning three advisory repo-health signals (README verification dates, C20 citation tiers, C16 env_linter roots) to committed keyed ratchet baselines with gates that fail on an increase, each falsified by a seeded finding."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 7,
   "metadata": {
-    "session_id": "sess_1795044397_89c580_938",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 9,
-    "dependency_waves": 4
-  },
-  "memory_candidates": [
-    {
-      "content": "When making an advisory repo-health signal enforceable, do not reuse an existing grandfathering file whose regeneration path is wholesale-destructive and whose current content backs a live gate. BimodalLogic's scripts/nolints.json is read root-independently by Batteries' runLinter and backs CI's non-continue-on-error 'lake lint' step; 'runLinter --update' rewrites it keeping only findings for the roots named on that invocation (observed collapse 914 -> 237 lines). Extending it to widen a signal's scope has two further costs beyond the regeneration hazard: grandfathering makes the findings stop being reported, so the count the task exists to pin reads zero and the drift signal disappears; and its [linterClass, declName] key carries no root component, so it cannot express a per-root sum. Prefer a NEW keyed baseline file in the warning-budget.txt shape (<count> <key> <class>), which needs no destructive regeneration, keeps the debt printed, and leaves the existing enforced gate untouched. General rule for choosing a baseline key: key by whatever identity is stable across the kind of edit that legitimately moves the finding (declaration name where a target declaration exists, file path alone where it does not, never a bare repository-wide total, never a line number).",
-      "category": "INSIGHT",
-      "source_artifact": "specs/938_enforceable_repo_health_baselines/plans/01_enforceable-health-baselines.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["ratchet-baseline", "enforcement-flag", "nolints", "warning-budget", "gate-regression", "baseline-key-shape"]
-    }
-  ],
-  "dispatch_seq": 5
+    "session_id": "sess_1795044397_89c580",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 0,
+    "phases_total": 6
+  }
 }

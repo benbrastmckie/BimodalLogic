@@ -6,7 +6,7 @@
 #   2. Every .lean file in a directory appears in its README.md   [REPORTED, not gated]
 #   3. No broken relative file references in any markdown file in scope
 #   4. Every README.md has a "Last verified" date, and that date is not
-#      older than the directory's last commit                     [REPORTED, not gated]
+#      older than the directory's last commit     [GATED against scripts/readme-date-baseline.txt]
 #
 # Usage: ./scripts/readme-lint.sh [<root-directory> ...]
 #
@@ -29,16 +29,31 @@
 #
 # What is gated vs. merely reported
 # ---------------------------------
-# Only Checks 1 and 3 affect the exit code. Check 2 (`NOT LISTED`) is REPORTED and
-# deliberately not gated: the tree carries ~110 such warnings, all cosmetic, and
-# gating them would convert a documentation nicety into a build failure. Check 4
-# (a missing `Last verified` date, or a present one that predates the directory's
-# last commit) is likewise reported. The summary block below states both counts
-# explicitly so that "not gated" never reads as "not measured".
+# Checks 1 and 3 always affect the exit code. Check 2 (`NOT LISTED`) is REPORTED
+# and deliberately not gated: the tree carries ~110 such warnings, all cosmetic,
+# and gating them would convert a documentation nicety into a build failure.
+# Check 4 (a missing `Last verified` date, or a present one that predates the
+# directory's last commit) is reported in full, but its DEBT IS PINNED: every
+# finding present when `scripts/readme-date-baseline.txt` was generated is
+# grandfathered by exact (class, path, stamp) match, and the exit code responds
+# only to a NEW finding -- one absent from that baseline, or a previously
+# grandfathered `stale` row whose stamp has since changed (refreshing a stamp
+# permanently un-grandfathers that README). This is controlled by
+# `ENFORCE_README_DATES` below, defaulting to enforced. The summary block states
+# the info/new counts for both checks explicitly so that "gated" and "reported"
+# are never conflated with "not measured".
 #
-# Exit code: 0 = all clean, 1 = errors found
+# Exit code: 0 = all clean, 1 = errors (or, with ENFORCE_README_DATES=1, a new
+# Check 4 finding) found
 
 set -euo pipefail
+
+# Set to 0 only for a one-off local run that must not fail on a new stale/missing
+# README date (e.g. while deliberately refreshing many stamps at once). The
+# committed default is 1 because scripts/readme-date-baseline.txt pins the
+# existing debt in the same change that introduces this flag -- it must never be
+# flipped to 0 in the committed script to quiet a new finding.
+ENFORCE_README_DATES="${ENFORCE_README_DATES:-1}"
 
 if [ "$#" -eq 0 ]; then
   ROOTS=("FormalSystem")
@@ -266,8 +281,8 @@ BROKEN=$(for r in "${ROOTS[@]}"; do scope_md "$r"; done | sort -u | { grep -v Bo
 done | wc -l)
 echo "Broken file references:   $BROKEN"
 
-# Check 2 and Check 4 are REPORTED, not gated. Counting them here is the point:
-# "not gated" must never be mistaken for "not measured".
+# Check 2 is REPORTED, not gated. Counting it here is the point: "not gated"
+# must never be mistaken for "not measured".
 NOT_LISTED=$(for r in "${ROOTS[@]}"; do
   if is_lean_root "$r"; then find "$r" -name "README.md"; fi
 done | sort -u | { grep -v Boneyard || true; } | while read -r readme; do
@@ -278,15 +293,108 @@ done | sort -u | { grep -v Boneyard || true; } | while read -r readme; do
 done | wc -l)
 echo "Files not listed (info):  $NOT_LISTED"
 
-NO_DATE=$(for r in "${ROOTS[@]}"; do scope_md "$r"; done | sort -u \
+# -----------------------------------------------------------------------
+# Check 4 debt: recompute the live stale and missing-date sets here (the
+# Check 4 loop above runs in a `while read` subshell; its counts don't reach
+# this parent shell -- the same reason this recompute already existed for
+# missing dates before Check 4 pinning). Diff each set against
+# scripts/readme-date-baseline.txt to find NEW findings -- rows absent from
+# the baseline entirely, or (for `stale`) present with a different stamp,
+# since a refreshed stamp permanently un-grandfathers that README.
+# -----------------------------------------------------------------------
+BASELINE_FILE="scripts/readme-date-baseline.txt"
+
+# Every markdown path in scope for the current ROOTS (Checks 3-4's own scope),
+# used below to keep the pruning report honest when invoked on a root subset
+# narrower than the baseline's union (e.g. the default FormalSystem-only run
+# against a baseline generated from FormalSystem + BimodalTools).
+SCOPE_SET=$(for r in "${ROOTS[@]}"; do scope_md "$r"; done | sort -u | { grep -v Boneyard || true; })
+
+STALE_LIST=$(for r in "${ROOTS[@]}"; do scope_md "$r"; done | sort -u \
+  | { grep -vE 'Boneyard|(^|/)(docs|latex|typst)/' || true; } | while read -r md; do
+  dir=$(dirname "$md")
+  STAMP_LINE=$(grep -i "last verified\|last updated" "$md" | head -1 || true)
+  [ -z "$STAMP_LINE" ] && continue
+  STAMP_DATE=$(printf '%s' "$STAMP_LINE" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1 || true)
+  [ -z "$STAMP_DATE" ] && continue
+  COMMIT_DATE=$(git log -1 --format=%cs -- "$dir" 2>/dev/null || true)
+  [ -z "$COMMIT_DATE" ] && continue
+  if [[ "$STAMP_DATE" < "$COMMIT_DATE" ]]; then
+    echo "$md $STAMP_DATE"
+  fi
+done)
+STALE_TOTAL=0
+[ -n "$STALE_LIST" ] && STALE_TOTAL=$(printf '%s\n' "$STALE_LIST" | wc -l)
+echo "Stale dates (info):       $STALE_TOTAL"
+
+MISSING_LIST=$(for r in "${ROOTS[@]}"; do scope_md "$r"; done | sort -u \
   | { grep -vE 'Boneyard|(^|/)(docs|latex|typst)/' || true; } | while read -r md; do
   grep -qi "last verified\|last updated" "$md" || echo "$md"
-done | wc -l)
+done)
+NO_DATE=0
+[ -n "$MISSING_LIST" ] && NO_DATE=$(printf '%s\n' "$MISSING_LIST" | wc -l)
 echo "Missing dates (info):     $NO_DATE"
 
-if [ "$MISSING" -gt 0 ] || [ "$BROKEN" -gt 0 ]; then
+STALE_NEW=0
+if [ -n "$STALE_LIST" ]; then
+  while read -r md stamp; do
+    [ -z "$md" ] && continue
+    if ! grep -qxF "stale $md $stamp" "$BASELINE_FILE" 2>/dev/null; then
+      STALE_NEW=$((STALE_NEW + 1))
+    fi
+  done <<< "$STALE_LIST"
+fi
+echo "Stale dates (new):        $STALE_NEW"
+
+NODATE_NEW=0
+if [ -n "$MISSING_LIST" ]; then
+  while read -r md; do
+    [ -z "$md" ] && continue
+    if ! grep -qxF "missing $md -" "$BASELINE_FILE" 2>/dev/null; then
+      NODATE_NEW=$((NODATE_NEW + 1))
+    fi
+  done <<< "$MISSING_LIST"
+fi
+echo "Missing dates (new):      $NODATE_NEW"
+
+# Baseline rows that no longer match a live finding -- reported, never failed,
+# on the c20-declaration-baseline.txt stale-key precedent. Only rows whose path
+# falls within the CURRENT invocation's scope are evaluated, so a narrower root
+# subset never reports a wider baseline's out-of-scope rows as prunable.
+echo ""
+echo "--- Baseline rows no longer matching a live finding (candidates for pruning) ---"
+PRUNE_COUNT=0
+while IFS= read -r row; do
+  case "$row" in '#'*|'') continue ;; esac
+  b_class=$(printf '%s' "$row" | awk '{print $1}')
+  b_path=$(printf '%s' "$row" | awk '{print $2}')
+  b_stamp=$(printf '%s' "$row" | awk '{print $3}')
+  printf '%s\n' "$SCOPE_SET" | grep -qxF "$b_path" || continue
+  case "$b_class" in
+    stale)
+      if [ -z "$STALE_LIST" ] || ! printf '%s\n' "$STALE_LIST" | grep -qxF "$b_path $b_stamp"; then
+        echo "  PRUNE: $row (no longer a live stale finding)"
+        PRUNE_COUNT=$((PRUNE_COUNT + 1))
+      fi
+      ;;
+    missing)
+      if [ -z "$MISSING_LIST" ] || ! printf '%s\n' "$MISSING_LIST" | grep -qxF "$b_path"; then
+        echo "  PRUNE: $row (no longer a live missing-date finding)"
+        PRUNE_COUNT=$((PRUNE_COUNT + 1))
+      fi
+      ;;
+  esac
+done < "$BASELINE_FILE"
+[ "$PRUNE_COUNT" -eq 0 ] && echo "  (none)"
+
+if [ "$MISSING" -gt 0 ] || [ "$BROKEN" -gt 0 ] \
+   || { [ "$ENFORCE_README_DATES" -eq 1 ] && { [ "$STALE_NEW" -gt 0 ] || [ "$NODATE_NEW" -gt 0 ]; }; }; then
   echo ""
-  echo "RESULT: FAIL ($MISSING missing READMEs, $BROKEN broken references)"
+  if [ "$MISSING" -gt 0 ] || [ "$BROKEN" -gt 0 ]; then
+    echo "RESULT: FAIL ($MISSING missing READMEs, $BROKEN broken references, $STALE_NEW new stale dates, $NODATE_NEW new missing dates)"
+  else
+    echo "RESULT: FAIL ($STALE_NEW new stale dates, $NODATE_NEW new missing dates)"
+  fi
   exit 1
 else
   echo ""
