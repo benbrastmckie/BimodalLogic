@@ -1,0 +1,34 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/933_correct_decidability_front_record/reports/01_record-correction-scope-remeasured.md",
+      "summary": "Re-measures all four record-correction items against the live tree: item (1) already discharged by independent /roadmap passes; item (2) still stale (ROADMAP.md:19-44 contradicts plan v13 and 934's archival); item (3) widened beyond the task's own AMENDED note (checkbox still unchecked, plus a crux restatement against 934's landed SAT verdict); item (4)'s literal mechanism (update-task-status.sh) does not exist and its premise is stale (761 is partial, not blocked, with seven edges not six), but the underlying blockers:null defect is still real and fixable via a direct scoped edit, precedented by task 298."
+    }
+  ],
+  "next_steps": "Run /orchestrate 933 to create an implementation plan for items (2), (3) and (4) as re-scoped in the report (item (1) needs no plan phase work).",
+  "metadata": {
+    "session_id": "sess_1795107126_0059c2_933",
+    "agent_type": "general-research-agent",
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  },
+  "findings_count": 4,
+  "memory_candidates": [
+    {
+      "content": "BimodalLogic's update-task-status.sh has no flag or code path that sets a free-text `blockers` field on a task record -- its only state-mutating flags are --file-scope-add, --research-questions, --hold-reason, --depends-on-add. hold_reason is a [HOLD]-specific triad (hold_reason/held_at/prior_status), not a general blocker annotation. Tasks with a populated free-text `blockers` field (298, 428, 257, 481) were set by a direct state.json edit, not through this script, and this is independent of a task's `status` value -- task 298 is status=partial with a populated prose blockers field, so 'partial' does not preclude a blockers entry.",
+      "category": "CONFIG",
+      "source_artifact": "specs/933_correct_decidability_front_record/reports/01_record-correction-scope-remeasured.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["update-task-status.sh", "blockers field", "state.json", "hold_reason", "task status schema"]
+    },
+    {
+      "content": "In BimodalLogic, state.json's `roadmap_batches` array (maintained by /roadmap, a separate periodic maintenance pass distinct from any individual task's own lifecycle) can carry a batch rationale that is temporally more current than a task's own filed/AMENDED description, when /roadmap runs between the task's filing and its dispatch. When a task's research phase finds the two disagree, cross-check both against direct reads of the live files rather than trusting either source outright -- /roadmap is explicitly barred from writing specs/ROADMAP.md itself, so a roadmap_batches rationale can correctly identify that ROADMAP.md prose needs updating without that update having happened yet.",
+      "category": "PATTERN",
+      "source_artifact": "specs/933_correct_decidability_front_record/reports/01_record-correction-scope-remeasured.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["roadmap_batches", "/roadmap", "ROADMAP.md", "scope reconciliation", "task description staleness"]
+    }
+  ]
+}
