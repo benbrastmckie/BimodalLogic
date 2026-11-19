@@ -1,7 +1,7 @@
 # Implementation Plan: Task #931
 
 - **Task**: 931 - Apply the final-frame amendments to the 901 two-sided Reynolds engine paper-proof report
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/931_apply_901_final_frame_amendments/reports/01_apply-final-frame-amendments.md`

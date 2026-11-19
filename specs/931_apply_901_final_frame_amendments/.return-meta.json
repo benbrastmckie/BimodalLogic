@@ -20,14 +20,25 @@
       "category": "PATTERN",
       "source_artifact": "specs/931_apply_901_final_frame_amendments/summaries/01_apply-final-frame-amendments-summary.md",
       "confidence": 0.9,
-      "suggested_keywords": ["specs/archive", "gitignore", "git diff", "verification tier", "untracked file"]
+      "suggested_keywords": [
+        "specs/archive",
+        "gitignore",
+        "git diff",
+        "verification tier",
+        "untracked file"
+      ]
     },
     {
       "content": "Content-match editing discipline (never line-number locators) worked cleanly across a three-phase, eight-anchor plan that explicitly forbade re-deriving replacement text: re-reading each phase's own plan section immediately before editing, confirming each old_string by live grep before applying it, and running the plan's own named grep-count verification immediately after each edit caught zero drift and required zero re-location fallback, despite the source plan itself admitting its own seven-anchor closure sentence had been mis-stated by a prior dispatch.",
       "category": "TECHNIQUE",
       "source_artifact": "specs/931_apply_901_final_frame_amendments/summaries/01_apply-final-frame-amendments-summary.md",
       "confidence": 0.75,
-      "suggested_keywords": ["content-match editing", "plan compliance", "closure sweep", "record correction"]
+      "suggested_keywords": [
+        "content-match editing",
+        "plan compliance",
+        "closure sweep",
+        "record correction"
+      ]
     }
   ],
   "sapience_notes": [
@@ -76,7 +87,11 @@
     "session_id": "sess_1795110673_3790cc",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 3,
     "phases_total": 3
   }
