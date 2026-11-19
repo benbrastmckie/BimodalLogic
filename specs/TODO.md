@@ -88,8 +88,8 @@ next_project_number: 944
 
 ### Repo Hygiene
 
-941 [RESEARCHED] — Add a local aggregator that mirrors ci.yml's check gate, so a...
-943 [RESEARCHED] — Close three small gitignore and loose-file hygiene gaps at...
+941 [PLANNED] — Add a local aggregator that mirrors ci.yml's check gate, so a...
+943 [PLANNING] — Close three small gitignore and loose-file hygiene gaps at...
 
 ### Semantics
 
@@ -105,7 +105,7 @@ next_project_number: 944
 ## Tasks
 
 ### 943. Gitignore and loose file hygiene
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -162,11 +162,12 @@ VERIFICATION: `lake build` and the project's test target both green; confirm by 
 ---
 
 ### 941. Local verify all ci check aggregator
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [941_local_verify_all_ci_check_aggregator/reports/01_local-verify-all-aggregator.md]
+- **Plan**: [941_local_verify_all_ci_check_aggregator/plans/01_local-verify-all-aggregator.md]
 
 **Description**: Add a local aggregator that mirrors ci.yml's check gate, so a contributor can reproduce CI's verdict before pushing.
 

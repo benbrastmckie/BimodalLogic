@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 3,
+  "summary": "Wrote a 3-phase implementation plan for scripts/verify-all.sh, the local aggregator mirroring ci.yml's nine-check gate. Phase 1 writes the script (nine invocations in ci.yml's order, continue-past-failure, ci.yml's Report results reporting shape with expected=9); Phase 2 documents it in CONTRIBUTING.md's Development Setup block and adds two scripts/README.md rows; Phase 3 verifies CI parity, a seeded single-check failure, and both cross-references. Six planning decisions are recorded, including check 9's three-sub-check handling, the no-lake-build boundary, and the SKIPPED-when-lake-absent semantics. Estimated 3 hours.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/941_local_verify_all_ci_check_aggregator/plans/01_local-verify-all-aggregator.md",
+      "summary": "3-phase plan (3h) for scripts/verify-all.sh plus CONTRIBUTING.md and scripts/README.md documentation."
+    }
+  ],
+  "dispatch_seq": 3
+}

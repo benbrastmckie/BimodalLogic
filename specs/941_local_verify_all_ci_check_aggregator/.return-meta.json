@@ -1,42 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/941_local_verify_all_ci_check_aggregator/reports/01_local-verify-all-aggregator.md",
-      "summary": "Re-derives the nine ci.yml checks' exact invocations, order, exit-code conventions, lock/sequencing behavior, and documentation-placement precedent for scripts/verify-all.sh, CONTRIBUTING.md, and scripts/README.md."
+      "type": "plan",
+      "path": "specs/941_local_verify_all_ci_check_aggregator/plans/01_local-verify-all-aggregator.md",
+      "summary": "3-phase plan (3h) for scripts/verify-all.sh, the local nine-check CI aggregator, plus CONTRIBUTING.md and scripts/README.md documentation."
     }
   ],
-  "next_steps": "Run /orchestrate 941 to create implementation plan",
+  "memory_candidates": [],
+  "next_steps": "Run /orchestrate 941 to execute the plan",
   "metadata": {
     "session_id": "sess_1795117390_6c8a38_941",
-    "agent_type": "general-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 3,
+    "dependency_waves": [[1], [2], [3]]
   },
-  "findings_count": 6,
-  "memory_candidates": [
-    {
-      "content": "BimodalLogic's ci.yml nine-check gate has argument drift from a plausible bare-name reading: check-copyright-headers.sh and readme-lint.sh are both invoked with 'FormalSystem BimodalTools' (not bare --strict / no args) because both scripts default to ROOTS=(\"FormalSystem\") only; 'lake exe mk_all' is invoked as '--lib FormalSystem --check' (bare '--check' errors on the two Tests-rooted libraries). Also, the 'lint-style' CI step is actually three sub-checks under one outcome: lake exe lint-style, an executable-bit scan over tracked .lean files, and a case-insensitive tracked-path collision scan.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/941_local_verify_all_ci_check_aggregator/reports/01_local-verify-all-aggregator.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["ci.yml", "verify-all", "check-copyright-headers", "readme-lint", "mk_all", "lint-style"]
-    },
-    {
-      "content": "BimodalLogic's scripts/README.md documents a 'Per-script determinations' table classifying each gate script's use of the shared .lake/build-guard.lock (flock-based, advisory, leaf-only: only the script that invokes lake/lean takes it, never a delegating caller). A sequential caller script that invokes several lock-taking child scripts one after another has no deadlock risk, since each child acquires and releases the lock before the next starts -- only parallel/backgrounded invocation of lock-taking scripts would be hazardous.",
-      "category": "PATTERN",
-      "source_artifact": "specs/941_local_verify_all_ci_check_aggregator/reports/01_local-verify-all-aggregator.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["lake", "flock", ".lake lock", "sequential execution", "scripts/README.md"]
-    },
-    {
-      "content": "BimodalLogic's docs/development/CI_CD_PROCESS.md 'Wiring a New Check Script' section (around line 214) is the canonical convention for adding a ci.yml check step: step naming mirrors exact invocation, every check is continue-on-error:true with the final 'Report results' step as the sole aggregating gate (expected count + report() per step), a skip-and-report-neutral convention for legitimately-absent inputs (print 'SKIP (neutral): <reason>' and exit 0, as check-paper-definitions.sh does), and cache-warm placement (lake-dependent checks after the build steps). Useful precedent for any local aggregator mirroring CI's reporting shape.",
-      "category": "PATTERN",
-      "source_artifact": "specs/941_local_verify_all_ci_check_aggregator/reports/01_local-verify-all-aggregator.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["ci.yml", "CI_CD_PROCESS.md", "aggregating gate", "skip-and-report-neutral", "continue-on-error"]
-    }
-  ]
+  "dispatch_seq": 3
 }

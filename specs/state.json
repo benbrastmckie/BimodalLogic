@@ -1324,15 +1324,16 @@
     {
       "project_number": 941,
       "project_name": "local_verify_all_ci_check_aggregator",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "topic": "repo-hygiene",
       "priority": "medium",
       "description": "Add a local aggregator that mirrors ci.yml's check gate, so a contributor can reproduce CI's verdict before pushing.\n\nSource of record: specs/reviews/review-2026-11-19.md (Medium severity finding).\n\nPROBLEM: ci.yml runs nine distinct checks, but no local entrypoint runs them together. A contributor can pass `lake build` and `lake test` locally and still push a CI-red commit, discovering failures only after a long CI run, one check at a time via ci.yml's own report step.\n\nTHE NINE CHECKS, in ci.yml's order (re-derive from .github/workflows/ci.yml at implementation time rather than trusting this list):\n1. scripts/check-evidence-probes.sh\n2. scripts/check-module-invariants.sh --no-build\n3. scripts/check-copyright-headers.sh --strict\n4. scripts/readme-lint.sh\n5. scripts/check-metalogic-cycles.sh\n6. scripts/typst-sync-check.sh\n7. scripts/check-paper-definitions.sh\n8. lake exe mk_all --check\n9. lake exe lint-style\n\nSCOPE:\n(A) Add scripts/verify-all.sh running the nine steps in the same order, with the same pass/fail reporting shape as ci.yml's \"Report results\" step (per-check status lines plus an aggregate verdict and a nonzero exit on any failure). Continue through all checks and report every failure rather than aborting on the first, matching how CI surfaces them.\n(B) Document it in CONTRIBUTING.md's Development Setup section (~lines 18-57), next to the existing git-hook installation instructions.\n(C) Add an entry to scripts/README.md consistent with how the other scripts there are catalogued.\n\nEXPLICITLY OUT OF SCOPE: changing any of the nine checks themselves, changing ci.yml, and wiring the aggregator into the pre-commit hook (the nine checks include slow steps; making them a commit-time gate is a separate decision).\n\nVERIFICATION: run scripts/verify-all.sh on the current clean tree and confirm it reports the same per-check verdicts CI reports for the same commit; confirm a deliberately seeded failure in one check is reported and yields a nonzero exit; confirm the script is referenced from both CONTRIBUTING.md and scripts/README.md.",
       "file_scope": [
-        "scripts/verify-all.sh",
         "CONTRIBUTING.md",
-        "scripts/README.md"
+        "scripts/README.md",
+        "scripts/verify-all.sh",
+        "specs/941_local_verify_all_ci_check_aggregator/summaries/01_local-verify-all-aggregator-summary.md"
       ],
       "created": "2026-11-19T19:08:34Z",
       "audit_verdict": {
@@ -1352,13 +1353,18 @@
         },
         "degradations_count": 441
       },
-      "last_updated": "2026-11-19T19:49:07Z",
+      "last_updated": "2026-11-19T19:56:18Z",
       "session_id": "sess_1795117390_6c8a38",
       "artifacts": [
         {
           "path": "specs/941_local_verify_all_ci_check_aggregator/reports/01_local-verify-all-aggregator.md",
           "type": "report",
           "summary": "Re-derives the nine ci.yml checks' exact invocations, order, exit-code conventions, lock/sequencing behavior, and documentation-placement precedent for scripts/verify-all.sh, CONTRIBUTING.md, and scripts/README.md."
+        },
+        {
+          "path": "specs/941_local_verify_all_ci_check_aggregator/plans/01_local-verify-all-aggregator.md",
+          "type": "plan",
+          "summary": "3-phase plan (3h) for scripts/verify-all.sh plus CONTRIBUTING.md and scripts/README.md documentation."
         }
       ],
       "next_artifact_number": 2
@@ -1409,7 +1415,7 @@
     {
       "project_number": 943,
       "project_name": "gitignore_and_loose_file_hygiene",
-      "status": "researched",
+      "status": "planning",
       "task_type": "general",
       "topic": "repo-hygiene",
       "priority": "low",
@@ -1447,8 +1453,8 @@
         },
         "degradations_count": 445
       },
-      "last_updated": "2026-11-19T19:49:23Z",
-      "session_id": "sess_1795117390_6c8a38",
+      "last_updated": "2026-11-19T19:49:56Z",
+      "session_id": "sess_1795117390_6c8a38_943",
       "artifacts": [
         {
           "path": "specs/943_gitignore_and_loose_file_hygiene/reports/01_gitignore-loose-file-hygiene.md",
