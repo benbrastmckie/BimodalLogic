@@ -1,7 +1,7 @@
 # Implementation Plan: Task #943
 
 - **Task**: 943 - Close three small gitignore and loose-file hygiene gaps at the repository root
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1 hour
 - **Dependencies**: None
 - **Research Inputs**: specs/943_gitignore_and_loose_file_hygiene/reports/01_gitignore-loose-file-hygiene.md
@@ -134,35 +134,35 @@ final phase observes all of the task's work.
 
 ---
 
-### Phase 1: Baseline capture and `.gitignore` rules (gaps A and B) [NOT STARTED]
+### Phase 1: Baseline capture and `.gitignore` rules (gaps A and B) [COMPLETED]
 
 **Goal**: Capture pre-change gate baselines, then add the two `.gitignore` rules and prove that
 exactly the intended paths moved from untracked to ignored with no tracked file affected.
 
 **Tasks**:
-- [ ] Capture pre-change baselines into the session scratchpad, recording each run's exit status and the exact command line
+- [x] Capture pre-change baselines into the session scratchpad, recording each run's exit status and the exact command line
       used for each so Phase 2 can re-run them byte-identically:
       `bash scripts/check-module-invariants.sh` and `bash scripts/readme-lint.sh`. If the full
       invariants run is too slow to repeat, use its `--no-build` mode — but then use `--no-build`
-      in Phase 2 as well, and note the choice in the summary.
-- [ ] Capture `git status --porcelain --ignored -- latex .pid` and `git ls-files latex` as a
-      pre-change reference.
-- [ ] Re-read `.gitignore` immediately before editing (sibling task 941 is live on this tree).
-- [ ] Add `latex/build/` to `.gitignore` directly beneath the existing `latex/**/*.log` /
+      in Phase 2 as well, and note the choice in the summary. *(completed: both exit 0; invariants "ALL CHECKS PASSED"; readme-lint "RESULT: PASS", 62 pre-existing stale-date info findings, 0 broken refs; full (non `--no-build`) invocations used)*
+- [x] Capture `git status --porcelain --ignored -- latex .pid` and `git ls-files latex` as a
+      pre-change reference. *(completed: `latex/` already `!!` via line 3's generic `build/` rule; `git ls-files latex` empty; `.pid` untracked and unignored)*
+- [x] Re-read `.gitignore` immediately before editing (sibling task 941 is live on this tree).
+- [x] Add `latex/build/` to `.gitignore` directly beneath the existing `latex/**/*.log` /
       `typst/**/*.log` pair (currently lines 44-45), inside that block's own comment scope. Do
       not touch line 3's generic `build/` rule.
-- [ ] Add an anchored `/.pid` rule in the runtime/temporary region — beside `*.tmp` (line 25) or
+- [x] Add an anchored `/.pid` rule in the runtime/temporary region — beside `*.tmp` (line 25) or
       alongside the other anchored root-only entries near `/.claude` (line 106). Pick one; do not
-      add it twice.
-- [ ] Verify the new rules bite: `git check-ignore -v .pid` must now report the new `/.pid` line,
+      add it twice. *(completed: placed beside `/.agent-logs` in the anchored root-only block)*
+- [x] Verify the new rules bite: `git check-ignore -v .pid` must now report the new `/.pid` line,
       and `git check-ignore -v latex/build/BimodalReference.aux` must report a rule (either the
       new `latex/build/` line or line 3's `build/` — both are correct outcomes; the point is that
       it stays ignored).
-- [ ] Verify no tracked file was newly ignored: `git ls-files latex` must still return zero, and
+- [x] Verify no tracked file was newly ignored: `git ls-files latex` must still return zero, and
       `git ls-files .pid` must return nothing. Confirm `git status --porcelain` no longer lists
       `.pid` as `??`.
-- [ ] Commit this phase's single file with an explicit file-list pathspec
-      (`git add -- .gitignore`), never a directory or glob.
+- [x] Commit this phase's single file with an explicit file-list pathspec
+      (`git add -- .gitignore`), never a directory or glob. *(deviation: altered — verify-touched.sh .gitignore surfaced a pre-existing, unrelated NEW failure in test-verify-deploy-gate-selection.sh case(t), root-caused to this repo's missing agent-system/extensions/ directory, not to the .gitignore content; recorded via issue-record.sh rather than treated as a regression)*
 
 **Timing**: 0.4 hours
 

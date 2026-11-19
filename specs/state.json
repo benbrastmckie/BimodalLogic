@@ -1324,7 +1324,7 @@
     {
       "project_number": 941,
       "project_name": "local_verify_all_ci_check_aggregator",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "general",
       "topic": "repo-hygiene",
       "priority": "medium",
@@ -1353,7 +1353,7 @@
         },
         "degradations_count": 441
       },
-      "last_updated": "2026-11-19T19:56:18Z",
+      "last_updated": "2026-11-19T19:57:32Z",
       "session_id": "sess_1795117390_6c8a38",
       "artifacts": [
         {
@@ -1415,7 +1415,7 @@
     {
       "project_number": 943,
       "project_name": "gitignore_and_loose_file_hygiene",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "general",
       "topic": "repo-hygiene",
       "priority": "low",
@@ -1453,7 +1453,7 @@
         },
         "degradations_count": 445
       },
-      "last_updated": "2026-11-19T19:57:02Z",
+      "last_updated": "2026-11-19T19:57:48Z",
       "session_id": "sess_1795117390_6c8a38",
       "artifacts": [
         {

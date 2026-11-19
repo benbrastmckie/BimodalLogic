@@ -88,8 +88,8 @@ next_project_number: 944
 
 ### Repo Hygiene
 
-941 [PLANNED] — Add a local aggregator that mirrors ci.yml's check gate, so a...
-943 [PLANNED] — Close three small gitignore and loose-file hygiene gaps at...
+941 [IMPLEMENTING] — Add a local aggregator that mirrors ci.yml's check gate, so a...
+943 [IMPLEMENTING] — Close three small gitignore and loose-file hygiene gaps at...
 
 ### Semantics
 
@@ -105,7 +105,7 @@ next_project_number: 944
 ## Tasks
 
 ### 943. Gitignore and loose file hygiene
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -163,7 +163,7 @@ VERIFICATION: `lake build` and the project's test target both green; confirm by 
 ---
 
 ### 941. Local verify all ci check aggregator
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None

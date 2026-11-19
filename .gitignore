@@ -43,6 +43,7 @@ coverage/
 # records, deliberately tracked.
 latex/**/*.log
 typst/**/*.log
+latex/build/
 
 # Backup files and directories
 *.backup
@@ -106,6 +107,7 @@ indent.log
 /.claude
 /data
 /.agent-logs
+/.pid
 /other
 
 # Python bytecode caches (scripts/lib/ is imported by the invariant harness)
