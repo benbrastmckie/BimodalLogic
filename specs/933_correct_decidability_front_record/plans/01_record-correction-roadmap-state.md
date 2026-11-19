@@ -1,7 +1,7 @@
 # Implementation Plan: Task #933
 
 - **Task**: 933 - Correct the decidability-front record
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/933_correct_decidability_front_record/reports/01_record-correction-scope-remeasured.md
@@ -149,7 +149,7 @@ through 3, so it observes every edit this plan makes.
 
 ---
 
-### Phase 1: Write 761's Actual Blocker Into state.json [NOT STARTED]
+### Phase 1: Write 761's Actual Blocker Into state.json [COMPLETED]
 
 **Goal**: Task 761's `specs/state.json` record carries a machine-readable `blockers` array
 naming Phase 11.6's depth-`0` gate and the fact that no open task owns it, so a reader or a
@@ -157,8 +157,8 @@ tool no longer sees a non-terminal task with no recorded reason.
 
 **Tasks**:
 
-- [ ] Re-confirm the anchor before editing: `jq '.active_projects[] | select(.project_number==761) | has("blockers")'` returns `false`, and `.status` is `"partial"`. If either has changed, stop and re-derive — the edit shape below assumes an absent key on a `partial` record.
-- [ ] Add a `blockers` key to 761's record using `Edit` with this exact three-line `old_string` (verified unique at authoring time), inserting the new key after the `status` line:
+- [x] Re-confirm the anchor before editing: `jq '.active_projects[] | select(.project_number==761) | has("blockers")'` returns `false`, and `.status` is `"partial"`. If either has changed, stop and re-derive — the edit shape below assumes an absent key on a `partial` record. *(completed: re-confirmed, `false`/`"partial"` as expected)*
+- [x] Add a `blockers` key to 761's record using `Edit` with this exact three-line `old_string` (verified unique at authoring time), inserting the new key after the `status` line:
 
       ```
             "project_number": 761,
@@ -166,9 +166,11 @@ tool no longer sees a non-terminal task with no recorded reason.
             "status": "partial",
       ```
 
-- [ ] Write the value as a JSON **array of one string** (canonical shape per `context/schemas/state-schema.json`; task 481 is the in-file precedent), stating all four facts and no more: (a) every remaining phase of plan v13 sits behind Phase 11.6's depth-`0` gate; (b) that gate is owned by NO open task and its disposition is a Stage 0 user ruling; (c) all seven declared edges (760, 775, 805, 806, 819, 820, 934) are discharged or archived, so no dependency edge can express the blocker; (d) 934's verdict is existence evidence only and lifts nothing. Cite `specs/761_ladder_realization_theorem/plans/13_depth-zero-gate-rest-state.md` and `specs/ROADMAP.md` Stage 0 by path, never by line number.
-- [ ] Do NOT touch any other key of 761's record, any other project's record, `roadmap_batches`, `roadmap_notes`, or `next_project_number`.
-- [ ] Do NOT invoke `update-task-status.sh` for this edit (no flag writes `blockers`), and do NOT reach for `--hold-reason` as a substitute — it writes the `hold_reason`/`held_at`/`prior_status` triad and pushes the status toward `hold`.
+      *(completed)*
+
+- [x] Write the value as a JSON **array of one string** (canonical shape per `context/schemas/state-schema.json`; task 481 is the in-file precedent), stating all four facts and no more: (a) every remaining phase of plan v13 sits behind Phase 11.6's depth-`0` gate; (b) that gate is owned by NO open task and its disposition is a Stage 0 user ruling; (c) all seven declared edges (760, 775, 805, 806, 819, 820, 934) are discharged or archived, so no dependency edge can express the blocker; (d) 934's verdict is existence evidence only and lifts nothing. Cite `specs/761_ladder_realization_theorem/plans/13_depth-zero-gate-rest-state.md` and `specs/ROADMAP.md` Stage 0 by path, never by line number. *(completed: one-string array, all four facts stated, cited by path)*
+- [x] Do NOT touch any other key of 761's record, any other project's record, `roadmap_batches`, `roadmap_notes`, or `next_project_number`. *(completed: confirmed by diff read-through)*
+- [x] Do NOT invoke `update-task-status.sh` for this edit (no flag writes `blockers`), and do NOT reach for `--hold-reason` as a substitute — it writes the `hold_reason`/`held_at`/`prior_status` triad and pushes the status toward `hold`. *(completed: Edit tool used directly, no status-mutating script invoked)*
 
 **Timing**: 0.25 hours
 

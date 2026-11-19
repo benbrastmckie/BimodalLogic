@@ -65,7 +65,7 @@ next_project_number: 941
     └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-933 [PLANNED] — AMENDED 2026-11-14 (Stage 0 rulings landed, scope narrowed):...
+933 [IMPLEMENTING] — AMENDED 2026-11-14 (Stage 0 rulings landed, scope narrowed):...
 
 ### Formula Refactor
 
@@ -315,7 +315,7 @@ CONTINGENCY. A negative verdict is a COMPLETE outcome, not a failure: if no dete
 ---
 
 ### 933. Correct decidability front record
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: None

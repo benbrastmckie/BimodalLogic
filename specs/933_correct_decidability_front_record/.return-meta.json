@@ -1,30 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/933_correct_decidability_front_record/plans/01_record-correction-roadmap-state.md",
-      "summary": "4-phase, 2-hour record-correction plan for specs/ROADMAP.md and specs/state.json; item (1) re-confirmed discharged and made a Non-Goal, item (4)'s filed mechanism refuted and replaced."
-    }
-  ],
-  "next_steps": "Run /orchestrate 933 to execute the plan",
-  "phase_count": 4,
-  "estimated_hours": 2,
-  "dependency_waves": [[1, 2], [3], [4]],
-  "memory_candidates": [
-    {
-      "content": "BimodalLogic's specs/ROADMAP.md is a STAGE-layout roadmap under scripts/roadmap-integration.sh: in that mode every '## ' section is retained byte-for-byte EXCEPT the single section whose body holds a fenced /orchestrate block ('## Run these next'), which is re-rendered wholly from specs/state.json's roadmap_batches/roadmap_notes. So a hand edit to any OTHER section (e.g. '## Where both fronts now stand', '## Stage 0', '## Next batches') is durable and is the correct edit target, while a hand edit inside '## Run these next' is silently overwritten by the next regeneration. The cheap, exit-status-checkable proof that a hand edit landed in a retained region is 'bash .claude/scripts/roadmap-integration.sh --regenerate --dry-run', which prints 'layout=stage ... retained=N' plus either 'no content change' or a diff -- a far better covering check for a ROADMAP.md prose edit than any shell suite, since suite_selection_select maps specs/ROADMAP.md to only 4 roadmap-generation suites and specs/state.json to 76 (every suite that READS state.json, i.e. effectively a full sweep).",
-      "category": "PATTERN",
-      "source_artifact": "specs/933_correct_decidability_front_record/plans/01_record-correction-roadmap-state.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["roadmap-integration", "stage-layout", "retained-sections", "roadmap-regenerate-dry-run", "suite-selection", "hand-edit-durability"]
-    }
-  ],
+  "status": "in_progress",
   "metadata": {
-    "session_id": "sess_1795107126_0059c2_933",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "session_id": "sess_1795107126_0059c2",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   },
-  "dispatch_seq": 2
+  "dispatch_seq": 3
 }
