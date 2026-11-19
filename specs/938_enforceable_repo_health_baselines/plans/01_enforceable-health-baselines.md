@@ -510,7 +510,7 @@ phase changes.
 
 ---
 
-### Phase 5: Record the three mechanisms in the documentation surfaces [NOT STARTED]
+### Phase 5: Record the three mechanisms in the documentation surfaces [COMPLETED]
 
 **Goal**: each new baseline and each gate's enforcement semantics are discoverable from the places
 this repository already keeps that record, and the falsification evidence is written down in the
@@ -518,27 +518,27 @@ form "Adding a Check" requires.
 
 **Tasks**:
 
-- [ ] Add a `MODULE_INVARIANTS.md` entry for the C20 residual/unverifiable assertion and for the
+- [x] Add a `MODULE_INVARIANTS.md` entry for the C20 residual/unverifiable assertion and for the
       C16-roots baseline comparison, each naming its baseline file, its `ENFORCE_*` flag and its
-      default.
-- [ ] Amend `MODULE_INVARIANTS.md`'s "Adding a Check" treatment of `ENFORCE_C16_ROOTS`: the rule
+      default. *(completed)*
+- [x] Amend `MODULE_INVARIANTS.md`'s "Adding a Check" treatment of `ENFORCE_C16_ROOTS`: the rule
       is now a pinned ceiling with a gate that fails on an increase, not "flip the default to 1
       once it reaches zero". State the current rule directly and state why a pinned non-zero
-      ceiling was chosen over waiting for zero — without record-versioning language.
-- [ ] Record the deliberate negative tests in the same section's established narrative form, one
+      ceiling was chosen over waiting for zero — without record-versioning language. *(completed)*
+- [x] Record the deliberate negative tests in the same section's established narrative form, one
       per seeded arm (two for README dates, three for C20, one for C16-roots): what was seeded,
       where, that the printed FAIL and the non-zero exit were observed **together**, that the seed
       was reverted and PASS and exit 0 re-observed, and — for C16 — what did not fail in the same
-      run.
-- [ ] State the local/CI asymmetry for the widened C16 scope in `MODULE_INVARIANTS.md` too, naming
+      run. *(completed)*
+- [x] State the local/CI asymmetry for the widened C16 scope in `MODULE_INVARIANTS.md` too, naming
       the local full-mode invocation as the gate of record, and that extending CI coverage means a
       `ci.yml` check step plus a matching `report` line and `expected` bump — work this record does
-      not own.
-- [ ] Add `scripts/README.md` rows for `scripts/readme-date-baseline.txt`,
-      `scripts/c20-residual-baseline.txt` and `scripts/c16-roots-baseline.txt`.
-- [ ] Re-read the diff for task-number citations (`C9`/`C9_DOCS` are enforced; no task number may
-      appear outside `specs/**`) and for status-literal shapes `C14` scans for.
-- [ ] Commit only `docs/development/MODULE_INVARIANTS.md` and `scripts/README.md`.
+      not own. *(completed)*
+- [x] Add `scripts/README.md` rows for `scripts/readme-date-baseline.txt`,
+      `scripts/c20-residual-baseline.txt` and `scripts/c16-roots-baseline.txt`. *(completed)*
+- [x] Re-read the diff for task-number citations (`C9`/`C9_DOCS` are enforced; no task number may
+      appear outside `specs/**`) and for status-literal shapes `C14` scans for. *(completed)*
+- [x] Commit only `docs/development/MODULE_INVARIANTS.md` and `scripts/README.md`. *(completed)*
 
 **Timing**: 1 hour
 

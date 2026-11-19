@@ -271,25 +271,74 @@ historical file (`docs/development/PHASED_IMPLEMENTATION.md`, since deleted). It
 enforced from the outset, the same as C8/C9/C10 above -- clearing the citations is the only
 way past the check; the flag must never be flipped back to 0 to quiet a new one.
 
-`ENFORCE_C16_ROOTS` is the live example of the pattern today, and it was added by the same change that added
-C26. The env_linter batch had only ever been pointed at the `FormalSystem` library root, which
-observes that root's import closure and nothing else — so every `lean_exe` root and the other
-library root were unlinted, the same structural gap C25 closes for *compilation*, left open for
-*linting*. It is not hypothetical: live `defsWithUnderscore` findings sit in an out-of-closure
-module today while `runLinter FormalSystem` reports zero in the same breath. The widening lints
-every root declared in `lakefile.toml`, but ships **reporting-only**, because the widened scope
-was measured before the decision was taken and is not clean: enforcing it now would hold the gate
-hostage to a burndown that change did not own, while abandoning it would leave the
-elaboration-only shapes — above all auto-generated structure-field projections, where whether an
-underscored name is a violation depends on whether the field's type is a `Prop` — with no
-instrument at all. The count is printed at every gate rather than recorded here, for the reason
-C14 exists. Flip the default to 1 once it reaches zero.
+`ENFORCE_C16_ROOTS` was the live example of the pattern for a release cycle, added by the same
+change that added C26. The env_linter batch had only ever been pointed at the `FormalSystem`
+library root, which observes that root's import closure and nothing else — so every `lean_exe`
+root and the other library root were unlinted, the same structural gap C25 closes for
+*compilation*, left open for *linting*. It is not hypothetical: live `defsWithUnderscore`
+findings sit in an out-of-closure module today while `runLinter FormalSystem` reports zero in
+the same breath. The widening lints every root declared in `lakefile.toml` (minus `FormalSystem`,
+already covered by the first half).
+
+**The rule is now a pinned ceiling with a gate that fails on an increase, not "wait for zero".**
+The widened scope's debt (231 findings across 15 of 17 measurable roots, one root -- see below --
+currently unmeasurable rather than zero) is pinned per `(root, module, linter)` in
+`scripts/c16-roots-baseline.txt`, generated and compared by `scripts/c16_roots_baseline.py`, on
+the `scripts/nolints.json` model. `ENFORCE_C16_ROOTS` defaults to 1: the baseline pins the
+existing debt in the same change that starts gating it, so there is no burndown the flag would
+otherwise be holding the gate hostage to. A pinned non-zero ceiling was chosen over waiting for
+the count to reach zero for the same reason C20's residual ceiling and C12-C15 ship flagless:
+"wait for zero" means the signal stays advisory, and therefore drifts upward, for as long as
+nobody happens to burn it down -- which is exactly the failure mode that left this debt
+unenforced for a release cycle in the first place. The exit-2 arm matters here specifically: a
+root whose build or lint cannot be measured at all is never silently read as "zero findings" --
+see `scripts/c16-roots-unmeasurable.txt` below.
+
+**One root is currently unmeasurable, not zero.** `BimodalToolsTest`'s own build fails (an
+"Ambiguous term closureList" error between two same-named declarations, independent of
+env_linter), so `lake exe runLinter BimodalToolsTest` cannot import the module at all. This is
+recorded in `scripts/c16-roots-unmeasurable.txt`, the `scripts/module-invariants-manifest.txt`
+(C6) precedent applied to a root whose measurement itself is blocked: a root listed there is
+excused from the generator's anti-silence exit-2 guard, but its exclusion is reported on every
+run (an INFO line), never silent, and never a substitute for fixing the root. The defect is
+pre-existing and already filed and owned outside this check's scope.
+
+**The local/CI asymmetry.** Both C16 halves sit inside `if [ "$RUN_BUILD" -eq 1 ]`, and CI
+invokes this script with `--no-build`, so CI never executes either half -- including the
+widened one, now enforced locally. The gate of record for the widened scope is therefore the
+LOCAL FULL-MODE invocation (`bash scripts/check-module-invariants.sh`, no `--no-build`), not CI.
+Extending CI coverage means a `ci.yml` check step plus a matching `report` line and `expected`
+bump in the same change -- work outside this check's own scope.
 
 Both halves of C16 print, and the widened half does not relax the enforced one. Note also that
 `lake exe runLinter <Module>` builds the runLinter *executable*, not the module named: the module
 is read back from its `.olean`, so any root must be built before it is linted or the sweep
 reports on a stale environment. That is why the loop builds each root first, and it is a mistake
 the negative test caught rather than one reasoned about in advance.
+
+`ENFORCE_C20_RESIDUAL` is a second, independent application of the same pinned-ceiling pattern.
+C20's declaration-span assertion (above) already gates named citations that land on the wrong
+declaration; three further sub-counts -- the residual (no declaration name), the
+unverifiable-declaration (the named thing is not declared, or is declared ambiguously, in the
+target file) and the unverifiable-filename (the cited filename is itself ambiguous or resolves
+to no live file) -- are printed as TODO/INFO lines that describe the finding but do not
+themselves hold the gate hostage. Each
+is now pinned per CITER FILE in `scripts/c20-residual-baseline.txt` (the `scripts/nolints.json`
+model again: `<count> <citer-path> <category>` rows, generated by the `C20_RESIDUAL_EMIT=1` emit
+mode so the generator and the gate can never disagree about the key shape) and gated against an
+increase. `ENFORCE_C20_RESIDUAL` defaults to 1, for the same reason `ENFORCE_C16_ROOTS` does: the
+baseline pins the existing debt (145 residual, 39 unverifiable-declaration, 30
+unverifiable-filename citations) in the same change that starts gating it.
+
+`ENFORCE_README_DATES`, in `scripts/readme-lint.sh`, is the same pattern applied to Check 4 (a
+README's `Last verified` date, missing or predating its directory's last commit). Every finding
+present when `scripts/readme-date-baseline.txt` was generated is grandfathered by exact
+`(class, path, stamp)` match; a `stale` row's grandfathering is keyed to the exact stamp it
+recorded, so refreshing a README's stamp permanently un-grandfathers that README and holds it to
+refresh-on-touch thereafter. `ENFORCE_README_DATES` defaults to 1, for the same reason: the
+baseline pins the existing debt (62 stale, 4 missing, against the default `FormalSystem` root;
+63 stale against the `FormalSystem BimodalTools` root CI invokes) in the same change that starts
+gating it.
 
 C12, C13, C14 and C15 ship **enforced**, with no flags, because the work that cleared their debt
 landed in the same change that added them. C14 has two halves: a content scan that always runs,
@@ -379,6 +428,51 @@ shift smaller than the named declaration's own span is likewise invisible to a s
 `scripts/reanchor-lean-citations.py --recompute` is the repair for that case, and its `--selftest`
 asserts the doubled-pass sequence end to end. Re-run all three tests after any change to a check's
 scope, to the path-shaped filter, or to `scripts/lib/lean_citations.py`.
+
+**`ENFORCE_README_DATES` was accepted after two deliberate negative tests, one per arm, since a
+check answering a stale stamp and a missing stamp proves nothing about the other if only one is
+exercised.** A clean README not on the baseline (`FormalSystem/Automation/ProofMode/README.md`)
+had its `Last verified` stamp edited to a date before its directory's last commit:
+`bash scripts/readme-lint.sh FormalSystem BimodalTools` printed `STALE DATE` for that file and
+`RESULT: FAIL (1 new stale dates, 0 new missing dates)`, with a non-zero exit in the same run.
+The stamp was restored and `RESULT: PASS` and exit 0 were re-observed. Then a second clean
+README (`FormalSystem/ForMathlib/Order/README.md`) had its stamp line deleted entirely:
+`MISSING DATE` and `RESULT: FAIL (0 new stale dates, 1 new missing dates)` were printed together
+with a non-zero exit; the line was restored and `PASS`/exit 0 were re-observed. Re-run both
+after any change to Check 4 or to `scripts/readme-date-baseline.txt`'s format.
+
+**`ENFORCE_C20_RESIDUAL` was accepted after three deliberate negative tests, one per category,
+on the C26 precedent that a check answering three routes proves nothing about two of them if
+only one is exercised.** Each seed was added to a `.sh`/`.md` citer rather than a `.lean` one, so
+none could interact with the `.lean` pre-commit hook at all. **Residual**: a bare
+`FormalSystem/Syntax/Formula.lean`, line 5, citation with no declaration name was appended to
+`scripts/check-evidence-probes.sh`, a citer already carrying one pinned residual finding;
+`bash scripts/check-module-invariants.sh --no-build` printed `FAIL C20  residual ceiling: 1
+(path, category) pair(s) exceed their pinned ceiling` with exit 1, and reverting restored `PASS`
+and exit 0. **Unverifiable-declaration**: a citation naming `` `nonExistentDeclXYZ123` `` against
+the same target file was added to `scripts/README.md` (a citer with no prior entry for this
+category); the same FAIL-and-exit-1 pair was observed, then reverted. **Unverifiable-filename**:
+a citation naming a filename that resolves to no live file (`NoSuchFileAtAll.lean`, line 5) was added
+to the same file; the same FAIL-and-exit-1 pair was observed, then reverted, restoring `PASS` and
+exit 0 in every case. Re-run all three after any change to the residual/unverifiable collection
+or to `scripts/c20-residual-baseline.txt`'s format.
+
+**`ENFORCE_C16_ROOTS` was accepted after a deliberate negative test run on a module *other* than
+the one the preceding falsification repaired, on the C25 precedent that a seed in the module
+under repair proves nothing about the gate.** A `def` carrying a non-trailing underscore, with
+no documentation string, was appended to `scripts/CheckInitImportsMain.lean` (an out-of-closure
+root already carrying one pinned `docBlame` finding, with no prior entry for `defsWithUnderscore`
+on that root). After rebuilding that one root, the full-mode
+`bash scripts/check-module-invariants.sh` (no `--no-build`) printed `FAIL C16  env_linter batch
+over the other lakefile roots reports finding(s) above the pinned ceiling`, naming a NEW
+`defsWithUnderscore` row and an ABOVE `docBlame` row (the undocumented seed tripped both
+linters), together with a non-zero script exit. The sharpest part of that observation is what
+did **not** fail in the same run: the first half's `PASS  C16  env_linter batch ... has no
+un-nolisted finding` for `FormalSystem`, and a separately-run `--no-build` pass, both stayed
+green — exactly the invisible-failure condition this half closes, since CI invokes
+`--no-build` and so never executes this half at all. The seed was reverted, the root rebuilt, and
+`PASS` and exit 0 were re-observed. Re-run after any change to the second half's scope, its log
+format, or `scripts/c16_roots_baseline.py`.
 
 **Never flip an `ENFORCE_` flag back to 0 to make a gate pass.** Preventing exactly that
 is why the flags are named and defaulted in the script rather than passed on the command
