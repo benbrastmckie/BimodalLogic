@@ -50,6 +50,76 @@ def Language.derivationName : Language → Name
 def Language.ruleName (language : Language) (tm plus : Name) : Name :=
   if language == .tm then tm else plus
 
+/-- Checked operator declarations. A source rename fails here rather than at tactic invocation. -/
+def Language.operatorName (language : Language) (operator : Name) : MetaM Name := do
+  let pair ← match operator with
+    | `atom => pure (``FormalSystem.Syntax.Formula.atom,
+        ``FormalSystem.PlusLanguage.PlusFormula.atom)
+    | `bot => pure (``FormalSystem.Syntax.Formula.bot,
+        ``FormalSystem.PlusLanguage.PlusFormula.bot)
+    | `top => pure (``FormalSystem.Syntax.Formula.top,
+        ``FormalSystem.PlusLanguage.PlusFormula.top)
+    | `imp => pure (``FormalSystem.Syntax.Formula.imp,
+        ``FormalSystem.PlusLanguage.PlusFormula.imp)
+    | `neg => pure (``FormalSystem.Syntax.Formula.neg,
+        ``FormalSystem.PlusLanguage.PlusFormula.neg)
+    | `and => pure (``FormalSystem.Syntax.Formula.and,
+        ``FormalSystem.PlusLanguage.PlusFormula.and)
+    | `or => pure (``FormalSystem.Syntax.Formula.or,
+        ``FormalSystem.PlusLanguage.PlusFormula.or)
+    | `box => pure (``FormalSystem.Syntax.Formula.box,
+        ``FormalSystem.PlusLanguage.PlusFormula.box)
+    | `diamond => pure (``FormalSystem.Syntax.Formula.diamond,
+        ``FormalSystem.PlusLanguage.PlusFormula.diamond)
+    | `untl => pure (``FormalSystem.Syntax.Formula.untl,
+        ``FormalSystem.PlusLanguage.PlusFormula.untl)
+    | `snce => pure (``FormalSystem.Syntax.Formula.snce,
+        ``FormalSystem.PlusLanguage.PlusFormula.snce)
+    | `allFuture => pure (``FormalSystem.Syntax.Formula.allFuture,
+        ``FormalSystem.PlusLanguage.PlusFormula.allFuture)
+    | `allPast => pure (``FormalSystem.Syntax.Formula.allPast,
+        ``FormalSystem.PlusLanguage.PlusFormula.allPast)
+    | `someFuture => pure (``FormalSystem.Syntax.Formula.someFuture,
+        ``FormalSystem.PlusLanguage.PlusFormula.someFuture)
+    | `somePast => pure (``FormalSystem.Syntax.Formula.somePast,
+        ``FormalSystem.PlusLanguage.PlusFormula.somePast)
+    | `next => pure (``FormalSystem.Syntax.Formula.next,
+        ``FormalSystem.PlusLanguage.PlusFormula.next)
+    | `prev => pure (``FormalSystem.Syntax.Formula.prev,
+        ``FormalSystem.PlusLanguage.PlusFormula.prev)
+    | `after => pure (``FormalSystem.Syntax.Formula.after,
+        ``FormalSystem.PlusLanguage.PlusFormula.after)
+    | `stab => do
+      unless language == .plus do throwError "stability requires TM⁺"
+      pure (``FormalSystem.PlusLanguage.PlusFormula.stab,
+        ``FormalSystem.PlusLanguage.PlusFormula.stab)
+    | `dstab => do
+      unless language == .plus do throwError "same-state possibility requires TM⁺"
+      pure (``FormalSystem.PlusLanguage.PlusFormula.dstab,
+        ``FormalSystem.PlusLanguage.PlusFormula.dstab)
+    | _ => throwError "unregistered formula operator {operator}"
+  return language.ruleName pair.1 pair.2
+
+/-- Build an operator application through its checked source declaration. -/
+def formulaApp (language : Language) (operator : Name) (arguments : Array Expr) : MetaM Expr := do
+  mkAppM (← language.operatorName operator) arguments
+
+/-- Checked native constructor and structural-rule declarations. -/
+def Language.derivationRule (language : Language) (rule : Name) : MetaM Name := do
+  let pair ← match rule with
+    | `lift => pure (``FormalSystem.ProofSystem.DerivationTree.lift,
+          ``FormalSystem.PlusLanguage.PlusDerivationTree.lift)
+    | `weakening => pure (``FormalSystem.ProofSystem.DerivationTree.weakening,
+          ``FormalSystem.PlusLanguage.PlusDerivationTree.weakening)
+    | `assumption => pure (``FormalSystem.ProofSystem.DerivationTree.assumption,
+          ``FormalSystem.PlusLanguage.PlusDerivationTree.assumption)
+    | `modus_ponens => pure (``FormalSystem.ProofSystem.DerivationTree.modus_ponens,
+          ``FormalSystem.PlusLanguage.PlusDerivationTree.modus_ponens)
+    | `axiom => pure (``FormalSystem.ProofSystem.DerivationTree.axiom,
+          ``FormalSystem.PlusLanguage.PlusDerivationTree.axiom)
+    | _ => throwError "unregistered native rule {rule}"
+  return language.ruleName pair.1 pair.2
+
 /-- Read a native derivation judgment without inspecting any derivation value. -/
 def judgment? (type : Expr) : MetaM (Option Judgment) := do
   let type ← whnf type
@@ -60,6 +130,14 @@ def judgment? (type : Expr) : MetaM (Option Judgment) := do
     | some ``FormalSystem.PlusLanguage.PlusDerivationTree => pure Language.plus
     | _ => return none
   return some ⟨language, args[0]!, args[1]!, args[2]!⟩
+
+/-- Collect telescope parameters and implicit holes inserted while elaborating a proof term. -/
+def proofParameters (proof : Expr) (parameters : Array Expr) : MetaM (Array Expr) := do
+  let mut result := parameters
+  for mvarId in ← getMVars (mkAppN proof parameters) do
+    let argument := mkMVar mvarId
+    if !result.contains argument then result := result.push argument
+  return result
 
 /-- Require a native TM or TM⁺ goal. -/
 def requireJudgment (goal : MVarId) : MetaM Judgment := do
@@ -75,7 +153,7 @@ def derivationType (judgment : Judgment) (context formula : Expr) : MetaM Expr :
 def operatorArgs? (language : Language) (operator : Name) (arity : Nat)
     (formula : Expr) : MetaM (Option (Array Expr)) := do
   let formula ← instantiateMVars formula
-  let name := language.formulaNamespace ++ operator
+  let name ← language.operatorName operator
   if formula.getAppFn.constName? == some name then
     return some formula.getAppArgs
   let saved ← saveState
@@ -86,6 +164,26 @@ def operatorArgs? (language : Language) (operator : Name) (arity : Nat)
     return some (← args.mapM instantiateMVars)
   saved.restore
   return none
+
+/-- Read a rule's syntax without constraining its pre-existing formula metavariables. Fresh
+probe arguments must resolve entirely to expressions already present in the statement. -/
+def rigidOperatorArgs? (language : Language) (operator : Name) (arity : Nat)
+    (formula : Expr) : MetaM (Option (Array Expr)) := do
+  let formula ← instantiateMVars formula
+  if formula.getAppFn.isMVar then return none
+  let original ← getMVars formula
+  let saved ← saveState
+  let result ← operatorArgs? language operator arity formula
+  let result ← result.mapM fun arguments => arguments.mapM instantiateMVars
+  let mut valid := true
+  for mvarId in original do
+    if ← mvarId.isAssigned then valid := false
+  if let some arguments := result then
+    for argument in arguments do
+      for mvarId in ← getMVars argument do
+        if !original.contains mvarId then valid := false
+  saved.restore
+  return if valid then result else none
 
 /-- Enumerate a concrete assumption list; abstract tails require explicit proof terms. -/
 partial def contextEntries (context : Expr) : MetaM (Array Expr) := do
@@ -146,19 +244,19 @@ def adaptProof (proof : Expr) (target : Judgment) : MetaM Expr := do
   unless ← isDefEq source.frame target.frame do
     if ← isDefEq source.frame (mkConst ``FormalSystem.ProofSystem.FrameClass.Base) then
       let le ← mkAppM ``FormalSystem.ProofSystem.FrameClass.base_le #[target.frame]
-      proof ← mkAppM (target.language.derivationName ++ `lift) #[le, proof]
+      proof ← mkAppM (← target.language.derivationRule `lift) #[le, proof]
     else
       throwError "different frame classes; supply an explicitly lifted derivation"
   unless ← isDefEq source.context target.context do
     let inclusion ← inclusionProof source.context target.context
-    proof ← mkAppM (target.language.derivationName ++ `weakening)
+    proof ← mkAppM (← target.language.derivationRule `weakening)
       #[source.context, target.context, source.formula, proof, inclusion]
   return proof
 
 /-- Construct the assumption derivation at the current object context. -/
 def assumptionProof (judgment : Judgment) (formula : Expr) : MetaM Expr := do
   let member ← membershipProof formula judgment.context
-  mkAppOptM (judgment.language.derivationName ++ `assumption)
+  mkAppOptM (← judgment.language.derivationRule `assumption)
     #[some judgment.frame, some judgment.context, some formula, some member]
 
 /-- Add a user-facing name for existing derivation data. -/
@@ -175,7 +273,7 @@ def modusPonens (judgment : Judgment) (implication premise : Expr) : MetaM Expr 
   let some args ← operatorArgs? judgment.language `imp 2
       (← requireJudgmentFromProof implication).formula
     | throwError "expected an object-language implication"
-  mkAppM (judgment.language.derivationName ++ `modus_ponens)
+  mkAppM (← judgment.language.derivationRule `modus_ponens)
     #[judgment.context, args[0]!, args[1]!, implication, premise]
 where
   /-- Read the native judgment carried by a derivation term. -/

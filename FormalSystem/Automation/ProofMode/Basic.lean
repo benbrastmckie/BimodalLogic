@@ -54,11 +54,13 @@ private def exactProof (term : Syntax) : TacticM Unit := withMainContext do
   goal.assign proof
   replaceMainGoal []
 
-private def applyProof (term : Syntax) : TacticM Unit := withMainContext do
+/-- Apply a once-elaborated native theorem; leave data parameters inferable from its premises.
+Only holes created since `firstNewIndex` become new goals. -/
+def applyDerivationProof (proof : Expr) (firstNewIndex : Nat) : TacticM Unit := withMainContext do
   let goal ← getMainGoal
   let judgment ← requireJudgment goal
-  let proof ← elaborateProof term
-  let (parameters, _, type) ← forallMetaTelescopeReducing (← inferType proof)
+  let (parameters, binders, type) ← forallMetaTelescopeReducing (← inferType proof)
+  let allParameters ← proofParameters proof parameters
   let mut proof := mkAppN proof parameters
   let some source ← judgment? type | throwError "lapply expected a derivation-producing theorem"
   let mut conclusion := source.formula
@@ -73,6 +75,9 @@ private def applyProof (term : Syntax) : TacticM Unit := withMainContext do
     antecedents := antecedents.push args[0]!
     conclusion := args[1]!
   unless matched do throwError "lapply exceeded the implication-chain limit"
+  for i in [:parameters.size] do
+    if binders[i]!.isInstImplicit && !(← parameters[i]!.mvarId!.isAssigned) then
+      discard <| Term.synthesizeInstMVarCore parameters[i]!.mvarId!
   proof ← adaptProof proof judgment
   let mut premises : Array MVarId := #[]
   for antecedent in antecedents do
@@ -80,12 +85,30 @@ private def applyProof (term : Syntax) : TacticM Unit := withMainContext do
       (← derivationType judgment judgment.context antecedent)
     proof ← modusPonens judgment proof premise
     premises := premises.push premise.mvarId!
+  unless ← isDefEq (← inferType proof) (← goal.getType) do
+    throwError "the applied rule produced an incompatible judgment"
   goal.assign proof
-  let parameterGoals ← parameters.filterMapM fun parameter => do
-    if parameter.isMVar && !(← parameter.mvarId!.isAssigned) then
-      return some parameter.mvarId!
-    return none
-  replaceMainGoal (parameterGoals.toList ++ premises.toList)
+  let mut proofGoals : List MVarId := []
+  let mut dataGoals : List MVarId := []
+  for parameter in allParameters do
+    if !parameter.isMVar || (← parameter.mvarId!.isAssigned) then continue
+    let id := parameter.mvarId!
+    if (← id.getDecl).index < firstNewIndex then continue
+    let type ← inferType parameter
+    if (← isProp type) || (← judgment? type).isSome then
+      id.setKind .syntheticOpaque
+      proofGoals := proofGoals ++ [id]
+    else
+      id.setKind .natural
+      dataGoals := dataGoals ++ [id]
+  replaceMainGoal (proofGoals ++ premises.toList ++ dataGoals)
+
+private def applyProof (term : Syntax) : TacticM Unit := withMainContext do
+  let saved ← saveState
+  try
+    let firstNewIndex := (← getMCtx).mvarCounter
+    applyDerivationProof (← elaborateProof term) firstNewIndex
+  catch error => saved.restore; throw error
 
 private def splitConjunction : TacticM Unit := withMainContext do
   let goal ← getMainGoal

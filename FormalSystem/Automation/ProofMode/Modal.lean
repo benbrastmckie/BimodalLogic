@@ -68,22 +68,35 @@ def substituteProofs (judgment : Judgment) (proof : Expr)
     ``FormalSystem.Theorems.ProofMode.substContext
     ``FormalSystem.PlusLanguage.ProofMode.substContext) #[proof, environment]
 
-/-- Introduce a universal modality through its checked mapped-context rule. -/
-def introduceMappedScope (operator rule : Name) (parameters : Array Expr)
-    (terms : Option (Array Syntax)) (names : Array Syntax) : TacticM Unit :=
-    withMainContext do
+/-- Elaborate the selected guarantees, or every matching assumption when `terms` is `none`, and
+check that each has the unary `operator` scope. Each result is adapted to the goal judgment. -/
+def scopedGuarantees (judgment : Judgment) (operator : Name)
+    (terms : Option (Array Syntax)) : TacticM (Array Expr) := do
+  let mut proofs : Array Expr := #[]
+  match terms with
+  | none =>
+    for formula in ← contextEntries judgment.context do
+      if (← operatorArgs? judgment.language operator 1 formula).isSome then
+        proofs := proofs.push (← assumptionProof judgment formula)
+  | some terms =>
+    for term in terms do
+      proofs := proofs.push (← adaptProof (← elaborateProof term) judgment)
+  for proof in proofs do
+    let some source ← judgment? (← inferType proof)
+      | throwError "expected a native derivation"
+    unless (← operatorArgs? judgment.language operator 1 source.formula).isSome do
+      throwError "selected guarantee must have the matching {operator} scope"
+  return proofs
+
+/-- `introduceMappedScope` over already checked guarantee derivations. The rule receives
+`parameters`, then the body context, body formula and body derivation. Bodies are named in the
+order of `proofs`, or `h1, h2, …` when `names` is empty. -/
+def introduceScopeFromProofs (operator rule : Name) (parameters proofs : Array Expr)
+    (names : Array Syntax) : TacticM Unit := withMainContext do
   let goal ← getMainGoal
   let judgment ← requireJudgment goal
   let some goalArgs ← operatorArgs? judgment.language operator 1 judgment.formula
     | throwError "the goal does not have the requested universal modality"
-  let mut proofs : Array Expr := #[]
-  if terms.isNone then
-    for formula in ← contextEntries judgment.context do
-      if (← operatorArgs? judgment.language operator 1 formula).isSome then
-        proofs := proofs.push (← assumptionProof judgment formula)
-  else
-    for term in terms.getD #[] do
-      proofs := proofs.push (← adaptProof (← elaborateProof term) judgment)
   let mut formulas : Array Expr := #[]
   for proof in proofs do
     let some source ← judgment? (← inferType proof)
@@ -92,7 +105,7 @@ def introduceMappedScope (operator rule : Name) (parameters : Array Expr)
       | throwError "selected guarantee does not have the requested modality"
     formulas := formulas.push args[0]!
   unless names.isEmpty || names.size == formulas.size do
-    throwError "expected {formulas.size} body hypothesis names"
+    throwError "expected {formulas.size} body hypothesis names in the supplied guarantee order"
   let context ← contextExpr judgment.language formulas
   let body ← mkFreshExprSyntheticOpaqueMVar
     (← derivationType judgment context goalArgs[0]!)
@@ -108,6 +121,14 @@ def introduceMappedScope (operator rule : Name) (parameters : Array Expr)
       let name := if names.isEmpty then Name.mkSimple s!"h{i + 1}" else names[i]!.getId
       nameProof bodyGoal name (← assumptionProof bodyJudgment formulas[i]!)
   replaceMainGoal [bodyGoal]
+
+/-- Select guarantees and introduce their checked mapped-context scope. -/
+def introduceMappedScope (operator rule : Name) (parameters : Array Expr)
+    (terms : Option (Array Syntax)) (names : Array Syntax) : TacticM Unit :=
+    withMainContext do
+  let judgment ← requireJudgment (← getMainGoal)
+  let proofs ← scopedGuarantees judgment operator terms
+  introduceScopeFromProofs operator rule parameters proofs names
 
 /-- Introduce a universal modality through its registered native contextual rule. -/
 private def introduceScope (scope : Scope) (terms : Option (Array Syntax)) (names : Array Syntax) :
@@ -128,13 +149,14 @@ private def modalUse (term : Syntax) (name : Option Name) : TacticM Unit := with
         | some args => pure (`stab_t, args)
         | none => throwError "lmodal_use expected necessity or settledness"
       else throwError "lmodal_use expected necessity"
-  let axiomNamespace := judgment.language.ruleName
-    ``FormalSystem.ProofSystem.Axiom ``FormalSystem.PlusLanguage.PlusAxiom
-  let axiomWitness ← mkAppM (axiomNamespace ++ operator) #[args[0]!]
+  let axiomName := if operator == `stab_t then
+      ``FormalSystem.PlusLanguage.PlusAxiom.stab_t
+    else judgment.language.ruleName
+      ``FormalSystem.ProofSystem.Axiom.modal_t ``FormalSystem.PlusLanguage.PlusAxiom.modal_t
+  let axiomWitness ← mkAppM axiomName #[args[0]!]
   let compatible ← mkAppM ``FormalSystem.ProofSystem.FrameClass.base_le #[judgment.frame]
-  let implication ← mkAppM (judgment.language.formulaNamespace ++ `imp)
-    #[source.formula, args[0]!]
-  let axiomProof ← mkAppM (judgment.language.derivationName ++ `axiom)
+  let implication ← formulaApp judgment.language `imp #[source.formula, args[0]!]
+  let axiomProof ← mkAppM (← judgment.language.derivationRule `axiom)
     #[judgment.context, implication, axiomWitness, compatible]
   let result ← modusPonens judgment axiomProof proof
   match name with
@@ -179,15 +201,7 @@ private def possibilityCases (term : Syntax) (selected : Option (Array Syntax))
     | throwError "expected a native derivation"
   let some event ← operatorArgs? judgment.language operator 1 source.formula
     | throwError "expected a possibility derivation"
-  let mut guarantees : Array Expr := #[]
-  match selected with
-  | none =>
-    for formula in ← contextEntries judgment.context do
-      if (← operatorArgs? judgment.language scope.operator 1 formula).isSome then
-        guarantees := guarantees.push (← assumptionProof judgment formula)
-  | some terms =>
-    for term in terms do
-      guarantees := guarantees.push (← adaptProof (← elaborateProof term) judgment)
+  let guarantees ← scopedGuarantees judgment scope.operator selected
   let mut formulas : Array Expr := #[]
   for guarantee in guarantees do
     let some source ← judgment? (← inferType guarantee)
