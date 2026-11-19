@@ -196,17 +196,17 @@ command drives covers this single-file config edit without a full-battery sweep.
 
 ---
 
-### Phase 2: Document `Challenge.lean` in ORGANISATION.md (gap C), and close out [NOT STARTED]
+### Phase 2: Document `Challenge.lean` in ORGANISATION.md (gap C), and close out [COMPLETED]
 
 **Goal**: Add one "Everything else" row for `Challenge.lean` that tells a future reader what
 produces the file, why its `sorry` bodies are expected, and that it must not be deleted or
 relocated — then confirm both named gate scripts are no worse than Phase 1's baseline.
 
 **Tasks**:
-- [ ] Re-read `ORGANISATION.md` immediately before editing (sibling task 941 is live on this
+- [x] Re-read `ORGANISATION.md` immediately before editing (sibling task 941 is live on this
       tree). The target table is the one under `## Everything else` (currently lines 189-199) —
       **not** the layer table under `## The library`.
-- [ ] Add one row for `Challenge.lean`, placed consistently with the table's existing ordering.
+- [x] Add one row for `Challenge.lean`, placed consistently with the table's existing ordering.
       Its "Holds" cell must state, in the present tense and in the table's existing voice: that
       the file is the committed, git-pinned statement set produced by the agent-system lean
       extension's `lean-challenge-snapshot.sh` Comparator snapshot step; that each snapshot is
@@ -214,7 +214,7 @@ relocated — then confirm both named gate scripts are no worse than Phase 1's b
       not a Lake root and is not built; that its `sorry` bodies are intentional because the module
       pins statement signatures rather than proofs; and that it should be left in place rather
       than deleted or moved.
-- [ ] Authoring constraints on that row, each a repository rule rather than a preference:
+- [x] Authoring constraints on that row, each a repository rule rather than a preference:
       **no** repository-relative path under `agent-system/` (absent from this repository) or
       `.claude/` (gitignored at `.gitignore:106`) — name the script by basename in backticks
       instead; **no** task-numbered path or "task N" phrasing
@@ -222,21 +222,21 @@ relocated — then confirm both named gate scripts are no worse than Phase 1's b
       `hooks/validate-no-task-references.sh`); **no** record-versioning phrasing — "previously",
       "no longer", "used to", "formerly"
       (`.claude/rules/no-record-versioning-in-deliverables.md`).
-- [ ] Confirm `Challenge.lean` itself is untouched: `git diff HEAD -- Challenge.lean` must be
-      empty, and `git status --porcelain Challenge.lean` must show nothing.
-- [ ] Re-run both named gate scripts with command lines byte-identical to Phase 1's baselines:
+- [x] Confirm `Challenge.lean` itself is untouched: `git diff HEAD -- Challenge.lean` must be
+      empty, and `git status --porcelain Challenge.lean` must show nothing. *(completed: both empty)*
+- [x] Re-run both named gate scripts with command lines byte-identical to Phase 1's baselines:
       `bash scripts/check-module-invariants.sh` and `bash scripts/readme-lint.sh`. Check each
       invocation's **exit status** (`echo $?` immediately after, or `&& echo OK || echo FAIL`) in
       addition to diffing its output against the baseline — a baseline diff alone cannot
       distinguish a clean run from a crashed one. No new finding, and no exit-status regression
-      relative to baseline.
-- [ ] Run the scoped touched-path check over this task's own touched set:
-      `bash .claude/scripts/verify-touched.sh .gitignore ORGANISATION.md`.
-- [ ] Confirm the final ignore state: `git status --porcelain --ignored` shows `.pid` and the
-      `latex/` byproducts as `!!`, and no tracked file is newly ignored.
-- [ ] Commit this phase's single file with an explicit file-list pathspec
+      relative to baseline. *(completed: both exit 0; check-module-invariants.sh output identical save for the expected commit-SHA stamp and an informational build-lock-wait line from sibling task 941's concurrent build; readme-lint.sh output byte-identical)*
+- [x] Run the scoped touched-path check over this task's own touched set:
+      `bash .claude/scripts/verify-touched.sh .gitignore ORGANISATION.md`. *(completed: ran; .gitignore resolved to its 19-suite mapped set with the same single pre-existing-and-unrelated NEW failure as Phase 1; ORGANISATION.md did not resolve to a mapped suite and fell to the OWED fallback (free cost-class, 95 suites), surfacing 11 further NEW failures, all root-caused to this repository's structural absence of agent-system/extensions/ -- confirmed pre-existing and unrelated to the added row; the two suites that would catch a problem in the row itself (test-check-record-versioning.sh, test-check-task-references.sh) both PASS. Recorded via issue-record.sh.)*
+- [x] Confirm the final ignore state: `git status --porcelain --ignored` shows `.pid` and the
+      `latex/` byproducts as `!!`, and no tracked file is newly ignored. *(completed: `latex/` shows `!!`; the `.pid` file itself no longer exists on disk at verification time -- `git check-ignore -v .pid` still confirms the `/.pid` rule matches by pattern; no tracked file became newly ignored per `git ls-files`)*
+- [x] Commit this phase's single file with an explicit file-list pathspec
       (`git add -- ORGANISATION.md`).
-- [ ] In the implementation summary, carry forward the research correction for gap (A): the
+- [x] In the implementation summary, carry forward the research correction for gap (A): the
       `latex/` build byproducts were already ignored via `.gitignore` line 3's generic `build/`
       rule, so the new `latex/build/` line is a clarity and robustness improvement rather than the
       removal of active unignored cruft.

@@ -190,6 +190,7 @@ guards the worst case and the `--namespace-paths` option that scopes the rewrite
 
 | Path | Holds |
 |---|---|
+| `Challenge.lean` | The committed, git-pinned statement set produced by the agent-system lean extension's `lean-challenge-snapshot.sh` Comparator snapshot step; each snapshot is pinned by its own commit, so the working-tree copy is simply the most recent one. Not a Lake root and not built. Its `sorry` bodies are intentional: the module pins statement signatures, not proofs. Leave in place; do not delete or relocate |
 | `Tests/BimodalTest/` | The test suite, mirroring the library's directory shape |
 | `BimodalTools/`, `Tests/BimodalToolsTest/` | The tooling library (dataset generation, export, benchmarks, the executable roots) and its tests; outside `defaultTargets`, and never imported by the library |
 | `docs/` | Prose documentation: architecture, reference, user guides, development standards |
