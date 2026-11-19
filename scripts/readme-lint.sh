@@ -55,6 +55,19 @@ set -euo pipefail
 # flipped to 0 in the committed script to quiet a new finding.
 ENFORCE_README_DATES="${ENFORCE_README_DATES:-1}"
 
+# The stale-date sub-check dates each directory by `git log -1 --format=%cs --
+# "$dir"`, which requires real history. In a shallow clone (a depth-limited
+# `actions/checkout` is the common case) the repository holds a single commit,
+# so EVERY directory reports that one commit's date and every stamp older than
+# it is reported stale -- a uniform artifact of the clone depth, not a property
+# of any README. Detect that condition once here and skip the sub-check rather
+# than emit a set of findings whose only signal is the clone depth. The
+# missing-stamp sub-check needs no history and is unaffected.
+SHALLOW_CLONE=0
+if [ "$(git rev-parse --is-shallow-repository 2>/dev/null || echo false)" = "true" ]; then
+  SHALLOW_CLONE=1
+fi
+
 if [ "$#" -eq 0 ]; then
   ROOTS=("FormalSystem")
 else
@@ -212,6 +225,10 @@ done
 # varies across READMEs -- `*Last verified: DATE*`, `**Last verified**: DATE`,
 # with or without trailing prose -- so the date is extracted from wherever it
 # appears on the matched line rather than assuming a fixed column).
+#
+# A third condition skips the stale comparison wholesale: a shallow clone, where
+# there is no history to date a directory against. See `SHALLOW_CLONE` near the
+# top of this script for the detection and the reasoning.
 # -----------------------------------------------------------------------
 echo ""
 echo "--- Check 4: Missing 'Last verified' dates ---"
@@ -230,6 +247,7 @@ for r in "${ROOTS[@]}"; do scope_md "$r"; done | sort -u | while read -r readme;
     WARNINGS=$((WARNINGS + 1))
     continue
   fi
+  [ "$SHALLOW_CLONE" = "1" ] && continue
   STAMP_DATE=$(printf '%s' "$STAMP_LINE" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1 || true)
   [ -z "$STAMP_DATE" ] && continue
   COMMIT_DATE=$(git log -1 --format=%cs -- "$dir" 2>/dev/null || true)
@@ -310,7 +328,7 @@ BASELINE_FILE="scripts/readme-date-baseline.txt"
 # against a baseline generated from FormalSystem + BimodalTools).
 SCOPE_SET=$(for r in "${ROOTS[@]}"; do scope_md "$r"; done | sort -u | { grep -v Boneyard || true; })
 
-STALE_LIST=$(for r in "${ROOTS[@]}"; do scope_md "$r"; done | sort -u \
+STALE_LIST=$([ "$SHALLOW_CLONE" = "1" ] || for r in "${ROOTS[@]}"; do scope_md "$r"; done | sort -u \
   | { grep -vE 'Boneyard|(^|/)(docs|latex|typst)/' || true; } | while read -r md; do
   dir=$(dirname "$md")
   STAMP_LINE=$(grep -i "last verified\|last updated" "$md" | head -1 || true)
@@ -325,7 +343,11 @@ STALE_LIST=$(for r in "${ROOTS[@]}"; do scope_md "$r"; done | sort -u \
 done)
 STALE_TOTAL=0
 [ -n "$STALE_LIST" ] && STALE_TOTAL=$(printf '%s\n' "$STALE_LIST" | wc -l)
-echo "Stale dates (info):       $STALE_TOTAL"
+if [ "$SHALLOW_CLONE" = "1" ]; then
+  echo "Stale dates (info):       (skipped: shallow clone, no history to date directories against)"
+else
+  echo "Stale dates (info):       $STALE_TOTAL"
+fi
 
 MISSING_LIST=$(for r in "${ROOTS[@]}"; do scope_md "$r"; done | sort -u \
   | { grep -vE 'Boneyard|(^|/)(docs|latex|typst)/' || true; } | while read -r md; do
@@ -372,6 +394,7 @@ while IFS= read -r row; do
   printf '%s\n' "$SCOPE_SET" | grep -qxF "$b_path" || continue
   case "$b_class" in
     stale)
+      [ "$SHALLOW_CLONE" = "1" ] && continue
       if [ -z "$STALE_LIST" ] || ! printf '%s\n' "$STALE_LIST" | grep -qxF "$b_path $b_stamp"; then
         echo "  PRUNE: $row (no longer a live stale finding)"
         PRUNE_COUNT=$((PRUNE_COUNT + 1))

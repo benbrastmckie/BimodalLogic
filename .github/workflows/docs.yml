@@ -15,15 +15,27 @@ name: API Documentation
 #     publish. The first step checks it and fails fast.
 #   - A `push` event. The action builds the API docs and deploys only on push; a
 #     `workflow_dispatch` run exercises the setup steps but publishes nothing.
-#   - Swap space beyond the runner's RAM. The doc build runs `lake build` over roughly 6,300 doc
-#     targets whose doc-gen4 processes each hold the full Mathlib-plus-`FormalSystem`
-#     environment, and a standard runner's memory alone is insufficient for the concurrent set
-#     Lake schedules. The kill surfaces as `error: resource exhausted (error code: 12, cannot
-#     allocate memory)`, and the failure summary attributes it to whichever `srcUri.github`
-#     targets were in flight when memory ran out -- those cheap `git`-subprocess jobs are the
-#     symptom, not the cause, and no URI or git configuration is involved. The swap step below
-#     supplies the headroom; it prints `free -h` and `df -h` on both sides so a shortfall names
-#     itself in the log.
+#   - More memory than this job has. THIS JOB DOES NOT CURRENTLY PASS, and the shortfall is the
+#     reason. The doc build runs `lake build` over roughly 6,300 doc targets whose doc-gen4
+#     processes each hold the full Mathlib-plus-`FormalSystem` environment, and a standard
+#     runner cannot hold the concurrent set Lake schedules. The kill surfaces as `error:
+#     resource exhausted (error code: 12, cannot allocate memory)`, and the failure summary
+#     attributes it to whichever `srcUri.github` targets were in flight when memory ran out --
+#     those cheap `git`-subprocess jobs are the symptom, not the cause, and no URI or git
+#     configuration is involved.
+#
+#     Measured, so that the next reader does not re-try it: enlarging swap is NOT sufficient.
+#     The swap step below takes this runner from 3 GiB to 15 GiB of swap alongside 15 GiB of
+#     RAM -- the step's own `free -h` output confirms the larger swap is active -- and the
+#     build still dies with 15 of those allocation errors. The step is kept because headroom
+#     is cheap and its `free -h`/`df -h` output on both sides makes any shortfall name itself
+#     in the log, but it is not the fix and must not be read as one.
+#
+#     Capping Lake's concurrency is the obvious lever and is NOT reachable from this file:
+#     Lake 5.0.0 accepts no `-j`/`--jobs` (`lake build -j2` -> `unknown short option '-j'`;
+#     `--jobs=2` -> `unknown long option '--jobs'`), and the doc build's own `lake build` call
+#     lives inside the pinned action's `scripts/build_docs.sh`, not in `build-args` here. A
+#     real fix therefore means a larger runner, a forked or newer action, or fewer doc targets.
 #
 # The action supplies doc-gen4 itself (a throwaway `docbuild/` package pinned to the doc-gen4
 # tag matching `lean-toolchain`), which is why `lakefile.toml` and `lake-manifest.json` carry no
