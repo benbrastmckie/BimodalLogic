@@ -85,7 +85,7 @@ next_project_number: 940
 
 ### Repo Hygiene
 
-939 [RESEARCHED] — Fix the API Documentation workflow's runner OOM. Swap...
+939 [PLANNED] — Fix the API Documentation workflow's runner OOM. Swap...
 
 ### Semantics
 
@@ -105,11 +105,12 @@ next_project_number: 940
 ## Tasks
 
 ### 939. Fix api documentation runner oom
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [939_fix_api_documentation_runner_oom/reports/01_runner_oom_lever.md]
+- **Plan**: [939_fix_api_documentation_runner_oom/plans/01_fix-api-docs-runner-oom.md]
 
 **Description**: Fix the API Documentation workflow's runner OOM. Swap enlargement is measured insufficient; pick and implement the real lever.
 

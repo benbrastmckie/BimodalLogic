@@ -1,33 +1,30 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "session_id": "sess_1795075070_e9603d_939",
-  "task_number": 939,
-  "dispatch_seq": 1,
-  "findings_count": 4,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/939_fix_api_documentation_runner_oom/reports/01_runner_oom_lever.md",
-      "summary": "Larger runners are unavailable to this personal free-plan account; forking docgen-action is unnecessary; the real OOM lever is the LEAN_NUM_THREADS env var (caps Lean's Task thread pool that Lake's job scheduler runs on), confirmed by Lake/Lean maintainers, leanprover/lean-action's own README for the identical leanchecker-OOM case, and opencompl/veir's production docs.yml fixing this exact doc-gen4 OOM. Recommends setting LEAN_NUM_THREADS: \"1\" on the docgen-action step in docs.yml."
+      "type": "plan",
+      "path": "specs/939_fix_api_documentation_runner_oom/plans/01_fix-api-docs-runner-oom.md",
+      "summary": "2-phase plan capping doc-gen4 concurrency via LEAN_NUM_THREADS in docs.yml, preceded by a local thread-pool measurement; ends at a local commit with the user-invoked push as the only remaining verification."
     }
   ],
-  "next_steps": "Run /orchestrate 939 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1795075070_e9603d_939",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 2,
+    "estimated_hours": 1.25,
+    "dependency_waves": 2
+  },
   "memory_candidates": [
     {
-      "content": "When a Mathlib-dependent Lean project's CI OOMs during a parallel Lake-driven build (lake build, doc-gen4, leanchecker/lean4checker) on a GitHub-hosted runner, the fix is NOT a Lake -j/--jobs flag (Lake 5.0 has none, because Lean gives host programs no API to cap its own Task thread pool). The actual knob is the LEAN_NUM_THREADS environment variable, read once at Lean-runtime startup, which directly caps that thread pool and therefore Lake's effective build concurrency. Unset, it defaults to the machine's hardware concurrency (e.g. 4 on a standard public-repo GitHub ubuntu-latest runner). Confirmed by Lake/Lean maintainers on the leanprover-community Zulip, documented authoritatively in leanprover/lean-action's README ('Run leanchecker on a project with a Mathlib dependency', recommending LEAN_NUM_THREADS: \"1\"), and used in production by opencompl/veir's docs.yml specifically to stop a doc-gen4 build OOMing ('Lake runs one job per core... run out of memory'). Set it as a step- or job-level env var in the workflow YAML; it reaches the underlying lake build subprocess by ordinary environment inheritance, no action-level input or fork required.",
+      "content": "Lake exposes no -j/--jobs flag (Lake 5.0.0 rejects both outright), which makes capping Lake build concurrency look unreachable from a CI workflow file. It is not: Lean reads its Task thread-pool size once at process start from the LEAN_NUM_THREADS environment variable, and Lake schedules its build jobs on that same pool, so a plain GitHub Actions step-level `env: LEAN_NUM_THREADS: \"1\"` caps concurrency inside a pinned third-party action whose own `lake build` call is not otherwise reachable. This is the documented remedy for Mathlib-dependent CI OOM (each parallel job holds a full import environment): leanprover/lean-action's README prescribes it for leanchecker, and opencompl/veir's docs.yml uses it for doc-gen4. The general pattern: when a build tool exposes no concurrency flag, check whether the underlying runtime takes an environment variable, since env vars cross the action boundary by ordinary inheritance where action inputs do not.",
       "category": "PATTERN",
-      "source_artifact": "specs/939_fix_api_documentation_runner_oom/reports/01_runner_oom_lever.md",
+      "source_artifact": "specs/939_fix_api_documentation_runner_oom/plans/01_fix-api-docs-runner-oom.md",
       "confidence": 0.9,
-      "suggested_keywords": ["lean", "lake", "LEAN_NUM_THREADS", "github-actions-oom", "doc-gen4", "ci-memory"]
-    },
-    {
-      "content": "GitHub larger hosted runners are unavailable to a personal/user-owned repository at any billing plan tier -- the feature is documented as limited to organizations and enterprises on GitHub Team/Enterprise Cloud plans. Repository visibility (public vs private) does not change this; public repos only get free/unlimited STANDARD runner minutes, never access to larger runner sizes. Before recommending a larger-runner fix for any CI resource problem, first confirm via `gh api repos/<owner>/<repo>` and `gh api user` whether the repo is org-owned, since this route is categorically closed for a personal account regardless of preference or payment.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/939_fix_api_documentation_runner_oom/reports/01_runner_oom_lever.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["github-actions", "larger-runners", "billing-plan", "personal-account", "runner-eligibility"]
+      "suggested_keywords": ["LEAN_NUM_THREADS", "lake-concurrency", "ci-oom", "doc-gen4", "github-actions-env", "mathlib-memory"]
     }
-  ]
+  ],
+  "next_steps": "Run /orchestrate 939 to execute the plan",
+  "dispatch_seq": 2
 }

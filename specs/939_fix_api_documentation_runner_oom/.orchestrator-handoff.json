@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 2,
+  "summary": "Wrote a 2-phase implementation plan for the API Documentation runner OOM. Research had already settled the route: LEAN_NUM_THREADS as a step-level env entry on the docgen step in .github/workflows/docs.yml, with the larger-runner and action-fork routes closed by measurement. Phase 1 measures the variable's actual thread-pool effect locally on Lean 4.33.0-rc1 (closing the report's own Risk 3); Phase 2 applies the one-file edit, rewrites the header paragraph that still misdirects readers toward the three refuted routes, and ends at a local commit. Premise re-validation found one stale carried figure (docs.yml was modified 2026-11-18, not unmodified since 2026-09-20) and confirmed the rest live.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/939_fix_api_documentation_runner_oom/plans/01_fix-api-docs-runner-oom.md",
+      "summary": "2-phase plan: local LEAN_NUM_THREADS thread-pool measurement, then the docs.yml concurrency cap plus header correction, ending at a local commit with the push named as the user's step."
+    }
+  ],
+  "dispatch_seq": 2
+}
