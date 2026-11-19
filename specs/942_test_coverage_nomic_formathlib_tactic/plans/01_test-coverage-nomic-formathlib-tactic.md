@@ -308,7 +308,7 @@ returns `test-lean-src-roots.sh`, `test-plan-file-scope-harvest.sh` and
 
 ---
 
-### Phase 2: ForMathlib isolated-import smoke module [NOT STARTED]
+### Phase 2: ForMathlib isolated-import smoke module [COMPLETED]
 
 **Goal**: Close the first Low-severity gap: every file under `FormalSystem/ForMathlib/` is reached
 by a check that imports only `FormalSystem.ForMathlib`, making each upstream-PR candidate
@@ -316,10 +316,10 @@ verifiable in isolation rather than only transitively through its seven in-tree 
 
 **Tasks**:
 
-- [ ] Create `Tests/BimodalTest/ForMathlib/SmokeTest.lean` with the four-line Apache copyright
+- [x] Create `Tests/BimodalTest/ForMathlib/SmokeTest.lean` with the four-line Apache copyright
       header, importing ONLY `FormalSystem.ForMathlib`. The isolated import is the whole point of
       the artifact; adding a second `FormalSystem.*` import defeats it.
-- [ ] A `#check` per public declaration, plus one minimal instantiating `example` per file, using
+- [x] A `#check` per public declaration, plus one minimal instantiating `example` per file, using
       the forms the research dispatch compiled: `Order.IsNest ({Set.univ} : Set (Set ℕ))` via
       `⟨⟨Set.univ, rfl⟩, by simp [IsChain, Set.Pairwise]⟩` and `IsNest.exists_subset_inter`
       (BallSpace); `Order.PFilter.isProper_iff_bot_notMem` and `Order.PrimeFilter.mem_iff`
@@ -328,27 +328,27 @@ verifiable in isolation rather than only transitively through its seven in-tree 
       (SimpleGraphAcyclic); `Nat.exists_strictMono_const_pair_colour` at `C := Bool`
       (InfiniteRamseyPairs); `Sierpinski.isOpen_locallyConstantLocus` and
       `const_of_countable_range` on a constant `ℝ → Bool` (Sierpinski).
-- [ ] For the Sierpinski level-set closedness obligation, use `simp [Sierpinski.levelSet]` on the
+- [x] For the Sierpinski level-set closedness obligation, use `simp [Sierpinski.levelSet]` on the
       `a = c` branch and `simp [Sierpinski.levelSet, Ne.symm hac]` on the `a ≠ c` branch. A
       `simpa` form and an explicit `isClosed_empty` were both measured to FAIL here
       (`unnecessarySimpa`, and "No goals to be solved"), and under the zero warning budget an
       `unnecessarySimpa` warning is a gate failure.
-- [ ] Keep this to ONE module, not one per file. A module per `ForMathlib` file is the over-built
+- [x] Keep this to ONE module, not one per file. A module per `ForMathlib` file is the over-built
       shape the review explicitly warns against; a single ~70-line module is the lightweight
       reading of "a `#check`/`example` smoke test per file".
-- [ ] Docstring (or make `private`) every new public declaration -- this module also has no
+- [x] Docstring (or make `private`) every new public declaration -- this module also has no
       `scripts/c16-roots-baseline.txt` row, so its ceiling is 0. Same `defsWithUnderscore` and
       `synTaut` cautions as Phase 1.
-- [ ] Add `import BimodalTest.ForMathlib.SmokeTest` to `Tests/BimodalTest.lean` as a new group, in
+- [x] Add `import BimodalTest.ForMathlib.SmokeTest` to `Tests/BimodalTest.lean` as a new group, in
       this same phase -- C6 again.
-- [ ] Verify no task-number citation appears in the new `.lean` file.
-- [ ] Build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
+- [x] Verify no task-number citation appears in the new `.lean` file.
+- [x] Build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
       BimodalTest.ForMathlib.SmokeTest`, then `bash scripts/check-module-invariants.sh
       --no-build`.
-- [ ] Regenerate the commit-blocking count surface, in THIS phase, with the same
+- [x] Regenerate the commit-blocking count surface, in THIS phase, with the same
       build-then-`--fix`-then-review-diff sequence Phase 1 used, and stage
       `typst/generated/status.typ` with this phase's commit.
-- [ ] Commit once, with an explicit three-path staging list: the new module,
+- [x] Commit once, with an explicit three-path staging list: the new module,
       `Tests/BimodalTest.lean`, and `typst/generated/status.typ`.
 
 **Timing**: 0.75 hours

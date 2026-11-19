@@ -73,6 +73,7 @@ import BimodalTest.Integration.TemporalIntegrationTest
 import BimodalTest.Integration.BimodalIntegrationTest
 import BimodalTest.Property.Generators
 import BimodalTest.Property
+import BimodalTest.ForMathlib.SmokeTest
 
 /-!
 # BimodalTest - Test Suite for Bimodal TM Logic
