@@ -430,37 +430,37 @@ exists yet, so no broader check can observe these edits.
 
 ---
 
-### Phase 4: Wire the C16-roots gate and flip `ENFORCE_C16_ROOTS` [NOT STARTED]
+### Phase 4: Wire the C16-roots gate and flip `ENFORCE_C16_ROOTS` [COMPLETED]
 
 **Goal**: a full-mode `check-module-invariants.sh` run exits non-zero when any root's env_linter
 count rises above the pinned baseline, and exits 0 on the unmodified tree.
 
 **Tasks**:
 
-- [ ] Re-read `scripts/check-module-invariants.sh`'s C16 second half immediately before editing
-      (sibling task 829 shares this tree and has no declared `file_scope`).
-- [ ] Have the second half write each root's `runLinter` log to a per-root path and hand the set to
+- [x] Re-read `scripts/check-module-invariants.sh`'s C16 second half immediately before editing
+      (sibling task 829 shares this tree and has no declared `file_scope`). *(completed)*
+- [x] Have the second half write each root's `runLinter` log to a per-root path and hand the set to
       `scripts/c16_roots_baseline.py` in compare mode, replacing the bare `C16R_TOTAL`/`C16R_DIRTY`
       verdict with that script's row-level one. Keep printing the live per-root figures — the
-      debt stays visible, which is the point of the signal.
-- [ ] Map the generator's exit codes onto the gate: 0 → `pass C16`; 1 → `fail C16` when
+      debt stays visible, which is the point of the signal. *(completed)*
+- [x] Map the generator's exit codes onto the gate: 0 → `pass C16`; 1 → `fail C16` when
       `ENFORCE_C16_ROOTS` is 1 and `soft C16` otherwise; 2 → `fail C16` unconditionally, not
-      suppressed by the flag, on the `ENFORCE_C28=0` precedent for an untrusted measurement.
-- [ ] Flip `ENFORCE_C16_ROOTS` from `0` to `1` and rewrite its inline comment to state the current
+      suppressed by the flag, on the `ENFORCE_C28=0` precedent for an untrusted measurement. *(completed)*
+- [x] Flip `ENFORCE_C16_ROOTS` from `0` to `1` and rewrite its inline comment to state the current
       rule: the gate fails when a root's count rises above `scripts/c16-roots-baseline.txt`, not
-      when the count is non-zero.
-- [ ] Delete the two now-wrong notes (`set ENFORCE_C16_ROOTS=1 to make this exit-code-affecting
+      when the count is non-zero. *(completed)*
+- [x] Delete the two now-wrong notes (`set ENFORCE_C16_ROOTS=1 to make this exit-code-affecting
       once the count reaches zero`, and the clean-tree variant) and replace them with the pruning
-      instruction and a pointer to the baseline.
-- [ ] Replace the hand-written dated per-root table in the C16 header with a pointer to the
+      instruction and a pointer to the baseline. *(completed)*
+- [x] Replace the hand-written dated per-root table in the C16 header with a pointer to the
       generated baseline file. A hand-written snapshot living beside a check that exists because
-      such snapshots drift is the defect class this task closes, in miniature.
-- [ ] State the local/CI asymmetry explicitly in the C16 header: both halves sit inside
+      such snapshots drift is the defect class this task closes, in miniature. *(completed)*
+- [x] State the local/CI asymmetry explicitly in the C16 header: both halves sit inside
       `if [ "$RUN_BUILD" -eq 1 ]`, CI invokes the script with `--no-build`, so the gate of record
       for the widened scope is the local full-mode invocation. State the current arrangement
-      only — no "previously", "no longer", or supersession framing (`.claude/rules/no-record-versioning-in-deliverables.md`).
-- [ ] Add the new baseline to the script header's companion-file list.
-- [ ] **Falsify.** Introduce one env_linter finding in a module belonging to a root OTHER than the
+      only — no "previously", "no longer", or supersession framing (`.claude/rules/no-record-versioning-in-deliverables.md`). *(completed)*
+- [x] Add the new baseline to the script header's companion-file list. *(completed)*
+- [x] **Falsify.** Introduce one env_linter finding in a module belonging to a root OTHER than the
       cheapest-to-build one, on the C25 precedent that a seed in the module under repair proves
       nothing about the gate: e.g. a `def` with a non-trailing underscore, or an unused argument,
       in an out-of-closure module. Rebuild that root and run the full-mode
@@ -468,8 +468,8 @@ count rises above the pinned baseline, and exits 0 on the unmodified tree.
       line naming the above-baseline row **and** `echo $?` showing non-zero in the same run. Note
       what did NOT fail in the same run — `runLinter FormalSystem` and the `--no-build` pass —
       since that is exactly the invisible-failure condition this half closes. Revert the seed,
-      rebuild, and re-observe `PASS C16` and exit 0. Never stage the seeded `.lean` file.
-- [ ] Commit only `scripts/check-module-invariants.sh`.
+      rebuild, and re-observe `PASS C16` and exit 0. Never stage the seeded `.lean` file. *(completed)*
+- [x] Commit only `scripts/check-module-invariants.sh`. *(completed)*
 
 **Timing**: 1.5 hours
 
