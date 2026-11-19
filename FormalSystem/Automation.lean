@@ -13,6 +13,7 @@ import FormalSystem.Automation.SuccessPatterns
 import FormalSystem.Metalogic.Expressiveness.EFGameTactics
 import FormalSystem.Automation.Normalization
 import FormalSystem.Automation.ProofMode
+import FormalSystem.Automation.ProofMode.Semantic
 -- This aggregator is LIBRARY-ONLY. It used to import eight tooling modules -- FormulaEnumerator,
 -- DatasetGenerator, DataExport, EnrichedCountermodel, DatasetAssembly, ProofStepExtractor,
 -- InterestingnessMetrics and PrefilterSoundness -- and was the single reason `lake build`

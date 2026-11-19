@@ -8,6 +8,12 @@ import FormalSystem.Automation.ProofMode.Modal
 import FormalSystem.Automation.ProofMode.Positions
 import FormalSystem.Automation.ProofMode.Rewriting
 import FormalSystem.Automation.ProofMode.RuleRegistry
+import FormalSystem.Automation.ProofMode.Semantic
+import FormalSystem.Automation.ProofMode.SemanticCore
+import FormalSystem.Automation.ProofMode.SemanticMeta
+import FormalSystem.Automation.ProofMode.SemanticRewriting
+import FormalSystem.Automation.ProofMode.SemanticSimplification
+import FormalSystem.Automation.ProofMode.SemanticTransport
 import FormalSystem.Automation.ProofMode.Simplification
 import FormalSystem.Automation.ProofMode.Temporal
 import FormalSystem.Automation.ProofSearch.Core
@@ -518,6 +524,7 @@ import FormalSystem.Metalogic.Independence.TranslationStateSet
 import FormalSystem.Metalogic.Independence.ZTimeSharpness
 import FormalSystem.Metalogic.LCExtension
 import FormalSystem.Metalogic.NamingRules
+import FormalSystem.Metalogic.ProofModeSoundness
 import FormalSystem.Metalogic.QTime
 import FormalSystem.Metalogic.SetConsequence
 import FormalSystem.Metalogic.Soundness
@@ -691,6 +698,10 @@ import FormalSystem.Semantics.Presheaf.Reflection
 import FormalSystem.Semantics.Presheaf.Sheaf
 import FormalSystem.Semantics.Presheaf.Site
 import FormalSystem.Semantics.Presheaf.Worlds
+import FormalSystem.Semantics.ProofModeIntervals
+import FormalSystem.Semantics.ProofModeRules
+import FormalSystem.Semantics.ProofModeTemporalRules
+import FormalSystem.Semantics.ProofModeTransport
 import FormalSystem.Semantics.Reversal
 import FormalSystem.Semantics.ShiftFiniteType
 import FormalSystem.Semantics.ShiftFiniteTypeDictionary

@@ -12,7 +12,7 @@ scope conversions, frame restrictions and layer placement.
 | --- | --- | --- |
 | `feat/proof-mode-rewriting` | P0 prototypes, P1 native congruence, P2 rewriting/simplification | Complete; reviewed and checked |
 | `feat/proof-mode-temporal` | P3 temporal rules, reflection, progress and persistent scope capture | Complete; reviewed and checked |
-| `feat/proof-mode-semantics` | P4 clauses/soundness, P5 transport, semantic rewriting and progress | Pending; stacks on temporal |
+| `feat/proof-mode-semantics` | P4 clauses/soundness, P5 transport, semantic rewriting and progress | Complete; reviewed and checked |
 
 Each branch must include executable examples, applicable repository gates, an independent
 Codex review, an Opus review and grades under the design rubric. A reported grade does not
@@ -30,13 +30,13 @@ override a defect. Required findings must be fixed before that branch is conside
 - [x] P3: strict U/S fold/cases/introduction; exact duals/inclusive translation; Base/ZTime gates;
   contextual reflection; generic rule application; consequence/case progress; `keeping` capture;
   documented Plus derived-view choice and compatibility.
-- [ ] P4: generic individual-clause helpers, covering-time Next/Previous; pointed semantic
+- [x] P4: generic individual-clause helpers, covering-time Next/Previous; pointed semantic
   logical/modal/temporal tactics; explicit soundness with abstract Γ; strict indices and scopes;
   semantic mixed-path rewrite prototype and frontend.
-- [ ] P5: typed fact/goal transport and existing correspondence routes; persistence across
+- [x] P5: typed fact/goal transport and existing correspondence routes; persistence across
   repeated advances; well-founded rank progress with occurrence premises; semantic witnesses,
   native/semantic opaque-provider composition examples and refusal cases.
-- [ ] Integration: compact mechanism suite, source/axiom audit, README/import/inventory/count
+- [x] Integration: compact mechanism suite, source/axiom audit, README/import/inventory/count
   updates, required checks, two independent reviews per branch and final requirement audit.
 
 ## Validation policy
@@ -63,6 +63,12 @@ do not rerun unchanged passing checks without a reason.
 - Generated module-root and README inventories have been refreshed. Final counts, repository
   gates and branch-1 review closeout are recorded in the
   [branch closeout](implementation-reviews/branch1-closeout.md). The full P0–P5 audit remains
-  outstanding until branches 2 and 3 are implemented.
+  complete; branch-2 and branch-3 closeouts record the final implementation and checks.
+
+- Branch 3 adds the indexed semantic backend, clause/cover witnesses, dual views, bounded
+  rewriting/simplification, typed transports and occurrence-based rank progress. Both reviews
+  are closed; the final library/test, linter, full invariant, README, book and axiom checks pass.
+
+The [completion audit](completion-audit.md) maps P0–P5 to the actual modules and boundaries.
 
 Last updated: 2026-11-19.

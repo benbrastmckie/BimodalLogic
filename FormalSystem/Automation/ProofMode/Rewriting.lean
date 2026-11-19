@@ -426,7 +426,9 @@ def finishRewrite (goal : MVarId) (j : Judgment) (proof replacement : Expr)
 
 /-- Lift a uniquely selected equality of formula data through its exact enclosing positions. -/
 def formulaEqualityRewriteProof (j : Judgment) (proof : Expr) (symm : Bool)
-    (path : Option (Array Name)) : TacticM (Expr × Expr × List MVarId) := do
+    (path : Option (Array Name))
+    (resolveParameters : Array Expr → MetaM (List MVarId) := resolveRuleParameters) :
+    TacticM (Expr × Expr × List MVarId) := do
   let (parameters, _, type) ← forallMetaTelescopeReducing (← inferType proof)
   let allParameters ← rewriteParameters proof parameters
   unless type.isAppOf ``Eq do throwError "expected an equality of formula data"
@@ -452,7 +454,7 @@ def formulaEqualityRewriteProof (j : Judgment) (proof : Expr) (symm : Bool)
     throwError "selected occurrence does not match the equality"
   let mut formula ← instantiateMVars replacement
   if formula.hasExprMVar then throwError "equality leaves an undetermined formula parameter"
-  let pending ← resolveRuleParameters allParameters
+  let pending ← resolveParameters allParameters
   let mut equality := mkAppN proof parameters
   if symm then equality ← mkAppM ``Eq.symm #[equality]
   for position in occurrence.path.reverse do

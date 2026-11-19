@@ -51,6 +51,7 @@ This directory contains integration guides applicable across all theories:
 
 For compositional proofs:
 - [Derivation Proof Mode](derivation-proof-mode.md) - Named assertions and checked modal/temporal scopes
+- [Semantic Proof Mode](semantic-proof-mode.md) - Indexed witnesses, rewriting, transport and soundness
 
 For advanced tactic development:
 - [Tactic Development](tactic-development.md) - Custom tactics for Bimodal

@@ -6,6 +6,8 @@ Authors: Tanner Duve
 
 import FormalSystem.Automation.ProofMode.Simplification
 import FormalSystem.Automation.ProofMode.Discrete
+import FormalSystem.Automation.ProofMode.Semantic
+import FormalSystem.Semantics.ProofModeIntervals
 import FormalSystem.Theorems.ModalS5
 import FormalSystem.Theorems.LinearityDerived
 import FormalSystem.Metalogic.Soundness
@@ -19,6 +21,8 @@ One shared, mechanism-driven acceptance suite for the three implementation branc
 open FormalSystem.Syntax FormalSystem.ProofSystem
 open FormalSystem.Theorems.LinearityDerived
 open FormalSystem.Semantics
+
+register_lrewrite FormalSystem.Theorems.ProofMode.doubleNegationIff
 
 namespace BimodalTest.Automation.ProofModeExtensionsTest
 
@@ -253,5 +257,144 @@ example : [(A.imp C.someFuture).allFuture, (B.imp C.someFuture).allFuture] ⊢
   lprogress cases
   · lexact hA
   · lexact hB
+
+namespace SemanticExamples
+
+open FormalSystem.PlusLanguage
+open FormalSystem.Semantics.ProofModeRules FormalSystem.Semantics.ProofModeTransport
+
+variable {F : TaskFrame} (M : TaskModel F) (τ σ : WorldHistory F) (t : F.Duration)
+
+-- Clause scopes expose actual alternatives, and the same propositional interface composes bodies.
+example (P Q : PlusFormula) (hp : PlusTruthAt M τ t P.stab)
+    (hq : PlusTruthAt M τ t Q.box) : PlusTruthAt M τ t (P.and Q).stab := by
+  lmodal_intro settled using [hp, hq] as ρ hState p q
+  lsplit
+  · lexact p
+  · lexact q
+
+-- The semantic twin of the native opaque-provider S2 example, using the actual keeping syntax.
+example (_now : TruthAt M τ t A) (hFA : TruthAt M τ t A.someFuture)
+    (hAB : TruthAt M τ t (A.imp B.someFuture).allFuture)
+    (hBC : TruthAt M τ t (B.imp C.someFuture).allFuture) : TruthAt M τ t C.someFuture := by
+  fail_if_success ladvance _now using [hAB] as u hu a ab
+  fail_if_success ladvance hFA using [] keeping [hFA] as u hu a kept
+  ladvance hFA using [hAB] keeping [hBC] as u hu a ab bc
+  lhave fb : B.someFuture
+  · lapply ab; lexact a
+  ladvance fb using [bc] as v hv b bcv
+  lapply bcv
+  lexact b
+
+-- Mixed world/state/time rewrite demands are composed; local evidence cannot replace them.
+example (P Q R : PlusFormula)
+    (_local : PlusTruthAt M τ t P ↔ PlusTruthAt M τ t Q)
+    (mapping : PlusTruthAt M τ t (P.imp Q).allFuture.stab.box)
+    (provider : PlusTruthAt M τ t (P.or R).allFuture.stab.box) :
+    PlusTruthAt M τ t (Q.or R).allFuture.stab.box := by
+  fail_if_success lrewrite _local at provider as leaked
+  lrewrite mapping at provider as mapped
+  lexact mapped
+
+-- Semantic simplification reuses the shared budgets and a model-wide clause-proved seed.
+example (provider : TruthAt M τ t A.neg.neg.allFuture.box) :
+    TruthAt M τ t A.allFuture.box := by
+  fail_if_success lsimp only [ProofModeRules.doubleNegation_iff (L := Formula)]
+    (maxSteps := 0) at provider as exhausted
+  lsimp only [ProofModeRules.doubleNegation_iff (L := Formula)] at provider as reduced
+  lexact reduced
+
+-- Model-wide contracts using typed points instantiate at each demanded world/time.
+example (mapping : ∀ p : Point Formula F, At M p A ↔ At M p B)
+    (provider : TruthAt M τ t A.allFuture.box) : TruthAt M τ t B.allFuture.box := by
+  lrewrite mapping at provider as mapped
+  lexact mapped
+
+-- Semantic equality side conditions retain points beneath negation and existential binders.
+example (_eqNot : ∀ {_gate : ¬ TruthAt M τ t Formula.bot}, A = B)
+    (_wrongNot : ¬ TruthAt M σ t Formula.bot)
+    (_eqExists : ∀ {_gate : ∃ _n : ℕ, TruthAt M τ t Formula.top}, A = B)
+    (_wrongExists : ∃ _n : ℕ, TruthAt M σ t Formula.top)
+    (provider : TruthAt M τ t A) : TruthAt M τ t A := by
+  fail_if_success lrewrite _eqNot at provider as mismatch
+  fail_if_success lrewrite _eqExists at provider as mismatch
+  have _okNot : ¬ TruthAt M τ t Formula.bot := fun h => h
+  lrewrite _eqNot at provider as rewritten
+  guard_hyp rewritten :ₛ TruthAt M τ t B
+  lexact provider
+
+-- A temporal witness retains the strict open interval and leaves the goal at the original point.
+example (h : TruthAt M τ t (Formula.untl A B)) : TruthAt M τ t (Formula.untl (A.or B) B) := by
+  luntil cases h as u hu event guard
+  guard_hyp guard :ₛ ∀ r, t < r → r < u → TruthAt M τ r A
+  luntil witness u
+  · exact hu
+  · lexact event
+  · intro r htr hru
+    lleft
+    lexact guard r htr hru
+
+-- Existing Next facts supply covers over an arbitrary duration carrier, without a ZTime gate.
+example (ha : TruthAt M τ t A.next) (hb : TruthAt M τ t B.next) :
+    TruthAt M τ t (A.and B).next := by
+  lstep future using [ha, hb] as u hCover a b
+  guard_hyp hCover :ₛ t ⋖ u
+  lsplit
+  · lexact a
+  · lexact b
+
+-- Soundness is the sole native adapter, and it accepts the complete abstract object context.
+example (Δ : Context) (d : DerivationTree fc Δ A) (hF : fc.Sat F)
+    (hΔ : ∀ P ∈ Δ, TruthAt M τ t P) : TruthAt M τ t A := by
+  fail_if_success lexact d
+  fail_if_success lapply d
+  luse_derivation d using hF, hΔ
+
+-- A strict progress rule retains occurrence, invariant, rank and endpoint evidence.
+example (I : F.Duration → Prop) (rank : F.Duration → ℕ)
+    (step : ∀ s, I s → ¬ TruthAt M τ s A →
+      ∃ u, s < u ∧ I u ∧ (TruthAt M τ u A ∨ rank u < rank s))
+    (ht : I t) (hNow : ¬ TruthAt M τ t A) : TruthAt M τ t A.someFuture := by
+  lprogress using (rank_progress_truth_strict M τ () A
+    (r := (· < ·)) wellFounded_lt I rank)
+  · exact step
+  · exact ht
+  · exact hNow
+
+-- Locality and explicit state equality justify transport; bare temporal formulas are refused.
+example (s : F.Duration) (p : Atom) (hState : τ.state t = σ.state s)
+    (_hNow : τ.state t = σ.state t)
+    (provider : PlusTruthAt M τ t (PlusFormula.atom p).someFuture.stab)
+    (_temporal : PlusTruthAt M τ t (PlusFormula.atom p).someFuture) :
+    PlusTruthAt M σ s (PlusFormula.atom p).someFuture.stab := by
+  have hR := SameState.intro (L := PlusFormula) τ σ t s hState
+    (e := PUnit.unit) (e' := PUnit.unit)
+  fail_if_success
+    ltransport _temporal using plus_iffTransport_stateLocal _ M
+      with SameStateNow.intro τ σ t _hNow as leaked
+  ltransport provider using plus_iffTransport_stab M _ with hR as moved
+  lexact moved
+
+-- Satisfaction may erase history, while the proof-mode interface still compares its indices.
+example (_wrong : TruthAt M σ t Formula.top) : TruthAt M τ t Formula.top := by
+  fail_if_success lexact _wrong
+  exact _wrong
+
+-- A forward fact certificate cannot be inverted into a goal transport certificate.
+example (provider : TruthAt M τ t A) : TruthAt M τ t A := by
+  have hR : (⟨τ, t, PUnit.unit⟩ : Point Formula F) = ⟨τ, t, PUnit.unit⟩ := rfl
+  fail_if_success ltransport using orIntroLeft_fact M A B with hR
+  ltransport provider using orIntroLeft_fact M A B with hR as alternative
+  guard_hyp alternative : TruthAt M τ t (TruthClauses.or A B)
+  lexact provider
+
+-- Reflection changes model/history/time; a same-model result needs its own certificate.
+example (provider : TruthAt M.rev τ.rev (-t) A.reflectTime)
+    (_same : TruthAt M τ t A) : TruthAt M τ t A := by
+  fail_if_success ltime_reflect using _same
+  ltime_reflect
+  lexact provider
+
+end SemanticExamples
 
 end BimodalTest.Automation.ProofModeExtensionsTest

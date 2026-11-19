@@ -46,7 +46,13 @@ Soundness stays outside both pure kernels; Base satisfaction includes regularity
 
 The branch-2 temporal module type-checks Base Until/Since fold, ZTime unfolding, mapped-context
 reflection, strict progress composition and G/H persistence. It is integrated in the native frontend.
-Covering-time, semantic demand, rank and transport interfaces belong to branch 3.
+Branch 3 integrates covering-time, semantic demand, rank, typed transports and explicit
+context-form soundness. `ProofModeRules` and `ProofModeTemporalRules` are clause-only layer 1;
+`ProofModeIntervals` adds strict/inclusive/dual truth views and concrete TM/Plus pins.
+`ProofModeTransport` wraps the existing correspondence/shift/reversal/locality/morphism sources;
+its HistoryMorphism import retains that existing module’s documented Axioms seam.
+`Metalogic/ProofModeSoundness` is the higher-layer native adapter. Semantic frontend leaves
+retain the exact truth dictionary and all evaluation indices.
 
 Native rules use the existing layer-2 `Theorems/ProofMode` classification; elaborators and
 registration use layer-3 `Automation/ProofMode`. Registration validates actual result judgments

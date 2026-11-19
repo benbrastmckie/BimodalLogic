@@ -187,6 +187,9 @@ example (Γ : Context) (A B C : Formula)
 The compact [extension examples](../../Tests/BimodalTest/Automation/ProofModeExtensionsTest.lean)
 also exercise mixed TM⁺ scopes, conditional Next, equality casts, frame gates and rollback.
 
+The separate [pointed semantic backend](semantic-proof-mode.md) reuses these command families
+for model-specific truth, witnesses, certified transport and explicit soundness.
+
 ## Foundations and scope
 
 Pure rules live in `FormalSystem/Theorems/ProofMode/`; elaborators live in
