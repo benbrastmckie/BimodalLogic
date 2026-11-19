@@ -294,14 +294,14 @@ unenforced for a release cycle in the first place. The exit-2 arm matters here s
 root whose build or lint cannot be measured at all is never silently read as "zero findings" --
 see `scripts/c16-roots-unmeasurable.txt` below.
 
-**One root is currently unmeasurable, not zero.** `BimodalToolsTest`'s own build fails (an
-"Ambiguous term closureList" error between two same-named declarations, independent of
-env_linter), so `lake exe runLinter BimodalToolsTest` cannot import the module at all. This is
-recorded in `scripts/c16-roots-unmeasurable.txt`, the `scripts/module-invariants-manifest.txt`
-(C6) precedent applied to a root whose measurement itself is blocked: a root listed there is
-excused from the generator's anti-silence exit-2 guard, but its exclusion is reported on every
-run (an INFO line), never silent, and never a substitute for fixing the root. The defect is
-pre-existing and already filed and owned outside this check's scope.
+**Every root is measurable, and none is excused.** `scripts/c16-roots-unmeasurable.txt` carries
+its format header and no rows. The mechanism stays in place and stays load-bearing: it is the
+`scripts/module-invariants-manifest.txt` (C6) precedent applied to a root whose measurement
+itself is blocked, and a root listed there is excused from the generator's anti-silence exit-2
+guard while its exclusion is reported on every run (an INFO line), never silent, and never a
+substitute for fixing the root. What the empty row set records is that no root currently needs
+the excuse — a root whose own build breaks is read as unmeasurable rather than as zero findings,
+and that distinction is what the file exists to keep.
 
 **The local/CI asymmetry.** Both C16 halves sit inside `if [ "$RUN_BUILD" -eq 1 ]`, and CI
 invokes this script with `--no-build`, so CI never executes either half -- including the

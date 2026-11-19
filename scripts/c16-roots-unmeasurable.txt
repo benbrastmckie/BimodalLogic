@@ -9,4 +9,3 @@
 # root earns its place back in the ceiling, it is never left excused by habit.
 #
 # Format: one row per unmeasurable root: `<root> <reason>`
-BimodalToolsTest pre-existing build break, tracked and owned outside this file's scope: Tests/BimodalToolsTest/CertificateImportTest.lean fails to build with an "Ambiguous term closureList" error (two same-named declarations, BimodalTools.CertificateImport.closureList and FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Enumerate.closureList, both opened by the test file). This breaks `lake build BimodalToolsTest` and therefore `lake exe runLinter BimodalToolsTest`'s import of the module, independent of any env_linter finding.

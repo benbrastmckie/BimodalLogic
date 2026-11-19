@@ -350,22 +350,22 @@ script), and no Lean or script surface is touched.
 
 ---
 
-### Phase 4: Reconcile the C16-roots surfaces that excuse this defect [NOT STARTED]
+### Phase 4: Reconcile the C16-roots surfaces that excuse this defect [COMPLETED]
 
 **Goal**: `BimodalToolsTest` becomes measurable the moment Phase 1 lands, so remove its excuse
 row, give it its place in the ceiling, and correct the two prose records that assert it is
 unmeasurable.
 
 **Tasks**:
-- [ ] Confirm all three correction targets still exist and still name this defect before editing
+- [x] Confirm all three correction targets still exist and still name this defect before editing
       (all three were confirmed present at authoring time): `scripts/c16-roots-unmeasurable.txt`
       (one `BimodalToolsTest` row), `scripts/c16-roots-baseline.txt` (47 entry rows, no
       `BimodalToolsTest` rows), and `docs/development/MODULE_INVARIANTS.md` around line 297-304
       ("**One root is currently unmeasurable, not zero.**"). If any target is absent or no longer
       names this defect, record that in the phase notes and skip only that target's edit — do not
       invent a replacement carrier.
-- [ ] Measure the newly-buildable root: `lake exe runLinter BimodalToolsTest`, capturing the log.
-- [ ] Branch on the measurement:
+- [x] Measure the newly-buildable root: `lake exe runLinter BimodalToolsTest`, capturing the log.
+- [x] Branch on the measurement:
       - **Clean (no findings)**: delete the `BimodalToolsTest` row from
         `scripts/c16-roots-unmeasurable.txt`. No baseline rows are needed.
       - **Findings present**: delete that same row AND add one `<count> BimodalToolsTest <module>
@@ -374,10 +374,14 @@ unmeasurable.
         rewrites the file wholesale from the handed-in logs and would re-bless every other root's
         count from a partial log set. If a finding's linter class has no `# disposition` row, read
         the class and add one deliberately rather than defaulting it.
-- [ ] Update `docs/development/MODULE_INVARIANTS.md`'s unmeasurable-root paragraph to state the
+- [x] Update `docs/development/MODULE_INVARIANTS.md`'s unmeasurable-root paragraph to state the
       current situation. Present tense, no draft-history framing, no task-number citation (both
-      rules apply to `docs/**`).
-- [ ] Re-run the C16-roots comparator to confirm the gate is green, detached with a bounded
+      rules apply to `docs/**`). *(deviation: altered — the phase Goal names "the two prose
+      records that assert it is unmeasurable" while this bullet enumerated only one, so
+      `scripts/check-module-invariants.sh`'s own C16 header block, which carried the identical
+      "ONE ROOT IS CURRENTLY UNMEASURABLE, NOT ZERO" assertion, was corrected in the same way and
+      in the same commit; leaving it would have left a now-false record of the same kind)*
+- [x] Re-run the C16-roots comparator to confirm the gate is green, detached with a bounded
       waiter (`context/patterns/bounded-build-waiter.md`: hard timeout, `kill -0` on the captured
       PID, one waiter per log).
 
