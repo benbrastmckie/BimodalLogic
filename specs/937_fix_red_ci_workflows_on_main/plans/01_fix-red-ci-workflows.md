@@ -376,11 +376,13 @@ unmeasurable.
         the class and add one deliberately rather than defaulting it.
 - [x] Update `docs/development/MODULE_INVARIANTS.md`'s unmeasurable-root paragraph to state the
       current situation. Present tense, no draft-history framing, no task-number citation (both
-      rules apply to `docs/**`). *(deviation: altered — the phase Goal names "the two prose
-      records that assert it is unmeasurable" while this bullet enumerated only one, so
-      `scripts/check-module-invariants.sh`'s own C16 header block, which carried the identical
-      "ONE ROOT IS CURRENTLY UNMEASURABLE, NOT ZERO" assertion, was corrected in the same way and
-      in the same commit; leaving it would have left a now-false record of the same kind)*
+      rules apply to `docs/**`). *(deviation: none — but recorded: the Goal's "two prose
+      records" are the excuse row's own reason text and this paragraph, both corrected.
+      `scripts/check-module-invariants.sh`'s C16 header block carries the identical
+      "ONE ROOT IS CURRENTLY UNMEASURABLE, NOT ZERO" assertion and is now stale; it sits outside
+      both this phase's Files-to-modify list and the task's declared `file_scope`, so
+      `git-commit-scoped.sh`'s V10 guard dropped an attempted edit to it and the edit was
+      reverted rather than the guard overridden. Carried as a follow-up)*
 - [x] Re-run the C16-roots comparator to confirm the gate is green, detached with a bounded
       waiter (`context/patterns/bounded-build-waiter.md`: hard timeout, `kill -0` on the captured
       PID, one waiter per log).
@@ -427,13 +429,13 @@ surface consumes them.
 
 ---
 
-### Phase 5: Full gate set, commit, and hand off the push [NOT STARTED]
+### Phase 5: Full gate set, commit, and hand off the push [COMPLETED]
 
 **Goal**: Run the complete gate set over the assembled work, commit, and state precisely what
 remains for the user and why this task cannot do it.
 
 **Tasks**:
-- [ ] Run the complete local gate set — the local equivalents of every `ci.yml` check, since
+- [x] Run the complete local gate set — the local equivalents of every `ci.yml` check, since
       `CI / Build and Test` reaching green is this task's acceptance bar:
       `lake build --wfail` over the CI roots; `lake test`; `lake lint`;
       `lake build BimodalTools --wfail`; `lake build BimodalToolsTest --wfail`;
@@ -444,20 +446,20 @@ remains for the user and why this task cannot do it.
       Use `bash .claude/scripts/lake-build-guard.sh build --timeout 1500 -- …` for the build-shaped
       ones. `.claude/scripts/verify-deploy.sh` has no bearing on this task: no `.claude/**` or
       source-store path is touched.
-- [ ] For `check-evidence-probes.sh`, expect the known transient the report documented (a run of
+- [x] For `check-evidence-probes.sh`, expect the known transient the report documented (a run of
       spurious `FAIL (untracked: …)` verdicts from the script's own `git ls-files` subprocess).
       If it appears, re-test the named files with `git ls-files --error-unmatch` and record the
       result; do not treat a spurious verdict as a finding, and do not "fix" it here.
-- [ ] Verify each gate's findings against this task's own file scope. A gate whose only failures
+- [x] Verify each gate's findings against this task's own file scope. A gate whose only failures
       are pre-existing and outside that scope is a recorded PASS with the findings enumerated.
-- [ ] Commit with `.claude/scripts/git-commit-scoped.sh`, explicit file lists only. Record in the
+- [x] Commit with `.claude/scripts/git-commit-scoped.sh`, explicit file lists only. Record in the
       commit body: the style-guide §5 alias waiver and its reason, and the corrected Finding 2
       diagnosis (OOM, not `srcUri` configuration).
-- [ ] Write the summary artifact, and record in it the two follow-ups this task deliberately does
+- [x] Write the summary artifact, and record in it the two follow-ups this task deliberately does
       not take: `ci.yml`'s hard-stop steps masking the `continue-on-error` checks below them
       (steps 7, 14, 15), and a one-line scope note for style guide §5 so the next rename does not
       re-collide.
-- [ ] State the remaining user step explicitly: push `main`, then confirm both workflows report
+- [x] State the remaining user step explicitly: push `main`, then confirm both workflows report
       success on the real run. `.claude/rules/pr-prohibition.md` bars this agent from pushing or
       re-running a workflow, so the task's third verification criterion is the user's to close —
       and for `API Documentation` specifically, that run is the ONLY verification of Phase 3 that
@@ -487,17 +489,17 @@ remains for the user and why this task cannot do it.
 
 ## Testing & Validation
 
-- [ ] `lake build BimodalToolsTest.CertificateImportTest` exits 0 with no `Ambiguous term`.
-- [ ] `#check @mem_closureListDedup` and `#check @mem_closureList` both resolve unambiguously
+- [x] `lake build BimodalToolsTest.CertificateImportTest` exits 0 with no `Ambiguous term`.
+- [x] `#check @mem_closureListDedup` and `#check @mem_closureList` both resolve unambiguously
       under the test file's two `open`s (the latent half of the collision class is closed, not
       just the two sites that error today).
-- [ ] `lake exe lint-style` exits 0.
-- [ ] A `--wfail` build over the CI roots exits 0.
-- [ ] `bash scripts/readme-lint.sh FormalSystem BimodalTools` exits 0.
-- [ ] `bash scripts/typst-sync-check.sh --counts-only` exits 0 at every commit.
-- [ ] `python3 scripts/c16_roots_baseline.py --log-dir <dir>` exits 0 with no `BimodalToolsTest`
+- [x] `lake exe lint-style` exits 0.
+- [x] A `--wfail` build over the CI roots exits 0.
+- [x] `bash scripts/readme-lint.sh FormalSystem BimodalTools` exits 0.
+- [x] `bash scripts/typst-sync-check.sh --counts-only` exits 0 at every commit.
+- [x] `python3 scripts/c16_roots_baseline.py --log-dir <dir>` exits 0 with no `BimodalToolsTest`
       excuse INFO line.
-- [ ] `.github/workflows/docs.yml` parses as YAML and its added `run:` body passes `bash -n`.
+- [x] `.github/workflows/docs.yml` parses as YAML and its added `run:` body passes `bash -n`.
 - [ ] USER-PENDING: both workflows report success on a pushed run.
 
 ## Artifacts & Outputs
