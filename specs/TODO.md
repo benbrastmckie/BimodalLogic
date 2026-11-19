@@ -13,7 +13,7 @@ next_project_number: 939
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,931,933,935,937 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,931,933,935 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -83,10 +83,6 @@ next_project_number: 939
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
-### Repo Hygiene
-
-937 [PLANNED] — Fix the two independently red CI workflows on main. Both were...
-
 ### Semantics
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
@@ -147,12 +143,13 @@ This record owns making the signals enforceable. It does NOT own the two red CI 
 ---
 
 ### 937. Fix red ci workflows on main
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [937_fix_red_ci_workflows_on_main/reports/01_fix-red-ci-workflows.md]
 - **Plan**: [937_fix_red_ci_workflows_on_main/plans/01_fix-red-ci-workflows.md]
+- **Summary**: [937_fix_red_ci_workflows_on_main/summaries/01_fix-red-ci-workflows-summary.md]
 
 **Description**: Fix the two independently red CI workflows on `main`. Both were red before the proof-mode contribution merged, and no existing active task owns either.
 

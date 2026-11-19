@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "dispatch_seq": 3,
+  "status": "implemented",
+  "phases_completed": 5,
   "phases_total": 5,
-  "summary": "Wrote a 5-phase plan (5h) covering three independent causes, not the two the record names. Finding 1 is planned as the rename closureList -> closureListDedup in BimodalTools plus the test retarget, closing the latent mem_closureList collision too; the report's masked lint-style failure (4 spaces before semicolons in NormalForm.lean) is a second in-scope cause of the same workflow's redness. The research report left Finding 2 PENDING, so this dispatch root-caused it: every API Documentation failure is an OOM kill during the doc build (13x 'resource exhausted (cannot allocate memory)', zero config errors), refuting the record's srcUri/configuration diagnosis and its '578 regression' framing. A fourth phase reconciles the scripts/c16-roots-* surfaces that currently excuse this very defect.",
+  "summary": "All five phases completed and committed across six commits. BimodalTools' closureList was renamed closureListDedup (defined through the core declaration), closing both the live and the latent half of the collision class, so lake build BimodalToolsTest.CertificateImportTest now exits 0. Four spaces before semicolons in SeparationZ/NormalForm.lean were deleted, taking lake exe lint-style from exit 1 to exit 0. API Documentation was re-diagnosed from the record's srcUri.github claim to a measured out-of-memory kill and given a swap step plus a corrected PREREQUISITES record, and the C16-roots surfaces that excused the closureList defect were reconciled on the clean branch with the baseline untouched. All thirteen local gates exit 0 in the working tree; sorry_count 0 and axiom_count unchanged at 14.",
+  "blockers": [],
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/937_fix_red_ci_workflows_on_main/summaries/01_fix-red-ci-workflows-summary.md",
+      "summary": "Fixes both red CI workflows across three independent causes: the closureList name ambiguity, the lint-style failure it was masking, and the doc-gen4 out-of-memory kill."
+    },
     {
       "type": "plan",
       "path": "specs/937_fix_red_ci_workflows_on_main/plans/01_fix-red-ci-workflows.md",
-      "summary": "5-phase plan: closureList rename + test retarget, the masked lint-style fix, docs.yml OOM headroom with corrected diagnosis, C16-roots reconciliation, full gate set and push handoff."
+      "summary": "All five phase headings closed [COMPLETED] with every checklist item ticked and one deviation annotated inline."
     }
-  ],
-  "blockers": [],
-  "dispatch_seq": 2
+  ]
 }

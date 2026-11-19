@@ -1,7 +1,7 @@
 # Implementation Plan: Task #937
 
 - **Task**: 937 - Fix red CI workflows on main
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None (tasks 829 and 938 are adjacent in `.github/workflows/` and
   `scripts/` territory; 938's `scripts/c16-roots-*` artifacts are an input to Phase 4, not a
