@@ -1,0 +1,34 @@
+{
+  "phase": 2,
+  "phase_name": "Apply the four claim-changing corrections",
+  "started_at": "2026-11-19T18:14:00Z",
+  "last_updated": "2026-11-19T18:11:29Z",
+  "objectives": [
+    {"id": 1, "description": "Replace the **missing** ingredient row (live line 110) with the compiled row citing UniversalCover.lean:591, HistoryMorphism.lean:681", "status": "done", "files_touched": ["specs/archive/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 2, "description": "Replace the weakest-link Risks bullet (live line 1001) with the fully merged Amended 2026-11-13 text including the appended refusal sentence", "status": "done", "files_touched": ["specs/archive/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 3, "description": "Correct the one clause in the companion Risks bullet (live line 1002): 'resting on two unlanded pieces' -> 'now resting on landed pieces'", "status": "done", "files_touched": ["specs/archive/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]},
+    {"id": 4, "description": "Replace Section 15.3's stale 'The two missing pieces, named.' paragraph (live line 910) with the amendment text as a plain paragraph, without the refusal sentence", "status": "done", "files_touched": ["specs/archive/901_two_sided_reynolds_engine_paper_proof/reports/01_two-sided-reynolds-engine-paper-proof.md"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "2.verification",
+      "description": "Phase 2's verification block specifies `git diff` to confirm exactly four changed hunks for this phase.",
+      "type": "altered",
+      "reason": "Same untracked/gitignored-path reason as Phase 1 (specs/archive/ is wholly .gitignore'd). Substituted a saved pre/post-edit snapshot diff (plain `diff`, not `git diff`): it shows 3 reported hunk-groups because two of the four anchors (live lines 1001 and 1002) are textually adjacent with no intervening unchanged line, so diff/git-diff tooling merges them into one hunk regardless of tracking status -- this is a property of the diff algorithm, not evidence of a missed or extra edit. All four distinct anchors (110, 910, 1001, 1002) were independently confirmed via their own grep checks below, each exactly as the plan specifies.",
+      "annotation": "*(deviation: altered -- git-diff-based hunk verification replaced with snapshot diff + grep counts; 3 diff hunk-groups cover the 4 anchors because two are adjacent lines)*"
+    }
+  ],
+  "verification_results": {
+    "refusal_sentence_count": 1,
+    "amended_2026_11_13_count": 2,
+    "missing_token_hits": "exactly one, line 112 (unrelated programme-report reference)",
+    "stale_phrase_hits": 0,
+    "historymorphism_589_count": 0,
+    "line_904_byte_unchanged": true,
+    "recommendation_8_and_O1_O3_O4_byte_unchanged": true,
+    "line_count_unchanged": "1084 (confirmed via wc -l)"
+  }
+}

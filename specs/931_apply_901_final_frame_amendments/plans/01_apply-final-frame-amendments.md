@@ -204,14 +204,14 @@ Risks bullets at lines 1001-1002 (Phase 2).
 
 ---
 
-### Phase 2: Apply the four claim-changing corrections [NOT STARTED]
+### Phase 2: Apply the four claim-changing corrections [COMPLETED]
 
 **Goal**: Every surface that still calls the two final-frame pieces missing or unlanded now records
 them as landed, using task 927's verbatim amendment text, with the 901 report's refusal sentence
 preserved exactly once.
 
 **Tasks**:
-- [ ] Locate by content and replace the `**missing**` ingredient row (live line 110). Replace:
+- [x] Locate by content and replace the `**missing**` ingredient row (live line 110). Replace:
       ```
       | universal cover; invariance with no *Saturation* on the base | **missing** | the two Lean pieces the final-frame step needs |
       ```
@@ -220,8 +220,8 @@ preserved exactly once.
       | `exists_orientedForest_cover_of_constraints`; `plus_invariance_of_isZTime_of_constraints` | **compiled** | `UniversalCover.lean:591`, `HistoryMorphism.lean:681` — both landed 2026-11-09, after this report |
       ```
       Use the whole row as the `old_string`, never the bare `**missing**` token — line 112 carries
-      an unrelated `**missing**` that must survive.
-- [ ] Locate by content and replace the weakest-link Risks bullet (live line 1001) — the whole
+      an unrelated `**missing**` that must survive. *(completed)*
+- [x] Locate by content and replace the weakest-link Risks bullet (live line 1001) — the whole
       list item beginning `- **Risk: the final-frame step is the weakest link` — with this single
       list item, copied exactly (it is task 927's Finding (3) text with the refusal sentence
       appended as its final sentence; do not re-merge, re-wrap, or re-date it, and do not render
@@ -229,17 +229,20 @@ preserved exactly once.
       ```
       - **Amended 2026-11-13.** Both pieces this risk named as missing landed later the same day, and the lifting chain was audited. `exists_orientedForest_cover_of_constraints` (`UniversalCover.lean:591`) supplies the cover with its forest, double-seriality and two-way-boundedness properties; `plus_invariance_of_isZTime_of_constraints` (`HistoryMorphism.lean:681`) supplies invariance over a base carrying **no** `def:frame` constraint. The negative evidence recorded here — that `plus_invariance_of_isZTime` demands `[F.IsRegular]` on the base — is answered: that binder is now carried only on the specialised form, is marked `@[nolint unusedArguments]` with a comment recording that it is genuinely unread, and the general form takes no base binder at all. *Saturation* is consumed nowhere in the lifting chain on either side. The positive evidence recorded here (`exists_preimage_step_neg` using only `reflection`) is likewise discharged: at the nonzero step duration that use is `TaskFrame.reflect_reflection_of_ne`, a fact about how `FrameOver.TaskRel` extends `PosRel` rather than a constraint on the frame. What remains for §15 is API packaging, not mathematics — see Finding (2) of the remeasurement report. This write-up does not claim the final-frame step; it claims the engine up to it.
       ```
-- [ ] Locate by content and correct the one clause in the companion Risks bullet (live line 1002):
+      *(completed)*
+- [x] Locate by content and correct the one clause in the companion Risks bullet (live line 1002):
       change `one step (the final frame) resting on two unlanded pieces` to
       `one step (the final frame), now resting on landed pieces`. Every other word of that bullet,
       including its own `*Mitigation*` sentence and its "the whole resting on no machine checking"
-      claim, is still accurate per task 927's Finding (3) and must be left untouched.
-- [ ] Locate by content and replace §15.3's stale paragraph (live line 910) — the whole paragraph
+      claim, is still accurate per task 927's Finding (3) and must be left untouched. *(completed)*
+- [x] Locate by content and replace §15.3's stale paragraph (live line 910) — the whole paragraph
       beginning `**The two missing pieces, named.**` — with the same amendment text as a plain
       paragraph: identical to the bullet above but with the leading `- ` list marker removed and
       **without** the appended refusal sentence (which belongs to, and must occur only in, the
-      Risks bullet). See Decision 1 for why this anchor is in scope.
-- [ ] Commit this green sub-step.
+      Risks bullet). See Decision 1 for why this anchor is in scope. *(completed)*
+- [x] Commit this green sub-step. *(completed — see phase-closing commit below; the deviation re:
+      git-diff-based hunk verification is recorded in the Phase 2 progress file's `deviations`
+      array)*
 
 **Timing**: 0.5 hours
 
