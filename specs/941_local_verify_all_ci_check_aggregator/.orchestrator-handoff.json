@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 5,
+  "phases_completed": 3,
   "phases_total": 3,
-  "summary": "Wrote a 3-phase implementation plan for scripts/verify-all.sh, the local aggregator mirroring ci.yml's nine-check gate. Phase 1 writes the script (nine invocations in ci.yml's order, continue-past-failure, ci.yml's Report results reporting shape with expected=9); Phase 2 documents it in CONTRIBUTING.md's Development Setup block and adds two scripts/README.md rows; Phase 3 verifies CI parity, a seeded single-check failure, and both cross-references. Six planning decisions are recorded, including check 9's three-sub-check handling, the no-lake-build boundary, and the SKIPPED-when-lake-absent semantics. Estimated 3 hours.",
+  "summary": "Implemented scripts/verify-all.sh, a local aggregator that runs the same nine checks .github/workflows/ci.yml runs, in the same order, continuing past every failure and reporting per-check verdicts plus an aggregate RESULT line. Documented it in CONTRIBUTING.md and scripts/README.md. Verified end-to-end with three real runs (clean-tree baseline, a seeded check-9 executable-bit failure, and a post-revert confirmation) plus an isolated logic test of the out-of-sync expected/seen guard. All three plan phases are COMPLETED and committed.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/941_local_verify_all_ci_check_aggregator/plans/01_local-verify-all-aggregator.md",
-      "summary": "3-phase plan (3h) for scripts/verify-all.sh plus CONTRIBUTING.md and scripts/README.md documentation."
+      "type": "summary",
+      "path": "specs/941_local_verify_all_ci_check_aggregator/summaries/01_local-verify-all-aggregator-summary.md",
+      "summary": "Implementation summary covering scripts/verify-all.sh, its documentation, and full verification evidence."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/941_local_verify_all_ci_check_aggregator/handoffs/phase-3-handoff-20261119T020000Z.md",
+      "summary": "Final phase-end handoff: all three phases complete, no blockers."
     }
-  ],
-  "dispatch_seq": 3
+  ]
 }

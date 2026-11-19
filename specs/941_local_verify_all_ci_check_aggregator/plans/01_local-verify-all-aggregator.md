@@ -1,7 +1,7 @@
 # Implementation Plan: Task #941
 
 - **Task**: 941 - Local aggregator that mirrors ci.yml's check gate
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/941_local_verify_all_ci_check_aggregator/reports/01_local-verify-all-aggregator.md

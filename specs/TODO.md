@@ -13,7 +13,7 @@ next_project_number: 944
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,941,942,943 | -- | algebraic-representation, code-quality, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,942,943 | -- | algebraic-representation, code-quality, completeness, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -88,7 +88,6 @@ next_project_number: 944
 
 ### Repo Hygiene
 
-941 [IMPLEMENTING] — Add a local aggregator that mirrors ci.yml's check gate, so a...
 943 [IMPLEMENTING] — Close three small gitignore and loose-file hygiene gaps at...
 
 ### Semantics
@@ -163,12 +162,13 @@ VERIFICATION: `lake build` and the project's test target both green; confirm by 
 ---
 
 ### 941. Local verify all ci check aggregator
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [941_local_verify_all_ci_check_aggregator/reports/01_local-verify-all-aggregator.md]
 - **Plan**: [941_local_verify_all_ci_check_aggregator/plans/01_local-verify-all-aggregator.md]
+- **Summary**: [941_local_verify_all_ci_check_aggregator/summaries/01_local-verify-all-aggregator-summary.md]
 
 **Description**: Add a local aggregator that mirrors ci.yml's check gate, so a contributor can reproduce CI's verdict before pushing.
 
