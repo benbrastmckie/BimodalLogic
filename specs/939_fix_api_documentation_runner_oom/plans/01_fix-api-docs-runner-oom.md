@@ -1,7 +1,7 @@
 # Implementation Plan: Task #939
 
 - **Task**: 939 - Fix the API Documentation workflow's runner OOM
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/939_fix_api_documentation_runner_oom/reports/01_runner_oom_lever.md
@@ -121,7 +121,7 @@ alone and files no edge.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Measure the `LEAN_NUM_THREADS` cap on this toolchain [NOT STARTED]
+### Phase 1: Measure the `LEAN_NUM_THREADS` cap on this toolchain [COMPLETED]
 
 **Goal**: Close the research report's Risk 3 locally. The variable's effect is attested by
 maintainers, by `lean-action`'s README, and by a production `docs.yml` elsewhere, but no consulted
@@ -129,20 +129,32 @@ source measured it. This phase measures it directly on Lean 4.33.0-rc1 — the s
 job pins — so Phase 2's edit rests on a local observation rather than on precedent alone.
 
 **Tasks**:
-- [ ] Create `specs/evidence/lean-num-threads-cap-probe/` and write `probe.lean`: a standalone Lean
+- [x] Create `specs/evidence/lean-num-threads-cap-probe/` and write `probe.lean`: a standalone Lean
       program with no Mathlib or `FormalSystem` imports that launches at least `2 x nproc` CPU-bound
       `Task`s (`IO.asTask` or `Task.spawn`) and waits for all of them. It must be CPU-bound, not
-      sleep-bound: a sleeping task shows no CPU-percent signal.
-- [ ] Run it twice under `lake env lean --run specs/evidence/lean-num-threads-cap-probe/probe.lean`,
+      sleep-bound: a sleeping task shows no CPU-percent signal. *(deviation: altered -- used
+      `IO.asTask`, not `Task.spawn`; `Task.spawn` confirmed via `/proc` thread-state polling to
+      never achieve multi-thread concurrency on this toolchain regardless of `LEAN_NUM_THREADS`,
+      including at `Task.Priority.dedicated`. `IO.asTask` does achieve genuine concurrency and is
+      the plan's other explicitly named alternative.)*
+- [x] Run it twice under `lake env lean --run specs/evidence/lean-num-threads-cap-probe/probe.lean`,
       wrapped in `/usr/bin/time -v`, reading the `Percent of CPU this job got` field: once with
-      `LEAN_NUM_THREADS` unset, once with `LEAN_NUM_THREADS=1`.
-- [ ] Record in `specs/evidence/lean-num-threads-cap-probe/probe-results.md`: both commands exactly
+      `LEAN_NUM_THREADS` unset, once with `LEAN_NUM_THREADS=1`. *(completed: this host has no
+      `/usr/bin/time`; substituted GNU Time resolved via `command -v time`, invoked by its
+      resolved path to avoid bash's own `time` reserved word)*
+- [x] Record in `specs/evidence/lean-num-threads-cap-probe/probe-results.md`: both commands exactly
       as run, both CPU-percent and elapsed figures as printed, `nproc`, and
-      `lake env lean --version`.
-- [ ] State one of three verdicts explicitly in that file: **confirmed** (the capped run's CPU
+      `lake env lean --version`. *(completed)*
+- [x] State one of three verdicts explicitly in that file: **confirmed** (the capped run's CPU
       percent collapses toward ~100% while the uncapped run's substantially exceeds it),
       **inconclusive** (no interpretable signal), or **refuted** (the capped run shows the same
       multi-core utilization). Record the verdict the numbers support, not the expected one.
+      *(completed: verdict is **inconclusive** -- 1433% CPU unset vs 1669% at `LEAN_NUM_THREADS=1`,
+      no capping signal in either direction; attributed to the probe's flat 48-way simultaneous
+      fan-out likely triggering Lean's documented soft-limit-exceeded-to-avoid-deadlock behavior,
+      a different task shape from Lake's actual dependency-graph-driven job release. See
+      `probe-results.md` for the full reasoning and a Lake maintainer statement vouching for the
+      mechanism's practical effectiveness.)*
 
 **Timing**: 0.5 hours
 

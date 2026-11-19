@@ -85,7 +85,7 @@ next_project_number: 940
 
 ### Repo Hygiene
 
-939 [PLANNED] — Fix the API Documentation workflow's runner OOM. Swap...
+939 [IMPLEMENTING] — Fix the API Documentation workflow's runner OOM. Swap...
 
 ### Semantics
 
@@ -105,7 +105,7 @@ next_project_number: 940
 ## Tasks
 
 ### 939. Fix api documentation runner oom
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None

@@ -1,30 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/939_fix_api_documentation_runner_oom/plans/01_fix-api-docs-runner-oom.md",
-      "summary": "2-phase plan capping doc-gen4 concurrency via LEAN_NUM_THREADS in docs.yml, preceded by a local thread-pool measurement; ends at a local commit with the user-invoked push as the only remaining verification."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 3,
   "metadata": {
-    "session_id": "sess_1795075070_e9603d_939",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 2,
-    "estimated_hours": 1.25,
-    "dependency_waves": 2
-  },
-  "memory_candidates": [
-    {
-      "content": "Lake exposes no -j/--jobs flag (Lake 5.0.0 rejects both outright), which makes capping Lake build concurrency look unreachable from a CI workflow file. It is not: Lean reads its Task thread-pool size once at process start from the LEAN_NUM_THREADS environment variable, and Lake schedules its build jobs on that same pool, so a plain GitHub Actions step-level `env: LEAN_NUM_THREADS: \"1\"` caps concurrency inside a pinned third-party action whose own `lake build` call is not otherwise reachable. This is the documented remedy for Mathlib-dependent CI OOM (each parallel job holds a full import environment): leanprover/lean-action's README prescribes it for leanchecker, and opencompl/veir's docs.yml uses it for doc-gen4. The general pattern: when a build tool exposes no concurrency flag, check whether the underlying runtime takes an environment variable, since env vars cross the action boundary by ordinary inheritance where action inputs do not.",
-      "category": "PATTERN",
-      "source_artifact": "specs/939_fix_api_documentation_runner_oom/plans/01_fix-api-docs-runner-oom.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["LEAN_NUM_THREADS", "lake-concurrency", "ci-oom", "doc-gen4", "github-actions-env", "mathlib-memory"]
-    }
-  ],
-  "next_steps": "Run /orchestrate 939 to execute the plan",
-  "dispatch_seq": 2
+    "session_id": "sess_1795075070_e9603d",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }
