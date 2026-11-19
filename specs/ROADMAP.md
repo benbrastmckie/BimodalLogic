@@ -18,17 +18,22 @@ last stage below and are never dispatched ahead of, or batched with, L⁺ critic
 
 ## Where both fronts now stand
 
-**Stage 1 has a short dispatchable Lean line again; Stage 2 has none.** This is the governing
+**Stage 1 has NO dispatchable Lean line; Stage 2 has none either.** This is the governing
 fact about the current state of the tree, and it is the product of rulings and closed
 programmes rather than of unfinished dispatches.
 
-- **Decidability (Stage 1).** 761's hold is **LIFTED** (2026-11-12) and the `hself` disposition is
-  **RULED (B), rename to auxiliaries** (2026-11-13, Stage 0 below), so Phases 11.16 and 11.17 are
-  now enterable — roughly 2.5 hours of work that closes the idle-insertion cascade's record.
-  Everything beyond them, fourteen phases and five of the task's six filed Goals, stays behind
-  Phase 11.6's depth-`0` gate, which **no open task owns**. The crux that would decide that gate is
-  named in Stage 0 and in `RaySummary/README.md`: whether `ForwardSlackWitnessed` at a POSITIVE
-  amount is satisfiable at any state the depth-`0` induction reaches.
+- **Decidability (Stage 1).** 761's hold was **LIFTED** (2026-11-12) and the `hself` disposition
+  was **RULED (B), rename to auxiliaries** (2026-11-13, Stage 0 below) — and that ruling was
+  EXECUTED, not merely enabling: Phases 11.15, 11.16 and 11.17 closed `[COMPLETED]`, and Phases
+  11.12 and 11.13 were promoted `[BLOCKED]` → `[COMPLETED WITH EXCLUSIONS]` on Phase 11.15's own
+  authority. Plan v13
+  (`specs/761_ladder_realization_theorem/plans/13_depth-zero-gate-rest-state.md`) records the
+  result: 30 of 41 phases closed, **ZERO phases enterable**. Every remaining phase — ten
+  `[NOT STARTED]` plus Phase 11.8 `[BLOCKED]` — and five of the task's six filed Goals, sits
+  behind Phase 11.6's depth-`0` gate, which **no open task owns**. The crux that would decide
+  that gate is restated, with the landed evidence on its satisfiable side, in Stage 0 below
+  (the depth-`0` gate bullet) and in `RaySummary/README.md`; it is not restated a second time
+  here.
 - **Completeness (Stage 2).** The Lean programme is **exhausted by ruling, not by exhaustion of
   effort**: every row of 879's 21-row ingredient table is landed, held as paper, or closed, and
   901's Recommendation 8 bars filing a Lean formalization of the Reynolds engine's §§7–15.
@@ -40,8 +45,12 @@ programmes rather than of unfinished dispatches.
 under "Not batched" below rather than batched, and unfiled by deliberate ruling. The other two this
 line used to name are discharged (2026-11-14 rulings, Stage 0): requirement (S)'s residue is
 CONFIRMED sufficient as assigned to (W) and reduces to the single named theorem `real_certStabK`,
-and the depth-`0` gate's crux is owned by task 934. The `I = 1` idle-run sub-regime was filed as
-929 and completed 2026-11-13.
+and the depth-`0` gate's crux has a landed verdict rather than an open owner: task 934
+completed 2026-11-14 and is archived, having compiled that the gate's crux IS satisfiable at
+the consumer-shape instantiation the five depth-`0` schemas use — existence evidence only, the
+gate ruling itself still not taken. See Stage 0's depth-`0` gate bullet below for the full
+statement; it is not restated here. The `I = 1` idle-run sub-regime was filed as 929 and
+completed 2026-11-13.
 
 ## L^▷: what is landed, and what is parked
 
