@@ -1,7 +1,7 @@
 # Implementation Plan: Task #937
 
 - **Task**: 937 - Fix red CI workflows on main
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None (tasks 829 and 938 are adjacent in `.github/workflows/` and
   `scripts/` territory; 938's `scripts/c16-roots-*` artifacts are an input to Phase 4, not a
@@ -144,34 +144,34 @@ and `.github/workflows/docs.yml`.
 
 ---
 
-### Phase 1: Rename the BimodalTools `closureList` and retarget the test [NOT STARTED]
+### Phase 1: Rename the BimodalTools `closureList` and retarget the test [COMPLETED]
 
 **Goal**: Close the entire `closureList`/`mem_closureList` collision class between
 `BimodalTools.CertificateImport` and `FormalSystem.Metalogic.Decidability`, so
 `lake build BimodalToolsTest.CertificateImportTest` exits 0.
 
 **Tasks**:
-- [ ] Re-read `BimodalTools/CertificateImport.lean:145-160` and `336-360` immediately before
+- [x] Re-read `BimodalTools/CertificateImport.lean:145-160` and `336-360` immediately before
       editing (concurrency guard).
-- [ ] Rename `def closureList` -> `def closureListDedup` at line 149, with the body
+- [x] Rename `def closureList` -> `def closureListDedup` at line 149, with the body
       `(FormalSystem.Metalogic.Decidability.closureList S).dedup`. No new import is needed:
       `…WitnessFamily.Compression.Enumerate` is already in this module's import closure
       (measured).
-- [ ] Rename `theorem mem_closureList` -> `mem_closureListDedup` (lines 152-155), proof
+- [x] Rename `theorem mem_closureList` -> `mem_closureListDedup` (lines 152-155), proof
       `simp [closureListDedup, List.mem_dedup, mem_closureList]`.
-- [ ] Retarget the three internal call sites at lines 338, 348, 357.
-- [ ] Update the four module-docstring mentions (lines 56, 59, 100, 118), including the
+- [x] Retarget the three internal call sites at lines 338, 348, 357.
+- [x] Update the four module-docstring mentions (lines 56, 59, 100, 118), including the
       `## Why closureList rather than Finset.toList` heading at line 56.
-- [ ] Add one sentence to the docstring recording why no deprecated alias accompanies this rename
+- [x] Add one sentence to the docstring recording why no deprecated alias accompanies this rename
       (style guide §5 waived; an alias retaining the old name measurably reproduces
       `Ambiguous term`). State it in present tense, naming the mechanism — NOT as "this used to
       be called…", which `.claude/rules/no-record-versioning-in-deliverables.md` forbids outside
       `specs/**`. Do not cite a task number in this file
       (`.claude/rules/no-task-references-in-deliverables.md`).
-- [ ] Update the inventory row naming `closureList` in `BimodalTools/README.md:384`.
-- [ ] Retarget `Tests/BimodalToolsTest/CertificateImportTest.lean:146,152` to `closureListDedup`
+- [x] Update the inventory row naming `closureList` in `BimodalTools/README.md:384`.
+- [x] Retarget `Tests/BimodalToolsTest/CertificateImportTest.lean:146,152` to `closureListDedup`
       (no qualification then needed, since the name is now unique across both opens).
-- [ ] Run `bash scripts/typst-sync-check.sh --counts-only`; if it reports drift (a line count
+- [x] Run `bash scripts/typst-sync-check.sh --counts-only`; if it reports drift (a line count
       moved), run `bash scripts/typst-sync-check.sh --fix` and stage
       `typst/generated/status.typ` in THIS phase's commit, never deferred.
 

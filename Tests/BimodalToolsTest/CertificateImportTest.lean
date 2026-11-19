@@ -143,13 +143,13 @@ def outsideExpected : Failure :=
 -- rows were retargeted from `pFormula ∘ Formula.toJson` when the envelope moved to the verified
 -- codec: `Formula.toJson` is no longer on the certificate's path, and the closure of `pFormula`
 -- with it is no longer what any certificate round trip runs through.
-#guard (closureList gammaPos).all fun φ =>
+#guard (closureListDedup gammaPos).all fun φ =>
   match decodeFormula (encodeFormula φ) with
   | .ok ψ => ψ == φ
   | .error _ => false
 
 -- The same, on the separation family's closure.
-#guard (closureList gammaSep).all fun φ =>
+#guard (closureListDedup gammaSep).all fun φ =>
   match decodeFormula (encodeFormula φ) with
   | .ok ψ => ψ == φ
   | .error _ => false
