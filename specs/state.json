@@ -1859,7 +1859,7 @@
     {
       "project_number": 942,
       "project_name": "test_coverage_nomic_formathlib_tactic",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "code-quality",
       "priority": "medium",
@@ -1907,7 +1907,7 @@
         },
         "degradations_count": 449
       },
-      "last_updated": "2026-11-19T21:33:35Z",
+      "last_updated": "2026-11-19T22:08:01Z",
       "session_id": "sess_1795122329_77078c",
       "artifacts": [
         {
@@ -1919,9 +1919,15 @@
           "path": "specs/942_test_coverage_nomic_formathlib_tactic/plans/01_test-coverage-nomic-formathlib-tactic.md",
           "type": "plan",
           "summary": "Three-phase plan (A: NomicLanguage module; B: ForMathlib isolated-import smoke module; C: Tactic folds plus doc reconciliation and whole-tree verification), 3.5 hours, waves [[1],[2],[3]]."
+        },
+        {
+          "path": "specs/942_test_coverage_nomic_formathlib_tactic/summaries/01_test-coverage-nomic-formathlib-tactic-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: three closed coverage gaps, measured gate verdicts, the Condition-4 verify-touched attribution, and the pre-validated buildContextExpr repair as a follow-up."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Added the first regression coverage for FormalSystem/NomicLanguage/ (a new 175-line module with seven axiom-profile pins), an isolated-import smoke module for all five FormalSystem/ForMathlib/ files, and two folds into existing Automation/ tests covering FormalSystem/Tactic/'s remaining simp sets and its MetaM helpers. lake build, lake build BimodalTest and lake test are all green at the repository's zero warning budget, with nothing under FormalSystem/ touched."
     },
     {
       "project_number": 943,

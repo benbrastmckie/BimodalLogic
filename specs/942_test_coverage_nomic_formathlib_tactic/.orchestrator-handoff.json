@@ -1,15 +1,29 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phase": "implement",
+  "phases_completed": 3,
   "phases_total": 3,
-  "summary": "Wrote a 3-phase, 3.5-hour implementation plan for the three untested FormalSystem module groups: Phase 1 adds Tests/BimodalTest/Semantics/NomicLanguageTest.lean for group (A), Phase 2 adds Tests/BimodalTest/ForMathlib/SmokeTest.lean importing only FormalSystem.ForMathlib for group (B), Phase 3 folds the two uncovered Tactic/Attr.lean simp sets into NormalizationTest.lean and the five Tactic/Meta.lean helpers into LemmaDBTest.lean for group (C), then reconciles the test READMEs and verifies the tree. The plan honours the recorded prior decision: no FormalSystem path appears in any phase's file list, and buildContextExpr is probed by #check only, with both pre-validated repairs recorded as a follow-up. Plan authoring corrected one research-report-adjacent error: typst/generated/status.typ carries tests-file-count and tests-line-count, so the commit-blocking count surface IS in play for a Tests/-only change and is now declared and regenerated in every phase.",
+  "summary": "All three test-coverage gaps are closed entirely inside Tests/. Two new modules landed (Tests/BimodalTest/Semantics/NomicLanguageTest.lean, 175 lines with seven axiom-profile pins; Tests/BimodalTest/ForMathlib/SmokeTest.lean, 141 lines with exactly one import) plus two folds into existing Automation/ tests for FormalSystem/Tactic/. lake build, lake build BimodalTest and lake test are all exit 0 with zero error/warning lines, check-module-invariants.sh passes in full mode, and the group-closure grep confirms NomicLanguage, ForMathlib and FormalSystem.Tactic are each referenced from at least one .lean file under Tests/. Nothing under FormalSystem/ was touched; verify-all.sh is deferred to the batch stage per this dispatch's Batch Gate Deferral directive, discharged in-dispatch by verify-touched.sh.",
+  "blockers": [],
+  "plan_markers_verified": true,
+  "next_action_hint": "File the buildContextExpr repair as its own task: FormalSystem/Tactic/Meta.lean calls mkAppM ``List.nil`` with an explicit argument for an implicit parameter, hard-failing modal_search on box-headed goals. Two repairs are pre-validated and recorded in the summary's Follow-ups.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/942_test_coverage_nomic_formathlib_tactic/plans/01_test-coverage-nomic-formathlib-tactic.md",
-      "summary": "Three-phase plan (A: NomicLanguage module; B: ForMathlib isolated-import smoke module; C: Tactic folds plus doc reconciliation and whole-tree verification), 3.5 hours, waves [[1],[2],[3]]."
+      "type": "summary",
+      "path": "specs/942_test_coverage_nomic_formathlib_tactic/summaries/01_test-coverage-nomic-formathlib-tactic-summary.md",
+      "summary": "Implementation summary: three closed coverage gaps, measured gate verdicts, the Condition-4 verify-touched attribution, and the pre-validated buildContextExpr repair as a follow-up."
+    },
+    {
+      "type": "other",
+      "path": "Tests/BimodalTest/Semantics/NomicLanguageTest.lean",
+      "summary": "NEW. Group (A): NomicFormula syntax, the Iff.rfl truth clauses, a concrete NomicModel over the F3 witness, and seven #guard_msgs axiom-profile pins."
+    },
+    {
+      "type": "other",
+      "path": "Tests/BimodalTest/ForMathlib/SmokeTest.lean",
+      "summary": "NEW. Group (B): 45 #checks and 7 examples reaching all five ForMathlib files, importing only FormalSystem.ForMathlib."
     }
   ],
-  "blockers": []
+  "sorry_inventory": []
 }

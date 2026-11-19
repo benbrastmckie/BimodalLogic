@@ -1,7 +1,7 @@
 # Implementation Plan: Task #942
 
 - **Task**: 942 - Add regression test coverage for three FormalSystem module groups that currently have none
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None (territory overlap with open task 177 on `TacticsTest.lean` is avoided outright -- see Decisions)
 - **Research Inputs**: specs/942_test_coverage_nomic_formathlib_tactic/reports/01_test-coverage-nomic-formathlib-tactic.md

@@ -13,14 +13,14 @@ next_project_number: 958
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,942,944 | -- | algebraic-representation, code-quality, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,944 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932,945 | 298,428,502,761,869,944 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876,946 | 429,497,763,873,945 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543,955 | 410,498,499,500,946 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 430,501,947 | 125,411,955 | algebraic-representation, decidability, proof-mode |
 | 6 | 412,949 | 430,947 | decidability, proof-mode |
 | 7 | 482,950 | 412,949 | decidability, proof-mode |
-| 8 | 177,948 | 178,282,296,481,482,543,942,950 | formula-refactor, proof-mode |
+| 8 | 177,948 | 178,282,296,481,482,543,950 | formula-refactor, proof-mode |
 | 9 | 954 | 948 | proof-mode |
 | 10 | 951 | 954 | proof-mode |
 | 11 | 952 | 951 | proof-mode |
@@ -40,10 +40,6 @@ next_project_number: 958
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
-
-### Code Quality
-
-942 [IMPLEMENTING] — Add regression test coverage for three FormalSystem module...
 
 ### Completeness
 
@@ -291,12 +287,13 @@ VERIFICATION: `bash scripts/check-module-invariants.sh` and `bash scripts/readme
 ---
 
 ### 942. Test coverage nomic formathlib tactic
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: None
 - **Research**: [942_test_coverage_nomic_formathlib_tactic/reports/01_test-coverage-nomic-formathlib-tactic.md]
 - **Plan**: [942_test_coverage_nomic_formathlib_tactic/plans/01_test-coverage-nomic-formathlib-tactic.md]
+- **Summary**: [942_test_coverage_nomic_formathlib_tactic/summaries/01_test-coverage-nomic-formathlib-tactic-summary.md]
 
 **Description**: Add regression test coverage for three FormalSystem module groups that currently have none.
 
