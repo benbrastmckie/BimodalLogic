@@ -1611,7 +1611,7 @@
     {
       "project_number": 933,
       "project_name": "correct_decidability_front_record",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "topic": "decidability",
       "priority": "high",
@@ -1631,7 +1631,7 @@
         "degradation_count": 446,
         "evidence_file": "specs/evidence/audit-verdicts/933.json"
       },
-      "last_updated": "2026-11-19T17:12:31Z",
+      "last_updated": "2026-11-19T17:27:33Z",
       "session_id": "sess_1795107126_0059c2",
       "artifacts": [
         {
@@ -1643,6 +1643,11 @@
           "path": "specs/933_correct_decidability_front_record/plans/01_record-correction-roadmap-state.md",
           "type": "plan",
           "summary": "4 phases across 3 waves, 2 hours: 761's blockers field in state.json; Stage 0's I=1 check-off plus depth-0 crux restatement against 934's landed verdict; the 'Where both fronts now stand' rewrite against plan v13; final cross-file consistency sweep under the complete gate set."
+        },
+        {
+          "path": "specs/933_correct_decidability_front_record/summaries/01_record-correction-roadmap-state-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary covering all four phases, verification results, deviations, and follow-ups."
         }
       ],
       "next_artifact_number": 2,
@@ -1650,7 +1655,8 @@
         "specs/933_correct_decidability_front_record/summaries/01_record-correction-roadmap-state-summary.md",
         "specs/ROADMAP.md",
         "specs/state.json"
-      ]
+      ],
+      "completion_summary": "Corrected specs/ROADMAP.md and specs/state.json's decidability-front record: added a machine-readable blockers array to task 761 naming its depth-0 gate blocker, checked off Stage 0's I=1 idle-run item citing task 929's honest refutation-plus-bound outcome, restated the depth-0 crux bullet against task 934's landed compiled-satisfiable verdict, and rewrote the stale 'Where both fronts now stand' paragraph against task 761's plan v13 rest state (30 of 41 phases closed, zero enterable). All four phases verified green; full gate set (verify-deploy.sh) passed with 0 failures."
     }
   ],
   "artifacts": [

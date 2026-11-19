@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Wrote a 4-phase, 2-hour plan for the three live record defects of the four originally filed. Item (1) (roadmap_batches archived head) is re-confirmed discharged and becomes a Non-Goal; items (2), (3a+3b) and (4) each get a phase, plus a final full-gate consistency phase. Item (4)'s filed mechanism (update-task-status.sh) is refuted and replaced with a scoped Edit adding a canonical array-of-strings blockers field to task 761. Plan validates clean in both default and --strict mode (0 warnings).",
+  "summary": "Implemented all four phases of the record-correction plan: added a machine-readable blockers array to task 761's state.json record naming its depth-0 gate blocker; checked off ROADMAP.md Stage 0's I=1 idle-run item citing task 929's honest refutation-plus-bound outcome and restated the depth-0 crux bullet against task 934's landed compiled-satisfiable verdict; rewrote the stale 'Where both fronts now stand' paragraph against task 761's plan v13 rest state (30 of 41 phases closed, zero enterable); and ran a final cross-file consistency sweep plus the complete gate set (verify-deploy.sh PASS, 0 failures). One out-of-scope residue (three already-terminal roadmap_batches[0] members per validate-state.sh Check 13) and two flagged follow-ups (## Next batches staleness, RaySummary/README.md's matching crux wording) recorded, not absorbed.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/933_correct_decidability_front_record/summaries/01_record-correction-roadmap-state-summary.md",
+      "summary": "Implementation summary covering all four phases, verification results, deviations, and follow-ups."
+    },
+    {
       "type": "plan",
       "path": "specs/933_correct_decidability_front_record/plans/01_record-correction-roadmap-state.md",
-      "summary": "4 phases across 3 waves, 2 hours: 761's blockers field in state.json; Stage 0's I=1 check-off plus depth-0 crux restatement against 934's landed verdict; the 'Where both fronts now stand' rewrite against plan v13; final cross-file consistency sweep under the complete gate set."
+      "summary": "4-phase record-correction plan, all phases COMPLETED."
     }
   ]
 }

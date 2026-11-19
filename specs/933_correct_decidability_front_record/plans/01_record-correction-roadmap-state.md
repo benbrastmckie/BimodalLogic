@@ -1,7 +1,7 @@
 # Implementation Plan: Task #933
 
 - **Task**: 933 - Correct the decidability-front record
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/933_correct_decidability_front_record/reports/01_record-correction-scope-remeasured.md
