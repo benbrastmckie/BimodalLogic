@@ -188,13 +188,6 @@ jobs:
       - name: Build and deploy doc-gen4 documentation
         id: docgen
         uses: leanprover-community/docgen-action@56023ee2a4b3630c1071825be5bafdb43f540bbd
-        env:
-          # Caps the Lean runtime's Task thread pool (and the Lake build job scheduler that runs
-          # on it) to one at a time, so doc-gen4's per-target processes -- each holding the full
-          # Mathlib-plus-FormalSystem environment -- do not run concurrently on this runner. See
-          # the header comment above for the precedents and the fallback ladder. Step-scoped
-          # deliberately: the "Build the project" step above must keep its default parallelism.
-          LEAN_NUM_THREADS: "1"
         with:
           api-docs: true
           blueprint: false

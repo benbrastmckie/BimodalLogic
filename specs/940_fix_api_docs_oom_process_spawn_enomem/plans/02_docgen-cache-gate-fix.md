@@ -212,16 +212,16 @@ body.
 
 ---
 
-### Phase 2: Remove the refuted LEAN_NUM_THREADS env entry [NOT STARTED]
+### Phase 2: Remove the refuted LEAN_NUM_THREADS env entry [COMPLETED]
 
 **Goal**: Act on the dispatch's explicit instruction to decide rather than leave the variable
 inert, by removing it.
 
 **Tasks**:
-- [ ] Delete the `env:` block on the "Build and deploy doc-gen4 documentation" step, including the `LEAN_NUM_THREADS: "1"` entry and the five comment lines above it that describe the cap as the remedy.
-- [ ] Leave no orphaned `env:` key and no trailing blank mapping; the step must go directly from `uses:` to `with:`.
-- [ ] Do not write the refutation narrative here -- it belongs in the header comment, rewritten in Phase 4, so the account lives in one place rather than two.
-- [ ] Verify locally: the file still parses, and `grep -c LEAN_NUM_THREADS .github/workflows/docs.yml` returns 0 (the header comment's own references to it are removed in Phase 4, so a non-zero count at the end of this phase means only the header, which Phase 4 then clears -- confirm by eye that every remaining hit is inside the leading comment block).
+- [x] Delete the `env:` block on the "Build and deploy doc-gen4 documentation" step, including the `LEAN_NUM_THREADS: "1"` entry and the five comment lines above it that describe the cap as the remedy. *(completed)*
+- [x] Leave no orphaned `env:` key and no trailing blank mapping; the step must go directly from `uses:` to `with:`. *(completed)*
+- [x] Do not write the refutation narrative here -- it belongs in the header comment, rewritten in Phase 4, so the account lives in one place rather than two. *(completed: not written)*
+- [x] Verify locally: the file still parses, and `grep -c LEAN_NUM_THREADS .github/workflows/docs.yml` returns 0 (the header comment's own references to it are removed in Phase 4, so a non-zero count at the end of this phase means only the header, which Phase 4 then clears -- confirm by eye that every remaining hit is inside the leading comment block). *(completed: count is 3, all 3 confirmed inside the leading comment block at lines 25/39/45)*
 
 **Timing**: 15 minutes
 
