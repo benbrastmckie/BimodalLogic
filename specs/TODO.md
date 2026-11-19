@@ -13,7 +13,7 @@ next_project_number: 939
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,931,933,935,937,938 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,931,933,935,937 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -86,7 +86,6 @@ next_project_number: 939
 ### Repo Hygiene
 
 937 [RESEARCHING] — Fix the two independently red CI workflows on main. Both were...
-938 [IMPLEMENTING] — Convert the repository's measured-but-unenforced health...
 
 ### Semantics
 
@@ -106,12 +105,13 @@ next_project_number: 939
 ## Tasks
 
 ### 938. Enforceable repo health baselines
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [938_enforceable_repo_health_baselines/reports/01_enforceable-health-baselines.md]
 - **Plan**: [938_enforceable_repo_health_baselines/plans/01_enforceable-health-baselines.md]
+- **Summary**: [938_enforceable_repo_health_baselines/summaries/01_enforceable-health-baselines-summary.md]
 
 **Description**: Convert the repository's measured-but-unenforced health signals into pinned baselines that block regressions. The aim is uniform standards a gate actually checks, not a one-time cleanup pass.
 

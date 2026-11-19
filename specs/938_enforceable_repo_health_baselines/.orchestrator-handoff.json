@@ -1,15 +1,15 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "phases_completed": 6,
   "phases_total": 6,
-  "summary": "Authored a six-phase plan pinning the three advisory repo-health signals to committed keyed ratchet baselines with gates that fail on an increase. Every cheap dispatch figure was re-confirmed live this dispatch (62/4/84 READMEs and readme-lint exit 0; C20's 10, 145-of-1030, 39, 30 and check-module-invariants --no-build exit 0); the 18-root C16 denominator was independently re-derived from scripts/lake_targets.py, and only the 231/16 numerator remains carried, measured by Phase 3 as its first task. Two planning decisions are recorded in the plan rather than deferred: the C16 baseline is a new keyed file instead of an extension of scripts/nolints.json, and a README baseline row pins the stamped date rather than only the path.",
+  "summary": "Pinned the three advisory repo-health signals named in this task to committed, keyed, ratchet-only baselines and wired each gate to fail on an increase, with every new ENFORCE_* flag defaulting to 1. README verification dates (scripts/readme-date-baseline.txt), C20's residual/unverifiable-declaration/unverifiable-filename sub-counts (scripts/c20-residual-baseline.txt), and C16's widened env_linter sweep (scripts/c16-roots-baseline.txt, via the new scripts/c16_roots_baseline.py generator/gate) are each enforced. All six seeded falsification arms (two README, three C20, one C16-roots) were observed to fail with a printed FAIL line and a non-zero exit, then pass again after reverting the seed. One root (BimodalToolsTest) is excused from C16-roots measurement via a new scripts/c16-roots-unmeasurable.txt, loudly, because its own build fails for a pre-existing, separately-owned reason unrelated to env_linter.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/938_enforceable_repo_health_baselines/plans/01_enforceable-health-baselines.md",
-      "summary": "Six phases in four waves, 9h: README date baseline, C20 residual/unverifiable baselines, C16 root sweep plus baseline generator, C16 gate wiring and flag flip, documentation surfaces, whole-tree verification and consolidated falsification record."
+      "type": "summary",
+      "path": "specs/938_enforceable_repo_health_baselines/summaries/01_enforceable-health-baselines-summary.md",
+      "summary": "Full account of all six phases, the decisions made, the plan deviations, and the consolidated six-arm falsification record."
     }
   ],
-  "dispatch_seq": 5
+  "dispatch_seq": 7
 }

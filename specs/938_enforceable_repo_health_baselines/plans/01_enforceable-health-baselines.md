@@ -1,7 +1,7 @@
 # Implementation Plan: Task #938
 
 - **Task**: 938 - Convert the repository's measured-but-unenforced health signals into pinned baselines that block regressions
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9 hours
 - **Dependencies**: None. Concurrent sibling task 829 (plan phase, no declared `file_scope`) shares this working tree; task 937 owns the red CI workflows this record explicitly does not.
 - **Research Inputs**: specs/938_enforceable_repo_health_baselines/reports/01_enforceable-health-baselines.md
