@@ -1,30 +1,18 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/942_test_coverage_nomic_formathlib_tactic/plans/01_test-coverage-nomic-formathlib-tactic.md",
-      "summary": "Three-phase, 3.5-hour plan closing the NomicLanguage, ForMathlib and Tactic test-coverage gaps entirely inside Tests/, with the commit-blocking generated count surface declared and regenerated per phase."
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1795122329_77078c_942",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 3.5,
-    "dependency_waves": [[1], [2], [3]]
+  "status": "partial",
+  "partial_progress": {
+    "stage": "stage_0_initialized",
+    "details": "Dispatch started; no substantive work yet.",
+    "phases_completed": 0,
+    "phases_total": 3
   },
-  "memory_candidates": [
-    {
-      "content": "A repository can derive a generated artifact from a quantity whose scope is NARROWER in one mechanism of a script and WIDER in another mechanism of the same script, and reading only the narrower one produces a plan that omits a commit-blocking regeneration step. Concretely: scripts/typst-sync-check.sh declares LEAN_SRC_ROOTS as FormalSystem/ + BimodalTools/ (its declaration-scan scope), while scripts/typst-status-counts.sh in the same pipeline derives tests-file-count and tests-line-count by counting recursively under Tests/. A Tests/-only change therefore moves typst/generated/status.typ even though the script's most visible scope constant excludes Tests/, and .githooks/pre-commit refuses the commit. The generalizable planning move: when a coupled-generated-surface obligation is in question, do not infer scope from a script's scope constant -- read the generator that emits the specific FIELD, and cross-check against the file-scope harvester's own auto-append behaviour, which encodes the repository's answer mechanically.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/942_test_coverage_nomic_formathlib_tactic/plans/01_test-coverage-nomic-formathlib-tactic.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["coupled-generated-surface", "plan-authoring", "typst-sync-check", "file-scope-harvest", "pre-commit-gate", "lean-line-count"]
-    }
-  ],
-  "next_steps": "Run /orchestrate 942 to execute the plan",
-  "dispatch_seq": 2
+  "artifacts": [],
+  "modified_files": [],
+  "metadata": {
+    "session_id": "sess_1795122329_77078c",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+  },
+  "dispatch_seq": 3
 }

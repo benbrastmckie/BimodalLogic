@@ -403,7 +403,7 @@ set returns `test-lean-src-roots.sh`, `test-plan-file-scope-harvest.sh` and
 
 ---
 
-### Phase 3: Tactic folds, documentation reconciliation, and whole-tree verification [NOT STARTED]
+### Phase 3: Tactic folds, documentation reconciliation, and whole-tree verification [IN PROGRESS]
 
 **Goal**: Close the second Low-severity gap by folding minimal usage checks for
 `FormalSystem/Tactic/Attr.lean` and `FormalSystem/Tactic/Meta.lean` into existing `Automation/`
