@@ -13,7 +13,7 @@ next_project_number: 940
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,931,933,935,939 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,931,933,935 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -83,10 +83,6 @@ next_project_number: 940
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
-### Repo Hygiene
-
-939 [IMPLEMENTING] — Fix the API Documentation workflow's runner OOM. Swap...
-
 ### Semantics
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
@@ -105,12 +101,13 @@ next_project_number: 940
 ## Tasks
 
 ### 939. Fix api documentation runner oom
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [939_fix_api_documentation_runner_oom/reports/01_runner_oom_lever.md]
 - **Plan**: [939_fix_api_documentation_runner_oom/plans/01_fix-api-docs-runner-oom.md]
+- **Summary**: [939_fix_api_documentation_runner_oom/summaries/01_fix-api-docs-runner-oom-summary.md]
 
 **Description**: Fix the API Documentation workflow's runner OOM. Swap enlargement is measured insufficient; pick and implement the real lever.
 

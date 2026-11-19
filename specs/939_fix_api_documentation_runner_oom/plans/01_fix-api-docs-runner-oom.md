@@ -1,7 +1,7 @@
 # Implementation Plan: Task #939
 
 - **Task**: 939 - Fix the API Documentation workflow's runner OOM
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/939_fix_api_documentation_runner_oom/reports/01_runner_oom_lever.md
