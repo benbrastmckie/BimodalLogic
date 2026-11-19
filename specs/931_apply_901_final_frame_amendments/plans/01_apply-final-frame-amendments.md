@@ -286,31 +286,38 @@ Phase 1 already corrected.
 
 ---
 
-### Phase 3: Closure, invariant confirmation, and final gate [NOT STARTED]
+### Phase 3: Closure, invariant confirmation, and final gate [COMPLETED]
 
 **Goal**: Prove mechanically that the enumeration was closed at eight anchors, that both
 must-not-touch surfaces are byte-unchanged, and that the amended report is internally consistent
 and still passes artifact validation.
 
 **Tasks**:
-- [ ] Run the closure sweep over the whole report for every stale form:
+- [x] Run the closure sweep over the whole report for every stale form:
       `grep -n 'OrientedForest.lean:134\|HistoryMorphism.lean:589\|HistoryMorphism.lean:306\|two unlanded pieces\|The two missing pieces, named\|the two Lean pieces the final-frame step needs'`
       — expect zero hits. Any hit is a ninth site; stop and record it rather than silently fixing it.
-- [ ] Run the residual-staleness sweep: `grep -n 'unlanded\|is \*\*unverified\*\*\|\*\*missing\*\*'`
+      *(completed: zero hits — enumeration closed at eight anchors, no ninth site found)*
+- [x] Run the residual-staleness sweep: `grep -n 'unlanded\|is \*\*unverified\*\*\|\*\*missing\*\*'`
       and confirm every surviving hit is a deliberate, enumerated non-anchor (line 112's
       programme-report row 2; rows 17-21's own paper/missing markers, which this task does not
-      touch). Record the surviving hit list in the phase notes.
-- [ ] Confirm both must-not-touch surfaces are byte-unchanged by inspecting the cumulative
+      touch). Record the surviving hit list in the phase notes. *(completed: exactly one surviving
+      hit, line 112's unrelated programme-report **missing** — see Phase 3 progress file)*
+- [x] Confirm both must-not-touch surfaces are byte-unchanged by inspecting the cumulative
       `git diff` for the file: §15.2's line-904 paragraph ("Reynolds stops at … the quotient is not
       an oriented forest … `saturation_of_orientedForest` does not apply directly") appears in no
       hunk, and the refusal sentence appears in a hunk only as added/retained context, never as a
-      deletion without a matching addition.
-- [ ] Confirm the untouched-surface guarantees: `grep -n 'Recommendation 8\|(O1)\|(O3)\|(O4)'` hits
-      appear in no `git diff` hunk for this file.
-- [ ] Confirm the report's line count and internal consistency: `wc -l` on the file, and a read of
+      deletion without a matching addition. *(deviation: altered — git diff substituted with
+      snapshot diff since specs/archive/ is gitignored and untracked; both confirmed via snapshot
+      diff instead, see Phase 3 progress file)*
+- [x] Confirm the untouched-surface guarantees: `grep -n 'Recommendation 8\|(O1)\|(O3)\|(O4)'` hits
+      appear in no `git diff` hunk for this file. *(deviation: altered — same git-diff substitution;
+      confirmed all such hits fall outside the seven edited lines)*
+- [x] Confirm the report's line count and internal consistency: `wc -l` on the file, and a read of
       §15.3 plus the Risks section end-to-end confirming no surface still calls the two pieces
-      missing while another calls them compiled.
-- [ ] Run the full gate set (below) and commit the phase.
+      missing while another calls them compiled. *(completed: 1084 lines unchanged, internally
+      consistent)*
+- [x] Run the full gate set (below) and commit the phase. *(completed — see phase-closing commit
+      below)*
 
 **Timing**: 0.5 hours
 
