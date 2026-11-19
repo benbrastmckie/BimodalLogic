@@ -85,7 +85,7 @@ next_project_number: 939
 
 ### Repo Hygiene
 
-937 [RESEARCHING] — Fix the two independently red CI workflows on main. Both were...
+937 [PLANNED] — Fix the two independently red CI workflows on main. Both were...
 
 ### Semantics
 
@@ -147,10 +147,12 @@ This record owns making the signals enforceable. It does NOT own the two red CI 
 ---
 
 ### 937. Fix red ci workflows on main
-- **Status**: [RESEARCHING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: repo-hygiene
 - **Dependencies**: None
+- **Research**: [937_fix_red_ci_workflows_on_main/reports/01_fix-red-ci-workflows.md]
+- **Plan**: [937_fix_red_ci_workflows_on_main/plans/01_fix-red-ci-workflows.md]
 
 **Description**: Fix the two independently red CI workflows on `main`. Both were red before the proof-mode contribution merged, and no existing active task owns either.
 

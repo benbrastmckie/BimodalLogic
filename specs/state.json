@@ -67,12 +67,12 @@
     {
       "project_number": 937,
       "project_name": "fix_red_ci_workflows_on_main",
-      "status": "researching",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Fix the two independently red CI workflows on `main`. Both were red before the proof-mode contribution merged, and no existing active task owns either.\n\n## Finding 1: `CI / Build and Test` -- a name ambiguity in a tools test\n\n`lake build BimodalToolsTest.CertificateImportTest` fails locally and in CI with the same four lines:\n\n```\nerror: Tests/BimodalToolsTest/CertificateImportTest.lean:146:8: Ambiguous term\nerror: Tests/BimodalToolsTest/CertificateImportTest.lean:146:0: cannot evaluate code because 'sorryAx' uses 'sorry' and/or contains errors\nerror: Tests/BimodalToolsTest/CertificateImportTest.lean:152:8: Ambiguous term\nerror: Tests/BimodalToolsTest/CertificateImportTest.lean:152:0: cannot evaluate code because 'sorryAx' uses 'sorry' and/or contains errors\n```\n\n`closureList` is declared twice:\n\n- `BimodalTools/CertificateImport.lean:149`\n- `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Enumerate.lean:137`\n\nand `Tests/BimodalToolsTest/CertificateImportTest.lean` opens both namespaces (`open FormalSystem.Metalogic.Decidability` at line 37, `open BimodalTools.CertificateImport` at line 40). Both failing sites are `#guard` terms whose head is `closureList`; column 8 is that identifier. The `sorryAx` lines are a consequence of the ambiguity, not independent sorry debt.\n\nQualifying the two call sites is the obvious fix, but decide deliberately whether the two same-named declarations should instead be reconciled or one renamed. They take the same argument type (`Context`), and the test's own comment records that the certificate path moved to the verified codec -- so which of the two the test should be reaching may not be what the current `open` order happens to pick.\n\n## Finding 2: `API Documentation` -- doc-gen4 dependency source URIs\n\nIndependent root cause, same redness. The workflow reaches doc-gen4 and then fails:\n\n```\nSome required targets logged failures:\n- Qq:srcUri.github\n- aesop:srcUri.github\n- importGraph:srcUri.github\n- mathlib:srcUri.github\nerror: build failed\n```\n\nConfiguration, not library code. This workflow has been green before: the closed record `specs/578_fix_api_documentation_ci_integration/plans/01_docgen-ci-fix-path.md` carried it to green via a `docs.yml` rewrite plus a verified green run. Treat this as a regression of that work -- start from what that plan established and establish what changed since, rather than re-deriving a fix from scratch.\n\n## Scope boundary\n\nDo NOT take on the absence of a `.lake/build` CI cache; that is task 829's record and this task must not grow into it. Touch `.github/workflows/` only as far as the doc-gen4 fix requires.\n\n## Verification\n\n- `bash .claude/scripts/lake-build-guard.sh build --timeout 1500 -- build BimodalToolsTest.CertificateImportTest` exits 0.\n- A `--wfail` build over the roots the CI workflow builds exits 0.\n- Both workflows report success on a real run, not only locally. The push and any workflow re-run are user-invoked (`.claude/rules/pr-prohibition.md` bars agent pushes): this task ends at a local commit plus the local build evidence, and names the push as the user's remaining step.",
       "topic": "repo-hygiene",
       "created": "2026-11-18T23:13:24Z",
-      "last_updated": "2026-11-18T23:26:59Z",
+      "last_updated": "2026-11-19T05:52:24Z",
       "audit_verdict": {
         "proposal": {
           "id": "fix_red_ci_workflows_on_main",
@@ -90,7 +90,36 @@
         },
         "degradations_count": 450
       },
-      "session_id": "sess_1795044397_89c580_937"
+      "session_id": "sess_1795066792_fee02c",
+      "artifacts": [
+        {
+          "path": "specs/937_fix_red_ci_workflows_on_main/reports/01_fix-red-ci-workflows.md",
+          "type": "report",
+          "summary": "Research report: 01_fix-red-ci-workflows.md"
+        },
+        {
+          "path": "specs/937_fix_red_ci_workflows_on_main/plans/01_fix-red-ci-workflows.md",
+          "type": "plan",
+          "summary": "5-phase plan: closureList rename + test retarget, the masked lint-style fix, docs.yml OOM headroom with corrected diagnosis, C16-roots reconciliation, full gate set and push handoff."
+        }
+      ],
+      "file_scope": [
+        ".github/workflows/docs.yml",
+        "BimodalTools/CertificateImport.lean",
+        "BimodalTools/README.md",
+        "FormalSystem/Metalogic/Expressiveness/README.md",
+        "FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "Tests/BimodalToolsTest/CertificateImportTest.lean",
+        "Tests/BimodalToolsTest/README.md",
+        "docs/development/MODULE_INVARIANTS.md",
+        "scripts/c16-roots-baseline.txt",
+        "scripts/c16-roots-unmeasurable.txt",
+        "specs/937_fix_red_ci_workflows_on_main/summaries/01_fix-red-ci-workflows-summary.md",
+        "typst/generated/status.typ"
+      ]
     },
     {
       "project_number": 935,

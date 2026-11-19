@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 5,
+  "summary": "Wrote a 5-phase plan (5h) covering three independent causes, not the two the record names. Finding 1 is planned as the rename closureList -> closureListDedup in BimodalTools plus the test retarget, closing the latent mem_closureList collision too; the report's masked lint-style failure (4 spaces before semicolons in NormalForm.lean) is a second in-scope cause of the same workflow's redness. The research report left Finding 2 PENDING, so this dispatch root-caused it: every API Documentation failure is an OOM kill during the doc build (13x 'resource exhausted (cannot allocate memory)', zero config errors), refuting the record's srcUri/configuration diagnosis and its '578 regression' framing. A fourth phase reconciles the scripts/c16-roots-* surfaces that currently excuse this very defect.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/937_fix_red_ci_workflows_on_main/plans/01_fix-red-ci-workflows.md",
+      "summary": "5-phase plan: closureList rename + test retarget, the masked lint-style fix, docs.yml OOM headroom with corrected diagnosis, C16-roots reconciliation, full gate set and push handoff."
+    }
+  ],
+  "blockers": [],
+  "dispatch_seq": 2
+}
