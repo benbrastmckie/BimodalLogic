@@ -213,21 +213,21 @@ module and its one enumerated dependent, which is the complete call-site set thi
 
 ---
 
-### Phase 2: Remove the four spaces before semicolons in NormalForm.lean [NOT STARTED]
+### Phase 2: Remove the four spaces before semicolons in NormalForm.lean [COMPLETED]
 
 **Goal**: Make `lake exe lint-style` exit 0, so the aggregating `Report results` step can reach
 green once Phase 1 unblocks the steps ahead of it.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean:380-425`
+- [x] Re-read `FormalSystem/Metalogic/Expressiveness/SeparationZ/NormalForm.lean:380-425`
       immediately before editing (this is a `FormalSystem` file and sibling tasks were dispatched
       into adjacent territory with no declared `file_scope`).
-- [ ] Delete the single space before `;` on lines 383, 390, 413 and 420 — `· intro hC' ; exact`
+- [x] Delete the single space before `;` on lines 383, 390, 413 and 420 — `· intro hC' ; exact`
       becomes `· intro hC'; exact`, and likewise for the two `hF'` lines. Four characters total;
       change nothing else on those lines.
-- [ ] Confirm the file is otherwise clean beforehand (`git diff --quiet -- <path>` before the
+- [x] Confirm the file is otherwise clean beforehand (`git diff --quiet -- <path>` before the
       edit) and stage only this path explicitly.
-- [ ] Run `bash scripts/typst-sync-check.sh --counts-only`; on drift, run `--fix` and stage
+- [x] Run `bash scripts/typst-sync-check.sh --counts-only`; on drift, run `--fix` and stage
       `typst/generated/status.typ` in THIS phase's commit.
 
 **Timing**: 0.5 hours
