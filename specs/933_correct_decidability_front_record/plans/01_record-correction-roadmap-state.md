@@ -306,7 +306,7 @@ read-through is the check that covers it.
 
 ---
 
-### Phase 4: Cross-File Consistency Sweep, Residue Record, and Full Gate [NOT STARTED]
+### Phase 4: Cross-File Consistency Sweep, Residue Record, and Full Gate [COMPLETED]
 
 **Goal**: Both corrected files are internally and mutually consistent, the out-of-scope residue
 is recorded as a measurement rather than silently inherited, and the complete gate set has run
@@ -314,13 +314,13 @@ green over the whole task.
 
 **Tasks**:
 
-- [ ] Read the final state of `## Where both fronts now stand`, `## Stage 0`'s depth-`0` bullet and `I = 1` item, the generated `## Run these next` preamble, and 761's `blockers` text together in one pass. Confirm no two of them assert contradictory facts about: the number of enterable phases (zero), plan v13's closed count (30 of 41), who owns the depth-`0` gate (no open task), what 934 established (satisfiability at the consumer instantiation, existence evidence only), and whether the gate is decided (it is not).
-- [ ] Re-confirm item (1) is still discharged, as the task's own fourth filed item rather than as an assumption: cross-check every `task_ids[0]` and every member of `roadmap_batches` against `ls specs/archive/`. Record the batch count and the zero-hit result.
-- [ ] Record the out-of-scope residue in the summary, with its measurement: `validate-state.sh` Check 13 warns that `roadmap_batches[0]` names three already-terminal members (937, 829, 938). Attribute it to `/roadmap`'s owned surface, state that this task deliberately did not absorb it, and name `/roadmap` as the resolver. Do NOT edit `roadmap_batches`.
-- [ ] Record the two flagged follow-ups the research report identified and this task does not cover: `## Next batches`'s authored-prose staleness, and `RaySummary/README.md`'s matching crux wording. Name them as follow-ups; do not file tasks for them from here.
-- [ ] Record in the summary the one tooling defect met during this task: `verify-touched.sh` is inoperable repo-wide (`suite-selection-map.data:37` names `test-verification-scope-lib.sh`, which does not exist), so every non-final phase named a direct entry point instead. Confirm it is in `issues.jsonl`; append it if not.
-- [ ] Write the implementation summary to `specs/933_correct_decidability_front_record/summaries/01_record-correction-roadmap-state-summary.md` per `summary-format.md`.
-- [ ] Run the complete gate set and record its verdict and exit status.
+- [x] Read the final state of `## Where both fronts now stand`, `## Stage 0`'s depth-`0` bullet and `I = 1` item, the generated `## Run these next` preamble, and 761's `blockers` text together in one pass. Confirm no two of them assert contradictory facts about: the number of enterable phases (zero), plan v13's closed count (30 of 41), who owns the depth-`0` gate (no open task), what 934 established (satisfiability at the consumer instantiation, existence evidence only), and whether the gate is decided (it is not). *(completed: all four sites agree)*
+- [x] Re-confirm item (1) is still discharged, as the task's own fourth filed item rather than as an assumption: cross-check every `task_ids[0]` and every member of `roadmap_batches` against `ls specs/archive/`. Record the batch count and the zero-hit result. *(completed: 21 batches, 44 unique task_ids, zero overlap against 779 archived ids)*
+- [x] Record the out-of-scope residue in the summary, with its measurement: `validate-state.sh` Check 13 warns that `roadmap_batches[0]` names three already-terminal members (937, 829, 938). Attribute it to `/roadmap`'s owned surface, state that this task deliberately did not absorb it, and name `/roadmap` as the resolver. Do NOT edit `roadmap_batches`. *(completed: recorded in summary's Follow-ups)*
+- [x] Record the two flagged follow-ups the research report identified and this task does not cover: `## Next batches`'s authored-prose staleness, and `RaySummary/README.md`'s matching crux wording. Name them as follow-ups; do not file tasks for them from here. *(completed: recorded in summary's Follow-ups)*
+- [x] Record in the summary the one tooling defect met during this task: `verify-touched.sh` is inoperable repo-wide (`suite-selection-map.data:37` names `test-verification-scope-lib.sh`, which does not exist), so every non-final phase named a direct entry point instead. Confirm it is in `issues.jsonl`; append it if not. *(completed: already present, iss_1795108257413_DnYoNl)*
+- [x] Write the implementation summary to `specs/933_correct_decidability_front_record/summaries/01_record-correction-roadmap-state-summary.md` per `summary-format.md`. *(completed)*
+- [x] Run the complete gate set and record its verdict and exit status. *(completed: `verify-deploy.sh` PASS, 12 checks, 0 failures)*
 
 **Timing**: 0.5 hours
 
@@ -355,16 +355,16 @@ edits.
 
 ## Testing & Validation
 
-- [ ] `specs/ROADMAP.md` asserts no dispatchable Stage 1 Lean line, and no "~2.5 hours" or "now enterable" claim survives unexplained.
-- [ ] Stage 0 holds exactly three unchecked items; the `I = 1` item is checked and cites 929's summary with its honest refutation-plus-bound outcome.
-- [ ] Stage 0's depth-`0` bullet carries 934's landed verdict with all four of 934's stated limits, keeps its `[x]` state, and leaves the gate's disposition with the user.
-- [ ] `## Where both fronts now stand` cross-references Stage 0 for the crux rather than restating it.
-- [ ] Task 761's `specs/state.json` record carries a non-empty `blockers` array of strings naming the gate, its lack of an owner, and the seven discharged edges.
-- [ ] `specs/state.json` is valid JSON and its diff is confined to 761's record.
-- [ ] `roadmap-integration.sh --regenerate --dry-run` reports `layout=stage` and no content change, proving both edits live in retained sections.
-- [ ] `verify-deploy.sh` exits 0 over the complete gate set.
-- [ ] No file under `.claude/**`, `FormalSystem/**`, or any `.lean` file is modified.
-- [ ] No Stage 0 item other than the one authorized `I = 1` box changed state.
+- [x] `specs/ROADMAP.md` asserts no dispatchable Stage 1 Lean line, and no "~2.5 hours" or "now enterable" claim survives unexplained.
+- [x] Stage 0 holds exactly three unchecked items; the `I = 1` item is checked and cites 929's summary with its honest refutation-plus-bound outcome.
+- [x] Stage 0's depth-`0` bullet carries 934's landed verdict with all four of 934's stated limits, keeps its `[x]` state, and leaves the gate's disposition with the user.
+- [x] `## Where both fronts now stand` cross-references Stage 0 for the crux rather than restating it.
+- [x] Task 761's `specs/state.json` record carries a non-empty `blockers` array of strings naming the gate, its lack of an owner, and the seven discharged edges.
+- [x] `specs/state.json` is valid JSON and its diff is confined to 761's record.
+- [x] `roadmap-integration.sh --regenerate --dry-run` reports `layout=stage` and no content change, proving both edits live in retained sections.
+- [x] `verify-deploy.sh` exits 0 over the complete gate set.
+- [x] No file under `.claude/**`, `FormalSystem/**`, or any `.lean` file is modified.
+- [x] No Stage 0 item other than the one authorized `I = 1` box changed state.
 
 ## Artifacts & Outputs
 
