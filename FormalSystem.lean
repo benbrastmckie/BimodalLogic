@@ -622,6 +622,7 @@ import FormalSystem.PlusLanguage.PlusTruth
 import FormalSystem.PlusLanguage.PlusValidity
 import FormalSystem.PlusLanguage.Subformulas
 import FormalSystem.PlusLanguage.Substitution
+import FormalSystem.PlusLanguage.TemporalViews
 import FormalSystem.ProofSystem
 import FormalSystem.ProofSystem.Axioms
 import FormalSystem.ProofSystem.Derivable
@@ -772,6 +773,7 @@ import FormalSystem.Theorems.ProofMode.Possibility
 import FormalSystem.Theorems.ProofMode.ScopeConversions
 import FormalSystem.Theorems.ProofMode.Simplification
 import FormalSystem.Theorems.ProofMode.Temporal
+import FormalSystem.Theorems.ProofMode.TemporalComposition
 import FormalSystem.Theorems.Propositional.Connectives
 import FormalSystem.Theorems.Propositional.Core
 import FormalSystem.Theorems.Propositional.Reasoning

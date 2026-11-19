@@ -11,7 +11,7 @@ scope conversions, frame restrictions and layer placement.
 | Branch | Milestones | Status |
 | --- | --- | --- |
 | `feat/proof-mode-rewriting` | P0 prototypes, P1 native congruence, P2 rewriting/simplification | Complete; reviewed and checked |
-| `feat/proof-mode-temporal` | P3 temporal rules, reflection, progress and persistent scope capture | Pending; stacks on rewriting |
+| `feat/proof-mode-temporal` | P3 temporal rules, reflection, progress and persistent scope capture | Complete; reviewed and checked |
 | `feat/proof-mode-semantics` | P4 clauses/soundness, P5 transport, semantic rewriting and progress | Pending; stacks on temporal |
 
 Each branch must include executable examples, applicable repository gates, an independent
@@ -27,7 +27,7 @@ override a defect. Required findings must be fixed before that branch is conside
 - [x] P2: goal/fact/equality rewrites, explicit paths/ambiguity; stable Γ; evidence exposure;
   bounded deterministic `lsimp only`; actual decrease; frame skipping; atomic failure/rollback;
   diagnostics and opaque provider reuse.
-- [ ] P3: strict U/S fold/cases/introduction; exact duals/inclusive translation; Base/ZTime gates;
+- [x] P3: strict U/S fold/cases/introduction; exact duals/inclusive translation; Base/ZTime gates;
   contextual reflection; generic rule application; consequence/case progress; `keeping` capture;
   documented Plus derived-view choice and compatibility.
 - [ ] P4: generic individual-clause helpers, covering-time Next/Previous; pointed semantic
@@ -56,9 +56,10 @@ do not rerun unchanged passing checks without a reason.
 - The original proof-mode acceptance module still compiles after replacing dynamic primitive
   name assembly with checked source declarations.
 - The abstract-context pointed soundness prototype compiles in the shared extension module.
-- Opus's P3 pure temporal rules are type-checked in a staging file outside the checkout,
-  including Base Since fold and contextual reflection. They will land on branch 2 after
-  branch 1 review; they are not yet imported or advertised as public commands here.
+- P3 pure rules and frontend are integrated: Base Since fold, integer-time unfold, contextual
+  reflection, progress consequence/cases, exact dual/inclusive views and persistent capture.
+  Its [two reviews and closeout](implementation-reviews/branch2-closeout.md) record the lapply
+  inference regression, fixes and passing source/build/linter/book checks.
 - Generated module-root and README inventories have been refreshed. Final counts, repository
   gates and branch-1 review closeout are recorded in the
   [branch closeout](implementation-reviews/branch1-closeout.md). The full P0–P5 audit remains

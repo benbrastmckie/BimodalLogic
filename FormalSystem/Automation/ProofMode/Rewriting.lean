@@ -343,12 +343,8 @@ def resolveRuleParameters (parameters : Array Expr) : MetaM (List MVarId) := do
   return pending
 
 /-- Collect explicit telescope parameters and implicit holes inserted by term elaboration. -/
-def rewriteParameters (proof : Expr) (parameters : Array Expr) : MetaM (Array Expr) := do
-  let mut result := parameters
-  for mvarId in ← getMVars (mkAppN proof parameters) do
-    let argument := mkMVar mvarId
-    if !result.contains argument then result := result.push argument
-  return result
+def rewriteParameters (proof : Expr) (parameters : Array Expr) : MetaM (Array Expr) :=
+  proofParameters proof parameters
 
 /-- Prepare a once-elaborated theorem by its type; derivation values remain opaque. -/
 def prepareRewriteRule (proof : Expr) (j : Judgment) :

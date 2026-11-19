@@ -19,6 +19,7 @@ Import the sibling [`ProofMode.lean`](../ProofMode.lean) aggregator for manual L
 | `ScopeConversions.lean` | 52 | Finite checked scope-conversion adapters for native Plus guarantees |
 | `Simplification.lean` | 70 | Closed Boolean and modal simplification guarantees for TM and Plus |
 | `Temporal.lean` | 204 | Future/past consequence, bind, progress, and Until/Since mapping |
+| `TemporalComposition.lean` | 634 |  |
 <!-- END GENERATED -->
 
 Under `FormalSystem`, TM rules use the `Theorems.ProofMode` namespace; TM⁺ counterparts use

@@ -11,3 +11,6 @@ Draft grades are preserved after closeout rather than raised automatically after
 - [Branch 1 resolution and evidence](branch1-closeout.md): fixes, checks and remaining scope.
 
 Last updated: 2026-11-19.
+
+Branch 2: [Codex review](codex-branch2.md), [Opus review](opus-branch2.md),
+[Opus source closeout](opus-branch2-closeout.md), [validation closeout](branch2-closeout.md).

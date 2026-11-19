@@ -131,6 +131,14 @@ def judgment? (type : Expr) : MetaM (Option Judgment) := do
     | _ => return none
   return some ⟨language, args[0]!, args[1]!, args[2]!⟩
 
+/-- Collect telescope parameters and implicit holes inserted while elaborating a proof term. -/
+def proofParameters (proof : Expr) (parameters : Array Expr) : MetaM (Array Expr) := do
+  let mut result := parameters
+  for mvarId in ← getMVars (mkAppN proof parameters) do
+    let argument := mkMVar mvarId
+    if !result.contains argument then result := result.push argument
+  return result
+
 /-- Require a native TM or TM⁺ goal. -/
 def requireJudgment (goal : MVarId) : MetaM Judgment := do
   let some judgment ← judgment? (← goal.getType)

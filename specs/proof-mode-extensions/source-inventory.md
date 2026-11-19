@@ -44,8 +44,8 @@ truth of every assumption in an abstract Γ at that point. The shared extension 
 type-checks this application. The Plus counterpart is `Conservativity.plus_soundness_in`.
 Soundness stays outside both pure kernels; Base satisfaction includes regularity.
 
-The staged temporal module type-checks Base Until/Since fold, ZTime unfolding, mapped-context
-reflection, strict progress composition and G/H persistence. It awaits branch 2 integration.
+The branch-2 temporal module type-checks Base Until/Since fold, ZTime unfolding, mapped-context
+reflection, strict progress composition and G/H persistence. It is integrated in the native frontend.
 Covering-time, semantic demand, rank and transport interfaces belong to branch 3.
 
 Native rules use the existing layer-2 `Theorems/ProofMode` classification; elaborators and

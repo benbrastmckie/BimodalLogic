@@ -5,6 +5,7 @@ Authors: Tanner Duve
 -/
 
 import FormalSystem.Automation.ProofMode.Simplification
+import FormalSystem.Automation.ProofMode.Discrete
 import FormalSystem.Theorems.ModalS5
 import FormalSystem.Theorems.LinearityDerived
 import FormalSystem.Metalogic.Soundness
@@ -161,5 +162,96 @@ example (mapping : Γ ⊢ (A.imp B).allFuture) (provider : Γ ⊢ A.and A.allFut
   fail_if_success lrewrite mapping at provider as implicitChoice
   lrewrite mapping (path := [andRight, futureBody]) at provider as mapped
   lexact mapped
+
+-- Fold is Base-valid; forward unfolding retains the explicit integer-time gate and both joins.
+example (g e : Formula) (hZ : FrameClass.ZTime ≤ fc) :
+    [Formula.untl g e] ⊢[fc] Formula.untl g e := by
+  lstart h
+  luntil unfold h as hEvent hContinue
+  · luntil fold; lleft; lexact hEvent
+  · luntil fold; lright; lexact hContinue
+
+-- A false gate rejects atomically; a supplied fact remains usable after refusal.
+example (provider : Γ ⊢[FrameClass.Dense] A.allFuture) :
+    Γ ⊢[FrameClass.Dense] A.allFuture := by
+  fail_if_success linduction using FormalSystem.Theorems.ProofMode.futureBackwardInduction
+  lexact provider
+
+-- Repeated advances compose opaque providers while retaining the second guarantee's scope.
+example (pAB : [A.someFuture] ⊢ (A.imp B.someFuture).allFuture)
+    (pBC : [A.someFuture] ⊢ (B.imp C.someFuture).allFuture) :
+    [A.someFuture] ⊢ C.someFuture := by
+  lstart hA
+  ladvance hA using [pAB] keeping [pBC] as hA hAB hBC
+  lhave hB : B.someFuture
+  · lapply hAB; lexact hA
+  ladvance hB using [hBC] as hB hBC
+  lapply hBC
+  lexact hB
+
+-- Past cases retain H-scoped facts; bare current facts cannot be carried by keeping.
+example : [A, A.allPast, B.somePast] ⊢ (B.and A.allPast).somePast := by
+  lstart hNow hPast hEvent
+  fail_if_success ltemporal_cases hEvent using [] keeping [hNow] as x y
+  ltemporal_cases hEvent using [] keeping [hPast] as hEvent hPast
+  lsplit
+  · lexact hEvent
+  · lexact hPast
+
+-- The generic rule route retains its explicit frame premise and reuses the local certificate.
+example (hZ : FrameClass.ZTime ≤ fc) :
+    [A, A.imp A.next, (A.imp A.next).allFuture] ⊢[fc] A.allFuture := by
+  lstart hInit hNow hFuture
+  linvariant using FormalSystem.Theorems.ProofMode.forwardInvariant
+  · lexact hInit
+  · lexact hNow
+  · lexact hFuture
+
+-- Reflection maps the whole context, including arbitrary Plus stability arguments.
+example (P : FormalSystem.PlusLanguage.PlusFormula) :
+    FormalSystem.PlusLanguage.PlusDerivationTree fc [P.stab.allFuture] P.stab.allFuture := by
+  ltime_reflect as h
+  lexact h
+
+-- Exact derived views preserve the guard/event order, and can use the ordinary equality route.
+example : [B] ⊢ Formula.inclusiveUntil A B := by
+  lstart h
+  ltemporal_dual using FormalSystem.Theorems.ProofMode.inclusiveUntilIff A B
+  lleft
+  lexact h
+
+-- Undetermined formula parameters remain inferable when a supplied premise determines them.
+example : [(A.imp B).allFuture, A.someFuture] ⊢ B.someFuture := by
+  lstart hMap hEvent
+  lapply FormalSystem.Theorems.ProofMode.futureConsequence
+  · lexact hMap
+  · lexact hEvent
+
+-- Both new frame and whole-context-reflection refusal paths are exercised without extra suites.
+example : [Formula.untl A B] ⊢[FrameClass.Dense] Formula.untl A B := by
+  lstart h
+  fail_if_success luntil unfold h as he hc
+  lexact h
+
+example (p q : Atom)
+    (_d : [(Formula.atom p).allFuture] ⊢ (Formula.atom q).someFuture)
+    (provider : [(Formula.atom p).allFuture] ⊢ (Formula.atom q).somePast) :
+    [(Formula.atom p).allFuture] ⊢ (Formula.atom q).somePast := by
+  fail_if_success ltime_reflect using _d
+  lexact provider
+
+-- Positive control: the reflected context, as well as the conclusion, matches.
+example (p q : Atom)
+    (d : [(Formula.atom p).allFuture] ⊢ (Formula.atom q).someFuture) :
+    [(Formula.atom p).allPast] ⊢ (Formula.atom q).somePast := by
+  ltime_reflect using d
+
+-- Consequence and finite cases compose persistent leads-to guarantees.
+example : [(A.imp C.someFuture).allFuture, (B.imp C.someFuture).allFuture] ⊢
+    ((A.or B).imp C.someFuture).allFuture := by
+  lstart hA hB
+  lprogress cases
+  · lexact hA
+  · lexact hB
 
 end BimodalTest.Automation.ProofModeExtensionsTest

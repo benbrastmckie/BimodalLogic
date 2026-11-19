@@ -15,6 +15,7 @@ import FormalSystem.Theorems.ProofMode.PlusDiscrete
 import FormalSystem.Theorems.ProofMode.Congruence
 import FormalSystem.Theorems.ProofMode.ScopeConversions
 import FormalSystem.Theorems.ProofMode.Simplification
+import FormalSystem.Theorems.ProofMode.TemporalComposition
 
 /-!
 # Native rules for compositional proof mode

@@ -77,7 +77,58 @@ G/H are strict: they do not supply A at the present. F/P cases retain an eventua
 they do not turn eventual assertions into current facts. Until/Since arguments are guard first,
 event second. Next/Previous scope introduction and invariance require `ZTime ≤ fc`; the tactics
 solve the reflexive ZTime instance or expose the certificate as an ordinary Lean goal.
+The legacy `lstep` and `linvariant future/past` forms retain that explicit abstract gate even
+when a local certificate is available; new rule routes reuse exact local certificates.
 Invariance requires A, A → X A, and G(A → X A), with the H/Y mirror for the past.
+
+## Temporal composition
+
+Until/Since remain strict, with guard first and event second.
+
+| Command | Obligations |
+| --- | --- |
+| `luntil intro`, `lsince intro` | G/H guard and F/P event |
+| `luntil fold`, `lsince fold` | `X e ∨ X(g ∧ U g e)`, or the Y/S mirror; Base-valid |
+| `luntil unfold h as he hc`, `lsince unfold h as he hc` | Integer-time certificate, then both one-step branches proving the same conclusion |
+| `lprogress cases` | A persistent leads-to guarantee for each disjunct |
+| `lprogress consequence using h` | Source strengthening and persistent target weakening |
+| `lprogress trans using h` | A persistent second step; the first may be current or persistent |
+| `luntil using rule`, `lsince using rule` | Apply the supplied native rule's premises |
+| `lprogress using rule`, `linvariant using rule`, `linduction using rule` | Apply a proved rule; no unbounded search |
+| `linduction future` / `past` | Integer-time Z1 backward induction, retaining its eventuality premise |
+| `ltime_reflect [as h …]` | Reflect the whole context and conclusion |
+| `ltime_reflect using d [as h]` | Reflect a fact with its own context, or apply a reflection rule |
+| `ltemporal_dual [←] view [at h as h']` | Expand/fold all exact occurrences of one derived view |
+| `ltemporal_dual [←] using theorem [at h as h']` | Use a checked equivalence or formula equality |
+
+Dual views are `release`, `trigger`, `weakUntil`, `weakSince`, `strongRelease`, `strongTrigger`,
+`before`, `after`, `inclusiveUntil`, and `inclusiveSince`, in both languages. The pre-existing
+release/weak/strong wrappers are event-first; inclusive views are guard-first:
+`inclusiveUntil g e = e ∨ (g ∧ U g e)`. Use an expansion equality with `lrewrite (path := …)`
+for one occurrence. A literal fold does not choose missing formula parameters.
+
+`keeping [...]` on temporal introduction, cases, advance and step retains G/H guarantees
+through temporal 4. Names list the event (if any), ordinary `using` bodies, then kept facts.
+Bare current facts need a separate preservation rule. For example, two advances compose opaque
+providers without losing the second guarantee at the first witness:
+
+```lean
+example (A B C : Formula)
+    (ab : [A.someFuture] ⊢ (A.imp B.someFuture).allFuture)
+    (bc : [A.someFuture] ⊢ (B.imp C.someFuture).allFuture) :
+    [A.someFuture] ⊢ C.someFuture := by
+  lstart hA
+  ladvance hA using [ab] keeping [bc] as hA hAB hBC
+  lhave hB : B.someFuture
+  · lapply hAB; lexact hA
+  ladvance hB using [hBC] as hB hBC
+  lapply hBC
+  lexact hB
+```
+
+New integer-time rules reuse exact local certificates, decide concrete tags, reject false tags,
+and expose unresolved abstract conditions. A decreasing measure alone is not a progress rule:
+its designated events must also occur. Semantic rank reasoning is a separate interface.
 
 ## Checked rewriting and simplification
 
