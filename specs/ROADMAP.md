@@ -219,7 +219,7 @@ cited record, not here.
 No line on this list unblocks another. The one that did -- the depth-`0` crux probe -- has landed and archived, and what it feeds is a user ruling rather than a dispatch. The lines are therefore independent of each other and may be run in any order or interleaved, subject to the batch-gate's live-lock rule; the order below is a priority judgment, not a dependency.
 
 ```
-/orchestrate 937, 829, 938   # Make the repository's own checks mean something: unred CI, cache builds, pin health baselines
+/orchestrate 937   # Make the repository's own checks mean something: unred CI, cache builds, pin health baselines
 /orchestrate 933   # Correct the decidability-front record, stale on both fronts and on 934's landed verdict
 /orchestrate 931   # Apply 927's already-written final-frame amendments to the 901 report; nothing is re-derived
 /orchestrate 935 --hard --lit   # Route R3: does a determinization-free progress measure for L-plus ZTime completeness exist
