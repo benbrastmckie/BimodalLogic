@@ -1,7 +1,7 @@
 # Implementation Plan: Task #940
 
 - **Task**: 940 - Fix the API Documentation runner OOM: the LEAN_NUM_THREADS route is refuted by a pushed run, and the failure is a process-spawn ENOMEM, not heap exhaustion.
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/940_fix_api_docs_oom_process_spawn_enomem/reports/01_process_spawn_enomem_cache_gate.md
@@ -172,17 +172,17 @@ two concurrently would collide on it. No phase may be parallelized with another.
 
 ---
 
-### Phase 1: Add in-run memory instrumentation around the docgen step [NOT STARTED]
+### Phase 1: Add in-run memory instrumentation around the docgen step [COMPLETED]
 
 **Goal**: Make the next failing run diagnosable from its own log alone -- in particular, decide
 the overcommit/fork-refusal hypothesis without a further round-trip.
 
 **Tasks**:
-- [ ] Add a step named "Record pre-docgen memory and overcommit state", placed after "Enlarge swap for the doc build" and before "Build and deploy doc-gen4 documentation". It runs `set -euo pipefail` then prints, each labelled: `free -h`; `grep -E '^(MemTotal|MemFree|MemAvailable|SwapTotal|SwapFree|Committed_AS|CommitLimit)' /proc/meminfo`; `sysctl vm.overcommit_memory vm.overcommit_ratio vm.max_map_count`; `nproc`; `ulimit -a`.
-- [ ] In that same step, launch a detached background sampler writing one timestamped record every 15 seconds to `"$RUNNER_TEMP/docgen-mem.log"`: the `Committed_AS`, `CommitLimit`, `MemAvailable` and `SwapFree` lines from `/proc/meminfo`, plus `ps -eo rss,comm --sort=-rss | head -6`. Detach it correctly -- redirect stdin from `/dev/null` and both stdout and stderr into the log, background it, and `disown` -- so it survives the step's shell exiting and never holds the step open. Record its PID to `"$RUNNER_TEMP/docgen-mem.pid"`.
-- [ ] Add a step named "Report docgen memory trace", placed immediately after the docgen step, gated `if: always()`. It stops the sampler (`kill "$(cat "$RUNNER_TEMP/docgen-mem.pid")" 2>/dev/null || true`), then prints: the peak `Committed_AS` and the `CommitLimit` observed across the log; the peak RSS recorded for any `lake` or `doc-gen4` process; and the final 60 samples. If the log is absent, it prints an explicit notice saying so and exits 0 rather than failing.
-- [ ] Add a short comment on the pre-docgen step stating what question the trace answers: whether `fork()` is being refused under heuristic overcommit while apparent headroom remains, which is the one hypothesis the three failing runs' logs cannot settle.
-- [ ] Verify locally: `python3 -I -c "import yaml; yaml.safe_load(open('.github/workflows/docs.yml'))"` parses, and each new `run:` body, extracted to a temp file, passes `bash -n`.
+- [x] Add a step named "Record pre-docgen memory and overcommit state", placed after "Enlarge swap for the doc build" and before "Build and deploy doc-gen4 documentation". It runs `set -euo pipefail` then prints, each labelled: `free -h`; `grep -E '^(MemTotal|MemFree|MemAvailable|SwapTotal|SwapFree|Committed_AS|CommitLimit)' /proc/meminfo`; `sysctl vm.overcommit_memory vm.overcommit_ratio vm.max_map_count`; `nproc`; `ulimit -a`. *(completed)*
+- [x] In that same step, launch a detached background sampler writing one timestamped record every 15 seconds to `"$RUNNER_TEMP/docgen-mem.log"`: the `Committed_AS`, `CommitLimit`, `MemAvailable` and `SwapFree` lines from `/proc/meminfo`, plus `ps -eo rss,comm --sort=-rss | head -6`. Detach it correctly -- redirect stdin from `/dev/null` and both stdout and stderr into the log, background it, and `disown` -- so it survives the step's shell exiting and never holds the step open. Record its PID to `"$RUNNER_TEMP/docgen-mem.pid"`. *(completed)*
+- [x] Add a step named "Report docgen memory trace", placed immediately after the docgen step, gated `if: always()`. It stops the sampler (`kill "$(cat "$RUNNER_TEMP/docgen-mem.pid")" 2>/dev/null || true`), then prints: the peak `Committed_AS` and the `CommitLimit` observed across the log; the peak RSS recorded for any `lake` or `doc-gen4` process; and the final 60 samples. If the log is absent, it prints an explicit notice saying so and exits 0 rather than failing. *(completed)*
+- [x] Add a short comment on the pre-docgen step stating what question the trace answers: whether `fork()` is being refused under heuristic overcommit while apparent headroom remains, which is the one hypothesis the three failing runs' logs cannot settle. *(completed)*
+- [x] Verify locally: `python3 -I -c "import yaml; yaml.safe_load(open('.github/workflows/docs.yml'))"` parses, and each new `run:` body, extracted to a temp file, passes `bash -n`. *(completed: step count 6->8, diff insertions-only confirmed)*
 
 **Timing**: 45 minutes
 

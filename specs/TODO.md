@@ -85,7 +85,7 @@ next_project_number: 941
 
 ### Repo Hygiene
 
-940 [PLANNED] — Fix the API Documentation runner OOM: the LEAN\_NUM\_THREADS...
+940 [IMPLEMENTING] — Fix the API Documentation runner OOM: the LEAN\_NUM\_THREADS...
 
 ### Semantics
 
@@ -105,7 +105,7 @@ next_project_number: 941
 ## Tasks
 
 ### 940. Fix api docs oom process spawn enomem
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None

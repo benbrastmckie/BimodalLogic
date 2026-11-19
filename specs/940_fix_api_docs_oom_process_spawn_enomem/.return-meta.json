@@ -1,29 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/940_fix_api_docs_oom_process_spawn_enomem/plans/02_docgen-cache-gate-fix.md",
-      "summary": "Five-phase, single-file plan for .github/workflows/docs.yml: in-run memory instrumentation first, removal of the refuted LEAN_NUM_THREADS entry, an if-always actions/cache/save step that breaks docgen-action's post-if success cache gate, a header-comment rewrite to measured reality, and a full-gate local commit with the push named as the user's step."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 3,
   "metadata": {
-    "session_id": "sess_1795104359_90df3a_940",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 3.5,
-    "dependency_waves": 5
-  },
-  "memory_candidates": [
-    {
-      "content": "A third-party composite GitHub Action that wraps actions/cache internally can have its cache permanently defeated in a job that always fails: actions/cache's save (post) action is declared post-if: \"success()\", so a job failing before success never populates the cache, and every subsequent run cold-builds the same work -- a self-reinforcing loop whose symptom is a repeating 'Cache not found for input keys: <same key>' line plus an 'outcome=skipped;conclusion=skipped' post-action in the run log. The fix is additive and needs no fork: a second actions/cache/save step in the caller's own workflow, gated if: always(), replicating the wrapped action's key expression and path list. The key is verifiable offline -- GitHub's hashFiles(a, b) is sha256 over the path-sorted concatenation of each matched file's sha256 digest, reproducible in ~10 lines of Python, so key equality with the wrapped action's restore step can be proven before pushing rather than discovered from a CI round-trip.",
-      "category": "PATTERN",
-      "source_artifact": "specs/940_fix_api_docs_oom_process_spawn_enomem/plans/02_docgen-cache-gate-fix.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["github-actions", "actions-cache", "post-if-success", "hashFiles", "ci-cache-gate", "composite-action"]
-    }
-  ],
-  "dispatch_seq": 2
+    "session_id": "sess_1795104359_90df3a",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

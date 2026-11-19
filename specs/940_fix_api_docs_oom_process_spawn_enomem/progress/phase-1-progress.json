@@ -1,0 +1,14 @@
+{
+  "phase": 1,
+  "phase_name": "Add in-run memory instrumentation around the docgen step",
+  "started_at": "2026-11-19T16:27:41Z",
+  "last_updated": "2026-11-19T16:40:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add pre-docgen memory/overcommit snapshot step with detached background sampler", "status": "done", "files_touched": [".github/workflows/docs.yml"]},
+    {"id": 2, "description": "Add post-docgen memory trace report step (if: always())", "status": "done", "files_touched": [".github/workflows/docs.yml"]},
+    {"id": 3, "description": "Verify YAML parses, run bodies pass bash -n, step count rises 6->8, diff is insertions only", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 3,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

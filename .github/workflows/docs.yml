@@ -152,6 +152,39 @@ jobs:
           sudo swapon /mnt/swapfile
           free -h
 
+      # Answers one question the three prior failing runs' logs could not settle: whether
+      # fork() is being refused under heuristic overcommit while apparent headroom remains
+      # (vm.overcommit_memory heuristic refusing a fork from an already-large parent), which
+      # would make the parent's resident size the lever rather than external-process count.
+      # The background sampler is detached (stdin from /dev/null, stdout+stderr to the log,
+      # backgrounded and disowned) so it survives this step's shell exiting and never holds
+      # the step open.
+      - name: Record pre-docgen memory and overcommit state
+        run: |
+          set -euo pipefail
+          echo "--- free -h ---"
+          free -h
+          echo "--- /proc/meminfo (selected) ---"
+          grep -E '^(MemTotal|MemFree|MemAvailable|SwapTotal|SwapFree|Committed_AS|CommitLimit)' /proc/meminfo
+          echo "--- sysctl ---"
+          sysctl vm.overcommit_memory vm.overcommit_ratio vm.max_map_count
+          echo "--- nproc ---"
+          nproc
+          echo "--- ulimit -a ---"
+          ulimit -a
+          nohup bash -c '
+            while true; do
+              {
+                echo "=== $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
+                grep -E "^(Committed_AS|CommitLimit|MemAvailable|SwapFree)" /proc/meminfo
+                ps -eo rss,comm --sort=-rss | head -6
+              }
+              sleep 15
+            done
+          ' </dev/null >"$RUNNER_TEMP/docgen-mem.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/docgen-mem.pid"
+          disown
+
       - name: Build and deploy doc-gen4 documentation
         id: docgen
         uses: leanprover-community/docgen-action@56023ee2a4b3630c1071825be5bafdb43f540bbd
@@ -168,3 +201,20 @@ jobs:
           build-page: false
           homepage: api-site
           references: references.bib
+
+      - name: Report docgen memory trace
+        if: always()
+        run: |
+          set -euo pipefail
+          kill "$(cat "$RUNNER_TEMP/docgen-mem.pid")" 2>/dev/null || true
+          log="$RUNNER_TEMP/docgen-mem.log"
+          if [ ! -s "$log" ]; then
+            echo "No memory trace log found at $log -- sampler did not produce output."
+            exit 0
+          fi
+          echo "--- peak Committed_AS / CommitLimit observed ---"
+          grep -E '^(Committed_AS|CommitLimit):' "$log" | sort -k2 -n -r | awk '{seen[$1]++; if (seen[$1]==1) print}'
+          echo "--- peak RSS for any lake/doc-gen4 process ---"
+          grep -E 'lake|doc-gen4' "$log" | sort -n -r | head -1 || echo "(none observed)"
+          echo "--- final 60 samples ---"
+          tail -n 60 "$log"
