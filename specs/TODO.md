@@ -1,5 +1,5 @@
 ---
-next_project_number: 940
+next_project_number: 941
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 940
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,931,933,935 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,931,933,935,940 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -83,6 +83,10 @@ next_project_number: 940
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
+### Repo Hygiene
+
+940 [NOT STARTED] — Fix the API Documentation runner OOM: the LEAN\_NUM\_THREADS...
+
 ### Semantics
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
@@ -99,6 +103,57 @@ next_project_number: 940
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 940. Fix api docs oom process spawn enomem
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Fix the API Documentation runner OOM: the LEAN_NUM_THREADS route is refuted by a pushed run, and the failure is a process-spawn ENOMEM, not heap exhaustion.
+
+## Measured state
+
+Run 44492038639 (commit 3bd8b2b31, 2026-11-19) failed with `LEAN_NUM_THREADS: "1"` correctly applied. The variable is NOT the lever for this build. Evidence, all from that run's own log:
+
+- The variable reached the build: it appears in the `docgen` step's resolved `env:` block and propagated to five nested invocations.
+- It made the failure WORSE in count: 48 allocation errors, against 13 on run 44457344329 and 15 on run 44477674624.
+- It did change timing: the docgen step ran 13m20s (799605 ms), up from 8-10 minutes, so something serialized; it just did not reduce peak memory.
+- Swap instrumentation confirms 15Gi RAM plus 15Gi swap active before the build, so the committed swap step works as intended and is still not sufficient.
+
+## The diagnostic that changes the problem
+
+47 of the 48 errors read:
+
+    error: failed to execute '.../doc-gen4/.lake/build/bin/doc-gen4':
+    resource exhausted (error code: 12, cannot allocate memory)
+
+This is Lake failing to SPAWN the doc-gen4 child process (fork/exec returning ENOMEM), not Lean failing to allocate inside its own heap. The earlier runs' bare `error: resource exhausted` did not distinguish the two. doc-gen4 is a separate binary invoked per module, so the governing concurrency is Lake's EXTERNAL-PROCESS fan-out, not the in-process Task thread pool that LEAN_NUM_THREADS caps. This is why the upstream precedents (leanprover/lean-action's leanchecker guidance, opencompl/veir's docs.yml) did not transfer.
+
+This also explains the predecessor's inconclusive local probe: it measured the in-process thread pool, which is the wrong quantity for this failure mode.
+
+## Ruled out by measurement; do NOT re-try these
+
+- LEAN_NUM_THREADS. Refuted above by a real pushed run with the variable confirmed applied. Decide explicitly whether to keep or remove the `env:` entry now in `.github/workflows/docs.yml`; it is currently inert at best.
+- Swap enlargement. 15Gi swap active and insufficient, confirmed twice by in-run `free -h`.
+- A larger GitHub-hosted runner. The repository is owned by a personal account on GitHub's `free` plan; larger runners are documented as organization/enterprise-only, independent of public-repo status.
+- Lake job-count flags. Lake 5.0.0 rejects both `-j2` (`unknown short option '-j'`) and `--jobs=2` (`unknown long option '--jobs'`).
+
+## Untested hypothesis, stated as such
+
+fork returning ENOMEM with 15 GiB RAM and 15 GiB swap available is characteristic of Linux overcommit refusing a fork from an already-large parent process, which would make the PARENT's resident size the lever rather than the child count. `vm.overcommit_memory` and `vm.overcommit_ratio` are settable on a GitHub runner via sysctl in a prior step. This is a hypothesis to test, not a finding; measure it in-run (log `/proc/meminfo`'s Committed_AS and CommitLimit, plus the parent's RSS, immediately before the failing step) rather than assuming it.
+
+## Scope
+
+Find the real lever for a process-spawn ENOMEM under doc-gen4's per-module fan-out. Candidate directions, none pre-selected: tuning overcommit via sysctl; reducing the doc-target set so fewer child processes are spawned; splitting the doc build across multiple jobs or a matrix; a forked or patched docgen-action that bounds external-process concurrency (the pinned action's `scripts/build_docs.sh` hardcodes `lake build $DOCS_FACETS` with no job-count surface in `action.yml`); or accepting a reduced-scope doc build. Add in-run memory instrumentation FIRST so the next failure is diagnosable without a second round-trip.
+
+Touch `.github/workflows/docs.yml` and, if a fork route is chosen, whatever new action source that requires. Do NOT take on `CI / Build and Test`, which passed on this same commit (run 44492038574) and has separate causes. Do NOT take on the absence of a `.lake/build` CI cache.
+
+## Verification
+
+The failure is a property of the hosted runner and cannot be reproduced locally, so a real pushed run is the only verification. Agent pushes are barred by `.claude/rules/pr-prohibition.md`: this task ends at a local commit and names the push as the user's remaining step. Do NOT report the objective as met on the strength of upstream precedent alone; that is precisely the error the predecessor made.
+
+---
 
 ### 939. Fix api documentation runner oom
 - **Status**: [COMPLETED]
