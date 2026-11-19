@@ -1,5 +1,5 @@
 ---
-next_project_number: 944
+next_project_number: 958
 ---
 
 # TODO
@@ -13,14 +13,15 @@ next_project_number: 944
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,942 | -- | algebraic-representation, code-quality, completeness, ... |
-| 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
-| 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
-| 5 | 430,501 | 125,411 | algebraic-representation, decidability |
-| 6 | 412 | 430 | decidability |
-| 7 | 482 | 412 | decidability |
-| 8 | 177 | 178,282,296,481,482,543,942 | formula-refactor |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,942,944 | -- | algebraic-representation, code-quality, completeness, ... |
+| 2 | 231,282,296,429,497,763,862,873,932,945 | 298,428,502,761,869,944 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 410,498,499,500,861,874,875,876,946 | 429,497,763,873,945 | algebraic-representation, decidability, metalogic, ... |
+| 4 | 125,411,543,947,954 | 410,498,499,500,946 | algebraic-representation, decidability, metalogic, ... |
+| 5 | 430,501,949 | 125,411,947 | algebraic-representation, decidability, proof-mode |
+| 6 | 412,950 | 430,949 | decidability, proof-mode |
+| 7 | 482,948,951 | 412,950 | decidability, proof-mode |
+| 8 | 177,952,956 | 178,282,296,481,482,543,942,948 | formula-refactor, proof-mode |
+| 9 | 953,955,957 | 952,956 | proof-mode |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -37,7 +38,7 @@ next_project_number: 944
 
 ### Code Quality
 
-942 [PLANNED] — Add regression test coverage for three FormalSystem module...
+942 [IMPLEMENTING] — Add regression test coverage for three FormalSystem module...
 
 ### Completeness
 
@@ -97,7 +98,164 @@ next_project_number: 944
   └─ 874 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
+### Proof Mode
+
+944 [NOT STARTED] — Proof mode: S5-aware box scopes. Extend lmodal\_intro...
+  └─ 945 [NOT STARTED] — Proof mode: cross-modal scopes from MF and TF. Let □...
+    └─ 946 [NOT STARTED] — Proof mode: scopes for always and sometimes. Add...
+      └─ 947 [NOT STARTED] — Proof mode adequacy test: re-prove Theorems/Perpetuity....
+        └─ 949 [NOT STARTED] — Proof mode: linearity case tactic. Add a tactic that, from...
+          └─ 950 [NOT STARTED] — Proof mode: Until/Since introduction, unfolding and...
+            └─ 948 [NOT STARTED] — Proof mode adequacy test: re-prove a temporal slice. Re-prove...
+              └─ 952 [NOT STARTED] — Proof mode: abstract the frontend over a proof-mode...
+                └─ 953 [NOT STARTED] — Proof mode: instances for the other object languages. Using...
+                └─ 955 [NOT STARTED] — Proof mode: close leaf goals with existing automation. Add a...
+              └─ 956 [NOT STARTED] — Proof mode: leads-to and invariance library. lprogress...
+                └─ 957 [NOT STARTED] — Research: verifying transition systems against TM...
+            └─ 951 [NOT STARTED] — Proof mode: dense and real-time rules. The proof mode's...
+      └─ 954 [NOT STARTED] — Proof mode: goal display, introduction patterns and error...
+
 ## Tasks
+
+### 957. Proof mode transition systems tm specifications
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Topic**: proof-mode
+- **Dependencies**: Task 956
+
+**Description**: Research: verifying transition systems against TM specifications. RESEARCH REPORT, no Lean required. Investigate verifying a transition system against a TM specification using the derivation proof mode: how a transition system is presented as a TM theory or model, which proof-mode rules carry the safety and liveness arguments, what the Veil integration that the proof-mode user guide names as separate work would involve, and the division of labour with the ModelChecker in the dual-verification architecture (countermodels from one side, derivations from the other). DONE WHEN: the report states a recommended architecture, the smallest worthwhile first case study, and the tasks that would follow. Source: research/NEW_DIRECTIONS.md, row PM-14. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
+
+### 956. Proof mode leads to invariance library
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: Task 948, Task 950
+
+**Description**: Proof mode: leads-to and invariance library. `lprogress` (composition of G(A → F B) guarantees) and `linvariant` (integer-time invariance) are leads-to and invariance rules in the TLA / UNITY sense. Extend them to the standard rule set for safety and liveness: invariance, leads-to transitivity and disjunction, and well-founded progress, each as a pure rule with a tactic. DONE WHEN: the rules exist with worked examples in the tests and a section in the user guide. Source: research/NEW_DIRECTIONS.md, row PM-13. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
+
+### 955. Proof mode close leaves with automation
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: Task 952
+
+**Description**: Proof mode: close leaf goals with existing automation. Add a closing tactic that hands propositional and single-modality leaf goals to the existing automation in FormalSystem/Automation/ProofSearch/ and FormalSystem/Automation/Tactics/, so the proof mode handles structure and search handles closure. DONE WHEN: the tactic closes the propositional and single-modality leaves arising in the acceptance tests and adequacy scripts, fails with a clear message otherwise, and never produces anything but a native derivation. Source: research/NEW_DIRECTIONS.md, row PM-12. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
+
+### 954. Proof mode goal display patterns error tests
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: Task 946
+
+**Description**: Proof mode: goal display, introduction patterns and error tests. Usability work. (1) A delaborator or custom goal view that shows named hypotheses and the object goal without repeating the object context in every hypothesis type. (2) Nested introduction patterns for `lcases` and `lintro` (today `lcases` takes exactly two names). (3) A negative test for every `throwError` path in FormalSystem/Automation/ProofMode/ asserting the message; the suite currently has two negative checks. DONE WHEN: all three are in place and documented in the user guide. Source: research/NEW_DIRECTIONS.md, row PM-11. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
+
+### 953. Proof mode instances other languages
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: Task 952
+
+**Description**: Proof mode: instances for the other object languages. Using the proof-mode interface, give the star, minus and open object languages (FormalSystem/StarLanguage/, FormalSystem/MinusLanguage/, the open language) each either a proof-mode instance with acceptance tests or a written reason, in the user guide, why the language cannot support one (for example no native derivation calculus or no deduction theorem). DONE WHEN: every such language is accounted for one way or the other. Source: research/NEW_DIRECTIONS.md, row PM-10. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
+
+### 952. Proof mode abstract frontend interface
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: Task 946, Task 948
+
+**Description**: Proof mode: abstract the frontend over a proof-mode interface. Every rule is written once for TM and once for TM⁺, and the elaborators dispatch through hard-coded name pairs (`Language.ruleName tm plus` in Automation/ProofMode/Meta.lean). Replace this with a typeclass or structure packaging what the elaborators need: judgment recognition, deduction, cut, context substitution, and a generalized K rule per universal operator. Extract the interface from the rule set as it stands after the adequacy tests; do not design it ahead of them. DONE WHEN: TM and TM⁺ are two instances, no elaborator names either language, and the full acceptance suite passes unchanged. Source: research/NEW_DIRECTIONS.md, row PM-9. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
+
+### 951. Proof mode dense and real time rules
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: Task 950
+
+**Description**: Proof mode: dense and real-time rules. The proof mode's frame-specific rules cover ZTime only. Add rules and tactics exposing DN (`LinearityDerived.density`) at Dense and PU (`prior_U_gap`), SEP (`sep`) and CO (`DedekindDerived.coDerived`) at RTime. DONE WHEN: each has a pure rule and a tactic whose frame certificate (`Dense ≤ fc` / `RTime ≤ fc`) is solved when reflexive and otherwise surfaced as an ordinary Lean goal, with tests at a concrete and at an abstract frame class. Source: research/NEW_DIRECTIONS.md, row PM-8. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
+
+### 950. Proof mode until since intro unfold induction
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: Task 949
+
+**Description**: Proof mode: Until/Since introduction, unfolding and induction. Until and Since currently support operand monotonicity only (`luntil`, `lsince`). Add: tactics to prove `φ U ψ` / `φ S ψ` from a witness-shaped argument; one-step unfolding at ZTime (from the DiscreteUnfolding theorems), with the `ZTime ≤ fc` certificate surfaced as a goal the way `lstep` does; and an induction rule of which the existing `linvariant` is the special case. DONE WHEN: all three exist for both directions and both languages with pure rules and tests, and `linvariant` is re-expressed through, or shown to be an instance of, the induction rule. Source: research/NEW_DIRECTIONS.md, row PM-7. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
+
+### 949. Proof mode linearity case tactic
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: Task 947
+
+**Description**: Proof mode: linearity case tactic. Add a tactic that, from two eventualities (F A and F B, or P A and P B) or two Until/Since facts, opens the three ordered cases licensed by TL (`LinearityDerived.tempLinearity`) and CN (`Axiom.linear_until`). Present the cases in CN's disjunct order: both witnesses together, first witness earlier, second witness earlier. DONE WHEN: the tactic works in both time directions and in both TM and TM⁺, with pure rules behind it and acceptance tests for each shape. Read the Perpetuity adequacy report first and follow any re-planning it recommends. Source: research/NEW_DIRECTIONS.md, row PM-6. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
+
+### 948. Proof mode reprove temporal slice
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: Task 947, Task 949, Task 950
+
+**Description**: Proof mode adequacy test: re-prove a temporal slice. Re-prove a representative slice of the Burgess-Xu layer (drawn from FormalSystem/Theorems/TemporalDerived.lean, ConnectDerived.lean and LinearityDerived.lean) in the proof mode, alongside the existing proofs. Same deliverable as the Perpetuity adequacy test: alternative derivations that build, plus a report of script length against the originals and every missing rule. DONE WHEN: the slice builds and the report lists what the temporal rule set still lacks. Source: research/NEW_DIRECTIONS.md, row PM-5. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
+
+### 947. Proof mode reprove perpetuity
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: Task 946
+
+**Description**: Proof mode adequacy test: re-prove Theorems/Perpetuity. Re-prove P1-P6 and their supporting lemmas from FormalSystem/Theorems/Perpetuity/ in the proof mode, as derivations ALONGSIDE the existing ones (do not delete or replace the existing proofs). Write a report recording, per theorem, proof-mode script length against the original and every rule or tactic found missing or awkward. THIS IS A GATE: the report must give an explicit go / re-plan verdict on whether the current rule design should continue; if scripts are not clearly shorter and more readable than the term proofs, say so and recommend how the downstream proof-mode tasks should be re-planned. DONE WHEN: the alternative derivations build and the report with its verdict exists. Source: research/NEW_DIRECTIONS.md, row PM-4. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
+
+### 946. Proof mode always sometimes scopes
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: Task 945
+
+**Description**: Proof mode: scopes for always and sometimes. Add introduction, use and case rules and tactics for the perpetuity operators `always` (H ∧ now ∧ G) and `sometimes` (P ∨ now ∨ F). DONE WHEN: each of the perpetuity principles P1-P6 is provable by a short proof-mode script, demonstrated in the acceptance tests. Source: research/NEW_DIRECTIONS.md, row PM-3. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
+
+### 945. Proof mode cross modal scopes mf tf
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: Task 944
+
+**Description**: Proof mode: cross-modal scopes from MF and TF. Let □ hypotheses cross into temporal scopes. `ltemporal_intro future|past` should accept □ hypotheses and deliver `□A` in the body, justified by MF (`modal_future`, □φ → □Gφ) and the derived TF (□φ → G□φ, `Combinators.temporalFutureDerived`) and their time-reflection mirrors. MF and TF are used nowhere in the proof mode today. DONE WHEN: `lmodal_intro` composed with temporal scopes derives MF- and TF-shaped goals without leaving the mode, in both time directions and in both TM and TM⁺, with tests including a negative test that a non-□ current fact still cannot cross. Source: research/NEW_DIRECTIONS.md, row PM-2. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
+
+### 944. Proof mode s5 aware box scopes
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: None
+
+**Description**: Proof mode: S5-aware box scopes. Extend `lmodal_intro necessity` so a □ scope can carry `□A` into the body as `□A` (via the derived modal 4) and `◇A` as `◇A` (via M5, `modal_5_collapse`), alongside the existing rule that strips the operator. Do the same for the stability scope `lmodal_intro settled` in TM⁺ using `stab_4` and `stab_5`. At present a scope admits only hypotheses carrying the scope's own operator, stripped of it, so □/◇ facts cannot enter a □ scope intact. DONE WHEN: both carrying rules exist as pure rules for TM and TM⁺, the tactic selects between stripping and carrying in a documented way (explicit `using [...]` stays the reusable form), and tests show a □ fact and a ◇ fact used intact inside a □ body while a merely current fact is still rejected. Source: research/NEW_DIRECTIONS.md, row PM-1. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed.
+
+---
 
 ### 943. Gitignore and loose file hygiene
 - **Status**: [COMPLETED]
@@ -128,7 +286,7 @@ VERIFICATION: `bash scripts/check-module-invariants.sh` and `bash scripts/readme
 ---
 
 ### 942. Test coverage nomic formathlib tactic
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: None
