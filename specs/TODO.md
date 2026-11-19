@@ -1,5 +1,5 @@
 ---
-next_project_number: 939
+next_project_number: 940
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 939
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,931,933,935 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,931,933,935,939 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -83,6 +83,10 @@ next_project_number: 939
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
+### Repo Hygiene
+
+939 [NOT STARTED] — Fix the API Documentation workflow's runner OOM. Swap...
+
 ### Semantics
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
@@ -99,6 +103,37 @@ next_project_number: 939
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 939. Fix api documentation runner oom
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Fix the API Documentation workflow's runner OOM. Swap enlargement is measured insufficient; pick and implement the real lever.
+
+## Measured state
+
+`.github/workflows/docs.yml`'s `Build and deploy doc-gen4 documentation` step fails with `error: resource exhausted (error code: 12, cannot allocate memory)` -- 13 instances on run 44457344329, 15 on run 44477674624 -- followed by `error: build failed`. No URI, git, or configuration error appears anywhere in either log, and the Pages prerequisite check passes. The `srcUri.github` targets named in Lake's failure summary are the cheap `git`-subprocess jobs that happened to be in flight when memory ran out; they are the symptom, not the cause.
+
+This is growth-driven: `docs.yml` is unmodified since 2026-09-20 (predating the last green run on 2026-10-16) and `lean-toolchain` since 2026-07-25, while `FormalSystem/` grew from 705 to 772 `.lean` files over the same window. The doc build runs `lake build` over roughly 6,300 doc targets whose doc-gen4 processes each hold the full Mathlib-plus-`FormalSystem` environment.
+
+## Ruled out by measurement -- do NOT re-try these
+
+- **Swap enlargement is insufficient.** A swap step taking the runner from 3 GiB to 15 GiB of swap alongside 15 GiB of RAM is already committed in `docs.yml`. The step's own `free -h` output confirms `Swap: 15Gi` active before the build, and the build still died with 15 allocation errors. The step is retained as cheap headroom and instrumentation; it is not the fix, and `docs.yml`'s header records this measurement so the next reader does not repeat it.
+- **Capping Lake's concurrency is not reachable from `docs.yml`.** Lake 5.0.0 accepts no job-count flag -- verified directly: `lake build -j2` returns `unknown short option '-j'` and `lake build --jobs=2` returns `unknown long option '--jobs'`. The doc build's own `lake build` invocation lives inside the pinned action's `scripts/build_docs.sh`, not in the `build-args` input this workflow passes.
+
+## Scope
+
+Establish which of these is actually available, then implement one: a larger GitHub runner (determine first whether this account's plan offers one); a forked, patched, or newer `leanprover-community/docgen-action` that caps concurrency or splits the build; or a reduction in the doc-target set. The choice turns on facts about the account's runner options and the action's current upstream state, not on preference -- find those facts before committing to a route.
+
+Touch `.github/workflows/docs.yml` and, if the fork route is chosen, whatever new action source that requires. Do NOT take on `CI / Build and Test`, a separate workflow with separate causes. Do NOT take on the absence of a `.lake/build` CI cache.
+
+## Verification
+
+The failure is a property of the runner's memory and cannot be reproduced locally, so a real pushed run reporting success is the only possible verification. The push is user-invoked (`.claude/rules/pr-prohibition.md` bars agent pushes): this task ends at a local commit plus whatever local evidence the chosen route admits, and names the push as the user's remaining step.
+
+---
 
 ### 938. Enforceable repo health baselines
 - **Status**: [COMPLETED]
