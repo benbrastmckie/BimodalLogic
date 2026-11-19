@@ -217,30 +217,34 @@ the whole single-file deliverable with no other file depending on it yet.
 
 ---
 
-### Phase 2: Document the aggregator in CONTRIBUTING.md and scripts/README.md [NOT STARTED]
+### Phase 2: Document the aggregator in CONTRIBUTING.md and scripts/README.md [COMPLETED]
 
 **Goal**: Both documents reference `scripts/verify-all.sh` in their own established style, so
 a contributor finds it where they already look for setup and script information.
 
 **Tasks**:
-- [ ] Re-read `CONTRIBUTING.md`'s Development Setup section immediately before editing (shared
-      tree; sibling task 943 is dispatched this same cycle).
-- [ ] Add to the Development Setup fenced `bash` block, after the
+- [x] Re-read `CONTRIBUTING.md`'s Development Setup section immediately before editing (shared
+      tree; sibling task 943 is dispatched this same cycle). *(completed: re-read immediately
+      before editing, unchanged from plan-authoring time)*
+- [x] Add to the Development Setup fenced `bash` block, after the
       `bash scripts/install-git-hooks.sh` line (Decision 4): a short comment block in the
       style of the adjacent git-hook comment, stating that the script reproduces CI's nine-check
       gate locally, that a successful `lake build` / `lake test` is its precondition
       (Decision 2), and that it is deliberately not wired into the pre-commit hook because it
       contains slow lake-dependent steps; then the `bash scripts/verify-all.sh` line itself.
-- [ ] Re-read `scripts/README.md` immediately before editing.
-- [ ] Add one `| \`verify-all.sh\` | ... |` row to the "Gates and ratchets" table, matching the
+      *(completed)*
+- [x] Re-read `scripts/README.md` immediately before editing. *(completed: unchanged from
+      plan-authoring time)*
+- [x] Add one `| \`verify-all.sh\` | ... |` row to the "Gates and ratchets" table, matching the
       one-sentence-purpose style of the rows already there and naming
-      `.github/workflows/ci.yml` as its source of record.
-- [ ] Add one row to the "Per-script determinations" table under "Shared `.lake` build lock"
+      `.github/workflows/ci.yml` as its source of record. *(completed)*
+- [x] Add one row to the "Per-script determinations" table under "Shared `.lake` build lock"
       with determination `No lock` (Decision 5): the aggregator takes no lock of its own; each
       child script acquires and releases the shared lock on its own, and all nine run strictly
-      sequentially.
-- [ ] Confirm `scripts/README.md`'s opening completeness claim ("Every script ... is named
+      sequentially. *(completed)*
+- [x] Confirm `scripts/README.md`'s opening completeness claim ("Every script ... is named
       below; nothing in this directory is undocumented") now holds for the new file.
+      *(completed: verify-all.sh is now named in the Gates and ratchets table)*
 
 **Timing**: 0.5 hours
 
