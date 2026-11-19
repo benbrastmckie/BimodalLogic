@@ -570,37 +570,37 @@ command that covers the edit.
 
 ---
 
-### Phase 6: Whole-tree verification and the consolidated falsification record [NOT STARTED]
+### Phase 6: Whole-tree verification and the consolidated falsification record [COMPLETED]
 
 **Goal**: the complete gate set is green on an unmodified tree with all three gates enforced, and
 the task's falsification evidence exists as one readable record.
 
 **Tasks**:
 
-- [ ] Confirm the tree is clean of every seed: `git status --short` lists no modification outside
-      this task's own committed paths, and no `.lean` file at all.
-- [ ] Run the complete gate set, recording each command and its exit status:
+- [x] Confirm the tree is clean of every seed: `git status --short` lists no modification outside
+      this task's own committed paths, and no `.lean` file at all. *(completed)*
+- [x] Run the complete gate set, recording each command and its exit status:
       `bash scripts/check-module-invariants.sh` (full mode),
       `bash scripts/check-module-invariants.sh --no-build`,
       `bash scripts/check-module-invariants.sh --emit-inventory --check`,
       `bash scripts/readme-lint.sh`,
       `bash scripts/readme-lint.sh FormalSystem BimodalTools`,
-      and `python3 scripts/c16_roots_baseline.py` in compare mode.
-- [ ] For any gate that reports a finding, apply the baseline-delta reading rather than an
+      and `python3 scripts/c16_roots_baseline.py` in compare mode. *(completed)*
+- [x] For any gate that reports a finding, apply the baseline-delta reading rather than an
       absolute-zero one: enumerate the findings, show each lies outside this plan's
       `Files to modify` set and is pre-existing, and show each touched file passes individually.
       A pre-existing finding outside this task's scope is a recorded PASS for this phase, not a
-      blocker, and never grounds to edit an out-of-scope file to force a count to zero.
-- [ ] Assemble the consolidated falsification record for the task summary: for each of the six
+      blocker, and never grounds to edit an out-of-scope file to force a count to zero. *(completed)*
+- [x] Assemble the consolidated falsification record for the task summary: for each of the six
       seeded arms, the seed, the command, the printed FAIL line, the observed non-zero exit status,
-      and the post-revert PASS and exit 0.
-- [ ] Confirm the three enforcement flags' defaults are as intended
+      and the post-revert PASS and exit 0. *(completed)*
+- [x] Confirm the three enforcement flags' defaults are as intended
       (`ENFORCE_README_DATES=1`, `ENFORCE_C20_RESIDUAL=1`, `ENFORCE_C16_ROOTS=1`) and that each
       gate's exit code actually responds to its flag being set to 0 — a flag that does nothing is
-      a flag that lies.
-- [ ] Record the C16 local/CI asymmetry one final time as a stated, decided outcome, not an
+      a flag that lies. *(completed)*
+- [x] Record the C16 local/CI asymmetry one final time as a stated, decided outcome, not an
       oversight: the widened scope's gate of record is the local full-mode run; CI coverage is
-      task 937's `ci.yml` territory.
+      task 937's `ci.yml` territory. *(completed)*
 
 **Timing**: 1 hour
 
@@ -628,14 +628,14 @@ the task's falsification evidence exists as one readable record.
 
 ## Testing & Validation
 
-- [ ] `bash scripts/readme-lint.sh` exits 0; `bash scripts/readme-lint.sh FormalSystem BimodalTools`
+- [x] `bash scripts/readme-lint.sh` exits 0; `bash scripts/readme-lint.sh FormalSystem BimodalTools`
       exits 0.
-- [ ] `bash scripts/check-module-invariants.sh --no-build` exits 0.
-- [ ] `bash scripts/check-module-invariants.sh` (full mode) exits 0.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0.
-- [ ] Each of the three signals has a committed baseline file and a gate invocation observed to
+- [x] `bash scripts/check-module-invariants.sh --no-build` exits 0.
+- [x] `bash scripts/check-module-invariants.sh` (full mode) exits 0.
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0.
+- [x] Each of the three signals has a committed baseline file and a gate invocation observed to
       exit non-zero on a seeded increase and 0 after the seed's removal.
-- [ ] No `.lean` file appears in any of this task's commits, and `scripts/nolints.json` is
+- [x] No `.lean` file appears in any of this task's commits, and `scripts/nolints.json` is
       untouched throughout.
 
 ## Artifacts & Outputs
