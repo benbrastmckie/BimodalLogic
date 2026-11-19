@@ -50,6 +50,7 @@
         "docs/development/MODULE_INVARIANTS.md",
         "scripts/README.md",
         "scripts/c16-roots-baseline.txt",
+        "scripts/c16-roots-unmeasurable.txt",
         "scripts/c16_roots_baseline.py",
         "scripts/c20-residual-baseline.txt",
         "scripts/check-module-invariants.sh",
