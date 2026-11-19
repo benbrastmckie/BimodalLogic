@@ -232,7 +232,6 @@ cited record, not here.
 One line on this list now unblocks another: 942 is a declared predecessor of 177 after this pass filed that edge, the two sharing `Tests/BimodalTest/Automation/TacticsTest.lean` with 942 writing test logic and 177 editing only that file's prose. Nothing else here gates anything else -- the one line that used to, the depth-`0` crux probe, has landed and archived, and what it feeds is a user ruling rather than a dispatch. Beyond that single edge the lines are independent and may be run in any order or interleaved, subject to the batch-gate's live-lock rule; the order below is a priority judgment, not a dependency.
 
 ```
-/orchestrate 941, 943   # Close the repo-health review's two hygiene findings: a local CI mirror and root-level cruft
 /orchestrate 942   # Cover three FormalSystem module groups that have zero referencing tests anywhere under Tests/
 /orchestrate 298, 282, 296, 231   # Half-finished dataset cleanup: three PARTIAL records behind 298's c7 bug, plus 231's automation
 /orchestrate 935 --hard --lit   # Route R3: does a determinization-free progress measure for L-plus ZTime completeness exist
