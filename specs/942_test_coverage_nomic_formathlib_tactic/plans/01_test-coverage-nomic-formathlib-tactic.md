@@ -403,7 +403,7 @@ set returns `test-lean-src-roots.sh`, `test-plan-file-scope-harvest.sh` and
 
 ---
 
-### Phase 3: Tactic folds, documentation reconciliation, and whole-tree verification [IN PROGRESS]
+### Phase 3: Tactic folds, documentation reconciliation, and whole-tree verification [COMPLETED]
 
 **Goal**: Close the second Low-severity gap by folding minimal usage checks for
 `FormalSystem/Tactic/Attr.lean` and `FormalSystem/Tactic/Meta.lean` into existing `Automation/`
@@ -412,7 +412,7 @@ the whole tree green.
 
 **Tasks**:
 
-- [ ] Fold the two missing `Tactic/Attr.lean` simp-set checks into
+- [x] Fold the two missing `Tactic/Attr.lean` simp-set checks into
       `Tests/BimodalTest/Automation/NormalizationTest.lean` (545 lines), which already hosts the
       `formula_unfold`/`formula_fold` checks and already names `FormalSystem/Tactic/Attr.lean` in
       its prose. Two `example`s suffice:
@@ -420,7 +420,7 @@ the whole tree green.
       `(φ.neg).reflectTime = (φ.reflectTime).neg` closed by `simp only [reflect_time_norm]`.
       **No new import is required** -- both were compiled under this file's existing two-import
       closure.
-- [ ] Fold the `Tactic/Meta.lean` usage probe into
+- [x] Fold the `Tactic/Meta.lean` usage probe into
       `Tests/BimodalTest/Automation/LemmaDBTest.lean` (223 lines): `#check` all five helpers, then
       one `TermElabM` block that elaborates
       `DerivationTree FrameClass.Base ([] : Context) (p.imp p)` and asserts that
@@ -431,15 +431,15 @@ the whole tree green.
       `mkConst ``Nat`. **No new import is required.** Watch for the `Context` ambiguity that
       arises under `open Lean Meta Elab Term` -- qualify the name rather than widening the
       `open`.
-- [ ] Assert NOTHING about `buildContextExpr` beyond `#check @buildContextExpr`. A test that
+- [x] Assert NOTHING about `buildContextExpr` beyond `#check @buildContextExpr`. A test that
       invokes it cannot pass, and one written to expect the throw would launder the bug. Add an
       in-file comment naming the defect by durable anchor -- `FormalSystem/Tactic/Meta.lean`'s
       `buildContextExpr`, whose `mkAppM `` `List.nil `` ` call passes an explicit argument for an
       implicit parameter -- with no task number anywhere in the comment.
-- [ ] Do not open `Tests/BimodalTest/Automation/TacticsTest.lean`. It is named in open task 177's
+- [x] Do not open `Tests/BimodalTest/Automation/TacticsTest.lean`. It is named in open task 177's
       file scope for a prose-only concern; this phase's hosts were chosen precisely to keep the
       two disjoint.
-- [ ] Record the follow-up the recorded prior decision owes: the `buildContextExpr` repair is a
+- [x] Record the follow-up the recorded prior decision owes: the `buildContextExpr` repair is a
       separate task, and two repairs were already compiled and both round-trip --
       `mkAppOptM `` `List.nil `` #[some formulaType]`, or
       `Lean.mkApp (Lean.mkConst `` `List.nil `` [Level.zero]) formulaType`. State both, with the
@@ -447,19 +447,24 @@ the whole tree green.
       block) in the implementation summary's follow-up section and in `.return-meta.json`, so the
       separate task can be filed with the fix pre-validated. Do NOT create the task from this
       dispatch and do NOT apply the repair.
-- [ ] Add a `NomicLanguageTest.lean` row to `Tests/BimodalTest/Semantics/README.md`'s Contents
+- [x] Add a `NomicLanguageTest.lean` row to `Tests/BimodalTest/Semantics/README.md`'s Contents
       table and refresh its Last Updated stamp.
-- [ ] Create `Tests/BimodalTest/ForMathlib/README.md` following the shape every other
+- [x] Create `Tests/BimodalTest/ForMathlib/README.md` following the shape every other
       `Tests/BimodalTest/` subdirectory README uses (title, Contents table, Coverage, Related,
       Last Updated), so the new directory is not the one test directory without one.
-- [ ] Note the two new `Automation/` folds in `Tests/BimodalTest/Automation/README.md` if its
+- [x] Note the two new `Automation/` folds in `Tests/BimodalTest/Automation/README.md` if its
       Contents table or Coverage section describes per-file content at that granularity; leave it
-      untouched if it does not. Do not invent a row shape the file does not already use.
-- [ ] Regenerate the commit-blocking count surface one last time, in THIS phase: the two folds add
+      untouched if it does not. Do not invent a row shape the file does not already use. *(deviation: altered -- it does
+      describe content at that granularity, so the `NormalizationTest.lean` row was updated AND a
+      `LemmaDBTest.lean` row added, since the `Tactic/Meta.lean` fold lives in a file that had no
+      row; additionally `Tests/BimodalTest/README.md` gained a `ForMathlib/` bullet, one README
+      beyond the three this task list names -- a brand-new top-level test directory absent from the
+      parent organization list is the drift this phase's Goal names. Both reuse existing shapes.)*
+- [x] Regenerate the commit-blocking count surface one last time, in THIS phase: the two folds add
       Lean lines under `Tests/`, so `tests-line-count` moves again. Same
       build-then-`--fix`-then-review-diff sequence, and stage `typst/generated/status.typ` with
       this phase's commit.
-- [ ] Record any issue, deviation or win as it arises via `issue-record.sh`, per this dispatch's
+- [x] Record any issue, deviation or win as it arises via `issue-record.sh`, per this dispatch's
       Issue Log contract -- not reconstructed at the end.
 
 **Timing**: 1.25 hours
@@ -525,6 +530,44 @@ comment, never an application. No task in this phase requires any excluded item.
   NOT run an independent full battery as its own criterion. Outside `/orchestrate` (a standalone
   run with no orchestration close to defer to), run the complete set directly instead.
 
+#### Verification Notes (recorded at execution)
+
+**The complete gate set was DEFERRED to the batch stage, not independently run.** This dispatch
+carried a Batch Gate Deferral directive, so this `full`-tier phase was discharged against the
+scoped tier instead: `bash .claude/scripts/verify-touched.sh` (no arguments). `scripts/verify-all.sh`
+was NOT run here; its result is attributed back to this task at the orchestration close by this
+task's own `modified_files`.
+
+Measured verdicts, all green:
+
+| Check | Verdict |
+|---|---|
+| `lake build-guard ... -- build` (default `FormalSystem` target) | exit 0, 2991 jobs, zero `error:`/`warning:` |
+| `lake build-guard ... -- build BimodalTest` | exit 0, 3062 jobs, zero `error:`/`warning:` |
+| `lake build-guard ... -- test` (`testDriver = "BimodalTest"`) | exit 0, zero `error:`/`warning:` |
+| `scripts/check-module-invariants.sh` (full mode) | exit 0, ALL CHECKS PASSED |
+| `scripts/check-module-invariants.sh --emit-inventory --check` | exit 0 -- the inventory blocks did not move, confirming the measured surface split |
+| `scripts/typst-sync-check.sh --counts-only` | exit 0, `MISMATCH_COUNT=0` |
+| `scripts/check-copyright-headers.sh --strict Tests` | exit 0, 85 files, 0 nonconforming / 0 missing |
+| `lake exe runLinter BimodalTest` | no row for either new module; finding count unchanged from the Phase 1 baseline |
+| Group-closure grep | `NomicLanguage`, `ForMathlib` and `FormalSystem.Tactic` each referenced from at least one `.lean` file under `Tests/` (5 files total) |
+| `git status --short` at phase close | names no path under `FormalSystem/` and does not name `TacticsTest.lean` |
+
+**One scoped-tier finding, recorded as a PASS under `plan-authoring-gate-collisions.md`
+Condition 4.** `verify-touched.sh` exits 1 with 11 failing `.claude/scripts/tests` suites:
+`test-deploy-baseline-lib.sh`, `test-gate-out-derived-staleness.sh`,
+`test-gate-out-self-attribution.sh`, `test-generate-task-order.sh`,
+`test-lint-hook-registration-paths.sh`, `test-manifest-scripts-sync.sh`,
+`test-orchestrate-conclusion-aggregate.sh`, `test-reconcile-demote-stranded.sh`,
+`test-reconcile-handoff-status.sh`, `test-resume-scan-nonconformance.sh` and
+`test-sweep-invalidated-claims.sh`. Every one fails on a missing LOCAL source store -- their
+assertions read `required source file(s) not found: .../agent-system/extensions/core/...` and
+`agent-system/extensions does not exist`. This repository has no `agent-system/` directory;
+`.claude-extensions.json` resolves every `source_dir` to `~/.config/nvim/agent-system/extensions/*`.
+They therefore fail unconditionally here regardless of any task, and none of the 11 references
+`Tests/`, `typst/` or `FormalSystem/` at all (`grep -c` returns 0 for each). Pre-existing and
+outside this task's file scope: recorded PASS, findings enumerated, no out-of-scope file edited.
+
 ---
 
 ## Lean Challenge Statements
@@ -540,32 +583,36 @@ identifiers.
 
 ## Testing & Validation
 
-- [ ] `lake build` (default `FormalSystem` target) exits 0 -- nothing under `FormalSystem/` moved.
-- [ ] `lake build BimodalTest` exits 0 with no warning beyond the library's suppressed
+- [x] `lake build` (default `FormalSystem` target) exits 0 -- nothing under `FormalSystem/` moved.
+- [x] `lake build BimodalTest` exits 0 with no warning beyond the library's suppressed
       `linter.hashCommand` class. CI builds with `--wfail`, so warning and error are the same
       thing here.
-- [ ] `lake test` exits 0.
-- [ ] `lake exe runLinter BimodalTest` adds no new per-module row and raises no existing row above
+- [x] `lake test` exits 0.
+- [x] `lake exe runLinter BimodalTest` adds no new per-module row and raises no existing row above
       its `scripts/c16-roots-baseline.txt` ceiling.
-- [ ] `bash scripts/check-module-invariants.sh` reports C6 PASS for both new modules and no
+- [x] `bash scripts/check-module-invariants.sh` reports C6 PASS for both new modules and no
       finding absent from the pre-task baseline captured in Phase 1.
 - [ ] `bash scripts/verify-all.sh` exits 0, or every FAIL it reports is enumerated in the Phase 1
-      pre-task baseline. Exit status checked, not only stdout.
-- [ ] `bash scripts/typst-sync-check.sh --counts-only` exits 0 with `MISMATCH_COUNT=0` and
+      pre-task baseline. Exit status checked, not only stdout. *(deviation: deferred -- this
+      dispatch carried a Batch Gate Deferral directive, so the complete gate set runs once for the
+      whole batch at the orchestration close and is attributed back by this task's
+      `modified_files`. Discharged in-dispatch by `verify-touched.sh` instead; see Phase 3's
+      Verification Notes.)*
+- [x] `bash scripts/typst-sync-check.sh --counts-only` exits 0 with `MISMATCH_COUNT=0` and
       `typst/generated/status.typ` is committed with each phase that moved it; the staged diff for
       that file never names a field other than `tests-file-count` and `tests-line-count`.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0 -- the generated
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0 -- the generated
       inventory blocks were not moved by this task and must not have been edited.
-- [ ] `bash scripts/check-copyright-headers.sh --strict Tests` exits 0 (the checker was clean in
+- [x] `bash scripts/check-copyright-headers.sh --strict Tests` exits 0 (the checker was clean in
       this scope before the task, so both new files must carry the four-line header).
-- [ ] Every code line in both new modules is 100 characters or fewer; only `/-- info: ... -/`
+- [x] Every code line in both new modules is 100 characters or fewer; only `/-- info: ... -/`
       expected-output lines exceed it, which is the measured, pre-existing exemption.
-- [ ] No `.lean` file touched by this task cites a task number
+- [x] No `.lean` file touched by this task cites a task number
       (`.claude/rules/no-task-references-in-deliverables.md`).
-- [ ] `git status --short` at task close names no path under `FormalSystem/` and does not name
+- [x] `git status --short` at task close names no path under `FormalSystem/` and does not name
       `Tests/BimodalTest/Automation/TacticsTest.lean`. The one path outside `Tests/` that this
       task legitimately touches is `typst/generated/status.typ`.
-- [ ] Group-closure grep: `NomicLanguage`, `ForMathlib` and `FormalSystem.Tactic` each referenced
+- [x] Group-closure grep: `NomicLanguage`, `ForMathlib` and `FormalSystem.Tactic` each referenced
       from at least one `.lean` file under `Tests/`.
 
 ## Artifacts & Outputs

@@ -254,6 +254,35 @@ example (a : Formula) : a.imp Formula.bot = a.neg := by simp only [formula_fold]
 end SimpLoopRegression
 
 /-!
+## Section 8b: the remaining `Tactic/Attr.lean` simp sets
+
+`FormalSystem/Tactic/Attr.lean` declares four simp sets. `formula_unfold` and `formula_fold` are
+covered immediately above, and its `tmLemma` label attribute is read in
+`Tests/BimodalTest/Automation/LemmaDBTest.lean`. The two remaining sets, `truth_norm` and
+`reflect_time_norm`, are covered here: one `example` per set, each closed by that set alone, so a
+set that stops reaching this file — or stops containing the clause the goal needs — fails here
+rather than silently degrading some tactic's behaviour elsewhere.
+
+`open FormalSystem.Semantics` is scoped to the section below rather than added at file level: the
+`truth_norm` goal is the only one in this module that needs the semantic layer's names.
+-/
+
+section AttrSimpSetTests
+
+open FormalSystem.Semantics
+
+-- The `truth_norm` set alone reduces the negation clause of `TruthAt`.
+example {D : TemporalOrder} {F : FrameOver D} (M : TaskModel F) (τ : WorldHistory F)
+    (t : ↑D) (a : Formula) : TruthAt M τ t a.neg ↔ ¬ TruthAt M τ t a := by
+  simp only [truth_norm]
+
+-- The `reflect_time_norm` set alone commutes time reflection past negation.
+example (a : Formula) : a.neg.reflectTime = a.reflectTime.neg := by
+  simp only [reflect_time_norm]
+
+end AttrSimpSetTests
+
+/-!
 ## Unfold simp set: statements and reductions
 
 The `#check` rows pin each unfold lemma's name and statement shape, so a renamed or reshaped

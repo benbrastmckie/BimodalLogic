@@ -11,7 +11,8 @@ Tests for proof automation tactics.
 | ProofSearchTest.lean | Proof search tests |
 | ProofSearchBenchmark.lean | Proof search benchmarks |
 | EdgeCaseTest.lean | Edge case coverage |
-| NormalizationTest.lean | Normalization, fold/unfold simp sets, serialization and enumerator counts |
+| NormalizationTest.lean | Normalization, all four `Tactic/Attr.lean` simp sets (`formula_unfold`/`formula_fold` and `truth_norm`/`reflect_time_norm`), serialization and enumerator counts |
+| LemmaDBTest.lean | The `@[tmLemma]` attribute database and `tryLemmaMatch` backward chaining, plus executed `MetaM`/`TermElabM` probes for `Tactic/Meta.lean`'s helpers |
 | DatasetGeneratorTest.lean | Structural pre-filter pins and hybrid labelling smoke tests |
 
 ## Coverage
@@ -21,6 +22,8 @@ Tests for proof automation tactics.
 - modal_search automation
 - Proof search algorithms
 - Edge cases and failure modes
+- The `Tactic/` support layer: all four `Attr.lean` simp sets, and `Meta.lean`'s
+  `MetaM` helpers under executed probes rather than signature pins alone
 
 ## Related
 
@@ -29,4 +32,4 @@ Tests for proof automation tactics.
 
 ---
 
-*Last Updated: 2026-03-16*
+*Last Updated: 2026-11-19*

@@ -220,4 +220,62 @@ example (p : Formula) : ⊢ p.box.imp p := by modal_search
 -- mbDiamond: φ → ◇φ.box  (i.e. modal B via diamond)
 example (p : Formula) : ⊢ p.imp p.diamond.box := by modal_search
 
+/-!
+## Group 6: `FormalSystem/Tactic/Meta.lean`'s `MetaM` helpers
+
+The first coverage of `FormalSystem/Tactic/Meta.lean`. It is covered here rather than in
+`TacticsTest.lean` because this file already runs a metaprogramming probe, and because its own
+header records that such probes were moved out of `TacticsTest.lean` deliberately.
+
+**A `MetaM` helper's failure is a runtime failure of the elaborator, never a compile error**, so
+`#check` alone proves nothing about behaviour: these helpers can be broken while the whole project
+builds clean. Hence the two executed `#eval` blocks below — one positive, one negative — rather
+than signature pins alone.
+
+`buildContextExpr` is the exception, and deliberately so. It is `#check`ed and never applied:
+`FormalSystem/Tactic/Meta.lean`'s `buildContextExpr` calls `mkAppM ``List.nil`` with an explicit
+argument for `List.nil`'s *implicit* type parameter, so it raises `too many explicit arguments
+provided to @List.nil` on every input, including the empty list. A probe that invoked it could not
+pass, and one written to expect the throw would launder the defect as intended behaviour. The
+repair belongs to whoever edits that declaration; nothing here depends on the current shape.
+-/
+
+section MetaHelperProbes
+
+#check @extractDerivationGoal
+#check @formulaHead
+#check @lemmaConclusionHead
+#check @isNilContext
+#check @buildContextExpr
+
+-- Positive probe: elaborate a real `DerivationTree` goal type and check that each helper reads
+-- the component it is supposed to read off it.
+#eval show Elab.Term.TermElabM Unit from do
+  let stx ← `(DerivationTree FrameClass.Base (([] : FormalSystem.Syntax.Context))
+      ((Formula.atomS "p").imp (Formula.atomS "p")))
+  let goalType ← Elab.Term.elabTerm stx none
+  Elab.Term.synthesizeSyntheticMVarsNoPostponing
+  let goalType ← instantiateMVars goalType
+  match ← extractDerivationGoal goalType with
+  | none => throwError "extractDerivationGoal failed to recognise {goalType}"
+  | some (_, ctx, formula) =>
+    unless isNilContext ctx do
+      throwError "isNilContext rejected the literal empty context {ctx}"
+    unless formulaHead formula == some ``Formula.imp do
+      throwError "formulaHead read {formulaHead formula}, expected Formula.imp"
+    let head ← lemmaConclusionHead ``FormalSystem.Theorems.ModalS5.tBoxToDiamond
+    unless head == some ``Formula.imp do
+      throwError "lemmaConclusionHead read {head}, expected Formula.imp"
+
+-- Negative probe: both recognisers must reject a type that is not a derivability goal. A
+-- recogniser that accepted everything would pass the positive probe above.
+#eval show MetaM Unit from do
+  let notAGoal := mkConst ``Nat
+  unless (← extractDerivationGoal notAGoal).isNone do
+    throwError "extractDerivationGoal accepted a non-derivability type"
+  if isNilContext notAGoal then
+    throwError "isNilContext accepted a non-list expression"
+
+end MetaHelperProbes
+
 end BimodalTest.Automation.LemmaDBTest
