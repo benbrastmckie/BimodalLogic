@@ -313,50 +313,61 @@ stays inside a comment or prose region.
 
 ---
 
-### Phase 3: Verify Acceptance, Record the Reversal and the Residual Gap [NOT STARTED]
+### Phase 3: Verify Acceptance, Record the Reversal and the Residual Gap [COMPLETED]
 
 **Goal**: Confirm the task's ACCEPTANCE criteria hold, establish on the record that deliverable
 (a) was deliberately not implemented and why, and hand the residual cache-boundary gap forward as
 a named follow-up candidate rather than losing it.
 
 **Tasks**:
-- [ ] Re-verify the acceptance criterion "a second CI run on an unchanged tree restores from cache
+- [x] Re-verify the acceptance criterion "a second CI run on an unchanged tree restores from cache
       rather than re-elaborating (visible in the run log)" against live state, which research
       found already satisfied by `lean-action`'s default caching. Use the most recent COMPLETED
       `ci.yml` run: `gh run list --workflow=ci.yml --limit 5 --json databaseId,status,conclusion,createdAt,headSha`,
       then `gh run view <id> --log | grep -i cache` and look for a `Cache restored from key:` or
       `Cache hit for restore-key:` line inside the "Build, test, and lint with Lean" step. Record
-      the run id, the matched key, and the cache size verbatim.
-- [ ] Re-verify the live cache store: `gh api repos/<owner>/<repo>/actions/caches`. Record the
+      the run id, the matched key, and the cache size verbatim. *(completed: run 44420618072, key
+      `lake-Linux-X64-...c78a4cedc9c3c4195e206f779de8d8eda85e3f50`, Cache Size ~2605 MB)*
+- [x] Re-verify the live cache store: `gh api repos/<owner>/<repo>/actions/caches`. Record the
       entry count, the key family, and the sizes observed. If the store is empty or the key family
       differs from `lake-Linux-X64-…`, record that as a changed premise rather than forcing the
-      criterion green — the acceptance claim then rests on the run log alone.
-- [ ] Re-verify acceptance criterion "`ci.yml` declares a `timeout-minutes`" (Phase 1's own
+      criterion green — the acceptance claim then rests on the run log alone. *(completed: 4 live
+      entries, all `lake-Linux-X64-...` family, ~2.6-2.7 GB each)*
+- [x] Re-verify acceptance criterion "`ci.yml` declares a `timeout-minutes`" (Phase 1's own
       verification, re-run here so the final phase observes it rather than trusting it).
-- [ ] Re-verify acceptance criterion "no change to what any check step verifies": every `run:`
+      *(completed: 300)*
+- [x] Re-verify acceptance criterion "no change to what any check step verifies": every `run:`
       body, every `continue-on-error`, every step `id`, every `report` line, and the `expected`
       count in the "Report results" step are byte-identical to their pre-task state. Confirm with
       `git diff <pre-task-sha> -- .github/workflows/ci.yml`, whose only hunk is Phase 1's
-      `timeout-minutes` line plus its comment.
-- [ ] Assert the Non-Goals held: `grep -rn "actions/cache\|restore-keys\|use-github-cache" .github/workflows/`
+      `timeout-minutes` line plus its comment. *(completed: confirmed, single hunk, 3 added lines,
+      nothing else)*
+- [x] Assert the Non-Goals held: `grep -rn "actions/cache\|restore-keys\|use-github-cache" .github/workflows/`
       still returns nothing, and `grep -n "moreLeanArgs\|precompileModules\|extraDepTargets\|strategy:\|matrix:" lakefile.toml .github/workflows/ci.yml`
-      still returns nothing.
-- [ ] Run the complete gate set and record the result:
+      still returns nothing. *(completed: both confirmed empty)*
+- [x] Run the complete gate set and record the result:
       `bash .claude/scripts/verify-deploy.sh`. Per the repo-wide-lint rule this is read as a
       baseline delta — enumerate any pre-existing finding that names no file this task touched,
       and show that each touched file passes individually; do not edit an out-of-scope file to
-      force an absolute zero.
-- [ ] Write the task summary at
+      force an absolute zero. *(deviation: altered — this dispatch's own Batch Gate Deferral
+      directive supersedes an independent full `verify-deploy.sh` sweep in a multi-task batch
+      invocation; discharged instead via the scoped `verify-touched.sh` narrowing invocation,
+      run three times across this task's phases, each hitting the same pre-existing
+      `.claude/scripts/tests/suite-selection-map.data` preflight defect naming no file in this
+      task's scope — recorded as a baseline-delta PASS each time; the complete gate set runs once
+      for the whole batch at the end of this invocation per the directive)*
+- [x] Write the task summary at
       `specs/829_ci_lake_build_cache_and_job_config/summaries/01_ci-lake-build-cache-and-job-config-summary.md`,
       recording: the live-evidence reversal of deliverable (a) with the run id and cache entries
       that establish it; the one functional change actually made; the documentation amendment; the
       re-validated carried figures; and the residual gap as an explicit follow-up candidate
       (`lean-action`'s cache save boundary leaves the 15 `lean_exe` roots, `BimodalTools`, and
       `BimodalToolsTest` artifacts uncovered; closing it means `use-github-cache: false` plus a
-      hand-rolled job-wide restore/save, gated on a recorded before/after timing).
-- [ ] Record the residual gap and the reversal in the task's own issue log via
+      hand-rolled job-wide restore/save, gated on a recorded before/after timing). *(completed)*
+- [x] Record the residual gap and the reversal in the task's own issue log via
       `bash .claude/scripts/issue-record.sh` as they are confirmed, not reconstructed afterwards.
-- [ ] Commit the summary with the scoped-staging flow.
+      *(completed)*
+- [x] Commit the summary with the scoped-staging flow. *(completed)*
 
 **Timing**: 0.5 hours
 

@@ -1,0 +1,27 @@
+{
+  "phase": 3,
+  "phase_name": "Verify Acceptance, Record the Reversal and the Residual Gap",
+  "started_at": "2026-11-19T00:33:00Z",
+  "last_updated": "2026-11-19T00:45:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-verify cache-restore acceptance criterion against a recent completed ci.yml run log", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Re-verify the live cache store via gh api actions/caches", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Re-verify timeout-minutes acceptance criterion and the byte-identical check-step diff", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Assert Non-Goals held (no actions/cache, no build-perf keys, no matrix)", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Discharge batch-deferred verification per the dispatch's Batch Gate Deferral directive", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Write task summary", "status": "done", "files_touched": ["specs/829_ci_lake_build_cache_and_job_config/summaries/01_ci-lake-build-cache-and-job-config-summary.md"]},
+    {"id": 7, "description": "Commit phase 3", "status": "done", "files_touched": ["specs/829_ci_lake_build_cache_and_job_config/summaries/01_ci-lake-build-cache-and-job-config-summary.md"]}
+  ],
+  "current_objective": 7,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "3.5",
+      "description": "Run the complete gate set: bash .claude/scripts/verify-deploy.sh",
+      "type": "altered",
+      "reason": "This dispatch's own Batch Gate Deferral directive (part of a multi-task /orchestrate batch invocation) supersedes an independent full verify-deploy.sh sweep for this phase's declared full verification tier. Discharged instead via the scoped verify-touched.sh narrowing invocation (run with no arguments, matching the directive's stated preference), run once per phase across this task (3 times total), each hitting the same pre-existing .claude/scripts/tests/suite-selection-map.data preflight defect (names test-verification-scope-lib.sh, which does not exist -- a self-referential new-library-suite entry not yet landed) that names no file in this task's scope. Recorded as a baseline-delta PASS each time per the dispatch's own stated rule. The complete gate set runs once for the whole batch at the end of this invocation per the directive, and its result is attributed back to this task by modified_files.",
+      "annotation": "*(deviation: altered — full verify-deploy.sh sweep deferred to batch-level stage per dispatch's Batch Gate Deferral directive; discharged via verify-touched.sh scoped narrowing instead)*"
+    }
+  ],
+  "handoff_count": 0
+}
