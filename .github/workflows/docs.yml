@@ -15,27 +15,42 @@ name: API Documentation
 #     publish. The first step checks it and fails fast.
 #   - A `push` event. The action builds the API docs and deploys only on push; a
 #     `workflow_dispatch` run exercises the setup steps but publishes nothing.
-#   - More memory than this job has. THIS JOB DOES NOT CURRENTLY PASS, and the shortfall is the
-#     reason. The doc build runs `lake build` over roughly 6,300 doc targets whose doc-gen4
-#     processes each hold the full Mathlib-plus-`FormalSystem` environment, and a standard
-#     runner cannot hold the concurrent set Lake schedules. The kill surfaces as `error:
-#     resource exhausted (error code: 12, cannot allocate memory)`, and the failure summary
-#     attributes it to whichever `srcUri.github` targets were in flight when memory ran out --
-#     those cheap `git`-subprocess jobs are the symptom, not the cause, and no URI or git
-#     configuration is involved.
+#   - More memory than this job has. The doc build runs `lake build` over roughly 6,300 doc
+#     targets whose doc-gen4 processes each hold the full Mathlib-plus-`FormalSystem`
+#     environment, and a standard runner cannot hold the concurrent set Lake schedules by
+#     default. The kill surfaces as `error: resource exhausted (error code: 12, cannot allocate
+#     memory)`, and the failure summary attributes it to whichever `srcUri.github` targets were
+#     in flight when memory ran out -- those cheap `git`-subprocess jobs are the symptom, not
+#     the cause, and no URI or git configuration is involved. The `docgen` step below caps
+#     concurrency with `LEAN_NUM_THREADS: "1"`; the cap is applied but unverified until a real
+#     pushed run reports a green `API Documentation` deploy.
 #
-#     Measured, so that the next reader does not re-try it: enlarging swap is NOT sufficient.
-#     The swap step below takes this runner from 3 GiB to 15 GiB of swap alongside 15 GiB of
-#     RAM -- the step's own `free -h` output confirms the larger swap is active -- and the
-#     build still dies with 15 of those allocation errors. The step is kept because headroom
-#     is cheap and its `free -h`/`df -h` output on both sides makes any shortfall name itself
-#     in the log, but it is not the fix and must not be read as one.
+#     Measured, so that the next reader does not re-try it: enlarging swap alone is NOT
+#     sufficient. The swap step below takes this runner from 3 GiB to 15 GiB of swap alongside
+#     15 GiB of RAM -- the step's own `free -h` output confirms the larger swap is active -- and
+#     a build without the concurrency cap still dies with 15 of those allocation errors. The
+#     step is kept because headroom is cheap and its `free -h`/`df -h` output on both sides makes
+#     any shortfall name itself in the log.
 #
-#     Capping Lake's concurrency is the obvious lever and is NOT reachable from this file:
-#     Lake 5.0.0 accepts no `-j`/`--jobs` (`lake build -j2` -> `unknown short option '-j'`;
-#     `--jobs=2` -> `unknown long option '--jobs'`), and the doc build's own `lake build` call
-#     lives inside the pinned action's `scripts/build_docs.sh`, not in `build-args` here. A
-#     real fix therefore means a larger runner, a forked or newer action, or fewer doc targets.
+#     Capping Lake's own build flags is NOT reachable from this file: Lake 5.0.0 accepts no
+#     `-j`/`--jobs` (re-verified: `lake build -j2` -> `unknown short option '-j'`; `--jobs=2` ->
+#     `unknown long option '--jobs'`), and the doc build's own `lake build` call lives inside the
+#     pinned action's `scripts/build_docs.sh`, not in `build-args` here. The cap is reachable by
+#     a different route instead: Lean reads its `Task`-pool size from the `LEAN_NUM_THREADS`
+#     environment variable at process start, and `build_docs.sh`'s `lake build` inherits it by
+#     ordinary environment inheritance, so a step-level `env:` entry on `docgen` below caps it
+#     without touching the pinned action's own inputs. Two precedents name this as the
+#     documented remedy for this exact failure mode, not a guess: `leanprover/lean-action`'s own
+#     README, section "Run leanchecker on a project with a Mathlib dependency", prescribes
+#     `LEAN_NUM_THREADS: "1"` for byte-for-byte this OOM; `opencompl/veir`'s production
+#     `docs.yml` sets the same variable on its own doc-gen4 build for this same root cause. Two
+#     other routes were measured closed and must not be re-tried: a larger GitHub-hosted runner
+#     is unavailable to this personal-account repository at any plan tier, and
+#     `docgen-action`'s `action.yml` exposes no job-count input to fork for. The fallback ladder,
+#     if a real run needs further adjustment: raise the value to `"2"` if `"1"` passes but costs
+#     too much build time; if `"1"` still OOMs, the fix is a doc-target reduction, not a higher
+#     thread count, because that outcome would indicate a single doc-gen4 task's own footprint --
+#     not concurrency -- exceeds the runner.
 #
 # The action supplies doc-gen4 itself (a throwaway `docbuild/` package pinned to the doc-gen4
 # tag matching `lean-toolchain`), which is why `lakefile.toml` and `lake-manifest.json` carry no
@@ -140,6 +155,13 @@ jobs:
       - name: Build and deploy doc-gen4 documentation
         id: docgen
         uses: leanprover-community/docgen-action@56023ee2a4b3630c1071825be5bafdb43f540bbd
+        env:
+          # Caps the Lean runtime's Task thread pool (and the Lake build job scheduler that runs
+          # on it) to one at a time, so doc-gen4's per-target processes -- each holding the full
+          # Mathlib-plus-FormalSystem environment -- do not run concurrently on this runner. See
+          # the header comment above for the precedents and the fallback ladder. Step-scoped
+          # deliberately: the "Build the project" step above must keep its default parallelism.
+          LEAN_NUM_THREADS: "1"
         with:
           api-docs: true
           blueprint: false

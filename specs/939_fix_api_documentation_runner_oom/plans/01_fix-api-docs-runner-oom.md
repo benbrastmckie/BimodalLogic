@@ -188,7 +188,7 @@ direction and writing it up as observed.
 
 ---
 
-### Phase 2: Cap doc-gen4 concurrency in `docs.yml` and correct its refuted header claim [NOT STARTED]
+### Phase 2: Cap doc-gen4 concurrency in `docs.yml` and correct its refuted header claim [COMPLETED]
 
 **Goal**: Apply the fix and leave the file's header telling the truth about it. The header
 currently closes with "A real fix therefore means a larger runner, a forked or newer action, or
@@ -197,35 +197,36 @@ third, so leaving that sentence would send the next reader down three paths this
 walked. The phase ends at a local commit with the push named as the user's remaining step.
 
 **Tasks**:
-- [ ] Contingency first: if Phase 1's recorded verdict is **refuted**, make no edit to
+- [x] Contingency first: if Phase 1's recorded verdict is **refuted**, make no edit to
       `docs.yml`. Stop and return `blocked`, citing `probe-results.md`'s figures. An
       **inconclusive** verdict is NOT a blocker — proceed, since the upstream precedent stands on
-      its own and the local probe was corroboration, not the basis.
-- [ ] Add an `env:` block containing `LEAN_NUM_THREADS: "1"` to the step `id: docgen` (the
+      its own and the local probe was corroboration, not the basis. *(completed: Phase 1's
+      verdict is inconclusive, not refuted; proceeded)*
+- [x] Add an `env:` block containing `LEAN_NUM_THREADS: "1"` to the step `id: docgen` (the
       `Build and deploy doc-gen4 documentation` step, currently at
       `.github/workflows/docs.yml:140-148`), as a sibling key of `uses:`/`with:`. **Step scope, not
       job scope**: the `leanprover/lean-action` build step is not OOMing and must keep its default
-      parallelism.
-- [ ] Rewrite the header's closing memory paragraph (currently lines 34-38) to record both halves
+      parallelism. *(completed)*
+- [x] Rewrite the header's closing memory paragraph (currently lines 34-38) to record both halves
       of the finding: Lake 5.0.0 still accepts no `-j`/`--jobs` flag (re-verified this round:
       `lake build -j2` -> `unknown short option '-j'`; `lake build --jobs=2` -> `unknown long
       option '--jobs'`), AND the cap is nonetheless reachable from this file, because Lean reads
       its `Task`-pool size from `LEAN_NUM_THREADS` at process start and `build_docs.sh`'s
-      `lake build` inherits it by ordinary environment inheritance.
-- [ ] In that same block, name the two precedents so the value is not read as a guess:
+      `lake build` inherits it by ordinary environment inheritance. *(completed)*
+- [x] In that same block, name the two precedents so the value is not read as a guess:
       `leanprover/lean-action`'s README section "Run leanchecker on a project with a Mathlib
       dependency", and `opencompl/veir`'s own `docs.yml`, which sets this variable on its doc-gen4
-      build for this same root cause.
-- [ ] In that same block, record the two routes measured closed, so neither is re-tried: larger
+      build for this same root cause. *(completed)*
+- [x] In that same block, record the two routes measured closed, so neither is re-tried: larger
       GitHub-hosted runners are unavailable to a personal-account repository at any plan tier, and
-      `docgen-action` exposes no job-count input anywhere in its `action.yml`.
-- [ ] Record the fallback ladder: `"2"` if `"1"` passes but costs too much build time; a doc-target
+      `docgen-action` exposes no job-count input anywhere in its `action.yml`. *(completed)*
+- [x] Record the fallback ladder: `"2"` if `"1"` passes but costs too much build time; a doc-target
       reduction — **not** a higher thread count — if `"1"` still OOMs, because that outcome would
-      indicate a single task's footprint, not concurrency, exceeds the runner.
-- [ ] Revise the line-18 "THIS JOB DOES NOT CURRENTLY PASS" sentence to state the accurate current
+      indicate a single task's footprint, not concurrency, exceeds the runner. *(completed)*
+- [x] Revise the line-18 "THIS JOB DOES NOT CURRENTLY PASS" sentence to state the accurate current
       position — the cap is applied but unverified until a real pushed run — rather than a flat
-      assertion the next push may immediately falsify.
-- [ ] Anticipated gate collision, stated so it is not discovered mid-commit: staging Phase 1's
+      assertion the next push may immediately falsify. *(completed)*
+- [x] Anticipated gate collision, stated so it is not discovered mid-commit: staging Phase 1's
       `probe.lean` makes the staged set touch a `.lean` path, which fires `.githooks/pre-commit`'s
       count-freshness gate even though a file under `specs/evidence/` moves none of the counts
       `typst/generated/status.typ` carries. That gate was run at plan-authoring time and is clean
@@ -233,11 +234,17 @@ walked. The phase ends at a local commit with the push named as the user's remai
       expected to be a pass, not a no-op. If it nonetheless refuses — a concurrent writer having
       moved the live counts in between — the remedy is `bash scripts/typst-sync-check.sh --fix` with
       `typst/generated/status.typ` staged alongside, never `git commit --no-verify`.
-- [ ] Commit `.github/workflows/docs.yml` together with Phase 1's two evidence files if they are
+      *(completed: re-ran `--counts-only` at implementation time -- `MISMATCH_COUNT=0`, clean --
+      Phase 1's evidence files were already committed in Phase 1's own commit, so this phase's
+      staged set is just `docs.yml`, which does not touch a `.lean` path at all)*
+- [x] Commit `.github/workflows/docs.yml` together with Phase 1's two evidence files if they are
       not already committed, using the repository's commit convention and the session ID. Stage by
-      explicit file list; never `git add -A`/`.`/a directory pathspec.
-- [ ] Do not push and do not open a PR. State in the handoff and summary that the sole remaining
+      explicit file list; never `git add -A`/`.`/a directory pathspec. *(completed: Phase 1's
+      evidence files were already committed in Phase 1's own closing commit; this phase's commit
+      carries only `docs.yml` plus this task's own directory)*
+- [x] Do not push and do not open a PR. State in the handoff and summary that the sole remaining
       verification is a user-invoked push to `main` and a green `API Documentation` run.
+      *(completed)*
 
 **Timing**: 0.75 hours
 
