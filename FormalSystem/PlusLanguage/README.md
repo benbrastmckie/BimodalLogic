@@ -50,6 +50,7 @@ atomization transfer rely on.
 | `PlusValidity.lean` | 316 | `PlusValidOnFrames`, `PlusValidIn`, `PlusValid` and per-class abbreviations — L⁺ mirrors of Validity.lean; `plusTruthAt_ofFormula` and `plusValidIn_ofFormula_iff`, semantic conservativity of L⁺ over L at every frame class |
 | `Subformulas.lean` | 373 | <!-- TODO: add description --> |
 | `Substitution.lean` | 233 | `substPlus`, the interpretation of L in L⁺ at an arbitrary atom assignment, and the substitution transfer `plusDerivable_substPlus`, which makes every TM *schema* available at L⁺ arguments containing `⊡` |
+| `TemporalViews.lean` | 222 | Exact derived temporal views, inclusive U/S, reflection and embedding pins |
 <!-- END GENERATED -->
 
 The sibling aggregator is `FormalSystem/PlusLanguage.lean`. The library root, the repository-root

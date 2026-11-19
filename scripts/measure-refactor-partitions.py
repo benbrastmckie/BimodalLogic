@@ -193,7 +193,7 @@ LANGUAGE_FILE_LAYERS = {
     },
     "PlusLanguage": {
         "Axioms": 0, "Derivation": 0, "Formula": 0, "Substitution": 0,
-        "Subformulas": 0,
+        "Subformulas": 0, "TemporalViews": 0,
         "PlusDeterminism": 1, "PlusIntTransfer": 1, "PlusLimitClosure": 1,
         "PlusLCSchema": 1, "PlusOmegaChain": 1,
         "PlusNonValidities": 1, "PlusPasting": 1,
