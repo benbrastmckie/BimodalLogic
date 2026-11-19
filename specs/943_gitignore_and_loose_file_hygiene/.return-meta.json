@@ -1,0 +1,32 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1795117390_6c8a38_943",
+  "dispatch_seq": 2,
+  "findings_count": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/943_gitignore_and_loose_file_hygiene/reports/01_gitignore-loose-file-hygiene.md",
+      "summary": "Research on the three gitignore/loose-file hygiene gaps: (A) the latex/build/ cruft is already fully covered by an existing generic build/ rule (review premise refuted by git check-ignore evidence, but adding an explicit rule is still worth doing for clarity); (B) /.pid is a confirmed, uncomplicated gap; (C) Challenge.lean is not a stray scratch file but the committed trust-boundary artifact of lean-challenge-snapshot.sh (the Comparator statement-pinning mechanism) -- it must be documented in ORGANISATION.md, not relocated to Boneyard/, which would break the mechanism."
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "BimodalLogic's .gitignore line 3 is a bare, unanchored `build/` rule (intended for Lean's own build/ output per its comment) that also incidentally matches any directory literally named `build` anywhere in the tree, including latex/build/ and latex/subfiles/build/. Before adding a new gitignore rule for 'unignored' cruft, run `git check-ignore -v <path>` first -- a review/finding that assumes a path is unignored can be wrong if an existing generic/unanchored rule already covers it by coincidence.",
+      "category": "PATTERN",
+      "source_artifact": "specs/943_gitignore_and_loose_file_hygiene/reports/01_gitignore-loose-file-hygiene.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["gitignore", "check-ignore", "build-rule", "unanchored-pattern", "BimodalLogic"]
+    },
+    {
+      "content": "BimodalLogic's root-level Challenge.lean is not loose scratch content: it is the git-committed output of `.claude/scripts/lean-challenge-snapshot.sh`, which pins a lean task's intended theorem STATEMENTS (bodies optionally `sorry`) as the trust boundary `lean-comparator-run.sh` checks an untrusted Solution.lean against. The script writes to `<project_root>/Challenge.lean` by design (default module name 'Challenge'), so each new snapshot-running task overwrites the previous working-tree copy -- the old content is never lost because it stays recoverable forever at its own commit SHA (recorded in that task's archived specs/{N}_{slug}/challenge/manifest.json), not in the working tree. Relocating or deleting the root file breaks the mechanism's precondition; the correct treatment when such a file is found undocumented is to document it (e.g. in ORGANISATION.md), never to archive/move it.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/943_gitignore_and_loose_file_hygiene/reports/01_gitignore-loose-file-hygiene.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["Challenge.lean", "lean-challenge-snapshot", "Comparator", "trust-boundary", "BimodalLogic", "manifest.json"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 943 to create implementation plan"
+}

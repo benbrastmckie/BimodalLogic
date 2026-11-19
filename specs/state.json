@@ -1409,7 +1409,7 @@
     {
       "project_number": 943,
       "project_name": "gitignore_and_loose_file_hygiene",
-      "status": "researching",
+      "status": "researched",
       "task_type": "general",
       "topic": "repo-hygiene",
       "priority": "low",
@@ -1447,8 +1447,16 @@
         },
         "degradations_count": 445
       },
-      "last_updated": "2026-11-19T19:43:39Z",
-      "session_id": "sess_1795117390_6c8a38_943"
+      "last_updated": "2026-11-19T19:49:23Z",
+      "session_id": "sess_1795117390_6c8a38",
+      "artifacts": [
+        {
+          "path": "specs/943_gitignore_and_loose_file_hygiene/reports/01_gitignore-loose-file-hygiene.md",
+          "type": "report",
+          "summary": "Research on the three gitignore/loose-file hygiene gaps: (A) the latex/build/ cruft is already fully covered by an existing generic build/ rule (review premise refuted by git check-ignore evidence, but adding an explicit rule is still worth doing for clarity); (B) /.pid is a confirmed, uncomplicated gap; (C) Challenge.lean is not a stray scratch file but the committed trust-boundary artifact of lean-challenge-snapshot.sh (the Comparator statement-pinning mechanism) -- it must be documented in ORGANISATION.md, not relocated to Boneyard/, which would break the mechanism."
+        }
+      ],
+      "next_artifact_number": 2
     }
   ],
   "artifacts": [

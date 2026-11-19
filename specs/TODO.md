@@ -89,7 +89,7 @@ next_project_number: 944
 ### Repo Hygiene
 
 941 [RESEARCHED] — Add a local aggregator that mirrors ci.yml's check gate, so a...
-943 [RESEARCHING] — Close three small gitignore and loose-file hygiene gaps at...
+943 [RESEARCHED] — Close three small gitignore and loose-file hygiene gaps at...
 
 ### Semantics
 
@@ -105,10 +105,11 @@ next_project_number: 944
 ## Tasks
 
 ### 943. Gitignore and loose file hygiene
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
+- **Research**: [943_gitignore_and_loose_file_hygiene/reports/01_gitignore-loose-file-hygiene.md]
 
 **Description**: Close three small gitignore and loose-file hygiene gaps at the repository root.
 
