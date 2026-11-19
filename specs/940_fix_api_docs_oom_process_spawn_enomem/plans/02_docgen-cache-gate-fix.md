@@ -1,7 +1,7 @@
 # Implementation Plan: Task #940
 
 - **Task**: 940 - Fix the API Documentation runner OOM: the LEAN_NUM_THREADS route is refuted by a pushed run, and the failure is a process-spawn ENOMEM, not heap exhaustion.
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/940_fix_api_docs_oom_process_spawn_enomem/reports/01_process_spawn_enomem_cache_gate.md

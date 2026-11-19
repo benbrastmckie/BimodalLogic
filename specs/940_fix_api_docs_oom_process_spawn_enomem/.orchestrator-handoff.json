@@ -1,15 +1,15 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phases_completed": 5,
   "phases_total": 5,
-  "summary": "Wrote a five-phase implementation plan confined to .github/workflows/docs.yml. The research report's cache-gate finding (docgen-action's internal actions/cache never saves because its post action is gated post-if: success()) is adopted as the primary fix, sequenced after the dispatch-required in-run memory instrumentation and the removal of the refuted LEAN_NUM_THREADS entry, then a header-comment rewrite and a full-gate local commit. Two research claims were corrected during planning: the report's generic cache-path derivation rule does not reproduce the live log's list, and the cache key proved locally reproducible, which converts the fix's largest risk into a pre-push check. The plan forbids any objective-met claim before a green pushed run and states the two-run convergence expectation explicitly.",
+  "summary": "Implemented all five phases of the docgen-cache-gate-fix plan in .github/workflows/docs.yml: added pre/post-docgen memory and overcommit instrumentation, removed the measured-refuted LEAN_NUM_THREADS entry, added an if-always actions/cache/save step breaking docgen-action's internal post-if:\"success()\" cache gate, and rewrote the header comment to state measured reality. Each phase landed as its own verified-green commit (bfe22eb21, 8a1b4a16e, 031f77805, 2d7f2497f, b6254ec47); the full gate set (verify-deploy.sh) ran green with 12 checks and 0 failures. The objective itself is NOT proven -- only a real pushed CI run can confirm the fix, and that push is the user's remaining step per pr-prohibition.md.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/940_fix_api_docs_oom_process_spawn_enomem/plans/02_docgen-cache-gate-fix.md",
-      "summary": "Five-phase plan: memory instrumentation, LEAN_NUM_THREADS removal, if-always cache-save step, header-comment rewrite, full-gate local commit."
+      "type": "summary",
+      "path": "specs/940_fix_api_docs_oom_process_spawn_enomem/summaries/02_docgen-cache-gate-fix-summary.md",
+      "summary": "Implementation summary covering all five phases, verification state, and the two-run convergence expectation for the user's pending push."
     }
-  ],
-  "dispatch_seq": 2
+  ]
 }

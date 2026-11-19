@@ -1,10 +1,94 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/940_fix_api_docs_oom_process_spawn_enomem/summaries/02_docgen-cache-gate-fix-summary.md",
+      "summary": "All five plan phases completed and committed: memory/overcommit instrumentation added, the refuted LEAN_NUM_THREADS entry removed, an if-always actions/cache/save step added to break docgen-action's post-if success() cache gate, and the header comment rewritten to state measured reality. Full gate set green locally; objective explicitly NOT yet proven -- a real pushed run (two consecutive runs) is the only verification and is named as the user's remaining step."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Implemented all five phases of the docgen-cache-gate-fix plan in .github/workflows/docs.yml: added pre/post-docgen memory and overcommit instrumentation, removed the measured-refuted LEAN_NUM_THREADS env entry, added an if-always actions/cache/save step that breaks docgen-action's internal post-if:\"success()\" cache gate, and rewrote the header comment to state measured reality. Each phase landed as its own verified-green commit; the full gate set (verify-deploy.sh) ran green. The objective itself remains unproven until a real pushed CI run succeeds -- that push is the user's remaining step, per pr-prohibition.md."
+  },
+  "modified_files": [
+    ".github/workflows/docs.yml"
+  ],
+  "memory_candidates": [
+    {
+      "content": "GitHub Actions' hashFiles(glob1, glob2, ...) function is NOT reproducible by concatenating the matched files' sha256 HEX-STRING digests and re-hashing -- that produces a different value. The correct reproduction concatenates the RAW DIGEST BYTES (hashlib's .digest(), not .hexdigest()) of each matched file's sha256, in path-sorted order, then sha256's that byte concatenation. Confirmed by reproducing a real GitHub Actions run's logged cache key exactly (a123379d6db94f6a6c99fecd852af470f05772553661bc654a4c62dbce0f7b9d) only after switching from hex-string to raw-bytes concatenation -- a hex-string attempt first produced a different, non-matching key. Useful whenever a cache key, or any other hashFiles()-derived value, needs to be verified offline before a push.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/940_fix_api_docs_oom_process_spawn_enomem/summaries/02_docgen-cache-gate-fix-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "github-actions",
+        "hashFiles",
+        "cache-key",
+        "sha256",
+        "actions-cache"
+      ]
+    }
+  ],
+  "sapience_notes": [
+    {
+      "subject": "BimodalLogic docs.yml process-spawn ENOMEM",
+      "predicate": "root cause is",
+      "value": "The GitHub Actions doc-gen4 build failure 'error: resource exhausted (error code: 12, cannot allocate memory)' is Lake failing to SPAWN a doc-gen4 child process (fork/exec ENOMEM), distinguishable from in-process Lean heap exhaustion by the 'failed to execute .../doc-gen4' prefix on the error. The governing quantity is therefore Lake's external-process fan-out (one doc-gen4 binary per module, ~6,300 targets), not Lean's in-process Task thread pool -- which is why LEAN_NUM_THREADS was the wrong lever and a real pushed run refuted it (48 allocation errors vs 13-15 on earlier runs, with no memory benefit).",
+      "ko_type": "finding",
+      "confidence": 0.9,
+      "source_loc": "specs/940_fix_api_docs_oom_process_spawn_enomem/summaries/02_docgen-cache-gate-fix-summary.md"
+    },
+    {
+      "subject": "actions/cache inside a composite GitHub Action",
+      "predicate": "has the constraint",
+      "value": "actions/cache's save (post) action is declared post-if: \"success()\". A composite action (like leanprover-community/docgen-action) that wraps actions/cache internally will never populate its cache if the wrapping job always fails before reaching success -- confirmed via outcome=skipped;conclusion=skipped on the post-action in a real run log. This creates a self-reinforcing cold-build loop: every run re-does the same expensive work because the cache that would make it cheaper never saves. The fix is additive, not a fork: add a second actions/cache/save step in the caller's own workflow, gated if: always(), replicating the wrapped action's key and path list.",
+      "ko_type": "finding",
+      "confidence": 0.9,
+      "source_loc": "specs/940_fix_api_docs_oom_process_spawn_enomem/summaries/02_docgen-cache-gate-fix-summary.md"
+    },
+    {
+      "subject": "GitHub Actions hashFiles() reproduction",
+      "predicate": "measured fact is",
+      "value": "hashFiles(a, b, ...) computes sha256 over the path-sorted concatenation of each matched file's sha256 DIGEST in raw byte form, not its hex-string representation. Concatenating hex strings and re-hashing produces a different, wrong value. Verified by reproducing a real run's logged cache key exactly only after switching to raw-bytes concatenation.",
+      "ko_type": "fact",
+      "confidence": 0.95,
+      "source_loc": "specs/940_fix_api_docs_oom_process_spawn_enomem/summaries/02_docgen-cache-gate-fix-summary.md"
+    },
+    {
+      "subject": "LEAN_NUM_THREADS as a fix for GitHub Actions doc-gen4 OOM",
+      "predicate": "correction is",
+      "value": "Setting LEAN_NUM_THREADS on the docgen step, following leanprover/lean-action's README and opencompl/veir's docs.yml precedent, is REFUTED for a process-spawn ENOMEM failure mode. A real pushed run with the variable confirmed applied produced MORE allocation errors (48) than two prior runs without it (13 and 15), and increased docgen wall-clock from 8-10 minutes to 13m20s, with no memory benefit. The variable caps Lean's in-process Task thread pool, which is the wrong quantity when the failure is Lake's external-process fan-out (one doc-gen4 binary spawned per module) rather than in-process heap pressure. Do not re-apply this precedent without first distinguishing the two failure modes from the log's own error text.",
+      "ko_type": "correction",
+      "confidence": 0.9,
+      "source_loc": "specs/940_fix_api_docs_oom_process_spawn_enomem/summaries/02_docgen-cache-gate-fix-summary.md"
+    },
+    {
+      "subject": "GitHub-hosted runner sizing for a personal-account repository",
+      "predicate": "constraint is",
+      "value": "Larger GitHub-hosted runners are documented as organization/enterprise-plan-only, independent of whether the repository itself is public. A personal account on GitHub's free plan cannot request a larger runner for a public repository's workflow, even though public-repo Actions minutes themselves are free.",
+      "ko_type": "fact",
+      "confidence": 0.85,
+      "source_loc": "specs/940_fix_api_docs_oom_process_spawn_enomem/summaries/02_docgen-cache-gate-fix-summary.md"
+    },
+    {
+      "subject": "Lake 5.0.0 job-count CLI flags",
+      "predicate": "measured fact is",
+      "value": "Lake 5.0.0 (the build tool bundled with this Lean 4 toolchain) accepts no job-count flag at all: `lake build -j2` fails with 'unknown short option -j', and `lake build --jobs=2` fails with 'unknown long option --jobs', both in the global position before the subcommand. There is no supported way to cap Lake's own build concurrency via a CLI flag on this version.",
+      "ko_type": "fact",
+      "confidence": 0.85,
+      "source_loc": "specs/940_fix_api_docs_oom_process_spawn_enomem/summaries/02_docgen-cache-gate-fix-summary.md"
+    }
+  ],
   "metadata": {
     "session_id": "sess_1795104359_90df3a",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
+    "phases_completed": 5,
+    "phases_total": 5
   }
 }
