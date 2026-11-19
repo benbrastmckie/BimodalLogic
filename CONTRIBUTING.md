@@ -43,7 +43,8 @@ bash scripts/install-git-hooks.sh
 # Reproduce CI's nine-check gate locally before pushing (requires the lake build/
 # lake test above to have already succeeded; see scripts/verify-all.sh's own header).
 # It is not wired into the pre-commit hook above because it contains several slow,
-# lake-dependent steps -- run it by hand before pushing instead.
+# lake-dependent steps -- run it by hand before pushing instead. A full run takes
+# over 10 minutes of wall time.
 bash scripts/verify-all.sh
 ```
 
