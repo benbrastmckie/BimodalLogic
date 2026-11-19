@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 3,
+  "summary": "Wrote a 3-phase plan (1.25h) applying task 927's verbatim final-frame amendment text to the archived 901 paper-proof report. Plan-time re-validation confirmed every carried figure except one: the research report's seven-anchor closure claim mis-states its own site list, and line 910 (section 15.3's 'The two missing pieces, named.' paragraph) is an eighth anchor the dispatch and task 927's Finding (3) both direct to be replaced, so the plan carries eight anchors and records the divergence as Decision 1. Phases split drift-only citation fixes (prose tier) from claim-changing replacements (prose tier) from a closure/invariant verification phase (full tier). Two issues were recorded as they arose: the deployed verify-touched.sh aborting on a stale suite map, and the research report's falsified closure site list.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/931_apply_901_final_frame_amendments/plans/01_apply-final-frame-amendments.md",
+      "summary": "Three-phase, 1.25-hour plan applying eight verbatim record corrections to the 901 paper-proof report's stale final-frame surfaces, with the refusal sentence preserved and the two must-not-touch surfaces mechanically guarded."
+    }
+  ],
+  "dispatch_seq": 2
+}
