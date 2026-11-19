@@ -1,0 +1,15 @@
+{
+  "phase": 1,
+  "phase_name": "timeout-minutes Parity on ci.yml's Build Job",
+  "started_at": "2026-11-19T00:12:56Z",
+  "last_updated": "2026-11-19T00:20:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-read ci.yml build job keys live before editing", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Add timeout-minutes: 300 plus provenance comment to build job", "status": "done", "files_touched": [".github/workflows/ci.yml"]},
+    {"id": 3, "description": "Verify parse, diff, and scoped verification; record baseline-delta tooling finding", "status": "done", "files_touched": [".github/workflows/ci.yml"]}
+  ],
+  "current_objective": 3,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}

@@ -17,6 +17,9 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+    # Parity with docs.yml's `docs` job, which sets the same 300 on the same runner class
+    # for a superset of work (build plus docgen).
+    timeout-minutes: 300
 
     steps:
       - name: Checkout repository

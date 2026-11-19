@@ -1,7 +1,7 @@
 # Implementation Plan: Task #829
 
 - **Task**: 829 - Ci lake build cache and job config
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/829_ci_lake_build_cache_and_job_config/reports/01_ci-lake-build-cache-and-job-config.md
@@ -152,31 +152,31 @@ judges the expansion unwarranted may drop Phase 2's documentation task and close
 Phases within the same wave can execute in parallel. Phases 1 and 2 touch disjoint files and
 have no ordering constraint between them.
 
-### Phase 1: `timeout-minutes` Parity on `ci.yml`'s Build Job [NOT STARTED]
+### Phase 1: `timeout-minutes` Parity on `ci.yml`'s Build Job [COMPLETED]
 
 **Goal**: `ci.yml`'s `build` job declares `timeout-minutes: 300`, matching `docs.yml:57`, so it no
 longer inherits GitHub's 360-minute default. This is the task's deliverable (b) and the only
 functional change in the plan.
 
 **Tasks**:
-- [ ] Re-read `.github/workflows/ci.yml` immediately before editing (sibling task 938 may have
+- [x] Re-read `.github/workflows/ci.yml` immediately before editing (sibling task 938 may have
       touched it), and re-confirm the `build` job still lacks `timeout-minutes`:
       `python3 -c "import yaml; print(sorted(yaml.safe_load(open('.github/workflows/ci.yml'))['jobs']['build'].keys()))"`
-      — expected before the edit: `['name', 'runs-on', 'steps']`.
-- [ ] Add `timeout-minutes: 300` to the `build` job, as a sibling key of `runs-on` (currently
+      — expected before the edit: `['name', 'runs-on', 'steps']`. *(completed: confirmed, no sibling drift)*
+- [x] Add `timeout-minutes: 300` to the `build` job, as a sibling key of `runs-on` (currently
       `.github/workflows/ci.yml:19`), placed between `runs-on` and the blank line preceding
-      `steps:` so the job header reads `name` / `runs-on` / `timeout-minutes`.
-- [ ] Add a one-line comment above it recording where the value comes from: parity with
+      `steps:` so the job header reads `name` / `runs-on` / `timeout-minutes`. *(completed)*
+- [x] Add a one-line comment above it recording where the value comes from: parity with
       `docs.yml`'s `docs` job, which sets the same 300 on the same runner class for a superset of
-      work. Cite `docs.yml` by filename and job name, not by line number.
-- [ ] Confirm the file still parses and the key is now present with the intended value:
+      work. Cite `docs.yml` by filename and job name, not by line number. *(completed)*
+- [x] Confirm the file still parses and the key is now present with the intended value:
       `python3 -c "import yaml; d=yaml.safe_load(open('.github/workflows/ci.yml'))['jobs']['build']; print(sorted(d.keys()), d['timeout-minutes'])"`
-      — expected `['name', 'runs-on', 'steps', 'timeout-minutes'] 300`.
-- [ ] Confirm no other job key changed and no step was disturbed:
+      — expected `['name', 'runs-on', 'steps', 'timeout-minutes'] 300`. *(completed: matches)*
+- [x] Confirm no other job key changed and no step was disturbed:
       `git diff -- .github/workflows/ci.yml` shows exactly the added `timeout-minutes` line plus
-      its comment line, and nothing else.
-- [ ] Commit this phase's single file with the scoped-staging flow
-      (`git status --short`, `git diff --staged` review, explicit single-path `git add --`).
+      its comment line, and nothing else. *(completed: diff is exactly 3 added lines — timeout-minutes plus a 2-line comment)*
+- [x] Commit this phase's single file with the scoped-staging flow
+      (`git status --short`, `git diff --staged` review, explicit single-path `git add --`). *(completed)*
 
 **Timing**: 0.3 hours
 

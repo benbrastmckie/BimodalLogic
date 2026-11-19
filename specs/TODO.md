@@ -86,7 +86,7 @@ next_project_number: 939
 ### Repo Hygiene
 
 937 [RESEARCHING] — Fix the two independently red CI workflows on main. Both were...
-938 [PLANNED] — Convert the repository's measured-but-unenforced health...
+938 [IMPLEMENTING] — Convert the repository's measured-but-unenforced health...
 
 ### Semantics
 
@@ -99,7 +99,7 @@ next_project_number: 939
 
 ### Build Performance
 
-829 [PLANNED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
+829 [IMPLEMENTING] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ### Syntax
 
@@ -110,7 +110,7 @@ next_project_number: 939
 ## Tasks
 
 ### 938. Enforceable repo health baselines
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -510,7 +510,7 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, Medium Priority Issues section
 ---
 
 ### 829. Ci lake build cache and job config
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: build-performance
 - **Dependencies**: None

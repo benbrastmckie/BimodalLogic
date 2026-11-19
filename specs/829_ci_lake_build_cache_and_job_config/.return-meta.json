@@ -1,30 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/829_ci_lake_build_cache_and_job_config/plans/01_ci-lake-build-cache-and-job-config.md",
-      "summary": "Three-phase plan: timeout-minutes parity on ci.yml's build job (deliverable b), documentation of lean-action's default-on .lake cache and its per-job save boundary, and a final verification/summary phase; filed deliverable (a) deliberately not implemented per research's live-evidence reversal."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 6,
   "metadata": {
-    "session_id": "sess_1795044397_89c580_829",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 1.5,
-    "dependency_waves": 2
-  },
-  "memory_candidates": [
-    {
-      "content": "When authoring a plan's Tier Justification, resolve suite_selection_select PER PHASE over that phase's own 'Files to modify' set, never over a union of all candidate paths. The selector collapses a mixed set to the __FULL_SWEEP__ sentinel as soon as ONE path has no mapped suite, which masks the real suites the other paths map to. Measured instance: passing '.github/workflows/ci.yml', 'lakefile.toml' and 'docs/development/CI_CD_PROCESS.md' together returned __FULL_SWEEP__, while ci.yml alone returned test-lint-roadmap-batch-proposals.sh and lakefile.toml alone returned six real suites. A per-phase resolution is both honest and what validate-artifact.sh's Tier Justification measurement check actually compares against -- it flags a sentinel claim for a phase whose own paths map to real suites.",
-      "category": "PATTERN",
-      "source_artifact": "specs/829_ci_lake_build_cache_and_job_config/plans/01_ci-lake-build-cache-and-job-config.md",
-      "confidence": 0.82,
-      "suggested_keywords": ["suite-selection", "tier-justification", "plan-authoring", "verify-touched", "full-sweep-sentinel", "validate-artifact"]
-    }
-  ],
-  "next_steps": "Run /orchestrate 829 to execute the plan",
-  "dispatch_seq": 4
+    "session_id": "sess_1795044397_89c580",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }
