@@ -19,6 +19,7 @@ the deliverable-hygiene bar this task holds green.
 | `check-paper-definitions.sh` | Detects drift between the JPL paper's semantic definitions and the pinned record at `docs/reference/paper-definitions-of-record.md`. |
 | `CheckInitImportsMain.lean` | Lean entry point (near-verbatim port of CSLib's `CheckInitImports.lean`) that asserts every file imports its own directory's `Init`/root module before any sibling. |
 | `warning-budget.py` | Build-free compiler-warning ratchet: measures the all-target warning surface from Lake's trace store and compares it against the committed baseline (closes the gap C16's declaration-only linting leaves open). |
+| `c16_roots_baseline.py` | Per-root `env_linter` ceiling for C16's second half: parses a sweep's `lake exe runLinter <root>` logs into `(root, module, linter)` counts, `--update` writes the committed baseline, and the default compare mode is the gate `check-module-invariants.sh` calls. A root named in `c16-roots-unmeasurable.txt` is excused, loudly, from the anti-silence exit-2 guard when its own build or lint cannot be measured. |
 
 ## Dataset and benchmark utilities
 

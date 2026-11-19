@@ -1,0 +1,31 @@
+{
+  "phase": 3,
+  "phase_name": "Measure the C16 root sweep and generate its pinned baseline",
+  "started_at": "2026-11-19T01:40:00Z",
+  "last_updated": "2026-11-19T02:40:00Z",
+  "objectives": [
+    {"id": 1, "description": "Enumerate the roots from lake_targets.py exe-roots/lib-roots minus FormalSystem", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Run the sweep (lake build + lake exe runLinter per root, via lake-build-guard.sh, bounded background wait)", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Record measured totals vs carried 231/16-of-18 figure", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Write scripts/c16_roots_baseline.py (parser, --update, compare mode, exit-2 untrusted arm)", "status": "done", "files_touched": ["scripts/c16_roots_baseline.py"]},
+    {"id": 5, "description": "Disposition-row discipline per linter class", "status": "done", "files_touched": ["scripts/c16_roots_baseline.py"]},
+    {"id": 6, "description": "Generate scripts/c16-roots-baseline.txt via --update", "status": "done", "files_touched": ["scripts/c16-roots-baseline.txt"]},
+    {"id": 7, "description": "Confirm generator idempotent; compare mode exits 0", "status": "done", "files_touched": []},
+    {"id": 8, "description": "Add scripts/README.md row for the generator", "status": "done", "files_touched": ["scripts/README.md"]},
+    {"id": 9, "description": "Commit scripts/c16_roots_baseline.py, scripts/c16-roots-baseline.txt, scripts/README.md", "status": "in_progress", "files_touched": []}
+  ],
+  "current_objective": 9,
+  "approaches_tried": [
+    {"approach": "Measure BimodalToolsTest's env_linter findings the same as every other root", "result": "failed", "reason": "lake exe runLinter BimodalToolsTest crashes with an uncaught exception because Tests/BimodalToolsTest/CertificateImportTest.lean fails to build (ambiguous 'closureList' term, a pre-existing defect already filed and owned outside this task). Resolved by adding scripts/c16-roots-unmeasurable.txt, an explicit, loud per-run excuse mechanism on the scripts/module-invariants-manifest.txt (C6) precedent, rather than silently treating the crash as zero findings."}
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "3.9",
+      "description": "Commit only scripts/c16_roots_baseline.py, scripts/c16-roots-baseline.txt and scripts/README.md.",
+      "type": "altered",
+      "reason": "A fourth file, scripts/c16-roots-unmeasurable.txt, was added and is committed alongside the three named -- required for the generator's own anti-silence guard to ever succeed, since BimodalToolsTest's build is broken for a reason outside this task's scope.",
+      "annotation": "*(deviation: altered -- a fourth file, scripts/c16-roots-unmeasurable.txt, is committed...)*"
+    }
+  ]
+}

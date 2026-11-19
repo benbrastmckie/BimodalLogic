@@ -338,7 +338,7 @@ cheaper check reaches the edited heredoc.
 
 ---
 
-### Phase 3: Measure the C16 root sweep and generate its pinned baseline [NOT STARTED]
+### Phase 3: Measure the C16 root sweep and generate its pinned baseline [COMPLETED]
 
 **Goal**: a committed per-root baseline for the env_linter findings across every non-`FormalSystem`
 lakefile root, generated from a real sweep, plus a generator/checker script that owns both the
@@ -346,38 +346,51 @@ parse and the comparison.
 
 **Tasks**:
 
-- [ ] Enumerate the roots from the single existing scrape site:
+- [x] Enumerate the roots from the single existing scrape site:
       `python3 scripts/lake_targets.py exe-roots` and `... lib-roots`, minus `FormalSystem`.
-      Record the count. Do not hand-write the list anywhere.
-- [ ] Run the sweep: for each root, `lake build <root>` then `lake exe runLinter <root>`, keeping
+      Record the count. Do not hand-write the list anywhere. *(completed)*
+- [x] Run the sweep: for each root, `lake build <root>` then `lake exe runLinter <root>`, keeping
       each root's raw log on disk under the session scratchpad so the parse can be re-run without
       re-sweeping. Route every `lake` invocation through
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- ...`; run the whole sweep
       as a detached shell-level background job with a hard `timeout` and block on it with the
       bounded single-call waiter idiom (`context/patterns/bounded-build-waiter.md`) — never
-      `Bash(run_in_background: true)`, never an unbounded foreground call.
-- [ ] Record the measured per-root totals and the dirty-root count, and compare them against the
+      `Bash(run_in_background: true)`, never an unbounded foreground call. *(completed)*
+- [x] Record the measured per-root totals and the dirty-root count, and compare them against the
       231/16-of-18 figure this plan carries unverified. State the result explicitly either way,
-      including when it confirms the carried figure unchanged.
-- [ ] Write `scripts/c16_roots_baseline.py` on the `scripts/warning-budget.py` model: it parses
+      including when it confirms the carried figure unchanged. *(completed: the 231 TOTAL is
+      confirmed exactly, but the denominator is 15 of 17 MEASURABLE roots, not 16 of 18 --
+      `BimodalToolsTest`'s build is broken by a pre-existing "Ambiguous term closureList" error
+      independent of env_linter and already filed and owned elsewhere, not by this record. The
+      prior unwidened mechanism's "16 dirty" figure counted `BimodalToolsTest` as dirty-but-zero
+      only because its crash log happened not to match a `grep -c 'error: '` fallback pattern --
+      a silent miscount this phase's own parser refuses to repeat, excusing that one root
+      loudly via `scripts/c16-roots-unmeasurable.txt` instead of silently reporting it as a
+      measured zero. See Deviations below.)*
+- [x] Write `scripts/c16_roots_baseline.py` on the `scripts/warning-budget.py` model: it parses
       the per-root logs, emits rows `<count> <root> <module> <linter>`, and supports `--update`
       (rewrite the baseline) and a default compare mode (exit 0 when no row exceeds its baseline,
       exit 1 when one does, exit 2 when the measurement itself could not be trusted — a log it
       cannot parse, or a root whose log is missing). The exit-2 arm matters: a measurement that
-      silently degrades to "no findings" would bless a regression.
-- [ ] Follow `warning-budget.txt`'s disposition-row discipline: every linter class observed in the
+      silently degrades to "no findings" would bless a regression. *(completed)*
+- [x] Follow `warning-budget.txt`'s disposition-row discipline: every linter class observed in the
       sweep gets a row in the baseline header recording its disposition, and a class with no row
       is exit 2 rather than a silent pass. This is what stops a future linter class being absorbed
-      into the baseline by a routine `--update` with nobody reading it.
-- [ ] Generate `scripts/c16-roots-baseline.txt` via `--update`, with a header stating: the counts
+      into the baseline by a routine `--update` with nobody reading it. *(completed)*
+- [x] Generate `scripts/c16-roots-baseline.txt` via `--update`, with a header stating: the counts
       are a CEILING and may only decrease; a module reachable from two roots is counted once per
       root, which is why the root is part of the key; never regenerate to make a regression
-      disappear.
-- [ ] Confirm the generator is idempotent: a second `--update` over the same logs changes no byte,
-      and the default compare mode exits 0 against the freshly generated baseline.
-- [ ] Add a `scripts/README.md` row for the new generator script.
-- [ ] Commit only `scripts/c16_roots_baseline.py`, `scripts/c16-roots-baseline.txt` and
-      `scripts/README.md`.
+      disappear. *(completed)*
+- [x] Confirm the generator is idempotent: a second `--update` over the same logs changes no byte,
+      and the default compare mode exits 0 against the freshly generated baseline. *(completed)*
+- [x] Add a `scripts/README.md` row for the new generator script. *(completed)*
+- [x] Commit only `scripts/c16_roots_baseline.py`, `scripts/c16-roots-baseline.txt` and
+      `scripts/README.md`. *(deviation: altered — a fourth file,
+      `scripts/c16-roots-unmeasurable.txt`, is committed alongside the three named here. It is
+      the `scripts/module-invariants-manifest.txt` (C6) precedent applied to a root whose BUILD,
+      not its linting, cannot be measured right now — see the annotation on the measurement task
+      above. Without it the generator's own anti-silence guard would never let `--update` or the
+      compare-mode gate succeed at all, for a reason outside this record's scope to fix.)*
 
 **Timing**: 2 hours
 
