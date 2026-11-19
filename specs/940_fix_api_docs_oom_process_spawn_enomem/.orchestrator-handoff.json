@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 5,
+  "summary": "Wrote a five-phase implementation plan confined to .github/workflows/docs.yml. The research report's cache-gate finding (docgen-action's internal actions/cache never saves because its post action is gated post-if: success()) is adopted as the primary fix, sequenced after the dispatch-required in-run memory instrumentation and the removal of the refuted LEAN_NUM_THREADS entry, then a header-comment rewrite and a full-gate local commit. Two research claims were corrected during planning: the report's generic cache-path derivation rule does not reproduce the live log's list, and the cache key proved locally reproducible, which converts the fix's largest risk into a pre-push check. The plan forbids any objective-met claim before a green pushed run and states the two-run convergence expectation explicitly.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/940_fix_api_docs_oom_process_spawn_enomem/plans/02_docgen-cache-gate-fix.md",
+      "summary": "Five-phase plan: memory instrumentation, LEAN_NUM_THREADS removal, if-always cache-save step, header-comment rewrite, full-gate local commit."
+    }
+  ],
+  "dispatch_seq": 2
+}

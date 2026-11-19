@@ -85,7 +85,7 @@ next_project_number: 941
 
 ### Repo Hygiene
 
-940 [RESEARCHED] — Fix the API Documentation runner OOM: the LEAN\_NUM\_THREADS...
+940 [PLANNED] — Fix the API Documentation runner OOM: the LEAN\_NUM\_THREADS...
 
 ### Semantics
 
@@ -105,11 +105,12 @@ next_project_number: 941
 ## Tasks
 
 ### 940. Fix api docs oom process spawn enomem
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [940_fix_api_docs_oom_process_spawn_enomem/reports/01_process_spawn_enomem_cache_gate.md]
+- **Plan**: [940_fix_api_docs_oom_process_spawn_enomem/plans/02_docgen-cache-gate-fix.md]
 
 **Description**: Fix the API Documentation runner OOM: the LEAN_NUM_THREADS route is refuted by a pushed run, and the failure is a process-spawn ENOMEM, not heap exhaustion.
 

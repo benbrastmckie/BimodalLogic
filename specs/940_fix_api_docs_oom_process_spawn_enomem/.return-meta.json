@@ -1,40 +1,29 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "session_id": "sess_1795104359_90df3a_940",
-  "task_number": 940,
-  "dispatch_seq": 1,
-  "findings_count": 6,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/940_fix_api_docs_oom_process_spawn_enomem/reports/01_process_spawn_enomem_cache_gate.md",
-      "summary": "Finds, via gh run view --log on all 3 failing runs, that docgen-action's own internal 'Cache Mathlib docs' actions/cache step has never saved (post-if: success() gate; the job always fails), forcing every run to cold-build the full ~6,300-target Mathlib+dependency docInfo fan-out instead of restoring it -- the dominant driver of the process-spawn ENOMEM, and a self-reinforcing loop independent of LEAN_NUM_THREADS or swap size. Recommends an additive if: always() actions/cache/save step in docs.yml (no fork needed, same key/path docgen-action already computes) as the primary fix; explicit removal of the refuted-and-harmful LEAN_NUM_THREADS env var; a version-verified linglib-precedent doc-gen4-CLI-bypass (find | xargs -P N calling doc-gen4 single/fromDb directly) as a documented fallback if the cache fix alone is insufficient; and vm.overcommit_memory sysctl tuning plus /proc/meminfo instrumentation as a cheap secondary layer. Flags that verification needs two pushed runs (first repopulates the cache, second proves the fan-out shrank), not one."
+      "type": "plan",
+      "path": "specs/940_fix_api_docs_oom_process_spawn_enomem/plans/02_docgen-cache-gate-fix.md",
+      "summary": "Five-phase, single-file plan for .github/workflows/docs.yml: in-run memory instrumentation first, removal of the refuted LEAN_NUM_THREADS entry, an if-always actions/cache/save step that breaks docgen-action's post-if success cache gate, a header-comment rewrite to measured reality, and a full-gate local commit with the push named as the user's step."
     }
   ],
+  "metadata": {
+    "session_id": "sess_1795104359_90df3a_940",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 3.5,
+    "dependency_waves": 5
+  },
   "memory_candidates": [
     {
-      "content": "A GitHub Actions composite/third-party action's own internal actions/cache step can be permanently defeated when its save (post) action is gated post-if: success() and the job it's embedded in always fails before reaching success -- confirmed for leanprover-community/docgen-action's 'Cache Mathlib docs' step (actions/cache@v4.2.3, post-if: success()) across 3 consecutive failing BimodalLogic docs.yml runs, all showing 'Cache not found for input keys: ...' plus outcome=skipped on the save post-action. Diagnosis: gh run view <id> --log, grep for 'Cache not found'/'outcome=skipped'. Fix: add an independent, if: always()-gated actions/cache/save step replicating the SAME cache key (hashFiles formula) and path list the wrapped action's own index.js computes, placed after the failing step -- this persists whatever partial work (e.g. markers for thousands of successfully-built sub-targets before a late OOM) exists on disk at job end even though the overall job status is failure, breaking an otherwise-permanent cold-cache loop.",
+      "content": "A third-party composite GitHub Action that wraps actions/cache internally can have its cache permanently defeated in a job that always fails: actions/cache's save (post) action is declared post-if: \"success()\", so a job failing before success never populates the cache, and every subsequent run cold-builds the same work -- a self-reinforcing loop whose symptom is a repeating 'Cache not found for input keys: <same key>' line plus an 'outcome=skipped;conclusion=skipped' post-action in the run log. The fix is additive and needs no fork: a second actions/cache/save step in the caller's own workflow, gated if: always(), replicating the wrapped action's key expression and path list. The key is verifiable offline -- GitHub's hashFiles(a, b) is sha256 over the path-sorted concatenation of each matched file's sha256 digest, reproducible in ~10 lines of Python, so key equality with the wrapped action's restore step can be proven before pushing rather than discovered from a CI round-trip.",
       "category": "PATTERN",
-      "source_artifact": "specs/940_fix_api_docs_oom_process_spawn_enomem/reports/01_process_spawn_enomem_cache_gate.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["github-actions", "actions/cache", "post-if-success", "cache-gate", "ci-debugging"]
-    },
-    {
-      "content": "doc-gen4's Lake library_facet `docs` (and module_facet `docInfo`) recursively fetches docInfo for every transitive IMPORT of a library's root modules, not just the library's own modules -- so `lake build <lib>:docs` on a Mathlib-dependent project spawns one external doc-gen4 process per module in the ENTIRE transitive import closure (Mathlib itself included), not per-module-of-the-target-library. Confirmed by reading doc-gen4's own lakefile.lean at the exact pinned tag matching the consuming project's lean-toolchain. This is also independently corroborated by a different real project's (linglib) production docs.yml history, which hit the identical OOM and fixed it by bypassing the :docs facet entirely in favor of calling the doc-gen4 CLI's own `single`/`fromDb` subcommands directly, scoped only to its own modules, with explicit xargs -P N concurrency instead of relying on Lake's job scheduler or LEAN_NUM_THREADS.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/940_fix_api_docs_oom_process_spawn_enomem/reports/01_process_spawn_enomem_cache_gate.md",
+      "source_artifact": "specs/940_fix_api_docs_oom_process_spawn_enomem/plans/02_docgen-cache-gate-fix.md",
       "confidence": 0.85,
-      "suggested_keywords": ["doc-gen4", "lake-facet", "docInfo", "mathlib-import-closure", "ci-oom"]
-    },
-    {
-      "content": "Lake 5.0.0's CLI accepts no job-count flag in ANY position: neither `lake build -j2`/`lake build --jobs=2` (as a build-subcommand flag) nor `lake -j 2 build ...`/`lake -j2 --version` (as a global pre-subcommand flag) -- all four forms return 'unknown short/long option'. A since-abandoned commit in a different Lean project (linglib) had used the global-flag form historically, but that project itself later abandoned the Lake-facet + -j approach entirely (switching to direct doc-gen4 CLI invocation) because even a working -j flag would not have been sufficient -- the facet-level fan-out into Mathlib's import closure was the actual problem, not Lake's own concurrency level.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/940_fix_api_docs_oom_process_spawn_enomem/reports/01_process_spawn_enomem_cache_gate.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["lake", "lean4", "job-count-flag", "cli-flags", "lake-build"]
+      "suggested_keywords": ["github-actions", "actions-cache", "post-if-success", "hashFiles", "ci-cache-gate", "composite-action"]
     }
   ],
-  "next_steps": "Run /orchestrate 940 to create implementation plan"
+  "dispatch_seq": 2
 }
