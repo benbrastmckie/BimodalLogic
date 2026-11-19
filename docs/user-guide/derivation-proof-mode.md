@@ -79,6 +79,63 @@ event second. Next/Previous scope introduction and invariance require `ZTime ≤
 solve the reflexive ZTime instance or expose the certificate as an ordinary Lean goal.
 Invariance requires A, A → X A, and G(A → X A), with the H/Y mirror for the past.
 
+## Checked rewriting and simplification
+
+`lrewrite rule` accepts a native implication, a native equivalence encoded as the conjunction
+of converse implications, or a Lean equality of formula data. Parenthesize applied rules:
+`lrewrite (lemma A B)`. A logical rewrite constructs a derivation through every enclosing
+constructor; a formula equality uses checked equality casts.
+
+| Command | Effect |
+| --- | --- |
+| `lrewrite d` / `lrewrite ← d` | Rewrite the unique applicable occurrence, reconstructing the old goal |
+| `lrewrite d (path := [boxBody, futureBody, orLeft])` | Select one explicit occurrence |
+| `lrewrite d at h as h'` | Derive a new fact; retain the original object context Γ |
+| `lrewrite d (obligations := expose)` | Expose missing scoped evidence or theorem premises as real goals |
+| `lsimp only [d₁, ← d₂]` | Deterministic decreasing normalization using only listed rules |
+| `lsimp only [d] (maxSteps := 32) at h as h'` | Normalize a fact within an explicit step budget |
+
+For positive occurrences, fact rewriting needs A→B while goal rewriting needs B→A.
+An implication antecedent flips that direction. Equivalences supply both arrows; implications
+remain one-way. Ambiguous logical rewrites report candidate paths instead of choosing silently.
+
+Paths name actual arguments: `impLeft`/`impRight`, `andLeft`/`andRight`, `orLeft`/`orRight`,
+`negBody`, `boxBody`, `stabilityBody`, `possibilityBody`, `settledPossibilityBody`,
+`futureBody`/`pastBody`, `futureEvent`/`pastEvent`, `nextBody`/`prevBody`, and
+`untilGuard`/`untilEvent`/`sinceGuard`/`sinceEvent`. Stability paths require TM⁺.
+For other derived operators, unfold to these views explicitly; duplicated operands are not
+silently identified with a single occurrence.
+
+A local A↔B cannot rewrite beneath □ or G. The corresponding scoped guarantee, a closed rule,
+or a checked scope conversion is required. Supported conversions are exact scope words;
+□→G/H/⊡; and bounded homogeneous □/G/H iteration. Arbitrary mixed-word conversions are explicit.
+Closed rewrites beneath Next/Previous use G/H monotonicity at Base, so they require no invented
+successor. Rewrite inside an introduction body only with guarantees captured by `using [...]`.
+
+`lsimp` checks the instantiated primitive constructor count before applying each logical
+reduction. Registered orientations are fixed; `←` reverses that orientation (or the declaration
+orientation for an unregistered rule). Non-decreasing or unavailable frame-gated rules are skipped. No change fails;
+budget exhaustion restores the entire original state. Matching attempts, node visits, depth
+and scope positions have finite limits in addition to Lean's heartbeat controls.
+Set `trace.proofMode.rewrite` or `trace.proofMode.simp` for paths, demands and counters.
+
+Library authors can use `register_lrewrite declaration [reverse]` to validate a closed schema's
+telescope and set its simp orientation. Registration never adds it to an `only` list. Boolean
+seeds are `Theorems.ProofMode.doubleNegationIff` and `conjunctionSelfIff`; modal seeds include
+`Theorems.ModalS5.boxConjIff`, `diamondDisjIff`, and `s5DiamondBox`, with corresponding
+`PlusLanguage.ProofMode` guarantees for arbitrary Plus arguments.
+
+```lean
+example (Γ : Context) (A B C : Formula)
+    (mapping : Γ ⊢ (A.imp B).allFuture.box)
+    (provider : Γ ⊢ (A.or C).allFuture.box) : Γ ⊢ (B.or C).allFuture.box := by
+  lrewrite mapping at provider as mapped
+  lexact mapped
+```
+
+The compact [extension examples](../../Tests/BimodalTest/Automation/ProofModeExtensionsTest.lean)
+also exercise mixed TM⁺ scopes, conditional Next, equality casts, frame gates and rollback.
+
 ## Foundations and scope
 
 Pure rules live in `FormalSystem/Theorems/ProofMode/`; elaborators live in
