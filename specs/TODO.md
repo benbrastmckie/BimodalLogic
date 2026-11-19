@@ -6,7 +6,7 @@ next_project_number: 939
 
 ## Task Order
 
-*Updated 2026-11-18. Generated from state.json dependency graph.*
+*Updated 2026-11-19. Generated from state.json dependency graph.*
 
 **Goal**: Close the residual repository-hygiene backlog
 
@@ -86,7 +86,7 @@ next_project_number: 939
 ### Repo Hygiene
 
 937 [RESEARCHING] — Fix the two independently red CI workflows on main. Both were...
-938 [RESEARCHED] — Convert the repository's measured-but-unenforced health...
+938 [PLANNING] — Convert the repository's measured-but-unenforced health...
 
 ### Semantics
 
@@ -99,7 +99,7 @@ next_project_number: 939
 
 ### Build Performance
 
-829 [RESEARCHED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
+829 [PLANNED] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ### Syntax
 
@@ -110,7 +110,7 @@ next_project_number: 939
 ## Tasks
 
 ### 938. Enforceable repo health baselines
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -509,11 +509,12 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, Medium Priority Issues section
 ---
 
 ### 829. Ci lake build cache and job config
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: build-performance
 - **Dependencies**: None
 - **Research**: [829_ci_lake_build_cache_and_job_config/reports/01_ci-lake-build-cache-and-job-config.md]
+- **Plan**: [829_ci_lake_build_cache_and_job_config/plans/01_ci-lake-build-cache-and-job-config.md]
 
 **Description**: **NO BUILD CACHE FOR `.lake/build` IN ANY CI WORKFLOW.** Every CI run re-elaborates the whole library from scratch.
 
