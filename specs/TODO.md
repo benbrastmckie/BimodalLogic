@@ -13,7 +13,7 @@ next_project_number: 939
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,829,831,869,890,931,933,935,937,938 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,931,933,935,937,938 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -96,10 +96,6 @@ next_project_number: 939
 ### Paper Alignment
 
 931 [NOT STARTED] — Apply the final-frame amendments to the 901 two-sided...
-
-### Build Performance
-
-829 [IMPLEMENTING] — NO BUILD CACHE FOR .lake/build IN ANY CI WORKFLOW. Every CI...
 
 ### Syntax
 
@@ -510,7 +506,7 @@ PROVENANCE: `specs/reviews/review-2026-11-02.md`, Medium Priority Issues section
 ---
 
 ### 829. Ci lake build cache and job config
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: build-performance
 - **Dependencies**: None

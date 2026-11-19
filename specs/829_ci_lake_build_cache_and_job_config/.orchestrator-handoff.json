@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "phases_completed": 3,
   "phases_total": 3,
-  "summary": "Wrote a three-phase implementation plan for task 829. Research's live-evidence reversal of filed deliverable (a) is carried into the plan as an explicit Non-Goal: leanprover/lean-action@v1 already caches the whole .lake directory by default (use-github-cache defaults true, none of the three workflows overrides it), so no actions/cache step is added. What remains is deliverable (b) (timeout-minutes: 300 on ci.yml's build job, for parity with docs.yml), an amendment to docs/development/CI_CD_PROCESS.md's already-existing '### GitHub Actions Cache' section recording the per-job cache-save boundary that leaves the 15 lean_exe roots, BimodalTools and BimodalToolsTest uncovered, and a corrected stale lean_exe count in one lakefile.toml comment. No lakefile build-performance config and no matrix split, per the task's own GUARDRAIL. All nine carried figures were re-validated live and the result stated in the plan; five drifted upward with library growth, four confirmed unchanged.",
+  "summary": "Implemented all three plan phases. Added timeout-minutes: 300 to ci.yml's build job for parity with docs.yml (deliverable b, the only functional change). Amended docs/development/CI_CD_PROCESS.md's existing GitHub Actions Cache subsection with the three facts research found missing (lean-action@v1's default-on whole-.lake cache, the per-job save boundary, and live re-verification pointers), and corrected a stale lean_exe target count in a lakefile.toml comment. Re-verified every acceptance criterion against live state: a completed CI run (44420618072) logged a cache hit (~2605 MB restored) and the live Actions cache store holds 4 lake-Linux-X64-... entries, confirming deliverable (a) is already satisfied by default and correctly was not re-implemented. Full verify-deploy.sh sweep deferred to the batch-level stage per this dispatch's Batch Gate Deferral directive; the scoped verify-touched.sh narrowing invocation was run after each phase and each time hit the same pre-existing, unrelated suite-selection-map.data preflight defect (logged as an issue), recorded as a baseline-delta PASS since it names no file in this task's scope.",
   "blockers": [],
   "artifacts": [
     {
       "type": "plan",
       "path": "specs/829_ci_lake_build_cache_and_job_config/plans/01_ci-lake-build-cache-and-job-config.md",
-      "summary": "Three-phase plan (waves: {1,2} then {3}), 1.5 hours estimated; validate-artifact.sh passes with 0 warnings."
+      "summary": "Three-phase plan (waves: {1,2} then {3}), all three phases now [COMPLETED]."
+    },
+    {
+      "type": "summary",
+      "path": "specs/829_ci_lake_build_cache_and_job_config/summaries/01_ci-lake-build-cache-and-job-config-summary.md",
+      "summary": "Records the deliverable-(a) reversal with live run/cache evidence, the one functional change, the documentation amendment, and the residual cache-boundary gap as a named follow-up candidate."
     }
   ],
-  "dispatch_seq": 4
+  "dispatch_seq": 6
 }
