@@ -1,28 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/942_test_coverage_nomic_formathlib_tactic/reports/01_test-coverage-nomic-formathlib-tactic.md",
-      "summary": "Confirms the three-group coverage gap; rules out both suggested extension points for NomicLanguage on structural grounds; specifies and compile-verifies four artifacts (new NomicLanguageTest + ForMathlib SmokeTest modules, two Automation folds); records the C6/C16/C28 gate obligations; and reports a measured live bug in FormalSystem/Tactic/Meta.lean's buildContextExpr."
+      "type": "plan",
+      "path": "specs/942_test_coverage_nomic_formathlib_tactic/plans/01_test-coverage-nomic-formathlib-tactic.md",
+      "summary": "Three-phase, 3.5-hour plan closing the NomicLanguage, ForMathlib and Tactic test-coverage gaps entirely inside Tests/, with the commit-blocking generated count surface declared and regenerated per phase."
     }
   ],
-  "user_decision": {
-    "required": true,
-    "blocking": false,
-    "question": "FormalSystem/Tactic/Meta.lean's buildContextExpr is broken and throws on every call (measured): its first line is `mkAppM ``List.nil #[formulaType]`, but List.nil's type argument is implicit, so mkAppM raises 'too many explicit arguments provided to @List.nil'. Its two consumers (Search.lean:475 tryModalK, Search.lean:527 tryTemporalK) call it outside their `observing?` block, so `example : |-[FrameClass.Base] box (p imp p) := by modal_search` hard-fails with that error. Repairing it requires editing a FormalSystem declaration, which this task's description places explicitly out of scope. Which do you want? (a) widen this task's scope by one objective to apply the one-line repair (two candidate repairs were compiled and both work: `mkAppOptM ``List.nil #[some formulaType]`, or `Lean.mkApp (Lean.mkConst ``List.nil [Level.zero]) formulaType`); (b) keep this task's scope as written -- the item (C) probe then #checks buildContextExpr without invoking it -- and spawn a separate task for the repair; or (c) keep scope and leave the repair unfiled.",
-    "options": [
-      "(a) widen scope by one objective and apply the pre-validated one-line repair here",
-      "(b) keep scope; spawn a separate task for the repair (research's default recommendation)",
-      "(c) keep scope; leave the repair unfiled"
-    ],
-    "recommendation": "(b) -- the repair is a genuine FormalSystem bug fix, not a testability change, so it deserves its own task record rather than being folded into a test-coverage task; the pre-validated fix makes that follow-up cheap."
-  },
   "metadata": {
     "session_id": "sess_1795122329_77078c_942",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 3.5,
+    "dependency_waves": [[1], [2], [3]]
+  },
+  "memory_candidates": [
+    {
+      "content": "A repository can derive a generated artifact from a quantity whose scope is NARROWER in one mechanism of a script and WIDER in another mechanism of the same script, and reading only the narrower one produces a plan that omits a commit-blocking regeneration step. Concretely: scripts/typst-sync-check.sh declares LEAN_SRC_ROOTS as FormalSystem/ + BimodalTools/ (its declaration-scan scope), while scripts/typst-status-counts.sh in the same pipeline derives tests-file-count and tests-line-count by counting recursively under Tests/. A Tests/-only change therefore moves typst/generated/status.typ even though the script's most visible scope constant excludes Tests/, and .githooks/pre-commit refuses the commit. The generalizable planning move: when a coupled-generated-surface obligation is in question, do not infer scope from a script's scope constant -- read the generator that emits the specific FIELD, and cross-check against the file-scope harvester's own auto-append behaviour, which encodes the repository's answer mechanically.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/942_test_coverage_nomic_formathlib_tactic/plans/01_test-coverage-nomic-formathlib-tactic.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["coupled-generated-surface", "plan-authoring", "typst-sync-check", "file-scope-harvest", "pre-commit-gate", "lean-line-count"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 942 to execute the plan",
+  "dispatch_seq": 2
 }

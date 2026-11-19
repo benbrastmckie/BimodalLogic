@@ -1378,16 +1378,25 @@
     {
       "project_number": 942,
       "project_name": "test_coverage_nomic_formathlib_tactic",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "code-quality",
       "priority": "medium",
       "description": "Add regression test coverage for three FormalSystem module groups that currently have none.\n\nSource of record: specs/reviews/review-2026-11-19.md (one Medium, two Low severity findings).\n\nPROBLEM: three module groups have zero referencing tests anywhere under Tests/BimodalTest/, confirmed by grep for their identifiers across the whole test tree.\n\n(A) MEDIUM -- FormalSystem/NomicLanguage/ (Formula.lean, NomicFour.lean, NomicTenseFree.lean, NomicTruth.lean, NomicValidity.lean). Every other language-variant directory (MinusLanguage, PlusLanguage, StarLanguage, SourceLanguage) has at least one referencing test; NomicLanguage has none. A refactor of Formula.lean or the validity/truth definitions could silently break the nomic-modal extension with no test to catch it.\n    Fix: add a Tests/BimodalTest/NomicLanguage/ test module, or extend an existing cross-language test (LanguageDerivationTest.lean / ValidityLayerTest.lean), exercising NomicFormula, NomicValidity and NomicTruth's basic properties. Follow whichever pattern the existing per-language tests use rather than inventing a new shape.\n\n(B) LOW -- FormalSystem/ForMathlib/ (Order/BallSpace.lean, Order/PFilter.lean, Combinatorics/SimpleGraphAcyclic.lean, Combinatorics/InfiniteRamseyPairs.lean, Topology/Sierpinski.lean). These are self-contained Mathlib-shaped extensions intended for upstreaming, importing nothing from FormalSystem.*. An upstream-PR candidate with no coverage is a weaker contribution and harder to verify in isolation.\n    Fix: a lightweight #check / example smoke test per file is sufficient. A full test module is NOT warranted -- do not over-build this.\n\n(C) LOW -- FormalSystem/Tactic/ (Attr.lean, Meta.lean). Tests/BimodalTest/Automation/TacticsTest.lean covers Automation/'s tactics, not this lower-level attribute/meta support code.\n    Fix: fold a minimal usage check into an existing Automation test rather than adding a new file.\n\nSEQUENCING: (A) is the real work and should land first as its own phase; (B) and (C) are small and can share a later phase.\n\nEXPLICITLY OUT OF SCOPE: changing any FormalSystem declaration, signature, import or proof to make it more testable; raising coverage of modules that already have tests; the 360 sorry occurrences in FormalSystem/ (expected for an in-progress formalization, with no unexplained clustering -- not this task's concern).\n\nTERRITORY NOTE: open task 177 names Tests/BimodalTest/Automation/TacticsTest.lean in its file_scope, but only for replacing task-number citations in its ## Test Coverage and ## Test Organization prose (its item C4) -- a different concern from item (C) here. If both land, keep the edits disjoint: this task touches test logic, 177 touches only that file's comment prose.\n\nVERIFICATION: `lake build` and the project's test target both green; confirm by grep that each of NomicLanguage, ForMathlib and Tactic is now referenced from at least one file under Tests/.",
       "file_scope": [
-        "Tests/BimodalTest/",
-        "FormalSystem/NomicLanguage/",
         "FormalSystem/ForMathlib/",
-        "FormalSystem/Tactic/"
+        "FormalSystem/NomicLanguage/",
+        "FormalSystem/Tactic/",
+        "Tests/BimodalTest.lean",
+        "Tests/BimodalTest/",
+        "Tests/BimodalTest/Automation/LemmaDBTest.lean",
+        "Tests/BimodalTest/Automation/NormalizationTest.lean",
+        "Tests/BimodalTest/Automation/README.md",
+        "Tests/BimodalTest/ForMathlib/README.md",
+        "Tests/BimodalTest/ForMathlib/SmokeTest.lean",
+        "Tests/BimodalTest/Semantics/NomicLanguageTest.lean",
+        "Tests/BimodalTest/Semantics/README.md",
+        "typst/generated/status.typ"
       ],
       "created": "2026-11-19T19:08:52Z",
       "audit_verdict": {
@@ -1417,13 +1426,18 @@
         },
         "degradations_count": 449
       },
-      "last_updated": "2026-11-19T21:18:15Z",
+      "last_updated": "2026-11-19T21:33:00Z",
       "session_id": "sess_1795122329_77078c",
       "artifacts": [
         {
           "path": "specs/942_test_coverage_nomic_formathlib_tactic/reports/01_test-coverage-nomic-formathlib-tactic.md",
           "type": "report",
           "summary": "Confirms the three-group coverage gap; rules out both suggested extension points for NomicLanguage on structural grounds; specifies and compile-verifies four artifacts (new NomicLanguageTest + ForMathlib SmokeTest modules, two Automation folds); records the C6/C16/C28 gate obligations; and reports a measured live bug in FormalSystem/Tactic/Meta.lean's buildContextExpr."
+        },
+        {
+          "path": "specs/942_test_coverage_nomic_formathlib_tactic/plans/01_test-coverage-nomic-formathlib-tactic.md",
+          "type": "plan",
+          "summary": "Three-phase plan (A: NomicLanguage module; B: ForMathlib isolated-import smoke module; C: Tactic folds plus doc reconciliation and whole-tree verification), 3.5 hours, waves [[1],[2],[3]]."
         }
       ],
       "next_artifact_number": 2

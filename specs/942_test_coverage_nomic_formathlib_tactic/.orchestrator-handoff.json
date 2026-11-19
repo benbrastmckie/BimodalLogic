@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 2,
+  "phases_completed": 0,
+  "phases_total": 3,
+  "summary": "Wrote a 3-phase, 3.5-hour implementation plan for the three untested FormalSystem module groups: Phase 1 adds Tests/BimodalTest/Semantics/NomicLanguageTest.lean for group (A), Phase 2 adds Tests/BimodalTest/ForMathlib/SmokeTest.lean importing only FormalSystem.ForMathlib for group (B), Phase 3 folds the two uncovered Tactic/Attr.lean simp sets into NormalizationTest.lean and the five Tactic/Meta.lean helpers into LemmaDBTest.lean for group (C), then reconciles the test READMEs and verifies the tree. The plan honours the recorded prior decision: no FormalSystem path appears in any phase's file list, and buildContextExpr is probed by #check only, with both pre-validated repairs recorded as a follow-up. Plan authoring corrected one research-report-adjacent error: typst/generated/status.typ carries tests-file-count and tests-line-count, so the commit-blocking count surface IS in play for a Tests/-only change and is now declared and regenerated in every phase.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/942_test_coverage_nomic_formathlib_tactic/plans/01_test-coverage-nomic-formathlib-tactic.md",
+      "summary": "Three-phase plan (A: NomicLanguage module; B: ForMathlib isolated-import smoke module; C: Tactic folds plus doc reconciliation and whole-tree verification), 3.5 hours, waves [[1],[2],[3]]."
+    }
+  ],
+  "blockers": []
+}
