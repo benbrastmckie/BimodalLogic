@@ -20,7 +20,7 @@ next_project_number: 944
 | 5 | 430,501 | 125,411 | algebraic-representation, decidability |
 | 6 | 412 | 430 | decidability |
 | 7 | 482 | 412 | decidability |
-| 8 | 177 | 178,282,296,481,482,543 | formula-refactor |
+| 8 | 177 | 178,282,296,481,482,543,942 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -88,8 +88,8 @@ next_project_number: 944
 
 ### Repo Hygiene
 
-941 [NOT STARTED] — Add a local aggregator that mirrors ci.yml's check gate, so a...
-943 [NOT STARTED] — Close three small gitignore and loose-file hygiene gaps at...
+941 [RESEARCHED] — Add a local aggregator that mirrors ci.yml's check gate, so a...
+943 [RESEARCHING] — Close three small gitignore and loose-file hygiene gaps at...
 
 ### Semantics
 
@@ -105,7 +105,7 @@ next_project_number: 944
 ## Tasks
 
 ### 943. Gitignore and loose file hygiene
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -161,10 +161,11 @@ VERIFICATION: `lake build` and the project's test target both green; confirm by 
 ---
 
 ### 941. Local verify all ci check aggregator
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
+- **Research**: [941_local_verify_all_ci_check_aggregator/reports/01_local-verify-all-aggregator.md]
 
 **Description**: Add a local aggregator that mirrors ci.yml's check gate, so a contributor can reproduce CI's verdict before pushing.
 
@@ -1376,7 +1377,7 @@ POST-RELOCATION NOTE (2026-09-21). Dependency 635 is complete. It moved 141 modu
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: Task 178, Task 282, Task 296, Task 298, Task 428, Task 429, Task 430, Task 464, Task 465, Task 481, Task 482, Task 534, Task 543, Task 568, Task 623, Task 628, Task 635, Task 636, Task 645, Task 646, Task 683, Task 684, Task 685, Task 696, Task 703, Task 706
+- **Dependencies**: Task 178, Task 282, Task 296, Task 298, Task 428, Task 429, Task 430, Task 464, Task 465, Task 481, Task 482, Task 534, Task 543, Task 568, Task 623, Task 628, Task 635, Task 636, Task 645, Task 646, Task 683, Task 684, Task 685, Task 696, Task 703, Task 706, Task 942
 
 **Description**: Update README.md, docs/, and FormalSystem/ module-level docstrings to their final post-refactor state, once the decidability chain (426, 428, 429, 430, 432, 433, 434) lands. This is the final polish pass, distinct from and run after task 472's already-completed immediate correction pass. Explicitly excludes: every item task 472 already corrected (the Decidability.lean Status block, Verified/README.md, FMP/README.md, DecisionProcedure.lean's decideAuto docstring, Verified/Decidable.lean's Status docstring, WeakCanonical.lean, RealModel/ShuffleReal.lean, Soundness.lean, PriorExpressivenessDense.lean) and the two Kamp files task 473 already swept (Kamp/EANegationClosure.lean, NfMultiAnchorBridge/NavigatedSpine.lean). This task's residual content is: re-auditing all touched documentation for drift accumulated during the decidability chain's landing (472/473 audited a snapshot; the chain's remaining tasks will touch further files after 472/473 ran), and the Axiom Reference update the charter names as part of 177's original scope.
 

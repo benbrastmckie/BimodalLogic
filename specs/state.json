@@ -1324,7 +1324,7 @@
     {
       "project_number": 941,
       "project_name": "local_verify_all_ci_check_aggregator",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "general",
       "topic": "repo-hygiene",
       "priority": "medium",
@@ -1351,7 +1351,17 @@
           "semantic": true
         },
         "degradations_count": 441
-      }
+      },
+      "last_updated": "2026-11-19T19:49:07Z",
+      "session_id": "sess_1795117390_6c8a38",
+      "artifacts": [
+        {
+          "path": "specs/941_local_verify_all_ci_check_aggregator/reports/01_local-verify-all-aggregator.md",
+          "type": "report",
+          "summary": "Re-derives the nine ci.yml checks' exact invocations, order, exit-code conventions, lock/sequencing behavior, and documentation-placement precedent for scripts/verify-all.sh, CONTRIBUTING.md, and scripts/README.md."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 942,
@@ -1399,7 +1409,7 @@
     {
       "project_number": 943,
       "project_name": "gitignore_and_loose_file_hygiene",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "general",
       "topic": "repo-hygiene",
       "priority": "low",
@@ -1436,7 +1446,9 @@
           "semantic": true
         },
         "degradations_count": 445
-      }
+      },
+      "last_updated": "2026-11-19T19:43:39Z",
+      "session_id": "sess_1795117390_6c8a38_943"
     }
   ],
   "artifacts": [
