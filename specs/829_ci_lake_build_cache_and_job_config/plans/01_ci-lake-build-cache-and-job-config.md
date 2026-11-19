@@ -214,7 +214,7 @@ measured at plan time to resolve that path to the single suite
 
 ---
 
-### Phase 2: Document the Real Cache Mechanism and Its Per-Job Boundary [NOT STARTED]
+### Phase 2: Document the Real Cache Mechanism and Its Per-Job Boundary [COMPLETED]
 
 **Goal**: A future reader who greps `.github/workflows/` for `actions/cache`, finds nothing, and
 concludes "`.lake/build` is never cached" is corrected by the repository's own CI documentation
@@ -222,14 +222,14 @@ rather than by re-running this task's research. Also correct one stale count in 
 comments while that in-scope file is open.
 
 **Tasks**:
-- [ ] Re-read `docs/development/CI_CD_PROCESS.md`'s `## Caching Strategy` section (currently
+- [x] Re-read `docs/development/CI_CD_PROCESS.md`'s `## Caching Strategy` section (currently
       beginning at line 356, with `### Mathlib Cache` at 358 and `### GitHub Actions Cache` at
       366) immediately before editing. The `### GitHub Actions Cache` subsection ALREADY EXISTS
       and already states the primary/fallback key shape and the `use-github-cache: false` disable
       switch — this task AMENDS it; it does not add a new section. If that subsection is absent
       when read (a sibling's edit, or a restructure), stop and report rather than creating a
-      parallel section.
-- [ ] Amend that subsection to add three facts it currently omits:
+      parallel section. *(completed: confirmed present, amended in place)*
+- [x] Amend that subsection to add three facts it currently omits:
       (i) the cache is provided by `leanprover/lean-action@v1` itself, whose `use-github-cache`
       input defaults to `true`, and it covers the whole `.lake` directory — there is deliberately
       no `actions/cache` step in this repository's own workflow files, and its absence is not
@@ -241,24 +241,24 @@ comments while that in-scope file is open.
       (iii) how to re-verify the live cache for this repository:
       `gh api repos/<owner>/<repo>/actions/caches`, and the `Cache restored from key:` /
       `Cache Size:` lines inside the "Build, test, and lint with Lean" step of a completed run's
-      `gh run view <id> --log`.
-- [ ] State fact (ii) as a known boundary of the current design, not as a defect to be fixed in
+      `gh run view <id> --log`. *(completed: all three facts added)*
+- [x] State fact (ii) as a known boundary of the current design, not as a defect to be fixed in
       this task, and note that closing it would mean setting `use-github-cache: false` and adding
       an explicit job-wide `actions/cache/restore` after checkout plus `actions/cache/save` as the
       job's last step — a change that must carry a before/after timing. Do not present it as
-      planned work.
-- [ ] Keep every reference in the added prose pointing at a path that exists; introduce no new
-      relative link whose target is not already in the tree.
-- [ ] Re-read `lakefile.toml`, then correct the tooling-library comment (currently line 63) that
+      planned work. *(completed)*
+- [x] Keep every reference in the added prose pointing at a path that exists; introduce no new
+      relative link whose target is not already in the tree. *(completed: readme-lint.sh Check 3 confirms 0 broken references)*
+- [x] Re-read `lakefile.toml`, then correct the tooling-library comment (currently line 63) that
       reads "the roots of the 13 `lean_exe` targets below" — the file declares 15. Confirm the
       live count first: `grep -c '^\[\[lean_exe\]\]' lakefile.toml` and
       `python3 scripts/lake_targets.py exe-roots | tr ' ' '\n' | grep -c .` must agree; write
-      whatever they agree on, not the number in this plan.
-- [ ] Leave the quoted historical gate output in `scripts/check-module-invariants.sh:4947` and
+      whatever they agree on, not the number in this plan. *(completed: both commands agree at 15)*
+- [x] Leave the quoted historical gate output in `scripts/check-module-invariants.sh:4947` and
       `docs/development/MODULE_INVARIANTS.md:309` ("`FAIL C25  1 of 13 lean_exe root module(s)
       do not compile`") untouched. Those are verbatim records of what was observed, not live
-      counts, and are outside this task's file scope besides.
-- [ ] Commit this phase's files with the scoped-staging flow (explicit two-path `git add --`).
+      counts, and are outside this task's file scope besides. *(completed: neither file touched)*
+- [x] Commit this phase's files with the scoped-staging flow (explicit two-path `git add --`). *(completed)*
 
 **Timing**: 0.7 hours
 

@@ -365,7 +365,13 @@ The lean-action automatically downloads prebuilt Mathlib binaries using `lake ex
 
 ### GitHub Actions Cache
 
-Build artifacts are cached between workflow runs:
+Build artifacts are cached between workflow runs. This caching is provided by
+`leanprover/lean-action@v1` itself — every workflow's build step invokes that action, whose
+`use-github-cache` input defaults to `true`, and the cache it restores/saves covers the whole
+`.lake` directory (so `.lake/build`, this repository's own compiled artifacts, is covered along
+with Mathlib's oleans). There is deliberately no separate `actions/cache` step anywhere under
+`.github/workflows/`; its absence is not evidence that `.lake/build` goes uncached — it is
+already handled by the action in use.
 
 - **Primary key**: OS + architecture + manifest + commit hash
 - **Fallback key**: OS + architecture + manifest
@@ -374,6 +380,27 @@ Build artifacts are cached between workflow runs:
 ```yaml
 use-github-cache: false
 ```
+
+**Known boundary — per-job save point.** The `actions/cache/save` half of this mechanism runs
+*inside* the single `lean-action` step, once that step's own build/test/lint work finishes. Any
+`lake build` invocation placed *after* that step in the same job writes into `.lake/build` after
+the snapshot was already taken, so that later output is not persisted and is re-elaborated on
+every subsequent run. In `ci.yml`'s `build` job this currently affects the `Compile lean_exe
+roots` loop and the `lake build BimodalTools --wfail` / `lake build BimodalToolsTest --wfail`
+steps that follow the main `lean-action` step. This is a known characteristic of the current
+design, not a defect being tracked for a fix here; closing it would mean setting
+`use-github-cache: false` and hand-rolling a job-wide `actions/cache/restore` (right after
+checkout) plus `actions/cache/save` (as the job's last step) instead, a change that should carry
+its own before/after timing rather than being assumed to help.
+
+**Re-verifying the live cache.** To confirm caching is actually active for this repository
+rather than trusting this description: `gh api repos/<owner>/<repo>/actions/caches` lists the
+live cache store entries (key family, size, last-accessed time); and inside a completed run's
+log (`gh run view <run-id> --log`), the "Build, test, and lint with Lean" step reports a `Cache
+restored from key:` (or `Cache hit for restore-key:`) line on a cache hit, and a `Cache Size:`
+line when the save half runs. `leanprover/lean-action@v1`'s cache behavior is described here as
+observed under the `v1` tag at the time of writing; since `v1` is a moving tag, re-run these two
+checks rather than assuming this description stays accurate indefinitely.
 
 ## Interpreting CI Results
 
