@@ -352,7 +352,9 @@ batch with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
       user ruling). The gate ruling itself is NOT taken here — 934 returns a compiled verdict and
       the disposition stays with the user. Original framing, retained because its detail is still
       live: the `hself` ruling unblocks
-      Phases 11.16 and 11.17 only (~2.5h); the other fourteen open phases of 761, and five of its
+      Phases 11.16 and 11.17 only (~2.5h — SPENT: both phases closed `[COMPLETED]` under plan v13,
+      `specs/761_ladder_realization_theorem/plans/13_depth-zero-gate-rest-state.md`; the figure
+      describes work already done, not work still open); the other fourteen open phases of 761, and five of its
       six filed Goals (`ladderSound`, `ladderCons_localRun`, `ladderLift`, `Dmax ⊆ Real`,
       `ladderRealized`), sit behind Phase 11.6's depth-`0` gate. That gate lifts on exactly one of
       two events — `cellLE_zero_const_of_kappa_eq` lands as a `sorryAx`-free THEOREM, or
@@ -386,8 +388,31 @@ batch with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
       therefore provably cannot reach the schemas' instantiation**, and all five keep the
       hypothesis for a positive compiled reason. What stays open is the other half: immunity to the
       ceiling is not satisfiability, and `ForwardSlackWitnessed` is a `∀ T ∈ cellAt …, ∃ g τ, …`
-      statement (`LadderCell.lean:998-1010`). 934 decides exactly that, at exactly that
-      instantiation. **Second trap, from 917**: the pin-layer discharge route is already REFUTED
+      statement (`LadderCell.lean:998-1010`).
+
+      **WHAT 934 LANDED (2026-11-14), and what it still leaves open.** Task 934 ran the
+      reachability probe at exactly that instantiation and completed, archived at
+      `specs/archive/934_depth_zero_reachability_probe/`
+      (`summaries/01_consumer-shape-reachability-probe-summary.md`). **The compiled answer:
+      satisfiable.** `specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean`
+      compiles `fsw_consumer_shape` — the hypothesis holds at the consumer-shape instantiation
+      `(q, c + m*(P+1), n)` at amount `m*(P+1)`, for every `c`, `m`, `P`, at `φ = ⊥` on `stepOr`
+      — together with `plateau_next_region` (the slack premise is non-vacuous: a genuine next
+      region exists at idle-run length `1`) and `consumer_fires`, which applies
+      `cellLE_zero_const_of_kappa_eq_of_forwardSlack` under `ParamsOk` to give the cell equality.
+      This is **EXISTENCE EVIDENCE ONLY** for `cellLE_zero_const_of_kappa_eq` landing as a
+      `sorryAx`-free theorem: it does not bring that lifting event about. All four of 934's own
+      stated limits still hold: (a) it is NOT a general discharge of `ForwardSlackWitnessed` —
+      the cell at `φ = ⊥` is the singleton `{∅}`, so one path witnesses every type; (b) it does
+      NOT refute `CellLEZeroConstOfKappaEq` under `ParamsOk`; (c) the reserved name
+      `cellLE_zero_const_of_kappa_eq` is claimed by nothing and all five depth-`0` schemas still
+      carry the hypothesis; (d) `certStabK`'s restatement obligation is unchanged. **The failure
+      direction is ARGUED, NOT COMPILED** (934's own point 5): research found no non-ceiling
+      failure mechanism and no concrete refuting object, which is an argument in the probe's
+      report, not a compiled result. The gate ruling is NOT taken by 934 or here — per 934's own
+      point 6, this bullet's "stays open and claimed in neither direction" framing is left for
+      the user or a `/roadmap` pass to revise; the disposition stays exactly where Stage 0's own
+      header puts it. **Second trap, from 917**: the pin-layer discharge route is already REFUTED
       and wired (`pin-cascade-straddle.lean`); do not retry it
 - [x] **The former "then `/revise 761`" item is DISCHARGED** — plan v12
       (`specs/761_ladder_realization_theorem/plans/12_hself-disposition-gate-settlement.md`) IS that
@@ -428,12 +453,21 @@ batch with it. See `.claude/context/patterns/batch-orchestration-guardrails.md`.
       must be RESTATED rather than proved for as long as `ForwardSlackWitnessed` stays carried.
       **What 763 inherits is therefore a verified premise, and the thing to watch there is
       `real_certStabK`, by name** — which is what "do not discover this at 763" was asking for
-- [ ] Decide whether the **`I = 1` idle-run sub-regime** is filed. It is the whole distance
-      between 924's conditional discharge of `ForwardSlackWitnessed` and an unconditional one, and
-      discharging it lifts the `certStabK` restatement obligation. The one route that would make
-      `IdleRunPumpable` `ParamsOk`-derivable — amending `(K1)` to quantify `idleCycleLens` — is
-      **measured at a blast radius of every wired probe** and is deliberately not admitted without
-      its own decision. File neither half without reading 924's report first
+- [x] **Decide whether the `I = 1` idle-run sub-regime is filed** (2026-11-19, citing task 929's
+      summary). It was filed as task 929 and completed 2026-11-13, archived at
+      `specs/archive/929_idle_run_length_one_forward_slack_discharge/`
+      (`summaries/01_idle-run-one-forward-slack-summary.md`). Its own standing instruction — "File
+      neither half without reading 924's report first" — was honored, not bypassed. **Honest
+      outcome: a refutation, not a discharge.** 929 did not make `ForwardSlackWitnessed`
+      unconditional; it REFUTED the hypothesis at a POSITIVE amount
+      (`forwardSlackWitnessed_refuted_I_one`: FALSE at amount `4` at `xState = (true, 2, 0)` on
+      `stepOr`, at a state whose pending-forever regime membership is compiled by
+      `xState_regime`), together with a compiled bound on the refutation's reach
+      (`ceiling_slack_at_consumer_amount`), under which all five depth-`0` cell-equality schemas
+      of `LadderCell.lean` keep `ForwardSlackWitnessed` for a positive compiled reason. The
+      `certStabK` restatement obligation this item names is therefore UNCHANGED, not lifted; see
+      this stage's depth-`0` gate bullet below for the full mechanism and its relation to task
+      934's later probe
 
 **713** is held by ruling (2026-10-03): its argued CTL⋆ 2EXPTIME lower bound is a citable ceiling
 with no consumer. **734** is `[HOLD]` on the paywalled *Handbook of Modal Logic* ch. 11

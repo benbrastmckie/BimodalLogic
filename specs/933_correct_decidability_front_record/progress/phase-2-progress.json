@@ -1,0 +1,15 @@
+{
+  "phase": 2,
+  "phase_name": "Stage 0 -- Check the I=1 Box and Restate the Depth-0 Crux",
+  "started_at": "2026-11-19T00:20:00Z",
+  "last_updated": "2026-11-19T00:40:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-read Stage 0 anchors and confirm line positions by text", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Check off I=1 item citing 929's summary with honest outcome", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 3, "description": "Restate depth-0 crux bullet closing sentence against 934's verdict", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 4, "description": "Annotate spent ~2.5h figure", "status": "done", "files_touched": ["specs/ROADMAP.md"]}
+  ],
+  "current_objective": 4,
+  "approaches_tried": [],
+  "handoff_count": 0
+}
