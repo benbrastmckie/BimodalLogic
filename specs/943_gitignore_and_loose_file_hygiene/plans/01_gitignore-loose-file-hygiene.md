@@ -1,7 +1,7 @@
 # Implementation Plan: Task #943
 
 - **Task**: 943 - Close three small gitignore and loose-file hygiene gaps at the repository root
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: None
 - **Research Inputs**: specs/943_gitignore_and_loose_file_hygiene/reports/01_gitignore-loose-file-hygiene.md

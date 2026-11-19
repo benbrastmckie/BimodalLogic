@@ -1,10 +1,99 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 6,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/943_gitignore_and_loose_file_hygiene/summaries/01_gitignore-loose-file-hygiene-summary.md",
+      "summary": "Two-phase implementation closing all three gitignore/loose-file hygiene gaps: .gitignore gains latex/build/ and anchored /.pid; ORGANISATION.md gains a Challenge.lean row documenting its Comparator-snapshot provenance."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Added latex/build/ and anchored /.pid rules to .gitignore, and one Challenge.lean row to ORGANISATION.md's Everything else table documenting its Comparator-snapshot provenance. Both named gate scripts (check-module-invariants.sh, readme-lint.sh) confirmed no-worse-than-baseline; no tracked file became newly ignored; Challenge.lean itself untouched."
+  },
+  "modified_files": [
+    ".gitignore",
+    "ORGANISATION.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, .gitignore's line 3 generic, unanchored `build/` rule already ignores latex/build/ and latex/subfiles/build/ before any latex-specific rule exists (confirmed via `git check-ignore -v`). Before adding a scoped rule to 'fix' apparently-unignored build output under a path like latex/, check whether a generic top-level rule already covers it -- the fix may be a clarity/robustness improvement rather than a cruft-removal.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/943_gitignore_and_loose_file_hygiene/summaries/01_gitignore-loose-file-hygiene-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "gitignore",
+        "build directory",
+        "unanchored rule",
+        "precedence",
+        "latex"
+      ]
+    },
+    {
+      "content": "In BimodalLogic, .claude/scripts/verify-touched.sh's OWED fallback (triggered when a touched path, e.g. a root-level markdown doc, does not resolve to a specific covering suite) runs a broad free-cost-class battery (95 suites observed) rather than a narrow suite set. A documentation-only one-line edit can therefore surface many unrelated, pre-existing suite failures. Cross-check any such failure against whether the failing suite's own assertions reference the touched file at all before treating it as a regression; this repository's structural absence of agent-system/extensions/ independently causes several suites (test-manifest-scripts-sync.sh, test-orchestrate-conclusion-aggregate.sh, test-lint-hook-registration-paths.sh, and others) to fail under this fallback.",
+      "category": "PATTERN",
+      "source_artifact": "specs/943_gitignore_and_loose_file_hygiene/summaries/01_gitignore-loose-file-hygiene-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "verify-touched.sh",
+        "OWED fallback",
+        "free cost-class",
+        "agent-system/extensions",
+        "pre-existing failure"
+      ]
+    }
+  ],
+  "sapience_notes": [
+    {
+      "subject": "BimodalLogic .gitignore line 3 build/ rule",
+      "value": "The generic, unanchored `build/` rule at .gitignore line 3 already ignores latex/build/ and latex/subfiles/build/ byproducts; a later latex/build/ rule added for clarity does not change what was actually ignored, confirmed via git check-ignore -v both before and after.",
+      "predicate": "finding is",
+      "ko_type": "insight",
+      "confidence": 0.9,
+      "source_loc": ".gitignore:3,46"
+    },
+    {
+      "subject": "BimodalLogic Challenge.lean",
+      "value": "Challenge.lean at the repository root is the committed, git-pinned statement set produced by the agent-system lean extension's lean-challenge-snapshot.sh Comparator snapshot step. It is not a Lake root, is not built, and its sorry bodies are intentional (the module pins statement signatures, not proofs). It must not be relocated to Boneyard/ -- doing so would remove the location the next snapshot/Comparator cycle writes to and reads from.",
+      "predicate": "finding is",
+      "ko_type": "insight",
+      "confidence": 0.9,
+      "source_loc": "ORGANISATION.md (Everything else table)"
+    },
+    {
+      "subject": "BimodalLogic repository structure",
+      "value": "This repository (BimodalLogic) has no agent-system/extensions/ directory at all. Several .claude/scripts/tests/* suites (test-manifest-scripts-sync.sh, test-orchestrate-conclusion-aggregate.sh, test-lint-hook-registration-paths.sh, test-gate-out-derived-staleness.sh, test-gate-out-self-attribution.sh, test-generate-task-order.sh, test-reconcile-demote-stranded.sh, test-reconcile-handoff-status.sh, test-resume-scan-nonconformance.sh, test-sweep-invalidated-claims.sh, test-deploy-baseline-lib.sh) assume it exists and fail with NEW (unexpected) status when it is absent -- a structural/environmental fact of this clone, not a regression caused by any particular content edit.",
+      "predicate": "finding is",
+      "ko_type": "insight",
+      "confidence": 0.85
+    },
+    {
+      "subject": "BimodalLogic verify-touched.sh OWED fallback",
+      "value": "When a touched path does not resolve to a specific covering suite (e.g. a root-level markdown document like ORGANISATION.md), verify-touched.sh runs a broad free-cost-class OWED fallback battery (95 suites observed) rather than a narrow mapped suite set. A documentation-only edit can therefore trigger a much larger test battery than its content would suggest, and surface unrelated pre-existing failures.",
+      "predicate": "finding is",
+      "ko_type": "insight",
+      "confidence": 0.85,
+      "source_loc": ".claude/scripts/verify-touched.sh"
+    },
+    {
+      "subject": "BimodalLogic root-level .pid runtime file",
+      "value": "A stray root-level .pid runtime file is transient and may disappear from disk between verification steps once its owning process exits, even mid-task. Its .gitignore rule's correctness should be confirmed via git check-ignore -v <path> (a pure pattern match that works even if the file does not currently exist) rather than relying on git status --porcelain --ignored to still list it.",
+      "predicate": "finding is",
+      "ko_type": "insight",
+      "confidence": 0.8,
+      "source_loc": ".gitignore:110"
+    }
+  ],
   "metadata": {
     "session_id": "sess_1795117390_6c8a38",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
+    "phases_completed": 2,
+    "phases_total": 2
   }
 }

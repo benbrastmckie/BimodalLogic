@@ -13,7 +13,7 @@ next_project_number: 944
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,942,943 | -- | algebraic-representation, code-quality, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,942 | -- | algebraic-representation, code-quality, completeness, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -86,10 +86,6 @@ next_project_number: 944
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
-### Repo Hygiene
-
-943 [IMPLEMENTING] — Close three small gitignore and loose-file hygiene gaps at...
-
 ### Semantics
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
@@ -104,12 +100,13 @@ next_project_number: 944
 ## Tasks
 
 ### 943. Gitignore and loose file hygiene
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [943_gitignore_and_loose_file_hygiene/reports/01_gitignore-loose-file-hygiene.md]
 - **Plan**: [943_gitignore_and_loose_file_hygiene/plans/01_gitignore-loose-file-hygiene.md]
+- **Summary**: [943_gitignore_and_loose_file_hygiene/summaries/01_gitignore-loose-file-hygiene-summary.md]
 
 **Description**: Close three small gitignore and loose-file hygiene gaps at the repository root.
 

@@ -1421,7 +1421,7 @@
     {
       "project_number": 943,
       "project_name": "gitignore_and_loose_file_hygiene",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "general",
       "topic": "repo-hygiene",
       "priority": "low",
@@ -1459,7 +1459,7 @@
         },
         "degradations_count": 445
       },
-      "last_updated": "2026-11-19T19:57:48Z",
+      "last_updated": "2026-11-19T20:53:06Z",
       "session_id": "sess_1795117390_6c8a38",
       "artifacts": [
         {
@@ -1471,9 +1471,15 @@
           "path": "specs/943_gitignore_and_loose_file_hygiene/plans/01_gitignore-loose-file-hygiene.md",
           "type": "plan",
           "summary": "Two-phase plan: .gitignore rules (latex/build/, anchored /.pid), then ORGANISATION.md row for Challenge.lean."
+        },
+        {
+          "path": "specs/943_gitignore_and_loose_file_hygiene/summaries/01_gitignore-loose-file-hygiene-summary.md",
+          "type": "summary",
+          "summary": "Two-phase implementation summary covering both .gitignore rules and the ORGANISATION.md Challenge.lean row."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Added latex/build/ and anchored /.pid rules to .gitignore, and one Challenge.lean row to ORGANISATION.md's Everything else table documenting its Comparator-snapshot provenance. Both named gate scripts (check-module-invariants.sh, readme-lint.sh) confirmed no-worse-than-baseline; no tracked file became newly ignored; Challenge.lean itself untouched."
     }
   ],
   "artifacts": [

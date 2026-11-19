@@ -1,15 +1,15 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
-  "phases_total": 2,
-  "summary": "Wrote a two-phase implementation plan for the three root-level gitignore and loose-file hygiene gaps. Phase 1 captures pre-change gate baselines (with exit status) and adds two .gitignore rules; Phase 2 (final, full tier) adds one ORGANISATION.md Everything-else row for Challenge.lean and closes out. Plan validates with 0 warnings. Two corrections carried in: gap (A)'s cruft premise stays refuted (already ignored via .gitignore:3 build/), and the research report's suggested row pointer to agent-system/... is a dead path here, so the plan names the snapshot script by basename instead.",
+  "status": "implemented",
+  "dispatch_seq": 6,
+  "summary": "Closed all three gitignore/loose-file hygiene gaps in two phases: .gitignore gained latex/build/ and anchored /.pid (2 insertions, 0 deletions), and ORGANISATION.md gained one row documenting Challenge.lean's Comparator-snapshot provenance (1 insertion, 0 deletions). Both named gate scripts (check-module-invariants.sh, readme-lint.sh) matched or improved on their pre-change baselines, and no tracked file became newly ignored. Challenge.lean itself was left untouched per the research's hard finding against relocation.",
   "blockers": [],
+  "phases_completed": 2,
+  "phases_total": 2,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/943_gitignore_and_loose_file_hygiene/plans/01_gitignore-loose-file-hygiene.md",
-      "summary": "Two-phase plan: .gitignore rules (latex/build/, anchored /.pid), then ORGANISATION.md row for Challenge.lean."
+      "type": "summary",
+      "path": "specs/943_gitignore_and_loose_file_hygiene/summaries/01_gitignore-loose-file-hygiene-summary.md",
+      "summary": "Two-phase implementation summary covering both .gitignore rules and the ORGANISATION.md Challenge.lean row."
     }
-  ],
-  "dispatch_seq": 4
+  ]
 }
