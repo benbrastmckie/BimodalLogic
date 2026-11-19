@@ -1,35 +1,29 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/938_enforceable_repo_health_baselines/reports/01_enforceable-health-baselines.md",
-      "summary": "Research on converting README-date, C20-citation, and C16-env_linter-root advisory findings into pinned, regression-blocking baselines, reusing the repo's existing nolints.json/c20-declaration-baseline.txt/warning-budget.txt ratchet model."
+      "type": "plan",
+      "path": "specs/938_enforceable_repo_health_baselines/plans/01_enforceable-health-baselines.md",
+      "summary": "Six-phase plan pinning three advisory repo-health signals (README verification dates, C20 citation tiers, C16 env_linter roots) to committed keyed ratchet baselines with gates that fail on an increase, each falsified by a seeded finding."
     }
   ],
-  "dispatch_seq": 3,
-  "findings_count": 3,
-  "next_steps": "Run /orchestrate 938 to create implementation plan",
   "metadata": {
     "session_id": "sess_1795044397_89c580_938",
-    "agent_type": "general-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 9,
+    "dependency_waves": 4
   },
   "memory_candidates": [
     {
-      "content": "This repo's canonical ratchet-baseline pattern (nolints.json, c20-declaration-baseline.txt, warning-budget.txt) is deliberately keyed by stable item identity (declaration name, citer|target|names triple, or path|linter) rather than a bare aggregate count -- warning-budget.py's own docstring explains an aggregate count cannot distinguish 'one fixed, one new, net unchanged' from 'no new finding.' When adding a new enforceable baseline in a Lean/Mathlib-style repo, prefer per-item keying and reuse an existing mechanism (e.g. nolints.json, read unconditionally by runLinter.lean regardless of module argument) over inventing a parallel file.",
-      "category": "PATTERN",
-      "source_artifact": "specs/938_enforceable_repo_health_baselines/reports/01_enforceable-health-baselines.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["baseline", "ratchet", "nolints.json", "enforce-flag", "ceiling", "ENFORCE_C16_ROOTS"]
-    },
-    {
-      "content": "A check-module-invariants.sh-style script's RUN_BUILD-gated blocks can be invisible to CI even when the script itself is wired into CI, if CI calls it with --no-build. Before assuming 'flip ENFORCE_X to 1' adds CI coverage, verify which flag/path CI actually exercises (grep the workflow for --no-build and for separate build/lint steps such as lean-action's lint:true) -- local full-mode enforcement and CI enforcement can diverge silently.",
+      "content": "When making an advisory repo-health signal enforceable, do not reuse an existing grandfathering file whose regeneration path is wholesale-destructive and whose current content backs a live gate. BimodalLogic's scripts/nolints.json is read root-independently by Batteries' runLinter and backs CI's non-continue-on-error 'lake lint' step; 'runLinter --update' rewrites it keeping only findings for the roots named on that invocation (observed collapse 914 -> 237 lines). Extending it to widen a signal's scope has two further costs beyond the regeneration hazard: grandfathering makes the findings stop being reported, so the count the task exists to pin reads zero and the drift signal disappears; and its [linterClass, declName] key carries no root component, so it cannot express a per-root sum. Prefer a NEW keyed baseline file in the warning-budget.txt shape (<count> <key> <class>), which needs no destructive regeneration, keeps the debt printed, and leaves the existing enforced gate untouched. General rule for choosing a baseline key: key by whatever identity is stable across the kind of edit that legitimately moves the finding (declaration name where a target declaration exists, file path alone where it does not, never a bare repository-wide total, never a line number).",
       "category": "INSIGHT",
-      "source_artifact": "specs/938_enforceable_repo_health_baselines/reports/01_enforceable-health-baselines.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["CI", "RUN_BUILD", "--no-build", "lean-action", "lake lint", "gating"]
+      "source_artifact": "specs/938_enforceable_repo_health_baselines/plans/01_enforceable-health-baselines.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["ratchet-baseline", "enforcement-flag", "nolints", "warning-budget", "gate-regression", "baseline-key-shape"]
     }
-  ]
+  ],
+  "dispatch_seq": 5
 }

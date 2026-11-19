@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 6,
+  "summary": "Authored a six-phase plan pinning the three advisory repo-health signals to committed keyed ratchet baselines with gates that fail on an increase. Every cheap dispatch figure was re-confirmed live this dispatch (62/4/84 READMEs and readme-lint exit 0; C20's 10, 145-of-1030, 39, 30 and check-module-invariants --no-build exit 0); the 18-root C16 denominator was independently re-derived from scripts/lake_targets.py, and only the 231/16 numerator remains carried, measured by Phase 3 as its first task. Two planning decisions are recorded in the plan rather than deferred: the C16 baseline is a new keyed file instead of an extension of scripts/nolints.json, and a README baseline row pins the stamped date rather than only the path.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/938_enforceable_repo_health_baselines/plans/01_enforceable-health-baselines.md",
+      "summary": "Six phases in four waves, 9h: README date baseline, C20 residual/unverifiable baselines, C16 root sweep plus baseline generator, C16 gate wiring and flag flip, documentation surfaces, whole-tree verification and consolidated falsification record."
+    }
+  ],
+  "dispatch_seq": 5
+}
