@@ -1,15 +1,8 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "dispatch_seq": 3,
   "summary": "Applied all eight final-frame amendments to the 901 two-sided Reynolds engine paper-proof report by content match across three phases: four drift-only Lean citation corrections and four claim-changing corrections (the missing-ingredient row, the weakest-link Risks bullet, the companion Risks clause, and the stale Section 15.3 paragraph). The report's refusal sentence is preserved exactly once; both must-not-touch surfaces (Section 15.2, Recommendation 8/(O1)/(O3)/(O4)) are confirmed byte-unchanged. This is a record correction only -- T3 completeness, rows 17-21 of the ingredient table, and Recommendation 8 remain untouched.",
-  "blockers": [
-    {
-      "phase": "implement",
-      "target": "WORK (i) per-cycle scoped commit (git-commit-scoped.sh)",
-      "what_was_tried": "git-commit-scoped.sh was invoked for this cycle's per-task commit (message: \"task 931: complete implementation\").",
-      "why_it_failed": "git-commit-scoped.sh exited 2 for task 931's per-cycle commit (see context/standards/git-staging-scope.md's exit-code table for this code's meaning). The work is on disk, UNCOMMITTED — commit it by hand, or let a later cycle's commit pick it up."
-    }
-  ],
+  "blockers": [],
   "phases_completed": 3,
   "phases_total": 3,
   "artifacts": [

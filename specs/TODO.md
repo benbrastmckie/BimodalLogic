@@ -13,7 +13,7 @@ next_project_number: 941
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,931,935 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -86,10 +86,6 @@ next_project_number: 941
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 932 [NOT STARTED] — Land the four ofStepRel constraint lemmas and an ofStepPlain...
-
-### Paper Alignment
-
-931 [PARTIAL] — Apply the final-frame amendments to the 901 two-sided...
 
 ### Syntax
 
@@ -361,7 +357,7 @@ COUPLED GENERATED SURFACES -- inherited at filing time, not to be discovered at 
 ---
 
 ### 931. Apply the final-frame amendments to the 901 two-sided Reynolds engine paper-proof report
-- **Status**: [PARTIAL]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: paper-alignment
 - **Dependencies**: None
