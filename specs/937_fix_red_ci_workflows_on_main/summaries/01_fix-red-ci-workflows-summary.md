@@ -80,7 +80,9 @@ independent causes rather than two. `CI / Build and Test` was red for a name amb
   own reason text and the `MODULE_INVARIANTS.md` paragraph — both corrected. The script's header
   assertion is now stale and is carried as a follow-up below.
 - **Phase 5, gate set** — two README `Last verified` stamps had to be refreshed that no phase's
-  Files-to-modify list named, though both are in the task's declared `file_scope`. See Verification.
+  Files-to-modify list named. One is in the task's declared `file_scope` and is committed; the
+  other is not, and its edit is left uncommitted with the path proposed via
+  `proposed_file_scope`. See Verification for the measured consequence.
 
 ## Verification
 
@@ -114,8 +116,20 @@ excuse line and no `NEW` or `ABOVE` row.
 the only commit touching `Expressiveness/` on 2026-11-18, so the directory's last-commit date
 moved past both stamps. Neither README's content went stale — both record `NormalForm.lean` line
 counts (514 for the `SeparationZ` file edited, 884 for the unrelated `Expressiveness` one) and the
-edit changed no line count. Both stamps were refreshed and the gate re-run to PASS with 0 new
-stale dates. Both paths are in the task's declared `file_scope`.
+edit changed no line count. Both stamps were refreshed and the gate re-runs to PASS with 0 new
+stale dates in the working tree.
+
+**One of the two is NOT committed, and this is the task's one open residual.**
+`FormalSystem/Metalogic/Expressiveness/README.md` is in the task's declared `file_scope` and is
+committed. `FormalSystem/Metalogic/Expressiveness/SeparationZ/README.md` is NOT in that
+`file_scope`, so `git-commit-scoped.sh`'s V10 containment guard dropped it, and the guard was not
+overridden. Measured consequence, not inferred: with the committed tree,
+`readme-lint.sh FormalSystem BimodalTools` exits 1 with `RESULT: FAIL (1 new stale dates)`; with
+the one-character stamp edit present it exits 0. The edit is therefore left in the working tree and
+the path is proposed via `proposed_file_scope` in `.return-meta.json` — the sanctioned route for a
+concrete file the task's creation-time `file_scope` did not anticipate, which postflight forwards
+to `update-task-status.sh --file-scope-add`. Remedy is one character:
+`*Last verified: 2026-11-09*` -> `*Last verified: 2026-11-18*` at line 216 of that README.
 
 **USER-PENDING, never recorded as met**: the task record's third criterion — both workflows
 reporting success on a real run — is the user's to close. `.claude/rules/pr-prohibition.md` bars
