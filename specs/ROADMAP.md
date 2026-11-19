@@ -228,7 +228,6 @@ cited record, not here.
 No line on this list unblocks another. The one that did -- the depth-`0` crux probe -- has landed and archived, and what it feeds is a user ruling rather than a dispatch. The lines are therefore independent of each other and may be run in any order or interleaved, subject to the batch-gate's live-lock rule; the order below is a priority judgment, not a dependency.
 
 ```
-/orchestrate 931   # Apply 927's already-written final-frame amendments to the 901 report; nothing is re-derived
 /orchestrate 935 --hard --lit   # Route R3: does a determinization-free progress measure for L-plus ZTime completeness exist
 /orchestrate 831 --research --lit   # The dense-time dichotomy gating L-R3, the only identified non-ZTime decidability route
 /orchestrate 502, 497, 500, 543 --hard --lit   # The algebraic chain bottom-up to 543, the last high-priority L-plus metalogic task still open
