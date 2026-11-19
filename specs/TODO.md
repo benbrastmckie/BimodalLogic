@@ -1,5 +1,5 @@
 ---
-next_project_number: 941
+next_project_number: 944
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 941
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,941,942,943 | -- | algebraic-representation, code-quality, completeness, ... |
 | 2 | 231,282,296,429,497,763,862,873,932 | 298,428,502,761,869 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876 | 429,497,763,873 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543 | 410,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -34,6 +34,10 @@ next_project_number: 941
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
+
+### Code Quality
+
+942 [NOT STARTED] — Add regression test coverage for three FormalSystem module...
 
 ### Completeness
 
@@ -82,6 +86,11 @@ next_project_number: 941
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
+### Repo Hygiene
+
+941 [NOT STARTED] — Add a local aggregator that mirrors ci.yml's check gate, so a...
+943 [NOT STARTED] — Close three small gitignore and loose-file hygiene gaps at...
+
 ### Semantics
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
@@ -94,6 +103,96 @@ next_project_number: 941
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ## Tasks
+
+### 943. Gitignore and loose file hygiene
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Close three small gitignore and loose-file hygiene gaps at the repository root.
+
+Source of record: specs/reviews/review-2026-11-19.md (one Medium, two Low severity findings).
+
+(A) MEDIUM -- retired latex/ build artifacts are untracked but unignored. The latex/ edition was deliberately retired and its .tex sources removed from git, and .gitignore gained a `latex/**/*.log` rule at the same time. The remaining build byproducts in latex/build/ and latex/subfiles/ (.pdf, .aux, .fls, .fdb_latexmk, .out, .toc, .xdv) are untracked yet matched by no .gitignore pattern, so they sit as unignored cruft and any future `git add` touching that path risks reintroducing retired build output into history.
+    Fix: extend .gitignore with a single `latex/build/` rule (preferred over enumerating extensions), matching the intent of the existing `latex/**/*.log` line. Verify with `git status --porcelain --ignored` that the artifacts move from untracked to ignored, and confirm no currently-TRACKED file becomes ignored as a side effect.
+
+(B) LOW -- `.pid` at the repo root is a stray runtime PID file, untracked but absent from .gitignore, unlike the sibling runtime paths .agent-logs/ and .playwright-mcp/ which are both correctly ignored.
+    Fix: add `/.pid` to .gitignore (anchored, so it cannot match a nested path).
+
+(C) LOW -- Challenge.lean at the repo root is a loose .lean scratch file containing a sorry-bearing theorem. It is not a Lake root (absent from lakefile.toml), is not built, and is not listed in ORGANISATION.md's "Everything else" table alongside the other top-level paths, so a reader cannot tell why it exists or whether it is safe to ignore.
+    Fix: EITHER add one line to ORGANISATION.md's "Everything else" table explaining its purpose, OR relocate it into Boneyard/ following that directory's existing archival conventions (which are ADR-backed and gate-enforced -- read its README before moving anything there). Decide from the file's git history which is appropriate; do not delete it.
+
+EXPLICITLY OUT OF SCOPE: Boneyard/ itself (verified deliberate, ADR-backed and gate-enforced -- not cruft); the already-gitignored other/, research/, training/ and data/ directories; and any change to lakefile.toml.
+
+VERIFICATION: `bash scripts/check-module-invariants.sh` and `bash scripts/readme-lint.sh` both no worse than before the change; `git status --porcelain` clean of the newly-ignored paths; no tracked file newly ignored.
+
+---
+
+### 942. Test coverage nomic formathlib tactic
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: code-quality
+- **Dependencies**: None
+
+**Description**: Add regression test coverage for three FormalSystem module groups that currently have none.
+
+Source of record: specs/reviews/review-2026-11-19.md (one Medium, two Low severity findings).
+
+PROBLEM: three module groups have zero referencing tests anywhere under Tests/BimodalTest/, confirmed by grep for their identifiers across the whole test tree.
+
+(A) MEDIUM -- FormalSystem/NomicLanguage/ (Formula.lean, NomicFour.lean, NomicTenseFree.lean, NomicTruth.lean, NomicValidity.lean). Every other language-variant directory (MinusLanguage, PlusLanguage, StarLanguage, SourceLanguage) has at least one referencing test; NomicLanguage has none. A refactor of Formula.lean or the validity/truth definitions could silently break the nomic-modal extension with no test to catch it.
+    Fix: add a Tests/BimodalTest/NomicLanguage/ test module, or extend an existing cross-language test (LanguageDerivationTest.lean / ValidityLayerTest.lean), exercising NomicFormula, NomicValidity and NomicTruth's basic properties. Follow whichever pattern the existing per-language tests use rather than inventing a new shape.
+
+(B) LOW -- FormalSystem/ForMathlib/ (Order/BallSpace.lean, Order/PFilter.lean, Combinatorics/SimpleGraphAcyclic.lean, Combinatorics/InfiniteRamseyPairs.lean, Topology/Sierpinski.lean). These are self-contained Mathlib-shaped extensions intended for upstreaming, importing nothing from FormalSystem.*. An upstream-PR candidate with no coverage is a weaker contribution and harder to verify in isolation.
+    Fix: a lightweight #check / example smoke test per file is sufficient. A full test module is NOT warranted -- do not over-build this.
+
+(C) LOW -- FormalSystem/Tactic/ (Attr.lean, Meta.lean). Tests/BimodalTest/Automation/TacticsTest.lean covers Automation/'s tactics, not this lower-level attribute/meta support code.
+    Fix: fold a minimal usage check into an existing Automation test rather than adding a new file.
+
+SEQUENCING: (A) is the real work and should land first as its own phase; (B) and (C) are small and can share a later phase.
+
+EXPLICITLY OUT OF SCOPE: changing any FormalSystem declaration, signature, import or proof to make it more testable; raising coverage of modules that already have tests; the 360 sorry occurrences in FormalSystem/ (expected for an in-progress formalization, with no unexplained clustering -- not this task's concern).
+
+TERRITORY NOTE: open task 177 names Tests/BimodalTest/Automation/TacticsTest.lean in its file_scope, but only for replacing task-number citations in its ## Test Coverage and ## Test Organization prose (its item C4) -- a different concern from item (C) here. If both land, keep the edits disjoint: this task touches test logic, 177 touches only that file's comment prose.
+
+VERIFICATION: `lake build` and the project's test target both green; confirm by grep that each of NomicLanguage, ForMathlib and Tactic is now referenced from at least one file under Tests/.
+
+---
+
+### 941. Local verify all ci check aggregator
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Add a local aggregator that mirrors ci.yml's check gate, so a contributor can reproduce CI's verdict before pushing.
+
+Source of record: specs/reviews/review-2026-11-19.md (Medium severity finding).
+
+PROBLEM: ci.yml runs nine distinct checks, but no local entrypoint runs them together. A contributor can pass `lake build` and `lake test` locally and still push a CI-red commit, discovering failures only after a long CI run, one check at a time via ci.yml's own report step.
+
+THE NINE CHECKS, in ci.yml's order (re-derive from .github/workflows/ci.yml at implementation time rather than trusting this list):
+1. scripts/check-evidence-probes.sh
+2. scripts/check-module-invariants.sh --no-build
+3. scripts/check-copyright-headers.sh --strict
+4. scripts/readme-lint.sh
+5. scripts/check-metalogic-cycles.sh
+6. scripts/typst-sync-check.sh
+7. scripts/check-paper-definitions.sh
+8. lake exe mk_all --check
+9. lake exe lint-style
+
+SCOPE:
+(A) Add scripts/verify-all.sh running the nine steps in the same order, with the same pass/fail reporting shape as ci.yml's "Report results" step (per-check status lines plus an aggregate verdict and a nonzero exit on any failure). Continue through all checks and report every failure rather than aborting on the first, matching how CI surfaces them.
+(B) Document it in CONTRIBUTING.md's Development Setup section (~lines 18-57), next to the existing git-hook installation instructions.
+(C) Add an entry to scripts/README.md consistent with how the other scripts there are catalogued.
+
+EXPLICITLY OUT OF SCOPE: changing any of the nine checks themselves, changing ci.yml, and wiring the aggregator into the pre-commit hook (the nine checks include slow steps; making them a commit-time gate is a separate decision).
+
+VERIFICATION: run scripts/verify-all.sh on the current clean tree and confirm it reports the same per-check verdicts CI reports for the same commit; confirm a deliberately seeded failure in one check is reported and yields a nonzero exit; confirm the script is referenced from both CONTRIBUTING.md and scripts/README.md.
+
+---
 
 ### 935. Determinization free progress measure design
 - **Status**: [NOT STARTED]
@@ -1295,6 +1394,17 @@ SCOPE NARROWED (2026-09-21): file_scope previously named the whole of FormalSyst
 FURTHER EDGES (2026-09-21): dependencies on 178, 282, 296, 298, 464, 465, 481 and 482 added, each sharing a named path with this task (Examples/TemporalStructures.lean; BimodalTools/TraceExporterMain.lean; Metalogic/Decidability/). This task is the final pass and runs after them. Note 481 is blocked and 282, 296 and 298 are partial: if any of them is abandoned the edge is satisfied; if one stalls indefinitely, drop its edge rather than hold this task.
 
 FURTHER EDGES (2026-09-28): the whole-directory FormalSystem/Metalogic/Decidability/ entry is retained, not narrowed, because this task's own description already defers that narrowing: "The re-audit is open-ended by design: re-derive and widen file_scope at research time." Narrowing it now, before the decidability chain lands, would be exactly the guessing this task's charter prohibits. scripts/validate-state.sh Check 8 currently reports this entry overlapping 8 non-terminal tasks (428,429,430,464,465,481,482,696); 7 of the 8 (428,429,430,464,465,481,482) were already dependency-gated. 696 was not -- it declares Decidability/PlusWitnessFamily/* and Decidability/WitnessFamily/Sharing/*, both under this directory -- so 696 is added to dependencies below to close that one real exposure. The existing "if one stalls indefinitely, drop its edge rather than hold this task" clause (see the 2026-09-21 FURTHER EDGES note above) extends to this new edge.
+
+=== ADDENDUM (repo-health review, specs/reviews/review-2026-11-19.md) ===
+README.md STRUCTURE-TREE DRIFT, folded in here rather than given its own task because this task already declares README.md in its file_scope and its residual scope is exactly "re-auditing all touched documentation for drift accumulated" after earlier passes.
+
+The Project Structure diagram at README.md:103-138 omits three FormalSystem/ subdirectories that exist on disk: ForMathlib/, NomicLanguage/, and Tactic/. Every other entry in the tree matches reality.
+
+This is drift accumulated SINCE the README correction recorded in specs/reviews/review-2026-08-25.md regenerated that tree from the filesystem -- Tactic/ is new (see this description's POST-RELOCATION REVISION note, which already records its creation), and the tree was not re-rendered when ForMathlib/ and NomicLanguage/ landed. It is not a regression of that earlier pass.
+
+Fix: add the three directories to the tree with one-line descriptions matching the existing entries' style. ForMathlib/ in particular must not be omitted -- root CLAUDE.md and ORGANISATION.md both document it as a load-bearing subsystem (Mathlib-shaped extensions intended for upstreaming, importing nothing from FormalSystem.*), so its absence from the reader's map is a real gap rather than a stylistic one. Re-render the tree from the filesystem rather than hand-patching three lines, so any further drift is caught in the same pass.
+
+Note: ORGANISATION.md is NOT stale on this point -- it already references Tactic/ and the other current subsystems. The drift is README.md's alone.
 
 ---
 
