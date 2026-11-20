@@ -85,37 +85,44 @@ the gap.
    `proof_mode_dense_and_real_time_rules`. Gap: none identified.
 4. **Closure automation.** Done: the mode handles structure and a closer finishes the leaves.
    Covered by `proof_mode_close_leaves_with_automation`, which is propositional and TM-only.
-   Gap: a TM⁺ closer, and closers built on the decision procedures in
-   `FormalSystem/Metalogic/Decidability/`.
+   Closers built on the decision procedures in
+   `FormalSystem/Metalogic/Decidability/` are covered by
+   `proof_mode_decision_procedure_leaf_closers`, which also settles whether any serves TM⁺.
+   Gap: a TM⁺ propositional closer.
 5. **Evidence and adoption.** Done: adequacy is measured against existing proofs, and real
    proofs are written in the mode. Covered by `proof_mode_reprove_perpetuity` and
-   `proof_mode_reprove_temporal_slice` for the measurement. Gap: nothing says where proof-mode
-   proofs live after the measurements, or which new work must use the mode.
+   `proof_mode_reprove_temporal_slice` for the measurement. Where proof-mode
+   proofs live and which new work must use the mode is covered by
+   `proof_mode_adoption_after_perpetuity_verdict`. Gap: none identified.
 6. **Architecture and language reach.** Done: each rule is proved once over an interface, and
    every object language with a derivation calculus has an instance or a stated reason for
    lacking one. Covered by `proof_mode_abstract_frontend_interface` and
-   `proof_mode_instances_other_languages`. Gap: deduction theorems for the Star and Open
-   calculi; the languages the usage guide lists as separate work (counterfactual, stored-index,
-   metric).
+   `proof_mode_instances_other_languages`. Deduction theorems for the Star and Open calculi are covered by
+   `proof_mode_deduction_theorems_star_open`. Gap: the languages the usage guide lists as
+   separate work (counterfactual, stored-index, metric).
 7. **Usability.** Done: goals are readable, introduction patterns nest, every error message is
    tested, and the mode is documented in the guide and the reference manual. Covered by
-   `proof_mode_goal_display_patterns_error_tests`. Gap: a reference-manual chapter, and a check
-   that keeps error coverage from falling once it is complete.
+   `proof_mode_error_message_coverage` (which includes the check that keeps coverage from
+   falling), `proof_mode_nested_intro_patterns`, `proof_mode_goal_display` and
+   `proof_mode_reference_manual_chapter`. Gap: none identified.
 8. **Specification reasoning.** Done: a library of safety and liveness rules, and a worked route
    from a transition system to a TM derivation. Covered by
    `proof_mode_leads_to_invariance_library` and
    `proof_mode_transition_systems_tm_specifications`. Gap: everything after the architecture
    report, which is left unfiled until that report exists.
 
-Two further dimensions cut across the eight and have no filed record.
+Two further dimensions cut across the eight.
 
 - **Trust and cost.** Done: tests state the axiom set of representative proof-mode derivations,
   and there is a baseline for the size of the derivation terms the tactics build and for their
   elaboration time. `lintro` discharges through the deduction theorem, which transforms a whole
-  derivation, so cost on long scripts is an open question. Nothing has been measured.
+  derivation, so cost on long scripts is an open question. Covered by
+  `proof_mode_axiom_audit_and_cost_baseline`.
 - **Dual verification.** Done: a leaf the mode cannot close can be handed to the ModelChecker
   for a countermodel, and proof-mode scripts are available to the dataset tooling in
-  `BimodalTools/`. Only the architecture report touches this, as one section.
+  `BimodalTools/`. The countermodel half is covered by
+  `proof_mode_countermodels_for_unclosed_leaves`, after the architecture report; the dataset
+  half has no filed record.
 
 ## Milestones
 
@@ -124,11 +131,12 @@ fields. A **hard dependency** is one without which the milestone's result cannot
 proved. A **sequencing-only dependency** is an order kept for another reason: the two pieces of
 work edit the same files, or running later saves rework.
 
-The split between the two kinds is a proposed reading of the filed records' descriptions, checked
-against the Lean sources where a rule is named. It is not a ruling. The filed records carry a
-stricter order than the hard dependencies below: fourteen records in one chain, because each
-edits `Tests/BimodalTest/Automation/ProofModeTest.lean`, the usage guide and both ProofMode
-READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a hard one does.
+Every milestone has a filed record, and the filed dependency edges are exactly the hard
+dependencies plus the sequencing-only dependencies listed in each block. A sequencing edge is
+filed for one of three reasons: two records edit the same family files, the later record is
+cheaper once the earlier has landed, or an adequacy gate should be able to hold the record. No
+edge is filed merely because two records touch the test suite or the guide: M0 gives each tactic
+family its own test file and guide page, and every record declares a `file_scope`.
 
 ### M0: Shared-file de-contention
 
@@ -140,7 +148,7 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
 - **Hard dependencies**: none.
 - **Sequencing-only dependencies**: none.
 - **Lane**: Elaborators.
-- **Filed record**: not filed.
+- **Filed record**: `proof_mode_split_shared_test_and_guide_files`.
 
 ### M1: Bimodal scope core
 
@@ -152,7 +160,7 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
   `FormalSystem/Theorems/Perpetuity/`.
 - **Hard dependencies**: none. The three records form an internal chain: each extends the scope
   rules the one before adds.
-- **Sequencing-only dependencies**: none.
+- **Sequencing-only dependencies**: M0, for the file layout.
 - **Lane**: Rule theory, then Elaborators.
 - **Filed record**: `proof_mode_s5_aware_box_scopes`, then `proof_mode_cross_modal_scopes_mf_tf`,
   then `proof_mode_always_sometimes_scopes`.
@@ -164,8 +172,9 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
   acceptance tests, discharging object assumptions first; it fails with a clear message
   otherwise, including on a TM⁺ goal; it yields a native derivation only and adds no axiom.
 - **Hard dependencies**: none.
-- **Sequencing-only dependencies**: M1. The closer uses `propDecide` and deduction and no scope
-  rule. It is ordered after M1 so that gate one measures the mode with leaves automated.
+- **Sequencing-only dependencies**: M0, for the file layout. The closer uses `propDecide` and deduction and no scope
+  rule, so it runs beside M1; gate one still measures the mode with leaves automated because M3
+  depends on both.
 - **Lane**: Elaborators.
 - **Filed record**: `proof_mode_close_leaves_with_automation`.
 
@@ -177,7 +186,7 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
   them, and a report opens with an explicit GO or RE-PLAN verdict backed by per-declaration
   measurements.
 - **Hard dependencies**: M1, M2. The gate measures exactly that rule set.
-- **Sequencing-only dependencies**: none.
+- **Sequencing-only dependencies**: M13, so that the gate report can quote a cost figure.
 - **Lane**: Evaluation.
 - **Filed record**: `proof_mode_reprove_perpetuity`.
 
@@ -218,20 +227,21 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
   test asserting its message with `#guard_msgs`, or is listed as unreachable with a reason, and a
   check fails when a site is added without a test.
 - **Hard dependencies**: none.
-- **Sequencing-only dependencies**: M1 to M5. Each of those adds error sites; running later
-  means one backfill instead of several.
+- **Sequencing-only dependencies**: M0, for the test layout. It tests the merged tactics and changes no rule, so
+  it does not wait on gate one. Once its check is in, each later record covers its own error
+  sites as it adds them.
 - **Lane**: Elaborators.
-- **Filed record**: `proof_mode_goal_display_patterns_error_tests` (part 1). The regression
-  check is not in the filed description.
+- **Filed record**: `proof_mode_error_message_coverage`.
 
 ### M6b: Nested introduction patterns
 
 - **Aim**: Let `lcases` and `lintro` take nested patterns.
 - **Done when**: both tactics accept nested patterns, with tests and a guide section.
 - **Hard dependencies**: none.
-- **Sequencing-only dependencies**: M1 and M5, which change the same elaborator files.
+- **Sequencing-only dependencies**: M6a, whose check the new error sites must pass, and M3: the gate can hold the
+  record, and the edge places it after M1, which edits the same elaborators. It runs beside M4.
 - **Lane**: Elaborators.
-- **Filed record**: `proof_mode_goal_display_patterns_error_tests` (part 2).
+- **Filed record**: `proof_mode_nested_intro_patterns`.
 
 ### M6c: Goal display
 
@@ -239,9 +249,10 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
 - **Done when**: a goal view elides a hypothesis's object context only when it equals the goal's
   context, keeps a differing context visibly marked, and is documented in the guide.
 - **Hard dependencies**: none.
-- **Sequencing-only dependencies**: M5, so that the display is designed against real scripts.
+- **Sequencing-only dependencies**: M6b, stacked in the same stream; through it M3, whose module supplies real
+  scripts to design the display against.
 - **Lane**: Elaborators.
-- **Filed record**: `proof_mode_goal_display_patterns_error_tests` (part 3).
+- **Filed record**: `proof_mode_goal_display`.
 
 ### M7: Frame coverage at Dense and RTime
 
@@ -252,8 +263,8 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
 - **Hard dependencies**: none. `density` takes `Dense ≤ fc`, `coDerived` takes `RTime ≤ fc`,
   `prior_U_gap` and `sep` are axiom constructors at RTime, and the certificate pattern is the
   one `lstep` has.
-- **Sequencing-only dependencies**: M4 and M6, as filed. Nothing in the deliverable uses an
-  Until or Since rule from M4 or anything from M6.
+- **Sequencing-only dependencies**: M3, so that the gate can hold the record. Nothing in the deliverable uses an
+  Until or Since rule from M4 or anything from M6, so it runs beside M4 in its own family files.
 - **Lane**: Rule theory, then Elaborators.
 - **Filed record**: `proof_mode_dense_and_real_time_rules`.
 
@@ -265,8 +276,9 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
   suite passes unchanged.
 - **Hard dependencies**: M5. The record says to extract the interface from the rule set as it
   stands after the adequacy tests.
-- **Sequencing-only dependencies**: M7, as filed. Either order works, at different cost; see
-  Open decisions.
+- **Sequencing-only dependencies**: M7, so that the interface is extracted having seen a Dense and an RTime rule;
+  M6b and M6c, because this milestone rewrites every elaborator. It is the one point where the
+  streams join: nothing that edits either ProofMode directory runs beside it.
 - **Lane**: Rule theory and Elaborators together.
 - **Filed record**: `proof_mode_abstract_frontend_interface`.
 
@@ -277,7 +289,8 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
   directory matching `FormalSystem/*Language/` is accounted for in the guide, by an instance or
   by a stated reason.
 - **Hard dependencies**: M8.
-- **Sequencing-only dependencies**: none.
+- **Sequencing-only dependencies**: M9b, which owns the Star and Open metatheory, so that the accounting here
+  cites a theorem or a written obstruction.
 - **Lane**: Rule theory.
 - **Filed record**: `proof_mode_instances_other_languages`. The Minus deduction theorem is
   `FormalSystem/Metalogic/Conservativity/MinusDeduction.lean`, at layer 3, so the instance cannot
@@ -291,7 +304,8 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
 - **Hard dependencies**: none. This is metatheory about the calculi and needs no interface.
 - **Sequencing-only dependencies**: none.
 - **Lane**: Metatheory.
-- **Filed record**: not filed. M9a's record may propose it.
+- **Filed record**: `proof_mode_deduction_theorems_star_open`. Its Open half follows the standing
+  ruling that places the L^▷ line behind L⁺ critical-path work.
 
 ### M10: Safety and liveness library
 
@@ -302,9 +316,8 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
   and TM⁺; with worked examples and a guide section.
 - **Hard dependencies**: M4 and M5. The library builds on the induction rule and on the
   missing-rule list.
-- **Sequencing-only dependencies**: M9a, as filed. The done-when names TM and TM⁺ only and uses
-  no other-language instance. M8 is optional: with it the rules are proved once, without it
-  twice.
+- **Sequencing-only dependencies**: M8, so that each rule is proved once over the interface. The done-when names
+  TM and TM⁺ only and uses no other-language instance, so M9a is not a predecessor.
 - **Lane**: Rule theory, then Elaborators.
 - **Filed record**: `proof_mode_leads_to_invariance_library`.
 
@@ -328,7 +341,7 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
 - **Hard dependencies**: M3 with a GO verdict.
 - **Sequencing-only dependencies**: none.
 - **Lane**: Research and writing, then Evaluation.
-- **Filed record**: not filed.
+- **Filed record**: `proof_mode_adoption_after_perpetuity_verdict`.
 
 ### M13: Trust and cost baseline
 
@@ -338,9 +351,9 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
   recorded baseline gives derivation-term size and elaboration time for the acceptance examples
   and for one long script with nested `lintro`, with the command that reproduces it.
 - **Hard dependencies**: none.
-- **Sequencing-only dependencies**: none. Landing before M3 gives the gate a cost figure.
+- **Sequencing-only dependencies**: M0, for the test layout. M3 is ordered after it.
 - **Lane**: Evaluation.
-- **Filed record**: not filed.
+- **Filed record**: `proof_mode_axiom_audit_and_cost_baseline`.
 
 ### M14a: Closers from the decision procedures
 
@@ -349,9 +362,11 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
   return a derivation and not only a validity verdict; and for each that does, the leaf closer
   uses it and yields a native derivation, with tests and no `native_decide`.
 - **Hard dependencies**: M2, which provides the closing tactic to extend.
-- **Sequencing-only dependencies**: none.
+- **Sequencing-only dependencies**: M8, which rewrites the closer's elaborator. The research half depends on
+  neither.
 - **Lane**: Metatheory, then Elaborators.
-- **Filed record**: not filed.
+- **Filed record**: `proof_mode_decision_procedure_leaf_closers`. Completeness of proof extraction is
+  not a prerequisite: a closer may fail.
 
 ### M14b: Countermodel bridge
 
@@ -360,9 +375,9 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
   countermodel it returns is reported against the leaf. A countermodel is a diagnostic; it never
   closes a goal.
 - **Hard dependencies**: M11, whose report fixes the division of labour.
-- **Sequencing-only dependencies**: none.
+- **Sequencing-only dependencies**: M14a, so that an unclosed leaf is measured against the full closer.
 - **Lane**: Research and writing, then Elaborators.
-- **Filed record**: not filed.
+- **Filed record**: `proof_mode_countermodels_for_unclosed_leaves`.
 
 ### M15: Reference-manual chapter
 
@@ -370,9 +385,10 @@ READMEs. Until M0 lands, every sequencing-only dependency binds exactly as a har
 - **Done when**: a chapter under `typst/` states the rules the tactics implement and the
   scope-safety guarantee, compiles, and passes the chapter-quality check.
 - **Hard dependencies**: M5. The chapter documents the rule set as it stands after both gates.
-- **Sequencing-only dependencies**: none.
+- **Sequencing-only dependencies**: M8, which deletes the TM⁺ rule copies and restates every rule over the
+  interface; a chapter grounded in declaration names is written against the names that remain.
 - **Lane**: Research and writing.
-- **Filed record**: not filed.
+- **Filed record**: `proof_mode_reference_manual_chapter`.
 
 ## Dependency picture
 
@@ -388,6 +404,24 @@ M2 --+                |      |                +--> M10 --> M11 --> M14b
 
 No hard predecessor: M0, M1, M2, M6a, M6b, M6c, M7, M9b, M13
 ```
+
+Filed edges, hard and sequencing together, as five streams that join at M8.
+
+```
+M0 --+--> M1 (three records) --+
+     +--> M2 ------------------+--> M3 (gate) --+--> M4 --> M5 (gate) --+
+     +--> M13 -----------------+                +--> M7 ----------------+
+     +--> M6a ----------------------------------+--> M6b --> M6c -------+--> M8
+                                                +--> M12
+
+M8 --+--> M9a   (also after M9b, which has no predecessor)
+     +--> M10 --> M11 --+
+     +--> M14a ---------+--> M14b
+     +--> M15
+```
+
+What can run at once: M0 and M9b from the start; then M1, M2, M13 and M6a; after a GO verdict
+M4, M7, M6b then M6c, and M12; after M8 the four branches above.
 
 M10 depends on M4 directly and through M5. The milestones with no hard predecessor:
 
@@ -408,20 +442,17 @@ each later record should change, and the work stops for user review so that no l
 dispatched on an unrevised plan.
 
 - On GO, M4 and M12 open.
-- On RE-PLAN, every filed milestone after M3 is held until its record is revised: M4, M5, M6a,
-  M6b, M6c, M7, M8, M9a, M10 and M11. This includes M6 and M7, which have no hard dependency on
-  M3. Running either before the verdict is possible in logic and carries the risk that a RE-PLAN
-  changes it.
-- M0, M9b and M13 do not wait on the verdict. They change no rule and no tactic.
+- On RE-PLAN, every milestone after M3 is held until its record is revised: M4, M5, M6b, M6c,
+  M7, M8, M9a, M10, M11, M12, M14a, M14b and M15. This includes M6b, M6c and M7, which have no
+  hard dependency on M3 and carry a filed edge on it for this reason.
+- M0, M6a, M9b and M13 do not wait on the verdict. They change no rule and no tactic.
 
 **Gate two (M5)** has no verdict as filed. Its output is a measured report and a missing-rule
 list, each item either added in M5 or named with a proposed description. M8, M10 and M15 wait on
-it because each takes the rule set after gate two as its input. M6c is ordered after it by
-preference.
+it because each takes the rule set after gate two as its input. M6c is ordered after gate one only.
 
-Nothing in this document weakens gate one. The side branches proposed here are M0, M9b and M13,
-which lie outside the measured rule set, and M2, M6 and M7 only once the user accepts the
-sequencing readings.
+Nothing in this document weakens gate one. The work that runs before the verdict is M0, M6a,
+M9b and M13, which lie outside the measured rule set, and M1 and M2, which are the rule set.
 
 ## Lanes
 
@@ -440,9 +471,11 @@ The finest joint is inside a milestone. Because `FormalSystem/Theorems/` cannot 
 rule can land first and the tactic, tests and guide entry follow. The rule half edits only
 `FormalSystem/Theorems/ProofMode/` and its README.
 
-The lanes are not safe to run in parallel today. Every filed record edits one test file and one
-guide, and none declares a `file_scope`, so nothing can detect two records colliding. M0 is the
-milestone that buys parallel lanes, and it has no predecessor.
+Every record declares a `file_scope` written against the layout M0 produces, so two records
+that would collide are detected at dispatch. Three kinds of shared file remain and serialize
+implementation without ordering it: the aggregator modules, the guide index and the two ProofMode
+READMEs, each edited one line at a time; and the generated surfaces every Lean edit regenerates.
+Research and planning are not serialized.
 
 ## Open decisions
 
@@ -452,127 +485,68 @@ These need a ruling from the user. Nothing in this document decides them.
    unfolding do not need it. The induction rule's formula is not stated yet, so this part of the
    edge inside M4 is undetermined. It is settled when the plan for
    `proof_mode_until_since_intro_unfold_induction` states the rule.
-2. **Which of M7 and M8 goes first?** As filed, M7 comes first, so its rules are written twice
-   (TM and TM⁺) and M8 then removes the copies. With M8 first, M7's rules are written once over
-   the interface, but the interface is designed without having seen a Dense or RTime rule.
-3. **Are the sequencing readings accepted?** Three were re-examined against the sources and read
-   as sequencing only: M4 and M6 before M7; M9a before M10; and the case split before Until and
-   Since introduction and unfolding. The others (M1 before M2, M1 to M5 before M6) rest on the
-   records' descriptions alone.
-4. **Are sequencing edges relaxed once M0 lands?** Relaxing one means removing a filed
-   dependency between two records. The roadmap agent's contract covers adding edges and
-   regrouping batches, not removing edges. Removal is a separate step by the user.
-5. **What does "default" mean for M12?** Proofs under `FormalSystem/Theorems/` cannot be written
+2. **What does "default" mean for M12?** Proofs under `FormalSystem/Theorems/` cannot be written
    in the mode. The candidates are: new example and case-study modules must use it; new derived
    theorems get a proof-mode companion under `FormalSystem/Examples/`; or the mode stays optional
    and M12 only fixes where its proofs live.
-6. **Where does the Minus instance live?** Its deduction theorem is at layer 3, so either the
+3. **Where does the Minus instance live?** Its deduction theorem is at layer 3, so either the
    instance sits at layer 3 or `FormalSystem/Metalogic/Conservativity/MinusDeduction.lean`, which
    imports only the Minus derivation module, moves down. This bears on how M8 lays out the
    interface.
-7. **Does `records/` get a row in `ORGANISATION.md`?** The directory holds this document and has
+4. **Does `records/` get a row in `ORGANISATION.md`?** The directory holds this document and has
    no entry in the "Everything else" table there.
-8. **Do M6 and M7 run before gate one?** They have no hard dependency on it, but a RE-PLAN
-   verdict may change them.
 
-## Not yet filed
+Four positions are taken by the filed edges and can each be reversed by changing one edge.
 
-Seven milestones have no filed record. Each entry below is written to be passed to `/task` as it
-stands.
+- **M7 before M8.** M7's rules are written twice (TM and TM⁺) and M8 then removes the copies, in
+  exchange for an interface designed having seen a Dense and an RTime rule. The alternative
+  writes M7 once over the interface.
+- **M10 after M8.** The library's rules are proved once. The alternative starts M10 straight
+  after M5 and proves each rule twice.
+- **M6a before gate one; M6b, M6c and M7 after it.** M6a only tests what is merged. The other
+  three add tactics that a RE-PLAN verdict could change.
+- **M14a and M15 after M8.** Both name things M8 rewrites: the closer's elaborator, and the
+  declaration names the chapter cites.
 
-**Proof mode: split the shared test and guide files (M0).** Every proof-mode record edits
-`Tests/BimodalTest/Automation/ProofModeTest.lean`, `docs/user-guide/derivation-proof-mode.md`
-and the READMEs in `FormalSystem/Automation/ProofMode/` and `FormalSystem/Theorems/ProofMode/`,
-which forces the records into one chain. Split the acceptance tests into one file per tactic
-family (basic, modal, temporal, discrete) in a new directory
-`Tests/BimodalTest/Automation/ProofMode/`, keeping every existing example unchanged and
-imported by `Tests/BimodalTest.lean`. Give the usage guide one clearly bounded section or file
-per family. Then add a `file_scope` to every open record whose slug begins `proof_mode_`,
-naming the family files it will edit. DONE WHEN: the 31 existing examples pass from the split
-files, the guide's content is unchanged apart from its division, and every open proof-mode
-record declares a `file_scope`. Hard dependencies: none. No Lean rule or tactic changes.
+## Filed records
 
-**Proof mode: deduction theorems for the Star and Open calculi (M9b).** A proof-mode instance
-for an object language needs a deduction theorem, a generalized K rule per universal operator,
-and context substitution. TM has them in `FormalSystem/Theorems/`, TM⁺ in
-`FormalSystem/Theorems/ProofMode/PlusRules.lean`, and Minus in
-`FormalSystem/Metalogic/Conservativity/MinusDeduction.lean`. `StarDerivationTree` and
-`OpenDerivationTree` have none. Prove the three for each calculus, or, where one fails, write
-down the rule of the calculus that blocks it. DONE WHEN: each of Star and Open has the three
-results with no `sorry` and no new axiom, or a written obstruction in the usage guide. Expected
-files: new modules under `FormalSystem/StarLanguage/` and `FormalSystem/OpenLanguage/`. Hard
-dependencies: none. This is metatheory and needs no proof-mode interface.
+| Milestone | Record |
+|---|---|
+| M0 | `proof_mode_split_shared_test_and_guide_files` |
+| M1 | `proof_mode_s5_aware_box_scopes`, `proof_mode_cross_modal_scopes_mf_tf`, `proof_mode_always_sometimes_scopes` |
+| M2 | `proof_mode_close_leaves_with_automation` |
+| M3 | `proof_mode_reprove_perpetuity` |
+| M4 | `proof_mode_linearity_case_tactic`, `proof_mode_until_since_intro_unfold_induction` |
+| M5 | `proof_mode_reprove_temporal_slice` |
+| M6a | `proof_mode_error_message_coverage` |
+| M6b | `proof_mode_nested_intro_patterns` |
+| M6c | `proof_mode_goal_display` |
+| M7 | `proof_mode_dense_and_real_time_rules` |
+| M8 | `proof_mode_abstract_frontend_interface` |
+| M9a | `proof_mode_instances_other_languages` |
+| M9b | `proof_mode_deduction_theorems_star_open` |
+| M10 | `proof_mode_leads_to_invariance_library` |
+| M11 | `proof_mode_transition_systems_tm_specifications` |
+| M12 | `proof_mode_adoption_after_perpetuity_verdict` |
+| M13 | `proof_mode_axiom_audit_and_cost_baseline` |
+| M14a | `proof_mode_decision_procedure_leaf_closers` |
+| M14b | `proof_mode_countermodels_for_unclosed_leaves` |
+| M15 | `proof_mode_reference_manual_chapter` |
 
-**Proof mode: adoption after the Perpetuity adequacy verdict (M12).** FIRST read the adequacy
-report produced by `proof_mode_reprove_perpetuity`; if its verdict is RE-PLAN, stop and report.
-On GO, decide and write down in `docs/user-guide/derivation-proof-mode.md` where proof-mode
-proofs live, which kinds of new derivation are to be written in the mode, and what "default"
-means given that `FormalSystem/Theorems/` is below `FormalSystem/Automation/` in the layer
-order and cannot import it. Then prove at least one module in the mode that is neither a test
-nor an adequacy module, under `FormalSystem/Examples/`. DONE WHEN: the guide section exists and
-the module builds. Hard dependency: `proof_mode_reprove_perpetuity` with a GO verdict. The
-choice among the candidate meanings of "default" needs the user's ruling before implementation.
-
-**Proof mode: axiom audit and cost baseline (M13).** No test states which axioms a proof-mode
-derivation depends on, and nothing measures the derivation terms the tactics build. Add a test
-module, on the pattern of `Tests/BimodalTest/WalkthroughAxioms.lean`, that asserts the axiom
-set of at least one derivation per tactic family (basic, modal, temporal, discrete) in TM and
-in TM⁺. Then record a baseline: derivation-term size and elaboration time for each acceptance
-example and for one long script with at least five nested `lintro` steps, since `lintro`
-discharges through the deduction theorem. Write the figures and the command that reproduces
-them to a new file under `docs/development/`. DONE WHEN: the audit test passes in `lake test`
-and the baseline file exists with its reproduction command. Hard dependencies: none. No tactic
-or rule changes.
-
-**Proof mode: leaf closers from the decision procedures (M14a).** The leaf closer added by
-`proof_mode_close_leaves_with_automation` is propositional and TM-only. Research first: for
-each decision procedure under `FormalSystem/Metalogic/Decidability/`, establish whether it
-returns a native derivation or only a validity verdict; only the former can close a proof-mode
-goal, because nothing semantic may stand in for a derivation. For each procedure that returns a
-derivation, extend the leaf closer to use it on goals in its fragment. DONE WHEN: a written
-table in the usage guide classifies each procedure, and each usable one closes at least one
-non-propositional leaf in the tests, yielding a native derivation, with no `native_decide` and
-no new axiom. Hard dependency: `proof_mode_close_leaves_with_automation`.
-
-**Proof mode: countermodels for unclosed leaves (M14b).** This repository is paired with a
-ModelChecker in a dual-verification design: derivations from one side, countermodels from the
-other. Build the bridge at the point where it is most useful: a proof-mode leaf that no closer
-proves. Export the leaf (context and goal formula) in a form the ModelChecker accepts, and
-report a returned countermodel against the leaf. A countermodel is a diagnostic only and never
-closes a goal. FIRST read the architecture report produced by
-`proof_mode_transition_systems_tm_specifications` and follow its division of labour. DONE WHEN:
-an export command exists with a test on a non-derivable leaf, and the usage guide documents the
-round trip. Hard dependency: `proof_mode_transition_systems_tm_specifications`.
-
-**Proof mode: reference-manual chapter (M15).** The paper sources under `typst/` do not mention
-the derivation proof mode. Write a chapter that states the derivation rules the tactics
-implement (context substitution, cut, generalized K for each universal operator, temporal bind
-and progress, integer-time invariance, and the rules added since), the scope-safety guarantee
-(a hypothesis keeps its source context in its type), and the frame restriction each rule
-carries. Ground every stated rule in a named declaration under
-`FormalSystem/Theorems/ProofMode/`. DONE WHEN: the chapter compiles and
-`bash .claude/scripts/chapter-quality-check.sh` reports no blocking finding for it. Hard
-dependency: `proof_mode_reprove_temporal_slice`, so that the chapter documents the rule set
-after both adequacy measurements. Task type: typst.
+Each record's description states its milestone, its stream, and which of its edges are hard and
+which are sequencing only.
 
 ## Using this document with the roadmap
 
 `/roadmap` builds its picture from the open records and their dependencies. It does not read
-this file unless told to. The document reaches the roadmap in three ways.
+this file unless told to. Name it in a quoted instruction when the batches should follow the
+streams above:
 
-1. **Records filed from "Not yet filed".** Pass an entry to `/task`; the roadmap then places the
-   new record in a batch like any other.
-2. **A quoted instruction naming this file.** For example:
+```
+/roadmap "re-batch the proof-mode records against records/proof-mode.md: keep the batch
+boundary at the Perpetuity adequacy gate, and place records with no dependency on the gate in
+their own batches"
+```
 
-   ```
-   /roadmap "re-batch the proof-mode records against records/proof-mode.md: keep the batch
-   boundary at the Perpetuity adequacy gate, and place records with no hard dependency on the
-   gate in a side batch"
-   ```
-
-3. **Edge changes by the user.** Relaxing a sequencing-only dependency means removing a filed
-   edge, which the roadmap agent's contract does not cover. Do it after M0 lands and after open
-   decision 3 is settled.
-
-A reasonable order of use: file M0 and M13 first, since neither waits on anything; run
-`/roadmap` with the instruction above; then settle the open decisions as the gates report.
+Changing one of the four positions listed under Open decisions means adding or removing a filed
+edge, and removal is a step the roadmap agent's contract does not cover.
