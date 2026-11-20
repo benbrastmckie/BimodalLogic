@@ -1,63 +1,14 @@
 {
-  "status": "partial",
-  "dispatch_seq": 6,
-  "artifacts": [
-    {
-      "type": "handoff",
-      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-4-handoff-20261120T202114Z.md",
-      "summary": "Phase-end handoff for phase 4: the three review drafts state the decisions; lists which file states which; phase 5 (closing check) is next."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 7,
+  "started_at": "2026-11-20T20:25:00Z",
+  "artifacts": [],
   "partial_progress": {
-    "stage": "phase_4_completed",
-    "details": "Phase mission was phase 4 only. The three review drafts under specs/reviews/pr-reviews-2026-11-20/ state decisions (a), (b), (c), (d), (e), (g), (h) and (l) and carry no numbered pointer to an open decision. One deviation: a clause in pr8-review.md outside the named passages was removed because it contradicted (h). Phase 5 not started.",
-    "handoff_path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-4-handoff-20261120T202114Z.md",
+    "stage": "phase_5_started",
+    "details": "Phase 5 (cross-file consistency and closing check) dispatched; phases 1-4 completed in earlier dispatches.",
     "phases_completed": 4,
     "phases_total": 5
   },
-  "completion_data": {
-    "completion_summary": "Phase 4 of 5: the review drafts for PRs #7, #8 and #9 state the decided positions in place of the questions they asked, agree with the three revised records, and put the one undecided naming question to the contributor with the preference stated."
-  },
-  "modified_files": [
-    "specs/reviews/pr-reviews-2026-11-20/pr7-review.md",
-    "specs/reviews/pr-reviews-2026-11-20/pr8-review.md",
-    "specs/reviews/pr-reviews-2026-11-20/pr9-review.md"
-  ],
-  "memory_candidates": [],
-  "sapience_notes": [
-    {
-      "subject": "BimodalLogic PR #7 review draft, conditions on logical rewriting",
-      "value": "The review draft for collaborator PR #7 (lrewrite, lsimp, congruence kernel) makes surface separation a merge condition: the formula-equality path leaves lrewrite and lsimp and is exposed as the views pair lunfold / lfold with the first rows of the view table. The full views tier stays under proof_mode_views_tier. Order is M17, then M0, then M16. lrewrite and lsimp are outside gate one; M17's client is a second run of the gate-one selection with the two tactics permitted, reported apart from the verdict.",
-      "predicate": "decision is",
-      "ko_type": "decision",
-      "confidence": 0.9,
-      "source_loc": "specs/reviews/pr-reviews-2026-11-20/pr7-review.md"
-    },
-    {
-      "subject": "BimodalLogic semantic proof mode, placement told to the PR #9 contributor",
-      "value": "FormalSystem/Semantics/ is layer 1, not layer 2: the PR #9 contributor's 'Layer 1' comment in ProofModeTransport.lean was correct and the review line contradicting it was removed. The semantic mode sits in a directory of its own under FormalSystem/Semantics/ at layer 1, its soundness adapter is one module at layer 3 under FormalSystem/Metalogic/, and the views tier and the position and polarity planner must sit at layer 0 or 1 so a layer-1 mode can import them.",
-      "predicate": "correction is",
-      "ko_type": "insight",
-      "confidence": 0.9,
-      "source_loc": "records/proof-mode-architecture.md, section Three tiers"
-    },
-    {
-      "subject": "BimodalLogic semantic proof mode, measured client",
-      "value": "The countermodel half of the theorem library is a candidate client of the semantic mode, not an established one. The record records/semantic-proof-mode.md (to be written) must name declarations, the five in PlusNonValidities.lean and the five in StarNonValidities.lean being the obvious set, and have each proved again twice: with the semantic lemmas alone (the control) and with the tactics, both against the existing proofs. If the lemmas alone give the saving, the tactic language has no client there.",
-      "predicate": "decision is",
-      "ko_type": "decision",
-      "confidence": 0.9,
-      "source_loc": "specs/reviews/pr-reviews-2026-11-20/pr9-review.md, Purpose and measure"
-    },
-    {
-      "subject": "BimodalLogic PR #8 review draft, what remains a question to the contributor",
-      "value": "After the decisions were written in, the PR #8 review asks the contributor only one open design question: whether the luntil unfold / luntil fold keywords are renamed expand / contract so that fold and unfold belong to the views tier alone. The preference stated is to rename; it awaits the user's ruling. The proposed Until/Since induction statement is given in the review as proposed, argued by hand on the integers and not derived or machine-checked.",
-      "predicate": "finding is",
-      "ko_type": "insight",
-      "confidence": 0.85,
-      "source_loc": "specs/reviews/pr-reviews-2026-11-20/pr8-review.md"
-    }
-  ],
   "metadata": {
     "session_id": "sess_1795203869_8d33c7",
     "agent_type": "general-implementation-agent",

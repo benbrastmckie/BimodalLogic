@@ -438,36 +438,36 @@ not match is reported, not guessed at. Passages the report does not name are lef
 
 ---
 
-### Phase 5: Cross-file consistency and closing check [NOT STARTED]
+### Phase 5: Cross-file consistency and closing check [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The six files agree with each other and with the report, nothing is left silently
 undecided, and the touched-path check has been run.
 
 **Tasks**:
-- [ ] Build a table of the twelve questions against the six files: where each decision is
+- [x] Build a table of the twelve questions against the six files: where each decision is
       stated, or where it is listed as open. Every question has at least one record row. (f)
       appears as open in `theorem-library.md` and as a pointer in the other two records. (i) and
-      the keyword question appear as open with a recommendation.
-- [ ] `grep -rn -i 'open decision[s]* [0-9]' records specs/reviews/pr-reviews-2026-11-20`:
-      expect nothing.
-- [ ] `grep -rn 'layer 2' records specs/reviews/pr-reviews-2026-11-20`: every hit is about
-      `Theorems/`.
-- [ ] `grep -rn 'lunfold\|lfold' records specs/reviews/pr-reviews-2026-11-20`: the pair is
-      described the same way in each file (one pair, view name, one table).
-- [ ] Check every relative markdown link in the three records resolves, and that
-      `records/semantic-proof-mode.md` appears only in backticks.
-- [ ] Check the order M17, M0, M16 reads the same in `proof-mode.md` (three blocks and
-      "Dependency picture"), the architecture record and `pr7-review.md`.
-- [ ] Read-only: for tasks 935, 947, 950, 952, 969, 970, 971 and 972, read the description in
+      the keyword question appear as open with a recommendation. *(completed: table in the summary)*
+- [x] `grep -rn -i 'open decision[s]* [0-9]' records specs/reviews/pr-reviews-2026-11-20`:
+      expect nothing. *(completed: no hit)*
+- [x] `grep -rn 'layer 2' records specs/reviews/pr-reviews-2026-11-20`: every hit is about
+      `Theorems/`. *(completed: 4 hits, all about `Theorems/`)*
+- [x] `grep -rn 'lunfold\|lfold' records specs/reviews/pr-reviews-2026-11-20`: the pair is
+      described the same way in each file (one pair, view name, one table). *(completed: 10 hits, one description)*
+- [x] Check every relative markdown link in the three records resolves, and that
+      `records/semantic-proof-mode.md` appears only in backticks. *(completed: all resolve; backticks only)*
+- [x] Check the order M17, M0, M16 reads the same in `proof-mode.md` (three blocks and
+      "Dependency picture"), the architecture record and `pr7-review.md`. *(completed: the architecture record states the order by contribution, without milestone numbers, and agrees)*
+- [x] Read-only: for tasks 935, 947, 950, 952, 969, 970, 971 and 972, read the description in
       `specs/state.json` and list those that now contradict the records (D8). List any
-      `roadmap_milestones` entry that contradicts the order M17, M0, M16. Edit neither.
-- [ ] Run both record lints once more over `records`.
-- [ ] Run the touched-path check over the six files with `--task-dir` set to this task's
-      directory.
-- [ ] Fix any inconsistency found, in the file that is wrong, under that file's phase rules.
-- [ ] Write the summary with: the question-by-file table; the two items awaiting the user's
+      `roadmap_milestones` entry that contradicts the order M17, M0, M16. Edit neither. *(completed: 947, 950, 952, 969, 971 contradict; 970, 972 cite a stale number; 935 unrelated; roadmap M2 and M5 rationales stale; none edited)*
+- [x] Run both record lints once more over `records`. *(completed: 0 BLOCKING, 1 ADVISORY; 0 task references)*
+- [x] Run the touched-path check over the six files with `--task-dir` set to this task's
+      directory. *(completed: 82 passed, 3 failed, 10 skipped; two failures beyond the baseline, see Reasoned Exclusions)*
+- [x] Fix any inconsistency found, in the file that is wrong, under that file's phase rules. *(completed: one fix, M16 and M17 added to the two lists in "Gates" of `records/proof-mode.md`)*
+- [x] Write the summary with: the question-by-file table; the two items awaiting the user's
       ruling, each with options and recommendation; the stale task descriptions and roadmap
-      entries; and the statement that nothing was posted to GitHub.
+      entries; and the statement that nothing was posted to GitHub. *(completed)*
 
 **Timing**: 0.5 hours
 
@@ -505,18 +505,29 @@ the words "open decision" is not in the list, so treat it as a lower bound.
   `specs/reviews/pr-reviews-2026-11-20/` and this task's directory, beyond what was already
   modified when the phase began.
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| The verification clause "any other failing suite is a failure of this phase", as applied to `tests/test-lint-state-writer-boundary.sh` in the fallback set of the touched-path check | The suite tests `.claude/scripts/lint/lint-state-writer-boundary.sh` against fixtures it builds itself. It reads no file this task edits, and its subject is in the gitignored deploy tree, which this task does not write. Its failure says nothing about the six files. | Run alone after the phase's one edit: `26 passed, 1 failed`, the failing case being "--verbose did not name the read-only-open EXEMPT reason for the explicit 'r' case". `grep -c 'records/\|pr-reviews'` on the suite: 0. `cmp` of suite and subject against the core source store: identical. `git status --short` lists no path under `.claude/`. |
+| The same clause, as applied to `tests/test-stall-reprompt-wiring.sh` | The suite reads `skill-orchestrate/SKILL.md`, the orchestrate state-machine document and the postflight script, all under `.claude/`. It reads no file this task edits. | Run alone: `19 passed, 1 failed`, the failing case being "re-prompt predicate: Move 3 region does not appear to OR stall_suspected and stranded_suspected together". `grep -c 'records/\|pr-reviews'` on the suite: 0. `cmp` of the suite and `SKILL.md` against the core source store: identical. |
+
+The third failing suite, `tests/test-deploy-baseline-lib.sh`, is the one in the planning-time
+baseline. The complete gate set is deferred to the batch stage under the dispatch's Batch Gate
+Deferral section and was not run here.
+
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/check-record-versioning.sh records`: 0 BLOCKING.
-- [ ] `bash .claude/scripts/check-task-references.sh records`: 0 occurrences.
-- [ ] No pointer by decision number in the six files.
-- [ ] No "layer 2" attached to `FormalSystem/Semantics/` in the six files.
-- [ ] Each of the twelve questions is either stated as design in a record, with its rejected
+- [x] `bash .claude/scripts/check-record-versioning.sh records`: 0 BLOCKING.
+- [x] `bash .claude/scripts/check-task-references.sh records`: 0 occurrences.
+- [x] No pointer by decision number in the six files.
+- [x] No "layer 2" attached to `FormalSystem/Semantics/` in the six files.
+- [x] Each of the twelve questions is either stated as design in a record, with its rejected
       alternative, or listed as open with options and a recommendation.
-- [ ] M17, M0, M16 is the stated order, with no cycle among their dependency lines.
-- [ ] The four reversible positions in `records/proof-mode.md` are byte-identical.
-- [ ] No `gh` write command was run.
-- [ ] Touched-path check run and compared with the planning-time baseline.
+- [x] M17, M0, M16 is the stated order, with no cycle among their dependency lines.
+- [x] The four reversible positions in `records/proof-mode.md` are byte-identical.
+- [x] No `gh` write command was run.
+- [x] Touched-path check run and compared with the planning-time baseline.
 
 ## Artifacts & Outputs
 

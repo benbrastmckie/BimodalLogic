@@ -677,8 +677,9 @@ the work stops for user review so that no later record is dispatched on an unrev
 - On RE-PLAN, every milestone after M3 is held until its record is revised: M4, M5, M6b, M6c,
   M7, M8, M9a, M10, M11, M12, M14a, M14b, M15 and M21. This includes M6b, M6c, M7 and M21,
   which have no hard dependency on M3 and carry an edge on it for this reason.
-- M0, M6a, M9b, M13, M16, M18, M19, M20, M22 and M23 do not wait on the verdict. M16 adds no
-  rule: a view proves nothing. The library milestones add entries and records and no rule, M22
+- M0, M6a, M9b, M13, M16, M17, M18, M19, M20, M22 and M23 do not wait on the verdict. M16 adds no
+  rule: a view proves nothing. M17's tactics are outside the gate-one scripts and the verdict;
+  only its second run of the selection follows the sweep. The library milestones add entries and records and no rule, M22
   is metatheory, and M23 is a report.
 
 **Gate two (M5)** has no verdict as filed. Its output is a measured report and a missing-rule
@@ -687,7 +688,7 @@ the same form. M8, M10 and M15 wait on
 it because each takes the rule set after gate two as its input. M6c is ordered after gate one only.
 
 Nothing in this document weakens gate one. The work that runs before the verdict is M0, M6a,
-M9b, M13, M18, M19, M20, M22 and M23, which lie outside the measured rule set, and M1 and M2, which are the
+M9b, M13, M16, M17, M18, M19, M20, M22 and M23, which lie outside the measured rule set, and M1 and M2, which are the
 rule set.
 
 Every sweep is re-run by one command after any later change to the rule set. A fall in coverage
