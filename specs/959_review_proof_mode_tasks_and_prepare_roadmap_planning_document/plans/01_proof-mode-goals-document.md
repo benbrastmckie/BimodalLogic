@@ -106,7 +106,7 @@ run; it does not restate batch order or batch rationale.
 Phases within the same wave can execute in parallel. All three phases edit one file, so the
 order is strict.
 
-### Phase 1: Aim, Current State and Dimensions [COMPLETED]
+### Phase 1: Aim, Current State and Dimensions [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Write the framing half of the document on re-measured facts.
 
@@ -157,9 +157,15 @@ and writes the value observed, noting any difference in the summary. The count o
 - No task number, no `research/` path, no draft-history wording in the sections written.
 - `bash .claude/scripts/verify-touched.sh records/proof-mode.md` reports no failure.
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Verification criterion: `bash .claude/scripts/verify-touched.sh records/proof-mode.md` reports no failure | Not applicable to this deliverable. No suite maps to the path, so the script runs its 95-suite fallback, and the suites that fail are agent-system fixture tests that need the source store `agent-system/extensions/`, which this repository does not contain. None reads the markdown file. The covering check for this prose phase is the diff read-through. | Phase 1 run: `84 passed, 11 failed`; final-file run in Phase 3: `83 passed, 12 failed`, the same 11 plus `test-lint-state-writer-boundary.sh`, which passes when run alone (no `[FAIL]` line on rerun; intermittent). `test-generate-task-order.sh` prints `generate-task-order.sh not found (mode=source-store): .../agent-system/extensions/core/scripts/generate-task-order.sh`; `test-manifest-scripts-sync.sh` prints `agent-system/extensions does not exist`. Resolution summary of the run: `SELECT: (none)`, `OWED: records/proof-mode.md`, recorded in `records/full-sweep-owed.jsonl` in the task directory. |
+
 ---
 
-### Phase 2: Milestones, Dependency Picture, Gates and Lanes [COMPLETED]
+### Phase 2: Milestones, Dependency Picture, Gates and Lanes [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Write the core of the document: the milestone blocks and how they connect.
 
@@ -213,39 +219,45 @@ hypotheses for the three doubtful edges and are replaced by this phase's finding
 - Each of the three re-examined edges carries a stated reading and ground.
 - `bash .claude/scripts/verify-touched.sh records/proof-mode.md` reports no failure.
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Verification criterion: `bash .claude/scripts/verify-touched.sh records/proof-mode.md` reports no failure | Not applicable to this deliverable. No suite maps to the path, so the script runs its 95-suite fallback, and the suites that fail are agent-system fixture tests that need the source store `agent-system/extensions/`, which this repository does not contain. None reads the markdown file. Not re-run in this phase; the Phase 3 run covers the file including this phase's sections. | Phase 1 run: `84 passed, 11 failed`; final-file run in Phase 3: `83 passed, 12 failed`, the same 11 plus `test-lint-state-writer-boundary.sh`, which passes when run alone (no `[FAIL]` line on rerun; intermittent). `test-generate-task-order.sh` prints `generate-task-order.sh not found (mode=source-store): .../agent-system/extensions/core/scripts/generate-task-order.sh`; `test-manifest-scripts-sync.sh` prints `agent-system/extensions does not exist`. Resolution summary of the run: `SELECT: (none)`, `OWED: records/proof-mode.md`, recorded in `records/full-sweep-owed.jsonl` in the task directory. |
+
 ---
 
-### Phase 3: Open Decisions, Unfiled Work, Roadmap Use and Final Checks [NOT STARTED]
+### Phase 3: Open Decisions, Unfiled Work, Roadmap Use and Final Checks [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Close the document and check the whole file.
 
 **Tasks**:
-- [ ] Write **Open decisions**: the edges left undetermined in Phase 2; what "default" means for
+- [x] Write **Open decisions**: the edges left undetermined in Phase 2; what "default" means for
   the adoption milestone given the import invariant; whether `records/` gets a row in
   `ORGANISATION.md`; whether sequencing edges are relaxed once M0 lands, and that doing so is a
-  user step outside what `/roadmap` does.
-- [ ] Write **Not yet filed**: one entry per milestone marked "not filed" (M0, M9b, M12, M13,
+  user step outside what `/roadmap` does. *(completed)*
+- [x] Write **Not yet filed**: one entry per milestone marked "not filed" (M0, M9b, M12, M13,
   M14, M15, plus any Phase 2 added). Each entry is a self-contained description: what to build,
   the done-when, the files it is expected to touch, and its hard dependencies by slug or local
-  ID. An entry must read correctly when pasted into `/task` without the rest of the document.
-- [ ] Write **Using this document with the roadmap**: the three channels (tasks filed from the
+  ID. An entry must read correctly when pasted into `/task` without the rest of the document. *(completed)*
+- [x] Write **Using this document with the roadmap**: the three channels (tasks filed from the
   list above; a quoted `/roadmap` instruction naming `records/proof-mode.md`; edge changes by
-  the user), with one example instruction.
-- [ ] Read the whole file top to bottom once for consistency: milestone IDs, slugs, counts, and
-  section cross-references agree across sections.
-- [ ] Task-reference check: `bash .claude/scripts/check-task-references.sh` shows no finding for
-  `records/proof-mode.md`.
-- [ ] Draft-history check:
+  the user), with one example instruction. *(completed)*
+- [x] Read the whole file top to bottom once for consistency: milestone IDs, slugs, counts, and
+  section cross-references agree across sections. *(completed)*
+- [x] Task-reference check: `bash .claude/scripts/check-task-references.sh` shows no finding for
+  `records/proof-mode.md`. *(completed)*
+- [x] Draft-history check:
   `grep -nEi 'no longer|previously|formerly|used to|supersed|carried forward|withdrawn|\(v[0-9]+\)' records/proof-mode.md`
-  returns nothing, or each hit is read and is not draft-history language.
-- [ ] Path check: extract every backticked repository path from the file; each passes `test -e`
-  and none is reported by `git check-ignore`.
-- [ ] Slug check: every `proof_mode_*` slug in the file is a `project_name` in
-  `specs/state.json`.
-- [ ] Run `bash scripts/check-module-invariants.sh` only if it completes in bounded time on this
+  returns nothing, or each hit is read and is not draft-history language. *(completed)*
+- [x] Path check: extract every backticked repository path from the file; each passes `test -e`
+  and none is reported by `git check-ignore`. *(deviation: altered — three hits read and accepted: the globs `FormalSystem/*Language/` and `Plus*.lean`, and `Tests/BimodalTest/Automation/ProofMode/`, named as a directory M0 creates)*
+- [x] Slug check: every `proof_mode_*` slug in the file is a `project_name` in
+  `specs/state.json`. *(completed: 14 slugs, all present; the bare prefix `proof_mode_` is prose)*
+- [x] Run `bash scripts/check-module-invariants.sh` only if it completes in bounded time on this
   host (hard timeout, per `context/patterns/bounded-build-waiter.md`); record whether any finding
-  names `records/`. Do not edit other files to clear such a finding; report it in the summary.
-- [ ] Run `bash .claude/scripts/verify-touched.sh records/proof-mode.md`.
+  names `records/`. Do not edit other files to clear such a finding; report it in the summary. *(completed: ALL CHECKS PASSED in under 400s; no finding names records/)*
+- [x] Run `bash .claude/scripts/verify-touched.sh records/proof-mode.md`. *(deviation: altered — run on the final file; fails on suites unrelated to the deliverable, see Reasoned Exclusions)*
 
 **Timing**: 1 hour
 
@@ -267,17 +279,23 @@ Expected document length is 250 to 400 lines; this is an estimate, not a bar.
   is not run here. In a standalone run, run `bash .claude/scripts/verify-deploy.sh` instead.
 - The file has all nine sections and is non-empty.
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Verification criterion: `bash .claude/scripts/verify-touched.sh records/proof-mode.md` reports no failure | Not applicable to this deliverable. No suite maps to the path, so the script runs its 95-suite fallback, and the suites that fail are agent-system fixture tests that need the source store `agent-system/extensions/`, which this repository does not contain. None reads the markdown file. The complete gate set is deferred to the batch stage under the dispatch's Batch Gate Deferral directive. | Phase 1 run: `84 passed, 11 failed`; final-file run in Phase 3: `83 passed, 12 failed`, the same 11 plus `test-lint-state-writer-boundary.sh`, which passes when run alone (no `[FAIL]` line on rerun; intermittent). `test-generate-task-order.sh` prints `generate-task-order.sh not found (mode=source-store): .../agent-system/extensions/core/scripts/generate-task-order.sh`; `test-manifest-scripts-sync.sh` prints `agent-system/extensions does not exist`. Resolution summary of the run: `SELECT: (none)`, `OWED: records/proof-mode.md`, recorded in `records/full-sweep-owed.jsonl` in the task directory. |
+
 ## Testing & Validation
 
-- [ ] `records/proof-mode.md` has the sections: Aim, Where it stands, Dimensions, Milestones,
-  Dependency picture, Gates, Lanes, Open decisions, Not yet filed, and the roadmap-use section.
-- [ ] No task number anywhere in the file (`check-task-references.sh`).
-- [ ] No draft-history wording (grep in Phase 3).
-- [ ] Every cited path exists and is tracked or trackable (not gitignored).
-- [ ] Every dependency ID resolves to a block; the hard-dependency graph has no cycle.
-- [ ] Every figure about merged code was re-measured in Phase 1.
-- [ ] `git status --short` shows no change outside `records/proof-mode.md` and this task's
-  `specs/` directory from this work.
+- [x] `records/proof-mode.md` has the sections: Aim, Where it stands, Dimensions, Milestones,
+  Dependency picture, Gates, Lanes, Open decisions, Not yet filed, and the roadmap-use section. *(completed)*
+- [x] No task number anywhere in the file (`check-task-references.sh`). *(completed)*
+- [x] No draft-history wording (grep in Phase 3). *(completed)*
+- [x] Every cited path exists and is tracked or trackable (not gitignored). *(completed)*
+- [x] Every dependency ID resolves to a block; the hard-dependency graph has no cycle. *(completed)*
+- [x] Every figure about merged code was re-measured in Phase 1. *(completed)*
+- [x] `git status --short` shows no change outside `records/proof-mode.md` and this task's
+  `specs/` directory from this work. *(completed)*
 
 ## Artifacts & Outputs
 

@@ -1,17 +1,17 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "summary": "Wrote a three-phase, 3.5-hour plan for records/proof-mode.md, all phases on that one file in strict order. Phase 1 re-measures the merged state and writes aim, current state and dimensions; Phase 2 writes the milestone blocks, dependency picture, gates and lanes and re-examines three doubtful edges; Phase 3 writes open decisions, the unfiled list and roadmap-use section and runs the final checks. The plan validates with zero warnings; nothing else to record for the issue log beyond one win entry.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "Wrote records/proof-mode.md (578 lines): aim, measured current state, ten dimensions, 20 milestones with hard and sequencing-only dependencies, two gates, five lanes, eight open decisions and seven /task-ready unfiled entries. All report figures were re-measured and match; the three doubtful edges read as sequencing, with Until/Since induction left undetermined. All three phases closed with a reasoned exclusion for verify-touched.sh, which fails only on agent-system suites needing a source store this repository lacks.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/plans/01_proof-mode-goals-document.md",
-      "summary": "Three-phase plan to write the proof-mode goals document."
+      "type": "summary",
+      "path": "specs/959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/summaries/01_proof-mode-goals-document-summary.md",
+      "summary": "Implementation summary for the proof-mode goals document."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 3,
   "phases_total": 3,
   "blockers": [],
-  "next_action_hint": "Dispatch implement for task 959, starting at Phase 1.",
-  "dispatch_seq": 2
+  "next_action_hint": "Run postflight for task 959; the batch-level gate will show the same source-store-dependent suite failures."
 }

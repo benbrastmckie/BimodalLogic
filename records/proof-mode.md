@@ -443,3 +443,136 @@ rule can land first and the tactic, tests and guide entry follow. The rule half 
 The lanes are not safe to run in parallel today. Every filed record edits one test file and one
 guide, and none declares a `file_scope`, so nothing can detect two records colliding. M0 is the
 milestone that buys parallel lanes, and it has no predecessor.
+
+## Open decisions
+
+These need a ruling from the user. Nothing in this document decides them.
+
+1. **Is the linearity case split needed for Until and Since induction?** Introduction and
+   unfolding do not need it. The induction rule's formula is not stated yet, so this part of the
+   edge inside M4 is undetermined. It is settled when the plan for
+   `proof_mode_until_since_intro_unfold_induction` states the rule.
+2. **Which of M7 and M8 goes first?** As filed, M7 comes first, so its rules are written twice
+   (TM and TM⁺) and M8 then removes the copies. With M8 first, M7's rules are written once over
+   the interface, but the interface is designed without having seen a Dense or RTime rule.
+3. **Are the sequencing readings accepted?** Three were re-examined against the sources and read
+   as sequencing only: M4 and M6 before M7; M9a before M10; and the case split before Until and
+   Since introduction and unfolding. The others (M1 before M2, M1 to M5 before M6) rest on the
+   records' descriptions alone.
+4. **Are sequencing edges relaxed once M0 lands?** Relaxing one means removing a filed
+   dependency between two records. The roadmap agent's contract covers adding edges and
+   regrouping batches, not removing edges. Removal is a separate step by the user.
+5. **What does "default" mean for M12?** Proofs under `FormalSystem/Theorems/` cannot be written
+   in the mode. The candidates are: new example and case-study modules must use it; new derived
+   theorems get a proof-mode companion under `FormalSystem/Examples/`; or the mode stays optional
+   and M12 only fixes where its proofs live.
+6. **Where does the Minus instance live?** Its deduction theorem is at layer 3, so either the
+   instance sits at layer 3 or `FormalSystem/Metalogic/Conservativity/MinusDeduction.lean`, which
+   imports only the Minus derivation module, moves down. This bears on how M8 lays out the
+   interface.
+7. **Does `records/` get a row in `ORGANISATION.md`?** The directory holds this document and has
+   no entry in the "Everything else" table there.
+8. **Do M6 and M7 run before gate one?** They have no hard dependency on it, but a RE-PLAN
+   verdict may change them.
+
+## Not yet filed
+
+Seven milestones have no filed record. Each entry below is written to be passed to `/task` as it
+stands.
+
+**Proof mode: split the shared test and guide files (M0).** Every proof-mode record edits
+`Tests/BimodalTest/Automation/ProofModeTest.lean`, `docs/user-guide/derivation-proof-mode.md`
+and the READMEs in `FormalSystem/Automation/ProofMode/` and `FormalSystem/Theorems/ProofMode/`,
+which forces the records into one chain. Split the acceptance tests into one file per tactic
+family (basic, modal, temporal, discrete) in a new directory
+`Tests/BimodalTest/Automation/ProofMode/`, keeping every existing example unchanged and
+imported by `Tests/BimodalTest.lean`. Give the usage guide one clearly bounded section or file
+per family. Then add a `file_scope` to every open record whose slug begins `proof_mode_`,
+naming the family files it will edit. DONE WHEN: the 31 existing examples pass from the split
+files, the guide's content is unchanged apart from its division, and every open proof-mode
+record declares a `file_scope`. Hard dependencies: none. No Lean rule or tactic changes.
+
+**Proof mode: deduction theorems for the Star and Open calculi (M9b).** A proof-mode instance
+for an object language needs a deduction theorem, a generalized K rule per universal operator,
+and context substitution. TM has them in `FormalSystem/Theorems/`, TM⁺ in
+`FormalSystem/Theorems/ProofMode/PlusRules.lean`, and Minus in
+`FormalSystem/Metalogic/Conservativity/MinusDeduction.lean`. `StarDerivationTree` and
+`OpenDerivationTree` have none. Prove the three for each calculus, or, where one fails, write
+down the rule of the calculus that blocks it. DONE WHEN: each of Star and Open has the three
+results with no `sorry` and no new axiom, or a written obstruction in the usage guide. Expected
+files: new modules under `FormalSystem/StarLanguage/` and `FormalSystem/OpenLanguage/`. Hard
+dependencies: none. This is metatheory and needs no proof-mode interface.
+
+**Proof mode: adoption after the Perpetuity adequacy verdict (M12).** FIRST read the adequacy
+report produced by `proof_mode_reprove_perpetuity`; if its verdict is RE-PLAN, stop and report.
+On GO, decide and write down in `docs/user-guide/derivation-proof-mode.md` where proof-mode
+proofs live, which kinds of new derivation are to be written in the mode, and what "default"
+means given that `FormalSystem/Theorems/` is below `FormalSystem/Automation/` in the layer
+order and cannot import it. Then prove at least one module in the mode that is neither a test
+nor an adequacy module, under `FormalSystem/Examples/`. DONE WHEN: the guide section exists and
+the module builds. Hard dependency: `proof_mode_reprove_perpetuity` with a GO verdict. The
+choice among the candidate meanings of "default" needs the user's ruling before implementation.
+
+**Proof mode: axiom audit and cost baseline (M13).** No test states which axioms a proof-mode
+derivation depends on, and nothing measures the derivation terms the tactics build. Add a test
+module, on the pattern of `Tests/BimodalTest/WalkthroughAxioms.lean`, that asserts the axiom
+set of at least one derivation per tactic family (basic, modal, temporal, discrete) in TM and
+in TM⁺. Then record a baseline: derivation-term size and elaboration time for each acceptance
+example and for one long script with at least five nested `lintro` steps, since `lintro`
+discharges through the deduction theorem. Write the figures and the command that reproduces
+them to a new file under `docs/development/`. DONE WHEN: the audit test passes in `lake test`
+and the baseline file exists with its reproduction command. Hard dependencies: none. No tactic
+or rule changes.
+
+**Proof mode: leaf closers from the decision procedures (M14a).** The leaf closer added by
+`proof_mode_close_leaves_with_automation` is propositional and TM-only. Research first: for
+each decision procedure under `FormalSystem/Metalogic/Decidability/`, establish whether it
+returns a native derivation or only a validity verdict; only the former can close a proof-mode
+goal, because nothing semantic may stand in for a derivation. For each procedure that returns a
+derivation, extend the leaf closer to use it on goals in its fragment. DONE WHEN: a written
+table in the usage guide classifies each procedure, and each usable one closes at least one
+non-propositional leaf in the tests, yielding a native derivation, with no `native_decide` and
+no new axiom. Hard dependency: `proof_mode_close_leaves_with_automation`.
+
+**Proof mode: countermodels for unclosed leaves (M14b).** This repository is paired with a
+ModelChecker in a dual-verification design: derivations from one side, countermodels from the
+other. Build the bridge at the point where it is most useful: a proof-mode leaf that no closer
+proves. Export the leaf (context and goal formula) in a form the ModelChecker accepts, and
+report a returned countermodel against the leaf. A countermodel is a diagnostic only and never
+closes a goal. FIRST read the architecture report produced by
+`proof_mode_transition_systems_tm_specifications` and follow its division of labour. DONE WHEN:
+an export command exists with a test on a non-derivable leaf, and the usage guide documents the
+round trip. Hard dependency: `proof_mode_transition_systems_tm_specifications`.
+
+**Proof mode: reference-manual chapter (M15).** The paper sources under `typst/` do not mention
+the derivation proof mode. Write a chapter that states the derivation rules the tactics
+implement (context substitution, cut, generalized K for each universal operator, temporal bind
+and progress, integer-time invariance, and the rules added since), the scope-safety guarantee
+(a hypothesis keeps its source context in its type), and the frame restriction each rule
+carries. Ground every stated rule in a named declaration under
+`FormalSystem/Theorems/ProofMode/`. DONE WHEN: the chapter compiles and
+`bash .claude/scripts/chapter-quality-check.sh` reports no blocking finding for it. Hard
+dependency: `proof_mode_reprove_temporal_slice`, so that the chapter documents the rule set
+after both adequacy measurements. Task type: typst.
+
+## Using this document with the roadmap
+
+`/roadmap` builds its picture from the open records and their dependencies. It does not read
+this file unless told to. The document reaches the roadmap in three ways.
+
+1. **Records filed from "Not yet filed".** Pass an entry to `/task`; the roadmap then places the
+   new record in a batch like any other.
+2. **A quoted instruction naming this file.** For example:
+
+   ```
+   /roadmap "re-batch the proof-mode records against records/proof-mode.md: keep the batch
+   boundary at the Perpetuity adequacy gate, and place records with no hard dependency on the
+   gate in a side batch"
+   ```
+
+3. **Edge changes by the user.** Relaxing a sequencing-only dependency means removing a filed
+   edge, which the roadmap agent's contract does not cover. Do it after M0 lands and after open
+   decision 3 is settled.
+
+A reasonable order of use: file M0 and M13 first, since neither waits on anything; run
+`/roadmap` with the instruction above; then settle the open decisions as the gates report.

@@ -1,0 +1,102 @@
+{
+  "phase": 3,
+  "phase_name": "Open Decisions, Unfiled Work, Roadmap Use and Final Checks",
+  "started_at": "2026-11-20T06:59:24Z",
+  "last_updated": "2026-11-20T06:59:24Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Write Open decisions",
+      "status": "done",
+      "files_touched": [
+        "records/proof-mode.md"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Write Not yet filed",
+      "status": "done",
+      "files_touched": [
+        "records/proof-mode.md"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Write Using this document with the roadmap",
+      "status": "done",
+      "files_touched": [
+        "records/proof-mode.md"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "Read whole file for consistency",
+      "status": "done",
+      "files_touched": [
+        "records/proof-mode.md"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "Task-reference check",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 6,
+      "description": "Draft-history check",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 7,
+      "description": "Path check",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 8,
+      "description": "Slug check",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 9,
+      "description": "Run check-module-invariants.sh bounded",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 10,
+      "description": "Run verify-touched.sh",
+      "status": "done",
+      "files_touched": []
+    }
+  ],
+  "current_objective": 10,
+  "approaches_tried": [
+    {
+      "approach": "verify-touched.sh with a 170s bound",
+      "result": "failed",
+      "reason": "waited on the host gate lock held by a sibling dispatch and timed out; re-run with a 540s bound completed"
+    }
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "3.7",
+      "description": "Path check: every backticked repository path passes test -e",
+      "type": "altered",
+      "reason": "Three hits accepted after reading: two globs and one directory that M0 creates and the text names as new.",
+      "annotation": "*(deviation: altered \u2014 three hits read and accepted)*"
+    },
+    {
+      "task_id": "3.10",
+      "description": "Run verify-touched.sh records/proof-mode.md",
+      "type": "altered",
+      "reason": "Runs and fails on 11 agent-system fixture suites that need the absent source store, plus one intermittent suite; closed by reasoned exclusion.",
+      "annotation": "*(deviation: altered \u2014 fails on suites unrelated to the deliverable, see Reasoned Exclusions)*"
+    }
+  ],
+  "notes": "Full gate set deferred to the batch stage per the dispatch's Batch Gate Deferral directive; not run here. Document is 578 lines against an estimate of 250 to 400."
+}
