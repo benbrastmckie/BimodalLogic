@@ -1,5 +1,5 @@
 ---
-next_project_number: 970
+next_project_number: 971
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 970
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,960,962 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,960,962,970 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932,944,954,955,961,969 | 298,428,502,761,869,960 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876,945 | 429,497,763,873,944 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543,946 | 410,498,499,500,945,969 | algebraic-representation, decidability, metalogic, ... |
@@ -131,8 +131,19 @@ next_project_number: 970
     └─ 946 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier... (see above)
 962 [NOT STARTED] — MILESTONE M9b (records/proof-mode.md), STREAM: metatheory....
   └─ 953 [NOT STARTED] — With the interface as one class per operator family and... (see above)
+970 [NOT STARTED] — Investigate whether the stability operator ⊡ belongs in the...
 
 ## Tasks
+
+### 970. Investigate stability as modal family
+- **Status**: [NOT STARTED]
+- **Task Type**: logic
+- **Topic**: proof-mode
+- **Dependencies**: None
+
+**Description**: Investigate whether the stability operator ⊡ belongs in the Modal operator family or in a family of its own. records/theorem-library.md and records/proof-mode-architecture.md start from ⊡ and its dual ⟐ filed under Modal beside □ and ◇, sharing one parameterized statement of the S5 laws; this is milestone M23 of records/proof-mode.md and open decision 2 of records/theorem-library.md. Research only, no Lean required. Deliverable: a report under docs/development/ that (1) weighs the one-family layout (four fragments, operator set recorded per entry) against a separate Stability family (eight fragments) using the three proved facts: without Temporal ⊡ collapses to the identity on state-local formulas (plusStateLocal_stab_iff, FormalSystem/PlusLanguage/PlusStateLocal.lean); TM⁺ is not closed under uniform substitution because AS p → ⊡p holds for atoms and state-local formulas only; the tableau does not cover ⊡; (2) determines whether the modal operators of FormalSystem/OpenLanguage/ and FormalSystem/NomicLanguage/ are further instances of the same parameterized necessity laws at other strengths, which would make "necessity operator of a given strength" the abstraction; (3) reviews how cslib (Cslib/Foundations/Logic/ProofSystem.lean, the Modal*Hilbert bundles and HasBox) would host two necessity operators on one formula type; (4) recommends one layout and, if the recommendation is a separate family, lists every change needed in records/theorem-library.md, records/proof-mode-architecture.md, records/proof-mode.md and in the filed proof-mode tasks (module names, file_scope, interface classes). The design is to be revised if the investigation finds the merged family wrong. No dependencies; the operator-family layout move, the interface extraction and the library registry are cheaper once it has reported but do not wait on it
+
+---
 
 ### 969. Proof mode views tier
 - **Status**: [NOT STARTED]
