@@ -355,58 +355,58 @@ status that would contradict (k).
 
 ---
 
-### Phase 4: Review drafts [NOT STARTED]
+### Phase 4: Review drafts [COMPLETED]
 
 **Goal**: The three review drafts state the decisions and agree with the revised records.
 
 **Tasks**:
-- [ ] The files are untracked. Before editing, copy the three to a scratch directory outside the
-      repository so the read-through has a baseline.
-- [ ] Re-read the three revised records, so each review cites their final wording.
-- [ ] `pr7-review.md`, the bullet beginning "Whether `lrewrite` and `lsimp` may be used in the
+- [x] The files are untracked. Before editing, copy the three to a scratch directory outside the
+      repository so the read-through has a baseline. *(completed)*
+- [x] Re-read the three revised records, so each review cites their final wording. *(completed)*
+- [x] `pr7-review.md`, the bullet beginning "Whether `lrewrite` and `lsimp` may be used in the
       gate-one scripts is open decision 4": state (d). They are outside gate one; M17's client
-      is the second run of the selection; ask for the named declaration as before.
-- [ ] `pr7-review.md`, the bullets beginning "`lrewrite` currently does two different things"
+      is the second run of the selection; ask for the named declaration as before. *(completed)*
+- [x] `pr7-review.md`, the bullets beginning "`lrewrite` currently does two different things"
       and "The views tier is M16": state (l) and (c). The surface separation is a merge
       condition: the formula-equality path leaves `lrewrite` and `lsimp` and is exposed as
       `lunfold` / `lfold` with the first rows of the view table; the full tier stays under
       `proof_mode_views_tier`. Remove the offer to take the extraction on and the sentence that
       the names are open. Update the table row "Formula equalities, folding and unfolding inside
-      the rewriting tactics" (last cell "nothing, unless you take the extraction on") to match.
-- [ ] `pr7-review.md`, the bullets beginning "`⊡` is filed under Modal" and "`Kit` and `Step`
+      the rewriting tactics" (last cell "nothing, unless you take the extraction on") to match. *(completed)*
+- [x] `pr7-review.md`, the bullets beginning "`⊡` is filed under Modal" and "`Kit` and `Step`
       are generic": state (e), the structure with the operator as a field over `Kit`, fields as
       theorems, one step taking it. Say the prototype shows one definition gives the three
-      steps and does not show whether it lifts the `⊡` iteration limit.
-- [ ] `pr7-review.md`: leave the hold on M0 as it is. State the order M17, M0, M16 where the
-      bullet about M0 moving files says M0 is held.
-- [ ] `pr8-review.md`, the bullet beginning "Gate one's selection is fixed": state which two
+      steps and does not show whether it lifts the `⊡` iteration limit. *(completed)*
+- [x] `pr7-review.md`: leave the hold on M0 as it is. State the order M17, M0, M16 where the
+      bullet about M0 moving files says M0 is held. *(completed)*
+- [x] `pr8-review.md`, the bullet beginning "Gate one's selection is fixed": state which two
       rules may enter gate-one scripts and on what condition, and that the rest are measured at
-      gate two.
-- [ ] `pr8-review.md`, "**Induction.**": give the proposed statement, marked as proposed and not
+      gate two. *(completed)*
+- [x] `pr8-review.md`, "**Induction.**": give the proposed statement, marked as proposed and not
       yet derived, say backward induction is a different rule, and that the linearity edge is
-      sequencing only.
-- [ ] `pr8-review.md`, "**Leads-to.**": state (h). Present-inclusive is the named definition;
-      the strict rules stay as the layer beneath, labelled so.
-- [ ] `pr8-review.md`, the bullet beginning "The inclusive Until and Since definitions": name
+      sequencing only. *(completed)*
+- [x] `pr8-review.md`, "**Leads-to.**": state (h). Present-inclusive is the named definition;
+      the strict rules stay as the layer beneath, labelled so. *(deviation: altered — also removed the clause "M10's, if the strict layer is to stay as the base" from the list of what the PR should revise, which contradicted (h))*
+- [x] `pr8-review.md`, the bullet beginning "The inclusive Until and Since definitions": name
       the pair `lunfold` / `lfold`. Add the keyword question of D2 as a question to the
-      contributor with the preference stated.
-- [ ] `pr9-review.md`, the bullet beginning "Two open decisions in the architecture record":
+      contributor with the preference stated. *(completed)*
+- [x] `pr9-review.md`, the bullet beginning "Two open decisions in the architecture record":
       state (a) with layer 1, the three placements and the condition on views and planner, and
-      (b). Remove "yours to argue" for both; the reviews may still invite a view on argument.
-- [ ] `pr9-review.md`, the table row "Views and the position and polarity planner": add that
-      both sit at layer 0 or 1.
-- [ ] `pr9-review.md`, restructuring items 2 and 4: item 2 no longer asks the contributor to
+      (b). Remove "yours to argue" for both; the reviews may still invite a view on argument. *(completed)*
+- [x] `pr9-review.md`, the table row "Views and the position and polarity planner": add that
+      both sit at layer 0 or 1. *(completed)*
+- [x] `pr9-review.md`, restructuring items 2 and 4: item 2 no longer asks the contributor to
       settle the two decisions in the record; item 4 states the adapter at layer 3 above a
-      layer-1 mode.
-- [ ] `pr9-review.md`: remove the line "`ProofModeTransport.lean:57` says "Layer 1";
-      `Semantics/` is layer 2 in `ORGANISATION.md`." The contributor's "Layer 1" is correct.
-- [ ] `pr9-review.md`, "Purpose and measure": state (b) with the control run (lemmas alone, then
+      layer-1 mode. *(completed)*
+- [x] `pr9-review.md`: remove the line "`ProofModeTransport.lean:57` says "Layer 1";
+      `Semantics/` is layer 2 in `ORGANISATION.md`." The contributor's "Layer 1" is correct. *(completed)*
+- [x] `pr9-review.md`, "Purpose and measure": state (b) with the control run (lemmas alone, then
       tactics, against the existing proofs of the five declarations in each of
       `PlusNonValidities.lean` and `StarNonValidities.lean`), and that the countermodel half is
       a candidate client. Reword the closing bullet that says the architecture record's "open
-      decisions 2 and 3 are revised to point at it".
-- [ ] In all three files, replace any remaining pointer to a numbered open decision per D3.
-- [ ] Read the diff of each file against its scratch copy.
+      decisions 2 and 3 are revised to point at it". *(completed)*
+- [x] In all three files, replace any remaining pointer to a numbered open decision per D3. *(completed)*
+- [x] Read the diff of each file against its scratch copy. *(completed)*
 
 **Timing**: 0.75 hours
 
