@@ -9,7 +9,7 @@
     {
       "project_number": 958,
       "project_name": "repair_buildcontextexpr_modal_search",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "automation",
       "priority": "medium",
@@ -20,7 +20,7 @@
         "Tests/BimodalTest/Automation/LemmaDBTest.lean"
       ],
       "created": "2026-11-20T00:27:00Z",
-      "last_updated": "2026-11-20T00:27:00Z",
+      "last_updated": "2026-11-20T03:03:55Z",
       "audit_verdict": {
         "proposal": {
           "id": "repair_buildcontextexpr_modal_search",
@@ -71,7 +71,16 @@
           "semantic": true
         },
         "degradations_count": 453
-      }
+      },
+      "session_id": "sess_1795143109_c896f6",
+      "artifacts": [
+        {
+          "path": "specs/958_repair_buildcontextexpr_modal_search/reports/01_repair-buildcontextexpr-modal-search.md",
+          "type": "report",
+          "summary": "Compile-verified repair research for buildContextExpr: mkAppOptM is the convention match (working twin at ProofMode/Meta.lean), both Search.lean calls belong inside observing?, a blank-line linter collision must be cleared, and the full repair plus three modal_search acceptance tests already measure lake build / lake test green with zero warnings and no new axioms."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 957,

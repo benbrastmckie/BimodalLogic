@@ -43,7 +43,7 @@ next_project_number: 959
 
 ### Automation
 
-958 [NOT STARTED] — Repair FormalSystem/Tactic/Meta.lean's buildContextExpr,...
+958 [RESEARCHED] — Repair FormalSystem/Tactic/Meta.lean's buildContextExpr,...
 
 ### Completeness
 
@@ -123,10 +123,11 @@ next_project_number: 959
 ## Tasks
 
 ### 958. Repair buildcontextexpr modal search
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
+- **Research**: [958_repair_buildcontextexpr_modal_search/reports/01_repair-buildcontextexpr-modal-search.md]
 
 **Description**: Repair FormalSystem/Tactic/Meta.lean's buildContextExpr, which throws on every call and hard-fails modal_search on any box-headed goal.
 
