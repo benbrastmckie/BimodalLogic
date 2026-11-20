@@ -115,15 +115,16 @@ next_project_number: 960
                       └─ 953 [NOT STARTED] — Proof mode: instances for the other object languages. Using...
                         └─ 956 [NOT STARTED] — Proof mode: leads-to and invariance library. lprogress...
                           └─ 957 [NOT STARTED] — Research: verifying transition systems against TM...
-959 [NOT STARTED] — Review the proof-mode tasks that exist already, and prepare a...
+959 [RESEARCHED] — Review the proof-mode tasks that exist already, and prepare a...
 
 ## Tasks
 
 ### 959. Review proof mode tasks and prepare roadmap planning document
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: proof-mode
 - **Dependencies**: None
+- **Research**: [959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/reports/01_proof-mode-roadmap-review.md]
 
 **Description**: Review the proof-mode tasks that exist already, and prepare a document in /home/benjamin/Projects/BimodalLogic/records/proof-mode.md which outlines the aims to build on the work already merged into main that develops the proof mode, while also surveying the other dimensions to be developed, looking for natural joints that can be set out as independent milestones, some of which may have certain dependencies. This will be used to run /roadmap afterward; the aim is a long-horizon goals document outlining the work ahead and the possible divisions of labor
 
