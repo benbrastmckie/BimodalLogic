@@ -38,8 +38,8 @@ and the second run gives the same information without moving the gate.
 3. **Nothing semantic stands in for a derivation.** Soundness carries a derivation to truth.
    Nothing carries truth to a derivation.
 4. **A rule's statement names only the operators it is about.** Rules for one operator family are
-   stated without any other; rules for an interaction name exactly the families that interact,
-   Boolean included.
+   stated without any other; rules for an interaction name the families that interact, and
+   every interaction includes Boolean.
 5. **Each rule is proved once.** Languages are instances of an interface, not copies of a file.
 6. **A language extension adds modules and changes none.**
 
@@ -157,19 +157,30 @@ formula type alone cannot hold two instances for TM⁺.
 
 ### Interactions
 
-An interaction is its own module, named by exactly the families its statements join. Boolean
-counts as a family here: a rule that names a modal operator and an implication is filed under
-Modal with Boolean, never under Modal.
+An interaction is its own module, named by the families its statements join, and every
+interaction includes Boolean: a rule that names a modal operator and an implication is filed
+under Modal with Boolean, never under Modal, and a rule that joins Modal and Temporal is filed
+under Modal with Temporal with Boolean whether or not its statement names a connective. So
+every class other than `Boolean` itself extends `Boolean`, and the interaction modules carry
+exactly the names of the theorem library's fragments.
+
+The alternative is a `ModalTemporal` module for the rules that join the two families and name
+no connective, the `□`-facts crossing into temporal scopes. Its merit: those rules are pure, so
+the purity rule would hold for an interaction as it does for a family. It is rejected because
+the module would hold a handful of rules, no language here has Modal and Temporal without
+Boolean, and no library fragment corresponds to it, so the scheme would carry a name used in
+one of its six places.
 
 | Interaction | Module | Content |
 |---|---|---|
 | Modal with Boolean | `ModalBoolean` | K as a formula, distribution of `□` over `∧` and of `◇` over `∨`, duality, each also for `⊡` and `⟐`; `□φ → ⊡φ`; the collapse `φ ↔ ⊡φ` for state-local `φ` |
 | Temporal with Boolean | `TemporalBoolean` | distribution of `G` and `H`, the connecting axioms, leads-to consequence, transitivity and cases |
-| Modal with Temporal | `ModalTemporal` | `□`-facts crossing into `G`, `H` and always scopes, by MF and TF, stated as scope rules; pasting for `⊡`, with its pure-future and pure-past side conditions |
-| Modal with Temporal with Boolean | `ModalTemporalBoolean` | MF and TF as formulas, the perpetuity principles, the pasting schemata as formulas, `Will`, `will`, `Could`, `could` |
+| Modal with Temporal with Boolean | `ModalTemporalBoolean` | `□`-facts crossing into `G`, `H` and always scopes, by MF and TF, stated as scope rules; MF and TF as formulas; the perpetuity principles; pasting for `⊡`, with its pure-future and pure-past side conditions, as scope rules and as formulas; `Will`, `will`, `Could`, `could` |
 
 Within a module the rules for `□` alone come first and those that name `⊡` are a section of
-their own, so that the part TM instantiates can be read off.
+their own, so that the part TM instantiates can be read off. Within `ModalTemporalBoolean` the
+scope rules, whose statements name no connective, are a section of their own ahead of the
+formulas.
 
 ### Frame class
 
@@ -191,11 +202,13 @@ Boolean, followed by a frame class if it needs one. The same names are used for:
 - the tactic modules under `FormalSystem/Automation/ProofMode/`;
 - the test files under `Tests/BimodalTest/Automation/ProofMode/`;
 - the guide pages under `docs/user-guide/proof-mode/`;
-- the interface: one class per family carrying its pure rules, and one class per interaction
-  extending exactly the families it joins;
+- the interface: the `Boolean` class, one class per further family carrying its pure rules
+  and extending `Boolean`, and one class per interaction extending the classes of the families
+  it joins;
 - the fragments of the theorem library. A fragment is a set of families with Boolean, and it
   contains the rules of every module whose families it includes: the library's `ModalBoolean`
-  is this scheme's `Modal` and `ModalBoolean` together. See
+  is this scheme's `Modal` and `ModalBoolean` together, and its `ModalTemporalBoolean` adds
+  `Temporal`, `TemporalBoolean` and this scheme's `ModalTemporalBoolean`. See
   [theorem-library.md](theorem-library.md).
 
 A language is an instance of the classes for the operators it has, and supplies the Modal
@@ -213,7 +226,8 @@ A new operator family (a counterfactual, a metric operator, a nominal) adds:
 
 1. one pure module and one class for the family;
 2. one interaction module and class with Boolean;
-3. one further interaction module and class for each existing family it has a rule with;
+3. one further interaction module and class, Boolean included, for each existing family it has
+   a rule with;
 4. its views, for any operator it defines;
 5. its fragments in the theorem library, with entries in both polarities, the conservativity
    theorems for the new edges, and a sweep over a selection of the entries.
@@ -237,8 +251,8 @@ module.
 | The layout itself: modules, tests and guide pages by family | all | all | `proof_mode_split_shared_test_and_guide_files` |
 | Named assumptions, cut, connective rules | Derivation | Boolean | merged |
 | `□` and `⊡` scopes carrying facts by 4 and 5 | Derivation | Modal | `proof_mode_s5_aware_box_scopes` |
-| `□`-facts into temporal scopes | Derivation | Modal with Temporal | `proof_mode_cross_modal_scopes_mf_tf` |
-| always and sometimes | Derivation | Temporal; Modal with Temporal for `□`-facts entering them | `proof_mode_always_sometimes_scopes` |
+| `□`-facts into temporal scopes | Derivation | Modal with Temporal with Boolean, in its scope-rule section | `proof_mode_cross_modal_scopes_mf_tf` |
+| always and sometimes | Derivation | Temporal; Modal with Temporal with Boolean for `□`-facts entering them | `proof_mode_always_sometimes_scopes` |
 | Carrying `G` and `H` facts across steps | Derivation | Temporal | contributed; one carrying table shared with the two scope records above |
 | Until and Since introduction and monotonicity | Derivation | Temporal | `proof_mode_until_since_intro_unfold_induction`; introduction contributed |
 | One-step unfolding and folding, backward induction | Derivation | Temporal at ZTime | same record; contributed, with folding at every class |
