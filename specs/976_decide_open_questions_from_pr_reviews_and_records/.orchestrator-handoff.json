@@ -1,17 +1,16 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "summary": "Wrote a five-phase, 3.5-hour plan that writes the research decisions into the three records and the three PR review drafts, with a closing cross-file consistency phase. Question (i) and the fold/unfold keyword question proceed on the research recommendations and stay listed as awaiting the user's ruling. Three issues were recorded: the report's pr9-review.md line numbers are wrong, removed decisions leave numbered pointers stale, and one fallback suite already fails on the untouched tree.",
+  "status": "partial",
+  "dispatch_seq": 3,
+  "phases_completed": 1,
+  "phases_total": 5,
+  "summary": "Phase 1 (architecture record) is complete and committed as 58f1db6ad. records/proof-mode-architecture.md states decisions (a)-(e) and the consequences of (g)(h)(l), each with its rejected alternative; its Open decisions list holds the stability-operator pointer and the unfold/fold keyword question. Both record lints pass at baseline. Phases 2-5 remain; this dispatch's mission was phase 1 only.",
+  "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/plans/01_record-review-revision-plan.md",
-      "summary": "Five-phase plan: one phase per record, one for the review drafts, one closing consistency check."
+      "type": "handoff",
+      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-1-handoff-20261120T200729Z.md",
+      "summary": "Phase-end handoff for phase 1 with the wording constraints phases 2-5 must respect."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 5,
-  "blockers": [],
-  "next_action_hint": "implement",
-  "dispatch_seq": 2
+  "next_steps": "Dispatch phase 2 (records/proof-mode.md) and phase 3 (records/theorem-library.md)."
 }

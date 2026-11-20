@@ -1,14 +1,75 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "dispatch_seq": 3,
-  "started_at": "2026-11-20T12:06:00Z",
-  "artifacts": [],
+  "artifacts": [
+    {
+      "type": "handoff",
+      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-1-handoff-20261120T200729Z.md",
+      "summary": "Phase-end handoff for phase 1: architecture record revised; phases 2 and 3 are next."
+    }
+  ],
   "partial_progress": {
-    "stage": "initializing",
-    "details": "Implement dispatch 3 started; phase 1 only.",
-    "phases_completed": 0,
+    "stage": "phase_1_completed",
+    "details": "Phase mission was phase 1 only. records/proof-mode-architecture.md states decisions (a)-(e) and the consequences of (g)(h)(l); Open decisions holds two entries. Committed as 58f1db6ad. Phases 2-5 not started.",
+    "handoff_path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-1-handoff-20261120T200729Z.md",
+    "phases_completed": 1,
     "phases_total": 5
   },
+  "completion_data": {
+    "completion_summary": "Phase 1 of 5: the architecture record now states the views pair, the semantic mode's placement and its record-and-client condition, the gate-one rule on rewriting, and the S5 structure carrier, each with its rejected alternative."
+  },
+  "modified_files": ["records/proof-mode-architecture.md"],
+  "memory_candidates": [],
+  "sapience_notes": [
+    {
+      "subject": "BimodalLogic semantic proof mode placement",
+      "value": "The architecture record places the semantic mode by kind of code: lemmas in FormalSystem/Semantics/ (layer 1), tactics in a directory of their own under FormalSystem/Semantics/ (layer 1), and one soundness adapter module at layer 3 under FormalSystem/Metalogic/ holding the soundness lemma and luse_derivation. The condition is that the views tier and the position and polarity planner sit at layer 0 or 1. FormalSystem/Automation/ was rejected because a layer-3 mode is unusable by the semantic proofs at layers 1 and 2.",
+      "predicate": "decision is",
+      "ko_type": "decision",
+      "confidence": 0.85,
+      "source_loc": "records/proof-mode-architecture.md, section Three tiers"
+    },
+    {
+      "subject": "BimodalLogic layer of FormalSystem/Semantics",
+      "value": "FormalSystem/Semantics/ is layer 1, not layer 2 (ORGANISATION.md layer table; Theorems/ is layer 2). The architecture record's open-decision list had said layer 2; no 'layer 2' remains in records/proof-mode-architecture.md.",
+      "predicate": "correction is",
+      "ko_type": "correction",
+      "confidence": 0.95,
+      "source_loc": "ORGANISATION.md:17"
+    },
+    {
+      "subject": "BimodalLogic proof-mode views tier tactic names",
+      "value": "The views tier has one pair, lunfold and lfold, each taking a view name from one table whose rows give name, folded shape, unfolded shape and the relating equality; a formula equality becomes a view by registering a row, and the elaborators' operator matching reads the same table. One tactic per view was rejected on count (26 defined operators in Formula, 22 in PlusFormula) and because each language extension would add syntax.",
+      "predicate": "decision is",
+      "ko_type": "decision",
+      "confidence": 0.85,
+      "source_loc": "records/proof-mode-architecture.md, section Three tiers"
+    },
+    {
+      "subject": "BimodalLogic shared S5 statement carrier",
+      "value": "The shared S5 rules are carried by a structure taking the necessity operator as a field, instantiated once per operator per language (TM at box; TM-plus at box and at the stability operator); its fields are theorems because the three axiom bases differ. A class indexed by the operator was rejected: instance resolution fails on an operator presented through a def.",
+      "predicate": "decision is",
+      "ko_type": "decision",
+      "confidence": 0.9,
+      "source_loc": "records/proof-mode-architecture.md, section Operator families"
+    },
+    {
+      "subject": "BimodalLogic gate-one measurement and rewriting",
+      "value": "lrewrite and lsimp are outside gate-one scripts and verdict; rewriting's client is a second run of the gate-one selection with them permitted, reported separately. Of the contributed temporal rules only G/H carrying and whole-judgment time reflection may enter gate-one scripts, each only once adopted into M1 before the selection is fixed.",
+      "predicate": "decision is",
+      "ko_type": "decision",
+      "confidence": 0.85,
+      "source_loc": "records/proof-mode-architecture.md, section Aim and measure"
+    },
+    {
+      "subject": "BimodalLogic architecture record open decisions",
+      "value": "records/proof-mode-architecture.md has two open decisions: whether the stability operator stays in the Modal family (a pointer to theorem-library.md, examined in investigate_stability_as_modal_family), and whether the contributed luntil unfold / luntil fold keywords are renamed expand / contract (recommended; awaiting the user's ruling).",
+      "predicate": "finding is",
+      "ko_type": "insight",
+      "confidence": 0.9,
+      "source_loc": "records/proof-mode-architecture.md, section Open decisions"
+    }
+  ],
   "metadata": {
     "session_id": "sess_1795203869_8d33c7",
     "agent_type": "general-implementation-agent",
