@@ -1,0 +1,54 @@
+{
+  "status": "researched",
+  "started_at": "2026-11-20T19:45:35Z",
+  "completed_at": "2026-11-20T19:57:00Z",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/reports/01_open-questions-decisions.md",
+      "summary": "Decisions with reasons and rejected alternatives for the twelve open questions (a)-(l), two needs-user-ruling items listed first, and the edit lists for the three records and three review files."
+    }
+  ],
+  "next_steps": "Run /orchestrate 976 to create implementation plan",
+  "user_decision": {
+    "question": "What does 'default' mean for proof-mode adoption (M12), given that proofs under FormalSystem/Theorems/ cannot be written in the mode?",
+    "options": [
+      "A+B — library registration requires a proof-mode script or a recorded failure class, and new Examples/ and case-study modules are written in the mode; Theorems/ exempt by layering; contingent on a GO at gate one",
+      "B only — library registration requires a script or a failure class; examples and case studies stay free",
+      "C — the mode stays optional outside the library's sweeps (requires rewriting M12's done-when)"
+    ],
+    "recommended": "A+B — library registration requires a proof-mode script or a recorded failure class, and new Examples/ and case-study modules are written in the mode; Theorems/ exempt by layering; contingent on a GO at gate one",
+    "blocking": false
+  },
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, FormalSystem/Semantics/ is layer 1 and FormalSystem/Theorems/ is layer 2 (LAYERS in scripts/measure-refactor-partitions.py; ORGANISATION.md). Text saying Semantics is layer 2 is wrong. A module placed under Semantics/ can import only layers 0-1, so anything it shares with Automation/ (layer 3) must live at layer 0 or 1, e.g. FormalSystem/Tactic/.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/976_decide_open_questions_from_pr_reviews_and_records/reports/01_open-questions-decisions.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["layer order", "Semantics", "Theorems", "import closure", "ORGANISATION"]
+    },
+    {
+      "content": "Collaborator PR heads in BimodalLogic are available as local refs pr/N-head; a module's import closure on a PR can be computed with git ls-tree and git show without checking out or building the branch.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/976_decide_open_questions_from_pr_reviews_and_records/reports/01_open-questions-decisions.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["pull request", "import closure", "git show", "pr head", "review"]
+    },
+    {
+      "content": "A Lean class indexed by an operator function (class C (box : L -> L)) admits two instances on one formula type and resolves at the constant and at its eta-expansion, but fails to resolve when the operator is presented through a def. A structure with the operator as a field has no such failure. TM box, TM-plus box and the stability operator have three different S5 axiom bases, so a shared S5 statement must take theorems, not axioms, as fields.",
+      "category": "PATTERN",
+      "source_artifact": "specs/976_decide_open_questions_from_pr_reviews_and_records/reports/01_open-questions-decisions.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["typeclass", "structure", "S5", "stability operator", "instance resolution", "Kit"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795203869_8d33c7_976",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 12
+  }
+}
