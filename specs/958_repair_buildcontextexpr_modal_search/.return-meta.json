@@ -1,46 +1,30 @@
 {
-  "status": "researched",
-  "started_at": "2026-11-19T18:52:59-08:00",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/958_repair_buildcontextexpr_modal_search/reports/01_repair-buildcontextexpr-modal-search.md",
-      "summary": "Compile-verified repair research for buildContextExpr: mkAppOptM is the convention match (working twin at ProofMode/Meta.lean), both Search.lean calls belong inside observing?, a blank-line linter collision must be cleared, and the full repair plus three modal_search acceptance tests already measure lake build / lake test green with zero warnings and no new axioms."
+      "type": "plan",
+      "path": "specs/958_repair_buildcontextexpr_modal_search/plans/01_repair-buildcontextexpr-modal-search.md",
+      "summary": "Single-phase plan (1.25h) repairing buildContextExpr via mkAppOptM, relocating both Search.lean call sites inside their observing? blocks, adding invoked regression plus three modal_search acceptance examples, and regenerating two coupled line-count surfaces in the same phase."
     }
   ],
-  "next_steps": "Run /orchestrate 958 to create the implementation plan; a single phase suffices and the report carries the verified edit set and test bodies.",
-  "metadata": {
-    "session_id": "sess_1795143109_c896f6_958",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "findings_count": 13
-  },
-  "modified_files": [
-    "specs/958_repair_buildcontextexpr_modal_search/reports/01_repair-buildcontextexpr-modal-search.md"
-  ],
+  "next_steps": "Run /orchestrate 958 to execute the plan",
+  "phase_count": 1,
+  "estimated_hours": 1.25,
+  "dependency_waves": 1,
   "memory_candidates": [
     {
-      "content": "Lean 4 AppBuilder arity trap in BimodalLogic: mkAppM's Array Expr holds only EXPLICIT arguments, so passing a type for an implicit parameter (e.g. mkAppM ``List.nil #[formulaType]) raises 'too many explicit arguments provided to @List.nil' on every input, including the empty list. The repo contains both the broken instance (FormalSystem/Tactic/Meta.lean buildContextExpr) and a line-for-line correct twin (FormalSystem/Automation/ProofMode/Meta.lean contextExpr) using mkAppOptM ``List.nil #[some type]. Meta.mkListLit (mkConst ``Formula) formulas produces a syntactically identical Expr and is a one-line alternative. A MetaM helper's failure is a runtime elaborator failure, never a compile error, so a #check pins the signature of a function that throws on every call -- only an invoked #eval probe is coverage.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/958_repair_buildcontextexpr_modal_search/reports/01_repair-buildcontextexpr-modal-search.md",
-      "confidence": 0.95,
-      "suggested_keywords": ["mkAppM", "mkAppOptM", "mkListLit", "AppBuilder", "MetaM", "implicit arguments", "lean4 metaprogramming"]
-    },
-    {
-      "content": "BimodalLogic's package-level weak.linter.mathlibStandardSet rejects a blank line inside a command unless a comment follows it ('Please, write a comment here or remove this line, but do not place empty lines within commands!'). Consequence when refactoring a Lean do-block: moving a statement and its explanatory comment together can leave a legal-looking blank line that newly trips this linter, failing a zero-warning gate. Invisible to review; only a compiled lake build surfaces it.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/958_repair_buildcontextexpr_modal_search/reports/01_repair-buildcontextexpr-modal-search.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["linter.style", "mathlibStandardSet", "empty lines within commands", "zero-warning gate", "lakefile leanOptions"]
-    },
-    {
-      "content": "Research-phase working-tree probe discipline on BimodalLogic's shared tree: to compile-verify a candidate repair during research, copy the target files to the session scratchpad first, patch in place, build through lake-build-guard.sh, then restore from the saved copies and confirm with md5sum plus an empty 'git diff -- <dirs>'. Do NOT use 'git checkout -- <path>' to revert: guard-destructive-git.sh blocks the pathspec-discard form whenever the tree is dirty at all, which it routinely is when other sessions hold uncommitted specs/ changes. Also run the counterfactual build (repair reverted, test kept) to prove the new test actually discriminates rather than passing vacuously.",
-      "category": "WORKFLOW",
-      "source_artifact": "specs/958_repair_buildcontextexpr_modal_search/reports/01_repair-buildcontextexpr-modal-search.md",
+      "content": "A Lean repair verified green by lake build and lake test is NOT yet verified committable in BimodalLogic. Any staged .lean path triggers .githooks/pre-commit, which blocks on scripts/typst-sync-check.sh --counts-only drift, and that check compares typst/generated/status.typ's formalsystem-line-count and tests-line-count against raw `find <dir> -name '*.lean' -exec cat + | wc -l`. A change that moves raw line counts without moving code or comment counts -- deleting blank lines is the clean example -- drifts the typst surface while leaving the root README.md inventory totals (which count code and comment lines separately) untouched. Separately, per-directory README BEGIN GENERATED blocks carry each file's RAW line count, so those drift too. A plan author must schedule `scripts/typst-sync-check.sh --fix` and `scripts/check-module-invariants.sh --emit-inventory` in the SAME phase as the Lean line-count change, because the typst surface is commit-blocking and cannot be deferred to a reconciliation phase. A research dispatch that verifies via builds alone never exercises this gate, so the collision reliably surfaces first at plan or implement time.",
+      "category": "PATTERN",
+      "source_artifact": "specs/958_repair_buildcontextexpr_modal_search/plans/01_repair-buildcontextexpr-modal-search.md",
       "confidence": 0.85,
-      "suggested_keywords": ["compile-verify-before-recommend", "guard-destructive-git", "scratchpad revert", "counterfactual build", "lake-build-guard"]
+      "suggested_keywords": ["lean-line-count", "pre-commit-gate", "typst-sync-check", "generated-surfaces", "plan-authoring", "blank-line-deletion"]
     }
-  ]
+  ],
+  "metadata": {
+    "session_id": "sess_1795143109_c896f6_958",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 2
 }

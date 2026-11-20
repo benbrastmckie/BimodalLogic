@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 1,
+  "summary": "Wrote a single-phase implementation plan for task 958 at specs/958_repair_buildcontextexpr_modal_search/plans/01_repair-buildcontextexpr-modal-search.md. The plan adopts research's measured repair (1) (mkAppOptM ``List.nil #[some formulaType]) on convention grounds, resolves the open observing?-placement question as yes for both Search.lean call sites with the two stray blank lines deleted, and folds the invoked buildContextExpr MetaM probe plus three modal_search acceptance examples into LemmaDBTest.lean's MetaHelperProbes section. One phase deliberately: a source-only phase would have no discriminating verification, since lake build BimodalTest was already green pre-repair. Added one gate collision research could not have hit without committing: the phase moves typst/generated/status.typ's formalsystem-line-count and tests-line-count plus FormalSystem/Automation/Tactics/README.md's generated Search.lean row, and the typst surface is pre-commit-blocking, so both regenerations are scheduled in the same phase.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/958_repair_buildcontextexpr_modal_search/plans/01_repair-buildcontextexpr-modal-search.md",
+      "summary": "Single-phase plan: mkAppOptM repair at Meta.lean:113, both Search.lean calls moved inside observing? with the two stray blank lines deleted, invoked buildContextExpr probe plus three modal_search acceptance examples in LemmaDBTest.lean, and same-phase regeneration of the two coupled generated line-count surfaces."
+    }
+  ],
+  "dispatch_seq": 2
+}

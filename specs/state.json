@@ -9,18 +9,25 @@
     {
       "project_number": 958,
       "project_name": "repair_buildcontextexpr_modal_search",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "automation",
       "priority": "medium",
       "description": "Repair FormalSystem/Tactic/Meta.lean's buildContextExpr, which throws on every call and hard-fails modal_search on any box-headed goal.\n\nMEASURED BUG (confirmed live at FormalSystem/Tactic/Meta.lean:113): the line is `let mut result <- mkAppM ``List.nil #[formulaType]`, but List.nil's type argument is IMPLICIT, so mkAppM raises \"too many explicit arguments provided to @List.nil\" on every input, the empty list included. Both consumers -- FormalSystem/Automation/Tactics/Search.lean:475 (tryModalK) and :527 (tryTemporalK) -- call it OUTSIDE their `observing?` block, so the exception propagates rather than being caught as a failed search branch. Consequence: `example : |-[FrameClass.Base] box (p imp p) := by modal_search` fails with that AppBuilder error.\n\nFIX: apply one of two repairs, both already compiled and verified working: (1) `mkAppOptM ``List.nil #[some formulaType]`, or (2) `Lean.mkApp (Lean.mkConst ``List.nil [Level.zero]) formulaType`. Prefer whichever better matches the surrounding code's conventions. Also assess whether the two Search.lean call sites belong INSIDE their `observing?` blocks -- a genuine elaboration failure there should be a failed search branch, not a hard tactic error.\n\nTESTS: existing coverage only `#check`s buildContextExpr without invoking it (deliberately -- the repair was out of scope for the test-coverage work that found this), which is exactly why the bug survived. Add a regression test that actually INVOKES buildContextExpr, on the empty list and on a non-empty list, plus a modal_search acceptance test on a box-headed goal. Fold these into Tests/BimodalTest/Automation/LemmaDBTest.lean, which already holds the MetaM probes for Tactic/Meta.lean's helpers.\n\nVERIFICATION: `lake build` and `lake test` green with zero warnings; the box-headed modal_search example compiles; no new axioms.\n\nBACKLOG NOTE: the proposal audit flags open task 955 (proof_mode_close_leaves_with_automation) as a possible duplicate at semantic score 0.47 with no shared paths. It is not a duplicate: 955 names modal_search only to rule it out as a default closer, is scoped to FormalSystem/Automation/Tactics/, and would CONSUME this broken function as a bounded fallback rather than repair it. 955 therefore depends on this task.",
       "file_scope": [
-        "FormalSystem/Tactic/Meta.lean",
+        "FormalSystem/Automation/README.md",
+        "FormalSystem/Automation/Tactics/README.md",
         "FormalSystem/Automation/Tactics/Search.lean",
-        "Tests/BimodalTest/Automation/LemmaDBTest.lean"
+        "FormalSystem/README.md",
+        "FormalSystem/Tactic/Meta.lean",
+        "FormalSystem/Tactic/README.md",
+        "README.md",
+        "Tests/BimodalTest/Automation/LemmaDBTest.lean",
+        "typst/generated/automation-module-map.typ",
+        "typst/generated/status.typ"
       ],
       "created": "2026-11-20T00:27:00Z",
-      "last_updated": "2026-11-20T03:03:55Z",
+      "last_updated": "2026-11-20T03:10:53Z",
       "audit_verdict": {
         "proposal": {
           "id": "repair_buildcontextexpr_modal_search",
@@ -78,6 +85,11 @@
           "path": "specs/958_repair_buildcontextexpr_modal_search/reports/01_repair-buildcontextexpr-modal-search.md",
           "type": "report",
           "summary": "Compile-verified repair research for buildContextExpr: mkAppOptM is the convention match (working twin at ProofMode/Meta.lean), both Search.lean calls belong inside observing?, a blank-line linter collision must be cleared, and the full repair plus three modal_search acceptance tests already measure lake build / lake test green with zero warnings and no new axioms."
+        },
+        {
+          "path": "specs/958_repair_buildcontextexpr_modal_search/plans/01_repair-buildcontextexpr-modal-search.md",
+          "type": "plan",
+          "summary": "Single-phase plan: mkAppOptM repair at Meta.lean:113, both Search.lean calls moved inside observing? with the two stray blank lines deleted, invoked buildContextExpr probe plus three modal_search acceptance examples in LemmaDBTest.lean, and same-phase regeneration of the two coupled generated line-count surfaces."
         }
       ],
       "next_artifact_number": 2
