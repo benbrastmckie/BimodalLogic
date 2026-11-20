@@ -1,16 +1,16 @@
 {
   "status": "partial",
-  "dispatch_seq": 3,
-  "phases_completed": 1,
+  "dispatch_seq": 4,
+  "phases_completed": 2,
   "phases_total": 5,
-  "summary": "Phase 1 (architecture record) is complete and committed as 58f1db6ad. records/proof-mode-architecture.md states decisions (a)-(e) and the consequences of (g)(h)(l), each with its rejected alternative; its Open decisions list holds the stability-operator pointer and the unfold/fold keyword question. Both record lints pass at baseline. Phases 2-5 remain; this dispatch's mission was phase 1 only.",
+  "summary": "Phase 2 (proof-mode record) is complete and committed as c4441b430. records/proof-mode.md states decisions (g)(j)(k)(l) and the milestone consequences of (a)(c)(d)(h), each with its rejected alternative; the order is M17, M0, M16; Open decisions holds the restated 'default' question (awaiting the user's ruling) and the stability-operator pointer. Both record lints pass at baseline. Phases 3-5 remain; this dispatch's mission was phase 2 only.",
   "blockers": [],
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-1-handoff-20261120T200729Z.md",
-      "summary": "Phase-end handoff for phase 1 with the wording constraints phases 2-5 must respect."
+      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-2-handoff-20261120T201135Z.md",
+      "summary": "Phase-end handoff for phase 2 with the wording constraints and the Gates-section note phases 3-5 must respect."
     }
   ],
-  "next_steps": "Dispatch phase 2 (records/proof-mode.md) and phase 3 (records/theorem-library.md)."
+  "next_steps": "Dispatch phase 3 (records/theorem-library.md), then phase 4 (review drafts) and phase 5."
 }
