@@ -159,12 +159,12 @@ and writes the value observed, noting any difference in the summary. The count o
 
 ---
 
-### Phase 2: Milestones, Dependency Picture, Gates and Lanes [NOT STARTED]
+### Phase 2: Milestones, Dependency Picture, Gates and Lanes [COMPLETED]
 
 **Goal**: Write the core of the document: the milestone blocks and how they connect.
 
 **Tasks**:
-- [ ] Re-examine the three edge readings the report marks doubtful, by reading the filed
+- [x] Re-examine the three edge readings the report marks doubtful, by reading the filed
   descriptions in `specs/state.json` (select by slug) and the relevant Lean sources:
   (a) linearity case split before Until/Since introduction, unfolding and induction
   (`proof_mode_linearity_case_tactic` to `proof_mode_until_since_intro_unfold_induction`);
@@ -173,22 +173,22 @@ and writes the value observed, noting any difference in the summary. The count o
   (c) Until/Since rules and the usability record before Dense and real-time rules
   (into `proof_mode_dense_and_real_time_rules`; check that `density` and `coDerived` take the
   frame-class parameters the report names). For each, write down logical, sequencing, or
-  undetermined, with the ground. Undetermined stays undetermined.
-- [ ] Write **Milestones**: one block per milestone, M0 to M15 with M6a/M6b/M6c and M9a/M9b. Each
+  undetermined, with the ground. Undetermined stays undetermined. *(completed)*
+- [x] Write **Milestones**: one block per milestone, M0 to M15 with M6a/M6b/M6c and M9a/M9b. Each
   block has the same six fields in the same order: Aim, Done when, Hard dependencies,
   Sequencing-only dependencies, Lane, Filed record (slug, or "not filed"). "Done when" is a
-  checkable condition, not a description of activity.
-- [ ] State at the top of the section that the hard / sequencing split is a proposed reading of
-  the records' descriptions, and that sequencing edges bind until M0 lands.
-- [ ] Write **Dependency picture**: the hard-dependency graph as a fenced text diagram, followed
-  by one sentence per milestone with no hard predecessor.
-- [ ] Write **Gates**: the Perpetuity adequacy gate and the temporal-slice gate; what GO and
+  checkable condition, not a description of activity. *(deviation: altered — M14 split into M14a/M14b; 20 blocks)*
+- [x] State at the top of the section that the hard / sequencing split is a proposed reading of
+  the records' descriptions, and that sequencing edges bind until M0 lands. *(completed)*
+- [x] Write **Dependency picture**: the hard-dependency graph as a fenced text diagram, followed
+  by one sentence per milestone with no hard predecessor. *(completed)*
+- [x] Write **Gates**: the Perpetuity adequacy gate and the temporal-slice gate; what GO and
   RE-PLAN each mean; which milestones wait on each verdict; that nothing here weakens the first
-  gate.
-- [ ] Write **Lanes**: rule theory, elaborators, evaluation, metatheory, research and writing;
+  gate. *(completed)*
+- [x] Write **Lanes**: rule theory, elaborators, evaluation, metatheory, research and writing;
   which milestones fall in each; the rule / tactic seam inside a milestone (a pure rule can land
   ahead of its tactic, if Phase 1 confirmed the import invariant); the plain statement that M0
-  is what buys parallel lanes.
+  is what buys parallel lanes. *(completed)*
 
 **Timing**: 1.5 hours
 
