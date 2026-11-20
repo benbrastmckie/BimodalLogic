@@ -19,9 +19,8 @@ Organized in three groups:
 3. **Chaining tests** (Phase 3): goals only provable by recursing through
    lemma premises, plus the weakening fallback and a negative test.
 
-NOTE: These tests live in a dedicated file (not `TacticsTest.lean`, which has
-pre-existing errors from the frame-class generalization). Build gate:
-`lake build BimodalTest.Automation.LemmaDBTest`.
+NOTE: These tests live in a dedicated file, separate from `TacticsTest.lean`.
+Build gate: `lake build BimodalTest.Automation.LemmaDBTest`.
 -/
 
 namespace BimodalTest.Automation.LemmaDBTest
