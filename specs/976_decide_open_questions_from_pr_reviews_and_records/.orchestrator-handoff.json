@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "summary": "Wrote a five-phase, 3.5-hour plan that writes the research decisions into the three records and the three PR review drafts, with a closing cross-file consistency phase. Question (i) and the fold/unfold keyword question proceed on the research recommendations and stay listed as awaiting the user's ruling. Three issues were recorded: the report's pr9-review.md line numbers are wrong, removed decisions leave numbered pointers stale, and one fallback suite already fails on the untouched tree.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/plans/01_record-review-revision-plan.md",
+      "summary": "Five-phase plan: one phase per record, one for the review drafts, one closing consistency check."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
+  "next_action_hint": "implement",
+  "dispatch_seq": 2
+}
