@@ -1,7 +1,7 @@
 # Implementation Plan: Task #976
 
 - **Task**: 976 - Decide open questions from PR reviews and records
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None. Coordinates with task 970 (`investigate_stability_as_modal_family`) on question (f); nothing here waits on it.
 - **Research Inputs**: specs/976_decide_open_questions_from_pr_reviews_and_records/reports/01_open-questions-decisions.md
@@ -155,53 +155,53 @@ Rules that apply to every record phase (1, 2, 3):
 - Take wording for decisions, reasons and rejected alternatives from the report's "Decisions"
   section; do not introduce a claim the report does not make.
 
-### Phase 1: Architecture record [NOT STARTED]
+### Phase 1: Architecture record [COMPLETED]
 
 **Goal**: `records/proof-mode-architecture.md` states decisions (a) (b) (c) (d) (e) and the
 consequences of (g) (h) (l), and its open-decision list holds only what is open.
 
 **Tasks**:
-- [ ] Read the whole record and the report's sections (a) to (e), (h), (l) and "Edits to
-      `records/proof-mode-architecture.md`".
-- [ ] "Three tiers": state the views pair `lunfold` / `lfold`, each taking a view name from one
+- [x] Read the whole record and the report's sections (a) to (e), (h), (l) and "Edits to
+      `records/proof-mode-architecture.md`". *(completed)*
+- [x] "Three tiers": state the views pair `lunfold` / `lfold`, each taking a view name from one
       table whose rows give name, folded shape, unfolded shape and the relating equality; a
       formula equality is used as a view by registering a row; the elaborators' operator
-      matching reads the same table. Keep one-tactic-per-view as the rejected alternative.
-- [ ] Semantic-tier paragraph: state the three placements of (a): lemmas in
+      matching reads the same table. Keep one-tactic-per-view as the rejected alternative. *(completed)*
+- [x] Semantic-tier paragraph: state the three placements of (a): lemmas in
       `FormalSystem/Semantics/` as general semantics at layer 1; tactics in a directory of their
       own under `FormalSystem/Semantics/` at layer 1 (D5); one adapter module at layer 3 under
       `FormalSystem/Metalogic/` holding the soundness lemma and `luse_derivation`, importing
       nothing under `FormalSystem/Automation/ProofMode/`. State the condition as part of the
       design: the views tier and the position and polarity planner sit at layer 0 or 1. Keep
-      placement under `FormalSystem/Automation/` as the rejected alternative.
-- [ ] Same paragraph: state (b). The semantic mode has a record and a measured client before any
+      placement under `FormalSystem/Automation/` as the rejected alternative. *(completed)*
+- [x] Same paragraph: state (b). The semantic mode has a record and a measured client before any
       tactic is built; the countermodel half of the library is a candidate client, to be
       measured by re-proving named declarations twice, with the lemmas alone as the control and
       with the tactics. Name `records/semantic-proof-mode.md` in backticks as the record to be
-      written, not as a markdown link (the file does not exist).
-- [ ] "Aim and measure": state (d). `lrewrite` and `lsimp` are outside the gate-one scripts and
+      written, not as a markdown link (the file does not exist). *(completed)*
+- [x] "Aim and measure": state (d). `lrewrite` and `lsimp` are outside the gate-one scripts and
       verdict; rewriting's client is a second run of the gate-one selection with them permitted,
       reported separately; of the contributed temporal rules only `G`/`H` carrying and
       whole-judgment time reflection may enter, each only once adopted into M1 before the
-      selection is fixed. Keep admitting rewriting to gate one as the rejected alternative.
-- [ ] The Modal-family section on two operators and one statement: state (e). The shared S5
+      selection is fixed. Keep admitting rewriting to gate one as the rejected alternative. *(completed)*
+- [x] The Modal-family section on two operators and one statement: state (e). The shared S5
       statement is a structure taking the operator as a field, instantiated once per necessity
       operator per language; the modal congruence step is one definition taking it; the fields
       are theorems, because the axiom bases of TM `□`, TM⁺ `□` and `⊡` differ. Keep the class
       indexed by the operator as the rejected alternative, with its failure on an operator
-      presented through a definition.
-- [ ] "One scheme, used six times": add that the views tier and the planner sit at layer 0 or 1,
-      under the `ORGANISATION.md` rule that puts shared metaprogramming in `FormalSystem/Tactic/`.
-- [ ] "Where the work sits": update four rows. Views (pair named; first rows contributed with
+      presented through a definition. *(completed: also reworded the "One scheme" sentence "of the Modal class at each necessity operator" to name the structure, so the file does not contradict itself)*
+- [x] "One scheme, used six times": add that the views tier and the planner sit at layer 0 or 1,
+      under the `ORGANISATION.md` rule that puts shared metaprogramming in `FormalSystem/Tactic/`. *(completed)*
+- [x] "Where the work sits": update four rows. Views (pair named; first rows contributed with
       rewriting). Semantic (own directory under `Semantics/`, adapter module at layer 3).
       Leads-to (strict rules are the layer beneath the present-inclusive definition). Until and
-      Since induction (statement proposed; see `proof-mode.md` M4).
-- [ ] "Open decisions": remove the entries on view tactic names, where the semantic mode lives,
+      Since induction (statement proposed; see `proof-mode.md` M4). *(completed)*
+- [x] "Open decisions": remove the entries on view tactic names, where the semantic mode lives,
       record and client, rewriting in the measurement, and the S5 carrier. Reduce the `⊡` entry
       to a pointer per D3. Add the keyword question of D2 with its recommendation. Reword the
-      list so numbering is contiguous.
-- [ ] Confirm no remaining "layer 2" is attached to `Semantics/` in this file.
-- [ ] Run both lints; read the diff hunk by hunk.
+      list so numbering is contiguous. *(completed)*
+- [x] Confirm no remaining "layer 2" is attached to `Semantics/` in this file. *(completed)*
+- [x] Run both lints; read the diff hunk by hunk. *(completed)*
 
 **Timing**: 0.75 hours
 

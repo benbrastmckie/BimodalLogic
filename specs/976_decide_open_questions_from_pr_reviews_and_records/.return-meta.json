@@ -1,22 +1,18 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/plans/01_record-review-revision-plan.md",
-      "summary": "Five-phase plan to write the research decisions into the three records and the three PR review drafts: one phase per record, one for the reviews, one closing cross-file consistency check."
-    }
-  ],
-  "next_steps": "Run /orchestrate 976 to execute the plan",
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1795203869_8d33c7_976",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 3.5,
-    "dependency_waves": [[1, 2, 3], [4], [5]]
+  "status": "in_progress",
+  "dispatch_seq": 3,
+  "started_at": "2026-11-20T12:06:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Implement dispatch 3 started; phase 1 only.",
+    "phases_completed": 0,
+    "phases_total": 5
   },
-  "dispatch_seq": 2
+  "metadata": {
+    "session_id": "sess_1795203869_8d33c7",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

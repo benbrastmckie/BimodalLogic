@@ -1,0 +1,15 @@
+{
+  "phase": 1,
+  "phase_name": "Architecture record",
+  "started_at": "2026-11-20T12:08:00Z",
+  "last_updated": "2026-11-20T12:16:00Z",
+  "objectives": [
+    {"id": 1, "description": "Read the record and the report sections", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Write decisions (a)-(e) and consequences of (g)(h)(l) into records/proof-mode-architecture.md; reduce Open decisions to two entries", "status": "done", "files_touched": ["records/proof-mode-architecture.md"], "note": "Also reworded the One-scheme sentence on the Modal class to name the structure carrier, an edit site the plan did not list, needed for the file to agree with decision (e)."},
+    {"id": 3, "description": "Run both lints, layer-2 grep, read the diff hunk by hunk", "status": "done", "files_touched": [], "note": "check-record-versioning: 0 BLOCKING, 1 ADVISORY (theorem-library.md:4, baseline, not this file). check-task-references: 0. No 'layer 2' in the file. Open decisions holds exactly 2 entries. Diff: 5 hunks, all prose; every removed decision is stated elsewhere with its rejected alternative. Verification Tier is prose; the Batch Gate Deferral directive names phase 5 only and does not apply here."}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}

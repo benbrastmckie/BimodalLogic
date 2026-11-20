@@ -143,12 +143,12 @@ next_project_number: 977
   └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
   └─ 972 [NOT STARTED] — MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem... (see above)
   └─ 975 [NOT STARTED] — MILESTONE M22 (records/proof-mode.md), LANE: metatheory....
-976 [PLANNED] — Research and decide every open question raised by the reviews...
+976 [IMPLEMENTING] — Research and decide every open question raised by the reviews...
 
 ## Tasks
 
 ### 976. Decide open questions from pr reviews and records
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Topic**: proof-mode
 - **Dependencies**: None

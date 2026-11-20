@@ -16,6 +16,18 @@ sweeps over such selections; the Perpetuity principles are one section of the fi
 no library entry needs another named client before it is built, and a library entry the mode
 cannot close is where the next capability comes from.
 
+Logical rewriting is measured apart from the first gate. `lrewrite` and `lsimp` are not used in
+gate-one scripts and do not enter the gate's verdict: the gate measures exactly the rule set
+[proof-mode.md](proof-mode.md) fixes for it. Rewriting's client is a second run of the gate-one
+selection with the two tactics permitted, reported as a separate comparison. Of the contributed
+temporal rules, gate-one scripts may use two, `G`/`H` carrying and whole-judgment time
+reflection, each only once it is adopted into M1 of [proof-mode.md](proof-mode.md) before the
+selection is fixed. Until and Since introduction, folding and unfolding, next-step carrying,
+backward induction and the leads-to rules are not used at gate one. Admitting rewriting to gate
+one has a merit: the gate would measure the mode a user actually has, and a rewrite-heavy proof
+may be where the mode gains most. It is rejected because it changes what a GO at the gate means,
+and the second run gives the same information without moving the gate.
+
 ## Principles
 
 1. **A script shows what it builds.** A reader can tell from the tactic names alone whether a
@@ -49,8 +61,50 @@ under `□` because `□(A ↔ B)` is derivable is a logical step: it uses modal
 that survives the scope, and it respects polarity. The first is a view; the second belongs to the
 derivation tier. They have different tactic names.
 
+**The views tier has one pair of tactics.** `lunfold` and `lfold` each take a view name. One
+table holds the views; a row gives the name, the folded shape, the unfolded shape and the
+equality that relates them, `rfl` for a defined operator and a proved formula equality
+otherwise. A formula equality is used as a view by registering it as a row, and the pair takes
+no free proof term. The elaborators' operator matching reads the same table, so a language
+extension adds rows and no syntax. The alternative is one tactic per view. Its merits: each name
+is found by completion, a misspelt operator is a parse error instead of a lookup failure, and no
+table is needed. It is rejected on count, `Formula` having 26 defined operators and
+`PlusFormula` 22 besides the inclusive Until and Since forms, and on principle 6, since each
+extension would add tactic syntax.
+
 **The semantic tier is a separate mode.** It has its own directory, its own tactic names, its own
-guide and its own tests, and it registers nothing on derivation-tier syntax.
+guide and its own tests, and it registers nothing on derivation-tier syntax. Its code is placed
+by what it is:
+
+- the semantic lemmas are general semantics and sit in `FormalSystem/Semantics/`, at layer 1;
+- the tactics sit in a directory of their own under `FormalSystem/Semantics/`, for example
+  `FormalSystem/Semantics/ProofMode/`, at layer 1;
+- the soundness adapter is one module at layer 3 under `FormalSystem/Metalogic/`, holding the
+  soundness lemma and `luse_derivation`. It imports soundness for each language and the
+  semantic mode, and nothing under `FormalSystem/Automation/ProofMode/`.
+
+A layer-1 mode imports layers 0 and 1 only. The two things it shares with the derivation mode,
+the views tier and the position and polarity planner, therefore sit at layer 0 or 1 and not
+under `FormalSystem/Automation/ProofMode/`; this condition is part of the placement. The mode is
+at layer 1 because the semantic proofs are at layers 1 and 2, in `FormalSystem/Semantics/` and
+the layer-1 files of the language directories, and a mode at layer 3 can be used by none of
+them. The alternative is `FormalSystem/Automation/`, beside the derivation mode. Its merits: the
+views and the planner need not sit below layer 3, all tactics are in one place, and
+`ORGANISATION.md` describes `Automation/` as tactics and proof search. It is rejected because it
+makes the mode unusable below layer 3.
+
+**The semantic mode has a record and a measured client before any tactic is built.** The record
+is `records/semantic-proof-mode.md`, which is to be written; the semantic lemmas need neither
+and come first. Ordinary Lean tactics already work on truth goals, so the case for a tactic
+language rests on proofs it shortens. The countermodel half of the theorem library is a
+candidate client, and the record makes it a measured one: it names the declarations, and each is
+proved again twice, once with the lemmas alone and once with the tactics, both reported against
+the existing proofs. The run with the lemmas alone is the control: if the lemmas give the
+saving, the tactic language has no client there. The alternative is to count the countermodel
+half as an established client. Its merit: its entries are truth proofs at a model, the same kind
+of measure the derivation mode has. It is rejected because no comparison exists, and the
+refutations in the tree are short in ordinary Lean, so a saving is not evident from reading
+them.
 
 ## Operator families
 
@@ -89,6 +143,17 @@ and says so in its statement. And without a temporal operator `⊡` collapses to
 its remaining rules are interactions with Temporal. Filing `⊡` under Modal is the position this
 design starts from; `investigate_stability_as_modal_family` examines whether it should be a
 family of its own.
+
+**The shared statement is a structure taking the operator as a field.** It is instantiated once
+per necessity operator per language: for TM at `□`, for TM⁺ at `□` and at `⊡`. The modal
+congruence step is one definition taking the structure. The fields are theorems and not axioms,
+because TM `□`, TM⁺ `□` and `⊡` have three different axiom bases, so each instance supplies
+some fields by derivation. The alternative is a class indexed by the operator. Its merits: call
+sites need not name the instance, generic theorems read as ordinary typeclass-polymorphic
+statements, and two instances on one formula type do coexist. It is rejected because instance
+resolution is keyed on how the operator is written and fails on an operator presented through a
+definition, and because the elaborators have the operator in hand anyway. A class keyed on the
+formula type alone cannot hold two instances for TM⁺.
 
 ### Interactions
 
@@ -133,9 +198,14 @@ Boolean, followed by a frame class if it needs one. The same names are used for:
   is this scheme's `Modal` and `ModalBoolean` together. See
   [theorem-library.md](theorem-library.md).
 
-A language is an instance of the classes for the operators it has, and of the Modal class at
-each necessity operator it has.
+A language is an instance of the classes for the operators it has, and supplies the Modal
+family's structure at each necessity operator it has.
 The semantic side already has this shape in its truth-clause classes, one per operator.
+
+The views tier and the position and polarity planner are filed outside the tactic directory
+above. Both are formula-syntax only and are shared by the derivation mode and the semantic mode,
+so they sit at layer 0 or 1, under the rule in `ORGANISATION.md` that puts shared metaprogramming
+in `FormalSystem/Tactic/`.
 
 ### Adding a language extension
 
@@ -172,34 +242,29 @@ module.
 | Carrying `G` and `H` facts across steps | Derivation | Temporal | contributed; one carrying table shared with the two scope records above |
 | Until and Since introduction and monotonicity | Derivation | Temporal | `proof_mode_until_since_intro_unfold_induction`; introduction contributed |
 | One-step unfolding and folding, backward induction | Derivation | Temporal at ZTime | same record; contributed, with folding at every class |
-| Until and Since induction generalizing invariance | Derivation | Temporal at ZTime | same record; open |
+| Until and Since induction generalizing invariance | Derivation | Temporal at ZTime | same record; statement proposed and not yet derived, see M4 of [proof-mode.md](proof-mode.md) |
 | Linearity cases | Derivation | Temporal | `proof_mode_linearity_case_tactic` |
 | Whole-judgment time reflection | Derivation | Temporal | contributed |
-| Leads-to consequence, transitivity, cases | Derivation | Temporal with Boolean | `proof_mode_leads_to_invariance_library`; strict form contributed, present-inclusive form open |
+| Leads-to consequence, transitivity, cases | Derivation | Temporal with Boolean | `proof_mode_leads_to_invariance_library`; the rules are stated for the present-inclusive definition, and the contributed strict rules are the layer beneath it |
 | Dense and RTime rules | Derivation | Temporal at Dense and RTime | `proof_mode_dense_and_real_time_rules` |
-| Folding and unfolding defined operators, inclusive forms, formula equalities | Views | every family | `proof_mode_views_tier`; partly contributed inside the rewriting tactics, to be separated |
+| Folding and unfolding defined operators, inclusive forms, formula equalities | Views | every family | `proof_mode_views_tier`; the pair is `lunfold` and `lfold`; the first rows of the view table are contributed with the rewriting tactics, exposed through the pair |
 | Logical rewriting under operators, bounded simplification | Derivation | one congruence step per family; seed equivalences under the Boolean interactions | contributed |
 | Leaf closing | Derivation | Boolean | `proof_mode_close_leaves_with_automation`, `proof_mode_decision_procedure_leaf_closers` |
 | Refutation of an unclosed leaf | none: a diagnostic, it builds nothing | the fragment of the leaf | `proof_mode_countermodels_for_unclosed_leaves`, through the countermodel half of the library |
 | Sweeps: library entries proved again in the mode | Derivation | one sweep per fragment | `proof_mode_reprove_perpetuity`, `proof_mode_reprove_temporal_slice`, `theorem_library_stability_entries` |
 | One interface, rules proved once | all | one class per family and interaction | `proof_mode_abstract_frontend_interface`; the congruence kit is its first generic piece |
-| Truth at a point, witnesses, transport, rank progress | Semantic | per truth-clause class | contributed as overloads of derivation tactics; to be a separate mode |
+| Truth at a point, witnesses, transport, rank progress | Semantic | per truth-clause class | contributed as overloads of derivation tactics; to be a separate mode in a directory of its own under `FormalSystem/Semantics/`, with one adapter module at layer 3, after `records/semantic-proof-mode.md` |
 
 ## Open decisions
 
-1. **Tactic names for views.** One pair (`lunfold`, `lfold`) taking an operator name, or one
-   tactic per view.
-2. **Where the semantic mode lives.** Under `FormalSystem/Semantics/` it sits at layer 2 and its
-   soundness adapter must sit above it; under `FormalSystem/Automation/` it sits beside the
-   derivation mode with a directory of its own.
-3. **Does the semantic mode get a record and a client before it is built?** Ordinary Lean tactics
-   already work on truth goals, so the case for a tactic language rests on proofs it shortens.
-4. **Does logical rewriting enter the adequacy measurement?** If it does, the rule set the first
-   gate measures grows; if not, rewriting needs its own client.
-5. **How is the shared S5 statement carried?** As a structure taking the operator as a field,
-   instantiated twice per language, or as a class indexed by the operator. A class keyed on the
-   formula type alone cannot hold two instances for TM⁺.
-6. **Is `⊡` rightly in the Modal family?** Open decision 2 of
+1. **Is `⊡` rightly in the Modal family?** The question of that name under "Open decisions" of
    [theorem-library.md](theorem-library.md), examined in
    `investigate_stability_as_modal_family`. A separate family would add a `Stability` module and
    class and its interactions, and move the sections that name `⊡` into them.
+2. **Do the Until and Since tactics keep `unfold` and `fold` as keywords?** The contributed
+   `luntil unfold` and `luntil fold` are derivation steps that use the ZTime axioms, where
+   `lunfold` and `lfold` name views. The tactic heads differ, so principle 1 is met to the
+   letter, but one word then names a view and a logical step. The options are to keep the
+   keywords, or to rename them `expand` and `contract` so that fold and unfold belong to the
+   views tier alone. The recommendation is to rename. This is a matter of taste and awaits the
+   user's ruling.
