@@ -1,7 +1,7 @@
 # Implementation Plan: Task #959
 
 - **Task**: 959 - Review proof mode tasks and prepare roadmap planning document
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/reports/01_proof-mode-roadmap-review.md
@@ -106,34 +106,34 @@ run; it does not restate batch order or batch rationale.
 Phases within the same wave can execute in parallel. All three phases edit one file, so the
 order is strict.
 
-### Phase 1: Aim, Current State and Dimensions [NOT STARTED]
+### Phase 1: Aim, Current State and Dimensions [COMPLETED]
 
 **Goal**: Write the framing half of the document on re-measured facts.
 
 **Tasks**:
-- [ ] Re-measure the merged state and record the commands' outputs in working notes: tactic
+- [x] Re-measure the merged state and record the commands' outputs in working notes: tactic
   names (`grep '^syntax (name :='` over `FormalSystem/Automation/ProofMode/*.lean`), line counts
   of the elaborator and pure-rule modules (`wc -l`), `Plus*.lean` total, `throwError` count,
   `^example` count and negative-test count in
   `Tests/BimodalTest/Automation/ProofModeTest.lean`, absence of `sorry` / `axiom` /
   `native_decide`, clients (`grep -rln ProofMode --include=*.lean FormalSystem Tests BimodalTools`),
-  absence of `#print axioms` in the test file, absence of coverage under `typst/`.
-- [ ] Check the import invariant the report carried unverified: that `FormalSystem/Theorems/`
+  absence of `#print axioms` in the test file, absence of coverage under `typst/`. *(completed)*
+- [x] Check the import invariant the report carried unverified: that `FormalSystem/Theorems/`
   does not import `FormalSystem/Automation/`. Read `scripts/module-invariants-manifest.txt` and
   `scripts/check-module-invariants.sh` for the rule, and confirm with
   `grep -rn '^import FormalSystem.Automation' FormalSystem/Theorems`. If the invariant is not
-  enforced or does not hold, say so in the document instead of asserting it.
-- [ ] Write the title and a two-line statement of what the document is and is not (a goals
-  document; batch order lives in the roadmap).
-- [ ] Write **Aim**: one paragraph. From a tested frontend to the ordinary way TM derivations are
-  written, then to specification reasoning; nothing semantic stands in for a derivation.
-- [ ] Write **Where it stands**: the measured table without a method column; what the merged
+  enforced or does not hold, say so in the document instead of asserting it. *(completed)*
+- [x] Write the title and a two-line statement of what the document is and is not (a goals
+  document; batch order lives in the roadmap). *(completed)*
+- [x] Write **Aim**: one paragraph. From a tested frontend to the ordinary way TM derivations are
+  written, then to specification reasoning; nothing semantic stands in for a derivation. *(completed)*
+- [x] Write **Where it stands**: the measured table without a method column; what the merged
   work established (scope safety by typing, integer-time invariance derived in the calculus, the
   TM-plus deduction theorem and generalized K); the gap list (no client, no axiom audit in
   tests, no reference-manual coverage, two negative tests against 65 error sites). Cite
-  `docs/user-guide/derivation-proof-mode.md` and the two ProofMode READMEs as anchors.
-- [ ] Write **Dimensions**: the eight dimensions and the two cross-cutting ones, each with a
-  done-state, what filed records cover it (by slug), and the gap.
+  `docs/user-guide/derivation-proof-mode.md` and the two ProofMode READMEs as anchors. *(completed)*
+- [x] Write **Dimensions**: the eight dimensions and the two cross-cutting ones, each with a
+  done-state, what filed records cover it (by slug), and the gap. *(completed)*
 
 **Timing**: 1 hour
 
