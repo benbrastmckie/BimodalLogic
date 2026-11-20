@@ -9,12 +9,12 @@
     {
       "project_number": 959,
       "project_name": "review_proof_mode_tasks_and_prepare_roadmap_planning_document",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "description": "Review the proof-mode tasks that exist already, and prepare a document in /home/benjamin/Projects/BimodalLogic/records/proof-mode.md which outlines the aims to build on the work already merged into main that develops the proof mode, while also surveying the other dimensions to be developed, looking for natural joints that can be set out as independent milestones, some of which may have certain dependencies. This will be used to run /roadmap afterward; the aim is a long-horizon goals document outlining the work ahead and the possible divisions of labor",
       "topic": "proof-mode",
       "created": "2026-11-20T06:26:11Z",
-      "last_updated": "2026-11-20T06:44:04Z",
+      "last_updated": "2026-11-20T07:00:30Z",
       "audit_verdict": {
         "proposal": {
           "id": "review_proof_mode_tasks_and_prepare_roadmap_planning_document",
@@ -46,9 +46,15 @@
           "path": "specs/959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/plans/01_proof-mode-goals-document.md",
           "type": "plan",
           "summary": "Three-phase plan to write the proof-mode goals document."
+        },
+        {
+          "path": "specs/959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/summaries/01_proof-mode-goals-document-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the proof-mode goals document."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Wrote records/proof-mode.md, a goals document for the derivation proof mode with 20 milestones, hard versus sequencing-only dependencies, two gates, five lanes, eight open decisions and seven /task-ready entries for unfiled work."
     },
     {
       "project_number": 958,
