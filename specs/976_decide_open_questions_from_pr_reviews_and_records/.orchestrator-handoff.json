@@ -1,16 +1,16 @@
 {
   "status": "partial",
-  "dispatch_seq": 4,
-  "phases_completed": 2,
+  "dispatch_seq": 5,
+  "phases_completed": 3,
   "phases_total": 5,
-  "summary": "Phase 2 (proof-mode record) is complete and committed as c4441b430. records/proof-mode.md states decisions (g)(j)(k)(l) and the milestone consequences of (a)(c)(d)(h), each with its rejected alternative; the order is M17, M0, M16; Open decisions holds the restated 'default' question (awaiting the user's ruling) and the stability-operator pointer. Both record lints pass at baseline. Phases 3-5 remain; this dispatch's mission was phase 2 only.",
+  "summary": "Phase 3 (theorem-library record) is complete and committed as b057bdb2a. records/theorem-library.md states decision (k) in Layout (BimodalLib outside defaultTargets, explicit target plus its own --wfail CI step, import-direction check) with the default-target alternative kept on its merits; Open decisions holds two entries, the stability-operator question with its text unchanged and enumeration bounds. Both record lints pass at baseline. Phases 4-5 remain; this dispatch's mission was phase 3 only.",
   "blockers": [],
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-2-handoff-20261120T201135Z.md",
-      "summary": "Phase-end handoff for phase 2 with the wording constraints and the Gates-section note phases 3-5 must respect."
+      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-3-handoff-20261120T201401Z.md",
+      "summary": "Phase-end handoff for phase 3 with the renumbering note phases 4-5 must respect."
     }
   ],
-  "next_steps": "Dispatch phase 3 (records/theorem-library.md), then phase 4 (review drafts) and phase 5."
+  "next_steps": "Dispatch phase 4 (review drafts under specs/reviews/pr-reviews-2026-11-20/), then phase 5."
 }
