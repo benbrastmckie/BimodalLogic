@@ -45,9 +45,9 @@
           "summary": "Five-phase plan: one phase per record, one for the review drafts, one closing consistency check."
         },
         {
-          "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-3-handoff-20261120T201401Z.md",
+          "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-4-handoff-20261120T202114Z.md",
           "type": "handoff",
-          "summary": "Phase-end handoff for phase 3 with the renumbering note phases 4-5 must respect."
+          "summary": "Phase-end handoff for phase 4: which review states which decision, the one deviation, and two passages left for phase 5 to weigh."
         }
       ],
       "next_artifact_number": 2,
