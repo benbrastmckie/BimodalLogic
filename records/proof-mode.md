@@ -105,9 +105,10 @@ the gap.
    sweep produces is what the mode works on next. Covered by `proof_mode_reprove_perpetuity` and
    `proof_mode_reprove_temporal_slice` for the first two sweeps, by
    `proof_mode_adoption_after_perpetuity_verdict` for which new work must use the mode, and by
-   `investigate_stability_as_modal_family` for the place of `⊡`. Gap: the library's layout and
-   registry, the tableau pipeline into it, its countermodel part, the entries for `⊡`, and the
-   conservativity theorems, none of which has a filed record (M18 to M22).
+   `investigate_stability_as_modal_family` for the place of `⊡`. The library itself is covered
+   by `theorem_library_layout_and_registry`, `theorem_library_tableau_pipeline`,
+   `theorem_library_countermodels`, `theorem_library_stability_entries` and
+   `theorem_library_fragment_conservativity`. Gap: none identified.
 6. **Architecture and language reach.** Done: each rule is proved once over an interface, and
    every object language with a derivation calculus has an instance or a stated reason for
    lacking one. Covered by `proof_mode_abstract_frontend_interface` and
@@ -146,9 +147,9 @@ fields. A **hard dependency** is one without which the milestone's result cannot
 proved. A **sequencing-only dependency** is an order kept for another reason: the two pieces of
 work edit the same files, or running later saves rework.
 
-M0 to M16 each have a filed record, and among them the filed dependency edges are exactly the
-hard dependencies plus the sequencing-only dependencies listed in each block. M23 has a filed
-record and no edge. M17 to M22 have none; the edges that involve them are stated in their blocks and are filed with their records. A sequencing edge is
+Every milestone but M17 has a filed record, and the filed dependency edges are exactly the hard
+dependencies plus the sequencing-only dependencies listed in each block, with one exception: M22
+carries an edge on M18 for its generated table, and its theorems do not wait on it. A sequencing edge is
 filed for one of three reasons: two records edit the same family files, the later record is
 cheaper once the earlier has landed, or an adequacy gate should be able to hold the record. No
 edge is filed merely because two records touch the test suite or the guide: M0 gives each
@@ -465,7 +466,7 @@ declares a `file_scope`.
 - **Hard dependencies**: none.
 - **Sequencing-only dependencies**: none. It edits no file under either ProofMode directory.
 - **Lane**: Library.
-- **Filed record**: none; to be filed as `theorem_library_layout_and_registry`.
+- **Filed record**: `theorem_library_layout_and_registry`.
 
 ### M19: Tableau pipeline into the library
 
@@ -480,7 +481,7 @@ declares a `file_scope`.
 - **Sequencing-only dependencies**: none. It reuses the enumerator and the decision entry points
   under `BimodalTools/` and adds no rule.
 - **Lane**: Library.
-- **Filed record**: none; to be filed as `theorem_library_tableau_pipeline`.
+- **Filed record**: `theorem_library_tableau_pipeline`.
 
 ### M20: Countermodel library
 
@@ -494,7 +495,7 @@ declares a `file_scope`.
 - **Hard dependencies**: M18.
 - **Sequencing-only dependencies**: M19, which supplies the tableau-fed entries.
 - **Lane**: Library.
-- **Filed record**: none; to be filed as `theorem_library_countermodels`.
+- **Filed record**: `theorem_library_countermodels`.
 
 ### M21: Entries for the stability operator
 
@@ -510,7 +511,7 @@ declares a `file_scope`.
   shared S5 statement is proved once; M20, for the pairing; M23, whose answer decides whether
   these entries are sections of the Modal fragments or fragments of their own.
 - **Lane**: Library, then Evaluation.
-- **Filed record**: none; to be filed as `theorem_library_stability_entries`.
+- **Filed record**: `theorem_library_stability_entries`.
 
 ### M22: Conservativity along every edge
 
@@ -527,7 +528,7 @@ declares a `file_scope`.
 - **Sequencing-only dependencies**: none. It works under `FormalSystem/Metalogic/` and edits no
   proof-mode file.
 - **Lane**: Metatheory.
-- **Filed record**: none; to be filed as `theorem_library_fragment_conservativity`. Two edges
+- **Filed record**: `theorem_library_fragment_conservativity`. Two edges
   need a completeness theorem the tree does not state, for S5 over the `□`-fragment and for the
   temporal schemata alone at each frame class, and each may be its own record.
 
@@ -716,11 +717,11 @@ Four positions are taken by the filed edges and can each be reversed by changing
 | M15 | `proof_mode_reference_manual_chapter` |
 | M16 | `proof_mode_views_tier` |
 | M17 | none; contributed and under review |
-| M18 | none; to be filed as `theorem_library_layout_and_registry` |
-| M19 | none; to be filed as `theorem_library_tableau_pipeline` |
-| M20 | none; to be filed as `theorem_library_countermodels` |
-| M21 | none; to be filed as `theorem_library_stability_entries` |
-| M22 | none; to be filed as `theorem_library_fragment_conservativity` |
+| M18 | `theorem_library_layout_and_registry` |
+| M19 | `theorem_library_tableau_pipeline` |
+| M20 | `theorem_library_countermodels` |
+| M21 | `theorem_library_stability_entries` |
+| M22 | `theorem_library_fragment_conservativity` |
 | M23 | `investigate_stability_as_modal_family` |
 
 Each record's description states its milestone, its stream, and which of its edges are hard and

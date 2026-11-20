@@ -181,7 +181,7 @@ module.
 | Logical rewriting under operators, bounded simplification | Derivation | one congruence step per family; seed equivalences under the Boolean interactions | contributed |
 | Leaf closing | Derivation | Boolean | `proof_mode_close_leaves_with_automation`, `proof_mode_decision_procedure_leaf_closers` |
 | Refutation of an unclosed leaf | none: a diagnostic, it builds nothing | the fragment of the leaf | `proof_mode_countermodels_for_unclosed_leaves`, through the countermodel half of the library |
-| Sweeps: library entries proved again in the mode | Derivation | one sweep per fragment | `proof_mode_reprove_perpetuity`, `proof_mode_reprove_temporal_slice`; the entries with `⊡` unfiled |
+| Sweeps: library entries proved again in the mode | Derivation | one sweep per fragment | `proof_mode_reprove_perpetuity`, `proof_mode_reprove_temporal_slice`, `theorem_library_stability_entries` |
 | One interface, rules proved once | all | one class per family and interaction | `proof_mode_abstract_frontend_interface`; the congruence kit is its first generic piece |
 | Truth at a point, witnesses, transport, rank progress | Semantic | per truth-clause class | contributed as overloads of derivation tactics; to be a separate mode |
 
