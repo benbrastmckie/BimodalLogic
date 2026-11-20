@@ -4,8 +4,75 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 958,
+  "next_project_number": 959,
   "active_projects": [
+    {
+      "project_number": 958,
+      "project_name": "repair_buildcontextexpr_modal_search",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "automation",
+      "priority": "medium",
+      "description": "Repair FormalSystem/Tactic/Meta.lean's buildContextExpr, which throws on every call and hard-fails modal_search on any box-headed goal.\n\nMEASURED BUG (confirmed live at FormalSystem/Tactic/Meta.lean:113): the line is `let mut result <- mkAppM ``List.nil #[formulaType]`, but List.nil's type argument is IMPLICIT, so mkAppM raises \"too many explicit arguments provided to @List.nil\" on every input, the empty list included. Both consumers -- FormalSystem/Automation/Tactics/Search.lean:475 (tryModalK) and :527 (tryTemporalK) -- call it OUTSIDE their `observing?` block, so the exception propagates rather than being caught as a failed search branch. Consequence: `example : |-[FrameClass.Base] box (p imp p) := by modal_search` fails with that AppBuilder error.\n\nFIX: apply one of two repairs, both already compiled and verified working: (1) `mkAppOptM ``List.nil #[some formulaType]`, or (2) `Lean.mkApp (Lean.mkConst ``List.nil [Level.zero]) formulaType`. Prefer whichever better matches the surrounding code's conventions. Also assess whether the two Search.lean call sites belong INSIDE their `observing?` blocks -- a genuine elaboration failure there should be a failed search branch, not a hard tactic error.\n\nTESTS: existing coverage only `#check`s buildContextExpr without invoking it (deliberately -- the repair was out of scope for the test-coverage work that found this), which is exactly why the bug survived. Add a regression test that actually INVOKES buildContextExpr, on the empty list and on a non-empty list, plus a modal_search acceptance test on a box-headed goal. Fold these into Tests/BimodalTest/Automation/LemmaDBTest.lean, which already holds the MetaM probes for Tactic/Meta.lean's helpers.\n\nVERIFICATION: `lake build` and `lake test` green with zero warnings; the box-headed modal_search example compiles; no new axioms.\n\nBACKLOG NOTE: the proposal audit flags open task 955 (proof_mode_close_leaves_with_automation) as a possible duplicate at semantic score 0.47 with no shared paths. It is not a duplicate: 955 names modal_search only to rule it out as a default closer, is scoped to FormalSystem/Automation/Tactics/, and would CONSUME this broken function as a bounded fallback rather than repair it. 955 therefore depends on this task.",
+      "file_scope": [
+        "FormalSystem/Tactic/Meta.lean",
+        "FormalSystem/Automation/Tactics/Search.lean",
+        "Tests/BimodalTest/Automation/LemmaDBTest.lean"
+      ],
+      "created": "2026-11-20T00:27:00Z",
+      "last_updated": "2026-11-20T00:27:00Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "repair_buildcontextexpr_modal_search",
+          "project_number": null,
+          "title": "Repair FormalSystem/Tactic/Meta.lean's buildContextExpr, which throws on every call and hard-fails modal_search on any box-headed goal"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 37,
+          "duplicate-of-open": 4,
+          "scope-blind": 453
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 955,
+            "project_name": "proof_mode_close_leaves_with_automation",
+            "shared_paths": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4666666666666667
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 952,
+            "project_name": "proof_mode_abstract_frontend_interface",
+            "shared_paths": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 761,
+            "project_name": "ladder_realization_theorem",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 874,
+            "project_name": "open_language_substitution_closure",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4666666666666667
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 453
+      }
+    },
     {
       "project_number": 957,
       "project_name": "proof_mode_transition_systems_tm_specifications",
@@ -79,7 +146,8 @@
       "topic": "proof-mode",
       "priority": "medium",
       "dependencies": [
-        946
+        946,
+        958
       ],
       "created": "2026-11-19T21:37:36Z",
       "last_updated": "2026-11-19T21:44:21Z",

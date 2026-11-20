@@ -1,22 +1,22 @@
 ---
-next_project_number: 958
+next_project_number: 959
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-11-19. Generated from state.json dependency graph.*
+*Updated 2026-11-20. Generated from state.json dependency graph.*
 
 **Goal**: Close the residual repository-hygiene backlog
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,944 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,944,958 | -- | algebraic-representation, automation, completeness, ... |
 | 2 | 231,282,296,429,497,763,862,873,932,945 | 298,428,502,761,869,944 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876,946 | 429,497,763,873,945 | algebraic-representation, decidability, metalogic, ... |
-| 4 | 125,411,543,955 | 410,498,499,500,946 | algebraic-representation, decidability, metalogic, ... |
+| 4 | 125,411,543,955 | 410,498,499,500,946,958 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 430,501,947 | 125,411,955 | algebraic-representation, decidability, proof-mode |
 | 6 | 412,949 | 430,947 | decidability, proof-mode |
 | 7 | 482,950 | 412,949 | decidability, proof-mode |
@@ -40,6 +40,10 @@ next_project_number: 958
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
+
+### Automation
+
+958 [NOT STARTED] — Repair FormalSystem/Tactic/Meta.lean's buildContextExpr,...
 
 ### Completeness
 
@@ -118,6 +122,26 @@ next_project_number: 958
 
 ## Tasks
 
+### 958. Repair buildcontextexpr modal search
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: automation
+- **Dependencies**: None
+
+**Description**: Repair FormalSystem/Tactic/Meta.lean's buildContextExpr, which throws on every call and hard-fails modal_search on any box-headed goal.
+
+MEASURED BUG (confirmed live at FormalSystem/Tactic/Meta.lean:113): the line is `let mut result <- mkAppM ``List.nil #[formulaType]`, but List.nil's type argument is IMPLICIT, so mkAppM raises "too many explicit arguments provided to @List.nil" on every input, the empty list included. Both consumers -- FormalSystem/Automation/Tactics/Search.lean:475 (tryModalK) and :527 (tryTemporalK) -- call it OUTSIDE their `observing?` block, so the exception propagates rather than being caught as a failed search branch. Consequence: `example : |-[FrameClass.Base] box (p imp p) := by modal_search` fails with that AppBuilder error.
+
+FIX: apply one of two repairs, both already compiled and verified working: (1) `mkAppOptM ``List.nil #[some formulaType]`, or (2) `Lean.mkApp (Lean.mkConst ``List.nil [Level.zero]) formulaType`. Prefer whichever better matches the surrounding code's conventions. Also assess whether the two Search.lean call sites belong INSIDE their `observing?` blocks -- a genuine elaboration failure there should be a failed search branch, not a hard tactic error.
+
+TESTS: existing coverage only `#check`s buildContextExpr without invoking it (deliberately -- the repair was out of scope for the test-coverage work that found this), which is exactly why the bug survived. Add a regression test that actually INVOKES buildContextExpr, on the empty list and on a non-empty list, plus a modal_search acceptance test on a box-headed goal. Fold these into Tests/BimodalTest/Automation/LemmaDBTest.lean, which already holds the MetaM probes for Tactic/Meta.lean's helpers.
+
+VERIFICATION: `lake build` and `lake test` green with zero warnings; the box-headed modal_search example compiles; no new axioms.
+
+BACKLOG NOTE: the proposal audit flags open task 955 (proof_mode_close_leaves_with_automation) as a possible duplicate at semantic score 0.47 with no shared paths. It is not a duplicate: 955 names modal_search only to rule it out as a default closer, is scoped to FormalSystem/Automation/Tactics/, and would CONSUME this broken function as a bounded fallback rather than repair it. 955 therefore depends on this task.
+
+---
+
 ### 957. Proof mode transition systems tm specifications
 - **Status**: [NOT STARTED]
 - **Task Type**: formal
@@ -142,7 +166,7 @@ next_project_number: 958
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
-- **Dependencies**: Task 946
+- **Dependencies**: Task 946, Task 958
 
 **Description**: Proof mode: close leaf goals with existing automation. Add a closing tactic so the proof mode handles structure and automation handles closure. The primary closer is `propDecide` (FormalSystem/Metalogic/Decidability/Propositional/Tactic.lean): reflective, complete for the propositional skeleton, treats □ / Until / Since subterms as opaque atoms, weakens into the goal's context, and yields a native derivation through the proved `tautologyDerivableFc'` using kernel `decide` only. Because it proves closed theorems and weakens, the tactic must first discharge the goal's object assumptions into implications (deduction, then modus ponens against the assumptions) so that leaves like `[A, A → B] ⊢ B` close. `modal_search` (FormalSystem/Automation/Tactics/) is documented in its own README as pedagogical, not library infrastructure; use it only as an optional bounded fallback for single-modality leaves, never as the default. Both are TM-only: on a TM⁺ goal the tactic must fail with a clear message unless a TM⁺ closer is built here (a TM⁺ reflection through `ofTMSubst` is welcome but not required). DONE WHEN: the tactic closes the propositional leaves arising in the acceptance tests, fails with a clear message otherwise, never produces anything but a native derivation, and adds no axiom (`native_decide` forbidden). Source: research/NEW_DIRECTIONS.md, row PM-12. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed. Every new `throwError` path gets a negative test asserting its message (`#guard_msgs`). The existing acceptance tests must keep passing unchanged.
 
