@@ -1,5 +1,5 @@
 ---
-next_project_number: 959
+next_project_number: 960
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 959
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,944 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,944,959 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932,945 | 298,428,502,761,869,944 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876,946 | 429,497,763,873,945 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543,955 | 410,498,499,500,946 | algebraic-representation, decidability, metalogic, ... |
@@ -115,8 +115,19 @@ next_project_number: 959
                       └─ 953 [NOT STARTED] — Proof mode: instances for the other object languages. Using...
                         └─ 956 [NOT STARTED] — Proof mode: leads-to and invariance library. lprogress...
                           └─ 957 [NOT STARTED] — Research: verifying transition systems against TM...
+959 [NOT STARTED] — Review the proof-mode tasks that exist already, and prepare a...
 
 ## Tasks
+
+### 959. Review proof mode tasks and prepare roadmap planning document
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: proof-mode
+- **Dependencies**: None
+
+**Description**: Review the proof-mode tasks that exist already, and prepare a document in /home/benjamin/Projects/BimodalLogic/records/proof-mode.md which outlines the aims to build on the work already merged into main that develops the proof mode, while also surveying the other dimensions to be developed, looking for natural joints that can be set out as independent milestones, some of which may have certain dependencies. This will be used to run /roadmap afterward; the aim is a long-horizon goals document outlining the work ahead and the possible divisions of labor
+
+---
 
 ### 958. Repair buildcontextexpr modal search
 - **Status**: [COMPLETED]
