@@ -1,30 +1,99 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "vacuous_count_note": "Single pre-existing hit, byte-identical at HEAD and outside this task's file scope: FormalSystem/Examples/TemporalStructures.lean:495's int_domain_universal, where `trivial` legitimately closes a universal-domain goal. This task introduced none; read as a baseline delta per the plan's explicit delta-not-absolute-zero verification criterion.",
+    "axiom_count": 14,
+    "axiom_count_note": "Identical to the HEAD baseline (git grep -c '^axiom ' over FormalSystem, Tests, BimodalTools). None of the three edited .lean files declares an axiom. Axiom profile on named copies of all three acceptance goals: [propext, Classical.choice, Quot.sound], no sorryAx.",
+    "build_passed": true,
+    "build_note": "Full-project `lake build` through lake-build-guard.sh: exit 0, 2991 jobs, zero `error:` and zero `warning:` lines. `lake test`: exit 0, 3061 targets, zero `error:` and zero `warning:` lines. Scoped touched-path discharge via verify-touched.sh reported 84/95 suites passing; all 11 failures are in .claude/scripts/tests/** and all stem from agent-system/extensions not existing in this deploy-only repository, with no failing suite reading any file this phase edited. The complete gate set was deliberately deferred to the batch stage per this dispatch's batch-gate directive."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/958_repair_buildcontextexpr_modal_search/plans/01_repair-buildcontextexpr-modal-search.md",
-      "summary": "Single-phase plan (1.25h) repairing buildContextExpr via mkAppOptM, relocating both Search.lean call sites inside their observing? blocks, adding invoked regression plus three modal_search acceptance examples, and regenerating two coupled line-count surfaces in the same phase."
+      "type": "summary",
+      "path": "specs/958_repair_buildcontextexpr_modal_search/summaries/01_repair-buildcontextexpr-modal-search-summary.md",
+      "summary": "Repaired buildContextExpr's List.nil arity defect, moved both Search.lean call sites inside their observing? blocks, and added an invoked MetaM probe plus three modal_search acceptance examples."
     }
   ],
-  "next_steps": "Run /orchestrate 958 to execute the plan",
-  "phase_count": 1,
-  "estimated_hours": 1.25,
-  "dependency_waves": 1,
-  "memory_candidates": [
+  "completion_data": {
+    "completion_summary": "buildContextExpr's nil case now builds via mkAppOptM ``List.nil #[some formulaType] instead of passing List.nil's implicit type parameter explicitly to mkAppM, which had made it throw on every input including the empty list. Both consumers in Search.lean (tryModalK, tryTemporalK) now call it inside their observing? blocks, so an elaboration failure there is a failed search branch rather than a hard tactic error. Tests/BimodalTest/Automation/LemmaDBTest.lean gained an invoked MetaM probe pinning buildContextExpr's output against Meta.mkListLit on the empty and a two-element list, plus three modal_search acceptance examples (box-headed at empty and non-empty all-boxed contexts, and allFuture-headed); the box-headed one was measured red pre-repair.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Tactic/Meta.lean",
+    "FormalSystem/Automation/Tactics/Search.lean",
+    "Tests/BimodalTest/Automation/LemmaDBTest.lean",
+    "FormalSystem/Automation/Tactics/README.md",
+    "typst/generated/status.typ",
+    "typst/generated/automation-module-map.typ",
+    "specs/958_repair_buildcontextexpr_modal_search/plans/01_repair-buildcontextexpr-modal-search.md",
+    "specs/958_repair_buildcontextexpr_modal_search/summaries/01_repair-buildcontextexpr-modal-search-summary.md",
+    "specs/958_repair_buildcontextexpr_modal_search/handoffs/phase-1-handoff-20261119T192839.md"
+  ],
+  "sapience_notes": [
     {
-      "content": "A Lean repair verified green by lake build and lake test is NOT yet verified committable in BimodalLogic. Any staged .lean path triggers .githooks/pre-commit, which blocks on scripts/typst-sync-check.sh --counts-only drift, and that check compares typst/generated/status.typ's formalsystem-line-count and tests-line-count against raw `find <dir> -name '*.lean' -exec cat + | wc -l`. A change that moves raw line counts without moving code or comment counts -- deleting blank lines is the clean example -- drifts the typst surface while leaving the root README.md inventory totals (which count code and comment lines separately) untouched. Separately, per-directory README BEGIN GENERATED blocks carry each file's RAW line count, so those drift too. A plan author must schedule `scripts/typst-sync-check.sh --fix` and `scripts/check-module-invariants.sh --emit-inventory` in the SAME phase as the Lean line-count change, because the typst surface is commit-blocking and cannot be deferred to a reconciliation phase. A research dispatch that verifies via builds alone never exercises this gate, so the collision reliably surfaces first at plan or implement time.",
-      "category": "PATTERN",
-      "source_artifact": "specs/958_repair_buildcontextexpr_modal_search/plans/01_repair-buildcontextexpr-modal-search.md",
+      "subject": "Lean 4 mkAppM vs mkAppOptM for a declaration with implicit leading arguments",
+      "predicate": "constraint is",
+      "value": "mkAppM's Array Expr fills only EXPLICIT parameters, so passing a type argument for List.nil (whose type parameter is implicit) raises 'too many explicit arguments provided to @List.nil' on every input, the empty list included. mkAppOptM takes Array (Option Expr) and assigns each `some` entry to the next parameter whether implicit or explicit, so `mkAppOptM ``List.nil #[some formulaType]` is the correct form. The defect type-checks and builds clean because the error is raised at elaborator RUNTIME, not at compile time.",
+      "ko_type": "constraint",
+      "confidence": 0.95,
+      "source_loc": "FormalSystem/Tactic/Meta.lean:113"
+    },
+    {
+      "subject": "Covering a MetaM helper with #check in a Lean test suite",
+      "predicate": "correction is",
+      "value": "A #check on a MetaM helper is not coverage and can mask a total defect indefinitely. #check pins only the declaration's type (here `List Expr -> MetaM Expr`), which is unchanged by any AppBuilder arity mistake in the body; the mistake surfaces only when the function is actually applied. BimodalLogic's buildContextExpr threw on 100% of inputs while `lake build` and `lake test` were exit-0 with zero warnings, because the only coverage was a #check and no test reached its consumers. An invoked #eval probe is what a MetaM helper owes; it runs at elaboration time, so a failed assertion surfaces as a build error.",
+      "ko_type": "correction",
+      "confidence": 0.95,
+      "source_loc": "Tests/BimodalTest/Automation/LemmaDBTest.lean"
+    },
+    {
+      "subject": "Placing a speculative elaboration call relative to Lean's observing? block",
+      "predicate": "decision is",
+      "value": "A call that can throw during a speculative search branch belongs INSIDE the observing? block, not above it. In BimodalLogic's tryModalK/tryTemporalK the buildContextExpr call sat above the block, so its exception propagated and aborted modal_search entirely instead of registering as a failed branch. Moving it inside is safe whenever the call reads no goal state, since observing?'s state rollback on failure is then harmless. Side effect worth knowing: the move strands a blank line above `let success <- observing? do`, which Mathlib's standard linter rejects as 'do not place empty lines within commands' and which fails a --wfail build.",
+      "ko_type": "decision",
+      "confidence": 0.9,
+      "source_loc": "FormalSystem/Automation/Tactics/Search.lean:473,524"
+    },
+    {
+      "subject": "BimodalLogic's typst-sync-check.sh --fix coverage of generated surfaces",
+      "predicate": "measured fact is",
+      "value": "typst-sync-check.sh --fix repairs typst/generated/status.typ ONLY. Its Check 2b reports drift in typst/generated/automation-module-map.typ but is read-only and prints 'regenerate via: bash scripts/typst-module-map.sh', which is a separate regenerator that must be run by hand. A .lean edit changing a module's raw line count therefore drifts at least three generated surfaces (status.typ, automation-module-map.typ, and the inventory block that check-module-invariants.sh --emit-inventory owns), each with its own regenerator.",
+      "ko_type": "insight",
+      "confidence": 0.95,
+      "source_loc": "scripts/typst-sync-check.sh, scripts/typst-module-map.sh"
+    },
+    {
+      "subject": "lean-plan-compliance-check.sh on a plan that names a Lean tactic",
+      "predicate": "correction is",
+      "value": "The script's per-name matcher greps for declaration keywords (def/theorem/lemma/instance), so any plan-harvested identifier that is declared as tactic SYNTAX rather than as a declaration is reported [MISSING] and flips the whole run to COMPLIANCE_CHECK: failed. BimodalLogic's modal_search is declared `syntax \"modal_search\" (num)? : tactic`, so it reports missing while compiling fine in `example ... := by modal_search`. This is a false-positive class alongside the dotted-token and structure-field classes the script's own header already documents; do not downgrade a task's status on it without checking how the named identifier is declared.",
+      "ko_type": "correction",
+      "confidence": 0.9,
+      "source_loc": ".claude/scripts/lean-plan-compliance-check.sh"
+    },
+    {
+      "subject": "verify-touched.sh scope derivation on a shared, concurrently-dispatched working tree",
+      "predicate": "operational constraint is",
+      "value": "verify-touched.sh derives its touched-path set from the whole working tree, so other sessions' uncommitted specs/TODO.md, specs/state.json and specs/events.jsonl edits are attributed to the running dispatch and pull in the entire agent-system test battery regardless of what the dispatch actually edited. In BimodalLogic, which is a deploy-only tree with no on-disk agent-system/ source store, that battery contributes a standing ~11-of-95 suite failure (e.g. test-generate-task-order.sh: 'generate-task-order.sh not found (mode=source-store)'). Read such failures as a baseline property and check whether any failing suite reads a file the dispatch edited before treating them as a regression.",
+      "ko_type": "constraint",
       "confidence": 0.85,
-      "suggested_keywords": ["lean-line-count", "pre-commit-gate", "typst-sync-check", "generated-surfaces", "plan-authoring", "blank-line-deletion"]
+      "source_loc": ".claude/scripts/verify-touched.sh"
     }
   ],
   "metadata": {
-    "session_id": "sess_1795143109_c896f6_958",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 2
+    "session_id": "sess_1795143109_c896f6",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "dispatch_seq": 3,
+    "compliance_check": "failed",
+    "compliance_check_note": "One [MISSING] modal_search, a false positive of the script's declaration-keyword matcher: modal_search is declared as tactic syntax at FormalSystem/Automation/Tactics/Commands.lean:113, not as a def/theorem/lemma/instance, and three `example ... := by modal_search` blocks added by this phase compile green. Every other harvested name reported [OK]. Status deliberately left `implemented` on that evidence; surfaced here so GATE OUT still sees the signal.",
+    "commit": "b3ffef170",
+    "commit_attribution_note": "git-commit-scoped.sh owns the commit message format and emitted no Co-Authored-By trailer. Not amended: sibling dispatches in this batch are live writers, which the guard-destructive-git.sh history-rewrite predicate refuses."
+  }
 }

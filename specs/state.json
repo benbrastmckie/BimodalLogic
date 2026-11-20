@@ -9,7 +9,7 @@
     {
       "project_number": 958,
       "project_name": "repair_buildcontextexpr_modal_search",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "automation",
       "priority": "medium",
@@ -27,7 +27,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-11-20T00:27:00Z",
-      "last_updated": "2026-11-20T03:10:53Z",
+      "last_updated": "2026-11-20T03:30:55Z",
       "audit_verdict": {
         "proposal": {
           "id": "repair_buildcontextexpr_modal_search",
@@ -90,9 +90,15 @@
           "path": "specs/958_repair_buildcontextexpr_modal_search/plans/01_repair-buildcontextexpr-modal-search.md",
           "type": "plan",
           "summary": "Single-phase plan: mkAppOptM repair at Meta.lean:113, both Search.lean calls moved inside observing? with the two stray blank lines deleted, invoked buildContextExpr probe plus three modal_search acceptance examples in LemmaDBTest.lean, and same-phase regeneration of the two coupled generated line-count surfaces."
+        },
+        {
+          "path": "specs/958_repair_buildcontextexpr_modal_search/summaries/01_repair-buildcontextexpr-modal-search-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for phase 1: the buildContextExpr repair, both call-site relocations, the invoked regression coverage, and all measured verification results."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "buildContextExpr's nil case now builds via mkAppOptM ``List.nil #[some formulaType] instead of passing List.nil's implicit type parameter explicitly to mkAppM, which had made it throw on every input including the empty list. Both consumers in Search.lean (tryModalK, tryTemporalK) now call it inside their observing? blocks, so an elaboration failure there is a failed search branch rather than a hard tactic error. Tests/BimodalTest/Automation/LemmaDBTest.lean gained an invoked MetaM probe pinning buildContextExpr's output against Meta.mkListLit on the empty and a two-element list, plus three modal_search acceptance examples (box-headed at empty and non-empty all-boxed contexts, and allFuture-headed); the box-headed one was measured red pre-repair."
     },
     {
       "project_number": 957,

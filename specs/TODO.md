@@ -13,10 +13,10 @@ next_project_number: 959
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,944,958 | -- | algebraic-representation, automation, completeness, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,944 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932,945 | 298,428,502,761,869,944 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876,946 | 429,497,763,873,945 | algebraic-representation, decidability, metalogic, ... |
-| 4 | 125,411,543,955 | 410,498,499,500,946,958 | algebraic-representation, decidability, metalogic, ... |
+| 4 | 125,411,543,955 | 410,498,499,500,946 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 430,501,947 | 125,411,955 | algebraic-representation, decidability, proof-mode |
 | 6 | 412,949 | 430,947 | decidability, proof-mode |
 | 7 | 482,950 | 412,949 | decidability, proof-mode |
@@ -40,10 +40,6 @@ next_project_number: 959
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the...
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
-
-### Automation
-
-958 [PLANNED] — Repair FormalSystem/Tactic/Meta.lean's buildContextExpr,...
 
 ### Completeness
 
@@ -123,12 +119,13 @@ next_project_number: 959
 ## Tasks
 
 ### 958. Repair buildcontextexpr modal search
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
 - **Research**: [958_repair_buildcontextexpr_modal_search/reports/01_repair-buildcontextexpr-modal-search.md]
 - **Plan**: [958_repair_buildcontextexpr_modal_search/plans/01_repair-buildcontextexpr-modal-search.md]
+- **Summary**: [958_repair_buildcontextexpr_modal_search/summaries/01_repair-buildcontextexpr-modal-search-summary.md]
 
 **Description**: Repair FormalSystem/Tactic/Meta.lean's buildContextExpr, which throws on every call and hard-fails modal_search on any box-headed goal.
 

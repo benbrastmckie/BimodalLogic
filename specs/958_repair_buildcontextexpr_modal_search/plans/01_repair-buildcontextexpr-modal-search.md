@@ -1,7 +1,7 @@
 # Implementation Plan: Task #958
 
 - **Task**: 958 - Repair FormalSystem/Tactic/Meta.lean's buildContextExpr, which throws on every call and hard-fails modal_search on any box-headed goal
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.25 hours
 - **Dependencies**: None (task 955 depends on this task, not the reverse)
 - **Research Inputs**: specs/958_repair_buildcontextexpr_modal_search/reports/01_repair-buildcontextexpr-modal-search.md
