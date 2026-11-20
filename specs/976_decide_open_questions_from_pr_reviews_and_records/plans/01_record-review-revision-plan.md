@@ -1,7 +1,7 @@
 # Implementation Plan: Task #976
 
 - **Task**: 976 - Decide open questions from PR reviews and records
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None. Coordinates with task 970 (`investigate_stability_as_modal_family`) on question (f); nothing here waits on it.
 - **Research Inputs**: specs/976_decide_open_questions_from_pr_reviews_and_records/reports/01_open-questions-decisions.md

@@ -1,16 +1,21 @@
 {
-  "status": "partial",
-  "dispatch_seq": 6,
-  "phases_completed": 4,
+  "status": "implemented",
+  "dispatch_seq": 7,
+  "phases_completed": 5,
   "phases_total": 5,
-  "summary": "Phase 4 (review drafts) is complete and committed as 892fd6a89. The drafts for PRs #7, #8 and #9 under specs/reviews/pr-reviews-2026-11-20/ state decisions (a), (b), (c), (d), (e), (g), (h) and (l) in place of the questions they asked, and carry no numbered pointer to an open decision; the three phase greps return nothing. One deviation: a clause in pr8-review.md outside the named passages was removed because it contradicted (h). Phase 5 remains; this dispatch's mission was phase 4 only.",
+  "summary": "Phase 5 (cross-file consistency and closing check) is done and committed as 4a2a208b4; all five phases are closed. The six files agree after one fix to the Gates section of records/proof-mode.md, and the summary carries the question-by-file table, the two items awaiting the user ruling and the stale task descriptions. Phase 5 is closed as COMPLETED WITH EXCLUSIONS: the scoped touched-path check gave 82 passed, 3 failed against a baseline of 84 passed, 1 failed, and the two extra failing suites read only the gitignored deploy tree and are excluded with evidence. The full gate set was deferred to the batch stage and not run.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/summaries/01_record-review-revision-summary.md",
+      "summary": "Implementation summary with the question-by-file table, items awaiting the user ruling, stale descriptions and verification record."
+    },
+    {
       "type": "handoff",
-      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-4-handoff-20261120T202114Z.md",
-      "summary": "Phase-end handoff for phase 4: which review states which decision, the one deviation, and two passages left for phase 5 to weigh."
+      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-5-handoff-20261120T203222Z.md",
+      "summary": "Phase-end handoff for phase 5: verification notes, the two excluded suites, and deploy-tree modifications observed during the dispatch."
     }
   ],
-  "next_steps": "Dispatch phase 5 (cross-file consistency and closing check)."
+  "next_steps": "Postflight, then the batch-level full gate set. The user rules on (i) and on the luntil keyword question; /revise for tasks 947, 950, 952, 969, 971 (and stale numbers in 970, 972)."
 }
