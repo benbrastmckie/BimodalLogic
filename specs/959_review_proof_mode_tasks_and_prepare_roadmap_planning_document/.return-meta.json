@@ -1,37 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/reports/01_proof-mode-roadmap-review.md",
-      "summary": "Review of the merged proof mode and its 14 filed tasks, with a logical-vs-sequencing edge analysis, ten development dimensions, and a proposed milestone outline for records/proof-mode.md."
+      "type": "plan",
+      "path": "specs/959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/plans/01_proof-mode-goals-document.md",
+      "summary": "Three-phase plan (3.5 hours) to write records/proof-mode.md: framing on re-measured facts, milestone blocks with hard versus sequencing-only dependencies, then open decisions, unfiled work, roadmap use and final checks."
     }
   ],
-  "next_steps": "Run /orchestrate 959 to create implementation plan",
+  "next_steps": "Run /orchestrate 959 to execute the plan",
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1795156500_7dd3b0_959",
-    "agent_type": "general-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 7
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 3.5,
+    "dependency_waves": [[1], [2], [3]]
   },
-  "modified_files": ["specs/959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/reports/01_proof-mode-roadmap-review.md"],
-  "proposed_file_scope": ["records/proof-mode.md"],
-  "memory_candidates": [
-    {
-      "content": "The /roadmap agent (roadmap-agent.md) builds its picture only from specs/state.json (roadmap_batches, roadmap_notes, open tasks) and the generate-task-order.sh wave table. It reads no goals or planning document unless the quoted instruction names one, and its write contract covers adding dependency edges (edge_only --depends-on-add) but describes no edge removal. A planning document therefore influences the roadmap only through tasks filed from it or an explicit /roadmap \"<instruction>\" naming it.",
-      "category": "WORKFLOW",
-      "source_artifact": "specs/959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/reports/01_proof-mode-roadmap-review.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["roadmap", "roadmap-agent", "planning-document", "state.json", "edges"]
-    },
-    {
-      "content": "BimodalLogic's research/ directory is gitignored (.gitignore /research/), so research/NEW_DIRECTIONS.md -- cited as the source by every proof-mode task record -- is local-only and not a durable anchor for tracked deliverables. Its stated count of 22 proof-mode tactics is off by one against the tree (21 syntax declarations under FormalSystem/Automation/ProofMode/).",
-      "category": "INSIGHT",
-      "source_artifact": "specs/959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/reports/01_proof-mode-roadmap-review.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["proof-mode", "NEW_DIRECTIONS", "gitignore", "carried-figure", "BimodalLogic"]
-    }
-  ]
+  "dispatch_seq": 2
 }
