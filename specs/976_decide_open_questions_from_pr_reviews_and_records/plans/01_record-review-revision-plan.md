@@ -231,60 +231,60 @@ absent, put the statement in the nearest section that owns the subject and say s
 
 ---
 
-### Phase 2: Proof-mode record [NOT STARTED]
+### Phase 2: Proof-mode record [COMPLETED]
 
 **Goal**: `records/proof-mode.md` carries decisions (g) (j) (k) (l) and the milestone
 consequences of (a) (c) (d) (h), keeps (i) open in restated form, and has no ordering cycle.
 
 **Tasks**:
-- [ ] Read the blocks M0, M1, M4, M9a, M10, M12, M16, M17, M18, "Dependency picture", "Gates",
+- [x] Read the blocks M0, M1, M4, M9a, M10, M12, M16, M17, M18, "Dependency picture", "Gates",
       "Lanes", "Open decisions", and the report's sections (g), (i), (j), (k), (l) and "Edits to
-      `records/proof-mode.md`".
-- [ ] M4, sequencing-only dependencies: replace the sentence that leaves the induction rule's
+      `records/proof-mode.md`". *(completed)*
+- [x] M4, sequencing-only dependencies: replace the sentence that leaves the induction rule's
       edge undetermined. The case split is a sequencing-only predecessor of all three parts,
       because the pure rule sits under `FormalSystem/Theorems/ProofMode/` at layer 2 and takes
       linearity as a theorem (`Axiom.linear_until`, `Theorems/LinearityDerived.lean`), never
-      through a tactic.
-- [ ] M4: add the proposed statement of the generalizing rule, in a code block, exactly as the
+      through a tactic. *(completed)*
+- [x] M4: add the proposed statement of the generalizing rule, in a code block, exactly as the
       report gives it under (g) part 2, with the Since mirror by time reflection, the
       instance that recovers `forwardInvariantRule` (`g := ⊤`, `e := ¬A`, `C := ¬A`), and the
       words that it is proposed and is derived under
       `proof_mode_until_since_intro_unfold_induction`. Keep backward induction as the rejected
-      statement: it is a different rule and `forwardInvariantRule` is not an instance of it.
-- [ ] M9a: replace the layer-3 sentence by decision (j). `MinusDeduction.lean` moves from
+      statement: it is a different rule and `forwardInvariantRule` is not an instance of it. *(completed)*
+- [x] M9a: replace the layer-3 sentence by decision (j). `MinusDeduction.lean` moves from
       `FormalSystem/Metalogic/Conservativity/` to `FormalSystem/Theorems/`, with
       `MinusTemporalDerived.lean` if the rule module needs it, and the Minus pure-rule module
       sits under `FormalSystem/Theorems/ProofMode/`; M9a carries out the move. Keep the two
-      rejected alternatives (instance at layer 3; move into `MinusLanguage/`).
-- [ ] M18: state (k). `BimodalLib` is a Lake library outside `defaultTargets`, built by explicit
+      rejected alternatives (instance at layer 3; move into `MinusLanguage/`). *(completed)*
+- [x] M18: state (k). `BimodalLib` is a Lake library outside `defaultTargets`, built by explicit
       target and by its own `--wfail` step in CI, with an import-direction check that
-      `FormalSystem` never imports it. Keep the default-target alternative.
-- [ ] M16: files at layer 0 or 1, not under `FormalSystem/Automation/ProofMode/`; the tactic
+      `FormalSystem` never imports it. Keep the default-target alternative. *(completed)*
+- [x] M16: files at layer 0 or 1, not under `FormalSystem/Automation/ProofMode/`; the tactic
       pair is `lunfold` / `lfold` over one table; it absorbs the rows M17 introduced; it keeps
-      its sequencing dependency on M0. Adjust the Lane line if it says Elaborators only.
-- [ ] M17: remove the sequencing dependency on M16. Done-when gains the surface separation (the
+      its sequencing dependency on M0. Adjust the Lane line if it says Elaborators only. *(completed)*
+- [x] M17: remove the sequencing dependency on M16. Done-when gains the surface separation (the
       formula-equality path leaves `lrewrite` and `lsimp` and is exposed through `lunfold` /
       `lfold` with the first rows of the view table) and names the comparison that meets "at
       least one library entry in a sweep is shorter": a second run of the gate-one selection
       with `lrewrite` and `lsimp` permitted, reported apart from the gate-one verdict. In the
       "Filed record" line, replace the pointer to the architecture record's numbered decision by
-      the statement that its tactics are outside the gate-one scripts.
-- [ ] M1: add one sentence per D4. Do not alter the done-when clause.
-- [ ] M10: say that the contributed strict rules are the layer beneath the present-inclusive
-      definition and the inclusive rules are proved from them. The done-when stands.
-- [ ] "Dependency picture", including the stream diagram and "What can run at once": M17, then
+      the statement that its tactics are outside the gate-one scripts. *(completed: also states that the second run waits on M3's sweep)*
+- [x] M1: add one sentence per D4. Do not alter the done-when clause. *(completed)*
+- [x] M10: say that the contributed strict rules are the layer beneath the present-inclusive
+      definition and the inclusive rules are proved from them. The done-when stands. *(completed)*
+- [x] "Dependency picture", including the stream diagram and "What can run at once": M17, then
       M0, then M16. Check the "No hard predecessor" line and the sentence "M16 uses definitions
-      only, and M17 uses rules the library has" still read correctly.
-- [ ] "Lanes": move M16's files out of the Elaborators lane directory if the table places them
-      there.
-- [ ] "Open decisions": remove the linearity, Minus-instance and `BimodalLib` entries. Reduce
+      only, and M17 uses rules the library has" still read correctly. *(completed: order paragraph with the two rejected orders added; stream diagram shows filed edges only and M17 has none, so it is unchanged)*
+- [x] "Lanes": move M16's files out of the Elaborators lane directory if the table places them
+      there. *(completed: the table does not list M16; one sentence added under it)*
+- [x] "Open decisions": remove the linearity, Minus-instance and `BimodalLib` entries. Reduce
       the `⊡` entry to a pointer per D3. Restate the "default" entry per D1 with the option
       table and the recommendation. Reword the lead sentence ("These need a ruling from the
       user. Nothing in this document decides them.") to fit what remains. Leave the four
-      reversible positions and the sentence that introduces them as they are.
-- [ ] Check "Where it stands" line 72 keeps `Theorems/` at layer 2 and says nothing false about
-      `Semantics/`.
-- [ ] Run both lints; read the diff hunk by hunk.
+      reversible positions and the sentence that introduces them as they are. *(completed)*
+- [x] Check "Where it stands" line 72 keeps `Theorems/` at layer 2 and says nothing false about
+      `Semantics/`. *(completed: no edit needed)*
+- [x] Run both lints; read the diff hunk by hunk. *(completed)*
 
 **Timing**: 1.25 hours
 

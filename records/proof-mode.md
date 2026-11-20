@@ -184,7 +184,10 @@ declares a `file_scope`.
 - **Sequencing-only dependencies**: M0, for the file layout.
 - **Lane**: Rule theory, then Elaborators.
 - **Filed record**: `proof_mode_s5_aware_box_scopes`, then `proof_mode_cross_modal_scopes_mf_tf`,
-  then `proof_mode_always_sometimes_scopes`.
+  then `proof_mode_always_sometimes_scopes`. Of the contributed temporal rules, `G`/`H` carrying,
+  as rows of the carrying table, and whole-judgment time reflection are the only two that
+  gate-one scripts may use, each only once it is adopted into this milestone before the gate-one
+  selection is fixed.
 
 ### M2: Leaf closure
 
@@ -225,13 +228,35 @@ declares a `file_scope`.
   instance; and `linvariant` is expressed through that induction rule.
 - **Hard dependencies**: M3 with a GO verdict. Both records read the gate-one report first.
 - **Sequencing-only dependencies**: inside M4, the case split is filed before the Until and
-  Since rules. For introduction and unfolding this is sequencing only: the principles they rest on
-  (`left_mono_until_G`, `unfoldForward`, `unfoldBackward`, `unfoldBackwardSince`) take no
-  linearity premise. For the induction rule it is undetermined, because the rule's formula is
-  not yet stated.
+  Since rules. This is sequencing only for all three parts. The principles introduction and
+  unfolding rest on (`left_mono_until_G`, `unfoldForward`, `unfoldBackward`,
+  `unfoldBackwardSince`) take no linearity premise. The pure induction rule sits under
+  `FormalSystem/Theorems/ProofMode/` at layer 2 and cannot import a tactic; what it takes of
+  linearity is a theorem, `Axiom.linear_until` and `FormalSystem/Theorems/LinearityDerived.lean`,
+  never the case-split tactic. This holds whatever the rule's formula is. The alternative leaves
+  the induction rule's edge undecided until the rule is derived; its merit is caution about a
+  formula nobody has derived, and it is rejected because the layer argument does not depend on
+  the formula.
 - **Lane**: Rule theory, then Elaborators.
 - **Filed record**: `proof_mode_linearity_case_tactic`, then
   `proof_mode_until_since_intro_unfold_induction`.
+
+The proposed statement of the induction rule, at `ZTime`, with guard `g`, event `e` (Lean
+`Formula.untl g e`), strict operators and `X φ := untl ⊥ φ`:
+
+```
+⊢[ZTime] (X(e ∨ (g ∧ C)) → C) → G(X(e ∨ (g ∧ C)) → C) → (g U e → C)
+```
+
+The Since rule is its mirror by time reflection. Both a present premise and a `G` premise are
+needed because `G` is strict, as in `forwardInvariantRule`. Putting `g := ⊤`, `e := ¬A` and
+`C := ¬A` recovers `forwardInvariantRule` up to argument order: the premise body becomes
+`X¬A → ¬A`, which at `ZTime` is `A → X A`, and the conclusion becomes `F¬A → ¬A`, that is
+`A → G A`. The statement is proposed. It is argued by hand on ℤ and is not derived or
+machine-checked; deriving it is the work of `proof_mode_until_since_intro_unfold_induction`.
+Backward induction, from `G(Gφ → φ)` and `F(Gφ)` to `Gφ`, is in the library as
+`futureBackwardInduction` and is a different rule: `forwardInvariantRule` is not an instance of
+it, so it does not meet the done-when.
 
 ### M5: Gate two, temporal fragment sweep
 
@@ -323,8 +348,16 @@ declares a `file_scope`.
   cites a theorem or a written obstruction.
 - **Lane**: Rule theory.
 - **Filed record**: `proof_mode_instances_other_languages`. The Minus deduction theorem is
-  `FormalSystem/Metalogic/Conservativity/MinusDeduction.lean`, at layer 3, so the instance cannot
-  sit under `FormalSystem/Theorems/` as the TM and TM⁺ rules do.
+  `FormalSystem/Metalogic/Conservativity/MinusDeduction.lean`, at layer 3. This milestone moves
+  it to `FormalSystem/Theorems/`, with `MinusTemporalDerived.lean` if the rule module needs it,
+  and the Minus pure-rule module sits under `FormalSystem/Theorems/ProofMode/` as the TM and TM⁺
+  modules do. Both files import layer 0 only and every importer is at layer 3, so the move
+  creates no upward edge. Two alternatives are rejected. The instance at layer 3, beside the
+  theorem, moves no file and regenerates no inventory; it puts one language's rule module
+  outside the Rule-theory lane and makes the naming scheme carry an exception. Moving the
+  theorem into `FormalSystem/MinusLanguage/` leaves it at layer 3, because `ORGANISATION.md`
+  gives a language-directory file the layer of its origin directory, as
+  `MinusLanguage/Soundness.lean` has.
 
 ### M9b: Deduction theorems for Star and Open
 
@@ -349,7 +382,11 @@ declares a `file_scope`.
 - **Sequencing-only dependencies**: M8, so that each rule is proved once over the interface. The done-when names
   TM and TM⁺ only and uses no other-language instance, so M9a is not a predecessor.
 - **Lane**: Rule theory, then Elaborators.
-- **Filed record**: `proof_mode_leads_to_invariance_library`.
+- **Filed record**: `proof_mode_leads_to_invariance_library`. The contributed strict leads-to
+  rules are the layer beneath the present-inclusive definition, labelled as the strict layer,
+  and the inclusive rules are proved from them. Strict as the base matches the primitive
+  operators and needs no unfolding of a definition; it is rejected because `G(φ → Fψ)` says
+  nothing about the present, so reflexivity and introduction from an implication fail for it.
 
 ### M11: Transition-system architecture report
 
@@ -430,14 +467,17 @@ declares a `file_scope`.
 ### M16: Views tier
 
 - **Aim**: Separate changing how a formula is written from proving anything.
-- **Done when**: every defined operator in TM and TM⁺ has a fold and an unfold tactic that uses
-  definitions and formula equalities only, with no axiom, rule, context or frame class; the
-  operator matching the elaborators use rests on the same table; and the tier sits below the
-  derivation tactics and imports none of them.
+- **Done when**: every defined operator in TM and TM⁺ has a row in one view table, and the pair
+  `lunfold` and `lfold`, each taking a view name, folds and unfolds it using definitions and
+  formula equalities only, with no axiom, rule, context or frame class; the table holds the rows
+  contributed with M17; the operator matching the elaborators use rests on the same table; and
+  the tier sits at layer 0 or 1, outside `FormalSystem/Automation/ProofMode/`, below the
+  derivation tactics, and imports none of them.
 - **Hard dependencies**: none.
-- **Sequencing-only dependencies**: M0, for the layout. The always and sometimes part of M1 and
+- **Sequencing-only dependencies**: M0, for the layout. M17 is merged or declined before M0
+  runs, so its rows exist when the tier is built. The always and sometimes part of M1 and
   M8 are ordered after it: both state rules about defined operators directly.
-- **Lane**: Elaborators.
+- **Lane**: Elaborators, in files at layer 0 or 1 and not in that lane's tactic directory.
 - **Filed record**: `proof_mode_views_tier`.
 
 ### M17: Logical rewriting
@@ -445,13 +485,17 @@ declares a `file_scope`.
 - **Aim**: Replace a subformula under modal and temporal operators by a derivably implied or
   equivalent one, with the justification checked at every scope it passes.
 - **Done when**: rewriting and a bounded simplifier exist as derivation-tier tactics over one
-  congruence step per operator, separate from views; errors from a supplied rule surface to the
-  user; and at least one library entry in a sweep is shorter with them.
-- **Hard dependencies**: none.
-- **Sequencing-only dependencies**: M16, which takes the definitional part out of it.
+  congruence step per operator, separate from views: the formula-equality path is outside
+  `lrewrite` and `lsimp` and is exposed through `lunfold` and `lfold`, with the first rows of
+  the view table; errors from a supplied rule surface to the user; and at least one library
+  entry in a sweep is shorter with them, shown by a second run of the gate-one selection with
+  `lrewrite` and `lsimp` permitted and reported apart from the gate-one verdict.
+- **Hard dependencies**: none for the tactics. The second run waits on M3's sweep.
+- **Sequencing-only dependencies**: none. It is merged or declined before M0 runs; M16 follows
+  M0 and takes over the view rows contributed here.
 - **Lane**: Rule theory, then Elaborators.
-- **Filed record**: none; contributed and under review. Whether its tactics may be used in the
-  gate-one scripts is open decision 4 of the architecture record.
+- **Filed record**: none; contributed and under review. Its tactics are outside the gate-one
+  scripts and the gate's verdict.
 
 ### M18: Library layout and registry
 
@@ -466,7 +510,13 @@ declares a `file_scope`.
 - **Hard dependencies**: none.
 - **Sequencing-only dependencies**: none. It edits no file under either ProofMode directory.
 - **Lane**: Library.
-- **Filed record**: `theorem_library_layout_and_registry`.
+- **Filed record**: `theorem_library_layout_and_registry`. `BimodalLib` is a Lake library
+  outside `defaultTargets`, built by explicit target and by its own `--wfail` step in CI, as
+  `BimodalTools` is, with an import-direction check that `FormalSystem` never imports it. A
+  plain `lake build` compiles the published library and nothing else, and this library holds
+  sweeps and enumerated entries. The alternative is a default target, under which a
+  contributor's plain build would catch a re-proof that has drifted; it is rejected because CI
+  catches the same drift and the default build would change its meaning.
 
 ### M19: Tableau pipeline into the library
 
@@ -586,7 +636,16 @@ The library is a sixth stream beside these. M18 runs from the start and feeds M3
 follow it and run beside everything, since they edit `BimodalLib/` and `BimodalTools/` only; M21
 follows gate one. M22 is metatheory and M23 is a report; both run from the start.
 
-What can run at once: M0, M9b, M18, M22 and M23 from the start; then M1, M2, M13, M6a and M16, with M19
+M17 has no filed record and so no filed edge. Its order is M17, then M0, then M16: M0 runs after
+the open contributions are merged or declined, M17 among them, and M16 follows M0 and takes
+over the view rows M17 contributes. Two other orders are rejected. Building M16 first and
+rebasing M17 onto it lets the tier's owner design its surface, but it drops M16's edge on M0,
+writes the tier in a layout M0 then moves, and holds a contribution on unscheduled work.
+Merging M17 with `lrewrite` still handling formula equalities and separating later is the
+fastest merge, and it puts one tactic name serving two tiers into the library.
+
+What can run at once: M17, M9b, M18, M22 and M23 from the start, and M0 once M17 is merged or
+declined; then M1, M2, M13, M6a and M16, with M19
 and M20 once M13 and M18 have landed; after a GO verdict M4, M7, M6b then M6c, M12 and M21;
 after M8 the four branches above.
 
@@ -647,6 +706,9 @@ Six lanes, by the kind of work and the files it touches.
 | Metatheory | the language directories, `FormalSystem/Metalogic/` | M9b, M22, the first half of M14a |
 | Research and writing | `docs/`, `typst/` | M11, M12, M14b (the ModelChecker half), M15, M23 |
 
+M16 is Elaborators work filed outside that lane's directory: the views tier sits at layer 0 or
+1, where [proof-mode-architecture.md](proof-mode-architecture.md) places it.
+
 The finest joint is inside a milestone. Because `FormalSystem/Theorems/` cannot import
 `FormalSystem/Automation/`, the pure rule for a milestone never depends on its tactic, so the
 rule can land first and the tactic, tests and guide entry follow. The rule half edits only
@@ -660,24 +722,26 @@ Research and planning are not serialized.
 
 ## Open decisions
 
-These need a ruling from the user. Nothing in this document decides them.
+Two questions are open. The first awaits the user's ruling; the second waits on a report.
 
-1. **Is the linearity case split needed for Until and Since induction?** Introduction and
-   unfolding do not need it. The induction rule's formula is not stated yet, so this part of the
-   edge inside M4 is undetermined. It is settled when the plan for
-   `proof_mode_until_since_intro_unfold_induction` states the rule.
-2. **What does "default" mean for M12?** Proofs under `FormalSystem/Theorems/` cannot be written
-   in the mode. The candidates are: new example and case-study modules must use it; every new
-   derived theorem is registered in the library with a proof-mode script beside it; or the mode
-   stays optional outside the library's sweeps.
-3. **Where does the Minus instance live?** Its deduction theorem is at layer 3, so either the
-   instance sits at layer 3 or `FormalSystem/Metalogic/Conservativity/MinusDeduction.lean`, which
-   imports only the Minus derivation module, moves down. This bears on how M8 lays out the
-   interface.
-4. **Is `⊡` rightly in the Modal family?** The records start from one family. M23 reports, and
-   a recommendation for a separate family needs a ruling before the records change.
-5. **Is `BimodalLib` built by default?** Open decision 1 of
-   [theorem-library.md](theorem-library.md). M18 adds the Lake target and needs the answer.
+1. **What does "default" mean for M12?** A policy on how contributors work, which the tree
+   does not settle.
+
+   | Option | What it requires | Evidence for | Evidence against |
+   |---|---|---|---|
+   | A | New example and case-study modules are written in the mode | `Examples/` is layer 4 and can import `FormalSystem/Automation/` | binds work outside the measure |
+   | B | Every new derived theorem is registered in `BimodalLib` with a proof-mode script or a recorded failure class | `BimodalLib` sits above every layer; M12's done-when states this clause | the registry of M18 is not built |
+   | C | The mode stays optional outside the library's sweeps | no burden on contributors | contradicts M12's done-when, which requires B and one module outside the tests and sweeps |
+
+   Two facts hold whatever the ruling: proofs under `FormalSystem/Theorems/` cannot be written
+   in the mode, layer 2 being below layer 3; and M12 hard-depends on a GO at gate one. The
+   recommendation is B as the rule, A for `Examples/` and case studies, and
+   `FormalSystem/Theorems/` exempt and said to be so, all contingent on a GO. M12's done-when
+   excludes C, so the choice left is whether A is added to B. This awaits the user's ruling.
+2. **Is `⊡` rightly in the Modal family?** The question of that name under "Open decisions" of
+   [theorem-library.md](theorem-library.md), examined in `investigate_stability_as_modal_family`
+   (M23). The records start from one family, and a recommendation for a separate family needs a
+   ruling before the records change.
 
 Four positions are taken by the filed edges and can each be reversed by changing one edge.
 

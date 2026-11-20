@@ -1,73 +1,81 @@
 {
   "status": "partial",
-  "dispatch_seq": 3,
+  "dispatch_seq": 4,
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-1-handoff-20261120T200729Z.md",
-      "summary": "Phase-end handoff for phase 1: architecture record revised; phases 2 and 3 are next."
+      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-2-handoff-20261120T201135Z.md",
+      "summary": "Phase-end handoff for phase 2: proof-mode record revised; phase 3 is next, then 4 and 5."
     }
   ],
   "partial_progress": {
-    "stage": "phase_1_completed",
-    "details": "Phase mission was phase 1 only. records/proof-mode-architecture.md states decisions (a)-(e) and the consequences of (g)(h)(l); Open decisions holds two entries. Committed as 58f1db6ad. Phases 2-5 not started.",
-    "handoff_path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-1-handoff-20261120T200729Z.md",
-    "phases_completed": 1,
+    "stage": "phase_2_completed",
+    "details": "Phase mission was phase 2 only. records/proof-mode.md states decisions (g)(j)(k)(l) and the milestone consequences of (a)(c)(d)(h); Open decisions holds two entries; order is M17, M0, M16. Phases 3-5 not started.",
+    "handoff_path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-2-handoff-20261120T201135Z.md",
+    "phases_completed": 2,
     "phases_total": 5
   },
   "completion_data": {
-    "completion_summary": "Phase 1 of 5: the architecture record now states the views pair, the semantic mode's placement and its record-and-client condition, the gate-one rule on rewriting, and the S5 structure carrier, each with its rejected alternative."
+    "completion_summary": "Phase 2 of 5: the proof-mode record now states the linearity edge and the proposed induction rule in M4, the Minus deduction theorem's move in M9a, BimodalLib outside the default targets in M18, the views pair and layer in M16, and the order M17, M0, M16, with the adoption question restated and still open."
   },
-  "modified_files": ["records/proof-mode-architecture.md"],
+  "modified_files": ["records/proof-mode.md"],
   "memory_candidates": [],
   "sapience_notes": [
     {
-      "subject": "BimodalLogic semantic proof mode placement",
-      "value": "The architecture record places the semantic mode by kind of code: lemmas in FormalSystem/Semantics/ (layer 1), tactics in a directory of their own under FormalSystem/Semantics/ (layer 1), and one soundness adapter module at layer 3 under FormalSystem/Metalogic/ holding the soundness lemma and luse_derivation. The condition is that the views tier and the position and polarity planner sit at layer 0 or 1. FormalSystem/Automation/ was rejected because a layer-3 mode is unusable by the semantic proofs at layers 1 and 2.",
-      "predicate": "decision is",
-      "ko_type": "decision",
-      "confidence": 0.85,
-      "source_loc": "records/proof-mode-architecture.md, section Three tiers"
-    },
-    {
-      "subject": "BimodalLogic layer of FormalSystem/Semantics",
-      "value": "FormalSystem/Semantics/ is layer 1, not layer 2 (ORGANISATION.md layer table; Theorems/ is layer 2). The architecture record's open-decision list had said layer 2; no 'layer 2' remains in records/proof-mode-architecture.md.",
-      "predicate": "correction is",
-      "ko_type": "correction",
-      "confidence": 0.95,
-      "source_loc": "ORGANISATION.md:17"
-    },
-    {
-      "subject": "BimodalLogic proof-mode views tier tactic names",
-      "value": "The views tier has one pair, lunfold and lfold, each taking a view name from one table whose rows give name, folded shape, unfolded shape and the relating equality; a formula equality becomes a view by registering a row, and the elaborators' operator matching reads the same table. One tactic per view was rejected on count (26 defined operators in Formula, 22 in PlusFormula) and because each language extension would add syntax.",
-      "predicate": "decision is",
-      "ko_type": "decision",
-      "confidence": 0.85,
-      "source_loc": "records/proof-mode-architecture.md, section Three tiers"
-    },
-    {
-      "subject": "BimodalLogic shared S5 statement carrier",
-      "value": "The shared S5 rules are carried by a structure taking the necessity operator as a field, instantiated once per operator per language (TM at box; TM-plus at box and at the stability operator); its fields are theorems because the three axiom bases differ. A class indexed by the operator was rejected: instance resolution fails on an operator presented through a def.",
+      "subject": "BimodalLogic proof-mode milestone order of M16 and M17",
+      "value": "records/proof-mode.md orders logical rewriting (M17), then the operator-family layout (M0), then the views tier (M16). M17 carries no sequencing dependency on M16; M0 already runs after open contributions are merged or declined, so no new filed edge is needed. M16 takes over the view rows M17 contributes. Rejected: building M16 first and rebasing M17 onto it (drops M16's edge on M0 and holds a contribution on unscheduled work), and merging M17 with lrewrite still handling formula equalities (one tactic name serving two tiers).",
       "predicate": "decision is",
       "ko_type": "decision",
       "confidence": 0.9,
-      "source_loc": "records/proof-mode-architecture.md, section Operator families"
+      "source_loc": "records/proof-mode.md, section Dependency picture"
     },
     {
-      "subject": "BimodalLogic gate-one measurement and rewriting",
-      "value": "lrewrite and lsimp are outside gate-one scripts and verdict; rewriting's client is a second run of the gate-one selection with them permitted, reported separately. Of the contributed temporal rules only G/H carrying and whole-judgment time reflection may enter gate-one scripts, each only once adopted into M1 before the selection is fixed.",
+      "subject": "BimodalLogic linearity case split and Until/Since induction",
+      "value": "The linearity case-split record is a sequencing-only predecessor of every part of the Until/Since record, the induction rule included: the pure rule sits under FormalSystem/Theorems/ProofMode/ at layer 2 and cannot import a tactic, so it takes linearity as a theorem (Axiom.linear_until, Theorems/LinearityDerived.lean). This holds whatever the rule's formula is.",
+      "predicate": "decision is",
+      "ko_type": "decision",
+      "confidence": 0.9,
+      "source_loc": "records/proof-mode.md, M4"
+    },
+    {
+      "subject": "BimodalLogic proposed Until induction rule generalizing forwardInvariantRule",
+      "value": "Proposed, not derived or machine-checked: at ZTime, with strict operators and X phi := untl bot phi, |- (X(e or (g and C)) -> C) -> G(X(e or (g and C)) -> C) -> (g U e -> C), with the Since mirror by time reflection. Setting g := top, e := not A, C := not A recovers forwardInvariantRule up to argument order. Backward induction (futureBackwardInduction) is a different rule and forwardInvariantRule is not an instance of it.",
+      "predicate": "finding is",
+      "ko_type": "insight",
+      "confidence": 0.6,
+      "source_loc": "records/proof-mode.md, M4"
+    },
+    {
+      "subject": "BimodalLogic Minus proof-mode instance placement",
+      "value": "MinusDeduction.lean moves from FormalSystem/Metalogic/Conservativity/ (layer 3) to FormalSystem/Theorems/, with MinusTemporalDerived.lean if needed, so the Minus pure-rule module sits under FormalSystem/Theorems/ProofMode/ like TM and TM-plus; M9a carries out the move. Both files import layer 0 only and all importers are at layer 3. Rejected: instance at layer 3 (scheme exception), and moving into MinusLanguage/ (the per-file rule would keep it at layer 3).",
       "predicate": "decision is",
       "ko_type": "decision",
       "confidence": 0.85,
-      "source_loc": "records/proof-mode-architecture.md, section Aim and measure"
+      "source_loc": "records/proof-mode.md, M9a"
     },
     {
-      "subject": "BimodalLogic architecture record open decisions",
-      "value": "records/proof-mode-architecture.md has two open decisions: whether the stability operator stays in the Modal family (a pointer to theorem-library.md, examined in investigate_stability_as_modal_family), and whether the contributed luntil unfold / luntil fold keywords are renamed expand / contract (recommended; awaiting the user's ruling).",
+      "subject": "BimodalLogic BimodalLib build target",
+      "value": "BimodalLib is a Lake library outside defaultTargets, built by explicit target and its own --wfail CI step as BimodalTools is, with an import-direction check that FormalSystem never imports it. A default target was rejected because CI catches the same drift and a plain lake build is stated to compile the published library only.",
+      "predicate": "decision is",
+      "ko_type": "decision",
+      "confidence": 0.9,
+      "source_loc": "records/proof-mode.md, M18"
+    },
+    {
+      "subject": "BimodalLogic proof-mode adoption, meaning of default (M12)",
+      "value": "Still open and awaiting the user's ruling. Options: A new Examples and case-study modules in the mode; B every new derived theorem registered in BimodalLib with a proof-mode script or a recorded failure class; C optional outside sweeps. Recommendation: B as the rule, A for Examples and case studies, Theorems/ exempt by layering, all contingent on a GO at gate one. M12's done-when already excludes C.",
       "predicate": "finding is",
       "ko_type": "insight",
       "confidence": 0.9,
-      "source_loc": "records/proof-mode-architecture.md, section Open decisions"
+      "source_loc": "records/proof-mode.md, section Open decisions"
+    },
+    {
+      "subject": "BimodalLogic M17 rewriting comparison depends on gate one's sweep",
+      "value": "M17's done-when clause 'at least one library entry in a sweep is shorter' is met by a second run of the gate-one selection with lrewrite and lsimp permitted, reported apart from the gate's verdict. The tactics have no hard dependency, but that comparison can only run once M3's sweep exists, so M17 cannot fully close before M3 even though it is merged before M0.",
+      "predicate": "constraint is",
+      "ko_type": "insight",
+      "confidence": 0.85,
+      "source_loc": "records/proof-mode.md, M17"
     }
   ],
   "metadata": {
