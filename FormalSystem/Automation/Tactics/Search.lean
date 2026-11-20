@@ -470,10 +470,9 @@ def tryModalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Na
   -- Check if context is all boxed formulas
   let some unboxedCtx ← extractUnboxedContext ctx
     | return false  -- Context not all boxed
-
-  -- Build the unboxed context expression
-  let unboxedCtxExpr ← buildContextExpr unboxedCtx
   let success ← observing? do
+    -- Build the unboxed context expression
+    let unboxedCtxExpr ← buildContextExpr unboxedCtx
     setGoals [goal]
     -- Apply generalizedModalK
     -- generalizedModalK : (Γ : Context) → (φ : Formula) →
@@ -522,10 +521,9 @@ def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId →
   -- Check if context is all future formulas
   let some unfuturedCtx ← extractUnfuturedContext ctx
     | return false  -- Context not all future
-
-  -- Build the unfutured context expression
-  let unfuturedCtxExpr ← buildContextExpr unfuturedCtx
   let success ← observing? do
+    -- Build the unfutured context expression
+    let unfuturedCtxExpr ← buildContextExpr unfuturedCtx
     setGoals [goal]
     -- Apply generalizedTemporalK
     -- generalizedTemporalK : (Γ : Context) → (φ : Formula) →

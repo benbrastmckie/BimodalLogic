@@ -232,12 +232,15 @@ header records that such probes were moved out of `TacticsTest.lean` deliberatel
 builds clean. Hence the two executed `#eval` blocks below — one positive, one negative — rather
 than signature pins alone.
 
-`buildContextExpr` is the exception, and deliberately so. It is `#check`ed and never applied:
-`FormalSystem/Tactic/Meta.lean`'s `buildContextExpr` calls `mkAppM ``List.nil`` with an explicit
-argument for `List.nil`'s *implicit* type parameter, so it raises `too many explicit arguments
-provided to @List.nil` on every input, including the empty list. A probe that invoked it could not
-pass, and one written to expect the throw would launder the defect as intended behaviour. The
-repair belongs to whoever edits that declaration; nothing here depends on the current shape.
+`buildContextExpr` is covered the same way, by an invoked `#eval` probe rather than a signature
+pin. A `#check` fixes only the declaration's type, which is `List Expr → MetaM Expr` whatever the
+body does; an `AppBuilder` arity mistake inside that body type-checks fine and throws only when
+the function is actually run. So the probe below applies it to the empty list and to a two-element
+list, runs `Meta.check` on each resulting `Expr`, confirms the empty case really is a `Context`,
+and pins both against `Meta.mkListLit`, which builds the list expression this helper is supposed to
+build. The three `modal_search` examples closing this section are the tactic-level counterpart:
+`buildContextExpr`'s only consumers are `tryModalK` and `tryTemporalK`, so a box-headed and an
+`allFuture`-headed goal are what exercise it through the elaborator rather than directly.
 -/
 
 section MetaHelperProbes
@@ -275,6 +278,36 @@ section MetaHelperProbes
     throwError "extractDerivationGoal accepted a non-derivability type"
   if isNilContext notAGoal then
     throwError "isNilContext accepted a non-list expression"
+
+-- Invoked probe for `buildContextExpr`: a `#check` cannot distinguish a working body from one
+-- that throws on every input, so apply it to both the empty and a non-empty list, type-check the
+-- results, and pin them against `Meta.mkListLit`.
+#eval show MetaM Unit from do
+  let p := mkApp (mkConst ``Formula.atomS) (mkStrLit "p")
+  let q := mkApp (mkConst ``Formula.atomS) (mkStrLit "q")
+  let nil ← buildContextExpr []
+  Meta.check nil
+  unless (← Meta.isDefEq (← Meta.inferType nil) (mkConst ``Context)) do
+    throwError "buildContextExpr [] : {← Meta.inferType nil}, expected Context"
+  unless nil == (← Meta.mkListLit (mkConst ``Formula) []) do
+    throwError "buildContextExpr [] built {nil}"
+  let two ← buildContextExpr [p, q]
+  Meta.check two
+  unless two == (← Meta.mkListLit (mkConst ``Formula) [p, q]) do
+    throwError "buildContextExpr [p, q] built {two}"
+
+-- Acceptance coverage through the tactic: `buildContextExpr`'s only consumers are `tryModalK`
+-- and `tryTemporalK`, reached from a box-headed and an `allFuture`-headed goal respectively.
+
+-- box-headed, empty context
+example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "p")).box := by modal_search
+
+-- box-headed, non-empty all-boxed context: exercises the map-box/cons path, not just nil
+example : [(Formula.atomS "p").box] ⊢ ((Formula.atomS "p").imp (Formula.atomS "p")).box := by
+  modal_search
+
+-- allFuture-headed: covers tryTemporalK, the second consumer
+example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "p")).allFuture := by modal_search
 
 end MetaHelperProbes
 

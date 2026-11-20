@@ -1,7 +1,7 @@
 # Implementation Plan: Task #958
 
 - **Task**: 958 - Repair FormalSystem/Tactic/Meta.lean's buildContextExpr, which throws on every call and hard-fails modal_search on any box-headed goal
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.25 hours
 - **Dependencies**: None (task 955 depends on this task, not the reverse)
 - **Research Inputs**: specs/958_repair_buildcontextexpr_modal_search/reports/01_repair-buildcontextexpr-modal-search.md
@@ -113,7 +113,7 @@ therefore also its final phase.
 
 ---
 
-### Phase 1: Repair `buildContextExpr`, relocate both call sites, and land invoked regression coverage [NOT STARTED]
+### Phase 1: Repair `buildContextExpr`, relocate both call sites, and land invoked regression coverage [COMPLETED]
 
 **Goal**: `buildContextExpr` builds a correct `Context` expression; both `Search.lean` consumers
 treat an elaboration failure as a failed search branch; the suite invokes `buildContextExpr` and
@@ -124,29 +124,29 @@ surface is back in sync and the whole project builds and tests green with zero w
 
 *Source repair*
 
-- [ ] At `FormalSystem/Tactic/Meta.lean:113`, replace
+- [x] At `FormalSystem/Tactic/Meta.lean:113`, replace
       `let mut result ← mkAppM ``List.nil #[formulaType]` with
       `let mut result ← mkAppOptM ``List.nil #[some formulaType]`. Leave the `List.cons` loop at
       `:114-115` untouched — `List.cons` takes exactly two explicit arguments, so that line is
       already correct.
-- [ ] In `tryModalK` (`FormalSystem/Automation/Tactics/Search.lean`, currently the
+- [x] In `tryModalK` (`FormalSystem/Automation/Tactics/Search.lean`, currently the
       `-- Build the unboxed context expression` comment at `:474` and
       `let unboxedCtxExpr ← buildContextExpr unboxedCtx` at `:475`), move the comment and the
       `let` **inside** the `observing? do` block that currently opens at `:476`, as the block's
       first statements, above `setGoals [goal]`. The call does not read goal state, and
       `observing?`'s state rollback on failure is harmless to it.
-- [ ] Delete the now-stray blank line left directly above `let success ← observing? do` in
+- [x] Delete the now-stray blank line left directly above `let success ← observing? do` in
       `tryModalK` (currently `:473`). Research measured that leaving it produces
       `warning: ... do not place empty lines within commands!`, and CI builds with `--wfail`, so
       this is a hard gate, not a style note.
-- [ ] Apply the same two moves in `tryTemporalK`: relocate the
+- [x] Apply the same two moves in `tryTemporalK`: relocate the
       `-- Build the unfutured context expression` comment (`:526`) and
       `let unfuturedCtxExpr ← buildContextExpr unfuturedCtx` (`:527`) inside the `observing? do`
       block at `:528`, and delete the stray blank line at `:525`.
 
 *Regression and acceptance coverage*
 
-- [ ] In `Tests/BimodalTest/Automation/LemmaDBTest.lean`'s `section MetaHelperProbes`
+- [x] In `Tests/BimodalTest/Automation/LemmaDBTest.lean`'s `section MetaHelperProbes`
       (`:243-279`), keeping the existing `#check @buildContextExpr` beside it, add an invoked
       `MetaM` probe that calls `buildContextExpr` on `[]` and on a two-element list, runs
       `Meta.check` on each result, confirms the empty case `isDefEq` to `Context`, and pins both
@@ -154,13 +154,13 @@ surface is back in sync and the whole project builds and tests green with zero w
       not bare `check`: the file opens `Lean` but not `Lean.Meta`, and research measured bare
       `check` failing with `Unknown identifier `check``. The exact body research compiled green
       is in the report's "The invoked probe that passes (row 9)" subsection.
-- [ ] Add all three `modal_search` acceptance examples research compiled green together, in the
+- [x] Add all three `modal_search` acceptance examples research compiled green together, in the
       same section. Keep all three: the empty-context box-headed one is the example the task
       description names; the non-empty all-boxed-context one is the only thing that drives the
       `List.cons` fold through the tactic (with an empty context `buildContextExpr` is only ever
       called on `[]`); the `allFuture`-headed one is the only acceptance coverage `tryTemporalK`
       gets.
-- [ ] Rewrite the paragraph at `Tests/BimodalTest/Automation/LemmaDBTest.lean:235-240` — the one
+- [x] Rewrite the paragraph at `Tests/BimodalTest/Automation/LemmaDBTest.lean:235-240` — the one
       beginning "`buildContextExpr` is the exception, and deliberately so." It states that
       `buildContextExpr` "is `#check`ed and never applied", names the `mkAppM ``List.nil` defect
       as live, and says "the repair belongs to whoever edits that declaration". Left standing it
@@ -174,32 +174,37 @@ surface is back in sync and the whole project builds and tests green with zero w
 
 *Coupled generated surfaces — same phase, not deferred*
 
-- [ ] Regenerate `typst/generated/status.typ` via
+- [x] Regenerate `typst/generated/status.typ` via
       `bash scripts/typst-sync-check.sh --fix` and stage it. **This cannot be deferred**:
       `.githooks/pre-commit` blocks any commit whose staged set touches a `.lean` path while
       `scripts/typst-sync-check.sh --counts-only` reports drift, and this phase moves two of its
       compared figures — `formalsystem-line-count` (Search.lean loses two blank lines: 620 -> 618)
       and `tests-line-count` (the new test block). Verify with
       `bash scripts/typst-sync-check.sh --counts-only` before committing.
-- [ ] Regenerate the machine-owned module-inventory blocks via
+- [x] Regenerate the machine-owned module-inventory blocks via
       `bash scripts/check-module-invariants.sh --emit-inventory`, then confirm with
       `--emit-inventory --check`, and stage whatever files it rewrote.
       `FormalSystem/Automation/Tactics/README.md` carries `Search.lean`'s raw line count (`620`)
-      in a `<!-- BEGIN GENERATED -->` block and will drift. Never hand-edit these numerals.
+      in a `<!-- BEGIN GENERATED -->` block and will drift. Never hand-edit these numerals. *(deviation:
+      altered — a third generated surface drifted,
+      `typst/generated/automation-module-map.typ` (`Tactics/Search.lean` 620 -> 618,
+      `automation-module-total` 3345 -> 3343). `typst-sync-check.sh --fix` reports it but does not
+      repair it (Check 2b is read-only); regenerated via `scripts/typst-module-map.sh` and staged,
+      per this phase's own confirm-by-running instruction.)*
 
 *Verification and commit*
 
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` (full project),
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` (full project),
       detached as a shell-level background job and blocked on with the bounded single-call idiom
       per `context/project/lean4/operations/long-builds.md` — never
       `Bash(run_in_background: true)`. Require exit 0 with **zero warnings**; under `--wfail` a
       warning is a failure.
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- test`. Require exit 0
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- test`. Require exit 0
       with zero warnings.
-- [ ] Confirm no new axioms: `#print axioms` (or `lean_verify` on a fully qualified name) against
+- [x] Confirm no new axioms: `#print axioms` (or `lean_verify` on a fully qualified name) against
       named copies of the box-headed and `allFuture`-headed goals must report only
       `[propext, Classical.choice, Quot.sound]`, with no `sorryAx`.
-- [ ] Commit once, as the pre-declared atomic batch (see **Commit Mode**), via
+- [x] Commit once, as the pre-declared atomic batch (see **Commit Mode**), via
       `.claude/scripts/git-commit-scoped.sh` with an explicit file list — never `git add -A`,
       `git add .`, or a directory/glob pathspec.
 
@@ -259,6 +264,20 @@ third file is rewritten, stage it and record the deviation.
   drift outside this repository. Each file this phase modifies must pass individually; a
   pre-existing finding outside this phase's file scope is a recorded PASS with that finding
   enumerated, not a blocker.
+- **Measured verification notes (this dispatch)**: full-project `lake build` exit 0, 2991 jobs,
+  zero `error:`/`warning:` lines; `lake test` exit 0, 3061 targets, zero `error:`/`warning:`
+  lines. Axiom profile on named copies of all three acceptance goals:
+  `[propext, Classical.choice, Quot.sound]`, no `sorryAx`. `sorry_count` 0; axiom-line count 14,
+  identical to `HEAD`. `typst-sync-check.sh` exits 0 on all four checks;
+  `check-module-invariants.sh --emit-inventory --check` exits 0. **The complete gate set was
+  deferred to the batch stage and NOT independently run here**: the scoped discharge was
+  `bash .claude/scripts/verify-touched.sh`, which reported 84/95 suites passing, with all 11
+  failures in `.claude/scripts/tests/**` and all caused by `agent-system/extensions` not existing
+  in this deploy-only repository; no failing suite reads any file this phase edited. The plan
+  compliance spot-check printed `COMPLIANCE_CHECK: failed` on one `[MISSING] modal_search`, a
+  false positive of its declaration-keyword matcher — `modal_search` is tactic syntax
+  (`Commands.lean:113`), and three `example ... := by modal_search` blocks added by this phase
+  compile green.
 - **Final-phase gate handling**: this phase's own in-dispatch obligation is the scoped,
   touched-path verification enumerated above. The complete gate set owed once per orchestration
   invocation is **explicitly deferred to the orchestration close**, not invoked independently
@@ -268,17 +287,17 @@ third file is rewritten, stage it and record the deviation.
 
 ## Testing & Validation
 
-- [ ] `buildContextExpr []` and `buildContextExpr [p, q]` both return well-typed expressions,
+- [x] `buildContextExpr []` and `buildContextExpr [p, q]` both return well-typed expressions,
       measured by an invoked probe rather than a `#check`.
-- [ ] Both probe results agree with `Meta.mkListLit (mkConst ``Formula) ...`.
-- [ ] `example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "p")).box := by modal_search` compiles.
-- [ ] `example : [(Formula.atomS "p").box] ⊢ ((Formula.atomS "p").imp (Formula.atomS "p")).box := by modal_search`
+- [x] Both probe results agree with `Meta.mkListLit (mkConst ``Formula) ...`.
+- [x] `example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "p")).box := by modal_search` compiles.
+- [x] `example : [(Formula.atomS "p").box] ⊢ ((Formula.atomS "p").imp (Formula.atomS "p")).box := by modal_search`
       compiles (drives the `List.cons` fold through the tactic).
-- [ ] `example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "p")).allFuture := by modal_search`
+- [x] `example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "p")).allFuture := by modal_search`
       compiles (the only acceptance coverage `tryTemporalK` gets).
-- [ ] Full `lake build` and `lake test`: exit 0, zero errors, zero warnings.
-- [ ] No new axioms; no `sorryAx`.
-- [ ] `typst-sync-check.sh --counts-only` and `check-module-invariants.sh --emit-inventory --check`
+- [x] Full `lake build` and `lake test`: exit 0, zero errors, zero warnings.
+- [x] No new axioms; no `sorryAx`.
+- [x] `typst-sync-check.sh --counts-only` and `check-module-invariants.sh --emit-inventory --check`
       both exit 0, so the commit is not refused by `.githooks/pre-commit`.
 
 ## Artifacts & Outputs
