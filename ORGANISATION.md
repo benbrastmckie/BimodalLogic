@@ -194,6 +194,7 @@ guards the worst case and the `--namespace-paths` option that scopes the rewrite
 | `Tests/BimodalTest/` | The test suite, mirroring the library's directory shape |
 | `BimodalTools/`, `Tests/BimodalToolsTest/` | The tooling library (dataset generation, export, benchmarks, the executable roots) and its tests; outside `defaultTargets`, and never imported by the library |
 | `docs/` | Prose documentation: architecture, reference, user guides, development standards |
+| `records/` | Shared designs for collaboration, for what is not yet fully implemented: what a line of work is for, how it is organized and which decisions are open. Once a design is implemented, `docs/` describes it and the record gives it up; see `records/README.md` |
 | `scripts/` | Repository invariant checks, inventory generation, release tooling |
 | `specs/` | The project development record: research reports, implementation plans and summaries for each unit of work. Tracked and published permanently; not part of the library, and nothing in the library depends on it |
 | `typst/` | The paper sources |

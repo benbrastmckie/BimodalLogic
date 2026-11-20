@@ -1,447 +1,91 @@
-# Contributing to ProofChecker
+# Contributing to BimodalLogic
 
-Thank you for your interest in contributing to ProofChecker! This document provides guidelines for contributing to the project.
+This repository is a Lean 4 formalization of TM, the bimodal logic of tense and modality, with
+its extensions, metalogic and automation. Contributions to the library, its automation, its
+tests and its documentation are welcome.
 
-**Current Focus**: The primary development focus is on **Bimodal**, the complete and verified propositional modal-temporal logic. Bimodal has full soundness and completeness proofs and serves as the production-ready foundation. Contributions to enhance Bimodal's automation, documentation, and tooling are especially welcome.
+For where things are in the tree, read [ORGANISATION.md](ORGANISATION.md) first.
 
-**Logos** represents the research roadmap extending Bimodal to hyperintensional semantics. Research contributions to Logos are also welcome, with the understanding that this is experimental work.
+## 1. Setup
 
-## 1. Getting Started
-
-### Prerequisites
-
-- Lean 4 v4.33.0-rc1
-- Lake (included with LEAN 4)
-- Git
-- VS Code with lean4 extension (recommended)
-
-### Development Setup
+You need Git and [elan](https://github.com/leanprover/elan). The Lean version is pinned in
+[`lean-toolchain`](lean-toolchain) and elan installs it on first use.
 
 ```bash
-# Fork the repository on GitHub, then clone your fork
 git clone https://github.com/YOUR-USERNAME/BimodalLogic.git
 cd BimodalLogic
-
-# Add upstream remote
-git remote add upstream https://github.com/benbrastmckie/BimodalLogic.git
-
-# Install dependencies and build
-lake update
+lake exe cache get                    # Mathlib's prebuilt cache
 lake build
-
-# Run tests to verify setup
 lake test
-
-# Install the repository's git hooks (one-time per clone). This activates a
-# build-free pre-commit gate that blocks a .lean-touching commit when
-# typst/generated/status.typ (the reference manual's cited counts) has
-# drifted from a live regeneration, so a stale count cannot silently reach
-# CI. It can be bypassed with `git commit --no-verify`, with CI's own
-# typst-sync-check.sh as the backstop.
-bash scripts/install-git-hooks.sh
-
-# Reproduce CI's nine-check gate locally before pushing (requires the lake build/
-# lake test above to have already succeeded; see scripts/verify-all.sh's own header).
-# It is not wired into the pre-commit hook above because it contains several slow,
-# lake-dependent steps -- run it by hand before pushing instead. A full run takes
-# over 10 minutes of wall time.
-bash scripts/verify-all.sh
+bash scripts/install-git-hooks.sh     # once per clone
 ```
 
-### Verifying Setup
+Do not run `lake update`: it moves the dependency pins.
+
+Before pushing:
 
 ```bash
-# Build should complete without errors
-lake build
-
-# Tests should pass
-lake test
-
-# Linter should have no warnings
-lake lint
-
-# Git hooks should be installed
-bash scripts/install-git-hooks.sh --check
+lake build && lake test && lake lint
+bash scripts/verify-all.sh            # CI's repository checks; over ten minutes
 ```
 
-## 2. Development Workflow
+`.github/workflows/ci.yml` is the source of record for what CI checks.
 
-### Test-Driven Development (TDD)
+## 2. What a Contribution Must Satisfy
 
-ProofChecker requires TDD for all new features:
+- **No `sorry`, no new `axiom`, no `native_decide`.** `scripts/check-module-invariants.sh` pins
+  the axiom set of each headline result, and a change to one fails the check. A statement that
+  is not yet proved is not committed as a theorem.
+- **Tests.** New definitions, theorems and tactics come with tests under `Tests/BimodalTest/`,
+  mirroring the library path. A tactic's error messages are tested too. See
+  [Testing Standards](docs/development/TESTING_STANDARDS.md).
+- **Style.** Follow the [Lean Style Guide](docs/development/LEAN_STYLE_GUIDE.md). Every public
+  declaration has a docstring; every file has a module docstring and a copyright header.
+- **Placement.** Imports run downward through the layers in
+  [ORGANISATION.md](ORGANISATION.md). A capability covered by a record under `records/` sits
+  where that record says.
+- **Generated files are regenerated, not edited.** After adding, moving or deleting a module,
+  run `lake exe mk_all --lib FormalSystem`. After changing a directory's files, run
+  `bash scripts/check-module-invariants.sh --emit-inventory` to rewrite the README inventories.
 
-#### 1. RED: Write a Failing Test
+## 3. Where Documents Live
 
-```lean
--- BimodalTest/ProofSystem/NewFeatureTest.lean
+- **`records/` holds shared designs for collaboration, and only for what is not yet fully
+  implemented.** See [records/README.md](records/README.md). A contribution that adds a
+  capability says where it sits in the relevant record, and updates the record if it changes
+  the design.
+- **`docs/` holds how to use what exists.** A contribution that implements part of a design
+  revises `docs/` to describe what now exists and cuts that part from the record.
+- **`specs/` is the development record**: reports, plans and drafts written while work is under
+  way. It is not maintained afterwards, so no `README.md` links into it.
+- **Source files, tests, `docs/` and `records/` state what is there now.** They do not cite
+  plan labels, task numbers or draft history.
 
-/-- Test new theorem is provable -/
-example : ⊢ my_new_theorem := by
-  sorry  -- Test fails because theorem doesn't exist
-```
+## 4. Pull Requests
 
-#### 2. GREEN: Implement Minimal Code
-
-```lean
--- FormalSystem/Theorems/
-
-/-- New theorem: description -/
-theorem my_new_theorem : ⊢ ... := by
-  -- Implementation to make test pass
-```
-
-#### 3. REFACTOR: Improve Code Quality
-
-- Add documentation
-- Optimize if needed
-- Ensure style compliance
-
-### Code Style Compliance
-
-All code must follow the [LEAN Style Guide](docs/development/LEAN_STYLE_GUIDE.md):
-
-```lean
--- Good: follows style guide
-/-- Brief description of function -/
-def my_function (x : Nat) : Nat :=
-  x + 1
-
--- Bad: missing docstring, wrong naming
-def MyFunction(x:Nat):Nat := x+1
-```
-
-#### Prohibited Elements
-
-Do not use emojis in code, comments, or documentation. Use text-based alternatives like `[COMPLETE]`, `**DO**`, `**DON'T**`. Mathematical symbols (→, ∧, ∨, ¬, □, ◇) are NOT emojis and must be preserved. See [LEAN Style Guide](docs/development/LEAN_STYLE_GUIDE.md#8-prohibited-elements) for details.
-
-### Documentation Requirements
-
-Every public definition needs:
-
-- Declaration docstring (`/-- ... -/`)
-- Module docstrings for new files (`/-! ... -/`)
-- Examples where appropriate
-
-```lean
-/-- Compute the complexity of a formula.
-
-Returns the number of operators plus atomic formulas.
-
-## Example
-
-```lean
-#eval (Formula.atom "p").complexity  -- 1
-#eval (Formula.box (Formula.atom "p")).complexity  -- 2
-```
--/
-def complexity (φ : Formula) : Nat := ...
-```
-
-## 3. Directory Naming Convention
-
-This project follows Lean 4 ecosystem conventions for directory naming:
-
-### PascalCase (capitalized)
-
-Directories containing Lean source code use PascalCase. These names must match Lean's import path requirements:
-
-- `FormalSystem/` - Main Lean source code
-- `FormalSystem/` - Theory implementations (Bimodal, Logos)
-- `Tests/` - Test suites
-
-**Rationale**: Lean imports like `import FormalSystem.Syntax` require directory names to match exactly.
-
-### lowercase
-
-All other directories use lowercase:
-
-- `docs/` - Project documentation
-- `scripts/` - Utility scripts
-- `benchmarks/` - Performance benchmarks
-
-**Rationale**: Aligns with standard software project conventions and provides visual distinction between code and non-code directories.
-
-### Why This Matters
-
-1. **Lean compatibility**: Import paths must match directory structure exactly
-2. **Ecosystem alignment**: Follows Mathlib and other Lean 4 project conventions
-3. **GitHub Pages**: `docs/` is automatically served by GitHub Pages
-4. **Clarity**: Developers can quickly identify code vs. non-code directories
-
-## 4. Pull Request Process
-
-### Branch Naming
-
-```
-feature/description    -- New features
-fix/issue-number      -- Bug fixes
-docs/description      -- Documentation updates
-refactor/description  -- Refactoring
-```
-
-Examples:
-- `feature/temporal-duality-tactic`
-- `fix/123-modus-ponens-edge-case`
-- `docs/update-examples`
-
-### Commit Message Format
-
-```
-<type>: <short description>
-
-<detailed description if needed>
-
-Fixes #123
-```
-
-Types:
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation
-- `test`: Adding tests
-- `refactor`: Code refactoring
-- `style`: Style/formatting changes
-- `chore`: Maintenance tasks
-
-Examples:
-```
-feat: Add temporal_k tactic for TK rule application
-
-Implements a custom tactic that automatically applies the
-temporal K inference rule when the goal matches the pattern.
-
-Fixes #45
-```
-
-### PR Description Template
+Branch from `main`, make the change with its tests and documentation, and open a pull request
+against `main`. Say what it changes and how it was tested. For a large change, open an issue or
+propose a record first, so that the design is agreed before the work is done.
 
 ```markdown
-## Summary
-
-Brief description of changes.
-
-## Changes
-
-- Change 1
-- Change 2
-- Change 3
-
-## Testing
-
-- [ ] Added unit tests
-- [ ] All existing tests pass
-- [ ] Manual testing performed
-
-## Checklist
-
-- [ ] Code follows style guide
-- [ ] All public definitions have docstrings
-- [ ] No `sorry` in committed code
-- [ ] `lake lint` has no warnings
-- [ ] Updated relevant documentation
+- [ ] `lake build`, `lake test` and `lake lint` pass
+- [ ] `bash scripts/verify-all.sh` passes
+- [ ] No `sorry`, no new `axiom`, no `native_decide`
+- [ ] New declarations have docstrings and tests
+- [ ] Generated files regenerated
+- [ ] `docs/` describes what now exists; the record is updated or cut back
+- [ ] No `README.md` links into `specs/`
 ```
 
-### Submitting a PR
+A toolchain or Mathlib upgrade is one pull request of its own: it moves `lean-toolchain`, the
+Mathlib `rev` in `lakefile.toml` and `lake-manifest.json` together, and updates the version
+stated in `README.md` and `CLAUDE.md`.
 
-1. Create a feature branch from `main`
-2. Make your changes with tests
-3. Ensure `lake build`, `lake test`, `lake lint` all pass
-4. Push to your fork
-5. Open PR against upstream `main`
-6. Address review feedback
-7. Squash commits if requested
+Commits beginning `task N:` come from the maintainer's agent system, configured under the
+gitignored `.claude/`. Contributors do not need it, and work done with AI assistance meets the
+same standards as any other.
 
-## 5. Code Review Checklist
+## 5. Bugs and Questions
 
-Reviewers will check:
-
-### Correctness
-- [ ] All tests pass
-- [ ] No `sorry` in committed code
-- [ ] Logic is correct
-- [ ] Edge cases handled
-
-### Style
-- [ ] Follows [LEAN Style Guide](docs/development/LEAN_STYLE_GUIDE.md)
-- [ ] 100-char line limit
-- [ ] 2-space indentation
-- [ ] Proper naming conventions
-
-### Documentation
-- [ ] All public definitions have docstrings
-- [ ] Module docstring if new file
-- [ ] Examples where appropriate
-- [ ] Updated README if needed
-
-### Testing
-- [ ] New tests for new features
-- [ ] Tests cover edge cases
-- [ ] No decrease in coverage
-
-### Performance
-- [ ] No unnecessary computation
-- [ ] Reasonable proof complexity
-- [ ] Build time not significantly increased
-
-## 6. Types of Contributions
-
-### Bug Fixes
-
-1. Create issue describing the bug
-2. Reference issue in PR
-3. Add regression test
-4. Fix the bug
-5. Verify fix with tests
-
-### New Features
-
-1. Discuss in issue first (for large features)
-2. Follow TDD process
-3. Document thoroughly
-4. Add examples
-
-### Documentation
-
-- Fix typos and unclear explanations
-- Add examples
-- Improve tutorials
-- Update outdated information
-
-### Tests
-
-- Increase coverage
-- Add edge case tests
-- Add integration tests
-- Improve test organization
-
-### Refactoring
-
-- Discuss approach in issue first
-- Ensure no behavior change
-- All tests must pass
-- Update documentation if APIs change
-
-## 7. Community Resources
-
-### Communication
-
-- **GitHub Issues**: Bug reports, feature requests
-- **GitHub Discussions**: Questions, ideas
-- **Lean Zulip**: `#lean4` and `#mathlib4` channels
-
-### Getting Help
-
-- Check existing documentation first
-- Search closed issues
-- Ask in GitHub Discussions
-- Ask on Lean Zulip
-
-### Reporting Bugs
-
-Include:
-1. LEAN version (`lean --version`)
-2. Steps to reproduce
-3. Expected behavior
-4. Actual behavior
-5. Minimal reproducible example
-
-```markdown
-## Bug Report
-
-### Environment
-- Lean: v4.33.0-rc1
-- OS: Ubuntu 22.04
-
-### Steps to Reproduce
-1. Step 1
-2. Step 2
-
-### Expected Behavior
-Description of expected behavior
-
-### Actual Behavior
-Description of actual behavior
-
-### Minimal Example
-```lean
--- Code that reproduces the issue
-```
-```
-
-### Feature Requests
-
-Include:
-1. Problem being solved
-2. Proposed solution
-3. Alternatives considered
-4. Additional context
-
-## 8. Recognition
-
-Contributors are recognized in:
-- CONTRIBUTORS.md file
-- Release notes for significant contributions
-- Commit history
-
-## 9. Code of Conduct
-
-- Be respectful and inclusive
-- Focus on constructive feedback
-- Help others learn
-- Follow project guidelines
-- Report issues appropriately
-
-## 10. AI-Assisted Development
-
-Logos includes an AI agent system that automates development workflows:
-
-### Using AI Commands
-
-```bash
-# Research a topic
-/research "LEAN 4 metaprogramming for tactics"
-
-# Create implementation plan
-/plan "Implement modal_search tactic"
-
-# Implement the plan
-/lean 045
-
-# Refactor code
-/refactor FormalSystem/Automation/Tactics/
-
-# Update documentation
-/document "automation tactics"
-```
-
-### AI System Features
-
-- **Automated Research**: Multi-source research with LEAN library exploration
-- **Implementation Planning**: Detailed step-by-step plans with complexity analysis
-- **Proof Development**: LEAN 4 proof implementation with verification
-- **Code Refactoring**: Style guide adherence and readability improvements
-- **Documentation Management**: Automated documentation updates
-
-### Extending the AI System
-
-Use `/meta` to create or modify agents and commands:
-
-```bash
-/meta "Create a new agent for proof optimization"
-```
-
-The meta system provides templates and patterns for extending the AI agent system.
-
-### AI System Documentation
-
-The agent-system configuration lives under `.claude/`. It is deliberately not linked here:
-`.claude/` is a gitignored, regenerable deploy artifact, so a committed link into it is dead in
-a fresh clone.
-
-## References
-
-- [LEAN Style Guide](docs/development/LEAN_STYLE_GUIDE.md)
-- [Testing Standards](docs/development/TESTING_STANDARDS.md)
-- [Module Organization](docs/development/MODULE_ORGANIZATION.md)
-- [Quality Metrics](docs/development/QUALITY_METRICS.md)
-- [Tactic Development](docs/project-info/tactic-registry.md)
+A bug report gives the commit, the output of `lake env lean --version`, and a minimal Lean
+example. Questions go to GitHub Discussions or the Lean Zulip.

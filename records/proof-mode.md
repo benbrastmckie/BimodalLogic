@@ -2,7 +2,12 @@
 
 This is a goals document for the derivation proof mode. It states the aim, what is merged, the
 directions still to develop, and a set of milestones with the dependencies between them. It is
-not a schedule: batch order and batch rationale live in `specs/ROADMAP.md`.
+not a schedule: batch order and batch rationale live in `specs/ROADMAP.md`. How rules and tactics are
+organized, and where each contribution sits, is in
+[proof-mode-architecture.md](proof-mode-architecture.md). The library of theorems,
+countermodels and conjectures the mode is measured against, its organization by language
+fragment, the pipeline that fills it and the diagnostics every stage reports are in
+[theorem-library.md](theorem-library.md).
 
 ## Aim
 
@@ -54,6 +59,9 @@ What the merged work established:
 What is missing:
 
 - **No client.** Nothing outside the mode's own tests is proved with it.
+- **No corpus.** The derived theorems under `FormalSystem/Theorems/` are not indexed by fragment
+  or frame class, the tableau's verdicts are kept as dataset files and not as library entries,
+  and refutations are scattered across the language directories.
 - **No axiom audit.** No test states which axioms a proof-mode derivation depends on, though
   `Tests/BimodalTest/WalkthroughAxioms.lean` shows the pattern for other proofs.
 - **Thin error testing.** 65 error sites against 2 negative tests, neither checking the message.
@@ -64,8 +72,9 @@ One structural fact shapes the work ahead. `ORGANISATION.md` places `FormalSyste
 layer 2 and `FormalSystem/Automation/` and `FormalSystem/Metalogic/` at layer 3, and each layer
 imports downward. No file under `FormalSystem/Theorems/` imports `FormalSystem.Automation`. So a
 pure rule can never depend on a tactic, proofs under `FormalSystem/Theorems/` cannot be written
-in the proof mode, and proof-mode proofs belong at layer 3 or above: `FormalSystem/Examples/`,
-the tests, or a new directory.
+in the proof mode, and proof-mode proofs belong above layer 3. The theorem library is a Lake
+library of its own that imports `FormalSystem`, so it sits above both the mode and the tableau,
+and proof-mode proofs of library entries live there.
 
 ## Dimensions
 
@@ -78,7 +87,7 @@ the gap.
    `proof_mode_always_sometimes_scopes`. Gap: none identified.
 2. **Linear-time rules.** Done: a three-way linearity case split, and introduction, unfolding
    and induction for Until and Since. Covered by `proof_mode_linearity_case_tactic` and
-   `proof_mode_until_since_intro_unfold_induction`. Gap: whatever the temporal adequacy report
+   `proof_mode_until_since_intro_unfold_induction`. Gap: whatever the temporal sweep report
    lists as missing.
 3. **Frame coverage.** Done: frame-specific rules at Dense and RTime as well as ZTime, each with
    its frame certificate solved or shown as a goal. Covered by
@@ -89,11 +98,16 @@ the gap.
    `FormalSystem/Metalogic/Decidability/` are covered by
    `proof_mode_decision_procedure_leaf_closers`, which also settles whether any serves TM⁺.
    Gap: a TM⁺ propositional closer.
-5. **Evidence and adoption.** Done: adequacy is measured against existing proofs, and real
-   proofs are written in the mode. Covered by `proof_mode_reprove_perpetuity` and
-   `proof_mode_reprove_temporal_slice` for the measurement. Where proof-mode
-   proofs live and which new work must use the mode is covered by
-   `proof_mode_adoption_after_perpetuity_verdict`. Gap: none identified.
+5. **Evidence and adoption.** Done: `BimodalLib` holds theorems, countermodels and conjectures
+   organized by language fragment, with the conservativity theorem for every edge between
+   fragments; a selection of its theorems, chosen for what each tests, is proved again in the
+   mode; the two proofs are compared by standard diagnostics; and the missing-rule list each
+   sweep produces is what the mode works on next. Covered by `proof_mode_reprove_perpetuity` and
+   `proof_mode_reprove_temporal_slice` for the first two sweeps, by
+   `proof_mode_adoption_after_perpetuity_verdict` for which new work must use the mode, and by
+   `investigate_stability_as_modal_family` for the place of `⊡`. Gap: the library's layout and
+   registry, the tableau pipeline into it, its countermodel part, the entries for `⊡`, and the
+   conservativity theorems, none of which has a filed record (M18 to M22).
 6. **Architecture and language reach.** Done: each rule is proved once over an interface, and
    every object language with a derivation calculus has an instance or a stated reason for
    lacking one. Covered by `proof_mode_abstract_frontend_interface` and
@@ -113,40 +127,46 @@ the gap.
 
 Two further dimensions cut across the eight.
 
-- **Trust and cost.** Done: tests state the axiom set of representative proof-mode derivations,
-  and there is a baseline for the size of the derivation terms the tactics build and for their
-  elaboration time. `lintro` discharges through the deduction theorem, which transforms a whole
-  derivation, so cost on long scripts is an open question. Covered by
-  `proof_mode_axiom_audit_and_cost_baseline`.
-- **Dual verification.** Done: a leaf the mode cannot close can be handed to the ModelChecker
-  for a countermodel, and proof-mode scripts are available to the dataset tooling in
-  `BimodalTools/`. The countermodel half is covered by
-  `proof_mode_countermodels_for_unclosed_leaves`, after the architecture report; the dataset
-  half has no filed record.
+- **Trust, cost and diagnostics.** Done: every stage, from enumeration through the tableau to
+  the proof-mode re-proof, reports in one documented schema; tests state the axiom set of
+  representative proof-mode derivations; and there is a baseline for the size of the derivation
+  terms the tactics build and for their elaboration time. `lintro` discharges through the
+  deduction theorem, which transforms a whole derivation, so cost on long scripts is an open
+  question. Covered by `proof_mode_axiom_audit_and_cost_baseline`.
+- **Dual verification.** Done: a leaf the mode cannot close is answered with a countermodel from
+  the library or the tableau, or handed to the ModelChecker where neither reaches; and
+  proof-mode scripts are available to the dataset tooling in `BimodalTools/`. The countermodel
+  half is covered by `proof_mode_countermodels_for_unclosed_leaves`; the dataset half has no
+  filed record.
 
 ## Milestones
 
-Twenty milestones, M0 to M15, with M6, M9 and M14 split into parts. Each block has the same six
+Twenty-eight milestones, M0 to M23, with M6, M9 and M14 split into parts. Each block has the same six
 fields. A **hard dependency** is one without which the milestone's result cannot be stated or
 proved. A **sequencing-only dependency** is an order kept for another reason: the two pieces of
 work edit the same files, or running later saves rework.
 
-Every milestone has a filed record, and the filed dependency edges are exactly the hard
-dependencies plus the sequencing-only dependencies listed in each block. A sequencing edge is
+M0 to M16 each have a filed record, and among them the filed dependency edges are exactly the
+hard dependencies plus the sequencing-only dependencies listed in each block. M23 has a filed
+record and no edge. M17 to M22 have none; the edges that involve them are stated in their blocks and are filed with their records. A sequencing edge is
 filed for one of three reasons: two records edit the same family files, the later record is
 cheaper once the earlier has landed, or an adequacy gate should be able to hold the record. No
-edge is filed merely because two records touch the test suite or the guide: M0 gives each tactic
-family its own test file and guide page, and every record declares a `file_scope`.
+edge is filed merely because two records touch the test suite or the guide: M0 gives each
+operator family and interaction its own modules, test file and guide page, and every record
+declares a `file_scope`.
 
-### M0: Shared-file de-contention
+### M0: Operator-family layout
 
-- **Aim**: Let two proof-mode milestones run at once without editing the same file.
-- **Done when**: the acceptance tests are split into one file per tactic family under a
-  `ProofMode` test directory with the 31 existing examples passing unchanged; the usage guide is
-  split or sectioned so each family has its own file or clearly bounded section; and every filed
-  proof-mode record declares a `file_scope`.
+- **Aim**: File every rule, tactic, test and guide page by the operator family or interaction its
+  statement names, so that two milestones edit different files and a language extension adds
+  modules without changing any.
+- **Done when**: the pure-rule modules, the tactic modules, the acceptance tests and the guide
+  pages follow the naming scheme of [proof-mode-architecture.md](proof-mode-architecture.md),
+  with every existing example passing unchanged and no statement, proof or tactic behaviour
+  changed; and every filed proof-mode record declares a `file_scope` in that layout.
 - **Hard dependencies**: none.
-- **Sequencing-only dependencies**: none.
+- **Sequencing-only dependencies**: none. It moves files that open contributions edit, so it runs
+  after they are merged or declined.
 - **Lane**: Elaborators.
 - **Filed record**: `proof_mode_split_shared_test_and_guide_files`.
 
@@ -178,15 +198,20 @@ family its own test file and guide page, and every record declares a `file_scope
 - **Lane**: Elaborators.
 - **Filed record**: `proof_mode_close_leaves_with_automation`.
 
-### M3: Gate one, Perpetuity adequacy
+### M3: Gate one, first fragment sweep
 
-- **Aim**: Measure whether proof-mode scripts are shorter than the existing Perpetuity proofs.
-- **Done when**: the supporting lemmas of `FormalSystem/Theorems/Perpetuity/` are re-proved in
-  the mode in a module under `FormalSystem/Examples/`, alongside the originals and without citing
-  them, and a report opens with an explicit GO or RE-PLAN verdict backed by per-declaration
-  measurements.
-- **Hard dependencies**: M1, M2. The gate measures exactly that rule set.
-- **Sequencing-only dependencies**: M13, so that the gate report can quote a cost figure.
+- **Aim**: Measure the mode on the library fragments its first rule set covers.
+- **Done when**: a selection of theorem entries from the library's `Boolean` and `ModalBoolean`
+  fragments and from the Perpetuity section of `ModalTemporalBoolean`, the six principles
+  included, is fixed before any script is written, with a stated reason for each entry: the
+  rule, tactic or scope it exercises; the selection exercises every rule M1 and M2 provide;
+  each entry is attempted in the mode under `BimodalLib/ProofMode/` against its registered statement,
+  without citing its reference proof; every attempt has a diagnostic record; and a report opens
+  with an explicit GO or RE-PLAN verdict backed by per-entry measurements and ends with the
+  missing-rule list.
+- **Hard dependencies**: M1, M2. The gate measures exactly that rule set. M18, which registers
+  the entries, and M13, which fixes the records.
+- **Sequencing-only dependencies**: none.
 - **Lane**: Evaluation.
 - **Filed record**: `proof_mode_reprove_perpetuity`.
 
@@ -207,16 +232,20 @@ family its own test file and guide page, and every record declares a `file_scope
 - **Filed record**: `proof_mode_linearity_case_tactic`, then
   `proof_mode_until_since_intro_unfold_induction`.
 
-### M5: Gate two, temporal slice
+### M5: Gate two, temporal fragment sweep
 
-- **Aim**: Measure the temporal rule set against existing proofs and list what it lacks.
-- **Done when**: a slice fixed in advance (at least four declarations from each of
-  `FormalSystem/Theorems/TemporalDerived.lean`, `FormalSystem/Theorems/ConnectDerived.lean` and
-  `FormalSystem/Theorems/LinearityDerived.lean`, including `tempLinearity`) is re-proved in the
-  mode, and a report gives the same measurements as gate one plus every missing rule, each
-  either added or named with a proposed follow-up description.
-- **Hard dependencies**: M4. The slice includes a linearity proof and Until proofs.
-- **Sequencing-only dependencies**: none.
+- **Aim**: Measure the temporal rule set on the library and list what it lacks.
+- **Done when**: a selection of theorem entries from `TemporalBoolean` and the rest of
+  `ModalTemporalBoolean`, at Base and at ZTime, is fixed in advance with a stated reason for
+  each, exercises every rule M4 provides, and includes at least four entries registered from
+  each of `FormalSystem/Theorems/TemporalDerived.lean`,
+  `FormalSystem/Theorems/ConnectDerived.lean` and `FormalSystem/Theorems/LinearityDerived.lean`
+  with `tempLinearity` among them; each is attempted in the mode; and a report gives the same measurements
+  as gate one plus every missing rule, each either added or named with a proposed follow-up
+  description.
+- **Hard dependencies**: M4. The set includes a linearity proof and Until proofs.
+- **Sequencing-only dependencies**: M19, so that the set includes entries admitted from the
+  tableau and not only hand proofs.
 - **Lane**: Evaluation.
 - **Filed record**: `proof_mode_reprove_temporal_slice`.
 
@@ -335,23 +364,27 @@ family its own test file and guide page, and every record declares a `file_scope
 ### M12: Adoption
 
 - **Aim**: Turn a GO verdict into a working practice.
-- **Done when**: the guide states where proof-mode proofs live, which kinds of new derivation
-  are to be written in the mode, and what "default" means given the layer order; and at least
-  one module outside the tests and the two adequacy modules is proved in the mode.
+- **Done when**: the guide states which kinds of new derivation are to be written in the mode
+  and what "default" means given the layer order; a theorem entering the library is required to
+  come with a proof-mode script or a recorded failure class; and at least one module outside the
+  tests and the library's sweeps is proved in the mode.
 - **Hard dependencies**: M3 with a GO verdict.
 - **Sequencing-only dependencies**: none.
 - **Lane**: Research and writing, then Evaluation.
 - **Filed record**: `proof_mode_adoption_after_perpetuity_verdict`.
 
-### M13: Trust and cost baseline
+### M13: Diagnostics standard, trust and cost baseline
 
-- **Aim**: Know what proof-mode derivations depend on and what they cost.
-- **Done when**: a test module asserts the axiom set of at least one derivation per tactic
-  family in TM and TM⁺, on the pattern of `Tests/BimodalTest/WalkthroughAxioms.lean`; and a
-  recorded baseline gives derivation-term size and elaboration time for the acceptance examples
-  and for one long script with nested `lintro`, with the command that reproduces it.
+- **Aim**: Fix the records every stage reports in, and know what proof-mode derivations depend
+  on and what they cost.
+- **Done when**: the record schema of [theorem-library.md](theorem-library.md) exists with the
+  command that emits the re-prove and compare records, and each field is documented under
+  `docs/`; a test module asserts the axiom set of at least one derivation per tactic family in
+  TM and TM⁺, on the pattern of `Tests/BimodalTest/WalkthroughAxioms.lean`; and a recorded
+  baseline gives derivation-term size and elaboration time for the acceptance examples and for
+  one long script with nested `lintro`, with the command that reproduces it.
 - **Hard dependencies**: none.
-- **Sequencing-only dependencies**: M0, for the test layout. M3 is ordered after it.
+- **Sequencing-only dependencies**: M0, for the test layout.
 - **Lane**: Evaluation.
 - **Filed record**: `proof_mode_axiom_audit_and_cost_baseline`.
 
@@ -368,15 +401,18 @@ family its own test file and guide page, and every record declares a `file_scope
 - **Filed record**: `proof_mode_decision_procedure_leaf_closers`. Completeness of proof extraction is
   not a prerequisite: a closer may fail.
 
-### M14b: Countermodel bridge
+### M14b: Refutation of unclosed leaves
 
-- **Aim**: Hand an unclosed leaf to the ModelChecker.
-- **Done when**: a failed leaf can be exported in a form the ModelChecker accepts, and a
-  countermodel it returns is reported against the leaf. A countermodel is a diagnostic; it never
-  closes a goal.
-- **Hard dependencies**: M11, whose report fixes the division of labour.
+- **Aim**: Answer a leaf the mode cannot close with a countermodel.
+- **Done when**: a failed leaf is looked up in the countermodel half of the library and, failing
+  that, decided by the tableau, and a countermodel of a stated grade is reported against the
+  leaf; a leaf outside the tableau's language can be exported in a form the ModelChecker
+  accepts, and what it returns is reported the same way. A countermodel is a diagnostic; it
+  never closes a goal.
+- **Hard dependencies**: M20, which defines the entries and their grades. M11 for the
+  ModelChecker half only: its report fixes the division of labour.
 - **Sequencing-only dependencies**: M14a, so that an unclosed leaf is measured against the full closer.
-- **Lane**: Research and writing, then Elaborators.
+- **Lane**: Library, then Elaborators.
 - **Filed record**: `proof_mode_countermodels_for_unclosed_leaves`.
 
 ### M15: Reference-manual chapter
@@ -390,25 +426,150 @@ family its own test file and guide page, and every record declares a `file_scope
 - **Lane**: Research and writing.
 - **Filed record**: `proof_mode_reference_manual_chapter`.
 
+### M16: Views tier
+
+- **Aim**: Separate changing how a formula is written from proving anything.
+- **Done when**: every defined operator in TM and TM⁺ has a fold and an unfold tactic that uses
+  definitions and formula equalities only, with no axiom, rule, context or frame class; the
+  operator matching the elaborators use rests on the same table; and the tier sits below the
+  derivation tactics and imports none of them.
+- **Hard dependencies**: none.
+- **Sequencing-only dependencies**: M0, for the layout. The always and sometimes part of M1 and
+  M8 are ordered after it: both state rules about defined operators directly.
+- **Lane**: Elaborators.
+- **Filed record**: `proof_mode_views_tier`.
+
+### M17: Logical rewriting
+
+- **Aim**: Replace a subformula under modal and temporal operators by a derivably implied or
+  equivalent one, with the justification checked at every scope it passes.
+- **Done when**: rewriting and a bounded simplifier exist as derivation-tier tactics over one
+  congruence step per operator, separate from views; errors from a supplied rule surface to the
+  user; and at least one library entry in a sweep is shorter with them.
+- **Hard dependencies**: none.
+- **Sequencing-only dependencies**: M16, which takes the definitional part out of it.
+- **Lane**: Rule theory, then Elaborators.
+- **Filed record**: none; contributed and under review. Whether its tactics may be used in the
+  gate-one scripts is open decision 4 of the architecture record.
+
+### M18: Library layout and registry
+
+- **Aim**: Give the theorem library its layout by fragment and register what is already proved.
+- **Done when**: `BimodalLib` builds; the fragment of a formula is computed for `Formula` and
+  `PlusFormula`; every closed derivation under `FormalSystem/Theorems/` outside its `ProofMode/`
+  directory is registered with its statement fragment, frame class and substitution class, and a
+  check fails when one is added unregistered; a re-proof is elaborated against the type of the
+  registered statement; a conjecture can be registered as a statement with a status and no
+  proof term; and a generated index lists the entries by fragment, with every box law that lacks
+  its diamond dual.
+- **Hard dependencies**: none.
+- **Sequencing-only dependencies**: none. It edits no file under either ProofMode directory.
+- **Lane**: Library.
+- **Filed record**: none; to be filed as `theorem_library_layout_and_registry`.
+
+### M19: Tableau pipeline into the library
+
+- **Aim**: Fill the fragments the tableau covers from its verdicts.
+- **Done when**: one command enumerates the formulas of `Boolean`, `ModalBoolean`,
+  `TemporalBoolean` and `ModalTemporalBoolean` to a stated bound at each frame class the tableau
+  accepts, and runs them through the stages of [theorem-library.md](theorem-library.md); each
+  valid formula with an extracted derivation is admitted as a schema unless an existing entry
+  subsumes it; every other verdict is registered as a conjecture with its reason; and each stage
+  emits its diagnostic records.
+- **Hard dependencies**: M18, for the registry, and M13, for the records.
+- **Sequencing-only dependencies**: none. It reuses the enumerator and the decision entry points
+  under `BimodalTools/` and adds no rule.
+- **Lane**: Library.
+- **Filed record**: none; to be filed as `theorem_library_tableau_pipeline`.
+
+### M20: Countermodel library
+
+- **Aim**: Keep every refuted inference with a checked refutation.
+- **Done when**: a countermodel entry records an inference, a frame class, a model and a proof
+  of non-validity at one of the three grades; the hand-built refutations in the language
+  directories and the independence results are registered; gated tableau refutations and
+  accepted certificates are admitted; an ungated verdict stays a conjecture and is never
+  admitted; a
+  refuted near miss and the theorem it bounds name each other; and an inference can be looked up.
+- **Hard dependencies**: M18.
+- **Sequencing-only dependencies**: M19, which supplies the tableau-fed entries.
+- **Lane**: Library.
+- **Filed record**: none; to be filed as `theorem_library_countermodels`.
+
+### M21: Entries for the stability operator
+
+- **Aim**: Populate and sweep the entries that name `⊡`, which the tableau does not reach.
+- **Done when**: the collapse `φ ↔ ⊡φ` for state-local `φ` is a TM⁺ derivation; the S5 laws are
+  entered for `⊡` and for `⟐` through the statement they share with `□` and `◇`; the pasting
+  schemata, their consequences and the principles for `Will`, `will`, `Could` and `could` are
+  entered with their substitution classes; each refutation in
+  `FormalSystem/PlusLanguage/PlusNonValidities.lean` is paired with the theorem it bounds; and a
+  sweep over a selection of these entries in TM⁺ produces a report with a missing-rule list.
+- **Hard dependencies**: M18, and M1 for the `⊡` scopes.
+- **Sequencing-only dependencies**: M3, so that the gate can hold the sweep; M8, so that the
+  shared S5 statement is proved once; M20, for the pairing; M23, whose answer decides whether
+  these entries are sections of the Modal fragments or fragments of their own.
+- **Lane**: Library, then Evaluation.
+- **Filed record**: none; to be filed as `theorem_library_stability_entries`.
+
+### M22: Conservativity along every edge
+
+- **Aim**: Prove that each fragment's logic is conserved by every larger one, so that filing by
+  smallest fragment is a theorem and not a convention.
+- **Done when**: each edge in the conservativity table of
+  [theorem-library.md](theorem-library.md) is proved, by soundness of the larger logic, a
+  semantic bridge and completeness of the smaller, with the argument stated once in parametric
+  form and instantiated per edge; or is refuted, with the countermodel entered; the table is
+  generated from the theorems; and no theorem entry has a proof fragment larger than its
+  statement fragment without a recorded reason.
+- **Hard dependencies**: none for the theorems. M18 for the generated table and the check on
+  entries.
+- **Sequencing-only dependencies**: none. It works under `FormalSystem/Metalogic/` and edits no
+  proof-mode file.
+- **Lane**: Metatheory.
+- **Filed record**: none; to be filed as `theorem_library_fragment_conservativity`. Two edges
+  need a completeness theorem the tree does not state, for S5 over the `□`-fragment and for the
+  temporal schemata alone at each frame class, and each may be its own record.
+
+### M23: The place of the stability operator
+
+- **Aim**: Decide whether `⊡` belongs in the Modal family or in a family of its own.
+- **Done when**: a report under `docs/development/` weighs the two layouts against the three
+  facts about `⊡` in [theorem-library.md](theorem-library.md), states whether the operators of
+  the Open and Nomic languages are further instances of the parameterized necessity laws,
+  recommends one layout, and lists the changes to the two records and to the filed records if
+  the recommendation is a separate family.
+- **Hard dependencies**: none.
+- **Sequencing-only dependencies**: none. M0, M8, M18 and M21 are cheaper to carry out once it
+  has reported, and none waits on it: the design starts from `⊡` in Modal.
+- **Lane**: Research and writing.
+- **Filed record**: `investigate_stability_as_modal_family`.
+
 ## Dependency picture
 
 Hard dependencies only.
 
 ```
-M1 --+
-     +--> M3 (gate) --+--> M4 --> M5 (gate) --+--> M8 --> M9a
-M2 --+                |      |                +--> M10 --> M11 --> M14b
- |                    |      +--------------------^
- |                    +--> M12                +--> M15
+M13 --+
+M18 --+
+M1 ---+--> M3 (gate) --+--> M4 --> M5 (gate) --+--> M8 --> M9a
+M2 ---+                |      |                +--> M10 --> M11
+ |                     |      +--------------------^
+ |                     +--> M12                +--> M15
  +--> M14a
 
-No hard predecessor: M0, M1, M2, M6a, M6b, M6c, M7, M9b, M13
+M18 --+--> M19   (also M13)
+      +--> M20 --> M14b   (M11 for its ModelChecker half)
+      +--> M21   (also M1)
+
+No hard predecessor: M0, M1, M2, M6a, M6b, M6c, M7, M9b, M13, M16, M17, M18, M22, M23
 ```
 
-Filed edges, hard and sequencing together, as five streams that join at M8.
+Filed edges among M0 to M16, hard and sequencing together, as five streams that join at M8.
 
 ```
-M0 --+--> M1 (three records) --+
+M0 --+--> M16 --> (M1, third record; M8)
+     +--> M1 (three records) --+
      +--> M2 ------------------+--> M3 (gate) --+--> M4 --> M5 (gate) --+
      +--> M13 -----------------+                +--> M7 ----------------+
      +--> M6a ----------------------------------+--> M6b --> M6c -------+--> M8
@@ -420,51 +581,70 @@ M8 --+--> M9a   (also after M9b, which has no predecessor)
      +--> M15
 ```
 
-What can run at once: M0 and M9b from the start; then M1, M2, M13 and M6a; after a GO verdict
-M4, M7, M6b then M6c, and M12; after M8 the four branches above.
+The library is a sixth stream beside these. M18 runs from the start and feeds M3; M19 and M20
+follow it and run beside everything, since they edit `BimodalLib/` and `BimodalTools/` only; M21
+follows gate one. M22 is metatheory and M23 is a report; both run from the start.
+
+What can run at once: M0, M9b, M18, M22 and M23 from the start; then M1, M2, M13, M6a and M16, with M19
+and M20 once M13 and M18 have landed; after a GO verdict M4, M7, M6b then M6c, M12 and M21;
+after M8 the four branches above.
 
 M10 depends on M4 directly and through M5. The milestones with no hard predecessor:
 
-- M0 restructures tests and documentation and needs no rule.
+- M0 moves files into the family layout and changes no rule.
 - M1 extends the merged scope rules.
 - M2 rests on `propDecide`, which is in the library.
 - M6a, M6b and M6c work on the elaborators as they stand.
 - M7 exposes principles the library has, behind the certificate pattern `lstep` has.
 - M9b is metatheory about two calculi.
 - M13 measures the merged tactics.
+- M16 uses definitions only, and M17 uses rules the library has.
+- M18 registers proofs that exist.
+- M22 is metatheory about the fragments, and M23 is a report.
 
 ## Gates
 
-**Gate one (M3)** is kept exactly as filed. GO requires the proof-mode scripts to be shorter in
-aggregate and for a clear majority of declarations, with no declaration needing a raw term-mode
-escape longer than its original. Otherwise the verdict is RE-PLAN: the report recommends how
-each later record should change, and the work stops for user review so that no later record is
-dispatched on an unrevised plan.
+**Gate one (M3)** keeps its criteria as filed and applies them to the gate's fixed selection of
+library entries. The selection is made to test the rule set, each entry for a stated reason,
+and is enlarged later only where a sweep shows something unexercised. GO requires the proof-mode scripts to be shorter than the hand proofs in
+aggregate and for a clear majority of entries, with no entry needing a raw term-mode escape
+longer than its hand proof. An entry whose only reference proof is extracted from the tableau
+counts toward coverage and the missing-rule list and not toward the length comparison.
+Otherwise the verdict is RE-PLAN: the report recommends how each later record should change, and
+the work stops for user review so that no later record is dispatched on an unrevised plan.
 
-- On GO, M4 and M12 open.
+- On GO, M4, M12 and M21 open.
 - On RE-PLAN, every milestone after M3 is held until its record is revised: M4, M5, M6b, M6c,
-  M7, M8, M9a, M10, M11, M12, M14a, M14b and M15. This includes M6b, M6c and M7, which have no
-  hard dependency on M3 and carry a filed edge on it for this reason.
-- M0, M6a, M9b and M13 do not wait on the verdict. They change no rule and no tactic.
+  M7, M8, M9a, M10, M11, M12, M14a, M14b, M15 and M21. This includes M6b, M6c, M7 and M21,
+  which have no hard dependency on M3 and carry an edge on it for this reason.
+- M0, M6a, M9b, M13, M16, M18, M19, M20, M22 and M23 do not wait on the verdict. M16 adds no
+  rule: a view proves nothing. The library milestones add entries and records and no rule, M22
+  is metatheory, and M23 is a report.
 
 **Gate two (M5)** has no verdict as filed. Its output is a measured report and a missing-rule
-list, each item either added in M5 or named with a proposed description. M8, M10 and M15 wait on
+list, each item either added in M5 or named with a proposed description. The sweep in M21 has
+the same form. M8, M10 and M15 wait on
 it because each takes the rule set after gate two as its input. M6c is ordered after gate one only.
 
 Nothing in this document weakens gate one. The work that runs before the verdict is M0, M6a,
-M9b and M13, which lie outside the measured rule set, and M1 and M2, which are the rule set.
+M9b, M13, M18, M19, M20, M22 and M23, which lie outside the measured rule set, and M1 and M2, which are the
+rule set.
+
+Every sweep is re-run by one command after any later change to the rule set. A fall in coverage
+on a fragment already swept is a regression and is reported as one.
 
 ## Lanes
 
-Five lanes, by the kind of work and the files it touches.
+Six lanes, by the kind of work and the files it touches.
 
 | Lane | Works in | Milestones |
 |---|---|---|
 | Rule theory | `FormalSystem/Theorems/ProofMode/` | M1, M4, M7, M8, M9a, M10 (the pure rules) |
 | Elaborators | `FormalSystem/Automation/ProofMode/`, tests, guide | M0, M2, M6a, M6b, M6c, M14a, and the tactic half of M1, M4, M7, M8, M10, M14b |
-| Evaluation | `FormalSystem/Examples/`, `docs/development/` | M3, M5, M13, the second half of M12 |
-| Metatheory | the language directories, `FormalSystem/Metalogic/` | M9b, the first half of M14a |
-| Research and writing | `docs/`, `typst/` | M11, M12, M14b (design), M15 |
+| Evaluation | `BimodalLib/ProofMode/`, `BimodalLib/Diagnostics/`, `docs/development/` | M3, M5, M13, the sweep of M21, the second half of M12 |
+| Library | `BimodalLib/Theorems/`, `BimodalLib/Countermodels/`, `BimodalLib/Conjectures/`, `BimodalTools/` | M18, M19, M20, the entries of M21, the lookup half of M14b |
+| Metatheory | the language directories, `FormalSystem/Metalogic/` | M9b, M22, the first half of M14a |
+| Research and writing | `docs/`, `typst/` | M11, M12, M14b (the ModelChecker half), M15, M23 |
 
 The finest joint is inside a milestone. Because `FormalSystem/Theorems/` cannot import
 `FormalSystem/Automation/`, the pure rule for a milestone never depends on its tactic, so the
@@ -486,15 +666,17 @@ These need a ruling from the user. Nothing in this document decides them.
    edge inside M4 is undetermined. It is settled when the plan for
    `proof_mode_until_since_intro_unfold_induction` states the rule.
 2. **What does "default" mean for M12?** Proofs under `FormalSystem/Theorems/` cannot be written
-   in the mode. The candidates are: new example and case-study modules must use it; new derived
-   theorems get a proof-mode companion under `FormalSystem/Examples/`; or the mode stays optional
-   and M12 only fixes where its proofs live.
+   in the mode. The candidates are: new example and case-study modules must use it; every new
+   derived theorem is registered in the library with a proof-mode script beside it; or the mode
+   stays optional outside the library's sweeps.
 3. **Where does the Minus instance live?** Its deduction theorem is at layer 3, so either the
    instance sits at layer 3 or `FormalSystem/Metalogic/Conservativity/MinusDeduction.lean`, which
    imports only the Minus derivation module, moves down. This bears on how M8 lays out the
    interface.
-4. **Does `records/` get a row in `ORGANISATION.md`?** The directory holds this document and has
-   no entry in the "Everything else" table there.
+4. **Is `⊡` rightly in the Modal family?** The records start from one family. M23 reports, and
+   a recommendation for a separate family needs a ruling before the records change.
+5. **Is `BimodalLib` built by default?** Open decision 1 of
+   [theorem-library.md](theorem-library.md). M18 adds the Lake target and needs the answer.
 
 Four positions are taken by the filed edges and can each be reversed by changing one edge.
 
@@ -532,6 +714,14 @@ Four positions are taken by the filed edges and can each be reversed by changing
 | M14a | `proof_mode_decision_procedure_leaf_closers` |
 | M14b | `proof_mode_countermodels_for_unclosed_leaves` |
 | M15 | `proof_mode_reference_manual_chapter` |
+| M16 | `proof_mode_views_tier` |
+| M17 | none; contributed and under review |
+| M18 | none; to be filed as `theorem_library_layout_and_registry` |
+| M19 | none; to be filed as `theorem_library_tableau_pipeline` |
+| M20 | none; to be filed as `theorem_library_countermodels` |
+| M21 | none; to be filed as `theorem_library_stability_entries` |
+| M22 | none; to be filed as `theorem_library_fragment_conservativity` |
+| M23 | `investigate_stability_as_modal_family` |
 
 Each record's description states its milestone, its stream, and which of its edges are hard and
 which are sequencing only.
@@ -544,7 +734,7 @@ streams above:
 
 ```
 /roadmap "re-batch the proof-mode records against records/proof-mode.md: keep the batch
-boundary at the Perpetuity adequacy gate, and place records with no dependency on the gate in
+boundary at gate one, and place records with no dependency on the gate in
 their own batches"
 ```
 
