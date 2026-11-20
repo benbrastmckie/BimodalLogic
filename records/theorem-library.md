@@ -173,6 +173,14 @@ The library is a Lake library of its own, beside `BimodalTools`. It imports
 above the proof mode, and may use both; the layer order that keeps proof-mode proofs out of
 `FormalSystem/Theorems/` does not constrain it.
 
+It is outside `defaultTargets`. It is built by explicit target and by its own `--wfail` step in
+CI, as `BimodalTools` is, and a check of import direction fails if `FormalSystem` imports it. A
+plain `lake build` compiles the published library and nothing else, and this library holds
+sweeps and enumerated entries, of which there are many. The alternative is a default target: a
+contributor's plain build would then catch a re-proof that has drifted from its registered
+statement, and hand-registered entries are cheap to build. It is rejected because CI catches the
+same drift and the default build would change its meaning.
+
 ```
 BimodalLib/
   Fragment.lean               the family set, the fragment of a formula, the registry
@@ -355,9 +363,7 @@ Not taken:
 
 ## Open decisions
 
-1. **Build status.** `BimodalLib` can be built by default or, as `BimodalTools` is, only on
-   request and in CI. Hand-registered entries are cheap to build; enumerated ones are many.
-2. **Is `⊡` rightly in the Modal family?** The design files it there. The case for a family of
+1. **Is `⊡` rightly in the Modal family?** The design files it there. The case for a family of
    its own: L and L⁻ have `□` without `⊡`, so the `⊡`-free language is recovered here by an
    operator set and not by the lattice; `⊡` breaks uniform substitution and `□` does not; the
    tableau covers one and not the other; and what is particular to `⊡` lies in its interaction
@@ -367,6 +373,6 @@ Not taken:
    the operators of the Open and Nomic languages are further instances of the same
    parameterized laws at other strengths, and revises this record if the answer is a separate
    family.
-3. **Enumeration bounds.** The complexity bound per fragment and frame class, and whether
+2. **Enumeration bounds.** The complexity bound per fragment and frame class, and whether
    admission filters by an interestingness measure
    (`BimodalTools/InterestingnessMetrics.lean`) or keeps every non-subsumed theorem.

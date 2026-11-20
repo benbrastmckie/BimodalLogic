@@ -317,19 +317,19 @@ instead of editing a nearby sentence.
 
 ---
 
-### Phase 3: Theorem-library record [NOT STARTED]
+### Phase 3: Theorem-library record [COMPLETED]
 
 **Goal**: `records/theorem-library.md` states the build status of `BimodalLib` as design and
 holds the single full statement of the `⊡` question.
 
 **Tasks**:
-- [ ] "Layout": state (k) as in Phase 2's M18 item, with the default-target alternative kept on
+- [x] "Layout": state (k) as in Phase 2's M18 item, with the default-target alternative kept on
       its merits (a plain build would catch a drifted re-proof; it loses because CI catches the
-      same drift and the default build's stated meaning would change).
-- [ ] "Open decisions": remove the build-status entry. Keep the `⊡` entry in full as the one
-      complete statement of the question. Keep the enumeration-bounds entry unchanged.
-- [ ] Check the pointer at line 96 ("see Open decisions") still resolves by name.
-- [ ] Run both lints; read the diff.
+      same drift and the default build's stated meaning would change). *(completed)*
+- [x] "Open decisions": remove the build-status entry. Keep the `⊡` entry in full as the one
+      complete statement of the question. Keep the enumeration-bounds entry unchanged. *(completed: entry text unchanged; list markers renumbered 2 to 1 and 3 to 2)*
+- [x] Check the pointer at line 96 ("see Open decisions") still resolves by name. *(completed)*
+- [x] Run both lints; read the diff. *(completed: 0 BLOCKING, 1 baseline ADVISORY; 0 task references)*
 
 **Timing**: 0.25 hours
 
