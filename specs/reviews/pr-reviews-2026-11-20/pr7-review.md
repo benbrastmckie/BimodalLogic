@@ -8,7 +8,7 @@ Since you opened the stack I have written the direction down on `main`, in three
 
 - `proof-mode-architecture.md`: the principles, tiers and module scheme. Please read this one first.
 - `proof-mode.md`: milestones and the two measurement gates.
-- `theorem-library.md`: `BimodalLib`, the library of theorems and countermodels the mode is measured against.
+- `theorem-library.md`: `BimodalLib`, the planned library of theorems and countermodels the mode will be measured against. It is not built yet.
 
 Two choices there shape all three PRs:
 
@@ -20,7 +20,7 @@ I would like the design for this work to live in those records, not in a separat
 **Requests**
 
 1. **Rebase onto `main`.** The red check is not yours; it is fixed on `main`. Regenerate `typst/generated/status.typ` afterwards.
-2. **Split views from rewriting.** This is a condition of merging. `lrewrite` with a formula equality is a cast; with an implication or equivalence it builds a derivation. Move the equality path out into a views pair, `lunfold` / `lfold`, each taking a view name over one table of views. `lrewrite` and `lsimp` keep logical steps only.
+2. **Split views from rewriting.** This is a condition of merging. `lrewrite` with a formula equality is a cast; with an implication or equivalence it builds a derivation. Move the equality path out into a views pair, `lunfold` / `lfold`, each taking a view name over one table of views. `lrewrite` and `lsimp` keep logical steps only. The views and the position and polarity planner build no proofs; please put each in its own module, importing nothing from the rewriting machinery, so that the semantic mode can share them (see #9).
 3. **File by family.**
    - Split the steps in `Congruence.lean` by family and keep `Kit`, `Step.comp` and path composition generic.
    - Move the `lsimp` seed rules to `ModalBoolean`.
@@ -38,6 +38,6 @@ I would like the design for this work to live in those records, not in a separat
 7. **Tests.**
    - Assert messages with `#guard_msgs`; `fail_if_success` passes on the wrong failure.
    - Add the past direction (H, Prev, Since), TM⁺ `lsimp`, and goal-side polarity.
-   - Move the soundness test (`:102-114`) to the PR it belongs to.
+   - Move the soundness test (`ProofModeExtensionsTest.lean:102-114`) to the PR it belongs to.
 8. **Name a client.** Show one existing proof, say from `Theorems/Perpetuity/` or `TemporalDerived`, made shorter with these tactics. Also record term size and elaboration time for one nested rewrite.
-9. **Documents.** Nothing outside `specs/` may link into it, so please drop the plan and review transcripts from the PR. Remove plan labels ("P0's…", "Proposed …") from source, tests and docs.
+9. **Documents.** Nothing outside `specs/` may link into it, so please remove the row of `docs/development/README.md` that links to `specs/proof-mode-extensions/`. The plan and review transcripts there can stay or go as you prefer. Remove plan labels ("P0's…", "Proposed …") from source, tests and docs.

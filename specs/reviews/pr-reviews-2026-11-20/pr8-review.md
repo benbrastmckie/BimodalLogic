@@ -10,7 +10,7 @@ Requesting changes. The records and the two design choices described on #7 apply
    - `TemporalZTime`: folding, unfolding, `nextKeep`.
    - `TemporalBoolean`: the leads-to rules.
    - Tactic modules, tests and guide pages follow the same names.
-3. **Move the views out.** The inclusive Until/Since definitions and `ltemporal_dual view` belong to the views tier, as rows of the view table behind `lunfold` / `lfold` from #7.
+3. **Move the views out.** The inclusive Until/Since definitions and `ltemporal_dual view` belong to the views tier, as rows of the view table behind the `lunfold` / `lfold` pair requested on #7.
 4. **Induction.** `linduction` is backward induction, which is useful, but `forwardInvariantRule` is not an instance of it. The generalizing Until/Since rule is still open. M4 of `records/proof-mode.md` has a proposed statement, not yet derived; if you see a flaw in it or a better one, that would be the most useful addition.
 5. **Leads-to.** Please label the three rules as the strict layer. The named leads-to is present-inclusive and will be proved from them.
 6. **`lapply`.** The reordering is fine. Make an unresolved instance an error at the call (`Basic.lean:80`), document the goal order, and pin it with a test.
