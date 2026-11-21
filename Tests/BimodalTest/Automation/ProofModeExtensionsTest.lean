@@ -4,20 +4,18 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tanner Duve
 -/
 
-import FormalSystem.Automation.ProofMode.Simplification
+import FormalSystem.Automation.ProofMode
 import FormalSystem.Theorems.ModalS5
 import FormalSystem.Theorems.LinearityDerived
-import FormalSystem.Metalogic.Soundness
 
 /-!
 # Compositional proof-mode extension examples
 
-One shared, mechanism-driven acceptance suite for the three implementation branches.
+Examples of checked rewriting, scoped normalization, and named formula views.
 -/
 
 open FormalSystem.Syntax FormalSystem.ProofSystem
 open FormalSystem.Theorems.LinearityDerived
-open FormalSystem.Semantics
 
 namespace BimodalTest.Automation.ProofModeExtensionsTest
 
@@ -60,11 +58,13 @@ example (_localMap : ∀ {_unavailable : False}, Γ ⊢[fc] A.imp B)
   · guard_hyp mapped :ₛ Γ ⊢[fc] B.box
     lexact mapped
 
--- Formula data equality casts only the conclusion, retaining the exact object context.
-example (equality : A = B) (provider : Γ ⊢[fc] A.and A) : Γ ⊢[fc] B.and A := by
-  fail_if_success lrewrite equality at provider as ambiguous
-  lrewrite equality (path := [andLeft]) at provider as mapped
-  lexact mapped
+-- Named views change formula data at a goal or local hypothesis.
+example (provider : Γ ⊢[fc] A.neg.box.neg) : Γ ⊢[fc] A.diamond := by
+  lfold diamond at provider
+  guard_hyp provider :ₛ Γ ⊢[fc] A.diamond
+  lunfold diamond
+  guard_target =ₛ Γ ⊢[fc] A.neg.box.neg
+  exact provider
 
 -- The exact same planner composes TM transfers and native stability at arbitrary Plus arguments.
 example (Δ : FormalSystem.PlusLanguage.PlusContext)
@@ -98,20 +98,6 @@ example (base : Γ ⊢ A.allFuture.allFuture)
     lexact base
   · lrewrite density at dense as collapsed
     lexact collapsed
-
--- P0's explicit soundness seam retains an abstract Γ and every pointed semantic index.
-example (F : TaskFrame) (hFrame : fc.Sat F) (M : TaskModel F)
-    (history : WorldHistory F) (time : F.Duration) (proof : Γ ⊢[fc] A)
-    (environment : ∀ P ∈ Γ, TruthAt M history time P) : TruthAt M history time A :=
-  FormalSystem.Metalogic.soundness_in Γ A proof F hFrame M history time environment
-
--- P0's Base Since converse is genuinely derived by closed time reflection, without completeness.
-def baseSinceFoldPrototype (g e : Formula) :
-    ⊢ (e.prev.or (g.and (.snce g e)).prev).imp (.snce g e) := by
-  have reflected := DerivationTree.time_reflection _
-    (FormalSystem.Theorems.DiscreteUnfolding.unfoldBackward e.reflectTime g.reflectTime)
-  simpa only [Formula.next, Formula.prev, Formula.or, Formula.and, Formula.neg,
-    Formula.reflectTime, Formula.reflect_time_involution] using reflected
 
 private def weakeningSchema (X Y : Formula) : ⊢[fc] X.imp (Y.imp X) :=
   .axiom [] _ (.prop_s X Y) (FrameClass.base_le fc)
@@ -161,5 +147,46 @@ example (mapping : Γ ⊢ (A.imp B).allFuture) (provider : Γ ⊢ A.and A.allFut
   fail_if_success lrewrite mapping at provider as implicitChoice
   lrewrite mapping (path := [andRight, futureBody]) at provider as mapped
   lexact mapped
+
+-- Past scope transport works through Previous and through the guard of Since.
+example (mapping : Γ ⊢ (A.imp B).allPast) (previous : Γ ⊢ A.prev)
+    (since : Γ ⊢ Formula.snce A C) : (Γ ⊢ B.prev) × (Γ ⊢ Formula.snce B C) := by
+  constructor
+  · lrewrite mapping (path := [prevBody]) at previous as mapped
+    lexact mapped
+  · lrewrite mapping (path := [sinceGuard]) at since as mapped
+    lexact mapped
+
+-- Backward goal rewriting exactly replays the closed boxDne derivation.
+example (h : ⊢[fc] A.neg.neg.box) : ⊢[fc] A.box := by
+  lrewrite ← (FormalSystem.Theorems.Propositional.doubleNegation (fc := fc) A)
+    (path := [boxBody])
+  lexact h
+
+example (Δ : FormalSystem.PlusLanguage.PlusContext) (P : FormalSystem.PlusLanguage.PlusFormula)
+    (provider : FormalSystem.PlusLanguage.PlusDerivationTree fc Δ P.neg.neg.stab) :
+    FormalSystem.PlusLanguage.PlusDerivationTree fc Δ P.stab := by
+  lsimp only [FormalSystem.PlusLanguage.ProofMode.doubleNegationIff] at provider as reduced
+  lexact reduced
+
+/-- error: Unknown identifier `missingRewriteRule` -/
+#guard_msgs in
+example : Γ ⊢[fc] A := by
+  lsimp only [missingRewriteRule]
+
+/-- error: formula equalities belong to named views (lunfold or lfold) -/
+#guard_msgs in
+example (equality : A = B) : Γ ⊢[fc] A := by
+  lrewrite equality
+
+/-- error: rewrite would leave the formula unchanged -/
+#guard_msgs in
+example (mapping : Γ ⊢[fc] A.imp A) : Γ ⊢[fc] A := by
+  lrewrite mapping
+
+/-- error: lsimp budget exhausted: matches 1/0, scope positions 0/4096 -/
+#guard_msgs in
+example : Γ ⊢[fc] A.neg.neg := by
+  lsimp only [FormalSystem.Theorems.ProofMode.doubleNegationIff] (maxAttempts := 0)
 
 end BimodalTest.Automation.ProofModeExtensionsTest

@@ -33,7 +33,6 @@ Hands-on guides for specific development tasks:
 | [METAPROGRAMMING_GUIDE.md](METAPROGRAMMING_GUIDE.md) | Lean 4 metaprogramming fundamentals for tactics |
 | [NONCOMPUTABLE_GUIDE.md](NONCOMPUTABLE_GUIDE.md) | Handling noncomputable definitions and Classical logic |
 | [PROPERTY_TESTING_GUIDE.md](PROPERTY_TESTING_GUIDE.md) | Property-based testing patterns and Plausible usage |
-| [Proof-mode extension plan](../../specs/proof-mode-extensions/plan.md) | Proposed checked rewriting, temporal rules and pointed semantics, with [mutual design review](../../specs/proof-mode-extensions/review.md) |
 
 ## Project Organization
 

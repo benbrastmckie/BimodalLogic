@@ -5,17 +5,18 @@ Named, compositional tactics for native TM and TM⁺ derivations. Import the sib
 
 ## Modules
 
+The shared formula planner and named views live in [Formulas and tactics](../../Tactic/README.md).
+
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Automation/ProofMode -->
 | File | Lines | Description |
 |------|------:|-------------|
 | `Basic.lean` | 212 | Named assumptions, opaque application, cut, and propositional branches |
 | `Discrete.lean` | 86 | Next/Previous scopes and invariance with explicit ZTime certificates |
-| `Meta.lean` | 277 | Native judgment recognition and checked context adaptation |
-| `Modal.lean` | 272 | Necessity, stability, and possibility scopes |
-| `Positions.lean` | 147 | Formula occurrences, derived views, reconstruction and bounded traversal |
-| `Rewriting.lean` | 620 | Role/polarity-aware checked rewriting with explicit scope evidence |
+| `Meta.lean` | 179 | Native judgment recognition and checked context adaptation |
+| `Modal.lean` | 274 | Necessity, stability, and possibility scopes |
+| `Rewriting.lean` | 558 | Role/polarity-aware checked rewriting with explicit scope evidence |
 | `RuleRegistry.lean` | 65 | Validated native schema registration and fixed simp orientations |
-| `Simplification.lean` | 170 | Deterministic bounded normalization with decrease guards and rollback |
+| `Simplification.lean` | 177 | Deterministic bounded normalization with decrease guards and rollback |
 | `Temporal.lean` | 257 | Future/past scopes, eventuality composition, progress, and Until/Since mapping |
 <!-- END GENERATED -->
 

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tanner Duve
 -/
 
-import FormalSystem.Automation.ProofMode.Positions
+import FormalSystem.Tactic.FormulaPositions
 import FormalSystem.Automation.ProofMode.Modal
 import FormalSystem.Theorems.ProofMode.ScopeConversions
 import Lean.Elab.Tactic.Rewrite
@@ -19,7 +19,9 @@ provider body. Fact rewriting adds a new name and preserves the original object 
 
 namespace FormalSystem.Automation.ProofMode
 
-open Lean Meta Elab Tactic
+open FormalSystem.Tactic.FormulaSyntax (Language)
+
+open Lean Meta Elab Tactic FormalSystem.Tactic.FormulaPositions
 open FormalSystem.Theorems.ProofMode
 
 initialize registerTraceClass `proofMode.rewrite
@@ -44,7 +46,7 @@ private def negStep (j : Judgment) : MetaM Expr := do
   primitiveStep j ``Congruence.tmImpLeft ``Congruence.plusImpLeft
     #[← formulaApp j.language `bot #[]]
 
-private def onePosition (j : Judgment) (p : Position) (exactNext : Bool) : MetaM Expr := do
+private def onePosition (j : Judgment) (p : FormulaPosition) (exactNext : Bool) : MetaM Expr := do
   let left := p.arguments[0]!
   let right := p.arguments.getD 1 left
   match p.name with
@@ -96,32 +98,15 @@ private def onePosition (j : Judgment) (p : Position) (exactNext : Bool) : MetaM
       #[← formulaApp j.language `top #[]]
   | _ => throwError "no checked congruence for position {p.name}"
 
-private def positionDemand (p : Position) (suggestion : Option Name) : Option Name :=
-  match p.name with
-  | `boxBody | `possibilityBody => some `box
-  | `stabilityBody | `settledPossibilityBody => some `stab
-  | `futureBody | `untilGuard | `untilEvent | `futureEvent => some `allFuture
-  | `pastBody | `sinceGuard | `sinceEvent | `pastEvent => some `allPast
-  | `nextBody => some (if suggestion == some `next then `next else `allFuture)
-  | `prevBody => some (if suggestion == some `prev then `prev else `allPast)
-  | _ => none
-
 /-- Construct one shared native path certificate; Plus uses its native step instances. -/
-def pathCertificate (j : Judgment) (path : Array Position)
+def pathCertificate (j : Judgment) (path : Array FormulaPosition)
     (evidenceWord : Array Name := #[]) : MetaM PathCertificate := do
   let kit ← mkAppM (j.language.ruleName ``Congruence.tmKit ``Congruence.plusKit) #[j.frame]
   let mut step ← mkAppM ``Congruence.Step.identity #[kit]
-  let mut positions : Array (Position × Bool) := #[]
-  let mut word := #[]
-  let mut flips := false
-  for p in path do
-    let demand := positionDemand p (evidenceWord[word.size]?)
-    positions := positions.push (p, demand == some `next || demand == some `prev)
-    if let some demand := demand then word := word.push demand
-    if p.name == `impLeft || p.name == `negBody then flips := !flips
-  for (position, exactNext) in positions.reverse do
+  let plan := planPath path evidenceWord
+  for (position, exactNext) in plan.positions.reverse do
     step ← composeSteps (← onePosition j position exactNext) step
-  return ⟨step, word, flips⟩
+  return ⟨step, plan.word, plan.flips⟩
 
 /-- A rule statement, never its proof body, including a possible scoped equivalence. -/
 structure RewriteEvidence where
@@ -144,7 +129,7 @@ private def scopeOperators (language : Language) : Array Name :=
 /-- Read the outer scope word and leaf implication, retaining its actual native indices. -/
 def readRewriteEvidence (proof : Expr) : MetaM RewriteEvidence := do
   let some j ← judgment? (← inferType proof)
-    | throwError "lrewrite requires a formula equality or a native implication/equivalence"
+    | throwError "lrewrite requires a native implication or equivalence"
   let mut current := j.formula
   let mut word := #[]
   for _ in [:64] do
@@ -257,9 +242,9 @@ private def supportedScopeConversion (source target : Array Name) : Bool :=
   (source.size == 1 && !target.isEmpty && target.all (· == source[0]!) &&
     #[`box, `allFuture, `allPast].contains source[0]!)
 
-/-- Replay one selected native rewrite and return the whole-formula implication. -/
-def rewriteCertificate (j : Judgment) (e : RewriteEvidence) (occurrence : Occurrence)
-    (goalRole symm : Bool) (expose : Bool := false) : MetaM (Expr × Expr × List MVarId) := do
+/-- Plan the replacement on formula syntax before building or discharging a certificate. -/
+def rewriteReplacement (j : Judgment) (e : RewriteEvidence) (occurrence : Occurrence)
+    (symm : Bool) : MetaM Expr := do
   let old := if symm then e.right else e.left
   let new := if symm then e.left else e.right
   unless ← isDefEq occurrence.formula old do
@@ -267,6 +252,14 @@ def rewriteCertificate (j : Judgment) (e : RewriteEvidence) (occurrence : Occurr
   let replacement ← instantiateMVars (← occurrence.replace j.language new)
   if replacement.hasExprMVar then
     throwError "rewrite leaves an undetermined formula parameter; supply its arguments explicitly"
+  if replacement == (← instantiateMVars j.formula) then
+    throwError "rewrite would leave the formula unchanged"
+  return replacement
+
+/-- Replay one selected native rewrite and return the whole-formula implication. -/
+def rewriteCertificate (j : Judgment) (e : RewriteEvidence) (occurrence : Occurrence)
+    (goalRole symm : Bool) (expose : Bool := false) : MetaM (Expr × Expr × List MVarId) := do
+  let replacement ← rewriteReplacement j e occurrence symm
   let certificate ← pathCertificate j occurrence.path e.word
   let reverseOriginal := (goalRole != certificate.flips) != symm
   let a := if reverseOriginal then e.right else e.left
@@ -354,6 +347,8 @@ def rewriteParameters (proof : Expr) (parameters : Array Expr) : MetaM (Array Ex
 def prepareRewriteRule (proof : Expr) (j : Judgment) :
     MetaM (RewriteEvidence × Array Expr) := do
   let (parameters, _, type) ← forallMetaTelescopeReducing (← inferType proof)
+  if type.isAppOf ``Eq then
+    throwError "formula equalities belong to named views (lunfold or lfold)"
   let some source ← judgment? type | throwError "expected a native rewrite rule"
   unless source.language == j.language do throwError "rewrite rule uses another object language"
   if source.frame.isMVar then discard <| isDefEq source.frame j.frame
@@ -401,7 +396,12 @@ def chooseRewriteOccurrence (j : Judgment) (e : RewriteEvidence) (symm : Bool)
     if ← isDefEq occurrence.formula old then
       candidates := candidates.push occurrence
     saved.restore
-  if candidates.isEmpty then throwError "no matching rewrite occurrence"
+  if candidates.isEmpty then
+    let wrappers ← stoppedWrappers j.language j.formula
+    if !wrappers.isEmpty then
+      throwError "no matching rewrite occurrence; traversal stopped at {wrappers} \
+        (no registered position)"
+    throwError "no matching rewrite occurrence"
   if candidates.size != 1 then
     throwError "ambiguous rewrite ({candidates.size} occurrences); select a path from \
       {candidates.map fun occurrence => occurrence.path.map (·.name)}"
@@ -428,62 +428,6 @@ def finishRewrite (goal : MVarId) (j : Judgment) (proof replacement : Expr)
     goal.assign result
     replaceMainGoal (pending ++ [next.mvarId!])
 
-/-- Lift a uniquely selected equality of formula data through its exact enclosing positions. -/
-def formulaEqualityRewriteProof (j : Judgment) (proof : Expr) (symm : Bool)
-    (path : Option (Array Name)) : TacticM (Expr × Expr × List MVarId) := do
-  let (parameters, _, type) ← forallMetaTelescopeReducing (← inferType proof)
-  let allParameters ← rewriteParameters proof parameters
-  unless type.isAppOf ``Eq do throwError "expected an equality of formula data"
-  let arguments := type.getAppArgs
-  unless ← isDefEq arguments[0]! (mkConst j.language.formulaNamespace) do
-    throwError "expected an equality of formula data"
-  let old := arguments[if symm then 2 else 1]!
-  let replacement := arguments[if symm then 1 else 2]!
-  let occurrence ← match path with
-    | some path => selectOccurrence j.language j.formula path
-    | none => do
-      let mut candidates : Array Occurrence := #[]
-      for occurrence in ← formulaOccurrences j.language j.formula do
-        let saved ← saveState
-        if ← isDefEq occurrence.formula old then candidates := candidates.push occurrence
-        saved.restore
-      if candidates.isEmpty then throwError "no matching equality occurrence"
-      if candidates.size != 1 then
-        throwError "ambiguous equality rewrite; select a path from \
-          {candidates.map fun occurrence => occurrence.path.map (·.name)}"
-      pure candidates[0]!
-  unless ← isDefEq occurrence.formula old do
-    throwError "selected occurrence does not match the equality"
-  let mut formula ← instantiateMVars replacement
-  if formula.hasExprMVar then throwError "equality leaves an undetermined formula parameter"
-  let pending ← resolveRuleParameters allParameters
-  let mut equality := mkAppN proof parameters
-  if symm then equality ← mkAppM ``Eq.symm #[equality]
-  for position in occurrence.path.reverse do
-    let congruence ← withLocalDeclD `A (mkConst j.language.formulaNamespace) fun value => do
-      mkLambdaFVars #[value] (← position.replace j.language value)
-    equality ← mkAppM ``congrArg #[congruence, equality]
-    formula ← position.replace j.language formula
-  return (formula, equality, pending)
-
-private def equalityRewrite (goal : MVarId) (j : Judgment) (proof : Expr) (symm : Bool)
-    (path : Option (Array Name)) (fact : Option (Expr × Name)) (expose : Bool) : TacticM Unit := do
-  let (formula, equality, sideGoals) ← formulaEqualityRewriteProof j proof symm path
-  unless expose || sideGoals.isEmpty do
-    throwError "equality rewrite requires side conditions; use obligations := expose"
-  checkRewriteHoles equality sideGoals
-  let judgmentCongruence ← withLocalDeclD `A (mkConst j.language.formulaNamespace) fun value => do
-    mkLambdaFVars #[value] (← derivationType j j.context value)
-  let typeEquality ← mkAppM ``congrArg #[judgmentCongruence, equality]
-  match fact with
-  | some (source, name) =>
-    let result ← mkAppM ``Eq.mp #[typeEquality, source]
-    replaceMainGoal (sideGoals ++ [← nameProof goal name result])
-  | none =>
-    let next ← mkFreshExprSyntheticOpaqueMVar (← derivationType j j.context formula)
-    goal.assign (← mkAppM ``Eq.mpr #[typeEquality, next])
-    replaceMainGoal (sideGoals ++ [next.mvarId!])
-
 /-- Apply a checked rewrite at a goal or add a rewritten fact, transactionally. -/
 def nativeRewrite (term : Syntax) (symm : Bool) (path : Option (Array Name))
     (fact : Option (Syntax × Name)) (expose : Bool) : TacticM Unit := withMainContext do
@@ -500,12 +444,6 @@ def nativeRewrite (term : Syntax) (symm : Bool) (path : Option (Array Name))
     let factValue := fact.map fun (proof, name, _) => (proof, name)
     let firstNewIndex := (← getMCtx).mvarCounter
     let raw ← elaborateProof term
-    let equality ← withoutModifyingState do
-      let (_, _, type) ← forallMetaTelescopeReducing (← inferType raw)
-      return type.isAppOf ``Eq
-    if equality then
-      equalityRewrite goal j raw symm path factValue expose
-      return
     let (e, parameters) ← prepareRewriteRule raw j
     let occurrence ← chooseRewriteOccurrence j e symm path
     let (certificate, replacement, sideGoals) ←
@@ -575,7 +513,7 @@ def validateRewriteAdapters : MetaM Unit := do
             let names := positionNames operator
             let arguments := if names.size == 2 then #[a, c] else #[a]
             for index in [:names.size] do
-              let position : Position := ⟨names[index]!, operator, arguments, index⟩
+              let position : FormulaPosition := ⟨names[index]!, operator, arguments, index⟩
               let hints := if operator == `next || operator == `prev then
                   #[#[], #[operator]] else #[#[]]
               for hint in hints do

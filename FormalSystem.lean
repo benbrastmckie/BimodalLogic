@@ -5,7 +5,6 @@ import FormalSystem.Automation.ProofMode.Basic
 import FormalSystem.Automation.ProofMode.Discrete
 import FormalSystem.Automation.ProofMode.Meta
 import FormalSystem.Automation.ProofMode.Modal
-import FormalSystem.Automation.ProofMode.Positions
 import FormalSystem.Automation.ProofMode.Rewriting
 import FormalSystem.Automation.ProofMode.RuleRegistry
 import FormalSystem.Automation.ProofMode.Simplification
@@ -742,6 +741,9 @@ import FormalSystem.Syntax.SubformulaClosure.TemporalFormulas
 import FormalSystem.Syntax.Subformulas
 import FormalSystem.Tactic
 import FormalSystem.Tactic.Attr
+import FormalSystem.Tactic.FormulaPositions
+import FormalSystem.Tactic.FormulaSyntax
+import FormalSystem.Tactic.FormulaViews
 import FormalSystem.Tactic.Meta
 import FormalSystem.Theorems
 import FormalSystem.Theorems.Combinators

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tanner Duve
 -/
 
+import FormalSystem.Tactic.FormulaSyntax
 import FormalSystem.Theorems.ProofMode.Basic
 import FormalSystem.Theorems.ProofMode.PlusRules
 
@@ -19,11 +20,10 @@ namespace FormalSystem.Automation.ProofMode
 
 open Lean Meta Elab Tactic
 
-/-- The two native derivation languages supported by the frontend. -/
-inductive Language where
-  | tm
-  | plus
-  deriving BEq
+export FormalSystem.Tactic.FormulaSyntax
+  (formulaApp operatorArgs? rigidOperatorArgs?)
+
+open FormalSystem.Tactic.FormulaSyntax (Language)
 
 /-- The frame class, object context, and conclusion of a native derivation goal. -/
 structure Judgment where
@@ -36,76 +36,14 @@ structure Judgment where
   /-- Object-language conclusion. -/
   formula : Expr
 
-/-- Namespace of formula constructors and derived operators. -/
-def Language.formulaNamespace : Language → Name
-  | .tm => ``FormalSystem.Syntax.Formula
-  | .plus => ``FormalSystem.PlusLanguage.PlusFormula
-
 /-- Native derivation type constructor. -/
-def Language.derivationName : Language → Name
+def _root_.FormalSystem.Tactic.FormulaSyntax.Language.derivationName : Language → Name
   | .tm => ``FormalSystem.ProofSystem.DerivationTree
   | .plus => ``FormalSystem.PlusLanguage.PlusDerivationTree
 
-/-- Select a TM helper or its native TM⁺ counterpart. -/
-def Language.ruleName (language : Language) (tm plus : Name) : Name :=
-  if language == .tm then tm else plus
-
-/-- Checked operator declarations. A source rename fails here rather than at tactic invocation. -/
-def Language.operatorName (language : Language) (operator : Name) : MetaM Name := do
-  let pair ← match operator with
-    | `atom => pure (``FormalSystem.Syntax.Formula.atom,
-        ``FormalSystem.PlusLanguage.PlusFormula.atom)
-    | `bot => pure (``FormalSystem.Syntax.Formula.bot,
-        ``FormalSystem.PlusLanguage.PlusFormula.bot)
-    | `top => pure (``FormalSystem.Syntax.Formula.top,
-        ``FormalSystem.PlusLanguage.PlusFormula.top)
-    | `imp => pure (``FormalSystem.Syntax.Formula.imp,
-        ``FormalSystem.PlusLanguage.PlusFormula.imp)
-    | `neg => pure (``FormalSystem.Syntax.Formula.neg,
-        ``FormalSystem.PlusLanguage.PlusFormula.neg)
-    | `and => pure (``FormalSystem.Syntax.Formula.and,
-        ``FormalSystem.PlusLanguage.PlusFormula.and)
-    | `or => pure (``FormalSystem.Syntax.Formula.or,
-        ``FormalSystem.PlusLanguage.PlusFormula.or)
-    | `box => pure (``FormalSystem.Syntax.Formula.box,
-        ``FormalSystem.PlusLanguage.PlusFormula.box)
-    | `diamond => pure (``FormalSystem.Syntax.Formula.diamond,
-        ``FormalSystem.PlusLanguage.PlusFormula.diamond)
-    | `untl => pure (``FormalSystem.Syntax.Formula.untl,
-        ``FormalSystem.PlusLanguage.PlusFormula.untl)
-    | `snce => pure (``FormalSystem.Syntax.Formula.snce,
-        ``FormalSystem.PlusLanguage.PlusFormula.snce)
-    | `allFuture => pure (``FormalSystem.Syntax.Formula.allFuture,
-        ``FormalSystem.PlusLanguage.PlusFormula.allFuture)
-    | `allPast => pure (``FormalSystem.Syntax.Formula.allPast,
-        ``FormalSystem.PlusLanguage.PlusFormula.allPast)
-    | `someFuture => pure (``FormalSystem.Syntax.Formula.someFuture,
-        ``FormalSystem.PlusLanguage.PlusFormula.someFuture)
-    | `somePast => pure (``FormalSystem.Syntax.Formula.somePast,
-        ``FormalSystem.PlusLanguage.PlusFormula.somePast)
-    | `next => pure (``FormalSystem.Syntax.Formula.next,
-        ``FormalSystem.PlusLanguage.PlusFormula.next)
-    | `prev => pure (``FormalSystem.Syntax.Formula.prev,
-        ``FormalSystem.PlusLanguage.PlusFormula.prev)
-    | `after => pure (``FormalSystem.Syntax.Formula.after,
-        ``FormalSystem.PlusLanguage.PlusFormula.after)
-    | `stab => do
-      unless language == .plus do throwError "stability requires TM⁺"
-      pure (``FormalSystem.PlusLanguage.PlusFormula.stab,
-        ``FormalSystem.PlusLanguage.PlusFormula.stab)
-    | `dstab => do
-      unless language == .plus do throwError "same-state possibility requires TM⁺"
-      pure (``FormalSystem.PlusLanguage.PlusFormula.dstab,
-        ``FormalSystem.PlusLanguage.PlusFormula.dstab)
-    | _ => throwError "unregistered formula operator {operator}"
-  return language.ruleName pair.1 pair.2
-
-/-- Build an operator application through its checked source declaration. -/
-def formulaApp (language : Language) (operator : Name) (arguments : Array Expr) : MetaM Expr := do
-  mkAppM (← language.operatorName operator) arguments
-
 /-- Checked native constructor and structural-rule declarations. -/
-def Language.derivationRule (language : Language) (rule : Name) : MetaM Name := do
+def _root_.FormalSystem.Tactic.FormulaSyntax.Language.derivationRule
+    (language : Language) (rule : Name) : MetaM Name := do
   let pair ← match rule with
     | `lift => pure (``FormalSystem.ProofSystem.DerivationTree.lift,
           ``FormalSystem.PlusLanguage.PlusDerivationTree.lift)
@@ -140,42 +78,6 @@ def requireJudgment (goal : MVarId) : MetaM Judgment := do
 /-- Construct a native derivation type with a new context and conclusion. -/
 def derivationType (judgment : Judgment) (context formula : Expr) : MetaM Expr :=
   mkAppM judgment.language.derivationName #[judgment.frame, context, formula]
-
-/-- Read a constructor or derived operator, retaining its object arguments. -/
-def operatorArgs? (language : Language) (operator : Name) (arity : Nat)
-    (formula : Expr) : MetaM (Option (Array Expr)) := do
-  let formula ← instantiateMVars formula
-  let name ← language.operatorName operator
-  if formula.getAppFn.constName? == some name then
-    return some formula.getAppArgs
-  let saved ← saveState
-  let args ← (List.range arity).toArray.mapM fun _ =>
-    mkFreshExprMVar (mkConst language.formulaNamespace)
-  let candidate ← mkAppM name args
-  if ← isDefEq formula candidate then
-    return some (← args.mapM instantiateMVars)
-  saved.restore
-  return none
-
-/-- Read a rule's syntax without constraining its pre-existing formula metavariables. Fresh
-probe arguments must resolve entirely to expressions already present in the statement. -/
-def rigidOperatorArgs? (language : Language) (operator : Name) (arity : Nat)
-    (formula : Expr) : MetaM (Option (Array Expr)) := do
-  let formula ← instantiateMVars formula
-  if formula.getAppFn.isMVar then return none
-  let original ← getMVars formula
-  let saved ← saveState
-  let result ← operatorArgs? language operator arity formula
-  let result ← result.mapM fun arguments => arguments.mapM instantiateMVars
-  let mut valid := true
-  for mvarId in original do
-    if ← mvarId.isAssigned then valid := false
-  if let some arguments := result then
-    for argument in arguments do
-      for mvarId in ← getMVars argument do
-        if !original.contains mvarId then valid := false
-  saved.restore
-  return if valid then result else none
 
 /-- Enumerate a concrete assumption list; abstract tails require explicit proof terms. -/
 partial def contextEntries (context : Expr) : MetaM (Array Expr) := do
@@ -258,7 +160,7 @@ def nameProof (goal : MVarId) (name : Name) (proof : Expr) : MetaM MVarId := do
 
 /-- Elaborate a proof term in the current Lean context. -/
 def elaborateProof (term : Syntax) : TacticM Expr :=
-  Term.elabTerm term none
+  Term.withoutErrToSorry (Term.elabTerm term none)
 
 /-- Apply the native modus-ponens constructor to two derivations. -/
 def modusPonens (judgment : Judgment) (implication premise : Expr) : MetaM Expr := do

@@ -17,7 +17,7 @@ premises must already be available. Exhaustion restores the complete original ta
 
 namespace FormalSystem.Automation.ProofMode
 
-open Lean Meta Elab Tactic
+open Lean Meta Elab Tactic FormalSystem.Tactic.FormulaPositions
 open FormalSystem.Theorems.ProofMode
 
 register_lrewrite FormalSystem.Theorems.ProofMode.doubleNegationIff
@@ -63,6 +63,13 @@ def nativeSimp (rules : Array (Syntax × Bool)) (budget : SimpBudget)
       let some source ← judgment? (← inferType proof) | throwError "expected a native fact"
       current := { original with formula := source.formula }
       factValue := some (proof, name)
+    let rules ← rules.mapM fun (term, reverse) => do
+      let proof ← elaborateProof term
+      -- Validate each supplied rule outside the match loop so elaboration and
+      -- rule-shape errors reach the user.
+      withoutModifyingState do
+        discard <| prepareRewriteRule proof original
+      return (proof, reverse != (← registeredRewriteOrientation proof))
     let mut steps := 0
     let mut attempts := 0
     let mut visits := 0
@@ -77,7 +84,7 @@ def nativeSimp (rules : Array (Syntax × Bool)) (budget : SimpBudget)
       let size ← primitiveSize current.language current.formula
       let mut change : Option (Expr × Expr) := none
       for occurrence in occurrences do
-        for (term, reverse) in rules do
+        for (rule, reverse) in rules do
           attempts := attempts + 1
           scopes := scopes + occurrence.path.size
           if attempts > budget.attempts || scopes > budget.scopes then
@@ -85,37 +92,20 @@ def nativeSimp (rules : Array (Syntax × Bool)) (budget : SimpBudget)
               scope positions {scopes}/{budget.scopes}"
           let attemptState ← saveState
           try
-            let explicit ← elaborateProof term
-            let reverse := reverse != (← registeredRewriteOrientation explicit)
-            let equality ← withoutModifyingState do
-              let (_, _, type) ← forallMetaTelescopeReducing (← inferType explicit)
-              return type.isAppOf ``Eq
-            let (certificate, replacement, sideGoals, pending) ← if equality then do
-                let (replacement, equality, sideGoals) ← formulaEqualityRewriteProof current
-                  explicit reverse (some (occurrence.path.map (·.name)))
-                let equality ← if factValue.isNone then mkAppM ``Eq.symm #[equality]
-                  else pure equality
-                let kit ← mkAppM (current.language.ruleName
-                  ``Congruence.tmKit ``Congruence.plusKit) #[current.frame]
-                let certificate ← adaptProof (← mkAppM ``Congruence.Kit.ofEquality
-                  #[kit, equality]) current
-                pure (certificate, replacement, sideGoals, [])
-              else do
-                let (evidence, parameters) ← prepareRewriteRule explicit current
-                let (certificate, replacement, sideGoals) ← rewriteCertificate current evidence
-                  occurrence factValue.isNone reverse
-                pure (certificate, replacement, sideGoals, ← resolveRuleParameters parameters)
+            let (evidence, parameters) ← prepareRewriteRule rule current
+            let replacement ← rewriteReplacement current evidence occurrence reverse
+            unless (← primitiveSize current.language replacement) < size do
+              throwError "rule does not decrease instantiated primitive constructor count"
+            let (certificate, replacement, sideGoals) ← rewriteCertificate current evidence
+              occurrence factValue.isNone reverse
+            let pending ← resolveRuleParameters parameters
             unless sideGoals.isEmpty && pending.isEmpty do
               throwError "rule requires unavailable side conditions"
             checkRewriteHoles certificate []
-            let replacement ← instantiateMVars replacement
-            if replacement.hasExprMVar then throwError "rule leaves an undetermined formula"
-            unless (← primitiveSize current.language replacement) < size do
-              throwError "rule does not decrease instantiated primitive constructor count"
             change := some (certificate, replacement)
             break
           catch error =>
-            trace[proofMode.simp] "skip {term} at {occurrence.path.map (·.name)}: \
+            trace[proofMode.simp] "skip {rule} at {occurrence.path.map (·.name)}: \
               {error.toMessageData}"
             attemptState.restore
         if change.isSome then break
@@ -155,16 +145,33 @@ declare_syntax_cat lproofRule
 /-- One selected proof term, with an optional reversal of its registered orientation. -/
 syntax ("←")? term : lproofRule
 
-/-- Simplify using only the selected implications/equivalences, with an explicit step bound. -/
+/-- One limit for a simplifier invocation. -/
+declare_syntax_cat lSimpOption
+syntax "(" ident " := " num ")" : lSimpOption
+
+/-- Simplify using only the selected implications or equivalences. -/
 syntax (name := lsimp) "lsimp" ppSpace "only" ppSpace "[" lproofRule,* "]"
-  (ppSpace "(" &"maxSteps" " := " num ")")?
+  (ppSpace lSimpOption)*
   (ppSpace "at" ppSpace colGt term ppSpace "as" ppSpace colGt ident)? : tactic
 
 elab_rules : tactic
-  | `(tactic| lsimp only [$rules:lproofRule,*] $[(maxSteps := $fuel:num)]?
+  | `(tactic| lsimp only [$rules:lproofRule,*] $options:lSimpOption*
       $[at $fact:term as $name:ident]?) => do
-    let rules := rules.getElems.map fun rule => (rule.raw[1], !rule.raw[0].isNone)
-    nativeSimp rules { steps := fuel.map (·.getNat) |>.getD 64 }
-      (fact.map fun fact => (fact, name.get!.getId))
+    let rules ← rules.getElems.mapM fun rule => do
+      match rule with
+      | `(lproofRule| $proof:term) => pure (proof.raw, false)
+      | `(lproofRule| ← $proof:term) => pure (proof.raw, true)
+      | _ => throwUnsupportedSyntax
+    let mut budget : SimpBudget := {}
+    for option in options do
+      match option with
+      | `(lSimpOption| ($key:ident := $limit:num)) =>
+        budget ← match key.getId with
+          | `maxSteps => pure { budget with steps := limit.getNat }
+          | `maxAttempts => pure { budget with attempts := limit.getNat }
+          | `maxScopes => pure { budget with scopes := limit.getNat }
+          | _ => throwErrorAt key "unknown lsimp budget {key.getId}"
+      | _ => throwUnsupportedSyntax
+    nativeSimp rules budget (fact.map fun fact => (fact, name.get!.getId))
 
 end FormalSystem.Automation.ProofMode

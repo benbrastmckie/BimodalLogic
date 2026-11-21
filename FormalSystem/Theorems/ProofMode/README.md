@@ -9,7 +9,7 @@ Import the sibling [`ProofMode.lean`](../ProofMode.lean) aggregator for manual L
 | File | Lines | Description |
 |------|------:|-------------|
 | `Basic.lean` | 103 | Context substitution, cut, conjunction, disjunction, and possibility introduction |
-| `Congruence.lean` | 452 | Language-parametric signed scope-demand composition and TM/Plus instances |
+| `Congruence.lean` | 449 | Language-parametric signed scope-demand composition and TM/Plus instances |
 | `Discrete.lean` | 198 | Shifted contexts and integer-time invariance |
 | `PlusDiscrete.lean` | 93 | Native TM⁺ discrete rules transferred from TM schemas |
 | `PlusModal.lean` | 76 | TM⁺ possibility and dual-stability rules |

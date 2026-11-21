@@ -50,11 +50,6 @@ structure Kit (L : Type) (P : L → Type) where
   /-- Closed transitivity: from `⊢ A → B` and `⊢ B → C`, conclude `⊢ A → C`. -/
   trans : ∀ {A B C}, P (imp A B) → P (imp B C) → P (imp A C)
 
-/-- Cast closed reflexivity along an equality of formula data. Logical equivalence is not
-accepted here: it requires a scoped derivation-producing congruence rule. -/
-def Kit.ofEquality {L : Type} {P : L → Type} (kit : Kit L P) {A B : L}
-    (equality : A = B) : P (kit.imp A B) := equality ▸ kit.refl A
-
 /-- One formula position: its constructor context, scope demand and polarity, with the closed
 transfer theorem and closed monotonicity of the demand. -/
 structure Step {L : Type} {P : L → Type} (kit : Kit L P) where
@@ -81,6 +76,16 @@ def identity (kit : Kit L P) : Step kit where
   flips := false
   transfer A B := kit.refl (kit.imp A B)
   demandMono h := h
+
+/-- Distribution and closed monotonicity determine a positive necessity position. -/
+def necessity (box : L → L)
+    (distribution : ∀ A B, P (kit.imp (box (kit.imp A B)) (kit.imp (box A) (box B))))
+    (mono : ∀ {A B}, P (kit.imp A B) → P (kit.imp (box A) (box B))) : Step kit where
+  wrap := box
+  demand := box
+  flips := false
+  transfer := distribution
+  demandMono := mono
 
 /-- Transfer of a composite position. The inner transfer is lifted through the outer demand and
 composed with the outer transfer, at swapped arguments when the inner position flips. -/
@@ -162,12 +167,9 @@ def tmImpRight (C : Formula) : Step (tmKit fc) where
   demandMono h := h
 
 /-- Modal body `x ↦ □x`, demand `□`, by modal K. -/
-def tmBox : Step (tmKit fc) where
-  wrap := Formula.box
-  demand := Formula.box
-  flips := false
-  transfer A B := .axiom [] _ (.modal_k_dist A B) (FrameClass.base_le fc)
-  demandMono := tmBoxMono
+def tmBox : Step (tmKit fc) :=
+  Step.necessity Formula.box
+    (fun A B => .axiom [] _ (.modal_k_dist A B) (FrameClass.base_le fc)) tmBoxMono
 
 /-- Strict future body `x ↦ Gx`, demand `G`, by `gDistribution`. -/
 def tmFuture : Step (tmKit fc) where
@@ -346,23 +348,18 @@ def plusImpRight (C : PlusFormula) : Step (plusKit fc) where
   demandMono h := h
 
 /-- Modal body `x ↦ □x`, demand `□`, from transferred modal K and native necessitation. -/
-def plusBox : Step (plusKit fc) where
-  wrap := PlusFormula.box
-  demand := PlusFormula.box
-  flips := false
-  transfer A B := .ofTMSubst (assign A B B)
-    (.axiom [] _ (.modal_k_dist (schemaAtom 0) (schemaAtom 1)) (FrameClass.base_le fc))
-  demandMono {A B} h :=
-    plusMp (.axiom [] _ (.modal_k_dist A B) (FrameClass.base_le fc)) (.necessitation _ h)
+def plusBox : Step (plusKit fc) :=
+  Step.necessity PlusFormula.box
+    (fun A B => .axiom [] _ (.modal_k_dist A B) (FrameClass.base_le fc))
+    (fun {A B} h =>
+      plusMp (.axiom [] _ (.modal_k_dist A B) (FrameClass.base_le fc)) (.necessitation _ h))
 
-/-- Stability body `x ↦ ⊡x`, demand `⊡`, natively by `stab_k` and `stabNecessitation`. -/
-def plusStability : Step (plusKit fc) where
-  wrap := PlusFormula.stab
-  demand := PlusFormula.stab
-  flips := false
-  transfer A B := .axiom [] _ (.stab_k A B) (FrameClass.base_le fc)
-  demandMono {A B} h :=
-    plusMp (.axiom [] _ (.stab_k A B) (FrameClass.base_le fc)) (stabNecessitation h)
+/-- Stability body with native distribution and necessitation. -/
+def plusStability : Step (plusKit fc) :=
+  Step.necessity PlusFormula.stab
+    (fun A B => .axiom [] _ (.stab_k A B) (FrameClass.base_le fc))
+    (fun {A B} h =>
+      plusMp (.axiom [] _ (.stab_k A B) (FrameClass.base_le fc)) (stabNecessitation h))
 
 /-- Strict future body `x ↦ Gx`, demand `G`, by transferred `gDistribution`. -/
 def plusFuture : Step (plusKit fc) where

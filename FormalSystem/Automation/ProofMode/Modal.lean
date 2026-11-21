@@ -18,6 +18,8 @@ An outer Lean hypothesis retains its original object context and cannot leak int
 
 namespace FormalSystem.Automation.ProofMode
 
+open FormalSystem.Tactic.FormulaSyntax (Language)
+
 open Lean Meta Elab Tactic
 
 /-- The universal modalities with checked contextual introduction rules. -/

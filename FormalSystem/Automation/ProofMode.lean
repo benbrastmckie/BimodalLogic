@@ -9,6 +9,7 @@ import FormalSystem.Automation.ProofMode.Modal
 import FormalSystem.Automation.ProofMode.Temporal
 import FormalSystem.Automation.ProofMode.Discrete
 import FormalSystem.Automation.ProofMode.Simplification
+import FormalSystem.Tactic.FormulaViews
 
 /-!
 # Compositional proof mode
