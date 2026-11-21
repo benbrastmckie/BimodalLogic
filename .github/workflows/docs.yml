@@ -46,16 +46,9 @@ name: API Documentation
 #     `build_docs.sh`'s `determine_doc_gen_rev` resolves to for this `lean-toolchain`).
 #   - A docs cache that is only ever written whole. `docgen-action` caches the dependency docs
 #     under `Docs-<hash of lake-manifest.json and references.bib>` and saves it only on job
-#     success. Cache keys are immutable, so an entry saved from a failed or partial build is
-#     restored on every later run and never replaced. The "Persist the Mathlib docs cache" step
-#     below saves under the same key after a failed build only when the Mathlib docs are
-#     at least 95% complete; a smaller result is left unsaved. To discard a bad entry:
-#     `gh cache delete <key>`.
-#
-#     Path-list maintenance: that step's `path:` list is copied from `docgen-action`'s own
-#     echoed `path:` input, not derived. It includes `Archive` and `Counterexamples`, which are
-#     not `lake-manifest.json` packages. Revisit the list after any `lake update` that changes
-#     the dependency set.
+#     success. Cache keys are immutable, so nothing here saves that key after a failed build:
+#     a partial entry would be restored on every later run and never replaced. To discard a
+#     bad entry: `gh cache delete <key>`.
 #
 # The action supplies doc-gen4 itself (a throwaway `docbuild/` package pinned to the doc-gen4
 # tag matching `lean-toolchain`), which is why `lakefile.toml` and `lake-manifest.json` carry no
@@ -203,70 +196,6 @@ jobs:
           build-page: false
           homepage: api-site
           references: references.bib
-
-      # docgen-action saves its docs cache only on job success. This step saves the same key and
-      # path list after a failed build, so that the dependency docs already built are not
-      # rebuilt, but only when the Mathlib docs are at least 95% complete: the key is
-      # immutable, so a small or empty entry would be restored on every later run. Saving under
-      # a key that already exists is a no-op.
-      - name: Measure the built Mathlib docs
-        id: docsize
-        if: always()
-        run: |
-          set -euo pipefail
-          n=$(find docbuild/.lake/build/doc/Mathlib -name '*.html' 2>/dev/null | wc -l)
-          total=$(find .lake/packages/mathlib/Mathlib -name '*.lean' | wc -l)
-          echo "Mathlib doc pages built: $n of $total modules"
-          if [ "$total" -gt 0 ] && [ "$n" -ge $(( total * 95 / 100 )) ]; then echo "complete=true" >> "$GITHUB_OUTPUT"; else echo "complete=false" >> "$GITHUB_OUTPUT"; fi
-
-      - name: Persist the Mathlib docs cache even when the doc build fails
-        if: always() && steps.docsize.outputs.complete == 'true'
-        continue-on-error: true
-        uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
-        with:
-          key: Docs-${{ hashFiles('lake-manifest.json', 'references.bib') }}
-          path: |
-            docbuild/.lake/build/doc/Mathlib
-            docbuild/.lake/build/doc/Archive
-            docbuild/.lake/build/doc/Counterexamples
-            docbuild/.lake/build/doc/Plausible
-            docbuild/.lake/build/doc/LeanSearchClient
-            docbuild/.lake/build/doc/ImportGraph
-            docbuild/.lake/build/doc/ProofWidgets
-            docbuild/.lake/build/doc/Aesop
-            docbuild/.lake/build/doc/Qq
-            docbuild/.lake/build/doc/Batteries
-            docbuild/.lake/build/doc/Cli
-            docbuild/.lake/build/doc/Init
-            docbuild/.lake/build/doc/Lake
-            docbuild/.lake/build/doc/Lean
-            docbuild/.lake/build/doc/Std
-            docbuild/.lake/build/doc-data
-            docbuild/.lake/build/doc/declarations/declaration-data.bmp
-            docbuild/.lake/build/api-docs.db
-            docbuild/.lake/build/doc-manifest.json
-            docbuild/.lake/build/doc/style.css
-            docbuild/.lake/build/doc/favicon.svg
-            docbuild/.lake/build/doc/declaration-data.js
-            docbuild/.lake/build/doc/color-scheme.js
-            docbuild/.lake/build/doc/nav.js
-            docbuild/.lake/build/doc/jump-src.js
-            docbuild/.lake/build/doc/expand-nav.js
-            docbuild/.lake/build/doc/how-about.js
-            docbuild/.lake/build/doc/search.js
-            docbuild/.lake/build/doc/mathjax-config.js
-            docbuild/.lake/build/doc/instances.js
-            docbuild/.lake/build/doc/importedBy.js
-            docbuild/.lake/build/doc/index.html
-            docbuild/.lake/build/doc/404.html
-            docbuild/.lake/build/doc/navbar.html
-            docbuild/.lake/build/doc/search.html
-            docbuild/.lake/build/doc/foundational_types.html
-            docbuild/.lake/build/doc/references.html
-            docbuild/.lake/build/doc/references.bib
-            docbuild/.lake/build/doc/tactics.html
-            docbuild/.lake/build/doc/find/index.html
-            docbuild/.lake/build/doc/find/find.js
 
       - name: Report docgen memory trace
         if: always()
