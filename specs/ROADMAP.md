@@ -184,7 +184,7 @@ Prove each rule once over an interface instead of once for TM and once for TM-pl
 
 ```
 /orchestrate 952
-952 blocked:948,951,963,964,969  proof_mode_abstract_frontend_interface
+952 blocked:948,951,963,964,969,977  proof_mode_abstract_frontend_interface
 ```
 
 **Batch 2** -- The Minus instance and the per-language accounting, whose honest outcome may be a written reason
@@ -439,4 +439,10 @@ Keep the open-modal language's backlog moving at low priority: truth invariance 
 ```
 713 HOLD            formalize_ctl_star_reduction_2exptime_lower_bound
 734 HOLD            e4_mosaic_stabsaturated_mixed_germ_probe
+981 blocked:980     rereview_pr8_temporal_rules_and_carrying_table
+982 blocked:978,979,980,981  reconcile_records_and_tasks_after_pr_review_round
+977 ready           connective_signature_layer_shared_primitives
+978 ready           review_pr11_pointed_semantic_lemmas
+979 ready           review_pr10_semantic_record_and_pr9_disposition
+980 ready           rereview_pr7_rewriting_and_views_merge_decision
 ```
