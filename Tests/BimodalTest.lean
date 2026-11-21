@@ -15,6 +15,8 @@ import BimodalTest.ProofSystem.DerivationPropertyTest
 import BimodalTest.ProofSystem.DerivationBenchmark
 import BimodalTest.Semantics.ValidityLayerTest
 import BimodalTest.Semantics.TruthTest
+import BimodalTest.Semantics.TemporalRulesTest
+import BimodalTest.Semantics.PointTransportTest
 import BimodalTest.Semantics.TaskFrameTest
 import BimodalTest.Semantics.SaturationFiniteAxiomTest
 import BimodalTest.Semantics.OrientedForestSaturationTest
