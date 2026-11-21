@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/978_review_pr11_pointed_semantic_lemmas/reports/01_review-pr11-pointed-semantic-lemmas.md",
+      "summary": "Full review of PR #11 at head c6cd983b7: all gates green (--wfail build, full check-module-invariants.sh 58/58, runLinter, 52 axiom sets all within pcq, upward edges 10 before and after); recommends REQUEST CHANGES on four additive items, with four user rulings (the At-abbrev rewriting defect, named interval operators, who performs the next_iff_covBy promotion, merge-now vs request-changes)."
+    },
+    {
+      "type": "report",
+      "path": "specs/reviews/pr-reviews-2026-11-21/pr11-review.md",
+      "summary": "Draft review for the user to post on PR #11, in the register of specs/reviews/pr-reviews-2026-11-20/: four conditions of merging, four smaller requests, three follow-ups, the lemmas-only control result, and the generated-file merge mechanics."
+    }
+  ],
+  "user_decision": {
+    "blocking": false,
+    "summary": "Four rulings are needed before the draft is posted, each with options and a recommendation in the report's opening section: (1) whether `At` stays and in what form, given the measured finding that no clause lemma rewrites through it; (2) whether the interval lemmas get generic named operators tied to the existing Formula.release/weakUntil family; (3) who performs the now-unblocked next_iff_covBy promotion; (4) REQUEST CHANGES (recommended) versus MERGE now with follow-ups, since the user told the contributor these lemmas would be merged on their merits."
+  },
+  "metadata": {
+    "session_id": "sess_1795302289_fd0199_978",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

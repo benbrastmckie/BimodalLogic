@@ -90,8 +90,8 @@ next_project_number: 983
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 932 [NOT STARTED] — Land the four ofStepRel constraint lemmas and an ofStepPlain...
-978 [NOT STARTED] — Review collaborator PR #11 (branch...
-979 [NOT STARTED] — Review collaborator PR #10 (branch...
+978 [RESEARCHED] — Review collaborator PR #11 (branch...
+979 [RESEARCHING] — Review collaborator PR #10 (branch...
 
 ### Syntax
 
@@ -146,7 +146,7 @@ next_project_number: 983
   └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
   └─ 972 [NOT STARTED] — MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem... (see above)
   └─ 975 [NOT STARTED] — MILESTONE M22 (records/proof-mode.md), LANE: metatheory....
-980 [NOT STARTED] — Re-review collaborator PR #7 (branch...
+980 [RESEARCHING] — Re-review collaborator PR #7 (branch...
   └─ 981 [NOT STARTED] — Re-review collaborator PR #8 (branch...
     └─ 982 [NOT STARTED] — Reconcile the records, the roadmap rules and the open task...
 
@@ -173,7 +173,7 @@ next_project_number: 983
 ---
 
 ### 980. Rereview pr7 rewriting and views merge decision
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: None
@@ -183,7 +183,7 @@ next_project_number: 983
 ---
 
 ### 979. Review pr10 semantic record and pr9 disposition
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: general
 - **Topic**: semantics
 - **Dependencies**: None
@@ -193,10 +193,11 @@ next_project_number: 983
 ---
 
 ### 978. Review pr11 pointed semantic lemmas
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
+- **Research**: [978_review_pr11_pointed_semantic_lemmas/reports/01_review-pr11-pointed-semantic-lemmas.md]
 
 **Description**: Review collaborator PR #11 (branch feat/pointed-semantic-lemmas, head c6cd983b7 when filed, base main, +793 lines): the standalone semantic lemmas split out of PR #9 at the user's request, and prepare a merge recommendation and a draft review at specs/reviews/pr-reviews-2026-11-21/pr11-review.md. The PR adds FormalSystem/Semantics/TemporalRules.lean (covering-time next_iff/prev_iff/next_at/prev_at, allFuture_persist/allPast_persist, someFuture_bind/somePast_bind and their keeping variants), TemporalIntervals.lean (inclusiveUntil_iff, inclusiveSince_iff, release_iff, trigger_iff, weakUntil_iff, weakSince_iff), RankProgress.lean (rank_progress and its strict and pointed-truth forms), PointTransport.lean (Point, At, FactTransport, GoalTransport, IffTransport, the point relations, and the TM and TM+ factories), and two test files under Tests/BimodalTest/Semantics/. FIRST-READ FINDINGS TO CHECK: CI was green; the temporal lemmas are stated over the existing clause classes (TruthEnv, BotClause, ImpClause, UntlClause, SnceClause) so each is proved once for every language; every module carries assert_not_exists for the derivation types; no sorry; the proofs read as correct. WHAT TO ESTABLISH. (1) BUILD AND TRUST: build FormalSystem.Semantics and both test modules at the head with --wfail, run the linter and scripts/check-module-invariants.sh, and state the axiom set of every new theorem. (2) STATEMENTS: check each statement against the truth clauses it unfolds and against the list the user asked for on PR #9 (covering-time Next and Previous, G/H persistence, F/P bind, the inclusive and weak Until and Since clauses, rank_progress, the transport structures); name anything asked for and absent, and anything present and not asked for. Check strictness and endpoint conventions (half-open intervals, guard-first versus event-first argument order, which the docstrings of release/trigger/weakUntil call event first) against the conventions of Formula.untl and the reference manual. (3) DUPLICATION: search FormalSystem/Semantics/ and the language directories for existing lemmas with the same content (truth of next and prev, G/H persistence, time-shift, reversal, box_const, stab_state_only) and say whether each new lemma is new, a restatement, or a generic form that should replace per-language copies. The local `next` and `prev` abbreviations in TemporalRules are a further copy of derived operators: say how they relate to Formula.next / PlusFormula.next and to connective_signature_layer_shared_primitives. (4) DESIGN: FactTransport, GoalTransport and IffTransport are bare universally quantified propositions; judge whether the definitions earn their place over stating the factories as plain iff theorems, and whether `Point` duplicates an existing structure. (5) PLACEMENT AND NAMING: module names, namespace, README inventory rows, the regenerated typst/generated/status.typ, docstring conventions, and layer (ORGANISATION.md). (6) TESTS: what the two test files exercise and what they omit; past variants; TM+ and the Star language. (7) USE: attempt one of the refutations named in PR #10 (refute_allFuture_stab in FormalSystem/PlusLanguage/PlusNonValidities.lean) with these lemmas in a scratch file under the task directory, to learn whether the lemmas are usable as the lemmas-only control that record proposes; report the result without committing the scratch proof to the library. Nothing here waits on the semantic-mode record or on the tier ruling: the user told the contributor these lemmas are reviewed and merged on their merits. GROUND RULES FOR THIS REVIEW TASK. (i) Nothing is posted to GitHub, merged, pushed or approved by an agent: the deliverable is a draft the user posts and a recommendation the user acts on (.claude/rules/pr-prohibition.md). (ii) Work on the pull request head in a separate git worktree fetched with `git fetch origin refs/pull/<N>/head`, never in the main working tree; record the exact commit reviewed, re-check the head with `gh pr view` before finishing, and if it has moved say so and review the new commits too. (iii) Every claim in the draft is backed by something run or read in this task: a build, a test, an `#print axioms`, a file and line. Say plainly what was not verified. (iv) The report opens with the items that need the user's ruling, each with options and a recommendation, then the recommendation for the pull request (MERGE, REQUEST CHANGES or COMMENT), then the evidence. (v) The draft is written in the register of the reviews already posted (specs/reviews/pr-reviews-2026-11-20/): direct, specific, numbered requests, credit where the work is right, and a clear separation of conditions of merging from follow-ups. Read records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md and records/theorem-library.md first; the first-read findings this task starts from are summarized below and are to be checked, not trusted.
 
