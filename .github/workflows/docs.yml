@@ -49,6 +49,11 @@ name: API Documentation
 #     success. Cache keys are immutable, so nothing here saves that key after a failed build:
 #     a partial entry would be restored on every later run and never replaced. To discard a
 #     bad entry: `gh cache delete <key>`.
+#   - A `docgen-action` pin at or after `dacc1acc2a` ("regenerate the HTML of the project after
+#     a cache hit"). The cache restores doc-gen4's `.docs_built` markers but not this project's
+#     HTML, so an earlier pin builds a site with no `FormalSystem` pages on every cache hit: run
+#     44931953893 produced 0 of the 857 pages. Check `docs/FormalSystem.html` after changing
+#     the pin.
 #
 # The action supplies doc-gen4 itself (a throwaway `docbuild/` package pinned to the doc-gen4
 # tag matching `lean-toolchain`), which is why `lakefile.toml` and `lake-manifest.json` carry no
@@ -189,7 +194,7 @@ jobs:
 
       - name: Build and deploy doc-gen4 documentation
         id: docgen
-        uses: leanprover-community/docgen-action@56023ee2a4b3630c1071825be5bafdb43f540bbd
+        uses: leanprover-community/docgen-action@dacc1acc2a3f532cc577266979ba9c36c7593f7c
         with:
           api-docs: true
           blueprint: false
