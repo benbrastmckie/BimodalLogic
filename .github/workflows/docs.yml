@@ -15,68 +15,47 @@ name: API Documentation
 #     publish. The first step checks it and fails fast.
 #   - A `push` event. The action builds the API docs and deploys only on push; a
 #     `workflow_dispatch` run exercises the setup steps but publishes nothing.
-#   - More memory than a cold run's external-process fan-out needs. The doc build runs
-#     `lake build` over roughly 6,300 doc targets, and the measured failure
-#     (`error: failed to execute '.../doc-gen4/.lake/build/bin/doc-gen4': resource exhausted
-#     (error code: 12, cannot allocate memory)`, 47 of 48 allocation errors in run 44492038639)
-#     is Lake failing to SPAWN a doc-gen4 child process -- fork/exec returning ENOMEM -- not
-#     Lean exhausting its own in-process heap. doc-gen4 is a separate binary invoked per module,
-#     so the governing quantity is Lake's EXTERNAL-PROCESS fan-out, not an in-process thread
-#     pool. The failure summary attributes the kill to whichever `srcUri.github` targets were in
-#     flight when memory ran out -- those cheap `git`-subprocess jobs are the symptom, not the
-#     cause, and no URI or git configuration is involved.
+#   - Unrestricted overcommit (`vm.overcommit_memory=1`), set by the "Allow memory overcommit"
+#     step. The doc build runs `lake build` over roughly 6,300 doc targets and spawns a child
+#     process for most of them. Under the runner's default heuristic overcommit
+#     (`vm.overcommit_memory=0`) those spawns fail with
+#     `error: resource exhausted (error code: 12, cannot allocate memory)` while physical memory
+#     is plentiful: run 44839249624 failed with 12.6 GiB available and 16 GiB of swap unused,
+#     at a peak `Committed_AS` of 40.9 GiB against a `CommitLimit` of 23.7 GiB. The kernel is
+#     refusing the fork on commit accounting, not on memory. The failure summary names
+#     whichever `srcUri.github` targets were in flight; those cheap `git` subprocesses are the
+#     symptom, and no URI or git configuration is involved.
 #
-#     Root cause: the `docs` library facet cascades `docInfo` into Mathlib's entire import
-#     closure, and that ~6,300-target fan-out recurs in full on every run because
-#     `actions/cache`'s save (post) action inside `docgen-action` is declared
-#     `post-if: "success()"`, and this job has never reached `success` -- directly observed as
-#     `outcome=skipped;conclusion=skipped` on the "Cache Mathlib docs" post-action in run
-#     44492038639. `docgen-action`'s internal Mathlib-docs cache has therefore never been
-#     populated, and every run cold-builds the same ~6,300 targets. The "Persist the Mathlib
-#     docs cache even when the doc build fails" step below closes this gate: it replicates the
-#     internal cache's own key and path list in an independently-gated save (`if: always()`)
-#     that fires regardless of job outcome.
+#     The swap step and the memory sampler are kept as instrumentation: their `free -h` output
+#     and the `Committed_AS`/`CommitLimit` trace make any shortfall name itself in the log.
 #
-#     Closed routes, measured and not to be re-tried:
-#       - `LEAN_NUM_THREADS: "1"` (caps the in-process Task thread pool, the wrong quantity for
-#         an external-process fan-out). Run 44492038639, commit 3bd8b2b31: the variable reached
-#         the build correctly, yet produced 48 allocation errors against 13 on run 44457344329
-#         and 15 on run 44477674624, and docgen wall-clock rose to 13m20s from 8-10 minutes.
-#       - Swap enlargement. The swap step below takes this runner from 3 GiB to 15 GiB of swap
-#         alongside 15 GiB of RAM -- confirmed active by the step's own `free -h` output -- and
-#         a build still dies with double-digit allocation errors. The step is kept because
-#         headroom is cheap and its `free -h`/`df -h` output makes any shortfall name itself in
-#         the log.
-#       - A larger GitHub-hosted runner. Unavailable to this personal-account repository at any
-#         plan tier; larger runners are organization/enterprise-only.
-#       - Lake job-count flags. Lake 5.0.0 accepts no `-j`/`--jobs` (`lake build -j2` ->
-#         `unknown short option '-j'`; `--jobs=2` -> `unknown long option '--jobs'`), and the
-#         doc build's own `lake build` call lives inside the pinned action's
-#         `scripts/build_docs.sh`, not in `build-args` here.
+#     Routes that do not address the failure, each measured:
+#       - `LEAN_NUM_THREADS: "1"` caps the in-process thread pool, not the external-process
+#         fan-out: run 44492038639 produced 48 allocation errors with it set, against 13 and 15
+#         without.
+#       - Swap alone. 16 GiB of swap beside 15 GiB of RAM raises `CommitLimit` to 23.7 GiB,
+#         still below the build's committed peak.
+#       - A larger GitHub-hosted runner is unavailable to a personal-account repository.
+#       - Lake 5.0.0 accepts no `-j`/`--jobs` flag, and the doc build's `lake build` call lives
+#         inside the pinned action's `scripts/build_docs.sh`.
 #
-#     Two-run convergence: the first push after this cache-save step lands is still cold and may
-#     still fail, but for the first time it populates the cache. The second push should restore
-#     it (`Cache restored from key: Docs-a123379d...` in the log) and shrink the fan-out to
-#     `FormalSystem`'s own modules, with a materially shorter docgen step.
-#
-#     Escalation ladder, in order, if a warm-cache run still OOMs: first, read the "Record
-#     pre-docgen memory and overcommit state" / "Report docgen memory trace" steps' log, and
-#     only if `Committed_AS` approaches `CommitLimit` at the moment of failure, add
-#     `sudo sysctl -w vm.overcommit_memory=1` (or raise `vm.overcommit_ratio`) in a step before
-#     the doc build -- this is conditional on that measurement, not a default action. Second, if
-#     `FormalSystem`'s own fan-out still OOMs on a warm cache, drive `doc-gen4`'s own
-#     `single`/`fromDb` subcommands directly over `find FormalSystem -name '*.lean'` with an
-#     explicit `xargs -P N`, as `linglib-community/linglib` does in production (its commit
-#     `97ec249684`; the CLI surface is confirmed present at `doc-gen4` tag `v4.33.0-rc1`, the tag
+#     If a run still fails on memory with overcommit unrestricted, the next route is to drive
+#     `doc-gen4`'s own `single`/`fromDb` subcommands over `find FormalSystem -name '*.lean'`
+#     with an explicit `xargs -P N`, as `linglib-community/linglib` does (its commit
+#     `97ec249684`; the CLI surface is present at `doc-gen4` tag `v4.33.0-rc1`, the tag
 #     `build_docs.sh`'s `determine_doc_gen_rev` resolves to for this `lean-toolchain`).
+#   - A docs cache that is only ever written whole. `docgen-action` caches the dependency docs
+#     under `Docs-<hash of lake-manifest.json and references.bib>` and saves it only on job
+#     success. Cache keys are immutable, so an entry saved from a failed or partial build is
+#     restored on every later run and never replaced. The "Persist the Mathlib docs cache" step
+#     below saves under the same key after a failed build only when the Mathlib docs are
+#     at least 95% complete; a smaller result is left unsaved. To discard a bad entry:
+#     `gh cache delete <key>`.
 #
-#     Path-list maintenance: the cache-save step's `path:` list below is copied verbatim from
-#     `docgen-action`'s own echoed `path:` input in run 44492038639's log, not derived. "One
-#     `docbuild/.lake/build/doc/<PackageName>` directory per `lake-manifest.json` package, plus
-#     the four implicit core modules" is an approximate hint only -- it omits `Archive` and
-#     `Counterexamples` (not `lake-manifest.json` packages) and differs in capitalization from
-#     the manifest's package names. Revisit the list after any `lake update` that changes the
-#     dependency set.
+#     Path-list maintenance: that step's `path:` list is copied from `docgen-action`'s own
+#     echoed `path:` input, not derived. It includes `Archive` and `Counterexamples`, which are
+#     not `lake-manifest.json` packages. Revisit the list after any `lake update` that changes
+#     the dependency set.
 #
 # The action supplies doc-gen4 itself (a throwaway `docbuild/` package pinned to the doc-gen4
 # tag matching `lean-toolchain`), which is why `lakefile.toml` and `lake-manifest.json` carry no
@@ -178,13 +157,17 @@ jobs:
           sudo swapon /mnt/swapfile
           free -h
 
-      # Answers one question the three prior failing runs' logs could not settle: whether
-      # fork() is being refused under heuristic overcommit while apparent headroom remains
-      # (vm.overcommit_memory heuristic refusing a fork from an already-large parent), which
-      # would make the parent's resident size the lever rather than external-process count.
-      # The background sampler is detached (stdin from /dev/null, stdout+stderr to the log,
-      # backgrounded and disowned) so it survives this step's shell exiting and never holds
-      # the step open.
+      # See the header: without this the doc build's child-process spawns are refused on commit
+      # accounting while physical memory is free.
+      - name: Allow memory overcommit
+        run: |
+          set -euo pipefail
+          sudo sysctl -w vm.overcommit_memory=1
+
+      # Prints the memory and overcommit state the build starts from, and starts a sampler
+      # whose trace the "Report docgen memory trace" step prints. The sampler is detached
+      # (stdin from /dev/null, output to the log, backgrounded and disowned) so it survives
+      # this step's shell and never holds the step open.
       - name: Record pre-docgen memory and overcommit state
         run: |
           set -euo pipefail
@@ -221,20 +204,23 @@ jobs:
           homepage: api-site
           references: references.bib
 
-      # actions/cache's own save (post) action inside docgen-action is gated post-if:
-      # "success()", and this job has never reached success -- directly observed as
-      # outcome=skipped;conclusion=skipped on the "Cache Mathlib docs" post-action in run
-      # 44492038639 -- so docgen-action's internal Mathlib-docs cache has never been populated,
-      # and every run re-builds the full ~6,300-target fan-out from cold. This step replicates
-      # that internal cache's own key and path list (recovered verbatim from the "Cache Mathlib
-      # docs" step's echoed `with:` input in that same run's log) in an independently-gated save
-      # that fires regardless of job outcome, so a failing run still persists the dependency
-      # docs it already built. actions/cache/save under an already-populated key is a safe
-      # no-op, so this never conflicts with a future run where the internal save does fire.
-      # Placed before "Report docgen memory trace" deliberately: in the failure path this job
-      # always takes today, the cache save is attempted first, ahead of anything else.
-      - name: Persist the Mathlib docs cache even when the doc build fails
+      # docgen-action saves its docs cache only on job success. This step saves the same key and
+      # path list after a failed build, so that the dependency docs already built are not
+      # rebuilt, but only when the Mathlib docs are at least 95% complete: the key is
+      # immutable, so a small or empty entry would be restored on every later run. Saving under
+      # a key that already exists is a no-op.
+      - name: Measure the built Mathlib docs
+        id: docsize
         if: always()
+        run: |
+          set -euo pipefail
+          n=$(find docbuild/.lake/build/doc/Mathlib -name '*.html' 2>/dev/null | wc -l)
+          total=$(find .lake/packages/mathlib/Mathlib -name '*.lean' | wc -l)
+          echo "Mathlib doc pages built: $n of $total modules"
+          if [ "$total" -gt 0 ] && [ "$n" -ge $(( total * 95 / 100 )) ]; then echo "complete=true" >> "$GITHUB_OUTPUT"; else echo "complete=false" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Persist the Mathlib docs cache even when the doc build fails
+        if: always() && steps.docsize.outputs.complete == 'true'
         continue-on-error: true
         uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
