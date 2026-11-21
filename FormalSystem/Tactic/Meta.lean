@@ -110,7 +110,7 @@ Build a List expression from a list of formula expressions.
 -/
 def buildContextExpr (formulas : List Expr) : MetaM Expr := do
   let formulaType := mkConst ``Formula
-  let mut result ← mkAppM ``List.nil #[formulaType]
+  let mut result ← mkAppOptM ``List.nil #[some formulaType]
   for f in formulas.reverse do
     result ← mkAppM ``List.cons #[f, result]
   return result

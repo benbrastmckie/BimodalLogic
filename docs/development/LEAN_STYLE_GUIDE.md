@@ -433,6 +433,27 @@ When renaming, create an alias pointing to the new name:
 abbrev EvalAt := TruthAt
 ```
 
+### Name-Collision Carve-Out
+
+When a rename exists specifically to resolve a cross-namespace name collision, do **not** add a
+deprecated alias retaining the old bare name. The alias is itself a declaration under that old
+name, so two `open`s that already produced two candidates for the bare name continue to produce
+two candidates with the alias in place — Lean reports `Ambiguous term` on a bare reference under
+both opens regardless of whether the second interpretation is the original `def`/`abbrev` or the
+new deprecated alias. Adding the alias the Deprecation Timeline above calls for would therefore
+reproduce the exact error the rename was made to fix, leaving any module that opens both
+namespaces unable to build.
+
+This is a structural exception, not a convenience: it applies only when the rename's purpose is
+collision resolution, and only to the bare old name the collision was keyed on. An ordinary
+rename for readability or consistency still gets its deprecated alias as above.
+
+Worked example: `BimodalTools.CertificateImport.closureListDedup` (and its membership lemma
+`mem_closureListDedup`) were renamed away from the bare name `closureList`/`mem_closureList`
+for exactly this reason — the bare name collided with
+`FormalSystem.Metalogic.Decidability.closureList` under a module that opens both namespaces. No
+deprecated alias accompanies the rename; see that module's own docstring for the full account.
+
 ## 6. Code Examples (LEAN, not Python)
 
 ### Correct Patterns

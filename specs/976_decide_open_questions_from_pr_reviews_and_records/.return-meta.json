@@ -1,0 +1,85 @@
+{
+  "status": "implemented",
+  "dispatch_seq": 7,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/summaries/01_record-review-revision-summary.md",
+      "summary": "Implementation summary: question-by-file table for the twelve questions, the two items awaiting the user ruling with options and recommendation, the stale task descriptions and roadmap rationales, and the verification record."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "The three records under records/ state ten of the twelve questions as decided design with the rejected alternative, keep (i) and the Until/Since keyword question open with a recommendation, and point (f) at investigate_stability_as_modal_family; the three review drafts for PRs #7, #8 and #9 state the decisions. Phase 5 found the six files consistent after one fix to the Gates section of records/proof-mode.md. Nothing was posted to GitHub."
+  },
+  "modified_files": [
+    "records/proof-mode-architecture.md",
+    "records/proof-mode.md",
+    "records/theorem-library.md",
+    "specs/976_decide_open_questions_from_pr_reviews_and_records/records/full-sweep-owed.jsonl",
+    "specs/976_decide_open_questions_from_pr_reviews_and_records/summaries/01_record-review-revision-summary.md",
+    "specs/reviews/pr-reviews-2026-11-20/pr7-review.md",
+    "specs/reviews/pr-reviews-2026-11-20/pr8-review.md",
+    "specs/reviews/pr-reviews-2026-11-20/pr9-review.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a closing phase must compare a verify-touched.sh fallback run against a planning-time baseline, attribute each extra failing suite before deciding: run it alone, grep it for the touched paths, and cmp it and its subject against the source store named in .claude-extensions.json. A suite that reads only the gitignored .claude/ tree cannot be moved by an edit to tracked markdown, and that evidence supports a Reasoned Exclusions record instead of a failed phase.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/976_decide_open_questions_from_pr_reviews_and_records/summaries/01_record-review-revision-summary.md",
+      "confidence": 0.7,
+      "suggested_keywords": [
+        "verify-touched",
+        "baseline",
+        "reasoned exclusions",
+        "deploy tree",
+        "suite attribution"
+      ]
+    }
+  ],
+  "sapience_notes": [
+    {
+      "subject": "BimodalLogic records, questions still open after the PR-review decisions",
+      "value": "Of the twelve questions raised by the reviews of PRs #7, #8 and #9, ten are stated as design in the records. Three remain open: what default means for adoption (M12), awaiting the user, recommendation B as the rule plus A for Examples and case studies with FormalSystem/Theorems exempt, contingent on a GO at gate one; whether luntil unfold / luntil fold are renamed expand / contract, awaiting the user, recommendation rename; and whether the stability operator is rightly in the Modal family, deferred to investigate_stability_as_modal_family.",
+      "predicate": "finding is",
+      "ko_type": "insight",
+      "confidence": 0.9,
+      "source_loc": "records/proof-mode.md, Open decisions; records/proof-mode-architecture.md, Open decisions"
+    },
+    {
+      "subject": "BimodalLogic task descriptions contradicting the revised proof-mode records",
+      "value": "The descriptions of proof_mode_reprove_perpetuity, proof_mode_until_since_intro_unfold_induction, proof_mode_abstract_frontend_interface, proof_mode_views_tier and theorem_library_layout_and_registry in specs/state.json each still call a question open or needing a user ruling that the records now decide: gate-one rule set, the induction rule linearity edge, structure versus class and the Minus instance, the views tactic names, and BimodalLib in defaultTargets. investigate_stability_as_modal_family and theorem_library_tableau_pipeline cite surviving open decisions by stale numbers. None was edited.",
+      "predicate": "finding is",
+      "ko_type": "insight",
+      "confidence": 0.9,
+      "source_loc": "specs/976_decide_open_questions_from_pr_reviews_and_records/summaries/01_record-review-revision-summary.md, Impacts"
+    },
+    {
+      "subject": "BimodalLogic proof-mode milestone order M17, M0, M16 and the gate",
+      "value": "Logical rewriting (M17, collaborator PR #7) is merged or declined first, then the operator-family layout (M0) runs, then the views tier (M16) follows and takes over the view rows M17 contributed. Neither M16 nor M17 waits on the gate-one verdict: a view proves nothing, and M17 tactics are outside the gate-one scripts; only M17 second run of the gate-one selection follows the sweep.",
+      "predicate": "decision is",
+      "ko_type": "decision",
+      "confidence": 0.9,
+      "source_loc": "records/proof-mode.md, Dependency picture and Gates"
+    },
+    {
+      "subject": "BimodalLogic deployed agent-system test suites failing on 2026-11-20",
+      "value": "In the BimodalLogic deployed .claude tree, verify-touched.sh with the --cost-class free fallback reported 82 passed, 3 failed, 10 skipped at 12:28 PST where a run about half an hour earlier reported 84 passed, 1 failed. Beyond test-deploy-baseline-lib.sh, the failures were test-lint-state-writer-boundary.sh (the --verbose EXEMPT reason for an explicit r open) and test-stall-reprompt-wiring.sh (the Move 3 region not OR-ing stall_suspected and stranded_suspected). Both fail when run alone and are byte-identical to the core source store, so the defect or the drift is in the source store, not in the consumer repository.",
+      "predicate": "measured fact is",
+      "ko_type": "insight",
+      "confidence": 0.8,
+      "source_loc": "specs/976_decide_open_questions_from_pr_reviews_and_records/plans/01_record-review-revision-plan.md, Phase 5, Reasoned Exclusions"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795203869_8d33c7",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
+    "phases_completed": 5,
+    "phases_total": 5
+  }
+}

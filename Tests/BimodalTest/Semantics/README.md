@@ -11,6 +11,7 @@ Tests for task frame semantics.
 | SemanticPropertyTest.lean | Property-based semantics tests |
 | SaturationFiniteAxiomTest.lean | Axiom-profile evidence for the finite-carrier *Saturation* discharge |
 | OrientedForestSaturationTest.lean | Axiom-profile evidence for the oriented-forest *Saturation* discharge, plus the compiled minimality fixture pinning that the duration minimum must range over ALL representations of all members |
+| NomicLanguageTest.lean | Regression coverage for BL plus the nomic operator `◈`: `NomicFormula` syntax and the embedding `ofFormula`, the `Iff.rfl`-shaped truth clauses at an arbitrary nomic frame, a concrete model over the static-and-lawful ℤ-time witness `F3` (seriality, axiom 4's failure, a tense-free negative), and seven axiom-profile guards |
 | OpenLanguageAxiomTest.lean | Axiom-profile guards for the open-future and open-past language: the Ockhamist separating pair, its time-reversal mirror, and `propext`-only conservativity over L⁺ |
 | HybridLanguageAxiomTest.lean | Axiom-profile guards for the hybrid state language: choice-free invariance of the register-free fragment, the two definability theorems for recurrence-freeness, and `propext`-only conservativity over L⁺ |
 | QuantLanguageAxiomTest.lean | Axiom-profile guards for the propositional-quantifier language: choice-free invariance under the lifted family, the standard-semantics definability and non-invariance results, and `propext`-only conservativity over L |
@@ -26,6 +27,7 @@ Tests for task frame semantics.
 - Truth evaluation at convex histories
 - Validity checking
 - Axiom profiles of the finite-carrier *Saturation* discharge and the ultraproduct construction
+- BL plus the nomic operator: syntax, truth clauses, a concrete nomic frame, and axiom profiles
 - The state topology of a task frame, and the declarations the manuscript's topology appendix cites
 
 ## Related
@@ -35,4 +37,4 @@ Tests for task frame semantics.
 
 ---
 
-*Last Updated: 2026-03-16*
+*Last Updated: 2026-11-19*

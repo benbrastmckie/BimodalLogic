@@ -1,0 +1,29 @@
+{
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phase": "implement",
+  "phases_completed": 3,
+  "phases_total": 3,
+  "summary": "All three test-coverage gaps are closed entirely inside Tests/. Two new modules landed (Tests/BimodalTest/Semantics/NomicLanguageTest.lean, 175 lines with seven axiom-profile pins; Tests/BimodalTest/ForMathlib/SmokeTest.lean, 141 lines with exactly one import) plus two folds into existing Automation/ tests for FormalSystem/Tactic/. lake build, lake build BimodalTest and lake test are all exit 0 with zero error/warning lines, check-module-invariants.sh passes in full mode, and the group-closure grep confirms NomicLanguage, ForMathlib and FormalSystem.Tactic are each referenced from at least one .lean file under Tests/. Nothing under FormalSystem/ was touched; verify-all.sh is deferred to the batch stage per this dispatch's Batch Gate Deferral directive, discharged in-dispatch by verify-touched.sh.",
+  "blockers": [],
+  "plan_markers_verified": true,
+  "next_action_hint": "File the buildContextExpr repair as its own task: FormalSystem/Tactic/Meta.lean calls mkAppM ``List.nil`` with an explicit argument for an implicit parameter, hard-failing modal_search on box-headed goals. Two repairs are pre-validated and recorded in the summary's Follow-ups.",
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/942_test_coverage_nomic_formathlib_tactic/summaries/01_test-coverage-nomic-formathlib-tactic-summary.md",
+      "summary": "Implementation summary: three closed coverage gaps, measured gate verdicts, the Condition-4 verify-touched attribution, and the pre-validated buildContextExpr repair as a follow-up."
+    },
+    {
+      "type": "other",
+      "path": "Tests/BimodalTest/Semantics/NomicLanguageTest.lean",
+      "summary": "NEW. Group (A): NomicFormula syntax, the Iff.rfl truth clauses, a concrete NomicModel over the F3 witness, and seven #guard_msgs axiom-profile pins."
+    },
+    {
+      "type": "other",
+      "path": "Tests/BimodalTest/ForMathlib/SmokeTest.lean",
+      "summary": "NEW. Group (B): 45 #checks and 7 examples reaching all five ForMathlib files, importing only FormalSystem.ForMathlib."
+    }
+  ],
+  "sorry_inventory": []
+}

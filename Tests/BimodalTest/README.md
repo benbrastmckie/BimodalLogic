@@ -64,6 +64,11 @@ Tests are organized by module under test:
 - **Property/**: Property-based tests using Plausible
   - `Generators.lean` - Type generators for Formula, Context, TaskFrame
 
+- **ForMathlib/**: Isolated-import smoke checks for the Mathlib-shaped extensions staged
+  for upstreaming
+  - `SmokeTest.lean` - `#check`/`example` coverage of every `FormalSystem/ForMathlib/` file,
+    importing only `FormalSystem.ForMathlib`
+
 ## Running Tests
 
 ### Run All Tests

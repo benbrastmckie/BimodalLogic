@@ -19,9 +19,8 @@ Organized in three groups:
 3. **Chaining tests** (Phase 3): goals only provable by recursing through
    lemma premises, plus the weakening fallback and a negative test.
 
-NOTE: These tests live in a dedicated file (not `TacticsTest.lean`, which has
-pre-existing errors from the frame-class generalization). Build gate:
-`lake build BimodalTest.Automation.LemmaDBTest`.
+NOTE: These tests live in a dedicated file, separate from `TacticsTest.lean`.
+Build gate: `lake build BimodalTest.Automation.LemmaDBTest`.
 -/
 
 namespace BimodalTest.Automation.LemmaDBTest
@@ -219,5 +218,96 @@ example (p : Formula) : ⊢ p.box.imp p := by modal_search
 
 -- mbDiamond: φ → ◇φ.box  (i.e. modal B via diamond)
 example (p : Formula) : ⊢ p.imp p.diamond.box := by modal_search
+
+/-!
+## Group 6: `FormalSystem/Tactic/Meta.lean`'s `MetaM` helpers
+
+The first coverage of `FormalSystem/Tactic/Meta.lean`. It is covered here rather than in
+`TacticsTest.lean` because this file already runs a metaprogramming probe, and because its own
+header records that such probes were moved out of `TacticsTest.lean` deliberately.
+
+**A `MetaM` helper's failure is a runtime failure of the elaborator, never a compile error**, so
+`#check` alone proves nothing about behaviour: these helpers can be broken while the whole project
+builds clean. Hence the two executed `#eval` blocks below — one positive, one negative — rather
+than signature pins alone.
+
+`buildContextExpr` is covered the same way, by an invoked `#eval` probe rather than a signature
+pin. A `#check` fixes only the declaration's type, which is `List Expr → MetaM Expr` whatever the
+body does; an `AppBuilder` arity mistake inside that body type-checks fine and throws only when
+the function is actually run. So the probe below applies it to the empty list and to a two-element
+list, runs `Meta.check` on each resulting `Expr`, confirms the empty case really is a `Context`,
+and pins both against `Meta.mkListLit`, which builds the list expression this helper is supposed to
+build. The three `modal_search` examples closing this section are the tactic-level counterpart:
+`buildContextExpr`'s only consumers are `tryModalK` and `tryTemporalK`, so a box-headed and an
+`allFuture`-headed goal are what exercise it through the elaborator rather than directly.
+-/
+
+section MetaHelperProbes
+
+#check @extractDerivationGoal
+#check @formulaHead
+#check @lemmaConclusionHead
+#check @isNilContext
+#check @buildContextExpr
+
+-- Positive probe: elaborate a real `DerivationTree` goal type and check that each helper reads
+-- the component it is supposed to read off it.
+#eval show Elab.Term.TermElabM Unit from do
+  let stx ← `(DerivationTree FrameClass.Base (([] : FormalSystem.Syntax.Context))
+      ((Formula.atomS "p").imp (Formula.atomS "p")))
+  let goalType ← Elab.Term.elabTerm stx none
+  Elab.Term.synthesizeSyntheticMVarsNoPostponing
+  let goalType ← instantiateMVars goalType
+  match ← extractDerivationGoal goalType with
+  | none => throwError "extractDerivationGoal failed to recognise {goalType}"
+  | some (_, ctx, formula) =>
+    unless isNilContext ctx do
+      throwError "isNilContext rejected the literal empty context {ctx}"
+    unless formulaHead formula == some ``Formula.imp do
+      throwError "formulaHead read {formulaHead formula}, expected Formula.imp"
+    let head ← lemmaConclusionHead ``FormalSystem.Theorems.ModalS5.tBoxToDiamond
+    unless head == some ``Formula.imp do
+      throwError "lemmaConclusionHead read {head}, expected Formula.imp"
+
+-- Negative probe: both recognisers must reject a type that is not a derivability goal. A
+-- recogniser that accepted everything would pass the positive probe above.
+#eval show MetaM Unit from do
+  let notAGoal := mkConst ``Nat
+  unless (← extractDerivationGoal notAGoal).isNone do
+    throwError "extractDerivationGoal accepted a non-derivability type"
+  if isNilContext notAGoal then
+    throwError "isNilContext accepted a non-list expression"
+
+-- Invoked probe for `buildContextExpr`: a `#check` cannot distinguish a working body from one
+-- that throws on every input, so apply it to both the empty and a non-empty list, type-check the
+-- results, and pin them against `Meta.mkListLit`.
+#eval show MetaM Unit from do
+  let p := mkApp (mkConst ``Formula.atomS) (mkStrLit "p")
+  let q := mkApp (mkConst ``Formula.atomS) (mkStrLit "q")
+  let nil ← buildContextExpr []
+  Meta.check nil
+  unless (← Meta.isDefEq (← Meta.inferType nil) (mkConst ``Context)) do
+    throwError "buildContextExpr [] : {← Meta.inferType nil}, expected Context"
+  unless nil == (← Meta.mkListLit (mkConst ``Formula) []) do
+    throwError "buildContextExpr [] built {nil}"
+  let two ← buildContextExpr [p, q]
+  Meta.check two
+  unless two == (← Meta.mkListLit (mkConst ``Formula) [p, q]) do
+    throwError "buildContextExpr [p, q] built {two}"
+
+-- Acceptance coverage through the tactic: `buildContextExpr`'s only consumers are `tryModalK`
+-- and `tryTemporalK`, reached from a box-headed and an `allFuture`-headed goal respectively.
+
+-- box-headed, empty context
+example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "p")).box := by modal_search
+
+-- box-headed, non-empty all-boxed context: exercises the map-box/cons path, not just nil
+example : [(Formula.atomS "p").box] ⊢ ((Formula.atomS "p").imp (Formula.atomS "p")).box := by
+  modal_search
+
+-- allFuture-headed: covers tryTemporalK, the second consumer
+example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "p")).allFuture := by modal_search
+
+end MetaHelperProbes
 
 end BimodalTest.Automation.LemmaDBTest

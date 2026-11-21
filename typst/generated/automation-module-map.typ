@@ -16,8 +16,8 @@
   ("SuccessPatterns.lean", 419, true),
   ("Tactics/Commands.lean", 175, true),
   ("Tactics/Deduction.lean", 181, true),
-  ("Tactics/Search.lean", 620, true),
+  ("Tactics/Search.lean", 618, true),
   ("Tactics/UserTactics.lean", 279, true),
 )
 
-#let automation-module-total = 3345
+#let automation-module-total = 3343

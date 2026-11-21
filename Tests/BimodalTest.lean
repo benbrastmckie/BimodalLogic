@@ -19,6 +19,7 @@ import BimodalTest.Semantics.TaskFrameTest
 import BimodalTest.Semantics.SaturationFiniteAxiomTest
 import BimodalTest.Semantics.OrientedForestSaturationTest
 import BimodalTest.Semantics.ConeUnravellingTest
+import BimodalTest.Semantics.NomicLanguageTest
 import BimodalTest.Semantics.OpenLanguageAxiomTest
 import BimodalTest.Semantics.HybridLanguageAxiomTest
 import BimodalTest.Semantics.QuantLanguageAxiomTest
@@ -73,6 +74,7 @@ import BimodalTest.Integration.TemporalIntegrationTest
 import BimodalTest.Integration.BimodalIntegrationTest
 import BimodalTest.Property.Generators
 import BimodalTest.Property
+import BimodalTest.ForMathlib.SmokeTest
 
 /-!
 # BimodalTest - Test Suite for Bimodal TM Logic

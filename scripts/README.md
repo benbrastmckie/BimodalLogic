@@ -19,6 +19,8 @@ the deliverable-hygiene bar this task holds green.
 | `check-paper-definitions.sh` | Detects drift between the JPL paper's semantic definitions and the pinned record at `docs/reference/paper-definitions-of-record.md`. |
 | `CheckInitImportsMain.lean` | Lean entry point (near-verbatim port of CSLib's `CheckInitImports.lean`) that asserts every file imports its own directory's `Init`/root module before any sibling. |
 | `warning-budget.py` | Build-free compiler-warning ratchet: measures the all-target warning surface from Lake's trace store and compares it against the committed baseline (closes the gap C16's declaration-only linting leaves open). |
+| `c16_roots_baseline.py` | Per-root `env_linter` ceiling for C16's second half: parses a sweep's `lake exe runLinter <root>` logs into `(root, module, linter)` counts, `--update` writes the committed baseline, and the default compare mode is the gate `check-module-invariants.sh` calls. A root named in `c16-roots-unmeasurable.txt` is excused, loudly, from the anti-silence exit-2 guard when its own build or lint cannot be measured. |
+| `verify-all.sh` | Local aggregator that runs all nine checks `.github/workflows/ci.yml` runs, in the same order, continuing past every failure and reporting a per-check verdict plus an aggregate `RESULT:` line (source of record: `.github/workflows/ci.yml`). A full run takes over 10 minutes of wall time. |
 
 ## Dataset and benchmark utilities
 
@@ -113,6 +115,7 @@ and advise a re-run.
 | `lake_targets.py` | none; parses `lakefile.toml` as text | **No lock**: never reads `.lake`. |
 | `CheckInitImportsMain.lean`, `nolints-style.txt` | not scripts; `lake` appears in documentation text | Not applicable. |
 | `.githooks/pre-commit` | none; runs `typst-sync-check.sh --counts-only` and prints a `lake build` hint | **No lock**: build-free. |
+| `verify-all.sh` | `lake exe mk_all --check`, `lake exe lint-style` directly, plus seven child scripts run in sequence | **No lock**: takes no lock of its own; each child script acquires and releases the shared lock on its own, and all nine checks run strictly sequentially. A full run takes over 10 minutes of wall time. |
 
 Scripts deployed under `.claude/scripts/` are regenerated from a source store outside this
 repository, so their determinations are recorded here and not in their own headers:
@@ -159,6 +162,9 @@ Not scripts — companion data consumed by the gates above.
 | File | Purpose |
 |------|---------|
 | `boneyard-import-waivers.txt` | Archived import lines that C11 must not treat as repairable. |
+| `c16-roots-baseline.txt` | Committed, generated-by-`--update` ceiling for C16's second half: one `<count> <root> <module> <linter>` row per env_linter finding across every non-`FormalSystem` lakefile root, pinned so a rise above it fails `ENFORCE_C16_ROOTS`. |
+| `c16-roots-unmeasurable.txt` | Lakefile roots `c16_roots_baseline.py`'s sweep cannot currently measure, with the reason (the `module-invariants-manifest.txt`/C6 precedent); a listed root is excused from the sweep's anti-silence exit-2 guard, loudly, never silently. |
+| `c20-residual-baseline.txt` | C20 companion: per-citer-file ceilings (`<count> <citer-path> <category>`) for the residual (no declaration name), unverifiable-declaration and unverifiable-filename sub-counts, gated via `ENFORCE_C20_RESIDUAL`. |
 | `certificate-witness-inventory.txt` | C36 companion: one `witness` row per certifying predicate under `Metalogic/Decidability/` (the exhibited interesting witness, its clause kinds, closure term and interest expression) plus the `coverage-limit` rows naming the refutations the lasso-based class must keep in the tree. |
 | `clause-shape-allowlist.txt` | C37 companion: every biconditional-bearing definition under the three certificate roots, one row per clause, with the reviewed verdict (`INTENDED` / `RESIDUAL` / `OUT-OF-SHAPE`) and a reason anchor the check re-resolves on every run. |
 | `debug-artifact-allowlist.txt` | Live debug directives that C27 must not treat as unreviewed debug output. |
@@ -172,5 +178,6 @@ Not scripts — companion data consumed by the gates above.
 | `nolint-attribute-allowlist.txt` | In-source `nolint` attributes that C26 must not treat as an unreviewed suppression. |
 | `nolints-style.txt` | Mathlib text-based style linter's (`lake exe lint-style`) per-project exception file; `--`-commented, deliberately empty. |
 | `nolints.json` | Machine-readable linter-suppression records consumed by the invariant harness. |
+| `readme-date-baseline.txt` | `readme-lint.sh` Check 4 companion: pinned `<class> <path> <stamp>` rows (`stale` or `missing`) for the README verification-date debt; a `stale` row matches only while the README still carries its recorded stamp, so a refresh permanently un-grandfathers it. |
 | `typst-axiom-report-modules.txt` | Display module label for each declaration in `typst-status-counts.sh`'s axiom-declaration list. |
 | `warning-budget.txt` | Committed compiler-warning baseline for C28, generated by `warning-budget.py`. |

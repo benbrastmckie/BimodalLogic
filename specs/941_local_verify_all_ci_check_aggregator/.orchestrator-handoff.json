@@ -1,0 +1,20 @@
+{
+  "status": "implemented",
+  "dispatch_seq": 5,
+  "phases_completed": 3,
+  "phases_total": 3,
+  "summary": "Implemented scripts/verify-all.sh, a local aggregator that runs the same nine checks .github/workflows/ci.yml runs, in the same order, continuing past every failure and reporting per-check verdicts plus an aggregate RESULT line. Documented it in CONTRIBUTING.md and scripts/README.md. Verified end-to-end with three real runs (clean-tree baseline, a seeded check-9 executable-bit failure, and a post-revert confirmation) plus an isolated logic test of the out-of-sync expected/seen guard. All three plan phases are COMPLETED and committed.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/941_local_verify_all_ci_check_aggregator/summaries/01_local-verify-all-aggregator-summary.md",
+      "summary": "Implementation summary covering scripts/verify-all.sh, its documentation, and full verification evidence."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/941_local_verify_all_ci_check_aggregator/handoffs/phase-3-handoff-20261119T020000Z.md",
+      "summary": "Final phase-end handoff: all three phases complete, no blockers."
+    }
+  ]
+}

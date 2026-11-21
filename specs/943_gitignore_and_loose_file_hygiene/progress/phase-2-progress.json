@@ -1,0 +1,27 @@
+{
+  "phase": 2,
+  "phase_name": "Document Challenge.lean in ORGANISATION.md (gap C), and close out",
+  "started_at": "2026-11-19T20:26:46Z",
+  "last_updated": "2026-11-19T20:26:46Z",
+  "objectives": [
+    {"id": 1, "description": "Re-read ORGANISATION.md Everything else table", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Add Challenge.lean row", "status": "done", "files_touched": ["ORGANISATION.md"]},
+    {"id": 3, "description": "Confirm Challenge.lean itself untouched", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Re-run gate scripts byte-identical to baseline and compare exit status + output", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Run scoped verify-touched.sh over .gitignore ORGANISATION.md", "status": "done", "files_touched": [], "note": "ORGANISATION.md triggered the OWED fallback (95 suites), surfacing 11 pre-existing NEW failures rooted in this repo's missing agent-system/extensions/ dir, unrelated to the added row; recorded via issue-record.sh"},
+    {"id": 6, "description": "Confirm final ignore state", "status": "done", "files_touched": []},
+    {"id": 7, "description": "Commit ORGANISATION.md", "status": "in_progress", "files_touched": ["ORGANISATION.md"]}
+  ],
+  "current_objective": 7,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "2.5",
+      "description": "verify-touched.sh .gitignore ORGANISATION.md surfaced 11 NEW failures via the OWED fallback for ORGANISATION.md",
+      "type": "altered",
+      "reason": "Root-caused as pre-existing and unrelated: every failure traces to this repository's structural absence of agent-system/extensions/ (confirmed via ls), not to the added documentation row. The two suites directly covering the row's own content rules (record-versioning, task-references) both PASS. Recorded via issue-record.sh; not treated as a regression blocking this phase.",
+      "annotation": "see Phase 2 task list annotation for the scoped touched-path check item"
+    }
+  ]
+}

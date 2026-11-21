@@ -1,0 +1,129 @@
+{
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/942_test_coverage_nomic_formathlib_tactic/summaries/01_test-coverage-nomic-formathlib-tactic-summary.md",
+      "summary": "Closed all three FormalSystem test-coverage gaps (NomicLanguage, ForMathlib, Tactic) entirely inside Tests/, with every gate green and the buildContextExpr repair recorded as a pre-validated follow-up."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Added the first regression coverage for FormalSystem/NomicLanguage/ (a new 175-line module with seven axiom-profile pins), an isolated-import smoke module for all five FormalSystem/ForMathlib/ files, and two folds into existing Automation/ tests covering FormalSystem/Tactic/'s remaining simp sets and its MetaM helpers. lake build, lake build BimodalTest and lake test are all green at the repository's zero warning budget, with nothing under FormalSystem/ touched.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "Tests/BimodalTest.lean",
+    "Tests/BimodalTest/Semantics/NomicLanguageTest.lean",
+    "Tests/BimodalTest/ForMathlib/SmokeTest.lean",
+    "Tests/BimodalTest/ForMathlib/README.md",
+    "Tests/BimodalTest/Automation/NormalizationTest.lean",
+    "Tests/BimodalTest/Automation/LemmaDBTest.lean",
+    "Tests/BimodalTest/Automation/README.md",
+    "Tests/BimodalTest/Semantics/README.md",
+    "Tests/BimodalTest/README.md",
+    "typst/generated/status.typ",
+    "specs/942_test_coverage_nomic_formathlib_tactic/plans/01_test-coverage-nomic-formathlib-tactic.md",
+    "specs/942_test_coverage_nomic_formathlib_tactic/summaries/01_test-coverage-nomic-formathlib-tactic-summary.md",
+    "specs/942_test_coverage_nomic_formathlib_tactic/handoffs/phase-1-handoff-20261119T214219Z.md",
+    "specs/942_test_coverage_nomic_formathlib_tactic/handoffs/phase-2-handoff-20261119T214834Z.md",
+    "specs/942_test_coverage_nomic_formathlib_tactic/handoffs/phase-3-handoff-20261119T220554Z.md",
+    "specs/942_test_coverage_nomic_formathlib_tactic/issues.jsonl",
+    "specs/942_test_coverage_nomic_formathlib_tactic/.return-meta.json",
+    "specs/942_test_coverage_nomic_formathlib_tactic/.orchestrator-handoff.json"
+  ],
+  "metadata": {
+    "session_id": "sess_1795122329_77078c",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "skipped",
+    "phases_completed": 3,
+    "phases_total": 3,
+    "gate_deferral": "scripts/verify-all.sh deferred to the batch stage per this dispatch's Batch Gate Deferral directive; discharged in-dispatch by .claude/scripts/verify-touched.sh, whose 11 failing suites are all pre-existing source-store-absence failures outside this task's file scope (plan-authoring-gate-collisions.md Condition 4)"
+  },
+  "sapience_notes": [
+    {
+      "content": "BimodalLogic is a DEPLOY-ONLY repository for the agent system: there is no local agent-system/ directory, and .claude-extensions.json resolves every extension source_dir to ~/.config/nvim/agent-system/extensions/*. Consequence measured here: .claude/scripts/verify-touched.sh exits 1 with 11 FAILING suites (test-deploy-baseline-lib, test-gate-out-derived-staleness, test-gate-out-self-attribution, test-generate-task-order, test-lint-hook-registration-paths, test-manifest-scripts-sync, test-orchestrate-conclusion-aggregate, test-reconcile-demote-stranded, test-reconcile-handoff-status, test-resume-scan-nonconformance, test-sweep-invalidated-claims), every one asserting 'required source file(s) not found: .../agent-system/extensions/core/...'. They fail unconditionally in this repo regardless of the task and reference no Lean or typst path. Any dispatch here should attribute them under Condition 4 rather than re-triaging; the durable fix is for those suites to SKIP when the resolved source_dir is outside the repository.",
+      "category": "CONSTRAINT",
+      "confidence": 0.95,
+      "suggested_keywords": [
+        "verify-touched",
+        "deploy-only-repo",
+        "source-store",
+        "gate-attribution",
+        "condition-4"
+      ]
+    },
+    {
+      "content": "A Lean MetaM/TacticM helper can be broken on every call while the whole project builds clean, because a MetaM failure is a RUNTIME failure of the elaborator, never a compile error. Measured instance: FormalSystem/Tactic/Meta.lean's buildContextExpr calls mkAppM ``List.nil`` with an explicit argument for List.nil's implicit type parameter, so it raises 'too many explicit arguments provided to @List.nil' on every input including the empty list, hard-failing modal_search on any box-headed goal -- and it compiled clean indefinitely. The 'it builds, so it works' heuristic does not extend to metaprogramming code: such code needs an executed #eval probe to be covered at all. Two pre-validated repairs: mkAppOptM ``List.nil`` #[some formulaType], or Lean.mkApp (Lean.mkConst ``List.nil`` [Level.zero]) formulaType.",
+      "category": "INSIGHT",
+      "confidence": 0.95,
+      "suggested_keywords": [
+        "lean-metaprogramming",
+        "MetaM",
+        "test-coverage",
+        "mkAppM",
+        "buildContextExpr"
+      ]
+    },
+    {
+      "content": "In BimodalLogic, scripts/typst-sync-check.sh --fix moves a THIRD field beyond the two tests-* counts on any Tests/-only change: stamp-commit, which scripts/typst-status-counts.sh derives from git rev-parse --short HEAD. Under concurrent dispatches HEAD advances mid-task, so stamp-commit drifts for reasons unrelated to the edit. A plan's 'any field other than the tests-* counts moving means another writer's FormalSystem/ edit -- stop and diagnose' rule must exempt stamp-commit explicitly, or it produces a false alarm on every concurrent run. The genuine FormalSystem-drift signal is formalsystem-file-count / formalsystem-line-count.",
+      "category": "CONSTRAINT",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "typst-sync-check",
+        "generated-surface",
+        "concurrency",
+        "stamp-commit",
+        "false-alarm"
+      ]
+    },
+    {
+      "content": "Sizing a Lean test module from the number of FILES it must reach underestimates badly when the instruction is 'a #check per public declaration'. Measured: a ForMathlib smoke module planned at ~70 lines for five files came out at 141, almost entirely because FormalSystem/ForMathlib/Order/PFilter.lean alone declares 31 public declarations. Count the target files' public declarations, not their file count.",
+      "category": "INSIGHT",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "plan-estimation",
+        "lean-test-module",
+        "public-declarations",
+        "scope-hypothesis"
+      ]
+    },
+    {
+      "content": "In BimodalLogic a new test module under Tests/ carries three non-obvious gate obligations, each discovered only by reading the gate scripts: (1) C6 requires the module be imported in Tests/BimodalTest.lean, since scripts/module-invariants-manifest.txt is empty and an unimported live module is an unreachable-module FAILURE; (2) a module with no row in scripts/c16-roots-baseline.txt has a docBlame ceiling of ZERO, so every new public declaration needs a docstring or `private`; (3) the warning budget is zero under CI's --wfail, with a measured exemption only for /-- info: ... -/ expected-output lines (104-133 chars observed) and not for code lines. All three held exactly as predicted across two new modules in this task.",
+      "category": "CONSTRAINT",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "test-module-gates",
+        "C6",
+        "docBlame",
+        "warning-budget",
+        "bimodallogic"
+      ]
+    },
+    {
+      "content": "FormalSystem/Semantics/Nomic/Witnesses.lean's F3 does NOT synthesize an F3.IsRegular instance: F3 is a plain def, so the instance head is not syntactically `ofStepFamily ...` until F3 unfolds. Any use of a regularity-requiring nomic theorem at F3 must bind it as a bare term, `haveI : F3.IsRegular := NomicFrame.ofStepFamily_isRegular R3 R3.fwd R3.bwd`, exactly as NomicLanguage/NomicFour.lean does. This is a general Lean pattern worth remembering: a concrete witness defined by `def` rather than `abbrev` silently loses instance resolution through its definitional unfolding.",
+      "category": "INSIGHT",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "lean-instances",
+        "nomic-frame",
+        "ofStepFamily",
+        "def-vs-abbrev",
+        "haveI"
+      ]
+    }
+  ],
+  "dispatch_seq": 3
+}

@@ -381,7 +381,7 @@ implementation obligation and stays where it is.
 | `BenchmarkAnchorsMain.lean` | 598 | <!-- TODO: add description --> |
 | `BenchmarkOracleMain.lean` | 359 | <!-- TODO: add description --> |
 | `CanonicalWire.lean` | 35 | Aggregator for `CanonicalWire/`: the verified certificate wire codec — canonical printer, total parser, round-trip theorems |
-| `CertificateImport.lean` | 599 | The certificate library: `closureList`/`intRange`, the envelope's two thin wrappers over the verified codec, the `dite`-based `WitnessFamily` builders, `checkRaw` and the localization scans |
+| `CertificateImport.lean` | 609 | The certificate library: `closureListDedup`/`intRange`, the envelope's two thin wrappers over the verified codec, the `dite`-based `WitnessFamily` builders, `checkRaw` and the localization scans |
 | `CertificateRecords.lean` | 156 | The parsed certificate records: `RawLasso`, `RawTarget`, `RawCertificate`, the `Partial*` mirrors and their `complete` functions, `hasFreshAtom` and `RawCertificate.formulas`; split out of `CertificateImport.lean` so the verified codec can import them |
 | `CheckCertificateMain.lean` | 57 | Executable root of `lake exe check_certificate`: `main` only; reads one certificate on stdin, prints one JSON line |
 | `ContrastiveGenerator.lean` | 1,025 | The formula-mutation engine: `MutationType`, `ContrastivePair`, the single-occurrence mutators, `generateContrastivePairs`, and the contrastive JSONL export |

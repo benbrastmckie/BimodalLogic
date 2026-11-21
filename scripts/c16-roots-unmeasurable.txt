@@ -1,0 +1,11 @@
+# scripts/c16-roots-unmeasurable.txt -- lakefile roots the C16-roots sweep
+# (scripts/c16_roots_baseline.py) cannot currently measure, with the reason, on the
+# scripts/module-invariants-manifest.txt (C6 "known-unreachable live modules") precedent.
+#
+# A root listed here is excused from the sweep's anti-silence exit-2 guard when its own build or
+# lint log cannot be measured -- but the exclusion is reported on every run (an INFO line to
+# stderr), never silent, and never a substitute for fixing the root. If a listed root measures
+# cleanly on some later run, that is reported too, as a candidate for removing its row: a fixed
+# root earns its place back in the ceiling, it is never left excused by habit.
+#
+# Format: one row per unmeasurable root: `<root> <reason>`

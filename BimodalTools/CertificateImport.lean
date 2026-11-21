@@ -53,11 +53,21 @@ certificate.
 discharge each one with a `dite`, so a certificate that fails a structural precondition comes
 back as a named rejection rather than as a parse error.
 
-## Why `closureList` rather than `Finset.toList`
+## Why `closureListDedup` rather than `Finset.toList`
 
 `Finset.toList` is noncomputable, so the diagnostic scans cannot enumerate `closureOf` directly.
-`closureList` is the computable enumeration of the same members, and `mem_closureList` is the
-one-line membership lemma that ties the two together.
+`closureListDedup` is the computable, duplicate-free enumeration of the same members — the core
+`FormalSystem.Metalogic.Decidability.closureList` passed through `List.dedup` — and
+`mem_closureListDedup` is the one-line membership lemma that ties the two together.
+
+The `Dedup` suffix carries the name out of the core declaration's way, and no deprecated alias
+accompanies it. An alias retaining the bare name `closureList` in this namespace would be visible
+to every module that opens both this namespace and
+`FormalSystem.Metalogic.Decidability` — `Tests/BimodalToolsTest/CertificateImportTest.lean` opens
+both — and Lean reports a bare reference under two such opens as `Ambiguous term` whether the
+second interpretation is a `def` or an alias. The style guide's rename-alias requirement is
+therefore waived here deliberately: `BimodalTools` sits outside `defaultTargets`, every use site
+is in this repository, and there are no external consumers to cushion.
 
 ## Atom identity
 
@@ -97,7 +107,7 @@ contract rather than a local naming choice; a faithful mirror is structural as w
 
 ## Main Definitions
 
-- `closureList`, `intRange` — computable enumerations the scans need
+- `closureListDedup`, `intRange` — computable enumerations the scans need
 - The parsed records themselves — `RawLasso`, `RawTarget`, `RawCertificate`, `PartialTarget`,
   `PartialCertificate`, the two `complete` functions, `hasFreshAtom` and `RawCertificate.formulas`
   — live in `BimodalTools/CertificateRecords.lean`, under this same namespace, so that the
@@ -115,7 +125,7 @@ contract rather than a local naming choice; a faithful mirror is structural as w
 
 ## Main Results
 
-- `mem_closureList` — `closureList` enumerates exactly `closureOf`
+- `mem_closureListDedup` — `closureListDedup` enumerates exactly `closureOf`
 - `refutes_of_countermodel` — a `countermodel` verdict entails `WitnessFamily.Refutes`
 
 ## References
@@ -146,13 +156,13 @@ open BimodalTools.DataExport
 -/
 
 /-- The closure of a context, as a duplicate-free list. Computable, unlike `Finset.toList`. -/
-def closureList (S : Context) : List Formula :=
-  (S.flatMap FormalSystem.Syntax.Formula.subformulas).dedup
+def closureListDedup (S : Context) : List Formula :=
+  (FormalSystem.Metalogic.Decidability.closureList S).dedup
 
-/-- `closureList` enumerates exactly the members of `closureOf`. -/
-theorem mem_closureList {S : Context} {ψ : Formula} :
-    ψ ∈ closureList S ↔ ψ ∈ closureOf S := by
-  simp [closureList, mem_closureOf, FormalSystem.Syntax.subformulaClosure]
+/-- `closureListDedup` enumerates exactly the members of `closureOf`. -/
+theorem mem_closureListDedup {S : Context} {ψ : Formula} :
+    ψ ∈ closureListDedup S ↔ ψ ∈ closureOf S := by
+  simp [closureListDedup, List.mem_dedup, mem_closureList]
 
 /-- The half-open integer range `[a, b)`, as a list. The scan windows are `Finset.Ico` at `ℤ`. -/
 def intRange (a b : Int) : List Int := (List.range (b - a).toNat).map (fun k => a + (k : Int))
@@ -335,7 +345,7 @@ def cohFailure (W : WitnessFamily Γ Del) : Option Failure :=
         some { condition := "local_coherent", lasso := some i.val, position := some t,
                formula := some Formula.bot, detail := "⊥ is labelled at this position" }
       else
-        let bad := (closureList (Γ ++ Del)).find? fun ψ =>
+        let bad := (closureListDedup (Γ ++ Del)).find? fun ψ =>
           ! decide (LabelledLasso.labClauseAt W.bx (Λ.lab (t - 1)) (Λ.lab t) (Λ.lab (t + 1)) ψ)
         some { condition := "local_coherent", lasso := some i.val, position := some t,
                formula := bad, detail := "the local clause of this closure member fails here" }
@@ -345,7 +355,7 @@ def fulFailure (W : WitnessFamily Γ Del) : Option Failure :=
   (List.finRange W.lassos.length).findSome? fun i =>
     let Λ := W.lassos.get i
     (intRange (LabelledLasso.labFulWindowLo Λ) (LabelledLasso.labFulWindowHi Λ)).findSome? fun t =>
-      match (closureList (Γ ++ Del)).find? fun ψ =>
+      match (closureListDedup (Γ ++ Del)).find? fun ψ =>
           ! decide (LabelledLasso.eventClauseAt Λ t ψ) with
       | some ψ =>
         some { condition := "fulfilling", lasso := some i.val, position := some t,
@@ -354,7 +364,7 @@ def fulFailure (W : WitnessFamily Γ Del) : Option Failure :=
 
 /-- The first closure member whose box clause fails, with a counter-position when one exists. -/
 def boxFailure (W : WitnessFamily Γ Del) : Option Failure :=
-  (closureList (Γ ++ Del)).findSome? fun ψ =>
+  (closureListDedup (Γ ++ Del)).findSome? fun ψ =>
     if W.boxClause ψ then none
     else
       match ψ with

@@ -1,6 +1,24 @@
 # Change Log
 
 
+## 2026-11-19: Archive 7 completed tasks
+
+**Archived**:
+- **940** (completed, general): Implemented the docgen-cache-gate-fix plan in `.github/workflows/docs.yml` -- added memory/overcommit instrumentation, removed the refuted `LEAN_NUM_THREADS` env entry, and added an always-run cache-save step that breaks docgen-action's internal success-gated cache skip. The objective (a real CI run succeeding) remains unproven pending a push.
+- **939** (completed, general): Added a step-level `LEAN_NUM_THREADS: "1"` env to the docgen step in `.github/workflows/docs.yml` and corrected the header's refuted claim, after an inconclusive local measurement.
+- **938** (completed, general): Pinned three advisory repo-health signals (README verification dates, C20 sub-counts, C16 env_linter sweep) to committed ratchet-only baselines with fail-on-increase gates, defaulting new `ENFORCE_*` flags to 1; all six seeded falsification arms verified.
+- **937** (completed, lean4): Fixed both red CI workflows on main -- renamed `closureList` to `closureListDedup` (closing a naming collision), removed four stray semicolon-spaces fixing `lint-style`, and corrected API Documentation's misdiagnosed redness (actually an OOM kill) with a swap step and corrected PREREQUISITES.
+- **829** (completed, general): Added `timeout-minutes: 300` to ci.yml's build job, amended `CI_CD_PROCESS.md`'s GitHub Actions Cache section with verified lean-action provenance, and corrected a stale `lean_exe` count comment in `lakefile.toml`.
+- **931** (completed, general): Applied all eight final-frame amendments to the 901 two-sided Reynolds engine paper-proof report by content match, preserving the report's refusal sentence and both must-not-touch surfaces byte-unchanged.
+- **933** (completed, meta): Corrected the decidability-front record in `specs/ROADMAP.md` and `specs/state.json` -- added task 761's blockers array, checked off a Stage 0 idle-run item, restated the depth-0 crux against task 934's result, and rewrote a stale status paragraph against task 761's plan v13 rest state.
+
+**Directories moved**: 7 (specs/ -> specs/archive/)
+**Deferred**: none
+**Orphans/misplaced**: none detected
+**Status reconciliation**: none (4 candidates checked, all refused promotion -- partial-handoff artifacts)
+**Roadmap updates**: not run this pass
+**Memory harvest**: not run this pass (deferred to `/distill --learn`); no candidates recorded on any of the 7 tasks
+
 ## 2026-11-17: Archive 1 completed task
 
 **Archived**:

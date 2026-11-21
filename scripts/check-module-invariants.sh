@@ -179,10 +179,13 @@
 #   scripts/markdown-link-allowlist.txt        link-syntax-illustration files (C13)
 #   docs/reference/paper-definitions-of-record.md       pinned paper anchors + known-anchor rows (C15)
 #   scripts/nolints.json                       grandfathered env_linter findings (C16)
+#   scripts/c16-roots-baseline.txt             per-root/module/linter env_linter ceilings over every other lakefile root (C16)
+#   scripts/c16-roots-unmeasurable.txt         lakefile roots the C16 root sweep cannot currently measure, with reasons
 #   scripts/nolint-attribute-allowlist.txt     reviewed in-source nolint attributes (C26)
 #   scripts/debug-artifact-allowlist.txt       allow-listed live debug directives (C27)
 #   scripts/warning-budget.txt                 per-file compiler-warning baseline (C28)
 #   scripts/c20-declaration-baseline.txt       recorded wrong-declaration citations still to repair (C20)
+#   scripts/c20-residual-baseline.txt          per-citer residual/unverifiable ceilings (C20)
 #   references.bib                             the single bibliography every block-scoped key resolves in (C31)
 #   scripts/certificate-witness-inventory.txt  interesting-witness and coverage-limit rows per certificate class (C36)
 #   scripts/clause-shape-allowlist.txt         reviewed biconditional clauses under the certificate roots, with verdicts (C37)
@@ -649,6 +652,12 @@ ENFORCE_C20=${ENFORCE_C20:-1} # no file:line citations in publication scope (enf
 # rather than either force-passed or blocking. Never flip it to 0, and never add a baseline key
 # to quiet a new failure: repair the citation with `reanchor-lean-citations.py --by-name`.
 ENFORCE_C20_DECL=${ENFORCE_C20_DECL:-1} # named citations land in the declaration they name (enforced)
+# C20's residual, unverifiable-declaration and unverifiable-filename sub-counts were previously
+# printed as TODO/INFO lines that never held the gate hostage. Each is now pinned per citer file
+# in scripts/c20-residual-baseline.txt (the scripts/nolints.json model) and gated against an
+# increase, enforced from the outset because the baseline pins the current debt in this same
+# change. Never flip it to 0, and never regenerate the baseline to absorb a new finding.
+ENFORCE_C20_RESIDUAL=${ENFORCE_C20_RESIDUAL:-1} # per-citer residual/unverifiable ceilings (enforced)
 # C21 asserts that every result the main-results page advertises has its axiom set pinned by
 # one of the two baselines this script already carries. The scope is clean the day the page is
 # written, so this is enforced from the outset. Never flip it back to 0 to quiet a new name;
@@ -851,15 +860,13 @@ export ENFORCE_C34A ENFORCE_C34B
 # scan closes for declared names; this half is what closes it for shapes only ELABORATION can
 # judge, above all auto-generated structure-field projections, where whether an underscored name
 # is a violation depends on whether the field's type is a Prop.
-# NOT YET ENFORCED, on a measurement rather than a preference: the widened target carries 196
-# pre-existing findings across 13 of 16 roots (re-measured 2026-09-21; see the C16 header for the
-# per-root numbers), 80 of them in `BimodalTest` alone, so enforcing it now would turn the gate
-# red on work this check's own change does not own. The decision was reviewed at the publication
-# gate and left at 0: the findings are docBlame/unusedArguments/defsWithUnderscore-class debt in
-# test and tooling code, none of it in the published library, whose own half is enforced at 0. It is computed and
-# printed at every gate instead, on the ENFORCE_C9_DOCS model, so the debt is visible rather
-# than either force-passed or blocking. Flip to 1 once the count reaches zero.
-ENFORCE_C16_ROOTS=${ENFORCE_C16_ROOTS:-0} # env_linter batch over EVERY lakefile root (NOT yet enforced)
+# PINNED AND ENFORCED FROM THE OUTSET: the widened target's existing debt (231 findings across
+# 15 of 17 measurable roots, measured when this baseline was generated -- see the C16 header for
+# the full account, including the one root this sweep cannot currently measure) is pinned per
+# (root, module, linter) in scripts/c16-roots-baseline.txt and gated against an increase by
+# scripts/c16_roots_baseline.py, the scripts/nolints.json model. Never regenerate that baseline
+# to make a genuine regression disappear, and never flip this flag to 0 to quiet a new finding.
+ENFORCE_C16_ROOTS=${ENFORCE_C16_ROOTS:-1} # env_linter batch over EVERY other lakefile root, pinned ceiling (enforced, local full-mode only -- see C16 header)
 
 FAILURES=0
 pass() { printf 'PASS  %-4s %s\n' "$1" "$2"; }
@@ -3267,7 +3274,8 @@ echo
 #
 # A citation whose filename resolves to several live files, or to none, is reported
 # as unverifiable rather than failed: the check will not guess which file was meant.
-# Neither is an expected steady state. An ambiguous basename is fixed by qualifying
+# Neither is an expected steady state -- the per-citer ceiling in the FOURTH ASSERTION
+# below gates this category too. An ambiguous basename is fixed by qualifying
 # the path until it is unique (`ProofSystem/Axioms.lean:NNN`, not `Axioms.lean:NNN`).
 # A file outside the live tree (anything under `Boneyard/`, or a Mathlib source) is
 # cited by its path WITHOUT a line number plus the declaration name or a quoted
@@ -3311,9 +3319,25 @@ echo
 #     pruning. Never add a key to quiet a new failure: fix the number, name the declaration the
 #     line is actually in, or drop the line number and cite the name alone.
 #   * The residual -- citations carrying no name, which nothing but tier 1 can check -- is
-#     printed as a TODO line at every gate and never holds the gate hostage.
+#     still printed as a TODO line at every gate; see the FOURTH ASSERTION below for how it
+#     is gated alongside the two UNVERIFIABLE categories above.
+#
+# FOURTH ASSERTION (gated under ENFORCE_C20_RESIDUAL=1): per-citer ceilings on the three
+# previously un-gated sub-counts -- the residual (no declaration name), the
+# unverifiable-declaration (the target file does not declare the named thing, or declares it
+# ambiguously), and the unverifiable-filename (the cited filename is itself ambiguous or
+# resolves to no live file) categories. Each is pinned per CITER FILE in
+# scripts/c20-residual-baseline.txt (the scripts/nolints.json model: `<count> <citer-path>
+# <category>` rows, generated by the `C20_RESIDUAL_EMIT=1` emit mode so the generator and the
+# gate can never disagree about the key shape). A (path, category) pair whose live count
+# exceeds its baseline entry fails, as does a pair with a non-zero live count that is absent
+# from the baseline entirely (a file newly introducing the defect class). A pair whose live
+# count is below its baseline entry is reported for pruning and never fails. No line number is
+# recorded, deliberately: an unrelated edit above a citation would otherwise manufacture a new
+# finding. Never add or regenerate a baseline row to quiet a new failure: name the declaration,
+# qualify the ambiguous path, or drop the line number and cite the name alone.
 # ---------------------------------------------------------------------------
-export ENFORCE_C20 ENFORCE_C20_DECL
+export ENFORCE_C20 ENFORCE_C20_DECL ENFORCE_C20_RESIDUAL
 python3 - <<'PYEOF'
 import os, re, sys
 sys.path.insert(0, os.path.join("scripts", "lib"))
@@ -3453,7 +3477,7 @@ if lib_bad:
 spans = {}
 verdicts = {lc.PASS: 0, lc.FAIL: 0, lc.UNVERIFIABLE: 0, lc.RESIDUAL: 0}
 conts = inside = 0
-mismatched, unnamed = [], []
+mismatched, unnamed, residual = [], [], []
 for p in files:
     plines = open(p, encoding="utf-8", errors="replace").read().split("\n")
     for idx, l in enumerate(plines):
@@ -3477,6 +3501,8 @@ for p in files:
                 mismatched.append((p, idx + 1, ref, n, chain, wanted, target))
             elif verdict == lc.UNVERIFIABLE and not is_cont:
                 unnamed.append((p, idx + 1, ref, n, chain))
+            elif verdict == lc.RESIDUAL and not is_cont:
+                residual.append((p, idx + 1, ref, n))
 
 def key(p, target, chain):
     return "%s|%s|%s" % (p.replace(os.sep, "/"), target.replace(os.sep, "/"), ",".join(chain))
@@ -3545,6 +3571,82 @@ soft("declaration span: %d of %d file.lean:NNN citations carry no declaration na
 if os.environ.get("C20_DECL_PRINT_KEYS") == "1":
     for row in sorted(mismatched):
         print("KEY   " + key(row[0], row[6], row[4]))
+
+# --- fourth assertion: per-citer ceilings on the residual, unverifiable-declaration and ------
+# --- unverifiable-filename sub-counts (see the FOURTH ASSERTION header comment above) --------
+RESIDUAL_BASELINE = os.path.join("scripts", "c20-residual-baseline.txt")
+ENFORCE_RESIDUAL = os.environ.get("ENFORCE_C20_RESIDUAL") == "1"
+
+
+def _norm(path):
+    return path.replace(os.sep, "/")
+
+
+residual_counts, unverifiable_decl_counts, unverifiable_file_counts = {}, {}, {}
+for row in residual:
+    k = _norm(row[0])
+    residual_counts[k] = residual_counts.get(k, 0) + 1
+for row in unnamed:
+    k = _norm(row[0])
+    unverifiable_decl_counts[k] = unverifiable_decl_counts.get(k, 0) + 1
+for row in unverifiable:
+    k = _norm(row[0])
+    unverifiable_file_counts[k] = unverifiable_file_counts.get(k, 0) + 1
+
+live_rows = {}
+for k, c in residual_counts.items():
+    live_rows[(k, "residual")] = c
+for k, c in unverifiable_decl_counts.items():
+    live_rows[(k, "unverifiable-decl")] = c
+for k, c in unverifiable_file_counts.items():
+    live_rows[(k, "unverifiable-file")] = c
+
+if os.environ.get("C20_RESIDUAL_EMIT") == "1":
+    for (k, cat), c in sorted(live_rows.items(), key=lambda kv: (kv[0][1], kv[0][0])):
+        print("%d %s %s" % (c, k, cat))
+
+residual_baseline = {}
+if os.path.isfile(RESIDUAL_BASELINE):
+    for bl in open(RESIDUAL_BASELINE, encoding="utf-8"):
+        bl = bl.strip()
+        if not bl or bl.startswith("#"):
+            continue
+        parts = bl.split()
+        if len(parts) != 3:
+            continue
+        cnt, bpath, bcat = parts
+        residual_baseline[(bpath, bcat)] = int(cnt)
+
+residual_fail = []
+for (k, cat), c in live_rows.items():
+    base = residual_baseline.get((k, cat), 0)
+    if c > base:
+        residual_fail.append((k, cat, c, base))
+residual_prune = [(bpath, bcat, base, live_rows.get((bpath, bcat), 0))
+                   for (bpath, bcat), base in residual_baseline.items()
+                   if live_rows.get((bpath, bcat), 0) < base]
+
+if residual_fail:
+    msg = ("residual ceiling: %d (path, category) pair(s) exceed their pinned ceiling in %s"
+           % (len(residual_fail), RESIDUAL_BASELINE))
+    if ENFORCE_RESIDUAL:
+        bad(msg)
+        status = 1
+    else:
+        soft(msg + " (not enforced: ENFORCE_C20_RESIDUAL=0)")
+    for k, cat, c, base in sorted(residual_fail)[:15]:
+        note("%s  %s: live %d > baseline %d -- name the declaration, qualify the ambiguous "
+             "path, or drop the line number and cite the name alone" % (k, cat, c, base))
+    if len(residual_fail) > 15:
+        note("... and %d more" % (len(residual_fail) - 15))
+else:
+    pas("residual ceiling: no (path, category) pair exceeds its pinned ceiling in %s"
+        % RESIDUAL_BASELINE)
+if residual_prune:
+    inf("residual ceiling: %d baseline row(s) exceed their live count; prune them from %s"
+        % (len(residual_prune), RESIDUAL_BASELINE))
+    for bpath, bcat, base, live in sorted(residual_prune)[:10]:
+        note("%d %s %s  (live %d)" % (base, bpath, bcat, live))
 
 sys.exit(status)
 PYEOF
@@ -3630,43 +3732,44 @@ fi
 #
 # MEASURED BEFORE DECIDING, AND RE-MEASURED SINCE. `lake exe runLinter <Module>` accepts any
 # module name, library root or exe root alike. The sweep below covers every root declared in
-# lakefile.toml. Re-measured on 2026-09-21 over all seventeen (4 library roots, 13 exe roots),
-# with every root built first:
+# lakefile.toml, minus `FormalSystem` (the enforced first half already covers it). The per-root,
+# per-module, per-linter counts are no longer hand-recorded here -- a dated snapshot living
+# beside a check that exists because such snapshots drift is the defect class C14 exists to
+# catch, in miniature. The live figures print at every gate (below); the PINNED CEILING lives in
+# scripts/c16-roots-baseline.txt, generated and compared by scripts/c16_roots_baseline.py, on the
+# scripts/nolints.json model. A module reachable from two roots is counted once per root in that
+# baseline, so its total is a per-root sum, not a count of distinct declarations.
 #
-#     FormalSystem 0   BimodalToolsTest 0   ProofExtractorMain 0   TableauProofStepsMain 0
-#     BenchmarkAnchorsMain 1   ProofFirstGeneratorMain 1   CheckInitImportsMain 1
-#     DatasetValidatorMain 2   EnumBenchmarkMain 5   TraceExporterMain 5   BenchmarkOracleMain 10
-#     TableauBridgeMain 13   BimodalTools 14   ContrastiveGeneratorMain 15   MachineAppendixMain 16
-#     DatasetGeneratorMain 33   BimodalTest 80
+# ZERO ROOTS ARE CURRENTLY UNMEASURABLE: every root `lake exe runLinter` can reach -- including
+# `BimodalToolsTest` -- imports and lints cleanly (`lake exe runLinter BimodalToolsTest` reports
+# "-- Linting passed"). scripts/c16-roots-unmeasurable.txt retains its header documenting the
+# format and the sweep's anti-silence exit-2 guard for any root that becomes unmeasurable in the
+# future, but currently lists no excused row, and scripts/c16_roots_baseline.py's refusal to
+# generate or compare a baseline that would paper over a crashed root as "0 findings" remains in
+# place as a standing safeguard regardless.
 #
-# -- 196 findings across 13 of the 16 roots outside `FormalSystem`. A finding in a module two
-# roots reach is counted once per root, so this is a per-root sum, not a count of distinct
-# declarations. The table this replaces read 179 across fifteen roots and predated the
-# `BimodalTools` / `BimodalToolsTest` library split. Two movements since are worth naming,
-# because neither is new debt: `BimodalTools` went from 1 to 14 when the mutation engine and the
-# proof-first pipeline were split out of their `*Main` roots into library modules the aggregator
-# imports, and `BimodalTest` stands at 80 because three test modules that had been outside
-# every root -- and so invisible to this sweep -- were wired in. Findings that were always there
-# became countable. The gate prints the live figures on every full run; this block is the
-# dated record of a measurement, and C14 exists because such records drift, so re-measure
-# rather than trust it.
-#
-# THE DECISION: widen, but REPORTING-ONLY, behind ENFORCE_C16_ROOTS, which defaults to 0. The
-# scope is not clean, so enforcing it would hold the gate hostage to a burndown this change does
-# not own; abandoning the widening would leave the elaboration-only shapes with no instrument at
-# all. Reporting it prints the debt at every gate, which is the ENFORCE_C9_DOCS pattern and the
-# reason that pattern exists. The first half above -- `runLinter FormalSystem` against
-# scripts/nolints.json -- stays ENFORCED and unchanged; this half neither relaxes it nor
-# depends on it, and no existing ENFORCE_ flag was flipped to accommodate the widening.
+# PINNED AND ENFORCED FROM THE OUTSET (ENFORCE_C16_ROOTS, see that flag's own comment), on the
+# same reasoning C20's residual ceiling and C12-C15 already ship flagless with: the baseline
+# pins the existing debt in the same change that starts gating it, so there is no burndown this
+# change would otherwise be holding the gate hostage to. The first half above -- `runLinter
+# FormalSystem` against scripts/nolints.json -- stays enforced and unchanged; this half neither
+# relaxes it nor depends on it.
 #
 # `BimodalTools` NEEDED NO EDIT HERE, unlike almost every other check in this file. The
 # enforced half is scoped to the FormalSystem closure BY CONSTRUCTION -- `runLinter <Module>`
 # observes a package by importing it -- and the tooling library is deliberately outside that
 # closure, so widening the enforced half would mean linting `BimodalTools` against
-# scripts/nolints.json, which is a burndown this split does not own. The reporting half below
+# scripts/nolints.json, which is a burndown this split does not own. The widened half below
 # reads its root list from lakefile.toml at run time, so it picked up `BimodalTools` and
 # `BimodalToolsTest` the moment those targets were declared. Recorded because "C16 was not
 # widened" otherwise reads as an omission.
+#
+# THE LOCAL/CI ASYMMETRY. Both C16 halves sit inside `if [ "$RUN_BUILD" -eq 1 ]`, and CI invokes
+# this script with `--no-build`, so CI never executes either half -- including this one, now
+# enforced locally. The gate of record for the widened scope is therefore THIS LOCAL FULL-MODE
+# INVOCATION (`bash scripts/check-module-invariants.sh`, no `--no-build`), not CI. Extending CI
+# coverage means a `ci.yml` check step plus a matching `report` line and `expected` bump in the
+# same change -- work outside this check's own scope.
 # ---------------------------------------------------------------------------
 if [ "$RUN_BUILD" -eq 1 ]; then
   C16_LOG=$(mktemp)
@@ -3687,15 +3790,14 @@ else
   info C16 "env_linter batch skipped (--no-build)"
 fi
 
-# C16, second half: the same env_linter batch over EVERY root declared in lakefile.toml.
-# Reporting-only while ENFORCE_C16_ROOTS is 0 -- see that flag and the decision recorded in this
-# check's header above. The root list comes from the single scrape site above, so a newly
-# declared target is covered the day it is added.
+# C16, second half: the same env_linter batch over EVERY root declared in lakefile.toml, pinned
+# to scripts/c16-roots-baseline.txt and gated via ENFORCE_C16_ROOTS -- see that flag's own
+# comment and the local/CI asymmetry statement in this check's header above. The root list comes
+# from the single scrape site above, so a newly declared target is covered the day it is added.
+# scripts/c16_roots_baseline.py owns BOTH the per-(root, module, linter) parse and the ceiling
+# comparison, so this block and that script can never disagree about what a finding is.
 if [ "$RUN_BUILD" -eq 1 ]; then
-  C16R_LOG=$(mktemp)
-  C16R_TOTAL=0
-  C16R_DIRTY=0
-  C16R_ROWS=""
+  C16R_DIR=$(mktemp -d)
   C16R_COUNT=0
   while IFS= read -r C16R_ROOT; do
     [ -n "$C16R_ROOT" ] || continue
@@ -3711,28 +3813,36 @@ if [ "$RUN_BUILD" -eq 1 ]; then
     # run by hand a moment later, after C25 had rebuilt the olean. `lake build` is a no-op once
     # the root is current, so C25 pays nothing for this.
     lake build "$C16R_ROOT" >/dev/null 2>&1 || true
-    if lake exe runLinter "$C16R_ROOT" >"$C16R_LOG" 2>&1; then
-      continue
-    fi
-    C16R_N=$(grep -m1 -oE '^-- Found [0-9]+' "$C16R_LOG" | grep -oE '[0-9]+' || true)
-    [ -n "$C16R_N" ] || C16R_N=$(grep -c 'error: ' "$C16R_LOG" || true)
-    C16R_TOTAL=$((C16R_TOTAL + C16R_N))
-    C16R_DIRTY=$((C16R_DIRTY + 1))
-    C16R_ROWS="${C16R_ROWS}${C16R_ROOT}: ${C16R_N}"$'\n'
+    lake exe runLinter "$C16R_ROOT" >"$C16R_DIR/${C16R_ROOT}.log" 2>&1 || true
   done <<< "$LAKE_EXE_ROOTS"$'\n'"$LAKE_LIB_ROOTS"
-  rm -f "$C16R_LOG"
   if [ "$C16R_COUNT" -eq 0 ]; then
     fail C16 "no non-FormalSystem root read from lakefile.toml -- the lakefile is missing or its shape changed"
-  elif [ "$C16R_TOTAL" -eq 0 ]; then
-    pass C16 "env_linter batch is clean on all $C16R_COUNT non-FormalSystem lakefile root(s)"
-    note "every root is now clean; set ENFORCE_C16_ROOTS=1 to make this exit-code-affecting"
   else
-    MSG="$C16R_TOTAL env_linter finding(s) across $C16R_DIRTY of $C16R_COUNT non-FormalSystem lakefile root(s)"
-    if [ "$ENFORCE_C16_ROOTS" -eq 1 ]; then fail C16 "$MSG"; else soft C16 "$MSG (not yet enforced)"; fi
-    printf '%s' "$C16R_ROWS" | sort -t: -k2 -rn | head -6 | while IFS= read -r l; do note "$l"; done
-    note "these roots are outside the FormalSystem closure, so \`runLinter FormalSystem\` reports 0 on them by construction"
-    note "set ENFORCE_C16_ROOTS=1 to make this exit-code-affecting once the count reaches zero"
+    C16R_OUT=$(python3 scripts/c16_roots_baseline.py --log-dir "$C16R_DIR" 2>&1)
+    C16R_STATUS=$?
+    case "$C16R_STATUS" in
+      0)
+        pass C16 "env_linter batch over every other lakefile root is at or below its pinned ceiling (scripts/c16-roots-baseline.txt)"
+        printf '%s\n' "$C16R_OUT" | while IFS= read -r l; do note "$l"; done
+        ;;
+      1)
+        MSG="env_linter batch over the other lakefile roots reports finding(s) above the pinned ceiling in scripts/c16-roots-baseline.txt"
+        if [ "$ENFORCE_C16_ROOTS" -eq 1 ]; then fail C16 "$MSG"; else soft C16 "$MSG (not yet enforced)"; fi
+        printf '%s\n' "$C16R_OUT" | head -20 | while IFS= read -r l; do note "$l"; done
+        note "these roots are outside the FormalSystem closure, so \`runLinter FormalSystem\` reports 0 on them by construction"
+        note "fix the finding, or -- if genuinely acceptable -- run 'python3 scripts/c16_roots_baseline.py --log-dir DIR --update' and justify the diff in the same commit"
+        ;;
+      2)
+        fail C16 "env_linter batch over the other lakefile roots: measurement could not be trusted -- never a silent pass (ENFORCE_C28=0 precedent)"
+        printf '%s\n' "$C16R_OUT" | while IFS= read -r l; do note "$l"; done
+        ;;
+      *)
+        fail C16 "scripts/c16_roots_baseline.py exited with unexpected status $C16R_STATUS"
+        printf '%s\n' "$C16R_OUT" | while IFS= read -r l; do note "$l"; done
+        ;;
+    esac
   fi
+  rm -rf "$C16R_DIR"
 else
   info C16 "env_linter batch over the other lakefile roots skipped (--no-build)"
 fi

@@ -380,14 +380,14 @@ theorem usTruth_event_split {A B C : USForm} (hC : IsUTyped A B C)
   · have h := usTruth_substU hC v t (p := USForm.top)
       ⟨fun _ => hU, fun _ => usTruth_top v t⟩
     constructor
-    · intro hC' ; exact Or.inl ⟨h.mpr hC', hU⟩
+    · intro hC'; exact Or.inl ⟨h.mpr hC', hU⟩
     · rintro (⟨hCU, -⟩ | ⟨-, hnU⟩)
       · exact h.mp hCU
       · exact absurd hU hnU
   · have h := usTruth_substU hC v t (p := USForm.bot)
       ⟨fun hb => absurd hb (usTruth_bot v t), fun hu => absurd hu hU⟩
     constructor
-    · intro hC' ; exact Or.inr ⟨h.mpr hC', hU⟩
+    · intro hC'; exact Or.inr ⟨h.mpr hC', hU⟩
     · rintro (⟨-, hu⟩ | ⟨hCN, -⟩)
       · exact absurd hu hU
       · exact h.mp hCN
@@ -410,14 +410,14 @@ theorem usTruth_guard_split {A B F : USForm} (hF : IsUTyped A B F)
   · have h := usTruth_substU hF v t (p := USForm.top)
       ⟨fun _ => hU, fun _ => usTruth_top v t⟩
     constructor
-    · intro hF' ; exact ⟨Or.inl (h.mpr hF'), Or.inr hU⟩
+    · intro hF'; exact ⟨Or.inl (h.mpr hF'), Or.inr hU⟩
     · rintro ⟨hl | hl, -⟩
       · exact h.mp hl
       · exact absurd hU hl
   · have h := usTruth_substU hF v t (p := USForm.bot)
       ⟨fun hb => absurd hb (usTruth_bot v t), fun hu => absurd hu hU⟩
     constructor
-    · intro hF' ; exact ⟨Or.inr hU, Or.inl (h.mpr hF')⟩
+    · intro hF'; exact ⟨Or.inr hU, Or.inl (h.mpr hF')⟩
     · rintro ⟨-, hr | hr⟩
       · exact h.mp hr
       · exact absurd hr hU

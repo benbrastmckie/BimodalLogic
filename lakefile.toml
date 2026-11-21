@@ -60,7 +60,7 @@ name = "BimodalTest"
 srcDir = "Tests"
 leanOptions = {pp.unicode.fun = true, autoImplicit = false, weak.linter.hashCommand = false}
 
-# The tooling library: dataset generation, ML export, benchmarks, and the roots of the 13
+# The tooling library: dataset generation, ML export, benchmarks, and the roots of the 15
 # `lean_exe` targets below. Absent from `defaultTargets` on purpose -- see the header comment.
 [[lean_lib]]
 name = "BimodalTools"

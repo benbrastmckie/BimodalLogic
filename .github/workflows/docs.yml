@@ -15,6 +15,45 @@ name: API Documentation
 #     publish. The first step checks it and fails fast.
 #   - A `push` event. The action builds the API docs and deploys only on push; a
 #     `workflow_dispatch` run exercises the setup steps but publishes nothing.
+#   - Unrestricted overcommit (`vm.overcommit_memory=1`), set by the "Allow memory overcommit"
+#     step. The doc build runs `lake build` over roughly 6,300 doc targets and spawns a child
+#     process for most of them. Under the runner's default heuristic overcommit
+#     (`vm.overcommit_memory=0`) those spawns fail with
+#     `error: resource exhausted (error code: 12, cannot allocate memory)` while physical memory
+#     is plentiful: run 44839249624 failed with 12.6 GiB available and 16 GiB of swap unused,
+#     at a peak `Committed_AS` of 40.9 GiB against a `CommitLimit` of 23.7 GiB. The kernel is
+#     refusing the fork on commit accounting, not on memory. The failure summary names
+#     whichever `srcUri.github` targets were in flight; those cheap `git` subprocesses are the
+#     symptom, and no URI or git configuration is involved.
+#
+#     The swap step and the memory sampler are kept as instrumentation: their `free -h` output
+#     and the `Committed_AS`/`CommitLimit` trace make any shortfall name itself in the log.
+#
+#     Routes that do not address the failure, each measured:
+#       - `LEAN_NUM_THREADS: "1"` caps the in-process thread pool, not the external-process
+#         fan-out: run 44492038639 produced 48 allocation errors with it set, against 13 and 15
+#         without.
+#       - Swap alone. 16 GiB of swap beside 15 GiB of RAM raises `CommitLimit` to 23.7 GiB,
+#         still below the build's committed peak.
+#       - A larger GitHub-hosted runner is unavailable to a personal-account repository.
+#       - Lake 5.0.0 accepts no `-j`/`--jobs` flag, and the doc build's `lake build` call lives
+#         inside the pinned action's `scripts/build_docs.sh`.
+#
+#     If a run still fails on memory with overcommit unrestricted, the next route is to drive
+#     `doc-gen4`'s own `single`/`fromDb` subcommands over `find FormalSystem -name '*.lean'`
+#     with an explicit `xargs -P N`, as `linglib-community/linglib` does (its commit
+#     `97ec249684`; the CLI surface is present at `doc-gen4` tag `v4.33.0-rc1`, the tag
+#     `build_docs.sh`'s `determine_doc_gen_rev` resolves to for this `lean-toolchain`).
+#   - A docs cache that is only ever written whole. `docgen-action` caches the dependency docs
+#     under `Docs-<hash of lake-manifest.json and references.bib>` and saves it only on job
+#     success. Cache keys are immutable, so nothing here saves that key after a failed build:
+#     a partial entry would be restored on every later run and never replaced. To discard a
+#     bad entry: `gh cache delete <key>`.
+#   - A `docgen-action` pin at or after `dacc1acc2a` ("regenerate the HTML of the project after
+#     a cache hit"). The cache restores doc-gen4's `.docs_built` markers but not this project's
+#     HTML, so an earlier pin builds a site with no `FormalSystem` pages on every cache hit: run
+#     44931953893 produced 0 of the 857 pages. Check `docs/FormalSystem.html` after changing
+#     the pin.
 #
 # The action supplies doc-gen4 itself (a throwaway `docbuild/` package pinned to the doc-gen4
 # tag matching `lean-toolchain`), which is why `lakefile.toml` and `lake-manifest.json` carry no
@@ -103,12 +142,79 @@ jobs:
           <a href="docs/">BimodalLogic API documentation</a>
           HTML
 
+      - name: Enlarge swap for the doc build
+        run: |
+          set -euo pipefail
+          free -h
+          df -h /mnt /
+          sudo swapoff -a || true
+          sudo rm -f /mnt/swapfile || true
+          sudo fallocate -l 16G /mnt/swapfile
+          sudo chmod 600 /mnt/swapfile
+          sudo mkswap /mnt/swapfile
+          sudo swapon /mnt/swapfile
+          free -h
+
+      # See the header: without this the doc build's child-process spawns are refused on commit
+      # accounting while physical memory is free.
+      - name: Allow memory overcommit
+        run: |
+          set -euo pipefail
+          sudo sysctl -w vm.overcommit_memory=1
+
+      # Prints the memory and overcommit state the build starts from, and starts a sampler
+      # whose trace the "Report docgen memory trace" step prints. The sampler is detached
+      # (stdin from /dev/null, output to the log, backgrounded and disowned) so it survives
+      # this step's shell and never holds the step open.
+      - name: Record pre-docgen memory and overcommit state
+        run: |
+          set -euo pipefail
+          echo "--- free -h ---"
+          free -h
+          echo "--- /proc/meminfo (selected) ---"
+          grep -E '^(MemTotal|MemFree|MemAvailable|SwapTotal|SwapFree|Committed_AS|CommitLimit)' /proc/meminfo
+          echo "--- sysctl ---"
+          sysctl vm.overcommit_memory vm.overcommit_ratio vm.max_map_count
+          echo "--- nproc ---"
+          nproc
+          echo "--- ulimit -a ---"
+          ulimit -a
+          nohup bash -c '
+            while true; do
+              {
+                echo "=== $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
+                grep -E "^(Committed_AS|CommitLimit|MemAvailable|SwapFree)" /proc/meminfo
+                ps -eo rss,comm --sort=-rss | head -6
+              }
+              sleep 15
+            done
+          ' </dev/null >"$RUNNER_TEMP/docgen-mem.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/docgen-mem.pid"
+          disown
+
       - name: Build and deploy doc-gen4 documentation
         id: docgen
-        uses: leanprover-community/docgen-action@56023ee2a4b3630c1071825be5bafdb43f540bbd
+        uses: leanprover-community/docgen-action@dacc1acc2a3f532cc577266979ba9c36c7593f7c
         with:
           api-docs: true
           blueprint: false
           build-page: false
           homepage: api-site
           references: references.bib
+
+      - name: Report docgen memory trace
+        if: always()
+        run: |
+          set -euo pipefail
+          kill "$(cat "$RUNNER_TEMP/docgen-mem.pid")" 2>/dev/null || true
+          log="$RUNNER_TEMP/docgen-mem.log"
+          if [ ! -s "$log" ]; then
+            echo "No memory trace log found at $log -- sampler did not produce output."
+            exit 0
+          fi
+          echo "--- peak Committed_AS / CommitLimit observed ---"
+          grep -E '^(Committed_AS|CommitLimit):' "$log" | sort -k2 -n -r | awk '{seen[$1]++; if (seen[$1]==1) print}'
+          echo "--- peak RSS for any lake/doc-gen4 process ---"
+          grep -E 'lake|doc-gen4' "$log" | sort -n -r | head -1 || echo "(none observed)"
+          echo "--- final 60 samples ---"
+          tail -n 60 "$log"

@@ -213,4 +213,4 @@ alone. Both are retained; `sepSnce` routes through the printed-form siblings.
   and Computational Aspects*, vol. 1, Chapter 10 §10.2 — Lemmas 10.2.1-10.2.8 and
   Theorem 10.2.9 over the integer flow
 
-*Last verified: 2026-11-09*
+*Last verified: 2026-11-18*

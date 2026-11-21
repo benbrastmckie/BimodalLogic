@@ -1,0 +1,74 @@
+{
+  "phase": 2,
+  "phase_name": "Milestones, Dependency Picture, Gates and Lanes",
+  "started_at": "2026-11-20T06:49:17Z",
+  "last_updated": "2026-11-20T06:49:17Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Re-examine the three doubtful edge readings",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 2,
+      "description": "Write Milestones",
+      "status": "done",
+      "files_touched": [
+        "records/proof-mode.md"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "State that the hard/sequencing split is a proposed reading",
+      "status": "done",
+      "files_touched": [
+        "records/proof-mode.md"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "Write Dependency picture",
+      "status": "done",
+      "files_touched": [
+        "records/proof-mode.md"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "Write Gates",
+      "status": "done",
+      "files_touched": [
+        "records/proof-mode.md"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "Write Lanes",
+      "status": "done",
+      "files_touched": [
+        "records/proof-mode.md"
+      ]
+    }
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "2.2",
+      "description": "Write Milestones: one block per milestone, M0 to M15 with M6a/M6b/M6c and M9a/M9b",
+      "type": "altered",
+      "reason": "M14 split into M14a (decision-procedure closers, hard dep M2) and M14b (countermodel bridge, hard dep M11) because the two halves have different hard dependencies and no single done-when; 20 blocks, not 19.",
+      "annotation": "*(deviation: altered \u2014 M14 split into M14a/M14b; 20 blocks)*"
+    },
+    {
+      "task_id": "2.V",
+      "description": "Phase verification: run verify-touched.sh records/proof-mode.md",
+      "type": "altered",
+      "reason": "Not re-run in Phase 2; the Phase 1 run showed the path maps to no suite and the fallback battery's result does not depend on the markdown content. Run once more on the final file in Phase 3.",
+      "annotation": "*(deviation: altered \u2014 verify-touched run deferred to Phase 3)*"
+    }
+  ],
+  "notes": "Edge findings: (a) linearity before Until/Since: sequencing for introduction and unfolding (left_mono_until_G, unfoldForward, unfoldBackward, unfoldBackwardSince take no linearity premise; DiscreteUnfolding.lean does not import LinearityDerived), undetermined for induction (formula not yet stated). (b) other-language instances before leads-to: sequencing (done-when names TM and TM-plus only). (c) Until/Since and usability before Dense/RTime: sequencing (density takes Dense <= fc, coDerived takes RTime <= fc, prior_U_gap and sep are axiom constructors at RTime). Also: M7->M8 moved from hard (report) to sequencing with an open decision; unfoldBackward is at FrameClass.Base, not ZTime as the filed description says; MinusDeduction.lean is under Metalogic (layer 3), so the Minus instance cannot sit under Theorems/."
+}
