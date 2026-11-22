@@ -5,7 +5,8 @@ Authors: Tanner Duve
 -/
 
 import FormalSystem.PlusLanguage.Formula
-import Lean
+import Lean.Meta.AppBuilder
+import Lean.Meta.CollectMVars
 
 /-! Formula syntax for TM and TM⁺ metaprogramming. -/
 

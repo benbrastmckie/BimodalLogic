@@ -20,7 +20,7 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 | Metric | Count |
 |--------|-------|
 | Live `.lean` files | 781 |
-| Live lines of code | 226,311 |
+| Live lines of code | 226,312 |
 | Live comment lines | 143,046 |
 <!-- END GENERATED -->
 
