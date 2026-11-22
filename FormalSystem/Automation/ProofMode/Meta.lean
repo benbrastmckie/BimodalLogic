@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tanner Duve
 -/
 
+import FormalSystem.Tactic.FormulaSyntax
 import FormalSystem.Theorems.ProofMode.Basic
 import FormalSystem.Theorems.ProofMode.PlusRules
 
@@ -19,11 +20,10 @@ namespace FormalSystem.Automation.ProofMode
 
 open Lean Meta Elab Tactic
 
-/-- The two native derivation languages supported by the frontend. -/
-inductive Language where
-  | tm
-  | plus
-  deriving BEq
+export FormalSystem.Tactic.FormulaSyntax
+  (formulaApp operatorArgs? rigidOperatorArgs?)
+
+open FormalSystem.Tactic.FormulaSyntax (Language)
 
 /-- The frame class, object context, and conclusion of a native derivation goal. -/
 structure Judgment where
@@ -36,19 +36,27 @@ structure Judgment where
   /-- Object-language conclusion. -/
   formula : Expr
 
-/-- Namespace of formula constructors and derived operators. -/
-def Language.formulaNamespace : Language → Name
-  | .tm => ``FormalSystem.Syntax.Formula
-  | .plus => ``FormalSystem.PlusLanguage.PlusFormula
-
 /-- Native derivation type constructor. -/
-def Language.derivationName : Language → Name
+def _root_.FormalSystem.Tactic.FormulaSyntax.Language.derivationName : Language → Name
   | .tm => ``FormalSystem.ProofSystem.DerivationTree
   | .plus => ``FormalSystem.PlusLanguage.PlusDerivationTree
 
-/-- Select a TM helper or its native TM⁺ counterpart. -/
-def Language.ruleName (language : Language) (tm plus : Name) : Name :=
-  if language == .tm then tm else plus
+/-- Checked native constructor and structural-rule declarations. -/
+def _root_.FormalSystem.Tactic.FormulaSyntax.Language.derivationRule
+    (language : Language) (rule : Name) : MetaM Name := do
+  let pair ← match rule with
+    | `lift => pure (``FormalSystem.ProofSystem.DerivationTree.lift,
+          ``FormalSystem.PlusLanguage.PlusDerivationTree.lift)
+    | `weakening => pure (``FormalSystem.ProofSystem.DerivationTree.weakening,
+          ``FormalSystem.PlusLanguage.PlusDerivationTree.weakening)
+    | `assumption => pure (``FormalSystem.ProofSystem.DerivationTree.assumption,
+          ``FormalSystem.PlusLanguage.PlusDerivationTree.assumption)
+    | `modus_ponens => pure (``FormalSystem.ProofSystem.DerivationTree.modus_ponens,
+          ``FormalSystem.PlusLanguage.PlusDerivationTree.modus_ponens)
+    | `axiom => pure (``FormalSystem.ProofSystem.DerivationTree.axiom,
+          ``FormalSystem.PlusLanguage.PlusDerivationTree.axiom)
+    | _ => throwError "unregistered native rule {rule}"
+  return language.ruleName pair.1 pair.2
 
 /-- Read a native derivation judgment without inspecting any derivation value. -/
 def judgment? (type : Expr) : MetaM (Option Judgment) := do
@@ -70,22 +78,6 @@ def requireJudgment (goal : MVarId) : MetaM Judgment := do
 /-- Construct a native derivation type with a new context and conclusion. -/
 def derivationType (judgment : Judgment) (context formula : Expr) : MetaM Expr :=
   mkAppM judgment.language.derivationName #[judgment.frame, context, formula]
-
-/-- Read a constructor or derived operator, retaining its object arguments. -/
-def operatorArgs? (language : Language) (operator : Name) (arity : Nat)
-    (formula : Expr) : MetaM (Option (Array Expr)) := do
-  let formula ← instantiateMVars formula
-  let name := language.formulaNamespace ++ operator
-  if formula.getAppFn.constName? == some name then
-    return some formula.getAppArgs
-  let saved ← saveState
-  let args ← (List.range arity).toArray.mapM fun _ =>
-    mkFreshExprMVar (mkConst language.formulaNamespace)
-  let candidate ← mkAppM name args
-  if ← isDefEq formula candidate then
-    return some (← args.mapM instantiateMVars)
-  saved.restore
-  return none
 
 /-- Enumerate a concrete assumption list; abstract tails require explicit proof terms. -/
 partial def contextEntries (context : Expr) : MetaM (Array Expr) := do
@@ -146,19 +138,19 @@ def adaptProof (proof : Expr) (target : Judgment) : MetaM Expr := do
   unless ← isDefEq source.frame target.frame do
     if ← isDefEq source.frame (mkConst ``FormalSystem.ProofSystem.FrameClass.Base) then
       let le ← mkAppM ``FormalSystem.ProofSystem.FrameClass.base_le #[target.frame]
-      proof ← mkAppM (target.language.derivationName ++ `lift) #[le, proof]
+      proof ← mkAppM (← target.language.derivationRule `lift) #[le, proof]
     else
       throwError "different frame classes; supply an explicitly lifted derivation"
   unless ← isDefEq source.context target.context do
     let inclusion ← inclusionProof source.context target.context
-    proof ← mkAppM (target.language.derivationName ++ `weakening)
+    proof ← mkAppM (← target.language.derivationRule `weakening)
       #[source.context, target.context, source.formula, proof, inclusion]
   return proof
 
 /-- Construct the assumption derivation at the current object context. -/
 def assumptionProof (judgment : Judgment) (formula : Expr) : MetaM Expr := do
   let member ← membershipProof formula judgment.context
-  mkAppOptM (judgment.language.derivationName ++ `assumption)
+  mkAppOptM (← judgment.language.derivationRule `assumption)
     #[some judgment.frame, some judgment.context, some formula, some member]
 
 /-- Add a user-facing name for existing derivation data. -/
@@ -168,14 +160,14 @@ def nameProof (goal : MVarId) (name : Name) (proof : Expr) : MetaM MVarId := do
 
 /-- Elaborate a proof term in the current Lean context. -/
 def elaborateProof (term : Syntax) : TacticM Expr :=
-  Term.elabTerm term none
+  Term.withoutErrToSorry (Term.elabTerm term none)
 
 /-- Apply the native modus-ponens constructor to two derivations. -/
 def modusPonens (judgment : Judgment) (implication premise : Expr) : MetaM Expr := do
   let some args ← operatorArgs? judgment.language `imp 2
       (← requireJudgmentFromProof implication).formula
     | throwError "expected an object-language implication"
-  mkAppM (judgment.language.derivationName ++ `modus_ponens)
+  mkAppM (← judgment.language.derivationRule `modus_ponens)
     #[judgment.context, args[0]!, args[1]!, implication, premise]
 where
   /-- Read the native judgment carried by a derivation term. -/
