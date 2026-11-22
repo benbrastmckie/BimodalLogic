@@ -32,6 +32,7 @@ structure View where
   /-- Equation identifying the named and expanded forms. -/
   equation : Name
 
+/-- Persistent registrations for named formula views added by library modules. -/
 initialize views : SimplePersistentEnvExtension View (Array View) ←
   registerSimplePersistentEnvExtension {
     addImportedFn := fun entries => entries.foldl (· ++ ·) #[]

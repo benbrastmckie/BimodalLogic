@@ -135,6 +135,7 @@ syntax ("←")? term : lproofRule
 
 /-- One limit for a simplifier invocation. -/
 declare_syntax_cat lSimpOption
+/-- Set one named simplifier budget to a natural number. -/
 syntax "(" ident " := " num ")" : lSimpOption
 
 /-- Simplify using only the selected implications or equivalences. -/
