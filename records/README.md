@@ -20,6 +20,7 @@ organized, and which decisions are open, so that everyone working on it aims at 
 
 | Record | Covers |
 |---|---|
+| [milestones.md](milestones.md) | The goals the open work serves, the milestones to each, what comes next, and the two channels the work divides into |
 | [proof-mode.md](proof-mode.md) | Goals, milestones, gates and dependencies for the derivation proof mode |
 | [proof-mode-architecture.md](proof-mode-architecture.md) | How proof-mode rules and tactics are organized: the three tiers, the operator families, and where each contribution sits |
 | [theorem-library.md](theorem-library.md) | `BimodalLib`, the library of theorems, countermodels and conjectures: language fragments, conservativity, the tableau pipeline, diagnostics, and how the library measures the proof mode |
