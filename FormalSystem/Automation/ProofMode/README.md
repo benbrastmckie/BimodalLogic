@@ -5,13 +5,19 @@ Named, compositional tactics for native TM and TM⁺ derivations. Import the sib
 
 ## Modules
 
+The shared formula planner and named views live in [Formulas and tactics](../../Tactic/README.md).
+
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Automation/ProofMode -->
 | File | Lines | Description |
 |------|------:|-------------|
 | `Basic.lean` | 212 | Named assumptions, opaque application, cut, and propositional branches |
 | `Discrete.lean` | 86 | Next/Previous scopes and invariance with explicit ZTime certificates |
-| `Meta.lean` | 187 | Native judgment recognition and checked context adaptation |
-| `Modal.lean` | 271 | Necessity, stability, and possibility scopes |
+| `Meta.lean` | 179 | Native judgment recognition and checked context adaptation |
+| `Modal.lean` | 274 | Necessity, stability, and possibility scopes |
+| `ModalBoolean.lean` | 21 | Preferred orientations for explicit simplifier rules |
+| `Rewriting.lean` | 558 | Role/polarity-aware checked rewriting with explicit scope evidence |
+| `RuleRegistry.lean` | 65 | Validated native schema registration and fixed simp orientations |
+| `Simplification.lean` | 166 | Deterministic bounded normalization with decrease guards and rollback |
 | `Temporal.lean` | 257 | Future/past scopes, eventuality composition, progress, and Until/Since mapping |
 <!-- END GENERATED -->
 
@@ -22,4 +28,4 @@ Use explicit `using [...]` to keep reusable proofs independent of unrelated oute
 See the [usage guide](../../../docs/user-guide/derivation-proof-mode.md) and
 [examples](../../../Tests/BimodalTest/Automation/ProofModeTest.lean).
 
-*Last verified: 2026-11-18*
+*Last verified: 2026-11-19*
