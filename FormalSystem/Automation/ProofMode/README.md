@@ -14,9 +14,10 @@ The shared formula planner and named views live in [Formulas and tactics](../../
 | `Discrete.lean` | 86 | Next/Previous scopes and invariance with explicit ZTime certificates |
 | `Meta.lean` | 179 | Native judgment recognition and checked context adaptation |
 | `Modal.lean` | 274 | Necessity, stability, and possibility scopes |
+| `ModalBoolean.lean` | 21 | Preferred orientations for explicit simplifier rules |
 | `Rewriting.lean` | 558 | Role/polarity-aware checked rewriting with explicit scope evidence |
 | `RuleRegistry.lean` | 65 | Validated native schema registration and fixed simp orientations |
-| `Simplification.lean` | 177 | Deterministic bounded normalization with decrease guards and rollback |
+| `Simplification.lean` | 165 | Deterministic bounded normalization with decrease guards and rollback |
 | `Temporal.lean` | 257 | Future/past scopes, eventuality composition, progress, and Until/Since mapping |
 <!-- END GENERATED -->
 

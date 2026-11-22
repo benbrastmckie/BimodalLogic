@@ -14,7 +14,10 @@ Tests for proof automation tactics.
 | NormalizationTest.lean | Normalization, all four `Tactic/Attr.lean` simp sets (`formula_unfold`/`formula_fold` and `truth_norm`/`reflect_time_norm`), serialization and enumerator counts |
 | LemmaDBTest.lean | The `@[tmLemma]` attribute database and `tryLemmaMatch` backward chaining, plus executed `MetaM`/`TermElabM` probes for `Tactic/Meta.lean`'s helpers |
 | ProofModeTest.lean | Native compositional TM and TM⁺ scopes |
-| ProofModeExtensionsTest.lean | Scoped rewriting and bounded simplification |
+| ProofModeBooleanTest.lean | Boolean rewriting and simplifier diagnostics |
+| ProofModeModalBooleanTest.lean | Modal simplification and named formula views |
+| ProofModeTemporalBooleanTest.lean | Temporal rewriting and frame premises |
+| ProofModeModalTemporalBooleanTest.lean | Rewriting across modal and temporal scopes |
 | DatasetGeneratorTest.lean | Structural pre-filter pins and hybrid labelling smoke tests |
 
 ## Coverage

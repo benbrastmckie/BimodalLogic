@@ -122,21 +122,12 @@ Node visits and depth also have finite limits.
 Set `trace.proofMode.rewrite` or `trace.proofMode.simp` for paths, demands and counters.
 
 Library authors can use `register_lrewrite declaration [reverse]` to validate a closed schema's
-telescope and set its simp orientation. Registration never adds it to an `only` list. Boolean
-seeds are `Theorems.ProofMode.doubleNegationIff` and `conjunctionSelfIff`; modal seeds include
-`Theorems.ModalS5.boxConjIff`, `diamondDisjIff`, and `s5DiamondBox`, with corresponding
-`PlusLanguage.ProofMode` guarantees for arbitrary Plus arguments.
+telescope and set its orientation. The simplifier considers the rules named in `only`.
 
-```lean
-example (Γ : Context) (A B C : Formula)
-    (mapping : Γ ⊢ (A.imp B).allFuture.box)
-    (provider : Γ ⊢ (A.or C).allFuture.box) : Γ ⊢ (B.or C).allFuture.box := by
-  lrewrite mapping at provider as mapped
-  lexact mapped
-```
-
-The compact [extension examples](../../Tests/BimodalTest/Automation/ProofModeExtensionsTest.lean)
-also exercise mixed TM⁺ scopes, conditional Next, named views, frame gates and rollback.
+- [Boolean rewriting](proof-mode-boolean.md)
+- [Modal congruence and simplification](proof-mode-modal-boolean.md)
+- [Temporal congruence](proof-mode-temporal-boolean.md)
+- [Combining modal and temporal scopes](proof-mode-modal-temporal-boolean.md)
 
 ## Foundations and scope
 

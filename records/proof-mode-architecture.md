@@ -262,7 +262,7 @@ module.
 | Leads-to consequence, transitivity, cases | Derivation | Temporal with Boolean | `proof_mode_leads_to_invariance_library`; the rules are stated for the present-inclusive definition, and the contributed strict rules are the layer beneath it |
 | Dense and RTime rules | Derivation | Temporal at Dense and RTime | `proof_mode_dense_and_real_time_rules` |
 | Folding and unfolding defined operators, inclusive forms, formula equalities | Views | every family | `proof_mode_views_tier`; the pair is `lunfold` and `lfold`; the first rows of the view table are contributed with the rewriting tactics, exposed through the pair |
-| Logical rewriting under operators, bounded simplification | Derivation | Generic path composition, closed family congruence, and seed equivalences from Boolean interactions | M17; `lrewrite` and `lsimp` apply native rules only. The syntax planner is shared with other tiers. |
+| Logical rewriting under operators, bounded simplification | Derivation | Generic path composition; Boolean, Modal and Temporal steps; seed rules in `ModalBoolean`; scope conversions in `ModalTemporalBoolean` | M17; `lrewrite` and `lsimp` apply native rules only. The syntax planner is shared with other tiers. |
 | Leaf closing | Derivation | Boolean | `proof_mode_close_leaves_with_automation`, `proof_mode_decision_procedure_leaf_closers` |
 | Refutation of an unclosed leaf | none: a diagnostic, it builds nothing | the fragment of the leaf | `proof_mode_countermodels_for_unclosed_leaves`, through the countermodel half of the library |
 | Sweeps: library entries proved again in the mode | Derivation | one sweep per fragment | `proof_mode_reprove_perpetuity`, `proof_mode_reprove_temporal_slice`, `theorem_library_stability_entries` |

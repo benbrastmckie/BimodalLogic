@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tanner Duve
 -/
 
-import FormalSystem.Theorems.ProofMode.ScopeConversions
+import FormalSystem.Theorems.ProofMode.PlusRules
 import FormalSystem.Theorems.ModalS5
 
 /-!

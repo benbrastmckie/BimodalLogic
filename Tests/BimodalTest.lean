@@ -63,7 +63,10 @@ import BimodalTest.Automation.LemmaDBTest
 import BimodalTest.Automation.DeductionTest
 import BimodalTest.Automation.NormalizationTest
 import BimodalTest.Automation.ProofModeTest
-import BimodalTest.Automation.ProofModeExtensionsTest
+import BimodalTest.Automation.ProofModeBooleanTest
+import BimodalTest.Automation.ProofModeModalBooleanTest
+import BimodalTest.Automation.ProofModeTemporalBooleanTest
+import BimodalTest.Automation.ProofModeModalTemporalBooleanTest
 import BimodalTest.Automation.WeakeningSearchTest
 import BimodalTest.Integration.Helpers
 import BimodalTest.Integration.EndToEndTest

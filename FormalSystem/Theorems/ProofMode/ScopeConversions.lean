@@ -5,7 +5,7 @@ Authors: Tanner Duve
 -/
 
 import FormalSystem.Theorems.ProofMode.Congruence
-import FormalSystem.Theorems.Perpetuity.Helpers
+import FormalSystem.Theorems.ProofMode.ModalTemporalBoolean
 
 /-!
 # Closed scope conversions for checked rewriting
@@ -22,14 +22,6 @@ open FormalSystem.Syntax FormalSystem.ProofSystem
 variable {fc : FrameClass}
 
 private def atom : Formula := .atom (Atom.mkFresh "" 0)
-
-/-- A boxed guarantee is valid at every strictly future point. -/
-def boxToFuture (A : PlusFormula) : PlusDerivationTree fc [] (A.box.imp A.allFuture) :=
-  .ofTMSubst (fun _ => A) (FormalSystem.Theorems.Perpetuity.boxToFuture atom)
-
-/-- A boxed guarantee is valid at every strictly past point. -/
-def boxToPast (A : PlusFormula) : PlusDerivationTree fc [] (A.box.imp A.allPast) :=
-  .ofTMSubst (fun _ => A) (FormalSystem.Theorems.Perpetuity.boxToPast atom)
 
 /-- Positive introspection for an opaque boxed guarantee. -/
 def boxIteration (A : PlusFormula) : PlusDerivationTree fc [] (A.box.imp A.box.box) :=
