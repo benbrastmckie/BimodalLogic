@@ -413,16 +413,17 @@ deviation from this hypothesis rather than treating a silent extra edit as in sc
 
 ---
 
-### Phase 5: The six task descriptions [NOT STARTED]
+### Phase 5: The six task descriptions [COMPLETED]
 
 **Goal**: Edit six task descriptions through `state-write.sh` so each names only the still-open
 coordinating pull request and the work that genuinely remains, and regenerate `specs/TODO.md`.
 
 **Tasks**:
-- [ ] For each task below, run `state-write.sh` with `--dry-run` first, inspect the diff, then
+- [x] For each task below, run `state-write.sh` with `--dry-run` first, inspect the diff, then
       run it for real with `--session-id` set to this dispatch's session id and `--regen-todo` on
       the final invocation. One task per invocation; never a hand edit of `specs/state.json`.
-- [ ] **`proof_mode_split_shared_test_and_guide_files`**: rewrite the coordination paragraph. It
+      *(completed: dry-run then real for all six, `--regen-todo` on the final (973) invocation)*
+- [x] **`proof_mode_split_shared_test_and_guide_files`**: rewrite the coordination paragraph. It
       currently names three pull requests; name only the temporal contribution as the still-open
       blocker — the rewriting contribution has merged and filed its own rules, tests and guide
       pages by family, and the semantic-mode contribution is recommended for closure with its
@@ -433,37 +434,51 @@ coordinating pull request and the work that genuinely remains, and regenerate `s
       into per-family modules. On the hold: the roadmap's gating rule is a statement, not a status
       field, and no hold flag is set on the task record; confirm this with
       `jq '.active_projects[] | select(.project_number==960) | .status'` and state in the
-      description that nothing needs lifting.
-- [ ] **`proof_mode_views_tier`**: its "coordination with open contributions" clause already
+      description that nothing needs lifting. *(completed; status confirmed `not_started`; note:
+      the dispatch's "under `FormalSystem/Tactic/`" is written against the files' actual location,
+      `FormalSystem/Automation/ProofMode/{Meta,Modal,Temporal}.lean` — `FormalSystem/Tactic/` has
+      only an unrelated `Meta.lean` of its own; also dropped the "shared test file
+      `ProofModeExtensionsTest.lean`" claim, since `gh pr view 8 --json files` confirms that file
+      belongs only to the closed-recommended semantic-mode contribution, not to the temporal one)*
+- [x] **`proof_mode_views_tier`**: its "coordination with open contributions" clause already
       anticipates this case. Update it: the rewriting contribution has merged, so its contributed
       view rows and the equality-handling parts of `lrewrite`/`lsimp` are extractable now, leaving
       logical rewriting where it is. The temporal contribution has not merged, so its twenty rows
       and the `ltemporal_dual` retirement remain owed extraction once it lands — do not state them
-      as extractable.
-- [ ] **`connective_signature_layer_shared_primitives`**: state inside the task description what
+      as extractable. *(completed)*
+- [x] **`connective_signature_layer_shared_primitives`**: state inside the task description what
       the roadmap already states — that the signature layer's landing window relative to the
       temporal contribution is still genuinely undecided (join 4), and that research and planning
       may proceed now regardless, with implementation waiting on that ruling. Also state its
       relation to the Language table: the generic clause classes in `TruthClauses.lean` and the
-      single home for the derived operators are the two questions its research opens.
-- [ ] **`proof_mode_s5_aware_box_scopes`**: the carrying table it adds rows to is the one the
+      single home for the derived operators are the two questions its research opens. *(completed:
+      added a "LANDING WINDOW" sentence; the Language-table relation was already fully stated in
+      the existing "FIRST QUESTION FOR RESEARCH" paragraph, confirmed and left as is)*
+- [x] **`proof_mode_s5_aware_box_scopes`**: the carrying table it adds rows to is the one the
       temporal contribution fixes the shape of. State the shape as currently asked of the
       contributor — keyed by `(source, target)`, with a `framed` flag, in
       `Automation/ProofMode/Carrying.lean`, non-private — and state that it is a condition of
       merging not yet confirmed accepted, so this task folds `keeping` into that one table rather
-      than building a parallel path once the merge lands.
-- [ ] **`proof_mode_cross_modal_scopes_mf_tf`**: the same carrying table; state that its MF and TF
+      than building a parallel path once the merge lands. *(completed)*
+- [x] **`proof_mode_cross_modal_scopes_mf_tf`**: the same carrying table; state that its MF and TF
       rows enter the table `proof_mode_s5_aware_box_scopes` establishes, with the same pending
-      shape, and that it waits on that task rather than on the merge independently.
-- [ ] **`theorem_library_countermodels`**: add a cross-reference naming the evaluator as the
+      shape, and that it waits on that task rather than on the merge independently. *(completed)*
+- [x] **`theorem_library_countermodels`**: add a cross-reference naming the evaluator as the
       client of its evaluator-checked grade, and naming `records/semantic-proof-mode.md` and the
       evaluator milestone as the still-missing upstream for that grade specifically — so a reader
       does not assume all three admission grades are equally ready. No `file_scope` change.
-- [ ] **No `file_scope` edits anywhere in this phase.** All six tasks are `not_started`, their
+      *(completed: added a fourth-grade cross-reference since the description's own three-grade
+      list did not yet mention "evaluator-checked" at all; left `theorem-library.md`'s own
+      three-grade table untouched, since it documents what exists and this addition does not
+      contradict it)*
+- [x] **No `file_scope` edits anywhere in this phase.** All six tasks are `not_started`, their
       declared paths read correctly against the current tree, and nothing has moved. If the
       implementer believes a `file_scope` entry is wrong, record it as a deviation and leave the
-      array alone — a `file_scope` edit is outside this plan's scope.
-- [ ] Run `bash .claude/scripts/validate-state.sh` after the final write and confirm it passes.
+      array alone — a `file_scope` edit is outside this plan's scope. *(confirmed: zero
+      `file_scope` edits; lengths unchanged at 8/8/2/8/13/5)*
+- [x] Run `bash .claude/scripts/validate-state.sh` after the final write and confirm it passes.
+      *(completed: PASSED WITH WARNINGS, 0 failures; the 24 warnings are pre-existing and concern
+      other tasks' `file_scope` declarations, unrelated to this phase)*
 
 **Timing**: 1.5 hours
 
