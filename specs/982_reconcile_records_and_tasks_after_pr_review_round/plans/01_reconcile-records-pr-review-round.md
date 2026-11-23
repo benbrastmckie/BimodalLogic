@@ -268,43 +268,51 @@ editing and records a deviation if it differs.
 
 ---
 
-### Phase 3: `records/proof-mode.md` [NOT STARTED]
+### Phase 3: `records/proof-mode.md` [COMPLETED]
 
 **Goal**: Fix the one live cross-record contradiction and bring M17, M16 and M4 to the position
 reached, without disturbing the still-correct "second run still owes" and "not yet derived"
 language.
 
 **Tasks**:
-- [ ] **M17 status, occurrence 1** (the "Filed record" line inside the M17 section, line 503 at
+- [x] **M17 status, occurrence 1** (the "Filed record" line inside the M17 section, line 503 at
       planning time): change "none; contributed and under review" to state the merge.
-- [ ] **M17 status, occurrence 2** (the M17 row of the "Filed records" table, line 790 at
-      planning time): same change.
-- [ ] **M17, nothing else**: the done-when text and the "Current client" paragraph already match
+      *(completed: "none; merged")*
+- [x] **M17 status, occurrence 2** (the M17 row of the "Filed records" table, line 790 at
+      planning time): same change. *(completed: "none; merged")*
+- [x] **M17, nothing else**: the done-when text and the "Current client" paragraph already match
       the user's own correction in `pr7-approval.md` — no node counts, no timing claim, the
       saving stated as being in the proof script rather than the term, the larger-term finding
       cited. Confirm against `pr7-approval.md` and leave them as they are. Confirm the
       surrounding "second run still owes" language, which correctly describes the gate-one
-      selection rerun as outstanding, is undisturbed.
-- [ ] **M16 (views tier)**: state precisely which rows and modules exist on `main` today — the
+      selection rerun as outstanding, is undisturbed. *(confirmed unchanged; byte-identical, see
+      `git diff records/proof-mode.md`)*
+- [x] **M16 (views tier)**: state precisely which rows and modules exist on `main` today — the
       view table holds the rows the rewriting contribution added, exposed through `lunfold` and
       `lfold`. State that the twenty further rows (ten `Formula`, ten `PlusFormula`, the extra
       pair being `after`) and the retirement of `ltemporal_dual` live on the temporal
       contribution's branch and are not on `main`. Do **not** describe those twenty rows as
       present. State what the views-tier record still owes independently of either contribution:
       building the tier module itself, with every defined operator having a row, at the
-      architecture record's lane placement — neither contribution does that.
-- [ ] **M4 (linear time, Until and Since)**: record that the `expand`/`contract` naming is
+      architecture record's lane placement — neither contribution does that. *(completed: added a
+      "Current state" bullet naming the seven rows that exist today in
+      `FormalSystem/Tactic/FormulaViews.lean`, the twenty-rows-plus-retirement deferred to the
+      temporal branch, and the remaining gap against `Formula`'s 26 and `PlusFormula`'s 22
+      defined operators)*
+- [x] **M4 (linear time, Until and Since)**: record that the `expand`/`contract` naming is
       settled. Record what the temporal contribution contributes — Until and Since introduction,
       one-step unfolding at `ZTime`, `keeping`, whole-judgment time reflection and the strict
       leads-to layer. Confirm the induction rule is still stated as open; the existing "statement
       proposed and not yet derived" wording is correct and needs no change beyond consistency
-      with the rest of the record.
-- [ ] **Dependency picture**: confirm the M17-then-M0-then-M16 order still reads correctly now
+      with the rest of the record. *(completed: added a "Current state" bullet; the induction
+      paragraph below is untouched)*
+- [x] **Dependency picture**: confirm the M17-then-M0-then-M16 order still reads correctly now
       that M17 has merged — M0 runs after the open contributions are merged or declined, and is
       still held on the temporal contribution. No change to the ordering logic is expected; record
-      the confirmation.
-- [ ] **Filed records table**: confirm the M17 row is the only row this round changes; every other
-      row is a slug pointer unaffected by the review.
+      the confirmation. *(confirmed: the text at "## Dependency picture" still reads correctly
+      with no edit needed — it states the general sequencing rule, not a point-in-time status)*
+- [x] **Filed records table**: confirm the M17 row is the only row this round changes; every other
+      row is a slug pointer unaffected by the review. *(confirmed)*
 
 **Timing**: 1 hour
 

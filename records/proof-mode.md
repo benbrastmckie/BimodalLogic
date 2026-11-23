@@ -226,6 +226,12 @@ declares a `file_scope`.
   Since facts, in both time directions and both languages; Until and Since have introduction,
   one-step unfolding at `ZTime`, and an induction rule of which `forwardInvariantRule` is an
   instance; and `linvariant` is expressed through that induction rule.
+- **Current state**: the temporal contribution, not yet merged, contributes Until and Since
+  introduction, one-step unfolding at `ZTime`, `keeping` (carrying `G` and `H` facts across
+  steps), whole-judgment time reflection, and the strict leads-to layer. Its one-step rules use
+  `expand` and `contract`, which is the settled naming for this family — distinct from
+  `lunfold`/`lfold`, the unrelated views pair of M16. The generalizing induction rule is a
+  separate part of this milestone and remains open; see the proposed statement below.
 - **Hard dependencies**: M3 with a GO verdict. Both records read the gate-one report first.
 - **Sequencing-only dependencies**: inside M4, the case split is filed before the Until and
   Since rules. This is sequencing only for all three parts. The principles introduction and
@@ -473,6 +479,17 @@ it, so it does not meet the done-when.
   contributed with M17; the operator matching the elaborators use rests on the same table; and
   the tier sits at layer 0 or 1, outside `FormalSystem/Automation/ProofMode/`, below the
   derivation tactics, and imports none of them.
+- **Current state**: the table and the `lunfold`/`lfold` pair already exist on `main`, at
+  `FormalSystem/Tactic/FormulaViews.lean`, placed at the layer-0-or-1 position the architecture
+  record requires. It holds the seven rows the rewriting contribution added — `diamond`, `next`
+  and `prev` for `Formula`, and `diamond`, `dstab`, `next` and `prev` for `PlusFormula`. The
+  twenty further rows the temporal contribution adds (ten `Formula`, ten `PlusFormula`, the extra
+  pair being `after`) and its retirement of `ltemporal_dual` live only on that contribution's
+  branch and are not on `main`. What this record still owes independently of either contribution
+  is completeness: most of `Formula`'s twenty-six and `PlusFormula`'s twenty-two defined
+  operators, the Boolean derived connectives among them, have no row yet, and neither
+  contribution closes that gap on its own; this milestone is done only once every defined
+  operator has one.
 - **Hard dependencies**: none.
 - **Sequencing-only dependencies**: M0, for the layout. M17 is merged or declined before M0
   runs, so its rows exist when the tier is built. The always and sometimes part of M1 and
@@ -500,8 +517,8 @@ it, so it does not meet the done-when.
 - **Sequencing-only dependencies**: none. It is merged or declined before M0 runs; M16 follows
   M0 and takes over the view rows contributed here.
 - **Lane**: Rule theory, then Elaborators.
-- **Filed record**: none; contributed and under review. Its tactics are outside the gate-one
-  scripts and the gate's verdict.
+- **Filed record**: none; merged. Its tactics are outside the gate-one scripts and the gate's
+  verdict.
 
 ### M18: Library layout and registry
 
@@ -787,7 +804,7 @@ Four positions are taken by the filed edges and can each be reversed by changing
 | M14b | `proof_mode_countermodels_for_unclosed_leaves` |
 | M15 | `proof_mode_reference_manual_chapter` |
 | M16 | `proof_mode_views_tier` |
-| M17 | none; contributed and under review |
+| M17 | none; merged |
 | M18 | `theorem_library_layout_and_registry` |
 | M19 | `theorem_library_tableau_pipeline` |
 | M20 | `theorem_library_countermodels` |
