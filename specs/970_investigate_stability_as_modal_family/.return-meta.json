@@ -1,0 +1,37 @@
+{
+  "status": "researched",
+  "started_at": "2026-11-23T21:56:28Z",
+  "completed_at": "2026-11-23T22:03:00Z",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/970_investigate_stability_as_modal_family/reports/01_stability-modal-family-layout.md",
+      "summary": "Weighs one Modal family against a separate Stability family; recommends keeping one family, understood as necessity operators parameterized by operator, with three record amendments; includes the Open/Nomic instance analysis, the cslib hosting review, and the full change list for the contrary ruling."
+    }
+  ],
+  "next_steps": "Run /orchestrate 970 to create implementation plan",
+  "memory_candidates": [
+    {
+      "content": "BimodalLogic necessity operators form one parameterized family. Box, stab (L-plus), ofut and opast (Open language) are each S5 with K/T/4/5 as axioms and necessitation derived through the inclusion chain box => stab => ofut/opast. Each restricted necessity carries a rigid class on which phi -> N phi holds and outside which uniform substitution fails: state-local formulas for stab, pure-past for ofut, pure-future for opast; atoms are in all three. The nomic operator is only KD over arbitrary nomic frames (T needs Lawful, 4 needs Uniform over integer time, S5 holds on the tense-free fragment). Interactions with Temporal are operator-specific and share no statement: MF/TF/perpetuity for box, pasting for stab, HN for the open modals.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/970_investigate_stability_as_modal_family/reports/01_stability-modal-family-layout.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["necessity operator", "stability modal", "rigid class", "uniform substitution", "OpenLanguage", "NomicLanguage"]
+    },
+    {
+      "content": "cslib's modal axiom classes and Modal*Hilbert bundles take [HasBox F] as an instance ARGUMENT, not a field, so they are already parameterized by the box operator at the type level; a second necessity operator on one formula type can be hosted without changing cslib by an explicit non-canonical HasBox instance, a type synonym, or a ProofSigHom sending box to the second operator. cslib's own precedent for a second necessity-like operator (G/H in BimodalTMHilbert) is operator-specific axiom classes, not a second HasBox.",
+      "category": "PATTERN",
+      "source_artifact": "specs/970_investigate_stability_as_modal_family/reports/01_stability-modal-family-layout.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["cslib", "HasBox", "ModalS5Hilbert", "ProofSigHom", "two necessity operators"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795470913_0f1533_970",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 6
+  }
+}
