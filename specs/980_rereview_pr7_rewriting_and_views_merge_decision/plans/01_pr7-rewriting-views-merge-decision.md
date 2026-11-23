@@ -171,20 +171,20 @@ forcing it into the nearest slug.
 
 ---
 
-### Phase 2: Record the Outcome in the Task's Report [IN PROGRESS]
+### Phase 2: Record the Outcome in the Task's Report [COMPLETED]
 
 **Goal**: Attach the outcome to this task's own durable artifact, so the report no longer stands
 as a live REQUEST CHANGES recommendation against a head that no longer exists.
 
 **Tasks**:
 
-- [ ] Re-read `specs/980_rereview_pr7_rewriting_and_views_merge_decision/reports/01_pr7-rewriting-views-merge-decision.md` immediately before editing (a sibling could not have touched it, but the re-read also confirms no Outcome section already exists).
-- [ ] Append a single new `## Outcome` section at the end of the report. Do **not** rewrite, renumber or contradict the existing findings: they are correct for the head they reviewed and are the evidence this section's conclusion rests on.
-- [ ] In that section state, each with the evidence from Phase 1: that PR #7 merged, at which commit and when; that the head moved from `5f5ad32bf` to `6313e693f`; that all three recommended conditions landed; that the filing by family was delivered as well, which the report had recommended be deferred to the layout record; that the M17 "Current client" paragraph has been restated on `main`; and that the response actually posted was `pr7-approval.md`.
-- [ ] State plainly which of the report's claims are now **historical** rather than live: the REQUEST CHANGES recommendation and the three-condition list at the top, and the "Items Needing Your Ruling" table whose three rulings are all closed.
-- [ ] State plainly which of the report's claims remain **live and unsuperseded**: the measured views-tier gap against the M16 deliverables, the measured `lunfold`/`lfold` and `applyView` behaviour, the residual swallowed-error examples, and the 45-declaration filing inventory (now partly consumed by the contributor's own filing, which the section says so).
-- [ ] State what was **not** re-verified in this close-out — in particular that no build, test or lint gate was re-run against the merged tree, and that the per-family filing was confirmed by directory listing rather than by checking every declaration reached its intended family module.
-- [ ] Commit the report edit as its own green sub-step.
+- [x] Re-read `specs/980_rereview_pr7_rewriting_and_views_merge_decision/reports/01_pr7-rewriting-views-merge-decision.md` immediately before editing (a sibling could not have touched it, but the re-read also confirms no Outcome section already exists).
+- [x] Append a single new `## Outcome` section at the end of the report. Do **not** rewrite, renumber or contradict the existing findings: they are correct for the head they reviewed and are the evidence this section's conclusion rests on.
+- [x] In that section state, each with the evidence from Phase 1: that PR #7 merged, at which commit and when; that the head moved from `5f5ad32bf` to `6313e693f`; that all three recommended conditions landed; that the filing by family was delivered as well, which the report had recommended be deferred to the layout record; that the M17 "Current client" paragraph has been restated on `main`; and that the response actually posted was `pr7-approval.md`.
+- [x] State plainly which of the report's claims are now **historical** rather than live: the REQUEST CHANGES recommendation and the three-condition list at the top, and the "Items Needing Your Ruling" table whose three rulings are all closed.
+- [x] State plainly which of the report's claims remain **live and unsuperseded**: the measured views-tier gap against the M16 deliverables, the measured `lunfold`/`lfold` and `applyView` behaviour, the residual swallowed-error examples, and the 45-declaration filing inventory (now partly consumed by the contributor's own filing, which the section says so).
+- [x] State what was **not** re-verified in this close-out — in particular that no build, test or lint gate was re-run against the merged tree, and that the per-family filing was confirmed by directory listing rather than by checking every declaration reached its intended family module.
+- [x] Commit the report edit as its own green sub-step.
 
 **Timing**: 0.35 hours
 
@@ -209,7 +209,7 @@ asserted fact names the Phase 1 evidence that produced it.
 
 ---
 
-### Phase 3: Retire the Superseded Draft in This Task's File Scope [NOT STARTED]
+### Phase 3: Retire the Superseded Draft in This Task's File Scope [COMPLETED]
 
 **Goal**: Leave `specs/reviews/pr-reviews-2026-11-21/pr7-review.md` — the whole of this task's
 declared `file_scope` — unable to mislead a future reader of that directory into thinking PR #7
@@ -217,11 +217,11 @@ is open and awaiting three changes.
 
 **Tasks**:
 
-- [ ] Re-read `specs/reviews/pr-reviews-2026-11-21/pr7-review.md` immediately before editing (territory: siblings 978 and 979 are live in this same directory this cycle, on different files).
-- [ ] Prepend a short, clearly separated header block — four lines at most — stating: that this is the drafted request-changes response, superseded before it was posted; that the response actually posted was `pr7-approval.md` in the same directory; and that PR #7 merged as `<merge-oid>` on `<mergedAt>` with all three conditions and the filing by family landed. Supersession language is permitted here: `specs/**` is the primary exemption of `.claude/rules/no-record-versioning-in-deliverables.md`.
-- [ ] Leave the draft's body text unchanged. It is the record of what was asked for and why, and the approval that superseded it is a separate file; rewriting the body would destroy the comparison.
-- [ ] **Do not touch `FOLLOWUP.md`**, `pr7-approval.md`, or any `pr8`/`pr9`/`pr10`/`pr11` file in that directory.
-- [ ] Attempt the scoped commit. `specs/reviews/` is git-excluded locally, so expect a `git-commit-scoped.sh` non-failure skip (exit 8/9) rather than a commit; record that outcome and move on rather than treating it as a failure or forcing the file into the index.
+- [x] Re-read `specs/reviews/pr-reviews-2026-11-21/pr7-review.md` immediately before editing (territory: siblings 978 and 979 are live in this same directory this cycle, on different files).
+- [x] Prepend a short, clearly separated header block — four lines at most — stating: that this is the drafted request-changes response, superseded before it was posted; that the response actually posted was `pr7-approval.md` in the same directory; and that PR #7 merged as `<merge-oid>` on `<mergedAt>` with all three conditions and the filing by family landed. Supersession language is permitted here: `specs/**` is the primary exemption of `.claude/rules/no-record-versioning-in-deliverables.md`.
+- [x] Leave the draft's body text unchanged. It is the record of what was asked for and why, and the approval that superseded it is a separate file; rewriting the body would destroy the comparison.
+- [x] **Do not touch `FOLLOWUP.md`**, `pr7-approval.md`, or any `pr8`/`pr9`/`pr10`/`pr11` file in that directory.
+- [x] Attempt the scoped commit. `specs/reviews/` is git-excluded locally, so expect a `git-commit-scoped.sh` non-failure skip (exit 8/9) rather than a commit; record that outcome and move on rather than treating it as a failure or forcing the file into the index.
 
 **Timing**: 0.25 hours
 
@@ -246,20 +246,20 @@ the header names the merge commit and `pr7-approval.md` and that the body below 
 
 ---
 
-### Phase 4: Close Out and Hand Over the Residuals [NOT STARTED]
+### Phase 4: Close Out and Hand Over the Residuals [COMPLETED]
 
 **Goal**: Close the task with every residual explicitly assigned, and with the verification
 evidence this orchestration round owes.
 
 **Tasks**:
 
-- [ ] Append to the report's `## Outcome` section (or add one short `### Handover` subsection beneath it) the five-row residual owner map from Phase 1, each row naming the residual, the owning slug, and the sentence in that task's description that carries the obligation.
-- [ ] For any residual Phase 1 found **unowned**, state it as an open gap in the same subsection and surface it in the dispatch's `.return-meta.json` as a non-blocking `user_decision`, since creating a new task is the user's call and not this task's remit.
-- [ ] State in that subsection that `reconcile_records_and_tasks_after_pr_review_round` is the record owner and that this task edited no record, so the reconciliation task's inputs are unperturbed.
-- [ ] Run the scoped touched-path verification over the paths this task actually modified (the report and `pr7-review.md`), and record the result as a delta against the standing baseline, not as an absolute exit 0 — this tree's agent-system battery carries ~11-of-95 standing failures that are a property of a deploy-only tree with no on-disk source store, unrelated to any file this task touched.
-- [ ] Record the gate-set obligation as deferred to the orchestration close (Move 4) rather than invoking the full battery here: no `.lean` file was touched, so no Lean gate is implicated by this task's edits.
-- [ ] Record the close-out `issue-record.sh` entries — at minimum the premise-supersession issue and, as a `win`, that the contributor delivered beyond the three conditions (the filing by family) so the layout record's inventory shrank without a round-trip.
-- [ ] Commit the final report edit.
+- [x] Append to the report's `## Outcome` section (or add one short `### Handover` subsection beneath it) the five-row residual owner map from Phase 1, each row naming the residual, the owning slug, and the sentence in that task's description that carries the obligation.
+- [x] For any residual Phase 1 found **unowned**, state it as an open gap in the same subsection and surface it in the dispatch's `.return-meta.json` as a non-blocking `user_decision`, since creating a new task is the user's call and not this task's remit.
+- [x] State in that subsection that `reconcile_records_and_tasks_after_pr_review_round` is the record owner and that this task edited no record, so the reconciliation task's inputs are unperturbed.
+- [x] Run the scoped touched-path verification over the paths this task actually modified (the report and `pr7-review.md`), and record the result as a delta against the standing baseline, not as an absolute exit 0 — this tree's agent-system battery carries ~11-of-95 standing failures that are a property of a deploy-only tree with no on-disk source store, unrelated to any file this task touched.
+- [x] Record the gate-set obligation as deferred to the orchestration close (Move 4) rather than invoking the full battery here: no `.lean` file was touched, so no Lean gate is implicated by this task's edits.
+- [x] Record the close-out `issue-record.sh` entries — at minimum the premise-supersession issue and, as a `win`, that the contributor delivered beyond the three conditions (the filing by family) so the layout record's inventory shrank without a round-trip.
+- [x] Commit the final report edit.
 
 **Timing**: 0.25 hours
 
@@ -288,16 +288,16 @@ evidence this orchestration round owes.
 
 ## Testing & Validation
 
-- [ ] `gh pr view 7` confirms `state: MERGED` and the merge commit oid the report cites
-- [ ] The three conditions and the per-family filing are each restated in the report with the
+- [x] `gh pr view 7` confirms `state: MERGED` and the merge commit oid the report cites
+- [x] The three conditions and the per-family filing are each restated in the report with the
       file, line or directory listing that shows them
-- [ ] The report's `## Outcome` section separates historical claims from live ones, and names
+- [x] The report's `## Outcome` section separates historical claims from live ones, and names
       what was not re-verified
-- [ ] `specs/reviews/pr-reviews-2026-11-21/pr7-review.md` opens with the superseded-draft header
+- [x] `specs/reviews/pr-reviews-2026-11-21/pr7-review.md` opens with the superseded-draft header
       and its body is unchanged
-- [ ] `FOLLOWUP.md` and the `pr8`–`pr11` files in that directory are untouched
-- [ ] No file under `records/`, no `.lean` file, and no other task's description was modified
-- [ ] The scoped touched-path check is recorded as a baseline delta over the two modified files
+- [x] `FOLLOWUP.md` and the `pr8`–`pr11` files in that directory are untouched
+- [x] No file under `records/`, no `.lean` file, and no other task's description was modified
+- [x] The scoped touched-path check is recorded as a baseline delta over the two modified files
 
 ## Artifacts & Outputs
 
