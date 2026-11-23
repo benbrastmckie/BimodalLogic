@@ -91,7 +91,7 @@ next_project_number: 986
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 932 [NOT STARTED] — Land the four ofStepRel constraint lemmas and an ofStepPlain...
-978 [PLANNED] — Review collaborator PR #11 (branch...
+978 [IMPLEMENTING] — Review collaborator PR #11 (branch...
 979 [PLANNED] — Review collaborator PR #10 (branch...
 984 [NOT STARTED] — Promote next\_iff\_covBy and prev\_iff\_covBy of...
 985 [NOT STARTED] — Research the shape of a semantic goal and its witnesses for...
@@ -149,7 +149,7 @@ next_project_number: 986
   └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
   └─ 972 [NOT STARTED] — MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem... (see above)
   └─ 975 [NOT STARTED] — MILESTONE M22 (records/proof-mode.md), LANE: metatheory....
-981 [NOT STARTED] — Re-review collaborator PR #8 (branch...
+981 [RESEARCHED] — Re-review collaborator PR #8 (branch...
   └─ 982 [NOT STARTED] — Reconcile the records, the roadmap rules and the open task...
 
 ## Tasks
@@ -195,10 +195,11 @@ next_project_number: 986
 ---
 
 ### 981. Rereview pr8 temporal rules and carrying table
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 980
+- **Research**: [981_rereview_pr8_temporal_rules_and_carrying_table/reports/01_rereview-pr8-temporal-rules-carrying-table.md]
 
 **Description**: Re-review collaborator PR #8 (branch feat/proof-mode-temporal, head b020320fd when filed: two commits, "Tighten temporal rule application and scope carrying" (dc253dde5) and "Exercise time reflection on library theorem clients", on top of the old temporal commit 1f545ea0a) against the thirteen requests of the posted review (specs/reviews/pr-reviews-2026-11-20/pr8-review.md), and prepare a draft response at specs/reviews/pr-reviews-2026-11-21/pr8-review.md. It is stacked on PR #7 and its own description says it is rebased after #7 merges, so this task runs after the PR #7 re-review and reads that report first. FIRST-READ FINDINGS TO CHECK: the branch sits on the OLD PR #7 head (fc85c61b9), not on 5f5ad32bf, conflicts with main, and has had NO CI RUN; done on reading: the Until/Since keywords are renamed expand / contract, the five `... using rule` forms are collapsed into lapply, there is one integerTimeGate helper and Dense now reports an integer-time error, keeping is a non-reserved keyword built over a carryRules table and rejects undetermined formulas, lapply errors on an unresolved instance with the goal order documented, ltime_reflect using rejects a non-derivation, tests are added for luntil intro, lsince intro, linduction, keeping on lstep and three messages, and two clients re-prove connectPast and connectPastH by reflection; not done: TemporalComposition.lean is not split by family, ltemporal_dual and the inclusive Until/Since views remain in Temporal.lean and are not rows of the view table, the generalizing induction rule is untouched, no edit to M4 or to Where the work sits, sixteen fail_if_success against three #guard_msgs. WHAT TO ESTABLISH. (1) REBASE COST: in a worktree, rebase or merge the two new commits onto the current PR #7 head and onto main, list every conflict and say whether each is mechanical, so the response can tell the contributor what the rebase involves or offer to do it; then build and run the tests on the result, since nothing has. (2) REQUEST TABLE: for each of the thirteen requests and sub-items, done, partly done or not done, with file and line. (3) THE CARRYING TABLE (join 2 of records/milestones.md): carryRules is private, holds hard-coded TM/TM+ declaration pairs, and is keyed by a `past` flag and one source operator. Work out what proof_mode_s5_aware_box_scopes and proof_mode_cross_modal_scopes_mf_tf need from it (box facts carried by 4, 5, MF and TF, into box, G and H scopes, in both time directions, and the stability mirror), and propose the concrete table shape and where it lives so that those records add rows without editing Temporal.lean; say whether that is a condition of merging or a follow-up. (4) A CHANGED MERGED TEST: Tests/BimodalTest/Automation/ProofModeTest.lean has an existing acceptance example altered (a hypothesis `ZTime <= fc` became `True -> ZTime <= fc`) because lstep and linvariant now reuse an exact local certificate where they used to leave the gate as a goal. State the behaviour before and after, whether the new single policy is the one request 7 asked for, and whether any other merged example changes meaning; the family-layout record's done-when requires every existing example to pass unchanged. (5) KEYWORDS: the rename settles open decision 2 of records/proof-mode-architecture.md in the direction the user leaned; confirm nothing still uses fold / unfold for a derivation step and draft the record edit. (6) VIEWS: with the view table now in PR #7, say exactly which declarations of this PR become rows (the inclusive forms, strongTrigger / strongRelease, ltemporal_dual) and whether ltemporal_dual survives as a tactic. (7) THE INDUCTION RULE: do not derive it; report whether anything in the PR bears on the statement proposed in M4 of records/proof-mode.md, and whether linduction as it stands should be documented as backward induction only. (8) GATE-ONE ADMISSION: keeping and ltime_reflect are the only contributed rules gate-one scripts may use and only once adopted into the scope-core milestone; say what adoption requires of each as they now stand. (9) REMAINING SMALLER POINTS: messages that print allFuture where the user wrote G; lprogress untested; past and TM+ coverage; plan labels and relative-to-the-past wording in source and guide. (10) THE DRAFT: what is settled, the conditions of merging as a short numbered list, the follow-ups, and the answer to give on the rebase. GROUND RULES FOR THIS REVIEW TASK. (i) Nothing is posted to GitHub, merged, pushed or approved by an agent: the deliverable is a draft the user posts and a recommendation the user acts on (.claude/rules/pr-prohibition.md). (ii) Work on the pull request head in a separate git worktree fetched with `git fetch origin refs/pull/<N>/head`, never in the main working tree; record the exact commit reviewed, re-check the head with `gh pr view` before finishing, and if it has moved say so and review the new commits too. (iii) Every claim in the draft is backed by something run or read in this task: a build, a test, an `#print axioms`, a file and line. Say plainly what was not verified. (iv) The report opens with the items that need the user's ruling, each with options and a recommendation, then the recommendation for the pull request (MERGE, REQUEST CHANGES or COMMENT), then the evidence. (v) The draft is written in the register of the reviews already posted (specs/reviews/pr-reviews-2026-11-20/): direct, specific, numbered requests, credit where the work is right, and a clear separation of conditions of merging from follow-ups. Read records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md and records/theorem-library.md first; the first-read findings this task starts from are summarized below and are to be checked, not trusted.
 
@@ -230,7 +231,7 @@ next_project_number: 986
 ---
 
 ### 978. Review pr11 pointed semantic lemmas
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None

@@ -1,0 +1,31 @@
+{
+  "status": "researched",
+  "dispatch_seq": 8,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/981_rereview_pr8_temporal_rules_and_carrying_table/reports/01_rereview-pr8-temporal-rules-carrying-table.md",
+      "summary": "Re-review of PR #8 at head 49a7efe23: measured rebase cost (7 mechanical conflicts plus one Language-scope break; green after a two-edit fix), the thirteen-request table, a compile-verified carrying-table proposal and views row set, and the changed merged acceptance example."
+    },
+    {
+      "type": "report",
+      "path": "specs/reviews/pr-reviews-2026-11-21/pr8-review.md",
+      "summary": "Draft REQUEST CHANGES response for PR #8, with three conditions of merging, the rebase recipe and an offer to do it, and the follow-ups kept separate."
+    }
+  ],
+  "user_decision": {
+    "question": "Where should the re-keyed carrying table live, given that condition 2 of the draft asks the contributor to move it out of Temporal.lean?",
+    "options": [
+      "A shared non-private module, FormalSystem/Automation/ProofMode/Carrying.lean, that both families import and the scope-core records edit one row at a time",
+      "A persistent environment-extension registry with a checking register_lcarry command, mirroring the merged FormalSystem/Tactic/FormulaViews.lean view table, so rows can be added from ModalTemporalBoolean.lean without touching any Temporal-family file"
+    ],
+    "recommended": "A shared non-private module, FormalSystem/Automation/ProofMode/Carrying.lean, that both families import and the scope-core records edit one row at a time",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1795402655_5a890d_981",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
