@@ -126,23 +126,23 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: One statement over TruthEnv [NOT STARTED]
+### Phase 2: One statement over TruthEnv [COMPLETED]
 
 **Goal**: the new module `FormalSystem/Metalogic/PointedSoundness.lean` with the class, three instances, the generic theorem and the completeness guard, wired into the library root and the `Metalogic` aggregator.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/PointedSoundness.lean` with the repository's copyright header and a module docstring stating the current design: one class tying a derivation relation to the `TruthEnv` truth predicate of its language, the three instances, the generic theorem; cite `records/milestones.md` and `records/proof-mode-architecture.md` by filename.
-- [ ] Imports: exactly `FormalSystem.Metalogic.Soundness`, `FormalSystem.Metalogic.Conservativity.Plus.PlusSoundness`, `FormalSystem.Metalogic.Conservativity.Star.StarSoundness`. Nothing under `FormalSystem/Automation/ProofMode/`.
-- [ ] Directly after the imports, add the `assert_not_exists` block on `FormalSystem.Metalogic.completeness_base`, `completeness_dense`, `completeness_ztime`, `completeness_rtime`, copied from `FormalSystem/Automation/ProofMode.lean`.
-- [ ] In `namespace FormalSystem.Metalogic`: the class `PointedSound` (one field `sound`, `Prop`-valued, `D : FrameClass → List L → L → Sort u`), the three instances at `Formula`/`DerivationTree`, `PlusFormula`/`PlusDerivationTree`, `StarFormula`/`StarDerivationTree`, each a one-line application of `soundness_in`, `Conservativity.plus_soundness_in`, `Conservativity.star_soundness_in`, and `truth_of_derivation` with `e` explicit. Text as in Recommendation 2 of the research report.
-- [ ] Docstrings on the class, its field, each instance and the theorem; `Paper:` lines on the declarations that get a theorem-index row.
-- [ ] Add no other theorem to the module.
-- [ ] Run `lake exe mk_all --lib FormalSystem` to regenerate `FormalSystem.lean`.
-- [ ] Add `import FormalSystem.Metalogic.PointedSoundness` to `FormalSystem/Metalogic.lean` and one entry for it in that aggregator's docstring.
-- [ ] Add `docs/theorem-index.md` rows for `FormalSystem.Metalogic.truth_of_derivation` and `FormalSystem.Metalogic.PointedSound`, and add `FormalSystem.Metalogic.PointedSound` to `scripts/module-invariants-allowlist.txt` with a one-line comment that it is a class name, placed beside the `FormalSystem.StarLanguage.StarDerivationTree` entry. If the class is given no row and its dotted name appears in no non-specs markdown, add no allowlist entry.
-- [ ] Confirm axioms: `#print axioms FormalSystem.Metalogic.truth_of_derivation` contains no `sorryAx`.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and `bash scripts/check-module-invariants.sh --emit-inventory`; stage what they rewrite among the files listed below.
-- [ ] Commit this phase's own files by explicit path.
+- [x] Create `FormalSystem/Metalogic/PointedSoundness.lean` with the repository's copyright header and a module docstring stating the current design: one class tying a derivation relation to the `TruthEnv` truth predicate of its language, the three instances, the generic theorem; cite `records/milestones.md` and `records/proof-mode-architecture.md` by filename.
+- [x] Imports: exactly `FormalSystem.Metalogic.Soundness`, `FormalSystem.Metalogic.Conservativity.Plus.PlusSoundness`, `FormalSystem.Metalogic.Conservativity.Star.StarSoundness`. Nothing under `FormalSystem/Automation/ProofMode/`.
+- [x] Directly after the imports, add the `assert_not_exists` block on `FormalSystem.Metalogic.completeness_base`, `completeness_dense`, `completeness_ztime`, `completeness_rtime`, copied from `FormalSystem/Automation/ProofMode.lean`.
+- [x] In `namespace FormalSystem.Metalogic`: the class `PointedSound` (one field `sound`, `Prop`-valued, `D : FrameClass → List L → L → Sort u`), the three instances at `Formula`/`DerivationTree`, `PlusFormula`/`PlusDerivationTree`, `StarFormula`/`StarDerivationTree`, each a one-line application of `soundness_in`, `Conservativity.plus_soundness_in`, `Conservativity.star_soundness_in`, and `truth_of_derivation` with `e` explicit. Text as in Recommendation 2 of the research report.
+- [x] Docstrings on the class, its field, each instance and the theorem; `Paper:` lines on the declarations that get a theorem-index row.
+- [x] Add no other theorem to the module.
+- [x] Run `lake exe mk_all --lib FormalSystem` to regenerate `FormalSystem.lean`.
+- [x] Add `import FormalSystem.Metalogic.PointedSoundness` to `FormalSystem/Metalogic.lean` and one entry for it in that aggregator's docstring.
+- [ ] Add `docs/theorem-index.md` rows for `FormalSystem.Metalogic.truth_of_derivation` and `FormalSystem.Metalogic.PointedSound`, and add `FormalSystem.Metalogic.PointedSound` to `scripts/module-invariants-allowlist.txt` with a one-line comment that it is a class name, placed beside the `FormalSystem.StarLanguage.StarDerivationTree` entry. If the class is given no row and its dotted name appears in no non-specs markdown, add no allowlist entry. *(deviation: skipped — same cause as Phase 1: a row needs a C14 pin in `scripts/check-module-invariants.sh`, outside the file list and file_scope. The plan's own conditional then applies: the class has no row and its dotted name appears in no non-specs markdown, so no allowlist entry was added)*
+- [x] Confirm axioms: `#print axioms FormalSystem.Metalogic.truth_of_derivation` contains no `sorryAx`.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and `bash scripts/check-module-invariants.sh --emit-inventory`; stage what they rewrite among the files listed below. *(deviation: altered — `--emit-inventory` also rewrote `FormalSystem/README.md`, in file_scope; staged. The generated `PointedSoundness.lean` row in `FormalSystem/Metalogic/README.md` got a hand-written description in place of the TODO placeholder)*
+- [x] Commit this phase's own files by explicit path.
 
 **Timing**: 1.25 hours
 

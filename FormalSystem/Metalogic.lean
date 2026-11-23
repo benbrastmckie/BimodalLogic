@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 -- Re-export commonly used modules for convenience
 import FormalSystem.Metalogic.Soundness
+import FormalSystem.Metalogic.PointedSoundness
 import FormalSystem.Metalogic.StrongCompleteness
 import FormalSystem.Metalogic.DiscreteNonCompactness
 import FormalSystem.Metalogic.DedekindNonCompactness
@@ -284,6 +285,13 @@ three axioms.
   `plusTruthAt_congr_of_fresh`, and the conclusion is projected back by
   `Semantics.plus_invariance`. These are soundness facts about two rules and **nothing more**: no
   completeness, decidability or axiomatizability claim follows from them here, and none is made.
+
+## Pointed soundness over `TruthEnv`
+
+- **One statement for TM, TM⁺ and TM⋆** (`PointedSound`, `truth_of_derivation`,
+  `Metalogic/PointedSoundness.lean`): a derivation, frame-class evidence and truth of the premises
+  at a point give truth of the conclusion at that point, stated once over `TruthEnv` with each
+  language's context-form soundness theorem as an instance. Sound direction only.
 
 ## Module Structure
 
