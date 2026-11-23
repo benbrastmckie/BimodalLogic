@@ -341,13 +341,13 @@ in this phase.
 
 ---
 
-### Phase 5: Update the filed task descriptions and cross-check [NOT STARTED]
+### Phase 5: Update the filed task descriptions and cross-check [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Remove the hedges from the six filed descriptions (R4) and confirm the report, the three
 records and the descriptions agree.
 
 **Tasks**:
-- [ ] For each of the six tasks, assert the sentence below is present in its `description` in
+- [x] For each of the six tasks, assert the sentence below is present in its `description` in
   `specs/state.json` (quoted from the file at plan time; select by `project_name`). A miss stops
   the phase for that task and is recorded; the other five proceed.
   - `proof_mode_split_shared_test_and_guide_files`: "`investigate_stability_as_modal_family` may reverse this; do not wait on it."
@@ -355,33 +355,33 @@ records and the descriptions agree.
   - `proof_mode_abstract_frontend_interface`: "`investigate_stability_as_modal_family` may reverse the family layout; read its report if it exists."
   - `theorem_library_layout_and_registry`: "`investigate_stability_as_modal_family` may change the family set; the design starts from `⊡` in Modal and this record does not wait on it."
   - `theorem_library_stability_entries`: "FIRST read the report of `investigate_stability_as_modal_family`: if it recommends a separate family and the records have been revised, file these entries as that revision says; otherwise they are sections of the ModalBoolean and ModalTemporalBoolean fragments." and, in its sequencing list, the item "`investigate_stability_as_modal_family` (which decides where these entries are filed)".
-  - `connective_signature_layer_shared_primitives`: "investigate_stability_as_modal_family may change whether the stability operator gets its own class or shares the Modal one; read its report if it exists but do not wait for it."
-- [ ] Replace each with one settled sentence: the family layout is fixed with `⊡` in Modal, the
+  - `connective_signature_layer_shared_primitives`: "investigate_stability_as_modal_family may change whether the stability operator gets its own class or shares the Modal one; read its report if it exists but do not wait for it." *(completed: all seven sentences present; the jq filter errors on a miss)*
+- [x] Replace each with one settled sentence: the family layout is fixed with `⊡` in Modal, the
   shared statement is a K core with T, 4 and 5 as further members, and
   `docs/development/stability-operator-family.md` gives the grounds. For
   `theorem_library_stability_entries`, the replacement states that the entries are sections of
   the ModalBoolean and ModalTemporalBoolean fragments and the sequencing item is dropped. For
   `connective_signature_layer_shared_primitives`, the replacement states that the stability
   operator shares the Modal class. Change no other word of any description, and no `file_scope`,
-  dependency or status.
-- [ ] Apply all six through one `bash .claude/scripts/state-write.sh` invocation with
+  dependency or status. *(completed)*
+- [x] Apply all six through one `bash .claude/scripts/state-write.sh` invocation with
   `--session-id` and `--regen-todo`, the filter selecting by `project_name` and replacing by
   exact string (`sub` on an escaped literal, or split-and-join; no `!=`). Run it with `--dry-run`
   first. Read the script's header for the argument contract before composing the call; do not
-  write `specs/state.json` by any other route.
-- [ ] Confirm the write: `git diff --stat specs/state.json` shows a change confined to those six
+  write `specs/state.json` by any other route. *(completed: dry run exit 0, then one write with --regen-todo)*
+- [x] Confirm the write: `git diff --stat specs/state.json` shows a change confined to those six
   descriptions (compare `jq -S 'del(.active_projects[].description)'` of the HEAD and working
   copies, which must agree apart from fields other sessions own, such as `last_updated` and this
-  task's own status), and each old sentence is absent.
-- [ ] Confirm `specs/TODO.md` was regenerated and shows the new sentences.
-- [ ] Cross-check: read the "Modal family" passages of the three records and the report's
+  task's own status), and each old sentence is absent. *(completed: non-description fields identical before and after; exactly six descriptions differ; 12 diff lines)*
+- [x] Confirm `specs/TODO.md` was regenerated and shows the new sentences. *(completed)*
+- [x] Cross-check: read the "Modal family" passages of the three records and the report's
   recommendation side by side and confirm they use the same terms (cell, operator set, K core,
   inclusion, rigid class) and none contradicts another.
   `grep -rn "rightly in the Modal family\|may reverse" records/ docs/development/` returns
   nothing, and `jq` over `specs/state.json` for descriptions containing "may reverse" or "may
-  change the family set" returns only tasks unrelated to this layout, if any.
-- [ ] Run the scoped check under Verification and record that the complete gate set is deferred
-  to the orchestration close.
+  change the family set" returns only tasks unrelated to this layout, if any. *(completed: terms agree across the report and the three records; both greps empty; the independent hedge selection found the same six tasks and none after the write)*
+- [x] Run the scoped check under Verification and record that the complete gate set is deferred
+  to the orchestration close. *(deviation: altered — verify-touched.sh exit 1 on unrelated agent-system suites; discharged by verify-deploy.sh --only-gate 4 --skip-unchanged, exit 0; full gate set deferred to the batch stage)*
 
 **Timing**: 0.75 hours
 
@@ -408,15 +408,21 @@ report" before writing, and add any task that selection finds whose hedge concer
   `bash .claude/scripts/verify-deploy.sh` directly.
 - The cross-check greps in the task list return as stated.
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Exit status 0 from `bash .claude/scripts/verify-touched.sh --task-dir specs/970_investigate_stability_as_modal_family` | The command exited 1 on nine agent-system self-test suites (eight of the 88 selected, one of the free-cost fallback set). Their fixtures expect the agent-system source store at `agent-system/extensions/core/` inside the repository; this is a consumer tree whose source store is at another path, so they fail whatever this phase edits. No failing suite reads `docs/development/`, `records/`, or the description fields changed here. | `ls -d agent-system` in the repository root: "No such file or directory"; `.claude-extensions.json` gives `source_dir` outside the repository. Failure lines from the run: `expected rc=0 and 18 warm entries, got rc=127`, `fixture is missing .../agent-system/extensions/core/scripts/lib/common.sh`, `.../BimodalLogic/agent-system/extensions/core/context/standards/user-decision-contract.md not found`. `test-deploy-baseline-lib.sh` fails identically run alone (29 passed, 1 failed) in its own `mktemp` scratch. The scoped tier was discharged by the dispatch's other narrowing invocation, `bash .claude/scripts/verify-deploy.sh --only-gate 4 --skip-unchanged` (exit 0, 1 check, 0 failures), with `bash .claude/scripts/validate-state.sh` (exit 0). The complete gate set is deferred to the batch stage and was not run in this dispatch. |
+
 ## Testing & Validation
 
-- [ ] `docs/development/stability-operator-family.md` exists and answers the task's four items.
-- [ ] `./scripts/readme-lint.sh docs` exits 0.
-- [ ] `bash .claude/scripts/check-task-references.sh` exits 0 over `docs/development` and `records`.
-- [ ] `bash .claude/scripts/check-record-versioning.sh` reports 0 BLOCKING over `docs/development` and `records`.
-- [ ] No record lists "Is `⊡` rightly in the Modal family?" as open.
-- [ ] No filed description defers to this investigation; `bash .claude/scripts/validate-state.sh` exits 0.
-- [ ] `git diff --stat` shows no `.lean` file changed.
+- [x] `docs/development/stability-operator-family.md` exists and answers the task's four items. *(completed)*
+- [x] `./scripts/readme-lint.sh docs` exits 0. *(completed)*
+- [x] `bash .claude/scripts/check-task-references.sh` exits 0 over `docs/development` and `records`. *(completed)*
+- [x] `bash .claude/scripts/check-record-versioning.sh` reports 0 BLOCKING over `docs/development` and `records`. *(completed)*
+- [x] No record lists "Is `⊡` rightly in the Modal family?" as open. *(completed)*
+- [x] No filed description defers to this investigation; `bash .claude/scripts/validate-state.sh` exits 0. *(completed)*
+- [x] `git diff --stat` shows no `.lean` file changed. *(completed)*
 
 ## Artifacts & Outputs
 

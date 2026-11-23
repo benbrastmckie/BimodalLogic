@@ -1,15 +1,15 @@
 {
-  "status": "planned",
-  "summary": "Wrote a five-phase, markdown-only plan from the research report, which recommends keeping the stability operator in the Modal family. Phase 1 writes the docs/development report; phases 2 to 4 amend the three design records in parallel; phase 5 updates six filed task descriptions through state-write.sh and cross-checks. No Lean is touched and no user decision is raised.",
-  "phases_completed": 0,
+  "status": "implemented",
+  "summary": "All five phases closed. docs/development/stability-operator-family.md recommends keeping the stability operator in the Modal family; the three design records state that layout as settled and six filed task descriptions had their hedges replaced through state-write.sh. Phase 5 closed with one reasoned exclusion: verify-touched.sh exited 1 on nine agent-system self-test suites unrelated to this task's files, and the scoped tier was discharged by verify-deploy.sh --only-gate 4 --skip-unchanged (exit 0). The full gate set is deferred to the batch stage.",
+  "phases_completed": 5,
   "phases_total": 5,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/970_investigate_stability_as_modal_family/plans/01_stability-modal-family-layout.md",
-      "summary": "Five-phase plan, 5 hours, waves [1], [2,3,4], [5]."
+      "type": "summary",
+      "path": "specs/970_investigate_stability_as_modal_family/summaries/01_stability-modal-family-layout-summary.md",
+      "summary": "Implementation summary: report written, three records amended, six filed descriptions updated; phase 5 closed with one reasoned exclusion."
     }
   ],
   "blockers": [],
-  "dispatch_seq": 2
+  "dispatch_seq": 3
 }
