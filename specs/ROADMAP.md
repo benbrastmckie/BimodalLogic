@@ -9,7 +9,7 @@
 
 | Milestone | Status | Tasks done | Review |
 |---|---|---|---|
-| [M0: The collaboration round: clear what Tanner's contributions wait on](#milestone-m0) | active | 5/12 | none |
+| [M0: The collaboration round: clear what Tanner's contributions wait on](#milestone-m0) | active | 6/12 | none |
 | [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | planned | 0/5 | none |
 | [M3: Proof-mode rule set up to gate one](#milestone-m3) | planned | 0/11 | none |
 | [M12: The semantic mode: evaluator, mode and adapter](#milestone-m12) | planned | - | none |
@@ -30,18 +30,13 @@ See also: [Rules, conventions and repo context](#roadmap-context)
 
 Close channel B's side of the open contributions: the re-review at #11's new head, the semantic-mode research the #10 reply needs, the soundness statement its adapter needs, the signature layer's design, and the follow-ups each merge leaves owed.
 
-- **Progress**: active -- 1/7 batches, 5/12 tasks done -- Review round closed; #8 mergeable with a review drafted, #11 at a new unreviewed head, #10 a comment pending, #9 to be closed
+- **Progress**: active -- 2/7 batches, 6/12 tasks done -- Review round closed; #8 mergeable with a review drafted, #11 at a new unreviewed head, #10 a comment pending, #9 to be closed
 - **Review**: none
 - **Gate**: Every open contribution carries a posted decision or an action named as the contributor's; records/milestones.md and the open task descriptions state the position reached; star_soundness_in is proved beside star_soundness_validIn; and the follow-ups each merge leaves owed are closed.
 
 **Batch 1** (done) -- Close the review round on PRs #7 to #11 and reconcile the records to the outcome it reaches
 
-**Batch 2** -- Re-review #11 at the head pushed after the round closed; the freshest contributor-facing line
-
-```
-/orchestrate 990
-990 ready           rereview_pr11_at_rewriteable_pointed_truth_head   <- PR #11's head moved to b2eb3ac0b after the review closed; that head is unreviewed
-```
+**Batch 2** (done) -- Re-review #11 at the head pushed after the round closed; the freshest contributor-facing line
 
 **Batch 3** -- Research the semantic goal shape and witnesses, so the #10 reply and the At fix can be judged
 
