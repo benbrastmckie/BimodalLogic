@@ -36,6 +36,13 @@
 ## Items Needing the User's Ruling
 
 ### 1. Does `At` stay, and in what form?
+> **RESOLVED (2026-11-22) — option (a), as recommended.** The posted `CHANGES_REQUESTED` review
+> of `2026-11-23T01:57:16Z` makes this condition 2 of three: "Please add an `at_def` simp lemma
+> or `At`-level statements of the clause lemmas, whichever you prefer, and one test that rewrites
+> a clause under `At`." The measured idiom table below is reproduced in the posted text. Option
+> (b)'s docstring fallback was **not** offered to the contributor, and option (c) (dropping
+> `Point`/`At`) was not taken. The options and measurements below are left intact as the evidence
+> the ruling rested on.
 
 **The measurement.** `At M p A` is `abbrev At (M : TaskModel F) (p : Point L F) (A : L) : Prop := TruthEnv.T M p.history p.time p.env A` (`FormalSystem/Semantics/PointTransport.lean:45`). Compiled probes (`scratch/AtUsability.lean`, `scratch/AtRemedies.lean`):
 
@@ -58,6 +65,17 @@ So term-mode use is free and tactic-mode clause work is strictly worse than not 
 **Recommendation: (a), falling back to (b).** The structures do earn their place on the composition side — `FactTransport.trans`/`GoalTransport.trans` chain certificates through an intermediate judgment, which a bare `Iff` cannot express without naming the intermediate point by hand, and `IffTransport.symm` is one line because `Point` is a structure. Option (c) throws that away to fix an ergonomic problem that (a) fixes directly.
 
 ### 2. Do the interval lemmas get named operators, and whose?
+> **RESOLVED (2026-11-22) — option (a) in substance, but deferred, not asked of this PR.** The
+> posted review moves the named interval operators to the after-merge list and assigns them to
+> the signature layer, milestone D1 — the work of `connective_signature_layer_shared_primitives`:
+> "`inclusiveUntil`, `inclusiveSince`, `release`, `trigger`, `weakUntil` and `weakSince` get
+> defined once there, with your `_iff` lemmas restated about them. Please do not add per-language
+> versions in this PR." So the generic abbreviations are agreed, but they are the signature
+> layer's to define, not the contributor's. Option (c) stays rejected for the reason given below.
+> The companion request for six `ValidityLayerTest` coincidence rows was not posted either: the
+> user instead records having compiled both checks himself ("your argument order already agrees
+> with `Formula.release` and `Formula.weakUntil`, and `TemporalRules.next` is `rfl`-equal to
+> `Formula.next`, `PlusFormula.next` and `StarFormula.next`").
 
 `inclusiveUntil_iff`, `release_iff`, `trigger_iff`, `weakUntil_iff`, `weakSince_iff` name five operators that exist nowhere as definitions; `inclusiveSince_iff` a sixth. Four of the six already exist per-language: `Formula.release`, `Formula.trigger`, `Formula.weakUntil`, `Formula.weakSince` (`FormalSystem/Syntax/Formula.lean:530,580,572,589`), with `strongRelease`/`strongTrigger` beside them and syntactic unfolding lemmas in `Automation/Normalization.lean:148–158`.
 
@@ -69,6 +87,11 @@ So term-mode use is free and tactic-mode clause work is strictly worse than not 
 **Recommendation: (a).** The views tier (`proof_mode_views_tier`) will need the named operators anyway, and the `_iff` lemma names already promise them. Verified cheap: `release_iff (L := Formula) M τ t PUnit.unit event guard` typechecks against the truth condition of `Formula.release event guard`, and `weakUntil_iff` likewise against `Formula.weakUntil` (`scratch/CoincidenceAndReach.lean`, sections C and D), so the argument order already agrees and no proof work is involved.
 
 ### 3. Who performs the `next_iff_covBy` consolidation, and when?
+> **RESOLVED (2026-11-22) — option (c), as recommended; the user takes it.** The posted review
+> lists the promotion under "After the merge, not conditions of it": "`next_iff_covBy` and
+> `prev_iff_covBy` in `SentenceTruth.lean` are the base-language instance of your `next_iff` and
+> `prev_iff`, and get promoted onto them once this merges." The work now has a task of its own,
+> `promote_next_prev_covby_to_generic_lemmas`, which is gated on these modules reaching `main`.
 
 `SourceLanguage/SentenceTruth.lean:156,166` holds `next_iff_covBy`/`prev_iff_covBy`, the base-language instance of the PR's `next_iff`/`prev_iff`. That module's own docstring (lines 56–62) calls the duplication "deliberate and unresolved" and names promotion into `FormalSystem/Semantics/Truth.lean` as "the eventual fix", blocked because the other copy of the `succ`-form fact is in `Metalogic/DiscreteNonCompactness.lean` and the import would be upward. Both `SentenceTruth` and the PR's modules are layer 1 (`scripts/measure-refactor-partitions.py:224` and the `Semantics/` row of `ORGANISATION.md`), so the promotion is now available at no layering cost. Verified: `next_iff (L := Formula) M τ t PUnit.unit φ` directly inhabits `next_iff_covBy`'s statement.
 
@@ -77,6 +100,14 @@ So term-mode use is free and tactic-mode clause work is strictly worse than not 
 **Recommendation: (c).** It touches `SourceLanguage/` and `Metalogic/`, neither of which is channel T's territory per `records/milestones.md`'s channel table (line 154), and it would widen a PR that is otherwise cleanly scoped.
 
 ### 4. MERGE now with follow-ups, or REQUEST CHANGES?
+> **RESOLVED (2026-11-22) — REQUEST CHANGES, narrowed from four items to three conditions.** The
+> posted review is `CHANGES_REQUESTED`, so the recommendation below was taken; but the list was
+> re-cut rather than adopted whole. Of the draft's four conditions, two survive (the `At` ruling
+> and tests, as posted conditions 2 and 3) and two move to follow-ups (named operators and the
+> coincidence rows). A condition the draft did not have takes first place: rebase onto `main` and
+> regenerate, because #7 merged after this report was written and #11 is now `CONFLICTING`. The
+> "all four items are additive, nothing needs removing" judgement below survives the re-cut: the
+> posted review also declines the draft's offer to drop `release_iff`/`trigger_iff`.
 
 **Recommendation: REQUEST CHANGES**, on items 1–4 of the draft (the `At` ruling, tests, the named operators, the coincidence rows). Reasoning: `CONTRIBUTING.md` makes tests a stated requirement and 13 of 35 touched declarations have none; and the `At` question is better settled before anything in the tree depends on the vehicle. The counter-case is real — the user told the contributor on #9's follow-up "I will review and merge them on their merits", the merge value is high (milestone C1, priority 2 of 6, unblocks the countermodel half of the library), and nothing here is wrong. If the user prefers momentum, MERGE-plus-follow-up is defensible; the draft is written so that items 1–4 can be demoted to follow-ups by moving one heading.
 

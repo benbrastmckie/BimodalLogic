@@ -166,23 +166,23 @@ plus the `prose` row's diff read-through is the covering check.
 
 ---
 
-### Phase 2: Reconcile the draft and close the four rulings [NOT STARTED]
+### Phase 2: Reconcile the draft and close the four rulings [COMPLETED]
 
 **Goal**: Make `pr11-review.md` and the report's four open rulings agree with the disposition the
 user actually chose, so task 982 reads a settled record rather than an open question list.
 
 **Tasks**:
-- [ ] Append a `## Posted disposition` section to `specs/reviews/pr-reviews-2026-11-21/pr11-review.md` stating that the text posted was the condensed `pr11-comment.md` and mapping each of the draft's eight numbered requests onto its outcome:
+- [x] Append a `## Posted disposition` section to `specs/reviews/pr-reviews-2026-11-21/pr11-review.md` stating that the text posted was the condensed `pr11-comment.md` and mapping each of the draft's eight numbered requests onto its outcome:
   - requests 1 (`At` usability) and 2 (tests) kept, as conditions 2 and 3 of the posted review;
   - a condition the draft did not have — rebase onto `main` and regenerate rather than hand-resolve — added as posted condition 1, because #7 merged after the draft was written;
   - requests 3 (named interval operators) and 4 (`next`/`prev` coincidence rows) moved to follow-ups, assigned to the signature layer (milestone D1, task 977), with the posted instruction "please do not add per-language versions in this PR";
-  - requests 5 (module docstring titles), 6 (one `assert_not_exists` spelling), 7 (positive reading for `release_iff`/`trigger_iff`) and 8 (`Point.history` field name) moved to the after-merge list.
-- [ ] Annotate each of the four headings under `## Items Needing the User's Ruling` in the research report with its resolution, directly beneath the heading, leaving the options and measurements intact:
+  - requests 5 (module docstring titles), 6 (one `assert_not_exists` spelling), 7 (positive reading for `release_iff`/`trigger_iff`) and 8 (`Point.history` field name) moved to the after-merge list. *(deviation: altered — requests 5, 6 and 7 are on the posted after-merge list as the plan expected, but request 8 is absent from the posted review entirely, in any form; the cross-check caught it and it is recorded under "Not posted at all", together with three other unposted draft pieces, rather than mapped to a follow-up it does not have)*
+- [x] Annotate each of the four headings under `## Items Needing the User's Ruling` in the research report with its resolution, directly beneath the heading, leaving the options and measurements intact:
   - ruling 1 (`At`) → resolved as option (a): make it usable, with a test that rewrites a clause under `At`;
   - ruling 2 (interval operators) → resolved as option (a) in substance but **deferred to the signature layer (D1, task 977)**, not asked of this PR;
   - ruling 3 (`next_iff_covBy` promotion) → resolved as option (c), the user's own, now carried by task 984;
   - ruling 4 (merge vs. request changes) → resolved as REQUEST CHANGES, narrowed from four items to three conditions.
-- [ ] Cross-check that no annotation contradicts the posted text: each resolution line quotes or paraphrases a sentence that is actually in `pr11-comment.md`.
+- [x] Cross-check that no annotation contradicts the posted text: each resolution line quotes or paraphrases a sentence that is actually in `pr11-comment.md`.
 
 **Timing**: 30 minutes
 
