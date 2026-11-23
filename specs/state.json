@@ -4,8 +4,45 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 985,
+  "next_project_number": 986,
   "active_projects": [
+    {
+      "project_number": 985,
+      "project_name": "research_semantic_proof_mode_for_pr10_reply",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Research the semantic proof mode in full, so that the findings can be used to revise the reply to pull request #10 (draft at specs/reviews/pr-reviews-2026-11-21/pr10-comment.md; not yet posted). RESEARCH ONLY: the deliverable is a report; do not edit the comment, the records, or any Lean source, and post nothing. SUBJECT: the semantic proof mode proposed in records/semantic-proof-mode.md on the branch of PR #10 (head bdaa3b6d0, read it with gh pr diff 10): a tool for proving a formula true or false at a named point of a named model from supplied witnesses, to be adopted only if measurement shows it shortens four named refutations (refute_allFuture_stab and refute_stab_allFuture_past in FormalSystem/PlusLanguage/PlusNonValidities.lean; refute_modal_future and refute_sentDet in FormalSystem/StarLanguage/StarNonValidities.lean). QUESTIONS TO ANSWER, each with evidence from the tree: (1) What the mode is and is not, stated plainly: evaluator versus tactic layer versus soundness adapter, and how each relates to milestones C1-C4 and D4 and joins 6 and 7 of records/milestones.md and the adapter paragraph of records/proof-mode-architecture.md. (2) What already exists: the clause classes and generic derived operators in FormalSystem/Semantics/TruthClauses.lean and which languages instantiate them; the pointed lemmas of PR #11 (head c6cd983b7: TemporalRules, TemporalIntervals, RankProgress, PointTransport); the semantic tactic layer on the PR #9 branch (Semantic.lean, SemanticCore.lean, the Semantic* files, ProofModeSoundness.lean, ProofModeExtensionsTest.lean) and what of it is reusable versus what overloads the l* commands. (3) The four clients read closely: which truth clauses each proof actually exercises, where the repeated clause reasoning is, what the witnesses are, and what a lemmas-only control and an evaluator script would each plausibly look like; check the claim that none exercises Until, Since or store and that recall and box reduce away, and the claim that the lemmas-only control on refute_allFuture_stab is no shorter than the 13-line proof in the tree. (4) The five open decisions drafted in the comment: for each, whether it is genuinely open or already settled by a record, who rules it, and the considerations on each side - evaluator beside the lemmas or one module with the mode; a clause-directed argument list or named witnesses; what is shared with the derivation mode and how L-star operators get recognized given FormalSystem/Tactic/FormulaSyntax.lean covers TM and TM-plus only; the soundness adapter as one statement over TruthEnv; the grade of an evaluator-checked refutation in BimodalLib. (5) The adoption threshold: what the record's step 3 measures (source tokens, elaborated term size, elaboration time), which measure a threshold should use and why, whether 'at least three of the four clients' is a sensible bar given refute_sentDet is described as a short control, what 'escape' should mean, and how comparable measured-adoption decisions are stated elsewhere in records/ (the rewriting client stated by script length). (6) Scope: why the evaluator has clients at all (what the tableau does and does not reach, and what automation the refutations use today), and which clauses no client covers. (7) Prior art, briefly and only where it changes a recommendation: how other proof assistants or proof modes handle checking truth in a concrete model from supplied witnesses versus deciding it. OUTPUT: a report that ends with a section 'Implications for the reply to #10' listing, point by point, what the reply should ask for, what it should state as already decided, what it can drop, and any claim in the current draft that the research found wrong or unsupported; keep that section short enough to revise the comment from directly. Channel: review work on channel B supporting milestone C2",
+      "topic": "semantics",
+      "created": "2026-11-23T02:33:04Z",
+      "last_updated": "2026-11-23T02:33:04Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "research_semantic_proof_mode_for_pr10_reply",
+          "project_number": null,
+          "title": "Research the semantic proof mode in full to revise the reply to PR #10"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 4,
+          "duplicate-of-open": 1,
+          "scope-blind": 452
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 979,
+            "project_name": "review_pr10_semantic_record_and_pr9_disposition",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.49557522123893805
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 452
+      }
+    },
     {
       "project_number": 984,
       "project_name": "promote_next_prev_covby_to_generic_lemmas",

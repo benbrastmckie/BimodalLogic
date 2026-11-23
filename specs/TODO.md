@@ -1,19 +1,19 @@
 ---
-next_project_number: 985
+next_project_number: 986
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-11-22. Generated from state.json dependency graph.*
+*Updated 2026-11-23. Generated from state.json dependency graph.*
 
 **Goal**: Close the residual repository-hygiene backlog
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,960,962,970,971,977,978,979,980,983,984 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,960,962,970,971,977,978,979,980,983,984,985 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932,944,954,955,961,969,975,981 | 298,428,502,761,869,960,971,980 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876,945,972,982 | 429,497,763,873,944,961,971,978,979,981 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543,946,973 | 410,498,499,500,945,969,972 | algebraic-representation, decidability, metalogic, ... |
@@ -94,6 +94,7 @@ next_project_number: 985
 978 [RESEARCHED] — Review collaborator PR #11 (branch...
 979 [RESEARCHED] — Review collaborator PR #10 (branch...
 984 [NOT STARTED] — Promote next\_iff\_covBy and prev\_iff\_covBy of...
+985 [NOT STARTED] — Research the semantic proof mode in full, so that the...
 
 ### Syntax
 
@@ -153,6 +154,16 @@ next_project_number: 985
     └─ 982 [NOT STARTED] — Reconcile the records, the roadmap rules and the open task...
 
 ## Tasks
+
+### 985. Research semantic proof mode for pr10 reply
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: Research the semantic proof mode in full, so that the findings can be used to revise the reply to pull request #10 (draft at specs/reviews/pr-reviews-2026-11-21/pr10-comment.md; not yet posted). RESEARCH ONLY: the deliverable is a report; do not edit the comment, the records, or any Lean source, and post nothing. SUBJECT: the semantic proof mode proposed in records/semantic-proof-mode.md on the branch of PR #10 (head bdaa3b6d0, read it with gh pr diff 10): a tool for proving a formula true or false at a named point of a named model from supplied witnesses, to be adopted only if measurement shows it shortens four named refutations (refute_allFuture_stab and refute_stab_allFuture_past in FormalSystem/PlusLanguage/PlusNonValidities.lean; refute_modal_future and refute_sentDet in FormalSystem/StarLanguage/StarNonValidities.lean). QUESTIONS TO ANSWER, each with evidence from the tree: (1) What the mode is and is not, stated plainly: evaluator versus tactic layer versus soundness adapter, and how each relates to milestones C1-C4 and D4 and joins 6 and 7 of records/milestones.md and the adapter paragraph of records/proof-mode-architecture.md. (2) What already exists: the clause classes and generic derived operators in FormalSystem/Semantics/TruthClauses.lean and which languages instantiate them; the pointed lemmas of PR #11 (head c6cd983b7: TemporalRules, TemporalIntervals, RankProgress, PointTransport); the semantic tactic layer on the PR #9 branch (Semantic.lean, SemanticCore.lean, the Semantic* files, ProofModeSoundness.lean, ProofModeExtensionsTest.lean) and what of it is reusable versus what overloads the l* commands. (3) The four clients read closely: which truth clauses each proof actually exercises, where the repeated clause reasoning is, what the witnesses are, and what a lemmas-only control and an evaluator script would each plausibly look like; check the claim that none exercises Until, Since or store and that recall and box reduce away, and the claim that the lemmas-only control on refute_allFuture_stab is no shorter than the 13-line proof in the tree. (4) The five open decisions drafted in the comment: for each, whether it is genuinely open or already settled by a record, who rules it, and the considerations on each side - evaluator beside the lemmas or one module with the mode; a clause-directed argument list or named witnesses; what is shared with the derivation mode and how L-star operators get recognized given FormalSystem/Tactic/FormulaSyntax.lean covers TM and TM-plus only; the soundness adapter as one statement over TruthEnv; the grade of an evaluator-checked refutation in BimodalLib. (5) The adoption threshold: what the record's step 3 measures (source tokens, elaborated term size, elaboration time), which measure a threshold should use and why, whether 'at least three of the four clients' is a sensible bar given refute_sentDet is described as a short control, what 'escape' should mean, and how comparable measured-adoption decisions are stated elsewhere in records/ (the rewriting client stated by script length). (6) Scope: why the evaluator has clients at all (what the tableau does and does not reach, and what automation the refutations use today), and which clauses no client covers. (7) Prior art, briefly and only where it changes a recommendation: how other proof assistants or proof modes handle checking truth in a concrete model from supplied witnesses versus deciding it. OUTPUT: a report that ends with a section 'Implications for the reply to #10' listing, point by point, what the reply should ask for, what it should state as already decided, what it can drop, and any claim in the current draft that the research found wrong or unsupported; keep that section short enough to revise the comment from directly. Channel: review work on channel B supporting milestone C2
+
+---
 
 ### 984. Promote next prev covby to generic lemmas
 - **Status**: [NOT STARTED]
