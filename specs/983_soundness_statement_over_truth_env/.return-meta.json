@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/983_soundness_statement_over_truth_env/reports/01_pointed-soundness-truth-env.md",
+      "summary": "star_soundness_in compiles as plus_soundness_in with one fixed register binder; recommended Prop-valued mixin PointedSound L D over TruthEnv with three instances and generic truth_of_derivation, all probe-compiled with tests at TM, TM+ and TM-star."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795462392_eb6c32_983",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
