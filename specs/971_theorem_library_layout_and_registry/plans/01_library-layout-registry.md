@@ -206,7 +206,9 @@ type, and a command can tell whether every closed derivation in a module prefix 
 **Tasks**:
 - [x] Create `BimodalLib/Registry.lean` with `TheoremEntry` as the report gives it: `arity`,
   `frameClass`, `stmt`, `proof`, `profile`, `profile_eq`. Add the declared dual as an optional
-  name field.
+  name field. *(deviation: altered — the row also carries a `substClass` field, which the
+  description requires; a declared dual is checked for a row by `assert_registry_complete` and
+  not at registration, so that two laws can name each other)*
 - [x] Implement `register_theorem X` and `register_theorem X (dual := Y)`: read the type of `X`
   with `forallTelescope`; substitute `v 0, v 1, ...` for the formula binders; take the frame
   class from the binder shape (implicit class: Base; one `C ≤ fc` hypothesis: `C`; fixed class:
@@ -254,7 +256,9 @@ filed by its computed fragment and frame class, and the build fails if one is mi
 - [x] Generate the `register_theorem` lines from `probes/census.tsv`, one per closed
   declaration, into the seven registration files below, by the fragment and frame class the
   prototype computed. Each file imports only the `FormalSystem` modules that declare what it
-  registers, and `BimodalLib.Registry`.
+  registers, and `BimodalLib.Registry`. *(deviation: altered — lines generated from a live
+  scan with the library's own `scanDerivations` and `mkTheoremEntry`, not from the census
+  file)*
 - [x] Create `BimodalLib/Theorems/Complete.lean`, importing the root `FormalSystem` and all
   seven files, and invoking `assert_registry_complete`.
 - [x] Import `BimodalLib.Theorems.Complete` from `BimodalLib.lean`. Run
@@ -302,20 +306,24 @@ by theme within its directory.
 
 ---
 
-### Phase 4: Pairing command and the test library [NOT STARTED]
+### Phase 4: Pairing command and the test library [COMPLETED]
 
 **Goal**: A second proof of a registered statement is elaborated against the registered
 declaration's type, and the failing directions of the pairing and of the completeness check are
 tested.
 
 **Tasks**:
-- [ ] Create `BimodalLib/Pairing.lean`: `ReproofEntry`, holding the row of `X` and the second
+- [x] Create `BimodalLib/Pairing.lean`: `ReproofEntry`, holding the row of `X` and the second
   proof at the row's statement; `reprove X as Y := t`, expanding to
   `def Y : type_of% @X := t` and adding a `ReproofEntry` constant with `addAndCompile` and a
-  generated docstring. It fails if `X` has no row. Import it from `BimodalLib.lean`.
-- [ ] Add `[[lean_lib]] name = "BimodalLibTest"` to `lakefile.toml` with `srcDir = "Tests"` and
+  generated docstring. It fails if `X` has no row. Import it from `BimodalLib.lean`. *(deviation:
+  altered — the command elaborates `t` against the type of `X` itself, with error recovery
+  off, and declares `Y` at that type; a `def` with an elaboration error is still added with a
+  `sorry` body, which the pairing row would then have cited. The syntax node is named
+  `reproveAs` because Lean core has a `reprove` command.)*
+- [x] Add `[[lean_lib]] name = "BimodalLibTest"` to `lakefile.toml` with `srcDir = "Tests"` and
   the `leanOptions` of `BimodalToolsTest`, including the `hashCommand` opt-out and its comment.
-- [ ] Create the root `Tests/BimodalLibTest.lean` and three test modules:
+- [x] Create the root `Tests/BimodalLibTest.lean` and three test modules:
   `Tests/BimodalLibTest/FragmentTest.lean` (fragment of sample formulas of both types by
   `decide`; `#print axioms` of the agreement theorem under `#guard_msgs`);
   `Tests/BimodalLibTest/PairingTest.lean` (`reprove perpetuity1 as ...` with a correct proof,
@@ -323,10 +331,10 @@ tested.
   `Tests/BimodalLibTest/RegistryCheckTest.lean` (imports the fixture, aims
   `assert_registry_complete` at the fixture prefix, expects the error under `#guard_msgs`; then
   registers the fixture declaration in the test module and expects the check to pass).
-- [ ] Create the fixture `Tests/BimodalLibTest/Fixtures/UnregisteredDerivation.lean`, declaring
+- [x] Create the fixture `Tests/BimodalLibTest/Fixtures/UnregisteredDerivation.lean`, declaring
   one closed derivation and nothing else.
-- [ ] Run `lake build BimodalLib --wfail` and `lake build BimodalLibTest --wfail`.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix`, then
+- [x] Run `lake build BimodalLib --wfail` and `lake build BimodalLibTest --wfail`.
+- [x] Run `bash scripts/typst-sync-check.sh --fix`, then
   `bash scripts/typst-sync-check.sh --counts-only`, and stage `typst/generated/status.typ` with
   the phase's files. The new files under `Tests/` move `tests-file-count` and
   `tests-line-count`, and `.githooks/pre-commit` blocks a commit that stages a `.lean` file

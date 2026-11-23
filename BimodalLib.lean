@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import BimodalLib.Fragment
+import BimodalLib.Pairing
 import BimodalLib.Registry
 import BimodalLib.Registry.Complete
 import BimodalLib.Theorems.Complete

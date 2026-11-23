@@ -84,6 +84,13 @@ name = "BimodalToolsTest"
 srcDir = "Tests"
 leanOptions = {pp.unicode.fun = true, autoImplicit = false, weak.linter.hashCommand = false}
 
+# Tests for the results library. Same `#`-command opt-out as `BimodalTest`: its `#guard_msgs`
+# and `#print axioms` probes are the content of those files, not development leftovers.
+[[lean_lib]]
+name = "BimodalLibTest"
+srcDir = "Tests"
+leanOptions = {pp.unicode.fun = true, autoImplicit = false, weak.linter.hashCommand = false}
+
 # Dataset generator executable for ML training data.
 # Run with: lake exe dataset_generator -- --max-complexity 5 --output data/bmlogic.jsonl
 [[lean_exe]]
