@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 4,
+  "phases_completed": 0,
+  "phases_total": 4,
+  "summary": "Planned task 980 as a close-out rather than a re-review: the premise is superseded, because PR #7 merged 2026-11-22T22:58:00Z as 3c7197f84 at head 6313e693f, with all three conditions the research report recommended applied, the filing by family delivered as well, and the M17 Current client paragraph already restated on main. The four-phase plan confirms the merged outcome, appends an Outcome section to the task's report separating historical from live claims, annotates the superseded draft in the task's file_scope, and hands the five residual follow-ups to their owning slugs. No record edits, no Lean edits, nothing posted.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/plans/01_pr7-rewriting-views-merge-decision.md",
+      "summary": "Four-phase close-out plan (3 waves, 1.25 hours) for a task whose merge-decision aim is already discharged by the merge of PR #7."
+    }
+  ]
+}

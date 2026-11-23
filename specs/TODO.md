@@ -91,8 +91,8 @@ next_project_number: 986
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 932 [NOT STARTED] — Land the four ofStepRel constraint lemmas and an ofStepPlain...
-978 [RESEARCHED] — Review collaborator PR #11 (branch...
-979 [RESEARCHED] — Review collaborator PR #10 (branch...
+978 [PLANNING] — Review collaborator PR #11 (branch...
+979 [PLANNING] — Review collaborator PR #10 (branch...
 984 [NOT STARTED] — Promote next\_iff\_covBy and prev\_iff\_covBy of...
 985 [NOT STARTED] — Research the shape of a semantic goal and its witnesses for...
 
@@ -149,7 +149,7 @@ next_project_number: 986
   └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
   └─ 972 [NOT STARTED] — MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem... (see above)
   └─ 975 [NOT STARTED] — MILESTONE M22 (records/proof-mode.md), LANE: metatheory....
-980 [RESEARCHED] — Re-review collaborator PR #7 (branch...
+980 [PLANNED] — Re-review collaborator PR #7 (branch...
   └─ 981 [NOT STARTED] — Re-review collaborator PR #8 (branch...
     └─ 982 [NOT STARTED] — Reconcile the records, the roadmap rules and the open task...
 
@@ -206,18 +206,19 @@ next_project_number: 986
 ---
 
 ### 980. Rereview pr7 rewriting and views merge decision
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: None
 - **Research**: [980_rereview_pr7_rewriting_and_views_merge_decision/reports/01_pr7-rewriting-views-merge-decision.md]
+- **Plan**: [980_rereview_pr7_rewriting_and_views_merge_decision/plans/01_pr7-rewriting-views-merge-decision.md]
 
 **Description**: Re-review collaborator PR #7 (branch feat/proof-mode-rewriting, head 5f5ad32bf when filed: a merge of main plus the commit "Separate named formula views from derivation rewriting") against the nine requests of the posted review (specs/reviews/pr-reviews-2026-11-20/pr7-review.md) and the follow-up comment (pr7-followup.md), research the one ruling that decides whether it merges, and prepare a draft response at specs/reviews/pr-reviews-2026-11-21/pr7-review.md. This PR is the base of the stack and the single blocker of proof_mode_split_shared_test_and_guide_files, so the aim is to reach a merge decision, not a second round of everything. FIRST-READ FINDINGS TO CHECK: CI is red on one linter warning under --wfail (`import Lean` at FormalSystem/Tactic/FormulaSyntax.lean:8, "Files in mathlib cannot import the whole Lean folder") and the test, lint and docs steps were skipped as a result, so NOTHING NEW HAS BEEN TESTED IN CI; done on reading: the formula-equality path is out of lrewrite and lsimp and is exposed as lunfold / lfold over a view table in FormalSystem/Tactic/FormulaViews.lean with assert_not_exists DerivationTree, the planner is in FormalSystem/Tactic/FormulaPositions.lean, Step.necessity states the box and stability step once, supplied-rule elaboration errors propagate, a no-op rewrite fails, a stopped-wrapper message exists, lsimp budgets are options, past-direction, TM+ lsimp and four #guard_msgs tests are added, the misplaced soundness test and the docs link into specs/ are gone, and M17 of records/proof-mode.md gains a "Current client" paragraph (Perpetuity.boxDne, 393 against 159 expression nodes); not done: filing by family (Congruence.lean is one file, tests remain in the shared ProofModeExtensionsTest.lean, seed rules and the box-to-G/H conversions unmoved), the tm/plus name pairs are centralized in Language.ruleName rather than removed, main was merged rather than rebased onto, the PR body still says lrewrite takes formula equalities. WHAT TO ESTABLISH. (1) BUILD AND TEST LOCALLY at the head: reproduce the CI failure, apply the one-line import fix in the worktree only, then run the full build with --wfail, the test suite, the linter and scripts/check-module-invariants.sh, and report every failure CI never reached. (2) REQUEST TABLE: for each of the nine requests and their sub-items, done, partly done or not done, with the file and line that shows it. (3) THE VIEWS TIER AS CONTRIBUTED: compute the import closure of FormulaSyntax, FormulaPositions and FormulaViews and confirm nothing under FormalSystem/Automation/ProofMode/, FormalSystem/ProofSystem/ or the rewriting machinery is reachable; test lunfold and lfold on goals and hypotheses where the operator occurs more than once, occurs in the object context as well as the formula, and occurs under another operator, and say exactly what they rewrite (they call rewriteTarget / rewriteLocalDecl with no position argument); check that the private equation theorems referenced by name resolve from a downstream module; note that applyView discards the underlying error; note the table has four operators (diamond, next, prev, dstab). Then compare against the deliverables of proof_mode_views_tier and against records/proof-mode-architecture.md (layer 0 or 1, the operator-matching helper resting on the same table) and state what that record still owes and how its description should be revised. (4) THE LANGUAGE TABLE: Language is an inductive with tm and plus and operatorName is a hand-written pair table; judge it against request 4 (no further tmX/plusX pairs, TM and TM+ as instances of one interface) and against connective_signature_layer_shared_primitives and proof_mode_abstract_frontend_interface, and say whether it is an acceptable intermediate or a third copy to be undone. (5) REMAINING SWALLOWED ERRORS: the per-attempt catch in lsimp and the catch in applyView; say which user mistakes still end in a generic message, with a failing example each. (6) THE RECORD EDITS: verify the measured numbers in the M17 paragraph by re-measuring, and check the paragraph and the edited architecture row against the deliverable rules. (7) THE RULING (open decision 1 of records/milestones.md): which requests are conditions of merging. Lay out the two options with their real cost: list every file and declaration proof_mode_split_shared_test_and_guide_files would have to move if the filing by family is carried there, and estimate what holding the merge for it costs the pre-gate records. Recommend one. Also recommend whether the merge-not-rebase history is acceptable under a squash merge. (8) THE DRAFT: a short response that thanks, lists what is settled, states the remaining conditions as a numbered list no longer than it must be, and names the follow-ups that are not conditions. GROUND RULES FOR THIS REVIEW TASK. (i) Nothing is posted to GitHub, merged, pushed or approved by an agent: the deliverable is a draft the user posts and a recommendation the user acts on (.claude/rules/pr-prohibition.md). (ii) Work on the pull request head in a separate git worktree fetched with `git fetch origin refs/pull/<N>/head`, never in the main working tree; record the exact commit reviewed, re-check the head with `gh pr view` before finishing, and if it has moved say so and review the new commits too. (iii) Every claim in the draft is backed by something run or read in this task: a build, a test, an `#print axioms`, a file and line. Say plainly what was not verified. (iv) The report opens with the items that need the user's ruling, each with options and a recommendation, then the recommendation for the pull request (MERGE, REQUEST CHANGES or COMMENT), then the evidence. (v) The draft is written in the register of the reviews already posted (specs/reviews/pr-reviews-2026-11-20/): direct, specific, numbered requests, credit where the work is right, and a clear separation of conditions of merging from follow-ups. Read records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md and records/theorem-library.md first; the first-read findings this task starts from are summarized below and are to be checked, not trusted.
 
 ---
 
 ### 979. Review pr10 semantic record and pr9 disposition
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: general
 - **Topic**: semantics
 - **Dependencies**: None
@@ -228,7 +229,7 @@ next_project_number: 986
 ---
 
 ### 978. Review pr11 pointed semantic lemmas
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None

@@ -1,27 +1,27 @@
 {
-  "status": "researched",
-  "dispatch_seq": 3,
+  "status": "planned",
+  "dispatch_seq": 4,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/reports/01_pr7-rewriting-views-merge-decision.md",
-      "summary": "Re-review of PR #7 at head 5f5ad32bf: nine-request table, locally reproduced CI failure with a verified one-line fix, two new lake lint failures CI never reached, measured views-tier behaviour and import closure, re-measured M17 numbers that do not reproduce, and a REQUEST CHANGES-then-squash-merge recommendation with three rulings for the user."
-    },
-    {
-      "type": "report",
-      "path": "specs/reviews/pr-reviews-2026-11-21/pr7-review.md",
-      "summary": "Draft response for the user to post on PR #7: three numbered conditions of merging, what is explicitly not asked, and five follow-ups."
+      "type": "plan",
+      "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/plans/01_pr7-rewriting-views-merge-decision.md",
+      "summary": "Four-phase close-out plan: confirm the merged outcome of PR #7, record it in the task's report, retire the superseded draft, and hand the residual follow-ups to their owning tasks."
     }
   ],
+  "memory_candidates": [],
+  "phase_count": 4,
+  "estimated_hours": 1.25,
+  "dependency_waves": 3,
   "user_decision": {
     "required": true,
     "blocking": false,
-    "summary": "Three rulings open at the top of the report: (1) which requests are conditions of merging (open decision 1 of records/milestones.md) -- recommended option A, three conditions with the filing by family carried in the layout record; (2) whether the merge-not-rebase history is acceptable -- recommended accept under a squash merge; (3) whether to ask the contributor to restate the M17 Current client numbers or correct them locally -- recommended ask. Nothing was posted, pushed or merged."
+    "summary": "Task 980's premise is superseded: PR #7 merged 2026-11-22T22:58:00Z (3c7197f84, head 6313e693f) with all three recommended conditions applied, the filing by family delivered, and the M17 Current client paragraph already restated on main. The three rulings the research round raised are therefore all closed by events. The plan is a close-out (record the outcome, retire the superseded draft, hand over residuals) and edits no record. The alternative, if you would rather not spend a cycle on it, is to mark 980 complete or abandoned directly and let reconcile_records_and_tasks_after_pr_review_round absorb the residuals."
   },
+  "next_steps": "Run /orchestrate 980 to execute the plan",
   "metadata": {
-    "session_id": "sess_1795302289_fd0199_980",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1795402655_5a890d_980",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }
