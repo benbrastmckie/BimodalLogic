@@ -284,3 +284,51 @@ gh pr view 11 / gh pr checks 11 / gh pr view {7,8,9,10}
 - `CONTRIBUTING.md` §2 (no `sorry`/axiom, tests, style, placement, generated files) and §4 (the PR checklist)
 - `ORGANISATION.md` — the five-layer table and the per-file language layering
 - `scripts/check-module-invariants.sh` header — the C0–C37 check catalogue
+
+## Disposition (2026-11-22)
+
+Appended after the review round closed. Every value below was re-measured by a command run at
+the time of writing, not copied from the body of this report.
+
+**The review was posted.** `gh pr view 11 --json reviews` returns exactly one review: author
+`benbrastmckie` (`authorAssociation: OWNER`), state `CHANGES_REQUESTED`, `submittedAt`
+`2026-11-23T01:57:16Z`, attached to commit `c6cd983b79842368ae789488d38e488656f98992`. The text
+posted is the condensed `specs/reviews/pr-reviews-2026-11-21/pr11-comment.md`, not the long draft
+in `pr11-review.md`; a whitespace-normalized `diff` of the posted body against that file differs
+by one blank line and nothing else. Its three conditions of merging are:
+
+1. **Rebase onto `main`** and regenerate `FormalSystem/README.md`, `README.md` and
+   `typst/generated/status.typ` with `lake exe mk_all --lib FormalSystem` and
+   `bash scripts/check-module-invariants.sh --emit-inventory`, rather than resolving by hand.
+2. **Make `At` usable in tactic proofs** — an `at_def` simp lemma or `At`-level clause
+   statements, plus one test that rewrites a clause under `At`.
+3. **Tests for the untested lemmas** — `next_iff`, `prev_iff`, the two `*_bind_keeping`,
+   `inclusiveSince_iff`, `release_iff`, `trigger_iff`, `weakUntil_iff` and the three
+   `rank_progress` forms; one transport factory per family; and one instantiation at L⋆.
+
+**The head has not moved.** `gh pr view 11 --json headRefOid` returns
+`c6cd983b79842368ae789488d38e488656f98992` — the same commit this report reviewed, and the same
+commit the posted review is attached to. `state: OPEN`, `+793/−12` across 14 files, `updatedAt`
+`2026-11-23T01:57:16Z` (the posting itself). Ground rule (ii)'s re-check therefore passes and no
+new commits need reviewing.
+
+**`mergeable` is now `CONFLICTING`.** It was `MERGEABLE` when this report was written. The cause
+is PR #7, which merged at `2026-11-22T22:58:00Z` as commit `3c7197f84297d9ebab2472a89adba19effb72ef6`
+(confirmed an ancestor of `origin/main` by `git merge-base --is-ancestor`). This is exactly the
+collision finding 8 predicted: #7, #8, #9 and #11 all regenerate `FormalSystem.lean`,
+`FormalSystem/README.md`, `README.md` and `typst/generated/status.typ`, so whichever lands first
+invalidates the others' counts. The posted review's condition 1 is that paragraph turned into a
+request.
+
+**The "head could move before the user posts" risk is closed.** The risk listed under `## Risks &
+Mitigations` is discharged by the posting: the review is attached to a specific commit oid, and
+any later push is now visible as a mismatch between that oid and `headRefOid` rather than as an
+unreviewed change.
+
+**Scope of the gate evidence in this report.** The `--wfail` build, the 58/58
+`check-module-invariants.sh` pass, the 52 `#print axioms` results, the upward-edge count of 10,
+and the `readme-lint.sh` / `check-paper-definitions.sh` baseline comparison were all measured in
+the detached worktree at `c6cd983b7`, against a `main` that did **not** yet contain #7. They
+remain true *of that commit* and are not evidence about the rebased tree condition 1 asks for.
+Re-measuring after the rebase is the contributor's move under condition 1; nothing in this task
+re-ran the battery, and no claim here should be read as covering a post-rebase head.

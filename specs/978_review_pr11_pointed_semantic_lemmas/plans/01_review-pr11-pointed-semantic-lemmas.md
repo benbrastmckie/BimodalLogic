@@ -1,7 +1,7 @@
 # Implementation Plan: Task #978
 
 - **Task**: 978 - Review collaborator PR #11 (feat/pointed-semantic-lemmas) and prepare a merge recommendation and draft review
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/978_review_pr11_pointed_semantic_lemmas/reports/01_review-pr11-pointed-semantic-lemmas.md`
@@ -126,19 +126,19 @@ Disposition of each condition for this plan:
 
 Phases within the same wave can execute in parallel; this plan is strictly serial.
 
-### Phase 1: Record the live disposition of PR #11 [NOT STARTED]
+### Phase 1: Record the live disposition of PR #11 [COMPLETED]
 
 **Goal**: Establish, from live commands rather than from the research report, what changed
 between the research round and now, and append it to the report as a dated disposition section.
 
 **Tasks**:
-- [ ] Re-read live PR state: `gh pr view 11 --json number,state,headRefOid,baseRefName,mergeable,additions,deletions,changedFiles,updatedAt,reviews`. Record `headRefOid`, `state`, `mergeable`, and the review's author / `state` / `submittedAt`.
-- [ ] **Escalation check**: if `headRefOid` is no longer `c6cd983b79842368ae789488d38e488656f98992`, STOP editing records. Ground rule (ii) requires the new commits be reviewed; report the mismatch in the handoff (`status: blocked`) with the new SHA and what moved, and do not append a disposition that would misdescribe the posted review.
-- [ ] Confirm the base moved: `gh pr view 7 --json state,mergedAt,mergeCommit` and `git fetch origin main --quiet && git log --oneline -3 origin/main`. Record #7's merge commit and time.
-- [ ] Diff the posted review body against the local draft: `gh pr view 11 --json reviews --jq '.reviews[0].body'` against `specs/reviews/pr-reviews-2026-11-21/pr11-comment.md`, whitespace-normalized. Record the result (at plan time: identical but for one blank line).
-- [ ] Append a `## Disposition (2026-11-22)` section to the research report recording: the posted review (author, `CHANGES_REQUESTED`, `submittedAt`, its three conditions in one line each); head unchanged at `c6cd983b7`; `mergeable` now `CONFLICTING` because #7 merged, which is finding 8's predicted collision arriving; and that the report's "The head could move before the user posts" risk is now closed by the posting.
-- [ ] In that same section, state the scope of the gate evidence explicitly: the `--wfail` build, the 58/58 `check-module-invariants.sh` pass and the 52 axiom sets were measured at `c6cd983b7` against the pre-#7 base, remain true *of that commit*, and are not evidence about the rebased tree condition 1 asks for.
-- [ ] Record one `issue-record.sh` entry for the premise shift found here (the task's deliverable was produced and acted on before this phase ran).
+- [x] Re-read live PR state: `gh pr view 11 --json number,state,headRefOid,baseRefName,mergeable,additions,deletions,changedFiles,updatedAt,reviews`. Record `headRefOid`, `state`, `mergeable`, and the review's author / `state` / `submittedAt`.
+- [x] **Escalation check**: if `headRefOid` is no longer `c6cd983b79842368ae789488d38e488656f98992`, STOP editing records. Ground rule (ii) requires the new commits be reviewed; report the mismatch in the handoff (`status: blocked`) with the new SHA and what moved, and do not append a disposition that would misdescribe the posted review.
+- [x] Confirm the base moved: `gh pr view 7 --json state,mergedAt,mergeCommit` and `git fetch origin main --quiet && git log --oneline -3 origin/main`. Record #7's merge commit and time.
+- [x] Diff the posted review body against the local draft: `gh pr view 11 --json reviews --jq '.reviews[0].body'` against `specs/reviews/pr-reviews-2026-11-21/pr11-comment.md`, whitespace-normalized. Record the result (at plan time: identical but for one blank line).
+- [x] Append a `## Disposition (2026-11-22)` section to the research report recording: the posted review (author, `CHANGES_REQUESTED`, `submittedAt`, its three conditions in one line each); head unchanged at `c6cd983b7`; `mergeable` now `CONFLICTING` because #7 merged, which is finding 8's predicted collision arriving; and that the report's "The head could move before the user posts" risk is now closed by the posting.
+- [x] In that same section, state the scope of the gate evidence explicitly: the `--wfail` build, the 58/58 `check-module-invariants.sh` pass and the 52 axiom sets were measured at `c6cd983b7` against the pre-#7 base, remain true *of that commit*, and are not evidence about the rebased tree condition 1 asks for.
+- [x] Record one `issue-record.sh` entry for the premise shift found here (the task's deliverable was produced and acted on before this phase ran).
 
 **Timing**: 20 minutes
 
