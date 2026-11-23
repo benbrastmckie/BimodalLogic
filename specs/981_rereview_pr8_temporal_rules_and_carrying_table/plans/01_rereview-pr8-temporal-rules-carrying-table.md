@@ -1,7 +1,7 @@
 # Implementation Plan: Task #981
 
 - **Task**: 981 - Re-review PR #8 (temporal rules and the carrying table)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.25 hours
 - **Dependencies**: Task 980 (PR #7 re-review) — complete; PR #7 merged as `3c7197f84`
 - **Research Inputs**: specs/981_rereview_pr8_temporal_rules_and_carrying_table/reports/01_rereview-pr8-temporal-rules-carrying-table.md
