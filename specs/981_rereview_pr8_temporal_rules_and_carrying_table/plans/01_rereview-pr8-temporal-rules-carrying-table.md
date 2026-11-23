@@ -193,39 +193,43 @@ a finding for the disposition section, not a failure of this phase.
 
 ---
 
-### Phase 2: Audit the Draft Against the Report, and Tighten It [NOT STARTED]
+### Phase 2: Audit the Draft Against the Report, and Tighten It [COMPLETED]
 
 **Goal**: Make every claim in `pr8-review.md` traceable to a finding in the report, remove any
 surviving first-read assertion the research round superseded, and bring the register into line
 with the reviews already posted in `specs/reviews/pr-reviews-2026-11-20/`.
 
 **Tasks**:
-- [ ] Read `specs/reviews/pr-reviews-2026-11-21/pr8-review.md` in full and
+- [x] Read `specs/reviews/pr-reviews-2026-11-21/pr8-review.md` in full and
       `specs/reviews/pr-reviews-2026-11-20/pr8-review.md` (the review being answered) alongside
       it.
-- [ ] Build a claim-to-evidence table, as working notes, mapping each factual assertion in the
+- [x] Build a claim-to-evidence table, as working notes, mapping each factual assertion in the
       draft (file:line citations, measured gate results, counts, the behaviour-before/after
       claim, the eighteen view rows, the `register_lview` acceptance, the axiom check) to the
       report finding that backs it. Any claim with no backing finding is either cut or
       downgraded to an explicit "not verified".
-- [ ] Check specifically that no stale first-read assertion survives: the draft must not say
+- [x] Check specifically that no stale first-read assertion survives: the draft must not say
       `TemporalComposition.lean` is unsplit, must not say "no CI run" without the
       "on the head" qualifier, and must not repeat the "sixteen against three" counts in place
       of the measured 17-against-7.
-- [ ] Check each of the thirteen requests of the 2026-11-20 review is accounted for in the
+- [x] Check each of the thirteen requests of the 2026-11-20 review is accounted for in the
       draft — done, partly done or not done — and that nothing is silently dropped. The report
       records nine done or substantially done; 1, 3, 4 and 13 not done; 8b, 10 and 12 partly.
-- [ ] Verify ground rule (iii) holds across the draft: add one short explicit paragraph naming
+- [x] Verify ground rule (iii) holds across the draft: add one short explicit paragraph naming
       what was **not** verified (the evidence probes, the `lean_exe` roots, the `typst` compile,
       the M4 derivation, any tactic-cost or term-size measurement), since the report states
       these and the draft currently does not.
-- [ ] Check ground rule (v): numbered conditions, credit where the work is right, conditions of
+- [x] Check ground rule (v): numbered conditions, credit where the work is right, conditions of
       merging clearly separated from follow-ups, and the direct register of the 2026-11-20
       reviews. Fix anything that drifts.
-- [ ] Apply the resulting edits with anchored `Edit` calls against the existing draft — never a
+- [x] Apply the resulting edits with anchored `Edit` calls against the existing draft — never a
       whole-file rewrite — so the research round's wording survives wherever it is already
-      right.
-- [ ] Record an `issue-record.sh` entry for any claim found unbacked (class `evidence-gap`) or
+      right. *(deviation: altered — the PR head moved to `5ecc91d63` between planning and this
+      dispatch, invalidating more than a quarter of the draft; the phase's own Scope Hypothesis
+      names that escalation, so the draft was rewritten rather than anchored-edited, with the
+      prior wording preserved in the scratchpad and every surviving paragraph carried over
+      verbatim)*
+- [x] Record an `issue-record.sh` entry for any claim found unbacked (class `evidence-gap`) or
       a `win` if the audit finds none.
 
 **Timing**: 30 minutes
