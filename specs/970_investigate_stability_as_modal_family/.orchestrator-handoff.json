@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "summary": "Wrote a five-phase, markdown-only plan from the research report, which recommends keeping the stability operator in the Modal family. Phase 1 writes the docs/development report; phases 2 to 4 amend the three design records in parallel; phase 5 updates six filed task descriptions through state-write.sh and cross-checks. No Lean is touched and no user decision is raised.",
+  "phases_completed": 0,
+  "phases_total": 5,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/970_investigate_stability_as_modal_family/plans/01_stability-modal-family-layout.md",
+      "summary": "Five-phase plan, 5 hours, waves [1], [2,3,4], [5]."
+    }
+  ],
+  "blockers": [],
+  "dispatch_seq": 2
+}

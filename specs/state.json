@@ -650,12 +650,12 @@
     {
       "project_number": 970,
       "project_name": "investigate_stability_as_modal_family",
-      "status": "researched",
+      "status": "planned",
       "task_type": "logic",
       "description": "Investigate whether the stability operator ⊡ belongs in the Modal operator family or in a family of its own. records/theorem-library.md and records/proof-mode-architecture.md start from ⊡ and its dual ⟐ filed under Modal beside □ and ◇, sharing one parameterized statement of the S5 laws; this is milestone M23 of records/proof-mode.md and open decision 2 of records/theorem-library.md. Research only, no Lean required. Deliverable: a report under docs/development/ that (1) weighs the one-family layout (four fragments, operator set recorded per entry) against a separate Stability family (eight fragments) using the three proved facts: without Temporal ⊡ collapses to the identity on state-local formulas (plusStateLocal_stab_iff, FormalSystem/PlusLanguage/PlusStateLocal.lean); TM⁺ is not closed under uniform substitution because AS p → ⊡p holds for atoms and state-local formulas only; the tableau does not cover ⊡; (2) determines whether the modal operators of FormalSystem/OpenLanguage/ and FormalSystem/NomicLanguage/ are further instances of the same parameterized necessity laws at other strengths, which would make \"necessity operator of a given strength\" the abstraction; (3) reviews how cslib (Cslib/Foundations/Logic/ProofSystem.lean, the Modal*Hilbert bundles and HasBox) would host two necessity operators on one formula type; (4) recommends one layout and, if the recommendation is a separate family, lists every change needed in records/theorem-library.md, records/proof-mode-architecture.md, records/proof-mode.md and in the filed proof-mode tasks (module names, file_scope, interface classes). The design is to be revised if the investigation finds the merged family wrong. No dependencies; the operator-family layout move, the interface extraction and the library registry are cheaper once it has reported but do not wait on it",
       "topic": "proof-mode",
       "created": "2026-11-20T18:25:05Z",
-      "last_updated": "2026-11-23T22:02:55Z",
+      "last_updated": "2026-11-23T22:09:15Z",
       "audit_verdict": {
         "proposal": {
           "id": "investigate_stability_as_modal_family",
@@ -680,9 +680,23 @@
           "path": "specs/970_investigate_stability_as_modal_family/reports/01_stability-modal-family-layout.md",
           "type": "report",
           "summary": "Weighs one Modal family against a separate Stability family; recommends keeping one family, understood as necessity operators parameterized by operator, with three record amendments; includes the Open/Nomic instance analysis, the cslib hosting review, and the full change list for the contrary ruling."
+        },
+        {
+          "path": "specs/970_investigate_stability_as_modal_family/plans/01_stability-modal-family-layout.md",
+          "type": "plan",
+          "summary": "Five-phase plan, 5 hours, waves [1], [2,3,4], [5]."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "file_scope": [
+        "docs/development/README.md",
+        "docs/development/stability-operator-family.md",
+        "records/proof-mode-architecture.md",
+        "records/proof-mode.md",
+        "records/theorem-library.md",
+        "specs/TODO.md",
+        "specs/state.json"
+      ]
     },
     {
       "project_name": "proof_mode_views_tier",
