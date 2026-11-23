@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "summary": "Wrote a four-phase, 3.25-hour plan for pointed soundness over TruthEnv: star_soundness_in in StarSoundness.lean, a new module FormalSystem/Metalogic/PointedSoundness.lean with the PointedSound class, three instances and truth_of_derivation, tests at all three languages, and a closing gate sweep. Generated-surface regeneration (status.typ, inventory blocks, library root) and a C5 allowlist entry are scheduled in the phase that causes them. The challenge block compiled standalone and the snapshot dry-run resolved both theorem names.",
+  "phases_completed": 0,
+  "phases_total": 4,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/983_soundness_statement_over_truth_env/plans/01_pointed-soundness-truth-env.md",
+      "summary": "Four-phase implementation plan for task 983."
+    }
+  ],
+  "blockers": [],
+  "dispatch_seq": 4
+}

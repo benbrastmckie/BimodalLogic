@@ -83,7 +83,7 @@ next_project_number: 991
 
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 890 [RESEARCHED] — Record the GHR94 Lemma 10.2.3 Case 5 erratum in the Typst...
-983 [RESEARCHED] — State pointed soundness once over TruthEnv, with TM, TM+ and...
+983 [PLANNED] — State pointed soundness once over TruthEnv, with TM, TM+ and...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 875 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
@@ -101,7 +101,7 @@ next_project_number: 991
 
 ### Syntax
 
-977 [RESEARCHED] — Introduce a connective signature layer under FormalSystem so...
+977 [PLANNING] — Introduce a connective signature layer under FormalSystem so...
 873 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 874 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
@@ -234,11 +234,12 @@ next_project_number: 991
 ---
 
 ### 983. Soundness statement over truth env
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [983_soundness_statement_over_truth_env/reports/01_pointed-soundness-truth-env.md]
+- **Plan**: [983_soundness_statement_over_truth_env/plans/01_pointed-soundness-truth-env.md]
 
 **Description**: State pointed soundness once over TruthEnv, with TM, TM+ and TM⋆ as instances, so that the semantic mode adapter needs no per-language wrapper module (milestone D4 of records/milestones.md, join 7; the adapter paragraph of records/proof-mode-architecture.md). PHASE 1: prove star_soundness_in, the context form of TM⋆ soundness (a StarDerivationTree fc Γ φ, a frame in fc, a model, history, time and register environment at which every member of Γ is true, give truth of φ there), beside star_soundness_validIn in FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean. TM has soundness_in (FormalSystem/Metalogic/Soundness.lean) and TM+ has plus_soundness_in (FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean); TM⋆ has only the empty-context validity form. StarSoundness.lean mirrors PlusSoundness.lean arm for arm, so the plus proof is the model, but this has NOT been attempted: establish first how the register environment is quantified in the premises and whether the three empty-context rules go through unchanged. PHASE 2: one class, at layer 3 under FormalSystem/Metalogic/, tying a language derivation relation to its TruthEnv truth predicate, with the three theorems as instances, and one generic theorem giving truth at a point from a derivation, frame-class evidence and truth of the premises. KEEP THE CLASS MINIMAL: proof_mode_abstract_frontend_interface will later constrain the object-level interface, and this class should be something that interface can require, not a second packaging of the connectives. DO NOT restate any language soundness theorem under another name; FormalSystem/Metalogic/ProofModeSoundness.lean on branch feat/proof-mode-semantics is four such restatements and is the shape to avoid. Sound direction only: guard with assert_not_exists against the completeness theorems, and import nothing under FormalSystem/Automation/ProofMode/. Tests instantiate the generic theorem at all three languages. Open to either collaborator; the done-when in records/milestones.md is the standard.
 
@@ -310,7 +311,7 @@ next_project_number: 991
 ---
 
 ### 977. Connective signature layer shared primitives
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: syntax
 - **Dependencies**: None

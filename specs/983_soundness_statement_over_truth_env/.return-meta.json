@@ -1,17 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 2,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/983_soundness_statement_over_truth_env/reports/01_pointed-soundness-truth-env.md",
-      "summary": "star_soundness_in compiles as plus_soundness_in with one fixed register binder; recommended Prop-valued mixin PointedSound L D over TruthEnv with three instances and generic truth_of_derivation, all probe-compiled with tests at TM, TM+ and TM-star."
+      "type": "plan",
+      "path": "specs/983_soundness_statement_over_truth_env/plans/01_pointed-soundness-truth-env.md",
+      "summary": "Four-phase plan: star_soundness_in, the PointedSound class with three instances and truth_of_derivation in a new Metalogic module, tests at three languages, and a gate sweep."
     }
   ],
+  "next_steps": "Run /orchestrate 983 to execute the plan",
   "metadata": {
-    "session_id": "sess_1795462392_eb6c32_983",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1795464911_3b5923_983",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3.25,
+    "dependency_waves": [[1], [2], [3], [4]]
+  },
+  "memory_candidates": [],
+  "dispatch_seq": 4
 }
