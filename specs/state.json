@@ -347,12 +347,12 @@
     {
       "project_number": 983,
       "project_name": "soundness_statement_over_truth_env",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "State pointed soundness once over TruthEnv, with TM, TM+ and TM⋆ as instances, so that the semantic mode adapter needs no per-language wrapper module (milestone D4 of records/milestones.md, join 7; the adapter paragraph of records/proof-mode-architecture.md). PHASE 1: prove star_soundness_in, the context form of TM⋆ soundness (a StarDerivationTree fc Γ φ, a frame in fc, a model, history, time and register environment at which every member of Γ is true, give truth of φ there), beside star_soundness_validIn in FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean. TM has soundness_in (FormalSystem/Metalogic/Soundness.lean) and TM+ has plus_soundness_in (FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean); TM⋆ has only the empty-context validity form. StarSoundness.lean mirrors PlusSoundness.lean arm for arm, so the plus proof is the model, but this has NOT been attempted: establish first how the register environment is quantified in the premises and whether the three empty-context rules go through unchanged. PHASE 2: one class, at layer 3 under FormalSystem/Metalogic/, tying a language derivation relation to its TruthEnv truth predicate, with the three theorems as instances, and one generic theorem giving truth at a point from a derivation, frame-class evidence and truth of the premises. KEEP THE CLASS MINIMAL: proof_mode_abstract_frontend_interface will later constrain the object-level interface, and this class should be something that interface can require, not a second packaging of the connectives. DO NOT restate any language soundness theorem under another name; FormalSystem/Metalogic/ProofModeSoundness.lean on branch feat/proof-mode-semantics is four such restatements and is the shape to avoid. Sound direction only: guard with assert_not_exists against the completeness theorems, and import nothing under FormalSystem/Automation/ProofMode/. Tests instantiate the generic theorem at all three languages. Open to either collaborator; the done-when in records/milestones.md is the standard.",
       "topic": "metalogic",
       "created": "2026-11-22T23:58:42Z",
-      "last_updated": "2026-11-23T20:22:25Z",
+      "last_updated": "2026-11-23T20:52:47Z",
       "audit_verdict": {
         "proposal": {
           "id": "soundness_statement_over_truth_env",
@@ -477,7 +477,7 @@
         "degradations_count": 435
       },
       "roadmap_annotation": "C4, the semantic mode and its adapter, waits on this; no open PR touches StarSoundness.lean",
-      "session_id": "sess_1795464911_3b5923",
+      "session_id": "sess_1795465627_d652c6",
       "artifacts": [
         {
           "path": "specs/983_soundness_statement_over_truth_env/reports/01_pointed-soundness-truth-env.md",
@@ -488,9 +488,14 @@
           "path": "specs/983_soundness_statement_over_truth_env/plans/01_pointed-soundness-truth-env.md",
           "type": "plan",
           "summary": "Four-phase implementation plan for task 983."
+        },
+        {
+          "path": "specs/983_soundness_statement_over_truth_env/summaries/02_pointed-soundness-truth-env-summary.md",
+          "type": "summary",
+          "summary": "star_soundness_in (context form of TM⋆ soundness), the PointedSound class with TM/TM⁺/TM⋆ instances and the generic truth_of_derivation in FormalSystem/Metalogic/PointedSoundness.lean, and tests at all three languages; full build green."
         }
       ],
-      "next_artifact_number": 3,
+      "next_artifact_number": 4,
       "file_scope": [
         "FormalSystem.lean",
         "FormalSystem/Metalogic.lean",
@@ -506,7 +511,8 @@
         "docs/theorem-index.md",
         "scripts/module-invariants-allowlist.txt",
         "typst/generated/status.typ"
-      ]
+      ],
+      "completion_summary": "Added star_soundness_in beside star_soundness_validIn and stated pointed soundness once over TruthEnv: the Prop-valued mixin PointedSound with instances at TM, TM⁺ and TM⋆ and the generic theorem truth_of_derivation, guarded against the completeness theorems. Tests instantiate it at all three languages. Milestone D4 done-when holds."
     },
     {
       "project_number": 982,

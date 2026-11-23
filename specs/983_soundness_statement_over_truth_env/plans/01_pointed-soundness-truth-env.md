@@ -1,7 +1,7 @@
 # Implementation Plan: Task #983
 
 - **Task**: 983 - State pointed soundness once over TruthEnv (milestone D4)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/983_soundness_statement_over_truth_env/reports/01_pointed-soundness-truth-env.md

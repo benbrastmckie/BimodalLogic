@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "task_number": 983,
+  "plan_path": "specs/983_soundness_statement_over_truth_env/plans/01_pointed-soundness-truth-env.md",
+  "project_root": "/home/benjamin/Projects/BimodalLogic",
+  "challenge_module": "Challenge",
+  "challenge_path": "Challenge.lean",
+  "theorem_names": [
+    "star_soundness_in",
+    "truth_of_derivation"
+  ],
+  "route": "plan-declared",
+  "commit": "2c7fc3f57157fcf0a228dda038954800ea66a7ca",
+  "content_sha256": "6f37693ae2b25b9d55d9acb71ede64ed1c7e5b86f57733cd3fad5f7b371ae6f2",
+  "created_at": "2026-11-23T20:23:29Z"
+}
