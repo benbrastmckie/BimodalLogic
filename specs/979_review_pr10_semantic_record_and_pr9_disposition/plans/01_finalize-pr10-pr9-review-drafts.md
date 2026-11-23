@@ -322,41 +322,58 @@ wording fix: record it as an item for the user rather than silently rewriting th
 
 ---
 
-### Phase 4: Citation sweep, PR head re-check, and posting hand-off [NOT STARTED]
+### Phase 4: Citation sweep, PR head re-check, and posting hand-off [COMPLETED]
 
 **Goal**: the four files agree with each other and with the records, both heads are confirmed
 unmoved (or the movement is reported), and the user has a current posting checklist.
 
 **Tasks**:
-- [ ] Sweep all four files for record citations and resolve each one against the records as they
+- [x] Sweep all four files for record citations and resolve each one against the records as they
       stand: `grep -nE 'records/[a-z-]+\.md|\b[A-F][0-9]+\b|PM-M[0-9]+|[Oo]pen decisions? [0-9]'`
       over `pr10-review.md`, `pr9-disposition.md`, `pr10-comment.md`, `pr9-comment.md`, then open
       each cited location. Report any that does not resolve rather than guessing at a correction.
-- [ ] Cross-read the pairs: `pr10-review.md` against `pr10-comment.md`, and `pr9-disposition.md`
+      *(completed: every hit opened and resolved, including the "join 6"/"join 7" references
+      checked separately since the grep pattern does not catch "join N"; none failed to resolve)*
+- [x] Cross-read the pairs: `pr10-review.md` against `pr10-comment.md`, and `pr9-disposition.md`
       against `pr9-comment.md`. The report is the evidence for the comment; neither pair may
-      contradict the other on a fact or a recommendation.
-- [ ] Re-check both heads: `gh pr view 10 --json number,state,isDraft,headRefOid,mergeable` and
+      contradict the other on a fact or a recommendation. *(completed: both drafted comment
+      blocks inside the reports are byte-identical to the posting drafts, confirmed by diff; no
+      contradiction found)*
+- [x] Re-check both heads: `gh pr view 10 --json number,state,isDraft,headRefOid,mergeable` and
       the same for 9. Expected `bdaa3b6d0307001794cc8c22fd3cf0a6f4ac1679` (OPEN, draft,
       MERGEABLE) and `b3d8f646344c95ba28130b3dafda0d812d371600` (OPEN, CONFLICTING). If either has
       moved, say so in the corresponding report, review the new commits, and flag the drafts as
-      written against a superseded head.
-- [ ] Re-read `specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md` immediately before editing it —
+      written against a superseded head. *(completed: #9 unmoved as expected. #10 HAD MOVED, to
+      `ada7074dd5899a535ae862a26b32641251bb3a45` — no longer draft, CI not yet reported. Reviewed
+      in a fresh worktree fetched at the new head: the PR's diff against its base is still the
+      same three files; the record's wording was revised but none of the three ruling items were
+      closed. Recorded in full in `pr10-review.md`'s preamble and flagged in `FOLLOWUP.md`'s
+      "Still open" section; `pr10-comment.md`'s three asks are re-confirmed to stand unchanged
+      against the new head, so no edit to the draft itself was needed)*
+- [x] Re-read `specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md` immediately before editing it —
       concurrent sibling tasks 978 and 980 may have changed it this same cycle — then update only
       the sentences that name #10 and #9 (the "Still open" entry for the final read of
       `pr10-comment.md` and `pr9-comment.md`, and the "Backing reports (stale where they call #7
       open)" line, which no longer applies to this task's two reports). Do not rewrite a block, do
       not touch the `pr11-comment.md` entry, and if a foreign modification is observed, stop and
-      report it after checking `git log` to confirm the work is not this task's own.
-- [ ] Record issues and wins as they arose via `issue-record.sh` per the dispatch's Issue Log
-      section; if nothing arose, attest that explicitly in the handoff summary.
-- [ ] Commit this task's own `specs/979_*/**` bookkeeping with
+      report it after checking `git log` to confirm the work is not this task's own. *(completed:
+      mtime unchanged since this task's earlier read, no foreign modification; "Still open" and
+      "Backing reports" updated, including the #10 head-movement note; the "To post, in order"
+      item 1 (`pr11-comment.md`) was not touched)*
+- [x] Record issues and wins as they arose via `issue-record.sh` per the dispatch's Issue Log
+      section; if nothing arose, attest that explicitly in the handoff summary. *(completed: one
+      issue recorded for the PR #10 head movement, one win recorded for the clean citation
+      reconciliation)*
+- [x] Commit this task's own `specs/979_*/**` bookkeeping with
       `bash .claude/scripts/git-commit-scoped.sh` and an explicit file list. Expect a non-failure
       skip (exit 8/9) for every `specs/reviews/**` path: that tree is excluded locally
       (`.git/info/exclude:20:/specs/reviews/`). Never `git add -A`, a directory, or a glob, and
-      never force-add an excluded path.
-- [ ] Hand off: the user posts `pr10-comment.md` (comment) and `pr9-comment.md` (close) in the
+      never force-add an excluded path. *(completed, via the phase-commit wrapper, which skips
+      the excluded `specs/reviews/**` path non-fatally)*
+- [x] Hand off: the user posts `pr10-comment.md` (comment) and `pr9-comment.md` (close) in the
       order `FOLLOWUP.md` gives. No agent posts, closes, merges or pushes anything
-      (`.claude/rules/pr-prohibition.md`).
+      (`.claude/rules/pr-prohibition.md`). *(completed: no `gh pr comment`/`close`/`review`/
+      `merge` and no `git push` was run anywhere in this task)*
 
 **Timing**: 30 minutes
 
@@ -395,17 +412,25 @@ changes this phase's outcome and is reported, not worked around.
 
 ## Testing & Validation
 
-- [ ] Every `records/*.md` citation and milestone id in the four files resolves to a location that
-      exists and says what the citing sentence claims.
-- [ ] No sentence in any of the four files describes PR #7 as open or in flight.
-- [ ] `pr10-review.md` and `pr10-comment.md` agree; `pr9-disposition.md` and `pr9-comment.md`
-      agree.
-- [ ] Both PR heads re-checked with `gh pr view` and recorded with their exact oids.
-- [ ] No GitHub write of any kind was performed: no `gh pr comment`, `gh pr close`,
-      `gh pr review`, `gh pr merge`, and no `git push`.
-- [ ] Diff read-through over every changed file confirms the edits are prose only.
-- [ ] Nothing outside this task's territory was edited: not `pr11-review.md` / `pr11-comment.md`
+- [x] Every `records/*.md` citation and milestone id in the four files resolves to a location that
+      exists and says what the citing sentence claims. *(confirmed by the Phase 4 sweep)*
+- [x] No sentence in any of the four files describes PR #7 as open or in flight. *(confirmed;
+      remaining "open"/"in flight" occurrences are about #8, #9, #10 or #11, which genuinely are)*
+- [x] `pr10-review.md` and `pr10-comment.md` agree; `pr9-disposition.md` and `pr9-comment.md`
+      agree. *(confirmed by diff: both drafted comment blocks are byte-identical to the posting
+      drafts)*
+- [x] Both PR heads re-checked with `gh pr view` and recorded with their exact oids. *(#9:
+      `b3d8f646344c95ba28130b3dafda0d812d371600`, unmoved. #10: moved to
+      `ada7074dd5899a535ae862a26b32641251bb3a45`, recorded in `pr10-review.md` and `FOLLOWUP.md`)*
+- [x] No GitHub write of any kind was performed: no `gh pr comment`, `gh pr close`,
+      `gh pr review`, `gh pr merge`, and no `git push`. *(confirmed: this task ran only `gh pr
+      view`, `gh pr diff`, `gh pr checks`, and read-only `git`/`gh` commands)*
+- [x] Diff read-through over every changed file confirms the edits are prose only. *(confirmed for
+      `pr10-review.md`, `pr9-disposition.md`, `FOLLOWUP.md`; no Lean or other source file touched)*
+- [x] Nothing outside this task's territory was edited: not `pr11-review.md` / `pr11-comment.md`
       (task 978), not `pr7-review.md` / `pr7-approval.md` (task 980), not `records/*.md`.
+      *(confirmed: mtimes of all four unchanged from this task's start, and `git diff --stat --
+      records/` is empty)*
 
 ## Artifacts & Outputs
 
