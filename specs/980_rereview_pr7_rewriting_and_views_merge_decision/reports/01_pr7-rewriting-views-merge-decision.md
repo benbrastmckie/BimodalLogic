@@ -465,3 +465,88 @@ Stated plainly, because the merged tree was not re-gated here:
   `5f5ad32bf`; `assert_not_exists FormalSystem.ProofSystem.DerivationTree` at
   `FormalSystem/Tactic/FormulaViews.lean:17` is the standing mechanical guard and is present in
   the merged tree, but it was not re-exercised by a build here.
+
+### Handover: who owns each residual
+
+Five residual follow-ups were named in the posted approval and in the retired draft. None of
+them held the merge. Each is matched below against an open task description read in full from
+`specs/state.json`, with the sentence that carries the obligation quoted.
+
+| # | Residual (re-measured in the merged tree) | Owner | Sentence carrying it |
+|---|---|---|---|
+| 1 | `lunfold`/`lfold` take no occurrence or position argument, so they behave like `rw` (`FormulaViews.lean:93-108`) | `proof_mode_views_tier` | Deliverable (1): "the fold/unfold tactics, acting on the goal or on a named hypothesis, **at the head or at a named position**" |
+| 2 | `applyView` discards the error it catches (`FormulaViews.lean:106-107`), so the user gets a generic message where `Language.operatorName` already knows the specific one | **no clean owner — see the gap below** | — |
+| 3 | The per-attempt `catch` in `lsimp` routes a real failure to a trace (`Simplification.lean:95-97`), so `rule requires unavailable side conditions` never reaches the user | `proof_mode_error_message_coverage` | "those two add about 90 `throwError` sites and no test asserting a message ... Re-measure first; this record backfills whatever is still uncovered" — scope is `FormalSystem/Automation/ProofMode/`, which contains `Simplification.lean` |
+| 4 | 11 `fail_if_success` against 4 `#guard_msgs` in the four family test files; the stopped-wrapper message (`Rewriting.lean:402`) has no test | `proof_mode_error_message_coverage` | "Add a negative test asserting the message (`#guard_msgs`, **not bare `fail_if_success`, which checks nothing about the message**) for every `throwError` path in `FormalSystem/Automation/ProofMode/` that lacks one" |
+| 5 | The four-name view table (`FormulaViews.lean:60-64`) and the 20-entry `Language.operatorName` table (`FormulaSyntax.lean:33-85`) are separate | `proof_mode_views_tier` | Deliverable (3): "the operator-matching helper the elaborators use (`operatorArgs?` and the occurrence views) expressed through **the same table**, so that what a tactic sees as an operator and what a view folds agree" |
+
+#### The one gap, stated rather than forced
+
+Residual 2 has **no owner whose declared scope reaches it**, and this close-out does not invent
+one:
+
+- `proof_mode_error_message_coverage` is the natural home for a swallowed error, but its remit
+  is stated by path: "every `throwError` path in `FormalSystem/Automation/ProofMode/`".
+  `applyView` lives in `FormalSystem/Tactic/FormulaViews.lean`, which PR #7 created and which
+  that path does not reach.
+- `proof_mode_views_tier` owns the views tier, but the only error sentences in its description
+  are "a negative test asserts the wrong-shape message" and the standing rule "Every new
+  `throwError` path gets a negative test asserting its message (`#guard_msgs`)". Both oblige a
+  **test of the message as it stands**; neither obliges **replacing** the generic message with
+  the specific one. A test written to today's behaviour would freeze the wrong message in place.
+- `reconcile_records_and_tasks_after_pr_review_round` is contracted to restate the descriptions
+  and `file_scope` of `proof_mode_split_shared_test_and_guide_files`, `proof_mode_views_tier`,
+  `connective_signature_layer_shared_primitives`, `proof_mode_s5_aware_box_scopes`,
+  `proof_mode_cross_modal_scopes_mf_tf` and `theorem_library_countermodels` —
+  `proof_mode_error_message_coverage` is **not** in that list, so nothing currently scheduled
+  will widen its path scope to the new `FormalSystem/Tactic/` modules.
+
+The same scope hole applies, more weakly, to residual 3's message *content* (as opposed to its
+test), since widening a test-coverage record into a message-rewriting record is a change of
+remit rather than a change of path.
+
+This is surfaced as a non-blocking `user_decision` on this dispatch's `.return-meta.json`:
+whether to widen `proof_mode_error_message_coverage` to cover `FormalSystem/Tactic/` and to
+state that swallowed errors are rewritten and not merely tested, or to add that obligation to
+`proof_mode_views_tier`, is the user's call. Creating or re-scoping a task is not this
+close-out's remit.
+
+#### Records are untouched by this task
+
+`reconcile_records_and_tasks_after_pr_review_round` is the record owner. Its description already
+names M17, M16, the contributions table and open decision 1 by name, and requires task
+descriptions to be "edited through `state-write.sh` and never by hand". This close-out therefore
+edited **no** file under `records/`, **no** task description, and **no** entry in
+`specs/state.json`; its inputs are unperturbed. The M17 restatement recorded above was made on
+`main` by the merge itself, not by this task.
+
+#### Verification of this close-out, as a baseline delta
+
+This task edited three markdown files and no Lean source, so no Lean gate is implicated. The
+scoped touched-path check was run (`bash .claude/scripts/verify-touched.sh`) and reported a
+non-zero overall result. That result is a **standing baseline, not a regression from this
+task**, and the reasoning is given rather than asserted:
+
+- **What the tool thought this dispatch touched.** It derived seven paths from the working tree:
+  this task's `.return-meta.json`, `issues.jsonl`, plan and report, plus `specs/TODO.md`,
+  `specs/events.jsonl` and `specs/state.json`. The last three are concurrent sibling dispatches'
+  uncommitted edits, attributed here because the derivation reads the whole tree. They are what
+  pulled in the entire agent-system suite battery.
+- **Note that `specs/reviews/pr-reviews-2026-11-21/pr7-review.md` is absent from that list.** It
+  is excluded at `.git/info/exclude:20`, so a git-derived touched-path set cannot see it. No
+  suite covers it either way; it is prose.
+- **The failures.** Selected run: 73 passed, 8 failed (1 expected, 7 NEW), 9 skipped, 90 total.
+  OWED fallback set: 84 passed, 1 failed (1 NEW), 10 skipped, 95 total.
+- **None of the nine failing suites reads any file this task touched.** Checked mechanically: a
+  grep of each failing suite for `980`, `pr-reviews` and `pr7-review` returns zero hits in all
+  nine.
+- **Two were opened to confirm the class.** `test-roadmap-generation.sh` fails with
+  `ERROR: roadmap-integration.sh not found (mode=source-store):
+  .../agent-system/extensions/core/scripts/roadmap-integration.sh` — this repository is a
+  deploy-only tree with no on-disk `agent-system/` source store, which is a property of the tree
+  and not of any change. `test-deploy-baseline-lib.sh` fails one warm-cache control assertion
+  (29 passed, 1 failed), a gate-cache concern untouched by markdown under `specs/`.
+- **The full gate set is deferred**, not forgiven, to the batch stage at the end of this
+  `/orchestrate` invocation, per this dispatch's batch-gate deferral directive. No `.lean` path
+  was staged at any point, so the `.githooks/pre-commit` generated-surface check
+  (`typst/generated/status.typ`) is a confirmed no-op for this task's commits.
