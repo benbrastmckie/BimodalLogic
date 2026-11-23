@@ -116,7 +116,7 @@ Rules are filed by the operators their statements name.
 | Family | Operators | Rules stated with these alone |
 |---|---|---|
 | Boolean | `⊥`, `→`, and the defined `¬`, `∧`, `∨`, `↔`, `⊤` | assumption, cut, introduction and elimination for each connective |
-| Modal | `□`, `◇`; in TM⁺ also the stability operator `⊡` and its dual `⟐` | scope introduction (from `□Γ ⊢ A` to `□Γ ⊢ □A`), T, 4, 5, `◇` introduction and consequence, each for both operators; a `□`-fact gives a `⊡`-fact |
+| Modal | `□`, `◇`; in TM⁺ also the stability operator `⊡` and its dual `⟐` | the K core, which is scope introduction (from `□Γ ⊢ A` to `□Γ ⊢ □A`) with `◇` introduction and consequence, and then T, 4 and 5, each for both operators; the inclusion: a `□`-fact gives a `⊡`-fact |
 | Temporal | Future: `U`, `F`, `G`. Past: `S`, `P`, `H`. Both: always, sometimes | scope introduction for `G` and `H`, Until and Since introduction, guard and event monotonicity, bind, temporal 4, linearity cases, whole-judgment time reflection, always and sometimes |
 
 A pure rule is stated at the level of judgments, so it needs no connective from another family:
@@ -134,19 +134,38 @@ operator it has the dual rule for its existential one: `◇` beside `□`, `⟐`
 `P` beside `G` and `H`, sometimes beside always. A family module with a box rule and no diamond
 rule is incomplete.
 
-**The Modal family has two operators and one statement of the S5 rules.** Scope introduction,
-T, 4, 5 and the diamond rules are stated once over a necessity operator given as a parameter,
-and instantiated at `□` and at `⊡`. A language instantiates them at the operators it has: TM at
-`□` only, TM⁺ at both, with the rule from `□` to `⊡` as a member that only a language with both
-provides. Two things are particular to `⊡` and are kept out of the shared statement. The schema
-`p → ⊡p` holds for atoms and state-local formulas only, so a rule that uses it is not schematic
-and says so in its statement. And without a temporal operator `⊡` collapses to the identity, so
-its remaining rules are interactions with Temporal. Filing `⊡` under Modal is the position this
-design starts from; `investigate_stability_as_modal_family` examines whether it should be a
-family of its own.
+**The Modal family is the necessity operators over histories, with one statement of their
+rules.** The rules are stated once over a necessity operator given as a parameter, and the
+statement is stratified by law. Its base is a K core: scope introduction, distribution,
+monotonicity and the diamond duals. T, 4 and 5 are separate members that an operator supplies
+when it has them, and D is the member a serial operator supplies. A language instantiates the
+statement at the operators it has, each at its own strength: TM at `□` only, TM⁺ at `□` and at
+`⊡`, both at S5. The K core is compiled as `NecessityRules` in
+`FormalSystem/Theorems/ProofMode/Congruence/Modal.lean`, with the instances `tmBox`, `plusBox`
+and `plusStability`.
+
+**Three pieces lie outside the shared statement, each per operator.**
+
+- An **inclusion** is a rule about an ordered pair of operators: a fact under the stronger gives
+  the fact under the weaker. Only a language with both operators supplies it. In TM⁺ it is the
+  rule from `□` to `⊡`.
+- A **rigidity** rule takes an operator and a formula class, the operator's rigid class, and
+  introduces the operator on a formula of that class. It is not schematic and says so in its
+  statement. For `⊡` the rigid class is the state-local formulas: `p → ⊡p` holds for atoms and
+  state-local formulas only.
+- **Interactions with Temporal are per operator.** MF, TF and the perpetuity principles belong
+  to `□`; pasting, with its purity side conditions, belongs to `⊡`. The sections of
+  `ModalTemporalBoolean` that name `⊡` share no statement with those for `□`.
+
+`⊡` is in Modal because it is a further instance of these rules, as are the restricted
+necessities of the Open language, and because without a temporal operator it collapses to the
+identity, so a family of its own would have a trivial pure module and a trivial interaction with
+Boolean. [stability-operator-family.md](../docs/development/stability-operator-family.md) gives
+the grounds and the cost of the alternative.
 
 **The shared statement is a structure taking the operator as a field.** It is instantiated once
-per necessity operator per language: for TM at `□`, for TM⁺ at `□` and at `⊡`. The modal
+per necessity operator per language: for TM at `□`, for TM⁺ at `□` and at `⊡`. The further laws
+extend it, so that an operator without T, 4 or 5 instantiates the K core alone. The modal
 congruence step is one definition taking the structure. The fields are theorems and not axioms,
 because TM `□`, TM⁺ `□` and `⊡` have three different axiom bases, so each instance supplies
 some fields by derivation. The alternative is a class indexed by the operator. Its merits: call
@@ -272,11 +291,7 @@ module.
 
 ## Open decisions
 
-1. **Is `⊡` rightly in the Modal family?** The question of that name under "Open decisions" of
-   [theorem-library.md](theorem-library.md), examined in
-   `investigate_stability_as_modal_family`. A separate family would add a `Stability` module and
-   class and its interactions, and move the sections that name `⊡` into them.
-2. **Do the Until and Since tactics keep `unfold` and `fold` as keywords?** The contributed
+1. **Do the Until and Since tactics keep `unfold` and `fold` as keywords?** The contributed
    `luntil unfold` and `luntil fold` are derivation steps that use the ZTime axioms, where
    `lunfold` and `lfold` name views. The tactic heads differ, so principle 1 is met to the
    letter, but one word then names a view and a logical step. The options are to keep the

@@ -175,39 +175,39 @@ actually read or marks the section as carried from the research pass.
 
 ---
 
-### Phase 2: Amend records/proof-mode-architecture.md [NOT STARTED]
+### Phase 2: Amend records/proof-mode-architecture.md [COMPLETED]
 
 **Goal**: State the stratified shared statement and the three unshared pieces (R1, R3), and remove
 the open decision.
 
 **Tasks**:
-- [ ] Confirm the correction targets exist as quoted (they did at plan time): the paragraph
+- [x] Confirm the correction targets exist as quoted (they did at plan time): the paragraph
   beginning "**The Modal family has two operators and one statement of the S5 rules.**", the
   paragraph beginning "**The shared statement is a structure taking the operator as a field.**",
   the Modal row of the "Families" table, and item 1 of "## Open decisions" ("Is `⊡` rightly in
   the Modal family?"). If any is absent or reworded, locate the passage carrying the same content
   by `grep -n "⊡" records/proof-mode-architecture.md` and amend that; if none carries it, record
-  the gap in the phase notes and add the statement under "### Families".
-- [ ] R1: rewrite the first paragraph so the shared statement is a K core (scope introduction,
+  the gap in the phase notes and add the statement under "### Families". *(completed: all four targets present as quoted)*
+- [x] R1: rewrite the first paragraph so the shared statement is a K core (scope introduction,
   distribution, monotonicity, the diamond duals) with T, 4 and 5 (and D for a serial operator) as
   separate members an operator supplies when it has them. Cite `NecessityRules` in
   `FormalSystem/Theorems/ProofMode/Congruence/Modal.lean` as the compiled K core and its three
-  instances. Adjust the Modal row of the "Families" table to match.
-- [ ] R3: replace the sentence "its remaining rules are interactions with Temporal" and the two
+  instances. Adjust the Modal row of the "Families" table to match. *(completed)*
+- [x] R3: replace the sentence "its remaining rules are interactions with Temporal" and the two
   "particular to `⊡`" sentences with three named pieces outside the shared statement: an
   **inclusion** (a rule about an ordered pair of operators, supplied only by a language with
   both); a **rigidity** rule (takes an operator and a formula class, is not schematic and says so
   in its statement: `⊡` with state-local formulas); and **interactions with Temporal, per
   operator**, so the `⊡` sections of `ModalTemporalBoolean` share no statement with those for
-  `□`.
-- [ ] Replace the closing sentences of that paragraph ("Filing `⊡` under Modal is the position
+  `□`. *(completed)*
+- [x] Replace the closing sentences of that paragraph ("Filing `⊡` under Modal is the position
   this design starts from; ... examines whether it should be a family of its own") with the
   position and its grounds in one or two sentences, linking
-  `../docs/development/stability-operator-family.md`.
-- [ ] Remove item 1 from "## Open decisions" and renumber the remainder. Before and after,
+  `../docs/development/stability-operator-family.md`. *(completed)*
+- [x] Remove item 1 from "## Open decisions" and renumber the remainder. Before and after,
   `grep -rn "proof-mode-architecture" records/ docs/` for references to that list by ordinal and
-  repair any found.
-- [ ] Run the checks under Verification.
+  repair any found. *(completed: no reference to this list by ordinal elsewhere in records/ or docs/)*
+- [x] Run the checks under Verification. *(completed: both greps as required; record-versioning 0 BLOCKING; task-reference lint exit 0)*
 
 **Timing**: 1 hour
 
