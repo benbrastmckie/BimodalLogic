@@ -1,32 +1,30 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "session_id": "sess_1795402655_5a890d_982",
-  "dispatch_seq": 13,
-  "findings_count": 18,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/982_reconcile_records_and_tasks_after_pr_review_round/reports/01_reconcile-records-pr-review-round.md",
-      "summary": "Confirms task 982 is not blocked: the four review tasks (978-981) completed and the PR #7-#11 review round's rulings are recorded (two posted to GitHub, three fully decided but not yet posted); gives item-by-item findings and concrete edit targets for records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md, records/README.md, six named task descriptions, and a quoted /roadmap instruction, plus one found cross-record staleness (M17's stale 'under review' text in records/proof-mode.md after PR #7 merged)."
+      "type": "plan",
+      "path": "specs/982_reconcile_records_and_tasks_after_pr_review_round/plans/01_reconcile-records-pr-review-round.md",
+      "summary": "Six-phase, 5.75-hour plan reconciling four records and six task descriptions with the PR #7-#11 review round, with three merge-gated items explicitly deferred."
     }
   ],
+  "metadata": {
+    "session_id": "sess_1795402655_5a890d_982",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 5.75,
+    "dependency_waves": 3
+  },
   "memory_candidates": [
     {
-      "content": "In BimodalLogic's records/ reconciliation work, a task description's own numbered 'open decision N' references can be stale relative to the current records/*.md open-decisions list: earlier review rounds (e.g. task 976) fold some open decisions into settled prose, shrinking and renumbering the list, while a task description written before that renumbering still cites the old numbers/content. When reconciling, map the task description's *content* (e.g. 'who drafts the semantic record') onto the current list by meaning, not by number, and treat a decision absent from the current list as already-resolved-into-prose rather than as missing work.",
+      "content": "When a records-reconciliation plan must act on facts that live only on an unmerged branch, the durable structure is a per-item deferral table whose rows each name their own precondition (which PR must merge, which file must exist on main), re-resolved in a cheap read-only Phase 1 immediately before any edit. This turns a later re-run into a lookup rather than fresh research, and it keeps the plan from asserting as current design something that exists only on a contributor's branch -- the specific hazard a 'record edits already landed by the PR' artifact is written to prevent.",
       "category": "PATTERN",
-      "source_artifact": "specs/982_reconcile_records_and_tasks_after_pr_review_round/reports/01_reconcile-records-pr-review-round.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["records-reconciliation", "open-decisions", "numbering-drift", "task-description-staleness", "milestones.md"]
-    },
-    {
-      "content": "In a multi-PR collaborator review round gated through drafted-but-unposted GitHub review/comment text (specs/reviews/.../*.md), a dependent records-reconciliation task should treat a decision as 'recorded' once it is fully drafted and stated as a ruling (not a request) in the review artifacts, even if the GitHub posting action itself (a separate, user-gated step outside any agent's authority) has not yet happened. Blocking the reconciliation on the posting event conflates a mechanical publish step with the actual decision-recording event.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/982_reconcile_records_and_tasks_after_pr_review_round/reports/01_reconcile-records-pr-review-round.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["pr-review-round", "decision-recorded", "gh-pr-view", "pr-prohibition", "gating-verdict"]
+      "source_artifact": "specs/982_reconcile_records_and_tasks_after_pr_review_round/plans/01_reconcile-records-pr-review-round.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["deferral-table", "merge-gated", "records-reconciliation", "precondition-phase", "unmerged-branch"]
     }
   ],
-  "next_steps": "Run /orchestrate 982 to create the implementation plan"
+  "dispatch_seq": 14,
+  "next_steps": "Run /orchestrate 982 to execute the plan"
 }

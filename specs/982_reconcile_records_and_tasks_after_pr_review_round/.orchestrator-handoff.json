@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 14,
+  "phases_completed": 0,
+  "phases_total": 6,
+  "summary": "Created a six-phase plan reconciling records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md, records/README.md and six task descriptions with the PR #7-#11 review round. Re-verified every trigger-class figure in the dispatch description against live state: PR states unchanged (#7 merged, #8/#9/#10/#11 open), the two stale 'under review' occurrences confirmed, records/semantic-proof-mode.md still absent from main. Three dispatch items are explicitly deferred as merge-gated (the architecture record's open decision 2, Goal C's C1/C2 pointer reduction, the README semantic-record row), and the roadmap work is delivered as a quoted /roadmap instruction rather than a file edit.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/982_reconcile_records_and_tasks_after_pr_review_round/plans/01_reconcile-records-pr-review-round.md",
+      "summary": "Six-phase, 5.75-hour plan in three dependency waves: gating re-verification, then three record files plus the state.json descriptions in parallel, then a cross-record consistency pass and the quoted /roadmap instruction."
+    }
+  ]
+}
