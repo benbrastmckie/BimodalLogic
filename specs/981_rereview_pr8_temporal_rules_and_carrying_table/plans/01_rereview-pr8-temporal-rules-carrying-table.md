@@ -261,24 +261,24 @@ so in its commit message and in the summary rather than forcing the small-edit s
 
 ---
 
-### Phase 3: The Postable Body and the Two Halves of the Records Ask [NOT STARTED]
+### Phase 3: The Postable Body and the Two Halves of the Records Ask [COMPLETED]
 
 **Goal**: Produce the condensed body the user actually posts, and make both halves of the records
 ask concrete — the contributor's half verbatim in the draft, ours handed to the
 records-reconciliation task as ready text.
 
 **Tasks**:
-- [ ] Write `specs/reviews/pr-reviews-2026-11-21/pr8-comment.md`: the postable condensation of
+- [x] Write `specs/reviews/pr-reviews-2026-11-21/pr8-comment.md`: the postable condensation of
       the audited draft, in the register and at roughly the length of the comment files already
       in this directory (`pr11-comment.md`, `pr10-comment.md`, `pr9-comment.md`). It keeps the
       credit paragraph, the rebase recipe and the offer, the numbered conditions of merging, and
       the follow-ups as a short list; it drops the long evidence recitations, which stay in
       `pr8-review.md`.
-- [ ] In `pr8-comment.md` and in the draft, state condition 4 (the records) in the form the
+- [x] In `pr8-comment.md` and in the draft, state condition 4 (the records) in the form the
       contributor can act on directly: the exact sentence to state where the Until and Since
       tactics are described, and the exact open decision to strike, each with its file and
       heading. Keep "leave the induction milestone and Where the work sits to me" explicit.
-- [ ] Write `specs/reviews/pr-reviews-2026-11-21/pr8-record-edits.md`: addressed to the records
+- [x] Write `specs/reviews/pr-reviews-2026-11-21/pr8-record-edits.md`: addressed to the records
       reconciliation task, carrying (i) verbatim replacement text for open decision 2 of
       `records/proof-mode-architecture.md:273-285` — fold and unfold name views only, the Until
       and Since derivation steps are `expand` and `contract`; (ii) verbatim text striking open
@@ -286,10 +286,10 @@ records-reconciliation task as ready text.
       currently makes the merge contingent on that decision; (iii) a one-line note that these
       are *drafts for task 982 to apply*, not edits made here, and that the contributor is being
       asked for the `proof-mode-architecture.md` half so 982 must check before duplicating it.
-- [ ] Keep carrying-table option (b) — a `register_lcarry` registry mirroring
+- [x] Keep carrying-table option (b) — a `register_lcarry` registry mirroring
       `FormalSystem/Tactic/FormulaViews.lean` — named in one sentence of the draft, with (a)
       stated as the ask, so the choice is visible rather than silently foreclosed.
-- [ ] Record an `issue-record.sh` entry noting the duplication hazard between the contributor's
+- [x] Record an `issue-record.sh` entry noting the duplication hazard between the contributor's
       records ask and task 982's declared `file_scope` (class `cross-task-overlap`, severity
       `minor`).
 
