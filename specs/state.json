@@ -9,17 +9,19 @@
     {
       "project_number": 990,
       "project_name": "rereview_pr11_at_rewriteable_pointed_truth_head",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Re-review pull request #11 (pointed temporal semantics and transport lemmas) at head b2eb3ac0b, \"Make pointed truth rewriteable and exercise semantic rule families\", pushed 2026-11-23T04:33Z after the CHANGES_REQUESTED review posted 2026-11-23T01:57Z against c6cd983b7. The earlier review record closed against the old head and did not see this commit. The push merges main (so the conflict with the merged rewriting contribution is gone and the PR is MERGEABLE) and, restricted to the PR-owned paths, changes FormalSystem/Semantics/PointTransport.lean (+7/-2), Tests/BimodalTest/Semantics/TemporalRulesTest.lean (+72) and Tests/BimodalTest/Semantics/PointTransportTest.lean (+35) plus the generated files. DELIVERABLE: check each of the three posted conditions against the new head (rebase and regenerate; `At` made usable, with a test; tests for the untested lemmas including one at the star language), by building and testing the head in a review worktree, and re-check the head has not moved again first; then a draft response in specs/reviews/pr-reviews-2026-11-21/ (approve, or the conditions still open), concise and flat in register, and an updated entry in FOLLOWUP.md. Nothing is posted, pushed, merged or approved by the agent; the user posts. If it is approved and merged, `pointed_semantic_lemmas_after_merge_followups` and `promote_next_prev_covby_to_generic_lemmas` are unblocked.",
       "topic": "semantics",
       "file_scope": [
-        "specs/reviews/pr-reviews-2026-11-21/pr11-review.md",
+        "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/summaries/01_approve-pr11-and-update-followup.md",
+        "specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr11-approval.md",
         "specs/reviews/pr-reviews-2026-11-21/pr11-comment.md",
-        "specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md"
+        "specs/reviews/pr-reviews-2026-11-21/pr11-review.md"
       ],
       "created": "2026-11-23T08:29:21Z",
-      "last_updated": "2026-11-23T09:35:55Z",
+      "last_updated": "2026-11-23T09:43:35Z",
       "roadmap_annotation": "PR #11's head moved to b2eb3ac0b after the review closed; that head is unreviewed",
       "audit_verdict": {
         "proposal": {
@@ -44,6 +46,11 @@
           "path": "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/reports/01_rereview-pr11-at-usability-and-tests.md",
           "type": "report",
           "summary": "Re-review of PR #11 at head b2eb3ac0b: all three posted conditions met; recommendation is approve, with measured evidence for each condition, a twelve-probe table pinning down exactly what At usability now means, and green gates from a from-scratch review worktree."
+        },
+        {
+          "path": "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/plans/01_approve-pr11-and-update-followup.md",
+          "type": "plan",
+          "summary": "Four-phase plan: re-confirm head, draft the PR #11 approval body, reconcile FOLLOWUP.md, final consistency pass and summary."
         }
       ],
       "next_artifact_number": 2

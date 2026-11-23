@@ -1,17 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/reports/01_rereview-pr11-at-usability-and-tests.md",
-      "summary": "Re-review of PR #11 at head b2eb3ac0b: all three posted conditions met; recommendation is approve, with measured evidence for each condition, a twelve-probe table pinning down exactly what At usability now means, and green gates from a from-scratch review worktree."
+      "type": "plan",
+      "path": "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/plans/01_approve-pr11-and-update-followup.md",
+      "summary": "Four-phase plan to turn the measured approve verdict for PR #11 at b2eb3ac0b into a draft approval body and a reconciled FOLLOWUP.md entry, gated on re-confirming the head has not moved."
     }
   ],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1795424219_8f2fbf_990",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2,
+    "dependency_waves": [[1], [2], [3], [4]]
+  },
+  "next_steps": "Run /orchestrate 990 to execute the plan",
+  "dispatch_seq": 2
 }

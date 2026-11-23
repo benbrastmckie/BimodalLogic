@@ -98,7 +98,7 @@ next_project_number: 991
 984 [NOT STARTED] — Promote next\_iff\_covBy and prev\_iff\_covBy of...
 985 [NOT STARTED] — Research the shape of a semantic goal and its witnesses for...
 989 [NOT STARTED] — Three follow-ups named in the posted review of the pointed...
-990 [RESEARCHED] — Re-review pull request #11 (pointed temporal semantics and...
+990 [PLANNED] — Re-review pull request #11 (pointed temporal semantics and...
 
 ### Syntax
 
@@ -161,11 +161,12 @@ next_project_number: 991
 ## Tasks
 
 ### 990. Rereview pr11 at rewriteable pointed truth head
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
 - **Research**: [990_rereview_pr11_at_rewriteable_pointed_truth_head/reports/01_rereview-pr11-at-usability-and-tests.md]
+- **Plan**: [990_rereview_pr11_at_rewriteable_pointed_truth_head/plans/01_approve-pr11-and-update-followup.md]
 
 **Description**: Re-review pull request #11 (pointed temporal semantics and transport lemmas) at head b2eb3ac0b, "Make pointed truth rewriteable and exercise semantic rule families", pushed 2026-11-23T04:33Z after the CHANGES_REQUESTED review posted 2026-11-23T01:57Z against c6cd983b7. The earlier review record closed against the old head and did not see this commit. The push merges main (so the conflict with the merged rewriting contribution is gone and the PR is MERGEABLE) and, restricted to the PR-owned paths, changes FormalSystem/Semantics/PointTransport.lean (+7/-2), Tests/BimodalTest/Semantics/TemporalRulesTest.lean (+72) and Tests/BimodalTest/Semantics/PointTransportTest.lean (+35) plus the generated files. DELIVERABLE: check each of the three posted conditions against the new head (rebase and regenerate; `At` made usable, with a test; tests for the untested lemmas including one at the star language), by building and testing the head in a review worktree, and re-check the head has not moved again first; then a draft response in specs/reviews/pr-reviews-2026-11-21/ (approve, or the conditions still open), concise and flat in register, and an updated entry in FOLLOWUP.md. Nothing is posted, pushed, merged or approved by the agent; the user posts. If it is approved and merged, `pointed_semantic_lemmas_after_merge_followups` and `promote_next_prev_covby_to_generic_lemmas` are unblocked.
 
