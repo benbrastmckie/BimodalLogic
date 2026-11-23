@@ -1,7 +1,7 @@
 # Implementation Plan: Task #971
 
 - **Task**: 971 - Theorem library: layout and registry
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/971_theorem_library_layout_and_registry/reports/01_library-layout-registry.md
@@ -152,28 +152,28 @@ No roadmap path was supplied in the dispatch. The task is milestone M18, lane Li
 Phases within the same wave can execute in parallel. The plan is sequential: every phase from 2
 on edits the root `BimodalLib.lean`.
 
-### Phase 1: Library scaffold and fragment computation [NOT STARTED]
+### Phase 1: Library scaffold and fragment computation [COMPLETED]
 
 **Goal**: `BimodalLib` exists as a Lake library and computes the fragment, modal operator set
 and frame class tag for both formula types.
 
 **Tasks**:
-- [ ] Add `[[lean_lib]] name = "BimodalLib"` to `lakefile.toml` with the `leanOptions` of
+- [x] Add `[[lean_lib]] name = "BimodalLib"` to `lakefile.toml` with the `leanOptions` of
   `BimodalTools`, leaving the `defaultTargets` line unchanged. Extend the header comment to name
   the library and say why it is outside the default targets.
-- [ ] Create the root `BimodalLib.lean` with the repository's copyright header, importing
+- [x] Create the root `BimodalLib.lean` with the repository's copyright header, importing
   `BimodalLib.Fragment`.
-- [ ] Create `BimodalLib/Fragment.lean`: `Family` (Modal, Temporal); `Fragment` (Boolean,
+- [x] Create `BimodalLib/Fragment.lean`: `Family` (Modal, Temporal); `Fragment` (Boolean,
   ModalBoolean, TemporalBoolean, ModalTemporalBoolean); `Profile` with fields for `□`, `⊡` and
   temporal occurrence, and an order by inclusion; `profileF : Formula → Profile` and
   `profileP : PlusFormula → Profile` by recursion on the primitives; `Profile.fragment`, mapping
   box-or-stab to Modal; the substitution class type; the agreement theorem
   `profileP (ofFormula φ) = profileF φ`. Take the definitions from
   `probes/registry-prototype.lean` and rename any `def` that has a non-trailing underscore.
-- [ ] Give every definition a docstring and the file a module docstring.
-- [ ] Create `BimodalLib/README.md` in the shape `docs/development/DIRECTORY_README_STANDARD.md`
+- [x] Give every definition a docstring and the file a module docstring.
+- [x] Create `BimodalLib/README.md` in the shape `docs/development/DIRECTORY_README_STANDARD.md`
   asks for.
-- [ ] Run `lake build BimodalLib --wfail`.
+- [x] Run `lake build BimodalLib --wfail`.
 
 **Timing**: 1.5 hours
 

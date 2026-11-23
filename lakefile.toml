@@ -8,6 +8,11 @@
 # explicit `lake build BimodalTools` / `lake build BimodalToolsTest` or by a `lake exe` target.
 # Check B3 asserts the separation holds in the import direction (`FormalSystem` never imports
 # `BimodalTools`); the converse direction is sanctioned and ungated.
+# `BimodalLib` (the library of TM results: fragments, the registry of proved theorems, pairing,
+# conjectures and the index) and `BimodalLibTest` (its tests) are absent from `defaultTargets`
+# on the same ground, and because the library is where sweeps and enumerated entries land, of
+# which there are many. They are built by `lake build BimodalLib` / `lake build BimodalLibTest`.
+# `FormalSystem` never imports `BimodalLib` either.
 # This file is declarative TOML (not a Lean-syntax lakefile) because
 # leanprover-community/docgen-action, used by .github/workflows/docs.yml, reads only
 # `lakefile.toml`. Scripts that need the declared targets read this file through
@@ -64,6 +69,12 @@ leanOptions = {pp.unicode.fun = true, autoImplicit = false, weak.linter.hashComm
 # `lean_exe` targets below. Absent from `defaultTargets` on purpose -- see the header comment.
 [[lean_lib]]
 name = "BimodalTools"
+leanOptions = {pp.unicode.fun = true, autoImplicit = false}
+
+# The library of TM results, filed by language fragment. Absent from `defaultTargets` on
+# purpose -- see the header comment.
+[[lean_lib]]
+name = "BimodalLib"
 leanOptions = {pp.unicode.fun = true, autoImplicit = false}
 
 # Tests for the tooling library. Same `#`-command opt-out as `BimodalTest`: the moved tooling
