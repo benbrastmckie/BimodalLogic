@@ -1,7 +1,7 @@
 # Implementation Plan: Task #970
 
 - **Task**: 970 - Investigate whether the stability operator belongs in the Modal operator family
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/970_investigate_stability_as_modal_family/reports/01_stability-modal-family-layout.md
@@ -109,13 +109,13 @@ No roadmap context was supplied with this dispatch. The task is milestone M23 of
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Write the docs/development report [NOT STARTED]
+### Phase 1: Write the docs/development report [COMPLETED]
 
 **Goal**: Produce the task's deliverable: a self-contained report that weighs the two layouts,
 settles the Open and Nomic question, reviews cslib hosting, and recommends one layout.
 
 **Tasks**:
-- [ ] Re-read the sources the report will cite and confirm each named declaration still exists
+- [x] Re-read the sources the report will cite and confirm each named declaration still exists
   under that name: `plusStateLocal_stab_iff` and `PlusFormula.StateLocal`
   (`FormalSystem/PlusLanguage/PlusStateLocal.lean`), `atom_stab` and `stab_of_stateLocal`,
   the four refutations in `FormalSystem/PlusLanguage/PlusNonValidities.lean`,
@@ -124,8 +124,8 @@ settles the Open and Nomic question, reviews cslib hosting, and recommends one l
   `stab_iff_ofut_opast`, `nomic_serial`, `four_validOn_iff_uniform`, `nomic_iff_box_of_uniform`,
   the `nomic_*_tenseFree` family, `NomicFrame.Lawful`, and `NecessityRules` with its three
   instances in `FormalSystem/Theorems/ProofMode/Congruence/Modal.lean`. Use `grep`; a name that
-  does not resolve is corrected or its claim dropped, never cited as read.
-- [ ] Write `docs/development/stability-operator-family.md` with these sections: the question and
+  does not resolve is corrected or its claim dropped, never cited as read. *(completed: every named declaration resolved by grep; the fourth refutation is refute_somePast_stab)*
+- [x] Write `docs/development/stability-operator-family.md` with these sections: the question and
   the recommendation; the two layouts as the same eight cells (research finding 1 table); the
   three proved facts weighed (finding 2), including the rigid-class observation and the condition
   on the tableau's generalization from atoms to schema variables; the Open and Nomic operators as
@@ -135,15 +135,15 @@ settles the Open and Nomic question, reviews cslib hosting, and recommends one l
   files reviewed (finding 5); the summary weighing table (finding 6); the recommendation with
   what the records state as a result (R1 to R3 as design statements); and a section "What a
   separate Stability family would require" carrying Appendix B as the cost of the rejected
-  alternative.
-- [ ] State the evidence tier in the report: established by reading source, nothing compiled; the
-  `◈` K-and-necessitation claim marked as an inference from the truth clause.
-- [ ] Keep the report free of task numbers and of draft-history language. The separate-family
+  alternative. *(completed)*
+- [x] State the evidence tier in the report: established by reading source, nothing compiled; the
+  `◈` K-and-necessitation claim marked as an inference from the truth clause. *(completed)*
+- [x] Keep the report free of task numbers and of draft-history language. The separate-family
   layout is described on its merits, not as an earlier position of the design. Filed records are
-  named by `project_name` slug only where the report must name one, as the records already do.
-- [ ] Add one row for the report to `docs/development/README.md`, in the "Project Organization"
-  table beside the other design evaluations, following the row shape already used there.
-- [ ] Run the checks under Verification and fix forward.
+  named by `project_name` slug only where the report must name one, as the records already do. *(completed)*
+- [x] Add one row for the report to `docs/development/README.md`, in the "Project Organization"
+  table beside the other design evaluations, following the row shape already used there. *(completed)*
+- [x] Run the checks under Verification and fix forward. *(completed: readme-lint exit 0; task-reference lint exit 0; record-versioning 0 BLOCKING, none in the two touched files)*
 
 **Timing**: 1.5 hours
 

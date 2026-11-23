@@ -44,6 +44,7 @@ Directory structure and documentation patterns:
 | [MODULE_INVARIANTS.md](MODULE_INVARIANTS.md) | The scripted structural gate: what `scripts/check-module-invariants.sh` checks and how to extend it |
 | [MODULE_RELOCATION.md](MODULE_RELOCATION.md) | How to move Lean modules: the rewrite classes of `scripts/move-modules.py`, gate-widening order, the traps past moves surfaced, and the pre-move checklist |
 | [MODULE_SYSTEM_EVALUATION.md](MODULE_SYSTEM_EVALUATION.md) | Evaluation of adopting the Lean module system: probes on the pinned toolchain, the bottom-up and exposure constraints, the local cost inventory, and the recommended programme order |
+| [stability-operator-family.md](stability-operator-family.md) | Evaluation of filing the stability operator `⊡` under the Modal family or in a family of its own: the eight cells both layouts record, the three proved facts weighed, the Open and Nomic operators as instances of the same necessity laws, hosting two necessity operators in cslib, and the cost of the rejected layout |
 | [PUBLICATION_REFACTOR.md](PUBLICATION_REFACTOR.md) | The dependency-ordered refactor programme to publication standard: convention map, target layout, templates, measurements, phases and follow-up split |
 | [DIRECTORY_README_STANDARD.md](DIRECTORY_README_STANDARD.md) | README documentation standard for directories |
 

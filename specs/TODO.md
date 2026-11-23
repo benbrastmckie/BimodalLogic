@@ -145,7 +145,7 @@ next_project_number: 991
     └─ 946 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS... (see above)
 962 [NOT STARTED] — MILESTONE M9b (records/proof-mode.md), STREAM: metatheory....
   └─ 953 [NOT STARTED] — With the interface as one class per operator family and... (see above)
-970 [PLANNED] — Investigate whether the stability operator ⊡ belongs in the...
+970 [IMPLEMENTING] — Investigate whether the stability operator ⊡ belongs in the...
   └─ 974 [NOT STARTED] — MILESTONE M21 (records/proof-mode.md), LANE: library, then... (see above)
 971 [NOT STARTED] — MILESTONE M18 (records/proof-mode.md), LANE: library. Theorem...
   └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
@@ -271,7 +271,7 @@ next_project_number: 991
 ---
 
 ### 970. Investigate stability as modal family
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: logic
 - **Topic**: proof-mode
 - **Dependencies**: None
