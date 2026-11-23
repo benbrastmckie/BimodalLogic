@@ -20,7 +20,7 @@
       ],
       "created": "2026-11-23T08:29:21Z",
       "last_updated": "2026-11-23T08:29:21Z",
-      "roadmap_annotation": "the contributor answered the posted review; the new head is unreviewed",
+      "roadmap_annotation": "PR #11's head moved to b2eb3ac0b after the review closed; that head is unreviewed",
       "audit_verdict": {
         "proposal": {
           "id": "rereview_pr11_at_rewriteable_pointed_truth_head",
@@ -114,7 +114,8 @@
           "semantic": true
         },
         "degradations_count": 450
-      }
+      },
+      "roadmap_annotation": "CI's shallow clone skips the stale-date arm, so its PASS checks less than it says"
     },
     {
       "project_number": 987,
@@ -254,7 +255,8 @@
           "semantic": true
         },
         "degradations_count": 452
-      }
+      },
+      "roadmap_annotation": "research only; it feeds the #10 reply and the choice of #11's At fix"
     },
     {
       "project_number": 984,
@@ -859,7 +861,7 @@
         },
         "degradations_count": 450
       },
-      "roadmap_annotation": "research and plan now; implement after the temporal rules merge"
+      "roadmap_annotation": "landing window settled: research and plan now, implement after the temporal rules merge"
     },
     {
       "project_number": 976,
@@ -1479,7 +1481,8 @@
           "semantic": true
         },
         "degradations_count": 449
-      }
+      },
+      "roadmap_annotation": "behind 977 and so behind the #8 merge; 946 and gate one 947 follow it"
     },
     {
       "project_name": "proof_mode_reference_manual_chapter",
@@ -4725,11 +4728,11 @@
     {
       "id": "M0",
       "title": "The collaboration round: clear what Tanner's contributions wait on",
-      "aim": "Close channel B's side of the open pull requests: the review round, the records reconciled to its outcome, the soundness statement the semantic mode's adapter needs, and the signature layer designed before the temporal rules are rebased.",
-      "gate": "Every open contribution carries a posted decision or an action named as the contributor's; records/milestones.md and the open task descriptions state the position reached; and star_soundness_in is proved beside star_soundness_validIn.",
+      "aim": "Close channel B's side of the open contributions: the re-review at #11's new head, the semantic-mode research the #10 reply needs, the soundness statement its adapter needs, the signature layer's design, and the follow-ups each merge leaves owed.",
+      "gate": "Every open contribution carries a posted decision or an action named as the contributor's; records/milestones.md and the open task descriptions state the position reached; star_soundness_in is proved beside star_soundness_validIn; and the follow-ups each merge leaves owed are closed.",
       "progress": {
         "status": "active",
-        "note": "#7 merged; #11 has changes requested, #10 a comment pending, #8 open and conflicting"
+        "note": "Review round closed; #8 mergeable with a review drafted, #11 at a new unreviewed head, #10 a comment pending, #9 to be closed"
       },
       "review": {
         "state": "none"
@@ -4748,6 +4751,20 @@
         },
         {
           "task_ids": [
+            990
+          ],
+          "description": "Re-review #11 at the head pushed after the round closed; the freshest contributor-facing line",
+          "rationale": "First live line in the milestone and the freshest contributor-facing item: PR #11's head moved to b2eb3ac0b at 2026-11-23T04:33Z, after the CHANGES_REQUESTED review posted against c6cd983b7 and after the review record that posted it closed. The push merged main, so the conflict with the merged rewriting contribution is gone and the PR is MERGEABLE, and the three posted conditions are now checkable at a head nobody has read. Alone on its line because the record's own first step is to re-check that the head has not moved again, which a co-dispatched member would make stale, and because it owns the #11 review artifacts under specs/reviews/pr-reviews-2026-11-21/. No edge is filed from 990 to 985: 990 checks the conditions as posted, and 985's research is not a precondition of that check, only of the reply's reasoning."
+        },
+        {
+          "task_ids": [
+            985
+          ],
+          "description": "Research the semantic goal shape and witnesses, so the #10 reply and the At fix can be judged",
+          "rationale": "Ready now and contributor-facing: this is the research the #10 reply is revised from, and it also recommends which of the two At fixes PR #11 should take. Research-only by its own record -- no comment, record or Lean source is edited and nothing is posted -- so it cannot collide with 990, which owns the #11 review artifacts. It carries no file_scope, so the creation-time overlap check is blind on it; alone on its line for that reason. Placed above 983 because an open contribution is waiting on its output this week and nothing is waiting on 983's this week."
+        },
+        {
+          "task_ids": [
             983
           ],
           "description": "Prove star_soundness_in, so the semantic mode's adapter needs no per-language wrapper",
@@ -4757,16 +4774,24 @@
           "task_ids": [
             977
           ],
-          "description": "Settle the signature layer's design now; it rewrites files every contribution reads",
-          "rationale": "Research and planning are startable now and are the preparation Tanner's rebase depends on; implementation is the half that waits. Join 4 of records/milestones.md gives the window and open decision 4 recommends AFTER the temporal contribution, since #8 is the single blocker of the layout -- so no edge is filed from 977 to the review round, because the order is a pending user ruling rather than an observed sequencing. One design question the research must settle before any file is written: FormalSystem/Semantics/TruthClauses.lean ALREADY defines neg, top, and, or, diamond, someFuture, allFuture, kPlus, after, somePast, allPast, kMinus and always once over the clause classes, so a syntactic signature layer that defines the same eighteen operators again creates a second generic copy of them rather than removing the duplication it was filed to remove. 952 carries the only edge on 977 and is nine waves away, so nothing downstream is held by taking the design slowly.",
+          "description": "Design the signature layer now; its landing after the temporal rules merge is settled",
+          "rationale": "Research and planning are startable now and are the preparation Tanner's rebase depends on; implementation is the half that waits. THE LANDING WINDOW IS SETTLED as of 2026-11-23: implementation lands after the temporal rules contribution merges -- join 4 of records/milestones.md and the recommendation of its open decision 4 -- and it is no longer a pending ruling, so no roadmap text should call it one. No dependency edge expresses it: the blocker is the #8 merge and no open task owns a merge, the same judgement already recorded for 984, 987, 989 and the depth-0 gate behind 761. The consequence is now real and is stated on M3's pre-gate line rather than left implicit: 969 carries an edge on 977, 946 carries one on 969 and 947 on 946, so the whole pre-gate chain up to gate one sits behind the #8 merge. One design question the research must settle before any file is written: FormalSystem/Semantics/TruthClauses.lean ALREADY defines neg, top, and, or, diamond, someFuture, allFuture, kPlus, after, somePast, allPast, kMinus and always once over the clause classes, so a syntactic signature layer that defines the same eighteen operators again creates a second generic copy of them rather than removing the duplication it was filed to remove. 952 carries the only other edge on 977 and is far downstream, so nothing but the pre-gate chain is held by taking the design slowly.",
           "flags": "--research --plan"
         },
         {
           "task_ids": [
+            987
+          ],
+          "description": "The temporal rules' owed follow-ups once #8 lands; 950 builds on the same modules",
+          "rationale": "Marked roadmap_ext_blocked rather than given a dependency edge: what it waits on is the temporal rules contribution reaching main, and no open task owns that merge -- the review that recommends it has closed and the user merges. Alone on its line because 950, the one record carrying an edge on it, sits in M4 behind gate one and cannot be co-dispatched from here. Both its deliverables -- the expand/contract rename one layer below the user-facing keywords (luntilFold, luntilUnfold, binaryFold and the pure rules still carrying the old collision) and the missing lprogress and throwError tests -- re-read the merged tree first and drop whatever the contributor already did, so the line is only worth entering once #8 is in."
+        },
+        {
+          "task_ids": [
+            989,
             984
           ],
-          "description": "Promote the base-language next and prev lemmas onto the generic ones once #11 lands",
-          "rationale": "Last in the milestone and marked roadmap_ext_blocked rather than given a dependency edge. What it waits on is FormalSystem/Semantics/TemporalRules.lean being on main, which arrives with the pointed semantic lemmas contribution; no OPEN TASK owns that merge -- 978 reviews #11 and recommends, the user merges -- so filing 984<-978 would invent an edge for a blocker no task owns, which is the same judgement already recorded for the depth-0 gate behind 761. The task's own description carries the measurement that makes it cheap once unblocked: next_iff (L := Formula) was checked to inhabit the statement of next_iff_covBy, and both modules sit at layer 1, so the promotion has no layering cost."
+          "description": "Everything owed on the pointed semantic lemmas once #11 lands, stated over the clause classes",
+          "rationale": "Batched on a shared blocker and a shared shape, not on file territory: both wait on the pointed semantic lemmas contribution reaching main, and both state their lemmas once over the clause classes so every language gets them rather than per-language copies. Each is marked roadmap_ext_blocked rather than carrying an edge, because no open task owns the merge -- 990 re-reviews #11 and recommends, the user merges; filing 989<-990 or 984<-990 would invent an edge for a blocker no task owns, the judgement already recorded for the depth-0 gate behind 761. 984 is cheap once unblocked: next_iff (L := Formula) was checked to inhabit the statement of next_iff_covBy and both modules sit at layer 1, so the promotion has no layering cost. Ownership against 977 is already carved in both descriptions -- 977 owns the interval operators and the next/prev encoding, 984 owns the next_iff_covBy promotion, 989 owns the positive readings, the docstrings and the L-minus and star-language lemmas -- so the three do not collide."
         }
       ]
     },
@@ -4821,7 +4846,7 @@
       "gate": "947's report at docs/development/proof-mode-adequacy-perpetuity.md opens with GO or RE-PLAN. GO requires the proof-mode scripts to be shorter than the hand proofs in aggregate and for a clear majority of the gate's entries, with no entry needing a raw term-mode escape longer than its hand proof.",
       "progress": {
         "status": "planned",
-        "note": "960's implementation is held while PR #8 is open; research and planning may proceed, and 962 needs nothing"
+        "note": "960 and 977 both wait on the #8 merge, so the 969 -> 946 -> 947 chain sits behind it too; 986 and 962 are the lines enterable today"
       },
       "review": {
         "state": "none"
@@ -4829,17 +4854,24 @@
       "batches": [
         {
           "task_ids": [
+            986
+          ],
+          "description": "Report a view's real failure cause before the views tier freezes the wrong message in a test",
+          "rationale": "HEADS M3 because it is the one proof-mode line with nothing in its way: it edits FormalSystem/Tactic/FormulaViews.lean, which sits below the derivation tactics, so it is outside the four ProofMode directories 960 declares and outside the #8 merge's reach. It must land before 969: applyView restores the saved state on ANY error (catch _ => saved.restore) and then throws a wrong-shape message whatever actually failed, and 969's own done-when obliges a negative test of that message, which would freeze the wrong message in place. The edge 969<-986 is filed, so the ordering is in the graph and not only here. Not added to the eight-wide pre-gate batch because that batch is already at MAX_TASKS."
+        },
+        {
+          "task_ids": [
             962
           ],
           "description": "Deduction theorems for Star and Open: no predecessors, off the gate, Open half demoted",
-          "rationale": "RAISED to head the milestone: it is the only line here a dispatch can enter today, since 960's implementation is held while PR #8 is open and the eight-wide pre-gate line sits behind 960. Metatheory about two calculi with no predecessor and no dependant inside the gate's reach: only 953 carries an edge on it, from the far side of the join. It changes no rule the gate measures, so a RE-PLAN verdict does not touch it. The Open half inherits the 2026-11-05 demotion of the open-modal language and is not raised by being listed here."
+          "rationale": "Second rather than first now that 986 is enterable and smaller: metatheory about two calculi with no predecessor and no dependant inside the gate's reach -- only 953 carries an edge on it, from the far side of the join. It changes no rule the gate measures, so a RE-PLAN verdict at 947 does not touch it. The Open half inherits the 2026-11-05 demotion of the open-modal language and is not raised by being listed here."
         },
         {
           "task_ids": [
             960
           ],
-          "description": "The operator-family layout every later record files into; held while PRs #7 and #8 are open",
-          "rationale": "Alone on its line on measured scope, not on an edge: 960 declares four whole directories (FormalSystem/Theorems/ProofMode/, FormalSystem/Automation/ProofMode/, Tests/BimodalTest/Automation/ProofMode/, docs/user-guide/proof-mode/) because it rewrites the first two and creates the last two, and every other pre-gate record declares at least one file inside them. Its external condition is not in the graph: three collaborator pull requests are open against the files it moves, and its IMPLEMENTATION must not be dispatched while #7 or #8 is open. No hold is set, and 950, 954, 956 and 961 each carry a conditional scope depending on the answer."
+          "description": "The operator-family layout every later record files into; held while PR #8 is open",
+          "rationale": "Alone on its line on measured scope, not on an edge: 960 declares four whole directories (FormalSystem/Theorems/ProofMode/, FormalSystem/Automation/ProofMode/, Tests/BimodalTest/Automation/ProofMode/, docs/user-guide/proof-mode/) because it rewrites the first two and creates the last two, and every other pre-gate record declares at least one file inside them. Its external condition is not in the graph: #7 has merged, so #8 is the only collaborator pull request still open against the files it moves, and its IMPLEMENTATION must not be dispatched while #8 is open. The gating rule itself is unchanged -- only the count of open pull requests named in the line is brought up to date. No hold is set, and 950, 954, 956 and 961 each carry a conditional scope depending on the answer."
         },
         {
           "task_ids": [
@@ -4852,10 +4884,24 @@
             954,
             947
           ],
-          "description": "All five pre-gate streams, views now among them, run up to 947's GO / RE-PLAN gate",
-          "rationale": "Exactly MAX_TASKS wide, and dependency-inclusive: the intra-batch edges (944<-960, 945<-944, 946<-945,969, 947<-946,955,961,971) sequence it into four waves, so the line needs repeated invocations rather than splitting. 947 stays with its predecessors because a batch holding a blocker with its dependent is correct; nothing AFTER the gate is batched with it. Every member declares a file_scope, so the absent_file_scope serialization no longer applies and an implementation co-dispatch is admitted on overlap; the aggregators, the guide index and the two ProofMode READMEs still serialize the line without ordering it. 947's out-of-batch edge on 971 is named on the line rather than silently relied on."
+          "description": "All five pre-gate streams up to gate one; the line now sits behind 977 and the #8 merge",
+          "rationale": "Exactly MAX_TASKS wide, and dependency-inclusive: the intra-batch edges (944<-960, 945<-944, 946<-945,969, 947<-946,955,961,971) sequence it into four waves, so the line needs repeated invocations rather than splitting. 969 now carries two further edges, on 977 and on 986. Neither member is added here: the batch is already at MAX_TASKS, 986 heads this milestone on its own line, and 977 sits in M0. THE HONEST CONSEQUENCE of the 977 edge, which this description now states rather than leaving to be rediscovered: 969, then 946, then gate one 947 all sit behind the temporal rules merge, so no amount of dispatching clears this line until #8 is in, and M4 in turn sits behind the gate. 947 stays with its predecessors because a batch holding a blocker with its dependent is correct; nothing AFTER the gate is batched with it. Every member declares a file_scope, so the absent_file_scope serialization does not apply and an implementation co-dispatch is admitted on overlap; the aggregators, the guide index and the two ProofMode READMEs still serialize the line without ordering it. 947's out-of-batch edge on 971 is named on the line rather than silently relied on."
         }
       ]
+    },
+    {
+      "id": "M12",
+      "title": "The semantic mode: evaluator, mode and adapter",
+      "aim": "Goal C of records/milestones.md: a semantic evaluator for truth at a named point of a named model, the semantic proof mode beside the derivation mode, and the soundness adapter joining them. Neither half has a task record yet.",
+      "gate": "records/semantic-proof-mode.md is on main, the goal shape and witness interface it leaves open are settled, and a task record exists for the evaluator and for the mode and its adapter.",
+      "progress": {
+        "status": "planned",
+        "note": "Placeholder: neither half has a task record; both wait on records/semantic-proof-mode.md landing with #10"
+      },
+      "review": {
+        "state": "none"
+      },
+      "batches": []
     },
     {
       "id": "M1",
@@ -4864,7 +4910,7 @@
       "gate": "One shared reader opens both .jsonl and .jsonl.zst with the Lean executables reaching compressed data; the 298-headed dataset chain is terminal; and 257 is either migrated or re-scoped once the account token exists.",
       "progress": {
         "status": "active",
-        "note": "604 is the one line a dispatch can clear; hygiene now sits below the collaboration round by instruction"
+        "note": "988 and 604 are the two lines a dispatch can clear; hygiene still sits below the collaboration round by instruction"
       },
       "review": {
         "state": "none"
@@ -4872,10 +4918,17 @@
       "batches": [
         {
           "task_ids": [
+            988
+          ],
+          "description": "Fix the stale-date arm that CI skips, so a readme-lint PASS means the check actually ran",
+          "rationale": "HEADS hygiene because it is the smallest ready line in the milestone and it repairs a check the rest of the repository is judged by: scripts/readme-lint.sh skips its stale-date arm whenever SHALLOW_CLONE=1 (lines 66-68, 250, 331), actions/checkout is shallow by default, and the CI step therefore reports RESULT: PASS without running the arm at all -- measured on one commit where the same script with full history reported FAIL (3 new stale dates), the three rows being FormalSystem/Automation/ProofMode/README.md, FormalSystem/Tactic/README.md and FormalSystem/Theorems/ProofMode/README.md. Independent of every other record in the tree: no edge either way, and its file_scope (scripts/readme-lint.sh, .github/workflows/ci.yml, scripts/readme-date-baseline.txt) overlaps nothing open. Placed above 604 because it is hours rather than a research-first inventory of every dataset reader, and because a silently-passing CI gate misleads every contributor review while it stands."
+        },
+        {
+          "task_ids": [
             604
           ],
-          "description": "Restore the dataset readers the c7 zstd compression broke; the only runnable hygiene line",
-          "rationale": "DEMOTED with its milestone by the 2026-11-22 instruction to put the work that supports the collaborator's contributions first; within hygiene it is still first, and it remains the only hygiene line with no unmet predecessor: both its edges (631, 632) are archived and it sits in wave 1. Its own record is the most literal hygiene finding in the tree -- data/bmlogic-c7.jsonl was compressed to data/bmlogic-c7.jsonl.zst (17G -> 153M, lossless, sha256 of the decompressed stream verified identical) and every consumer hardcoding the uncompressed path is currently broken. Research-first: inventory every reader and writer of .jsonl datasets (Python validators and curators, shell runners, Lean executables, and the path fields in data/*_metadata.json) before changing any of them, then choose one shared open_dataset() helper and decide how the Lean executables reach compressed data given that Lean has no native zstd."
+          "description": "Restore the dataset readers the c7 zstd compression broke, so the Lean consumers read c7 again",
+          "rationale": "DEMOTED with its milestone by the 2026-11-22 instruction to put the work that supports the collaborator's contributions first, and now second within hygiene behind 988, which is smaller and repairs a CI check rather than a dataset reader. It still has no unmet predecessor: both its edges (631, 632) are archived and it sits in wave 1. Its own record is the most literal hygiene finding in the tree -- data/bmlogic-c7.jsonl was compressed to data/bmlogic-c7.jsonl.zst (17G -> 153M, lossless, sha256 of the decompressed stream verified identical) and every consumer hardcoding the uncompressed path is currently broken. Research-first: inventory every reader and writer of .jsonl datasets (Python validators and curators, shell runners, Lean executables, and the path fields in data/*_metadata.json) before changing any of them, then choose one shared open_dataset() helper and decide how the Lean executables reach compressed data given that Lean has no native zstd."
         },
         {
           "task_ids": [
@@ -4903,7 +4956,7 @@
       "gate": "948's measured report and missing-rule list are delivered, each item either added there or named with a proposed follow-up description. Gate two carries no GO/RE-PLAN verdict as filed.",
       "progress": {
         "status": "planned",
-        "note": "Every batch here is enterable only on a GO verdict at 947; RE-PLAN holds each until its own record is revised"
+        "note": "Enterable only on a GO verdict at 947; RE-PLAN holds each until its own record is revised; 950 additionally waits on 987 and the #8 merge"
       },
       "review": {
         "state": "none"
@@ -5236,6 +5289,7 @@
       "The mathematics and the (C)/(S)/(W) verdict table live in FormalSystem/Metalogic/Decidability/RaySummary/README.md, which is the authority; per-task detail in specs/TODO.md; finished work in specs/CHANGE_LOG.md and specs/archive/.",
       "records/milestones.md sits above the other records: the goals, its own milestone ids A1 to F, the two channels T and B, the joins where they meet, and the open decisions. The milestone ids here are separate from both those and proof-mode.md's M0-M23.",
       "The proof-mode and library programmes are specified in records/proof-mode.md (its milestones M0-M23, dependency picture, gates and lanes), records/proof-mode-architecture.md and records/theorem-library.md.",
+      "records/semantic-proof-mode.md specifies the semantic mode and is not on main; it arrives with the semantic-record contribution (#10), and the semantic-mode milestone below is a placeholder until it lands.",
       "The milestone ids here are this roadmap's own and do NOT correspond to records/proof-mode.md's M0-M23: M2 to M6 below carry that record's milestones, several per milestone.",
       "The rulings and the fuller rationale the hand-maintained roadmap carried are retained verbatim at specs/archive/roadmap-retained-prose-20261120.md; this file is rendered from specs/state.json and that prose is not.",
       "713 and 734 sit in no batch by ruling: 713's argued CTL-star 2EXPTIME lower bound is a citable ceiling with no consumer, and 734 waits on the paywalled Handbook of Modal Logic ch. 11 sections 5.10-5.11, absent from the local Zotero library."
@@ -5248,16 +5302,17 @@
       "The stability operator stays primitive in both languages (2026-11-05), and no constructor is added to PlusFormula, PlusAxiom or PlusDerivationTree.",
       "No agent-system work is filed in this repository: this tree's .claude-extensions.json declares no reachable source_dir, so a record whose edit target resolves only under the source store cannot run from here.",
       "960's IMPLEMENTATION must not be dispatched while collaborator pull request #8 is open; #7 is merged, so #8 is the only one still barring it. Research and planning may proceed. This is a statement rather than a status: no hold is set.",
+      "977's landing window is settled (2026-11-23): implementation lands after the temporal rules contribution merges, research and planning run now. The consequence: 969, then 946 and gate one 947, sit behind the #8 merge.",
       "947 is gate one: its report must open with an explicit GO or RE-PLAN verdict, and on RE-PLAN every record after it is held until its own record is revised. 948 is gate two and carries no verdict as filed.",
       "The depth-0 gate behind 761 is owned by no open task, so no dependency edge can express that blocker and none was invented to replace the one that aged out. Its disposition is a user ruling.",
-      "The collaboration round leads the order (2026-11-22 instruction): the review round, the records reconciliation, the D4 soundness statement and the signature layer's design come first, and repository hygiene sits below the library and the pre-gate rule set rather than ahead of them."
+      "The collaboration round leads the order (2026-11-22 instruction): the review round has closed, and what it left -- the #11 re-review, the semantic-mode research, the D4 soundness statement and the signature layer's design -- comes first, with hygiene below the library and the pre-gate rule set."
     ],
     "conventions": [
       "Each batch line is one invocation and batches are dependency-inclusive: a batch holding a blocker with its dependent is correct, while a dependent named without its out-of-batch blocker is dead weight.",
       "MAX_TASKS is 8 and the work-cycle budget is per task per invocation (5 default, 13 under --hard), so re-run the same line until every member reports terminal.",
       "Shared file scope serializes a batch rather than breaking it, and a collision against a live session's lock is not bypassable by --allow-scope-collision: wait for the holder, or batch with it.",
       "960 and 952 declare whole ProofMode directories on purpose, so nothing else may run beside either; the library records declare their own BimodalLib directories, and 178, 177, 257, 482, 875 and 876 declare theirs coarsely.",
-      "Twenty open records carry no file_scope (125, 231, 411, 412, 497-502, 570, 604, 664, 713, 831, 890, 935, 970, 983, 984), so the creation-time overlap check is blind on them. No task is filed for it.",
+      "Twenty-one open records carry no file_scope (125, 231, 411, 412, 497-502, 570, 604, 664, 713, 831, 890, 935, 970, 983, 984, 985), so the creation-time overlap check is blind on them. No task is filed for it.",
       "A RESEARCHED status does not always mean a report exists: 861, 862 and 890 carry it with no linked artifact and no task directory, their research folded into the task description.",
       "This file is generated from specs/state.json by scripts/roadmap-integration.sh; change milestone order, batch membership or a description through /roadmap, never by editing the file."
     ]
