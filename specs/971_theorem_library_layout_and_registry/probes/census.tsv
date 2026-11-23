@@ -1,0 +1,331 @@
+closed	FormalSystem.Theorems.Combinators	FormalSystem.ProofSystem.DerivedAxioms.contraSwap	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.ProofSystem.DerivedAxioms.linearSince	TemporalBoolean	fc	#[fc, F, F, F, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.ProofSystem.DerivedAxioms.linearUntilLegacy	TemporalBoolean	fc	#[fc, F, F, F, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.ProofSystem.DerivedAxioms.modal4	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.ProofSystem.DerivedAxioms.modalB	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.ProofSystem.DerivedAxioms.orAssocRev	Boolean	fc	#[fc, F, F, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.ProofSystem.DerivedAxioms.orRotate	Boolean	fc	#[fc, F, F, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.bCombinator	Boolean	fc	#[fc, F, F, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.identity	Boolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.notNotIntro	Boolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.pairing	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.temporalFutureDerived	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.theoremApp1	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.theoremApp2	Boolean	fc	#[fc, F, F, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.theoremFlip	Boolean	fc	#[fc, F, F, F]	public	def
+closed	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.topThm	Boolean	fc	#[fc]	public	def
+closed	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.connectFuture	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.connectPast	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.discretePropagateBwd	TemporalBoolean	fc	#[fc]	public	def
+closed	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.discreteSymmBwd	TemporalBoolean	fc	#[fc]	public	def
+closed	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.discreteSymmFwd	TemporalBoolean	fc	#[fc]	public	def
+closed	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.fHImp	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.lceImpThm	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.rceImpThm	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.untlBotFalseThm	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.DedekindDerived	FormalSystem.Theorems.DedekindDerived.alwaysElimFuture	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.DedekindDerived	FormalSystem.Theorems.DedekindDerived.alwaysElimHere	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.DedekindDerived	FormalSystem.Theorems.DedekindDerived.alwaysElimPast	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.DedekindDerived	FormalSystem.Theorems.DedekindDerived.coDerived	TemporalBoolean	fc	#[fc, P[FormalSystem.ProofSystem.FrameClass.RTime ≤ fc], F]	public	def
+closed	FormalSystem.Theorems.DedekindDerived	FormalSystem.Theorems.DedekindDerived.snceAllPastAndImp	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.DedekindDerived	FormalSystem.Theorems.DedekindDerived.someFutureAllPastImp	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.DedekindDerived	FormalSystem.Theorems.DedekindDerived.someFutureAllPastUntlTop	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.dfSchema	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.ZTime	#[F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.nextAllFuture	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.ZTime	#[F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.nextConj	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.noBlockingTriple	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.ZTime	#[F, F, F, F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.prevAllPast	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.ZTime	#[F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.prevConj	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.prevIndicator	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.ZTime	#[]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.prevIndicatorAt	TemporalBoolean	fc	#[fc, P[FormalSystem.ProofSystem.FrameClass.ZTime ≤ fc]]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.succIndicator	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.ZTime	#[]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.succIndicatorAt	TemporalBoolean	fc	#[fc, P[FormalSystem.ProofSystem.FrameClass.ZTime ≤ fc]]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.unfoldBackward	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.Base	#[F, F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.unfoldBackwardSince	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.ZTime	#[F, F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.unfoldForward	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.ZTime	#[F, F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.unfoldTableBackward	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.Base	#[F, F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.unfoldTableForward	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.ZTime	#[F, F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.z1EventBot	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.ZTime	#[F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.z1Schema	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.ZTime	#[F]	public	def
+closed	FormalSystem.Theorems.DiscreteUnfolding	FormalSystem.Theorems.DiscreteUnfolding.z1SchemaAt	TemporalBoolean	fc	#[fc, P[FormalSystem.ProofSystem.FrameClass.ZTime ≤ fc], F]	public	def
+closed	FormalSystem.Theorems.GeneralizedNecessitation	FormalSystem.Theorems.pastKDist	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.alwaysBoxIffBox	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.alwaysDiamondToDiamond	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.alwaysNegToNotSometimes	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.boxAlwaysIffAlwaysBox	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.boxAlwaysIffBox	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.boxToAlwaysBox	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.diamondAlwaysToDiamond	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.diamondIffDiamondSometimes	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.diamondSometimesIffSometimesDiamond	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.diamondSometimesToSometimesDiamond	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.diamondToDiamondSometimes	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.notSometimesToAlwaysNeg	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.sometimesBoxIffBox	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.sometimesDiamondToDiamond	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.sometimesDiamondToDiamondSometimes	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Interaction	FormalSystem.Theorems.Interaction.temporalPastDerived	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.LinearityDerived	FormalSystem.Theorems.LinearityDerived.claviusThm	Boolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.LinearityDerived	FormalSystem.Theorems.LinearityDerived.density	TemporalBoolean	fc	#[fc, P[FormalSystem.ProofSystem.FrameClass.Dense ≤ fc], F]	public	def
+closed	FormalSystem.Theorems.LinearityDerived	FormalSystem.Theorems.LinearityDerived.orInlThm	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.LinearityDerived	FormalSystem.Theorems.LinearityDerived.orInrThm	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.LinearityDerived	FormalSystem.Theorems.LinearityDerived.tempLinearity	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.LinearityDerived	FormalSystem.Theorems.LinearityDerived.tempLinearityLegacy	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.LinearityDerived	FormalSystem.Theorems.LinearityDerived.tempLinearityPast	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.ModalDerived	FormalSystem.Theorems.ModalDerived.axiom5NegativeIntrospection	ModalBoolean	FormalSystem.ProofSystem.FrameClass.Base	#[F]	public	def
+closed	FormalSystem.Theorems.ModalDerived	FormalSystem.Theorems.ModalDerived.boxDneTheorem	ModalBoolean	FormalSystem.ProofSystem.FrameClass.Base	#[F]	public	def
+closed	FormalSystem.Theorems.ModalDerived	FormalSystem.Theorems.ModalDerived.dneTheorem	Boolean	FormalSystem.ProofSystem.FrameClass.Base	#[F]	public	def
+closed	FormalSystem.Theorems.ModalDerived	FormalSystem.Theorems.ModalDerived.gDneTheorem	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.Base	#[F]	public	def
+closed	FormalSystem.Theorems.ModalDerived	FormalSystem.Theorems.ModalDerived.hDneTheorem	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.Base	#[F]	public	def
+closed	FormalSystem.Theorems.ModalDerived	FormalSystem.Theorems.ModalDerived.modal5CollapseTheorem	ModalBoolean	FormalSystem.ProofSystem.FrameClass.Base	#[F]	public	def
+closed	FormalSystem.Theorems.ModalDerived	FormalSystem.Theorems.ModalDerived.negBoxToBoxNegBox	ModalBoolean	FormalSystem.ProofSystem.FrameClass.Base	#[F]	public	def
+closed	FormalSystem.Theorems.ModalDerived	FormalSystem.Theorems.ModalDerived.pastTempA	TemporalBoolean	FormalSystem.ProofSystem.FrameClass.Base	#[F]	public	def
+closed	FormalSystem.Theorems.ModalS4	FormalSystem.Theorems.ModalS4.s4BoxDiamondBox	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.ModalS4	FormalSystem.Theorems.ModalS4.s4DiamondBoxConj	ModalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.ModalS4	FormalSystem.Theorems.ModalS4.s4DiamondBoxDiamond	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.ModalS4	FormalSystem.Theorems.ModalS4.s5DiamondConjDiamond	ModalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.ModalS5	FormalSystem.Theorems.ModalS5.boxConjIff	ModalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.ModalS5	FormalSystem.Theorems.ModalS5.boxContrapose	ModalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.ModalS5	FormalSystem.Theorems.ModalS5.boxDisjIntro	ModalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.ModalS5	FormalSystem.Theorems.ModalS5.classicalMerge	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.ModalS5	FormalSystem.Theorems.ModalS5.diamondDisjIff	ModalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.ModalS5	FormalSystem.Theorems.ModalS5.kDistDiamond	ModalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.ModalS5	FormalSystem.Theorems.ModalS5.s5DiamondBox	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.ModalS5	FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.ModalS5	FormalSystem.Theorems.ModalS5.tBoxConsistency	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.ModalS5	FormalSystem.Theorems.ModalS5.tBoxToDiamond	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Helpers	FormalSystem.Theorems.Perpetuity.boxToFuture	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Helpers	FormalSystem.Theorems.Perpetuity.boxToPast	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Helpers	FormalSystem.Theorems.Perpetuity.boxToPresent	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.alwaysDne	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.alwaysDni	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.alwaysToFuture	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.alwaysToPast	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.alwaysToPresent	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.bridge1	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.bridge2	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.modalDualityNeg	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.modalDualityNegRev	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.pastPresentFutureToAlways	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.perpetuity6	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.temporalDualityNeg	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.temporalDualityNegRev	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.boxDiamondToFutureBoxDiamond	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.boxDiamondToPastBoxDiamond	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.boxToBoxPast	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.diamond4	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.futureKDist	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.mbDiamond	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.modal5	ModalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.pastKDistFromFuture	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.perpetuity1	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.perpetuity2	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.perpetuity3	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.perpetuity4	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.perpetuity5	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.persistence	ModalTemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.classicalMerge	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.contraposeImp	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.demorganConjNeg	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.demorganConjNegBackward	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.demorganConjNegForward	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.demorganDisjNeg	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.demorganDisjNegBackward	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.demorganDisjNegForward	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.doubleNegation	Boolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.efqAxiom	Boolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.em	Boolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.impNegImp	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.impOfNeg	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.lceImp	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.negImp	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.peirceAxiom	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.rceImp	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.snceBotFalse	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.topNegImpBot	Boolean	fc	#[fc]	public	def
+closed	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.untlBotFalse	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.Propositional.Reasoning	FormalSystem.Theorems.Propositional.biImp	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.alwaysImpAllFuture	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.alwaysImpAllPast	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.alwaysToPresent	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.connectFutureChain	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.connectFutureG	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.connectFutureThm	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.connectPastChain	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.connectPastH	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.connectPastThm	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.contrapositive	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.fMono	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.fNegG	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.formulaOrComm	Boolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.gAndIntro	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.gContrapose	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.gDistribution	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.gImpTrans	TemporalBoolean	fc	#[fc, F, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.gImpliesGId	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.gMono	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.gTransitivity	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.hAndIntro	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.hContrapose	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.hDistribution	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.hImpTrans	TemporalBoolean	fc	#[fc, F, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.hMono	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.hTransitivity	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.pMono	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.pNegH	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.presentToSometimes	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.sinceImpP	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.sinceImpliesSomePast	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.sinceMonoEvent	TemporalBoolean	fc	#[fc, F, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.sinceMonoGuard	TemporalBoolean	fc	#[fc, F, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.temporal4Derived	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.temporalKDistDerived	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.untilImpF	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.untilImpliesSomeFuture	TemporalBoolean	fc	#[fc, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.untilMonoEvent	TemporalBoolean	fc	#[fc, F, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.untilMonoGuard	TemporalBoolean	fc	#[fc, F, F, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.weakFutureLeft	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.weakFutureRight	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.weakPastLeft	TemporalBoolean	fc	#[fc, F]	public	def
+closed	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.weakPastRight	TemporalBoolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.Combinators	FormalSystem.ProofSystem.DerivedAxioms.linearSinceAt	TemporalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, F, F]	public	def
+ctx	FormalSystem.Theorems.Combinators	FormalSystem.ProofSystem.DerivedAxioms.linearUntilLegacyAt	TemporalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, F, F]	public	def
+ctx	FormalSystem.Theorems.Combinators	FormalSystem.ProofSystem.DerivedAxioms.modal4At	ModalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F]	public	def
+ctx	FormalSystem.Theorems.Combinators	FormalSystem.ProofSystem.DerivedAxioms.modalBAt	ModalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F]	public	def
+ctx	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.connectPastAt	TemporalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F]	public	def
+ctx	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.discreteSymmBwdAt	TemporalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context]]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.applyInCtx	Boolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.applyInCtxWeak	Boolean	fc	#[fc, F, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.bCombinatorWeakened	Boolean	fc	#[fc, F, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.box4Ctx	ModalBoolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.box4CtxWeak	ModalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.boxBCtx	ModalBoolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.boxBCtxWeak	ModalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.boxElimCtx	Boolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.boxElimCtxWeak	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.boxFutureCtx	ModalTemporalBoolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.boxFutureCtxWeak	ModalTemporalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.boxPairCtx	ModalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.boxPairCtxWeak	ModalBoolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.boxPastCtx	TemporalBoolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.boxPastCtxWeak	TemporalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.boxToDiamondCtx	ModalBoolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.boxToFutureCtx	TemporalBoolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.conjIntroCtx	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.conjIntroCtxWeak	Boolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.conjProjLeft	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.conjProjRight	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.connectFutureCtx	TemporalBoolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.connectFutureCtxWeak	TemporalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.connectFutureWeakened	TemporalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.connectPastCtx	TemporalBoolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.connectPastCtxWeak	TemporalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.connectPastWeakened	TemporalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.diamond5Ctx	ModalBoolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.dniWeakened	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.ecqComputable	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.ecqComputableWeak	Boolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.exFalsoWeakened	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.identityInCtx	Boolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.identityInCtxWeak	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.identityWeakened	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.kDistCtx	ModalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.kDistCtxWeak	ModalBoolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.ldiComputable	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.modal4Weakened	ModalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.modalBWeakened	ModalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.modalKDistWeakened	ModalBoolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.modalTWeakened	ModalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.mpChain2	Boolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.mpChain2Weak	Boolean	fc	#[fc, F, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.mpChain3	Boolean	fc	#[fc, F, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.mpInContext	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.mpInContextWeak	Boolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.pairingWeakened	Boolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.propKWeakened	Boolean	fc	#[fc, F, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.propSWeakened	Boolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.rdiComputable	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.serialFutureCtx	TemporalBoolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.serialFutureCtxWeak	TemporalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.serialFutureWeakened	TemporalBoolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.serialPastWeakened	TemporalBoolean	fc	#[fc, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.sincePCtx	TemporalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.sincePCtxWeak	TemporalBoolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.sincePWeakened	TemporalBoolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.tempFutureWeakened	ModalTemporalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.tempKCtx	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.theoremApp1Weakened	Boolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.theoremFlipWeakened	Boolean	fc	#[fc, F, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.untilFCtx	TemporalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.untilFCtxWeak	TemporalBoolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.untilFWeakened	TemporalBoolean	fc	#[fc, F, F, F]	public	def
+ctx	FormalSystem.Theorems.ContextualProofs	FormalSystem.Theorems.ContextualProofs.weakenedAxiom	ModalBoolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.DeductionTheorem	FormalSystem.Metalogic.Core.deductionAssumptionOther	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, P[B ∈ Γ]]	public	def
+ctx	FormalSystem.Theorems.DeductionTheorem	FormalSystem.Metalogic.Core.deductionAssumptionSame	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F]	public	def
+ctx	FormalSystem.Theorems.DeductionTheorem	FormalSystem.Metalogic.Core.deductionAxiom	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, O[FormalSystem.ProofSystem.Axiom φ], P[h_ax.minFrameClass ≤ fc]]	public	def
+ctx	FormalSystem.Theorems.LinearityDerived	FormalSystem.Theorems.LinearityDerived.tempLinearityLegacyAt	TemporalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F]	public	def
+ctx	FormalSystem.Theorems.LinearityDerived	FormalSystem.Theorems.LinearityDerived.tempLinearityPastAt	TemporalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F]	public	def
+ctx	FormalSystem.Theorems.Perpetuity.Helpers	FormalSystem.Theorems.Perpetuity.axiomInContext	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, O[FormalSystem.ProofSystem.Axiom φ], P[h.minFrameClass ≤ fc]]	public	def
+ctx	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.iffElimLeft	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.iffElimRight	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.andLeft	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.andRight	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.botOfAndNeg	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.orInl	Boolean	fc	#[fc, F, F]	public	def
+ctx	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.orInr	Boolean	fc	#[fc, F, F]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.andIntro	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, D, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.baseThm	Boolean	fc	#[fc, F, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.combineImpConj	Boolean	fc	#[fc, F, F, F, D, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.combineImpConj3	Boolean	fc	#[fc, F, F, F, F, D, D, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.ctxMp	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, D, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.eventMono	TemporalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, F, D, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.guardMono	TemporalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, F, D, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.impTrans	Boolean	fc	#[fc, F, F, F, D, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.mp	Boolean	fc	#[fc, F, F, D, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.necG	TemporalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.necH	TemporalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.orElimBot	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, D, D, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.snceEventMono	TemporalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, F, D, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.thmIn	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, D]	public	def
+rule	FormalSystem.Theorems.Combinators	FormalSystem.Theorems.Combinators.wk	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, D]	public	def
+rule	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.compLeft	Boolean	fc	#[fc, F, F, F, D]	public	def
+rule	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.compRight	Boolean	fc	#[fc, F, F, F, D]	public	def
+rule	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.curryThm	Boolean	fc	#[fc, F, F, F, D]	public	def
+rule	FormalSystem.Theorems.ConnectDerived	FormalSystem.Theorems.ConnectDerived.gMonoThm	TemporalBoolean	fc	#[fc, F, F, D]	public	def
+rule	FormalSystem.Theorems.DeductionTheorem	FormalSystem.Metalogic.Core.deductionConverse	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, D]	public	def
+rule	FormalSystem.Theorems.DeductionTheorem	FormalSystem.Metalogic.Core.deductionMp	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, F, D, D]	public	def
+rule	FormalSystem.Theorems.DeductionTheorem	FormalSystem.Metalogic.Core.deductionTheorem	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, D]	public	def
+rule	FormalSystem.Theorems.GeneralizedNecessitation	FormalSystem.Theorems.generalizedModalK	ModalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, D]	public	def
+rule	FormalSystem.Theorems.GeneralizedNecessitation	FormalSystem.Theorems.generalizedPastK	TemporalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, D]	public	def
+rule	FormalSystem.Theorems.GeneralizedNecessitation	FormalSystem.Theorems.generalizedTemporalK	TemporalBoolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, D]	public	def
+rule	FormalSystem.Theorems.GeneralizedNecessitation	FormalSystem.Theorems.pastNecessitation	TemporalBoolean	fc	#[fc, F, D]	public	def
+rule	FormalSystem.Theorems.GeneralizedNecessitation	FormalSystem.Theorems.reverseDeduction	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, D]	public	def
+rule	FormalSystem.Theorems.LinearityDerived	FormalSystem.Theorems.LinearityDerived.orElimThm	Boolean	fc	#[fc, F, F, F, D, D]	public	def
+rule	FormalSystem.Theorems.ModalS5	FormalSystem.Theorems.ModalS5.boxIffIntro	ModalBoolean	fc	#[fc, F, F, D]	public	def
+rule	FormalSystem.Theorems.Perpetuity.Helpers	FormalSystem.Theorems.Perpetuity.applyAxiomInContext	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, O[FormalSystem.ProofSystem.Axiom (A.imp B)], P[axiom_proof.minFrameClass ≤ fc], D]	public	def
+rule	FormalSystem.Theorems.Perpetuity.Helpers	FormalSystem.Theorems.Perpetuity.applyAxiomTo	Boolean	fc	#[fc, F, F, O[FormalSystem.ProofSystem.Axiom (A.imp B)], P[axiom_proof.minFrameClass ≤ fc], D]	public	def
+rule	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.alwaysMono	TemporalBoolean	fc	#[fc, F, F, D]	public	def
+rule	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.boxMono	ModalBoolean	fc	#[fc, F, F, D]	public	def
+rule	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.diamondMono	ModalBoolean	fc	#[fc, F, F, D]	public	def
+rule	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.doubleContrapose	Boolean	fc	#[fc, F, F, D]	public	def
+rule	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.futureMono	TemporalBoolean	fc	#[fc, F, F, D]	public	def
+rule	FormalSystem.Theorems.Perpetuity.MonotonicityDuality	FormalSystem.Theorems.Perpetuity.pastMono	TemporalBoolean	fc	#[fc, F, F, D]	public	def
+rule	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.boxConjIntro	ModalBoolean	fc	#[fc, F, F, D, D]	public	def
+rule	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.boxConjIntroImp	ModalBoolean	fc	#[fc, F, F, F, D, D]	public	def
+rule	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.boxConjIntroImp3	ModalBoolean	fc	#[fc, F, F, F, F, D, D, D]	public	def
+rule	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.boxDne	ModalBoolean	fc	#[fc, F, D]	public	def
+rule	FormalSystem.Theorems.Perpetuity.Principles	FormalSystem.Theorems.Perpetuity.contraposition	Boolean	fc	#[fc, F, F, D]	public	def
+rule	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.contraposeIff	Boolean	fc	#[fc, F, F, D]	public	def
+rule	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.contraposition	Boolean	fc	#[fc, F, F, D]	public	def
+rule	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.iffIntro	Boolean	fc	#[fc, F, F, D, D]	public	def
+rule	FormalSystem.Theorems.Propositional.Connectives	FormalSystem.Theorems.Propositional.iffNegIntro	Boolean	fc	#[fc, F, F, D, D]	public	def
+rule	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.andFst	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, D]	public	def
+rule	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.andSnd	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, D]	public	def
+rule	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.impOfNegImpNeg	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, D]	public	def
+rule	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.orElim	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, F, D, D, D]	public	def
+rule	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.orIntroL	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, D]	public	def
+rule	FormalSystem.Theorems.Propositional.Core	FormalSystem.Theorems.Propositional.orIntroR	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, D]	public	def
+rule	FormalSystem.Theorems.Propositional.Reasoning	FormalSystem.Theorems.Propositional.de	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, F, D, D]	public	def
+rule	FormalSystem.Theorems.Propositional.Reasoning	FormalSystem.Theorems.Propositional.ni	Boolean	fc	#[fc, O[FormalSystem.Syntax.Context], F, F, D, D]	public	def
+rule	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.someFutureMono	TemporalBoolean	fc	#[fc, F, F, D]	public	def
+rule	FormalSystem.Theorems.TemporalDerived	FormalSystem.Theorems.TemporalDerived.somePastMono	TemporalBoolean	fc	#[fc, F, F, D]	public	def
