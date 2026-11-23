@@ -9,16 +9,17 @@
 
 | Milestone | Status | Tasks done | Review |
 |---|---|---|---|
-| [M0: The collaboration round: clear what Tanner's contributions wait on](#milestone-m0) | active | 8/12 | none |
+| [M0: The PR review round: a posted decision on each of the five contributions](#milestone-m0) | closed 2026-11-23 | - | none |
+| [M13: What the merges leave owed: the signature layer and the follow-ups](#milestone-m13) | active | 0/4 | none |
 | [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | planned | 0/5 | none |
 | [M3: Proof-mode rule set up to gate one](#milestone-m3) | planned | 0/11 | none |
-| [M12: The semantic mode: evaluator, mode and adapter](#milestone-m12) | planned | - | none |
 | [M1: Repository hygiene](#milestone-m1) | active | 0/7 | none |
+| [M7: L-plus at integer time: decidability and route R3](#milestone-m7) | active | 0/6 | none |
+| [M8: The tableau decidability engine](#milestone-m8) | active | 0/8 | none |
 | [M4: Linear-time rules, usability and gate two](#milestone-m4) | planned | 0/7 | none |
 | [M5: One interface, and the entries that need it](#milestone-m5) | planned | 0/3 | none |
 | [M6: Specification reasoning, dual verification and the manual](#milestone-m6) | planned | 0/5 | none |
-| [M7: L-plus at integer time: decidability and route R3](#milestone-m7) | active | 0/6 | none |
-| [M8: The tableau decidability engine](#milestone-m8) | active | 0/8 | none |
+| [M12: The semantic mode: evaluator, mode and adapter](#milestone-m12) | planned | - | none |
 | [M9: Algebraic representation and MF rigidity](#milestone-m9) | planned | 0/8 | none |
 | [M10: The written record: errata, open questions, examples and docs](#milestone-m10) | planned | 0/5 | none |
 | [M11: L-triangle: the open-modal exploration backlog](#milestone-m11) | planned | 0/6 | none |
@@ -26,37 +27,34 @@
 See also: [Rules, conventions and repo context](#roadmap-context)
 
 <a id="milestone-m0"></a>
-## M0: The collaboration round: clear what Tanner's contributions wait on
+## M0: The PR review round: a posted decision on each of the five contributions
 
-Close channel B's side of the open contributions: the re-review at #11's new head, the semantic-mode research the #10 reply needs, the soundness statement its adapter needs, the signature layer's design, and the follow-ups each merge leaves owed.
+Closed 2026-11-23 -- review: none -- Reported on all five contributions, reconciled the records, and stated D4 once over TruthEnv
 
-- **Progress**: active -- 4/7 batches, 8/12 tasks done -- Review round closed; #8 mergeable with a review drafted, #11 at a new unreviewed head, #10 a comment pending, #9 to be closed
+<a id="milestone-m13"></a>
+## M13: What the merges leave owed: the signature layer and the follow-ups
+
+Land the records the open contributions release: the D1 signature layer that the derivation layout and the one interface both file into, and the follow-ups the temporal rules and the pointed semantic lemmas each leave owed.
+
+- **Progress**: active -- 0/3 batches, 0/4 tasks done -- 977 is researched and planned; all four wait only on a merge -- 977 and 987 on #8, 989 and 984 on #11
 - **Review**: none
-- **Gate**: Every open contribution carries a posted decision or an action named as the contributor's; records/milestones.md and the open task descriptions state the position reached; star_soundness_in is proved beside star_soundness_validIn; and the follow-ups each merge leaves owed are closed.
+- **Gate**: The signature layer is implemented with Formula, PlusFormula and StarFormula as instances and the eighteen doubled derived operators written once; and every follow-up each merged contribution leaves owed is closed, or re-filed against the merged tree with a stated reason.
 
-**Batch 1** (done) -- Close the review round on PRs #7 to #11 and reconcile the records to the outcome it reaches
-
-**Batch 2** (done) -- Re-review #11 at the head pushed after the round closed; the freshest contributor-facing line
-
-**Batch 3** (done) -- Research the semantic goal shape and witnesses, so the #10 reply and the At fix can be judged
-
-**Batch 4** (done) -- Prove star_soundness_in, so the semantic mode's adapter needs no per-language wrapper
-
-**Batch 5** -- Design the signature layer now; its landing after the temporal rules merge is settled
+**Batch 1** -- The D1 signature layer: researched and planned, implementation waits only on the #8 merge
 
 ```
-/orchestrate 977 --research --plan
-977 ready           connective_signature_layer_shared_primitives   <- landing window settled: research and plan now, implement after the temporal rules merge
+/orchestrate 977
+977 EXT-BLOCKED     connective_signature_layer_shared_primitives   <- researched and planned; implementation waits on the temporal rules merge
 ```
 
-**Batch 6** -- The temporal rules' owed follow-ups once #8 lands; 950 builds on the same modules
+**Batch 2** -- The temporal rules' owed follow-ups once #8 lands; 950 builds on the same modules
 
 ```
 /orchestrate 987
 987 EXT-BLOCKED     temporal_rules_followups_fold_names_and_progress_tests   <- waits on the temporal rules contribution merging
 ```
 
-**Batch 7** -- Everything owed on the pointed semantic lemmas once #11 lands, stated over the clause classes
+**Batch 3** -- Everything owed on the pointed semantic lemmas once #11 lands, stated over the clause classes
 
 ```
 /orchestrate 989, 984
@@ -69,37 +67,25 @@ Close channel B's side of the open contributions: the re-review at #11's new hea
 
 Give the theorem library its layout by fragment and frame class, fill the fragments the tableau reaches, keep every refutation checked, and make filing by smallest fragment a theorem.
 
-- **Progress**: planned -- 0/4 batches, 0/5 tasks done -- 971 is ready now; gate one carries an edge on it, and the evaluator's countermodel client sits behind it
+- **Progress**: planned -- 0/2 batches, 0/5 tasks done -- 971 is ready now; gate one carries an edge on it, and the evaluator's countermodel client sits behind it
 - **Review**: none
 - **Gate**: BimodalLib builds; every closed derivation outside Theorems/ProofMode/ is registered with its fragment, frame class and substitution class and a check fails when one is added unregistered; tableau verdicts and countermodels are admitted only at a stated grade; and the conservativity table is generated from the theorems.
 
-**Batch 1** -- The registry and fragment layout gate one and every later library record read from
+**Batch 1** -- The registry and the three records that read it; only 972's 961 edge reaches outside
 
 ```
-/orchestrate 971
+/orchestrate 971, 975, 972, 973
+972 blocked:961,971 theorem_library_tableau_pipeline
+973 blocked:971,972 theorem_library_countermodels
+975 blocked:971     theorem_library_fragment_conservativity   <- the 971 edge is the generated table only; its theorems need not wait
 971 ready           theorem_library_layout_and_registry   <- the registry 947, 972, 973, 974 and 975 all read
 ```
 
-**Batch 2** -- Conservativity along every fragment edge; the 971 edge covers the generated table only
-
-```
-/orchestrate 975
-975 blocked:971     theorem_library_fragment_conservativity   <- the 971 edge is the generated table only; its theorems need not wait
-```
-
-**Batch 3** -- Whether the stability operator is rightly in the Modal family; the entries wait on this report
+**Batch 2** -- Whether the stability operator is rightly in the Modal family; the entries wait on this report
 
 ```
 /orchestrate 970
 970 ready           investigate_stability_as_modal_family
-```
-
-**Batch 4** -- The tableau's verdicts and refutations turned into library entries, each with its grade
-
-```
-/orchestrate 972, 973
-972 blocked:961,971 theorem_library_tableau_pipeline
-973 blocked:971,972 theorem_library_countermodels
 ```
 
 <a id="milestone-m3"></a>
@@ -132,7 +118,7 @@ Put the mode in the operator-family layout, extend the bimodal scope rules, clos
 960 ready           proof_mode_split_shared_test_and_guide_files   <- implementation held while PR #8 is open; research and planning may proceed
 ```
 
-**Batch 4** -- All five pre-gate streams up to gate one; the line now sits behind 977 and the #8 merge
+**Batch 4** -- All five pre-gate streams to gate one; 960 and 986 stay outside only because this is MAX_TASKS
 
 ```
 /orchestrate 969, 944, 945, 946, 955, 961, 954, 947
@@ -146,21 +132,12 @@ Put the mode in the operator-family layout, extend the bimodal scope rules, clos
 969 blocked:960,977,986  proof_mode_views_tier   <- behind 977 and so behind the #8 merge; 946 and gate one 947 follow it
 ```
 
-<a id="milestone-m12"></a>
-## M12: The semantic mode: evaluator, mode and adapter
-
-Goal C of records/milestones.md: a semantic evaluator for truth at a named point of a named model, the semantic proof mode beside the derivation mode, and the soundness adapter joining them. Neither half has a task record yet.
-
-- **Progress**: planned -- no batches yet -- Placeholder: neither half has a task record; both wait on records/semantic-proof-mode.md landing with #10
-- **Review**: none
-- **Gate**: records/semantic-proof-mode.md is on main, the goal shape and witness interface it leaves open are settled, and a task record exists for the evaluator and for the mode and its adapter.
-
 <a id="milestone-m1"></a>
 ## M1: Repository hygiene
 
 Close the residual hygiene backlog: dataset readers that work on compressed data, the c7 labeling chain finished, and the large datasets moved off the repository.
 
-- **Progress**: active -- 0/4 batches, 0/7 tasks done -- 988 and 604 are the two lines a dispatch can clear; hygiene still sits below the collaboration round by instruction
+- **Progress**: active -- 0/3 batches, 0/7 tasks done -- 988 is the one line a dispatch clears outright; hygiene stays below the library and the pre-gate rule set
 - **Review**: none
 - **Gate**: One shared reader opens both .jsonl and .jsonl.zst with the Lean executables reaching compressed data; the 298-headed dataset chain is terminal; and 257 is either migrated or re-scoped once the account token exists.
 
@@ -171,28 +148,84 @@ Close the residual hygiene backlog: dataset readers that work on compressed data
 988 ready           readme_lint_stale_date_check_on_shallow_clones   <- CI's shallow clone skips the stale-date arm, so its PASS checks less than it says
 ```
 
-**Batch 2** -- Restore the dataset readers the c7 zstd compression broke, so the Lean consumers read c7 again
+**Batch 2** -- The dataset chain on one line: the readers c7's compression broke, then 298's own bug chain
 
 ```
-/orchestrate 604
-604 ready           support_zstd_compressed_jsonl_datasets   <- hygiene: the c7 consumers stay broken until this lands
-```
-
-**Batch 3** -- Half-finished dataset work: three PARTIAL records behind 298's c7 bug, plus 231's automation
-
-```
-/orchestrate 298, 282, 296, 231
+/orchestrate 604, 298, 282, 296, 231
 282 PARTIAL         exhaustive_enumeration_by_default
 296 PARTIAL         re_add_derived_binary_operators_with_dedup_fix
 298 PARTIAL         fix_c7_labeling_bug_and_regenerate_dataset
-231 blocked:298     dataset_regeneration_automation
+231 blocked:298,604 dataset_regeneration_automation
+604 ready           support_zstd_compressed_jsonl_datasets   <- hygiene: the c7 consumers stay broken until this lands
 ```
 
-**Batch 4** -- Hugging Face migration for large datasets; externally blocked until the account token exists
+**Batch 3** -- Hugging Face migration for large datasets; externally blocked until the account token exists
 
 ```
 /orchestrate 257
 257 BLOCKED         large_data_storage_huggingface   <- needs the Hugging Face account token only the owner can supply
+```
+
+<a id="milestone-m7"></a>
+## M7: L-plus at integer time: decidability and route R3
+
+Decide validity of the stability-modal language at integer time in Lean, past the ladder realization theorem to Decidable (PlusValidZTime phi), and settle whether a determinization-free route to completeness exists.
+
+- **Progress**: active -- 0/3 batches, 0/6 tasks done -- 935 and 831 are the two enterable research lines; the ladder line waits on a ruling on the depth-0 gate
+- **Review**: none
+- **Gate**: cellLE_zero_const_of_kappa_eq lands sorry-free or CellLEZeroConstOfKappaEq is refuted under ParamsOk; the ladder realization theorem closes; Decidable (PlusValidZTime phi) is stated and proved; and route R3 has a recorded verdict either way.
+
+**Batch 1** -- Route R3: does a determinization-free progress measure for L-plus ZTime completeness exist
+
+```
+/orchestrate 935 --hard --lit
+935 ready           determinization_free_progress_measure_design
+```
+
+**Batch 2** -- The dense-time dichotomy gating L-R3, the only identified non-ZTime decidability route
+
+```
+/orchestrate 831 --research --lit
+831 ready           dense_time_certificate_dichotomy_gate
+```
+
+**Batch 3** -- Ladder realization with all three dependents, parked on the depth-0 gate no open task owns
+
+```
+/orchestrate 761, 862, 763, 861 --hard --lit
+761 PARTIAL         ladder_realization_theorem   <- no dispatch can advance it: the depth-0 gate is owned by no open task
+763 blocked:761     ladder_lift_decidability_corollary
+861 blocked:761,763 Record the one-sided transport refutation in the RaySummary refutation table
+862 blocked:761     Promote cntAt_eq_of_pend_eq_fwd into LadderAgree as a strict sharpening
+```
+
+<a id="milestone-m8"></a>
+## M8: The tableau decidability engine
+
+Carry the TM tableau from engine totality at a quantified branch budget through the repaired truth lemma and the admissibility lemmas to refutation-core decidability and proof extraction.
+
+- **Progress**: active -- 0/2 batches, 0/8 tasks done -- 428's marker is mis-set and its scope needs a user ruling; 410 already carries a plan
+- **Review**: none
+- **Gate**: valid iff allClosed is assembled, provability is decidable with its completeness corollaries, and the proof-extraction obligation is discharged or refused with a recorded reason.
+
+**Batch 1** -- The refuted UnorderedSuccessorLabelClosed residual; a register entry is a complete outcome
+
+```
+/orchestrate 481 --hard
+481 BLOCKED         discharge_or_replace_unorderedsuccessorlabelclosed_residual
+```
+
+**Batch 2** -- The whole tableau spine: stalled on 428's scope ruling, ending at open mathematics
+
+```
+/orchestrate 428, 429, 410, 411, 430, 412, 482 --hard --lit
+428 BLOCKED         engine_totality_at_a_quantified_branch_budget
+410 blocked:429     internalize_tableau_branches_and_prove_routine_rule_admissibility
+411 blocked:410     prove_hard_admissibility_lemmas_for_until_since_trichotomy_discrete_and_dedek...
+412 blocked:410,411,428,430  prove_refutation_core_and_decidability_of_provability_with_completen...
+429 blocked:428     repair_truth_lemma_side_conditions_boxanchored_and_temporalwitness
+430 blocked:411,428,429  semantic_lift_and_track_a_assembly_valid_iff_allclosed
+482 blocked:412     discharge_proof_extraction_completeness
 ```
 
 <a id="milestone-m4"></a>
@@ -291,113 +324,36 @@ Carry the mode from derivations to safety and liveness arguments about systems d
 968 blocked:948,952 proof_mode_reference_manual_chapter
 ```
 
-<a id="milestone-m7"></a>
-## M7: L-plus at integer time: decidability and route R3
+<a id="milestone-m12"></a>
+## M12: The semantic mode: evaluator, mode and adapter
 
-Decide validity of the stability-modal language at integer time in Lean, past the ladder realization theorem to Decidable (PlusValidZTime phi), and settle whether a determinization-free route to completeness exists.
+Goal C of records/milestones.md: a semantic evaluator for truth at a named point of a named model, the semantic proof mode beside the derivation mode, and the soundness adapter joining them. Neither half has a task record yet.
 
-- **Progress**: active -- 0/4 batches, 0/6 tasks done -- 761 rests at 30 of 41 phases with zero enterable, behind the depth-0 gate no open task owns
+- **Progress**: planned -- no batches yet -- The semantic goal shape is researched and delivered; the record is unmerged at #10 and neither half has a record
 - **Review**: none
-- **Gate**: cellLE_zero_const_of_kappa_eq lands sorry-free or CellLEZeroConstOfKappaEq is refuted under ParamsOk; the ladder realization theorem closes; Decidable (PlusValidZTime phi) is stated and proved; and route R3 has a recorded verdict either way.
-
-**Batch 1** -- Route R3: does a determinization-free progress measure for L-plus ZTime completeness exist
-
-```
-/orchestrate 935 --hard --lit
-935 ready           determinization_free_progress_measure_design
-```
-
-**Batch 2** -- The dense-time dichotomy gating L-R3, the only identified non-ZTime decidability route
-
-```
-/orchestrate 831 --research --lit
-831 ready           dense_time_certificate_dichotomy_gate
-```
-
-**Batch 3** -- Ladder realization and its two dependents, parked behind a depth-0 gate no open task owns
-
-```
-/orchestrate 761, 862, 861 --hard --lit
-761 PARTIAL         ladder_realization_theorem   <- no dispatch can advance it: the depth-0 gate is owned by no open task
-861 blocked:761,763 Record the one-sided transport refutation in the RaySummary refutation table
-862 blocked:761     Promote cntAt_eq_of_pend_eq_fwd into LadderAgree as a strict sharpening
-```
-
-**Batch 4** -- The lift to Decidable (PlusValidZTime phi); watch real_certStabK by name, not by discovery
-
-```
-/orchestrate 763 --hard --lit
-763 blocked:761     ladder_lift_decidability_corollary
-```
-
-<a id="milestone-m8"></a>
-## M8: The tableau decidability engine
-
-Carry the TM tableau from engine totality at a quantified branch budget through the repaired truth lemma and the admissibility lemmas to refutation-core decidability and proof extraction.
-
-- **Progress**: active -- 0/3 batches, 0/8 tasks done -- 428's marker is mis-set and its scope needs a user ruling; 410 already carries a plan
-- **Review**: none
-- **Gate**: valid iff allClosed is assembled, provability is decidable with its completeness corollaries, and the proof-extraction obligation is discharged or refused with a recorded reason.
-
-**Batch 1** -- The refuted UnorderedSuccessorLabelClosed residual; a register entry is a complete outcome
-
-```
-/orchestrate 481 --hard
-481 BLOCKED         discharge_or_replace_unorderedsuccessorlabelclosed_residual
-```
-
-**Batch 2** -- The tableau spine's middle; needs 428's scope ruled, and 410 already carries a plan
-
-```
-/orchestrate 428, 429, 410, 411 --hard
-428 BLOCKED         engine_totality_at_a_quantified_branch_budget
-410 blocked:429     internalize_tableau_branches_and_prove_routine_rule_admissibility
-411 blocked:410     prove_hard_admissibility_lemmas_for_until_since_trichotomy_discrete_and_dedek...
-429 blocked:428     repair_truth_lemma_side_conditions_boxanchored_and_temporalwitness
-```
-
-**Batch 3** -- The tableau spine's terminus, ending at 482, classified open mathematics and multi-month
-
-```
-/orchestrate 430, 412, 482 --hard --lit
-412 blocked:410,411,428,430  prove_refutation_core_and_decidability_of_provability_with_completen...
-430 blocked:411,428,429  semantic_lift_and_track_a_assembly_valid_iff_allclosed
-482 blocked:412     discharge_proof_extraction_completeness
-```
+- **Gate**: records/semantic-proof-mode.md is on main, the goal shape and witness interface it leaves open are settled, and a task record exists for the evaluator and for the mode and its adapter.
 
 <a id="milestone-m9"></a>
 ## M9: Algebraic representation and MF rigidity
 
 Ground the representation front in Goldblatt and BRV, bring the Shift-closed Tense S5 Algebra class into live code, prove the Jonsson-Tarski representation for the bimodal case, and machine-check the MF correspondence results.
 
-- **Progress**: planned -- 0/3 batches, 0/8 tasks done -- The only route to 543, the last high-priority L-plus metalogic task still open
+- **Progress**: planned -- 0/1 batches, 0/8 tasks done -- The only route to 543, the last high-priority L-plus metalogic task still open
 - **Review**: none
 - **Gate**: The representation theorem holds for the Shift-closed Tense S5 Algebra class with Until and Since, one representation route survives the reconciliation with the shift-set theorem rather than two running in parallel, and 543's correspondence and rigidity results compile.
 
-**Batch 1** -- The algebraic chain bottom-up to 543, the last high-priority L-plus metalogic task still open
+**Batch 1** -- The algebraic front on one line, from the grounding to the capstone and 543's rigidity
 
 ```
-/orchestrate 502, 497, 500, 543 --hard --lit
+/orchestrate 502, 497, 498, 499, 500, 125, 501, 543 --hard --lit
+125 blocked:498,499 jonsson_tarski_representation_bimodal_sus
 497 blocked:502     port_stsa_class_and_add_g_operator
-500 blocked:497     reconcile_shiftset_representation_with_stsa_route
-543 blocked:500     formalize_mf_correspondence_rigidity
-502 ready           ground_algebraic_representation_in_goldblatt_and_brv
-```
-
-**Batch 2** -- The Jonsson-Tarski representation's two sides: complex algebra and ultrafilter frame
-
-```
-/orchestrate 498, 499 --hard
 498 blocked:497     build_complex_algebra_for_task_frames
 499 blocked:497     build_ultrafilter_frame_and_prove_task_frame_axioms
-```
-
-**Batch 3** -- The Jonsson-Tarski capstone and Until/Since on STSA, the representation front's terminus
-
-```
-/orchestrate 125, 501 --hard
-125 blocked:498,499 jonsson_tarski_representation_bimodal_sus
+500 blocked:497     reconcile_shiftset_representation_with_stsa_route
 501 blocked:125     extend_stsa_with_until_since_operators
+543 blocked:500     formalize_mf_correspondence_rigidity
+502 ready           ground_algebraic_representation_in_goldblatt_and_brv
 ```
 
 <a id="milestone-m10"></a>
@@ -443,26 +399,20 @@ Land the paper-side record the two fronts owe: the GHR erratum, the C3 completen
 
 Keep the open-modal language's backlog moving at low priority: truth invariance along a ray lifting, the syntax closures, incompleteness transfer at Base, and the decision record on the stability primitive.
 
-- **Progress**: planned -- 0/2 batches, 0/6 tasks done -- Secondary by the 2026-11-05 ruling: never dispatched ahead of, or batched with, L-plus critical-path work
+- **Progress**: planned -- 0/1 batches, 0/6 tasks done -- Secondary by the 2026-11-05 ruling: never dispatched ahead of, or batched with, L-plus critical-path work
 - **Review**: none
 - **Gate**: Each row of the backlog is landed or carries a recorded reason, and 876 reports on whether the stability operator could be removed as an OpenFormula primitive and at what cost, without attempting the removal.
 
-**Batch 1** -- Open-modal invariance and the IntNormalForm API behind it; 869's own gates are discharged
+**Batch 1** -- The whole L-triangle backlog: 869 first, then the IntNormalForm API and the three closures
 
 ```
-/orchestrate 869, 932
-932 blocked:869     Land the four ofStepRel constraint lemmas and an ofStepPlain constructor in I...
-869 ready           open_modal_invariance_ray_agreement_lifting
-```
-
-**Batch 2** -- The L-triangle syntax line: 873 runs first within the batch and gates the other three
-
-```
-/orchestrate 873, 874, 875, 876
+/orchestrate 869, 932, 873, 874, 875, 876
 873 blocked:869     open_language_subformula_closure
 874 blocked:873     open_language_substitution_closure
 875 blocked:873     open_language_incompleteness_transfer
 876 blocked:873     open_language_stability_primitive_removal
+932 blocked:869     Land the four ofStepRel constraint lemmas and an ofStepPlain constructor in I...
+869 ready           open_modal_invariance_ray_agreement_lifting
 ```
 
 <a id="roadmap-context"></a>
@@ -487,10 +437,10 @@ Keep the open-modal language's backlog moving at low priority: truth invariance 
 - The stability operator stays primitive in both languages (2026-11-05), and no constructor is added to PlusFormula, PlusAxiom or PlusDerivationTree.
 - No agent-system work is filed in this repository: this tree's .claude-extensions.json declares no reachable source_dir, so a record whose edit target resolves only under the source store cannot run from here.
 - 960's IMPLEMENTATION must not be dispatched while collaborator pull request #8 is open; #7 is merged, so #8 is the only one still barring it. Research and planning may proceed. This is a statement rather than a status: no hold is set.
-- 977's landing window is settled (2026-11-23): implementation lands after the temporal rules contribution merges, research and planning run now. The consequence: 969, then 946 and gate one 947, sit behind the #8 merge.
+- 977's landing window is settled (2026-11-23): research and planning are done and implementation lands after the temporal rules contribution merges. The consequence: 969, then 946 and gate one 947, sit behind the #8 merge.
 - 947 is gate one: its report must open with an explicit GO or RE-PLAN verdict, and on RE-PLAN every record after it is held until its own record is revised. 948 is gate two and carries no verdict as filed.
 - The depth-0 gate behind 761 is owned by no open task, so no dependency edge can express that blocker and none was invented to replace the one that aged out. Its disposition is a user ruling.
-- The collaboration round leads the order (2026-11-22 instruction): the review round has closed, and what it left -- the #11 re-review, the semantic-mode research, the D4 soundness statement and the signature layer's design -- comes first, with hygiene below the library and the pre-gate rule set.
+- The collaboration round leads the order (2026-11-22 instruction). The review round and the three actions it left have closed; what the merges still leave owed -- the signature layer and each contribution's follow-ups -- comes first, with hygiene below the library and the pre-gate rule set.
 
 ### Conventions
 
@@ -498,7 +448,7 @@ Keep the open-modal language's backlog moving at low priority: truth invariance 
 - MAX_TASKS is 8 and the work-cycle budget is per task per invocation (5 default, 13 under --hard), so re-run the same line until every member reports terminal.
 - Shared file scope serializes a batch rather than breaking it, and a collision against a live session's lock is not bypassable by --allow-scope-collision: wait for the holder, or batch with it.
 - 960 and 952 declare whole ProofMode directories on purpose, so nothing else may run beside either; the library records declare their own BimodalLib directories, and 178, 177, 257, 482, 875 and 876 declare theirs coarsely.
-- Twenty-one open records carry no file_scope (125, 231, 411, 412, 497-502, 570, 604, 664, 713, 831, 890, 935, 970, 983, 984, 985), so the creation-time overlap check is blind on them. No task is filed for it.
+- Nineteen open records carry no file_scope (125, 231, 411, 412, 497-502, 570, 604, 664, 713, 831, 890, 935, 970, 984), so the creation-time overlap check is blind on them. No task is filed for it.
 - A RESEARCHED status does not always mean a report exists: 861, 862 and 890 carry it with no linked artifact and no task directory, their research folded into the task description.
 - This file is generated from specs/state.json by scripts/roadmap-integration.sh; change milestone order, batch membership or a description through /roadmap, never by editing the file.
 
