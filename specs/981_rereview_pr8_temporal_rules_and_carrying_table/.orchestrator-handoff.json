@@ -1,0 +1,27 @@
+{
+  "status": "planned",
+  "task_number": 981,
+  "phase": "plan",
+  "dispatch_seq": 10,
+  "session_id": "sess_1795402655_5a890d_981",
+  "phases_completed": 0,
+  "phases_total": 4,
+  "summary": "Wrote a four-phase close-out plan for the PR #8 re-review. The research round had already produced both the report and the full draft response at specs/reviews/pr-reviews-2026-11-21/pr8-review.md, so the implement round is an audit-and-close-out rather than an authoring round: re-validate the head (still 49a7efe23, OPEN, CONFLICTING), audit every claim in the draft against the report and strip the stale first-read assertions, produce the postable pr8-comment.md plus verbatim record-edit text for the records-reconciliation task, then dispose of the probe worktree and the follow-up ledger and write the summary. No Lean edits, no records/ edits, nothing posted or pushed.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/981_rereview_pr8_temporal_rules_and_carrying_table/plans/01_rereview-pr8-temporal-rules-carrying-table.md",
+      "summary": "Four-phase close-out plan; validates clean against validate-artifact.sh with zero warnings."
+    }
+  ],
+  "blockers": [],
+  "user_decision": {
+    "question": "Where should PR #8's re-keyed carrying table live -- in a shared non-private module both tactic families import, or in a register_lcarry environment-extension registry mirroring the merged view table? The draft currently asks the contributor for the shared module.",
+    "options": [
+      "(a) A shared non-private module, e.g. FormalSystem/Automation/ProofMode/Carrying.lean, imported by Temporal.lean and Discrete.lean -- cheapest, a key change plus a file move, and the scope-core records add rows one line at a time",
+      "(b) A register_lcarry registry mirroring FormalSystem/Tactic/FormulaViews.lean's SimplePersistentEnvExtension -- lets the scope-core records add rows without touching any Temporal-family file at all, but the registration command must do its own checking since extension rows are invisible to the kernel and to #print axioms"
+    ],
+    "recommended": "(a) A shared non-private module, e.g. FormalSystem/Automation/ProofMode/Carrying.lean, imported by Temporal.lean and Discrete.lean -- cheapest, a key change plus a file move, and the scope-core records add rows one line at a time",
+    "blocking": false
+  }
+}
