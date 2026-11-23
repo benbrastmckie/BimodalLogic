@@ -13,7 +13,7 @@ next_project_number: 991
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,960,962,970,971,977,984,985,986,987,988,989 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,960,962,970,971,977,984,986,987,988,989 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932,944,954,955,961,969,975 | 298,428,502,761,869,960,971,977,986 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876,945,972 | 429,497,763,873,944,961,971 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543,946,973 | 410,498,499,500,945,969,972 | algebraic-representation, decidability, metalogic, ... |
@@ -95,7 +95,6 @@ next_project_number: 991
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 932 [NOT STARTED] — Land the four ofStepRel constraint lemmas and an ofStepPlain...
 984 [NOT STARTED] — Promote next\_iff\_covBy and prev\_iff\_covBy of...
-985 [RESEARCHED] — Research the shape of a semantic goal and its witnesses for...
 989 [NOT STARTED] — Three follow-ups named in the posted review of the pointed...
 
 ### Syntax
@@ -212,7 +211,7 @@ next_project_number: 991
 ---
 
 ### 985. Research semantic proof mode for pr10 reply
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None

@@ -245,12 +245,12 @@
     {
       "project_number": 985,
       "project_name": "research_semantic_proof_mode_for_pr10_reply",
-      "status": "researched",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Research the shape of a semantic goal and its witnesses for the semantic proof mode, so that the findings can be used to revise the reply to pull request #10 (draft at specs/reviews/pr-reviews-2026-11-21/pr10-comment.md; not yet posted) and to judge the fix requested on pull request #11. RESEARCH ONLY: the deliverable is a report; do not edit the comment, the records, or any Lean source, and post nothing. START FROM what is already known and do not redo it: specs/reviews/pr-reviews-2026-11-21/pr10-review.md (the review of records/semantic-proof-mode.md: idiom, consistency with the sibling records, the four clients, the ceiling, the measurement plan, the open points), specs/978_review_pr11_pointed_semantic_lemmas/reports/01_review-pr11-pointed-semantic-lemmas.md, and records/milestones.md (C1-C4, D4, joins 6 and 7). The soundness adapter is decided (D4) and the adoption threshold is set as revisable; neither is in scope. SUBJECT: records/semantic-proof-mode.md on the branch of PR #10 (head bdaa3b6d0, read with gh pr diff 10) proposes a tool for proving a formula true or false at a named point of a named model from supplied witnesses, measured on refute_allFuture_stab and refute_stab_allFuture_past (FormalSystem/PlusLanguage/PlusNonValidities.lean) and refute_modal_future and refute_sentDet (FormalSystem/StarLanguage/StarNonValidities.lean). QUESTIONS, each answered with evidence from the tree. (1) THE GOAL SHAPE. What a truth-at-a-point goal should look like in a tactic proof: the per-language predicates (TruthAt, PlusTruthAt, StarTruthAt), the generic TruthEnv form of FormalSystem/Semantics/TruthClauses.lean, or the At abbreviation over Point introduced by PR #11 (head c6cd983b7, FormalSystem/Semantics/PointTransport.lean and TemporalRules.lean). PR #11's At cannot be rewritten through by any clause lemma (rw and simp only both fail; only show works), and the fix was left to the author as either an at_def simp lemma or At-level statements of the clause lemmas. Determine which fix gives the goal shape an evaluator would recurse on, whether the choice constrains the evaluator, and what the four clients' goals look like under each. (2) THE WITNESS INTERFACE. A clause-directed positional argument list or named witnesses: write out, for refute_allFuture_stab, refute_modal_future and refute_stab_allFuture_past (three clause layers), what the supplied evidence is at each clause and how each interface would read; say which is legible at three layers and what the trial the record proposes should be judged on. (3) EVALUATOR BESIDE THE LEMMAS OR ONE MODULE WITH THE MODE: the considerations on each side given what (1) and (2) find, and what records/milestones.md assumes. (4) WHAT THE #9 BRANCH ALREADY TRIED. The semantic tactic layer on the PR #9 branch (head b3d8f6463: Semantic.lean, SemanticCore.lean, the Semantic* files beside them, ProofModeExtensionsTest.lean): what goal shape and witness handling it used, what worked, what of it is reusable under a separate prefix and registry, and what depends on overloading the l* commands. (5) PRIOR ART, briefly and only where it changes a recommendation: how other proof assistants or proof modes present checking truth in a concrete model from supplied witnesses. OUTPUT: a report ending with a section 'Implications for the replies' in two short parts: for #10, point by point, what the reply should ask for, what it should state as decided, what it can drop, and any claim in the current draft found wrong or unsupported; for #11, which of the two At fixes to prefer and why, if the research gives a reason. Keep that section short enough to revise the comment from directly. Channel: review work on channel B supporting milestones C1 and C2",
       "topic": "semantics",
       "created": "2026-11-23T02:33:04Z",
-      "last_updated": "2026-11-23T19:46:41Z",
+      "last_updated": "2026-11-23T20:55:04Z",
       "audit_verdict": {
         "proposal": {
           "id": "research_semantic_proof_mode_for_pr10_reply",
@@ -279,7 +279,7 @@
         "degradations_count": 452
       },
       "roadmap_annotation": "research only; it feeds the #10 reply and the choice of #11's At fix",
-      "session_id": "sess_1795462392_eb6c32",
+      "session_id": "sess_1795467304_abe5e9",
       "artifacts": [
         {
           "path": "specs/985_research_semantic_proof_mode_for_pr10_reply/reports/01_semantic-goal-shape-witnesses.md",
