@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 5,
+  "phases_completed": 0,
+  "phases_total": 3,
+  "summary": "Wrote a 3-phase plan at specs/978_review_pr11_pointed_semantic_lemmas/plans/01_review-pr11-pointed-semantic-lemmas.md. Live re-check changed the premise: PR #11's head is unchanged at c6cd983b7, but #7 has merged (so #11 is now CONFLICTING) and the user already posted the review to GitHub as CHANGES_REQUESTED at 2026-11-23T01:57:16Z, verbatim from specs/reviews/pr-reviews-2026-11-21/pr11-comment.md. The review deliverable is therefore done and acted on; the plan covers only record reconciliation (disposition section, closing the four rulings, follow-up ledger, worktree note, summary). No Lean build, no rebase, nothing posted.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/978_review_pr11_pointed_semantic_lemmas/plans/01_review-pr11-pointed-semantic-lemmas.md",
+      "summary": "Three serial phases (prose, prose, full) reconciling the task's durable record with the review the user already posted on PR #11."
+    }
+  ],
+  "blockers": []
+}
