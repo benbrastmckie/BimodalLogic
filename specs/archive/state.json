@@ -5482,6 +5482,1067 @@
   ],
   "completed_projects": [
     {
+      "project_number": 990,
+      "project_name": "rereview_pr11_at_rewriteable_pointed_truth_head",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Re-review pull request #11 (pointed temporal semantics and transport lemmas) at head b2eb3ac0b, \"Make pointed truth rewriteable and exercise semantic rule families\", pushed 2026-11-23T04:33Z after the CHANGES_REQUESTED review posted 2026-11-23T01:57Z against c6cd983b7. The earlier review record closed against the old head and did not see this commit. The push merges main (so the conflict with the merged rewriting contribution is gone and the PR is MERGEABLE) and, restricted to the PR-owned paths, changes FormalSystem/Semantics/PointTransport.lean (+7/-2), Tests/BimodalTest/Semantics/TemporalRulesTest.lean (+72) and Tests/BimodalTest/Semantics/PointTransportTest.lean (+35) plus the generated files. DELIVERABLE: check each of the three posted conditions against the new head (rebase and regenerate; `At` made usable, with a test; tests for the untested lemmas including one at the star language), by building and testing the head in a review worktree, and re-check the head has not moved again first; then a draft response in specs/reviews/pr-reviews-2026-11-21/ (approve, or the conditions still open), concise and flat in register, and an updated entry in FOLLOWUP.md. Nothing is posted, pushed, merged or approved by the agent; the user posts. If it is approved and merged, `pointed_semantic_lemmas_after_merge_followups` and `promote_next_prev_covby_to_generic_lemmas` are unblocked.",
+      "topic": "semantics",
+      "file_scope": [
+        "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/summaries/01_approve-pr11-and-update-followup.md",
+        "specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr11-approval.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr11-comment.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr11-review.md"
+      ],
+      "created": "2026-11-23T08:29:21Z",
+      "last_updated": "2026-11-23T10:00:37Z",
+      "roadmap_annotation": "PR #11's head moved to b2eb3ac0b after the review closed; that head is unreviewed",
+      "audit_verdict": {
+        "proposal": {
+          "id": "rereview_pr11_at_rewriteable_pointed_truth_head",
+          "project_number": null,
+          "title": "rereview_pr11_at_rewriteable_pointed_truth_head"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 4,
+          "scope-blind": 453
+        },
+        "verdicts_detail": [],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 453
+      },
+      "session_id": "sess_1795424219_8f2fbf",
+      "artifacts": [
+        {
+          "path": "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/reports/01_rereview-pr11-at-usability-and-tests.md",
+          "type": "report",
+          "summary": "Re-review of PR #11 at head b2eb3ac0b: all three posted conditions met; recommendation is approve, with measured evidence for each condition, a twelve-probe table pinning down exactly what At usability now means, and green gates from a from-scratch review worktree."
+        },
+        {
+          "path": "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/plans/01_approve-pr11-and-update-followup.md",
+          "type": "plan",
+          "summary": "Four-phase plan: re-confirm head, draft the PR #11 approval body, reconcile FOLLOWUP.md, final consistency pass and summary."
+        },
+        {
+          "path": "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/summaries/01_approve-pr11-and-update-followup.md",
+          "type": "summary",
+          "summary": "Completion summary: approve verdict turned into two prose deliverables, with the scoped gate result and its one unattributable pre-existing failure named."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "PR #11's head was re-confirmed at b2eb3ac0b twice with CI green and no contributor prose, and the research dispatch's approve verdict was turned into two prose deliverables: a 61-line draft approval body stating all three conditions met and what At usability now measurably means, and a FOLLOWUP.md reconciled across all six #11 mentions with the approval as post-list item 5. No Lean source, generated surface or repository code was touched, and nothing was posted, pushed, merged or approved.",
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
+      "project_number": 985,
+      "project_name": "research_semantic_proof_mode_for_pr10_reply",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Research the shape of a semantic goal and its witnesses for the semantic proof mode, so that the findings can be used to revise the reply to pull request #10 (draft at specs/reviews/pr-reviews-2026-11-21/pr10-comment.md; not yet posted) and to judge the fix requested on pull request #11. RESEARCH ONLY: the deliverable is a report; do not edit the comment, the records, or any Lean source, and post nothing. START FROM what is already known and do not redo it: specs/reviews/pr-reviews-2026-11-21/pr10-review.md (the review of records/semantic-proof-mode.md: idiom, consistency with the sibling records, the four clients, the ceiling, the measurement plan, the open points), specs/978_review_pr11_pointed_semantic_lemmas/reports/01_review-pr11-pointed-semantic-lemmas.md, and records/milestones.md (C1-C4, D4, joins 6 and 7). The soundness adapter is decided (D4) and the adoption threshold is set as revisable; neither is in scope. SUBJECT: records/semantic-proof-mode.md on the branch of PR #10 (head bdaa3b6d0, read with gh pr diff 10) proposes a tool for proving a formula true or false at a named point of a named model from supplied witnesses, measured on refute_allFuture_stab and refute_stab_allFuture_past (FormalSystem/PlusLanguage/PlusNonValidities.lean) and refute_modal_future and refute_sentDet (FormalSystem/StarLanguage/StarNonValidities.lean). QUESTIONS, each answered with evidence from the tree. (1) THE GOAL SHAPE. What a truth-at-a-point goal should look like in a tactic proof: the per-language predicates (TruthAt, PlusTruthAt, StarTruthAt), the generic TruthEnv form of FormalSystem/Semantics/TruthClauses.lean, or the At abbreviation over Point introduced by PR #11 (head c6cd983b7, FormalSystem/Semantics/PointTransport.lean and TemporalRules.lean). PR #11's At cannot be rewritten through by any clause lemma (rw and simp only both fail; only show works), and the fix was left to the author as either an at_def simp lemma or At-level statements of the clause lemmas. Determine which fix gives the goal shape an evaluator would recurse on, whether the choice constrains the evaluator, and what the four clients' goals look like under each. (2) THE WITNESS INTERFACE. A clause-directed positional argument list or named witnesses: write out, for refute_allFuture_stab, refute_modal_future and refute_stab_allFuture_past (three clause layers), what the supplied evidence is at each clause and how each interface would read; say which is legible at three layers and what the trial the record proposes should be judged on. (3) EVALUATOR BESIDE THE LEMMAS OR ONE MODULE WITH THE MODE: the considerations on each side given what (1) and (2) find, and what records/milestones.md assumes. (4) WHAT THE #9 BRANCH ALREADY TRIED. The semantic tactic layer on the PR #9 branch (head b3d8f6463: Semantic.lean, SemanticCore.lean, the Semantic* files beside them, ProofModeExtensionsTest.lean): what goal shape and witness handling it used, what worked, what of it is reusable under a separate prefix and registry, and what depends on overloading the l* commands. (5) PRIOR ART, briefly and only where it changes a recommendation: how other proof assistants or proof modes present checking truth in a concrete model from supplied witnesses. OUTPUT: a report ending with a section 'Implications for the replies' in two short parts: for #10, point by point, what the reply should ask for, what it should state as decided, what it can drop, and any claim in the current draft found wrong or unsupported; for #11, which of the two At fixes to prefer and why, if the research gives a reason. Keep that section short enough to revise the comment from directly. Channel: review work on channel B supporting milestones C1 and C2",
+      "topic": "semantics",
+      "created": "2026-11-23T02:33:04Z",
+      "last_updated": "2026-11-23T20:55:04Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "research_semantic_proof_mode_for_pr10_reply",
+          "project_number": null,
+          "title": "Research the semantic proof mode in full to revise the reply to PR #10"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 4,
+          "duplicate-of-open": 1,
+          "scope-blind": 452
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 979,
+            "project_name": "review_pr10_semantic_record_and_pr9_disposition",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.49557522123893805
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 452
+      },
+      "roadmap_annotation": "research only; it feeds the #10 reply and the choice of #11's At fix",
+      "session_id": "sess_1795467304_abe5e9",
+      "artifacts": [
+        {
+          "path": "specs/985_research_semantic_proof_mode_for_pr10_reply/reports/01_semantic-goal-shape-witnesses.md",
+          "type": "report",
+          "summary": "Goal shape, witness interface, evaluator placement, the PR #9 semantic layer and prior art for the semantic proof mode, with compiled probes and a closing section on what to change in the PR #10 reply and the verdict on PR #11's At fix."
+        }
+      ],
+      "next_artifact_number": 2,
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
+      "project_number": 983,
+      "project_name": "soundness_statement_over_truth_env",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "State pointed soundness once over TruthEnv, with TM, TM+ and TM⋆ as instances, so that the semantic mode adapter needs no per-language wrapper module (milestone D4 of records/milestones.md, join 7; the adapter paragraph of records/proof-mode-architecture.md). PHASE 1: prove star_soundness_in, the context form of TM⋆ soundness (a StarDerivationTree fc Γ φ, a frame in fc, a model, history, time and register environment at which every member of Γ is true, give truth of φ there), beside star_soundness_validIn in FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean. TM has soundness_in (FormalSystem/Metalogic/Soundness.lean) and TM+ has plus_soundness_in (FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean); TM⋆ has only the empty-context validity form. StarSoundness.lean mirrors PlusSoundness.lean arm for arm, so the plus proof is the model, but this has NOT been attempted: establish first how the register environment is quantified in the premises and whether the three empty-context rules go through unchanged. PHASE 2: one class, at layer 3 under FormalSystem/Metalogic/, tying a language derivation relation to its TruthEnv truth predicate, with the three theorems as instances, and one generic theorem giving truth at a point from a derivation, frame-class evidence and truth of the premises. KEEP THE CLASS MINIMAL: proof_mode_abstract_frontend_interface will later constrain the object-level interface, and this class should be something that interface can require, not a second packaging of the connectives. DO NOT restate any language soundness theorem under another name; FormalSystem/Metalogic/ProofModeSoundness.lean on branch feat/proof-mode-semantics is four such restatements and is the shape to avoid. Sound direction only: guard with assert_not_exists against the completeness theorems, and import nothing under FormalSystem/Automation/ProofMode/. Tests instantiate the generic theorem at all three languages. Open to either collaborator; the done-when in records/milestones.md is the standard.",
+      "topic": "metalogic",
+      "created": "2026-11-22T23:58:42Z",
+      "last_updated": "2026-11-23T20:52:47Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "soundness_statement_over_truth_env",
+          "project_number": null,
+          "title": "State pointed soundness once over TruthEnv with TM, TM+ and TM-star as instances, including a new context-form star_soundness_in"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 74,
+          "duplicate-of-open": 13,
+          "scope-blind": 435
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 980,
+            "project_name": "rereview_pr7_rewriting_and_views_merge_decision",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.5
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 978,
+            "project_name": "review_pr11_pointed_semantic_lemmas",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.6
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 977,
+            "project_name": "connective_signature_layer_shared_primitives",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 975,
+            "project_name": "theorem_library_fragment_conservativity",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 957,
+            "project_name": "proof_mode_transition_systems_tm_specifications",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 956,
+            "project_name": "proof_mode_leads_to_invariance_library",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 952,
+            "project_name": "proof_mode_abstract_frontend_interface",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.5
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 763,
+            "project_name": "ladder_lift_decidability_corollary",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 761,
+            "project_name": "ladder_realization_theorem",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 177,
+            "project_name": "update_readme_and_module_docstrings",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.6
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 412,
+            "project_name": "prove_refutation_core_and_decidability_of_provability_with_completeness_corollaries",
+            "shared_paths": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 430,
+            "project_name": "semantic_lift_and_track_a_assembly_valid_iff_allclosed",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 876,
+            "project_name": "open_language_stability_primitive_removal",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 435
+      },
+      "roadmap_annotation": "C4, the semantic mode and its adapter, waits on this; no open PR touches StarSoundness.lean",
+      "session_id": "sess_1795465627_d652c6",
+      "artifacts": [
+        {
+          "path": "specs/983_soundness_statement_over_truth_env/reports/01_pointed-soundness-truth-env.md",
+          "type": "report",
+          "summary": "star_soundness_in compiles as plus_soundness_in with one fixed register binder; recommended Prop-valued mixin PointedSound L D over TruthEnv with three instances and generic truth_of_derivation, all probe-compiled with tests at TM, TM+ and TM-star."
+        },
+        {
+          "path": "specs/983_soundness_statement_over_truth_env/plans/01_pointed-soundness-truth-env.md",
+          "type": "plan",
+          "summary": "Four-phase implementation plan for task 983."
+        },
+        {
+          "path": "specs/983_soundness_statement_over_truth_env/summaries/02_pointed-soundness-truth-env-summary.md",
+          "type": "summary",
+          "summary": "star_soundness_in (context form of TM⋆ soundness), the PointedSound class with TM/TM⁺/TM⋆ instances and the generic truth_of_derivation in FormalSystem/Metalogic/PointedSoundness.lean, and tests at all three languages; full build green."
+        }
+      ],
+      "next_artifact_number": 4,
+      "file_scope": [
+        "FormalSystem.lean",
+        "FormalSystem/Metalogic.lean",
+        "FormalSystem/Metalogic/Conservativity/README.md",
+        "FormalSystem/Metalogic/Conservativity/Star/README.md",
+        "FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean",
+        "FormalSystem/Metalogic/PointedSoundness.lean",
+        "FormalSystem/Metalogic/README.md",
+        "FormalSystem/README.md",
+        "README.md",
+        "Tests/BimodalTest.lean",
+        "Tests/BimodalTest/Metalogic/PointedSoundnessTest.lean",
+        "docs/theorem-index.md",
+        "scripts/module-invariants-allowlist.txt",
+        "typst/generated/status.typ"
+      ],
+      "completion_summary": "Added star_soundness_in beside star_soundness_validIn and stated pointed soundness once over TruthEnv: the Prop-valued mixin PointedSound with instances at TM, TM⁺ and TM⋆ and the generic theorem truth_of_derivation, guarded against the completeness theorems. Tests instantiate it at all three languages. Milestone D4 done-when holds.",
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
+      "project_number": 982,
+      "project_name": "reconcile_records_and_tasks_after_pr_review_round",
+      "status": "completed",
+      "task_type": "general",
+      "description": "Reconcile the records, the roadmap rules and the open task descriptions with the outcome of the review round on collaborator PRs #7 to #11. Run this after the four review tasks have reported AND the user has acted on them; begin by reading the state of every pull request with `gh pr view` and the four reports under specs/reviews/pr-reviews-2026-11-21/, and stop with a list of what is still pending if the user's rulings on the items those reports put first are not yet recorded. This task posts nothing and merges nothing. WHAT TO CHANGE. (1) records/milestones.md: the contributions table (five pull requests where it lists three, each with its current state); Where it stands and What to do next rewritten for the state reached; open decision 1 (conditions of merging) replaced by the ruling; open decision 2 (who drafts the semantic record) removed, the contributor having written it; open decision 4 (evaluator beside the lemmas or its own mode) and open decision 5 (expand / contract) closed or restated per the reports; Goal C's milestones C1 and C2 given up to pointers once the lemmas and the record are merged, as records/README.md requires of implemented design; join 2 restated with the carrying-table shape agreed; and the channel table re-phased. (2) records/proof-mode.md: M17 (what is contributed, what the second run still owes, the contributor's Current client paragraph checked against the deliverable rules), M16 (which rows and which modules exist, what the views-tier record still owes), M4 (expand / contract, what is contributed, the induction rule still open), the dependency picture's M17-then-M0-then-M16 order, and Filed records. (3) records/proof-mode-architecture.md: open decision 2 closed with the rename, the rows of Where the work sits for views, rewriting, carrying, Until/Since and the semantic tier, and the semantic-mode paragraph once records/semantic-proof-mode.md is in the tree. (4) records/README.md: one row per record actually present, milestones.md and semantic-proof-mode.md among them. (5) Task descriptions, edited through state-write.sh and never by hand: proof_mode_split_shared_test_and_guide_files (its coordination paragraph names PRs #7, #8 and #9 and a set of files that has changed; restate what it must now move, including the modules under FormalSystem/Tactic/, and whether its hold is lifted), proof_mode_views_tier (what is contributed and what remains), connective_signature_layer_shared_primitives (its relation to the Language table and the landing window of join 4), proof_mode_s5_aware_box_scopes and proof_mode_cross_modal_scopes_mf_tf (the carrying table they add rows to), theorem_library_countermodels (the evaluator as a client and the admission grade), and the file_scope of each where paths moved. (6) The roadmap: list the rule and batch-description changes needed (the rule that the layout record's implementation is not dispatched while PR #7 or #8 is open; a place for the semantic tier) as a quoted instruction for the user to give /roadmap; do not edit specs/ROADMAP.md, which is generated. CONSTRAINTS: records state the current design and name work by slug (records/README.md, .claude/rules/no-record-versioning-in-deliverables.md, no-task-references-in-deliverables.md); where a merged pull request has itself edited a record, reconcile with its text instead of overwriting it; run a closing consistency pass over all the records for statements that contradict each other.",
+      "topic": "proof-mode",
+      "dependencies": [
+        978,
+        979,
+        980,
+        981
+      ],
+      "file_scope": [
+        "records/README.md",
+        "records/milestones.md",
+        "records/proof-mode-architecture.md",
+        "records/proof-mode.md",
+        "records/theorem-library.md",
+        "specs/ROADMAP.md",
+        "specs/TODO.md",
+        "specs/state.json"
+      ],
+      "created": "2026-11-21T23:01:58Z",
+      "last_updated": "2026-11-23T05:58:00Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "reconcile_records_and_tasks_after_pr_review_round",
+          "project_number": null,
+          "title": "reconcile_records_and_tasks_after_pr_review_round"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 19,
+          "duplicate-of-open": 3,
+          "scope-blind": 448
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 981,
+            "project_name": "rereview_pr8_temporal_rules_and_carrying_table",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4696969696969697
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 980,
+            "project_name": "rereview_pr7_rewriting_and_views_merge_decision",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4494949494949495
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 979,
+            "project_name": "review_pr10_semantic_record_and_pr9_disposition",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.43434343434343436
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 448
+      },
+      "roadmap_annotation": "cannot finish ahead of the user's rulings on open decisions 3 and 4",
+      "session_id": "sess_1795402655_5a890d",
+      "artifacts": [
+        {
+          "path": "specs/982_reconcile_records_and_tasks_after_pr_review_round/reports/01_reconcile-records-pr-review-round.md",
+          "type": "report",
+          "summary": "Confirms task 982 is not blocked: the four review tasks (978-981) completed and the PR #7-#11 review round's rulings are recorded (two posted to GitHub, three fully decided but not yet posted); gives item-by-item findings and concrete edit targets for records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md, records/README.md, six named task descriptions, and a quoted /roadmap instruction, plus one found cross-record staleness (M17's stale 'under review' text in records/proof-mode.md after PR #7 merged)."
+        },
+        {
+          "path": "specs/982_reconcile_records_and_tasks_after_pr_review_round/plans/01_reconcile-records-pr-review-round.md",
+          "type": "plan",
+          "summary": "Six-phase, 5.75-hour plan in three dependency waves: gating re-verification, then three record files plus the state.json descriptions in parallel, then a cross-record consistency pass and the quoted /roadmap instruction."
+        },
+        {
+          "path": "specs/982_reconcile_records_and_tasks_after_pr_review_round/summaries/01_reconcile-records-pr-review-round-summary.md",
+          "type": "summary",
+          "summary": "Reconciled four record files and six task descriptions with the PR review round outcome; includes the quoted /roadmap instruction and the still-pending list."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Reconciled records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md and records/README.md, and six task descriptions in specs/state.json, with the state the PR review round actually reached; closed a stale cross-record contradiction (M17's 'under review' text after the rewriting contribution merged), deferred every item gated on an unmerged branch, and wrote a quoted /roadmap instruction plus a still-pending list into the implementation summary.",
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
+      "project_number": 981,
+      "project_name": "rereview_pr8_temporal_rules_and_carrying_table",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Re-review collaborator PR #8 (branch feat/proof-mode-temporal, head b020320fd when filed: two commits, \"Tighten temporal rule application and scope carrying\" (dc253dde5) and \"Exercise time reflection on library theorem clients\", on top of the old temporal commit 1f545ea0a) against the thirteen requests of the posted review (specs/reviews/pr-reviews-2026-11-20/pr8-review.md), and prepare a draft response at specs/reviews/pr-reviews-2026-11-21/pr8-review.md. It is stacked on PR #7 and its own description says it is rebased after #7 merges, so this task runs after the PR #7 re-review and reads that report first. FIRST-READ FINDINGS TO CHECK: the branch sits on the OLD PR #7 head (fc85c61b9), not on 5f5ad32bf, conflicts with main, and has had NO CI RUN; done on reading: the Until/Since keywords are renamed expand / contract, the five `... using rule` forms are collapsed into lapply, there is one integerTimeGate helper and Dense now reports an integer-time error, keeping is a non-reserved keyword built over a carryRules table and rejects undetermined formulas, lapply errors on an unresolved instance with the goal order documented, ltime_reflect using rejects a non-derivation, tests are added for luntil intro, lsince intro, linduction, keeping on lstep and three messages, and two clients re-prove connectPast and connectPastH by reflection; not done: TemporalComposition.lean is not split by family, ltemporal_dual and the inclusive Until/Since views remain in Temporal.lean and are not rows of the view table, the generalizing induction rule is untouched, no edit to M4 or to Where the work sits, sixteen fail_if_success against three #guard_msgs. WHAT TO ESTABLISH. (1) REBASE COST: in a worktree, rebase or merge the two new commits onto the current PR #7 head and onto main, list every conflict and say whether each is mechanical, so the response can tell the contributor what the rebase involves or offer to do it; then build and run the tests on the result, since nothing has. (2) REQUEST TABLE: for each of the thirteen requests and sub-items, done, partly done or not done, with file and line. (3) THE CARRYING TABLE (join 2 of records/milestones.md): carryRules is private, holds hard-coded TM/TM+ declaration pairs, and is keyed by a `past` flag and one source operator. Work out what proof_mode_s5_aware_box_scopes and proof_mode_cross_modal_scopes_mf_tf need from it (box facts carried by 4, 5, MF and TF, into box, G and H scopes, in both time directions, and the stability mirror), and propose the concrete table shape and where it lives so that those records add rows without editing Temporal.lean; say whether that is a condition of merging or a follow-up. (4) A CHANGED MERGED TEST: Tests/BimodalTest/Automation/ProofModeTest.lean has an existing acceptance example altered (a hypothesis `ZTime <= fc` became `True -> ZTime <= fc`) because lstep and linvariant now reuse an exact local certificate where they used to leave the gate as a goal. State the behaviour before and after, whether the new single policy is the one request 7 asked for, and whether any other merged example changes meaning; the family-layout record's done-when requires every existing example to pass unchanged. (5) KEYWORDS: the rename settles open decision 2 of records/proof-mode-architecture.md in the direction the user leaned; confirm nothing still uses fold / unfold for a derivation step and draft the record edit. (6) VIEWS: with the view table now in PR #7, say exactly which declarations of this PR become rows (the inclusive forms, strongTrigger / strongRelease, ltemporal_dual) and whether ltemporal_dual survives as a tactic. (7) THE INDUCTION RULE: do not derive it; report whether anything in the PR bears on the statement proposed in M4 of records/proof-mode.md, and whether linduction as it stands should be documented as backward induction only. (8) GATE-ONE ADMISSION: keeping and ltime_reflect are the only contributed rules gate-one scripts may use and only once adopted into the scope-core milestone; say what adoption requires of each as they now stand. (9) REMAINING SMALLER POINTS: messages that print allFuture where the user wrote G; lprogress untested; past and TM+ coverage; plan labels and relative-to-the-past wording in source and guide. (10) THE DRAFT: what is settled, the conditions of merging as a short numbered list, the follow-ups, and the answer to give on the rebase. GROUND RULES FOR THIS REVIEW TASK. (i) Nothing is posted to GitHub, merged, pushed or approved by an agent: the deliverable is a draft the user posts and a recommendation the user acts on (.claude/rules/pr-prohibition.md). (ii) Work on the pull request head in a separate git worktree fetched with `git fetch origin refs/pull/<N>/head`, never in the main working tree; record the exact commit reviewed, re-check the head with `gh pr view` before finishing, and if it has moved say so and review the new commits too. (iii) Every claim in the draft is backed by something run or read in this task: a build, a test, an `#print axioms`, a file and line. Say plainly what was not verified. (iv) The report opens with the items that need the user's ruling, each with options and a recommendation, then the recommendation for the pull request (MERGE, REQUEST CHANGES or COMMENT), then the evidence. (v) The draft is written in the register of the reviews already posted (specs/reviews/pr-reviews-2026-11-20/): direct, specific, numbered requests, credit where the work is right, and a clear separation of conditions of merging from follow-ups. Read records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md and records/theorem-library.md first; the first-read findings this task starts from are summarized below and are to be checked, not trusted.",
+      "topic": "proof-mode",
+      "dependencies": [
+        980
+      ],
+      "file_scope": [
+        "specs/981_rereview_pr8_temporal_rules_and_carrying_table/reports/01_rereview-pr8-temporal-rules-carrying-table.md",
+        "specs/981_rereview_pr8_temporal_rules_and_carrying_table/summaries/01_rereview-pr8-temporal-rules-carrying-table-summary.md",
+        "specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr8-comment.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr8-record-edits.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr8-review.md"
+      ],
+      "created": "2026-11-21T23:01:29Z",
+      "last_updated": "2026-11-23T05:08:35Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "rereview_pr8_temporal_rules_and_carrying_table",
+          "project_number": null,
+          "title": "rereview_pr8_temporal_rules_and_carrying_table"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 4,
+          "duplicate-of-open": 4,
+          "scope-blind": 450
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 980,
+            "project_name": "rereview_pr7_rewriting_and_views_merge_decision",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.49851632047477745
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 979,
+            "project_name": "review_pr10_semantic_record_and_pr9_disposition",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4870967741935484
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 978,
+            "project_name": "review_pr11_pointed_semantic_lemmas",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.45980707395498394
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 954,
+            "project_name": "proof_mode_error_message_coverage",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.41935483870967744
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 450
+      },
+      "roadmap_annotation": "the one review line with work left; it measures the rebase cost in a worktree itself",
+      "session_id": "sess_1795402655_5a890d",
+      "artifacts": [
+        {
+          "path": "specs/981_rereview_pr8_temporal_rules_and_carrying_table/reports/01_rereview-pr8-temporal-rules-carrying-table.md",
+          "type": "report",
+          "summary": "Re-review of PR #8 at head 49a7efe23: measured rebase cost (7 mechanical conflicts plus one Language-scope break; green after a two-edit fix), the thirteen-request table, a compile-verified carrying-table proposal and views row set, and the changed merged acceptance example."
+        },
+        {
+          "path": "specs/981_rereview_pr8_temporal_rules_and_carrying_table/plans/01_rereview-pr8-temporal-rules-carrying-table.md",
+          "type": "plan",
+          "summary": "Four-phase close-out plan; validates clean against validate-artifact.sh with zero warnings."
+        },
+        {
+          "path": "specs/981_rereview_pr8_temporal_rules_and_carrying_table/summaries/01_rereview-pr8-temporal-rules-carrying-table-summary.md",
+          "type": "summary",
+          "summary": "Close-out summary: the moved head, the measured gate table, the two surviving conditions, the deviations and the worktree disposition."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Re-reviewed PR #8 at its moved head 5ecc91d63, where the contributor had merged origin/main themselves (mergeable: MERGEABLE, CI run 45112191590 green) and had additionally landed the view-registry follow-up as twenty register_lview rows, retiring ltemporal_dual entirely. Measured on that head in a probe worktree: lake build --wfail green at 3014 jobs, lake test green at 3091, lake lint green, check-module-invariants.sh ALL CHECKS PASSED, and #print axioms clean on eighteen contributed rules. Rewrote the draft response, produced the postable comment body and the records hand-off note, and cut the conditions of merging from four to two: widen CarryRule's key to (source, target) and make the table non-private in a shared module, and split the altered ProofModeTest.lean:129 acceptance example back into its two cases.",
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
+      "project_number": 980,
+      "project_name": "rereview_pr7_rewriting_and_views_merge_decision",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Re-review collaborator PR #7 (branch feat/proof-mode-rewriting, head 5f5ad32bf when filed: a merge of main plus the commit \"Separate named formula views from derivation rewriting\") against the nine requests of the posted review (specs/reviews/pr-reviews-2026-11-20/pr7-review.md) and the follow-up comment (pr7-followup.md), research the one ruling that decides whether it merges, and prepare a draft response at specs/reviews/pr-reviews-2026-11-21/pr7-review.md. This PR is the base of the stack and the single blocker of proof_mode_split_shared_test_and_guide_files, so the aim is to reach a merge decision, not a second round of everything. FIRST-READ FINDINGS TO CHECK: CI is red on one linter warning under --wfail (`import Lean` at FormalSystem/Tactic/FormulaSyntax.lean:8, \"Files in mathlib cannot import the whole Lean folder\") and the test, lint and docs steps were skipped as a result, so NOTHING NEW HAS BEEN TESTED IN CI; done on reading: the formula-equality path is out of lrewrite and lsimp and is exposed as lunfold / lfold over a view table in FormalSystem/Tactic/FormulaViews.lean with assert_not_exists DerivationTree, the planner is in FormalSystem/Tactic/FormulaPositions.lean, Step.necessity states the box and stability step once, supplied-rule elaboration errors propagate, a no-op rewrite fails, a stopped-wrapper message exists, lsimp budgets are options, past-direction, TM+ lsimp and four #guard_msgs tests are added, the misplaced soundness test and the docs link into specs/ are gone, and M17 of records/proof-mode.md gains a \"Current client\" paragraph (Perpetuity.boxDne, 393 against 159 expression nodes); not done: filing by family (Congruence.lean is one file, tests remain in the shared ProofModeExtensionsTest.lean, seed rules and the box-to-G/H conversions unmoved), the tm/plus name pairs are centralized in Language.ruleName rather than removed, main was merged rather than rebased onto, the PR body still says lrewrite takes formula equalities. WHAT TO ESTABLISH. (1) BUILD AND TEST LOCALLY at the head: reproduce the CI failure, apply the one-line import fix in the worktree only, then run the full build with --wfail, the test suite, the linter and scripts/check-module-invariants.sh, and report every failure CI never reached. (2) REQUEST TABLE: for each of the nine requests and their sub-items, done, partly done or not done, with the file and line that shows it. (3) THE VIEWS TIER AS CONTRIBUTED: compute the import closure of FormulaSyntax, FormulaPositions and FormulaViews and confirm nothing under FormalSystem/Automation/ProofMode/, FormalSystem/ProofSystem/ or the rewriting machinery is reachable; test lunfold and lfold on goals and hypotheses where the operator occurs more than once, occurs in the object context as well as the formula, and occurs under another operator, and say exactly what they rewrite (they call rewriteTarget / rewriteLocalDecl with no position argument); check that the private equation theorems referenced by name resolve from a downstream module; note that applyView discards the underlying error; note the table has four operators (diamond, next, prev, dstab). Then compare against the deliverables of proof_mode_views_tier and against records/proof-mode-architecture.md (layer 0 or 1, the operator-matching helper resting on the same table) and state what that record still owes and how its description should be revised. (4) THE LANGUAGE TABLE: Language is an inductive with tm and plus and operatorName is a hand-written pair table; judge it against request 4 (no further tmX/plusX pairs, TM and TM+ as instances of one interface) and against connective_signature_layer_shared_primitives and proof_mode_abstract_frontend_interface, and say whether it is an acceptable intermediate or a third copy to be undone. (5) REMAINING SWALLOWED ERRORS: the per-attempt catch in lsimp and the catch in applyView; say which user mistakes still end in a generic message, with a failing example each. (6) THE RECORD EDITS: verify the measured numbers in the M17 paragraph by re-measuring, and check the paragraph and the edited architecture row against the deliverable rules. (7) THE RULING (open decision 1 of records/milestones.md): which requests are conditions of merging. Lay out the two options with their real cost: list every file and declaration proof_mode_split_shared_test_and_guide_files would have to move if the filing by family is carried there, and estimate what holding the merge for it costs the pre-gate records. Recommend one. Also recommend whether the merge-not-rebase history is acceptable under a squash merge. (8) THE DRAFT: a short response that thanks, lists what is settled, states the remaining conditions as a numbered list no longer than it must be, and names the follow-ups that are not conditions. GROUND RULES FOR THIS REVIEW TASK. (i) Nothing is posted to GitHub, merged, pushed or approved by an agent: the deliverable is a draft the user posts and a recommendation the user acts on (.claude/rules/pr-prohibition.md). (ii) Work on the pull request head in a separate git worktree fetched with `git fetch origin refs/pull/<N>/head`, never in the main working tree; record the exact commit reviewed, re-check the head with `gh pr view` before finishing, and if it has moved say so and review the new commits too. (iii) Every claim in the draft is backed by something run or read in this task: a build, a test, an `#print axioms`, a file and line. Say plainly what was not verified. (iv) The report opens with the items that need the user's ruling, each with options and a recommendation, then the recommendation for the pull request (MERGE, REQUEST CHANGES or COMMENT), then the evidence. (v) The draft is written in the register of the reviews already posted (specs/reviews/pr-reviews-2026-11-20/): direct, specific, numbered requests, credit where the work is right, and a clear separation of conditions of merging from follow-ups. Read records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md and records/theorem-library.md first; the first-read findings this task starts from are summarized below and are to be checked, not trusted.",
+      "topic": "proof-mode",
+      "file_scope": [
+        "specs/980_rereview_pr7_rewriting_and_views_merge_decision/reports/01_pr7-rewriting-views-merge-decision.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr7-review.md"
+      ],
+      "created": "2026-11-21T23:00:44Z",
+      "last_updated": "2026-11-23T03:22:51Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "rereview_pr7_rewriting_and_views_merge_decision",
+          "project_number": null,
+          "title": "rereview_pr7_rewriting_and_views_merge_decision"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 3,
+          "duplicate-of-open": 3,
+          "scope-blind": 450
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 979,
+            "project_name": "review_pr10_semantic_record_and_pr9_disposition",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.47096774193548385
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 978,
+            "project_name": "review_pr11_pointed_semantic_lemmas",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4983922829581994
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 969,
+            "project_name": "proof_mode_views_tier",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4028436018957346
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 450
+      },
+      "session_id": "sess_1795402655_5a890d",
+      "artifacts": [
+        {
+          "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/reports/01_pr7-rewriting-views-merge-decision.md",
+          "type": "report",
+          "summary": "Re-review of PR #7 at head 5f5ad32bf: nine-request table, locally reproduced CI failure with a verified one-line fix, two new lake lint failures CI never reached, measured views-tier behaviour and import closure, re-measured M17 numbers that do not reproduce, and a REQUEST CHANGES-then-squash-merge recommendation with three rulings for the user."
+        },
+        {
+          "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/plans/01_pr7-rewriting-views-merge-decision.md",
+          "type": "plan",
+          "summary": "Four-phase close-out plan (3 waves, 1.25 hours) for a task whose merge-decision aim is already discharged by the merge of PR #7."
+        },
+        {
+          "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/summaries/01_pr7-rewriting-views-merge-decision-summary.md",
+          "type": "summary",
+          "summary": "Close-out of the PR #7 re-review: merge confirmed, conditions verified, residuals handed over with one stated gap."
+        }
+      ],
+      "next_artifact_number": 2,
+      "roadmap_annotation": "#7 is merged; what is left is recording the decision and releasing 981",
+      "completion_summary": "PR #7 merged as 3c7197f84 on 2026-11-22T22:58:00Z before this dispatch ran, so the plan's close-out executed in place of a second review. The task report gained an Outcome section (merge facts, the three conditions confirmed by file and line, the filing-by-family delivery, the M17 restatement, and a live/historical split of its own claims), a Handover map assigning four of five residual follow-ups to proof_mode_views_tier and proof_mode_error_message_coverage with the obligating sentence quoted, and a baseline-delta verification note. The superseded pr7-review.md draft was retired in place with a header naming pr7-approval.md and the merge commit, its body byte-unchanged.",
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
+      "project_number": 979,
+      "project_name": "review_pr10_semantic_record_and_pr9_disposition",
+      "status": "completed",
+      "task_type": "general",
+      "description": "Review collaborator PR #10 (branch docs/semantic-proof-mode-record, head bdaa3b6d0 when filed, base main, +77 lines), which adds records/semantic-proof-mode.md, and settle the disposition of PR #9 (feat/proof-mode-semantics, untouched since 2026-11-19, conflicting), which PRs #10 and #11 replace in part. Deliverables: specs/reviews/pr-reviews-2026-11-21/pr10-review.md with proposed replacement text for every passage it asks to change, and specs/reviews/pr-reviews-2026-11-21/pr9-disposition.md with a draft closing or holding comment. If the review task for PR #11 has reported, read its report first, in particular its trial of the lemmas-only control. FIRST-READ FINDINGS TO CHECK: the record adopts the evaluator framing of the user's follow-up comment on PR #7 (specs/reviews/pr-reviews-2026-11-20/pr7-followup.md): one tactic, tentatively `seval`, its own registry and syntax under FormalSystem/Semantics/, recursion on truth clauses, explicit witnesses; it says the first interface is proof-directed and not a decision procedure because quantifiers over times and histories are unbounded; it names four clients that exist (refute_allFuture_stab and refute_stab_allFuture_past in PlusNonValidities.lean, refute_modal_future and refute_sentDet in StarNonValidities.lean) and a three-way comparison of reference, lemmas-only control and evaluator by source tokens, elaborated term size and median elaboration time; it has no milestone blocks with done-when and dependencies, no rejected alternatives, and does not say where it meets theorem_library_countermodels. WHAT TO ESTABLISH. (1) IDIOM: check the record against records/README.md, the two deliverable rules (.claude/rules/no-record-versioning-in-deliverables.md, no-task-references-in-deliverables.md) and the shape of the three existing records; list what is missing as concrete proposed text. (2) CONSISTENCY: check every claim against records/proof-mode-architecture.md (Three tiers; the semantic-mode paragraph PR #10 edits; the last row of Where the work sits), records/theorem-library.md (Countermodels, Diagnostics), and Goal C and open decisions 2 and 4 of records/milestones.md; say where the record and those documents disagree and which should change. (3) THE CLIENTS: read the four declarations and report for each its length, its structure, which truth clauses it unfolds and which steps are repeated clause reasoning as against model-specific argument, so that the claim that an evaluator shortens them can be judged before anything is built; say whether four is enough and whether any clause (Until, Since, box, store and recall) has no client. (4) THE CEILING: assess the record's claim about what is and is not decidable by evaluation, and state what class of models and formulas a genuine decision procedure would cover (finite presentations, bounded quantifier ranges), citing the tree. (5) MEASUREMENT: say how each proposed measurement is actually taken in this repository, whether the diagnostics schema of proof_mode_axiom_audit_and_cost_baseline should be the one used, and what GO looks like; the record's step 4 gives an adoption criterion with no threshold. (6) OPEN POINTS THE RECORD LEAVES: evaluator beside the lemmas or a mode of its own; the witness interface (clause-directed list versus named witnesses); what is shared with the derivation mode now that PR #7 has moved the syntax, positions and views modules to FormalSystem/Tactic/; where the soundness adapter lives; the grade at which an evaluator-checked refutation enters the library. Give a recommendation on each. (7) PR #9: inventory what PR #9 contains that neither #10 nor #11 carries (the tactic overloads, luse_derivation and the soundness adapter, the transport tactics, tests), say what of it is reusable for the mode the record describes, and recommend closing, converting to draft, or holding, with the comment to post. GROUND RULES FOR THIS REVIEW TASK. (i) Nothing is posted to GitHub, merged, pushed or approved by an agent: the deliverable is a draft the user posts and a recommendation the user acts on (.claude/rules/pr-prohibition.md). (ii) Work on the pull request head in a separate git worktree fetched with `git fetch origin refs/pull/<N>/head`, never in the main working tree; record the exact commit reviewed, re-check the head with `gh pr view` before finishing, and if it has moved say so and review the new commits too. (iii) Every claim in the draft is backed by something run or read in this task: a build, a test, an `#print axioms`, a file and line. Say plainly what was not verified. (iv) The report opens with the items that need the user's ruling, each with options and a recommendation, then the recommendation for the pull request (MERGE, REQUEST CHANGES or COMMENT), then the evidence. (v) The draft is written in the register of the reviews already posted (specs/reviews/pr-reviews-2026-11-20/): direct, specific, numbered requests, credit where the work is right, and a clear separation of conditions of merging from follow-ups. Read records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md and records/theorem-library.md first; the first-read findings this task starts from are summarized below and are to be checked, not trusted.",
+      "topic": "semantics",
+      "file_scope": [
+        "specs/979_review_pr10_semantic_record_and_pr9_disposition/.orchestrator-handoff.json",
+        "specs/979_review_pr10_semantic_record_and_pr9_disposition/.return-meta.json",
+        "specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr10-comment.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr10-review.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr9-comment.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr9-disposition.md"
+      ],
+      "created": "2026-11-21T22:59:59Z",
+      "last_updated": "2026-11-23T04:39:05Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "review_pr10_semantic_record_and_pr9_disposition",
+          "project_number": null,
+          "title": "review_pr10_semantic_record_and_pr9_disposition"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 7,
+          "duplicate-of-open": 1,
+          "scope-blind": 450
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 978,
+            "project_name": "review_pr11_pointed_semantic_lemmas",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4935483870967742
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 450
+      },
+      "session_id": "sess_1795402655_5a890d",
+      "artifacts": [
+        {
+          "path": "specs/reviews/pr-reviews-2026-11-21/pr10-review.md",
+          "type": "report",
+          "summary": "Draft review of PR #10 (records/semantic-proof-mode.md): items for the user's ruling (missing Open Decisions section, four-client coverage, GO threshold), a COMMENT recommendation, and evidence for all seven requested checks (idiom, consistency, the four clients, the decidability ceiling, measurement, open points, PR #9 inventory pointer)."
+        },
+        {
+          "path": "specs/979_review_pr10_semantic_record_and_pr9_disposition/plans/01_finalize-pr10-pr9-review-drafts.md",
+          "type": "plan",
+          "summary": "Four-phase reconciliation plan for the PR #10 review, PR #9 disposition and the two posting drafts."
+        },
+        {
+          "path": "specs/979_review_pr10_semantic_record_and_pr9_disposition/summaries/01_finalize-pr10-pr9-review-drafts-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the pr10/pr9 reconciliation, including the PR #10 head-movement finding."
+        }
+      ],
+      "next_artifact_number": 2,
+      "roadmap_annotation": "#10 still owes an open-decisions section, an adoption threshold and scope sentences",
+      "completion_summary": "Reconciled pr10-review.md and pr9-disposition.md with the current records, merged PR #7, and the decided rulings; confirmed the two posting drafts (pr10-comment.md, pr9-comment.md) already correct against every citation and declaration; discovered and recorded that PR #10's head moved to a new commit mid-task, reviewed it, and confirmed the three ruling items still stand. Nothing was posted, pushed, merged or closed on GitHub.",
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
+      "project_number": 978,
+      "project_name": "review_pr11_pointed_semantic_lemmas",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Review collaborator PR #11 (branch feat/pointed-semantic-lemmas, head c6cd983b7 when filed, base main, +793 lines): the standalone semantic lemmas split out of PR #9 at the user's request, and prepare a merge recommendation and a draft review at specs/reviews/pr-reviews-2026-11-21/pr11-review.md. The PR adds FormalSystem/Semantics/TemporalRules.lean (covering-time next_iff/prev_iff/next_at/prev_at, allFuture_persist/allPast_persist, someFuture_bind/somePast_bind and their keeping variants), TemporalIntervals.lean (inclusiveUntil_iff, inclusiveSince_iff, release_iff, trigger_iff, weakUntil_iff, weakSince_iff), RankProgress.lean (rank_progress and its strict and pointed-truth forms), PointTransport.lean (Point, At, FactTransport, GoalTransport, IffTransport, the point relations, and the TM and TM+ factories), and two test files under Tests/BimodalTest/Semantics/. FIRST-READ FINDINGS TO CHECK: CI was green; the temporal lemmas are stated over the existing clause classes (TruthEnv, BotClause, ImpClause, UntlClause, SnceClause) so each is proved once for every language; every module carries assert_not_exists for the derivation types; no sorry; the proofs read as correct. WHAT TO ESTABLISH. (1) BUILD AND TRUST: build FormalSystem.Semantics and both test modules at the head with --wfail, run the linter and scripts/check-module-invariants.sh, and state the axiom set of every new theorem. (2) STATEMENTS: check each statement against the truth clauses it unfolds and against the list the user asked for on PR #9 (covering-time Next and Previous, G/H persistence, F/P bind, the inclusive and weak Until and Since clauses, rank_progress, the transport structures); name anything asked for and absent, and anything present and not asked for. Check strictness and endpoint conventions (half-open intervals, guard-first versus event-first argument order, which the docstrings of release/trigger/weakUntil call event first) against the conventions of Formula.untl and the reference manual. (3) DUPLICATION: search FormalSystem/Semantics/ and the language directories for existing lemmas with the same content (truth of next and prev, G/H persistence, time-shift, reversal, box_const, stab_state_only) and say whether each new lemma is new, a restatement, or a generic form that should replace per-language copies. The local `next` and `prev` abbreviations in TemporalRules are a further copy of derived operators: say how they relate to Formula.next / PlusFormula.next and to connective_signature_layer_shared_primitives. (4) DESIGN: FactTransport, GoalTransport and IffTransport are bare universally quantified propositions; judge whether the definitions earn their place over stating the factories as plain iff theorems, and whether `Point` duplicates an existing structure. (5) PLACEMENT AND NAMING: module names, namespace, README inventory rows, the regenerated typst/generated/status.typ, docstring conventions, and layer (ORGANISATION.md). (6) TESTS: what the two test files exercise and what they omit; past variants; TM+ and the Star language. (7) USE: attempt one of the refutations named in PR #10 (refute_allFuture_stab in FormalSystem/PlusLanguage/PlusNonValidities.lean) with these lemmas in a scratch file under the task directory, to learn whether the lemmas are usable as the lemmas-only control that record proposes; report the result without committing the scratch proof to the library. Nothing here waits on the semantic-mode record or on the tier ruling: the user told the contributor these lemmas are reviewed and merged on their merits. GROUND RULES FOR THIS REVIEW TASK. (i) Nothing is posted to GitHub, merged, pushed or approved by an agent: the deliverable is a draft the user posts and a recommendation the user acts on (.claude/rules/pr-prohibition.md). (ii) Work on the pull request head in a separate git worktree fetched with `git fetch origin refs/pull/<N>/head`, never in the main working tree; record the exact commit reviewed, re-check the head with `gh pr view` before finishing, and if it has moved say so and review the new commits too. (iii) Every claim in the draft is backed by something run or read in this task: a build, a test, an `#print axioms`, a file and line. Say plainly what was not verified. (iv) The report opens with the items that need the user's ruling, each with options and a recommendation, then the recommendation for the pull request (MERGE, REQUEST CHANGES or COMMENT), then the evidence. (v) The draft is written in the register of the reviews already posted (specs/reviews/pr-reviews-2026-11-20/): direct, specific, numbered requests, credit where the work is right, and a clear separation of conditions of merging from follow-ups. Read records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md and records/theorem-library.md first; the first-read findings this task starts from are summarized below and are to be checked, not trusted.",
+      "topic": "semantics",
+      "file_scope": [
+        "specs/978_review_pr11_pointed_semantic_lemmas/reports/01_review-pr11-pointed-semantic-lemmas.md",
+        "specs/978_review_pr11_pointed_semantic_lemmas/summaries/01_review-pr11-pointed-semantic-lemmas-summary.md",
+        "specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr11-review.md"
+      ],
+      "created": "2026-11-21T22:59:09Z",
+      "last_updated": "2026-11-23T04:06:39Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "review_pr11_pointed_semantic_lemmas",
+          "project_number": null,
+          "title": "review_pr11_pointed_semantic_lemmas"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 8,
+          "scope-blind": 447
+        },
+        "verdicts_detail": [],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 447
+      },
+      "session_id": "sess_1795402655_5a890d",
+      "artifacts": [
+        {
+          "path": "specs/978_review_pr11_pointed_semantic_lemmas/reports/01_review-pr11-pointed-semantic-lemmas.md",
+          "type": "report",
+          "summary": "Full review of PR #11 at head c6cd983b7: all gates green (--wfail build, full check-module-invariants.sh 58/58, runLinter, 52 axiom sets all within pcq, upward edges 10 before and after); recommends REQUEST CHANGES on four additive items, with four user rulings (the At-abbrev rewriting defect, named interval operators, who performs the next_iff_covBy promotion, merge-now vs request-changes)."
+        },
+        {
+          "path": "specs/978_review_pr11_pointed_semantic_lemmas/plans/01_review-pr11-pointed-semantic-lemmas.md",
+          "type": "plan",
+          "summary": "Three serial phases (prose, prose, full) reconciling the task's durable record with the review the user already posted on PR #11."
+        },
+        {
+          "path": "specs/978_review_pr11_pointed_semantic_lemmas/summaries/01_review-pr11-pointed-semantic-lemmas-summary.md",
+          "type": "summary",
+          "summary": "Posted disposition of PR #11, the follow-up ledger with three unhomed gaps, the reusable review worktree, and an explicit statement of what was not verified."
+        }
+      ],
+      "next_artifact_number": 2,
+      "roadmap_annotation": "the draft review is written; the rebase, At and the tests are the contributor's half",
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
+      "project_number": 976,
+      "project_name": "decide_open_questions_from_pr_reviews_and_records",
+      "status": "completed",
+      "task_type": "meta",
+      "description": "Research and decide every open question raised by the reviews of collaborator PRs #7, #8 and #9 and by the open-decision lists of the three records, then revise the records and the reviews to match. Inputs: specs/reviews/pr-reviews-2026-11-20/pr7-review.md, pr8-review.md, pr9-review.md; records/proof-mode.md (Open decisions 1-5 and the four reversible positions); records/proof-mode-architecture.md (Open decisions 1-6); records/theorem-library.md (Open decisions); ORGANISATION.md (layer order); CONTRIBUTING.md section 3; the PR branches themselves (gh pr diff 7/8/9). Questions to settle, each with evidence from the tree: (a) where the semantic proof mode lives -- FormalSystem/Semantics/ at layer 2 with a soundness adapter above it, or FormalSystem/Automation/ beside the derivation mode in its own directory -- checked against the actual import closure of the PR #9 modules; (b) whether the semantic mode gets a record and a named client before it is built, and whether the countermodel half of the library is a real client; (c) tactic names for the views tier (one lunfold/lfold pair taking an operator name vs one tactic per view); (d) whether lrewrite/lsimp enter the gate-one measurement, and which of PR #8's temporal rules gate-one scripts may use; (e) how the shared S5 statement is carried (structure with the operator as a field vs class indexed by the operator), prototyped against PR #7's Kit/Step; (f) whether the stability operator stays in the Modal family, coordinated with investigate_stability_as_modal_family rather than duplicating it; (g) whether the linearity case split is needed for Until/Since induction, and the statement of the generalizing induction rule; (h) strict vs present-inclusive leads-to as the base layer; (i) what default means for adoption; (j) where the Minus instance lives; (k) whether BimodalLib is built by default; (l) whether views extraction is handed to the contributor in PR #7 or done under proof_mode_views_tier, and the resulting order of M16 and M17. Deliverable: a research report giving for each question a decision with its reason and the rejected alternative on its merits, OR an explicit needs-user-ruling entry with the options, the evidence for each and a recommendation -- nothing left silently undecided. Decisions that are made are then written into the records (open decisions removed or restated, milestone done-whens and Where-the-work-sits rows updated) and the three review files are revised to state them; questions needing a ruling are collected in one list at the top of the report for the user. Do not post anything to GitHub",
+      "topic": "proof-mode",
+      "created": "2026-11-20T19:42:46Z",
+      "last_updated": "2026-11-20T20:33:15Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "decide_open_questions_from_pr_reviews_and_records",
+          "project_number": null,
+          "title": "Decide open questions from PR #7-#9 reviews and the proof-mode records"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 9,
+          "scope-blind": 449
+        },
+        "verdicts_detail": [],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 449
+      },
+      "session_id": "sess_1795203869_8d33c7",
+      "artifacts": [
+        {
+          "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/reports/01_open-questions-decisions.md",
+          "type": "report",
+          "summary": "Decisions with reasons and rejected alternatives for the twelve open questions (a)-(l), two needs-user-ruling items listed first, and the edit lists for the three records and three review files."
+        },
+        {
+          "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/plans/01_record-review-revision-plan.md",
+          "type": "plan",
+          "summary": "Five-phase plan: one phase per record, one for the review drafts, one closing consistency check."
+        },
+        {
+          "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/handoffs/phase-4-handoff-20261120T202114Z.md",
+          "type": "handoff",
+          "summary": "Phase-end handoff for phase 4: which review states which decision, the one deviation, and two passages left for phase 5 to weigh."
+        },
+        {
+          "path": "specs/976_decide_open_questions_from_pr_reviews_and_records/summaries/01_record-review-revision-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with the question-by-file table, items awaiting the user ruling, stale descriptions and verification record."
+        }
+      ],
+      "next_artifact_number": 2,
+      "file_scope": [
+        "records/proof-mode-architecture.md",
+        "records/proof-mode.md",
+        "records/theorem-library.md",
+        "specs/reviews/pr-reviews-2026-11-20/pr7-review.md",
+        "specs/reviews/pr-reviews-2026-11-20/pr8-review.md",
+        "specs/reviews/pr-reviews-2026-11-20/pr9-review.md"
+      ],
+      "completion_summary": "The three records under records/ state ten of the twelve questions as decided design with the rejected alternative, keep (i) and the Until/Since keyword question open with a recommendation, and point (f) at investigate_stability_as_modal_family; the three review drafts for PRs #7, #8 and #9 state the decisions. Phase 5 found the six files consistent after one fix to the Gates section of records/proof-mode.md. Nothing was posted to GitHub.",
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
+      "project_number": 959,
+      "project_name": "review_proof_mode_tasks_and_prepare_roadmap_planning_document",
+      "status": "completed",
+      "task_type": "meta",
+      "description": "Review the proof-mode tasks that exist already, and prepare a document in /home/benjamin/Projects/BimodalLogic/records/proof-mode.md which outlines the aims to build on the work already merged into main that develops the proof mode, while also surveying the other dimensions to be developed, looking for natural joints that can be set out as independent milestones, some of which may have certain dependencies. This will be used to run /roadmap afterward; the aim is a long-horizon goals document outlining the work ahead and the possible divisions of labor",
+      "topic": "proof-mode",
+      "created": "2026-11-20T06:26:11Z",
+      "last_updated": "2026-11-20T07:00:30Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "review_proof_mode_tasks_and_prepare_roadmap_planning_document",
+          "project_number": null,
+          "title": "Review the proof-mode tasks that exist already, and prepare a document in /home/benjamin/Projects/BimodalLogic/records/proof-mode.md which outlines the aims to build on the work already merged into main that develops the proof mode, while also surveying the other dimensions to be developed, looking for natural joints that can be set out as independent milestones, some of which may have certain dependencies. This will be used to run /roadmap afterward; the aim is a long-horizon goals document outlining the work ahead and the possible divisions of labor"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 6,
+          "scope-blind": 462
+        },
+        "verdicts_detail": [],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 462
+      },
+      "session_id": "sess_1795156500_7dd3b0",
+      "file_scope": [
+        "records/proof-mode.md"
+      ],
+      "artifacts": [
+        {
+          "path": "specs/959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/reports/01_proof-mode-roadmap-review.md",
+          "type": "report",
+          "summary": "Review of the merged proof mode and its 14 filed tasks, with a logical-vs-sequencing edge analysis, ten development dimensions, and a proposed milestone outline for records/proof-mode.md."
+        },
+        {
+          "path": "specs/959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/plans/01_proof-mode-goals-document.md",
+          "type": "plan",
+          "summary": "Three-phase plan to write the proof-mode goals document."
+        },
+        {
+          "path": "specs/959_review_proof_mode_tasks_and_prepare_roadmap_planning_document/summaries/01_proof-mode-goals-document-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the proof-mode goals document."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Wrote records/proof-mode.md, a goals document for the derivation proof mode with 20 milestones, hard versus sequencing-only dependencies, two gates, five lanes, eight open decisions and seven /task-ready entries for unfiled work.",
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
+      "project_number": 958,
+      "project_name": "repair_buildcontextexpr_modal_search",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "automation",
+      "priority": "medium",
+      "description": "Repair FormalSystem/Tactic/Meta.lean's buildContextExpr, which throws on every call and hard-fails modal_search on any box-headed goal.\n\nMEASURED BUG (confirmed live at FormalSystem/Tactic/Meta.lean:113): the line is `let mut result <- mkAppM ``List.nil #[formulaType]`, but List.nil's type argument is IMPLICIT, so mkAppM raises \"too many explicit arguments provided to @List.nil\" on every input, the empty list included. Both consumers -- FormalSystem/Automation/Tactics/Search.lean:475 (tryModalK) and :527 (tryTemporalK) -- call it OUTSIDE their `observing?` block, so the exception propagates rather than being caught as a failed search branch. Consequence: `example : |-[FrameClass.Base] box (p imp p) := by modal_search` fails with that AppBuilder error.\n\nFIX: apply one of two repairs, both already compiled and verified working: (1) `mkAppOptM ``List.nil #[some formulaType]`, or (2) `Lean.mkApp (Lean.mkConst ``List.nil [Level.zero]) formulaType`. Prefer whichever better matches the surrounding code's conventions. Also assess whether the two Search.lean call sites belong INSIDE their `observing?` blocks -- a genuine elaboration failure there should be a failed search branch, not a hard tactic error.\n\nTESTS: existing coverage only `#check`s buildContextExpr without invoking it (deliberately -- the repair was out of scope for the test-coverage work that found this), which is exactly why the bug survived. Add a regression test that actually INVOKES buildContextExpr, on the empty list and on a non-empty list, plus a modal_search acceptance test on a box-headed goal. Fold these into Tests/BimodalTest/Automation/LemmaDBTest.lean, which already holds the MetaM probes for Tactic/Meta.lean's helpers.\n\nVERIFICATION: `lake build` and `lake test` green with zero warnings; the box-headed modal_search example compiles; no new axioms.\n\nBACKLOG NOTE: the proposal audit flags open task 955 (proof_mode_close_leaves_with_automation) as a possible duplicate at semantic score 0.47 with no shared paths. It is not a duplicate: 955 names modal_search only to rule it out as a default closer, is scoped to FormalSystem/Automation/Tactics/, and would CONSUME this broken function as a bounded fallback rather than repair it. 955 therefore depends on this task.",
+      "file_scope": [
+        "FormalSystem/Automation/README.md",
+        "FormalSystem/Automation/Tactics/README.md",
+        "FormalSystem/Automation/Tactics/Search.lean",
+        "FormalSystem/README.md",
+        "FormalSystem/Tactic/Meta.lean",
+        "FormalSystem/Tactic/README.md",
+        "README.md",
+        "Tests/BimodalTest/Automation/LemmaDBTest.lean",
+        "typst/generated/automation-module-map.typ",
+        "typst/generated/status.typ"
+      ],
+      "created": "2026-11-20T00:27:00Z",
+      "last_updated": "2026-11-20T03:30:55Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "repair_buildcontextexpr_modal_search",
+          "project_number": null,
+          "title": "Repair FormalSystem/Tactic/Meta.lean's buildContextExpr, which throws on every call and hard-fails modal_search on any box-headed goal"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 37,
+          "duplicate-of-open": 4,
+          "scope-blind": 453
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 955,
+            "project_name": "proof_mode_close_leaves_with_automation",
+            "shared_paths": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4666666666666667
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 952,
+            "project_name": "proof_mode_abstract_frontend_interface",
+            "shared_paths": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 761,
+            "project_name": "ladder_realization_theorem",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 874,
+            "project_name": "open_language_substitution_closure",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4666666666666667
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 453
+      },
+      "session_id": "sess_1795143109_c896f6",
+      "artifacts": [
+        {
+          "path": "specs/958_repair_buildcontextexpr_modal_search/reports/01_repair-buildcontextexpr-modal-search.md",
+          "type": "report",
+          "summary": "Compile-verified repair research for buildContextExpr: mkAppOptM is the convention match (working twin at ProofMode/Meta.lean), both Search.lean calls belong inside observing?, a blank-line linter collision must be cleared, and the full repair plus three modal_search acceptance tests already measure lake build / lake test green with zero warnings and no new axioms."
+        },
+        {
+          "path": "specs/958_repair_buildcontextexpr_modal_search/plans/01_repair-buildcontextexpr-modal-search.md",
+          "type": "plan",
+          "summary": "Single-phase plan: mkAppOptM repair at Meta.lean:113, both Search.lean calls moved inside observing? with the two stray blank lines deleted, invoked buildContextExpr probe plus three modal_search acceptance examples in LemmaDBTest.lean, and same-phase regeneration of the two coupled generated line-count surfaces."
+        },
+        {
+          "path": "specs/958_repair_buildcontextexpr_modal_search/summaries/01_repair-buildcontextexpr-modal-search-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for phase 1: the buildContextExpr repair, both call-site relocations, the invoked regression coverage, and all measured verification results."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "buildContextExpr's nil case now builds via mkAppOptM ``List.nil #[some formulaType] instead of passing List.nil's implicit type parameter explicitly to mkAppM, which had made it throw on every input including the empty list. Both consumers in Search.lean (tryModalK, tryTemporalK) now call it inside their observing? blocks, so an elaboration failure there is a failed search branch rather than a hard tactic error. Tests/BimodalTest/Automation/LemmaDBTest.lean gained an invoked MetaM probe pinning buildContextExpr's output against Meta.mkListLit on the empty and a two-element list, plus three modal_search acceptance examples (box-headed at empty and non-empty all-boxed contexts, and allFuture-headed); the box-headed one was measured red pre-repair.",
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
+      "project_number": 941,
+      "project_name": "local_verify_all_ci_check_aggregator",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "repo-hygiene",
+      "priority": "medium",
+      "description": "Add a local aggregator that mirrors ci.yml's check gate, so a contributor can reproduce CI's verdict before pushing.\n\nSource of record: specs/reviews/review-2026-11-19.md (Medium severity finding).\n\nPROBLEM: ci.yml runs nine distinct checks, but no local entrypoint runs them together. A contributor can pass `lake build` and `lake test` locally and still push a CI-red commit, discovering failures only after a long CI run, one check at a time via ci.yml's own report step.\n\nTHE NINE CHECKS, in ci.yml's order (re-derive from .github/workflows/ci.yml at implementation time rather than trusting this list):\n1. scripts/check-evidence-probes.sh\n2. scripts/check-module-invariants.sh --no-build\n3. scripts/check-copyright-headers.sh --strict\n4. scripts/readme-lint.sh\n5. scripts/check-metalogic-cycles.sh\n6. scripts/typst-sync-check.sh\n7. scripts/check-paper-definitions.sh\n8. lake exe mk_all --check\n9. lake exe lint-style\n\nSCOPE:\n(A) Add scripts/verify-all.sh running the nine steps in the same order, with the same pass/fail reporting shape as ci.yml's \"Report results\" step (per-check status lines plus an aggregate verdict and a nonzero exit on any failure). Continue through all checks and report every failure rather than aborting on the first, matching how CI surfaces them.\n(B) Document it in CONTRIBUTING.md's Development Setup section (~lines 18-57), next to the existing git-hook installation instructions.\n(C) Add an entry to scripts/README.md consistent with how the other scripts there are catalogued.\n\nEXPLICITLY OUT OF SCOPE: changing any of the nine checks themselves, changing ci.yml, and wiring the aggregator into the pre-commit hook (the nine checks include slow steps; making them a commit-time gate is a separate decision).\n\nVERIFICATION: run scripts/verify-all.sh on the current clean tree and confirm it reports the same per-check verdicts CI reports for the same commit; confirm a deliberately seeded failure in one check is reported and yields a nonzero exit; confirm the script is referenced from both CONTRIBUTING.md and scripts/README.md.",
+      "file_scope": [
+        "CONTRIBUTING.md",
+        "scripts/README.md",
+        "scripts/verify-all.sh",
+        "specs/941_local_verify_all_ci_check_aggregator/summaries/01_local-verify-all-aggregator-summary.md"
+      ],
+      "created": "2026-11-19T19:08:34Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "local_verify_all_ci_check_aggregator",
+          "project_number": null,
+          "title": "Add local verify-all.sh aggregator mirroring CI's nine checks"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 35,
+          "scope-blind": 441
+        },
+        "verdicts_detail": [],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 441
+      },
+      "last_updated": "2026-11-19T20:52:19Z",
+      "session_id": "sess_1795117390_6c8a38",
+      "artifacts": [
+        {
+          "path": "specs/941_local_verify_all_ci_check_aggregator/reports/01_local-verify-all-aggregator.md",
+          "type": "report",
+          "summary": "Re-derives the nine ci.yml checks' exact invocations, order, exit-code conventions, lock/sequencing behavior, and documentation-placement precedent for scripts/verify-all.sh, CONTRIBUTING.md, and scripts/README.md."
+        },
+        {
+          "path": "specs/941_local_verify_all_ci_check_aggregator/plans/01_local-verify-all-aggregator.md",
+          "type": "plan",
+          "summary": "3-phase plan (3h) for scripts/verify-all.sh plus CONTRIBUTING.md and scripts/README.md documentation."
+        },
+        {
+          "path": "specs/941_local_verify_all_ci_check_aggregator/summaries/01_local-verify-all-aggregator-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary covering scripts/verify-all.sh, its documentation, and full verification evidence."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Implemented scripts/verify-all.sh, a local aggregator reproducing ci.yml's nine-check gate with continue-past-failure reporting and a nonzero exit on any failure; documented it in CONTRIBUTING.md and scripts/README.md; verified via three real runs (clean, seeded, post-revert) plus an isolated logic test of the out-of-sync guard. Found one genuine pre-existing check-paper-definitions.sh content drift, unrelated to this task's scope, recorded as a follow-up.",
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
+      "project_number": 942,
+      "project_name": "test_coverage_nomic_formathlib_tactic",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "code-quality",
+      "priority": "medium",
+      "description": "Add regression test coverage for three FormalSystem module groups that currently have none.\n\nSource of record: specs/reviews/review-2026-11-19.md (one Medium, two Low severity findings).\n\nPROBLEM: three module groups have zero referencing tests anywhere under Tests/BimodalTest/, confirmed by grep for their identifiers across the whole test tree.\n\n(A) MEDIUM -- FormalSystem/NomicLanguage/ (Formula.lean, NomicFour.lean, NomicTenseFree.lean, NomicTruth.lean, NomicValidity.lean). Every other language-variant directory (MinusLanguage, PlusLanguage, StarLanguage, SourceLanguage) has at least one referencing test; NomicLanguage has none. A refactor of Formula.lean or the validity/truth definitions could silently break the nomic-modal extension with no test to catch it.\n    Fix: add a Tests/BimodalTest/NomicLanguage/ test module, or extend an existing cross-language test (LanguageDerivationTest.lean / ValidityLayerTest.lean), exercising NomicFormula, NomicValidity and NomicTruth's basic properties. Follow whichever pattern the existing per-language tests use rather than inventing a new shape.\n\n(B) LOW -- FormalSystem/ForMathlib/ (Order/BallSpace.lean, Order/PFilter.lean, Combinatorics/SimpleGraphAcyclic.lean, Combinatorics/InfiniteRamseyPairs.lean, Topology/Sierpinski.lean). These are self-contained Mathlib-shaped extensions intended for upstreaming, importing nothing from FormalSystem.*. An upstream-PR candidate with no coverage is a weaker contribution and harder to verify in isolation.\n    Fix: a lightweight #check / example smoke test per file is sufficient. A full test module is NOT warranted -- do not over-build this.\n\n(C) LOW -- FormalSystem/Tactic/ (Attr.lean, Meta.lean). Tests/BimodalTest/Automation/TacticsTest.lean covers Automation/'s tactics, not this lower-level attribute/meta support code.\n    Fix: fold a minimal usage check into an existing Automation test rather than adding a new file.\n\nSEQUENCING: (A) is the real work and should land first as its own phase; (B) and (C) are small and can share a later phase.\n\nEXPLICITLY OUT OF SCOPE: changing any FormalSystem declaration, signature, import or proof to make it more testable; raising coverage of modules that already have tests; the 360 sorry occurrences in FormalSystem/ (expected for an in-progress formalization, with no unexplained clustering -- not this task's concern).\n\nTERRITORY NOTE: open task 177 names Tests/BimodalTest/Automation/TacticsTest.lean in its file_scope, but only for replacing task-number citations in its ## Test Coverage and ## Test Organization prose (its item C4) -- a different concern from item (C) here. If both land, keep the edits disjoint: this task touches test logic, 177 touches only that file's comment prose.\n\nVERIFICATION: `lake build` and the project's test target both green; confirm by grep that each of NomicLanguage, ForMathlib and Tactic is now referenced from at least one file under Tests/.",
+      "file_scope": [
+        "FormalSystem/ForMathlib/",
+        "FormalSystem/NomicLanguage/",
+        "FormalSystem/Tactic/",
+        "Tests/BimodalTest.lean",
+        "Tests/BimodalTest/",
+        "Tests/BimodalTest/Automation/LemmaDBTest.lean",
+        "Tests/BimodalTest/Automation/NormalizationTest.lean",
+        "Tests/BimodalTest/Automation/README.md",
+        "Tests/BimodalTest/ForMathlib/README.md",
+        "Tests/BimodalTest/ForMathlib/SmokeTest.lean",
+        "Tests/BimodalTest/Semantics/NomicLanguageTest.lean",
+        "Tests/BimodalTest/Semantics/README.md",
+        "typst/generated/status.typ"
+      ],
+      "created": "2026-11-19T19:08:52Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "test_coverage_nomic_formathlib_tactic",
+          "project_number": null,
+          "title": "Add test coverage for NomicLanguage, ForMathlib and Tactic modules"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 2,
+          "duplicate-of-open": 1,
+          "scope-blind": 449
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 177,
+            "project_name": "update_readme_and_module_docstrings",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.47058823529411764
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 449
+      },
+      "last_updated": "2026-11-19T22:08:01Z",
+      "session_id": "sess_1795122329_77078c",
+      "artifacts": [
+        {
+          "path": "specs/942_test_coverage_nomic_formathlib_tactic/reports/01_test-coverage-nomic-formathlib-tactic.md",
+          "type": "report",
+          "summary": "Confirms the three-group coverage gap; rules out both suggested extension points for NomicLanguage on structural grounds; specifies and compile-verifies four artifacts (new NomicLanguageTest + ForMathlib SmokeTest modules, two Automation folds); records the C6/C16/C28 gate obligations; and reports a measured live bug in FormalSystem/Tactic/Meta.lean's buildContextExpr."
+        },
+        {
+          "path": "specs/942_test_coverage_nomic_formathlib_tactic/plans/01_test-coverage-nomic-formathlib-tactic.md",
+          "type": "plan",
+          "summary": "Three-phase plan (A: NomicLanguage module; B: ForMathlib isolated-import smoke module; C: Tactic folds plus doc reconciliation and whole-tree verification), 3.5 hours, waves [[1],[2],[3]]."
+        },
+        {
+          "path": "specs/942_test_coverage_nomic_formathlib_tactic/summaries/01_test-coverage-nomic-formathlib-tactic-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: three closed coverage gaps, measured gate verdicts, the Condition-4 verify-touched attribution, and the pre-validated buildContextExpr repair as a follow-up."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Added the first regression coverage for FormalSystem/NomicLanguage/ (a new 175-line module with seven axiom-profile pins), an isolated-import smoke module for all five FormalSystem/ForMathlib/ files, and two folds into existing Automation/ tests covering FormalSystem/Tactic/'s remaining simp sets and its MetaM helpers. lake build, lake build BimodalTest and lake test are all green at the repository's zero warning budget, with nothing under FormalSystem/ touched.",
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
+      "project_number": 943,
+      "project_name": "gitignore_and_loose_file_hygiene",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "repo-hygiene",
+      "priority": "low",
+      "description": "Close three small gitignore and loose-file hygiene gaps at the repository root.\n\nSource of record: specs/reviews/review-2026-11-19.md (one Medium, two Low severity findings).\n\n(A) MEDIUM -- retired latex/ build artifacts are untracked but unignored. The latex/ edition was deliberately retired and its .tex sources removed from git, and .gitignore gained a `latex/**/*.log` rule at the same time. The remaining build byproducts in latex/build/ and latex/subfiles/ (.pdf, .aux, .fls, .fdb_latexmk, .out, .toc, .xdv) are untracked yet matched by no .gitignore pattern, so they sit as unignored cruft and any future `git add` touching that path risks reintroducing retired build output into history.\n    Fix: extend .gitignore with a single `latex/build/` rule (preferred over enumerating extensions), matching the intent of the existing `latex/**/*.log` line. Verify with `git status --porcelain --ignored` that the artifacts move from untracked to ignored, and confirm no currently-TRACKED file becomes ignored as a side effect.\n\n(B) LOW -- `.pid` at the repo root is a stray runtime PID file, untracked but absent from .gitignore, unlike the sibling runtime paths .agent-logs/ and .playwright-mcp/ which are both correctly ignored.\n    Fix: add `/.pid` to .gitignore (anchored, so it cannot match a nested path).\n\n(C) LOW -- Challenge.lean at the repo root is a loose .lean scratch file containing a sorry-bearing theorem. It is not a Lake root (absent from lakefile.toml), is not built, and is not listed in ORGANISATION.md's \"Everything else\" table alongside the other top-level paths, so a reader cannot tell why it exists or whether it is safe to ignore.\n    Fix: EITHER add one line to ORGANISATION.md's \"Everything else\" table explaining its purpose, OR relocate it into Boneyard/ following that directory's existing archival conventions (which are ADR-backed and gate-enforced -- read its README before moving anything there). Decide from the file's git history which is appropriate; do not delete it.\n\nEXPLICITLY OUT OF SCOPE: Boneyard/ itself (verified deliberate, ADR-backed and gate-enforced -- not cruft); the already-gitignored other/, research/, training/ and data/ directories; and any change to lakefile.toml.\n\nVERIFICATION: `bash scripts/check-module-invariants.sh` and `bash scripts/readme-lint.sh` both no worse than before the change; `git status --porcelain` clean of the newly-ignored paths; no tracked file newly ignored.",
+      "file_scope": [
+        ".gitignore",
+        "Challenge.lean",
+        "ORGANISATION.md"
+      ],
+      "created": "2026-11-19T19:09:08Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "gitignore_and_loose_file_hygiene",
+          "project_number": null,
+          "title": "Close gitignore and loose-file hygiene gaps at repo root"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 33,
+          "duplicate-of-open": 1,
+          "scope-blind": 445
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 231,
+            "project_name": "dataset_regeneration_automation",
+            "shared_paths": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.5
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 445
+      },
+      "last_updated": "2026-11-19T20:53:06Z",
+      "session_id": "sess_1795117390_6c8a38",
+      "artifacts": [
+        {
+          "path": "specs/943_gitignore_and_loose_file_hygiene/reports/01_gitignore-loose-file-hygiene.md",
+          "type": "report",
+          "summary": "Research on the three gitignore/loose-file hygiene gaps: (A) the latex/build/ cruft is already fully covered by an existing generic build/ rule (review premise refuted by git check-ignore evidence, but adding an explicit rule is still worth doing for clarity); (B) /.pid is a confirmed, uncomplicated gap; (C) Challenge.lean is not a stray scratch file but the committed trust-boundary artifact of lean-challenge-snapshot.sh (the Comparator statement-pinning mechanism) -- it must be documented in ORGANISATION.md, not relocated to Boneyard/, which would break the mechanism."
+        },
+        {
+          "path": "specs/943_gitignore_and_loose_file_hygiene/plans/01_gitignore-loose-file-hygiene.md",
+          "type": "plan",
+          "summary": "Two-phase plan: .gitignore rules (latex/build/, anchored /.pid), then ORGANISATION.md row for Challenge.lean."
+        },
+        {
+          "path": "specs/943_gitignore_and_loose_file_hygiene/summaries/01_gitignore-loose-file-hygiene-summary.md",
+          "type": "summary",
+          "summary": "Two-phase implementation summary covering both .gitignore rules and the ORGANISATION.md Challenge.lean row."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Added latex/build/ and anchored /.pid rules to .gitignore, and one Challenge.lean row to ORGANISATION.md's Everything else table documenting its Comparator-snapshot provenance. Both named gate scripts (check-module-invariants.sh, readme-lint.sh) confirmed no-worse-than-baseline; no tracked file became newly ignored; Challenge.lean itself untouched.",
+      "archived_at": "2026-11-23T21:07:21Z"
+    },
+    {
       "project_number": 940,
       "project_name": "fix_api_docs_oom_process_spawn_enomem",
       "status": "completed",
