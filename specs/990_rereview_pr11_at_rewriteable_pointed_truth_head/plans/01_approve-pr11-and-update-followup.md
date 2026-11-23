@@ -406,27 +406,27 @@ report/plan/summary artifact, so plan-format's sub-case (a) applies and the cove
 
 ---
 
-### Phase 4: Final consistency pass and completion [NOT STARTED]
+### Phase 4: Final consistency pass and completion [COMPLETED]
 
 **Goal**: the two review files agree with each other and with the report, the head is confirmed
 one last time, and the task closes with a summary.
 
 **Tasks**:
 
-- [ ] Re-read `pr11-approval.md` and `FOLLOWUP.md` together and check that every fact common to
+- [x] Re-read `pr11-approval.md` and `FOLLOWUP.md` together and check that every fact common to
       both — the head sha, the verdict, the CI run, the condition outcomes — is stated the same
       way in each.
-- [ ] Re-probe `gh pr view 11 --json headRefOid,state,mergeable,updatedAt` one last time and
+- [x] Re-probe `gh pr view 11 --json headRefOid,state,mergeable,updatedAt` one last time and
       record the result. If the head has moved since Phase 1, do not revise the drafts silently:
       record it, note in `FOLLOWUP.md` that the drafts were measured against `b2eb3ac0b` and the
       head has since moved, and surface it as a `user_decision`.
-- [ ] Write the completion summary to
+- [x] Write the completion summary to
       `specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/summaries/01_approve-pr11-and-update-followup.md`
       per `context/formats/summary-format.md`.
-- [ ] Record in the summary that nothing was posted, pushed, merged or approved, and that the
+- [x] Record in the summary that nothing was posted, pushed, merged or approved, and that the
       unblocking of the two downstream follow-up tasks is contingent on the user posting the
       approval and the merge actually landing.
-- [ ] Record the issue-log attestation for this phase, including an explicit attestation if
+- [x] Record the issue-log attestation for this phase, including an explicit attestation if
       nothing arose.
 
 **Timing**: 25 minutes
@@ -454,6 +454,40 @@ one last time, and the task closes with a summary.
   the divergence is recorded in `FOLLOWUP.md` and surfaced as a `user_decision`.
 - Both deliverable files exist and are non-empty; the summary names both of them.
 
+**Verification Notes** (Phase 4):
+
+- Final head re-probe at 2026-11-23T09:50:58Z:
+  `{"headRefOid":"b2eb3ac0b57d0f6082235aee0b861d8249bd7687","mergeable":"MERGEABLE","state":"OPEN","updatedAt":"2026-11-23T04:33:16Z"}`
+  — identical to the Phase 1 probe. No divergence to record, and no `user_decision` needed.
+- Cross-read of `pr11-approval.md` against `FOLLOWUP.md`: the head sha (`b2eb3ac0b`) and the
+  verdict (approve) are stated the same way in both. The CI run id `45112546558` appears only in
+  `FOLLOWUP.md`, by design — it is the pre-post re-check record, while the approval body reports
+  the local gate run rather than CI.
+- `bash .claude/scripts/validate-artifact.sh <summary> summary` → `[PASS]`, 0 warnings.
+- `pr11-comment.md` byte-unchanged: still 45 lines, same opening and closing lines as read at
+  planning time.
+- `git status --short` shows no `.lean`, `README.md`, `FormalSystem/**` or `typst/generated/**`
+  entry, and no entry attributable to this task outside
+  `specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/`. The sibling `specs/978*`,
+  `specs/979*`, `specs/980*` and `specs/981*` entries and the `specs/TODO.md`,
+  `specs/events.jsonl`, `specs/state.json` entries belong to other dispatches in this batch and
+  to the orchestrator.
+- **Scoped discharge of the declared `full` tier**: `bash .claude/scripts/verify-touched.sh`, per
+  the dispatch's Batch Gate Deferral directive, run detached with a bounded wait. Result: 84
+  passed, 1 failed (NEW), 10 skipped, 95 total. The single failure is
+  `tests/test-deploy-baseline-lib.sh`'s case "control: a genuinely matching warm-cache entry was
+  expected to skip gate 1 but did not" — the standing `verify-deploy.sh` gate-cache warm-path
+  defect, already reproduced twice in freshly created isolated scratch directories and so not a
+  concurrency artifact. It is unattributable to this task, which touched no `.claude/**` and no
+  `.lean` path; `verify-touched.sh` selected that suite only because it derives touched paths
+  from the whole working tree plus the committed diff against its own determined base, which under
+  this multi-task batch takes in sibling and prior-session changes. Recorded in `issues.jsonl`
+  and named in the summary's Verification and Follow-ups sections rather than papered over.
+- **The complete gate set is DEFERRED** to the orchestration close for the whole batch rather
+  than independently run here, and no additional full sweep was run. No unmappable criterion
+  arose: `verify-touched.sh` resolved every touched path, with the four this task owns landing in
+  its OWED free-fallback set.
+
 ---
 
 ## Lean Challenge Statements
@@ -467,22 +501,22 @@ cited, not reproduced. See the `## Decisions` section above for the full rationa
 
 ## Testing & Validation
 
-- [ ] `gh pr view 11 --json headRefOid` reads `b2eb3ac0b57d0f6082235aee0b861d8249bd7687` at
+- [x] `gh pr view 11 --json headRefOid` reads `b2eb3ac0b57d0f6082235aee0b861d8249bd7687` at
       Phase 1 and again at Phase 4.
-- [ ] `specs/reviews/pr-reviews-2026-11-21/pr11-approval.md` exists, is non-empty, and addresses
+- [x] `specs/reviews/pr-reviews-2026-11-21/pr11-approval.md` exists, is non-empty, and addresses
       all three posted conditions by name and in order.
-- [ ] Every factual claim in the approval body traces to a row of the research report; nothing is
+- [x] Every factual claim in the approval body traces to a row of the research report; nothing is
       asserted that the report does not carry.
-- [ ] The approval body contains no task-number reference, checked with
+- [x] The approval body contains no task-number reference, checked with
       `grep -nE '\b[Tt]asks? [0-9]+'`.
-- [ ] `specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md` carries no surviving stale #11 fact
+- [x] `specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md` carries no surviving stale #11 fact
       outside the preserved posted-record sentence, and names `pr11-approval.md` and
       `b2eb3ac0b`.
-- [ ] `specs/reviews/pr-reviews-2026-11-21/pr11-comment.md` is byte-unchanged — confirmed by
+- [x] `specs/reviews/pr-reviews-2026-11-21/pr11-comment.md` is byte-unchanged — confirmed by
       comparing its length and first and last lines against the values read at planning time (45
       lines, opening "Thank you. This is the contribution I asked for").
-- [ ] `bash .claude/scripts/validate-artifact.sh <summary path> summary` passes.
-- [ ] No `.lean`, `README.md`, `FormalSystem/**` or `typst/generated/**` path is modified —
+- [x] `bash .claude/scripts/validate-artifact.sh <summary path> summary` passes.
+- [x] No `.lean`, `README.md`, `FormalSystem/**` or `typst/generated/**` path is modified —
       confirmed from `git status --short`, which must show no new entries attributable to this
       task outside `specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/`.
 
