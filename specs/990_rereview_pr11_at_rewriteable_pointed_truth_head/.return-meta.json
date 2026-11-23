@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/reports/01_rereview-pr11-at-usability-and-tests.md",
+      "summary": "Re-review of PR #11 at head b2eb3ac0b: all three posted conditions met; recommendation is approve, with measured evidence for each condition, a twelve-probe table pinning down exactly what At usability now means, and green gates from a from-scratch review worktree."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795424219_8f2fbf_990",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
