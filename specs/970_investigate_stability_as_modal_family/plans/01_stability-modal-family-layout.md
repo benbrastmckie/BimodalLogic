@@ -289,33 +289,33 @@ with the stratified statement (R1), and remove the open decision.
 
 ---
 
-### Phase 4: Amend records/proof-mode.md [NOT STARTED]
+### Phase 4: Amend records/proof-mode.md [COMPLETED]
 
 **Goal**: Qualify M19's fragment list (R2) and remove every statement in the milestone record that
 the place of `⊡` is undecided (R4).
 
 **Tasks**:
-- [ ] Confirm the correction targets exist as quoted (they did at plan time): M19's sentence
+- [x] Confirm the correction targets exist as quoted (they did at plan time): M19's sentence
   listing the enumerated fragments; M21's sequencing clause "M23, whose answer decides whether
   these entries are sections of the Modal fragments or fragments of their own"; the M23 block,
   whose sequencing line ends "the design starts from `⊡` in Modal"; the lead-in "Two questions
   are open. The first awaits the user's ruling; the second waits on a report."; and item 2 of
   "## Open decisions". Locate M19's sentence with `grep -n "enumerat" records/proof-mode.md`. If
   a target is absent, find the passage by `grep -n "⊡\|M23" records/proof-mode.md`; if none
-  carries it, record the gap in the phase notes and make no substitute edit.
-- [ ] M19: qualify the fragment list so it reads as the cells whose operator set is within `□`.
-- [ ] M21: replace the M23 sequencing clause with the settled statement that the `⊡` entries are
-  sections of the `ModalBoolean` and `ModalTemporalBoolean` fragments, citing the report.
-- [ ] M23: leave the aim and done-when as written; amend the sequencing line so it does not
+  carries it, record the gap in the phase notes and make no substitute edit. *(completed: all five targets present as quoted)*
+- [x] M19: qualify the fragment list so it reads as the cells whose operator set is within `□`. *(completed)*
+- [x] M21: replace the M23 sequencing clause with the settled statement that the `⊡` entries are
+  sections of the `ModalBoolean` and `ModalTemporalBoolean` fragments, citing the report. *(completed: the record has no per-block convention for a met done-when, so none was added; the report path was added to the done-when)*
+- [x] M23: leave the aim and done-when as written; amend the sequencing line so it does not
   describe the layout as a starting position, and add the report path where the block names its
   output. Follow whatever convention the record uses for a milestone whose done-when is met;
   check two other milestone blocks for that convention before choosing, and add none if the
-  record has none.
-- [ ] Remove item 2 from "## Open decisions" and correct the lead-in count and sentence. Leave
-  the "Four positions are taken by the filed edges" paragraph and its later reference untouched.
-- [ ] `grep -n "M23" records/proof-mode.md` and read each remaining hit; the dependency-picture
-  and lane references describe M23 as a report and stay.
-- [ ] Run the checks under Verification.
+  record has none. *(completed)*
+- [x] Remove item 2 from "## Open decisions" and correct the lead-in count and sentence. Leave
+  the "Four positions are taken by the filed edges" paragraph and its later reference untouched. *(completed: remaining M23 hits describe it as a report and stay)*
+- [x] `grep -n "M23" records/proof-mode.md` and read each remaining hit; the dependency-picture
+  and lane references describe M23 as a report and stay. *(completed: three greps empty; record-versioning 0 BLOCKING; task-reference lint exit 0)*
+- [x] Run the checks under Verification. *(completed)*
 
 **Timing**: 0.75 hours
 

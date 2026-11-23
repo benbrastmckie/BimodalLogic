@@ -545,8 +545,9 @@ it, so it does not meet the done-when.
 
 - **Aim**: Fill the fragments the tableau covers from its verdicts.
 - **Done when**: one command enumerates the formulas of `Boolean`, `ModalBoolean`,
-  `TemporalBoolean` and `ModalTemporalBoolean` to a stated bound at each frame class the tableau
-  accepts, and runs them through the stages of [theorem-library.md](theorem-library.md); each
+  `TemporalBoolean` and `ModalTemporalBoolean`, in the cells whose operator set is within `□`,
+  to a stated bound at each frame class the tableau accepts, and runs them through the stages
+  of [theorem-library.md](theorem-library.md); each
   valid formula with an extracted derivation is admitted as a schema unless an existing entry
   subsumes it; every other verdict is registered as a conjecture with its reason; and each stage
   emits its diagnostic records.
@@ -581,8 +582,9 @@ it, so it does not meet the done-when.
   sweep over a selection of these entries in TM⁺ produces a report with a missing-rule list.
 - **Hard dependencies**: M18, and M1 for the `⊡` scopes.
 - **Sequencing-only dependencies**: M3, so that the gate can hold the sweep; M8, so that the
-  shared S5 statement is proved once; M20, for the pairing; M23, whose answer decides whether
-  these entries are sections of the Modal fragments or fragments of their own.
+  shared S5 statement is proved once; M20, for the pairing. The entries are sections of the
+  `ModalBoolean` and `ModalTemporalBoolean` fragments, by the layout of
+  [stability-operator-family.md](../docs/development/stability-operator-family.md).
 - **Lane**: Library, then Evaluation.
 - **Filed record**: `theorem_library_stability_entries`.
 
@@ -608,14 +610,16 @@ it, so it does not meet the done-when.
 ### M23: The place of the stability operator
 
 - **Aim**: Decide whether `⊡` belongs in the Modal family or in a family of its own.
-- **Done when**: a report under `docs/development/` weighs the two layouts against the three
+- **Done when**: a report under `docs/development/`,
+  [stability-operator-family.md](../docs/development/stability-operator-family.md), weighs the
+  two layouts against the three
   facts about `⊡` in [theorem-library.md](theorem-library.md), states whether the operators of
   the Open and Nomic languages are further instances of the parameterized necessity laws,
   recommends one layout, and lists the changes to the two records and to the filed records if
   the recommendation is a separate family.
 - **Hard dependencies**: none.
-- **Sequencing-only dependencies**: none. M0, M8, M18 and M21 are cheaper to carry out once it
-  has reported, and none waits on it: the design starts from `⊡` in Modal.
+- **Sequencing-only dependencies**: none. M0, M8, M18 and M21 take the layout from the report,
+  which files `⊡` under Modal, and none carries an edge on it.
 - **Lane**: Research and writing.
 - **Filed record**: `investigate_stability_as_modal_family`.
 
@@ -746,7 +750,7 @@ Research and planning are not serialized.
 
 ## Open decisions
 
-Two questions are open. The first awaits the user's ruling; the second waits on a report.
+One question is open. It awaits the user's ruling.
 
 1. **What does "default" mean for M12?** A policy on how contributors work, which the tree
    does not settle.
@@ -762,10 +766,6 @@ Two questions are open. The first awaits the user's ruling; the second waits on 
    recommendation is B as the rule, A for `Examples/` and case studies, and
    `FormalSystem/Theorems/` exempt and said to be so, all contingent on a GO. M12's done-when
    excludes C, so the choice left is whether A is added to B. This awaits the user's ruling.
-2. **Is `⊡` rightly in the Modal family?** The question of that name under "Open decisions" of
-   [theorem-library.md](theorem-library.md), examined in `investigate_stability_as_modal_family`
-   (M23). The records start from one family, and a recommendation for a separate family needs a
-   ruling before the records change.
 
 Four positions are taken by the filed edges and can each be reversed by changing one edge.
 
