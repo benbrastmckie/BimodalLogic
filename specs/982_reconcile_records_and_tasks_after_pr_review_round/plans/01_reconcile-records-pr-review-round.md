@@ -342,41 +342,47 @@ editing and records a deviation if the count or the locations differ.
 
 ---
 
-### Phase 4: `records/proof-mode-architecture.md` and `records/README.md` [NOT STARTED]
+### Phase 4: `records/proof-mode-architecture.md` and `records/README.md` [COMPLETED]
 
 **Goal**: Close the one currency gap that is safe to close, verify the "Where the work sits" rows,
 and record why the two merge-gated items are left alone.
 
 **Tasks**:
-- [ ] **Semantic-mode paragraph** (line 98 at planning time): the record currently says
+- [x] **Semantic-mode paragraph** (line 98 at planning time): the record currently says
       `records/semantic-proof-mode.md` "is to be written". It has been written, as a draft on the
       semantic-record contribution's branch, and is not yet merged. Change the phrase so it does
       not imply no draft exists — name it as drafted on that contribution and not yet in the tree.
       Do **not** attempt the larger rewrite the dispatch describes for "once
-      `records/semantic-proof-mode.md` is in the tree"; that is gated on the merge.
-- [ ] **Open decision 2 (the rename)**: leave it open. The edit that closes it exists only on the
+      `records/semantic-proof-mode.md` is in the tree"; that is gated on the merge. *(completed)*
+- [x] **Open decision 2 (the rename)**: leave it open. The edit that closes it exists only on the
       temporal contribution's unmerged branch, and `pr8-record-edits.md` was written specifically
       to stop this task duplicating or reverting it. Add nothing; record the reason in the phase
-      note so a later reader does not mistake the omission for an oversight.
-- [ ] **"Where the work sits" rows**: verify each of the five rows the dispatch names.
+      note so a later reader does not mistake the omission for an oversight. *(confirmed: left
+      open verbatim; reason recorded in progress/phase-4-progress.json)*
+- [x] **"Where the work sits" rows**: verify each of the five rows the dispatch names.
       - Logical rewriting row ("`lrewrite` and `lsimp` apply native rules only") — accurate, the
-        rewriting contribution has merged; confirm and leave.
+        rewriting contribution has merged; confirm and leave. *(confirmed accurate, left as is)*
       - Views row ("the first rows of the view table are contributed with the rewriting tactics")
         — accurate for `main` today; the twenty temporal rows are deferred until that contribution
-        merges. Confirm and leave.
+        merges. Confirm and leave. *(confirmed accurate: seven rows exist on `main` today, filed
+        under the rewriting contribution per Phase 3's M16 edit; left as is)*
       - Carrying row ("one carrying table shared with the two scope records above") — accurate;
-        confirm and leave.
+        confirm and leave. *(confirmed: "contributed" here follows this table's own convention of
+        naming a pull request's content rather than asserting it is merged — `carryRules` exists
+        only on the temporal contribution's branch, consistent with that convention; left as is)*
       - Until/Since induction row ("statement proposed and not yet derived") — accurate; confirm
-        and leave.
+        and leave. *(confirmed accurate, left as is)*
       - Semantic tier row ("to be a separate mode in a directory of its own ... after
         `records/semantic-proof-mode.md`") — accurate, since the record is still a draft; confirm
-        and leave.
-      Record each verdict; change only a row the verification shows is wrong.
-- [ ] **`records/README.md`**: confirm it has one row per record actually present — four rows for
+        and leave. *(confirmed accurate, left as is)*
+      Record each verdict; change only a row the verification shows is wrong. *(no row needed
+      changing; all five confirmed accurate)*
+- [x] **`records/README.md`**: confirm it has one row per record actually present — four rows for
       `milestones.md`, `proof-mode.md`, `proof-mode-architecture.md` and `theorem-library.md`,
       with `milestones.md` among them. It does. Do **not** add a `records/semantic-proof-mode.md`
       row: that file does not exist on `main` (Phase 1 re-confirms this), and adding a row for an
-      absent file would break the README's own one-row-per-present-record rule.
+      absent file would break the README's own one-row-per-present-record rule. *(confirmed: four
+      rows, matches `ls records/`; no edit made)*
 
 **Timing**: 0.5 hours
 

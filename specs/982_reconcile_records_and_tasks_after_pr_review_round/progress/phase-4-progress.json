@@ -1,0 +1,18 @@
+{
+  "phase": 4,
+  "phase_name": "records/proof-mode-architecture.md and records/README.md",
+  "started_at": "2026-11-23T06:05:00Z",
+  "last_updated": "2026-11-23T06:15:00Z",
+  "objectives": [
+    {"id": 1, "description": "Semantic-mode paragraph currency phrase", "status": "done", "files_touched": ["records/proof-mode-architecture.md"]},
+    {"id": 2, "description": "Open decision 2 left open with reason recorded", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Where the work sits rows verified (5 rows)", "status": "done", "files_touched": []},
+    {"id": 4, "description": "records/README.md confirmed, no edit", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 4,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "phase_note": {
+    "open_decision_2_reason": "Left open deliberately. The rename (unfold/fold -> expand/contract) and the architecture-record text that would close this item exist only on the temporal contribution's unmerged branch (PR #8). pr8-record-edits.md was written specifically to stop this reconciliation task duplicating or reverting the contributor's own forthcoming edit to this exact decision. The milestones-level ruling (the keywords ARE expand/contract, settled) is stated in records/milestones.md's contributions table (Phase 2), with this item named there as closing on the merge -- this is the deliberate asymmetry the plan's Risk table calls for, not a contradiction or an oversight."
+  }
+}

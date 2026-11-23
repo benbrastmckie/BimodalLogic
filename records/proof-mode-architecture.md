@@ -95,8 +95,8 @@ views and the planner need not sit below layer 3, all tactics are in one place, 
 makes the mode unusable below layer 3.
 
 **The semantic mode has a record and a measured client before any tactic is built.** The record
-is `records/semantic-proof-mode.md`, which is to be written; the semantic lemmas need neither
-and come first. Ordinary Lean tactics already work on truth goals, so the case for a tactic
+is `records/semantic-proof-mode.md`, drafted on the semantic-record contribution's branch and not
+yet in the tree; the semantic lemmas need neither and come first. Ordinary Lean tactics already work on truth goals, so the case for a tactic
 language rests on proofs it shortens. The countermodel half of the theorem library is a
 candidate client, and the record makes it a measured one: it names the declarations, and each is
 proved again twice, once with the lemmas alone and once with the tactics, both reported against
