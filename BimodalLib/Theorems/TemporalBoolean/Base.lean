@@ -1,0 +1,135 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import FormalSystem.Theorems.Combinators
+import FormalSystem.Theorems.ConnectDerived
+import FormalSystem.Theorems.DedekindDerived
+import FormalSystem.Theorems.DiscreteUnfolding
+import FormalSystem.Theorems.GeneralizedNecessitation
+import FormalSystem.Theorems.Interaction
+import FormalSystem.Theorems.LinearityDerived
+import FormalSystem.Theorems.ModalDerived
+import FormalSystem.Theorems.Perpetuity.MonotonicityDuality
+import FormalSystem.Theorems.Perpetuity.Principles
+import FormalSystem.Theorems.Propositional.Core
+import FormalSystem.Theorems.TemporalDerived
+import BimodalLib.Registry
+
+/-!
+# Registered theorems: `TemporalBoolean` at `Base`
+
+The closed derivations under `FormalSystem/Theorems/` whose statement has
+a temporal operator and no modal one, derivable at every frame class.
+
+Each line registers one declaration by reference; the row is built from the type of the
+declaration, and the fragment and frame class it is filed under here are the ones the row
+computes. Lines are grouped by the module that declares the derivation.
+-/
+
+-- Declared in `FormalSystem.Theorems.Combinators`.
+register_theorem FormalSystem.ProofSystem.DerivedAxioms.linearSince
+register_theorem FormalSystem.ProofSystem.DerivedAxioms.linearUntilLegacy
+
+-- Declared in `FormalSystem.Theorems.ConnectDerived`.
+register_theorem FormalSystem.Theorems.ConnectDerived.connectFuture
+register_theorem FormalSystem.Theorems.ConnectDerived.connectPast
+register_theorem FormalSystem.Theorems.ConnectDerived.discretePropagateBwd
+register_theorem FormalSystem.Theorems.ConnectDerived.discreteSymmBwd
+register_theorem FormalSystem.Theorems.ConnectDerived.discreteSymmFwd
+register_theorem FormalSystem.Theorems.ConnectDerived.fHImp
+register_theorem FormalSystem.Theorems.ConnectDerived.untlBotFalseThm
+
+-- Declared in `FormalSystem.Theorems.DedekindDerived`.
+register_theorem FormalSystem.Theorems.DedekindDerived.alwaysElimFuture
+register_theorem FormalSystem.Theorems.DedekindDerived.alwaysElimHere
+register_theorem FormalSystem.Theorems.DedekindDerived.alwaysElimPast
+register_theorem FormalSystem.Theorems.DedekindDerived.snceAllPastAndImp
+register_theorem FormalSystem.Theorems.DedekindDerived.someFutureAllPastImp
+register_theorem FormalSystem.Theorems.DedekindDerived.someFutureAllPastUntlTop
+
+-- Declared in `FormalSystem.Theorems.DiscreteUnfolding`.
+register_theorem FormalSystem.Theorems.DiscreteUnfolding.nextConj
+register_theorem FormalSystem.Theorems.DiscreteUnfolding.prevConj
+register_theorem FormalSystem.Theorems.DiscreteUnfolding.unfoldBackward
+register_theorem FormalSystem.Theorems.DiscreteUnfolding.unfoldTableBackward
+
+-- Declared in `FormalSystem.Theorems.GeneralizedNecessitation`.
+register_theorem FormalSystem.Theorems.pastKDist
+
+-- Declared in `FormalSystem.Theorems.Interaction`.
+register_theorem FormalSystem.Theorems.Interaction.alwaysNegToNotSometimes
+register_theorem FormalSystem.Theorems.Interaction.notSometimesToAlwaysNeg
+
+-- Declared in `FormalSystem.Theorems.LinearityDerived`.
+register_theorem FormalSystem.Theorems.LinearityDerived.tempLinearity
+register_theorem FormalSystem.Theorems.LinearityDerived.tempLinearityLegacy
+register_theorem FormalSystem.Theorems.LinearityDerived.tempLinearityPast
+
+-- Declared in `FormalSystem.Theorems.ModalDerived`.
+register_theorem FormalSystem.Theorems.ModalDerived.gDneTheorem
+register_theorem FormalSystem.Theorems.ModalDerived.hDneTheorem
+register_theorem FormalSystem.Theorems.ModalDerived.pastTempA
+
+-- Declared in `FormalSystem.Theorems.Perpetuity.MonotonicityDuality`.
+register_theorem FormalSystem.Theorems.Perpetuity.alwaysDne
+register_theorem FormalSystem.Theorems.Perpetuity.alwaysDni
+register_theorem FormalSystem.Theorems.Perpetuity.alwaysToFuture
+register_theorem FormalSystem.Theorems.Perpetuity.alwaysToPast
+register_theorem FormalSystem.Theorems.Perpetuity.alwaysToPresent
+register_theorem FormalSystem.Theorems.Perpetuity.pastPresentFutureToAlways
+register_theorem FormalSystem.Theorems.Perpetuity.temporalDualityNeg
+register_theorem FormalSystem.Theorems.Perpetuity.temporalDualityNegRev
+
+-- Declared in `FormalSystem.Theorems.Perpetuity.Principles`.
+register_theorem FormalSystem.Theorems.Perpetuity.futureKDist
+register_theorem FormalSystem.Theorems.Perpetuity.pastKDistFromFuture
+
+-- Declared in `FormalSystem.Theorems.Propositional.Core`.
+register_theorem FormalSystem.Theorems.Propositional.snceBotFalse
+register_theorem FormalSystem.Theorems.Propositional.untlBotFalse
+
+-- Declared in `FormalSystem.Theorems.TemporalDerived`.
+register_theorem FormalSystem.Theorems.TemporalDerived.alwaysImpAllFuture
+register_theorem FormalSystem.Theorems.TemporalDerived.alwaysImpAllPast
+register_theorem FormalSystem.Theorems.TemporalDerived.alwaysToPresent
+register_theorem FormalSystem.Theorems.TemporalDerived.connectFutureChain
+register_theorem FormalSystem.Theorems.TemporalDerived.connectFutureG
+register_theorem FormalSystem.Theorems.TemporalDerived.connectFutureThm
+register_theorem FormalSystem.Theorems.TemporalDerived.connectPastChain
+register_theorem FormalSystem.Theorems.TemporalDerived.connectPastH
+register_theorem FormalSystem.Theorems.TemporalDerived.connectPastThm
+register_theorem FormalSystem.Theorems.TemporalDerived.fMono
+register_theorem FormalSystem.Theorems.TemporalDerived.fNegG
+register_theorem FormalSystem.Theorems.TemporalDerived.gAndIntro
+register_theorem FormalSystem.Theorems.TemporalDerived.gContrapose
+register_theorem FormalSystem.Theorems.TemporalDerived.gDistribution
+register_theorem FormalSystem.Theorems.TemporalDerived.gImpTrans
+register_theorem FormalSystem.Theorems.TemporalDerived.gImpliesGId
+register_theorem FormalSystem.Theorems.TemporalDerived.gMono
+register_theorem FormalSystem.Theorems.TemporalDerived.gTransitivity
+register_theorem FormalSystem.Theorems.TemporalDerived.hAndIntro
+register_theorem FormalSystem.Theorems.TemporalDerived.hContrapose
+register_theorem FormalSystem.Theorems.TemporalDerived.hDistribution
+register_theorem FormalSystem.Theorems.TemporalDerived.hImpTrans
+register_theorem FormalSystem.Theorems.TemporalDerived.hMono
+register_theorem FormalSystem.Theorems.TemporalDerived.hTransitivity
+register_theorem FormalSystem.Theorems.TemporalDerived.pMono
+register_theorem FormalSystem.Theorems.TemporalDerived.pNegH
+register_theorem FormalSystem.Theorems.TemporalDerived.presentToSometimes
+register_theorem FormalSystem.Theorems.TemporalDerived.sinceImpP
+register_theorem FormalSystem.Theorems.TemporalDerived.sinceImpliesSomePast
+register_theorem FormalSystem.Theorems.TemporalDerived.sinceMonoEvent
+register_theorem FormalSystem.Theorems.TemporalDerived.sinceMonoGuard
+register_theorem FormalSystem.Theorems.TemporalDerived.temporal4Derived
+register_theorem FormalSystem.Theorems.TemporalDerived.temporalKDistDerived
+register_theorem FormalSystem.Theorems.TemporalDerived.untilImpF
+register_theorem FormalSystem.Theorems.TemporalDerived.untilImpliesSomeFuture
+register_theorem FormalSystem.Theorems.TemporalDerived.untilMonoEvent
+register_theorem FormalSystem.Theorems.TemporalDerived.untilMonoGuard
+register_theorem FormalSystem.Theorems.TemporalDerived.weakFutureLeft
+register_theorem FormalSystem.Theorems.TemporalDerived.weakFutureRight
+register_theorem FormalSystem.Theorems.TemporalDerived.weakPastLeft
+register_theorem FormalSystem.Theorems.TemporalDerived.weakPastRight

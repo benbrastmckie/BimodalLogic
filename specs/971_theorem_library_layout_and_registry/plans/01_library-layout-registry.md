@@ -245,23 +245,23 @@ modules inside a library nothing else imports.
 
 ---
 
-### Phase 3: Register the closed derivations and run the check [NOT STARTED]
+### Phase 3: Register the closed derivations and run the check [COMPLETED]
 
 **Goal**: Every closed derivation under `FormalSystem/Theorems/` outside `ProofMode/` has a row,
 filed by its computed fragment and frame class, and the build fails if one is missing.
 
 **Tasks**:
-- [ ] Generate the `register_theorem` lines from `probes/census.tsv`, one per closed
+- [x] Generate the `register_theorem` lines from `probes/census.tsv`, one per closed
   declaration, into the seven registration files below, by the fragment and frame class the
   prototype computed. Each file imports only the `FormalSystem` modules that declare what it
   registers, and `BimodalLib.Registry`.
-- [ ] Create `BimodalLib/Theorems/Complete.lean`, importing the root `FormalSystem` and all
+- [x] Create `BimodalLib/Theorems/Complete.lean`, importing the root `FormalSystem` and all
   seven files, and invoking `assert_registry_complete`.
-- [ ] Import `BimodalLib.Theorems.Complete` from `BimodalLib.lean`. Run
+- [x] Import `BimodalLib.Theorems.Complete` from `BimodalLib.lean`. Run
   `lake build BimodalLib --wfail`.
-- [ ] Compare the three counts the command logs, and the per-file row counts, with the Scope
+- [x] Compare the three counts the command logs, and the per-file row counts, with the Scope
   Hypothesis. Record any difference in the issue log and in the summary; the live counts win.
-- [ ] Confirm placement: for one row per file, a `decide` or `rfl` example in a scratch file
+- [x] Confirm placement: for one row per file, a `decide` or `rfl` example in a scratch file
   shows the row's fragment and frame class are those of the file it sits in.
 
 **Timing**: 2 hours
