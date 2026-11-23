@@ -325,39 +325,43 @@ edited here.
 
 ---
 
-### Phase 4: Ledger, Worktree Disposition, Summary and Close-Out [NOT STARTED]
+### Phase 4: Ledger, Worktree Disposition, Summary and Close-Out [COMPLETED]
 
 **Goal**: Attach the outcome to the follow-up ledger and to the task's own durable artifacts, and
 leave the probe worktree recorded rather than orphaned.
 
 **Tasks**:
-- [ ] Re-run `gh pr view 8 --json headRefOid,state,mergeable` one final time (ground rule ii).
+- [x] Re-run `gh pr view 8 --json headRefOid,state,mergeable` one final time (ground rule ii).
       If the head has moved since Phase 1, mark the draft NOT READY TO POST in its own first
       line and in the summary, naming the new oid and the unreviewed commits.
-- [ ] Re-read `specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md` **immediately before editing it**
+- [x] Re-read `specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md` **immediately before editing it**
       and compare against the copy read in Phase 1. If it has changed in any way other than by
       this task's own hand, abort the edit, record the intended entry verbatim in the summary,
       and record an `issue-record.sh` entry of class `cross-task-overlap`.
-- [ ] If clear: two anchored `Edit` calls only — add one numbered item to "To post, in order"
+- [x] If clear: two anchored `Edit` calls only — add one numbered item to "To post, in order"
       for `pr8-comment.md` (request changes; the three conditions), and replace the stale "#8
       temporal: Tanner's move ... Re-review after the rebase: `/orchestrate 981 --research`"
       bullet under "Related, not in the three" with the re-review's outcome. Items 2 and 3 of
       the post list, and every "Decided"/"Still open" bullet about #9, #10 and #11, are task
       979's and are not touched.
-- [ ] Record the probe worktree's disposition: path, branch, head sha, what it contains (the
+- [x] Record the probe worktree's disposition: path, branch, head sha, what it contains (the
       rebase plus one extra commit of this review's own restoring the test imports), and the
       instruction that if the rebase offer is taken up it is redone cleanly on a fresh branch
       rather than pushed from the probe. Do not remove the worktree — the green tree is the
       evidence behind the offer. Record it in the summary and in the report disposition section.
-- [ ] Write `specs/981_rereview_pr8_temporal_rules_and_carrying_table/summaries/01_rereview-pr8-temporal-rules-carrying-table-summary.md`
+      *(deviation: altered — the rebase offer is moot, since the contributor merged `main`
+      themselves, so the worktree was repurposed to the contributor's own head `5ecc91d63` and the
+      gate table measured there; the probe branch `pr8-rebase-probe` is retained at `4e732c51c`
+      as evidence rather than left checked out)*
+- [x] Write `specs/981_rereview_pr8_temporal_rules_and_carrying_table/summaries/01_rereview-pr8-temporal-rules-carrying-table-summary.md`
       per `summary-format.md`: what changed, the live PR state measured in this dispatch, the
       recommendation (REQUEST CHANGES with three conditions), the follow-ups and their owners,
       the open ruling on the carrying table's siting, and a plain statement that
       `specs/reviews/**` is git-excluded so those files appear in no commit.
-- [ ] Commit this task's own `specs/981_*/` artifacts with `git-commit-scoped.sh`, staging an
+- [x] Commit this task's own `specs/981_*/` artifacts with `git-commit-scoped.sh`, staging an
       explicit file list only — never a directory or glob add. Sibling tasks are live on this
       same tree.
-- [ ] Record a closing `issue-record.sh` entry for the phase; if nothing noteworthy arose,
+- [x] Record a closing `issue-record.sh` entry for the phase; if nothing noteworthy arose,
       attest that explicitly in the summary prose rather than recording nothing silently.
 
 **Timing**: 25 minutes

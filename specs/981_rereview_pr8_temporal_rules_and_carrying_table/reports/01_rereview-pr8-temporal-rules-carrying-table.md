@@ -435,4 +435,7 @@ readme-lint is therefore no evidence at all about stale dates; only a full-histo
 ### Ground rule (ii) re-check log
 
 - `gh pr view 8` at the start of this dispatch: `5ecc91d63` (the move recorded above).
-- `gh pr view 8` at the close of this dispatch: recorded in the summary.
+- `gh pr view 8` at the close of this dispatch (Phase 4, 2026-11-23T05:25Z):
+  `{"headRefOid":"5ecc91d63b3a3cdcae1028417d67c3e89907bdad","mergeable":"MERGEABLE","state":"OPEN","updatedAt":"2026-11-23T04:29:47Z"}`
+  — **unchanged** from the Phase 1 read, `updatedAt` included. The draft reviews the live head and
+  is READY TO POST.
