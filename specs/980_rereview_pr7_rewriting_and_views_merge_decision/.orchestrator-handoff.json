@@ -1,15 +1,22 @@
 {
-  "status": "planned",
-  "dispatch_seq": 4,
-  "phases_completed": 0,
+  "task_number": 980,
+  "phase": "implement",
+  "dispatch_seq": 7,
+  "status": "implemented",
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Planned task 980 as a close-out rather than a re-review: the premise is superseded, because PR #7 merged 2026-11-22T22:58:00Z as 3c7197f84 at head 6313e693f, with all three conditions the research report recommended applied, the filing by family delivered as well, and the M17 Current client paragraph already restated on main. The four-phase plan confirms the merged outcome, appends an Outcome section to the task's report separating historical from live claims, annotates the superseded draft in the task's file_scope, and hands the five residual follow-ups to their owning slugs. No record edits, no Lean edits, nothing posted.",
+  "summary": "PR #7 was already merged (3c7197f84, 2026-11-22T22:58:00Z, head 6313e693f), so the plan's close-out ran instead of a re-review. Appended an Outcome section, a five-row residual Handover map and a verification note to the task report; retired the superseded pr7-review.md draft in place with a header naming pr7-approval.md and the merge commit. All three review conditions and the filing by family confirmed landed by file and line; no Lean source, record or task description was touched and nothing was posted or pushed.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/plans/01_pr7-rewriting-views-merge-decision.md",
-      "summary": "Four-phase close-out plan (3 waves, 1.25 hours) for a task whose merge-decision aim is already discharged by the merge of PR #7."
+      "type": "summary",
+      "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/summaries/01_pr7-rewriting-views-merge-decision-summary.md",
+      "summary": "Close-out of the PR #7 re-review: merge confirmed, conditions verified, residuals handed over with one stated gap."
+    },
+    {
+      "type": "report",
+      "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/reports/01_pr7-rewriting-views-merge-decision.md",
+      "summary": "Original review extended with Outcome, Handover and close-out verification sections; the pre-existing 340 lines are byte-unchanged."
     }
   ]
 }

@@ -1,27 +1,82 @@
 {
-  "status": "planned",
-  "dispatch_seq": 4,
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 12,
+    "build_passed": null,
+    "build_output": "N/A -- this task edited zero .lean files (git diff --name-only over all four of its commits returns no .lean path), so no Lean gate is implicated. The scoped touched-path check (verify-touched.sh) was run as this dispatch's batch-gate-deferral discharge; the full gate set is deferred to the batch stage at the end of this /orchestrate invocation. Baselines re-measured and unchanged against pre-task commit 8a813bbd8: vacuous 1 -> 1 (FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal := trivial, a legitimate proof that Int's time-history domain is universal, pre-existing and untouched), axioms 12 -> 12."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/plans/01_pr7-rewriting-views-merge-decision.md",
-      "summary": "Four-phase close-out plan: confirm the merged outcome of PR #7, record it in the task's report, retire the superseded draft, and hand the residual follow-ups to their owning tasks."
+      "type": "summary",
+      "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/summaries/01_pr7-rewriting-views-merge-decision-summary.md",
+      "summary": "Close-out of the PR #7 re-review: merge confirmed at 3c7197f84, three conditions verified by file and line, five residuals handed over with one stated gap."
+    },
+    {
+      "type": "report",
+      "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/reports/01_pr7-rewriting-views-merge-decision.md",
+      "summary": "Original review extended with Outcome, Handover and close-out verification sections; the pre-existing 340 lines are byte-unchanged."
     }
   ],
-  "memory_candidates": [],
-  "phase_count": 4,
-  "estimated_hours": 1.25,
-  "dependency_waves": 3,
-  "user_decision": {
-    "required": true,
-    "blocking": false,
-    "summary": "Task 980's premise is superseded: PR #7 merged 2026-11-22T22:58:00Z (3c7197f84, head 6313e693f) with all three recommended conditions applied, the filing by family delivered, and the M17 Current client paragraph already restated on main. The three rulings the research round raised are therefore all closed by events. The plan is a close-out (record the outcome, retire the superseded draft, hand over residuals) and edits no record. The alternative, if you would rather not spend a cycle on it, is to mark 980 complete or abandoned directly and let reconcile_records_and_tasks_after_pr_review_round absorb the residuals."
+  "completion_data": {
+    "completion_summary": "PR #7 merged as 3c7197f84 on 2026-11-22T22:58:00Z before this dispatch ran, so the plan's close-out executed in place of a second review. The task report gained an Outcome section (merge facts, the three conditions confirmed by file and line, the filing-by-family delivery, the M17 restatement, and a live/historical split of its own claims), a Handover map assigning four of five residual follow-ups to proof_mode_views_tier and proof_mode_error_message_coverage with the obligating sentence quoted, and a baseline-delta verification note. The superseded pr7-review.md draft was retired in place with a header naming pr7-approval.md and the merge commit, its body byte-unchanged.",
+    "roadmap_items": []
   },
-  "next_steps": "Run /orchestrate 980 to execute the plan",
+  "modified_files": [
+    "specs/980_rereview_pr7_rewriting_and_views_merge_decision/reports/01_pr7-rewriting-views-merge-decision.md",
+    "specs/980_rereview_pr7_rewriting_and_views_merge_decision/plans/01_pr7-rewriting-views-merge-decision.md",
+    "specs/980_rereview_pr7_rewriting_and_views_merge_decision/summaries/01_pr7-rewriting-views-merge-decision-summary.md",
+    "specs/reviews/pr-reviews-2026-11-21/pr7-review.md"
+  ],
+  "user_decision": {
+    "blocking": false,
+    "question": "applyView's swallowed error (FormalSystem/Tactic/FormulaViews.lean:106-107) has no owner whose declared scope reaches it. proof_mode_error_message_coverage's remit is stated by path as 'every throwError path in FormalSystem/Automation/ProofMode/', which does not reach the FormalSystem/Tactic/ modules PR #7 created; proof_mode_views_tier obliges only a test of the message as it stands, which would freeze the wrong message in place; and reconcile_records_and_tasks_after_pr_review_round does not list proof_mode_error_message_coverage among the descriptions it will restate. Should proof_mode_error_message_coverage be widened to cover FormalSystem/Tactic/ and to require that swallowed errors are rewritten rather than merely tested, or should that obligation be added to proof_mode_views_tier instead?",
+    "options": [
+      "Widen proof_mode_error_message_coverage's path scope to FormalSystem/Tactic/ and restate its remit to cover rewriting a swallowed error, not only testing the message it currently emits.",
+      "Add the obligation to proof_mode_views_tier, which already owns FormulaViews.lean, as an explicit deliverable alongside its existing wrong-shape-message test.",
+      "Add proof_mode_error_message_coverage to the list of task descriptions reconcile_records_and_tasks_after_pr_review_round restates, and let that task decide."
+    ],
+    "recommendation": "Add proof_mode_error_message_coverage to reconcile_records_and_tasks_after_pr_review_round's restatement list. That task is already contracted to re-scope six sibling descriptions against the merged tree and to re-measure the throwError counts PRs #7 and #8 added, so it is the cheapest place to settle both the path widening and the test-versus-rewrite question together, rather than this close-out guessing at a remit change."
+  },
+  "sapience_notes": [
+    {
+      "subject": "PR #7 (BimodalLogic proof-mode rewriting) outcome",
+      "value": "Merged as 3c7197f84297d9ebab2472a89adba19effb72ef6 on 2026-11-22T22:58:00Z at head 6313e693f, under a squash. All three review conditions landed (the whole-folder 'import Lean' replaced by Lean.Meta.AppBuilder/CollectMVars at FormalSystem/Tactic/FormulaSyntax.lean:8-9; docstrings on the lSimpOption production and the views environment extension), and the contributor additionally delivered the filing by family, which the review had explicitly deferred to the layout record."
+    },
+    {
+      "subject": "Views tier as contributed in BimodalLogic",
+      "value": "The view table (coreViews, FormalSystem/Tactic/FormulaViews.lean:60-64) carries four distinct names - diamond, next, prev, dstab - across seven rows, against 20 entries in the hand-written Language.operatorName pair table (FormalSystem/Tactic/FormulaSyntax.lean:33-85), of which 17 are operators proper. The two tables are separate, so an operator can be traversable with no view or the reverse. proof_mode_views_tier's deliverable (3) is exactly the obligation to unify them."
+    },
+    {
+      "subject": "Swallowed errors surviving the PR #7 merge",
+      "value": "Two remain and both still produce generic messages. applyView at FormulaViews.lean:106-107 is literally 'catch _ => saved.restore' before throwing the generic wrong-location message. The lsimp per-attempt catch at Simplification.lean:95-97 routes to trace[proofMode.simp], swallowing the throwError 'rule requires unavailable side conditions' raised at :91, so the user sees only 'lsimp made no decreasing change with the supplied rules'."
+    },
+    {
+      "subject": "Scope hole between BimodalLogic's proof-mode task descriptions",
+      "value": "proof_mode_error_message_coverage states its remit by path as FormalSystem/Automation/ProofMode/, which does not reach the FormalSystem/Tactic/ modules (FormulaSyntax, FormulaPositions, FormulaViews) that PR #7 created; and reconcile_records_and_tasks_after_pr_review_round's restatement list names six sibling tasks but not proof_mode_error_message_coverage. A path-stated remit silently fails to follow new modules into a new directory - worth checking whenever a contribution adds a directory."
+    },
+    {
+      "subject": "verify-touched.sh behaviour on a shared, concurrently-dispatched tree",
+      "value": "It derives touched paths from the whole working tree, so sibling dispatches' uncommitted specs/TODO.md, specs/events.jsonl and specs/state.json are attributed to the running dispatch and pull in the entire 90-suite agent-system battery even for a three-file markdown edit. It also cannot see a git-excluded path at all (specs/reviews/ is excluded at .git/info/exclude:20), so such edits are invisible to it in both directions. In this deploy-only tree the resulting failures are a standing baseline: test-roadmap-generation.sh fails with 'roadmap-integration.sh not found (mode=source-store)' because there is no on-disk agent-system/ source store."
+    },
+    {
+      "subject": "Confirming a markdown-only close-out did not regress Lean invariants",
+      "value": "Comparing the sorry/vacuous/axiom census against the pre-task commit with 'git grep -c' at a named revision is cheaper and more honest than running a build when the dispatch edited no .lean file. Here vacuous held at 1 and axioms at 12 across 8a813bbd8..HEAD, and the single vacuous hit (int_domain_universal := trivial at FormalSystem/Examples/TemporalStructures.lean:495) is a legitimate proof rather than a placeholder - a reminder that the vacuous-pattern grep has a real false-positive class."
+    }
+  ],
   "metadata": {
-    "session_id": "sess_1795402655_5a890d_980",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "session_id": "sess_1795402655_5a890d",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "task_dir": "specs/980_rereview_pr7_rewriting_and_views_merge_decision",
+    "dispatch_seq": 7,
+    "compliance_check": "passed",
+    "gate_deferral": "Full gate set deferred to the batch stage per this dispatch's batch-gate deferral directive; discharged here by the scoped verify-touched.sh run, whose failures were shown to be the standing deploy-only-tree baseline and to read none of this task's files."
   }
 }

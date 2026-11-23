@@ -1,7 +1,7 @@
 # Implementation Plan: Task #980
 
 - **Task**: 980 - rereview_pr7_rewriting_and_views_merge_decision
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/980_rereview_pr7_rewriting_and_views_merge_decision/reports/01_pr7-rewriting-views-merge-decision.md
