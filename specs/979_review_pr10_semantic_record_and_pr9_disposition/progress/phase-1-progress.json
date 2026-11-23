@@ -1,0 +1,18 @@
+{
+  "phase": 1,
+  "phase_name": "Reconcile pr10-review.md with the merged-#7 state, the PR #11 control, and the current records",
+  "started_at": "2026-11-22T20:15:00Z",
+  "last_updated": "2026-11-22T20:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-read pr10-review.md and pr11-review.md in full", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Replace preamble caveat with PR #11 control result and threshold implication", "status": "done", "files_touched": ["specs/reviews/pr-reviews-2026-11-21/pr10-review.md"]},
+    {"id": 3, "description": "Re-resolve open-decision citations (decision 4 -> decision 2); check open-decision-2 claim", "status": "done", "files_touched": ["specs/reviews/pr-reviews-2026-11-21/pr10-review.md"]},
+    {"id": 4, "description": "Correct PR #7 as merged, not in flight", "status": "done", "files_touched": ["specs/reviews/pr-reviews-2026-11-21/pr10-review.md"]},
+    {"id": 5, "description": "Record rulings taken under each ruling item", "status": "done", "files_touched": ["specs/reviews/pr-reviews-2026-11-21/pr10-review.md"]},
+    {"id": 6, "description": "Align Evidence section 1 drafted Open decisions block with pr10-comment.md", "status": "done", "files_touched": ["specs/reviews/pr-reviews-2026-11-21/pr10-review.md"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}

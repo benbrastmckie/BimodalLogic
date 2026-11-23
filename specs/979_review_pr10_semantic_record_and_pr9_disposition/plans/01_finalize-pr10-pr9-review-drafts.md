@@ -1,7 +1,7 @@
 # Implementation Plan: Task #979
 
 - **Task**: 979 - Review PR #10 (semantic proof mode record) and settle the disposition of PR #9
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None (sibling tasks 978 and 980 run concurrently on disjoint files)
 - **Research Inputs**: `specs/reviews/pr-reviews-2026-11-21/pr10-review.md`,
@@ -115,37 +115,45 @@ content of `pr10-comment.md`'s three numbered asks; this plan does not change th
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Reconcile `pr10-review.md` with the merged-#7 state, the PR #11 control, and the current records [NOT STARTED]
+### Phase 1: Reconcile `pr10-review.md` with the merged-#7 state, the PR #11 control, and the current records [COMPLETED]
 
 **Goal**: `pr10-review.md` states facts that are true today, cites decisions that resolve, and
 records the rulings that were taken on its three ruling items.
 
 **Tasks**:
-- [ ] Re-read `specs/reviews/pr-reviews-2026-11-21/pr10-review.md` in full and
+- [x] Re-read `specs/reviews/pr-reviews-2026-11-21/pr10-review.md` in full and
       `specs/reviews/pr-reviews-2026-11-21/pr11-review.md`, in case a sibling has changed either.
-- [ ] Replace the preamble caveat (the sentences at lines 9-12 saying the PR #11 review had not
+      *(completed: neither had been touched by a sibling)*
+- [x] Replace the preamble caveat (the sentences at lines 9-12 saying the PR #11 review had not
       reported and its lemmas-only control could not be read) with the result now available: cite
       `pr11-review.md` and the control measurement for `refute_allFuture_stab` (reference proof 13
       tactic lines; tightest version over PR #11's lemmas also 13), and say what that does to
       ruling item 3's threshold argument — the saving has to come from the evaluator, not the
-      lemmas.
-- [ ] Re-resolve the open-decision citations against `records/milestones.md` as it now stands
+      lemmas. *(completed)*
+- [x] Re-resolve the open-decision citations against `records/milestones.md` as it now stands
       (open decision 2 = "Evaluator with the lemmas or in a mode of its own?"; open decision 4 =
       whether the signature layer lands before or after the temporal contribution): the three
       occurrences of "Open decision 4" at lines 97, 153 and 246 all mean the evaluator question
       and must become decision 2. Check the surrounding claim at line 155 about an open decision
       2 that recorded "who writes the record first?" — that decision is no longer in the record's
       list; either re-ground the claim on something that is in the current record or drop it.
-- [ ] Correct every description of PR #7 as in flight: it is merged (`3c7197f84`, "Add checked
+      *(completed: all three resolved to decision 2; the "who writes first" claim re-grounded on
+      C2's own Channel column, "T drafts, B reviews", since no numbered open decision carries it
+      any longer)*
+- [x] Correct every description of PR #7 as in flight: it is merged (`3c7197f84`, "Add checked
       rewriting and bounded simplification (#7)"). Affects at least the sentences at lines 104 and
-      253-255 about the syntax/positions/views move to `FormalSystem/Tactic/`.
-- [ ] Under each of the three "Items for your ruling", record the ruling taken (from
+      253-255 about the syntax/positions/views move to `FormalSystem/Tactic/`. *(completed; also
+      corrected the equivalent passage inside the Evidence §1 drafted block)*
+- [x] Under each of the three "Items for your ruling", record the ruling taken (from
       `FOLLOWUP.md`'s "Decided" list: the `## Open decisions` section is asked for with drafted
       text; the Until/Since gap is named rather than filled; the threshold is by source tokens, at
       least three of the four clients, stated as revisable), as a short "Ruled:" line under the
-      existing options — do not delete the options or the recommendation.
-- [ ] Re-read the drafted `## Open decisions` block inside Evidence §1 against the block actually
+      existing options — do not delete the options or the recommendation. *(completed)*
+- [x] Re-read the drafted `## Open decisions` block inside Evidence §1 against the block actually
       drafted in `pr10-comment.md`, and make the report's copy match the one that will be posted.
+      *(completed: replaced wholesale, now word-for-word identical to `pr10-comment.md`'s block;
+      also corrected the §6 "Where the soundness adapter lives" bullet, which still recommended
+      the now-superseded "carry ProofModeSoundness.lean forward unchanged" position)*
 
 **Timing**: 45 minutes
 

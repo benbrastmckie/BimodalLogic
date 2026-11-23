@@ -1,30 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/979_review_pr10_semantic_record_and_pr9_disposition/plans/01_finalize-pr10-pr9-review-drafts.md",
-      "summary": "Four-phase plan to reconcile the PR #10 review and PR #9 disposition reports with the merged-#7 state and the rewritten records, give the two posting drafts their final read, re-check both PR heads, and hand off for the user to post."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 11,
   "metadata": {
-    "session_id": "sess_1795402655_5a890d_979",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 2.5,
-    "dependency_waves": [[1, 2], [3], [4]]
-  },
-  "memory_candidates": [
-    {
-      "content": "In BimodalLogic, a research-round report that cites records/milestones.md open decisions by NUMBER goes stale silently whenever the records are rewritten, because the open-decisions list is renumbered without any cross-reference check. Concretely: a report written before commit b63de1dd9 cites 'Open decision 4' for the evaluator-beside-the-lemmas question, which that rewrite moved to decision 2 while giving 4 to the signature-layer timing question. When planning or implementing any round that follows a records commit, sweep the prior round's artifacts with grep -nE 'records/[a-z-]+\\.md|\\b[A-F][0-9]+\\b|[Oo]pen decisions? [0-9]' and re-resolve each hit. Milestone IDs (C3, D4, B4) are stable across rewrites; open-decision ordinals are not, so prefer citing a decision by its question text, not its number.",
-      "category": "PATTERN",
-      "source_artifact": "specs/979_review_pr10_semantic_record_and_pr9_disposition/plans/01_finalize-pr10-pr9-review-drafts.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["records", "open-decisions", "citation-drift", "milestones", "BimodalLogic"]
-    }
-  ],
-  "next_steps": "Run /orchestrate 979 to execute the plan",
-  "dispatch_seq": 6
+    "session_id": "sess_1795402655_5a890d",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }
