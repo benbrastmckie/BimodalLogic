@@ -9,7 +9,7 @@
 
 | Milestone | Status | Tasks done | Review |
 |---|---|---|---|
-| [M0: The collaboration round: clear what Tanner's contributions wait on](#milestone-m0) | active | 0/8 | none |
+| [M0: The collaboration round: clear what Tanner's contributions wait on](#milestone-m0) | active | 5/8 | none |
 | [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | planned | 0/5 | none |
 | [M3: Proof-mode rule set up to gate one](#milestone-m3) | planned | 0/10 | none |
 | [M1: Repository hygiene](#milestone-m1) | active | 0/6 | none |
@@ -29,20 +29,11 @@ See also: [Rules, conventions and repo context](#roadmap-context)
 
 Close channel B's side of the open pull requests: the review round, the records reconciled to its outcome, the soundness statement the semantic mode's adapter needs, and the signature layer designed before the temporal rules are rebased.
 
-- **Progress**: active -- 0/4 batches, 0/8 tasks done -- #7 merged; #11 has changes requested, #10 a comment pending, #8 open and conflicting
+- **Progress**: active -- 1/4 batches, 5/8 tasks done -- #7 merged; #11 has changes requested, #10 a comment pending, #8 open and conflicting
 - **Review**: none
 - **Gate**: Every open contribution carries a posted decision or an action named as the contributor's; records/milestones.md and the open task descriptions state the position reached; and star_soundness_in is proved beside star_soundness_validIn.
 
-**Batch 1** -- Close the review round on PRs #7 to #11 and reconcile the records to the outcome it reaches
-
-```
-/orchestrate 980, 981, 978, 979, 982
-981 blocked:980     rereview_pr8_temporal_rules_and_carrying_table   <- the one review line with work left; it measures the rebase cost in a worktree itself
-982 blocked:978,979,980,981  reconcile_records_and_tasks_after_pr_review_round   <- cannot finish ahead of the user's rulings on open decisions 3 and 4
-978 ready           review_pr11_pointed_semantic_lemmas   <- the draft review is written; the rebase, At and the tests are the contributor's half
-979 ready           review_pr10_semantic_record_and_pr9_disposition   <- #10 still owes an open-decisions section, an adoption threshold and scope sentences
-980 ready           rereview_pr7_rewriting_and_views_merge_decision   <- #7 is merged; what is left is recording the decision and releasing 981
-```
+**Batch 1** (done) -- Close the review round on PRs #7 to #11 and reconcile the records to the outcome it reaches
 
 **Batch 2** -- Prove star_soundness_in, so the semantic mode's adapter needs no per-language wrapper
 
@@ -483,4 +474,5 @@ Keep the open-modal language's backlog moving at low priority: truth invariance 
 ```
 713 HOLD            formalize_ctl_star_reduction_2exptime_lower_bound
 734 HOLD            e4_mosaic_stabsaturated_mixed_germ_probe
+985 ready           research_semantic_proof_mode_for_pr10_reply
 ```
