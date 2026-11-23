@@ -1,7 +1,7 @@
 # Implementation Plan: Task #979
 
 - **Task**: 979 - Review PR #10 (semantic proof mode record) and settle the disposition of PR #9
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None (sibling tasks 978 and 980 run concurrently on disjoint files)
 - **Research Inputs**: `specs/reviews/pr-reviews-2026-11-21/pr10-review.md`,
