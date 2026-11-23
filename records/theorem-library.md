@@ -67,19 +67,28 @@ together.
 Frame class is a second axis, as in the proof mode. It applies only where Temporal is present:
 Base, Dense, ZTime, RTime. An entry is filed at the weakest class at which it holds.
 
+The **operator set** of an entry, the modal operators that occur in it, is a coordinate of the
+lattice beside the fragment. A **cell** is a fragment together with an operator set. The two
+fragments with Modal each have three cells, for `□`, for `⊡` and for both; `Boolean` and
+`TemporalBoolean` have one each. Directories are per fragment; conservativity edges run between
+cells.
+
 ### Two operators in the Modal family
 
 `□` quantifies over every history and `⊡` over the histories that share the present state, so
-`□φ → ⊡φ`, and each is an S5 operator. They are filed as one family: the S5 laws are stated once
-over a necessity operator given as a parameter and entered for both, and a section has each law
-for `□`, `◇`, `⊡` and `⟐`. An entry records its **operator set**, the modal operators that occur
-in it, so that the part of a fragment that belongs to L is recoverable: an entry is a statement
-of L exactly when `⊡` is not in its operator set.
+`□φ → ⊡φ`, and each is an S5 operator. They are filed as one family, the necessity operators
+over histories. The laws are stated once over a necessity operator given as a parameter and
+entered for both: a K core (scope introduction, distribution, monotonicity, the diamond duals),
+with T, 4 and 5 as further members that an operator has or lacks. A section has each law for
+`□`, `◇`, `⊡` and `⟐`. The inclusion `□φ → ⊡φ` relates the two operators and is entered once.
+An entry records its operator set, so that the part of a fragment that belongs to L is
+recoverable: an entry is a statement of L exactly when `⊡` is not in its operator set.
 
 Three facts about `⊡` are theorems in the tree, and the filing has to respect each.
 
-- **Without Temporal, `⊡` is the identity.** Every formula built from atoms, `⊥`, `→`, `□` and
-  `⊡` is state-local, and a state-local `φ` satisfies `φ ↔ ⊡φ` at every frame
+- **Without Temporal, `⊡` is the identity.** Atoms and `⊥` are state-local, an implication of
+  state-local formulas is, and so is any formula headed by `□` or `⊡`, whatever is beneath the
+  head. A state-local `φ` satisfies `φ ↔ ⊡φ` at every frame
   (`PlusFormula.StateLocal`, `plusStateLocal_stab_iff` in
   `FormalSystem/PlusLanguage/PlusStateLocal.lean`). In `ModalBoolean` the operator contributes
   the collapse and what follows from it; its other content is in `ModalTemporalBoolean`:
@@ -87,13 +96,21 @@ Three facts about `⊡` are theorems in the tree, and the filing has to respect 
   `FormalSystem/PlusLanguage/PlusNonValidities.lean`.
 - **TM⁺ is not closed under uniform substitution.** The schema AS, `p → ⊡p`, holds for atoms and
   generalizes to state-local formulas only. A theorem that depends on AS is not a schema in its
-  atoms.
+  atoms. The state-local formulas are the **rigid class** of `⊡`: the class on which `φ → ⊡φ`
+  holds.
 - **The tableau does not cover `⊡`.** The decision procedure is over `Formula`. Refutations in
   L⁺ come from hand-built models and from the certificate checkers under
   `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/` and `PlusSlicedCertificate/`.
 
-Filing `⊡` under Modal is the position this design starts from. Whether it should be a family of
-its own is under investigation in `investigate_stability_as_modal_family`; see Open decisions.
+`⊡` is filed under Modal on these grounds. A family of its own would record the same cells as
+eight fragments, and by the first fact the two of them without Temporal would hold the collapse
+and nothing else. Restricted substitution and tableau coverage are properties of an operator,
+recorded per entry by the operator set and the substitution class, and they recur in other forms
+for the other restricted necessities, so they mark no family boundary. The L-part of a fragment
+is recovered by the operator set. And the operators of the Open and Nomic languages are further
+instances of the same laws, so a family per necessity operator would double the fragments with
+each one. [stability-operator-family.md](../docs/development/stability-operator-family.md) sets
+out the comparison and what a separate family would require.
 
 ### Filing rule
 
@@ -127,8 +144,10 @@ A new operator family adds one element to the family set. Every existing entry k
 fragment, because its statement does not mention the new operator. The new fragments are the
 existing ones with the family added, populated in the order: the family with Boolean, then with
 each existing family, then the rest. The proof mode adds modules by the same rule. A new
-operator that is an S5 or weaker necessity over histories joins Modal as a further instance of
-the parameterized laws instead.
+operator that is a necessity over histories joins Modal as a further instance of the
+parameterized laws instead, at the strength it has, and the operator set grows by it. `□`, `⊡`
+and the Open language's `▷` and `◁` join at S5. The Nomic language's `◈` joins at KD, the K core
+with seriality, once it has a calculus over the frame notion of the lattice.
 
 ## Conservativity
 
@@ -151,12 +170,12 @@ the smaller by 3. The converse direction is the embedding of derivations.
 
 | Edge | Status | Where |
 |---|---|---|
-| L into L⁺ (`⊡` added) | proved at all four frame classes | `plusDerivable_ofFormula_iff`, `FormalSystem/Metalogic/Conservativity/Plus/Forward.lean` |
+| L into L⁺: at `ModalTemporalBoolean`, the cell with `□` into the cell with both | proved at all four frame classes | `plusDerivable_ofFormula_iff`, `FormalSystem/Metalogic/Conservativity/Plus/Forward.lean` |
 | `Boolean` into `ModalBoolean` | to prove | completeness of the smaller is the propositional procedure under `FormalSystem/Metalogic/Decidability/Propositional/` |
 | `Boolean` into `TemporalBoolean` | to prove | the same |
 | `ModalBoolean` with `□` into TM | to prove | needs completeness of S5 for the `□`-fragment, which the tree does not state |
 | `TemporalBoolean` into TM, per frame class | to prove | needs completeness of the temporal schemata alone at each class, which the tree does not state |
-| `ModalBoolean` with `□` into `ModalBoolean` with both | to prove | follows from L into L⁺ once the two edges into TM are proved, or directly by the collapse |
+| The same edge at `ModalBoolean`: the cell with `□` into the cell with both | to prove | follows from L into L⁺ once the two edges into TM are proved, or directly by the collapse |
 
 The theorems live with the rest of the metalogic under `FormalSystem/Metalogic/Conservativity/`.
 The library keeps this table as a generated index over them. An edge that is not yet proved is a
@@ -210,9 +229,11 @@ Entries come from four sources.
 | Hand proofs under `FormalSystem/Theorems/` | entries without `⊡` | the derivation |
 | The manuscript's listed principles | all fragments | a derivation written for the entry |
 | The tableau, over enumerated formulas | entries without `⊡` | an extracted derivation, or a gated open branch |
-| Transfer | entries with `⊡` | a TM theorem carried along `ofTM`; an S5 law of `□` restated for `⊡` and `⟐` |
+| Transfer | entries with `⊡` | a TM theorem carried along `ofTM`; an S5 law instantiated at `⊡` and `⟐` |
 
-The tableau pipeline is the bulk source. Its stages:
+The tableau pipeline is the bulk source. It runs on the cells whose operator set is within `□`.
+The decision procedure is over `Formula`, and stage 5 generalizes a certified formula from atoms
+to schema variables, which is sound only where uniform substitution holds. Its stages:
 
 1. **Enumerate.** Formulas of a fragment up to a complexity bound, one representative per
    renaming of atoms. `BimodalTools/FormulaEnumerator.lean` and
@@ -363,16 +384,6 @@ Not taken:
 
 ## Open decisions
 
-1. **Is `⊡` rightly in the Modal family?** The design files it there. The case for a family of
-   its own: L and L⁻ have `□` without `⊡`, so the `⊡`-free language is recovered here by an
-   operator set and not by the lattice; `⊡` breaks uniform substitution and `□` does not; the
-   tableau covers one and not the other; and what is particular to `⊡` lies in its interaction
-   with Temporal. The case for one family: both are S5 necessities over histories ordered by
-   inclusion, the laws and the scope rules are shared, and the lattice has four fragments
-   instead of eight. `investigate_stability_as_modal_family` examines this, including whether
-   the operators of the Open and Nomic languages are further instances of the same
-   parameterized laws at other strengths, and revises this record if the answer is a separate
-   family.
-2. **Enumeration bounds.** The complexity bound per fragment and frame class, and whether
+1. **Enumeration bounds.** The complexity bound per fragment and frame class, and whether
    admission filters by an interestingness measure
    (`BimodalTools/InterestingnessMetrics.lean`) or keeps every non-subsumed theorem.

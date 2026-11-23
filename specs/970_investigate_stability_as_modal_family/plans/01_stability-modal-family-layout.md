@@ -230,13 +230,13 @@ the open decision.
 
 ---
 
-### Phase 3: Amend records/theorem-library.md [NOT STARTED]
+### Phase 3: Amend records/theorem-library.md [COMPLETED]
 
 **Goal**: Make the operator set a coordinate of the lattice (R2), align the family description
 with the stratified statement (R1), and remove the open decision.
 
 **Tasks**:
-- [ ] Confirm the correction targets exist as quoted (they did at plan time): "### Two operators
+- [x] Confirm the correction targets exist as quoted (they did at plan time): "### Two operators
   in the Modal family" and its closing paragraph ("Filing `⊡` under Modal is the position this
   design starts from. Whether it should be a family of its own is under investigation ..."); the
   last sentence of "### Adding a family" ("... an S5 or weaker necessity over histories joins
@@ -244,29 +244,29 @@ with the stratified statement (R1), and remove the open decision.
   `ModalBoolean` with both"; the "Transfer" row of the sources table ("... restated for `⊡` and
   `⟐`"); stage 1 "Enumerate" of the tableau pipeline; and item 1 of "## Open decisions". If one
   is absent, find the passage with the same content by `grep -n "⊡" records/theorem-library.md`;
-  if none exists, record the gap and place the statement in the nearest section named here.
-- [ ] R2, in "### The lattice" or "### Two operators in the Modal family": state that a **cell**
+  if none exists, record the gap and place the statement in the nearest section named here. *(completed: all targets present as quoted)*
+- [x] R2, in "### The lattice" or "### Two operators in the Modal family": state that a **cell**
   is a fragment together with an operator set, and that conservativity edges run between cells.
   Restate the two conservativity rows in those terms: L into L⁺ is the edge that adds `⊡` to the
-  operator set at `ModalTemporalBoolean`; the other is the same edge at `ModalBoolean`.
-- [ ] R2, in "## Sources and the tableau pipeline": state that the pipeline, including its
+  operator set at `ModalTemporalBoolean`; the other is the same edge at `ModalBoolean`. *(completed)*
+- [x] R2, in "## Sources and the tableau pipeline": state that the pipeline, including its
   generalization of a certified formula from atoms to schema variables, runs on cells whose
   operator set is within `□`, because that generalization is sound only where uniform
-  substitution holds.
-- [ ] R1: in "### Two operators in the Modal family", describe the shared laws as a K core with T,
+  substitution holds. *(completed)*
+- [x] R1: in "### Two operators in the Modal family", describe the shared laws as a K core with T,
   4 and 5 as further members; in "### Adding a family", say at which strength each known operator
   joins (`□`, `⊡`, `▷`, `◁` at S5; `◈` at KD, once it has a calculus over the lattice's frame
-  notion).
-- [ ] Replace the section's closing paragraph with the position and its grounds, linking the
-  report. Keep the three facts.
-- [ ] Minor corrections: the state-local class is described by the tree's definition (any formula
+  notion). *(completed)*
+- [x] Replace the section's closing paragraph with the position and its grounds, linking the
+  report. Keep the three facts. *(completed)*
+- [x] Minor corrections: the state-local class is described by the tree's definition (any formula
   headed by `□` or `⊡` is state-local, whatever is beneath the head); the "Transfer" row reads
-  "instantiated at `⊡` and `⟐`".
-- [ ] Remove item 1 from "## Open decisions", keeping in the body any of its content that is a
+  "instantiated at `⊡` and `⟐`". *(completed)*
+- [x] Remove item 1 from "## Open decisions", keeping in the body any of its content that is a
   ground for the position, and renumber. Before and after,
   `grep -rn "theorem-library" records/ docs/` for references to that list by ordinal or by the
-  question text, and note each for Phases 2 and 4 to repair in their own files.
-- [ ] Run the checks under Verification.
+  question text, and note each for Phases 2 and 4 to repair in their own files. *(completed: list had two items; one remains, renumbered; no reference to it by ordinal in records/ or docs/)*
+- [x] Run the checks under Verification. *(completed: three greps empty; six conservativity rows; record-versioning 0 BLOCKING; task-reference lint exit 0)*
 
 **Timing**: 1 hour
 
