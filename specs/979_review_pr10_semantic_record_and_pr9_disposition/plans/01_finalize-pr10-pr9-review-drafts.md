@@ -186,29 +186,34 @@ substitute.
 
 ---
 
-### Phase 2: Reconcile `pr9-disposition.md` with the merged-#7 state and the decided adapter disposition [NOT STARTED]
+### Phase 2: Reconcile `pr9-disposition.md` with the merged-#7 state and the decided adapter disposition [COMPLETED]
 
 **Goal**: `pr9-disposition.md` and `pr9-comment.md` tell the same story about what carries
 forward from PR #9, and the report's facts about PR #7 are true.
 
 **Tasks**:
-- [ ] Re-read `specs/reviews/pr-reviews-2026-11-21/pr9-disposition.md` and
-      `specs/reviews/pr-reviews-2026-11-21/pr9-comment.md` in full.
-- [ ] Correct the PR #7 status in the inventory table (the row at line 42 saying "PR #7 is still
+- [x] Re-read `specs/reviews/pr-reviews-2026-11-21/pr9-disposition.md` and
+      `specs/reviews/pr-reviews-2026-11-21/pr9-comment.md` in full. *(completed: neither had been
+      touched by a sibling; mtimes unchanged since this task's earlier read)*
+- [x] Correct the PR #7 status in the inventory table (the row at line 42 saying "PR #7 is still
       open but has since evolved past what PR #9 was stacked on") and in option C's wording (line
       65, "once PR #7/#8 ... have moved further"): #7 is merged at `3c7197f84`; #8 is still open
-      and conflicting (`49a7efe231cf98a488ad107dd981881557b1fd96`).
-- [ ] Bring the `## Draft closing comment` block onto the decided position: the adapter is one
+      and conflicting (`49a7efe231cf98a488ad107dd981881557b1fd96`). *(completed; both re-confirmed
+      live with `gh pr view 7`/`gh pr view 8`)*
+- [x] Bring the `## Draft closing comment` block onto the decided position: the adapter is one
       soundness statement over `TruthEnv` with TM, TM⁺ and TM⋆ as instances (milestone D4 of
       `records/milestones.md`), so `FormalSystem/Metalogic/ProofModeSoundness.lean` contributes
       its *shape and content*, and the file itself need not come back — not "carried over
       unchanged" as the current draft says. The simplest correct move is to replace the block with
       the text of `pr9-comment.md` and mark it as the comment that will be posted; if the report's
-      own draft is kept separate, it must not contradict `pr9-comment.md`.
-- [ ] Update `## What was and was not verified`: the task 978 (PR #11) findings, listed there as
+      own draft is kept separate, it must not contradict `pr9-comment.md`. *(completed: block
+      replaced with `pr9-comment.md`'s text verbatim, confirmed identical by diff)*
+- [x] Update `## What was and was not verified`: the task 978 (PR #11) findings, listed there as
       unavailable, are now available at `specs/reviews/pr-reviews-2026-11-21/pr11-review.md`. Keep
       every other "not verified" item as it stands — the line-for-line diff against #7/#8 and the
       PR #9 build against current `main` were not run and are not run by this plan either.
+      *(completed: moved into "Verified", citing pr11-review.md directly; the two remaining
+      "Not verified" items left unchanged)*
 
 **Timing**: 30 minutes
 
