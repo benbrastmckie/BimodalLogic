@@ -9,7 +9,7 @@
 
 | Milestone | Status | Tasks done | Review |
 |---|---|---|---|
-| [M0: The collaboration round: clear what Tanner's contributions wait on](#milestone-m0) | active | 7/12 | none |
+| [M0: The collaboration round: clear what Tanner's contributions wait on](#milestone-m0) | active | 8/12 | none |
 | [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | planned | 0/5 | none |
 | [M3: Proof-mode rule set up to gate one](#milestone-m3) | planned | 0/11 | none |
 | [M12: The semantic mode: evaluator, mode and adapter](#milestone-m12) | planned | - | none |
@@ -30,7 +30,7 @@ See also: [Rules, conventions and repo context](#roadmap-context)
 
 Close channel B's side of the open contributions: the re-review at #11's new head, the semantic-mode research the #10 reply needs, the soundness statement its adapter needs, the signature layer's design, and the follow-ups each merge leaves owed.
 
-- **Progress**: active -- 3/7 batches, 7/12 tasks done -- Review round closed; #8 mergeable with a review drafted, #11 at a new unreviewed head, #10 a comment pending, #9 to be closed
+- **Progress**: active -- 4/7 batches, 8/12 tasks done -- Review round closed; #8 mergeable with a review drafted, #11 at a new unreviewed head, #10 a comment pending, #9 to be closed
 - **Review**: none
 - **Gate**: Every open contribution carries a posted decision or an action named as the contributor's; records/milestones.md and the open task descriptions state the position reached; star_soundness_in is proved beside star_soundness_validIn; and the follow-ups each merge leaves owed are closed.
 
@@ -38,12 +38,7 @@ Close channel B's side of the open contributions: the re-review at #11's new hea
 
 **Batch 2** (done) -- Re-review #11 at the head pushed after the round closed; the freshest contributor-facing line
 
-**Batch 3** -- Research the semantic goal shape and witnesses, so the #10 reply and the At fix can be judged
-
-```
-/orchestrate 985
-985 ready           research_semantic_proof_mode_for_pr10_reply   <- research only; it feeds the #10 reply and the choice of #11's At fix
-```
+**Batch 3** (done) -- Research the semantic goal shape and witnesses, so the #10 reply and the At fix can be judged
 
 **Batch 4** (done) -- Prove star_soundness_in, so the semantic mode's adapter needs no per-language wrapper
 
