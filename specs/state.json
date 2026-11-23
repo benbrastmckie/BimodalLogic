@@ -245,12 +245,12 @@
     {
       "project_number": 985,
       "project_name": "research_semantic_proof_mode_for_pr10_reply",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Research the shape of a semantic goal and its witnesses for the semantic proof mode, so that the findings can be used to revise the reply to pull request #10 (draft at specs/reviews/pr-reviews-2026-11-21/pr10-comment.md; not yet posted) and to judge the fix requested on pull request #11. RESEARCH ONLY: the deliverable is a report; do not edit the comment, the records, or any Lean source, and post nothing. START FROM what is already known and do not redo it: specs/reviews/pr-reviews-2026-11-21/pr10-review.md (the review of records/semantic-proof-mode.md: idiom, consistency with the sibling records, the four clients, the ceiling, the measurement plan, the open points), specs/978_review_pr11_pointed_semantic_lemmas/reports/01_review-pr11-pointed-semantic-lemmas.md, and records/milestones.md (C1-C4, D4, joins 6 and 7). The soundness adapter is decided (D4) and the adoption threshold is set as revisable; neither is in scope. SUBJECT: records/semantic-proof-mode.md on the branch of PR #10 (head bdaa3b6d0, read with gh pr diff 10) proposes a tool for proving a formula true or false at a named point of a named model from supplied witnesses, measured on refute_allFuture_stab and refute_stab_allFuture_past (FormalSystem/PlusLanguage/PlusNonValidities.lean) and refute_modal_future and refute_sentDet (FormalSystem/StarLanguage/StarNonValidities.lean). QUESTIONS, each answered with evidence from the tree. (1) THE GOAL SHAPE. What a truth-at-a-point goal should look like in a tactic proof: the per-language predicates (TruthAt, PlusTruthAt, StarTruthAt), the generic TruthEnv form of FormalSystem/Semantics/TruthClauses.lean, or the At abbreviation over Point introduced by PR #11 (head c6cd983b7, FormalSystem/Semantics/PointTransport.lean and TemporalRules.lean). PR #11's At cannot be rewritten through by any clause lemma (rw and simp only both fail; only show works), and the fix was left to the author as either an at_def simp lemma or At-level statements of the clause lemmas. Determine which fix gives the goal shape an evaluator would recurse on, whether the choice constrains the evaluator, and what the four clients' goals look like under each. (2) THE WITNESS INTERFACE. A clause-directed positional argument list or named witnesses: write out, for refute_allFuture_stab, refute_modal_future and refute_stab_allFuture_past (three clause layers), what the supplied evidence is at each clause and how each interface would read; say which is legible at three layers and what the trial the record proposes should be judged on. (3) EVALUATOR BESIDE THE LEMMAS OR ONE MODULE WITH THE MODE: the considerations on each side given what (1) and (2) find, and what records/milestones.md assumes. (4) WHAT THE #9 BRANCH ALREADY TRIED. The semantic tactic layer on the PR #9 branch (head b3d8f6463: Semantic.lean, SemanticCore.lean, the Semantic* files beside them, ProofModeExtensionsTest.lean): what goal shape and witness handling it used, what worked, what of it is reusable under a separate prefix and registry, and what depends on overloading the l* commands. (5) PRIOR ART, briefly and only where it changes a recommendation: how other proof assistants or proof modes present checking truth in a concrete model from supplied witnesses. OUTPUT: a report ending with a section 'Implications for the replies' in two short parts: for #10, point by point, what the reply should ask for, what it should state as decided, what it can drop, and any claim in the current draft found wrong or unsupported; for #11, which of the two At fixes to prefer and why, if the research gives a reason. Keep that section short enough to revise the comment from directly. Channel: review work on channel B supporting milestones C1 and C2",
       "topic": "semantics",
       "created": "2026-11-23T02:33:04Z",
-      "last_updated": "2026-11-23T02:46:16Z",
+      "last_updated": "2026-11-23T19:46:41Z",
       "audit_verdict": {
         "proposal": {
           "id": "research_semantic_proof_mode_for_pr10_reply",
@@ -278,7 +278,16 @@
         },
         "degradations_count": 452
       },
-      "roadmap_annotation": "research only; it feeds the #10 reply and the choice of #11's At fix"
+      "roadmap_annotation": "research only; it feeds the #10 reply and the choice of #11's At fix",
+      "session_id": "sess_1795462392_eb6c32",
+      "artifacts": [
+        {
+          "path": "specs/985_research_semantic_proof_mode_for_pr10_reply/reports/01_semantic-goal-shape-witnesses.md",
+          "type": "report",
+          "summary": "Goal shape, witness interface, evaluator placement, the PR #9 semantic layer and prior art for the semantic proof mode, with compiled probes and a closing section on what to change in the PR #10 reply and the verdict on PR #11's At fix."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 984,
@@ -338,12 +347,12 @@
     {
       "project_number": 983,
       "project_name": "soundness_statement_over_truth_env",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "State pointed soundness once over TruthEnv, with TM, TM+ and TM⋆ as instances, so that the semantic mode adapter needs no per-language wrapper module (milestone D4 of records/milestones.md, join 7; the adapter paragraph of records/proof-mode-architecture.md). PHASE 1: prove star_soundness_in, the context form of TM⋆ soundness (a StarDerivationTree fc Γ φ, a frame in fc, a model, history, time and register environment at which every member of Γ is true, give truth of φ there), beside star_soundness_validIn in FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean. TM has soundness_in (FormalSystem/Metalogic/Soundness.lean) and TM+ has plus_soundness_in (FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean); TM⋆ has only the empty-context validity form. StarSoundness.lean mirrors PlusSoundness.lean arm for arm, so the plus proof is the model, but this has NOT been attempted: establish first how the register environment is quantified in the premises and whether the three empty-context rules go through unchanged. PHASE 2: one class, at layer 3 under FormalSystem/Metalogic/, tying a language derivation relation to its TruthEnv truth predicate, with the three theorems as instances, and one generic theorem giving truth at a point from a derivation, frame-class evidence and truth of the premises. KEEP THE CLASS MINIMAL: proof_mode_abstract_frontend_interface will later constrain the object-level interface, and this class should be something that interface can require, not a second packaging of the connectives. DO NOT restate any language soundness theorem under another name; FormalSystem/Metalogic/ProofModeSoundness.lean on branch feat/proof-mode-semantics is four such restatements and is the shape to avoid. Sound direction only: guard with assert_not_exists against the completeness theorems, and import nothing under FormalSystem/Automation/ProofMode/. Tests instantiate the generic theorem at all three languages. Open to either collaborator; the done-when in records/milestones.md is the standard.",
       "topic": "metalogic",
       "created": "2026-11-22T23:58:42Z",
-      "last_updated": "2026-11-22T23:58:42Z",
+      "last_updated": "2026-11-23T19:34:02Z",
       "audit_verdict": {
         "proposal": {
           "id": "soundness_statement_over_truth_env",
@@ -467,7 +476,8 @@
         },
         "degradations_count": 435
       },
-      "roadmap_annotation": "C4, the semantic mode and its adapter, waits on this; no open PR touches StarSoundness.lean"
+      "roadmap_annotation": "C4, the semantic mode and its adapter, waits on this; no open PR touches StarSoundness.lean",
+      "session_id": "sess_1795462392_eb6c32_983"
     },
     {
       "project_number": 982,
@@ -853,7 +863,7 @@
     {
       "project_number": 977,
       "project_name": "connective_signature_layer_shared_primitives",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Introduce a connective signature layer under FormalSystem so that TM and TM+ share one primitive signature and one set of derived operators instead of PlusFormula being a verbatim copy of Formula. PRIMITIVES STAY MINIMAL. Formula (FormalSystem/Syntax/Formula.lean) has six constructors (atom, bot, imp, box, untl, snce) and PlusFormula (FormalSystem/PlusLanguage/Formula.lean) restates all six and adds stab for the stability operator; that minimality is correct for TM and TM+ and is to be preserved. Do NOT adopt cslib's non-minimal expansion to primitive diamond, allFuture and allPast (cslib Cslib/Logics/Modal/Basic.lean has primitive and, or, box, diamond; Cslib/Logics/Temporal/Syntax/Formula.lean has primitive allFuture and allPast; the rationale and the 11-primitive target for the Bimodal layer are in cslib specs/181_bimodal_primitive_dia_always_historically/reports/01_bimodal-primitive-expansion-research.md, and cslib task 181 is still NOT STARTED so its own tree is inconsistent with that target). Non-minimality exists there to let one syntax serve minimal and intuitionistic propositional bases, since each classical interdefinability fails in a weaker logic; TM and TM+ are classical, so adopting it here would buy nothing and would move most of the views tier out of views and into the derivation tier as theorems. THE DEFECT IS DUPLICATION, NOT THE PRIMITIVE CHOICE. Eighteen derived operators are defined verbatim in both syntax files: after, allFuture, allPast, always, and, diamond, kMinus, kPlus, neg, next, or, prev, reflectTime, someFuture, somePast, sometimes and top. This is the syntax-layer root of the tmX / plusX name-pair duplication, and it violates principle 5 of records/proof-mode-architecture.md (languages are instances of an interface, not copies of a file). MODEL TO FOLLOW. cslib Cslib/Foundations/Logic/Connectives.lean (224 lines) is a working instance of the wanted shape and is directly portable: one class per primitive operator (HasBot, HasImp, HasBox, HasUntil, HasSince, HasNext), then PropositionalConnectives extending HasBot and HasImp and supplying neg := phi -> bot and top := bot -> bot as DEFAULT FIELD VALUES so the derived Boolean operators are written once, then a hierarchy of ModalConnectives, FutureTemporalConnectives, TemporalConnectives, LTLConnectives and BimodalConnectives with a bridge instance from BimodalConnectives to ModalConnectives. Four cslib languages share that one definition of neg and top. Note one tension to resolve rather than copy: cslib's ModalConnectives is box-only and minimal while its concrete Modal.Proposition carries a primitive diamond, so interface and inductive disagree there. DELIVERABLE. A signature layer under FormalSystem carrying one class per primitive operator including a stability class for the TM+ operator, a propositional class supplying the derived Boolean operators once, and a bimodal class, with Formula and PlusFormula as instances and the eighteen doubled definitions written once. ALSO ASSESS reducibility: all 35 definitions in FormalSystem/Syntax/Formula.lean are opaque defs and cslib uses abbrev for its Boolean and dual definitions, which unfold definitionally; making the pure Boolean and dual definitions here reducible would let part of the views tier be definitional rather than a table of view rows with unfolding lemmas, which bears directly on the views tier design in records/proof-mode-architecture.md. SEQUENCING. This sits BELOW the proof mode and is a prerequisite for proof_mode_abstract_frontend_interface, whose object-level class is to package the connectives among its members and which should require this signature rather than re-package it; a dependency edge is filed to that effect. Keep the Atom type fixed as it is; cslib parameterizes Formula over the atom type but that is a separate and larger change and is out of scope here. investigate_stability_as_modal_family may change whether the stability operator gets its own class or shares the Modal one; read its report if it exists but do not wait for it. LANDING WINDOW. ORDER: this signature lands AFTER the temporal contribution merges, the order records/milestones.md recommends: the contribution merges at once and this signature rewrites its operators with the rest. Research and planning may run before the merge; implementation waits on it. On merging, that contribution adds FormalSystem/PlusLanguage/TemporalViews.lean, which declares `Formula.inclusiveUntil`, `Formula.inclusiveSince` and the TM expansions under the TM+ directory, and FormalSystem/Tactic/TemporalFormulaViews.lean, which registers twenty view rows about them. Deliverable (b) absorbs those definitions onto the signature, keeps the per-language names as instances, and repoints the view rows; it does not define the interval operators a second time. Research and planning may proceed now regardless of that undecided window; only implementation waits on the ruling. ADDITIONAL DELIVERABLES (done-when of milestone D1 in records/milestones.md). (a) StarFormula (FormalSystem/StarLanguage) is an instance beside Formula and PlusFormula; it carries its own copy of next among others. (b) The interval operators are defined once on the signature: inclusiveUntil, inclusiveSince, release, trigger, weakUntil and weakSince, agreeing in argument order with Formula.release, Formula.trigger, Formula.weakUntil and Formula.weakSince (see the Argument-order trap note on Formula.release), and the clause lemmas of FormalSystem/Semantics/TemporalIntervals.lean (inclusiveUntil_iff, release_iff, weakUntil_iff and their past duals; that module arrives with branch feat/pointed-semantic-lemmas) are restated about them instead of about inline derived formulas. (c) One next and prev encoding: TemporalRules.next and prev of FormalSystem/Semantics/TemporalRules.lean, Formula.next, PlusFormula.next, StarFormula.next and the copy in FormalSystem/Metalogic/Expressiveness/SeparationZ/Syntax.lean are one definition or are tied by rfl rows in Tests/BimodalTest/Semantics/ValidityLayerTest.lean. (d) FormalSystem/Tactic/FormulaSyntax.lean, which matches TM and TM+ operator names only, reads the signature so that operator recognition reaches L⋆; the semantic evaluator of records/semantic-proof-mode.md has L⋆ clients. FIRST QUESTION FOR RESEARCH, to settle before any design: ONE HOME FOR THE DERIVED OPERATORS. FormalSystem/Semantics/TruthClauses.lean already defines the derived operators once, generically over the clause classes (TruthEnv, BotClause, ImpClause, BoxClause, UntlClause, SnceClause, StabClause and their bundles): neg, top, and, or, diamond, someFuture, allFuture, kPlus, after, somePast, allPast, kMinus, always, among others, as abbrevs, and every language (L, L-plus, L-star, L-minus, Open, Hybrid, Quant) instantiates those classes. A syntactic signature layer that defines the same operators again would be a second generic copy beside the per-language ones, which is the duplication this task exists to remove. Decide, with the options and the evidence for each stated: (i) the signature is the syntactic half of the clause classes, the clause classes extend it, and the operators of TruthClauses.lean move down to it; (ii) the clause classes stay the one generic home and the per-language syntax files take their operators from them; (iii) two layers tied by rfl rows, and why that would not be a wrapper to rip out later. The answer fixes where the interval operators and the next and prev encoding of deliverables (b) and (c) live, what the temporal rules of the proof mode are stated about, and how deliverable (d) recognizes L-star operators. State the import and layering consequences (TruthClauses.lean is at the semantics layer; syntax sits below it) and the cost to the open contributions that build on the current definitions.",
       "topic": "syntax",
@@ -865,7 +875,7 @@
         "FormalSystem/Tactic/FormulaSyntax.lean"
       ],
       "created": "2026-11-21T21:05:46Z",
-      "last_updated": "2026-11-23T02:46:16Z",
+      "last_updated": "2026-11-23T19:34:26Z",
       "audit_verdict": {
         "proposal": {
           "id": "connective_signature_layer_shared_primitives",
@@ -883,7 +893,8 @@
         },
         "degradations_count": 450
       },
-      "roadmap_annotation": "landing window settled: research and plan now, implement after the temporal rules merge"
+      "roadmap_annotation": "landing window settled: research and plan now, implement after the temporal rules merge",
+      "session_id": "sess_1795462392_eb6c32_977"
     },
     {
       "project_number": 976,

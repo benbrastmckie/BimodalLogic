@@ -1,0 +1,19 @@
+{
+  "status": "researched",
+  "started_at": "2026-11-23T19:33:35Z",
+  "completed_at": "2026-11-23T19:46:18Z",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/985_research_semantic_proof_mode_for_pr10_reply/reports/01_semantic-goal-shape-witnesses.md",
+      "summary": "Goal shape, witness interface, evaluator placement, the PR #9 semantic layer and prior art for the semantic proof mode, with compiled probes and a closing section on what to change in the PR #10 reply and the verdict on PR #11's At fix."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795462392_eb6c32_985",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
