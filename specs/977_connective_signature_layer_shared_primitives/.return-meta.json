@@ -1,0 +1,19 @@
+{
+  "status": "researched",
+  "started_at": "2026-11-23T19:35:31Z",
+  "completed_at": "2026-11-23T19:44:58Z",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/977_connective_signature_layer_shared_primitives/reports/01_connective-signature-layer.md",
+      "summary": "Settles the one-home question for option (i): a layer-0 signature with clause classes as Prop mixins over it; compiled probes show per-language bodies generated from the signature are identical to the tree's in 63 of 63 cases, that bare delegation breaks constructor-keyed rw/simp, and that abbrev operators flip the truth simp set's normal form."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795462392_eb6c32_977",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

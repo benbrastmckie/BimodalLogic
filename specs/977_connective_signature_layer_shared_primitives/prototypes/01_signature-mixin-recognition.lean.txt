@@ -1,0 +1,187 @@
+import FormalSystem.Semantics.Truth
+import FormalSystem.StarLanguage.StarTruth
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.Syntax
+
+/-! Prototype: signature layer, option (i). -/
+namespace Sig
+universe u
+class HasBot (L : Type u) where bot : L
+class HasImp (L : Type u) where imp : L → L → L
+class HasBox (L : Type u) where box : L → L
+class HasUntl (L : Type u) where untl : L → L → L
+class HasSnce (L : Type u) where snce : L → L → L
+class HasStab (L : Type u) where stab : L → L
+
+section
+variable {L : Type u} [HasBot L] [HasImp L]
+abbrev neg (φ : L) : L := HasImp.imp φ HasBot.bot
+abbrev top : L := HasImp.imp (HasBot.bot : L) HasBot.bot
+abbrev and (φ ψ : L) : L := neg (HasImp.imp φ (neg ψ))
+abbrev or (φ ψ : L) : L := HasImp.imp (neg φ) ψ
+abbrev diamond [HasBox L] (φ : L) : L := neg (HasBox.box (neg φ))
+abbrev someFuture [HasUntl L] (φ : L) : L := HasUntl.untl top φ
+abbrev allFuture [HasUntl L] (φ : L) : L := neg (someFuture (neg φ))
+abbrev next [HasUntl L] (φ : L) : L := HasUntl.untl HasBot.bot φ
+abbrev release [HasUntl L] (φ ψ : L) : L := neg (HasUntl.untl (neg ψ) (neg φ))
+abbrev weakUntil [HasUntl L] (φ ψ : L) : L := or (HasUntl.untl ψ φ) (allFuture ψ)
+abbrev inclusiveUntil [HasUntl L] (g ev : L) : L := or ev (and g (HasUntl.untl g ev))
+abbrev dstab [HasStab L] (φ : L) : L := neg (HasStab.stab (neg φ))
+end
+end Sig
+
+open FormalSystem FormalSystem.Syntax FormalSystem.Semantics FormalSystem.StarLanguage
+open FormalSystem.Metalogic.Expressiveness.SeparationZ in
+instance : Sig.HasBot USForm := ⟨USForm.bot⟩
+
+instance : Sig.HasBot Formula := ⟨Formula.bot⟩
+instance : Sig.HasImp Formula := ⟨Formula.imp⟩
+instance : Sig.HasBox Formula := ⟨Formula.box⟩
+instance : Sig.HasUntl Formula := ⟨Formula.untl⟩
+instance : Sig.HasSnce Formula := ⟨Formula.snce⟩
+instance : Sig.HasBot StarFormula := ⟨StarFormula.bot⟩
+instance : Sig.HasImp StarFormula := ⟨StarFormula.imp⟩
+instance : Sig.HasBox StarFormula := ⟨StarFormula.box⟩
+instance : Sig.HasUntl StarFormula := ⟨StarFormula.untl⟩
+instance : Sig.HasStab StarFormula := ⟨StarFormula.stab⟩
+
+/-! G1: rfl rows, existing per-language defs vs signature operators. -/
+example (φ : Formula) : φ.neg = Sig.neg φ := rfl
+example (φ ψ : Formula) : φ.and ψ = Sig.and φ ψ := rfl
+example (φ : Formula) : φ.diamond = Sig.diamond φ := rfl
+example (φ : Formula) : φ.allFuture = Sig.allFuture φ := rfl
+example (φ : Formula) : φ.next = Sig.next φ := rfl
+example (φ ψ : Formula) : Formula.release φ ψ = Sig.release φ ψ := rfl
+example (φ ψ : Formula) : Formula.weakUntil φ ψ = Sig.weakUntil φ ψ := rfl
+example (φ : StarFormula) : φ.next = Sig.next φ := rfl
+example (φ : StarFormula) : φ.dstab = Sig.dstab φ := rfl
+example (φ : StarFormula) : φ.allFuture = Sig.allFuture φ := rfl
+
+/-! G2: mixin clause classes (Prop-valued), option (i)(b). -/
+class BotClauseM (L : Type) [TruthEnv L] [Sig.HasBot L] : Prop where
+  bot_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F), ¬ TruthEnv.T M τ t e (Sig.HasBot.bot : L)
+class ImpClauseM (L : Type) [TruthEnv L] [Sig.HasImp L] : Prop where
+  imp_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ ψ : L),
+    TruthEnv.T M τ t e (Sig.HasImp.imp φ ψ) ↔ (TruthEnv.T M τ t e φ → TruthEnv.T M τ t e ψ)
+class BoolM (L : Type) [TruthEnv L] [Sig.HasBot L] [Sig.HasImp L] : Prop
+  extends BotClauseM L, ImpClauseM L
+
+instance : BoolM Formula where
+  bot_clause _ _ _ _ := fun h => h
+  imp_clause _ _ _ _ _ _ := Iff.rfl
+
+theorem neg_iffM {L : Type} [TruthEnv L] [Sig.HasBot L] [Sig.HasImp L] [BotClauseM L]
+    [ImpClauseM L] {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e (Sig.neg φ) ↔ ¬ TruthEnv.T M τ t e φ := by
+  rw [ImpClauseM.imp_clause]
+  exact ⟨fun h hφ => BotClauseM.bot_clause M τ t e (h hφ), fun h hφ => absurd hφ h⟩
+
+-- delegation without `show`, as today's wrappers do
+example {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration} (φ : Formula) :
+    TruthAt M τ t φ.neg ↔ ¬ TruthAt M τ t φ :=
+  neg_iffM (L := Formula) M τ t PUnit.unit φ
+
+/-! G3: the syntactic-form hazard. A per-language name defined AS the signature operator. -/
+def FormalSystem.Syntax.Formula.negS (φ : Formula) : Formula := Sig.neg φ
+example {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration} (φ : Formula)
+    (h : ¬ TruthAt M τ t φ) : TruthAt M τ t φ.negS := by
+  simp only [Formula.negS]
+  -- does a constructor-keyed simp lemma fire on the unfolded generic term?
+  first
+    | (simp only [Truth.imp_iff]; trace "G3a: simp only [imp_iff] FIRED on Sig-unfolded term"; exact fun hφ => absurd hφ h)
+    | (trace "G3a: simp only [imp_iff] did NOT fire"; rw [Truth.imp_iff]; trace "G3b: rw [imp_iff] fired"; exact fun hφ => absurd hφ h)
+example (φ : Formula) : φ.negS = φ.imp Formula.bot := by
+  first
+    | (simp only [Formula.negS]; done; trace "G3c: closes syntactically after simp only")
+    | (trace "G3c: needs rfl"; rfl)
+
+/-! G4: per-language definitions GENERATED from the single signature definition, with the
+instance projections reduced away, so the stored body is the concrete constructor term. -/
+open Lean Meta Elab Term in
+/-- `sig% t`: elaborate `t`, unfold reducible definitions and class projections of instances. -/
+elab "sig% " t:term : term <= expectedType => do
+  let e ← elabTermEnsuringType t expectedType
+  synthesizeSyntheticMVarsNoPostponing
+  let e ← instantiateMVars e
+  let e ← Meta.transform e (pre := fun e => do
+    let e' ← withReducibleAndInstances (whnfCore e)
+    match ← withReducibleAndInstances (unfoldDefinition? e') with
+    | some e'' => return .visit e''
+    | none => if e' == e then return .continue else return .visit e')
+  return e
+
+def FormalSystem.Syntax.Formula.negG (φ : Formula) : Formula := sig% (Sig.neg φ)
+def FormalSystem.Syntax.Formula.andG (φ ψ : Formula) : Formula := sig% (Sig.and φ ψ)
+def FormalSystem.Syntax.Formula.allFutureG (φ : Formula) : Formula := sig% (Sig.allFuture φ)
+def FormalSystem.Syntax.Formula.weakUntilG (φ ψ : Formula) : Formula := sig% (Sig.weakUntil φ ψ)
+
+open Lean Meta Elab Command in
+/-- Print a definition's stored body and whether it mentions any `Sig.*` constant. -/
+elab "#body " a:ident : command => do
+  let va := (← getConstInfo (← liftCoreM <| realizeGlobalConstNoOverload a)).value!
+  let hasSig := (va.find? fun e => e.isConst && (`Sig).isPrefixOf e.constName!).isSome
+  logInfo m!"{a.getId}: body = {va}; mentions Sig constants: {hasSig}"
+#body FormalSystem.Syntax.Formula.negG
+#body FormalSystem.Syntax.Formula.andG
+#body FormalSystem.Syntax.Formula.allFutureG
+#body FormalSystem.Syntax.Formula.weakUntilG
+#body FormalSystem.Syntax.Formula.negS
+
+example {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration} (φ : Formula)
+    (h : ¬ TruthAt M τ t φ) : TruthAt M τ t φ.negG := by
+  simp only [Formula.negG]
+  first
+    | (simp only [Truth.imp_iff]; trace "G4a: simp only [imp_iff] FIRED on generated definition"; exact fun hφ => absurd hφ h)
+    | (trace "G4a: did NOT fire"; exact fun hφ => absurd hφ h)
+example (φ : Formula) : φ.negG = φ.imp Formula.bot := by
+  first
+    | (simp only [Formula.negG]; done)
+    | (trace "G4c: needs rfl"; rfl)
+example (φ ψ : Formula) : φ.andG ψ = Sig.and φ ψ := rfl
+
+/-! G5: the `extends` variant (i)(a): a second instance path to the signature. -/
+class BotClauseE (L : Type) [TruthEnv L] extends Sig.HasBot L where
+  bot_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F), ¬ TruthEnv.T M τ t e bot
+instance instE : BotClauseE Formula where
+  bot := Formula.bot
+  bot_clause _ _ _ _ := fun h => h
+example : (instE.toHasBot : Sig.HasBot Formula) = (instHasBotFormula : Sig.HasBot Formula) := rfl
+example : (instE.toHasBot : Sig.HasBot Formula) = (instHasBotFormula : Sig.HasBot Formula) := by
+  with_reducible_and_instances rfl
+open Lean Meta Elab Command in
+elab "#which_inst " t:term : command => liftTermElabM do
+  let ty ← Term.elabType t
+  logInfo m!"resolved {ty} to {← synthInstance ty}"
+#which_inst Sig.HasBot Formula
+
+/-! G6: operator recognition through the signature, at L⋆ (no per-language name table). -/
+open Lean Meta Elab Command in
+elab "#recognize " op:ident t:term : command => liftTermElabM do
+  let e ← Term.elabTerm t none
+  Term.synthesizeSyntheticMVarsNoPostponing
+  let e ← instantiateMVars e
+  lambdaTelescope e fun _ body => do
+    let L ← inferType body
+    let sigName := `Sig ++ op.getId
+    let info ← getConstInfo sigName
+    let arity ← forallTelescope info.type fun xs _ => do
+      let ex ← xs.filterM fun x => do return (← x.fvarId!.getBinderInfo).isExplicit
+      pure ex.size
+    let args ← (List.range arity).toArray.mapM fun _ => mkFreshExprMVar L
+    match ← observing? (mkAppM sigName args) with
+    | none => logInfo m!"{op.getId} at {L}: no signature instance (operator absent from this language)"
+    | some cand =>
+      if ← isDefEq body cand then
+        logInfo m!"{op.getId} at {L}: recognized, args = {← args.mapM instantiateMVars}"
+      else logInfo m!"{op.getId} at {L}: not this operator"
+#recognize diamond fun (a : StarFormula) => a.diamond
+#recognize allFuture fun (a : StarFormula) => a.allFuture
+#recognize dstab fun (a : StarFormula) => a.dstab
+#recognize next fun (a : StarFormula) => StarFormula.untl StarFormula.bot a
+#recognize dstab fun (a : Formula) => a.neg
+#recognize weakUntil fun (a b : Formula) => Formula.weakUntil a b
+#recognize neg fun (a : StarFormula) => a.diamond
+#recognize diamond fun (a : StarFormula) => a.neg

@@ -1,0 +1,72 @@
+import FormalSystem.Semantics.Truth
+
+/-! Prototype 3: what `abbrev` (reducible) derived operators change, measured on L. -/
+open FormalSystem FormalSystem.Syntax FormalSystem.Semantics
+
+namespace FormalSystem.Syntax.Formula
+abbrev negA (φ : Formula) : Formula := φ.imp bot
+abbrev andA (φ ψ : Formula) : Formula := (φ.imp ψ.negA).negA
+abbrev diamondA (φ : Formula) : Formula := φ.negA.box.negA
+end FormalSystem.Syntax.Formula
+
+variable {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
+
+theorem negA_iff (φ : Formula) : TruthAt M τ t φ.negA ↔ ¬ TruthAt M τ t φ := Truth.neg_iff φ
+theorem andA_iff (φ ψ : Formula) :
+    TruthAt M τ t (φ.andA ψ) ↔ TruthAt M τ t φ ∧ TruthAt M τ t ψ := Truth.and_iff φ ψ
+theorem diamondA_iff (φ : Formula) :
+    TruthAt M τ t φ.diamondA ↔ ∃ σ : WorldHistory F, TruthAt M σ t φ := Truth.diamond_iff φ
+
+/-! R1. The view is definitional at reducible transparency for `abbrev`, not for `def`. -/
+example (φ : Formula) : φ.diamondA = φ.negA.box.negA := by with_reducible rfl
+example (φ : Formula) : φ.diamond = φ.neg.box.neg := by
+  first | (with_reducible rfl; trace "R1: def is reducible-rfl") | (trace "R1: def needs default transparency"; rfl)
+
+/-! R2. A rule stated about the folded operator applies to the unfolded shape with no view step
+(abbrev), and does not (def). -/
+example (φ : Formula) (h : ∃ σ : WorldHistory F, TruthAt M σ t φ) :
+    TruthAt M τ t ((φ.imp .bot).box.imp .bot) := by
+  first
+    | (rw [diamondA_iff]; trace "R2a: rw with abbrev-stated lemma matched the unfolded shape"; exact h)
+    | (trace "R2a: no match"; exact (diamondA_iff φ).mpr h)
+example (φ : Formula) (h : ∃ σ : WorldHistory F, TruthAt M σ t φ) :
+    TruthAt M τ t ((φ.imp .bot).box.imp .bot) := by
+  first
+    | (rw [Truth.diamond_iff]; trace "R2b: rw with def-stated lemma matched the unfolded shape"; exact h)
+    | (trace "R2b: def-stated lemma does not match the unfolded shape under rw"; exact (Truth.diamond_iff φ).mpr h)
+example (φ : Formula) (h : ∃ σ : WorldHistory F, TruthAt M σ t φ) :
+    TruthAt M τ t ((φ.imp .bot).box.imp .bot) := by
+  first
+    | (simp only [diamondA_iff]; trace "R2c: simp only with abbrev-stated lemma matched the unfolded shape"; exact h)
+    | (trace "R2c: no simp match"; exact (diamondA_iff φ).mpr h)
+
+/-! R3. The cost: simp lemmas about abbrev operators overlap with the primitive ones. -/
+example (φ ψ : Formula) : TruthAt M τ t (φ.andA ψ) := by
+  simp only [Truth.imp_iff, andA_iff]
+  trace_state
+  sorry
+example (φ ψ : Formula) : TruthAt M τ t (φ.andA ψ) := by
+  simp only [andA_iff, Truth.imp_iff]
+  trace_state
+  sorry
+example (φ ψ : Formula) : TruthAt M τ t (φ.and ψ) := by
+  simp only [Truth.imp_iff, Truth.and_iff]
+  trace_state
+  sorry
+-- an implication whose consequent happens to be ⊥ is now indistinguishable from a negation
+example (φ : Formula) : TruthAt M τ t (φ.imp .bot) := by
+  simp only [negA_iff]
+  trace_state
+  sorry
+
+/-! R4. The fold family: an `rfl` fold lemma about an abbrev operator. -/
+theorem negA_fold (φ : Formula) : φ.imp Formula.bot = φ.negA := rfl
+example (φ : Formula) : TruthAt M τ t (φ.imp .bot) := by
+  first
+    | (simp only [negA_fold]; trace "R4: fold lemma made progress"; trace_state; sorry)
+    | (trace "R4: fold lemma for an abbrev operator makes no progress (it is `x = x` up to reducibility)"; sorry)
+
+/-! R5. Delaboration: is the folded name still what a goal shows? -/
+example (φ : Formula) (h : TruthAt M τ t φ.diamondA) : True := by
+  trace_state
+  rw [Truth.box_iff] at h <;> trivial

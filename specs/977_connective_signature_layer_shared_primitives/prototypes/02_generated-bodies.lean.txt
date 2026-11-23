@@ -1,0 +1,122 @@
+import FormalSystem.StarLanguage.Formula
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.Syntax
+
+/-! Prototype 2: every shared derived operator written once on the signature; per-language
+bodies GENERATED from it, one layer deep, and compared structurally with the bodies in the tree. -/
+namespace Sig
+universe u
+class HasBot (L : Type u) where bot : L
+class HasImp (L : Type u) where imp : L → L → L
+class HasBox (L : Type u) where box : L → L
+class HasUntl (L : Type u) where untl : L → L → L
+class HasSnce (L : Type u) where snce : L → L → L
+class HasStab (L : Type u) where stab : L → L
+
+variable {L : Type u} [HasBot L] [HasImp L]
+abbrev top : L := HasImp.imp (HasBot.bot : L) HasBot.bot
+abbrev neg (φ : L) : L := HasImp.imp φ HasBot.bot
+abbrev and (φ ψ : L) : L := neg (HasImp.imp φ (neg ψ))
+abbrev or (φ ψ : L) : L := HasImp.imp (neg φ) ψ
+abbrev diamond [HasBox L] (φ : L) : L := neg (HasBox.box (neg φ))
+abbrev someFuture [HasUntl L] (φ : L) : L := HasUntl.untl top φ
+abbrev somePast [HasSnce L] (φ : L) : L := HasSnce.snce top φ
+abbrev allFuture [HasUntl L] (φ : L) : L := neg (someFuture (neg φ))
+abbrev allPast [HasSnce L] (φ : L) : L := neg (somePast (neg φ))
+abbrev kPlus [HasUntl L] (φ : L) : L := neg (HasUntl.untl (neg φ) top)
+abbrev kMinus [HasSnce L] (φ : L) : L := neg (HasSnce.snce (neg φ) top)
+abbrev always [HasUntl L] [HasSnce L] (φ : L) : L := and (allPast φ) (and φ (allFuture φ))
+abbrev sometimes [HasUntl L] [HasSnce L] (φ : L) : L := neg (always (neg φ))
+abbrev next [HasUntl L] (φ : L) : L := HasUntl.untl HasBot.bot φ
+abbrev prev [HasSnce L] (φ : L) : L := HasSnce.snce HasBot.bot φ
+abbrev after [HasUntl L] (φ ψ : L) : L := HasUntl.untl (neg φ) (and φ ψ)
+abbrev dstab [HasStab L] (φ : L) : L := neg (HasStab.stab (neg φ))
+-- interval operators, argument order of `Formula.release` etc. (event first)
+abbrev release [HasUntl L] (φ ψ : L) : L := neg (HasUntl.untl (neg ψ) (neg φ))
+abbrev trigger [HasSnce L] (φ ψ : L) : L := neg (HasSnce.snce (neg ψ) (neg φ))
+abbrev weakUntil [HasUntl L] (φ ψ : L) : L := or (HasUntl.untl ψ φ) (allFuture ψ)
+abbrev weakSince [HasSnce L] (φ ψ : L) : L := or (HasSnce.snce ψ φ) (allPast ψ)
+end Sig
+
+open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.StarLanguage
+open FormalSystem.Metalogic.Expressiveness.SeparationZ
+
+instance : Sig.HasBot Formula := ⟨Formula.bot⟩
+instance : Sig.HasImp Formula := ⟨Formula.imp⟩
+instance : Sig.HasBox Formula := ⟨Formula.box⟩
+instance : Sig.HasUntl Formula := ⟨Formula.untl⟩
+instance : Sig.HasSnce Formula := ⟨Formula.snce⟩
+instance : Sig.HasBot PlusFormula := ⟨PlusFormula.bot⟩
+instance : Sig.HasImp PlusFormula := ⟨PlusFormula.imp⟩
+instance : Sig.HasBox PlusFormula := ⟨PlusFormula.box⟩
+instance : Sig.HasUntl PlusFormula := ⟨PlusFormula.untl⟩
+instance : Sig.HasSnce PlusFormula := ⟨PlusFormula.snce⟩
+instance : Sig.HasStab PlusFormula := ⟨PlusFormula.stab⟩
+instance : Sig.HasBot StarFormula := ⟨StarFormula.bot⟩
+instance : Sig.HasImp StarFormula := ⟨StarFormula.imp⟩
+instance : Sig.HasBox StarFormula := ⟨StarFormula.box⟩
+instance : Sig.HasUntl StarFormula := ⟨StarFormula.untl⟩
+instance : Sig.HasSnce StarFormula := ⟨StarFormula.snce⟩
+instance : Sig.HasStab StarFormula := ⟨StarFormula.stab⟩
+instance : Sig.HasBot USForm := ⟨USForm.bot⟩
+instance : Sig.HasImp USForm := ⟨USForm.imp⟩
+instance : Sig.HasUntl USForm := ⟨USForm.untl⟩
+instance : Sig.HasSnce USForm := ⟨USForm.snce⟩
+
+open Lean Meta Elab Command
+
+/-- One layer: delta-unfold the head signature operator once, then rewrite every remaining
+`Sig.op` application at the concrete type `T` to `T.op`, and every class projection of an
+instance to the constructor it projects. -/
+def oneLayer (T : Name) (e : Expr) : MetaM Expr := do
+  let some e ← delta? e | throwError "not a definition application: {e}"
+  let e := e.headBeta
+  Meta.transform e (pre := fun e => do
+    let .const n _ := e.getAppFn | return .continue
+    unless (`Sig).isPrefixOf n do return .continue
+    if (← getProjectionFnInfo? n).isSome then
+      let e' ← withReducibleAndInstances (whnfCore e)
+      match ← withReducibleAndInstances (unfoldDefinition? e') with
+      | some e'' => return .visit (← withReducibleAndInstances (whnfCore e''))
+      | none => return .continue
+    let target := n.replacePrefix `Sig T
+    unless (← getEnv).contains target do return .continue
+    let arity := (← getConstInfo target).type.getForallBinderNames.length
+    let args := e.getAppArgs
+    return .visit (mkAppN (mkConst target) (args.extract (args.size - arity) args.size)))
+
+/-- For each operator: generate the per-language body from the signature definition and compare
+it structurally (`Expr` equality) with the body stored in the tree. -/
+elab "#compare_generated " T:ident ops:ident* : command => liftTermElabM do
+  let T ← realizeGlobalConstNoOverload T
+  let mut same : Nat := 0
+  let mut total : Nat := 0
+  for op in ops do
+    let existing := T ++ op.getId
+    let some info := (← getEnv).find? existing
+      | logInfo m!"{existing}: not in the tree (new on the signature)"; continue
+    total := total + 1
+    let gen ← forallTelescope info.type fun xs _ => do
+      let f := mkApp (mkConst (`Sig ++ op.getId) [levelZero]) (mkConst T)
+      let (ms, bis, _) ← forallMetaTelescopeReducing (← inferType f)
+      let mut i : Nat := 0
+      for m in ms, bi in bis do
+        if bi.isInstImplicit then m.mvarId!.assign (← synthInstance (← inferType m))
+        else m.mvarId!.assign xs[i]!; i := i + 1
+      let app ← instantiateMVars (mkAppN f ms)
+      mkLambdaFVars xs (← oneLayer T app)
+    if gen == info.value! then same := same + 1
+    else logInfo m!"{existing}: DIFFERENT\n  generated: {gen}\n  in tree:   {info.value!}"
+  logInfo m!"{T}: {same} of {total} generated bodies are structurally identical to the tree's"
+
+#compare_generated Formula top neg and or diamond someFuture somePast allFuture allPast kPlus kMinus always sometimes next prev after release trigger weakUntil weakSince
+#compare_generated PlusFormula top neg and or diamond someFuture somePast allFuture allPast kPlus kMinus always sometimes next prev after dstab
+#compare_generated StarFormula top neg and or diamond someFuture somePast allFuture allPast kPlus kMinus always sometimes next prev dstab
+#compare_generated USForm top neg and or someFuture somePast allFuture allPast next prev
+
+/-! `rfl` ties, including the fourth `next`/`prev` copy. -/
+example (φ : USForm) : φ.next = Sig.next φ := rfl
+example (φ : USForm) : φ.prev = Sig.prev φ := rfl
+example (φ : StarFormula) : φ.next = Sig.next φ := rfl
+example (φ : PlusFormula) : φ.prev = Sig.prev φ := rfl
+example (φ ψ : Formula) : Formula.trigger φ ψ = Sig.trigger φ ψ := rfl
+example (φ ψ : Formula) : Formula.weakSince φ ψ = Sig.weakSince φ ψ := rfl
