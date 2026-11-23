@@ -316,36 +316,40 @@ tables.
 
 ---
 
-### Phase 3: Reconcile the follow-up record [NOT STARTED]
+### Phase 3: Reconcile the follow-up record [COMPLETED]
 
 **Goal**: `FOLLOWUP.md` states the current facts for PR #11 and names the approval draft as an
 item to post.
 
 **Tasks**:
 
-- [ ] Enumerate every mention of #11 in
+- [x] Enumerate every mention of #11 in
       `specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md` before editing: the preamble state
       sentence, item 1 of the post list, the `## Decided` bullet, the `## Still open` entry, and
       the `## Backing reports` paragraph. Work the list, not only the first hit.
-- [ ] Correct the preamble: #11's head is no longer `c6cd983b7` and is no longer draft or
+- [x] Correct the preamble: #11's head is no longer `c6cd983b7` and is no longer draft or
       conflicting. It is `b2eb3ac0b`, `OPEN`, `MERGEABLE`, `CLEAN`, with the merge of `main`
       done by the contributor.
-- [ ] Leave item 1's `**POSTED ...**` record intact — it is the record of what went out against
+- [x] Leave item 1's `**POSTED ...**` record intact — it is the record of what went out against
       `c6cd983b79842368ae789488d38e488656f98992` — and extend it with the outcome: the
       contributor answered in code with no prose, all three conditions are met at
       `b2eb3ac0b`, and the draft response is `pr11-approval.md`.
-- [ ] Add the approval to the post list as its own item, in the order the user should post it,
+- [x] Add the approval to the post list as its own item, in the order the user should post it,
       carrying the same one-line shape the other items use: what it is, what it says, and the
-      re-check result with its timestamp and the CI run id.
-- [ ] Update the `## Decided` bullet for #11 so it records that the three conditions were met and
+      re-check result with its timestamp and the CI run id. *(deviation: altered — the approval
+      was APPENDED as item 5 rather than inserted at position 2 with the list renumbered.
+      Renumbering would have edited the #8 entry's own self-reference "now in the post list above
+      as item 4", which the next checklist item forbids; appending is also this list's established
+      convention. Posting order is conveyed inside item 5's own text instead.)*
+- [x] Update the `## Decided` bullet for #11 so it records that the three conditions were met and
       the position is now approve, without rewriting the decisions that produced the original
       three conditions.
-- [ ] Reconcile the `## Still open` entry that names the re-read of `pr11-comment.md`'s changed
+- [x] Reconcile the `## Still open` entry that names the re-read of `pr11-comment.md`'s changed
       follow-up section, and the `## Backing reports` paragraph, against the new backing report
       at `specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/reports/01_rereview-pr11-at-usability-and-tests.md`.
-- [ ] Keep the standing pre-post instruction intact: re-check each head immediately before
+- [x] Keep the standing pre-post instruction intact: re-check each head immediately before
       posting. The approval is subject to it exactly as the other items are.
-- [ ] Do not touch the #8, #9 or #10 entries except where a shared sentence (the preamble's
+- [x] Do not touch the #8, #9 or #10 entries except where a shared sentence (the preamble's
       heads line) names #11 alongside them.
 
 **Timing**: 25 minutes
@@ -374,6 +378,31 @@ report/plan/summary artifact, so plan-format's sub-case (a) applies and the cove
 - The #8, #9 and #10 entries are unchanged apart from the shared preamble sentence — confirmed by
   reading the diff hunk by hunk.
 - `git status --short` does not list the file, for the same exclusion reason as Phase 2.
+
+**Verification Notes** (Phase 3):
+
+- All six enumerated #11 mentions were worked, confirmed by a hunk-by-hunk read of
+  `diff -u <scratchpad backup> FOLLOWUP.md`: the preamble heads sentence, item 1's `**Outcome**`
+  extension, the new item 5, the `## Decided` bullet, the `## Still open` entry, and the
+  `## Backing reports` paragraph.
+- `grep -n 'c6cd983'` returns two lines, both correct: item 1's preserved posted-record sentence
+  (the sha the `CHANGES_REQUESTED` review attached to) and the `## Backing reports` statement that
+  `pr11-review.md` and the other review's report are written against that sha. Neither asserts it
+  as #11's current head.
+- `grep -nE 'draft|conflict'` surfaces no surviving stale #11 claim: the preamble reads "not a
+  draft" and "the conflict ... is gone", line 6's "(conflicting)" belongs to #9, and line 19's
+  "the draft response" means a draft document.
+- The file names `pr11-approval.md` (4 occurrences) and `b2eb3ac0b` (7).
+- The #8, #9 and #10 entries are unchanged apart from the shared preamble sentence. In that
+  sentence #10's head was reconciled from the stale `bdaa3b6d0` (draft, clean) to `ada7074dd`
+  (no longer draft) — the value the file's own `## Still open` section already records — rather
+  than preserved as a contradiction the rewrite would have knowingly carried forward.
+- The standing "Before posting: ... re-check each head" instruction is intact, and item 5 is
+  subject to it exactly as the other items are.
+- `git status --short -- specs/reviews/` is empty, as expected under the `.git/info/exclude`
+  entry.
+- Covering check for the declared `prose` tier: the diff read-through above. The sole touched
+  path lies under `specs/**` and is not a report/plan/summary artifact.
 
 ---
 
