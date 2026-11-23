@@ -45,6 +45,7 @@ register_theorem FormalSystem.Theorems.ConnectDerived.untlBotFalseThm
 -- Declared in `FormalSystem.Theorems.DedekindDerived`.
 register_theorem FormalSystem.Theorems.DedekindDerived.alwaysElimFuture
 register_theorem FormalSystem.Theorems.DedekindDerived.alwaysElimHere
+  (dual := FormalSystem.Theorems.TemporalDerived.presentToSometimes)
 register_theorem FormalSystem.Theorems.DedekindDerived.alwaysElimPast
 register_theorem FormalSystem.Theorems.DedekindDerived.snceAllPastAndImp
 register_theorem FormalSystem.Theorems.DedekindDerived.someFutureAllPastImp
@@ -79,6 +80,7 @@ register_theorem FormalSystem.Theorems.Perpetuity.alwaysDni
 register_theorem FormalSystem.Theorems.Perpetuity.alwaysToFuture
 register_theorem FormalSystem.Theorems.Perpetuity.alwaysToPast
 register_theorem FormalSystem.Theorems.Perpetuity.alwaysToPresent
+  (dual := FormalSystem.Theorems.TemporalDerived.presentToSometimes)
 register_theorem FormalSystem.Theorems.Perpetuity.pastPresentFutureToAlways
 register_theorem FormalSystem.Theorems.Perpetuity.temporalDualityNeg
 register_theorem FormalSystem.Theorems.Perpetuity.temporalDualityNegRev
@@ -95,6 +97,7 @@ register_theorem FormalSystem.Theorems.Propositional.untlBotFalse
 register_theorem FormalSystem.Theorems.TemporalDerived.alwaysImpAllFuture
 register_theorem FormalSystem.Theorems.TemporalDerived.alwaysImpAllPast
 register_theorem FormalSystem.Theorems.TemporalDerived.alwaysToPresent
+  (dual := FormalSystem.Theorems.TemporalDerived.presentToSometimes)
 register_theorem FormalSystem.Theorems.TemporalDerived.connectFutureChain
 register_theorem FormalSystem.Theorems.TemporalDerived.connectFutureG
 register_theorem FormalSystem.Theorems.TemporalDerived.connectFutureThm
@@ -102,6 +105,7 @@ register_theorem FormalSystem.Theorems.TemporalDerived.connectPastChain
 register_theorem FormalSystem.Theorems.TemporalDerived.connectPastH
 register_theorem FormalSystem.Theorems.TemporalDerived.connectPastThm
 register_theorem FormalSystem.Theorems.TemporalDerived.fMono
+  (dual := FormalSystem.Theorems.TemporalDerived.gMono)
 register_theorem FormalSystem.Theorems.TemporalDerived.fNegG
 register_theorem FormalSystem.Theorems.TemporalDerived.gAndIntro
 register_theorem FormalSystem.Theorems.TemporalDerived.gContrapose
@@ -109,16 +113,20 @@ register_theorem FormalSystem.Theorems.TemporalDerived.gDistribution
 register_theorem FormalSystem.Theorems.TemporalDerived.gImpTrans
 register_theorem FormalSystem.Theorems.TemporalDerived.gImpliesGId
 register_theorem FormalSystem.Theorems.TemporalDerived.gMono
+  (dual := FormalSystem.Theorems.TemporalDerived.fMono)
 register_theorem FormalSystem.Theorems.TemporalDerived.gTransitivity
 register_theorem FormalSystem.Theorems.TemporalDerived.hAndIntro
 register_theorem FormalSystem.Theorems.TemporalDerived.hContrapose
 register_theorem FormalSystem.Theorems.TemporalDerived.hDistribution
 register_theorem FormalSystem.Theorems.TemporalDerived.hImpTrans
 register_theorem FormalSystem.Theorems.TemporalDerived.hMono
+  (dual := FormalSystem.Theorems.TemporalDerived.pMono)
 register_theorem FormalSystem.Theorems.TemporalDerived.hTransitivity
 register_theorem FormalSystem.Theorems.TemporalDerived.pMono
+  (dual := FormalSystem.Theorems.TemporalDerived.hMono)
 register_theorem FormalSystem.Theorems.TemporalDerived.pNegH
 register_theorem FormalSystem.Theorems.TemporalDerived.presentToSometimes
+  (dual := FormalSystem.Theorems.TemporalDerived.alwaysToPresent)
 register_theorem FormalSystem.Theorems.TemporalDerived.sinceImpP
 register_theorem FormalSystem.Theorems.TemporalDerived.sinceImpliesSomePast
 register_theorem FormalSystem.Theorems.TemporalDerived.sinceMonoEvent

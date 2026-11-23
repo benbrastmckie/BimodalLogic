@@ -5,5 +5,6 @@ Authors: Benjamin Brast-McKie
 -/
 
 import BimodalLibTest.FragmentTest
+import BimodalLibTest.IndexTest
 import BimodalLibTest.PairingTest
 import BimodalLibTest.RegistryCheckTest

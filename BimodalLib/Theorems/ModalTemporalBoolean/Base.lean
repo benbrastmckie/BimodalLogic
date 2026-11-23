@@ -31,6 +31,7 @@ register_theorem FormalSystem.Theorems.Interaction.alwaysDiamondToDiamond
 register_theorem FormalSystem.Theorems.Interaction.boxAlwaysIffAlwaysBox
 register_theorem FormalSystem.Theorems.Interaction.boxAlwaysIffBox
 register_theorem FormalSystem.Theorems.Interaction.boxToAlwaysBox
+  (dual := FormalSystem.Theorems.Interaction.sometimesDiamondToDiamond)
 register_theorem FormalSystem.Theorems.Interaction.diamondAlwaysToDiamond
 register_theorem FormalSystem.Theorems.Interaction.diamondIffDiamondSometimes
 register_theorem FormalSystem.Theorems.Interaction.diamondSometimesIffSometimesDiamond
@@ -38,6 +39,7 @@ register_theorem FormalSystem.Theorems.Interaction.diamondSometimesToSometimesDi
 register_theorem FormalSystem.Theorems.Interaction.diamondToDiamondSometimes
 register_theorem FormalSystem.Theorems.Interaction.sometimesBoxIffBox
 register_theorem FormalSystem.Theorems.Interaction.sometimesDiamondToDiamond
+  (dual := FormalSystem.Theorems.Interaction.boxToAlwaysBox)
 register_theorem FormalSystem.Theorems.Interaction.sometimesDiamondToDiamondSometimes
 register_theorem FormalSystem.Theorems.Interaction.temporalPastDerived
 
@@ -49,14 +51,20 @@ register_theorem FormalSystem.Theorems.Perpetuity.boxToPast
 register_theorem FormalSystem.Theorems.Perpetuity.bridge1
 register_theorem FormalSystem.Theorems.Perpetuity.bridge2
 register_theorem FormalSystem.Theorems.Perpetuity.perpetuity6
+  (dual := FormalSystem.Theorems.Perpetuity.perpetuity5)
 
 -- Declared in `FormalSystem.Theorems.Perpetuity.Principles`.
 register_theorem FormalSystem.Theorems.Perpetuity.boxDiamondToFutureBoxDiamond
 register_theorem FormalSystem.Theorems.Perpetuity.boxDiamondToPastBoxDiamond
 register_theorem FormalSystem.Theorems.Perpetuity.boxToBoxPast
 register_theorem FormalSystem.Theorems.Perpetuity.perpetuity1
+  (dual := FormalSystem.Theorems.Perpetuity.perpetuity2)
 register_theorem FormalSystem.Theorems.Perpetuity.perpetuity2
+  (dual := FormalSystem.Theorems.Perpetuity.perpetuity1)
 register_theorem FormalSystem.Theorems.Perpetuity.perpetuity3
+  (dual := FormalSystem.Theorems.Perpetuity.perpetuity4)
 register_theorem FormalSystem.Theorems.Perpetuity.perpetuity4
+  (dual := FormalSystem.Theorems.Perpetuity.perpetuity3)
 register_theorem FormalSystem.Theorems.Perpetuity.perpetuity5
+  (dual := FormalSystem.Theorems.Perpetuity.perpetuity6)
 register_theorem FormalSystem.Theorems.Perpetuity.persistence

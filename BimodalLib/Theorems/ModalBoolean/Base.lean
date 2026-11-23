@@ -26,12 +26,15 @@ computes. Lines are grouped by the module that declares the derivation.
 
 -- Declared in `FormalSystem.Theorems.Combinators`.
 register_theorem FormalSystem.ProofSystem.DerivedAxioms.modal4
+  (dual := FormalSystem.Theorems.Perpetuity.diamond4)
 register_theorem FormalSystem.ProofSystem.DerivedAxioms.modalB
+  (dual := FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth)
 
 -- Declared in `FormalSystem.Theorems.ModalDerived`.
 register_theorem FormalSystem.Theorems.ModalDerived.axiom5NegativeIntrospection
 register_theorem FormalSystem.Theorems.ModalDerived.boxDneTheorem
 register_theorem FormalSystem.Theorems.ModalDerived.modal5CollapseTheorem
+  (dual := FormalSystem.Theorems.Perpetuity.modal5)
 register_theorem FormalSystem.Theorems.ModalDerived.negBoxToBoxNegBox
 
 -- Declared in `FormalSystem.Theorems.ModalS4`.
@@ -42,12 +45,15 @@ register_theorem FormalSystem.Theorems.ModalS4.s5DiamondConjDiamond
 
 -- Declared in `FormalSystem.Theorems.ModalS5`.
 register_theorem FormalSystem.Theorems.ModalS5.boxConjIff
+  (dual := FormalSystem.Theorems.ModalS5.diamondDisjIff)
 register_theorem FormalSystem.Theorems.ModalS5.boxContrapose
 register_theorem FormalSystem.Theorems.ModalS5.boxDisjIntro
 register_theorem FormalSystem.Theorems.ModalS5.diamondDisjIff
+  (dual := FormalSystem.Theorems.ModalS5.boxConjIff)
 register_theorem FormalSystem.Theorems.ModalS5.kDistDiamond
 register_theorem FormalSystem.Theorems.ModalS5.s5DiamondBox
 register_theorem FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth
+  (dual := FormalSystem.ProofSystem.DerivedAxioms.modalB)
 register_theorem FormalSystem.Theorems.ModalS5.tBoxConsistency
 register_theorem FormalSystem.Theorems.ModalS5.tBoxToDiamond
 
@@ -60,5 +66,8 @@ register_theorem FormalSystem.Theorems.Perpetuity.modalDualityNegRev
 
 -- Declared in `FormalSystem.Theorems.Perpetuity.Principles`.
 register_theorem FormalSystem.Theorems.Perpetuity.diamond4
+  (dual := FormalSystem.ProofSystem.DerivedAxioms.modal4)
 register_theorem FormalSystem.Theorems.Perpetuity.mbDiamond
+  (dual := FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth)
 register_theorem FormalSystem.Theorems.Perpetuity.modal5
+  (dual := FormalSystem.Theorems.ModalDerived.modal5CollapseTheorem)

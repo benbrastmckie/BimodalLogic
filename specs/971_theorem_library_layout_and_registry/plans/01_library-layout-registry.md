@@ -434,30 +434,34 @@ omitted without a record.
 
 ---
 
-### Phase 6: Index generation [NOT STARTED]
+### Phase 6: Index generation [COMPLETED]
 
 **Goal**: One named command writes an index of theorem rows, re-proofs and conjectures by
 fragment and frame class, with every box law that has no declared diamond dual.
 
 **Tasks**:
-- [ ] Create `BimodalLib/Index.lean`: a polarity census per row for `□`/`◇`, `⊡`/`⟐`, `G`/`F`,
+- [x] Create `BimodalLib/Index.lean`: a polarity census per row for `□`/`◇`, `⊡`/`⟐`, `G`/`F`,
   `H`/`P` and always/sometimes, by pattern over the primitives in the shape of
   `extractOperatorProfile` in `BimodalTools/InterestingnessMetrics.lean`; and a command
   `library_index` that walks the constants of type `TheoremEntry`, `ReproofEntry` and
   `Conjecture`, evaluates their fields, and renders Markdown: entries by fragment and frame
   class (rows above Base labelled "stated at"), re-proofs per statement, conjectures with
   status and note, and, per operator pair, the rows whose statement has the universal operator
-  and whose `dual` field is empty.
-- [ ] Add `(dual := Y)` to registration lines only where the dual is evident from an existing
+  and whose `dual` field is empty. *(deviation: altered — the command reads the rows by reduction
+  and reification in `MetaM`, not by evaluation, so no `unsafe` code is needed; the statement
+  printed is the type of the registered declaration; `G` and `H` inside an `always` are not
+  counted again, so the live `G`-only and `H`-only figures are 28 and 33, not the report's 63
+  and 68; a test module `Tests/BimodalLibTest/IndexTest.lean` was added)*
+- [x] Add `(dual := Y)` to registration lines only where the dual is evident from an existing
   declaration and both are registered; the command checks that `Y` has a row. The listing of
   laws with no dual is expected to be long.
-- [ ] Create `scripts/library-index.sh`: builds `BimodalLib`, runs the command through a
+- [x] Create `scripts/library-index.sh`: builds `BimodalLib`, runs the command through a
   one-line driver with `lake env lean`, and writes `BimodalLib/INDEX.md`; with `--check` it
   writes to a temporary file and exits non-zero on a difference. Output is sorted so it is
   stable between runs.
-- [ ] Generate and commit `BimodalLib/INDEX.md`. Import `BimodalLib.Index` from
+- [x] Generate and commit `BimodalLib/INDEX.md`. Import `BimodalLib.Index` from
   `BimodalLib.lean`.
-- [ ] Run `lake build BimodalLib --wfail` and `bash scripts/library-index.sh --check`.
+- [x] Run `lake build BimodalLib --wfail` and `bash scripts/library-index.sh --check`.
 
 **Timing**: 2 hours
 

@@ -9,6 +9,7 @@ import BimodalLib.Conjectures.Conservativity
 import BimodalLib.Conjectures.ModalBoolean.Collapse
 import BimodalLib.Conservativity
 import BimodalLib.Fragment
+import BimodalLib.Index
 import BimodalLib.Pairing
 import BimodalLib.Registry
 import BimodalLib.Registry.Complete
