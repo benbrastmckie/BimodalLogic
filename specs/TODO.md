@@ -13,8 +13,8 @@ next_project_number: 991
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,960,962,970,971,977,984,986,987,988,989 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,862,873,932,944,954,955,961,969,975 | 298,428,502,761,869,960,971,977,986 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,960,962,970,971,977,986,987,988,989 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,862,873,932,944,954,955,961,969,975,984 | 298,428,502,604,761,869,960,971,977,986,989 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876,945,972 | 429,497,763,873,944,961,971 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543,946,973 | 410,498,499,500,945,969,972 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 430,501,947 | 125,411,946,955,961,971 | algebraic-representation, decidability, proof-mode |
@@ -51,6 +51,7 @@ next_project_number: 991
   └─ 282 [PARTIAL] — Flip complexity-9 dataset generation from stratified to...
   └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release,...
 604 [NOT STARTED] — Add zstd-compressed .jsonl dataset support across the data...
+  └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset... (see above)
 
 ### Decidability
 
@@ -94,12 +95,12 @@ next_project_number: 991
 
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 932 [NOT STARTED] — Land the four ofStepRel constraint lemmas and an ofStepPlain...
-984 [NOT STARTED] — Promote next\_iff\_covBy and prev\_iff\_covBy of...
 989 [NOT STARTED] — Three follow-ups named in the posted review of the pointed...
+  └─ 984 [NOT STARTED] — Promote next\_iff\_covBy and prev\_iff\_covBy of...
 
 ### Syntax
 
-977 [PLANNED] — Introduce a connective signature layer under FormalSystem so...
+977 [BLOCKED] — Introduce a connective signature layer under FormalSystem so...
 873 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 874 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
@@ -201,14 +202,14 @@ next_project_number: 991
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: semantics
-- **Dependencies**: None
+- **Dependencies**: Task 989
 
 **Description**: Promote next_iff_covBy and prev_iff_covBy of FormalSystem/SourceLanguage/SentenceTruth.lean onto the generic next_iff and prev_iff of FormalSystem/Semantics/TemporalRules.lean, once that module is on main (it arrives with the pointed semantic lemmas contribution, branch feat/pointed-semantic-lemmas, milestone C1 of records/milestones.md). SentenceTruth.lean docstring calls the duplication deliberate and unresolved and names promotion of one shared lemma as the eventual fix, blocked because the other copy of the succ-form fact sits in FormalSystem/Metalogic/DiscreteNonCompactness.lean and the import would be upward. TemporalRules.lean is at layer 1, as is SentenceTruth.lean, so the promotion has no layering cost; next_iff (L := Formula) M τ t PUnit.unit φ was checked to inhabit the statement of next_iff_covBy. Deliverable: the base-language lemmas become instances or one-line corollaries of the generic ones (or are removed with their uses repointed), the copy in Metalogic/DiscreteNonCompactness.lean is repointed likewise, and the deliberate-and-unresolved note in the SentenceTruth.lean docstring is replaced by the current state. No statement changes for downstream users.
 
 ---
 
 ### 977. Connective signature layer shared primitives
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: syntax
 - **Dependencies**: None
@@ -1607,7 +1608,7 @@ SCOPE NARROWED (2026-09-28): file_scope's BimodalTools/, FormalSystem/Automation
 - **Status**: [NOT STARTED]
 - **Task Type**: general
 - **Topic**: dataset-enhancement
-- **Dependencies**: Task 298
+- **Dependencies**: Task 298, Task 604
 
 **Description**: Build comprehensive automation so that every dataset regeneration automatically updates all downstream artifacts and documentation fields. Supersedes task 227 scope. (1) Create data/scripts/sync-all.py master sync script that: (a) Scans all JSONL files and recomputes metadata JSON files (record counts, rule distributions, schema field lists, valid/invalid ratios, tier distributions, step statistics). (b) Updates specific fields in data/README.md: file inventory table (Records, Size columns), training record schema table (field count), proof steps statistics (records, theorems, rule distribution, steps per theorem), cross-logic split table (records, valid rates), NL paraphrase statistics. (c) Updates specific fields in data/dataset-card.md: overview table, all record counts, proof steps section, competitive position 'primary gaps' paragraph. (d) Recomputes SHA-256 hashes and contentSize for all distributions in croissant.json. (e) Regenerates bmlogic-bench-splits.json. (f) Validates all JSONL records against declared schemas (checks field presence, types, null patterns). (g) Checks train/benchmark formula overlap and reports contamination percentage. (h) Validates metadata key consistency (total_records not total_count). (2) Idempotent and safe to run after any regeneration command (lake exe dataset_generator, lake exe proof_extractor, lake exe benchmark_oracle, finalize_benchmark.py). (3) --dry-run mode that reports what would change. (4) --commit mode that creates structured git commit. (5) CI-friendly exit codes (0=clean, 1=staleness detected, 2=validation error). (6) Update data/README.md with pipeline documentation. (7) Integrate into agent context (.claude/context/project/dataset/) so /implement for dataset tasks runs sync-all as post-implementation step. Note: supersedes task 227 (dataset_pipeline_automation_croissant_sync) with broader scope covering README/dataset-card field updates and schema validation.
 === ITEM (7) TARGETS A DISPOSABLE DEPLOY ARTIFACT -- CORRECTED 2026-08-24 ===
