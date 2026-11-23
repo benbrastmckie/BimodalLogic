@@ -1,14 +1,19 @@
 {
-  "status": "planned",
-  "dispatch_seq": 5,
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 9,
+  "phases_completed": 3,
   "phases_total": 3,
-  "summary": "Wrote a 3-phase plan at specs/978_review_pr11_pointed_semantic_lemmas/plans/01_review-pr11-pointed-semantic-lemmas.md. Live re-check changed the premise: PR #11's head is unchanged at c6cd983b7, but #7 has merged (so #11 is now CONFLICTING) and the user already posted the review to GitHub as CHANGES_REQUESTED at 2026-11-23T01:57:16Z, verbatim from specs/reviews/pr-reviews-2026-11-21/pr11-comment.md. The review deliverable is therefore done and acted on; the plan covers only record reconciliation (disposition section, closing the four rulings, follow-up ledger, worktree note, summary). No Lean build, no rebase, nothing posted.",
+  "summary": "Executed all three phases of plan 01. The task's deliverable had already been produced and acted on: the user posted the condensed draft to PR #11 as CHANGES_REQUESTED at 2026-11-23T01:57:16Z, head unchanged at c6cd983b7, and #11 is now CONFLICTING because #7 merged. This dispatch did record work only: appended a dated Disposition section to the research report, closed its four open rulings with the dispositions the user actually chose, mapped all eight draft requests onto their posted outcome, recorded that request 8 was never posted, logged the posting in FOLLOWUP.md, and wrote the summary with a follow-up ledger (two homed in tasks 977/984, three with no task yet). No Lean file touched, no build run, nothing posted, pushed, merged or approved.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/978_review_pr11_pointed_semantic_lemmas/plans/01_review-pr11-pointed-semantic-lemmas.md",
-      "summary": "Three serial phases (prose, prose, full) reconciling the task's durable record with the review the user already posted on PR #11."
+      "type": "summary",
+      "path": "specs/978_review_pr11_pointed_semantic_lemmas/summaries/01_review-pr11-pointed-semantic-lemmas-summary.md",
+      "summary": "Posted disposition of PR #11, the follow-up ledger with three unhomed gaps, the reusable review worktree, and an explicit statement of what was not verified."
+    },
+    {
+      "type": "report",
+      "path": "specs/978_review_pr11_pointed_semantic_lemmas/reports/01_review-pr11-pointed-semantic-lemmas.md",
+      "summary": "Amended: a dated Disposition section and a RESOLVED block on each of the four rulings; purely additive (+48/-0 then +31/-0)."
     }
   ],
   "blockers": []

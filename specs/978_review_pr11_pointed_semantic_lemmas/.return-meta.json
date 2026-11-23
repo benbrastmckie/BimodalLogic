@@ -1,22 +1,72 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "build_output": "N/A -- no .lean file touched by this task; the phase-end full-build gate has no subject. Each phase's declared covering check ran instead: validate-artifact.sh PASS (exit 0) on the report after both edits and on the summary and plan; verify-touched.sh run unflagged per the batch-gate deferral directive."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/978_review_pr11_pointed_semantic_lemmas/plans/01_review-pr11-pointed-semantic-lemmas.md",
-      "summary": "Three-phase plan reconciling task 978's durable record with the CHANGES_REQUESTED review already posted on PR #11; no Lean build, no rebase, nothing posted."
+      "type": "summary",
+      "path": "specs/978_review_pr11_pointed_semantic_lemmas/summaries/01_review-pr11-pointed-semantic-lemmas-summary.md",
+      "summary": "Posted disposition of PR #11, the follow-up ledger with three unhomed gaps, the reusable review worktree, and an explicit not-verified statement."
+    },
+    {
+      "type": "report",
+      "path": "specs/978_review_pr11_pointed_semantic_lemmas/reports/01_review-pr11-pointed-semantic-lemmas.md",
+      "summary": "Amended with a dated Disposition section and a RESOLVED block on each of the four rulings."
     }
   ],
+  "completion_data": {
+    "completion_summary": "Reconciled task 978's durable record with the CHANGES_REQUESTED review the user had already posted on PR #11 at 2026-11-23T01:57:16Z: a dated Disposition section on the research report, resolutions on its four open rulings, a mapping of all eight draft requests onto their posted outcome (including request 8, which was never posted), the posting logged in FOLLOWUP.md, and a summary carrying the follow-up ledger, the reusable review worktree, and an explicit statement of what was not verified. No Lean file touched, no build run, nothing posted or pushed.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "specs/978_review_pr11_pointed_semantic_lemmas/plans/01_review-pr11-pointed-semantic-lemmas.md",
+    "specs/978_review_pr11_pointed_semantic_lemmas/reports/01_review-pr11-pointed-semantic-lemmas.md",
+    "specs/978_review_pr11_pointed_semantic_lemmas/summaries/01_review-pr11-pointed-semantic-lemmas-summary.md",
+    "specs/978_review_pr11_pointed_semantic_lemmas/issues.jsonl",
+    "specs/reviews/pr-reviews-2026-11-21/pr11-review.md",
+    "specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md"
+  ],
   "metadata": {
-    "session_id": "sess_1795402655_5a890d_978",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1795402655_5a890d",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 1.25,
-    "dependency_waves": 3
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "phases_completed": 3,
+    "phases_total": 3
   },
   "memory_candidates": [],
-  "next_steps": "Run /orchestrate 978 to execute the plan",
-  "dispatch_seq": 5
+  "sapience_notes": [
+    {
+      "subject": "BimodalLogic PR #11 (feat/pointed-semantic-lemmas) disposition",
+      "value": "Reviewed and acted on: the user posted a CHANGES_REQUESTED review at 2026-11-23T01:57:16Z against head c6cd983b79842368ae789488d38e488656f98992, with three conditions of merging -- rebase onto main and regenerate FormalSystem/README.md, README.md and typst/generated/status.typ (not hand-resolve); make the At abbrev usable in tactic proofs with one test rewriting a clause under At; and tests for the eleven untested lemmas plus one transport factory per family and one instantiation at L-star. The head has not moved. mergeable flipped MERGEABLE -> CONFLICTING when PR #7 merged at 2026-11-22T22:58:00Z (3c7197f84), which is the predicted four-way collision on the generated files."
+    },
+    {
+      "subject": "A review draft and the text actually posted diverge, and the gap is where requests get lost",
+      "value": "The long draft (pr11-review.md) carried eight numbered requests; the condensed text the user posted carried three conditions and five follow-up bullets. Seven requests map cleanly. Request 8 (Point.history versus PointedModel.hist field name) appears nowhere in the posted review, in any form -- as do the typst status.typ stamp-commit nit, the lemmas-only control paragraph, and the instruction that PR #9 must drop its three renamed modules on rebase. Mapping a draft onto a posted review must be done by grepping the posted text for each item, not by assuming the condensation kept everything below the line; the assumption was wrong for one item in eight here."
+    },
+    {
+      "subject": "verify-touched.sh on a shared, concurrently-dispatched tree, measured",
+      "value": "Run unflagged for a four-file markdown edit, it derived 9 touched paths. Five belonged to concurrent sibling dispatches (specs/TODO.md, specs/state.json, specs/events.jsonl, and files under specs/980_* and specs/981_*), which pulled in the full 90-suite agent-system battery at roughly 6 minutes. Separately, neither specs/reviews/** file this task actually edited appeared in the derived set, because that directory is git-excluded at .git/info/exclude:20. So the narrowing over-selects siblings' work and under-selects git-excluded paths at the same time -- it is not a scoping guarantee in either direction."
+    },
+    {
+      "subject": "BimodalLogic deploy-only tree's standing suite-failure baseline",
+      "value": "Nine agent-system suites fail here and are baseline, not regressions: there is no on-disk agent-system/ source store (fixtures report 'agent-system/extensions/core/... not found'), and the deployed .claude/ tree is stale for the core, lean and sapience extensions. The discriminating check that is cheap and conclusive: grep each failing suite for the paths the dispatch actually touched. Zero matches across all nine settled it here without re-running anything."
+    },
+    {
+      "subject": "Warm-.lake review worktree for a Lean PR, and the build-guard files",
+      "value": "/home/benjamin/Projects/.worktrees/BimodalLogic-pr11 reviews PR #11 at c6cd983b7 with .lake/packages symlinked to the main tree and .lake/build/lib + build/ir real-copied (2.3G); build/bin omitted, which makes check-module-invariants C25 relink the lean_exe roots. The five .lake/build-guard.* files present in the worktree are NOT copies: their mtimes (2026-11-21 15:08-15:09) against the main tree's (2026-10-17, 2026-11-19) show the guard wrote its own in place. Keep the worktree -- the rebase condition will produce a new head to re-review and the warm .lake is the expensive part."
+    },
+    {
+      "subject": "Follow-ups named in a posted public review need task homes or they are lost",
+      "value": "Of the five after-merge bullets in PR #11's posted review, two have homes (named interval operators and the next/prev encoding in task 977 connective_signature_layer_shared_primitives, whose description already names clause (b); the next_iff_covBy/prev_iff_covBy promotion in task 984). Three have none: a positive reading for release_iff/trigger_iff, module docstring titles plus one assert_not_exists spelling, and the L-minus persistence siblings with the L-star transport factories. Task 177 does not cover the docstring bullet -- it is a post-refactor polish pass gated on the decidability chain landing."
+    }
+  ],
+  "dispatch_seq": 9
 }
