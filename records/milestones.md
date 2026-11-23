@@ -11,17 +11,16 @@ Work is named by slug throughout.
 
 ## Where it stands
 
-The rewriting contribution is merged: `lrewrite` and `lsimp` hold logical steps only, the
-formula-equality path is the views pair `lunfold` and `lfold` over a view table under
-`FormalSystem/Tactic/`, and the congruence steps, seed rules, tests and guide pages are filed by
-operator family. Four contributions from Tanner are open:
+A review round has reported on all five of Tanner's pull requests. One is merged; the other four
+each have a stated path to landing.
 
 | Contribution | Branch | Adds | State |
 |---|---|---|---|
-| Temporal | `feat/proof-mode-temporal` | Until and Since introduction, folding and ZTime unfolding, `linduction`, `keeping`, time reflection, strict leads-to rules | Statements and frame gates are right; `keeping` is adopted; rules, tests and guide pages are filed by family. It conflicts with `main` and is rebased before review. The generalizing induction rule is open |
-| Semantic lemmas | `feat/pointed-semantic-lemmas` | Covering-time Next and Previous, G/H persistence, F/P witnesses, inclusive and weak Until and Since, `rank_progress`, pointed transport | A draft. Statements are sound and it builds clean. Open points: no clause lemma rewrites through the `At` abbreviation; test coverage; the interval operators are unnamed though four exist as `Formula.release`, `trigger`, `weakUntil`, `weakSince` |
-| Semantic record | `docs/semantic-proof-mode-record` | `records/semantic-proof-mode.md`: an evaluator for pointed truth and falsity, its countermodel clients, its measure | A draft. Open points: it has no open-decisions section; its adoption criterion names no threshold; none of its four clients exercises Until or Since |
-| Semantic mode | `feat/proof-mode-semantics` | A semantic mode as overloads of the `l*` tactics, and a soundness adapter | Not merged as it stands. Its rewriting, lemmas and record are carried by the other contributions; what is its own is the overload layer, which is re-sited as a tier after the record, and `FormalSystem/Metalogic/ProofModeSoundness.lean`, which is reusable as written |
+| Rewriting | `feat/proof-mode-rewriting` | `lrewrite` and `lsimp` holding logical steps only, the formula-equality path exposed as the views pair `lunfold` and `lfold` over a view table under `FormalSystem/Tactic/`, congruence steps, seed rules, tests and guide pages filed by operator family | Merged |
+| Temporal | `feat/proof-mode-temporal` | Until and Since introduction, folding and ZTime unfolding, `linduction`, `keeping`, time reflection, strict leads-to rules | Open. Rebased onto `main` and re-reviewed at `5ecc91d63`; two small conditions of merging remain, the carrying table's key and visibility and the split of one acceptance example in `ProofModeTest.lean`. The `expand`/`contract` naming for the one-step rules is ruled — the contribution uses the two words throughout; the architecture record's own open decision on the point closes once this contribution merges |
+| Semantic lemmas | `feat/pointed-semantic-lemmas` | Covering-time Next and Previous, G/H persistence, F/P witnesses, inclusive and weak Until and Since, `rank_progress`, pointed transport | Open, changes requested, with three posted conditions of merging: a rebase onto `main` with the generated files regenerated rather than hand-resolved, the `At` abbreviation made usable in tactic proofs, and tests for the untested lemmas plus one transport factory per family |
+| Semantic record | `docs/semantic-proof-mode-record` | `records/semantic-proof-mode.md`: an evaluator for pointed truth and falsity, its countermodel clients, its measure | Open. Agrees with the other records on every point checked; three additions are asked before merging, an `## Open decisions` section, a stated adoption threshold, and two sentences of scope on why the evaluator has clients and what gap remains |
+| Semantic mode | `feat/proof-mode-semantics` | A semantic mode as overloads of the `l*` tactics, and a soundness adapter | Open, recommended for closure. Its rewriting, lemmas and record are now carried by the other four contributions; what is its own is the rejected overload layer and `FormalSystem/Metalogic/ProofModeSoundness.lean`, which is reusable as written and returns with the fresh pull request the mode is asked to come back as |
 
 Three facts fix the order of everything else.
 
@@ -42,9 +41,10 @@ Three facts fix the order of everything else.
 
 In priority order.
 
-1. **Land the temporal contribution.** It is the single blocker of the layout. It is rebased
-   onto `main`, re-reviewed at its new head, and merged with the carrying table agreed (join 2)
-   and the `expand` and `contract` keywords ruled (open decision 3).
+1. **Land the temporal contribution.** It is the single blocker of the layout. It is rebased onto
+   `main` and re-reviewed at `5ecc91d63`; it merges once the carrying table's key is widened to
+   `(source, target)` and made non-private (join 2), and once the one altered acceptance example
+   in `ProofModeTest.lean` is split into the two cases it used to cover.
 2. **Land the semantic lemmas.** They are independent of the temporal review, unblock the
    countermodel half of the library, and are the cheapest merged result available. The point
    that needs the author's judgment is `At`: either clause lemmas are restated at its level or
@@ -107,8 +107,9 @@ Satisfaction, `TruthAt M τ t A`, has no proof-theoretic counterpart. The tier's
 evaluator for it and the checked refutations that follow, in a directory of its own under
 `FormalSystem/Semantics/`, sharing only the views tier and the position and polarity planner
 with the derivation mode, and meeting it in one soundness adapter under
-`FormalSystem/Metalogic/`. The record that owns it is proposed on
-`docs/semantic-proof-mode-record`; C2 is its acceptance.
+`FormalSystem/Metalogic/`. The evaluator sits under that directory beside the semantic lemmas,
+with the semantic mode, C4, a thin tactic layer over it, rather than the two as one module. The
+record that owns it is proposed on `docs/semantic-proof-mode-record`; C2 is its acceptance.
 
 | Id | Milestone | Done when | Channel | Waits on |
 |---|---|---|---|---|
@@ -167,7 +168,7 @@ Order within each channel:
 
 | Phase | Channel T | Channel B |
 |---|---|---|
-| Until temporal is merged | A2; C1; A7 (pure rule); C2 revisions | B1; B2; D3 (deduction theorems); D1; C2 review; research and planning for A3 to A5 |
+| Rewriting merged, temporal not yet | A2; C1; A7 (pure rule); C2 revisions | B1; B2; D3 (deduction theorems); D1; C2 review; research and planning for A3 to A5 |
 | Temporal merged | C3 | A3, then A4 and A5 in their five streams; B3, B4 |
 | Gate one | scripts for A11 | A6 |
 | After GO | A8; C4 | A9; B5; A10 |
@@ -181,15 +182,20 @@ The places where the channels meet, each with the agreement it needs.
    contributions, and channel B changes no statement, proof or tactic behaviour while moving.
 2. **One carrying table.** `keeping` carries `G` and `H` facts (A2); `□` facts carried by 4, 5,
    MF and TF are rows of the same table, added by `proof_mode_s5_aware_box_scopes` and
-   `proof_mode_cross_modal_scopes_mf_tf` (A5). The table's shape is fixed in A2, before A5 adds
-   rows. `ModalTemporalBoolean` is the one interaction both channels file into; rows are added
-   one at a time and neither channel restructures it alone.
+   `proof_mode_cross_modal_scopes_mf_tf` (A5). The shape asked of the contribution as a condition
+   of merging, not yet confirmed accepted, is a `CarryRule` keyed by `(source, target)` — the
+   operator of the fact carried and the scope entered — with the `(TM, TM⁺)` rule pair as its
+   value and a `framed` flag for a row taking a leading `FrameClass.ZTime ≤ fc` certificate, in a
+   module both tactic families import (`Automation/ProofMode/Carrying.lean`, not
+   `Automation/ProofMode/Temporal.lean`) and not `private`. `ModalTemporalBoolean` is the one
+   interaction both channels file into; rows are added one at a time and neither channel
+   restructures it alone.
 3. **One view table.** A1 contributes its first rows, A4 owns the tier. The position and polarity
    planner sits beside it, proof-free, and is what C4 shares.
 4. **Signature layer window.** D1 rewrites the derived operators in `FormalSystem/Syntax/Formula.lean`
    and `FormalSystem/PlusLanguage/Formula.lean`, which every contribution reads. Its window is
    between A1 and A2: implemented before A2 is rebased, the temporal contribution is rebased
-   over it once; implemented after A2 merges, it carries A2's operators too (open decision 4).
+   over it once; implemented after A2 merges, it carries A2's operators too (open decision 2).
    The single S5 step of A1 is stated over the necessity operator as a field and needs nothing
    from D1.
 5. **Gate one admission.** Of channel T's rules only `G`/`H` carrying and whole-judgment time
@@ -206,13 +212,7 @@ The places where the channels meet, each with the agreement it needs.
 
 1. **Is `BimodalLib` in `defaultTargets`?** Open decision of
    `theorem_library_layout_and_registry`; it holds B1's implementation.
-2. **Evaluator with the lemmas or in a mode of its own?** Whether C3 is an evaluator
-   under `FormalSystem/Semantics/` beside the lemmas, with C4 a thin tactic layer over it, or
-   the two are one module. The table above assumes the former. Settled in C2.
-3. **`expand` and `contract` for the Until and Since steps.** Open decision 2 of
-   [proof-mode-architecture.md](proof-mode-architecture.md); it should be ruled before A2 merges,
-   since A2 introduces the keywords.
-4. **Does the signature layer land before or after the temporal contribution?** Join 4 states
+2. **Does the signature layer land before or after the temporal contribution?** Join 4 states
    both orders. Before: one rebase of A2 over the rewritten derived operators, at the cost of
    holding A2, and with it the layout, until D1 is implemented. After: A2 merges at once and D1
    rewrites A2's operators with the rest. The recommendation is after, since A2 is the single

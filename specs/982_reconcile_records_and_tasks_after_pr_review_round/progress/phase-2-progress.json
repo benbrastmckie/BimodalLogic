@@ -1,0 +1,29 @@
+{
+  "phase": 2,
+  "phase_name": "records/milestones.md",
+  "started_at": "2026-11-23T05:35:00Z",
+  "last_updated": "2026-11-23T05:45:00Z",
+  "objectives": [
+    {"id": 1, "description": "Contributions table: five rows with State column", "status": "done", "files_touched": ["records/milestones.md"]},
+    {"id": 2, "description": "Where it stands rewrite", "status": "done", "files_touched": ["records/milestones.md"]},
+    {"id": 3, "description": "What to do next item 1 verbatim replacement", "status": "done", "files_touched": ["records/milestones.md"]},
+    {"id": 4, "description": "Open decision 2 (evaluator placement) settled, removed, folded into Goal C preamble", "status": "done", "files_touched": ["records/milestones.md"]},
+    {"id": 5, "description": "Open decision 3 (expand/contract) struck, renumbering", "status": "done", "files_touched": ["records/milestones.md"]},
+    {"id": 6, "description": "Confirm old decisions absent", "status": "done", "files_touched": []},
+    {"id": 7, "description": "Join 2 restated with agreed shape", "status": "done", "files_touched": ["records/milestones.md"]},
+    {"id": 8, "description": "Channel table re-phased", "status": "done", "files_touched": ["records/milestones.md"]},
+    {"id": 9, "description": "Leave alone: open decision 1, Goal C C1/C2", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 9,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "2.5",
+      "description": "Open decision 3 (expand/contract) struck and signature-layer item renumbered",
+      "type": "altered",
+      "reason": "pr8-record-edits.md's own suggested renumbering is 4->3 (it assumes only decision 3 is struck). This plan also strikes decision 2 (evaluator placement) per its own Task 4, so the correct renumbering per this plan's own verification criterion ('exactly two items... numbered 1 and 2') is 4->2, not 4->3. Followed the plan's verification criterion over pr8-record-edits.md's literal renumbering instruction.",
+      "annotation": "*(completed: renumbered to 2, since open decision 2 (evaluator) was also struck this round, not just decision 3)*"
+    }
+  ]
+}

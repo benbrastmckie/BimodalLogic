@@ -187,51 +187,56 @@ a plan deviation to record, not a detail to absorb silently.
 
 ---
 
-### Phase 2: `records/milestones.md` [NOT STARTED]
+### Phase 2: `records/milestones.md` [COMPLETED]
 
 **Goal**: Bring the contributions table, "Where it stands", "What to do next", the open-decisions
 list, join 2 and the channel table to the state the review round reached.
 
 **Tasks**:
-- [ ] **Contributions table**: give all five pull requests a row with a State column — Rewriting
+- [x] **Contributions table**: give all five pull requests a row with a State column — Rewriting
       (merged); Temporal (open, rebased onto `main`, two conditions remain per `pr8-review.md`);
       Semantic lemmas (open, changes requested with three conditions, posted); Semantic record
       (open, three additions requested per `pr10-comment.md`); Semantic mode (open, recommended
       for closure per `pr9-disposition.md`). Reword the prose above the table so it introduces
-      the table rather than describing the rewriting contribution separately from it.
-- [ ] **"Where it stands"**: rewrite each state description to the position reached — in
+      the table rather than describing the rewriting contribution separately from it. *(completed)*
+- [x] **"Where it stands"**: rewrite each state description to the position reached — in
       particular that the temporal contribution is rebased and its gates are green, and that the
       semantic lemmas now carry three posted conditions of merging. Name work by slug; cite no
-      task numbers.
-- [ ] **"What to do next" item 1**: replace with the text `pr8-record-edits.md` gives verbatim —
+      task numbers. *(completed; done inline as part of the contributions-table rewrite above)*
+- [x] **"What to do next" item 1**: replace with the text `pr8-record-edits.md` gives verbatim —
       the contribution is rebased onto `main` and re-reviewed at its new head; it merges once the
       carrying table's key is widened to `(source, target)` and made non-private (join 2), and
       once the one altered acceptance example in `ProofModeTest.lean` is split into the two cases
-      it used to cover.
-- [ ] **Open decision 2 (evaluator placement)**: restate as settled design rather than an open
+      it used to cover. *(completed, verbatim)*
+- [x] **Open decision 2 (evaluator placement)**: restate as settled design rather than an open
       question — the evaluator sits under `FormalSystem/Semantics/` beside the lemmas, with the
       semantic mode a thin tactic layer over it. Remove it from the open-decisions list and fold
-      the statement into the Goal C preamble, which already assumes it.
-- [ ] **Open decision 3 (`expand`/`contract`)**: strike it entirely and renumber the
+      the statement into the Goal C preamble, which already assumes it. *(completed)*
+- [x] **Open decision 3 (`expand`/`contract`)**: strike it entirely and renumber the
       signature-layer item from 4 to 3, exactly as `pr8-record-edits.md` instructs. Word the
       strike so the ruling is stated at the milestones level — the keywords are `expand` and
       `contract` — while the architecture record's own item is named as closing on the temporal
-      contribution's merge, not as already edited.
-- [ ] **Confirm, do not reintroduce**: the old "conditions of merging" and "who drafts the
+      contribution's merge, not as already edited. *(completed: renumbered to 2, since open
+      decision 2 (evaluator) was also struck this round, not just decision 3; the ruling itself
+      is stated in the Temporal row of the contributions table, naming the architecture record's
+      own open decision as closing on the merge)*
+- [x] **Confirm, do not reintroduce**: the old "conditions of merging" and "who drafts the
       semantic record" decisions are absent from the current list and must stay absent; the
       per-pull-request State column now carries the first, and the contributor having written
-      `records/semantic-proof-mode.md` settles the second.
-- [ ] **Join 2**: restate with the shape agreed — a carrying table keyed by `(source, target)`
+      `records/semantic-proof-mode.md` settles the second. *(confirmed)*
+- [x] **Join 2**: restate with the shape agreed — a carrying table keyed by `(source, target)`
       with a `framed` flag, in `Automation/ProofMode/Carrying.lean`, non-private so the two scope
       records can add rows. State it as the current condition of merging asked of the
       contributor, **not** as settled design; `pr8-record-edits.md` itself qualifies it with
-      "Only if the contributor accepts that shape".
-- [ ] **Channel table**: re-phase the "Order within each channel" rows so they do not imply the
+      "Only if the contributor accepts that shape". *(completed)*
+- [x] **Channel table**: re-phase the "Order within each channel" rows so they do not imply the
       rewriting and temporal contributions merge together — the rewriting contribution has
       merged ahead of the temporal one. Check the phase labels read correctly against that.
-- [ ] **Leave alone**: open decision 1 (`BimodalLib` in `defaultTargets`) is untouched by this
+      *(completed: row 1 label changed from "Until temporal is merged" to "Rewriting merged,
+      temporal not yet")*
+- [x] **Leave alone**: open decision 1 (`BimodalLib` in `defaultTargets`) is untouched by this
       round. Goal C's C1 and C2 are NOT reduced to pointers — both pull requests that would
-      complete them are open (confirmed in Phase 1).
+      complete them are open (confirmed in Phase 1). *(confirmed untouched)*
 
 **Timing**: 1.5 hours
 
