@@ -4,8 +4,221 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 986,
+  "next_project_number": 991,
   "active_projects": [
+    {
+      "project_number": 990,
+      "project_name": "rereview_pr11_at_rewriteable_pointed_truth_head",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Re-review pull request #11 (pointed temporal semantics and transport lemmas) at head b2eb3ac0b, \"Make pointed truth rewriteable and exercise semantic rule families\", pushed 2026-11-23T04:33Z after the CHANGES_REQUESTED review posted 2026-11-23T01:57Z against c6cd983b7. The earlier review record closed against the old head and did not see this commit. The push merges main (so the conflict with the merged rewriting contribution is gone and the PR is MERGEABLE) and, restricted to the PR-owned paths, changes FormalSystem/Semantics/PointTransport.lean (+7/-2), Tests/BimodalTest/Semantics/TemporalRulesTest.lean (+72) and Tests/BimodalTest/Semantics/PointTransportTest.lean (+35) plus the generated files. DELIVERABLE: check each of the three posted conditions against the new head (rebase and regenerate; `At` made usable, with a test; tests for the untested lemmas including one at the star language), by building and testing the head in a review worktree, and re-check the head has not moved again first; then a draft response in specs/reviews/pr-reviews-2026-11-21/ (approve, or the conditions still open), concise and flat in register, and an updated entry in FOLLOWUP.md. Nothing is posted, pushed, merged or approved by the agent; the user posts. If it is approved and merged, `pointed_semantic_lemmas_after_merge_followups` and `promote_next_prev_covby_to_generic_lemmas` are unblocked.",
+      "topic": "semantics",
+      "file_scope": [
+        "specs/reviews/pr-reviews-2026-11-21/pr11-review.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr11-comment.md",
+        "specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md"
+      ],
+      "created": "2026-11-23T08:29:21Z",
+      "last_updated": "2026-11-23T08:29:21Z",
+      "roadmap_annotation": "the contributor answered the posted review; the new head is unreviewed",
+      "audit_verdict": {
+        "proposal": {
+          "id": "rereview_pr11_at_rewriteable_pointed_truth_head",
+          "project_number": null,
+          "title": "rereview_pr11_at_rewriteable_pointed_truth_head"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 4,
+          "scope-blind": 453
+        },
+        "verdicts_detail": [],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 453
+      }
+    },
+    {
+      "project_number": 989,
+      "project_name": "pointed_semantic_lemmas_after_merge_followups",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Three follow-ups named in the posted review of the pointed semantic lemmas contribution (branch feat/pointed-semantic-lemmas, milestone C1 of records/milestones.md) that no other record owns. None is a condition of merging; all wait on the merge, since the modules below are absent from main until then. Re-read the merged tree first and drop whatever the contributor already did. (1) A POSITIVE READING for `release_iff` and `trigger_iff`: each is stated as the negation of an Until or Since clause; add the direct universal-existential form a refutation script uses, proved from the existing one. (2) DOCSTRINGS: module docstring titles for the three generic modules, and one spelling of the `assert_not_exists` lock (the directory uses `Axiom DerivationTree`). (3) LEMMAS: `allFuture_persist` and `allPast_persist` for L-minus, which has no `untl`; and star-language versions of the time-shift and state-local transport factories. Each new lemma is stated over the clause classes so it is proved once for every language, with a test, including one at the star language. Related and separate: `connective_signature_layer_shared_primitives` owns the named interval operators and the `next` and `prev` encoding; `promote_next_prev_covby_to_generic_lemmas` owns the `next_iff_covBy` promotion.",
+      "topic": "semantics",
+      "file_scope": [
+        "FormalSystem/Semantics/TemporalRules.lean",
+        "FormalSystem/Semantics/PointTransport.lean",
+        "Tests/BimodalTest/Semantics/TemporalRulesTest.lean",
+        "Tests/BimodalTest/Semantics/PointTransportTest.lean"
+      ],
+      "created": "2026-11-23T08:28:48Z",
+      "last_updated": "2026-11-23T08:28:48Z",
+      "roadmap_ext_blocked": true,
+      "roadmap_annotation": "waits on the pointed semantic lemmas contribution merging",
+      "audit_verdict": {
+        "proposal": {
+          "id": "pointed_semantic_lemmas_after_merge_followups",
+          "project_number": null,
+          "title": "pointed_semantic_lemmas_after_merge_followups"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 7,
+          "duplicate-of-open": 1,
+          "scope-blind": 452
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 977,
+            "project_name": "connective_signature_layer_shared_primitives",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4205607476635514
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 452
+      }
+    },
+    {
+      "project_number": 988,
+      "project_name": "readme_lint_stale_date_check_on_shallow_clones",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "Fix scripts/readme-lint.sh reporting PASS in CI without checking stale dates. The stale-date arm of scripts/readme-lint.sh is skipped whenever `SHALLOW_CLONE=1` (lines 66-68, 250, 331), since a shallow clone has no history to date a directory against, and `actions/checkout` is shallow by default, so the step in .github/workflows/ci.yml reports `RESULT: PASS` regardless. Measured on one commit: CI passed while the same script with full history reported `FAIL (3 new stale dates)`. The three rows not in scripts/readme-date-baseline.txt are FormalSystem/Automation/ProofMode/README.md, FormalSystem/Tactic/README.md and FormalSystem/Theorems/ProofMode/README.md, stale on main today. DELIVERABLE: (1) the CI step either checks out enough history for the stale-date arm to run (`fetch-depth: 0` on that job) or the script fails loudly, not silently, when it cannot run the arm; state which and why; (2) the three stale rows on main are fixed by updating the README dates, not by widening the baseline; (3) the script prints a line naming any arm it skipped, so a pass that checked less is distinguishable from a full pass.",
+      "topic": "repo-hygiene",
+      "file_scope": [
+        "scripts/readme-lint.sh",
+        ".github/workflows/ci.yml",
+        "scripts/readme-date-baseline.txt"
+      ],
+      "created": "2026-11-23T08:28:15Z",
+      "last_updated": "2026-11-23T08:28:15Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "readme_lint_stale_date_check_on_shallow_clones",
+          "project_number": null,
+          "title": "readme_lint_stale_date_check_on_shallow_clones"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 14,
+          "scope-blind": 450
+        },
+        "verdicts_detail": [],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 450
+      }
+    },
+    {
+      "project_number": 987,
+      "project_name": "temporal_rules_followups_fold_names_and_progress_tests",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Two follow-ups owed after the temporal rules contribution (the pull request adding compositional temporal rules and persistent scope capture) merges; neither is a condition of merging it, and both are stated to the contributor as follow-ups. Every path below arrives with that contribution and is absent from main until it merges; re-read the merged tree first and drop whatever the contributor already did. (1) FOLD AND UNFOLD NAMES. The user-facing keywords were renamed so that `lfold` and `lunfold` name views only, but one layer down FormalSystem/Automation/ProofMode/TemporalZTime.lean still carries `luntilFold`, `luntilUnfold` and `binaryFold`, and the pure rules are still `untilFoldRule`, `untilUnfoldRule`, `untilFold`, `untilUnfoldCases` and their Since and TM+ mirrors: the same collision the keywords had, now in the identifiers. Rename them to the expand and contract vocabulary settled in records/proof-mode-architecture.md, repointing every use. (2) TESTS. `lprogress` has exactly one example, exercising its `cases` form only; add tests for its other forms, for the past direction and for TM+, and a negative test with `#guard_msgs` for each `throwError` path the contribution added that has none. ORDER: `proof_mode_until_since_intro_unfold_induction` builds on the same modules and runs after this record.",
+      "topic": "proof-mode",
+      "file_scope": [
+        "FormalSystem/Automation/ProofMode/TemporalZTime.lean",
+        "FormalSystem/Theorems/ProofMode/TemporalComposition/TemporalZTime.lean",
+        "Tests/BimodalTest/Automation/ProofModeTemporalBooleanProgressTest.lean",
+        "Tests/BimodalTest/Automation/ProofModeTemporalZTimeTest.lean"
+      ],
+      "created": "2026-11-23T08:27:43Z",
+      "last_updated": "2026-11-23T08:27:43Z",
+      "roadmap_ext_blocked": true,
+      "roadmap_annotation": "waits on the temporal rules contribution merging",
+      "audit_verdict": {
+        "proposal": {
+          "id": "temporal_rules_followups_fold_names_and_progress_tests",
+          "project_number": null,
+          "title": "temporal_rules_followups_fold_names_and_progress_tests"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 6,
+          "duplicate-of-open": 2,
+          "scope-blind": 453
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 956,
+            "project_name": "proof_mode_leads_to_invariance_library",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.43137254901960786
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 950,
+            "project_name": "proof_mode_until_since_intro_unfold_induction",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4117647058823529
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 453
+      }
+    },
+    {
+      "project_number": 986,
+      "project_name": "proof_mode_views_report_swallowed_view_error",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Report the real cause when a view fails to apply. `applyView` in FormalSystem/Tactic/FormulaViews.lean tries each registered row and on ANY error restores the saved state and moves on (`catch _ => saved.restore`, lines 106-107), then throws \"view <name> does not match a formula in this location\". So `lunfold` and `lfold` report a wrong-shape message whatever actually failed. No other open record reaches this: `proof_mode_error_message_coverage` is scoped by path to FormalSystem/Automation/ProofMode/, and `proof_mode_views_tier` obliges only a test of the message as it stands, which would freeze the wrong message in place. DELIVERABLE: the handler distinguishes a formula of the wrong shape from every other failure and reports the latter with its cause; one negative test per case asserts the message with `#guard_msgs`. ORDER: lands before `proof_mode_views_tier`, which edits the same file and then tests the corrected message. No statement or tactic syntax changes.",
+      "topic": "proof-mode",
+      "file_scope": [
+        "FormalSystem/Tactic/FormulaViews.lean",
+        "Tests/BimodalTest/Automation/ProofModeBooleanTest.lean"
+      ],
+      "created": "2026-11-23T08:27:11Z",
+      "last_updated": "2026-11-23T08:27:11Z",
+      "roadmap_annotation": "lands before the views tier, which edits the same file",
+      "audit_verdict": {
+        "proposal": {
+          "id": "proof_mode_views_report_swallowed_view_error",
+          "project_number": null,
+          "title": "proof_mode_views_report_swallowed_view_error"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 12,
+          "duplicate-of-open": 2,
+          "scope-blind": 453
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 969,
+            "project_name": "proof_mode_views_tier",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.41333333333333333
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 952,
+            "project_name": "proof_mode_abstract_frontend_interface",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 453
+      }
+    },
     {
       "project_number": 985,
       "project_name": "research_semantic_proof_mode_for_pr10_reply",
@@ -618,11 +831,14 @@
       "project_name": "connective_signature_layer_shared_primitives",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Introduce a connective signature layer under FormalSystem so that TM and TM+ share one primitive signature and one set of derived operators instead of PlusFormula being a verbatim copy of Formula. PRIMITIVES STAY MINIMAL. Formula (FormalSystem/Syntax/Formula.lean) has six constructors (atom, bot, imp, box, untl, snce) and PlusFormula (FormalSystem/PlusLanguage/Formula.lean) restates all six and adds stab for the stability operator; that minimality is correct for TM and TM+ and is to be preserved. Do NOT adopt cslib's non-minimal expansion to primitive diamond, allFuture and allPast (cslib Cslib/Logics/Modal/Basic.lean has primitive and, or, box, diamond; Cslib/Logics/Temporal/Syntax/Formula.lean has primitive allFuture and allPast; the rationale and the 11-primitive target for the Bimodal layer are in cslib specs/181_bimodal_primitive_dia_always_historically/reports/01_bimodal-primitive-expansion-research.md, and cslib task 181 is still NOT STARTED so its own tree is inconsistent with that target). Non-minimality exists there to let one syntax serve minimal and intuitionistic propositional bases, since each classical interdefinability fails in a weaker logic; TM and TM+ are classical, so adopting it here would buy nothing and would move most of the views tier out of views and into the derivation tier as theorems. THE DEFECT IS DUPLICATION, NOT THE PRIMITIVE CHOICE. Eighteen derived operators are defined verbatim in both syntax files: after, allFuture, allPast, always, and, diamond, kMinus, kPlus, neg, next, or, prev, reflectTime, someFuture, somePast, sometimes and top. This is the syntax-layer root of the tmX / plusX name-pair duplication, and it violates principle 5 of records/proof-mode-architecture.md (languages are instances of an interface, not copies of a file). MODEL TO FOLLOW. cslib Cslib/Foundations/Logic/Connectives.lean (224 lines) is a working instance of the wanted shape and is directly portable: one class per primitive operator (HasBot, HasImp, HasBox, HasUntil, HasSince, HasNext), then PropositionalConnectives extending HasBot and HasImp and supplying neg := phi -> bot and top := bot -> bot as DEFAULT FIELD VALUES so the derived Boolean operators are written once, then a hierarchy of ModalConnectives, FutureTemporalConnectives, TemporalConnectives, LTLConnectives and BimodalConnectives with a bridge instance from BimodalConnectives to ModalConnectives. Four cslib languages share that one definition of neg and top. Note one tension to resolve rather than copy: cslib's ModalConnectives is box-only and minimal while its concrete Modal.Proposition carries a primitive diamond, so interface and inductive disagree there. DELIVERABLE. A signature layer under FormalSystem carrying one class per primitive operator including a stability class for the TM+ operator, a propositional class supplying the derived Boolean operators once, and a bimodal class, with Formula and PlusFormula as instances and the eighteen doubled definitions written once. ALSO ASSESS reducibility: all 35 definitions in FormalSystem/Syntax/Formula.lean are opaque defs and cslib uses abbrev for its Boolean and dual definitions, which unfold definitionally; making the pure Boolean and dual definitions here reducible would let part of the views tier be definitional rather than a table of view rows with unfolding lemmas, which bears directly on the views tier design in records/proof-mode-architecture.md. SEQUENCING. This sits BELOW the proof mode and is a prerequisite for proof_mode_abstract_frontend_interface, whose object-level class is to package the connectives among its members and which should require this signature rather than re-package it; a dependency edge is filed to that effect. Keep the Atom type fixed as it is; cslib parameterizes Formula over the atom type but that is a separate and larger change and is out of scope here. investigate_stability_as_modal_family may change whether the stability operator gets its own class or shares the Modal one; read its report if it exists but do not wait for it. LANDING WINDOW. Whether this signature lands before or after the temporal contribution merges is still genuinely undecided (join 4 of records/milestones.md): before, it costs one rebase of that contribution over the rewritten derived operators and holds the layout until this signature is implemented; after, the contribution merges at once and this signature rewrites its operators with the rest. Research and planning may proceed now regardless of that undecided window; only implementation waits on the ruling. ADDITIONAL DELIVERABLES (done-when of milestone D1 in records/milestones.md). (a) StarFormula (FormalSystem/StarLanguage) is an instance beside Formula and PlusFormula; it carries its own copy of next among others. (b) The interval operators are defined once on the signature: inclusiveUntil, inclusiveSince, release, trigger, weakUntil and weakSince, agreeing in argument order with Formula.release, Formula.trigger, Formula.weakUntil and Formula.weakSince (see the Argument-order trap note on Formula.release), and the clause lemmas of FormalSystem/Semantics/TemporalIntervals.lean (inclusiveUntil_iff, release_iff, weakUntil_iff and their past duals; that module arrives with branch feat/pointed-semantic-lemmas) are restated about them instead of about inline derived formulas. (c) One next and prev encoding: TemporalRules.next and prev of FormalSystem/Semantics/TemporalRules.lean, Formula.next, PlusFormula.next, StarFormula.next and the copy in FormalSystem/Metalogic/Expressiveness/SeparationZ/Syntax.lean are one definition or are tied by rfl rows in Tests/BimodalTest/Semantics/ValidityLayerTest.lean. (d) FormalSystem/Tactic/FormulaSyntax.lean, which matches TM and TM+ operator names only, reads the signature so that operator recognition reaches L⋆; the semantic evaluator of records/semantic-proof-mode.md has L⋆ clients. FIRST QUESTION FOR RESEARCH, to settle before any design: ONE HOME FOR THE DERIVED OPERATORS. FormalSystem/Semantics/TruthClauses.lean already defines the derived operators once, generically over the clause classes (TruthEnv, BotClause, ImpClause, BoxClause, UntlClause, SnceClause, StabClause and their bundles): neg, top, and, or, diamond, someFuture, allFuture, kPlus, after, somePast, allPast, kMinus, always, among others, as abbrevs, and every language (L, L-plus, L-star, L-minus, Open, Hybrid, Quant) instantiates those classes. A syntactic signature layer that defines the same operators again would be a second generic copy beside the per-language ones, which is the duplication this task exists to remove. Decide, with the options and the evidence for each stated: (i) the signature is the syntactic half of the clause classes, the clause classes extend it, and the operators of TruthClauses.lean move down to it; (ii) the clause classes stay the one generic home and the per-language syntax files take their operators from them; (iii) two layers tied by rfl rows, and why that would not be a wrapper to rip out later. The answer fixes where the interval operators and the next and prev encoding of deliverables (b) and (c) live, what the temporal rules of the proof mode are stated about, and how deliverable (d) recognizes L-star operators. State the import and layering consequences (TruthClauses.lean is at the semantics layer; syntax sits below it) and the cost to the open contributions that build on the current definitions.",
+      "description": "Introduce a connective signature layer under FormalSystem so that TM and TM+ share one primitive signature and one set of derived operators instead of PlusFormula being a verbatim copy of Formula. PRIMITIVES STAY MINIMAL. Formula (FormalSystem/Syntax/Formula.lean) has six constructors (atom, bot, imp, box, untl, snce) and PlusFormula (FormalSystem/PlusLanguage/Formula.lean) restates all six and adds stab for the stability operator; that minimality is correct for TM and TM+ and is to be preserved. Do NOT adopt cslib's non-minimal expansion to primitive diamond, allFuture and allPast (cslib Cslib/Logics/Modal/Basic.lean has primitive and, or, box, diamond; Cslib/Logics/Temporal/Syntax/Formula.lean has primitive allFuture and allPast; the rationale and the 11-primitive target for the Bimodal layer are in cslib specs/181_bimodal_primitive_dia_always_historically/reports/01_bimodal-primitive-expansion-research.md, and cslib task 181 is still NOT STARTED so its own tree is inconsistent with that target). Non-minimality exists there to let one syntax serve minimal and intuitionistic propositional bases, since each classical interdefinability fails in a weaker logic; TM and TM+ are classical, so adopting it here would buy nothing and would move most of the views tier out of views and into the derivation tier as theorems. THE DEFECT IS DUPLICATION, NOT THE PRIMITIVE CHOICE. Eighteen derived operators are defined verbatim in both syntax files: after, allFuture, allPast, always, and, diamond, kMinus, kPlus, neg, next, or, prev, reflectTime, someFuture, somePast, sometimes and top. This is the syntax-layer root of the tmX / plusX name-pair duplication, and it violates principle 5 of records/proof-mode-architecture.md (languages are instances of an interface, not copies of a file). MODEL TO FOLLOW. cslib Cslib/Foundations/Logic/Connectives.lean (224 lines) is a working instance of the wanted shape and is directly portable: one class per primitive operator (HasBot, HasImp, HasBox, HasUntil, HasSince, HasNext), then PropositionalConnectives extending HasBot and HasImp and supplying neg := phi -> bot and top := bot -> bot as DEFAULT FIELD VALUES so the derived Boolean operators are written once, then a hierarchy of ModalConnectives, FutureTemporalConnectives, TemporalConnectives, LTLConnectives and BimodalConnectives with a bridge instance from BimodalConnectives to ModalConnectives. Four cslib languages share that one definition of neg and top. Note one tension to resolve rather than copy: cslib's ModalConnectives is box-only and minimal while its concrete Modal.Proposition carries a primitive diamond, so interface and inductive disagree there. DELIVERABLE. A signature layer under FormalSystem carrying one class per primitive operator including a stability class for the TM+ operator, a propositional class supplying the derived Boolean operators once, and a bimodal class, with Formula and PlusFormula as instances and the eighteen doubled definitions written once. ALSO ASSESS reducibility: all 35 definitions in FormalSystem/Syntax/Formula.lean are opaque defs and cslib uses abbrev for its Boolean and dual definitions, which unfold definitionally; making the pure Boolean and dual definitions here reducible would let part of the views tier be definitional rather than a table of view rows with unfolding lemmas, which bears directly on the views tier design in records/proof-mode-architecture.md. SEQUENCING. This sits BELOW the proof mode and is a prerequisite for proof_mode_abstract_frontend_interface, whose object-level class is to package the connectives among its members and which should require this signature rather than re-package it; a dependency edge is filed to that effect. Keep the Atom type fixed as it is; cslib parameterizes Formula over the atom type but that is a separate and larger change and is out of scope here. investigate_stability_as_modal_family may change whether the stability operator gets its own class or shares the Modal one; read its report if it exists but do not wait for it. LANDING WINDOW. ORDER: this signature lands AFTER the temporal contribution merges, the order records/milestones.md recommends: the contribution merges at once and this signature rewrites its operators with the rest. Research and planning may run before the merge; implementation waits on it. On merging, that contribution adds FormalSystem/PlusLanguage/TemporalViews.lean, which declares `Formula.inclusiveUntil`, `Formula.inclusiveSince` and the TM expansions under the TM+ directory, and FormalSystem/Tactic/TemporalFormulaViews.lean, which registers twenty view rows about them. Deliverable (b) absorbs those definitions onto the signature, keeps the per-language names as instances, and repoints the view rows; it does not define the interval operators a second time. Research and planning may proceed now regardless of that undecided window; only implementation waits on the ruling. ADDITIONAL DELIVERABLES (done-when of milestone D1 in records/milestones.md). (a) StarFormula (FormalSystem/StarLanguage) is an instance beside Formula and PlusFormula; it carries its own copy of next among others. (b) The interval operators are defined once on the signature: inclusiveUntil, inclusiveSince, release, trigger, weakUntil and weakSince, agreeing in argument order with Formula.release, Formula.trigger, Formula.weakUntil and Formula.weakSince (see the Argument-order trap note on Formula.release), and the clause lemmas of FormalSystem/Semantics/TemporalIntervals.lean (inclusiveUntil_iff, release_iff, weakUntil_iff and their past duals; that module arrives with branch feat/pointed-semantic-lemmas) are restated about them instead of about inline derived formulas. (c) One next and prev encoding: TemporalRules.next and prev of FormalSystem/Semantics/TemporalRules.lean, Formula.next, PlusFormula.next, StarFormula.next and the copy in FormalSystem/Metalogic/Expressiveness/SeparationZ/Syntax.lean are one definition or are tied by rfl rows in Tests/BimodalTest/Semantics/ValidityLayerTest.lean. (d) FormalSystem/Tactic/FormulaSyntax.lean, which matches TM and TM+ operator names only, reads the signature so that operator recognition reaches L⋆; the semantic evaluator of records/semantic-proof-mode.md has L⋆ clients. FIRST QUESTION FOR RESEARCH, to settle before any design: ONE HOME FOR THE DERIVED OPERATORS. FormalSystem/Semantics/TruthClauses.lean already defines the derived operators once, generically over the clause classes (TruthEnv, BotClause, ImpClause, BoxClause, UntlClause, SnceClause, StabClause and their bundles): neg, top, and, or, diamond, someFuture, allFuture, kPlus, after, somePast, allPast, kMinus, always, among others, as abbrevs, and every language (L, L-plus, L-star, L-minus, Open, Hybrid, Quant) instantiates those classes. A syntactic signature layer that defines the same operators again would be a second generic copy beside the per-language ones, which is the duplication this task exists to remove. Decide, with the options and the evidence for each stated: (i) the signature is the syntactic half of the clause classes, the clause classes extend it, and the operators of TruthClauses.lean move down to it; (ii) the clause classes stay the one generic home and the per-language syntax files take their operators from them; (iii) two layers tied by rfl rows, and why that would not be a wrapper to rip out later. The answer fixes where the interval operators and the next and prev encoding of deliverables (b) and (c) live, what the temporal rules of the proof mode are stated about, and how deliverable (d) recognizes L-star operators. State the import and layering consequences (TruthClauses.lean is at the semantics layer; syntax sits below it) and the cost to the open contributions that build on the current definitions.",
       "topic": "syntax",
       "file_scope": [
+        "FormalSystem/PlusLanguage/Formula.lean",
+        "FormalSystem/PlusLanguage/TemporalViews.lean",
+        "FormalSystem/StarLanguage/Formula.lean",
         "FormalSystem/Syntax/Formula.lean",
-        "FormalSystem/PlusLanguage/Formula.lean"
+        "FormalSystem/Tactic/FormulaSyntax.lean"
       ],
       "created": "2026-11-21T21:05:46Z",
       "last_updated": "2026-11-23T02:46:16Z",
@@ -643,7 +859,7 @@
         },
         "degradations_count": 450
       },
-      "roadmap_annotation": "research and plan now; implement after the temporal rules merge (open decision 4)"
+      "roadmap_annotation": "research and plan now; implement after the temporal rules merge"
     },
     {
       "project_number": 976,
@@ -1026,21 +1242,24 @@
       "project_name": "proof_mode_views_tier",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "MILESTONE M16 (records/proof-mode.md), STREAM: views. ARCHITECTURE (records/proof-mode-architecture.md): tier Views; filed under every family; modules the views modules. A rule's statement names only the operators of the family or interaction it is filed under: pure family modules contain no implication, and an interaction with Boolean is its own module. Proof mode: views tier. Add the tactics that change only how a formula is written: folding and unfolding a defined operator (`¬`, `∧`, `∨`, `↔`, `◇`, `F`, `G`, `P`, `H`, `X`, `Y`, always, sometimes, the inclusive and weak Until and Since forms, and the TM⁺ counterparts) and replacing a formula by one that is equal as a Lean term. A view uses definitions and formula equalities ONLY: no axiom, no derivation rule, no object context, no frame class. It leaves the judgment unchanged up to definitional equality or a cast, and it can fail only because the formula has the wrong shape. Logical rewriting (replacing `A` by `B` because an implication or equivalence is derivable) is NOT a view and stays in the derivation tier. Deliverables: (1) the fold/unfold tactics, acting on the goal or on a named hypothesis, at the head or at a named position; (2) the expansion lemmas they rest on, each a `rfl` or a stated formula equality, filed with the syntax of the operator they expand; (3) the operator-matching helper the elaborators use (`operatorArgs?` and the occurrence views) expressed through the same table, so that what a tactic sees as an operator and what a view folds agree; (4) tests and a guide page stating the tier boundary. The plan settles the tactic names (one fold/unfold pair taking an operator name, or one tactic per view; open decision 1 of the architecture record) and where the tier lives: it must sit BELOW the derivation tactics and import none of them, so that a separate semantic mode can use it too. COORDINATION WITH OPEN CONTRIBUTIONS. The rewriting contribution has merged: extract the views already inside it — the seven rows already registered in FormalSystem/Tactic/FormulaViews.lean, the equality handler of `lrewrite`, and the view-preparation pass of `lsimp` — into this tier, and leave the logical rewriting where it is; do not write a second copy. The temporal contribution has not merged: its twenty further rows (ten Formula, ten PlusFormula, the extra pair being `after`) and its retirement of `ltemporal_dual` remain owed extraction once it lands — do not state them as already extractable; build this tier on the merged code today and record that extraction as owed. DONE WHEN: every defined operator in TM and TM⁺ has a fold and an unfold with a test in each direction; a `#print axioms` check on a views-only script shows no object-language axiom is involved; a negative test asserts the wrong-shape message; and the guide page exists. DEPENDENCIES. Hard: none. Sequencing: `proof_mode_split_shared_test_and_guide_files`, for the family layout. Consumers: `proof_mode_always_sometimes_scopes` (always and sometimes are defined operators), `proof_mode_abstract_frontend_interface` (the interface states rules about defined operators directly, which views make possible) and through it `proof_mode_leads_to_invariance_library` (present-inclusive leads-to is a defined form). The derivation proof mode lives in FormalSystem/Automation/ProofMode/ and FormalSystem/Theorems/ProofMode/; FormalSystem/Theorems/ must not import FormalSystem/Automation/. Every new `throwError` path gets a negative test asserting its message (`#guard_msgs`).",
+      "description": "LOCATION (binding over any module path named below): the view table and the pair `lunfold` and `lfold` are on main in FormalSystem/Tactic/FormulaViews.lean, below the derivation tactics and importing none of them. This tier is built there; there is no FormalSystem/Automation/ProofMode/Views.lean. The temporal contribution adds FormalSystem/Tactic/TemporalFormulaViews.lean beside it. ORDER: runs after `connective_signature_layer_shared_primitives`, so that each view row is registered once over the signature and not once per language, and after `proof_mode_views_report_swallowed_view_error`, which corrects the message this tier then tests. MILESTONE M16 (records/proof-mode.md), STREAM: views. ARCHITECTURE (records/proof-mode-architecture.md): tier Views; filed under every family; modules the views modules. A rule's statement names only the operators of the family or interaction it is filed under: pure family modules contain no implication, and an interaction with Boolean is its own module. Proof mode: views tier. Add the tactics that change only how a formula is written: folding and unfolding a defined operator (`¬`, `∧`, `∨`, `↔`, `◇`, `F`, `G`, `P`, `H`, `X`, `Y`, always, sometimes, the inclusive and weak Until and Since forms, and the TM⁺ counterparts) and replacing a formula by one that is equal as a Lean term. A view uses definitions and formula equalities ONLY: no axiom, no derivation rule, no object context, no frame class. It leaves the judgment unchanged up to definitional equality or a cast, and it can fail only because the formula has the wrong shape. Logical rewriting (replacing `A` by `B` because an implication or equivalence is derivable) is NOT a view and stays in the derivation tier. Deliverables: (1) the fold/unfold tactics, acting on the goal or on a named hypothesis, at the head or at a named position; (2) the expansion lemmas they rest on, each a `rfl` or a stated formula equality, filed with the syntax of the operator they expand; (3) the operator-matching helper the elaborators use (`operatorArgs?` and the occurrence views) expressed through the same table, so that what a tactic sees as an operator and what a view folds agree; (4) tests and a guide page stating the tier boundary. The plan settles the tactic names (one fold/unfold pair taking an operator name, or one tactic per view; open decision 1 of the architecture record) and where the tier lives: it must sit BELOW the derivation tactics and import none of them, so that a separate semantic mode can use it too. COORDINATION WITH OPEN CONTRIBUTIONS. The rewriting contribution has merged: extract the views already inside it — the seven rows already registered in FormalSystem/Tactic/FormulaViews.lean, the equality handler of `lrewrite`, and the view-preparation pass of `lsimp` — into this tier, and leave the logical rewriting where it is; do not write a second copy. The temporal contribution has not merged: its twenty further rows (ten Formula, ten PlusFormula, the extra pair being `after`) and its retirement of `ltemporal_dual` remain owed extraction once it lands — do not state them as already extractable; build this tier on the merged code today and record that extraction as owed. DONE WHEN: every defined operator in TM and TM⁺ has a fold and an unfold with a test in each direction; a `#print axioms` check on a views-only script shows no object-language axiom is involved; a negative test asserts the wrong-shape message; and the guide page exists. DEPENDENCIES. Hard: none. Sequencing: `proof_mode_split_shared_test_and_guide_files`, for the family layout. Consumers: `proof_mode_always_sometimes_scopes` (always and sometimes are defined operators), `proof_mode_abstract_frontend_interface` (the interface states rules about defined operators directly, which views make possible) and through it `proof_mode_leads_to_invariance_library` (present-inclusive leads-to is a defined form). The derivation proof mode lives in FormalSystem/Automation/ProofMode/ and FormalSystem/Theorems/ProofMode/; FormalSystem/Theorems/ must not import FormalSystem/Automation/. Every new `throwError` path gets a negative test asserting its message (`#guard_msgs`).",
       "topic": "proof-mode",
       "priority": "high",
       "dependencies": [
-        960
+        960,
+        977,
+        986
       ],
       "file_scope": [
-        "FormalSystem/Automation/ProofMode/Views.lean",
-        "Tests/BimodalTest/Automation/ProofMode/ViewsTest.lean",
-        "docs/user-guide/proof-mode/views.md",
         "FormalSystem/Automation/ProofMode.lean",
+        "FormalSystem/Automation/ProofMode/README.md",
+        "FormalSystem/Syntax/",
+        "FormalSystem/Tactic/FormulaViews.lean",
+        "FormalSystem/Tactic/TemporalFormulaViews.lean",
+        "Tests/BimodalTest/Automation/ProofMode/ViewsTest.lean",
         "Tests/BimodalTest/Automation/ProofModeTest.lean",
         "docs/user-guide/derivation-proof-mode.md",
-        "FormalSystem/Automation/ProofMode/README.md",
-        "FormalSystem/Syntax/"
+        "docs/user-guide/proof-mode/views.md"
       ],
       "created": "2026-11-20T14:43:54Z",
       "last_updated": "2026-11-20T14:43:54Z",
@@ -2618,7 +2837,8 @@
       "topic": "proof-mode",
       "priority": "medium",
       "dependencies": [
-        949
+        949,
+        987
       ],
       "created": "2026-11-19T21:37:36Z",
       "last_updated": "2026-11-20T14:43:54Z",
