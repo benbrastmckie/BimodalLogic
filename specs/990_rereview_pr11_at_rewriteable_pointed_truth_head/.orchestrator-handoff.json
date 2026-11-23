@@ -1,15 +1,28 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phase": "implement",
+  "phases_completed": 4,
   "phases_total": 4,
-  "summary": "Wrote a four-phase plan turning the research dispatch's measured approve verdict for PR #11 at b2eb3ac0b into the two prose deliverables the task names. Phase 1 is a hard gate re-probing headRefOid before anything is written (a moved head stops the run with a user_decision rather than prompting a re-measure); Phase 2 drafts specs/reviews/pr-reviews-2026-11-21/pr11-approval.md, stating what At usability now measurably means (the three-lemma simp only idiom, working on goals and hypotheses at L, L-plus and L-star, with rw under At still failing); Phase 3 reconciles every #11 mention in FOLLOWUP.md and adds the approval to the post list; Phase 4 is the final full-tier consistency pass, summary, and deferral of the complete gate set to the orchestration close. No Lean source, generated surface, or .lean path is in scope, so no coupled generated surface can drift; specs/reviews/ is locally git-excluded, so a commit skip there is the expected non-failure.",
+  "plan_markers_verified": true,
+  "summary": "Re-confirmed PR #11's head at b2eb3ac0b57d0f6082235aee0b861d8249bd7687 twice (09:45:17Z and 09:50:58Z), with CI run 45112546558 green and zero contributor comments, then wrote the two prose deliverables the task named. pr11-approval.md is a 61-line draft approval stating all three conditions met and what At usability now measurably means (simp only [at_def, TruthEnv.T, <clause lemma>] works at L, L-plus and L-star and on hypotheses; rw under At still does not). FOLLOWUP.md was reconciled across all six #11 mentions and names the approval as item 5 of the post list. Nothing was posted, pushed, merged or approved; no .lean or generated path was touched.",
   "blockers": [],
+  "next_action_hint": "User posts pr11-approval.md to PR #11 after re-checking the head, then merges. Only then are pointed_semantic_lemmas_after_merge_followups and promote_next_prev_covby_to_generic_lemmas unblocked.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/plans/01_approve-pr11-and-update-followup.md",
-      "summary": "Four-phase plan: re-confirm head, draft the PR #11 approval body, reconcile FOLLOWUP.md, final consistency pass and summary."
+      "type": "summary",
+      "path": "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/summaries/01_approve-pr11-and-update-followup.md",
+      "summary": "Completion summary: approve verdict turned into two prose deliverables, with the scoped gate result and its one unattributable pre-existing failure named."
+    },
+    {
+      "type": "other",
+      "path": "specs/reviews/pr-reviews-2026-11-21/pr11-approval.md",
+      "summary": "Draft approval body for PR #11 at b2eb3ac0b; all three conditions marked met, three notes marked explicitly not conditions, after-the-merge list left unchanged."
+    },
+    {
+      "type": "other",
+      "path": "specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md",
+      "summary": "Follow-up record reconciled across six #11 mentions; approval added as post-list item 5."
     }
   ]
 }

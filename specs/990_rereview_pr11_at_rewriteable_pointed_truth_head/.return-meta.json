@@ -1,22 +1,71 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/plans/01_approve-pr11-and-update-followup.md",
-      "summary": "Four-phase plan to turn the measured approve verdict for PR #11 at b2eb3ac0b into a draft approval body and a reconciled FOLLOWUP.md entry, gated on re-confirming the head has not moved."
+      "type": "summary",
+      "path": "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/summaries/01_approve-pr11-and-update-followup.md",
+      "summary": "Completion summary for the PR #11 re-review: approve verdict turned into a draft approval body and a reconciled follow-up record."
     }
   ],
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1795424219_8f2fbf_990",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 2,
-    "dependency_waves": [[1], [2], [3], [4]]
+  "completion_data": {
+    "completion_summary": "PR #11's head was re-confirmed at b2eb3ac0b twice with CI green and no contributor prose, and the research dispatch's approve verdict was turned into two prose deliverables: a 61-line draft approval body stating all three conditions met and what At usability now measurably means, and a FOLLOWUP.md reconciled across all six #11 mentions with the approval as post-list item 5. No Lean source, generated surface or repository code was touched, and nothing was posted, pushed, merged or approved.",
+    "roadmap_items": []
   },
-  "next_steps": "Run /orchestrate 990 to execute the plan",
-  "dispatch_seq": 2
+  "modified_files": [
+    "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/plans/01_approve-pr11-and-update-followup.md",
+    "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/summaries/01_approve-pr11-and-update-followup.md",
+    "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/issues.jsonl",
+    "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/.return-meta.json",
+    "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/.orchestrator-handoff.json",
+    "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/handoffs/phase-2-handoff-20261123T094833Z.md",
+    "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/handoffs/phase-3-handoff-20261123T095053Z.md",
+    "specs/reviews/pr-reviews-2026-11-21/pr11-approval.md",
+    "specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md"
+  ],
+  "sapience_notes": [
+    {
+      "subject": "BimodalLogic PR #11 At-usability outcome at head b2eb3ac0b",
+      "value": "Making an `abbrev` like `At` usable in tactic proofs took a `@[simp] at_def` lemma, but the measured result is narrower than 'At now rewrites': the working idiom is a three-lemma `simp only [at_def, TruthEnv.T, <language clause lemma>]`, and `rw` to a per-language clause lemma under `At` still fails because that lemma is stated about the instance projection, which must be reduced first. `at_def` is load-bearing (omitting it leaves `simp` with no progress) on the language-specific route and reported unused on a generic clause former, where `simp` already sees through the reducible `At`."
+    },
+    {
+      "subject": "Lake .trace files key on absolute source paths",
+      "value": "Seeding a Lean review worktree's `.lake/build` by copying another worktree's produces a false green: Lake's per-module `.trace` records the absolute source path of the worktree it was built in and re-hashes that path, so a module whose source differs between the two worktrees is judged up to date and never rebuilt. The symptom is a green build in which the file under review has no fresh `.olean`; the audit is `grep -rl '<other worktree path>' .lake/build/lib/lean --include='*.trace'` returning 0, and the remedy is wiping `.lake/build` (`.lake/packages` may still be shared by symlink)."
+    },
+    {
+      "subject": "lake-build-guard.sh --dir does not chdir",
+      "value": "The `--dir` flag resolves the Lean project root for locking and result-record paths only; the wrapped `lake` still runs in the caller's cwd. Invoking the guard from a main repository with `--dir <worktree>` therefore builds the main repository and writes a green result into the worktree's guard files, and the guard will then REPLAY that result for a later worktree call whose fingerprint matches. Always `cd` into the project you mean to build, and clear a stale `.lake/build-guard.result` first."
+    },
+    {
+      "subject": "verify-touched.sh scope under a multi-task orchestrate batch",
+      "value": "verify-touched.sh derives touched paths from the whole working tree plus the committed diff against its own determined base, not from the calling task's own modified_files. Under a multi-task batch it therefore picks up sibling dispatches' and prior sessions' changes: a task touching only four files under specs/** selected 91 suites and ran 95. A resulting failure is not automatically the calling task's; attribution has to be checked against that task's own modified_files before treating a scoped run's red as this task's red."
+    },
+    {
+      "subject": "BimodalLogic test-deploy-baseline-lib.sh warm-cache control failure is standing",
+      "value": "The case 'control: a genuinely matching warm-cache entry was expected to skip gate 1 but did not' fails reproducibly and is owned by no task. It is a defect in verify-deploy.sh's gate-cache warm-path logic itself, confirmed in freshly created isolated scratch directories, so it is not a concurrency artifact of a shared specs/.gate-cache. Every scoped or full battery run in this repository will keep reporting exactly one NEW failure until it is fixed or marked expected."
+    },
+    {
+      "subject": "Splitting re-review measurement from re-review prose",
+      "value": "Pinning a PR head sha in the research artifact and making the implementation phase's first action a re-probe against that pin turned a PR re-review into a near-mechanical prose dispatch: two `gh pr view` probes (5 minutes apart, both byte-identical) validated the carried measurement instead of re-running a from-scratch worktree build. The pin doubles as a hard stop condition, so a moved head blocks rather than silently producing an approval of unmeasured code."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795424219_8f2fbf",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "task_dir": "specs/990_rereview_pr11_at_rewriteable_pointed_truth_head",
+    "dispatch_seq": 3,
+    "compliance_check": "passed",
+    "scoped_gate": "verify-touched.sh: 84 passed, 1 failed (NEW, pre-existing test-deploy-baseline-lib.sh warm-cache control defect, unattributable to this task), 10 skipped, 95 total; complete gate set deferred to the batch close per the dispatch's Batch Gate Deferral directive"
+  }
 }

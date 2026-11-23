@@ -1,7 +1,7 @@
 # Implementation Plan: Task #990
 
 - **Task**: 990 - Rereview pr11 at rewriteable pointed truth head
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/reports/01_rereview-pr11-at-usability-and-tests.md`
