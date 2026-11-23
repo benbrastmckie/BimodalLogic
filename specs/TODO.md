@@ -147,7 +147,7 @@ next_project_number: 986
   └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
   └─ 972 [NOT STARTED] — MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem... (see above)
   └─ 975 [NOT STARTED] — MILESTONE M22 (records/proof-mode.md), LANE: metatheory....
-982 [PLANNED] — Reconcile the records, the roadmap rules and the open task...
+982 [IMPLEMENTING] — Reconcile the records, the roadmap rules and the open task...
 
 ## Tasks
 
@@ -182,7 +182,7 @@ next_project_number: 986
 ---
 
 ### 982. Reconcile records and tasks after pr review round
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: proof-mode
 - **Dependencies**: Task 978, Task 979, Task 980, Task 981

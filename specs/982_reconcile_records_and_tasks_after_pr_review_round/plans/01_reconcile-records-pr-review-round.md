@@ -1,7 +1,7 @@
 # Implementation Plan: Task #982
 
 - **Task**: 982 - Reconcile records and tasks after PR review round
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.75 hours
 - **Dependencies**: 978, 979, 980, 981 (all completed)
 - **Research Inputs**: specs/982_reconcile_records_and_tasks_after_pr_review_round/reports/01_reconcile-records-pr-review-round.md
@@ -123,33 +123,45 @@ and share none; Phase 5 owns `specs/state.json` and touches no record.
 
 ---
 
-### Phase 1: Re-verify the gating state and the deferral table [NOT STARTED]
+### Phase 1: Re-verify the gating state and the deferral table [COMPLETED]
 
 **Goal**: Confirm, immediately before any edit, that the five pull requests are still in the
 states this plan was written against, and resolve each deferred item to "still deferred" or "now
 actionable". Nothing is written to the repository in this phase.
 
 **Tasks**:
-- [ ] Run `gh pr view N --json number,state,mergeable,headRefOid,mergedAt` for N in 7, 8, 9, 10,
-      11 and record the result.
-- [ ] Run `gh pr view 7 --json files --jq '.files[].path'` and confirm no path under `records/`
+- [x] Run `gh pr view N --json number,state,mergeable,headRefOid,mergedAt` for N in 7, 8, 9, 10,
+      11 and record the result. *(completed: #7 MERGED 6313e693f; #8 OPEN/MERGEABLE 5ecc91d63; #9
+      OPEN/CONFLICTING b3d8f6463; #10 OPEN/MERGEABLE ada7074dd; #11 OPEN/MERGEABLE b2eb3ac0b --
+      unchanged from the plan's premise)*
+- [x] Run `gh pr view 7 --json files --jq '.files[].path'` and confirm no path under `records/`
       appears — i.e. the one merged pull request edited no record file, so nothing in Phases 2-4
-      risks overwriting a contributor's own record text.
-- [ ] Run `ls records/` and confirm whether `records/semantic-proof-mode.md` now exists.
-- [ ] Resolve each row of the deferral table below and write the verdicts into the phase note:
-      - architecture record's open decision 2 (rename) — deferred while #8 is open
-      - Goal C's C1/C2 reduced to pointers — deferred while #10 or #11 is open
+      risks overwriting a contributor's own record text. *(deviation: the check FAILS -- PR #7's
+      merged diff includes records/proof-mode-architecture.md and records/proof-mode.md. Recorded
+      as issue plan-premise-stale/minor; no corrective action needed, see phase note)*
+- [x] Run `ls records/` and confirm whether `records/semantic-proof-mode.md` now exists.
+      *(completed: absent -- records/ has 5 files: milestones.md, proof-mode-architecture.md,
+      proof-mode.md, README.md, theorem-library.md)*
+- [x] Resolve each row of the deferral table below and write the verdicts into the phase note:
+      - architecture record's open decision 2 (rename) — deferred while #8 is open *(confirmed
+        still open in the live file)*
+      - Goal C's C1/C2 reduced to pointers — deferred while #10 or #11 is open *(confirmed, both
+        open)*
       - `records/README.md` row for `records/semantic-proof-mode.md` — deferred while that file
-        is absent from `main`
+        is absent from `main` *(confirmed absent)*
       - PR #8's carrying-table shape folded into `proof_mode_s5_aware_box_scopes` and
-        `proof_mode_cross_modal_scopes_mf_tf` — deferred while #8 is open
-- [ ] If any precondition has flipped (a deferred item is now actionable, or an item this plan
+        `proof_mode_cross_modal_scopes_mf_tf` — deferred while #8 is open *(confirmed, #8 still
+        open)*
+- [x] If any precondition has flipped (a deferred item is now actionable, or an item this plan
       states as current has gone stale), record the flip explicitly in the phase note and in
       `issues.jsonl` via `issue-record.sh`, then carry it into the affected phase rather than
-      following this plan's text blindly.
-- [ ] Re-read `specs/reviews/pr-reviews-2026-11-21/pr8-record-edits.md` in full — it is the one
+      following this plan's text blindly. *(completed: the records/ path flip on PR #7 recorded
+      above; no deferred item flipped to actionable)*
+- [x] Re-read `specs/reviews/pr-reviews-2026-11-21/pr8-record-edits.md` in full — it is the one
       artifact that distinguishes "already landed by the PR, do not touch" from "still ours to
-      apply", and Phases 2 and 4 both depend on that distinction.
+      apply", and Phases 2 and 4 both depend on that distinction. *(completed: confirmed live that
+      items 1-2 of that artifact have NOT landed, since PR #8 is still open; only item 3
+      (milestones.md) and item 4 (join 2 shape) are ours to apply this round)*
 
 **Timing**: 0.5 hours
 

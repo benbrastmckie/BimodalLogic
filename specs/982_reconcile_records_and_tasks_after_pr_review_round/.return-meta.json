@@ -1,30 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/982_reconcile_records_and_tasks_after_pr_review_round/plans/01_reconcile-records-pr-review-round.md",
-      "summary": "Six-phase, 5.75-hour plan reconciling four records and six task descriptions with the PR #7-#11 review round, with three merge-gated items explicitly deferred."
-    }
-  ],
+  "status": "in_progress",
   "metadata": {
-    "session_id": "sess_1795402655_5a890d_982",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 5.75,
-    "dependency_waves": 3
+    "session_id": "sess_1795402655_5a890d",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   },
-  "memory_candidates": [
-    {
-      "content": "When a records-reconciliation plan must act on facts that live only on an unmerged branch, the durable structure is a per-item deferral table whose rows each name their own precondition (which PR must merge, which file must exist on main), re-resolved in a cheap read-only Phase 1 immediately before any edit. This turns a later re-run into a lookup rather than fresh research, and it keeps the plan from asserting as current design something that exists only on a contributor's branch -- the specific hazard a 'record edits already landed by the PR' artifact is written to prevent.",
-      "category": "PATTERN",
-      "source_artifact": "specs/982_reconcile_records_and_tasks_after_pr_review_round/plans/01_reconcile-records-pr-review-round.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["deferral-table", "merge-gated", "records-reconciliation", "precondition-phase", "unmerged-branch"]
-    }
-  ],
-  "dispatch_seq": 14,
-  "next_steps": "Run /orchestrate 982 to execute the plan"
+  "dispatch_seq": 15
 }
