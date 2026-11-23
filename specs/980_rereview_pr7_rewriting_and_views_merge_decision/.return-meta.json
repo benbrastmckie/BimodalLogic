@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/reports/01_pr7-rewriting-views-merge-decision.md",
+      "summary": "Re-review of PR #7 at head 5f5ad32bf: nine-request table, locally reproduced CI failure with a verified one-line fix, two new lake lint failures CI never reached, measured views-tier behaviour and import closure, re-measured M17 numbers that do not reproduce, and a REQUEST CHANGES-then-squash-merge recommendation with three rulings for the user."
+    },
+    {
+      "type": "report",
+      "path": "specs/reviews/pr-reviews-2026-11-21/pr7-review.md",
+      "summary": "Draft response for the user to post on PR #7: three numbered conditions of merging, what is explicitly not asked, and five follow-ups."
+    }
+  ],
+  "user_decision": {
+    "required": true,
+    "blocking": false,
+    "summary": "Three rulings open at the top of the report: (1) which requests are conditions of merging (open decision 1 of records/milestones.md) -- recommended option A, three conditions with the filing by family carried in the layout record; (2) whether the merge-not-rebase history is acceptable -- recommended accept under a squash merge; (3) whether to ask the contributor to restate the M17 Current client numbers or correct them locally -- recommended ask. Nothing was posted, pushed or merged."
+  },
+  "metadata": {
+    "session_id": "sess_1795302289_fd0199_980",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

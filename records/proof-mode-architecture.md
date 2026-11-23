@@ -79,8 +79,9 @@ by what it is:
 - the semantic lemmas are general semantics and sit in `FormalSystem/Semantics/`, at layer 1;
 - the tactics sit in a directory of their own under `FormalSystem/Semantics/`, for example
   `FormalSystem/Semantics/ProofMode/`, at layer 1;
-- the soundness adapter is one module at layer 3 under `FormalSystem/Metalogic/`, holding the
-  soundness lemma and `luse_derivation`. It imports soundness for each language and the
+- the soundness adapter is one module at layer 3 under `FormalSystem/Metalogic/`, holding one
+  soundness statement over `TruthEnv`, of which each language's soundness theorem is an
+  instance, and the tactic that applies it. It imports soundness for each language and the
   semantic mode, and nothing under `FormalSystem/Automation/ProofMode/`.
 
 A layer-1 mode imports layers 0 and 1 only. The two things it shares with the derivation mode,
@@ -262,7 +263,7 @@ module.
 | Leads-to consequence, transitivity, cases | Derivation | Temporal with Boolean | `proof_mode_leads_to_invariance_library`; the rules are stated for the present-inclusive definition, and the contributed strict rules are the layer beneath it |
 | Dense and RTime rules | Derivation | Temporal at Dense and RTime | `proof_mode_dense_and_real_time_rules` |
 | Folding and unfolding defined operators, inclusive forms, formula equalities | Views | every family | `proof_mode_views_tier`; the pair is `lunfold` and `lfold`; the first rows of the view table are contributed with the rewriting tactics, exposed through the pair |
-| Logical rewriting under operators, bounded simplification | Derivation | one congruence step per family; seed equivalences under the Boolean interactions | contributed |
+| Logical rewriting under operators, bounded simplification | Derivation | Generic path composition; Boolean, Modal and Temporal steps; seed rules in `ModalBoolean`; scope conversions in `ModalTemporalBoolean` | M17; `lrewrite` and `lsimp` apply native rules only. The syntax planner is shared with other tiers. |
 | Leaf closing | Derivation | Boolean | `proof_mode_close_leaves_with_automation`, `proof_mode_decision_procedure_leaf_closers` |
 | Refutation of an unclosed leaf | none: a diagnostic, it builds nothing | the fragment of the leaf | `proof_mode_countermodels_for_unclosed_leaves`, through the countermodel half of the library |
 | Sweeps: library entries proved again in the mode | Derivation | one sweep per fragment | `proof_mode_reprove_perpetuity`, `proof_mode_reprove_temporal_slice`, `theorem_library_stability_entries` |

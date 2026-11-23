@@ -4,8 +4,511 @@
     "total_tasks": 81,
     "last_sync": "2026-10-14T21:59:04Z"
   },
-  "next_project_number": 977,
+  "next_project_number": 985,
   "active_projects": [
+    {
+      "project_number": 984,
+      "project_name": "promote_next_prev_covby_to_generic_lemmas",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Promote next_iff_covBy and prev_iff_covBy of FormalSystem/SourceLanguage/SentenceTruth.lean onto the generic next_iff and prev_iff of FormalSystem/Semantics/TemporalRules.lean, once that module is on main (it arrives with the pointed semantic lemmas contribution, branch feat/pointed-semantic-lemmas, milestone C1 of records/milestones.md). SentenceTruth.lean docstring calls the duplication deliberate and unresolved and names promotion of one shared lemma as the eventual fix, blocked because the other copy of the succ-form fact sits in FormalSystem/Metalogic/DiscreteNonCompactness.lean and the import would be upward. TemporalRules.lean is at layer 1, as is SentenceTruth.lean, so the promotion has no layering cost; next_iff (L := Formula) M τ t PUnit.unit φ was checked to inhabit the statement of next_iff_covBy. Deliverable: the base-language lemmas become instances or one-line corollaries of the generic ones (or are removed with their uses repointed), the copy in Metalogic/DiscreteNonCompactness.lean is repointed likewise, and the deliberate-and-unresolved note in the SentenceTruth.lean docstring is replaced by the current state. No statement changes for downstream users.",
+      "topic": "semantics",
+      "created": "2026-11-22T23:58:42Z",
+      "last_updated": "2026-11-22T23:58:42Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "promote_next_prev_covby_to_generic_lemmas",
+          "project_number": null,
+          "title": "Promote next_iff_covBy and prev_iff_covBy of SourceLanguage/SentenceTruth.lean onto the generic next_iff and prev_iff of Semantics/TemporalRules.lean"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 8,
+          "duplicate-of-open": 3,
+          "scope-blind": 448
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 980,
+            "project_name": "rereview_pr7_rewriting_and_views_merge_decision",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4166666666666667
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 978,
+            "project_name": "review_pr11_pointed_semantic_lemmas",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.5833333333333334
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 977,
+            "project_name": "connective_signature_layer_shared_primitives",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.5
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 448
+      }
+    },
+    {
+      "project_number": 983,
+      "project_name": "soundness_statement_over_truth_env",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "State pointed soundness once over TruthEnv, with TM, TM+ and TM⋆ as instances, so that the semantic mode adapter needs no per-language wrapper module (milestone D4 of records/milestones.md, join 7; the adapter paragraph of records/proof-mode-architecture.md). PHASE 1: prove star_soundness_in, the context form of TM⋆ soundness (a StarDerivationTree fc Γ φ, a frame in fc, a model, history, time and register environment at which every member of Γ is true, give truth of φ there), beside star_soundness_validIn in FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean. TM has soundness_in (FormalSystem/Metalogic/Soundness.lean) and TM+ has plus_soundness_in (FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean); TM⋆ has only the empty-context validity form. StarSoundness.lean mirrors PlusSoundness.lean arm for arm, so the plus proof is the model, but this has NOT been attempted: establish first how the register environment is quantified in the premises and whether the three empty-context rules go through unchanged. PHASE 2: one class, at layer 3 under FormalSystem/Metalogic/, tying a language derivation relation to its TruthEnv truth predicate, with the three theorems as instances, and one generic theorem giving truth at a point from a derivation, frame-class evidence and truth of the premises. KEEP THE CLASS MINIMAL: proof_mode_abstract_frontend_interface will later constrain the object-level interface, and this class should be something that interface can require, not a second packaging of the connectives. DO NOT restate any language soundness theorem under another name; FormalSystem/Metalogic/ProofModeSoundness.lean on branch feat/proof-mode-semantics is four such restatements and is the shape to avoid. Sound direction only: guard with assert_not_exists against the completeness theorems, and import nothing under FormalSystem/Automation/ProofMode/. Tests instantiate the generic theorem at all three languages. Open to either collaborator; the done-when in records/milestones.md is the standard.",
+      "topic": "metalogic",
+      "created": "2026-11-22T23:58:42Z",
+      "last_updated": "2026-11-22T23:58:42Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "soundness_statement_over_truth_env",
+          "project_number": null,
+          "title": "State pointed soundness once over TruthEnv with TM, TM+ and TM-star as instances, including a new context-form star_soundness_in"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 74,
+          "duplicate-of-open": 13,
+          "scope-blind": 435
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 980,
+            "project_name": "rereview_pr7_rewriting_and_views_merge_decision",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.5
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 978,
+            "project_name": "review_pr11_pointed_semantic_lemmas",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.6
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 977,
+            "project_name": "connective_signature_layer_shared_primitives",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 975,
+            "project_name": "theorem_library_fragment_conservativity",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 957,
+            "project_name": "proof_mode_transition_systems_tm_specifications",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 956,
+            "project_name": "proof_mode_leads_to_invariance_library",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 952,
+            "project_name": "proof_mode_abstract_frontend_interface",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.5
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 763,
+            "project_name": "ladder_lift_decidability_corollary",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 761,
+            "project_name": "ladder_realization_theorem",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 177,
+            "project_name": "update_readme_and_module_docstrings",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.6
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 412,
+            "project_name": "prove_refutation_core_and_decidability_of_provability_with_completeness_corollaries",
+            "shared_paths": null,
+            "mechanical_class": "scope-blind",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 430,
+            "project_name": "semantic_lift_and_track_a_assembly_valid_iff_allclosed",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 876,
+            "project_name": "open_language_stability_primitive_removal",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 435
+      }
+    },
+    {
+      "project_number": 982,
+      "project_name": "reconcile_records_and_tasks_after_pr_review_round",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "Reconcile the records, the roadmap rules and the open task descriptions with the outcome of the review round on collaborator PRs #7 to #11. Run this after the four review tasks have reported AND the user has acted on them; begin by reading the state of every pull request with `gh pr view` and the four reports under specs/reviews/pr-reviews-2026-11-21/, and stop with a list of what is still pending if the user's rulings on the items those reports put first are not yet recorded. This task posts nothing and merges nothing. WHAT TO CHANGE. (1) records/milestones.md: the contributions table (five pull requests where it lists three, each with its current state); Where it stands and What to do next rewritten for the state reached; open decision 1 (conditions of merging) replaced by the ruling; open decision 2 (who drafts the semantic record) removed, the contributor having written it; open decision 4 (evaluator beside the lemmas or its own mode) and open decision 5 (expand / contract) closed or restated per the reports; Goal C's milestones C1 and C2 given up to pointers once the lemmas and the record are merged, as records/README.md requires of implemented design; join 2 restated with the carrying-table shape agreed; and the channel table re-phased. (2) records/proof-mode.md: M17 (what is contributed, what the second run still owes, the contributor's Current client paragraph checked against the deliverable rules), M16 (which rows and which modules exist, what the views-tier record still owes), M4 (expand / contract, what is contributed, the induction rule still open), the dependency picture's M17-then-M0-then-M16 order, and Filed records. (3) records/proof-mode-architecture.md: open decision 2 closed with the rename, the rows of Where the work sits for views, rewriting, carrying, Until/Since and the semantic tier, and the semantic-mode paragraph once records/semantic-proof-mode.md is in the tree. (4) records/README.md: one row per record actually present, milestones.md and semantic-proof-mode.md among them. (5) Task descriptions, edited through state-write.sh and never by hand: proof_mode_split_shared_test_and_guide_files (its coordination paragraph names PRs #7, #8 and #9 and a set of files that has changed; restate what it must now move, including the modules under FormalSystem/Tactic/, and whether its hold is lifted), proof_mode_views_tier (what is contributed and what remains), connective_signature_layer_shared_primitives (its relation to the Language table and the landing window of join 4), proof_mode_s5_aware_box_scopes and proof_mode_cross_modal_scopes_mf_tf (the carrying table they add rows to), theorem_library_countermodels (the evaluator as a client and the admission grade), and the file_scope of each where paths moved. (6) The roadmap: list the rule and batch-description changes needed (the rule that the layout record's implementation is not dispatched while PR #7 or #8 is open; a place for the semantic tier) as a quoted instruction for the user to give /roadmap; do not edit specs/ROADMAP.md, which is generated. CONSTRAINTS: records state the current design and name work by slug (records/README.md, .claude/rules/no-record-versioning-in-deliverables.md, no-task-references-in-deliverables.md); where a merged pull request has itself edited a record, reconcile with its text instead of overwriting it; run a closing consistency pass over all the records for statements that contradict each other.",
+      "topic": "proof-mode",
+      "dependencies": [
+        978,
+        979,
+        980,
+        981
+      ],
+      "file_scope": [
+        "records/milestones.md",
+        "records/proof-mode.md",
+        "records/proof-mode-architecture.md",
+        "records/README.md"
+      ],
+      "created": "2026-11-21T23:01:58Z",
+      "last_updated": "2026-11-21T23:01:58Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "reconcile_records_and_tasks_after_pr_review_round",
+          "project_number": null,
+          "title": "reconcile_records_and_tasks_after_pr_review_round"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 19,
+          "duplicate-of-open": 3,
+          "scope-blind": 448
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 981,
+            "project_name": "rereview_pr8_temporal_rules_and_carrying_table",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4696969696969697
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 980,
+            "project_name": "rereview_pr7_rewriting_and_views_merge_decision",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4494949494949495
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 979,
+            "project_name": "review_pr10_semantic_record_and_pr9_disposition",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.43434343434343436
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 448
+      }
+    },
+    {
+      "project_number": 981,
+      "project_name": "rereview_pr8_temporal_rules_and_carrying_table",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Re-review collaborator PR #8 (branch feat/proof-mode-temporal, head b020320fd when filed: two commits, \"Tighten temporal rule application and scope carrying\" (dc253dde5) and \"Exercise time reflection on library theorem clients\", on top of the old temporal commit 1f545ea0a) against the thirteen requests of the posted review (specs/reviews/pr-reviews-2026-11-20/pr8-review.md), and prepare a draft response at specs/reviews/pr-reviews-2026-11-21/pr8-review.md. It is stacked on PR #7 and its own description says it is rebased after #7 merges, so this task runs after the PR #7 re-review and reads that report first. FIRST-READ FINDINGS TO CHECK: the branch sits on the OLD PR #7 head (fc85c61b9), not on 5f5ad32bf, conflicts with main, and has had NO CI RUN; done on reading: the Until/Since keywords are renamed expand / contract, the five `... using rule` forms are collapsed into lapply, there is one integerTimeGate helper and Dense now reports an integer-time error, keeping is a non-reserved keyword built over a carryRules table and rejects undetermined formulas, lapply errors on an unresolved instance with the goal order documented, ltime_reflect using rejects a non-derivation, tests are added for luntil intro, lsince intro, linduction, keeping on lstep and three messages, and two clients re-prove connectPast and connectPastH by reflection; not done: TemporalComposition.lean is not split by family, ltemporal_dual and the inclusive Until/Since views remain in Temporal.lean and are not rows of the view table, the generalizing induction rule is untouched, no edit to M4 or to Where the work sits, sixteen fail_if_success against three #guard_msgs. WHAT TO ESTABLISH. (1) REBASE COST: in a worktree, rebase or merge the two new commits onto the current PR #7 head and onto main, list every conflict and say whether each is mechanical, so the response can tell the contributor what the rebase involves or offer to do it; then build and run the tests on the result, since nothing has. (2) REQUEST TABLE: for each of the thirteen requests and sub-items, done, partly done or not done, with file and line. (3) THE CARRYING TABLE (join 2 of records/milestones.md): carryRules is private, holds hard-coded TM/TM+ declaration pairs, and is keyed by a `past` flag and one source operator. Work out what proof_mode_s5_aware_box_scopes and proof_mode_cross_modal_scopes_mf_tf need from it (box facts carried by 4, 5, MF and TF, into box, G and H scopes, in both time directions, and the stability mirror), and propose the concrete table shape and where it lives so that those records add rows without editing Temporal.lean; say whether that is a condition of merging or a follow-up. (4) A CHANGED MERGED TEST: Tests/BimodalTest/Automation/ProofModeTest.lean has an existing acceptance example altered (a hypothesis `ZTime <= fc` became `True -> ZTime <= fc`) because lstep and linvariant now reuse an exact local certificate where they used to leave the gate as a goal. State the behaviour before and after, whether the new single policy is the one request 7 asked for, and whether any other merged example changes meaning; the family-layout record's done-when requires every existing example to pass unchanged. (5) KEYWORDS: the rename settles open decision 2 of records/proof-mode-architecture.md in the direction the user leaned; confirm nothing still uses fold / unfold for a derivation step and draft the record edit. (6) VIEWS: with the view table now in PR #7, say exactly which declarations of this PR become rows (the inclusive forms, strongTrigger / strongRelease, ltemporal_dual) and whether ltemporal_dual survives as a tactic. (7) THE INDUCTION RULE: do not derive it; report whether anything in the PR bears on the statement proposed in M4 of records/proof-mode.md, and whether linduction as it stands should be documented as backward induction only. (8) GATE-ONE ADMISSION: keeping and ltime_reflect are the only contributed rules gate-one scripts may use and only once adopted into the scope-core milestone; say what adoption requires of each as they now stand. (9) REMAINING SMALLER POINTS: messages that print allFuture where the user wrote G; lprogress untested; past and TM+ coverage; plan labels and relative-to-the-past wording in source and guide. (10) THE DRAFT: what is settled, the conditions of merging as a short numbered list, the follow-ups, and the answer to give on the rebase. GROUND RULES FOR THIS REVIEW TASK. (i) Nothing is posted to GitHub, merged, pushed or approved by an agent: the deliverable is a draft the user posts and a recommendation the user acts on (.claude/rules/pr-prohibition.md). (ii) Work on the pull request head in a separate git worktree fetched with `git fetch origin refs/pull/<N>/head`, never in the main working tree; record the exact commit reviewed, re-check the head with `gh pr view` before finishing, and if it has moved say so and review the new commits too. (iii) Every claim in the draft is backed by something run or read in this task: a build, a test, an `#print axioms`, a file and line. Say plainly what was not verified. (iv) The report opens with the items that need the user's ruling, each with options and a recommendation, then the recommendation for the pull request (MERGE, REQUEST CHANGES or COMMENT), then the evidence. (v) The draft is written in the register of the reviews already posted (specs/reviews/pr-reviews-2026-11-20/): direct, specific, numbered requests, credit where the work is right, and a clear separation of conditions of merging from follow-ups. Read records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md and records/theorem-library.md first; the first-read findings this task starts from are summarized below and are to be checked, not trusted.",
+      "topic": "proof-mode",
+      "dependencies": [
+        980
+      ],
+      "file_scope": [
+        "specs/reviews/pr-reviews-2026-11-21/pr8-review.md"
+      ],
+      "created": "2026-11-21T23:01:29Z",
+      "last_updated": "2026-11-21T23:01:29Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "rereview_pr8_temporal_rules_and_carrying_table",
+          "project_number": null,
+          "title": "rereview_pr8_temporal_rules_and_carrying_table"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 4,
+          "duplicate-of-open": 4,
+          "scope-blind": 450
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 980,
+            "project_name": "rereview_pr7_rewriting_and_views_merge_decision",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.49851632047477745
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 979,
+            "project_name": "review_pr10_semantic_record_and_pr9_disposition",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4870967741935484
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 978,
+            "project_name": "review_pr11_pointed_semantic_lemmas",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.45980707395498394
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 954,
+            "project_name": "proof_mode_error_message_coverage",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.41935483870967744
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 450
+      }
+    },
+    {
+      "project_number": 980,
+      "project_name": "rereview_pr7_rewriting_and_views_merge_decision",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Re-review collaborator PR #7 (branch feat/proof-mode-rewriting, head 5f5ad32bf when filed: a merge of main plus the commit \"Separate named formula views from derivation rewriting\") against the nine requests of the posted review (specs/reviews/pr-reviews-2026-11-20/pr7-review.md) and the follow-up comment (pr7-followup.md), research the one ruling that decides whether it merges, and prepare a draft response at specs/reviews/pr-reviews-2026-11-21/pr7-review.md. This PR is the base of the stack and the single blocker of proof_mode_split_shared_test_and_guide_files, so the aim is to reach a merge decision, not a second round of everything. FIRST-READ FINDINGS TO CHECK: CI is red on one linter warning under --wfail (`import Lean` at FormalSystem/Tactic/FormulaSyntax.lean:8, \"Files in mathlib cannot import the whole Lean folder\") and the test, lint and docs steps were skipped as a result, so NOTHING NEW HAS BEEN TESTED IN CI; done on reading: the formula-equality path is out of lrewrite and lsimp and is exposed as lunfold / lfold over a view table in FormalSystem/Tactic/FormulaViews.lean with assert_not_exists DerivationTree, the planner is in FormalSystem/Tactic/FormulaPositions.lean, Step.necessity states the box and stability step once, supplied-rule elaboration errors propagate, a no-op rewrite fails, a stopped-wrapper message exists, lsimp budgets are options, past-direction, TM+ lsimp and four #guard_msgs tests are added, the misplaced soundness test and the docs link into specs/ are gone, and M17 of records/proof-mode.md gains a \"Current client\" paragraph (Perpetuity.boxDne, 393 against 159 expression nodes); not done: filing by family (Congruence.lean is one file, tests remain in the shared ProofModeExtensionsTest.lean, seed rules and the box-to-G/H conversions unmoved), the tm/plus name pairs are centralized in Language.ruleName rather than removed, main was merged rather than rebased onto, the PR body still says lrewrite takes formula equalities. WHAT TO ESTABLISH. (1) BUILD AND TEST LOCALLY at the head: reproduce the CI failure, apply the one-line import fix in the worktree only, then run the full build with --wfail, the test suite, the linter and scripts/check-module-invariants.sh, and report every failure CI never reached. (2) REQUEST TABLE: for each of the nine requests and their sub-items, done, partly done or not done, with the file and line that shows it. (3) THE VIEWS TIER AS CONTRIBUTED: compute the import closure of FormulaSyntax, FormulaPositions and FormulaViews and confirm nothing under FormalSystem/Automation/ProofMode/, FormalSystem/ProofSystem/ or the rewriting machinery is reachable; test lunfold and lfold on goals and hypotheses where the operator occurs more than once, occurs in the object context as well as the formula, and occurs under another operator, and say exactly what they rewrite (they call rewriteTarget / rewriteLocalDecl with no position argument); check that the private equation theorems referenced by name resolve from a downstream module; note that applyView discards the underlying error; note the table has four operators (diamond, next, prev, dstab). Then compare against the deliverables of proof_mode_views_tier and against records/proof-mode-architecture.md (layer 0 or 1, the operator-matching helper resting on the same table) and state what that record still owes and how its description should be revised. (4) THE LANGUAGE TABLE: Language is an inductive with tm and plus and operatorName is a hand-written pair table; judge it against request 4 (no further tmX/plusX pairs, TM and TM+ as instances of one interface) and against connective_signature_layer_shared_primitives and proof_mode_abstract_frontend_interface, and say whether it is an acceptable intermediate or a third copy to be undone. (5) REMAINING SWALLOWED ERRORS: the per-attempt catch in lsimp and the catch in applyView; say which user mistakes still end in a generic message, with a failing example each. (6) THE RECORD EDITS: verify the measured numbers in the M17 paragraph by re-measuring, and check the paragraph and the edited architecture row against the deliverable rules. (7) THE RULING (open decision 1 of records/milestones.md): which requests are conditions of merging. Lay out the two options with their real cost: list every file and declaration proof_mode_split_shared_test_and_guide_files would have to move if the filing by family is carried there, and estimate what holding the merge for it costs the pre-gate records. Recommend one. Also recommend whether the merge-not-rebase history is acceptable under a squash merge. (8) THE DRAFT: a short response that thanks, lists what is settled, states the remaining conditions as a numbered list no longer than it must be, and names the follow-ups that are not conditions. GROUND RULES FOR THIS REVIEW TASK. (i) Nothing is posted to GitHub, merged, pushed or approved by an agent: the deliverable is a draft the user posts and a recommendation the user acts on (.claude/rules/pr-prohibition.md). (ii) Work on the pull request head in a separate git worktree fetched with `git fetch origin refs/pull/<N>/head`, never in the main working tree; record the exact commit reviewed, re-check the head with `gh pr view` before finishing, and if it has moved say so and review the new commits too. (iii) Every claim in the draft is backed by something run or read in this task: a build, a test, an `#print axioms`, a file and line. Say plainly what was not verified. (iv) The report opens with the items that need the user's ruling, each with options and a recommendation, then the recommendation for the pull request (MERGE, REQUEST CHANGES or COMMENT), then the evidence. (v) The draft is written in the register of the reviews already posted (specs/reviews/pr-reviews-2026-11-20/): direct, specific, numbered requests, credit where the work is right, and a clear separation of conditions of merging from follow-ups. Read records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md and records/theorem-library.md first; the first-read findings this task starts from are summarized below and are to be checked, not trusted.",
+      "topic": "proof-mode",
+      "file_scope": [
+        "specs/reviews/pr-reviews-2026-11-21/pr7-review.md"
+      ],
+      "created": "2026-11-21T23:00:44Z",
+      "last_updated": "2026-11-21T23:44:28Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "rereview_pr7_rewriting_and_views_merge_decision",
+          "project_number": null,
+          "title": "rereview_pr7_rewriting_and_views_merge_decision"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 3,
+          "duplicate-of-open": 3,
+          "scope-blind": 450
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 979,
+            "project_name": "review_pr10_semantic_record_and_pr9_disposition",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.47096774193548385
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 978,
+            "project_name": "review_pr11_pointed_semantic_lemmas",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4983922829581994
+          },
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 969,
+            "project_name": "proof_mode_views_tier",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4028436018957346
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 450
+      },
+      "session_id": "sess_1795302289_fd0199",
+      "artifacts": [
+        {
+          "path": "specs/980_rereview_pr7_rewriting_and_views_merge_decision/reports/01_pr7-rewriting-views-merge-decision.md",
+          "type": "report",
+          "summary": "Re-review of PR #7 at head 5f5ad32bf: nine-request table, locally reproduced CI failure with a verified one-line fix, two new lake lint failures CI never reached, measured views-tier behaviour and import closure, re-measured M17 numbers that do not reproduce, and a REQUEST CHANGES-then-squash-merge recommendation with three rulings for the user."
+        }
+      ],
+      "next_artifact_number": 2
+    },
+    {
+      "project_number": 979,
+      "project_name": "review_pr10_semantic_record_and_pr9_disposition",
+      "status": "researched",
+      "task_type": "general",
+      "description": "Review collaborator PR #10 (branch docs/semantic-proof-mode-record, head bdaa3b6d0 when filed, base main, +77 lines), which adds records/semantic-proof-mode.md, and settle the disposition of PR #9 (feat/proof-mode-semantics, untouched since 2026-11-19, conflicting), which PRs #10 and #11 replace in part. Deliverables: specs/reviews/pr-reviews-2026-11-21/pr10-review.md with proposed replacement text for every passage it asks to change, and specs/reviews/pr-reviews-2026-11-21/pr9-disposition.md with a draft closing or holding comment. If the review task for PR #11 has reported, read its report first, in particular its trial of the lemmas-only control. FIRST-READ FINDINGS TO CHECK: the record adopts the evaluator framing of the user's follow-up comment on PR #7 (specs/reviews/pr-reviews-2026-11-20/pr7-followup.md): one tactic, tentatively `seval`, its own registry and syntax under FormalSystem/Semantics/, recursion on truth clauses, explicit witnesses; it says the first interface is proof-directed and not a decision procedure because quantifiers over times and histories are unbounded; it names four clients that exist (refute_allFuture_stab and refute_stab_allFuture_past in PlusNonValidities.lean, refute_modal_future and refute_sentDet in StarNonValidities.lean) and a three-way comparison of reference, lemmas-only control and evaluator by source tokens, elaborated term size and median elaboration time; it has no milestone blocks with done-when and dependencies, no rejected alternatives, and does not say where it meets theorem_library_countermodels. WHAT TO ESTABLISH. (1) IDIOM: check the record against records/README.md, the two deliverable rules (.claude/rules/no-record-versioning-in-deliverables.md, no-task-references-in-deliverables.md) and the shape of the three existing records; list what is missing as concrete proposed text. (2) CONSISTENCY: check every claim against records/proof-mode-architecture.md (Three tiers; the semantic-mode paragraph PR #10 edits; the last row of Where the work sits), records/theorem-library.md (Countermodels, Diagnostics), and Goal C and open decisions 2 and 4 of records/milestones.md; say where the record and those documents disagree and which should change. (3) THE CLIENTS: read the four declarations and report for each its length, its structure, which truth clauses it unfolds and which steps are repeated clause reasoning as against model-specific argument, so that the claim that an evaluator shortens them can be judged before anything is built; say whether four is enough and whether any clause (Until, Since, box, store and recall) has no client. (4) THE CEILING: assess the record's claim about what is and is not decidable by evaluation, and state what class of models and formulas a genuine decision procedure would cover (finite presentations, bounded quantifier ranges), citing the tree. (5) MEASUREMENT: say how each proposed measurement is actually taken in this repository, whether the diagnostics schema of proof_mode_axiom_audit_and_cost_baseline should be the one used, and what GO looks like; the record's step 4 gives an adoption criterion with no threshold. (6) OPEN POINTS THE RECORD LEAVES: evaluator beside the lemmas or a mode of its own; the witness interface (clause-directed list versus named witnesses); what is shared with the derivation mode now that PR #7 has moved the syntax, positions and views modules to FormalSystem/Tactic/; where the soundness adapter lives; the grade at which an evaluator-checked refutation enters the library. Give a recommendation on each. (7) PR #9: inventory what PR #9 contains that neither #10 nor #11 carries (the tactic overloads, luse_derivation and the soundness adapter, the transport tactics, tests), say what of it is reusable for the mode the record describes, and recommend closing, converting to draft, or holding, with the comment to post. GROUND RULES FOR THIS REVIEW TASK. (i) Nothing is posted to GitHub, merged, pushed or approved by an agent: the deliverable is a draft the user posts and a recommendation the user acts on (.claude/rules/pr-prohibition.md). (ii) Work on the pull request head in a separate git worktree fetched with `git fetch origin refs/pull/<N>/head`, never in the main working tree; record the exact commit reviewed, re-check the head with `gh pr view` before finishing, and if it has moved say so and review the new commits too. (iii) Every claim in the draft is backed by something run or read in this task: a build, a test, an `#print axioms`, a file and line. Say plainly what was not verified. (iv) The report opens with the items that need the user's ruling, each with options and a recommendation, then the recommendation for the pull request (MERGE, REQUEST CHANGES or COMMENT), then the evidence. (v) The draft is written in the register of the reviews already posted (specs/reviews/pr-reviews-2026-11-20/): direct, specific, numbered requests, credit where the work is right, and a clear separation of conditions of merging from follow-ups. Read records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md and records/theorem-library.md first; the first-read findings this task starts from are summarized below and are to be checked, not trusted.",
+      "topic": "semantics",
+      "file_scope": [
+        "specs/reviews/pr-reviews-2026-11-21/pr10-review.md",
+        "specs/reviews/pr-reviews-2026-11-21/pr9-disposition.md"
+      ],
+      "created": "2026-11-21T22:59:59Z",
+      "last_updated": "2026-11-21T23:43:45Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "review_pr10_semantic_record_and_pr9_disposition",
+          "project_number": null,
+          "title": "review_pr10_semantic_record_and_pr9_disposition"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 7,
+          "duplicate-of-open": 1,
+          "scope-blind": 450
+        },
+        "verdicts_detail": [
+          {
+            "verdict": "duplicate-of-open",
+            "project_number": 978,
+            "project_name": "review_pr11_pointed_semantic_lemmas",
+            "shared_paths": null,
+            "mechanical_class": "none",
+            "semantic_score": 0.4935483870967742
+          }
+        ],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 450
+      },
+      "session_id": "sess_1795302289_fd0199",
+      "artifacts": [
+        {
+          "path": "specs/reviews/pr-reviews-2026-11-21/pr10-review.md",
+          "type": "report",
+          "summary": "Draft review of PR #10 (records/semantic-proof-mode.md): items for the user's ruling (missing Open Decisions section, four-client coverage, GO threshold), a COMMENT recommendation, and evidence for all seven requested checks (idiom, consistency, the four clients, the decidability ceiling, measurement, open points, PR #9 inventory pointer)."
+        }
+      ],
+      "next_artifact_number": 2
+    },
+    {
+      "project_number": 978,
+      "project_name": "review_pr11_pointed_semantic_lemmas",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Review collaborator PR #11 (branch feat/pointed-semantic-lemmas, head c6cd983b7 when filed, base main, +793 lines): the standalone semantic lemmas split out of PR #9 at the user's request, and prepare a merge recommendation and a draft review at specs/reviews/pr-reviews-2026-11-21/pr11-review.md. The PR adds FormalSystem/Semantics/TemporalRules.lean (covering-time next_iff/prev_iff/next_at/prev_at, allFuture_persist/allPast_persist, someFuture_bind/somePast_bind and their keeping variants), TemporalIntervals.lean (inclusiveUntil_iff, inclusiveSince_iff, release_iff, trigger_iff, weakUntil_iff, weakSince_iff), RankProgress.lean (rank_progress and its strict and pointed-truth forms), PointTransport.lean (Point, At, FactTransport, GoalTransport, IffTransport, the point relations, and the TM and TM+ factories), and two test files under Tests/BimodalTest/Semantics/. FIRST-READ FINDINGS TO CHECK: CI was green; the temporal lemmas are stated over the existing clause classes (TruthEnv, BotClause, ImpClause, UntlClause, SnceClause) so each is proved once for every language; every module carries assert_not_exists for the derivation types; no sorry; the proofs read as correct. WHAT TO ESTABLISH. (1) BUILD AND TRUST: build FormalSystem.Semantics and both test modules at the head with --wfail, run the linter and scripts/check-module-invariants.sh, and state the axiom set of every new theorem. (2) STATEMENTS: check each statement against the truth clauses it unfolds and against the list the user asked for on PR #9 (covering-time Next and Previous, G/H persistence, F/P bind, the inclusive and weak Until and Since clauses, rank_progress, the transport structures); name anything asked for and absent, and anything present and not asked for. Check strictness and endpoint conventions (half-open intervals, guard-first versus event-first argument order, which the docstrings of release/trigger/weakUntil call event first) against the conventions of Formula.untl and the reference manual. (3) DUPLICATION: search FormalSystem/Semantics/ and the language directories for existing lemmas with the same content (truth of next and prev, G/H persistence, time-shift, reversal, box_const, stab_state_only) and say whether each new lemma is new, a restatement, or a generic form that should replace per-language copies. The local `next` and `prev` abbreviations in TemporalRules are a further copy of derived operators: say how they relate to Formula.next / PlusFormula.next and to connective_signature_layer_shared_primitives. (4) DESIGN: FactTransport, GoalTransport and IffTransport are bare universally quantified propositions; judge whether the definitions earn their place over stating the factories as plain iff theorems, and whether `Point` duplicates an existing structure. (5) PLACEMENT AND NAMING: module names, namespace, README inventory rows, the regenerated typst/generated/status.typ, docstring conventions, and layer (ORGANISATION.md). (6) TESTS: what the two test files exercise and what they omit; past variants; TM+ and the Star language. (7) USE: attempt one of the refutations named in PR #10 (refute_allFuture_stab in FormalSystem/PlusLanguage/PlusNonValidities.lean) with these lemmas in a scratch file under the task directory, to learn whether the lemmas are usable as the lemmas-only control that record proposes; report the result without committing the scratch proof to the library. Nothing here waits on the semantic-mode record or on the tier ruling: the user told the contributor these lemmas are reviewed and merged on their merits. GROUND RULES FOR THIS REVIEW TASK. (i) Nothing is posted to GitHub, merged, pushed or approved by an agent: the deliverable is a draft the user posts and a recommendation the user acts on (.claude/rules/pr-prohibition.md). (ii) Work on the pull request head in a separate git worktree fetched with `git fetch origin refs/pull/<N>/head`, never in the main working tree; record the exact commit reviewed, re-check the head with `gh pr view` before finishing, and if it has moved say so and review the new commits too. (iii) Every claim in the draft is backed by something run or read in this task: a build, a test, an `#print axioms`, a file and line. Say plainly what was not verified. (iv) The report opens with the items that need the user's ruling, each with options and a recommendation, then the recommendation for the pull request (MERGE, REQUEST CHANGES or COMMENT), then the evidence. (v) The draft is written in the register of the reviews already posted (specs/reviews/pr-reviews-2026-11-20/): direct, specific, numbered requests, credit where the work is right, and a clear separation of conditions of merging from follow-ups. Read records/milestones.md, records/proof-mode.md, records/proof-mode-architecture.md and records/theorem-library.md first; the first-read findings this task starts from are summarized below and are to be checked, not trusted.",
+      "topic": "semantics",
+      "file_scope": [
+        "specs/reviews/pr-reviews-2026-11-21/pr11-review.md"
+      ],
+      "created": "2026-11-21T22:59:09Z",
+      "last_updated": "2026-11-21T23:42:47Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "review_pr11_pointed_semantic_lemmas",
+          "project_number": null,
+          "title": "review_pr11_pointed_semantic_lemmas"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 8,
+          "scope-blind": 447
+        },
+        "verdicts_detail": [],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 447
+      },
+      "session_id": "sess_1795302289_fd0199",
+      "artifacts": [
+        {
+          "path": "specs/978_review_pr11_pointed_semantic_lemmas/reports/01_review-pr11-pointed-semantic-lemmas.md",
+          "type": "report",
+          "summary": "Full review of PR #11 at head c6cd983b7: all gates green (--wfail build, full check-module-invariants.sh 58/58, runLinter, 52 axiom sets all within pcq, upward edges 10 before and after); recommends REQUEST CHANGES on four additive items, with four user rulings (the At-abbrev rewriting defect, named interval operators, who performs the next_iff_covBy promotion, merge-now vs request-changes)."
+        }
+      ],
+      "next_artifact_number": 2
+    },
+    {
+      "project_number": 977,
+      "project_name": "connective_signature_layer_shared_primitives",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Introduce a connective signature layer under FormalSystem so that TM and TM+ share one primitive signature and one set of derived operators instead of PlusFormula being a verbatim copy of Formula. PRIMITIVES STAY MINIMAL. Formula (FormalSystem/Syntax/Formula.lean) has six constructors (atom, bot, imp, box, untl, snce) and PlusFormula (FormalSystem/PlusLanguage/Formula.lean) restates all six and adds stab for the stability operator; that minimality is correct for TM and TM+ and is to be preserved. Do NOT adopt cslib's non-minimal expansion to primitive diamond, allFuture and allPast (cslib Cslib/Logics/Modal/Basic.lean has primitive and, or, box, diamond; Cslib/Logics/Temporal/Syntax/Formula.lean has primitive allFuture and allPast; the rationale and the 11-primitive target for the Bimodal layer are in cslib specs/181_bimodal_primitive_dia_always_historically/reports/01_bimodal-primitive-expansion-research.md, and cslib task 181 is still NOT STARTED so its own tree is inconsistent with that target). Non-minimality exists there to let one syntax serve minimal and intuitionistic propositional bases, since each classical interdefinability fails in a weaker logic; TM and TM+ are classical, so adopting it here would buy nothing and would move most of the views tier out of views and into the derivation tier as theorems. THE DEFECT IS DUPLICATION, NOT THE PRIMITIVE CHOICE. Eighteen derived operators are defined verbatim in both syntax files: after, allFuture, allPast, always, and, diamond, kMinus, kPlus, neg, next, or, prev, reflectTime, someFuture, somePast, sometimes and top. This is the syntax-layer root of the tmX / plusX name-pair duplication, and it violates principle 5 of records/proof-mode-architecture.md (languages are instances of an interface, not copies of a file). MODEL TO FOLLOW. cslib Cslib/Foundations/Logic/Connectives.lean (224 lines) is a working instance of the wanted shape and is directly portable: one class per primitive operator (HasBot, HasImp, HasBox, HasUntil, HasSince, HasNext), then PropositionalConnectives extending HasBot and HasImp and supplying neg := phi -> bot and top := bot -> bot as DEFAULT FIELD VALUES so the derived Boolean operators are written once, then a hierarchy of ModalConnectives, FutureTemporalConnectives, TemporalConnectives, LTLConnectives and BimodalConnectives with a bridge instance from BimodalConnectives to ModalConnectives. Four cslib languages share that one definition of neg and top. Note one tension to resolve rather than copy: cslib's ModalConnectives is box-only and minimal while its concrete Modal.Proposition carries a primitive diamond, so interface and inductive disagree there. DELIVERABLE. A signature layer under FormalSystem carrying one class per primitive operator including a stability class for the TM+ operator, a propositional class supplying the derived Boolean operators once, and a bimodal class, with Formula and PlusFormula as instances and the eighteen doubled definitions written once. ALSO ASSESS reducibility: all 35 definitions in FormalSystem/Syntax/Formula.lean are opaque defs and cslib uses abbrev for its Boolean and dual definitions, which unfold definitionally; making the pure Boolean and dual definitions here reducible would let part of the views tier be definitional rather than a table of view rows with unfolding lemmas, which bears directly on the views tier design in records/proof-mode-architecture.md. SEQUENCING. This sits BELOW the proof mode and is a prerequisite for proof_mode_abstract_frontend_interface, whose object-level class is to package the connectives among its members and which should require this signature rather than re-package it; a dependency edge is filed to that effect. Keep the Atom type fixed as it is; cslib parameterizes Formula over the atom type but that is a separate and larger change and is out of scope here. investigate_stability_as_modal_family may change whether the stability operator gets its own class or shares the Modal one; read its report if it exists but do not wait for it. ADDITIONAL DELIVERABLES (done-when of milestone D1 in records/milestones.md). (a) StarFormula (FormalSystem/StarLanguage) is an instance beside Formula and PlusFormula; it carries its own copy of next among others. (b) The interval operators are defined once on the signature: inclusiveUntil, inclusiveSince, release, trigger, weakUntil and weakSince, agreeing in argument order with Formula.release, Formula.trigger, Formula.weakUntil and Formula.weakSince (see the Argument-order trap note on Formula.release), and the clause lemmas of FormalSystem/Semantics/TemporalIntervals.lean (inclusiveUntil_iff, release_iff, weakUntil_iff and their past duals; that module arrives with branch feat/pointed-semantic-lemmas) are restated about them instead of about inline derived formulas. (c) One next and prev encoding: TemporalRules.next and prev of FormalSystem/Semantics/TemporalRules.lean, Formula.next, PlusFormula.next, StarFormula.next and the copy in FormalSystem/Metalogic/Expressiveness/SeparationZ/Syntax.lean are one definition or are tied by rfl rows in Tests/BimodalTest/Semantics/ValidityLayerTest.lean. (d) FormalSystem/Tactic/FormulaSyntax.lean, which matches TM and TM+ operator names only, reads the signature so that operator recognition reaches L⋆; the semantic evaluator of records/semantic-proof-mode.md has L⋆ clients.",
+      "topic": "syntax",
+      "file_scope": [
+        "FormalSystem/Syntax/Formula.lean",
+        "FormalSystem/PlusLanguage/Formula.lean"
+      ],
+      "created": "2026-11-21T21:05:46Z",
+      "last_updated": "2026-11-22T23:57:42Z",
+      "audit_verdict": {
+        "proposal": {
+          "id": "connective_signature_layer_shared_primitives",
+          "project_number": null,
+          "title": "Introduce a connective signature layer under FormalSystem so TM and TM+ share one primitive signature and one set of derived operators"
+        },
+        "verdict_counts": {
+          "covered-by-closed": 1,
+          "scope-blind": 450
+        },
+        "verdicts_detail": [],
+        "passes": {
+          "mechanical": true,
+          "semantic": true
+        },
+        "degradations_count": 450
+      }
+    },
     {
       "project_number": 976,
       "project_name": "decide_open_questions_from_pr_reviews_and_records",
@@ -1881,7 +2384,8 @@
         951,
         963,
         964,
-        969
+        969,
+        977
       ],
       "created": "2026-11-19T21:37:36Z",
       "last_updated": "2026-11-20T18:46:10Z",

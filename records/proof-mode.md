@@ -490,6 +490,12 @@ it, so it does not meet the done-when.
   the view table; errors from a supplied rule surface to the user; and at least one library
   entry in a sweep is shorter with them, shown by a second run of the gate-one selection with
   `lrewrite` and `lsimp` permitted and reported apart from the gate-one verdict.
+- **Current client**: the statement of `Perpetuity.boxDne` is proved by two tactics,
+  `lrewrite ← doubleNegation A (path := [boxBody])` then `lexact h`, against five steps in the
+  hand proof. The saving is in the proof script and not in the proof term, which is larger for
+  the rewrite variant. `boxDne` itself keeps its hand proof; the variant is an example in
+  `Tests/BimodalTest/Automation/ProofModeModalBooleanTest.lean`. The full comparison waits on
+  the M3 selection.
 - **Hard dependencies**: none for the tactics. The second run waits on M3's sweep.
 - **Sequencing-only dependencies**: none. It is merged or declined before M0 runs; M16 follows
   M0 and takes over the view rows contributed here.

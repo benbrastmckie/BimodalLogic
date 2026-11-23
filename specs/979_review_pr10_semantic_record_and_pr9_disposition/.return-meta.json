@@ -1,0 +1,48 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1795302289_fd0199_979",
+  "dispatch_seq": 2,
+  "findings_count": 7,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/reviews/pr-reviews-2026-11-21/pr10-review.md",
+      "summary": "Draft review of PR #10 (records/semantic-proof-mode.md): items for the user's ruling (missing Open Decisions section, four-client coverage, GO threshold), a COMMENT recommendation, and evidence for all seven requested checks (idiom, consistency, the four clients, the decidability ceiling, measurement, open points, PR #9 inventory pointer)."
+    },
+    {
+      "type": "report",
+      "path": "specs/reviews/pr-reviews-2026-11-21/pr9-disposition.md",
+      "summary": "Draft disposition of PR #9: inventory of what it carries that PR #7/#10/#11 do not, a recommendation to close (not hold) with a draft closing comment, and what was and was not independently verified."
+    }
+  ],
+  "user_decision": {
+    "summary": "PR #10 (records/semantic-proof-mode.md) and PR #9 (feat/proof-mode-semantics) each need the user's own ruling before any GitHub action; per .claude/rules/pr-prohibition.md no agent posts, merges, or closes anything.",
+    "details": "pr10-review.md opens with three ruling items (add a formal Open Decisions section before accepting; whether four named clients are enough or an Until/Since client should be added now; whether to fix a GO threshold for tactic adoption now or defer it) and a COMMENT recommendation for the PR. pr9-disposition.md recommends closing PR #9 (not holding or converting to draft) with a drafted closing comment, since its two unconditional asks are already in flight as #10/#11 and its remaining tactic-dispatch layer cannot merge as written regardless of its CONFLICTING status."
+  },
+  "memory_candidates": [
+    {
+      "content": "When reviewing a markdown-only governance/design record in this repo (records/*.md), checking it against records/README.md's 'which decisions are open' requirement is mechanically checkable: grep the candidate record and its siblings for case-insensitive 'alternative|reject' occurrence counts. A record with zero hits while its siblings each have several is a concrete, citable idiom gap (missing '## Open decisions' / no stated rejected alternatives), not a subjective style complaint.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/reviews/pr-reviews-2026-11-21/pr10-review.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["records", "idiom-review", "open-decisions", "grep-check", "BimodalLogic"]
+    },
+    {
+      "content": "In BimodalLogic, a PR whose branch name/number suggests it is late in a stack (e.g. '[3/3]') will show a diff against main that is the cumulative content of every earlier branch in the stack, not just its own unique work. Before inventorying 'what's unique to this PR', diff its file list (gh pr view --json files) against the file lists of the PRs it is presumably stacked on; content appearing in an earlier, still-open sibling PR is very likely superseded there (in a cleaned-up form) rather than uniquely owned by the later PR.",
+      "category": "PATTERN",
+      "source_artifact": "specs/reviews/pr-reviews-2026-11-21/pr9-disposition.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["stacked-prs", "pr-review", "gh-pr-view", "file-list-diff", "BimodalLogic"]
+    },
+    {
+      "content": "FormalSystem/Metalogic/Decidability/README.md in BimodalLogic directly states the decidability ceiling: the tableau's full decidability biconditional is retired as vacuous; the only landed decidability result is decidableValidZTime (ZTime only, Formula only i.e. no stability operator, empty premises, via a presentation-free witness-family certificate); IntPresentation.lean gives the one genuinely finite model presentation (Fin-card ZTime frame) but only decides satisfiability of that presented frame, not the logic. Cite this README directly for any 'what would a decision procedure over these models need' question instead of re-deriving it from the tableau code.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/reviews/pr-reviews-2026-11-21/pr10-review.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["decidability", "tableau", "WitnessFamily", "IntPresentation", "BimodalLogic"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 979 to create an implementation plan (or, if the user prefers to act on the two review drafts directly, no further implementation is needed for this task beyond the user posting/acting on the drafts themselves)."
+}

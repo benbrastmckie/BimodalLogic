@@ -10,6 +10,9 @@ dependency.
 | File | Lines | Description |
 |------|------:|-------------|
 | `Attr.lean` | 104 | Every attribute and named simp set the library uses: `truth_norm`, `reflect_time_norm`, `formula_unfold`, `formula_fold`, `@[tmLemma]` |
+| `FormulaPositions.lean` | 192 | Formula occurrence selection, path polarity and scope planning |
+| `FormulaSyntax.lean` | 122 | Checked TM and TM⁺ formula operator names and matching |
+| `FormulaViews.lean` | 120 | The named formula equality table and `lunfold` / `lfold` |
 | `Meta.lean` | 118 | Shared `MetaM` plumbing for derivability goals: goal recognition, head-symbol readers, context rebuilding |
 <!-- END GENERATED -->
 
@@ -48,6 +51,12 @@ constraint, but the absence of a natural home. Its consumers are spread across `
 `Metalogic/`, so leaving it under `Automation/Tactics/` meant relocating `propDecide` into
 `Metalogic/Decidability/Propositional/` would merely have traded one `Metalogic -> Automation`
 import line for another.
+
+## Formula syntax and views
+
+`FormulaSyntax` and `FormulaPositions` inspect and rebuild formula expressions. `FormulaViews`
+applies a registered formula-data equation. These modules depend on formula definitions and Lean
+metaprogramming. Both derivation and pointed-model clients can import them directly.
 
 ## Related Documentation
 

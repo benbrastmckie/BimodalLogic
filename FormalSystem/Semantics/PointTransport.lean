@@ -29,13 +29,13 @@ namespace FormalSystem.Semantics.PointTransport
 open FormalSystem.Syntax
 open FormalSystem.PlusLanguage
 
-/-- A point of evaluation: a typed world history, a time and the inert environment. -/
+/-- A point of evaluation: a typed world history, a time and the evaluation environment. -/
 structure Point (L : Type) [TruthEnv L] (F : TaskFrame) where
   /-- The world history. -/
   history : WorldHistory F
   /-- The evaluation time. -/
   time : F.Duration
-  /-- The inert environment (`PUnit.unit` for TM/TM⁺). -/
+  /-- The evaluation environment (`PUnit.unit` for TM/TM⁺). -/
   env : TruthEnv.Env L F
 
 section Pointed
@@ -44,6 +44,11 @@ variable {L : Type} [TruthEnv L] {F : TaskFrame}
 /-- The existing truth relation at a point. -/
 abbrev At (M : TaskModel F) (p : Point L F) (A : L) : Prop :=
   TruthEnv.T M p.history p.time p.env A
+
+/-- Expose the truth judgment behind a point. To use a concrete language clause, include
+`TruthEnv.T` in the simp set to reduce the instance projection. -/
+@[simp] theorem at_def (M : TaskModel F) (p : Point L F) (A : L) :
+    At M p A ↔ TruthEnv.T M p.history p.time p.env A := Iff.rfl
 
 end Pointed
 
