@@ -10,11 +10,11 @@
 | Milestone | Status | Tasks done | Review |
 |---|---|---|---|
 | [M0: The PR review round: a posted decision on each of the five contributions](#milestone-m0) | closed 2026-11-23 | - | none |
-| [M13: What the merges leave owed: the signature layer and the follow-ups](#milestone-m13) | active | 0/4 | none |
 | [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | planned | 0/5 | none |
 | [M3: Proof-mode rule set up to gate one](#milestone-m3) | planned | 0/11 | none |
 | [M1: Repository hygiene](#milestone-m1) | active | 0/7 | none |
 | [M7: L-plus at integer time: decidability and route R3](#milestone-m7) | active | 0/6 | none |
+| [M13: What the merges leave owed: the signature layer and the follow-ups](#milestone-m13) | active | 0/4 | none |
 | [M8: The tableau decidability engine](#milestone-m8) | active | 0/8 | none |
 | [M4: Linear-time rules, usability and gate two](#milestone-m4) | planned | 0/7 | none |
 | [M5: One interface, and the entries that need it](#milestone-m5) | planned | 0/3 | none |
@@ -31,61 +31,30 @@ See also: [Rules, conventions and repo context](#roadmap-context)
 
 Closed 2026-11-23 -- review: none -- Reported on all five contributions, reconciled the records, and stated D4 once over TruthEnv
 
-<a id="milestone-m13"></a>
-## M13: What the merges leave owed: the signature layer and the follow-ups
-
-Land the records the open contributions release: the D1 signature layer that the derivation layout and the one interface both file into, and the follow-ups the temporal rules and the pointed semantic lemmas each leave owed.
-
-- **Progress**: active -- 0/3 batches, 0/4 tasks done -- 977 is researched and planned; all four wait only on a merge -- 977 and 987 on #8, 989 and 984 on #11
-- **Review**: none
-- **Gate**: The signature layer is implemented with Formula, PlusFormula and StarFormula as instances and the eighteen doubled derived operators written once; and every follow-up each merged contribution leaves owed is closed, or re-filed against the merged tree with a stated reason.
-
-**Batch 1** -- The D1 signature layer: researched and planned, implementation waits only on the #8 merge
-
-```
-/orchestrate 977
-977 EXT-BLOCKED     connective_signature_layer_shared_primitives   <- researched and planned; implementation waits on the temporal rules merge
-```
-
-**Batch 2** -- The temporal rules' owed follow-ups once #8 lands; 950 builds on the same modules
-
-```
-/orchestrate 987
-987 EXT-BLOCKED     temporal_rules_followups_fold_names_and_progress_tests   <- waits on the temporal rules contribution merging
-```
-
-**Batch 3** -- Everything owed on the pointed semantic lemmas once #11 lands, stated over the clause classes
-
-```
-/orchestrate 989, 984
-984 EXT-BLOCKED     promote_next_prev_covby_to_generic_lemmas   <- waits on TemporalRules.lean reaching main with the pointed semantic lemmas
-989 EXT-BLOCKED     pointed_semantic_lemmas_after_merge_followups   <- waits on the pointed semantic lemmas contribution merging
-```
-
 <a id="milestone-m2"></a>
 ## M2: BimodalLib: the evidence base the mode is measured against
 
 Give the theorem library its layout by fragment and frame class, fill the fragments the tableau reaches, keep every refutation checked, and make filing by smallest fragment a theorem.
 
-- **Progress**: planned -- 0/2 batches, 0/5 tasks done -- 971 is ready now; gate one carries an edge on it, and the evaluator's countermodel client sits behind it
+- **Progress**: planned -- 0/2 batches, 0/5 tasks done -- 970 and 971 are the highest-leverage ready lines and collide with nothing in any open PR; gate one carries an edge on 971
 - **Review**: none
 - **Gate**: BimodalLib builds; every closed derivation outside Theorems/ProofMode/ is registered with its fragment, frame class and substitution class and a check fails when one is added unregistered; tableau verdicts and countermodels are admitted only at a stated grade; and the conservativity table is generated from the theorems.
 
-**Batch 1** -- The registry and the three records that read it; only 972's 961 edge reaches outside
+**Batch 1** -- Whether stability is rightly a Modal family: no file scope, the cheapest de-risking while 977 waits
+
+```
+/orchestrate 970
+970 ready           investigate_stability_as_modal_family   <- no file scope, no PR overlap; its report may move stability to its own signature class
+```
+
+**Batch 2** -- The registry every later library record reads: no open-PR collision, the deepest unblock ready
 
 ```
 /orchestrate 971, 975, 972, 973
 972 blocked:961,971 theorem_library_tableau_pipeline
 973 blocked:971,972 theorem_library_countermodels
 975 blocked:971     theorem_library_fragment_conservativity   <- the 971 edge is the generated table only; its theorems need not wait
-971 ready           theorem_library_layout_and_registry   <- the registry 947, 972, 973, 974 and 975 all read
-```
-
-**Batch 2** -- Whether the stability operator is rightly in the Modal family; the entries wait on this report
-
-```
-/orchestrate 970
-970 ready           investigate_stability_as_modal_family
+971 ready           theorem_library_layout_and_registry   <- the registry 947, 972, 973, 974 and 975 all read; no overlap with any open PR
 ```
 
 <a id="milestone-m3"></a>
@@ -93,29 +62,29 @@ Give the theorem library its layout by fragment and frame class, fill the fragme
 
 Put the mode in the operator-family layout, extend the bimodal scope rules, close leaves by automation and measure the merged tactics, then re-prove the perpetuity selection and take the verdict.
 
-- **Progress**: planned -- 0/4 batches, 0/11 tasks done -- 960 and 977 both wait on the #8 merge, so the 969 -> 946 -> 947 chain sits behind it too; 986 and 962 are the lines enterable today
+- **Progress**: planned -- 0/4 batches, 0/11 tasks done -- 962 then 986 are enterable today; 960 is genuinely held on four ProofMode overlaps, and the 969 -> 946 -> 947 chain waits on the #8 merge
 - **Review**: none
 - **Gate**: 947's report at docs/development/proof-mode-adequacy-perpetuity.md opens with GO or RE-PLAN. GO requires the proof-mode scripts to be shorter than the hand proofs in aggregate and for a clear majority of the gate's entries, with no entry needing a raw term-mode escape longer than its hand proof.
 
-**Batch 1** -- Report a view's real failure cause before the views tier freezes the wrong message in a test
-
-```
-/orchestrate 986
-986 ready           proof_mode_views_report_swallowed_view_error   <- lands before the views tier, which edits the same file
-```
-
-**Batch 2** -- Deduction theorems for Star and Open: no predecessors, off the gate, Open half demoted
+**Batch 1** -- Deduction theorems for Star and Open: no predecessor, off the gate, no open-PR collision
 
 ```
 /orchestrate 962
 962 ready           proof_mode_deduction_theorems_star_open
 ```
 
-**Batch 3** -- The operator-family layout every later record files into; held while PR #8 is open
+**Batch 2** -- A view's real failure cause, before the views tier freezes it; one real file overlap with #8
+
+```
+/orchestrate 986
+986 ready           proof_mode_views_report_swallowed_view_error   <- one real overlap with #8 on Tactic/FormulaViews.lean; lands before the views tier
+```
+
+**Batch 3** -- The operator-family layout every later record files into; genuinely held by #8 and #9 overlap
 
 ```
 /orchestrate 960
-960 ready           proof_mode_split_shared_test_and_guide_files   <- implementation held while PR #8 is open; research and planning may proceed
+960 ready           proof_mode_split_shared_test_and_guide_files   <- genuinely held: four real ProofMode overlaps with #8 and #9; research and planning may proceed
 ```
 
 **Batch 4** -- All five pre-gate streams to gate one; 960 and 986 stay outside only because this is MAX_TASKS
@@ -197,6 +166,37 @@ Decide validity of the stability-modal language at integer time in Lean, past th
 763 blocked:761     ladder_lift_decidability_corollary
 861 blocked:761,763 Record the one-sided transport refutation in the RaySummary refutation table
 862 blocked:761     Promote cntAt_eq_of_pend_eq_fwd into LadderAgree as a strict sharpening
+```
+
+<a id="milestone-m13"></a>
+## M13: What the merges leave owed: the signature layer and the follow-ups
+
+Land the records the open contributions release: the D1 signature layer that the derivation layout and the one interface both file into, and the follow-ups the temporal rules and the pointed semantic lemmas each leave owed.
+
+- **Progress**: active -- 0/3 batches, 0/4 tasks done -- 977 is BLOCKED: its Phase 1 gate needs TemporalViews files absent from main, and no open PR is merge-ready, so all four lines wait
+- **Review**: none
+- **Gate**: The signature layer is implemented with Formula, PlusFormula and StarFormula as instances and the eighteen doubled derived operators written once; and every follow-up each merged contribution leaves owed is closed, or re-filed against the merged tree with a stated reason.
+
+**Batch 1** -- The D1 signature layer, now blocked: its Phase 1 needs the TemporalViews files only #8 carries
+
+```
+/orchestrate 977
+977 BLOCKED         connective_signature_layer_shared_primitives   <- BLOCKED: Phase 1 needs TemporalViews.lean and TemporalFormulaViews.lean, carried only by #8
+```
+
+**Batch 2** -- The temporal rules' owed follow-ups once #8 lands; 950 builds on the same modules
+
+```
+/orchestrate 987
+987 EXT-BLOCKED     temporal_rules_followups_fold_names_and_progress_tests   <- waits on the temporal rules contribution merging
+```
+
+**Batch 3** -- Everything owed on the pointed semantic lemmas once #11 lands, stated over the clause classes
+
+```
+/orchestrate 989, 984
+984 EXT-BLOCKED     promote_next_prev_covby_to_generic_lemmas   <- waits on TemporalRules.lean reaching main with the pointed semantic lemmas
+989 EXT-BLOCKED     pointed_semantic_lemmas_after_merge_followups   <- waits on the pointed semantic lemmas contribution merging
 ```
 
 <a id="milestone-m8"></a>
@@ -403,7 +403,7 @@ Keep the open-modal language's backlog moving at low priority: truth invariance 
 - **Review**: none
 - **Gate**: Each row of the backlog is landed or carries a recorded reason, and 876 reports on whether the stability operator could be removed as an OpenFormula primitive and at what cost, without attempting the removal.
 
-**Batch 1** -- The whole L-triangle backlog: 869 first, then the IntNormalForm API and the three closures
+**Batch 1** -- The whole demoted L-triangle backlog: 869 first, whose PR overlaps are regenerated files only
 
 ```
 /orchestrate 869, 932, 873, 874, 875, 876
@@ -412,7 +412,7 @@ Keep the open-modal language's backlog moving at low priority: truth invariance 
 875 blocked:873     open_language_incompleteness_transfer
 876 blocked:873     open_language_stability_primitive_removal
 932 blocked:869     Land the four ofStepRel constraint lemmas and an ofStepPlain constructor in I...
-869 ready           open_modal_invariance_ray_agreement_lifting
+869 ready           open_modal_invariance_ray_agreement_lifting   <- overlaps only regenerated inventory surfaces; stays demoted behind L-plus work
 ```
 
 <a id="roadmap-context"></a>
@@ -431,22 +431,27 @@ Keep the open-modal language's backlog moving at low priority: truth invariance 
 ### Rules
 
 - L-plus is the front and L-triangle is secondary (2026-11-05). Its tasks are demoted, not abandoned, and are never dispatched ahead of, or batched with, L-plus critical-path work.
+- The enterable front leads the order (2026-11-23). No open contribution is merge-ready -- every one is CONFLICTING or DIRTY -- so the merge-gated round no longer leads: the library and rule-set work that collides with no open PR does, and M13 sits below it.
 - Decidability before completeness (2026-11-02). At ZTime deciding validity makes the valid set recursive outright; Craig remains the instrument only for the weaker r.e.-only case at Base, Dense and RTime.
 - No Lean formalization of the Reynolds engine's sections 7-15 (901's Recommendation 8). Filing a record for any part of them is a ruling violation, not a judgement call.
 - Closedness of the canonical bundle is the completeness front's standing open problem, owned by no task and not to be filed: filing it needs a fresh user ruling reversing the sections 7-15 refusal.
 - The stability operator stays primitive in both languages (2026-11-05), and no constructor is added to PlusFormula, PlusAxiom or PlusDerivationTree.
 - No agent-system work is filed in this repository: this tree's .claude-extensions.json declares no reachable source_dir, so a record whose edit target resolves only under the source store cannot run from here.
-- 960's IMPLEMENTATION must not be dispatched while collaborator pull request #8 is open; #7 is merged, so #8 is the only one still barring it. Research and planning may proceed. This is a statement rather than a status: no hold is set.
-- 977's landing window is settled (2026-11-23): research and planning are done and implementation lands after the temporal rules contribution merges. The consequence: 969, then 946 and gate one 947, sit behind the #8 merge.
+- 977 is BLOCKED (2026-11-23): its plan's Phase 1 gate needs PlusLanguage/TemporalViews.lean and Tactic/TemporalFormulaViews.lean, both absent from main and carried only by #8, and phases 1, 5 and 8 read #8-only files. Nothing was edited; see the task's issues.jsonl, iss_1795469726840_qnsMb4.
+- 977 lands AFTER the temporal contribution, settled on evidence (2026-11-23) rather than recommendation: #8 edits neither Syntax/Formula.lean nor PlusLanguage/Formula.lean, so the before order saves no rebase, and the interval operators 977 owes exist only on #8's branch.
+- #8 merges on two conditions (records/milestones.md, what to do next): the carrying table's key widened to (source, target) and made non-private, and the one altered ProofModeTest.lean acceptance example split into the two cases it used to cover.
+- 960's IMPLEMENTATION must not be dispatched while #8 is open: its overlap is four real ProofMode source, test and guide paths, carried by #8 and #9, not a regenerated surface. Research and planning may proceed. This is a statement rather than a status: no hold is set.
+- The 970 -> 977 relation is advisory, not an edge (2026-11-23): 970's report may move the stability operator to its own signature class, but 977's filed plan presupposes no such report, and 974 already carries edges on both 970 and 971 where that decision is load-bearing.
 - 947 is gate one: its report must open with an explicit GO or RE-PLAN verdict, and on RE-PLAN every record after it is held until its own record is revised. 948 is gate two and carries no verdict as filed.
 - The depth-0 gate behind 761 is owned by no open task, so no dependency edge can express that blocker and none was invented to replace the one that aged out. Its disposition is a user ruling.
-- The collaboration round leads the order (2026-11-22 instruction). The review round and the three actions it left have closed; what the merges still leave owed -- the signature layer and each contribution's follow-ups -- comes first, with hygiene below the library and the pre-gate rule set.
 
 ### Conventions
 
 - Each batch line is one invocation and batches are dependency-inclusive: a batch holding a blocker with its dependent is correct, while a dependent named without its out-of-batch blocker is dead weight.
 - MAX_TASKS is 8 and the work-cycle budget is per task per invocation (5 default, 13 under --hard), so re-run the same line until every member reports terminal.
 - Shared file scope serializes a batch rather than breaking it, and a collision against a live session's lock is not bypassable by --allow-scope-collision: wait for the holder, or batch with it.
+- Measured against the open PR diffs (2026-11-23): 12 of the 15 ready records collide with nothing in any open contribution -- 971, 970, 962, 988, 604, 935, 831, 502, 570, 890, 178, 664 -- and eight of those declare no file_scope at all, so no merge can collide with them.
+- Only three ready records overlap an open PR: 986 on Tactic/FormulaViews.lean, 960 on four ProofMode source, test and guide paths, and 869 on four auto-regenerated inventory surfaces, three READMEs and typst/generated/status.typ -- mechanical, not semantic.
 - 960 and 952 declare whole ProofMode directories on purpose, so nothing else may run beside either; the library records declare their own BimodalLib directories, and 178, 177, 257, 482, 875 and 876 declare theirs coarsely.
 - Nineteen open records carry no file_scope (125, 231, 411, 412, 497-502, 570, 604, 664, 713, 831, 890, 935, 970, 984), so the creation-time overlap check is blind on them. No task is filed for it.
 - A RESEARCHED status does not always mean a report exists: 861, 862 and 890 carry it with no linked artifact and no task directory, their research folded into the task description.
