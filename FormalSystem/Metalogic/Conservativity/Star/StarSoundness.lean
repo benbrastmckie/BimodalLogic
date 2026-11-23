@@ -37,6 +37,8 @@ which would require an axiom set that is mirror-closed as a *set of instances*.
 
 - `star_derivable_valid_and_reflect_time_validIn` — the companion recursion
 - `star_soundness_validIn` — `StarDerivable fc [] φ → StarValidIn fc φ`
+- `star_soundness_in` — the context form: truth of `φ` at a point from a derivation of `φ` from
+  `Γ` and truth of `Γ` at that point, at one stored-time vector
 - `star_soundness_valid` / `_dense` / `_ztime` / `_rtime` — the four rows
 - `star_not_derivable_nil_bot` — consistency of TM⋆ at `.Base`
 
@@ -124,6 +126,33 @@ Paper: — (formalization-native; the manuscript supplies no proof system for `\
 theorem star_soundness_validIn {fc : FrameClass} {φ : StarFormula}
     (h : StarDerivable fc [] φ) : StarValidIn fc φ :=
   h.elim fun d => (star_derivable_valid_and_reflect_time_validIn d).1
+
+/-- **Soundness of TM⋆ at `fc`**, context form: a derivation of `φ` from `Γ` makes `φ` true at
+every model over a frame satisfying `fc`, every world history, every time and every stored-time
+vector at which all of `Γ` is true. The stored-time vector is one fixed `v`, shared by the
+premises and the conclusion: the premises are assumed at the point of evaluation only, not at
+every vector. Mirror of `plus_soundness_in`; the `time_reflection` case defers to the companion
+recursion.
+
+Paper: — (formalization-native; the manuscript supplies no proof system for `\BL^\star`)
+-/
+theorem star_soundness_in {fc : FrameClass} (Γ : StarContext) (φ : StarFormula)
+    (d : StarDerivationTree fc Γ φ)
+    (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
+    (τ : WorldHistory F) (t : F.Duration) (v : ℕ → F.Duration)
+    (h_ctx : ∀ ψ ∈ Γ, StarTruthAt M τ t v ψ) :
+    StarTruthAt M τ t v φ := by
+  induction d generalizing τ t with
+  | «axiom» Γ' φ' h_ax h_fc => exact starAxiom_validIn h_ax h_fc F hF M τ t v
+  | assumption Γ' φ' h_in => exact h_ctx φ' h_in
+  | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 => exact (ih1 τ t h_ctx) (ih2 τ t h_ctx)
+  | necessitation φ' _ ih => intro σ; exact ih σ t (by simp)
+  | temporal_necessitation φ' _ ih =>
+    rw [StarTruth.allFuture_iff]; intro s _; exact ih τ s (by simp)
+  | time_reflection φ' d' _ih =>
+    exact (star_derivable_valid_and_reflect_time_validIn d').2 F hF M τ t v
+  | weakening Γ' Δ' φ' _ h_sub ih =>
+    exact ih τ t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
 /-! ## The four rows -/
 

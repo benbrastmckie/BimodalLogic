@@ -1,7 +1,7 @@
 # Implementation Plan: Task #983
 
 - **Task**: 983 - State pointed soundness once over TruthEnv (milestone D4)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/983_soundness_statement_over_truth_env/reports/01_pointed-soundness-truth-env.md
@@ -87,19 +87,19 @@ No prior plan.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Context form of TM⋆ soundness [NOT STARTED]
+### Phase 1: Context form of TM⋆ soundness [COMPLETED]
 
 **Goal**: `star_soundness_in` proved in `StarSoundness.lean` directly after `star_soundness_validIn`, with its registry rows and generated surfaces current.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean` immediately before editing (shared working tree).
-- [ ] Add `star_soundness_in` directly after `star_soundness_validIn`, with the signature in "Lean Challenge Statements" below and the proof from Recommendation 1 of the research report (`induction d generalizing τ t`, seven arms). Use no `show`.
-- [ ] Give it a docstring with a `Paper:` line in the form `plus_soundness_in`'s docstring uses; state that the register environment is one fixed `v` shared by premises and conclusion.
-- [ ] Add a `star_soundness_in` bullet to the "Main Results" list of the module docstring.
-- [ ] Add a `docs/theorem-index.md` row for `FormalSystem.Metalogic.Conservativity.star_soundness_in` directly after the `star_soundness_validIn` row, following that row's column shape. If the tree's rows for the neighbouring context forms follow a different convention when the file is re-read, follow the file.
-- [ ] Confirm axioms: `#print axioms FormalSystem.Metalogic.Conservativity.star_soundness_in` in a scratch file gives `[propext, Classical.choice, Quot.sound]`.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and `bash scripts/check-module-invariants.sh --emit-inventory`; stage what they rewrite among the files listed below.
-- [ ] Commit this phase's own files by explicit path.
+- [x] Re-read `FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean` immediately before editing (shared working tree).
+- [x] Add `star_soundness_in` directly after `star_soundness_validIn`, with the signature in "Lean Challenge Statements" below and the proof from Recommendation 1 of the research report (`induction d generalizing τ t`, seven arms). Use no `show`.
+- [x] Give it a docstring with a `Paper:` line in the form `plus_soundness_in`'s docstring uses; state that the register environment is one fixed `v` shared by premises and conclusion.
+- [x] Add a `star_soundness_in` bullet to the "Main Results" list of the module docstring.
+- [ ] Add a `docs/theorem-index.md` row for `FormalSystem.Metalogic.Conservativity.star_soundness_in` directly after the `star_soundness_validIn` row, following that row's column shape. If the tree's rows for the neighbouring context forms follow a different convention when the file is re-read, follow the file. *(deviation: skipped — every row on that page must be axiom-pinned in the C14 baseline pair inside `scripts/check-module-invariants.sh`, outside this plan's file list and the task file_scope; the neighbouring context forms `soundness_in` and `plus_soundness_in` carry no row, so the file's convention was followed)*
+- [x] Confirm axioms: `#print axioms FormalSystem.Metalogic.Conservativity.star_soundness_in` in a scratch file gives `[propext, Classical.choice, Quot.sound]`.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and `bash scripts/check-module-invariants.sh --emit-inventory`; stage what they rewrite among the files listed below. *(deviation: altered — `--emit-inventory` also rewrote `FormalSystem/Metalogic/Conservativity/Star/README.md`, in file_scope; staged, with a hand-added `star_soundness_in` bullet in its results list)*
+- [x] Commit this phase's own files by explicit path.
 
 **Timing**: 0.75 hours
 

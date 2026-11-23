@@ -27,7 +27,7 @@ function `StarAxiom.ofPlusAxiom` (`StarLanguage/Embedding.lean`), which adds not
 | `Forward.lean` | 236 | Conservativity: `forward_star` and `starDerivable_ofFormula_iff` over TM, unconditional in both directions at all four classes; the conditional pair `starConservative_of_plusComplete` / `plusIncomplete_of_starNonconservative` over TM⁺. |
 | `StarAxiomValidity.lean` | 1,213 | The two dispatch lemmas, one arm per `StarAxiom` constructor and no wildcard, plus the sixteen named register-schema validities they dispatch to. |
 | `StarPasting.lean` | 232 | The two L⋆ purity congruences and PS / US over `StarFormula`, reusing `PlusLanguage/PlusPasting.lean`'s formula-independent construction read-only. |
-| `StarSoundness.lean` | 177 | Soundness of TM⋆ at every frame class, by the companion recursion carrying validity and reflection-validity, plus the four rows and consistency at `.Base`. |
+| `StarSoundness.lean` | 206 | Soundness of TM⋆ at every frame class, by the companion recursion carrying validity and reflection-validity, plus the four rows and consistency at `.Base`. |
 <!-- END GENERATED -->
 
 ## Key Results
@@ -40,6 +40,8 @@ function `StarAxiom.ofPlusAxiom` (`StarLanguage/Embedding.lean`), which adds not
   nor `↑ⁱχ` is state-determined, so `stab_state_only` has no L⋆ analogue), and no argument
   anywhere uses uniform substitution.
 - `star_soundness_validIn` — soundness of TM⋆ at every frame class, TR discharged semantically.
+- `star_soundness_in` — the context form: a derivation of `φ` from `Γ` gives truth of `φ` at any
+  point where `Γ` is true, at one stored-time vector shared by premises and conclusion.
 - `starDerivable_ofFormula_iff` — **TM⋆ is a conservative extension of TM**, both directions, at
   all four classes, unconditionally.
 - `starConservative_of_plusComplete` with `plusIncomplete_of_starNonconservative` — the L⁺ ⊂ L⋆
