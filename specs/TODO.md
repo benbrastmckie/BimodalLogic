@@ -13,7 +13,7 @@ next_project_number: 991
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,960,962,970,971,977,986,987,988,989 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,960,962,971,977,986,987,988,989 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932,944,954,955,961,969,975,984 | 298,428,502,604,761,869,960,971,977,986,989 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876,945,972 | 429,497,763,873,944,961,971 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543,946,973 | 410,498,499,500,945,969,972 | algebraic-representation, decidability, metalogic, ... |
@@ -22,7 +22,7 @@ next_project_number: 991
 | 7 | 482,950,964 | 412,949,963,987 | decidability, proof-mode |
 | 8 | 177,948 | 178,282,296,481,482,543,950,972 | formula-refactor, proof-mode |
 | 9 | 952 | 948,951,964 | proof-mode |
-| 10 | 953,956,966,968,974 | 952,962,970,973 | proof-mode |
+| 10 | 953,956,966,968,974 | 952,962,973 | proof-mode |
 | 11 | 957 | 956 | proof-mode |
 | 12 | 967 | 957,966,973 | proof-mode |
 
@@ -145,8 +145,6 @@ next_project_number: 991
     └─ 946 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS... (see above)
 962 [NOT STARTED] — MILESTONE M9b (records/proof-mode.md), STREAM: metatheory....
   └─ 953 [NOT STARTED] — With the interface as one class per operator family and... (see above)
-970 [IMPLEMENTING] — Investigate whether the stability operator ⊡ belongs in the...
-  └─ 974 [NOT STARTED] — MILESTONE M21 (records/proof-mode.md), LANE: library, then... (see above)
 971 [NOT STARTED] — MILESTONE M18 (records/proof-mode.md), LANE: library. Theorem...
   └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
   └─ 972 [NOT STARTED] — MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem... (see above)
@@ -271,12 +269,13 @@ next_project_number: 991
 ---
 
 ### 970. Investigate stability as modal family
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: logic
 - **Topic**: proof-mode
 - **Dependencies**: None
 - **Research**: [970_investigate_stability_as_modal_family/reports/01_stability-modal-family-layout.md]
 - **Plan**: [970_investigate_stability_as_modal_family/plans/01_stability-modal-family-layout.md]
+- **Summary**: [970_investigate_stability_as_modal_family/summaries/01_stability-modal-family-layout-summary.md]
 
 **Description**: Investigate whether the stability operator ⊡ belongs in the Modal operator family or in a family of its own. records/theorem-library.md and records/proof-mode-architecture.md start from ⊡ and its dual ⟐ filed under Modal beside □ and ◇, sharing one parameterized statement of the S5 laws; this is milestone M23 of records/proof-mode.md and open decision 2 of records/theorem-library.md. Research only, no Lean required. Deliverable: a report under docs/development/ that (1) weighs the one-family layout (four fragments, operator set recorded per entry) against a separate Stability family (eight fragments) using the three proved facts: without Temporal ⊡ collapses to the identity on state-local formulas (plusStateLocal_stab_iff, FormalSystem/PlusLanguage/PlusStateLocal.lean); TM⁺ is not closed under uniform substitution because AS p → ⊡p holds for atoms and state-local formulas only; the tableau does not cover ⊡; (2) determines whether the modal operators of FormalSystem/OpenLanguage/ and FormalSystem/NomicLanguage/ are further instances of the same parameterized necessity laws at other strengths, which would make "necessity operator of a given strength" the abstraction; (3) reviews how cslib (Cslib/Foundations/Logic/ProofSystem.lean, the Modal*Hilbert bundles and HasBox) would host two necessity operators on one formula type; (4) recommends one layout and, if the recommendation is a separate family, lists every change needed in records/theorem-library.md, records/proof-mode-architecture.md, records/proof-mode.md and in the filed proof-mode tasks (module names, file_scope, interface classes). The design is to be revised if the investigation finds the merged family wrong. No dependencies; the operator-family layout move, the interface extraction and the library registry are cheaper once it has reported but do not wait on it
 

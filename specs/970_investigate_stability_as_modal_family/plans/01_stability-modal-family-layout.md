@@ -1,7 +1,7 @@
 # Implementation Plan: Task #970
 
 - **Task**: 970 - Investigate whether the stability operator belongs in the Modal operator family
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/970_investigate_stability_as_modal_family/reports/01_stability-modal-family-layout.md
