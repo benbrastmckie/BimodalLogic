@@ -244,38 +244,53 @@ that is not there instead of substituting.
 
 ---
 
-### Phase 3: Final read of the two posting drafts [NOT STARTED]
+### Phase 3: Final read of the two posting drafts [COMPLETED]
 
 **Goal**: `pr10-comment.md` and `pr9-comment.md` are ready for the user to post unchanged — every
 citation resolves, every factual claim is backed by something read in this task, and the register
 matches the reviews already posted.
 
 **Tasks**:
-- [ ] Re-read `pr10-comment.md` and `pr9-comment.md` in full, and re-read
+- [x] Re-read `pr10-comment.md` and `pr9-comment.md` in full, and re-read
       `specs/reviews/pr-reviews-2026-11-20/pr7-followup.md` (and a second posted review in that
       directory) for the register: direct, numbered requests, credit where the work is right,
-      conditions of merging separated from follow-ups.
-- [ ] Resolve each record citation in the two drafts against the files on disk: `D4` and the
+      conditions of merging separated from follow-ups. *(completed: both drafts already match the
+      register — direct address, numbered items, credit given, merge conditions separated from
+      optional items; mtimes unchanged since this task's earlier read, no sibling edits)*
+- [x] Resolve each record citation in the two drafts against the files on disk: `D4` and the
       soundness-statement-over-`TruthEnv` wording (`records/milestones.md`, Goal D row D4); `D1`
       and its operator-recognition clause reaching L⋆; `B4` and `theorem_library_countermodels`
       (Goal B row B4); the evaluator-beside-the-lemmas assumption (now open decision 2, and the C3
       and C4 rows of Goal C); the adapter bullet in `records/proof-mode-architecture.md`. Where
       `pr10-comment.md` says "`milestones.md` assumes the evaluator sits under
       `FormalSystem/Semantics/` beside the lemmas with the mode a thin tactic layer over it",
-      confirm that is what open decision 2 and the C3/C4 rows actually say.
-- [ ] Confirm the three file paths `pr10-comment.md` names as shared-syntax candidates exist on
+      confirm that is what open decision 2 and the C3/C4 rows actually say. *(completed: every
+      citation resolves and agrees; D4's row text, D1's "reaches L⋆" clause, B4's Countermodels
+      table, open decision 2's exact wording, the C3/C4 rows, and the architecture record's
+      adapter bullet were all re-read directly and match what the drafts attribute to them — no
+      correction needed to either draft)*
+- [x] Confirm the three file paths `pr10-comment.md` names as shared-syntax candidates exist on
       `main` — `FormalSystem/Tactic/FormulaSyntax.lean`, `FormulaViews.lean`,
       `FormulaPositions.lean` — and that `FormulaSyntax.lean`'s operator table does stop at TM⁺,
-      which is the premise of its item 3. If it does not, correct the draft.
-- [ ] Confirm the four client declarations named in the drafts exist and are spelled correctly:
+      which is the premise of its item 3. If it does not, correct the draft. *(completed: all
+      three files exist; `FormulaSyntax.lean`'s `elabFormula`/match only handles
+      `PlusFormula` constructors, no `StarFormula` case — confirms the TM⁺-only premise; no
+      correction needed)*
+- [x] Confirm the four client declarations named in the drafts exist and are spelled correctly:
       `refute_allFuture_stab` and `refute_stab_allFuture_past` in `PlusNonValidities.lean`,
-      `refute_modal_future` and `refute_sentDet` in `StarNonValidities.lean`.
-- [ ] Check both drafts for anything meaningless to an outside collaborator: task numbers, agent
+      `refute_modal_future` and `refute_sentDet` in `StarNonValidities.lean`. *(completed: all
+      four exist under those exact names in those exact files on current `main`)*
+- [x] Check both drafts for anything meaningless to an outside collaborator: task numbers, agent
       or orchestration vocabulary, references to `specs/**` paths the collaborator cannot see, and
       draft-history phrasing. These are posted outside the repository even though PR metadata is
-      exempt from `.claude/rules/no-task-references-in-deliverables.md`.
-- [ ] Note in the drafts, or in the reports, anything asserted that was not independently verified
-      in this task, rather than letting it pass as checked.
+      exempt from `.claude/rules/no-task-references-in-deliverables.md`. *(completed: a case-
+      insensitive sweep for task-number, specs/-path, agent/orchestration and draft-history
+      patterns found nothing in either draft)*
+- [x] Note in the drafts, or in the reports, anything asserted that was not independently verified
+      in this task, rather than letting it pass as checked. *(completed: `pr10-comment.md`'s
+      first-person "I ran the lemmas-only control" claim is a measurement this task read from
+      `pr11-review.md`'s reported trial rather than re-running itself; that provenance is now
+      recorded in `pr10-review.md`'s preamble, which this draft's claim rests on)*
 
 **Timing**: 45 minutes
 
