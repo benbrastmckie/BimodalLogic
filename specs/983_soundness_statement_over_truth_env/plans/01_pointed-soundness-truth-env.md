@@ -173,17 +173,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Tests at all three languages [NOT STARTED]
+### Phase 3: Tests at all three languages [COMPLETED]
 
 **Goal**: a test module that derives native pointed truth from `truth_of_derivation` at TM, TM⁺ and TM⋆, registered in the test aggregator.
 
 **Tasks**:
-- [ ] Create `Tests/BimodalTest/Metalogic/PointedSoundnessTest.lean` importing `FormalSystem.Metalogic.PointedSoundness`, with the header and docstring shape the neighbouring test modules use.
-- [ ] One `example` per language closing a native goal (`TruthAt`, `PlusTruthAt`, `StarTruthAt`) from an abstract derivation tree and premises via `truth_of_derivation`, passing `PUnit.unit` for TM and TM⁺ and `v` for TM⋆.
-- [ ] Two further TM⋆ examples: a register axiom at a point (`StarAxiom.recall_rigid_future` at `FrameClass.Base`, frame evidence by `inferInstance` under `[F.IsRegular]`, with `(D := StarDerivationTree)` named), and a two-premise modus ponens from the context.
-- [ ] Add `import BimodalTest.Metalogic.PointedSoundnessTest` to `Tests/BimodalTest.lean` beside the other `BimodalTest.Metalogic.*` imports.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix`; stage `typst/generated/status.typ`.
-- [ ] Commit this phase's own files by explicit path.
+- [x] Create `Tests/BimodalTest/Metalogic/PointedSoundnessTest.lean` importing `FormalSystem.Metalogic.PointedSoundness`, with the header and docstring shape the neighbouring test modules use.
+- [x] One `example` per language closing a native goal (`TruthAt`, `PlusTruthAt`, `StarTruthAt`) from an abstract derivation tree and premises via `truth_of_derivation`, passing `PUnit.unit` for TM and TM⁺ and `v` for TM⋆.
+- [x] Two further TM⋆ examples: a register axiom at a point (`StarAxiom.recall_rigid_future` at `FrameClass.Base`, frame evidence by `inferInstance` under `[F.IsRegular]`, with `(D := StarDerivationTree)` named), and a two-premise modus ponens from the context.
+- [x] Add `import BimodalTest.Metalogic.PointedSoundnessTest` to `Tests/BimodalTest.lean` beside the other `BimodalTest.Metalogic.*` imports.
+- [x] Run `bash scripts/typst-sync-check.sh --fix`; stage `typst/generated/status.typ`.
+- [x] Commit this phase's own files by explicit path.
 
 **Timing**: 0.75 hours
 

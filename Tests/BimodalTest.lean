@@ -42,6 +42,7 @@ import BimodalTest.Metalogic.PeriodicExtensionAxiomTest
 import BimodalTest.Metalogic.EffectivePeriodicExtensionAxiomTest
 import BimodalTest.Metalogic.KTypeSummaryAxiomTest
 import BimodalTest.Metalogic.KTypeFinEvalTest
+import BimodalTest.Metalogic.PointedSoundnessTest
 import BimodalTest.Metalogic.Decidability.SaturationTest
 import BimodalTest.Metalogic.Decidability.BiLassoTest
 import BimodalTest.Metalogic.Decidability.BiLassoSuccessorTest
