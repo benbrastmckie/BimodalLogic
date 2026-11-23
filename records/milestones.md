@@ -62,8 +62,9 @@ layout runs the two channels share no file.
 
 ## Goals and milestones
 
-Milestone ids are local to this record. "Channel" is T (Tanner) or B (Benjamin); "Waits on"
-lists milestones here.
+Milestone ids are local to this record. "Channel" is T (Tanner) or B (Benjamin), or "either"
+where the milestone is open to whoever claims it and the "Done when" column is the standard;
+"Waits on" lists milestones here.
 
 ### Goal A: the derivation proof mode is how derivations are written
 
@@ -113,16 +114,17 @@ with the derivation mode, and meeting it in one soundness adapter under
 |---|---|---|---|---|
 | C1 | Semantic lemmas | Covering-time Next and Previous, G/H persistence, F/P bind, the inclusive and weak Until and Since clauses, `rank_progress` and the transport structures are merged under `FormalSystem/Semantics/` with tests | T | none |
 | C2 | Record agreed | `records/semantic-proof-mode.md` states the aim, the declarations the mode shortens, the measure and the milestones, and both collaborators accept it | T drafts, B reviews | none; better after C1 |
-| C3 | Evaluator | Truth of an arbitrary formula at a named point of a named model is decided by recursion on the formula; the refutations in `PlusNonValidities.lean` and `StarNonValidities.lean` are re-done with it and compared with a control run using the lemmas alone | T | C1, C2 |
-| C4 | Semantic mode and adapter | Own prefix and registry, no handler on `l*` syntax, no import of `FormalSystem/Automation/ProofMode/`; the adapter is the one module where the modes meet | T | C3, A4 |
+| C3 | Evaluator | Truth or falsity of a formula at a named point of a named model is proved by recursion on the formula's truth clauses, from witnesses the caller supplies; it checks evidence and is not a decision procedure; the refutations in `PlusNonValidities.lean` and `StarNonValidities.lean` are re-done with it and compared with a control run using the lemmas alone | T | C1, C2 |
+| C4 | Semantic mode and adapter | Own prefix and registry, no handler on `l*` syntax, no import of `FormalSystem/Automation/ProofMode/`; the adapter is the one module where the modes meet | T | C3, A4, D4 |
 
 ### Goal D: TM and TM⁺ are instances, not copies
 
 | Id | Milestone | Done when | Channel | Waits on |
 |---|---|---|---|---|
-| D1 | Signature layer | `connective_signature_layer_shared_primitives`: one class per primitive, the eighteen doubled derived operators written once | B | none; lands in the window of join 4 |
+| D1 | Signature layer | `connective_signature_layer_shared_primitives`: one class per primitive, the eighteen doubled derived operators written once, with `Formula`, `PlusFormula` and `StarFormula` as instances; the inclusive and weak Until and Since, Release and Trigger defined once on the signature, with the interval clause lemmas of C1 stated about them; one `next` and `prev` encoding; operator recognition in `FormalSystem/Tactic/FormulaSyntax.lean` reads the signature and so reaches L⋆ | B | none; lands in the window of join 4 |
 | D2 | One interface | PM-M8, `proof_mode_abstract_frontend_interface`: each rule proved once, the congruence kit and the single S5 step over `□` and `⊡` as its first generic pieces | assigned at gate two | A10, D1, A9 |
 | D3 | Other languages | PM-M9b then PM-M9a: `proof_mode_deduction_theorems_star_open`, `proof_mode_instances_other_languages` | B | none for the deduction theorems; D2 for the instances |
+| D4 | One soundness statement | `soundness_statement_over_truth_env`: pointed soundness with premises holds for TM, TM⁺ and TM⋆, the TM⋆ case being a new theorem beside `star_soundness_validIn`; it is stated once over `TruthEnv`, each language an instance; no module restates a language's soundness theorem under another name | either | none |
 
 ### Goal E: specification reasoning and dual verification
 
@@ -195,15 +197,16 @@ The places where the channels meet, each with the agreement it needs.
    selection is fixed. `lrewrite` and `lsimp` are measured by A11.
 6. **Evaluator and countermodels.** C3's client is B4. The record of C2 names the declarations;
    B4 states the grade at which an evaluator-checked refutation is admitted.
-7. **The adapter.** `luse_derivation` and the soundness lemma live in one module under
-   `FormalSystem/Metalogic/`, in the sound direction only. It is written with C4 and reviewed by
-   channel B.
+7. **The adapter.** The soundness lemma is the one statement of D4, in the sound direction only,
+   under `FormalSystem/Metalogic/`. The tactic that applies it is written with C4, in the same
+   module, and reviewed by channel B. C4 does not wrap soundness per language; a language the
+   statement does not yet cover is added as an instance of D4.
 
 ## Open decisions
 
 1. **Is `BimodalLib` in `defaultTargets`?** Open decision of
    `theorem_library_layout_and_registry`; it holds B1's implementation.
-2. **Evaluator with the lemmas or in a mode of its own?** Whether C3 is a decision procedure
+2. **Evaluator with the lemmas or in a mode of its own?** Whether C3 is an evaluator
    under `FormalSystem/Semantics/` beside the lemmas, with C4 a thin tactic layer over it, or
    the two are one module. The table above assumes the former. Settled in C2.
 3. **`expand` and `contract` for the Until and Since steps.** Open decision 2 of

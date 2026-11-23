@@ -79,8 +79,9 @@ by what it is:
 - the semantic lemmas are general semantics and sit in `FormalSystem/Semantics/`, at layer 1;
 - the tactics sit in a directory of their own under `FormalSystem/Semantics/`, for example
   `FormalSystem/Semantics/ProofMode/`, at layer 1;
-- the soundness adapter is one module at layer 3 under `FormalSystem/Metalogic/`, holding the
-  soundness lemma and `luse_derivation`. It imports soundness for each language and the
+- the soundness adapter is one module at layer 3 under `FormalSystem/Metalogic/`, holding one
+  soundness statement over `TruthEnv`, of which each language's soundness theorem is an
+  instance, and the tactic that applies it. It imports soundness for each language and the
   semantic mode, and nothing under `FormalSystem/Automation/ProofMode/`.
 
 A layer-1 mode imports layers 0 and 1 only. The two things it shares with the derivation mode,
