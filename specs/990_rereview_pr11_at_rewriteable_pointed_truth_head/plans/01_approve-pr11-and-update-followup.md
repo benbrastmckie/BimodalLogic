@@ -197,26 +197,26 @@ against the pinned sha `b2eb3ac0b57d0f6082235aee0b861d8249bd7687`.
 
 ---
 
-### Phase 2: Draft the approval body [NOT STARTED]
+### Phase 2: Draft the approval body [COMPLETED]
 
 **Goal**: a concise, flat approval message for PR #11 that says what was re-measured, what `At`
 usability now means, and what is a note rather than a condition.
 
 **Tasks**:
 
-- [ ] Create `specs/reviews/pr-reviews-2026-11-21/pr11-approval.md`. Do not edit or overwrite
+- [x] Create `specs/reviews/pr-reviews-2026-11-21/pr11-approval.md`. Do not edit or overwrite
       `pr11-comment.md`, which is the record of the body that was posted.
-- [ ] Open with the approval and the re-measurement in two or three sentences: approving at
+- [x] Open with the approval and the re-measurement in two or three sentences: approving at
       `b2eb3ac0b`; the gate set re-run locally in a from-scratch worktree at that head (build
       under `--wfail`, tests, lint, the full invariants run) and green; the axiom profile of all
       69 declarations of the four modules unchanged.
-- [ ] Condition 1, one short paragraph: the regeneration is the generators' own verdict, not an
+- [x] Condition 1, one short paragraph: the regeneration is the generators' own verdict, not an
       eyeball — `lake exe mk_all --lib FormalSystem` reports no update necessary and
       `check-module-invariants.sh --emit-inventory` reports no block needed a rewrite, with the
       tree clean through both. Note in one clause that the `status.typ` stamp naming `c6cd983`
       is the generator recording the HEAD it ran at, and that every count reproduces at the merge
       head, so it is generated output rather than a hand-resolved conflict.
-- [ ] Condition 2, the longest section and the one that has to be exact. State: the working
+- [x] Condition 2, the longest section and the one that has to be exact. State: the working
       idiom is `simp only [at_def, TruthEnv.T, <language clause lemma>]`; it works on goals and
       on hypotheses with `... at h`; it works at L, L⁺ and L⋆ including L⋆'s
       `ℕ → F.Duration` environment; `at_def` is load-bearing, since omitting it leaves `simp`
@@ -224,12 +224,12 @@ usability now means, and what is a note rather than a condition.
       because the per-language clause lemma is stated about the instance projection and that has
       to be reduced first. Add that on a generic clause former `simp` already sees through the
       reducible `At`, so `at_def` is needed only on the language-specific route.
-- [ ] Condition 3, one paragraph plus the acknowledgement: every named lemma now has a row, two
+- [x] Condition 3, one paragraph plus the acknowledgement: every named lemma now has a row, two
       of them at L⋆ with `regs` threaded explicitly, and 7 of the 13 transport factories are
       exercised, one per relation family. Acknowledge — as an acknowledgement, not an ask — that
       `IsoRel`, `AntiIsoRel` and the `Eq` relation of `plus_iffTransport_stateLocalStab` remain
       unexercised, since the bar asked for was one per family.
-- [ ] Notes, each explicitly not a condition and each at most a sentence or two: the
+- [x] Notes, each explicitly not a condition and each at most a sentence or two: the
       `someFuture_bind`, `somePast_bind`, `allFuture_persist` and `allPast_persist` rows were
       rewritten into the `_keeping` forms and stay exercised transitively, since the `_keeping`
       lemmas are proved from them, so nothing is being reopened there; the `rank_progress` row
@@ -237,18 +237,18 @@ usability now means, and what is a note rather than a condition.
       the pre-existing `rank_progress_strict` row rather than by it; and
       `Tests/BimodalTest/Semantics/README.md`'s row for `TemporalRulesTest.lean` no longer
       describes the file.
-- [ ] Credit the one thing that landed early at no cost: the `release_iff`, `trigger_iff` and
+- [x] Credit the one thing that landed early at no cost: the `release_iff`, `trigger_iff` and
       `weakUntil_iff` rows state their goals with `Formula.release`, `Formula.trigger` and
       `Formula.weakUntil`, so they compile the definitional agreement between the generic inline
       formula and the existing `Syntax/Formula.lean` operator.
-- [ ] Close by confirming the after-the-merge list stands unchanged — nothing in this push
+- [x] Close by confirming the after-the-merge list stands unchanged — nothing in this push
       touches the named interval operators, the `next_iff_covBy`/`prev_iff_covBy` promotion, the
       Release positive-reading note, the module docstring titles, or the L⁻/L⋆ gaps — and
       pointing at `records/milestones.md` D1 as the posted comment already does.
-- [ ] State plainly, in one sentence, what the gates certify and what they do not: compilation,
+- [x] State plainly, in one sentence, what the gates certify and what they do not: compilation,
       linting, the invariants suite and the axiom profile, not that any statement is the intended
       one.
-- [ ] Re-read the whole file for register: flat, direct, no hedging, no exclamation, short
+- [x] Re-read the whole file for register: flat, direct, no hedging, no exclamation, short
       paragraphs, bold lead-ins only where a note genuinely needs one. Use no task numbers
       anywhere in the body — the durable anchors are file paths, declaration names and
       `records/milestones.md` D1.
@@ -288,6 +288,31 @@ tables.
   `.git/info/exclude`, so its absence from the status output is the expected signal and a
   commit skip (`git-commit-scoped.sh` exit 8/9) for that path is a documented non-failure, not
   a gap.
+
+**Verification Notes** (Phase 2):
+
+- `specs/reviews/pr-reviews-2026-11-21/pr11-approval.md` exists and is non-empty (61 lines).
+- Claim-by-claim read-through against the research report completed: every factual assertion in
+  the body traces to a named row of the report's Condition 1, Condition 2, Condition 3 or
+  gate-evidence tables. Nothing is asserted that the report does not carry; the one
+  non-measurement sentence ("the case I was most worried about") restates the posted comment's
+  own stated concern about a wrongly threaded L⋆ environment rather than adding a fact.
+- All three conditions are addressed by name, in order, each with an explicit "— met".
+- The Condition 2 paragraph names `simp only [at_def, TruthEnv.T, <language clause lemma>]`
+  literally, states that `rw` to a clause lemma under `At` still does not work, and states that
+  `at_def` is load-bearing via the omitted-`at_def` control.
+- `grep -nE '\b[Tt]asks? [0-9]+'` over the file returns nothing (exit 1).
+- `git status --short -- <the file>` is empty, as expected: `/specs/reviews/` is listed in
+  `.git/info/exclude`, so this deliverable is never committed and a `git-commit-scoped.sh`
+  exit 8/9 skip for that path is the documented non-failure.
+- `pr11-comment.md` is untouched: still 45 lines, same first and last lines as read at planning
+  time.
+- **Scope Hypothesis outcome**: 61 lines against the hypothesised 35-55. Recorded as a knowing
+  overshoot in `issues.jsonl` rather than cut further, since every remaining paragraph discharges
+  a checklist item above and the only route to 55 was rewrapping at a wider column.
+- Covering check for the declared `prose` tier: the read-through above. The sole touched path
+  lies under `specs/**` and is not a report/plan/summary artifact, so no suite or build maps
+  to it.
 
 ---
 
