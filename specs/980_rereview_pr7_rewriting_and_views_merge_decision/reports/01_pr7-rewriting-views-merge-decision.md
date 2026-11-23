@@ -338,3 +338,130 @@ gh api repos/benbrastmckie/BimodalLogic --jq '{squash,merge,rebase}'
 - Tier and family scheme, "Where the work sits": `records/proof-mode-architecture.md`
 - Task descriptions in `specs/state.json`: 960 (`proof_mode_split_shared_test_and_guide_files`), 969 (`proof_mode_views_tier`), 952 (`proof_mode_abstract_frontend_interface`), 977 (`connective_signature_layer_shared_primitives`)
 - Draft response: `specs/reviews/pr-reviews-2026-11-21/pr7-review.md`
+
+---
+
+## Outcome
+
+This section was appended after the fact. Everything above it is the review as filed against
+head `5f5ad32bf` and is unchanged; this section records what became of it.
+
+### What happened
+
+Pull request #7 is **merged**. Read first-hand with
+`gh pr view 7 --json number,state,headRefOid,mergedAt,mergeCommit,title`:
+
+| Field | Value |
+|---|---|
+| `state` | `MERGED` |
+| `mergedAt` | `2026-11-22T22:58:00Z` |
+| `mergeCommit.oid` | `3c7197f84297d9ebab2472a89adba19effb72ef6` |
+| `headRefOid` | `6313e693f41e5dd761da83cd8e88b696196d2b8b` |
+| `title` | `[1/3] Add checked rewriting and bounded simplification` |
+
+The head moved from `5f5ad32bf` (the commit this report reviewed) to `6313e693f` before the
+merge. `git merge-base --is-ancestor 3c7197f84 HEAD` exits 0, so every file-and-line cited below
+is read off a working tree that contains the merged work.
+
+The response actually posted was `specs/reviews/pr-reviews-2026-11-21/pr7-approval.md` — an
+approval with two non-conditions — and **not** the request-changes draft at
+`pr7-review.md` in the same directory, which this task had prepared. That draft is retired in
+place with a header naming what superseded it.
+
+### The three conditions, each confirmed by file and line
+
+| Condition (as this report recommended) | Evidence in the merged tree |
+|---|---|
+| Replace the whole-folder `import Lean`, which fails the linter under `--wfail` | `FormalSystem/Tactic/FormulaSyntax.lean:8-9` now reads `import Lean.Meta.AppBuilder` and `import Lean.Meta.CollectMVars`; no `import Lean` remains in the file |
+| Docstring on the `lSimpOption` syntax production | `FormalSystem/Automation/ProofMode/Simplification.lean:136` `/-- One limit for a simplifier invocation. -/` above `declare_syntax_cat lSimpOption`, and `:138` documents the production itself |
+| Docstring on the `views` environment extension | `FormalSystem/Tactic/FormulaViews.lean:35` `/-- Persistent registrations for named formula views added by library modules. -/` above `initialize views : SimplePersistentEnvExtension View (Array View)` |
+
+### Delivered beyond the conditions: the filing by family
+
+This report recommended that the filing by family **not** hold the merge, and be carried instead
+by `proof_mode_split_shared_test_and_guide_files`. The contributor did it anyway. Confirmed by
+directory listing:
+
+- `FormalSystem/Theorems/ProofMode/Congruence/` now exists beside the aggregator
+  `Congruence.lean`, holding `Basic.lean`, `Boolean.lean`, `Modal.lean` and `Temporal.lean`,
+  where the review found one undivided `Congruence.lean`.
+- `Tests/BimodalTest/Automation/ProofModeExtensionsTest.lean` is **gone**
+  (`find . -name ProofModeExtensionsTest.lean` returns nothing outside `.git/`), replaced by
+  `ProofModeBooleanTest.lean`, `ProofModeModalBooleanTest.lean`,
+  `ProofModeModalTemporalBooleanTest.lean` and `ProofModeTemporalBooleanTest.lean`.
+- `FormalSystem/Theorems/ProofMode/ModalBoolean.lean` and `ModalTemporalBoolean.lean` exist, so
+  the seeds and the scope conversions have their family homes.
+
+The 45-declaration inventory in the Findings above is therefore **partly consumed**: the
+`Congruence` split and the test split are done; the inventory's remaining rows (the elaborator
+module renames, the guide pages, the README inventories) are untouched and still owed.
+
+### The M17 "Current client" paragraph
+
+Restated on `main`. `records/proof-mode.md:493` now reads, in part, "The saving is in the proof
+script and not in the proof term, which is larger for the rewrite variant", names
+`Tests/BimodalTest/Automation/ProofModeModalBooleanTest.lean` as where the variant lives, and
+says `boxDne` itself keeps its hand proof. A grep for `0.14 ms`, `393`, `159 expression` and
+`expression nodes` over `records/proof-mode.md` returns nothing: the unreproducible node counts
+and the timing are gone, exactly as this report's condition 3 asked.
+
+### Which claims above are now historical
+
+- The **REQUEST CHANGES** recommendation under `## Recommendation for the Pull Request` and the
+  three-condition list that opens the report. Both conditions and the recommendation are
+  discharged; the pull request merged under a squash, which this report judged acceptable for
+  the merge-not-rebase history.
+- The whole `## Items Needing Your Ruling` table. All three rulings are closed by events: the
+  conditions were settled and exceeded, the squash merge was taken, and the M17 paragraph was
+  restated on `main`.
+- Any statement that the filing by family is "not done" or must be carried by the layout record
+  in full. It was partly delivered here.
+
+### Which claims above remain live
+
+Re-measured in the merged tree, not inherited:
+
+- **The views-tier gap is real and unchanged.** `coreViews` at
+  `FormalSystem/Tactic/FormulaViews.lean:60-64` carries four distinct view names — `diamond`,
+  `next`, `prev`, `dstab` — across seven rows (`Formula` and `PlusFormula` copies).
+  `Language.operatorName` at `FormalSystem/Tactic/FormulaSyntax.lean:33-85` is a hand-written
+  pair table with **20 entries** (`atom bot top imp neg and or box diamond untl snce allFuture
+  allPast someFuture somePast next prev after stab dstab`); 17 of those are operators proper,
+  which is the figure the Findings above cite. The two tables are still separate, so an operator
+  can be traversable with no view or the reverse.
+- **`lunfold`/`lfold` have no occurrence argument.** `applyView`
+  (`FormulaViews.lean:93-108`) calls `rewriteLocalDecl equation fold id` or
+  `rewriteTarget equation fold` with no position argument, so both behave like `rw`.
+- **`applyView` discards the error it catches.** `FormulaViews.lean:106-107` is literally
+  `catch _ => saved.restore`, and line 108 then throws the generic
+  `view {name.getId} does not match a formula in this location`.
+- **The per-attempt `catch` in `lsimp` still routes to a trace.**
+  `Simplification.lean:95-97` catches into `trace[proofMode.simp]` and restores; the
+  `throwError "rule requires unavailable side conditions"` raised at `:91` is inside that `try`,
+  so it is swallowed, and the user sees only the generic
+  `lsimp made no decreasing change with the supplied rules` from `:121`.
+- **The negative-test shortfall is unchanged in the merged tree.** Counted across the four new
+  family test files: **11** `fail_if_success` (2 Boolean, 0 ModalBoolean, 5 ModalTemporalBoolean,
+  4 TemporalBoolean) against **4** `#guard_msgs` (all four in `ProofModeBooleanTest.lean`). The
+  stopped-wrapper message at `FormalSystem/Automation/ProofMode/Rewriting.lean:402`
+  (`no matching rewrite occurrence; traversal stopped at ...`) has **no** test: a grep for
+  `traversal stopped` over `Tests/` and `docs/` returns nothing.
+
+### What this close-out did not verify
+
+Stated plainly, because the merged tree was not re-gated here:
+
+- **No build, test or lint gate was re-run.** `lake build --wfail`, `lake test`, `lake lint`, the
+  tooling and executable roots, the evidence probes and `scripts/check-module-invariants.sh`
+  were all run at `6313e693f` during the review round (results in the Appendix above and quoted
+  in `pr7-approval.md`), but nothing was re-run against the merge commit
+  `3c7197f84`. The merge was a squash of an already-green head; this close-out takes CI and the
+  review-round run as the evidence and does not add to it.
+- **The filing by family was confirmed by directory listing only.** No check was made that every
+  declaration reached its intended family module — only that the per-family files and the
+  per-family test files exist and that the shared test file is gone.
+- **No `#print axioms` or axiom check was run** in this close-out.
+- **The merged tree's import closure was not recomputed.** The Findings above computed it at
+  `5f5ad32bf`; `assert_not_exists FormalSystem.ProofSystem.DerivationTree` at
+  `FormalSystem/Tactic/FormulaViews.lean:17` is the standing mechanical guard and is present in
+  the merged tree, but it was not re-exercised by a build here.

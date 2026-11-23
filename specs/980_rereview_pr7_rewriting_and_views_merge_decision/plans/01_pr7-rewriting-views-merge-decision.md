@@ -1,7 +1,7 @@
 # Implementation Plan: Task #980
 
 - **Task**: 980 - rereview_pr7_rewriting_and_views_merge_decision
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/980_rereview_pr7_rewriting_and_views_merge_decision/reports/01_pr7-rewriting-views-merge-decision.md
@@ -121,7 +121,7 @@ owed a declaration.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Confirm the Merged Outcome and Map the Residuals [NOT STARTED]
+### Phase 1: Confirm the Merged Outcome and Map the Residuals [COMPLETED]
 
 **Goal**: Hold, as first-hand evidence rather than as inherited claim, the facts the close-out
 will assert: that PR #7 merged, at which commit, with which conditions landed; and, for each
@@ -129,14 +129,14 @@ residual follow-up the review named, which open task or record already owns it.
 
 **Tasks**:
 
-- [ ] Re-check the pull request read-only: `gh pr view 7 --json number,state,headRefOid,mergedAt,mergeCommit,title`. Record `state`, `mergedAt`, `headRefOid` and the merge commit oid verbatim. If `state` is anything other than `MERGED`, STOP and report — the whole premise of this plan is then wrong.
-- [ ] Confirm the merge commit is an ancestor of local `HEAD` (`git merge-base --is-ancestor <merge-oid> HEAD`), so the facts below are read off a tree that actually contains the merged work.
-- [ ] Confirm each of the three conditions landed, by file and line, not by inference: the import at `FormalSystem/Tactic/FormulaSyntax.lean` line 8; a docstring on the `lSimpOption` production in `FormalSystem/Automation/ProofMode/Simplification.lean`; a docstring on the `views` environment extension in `FormalSystem/Tactic/FormulaViews.lean`.
-- [ ] Confirm the filing by family landed: list `FormalSystem/Theorems/ProofMode/` and `Tests/BimodalTest/Automation/`, and record which per-family modules and per-family test files now exist and that `ProofModeExtensionsTest.lean` is gone.
-- [ ] Read the current M17 "Current client" paragraph in `records/proof-mode.md` and record whether the unreproducible node counts and the `0.14 ms` timing are still present. (At authoring time they are not; confirm rather than assume.)
-- [ ] For each of the five follow-ups listed in `specs/reviews/pr-reviews-2026-11-21/pr7-approval.md` and `pr7-review.md` — the missing occurrence argument on `lunfold`/`lfold`; `applyView` discarding its error; the per-attempt `catch` in `lsimp`; the eleven remaining `fail_if_success` and the untested stopped-wrapper message; the four-name view table against the operator-matching table — identify the owning slug by reading the relevant task descriptions in `specs/state.json` (`proof_mode_views_tier`, `reconcile_records_and_tasks_after_pr_review_round`, `proof_mode_split_shared_test_and_guide_files`) and the relevant record sections. Write the five-row owner map to the scratchpad.
-- [ ] Record any residual with **no** owner as an explicit gap; do not invent one.
-- [ ] Record one `issue-record.sh` entry for the premise supersession found at plan time (class: stale premise / superseded input), non-fatally.
+- [x] Re-check the pull request read-only: `gh pr view 7 --json number,state,headRefOid,mergedAt,mergeCommit,title`. Record `state`, `mergedAt`, `headRefOid` and the merge commit oid verbatim. If `state` is anything other than `MERGED`, STOP and report — the whole premise of this plan is then wrong.
+- [x] Confirm the merge commit is an ancestor of local `HEAD` (`git merge-base --is-ancestor <merge-oid> HEAD`), so the facts below are read off a tree that actually contains the merged work.
+- [x] Confirm each of the three conditions landed, by file and line, not by inference: the import at `FormalSystem/Tactic/FormulaSyntax.lean` line 8; a docstring on the `lSimpOption` production in `FormalSystem/Automation/ProofMode/Simplification.lean`; a docstring on the `views` environment extension in `FormalSystem/Tactic/FormulaViews.lean`.
+- [x] Confirm the filing by family landed: list `FormalSystem/Theorems/ProofMode/` and `Tests/BimodalTest/Automation/`, and record which per-family modules and per-family test files now exist and that `ProofModeExtensionsTest.lean` is gone.
+- [x] Read the current M17 "Current client" paragraph in `records/proof-mode.md` and record whether the unreproducible node counts and the `0.14 ms` timing are still present. (At authoring time they are not; confirm rather than assume.)
+- [x] For each of the five follow-ups listed in `specs/reviews/pr-reviews-2026-11-21/pr7-approval.md` and `pr7-review.md` — the missing occurrence argument on `lunfold`/`lfold`; `applyView` discarding its error; the per-attempt `catch` in `lsimp`; the eleven remaining `fail_if_success` and the untested stopped-wrapper message; the four-name view table against the operator-matching table — identify the owning slug by reading the relevant task descriptions in `specs/state.json` (`proof_mode_views_tier`, `reconcile_records_and_tasks_after_pr_review_round`, `proof_mode_split_shared_test_and_guide_files`) and the relevant record sections. Write the five-row owner map to the scratchpad.
+- [x] Record any residual with **no** owner as an explicit gap; do not invent one.
+- [x] Record one `issue-record.sh` entry for the premise supersession found at plan time (class: stale premise / superseded input), non-fatally.
 
 **Timing**: 0.4 hours
 
@@ -171,7 +171,7 @@ forcing it into the nearest slug.
 
 ---
 
-### Phase 2: Record the Outcome in the Task's Report [NOT STARTED]
+### Phase 2: Record the Outcome in the Task's Report [IN PROGRESS]
 
 **Goal**: Attach the outcome to this task's own durable artifact, so the report no longer stands
 as a live REQUEST CHANGES recommendation against a head that no longer exists.
