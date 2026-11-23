@@ -497,33 +497,42 @@ match these.
 
 ---
 
-### Phase 7: CI and repository gates [NOT STARTED]
+### Phase 7: CI and repository gates [COMPLETED]
 
 **Goal**: CI compiles the library and its tests with warnings as errors, and the repository's
 own checks cover the new tree, including the import direction.
 
 **Tasks**:
-- [ ] Capture a baseline before editing: `bash scripts/check-module-invariants.sh --no-build`
+- [x] Capture a baseline before editing: `bash scripts/check-module-invariants.sh --no-build`
   and `bash scripts/verify-all.sh`, output and exit status saved outside the repository tree.
-- [ ] In `.github/workflows/ci.yml`, after the `BimodalToolsTest` step, add
+- [x] In `.github/workflows/ci.yml`, after the `BimodalToolsTest` step, add
   `lake build BimodalLib --wfail`, `lake build BimodalLibTest --wfail`, and
   `bash scripts/library-index.sh --check`; add `BimodalLib` to the roots passed to
-  `check-copyright-headers.sh --strict` and `readme-lint.sh`.
-- [ ] In `scripts/verify-all.sh`, add `BimodalLib` to the same two invocations and their
+  `check-copyright-headers.sh --strict` and `readme-lint.sh`. *(deviation: altered — the index
+  check is wired as the tenth aggregated check (`id: library-index`, a `report` line,
+  `expected=10`), which is what `docs/development/CI_CD_PROCESS.md` requires of a check step,
+  and `scripts/verify-all.sh` mirrors it as check 10; the script takes the shared `.lake`
+  build lock and has a row in `scripts/README.md`)*
+- [x] In `scripts/verify-all.sh`, add `BimodalLib` to the same two invocations and their
   comments.
-- [ ] In `scripts/check-module-invariants.sh`: extend B3, or add a sibling check beside it, so
+- [x] In `scripts/check-module-invariants.sh`: extend B3, or add a sibling check beside it, so
   that no `.lean` under `FormalSystem/` imports `BimodalLib` and the root `FormalSystem.lean`
   does not name it; add `BimodalLib` and `BimodalLibTest` to `LIB_ROOTS`; extend each scan that
   names `BimodalTools/` as a covered tree (B2, C29 to C32, the C7 inventory line) to cover
-  `BimodalLib/`. Update the header comments that list what each check covers.
-- [ ] Add `BimodalLib` and `BimodalLibTest` to the known-names list in
+  `BimodalLib/`. Update the header comments that list what each check covers. *(deviation: altered
+  — every scan that pairs `FormalSystem` with `BimodalTools` was widened: B2, B3, C3, the
+  import graph and C7, C15, C16, C19, C20, C25, C26, C27, C29 to C32. C8, the
+  one-aggregator-per-subdirectory rule, was not: `BimodalLib/Theorems/` has no sibling
+  aggregator by design. Eight directory READMEs were added under `BimodalLib/` because
+  `readme-lint.sh` requires one beside every directory of `.lean` files.)*
+- [x] Add `BimodalLib` and `BimodalLibTest` to the known-names list in
   `scripts/check-phantom-citations.sh`.
-- [ ] Run `lake exe runLinter BimodalLib`. Fix findings at their source, in the generator for
+- [x] Run `lake exe runLinter BimodalLib`. Fix findings at their source, in the generator for
   generated rows. If an exemption is unavoidable, hand-insert the row in `scripts/nolints.json`
   beside an existing row of the same linter; do not run `runLinter --update`.
-- [ ] Add any permanent exemption the new files need (for instance C5 on a dotted declaration
+- [x] Add any permanent exemption the new files need (for instance C5 on a dotted declaration
   name) to `scripts/module-invariants-allowlist.txt`.
-- [ ] Re-run both baseline commands and compare.
+- [x] Re-run both baseline commands and compare.
 
 **Timing**: 1.5 hours
 

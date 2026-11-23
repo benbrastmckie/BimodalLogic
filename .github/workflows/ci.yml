@@ -112,6 +112,40 @@ jobs:
           lake build BimodalToolsTest --wfail
           echo "::endgroup::"
 
+      # `lean_lib BimodalLib`, the library of TM results, is outside `defaultTargets` for the
+      # same reason as `BimodalTools`, so nothing above compiles it. Building it is also the
+      # registration check: `BimodalLib/Theorems/Complete.lean` fails to elaborate when a closed
+      # derivation under FormalSystem/Theorems/ has no `register_theorem` line. Its import closure
+      # is the whole of `FormalSystem`, which the lean-action step has already built.
+      - name: Compile BimodalLib (outside defaultTargets)
+        run: |
+          set -euo pipefail
+          echo "::group::lake build BimodalLib --wfail"
+          lake build BimodalLib --wfail
+          echo "::endgroup::"
+
+      # The tests of the registration check, the pairing command and the fragment computation.
+      # A separate step because the fixture module is reached only from the test library.
+      - name: Compile BimodalLibTest
+        run: |
+          set -euo pipefail
+          echo "::group::lake build BimodalLibTest --wfail"
+          lake build BimodalLibTest --wfail
+          echo "::endgroup::"
+
+      # BimodalLib/INDEX.md is generated from the rows of the library. A theorem, second proof
+      # or conjecture registered without regenerating it leaves the committed copy stale; this
+      # check fails on any difference. `--no-build`: the step above has just built the library.
+      # It calls `lean`, so it carries no `if: !cancelled()` guard: a broken build skips it.
+      - name: Check the library index (scripts/library-index.sh --no-build --check)
+        id: library-index
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          echo "::group::bash scripts/library-index.sh --no-build --check"
+          bash scripts/library-index.sh --no-build --check
+          echo "::endgroup::"
+
       # The bi-lasso evidence probes under specs/evidence/ are machine-checked records of design
       # obstructions. They live outside every Lake root, so neither step above ever elaborates
       # them, and they have already rotted undetected once: an API refactor broke all four with
@@ -142,9 +176,9 @@ jobs:
           bash scripts/check-module-invariants.sh --no-build
           echo "::endgroup::"
 
-      # BimodalTools is named explicitly because this script defaults to ROOTS=("FormalSystem").
-      # The tooling library is outside that default, so without the second argument the 25
-      # relocated modules would leave this gate's denominator and it would keep passing.
+      # BimodalTools and BimodalLib are named explicitly because this script defaults to
+      # ROOTS=("FormalSystem"). Both libraries are outside that default, so without the further
+      # arguments their modules would leave this gate's denominator and it would keep passing.
       - name: Check copyright headers (scripts/check-copyright-headers.sh --strict)
         id: copyright-headers
         continue-on-error: true
@@ -153,8 +187,8 @@ jobs:
           set -euo pipefail
           # No --exclude: the archive left FormalSystem/ entirely (ADR-010), so the former
           # '*/Boneyard/*' exclusion no longer excludes anything from these scanned roots.
-          echo "::group::bash scripts/check-copyright-headers.sh --strict FormalSystem BimodalTools"
-          bash scripts/check-copyright-headers.sh --strict FormalSystem BimodalTools
+          echo "::group::bash scripts/check-copyright-headers.sh --strict FormalSystem BimodalTools BimodalLib"
+          bash scripts/check-copyright-headers.sh --strict FormalSystem BimodalTools BimodalLib
           echo "::endgroup::"
 
       # Same reason as the step above: readme-lint.sh also defaults to ROOTS=("FormalSystem"),
@@ -165,8 +199,8 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           set -euo pipefail
-          echo "::group::bash scripts/readme-lint.sh FormalSystem BimodalTools"
-          bash scripts/readme-lint.sh FormalSystem BimodalTools
+          echo "::group::bash scripts/readme-lint.sh FormalSystem BimodalTools BimodalLib"
+          bash scripts/readme-lint.sh FormalSystem BimodalTools BimodalLib
           echo "::endgroup::"
 
       # Metalogic/ is allowed exactly one directory-level import cycle (BXCanonical <->
@@ -290,7 +324,7 @@ jobs:
       # only a readme-lint failure while five later checks never executed at all and their
       # verdicts were simply unknown.
       #
-      # A `skipped` outcome is a legitimate non-failure: the three lake-dependent checks are
+      # A `skipped` outcome is a legitimate non-failure: the four lake-dependent checks are
       # correctly skipped when the build itself broke (the build is still a hard stop, and that
       # failure fails the job on its own).
       #
@@ -313,7 +347,7 @@ jobs:
           echo
           echo "=== Check step outcomes ==="
 
-          expected=9
+          expected=10
           seen=0
           passed=0
           failed=0
@@ -346,6 +380,7 @@ jobs:
           report "check-paper-definitions.sh"            "${{ steps.paper-definitions.outcome }}"
           report "mk_all --lib FormalSystem --check"     "${{ steps.mk-all-check.outcome }}"
           report "lint-style"                            "${{ steps.lint-style.outcome }}"
+          report "library-index.sh --check"              "${{ steps.library-index.outcome }}"
 
           echo
           if [ "$seen" -ne "$expected" ]; then

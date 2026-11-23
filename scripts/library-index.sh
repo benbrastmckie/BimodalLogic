@@ -13,8 +13,9 @@
 #   scripts/library-index.sh --no-build as either form above, without building first
 #
 # Exit status: 0 on success (or, with --check, when the committed index is current);
-# 1 when --check finds a difference; 2 on a usage error; otherwise the status of the failing
-# build or of the Lean run.
+# 1 when --check finds a difference, or the shared build lock is not acquired in time;
+# 2 on a usage error; 3 when the index command wrote
+# nothing; 4 when the build fails; otherwise the status of the failing Lean run.
 
 set -euo pipefail
 
@@ -34,12 +35,38 @@ done
 
 cd "$ROOT"
 
-if [ "$build" -eq 1 ]; then
-  lake build BimodalLib >&2
-fi
-
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
+
+# SHARED .lake LOCK. Both calls below read or write `.lake`, so this script takes the advisory
+# lock on `.lake/build-guard.lock` that the other lake-calling scripts here take, in the shape
+# scripts/README.md's "Shared `.lake` build lock" section fixes: `flock -n`, then a bounded
+# announced wait, held to exit, and an audible unserialized run when `flock` is absent.
+# `LIBRARY_INDEX_LOCK_WAIT_S` overrides the bound so the timeout branch can be exercised.
+LIBRARY_INDEX_LOCK_WAIT_S="${LIBRARY_INDEX_LOCK_WAIT_S:-600}"
+LOCK_FILE="$ROOT/.lake/build-guard.lock"
+mkdir -p "$ROOT/.lake"
+if command -v flock >/dev/null 2>&1; then
+  exec {LIBRARY_INDEX_LOCK_FD}<>"$LOCK_FILE"
+  if ! flock -n "$LIBRARY_INDEX_LOCK_FD"; then
+    echo "library-index.sh: waiting on the shared build lock ($LOCK_FILE, up to ${LIBRARY_INDEX_LOCK_WAIT_S}s)" >&2
+    if ! flock -w "$LIBRARY_INDEX_LOCK_WAIT_S" "$LIBRARY_INDEX_LOCK_FD"; then
+      echo "library-index.sh: environment failure: timed out after ${LIBRARY_INDEX_LOCK_WAIT_S}s waiting for the shared build lock; nothing was read or written" >&2
+      exit 1
+    fi
+  fi
+else
+  echo "library-index.sh: flock not found on PATH; building and rendering unserialized" >&2
+fi
+
+# The build replays every `info:` line of the whole import closure; show it only on failure.
+if [ "$build" -eq 1 ]; then
+  if ! lake build BimodalLib > "$work/build.log" 2>&1; then
+    cat "$work/build.log" >&2
+    echo "library-index.sh: lake build BimodalLib failed" >&2
+    exit 4
+  fi
+fi
 
 # A one-line driver: the command reads the rows of every module `BimodalLib` imports.
 printf 'import BimodalLib\nlibrary_index to "%s"\n' "$work/INDEX.md" > "$work/Driver.lean"

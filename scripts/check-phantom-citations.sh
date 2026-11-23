@@ -154,7 +154,8 @@ ALLOWLIST=(
 
   # --- NOT-LEAN: lakefile.toml `[[lean_lib]]`/`[[lean_exe]]` target names (Lake DSL identifiers,
   # not Lean declarations).
-  BimodalLogic BimodalTest BimodalTools BimodalToolsTest checkInitImports dataset_generator
+  BimodalLogic BimodalTest BimodalTools BimodalToolsTest BimodalLib BimodalLibTest
+  checkInitImports dataset_generator
   defaultTargets mk_all proof_extractor
 
   # --- NOT-LEAN: batteries/runLinter option names.
@@ -225,6 +226,8 @@ ROOT_DENYLIST=(
   # that the `X` half actually exists there -- the same trust extended to `Mathlib.*`/`Lean.*`
   # above.
   BimodalTools
+  # BimodalLib: the results library, a sibling source tree on the same footing.
+  BimodalLib
 )
 
 is_denylisted_root() {
