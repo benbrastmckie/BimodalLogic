@@ -557,6 +557,11 @@
           "path": "specs/978_review_pr11_pointed_semantic_lemmas/plans/01_review-pr11-pointed-semantic-lemmas.md",
           "type": "plan",
           "summary": "Three serial phases (prose, prose, full) reconciling the task's durable record with the review the user already posted on PR #11."
+        },
+        {
+          "path": "specs/978_review_pr11_pointed_semantic_lemmas/summaries/01_review-pr11-pointed-semantic-lemmas-summary.md",
+          "type": "summary",
+          "summary": "Posted disposition of PR #11, the follow-up ledger with three unhomed gaps, the reusable review worktree, and an explicit statement of what was not verified."
         }
       ],
       "next_artifact_number": 2,
