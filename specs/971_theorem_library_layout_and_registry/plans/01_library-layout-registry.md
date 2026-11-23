@@ -198,30 +198,30 @@ is outside `defaultTargets` and nothing imports it, and the `lakefile.toml` diff
 
 ---
 
-### Phase 2: Registry row type, registration command and completeness command [NOT STARTED]
+### Phase 2: Registry row type, registration command and completeness command [COMPLETED]
 
 **Goal**: A declaration can be registered by one line, as a kernel-checked row read from its
 type, and a command can tell whether every closed derivation in a module prefix is registered.
 
 **Tasks**:
-- [ ] Create `BimodalLib/Registry.lean` with `TheoremEntry` as the report gives it: `arity`,
+- [x] Create `BimodalLib/Registry.lean` with `TheoremEntry` as the report gives it: `arity`,
   `frameClass`, `stmt`, `proof`, `profile`, `profile_eq`. Add the declared dual as an optional
   name field.
-- [ ] Implement `register_theorem X` and `register_theorem X (dual := Y)`: read the type of `X`
+- [x] Implement `register_theorem X` and `register_theorem X (dual := Y)`: read the type of `X`
   with `forallTelescope`; substitute `v 0, v 1, ...` for the formula binders; take the frame
   class from the binder shape (implicit class: Base; one `C ≤ fc` hypothesis: `C`; fixed class:
   that class, with `DerivationTree.lift`); build `profile_eq` as `Eq.refl`; add the row as
   `BimodalLib.Registry.<full name of X>` with `addAndCompile`; attach a generated docstring
   with `addDocStringCore`. Reject a declaration that is not a closed derivation with a clear
   error.
-- [ ] Create `BimodalLib/Registry/Complete.lean` defining `assert_registry_complete` with the
+- [x] Create `BimodalLib/Registry/Complete.lean` defining `assert_registry_complete` with the
   scanned module prefix and the excluded prefix as parameters, defaulting to
   `FormalSystem.Theorems` and `FormalSystem.Theorems.ProofMode`. It enumerates constants by
   declaring module (`Environment.getModuleIdxFor?`), classifies each derivation-typed constant
   as closed, context-form or rule as the census probe does, reads the registered name off each
   row's `proof` field, logs the three counts, and throws with the names of the unregistered
   closed derivations. This module defines the command and does not run it.
-- [ ] Import both modules from `BimodalLib.lean`. Run `lake build BimodalLib --wfail`.
+- [x] Import both modules from `BimodalLib.lean`. Run `lake build BimodalLib --wfail`.
 
 **Timing**: 2 hours
 

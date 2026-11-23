@@ -5,3 +5,5 @@ Authors: Benjamin Brast-McKie
 -/
 
 import BimodalLib.Fragment
+import BimodalLib.Registry
+import BimodalLib.Registry.Complete
