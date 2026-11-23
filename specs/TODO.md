@@ -13,7 +13,7 @@ next_project_number: 986
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,960,962,970,971,977,982,983,984,985 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,960,962,970,971,977,983,984,985 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,873,932,944,954,955,961,969,975 | 298,428,502,761,869,960,971 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,861,874,875,876,945,972 | 429,497,763,873,944,961,971 | algebraic-representation, decidability, metalogic, ... |
 | 4 | 125,411,543,946,973 | 410,498,499,500,945,969,972 | algebraic-representation, decidability, metalogic, ... |
@@ -147,7 +147,6 @@ next_project_number: 986
   └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
   └─ 972 [NOT STARTED] — MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem... (see above)
   └─ 975 [NOT STARTED] — MILESTONE M22 (records/proof-mode.md), LANE: metatheory....
-982 [IMPLEMENTING] — Reconcile the records, the roadmap rules and the open task...
 
 ## Tasks
 
@@ -182,12 +181,13 @@ next_project_number: 986
 ---
 
 ### 982. Reconcile records and tasks after pr review round
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: proof-mode
 - **Dependencies**: Task 978, Task 979, Task 980, Task 981
 - **Research**: [982_reconcile_records_and_tasks_after_pr_review_round/reports/01_reconcile-records-pr-review-round.md]
 - **Plan**: [982_reconcile_records_and_tasks_after_pr_review_round/plans/01_reconcile-records-pr-review-round.md]
+- **Summary**: [982_reconcile_records_and_tasks_after_pr_review_round/summaries/01_reconcile-records-pr-review-round-summary.md]
 
 **Description**: Reconcile the records, the roadmap rules and the open task descriptions with the outcome of the review round on collaborator PRs #7 to #11. Run this after the four review tasks have reported AND the user has acted on them; begin by reading the state of every pull request with `gh pr view` and the four reports under specs/reviews/pr-reviews-2026-11-21/, and stop with a list of what is still pending if the user's rulings on the items those reports put first are not yet recorded. This task posts nothing and merges nothing. WHAT TO CHANGE. (1) records/milestones.md: the contributions table (five pull requests where it lists three, each with its current state); Where it stands and What to do next rewritten for the state reached; open decision 1 (conditions of merging) replaced by the ruling; open decision 2 (who drafts the semantic record) removed, the contributor having written it; open decision 4 (evaluator beside the lemmas or its own mode) and open decision 5 (expand / contract) closed or restated per the reports; Goal C's milestones C1 and C2 given up to pointers once the lemmas and the record are merged, as records/README.md requires of implemented design; join 2 restated with the carrying-table shape agreed; and the channel table re-phased. (2) records/proof-mode.md: M17 (what is contributed, what the second run still owes, the contributor's Current client paragraph checked against the deliverable rules), M16 (which rows and which modules exist, what the views-tier record still owes), M4 (expand / contract, what is contributed, the induction rule still open), the dependency picture's M17-then-M0-then-M16 order, and Filed records. (3) records/proof-mode-architecture.md: open decision 2 closed with the rename, the rows of Where the work sits for views, rewriting, carrying, Until/Since and the semantic tier, and the semantic-mode paragraph once records/semantic-proof-mode.md is in the tree. (4) records/README.md: one row per record actually present, milestones.md and semantic-proof-mode.md among them. (5) Task descriptions, edited through state-write.sh and never by hand: proof_mode_split_shared_test_and_guide_files (its coordination paragraph names PRs #7, #8 and #9 and a set of files that has changed; restate what it must now move, including the modules under FormalSystem/Tactic/, and whether its hold is lifted), proof_mode_views_tier (what is contributed and what remains), connective_signature_layer_shared_primitives (its relation to the Language table and the landing window of join 4), proof_mode_s5_aware_box_scopes and proof_mode_cross_modal_scopes_mf_tf (the carrying table they add rows to), theorem_library_countermodels (the evaluator as a client and the admission grade), and the file_scope of each where paths moved. (6) The roadmap: list the rule and batch-description changes needed (the rule that the layout record's implementation is not dispatched while PR #7 or #8 is open; a place for the semantic tier) as a quoted instruction for the user to give /roadmap; do not edit specs/ROADMAP.md, which is generated. CONSTRAINTS: records state the current design and name work by slug (records/README.md, .claude/rules/no-record-versioning-in-deliverables.md, no-task-references-in-deliverables.md); where a merged pull request has itself edited a record, reconcile with its text instead of overwriting it; run a closing consistency pass over all the records for statements that contradict each other.
 
