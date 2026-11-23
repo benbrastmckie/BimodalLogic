@@ -246,12 +246,12 @@ record the review worktree for the post-rebase re-review, and close the task.
 
 ## Testing & Validation
 
-- [ ] The live `headRefOid`, review `state`/`submittedAt`, and `mergeable` value recorded in the report match a command re-run during implementation, not the values copied from this plan.
-- [ ] `validate-artifact.sh` exits 0 for the report (`report`) and the summary (`summary`).
-- [ ] Every one of the draft's numbered requests and the report's rulings carries exactly one disposition line.
-- [ ] Every after-merge follow-up bullet has a task number or an explicit gap line.
-- [ ] No `.lean` file, no `.claude/**` file, and no file belonging to a sibling task's declared `file_scope` is modified.
-- [ ] Nothing is posted, pushed, merged or approved on GitHub by this task.
+- [x] The live `headRefOid`, review `state`/`submittedAt`, and `mergeable` value recorded in the report match a command re-run during implementation, not the values copied from this plan.
+- [x] `validate-artifact.sh` exits 0 for the report (`report`) and the summary (`summary`).
+- [x] Every one of the draft's numbered requests and the report's rulings carries exactly one disposition line. *(satisfied with one qualification: all 8 requests and all 4 rulings carry a disposition; "request 4" is named twice inside its own single disposition bullet — once in the mapping, once in the elaboration — so the count is one disposition per item, not one mention.)*
+- [x] Every after-merge follow-up bullet has a task number or an explicit gap line.
+- [x] No `.lean` file, no `.claude/**` file, and no file belonging to a sibling task's declared `file_scope` is modified.
+- [x] Nothing is posted, pushed, merged or approved on GitHub by this task.
 
 ## Artifacts & Outputs
 
