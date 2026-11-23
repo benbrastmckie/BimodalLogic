@@ -376,19 +376,19 @@ them and stage only what the counts check needs.
 
 ---
 
-### Phase 5: Conjecture registration and the seed conjectures [NOT STARTED]
+### Phase 5: Conjecture registration and the seed conjectures [COMPLETED]
 
 **Goal**: A conjecture is a registered statement with a fragment, frame class, status and note
 and no proof term; the unproved conservativity edges and the collapse derivation are seeded.
 
 **Tasks**:
-- [ ] Create `BimodalLib/Conjecture.lean`: `ConjectureStatus`; `structure Conjecture` with
+- [x] Create `BimodalLib/Conjecture.lean`: `ConjectureStatus`; `structure Conjecture` with
   `statement : Prop`, `fragment`, `ops : Profile`, `frameClass : Option FrameClass`, `status`,
   `note : String`, and no proof field.
-- [ ] Create `BimodalLib/Conservativity.lean`: `within c d` (with the `conclOf` helper and the
+- [x] Create `BimodalLib/Conservativity.lean`: `within c d` (with the `conclOf` helper and the
   `e@(.necessitation _ d)` pattern form the report found necessary), `DerivableIn c fc φ`, and
   `ConservativeEdge c fc`.
-- [ ] Create `BimodalLib/Conjectures/Conservativity.lean` with one conjecture per unproved row
+- [x] Create `BimodalLib/Conjectures/Conservativity.lean` with one conjecture per unproved row
   of the Conservativity table in `records/theorem-library.md`: `Boolean` into `ModalBoolean`;
   `Boolean` into `TemporalBoolean`; `ModalBoolean` with `□` into TM; `TemporalBoolean` into TM,
   one per frame class; the `ModalBoolean` cell with `□` into the cell with both. Each note says
@@ -396,11 +396,13 @@ and no proof term; the unproved conservativity edges and the collapse derivation
   state it over `PlusDerivationTree` with a profile bound on the formula; if a `within`
   analogue for `PlusDerivationTree` is needed and does not fit the phase, state the edge as
   derivability of `ofFormula φ` in the extended system implying `DerivableIn` in the base
-  system, and say in the note which form was used.
-- [ ] Create `BimodalLib/Conjectures/ModalBoolean/Collapse.lean` with the collapse conjecture
+  system, and say in the note which form was used. *(deviation: altered — the `within`
+  analogue `withinP` fit the phase, so the edge is stated in the first form; the one-per-row
+  count from the live table is eight conjectures, the per-class edge taking four)*
+- [x] Create `BimodalLib/Conjectures/ModalBoolean/Collapse.lean` with the collapse conjecture
   `∀ fc φ, φ.StateLocal → Nonempty (PlusDerivationTree fc [] ((φ.imp φ.stab).and (φ.stab.imp φ)))`,
   its note citing `plusStateLocal_stab_iff` as the validity already proved.
-- [ ] Import the new modules from `BimodalLib.lean`. Run `lake build BimodalLib --wfail`.
+- [x] Import the new modules from `BimodalLib.lean`. Run `lake build BimodalLib --wfail`.
 
 **Timing**: 1.5 hours
 

@@ -4,6 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import BimodalLib.Conjecture
+import BimodalLib.Conjectures.Conservativity
+import BimodalLib.Conjectures.ModalBoolean.Collapse
+import BimodalLib.Conservativity
 import BimodalLib.Fragment
 import BimodalLib.Pairing
 import BimodalLib.Registry
