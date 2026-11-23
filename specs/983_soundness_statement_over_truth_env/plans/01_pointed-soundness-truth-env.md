@@ -207,18 +207,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Gate sweep and done-when check [NOT STARTED]
+### Phase 4: Gate sweep and done-when check [COMPLETED]
 
 **Goal**: the repository's gates observed on this task's touched files, the D4 done-when checked line by line, and any drift in this task's own generated surfaces repaired.
 
 **Tasks**:
-- [ ] `lake build FormalSystem.Metalogic BimodalTest` (the two aggregators that now import the new modules); no warning attributable to a file this task touched.
-- [ ] `bash scripts/check-module-invariants.sh --no-build` and `bash scripts/check-metalogic-cycles.sh`. Judge each as a delta: every finding that names a file this task touched is fixed; a finding that names only files outside this task's file list is recorded as pre-existing with its text, and is not edited.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check`, `lake exe mk_all --lib FormalSystem --check`, `bash scripts/typst-sync-check.sh --counts-only`. Repair drift in this task's own surfaces with the matching writer command and commit it.
-- [ ] `bash scripts/check-copyright-headers.sh` on the two new files, if the script accepts a path; otherwise read its verdict for those two files from a bare run.
-- [ ] Done-when check against `records/milestones.md` D4: (a) `star_soundness_in` exists beside `star_soundness_validIn`; (b) `PointedSound` has instances at all three languages; (c) `grep -rn 'soundness_in' FormalSystem/Metalogic/PointedSoundness.lean` shows the language theorems only inside the three instance bodies; (d) the module imports nothing under `FormalSystem/Automation/ProofMode/` and carries the `assert_not_exists` guard.
-- [ ] Exact-name sweep: `grep -rn 'sorry' ` over the three touched `.lean` source files returns nothing.
-- [ ] Record in the phase's verification notes that the complete gate set is deferred to the orchestration close.
+- [x] `lake build FormalSystem.Metalogic BimodalTest` (the two aggregators that now import the new modules); no warning attributable to a file this task touched. *(deviation: altered — ran `lake build FormalSystem BimodalTest` and a default full `lake build` through the build guard, a superset; both green with zero warnings)*
+- [x] `bash scripts/check-module-invariants.sh --no-build` and `bash scripts/check-metalogic-cycles.sh`. Judge each as a delta: every finding that names a file this task touched is fixed; a finding that names only files outside this task's file list is recorded as pre-existing with its text, and is not edited.
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check`, `lake exe mk_all --lib FormalSystem --check`, `bash scripts/typst-sync-check.sh --counts-only`. Repair drift in this task's own surfaces with the matching writer command and commit it.
+- [x] `bash scripts/check-copyright-headers.sh` on the two new files, if the script accepts a path; otherwise read its verdict for those two files from a bare run.
+- [x] Done-when check against `records/milestones.md` D4: (a) `star_soundness_in` exists beside `star_soundness_validIn`; (b) `PointedSound` has instances at all three languages; (c) `grep -rn 'soundness_in' FormalSystem/Metalogic/PointedSoundness.lean` shows the language theorems only inside the three instance bodies; (d) the module imports nothing under `FormalSystem/Automation/ProofMode/` and carries the `assert_not_exists` guard.
+- [x] Exact-name sweep: `grep -rn 'sorry' ` over the three touched `.lean` source files returns nothing.
+- [x] Record in the phase's verification notes that the complete gate set is deferred to the orchestration close. *(verification note: the complete gate set is deferred to the orchestration batch stage and was not run here. `verify-touched.sh` selected a 119-suite agent-system fallback for uncommitted specs plan files, did not finish inside a 400 s bound and was stopped; the scoped discharge is the repository checks above, all green)*
 
 **Timing**: 0.5 hours
 
