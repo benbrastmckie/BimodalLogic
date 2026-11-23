@@ -57,7 +57,9 @@
           "semantic": true
         },
         "degradations_count": 448
-      }
+      },
+      "roadmap_annotation": "waits on TemporalRules.lean reaching main with the pointed semantic lemmas",
+      "roadmap_ext_blocked": true
     },
     {
       "project_number": 983,
@@ -190,7 +192,8 @@
           "semantic": true
         },
         "degradations_count": 435
-      }
+      },
+      "roadmap_annotation": "C4, the semantic mode and its adapter, waits on this; no open PR touches StarSoundness.lean"
     },
     {
       "project_number": 982,
@@ -255,7 +258,8 @@
           "semantic": true
         },
         "degradations_count": 448
-      }
+      },
+      "roadmap_annotation": "cannot finish ahead of the user's rulings on open decisions 3 and 4"
     },
     {
       "project_number": 981,
@@ -322,7 +326,8 @@
           "semantic": true
         },
         "degradations_count": 450
-      }
+      },
+      "roadmap_annotation": "the one review line with work left; it measures the rebase cost in a worktree itself"
     },
     {
       "project_number": 980,
@@ -387,7 +392,8 @@
           "summary": "Re-review of PR #7 at head 5f5ad32bf: nine-request table, locally reproduced CI failure with a verified one-line fix, two new lake lint failures CI never reached, measured views-tier behaviour and import closure, re-measured M17 numbers that do not reproduce, and a REQUEST CHANGES-then-squash-merge recommendation with three rulings for the user."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "roadmap_annotation": "#7 is merged; what is left is recording the decision and releasing 981"
     },
     {
       "project_number": 979,
@@ -437,7 +443,8 @@
           "summary": "Draft review of PR #10 (records/semantic-proof-mode.md): items for the user's ruling (missing Open Decisions section, four-client coverage, GO threshold), a COMMENT recommendation, and evidence for all seven requested checks (idiom, consistency, the four clients, the decidability ceiling, measurement, open points, PR #9 inventory pointer)."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "roadmap_annotation": "#10 still owes an open-decisions section, an adoption threshold and scope sentences"
     },
     {
       "project_number": 978,
@@ -476,7 +483,8 @@
           "summary": "Full review of PR #11 at head c6cd983b7: all gates green (--wfail build, full check-module-invariants.sh 58/58, runLinter, 52 axiom sets all within pcq, upward edges 10 before and after); recommends REQUEST CHANGES on four additive items, with four user rulings (the At-abbrev rewriting defect, named interval operators, who performs the next_iff_covBy promotion, merge-now vs request-changes)."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "roadmap_annotation": "the draft review is written; the rebase, At and the tests are the contributor's half"
     },
     {
       "project_number": 977,
@@ -507,7 +515,8 @@
           "semantic": true
         },
         "degradations_count": 450
-      }
+      },
+      "roadmap_annotation": "research and plan now; implement after the temporal rules merge (open decision 4)"
     },
     {
       "project_number": 976,
@@ -2015,7 +2024,7 @@
         },
         "degradations_count": 451
       },
-      "roadmap_annotation": "implementation held while PR #7 or #8 is open; research and planning may proceed"
+      "roadmap_annotation": "implementation held while PR #8 is open; research and planning may proceed"
     },
     {
       "project_number": 959,
@@ -4367,13 +4376,13 @@
   "active_goal": "Close the residual repository-hygiene backlog",
   "roadmap_milestones": [
     {
-      "id": "M1",
-      "title": "Repository hygiene",
-      "aim": "Close the residual hygiene backlog: dataset readers that work on compressed data, the c7 labeling chain finished, and the large datasets moved off the repository.",
-      "gate": "One shared reader opens both .jsonl and .jsonl.zst with the Lean executables reaching compressed data; the 298-headed dataset chain is terminal; and 257 is either migrated or re-scoped once the account token exists.",
+      "id": "M0",
+      "title": "The collaboration round: clear what Tanner's contributions wait on",
+      "aim": "Close channel B's side of the open pull requests: the review round, the records reconciled to its outcome, the soundness statement the semantic mode's adapter needs, and the signature layer designed before the temporal rules are rebased.",
+      "gate": "Every open contribution carries a posted decision or an action named as the contributor's; records/milestones.md and the open task descriptions state the position reached; and star_soundness_in is proved beside star_soundness_validIn.",
       "progress": {
         "status": "active",
-        "note": "604 is the one line a dispatch can clear; the other two wait on compute approval and a token"
+        "note": "#7 merged; #11 has changes requested, #10 a comment pending, #8 open and conflicting"
       },
       "review": {
         "state": "none"
@@ -4381,27 +4390,36 @@
       "batches": [
         {
           "task_ids": [
-            604
+            980,
+            981,
+            978,
+            979,
+            982
           ],
-          "description": "Restore the dataset readers the c7 zstd compression broke; the only runnable hygiene line",
-          "rationale": "FIRST by the standing instruction to clear repository hygiene before the proof-mode programme, and the only hygiene line with no unmet predecessor: both its edges (631, 632) are archived and it sits in wave 1. Its own record is the most literal hygiene finding in the tree -- data/bmlogic-c7.jsonl was compressed to data/bmlogic-c7.jsonl.zst (17G -> 153M, lossless, sha256 of the decompressed stream verified identical) and every consumer hardcoding the uncompressed path is currently broken. Research-first: inventory every reader and writer of .jsonl datasets (Python validators and curators, shell runners, Lean executables, and the path fields in data/*_metadata.json) before changing any of them, then choose one shared open_dataset() helper and decide how the Lean executables reach compressed data given that Lean has no native zstd."
+          "description": "Close the review round on PRs #7 to #11 and reconcile the records to the outcome it reaches",
+          "rationale": "FIRST in the whole roadmap by the 2026-11-22 instruction: this is the channel-B work every one of Tanner's four open contributions waits on, and three of its five members already have artifacts on disk (specs/reviews/pr-reviews-2026-11-21/pr7-approval.md, pr10-review.md, pr11-review.md, pr9-disposition.md), so the line is mostly a matter of running them to terminal. Dependency-inclusive and internally sequenced: 981<-980 and 982<-978,979,980,981. 981 is the one member with real work left -- the #8 re-review at the rebased head, which the record itself says measures the rebase cost in a worktree rather than waiting for the contributor to rebase first. 980 is kept in the batch rather than dropped even though #7 is MERGED (verified: gh reports #7 MERGED, #8/#9/#10/#11 OPEN, and records/milestones.md's Where it stands opens with the rewriting contribution merged), because it is 981's only graph predecessor and a dispatch is what records the decision and releases it. 982 is last and cannot finish ahead of the user's rulings on open decisions 3 and 4; its own description tells it to stop with a pending list, which is the correct terminal outcome for a records pass taken too early."
         },
         {
           "task_ids": [
-            298,
-            282,
-            296,
-            231
+            983
           ],
-          "description": "Half-finished dataset work: three PARTIAL records behind 298's c7 bug, plus 231's automation",
-          "rationale": "Dependency-inclusive: 282, 296 and 231 each carry a 298 edge, so the chain head runs in the batch rather than ahead of it. Second rather than first within hygiene because the head needs a full native compile (410 generated .c files, two around 45 minutes each at 2-7GB clang RSS) and 282 additionally needs explicit user approval for multi-hour compute -- neither is a condition a dispatch can clear by being listed earlier."
+          "description": "Prove star_soundness_in, so the semantic mode's adapter needs no per-language wrapper",
+          "rationale": "The highest-value channel-B Lean line that is startable today and lands on Tanner's own path: milestone C4 of records/milestones.md (semantic mode and adapter) waits on D4, and join 7 makes D4's statement the single soundness lemma the adapter applies. Phase 1 is a new theorem in FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean, which neither PR #8 (ProofMode temporal modules) nor PR #11 (FormalSystem/Semantics/, four new modules plus tests) touches, so it can run beside the review round without territory contention. Alone on its line because it declares no file_scope at all, so the creation-time overlap check is blind on it; scope it at plan time. Its phase 2 class is about the derivation-to-truth relation, not about connectives, and records/milestones.md lists D4's waits-on as none -- so it is NOT sequenced behind the signature layer and no edge was filed to make it so."
         },
         {
           "task_ids": [
-            257
+            977
           ],
-          "description": "Hugging Face migration for large datasets; externally blocked until the account token exists",
-          "rationale": "Last within hygiene because it is the one hygiene blocker no dispatch can clear and a person can: the Hugging Face account and token are the owner's to supply. Marked roadmap_ext_blocked so the member line says so rather than rendering a misleading ready token."
+          "description": "Settle the signature layer's design now; it rewrites files every contribution reads",
+          "rationale": "Research and planning are startable now and are the preparation Tanner's rebase depends on; implementation is the half that waits. Join 4 of records/milestones.md gives the window and open decision 4 recommends AFTER the temporal contribution, since #8 is the single blocker of the layout -- so no edge is filed from 977 to the review round, because the order is a pending user ruling rather than an observed sequencing. One design question the research must settle before any file is written: FormalSystem/Semantics/TruthClauses.lean ALREADY defines neg, top, and, or, diamond, someFuture, allFuture, kPlus, after, somePast, allPast, kMinus and always once over the clause classes, so a syntactic signature layer that defines the same eighteen operators again creates a second generic copy of them rather than removing the duplication it was filed to remove. 952 carries the only edge on 977 and is nine waves away, so nothing downstream is held by taking the design slowly.",
+          "flags": "--research --plan"
+        },
+        {
+          "task_ids": [
+            984
+          ],
+          "description": "Promote the base-language next and prev lemmas onto the generic ones once #11 lands",
+          "rationale": "Last in the milestone and marked roadmap_ext_blocked rather than given a dependency edge. What it waits on is FormalSystem/Semantics/TemporalRules.lean being on main, which arrives with the pointed semantic lemmas contribution; no OPEN TASK owns that merge -- 978 reviews #11 and recommends, the user merges -- so filing 984<-978 would invent an edge for a blocker no task owns, which is the same judgement already recorded for the depth-0 gate behind 761. The task's own description carries the measurement that makes it cheap once unblocked: next_iff (L := Formula) was checked to inhabit the statement of next_iff_covBy, and both modules sit at layer 1, so the promotion has no layering cost."
         }
       ]
     },
@@ -4412,7 +4430,7 @@
       "gate": "BimodalLib builds; every closed derivation outside Theorems/ProofMode/ is registered with its fragment, frame class and substitution class and a check fails when one is added unregistered; tableau verdicts and countermodels are admitted only at a stated grade; and the conservativity table is generated from the theorems.",
       "progress": {
         "status": "planned",
-        "note": "971 is ready now and gate one carries an edge on it, so the library heads the programme rather than trailing it"
+        "note": "971 is ready now; gate one carries an edge on it, and the evaluator's countermodel client sits behind it"
       },
       "review": {
         "state": "none"
@@ -4456,12 +4474,19 @@
       "gate": "947's report at docs/development/proof-mode-adequacy-perpetuity.md opens with GO or RE-PLAN. GO requires the proof-mode scripts to be shorter than the hand proofs in aggregate and for a clear majority of the gate's entries, with no entry needing a raw term-mode escape longer than its hand proof.",
       "progress": {
         "status": "planned",
-        "note": "960's implementation is held while collaborator PRs #7 or #8 are open; research and planning may proceed"
+        "note": "960's implementation is held while PR #8 is open; research and planning may proceed, and 962 needs nothing"
       },
       "review": {
         "state": "none"
       },
       "batches": [
+        {
+          "task_ids": [
+            962
+          ],
+          "description": "Deduction theorems for Star and Open: no predecessors, off the gate, Open half demoted",
+          "rationale": "RAISED to head the milestone: it is the only line here a dispatch can enter today, since 960's implementation is held while PR #8 is open and the eight-wide pre-gate line sits behind 960. Metatheory about two calculi with no predecessor and no dependant inside the gate's reach: only 953 carries an edge on it, from the far side of the join. It changes no rule the gate measures, so a RE-PLAN verdict does not touch it. The Open half inherits the 2026-11-05 demotion of the open-modal language and is not raised by being listed here."
+        },
         {
           "task_ids": [
             960
@@ -4482,13 +4507,45 @@
           ],
           "description": "All five pre-gate streams, views now among them, run up to 947's GO / RE-PLAN gate",
           "rationale": "Exactly MAX_TASKS wide, and dependency-inclusive: the intra-batch edges (944<-960, 945<-944, 946<-945,969, 947<-946,955,961,971) sequence it into four waves, so the line needs repeated invocations rather than splitting. 947 stays with its predecessors because a batch holding a blocker with its dependent is correct; nothing AFTER the gate is batched with it. Every member declares a file_scope, so the absent_file_scope serialization no longer applies and an implementation co-dispatch is admitted on overlap; the aggregators, the guide index and the two ProofMode READMEs still serialize the line without ordering it. 947's out-of-batch edge on 971 is named on the line rather than silently relied on."
+        }
+      ]
+    },
+    {
+      "id": "M1",
+      "title": "Repository hygiene",
+      "aim": "Close the residual hygiene backlog: dataset readers that work on compressed data, the c7 labeling chain finished, and the large datasets moved off the repository.",
+      "gate": "One shared reader opens both .jsonl and .jsonl.zst with the Lean executables reaching compressed data; the 298-headed dataset chain is terminal; and 257 is either migrated or re-scoped once the account token exists.",
+      "progress": {
+        "status": "active",
+        "note": "604 is the one line a dispatch can clear; hygiene now sits below the collaboration round by instruction"
+      },
+      "review": {
+        "state": "none"
+      },
+      "batches": [
+        {
+          "task_ids": [
+            604
+          ],
+          "description": "Restore the dataset readers the c7 zstd compression broke; the only runnable hygiene line",
+          "rationale": "DEMOTED with its milestone by the 2026-11-22 instruction to put the work that supports the collaborator's contributions first; within hygiene it is still first, and it remains the only hygiene line with no unmet predecessor: both its edges (631, 632) are archived and it sits in wave 1. Its own record is the most literal hygiene finding in the tree -- data/bmlogic-c7.jsonl was compressed to data/bmlogic-c7.jsonl.zst (17G -> 153M, lossless, sha256 of the decompressed stream verified identical) and every consumer hardcoding the uncompressed path is currently broken. Research-first: inventory every reader and writer of .jsonl datasets (Python validators and curators, shell runners, Lean executables, and the path fields in data/*_metadata.json) before changing any of them, then choose one shared open_dataset() helper and decide how the Lean executables reach compressed data given that Lean has no native zstd."
         },
         {
           "task_ids": [
-            962
+            298,
+            282,
+            296,
+            231
           ],
-          "description": "Deduction theorems for Star and Open: no predecessors, off the gate, Open half demoted",
-          "rationale": "Its own line because it is metatheory about two calculi with no predecessor and no dependant inside the gate's reach: only 953 carries an edge on it, from the far side of the join. It changes no rule the gate measures, so a RE-PLAN verdict does not touch it. The Open half inherits the 2026-11-05 demotion of the open-modal language and is not raised by being listed here."
+          "description": "Half-finished dataset work: three PARTIAL records behind 298's c7 bug, plus 231's automation",
+          "rationale": "Dependency-inclusive: 282, 296 and 231 each carry a 298 edge, so the chain head runs in the batch rather than ahead of it. Second rather than first within hygiene because the head needs a full native compile (410 generated .c files, two around 45 minutes each at 2-7GB clang RSS) and 282 additionally needs explicit user approval for multi-hour compute -- neither is a condition a dispatch can clear by being listed earlier."
+        },
+        {
+          "task_ids": [
+            257
+          ],
+          "description": "Hugging Face migration for large datasets; externally blocked until the account token exists",
+          "rationale": "Last within hygiene because it is the one hygiene blocker no dispatch can clear and a person can: the Hugging Face account and token are the owner's to supply. Marked roadmap_ext_blocked so the member line says so rather than rendering a misleading ready token."
         }
       ]
     },
@@ -4830,6 +4887,7 @@
   "roadmap_context": {
     "overview": [
       "The mathematics and the (C)/(S)/(W) verdict table live in FormalSystem/Metalogic/Decidability/RaySummary/README.md, which is the authority; per-task detail in specs/TODO.md; finished work in specs/CHANGE_LOG.md and specs/archive/.",
+      "records/milestones.md sits above the other records: the goals, its own milestone ids A1 to F, the two channels T and B, the joins where they meet, and the open decisions. The milestone ids here are separate from both those and proof-mode.md's M0-M23.",
       "The proof-mode and library programmes are specified in records/proof-mode.md (its milestones M0-M23, dependency picture, gates and lanes), records/proof-mode-architecture.md and records/theorem-library.md.",
       "The milestone ids here are this roadmap's own and do NOT correspond to records/proof-mode.md's M0-M23: M2 to M6 below carry that record's milestones, several per milestone.",
       "The rulings and the fuller rationale the hand-maintained roadmap carried are retained verbatim at specs/archive/roadmap-retained-prose-20261120.md; this file is rendered from specs/state.json and that prose is not.",
@@ -4842,16 +4900,17 @@
       "Closedness of the canonical bundle is the completeness front's standing open problem, owned by no task and not to be filed: filing it needs a fresh user ruling reversing the sections 7-15 refusal.",
       "The stability operator stays primitive in both languages (2026-11-05), and no constructor is added to PlusFormula, PlusAxiom or PlusDerivationTree.",
       "No agent-system work is filed in this repository: this tree's .claude-extensions.json declares no reachable source_dir, so a record whose edit target resolves only under the source store cannot run from here.",
-      "960's IMPLEMENTATION must not be dispatched while collaborator pull request #7 or #8 is open; research and planning may proceed. This is a statement rather than a status: no hold is set.",
+      "960's IMPLEMENTATION must not be dispatched while collaborator pull request #8 is open; #7 is merged, so #8 is the only one still barring it. Research and planning may proceed. This is a statement rather than a status: no hold is set.",
       "947 is gate one: its report must open with an explicit GO or RE-PLAN verdict, and on RE-PLAN every record after it is held until its own record is revised. 948 is gate two and carries no verdict as filed.",
-      "The depth-0 gate behind 761 is owned by no open task, so no dependency edge can express that blocker and none was invented to replace the one that aged out. Its disposition is a user ruling."
+      "The depth-0 gate behind 761 is owned by no open task, so no dependency edge can express that blocker and none was invented to replace the one that aged out. Its disposition is a user ruling.",
+      "The collaboration round leads the order (2026-11-22 instruction): the review round, the records reconciliation, the D4 soundness statement and the signature layer's design come first, and repository hygiene sits below the library and the pre-gate rule set rather than ahead of them."
     ],
     "conventions": [
       "Each batch line is one invocation and batches are dependency-inclusive: a batch holding a blocker with its dependent is correct, while a dependent named without its out-of-batch blocker is dead weight.",
       "MAX_TASKS is 8 and the work-cycle budget is per task per invocation (5 default, 13 under --hard), so re-run the same line until every member reports terminal.",
       "Shared file scope serializes a batch rather than breaking it, and a collision against a live session's lock is not bypassable by --allow-scope-collision: wait for the holder, or batch with it.",
       "960 and 952 declare whole ProofMode directories on purpose, so nothing else may run beside either; the library records declare their own BimodalLib directories, and 178, 177, 257, 482, 875 and 876 declare theirs coarsely.",
-      "Eighteen open records carry no file_scope (125, 231, 411, 412, 497-502, 570, 604, 664, 713, 831, 890, 935, 970), so the creation-time overlap check is blind on them. No task is filed for it.",
+      "Twenty open records carry no file_scope (125, 231, 411, 412, 497-502, 570, 604, 664, 713, 831, 890, 935, 970, 983, 984), so the creation-time overlap check is blind on them. No task is filed for it.",
       "A RESEARCHED status does not always mean a report exists: 861, 862 and 890 carry it with no linked artifact and no task directory, their research folded into the task description.",
       "This file is generated from specs/state.json by scripts/roadmap-integration.sh; change milestone order, batch membership or a description through /roadmap, never by editing the file."
     ]

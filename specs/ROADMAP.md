@@ -9,9 +9,10 @@
 
 | Milestone | Status | Tasks done | Review |
 |---|---|---|---|
-| [M1: Repository hygiene](#milestone-m1) | active | 0/6 | none |
+| [M0: The collaboration round: clear what Tanner's contributions wait on](#milestone-m0) | active | 0/8 | none |
 | [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | planned | 0/5 | none |
 | [M3: Proof-mode rule set up to gate one](#milestone-m3) | planned | 0/10 | none |
+| [M1: Repository hygiene](#milestone-m1) | active | 0/6 | none |
 | [M4: Linear-time rules, usability and gate two](#milestone-m4) | planned | 0/7 | none |
 | [M5: One interface, and the entries that need it](#milestone-m5) | planned | 0/3 | none |
 | [M6: Specification reasoning, dual verification and the manual](#milestone-m6) | planned | 0/5 | none |
@@ -23,37 +24,45 @@
 
 See also: [Rules, conventions and repo context](#roadmap-context)
 
-<a id="milestone-m1"></a>
-## M1: Repository hygiene
+<a id="milestone-m0"></a>
+## M0: The collaboration round: clear what Tanner's contributions wait on
 
-Close the residual hygiene backlog: dataset readers that work on compressed data, the c7 labeling chain finished, and the large datasets moved off the repository.
+Close channel B's side of the open pull requests: the review round, the records reconciled to its outcome, the soundness statement the semantic mode's adapter needs, and the signature layer designed before the temporal rules are rebased.
 
-- **Progress**: active -- 0/3 batches, 0/6 tasks done -- 604 is the one line a dispatch can clear; the other two wait on compute approval and a token
+- **Progress**: active -- 0/4 batches, 0/8 tasks done -- #7 merged; #11 has changes requested, #10 a comment pending, #8 open and conflicting
 - **Review**: none
-- **Gate**: One shared reader opens both .jsonl and .jsonl.zst with the Lean executables reaching compressed data; the 298-headed dataset chain is terminal; and 257 is either migrated or re-scoped once the account token exists.
+- **Gate**: Every open contribution carries a posted decision or an action named as the contributor's; records/milestones.md and the open task descriptions state the position reached; and star_soundness_in is proved beside star_soundness_validIn.
 
-**Batch 1** -- Restore the dataset readers the c7 zstd compression broke; the only runnable hygiene line
-
-```
-/orchestrate 604
-604 ready           support_zstd_compressed_jsonl_datasets   <- hygiene: the c7 consumers stay broken until this lands
-```
-
-**Batch 2** -- Half-finished dataset work: three PARTIAL records behind 298's c7 bug, plus 231's automation
+**Batch 1** -- Close the review round on PRs #7 to #11 and reconcile the records to the outcome it reaches
 
 ```
-/orchestrate 298, 282, 296, 231
-282 PARTIAL         exhaustive_enumeration_by_default
-296 PARTIAL         re_add_derived_binary_operators_with_dedup_fix
-298 PARTIAL         fix_c7_labeling_bug_and_regenerate_dataset
-231 blocked:298     dataset_regeneration_automation
+/orchestrate 980, 981, 978, 979, 982
+981 blocked:980     rereview_pr8_temporal_rules_and_carrying_table   <- the one review line with work left; it measures the rebase cost in a worktree itself
+982 blocked:978,979,980,981  reconcile_records_and_tasks_after_pr_review_round   <- cannot finish ahead of the user's rulings on open decisions 3 and 4
+978 ready           review_pr11_pointed_semantic_lemmas   <- the draft review is written; the rebase, At and the tests are the contributor's half
+979 ready           review_pr10_semantic_record_and_pr9_disposition   <- #10 still owes an open-decisions section, an adoption threshold and scope sentences
+980 ready           rereview_pr7_rewriting_and_views_merge_decision   <- #7 is merged; what is left is recording the decision and releasing 981
 ```
 
-**Batch 3** -- Hugging Face migration for large datasets; externally blocked until the account token exists
+**Batch 2** -- Prove star_soundness_in, so the semantic mode's adapter needs no per-language wrapper
 
 ```
-/orchestrate 257
-257 BLOCKED         large_data_storage_huggingface   <- needs the Hugging Face account token only the owner can supply
+/orchestrate 983
+983 ready           soundness_statement_over_truth_env   <- C4, the semantic mode and its adapter, waits on this; no open PR touches StarSoundness.lean
+```
+
+**Batch 3** -- Settle the signature layer's design now; it rewrites files every contribution reads
+
+```
+/orchestrate 977 --research --plan
+977 ready           connective_signature_layer_shared_primitives   <- research and plan now; implement after the temporal rules merge (open decision 4)
+```
+
+**Batch 4** -- Promote the base-language next and prev lemmas onto the generic ones once #11 lands
+
+```
+/orchestrate 984
+984 EXT-BLOCKED     promote_next_prev_covby_to_generic_lemmas   <- waits on TemporalRules.lean reaching main with the pointed semantic lemmas
 ```
 
 <a id="milestone-m2"></a>
@@ -61,7 +70,7 @@ Close the residual hygiene backlog: dataset readers that work on compressed data
 
 Give the theorem library its layout by fragment and frame class, fill the fragments the tableau reaches, keep every refutation checked, and make filing by smallest fragment a theorem.
 
-- **Progress**: planned -- 0/4 batches, 0/5 tasks done -- 971 is ready now and gate one carries an edge on it, so the library heads the programme rather than trailing it
+- **Progress**: planned -- 0/4 batches, 0/5 tasks done -- 971 is ready now; gate one carries an edge on it, and the evaluator's countermodel client sits behind it
 - **Review**: none
 - **Gate**: BimodalLib builds; every closed derivation outside Theorems/ProofMode/ is registered with its fragment, frame class and substitution class and a check fails when one is added unregistered; tableau verdicts and countermodels are admitted only at a stated grade; and the conservativity table is generated from the theorems.
 
@@ -99,18 +108,25 @@ Give the theorem library its layout by fragment and frame class, fill the fragme
 
 Put the mode in the operator-family layout, extend the bimodal scope rules, close leaves by automation and measure the merged tactics, then re-prove the perpetuity selection and take the verdict.
 
-- **Progress**: planned -- 0/3 batches, 0/10 tasks done -- 960's implementation is held while collaborator PRs #7 or #8 are open; research and planning may proceed
+- **Progress**: planned -- 0/3 batches, 0/10 tasks done -- 960's implementation is held while PR #8 is open; research and planning may proceed, and 962 needs nothing
 - **Review**: none
 - **Gate**: 947's report at docs/development/proof-mode-adequacy-perpetuity.md opens with GO or RE-PLAN. GO requires the proof-mode scripts to be shorter than the hand proofs in aggregate and for a clear majority of the gate's entries, with no entry needing a raw term-mode escape longer than its hand proof.
 
-**Batch 1** -- The operator-family layout every later record files into; held while PRs #7 and #8 are open
+**Batch 1** -- Deduction theorems for Star and Open: no predecessors, off the gate, Open half demoted
+
+```
+/orchestrate 962
+962 ready           proof_mode_deduction_theorems_star_open
+```
+
+**Batch 2** -- The operator-family layout every later record files into; held while PRs #7 and #8 are open
 
 ```
 /orchestrate 960
-960 ready           proof_mode_split_shared_test_and_guide_files   <- implementation held while PR #7 or #8 is open; research and planning may proceed
+960 ready           proof_mode_split_shared_test_and_guide_files   <- implementation held while PR #8 is open; research and planning may proceed
 ```
 
-**Batch 2** -- All five pre-gate streams, views now among them, run up to 947's GO / RE-PLAN gate
+**Batch 3** -- All five pre-gate streams, views now among them, run up to 947's GO / RE-PLAN gate
 
 ```
 /orchestrate 969, 944, 945, 946, 955, 961, 954, 947
@@ -124,11 +140,37 @@ Put the mode in the operator-family layout, extend the bimodal scope rules, clos
 969 blocked:960     proof_mode_views_tier
 ```
 
-**Batch 3** -- Deduction theorems for Star and Open: no predecessors, off the gate, Open half demoted
+<a id="milestone-m1"></a>
+## M1: Repository hygiene
+
+Close the residual hygiene backlog: dataset readers that work on compressed data, the c7 labeling chain finished, and the large datasets moved off the repository.
+
+- **Progress**: active -- 0/3 batches, 0/6 tasks done -- 604 is the one line a dispatch can clear; hygiene now sits below the collaboration round by instruction
+- **Review**: none
+- **Gate**: One shared reader opens both .jsonl and .jsonl.zst with the Lean executables reaching compressed data; the 298-headed dataset chain is terminal; and 257 is either migrated or re-scoped once the account token exists.
+
+**Batch 1** -- Restore the dataset readers the c7 zstd compression broke; the only runnable hygiene line
 
 ```
-/orchestrate 962
-962 ready           proof_mode_deduction_theorems_star_open
+/orchestrate 604
+604 ready           support_zstd_compressed_jsonl_datasets   <- hygiene: the c7 consumers stay broken until this lands
+```
+
+**Batch 2** -- Half-finished dataset work: three PARTIAL records behind 298's c7 bug, plus 231's automation
+
+```
+/orchestrate 298, 282, 296, 231
+282 PARTIAL         exhaustive_enumeration_by_default
+296 PARTIAL         re_add_derived_binary_operators_with_dedup_fix
+298 PARTIAL         fix_c7_labeling_bug_and_regenerate_dataset
+231 blocked:298     dataset_regeneration_automation
+```
+
+**Batch 3** -- Hugging Face migration for large datasets; externally blocked until the account token exists
+
+```
+/orchestrate 257
+257 BLOCKED         large_data_storage_huggingface   <- needs the Hugging Face account token only the owner can supply
 ```
 
 <a id="milestone-m4"></a>
@@ -407,6 +449,7 @@ Keep the open-modal language's backlog moving at low priority: truth invariance 
 ### Repository
 
 - The mathematics and the (C)/(S)/(W) verdict table live in FormalSystem/Metalogic/Decidability/RaySummary/README.md, which is the authority; per-task detail in specs/TODO.md; finished work in specs/CHANGE_LOG.md and specs/archive/.
+- records/milestones.md sits above the other records: the goals, its own milestone ids A1 to F, the two channels T and B, the joins where they meet, and the open decisions. The milestone ids here are separate from both those and proof-mode.md's M0-M23.
 - The proof-mode and library programmes are specified in records/proof-mode.md (its milestones M0-M23, dependency picture, gates and lanes), records/proof-mode-architecture.md and records/theorem-library.md.
 - The milestone ids here are this roadmap's own and do NOT correspond to records/proof-mode.md's M0-M23: M2 to M6 below carry that record's milestones, several per milestone.
 - The rulings and the fuller rationale the hand-maintained roadmap carried are retained verbatim at specs/archive/roadmap-retained-prose-20261120.md; this file is rendered from specs/state.json and that prose is not.
@@ -420,9 +463,10 @@ Keep the open-modal language's backlog moving at low priority: truth invariance 
 - Closedness of the canonical bundle is the completeness front's standing open problem, owned by no task and not to be filed: filing it needs a fresh user ruling reversing the sections 7-15 refusal.
 - The stability operator stays primitive in both languages (2026-11-05), and no constructor is added to PlusFormula, PlusAxiom or PlusDerivationTree.
 - No agent-system work is filed in this repository: this tree's .claude-extensions.json declares no reachable source_dir, so a record whose edit target resolves only under the source store cannot run from here.
-- 960's IMPLEMENTATION must not be dispatched while collaborator pull request #7 or #8 is open; research and planning may proceed. This is a statement rather than a status: no hold is set.
+- 960's IMPLEMENTATION must not be dispatched while collaborator pull request #8 is open; #7 is merged, so #8 is the only one still barring it. Research and planning may proceed. This is a statement rather than a status: no hold is set.
 - 947 is gate one: its report must open with an explicit GO or RE-PLAN verdict, and on RE-PLAN every record after it is held until its own record is revised. 948 is gate two and carries no verdict as filed.
 - The depth-0 gate behind 761 is owned by no open task, so no dependency edge can express that blocker and none was invented to replace the one that aged out. Its disposition is a user ruling.
+- The collaboration round leads the order (2026-11-22 instruction): the review round, the records reconciliation, the D4 soundness statement and the signature layer's design come first, and repository hygiene sits below the library and the pre-gate rule set rather than ahead of them.
 
 ### Conventions
 
@@ -430,7 +474,7 @@ Keep the open-modal language's backlog moving at low priority: truth invariance 
 - MAX_TASKS is 8 and the work-cycle budget is per task per invocation (5 default, 13 under --hard), so re-run the same line until every member reports terminal.
 - Shared file scope serializes a batch rather than breaking it, and a collision against a live session's lock is not bypassable by --allow-scope-collision: wait for the holder, or batch with it.
 - 960 and 952 declare whole ProofMode directories on purpose, so nothing else may run beside either; the library records declare their own BimodalLib directories, and 178, 177, 257, 482, 875 and 876 declare theirs coarsely.
-- Eighteen open records carry no file_scope (125, 231, 411, 412, 497-502, 570, 604, 664, 713, 831, 890, 935, 970), so the creation-time overlap check is blind on them. No task is filed for it.
+- Twenty open records carry no file_scope (125, 231, 411, 412, 497-502, 570, 604, 664, 713, 831, 890, 935, 970, 983, 984), so the creation-time overlap check is blind on them. No task is filed for it.
 - A RESEARCHED status does not always mean a report exists: 861, 862 and 890 carry it with no linked artifact and no task directory, their research folded into the task description.
 - This file is generated from specs/state.json by scripts/roadmap-integration.sh; change milestone order, batch membership or a description through /roadmap, never by editing the file.
 
@@ -439,10 +483,4 @@ Keep the open-modal language's backlog moving at low priority: truth invariance 
 ```
 713 HOLD            formalize_ctl_star_reduction_2exptime_lower_bound
 734 HOLD            e4_mosaic_stabsaturated_mixed_germ_probe
-981 blocked:980     rereview_pr8_temporal_rules_and_carrying_table
-982 blocked:978,979,980,981  reconcile_records_and_tasks_after_pr_review_round
-977 ready           connective_signature_layer_shared_primitives
-978 ready           review_pr11_pointed_semantic_lemmas
-979 ready           review_pr10_semantic_record_and_pr9_disposition
-980 ready           rereview_pr7_rewriting_and_views_merge_decision
 ```
