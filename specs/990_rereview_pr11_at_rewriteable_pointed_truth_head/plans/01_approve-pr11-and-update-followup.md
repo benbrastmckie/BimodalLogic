@@ -1,7 +1,7 @@
 # Implementation Plan: Task #990
 
 - **Task**: 990 - Rereview pr11 at rewriteable pointed truth head
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/990_rereview_pr11_at_rewriteable_pointed_truth_head/reports/01_rereview-pr11-at-usability-and-tests.md`
@@ -128,25 +128,25 @@ Phases within the same wave can execute in parallel. Every wave here holds one p
 approval cannot be written before the head is re-confirmed, the follow-up entry names the
 approval file, and the final pass reads both.
 
-### Phase 1: Re-confirm the head before writing anything [NOT STARTED]
+### Phase 1: Re-confirm the head before writing anything [COMPLETED]
 
 **Goal**: establish that the measured verdict still applies to the code currently at the tip of
 PR #11, or stop.
 
 **Tasks**:
 
-- [ ] Run `gh pr view 11 --json number,state,isDraft,headRefOid,updatedAt,mergeable,mergeStateStatus,baseRefName`
+- [x] Run `gh pr view 11 --json number,state,isDraft,headRefOid,updatedAt,mergeable,mergeStateStatus,baseRefName`
       and record the output verbatim, with the wall-clock time of the probe.
-- [ ] Compare `headRefOid` against the pinned
+- [x] Compare `headRefOid` against the pinned
       `b2eb3ac0b57d0f6082235aee0b861d8249bd7687`. Equality is the gate.
-- [ ] Confirm CI on that head is still green: `gh run list --branch feat/pointed-semantic-lemmas
+- [x] Confirm CI on that head is still green: `gh run list --branch feat/pointed-semantic-lemmas
       --limit 5 --json databaseId,headSha,conclusion,status,workflowName`, looking for run
       `45112546558` (or a later run on the same sha) with `conclusion: success`.
-- [ ] Check for any contributor prose that arrived after the research dispatch:
+- [x] Check for any contributor prose that arrived after the research dispatch:
       `gh api repos/benbrastmckie/BimodalLogic/issues/11/comments` and
       `gh api repos/benbrastmckie/BimodalLogic/pulls/11/comments`. Both were empty; a non-empty
       result is content the response must answer, not a stop condition.
-- [ ] If `headRefOid` differs from the pinned sha: write no response file at all. Record the new
+- [ ] If `headRefOid` differs from the pinned sha: write no response file at all. *(deviation: skipped — stop condition did not fire; the head matched the pinned sha)* Record the new
       sha with `issue-record.sh`, set `user_decision` on `.return-meta.json` (the approval would
       otherwise endorse code no gate run has seen), and return `blocked` without entering
       Phase 2.
@@ -173,6 +173,27 @@ against the pinned sha `b2eb3ac0b57d0f6082235aee0b861d8249bd7687`.
 - `state` is `OPEN` and `mergeable` is `MERGEABLE`; a change in either is recorded in the notes
   and carried into the response rather than silently dropped.
 - The CI query names a `success` run on that sha.
+
+**Verification Notes** (Phase 1, probe at 2026-11-23T09:45:17Z):
+
+```
+{"baseRefName":"main","headRefOid":"b2eb3ac0b57d0f6082235aee0b861d8249bd7687","isDraft":false,
+ "mergeStateStatus":"CLEAN","mergeable":"MERGEABLE","number":11,"state":"OPEN",
+ "updatedAt":"2026-11-23T04:33:16Z"}
+```
+
+- `headRefOid` equals the pinned `b2eb3ac0b57d0f6082235aee0b861d8249bd7687`. The gate passes and
+  Phase 2 is entered.
+- `state` `OPEN`, `isDraft` `false`, `mergeable` `MERGEABLE`, `mergeStateStatus` `CLEAN` — all
+  unchanged from the research measurement; nothing to carry into the response as a change.
+- CI: run `45112546558`, workflow `CI`, `headSha` `b2eb3ac0b...`, `conclusion: success`,
+  `status: completed`. No later run on that sha.
+- Contributor prose since the research dispatch: none. `issues/11/comments` length 0,
+  `pulls/11/comments` length 0. `pulls/11/reviews` still holds exactly one review,
+  `CHANGES_REQUESTED` at 2026-11-23T01:57:16Z against `c6cd983b79842368ae789488d38e488656f98992`.
+- Covering check for the declared `prose` tier: the read-through above. No `.lean` path, no
+  generated surface and no deliverable file was touched by this phase, so no build or suite maps
+  to it.
 
 ---
 
