@@ -1,7 +1,7 @@
 # Implementation Plan: Task #981
 
 - **Task**: 981 - Re-review PR #8 (temporal rules and the carrying table)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.25 hours
 - **Dependencies**: Task 980 (PR #7 re-review) — complete; PR #7 merged as `3c7197f84`
 - **Research Inputs**: specs/981_rereview_pr8_temporal_rules_and_carrying_table/reports/01_rereview-pr8-temporal-rules-carrying-table.md
@@ -133,35 +133,37 @@ reads the artifact the previous one left.
 
 ---
 
-### Phase 1: Re-validate the Head and the Report's Live Premises [NOT STARTED]
+### Phase 1: Re-validate the Head and the Report's Live Premises [COMPLETED]
 
 **Goal**: Establish, in this dispatch rather than by carrying the research round's word, that the
 commit the draft reviews is still the head, and that the three artifacts the later phases edit
 exist in the state those phases assume.
 
 **Tasks**:
-- [ ] Re-run `gh pr view 8 --json headRefOid,state,mergeable,updatedAt` and record the four
+- [x] Re-run `gh pr view 8 --json headRefOid,state,mergeable,updatedAt` and record the four
       values. The research round and this plan both observed
       `49a7efe231cf98a488ad107dd981881557b1fd96` / `OPEN` / `CONFLICTING` /
       `2026-11-22T18:44:10Z`.
-- [ ] If the head has moved: stop the normal flow, run `git log --oneline 49a7efe23..<new>` to
-      enumerate the new commits, and record them. The later phases then proceed only to the
+- [x] If the head has moved: stop the normal flow, run `git log --oneline 49a7efe23..<new>` to
+      enumerate the new commits, and record them. *(deviation: altered -- the head HAD moved, to
+      5ecc91d63, a merge of origin/main; enumerated via `git log --oneline origin/main..5ecc91d63`
+      rather than the two-dot form, since the move was a merge rather than new linear commits)* The later phases then proceed only to the
       extent the new commits leave the draft's claims standing; anything they touch is marked
       explicitly as not re-reviewed.
-- [ ] Re-run `gh run list --branch feat/proof-mode-temporal --limit 5` and confirm the CI
+- [x] Re-run `gh run list --branch feat/proof-mode-temporal --limit 5` and confirm the CI
       picture the draft states (one run, on `1f545ea0a`, failed) has not changed.
-- [ ] Confirm the three files the later phases edit exist and are the ones the report names:
+- [x] Confirm the three files the later phases edit exist and are the ones the report names:
       `specs/reviews/pr-reviews-2026-11-21/pr8-review.md`,
       `specs/981_rereview_pr8_temporal_rules_and_carrying_table/reports/01_rereview-pr8-temporal-rules-carrying-table.md`,
       and `specs/reviews/pr-reviews-2026-11-21/FOLLOWUP.md`. If `pr8-review.md` is absent or
       truncated, Phase 2 becomes an authoring phase rather than an audit phase and says so.
-- [ ] Confirm the probe worktree is still present and on the sha the report names:
+- [x] Confirm the probe worktree is still present and on the sha the report names:
       `git worktree list` should show `/home/benjamin/Projects/.worktrees/BimodalLogic-pr8` on
       branch `pr8-rebase-probe`. Record its current sha.
-- [ ] Append a dated `## Disposition` heading to the report with the re-checked head, state,
+- [x] Append a dated `## Disposition` heading to the report with the re-checked head, state,
       mergeable value and CI picture. Purely additive — no existing finding, table row or
       measurement is deleted or reworded.
-- [ ] Record one `issue-record.sh` entry for this phase (a `win` if the head is unchanged and
+- [x] Record one `issue-record.sh` entry for this phase (a `win` if the head is unchanged and
       every premise holds, an `issue` of class `stale-premise` if the head has moved).
 
 **Timing**: 20 minutes

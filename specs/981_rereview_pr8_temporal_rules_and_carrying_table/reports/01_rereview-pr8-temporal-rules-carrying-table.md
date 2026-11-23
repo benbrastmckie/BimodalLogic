@@ -329,3 +329,110 @@ lake env lean <probe>.lean                                    # six compiled pro
 **Records read**: `records/milestones.md` (joins 2, 4, 5; open decisions 3, 4; goal A table), `records/proof-mode.md` (M0:159-172, M1:174-190, M4:222-259, Lanes:704-730), `records/proof-mode-architecture.md` (open decisions:273-285), `records/theorem-library.md` (skimmed for the M1 cross-reference).
 
 **Reviews read**: `specs/reviews/pr-reviews-2026-11-20/pr8-review.md` (the thirteen requests), `specs/reviews/pr-reviews-2026-11-21/pr7-review.md` and `pr7-approval.md` (the merged state and the follow-up list PR #8 inherits).
+
+---
+
+## Disposition (2026-11-23, implement round, dispatch 12)
+
+This section is additive. Nothing above it is deleted or reworded; where a finding above is
+superseded, that is stated here rather than by editing the original.
+
+### The head moved, and the move is large
+
+| Field | Research round (2026-11-22) | This dispatch (2026-11-23) |
+|---|---|---|
+| `headRefOid` | `49a7efe231cf98a488ad107dd981881557b1fd96` | `5ecc91d63b3a3cdcae1028417d67c3e89907bdad` |
+| `state` | `OPEN` | `OPEN` |
+| `mergeable` | `CONFLICTING` | `MERGEABLE` |
+| `updatedAt` | `2026-11-22T18:44:10Z` | `2026-11-23T04:29:47Z` |
+
+Verbatim: `gh pr view 8 --json headRefOid,state,mergeable,updatedAt` returns
+
+```
+{"headRefOid":"5ecc91d63b3a3cdcae1028417d67c3e89907bdad","mergeable":"MERGEABLE","state":"OPEN","updatedAt":"2026-11-23T04:29:47Z"}
+```
+
+`5ecc91d63` is a merge commit (`Merge: 49a7efe23 171021f4b`) titled "Refresh temporal proof mode
+and register views in the shared tier". Its second parent is `171021f4b`, which is `origin/main`
+exactly: `git merge-base origin/main 5ecc91d63` returns `171021f4b`. **The contributor has done
+the rebase themselves**, by merging `main` rather than rebasing, and `main` now contains PR #7 as
+the squash `3c7197f84`.
+
+Commits unique to the PR (`git log --oneline origin/main..5ecc91d63`): `5ecc91d63`, `49a7efe23`,
+`b020320fd`, `dc253dde5`, `1f545ea0a`, `fc85c61b9`, `9695749ca` — seven, of which the first five
+are #8's own layer and the last two are #7's now-superseded ancestry carried along by the merge.
+
+### What that supersedes in this report and in the draft
+
+| Claim in the research round | Status now |
+|---|---|
+| "the branch sits on `fc85c61b9`, the old #7 head; `mergeable: CONFLICTING`" | **superseded** — merged, `MERGEABLE` |
+| the rebase recipe `git rebase --onto origin/main fc85c61b9`, seven conflicts, six generated surfaces plus `Theorems/ProofMode.lean` | **moot as an ask** — retained only as the record of what the contributor's merge had to resolve |
+| the `Unknown identifier Language` source break in `Automation/ProofMode/Temporal.lean` needing two edits | **resolved by the contributor** — `lake build --wfail` is green on `5ecc91d63` with no local edit |
+| "the only CI run is on `1f545ea0a`, three commits behind, and it failed" | **superseded** — run `45112191590` ran on `5ecc91d63` itself and **passed** |
+| "I registered all eighteen of your `*_expand` equalities ... with `register_lview`" | **landed by the contributor, and larger**: `FormalSystem/Tactic/TemporalFormulaViews.lean` registers **twenty** rows (ten `Formula`, ten `PlusFormula`), the extra pair being `after`, carried by two `private … := rfl` theorems |
+| "`ltemporal_dual` is a third implementation ... the eighteen become rows and the tactic goes away entirely" | **done** — `git grep ltemporal_dual 5ecc91d63` over `FormalSystem`, `Tests` and `docs` returns nothing; `ProofModeTemporalTest.lean:47-50` now uses `lunfold inclusiveUntil` / `lfold inclusiveUntil` |
+| "the records ask (condition 4)" | **partly pre-empted** — the contributor edited `records/proof-mode-architecture.md` and `records/proof-mode.md` in the PR itself |
+| "`readme-lint.sh` is still red, with three stale date stamps. Two are yours ... the third is mine" | **superseded by measurement** — all three new rows are present on `origin/main` **and** on the PR head, identically; the PR adds none |
+
+### What this dispatch ran, on `5ecc91d63`, in the probe worktree
+
+Worktree `/home/benjamin/Projects/.worktrees/BimodalLogic-pr8`, branch `pr8-head-check` at
+`5ecc91d63`, every `lake` call routed through `.claude/scripts/lake-build-guard.sh`:
+
+| Gate | Result |
+|---|---|
+| `lake build --wfail` | **green**, 3014 jobs, exit 0 |
+| `lake test` | **green**, 3091 jobs, exit 0 |
+| `lake lint` | **green**, "Linting passed for FormalSystem", exit 0 |
+| `scripts/check-module-invariants.sh --no-build` | **ALL CHECKS PASSED** |
+| `scripts/readme-lint.sh` | **FAIL (3 new stale dates)** — see below |
+| `#print axioms` on 18 contributed rules | only `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx` |
+
+The eighteen rules checked: `untilIntro`, `sinceIntro`, `untilUnfoldRule`, `sinceUnfoldRule`,
+`untilFoldRule`, `sinceFoldRule`, `untilUnfoldCases`, `sinceUnfoldCases`, `futureKeep`,
+`pastKeep`, `nextKeep`, `prevKeep`, `reflectGoal`, `reflectContext`, `progressCases`,
+`pastProgressCases`, `leadsToTrans`, `gWeaken`. `untilIntro`, `sinceIntro`, `futureKeep`,
+`pastKeep` and `gWeaken` need only `propext`; the rest take all three.
+
+### `readme-lint.sh` is a standing baseline, not a PR regression — and CI cannot see it
+
+Run on both trees and diffed against `scripts/readme-date-baseline.txt`, the set of rows counted
+NEW is **byte-identical** on `origin/main` and on `5ecc91d63`:
+
+```
+stale FormalSystem/Automation/ProofMode/README.md 2026-11-19
+stale FormalSystem/Tactic/README.md               2026-09-21
+stale FormalSystem/Theorems/ProofMode/README.md   2026-11-19
+```
+
+So `main` is red on this gate today, the PR introduces nothing, and the research round's
+attribution ("two are yours, one is mine") is wrong as stated. The ask that survives is a
+courtesy, not a condition: #8 touches both ProofMode directories, so bumping those two stamps
+clears two of the three for whoever lands next.
+
+Separately, and worth recording on its own account: **CI never sees this gate fail.** Run
+`45112191590`'s `Check README health` step reports
+`Stale dates (info): (skipped: shallow clone, no history to date directories against)` and then
+`RESULT: PASS`. `readme-lint.sh` disables Check 4's stale arm under `SHALLOW_CLONE=1`
+(`scripts/readme-lint.sh:336`), and `actions/checkout` is shallow by default. A green CI
+readme-lint is therefore no evidence at all about stale dates; only a full-history local run is.
+
+### Probe worktree disposition
+
+- Path: `/home/benjamin/Projects/.worktrees/BimodalLogic-pr8`
+- Branch now checked out: `pr8-head-check` at `5ecc91d63` (the contributor's own head) — this is
+  the tree the gate table above was measured in.
+- Branch `pr8-rebase-probe` is retained at `4e732c51c`, whose tip commit parks the generated-surface
+  and `open … (Language)` fixes the research round's own `git rebase --onto origin/main fc85c61b9`
+  needed. **That branch is now evidence only.** The rebase it demonstrates is no longer the ask,
+  because the contributor merged `main` instead and the result is green.
+- Neither branch was pushed, and neither is to be pushed. If anything from the probe is ever
+  wanted it is redone on a fresh branch from the live head.
+- The worktree is deliberately **not removed**: it holds a warm `.lake` for the PR head, which is
+  what makes a re-check of a moved head cheap.
+
+### Ground rule (ii) re-check log
+
+- `gh pr view 8` at the start of this dispatch: `5ecc91d63` (the move recorded above).
+- `gh pr view 8` at the close of this dispatch: recorded in the summary.
