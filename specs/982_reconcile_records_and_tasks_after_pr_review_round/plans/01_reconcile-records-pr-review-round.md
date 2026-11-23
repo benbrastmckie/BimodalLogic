@@ -515,45 +515,59 @@ with `jq` before the first write, and records any mismatch as a deviation.
 
 ---
 
-### Phase 6: Closing consistency pass and the roadmap instruction [NOT STARTED]
+### Phase 6: Closing consistency pass and the roadmap instruction [COMPLETED]
 
 **Goal**: Sweep all five record files for statements that contradict each other after Phases 2-5,
 and hand the user a quoted `/roadmap` instruction for the two roadmap changes this round calls
 for.
 
 **Tasks**:
-- [ ] Run `grep -n "under review\|contributed and\|merged" records/*.md` and read every hit
+- [x] Run `grep -n "under review\|contributed and\|merged" records/*.md` and read every hit
       against the live PR states from Phase 1. Every "merged" claim must name the rewriting
-      contribution and nothing else; no "under review" claim may survive for it.
-- [ ] Cross-check the three places the same facts are stated: `records/milestones.md`'s
+      contribution and nothing else; no "under review" claim may survive for it. *(completed: 22
+      hits read; every "merged" occurrence is either about the rewriting contribution, a milestone
+      NAME in the Goals table (e.g. "A2 | Temporal rules merged" is a milestone title, not a status
+      claim), a prospective/conditional "is merged or declined" dependency statement, or
+      pre-existing core-tactic text unrelated to the review round; zero "under review"
+      occurrences)*
+- [x] Cross-check the three places the same facts are stated: `records/milestones.md`'s
       contributions table and "Where it stands", `records/proof-mode.md`'s M16, M17 and M4
       sections, and `records/proof-mode-architecture.md`'s "Where the work sits" rows. Any
       disagreement about what has merged, what is contributed, or what remains open is a finding
-      to fix, not to note.
-- [ ] Verify the deliberate asymmetry is not read as a contradiction: `records/milestones.md`
+      to fix, not to note. *(checked: all three agree — rewriting merged, temporal open with the
+      same two conditions, views at seven rows on main with twenty more deferred, semantic record
+      drafted-not-merged; zero disagreements found)*
+- [x] Verify the deliberate asymmetry is not read as a contradiction: `records/milestones.md`
       states the `expand`/`contract` ruling while `records/proof-mode-architecture.md`'s open
       decision 2 stays open. Confirm the milestones wording names the architecture record's item
-      as closing on the merge, so the two read as one position rather than two.
-- [ ] Confirm no record names work by task number anywhere:
-      `bash .claude/scripts/check-task-references.sh records/` exits 0.
-- [ ] Confirm no record narrates its own draft history: read the edited sections against
+      as closing on the merge, so the two read as one position rather than two. *(confirmed: the
+      Temporal row's State cell explicitly says "the architecture record's own open decision on
+      the point closes once this contribution merges")*
+- [x] Confirm no record names work by task number anywhere:
+      `bash .claude/scripts/check-task-references.sh records/` exits 0. *(confirmed: PASS, 0
+      occurrences)*
+- [x] Confirm no record narrates its own draft history: read the edited sections against
       `.claude/rules/no-record-versioning-in-deliverables.md` — no "previously", "no longer",
       "formerly", "supersedes", and no version label. The write-time hook
       `validate-no-record-versioning.sh` enforces this, but a passing hook is not a reading.
-- [ ] Write the quoted `/roadmap` instruction into the task summary, for the user to issue. It
+      *(confirmed by direct grep and by `check-record-versioning.sh` on each file: 0 BLOCKING on
+      every record; two pre-existing ADVISORY findings, one in milestones.md's own
+      pr8-record-edits.md-verbatim text about what a test case "used to cover", one pre-existing
+      in theorem-library.md, neither a draft-history narration)*
+- [x] Write the quoted `/roadmap` instruction into the task summary, for the user to issue. It
       asks for three things and no more: narrow this task's `roadmap_annotation` to name only the
       signature-layer-timing decision, since the `expand`/`contract` question it used to cite is
       now resolved pending only a mechanical merge; add a placeholder milestone or batch entry for
       Goal C's evaluator and semantic-mode/adapter work, noting that neither has a task record yet
       and both wait on the semantic record landing, without creating the task records; and leave
       the existing gating rule on `proof_mode_split_shared_test_and_guide_files` unchanged, since
-      it already states the position correctly.
-- [ ] Do not run `/roadmap` and do not edit `specs/ROADMAP.md`. The instruction is handed over,
-      not executed.
-- [ ] Record in the summary the list of anything still pending that this task could not close,
+      it already states the position correctly. *(completed; see summary)*
+- [x] Do not run `/roadmap` and do not edit `specs/ROADMAP.md`. The instruction is handed over,
+      not executed. *(confirmed: `git diff --stat specs/ROADMAP.md` is empty)*
+- [x] Record in the summary the list of anything still pending that this task could not close,
       with its precondition: the architecture record's open decision 2, Goal C's C1/C2 pointer
       reduction, the `records/README.md` semantic-record row, and the carrying-table fold into the
-      two scope records.
+      two scope records. *(completed; see summary)*
 
 **Timing**: 0.75 hours
 
