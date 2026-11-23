@@ -679,6 +679,7 @@ import FormalSystem.Semantics.OrientedForest
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.Periodicity
+import FormalSystem.Semantics.PointTransport
 import FormalSystem.Semantics.Presheaf
 import FormalSystem.Semantics.Presheaf.Behavior
 import FormalSystem.Semantics.Presheaf.Determinism
@@ -690,6 +691,7 @@ import FormalSystem.Semantics.Presheaf.Reflection
 import FormalSystem.Semantics.Presheaf.Sheaf
 import FormalSystem.Semantics.Presheaf.Site
 import FormalSystem.Semantics.Presheaf.Worlds
+import FormalSystem.Semantics.RankProgress
 import FormalSystem.Semantics.Reversal
 import FormalSystem.Semantics.ShiftFiniteType
 import FormalSystem.Semantics.ShiftFiniteTypeDictionary
@@ -702,7 +704,9 @@ import FormalSystem.Semantics.StateTopology.Counterexamples
 import FormalSystem.Semantics.StateTopology.MetricFrame
 import FormalSystem.Semantics.TaskFrame
 import FormalSystem.Semantics.TaskModel
+import FormalSystem.Semantics.TemporalIntervals
 import FormalSystem.Semantics.TemporalOrder
+import FormalSystem.Semantics.TemporalRules
 import FormalSystem.Semantics.TimeIndexed
 import FormalSystem.Semantics.TimeIndexedSharpness
 import FormalSystem.Semantics.Truth
