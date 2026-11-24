@@ -517,36 +517,36 @@ equivalence of `DerivableIn` with the cell calculus; and a computed proof profil
 
 ---
 
-### Phase 7: The edge registry, the conjectures and the generated status table [NOT STARTED]
+### Phase 7: The edge registry, the conjectures and the generated status table [COMPLETED]
 
 **Goal**: A status table in `BimodalLib/INDEX.md` rendered from rows that carry a proof, a
 refutation or an obstruction; conjecture statuses brought in line.
 
 **Tasks**:
-- [ ] Create `BimodalLib/Conservativity/Table.lean`: a verdict type indexed by a statement
+- [x] Create `BimodalLib/Conservativity/Table.lean`: a verdict type indexed by a statement
   (`proved` with a proof, `refuted` with a proof of the negation, `open` with an obstruction
   string); a row type holding the edge's description (smaller cell, larger cell, optional frame
   class), its statement, its verdict and the name of the declaration or conjecture that answers
   or states it.
-- [ ] Register the rows: L into L⁺ (proved, `plusDerivable_ofFormula_iff`); Boolean into
+- [x] Register the rows: L into L⁺ (proved, `plusDerivable_ofFormula_iff`); Boolean into
   ModalBoolean; Boolean into TemporalBoolean; `□` cell into TM; `□` cell into `□, ⊡` cell;
   temporal cell into TM at `.Base` (refuted); at `.Dense`, `.ZTime`, `.RTime` (open); the
-  repaired `.Base` edge (open).
-- [ ] In `BimodalLib/Conjectures/Conservativity.lean`: set the four proved conjectures to
+  repaired `.Base` edge (open). *(deviation: altered — eleven rows: the edge from `Boolean` into the full base system, `conservativeEdge_boolean`, has a row of its own beside the two it implies)*
+- [x] In `BimodalLib/Conjectures/Conservativity.lean`: set the four proved conjectures to
   `.derived` and `temporalBooleanIntoTMBase` to `.refuted`, each note naming the theorem; change
   the three remaining temporal notes to the obstruction research names (the S5 laws of `△`,
   `△φ → △Gφ`, and replacement of provable equivalents must be derived inside the temporal cell;
   no completeness theorem is needed); correct the note of `modalBooleanBoxIntoBoxStab`; rewrite
   the module docstring's method paragraph.
-- [ ] Register the repaired `.Base` edge as a new conjecture, in existing vocabulary and with no
+- [x] Register the repaired `.Base` edge as a new conjecture, in existing vocabulary and with no
   new calculus. Suggested statement: every formula of the temporal cell that TM derives at
   `.Base` is derivable within the cell from the always-closure of `X⊤ → △X⊤` as an antecedent.
-  Record in the note which rendering was chosen and why it is the cell extended by that formula.
-- [ ] In `BimodalLib/Index.lean`: a section "Conservativity edges" rendering one table row per
+  Record in the note which rendering was chosen and why it is the cell extended by that formula. *(deviation: altered — the hypothesis has a past conjunct as well, `Y⊤ → always Y⊤`, because a hypothesis is not closed under time reflection; the note records it)*
+- [x] In `BimodalLib/Index.lean`: a section "Conservativity edges" rendering one table row per
   registered edge, the status read from the verdict's constructor; add it to `library_index`.
-- [ ] Add `Tests/BimodalLibTest/EdgeTableTest.lean` (the rendered section lists every registered
+- [x] Add `Tests/BimodalLibTest/EdgeTableTest.lean` (the rendered section lists every registered
   edge; a row cannot be `proved` without a proof term) and import it in `Tests/BimodalLibTest.lean`.
-- [ ] Add the import to `BimodalLib.lean`; `lake build BimodalLib BimodalLibTest --wfail`;
+- [x] Add the import to `BimodalLib.lean`; `lake build BimodalLib BimodalLibTest --wfail`;
   `bash scripts/library-index.sh` and stage `BimodalLib/INDEX.md`.
 
 **Timing**: 2 hours
@@ -576,7 +576,7 @@ refutation or an obstruction; conjecture statuses brought in line.
 
 ---
 
-### Phase 8: Proof fragments of the registered theorems [NOT STARTED]
+### Phase 8: Proof fragments of the registered theorems [IN PROGRESS]
 
 **Goal**: The index lists every registered theorem whose reference proof leaves its statement
 cell, each with a reason, and the library fails to build when a listed entry has none.

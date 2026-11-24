@@ -9,6 +9,7 @@ import BimodalLib.Conjectures.Conservativity
 import BimodalLib.Conjectures.ModalBoolean.Collapse
 import BimodalLib.Conservativity
 import BimodalLib.Conservativity.Proved
+import BimodalLib.Conservativity.Table
 import BimodalLib.Conservativity.TemporalBase
 import BimodalLib.Fragment
 import BimodalLib.Index
