@@ -48,6 +48,12 @@ be many: `lake build` means "the published library".
 | `BimodalLib/ProofFragment.lean` | The commands `record_proof_fragment` and `assert_proof_fragments_recorded` |
 | `BimodalLib/Conjectures/` | The registered conjectures |
 | `BimodalLib/Conjectures/Enumerated.lean` | The pipeline's non-admitted outcomes, one aggregate constant per (fragment, frame class, verdict) cell |
+| `BimodalLib/Countermodel.lean` | The row type `CountermodelEntry`, the consequence relation `GenericConsequenceIn`, the class `HasProfile`, and the three grades |
+| `BimodalLib/Countermodel/Transfer.lean` | The two transfer theorems and their entry-level companions |
+| `BimodalLib/Countermodel/Gates.lean` | `gatesOK`, the branch gates bundled, and the gate bridge theorem |
+| `BimodalLib/Countermodel/Lookup.lean` | Looking a refuted inference up to renaming of atoms |
+| `BimodalLib/Countermodels/<Fragment>/<FrameClass>.lean` | The countermodel rows, filed by fragment and maximal frame class |
+| `BimodalLib/Countermodels/Complete.lean` | Runs the near-miss resolution check over every row |
 | `BimodalLib/Index.lean` | The polarity census and the command `library_index` |
 | `BimodalLib/INDEX.md` | The generated index |
 | `Tests/BimodalLibTest/` | Tests of each command, in both directions |
@@ -313,12 +319,196 @@ row whose proof stays inside its cell, so that a reason does not outlive the pro
 written for. Three rows are listed: NP, its time reflection and NA, each at `TemporalBoolean`
 over `Base` and each derived through `□`.
 
+## Countermodels
+
+Every refuted inference is kept beside a checked refutation. A countermodel row is a definition
+of type `CountermodelEntry L` in a module under `BimodalLib/Countermodels/`, and the index walk
+discovers every such constant. There is no registration command, and the asymmetry with
+`register_theorem` is the reason: a theorem row must read its statement off a declaration's type
+and may not retype it, whereas a countermodel row's statement is the refuted *inference*, which
+has no declaration to be read from and which the author therefore writes.
+
+The row type is stated once, generically over `PointTruth` (`FormalSystem/Semantics/`,
+`ValidityLayer.lean`), and serves both L and L⁺. That costs nothing at the statement side,
+because `ValidIn` and `PlusValidIn` are definitionally `GenericValidIn`, so every refutation
+already in the tree is admissible without restatement. It costs one explicit branch per language
+in the index's meta-code, because `evalExpr` is monomorphic.
+
+### The two kernel-checked invariants
+
+A row carries the same pair the theorem half does.
+
+`refutation : ¬ GenericConsequenceIn frameClass premises conclusion` is what the kernel checks.
+`GenericConsequenceIn` is the premise-bearing consequence relation over `PointTruth`, added
+because it existed for neither language: `SemanticConsequenceIn` is `Formula`-only, and L⁺
+carried no premise-bearing consequence predicate at all. `genericConsequenceIn_nil` is the
+bridge at the empty premise list, through which an existing `¬ Valid…`-shaped theorem becomes a
+row's refutation without restatement.
+
+`profile_eq : inferenceProfile premises conclusion = profile` is closed by `rfl`, so the
+fragment a row is filed in is computed and not asserted. The profile of an inference joins the
+premises' onto the conclusion's, so a row is filed by the operators occurring anywhere in it.
+
+The record's third component, a model, is carried by `model : Option String`, which names the
+declaration the refutation's proof uses. It is a name rather than a packed existential on
+purpose: every landed refutation in the tree has the `¬ Valid…` shape, and converting one into a
+model-exhibiting existential needs classical choice, which discards exactly the explicit model
+the conversion was for.
+
+### The three admitted grades
+
+| Grade | What stands behind it | How rows of it are populated |
+|---|---|---|
+| `semantic` | A Lean theorem that the inference is not valid, by an explicit model | By hand, from the refutations under `FormalSystem/Metalogic/Independence/` and `FormalSystem/PlusLanguage/PlusNonValidities.lean` |
+| `certificate` | A finite certificate accepted by a proved checker | The witness-family checkers at `ZTime`: a labelled lasso whose `Certifies` conditions are decided on finite data, turned into a refutation by `not_consequence_ztime` |
+| `gatedTableau` | An open saturated branch passing the gates, with the gate theorem applied | By hand from branch data today; see below |
+
+A fourth grade, a refutation checked by a semantic evaluator against witnesses the caller
+supplies, is anticipated and deliberately absent. Its client milestone and its design record are
+not in the tree, and admitting the constructor now would advertise a route that does not exist.
+
+**An ungated `invalid` verdict is never a row, at any grade.** A decision procedure's bare
+refutation is registered as a conjecture at `ConjectureStatus.heuristicallyRefuted`, whose own
+docstring says what that means: a procedure returned a refutation that no theorem stands behind.
+Only a branch that passes the gates, with the gate theorem applied, is admitted.
+
+### Filing: fragment, and maximal frame class
+
+A row is filed by the fragment of its inference and by the strongest frame class at which its
+model lives. The frame-class order is a **tree, not a chain**: `Base` is below everything,
+`Dense ≤ RTime`, and `ZTime` is **incomparable** with both `Dense` and `RTime`. Two consequences
+follow and both are load-bearing.
+
+First, "the strongest frame class" is not always unique, so one inference may legitimately carry
+two maximal rows — one at `RTime`, one at `ZTime`. Second, a weaker-class reading is *derived*
+rather than registered: rows are admitted at maximal classes only, and a `Base` duplicate of a
+`ZTime` row is not a row.
+
+### Transfer
+
+Both transfers rest on a named theorem rather than on a convention.
+
+`not_genericConsequenceIn_of_le` moves a refutation down the order, and takes an explicit
+`fc₁ ≤ fc₂` hypothesis so the order is checked by the kernel and not by the author. That matters
+precisely because of the tree shape: a model at `ZTime` does not refute at `Dense` or `RTime`,
+and a "weaker class" convention would hide that.
+
+`not_genericConsequenceIn_ofFormula` reads an L countermodel in L⁺, premise by premise, through
+the truth-transfer bridge `plusTruthAt_ofFormula`. The `Γ = []` case of this is
+`plusValidIn_ofFormula_iff`, which carries no premises, which is why the premise-bearing form
+goes through the point-level bridge instead. `inferenceProfile_map_ofFormula` records that the
+embedding preserves the filing, so an L⁺ reading lands in the same cell as its L original.
+
+`CountermodelEntry.transferLe` and `CountermodelEntry.toPlus` are the entry-level companions:
+each rebuilds a row, changing only what the transfer changes.
+
+### The gated-tableau grade: gates as data
+
+`gatesOK φ fc b ord` bundles the branch gates as one decidable `Bool` over `FormalSystem`
+primitives, and `not_genericConsequenceIn_of_gatesOK` is the bridge from that `Bool` to a
+refutation. A row then discharges its gates by `decide` on finite branch data.
+
+**No tableau is rebuilt in the kernel.** None of the gate theorems requires the branch to have
+come from the tableau construction — soundness rests on the gates alone — and that is what makes
+an explicit-branch row cheap. The alternative shape, deciding the whole construction per row, is
+deliberately not taken. `native_decide` is barred in this library and is not a fallback for
+either shape.
+
+The conclusion of the bridge is at `FrameClass.Base` whatever class the branch's closure check
+was run at, because the gate theorem concludes `¬ Valid χ`: the class argument is the one fed to
+the closure search, not the class of the conclusion.
+
+`BimodalTools.TableauBridge` carries the other bundle of the same gates, and the
+`BimodalLib → BimodalTools` import is forbidden outright, so duplicating the conjunction was the
+only route open. `Tests/BimodalLibTest/GateAgreementTest.lean` pins the two bundles to agree, in
+both verdicts; the test library may import both and the library itself may not.
+
+**Bulk admission is not implemented.** The tableau pipeline's dataset carries 1,047 distinct
+gated statements and none of them can become a kernel-checked row as the data file stands: the
+records carry the gate flags and the true and false atoms, and not the open branch or its time
+ordering, which is exactly what the gate theorem consumes. Beyond that, the measured cost is
+roughly 70 wrapped source lines per row against a package-wide 1,500-line file linter that CI
+enforces with `--wfail`, so the full set is on the order of 73,000 lines. One row stands as the
+grade's existence witness; the bulk waits on the pipeline emitting branches.
+
+### The certificate grade cannot be fed by the tableau pipeline
+
+This is structural rather than incidental. At `ZTime` the region-label and temporal-witness gates
+come back `false` on every formula, so the gated grade is unavailable there by construction, and
+the pipeline's output carries no `ZTime` row and no certificate row at all. The certificate
+grade's population route is the witness-family checkers, and nothing else.
+
+### Lookup, up to renaming of atoms
+
+An inference can be looked up in the library up to a renaming of its atoms. This is the proof
+mode's entry point: where a tableau leaves a leaf unclosed, the leaf's inference is looked up,
+and a hit is **reported against the leaf** rather than used to discharge it. A countermodel is
+not a proof of anything about the goal under consideration — a row can say why a branch stayed
+open, and cannot say that the goal is false.
+
+Renaming is mutual substitution-instance, and the strictness is the point. `sameUpToRenaming x y`
+is `isSubstInstance x y && isSubstInstance y x`; the one-directional test accepts a strict
+instance, so a lookup built on it would report a row refuting something more general than the
+inference asked about. `BimodalLib/Subsumption.lean`'s matcher was `Formula`-only, so a
+`PlusFormula` companion with the `⊡` case was added beside it.
+
+An inference is matched as one folded formula, `Γ.foldr .imp φ`. That is what a *single
+consistent* renaming requires: one assignment is threaded through the premises and the
+conclusion together, so a variable recurring across two premises must meet the same subformula
+both times. The cost is that the premise list is matched in order rather than as a set; matching
+it as a set would need permutation search and is deliberately not done.
+
+### Near-miss naming is one-directional, by type
+
+Where a refuted inference is the converse of a law, or a schema with its side condition dropped,
+`nearMiss : Option Name` names the declaration it bounds. The design asks that the two entries
+name *each other*, and only one direction of that is constructible — not as an omission, but
+because of `TheoremEntry`'s type. A theorem row is `Formula`-only (`stmt : (Nat → Formula) →
+Formula`, `proof : DerivationTree`), so the laws that the stability refutations bound — an axiom
+constructor of the extended language, and two semantic validity theorems — are not and cannot be
+registry rows. There is no row for the countermodel row to be named by.
+
+`assert_near_miss_targets_resolve` therefore checks the direction that exists: every `some
+nearMiss` must resolve in the environment. It runs in
+`BimodalLib/Countermodels/Complete.lean`, so `lake build BimodalLib --wfail` is what catches a
+renamed or deleted target; `Tests/BimodalLibTest/CountermodelTest.lean` pins its failing
+direction against a fixture, so a check that stops failing is caught too. Where the bounded
+object is not a declaration at all, the bound is recorded in the row's `note` instead, which is
+why `nearMiss` is an `Option`.
+
+### What is not a countermodel row
+
+Recorded explicitly rather than by omission, because each is a judgement and not an oversight.
+
+- **No `StarNonValidities` row.** The L⋆ refutations are not statable in L or L⁺: `StarValidOn`
+  carries an extra binder, the stored-time vector, so L⋆ validity is not an instance of the point
+  shape `PointTruth` abstracts; there is no profile computation for `StarFormula`, so an L⋆ row
+  would have no computable filing; and the operators are L⋆-only. One of those refutations has
+  L-statable content, but the declaration as written is over `StarFormula`.
+- **No derivability- or definability-level independence result.** A claim that something is not
+  derivable, or not definable, or that a frame is not separated, is about a calculus or a frame
+  class — not about an inference failing in a model.
+- **No frame-level refutation without a class-tag corollary beside it.** Manufacturing the
+  corollary would be work in `FormalSystem`, and a row is not the place to do it.
+- **No schematic sharpness statement.** A refutation stated for every class below a given one is
+  open in its frame class and cannot be filed at a fixed one; the concrete class-tag declarations
+  beside it are what the rows cite.
+
+### Why there is no completeness check
+
+`assert_registry_complete` demands a row for every closed derivation under
+`FormalSystem/Theorems/`. The analogue here would demand one for every `¬ Valid…`-shaped theorem
+in `FormalSystem`, and that would indict around a hundred declarations across the five
+incompatible tiers just listed. A check that said so would be wrong rather than strict.
+Registration is by the design's explicit list, not by exhaustion.
+
 ## The index
 
 `bash scripts/library-index.sh` builds the library, runs the command `library_index`, and
 writes `BimodalLib/INDEX.md`: the theorems by fragment and frame class, the second proofs by
-statement, the conservativity edges, the proofs outside the statement cell, the conjectures, and
-for each pair of dual operators the laws with no declared dual.
+statement, the conservativity edges, the proofs outside the statement cell, the conjectures, the
+countermodels by grade and by fragment and frame class, and for each pair of dual operators the
+laws with no declared dual.
 `--check` fails when the committed index differs from a fresh one; CI runs it.
 
 The dual pairs are `□`/`◇`, `G`/`F`, `H`/`P` and always/sometimes, with `⊡`/`⟐` listed as
@@ -336,4 +526,7 @@ listing is long because few duals are declared.
 | `lake build BimodalLibTest --wfail` (CI) | A command that stops failing where it should: the registration check and the proof-fragment check on their fixtures, a drifted second proof, a declaration that is not a closed derivation, an edge table that omits a registered edge |
 | `scripts/library-index.sh --check` (CI) | A stale `BimodalLib/INDEX.md` |
 | `B3` of `scripts/check-module-invariants.sh` | `FormalSystem` importing `BimodalLib` |
+| `assert_near_miss_targets_resolve` (in `BimodalLib/Countermodels/Complete.lean`, so `lake build BimodalLib --wfail`) | A countermodel row whose `nearMiss` names a declaration that is not in the environment |
+| `Tests/BimodalLibTest/CountermodelTest.lean` (CI, via `lake build BimodalLibTest --wfail`) | The near-miss check stopping failing on its fixture; a grade losing its last row; the renaming relation accepting a strict instance; the lookup reporting a near-miss shape as a hit; a row's axiom set growing |
+| `Tests/BimodalLibTest/GateAgreementTest.lean` (CI, same build) | The library's `gatesOK` and `BimodalTools.TableauBridge`'s `BranchGates` drifting apart, in either verdict |
 | `lake exe runLinter BimodalLib` | A declaration, generated rows included, with no docstring |

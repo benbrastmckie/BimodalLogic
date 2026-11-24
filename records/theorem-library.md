@@ -188,14 +188,17 @@ registry of the theorems under `FormalSystem/Theorems/`, the pairing of a second
 registered statement, and the index are implemented and described in
 [docs/reference/bimodal-lib.md](../docs/reference/bimodal-lib.md).
 
-The directories still to come, each by fragment and, within a fragment, by frame class and then
-by theme:
+The directory still to come, by fragment and, within a fragment, by frame class and then by
+theme:
 
 ```
 BimodalLib/
   ProofMode/<Fragment>/       registered statements proved in the mode
-  Countermodels/<Fragment>/   refuted inferences with their models
 ```
+
+`BimodalLib/Countermodels/<Fragment>/<FrameClass>.lean` is in place, along with
+`BimodalLib/Countermodel.lean` and the three modules under `BimodalLib/Countermodel/`; see
+[docs/reference/bimodal-lib.md](../docs/reference/bimodal-lib.md)'s Countermodels section.
 
 `BimodalLib/Diagnostics/` holds the record **schema** and the `reprove`/`compare` emitters, and
 is already in place. The five reserved stages' emitters are **not** there and should not be put
@@ -265,29 +268,37 @@ complete low layers and the countermodels.
 
 ## Countermodels
 
-A countermodel entry records an inference `Γ ⊭ φ` at a frame class, a model, and a proof that
-the model refutes it. Entries are graded by what the proof is.
+The entry type, its registration, the three admitted grades, the filing rule, both transfers,
+the lookup up to renaming of atoms, the near-miss field and its build invariant, and the index's
+countermodel section are implemented and described in
+[docs/reference/bimodal-lib.md](../docs/reference/bimodal-lib.md)'s Countermodels section. That
+page also records what is deliberately not a row, and why near-miss naming is one-directional:
+a theorem row is `Formula`-only by type, so the laws the stability refutations bound cannot be
+registry rows and there is no row for a countermodel row to be named by.
 
-| Grade | Evidence | Where it comes from |
-|---|---|---|
-| Semantic | a Lean theorem that the inference is not valid, by an explicit model | hand-built models: `PlusNonValidities`, `StarNonValidities`, the independence results |
-| Certificate | a finite certificate accepted by a proved checker | the witness-family checkers at ZTime |
-| Gated tableau | an open saturated branch passing the gates, with the gate theorem applied | the tableau |
+Two parts remain unimplemented.
 
-An ungated `invalid` verdict is not a countermodel entry. It is registered as a conjecture,
-labelled heuristically refuted, because no theorem stands behind it.
+**Bulk admission of the tableau-fed gated entries.** One row stands as the gated-tableau grade's
+existence witness; the pipeline's 1,047 distinct gated statements are not admitted. Two measured
+obstacles, both to be cleared before the bulk is attempted:
 
-Countermodels are filed by the fragment of the refuted inference and by the strongest frame
-class at which the model lives. A model at ZTime refutes the inference at Base as well. A
-countermodel in L refutes in L⁺ through `plusValidIn_ofFormula_iff`.
+- The pipeline's refutation record carries the gate flags and the true and false atoms, and
+  **not** the open branch or its time ordering, which is exactly what the gate theorem consumes.
+  No kernel-checked row can be generated from the data file as it stands; the record must emit
+  the branch first.
+- At roughly 70 wrapped source lines per row — measured on the smallest refuted formula in the
+  dataset, whose branch is 14 signed formulas over 4 times — the full set is on the order of
+  73,000 lines across some fifty files, against a package-wide 1,500-line file linter that CI
+  enforces with `--wfail`. Sizing comes before generating: measure lines per row and elaboration
+  time on a ten-row sample, file per (fragment, frame class), and pin each generated file's
+  long-file baseline to its actual length.
 
-Where a refuted inference is a near miss of a theorem (the converse of an implication, a schema
-with its side condition dropped), the two entries name each other. The five refutations that
-bound the `⊡` axiom set are the model for this.
-
-The proof mode uses this half directly. A leaf that the mode cannot close is looked up in the
-countermodel library and, failing that, sent through the pipeline; a refutation is reported
-against the leaf. It never closes a goal.
+**The evaluator-checked fourth grade.** A refutation checked by the evaluator that
+`records/semantic-proof-mode.md` is to own — cited by path and not linked, because that record is
+not in the tree yet. Its client is the evaluator milestone of
+[milestones.md](milestones.md), and it waits on both the evaluator and the record; the grade
+constructor is deliberately absent from `BimodalLib.Grade` (`BimodalLib/Countermodel.lean`)
+until they exist, so that the type does not advertise a route that is not there.
 
 ## Conjectures
 

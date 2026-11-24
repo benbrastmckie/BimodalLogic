@@ -29,6 +29,9 @@ in `scripts/check-module-invariants.sh` asserts it.
 | `Conservativity/` | The conservativity edges: `Proved.lean` (out of `Boolean` and out of the cell with `□`), `TemporalBase.lean` (the refuted temporal edge at the base class), `Table.lean` (the registry of edges with their verdicts) |
 | `ProofFragment.lean` | `record_proof_fragment` and `assert_proof_fragments_recorded`: the theorems whose reference proof leaves the cell of their statement, each with a reason |
 | `Conjectures/` | The registered conjectures, including `Enumerated.lean`: the pipeline's non-admitted outcomes, one aggregate constant per (fragment, frame class, verdict) cell |
+| `Countermodel.lean` | `CountermodelEntry`, the kernel-checked row of a refuted inference; `GenericConsequenceIn`, the premise-bearing consequence relation over `PointTruth`; `HasProfile`; and the three admitted grades |
+| `Countermodel/` | `Transfer.lean` (the two transfer theorems, down the frame-class order and into L⁺), `Gates.lean` (`gatesOK`, the branch gates bundled, and the gate bridge), `Lookup.lean` (looking a refuted inference up to renaming of atoms) |
+| `Countermodels/` | The countermodel rows, by `<Fragment>/<FrameClass>.lean`, filed at maximal frame classes only; plus `Complete.lean`, which runs `assert_near_miss_targets_resolve` |
 | `Index.lean` | The polarity census and `library_index` |
 | `Diagnostics/` | The one record schema for every stage of the library pipeline, the `#reprove_record` and `#compare_record` emitters, and the computable node count of a derivation |
 | [INDEX.md](INDEX.md) | The generated index; do not edit |

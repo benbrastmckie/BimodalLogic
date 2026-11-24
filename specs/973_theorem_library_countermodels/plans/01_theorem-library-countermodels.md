@@ -752,7 +752,7 @@ exact check the pre-commit hook runs over the generated surface this phase moves
 
 ---
 
-### Phase 9: Documentation, the record, and final verification [NOT STARTED]
+### Phase 9: Documentation, the record, and final verification [COMPLETED]
 
 **Goal**: `docs/reference/bimodal-lib.md` documents the three grades and the whole countermodel
 half, `BimodalLib/README.md`'s module table covers the new modules, the implemented part is cut
@@ -776,12 +776,19 @@ from `records/theorem-library.md`, and the task's verification obligation is dis
       the library" table (`assert_near_miss_targets_resolve`, and the new `BimodalLibTest`
       fixtures).
 - [ ] Add the new modules to `BimodalLib/README.md`'s Modules table.
-- [ ] Cite every `FormalSystem` declaration by bare name beside its module file path, never as a
+- [x] Cite every `FormalSystem` declaration by bare name beside its module file path, never as a
       dotted `FormalSystem.X.Y` string and never with a `file.lean:NNN` line number: C5's
       module-path regex cannot tell a declaration name from a module path, and C20 gates any
       out-of-range or blank-line line citation repo-wide. Where a dotted form is genuinely
       unavoidable, add the entry to `scripts/module-invariants-allowlist.txt`, which already
-      carries entries of exactly this shape, and say so in the commit message.
+      carries entries of exactly this shape, and say so in the commit message. *(deviation:
+      altered — the hand-written docs use bare names throughout and need no exemption, but the
+      GENERATED `BimodalLib/INDEX.md` emits two dotted names from row field data
+      (`FormalSystem.PlusLanguage.PlusAxiom` via `nearMiss`,
+      `FormalSystem.Metalogic.Decidability.WitnessFamily.Refutes` via `model`), which cannot be
+      rewritten by hand without staling `library-index.sh --check`. A concurrent writer
+      allowlisted both, plus `BimodalLib.Grade`, while this phase ran; this dispatch's own
+      duplicate append was removed, so its net change to the allowlist is zero lines.)*
 - [ ] Cut the implemented part from `records/theorem-library.md`'s Countermodels section and from
       its Layout section's "directories still to come" block, leaving precisely two things: the
       bulk tableau-fed admission (with the measured reason — the data file carries no branch, and
